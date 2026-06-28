@@ -31,5 +31,5 @@ if (testFiles.length === 0) {
   process.exit(1);
 }
 
-const res = spawnSync('node', ['--test --glob', ...testFiles], { stdio: 'inherit' });
+const res = spawnSync('node', ['--test', ...testFiles], { stdio: 'inherit' });
 process.exit(res.status ?? 0);
