@@ -174,7 +174,7 @@
     "compile": "tsc -p ./",
     "watch": "tsc -watch -p ./",
     "pretest:unit": "npm run compile",
-    "test:unit": "node --test \"out/test/unit/**/*.test.js\"",
+    "test:unit": "node scripts/run-tests.cjs",
     "pretest:integration": "npm run compile",
     "test:integration": "vscode-test",
     "test": "npm run test:unit",
