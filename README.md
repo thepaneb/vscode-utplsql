@@ -1,12 +1,24 @@
+<p align="center">
+  <img src="images/icon.png" alt="utPLSQL Test Runner Logo" width="128" height="128">
+</p>
+
 # utPLSQL Test Runner
 
-Integra o [utPLSQL](https://www.utplsql.org/) ao VSCode, trazendo os testes de PL/SQL
-para o **Test Explorer** nativo, com menu de contexto e cobertura visual.
+Integra o [utPLSQL](https://www.utplsql.org/) ao VSCode, trazendo os testes de PL/SQL para o **Test Explorer** nativo, com menu de contexto e cobertura visual.
 
 - 🧪 **Test Explorer nativo** — suites e testes aparecem na view de testes; rode por teste, suite, arquivo ou pasta.
 - 🖱️ **Menu de contexto** — clique direito em uma **pasta** ou em um arquivo **`.pks`/`.pkb`** (no Explorer ou no editor) para rodar os testes.
 - ✅ **Resultados na view de testes** — verde/vermelho por teste, com a mensagem de falha do utPLSQL.
 - 📊 **Cobertura visual** — gutters coloridos por linha (coberta/não coberta) e percentual por arquivo na aba **Coverage**, usando a Test Coverage API do VSCode.
+
+## Instalação
+
+A extensão pode ser instalada de duas formas:
+
+1. **Pelo Marketplace:** Procure por **utPLSQL Test Runner** no painel de extensões do VSCode (`Ctrl+Shift+X`) e clique em **Instalar**.
+2. **Manualmente (.vsix):** Baixe o arquivo `.vsix` da versão desejada e instale no VSCode:
+   * **Via Linha de Comando:** `code --install-extension vscode-utplsql-<versao>.vsix`
+   * **Via Interface:** Abra o painel de Extensões (`Ctrl+Shift+X`), clique nos três pontos `...` (canto superior direito) e selecione **Install from VSIX...**.
 
 ## Requisitos
 
