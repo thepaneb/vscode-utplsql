@@ -11,4 +11,5 @@ tsconfig.json
 .gitignore
 CLAUDE.md
 DEVELOPMENT.md
+AGENTS.md
 node_modules/.bin/**

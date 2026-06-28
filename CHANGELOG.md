@@ -1,5 +1,15 @@
 # Changelog
 
+## 0.2.4 
+
+- Inclusão de instruções para funcionamento da Cobertura com o `utPLSQL-cli`.
+- Inclusão dos GRANTS necessários para funcionamento do `utPLSQL` em modo DBA.
+
+## 0.2.3
+
+- Inclusão do logotipo
+
+
 ## 0.2.2
 
 - Cobertura mapeada aos arquivos-fonte (gutters / Sonar): a extensão passa `-owner`
