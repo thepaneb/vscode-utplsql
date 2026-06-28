@@ -1,0 +1,14 @@
+.vscode/**
+.vscode-test/**
+.vscode-test.mjs
+src/**
+out/test/**
+scripts/**
+images/*.svg
+**/*.ts
+**/*.map
+tsconfig.json
+.gitignore
+CLAUDE.md
+DEVELOPMENT.md
+node_modules/.bin/**

@@ -1,0 +1,199 @@
+{
+  "name": "vscode-utplsql",
+  "displayName": "utPLSQL Test Runner",
+  "description": "Roda testes utPLSQL pelo Test Explorer do VSCode, com menu de contexto e cobertura visual (estilo pytest).",
+  "version": "0.2.3",
+  "publisher": "paneb",
+  "author": "Gil Cleber Barboza",
+  "license": "MIT",
+  "icon": "images/icon.png",
+  "engines": {
+    "vscode": "^1.88.0"
+  },
+  "categories": [
+    "Testing"
+  ],
+  "keywords": [
+    "utplsql",
+    "plsql",
+    "oracle",
+    "test",
+    "coverage"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/thepaneb/vscode-utplsql.git"
+  },
+  "bugs": {
+    "url": "https://github.com/thepaneb/vscode-utplsql/issues"
+  },
+  "homepage": "https://github.com/thepaneb/vscode-utplsql#readme",
+  "galleryBanner": {
+    "color": "#1e1e1e",
+    "theme": "dark"
+  },
+  "activationEvents": [
+    "workspaceContains:**/*.pks",
+    "workspaceContains:**/*.pkb"
+  ],
+  "main": "./out/extension.js",
+  "contributes": {
+    "configuration": {
+      "title": "utPLSQL",
+      "properties": {
+        "utplsql.connection": {
+          "type": "string",
+          "default": "",
+          "markdownDescription": "String de conexão Oracle (`usuario/senha@//host:porta/servico`). Se vazio, usa a variável de ambiente `UTPLSQL_CONN`; se ainda assim vazio, a extensão pergunta (e mantém só na sessão). **Recomendado deixar vazio e usar a variável de ambiente** para não gravar a senha nas settings."
+        },
+        "utplsql.cliPath": {
+          "type": "string",
+          "default": "utplsql",
+          "description": "Caminho do executável do utPLSQL-cli. Use o caminho completo se não estiver no PATH (ex.: C:\\tools\\utPLSQL-cli\\bin\\utplsql.bat)."
+        },
+        "utplsql.sourcePath": {
+          "type": "string",
+          "default": "install",
+          "description": "Pasta (relativa à raiz do workspace) com o código de produção. Usada no parâmetro -source_path para mapear a cobertura aos arquivos locais."
+        },
+        "utplsql.testPath": {
+          "type": "string",
+          "default": "tests",
+          "description": "Pasta (relativa à raiz do workspace) com os packages de teste. Usada no parâmetro -test_path."
+        },
+        "utplsql.includePatterns": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "default": [
+            "**/*.pks"
+          ],
+          "description": "Globs para descobrir os specs de teste que contêm as annotations %suite/%test."
+        },
+        "utplsql.extraRunArgs": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "default": [],
+          "description": "Argumentos extras passados ao 'utplsql run' (ex.: [\"-color\"])."
+        },
+        "utplsql.coverageOwner": {
+          "type": "string",
+          "default": "",
+          "description": "Schema dono dos objetos para o mapeamento de cobertura. Se vazio, usa o usuário da conexão (parte antes de '/'), em maiúsculas."
+        },
+        "utplsql.coverageSourceArgs": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "default": [
+            "-regex_expression=.*[/\\\\](\\w+)[/\\\\](\\w+)\\.sql$",
+            "-type_subexpression=1",
+            "-name_subexpression=2",
+            "-type_mapping=packages=PACKAGE BODY/functions=FUNCTION/procedures=PROCEDURE/triggers=TRIGGER"
+          ],
+          "markdownDescription": "Args do utPLSQL-cli para mapear a cobertura aos arquivos-fonte (estrutura `sourcePath/<tipo>/<nome>.sql`). O default casa as pastas `functions/`, `procedures/`, `packages/`, `triggers/`. Sem isso, a cobertura sai por nome de objeto (sem gutters)."
+        }
+      }
+    },
+    "commands": [
+      {
+        "command": "utplsql.refresh",
+        "title": "Atualizar testes",
+        "category": "utPLSQL",
+        "icon": "$(refresh)"
+      },
+      {
+        "command": "utplsql.runAll",
+        "title": "Rodar todos os testes",
+        "category": "utPLSQL"
+      },
+      {
+        "command": "utplsql.runFile",
+        "title": "utPLSQL: Rodar testes deste arquivo",
+        "category": "utPLSQL"
+      },
+      {
+        "command": "utplsql.runFileCoverage",
+        "title": "utPLSQL: Rodar testes deste arquivo (com cobertura)",
+        "category": "utPLSQL"
+      },
+      {
+        "command": "utplsql.runFolder",
+        "title": "utPLSQL: Rodar testes desta pasta",
+        "category": "utPLSQL"
+      },
+      {
+        "command": "utplsql.runFolderCoverage",
+        "title": "utPLSQL: Rodar testes desta pasta (com cobertura)",
+        "category": "utPLSQL"
+      }
+    ],
+    "menus": {
+      "explorer/context": [
+        {
+          "command": "utplsql.runFile",
+          "group": "utplsql@1",
+          "when": "resourceExtname == .pks || resourceExtname == .pkb"
+        },
+        {
+          "command": "utplsql.runFileCoverage",
+          "group": "utplsql@2",
+          "when": "resourceExtname == .pks || resourceExtname == .pkb"
+        },
+        {
+          "command": "utplsql.runFolder",
+          "group": "utplsql@1",
+          "when": "explorerResourceIsFolder"
+        },
+        {
+          "command": "utplsql.runFolderCoverage",
+          "group": "utplsql@2",
+          "when": "explorerResourceIsFolder"
+        }
+      ],
+      "editor/context": [
+        {
+          "command": "utplsql.runFile",
+          "group": "utplsql@1",
+          "when": "resourceExtname == .pks || resourceExtname == .pkb"
+        },
+        {
+          "command": "utplsql.runFileCoverage",
+          "group": "utplsql@2",
+          "when": "resourceExtname == .pks || resourceExtname == .pkb"
+        }
+      ]
+    }
+  },
+  "scripts": {
+    "vscode:prepublish": "npm run compile",
+    "compile": "tsc -p ./",
+    "watch": "tsc -watch -p ./",
+    "pretest:unit": "npm run compile",
+    "test:unit": "node --test \"out/test/unit/**/*.test.js\"",
+    "pretest:integration": "npm run compile",
+    "test:integration": "vscode-test",
+    "test": "npm run test:unit",
+    "package": "vsce package",
+    "gen-icon": "node scripts/gen-icon.cjs",
+    "publish": "vsce publish",
+    "publish:patch": "vsce publish patch"
+  },
+  "dependencies": {
+    "fast-xml-parser": "^4.4.1"
+  },
+  "devDependencies": {
+    "@resvg/resvg-js": "^2.6.2",
+    "@types/mocha": "^10.0.7",
+    "@types/node": "^20.11.30",
+    "@types/vscode": "^1.88.0",
+    "@vscode/test-cli": "^0.0.10",
+    "@vscode/test-electron": "^2.4.1",
+    "@vscode/vsce": "^3.2.1",
+    "typescript": "^5.4.5"
+  }
+}
