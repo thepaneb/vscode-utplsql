@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.2.5 
+
+- Refinamento das instruções.
+
 ## 0.2.4 
 
 - Inclusão de instruções para funcionamento da Cobertura com o `utPLSQL-cli`.
