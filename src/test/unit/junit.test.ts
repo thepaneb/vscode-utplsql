@@ -4,12 +4,12 @@ import { parseJUnit } from '../../junit';
 
 const XML = `<?xml version="1.0" encoding="UTF-8"?>
 <testsuites tests="3" failures="1" errors="0">
-  <testsuite name="test_calcular_desconto" tests="3">
-    <testcase classname="hr.test_calcular_desconto" name="Aplica 10% de desconto corretamente" time="0.05"/>
-    <testcase classname="hr.test_calcular_desconto" name="Lanca erro quando o valor e nulo" time="0.02">
+  <testsuite name="test_exemplo" tests="3">
+    <testcase classname="app.test_exemplo" name="Cenario de sucesso" time="0.05"/>
+    <testcase classname="app.test_exemplo" name="Lanca erro quando o valor e invalido" time="0.02">
       <failure message="Expected 90 but got 80" type="failure">at line 12</failure>
     </testcase>
-    <testcase classname="hr.test_calcular_desconto" name="Teste pulado" time="0">
+    <testcase classname="app.test_exemplo" name="Teste pulado" time="0">
       <skipped/>
     </testcase>
   </testsuite>
@@ -31,7 +31,7 @@ test('captura mensagem de falha e duração', () => {
   const cases = parseJUnit(XML);
   assert.match(cases[1].message ?? '', /Expected 90 but got 80/);
   assert.strictEqual(cases[0].durationMs, 50);
-  assert.strictEqual(cases[0].classname, 'hr.test_calcular_desconto');
+  assert.strictEqual(cases[0].classname, 'app.test_exemplo');
 });
 
 test('lida com testsuite único (não-array)', () => {

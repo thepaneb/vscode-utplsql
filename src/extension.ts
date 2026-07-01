@@ -6,6 +6,7 @@ import * as vscode from 'vscode';
 import { readConfig, resolveConnection } from './config';
 import { discoverWorkspace } from './discovery';
 import { runCli } from './cli';
+import { buildInvocation, isInvocationError } from './invocation';
 import { parseJUnit, TestStatus } from './junit';
 import { parseCobertura } from './cobertura';
 import { resolveSourceUri } from './coverage';
@@ -256,7 +257,21 @@ async function executeRun(
 
   run.appendOutput(`Rodando utPLSQL${coverage ? ' (com cobertura)' : ''}...\r\n`);
 
-  const result = await runCli(cfg.cliPath, args, root, token, (chunk) => {
+  const inv = buildInvocation(cfg, args);
+  if (isInvocationError(inv)) {
+    run.appendOutput(`\r\n[erro] ${inv.error}\r\n`);
+    vscode.window.showErrorMessage(inv.error);
+    leafTests.forEach((t) => run.errored(t, new vscode.TestMessage(inv.error)));
+    try {
+      fs.rmSync(tmpDir, { recursive: true, force: true });
+    } catch {
+      /* ignore */
+    }
+    run.end();
+    return;
+  }
+
+  const result = await runCli(inv.file, inv.args, inv.shell, root, token, (chunk) => {
     run.appendOutput(chunk.replace(/\r?\n/g, '\r\n'));
   });
 

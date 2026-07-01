@@ -1,5 +1,14 @@
 # Changelog
 
+## 0.3.0
+
+- Novo modo de invocação **`java`** (`utplsql.invocation`): chama a JVM direto
+  (`java -cp <home>/etc;<home>/lib/* org.utplsql.cli.Cli`) **sem shell**, em vez do
+  launcher `utplsql.bat`. Evita o `cmd` do Windows e o tratamento de metacaracteres
+  (`^`, `|`) — argumentos de regex em `coverageSourceArgs` passam literais.
+- Settings novas: `utplsql.javaPath` (executável do Java) e `utplsql.cliHome`
+  (raiz do utPLSQL-cli; vazio = derivado do `cliPath`). O modo `launcher` segue padrão.
+
 ## 0.2.5 
 
 - Refinamento das instruções.
@@ -12,7 +21,6 @@
 ## 0.2.3
 
 - Inclusão do logotipo
-
 
 ## 0.2.2
 

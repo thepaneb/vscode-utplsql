@@ -21,19 +21,20 @@ function quoteArg(arg: string): string {
  * onStdout é chamado em streaming para exibir o reporter de documentação na view de testes.
  */
 export function runCli(
-  cliPath: string,
+  file: string,
   args: string[],
+  shell: boolean,
   cwd: string,
   token: vscode.CancellationToken,
   onStdout?: (chunk: string) => void
 ): Promise<CliResult> {
   return new Promise((resolve) => {
-    const cmd = [cliPath, ...args].map(quoteArg).join(' ');
-    const child = cp.spawn(cmd, {
-      cwd,
-      shell: true,
-      windowsHide: true
-    });
+    // shell=true (launcher .bat/script): junta tudo numa string e cita os args
+    // (necessário com shell). shell=false (java direto): passa o array — sem cmd,
+    // sem quoting, metacaracteres de regex passam literais.
+    const child = shell
+      ? cp.spawn([file, ...args].map(quoteArg).join(' '), { cwd, shell: true, windowsHide: true })
+      : cp.spawn(file, args, { cwd, shell: false, windowsHide: true });
 
     let stdout = '';
     let stderr = '';

@@ -11,6 +11,9 @@ export interface UtConfig {
   extraRunArgs: string[];
   coverageOwner: string;
   coverageSourceArgs: string[];
+  invocation: string;
+  javaPath: string;
+  cliHome: string;
 }
 
 export function readConfig(): UtConfig {
@@ -27,7 +30,10 @@ export function readConfig(): UtConfig {
       '-type_subexpression=1',
       '-name_subexpression=2',
       '-type_mapping=packages=PACKAGE BODY/functions=FUNCTION/procedures=PROCEDURE/triggers=TRIGGER'
-    ])
+    ]),
+    invocation: c.get<string>('invocation', 'launcher'),
+    javaPath: c.get<string>('javaPath', 'java'),
+    cliHome: c.get<string>('cliHome', '')
   };
 }
 

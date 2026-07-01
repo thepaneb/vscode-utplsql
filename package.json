@@ -2,7 +2,7 @@
   "name": "vscode-utplsql",
   "displayName": "utPLSQL Test Runner",
   "description": "Roda testes utPLSQL pelo Test Explorer do VSCode, com menu de contexto e cobertura visual (estilo pytest).",
-  "version": "0.2.5",
+  "version": "0.3.0",
   "publisher": "paneb",
   "author": "Gil Cleber Barboza",
   "license": "MIT",
@@ -96,6 +96,22 @@
             "-type_mapping=packages=PACKAGE BODY/functions=FUNCTION/procedures=PROCEDURE/triggers=TRIGGER"
           ],
           "markdownDescription": "Args do utPLSQL-cli para mapear a cobertura aos arquivos-fonte (estrutura `sourcePath/<tipo>/<nome>.sql`). O default casa as pastas `functions/`, `procedures/`, `packages/`, `triggers/`. Sem isso, a cobertura sai por nome de objeto (sem gutters)."
+        },
+        "utplsql.invocation": {
+          "type": "string",
+          "enum": ["launcher", "java"],
+          "default": "launcher",
+          "markdownDescription": "Como invocar o utPLSQL-cli. `launcher` (padrão): via o executável `utplsql`/`.bat`. `java`: chama a JVM direto (`java -cp … org.utplsql.cli.Cli`), **sem shell** — evita o `cmd` e o tratamento de metacaracteres (útil para regex em `coverageSourceArgs`)."
+        },
+        "utplsql.javaPath": {
+          "type": "string",
+          "default": "java",
+          "description": "Executável do Java (no PATH ou caminho completo). Usado apenas no modo de invocação 'java'."
+        },
+        "utplsql.cliHome": {
+          "type": "string",
+          "default": "",
+          "description": "Raiz do utPLSQL-cli (pasta que contém bin/ e lib/). Vazio = derivado do cliPath. Usado apenas no modo de invocação 'java'."
         }
       }
     },

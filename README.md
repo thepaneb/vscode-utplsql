@@ -54,7 +54,9 @@ traduz para as APIs nativas do VSCode.
 | `utplsql.includePatterns` | `["**/*.pks"]` | Globs para descobrir os specs com `%suite`/`%test`. Se seus testes estão em `.sql`, use `["**/*.sql"]`. |
 | `utplsql.extraRunArgs` | `[]` | Argumentos extras para o `utplsql run`. |
 | `utplsql.coverageOwner` | `""` | Schema dono dos objetos cobertos. Vazio = usa o usuário da conexão (em maiúsculas). |
-| `utplsql.coverageSourceArgs` | (ver **Cobertura**) | Args do CLI que mapeiam a cobertura aos arquivos-fonte (regex + `type_mapping`). |
+| `utplsql.coverageSourceArgs` | (ver **Cobertura**) | Args do CLI que mapeiam a c| `utplsql.invocation` | `launcher` | Como chamar o CLI: `launcher` (via `.bat`/script, padrão) ou `java` (JVM direto, **sem shell**). Veja **Modo de invocação**. |
+| `utplsql.javaPath` | `java` | Executável do Java (PATH ou caminho completo). Usado só no modo `java`. |
+| `utplsql.cliHome` | `""` | Raiz do utPLSQL-cli (pasta com `bin/` e `lib/`). Vazio = derivado do `cliPath`. Usado só no modo `java`. |
 
 Exemplo (`.vscode/settings.json` do projeto):
 
@@ -73,6 +75,32 @@ E, antes de abrir o VSCode (ou no perfil do PowerShell):
 $env:UTPLSQL_CONN = "DEV/senha@//localhost:1521/XEPDB1"
 ```
 
+### Modo de invocação (`launcher` vs `java`)
+
+Por padrão (`utplsql.invocation = "launcher"`) a extensão chama o launcher
+`utplsql`/`utplsql.bat`. No Windows isso passa pelo `cmd`, que **consome/interpreta
+metacaracteres** (`^` vira escape, `|` vira pipe) — o que atrapalha regex em
+`coverageSourceArgs`.
+
+O modo `java` chama a JVM **direto** (`java -cp <home>/etc;<home>/lib/* …
+org.utplsql.cli.Cli`), **sem shell**. Os argumentos vão para o processo como um array,
+sem `cmd` no meio, então `^` e `|` passam **literais** — você pode usar `^âncoras$` e
+`(a|b|c)` no regex sem contornos.
+
+```jsonc
+{
+  "utplsql.invocation": "java",
+  "utplsql.cliPath": "C:\\tools\\utPLSQL-cli\\bin\\utplsql.bat", // cliHome é derivado daqui
+  // "utplsql.cliHome": "C:\\tools\\utPLSQL-cli",  // só se cliPath for um comando do PATH
+  // "utplsql.javaPath": "java"                     // PATH, ou caminho completo do java.exe
+}
+```
+
+> O modo `java` replica fielmente o que o `.bat` faz (mesmo classpath e mesmas
+> propriedades `-D`); a única diferença é não passar pelo `cmd`. Requer o `java` no PATH
+> (ou em `utplsql.javaPath`) e que a raiz do CLI seja resolvível — ou via `cliPath`
+> apontando para `…/bin/utplsql(.bat)`, ou definindo `cliHome`.
+
 ## Uso
 
 1. Abra o projeto PL/SQL (com o código e os packages de teste).
@@ -88,6 +116,14 @@ $env:UTPLSQL_CONN = "DEV/senha@//localhost:1521/XEPDB1"
 
 - Linhas **executadas** ficam verdes no gutter; **não executadas**, vermelhas.
 - A aba **Test Coverage** mostra o **percentual por arquivo/pasta**.
+
+<p align="center">
+  <img src="images/image1.png" alt="Coverage" width="600" height="400">
+</p>
+
+<p align="center">
+  <img src="images/image2.png" alt="Test Explorer" width="600" height="400">
+</p>
 
 A extensão passa `-source_path` (= `utplsql.sourcePath`) e mapeia os objetos cobertos
 aos arquivos-fonte via `utplsql.coverageSourceArgs` (regex + `type_mapping`). O `-owner`
@@ -107,13 +143,13 @@ O `type_mapping` traduz o "tipo" capturado pelo regex no tipo Oracle. Três conv
 ]
 ```
 > Funciona em qualquer profundidade (o `.*` absorve os módulos acima). Nomes de pasta variados
-> (ex.: `package`, `package_relatorio`) podem ser enumerados no `type_mapping`.
+> (ex.: `package`, `pkg`, `pacote`) podem ser enumerados no `type_mapping`.
 
 **2) Por prefixo do nome** — convenção `pkg_*`, `prc_*`, `vw_*` (independe da pasta):
 ```jsonc
 "utplsql.coverageSourceArgs": [
   "-regex_expression=.*[/\\\\]((pkg|prc|fnc|trg|vw)_\\w+)\\.sql$",
-  "-name_subexpression=1",   // grupo 1 = nome completo (ex.: PKG_BANDEIRADO)
+  "-name_subexpression=1",   // grupo 1 = nome completo (ex.: PKG_EXEMPLO)
   "-type_subexpression=2",   // grupo 2 = prefixo (tipo)
   "-type_mapping=pkg=PACKAGE BODY/prc=PROCEDURE/fnc=FUNCTION/trg=TRIGGER/vw=VIEW"
 ]
@@ -131,16 +167,20 @@ O `type_mapping` traduz o "tipo" capturado pelo regex no tipo Oracle. Três conv
 
 **Notas importantes:**
 - **Packages → `PACKAGE BODY`** (não `PACKAGE`): a cobertura é coletada no **corpo** do package.
+- **Windows / metacaracteres no regex:** no modo `launcher` (padrão), o `.bat` passa pelo `cmd`,
+  que **consome o `^`** e **interpreta o `|` como pipe** — por isso os exemplos acima usam `\w` e
+  `[/\\]` (sem `^`), e o `|` do exemplo 2 só funciona dentro da extensão. **Solução:** use **`utplsql.invocation = "java"`** (ver
+  [Modo de invocação](#modo-de-invocação-launcher-vs-java)) — sem `cmd` no meio, `^` e `|` passam
+  literais e você fica livre para escrever o regex normalmente.
 - **Windows / `cmd`:** evite **`^`** no regex (o `cmd` do `.bat` o consome) — por isso os exemplos
-  usam `\w` e `[/\\]`. O **`|`** (alternância do exemplo 2) funciona pela extensão, mas **quebra**
-  no `run-tests.ps1`/`.sh` e no cli direto no Windows; nesses casos prefira o mapeamento por
-  diretório/extensão (sem `|`) ou enumere as pastas no `type_mapping`.
+  usam `\w` e `[/\\]`.
 
 ## Requisitos no banco
 
 **Cobertura** (sempre) — habilita o profiler:
 ```sql
 GRANT EXECUTE ON SYS.DBMS_PROFILER TO <schema_que_roda_os_testes>;
+GRANT EXECUTE ON SYS.DBMS_PLSQL_CODE_COVERAGE TO <schema_que_roda_os_testes>;
 ```
 Sem isso, os testes rodam mas a cobertura sai **vazia**.
 

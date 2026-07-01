@@ -5,16 +5,16 @@ import { parseCobertura } from '../../cobertura';
 const XML = `<?xml version="1.0"?>
 <coverage line-rate="0.5" version="1.9">
   <packages>
-    <package name="hr">
+    <package name="app">
       <classes>
-        <class name="CALCULAR_DESCONTO" filename="install/functions/calcular_desconto.sql">
+        <class name="FUNCAO_EXEMPLO" filename="install/functions/funcao_exemplo.sql">
           <lines>
             <line number="3" hits="2"/>
             <line number="4" hits="0"/>
             <line number="5" hits="2"/>
           </lines>
         </class>
-        <class name="REAJUSTAR_SALARIO" filename="install/procedures/reajustar_salario.sql">
+        <class name="PROC_EXEMPLO" filename="install/procedures/proc_exemplo.sql">
           <lines>
             <line number="7" hits="1"/>
           </lines>
@@ -27,7 +27,7 @@ const XML = `<?xml version="1.0"?>
 test('faz parse de todos os arquivos cobertos', () => {
   const files = parseCobertura(XML);
   assert.strictEqual(files.length, 2);
-  assert.strictEqual(files[0].file, 'install/functions/calcular_desconto.sql');
+  assert.strictEqual(files[0].file, 'install/functions/funcao_exemplo.sql');
 });
 
 test('lê número da linha e hits', () => {
