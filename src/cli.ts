@@ -7,10 +7,10 @@ export interface CliResult {
   stderr: string;
 }
 
-function quoteArg(arg: string): string {
+export function quoteArg(arg: string): string {
   // Em Windows usamos shell: true (para resolver .bat/.cmd e o PATH),
   // então protegemos argumentos com espaços ou caracteres especiais.
-  if (/[\s"&|<>^()]/.test(arg)) {
+  if (/[\s"&|<>^()$`]/.test(arg)) {
     return `"${arg.replace(/"/g, '\\"')}"`;
   }
   return arg;

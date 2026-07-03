@@ -122,7 +122,7 @@ export async function executeRun(
   run.end();
 }
 
-function applyResults(
+export function applyResults(
   junitPath: string,
   leafTests: vscode.TestItem[],
   run: vscode.TestRun,
@@ -158,7 +158,14 @@ function applyResults(
   }
 
   for (const t of leafTests) {
-    if (!matched.has(t)) run.skipped(t);
+    if (!matched.has(t)) {
+      const m = state.getMeta(t);
+      run.appendOutput(
+        `[aviso] Nenhum resultado JUnit encontrado para "${t.id}".` +
+          (m && m.kind === 'test' ? ` packageName esperado: ${m.packageName}\r\n` : '\r\n'),
+      );
+      run.skipped(t);
+    }
   }
 }
 
@@ -185,7 +192,7 @@ function report(
   }
 }
 
-function findByNameOnly(
+export function findByNameOnly(
   items: vscode.TestItem[],
   name: string,
   state: TestStateManager,
@@ -201,7 +208,7 @@ function findByNameOnly(
   return undefined;
 }
 
-function lastSegment(classname: string): string {
+export function lastSegment(classname: string): string {
   const parts = classname.split(/[.:]/).filter(Boolean);
   return parts.length ? parts[parts.length - 1] : classname;
 }
