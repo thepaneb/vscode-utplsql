@@ -6,3 +6,4 @@ CLAUDE.md
 DEVELOPMENT.md
 AGENTS.md
 docs/*
+.env

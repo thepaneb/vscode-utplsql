@@ -182,6 +182,33 @@ async function sync() {
     }
   }
 
+  // -----------------------------------------------------------------------
+  // Fechar issues de PRDs concluídos
+  // -----------------------------------------------------------------------
+  const completedPRDs = prds.filter(p => p.status === 'completed');
+  if (completedPRDs.length) {
+    console.log('\n🔒 Verificando issues de PRDs concluídos...');
+    for (const prd of completedPRDs) {
+      const issueNumber = mapping[prd.number];
+      if (!issueNumber) continue;
+      try {
+        const issue = await github(`/issues/${issueNumber}`);
+        if (issue.state === 'open') {
+          console.log(`  🔒 PRD-${prd.number}: fechando issue #${issueNumber}...`);
+          await github(`/issues/${issueNumber}`, 'PATCH', {
+            state: 'closed',
+            state_reason: 'completed',
+          });
+          console.log(`    → #${issueNumber} fechada`);
+        } else {
+          console.log(`  ✅ PRD-${prd.number}: issue #${issueNumber} já fechada`);
+        }
+      } catch (err) {
+        console.error(`  ⚠️  PRD-${prd.number}: erro ao buscar/fechar issue #${issueNumber}: ${err.message}`);
+      }
+    }
+  }
+
   saveMapping(mapping);
   console.log('\n✅ Sincronização concluída.');
 }
