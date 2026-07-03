@@ -1,5 +1,5 @@
 import * as vscode from 'vscode';
-import { parseSuiteText, TestProc } from './suiteParser';
+import { parseSuiteText, type TestProc } from './suiteParser';
 
 export interface SuiteFile {
   uri: vscode.Uri;

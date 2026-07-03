@@ -1,5 +1,5 @@
-import * as cp from 'child_process';
-import * as vscode from 'vscode';
+import * as cp from 'node:child_process';
+import type * as vscode from 'vscode';
 
 export interface CliResult {
   code: number;
@@ -26,7 +26,7 @@ export function runCli(
   shell: boolean,
   cwd: string,
   token: vscode.CancellationToken,
-  onStdout?: (chunk: string) => void
+  onStdout?: (chunk: string) => void,
 ): Promise<CliResult> {
   return new Promise((resolve) => {
     // shell=true (launcher .bat/script): junta tudo numa string e cita os args
@@ -58,7 +58,7 @@ export function runCli(
 
     child.on('error', (err) => {
       killSub.dispose();
-      resolve({ code: -1, stdout, stderr: stderr + '\n' + String(err) });
+      resolve({ code: -1, stdout, stderr: `${stderr}\n${String(err)}` });
     });
 
     child.on('close', (code) => {

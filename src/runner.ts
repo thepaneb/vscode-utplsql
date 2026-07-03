@@ -1,22 +1,21 @@
-import * as fs from 'fs';
-import * as os from 'os';
-import * as path from 'path';
+import * as fs from 'node:fs';
+import * as os from 'node:os';
+import * as path from 'node:path';
 import * as vscode from 'vscode';
-
-import { readConfig, resolveConnection } from './config';
 import { runCli } from './cli';
-import { buildInvocation, isInvocationError } from './invocation';
-import { parseJUnit, TestStatus } from './junit';
 import { parseCobertura } from './cobertura';
+import { readConfig, resolveConnection } from './config';
 import { resolveSourceUri } from './coverage';
-import { TestStateManager } from './state';
+import { buildInvocation, isInvocationError } from './invocation';
+import { parseJUnit, type TestStatus } from './junit';
+import type { TestStateManager } from './state';
 
 export async function executeRun(
   controller: vscode.TestController,
   request: vscode.TestRunRequest,
   token: vscode.CancellationToken,
   coverage: boolean,
-  state: TestStateManager
+  state: TestStateManager,
 ): Promise<void> {
   const workspaceFolder = vscode.workspace.workspaceFolders?.[0];
   if (!workspaceFolder) {
@@ -38,9 +37,13 @@ export async function executeRun(
 
   const included: vscode.TestItem[] = [];
   if (request.include) {
-    request.include.forEach((i) => included.push(i));
+    request.include.forEach((i) => {
+      included.push(i);
+    });
   } else {
-    controller.items.forEach((i) => included.push(i));
+    controller.items.forEach((i) => {
+      included.push(i);
+    });
   }
 
   for (const item of included) {
@@ -48,7 +51,9 @@ export async function executeRun(
     if (!m) continue;
     if (m.kind === 'suite') {
       pathArgs.add(m.packageName);
-      item.children.forEach((c) => leafTests.push(c));
+      item.children.forEach((c) => {
+        leafTests.push(c);
+      });
     } else {
       pathArgs.add(`${m.packageName}.${m.procName}`);
       leafTests.push(item);
@@ -58,7 +63,7 @@ export async function executeRun(
   for (const t of leafTests) {
     run.enqueued(t);
   }
-  leafTests.forEach((t) => run.started(t));
+  for (const t of leafTests) run.started(t);
 
   const tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), 'utplsql-'));
   const junitPath = path.join(tmpDir, 'results.xml');
@@ -86,8 +91,12 @@ export async function executeRun(
   if (isInvocationError(inv)) {
     run.appendOutput(`\r\n[erro] ${inv.error}\r\n`);
     vscode.window.showErrorMessage(inv.error);
-    leafTests.forEach((t) => run.errored(t, new vscode.TestMessage(inv.error)));
-    try { fs.rmSync(tmpDir, { recursive: true, force: true }); } catch { /* ignore */ }
+    for (const t of leafTests) run.errored(t, new vscode.TestMessage(inv.error));
+    try {
+      fs.rmSync(tmpDir, { recursive: true, force: true });
+    } catch {
+      /* ignore */
+    }
     run.end();
     return;
   }
@@ -105,7 +114,11 @@ export async function executeRun(
     applyCoverage(coveragePath, root, cfg.sourcePath, run, state);
   }
 
-  try { fs.rmSync(tmpDir, { recursive: true, force: true }); } catch { /* ignore */ }
+  try {
+    fs.rmSync(tmpDir, { recursive: true, force: true });
+  } catch {
+    /* ignore */
+  }
   run.end();
 }
 
@@ -113,10 +126,12 @@ function applyResults(
   junitPath: string,
   leafTests: vscode.TestItem[],
   run: vscode.TestRun,
-  state: TestStateManager
+  state: TestStateManager,
 ): void {
   if (!fs.existsSync(junitPath)) {
-    leafTests.forEach((t) => run.errored(t, new vscode.TestMessage('Sem relatório de resultados (o CLI falhou?).')));
+    for (const t of leafTests) {
+      run.errored(t, new vscode.TestMessage('Sem relatório de resultados (o CLI falhou?).'));
+    }
     return;
   }
 
@@ -152,20 +167,28 @@ function report(
   item: vscode.TestItem,
   status: TestStatus,
   message?: string,
-  ms?: number
+  ms?: number,
 ): void {
   switch (status) {
-    case 'passed': run.passed(item, ms); break;
-    case 'failed': run.failed(item, new vscode.TestMessage(message ?? 'Falhou'), ms); break;
-    case 'error': run.errored(item, new vscode.TestMessage(message ?? 'Erro'), ms); break;
-    case 'skipped': run.skipped(item); break;
+    case 'passed':
+      run.passed(item, ms);
+      break;
+    case 'failed':
+      run.failed(item, new vscode.TestMessage(message ?? 'Falhou'), ms);
+      break;
+    case 'error':
+      run.errored(item, new vscode.TestMessage(message ?? 'Erro'), ms);
+      break;
+    case 'skipped':
+      run.skipped(item);
+      break;
   }
 }
 
 function findByNameOnly(
   items: vscode.TestItem[],
   name: string,
-  state: TestStateManager
+  state: TestStateManager,
 ): vscode.TestItem | undefined {
   for (const t of items) {
     const m = state.getMeta(t);
@@ -188,11 +211,13 @@ function applyCoverage(
   root: string,
   sourcePath: string,
   run: vscode.TestRun,
-  state: TestStateManager
+  state: TestStateManager,
 ): void {
   state.clearCoverage();
   if (!fs.existsSync(coveragePath)) {
-    run.appendOutput('\r\n[cobertura] relatório não gerado — verifique o GRANT EXECUTE ON SYS.DBMS_PROFILER.\r\n');
+    run.appendOutput(
+      '\r\n[cobertura] relatório não gerado — verifique o GRANT EXECUTE ON SYS.DBMS_PROFILER.\r\n',
+    );
     return;
   }
 
@@ -203,7 +228,7 @@ function applyCoverage(
     const uri = resolveSourceUri(f.file, root, sourcePath);
     if (!uri) continue;
     const details: vscode.FileCoverageDetail[] = f.lines.map(
-      (l) => new vscode.StatementCoverage(l.hits, new vscode.Position(Math.max(0, l.line - 1), 0))
+      (l) => new vscode.StatementCoverage(l.hits, new vscode.Position(Math.max(0, l.line - 1), 0)),
     );
     if (details.length === 0) continue;
     const fc = vscode.FileCoverage.fromDetails(uri, details);
@@ -214,7 +239,7 @@ function applyCoverage(
 
   if (mappedCount === 0) {
     run.appendOutput(
-      '\r\n[cobertura] nenhum arquivo mapeado. Ajuste "utplsql.sourcePath" para a pasta do código-fonte.\r\n'
+      '\r\n[cobertura] nenhum arquivo mapeado. Ajuste "utplsql.sourcePath" para a pasta do código-fonte.\r\n',
     );
   }
 }

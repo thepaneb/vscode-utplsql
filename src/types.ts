@@ -1,4 +1,4 @@
-import * as vscode from 'vscode';
+import type * as vscode from 'vscode';
 
 export type ItemMeta =
   | { kind: 'suite'; packageName: string; uri: vscode.Uri }

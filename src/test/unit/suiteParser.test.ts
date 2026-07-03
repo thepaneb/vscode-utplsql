@@ -1,5 +1,5 @@
-import { test } from 'node:test';
 import assert from 'node:assert';
+import { test } from 'node:test';
 import { parseSuiteText } from '../../suiteParser';
 
 const PKS = `
@@ -21,12 +21,14 @@ END test_exemplo;
 test('extrai nome do package e descrição da suite', () => {
   const s = parseSuiteText(PKS);
   assert.ok(s, 'deveria reconhecer a suite');
-  assert.strictEqual(s!.packageName, 'test_exemplo');
-  assert.strictEqual(s!.suiteDescription, 'Suite de exemplo');
+  assert.strictEqual(s?.packageName, 'test_exemplo');
+  assert.strictEqual(s?.suiteDescription, 'Suite de exemplo');
 });
 
 test('extrai os testes com descrição e procedure', () => {
-  const s = parseSuiteText(PKS)!;
+  const s = parseSuiteText(PKS);
+  assert.ok(s, 'deve retornar um suite');
+
   assert.strictEqual(s.tests.length, 2);
 
   assert.strictEqual(s.tests[0].procName, 'cenario_de_sucesso');
@@ -51,6 +53,6 @@ test('suporta CREATE PACKAGE BODY e schema qualificado', () => {
   `;
   const s = parseSuiteText(body);
   assert.ok(s);
-  assert.strictEqual(s!.packageName, 'test_x');
-  assert.strictEqual(s!.tests.length, 1);
+  assert.strictEqual(s?.packageName, 'test_x');
+  assert.strictEqual(s?.tests.length, 1);
 });

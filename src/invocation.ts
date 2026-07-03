@@ -1,4 +1,4 @@
-import * as path from 'path';
+import * as path from 'node:path';
 
 // Monta como o utPLSQL-cli será invocado. PURO (sem 'vscode'), testável por unidade.
 
@@ -55,20 +55,21 @@ export function buildInvocation(cfg: InvocationConfig, cliArgs: string[]): Spawn
     return {
       error:
         "Modo 'java': não foi possível determinar a raiz do utPLSQL-cli. " +
-        "Defina 'utplsql.cliHome' ou aponte 'utplsql.cliPath' para .../bin/utplsql(.bat)."
+        "Defina 'utplsql.cliHome' ou aponte 'utplsql.cliPath' para .../bin/utplsql(.bat).",
     };
   }
 
   const classpath = [path.join(home, 'etc'), path.join(home, 'lib', '*')].join(path.delimiter);
   const file = (cfg.javaPath || '').trim() || 'java';
   const args = [
-    '-cp', classpath,
+    '-cp',
+    classpath,
     '-Dapp.name=utplsql',
     `-Dapp.home=${home}`,
     `-Dapp.repo=${path.join(home, 'lib')}`,
     `-Dbasedir=${home}`,
     UTPLSQL_MAIN_CLASS,
-    ...cliArgs
+    ...cliArgs,
   ];
   return { file, args, shell: false };
 }

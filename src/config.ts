@@ -27,11 +27,11 @@ export function readConfig(): UtConfig {
       '-regex_expression=.*[/\\\\](\\w+)[/\\\\](\\w+)\\.sql$',
       '-type_subexpression=1',
       '-name_subexpression=2',
-      '-type_mapping=packages=PACKAGE BODY/functions=FUNCTION/procedures=PROCEDURE/triggers=TRIGGER'
+      '-type_mapping=packages=PACKAGE BODY/functions=FUNCTION/procedures=PROCEDURE/triggers=TRIGGER',
     ]),
     invocation: c.get<string>('invocation', 'launcher'),
     javaPath: c.get<string>('javaPath', 'java'),
-    cliHome: c.get<string>('cliHome', '')
+    cliHome: c.get<string>('cliHome', ''),
   };
 }
 
@@ -43,7 +43,10 @@ export function readConfig(): UtConfig {
  *   4) pergunta ao usuário (e guarda só na sessão)
  */
 export async function resolveConnection(): Promise<string | undefined> {
-  const fromSetting = vscode.workspace.getConfiguration('utplsql').get<string>('connection', '').trim();
+  const fromSetting = vscode.workspace
+    .getConfiguration('utplsql')
+    .get<string>('connection', '')
+    .trim();
   if (fromSetting) {
     return fromSetting;
   }
@@ -59,9 +62,9 @@ export async function resolveConnection(): Promise<string | undefined> {
     prompt: 'Informe a conexão (usuario/senha@//host:porta/servico). Fica só nesta sessão.',
     placeHolder: 'DEV_FULANO/senha@//localhost:1521/XEPDB1',
     password: true,
-    ignoreFocusOut: true
+    ignoreFocusOut: true,
   });
-  if (input && input.trim()) {
+  if (input?.trim()) {
     sessionConnection = input.trim();
     return sessionConnection;
   }

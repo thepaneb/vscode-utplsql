@@ -1,13 +1,13 @@
-import { test } from 'node:test';
 import assert from 'node:assert';
-import * as path from 'path';
+import * as path from 'node:path';
+import { test } from 'node:test';
 import {
-  resolveCliHome,
   buildInvocation,
+  type InvocationConfig,
   isInvocationError,
+  resolveCliHome,
+  type Spawn,
   UTPLSQL_MAIN_CLASS,
-  Spawn,
-  InvocationConfig
 } from '../../invocation';
 
 function cfg(over: Partial<InvocationConfig> = {}): InvocationConfig {
@@ -16,7 +16,7 @@ function cfg(over: Partial<InvocationConfig> = {}): InvocationConfig {
     cliPath: 'utplsql',
     javaPath: 'java',
     cliHome: '',
-    ...over
+    ...over,
   };
 }
 
@@ -56,10 +56,11 @@ test('buildInvocation launcher: usa cliPath com shell', () => {
 
 test('buildInvocation java: monta JVM sem shell', () => {
   const home = path.join('C:', 'tools', 'utPLSQL-cli');
-  const inv = buildInvocation(
-    cfg({ invocation: 'java', cliHome: home, javaPath: 'java' }),
-    ['run', 'u/p@db', '-p=foo']
-  );
+  const inv = buildInvocation(cfg({ invocation: 'java', cliHome: home, javaPath: 'java' }), [
+    'run',
+    'u/p@db',
+    '-p=foo',
+  ]);
   assert.ok(!isInvocationError(inv));
   const s = inv as Spawn;
 
@@ -101,7 +102,9 @@ test('buildInvocation java: usa javaPath customizado', () => {
 });
 
 test('buildInvocation java: erro quando não dá para resolver a raiz', () => {
-  const inv = buildInvocation(cfg({ invocation: 'java', cliPath: 'utplsql', cliHome: '' }), ['run']);
+  const inv = buildInvocation(cfg({ invocation: 'java', cliPath: 'utplsql', cliHome: '' }), [
+    'run',
+  ]);
   assert.ok(isInvocationError(inv));
   if (isInvocationError(inv)) {
     assert.match(inv.error, /cliHome|raiz/i);

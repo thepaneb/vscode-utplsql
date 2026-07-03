@@ -56,7 +56,7 @@ export function parseSuiteText(text: string): ParsedSuite | null {
         tests.push({
           procName,
           description: pendingDescription || procName,
-          line: i
+          line: i,
         });
         pendingDescription = null;
       }
