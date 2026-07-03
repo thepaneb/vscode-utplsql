@@ -14,3 +14,4 @@ CLAUDE.md
 DEVELOPMENT.md
 AGENTS.md
 node_modules/.bin/**
+.env

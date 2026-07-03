@@ -20,20 +20,23 @@ export function parseCobertura(xml: string): FileLines[] {
   const doc = parser.parse(xml);
 
   const out: FileLines[] = [];
+  // biome-ignore lint/suspicious/noExplicitAny: XML parsing — structure is dynamic
   const packages = toArray<any>(doc?.coverage?.packages?.package);
 
   for (const pkg of packages) {
+    // biome-ignore lint/suspicious/noExplicitAny: XML parsing — structure is dynamic
     for (const cls of toArray<any>(pkg?.classes?.class)) {
       const file = String(cls['@_filename'] ?? '');
       if (!file) {
         continue;
       }
+      // biome-ignore lint/suspicious/noExplicitAny: XML parsing — structure is dynamic
       const lines = toArray<any>(cls?.lines?.line)
         .map((l) => ({
           line: parseInt(l['@_number'], 10),
-          hits: parseInt(l['@_hits'], 10)
+          hits: parseInt(l['@_hits'], 10),
         }))
-        .filter((l) => !isNaN(l.line));
+        .filter((l) => !Number.isNaN(l.line));
       out.push({ file, lines });
     }
   }

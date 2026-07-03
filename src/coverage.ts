@@ -1,5 +1,5 @@
-import * as fs from 'fs';
-import * as path from 'path';
+import * as fs from 'node:fs';
+import * as path from 'node:path';
 import * as vscode from 'vscode';
 
 /**
@@ -9,13 +9,13 @@ import * as vscode from 'vscode';
 export function resolveSourceUri(
   file: string,
   workspaceRoot: string,
-  sourcePath: string
+  sourcePath: string,
 ): vscode.Uri | undefined {
   const candidates = [
     file,
     path.join(workspaceRoot, file),
     path.join(workspaceRoot, sourcePath, file),
-    path.join(workspaceRoot, sourcePath, path.basename(file))
+    path.join(workspaceRoot, sourcePath, path.basename(file)),
   ];
   for (const c of candidates) {
     try {

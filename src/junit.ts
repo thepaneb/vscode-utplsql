@@ -4,7 +4,7 @@ export type TestStatus = 'passed' | 'failed' | 'error' | 'skipped';
 
 export interface TestCaseResult {
   classname: string; // ex.: schema.package
-  name: string;      // descrição do %test
+  name: string; // descrição do %test
   status: TestStatus;
   message?: string;
   durationMs?: number;
@@ -23,15 +23,17 @@ export function parseJUnit(xml: string): TestCaseResult[] {
   const doc = parser.parse(xml);
 
   const root = doc.testsuites ?? doc;
+  // biome-ignore lint/suspicious/noExplicitAny: XML parsing — structure is dynamic
   const suites = toArray<any>(root.testsuite);
   const results: TestCaseResult[] = [];
 
   for (const suite of suites) {
+    // biome-ignore lint/suspicious/noExplicitAny: XML parsing — structure is dynamic
     for (const tc of toArray<any>(suite.testcase)) {
       const classname = String(tc['@_classname'] ?? suite['@_name'] ?? '');
       const name = String(tc['@_name'] ?? '');
       const timeSec = parseFloat(tc['@_time'] ?? '0');
-      const durationMs = isNaN(timeSec) ? undefined : Math.round(timeSec * 1000);
+      const durationMs = Number.isNaN(timeSec) ? undefined : Math.round(timeSec * 1000);
 
       let status: TestStatus = 'passed';
       let message: string | undefined;
@@ -57,7 +59,9 @@ export function parseJUnit(xml: string): TestCaseResult[] {
   return results;
 }
 
+// biome-ignore lint/suspicious/noExplicitAny: XML parsing — structure is dynamic
 function extractMessage(node: any): string {
+  // biome-ignore lint/suspicious/noExplicitAny: XML parsing — structure is dynamic
   const first = toArray<any>(node)[0];
   if (first === undefined) {
     return 'Falhou';

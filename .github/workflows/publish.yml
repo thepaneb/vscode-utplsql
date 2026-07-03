@@ -26,6 +26,9 @@ jobs:
       - name: Run compile
         run: npm run compile
 
+      - name: Run lint
+        run: npm run lint
+
       - name: Run unit tests
         run: npm run test:unit
 

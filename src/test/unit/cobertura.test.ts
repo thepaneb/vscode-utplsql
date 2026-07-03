@@ -1,5 +1,5 @@
-import { test } from 'node:test';
 import assert from 'node:assert';
+import { test } from 'node:test';
 import { parseCobertura } from '../../cobertura';
 
 const XML = `<?xml version="1.0"?>

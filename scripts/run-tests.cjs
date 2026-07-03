@@ -31,5 +31,6 @@ if (testFiles.length === 0) {
   process.exit(1);
 }
 
-const res = spawnSync('node', ['--test', ...testFiles], { stdio: 'inherit' });
+const setupPath = path.join(__dirname, 'test-setup.cjs');
+const res = spawnSync('node', ['--require', setupPath, '--test', ...testFiles], { stdio: 'inherit' });
 process.exit(res.status ?? 0);

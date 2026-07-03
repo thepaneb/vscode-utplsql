@@ -50,7 +50,6 @@ traduz para as APIs nativas do VSCode.
 | `utplsql.connection` | `""` | Conexão Oracle. **Deixe vazio** e use a variável de ambiente `UTPLSQL_CONN` para não gravar a senha. Se ambos vazios, a extensão pergunta (guarda só na sessão). |
 | `utplsql.cliPath` | `utplsql` | Caminho do executável do utPLSQL-cli (ex.: `C:\tools\utPLSQL-cli\bin\utplsql.bat`). |
 | `utplsql.sourcePath` | `install` | Pasta do código de produção (para mapear a cobertura aos arquivos). |
-| `utplsql.testPath` | `tests` | Pasta dos packages de teste. |
 | `utplsql.includePatterns` | `["**/*.pks"]` | Globs para descobrir os specs com `%suite`/`%test`. Se seus testes estão em `.sql`, use `["**/*.sql"]`. |
 | `utplsql.extraRunArgs` | `[]` | Argumentos extras para o `utplsql run`. |
 | `utplsql.coverageOwner` | `""` | Schema dono dos objetos cobertos. Vazio = usa o usuário da conexão (em maiúsculas). |
@@ -64,7 +63,6 @@ Exemplo (`.vscode/settings.json` do projeto):
 {
   "utplsql.cliPath": "C:\\tools\\utPLSQL-cli\\bin\\utplsql.bat",
   "utplsql.sourcePath": "install",
-  "utplsql.testPath": "tests"
   // utplsql.connection fica vazio -> use a variável de ambiente UTPLSQL_CONN
 }
 ```
@@ -208,7 +206,7 @@ GRANT SELECT ON SYS.DBA_PROCEDURES TO <ut3_owner>;
 - O mapeamento resultado→teste é feito por nome de package + nome/descrição do teste;
   descrições idênticas em packages diferentes podem gerar ambiguidade (o índice é
   escopado por package para minimizar isso).
-- Considera o **primeiro** workspace folder para resolver `sourcePath`/`testPath`.
+- Considera o **primeiro** workspace folder para resolver `sourcePath`.
 - A descoberta lê os `.pks` (specs); mantenha as annotations `%suite`/`%test` no spec.
 
 ## Licença

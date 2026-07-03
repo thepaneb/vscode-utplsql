@@ -2,13 +2,14 @@
   "name": "vscode-utplsql",
   "displayName": "utPLSQL Test Runner",
   "description": "Roda testes utPLSQL pelo Test Explorer do VSCode, com menu de contexto e cobertura visual (estilo pytest).",
-  "version": "0.3.0",
+  "version": "0.4.0",
   "publisher": "paneb",
   "author": "Gil Cleber Barboza",
   "license": "MIT",
   "icon": "images/icon.png",
   "engines": {
-    "vscode": "^1.88.0"
+    "vscode": "^1.88.0",
+    "node": "^24.0.0"
   },
   "categories": [
     "Testing"
@@ -56,11 +57,6 @@
           "default": "install",
           "description": "Pasta (relativa à raiz do workspace) com o código de produção. Usada no parâmetro -source_path para mapear a cobertura aos arquivos locais."
         },
-        "utplsql.testPath": {
-          "type": "string",
-          "default": "tests",
-          "description": "Pasta (relativa à raiz do workspace) com os packages de teste. Usada no parâmetro -test_path."
-        },
         "utplsql.includePatterns": {
           "type": "array",
           "items": {
@@ -99,7 +95,10 @@
         },
         "utplsql.invocation": {
           "type": "string",
-          "enum": ["launcher", "java"],
+          "enum": [
+            "launcher",
+            "java"
+          ],
           "default": "launcher",
           "markdownDescription": "Como invocar o utPLSQL-cli. `launcher` (padrão): via o executável `utplsql`/`.bat`. `java`: chama a JVM direto (`java -cp … org.utplsql.cli.Cli`), **sem shell** — evita o `cmd` e o tratamento de metacaracteres (útil para regex em `coverageSourceArgs`)."
         },
@@ -189,27 +188,32 @@
     "vscode:prepublish": "npm run compile",
     "compile": "tsc -p ./",
     "watch": "tsc -watch -p ./",
-    "pretest:unit": "npm run compile",
+    "lint": "biome check src/",
+    "lint:fix": "biome check --write src/",
+    "format": "biome format --write src/",
+    "pretest:unit": "npm run compile && npm run lint",
     "test:unit": "node scripts/run-tests.cjs",
     "pretest:integration": "npm run compile",
     "test:integration": "vscode-test",
     "test": "npm run test:unit",
     "package": "vsce package",
     "gen-icon": "node scripts/gen-icon.cjs",
-    "publish": "vsce publish",
-    "publish:patch": "vsce publish patch"
+    "sync-prds": "node scripts/sync-prds.cjs",
+    "publish": "echo '⚠️ Publicacao apenas via GitHub workflow (release). Use npm run package para .vsix local.' && exit 1",
+    "publish:patch": "echo '⚠️ Publicacao apenas via GitHub workflow (release). Use npm run package para .vsix local.' && exit 1"
   },
   "dependencies": {
     "fast-xml-parser": "^4.4.1"
   },
   "devDependencies": {
+    "@biomejs/biome": "^2.5.2",
     "@resvg/resvg-js": "^2.6.2",
     "@types/mocha": "^10.0.7",
-    "@types/node": "^20.11.30",
+    "@types/node": "^24.0.0",
     "@types/vscode": "^1.88.0",
     "@vscode/test-cli": "^0.0.10",
     "@vscode/test-electron": "^2.4.1",
     "@vscode/vsce": "^3.2.1",
-    "typescript": "^5.4.5"
+    "typescript": "^6.0.3"
   }
 }

@@ -1,4 +1,4 @@
-import * as assert from 'assert';
+import * as assert from 'node:assert';
 import * as vscode from 'vscode';
 
 // Testes de integração: rodam dentro de uma instância do VSCode (host de extensão).
@@ -8,13 +8,13 @@ describe('utPLSQL extension', () => {
   it('é encontrada e ativa sem erro', async () => {
     const ext = vscode.extensions.getExtension('paneb.vscode-utplsql');
     assert.ok(ext, 'extensão paneb.vscode-utplsql não encontrada');
-    await ext!.activate();
-    assert.strictEqual(ext!.isActive, true);
+    await ext?.activate();
+    assert.strictEqual(ext?.isActive, true);
   });
 
   it('registra os comandos do menu de contexto', async () => {
     const ext = vscode.extensions.getExtension('paneb.vscode-utplsql');
-    await ext!.activate();
+    await ext?.activate();
 
     const cmds = await vscode.commands.getCommands(true);
     for (const c of [
@@ -23,7 +23,7 @@ describe('utPLSQL extension', () => {
       'utplsql.runFile',
       'utplsql.runFileCoverage',
       'utplsql.runFolder',
-      'utplsql.runFolderCoverage'
+      'utplsql.runFolderCoverage',
     ]) {
       assert.ok(cmds.includes(c), `comando ausente: ${c}`);
     }
