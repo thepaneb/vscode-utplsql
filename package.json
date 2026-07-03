@@ -191,6 +191,7 @@
     "test": "npm run test:unit",
     "package": "vsce package",
     "gen-icon": "node scripts/gen-icon.cjs",
+    "sync-prds": "node scripts/sync-prds.cjs",
     "publish": "echo '⚠️ Publicacao apenas via GitHub workflow (release). Use npm run package para .vsix local.' && exit 1",
     "publish:patch": "echo '⚠️ Publicacao apenas via GitHub workflow (release). Use npm run package para .vsix local.' && exit 1"
   },
