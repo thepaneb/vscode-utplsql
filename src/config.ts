@@ -6,7 +6,6 @@ let sessionConnection: string | undefined;
 export interface UtConfig {
   cliPath: string;
   sourcePath: string;
-  testPath: string;
   includePatterns: string[];
   extraRunArgs: string[];
   coverageOwner: string;
@@ -21,7 +20,6 @@ export function readConfig(): UtConfig {
   return {
     cliPath: c.get<string>('cliPath', 'utplsql'),
     sourcePath: c.get<string>('sourcePath', 'install'),
-    testPath: c.get<string>('testPath', 'tests'),
     includePatterns: c.get<string[]>('includePatterns', ['**/*.pks']),
     extraRunArgs: c.get<string[]>('extraRunArgs', []),
     coverageOwner: c.get<string>('coverageOwner', ''),

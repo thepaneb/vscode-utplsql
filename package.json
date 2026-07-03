@@ -56,11 +56,6 @@
           "default": "install",
           "description": "Pasta (relativa à raiz do workspace) com o código de produção. Usada no parâmetro -source_path para mapear a cobertura aos arquivos locais."
         },
-        "utplsql.testPath": {
-          "type": "string",
-          "default": "tests",
-          "description": "Pasta (relativa à raiz do workspace) com os packages de teste. Usada no parâmetro -test_path."
-        },
         "utplsql.includePatterns": {
           "type": "array",
           "items": {
@@ -196,8 +191,8 @@
     "test": "npm run test:unit",
     "package": "vsce package",
     "gen-icon": "node scripts/gen-icon.cjs",
-    "publish": "vsce publish",
-    "publish:patch": "vsce publish patch"
+    "publish": "echo '⚠️ Publicacao apenas via GitHub workflow (release). Use npm run package para .vsix local.' && exit 1",
+    "publish:patch": "echo '⚠️ Publicacao apenas via GitHub workflow (release). Use npm run package para .vsix local.' && exit 1"
   },
   "dependencies": {
     "fast-xml-parser": "^4.4.1"
