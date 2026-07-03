@@ -2,8 +2,15 @@ node_modules/
 out/
 *.vsix
 .vscode-test/
+.env
+
+# Arquivos de instrução para agentes de IA — NUNCA persistir no repositório.
+# AGENTS.md e CLAUDE.md contêm contexto local do desenvolvedor e são
+# gerados/atualizados por cada dev no seu ambiente. Cada um gerencia o seu.
+# Se precisar de um template, commit ele com outro nome (ex.: AGENTS.template.md).
+AGENTS.md
 CLAUDE.md
 DEVELOPMENT.md
-AGENTS.md
+
+# Docs locais (cada dev gera os seus; PRDs são commitados fora desta regra)
 docs/*
-.env
