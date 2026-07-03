@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.4.0
+
+- Pipeline CI + Linter com Biome (PRD-03): workflow `ci.yml`, scripts `lint`/`format`, auto-formatação de todo `src/`.
+- Expansão da cobertura de testes (PRD-04): 5 novos arquivos de teste unitário, `applyResults` com fallback via `appendOutput`, infra de mock para `vscode`.
+- Upgrade Node 24 + TypeScript 6.0 (PRD-07): `.nvmrc`, `@types/node ^24`, `typescript ^6.0.3`, `engines.node ^24`.
+
 ## 0.3.0
 
 - Novo modo de invocação **`java`** (`utplsql.invocation`): chama a JVM direto
