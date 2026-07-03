@@ -129,3 +129,26 @@ O script:
 - Atualiza a label (`prd:proposed`/`prd:approved`/`prd:completed`) quando o
   status muda.
 - Mantém um cache em `docs/prd/.prd-issues.json` (gitignored).
+
+### Rastreabilidade Commits/PR ↔ Issues
+
+Use as **keywords do GitHub** no corpo do commit ou PR para fechar issues automaticamente no merge:
+
+```
+feat: implement CI pipeline with Biome linter (PRD-03)
+
+Closes #3
+```
+
+| Keyword | Efeito |
+|---|---|
+| `Closes #N` | Fecha a issue N no merge do PR |
+| `Fixes #N` | Fecha a issue N (semântica de bugfix) |
+| `Refs #N` | Referência apenas, sem fechar |
+
+**Convenção do projeto:**
+- O título do commit deve conter `(PRD-<NN>)` no final.
+- O corpo (ou descrição do PR) deve conter `Closes #<issue-number>` se a issue
+  do PRD existir.
+- Para múltiplas issues num mesmo commit: `Closes #3, #4, #7`.
+- Issues de PRDs concluídos também são fechadas pelo `sync-prds.cjs` (fallback).
