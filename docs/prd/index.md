@@ -24,6 +24,7 @@ Catálogo de Product Requirements Documents da extensão.
 | 02 | [Refatoração de extension.ts](completed/prd-02-refactor-extension.md) | 0.4.0 | 2026-07-02 |
 | 03 | [Pipeline CI + Linter](completed/prd-03-ci-lint.md) | 0.4.0 | 2026-07-02 |
 | 04 | [Expansão da cobertura de testes](completed/prd-04-expand-tests.md) | 0.4.0 | 2026-07-02 |
+| 07 | [Upgrade Node 24 + TypeScript 6.0](completed/prd-07-upgrade-node-ts.md) | 0.4.0 | 2026-07-02 |
 
 ### 🟡 Em desenvolvimento
 
@@ -56,7 +57,6 @@ docs/prd/
 │   ├── prd-03-ci-lint.md
 │   └── prd-04-expand-tests.md
 ├── approved/         ← aprovados, aguardando implementação
-│   └── prd-07-upgrade-node-ts.md
 ├── in-progress/      ← sendo implementados agora
 └── proposed/         ← em avaliação
     ├── prd-05-progress-cancel.md
