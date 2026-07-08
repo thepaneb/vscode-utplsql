@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.5.2
+
+- Correção no discovery: padrão glob `**/*.pks` agora busca recursivamente em subpastas.
+- runForFolder/runForUri aguardam refresh concluir antes de filtrar.
+
 ## 0.5.1
 
 - Correção no filtro de pastas para Windows (trailing separator + race condition em refresh).
