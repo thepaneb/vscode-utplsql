@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.5.3
+
+- Correção no discovery: `RelativePattern` removido, `findFiles` agora usa glob simples
+  `**/*.pks` compatível com Windows.
+
 ## 0.5.2
 
 - Correção no discovery: padrão glob `**/*.pks` agora busca recursivamente em subpastas.
