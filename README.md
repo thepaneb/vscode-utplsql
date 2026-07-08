@@ -87,6 +87,10 @@ traduz para as APIs nativas do VSCode.
 | `utplsql.coverageSourceArgs` | (ver **Cobertura**) | Args do CLI que mapeiam a c| `utplsql.invocation` | `launcher` | Como chamar o CLI: `launcher` (via `.bat`/script, padrão) ou `java` (JVM direto, **sem shell**). Veja **Modo de invocação**. |
 | `utplsql.javaPath` | `java` | Executável do Java (PATH ou caminho completo). Usado só no modo `java`. |
 | `utplsql.cliHome` | `""` | Raiz do utPLSQL-cli (pasta com `bin/` e `lib/`). Vazio = derivado do `cliPath`. Usado só no modo `java`. |
+| `utplsql.timeoutMinutes` | `60` | Timeout em minutos para o CLI (flag `-t`). |
+| `utplsql.dbmsOutput` | `false` | Habilita `DBMS_OUTPUT` na sessão de teste (flag `-D`). |
+| `utplsql.quiet` | `false` | Suprime logs informativos do CLI (flag `-q`). |
+| `utplsql.failureExitCode` | `1` | Código de saída em caso de falha (flag `--failure-exit-code`). `0` faz o CLI sempre exitir com sucesso. |
 
 Exemplo (`.vscode/settings.json` do projeto):
 
@@ -140,6 +144,7 @@ sem `cmd` no meio, então `^` e `|` passam **literais** — você pode usar `^â
    - Botão **Run Tests** da view, ou
    - **Clique direito** numa pasta/arquivo → *utPLSQL: Rodar testes…* (com ou sem cobertura).
 5. Para cobertura, use o perfil **Run with Coverage** (ou o item de menu "com cobertura").
+6. Para diagnóstico, use o comando **utPLSQL: Mostrar informações do utPLSQL** na palette (`Ctrl+Shift+P`) — exibe as versões do CLI, da API Java e do utPLSQL no banco, com opção de copiar.
 
 ## Cobertura
 

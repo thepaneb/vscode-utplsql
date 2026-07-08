@@ -3,6 +3,7 @@ import * as os from 'node:os';
 import * as path from 'node:path';
 import * as vscode from 'vscode';
 import { runCli } from './cli';
+import { getCliInfo, semverLt } from './cliInfo';
 import { parseCobertura } from './cobertura';
 import { readConfig, resolveConnection } from './config';
 import { resolveSourceUri } from './coverage';
@@ -32,6 +33,22 @@ export async function executeRun(
   const cfg = readConfig();
   const root = folders[0].uri.fsPath;
   const run = controller.createTestRun(request);
+
+  const info = await getCliInfo(cfg, connection);
+  if ('error' in info) {
+    run.appendOutput(`[aviso] Não foi possível obter info do CLI: ${info.error}\r\n`);
+  } else {
+    run.appendOutput(
+      `[info] CLI ${info.cliVersion} | API ${info.apiVersion}` +
+        (info.dbVersion ? ` | DB utPLSQL ${info.dbVersion}` : '') +
+        '\r\n',
+    );
+    if (info.dbVersion && semverLt(info.dbVersion, '3.1.0')) {
+      run.appendOutput(
+        '[aviso] utPLSQL no banco é anterior a 3.1.0 — cobertura pode não funcionar.\r\n',
+      );
+    }
+  }
 
   const leafTests: vscode.TestItem[] = [];
   const pathArgs = new Set<string>();
@@ -84,6 +101,18 @@ export async function executeRun(
     const owner = cfg.coverageOwner.trim() || connection.split('/')[0].toUpperCase();
     args.push(`-owner=${owner}`);
     args.push(...cfg.coverageSourceArgs);
+  }
+  if (cfg.timeoutMinutes !== 60) {
+    args.push(`-t=${cfg.timeoutMinutes}`);
+  }
+  if (cfg.dbmsOutput) {
+    args.push('-D');
+  }
+  if (cfg.quiet) {
+    args.push('-q');
+  }
+  if (cfg.failureExitCode !== 1) {
+    args.push(`--failure-exit-code=${cfg.failureExitCode}`);
   }
   args.push(...cfg.extraRunArgs);
 

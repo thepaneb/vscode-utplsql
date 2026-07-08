@@ -1,5 +1,6 @@
 import * as path from 'node:path';
 import * as vscode from 'vscode';
+import { getCliInfo } from './cliInfo';
 import { clearSessionConnection, readConfig } from './config';
 import { discoverWorkspace } from './discovery';
 import { executeRun } from './runner';
@@ -63,6 +64,18 @@ export function activate(context: vscode.ExtensionContext) {
     vscode.commands.registerCommand('utplsql.clearConnection', () => {
       clearSessionConnection();
       vscode.window.showInformationMessage('Conexão limpa da sessão.');
+    }),
+    vscode.commands.registerCommand('utplsql.showInfo', async () => {
+      const cfg = readConfig();
+      const info = await getCliInfo(cfg);
+      if ('error' in info) {
+        vscode.window.showErrorMessage(`utPLSQL info: ${info.error}`);
+        return;
+      }
+      let msg = `CLI: ${info.cliVersion}\nAPI: ${info.apiVersion}`;
+      if (info.dbVersion) msg += `\nDB:  ${info.dbVersion}`;
+      const copy = await vscode.window.showInformationMessage(msg, 'Copiar');
+      if (copy) vscode.env.clipboard.writeText(msg);
     }),
   );
 

@@ -13,6 +13,10 @@ export interface UtConfig {
   invocation: string;
   javaPath: string;
   cliHome: string;
+  timeoutMinutes: number;
+  dbmsOutput: boolean;
+  quiet: boolean;
+  failureExitCode: number;
 }
 
 export function readConfig(): UtConfig {
@@ -32,6 +36,10 @@ export function readConfig(): UtConfig {
     invocation: c.get<string>('invocation', 'launcher'),
     javaPath: c.get<string>('javaPath', 'java'),
     cliHome: c.get<string>('cliHome', ''),
+    timeoutMinutes: c.get<number>('timeoutMinutes', 60),
+    dbmsOutput: c.get<boolean>('dbmsOutput', false),
+    quiet: c.get<boolean>('quiet', false),
+    failureExitCode: c.get<number>('failureExitCode', 1),
   };
 }
 

@@ -111,6 +111,30 @@
           "type": "string",
           "default": "",
           "description": "Raiz do utPLSQL-cli (pasta que contém bin/ e lib/). Vazio = derivado do cliPath. Usado apenas no modo de invocação 'java'."
+        },
+        "utplsql.timeoutMinutes": {
+          "type": "number",
+          "default": 60,
+          "minimum": 1,
+          "maximum": 1440,
+          "description": "Timeout em minutos para o utPLSQL-cli (flag -t)."
+        },
+        "utplsql.dbmsOutput": {
+          "type": "boolean",
+          "default": false,
+          "description": "Habilita DBMS_OUTPUT na sessão de teste (flag -D). Útil para debugar."
+        },
+        "utplsql.quiet": {
+          "type": "boolean",
+          "default": false,
+          "description": "Suprime logs informativos do CLI (flag -q). Útil para CI ou output mais limpo."
+        },
+        "utplsql.failureExitCode": {
+          "type": "number",
+          "default": 1,
+          "minimum": 0,
+          "maximum": 255,
+          "description": "Código de saída quando há falha (flag --failure-exit-code). 0 faz o CLI sempre exitar com sucesso."
         }
       }
     },
@@ -154,6 +178,11 @@
       {
         "command": "utplsql.clearConnection",
         "title": "Limpar conexão da sessão",
+        "category": "utPLSQL"
+      },
+      {
+        "command": "utplsql.showInfo",
+        "title": "Mostrar informações do utPLSQL",
         "category": "utPLSQL"
       }
     ],
