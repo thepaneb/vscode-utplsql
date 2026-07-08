@@ -2,7 +2,7 @@
   "name": "vscode-utplsql",
   "displayName": "utPLSQL Test Runner",
   "description": "Roda testes utPLSQL pelo Test Explorer do VSCode, com menu de contexto e cobertura visual (estilo pytest).",
-  "version": "0.4.0",
+  "version": "0.5.0",
   "publisher": "paneb",
   "author": "Gil Cleber Barboza",
   "license": "MIT",
@@ -111,6 +111,30 @@
           "type": "string",
           "default": "",
           "description": "Raiz do utPLSQL-cli (pasta que contém bin/ e lib/). Vazio = derivado do cliPath. Usado apenas no modo de invocação 'java'."
+        },
+        "utplsql.timeoutMinutes": {
+          "type": "number",
+          "default": 60,
+          "minimum": 1,
+          "maximum": 1440,
+          "description": "Timeout em minutos para o utPLSQL-cli (flag -t)."
+        },
+        "utplsql.dbmsOutput": {
+          "type": "boolean",
+          "default": false,
+          "description": "Habilita DBMS_OUTPUT na sessão de teste (flag -D). Útil para debugar."
+        },
+        "utplsql.quiet": {
+          "type": "boolean",
+          "default": false,
+          "description": "Suprime logs informativos do CLI (flag -q). Útil para CI ou output mais limpo."
+        },
+        "utplsql.failureExitCode": {
+          "type": "number",
+          "default": 1,
+          "minimum": 0,
+          "maximum": 255,
+          "description": "Código de saída quando há falha (flag --failure-exit-code). 0 faz o CLI sempre exitar com sucesso."
         }
       }
     },
@@ -144,6 +168,21 @@
       {
         "command": "utplsql.runFolderCoverage",
         "title": "utPLSQL: Rodar testes desta pasta (com cobertura)",
+        "category": "utPLSQL"
+      },
+      {
+        "command": "utplsql.cancelRun",
+        "title": "Cancelar execução",
+        "category": "utPLSQL"
+      },
+      {
+        "command": "utplsql.clearConnection",
+        "title": "Limpar conexão da sessão",
+        "category": "utPLSQL"
+      },
+      {
+        "command": "utplsql.showInfo",
+        "title": "Mostrar informações do utPLSQL",
         "category": "utPLSQL"
       }
     ],
@@ -214,6 +253,7 @@
     "@vscode/test-cli": "^0.0.10",
     "@vscode/test-electron": "^2.4.1",
     "@vscode/vsce": "^3.2.1",
+    "c8": "^11.0.0",
     "typescript": "^6.0.3"
   }
 }

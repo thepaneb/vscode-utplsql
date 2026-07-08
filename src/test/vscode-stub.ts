@@ -7,15 +7,63 @@ export namespace Uri {
   }
 }
 
+const _configValues: Record<string, unknown> = {};
+let _inputBoxResult: string | undefined;
+let _mockFileContents: Record<string, string> = {};
+let _mockFindFilesResult: Record<string, string[]> = {};
+
+export function __setConfigValue(key: string, value: unknown): void {
+  _configValues[key] = value;
+}
+
+export function __resetConfigValues(): void {
+  for (const key of Object.keys(_configValues)) {
+    delete _configValues[key];
+  }
+}
+
+export function __setInputBoxResult(value: string | undefined): void {
+  _inputBoxResult = value;
+}
+
+export function __setMockFile(pattern: string, path: string, content: string): void {
+  _mockFileContents[path] = content;
+  if (!_mockFindFilesResult[pattern]) {
+    _mockFindFilesResult[pattern] = [];
+  }
+  _mockFindFilesResult[pattern].push(path);
+}
+
+export function __resetMockFiles(): void {
+  _mockFileContents = {};
+  _mockFindFilesResult = {};
+}
+
 export namespace workspace {
   export function getConfiguration(_section?: string) {
-    return { get: <T>(_key: string, defaultValue?: T) => defaultValue };
+    return {
+      get: <T>(_key: string, defaultValue?: T) =>
+        (_key in _configValues ? _configValues[_key] : defaultValue) as T,
+    };
   }
-  export function findFiles(_pattern: string) {
-    return Promise.resolve([] as any[]);
+  export function findFiles(pattern: any) {
+    const patternStr = typeof pattern === 'string' ? pattern : (pattern?.pattern ?? '');
+    const matches = _mockFindFilesResult[patternStr] ?? [];
+    return Promise.resolve(
+      matches.map((p) => ({
+        fsPath: p,
+        path: p,
+        scheme: 'file',
+        toString: () => p,
+        toJSON: () => p,
+      })),
+    );
   }
   export const fs = {
-    readFile: (_uri: any) => Promise.resolve(Buffer.from('')),
+    readFile: (uri: any) => {
+      const content = _mockFileContents[uri.fsPath ?? uri] ?? '';
+      return Promise.resolve(Buffer.from(content));
+    },
   };
   export const workspaceFolders = undefined;
 }
@@ -28,7 +76,7 @@ export namespace window {
     password?: boolean;
     ignoreFocusOut?: boolean;
   }) {
-    return Promise.resolve(undefined as string | undefined);
+    return Promise.resolve(_inputBoxResult);
   }
   export function showErrorMessage(_message: string) {}
 }
@@ -109,4 +157,14 @@ export class Position {
     public line: number,
     public character: number,
   ) {}
+}
+
+export class RelativePattern {
+  pattern: string;
+  base: string;
+  constructor(base: any, pattern: string) {
+    this.base =
+      typeof base === 'string' ? base : (base?.uri?.fsPath ?? base?.fsPath ?? String(base));
+    this.pattern = pattern;
+  }
 }

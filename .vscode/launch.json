@@ -8,6 +8,20 @@
       "args": ["--extensionDevelopmentPath=${workspaceFolder}"],
       "outFiles": ["${workspaceFolder}/out/**/*.js"],
       "preLaunchTask": "npm: compile"
+    },
+    {
+      "name": "Testes unitários",
+      "type": "node",
+      "request": "launch",
+      "runtimeExecutable": "node",
+      "runtimeArgs": [
+        "--require",
+        "${workspaceFolder}/scripts/test-setup.cjs",
+        "--test",
+        "${workspaceFolder}/out/test/unit/*.test.js"
+      ],
+      "preLaunchTask": "npm: compile",
+      "outFiles": ["${workspaceFolder}/out/**/*.js"]
     }
   ]
 }

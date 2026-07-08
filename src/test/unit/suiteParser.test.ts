@@ -56,3 +56,50 @@ test('suporta CREATE PACKAGE BODY e schema qualificado', () => {
   assert.strictEqual(s?.packageName, 'test_x');
   assert.strictEqual(s?.tests.length, 1);
 });
+
+test('parseSuiteText: %suite sem descricao usa nome do package', () => {
+  const src = `CREATE OR REPLACE PACKAGE meu_pkg IS
+    -- %suite
+    -- %test(Faz algo)
+    PROCEDURE faz_algo;
+  END;`;
+  const s = parseSuiteText(src);
+  assert.ok(s);
+  assert.strictEqual(s.suiteDescription, 'meu_pkg');
+});
+
+test('parseSuiteText: %test sem descricao fallback para nome da procedure', () => {
+  const src = `CREATE OR REPLACE PACKAGE pkg IS
+    -- %suite(Suite)
+    -- %test
+    PROCEDURE proc1;
+  END;`;
+  const s = parseSuiteText(src);
+  assert.ok(s);
+  assert.strictEqual(s.tests[0].description, 'proc1');
+});
+
+test('parseSuiteText: %test sem procedure seguinte nao entra no resultado', () => {
+  const src = `CREATE OR REPLACE PACKAGE pkg IS
+    -- %suite
+    -- %test(sem proc)
+    -- %test(com proc)
+    PROCEDURE com_proc;
+  END;`;
+  const s = parseSuiteText(src);
+  assert.ok(s);
+  // O primeiro %test nao tem procedure seguinte, entao eh sobrescrito pelo segundo
+  assert.strictEqual(s.tests.length, 1);
+  assert.strictEqual(s.tests[0].description, 'com proc');
+});
+
+test('parseSuiteText: arquivo sem CREATE PACKAGE retorna null mesmo com %suite', () => {
+  const src = `-- %suite
+  -- %test
+  PROCEDURE foo;`;
+  assert.strictEqual(parseSuiteText(src), null);
+});
+
+test('parseSuiteText: arquivo vazio', () => {
+  assert.strictEqual(parseSuiteText(''), null);
+});

@@ -3,6 +3,7 @@ import * as os from 'node:os';
 import * as path from 'node:path';
 import * as vscode from 'vscode';
 import { runCli } from './cli';
+import { getCliInfo, semverLt } from './cliInfo';
 import { parseCobertura } from './cobertura';
 import { readConfig, resolveConnection } from './config';
 import { resolveSourceUri } from './coverage';
@@ -16,9 +17,10 @@ export async function executeRun(
   token: vscode.CancellationToken,
   coverage: boolean,
   state: TestStateManager,
+  onSuiteStart?: () => void,
 ): Promise<void> {
-  const workspaceFolder = vscode.workspace.workspaceFolders?.[0];
-  if (!workspaceFolder) {
+  const folders = vscode.workspace.workspaceFolders;
+  if (!folders?.length) {
     vscode.window.showErrorMessage('Abra uma pasta/projeto para rodar os testes utPLSQL.');
     return;
   }
@@ -29,8 +31,24 @@ export async function executeRun(
   }
 
   const cfg = readConfig();
-  const root = workspaceFolder.uri.fsPath;
+  const root = folders[0].uri.fsPath;
   const run = controller.createTestRun(request);
+
+  const info = await getCliInfo(cfg, connection);
+  if ('error' in info) {
+    run.appendOutput(`[aviso] Não foi possível obter info do CLI: ${info.error}\r\n`);
+  } else {
+    run.appendOutput(
+      `[info] CLI ${info.cliVersion} | API ${info.apiVersion}` +
+        (info.dbVersion ? ` | DB utPLSQL ${info.dbVersion}` : '') +
+        '\r\n',
+    );
+    if (info.dbVersion && semverLt(info.dbVersion, '3.1.0')) {
+      run.appendOutput(
+        '[aviso] utPLSQL no banco é anterior a 3.1.0 — cobertura pode não funcionar.\r\n',
+      );
+    }
+  }
 
   const leafTests: vscode.TestItem[] = [];
   const pathArgs = new Set<string>();
@@ -50,6 +68,7 @@ export async function executeRun(
     const m = state.getMeta(item);
     if (!m) continue;
     if (m.kind === 'suite') {
+      onSuiteStart?.();
       pathArgs.add(m.packageName);
       item.children.forEach((c) => {
         leafTests.push(c);
@@ -83,6 +102,18 @@ export async function executeRun(
     args.push(`-owner=${owner}`);
     args.push(...cfg.coverageSourceArgs);
   }
+  if (cfg.timeoutMinutes !== 60) {
+    args.push(`-t=${cfg.timeoutMinutes}`);
+  }
+  if (cfg.dbmsOutput) {
+    args.push('-D');
+  }
+  if (cfg.quiet) {
+    args.push('-q');
+  }
+  if (cfg.failureExitCode !== 1) {
+    args.push(`--failure-exit-code=${cfg.failureExitCode}`);
+  }
   args.push(...cfg.extraRunArgs);
 
   run.appendOutput(`Rodando utPLSQL${coverage ? ' (com cobertura)' : ''}...\r\n`);
@@ -111,7 +142,7 @@ export async function executeRun(
 
   applyResults(junitPath, leafTests, run, state);
   if (coverage) {
-    applyCoverage(coveragePath, root, cfg.sourcePath, run, state);
+    applyCoverage(coveragePath, root, cfg.sourcePath, run, state, folders);
   }
 
   try {
@@ -215,10 +246,11 @@ export function lastSegment(classname: string): string {
 
 function applyCoverage(
   coveragePath: string,
-  root: string,
+  _root: string,
   sourcePath: string,
   run: vscode.TestRun,
   state: TestStateManager,
+  folders?: readonly vscode.WorkspaceFolder[],
 ): void {
   state.clearCoverage();
   if (!fs.existsSync(coveragePath)) {
@@ -232,7 +264,11 @@ function applyCoverage(
   let mappedCount = 0;
 
   for (const f of files) {
-    const uri = resolveSourceUri(f.file, root, sourcePath);
+    let uri: vscode.Uri | undefined;
+    for (const folder of folders ?? []) {
+      uri = resolveSourceUri(f.file, folder.uri.fsPath, sourcePath, folder.uri.fsPath);
+      if (uri) break;
+    }
     if (!uri) continue;
     const details: vscode.FileCoverageDetail[] = f.lines.map(
       (l) => new vscode.StatementCoverage(l.hits, new vscode.Position(Math.max(0, l.line - 1), 0)),

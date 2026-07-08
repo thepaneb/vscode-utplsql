@@ -1,0 +1,3 @@
+{
+  "node.testing.testArguments": ["--require", "scripts/test-setup.cjs"]
+}

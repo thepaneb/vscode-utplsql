@@ -41,3 +41,63 @@ test('lê número da linha e hits', () => {
 test('retorna vazio para XML sem cobertura', () => {
   assert.deepStrictEqual(parseCobertura('<coverage></coverage>'), []);
 });
+
+test('parseCobertura: pula classe sem filename', () => {
+  const xml = `<?xml version="1.0"?>
+<coverage>
+  <packages>
+    <package name="app">
+      <classes>
+        <class name="SEM_ARQUIVO">
+          <lines><line number="1" hits="1"/></lines>
+        </class>
+        <class name="COM_ARQUIVO" filename="ok.sql">
+          <lines><line number="1" hits="2"/></lines>
+        </class>
+      </classes>
+    </package>
+  </packages>
+</coverage>`;
+  const files = parseCobertura(xml);
+  assert.strictEqual(files.length, 1);
+  assert.strictEqual(files[0].file, 'ok.sql');
+});
+
+test('parseCobertura: linha com numero invalido e filtrada', () => {
+  const xml = `<?xml version="1.0"?>
+<coverage>
+  <packages>
+    <package name="app">
+      <classes>
+        <class name="X" filename="x.sql">
+          <lines><line number="abc" hits="0"/><line number="3" hits="1"/></lines>
+        </class>
+      </classes>
+    </package>
+  </packages>
+</coverage>`;
+  const files = parseCobertura(xml);
+  assert.strictEqual(files.length, 1);
+  assert.strictEqual(files[0].lines.length, 1);
+  assert.strictEqual(files[0].lines[0].line, 3);
+});
+
+test('parseCobertura: multiplos packages', () => {
+  const xml = `<?xml version="1.0"?>
+<coverage>
+  <packages>
+    <package name="pkg1">
+      <classes>
+        <class name="A" filename="a.sql"><lines><line number="1" hits="1"/></lines></class>
+      </classes>
+    </package>
+    <package name="pkg2">
+      <classes>
+        <class name="B" filename="b.sql"><lines><line number="2" hits="2"/></lines></class>
+      </classes>
+    </package>
+  </packages>
+</coverage>`;
+  const files = parseCobertura(xml);
+  assert.strictEqual(files.length, 2);
+});

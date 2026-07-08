@@ -1,5 +1,18 @@
 # Changelog
 
+## 0.5.0
+
+- Progresso notificável + cancelamento (PRD-05): barra de progresso com contagem,
+  `utplsql.cancelRun` para abortar execução.
+- Suporte a multi-root workspace (PRD-06): descoberta de suites escopo por pasta,
+  cobertura resolve arquivos na pasta correta, `ItemMeta` com campo `folder`.
+- Settings avançados do CLI (PRD-08): `timeoutMinutes`, `dbmsOutput`, `quiet`,
+  `failureExitCode`.
+- Diagnóstico `utplsql info` (PRD-09): exibe versões CLI/API/DB com `semverLt`.
+- Filtragem URI→suites extraída para `matching.ts` com 12 testes unitários.
+- Cobertura de `src/` em 76% (+110 testes, 0 falhas).
+- Testes funcionam no Test Explorer do VSCode (setup independente de `--require`).
+
 ## 0.4.0
 
 - Pipeline CI + Linter com Biome (PRD-03): workflow `ci.yml`, scripts `lint`/`format`, auto-formatação de todo `src/`.
