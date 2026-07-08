@@ -18,8 +18,8 @@ export async function executeRun(
   state: TestStateManager,
   onSuiteStart?: () => void,
 ): Promise<void> {
-  const workspaceFolder = vscode.workspace.workspaceFolders?.[0];
-  if (!workspaceFolder) {
+  const folders = vscode.workspace.workspaceFolders;
+  if (!folders?.length) {
     vscode.window.showErrorMessage('Abra uma pasta/projeto para rodar os testes utPLSQL.');
     return;
   }
@@ -30,7 +30,7 @@ export async function executeRun(
   }
 
   const cfg = readConfig();
-  const root = workspaceFolder.uri.fsPath;
+  const root = folders[0].uri.fsPath;
   const run = controller.createTestRun(request);
 
   const leafTests: vscode.TestItem[] = [];
@@ -113,7 +113,7 @@ export async function executeRun(
 
   applyResults(junitPath, leafTests, run, state);
   if (coverage) {
-    applyCoverage(coveragePath, root, cfg.sourcePath, run, state);
+    applyCoverage(coveragePath, root, cfg.sourcePath, run, state, folders);
   }
 
   try {
@@ -217,10 +217,11 @@ export function lastSegment(classname: string): string {
 
 function applyCoverage(
   coveragePath: string,
-  root: string,
+  _root: string,
   sourcePath: string,
   run: vscode.TestRun,
   state: TestStateManager,
+  folders?: readonly vscode.WorkspaceFolder[],
 ): void {
   state.clearCoverage();
   if (!fs.existsSync(coveragePath)) {
@@ -234,7 +235,11 @@ function applyCoverage(
   let mappedCount = 0;
 
   for (const f of files) {
-    const uri = resolveSourceUri(f.file, root, sourcePath);
+    let uri: vscode.Uri | undefined;
+    for (const folder of folders ?? []) {
+      uri = resolveSourceUri(f.file, folder.uri.fsPath, sourcePath, folder.uri.fsPath);
+      if (uri) break;
+    }
     if (!uri) continue;
     const details: vscode.FileCoverageDetail[] = f.lines.map(
       (l) => new vscode.StatementCoverage(l.hits, new vscode.Position(Math.max(0, l.line - 1), 0)),

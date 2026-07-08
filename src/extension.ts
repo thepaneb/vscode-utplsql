@@ -140,7 +140,8 @@ async function runWithProgress(
 }
 
 async function refresh(controller: vscode.TestController): Promise<void> {
-  const suites = await discoverWorkspace(readConfig().includePatterns);
+  const folders = vscode.workspace.workspaceFolders;
+  const suites = await discoverWorkspace(readConfig().includePatterns, folders ?? undefined);
   controller.items.replace([]);
   state.cachedItems = [];
   for (const suite of suites) {
@@ -149,7 +150,12 @@ async function refresh(controller: vscode.TestController): Promise<void> {
       `${suite.suiteDescription}  (${suite.packageName})`,
       suite.uri,
     );
-    state.setMeta(suiteItem, { kind: 'suite', packageName: suite.packageName, uri: suite.uri });
+    state.setMeta(suiteItem, {
+      kind: 'suite',
+      packageName: suite.packageName,
+      uri: suite.uri,
+      folder: suite.folder,
+    });
     for (const t of suite.tests) {
       const testItem = controller.createTestItem(
         `test:${suite.packageName.toLowerCase()}.${t.procName.toLowerCase()}`,
@@ -163,6 +169,7 @@ async function refresh(controller: vscode.TestController): Promise<void> {
         procName: t.procName,
         description: t.description,
         uri: suite.uri,
+        folder: suite.folder,
       });
       suiteItem.children.add(testItem);
     }
