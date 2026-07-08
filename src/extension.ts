@@ -9,6 +9,8 @@ import type { ItemMeta } from './types';
 
 const state = new TestStateManager();
 let currentRunToken: vscode.CancellationTokenSource | undefined;
+let refreshPromise: Promise<void> | undefined;
+let needsRefresh = false;
 
 export function activate(context: vscode.ExtensionContext) {
   const controller = vscode.tests.createTestController('utplsql', 'utPLSQL');
@@ -154,6 +156,25 @@ async function runWithProgress(
 }
 
 async function refresh(controller: vscode.TestController): Promise<void> {
+  if (refreshPromise) {
+    needsRefresh = true;
+    await refreshPromise;
+    if (needsRefresh) {
+      needsRefresh = false;
+      return refresh(controller);
+    }
+    return;
+  }
+
+  refreshPromise = doRefresh(controller);
+  try {
+    await refreshPromise;
+  } finally {
+    refreshPromise = undefined;
+  }
+}
+
+async function doRefresh(controller: vscode.TestController): Promise<void> {
   const folders = vscode.workspace.workspaceFolders;
   const suites = await discoverWorkspace(readConfig().includePatterns, folders ?? undefined);
   controller.items.replace([]);

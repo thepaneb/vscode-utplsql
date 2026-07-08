@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.5.1
+
+- Correção no filtro de pastas para Windows (trailing separator + race condition em refresh).
+
 ## 0.5.0
 
 - Progresso notificável + cancelamento (PRD-05): barra de progresso com contagem,

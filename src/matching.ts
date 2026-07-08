@@ -19,10 +19,10 @@ export function filterSuitesByUri(items: ItemMeta[], uriFsPath: string): ItemMet
 }
 
 export function filterSuitesByFolder(items: ItemMeta[], uriFsPath: string): ItemMeta[] {
-  const folder = uriFsPath.toLowerCase().replace(sepRe, '/');
+  const folder = uriFsPath.toLowerCase().replace(sepRe, '/').replace(/\/+$/, '');
   if (!folder) return [];
+  const prefix = `${folder}/`;
   return items.filter(
-    (m) =>
-      m.kind === 'suite' && m.uri.fsPath.toLowerCase().replace(sepRe, '/').startsWith(`${folder}/`),
+    (m) => m.kind === 'suite' && m.uri.fsPath.toLowerCase().replace(sepRe, '/').startsWith(prefix),
   );
 }

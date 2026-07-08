@@ -2,7 +2,7 @@
   "name": "vscode-utplsql",
   "displayName": "utPLSQL Test Runner",
   "description": "Roda testes utPLSQL pelo Test Explorer do VSCode, com menu de contexto e cobertura visual (estilo pytest).",
-  "version": "0.5.0",
+  "version": "0.5.1",
   "publisher": "paneb",
   "author": "Gil Cleber Barboza",
   "license": "MIT",
