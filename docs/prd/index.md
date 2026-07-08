@@ -82,27 +82,28 @@ CONCLUIR
 | 03 | [Pipeline CI + Linter](completed/prd-03-ci-lint.md) | 0.4.0 | 2026-07-02 |
 | 04 | [Expansão da cobertura de testes](completed/prd-04-expand-tests.md) | 0.4.0 | 2026-07-02 |
 | 07 | [Upgrade Node 24 + TypeScript 6.0](completed/prd-07-upgrade-node-ts.md) | 0.4.0 | 2026-07-02 |
+| 05 | [Feedback de progresso e cancelamento](completed/prd-05-progress-cancel.md) | 0.5.0 | 2026-07-07 |
+| 06 | [Suporte a múltiplos workspace folders](completed/prd-06-multiroot.md) | 0.5.0 | 2026-07-08 |
+| 08 | [Opções CLI avançadas como settings](completed/prd-08-cli-options.md) | 0.5.0 | 2026-07-08 |
+| 09 | [Diagnóstico com info](completed/prd-09-cli-info.md) | 0.5.0 | 2026-07-08 |
 
 ### 🟡 Em desenvolvimento
 
 | # | PRD | Versão alvo | Data |
 |---|---|---|---|
-| 05 | [Feedback de progresso e cancelamento](in-progress/prd-05-progress-cancel.md) | 0.5.0 | 2026-07-02 |
-| 06 | [Suporte a múltiplos workspace folders](in-progress/prd-06-multiroot.md) | 0.5.0 | 2026-07-02 |
-| 08 | [Opções CLI avançadas como settings](in-progress/prd-08-cli-options.md) | 0.5.0 | 2026-07-03 |
-| 09 | [Diagnóstico com info](in-progress/prd-09-cli-info.md) | 0.5.0 | 2026-07-03 |
+*(vazio)*
 
 ### 🔵 Aprovados
 
 | # | PRD | Versão alvo | Data |
 |---|---|---|---|
-| 09 | [Diagnóstico com info](approved/prd-09-cli-info.md) | 0.5.0 | 2026-07-03 |
+| 10 | [Reporters dinâmicos](approved/prd-10-dynamic-reporters.md) | 0.6.0 | 2026-07-03 |
 
 ### ⚪ Propostos
 
 | # | PRD | Versão alvo | Data |
 |---|---|---|---|
-| 10 | [Reporters dinâmicos](proposed/prd-10-dynamic-reporters.md) | 0.6.0 | 2026-07-03 |
+| 11 | [Streaming de resultados](proposed/prd-11-streaming-results.md) | 0.7.0 | 2026-07-03 |
 | 11 | [Streaming de resultados](proposed/prd-11-streaming-results.md) | 0.7.0 | 2026-07-03 |
 
 ---
@@ -118,14 +119,15 @@ docs/prd/
 │   ├── prd-02-refactor-extension.md
 │   ├── prd-03-ci-lint.md
 │   ├── prd-04-expand-tests.md
-│   └── prd-07-upgrade-node-ts.md
-├── approved/         ← aprovados, aguardando implementação
-│   (vazio)
-├── in-progress/      ← sendo implementados agora
 │   ├── prd-05-progress-cancel.md
 │   ├── prd-06-multiroot.md
+│   ├── prd-07-upgrade-node-ts.md
 │   ├── prd-08-cli-options.md
 │   └── prd-09-cli-info.md
+├── approved/         ← aprovados, aguardando implementação
+│   ├── prd-10-dynamic-reporters.md
+├── in-progress/      ← sendo implementados agora
+│   (vazio)
 └── proposed/         ← em avaliação
     ├── prd-10-dynamic-reporters.md
     └── prd-11-streaming-results.md

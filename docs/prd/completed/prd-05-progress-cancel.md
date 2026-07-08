@@ -2,7 +2,7 @@
 
 | Campo | Valor |
 |---|---|
-| Status | Em desenvolvimento |
+| Status | Concluído |
 | Autor | Análise automatizada |
 | Data | 2026-07-02 |
 | Componente | Extensão `paneb.vscode-utplsql` |
