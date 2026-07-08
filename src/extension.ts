@@ -1,11 +1,12 @@
 import * as path from 'node:path';
 import * as vscode from 'vscode';
-import { readConfig } from './config';
+import { clearSessionConnection, readConfig } from './config';
 import { discoverWorkspace } from './discovery';
 import { executeRun } from './runner';
 import { TestStateManager } from './state';
 
 const state = new TestStateManager();
+let currentRunToken: vscode.CancellationTokenSource | undefined;
 
 export function activate(context: vscode.ExtensionContext) {
   const controller = vscode.tests.createTestController('utplsql', 'utPLSQL');
@@ -20,13 +21,13 @@ export function activate(context: vscode.ExtensionContext) {
   state.runProfile = controller.createRunProfile(
     'Run',
     vscode.TestRunProfileKind.Run,
-    (request, token) => executeRun(controller, request, token, false, state),
+    (request, token) => runWithProgress(controller, request, token, false, state),
     true,
   );
   state.coverageProfile = controller.createRunProfile(
     'Run with Coverage',
     vscode.TestRunProfileKind.Coverage,
-    (request, token) => executeRun(controller, request, token, true, state),
+    (request, token) => runWithProgress(controller, request, token, true, state),
     true,
   );
   state.coverageProfile.loadDetailedCoverage = async (_run, fc) =>
@@ -36,10 +37,10 @@ export function activate(context: vscode.ExtensionContext) {
   context.subscriptions.push(
     vscode.commands.registerCommand('utplsql.refresh', () => refresh(controller)),
     vscode.commands.registerCommand('utplsql.runAll', () =>
-      executeRun(
+      runWithProgress(
         controller,
         new vscode.TestRunRequest(undefined, undefined, state.runProfile),
-        new vscode.CancellationTokenSource().token,
+        undefined,
         false,
         state,
       ),
@@ -56,6 +57,13 @@ export function activate(context: vscode.ExtensionContext) {
     vscode.commands.registerCommand('utplsql.runFolderCoverage', (uri: vscode.Uri) =>
       runForFolder(controller, uri, true),
     ),
+    vscode.commands.registerCommand('utplsql.cancelRun', () => {
+      currentRunToken?.cancel();
+    }),
+    vscode.commands.registerCommand('utplsql.clearConnection', () => {
+      clearSessionConnection();
+      vscode.window.showInformationMessage('Conexão limpa da sessão.');
+    }),
   );
 
   const watcher = vscode.workspace.createFileSystemWatcher('**/*.{pks,pkb}');
@@ -66,7 +74,70 @@ export function activate(context: vscode.ExtensionContext) {
   refresh(controller);
 }
 
-export function deactivate() {}
+export function deactivate() {
+  currentRunToken?.cancel();
+}
+
+async function runWithProgress(
+  controller: vscode.TestController,
+  request: vscode.TestRunRequest,
+  externalToken: vscode.CancellationToken | undefined,
+  coverage: boolean,
+  state: TestStateManager,
+): Promise<void> {
+  currentRunToken?.cancel();
+
+  const cts = new vscode.CancellationTokenSource();
+  currentRunToken = cts;
+
+  if (externalToken) {
+    externalToken.onCancellationRequested(() => {
+      try {
+        cts.cancel();
+      } catch {
+        /* */
+      }
+    });
+  }
+
+  await vscode.window.withProgress(
+    {
+      location: vscode.ProgressLocation.Notification,
+      title: 'utPLSQL',
+      cancellable: true,
+    },
+    async (progress, token) => {
+      token.onCancellationRequested(() => {
+        try {
+          cts.cancel();
+        } catch {
+          /* */
+        }
+      });
+
+      const items = request.include
+        ? [...request.include]
+        : (() => {
+            const a: vscode.TestItem[] = [];
+            controller.items.forEach((i) => {
+              a.push(i);
+            });
+            return a;
+          })();
+      const total = items.filter((i) => state.getMeta(i)?.kind === 'suite').length;
+
+      let done = 0;
+      const onSuiteStart = () => {
+        done++;
+        progress.report({ message: `${done}/${total}` });
+      };
+
+      await executeRun(controller, request, cts.token, coverage, state, onSuiteStart);
+
+      progress.report({ message: 'Parseando resultados...' });
+    },
+  );
+}
 
 async function refresh(controller: vscode.TestController): Promise<void> {
   const suites = await discoverWorkspace(readConfig().includePatterns);
@@ -127,14 +198,14 @@ async function runForUri(controller: vscode.TestController, uri: vscode.Uri, cov
     vscode.window.showWarningMessage('Nenhuma suite utPLSQL encontrada neste arquivo.');
     return;
   }
-  await executeRun(
+  await runWithProgress(
     controller,
     new vscode.TestRunRequest(
       include,
       undefined,
       coverage ? state.coverageProfile : state.runProfile,
     ),
-    new vscode.CancellationTokenSource().token,
+    undefined,
     coverage,
     state,
   );
@@ -150,14 +221,14 @@ async function runForFolder(controller: vscode.TestController, uri: vscode.Uri, 
     vscode.window.showWarningMessage('Nenhuma suite utPLSQL encontrada nesta pasta.');
     return;
   }
-  await executeRun(
+  await runWithProgress(
     controller,
     new vscode.TestRunRequest(
       include,
       undefined,
       coverage ? state.coverageProfile : state.runProfile,
     ),
-    new vscode.CancellationTokenSource().token,
+    undefined,
     coverage,
     state,
   );

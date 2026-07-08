@@ -28,6 +28,37 @@ A extensão pode ser instalada de duas formas:
 
 A extensão é só o "cliente gráfico" — quem executa os testes é o banco, via CLI.
 
+## Conexão
+
+A extensão precisa de uma string de conexão Oracle para rodar os testes. A
+resolução segue esta ordem:
+
+1. **Setting `utplsql.connection`** — lido do `settings.json` do projeto/usuário.
+2. **Variável de ambiente `UTPLSQL_CONN`** — definida antes de abrir o VSCode.
+3. **Cache da sessão** — se o usuário já digitou a conexão via prompt.
+4. **Prompt ao usuário** — pergunta e mantém só na sessão atual.
+
+⚠️ **Recomendação de segurança:** a string de conexão contém senha. **NÃO** use o
+setting `utplsql.connection` em ambientes compartilhados (o settings.json pode
+ser versionado ou visível a outros). Em vez disso, **use a variável de ambiente
+`UTPLSQL_CONN`**:
+
+```powershell
+# PowerShell
+$env:UTPLSQL_CONN = "usuario/senha@//host:1521/servico"
+code .
+```
+
+```bash
+# Bash
+export UTPLSQL_CONN="usuario/senha@//host:1521/servico"
+code .
+```
+
+Se nem o setting nem a env var estiverem definidos, a extensão pergunta a
+conexão e a mantém apenas em memória durante a sessão — use o comando
+**utPLSQL: Limpar conexão da sessão** (palette de comandos) para limpá-la.
+
 ## Como funciona
 
 ```

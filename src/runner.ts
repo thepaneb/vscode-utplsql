@@ -16,6 +16,7 @@ export async function executeRun(
   token: vscode.CancellationToken,
   coverage: boolean,
   state: TestStateManager,
+  onSuiteStart?: () => void,
 ): Promise<void> {
   const workspaceFolder = vscode.workspace.workspaceFolders?.[0];
   if (!workspaceFolder) {
@@ -50,6 +51,7 @@ export async function executeRun(
     const m = state.getMeta(item);
     if (!m) continue;
     if (m.kind === 'suite') {
+      onSuiteStart?.();
       pathArgs.add(m.packageName);
       item.children.forEach((c) => {
         leafTests.push(c);
