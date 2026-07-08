@@ -1,10 +1,11 @@
-import * as path from 'node:path';
 import * as vscode from 'vscode';
 import { getCliInfo } from './cliInfo';
 import { clearSessionConnection, readConfig } from './config';
 import { discoverWorkspace } from './discovery';
+import { filterSuitesByFolder, filterSuitesByUri } from './matching';
 import { executeRun } from './runner';
 import { TestStateManager } from './state';
+import type { ItemMeta } from './types';
 
 const state = new TestStateManager();
 let currentRunToken: vscode.CancellationTokenSource | undefined;
@@ -200,20 +201,12 @@ function collectAllItems(controller: vscode.TestController): vscode.TestItem[] {
 }
 
 async function runForUri(controller: vscode.TestController, uri: vscode.Uri, coverage: boolean) {
-  const base = path
-    .basename(uri.fsPath)
-    .replace(/\.(pks|pkb)$/i, '')
-    .toLowerCase();
-  const include = collectAllItems(controller).filter((i) => {
-    const m = state.getMeta(i);
-    return (
-      m?.kind === 'suite' &&
-      path
-        .basename(m.uri.fsPath)
-        .replace(/\.(pks|pkb)$/i, '')
-        .toLowerCase() === base
-    );
-  });
+  const metas = collectAllItems(controller)
+    .map((i) => state.getMeta(i))
+    .filter(Boolean) as ItemMeta[];
+  const include = filterSuitesByUri(metas, uri.fsPath)
+    .map((m) => controller.items.get(`suite:${m.packageName.toLowerCase()}`))
+    .filter(Boolean) as vscode.TestItem[];
   if (!include.length) {
     vscode.window.showWarningMessage('Nenhuma suite utPLSQL encontrada neste arquivo.');
     return;
@@ -232,11 +225,12 @@ async function runForUri(controller: vscode.TestController, uri: vscode.Uri, cov
 }
 
 async function runForFolder(controller: vscode.TestController, uri: vscode.Uri, coverage: boolean) {
-  const folder = uri.fsPath.toLowerCase();
-  const include = collectAllItems(controller).filter((i) => {
-    const m = state.getMeta(i);
-    return m?.kind === 'suite' && m.uri.fsPath.toLowerCase().startsWith(folder + path.sep);
-  });
+  const metas = collectAllItems(controller)
+    .map((i) => state.getMeta(i))
+    .filter(Boolean) as ItemMeta[];
+  const include = filterSuitesByFolder(metas, uri.fsPath)
+    .map((m) => controller.items.get(`suite:${m.packageName.toLowerCase()}`))
+    .filter(Boolean) as vscode.TestItem[];
   if (!include.length) {
     vscode.window.showWarningMessage('Nenhuma suite utPLSQL encontrada nesta pasta.');
     return;

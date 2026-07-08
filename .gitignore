@@ -1,8 +1,12 @@
 node_modules/
 out/
+coverage/
 *.vsix
 .vscode-test/
 .env
+docs/prd/.prd-issues.json
+.DS_Store
+Thumbs.db
 
 # Arquivos de instrução para agentes de IA — NUNCA persistir no repositório.
 # AGENTS.md e CLAUDE.md contêm contexto local do desenvolvedor e são
@@ -12,5 +16,7 @@ AGENTS.md
 CLAUDE.md
 DEVELOPMENT.md
 
-# Docs locais (cada dev gera os seus; PRDs são commitados fora desta regra)
+# PRDs são commitados (docs/prd/); ignore apenas docs locais avulsos
 docs/*
+!docs/prd/
+!docs/prd/**

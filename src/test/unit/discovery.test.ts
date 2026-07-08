@@ -1,37 +1,60 @@
+import './setup.js';
 import assert from 'node:assert';
 import { test } from 'node:test';
-import { parseSuite } from '../../discovery';
+import { discoverWorkspace, parseSuite } from '../../discovery';
 
-const PKG = 'test_exemplo';
-const PKS_CONTENT = `CREATE OR REPLACE PACKAGE ${PKG} IS
-  -- %suite(Teste exemplo)
-  -- %test(Cenario um)
-  procedure cen_um;
+test('parseSuite: retorna ParsedSuite para arquivo com %suite', () => {
+  const text = `CREATE OR REPLACE PACKAGE test_app IS
+  --%suite(Testes)
+  --%test(Cenario)
+  PROCEDURE proc1;
 END;`;
-
-const NON_SUITE_PKG = `CREATE OR REPLACE PACKAGE pkg_qualquer IS
-  procedure proc1;
-END;`;
-
-test('parseSuite: retorna SuiteFile com uri', () => {
-  const uri = {
-    fsPath: '/workspace/test_exemplo.pks',
-    path: '/workspace/test_exemplo.pks',
-    scheme: 'file',
-  };
-  const suite = parseSuite(uri as any, PKS_CONTENT);
-  assert.ok(suite);
-  assert.strictEqual(suite.packageName, PKG);
-  assert.strictEqual(suite.suiteDescription, 'Teste exemplo');
-  assert.strictEqual(suite.tests.length, 1);
-  assert.strictEqual(suite.tests[0].procName, 'cen_um');
+  const uri = { fsPath: '/x/test_app.pks', path: '/x/test_app.pks', scheme: 'file' };
+  const result = parseSuite(uri as any, text);
+  assert.ok(result);
+  assert.strictEqual(result.packageName, 'test_app');
+  assert.strictEqual(result.suiteDescription, 'Testes');
+  assert.strictEqual(result.tests.length, 1);
+  assert.strictEqual(result.tests[0].procName, 'proc1');
+  assert.strictEqual(result.uri.fsPath, '/x/test_app.pks');
 });
 
-test('parseSuite: retorna null se nao for suite', () => {
-  const uri = {
-    fsPath: '/workspace/pkg_qualquer.pks',
-    path: '/workspace/pkg_qualquer.pks',
-    scheme: 'file',
-  };
-  assert.strictEqual(parseSuite(uri as any, NON_SUITE_PKG), null);
+test('parseSuite: retorna null para arquivo sem %suite', () => {
+  const text = 'CREATE OR REPLACE PACKAGE normal IS\nPROCEDURE proc1;\nEND;';
+  const uri = { fsPath: '/x/normal.pks', path: '/x/normal.pks', scheme: 'file' };
+  const result = parseSuite(uri as any, text);
+  assert.strictEqual(result, null);
+});
+
+test('parseSuite: retorna null para texto vazio', () => {
+  const uri = { fsPath: '/x/vazio.pks', path: '/x/vazio.pks', scheme: 'file' };
+  const result = parseSuite(uri as any, '');
+  assert.strictEqual(result, null);
+});
+
+test('discoverWorkspace: retorna lista vazia quando sem pastas', async () => {
+  const result = await discoverWorkspace(['**/*.pks'], []);
+  assert.ok(Array.isArray(result));
+  assert.strictEqual(result.length, 0);
+});
+
+test('discoverWorkspace: encontra suites em arquivos .pks', async () => {
+  const { __setMockFile, __resetMockFiles } = await import('../vscode-stub.js');
+  __setMockFile(
+    '*.pks',
+    '/root/test_app.pks',
+    'CREATE OR REPLACE PACKAGE test_app IS\n  --%suite(Testes)\n  --%test(Cenario)\n  PROCEDURE proc1;\nEND;',
+  );
+  try {
+    const folder = { uri: { fsPath: '/root' }, name: 'root', index: 0 };
+    const result = await discoverWorkspace(['*.pks'], [folder as any]);
+    assert.strictEqual(result.length, 1);
+    assert.strictEqual(result[0].packageName, 'test_app');
+    assert.strictEqual(result[0].suiteDescription, 'Testes');
+    assert.strictEqual(result[0].tests.length, 1);
+    assert.strictEqual(result[0].tests[0].procName, 'proc1');
+    assert.strictEqual(result[0].folder, folder);
+  } finally {
+    __resetMockFiles();
+  }
 });

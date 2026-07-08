@@ -28,4 +28,12 @@ describe('utPLSQL extension', () => {
       assert.ok(cmds.includes(c), `comando ausente: ${c}`);
     }
   });
+
+  it('utplsql.refresh executa sem erro', async () => {
+    await vscode.commands.executeCommand('utplsql.refresh');
+  });
+
+  it('utplsql.clearConnection executa sem erro', async () => {
+    await vscode.commands.executeCommand('utplsql.clearConnection');
+  });
 });
