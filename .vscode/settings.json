@@ -1,3 +1,8 @@
 {
-  "node.testing.testArguments": ["--require", "scripts/test-setup.cjs"]
+  "node.testing.testArguments": ["--require", "scripts/test-setup.cjs"],
+  "utplsql.connection": "UT3/XNtxj8eEgA6X6b6f@//localhost:1521/freepdb1",
+  "utplsql.cliPath": "/home/gilcl/utplsql-cli/bin/utplsql",
+  "utplsql.sourcePath": "src/test/integration/fixtures",
+  "utplsql.includePatterns": ["src/test/integration/fixtures/*.pks"],
+  "utplsql.invocation": "launcher"
 }

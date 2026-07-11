@@ -1,5 +1,14 @@
 # Changelog
 
+## 0.6.0
+
+- Infraestrutura de testes com Oracle real (PRD-13, PRD-14, PRD-15):
+  - Container Oracle 23ai Free com utPLSQL v3.2.3 instalado no schema UT3.
+  - Schema utplsql_test com 3 packages de teste (test_betwnvarchar, test_math, test_employees).
+  - Script `src/test/integration/fixtures/setup.sh` para configurar todo o ambiente.
+  - Testes de integração expandidos em `extension.test.ts` com dependência condicional
+    ao banco real via `UTPLSQL_CONN`.
+
 ## 0.5.3
 
 - Correção no discovery: `RelativePattern` removido, `findFiles` agora usa glob simples
