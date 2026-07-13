@@ -1,0 +1,7 @@
+{
+  "utplsql.cliPath": "/caminho/para/utplsql-cli/bin/utplsql",
+  "utplsql.cliHome": "/caminho/para/utplsql-cli",
+  "utplsql.sourcePath": "src/test/integration/fixtures",
+  "utplsql.includePatterns": ["src/test/integration/fixtures/*.pks"],
+  "utplsql.invocation": "launcher"
+}
