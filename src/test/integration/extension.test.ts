@@ -21,10 +21,7 @@ const describeDB = hasConnection() ? describe : describe.skip;
 // cliHome lido de process.env — repassado ao VSCode host via env no .vscode-test.mjs
 const cliHome = process.env.UTPLSQL_CLI_HOME || '';
 
-async function withInvocationMode<T>(
-  mode: string,
-  fn: () => Promise<T>,
-): Promise<T> {
+async function withInvocationMode<T>(mode: string, fn: () => Promise<T>): Promise<T> {
   const config = vscode.workspace.getConfiguration('utplsql');
   const original = config.inspect<string>('invocation');
 
@@ -82,10 +79,7 @@ describe('utPLSQL extension', () => {
     for (const mode of MODES) {
       if (mode === 'java' && !cliHome) {
         describe(`modo ${mode}`, () => {
-          it.skip(
-            'cliHome não configurado — defina UTPLSQL_CLI_HOME no .env',
-            () => {},
-          );
+          it.skip('cliHome não configurado — defina UTPLSQL_CLI_HOME no .env', () => {});
         });
         continue;
       }
@@ -113,10 +107,7 @@ describe('utPLSQL extension', () => {
           const doc = await vscode.workspace.openTextDocument(fixtureUri);
           await vscode.window.showTextDocument(doc);
           await withInvocationMode(mode, async () => {
-            await vscode.commands.executeCommand(
-              'utplsql.runFileCoverage',
-              fixtureUri,
-            );
+            await vscode.commands.executeCommand('utplsql.runFileCoverage', fixtureUri);
           });
         });
       });
