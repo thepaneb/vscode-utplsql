@@ -86,6 +86,10 @@ CONCLUIR
 | 06 | [Suporte a múltiplos workspace folders](completed/prd-06-multiroot.md) | 0.5.0 | 2026-07-08 |
 | 08 | [Opções CLI avançadas como settings](completed/prd-08-cli-options.md) | 0.5.0 | 2026-07-08 |
 | 09 | [Diagnóstico com info](completed/prd-09-cli-info.md) | 0.5.0 | 2026-07-08 |
+| 13 | [Infraestrutura de testes com Oracle real](completed/prd-13-oracle-infra.md) | 0.6.0 | 2026-07-11 |
+| 14 | [Schema e objetos de teste utPLSQL](completed/prd-14-test-schema-packages.md) | 0.6.0 | 2026-07-11 |
+| 15 | [Testes de integração com banco real](completed/prd-15-integration-tests-real-db.md) | 0.6.0 | 2026-07-11 |
+| 16 | [Testes de integração para ambos os modos de invocação](completed/prd-16-integration-test-invocation-modes.md) | 0.6.0 | 2026-07-13 |
 
 ### 🟡 Em desenvolvimento
 
@@ -104,7 +108,9 @@ CONCLUIR
 | # | PRD | Versão alvo | Data |
 |---|---|---|---|
 | 11 | [Streaming de resultados](proposed/prd-11-streaming-results.md) | 0.7.0 | 2026-07-03 |
-| 11 | [Streaming de resultados](proposed/prd-11-streaming-results.md) | 0.7.0 | 2026-07-03 |
+| 12 | [Cobertura SQL (views)](proposed/prd-12-sql-coverage.md) | 0.7.0 | 2026-07-08 |
+| 17 | [Flags JVM customizáveis para o modo `java`](proposed/prd-17-java-args-setting.md) | 0.7.0 | 2026-07-13 |
+
 
 ---
 
@@ -123,14 +129,19 @@ docs/prd/
 │   ├── prd-06-multiroot.md
 │   ├── prd-07-upgrade-node-ts.md
 │   ├── prd-08-cli-options.md
-│   └── prd-09-cli-info.md
+│   ├── prd-09-cli-info.md
+│   ├── prd-13-oracle-infra.md
+│   ├── prd-14-test-schema-packages.md
+│   ├── prd-15-integration-tests-real-db.md
+│   └── prd-16-integration-test-invocation-modes.md
 ├── approved/         ← aprovados, aguardando implementação
 │   ├── prd-10-dynamic-reporters.md
 ├── in-progress/      ← sendo implementados agora
 │   (vazio)
 └── proposed/         ← em avaliação
-    ├── prd-10-dynamic-reporters.md
-    └── prd-11-streaming-results.md
+    ├── prd-11-streaming-results.md
+    ├── prd-12-sql-coverage.md
+    └── prd-17-java-args-setting.md
 ```
 
 ---
