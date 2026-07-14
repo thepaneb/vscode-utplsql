@@ -1,4 +1,5 @@
 {
+  "biome.lspBin": "node_modules/@biomejs/cli-win32-x64/biome.exe",
   "node.testing.testArguments": ["--require", "scripts/test-setup.cjs"],
   "utplsql.cliPath": "/home/gilcl/utplsql-cli/bin/utplsql",
   "utplsql.sourcePath": "src/test/integration/fixtures",
