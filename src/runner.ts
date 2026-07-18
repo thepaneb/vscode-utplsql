@@ -4,6 +4,7 @@ import * as path from 'node:path';
 import * as vscode from 'vscode';
 import { runCli } from './cli';
 import { getCliInfo, semverLt } from './cliInfo';
+import { listReporters } from './cliReporters';
 import { parseCobertura } from './cobertura';
 import { readConfig, resolveConnection } from './config';
 import { resolveSourceUri } from './coverage';
@@ -95,13 +96,42 @@ export async function executeRun(
   args.push('-f=ut_documentation_reporter', '-c');
   args.push('-f=ut_junit_reporter', `-o=${junitPath}`);
 
-  if (coverage) {
-    args.push('-f=ut_coverage_cobertura_reporter', `-o=${coveragePath}`);
-    args.push(`-source_path=${cfg.sourcePath}`);
-    const owner = cfg.coverageOwner.trim() || connection.split('/')[0].toUpperCase();
-    args.push(`-owner=${owner}`);
-    args.push(...cfg.coverageSourceArgs);
+  const extraReporter = state.consumeExtraReporter();
+  if (extraReporter) {
+    run.appendOutput(`[info] Reporter adicional da sessão: ${extraReporter}\r\n`);
+    args.push(`-f=${extraReporter}`);
   }
+
+  if (coverage) {
+    const reporters = await listReporters(cfg, connection);
+    if ('error' in reporters) {
+      run.appendOutput(`[aviso] Não foi possível listar reporters: ${reporters.error}\r\n`);
+      run.appendOutput('[aviso] Continuando sem cobertura.\r\n');
+    } else if (!reporters.some((r) => r.toUpperCase() === 'UT_COVERAGE_COBERTURA_REPORTER')) {
+      run.appendOutput(
+        '\r\n[aviso] Reporter UT_COVERAGE_COBERTURA_REPORTER não disponível no banco.\r\n' +
+          'Cobertura desabilitada. Verifique se o pacote utPLSQL está atualizado.\r\n',
+      );
+    } else {
+      args.push('-f=ut_coverage_cobertura_reporter', `-o=${coveragePath}`);
+      args.push(`-source_path=${cfg.sourcePath}`);
+      const owner = cfg.coverageOwner.trim() || connection.split('/')[0].toUpperCase();
+      args.push(`-owner=${owner}`);
+      args.push(...cfg.coverageSourceArgs);
+    }
+  }
+
+  for (const r of cfg.additionalReporters) {
+    if (
+      r.toUpperCase() === 'UT_DOCUMENTATION_REPORTER' ||
+      r.toUpperCase() === 'UT_JUNIT_REPORTER' ||
+      r.toUpperCase() === 'UT_COVERAGE_COBERTURA_REPORTER'
+    ) {
+      continue;
+    }
+    args.push(`-f=${r}`);
+  }
+
   if (cfg.timeoutMinutes !== 60) {
     args.push(`-t=${cfg.timeoutMinutes}`);
   }

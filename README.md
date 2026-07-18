@@ -84,13 +84,15 @@ traduz para as APIs nativas do VSCode.
 | `utplsql.includePatterns` | `["**/*.pks"]` | Globs para descobrir os specs com `%suite`/`%test`. Se seus testes estão em `.sql`, use `["**/*.sql"]`. |
 | `utplsql.extraRunArgs` | `[]` | Argumentos extras para o `utplsql run`. |
 | `utplsql.coverageOwner` | `""` | Schema dono dos objetos cobertos. Vazio = usa o usuário da conexão (em maiúsculas). |
-| `utplsql.coverageSourceArgs` | (ver **Cobertura**) | Args do CLI que mapeiam a c| `utplsql.invocation` | `launcher` | Como chamar o CLI: `launcher` (via `.bat`/script, padrão) ou `java` (JVM direto, **sem shell**). Veja **Modo de invocação**. |
+| `utplsql.coverageSourceArgs` | (ver **Cobertura**) | Args do CLI que mapeiam a cobertura aos arquivos-fonte. |
+| `utplsql.invocation` | `launcher` | Como chamar o CLI: `launcher` (via `.bat`/script, padrão) ou `java` (JVM direto, **sem shell**). Veja **Modo de invocação**. |
 | `utplsql.javaPath` | `java` | Executável do Java (PATH ou caminho completo). Usado só no modo `java`. |
 | `utplsql.cliHome` | `""` | Raiz do utPLSQL-cli (pasta com `bin/` e `lib/`). Vazio = derivado do `cliPath`. Usado só no modo `java`. |
 | `utplsql.timeoutMinutes` | `60` | Timeout em minutos para o CLI (flag `-t`). |
 | `utplsql.dbmsOutput` | `false` | Habilita `DBMS_OUTPUT` na sessão de teste (flag `-D`). |
 | `utplsql.quiet` | `false` | Suprime logs informativos do CLI (flag `-q`). |
 | `utplsql.failureExitCode` | `1` | Código de saída em caso de falha (flag `--failure-exit-code`). `0` faz o CLI sempre exitir com sucesso. |
+| `utplsql.additionalReporters` | `[]` | Reporters adicionais para incluir em toda execução (ex.: `["ut_coverage_html_reporter"]`). Os padrões (documentation, junit, cobertura) são sempre incluídos e não precisam ser listados. |
 
 Exemplo (`.vscode/settings.json` do projeto):
 
@@ -145,6 +147,9 @@ sem `cmd` no meio, então `^` e `|` passam **literais** — você pode usar `^â
    - **Clique direito** numa pasta/arquivo → *utPLSQL: Rodar testes…* (com ou sem cobertura).
 5. Para cobertura, use o perfil **Run with Coverage** (ou o item de menu "com cobertura").
 6. Para diagnóstico, use o comando **utPLSQL: Mostrar informações do utPLSQL** na palette (`Ctrl+Shift+P`) — exibe as versões do CLI, da API Java e do utPLSQL no banco, com opção de copiar.
+7. **utPLSQL: Selecionar reporter adicional...** — QuickPick com reporters disponíveis no banco. O selecionado é usado na execução seguinte e descartado após.
+8. **utPLSQL: Cancelar execução** — interrompe o CLI em execução.
+9. **utPLSQL: Atualizar testes** — força rediscovery dos `.pks`.
 
 ## Cobertura
 
@@ -208,6 +213,31 @@ O `type_mapping` traduz o "tipo" capturado pelo regex no tipo Oracle. Três conv
   literais e você fica livre para escrever o regex normalmente.
 - **Windows / `cmd`:** evite **`^`** no regex (o `cmd` do `.bat` o consome) — por isso os exemplos
   usam `\w` e `[/\\]`.
+
+## Reporters
+
+A extensão sempre inclui três reporters padrão:
+`ut_documentation_reporter` (stdout),
+`ut_junit_reporter` (resultados → Test Explorer) e
+`ut_coverage_cobertura_reporter` (cobertura, se disponível).
+
+**Validação dinâmica** — antes de rodar com cobertura, a extensão consulta
+o banco via `utplsql reporters <conn>`. Se
+`UT_COVERAGE_COBERTURA_REPORTER` não existir no banco (ex.: utPLSQL
+desatualizado), a cobertura é pulada com um aviso no output. A execução
+dos testes nunca é bloqueada.
+
+**Reporters adicionais fixos** — setting `utplsql.additionalReporters`:
+```jsonc
+"utplsql.additionalReporters": ["UT_COVERAGE_HTML_REPORTER"]
+```
+Os três reporters padrão são deduplicados automaticamente, mesmo se
+listados aqui.
+
+**Reporter volátil por sessão** — comando **utPLSQL: Selecionar reporter
+adicional...** abre um QuickPick com a lista dinâmica do banco. O reporter
+escolhido é usado na execução seguinte e descartado após (não persiste
+nas settings).
 
 ## Requisitos no banco
 

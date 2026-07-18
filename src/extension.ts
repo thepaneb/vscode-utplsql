@@ -1,6 +1,7 @@
 import * as vscode from 'vscode';
 import { getCliInfo } from './cliInfo';
-import { clearSessionConnection, readConfig } from './config';
+import { listReporters } from './cliReporters';
+import { clearSessionConnection, readConfig, resolveConnection } from './config';
 import { discoverWorkspace } from './discovery';
 import { filterSuitesByFolder, filterSuitesByUri } from './matching';
 import { executeRun } from './runner';
@@ -63,6 +64,25 @@ export function activate(context: vscode.ExtensionContext) {
     ),
     vscode.commands.registerCommand('utplsql.cancelRun', () => {
       currentRunToken?.cancel();
+    }),
+    vscode.commands.registerCommand('utplsql.selectReporter', async () => {
+      const conn = await resolveConnection();
+      if (!conn) return;
+      const cfg = readConfig();
+      const reporters = await listReporters(cfg, conn);
+      if ('error' in reporters) {
+        vscode.window.showErrorMessage(`Falha ao listar reporters: ${reporters.error}`);
+        return;
+      }
+      const selected = await vscode.window.showQuickPick(reporters, {
+        placeHolder: 'Selecione um reporter adicional para esta execução',
+      });
+      if (selected) {
+        state.setExtraReporter(selected);
+        vscode.window.showInformationMessage(
+          `Reporter "${selected}" será usado na próxima execução.`,
+        );
+      }
     }),
     vscode.commands.registerCommand('utplsql.clearConnection', () => {
       clearSessionConnection();

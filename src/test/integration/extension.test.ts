@@ -8,6 +8,10 @@ const COMMANDS = [
   'utplsql.runFileCoverage',
   'utplsql.runFolder',
   'utplsql.runFolderCoverage',
+  'utplsql.cancelRun',
+  'utplsql.showInfo',
+  'utplsql.selectReporter',
+  'utplsql.clearConnection',
 ] as const;
 
 const MODES = ['launcher', 'java'] as const;
@@ -75,6 +79,20 @@ describe('utPLSQL extension', () => {
     await vscode.commands.executeCommand('utplsql.clearConnection');
   });
 
+  it('utplsql.cancelRun executa sem erro quando não há execução ativa', async () => {
+    await vscode.commands.executeCommand('utplsql.cancelRun');
+  });
+
+  describe('runFolder', () => {
+    it('utplsql.runFolder com pasta fixtures retorna warning (nenhuma suite se sem banco)', async () => {
+      const root = vscode.workspace.workspaceFolders?.[0]?.uri;
+      assert.ok(root, 'workspace folder required');
+      const fixturesUri = vscode.Uri.joinPath(root, 'src', 'test', 'integration', 'fixtures');
+      // Não deve lançar (mostra warning se sem suites, mas não quebra)
+      await vscode.commands.executeCommand('utplsql.runFolder', fixturesUri);
+    });
+  });
+
   describeDB('integração com banco Oracle', () => {
     for (const mode of MODES) {
       if (mode === 'java' && !cliHome) {
@@ -89,6 +107,25 @@ describe('utPLSQL extension', () => {
           this.timeout(120_000);
           await withInvocationMode(mode, async () => {
             await vscode.commands.executeCommand('utplsql.runAll');
+          });
+        });
+
+        it('utplsql.runFile com arquivo ativo (sem cobertura)', async function () {
+          this.timeout(120_000);
+          const root = vscode.workspace.workspaceFolders?.[0]?.uri;
+          assert.ok(root, 'workspace folder required');
+          const fixtureUri = vscode.Uri.joinPath(
+            root,
+            'src',
+            'test',
+            'integration',
+            'fixtures',
+            'test_math.pks',
+          );
+          const doc = await vscode.workspace.openTextDocument(fixtureUri);
+          await vscode.window.showTextDocument(doc);
+          await withInvocationMode(mode, async () => {
+            await vscode.commands.executeCommand('utplsql.runFile', fixtureUri);
           });
         });
 
@@ -109,6 +146,48 @@ describe('utPLSQL extension', () => {
           await withInvocationMode(mode, async () => {
             await vscode.commands.executeCommand('utplsql.runFileCoverage', fixtureUri);
           });
+        });
+
+        it('utplsql.runFolder com pasta fixtures', async function () {
+          this.timeout(120_000);
+          const root = vscode.workspace.workspaceFolders?.[0]?.uri;
+          assert.ok(root, 'workspace folder required');
+          const fixturesUri = vscode.Uri.joinPath(root, 'src', 'test', 'integration', 'fixtures');
+          await withInvocationMode(mode, async () => {
+            await vscode.commands.executeCommand('utplsql.runFolder', fixturesUri);
+          });
+        });
+
+        it('utplsql.runFolderCoverage com pasta fixtures', async function () {
+          this.timeout(120_000);
+          const root = vscode.workspace.workspaceFolders?.[0]?.uri;
+          assert.ok(root, 'workspace folder required');
+          const fixturesUri = vscode.Uri.joinPath(root, 'src', 'test', 'integration', 'fixtures');
+          await withInvocationMode(mode, async () => {
+            await vscode.commands.executeCommand('utplsql.runFolderCoverage', fixturesUri);
+          });
+        });
+
+        it('utplsql.additionalReporters com reporter extra', async function () {
+          this.timeout(120_000);
+          const config = vscode.workspace.getConfiguration('utplsql');
+          const original = config.inspect<string[]>('additionalReporters');
+          await config.update(
+            'additionalReporters',
+            ['UT_DOCUMENTATION_REPORTER'],
+            vscode.ConfigurationTarget.Workspace,
+          );
+          try {
+            await withInvocationMode(mode, async () => {
+              await vscode.commands.executeCommand('utplsql.runAll');
+            });
+          } finally {
+            await config.update(
+              'additionalReporters',
+              original?.workspaceValue ?? original?.defaultValue ?? [],
+              vscode.ConfigurationTarget.Workspace,
+            );
+          }
         });
       });
     }

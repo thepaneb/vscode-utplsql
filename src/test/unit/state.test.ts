@@ -38,3 +38,27 @@ test('TestStateManager: clearCoverage limpa o store', () => {
   mgr.clearCoverage();
   assert.deepStrictEqual(mgr.getCoverage('file:///test.sql'), []);
 });
+
+test('TestStateManager: setExtraReporter armazena o valor', () => {
+  const mgr = new TestStateManager();
+  mgr.setExtraReporter('UT_COVERAGE_HTML_REPORTER');
+  assert.strictEqual(mgr.extraReporter, 'UT_COVERAGE_HTML_REPORTER');
+});
+
+test('TestStateManager: consumeExtraReporter retorna o valor armazenado', () => {
+  const mgr = new TestStateManager();
+  mgr.setExtraReporter('UT_MY_CUSTOM');
+  assert.strictEqual(mgr.consumeExtraReporter(), 'UT_MY_CUSTOM');
+});
+
+test('TestStateManager: consumeExtraReporter limpa apos consumo', () => {
+  const mgr = new TestStateManager();
+  mgr.setExtraReporter('UT_TEMP');
+  mgr.consumeExtraReporter();
+  assert.strictEqual(mgr.consumeExtraReporter(), undefined);
+});
+
+test('TestStateManager: consumeExtraReporter retorna undefined sem nada armazenado', () => {
+  const mgr = new TestStateManager();
+  assert.strictEqual(mgr.consumeExtraReporter(), undefined);
+});

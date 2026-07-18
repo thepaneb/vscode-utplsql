@@ -1,5 +1,16 @@
 # Changelog
 
+## 0.7.0
+
+- Reporters dinâmicos (PRD-10):
+  - Novo módulo puro `cliReporters.ts` com `parseReportersOutput` e `listReporters`.
+  - Validação dinâmica antes da cobertura: se `UT_COVERAGE_COBERTURA_REPORTER`
+    não existir no banco, cobertura é pulada com aviso (nunca bloqueia execução).
+  - Nova setting `utplsql.additionalReporters` para reporters extras fixos.
+  - Novo comando `utplsql.selectReporter` com QuickPick dos reporters disponíveis
+    no banco; o selecionado é usado na execução seguinte e descartado após.
+- README atualizado: seção Reporters, comandos e settings faltantes documentados.
+
 ## 0.6.0
 
 - Infraestrutura de testes com Oracle real (PRD-13, PRD-14, PRD-15):
