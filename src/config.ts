@@ -17,6 +17,7 @@ export interface UtConfig {
   dbmsOutput: boolean;
   quiet: boolean;
   failureExitCode: number;
+  additionalReporters: string[];
 }
 
 export function readConfig(): UtConfig {
@@ -40,6 +41,7 @@ export function readConfig(): UtConfig {
     dbmsOutput: c.get<boolean>('dbmsOutput', false),
     quiet: c.get<boolean>('quiet', false),
     failureExitCode: c.get<number>('failureExitCode', 1),
+    additionalReporters: c.get<string[]>('additionalReporters', []),
   };
 }
 

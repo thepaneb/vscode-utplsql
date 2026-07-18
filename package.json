@@ -2,7 +2,7 @@
   "name": "vscode-utplsql",
   "displayName": "utPLSQL Test Runner",
   "description": "Roda testes utPLSQL pelo Test Explorer do VSCode, com menu de contexto e cobertura visual (estilo pytest).",
-  "version": "0.6.0",
+  "version": "0.7.0",
   "publisher": "paneb",
   "author": "Gil Cleber Barboza",
   "license": "MIT",
@@ -135,6 +135,12 @@
           "minimum": 0,
           "maximum": 255,
           "description": "Código de saída quando há falha (flag --failure-exit-code). 0 faz o CLI sempre exitar com sucesso."
+        },
+        "utplsql.additionalReporters": {
+          "type": "array",
+          "items": { "type": "string" },
+          "default": [],
+          "description": "Reporters adicionais para incluir em toda execução (ex.: [\"ut_coverage_html_reporter\"]). Os reporters padrão (documentation, junit e cobertura) são sempre incluídos."
         }
       }
     },
@@ -183,6 +189,11 @@
       {
         "command": "utplsql.showInfo",
         "title": "Mostrar informações do utPLSQL",
+        "category": "utPLSQL"
+      },
+      {
+        "command": "utplsql.selectReporter",
+        "title": "Selecionar reporter adicional...",
         "category": "utPLSQL"
       }
     ],

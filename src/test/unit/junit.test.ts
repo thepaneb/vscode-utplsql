@@ -85,3 +85,23 @@ test('parseJUnit: error tag com texto simples (sem atributos)', () => {
   assert.strictEqual(cases[0].status, 'error');
   assert.match(cases[0].message ?? '', /Erro na linha 5/);
 });
+
+test('parseJUnit: failure tag auto-fechada sem message retorna string vazia', () => {
+  const xml = `<testsuites><testsuite name="s"><testcase classname="s" name="f" time="0.1"><failure/></testcase></testsuite></testsuites>`;
+  const cases = parseJUnit(xml);
+  assert.strictEqual(cases[0].status, 'failed');
+  assert.strictEqual(cases[0].message, '');
+});
+
+test('parseJUnit: failure sem message e sem texto retorna Falhou', () => {
+  const xml = `<testsuites><testsuite name="s"><testcase classname="s" name="f" time="0.1"><failure dummy="x"/></testcase></testsuite></testsuites>`;
+  const cases = parseJUnit(xml);
+  assert.strictEqual(cases[0].status, 'failed');
+  assert.strictEqual(cases[0].message, 'Falhou');
+});
+
+test('parseJUnit: failure com message attr sem texto', () => {
+  const xml = `<testsuites><testsuite name="s"><testcase classname="s" name="f" time="0.1"><failure message="Something wrong"/></testcase></testsuite></testsuites>`;
+  const cases = parseJUnit(xml);
+  assert.match(cases[0].message ?? '', /Something wrong/);
+});

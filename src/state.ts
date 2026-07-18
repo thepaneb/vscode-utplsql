@@ -25,4 +25,15 @@ export class TestStateManager {
   clearCoverage(): void {
     this.coverageStore.clear();
   }
+
+  extraReporter?: string;
+
+  setExtraReporter(name: string): void {
+    this.extraReporter = name;
+  }
+  consumeExtraReporter(): string | undefined {
+    const r = this.extraReporter;
+    this.extraReporter = undefined;
+    return r;
+  }
 }

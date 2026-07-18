@@ -22,8 +22,8 @@ A extensão pode ser instalada de duas formas:
 
 ## Requisitos
 
-- **Framework utPLSQL (UT3)** instalado no banco Oracle.
-- **utPLSQL-cli** + **Java** instalados na máquina (a extensão chama o CLI).
+- [**utPLSQL**](https://github.com/utPLSQL/utPLSQL) **(UT3)** instalado no banco Oracle.
+- [**utPLSQL-cli**](https://github.com/utPLSQL/utPLSQL-cli/releases) + **Java** instalados na máquina (a extensão chama o CLI).
 - **VSCode 1.88+** (Test Coverage API).
 
 A extensão é só o "cliente gráfico" — quem executa os testes é o banco, via CLI.
@@ -59,6 +59,11 @@ Se nem o setting nem a env var estiverem definidos, a extensão pergunta a
 conexão e a mantém apenas em memória durante a sessão — use o comando
 **utPLSQL: Limpar conexão da sessão** (palette de comandos) para limpá-la.
 
+**Formatos aceitos:**
+- **EZ Connect**: `user/pass@//host:1521/service`
+- **TNS alias**: `user/pass@tns_alias` (requer `TNS_ADMIN` configurado)
+- **Wallet (Oracle Cloud)**: `user/pass@tcps://host:1522/service?wallet_location=/caminho/wallet`
+
 ## Como funciona
 
 ```
@@ -84,13 +89,15 @@ traduz para as APIs nativas do VSCode.
 | `utplsql.includePatterns` | `["**/*.pks"]` | Globs para descobrir os specs com `%suite`/`%test`. Se seus testes estão em `.sql`, use `["**/*.sql"]`. |
 | `utplsql.extraRunArgs` | `[]` | Argumentos extras para o `utplsql run`. |
 | `utplsql.coverageOwner` | `""` | Schema dono dos objetos cobertos. Vazio = usa o usuário da conexão (em maiúsculas). |
-| `utplsql.coverageSourceArgs` | (ver **Cobertura**) | Args do CLI que mapeiam a c| `utplsql.invocation` | `launcher` | Como chamar o CLI: `launcher` (via `.bat`/script, padrão) ou `java` (JVM direto, **sem shell**). Veja **Modo de invocação**. |
+| `utplsql.coverageSourceArgs` | (ver **Cobertura**) | Args do CLI que mapeiam a cobertura aos arquivos-fonte. |
+| `utplsql.invocation` | `launcher` | Como chamar o CLI: `launcher` (via `.bat`/script, padrão) ou `java` (JVM direto, **sem shell**). Veja **Modo de invocação**. |
 | `utplsql.javaPath` | `java` | Executável do Java (PATH ou caminho completo). Usado só no modo `java`. |
 | `utplsql.cliHome` | `""` | Raiz do utPLSQL-cli (pasta com `bin/` e `lib/`). Vazio = derivado do `cliPath`. Usado só no modo `java`. |
-| `utplsql.timeoutMinutes` | `60` | Timeout em minutos para o CLI (flag `-t`). |
-| `utplsql.dbmsOutput` | `false` | Habilita `DBMS_OUTPUT` na sessão de teste (flag `-D`). |
-| `utplsql.quiet` | `false` | Suprime logs informativos do CLI (flag `-q`). |
-| `utplsql.failureExitCode` | `1` | Código de saída em caso de falha (flag `--failure-exit-code`). `0` faz o CLI sempre exitir com sucesso. |
+| `utplsql.timeoutMinutes` | `60` | Timeout em minutos para o CLI. A flag `-t` só é enviada se o valor for diferente de `60`. |
+| `utplsql.dbmsOutput` | `false` | Habilita `DBMS_OUTPUT` na sessão de teste. A flag `-D` só é enviada quando `true`. |
+| `utplsql.quiet` | `false` | Suprime logs informativos do CLI. A flag `-q` só é enviada quando `true`. |
+| `utplsql.failureExitCode` | `1` | Código de saída em caso de falha. A flag `--failure-exit-code` só é enviada se o valor for diferente de `1`. `0` faz o CLI sempre sair com sucesso. |
+| `utplsql.additionalReporters` | `[]` | Reporters adicionais para incluir em toda execução (ex.: `["ut_coverage_html_reporter"]`). Os padrões (documentation, junit, cobertura) são sempre incluídos e não precisam ser listados. |
 
 Exemplo (`.vscode/settings.json` do projeto):
 
@@ -106,6 +113,17 @@ E, antes de abrir o VSCode (ou no perfil do PowerShell):
 
 ```powershell
 $env:UTPLSQL_CONN = "DEV/senha@//localhost:1521/XEPDB1"
+```
+
+### Para contribuidores
+
+Crie um arquivo `.env` na raiz do projeto (gitignorado) com as variáveis de
+ambiente usadas pelos testes de integração:
+
+```bash
+UTPLSQL_CONN=seu_user/senha@//host:1521/service
+UTPLSQL_CLI_PATH=/caminho/para/utplsql
+UTPLSQL_CLI_HOME=/caminho/para/utplsql-cli
 ```
 
 ### Modo de invocação (`launcher` vs `java`)
@@ -145,6 +163,30 @@ sem `cmd` no meio, então `^` e `|` passam **literais** — você pode usar `^â
    - **Clique direito** numa pasta/arquivo → *utPLSQL: Rodar testes…* (com ou sem cobertura).
 5. Para cobertura, use o perfil **Run with Coverage** (ou o item de menu "com cobertura").
 6. Para diagnóstico, use o comando **utPLSQL: Mostrar informações do utPLSQL** na palette (`Ctrl+Shift+P`) — exibe as versões do CLI, da API Java e do utPLSQL no banco, com opção de copiar.
+7. **utPLSQL: Selecionar reporter adicional...** — QuickPick com reporters disponíveis no banco. O selecionado é usado na execução seguinte e descartado após.
+8. **utPLSQL: Cancelar execução** — interrompe o CLI em execução.
+9. **utPLSQL: Atualizar testes** — força rediscovery dos `.pks`.
+
+> 💡 **Ao escrever testes:** deixe uma **linha em branco** separando o `%suite`
+> dos `%test`/procedures, senão o `%suite` "gruda" na procedure e o package
+> não é reconhecido como suíte.
+
+## Comandos
+
+Todos os comandos da extensão (palette `Ctrl+Shift+P` prefixo `utPLSQL:`):
+
+| Comando | Descrição | Atalho via UI |
+|---|---|---|
+| `utPLSQL: Rodar todos os testes` | Executa todas as suites do workspace | Botão ▶ na view Testing |
+| `utPLSQL: Rodar testes do arquivo` | Executa suites do `.pks`/`.pkb` ativo | Clique direito → arquivo |
+| `utPLSQL: Rodar testes do arquivo com cobertura` | Idem, perfil com cobertura | Clique direito → arquivo |
+| `utPLSQL: Rodar testes da pasta` | Executa suites da pasta selecionada | Clique direito → pasta |
+| `utPLSQL: Rodar testes da pasta com cobertura` | Idem, perfil com cobertura | Clique direito → pasta |
+| `utPLSQL: Atualizar testes` | Força rediscovery dos `.pks` | — |
+| `utPLSQL: Cancelar execução` | Interrompe o CLI em execução | — |
+| `utPLSQL: Mostrar informações do utPLSQL` | Versões CLI/API/DB com opção de copiar | — |
+| `utPLSQL: Selecionar reporter adicional...` | QuickPick com reporters do banco | — |
+| `utPLSQL: Limpar conexão da sessão` | Remove a conexão do cache da sessão | — |
 
 ## Cobertura
 
@@ -209,6 +251,31 @@ O `type_mapping` traduz o "tipo" capturado pelo regex no tipo Oracle. Três conv
 - **Windows / `cmd`:** evite **`^`** no regex (o `cmd` do `.bat` o consome) — por isso os exemplos
   usam `\w` e `[/\\]`.
 
+## Reporters
+
+A extensão sempre inclui três reporters padrão:
+`ut_documentation_reporter` (stdout),
+`ut_junit_reporter` (resultados → Test Explorer) e
+`ut_coverage_cobertura_reporter` (cobertura, se disponível).
+
+**Validação dinâmica** — antes de rodar com cobertura, a extensão consulta
+o banco via `utplsql reporters <conn>`. Se
+`UT_COVERAGE_COBERTURA_REPORTER` não existir no banco (ex.: utPLSQL
+desatualizado), a cobertura é pulada com um aviso no output. A execução
+dos testes nunca é bloqueada.
+
+**Reporters adicionais fixos** — setting `utplsql.additionalReporters`:
+```jsonc
+"utplsql.additionalReporters": ["UT_COVERAGE_HTML_REPORTER"]
+```
+Os três reporters padrão são deduplicados automaticamente, mesmo se
+listados aqui.
+
+**Reporter volátil por sessão** — comando **utPLSQL: Selecionar reporter
+adicional...** abre um QuickPick com a lista dinâmica do banco. O reporter
+escolhido é usado na execução seguinte e descartado após (não persiste
+nas settings).
+
 ## Requisitos no banco
 
 **Cobertura** (sempre) — habilita o profiler:
@@ -234,9 +301,6 @@ GRANT SELECT ON SYS.DBA_PROCEDURES TO <ut3_owner>;
 > Em install **por schema** (utPLSQL no mesmo schema dos testes), esses grants cross-schema **não**
 > são necessários — o framework lê o próprio source.
 
-> 💡 **Ao escrever testes:** deixe uma **linha em branco** separando o `%suite` dos `%test`/procedures,
-> senão o `%suite` "gruda" na procedure e o package não é reconhecido como suíte.
-
 ## Limitações conhecidas
 
 - O mapeamento resultado→teste é feito por nome de package + nome/descrição do teste;
@@ -244,6 +308,19 @@ GRANT SELECT ON SYS.DBA_PROCEDURES TO <ut3_owner>;
   escopado por package para minimizar isso).
 - Considera o **primeiro** workspace folder para resolver `sourcePath`.
 - A descoberta lê os `.pks` (specs); mantenha as annotations `%suite`/`%test` no spec.
+
+## Troubleshooting
+
+| Sintoma | Causa provável | Solução |
+|---|---|---|
+| Suites não aparecem | `includePatterns` não cobre os arquivos | Ajuste `utplsql.includePatterns` (ex.: `["**/*.sql"]`) |
+| Cobertura vazia | Falta `GRANT EXECUTE ON DBMS_PROFILER` | Execute os grants em [Requisitos no banco](#requisitos-no-banco) |
+| Cobertura vazia | Reporter de cobertura não instalado no banco | Atualize o utPLSQL; use `utPLSQL: Mostrar informações` para verificar versões |
+| Timeout ao executar | Testes demoram mais que `timeoutMinutes` | Aumente `utplsql.timeoutMinutes` |
+| Erro de conexão | String malformada ou DB inacessível | Use `utPLSQL: Mostrar informações` para validar a conexão |
+| Regex de cobertura não casa | `cmd` do Windows consome `^` e `\|` | Use `utplsql.invocation: "java"` (veja [Modo de invocação](#modo-de-invocação-launcher-vs-java)) |
+| `%suite` não reconhecido | Falta linha em branco após `%suite` | Deixe uma linha em branco entre `%suite` e o primeiro `%test`/procedure |
+| "relatório não gerado" | CLI não conseguiu gerar XML de saída | Verifique permissões de escrita em `%TEMP%` e grants do utPLSQL |
 
 ## Licença
 

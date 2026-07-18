@@ -65,3 +65,29 @@ test('resolveSourceUri: arquivo inexistente retorna undefined', () => {
     assert.strictEqual(uri, undefined);
   });
 });
+
+test('resolveSourceUri: pasta passada como arquivo retorna undefined', () => {
+  withTempDir((dir) => {
+    const uri = resolveSourceUri(dir, dir, 'install');
+    assert.strictEqual(uri, undefined);
+  });
+});
+
+test('resolveSourceUri: sourcePath que nao existe retorna undefined', () => {
+  withTempDir((dir) => {
+    const uri = resolveSourceUri('funcao.sql', dir, 'inexistente');
+    assert.strictEqual(uri, undefined);
+  });
+});
+
+test('resolveSourceUri: caminho com folderRoot tem prioridade', () => {
+  withTempDir((dir) => {
+    const folderRoot = path.join(dir, 'sub');
+    fs.mkdirSync(folderRoot);
+    const filePath = path.join(folderRoot, 'app.sql');
+    fs.writeFileSync(filePath, '');
+    const uri = resolveSourceUri('app.sql', dir, 'install', folderRoot);
+    assert.ok(uri);
+    assert.strictEqual(uri.fsPath, filePath);
+  });
+});

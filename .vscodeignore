@@ -14,4 +14,6 @@ CLAUDE.md
 DEVELOPMENT.md
 AGENTS.md
 node_modules/.bin/**
+.opencode/**
+coverage/**
 .env
