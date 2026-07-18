@@ -90,6 +90,7 @@ CONCLUIR
 | 14 | [Schema e objetos de teste utPLSQL](completed/prd-14-test-schema-packages.md) | 0.6.0 | 2026-07-11 |
 | 15 | [Testes de integração com banco real](completed/prd-15-integration-tests-real-db.md) | 0.6.0 | 2026-07-11 |
 | 16 | [Testes de integração para ambos os modos de invocação](completed/prd-16-integration-test-invocation-modes.md) | 0.6.0 | 2026-07-13 |
+| 10 | [Reporters dinâmicos](completed/prd-10-dynamic-reporters.md) | 0.7.0 | 2026-07-03 |
 
 ### 🟡 Em desenvolvimento
 
@@ -101,7 +102,7 @@ CONCLUIR
 
 | # | PRD | Versão alvo | Data |
 |---|---|---|---|
-| 10 | [Reporters dinâmicos](approved/prd-10-dynamic-reporters.md) | 0.6.0 | 2026-07-03 |
+*(vazio)*
 
 ### ⚪ Propostos
 
@@ -133,9 +134,10 @@ docs/prd/
 │   ├── prd-13-oracle-infra.md
 │   ├── prd-14-test-schema-packages.md
 │   ├── prd-15-integration-tests-real-db.md
-│   └── prd-16-integration-test-invocation-modes.md
+│   ├── prd-16-integration-test-invocation-modes.md
+│   └── prd-10-dynamic-reporters.md
 ├── approved/         ← aprovados, aguardando implementação
-│   ├── prd-10-dynamic-reporters.md
+│   (vazio)
 ├── in-progress/      ← sendo implementados agora
 │   (vazio)
 └── proposed/         ← em avaliação

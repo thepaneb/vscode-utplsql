@@ -2,11 +2,11 @@
 
 | Campo | Valor |
 |---|---|
-| Status | Aprovado |
+| Status | Concluído |
 | Autor | Gil Cleber Barboza |
 | Data | 2026-07-03 |
 | Componente | Extensão `paneb.vscode-utplsql` |
-| Versão alvo | 0.6.0 |
+| Versão | 0.7.0 |
 | Arquivos afetados | `src/cliReporters.ts` (novo), `src/extension.ts`, `src/runner.ts`, `package.json`, `README.md` |
 
 ## 1. Resumo
