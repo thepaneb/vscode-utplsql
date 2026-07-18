@@ -108,9 +108,13 @@ CONCLUIR
 
 | # | PRD | Versão alvo | Data |
 |---|---|---|---|
-| 11 | [Streaming de resultados](proposed/prd-11-streaming-results.md) | 0.7.0 | 2026-07-03 |
-| 12 | [Cobertura SQL (views)](proposed/prd-12-sql-coverage.md) | 0.7.0 | 2026-07-08 |
-| 17 | [Flags JVM customizáveis para o modo `java`](proposed/prd-17-java-args-setting.md) | 0.7.0 | 2026-07-13 |
+| 11 | [Streaming de resultados](proposed/prd-11-streaming-results.md) | 0.8.0 | 2026-07-03 |
+| 12 | [Cobertura SQL (views)](proposed/prd-12-sql-coverage.md) | 0.8.0 | 2026-07-08 |
+| 17 | [Flags JVM customizáveis para o modo `java`](proposed/prd-17-java-args-setting.md) | 0.8.0 | 2026-07-13 |
+| 18 | [Alinhamento `engines.node` com CI](proposed/prd-18-engine-node-ci.md) | 0.7.1 | 2026-07-18 |
+| 19 | [Normalização do sistema de PRDs](proposed/prd-19-normalize-prd-system.md) | 0.7.1 | 2026-07-18 |
+| 20 | [Limpeza de dependências e configurações](proposed/prd-20-cleanup-deps-config.md) | 0.7.1 | 2026-07-18 |
+| 21 | [Melhorias nos workflows CI/CD](proposed/prd-21-workflow-improvements.md) | 0.8.0 | 2026-07-18 |
 
 
 ---
@@ -143,7 +147,11 @@ docs/prd/
 └── proposed/         ← em avaliação
     ├── prd-11-streaming-results.md
     ├── prd-12-sql-coverage.md
-    └── prd-17-java-args-setting.md
+    ├── prd-17-java-args-setting.md
+    ├── prd-18-engine-node-ci.md
+    ├── prd-19-normalize-prd-system.md
+    ├── prd-20-cleanup-deps-config.md
+    └── prd-21-workflow-improvements.md
 ```
 
 ---

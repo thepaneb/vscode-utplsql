@@ -6,7 +6,7 @@
 | Autor | Gil Cleber Barboza |
 | Data | 2026-07-03 |
 | Componente | Extensão `paneb.vscode-utplsql` |
-| Versão alvo | 0.7.0 |
+| Versão alvo | 0.8.0 |
 | Arquivos afetados | `src/oracleRunner.ts` (novo), `src/runner.ts`, `src/config.ts`, `src/extension.ts`, `src/state.ts`, `package.json` |
 
 ## 1. Resumo

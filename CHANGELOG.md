@@ -19,6 +19,8 @@
   - Script `src/test/integration/fixtures/setup.sh` para configurar todo o ambiente.
   - Testes de integração expandidos em `extension.test.ts` com dependência condicional
     ao banco real via `UTPLSQL_CONN`.
+- Testes de integração para ambos os modos de invocação (PRD-16): cobertura de `launcher`
+  e `java` nos testes com banco real, validação dos argumentos de linha de comando.
 
 ## 0.5.3
 
@@ -49,24 +51,25 @@
 
 ## 0.4.0
 
+- Refatoração de `extension.ts` (PRD-02): módulos puros (`suiteParser`, `junit`, `cobertura`) sem dependência de `vscode`.
 - Pipeline CI + Linter com Biome (PRD-03): workflow `ci.yml`, scripts `lint`/`format`, auto-formatação de todo `src/`.
 - Expansão da cobertura de testes (PRD-04): 5 novos arquivos de teste unitário, `applyResults` com fallback via `appendOutput`, infra de mock para `vscode`.
 - Upgrade Node 24 + TypeScript 6.0 (PRD-07): `.nvmrc`, `@types/node ^24`, `typescript ^6.0.3`, `engines.node ^24`.
 
 ## 0.3.0
 
-- Novo modo de invocação **`java`** (`utplsql.invocation`): chama a JVM direto
+- Novo modo de invocação **`java`** (PRD-01): chama a JVM direto
   (`java -cp <home>/etc;<home>/lib/* org.utplsql.cli.Cli`) **sem shell**, em vez do
   launcher `utplsql.bat`. Evita o `cmd` do Windows e o tratamento de metacaracteres
   (`^`, `|`) — argumentos de regex em `coverageSourceArgs` passam literais.
 - Settings novas: `utplsql.javaPath` (executável do Java) e `utplsql.cliHome`
   (raiz do utPLSQL-cli; vazio = derivado do `cliPath`). O modo `launcher` segue padrão.
 
-## 0.2.5 
+## 0.2.5
 
 - Refinamento das instruções.
 
-## 0.2.4 
+## 0.2.4
 
 - Inclusão de instruções para funcionamento da Cobertura com o `utPLSQL-cli`.
 - Inclusão dos GRANTS necessários para funcionamento do `utPLSQL` em modo DBA.
