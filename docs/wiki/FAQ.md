@@ -159,6 +159,6 @@ publicação no Marketplace é feita **exclusivamente** via GitHub release
 
 ```bash
 npm run package
-# gera: vscode-utplsql-0.7.1.vsix
-code --install-extension vscode-utplsql-0.7.1.vsix
+# gera: vscode-utplsql-0.7.2.vsix
+code --install-extension vscode-utplsql-0.7.2.vsix
 ```

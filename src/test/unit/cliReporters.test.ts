@@ -45,16 +45,59 @@ test('parseReportersOutput: CRLF é tratado', () => {
   assert.deepStrictEqual(reporters, ['UT_DOCUMENTATION_REPORTER', 'UT_JUNIT_REPORTER']);
 });
 
-test('parseReportersOutput: linhas com espaços extras são trimadas', () => {
-  const stdout = '  UT_DOCUMENTATION_REPORTER  \n  UT_JUNIT_REPORTER  ';
+test('parseReportersOutput: reporter com sufixo dois-pontos (formato 3.2.x)', () => {
+  const stdout = 'UT_DOCUMENTATION_REPORTER:\nUT_JUNIT_REPORTER:\nUT_COVERAGE_COBERTURA_REPORTER:';
   const reporters = parseReportersOutput(stdout);
-  assert.deepStrictEqual(reporters, ['UT_DOCUMENTATION_REPORTER', 'UT_JUNIT_REPORTER']);
+  assert.deepStrictEqual(reporters, [
+    'UT_DOCUMENTATION_REPORTER',
+    'UT_JUNIT_REPORTER',
+    'UT_COVERAGE_COBERTURA_REPORTER',
+  ]);
 });
 
 test('parseReportersOutput: linha só com espaço não entra', () => {
   const stdout = 'UT_DOCUMENTATION_REPORTER\n   \nUT_JUNIT_REPORTER';
   const reporters = parseReportersOutput(stdout);
   assert.deepStrictEqual(reporters, ['UT_DOCUMENTATION_REPORTER', 'UT_JUNIT_REPORTER']);
+});
+
+test('parseReportersOutput: descricao apos espaco e dash e ignorada', () => {
+  const stdout = 'UT_A - desc\nUT_B - outra desc';
+  const reporters = parseReportersOutput(stdout);
+  assert.deepStrictEqual(reporters, ['UT_A', 'UT_B']);
+});
+
+test('parseReportersOutput: descricao apos espaco e ignorada', () => {
+  const stdout = 'UT_A desc\nUT_B outra desc';
+  const reporters = parseReportersOutput(stdout);
+  assert.deepStrictEqual(reporters, ['UT_A', 'UT_B']);
+});
+
+test('parseReportersOutput: descricao apos dois-pontos e ignorada', () => {
+  const stdout = 'UT_COVERAGE_COBERTURA_REPORTER:Cobertura XML\nUT_JUNIT_REPORTER';
+  const reporters = parseReportersOutput(stdout);
+  assert.deepStrictEqual(reporters, ['UT_COVERAGE_COBERTURA_REPORTER', 'UT_JUNIT_REPORTER']);
+});
+
+test('parseReportersOutput: formato 3.2.x com descricoes indentadas', () => {
+  const stdout = [
+    'UT_DOCUMENTATION_REPORTER:',
+    '    A textual pretty-print of unit test results.',
+    '',
+    'UT_JUNIT_REPORTER:',
+    '    Provides outcomes in JUnit format.',
+    '    Based on specification v4.',
+    '',
+    'UT_COVERAGE_COBERTURA_REPORTER:',
+    '    Generates a Cobertura coverage report.',
+    '    Designed for Jenkins and TFS.',
+  ].join('\n');
+  const reporters = parseReportersOutput(stdout);
+  assert.deepStrictEqual(reporters, [
+    'UT_DOCUMENTATION_REPORTER',
+    'UT_JUNIT_REPORTER',
+    'UT_COVERAGE_COBERTURA_REPORTER',
+  ]);
 });
 
 test('listReporters: retorna lista quando CLI executa com sucesso', async () => {

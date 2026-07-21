@@ -102,12 +102,15 @@ export async function executeRun(
     args.push(`-f=${extraReporter}`);
   }
 
+  let coverageEnabled = coverage;
   if (coverage) {
     const reporters = await listReporters(cfg, connection);
     if ('error' in reporters) {
+      coverageEnabled = false;
       run.appendOutput(`[aviso] Não foi possível listar reporters: ${reporters.error}\r\n`);
       run.appendOutput('[aviso] Continuando sem cobertura.\r\n');
     } else if (!reporters.some((r) => r.toUpperCase() === 'UT_COVERAGE_COBERTURA_REPORTER')) {
+      coverageEnabled = false;
       run.appendOutput(
         '\r\n[aviso] Reporter UT_COVERAGE_COBERTURA_REPORTER não disponível no banco.\r\n' +
           'Cobertura desabilitada. Verifique se o pacote utPLSQL está atualizado.\r\n',
@@ -162,6 +165,9 @@ export async function executeRun(
     return;
   }
 
+  const safeArgs = inv.args.map((a) => (a === connection ? '***' : a.replace(connection, '***')));
+  run.appendOutput(`[debug] CLI: ${inv.file} ${safeArgs.join(' ')}\r\n`);
+
   const result = await runCli(inv.file, inv.args, inv.shell, root, token, (chunk) => {
     run.appendOutput(chunk.replace(/\r?\n/g, '\r\n'));
   });
@@ -171,7 +177,7 @@ export async function executeRun(
   }
 
   applyResults(junitPath, leafTests, run, state);
-  if (coverage) {
+  if (coverageEnabled) {
     applyCoverage(coveragePath, root, cfg.sourcePath, run, state, folders);
   }
 
@@ -274,7 +280,7 @@ export function lastSegment(classname: string): string {
   return parts.length ? parts[parts.length - 1] : classname;
 }
 
-function applyCoverage(
+export function applyCoverage(
   coveragePath: string,
   _root: string,
   sourcePath: string,
@@ -284,8 +290,19 @@ function applyCoverage(
 ): void {
   state.clearCoverage();
   if (!fs.existsSync(coveragePath)) {
+    const tmpDir = path.dirname(coveragePath);
+    const siblingFiles = (() => {
+      try {
+        return fs.readdirSync(tmpDir).join(', ') || '(vazio)';
+      } catch {
+        return '(diretório não encontrado)';
+      }
+    })();
     run.appendOutput(
-      '\r\n[cobertura] relatório não gerado — verifique o GRANT EXECUTE ON SYS.DBMS_PROFILER.\r\n',
+      `\r\n[cobertura] relatório não gerado.\r\n` +
+        `  esperado em: ${coveragePath}\r\n` +
+        `  arquivos em ${tmpDir}: ${siblingFiles}\r\n` +
+        `  verifique o GRANT EXECUTE ON SYS.DBMS_PROFILER.\r\n`,
     );
     return;
   }

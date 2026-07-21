@@ -1,5 +1,17 @@
 # Changelog
 
+## 0.7.2
+
+- Correção: parse de reporters com formato utPLSQL 3.2.x — nomes com sufixo `:` e
+  descrições indentadas não eram reconhecidos, desabilitando cobertura silenciosamente (PRD-36).
+- Flag `coverageEnabled` impede diagnóstico falso de "GRANT EXECUTE" quando o reporter
+  de cobertura não está disponível.
+- Correção: relatório de cobertura não gerado no Windows com modo `launcher` (PRD-35):
+  bypass do wrap duplo de quoting entre `quoteArg` e o Node.js no `cmd.exe`.
+- Blindagem de testes para `quoteArg` com caminhos Windows, padrões regex e strings com `=`.
+- Diagnóstico aprimorado em `applyCoverage` quando o arquivo de cobertura não existe.
+- Log de argumentos CLI (sem connection) para facilitar debugging.
+
 ## 0.7.1
 
 - Alinhamento `engines.node` com CI (PRD-18): requisito relaxado de `^24.0.0` para `>=20.0.0`.

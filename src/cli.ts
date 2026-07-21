@@ -33,7 +33,13 @@ export function runCli(
     // (necessário com shell). shell=false (java direto): passa o array — sem cmd,
     // sem quoting, metacaracteres de regex passam literais.
     const child = shell
-      ? cp.spawn([file, ...args].map(quoteArg).join(' '), { cwd, shell: true, windowsHide: true })
+      ? process.platform === 'win32'
+        ? cp.spawn('cmd.exe', ['/d', '/s', '/c', [file, ...args].map(quoteArg).join(' ')], {
+            cwd,
+            shell: false,
+            windowsHide: true,
+          })
+        : cp.spawn([file, ...args].map(quoteArg).join(' '), { cwd, shell: true, windowsHide: true })
       : cp.spawn(file, args, { cwd, shell: false, windowsHide: true });
 
     let stdout = '';

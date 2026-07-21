@@ -17,3 +17,5 @@ node_modules/.bin/**
 .opencode/**
 coverage/**
 .env
+*.rar
+*.txt

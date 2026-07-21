@@ -10,7 +10,10 @@ const dummyToken: vscode.CancellationToken = {
 export function parseReportersOutput(stdout: string): string[] {
   return stdout
     .split(/\r?\n/)
-    .map((l) => l.trim())
+    .map((l) => {
+      const m = l.match(/^([A-Za-z0-9_]+)/);
+      return m ? m[1] : '';
+    })
     .filter((l) => l.length > 0 && !l.startsWith('#') && !l.startsWith('['));
 }
 

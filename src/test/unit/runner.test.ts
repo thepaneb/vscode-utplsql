@@ -4,7 +4,7 @@ import * as fs from 'node:fs';
 import * as os from 'node:os';
 import * as path from 'node:path';
 import { test } from 'node:test';
-import { applyResults, findByNameOnly, lastSegment } from '../../runner';
+import { applyCoverage, applyResults, findByNameOnly, lastSegment } from '../../runner';
 import type { ItemMeta } from '../../types';
 
 function makeState() {
@@ -412,4 +412,44 @@ test('applyResults: arquivo inexistente marca todos como erro', () => {
 
   applyResults('/caminho/inexistente.xml', leafTests, run as any, state as any);
   assert.strictEqual(errored.length, 1);
+});
+
+test('applyCoverage: arquivo ausente gera diagnostico com caminho', () => {
+  const tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), 'runner-cov-test-'));
+  const coveragePath = path.join(tmpDir, 'coverage.xml');
+  const output: string[] = [];
+
+  const run = {
+    passed: () => {},
+    failed: () => {},
+    skipped: () => {},
+    errored: () => {},
+    appendOutput: (s: string) => output.push(s),
+    enqueued: () => {},
+    started: () => {},
+    addCoverage: () => {},
+    end: () => {},
+  };
+
+  const state = {
+    clearCoverage: () => {},
+    setCoverage: () => {},
+    getMeta: () => undefined,
+    setMeta: () => {},
+    getCoverage: () => [],
+  } as any;
+
+  try {
+    applyCoverage(coveragePath, '/root', 'install', run as any, state, []);
+    const all = output.join('');
+    assert.match(all, /\[cobertura\] relatório não gerado/);
+    assert.match(all, /esperado em:/);
+    assert.match(all, /\(vazio\)/);
+  } finally {
+    try {
+      fs.rmSync(tmpDir, { recursive: true, force: true });
+    } catch {
+      /* ignore */
+    }
+  }
 });
