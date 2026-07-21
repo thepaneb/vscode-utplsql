@@ -106,17 +106,27 @@ CONCLUIR
 
 | # | PRD | Versão alvo | Data |
 |---|---|---|---|
-*(vazio)*
+| 24 | [CodeLens Integration](approved/prd-24-codelens-integration.md) | 0.8.0 | 2026-07-21 |
+| 25 | [Status Bar Indicator](approved/prd-25-status-bar-indicator.md) | 0.8.0 | 2026-07-21 |
+| 26 | [Inline Test Result Decorations](approved/prd-26-inline-test-decorations.md) | 0.8.0 | 2026-07-21 |
+| 27 | [Default Keybindings](approved/prd-27-default-keybindings.md) | 0.8.0 | 2026-07-21 |
+| 31 | [Smart Re-run Patterns](approved/prd-31-smart-rerun-patterns.md) | 0.8.0 | 2026-07-21 |
 
 ### ⚪ Propostos
 
 | # | PRD | Versão alvo | Data |
 |---|---|---|---|
-| 11 | [Streaming de resultados em tempo real](proposed/prd-11-streaming-results.md) | 0.8.0 | 2026-07-03 |
-| 12 | [Cobertura de código para objetos SQL (views, queries)](proposed/prd-12-sql-coverage.md) | 0.8.0 | 2026-07-08 |
-| 17 | [Flags JVM customizáveis para o modo `java`](proposed/prd-17-java-args-setting.md) | 0.8.0 | 2026-07-13 |
-| 21 | [Melhorias nos workflows CI/CD](proposed/prd-21-workflow-improvements.md) | 0.8.0 | 2026-07-18 |
-| 23 | [Automatizar geração de screenshots da wiki](proposed/prd-23-auto-wiki-screenshots.md) | 0.8.0 | 2026-07-21 |
+| 11 | [Streaming de resultados em tempo real](proposed/prd-11-streaming-results.md) | 0.9.0 | 2026-07-03 |
+| 12 | [Cobertura de código para objetos SQL (views, queries)](proposed/prd-12-sql-coverage.md) | 1.0.0 | 2026-07-08 |
+| 17 | [Flags JVM customizáveis para o modo `java`](proposed/prd-17-java-args-setting.md) | 0.9.0 | 2026-07-13 |
+| 21 | [Melhorias nos workflows CI/CD](proposed/prd-21-workflow-improvements.md) | 1.0.0 | 2026-07-18 |
+| 23 | [Automatizar geração de screenshots da wiki](proposed/prd-23-auto-wiki-screenshots.md) | 1.0.0 | 2026-07-21 |
+| 28 | [PL/SQL Compilation Diagnostics](proposed/prd-28-plsql-compilation-diagnostics.md) | 0.9.0 | 2026-07-21 |
+| 29 | [Jump to Failing Assertion](proposed/prd-29-jump-to-failing-assertion.md) | 0.9.0 | 2026-07-21 |
+| 30 | [Schema-Aware Test Organization](proposed/prd-30-schema-aware-organization.md) | 0.9.0 | 2026-07-21 |
+| 32 | [Quick-Fix Setup Diagnostics](proposed/prd-32-quickfix-setup-diagnostics.md) | 0.9.0 | 2026-07-21 |
+| 33 | [PL/SQL Debugger Integration](proposed/prd-33-plsql-debugger-integration.md) | 1.0.0 | 2026-07-21 |
+| 34 | [Multi-Connection Profiles](proposed/prd-34-multi-connection-profiles.md) | 1.0.0 | 2026-07-21 |
 
 
 ---
@@ -147,7 +157,11 @@ docs/prd/
 │   ├── prd-20-cleanup-deps-config.md
 │   └── prd-22-wiki-image-sync.md
 ├── approved/         ← aprovados, aguardando implementação
-│   (vazio)
+│   ├── prd-24-codelens-integration.md
+│   ├── prd-25-status-bar-indicator.md
+│   ├── prd-26-inline-test-decorations.md
+│   ├── prd-27-default-keybindings.md
+│   └── prd-31-smart-rerun-patterns.md
 ├── in-progress/      ← sendo implementados agora
 │   (vazio)
 └── proposed/         ← em avaliação
@@ -155,7 +169,13 @@ docs/prd/
     ├── prd-12-sql-coverage.md
     ├── prd-17-java-args-setting.md
     ├── prd-21-workflow-improvements.md
-    └── prd-23-auto-wiki-screenshots.md
+    ├── prd-23-auto-wiki-screenshots.md
+    ├── prd-28-plsql-compilation-diagnostics.md
+    ├── prd-29-jump-to-failing-assertion.md
+    ├── prd-30-schema-aware-organization.md
+    ├── prd-32-quickfix-setup-diagnostics.md
+    ├── prd-33-plsql-debugger-integration.md
+    └── prd-34-multi-connection-profiles.md
 ```
 
 ---

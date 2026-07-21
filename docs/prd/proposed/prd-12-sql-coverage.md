@@ -6,7 +6,7 @@
 | Autor | Gil Cleber |
 | Data | 2026-07-08 |
 | Componente | Extensão `paneb.vscode-utplsql` |
-| Versão alvo | 0.8.0 |
+| Versão alvo | 1.0.0 |
 | Arquivos afetados | `src/config.ts`, `src/viewCoverage.ts`, `src/extension.ts`, `src/runner.ts`, `docs/coverage-views.md` |
 
 ## 1. Resumo
