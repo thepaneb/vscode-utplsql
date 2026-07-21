@@ -91,6 +91,10 @@ CONCLUIR
 | 14 | [Schema e objetos de teste utPLSQL](completed/prd-14-test-schema-packages.md) | 0.6.0 | 2026-07-11 |
 | 15 | [Testes de integração com banco real](completed/prd-15-integration-tests-real-db.md) | 0.6.0 | 2026-07-11 |
 | 16 | [Testes de integração para ambos os modos de invocação](completed/prd-16-integration-test-invocation-modes.md) | 0.6.0 | 2026-07-13 |
+| 18 | [Alinhamento `engines.node` com CI](completed/prd-18-engine-node-ci.md) | 0.7.1 | 2026-07-18 |
+| 19 | [Normalização do sistema de PRDs](completed/prd-19-normalize-prd-system.md) | 0.7.1 | 2026-07-18 |
+| 20 | [Limpeza de dependências e configurações](completed/prd-20-cleanup-deps-config.md) | 0.7.1 | 2026-07-18 |
+| 22 | [Sincronizar imagens no workflow da wiki](completed/prd-22-wiki-image-sync.md) | 0.7.1 | 2026-07-21 |
 
 ### 🟡 Em desenvolvimento
 
@@ -102,10 +106,7 @@ CONCLUIR
 
 | # | PRD | Versão alvo | Data |
 |---|---|---|---|
-| 18 | [Alinhamento `engines.node` com CI](approved/prd-18-engine-node-ci.md) | 0.7.1 | 2026-07-18 |
-| 19 | [Normalização do sistema de PRDs](approved/prd-19-normalize-prd-system.md) | 0.7.1 | 2026-07-18 |
-| 20 | [Limpeza de dependências e configurações](approved/prd-20-cleanup-deps-config.md) | 0.7.1 | 2026-07-18 |
-| 22 | [Sincronizar imagens no workflow da wiki](approved/prd-22-wiki-image-sync.md) | 0.7.1 | 2026-07-21 |
+*(vazio)*
 
 ### ⚪ Propostos
 
@@ -136,16 +137,17 @@ docs/prd/
 │   ├── prd-07-upgrade-node-ts.md
 │   ├── prd-08-cli-options.md
 │   ├── prd-09-cli-info.md
+│   ├── prd-10-dynamic-reporters.md
 │   ├── prd-13-oracle-infra.md
 │   ├── prd-14-test-schema-packages.md
 │   ├── prd-15-integration-tests-real-db.md
 │   ├── prd-16-integration-test-invocation-modes.md
-│   └── prd-10-dynamic-reporters.md
-├── approved/         ← aprovados, aguardando implementação
 │   ├── prd-18-engine-node-ci.md
 │   ├── prd-19-normalize-prd-system.md
 │   ├── prd-20-cleanup-deps-config.md
 │   └── prd-22-wiki-image-sync.md
+├── approved/         ← aprovados, aguardando implementação
+│   (vazio)
 ├── in-progress/      ← sendo implementados agora
 │   (vazio)
 └── proposed/         ← em avaliação
