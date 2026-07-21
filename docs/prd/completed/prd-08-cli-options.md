@@ -1,4 +1,4 @@
-# PRD — Opções CLI avançadas expostas como settings
+# PRD-08 — Opções CLI avançadas expostas como settings
 
 | Campo | Valor |
 |---|---|

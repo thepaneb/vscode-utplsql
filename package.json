@@ -2,14 +2,14 @@
   "name": "vscode-utplsql",
   "displayName": "utPLSQL Test Runner",
   "description": "Roda testes utPLSQL pelo Test Explorer do VSCode, com menu de contexto e cobertura visual (estilo pytest).",
-  "version": "0.7.0",
+  "version": "0.7.1",
   "publisher": "paneb",
   "author": "Gil Cleber Barboza",
   "license": "MIT",
   "icon": "images/icon.png",
   "engines": {
     "vscode": "^1.88.0",
-    "node": "^24.0.0"
+    "node": ">=20.0.0"
   },
   "categories": [
     "Testing"
@@ -138,7 +138,9 @@
         },
         "utplsql.additionalReporters": {
           "type": "array",
-          "items": { "type": "string" },
+          "items": {
+            "type": "string"
+          },
           "default": [],
           "description": "Reporters adicionais para incluir em toda execução (ex.: [\"ut_coverage_html_reporter\"]). Os reporters padrão (documentation, junit e cobertura) são sempre incluídos."
         }
@@ -264,7 +266,6 @@
     "@vscode/test-cli": "^0.0.10",
     "@vscode/test-electron": "^2.4.1",
     "@vscode/vsce": "^3.2.1",
-    "c8": "^11.0.0",
     "typescript": "^6.0.3"
   }
 }

@@ -1,4 +1,4 @@
-# PRD — Suporte a múltiplos workspace folders
+# PRD-06 — Suporte a múltiplos workspace folders
 
 | Campo | Valor |
 |---|---|

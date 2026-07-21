@@ -1,4 +1,4 @@
-# PRD — Reporters dinâmicos com `utplsql reporters`
+# PRD-10 — Reporters dinâmicos com `utplsql reporters`
 
 | Campo | Valor |
 |---|---|
@@ -6,7 +6,7 @@
 | Autor | Gil Cleber Barboza |
 | Data | 2026-07-03 |
 | Componente | Extensão `paneb.vscode-utplsql` |
-| Versão | 0.7.0 |
+| Versão alvo | 0.7.0 |
 | Arquivos afetados | `src/cliReporters.ts` (novo), `src/extension.ts`, `src/runner.ts`, `package.json`, `README.md` |
 
 ## 1. Resumo

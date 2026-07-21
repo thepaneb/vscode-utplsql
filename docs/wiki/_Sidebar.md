@@ -1,0 +1,20 @@
+- **Começando**
+  - [Instalação e requisitos](Instalação-e-requisitos)
+  - [Configuração da conexão](Conexão)
+- **Uso**
+  - [Guia rápido](Guia-rápido)
+  - [Cobertura de código](Cobertura)
+  - [Reporters customizados](Reporters)
+- **Referência**
+  - [Configurações (settings)](Configurações)
+  - [Comandos](Comandos)
+  - [Modo de invocação Java](Modo-de-invocação)
+  - [Requisitos no banco (grants)](Requisitos-no-banco)
+- **Desenvolvimento**
+  - [Arquitetura](Arquitetura)
+  - [Como contribuir](Como-contribuir)
+  - [Testes](Testes)
+  - [PRDs e roadmap](PRDs)
+- **Ajuda**
+  - [Troubleshooting](Troubleshooting)
+  - [FAQ](FAQ)

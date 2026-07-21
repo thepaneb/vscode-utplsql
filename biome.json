@@ -24,10 +24,10 @@
     "includes": [
       "**",
       "!**/node_modules",
-      "!**/out",
-      "!**/.vscode-test",
+      "!**/out/**",
+      "!**/.vscode-test/**",
       "!**/*.vsix",
-      "!**/images"
+      "!**/images/**"
     ]
   }
 }

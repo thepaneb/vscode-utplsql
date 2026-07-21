@@ -77,20 +77,24 @@ CONCLUIR
 
 | # | PRD | Versão | Data |
 |---|---|---|---|
-| 01 | [Modo de invocação `java`](completed/prd-01-java-mode.md) | 0.3.0 | 2026-06-28 |
-| 02 | [Refatoração de extension.ts](completed/prd-02-refactor-extension.md) | 0.4.0 | 2026-07-02 |
+| 01 | [Modo de invocação `java` (bypass do launcher)](completed/prd-01-java-mode.md) | 0.3.0 | 2026-06-28 |
+| 02 | [Refatoração de `extension.ts`](completed/prd-02-refactor-extension.md) | 0.4.0 | 2026-07-02 |
 | 03 | [Pipeline CI + Linter](completed/prd-03-ci-lint.md) | 0.4.0 | 2026-07-02 |
 | 04 | [Expansão da cobertura de testes](completed/prd-04-expand-tests.md) | 0.4.0 | 2026-07-02 |
-| 07 | [Upgrade Node 24 + TypeScript 6.0](completed/prd-07-upgrade-node-ts.md) | 0.4.0 | 2026-07-02 |
-| 05 | [Feedback de progresso e cancelamento](completed/prd-05-progress-cancel.md) | 0.5.0 | 2026-07-07 |
+| 05 | [Feedback de progresso e cancelamento na UX](completed/prd-05-progress-cancel.md) | 0.5.0 | 2026-07-07 |
 | 06 | [Suporte a múltiplos workspace folders](completed/prd-06-multiroot.md) | 0.5.0 | 2026-07-08 |
-| 08 | [Opções CLI avançadas como settings](completed/prd-08-cli-options.md) | 0.5.0 | 2026-07-08 |
-| 09 | [Diagnóstico com info](completed/prd-09-cli-info.md) | 0.5.0 | 2026-07-08 |
+| 07 | [Upgrade Node 24 + TypeScript 6.0](completed/prd-07-upgrade-node-ts.md) | 0.4.0 | 2026-07-02 |
+| 08 | [Opções CLI avançadas expostas como settings](completed/prd-08-cli-options.md) | 0.5.0 | 2026-07-08 |
+| 09 | [Diagnóstico e validação com `utplsql info`](completed/prd-09-cli-info.md) | 0.5.0 | 2026-07-08 |
+| 10 | [Reporters dinâmicos com `utplsql reporters`](completed/prd-10-dynamic-reporters.md) | 0.7.0 | 2026-07-03 |
 | 13 | [Infraestrutura de testes com Oracle real](completed/prd-13-oracle-infra.md) | 0.6.0 | 2026-07-11 |
 | 14 | [Schema e objetos de teste utPLSQL](completed/prd-14-test-schema-packages.md) | 0.6.0 | 2026-07-11 |
 | 15 | [Testes de integração com banco real](completed/prd-15-integration-tests-real-db.md) | 0.6.0 | 2026-07-11 |
 | 16 | [Testes de integração para ambos os modos de invocação](completed/prd-16-integration-test-invocation-modes.md) | 0.6.0 | 2026-07-13 |
-| 10 | [Reporters dinâmicos](completed/prd-10-dynamic-reporters.md) | 0.7.0 | 2026-07-03 |
+| 18 | [Alinhamento `engines.node` com CI](completed/prd-18-engine-node-ci.md) | 0.7.1 | 2026-07-18 |
+| 19 | [Normalização do sistema de PRDs](completed/prd-19-normalize-prd-system.md) | 0.7.1 | 2026-07-18 |
+| 20 | [Limpeza de dependências e configurações](completed/prd-20-cleanup-deps-config.md) | 0.7.1 | 2026-07-18 |
+| 22 | [Sincronizar imagens no workflow da wiki](completed/prd-22-wiki-image-sync.md) | 0.7.1 | 2026-07-21 |
 
 ### 🟡 Em desenvolvimento
 
@@ -108,13 +112,11 @@ CONCLUIR
 
 | # | PRD | Versão alvo | Data |
 |---|---|---|---|
-| 11 | [Streaming de resultados](proposed/prd-11-streaming-results.md) | 0.8.0 | 2026-07-03 |
-| 12 | [Cobertura SQL (views)](proposed/prd-12-sql-coverage.md) | 0.8.0 | 2026-07-08 |
+| 11 | [Streaming de resultados em tempo real](proposed/prd-11-streaming-results.md) | 0.8.0 | 2026-07-03 |
+| 12 | [Cobertura de código para objetos SQL (views, queries)](proposed/prd-12-sql-coverage.md) | 0.8.0 | 2026-07-08 |
 | 17 | [Flags JVM customizáveis para o modo `java`](proposed/prd-17-java-args-setting.md) | 0.8.0 | 2026-07-13 |
-| 18 | [Alinhamento `engines.node` com CI](proposed/prd-18-engine-node-ci.md) | 0.7.1 | 2026-07-18 |
-| 19 | [Normalização do sistema de PRDs](proposed/prd-19-normalize-prd-system.md) | 0.7.1 | 2026-07-18 |
-| 20 | [Limpeza de dependências e configurações](proposed/prd-20-cleanup-deps-config.md) | 0.7.1 | 2026-07-18 |
 | 21 | [Melhorias nos workflows CI/CD](proposed/prd-21-workflow-improvements.md) | 0.8.0 | 2026-07-18 |
+| 23 | [Automatizar geração de screenshots da wiki](proposed/prd-23-auto-wiki-screenshots.md) | 0.8.0 | 2026-07-21 |
 
 
 ---
@@ -135,11 +137,15 @@ docs/prd/
 │   ├── prd-07-upgrade-node-ts.md
 │   ├── prd-08-cli-options.md
 │   ├── prd-09-cli-info.md
+│   ├── prd-10-dynamic-reporters.md
 │   ├── prd-13-oracle-infra.md
 │   ├── prd-14-test-schema-packages.md
 │   ├── prd-15-integration-tests-real-db.md
 │   ├── prd-16-integration-test-invocation-modes.md
-│   └── prd-10-dynamic-reporters.md
+│   ├── prd-18-engine-node-ci.md
+│   ├── prd-19-normalize-prd-system.md
+│   ├── prd-20-cleanup-deps-config.md
+│   └── prd-22-wiki-image-sync.md
 ├── approved/         ← aprovados, aguardando implementação
 │   (vazio)
 ├── in-progress/      ← sendo implementados agora
@@ -148,10 +154,8 @@ docs/prd/
     ├── prd-11-streaming-results.md
     ├── prd-12-sql-coverage.md
     ├── prd-17-java-args-setting.md
-    ├── prd-18-engine-node-ci.md
-    ├── prd-19-normalize-prd-system.md
-    ├── prd-20-cleanup-deps-config.md
-    └── prd-21-workflow-improvements.md
+    ├── prd-21-workflow-improvements.md
+    └── prd-23-auto-wiki-screenshots.md
 ```
 
 ---

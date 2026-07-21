@@ -1,0 +1,40 @@
+name: Publish Wiki
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'docs/wiki/**'
+  workflow_dispatch:
+
+jobs:
+  publish:
+    name: Sync wiki from docs/wiki/
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v7
+
+      - name: Clone wiki
+        run: |
+          git clone "https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.wiki.git" /tmp/wiki
+
+      - name: Copy wiki pages
+        run: |
+          cp docs/wiki/*.md /tmp/wiki/
+          [ -d docs/wiki/images ] && cp -r docs/wiki/images /tmp/wiki/
+
+      - name: Commit and push
+        run: |
+          cd /tmp/wiki
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add .
+          if git diff --staged --quiet; then
+            echo "No changes to push"
+          else
+            git commit -m "Sincronização automática de docs/wiki/ [skip ci]"
+            git push
+          fi
