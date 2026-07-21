@@ -6,7 +6,7 @@
 | Autor | Gil Cleber Barboza |
 | Data | 2026-07-18 |
 | Componente | CI/CD `.github/workflows/` |
-| Versão alvo | 0.8.0 |
+| Versão alvo | 1.0.0 |
 | Arquivos afetados | `.github/workflows/ci.yml`, `.github/workflows/publish.yml`, `package.json` |
 
 ## 1. Resumo

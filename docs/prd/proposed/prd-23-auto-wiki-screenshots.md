@@ -6,7 +6,7 @@
 | Autor | Gil Cleber Barboza |
 | Data | 2026-07-21 |
 | Componente | Extensão `paneb.vscode-utplsql` + CI/CD + `docs/wiki/images/` |
-| Versão alvo | 0.8.0 |
+| Versão alvo | 1.0.0 |
 | Arquivos afetados | `scripts/gen-screenshots.cjs`, `src/test/fixtures/workspace-gen-screenshots/`, `docs/wiki/images/`, `package.json` |
 
 ## 1. Resumo
