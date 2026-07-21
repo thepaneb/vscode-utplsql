@@ -20,3 +20,5 @@ DEVELOPMENT.md
 docs/*
 !docs/prd/
 !docs/prd/**
+!docs/wiki/
+!docs/wiki/**
