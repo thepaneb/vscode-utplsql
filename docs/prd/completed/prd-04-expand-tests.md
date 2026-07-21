@@ -1,4 +1,4 @@
-# PRD — Expansão da cobertura de testes
+# PRD-04 — Expansão da cobertura de testes
 
 | Campo | Valor |
 |---|---|

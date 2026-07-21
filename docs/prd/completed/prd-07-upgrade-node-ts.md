@@ -1,4 +1,4 @@
-# PRD — Upgrade Node 24 + TypeScript 6.0
+# PRD-07 — Upgrade Node 24 + TypeScript 6.0
 
 | Campo | Valor |
 |---|---|

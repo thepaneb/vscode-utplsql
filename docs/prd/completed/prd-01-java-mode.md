@@ -1,4 +1,4 @@
-# PRD — Modo de invocação `java` (bypass do launcher)
+# PRD-01 — Modo de invocação `java` (bypass do launcher)
 
 | Campo | Valor |
 |---|---|

@@ -1,4 +1,4 @@
-# PRD — Refatoração de `extension.ts`
+# PRD-02 — Refatoração de `extension.ts`
 
 | Campo | Valor |
 |---|---|
