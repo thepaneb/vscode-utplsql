@@ -9,7 +9,7 @@
   "icon": "images/icon.png",
   "engines": {
     "vscode": "^1.88.0",
-    "node": "^24.0.0"
+    "node": ">=20.0.0"
   },
   "categories": [
     "Testing"
