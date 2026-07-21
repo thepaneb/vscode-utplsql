@@ -1,5 +1,16 @@
 # Changelog
 
+## 0.7.1
+
+- Alinhamento `engines.node` com CI (PRD-18): requisito relaxado de `^24.0.0` para `>=20.0.0`.
+- Normalização do sistema de PRDs (PRD-19): H1s padronizados (`# PRD-NN —`), tabela Concluídos
+  ordenada numericamente, títulos alinhados com os arquivos fonte.
+- Limpeza de dependências e configurações (PRD-20): `c8` removido (não utilizado), padrões
+  de exclusão do Biome corrigidos (`/**` para diretórios), tipos `mocha` isolados no escopo
+  de integração.
+- Workflow da wiki sincroniza imagens (PRD-22): diretório `docs/wiki/images/` copiado
+  automaticamente para o repositório wiki.
+
 ## 0.7.0
 
 - Reporters dinâmicos (PRD-10):
