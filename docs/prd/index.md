@@ -127,6 +127,8 @@ CONCLUIR
 | 32 | [Quick-Fix Setup Diagnostics](proposed/prd-32-quickfix-setup-diagnostics.md) | 0.9.0 | 2026-07-21 |
 | 33 | [PL/SQL Debugger Integration](proposed/prd-33-plsql-debugger-integration.md) | 1.0.0 | 2026-07-21 |
 | 34 | [Multi-Connection Profiles](proposed/prd-34-multi-connection-profiles.md) | 1.0.0 | 2026-07-21 |
+| 35 | [Correção de cobertura no Windows + blindagem de testes](proposed/prd-35-windows-coverage-fix.md) | 0.7.2 | 2026-07-21 |
+| 36 | [Correção do parse de reporters com descrições](proposed/prd-36-reporter-parse-fix.md) | 0.7.2 | 2026-07-21 |
 
 
 ---
@@ -175,7 +177,9 @@ docs/prd/
     ├── prd-30-schema-aware-organization.md
     ├── prd-32-quickfix-setup-diagnostics.md
     ├── prd-33-plsql-debugger-integration.md
-    └── prd-34-multi-connection-profiles.md
+    ├── prd-34-multi-connection-profiles.md
+    ├── prd-35-windows-coverage-fix.md
+    └── prd-36-reporter-parse-fix.md
 ```
 
 ---

@@ -42,6 +42,28 @@ test('quoteArg: trailing whitespace', () => {
   assert.strictEqual(quoteArg('foo '), '"foo "');
 });
 
+test('quoteArg: caminho Windows sem espaco nao e alterado', () => {
+  assert.strictEqual(quoteArg('-o=C:\\Temp\\cov.xml'), '-o=C:\\Temp\\cov.xml');
+});
+
+test('quoteArg: caminho Windows com espaco e citado', () => {
+  assert.strictEqual(quoteArg('-o=C:\\My Docs\\cov.xml'), '"-o=C:\\My Docs\\cov.xml"');
+});
+
+test('quoteArg: regex de coverageSourceArgs e citado pelo $', () => {
+  assert.strictEqual(
+    quoteArg('-regex_expression=.*[/\\\\](\\w+)\\.sql$'),
+    '"-regex_expression=.*[/\\\\](\\w+)\\.sql$"',
+  );
+});
+
+test('quoteArg: type_mapping com espacos e barra e citado', () => {
+  assert.strictEqual(
+    quoteArg('-type_mapping=p=PACKAGE BODY/f=FUNCTION'),
+    '"-type_mapping=p=PACKAGE BODY/f=FUNCTION"',
+  );
+});
+
 test('runCli: executa echo com shell e retorna stdout', async () => {
   const result = await runCli('echo', ['hello', 'world'], true, tmpCwd, neverCancel);
   assert.strictEqual(result.code, 0);
