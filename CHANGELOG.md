@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.8.0
+
+### Em desenvolvimento
+
 ## 0.7.2
 
 - Correção: parse de reporters com formato utPLSQL 3.2.x — nomes com sufixo `:` e
