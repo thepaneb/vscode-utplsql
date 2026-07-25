@@ -4,8 +4,14 @@ import * as fs from 'node:fs';
 import * as os from 'node:os';
 import * as path from 'node:path';
 import { test } from 'node:test';
-import { applyCoverage, applyResults, countResults, findByNameOnly, lastSegment } from '../../runner';
 import type { TestCaseResult } from '../../junit';
+import {
+  applyCoverage,
+  applyResults,
+  countResults,
+  findByNameOnly,
+  lastSegment,
+} from '../../runner';
 import type { ItemMeta } from '../../types';
 
 function makeState() {

@@ -45,7 +45,19 @@ test('DecorationManager: update com TestItem populado armazena resultados', () =
 test('DecorationManager: clear limpa os resultados', () => {
   __setConfigValue('decorations.enabled', true);
   const mgr = new DecorationManager();
-  const controller = { items: new Map([['suite:x', { id: 'suite:x', uri: vscode.Uri.file('/x.pks'), range: new vscode.Range(0, 0, 0, 0), children: new Map() }]]) };
+  const controller = {
+    items: new Map([
+      [
+        'suite:x',
+        {
+          id: 'suite:x',
+          uri: vscode.Uri.file('/x.pks'),
+          range: new vscode.Range(0, 0, 0, 0),
+          children: new Map(),
+        },
+      ],
+    ]),
+  };
   mgr.update(new Map([['suite:x', { status: 'failed' }]]), controller as any);
   assert.strictEqual(mgr.hasResults(), true);
   mgr.clear();

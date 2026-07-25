@@ -71,8 +71,7 @@ test('UtplsqlCodeLensProvider: gera 2 lenses por anotacao', () => {
   __setConfigValue('codeLens.enabled', true);
   const provider = new UtplsqlCodeLensProvider();
   const doc = {
-    getText: () =>
-      pkgWrapper('--%suite(Math)\n  --%test(Add)\n  PROCEDURE add;'),
+    getText: () => pkgWrapper('--%suite(Math)\n  --%test(Add)\n  PROCEDURE add;'),
     fileName: '/test/test_math.pks',
     uri: { toString: () => 'file:///test/test_math.pks' },
   } as any;
