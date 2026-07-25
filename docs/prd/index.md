@@ -95,6 +95,11 @@ CONCLUIR
 | 19 | [Normalização do sistema de PRDs](completed/prd-19-normalize-prd-system.md) | 0.7.1 | 2026-07-18 |
 | 20 | [Limpeza de dependências e configurações](completed/prd-20-cleanup-deps-config.md) | 0.7.1 | 2026-07-18 |
 | 22 | [Sincronizar imagens no workflow da wiki](completed/prd-22-wiki-image-sync.md) | 0.7.1 | 2026-07-21 |
+| 24 | [CodeLens Integration](completed/prd-24-codelens-integration.md) | 0.8.0 | 2026-07-25 |
+| 25 | [Status Bar Indicator](completed/prd-25-status-bar-indicator.md) | 0.8.0 | 2026-07-25 |
+| 26 | [Inline Test Result Decorations](completed/prd-26-inline-test-decorations.md) | 0.8.0 | 2026-07-25 |
+| 27 | [Default Keybindings](completed/prd-27-default-keybindings.md) | 0.8.0 | 2026-07-25 |
+| 31 | [Smart Re-run Patterns](completed/prd-31-smart-rerun-patterns.md) | 0.8.0 | 2026-07-25 |
 
 ### 🟡 Em desenvolvimento
 
@@ -106,11 +111,7 @@ CONCLUIR
 
 | # | PRD | Versão alvo | Data |
 |---|---|---|---|
-| 24 | [CodeLens Integration](approved/prd-24-codelens-integration.md) | 0.8.0 | 2026-07-21 |
-| 25 | [Status Bar Indicator](approved/prd-25-status-bar-indicator.md) | 0.8.0 | 2026-07-21 |
-| 26 | [Inline Test Result Decorations](approved/prd-26-inline-test-decorations.md) | 0.8.0 | 2026-07-21 |
-| 27 | [Default Keybindings](approved/prd-27-default-keybindings.md) | 0.8.0 | 2026-07-21 |
-| 31 | [Smart Re-run Patterns](approved/prd-31-smart-rerun-patterns.md) | 0.8.0 | 2026-07-21 |
+| *(vazio)* |
 
 ### ⚪ Propostos
 
@@ -158,13 +159,14 @@ docs/prd/
 │   ├── prd-18-engine-node-ci.md
 │   ├── prd-19-normalize-prd-system.md
 │   ├── prd-20-cleanup-deps-config.md
-│   └── prd-22-wiki-image-sync.md
-├── approved/         ← aprovados, aguardando implementação
+│   ├── prd-22-wiki-image-sync.md
 │   ├── prd-24-codelens-integration.md
 │   ├── prd-25-status-bar-indicator.md
 │   ├── prd-26-inline-test-decorations.md
 │   ├── prd-27-default-keybindings.md
 │   └── prd-31-smart-rerun-patterns.md
+├── approved/         ← aprovados, aguardando implementação
+│   (vazio)
 ├── in-progress/      ← sendo implementados agora
 │   (vazio)
 └── proposed/         ← em avaliação
