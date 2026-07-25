@@ -56,10 +56,11 @@ A **pasta** onde o arquivo está é a fonte da verdade do status. O arquivo
 
 | # | PRD | Versão alvo |
 |---|---|---|
-| 11 | Streaming de resultados em tempo real | 0.8.0 |
-| 12 | Cobertura SQL (views) | 0.8.0 |
-| 17 | Flags JVM customizáveis para modo `java` | 0.8.0 |
-| 21 | Melhorias nos workflows CI/CD | 0.8.0 |
+| 11 | Streaming de resultados em tempo real | 0.9.0 |
+| 12 | Cobertura SQL (views) | 1.0.0 |
+| 17 | Flags JVM customizáveis para modo `java` | 0.9.0 |
+| 21 | Melhorias nos workflows CI/CD | 1.0.0 |
+| 22 | Sincronizar imagens no workflow da wiki | 0.7.1 |
 
 ## Como propor um PRD
 

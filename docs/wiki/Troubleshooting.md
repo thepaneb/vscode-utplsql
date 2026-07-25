@@ -157,6 +157,39 @@ utplsql run "DEV/senha@//localhost:1521/XEPDB1" \
 
 ---
 
+## CodeLens não aparece
+
+**Sintoma:** Botões Run/Run with Coverage não aparecem sobre `%suite` e
+`%test` nos arquivos `.pks`.
+
+**Causa 1:** `utplsql.codeLens.enabled` desabilitado.
+
+**Solução:** Verifique no `settings.json`:
+```jsonc
+"utplsql.codeLens.enabled": true  // default é true
+```
+
+**Causa 2:** `editor.codeLens` desabilitado no VSCode.
+
+**Solução:** Habilite:
+```jsonc
+"editor.codeLens": true
+```
+
+---
+
+## Atalhos de teclado não funcionam
+
+**Sintoma:** Os atalhos com prefixo `Ctrl+Shift+U` não executam a ação
+esperada, ou executam comando de outra extensão.
+
+**Causa:** Conflito com outra extensão ou atalho do VSCode.
+
+**Solução:** Vá em File → Preferences → Keyboard Shortcuts, busque `utplsql`
+e redefina as teclas conforme necessário.
+
+---
+
 ## CLI não encontrado
 
 **Sintoma:** "utplsql não é reconhecido como comando interno".

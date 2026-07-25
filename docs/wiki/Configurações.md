@@ -48,6 +48,14 @@ Todas as settings da extensão, com prefixo `utplsql.`. Configure no
 |---|---|---|
 | `utplsql.additionalReporters` | `[]` | Reporters extras incluídos em toda execução. Veja [Reporters](Reporters). |
 
+## Interface (CodeLens, Status Bar, Decorações)
+
+| Setting | Default | Descrição |
+|---|---|---|
+| `utplsql.codeLens.enabled` | `true` | Botões CodeLens Run/Run with Coverage sobre `%suite` e `%test`. |
+| `utplsql.statusBar.enabled` | `true` | Indicador de status na barra de status (pass/fail + duração). |
+| `utplsql.decorations.enabled` | `true` | Ícones inline ✓/✗/⚠ no editor após execução. |
+
 ## Hierarquia de settings
 
 O VSCode aplica settings nesta ordem (a última sobrescreve):

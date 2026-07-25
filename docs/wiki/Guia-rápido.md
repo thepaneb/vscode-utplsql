@@ -58,6 +58,7 @@ As suites aparecem na árvore:
 
 Você pode rodar de várias formas:
 
+- **CodeLens** — botões ▶ **Run** e **Run with Coverage** sobre cada `%suite` e `%test` no editor
 - **Gutter**: ícone ▶ ao lado de cada teste ou suite no editor
 - **Botão Run Tests**: na barra de ferramentas da view Testing
 - **Clique direito**: na pasta `tests/` ou no arquivo `test_hello.pks` →
@@ -85,6 +86,18 @@ da view de testes. Clique no teste para ver o log completo.
 
 Para ver cobertura, use o perfil **Run with Coverage** (botão ao lado de
 Run Tests, ou item de menu com cobertura). Veja [Cobertura](Cobertura).
+
+## 8. Repita execuções rapidamente
+
+Use os atalhos de re-run para acelerar o ciclo TDD:
+
+| Atalho | Descrição |
+|---|---|
+| `Ctrl+Shift+U L` | **Rerun Last** — repete a última execução (com/sem cobertura) |
+| `Ctrl+Shift+U U` | **Run at Cursor** — executa o `%test` ou `%suite` sob o cursor |
+| `Ctrl+Shift+U X` | **Run Failed Only** — reexecuta apenas os testes que falharam |
+
+Veja [Comandos](Comandos) para a lista completa.
 
 ## Exemplo completo
 

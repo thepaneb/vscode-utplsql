@@ -4,9 +4,13 @@ Integra o [utPLSQL](https://www.utplsql.org/) ao VSCode, trazendo testes de PL/S
 para o **Test Explorer** nativo, com menu de contexto e cobertura visual.
 
 - **Test Explorer nativo** — suites e testes aparecem na view de testes
+- **CodeLens** — botões Run/Run with Coverage sobre `%suite` e `%test` no editor
+- **Atalhos de teclado** — prefixo `Ctrl+Shift+U` + tecla para todos os comandos (R = Run All, T = Run File, L = Rerun Last, etc.)
 - **Menu de contexto** — clique direito em pasta ou arquivo `.pks`/`.pkb`
 - **Cobertura visual** — gutters coloridos + percentual por arquivo
-- **Reporters dinâmicos** — validação de cobertura + reporters extras via QuickPick
+- **Decorações inline** — ícones ✓/✗/⚠ no editor após execução com tooltip da falha
+- **Status Bar** — indicador com contagem pass/fail e duração
+- **Smart Re-run** — Rerun Last, Run at Cursor, Run Failed Only com um atalho
 
 ![Test Explorer com suites expandidas](images/test-explorer-suites.png)
 

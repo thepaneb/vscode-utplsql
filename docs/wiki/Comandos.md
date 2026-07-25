@@ -19,6 +19,10 @@ com prefixo `utPLSQL:`.
 | `utPLSQL: Mostrar informações do utPLSQL` | Versões CLI/API/DB | — |
 | `utPLSQL: Selecionar reporter adicional...` | QuickPick com reporters do banco | — |
 | `utPLSQL: Limpar conexão da sessão` | Remove conexão do cache | — |
+| `utPLSQL: Rerun Last Test` | Repete a última execução | `Ctrl+Shift+U L` |
+| `utPLSQL: Run Test at Cursor` | Executa o teste sob o cursor | `Ctrl+Shift+U U` |
+| `utPLSQL: Run Failed Tests` | Reexecuta apenas testes falhos | `Ctrl+Shift+U X` |
+| `utPLSQL: Mostrar Test Explorer` | Foca a view Testing | Clique na status bar |
 
 ## Menu de contexto
 
@@ -31,20 +35,21 @@ Os comandos de execução também aparecem no menu de contexto:
 
 ## Atalhos de teclado
 
-Nenhum atalho padrão é atribuído. Para definir, edite o `keybindings.json`
-(`Ctrl+K Ctrl+S`):
+Todos os atalhos usam o prefixo `Ctrl+Shift+U` (`Cmd+Shift+U` no Mac):
 
-```jsonc
-// Atalho para rodar todos os testes
-{
-  "key": "ctrl+shift+t",
-  "command": "utplsql.runAll"
-},
-// Atalho para cancelar execução
-{
-  "key": "ctrl+shift+escape",
-  "command": "utplsql.cancelRun"
-}
-```
+| Atalho | Comando |
+|---|---|
+| `Ctrl+Shift+U R` | Rodar todos os testes |
+| `Ctrl+Shift+U T` | Rodar testes do arquivo |
+| `Ctrl+Shift+U Shift+T` | Rodar testes do arquivo com cobertura |
+| `Ctrl+Shift+U F` | Atualizar testes (refresh) |
+| `Ctrl+Shift+U I` | Mostrar informações do utPLSQL |
+| `Ctrl+Shift+U C` | Limpar conexão da sessão |
+| `Ctrl+Shift+U L` | Rerun last (último teste) |
+| `Ctrl+Shift+U U` | Run at cursor (teste sob cursor) |
+| `Ctrl+Shift+U X` | Run failed only (apenas falhas) |
+| `Escape` | Cancelar execução |
+
+Para redefinir, vá em File → Preferences → Keyboard Shortcuts e busque `utplsql`.
 
 ![Atalhos de teclado filtrados por utplsql](images/keyboard-shortcuts.png)
