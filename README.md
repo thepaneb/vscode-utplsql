@@ -7,9 +7,13 @@
 Integra o [utPLSQL](https://www.utplsql.org/) ao VSCode, trazendo os testes de PL/SQL para o **Test Explorer** nativo, com menu de contexto e cobertura visual.
 
 - 🧪 **Test Explorer nativo** — suites e testes aparecem na view de testes; rode por teste, suite, arquivo ou pasta.
+- 🔍 **CodeLens** — botões Run/Run with Coverage sobre `%suite` e `%test` no editor, sem sair do código.
+- ⌨️ **Atalhos de teclado** — prefixo `Ctrl+Shift+U` + tecla para todos os comandos (R = Run All, T = Run File, L = Rerun Last, etc.).
 - 🖱️ **Menu de contexto** — clique direito em uma **pasta** ou em um arquivo **`.pks`/`.pkb`** (no Explorer ou no editor) para rodar os testes.
-- ✅ **Resultados na view de testes** — verde/vermelho por teste, com a mensagem de falha do utPLSQL.
-- 📊 **Cobertura visual** — gutters coloridos por linha (coberta/não coberta) e percentual por arquivo na aba **Coverage**, usando a Test Coverage API do VSCode.
+- 📊 **Cobertura visual** — gutters coloridos por linha (coberta/não coberta) e percentual por arquivo na aba **Coverage**.
+- ✅ **Decorações inline** — ícones ✓/✗/⚠ no editor após execução, com tooltip da falha e overview ruler.
+- 📌 **Status Bar** — indicador com contagem pass/fail, duração e progresso em tempo real.
+- 🔁 **Smart Re-run** — Rerun Last, Run at Cursor, Run Failed Only com um atalho.
 
 ## Instalação
 
@@ -98,6 +102,9 @@ traduz para as APIs nativas do VSCode.
 | `utplsql.quiet` | `false` | Suprime logs informativos do CLI. A flag `-q` só é enviada quando `true`. |
 | `utplsql.failureExitCode` | `1` | Código de saída em caso de falha. A flag `--failure-exit-code` só é enviada se o valor for diferente de `1`. `0` faz o CLI sempre sair com sucesso. |
 | `utplsql.additionalReporters` | `[]` | Reporters adicionais para incluir em toda execução (ex.: `["ut_coverage_html_reporter"]`). Os padrões (documentation, junit, cobertura) são sempre incluídos e não precisam ser listados. |
+| `utplsql.codeLens.enabled` | `true` | Exibe botões CodeLens Run/Run with Coverage sobre `%suite` e `%test`. |
+| `utplsql.statusBar.enabled` | `true` | Exibe indicador de status dos testes na barra de status. |
+| `utplsql.decorations.enabled` | `true` | Exibe decorações de pass/fail nas linhas `%suite` e `%test` após execução. |
 
 Exemplo (`.vscode/settings.json` do projeto):
 
@@ -158,14 +165,24 @@ sem `cmd` no meio, então `^` e `|` passam **literais** — você pode usar `^â
 2. Compile o código e os testes no banco (extensão Oracle / SQLcl).
 3. Abra a view **Testing** → as suites aparecem.
 4. Rode:
+   - Pelo **CodeLens** — botões ▶ Run/Run with Coverage sobre cada `%suite` e `%test` no editor.
    - Pelo **gutter** ao lado de cada teste/suite, ou
-   - Botão **Run Tests** da view, ou
+   - Pelos **atalhos de teclado** (`Ctrl+Shift+U R` = Run All, `Ctrl+Shift+U T` = Run File, etc.), ou
+   - Botão **Run Tests** da view Test Explorer, ou
    - **Clique direito** numa pasta/arquivo → *utPLSQL: Rodar testes…* (com ou sem cobertura).
-5. Para cobertura, use o perfil **Run with Coverage** (ou o item de menu "com cobertura").
-6. Para diagnóstico, use o comando **utPLSQL: Mostrar informações do utPLSQL** na palette (`Ctrl+Shift+P`) — exibe as versões do CLI, da API Java e do utPLSQL no banco, com opção de copiar.
-7. **utPLSQL: Selecionar reporter adicional...** — QuickPick com reporters disponíveis no banco. O selecionado é usado na execução seguinte e descartado após.
-8. **utPLSQL: Cancelar execução** — interrompe o CLI em execução.
-9. **utPLSQL: Atualizar testes** — força rediscovery dos `.pks`.
+5. Após a execução, veja:
+   - **Decorações inline** (✓/✗/⚠) no editor ao lado das anotações de teste.
+   - **Status Bar** com contagem pass/fail e duração total.
+   - **Test Explorer** com resultados detalhados.
+6. Para cobertura, use o perfil **Run with Coverage** (ou o item de menu "com cobertura").
+7. Para repetir execuções rapidamente:
+   - `Ctrl+Shift+U L` — **Rerun Last** (repete a última execução, com ou sem coverage).
+   - `Ctrl+Shift+U U` — **Run at Cursor** (executa o `%test`/`%suite` sob o cursor).
+   - `Ctrl+Shift+U X` — **Run Failed Only** (executa apenas os testes que falharam).
+8. Para diagnóstico, use `utPLSQL: Mostrar informações` na palette — exibe versões CLI/API/DB com opção de copiar.
+9. **utPLSQL: Selecionar reporter adicional...** — QuickPick com reporters disponíveis no banco.
+10. **utPLSQL: Cancelar execução** — interrompe o CLI em execução (`Escape` durante execução).
+11. **utPLSQL: Atualizar testes** — força rediscovery dos `.pks`.
 
 > 💡 **Ao escrever testes:** deixe uma **linha em branco** separando o `%suite`
 > dos `%test`/procedures, senão o `%suite` "gruda" na procedure e o package
@@ -187,6 +204,27 @@ Todos os comandos da extensão (palette `Ctrl+Shift+P` prefixo `utPLSQL:`):
 | `utPLSQL: Mostrar informações do utPLSQL` | Versões CLI/API/DB com opção de copiar | — |
 | `utPLSQL: Selecionar reporter adicional...` | QuickPick com reporters do banco | — |
 | `utPLSQL: Limpar conexão da sessão` | Remove a conexão do cache da sessão | — |
+| `utPLSQL: Rerun Last Test` | Repete a última execução | `Ctrl+Shift+U L` |
+| `utPLSQL: Run Test at Cursor` | Executa o teste sob o cursor | `Ctrl+Shift+U U` |
+| `utPLSQL: Run Failed Tests` | Reexecuta apenas testes falhos | `Ctrl+Shift+U X` |
+| `utPLSQL: Mostrar Test Explorer` | Foca a view Testing | Clique na status bar |
+
+## Keybindings
+
+Todos os atalhos usam o prefixo `Ctrl+Shift+U` (`Cmd+Shift+U` no Mac):
+
+| Atalho | Comando |
+|---|---|
+| `Ctrl+Shift+U R` | Rodar todos os testes |
+| `Ctrl+Shift+U T` | Rodar testes do arquivo |
+| `Ctrl+Shift+U Shift+T` | Rodar testes do arquivo com cobertura |
+| `Ctrl+Shift+U F` | Atualizar testes (refresh) |
+| `Ctrl+Shift+U I` | Mostrar informações do utPLSQL |
+| `Ctrl+Shift+U C` | Limpar conexão da sessão |
+| `Ctrl+Shift+U L` | Rerun last (último teste) |
+| `Ctrl+Shift+U U` | Run at cursor (teste sob cursor) |
+| `Ctrl+Shift+U X` | Run failed only (apenas falhas) |
+| `Escape` | Cancelar execução |
 
 ## Cobertura
 
@@ -321,6 +359,8 @@ GRANT SELECT ON SYS.DBA_PROCEDURES TO <ut3_owner>;
 | Regex de cobertura não casa | `cmd` do Windows consome `^` e `\|` | Use `utplsql.invocation: "java"` (veja [Modo de invocação](#modo-de-invocação-launcher-vs-java)) |
 | `%suite` não reconhecido | Falta linha em branco após `%suite` | Deixe uma linha em branco entre `%suite` e o primeiro `%test`/procedure |
 | "relatório não gerado" | CLI não conseguiu gerar XML de saída | Verifique permissões de escrita em `%TEMP%` e grants do utPLSQL |
+| CodeLens não aparece | `editor.codeLens` desabilitado ou conflito | Habilite `"editor.codeLens": true`; verifique `utplsql.codeLens.enabled` |
+| Atalhos não funcionam | Conflito com outra extensão ou atalho do VSCode | Vá em File → Preferences → Keyboard Shortcuts e busque `utplsql` para redefinir |
 
 ## Licença
 

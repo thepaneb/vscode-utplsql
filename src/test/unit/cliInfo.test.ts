@@ -1,6 +1,9 @@
+import './setup.js';
 import assert from 'node:assert';
-import { test } from 'node:test';
-import { parseInfoOutput, semverLt } from '../../cliInfo';
+import { mock, test } from 'node:test';
+import * as cli from '../../cli';
+import { getCliInfo, parseInfoOutput, semverLt } from '../../cliInfo';
+import * as invocation from '../../invocation';
 
 test('parseInfoOutput: saída completa com CLI, API e DB', () => {
   const stdout = 'cli 3.1.7\nutPLSQL-java-api 3.1.7\nutPLSQL 3.1.2.1913';
@@ -51,4 +54,54 @@ test('semverLt: versoes com partes desiguais', () => {
 test('semverLt: versao longa vs curta', () => {
   assert.ok(semverLt('3.1.0.1234', '3.1.1'));
   assert.strictEqual(semverLt('3.1.1', '3.1.0.1234'), false);
+});
+
+test('getCliInfo: retorna info quando CLI executa com sucesso', async () => {
+  mock.method(invocation, 'buildInvocation', () => ({
+    file: 'echo',
+    args: ['info', 'conn'],
+    shell: true,
+  }));
+  mock.method(cli, 'runCli', () =>
+    Promise.resolve({ code: 0, stdout: 'cli 3.2.0\nutPLSQL-java-api 3.2.4', stderr: '' }),
+  );
+  const result = await getCliInfo(
+    { invocation: 'launcher', cliPath: 'utplsql', javaPath: 'java', cliHome: '' },
+    'conn',
+  );
+  assert.ok(!('error' in result));
+  if (!('error' in result)) {
+    assert.strictEqual(result.cliVersion, '3.2.0');
+    assert.strictEqual(result.apiVersion, '3.2.4');
+  }
+  mock.restoreAll();
+});
+
+test('getCliInfo: retorna erro quando buildInvocation falha', async () => {
+  mock.method(invocation, 'buildInvocation', () => ({ error: 'no cli home' }));
+  const result = await getCliInfo(
+    { invocation: 'java', cliPath: 'utplsql', javaPath: 'java', cliHome: '' },
+    'conn',
+  );
+  assert.ok('error' in result);
+  assert.match((result as { error: string }).error, /no cli home/);
+  mock.restoreAll();
+});
+
+test('getCliInfo: retorna erro quando CLI retorna codigo != 0', async () => {
+  mock.method(invocation, 'buildInvocation', () => ({
+    file: 'echo',
+    args: [],
+    shell: true,
+  }));
+  mock.method(cli, 'runCli', () =>
+    Promise.resolve({ code: 1, stdout: '', stderr: 'command failed' }),
+  );
+  const result = await getCliInfo(
+    { invocation: 'launcher', cliPath: 'utplsql', javaPath: 'java', cliHome: '' },
+    'conn',
+  );
+  assert.ok('error' in result);
+  assert.match((result as { error: string }).error, /command failed/);
+  mock.restoreAll();
 });

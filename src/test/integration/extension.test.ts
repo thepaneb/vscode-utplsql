@@ -190,6 +190,32 @@ describe('utPLSQL extension', () => {
             );
           }
         });
+
+        it('utplsql.rerunLast repete última execução', async function () {
+          this.timeout(120_000);
+          await withInvocationMode(mode, async () => {
+            await vscode.commands.executeCommand('utplsql.runAll');
+            await vscode.commands.executeCommand('utplsql.rerunLast');
+          });
+        });
+
+        it('utplsql.runFailed executa sem erro', async function () {
+          this.timeout(120_000);
+          const root = vscode.workspace.workspaceFolders?.[0]?.uri;
+          assert.ok(root, 'workspace folder required');
+          const fixtureUri = vscode.Uri.joinPath(
+            root,
+            'src',
+            'test',
+            'integration',
+            'fixtures',
+            'test_math.pks',
+          );
+          await withInvocationMode(mode, async () => {
+            await vscode.commands.executeCommand('utplsql.runFile', fixtureUri);
+            await vscode.commands.executeCommand('utplsql.runFailed');
+          });
+        });
       });
     }
   });

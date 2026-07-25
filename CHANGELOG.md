@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.8.0
+
+- CodeLens Integration (PRD-24): botões Run/Run with Coverage sobre `%suite` e `%test` no editor.
+- Status Bar Indicator (PRD-25): indicador com contagem pass/fail, duração, tooltip e barra de progresso.
+- Inline Test Result Decorations (PRD-26): ícones ✓/✗/⚠ no editor após execução, overview ruler, tooltip com falha.
+- Default Keybindings (PRD-27): 9 atalhos `Ctrl+Shift+U` + tecla para comandos frequentes.
+- Smart Re-run Patterns (PRD-31): Rerun Last (`Ctrl+Shift+U L`), Run at Cursor (`Ctrl+Shift+U U`), Run Failed Only (`Ctrl+Shift+U X`).
+
 ## 0.7.2
 
 - Correção: parse de reporters com formato utPLSQL 3.2.x — nomes com sufixo `:` e

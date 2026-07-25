@@ -39,6 +39,14 @@ A **pasta** onde o arquivo está é a fonte da verdade do status. O arquivo
 | 14 | Schema e objetos de teste utPLSQL | 0.6.0 |
 | 15 | Testes de integração com banco real | 0.6.0 |
 | 16 | Testes de integração ambos modos de invocação | 0.6.0 |
+| 18 | Alinhamento `engines.node` com CI | 0.7.1 |
+| 19 | Normalização do sistema de PRDs | 0.7.1 |
+| 20 | Limpeza de dependências e configurações | 0.7.1 |
+| 24 | CodeLens Integration | 0.8.0 |
+| 25 | Status Bar Indicator | 0.8.0 |
+| 26 | Inline Test Result Decorations | 0.8.0 |
+| 27 | Default Keybindings | 0.8.0 |
+| 31 | Smart Re-run Patterns | 0.8.0 |
 
 ### 🔵 Aprovados / 🟡 Em desenvolvimento
 
@@ -51,9 +59,6 @@ A **pasta** onde o arquivo está é a fonte da verdade do status. O arquivo
 | 11 | Streaming de resultados em tempo real | 0.8.0 |
 | 12 | Cobertura SQL (views) | 0.8.0 |
 | 17 | Flags JVM customizáveis para modo `java` | 0.8.0 |
-| 18 | Alinhamento `engines.node` com CI | 0.7.1 |
-| 19 | Normalização do sistema de PRDs | 0.7.1 |
-| 20 | Limpeza de dependências e configurações | 0.7.1 |
 | 21 | Melhorias nos workflows CI/CD | 0.8.0 |
 
 ## Como propor um PRD

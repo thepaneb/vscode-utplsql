@@ -7,6 +7,7 @@ export interface SuiteFile {
   suiteDescription: string;
   tests: TestProc[];
   folder: vscode.WorkspaceFolder;
+  suiteLine: number;
 }
 
 type ParsedSuite = Omit<SuiteFile, 'folder'>;

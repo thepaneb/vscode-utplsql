@@ -2,7 +2,7 @@
   "name": "vscode-utplsql",
   "displayName": "utPLSQL Test Runner",
   "description": "Roda testes utPLSQL pelo Test Explorer do VSCode, com menu de contexto e cobertura visual (estilo pytest).",
-  "version": "0.7.2",
+  "version": "0.8.0",
   "publisher": "paneb",
   "author": "Gil Cleber Barboza",
   "license": "MIT",
@@ -143,10 +143,35 @@
           },
           "default": [],
           "description": "Reporters adicionais para incluir em toda execução (ex.: [\"ut_coverage_html_reporter\"]). Os reporters padrão (documentation, junit e cobertura) são sempre incluídos."
+        },
+        "utplsql.codeLens.enabled": {
+          "type": "boolean",
+          "default": true,
+          "description": "Exibe botões CodeLens Run/Run with Coverage sobre %suite e %test."
+        },
+        "utplsql.statusBar.enabled": {
+          "type": "boolean",
+          "default": true,
+          "description": "Exibe indicador de status dos testes na barra de status."
+        },
+        "utplsql.decorations.enabled": {
+          "type": "boolean",
+          "default": true,
+          "description": "Exibe decorações de pass/fail nas linhas %suite e %test após execução."
         }
       }
     },
     "commands": [
+      {
+        "command": "utplsql.showTestExplorer",
+        "title": "Mostrar Test Explorer",
+        "category": "utPLSQL"
+      },
+      {
+        "command": "utplsql.runLens",
+        "title": "Executar teste (CodeLens)",
+        "category": "utPLSQL"
+      },
       {
         "command": "utplsql.refresh",
         "title": "Atualizar testes",
@@ -197,6 +222,21 @@
         "command": "utplsql.selectReporter",
         "title": "Selecionar reporter adicional...",
         "category": "utPLSQL"
+      },
+      {
+        "command": "utplsql.rerunLast",
+        "title": "utPLSQL: Rerun Last",
+        "category": "utPLSQL"
+      },
+      {
+        "command": "utplsql.runAtCursor",
+        "title": "utPLSQL: Run Test at Cursor",
+        "category": "utPLSQL"
+      },
+      {
+        "command": "utplsql.runFailed",
+        "title": "utPLSQL: Run Failed Tests",
+        "category": "utPLSQL"
       }
     ],
     "menus": {
@@ -234,7 +274,68 @@
           "when": "resourceExtname == .pks || resourceExtname == .pkb"
         }
       ]
-    }
+    },
+    "keybindings": [
+      {
+        "command": "utplsql.runAll",
+        "key": "ctrl+shift+u r",
+        "mac": "cmd+shift+u r",
+        "when": "utplsql:connected"
+      },
+      {
+        "command": "utplsql.refresh",
+        "key": "ctrl+shift+u f",
+        "mac": "cmd+shift+u f",
+        "when": "utplsql:activated"
+      },
+      {
+        "command": "utplsql.cancelRun",
+        "key": "escape",
+        "when": "utplsql:running"
+      },
+      {
+        "command": "utplsql.showInfo",
+        "key": "ctrl+shift+u i",
+        "mac": "cmd+shift+u i",
+        "when": "utplsql:activated"
+      },
+      {
+        "command": "utplsql.clearConnection",
+        "key": "ctrl+shift+u c",
+        "mac": "cmd+shift+u c",
+        "when": "utplsql:activated"
+      },
+      {
+        "command": "utplsql.runFile",
+        "key": "ctrl+shift+u t",
+        "mac": "cmd+shift+u t",
+        "when": "editorTextFocus && resourceExtname =~ /\\.pks|\\\\.pkb/ && utplsql:connected"
+      },
+      {
+        "command": "utplsql.runFileCoverage",
+        "key": "ctrl+shift+u shift+t",
+        "mac": "cmd+shift+u shift+t",
+        "when": "editorTextFocus && resourceExtname =~ /\\.pks|\\\\.pkb/ && utplsql:connected"
+      },
+      {
+        "command": "utplsql.rerunLast",
+        "key": "ctrl+shift+u l",
+        "mac": "cmd+shift+u l",
+        "when": "utplsql:activated"
+      },
+      {
+        "command": "utplsql.runAtCursor",
+        "key": "ctrl+shift+u u",
+        "mac": "cmd+shift+u u",
+        "when": "editorTextFocus && resourceExtname == .pks"
+      },
+      {
+        "command": "utplsql.runFailed",
+        "key": "ctrl+shift+u x",
+        "mac": "cmd+shift+u x",
+        "when": "utplsql:hasFailures"
+      }
+    ]
   },
   "scripts": {
     "vscode:prepublish": "npm run compile",

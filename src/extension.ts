@@ -1,19 +1,26 @@
 import * as vscode from 'vscode';
 import { getCliInfo } from './cliInfo';
 import { listReporters } from './cliReporters';
+import { type CodeLensItem, parseCodeLensItems, UtplsqlCodeLensProvider } from './codelens';
 import { clearSessionConnection, readConfig, resolveConnection } from './config';
+import { DecorationManager } from './decorations';
 import { discoverWorkspace } from './discovery';
 import { filterSuitesByFolder, filterSuitesByUri } from './matching';
 import { executeRun } from './runner';
 import { TestStateManager } from './state';
+import { UtplsqlStatusBar } from './statusBar';
 import type { ItemMeta } from './types';
 
 const state = new TestStateManager();
 let currentRunToken: vscode.CancellationTokenSource | undefined;
 let refreshPromise: Promise<void> | undefined;
 let needsRefresh = false;
+let statusBar: UtplsqlStatusBar | undefined;
+let decorationManager: DecorationManager | undefined;
 
 export function activate(context: vscode.ExtensionContext) {
+  vscode.commands.executeCommand('setContext', 'utplsql:activated', true);
+
   const controller = vscode.tests.createTestController('utplsql', 'utPLSQL');
   context.subscriptions.push(controller);
   controller.resolveHandler = async (item) => {
@@ -100,6 +107,131 @@ export function activate(context: vscode.ExtensionContext) {
       const copy = await vscode.window.showInformationMessage(msg, 'Copiar');
       if (copy) vscode.env.clipboard.writeText(msg);
     }),
+    vscode.commands.registerCommand(
+      'utplsql.runLens',
+      async (args: {
+        type: 'suite' | 'test';
+        packageName: string;
+        procName?: string;
+        uri: string;
+        coverage?: boolean;
+      }) => {
+        const docUri = vscode.Uri.parse(args.uri);
+        if (args.type === 'test' && args.procName) {
+          const procName = args.procName;
+          const suiteItem = controller.items.get(`suite:${args.packageName.toLowerCase()}`);
+          if (!suiteItem) return;
+          const testItems: vscode.TestItem[] = [];
+          for (const [, c] of suiteItem.children) {
+            testItems.push(c);
+          }
+          const testItem = testItems.find((t) => {
+            const meta = state.getMeta(t);
+            return meta?.kind === 'test' && meta.procName.toLowerCase() === procName.toLowerCase();
+          });
+          if (!testItem) return;
+          await runWithProgress(
+            controller,
+            new vscode.TestRunRequest(
+              [testItem],
+              undefined,
+              args.coverage ? state.coverageProfile : state.runProfile,
+            ),
+            undefined,
+            !!args.coverage,
+            state,
+          );
+        } else {
+          await runForUri(controller, docUri, !!args.coverage);
+        }
+      },
+    ),
+    vscode.commands.registerCommand('utplsql.rerunLast', async () => {
+      const lr = state.getLastRun();
+      if (!lr) {
+        vscode.window.showInformationMessage('Nenhuma execução anterior para repetir.');
+        return;
+      }
+      switch (lr.type) {
+        case 'all':
+          await vscode.commands.executeCommand('utplsql.runAll');
+          break;
+        case 'file':
+        case 'suite':
+          if (lr.uri) await runForUri(controller, lr.uri, lr.coverage);
+          break;
+        case 'test':
+          if (lr.uri && lr.procName && lr.packageName) {
+            await runSingleTest(controller, lr.uri, lr.packageName, lr.procName, lr.coverage);
+          }
+          break;
+      }
+    }),
+    vscode.commands.registerCommand('utplsql.runAtCursor', async () => {
+      const editor = vscode.window.activeTextEditor;
+      if (!editor?.document.fileName.endsWith('.pks')) {
+        vscode.window.showWarningMessage('Run at cursor disponível apenas em arquivos .pks.');
+        return;
+      }
+      const annotation = findAnnotationAtLine(editor.document, editor.selection.active.line);
+      if (!annotation) {
+        vscode.window.showWarningMessage('Nenhuma anotação %suite/%test encontrada na posição.');
+        return;
+      }
+      if (annotation.type === 'test' && annotation.procName) {
+        await runSingleTest(
+          controller,
+          editor.document.uri,
+          annotation.packageName,
+          annotation.procName,
+          false,
+        );
+      } else {
+        await runForUri(controller, editor.document.uri, false);
+      }
+    }),
+    vscode.commands.registerCommand('utplsql.runFailed', async () => {
+      const failed = state.getLastFailedItems();
+      if (failed.length === 0) {
+        vscode.window.showInformationMessage('Nenhum teste falhou na última execução.');
+        return;
+      }
+      await runWithProgress(
+        controller,
+        new vscode.TestRunRequest(failed, undefined, state.runProfile),
+        undefined,
+        false,
+        state,
+      );
+    }),
+  );
+
+  const lensProvider = new UtplsqlCodeLensProvider();
+  context.subscriptions.push(
+    vscode.languages.registerCodeLensProvider(
+      { scheme: 'file', pattern: '**/*.pks' },
+      lensProvider,
+    ),
+  );
+
+  statusBar = new UtplsqlStatusBar();
+  context.subscriptions.push(statusBar);
+
+  context.subscriptions.push(
+    vscode.commands.registerCommand('utplsql.showTestExplorer', () => {
+      vscode.commands.executeCommand('workbench.view.testing');
+    }),
+  );
+
+  decorationManager = new DecorationManager();
+  context.subscriptions.push(decorationManager);
+
+  context.subscriptions.push(
+    vscode.window.onDidChangeActiveTextEditor((editor) => {
+      if (editor && decorationManager?.hasResults()) {
+        decorationManager.applyToVisibleEditors();
+      }
+    }),
   );
 
   const watcher = vscode.workspace.createFileSystemWatcher('**/*.{pks,pkb}');
@@ -166,9 +298,26 @@ async function runWithProgress(
       const onSuiteStart = () => {
         done++;
         progress.report({ message: `${done}/${total}` });
+        statusBar?.showRunning(done, total);
       };
 
-      await executeRun(controller, request, cts.token, coverage, state, onSuiteStart);
+      const sb = statusBar;
+      await executeRun(
+        controller,
+        request,
+        cts.token,
+        coverage,
+        state,
+        onSuiteStart,
+        sb
+          ? (passed, failed, skipped, errored, durationMs) =>
+              sb.showResults(passed, failed, skipped, errored, durationMs)
+          : undefined,
+      );
+
+      if (decorationManager) {
+        decorationManager.update(state.getLastResults(), controller);
+      }
 
       progress.report({ message: 'Parseando resultados...' });
     },
@@ -211,6 +360,7 @@ async function doRefresh(controller: vscode.TestController): Promise<void> {
       uri: suite.uri,
       folder: suite.folder,
     });
+    suiteItem.range = new vscode.Range(suite.suiteLine, 0, suite.suiteLine, 0);
     for (const t of suite.tests) {
       const testItem = controller.createTestItem(
         `test:${suite.packageName.toLowerCase()}.${t.procName.toLowerCase()}`,
@@ -280,6 +430,51 @@ async function runForFolder(controller: vscode.TestController, uri: vscode.Uri, 
     controller,
     new vscode.TestRunRequest(
       include,
+      undefined,
+      coverage ? state.coverageProfile : state.runProfile,
+    ),
+    undefined,
+    coverage,
+    state,
+  );
+}
+
+function findAnnotationAtLine(
+  document: vscode.TextDocument,
+  cursorLine: number,
+): CodeLensItem | undefined {
+  const items = parseCodeLensItems(document.getText());
+  let best: CodeLensItem | undefined;
+  for (const item of items) {
+    if (item.line <= cursorLine && (!best || item.line > best.line)) {
+      best = item;
+    }
+  }
+  return best;
+}
+
+async function runSingleTest(
+  controller: vscode.TestController,
+  _uri: vscode.Uri,
+  packageName: string,
+  procName: string,
+  coverage: boolean,
+): Promise<void> {
+  const suiteItem = controller.items.get(`suite:${packageName.toLowerCase()}`);
+  if (!suiteItem) return;
+  const testItems: vscode.TestItem[] = [];
+  for (const [, c] of suiteItem.children) {
+    testItems.push(c);
+  }
+  const testItem = testItems.find((t) => {
+    const meta = state.getMeta(t);
+    return meta?.kind === 'test' && meta.procName.toLowerCase() === procName.toLowerCase();
+  });
+  if (!testItem) return;
+  await runWithProgress(
+    controller,
+    new vscode.TestRunRequest(
+      [testItem],
       undefined,
       coverage ? state.coverageProfile : state.runProfile,
     ),
