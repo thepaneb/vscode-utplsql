@@ -68,6 +68,25 @@ export namespace workspace {
   export const workspaceFolders = undefined;
 }
 
+export namespace commands {
+  export function executeCommand(_cmd: string, ..._args: unknown[]): void {}
+}
+
+export class EventEmitter<T> {
+  event = (_listener: (e: T) => void) => ({ dispose: () => {} });
+  fire(_data?: T) {}
+  dispose() {}
+}
+
+export class CodeLens {
+  command?: { title: string; command: string; arguments?: unknown[] };
+  range: Range;
+  constructor(range: Range, command?: { title: string; command: string; arguments?: unknown[] }) {
+    this.range = range;
+    this.command = command;
+  }
+}
+
 export namespace window {
   export function showInputBox(_options?: {
     title?: string;
@@ -79,6 +98,13 @@ export namespace window {
     return Promise.resolve(_inputBoxResult);
   }
   export function showErrorMessage(_message: string) {}
+  export function createTextEditorDecorationType(_opts: any) {
+    return { dispose: () => {} } as TextEditorDecorationType;
+  }
+  export const visibleTextEditors: any[] = [];
+  export function onDidChangeActiveTextEditor(_handler: any) {
+    return { dispose: () => {} };
+  }
 }
 
 export class TestMessage {
@@ -137,6 +163,59 @@ export class TestItem {
   constructor(id: string) {
     this.id = id;
   }
+}
+
+export class Range {
+  constructor(
+    public startLine: number,
+    public startCharacter: number,
+    public endLine: number,
+    public endCharacter: number,
+  ) {}
+  get start(): Position {
+    return new Position(this.startLine, this.startCharacter);
+  }
+  get end(): Position {
+    return new Position(this.endLine, this.endCharacter);
+  }
+}
+
+export class ThemeColor {
+  constructor(public id: string) {}
+}
+
+export class ThemeIcon {
+  constructor(public id: string) {}
+}
+
+export class MarkdownString {
+  constructor(public value: string) {}
+}
+
+export const OverviewRulerLane = {
+  Right: 2,
+  Left: 1,
+  Center: 0,
+  Full: 7,
+} as const;
+
+export interface DecorationOptions {
+  range: Range;
+  hoverMessage?: MarkdownString;
+}
+
+export interface TextEditorDecorationType {
+  dispose(): void;
+}
+
+export interface TextEditor {
+  document: { uri: { toString(): string } };
+  setDecorations(decorationType: TextEditorDecorationType, ranges: DecorationOptions[]): void;
+}
+
+let _mockVisibleEditors: any[] = [];
+export function __setVisibleEditors(editors: any[]): void {
+  _mockVisibleEditors = editors;
 }
 
 export class FileCoverage {

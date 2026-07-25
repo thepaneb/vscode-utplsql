@@ -11,6 +11,7 @@ export interface ParsedSuite {
   packageName: string;
   suiteDescription: string;
   tests: TestProc[];
+  suiteLine: number;
 }
 
 const RE_PACKAGE = /create\s+(?:or\s+replace\s+)?package\s+(?:body\s+)?(?:"?(\w+)"?\.)?"?(\w+)"?/i;
@@ -39,9 +40,14 @@ export function parseSuiteText(text: string): ParsedSuite | null {
   const lines = text.split(/\r?\n/);
   const tests: TestProc[] = [];
   let pendingDescription: string | null = null;
+  let suiteLine = 0;
 
   for (let i = 0; i < lines.length; i++) {
     const line = lines[i];
+
+    if (!suiteLine && RE_SUITE.test(line)) {
+      suiteLine = i;
+    }
 
     const testMatch = RE_TEST.exec(line);
     if (testMatch) {
@@ -63,5 +69,5 @@ export function parseSuiteText(text: string): ParsedSuite | null {
     }
   }
 
-  return { packageName, suiteDescription, tests };
+  return { packageName, suiteDescription, tests, suiteLine };
 }

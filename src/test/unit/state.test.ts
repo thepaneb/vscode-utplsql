@@ -62,3 +62,32 @@ test('TestStateManager: consumeExtraReporter retorna undefined sem nada armazena
   const mgr = new TestStateManager();
   assert.strictEqual(mgr.consumeExtraReporter(), undefined);
 });
+
+test('TestStateManager: setLastResults e getLastResults', () => {
+  const mgr = new TestStateManager();
+  const map = new Map([['test:x', { status: 'passed' as const }]]);
+  mgr.setLastResults(map);
+  assert.strictEqual(mgr.getLastResults(), map);
+});
+
+test('TestStateManager: clearLastResults limpa o map', () => {
+  const mgr = new TestStateManager();
+  mgr.setLastResults(new Map([['test:x', { status: 'passed' as const }]]));
+  mgr.clearLastResults();
+  assert.strictEqual(mgr.getLastResults().size, 0);
+});
+
+test('TestStateManager: setLastRun e getLastRun', () => {
+  const mgr = new TestStateManager();
+  const lr = { type: 'all' as const, coverage: false };
+  mgr.setLastRun(lr);
+  assert.strictEqual(mgr.getLastRun(), lr);
+});
+
+test('TestStateManager: setLastFailedItems e getLastFailedItems', () => {
+  const mgr = new TestStateManager();
+  const items = [{ id: 'test:a' }, { id: 'test:b' }] as any[];
+  mgr.setLastFailedItems(items);
+  assert.strictEqual(mgr.getLastFailedItems().length, 2);
+  assert.strictEqual(mgr.getLastFailedItems()[0].id, 'test:a');
+});

@@ -1,0 +1,107 @@
+import './setup.js';
+import assert from 'node:assert';
+import { test } from 'node:test';
+import { parseCodeLensItems, UtplsqlCodeLensProvider } from '../../codelens';
+import { __setConfigValue } from '../../test/vscode-stub';
+
+function pkgWrapper(inner: string): string {
+  return ['CREATE OR REPLACE PACKAGE test_math IS', inner, 'END;'].join('\n');
+}
+
+test('parseCodeLensItems: suite com descricao', () => {
+  const items = parseCodeLensItems(pkgWrapper('--%suite(Math Tests)\n  PROCEDURE add;'));
+  assert.strictEqual(items.length, 1);
+  assert.strictEqual(items[0].type, 'suite');
+  assert.strictEqual(items[0].description, 'Math Tests');
+  assert.strictEqual(items[0].packageName, 'test_math');
+  assert.strictEqual(items[0].line, 1);
+});
+
+test('parseCodeLensItems: test com procedure', () => {
+  const items = parseCodeLensItems(
+    pkgWrapper('--%suite(Math)\n  --%test(Addition)\n  PROCEDURE add;'),
+  );
+  assert.strictEqual(items.length, 2);
+  assert.strictEqual(items[0].type, 'suite');
+  assert.strictEqual(items[1].type, 'test');
+  assert.strictEqual(items[1].description, 'Addition');
+  assert.strictEqual(items[1].procName, 'add');
+  assert.strictEqual(items[1].line, 2);
+});
+
+test('parseCodeLensItems: arquivo sem anotacoes', () => {
+  const items = parseCodeLensItems(pkgWrapper('  PROCEDURE add;'));
+  assert.strictEqual(items.length, 0);
+});
+
+test('parseCodeLensItems: suite sem descricao usa packageName', () => {
+  const items = parseCodeLensItems(pkgWrapper('--%suite\n  PROCEDURE add;'));
+  assert.strictEqual(items.length, 1);
+  assert.strictEqual(items[0].description, 'test_math');
+});
+
+test('parseCodeLensItems: test sem procedure e ignorado', () => {
+  const items = parseCodeLensItems(
+    pkgWrapper('--%suite(Math)\n  --%test(Orphan)\n  v_foo NUMBER;'),
+  );
+  assert.strictEqual(items.length, 1);
+  assert.strictEqual(items[0].type, 'suite');
+});
+
+test('parseCodeLensItems: multiplos testes', () => {
+  const items = parseCodeLensItems(
+    pkgWrapper(
+      '--%suite(Math)\n  --%test(Add)\n  PROCEDURE add;\n  --%test(Sub)\n  PROCEDURE sub;\n  --%test(Mul)\n  PROCEDURE mul;',
+    ),
+  );
+  assert.strictEqual(items.length, 4);
+  assert.strictEqual(items[0].type, 'suite');
+  assert.strictEqual(items[1].type, 'test');
+  assert.strictEqual(items[1].procName, 'add');
+  assert.strictEqual(items[2].procName, 'sub');
+  assert.strictEqual(items[3].procName, 'mul');
+});
+
+test('parseCodeLensItems: sem CREATE PACKAGE retorna vazio', () => {
+  const items = parseCodeLensItems('--%suite(Math)\n  PROCEDURE add;');
+  assert.strictEqual(items.length, 0);
+});
+
+test('UtplsqlCodeLensProvider: gera 2 lenses por anotacao', () => {
+  __setConfigValue('codeLens.enabled', true);
+  const provider = new UtplsqlCodeLensProvider();
+  const doc = {
+    getText: () =>
+      pkgWrapper('--%suite(Math)\n  --%test(Add)\n  PROCEDURE add;'),
+    fileName: '/test/test_math.pks',
+    uri: { toString: () => 'file:///test/test_math.pks' },
+  } as any;
+  const lenses = provider.provideCodeLenses(doc, {} as any);
+  assert.strictEqual(lenses.length, 4);
+  assert.strictEqual(lenses[0].command?.title, '▶ Run Suite');
+  assert.strictEqual(lenses[1].command?.title, '▶ Run Suite with Coverage');
+  assert.strictEqual(lenses[2].command?.title, '▶ Run Test');
+  assert.strictEqual(lenses[3].command?.title, '▶ Run Test with Coverage');
+});
+
+test('UtplsqlCodeLensProvider: arquivo sem anotacoes retorna vazio', () => {
+  const provider = new UtplsqlCodeLensProvider();
+  const doc = {
+    getText: () => pkgWrapper('  PROCEDURE add;'),
+    fileName: '/test/test_math.pks',
+    uri: { toString: () => 'file:///test/test_math.pks' },
+  } as any;
+  const lenses = provider.provideCodeLenses(doc, {} as any);
+  assert.strictEqual(lenses.length, 0);
+});
+
+test('UtplsqlCodeLensProvider: arquivo .sql e ignorado', () => {
+  const provider = new UtplsqlCodeLensProvider();
+  const doc = {
+    getText: () => pkgWrapper('--%suite(Math)\n  PROCEDURE add;'),
+    fileName: '/test/test_math.sql',
+    uri: { toString: () => 'file:///test/test_math.sql' },
+  } as any;
+  const lenses = provider.provideCodeLenses(doc, {} as any);
+  assert.strictEqual(lenses.length, 0);
+});

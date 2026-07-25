@@ -37,6 +37,49 @@ Sim. O utPLSQL-cli é uma aplicação Java — o launcher (`utplsql.bat` ou
 `utplsql`) invoca a JVM internamente. O Java precisa estar instalado e
 no PATH.
 
+### Os botões Run/Run with Coverage não aparecem sobre %suite/%test
+
+Verifique se `utplsql.codeLens.enabled` está `true` (é o default). Também
+confira que `editor.codeLens` não está desabilitado em settings do VSCode.
+
+### O que significam os ícones nas linhas após executar os testes?
+
+Após cada execução, a extensão mostra decorações inline no editor:
+- ✓ verde — teste passou
+- ✗ vermelho — teste falhou (tooltip mostra a mensagem de erro)
+- ⚠ amarelo — teste pulado (skipped) ou com erro
+
+Passe o mouse sobre o ícone para ver a mensagem de falha. Desabilite com
+`utplsql.decorations.enabled: false`.
+
+### Quais são os atalhos de teclado?
+
+Use o prefixo `Ctrl+Shift+U` + uma tecla mnemônica. Os principais:
+
+| Atalho | Ação |
+|---|---|
+| `Ctrl+Shift+U R` | Rodar todos os testes |
+| `Ctrl+Shift+U T` | Rodar testes do arquivo |
+| `Ctrl+Shift+U F` | Atualizar (refresh) |
+| `Ctrl+Shift+U L` | Rerun last (último teste) |
+| `Ctrl+Shift+U U` | Run at cursor |
+| `Ctrl+Shift+U X` | Run failed only |
+| `Escape` | Cancelar execução |
+
+Para ver todos, vá em File → Preferences → Keyboard Shortcuts e busque `utplsql`.
+
+### Como reexecutar apenas os testes que falharam?
+
+Use `Ctrl+Shift+U X` (Run Failed Only) ou o comando `utPLSQL: Run Failed Tests`
+na palette. A extensão armazena quais testes falharam na última execução e os
+reexecuta isoladamente.
+
+### Como executar o teste que está sob o cursor?
+
+Com um arquivo `.pks` aberto, pressione `Ctrl+Shift+U U` (Run at Cursor).
+A extensão procura a anotação `%suite` ou `%test` acima do cursor e executa
+apenas aquele teste/suite.
+
 ---
 
 ## Cobertura
@@ -159,6 +202,6 @@ publicação no Marketplace é feita **exclusivamente** via GitHub release
 
 ```bash
 npm run package
-# gera: vscode-utplsql-0.7.2.vsix
-code --install-extension vscode-utplsql-0.7.2.vsix
+# gera: vscode-utplsql-0.8.0.vsix
+code --install-extension vscode-utplsql-0.8.0.vsix
 ```

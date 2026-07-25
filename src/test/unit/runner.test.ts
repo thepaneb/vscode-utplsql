@@ -4,7 +4,8 @@ import * as fs from 'node:fs';
 import * as os from 'node:os';
 import * as path from 'node:path';
 import { test } from 'node:test';
-import { applyCoverage, applyResults, findByNameOnly, lastSegment } from '../../runner';
+import { applyCoverage, applyResults, countResults, findByNameOnly, lastSegment } from '../../runner';
+import type { TestCaseResult } from '../../junit';
 import type { ItemMeta } from '../../types';
 
 function makeState() {
@@ -452,4 +453,41 @@ test('applyCoverage: arquivo ausente gera diagnostico com caminho', () => {
       /* ignore */
     }
   }
+});
+
+test('countResults: conta pass/fail/skip/erro e soma duracao', () => {
+  const cases: TestCaseResult[] = [
+    { classname: 'p', name: 'a', status: 'passed', durationMs: 100 },
+    { classname: 'p', name: 'b', status: 'failed', durationMs: 50 },
+    { classname: 'p', name: 'c', status: 'skipped', durationMs: 25 },
+    { classname: 'p', name: 'd', status: 'error', durationMs: 25 },
+  ];
+  const r = countResults(cases);
+  assert.strictEqual(r.passed, 1);
+  assert.strictEqual(r.failed, 1);
+  assert.strictEqual(r.skipped, 1);
+  assert.strictEqual(r.errored, 1);
+  assert.strictEqual(r.totalMs, 200);
+});
+
+test('countResults: apenas passed com duracao zero', () => {
+  const cases: TestCaseResult[] = [
+    { classname: 'p', name: 'a', status: 'passed' },
+    { classname: 'p', name: 'b', status: 'passed', durationMs: 10 },
+  ];
+  const r = countResults(cases);
+  assert.strictEqual(r.passed, 2);
+  assert.strictEqual(r.failed, 0);
+  assert.strictEqual(r.skipped, 0);
+  assert.strictEqual(r.errored, 0);
+  assert.strictEqual(r.totalMs, 10);
+});
+
+test('countResults: array vazio retorna zeros', () => {
+  const r = countResults([]);
+  assert.strictEqual(r.passed, 0);
+  assert.strictEqual(r.failed, 0);
+  assert.strictEqual(r.skipped, 0);
+  assert.strictEqual(r.errored, 0);
+  assert.strictEqual(r.totalMs, 0);
 });

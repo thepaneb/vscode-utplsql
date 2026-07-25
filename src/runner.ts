@@ -9,7 +9,7 @@ import { parseCobertura } from './cobertura';
 import { readConfig, resolveConnection } from './config';
 import { resolveSourceUri } from './coverage';
 import { buildInvocation, isInvocationError } from './invocation';
-import { parseJUnit, type TestStatus } from './junit';
+import { parseJUnit, type TestCaseResult, type TestStatus } from './junit';
 import type { TestStateManager } from './state';
 
 export async function executeRun(
@@ -19,6 +19,13 @@ export async function executeRun(
   coverage: boolean,
   state: TestStateManager,
   onSuiteStart?: () => void,
+  onComplete?: (
+    passed: number,
+    failed: number,
+    skipped: number,
+    errored: number,
+    durationMs: number,
+  ) => void,
 ): Promise<void> {
   const folders = vscode.workspace.workspaceFolders;
   if (!folders?.length) {
@@ -34,6 +41,33 @@ export async function executeRun(
   const cfg = readConfig();
   const root = folders[0].uri.fsPath;
   const run = controller.createTestRun(request);
+
+  state.clearLastResults();
+
+  if (request.include) {
+    const items = [...request.include];
+    if (items.length === 1) {
+      const m = state.getMeta(items[0]);
+      if (m?.kind === 'test') {
+        state.setLastRun({
+          type: 'test',
+          uri: m.uri,
+          packageName: m.packageName,
+          procName: m.procName,
+          coverage,
+        });
+      } else {
+        state.setLastRun({ type: 'suite', uri: m?.uri, packageName: m?.packageName, coverage });
+      }
+    } else {
+      const m = state.getMeta(items[0]);
+      state.setLastRun({ type: 'file', uri: m?.uri, coverage });
+    }
+  } else {
+    state.setLastRun({ type: 'all', coverage });
+  }
+
+  vscode.commands.executeCommand('setContext', 'utplsql:running', true);
 
   const info = await getCliInfo(cfg, connection);
   if ('error' in info) {
@@ -162,6 +196,7 @@ export async function executeRun(
       /* ignore */
     }
     run.end();
+    vscode.commands.executeCommand('setContext', 'utplsql:running', false);
     return;
   }
 
@@ -176,9 +211,27 @@ export async function executeRun(
     run.appendOutput(`\r\n[stderr]\r\n${result.stderr.replace(/\r?\n/g, '\r\n')}\r\n`);
   }
 
-  applyResults(junitPath, leafTests, run, state);
+  const resultMap = applyResults(junitPath, leafTests, run, state);
+  state.setLastResults(resultMap);
+  state.setLastFailedItems(
+    leafTests.filter((t) => {
+      const r = resultMap.get(t.id);
+      return r?.status === 'failed' || r?.status === 'error';
+    }),
+  );
+  vscode.commands.executeCommand(
+    'setContext',
+    'utplsql:hasFailures',
+    state.getLastFailedItems().length > 0,
+  );
   if (coverageEnabled) {
     applyCoverage(coveragePath, root, cfg.sourcePath, run, state, folders);
+  }
+
+  if (onComplete && fs.existsSync(junitPath)) {
+    const cases = parseJUnit(fs.readFileSync(junitPath, 'utf8'));
+    const r = countResults(cases);
+    onComplete(r.passed, r.failed, r.skipped, r.errored, r.totalMs);
   }
 
   try {
@@ -187,6 +240,41 @@ export async function executeRun(
     /* ignore */
   }
   run.end();
+  vscode.commands.executeCommand('setContext', 'utplsql:running', false);
+}
+
+export interface RunResults {
+  passed: number;
+  failed: number;
+  skipped: number;
+  errored: number;
+  totalMs: number;
+}
+
+export function countResults(cases: TestCaseResult[]): RunResults {
+  let passed = 0;
+  let failed = 0;
+  let skipped = 0;
+  let errored = 0;
+  let totalMs = 0;
+  for (const c of cases) {
+    switch (c.status) {
+      case 'passed':
+        passed++;
+        break;
+      case 'failed':
+        failed++;
+        break;
+      case 'skipped':
+        skipped++;
+        break;
+      case 'error':
+        errored++;
+        break;
+    }
+    totalMs += c.durationMs ?? 0;
+  }
+  return { passed, failed, skipped, errored, totalMs };
 }
 
 export function applyResults(
@@ -194,12 +282,13 @@ export function applyResults(
   leafTests: vscode.TestItem[],
   run: vscode.TestRun,
   state: TestStateManager,
-): void {
+): Map<string, { status: TestStatus; message?: string }> {
+  const resultMap = new Map<string, { status: TestStatus; message?: string }>();
   if (!fs.existsSync(junitPath)) {
     for (const t of leafTests) {
       run.errored(t, new vscode.TestMessage('Sem relatório de resultados (o CLI falhou?).'));
     }
-    return;
+    return resultMap;
   }
 
   const cases = parseJUnit(fs.readFileSync(junitPath, 'utf8'));
@@ -221,6 +310,7 @@ export function applyResults(
     const item = index.get(`${pkg}|${name}`) ?? findByNameOnly(leafTests, name, state);
     if (!item) continue;
     matched.add(item);
+    resultMap.set(item.id, { status: c.status, message: c.message });
     report(run, item, c.status, c.message, c.durationMs);
   }
 
@@ -234,6 +324,8 @@ export function applyResults(
       run.skipped(t);
     }
   }
+
+  return resultMap;
 }
 
 function report(
