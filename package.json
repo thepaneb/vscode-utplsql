@@ -412,7 +412,7 @@
     "pretest:integration": "npm run compile",
     "test:integration": "vscode-test",
     "test": "npm run test:unit",
-    "test:coverage": "npm run compile && c8 node scripts/run-tests.cjs",
+    "test:coverage": "npm run compile && c8 node --require ./scripts/test-setup.cjs --test out/test/unit/**/*.test.js",
     "package": "vsce package",
     "gen-icon": "node scripts/gen-icon.cjs",
     "sync-prds": "node scripts/sync-prds.cjs",

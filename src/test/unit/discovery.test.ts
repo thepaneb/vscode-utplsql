@@ -59,6 +59,44 @@ test('discoverWorkspace: encontra suites em arquivos .pks', async () => {
   }
 });
 
+test('discoverWorkspace: arquivo ilegivel e ignorado', async () => {
+  const { __setMockFile, __resetMockFiles, __setMockFileError } = await import('../vscode-stub.js');
+  __setMockFile(
+    '*.pks',
+    '/root/bad.pks',
+    'CREATE OR REPLACE PACKAGE bad IS\n  --%suite(ok)\n  --%test(x)\nPROCEDURE x;\nEND;',
+  );
+  __setMockFileError('/root/bad.pks', true);
+  try {
+    const folder = { uri: { fsPath: '/root' }, name: 'root', index: 0 };
+    const result = await discoverWorkspace(['*.pks'], [folder as any]);
+    assert.strictEqual(result.length, 0);
+  } finally {
+    __resetMockFiles();
+  }
+});
+
+test('discoverWorkspace: suite sem testes e ignorada', async () => {
+  const { __setMockFile, __resetMockFiles } = await import('../vscode-stub.js');
+  __setMockFile(
+    '*.pks',
+    '/root/empty_suite.pks',
+    'CREATE OR REPLACE PACKAGE empty_suite IS\n  --%suite(Sem testes)\nEND;',
+  );
+  try {
+    const folder = { uri: { fsPath: '/root' }, name: 'root', index: 0 };
+    const result = await discoverWorkspace(['*.pks'], [folder as any]);
+    assert.strictEqual(result.length, 0);
+  } finally {
+    __resetMockFiles();
+  }
+});
+
+test('discoverWorkspace: pattern sem match retorna vazio', async () => {
+  const result = await discoverWorkspace(['**/*.xyz'], [{ uri: { fsPath: '/root' }, name: 'root', index: 0 } as any]);
+  assert.strictEqual(result.length, 0);
+});
+
 test('extractSchemaFromPath: extrai schema com padrao db/{schema}/**', () => {
   assert.strictEqual(
     extractSchemaFromPath('/root/db/APP/tests/packages/ut_foo.pks', '/root', 'db/{schema}/**'),

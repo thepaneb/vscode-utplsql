@@ -16,6 +16,8 @@ const _configValues: Record<string, unknown> = {};
 let _inputBoxResult: string | undefined;
 let _mockFileContents: Record<string, string> = {};
 let _mockFindFilesResult: Record<string, string[]> = {};
+let _mockFileErrors: Record<string, boolean> = {};
+let _mockVisibleEditors: any[] = [];
 
 export function __setConfigValue(key: string, value: unknown): void {
   _configValues[key] = value;
@@ -42,6 +44,11 @@ export function __setMockFile(pattern: string, path: string, content: string): v
 export function __resetMockFiles(): void {
   _mockFileContents = {};
   _mockFindFilesResult = {};
+  _mockFileErrors = {};
+}
+
+export function __setMockFileError(path: string, hasError: boolean): void {
+  _mockFileErrors[path] = hasError;
 }
 
 export namespace workspace {
@@ -66,7 +73,11 @@ export namespace workspace {
   }
   export const fs = {
     readFile: (uri: any) => {
-      const content = _mockFileContents[uri.fsPath ?? uri] ?? '';
+      const path = uri.fsPath ?? uri;
+      if (_mockFileErrors[path]) {
+        return Promise.reject(new Error('mock read error'));
+      }
+      const content = _mockFileContents[path] ?? '';
       return Promise.resolve(Buffer.from(content));
     },
   };
@@ -112,11 +123,23 @@ export namespace window {
   export function createTextEditorDecorationType(_opts: any) {
     return { dispose: () => {} } as TextEditorDecorationType;
   }
-  export const visibleTextEditors: any[] = [];
+  export function createStatusBarItem(_alignment: number, _priority: number) {
+    return {
+      text: '',
+      tooltip: '',
+      command: '',
+      show: () => {},
+      hide: () => {},
+      dispose: () => {},
+    };
+  }
+  export const visibleTextEditors = _mockVisibleEditors as any[];
   export function onDidChangeActiveTextEditor(_handler: any) {
     return { dispose: () => {} };
   }
 }
+
+export const StatusBarAlignment = { Left: 1, Right: 2 } as const;
 
 export class TestMessage {
   message: string;
@@ -224,9 +247,9 @@ export interface TextEditor {
   setDecorations(decorationType: TextEditorDecorationType, ranges: DecorationOptions[]): void;
 }
 
-let _mockVisibleEditors: any[] = [];
 export function __setVisibleEditors(editors: any[]): void {
-  _mockVisibleEditors = editors;
+  _mockVisibleEditors.length = 0;
+  _mockVisibleEditors.push(...editors);
 }
 
 export class FileCoverage {

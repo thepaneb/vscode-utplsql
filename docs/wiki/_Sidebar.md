@@ -5,6 +5,10 @@
   - [Guia rápido](Guia-rápido)
   - [Cobertura de código](Cobertura)
   - [Reporters customizados](Reporters)
+- **Ferramentas avançadas**
+  - [Execução Oracle direta](Execução-Oracle-direta)
+  - [Diagnósticos e quick-fix](Diagnósticos-e-quick-fix)
+  - [Organização da árvore](Organização-da-árvore)
 - **Referência**
   - [Configurações (settings)](Configurações)
   - [Comandos](Comandos)

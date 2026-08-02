@@ -23,6 +23,9 @@ com prefixo `utPLSQL:`.
 | `utPLSQL: Run Test at Cursor` | Executa o teste sob o cursor | `Ctrl+Shift+U U` |
 | `utPLSQL: Run Failed Tests` | Reexecuta apenas testes falhos | `Ctrl+Shift+U X` |
 | `utPLSQL: Mostrar Test Explorer` | Foca a view Testing | Clique na status bar |
+| `utPLSQL: Validar configuração` | Roda validação completa do setup | — |
+| `utPLSQL: Configurar conexão` | Abre settings em `utplsql.connection` | — |
+| `utPLSQL: Copiar grants de cobertura` | Copia grants SQL para clipboard | — |
 
 ## Menu de contexto
 

@@ -11,6 +11,10 @@ para o **Test Explorer** nativo, com menu de contexto e cobertura visual.
 - **Decorações inline** — ícones ✓/✗/⚠ no editor após execução com tooltip da falha
 - **Status Bar** — indicador com contagem pass/fail e duração
 - **Smart Re-run** — Rerun Last, Run at Cursor, Run Failed Only com um atalho
+- **Oracle streaming** — execução direta via node-oracledb com resultados em tempo real
+- **Schema-aware tree** — organize testes por Schema > Package > Suite > Test
+- **Diagnósticos e quick-fix** — erros PL/SQL no editor + validação de setup com Code Actions
+- **Jump to failure** — navegação para a linha da asserção que falhou (Go to Error nativo)
 
 ![Test Explorer com suites expandidas](images/test-explorer-suites.png)
 
@@ -20,6 +24,7 @@ Use a sidebar à esquerda (ou o menu ≡ no mobile) para navegar entre as seçõ
 
 - **Começando**: [Instalação e requisitos](Instalação-e-requisitos) · [Conexão](Conexão)
 - **Uso**: [Guia rápido](Guia-rápido) · [Cobertura](Cobertura) · [Reporters](Reporters)
+- **Avançado**: [Execução Oracle direta](Execução-Oracle-direta) · [Diagnósticos e quick-fix](Diagnósticos-e-quick-fix) · [Organização da árvore](Organização-da-árvore)
 - **Referência**: [Configurações](Configurações) · [Comandos](Comandos) · [Modo de invocação](Modo-de-invocação) · [Requisitos no banco](Requisitos-no-banco)
 - **Desenvolvimento**: [Arquitetura](Arquitetura) · [Como contribuir](Como-contribuir) · [Testes](Testes) · [PRDs e roadmap](PRDs)
 - **Ajuda**: [Troubleshooting](Troubleshooting) · [FAQ](FAQ)
