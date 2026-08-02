@@ -2,11 +2,11 @@
 
 | Campo | Valor |
 |---|---|
-| Status | Em desenvolvimento |
+| Status | Concluído |
 | Autor | Gil Cleber Barboza |
 | Data | 2026-07-25 |
 | Componente | Extensão `paneb.vscode-utplsql` |
-| Versão alvo | 0.9.0 |
+| Versão | 0.9.0 |
 | Arquivos afetados | `package.json`, `package-lock.json`, `.c8rc` (novo) |
 
 ## 1. Resumo

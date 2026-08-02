@@ -108,12 +108,11 @@ CONCLUIR
 | 32 | [Quick-Fix Setup Diagnostics](completed/prd-32-quickfix-setup-diagnostics.md) | 0.9.0 | 2026-08-02 |
 | 35 | [Correção de cobertura no Windows + blindagem de testes](completed/prd-35-windows-coverage-fix.md) | 0.7.2 | 2026-07-21 |
 | 36 | [Correção do parse de reporters com descrições](completed/prd-36-reporter-parse-fix.md) | 0.7.2 | 2026-07-21 |
+| 37 | [Cobertura de código TypeScript com `c8`](completed/prd-37-ts-coverage.md) | 0.9.0 | 2026-08-02 |
 
 ### 🟡 Em desenvolvimento
 
-| # | PRD | Versão alvo | Data |
-|---|---|---|---|
-| 37 | [Cobertura de código TypeScript com `c8`](in-progress/prd-37-ts-coverage.md) | 0.9.0 | 2026-07-25 |
+*(nenhum)*
 
 ### 🔵 Aprovados
 
@@ -169,10 +168,10 @@ docs/prd/
 │   ├── prd-31-smart-rerun-patterns.md
 │   ├── prd-32-quickfix-setup-diagnostics.md
 │   ├── prd-35-windows-coverage-fix.md
-│   └── prd-36-reporter-parse-fix.md
+│   ├── prd-36-reporter-parse-fix.md
+│   └── prd-37-ts-coverage.md
 ├── approved/         ← aprovados, aguardando implementação
 ├── in-progress/      ← sendo implementados agora
-│   └── prd-37-ts-coverage.md
 └── proposed/         ← em avaliação
     ├── prd-12-sql-coverage.md
     ├── prd-21-workflow-improvements.md
