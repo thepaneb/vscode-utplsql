@@ -103,7 +103,9 @@ CONCLUIR
 | 27 | [Default Keybindings](completed/prd-27-default-keybindings.md) | 0.8.0 | 2026-07-25 |
 | 28 | [PL/SQL Compilation Diagnostics](completed/prd-28-plsql-compilation-diagnostics.md) | 0.9.0 | 2026-08-02 |
 | 29 | [Jump to Failing Assertion](completed/prd-29-jump-to-failing-assertion.md) | 0.9.0 | 2026-08-02 |
+| 30 | [Schema-Aware Test Organization](completed/prd-30-schema-aware-organization.md) | 0.9.0 | 2026-08-02 |
 | 31 | [Smart Re-run Patterns](completed/prd-31-smart-rerun-patterns.md) | 0.8.0 | 2026-07-25 |
+| 32 | [Quick-Fix Setup Diagnostics](completed/prd-32-quickfix-setup-diagnostics.md) | 0.9.0 | 2026-08-02 |
 | 35 | [Correção de cobertura no Windows + blindagem de testes](completed/prd-35-windows-coverage-fix.md) | 0.7.2 | 2026-07-21 |
 | 36 | [Correção do parse de reporters com descrições](completed/prd-36-reporter-parse-fix.md) | 0.7.2 | 2026-07-21 |
 
@@ -111,14 +113,11 @@ CONCLUIR
 
 | # | PRD | Versão alvo | Data |
 |---|---|---|---|
-| 30 | [Schema-Aware Test Organization](in-progress/prd-30-schema-aware-organization.md) | 0.9.0 | 2026-07-21 |
+| 37 | [Cobertura de código TypeScript com `c8`](in-progress/prd-37-ts-coverage.md) | 0.9.0 | 2026-07-25 |
 
 ### 🔵 Aprovados
 
-| # | PRD | Versão alvo | Data |
-|---|---|---|---|
-| 32 | [Quick-Fix Setup Diagnostics](approved/prd-32-quickfix-setup-diagnostics.md) | 0.9.0 | 2026-07-21 |
-| 37 | [Cobertura de código TypeScript com `c8`](approved/prd-37-ts-coverage.md) | 0.9.0 | 2026-07-25 |
+*(nenhum)*
 
 ### ⚪ Propostos
 
@@ -166,14 +165,14 @@ docs/prd/
 │   ├── prd-27-default-keybindings.md
 │   ├── prd-28-plsql-compilation-diagnostics.md
 │   ├── prd-29-jump-to-failing-assertion.md
+│   ├── prd-30-schema-aware-organization.md
 │   ├── prd-31-smart-rerun-patterns.md
+│   ├── prd-32-quickfix-setup-diagnostics.md
 │   ├── prd-35-windows-coverage-fix.md
 │   └── prd-36-reporter-parse-fix.md
 ├── approved/         ← aprovados, aguardando implementação
-│   ├── prd-32-quickfix-setup-diagnostics.md
-│   └── prd-37-ts-coverage.md
 ├── in-progress/      ← sendo implementados agora
-│   └── prd-30-schema-aware-organization.md
+│   └── prd-37-ts-coverage.md
 └── proposed/         ← em avaliação
     ├── prd-12-sql-coverage.md
     ├── prd-21-workflow-improvements.md

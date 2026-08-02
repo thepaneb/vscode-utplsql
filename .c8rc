@@ -1,0 +1,9 @@
+{
+  "exclude": ["src/test/**", "out/**", "node_modules/**"],
+  "reporter": ["text", "lcov", "html"],
+  "check-coverage": true,
+  "lines": 80,
+  "branches": 50,
+  "functions": 70,
+  "statements": 80
+}

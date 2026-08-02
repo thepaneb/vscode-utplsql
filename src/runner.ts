@@ -12,6 +12,7 @@ import { resolveSourceUri } from './coverage';
 import { buildInvocation, isInvocationError } from './invocation';
 import { parseJUnit, type TestCaseResult, type TestStatus, isUserFrame, type StackFrame } from './junit';
 import { executeRunOracle } from './oracleRunner';
+import { setupValidator } from './quickfix';
 import type { TestStateManager } from './state';
 
 export async function executeRun(
@@ -492,6 +493,9 @@ export function applyCoverage(
         `  arquivos em ${tmpDir}: ${siblingFiles}\r\n` +
         `  verifique o GRANT EXECUTE ON SYS.DBMS_PROFILER.\r\n`,
     );
+    if (readConfig().setupDiagnosticsEnabled) {
+      setupValidator.addCoverageDiagnostic();
+    }
     return;
   }
 

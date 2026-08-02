@@ -112,7 +112,9 @@
           "items": {
             "type": "string"
           },
-          "default": ["-Xmx256m"],
+          "default": [
+            "-Xmx256m"
+          ],
           "markdownDescription": "Flags JVM usadas no modo `java` (ex.: `[\"-Xmx512m\", \"-Xms128m\"]`). Inseridas **antes** de `-cp`. Vazio = nenhuma flag."
         },
         "utplsql.cliHome": {
@@ -162,6 +164,24 @@
           "default": "auto",
           "markdownDescription": "Modo de execução dos testes. `auto` — tenta Oracle direto (via `node-oracledb`), fallback para CLI. `cli` — sempre via linha de comando (comportamento atual). `oracle` — sempre via conexão direta (erro se `oracledb` não disponível)."
         },
+        "utplsql.organization": {
+          "type": "string",
+          "enum": [
+            "file",
+            "schema"
+          ],
+          "default": "file",
+          "enumDescriptions": [
+            "Organiza os testes por caminho de arquivo (padrão).",
+            "Organiza os testes por schema Oracle (Schema > Package > Suite > Test). Use organization.schemaPattern para definir como extrair o schema do caminho."
+          ],
+          "description": "Modo de organização da árvore de testes no Test Explorer."
+        },
+        "utplsql.organization.schemaPattern": {
+          "type": "string",
+          "default": "db/{schema}/**",
+          "markdownDescription": "Padrão glob para extrair o nome do schema a partir do caminho do arquivo. Use `{schema}` como placeholder. Ex: `db/{schema}/**` extrai `APP` de `db/APP/tests/ut_foo.pks`. Só usado quando `#utplsql.organization#` é `schema`."
+        },
         "utplsql.codeLens.enabled": {
           "type": "boolean",
           "default": true,
@@ -181,6 +201,11 @@
           "type": "boolean",
           "default": true,
           "description": "Exibe erros de compilação PL/SQL como sublinhados no editor e no Problems Panel após execução dos testes."
+        },
+        "utplsql.setupDiagnostics.enabled": {
+          "type": "boolean",
+          "default": true,
+          "description": "Exibe diagnósticos de configuração (CLI, conexão, grants, versão) no Problems Panel e oferece quick-fix actions."
         }
       }
     },
@@ -259,6 +284,21 @@
       {
         "command": "utplsql.runFailed",
         "title": "utPLSQL: Run Failed Tests",
+        "category": "utPLSQL"
+      },
+      {
+        "command": "utplsql.configureConnection",
+        "title": "Configurar conexão",
+        "category": "utPLSQL"
+      },
+      {
+        "command": "utplsql.copyGrantsToClipboard",
+        "title": "Copiar grants de cobertura para clipboard",
+        "category": "utPLSQL"
+      },
+      {
+        "command": "utplsql.validateSetup",
+        "title": "Validar configuração",
         "category": "utPLSQL"
       }
     ],
@@ -372,6 +412,7 @@
     "pretest:integration": "npm run compile",
     "test:integration": "vscode-test",
     "test": "npm run test:unit",
+    "test:coverage": "npm run compile && c8 node scripts/run-tests.cjs",
     "package": "vsce package",
     "gen-icon": "node scripts/gen-icon.cjs",
     "sync-prds": "node scripts/sync-prds.cjs",
@@ -394,6 +435,7 @@
     "@vscode/test-cli": "^0.0.10",
     "@vscode/test-electron": "^2.4.1",
     "@vscode/vsce": "^3.2.1",
+    "c8": "^12.0.0",
     "typescript": "^6.0.3"
   }
 }

@@ -5,9 +5,10 @@ import { type CodeLensItem, parseCodeLensItems, UtplsqlCodeLensProvider } from '
 import { compilationDiagnostics } from './compilationDiagnostics';
 import { clearSessionConnection, readConfig, resolveConnection } from './config';
 import { DecorationManager } from './decorations';
-import { discoverWorkspace } from './discovery';
+import { discoverWorkspace, extractSchemaFromPath } from './discovery';
 import { filterSuitesByFolder, filterSuitesByUri } from './matching';
 import { executeRun } from './runner';
+import { setupValidator, UtplsqlCodeActionProvider } from './quickfix';
 import { TestStateManager } from './state';
 import { UtplsqlStatusBar } from './statusBar';
 import type { ItemMeta } from './types';
@@ -120,7 +121,7 @@ export function activate(context: vscode.ExtensionContext) {
         const docUri = vscode.Uri.parse(args.uri);
         if (args.type === 'test' && args.procName) {
           const procName = args.procName;
-          const suiteItem = controller.items.get(`suite:${args.packageName.toLowerCase()}`);
+          const suiteItem = state.getSuiteItem(`suite:${args.packageName.toLowerCase()}`);
           if (!suiteItem) return;
           const testItems: vscode.TestItem[] = [];
           for (const [, c] of suiteItem.children) {
@@ -228,6 +229,41 @@ export function activate(context: vscode.ExtensionContext) {
   context.subscriptions.push(decorationManager);
 
   context.subscriptions.push(compilationDiagnostics);
+
+  context.subscriptions.push(setupValidator);
+
+  const codeActionProvider = vscode.languages.registerCodeActionsProvider(
+    { scheme: 'file', pattern: '**/*.pks' },
+    new UtplsqlCodeActionProvider(),
+  );
+  context.subscriptions.push(codeActionProvider);
+
+  context.subscriptions.push(
+    vscode.commands.registerCommand('utplsql.configureConnection', async () => {
+      await vscode.commands.executeCommand('workbench.action.openSettings', 'utplsql.connection');
+    }),
+    vscode.commands.registerCommand('utplsql.copyGrantsToClipboard', () => {
+      const grants = [
+        'GRANT EXECUTE ON SYS.DBMS_PROFILER TO <your_schema>;',
+        'GRANT EXECUTE ON SYS.DBMS_PLSQL_CODE_COVERAGE TO <your_schema>;',
+      ].join('\n');
+      vscode.env.clipboard.writeText(grants);
+      vscode.window.showInformationMessage('Grants copiados para o clipboard.');
+    }),
+    vscode.commands.registerCommand('utplsql.validateSetup', async () => {
+      const diags = await setupValidator.validateOnActivation();
+      setupValidator.applyDiagnostics(diags);
+      vscode.window.showInformationMessage(
+        diags.length === 0
+          ? 'Configuração utPLSQL OK — nenhum problema encontrado.'
+          : `${diags.length} problema(s) de configuração encontrado(s). Veja o Problems Panel.`,
+      );
+    }),
+  );
+
+  setupValidator.validateOnActivation().then((diags) => {
+    setupValidator.applyDiagnostics(diags);
+  });
 
   context.subscriptions.push(
     vscode.window.onDidChangeActiveTextEditor((editor) => {
@@ -348,9 +384,20 @@ async function refresh(controller: vscode.TestController): Promise<void> {
 
 async function doRefresh(controller: vscode.TestController): Promise<void> {
   const folders = vscode.workspace.workspaceFolders;
-  const suites = await discoverWorkspace(readConfig().includePatterns, folders ?? undefined);
+  const cfg = readConfig();
+  const suites = await discoverWorkspace(cfg.includePatterns, folders ?? undefined);
   controller.items.replace([]);
   state.cachedItems = [];
+  state.clearSuiteMap();
+
+  if (cfg.organization === 'schema' && folders?.length) {
+    buildSchemaTree(controller, suites, cfg.organizationSchemaPattern);
+  } else {
+    buildFileTree(controller, suites);
+  }
+}
+
+function buildFileTree(controller: vscode.TestController, suites: Awaited<ReturnType<typeof discoverWorkspace>>) {
   for (const suite of suites) {
     const suiteItem = controller.createTestItem(
       `suite:${suite.packageName.toLowerCase()}`,
@@ -383,6 +430,94 @@ async function doRefresh(controller: vscode.TestController): Promise<void> {
     }
     controller.items.add(suiteItem);
     state.cachedItems.push(suiteItem);
+    state.setSuiteItem(`suite:${suite.packageName.toLowerCase()}`, suiteItem);
+  }
+}
+
+function buildSchemaTree(
+  controller: vscode.TestController,
+  suites: Awaited<ReturnType<typeof discoverWorkspace>>,
+  schemaPattern: string,
+) {
+  const bySchema = new Map<string, typeof suites>();
+
+  for (const suite of suites) {
+    const schema = extractSchemaFromPath(
+      suite.uri.fsPath,
+      suite.folder.uri.fsPath,
+      schemaPattern,
+    );
+    const key = schema ?? 'UNKNOWN';
+    if (!bySchema.has(key)) bySchema.set(key, []);
+    bySchema.get(key)!.push(suite);
+  }
+
+  const sortedSchemas = [...bySchema.keys()].sort((a, b) => {
+    if (a === 'UNKNOWN') return 1;
+    if (b === 'UNKNOWN') return -1;
+    return a.localeCompare(b);
+  });
+
+  for (const schema of sortedSchemas) {
+    const schemaSuites = bySchema.get(schema)!;
+    const firstSuite = schemaSuites[0];
+    const schemaItem = controller.createTestItem(
+      `schema:${schema}`,
+      `Schema: ${schema}`,
+      firstSuite.folder.uri,
+    );
+
+    const byPackage = new Map<string, typeof suites>();
+    for (const suite of schemaSuites) {
+      const pkg = suite.packageName;
+      if (!byPackage.has(pkg)) byPackage.set(pkg, []);
+      byPackage.get(pkg)!.push(suite);
+    }
+
+    for (const [pkg, pkgSuites] of byPackage) {
+      const pkgItem = controller.createTestItem(
+        `package:${schema}:${pkg}`,
+        `Package: ${pkg}`,
+        pkgSuites[0].uri,
+      );
+
+      for (const suite of pkgSuites) {
+        const suiteItem = controller.createTestItem(
+          `suite:${suite.packageName.toLowerCase()}`,
+          `${suite.suiteDescription}  (${suite.packageName})`,
+          suite.uri,
+        );
+        state.setMeta(suiteItem, {
+          kind: 'suite',
+          packageName: suite.packageName,
+          uri: suite.uri,
+          folder: suite.folder,
+        });
+        suiteItem.range = new vscode.Range(suite.suiteLine, 0, suite.suiteLine, 0);
+        for (const t of suite.tests) {
+          const testItem = controller.createTestItem(
+            `test:${suite.packageName.toLowerCase()}.${t.procName.toLowerCase()}`,
+            t.description,
+            suite.uri,
+          );
+          testItem.range = new vscode.Range(t.line, 0, t.line, 0);
+          state.setMeta(testItem, {
+            kind: 'test',
+            packageName: suite.packageName,
+            procName: t.procName,
+            description: t.description,
+            uri: suite.uri,
+            folder: suite.folder,
+          });
+          suiteItem.children.add(testItem);
+        }
+        pkgItem.children.add(suiteItem);
+        state.cachedItems.push(suiteItem);
+        state.setSuiteItem(`suite:${suite.packageName.toLowerCase()}`, suiteItem);
+      }
+      schemaItem.children.add(pkgItem);
+    }
+    controller.items.add(schemaItem);
   }
 }
 
@@ -390,6 +525,12 @@ function collectAllItems(controller: vscode.TestController): vscode.TestItem[] {
   if (state.cachedItems.length) return state.cachedItems;
   controller.items.forEach((i) => {
     state.cachedItems.push(i);
+    for (const [, c] of i.children) {
+      state.cachedItems.push(c);
+      for (const [, gc] of c.children) {
+        state.cachedItems.push(gc);
+      }
+    }
   });
   return state.cachedItems;
 }
@@ -399,7 +540,7 @@ async function runForUri(controller: vscode.TestController, uri: vscode.Uri, cov
     .map((i) => state.getMeta(i))
     .filter(Boolean) as ItemMeta[];
   const include = filterSuitesByUri(metas, uri.fsPath)
-    .map((m) => controller.items.get(`suite:${m.packageName.toLowerCase()}`))
+    .map((m) => state.getSuiteItem(`suite:${m.packageName.toLowerCase()}`))
     .filter(Boolean) as vscode.TestItem[];
   if (!include.length) {
     vscode.window.showWarningMessage('Nenhuma suite utPLSQL encontrada neste arquivo.');
@@ -423,7 +564,7 @@ async function runForFolder(controller: vscode.TestController, uri: vscode.Uri, 
     .map((i) => state.getMeta(i))
     .filter(Boolean) as ItemMeta[];
   const include = filterSuitesByFolder(metas, uri.fsPath)
-    .map((m) => controller.items.get(`suite:${m.packageName.toLowerCase()}`))
+    .map((m) => state.getSuiteItem(`suite:${m.packageName.toLowerCase()}`))
     .filter(Boolean) as vscode.TestItem[];
   if (!include.length) {
     vscode.window.showWarningMessage('Nenhuma suite utPLSQL encontrada nesta pasta.');
@@ -463,7 +604,7 @@ async function runSingleTest(
   procName: string,
   coverage: boolean,
 ): Promise<void> {
-  const suiteItem = controller.items.get(`suite:${packageName.toLowerCase()}`);
+  const suiteItem = state.getSuiteItem(`suite:${packageName.toLowerCase()}`);
   if (!suiteItem) return;
   const testItems: vscode.TestItem[] = [];
   for (const [, c] of suiteItem.children) {

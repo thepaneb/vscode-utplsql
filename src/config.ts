@@ -24,6 +24,9 @@ export interface UtConfig {
   statusBarEnabled: boolean;
   decorationsEnabled: boolean;
   compilationDiagnosticsEnabled: boolean;
+  organization: 'file' | 'schema';
+  organizationSchemaPattern: string;
+  setupDiagnosticsEnabled: boolean;
 }
 
 export function readConfig(): UtConfig {
@@ -54,6 +57,9 @@ export function readConfig(): UtConfig {
     statusBarEnabled: c.get<boolean>('statusBar.enabled', true),
     decorationsEnabled: c.get<boolean>('decorations.enabled', true),
     compilationDiagnosticsEnabled: c.get<boolean>('compilationDiagnostics.enabled', true),
+    organization: c.get<'file' | 'schema'>('organization', 'file'),
+    organizationSchemaPattern: c.get<string>('organization.schemaPattern', 'db/{schema}/**'),
+    setupDiagnosticsEnabled: c.get<boolean>('setupDiagnostics.enabled', true),
   };
 }
 
