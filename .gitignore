@@ -22,3 +22,5 @@ docs/*
 !docs/prd/**
 !docs/wiki/
 !docs/wiki/**
+!docs/functional/
+!docs/functional/**
