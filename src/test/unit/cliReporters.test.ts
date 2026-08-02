@@ -108,7 +108,7 @@ test('listReporters: retorna lista quando CLI executa com sucesso', async () => 
   }));
   mock.method(cli, 'runCli', () => Promise.resolve({ code: 0, stdout: 'UT_A\nUT_B', stderr: '' }));
   const result = await listReporters(
-    { invocation: 'launcher', cliPath: 'utplsql', javaPath: 'java', cliHome: '' },
+    { invocation: 'launcher', cliPath: 'utplsql', javaPath: 'java', javaArgs: [], cliHome: '' },
     'conn',
   );
   assert.deepStrictEqual(result, ['UT_A', 'UT_B']);
@@ -118,7 +118,7 @@ test('listReporters: retorna lista quando CLI executa com sucesso', async () => 
 test('listReporters: retorna erro quando buildInvocation falha', async () => {
   mock.method(invocation, 'buildInvocation', () => ({ error: 'no cli home' }));
   const result = await listReporters(
-    { invocation: 'java', cliPath: 'utplsql', javaPath: 'java', cliHome: '' },
+    { invocation: 'java', cliPath: 'utplsql', javaPath: 'java', javaArgs: [], cliHome: '' },
     'conn',
   );
   assert.ok('error' in result);
@@ -136,7 +136,7 @@ test('listReporters: retorna erro quando CLI retorna codigo != 0', async () => {
     Promise.resolve({ code: 1, stdout: '', stderr: 'command failed' }),
   );
   const result = await listReporters(
-    { invocation: 'launcher', cliPath: 'utplsql', javaPath: 'java', cliHome: '' },
+    { invocation: 'launcher', cliPath: 'utplsql', javaPath: 'java', javaArgs: [], cliHome: '' },
     'conn',
   );
   assert.ok('error' in result);

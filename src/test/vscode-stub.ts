@@ -5,6 +5,11 @@ export namespace Uri {
   export function parse(s: string) {
     return { fsPath: s, path: s, scheme: 'file', toString: () => s, toJSON: () => s };
   }
+  export function joinPath(base: { fsPath: string }, ...pathSegments: string[]) {
+    const basePath = (base as { fsPath: string }).fsPath.replace(/[/\\]$/, '');
+    const joined = [basePath, ...pathSegments].join('/');
+    return file(joined);
+  }
 }
 
 const _configValues: Record<string, unknown> = {};
@@ -65,7 +70,13 @@ export namespace workspace {
       return Promise.resolve(Buffer.from(content));
     },
   };
-  export const workspaceFolders = undefined;
+  export let workspaceFolders: Array<{ uri: { fsPath: string }; name: string; index: number }> | undefined;
+
+  export function __setWorkspaceFolders(
+    folders: Array<{ uri: { fsPath: string }; name: string; index: number }> | undefined,
+  ) {
+    workspaceFolders = folders;
+  }
 }
 
 export namespace commands {
@@ -237,6 +248,39 @@ export class Position {
     public character: number,
   ) {}
 }
+
+export namespace DiagnosticSeverity {
+  export const Error = 0;
+  export const Warning = 1;
+  export const Information = 2;
+  export const Hint = 3;
+}
+
+export class Diagnostic {
+  constructor(
+    public range: Range,
+    public message: string,
+    public severity: number = DiagnosticSeverity.Error,
+  ) {}
+  source?: string;
+}
+
+export class DiagnosticCollection {
+  private _diags = new Map<string, Diagnostic[]>();
+  set(uri: { toString(): string }, diagnostics: Diagnostic[]) {
+    this._diags.set(uri.toString(), diagnostics);
+  }
+  clear() {
+    this._diags.clear();
+  }
+  dispose() {}
+}
+
+export const languages = {
+  createDiagnosticCollection(_name: string): DiagnosticCollection {
+    return new DiagnosticCollection();
+  },
+};
 
 export class RelativePattern {
   pattern: string;

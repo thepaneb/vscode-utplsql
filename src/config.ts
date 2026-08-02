@@ -12,15 +12,18 @@ export interface UtConfig {
   coverageSourceArgs: string[];
   invocation: string;
   javaPath: string;
+  javaArgs: string[];
   cliHome: string;
   timeoutMinutes: number;
   dbmsOutput: boolean;
   quiet: boolean;
   failureExitCode: number;
   additionalReporters: string[];
+  runnerMode: 'auto' | 'cli' | 'oracle';
   codeLensEnabled: boolean;
   statusBarEnabled: boolean;
   decorationsEnabled: boolean;
+  compilationDiagnosticsEnabled: boolean;
 }
 
 export function readConfig(): UtConfig {
@@ -39,15 +42,18 @@ export function readConfig(): UtConfig {
     ]),
     invocation: c.get<string>('invocation', 'launcher'),
     javaPath: c.get<string>('javaPath', 'java'),
+    javaArgs: c.get<string[]>('javaArgs', ['-Xmx256m']),
     cliHome: c.get<string>('cliHome', ''),
     timeoutMinutes: c.get<number>('timeoutMinutes', 60),
     dbmsOutput: c.get<boolean>('dbmsOutput', false),
     quiet: c.get<boolean>('quiet', false),
     failureExitCode: c.get<number>('failureExitCode', 1),
     additionalReporters: c.get<string[]>('additionalReporters', []),
+    runnerMode: c.get<'auto' | 'cli' | 'oracle'>('runnerMode', 'auto'),
     codeLensEnabled: c.get<boolean>('codeLens.enabled', true),
     statusBarEnabled: c.get<boolean>('statusBar.enabled', true),
     decorationsEnabled: c.get<boolean>('decorations.enabled', true),
+    compilationDiagnosticsEnabled: c.get<boolean>('compilationDiagnostics.enabled', true),
   };
 }
 

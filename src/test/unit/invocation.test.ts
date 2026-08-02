@@ -15,6 +15,7 @@ function cfg(over: Partial<InvocationConfig> = {}): InvocationConfig {
     invocation: 'launcher',
     cliPath: 'utplsql',
     javaPath: 'java',
+    javaArgs: ['-Xmx256m'],
     cliHome: '',
     ...over,
   };
@@ -109,6 +110,43 @@ test('buildInvocation java: erro quando não dá para resolver a raiz', () => {
   if (isInvocationError(inv)) {
     assert.match(inv.error, /cliHome|raiz/i);
   }
+});
+
+test('buildInvocation java: javaArgs default antes de -cp', () => {
+  const home = path.join('C:', 'tools', 'utPLSQL-cli');
+  const inv = buildInvocation(cfg({ invocation: 'java', cliHome: home }), ['run']);
+  const s = inv as Spawn;
+  assert.strictEqual(s.args[0], '-Xmx256m');
+  assert.strictEqual(s.args[1], '-cp');
+});
+
+test('buildInvocation java: javaArgs vazio sem efeito', () => {
+  const home = path.join('C:', 'tools', 'utPLSQL-cli');
+  const inv = buildInvocation(cfg({ invocation: 'java', cliHome: home, javaArgs: [] }), ['run']);
+  const s = inv as Spawn;
+  assert.strictEqual(s.args[0], '-cp');
+});
+
+test('buildInvocation java: javaArgs customizados aparecem antes de -cp', () => {
+  const home = path.join('C:', 'tools', 'utPLSQL-cli');
+  const inv = buildInvocation(
+    cfg({ invocation: 'java', cliHome: home, javaArgs: ['-Xmx512m', '-Xms128m'] }),
+    ['run'],
+  );
+  const s = inv as Spawn;
+  assert.strictEqual(s.args[0], '-Xmx512m');
+  assert.strictEqual(s.args[1], '-Xms128m');
+  assert.strictEqual(s.args[2], '-cp');
+});
+
+test('buildInvocation launcher: javaArgs e ignorado', () => {
+  const inv = buildInvocation(
+    cfg({ invocation: 'launcher', cliPath: 'utplsql', javaArgs: ['-Xmx1g'] }),
+    ['run'],
+  );
+  const s = inv as Spawn;
+  assert.ok(!s.args.includes('-Xmx1g'));
+  assert.strictEqual(s.shell, true);
 });
 
 // ---------- isInvocationError ----------

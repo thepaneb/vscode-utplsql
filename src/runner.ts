@@ -6,10 +6,12 @@ import { runCli } from './cli';
 import { getCliInfo, semverLt } from './cliInfo';
 import { listReporters } from './cliReporters';
 import { parseCobertura } from './cobertura';
+import { compilationDiagnostics } from './compilationDiagnostics';
 import { readConfig, resolveConnection } from './config';
 import { resolveSourceUri } from './coverage';
 import { buildInvocation, isInvocationError } from './invocation';
-import { parseJUnit, type TestCaseResult, type TestStatus } from './junit';
+import { parseJUnit, type TestCaseResult, type TestStatus, isUserFrame, type StackFrame } from './junit';
+import { executeRunOracle } from './oracleRunner';
 import type { TestStateManager } from './state';
 
 export async function executeRun(
@@ -43,6 +45,7 @@ export async function executeRun(
   const run = controller.createTestRun(request);
 
   state.clearLastResults();
+  compilationDiagnostics.clear();
 
   if (request.include) {
     const items = [...request.include];
@@ -118,6 +121,42 @@ export async function executeRun(
     run.enqueued(t);
   }
   for (const t of leafTests) run.started(t);
+
+  const useOracle = cfg.runnerMode === 'oracle' || cfg.runnerMode === 'auto';
+  if (useOracle) {
+    try {
+      await executeRunOracle(
+        connection,
+        [...pathArgs],
+        coverage,
+        cfg.sourcePath,
+        root,
+        run,
+        leafTests,
+        state,
+        token,
+        onComplete,
+        folders,
+      );
+      run.end();
+      vscode.commands.executeCommand('setContext', 'utplsql:running', false);
+      return;
+    } catch (e) {
+      if (cfg.runnerMode === 'oracle') {
+        const msg = e instanceof Error ? e.message : String(e);
+        run.appendOutput(`\r\n[erro] Oracle runner: ${msg}\r\n`);
+        for (const t of leafTests) {
+          run.errored(t, new vscode.TestMessage(`Oracle runner: ${msg}`));
+        }
+        run.end();
+        vscode.commands.executeCommand('setContext', 'utplsql:running', false);
+        return;
+      }
+      run.appendOutput(
+        `[aviso] Oracle runner indisponível, fallback para CLI: ${e instanceof Error ? e.message : String(e)}\r\n`,
+      );
+    }
+  }
 
   const tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), 'utplsql-'));
   const junitPath = path.join(tmpDir, 'results.xml');
@@ -203,12 +242,23 @@ export async function executeRun(
   const safeArgs = inv.args.map((a) => (a === connection ? '***' : a.replace(connection, '***')));
   run.appendOutput(`[debug] CLI: ${inv.file} ${safeArgs.join(' ')}\r\n`);
 
+  let compilerOutput = '';
   const result = await runCli(inv.file, inv.args, inv.shell, root, token, (chunk) => {
+    compilerOutput += chunk;
     run.appendOutput(chunk.replace(/\r?\n/g, '\r\n'));
   });
 
   if (result.stderr.trim()) {
+    compilerOutput += result.stderr;
     run.appendOutput(`\r\n[stderr]\r\n${result.stderr.replace(/\r?\n/g, '\r\n')}\r\n`);
+  }
+
+  if (cfg.compilationDiagnosticsEnabled && compilerOutput) {
+    const errors = compilationDiagnostics.parseFromOutput(compilerOutput);
+    if (errors.length > 0) {
+      compilationDiagnostics.resolveFiles(errors, state);
+      compilationDiagnostics.apply(errors);
+    }
   }
 
   const resultMap = applyResults(junitPath, leafTests, run, state);
@@ -311,7 +361,7 @@ export function applyResults(
     if (!item) continue;
     matched.add(item);
     resultMap.set(item.id, { status: c.status, message: c.message });
-    report(run, item, c.status, c.message, c.durationMs);
+    report(run, item, c.status, c.message, c.durationMs, c.stackFrames, state);
   }
 
   for (const t of leafTests) {
@@ -334,16 +384,29 @@ function report(
   status: TestStatus,
   message?: string,
   ms?: number,
+  stackFrames?: StackFrame[],
+  state?: TestStateManager,
 ): void {
+  let testMessage: vscode.TestMessage | undefined;
   switch (status) {
     case 'passed':
       run.passed(item, ms);
       break;
     case 'failed':
-      run.failed(item, new vscode.TestMessage(message ?? 'Falhou'), ms);
+      testMessage = new vscode.TestMessage(message ?? 'Falhou');
+      if (stackFrames && state) {
+        const loc = resolveStackFrameToUri(stackFrames, state);
+        if (loc) testMessage.location = loc;
+      }
+      run.failed(item, testMessage, ms);
       break;
     case 'error':
-      run.errored(item, new vscode.TestMessage(message ?? 'Erro'), ms);
+      testMessage = new vscode.TestMessage(message ?? 'Erro');
+      if (stackFrames && state) {
+        const loc = resolveStackFrameToUri(stackFrames, state);
+        if (loc) testMessage.location = loc;
+      }
+      run.errored(item, testMessage, ms);
       break;
     case 'skipped':
       run.skipped(item);
@@ -370,6 +433,39 @@ export function findByNameOnly(
 export function lastSegment(classname: string): string {
   const parts = classname.split(/[.:]/).filter(Boolean);
   return parts.length ? parts[parts.length - 1] : classname;
+}
+
+function resolveStackFrameToUri(
+  stackFrames: StackFrame[],
+  state: TestStateManager,
+): vscode.Location | undefined {
+  const userFrame = stackFrames.find(isUserFrame);
+  if (!userFrame || userFrame.line <= 0) return undefined;
+
+  const objName = userFrame.objectName.toLowerCase();
+
+  for (const item of state.cachedItems) {
+    const meta = state.getMeta(item);
+    if (!meta?.uri) continue;
+    if (meta.kind !== 'suite') continue;
+    if (meta.packageName.toLowerCase() !== objName) continue;
+
+    const line = Math.max(0, userFrame.line - 1);
+    const pos = new vscode.Position(line, 0);
+    return new vscode.Location(meta.uri, pos);
+  }
+
+  const folders = vscode.workspace.workspaceFolders;
+  if (folders) {
+    for (const folder of folders) {
+      const pksUri = vscode.Uri.joinPath(folder.uri, `${objName}.pks`);
+      const line = Math.max(0, userFrame.line - 1);
+      const pos = new vscode.Position(line, 0);
+      return new vscode.Location(pksUri, pos);
+    }
+  }
+
+  return undefined;
 }
 
 export function applyCoverage(

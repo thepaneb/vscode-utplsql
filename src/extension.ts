@@ -2,6 +2,7 @@ import * as vscode from 'vscode';
 import { getCliInfo } from './cliInfo';
 import { listReporters } from './cliReporters';
 import { type CodeLensItem, parseCodeLensItems, UtplsqlCodeLensProvider } from './codelens';
+import { compilationDiagnostics } from './compilationDiagnostics';
 import { clearSessionConnection, readConfig, resolveConnection } from './config';
 import { DecorationManager } from './decorations';
 import { discoverWorkspace } from './discovery';
@@ -225,6 +226,8 @@ export function activate(context: vscode.ExtensionContext) {
 
   decorationManager = new DecorationManager();
   context.subscriptions.push(decorationManager);
+
+  context.subscriptions.push(compilationDiagnostics);
 
   context.subscriptions.push(
     vscode.window.onDidChangeActiveTextEditor((editor) => {
