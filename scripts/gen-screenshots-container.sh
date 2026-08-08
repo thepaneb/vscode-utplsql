@@ -82,14 +82,13 @@ if [ "$FOUND" -eq 0 ]; then
   exit 1
 fi
 
-# Let UI fully render and extension activate
-sleep 12
+# Let UI fully render
+sleep 10
 
 WINDOW_NAME="Visual Studio Code"
 
 # ---------------------------------------------------------------------------
 # Screenshot capture — uses scrot for full-screen captures
-# xdotool send_keys runs in background with timeout to prevent hangs
 # ---------------------------------------------------------------------------
 capture() {
   local name="$1"
@@ -107,6 +106,43 @@ send_keys() {
   xdotool key "$@"
   sleep 1.5
 }
+
+# -----------------------------------------------------------------------
+# Run actual tests (if Oracle connection available)
+# -----------------------------------------------------------------------
+if [ -n "$UTPLSQL_CONN" ]; then
+  echo ""
+  echo "=== Executando testes com Oracle ==="
+
+  # Set connection in VSCode settings
+  mkdir -p "$FIXTURES_DIR/.vscode"
+  cat > "$FIXTURES_DIR/.vscode/settings.json" << EOF
+{
+  "workbench.colorTheme": "Default Light+",
+  "utplsql.includePatterns": ["**/*.pks"],
+  "utplsql.connection": "$UTPLSQL_CONN",
+  "utplsql.organization": "schema",
+  "utplsql.organization.schemaPattern": "db/{schema}/**",
+  "workbench.startupEditor": "none",
+  "editor.minimap.enabled": false,
+  "window.titleBarStyle": "custom"
+}
+EOF
+
+  # Run tests via command palette
+  sleep 2
+  send_keys "F1"
+  sleep 0.5
+  xdotool search --name "$WINDOW_NAME" windowactivate 2>/dev/null
+  sleep 0.2
+  xdotool type "utplsql run all"
+  sleep 0.5
+  send_keys "Return"
+
+  echo "  Aguardando execução dos testes..."
+  sleep 15
+  echo "  Testes executados."
+fi
 
 echo ""
 echo "=== Capturando screenshots ==="
