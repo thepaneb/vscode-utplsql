@@ -1,8 +1,10 @@
 {
-  "workbench.colorTheme": "Light+",
+  "workbench.colorTheme": "Default Light+",
   "utplsql.includePatterns": ["**/*.pks"],
   "utplsql.cliPath": "/fake/path",
   "utplsql.connection": "",
+  "utplsql.organization": "schema",
+  "utplsql.organization.schemaPattern": "db/{schema}/**",
   "workbench.startupEditor": "none",
   "editor.minimap.enabled": false,
   "window.titleBarStyle": "custom"

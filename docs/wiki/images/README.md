@@ -380,6 +380,22 @@ Coloque os PNGs capturados neste diretório.
 
 ---
 
+### `schema-mode-tree.png`
+**Onde:** Organização-da-árvore.md  
+**O que mostrar:**
+- Test Explorer com `organization: schema`
+- Schemas `APP` e `INVENTORY` como nós raiz
+- Pacotes aninhados: `tst_hello_world`, `tst_coverage_sample`, `tst_multi_suite`
+
+### `diagnostics-squiggles.png`
+**Onde:** Diagnósticos-e-quick-fix.md  
+**O que mostrar:**
+- Editor com arquivo `.pks` contendo erro de compilação
+- Sublinhado vermelho (squiggly) na linha com erro
+- Problems Panel visível com diagnóstico `utPLSQL Compilation`
+
+---
+
 ## Checklist de captura
 
 - [ ] `test-explorer-suites.png`
@@ -403,3 +419,5 @@ Coloque os PNGs capturados neste diretório.
 - [ ] `quickpick-reporters.png`
 - [ ] `sqlcl-compile.png`
 - [ ] `sqlcl-version.png`
+- [ ] `schema-mode-tree.png`
+- [ ] `diagnostics-squiggles.png`

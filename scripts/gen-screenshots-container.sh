@@ -111,6 +111,9 @@ capture "dev-host-testing.png"
 send_keys "ctrl+shift+t"
 capture "test-explorer-pass-fail.png"
 
+# 2b. Schema-mode tree
+capture "schema-mode-tree.png"
+
 # 3. Open Command Palette and type utplsql
 send_keys "F1"
 sleep 0.5
@@ -150,6 +153,16 @@ xdotool type "tst_coverage_sample.pks"
 sleep 0.5
 send_keys "Return"
 capture "editor-coverage-gutters.png"
+
+# 6b. Open broken file for diagnostics (editor with squiggles)
+send_keys "ctrl+p"
+sleep 0.5
+xdotool search --name "$WINDOW_NAME" windowactivate 2>/dev/null
+sleep 0.2
+xdotool type "tst_broken.pks"
+sleep 0.5
+send_keys "Return"
+capture "diagnostics-squiggles.png"
 
 # 7. Coverage panel
 send_keys "ctrl+shift+9"
