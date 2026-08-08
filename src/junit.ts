@@ -97,7 +97,8 @@ export function parseStackFrames(body: string): StackFrame[] | undefined {
   if (!body) return undefined;
   const frames: StackFrame[] = [];
   const regex = /at\s+(?:"([^"]+)"\."([^"]+)"|([\w.$#]+)),?\s*line\s+(\d+)/g;
-  let match;
+  let match: RegExpExecArray | null;
+  // biome-ignore lint/suspicious/noAssignInExpressions: idiomatic regex loop
   while ((match = regex.exec(body)) !== null) {
     const obj = match[1] ?? match[3];
     if (obj) {

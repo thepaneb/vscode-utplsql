@@ -10,7 +10,13 @@ import { compilationDiagnostics } from './compilationDiagnostics';
 import { readConfig, resolveConnection } from './config';
 import { resolveSourceUri } from './coverage';
 import { buildInvocation, isInvocationError } from './invocation';
-import { parseJUnit, type TestCaseResult, type TestStatus, isUserFrame, type StackFrame } from './junit';
+import {
+  isUserFrame,
+  parseJUnit,
+  type StackFrame,
+  type TestCaseResult,
+  type TestStatus,
+} from './junit';
 import { executeRunOracle } from './oracleRunner';
 import { setupValidator } from './quickfix';
 import type { TestStateManager } from './state';

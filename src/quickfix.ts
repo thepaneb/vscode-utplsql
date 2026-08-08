@@ -112,8 +112,7 @@ export class SetupValidator {
       diag.source = 'utPLSQL Setup';
       diag.code = d.code;
 
-      const ds = groups.get(key)!;
-      ds.push(diag);
+      groups.get(key)?.push(diag);
     }
 
     for (const [uri, diags] of groups) {

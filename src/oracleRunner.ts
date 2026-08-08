@@ -1,7 +1,7 @@
 import * as vscode from 'vscode';
 import { parseCobertura } from './cobertura';
 import { resolveSourceUri } from './coverage';
-import { parseJUnit, isUserFrame, type StackFrame } from './junit';
+import { isUserFrame, parseJUnit, type StackFrame } from './junit';
 import type { TestStateManager } from './state';
 
 export function parseConnString(connStr: string): {
@@ -335,7 +335,7 @@ export function countResultsFromCases(cases: ReturnType<typeof parseJUnit>): {
 export function applyCoverageFromXml(
   covXml: string,
   sourcePath: string,
-  root: string,
+  _root: string,
   run: vscode.TestRun,
   state: TestStateManager,
   folders?: readonly vscode.WorkspaceFolder[],

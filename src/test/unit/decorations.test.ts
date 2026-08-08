@@ -94,7 +94,10 @@ test('DecorationManager: applyToVisibleEditors com editor visivel', () => {
           uri,
           range: new vscode.Range(1, 0, 1, 0),
           children: new Map([
-            ['test:test_math.add', { id: 'test:test_math.add', uri, range: new vscode.Range(3, 0, 3, 0) }],
+            [
+              'test:test_math.add',
+              { id: 'test:test_math.add', uri, range: new vscode.Range(3, 0, 3, 0) },
+            ],
           ]),
         },
       ],

@@ -119,6 +119,7 @@ test('runCli: comando inexistente retorna codigo -1', async () => {
 
 test('runCli: cancelamento mata o processo', async () => {
   const callbacks: (() => void)[] = [];
+  // biome-ignore lint/suspicious/noExplicitAny: partial CancellationToken mock
   const cts: any = {
     isCancellationRequested: false,
     onCancellationRequested: (cb: () => void) => {

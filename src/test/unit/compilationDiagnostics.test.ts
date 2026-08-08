@@ -138,17 +138,13 @@ test('resolveFiles: sem workspaceFolders nao quebra', () => {
   const d = new CompilationDiagnostics();
   const state = makeState([{ uri: { fsPath: '/root/app.pks' }, uriStr: 'file:///root/app.pks' }]);
 
-  const errors = [
-    { line: 1, column: 1, code: 'PLS-123', message: 'x', fileUri: undefined },
-  ];
+  const errors = [{ line: 1, column: 1, code: 'PLS-123', message: 'x', fileUri: undefined }];
   assert.doesNotThrow(() => d.resolveFiles(errors, state));
   assert.strictEqual(errors[0].fileUri, undefined);
 });
 
 test('resolveFiles: associa erros a URIs do workspace', () => {
-  vscode.workspace.__setWorkspaceFolders([
-    { uri: { fsPath: '/root' }, name: 'root', index: 0 },
-  ]);
+  vscode.workspace.__setWorkspaceFolders([{ uri: { fsPath: '/root' }, name: 'root', index: 0 }]);
 
   const d = new CompilationDiagnostics();
   const state = makeState([{ uri: { fsPath: '/root/app.pks' }, uriStr: 'file:///root/app.pks' }]);

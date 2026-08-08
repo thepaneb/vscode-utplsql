@@ -120,13 +120,32 @@ CONCLUIR
 
 ### ⚪ Propostos
 
+#### 0.10.0
+
 | # | PRD | Versão alvo | Data |
 |---|---|---|---|
-| 12 | [Cobertura de código para objetos SQL (views, queries)](proposed/prd-12-sql-coverage.md) | 1.0.0 | 2026-07-08 |
-| 21 | [Melhorias nos workflows CI/CD](proposed/prd-21-workflow-improvements.md) | 1.0.0 | 2026-07-18 |
-| 23 | [Automatizar geração de screenshots da wiki](proposed/prd-23-auto-wiki-screenshots.md) | 1.0.0 | 2026-07-21 |
-| 33 | [PL/SQL Debugger Integration](proposed/prd-33-plsql-debugger-integration.md) | 1.0.0 | 2026-07-21 |
-| 34 | [Multi-Connection Profiles](proposed/prd-34-multi-connection-profiles.md) | 1.0.0 | 2026-07-21 |
+| 23 | [Automatizar geração de screenshots da wiki](proposed/prd-23-auto-wiki-screenshots.md) | 0.10.0 | 2026-07-21 |
+| 38 | [Connection Pooling no Oracle Runner](proposed/prd-38-connection-pooling.md) | 0.10.0 | 2026-08-08 |
+| 39 | [Eliminar código duplicado entre runners](proposed/prd-39-deduplicate-runners.md) | 0.10.0 | 2026-08-08 |
+| 40 | [Refatorar executeRunOracle: Options Object](proposed/prd-40-options-object.md) | 0.10.0 | 2026-08-08 |
+| 42 | [SuiteParser: parse de annotations estendidas](proposed/prd-42-suiteparser-annotations.md) | 0.10.0 | 2026-08-08 |
+
+#### 0.11.0
+
+| # | PRD | Versão alvo | Data |
+|---|---|---|---|
+| 21 | [Melhorias nos workflows CI/CD](proposed/prd-21-workflow-improvements.md) | 0.11.0 | 2026-07-18 |
+| 41 | [Verificação de instalação do utPLSQL](proposed/prd-41-utplsql-install-verification.md) | 0.11.0 | 2026-08-08 |
+| 43 | [Schema-mode: descoberta via ALL_OBJECTS](proposed/prd-43-schema-db-discovery.md) | 0.11.0 | 2026-08-08 |
+| 44 | [Matching resultado→teste como função pura](proposed/prd-44-pure-matching.md) | 0.11.0 | 2026-08-08 |
+
+#### 0.12.0
+
+| # | PRD | Versão alvo | Data |
+|---|---|---|---|
+| 12 | [Cobertura de código para objetos SQL (views, queries)](proposed/prd-12-sql-coverage.md) | 0.12.0 | 2026-07-08 |
+| 33 | [PL/SQL Debugger Integration](proposed/prd-33-plsql-debugger-integration.md) | 0.12.0 | 2026-07-21 |
+| 34 | [Multi-Connection Profiles](proposed/prd-34-multi-connection-profiles.md) | 0.12.0 | 2026-07-21 |
 
 
 ---
@@ -177,7 +196,14 @@ docs/prd/
     ├── prd-21-workflow-improvements.md
     ├── prd-23-auto-wiki-screenshots.md
     ├── prd-33-plsql-debugger-integration.md
-    └── prd-34-multi-connection-profiles.md
+    ├── prd-34-multi-connection-profiles.md
+    ├── prd-38-connection-pooling.md
+    ├── prd-39-deduplicate-runners.md
+    ├── prd-40-options-object.md
+    ├── prd-41-utplsql-install-verification.md
+    ├── prd-42-suiteparser-annotations.md
+    ├── prd-43-schema-db-discovery.md
+    └── prd-44-pure-matching.md
 ```
 
 ---

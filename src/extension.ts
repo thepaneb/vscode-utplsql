@@ -7,8 +7,8 @@ import { clearSessionConnection, readConfig, resolveConnection } from './config'
 import { DecorationManager } from './decorations';
 import { discoverWorkspace, extractSchemaFromPath } from './discovery';
 import { filterSuitesByFolder, filterSuitesByUri } from './matching';
-import { executeRun } from './runner';
 import { setupValidator, UtplsqlCodeActionProvider } from './quickfix';
+import { executeRun } from './runner';
 import { TestStateManager } from './state';
 import { UtplsqlStatusBar } from './statusBar';
 import type { ItemMeta } from './types';
@@ -397,7 +397,10 @@ async function doRefresh(controller: vscode.TestController): Promise<void> {
   }
 }
 
-function buildFileTree(controller: vscode.TestController, suites: Awaited<ReturnType<typeof discoverWorkspace>>) {
+function buildFileTree(
+  controller: vscode.TestController,
+  suites: Awaited<ReturnType<typeof discoverWorkspace>>,
+) {
   for (const suite of suites) {
     const suiteItem = controller.createTestItem(
       `suite:${suite.packageName.toLowerCase()}`,
@@ -442,14 +445,10 @@ function buildSchemaTree(
   const bySchema = new Map<string, typeof suites>();
 
   for (const suite of suites) {
-    const schema = extractSchemaFromPath(
-      suite.uri.fsPath,
-      suite.folder.uri.fsPath,
-      schemaPattern,
-    );
+    const schema = extractSchemaFromPath(suite.uri.fsPath, suite.folder.uri.fsPath, schemaPattern);
     const key = schema ?? 'UNKNOWN';
     if (!bySchema.has(key)) bySchema.set(key, []);
-    bySchema.get(key)!.push(suite);
+    bySchema.get(key)?.push(suite);
   }
 
   const sortedSchemas = [...bySchema.keys()].sort((a, b) => {
@@ -459,7 +458,8 @@ function buildSchemaTree(
   });
 
   for (const schema of sortedSchemas) {
-    const schemaSuites = bySchema.get(schema)!;
+    const schemaSuites = bySchema.get(schema);
+    if (!schemaSuites) continue;
     const firstSuite = schemaSuites[0];
     const schemaItem = controller.createTestItem(
       `schema:${schema}`,
@@ -471,7 +471,7 @@ function buildSchemaTree(
     for (const suite of schemaSuites) {
       const pkg = suite.packageName;
       if (!byPackage.has(pkg)) byPackage.set(pkg, []);
-      byPackage.get(pkg)!.push(suite);
+      byPackage.get(pkg)?.push(suite);
     }
 
     for (const [pkg, pkgSuites] of byPackage) {

@@ -1,6 +1,6 @@
 import assert from 'node:assert';
 import { test } from 'node:test';
-import { parseJUnit, parseStackFrames, isUserFrame } from '../../junit';
+import { isUserFrame, parseJUnit, parseStackFrames } from '../../junit';
 
 const XML = `<?xml version="1.0" encoding="UTF-8"?>
 <testsuites tests="3" failures="1" errors="0">
@@ -135,9 +135,9 @@ at "APP.TEST_MATH"."ASSERT_EQUALS", line 8</failure>
   const cases = parseJUnit(xml);
   assert.strictEqual(cases.length, 1);
   assert.ok(cases[0].stackFrames);
-  assert.strictEqual(cases[0].stackFrames!.length, 2);
-  assert.strictEqual(cases[0].stackFrames![0].objectName, 'APP.TEST_MATH');
-  assert.strictEqual(cases[0].stackFrames![0].line, 12);
+  assert.strictEqual(cases[0].stackFrames?.length, 2);
+  assert.strictEqual(cases[0].stackFrames?.[0].objectName, 'APP.TEST_MATH');
+  assert.strictEqual(cases[0].stackFrames?.[0].line, 12);
 });
 
 test('parseStackFrames: error tag tambem tem stack frames', () => {
@@ -150,7 +150,7 @@ test('parseStackFrames: error tag tambem tem stack frames', () => {
   assert.strictEqual(cases.length, 1);
   assert.strictEqual(cases[0].status, 'error');
   assert.ok(cases[0].stackFrames);
-  assert.strictEqual(cases[0].stackFrames!.length, 1);
+  assert.strictEqual(cases[0].stackFrames?.length, 1);
 });
 
 test('isUserFrame: filtra frames internos UT_', () => {

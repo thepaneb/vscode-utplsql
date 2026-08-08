@@ -74,7 +74,9 @@ test('UtplsqlCodeLensProvider: gera 2 lenses por anotacao', () => {
     getText: () => pkgWrapper('--%suite(Math)\n  --%test(Add)\n  PROCEDURE add;'),
     fileName: '/test/test_math.pks',
     uri: { toString: () => 'file:///test/test_math.pks' },
+    // biome-ignore lint/suspicious/noExplicitAny: partial TextDocument mock
   } as any;
+  // biome-ignore lint/suspicious/noExplicitAny: partial CancellationToken mock
   const lenses = provider.provideCodeLenses(doc, {} as any);
   assert.strictEqual(lenses.length, 4);
   assert.strictEqual(lenses[0].command?.title, '▶ Run Suite');
@@ -89,7 +91,9 @@ test('UtplsqlCodeLensProvider: arquivo sem anotacoes retorna vazio', () => {
     getText: () => pkgWrapper('  PROCEDURE add;'),
     fileName: '/test/test_math.pks',
     uri: { toString: () => 'file:///test/test_math.pks' },
+    // biome-ignore lint/suspicious/noExplicitAny: partial TextDocument mock
   } as any;
+  // biome-ignore lint/suspicious/noExplicitAny: partial CancellationToken mock
   const lenses = provider.provideCodeLenses(doc, {} as any);
   assert.strictEqual(lenses.length, 0);
 });
@@ -100,7 +104,9 @@ test('UtplsqlCodeLensProvider: arquivo .sql e ignorado', () => {
     getText: () => pkgWrapper('--%suite(Math)\n  PROCEDURE add;'),
     fileName: '/test/test_math.sql',
     uri: { toString: () => 'file:///test/test_math.sql' },
+    // biome-ignore lint/suspicious/noExplicitAny: partial TextDocument mock
   } as any;
+  // biome-ignore lint/suspicious/noExplicitAny: partial CancellationToken mock
   const lenses = provider.provideCodeLenses(doc, {} as any);
   assert.strictEqual(lenses.length, 0);
 });

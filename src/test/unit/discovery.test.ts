@@ -93,7 +93,10 @@ test('discoverWorkspace: suite sem testes e ignorada', async () => {
 });
 
 test('discoverWorkspace: pattern sem match retorna vazio', async () => {
-  const result = await discoverWorkspace(['**/*.xyz'], [{ uri: { fsPath: '/root' }, name: 'root', index: 0 } as any]);
+  const result = await discoverWorkspace(
+    ['**/*.xyz'],
+    [{ uri: { fsPath: '/root' }, name: 'root', index: 0 } as any],
+  );
   assert.strictEqual(result.length, 0);
 });
 
