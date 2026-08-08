@@ -54,6 +54,7 @@ sleep 1
   --no-sandbox \
   --disable-gpu \
   --disable-dev-shm-usage \
+  --disable-workspace-trust \
   --user-data-dir /tmp/vscode-user \
   --extensionDevelopmentPath="$PROJECT_DIR" \
   "$FIXTURES_DIR" \
@@ -81,8 +82,8 @@ if [ "$FOUND" -eq 0 ]; then
   exit 1
 fi
 
-# Let UI fully render
-sleep 8
+# Let UI fully render and extension activate
+sleep 12
 
 WINDOW_NAME="Visual Studio Code"
 
@@ -170,9 +171,17 @@ sleep 0.5
 send_keys "Return"
 capture "diagnostics-squiggles.png"
 
-# 7. Coverage panel
-send_keys "ctrl+shift+9"
+# 7. Coverage panel — open via command palette
+send_keys "F1"
+sleep 0.5
+xdotool search --name "$WINDOW_NAME" windowactivate 2>/dev/null
+sleep 0.2
+xdotool type "test coverage"
+sleep 0.5
+send_keys "Return"
+sleep 3
 capture "coverage-panel.png"
+send_keys "Escape"
 
 # 8. Explorer with context menu on .pks
 send_keys "ctrl+shift+e"
