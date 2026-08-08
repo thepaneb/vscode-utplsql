@@ -40,12 +40,19 @@ echo "=== Lançando VSCode com xvfb ==="
 
 # Write settings.json BEFORE launching VSCode
 mkdir -p "$FIXTURES_DIR/.vscode"
+
+# Replace localhost/127.0.0.1 with host.docker.internal for Docker networking
+FIXED_CONN="$UTPLSQL_CONN"
+if [ -n "$FIXED_CONN" ]; then
+  FIXED_CONN=$(echo "$FIXED_CONN" | sed 's/\/\/localhost:/\/\/host.docker.internal:/g; s/\/\/127\.0\.0\.1:/\/\/host.docker.internal:/g')
+fi
+
 if [ -n "$UTPLSQL_CONN" ]; then
   cat > "$FIXTURES_DIR/.vscode/settings.json" << SETEOF
 {
   "workbench.colorTheme": "Default Light+",
   "utplsql.includePatterns": ["**/*.pks"],
-  "utplsql.connection": "$UTPLSQL_CONN",
+  "utplsql.connection": "$FIXED_CONN",
   "utplsql.cliPath": "/opt/utplsql-cli/utPLSQL-cli/bin/utplsql",
   "utplsql.javaPath": "/usr/bin/java",
   "utplsql.organization": "schema",
