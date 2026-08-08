@@ -116,19 +116,17 @@ CONCLUIR
 
 ### 🔵 Aprovados
 
-*(nenhum)*
-
-### ⚪ Propostos
-
 #### 0.10.0
 
 | # | PRD | Versão alvo | Data |
 |---|---|---|---|
-| 23 | [Automatizar geração de screenshots da wiki](proposed/prd-23-auto-wiki-screenshots.md) | 0.10.0 | 2026-07-21 |
-| 38 | [Connection Pooling no Oracle Runner](proposed/prd-38-connection-pooling.md) | 0.10.0 | 2026-08-08 |
-| 39 | [Eliminar código duplicado entre runners](proposed/prd-39-deduplicate-runners.md) | 0.10.0 | 2026-08-08 |
-| 40 | [Refatorar executeRunOracle: Options Object](proposed/prd-40-options-object.md) | 0.10.0 | 2026-08-08 |
-| 42 | [SuiteParser: parse de annotations estendidas](proposed/prd-42-suiteparser-annotations.md) | 0.10.0 | 2026-08-08 |
+| 23 | [Automatizar geração de screenshots da wiki](approved/prd-23-auto-wiki-screenshots.md) | 0.10.0 | 2026-07-21 |
+| 38 | [Connection Pooling no Oracle Runner](approved/prd-38-connection-pooling.md) | 0.10.0 | 2026-08-08 |
+| 39 | [Eliminar código duplicado entre runners](approved/prd-39-deduplicate-runners.md) | 0.10.0 | 2026-08-08 |
+| 40 | [Refatorar executeRunOracle: Options Object](approved/prd-40-options-object.md) | 0.10.0 | 2026-08-08 |
+| 42 | [SuiteParser: parse de annotations estendidas](approved/prd-42-suiteparser-annotations.md) | 0.10.0 | 2026-08-08 |
+
+### ⚪ Propostos
 
 #### 0.11.0
 
@@ -190,18 +188,18 @@ docs/prd/
 │   ├── prd-36-reporter-parse-fix.md
 │   └── prd-37-ts-coverage.md
 ├── approved/         ← aprovados, aguardando implementação
+│   ├── prd-23-auto-wiki-screenshots.md
+│   ├── prd-38-connection-pooling.md
+│   ├── prd-39-deduplicate-runners.md
+│   ├── prd-40-options-object.md
+│   └── prd-42-suiteparser-annotations.md
 ├── in-progress/      ← sendo implementados agora
 └── proposed/         ← em avaliação
     ├── prd-12-sql-coverage.md
     ├── prd-21-workflow-improvements.md
-    ├── prd-23-auto-wiki-screenshots.md
     ├── prd-33-plsql-debugger-integration.md
     ├── prd-34-multi-connection-profiles.md
-    ├── prd-38-connection-pooling.md
-    ├── prd-39-deduplicate-runners.md
-    ├── prd-40-options-object.md
     ├── prd-41-utplsql-install-verification.md
-    ├── prd-42-suiteparser-annotations.md
     ├── prd-43-schema-db-discovery.md
     └── prd-44-pure-matching.md
 ```
