@@ -1,0 +1,9 @@
+{
+  "workbench.colorTheme": "Default Light+",
+  "utplsql.includePatterns": ["**/*.pks"],
+  "utplsql.cliPath": "/fake/path",
+  "utplsql.connection": "",
+  "workbench.startupEditor": "none",
+  "editor.minimap.enabled": false,
+  "window.titleBarStyle": "custom"
+}

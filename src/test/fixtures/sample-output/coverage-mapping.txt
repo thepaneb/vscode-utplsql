@@ -1,0 +1,7 @@
+[info] Coverage collected for UT3 schema.
+[info] Mapping source files...
+[cobertura] source_path=/home/user/project/install
+[cobertura] Mapping: packages/ORDER_PKG.sql → src/plsql/packages/order_pkg.sql (PACKAGE BODY)
+[cobertura] Mapping: functions/CALC_TAX.sql → src/plsql/functions/calc_tax.sql (FUNCTION)
+[cobertura] Mapping: procedures/CHECK_STOCK.sql → src/plsql/procedures/check_stock.sql (PROCEDURE)
+[cobertura] 3 files mapped successfully.
