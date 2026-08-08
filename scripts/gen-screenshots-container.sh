@@ -127,8 +127,8 @@ if [ "$FOUND" -eq 0 ]; then
   exit 1
 fi
 
-# Let UI fully render
-sleep 10
+# Let UI fully render and extension activate
+sleep 20
 
 WINDOW_NAME="Visual Studio Code"
 
@@ -146,9 +146,9 @@ capture() {
 }
 
 send_keys() {
-  xdotool search --name "$WINDOW_NAME" windowactivate --sync 2>/dev/null
+  xdotool windowfocus --sync $WID 2>/dev/null
   sleep 0.3
-  xdotool key "$@"
+  xdotool key --window $WID "$@"
   sleep 1.5
 }
 
@@ -159,18 +159,24 @@ if [ -n "$UTPLSQL_CONN" ]; then
   echo ""
   echo "=== Executando testes com Oracle ==="
 
-  # Run tests via command palette
-  sleep 2
-  send_keys "F1"
-  sleep 0.5
-  xdotool search --name "$WINDOW_NAME" windowactivate 2>/dev/null
-  sleep 0.2
-  xdotool type "utplsql run all"
-  sleep 0.5
-  send_keys "Return"
+  # Find and focus the VSCode window
+  WID=$(xdotool search --name "$WINDOW_NAME" | head -1)
+  xdotool windowfocus --sync $WID 2>/dev/null
+  sleep 1
 
-  echo "  Aguardando execução dos testes..."
-  sleep 15
+  # Open Test Explorer
+  xdotool key --window $WID "ctrl+shift+t"
+  sleep 3
+
+  # Execute Run All via command palette using the Portuguese command name
+  xdotool key --window $WID "F1"
+  sleep 1.5
+  xdotool type --window $WID --delay 30 "utplsql: Rodar todos os testes"
+  sleep 1
+  xdotool key --window $WID "Return"
+
+  echo "  Aguardando execução dos testes (45s)..."
+  sleep 45
   echo "  Testes executados."
 fi
 
