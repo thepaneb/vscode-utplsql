@@ -21,6 +21,7 @@ export class TestStateManager {
   private lastResults = new Map<string, TestLineResult>();
   private lastRun: LastRunState | undefined;
   private lastFailedItems: vscode.TestItem[] = [];
+  private suiteMap = new Map<string, vscode.TestItem>();
 
   cachedItems: vscode.TestItem[] = [];
   runProfile?: vscode.TestRunProfile;
@@ -75,5 +76,15 @@ export class TestStateManager {
   }
   getLastFailedItems(): vscode.TestItem[] {
     return this.lastFailedItems;
+  }
+
+  setSuiteItem(id: string, item: vscode.TestItem): void {
+    this.suiteMap.set(id, item);
+  }
+  getSuiteItem(id: string): vscode.TestItem | undefined {
+    return this.suiteMap.get(id);
+  }
+  clearSuiteMap(): void {
+    this.suiteMap.clear();
   }
 }

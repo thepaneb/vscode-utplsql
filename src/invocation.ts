@@ -7,6 +7,7 @@ export interface InvocationConfig {
   invocation: string; // 'launcher' | 'java'
   cliPath: string;
   javaPath: string;
+  javaArgs: string[];
   cliHome: string;
 }
 
@@ -62,6 +63,7 @@ export function buildInvocation(cfg: InvocationConfig, cliArgs: string[]): Spawn
   const classpath = [path.join(home, 'etc'), path.join(home, 'lib', '*')].join(path.delimiter);
   const file = (cfg.javaPath || '').trim() || 'java';
   const args = [
+    ...cfg.javaArgs,
     '-cp',
     classpath,
     '-Dapp.name=utplsql',

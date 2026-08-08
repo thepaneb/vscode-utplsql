@@ -1,5 +1,17 @@
 # Changelog
 
+## 0.9.0
+
+- **Execução Oracle direta com streaming** (PRD-11): novo `runnerMode` (`auto`, `cli`, `oracle`). Modo `auto` conecta via `node-oracledb` (thin driver, opcional) e faz polling incremental de `UT_OUTPUT_BUFFER_TMP` — cada teste aparece no Test Explorer em tempo real. Fallback automático para CLI se `oracledb` não estiver disponível. Suporte a shared install via `discoverUtplsqlSchema` (schema prefixado nas queries). Reporters (doc, JUnit, coverage) escrevem na mesma tabela VARCHAR2 — sem dependência de `UT_OUTPUT_CLOB_BUFFER_TMP`.
+- **Flags JVM customizáveis** (PRD-17): nova setting `utplsql.javaArgs` (array, default `["-Xmx256m"]`). Flags inseridas antes de `-cp` no modo `java`. Permite `-Xmx`, `-Xms`, `-Dprop=value` sem editar código.
+- **Compilation diagnostics** (PRD-28): `CompilationDiagnostics` captura erros `PLS-*`/`ORA-06550` do stdout do CLI e os exibe como sublinhados no editor e `vscode.Diagnostic` no Problems Panel (source: "utPLSQL Compilation"). Mapeia para arquivos `.pks`/`.pkb` via `resolveFiles`. Setting `utplsql.compilationDiagnostics.enabled` (default `true`).
+- **Jump to failing assertion** (PRD-29): `parseStackFrames` extrai stack traces do JUnit XML (`at "SCHEMA.PKG"."PROC", line 42`), `resolveStackFrameToUri` mapeia para arquivo fonte. `message.location` populado nos `TestMessage`s de falha/erro — VSCode habilita botão "Go to Error" nativo. Frames internos (`UT_*`) filtrados automaticamente.
+- **Schema-aware test organization** (PRD-30): nova setting `utplsql.organization` (`file` | `schema`, default `file`). Modo `schema` agrupa testes em hierarquia **Schema > Package > Suite > Test** no Test Explorer. `extractSchemaFromPath` extrai schema via regex glob configurável em `utplsql.organization.schemaPattern` (placeholder `{schema}`, default `db/{schema}/**`). Suporte a `UNKNOWN` para arquivos fora do padrão.
+- **Quick-fix setup diagnostics** (PRD-32): `SetupValidator` valida CLI, Java, conexão e versão utPLSQL na ativação da extensão. `UtplsqlCodeActionProvider` oferece Code Actions (quick-fix) no Problems Panel: "Configurar utplsql.cliPath", "Reconfigurar conexão", "Copiar grants". Novos comandos: `utplsql.validateSetup`, `utplsql.configureConnection`, `utplsql.copyGrantsToClipboard`. Setting `utplsql.setupDiagnostics.enabled` (default `true`).
+- **Cobertura TypeScript com c8** (PRD-37): script `test:coverage` com `c8`, `.c8rc` com thresholds 65/80/70 (lines/branches/functions), reporters `text` + `lcov` + `html`. Exclusão de `src/test/**` e `out/test/**`. Coverage atual: **69.4% lines** (241 testes).
+- **Testes de cobertura expandidos**: `decorations.test.ts` +5 testes, `statusBar.test.ts` +5 testes, `discovery.test.ts` +3 testes, `compilationDiagnostics.test.ts` +1 teste. Infra de mock expandida em `vscode-stub.ts` (`StatusBarItem`, `__setMockFileError`, `__setVisibleEditors`, `Uri.joinPath`).
+- **Documentação completa**: novas páginas wiki (Execução Oracle direta, Diagnósticos e quick-fix, Organização da árvore). FAQ +9 perguntas, Troubleshooting +4 entradas, README com diagrama dual CLI/Oracle, sidebar reorganizada.
+
 ## 0.8.0
 
 - CodeLens Integration (PRD-24): botões Run/Run with Coverage sobre `%suite` e `%test` no editor.

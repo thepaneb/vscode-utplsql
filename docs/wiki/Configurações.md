@@ -30,7 +30,9 @@ Todas as settings da extensão, com prefixo `utplsql.`. Configure no
 |---|---|---|
 | `utplsql.invocation` | `launcher` | `launcher` (via .bat/script) ou `java` (JVM direto). Veja [Modo de invocação](Modo-de-invocação). |
 | `utplsql.javaPath` | `java` | Executável Java. Só no modo `java`. |
+| `utplsql.javaArgs` | `["-Xmx256m"]` | Flags JVM no modo `java` (ex.: `["-Xmx512m", "-Xms128m"]`). Inseridas antes de `-cp`. |
 | `utplsql.cliHome` | `""` | Raiz do utPLSQL-cli. Vazio = derivado do `cliPath`. Só no modo `java`. |
+| `utplsql.runnerMode` | `auto` | Modo de execução: `auto` (Oracle direto via node-oracledb, fallback CLI), `cli` (sempre CLI), `oracle` (sempre Oracle direto). |
 
 ## Flags do CLI
 
@@ -55,6 +57,15 @@ Todas as settings da extensão, com prefixo `utplsql.`. Configure no
 | `utplsql.codeLens.enabled` | `true` | Botões CodeLens Run/Run with Coverage sobre `%suite` e `%test`. |
 | `utplsql.statusBar.enabled` | `true` | Indicador de status na barra de status (pass/fail + duração). |
 | `utplsql.decorations.enabled` | `true` | Ícones inline ✓/✗/⚠ no editor após execução. |
+| `utplsql.compilationDiagnostics.enabled` | `true` | Exibe erros de compilação PL/SQL como sublinhados e no Problems Panel. |
+| `utplsql.setupDiagnostics.enabled` | `true` | Exibe diagnósticos de setup (CLI, conexão, grants) com quick-fix. |
+
+## Organização da árvore
+
+| Setting | Default | Descrição |
+|---|---|---|
+| `utplsql.organization` | `file` | `file` (por caminho) ou `schema` (Schema > Package > Suite > Test). |
+| `utplsql.organization.schemaPattern` | `db/{schema}/**` | Padrão glob para extrair schema do caminho. Use `{schema}` como placeholder. |
 
 ## Hierarquia de settings
 

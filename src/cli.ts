@@ -34,7 +34,7 @@ export function runCli(
     // sem quoting, metacaracteres de regex passam literais.
     const child = shell
       ? process.platform === 'win32'
-        ? cp.spawn('cmd.exe', ['/d', '/s', '/c', [file, ...args].map(quoteArg).join(' ')], {
+        ? cp.spawn('cmd.exe', ['/d', '/c', file, ...args], {
             cwd,
             shell: false,
             windowsHide: true,

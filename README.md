@@ -14,6 +14,10 @@ Integra o [utPLSQL](https://www.utplsql.org/) ao VSCode, trazendo os testes de P
 - ✅ **Decorações inline** — ícones ✓/✗/⚠ no editor após execução, com tooltip da falha e overview ruler.
 - 📌 **Status Bar** — indicador com contagem pass/fail, duração e progresso em tempo real.
 - 🔁 **Smart Re-run** — Rerun Last, Run at Cursor, Run Failed Only com um atalho.
+- 🚀 **Oracle direto (via node-oracledb)** — streaming em tempo real, sem esperar o batch terminar.
+- 🔧 **Diagnósticos de setup** — validação proativa de CLI, conexão, grants e versão com quick-fix.
+- 🧩 **Schema-aware tree** — organize testes por Schema > Package > Suite > Test no Test Explorer.
+- 🎯 **Jump to failure** — navegação direta para a linha da asserção que falhou (via "Go to Error" nativo).
 
 ## Instalação
 
@@ -70,18 +74,35 @@ conexão e a mantém apenas em memória durante a sessão — use o comando
 
 ## Como funciona
 
+Dois modos de execução estão disponíveis:
+
+### Modo Oracle direto (v0.9.0) — `runnerMode: auto` ou `oracle`
+```
+ Extension Host
+     │
+     ├─► node-oracledb conn1  →  ut_runner.run(...)             ──► testes executados
+     │
+     └─► node-oracledb conn2  →  poll UT_OUTPUT_BUFFER_TMP      ──► resultados streaming
+                                    (doc + JUnit + coverage)
+```
+Sem arquivos temporários, sem esperar o batch. Resultados aparecem no
+Test Explorer **conforme cada teste termina**.
+
+### Modo CLI — `runnerMode: cli` (fallback)
 ```
  Test Explorer / menu de contexto
-        │  (descobre %suite / %test nos .pks)
-        ▼
- utplsql run <conn> -p=<suites>
-   -f=ut_junit_reporter             -o=results.xml    ──► resultados na view de testes
-   -f=ut_coverage_cobertura_reporter -o=coverage.xml  ──► gutters + % na aba Coverage
-   -f=ut_documentation_reporter -c                    ──► log no terminal de testes
+         │  (descobre %suite / %test nos .pks)
+         ▼
+  utplsql run <conn> -p=<suites>
+    -f=ut_junit_reporter             -o=results.xml    ──► resultados na view de testes
+    -f=ut_coverage_cobertura_reporter -o=coverage.xml  ──► gutters + % na aba Coverage
+    -f=ut_documentation_reporter -c                    ──► log no terminal de testes
 ```
 
-A extensão monta a linha de comando do CLI, lê os relatórios (JUnit + Cobertura) e os
-traduz para as APIs nativas do VSCode.
+A extensão monta a linha de comando do CLI ou conecta via Oracle direto, lê os
+relatórios (JUnit + Cobertura) e os traduz para as APIs nativas do VSCode. O
+modo `auto` (padrão) tenta Oracle direto e cai para CLI se `node-oracledb` não
+estiver instalado. Use `runnerMode: cli` para forçar CLI sempre.
 
 ## Configuração
 
@@ -105,6 +126,12 @@ traduz para as APIs nativas do VSCode.
 | `utplsql.codeLens.enabled` | `true` | Exibe botões CodeLens Run/Run with Coverage sobre `%suite` e `%test`. |
 | `utplsql.statusBar.enabled` | `true` | Exibe indicador de status dos testes na barra de status. |
 | `utplsql.decorations.enabled` | `true` | Exibe decorações de pass/fail nas linhas `%suite` e `%test` após execução. |
+| `utplsql.runnerMode` | `auto` | Modo de execução: `auto` (Oracle direto via node-oracledb, fallback CLI), `cli` (sempre via linha de comando), `oracle` (sempre Oracle direto). |
+| `utplsql.javaArgs` | `["-Xmx256m"]` | Flags JVM para o modo `java` (ex.: `["-Xmx512m", "-Xms128m"]`). Inseridas antes de `-cp`. |
+| `utplsql.organization` | `file` | Organização da árvore: `file` (por caminho) ou `schema` (Schema > Package > Suite > Test). |
+| `utplsql.organization.schemaPattern` | `db/{schema}/**` | Padrão glob para extrair schema do caminho. Use `{schema}` como placeholder. |
+| `utplsql.compilationDiagnostics.enabled` | `true` | Exibe erros de compilação PL/SQL como sublinhados no editor e Problems Panel. |
+| `utplsql.setupDiagnostics.enabled` | `true` | Exibe diagnósticos de configuração (CLI, conexão, grants, versão) com quick-fix actions. |
 
 Exemplo (`.vscode/settings.json` do projeto):
 
@@ -179,7 +206,8 @@ sem `cmd` no meio, então `^` e `|` passam **literais** — você pode usar `^â
    - `Ctrl+Shift+U L` — **Rerun Last** (repete a última execução, com ou sem coverage).
    - `Ctrl+Shift+U U` — **Run at Cursor** (executa o `%test`/`%suite` sob o cursor).
    - `Ctrl+Shift+U X` — **Run Failed Only** (executa apenas os testes que falharam).
-8. Para diagnóstico, use `utPLSQL: Mostrar informações` na palette — exibe versões CLI/API/DB com opção de copiar.
+8. **Para Oracle direto (streaming):** instale `npm install oracledb` (opcional). Sem ele, o modo `auto` usa CLI automaticamente.
+9. Para diagnóstico, use `utPLSQL: Mostrar informações` na palette — exibe versões CLI/API/DB com opção de copiar.
 9. **utPLSQL: Selecionar reporter adicional...** — QuickPick com reporters disponíveis no banco.
 10. **utPLSQL: Cancelar execução** — interrompe o CLI em execução (`Escape` durante execução).
 11. **utPLSQL: Atualizar testes** — força rediscovery dos `.pks`.
@@ -207,6 +235,9 @@ Todos os comandos da extensão (palette `Ctrl+Shift+P` prefixo `utPLSQL:`):
 | `utPLSQL: Rerun Last Test` | Repete a última execução | `Ctrl+Shift+U L` |
 | `utPLSQL: Run Test at Cursor` | Executa o teste sob o cursor | `Ctrl+Shift+U U` |
 | `utPLSQL: Run Failed Tests` | Reexecuta apenas testes falhos | `Ctrl+Shift+U X` |
+| `utPLSQL: Validar configuração` | Roda validação completa do setup e mostra resultados | — |
+| `utPLSQL: Configurar conexão` | Abre settings em `utplsql.connection` | — |
+| `utPLSQL: Copiar grants de cobertura` | Copia grants SQL para clipboard | — |
 | `utPLSQL: Mostrar Test Explorer` | Foca a view Testing | Clique na status bar |
 
 ## Keybindings
@@ -351,11 +382,13 @@ GRANT SELECT ON SYS.DBA_PROCEDURES TO <ut3_owner>;
 
 | Sintoma | Causa provável | Solução |
 |---|---|---|
-| Suites não aparecem | `includePatterns` não cobre os arquivos | Ajuste `utplsql.includePatterns` (ex.: `["**/*.sql"]`) |
-| Cobertura vazia | Falta `GRANT EXECUTE ON DBMS_PROFILER` | Execute os grants em [Requisitos no banco](#requisitos-no-banco) |
-| Cobertura vazia | Reporter de cobertura não instalado no banco | Atualize o utPLSQL; use `utPLSQL: Mostrar informações` para verificar versões |
+| Suites não aparecem | CLI não encontrado | Rode `utPLSQL: Validar configuração` para diagnóstico |
+| Cobertura vazia | Falta `GRANT EXECUTE ON DBMS_PROFILER` | Execute grants em [Requisitos](#requisitos-no-banco) ou use `utPLSQL: Copiar grants` |
+| Cobertura vazia | Oracle 19c exige grants adicionais | `GRANT EXECUTE ON DBMS_PROFILER` + `GRANT EXECUTE ON DBMS_PLSQL_CODE_COVERAGE` |
+| Desempenho lento | Suites grandes exigem mais heap JVM | Aumente `utplsql.javaArgs` (ex.: `["-Xmx1024m"]`) |
+| Erro de compilação sem indicação | Código com erro de sintaxe PL/SQL | Ative `utplsql.compilationDiagnostics.enabled` (default ativo); veja Problems Panel |
+| Erro de conexão | String malformada ou DB inacessível | Use `utPLSQL: Validar configuração` |
 | Timeout ao executar | Testes demoram mais que `timeoutMinutes` | Aumente `utplsql.timeoutMinutes` |
-| Erro de conexão | String malformada ou DB inacessível | Use `utPLSQL: Mostrar informações` para validar a conexão |
 | Regex de cobertura não casa | `cmd` do Windows consome `^` e `\|` | Use `utplsql.invocation: "java"` (veja [Modo de invocação](#modo-de-invocação-launcher-vs-java)) |
 | `%suite` não reconhecido | Falta linha em branco após `%suite` | Deixe uma linha em branco entre `%suite` e o primeiro `%test`/procedure |
 | "relatório não gerado" | CLI não conseguiu gerar XML de saída | Verifique permissões de escrita em `%TEMP%` e grants do utPLSQL |

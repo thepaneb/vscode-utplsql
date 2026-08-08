@@ -1,0 +1,64 @@
+# Especificação Funcional — vscode-utplsql
+
+Extensão VSCode para execução de testes utPLSQL (Oracle PL/SQL) integrada ao Test
+Explorer nativo, com suporte a cobertura de código, diagnósticos e organização
+por schema.
+
+## Visão geral
+
+```
+discovery (.pks)  ──►  executeRun  ──►  CLI / Oracle direto  ──►  parseJUnit  ──►  Test Explorer
+                              │                                      │
+                              └─► parseCobertura  ──►  Coverage gutters
+```
+
+### Arquitetura de alto nível
+
+| Camada | Módulos | Responsabilidade |
+|---|---|---|
+| **Descoberta** | `suiteParser.ts`, `discovery.ts` | Encontrar suites/testes nos arquivos `.pks` via regex `%suite`/`%test` |
+| **Execução** | `runner.ts`, `cli.ts`, `oracleRunner.ts`, `invocation.ts` | Executar testes via CLI ou Oracle direto |
+| **Resultados** | `junit.ts`, `runner.ts`, `cliReporters.ts` | Parse do XML JUnit, mapeamento para `vscode.TestItem` |
+| **Cobertura** | `cobertura.ts`, `coverage.ts` | Parse do XML Cobertura, mapeamento para arquivos fonte |
+| **UX** | `codelens.ts`, `statusBar.ts`, `decorations.ts` | CodeLens, StatusBar, decorações inline |
+| **Diagnósticos** | `compilationDiagnostics.ts`, `quickfix.ts` | Erros PL/SQL no editor, validação de setup com quick-fix |
+| **Configuração** | `config.ts`, `state.ts` | Settings, conexão, estado persistente |
+| **Orquestração** | `extension.ts` | Registro de comandos, providers, ciclo de vida |
+
+### Separação módulos puros vs vscode
+
+| Puro (testável com `node --test`) | Depende de `vscode` |
+|---|---|
+| `suiteParser.ts`, `junit.ts`, `cobertura.ts` | `extension.ts`, `runner.ts` |
+| `invocation.ts`, `matching.ts` | `config.ts`, `cli.ts` |
+| `cliInfo.ts`, `cliReporters.ts`, `codelens.ts` (parse) | `discovery.ts`, `coverage.ts` |
+| `state.ts`, `types.ts` | `decorations.ts`, `statusBar.ts` |
+
+### Context keys
+
+| Key | Quando |
+|---|---|
+| `utplsql:activated` | Extensão ativada |
+| `utplsql:running` | Execução em andamento |
+| `utplsql:connected` | Conexão resolvida |
+| `utplsql:hasFailures` | Último run teve falhas |
+
+### Padrões de arquivo
+
+- Test specs: `**/*.pks` com annotations `--%suite` e `--%test`
+- CodeLens: registrado em `{ scheme: 'file', pattern: '**/*.pks' }` (sem `language: 'plsql'`)
+
+## Índice
+
+| # | Documento | Descrição |
+|---|---|---|
+| 01 | [Test Discovery](01-test-discovery.md) | Como suites e testes são descobertos nos arquivos `.pks` |
+| 02 | [Test Execution](02-test-execution.md) | Modos de execução (CLI, Oracle streaming), cancelamento |
+| 03 | [Results and Reporting](03-results-and-reporting.md) | Parse JUnit, mapping resultado→TestItem, reporters |
+| 04 | [Code Coverage](04-code-coverage.md) | Parse Cobertura, source mapping, grants |
+| 05 | [UX Components](05-ux-components.md) | CodeLens, StatusBar, Decorations, Keybindings |
+| 06 | [Tree Organization](06-tree-organization.md) | Modos file/schema, extração de schema |
+| 07 | [Diagnostics and Validation](07-diagnostics-and-validation.md) | Compilação PL/SQL, setup validation, quick-fix |
+| 08 | [Jump to Failure](08-jump-to-failure.md) | Stack trace parse, message.location, Go to Error |
+| 09 | [Configuration](09-configuration.md) | Settings, conexão, env vars, segurança |
+| 10 | [Development Tooling](10-development-tooling.md) | TS coverage, CI, PRDs, stub de testes |

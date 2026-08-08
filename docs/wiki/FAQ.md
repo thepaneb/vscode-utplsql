@@ -9,6 +9,7 @@ Verifique:
 2. As annotations `%suite` e `%test` estão no **spec** (`.pks`), não no body
 3. Há uma **linha em branco** entre `%suite` e o primeiro `%test`/procedure
 4. Rode `utPLSQL: Atualizar testes` para forçar rediscovery
+5. Rode `utPLSQL: Validar configuração` para diagnóstico automático de CLI, conexão e grants
 
 ### Posso usar com Oracle XE?
 
@@ -202,6 +203,99 @@ publicação no Marketplace é feita **exclusivamente** via GitHub release
 
 ```bash
 npm run package
-# gera: vscode-utplsql-0.8.0.vsix
-code --install-extension vscode-utplsql-0.8.0.vsix
+# gera: vscode-utplsql-0.9.0.vsix
+code --install-extension vscode-utplsql-0.9.0.vsix
 ```
+
+---
+
+## Oracle direto (streaming)
+
+### Qual a diferença entre CLI e Oracle direto?
+
+O modo CLI (tradicional) executa o `utplsql` como processo externo e só mostra
+resultados quando o batch termina. O modo Oracle direto (v0.9.0+) conecta no
+banco via `node-oracledb` e mostra cada teste **em tempo real** no Explorer.
+
+### Preciso instalar algo para usar o Oracle direto?
+
+Sim, `node-oracledb` é uma dependência opcional. Instale com:
+```bash
+npm install oracledb
+```
+
+No modo `auto` (default), se não estiver instalado, a extensão usa CLI
+automaticamente. Use `runnerMode: cli` para forçar CLI sempre.
+
+### Funciona com shared install (UT3)?
+
+Sim, mas requer grants nas tabelas de buffer:
+```sql
+GRANT SELECT, DELETE ON UT3.UT_OUTPUT_BUFFER_TMP TO PUBLIC;
+GRANT SELECT, DELETE ON UT3.UT_OUTPUT_BUFFER_INFO_TMP TO PUBLIC;
+```
+Sem esses grants, use `runnerMode: cli` ou `auto` (fallback automático).
+
+---
+
+## Diagnósticos
+
+### Como vejo erros de compilação PL/SQL no editor?
+
+É automático. Após rodar testes, a extensão analisa o output do CLI. Se houver
+erros como `PLS-00201` ou `ORA-06550`, eles aparecem como **sublinhados
+vermelhos** no arquivo `.pks`/`.pkb` e no **Problems Panel** (source: "utPLSQL
+Compilation"). Desabilite com `utplsql.compilationDiagnostics.enabled: false`.
+
+### Como valido se minha configuração está correta?
+
+Rode `utPLSQL: Validar configuração` (palette `Ctrl+Shift+P`). A extensão
+verifica CLI, Java (modo java), conexão Oracle e versão do utPLSQL. Os
+resultados aparecem no Problems Panel com **quick-fix actions** (ícone 💡).
+
+### Como consigo os grants de cobertura sem digitar?
+
+Use `utPLSQL: Copiar grants de cobertura` — copia o SQL pronto para o
+clipboard. Cole no SQL*Plus/SQL Developer como DBA.
+
+---
+
+## Organização da árvore
+
+### Como organizar os testes por schema?
+
+Mude `utplsql.organization` para `schema` e configure `organization.schemaPattern`:
+
+```jsonc
+{
+  "utplsql.organization": "schema",
+  "utplsql.organization.schemaPattern": "db/{schema}/**"
+}
+```
+
+Com estrutura `db/APP/tests/` e `db/LOGIC/tests/`, o Test Explorer mostra
+`Schema: APP` e `Schema: LOGIC` como nós raiz. Veja [Organização da árvore](Organização-da-árvore).
+
+### Funciona com multi-root?
+
+Sim. Cada workspace folder mantém seus próprios schemas. O `schemaPattern` é
+aplicado ao caminho relativo dentro de cada folder.
+
+---
+
+## Navegação e produtividade
+
+### Como pular direto para a linha da asserção que falhou?
+
+Quando um teste falha, o VSCode mostra um botão **"Go to Error"** no Test
+Explorer (ícone de seta). Clicar nele abre o arquivo `.pks`/`.pkb` na linha
+exata da falha. Funciona automaticamente — a extensão extrai o stack trace do
+JUnit e resolve para o arquivo fonte.
+
+### Modo `java` está lento com muitas suites?
+
+Aumente a memória da JVM com `utplsql.javaArgs`:
+```jsonc
+"utplsql.javaArgs": ["-Xmx1024m", "-Xms256m"]
+```
+O default é `-Xmx256m`. Ajuste conforme o tamanho do seu projeto.

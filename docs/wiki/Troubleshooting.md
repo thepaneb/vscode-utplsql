@@ -9,7 +9,7 @@ Problemas comuns e suas soluções.
 **Sintoma:** A view Testing está vazia, nenhuma suite listada.
 
 **Causa provável:** `utplsql.includePatterns` não cobre seus arquivos de
-teste.
+teste, ou CLI não está configurado.
 
 **Solução:** Ajuste o padrão glob. Exemplos:
 
@@ -21,8 +21,25 @@ teste.
 "utplsql.includePatterns": ["**/*.pks", "**/*.pkb"]
 ```
 
-Use `utPLSQL: Atualizar testes` (palette) para forçar rediscovery após
-alterar a setting.
+Use `utPLSQL: Atualizar testes` (palette) para forçar rediscovery.
+Para diagnóstico automático, rode `utPLSQL: Validar configuração`.
+
+---
+
+## Erros de compilação não aparecem no editor
+
+**Sintoma:** Testes falham com erro de compilação, mas o editor não mostra
+sublinhados.
+
+**Solução:** Verifique se `utplsql.compilationDiagnostics.enabled` está `true`
+(default). Se estiver desabilitado, reabilite:
+
+```jsonc
+"utplsql.compilationDiagnostics.enabled": true
+```
+
+O diagnóstico funciona no modo CLI (parse do stdout). No modo Oracle direto,
+o comportamento é similar internamente.
 
 ---
 
@@ -215,3 +232,62 @@ C:\tools\utPLSQL-cli\bin\utplsql.bat --version
 # Linux/macOS
 /home/user/utplsql-cli/bin/utplsql --version
 ```
+
+---
+
+## Oracle direto não conecta
+
+**Sintoma:** `runnerMode: oracle` falha com "oracledb não disponível" ou
+erro de conexão.
+
+**Causa 1:** `node-oracledb` não está instalado.
+
+**Solução:** Instale a dependência opcional:
+```bash
+npm install oracledb
+```
+Ou use `runnerMode: auto` (fallback automático para CLI) ou `runnerMode: cli`.
+
+**Causa 2:** Grants ausentes nas tabelas de buffer (shared install).
+
+**Solução:** Execute como DBA:
+```sql
+GRANT SELECT, DELETE ON UT3.UT_OUTPUT_BUFFER_TMP TO PUBLIC;
+GRANT SELECT, DELETE ON UT3.UT_OUTPUT_BUFFER_INFO_TMP TO PUBLIC;
+```
+Sem esses grants, use `runnerMode: cli`. Veja [Execução Oracle direta](Execução-Oracle-direta).
+
+---
+
+## Schema sempre "UNKNOWN"
+
+**Sintoma:** No modo `schema`, todos os testes aparecem sob "UNKNOWN".
+
+**Causa:** O `schemaPattern` não corresponde à estrutura de diretórios.
+
+**Solução:** Ajuste o padrão. Exemplos:
+```jsonc
+// Estrutura: src/HR/tests/ut_hr.pks
+"utplsql.organization.schemaPattern": "src/{schema}/tests/**"
+
+// Estrutura: db/APP/packages/ut_foo.pks
+"utplsql.organization.schemaPattern": "db/{schema}/**"
+```
+
+O placeholder `{schema}` captura exatamente um nível de diretório.
+Use `**` para qualquer profundidade de subdiretórios após o schema.
+
+---
+
+## Modo java lento com suites grandes
+
+**Sintoma:** Execução no modo `java` demora muito ou falha com
+`OutOfMemoryError`.
+
+**Causa:** Heap JVM padrão (`-Xmx256m`) insuficiente para o projeto.
+
+**Solução:** Aumente a memória:
+```jsonc
+"utplsql.javaArgs": ["-Xmx1024m", "-Xms256m"]
+```
+As flags são inseridas antes de `-cp` e só afetam o modo `java`.

@@ -6,7 +6,7 @@
 | Autor | Gil Cleber |
 | Data | 2026-07-08 |
 | Componente | Extensão `paneb.vscode-utplsql` |
-| Versão alvo | 1.0.0 |
+| Versão alvo | 0.12.0 |
 | Arquivos afetados | `src/config.ts`, `src/viewCoverage.ts`, `src/extension.ts`, `src/runner.ts`, `docs/coverage-views.md` |
 
 ## 1. Resumo
@@ -118,7 +118,7 @@ Fase 2 requer `GRANT SELECT ON V$SQL TO <user>` no Oracle + setting `true`.
 
 ## 9. Rollout
 
-- Versão alvo: `0.7.0`
+- Versão alvo: `0.12.0`
 - Feature gateada por `sqlCoverageEnabled` (default false) — sem impacto
 - CHANGELOG.md com entry na release
 

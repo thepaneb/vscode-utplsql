@@ -4,10 +4,8 @@ coverage/
 *.vsix
 .vscode-test/
 .env
+install/
 docs/prd/.prd-issues.json
-.DS_Store
-Thumbs.db
-
 # Arquivos de instrução para agentes de IA — NUNCA persistir no repositório.
 # AGENTS.md e CLAUDE.md contêm contexto local do desenvolvedor e são
 # gerados/atualizados por cada dev no seu ambiente. Cada um gerencia o seu.
@@ -22,3 +20,5 @@ docs/*
 !docs/prd/**
 !docs/wiki/
 !docs/wiki/**
+!docs/functional/
+!docs/functional/**

@@ -1,3 +1,4 @@
+import * as path from 'node:path';
 import * as vscode from 'vscode';
 import { parseSuiteText, type TestProc } from './suiteParser';
 
@@ -67,4 +68,25 @@ export async function discoverWorkspace(
   }
 
   return results;
+}
+
+export function extractSchemaFromPath(
+  filePath: string,
+  workspaceFsPath: string,
+  schemaPattern: string,
+): string | undefined {
+  const normFile = filePath.replace(/\\/g, '/');
+  const normWs = workspaceFsPath.replace(/\\/g, '/');
+  const relative = path.posix.relative(normWs, normFile);
+  if (relative.startsWith('..')) return undefined;
+
+  const escaped = schemaPattern
+    .replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
+    .replace('\\{schema\\}', '([^/]+)')
+    .replace(/\\\*\\\*/g, '.*')
+    .replace(/\\\*/g, '[^/]*');
+
+  const regex = new RegExp(`^${escaped}$`);
+  const match = regex.exec(relative);
+  return match ? match[1].toUpperCase() : undefined;
 }

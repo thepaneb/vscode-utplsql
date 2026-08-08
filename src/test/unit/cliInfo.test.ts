@@ -66,7 +66,7 @@ test('getCliInfo: retorna info quando CLI executa com sucesso', async () => {
     Promise.resolve({ code: 0, stdout: 'cli 3.2.0\nutPLSQL-java-api 3.2.4', stderr: '' }),
   );
   const result = await getCliInfo(
-    { invocation: 'launcher', cliPath: 'utplsql', javaPath: 'java', cliHome: '' },
+    { invocation: 'launcher', cliPath: 'utplsql', javaPath: 'java', javaArgs: [], cliHome: '' },
     'conn',
   );
   assert.ok(!('error' in result));
@@ -80,7 +80,7 @@ test('getCliInfo: retorna info quando CLI executa com sucesso', async () => {
 test('getCliInfo: retorna erro quando buildInvocation falha', async () => {
   mock.method(invocation, 'buildInvocation', () => ({ error: 'no cli home' }));
   const result = await getCliInfo(
-    { invocation: 'java', cliPath: 'utplsql', javaPath: 'java', cliHome: '' },
+    { invocation: 'java', cliPath: 'utplsql', javaPath: 'java', javaArgs: [], cliHome: '' },
     'conn',
   );
   assert.ok('error' in result);
@@ -98,7 +98,7 @@ test('getCliInfo: retorna erro quando CLI retorna codigo != 0', async () => {
     Promise.resolve({ code: 1, stdout: '', stderr: 'command failed' }),
   );
   const result = await getCliInfo(
-    { invocation: 'launcher', cliPath: 'utplsql', javaPath: 'java', cliHome: '' },
+    { invocation: 'launcher', cliPath: 'utplsql', javaPath: 'java', javaArgs: [], cliHome: '' },
     'conn',
   );
   assert.ok('error' in result);

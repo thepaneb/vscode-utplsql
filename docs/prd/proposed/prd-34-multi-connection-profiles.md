@@ -6,7 +6,7 @@
 | Autor | Gil Cleber Barboza |
 | Data | 2026-07-21 |
 | Componente | Extensão `paneb.vscode-utplsql` |
-| Versão alvo | 1.0.0 |
+| Versão alvo | 0.12.0 |
 | Arquivos afetados | `src/config.ts`, `src/connectionProfiles.ts` (novo), `src/extension.ts`, `src/runner.ts`, `src/state.ts`, `package.json` |
 
 ## 1. Resumo

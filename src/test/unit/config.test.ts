@@ -33,6 +33,16 @@ test('readConfig: novos settings CLI', () => {
   assert.strictEqual(cfg.failureExitCode, 1);
 });
 
+test('readConfig: runnerMode default e auto', () => {
+  const cfg = readConfig();
+  assert.strictEqual(cfg.runnerMode, 'auto');
+});
+
+test('readConfig: javaArgs default e -Xmx256m', () => {
+  const cfg = readConfig();
+  assert.deepStrictEqual(cfg.javaArgs, ['-Xmx256m']);
+});
+
 async function withCleanResolve(fn: () => Promise<void>): Promise<void> {
   clearSessionConnection();
   await fn();

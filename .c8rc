@@ -1,0 +1,9 @@
+{
+  "exclude": ["out/test/**", "src/test/**"],
+  "reporter": ["text", "lcov", "html"],
+  "check-coverage": true,
+  "lines": 65,
+  "branches": 80,
+  "functions": 70,
+  "statements": 65
+}

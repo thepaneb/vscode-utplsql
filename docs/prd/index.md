@@ -87,10 +87,12 @@ CONCLUIR
 | 08 | [Opções CLI avançadas expostas como settings](completed/prd-08-cli-options.md) | 0.5.0 | 2026-07-08 |
 | 09 | [Diagnóstico e validação com `utplsql info`](completed/prd-09-cli-info.md) | 0.5.0 | 2026-07-08 |
 | 10 | [Reporters dinâmicos com `utplsql reporters`](completed/prd-10-dynamic-reporters.md) | 0.7.0 | 2026-07-03 |
+| 11 | [Streaming de resultados em tempo real](completed/prd-11-streaming-results.md) | 0.9.0 | 2026-08-02 |
 | 13 | [Infraestrutura de testes com Oracle real](completed/prd-13-oracle-infra.md) | 0.6.0 | 2026-07-11 |
 | 14 | [Schema e objetos de teste utPLSQL](completed/prd-14-test-schema-packages.md) | 0.6.0 | 2026-07-11 |
 | 15 | [Testes de integração com banco real](completed/prd-15-integration-tests-real-db.md) | 0.6.0 | 2026-07-11 |
 | 16 | [Testes de integração para ambos os modos de invocação](completed/prd-16-integration-test-invocation-modes.md) | 0.6.0 | 2026-07-13 |
+| 17 | [Flags JVM customizáveis para o modo `java`](completed/prd-17-java-args-setting.md) | 0.9.0 | 2026-08-02 |
 | 18 | [Alinhamento `engines.node` com CI](completed/prd-18-engine-node-ci.md) | 0.7.1 | 2026-07-18 |
 | 19 | [Normalização do sistema de PRDs](completed/prd-19-normalize-prd-system.md) | 0.7.1 | 2026-07-18 |
 | 20 | [Limpeza de dependências e configurações](completed/prd-20-cleanup-deps-config.md) | 0.7.1 | 2026-07-18 |
@@ -99,38 +101,51 @@ CONCLUIR
 | 25 | [Status Bar Indicator](completed/prd-25-status-bar-indicator.md) | 0.8.0 | 2026-07-25 |
 | 26 | [Inline Test Result Decorations](completed/prd-26-inline-test-decorations.md) | 0.8.0 | 2026-07-25 |
 | 27 | [Default Keybindings](completed/prd-27-default-keybindings.md) | 0.8.0 | 2026-07-25 |
+| 28 | [PL/SQL Compilation Diagnostics](completed/prd-28-plsql-compilation-diagnostics.md) | 0.9.0 | 2026-08-02 |
+| 29 | [Jump to Failing Assertion](completed/prd-29-jump-to-failing-assertion.md) | 0.9.0 | 2026-08-02 |
+| 30 | [Schema-Aware Test Organization](completed/prd-30-schema-aware-organization.md) | 0.9.0 | 2026-08-02 |
 | 31 | [Smart Re-run Patterns](completed/prd-31-smart-rerun-patterns.md) | 0.8.0 | 2026-07-25 |
+| 32 | [Quick-Fix Setup Diagnostics](completed/prd-32-quickfix-setup-diagnostics.md) | 0.9.0 | 2026-08-02 |
+| 35 | [Correção de cobertura no Windows + blindagem de testes](completed/prd-35-windows-coverage-fix.md) | 0.7.2 | 2026-07-21 |
+| 36 | [Correção do parse de reporters com descrições](completed/prd-36-reporter-parse-fix.md) | 0.7.2 | 2026-07-21 |
+| 37 | [Cobertura de código TypeScript com `c8`](completed/prd-37-ts-coverage.md) | 0.9.0 | 2026-08-02 |
 
 ### 🟡 Em desenvolvimento
 
-| # | PRD | Versão alvo | Data |
-|---|---|---|---|
-*(vazio)*
+*(nenhum)*
 
 ### 🔵 Aprovados
 
-| # | PRD | Versão alvo | Data |
-|---|---|---|---|
-| *(vazio)* |
+*(nenhum)*
 
 ### ⚪ Propostos
 
+#### 0.10.0
+
 | # | PRD | Versão alvo | Data |
 |---|---|---|---|
-| 11 | [Streaming de resultados em tempo real](proposed/prd-11-streaming-results.md) | 0.9.0 | 2026-07-03 |
-| 12 | [Cobertura de código para objetos SQL (views, queries)](proposed/prd-12-sql-coverage.md) | 1.0.0 | 2026-07-08 |
-| 17 | [Flags JVM customizáveis para o modo `java`](proposed/prd-17-java-args-setting.md) | 0.9.0 | 2026-07-13 |
-| 21 | [Melhorias nos workflows CI/CD](proposed/prd-21-workflow-improvements.md) | 1.0.0 | 2026-07-18 |
-| 23 | [Automatizar geração de screenshots da wiki](proposed/prd-23-auto-wiki-screenshots.md) | 1.0.0 | 2026-07-21 |
-| 28 | [PL/SQL Compilation Diagnostics](proposed/prd-28-plsql-compilation-diagnostics.md) | 0.9.0 | 2026-07-21 |
-| 29 | [Jump to Failing Assertion](proposed/prd-29-jump-to-failing-assertion.md) | 0.9.0 | 2026-07-21 |
-| 30 | [Schema-Aware Test Organization](proposed/prd-30-schema-aware-organization.md) | 0.9.0 | 2026-07-21 |
-| 32 | [Quick-Fix Setup Diagnostics](proposed/prd-32-quickfix-setup-diagnostics.md) | 0.9.0 | 2026-07-21 |
-| 33 | [PL/SQL Debugger Integration](proposed/prd-33-plsql-debugger-integration.md) | 1.0.0 | 2026-07-21 |
-| 34 | [Multi-Connection Profiles](proposed/prd-34-multi-connection-profiles.md) | 1.0.0 | 2026-07-21 |
-| 35 | [Correção de cobertura no Windows + blindagem de testes](proposed/prd-35-windows-coverage-fix.md) | 0.7.2 | 2026-07-21 |
-| 36 | [Correção do parse de reporters com descrições](proposed/prd-36-reporter-parse-fix.md) | 0.7.2 | 2026-07-21 |
-| 37 | [Cobertura de código TypeScript com `c8`](proposed/prd-37-ts-coverage.md) | 0.9.0 | 2026-07-25 |
+| 23 | [Automatizar geração de screenshots da wiki](proposed/prd-23-auto-wiki-screenshots.md) | 0.10.0 | 2026-07-21 |
+| 38 | [Connection Pooling no Oracle Runner](proposed/prd-38-connection-pooling.md) | 0.10.0 | 2026-08-08 |
+| 39 | [Eliminar código duplicado entre runners](proposed/prd-39-deduplicate-runners.md) | 0.10.0 | 2026-08-08 |
+| 40 | [Refatorar executeRunOracle: Options Object](proposed/prd-40-options-object.md) | 0.10.0 | 2026-08-08 |
+| 42 | [SuiteParser: parse de annotations estendidas](proposed/prd-42-suiteparser-annotations.md) | 0.10.0 | 2026-08-08 |
+
+#### 0.11.0
+
+| # | PRD | Versão alvo | Data |
+|---|---|---|---|
+| 21 | [Melhorias nos workflows CI/CD](proposed/prd-21-workflow-improvements.md) | 0.11.0 | 2026-07-18 |
+| 41 | [Verificação de instalação do utPLSQL](proposed/prd-41-utplsql-install-verification.md) | 0.11.0 | 2026-08-08 |
+| 43 | [Schema-mode: descoberta via ALL_OBJECTS](proposed/prd-43-schema-db-discovery.md) | 0.11.0 | 2026-08-08 |
+| 44 | [Matching resultado→teste como função pura](proposed/prd-44-pure-matching.md) | 0.11.0 | 2026-08-08 |
+
+#### 0.12.0
+
+| # | PRD | Versão alvo | Data |
+|---|---|---|---|
+| 12 | [Cobertura de código para objetos SQL (views, queries)](proposed/prd-12-sql-coverage.md) | 0.12.0 | 2026-07-08 |
+| 33 | [PL/SQL Debugger Integration](proposed/prd-33-plsql-debugger-integration.md) | 0.12.0 | 2026-07-21 |
+| 34 | [Multi-Connection Profiles](proposed/prd-34-multi-connection-profiles.md) | 0.12.0 | 2026-07-21 |
 
 
 ---
@@ -152,10 +167,12 @@ docs/prd/
 │   ├── prd-08-cli-options.md
 │   ├── prd-09-cli-info.md
 │   ├── prd-10-dynamic-reporters.md
+│   ├── prd-11-streaming-results.md
 │   ├── prd-13-oracle-infra.md
 │   ├── prd-14-test-schema-packages.md
 │   ├── prd-15-integration-tests-real-db.md
 │   ├── prd-16-integration-test-invocation-modes.md
+│   ├── prd-17-java-args-setting.md
 │   ├── prd-18-engine-node-ci.md
 │   ├── prd-19-normalize-prd-system.md
 │   ├── prd-20-cleanup-deps-config.md
@@ -164,26 +181,29 @@ docs/prd/
 │   ├── prd-25-status-bar-indicator.md
 │   ├── prd-26-inline-test-decorations.md
 │   ├── prd-27-default-keybindings.md
-│   └── prd-31-smart-rerun-patterns.md
+│   ├── prd-28-plsql-compilation-diagnostics.md
+│   ├── prd-29-jump-to-failing-assertion.md
+│   ├── prd-30-schema-aware-organization.md
+│   ├── prd-31-smart-rerun-patterns.md
+│   ├── prd-32-quickfix-setup-diagnostics.md
+│   ├── prd-35-windows-coverage-fix.md
+│   ├── prd-36-reporter-parse-fix.md
+│   └── prd-37-ts-coverage.md
 ├── approved/         ← aprovados, aguardando implementação
-│   (vazio)
 ├── in-progress/      ← sendo implementados agora
-│   (vazio)
 └── proposed/         ← em avaliação
-    ├── prd-11-streaming-results.md
     ├── prd-12-sql-coverage.md
-    ├── prd-17-java-args-setting.md
     ├── prd-21-workflow-improvements.md
     ├── prd-23-auto-wiki-screenshots.md
-    ├── prd-28-plsql-compilation-diagnostics.md
-    ├── prd-29-jump-to-failing-assertion.md
-    ├── prd-30-schema-aware-organization.md
-    ├── prd-32-quickfix-setup-diagnostics.md
     ├── prd-33-plsql-debugger-integration.md
     ├── prd-34-multi-connection-profiles.md
-    ├── prd-35-windows-coverage-fix.md
-    ├── prd-36-reporter-parse-fix.md
-    └── prd-37-ts-coverage.md
+    ├── prd-38-connection-pooling.md
+    ├── prd-39-deduplicate-runners.md
+    ├── prd-40-options-object.md
+    ├── prd-41-utplsql-install-verification.md
+    ├── prd-42-suiteparser-annotations.md
+    ├── prd-43-schema-db-discovery.md
+    └── prd-44-pure-matching.md
 ```
 
 ---

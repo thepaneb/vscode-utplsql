@@ -5,12 +5,19 @@ export namespace Uri {
   export function parse(s: string) {
     return { fsPath: s, path: s, scheme: 'file', toString: () => s, toJSON: () => s };
   }
+  export function joinPath(base: { fsPath: string }, ...pathSegments: string[]) {
+    const basePath = (base as { fsPath: string }).fsPath.replace(/[/\\]$/, '');
+    const joined = [basePath, ...pathSegments].join('/');
+    return file(joined);
+  }
 }
 
 const _configValues: Record<string, unknown> = {};
 let _inputBoxResult: string | undefined;
 let _mockFileContents: Record<string, string> = {};
 let _mockFindFilesResult: Record<string, string[]> = {};
+let _mockFileErrors: Record<string, boolean> = {};
+const _mockVisibleEditors: TextEditor[] = [];
 
 export function __setConfigValue(key: string, value: unknown): void {
   _configValues[key] = value;
@@ -37,6 +44,11 @@ export function __setMockFile(pattern: string, path: string, content: string): v
 export function __resetMockFiles(): void {
   _mockFileContents = {};
   _mockFindFilesResult = {};
+  _mockFileErrors = {};
+}
+
+export function __setMockFileError(path: string, hasError: boolean): void {
+  _mockFileErrors[path] = hasError;
 }
 
 export namespace workspace {
@@ -46,7 +58,7 @@ export namespace workspace {
         (_key in _configValues ? _configValues[_key] : defaultValue) as T,
     };
   }
-  export function findFiles(pattern: any) {
+  export function findFiles(pattern: string | RelativePattern) {
     const patternStr = typeof pattern === 'string' ? pattern : (pattern?.pattern ?? '');
     const matches = _mockFindFilesResult[patternStr] ?? [];
     return Promise.resolve(
@@ -60,12 +72,25 @@ export namespace workspace {
     );
   }
   export const fs = {
+    // biome-ignore lint/suspicious/noExplicitAny: VSCode Uri stringish stub
     readFile: (uri: any) => {
-      const content = _mockFileContents[uri.fsPath ?? uri] ?? '';
+      const path = uri.fsPath ?? uri;
+      if (_mockFileErrors[path]) {
+        return Promise.reject(new Error('mock read error'));
+      }
+      const content = _mockFileContents[path] ?? '';
       return Promise.resolve(Buffer.from(content));
     },
   };
-  export const workspaceFolders = undefined;
+  export let workspaceFolders:
+    | Array<{ uri: { fsPath: string }; name: string; index: number }>
+    | undefined;
+
+  export function __setWorkspaceFolders(
+    folders: Array<{ uri: { fsPath: string }; name: string; index: number }> | undefined,
+  ) {
+    workspaceFolders = folders;
+  }
 }
 
 export namespace commands {
@@ -98,14 +123,31 @@ export namespace window {
     return Promise.resolve(_inputBoxResult);
   }
   export function showErrorMessage(_message: string) {}
-  export function createTextEditorDecorationType(_opts: any) {
+  export function createTextEditorDecorationType(
+    // biome-ignore lint/suspicious/noExplicitAny: DecorationRenderOptions stub
+    _opts: any,
+  ) {
     return { dispose: () => {} } as TextEditorDecorationType;
   }
-  export const visibleTextEditors: any[] = [];
-  export function onDidChangeActiveTextEditor(_handler: any) {
+  export function createStatusBarItem(_alignment: number, _priority: number) {
+    return {
+      text: '',
+      tooltip: '',
+      command: '',
+      show: () => {},
+      hide: () => {},
+      dispose: () => {},
+    };
+  }
+  export const visibleTextEditors: TextEditor[] = _mockVisibleEditors;
+  export function onDidChangeActiveTextEditor(
+    _handler: (editor: TextEditor | undefined) => unknown,
+  ) {
     return { dispose: () => {} };
   }
 }
+
+export const StatusBarAlignment = { Left: 1, Right: 2 } as const;
 
 export class TestMessage {
   message: string;
@@ -213,12 +255,14 @@ export interface TextEditor {
   setDecorations(decorationType: TextEditorDecorationType, ranges: DecorationOptions[]): void;
 }
 
-let _mockVisibleEditors: any[] = [];
-export function __setVisibleEditors(editors: any[]): void {
-  _mockVisibleEditors = editors;
+export function __setVisibleEditors(editors: TextEditor[]): void {
+  _mockVisibleEditors.length = 0;
+  _mockVisibleEditors.push(...editors);
 }
 
+// biome-ignore lint/complexity/noStaticOnlyClass: mimics vscode.FileCoverage API
 export class FileCoverage {
+  // biome-ignore lint/suspicious/noExplicitAny: VSCode Uri stub
   static fromDetails(_uri: any, _details: StatementCoverage[]) {
     return new FileCoverage();
   }
@@ -238,10 +282,48 @@ export class Position {
   ) {}
 }
 
+export namespace DiagnosticSeverity {
+  // biome-ignore lint/suspicious/noShadowRestrictedNames: matches vscode.DiagnosticSeverity.Error
+  export const Error = 0;
+  export const Warning = 1;
+  export const Information = 2;
+  export const Hint = 3;
+}
+
+export class Diagnostic {
+  constructor(
+    public range: Range,
+    public message: string,
+    public severity: number = DiagnosticSeverity.Error,
+  ) {}
+  source?: string;
+}
+
+export class DiagnosticCollection {
+  private _diags = new Map<string, Diagnostic[]>();
+  set(uri: { toString(): string }, diagnostics: Diagnostic[]) {
+    this._diags.set(uri.toString(), diagnostics);
+  }
+  clear() {
+    this._diags.clear();
+  }
+  dispose() {}
+}
+
+export const languages = {
+  createDiagnosticCollection(_name: string): DiagnosticCollection {
+    return new DiagnosticCollection();
+  },
+};
+
 export class RelativePattern {
   pattern: string;
   base: string;
-  constructor(base: any, pattern: string) {
+  constructor(
+    // biome-ignore lint/suspicious/noExplicitAny: stringish-forgiving constructor
+    base: any,
+    pattern: string,
+  ) {
     this.base =
       typeof base === 'string' ? base : (base?.uri?.fsPath ?? base?.fsPath ?? String(base));
     this.pattern = pattern;
