@@ -25,11 +25,17 @@ echo "=== Lançando VSCode com xvfb ==="
 pkill -f "code" 2>/dev/null || true
 sleep 1
 
+# Start Xvfb with virtual display
 export DISPLAY=:99
 export DONT_PROMPT_WSL_INSTALL=1
 Xvfb :99 -screen 0 1280x800x24 +extension RANDR &
 XVFB_PID=$!
 sleep 2
+
+# Start window manager (needed for xdotool window focus and key events)
+openbox &
+OPENBOX_PID=$!
+sleep 1
 
 # Launch VSCode
 "$VSCODE_BIN" \
@@ -82,8 +88,10 @@ capture() {
 }
 
 send_keys() {
-  timeout 3 xdotool search --name "$WINDOW_NAME" windowactivate --sync key "$@" 2>/dev/null || true
-  sleep 2
+  xdotool search --name "$WINDOW_NAME" windowactivate --sync 2>/dev/null
+  sleep 0.3
+  xdotool key "$@"
+  sleep 1.5
 }
 
 echo ""
@@ -99,7 +107,9 @@ capture "test-explorer-pass-fail.png"
 # 3. Open Command Palette and type utplsql
 send_keys "F1"
 sleep 0.5
-timeout 3 xdotool search --name "$WINDOW_NAME" windowactivate type "utplsql" 2>/dev/null || true
+xdotool search --name "$WINDOW_NAME" windowactivate 2>/dev/null
+sleep 0.2
+xdotool type "utplsql"
 sleep 0.5
 capture "palette-commands.png"
 send_keys "Escape"
@@ -107,13 +117,19 @@ send_keys "Escape"
 # 4. Clear connection in palette
 send_keys "F1"
 sleep 0.3
-timeout 3 xdotool search --name "$WINDOW_NAME" windowactivate type "utplsql clear" 2>/dev/null || true
+xdotool search --name "$WINDOW_NAME" windowactivate 2>/dev/null
+sleep 0.2
+xdotool type "utplsql clear"
 sleep 0.3
 capture "palette-clear-connection.png"
 send_keys "Escape"
 
 # 5. Keyboard shortcuts
-send_keys "ctrl+k ctrl+s"
+xdotool search --name "$WINDOW_NAME" windowactivate --sync 2>/dev/null
+sleep 0.3
+xdotool key "ctrl+k"
+sleep 0.3
+xdotool key "ctrl+s"
 sleep 2
 capture "keyboard-shortcuts.png"
 send_keys "Escape"
@@ -121,7 +137,9 @@ send_keys "Escape"
 # 6. Open coverage sample file in editor
 send_keys "ctrl+p"
 sleep 0.5
-timeout 3 xdotool search --name "$WINDOW_NAME" windowactivate type "tst_coverage_sample.pks" 2>/dev/null || true
+xdotool search --name "$WINDOW_NAME" windowactivate 2>/dev/null
+sleep 0.2
+xdotool type "tst_coverage_sample.pks"
 sleep 0.5
 send_keys "Return"
 capture "editor-coverage-gutters.png"
@@ -157,7 +175,9 @@ cp "$OUTPUT_DIR/output-terminal.png" "$OUTPUT_DIR/output-sqlcl-version.png" 2>/d
 # 11. QuickPick reporters
 send_keys "F1"
 sleep 0.3
-timeout 3 xdotool search --name "$WINDOW_NAME" windowactivate type "utplsql select reporter" 2>/dev/null || true
+xdotool search --name "$WINDOW_NAME" windowactivate 2>/dev/null
+sleep 0.2
+xdotool type "utplsql select reporter"
 sleep 0.3
 send_keys "Return"
 capture "quickpick-reporters.png"
@@ -167,6 +187,8 @@ echo ""
 echo "=== Limpando ==="
 kill $VSCODE_PID 2>/dev/null || true
 sleep 2
+kill $OPENBOX_PID 2>/dev/null || true
+sleep 1
 kill $XVFB_PID 2>/dev/null || true
 
 echo ""
