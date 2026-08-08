@@ -9,6 +9,12 @@ RUN curl -fsSL https://deb.nodesource.com/setup_24.x | bash - && apt-get install
 ARG VSCODE_VER=1.88.1
 RUN curl -fsSL "https://update.code.visualstudio.com/${VSCODE_VER}/linux-x64/stable" -o /tmp/vscode.tar.gz && mkdir -p /opt/vscode && tar xzf /tmp/vscode.tar.gz -C /opt/vscode --strip-components=1 && rm /tmp/vscode.tar.gz
 
+# utPLSQL CLI (Java client)
+RUN curl -fsSL "https://github.com/utPLSQL/utPLSQL-cli/releases/download/v3.1.10/utplsql-cli.zip" -o /tmp/utplsql-cli.zip && mkdir -p /opt/utplsql-cli && python3 -c "import zipfile,sys; zipfile.ZipFile('/tmp/utplsql-cli.zip').extractall('/opt/utplsql-cli')" 2>/dev/null || (apt-get update -qq && apt-get install -y -qq unzip && unzip -q /tmp/utplsql-cli.zip -d /opt/utplsql-cli && rm -rf /var/lib/apt/lists/*) && rm /tmp/utplsql-cli.zip && chmod +x /opt/utplsql-cli/bin/utplsql 2>/dev/null || true && chmod +x /opt/utplsql-cli/utplsql 2>/dev/null || true
+
+# Java (needed by utPLSQL-cli)
+RUN apt-get update && apt-get install -y --no-install-recommends default-jre-headless && rm -rf /var/lib/apt/lists/*
+
 WORKDIR /workspace
 
 COPY scripts/gen-screenshots-container.sh /usr/local/bin/gen-screenshots

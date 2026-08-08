@@ -2,6 +2,8 @@
   "workbench.colorTheme": "Default Light+",
   "utplsql.includePatterns": ["**/*.pks"],
   "utplsql.connection": "UT3/XNtxj8eEgA6X6b6f@//localhost:1521/freepdb1",
+  "utplsql.cliPath": "/opt/utplsql-cli/bin/utplsql",
+  "utplsql.javaPath": "/usr/bin/java",
   "utplsql.organization": "schema",
   "utplsql.organization.schemaPattern": "db/{schema}/**",
   "workbench.startupEditor": "none",

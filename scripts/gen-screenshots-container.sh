@@ -12,11 +12,16 @@ VSCODE_BIN="/opt/vscode/bin/code"
 
 mkdir -p "$OUTPUT_DIR"
 
-echo "=== Verificando dependências ==="
+# Verificar/compilar dependências nativas para Linux
+echo "=== Preparando dependências ==="
 cd "$PROJECT_DIR"
 if [ ! -d "node_modules" ]; then
   npm install --ignore-scripts 2>&1 | tail -3
 fi
+if [ -d "node_modules/oracledb" ]; then
+  npm rebuild oracledb 2>&1 | tail -2 || echo "  (oracledb rebuild skipped)"
+fi
+echo ""
 
 echo "=== Renderizando diagramas ==="
 if [ -f "$PROJECT_DIR/docs/wiki/images/diagram-schemas.svg" ]; then
@@ -116,18 +121,20 @@ if [ -n "$UTPLSQL_CONN" ]; then
 
   # Set connection in VSCode settings
   mkdir -p "$FIXTURES_DIR/.vscode"
-  cat > "$FIXTURES_DIR/.vscode/settings.json" << EOF
+  cat > "$FIXTURES_DIR/.vscode/settings.json" << SETEOF
 {
   "workbench.colorTheme": "Default Light+",
   "utplsql.includePatterns": ["**/*.pks"],
   "utplsql.connection": "$UTPLSQL_CONN",
+  "utplsql.cliPath": "/opt/utplsql-cli/bin/utplsql",
+  "utplsql.javaPath": "/usr/bin/java",
   "utplsql.organization": "schema",
   "utplsql.organization.schemaPattern": "db/{schema}/**",
   "workbench.startupEditor": "none",
   "editor.minimap.enabled": false,
   "window.titleBarStyle": "custom"
 }
-EOF
+SETEOF
 
   # Run tests via command palette
   sleep 2
