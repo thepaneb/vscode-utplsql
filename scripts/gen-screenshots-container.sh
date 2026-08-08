@@ -38,6 +38,39 @@ npx tsc -p ./ --outDir out 2>&1 | tail -3 || echo "  (compile skipped — out/ m
 echo ""
 echo "=== Lançando VSCode com xvfb ==="
 
+# Write settings.json BEFORE launching VSCode
+mkdir -p "$FIXTURES_DIR/.vscode"
+if [ -n "$UTPLSQL_CONN" ]; then
+  cat > "$FIXTURES_DIR/.vscode/settings.json" << SETEOF
+{
+  "workbench.colorTheme": "Default Light+",
+  "utplsql.includePatterns": ["**/*.pks"],
+  "utplsql.connection": "$UTPLSQL_CONN",
+  "utplsql.cliPath": "/opt/utplsql-cli/utPLSQL-cli/bin/utplsql",
+  "utplsql.javaPath": "/usr/bin/java",
+  "utplsql.organization": "schema",
+  "utplsql.organization.schemaPattern": "db/{schema}/**",
+  "workbench.startupEditor": "none",
+  "editor.minimap.enabled": false,
+  "window.titleBarStyle": "custom"
+}
+SETEOF
+else
+  cat > "$FIXTURES_DIR/.vscode/settings.json" << SETEOF
+{
+  "workbench.colorTheme": "Default Light+",
+  "utplsql.includePatterns": ["**/*.pks"],
+  "utplsql.cliPath": "/opt/utplsql-cli/utPLSQL-cli/bin/utplsql",
+  "utplsql.javaPath": "/usr/bin/java",
+  "utplsql.organization": "schema",
+  "utplsql.organization.schemaPattern": "db/{schema}/**",
+  "workbench.startupEditor": "none",
+  "editor.minimap.enabled": false,
+  "window.titleBarStyle": "custom"
+}
+SETEOF
+fi
+
 # Kill any existing VSCode
 pkill -f "code" 2>/dev/null || true
 sleep 1
@@ -118,23 +151,6 @@ send_keys() {
 if [ -n "$UTPLSQL_CONN" ]; then
   echo ""
   echo "=== Executando testes com Oracle ==="
-
-  # Set connection in VSCode settings
-  mkdir -p "$FIXTURES_DIR/.vscode"
-  cat > "$FIXTURES_DIR/.vscode/settings.json" << SETEOF
-{
-  "workbench.colorTheme": "Default Light+",
-  "utplsql.includePatterns": ["**/*.pks"],
-  "utplsql.connection": "$UTPLSQL_CONN",
-  "utplsql.cliPath": "/opt/utplsql-cli/utPLSQL-cli/bin/utplsql",
-  "utplsql.javaPath": "/usr/bin/java",
-  "utplsql.organization": "schema",
-  "utplsql.organization.schemaPattern": "db/{schema}/**",
-  "workbench.startupEditor": "none",
-  "editor.minimap.enabled": false,
-  "window.titleBarStyle": "custom"
-}
-SETEOF
 
   # Run tests via command palette
   sleep 2
