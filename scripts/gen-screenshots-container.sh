@@ -18,6 +18,13 @@ if [ ! -d "node_modules" ]; then
   npm install --ignore-scripts 2>&1 | tail -3
 fi
 
+echo "=== Renderizando diagramas ==="
+if [ -f "$PROJECT_DIR/docs/wiki/images/diagram-schemas.svg" ]; then
+  rsvg-convert -w 1200 "$PROJECT_DIR/docs/wiki/images/diagram-schemas.svg" \
+    -o "$OUTPUT_DIR/diagram-schemas.png" 2>/dev/null && \
+    echo "  diagram-schemas.png OK" || echo "  diagram-schemas.png FAILED"
+fi
+
 echo ""
 echo "=== Lançando VSCode com xvfb ==="
 
@@ -169,8 +176,8 @@ send_keys "ctrl+shift+u"
 capture "output-terminal.png"
 cp "$OUTPUT_DIR/output-terminal.png" "$OUTPUT_DIR/output-coverage-mapping.png" 2>/dev/null || true
 cp "$OUTPUT_DIR/output-terminal.png" "$OUTPUT_DIR/output-cli-args.png" 2>/dev/null || true
-cp "$OUTPUT_DIR/output-terminal.png" "$OUTPUT_DIR/output-sqlcl-compile.png" 2>/dev/null || true
-cp "$OUTPUT_DIR/output-terminal.png" "$OUTPUT_DIR/output-sqlcl-version.png" 2>/dev/null || true
+cp "$OUTPUT_DIR/output-terminal.png" "$OUTPUT_DIR/sqlcl-compile.png" 2>/dev/null || true
+cp "$OUTPUT_DIR/output-terminal.png" "$OUTPUT_DIR/sqlcl-version.png" 2>/dev/null || true
 
 # 11. QuickPick reporters
 send_keys "F1"

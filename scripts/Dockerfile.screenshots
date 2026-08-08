@@ -2,7 +2,7 @@ FROM ubuntu:24.04
 
 ENV DEBIAN_FRONTEND=noninteractive
 
-RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates xvfb xdotool scrot openbox libgtk-3-0 libnss3 libxss1 libxtst6 libasound2t64 libgbm1 libdrm2 libxkbcommon0 && rm -rf /var/lib/apt/lists/*
+RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates xvfb xdotool scrot openbox librsvg2-bin libgtk-3-0 libnss3 libxss1 libxtst6 libasound2t64 libgbm1 libdrm2 libxkbcommon0 && rm -rf /var/lib/apt/lists/*
 
 RUN curl -fsSL https://deb.nodesource.com/setup_24.x | bash - && apt-get install -y nodejs && rm -rf /var/lib/apt/lists/*
 

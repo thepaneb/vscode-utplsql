@@ -12,7 +12,7 @@ Coloque os PNGs capturados neste diretório.
 
 ---
 
-## Sem banco (UI pura — 17 prints)
+## Sem banco (UI pura — 15 prints)
 
 ### `test-explorer-suites.png`
 **Onde:** Home.md  
