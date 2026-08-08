@@ -126,7 +126,7 @@ if [ -n "$UTPLSQL_CONN" ]; then
   "workbench.colorTheme": "Default Light+",
   "utplsql.includePatterns": ["**/*.pks"],
   "utplsql.connection": "$UTPLSQL_CONN",
-  "utplsql.cliPath": "/opt/utplsql-cli/bin/utplsql",
+  "utplsql.cliPath": "/opt/utplsql-cli/utPLSQL-cli/bin/utplsql",
   "utplsql.javaPath": "/usr/bin/java",
   "utplsql.organization": "schema",
   "utplsql.organization.schemaPattern": "db/{schema}/**",
