@@ -25,6 +25,11 @@ if [ -f "$PROJECT_DIR/docs/wiki/images/diagram-schemas.svg" ]; then
     echo "  diagram-schemas.png OK" || echo "  diagram-schemas.png FAILED"
 fi
 
+# Compile extension (needed for Extension Development Host)
+echo "=== Compilando extensão ==="
+cd "$PROJECT_DIR"
+npx tsc -p ./ --outDir out 2>&1 | tail -3 || echo "  (compile skipped — out/ may already exist)"
+
 echo ""
 echo "=== Lançando VSCode com xvfb ==="
 
@@ -44,12 +49,13 @@ openbox &
 OPENBOX_PID=$!
 sleep 1
 
-# Launch VSCode
+# Launch VSCode with Extension Development Host
 "$VSCODE_BIN" \
   --no-sandbox \
   --disable-gpu \
   --disable-dev-shm-usage \
   --user-data-dir /tmp/vscode-user \
+  --extensionDevelopmentPath="$PROJECT_DIR" \
   "$FIXTURES_DIR" \
   > /tmp/vscode.log 2>&1 &
 VSCODE_PID=$!
