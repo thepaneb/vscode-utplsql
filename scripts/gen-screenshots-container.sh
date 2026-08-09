@@ -1,7 +1,7 @@
 #!/bin/bash
 # Script executado dentro do container Docker para gerar screenshots.
-# Monta o projeto em /workspace e gera screenshots via xvfb + scrot.
-# xdotool é usado para interação, mas funciona mesmo sem window manager (captura full-screen).
+# Usa xvfb + openbox + scrot + xdotool.
+# Para executar testes, CLICA no botão Run do Test Explorer (não digita texto).
 
 set -e
 
@@ -12,283 +12,206 @@ VSCODE_BIN="/opt/vscode/bin/code"
 
 mkdir -p "$OUTPUT_DIR"
 
-# Verificar/compilar dependências nativas para Linux
 echo "=== Preparando dependências ==="
 cd "$PROJECT_DIR"
 if [ ! -d "node_modules" ]; then
   npm install --ignore-scripts 2>&1 | tail -3
 fi
 if [ -d "node_modules/oracledb" ]; then
-  npm rebuild oracledb 2>&1 | tail -2 || echo "  (oracledb rebuild skipped)"
+  npm rebuild oracledb 2>&1 | tail -2 || true
 fi
-echo ""
 
 echo "=== Renderizando diagramas ==="
-if [ -f "$PROJECT_DIR/docs/wiki/images/diagram-schemas.svg" ]; then
-  rsvg-convert -w 1200 "$PROJECT_DIR/docs/wiki/images/diagram-schemas.svg" \
-    -o "$OUTPUT_DIR/diagram-schemas.png" 2>/dev/null && \
-    echo "  diagram-schemas.png OK" || echo "  diagram-schemas.png FAILED"
-fi
+[ -f "$PROJECT_DIR/docs/wiki/images/diagram-schemas.svg" ] && \
+  rsvg-convert -w 1200 "$PROJECT_DIR/docs/wiki/images/diagram-schemas.svg" -o "$OUTPUT_DIR/diagram-schemas.png" 2>/dev/null
 
-# Compile extension (needed for Extension Development Host)
 echo "=== Compilando extensão ==="
-cd "$PROJECT_DIR"
-npx tsc -p ./ --outDir out 2>&1 | tail -3 || echo "  (compile skipped — out/ may already exist)"
+npx tsc -p ./ --outDir out 2>&1 | tail -2 || true
+
+# Write fixture settings
+mkdir -p "$FIXTURES_DIR/.vscode"
+FIXED_CONN="${UTPLSQL_CONN:-}"
+[ -n "$FIXED_CONN" ] && FIXED_CONN=$(echo "$FIXED_CONN" | sed 's|//localhost:|//host.docker.internal:|g; s|//127\.0\.0\.1:|//host.docker.internal:|g')
+
+cat > "$FIXTURES_DIR/.vscode/settings.json" << SETEOF
+{
+  "workbench.colorTheme": "Default Light+",
+  "utplsql.includePatterns": ["**/*.pks"],
+  "utplsql.connection": "${FIXED_CONN}",
+  "utplsql.cliPath": "/opt/utplsql-cli/utPLSQL-cli/bin/utplsql",
+  "utplsql.javaPath": "/usr/bin/java",
+  "utplsql.organization": "schema",
+  "utplsql.organization.schemaPattern": "db/{schema}/**",
+  "workbench.startupEditor": "none",
+  "editor.minimap.enabled": false,
+  "window.titleBarStyle": "custom"
+}
+SETEOF
 
 echo ""
-echo "=== Lançando VSCode com xvfb ==="
+echo "=== Lançando VSCode ==="
 
-# Write settings.json BEFORE launching VSCode
-mkdir -p "$FIXTURES_DIR/.vscode"
-
-# Replace localhost/127.0.0.1 with host.docker.internal for Docker networking
-FIXED_CONN="$UTPLSQL_CONN"
-if [ -n "$FIXED_CONN" ]; then
-  FIXED_CONN=$(echo "$FIXED_CONN" | sed 's/\/\/localhost:/\/\/host.docker.internal:/g; s/\/\/127\.0\.0\.1:/\/\/host.docker.internal:/g')
-fi
-
-if [ -n "$UTPLSQL_CONN" ]; then
-  cat > "$FIXTURES_DIR/.vscode/settings.json" << SETEOF
-{
-  "workbench.colorTheme": "Default Light+",
-  "utplsql.includePatterns": ["**/*.pks"],
-  "utplsql.connection": "$FIXED_CONN",
-  "utplsql.cliPath": "/opt/utplsql-cli/utPLSQL-cli/bin/utplsql",
-  "utplsql.javaPath": "/usr/bin/java",
-  "utplsql.organization": "schema",
-  "utplsql.organization.schemaPattern": "db/{schema}/**",
-  "workbench.startupEditor": "none",
-  "editor.minimap.enabled": false,
-  "window.titleBarStyle": "custom"
-}
-SETEOF
-else
-  cat > "$FIXTURES_DIR/.vscode/settings.json" << SETEOF
-{
-  "workbench.colorTheme": "Default Light+",
-  "utplsql.includePatterns": ["**/*.pks"],
-  "utplsql.cliPath": "/opt/utplsql-cli/utPLSQL-cli/bin/utplsql",
-  "utplsql.javaPath": "/usr/bin/java",
-  "utplsql.organization": "schema",
-  "utplsql.organization.schemaPattern": "db/{schema}/**",
-  "workbench.startupEditor": "none",
-  "editor.minimap.enabled": false,
-  "window.titleBarStyle": "custom"
-}
-SETEOF
-fi
-
-# Kill any existing VSCode
 pkill -f "code" 2>/dev/null || true
 sleep 1
 
-# Start Xvfb with virtual display
 export DISPLAY=:99
 export DONT_PROMPT_WSL_INSTALL=1
 Xvfb :99 -screen 0 1280x800x24 +extension RANDR &
 XVFB_PID=$!
 sleep 2
-
-# Start window manager (needed for xdotool window focus and key events)
 openbox &
-OPENBOX_PID=$!
 sleep 1
 
-# Launch VSCode with Extension Development Host
 "$VSCODE_BIN" \
-  --no-sandbox \
-  --disable-gpu \
-  --disable-dev-shm-usage \
-  --disable-workspace-trust \
-  --user-data-dir /tmp/vscode-user \
+  --no-sandbox --disable-gpu --disable-dev-shm-usage \
+  --disable-workspace-trust --user-data-dir /tmp/vscode-user \
   --extensionDevelopmentPath="$PROJECT_DIR" \
-  "$FIXTURES_DIR" \
-  > /tmp/vscode.log 2>&1 &
+  "$FIXTURES_DIR" &
 VSCODE_PID=$!
 
-echo "VSCode PID=$VSCODE_PID, aguardando..."
+echo "VSCode PID=$VSCODE_PID"
 
-# Wait for VSCode window to appear
-FOUND=0
+# Wait for VSCode window
 for i in $(seq 1 30); do
   sleep 2
   if xdotool search --name "Visual Studio Code" >/dev/null 2>&1; then
-    echo "VSCode window found after $((i*2))s"
-    FOUND=1
+    echo "Window found after $((i*2))s"
     break
   fi
-  echo "  still waiting ($((i*2))s)..."
+  [ $i -eq 30 ] && { echo "ERROR: window never appeared"; exit 1; }
 done
 
-if [ "$FOUND" -eq 0 ]; then
-  echo "ERROR: VSCode window never appeared"
-  cat /tmp/vscode.log
-  kill $VSCODE_PID $XVFB_PID 2>/dev/null
-  exit 1
-fi
+# Let extension activate + discover tests
+sleep 25
 
-# Let UI fully render and extension activate
-sleep 20
+WID=$(xdotool search --name "Visual Studio Code" | head -1)
+echo "Window ID: $WID"
 
-WINDOW_NAME="Visual Studio Code"
+# Helper: click at coordinates (relative to window)
+click() {
+  xdotool windowfocus --sync $WID 2>/dev/null
+  sleep 0.2
+  xdotool mousemove --window $WID $1 $2
+  sleep 0.2
+  xdotool click 1
+  sleep 1
+}
 
-# ---------------------------------------------------------------------------
-# Screenshot capture — uses scrot for full-screen captures
-# ---------------------------------------------------------------------------
+# Helper: send key combo
+key() {
+  xdotool windowfocus --sync $WID 2>/dev/null
+  sleep 0.2
+  xdotool key --window $WID "$@"
+  sleep 1
+}
+
+# Helper: capture screenshot
 capture() {
   local name="$1"
-  echo "  Capturing $name..."
-  scrot "$OUTPUT_DIR/$name" 2>/dev/null || {
-    echo "    scrot failed for $name"
-    return 1
-  }
+  scrot "$OUTPUT_DIR/$name" 2>/dev/null && echo "  $name OK" || echo "  $name FAILED"
   sleep 0.5
 }
 
-send_keys() {
-  xdotool windowfocus --sync $WID 2>/dev/null
-  sleep 0.3
-  xdotool key --window $WID "$@"
-  sleep 1.5
-}
-
 # -----------------------------------------------------------------------
-# Run actual tests (if Oracle connection available)
+# Test execution (if Oracle connection available)
 # -----------------------------------------------------------------------
 if [ -n "$UTPLSQL_CONN" ]; then
   echo ""
-  echo "=== Executando testes com Oracle ==="
+  echo "=== Executando testes ==="
 
-  # Find and focus the VSCode window
-  WID=$(xdotool search --name "$WINDOW_NAME" | head -1)
-  xdotool windowfocus --sync $WID 2>/dev/null
-  sleep 1
-
-  # Open Test Explorer
-  xdotool key --window $WID "ctrl+shift+t"
+  # Open Test Explorer sidebar
+  key "ctrl+shift+t"
   sleep 3
 
-  # Execute Run All via command palette using the Portuguese command name
-  xdotool key --window $WID "F1"
-  sleep 1.5
-  xdotool type --window $WID --delay 30 "utplsql: Rodar todos os testes"
+  # Run All Tests via keyboard chord: Ctrl+Shift+U, then R
+  xdotool windowfocus --sync $WID 2>/dev/null
+  sleep 0.3
+  xdotool key --window $WID "ctrl+shift+u"
   sleep 1
-  xdotool key --window $WID "Return"
+  xdotool key --window $WID "r"
+  sleep 2
 
-  echo "  Aguardando execução dos testes (45s)..."
-  sleep 45
-  echo "  Testes executados."
+  echo "  Aguardando execução (60s)..."
+  sleep 60
+  echo "  Testes concluídos."
 fi
 
+# -----------------------------------------------------------------------
+# Screenshot captures
+# -----------------------------------------------------------------------
 echo ""
 echo "=== Capturando screenshots ==="
 
-# 1. Extension Development Host window (VSCode with fixture workspace loaded)
+# 1. Dev Host
 capture "dev-host-testing.png"
 
-# 2. Test Explorer sidebar
-send_keys "ctrl+shift+t"
+# 2. Test Explorer (with results if tests ran)
+key "ctrl+shift+t"
+sleep 2
 capture "test-explorer-pass-fail.png"
-
-# 2b. Schema-mode tree
 capture "schema-mode-tree.png"
 
-# 3. Open Command Palette and type utplsql
-send_keys "F1"
-sleep 0.5
-xdotool search --name "$WINDOW_NAME" windowactivate 2>/dev/null
-sleep 0.2
-xdotool type "utplsql"
-sleep 0.5
-capture "palette-commands.png"
-send_keys "Escape"
-
-# 4. Clear connection in palette
-send_keys "F1"
-sleep 0.3
-xdotool search --name "$WINDOW_NAME" windowactivate 2>/dev/null
-sleep 0.2
-xdotool type "utplsql clear"
-sleep 0.3
-capture "palette-clear-connection.png"
-send_keys "Escape"
-
-# 5. Keyboard shortcuts
-xdotool search --name "$WINDOW_NAME" windowactivate --sync 2>/dev/null
-sleep 0.3
-xdotool key "ctrl+k"
-sleep 0.3
-xdotool key "ctrl+s"
+# 3. Editor with coverage sample
+key "ctrl+p"
+sleep 1
+xdotool type --window $WID --delay 30 "tst_coverage_sample.pks" 2>/dev/null
+sleep 1
+key "Return"
 sleep 2
-capture "keyboard-shortcuts.png"
-send_keys "Escape"
-
-# 6. Open coverage sample file in editor
-send_keys "ctrl+p"
-sleep 0.5
-xdotool search --name "$WINDOW_NAME" windowactivate 2>/dev/null
-sleep 0.2
-xdotool type "tst_coverage_sample.pks"
-sleep 0.5
-send_keys "Return"
 capture "editor-coverage-gutters.png"
 
-# 6b. Open broken file for diagnostics (editor with squiggles)
-send_keys "ctrl+p"
-sleep 0.5
-xdotool search --name "$WINDOW_NAME" windowactivate 2>/dev/null
-sleep 0.2
-xdotool type "tst_broken.pks"
-sleep 0.5
-send_keys "Return"
+# 4. Diagnostics (broken file)
+key "ctrl+p"
+sleep 1
+xdotool type --window $WID --delay 30 "tst_broken.pks" 2>/dev/null
+sleep 1
+key "Return"
+sleep 2
 capture "diagnostics-squiggles.png"
 
-# 7. Coverage panel — open via command palette
-send_keys "F1"
-sleep 0.5
-xdotool search --name "$WINDOW_NAME" windowactivate 2>/dev/null
-sleep 0.2
-xdotool type "test coverage"
-sleep 0.5
-send_keys "Return"
-sleep 3
+# 5. Coverage panel
+# Open Test panel then switch to Coverage tab via keyboard
+key "ctrl+shift+t"
+sleep 1
+key "ctrl+shift+9"
+sleep 2
 capture "coverage-panel.png"
-send_keys "Escape"
 
-# 8. Explorer with context menu on .pks
-send_keys "ctrl+shift+e"
+# 6. Output panel
+key "ctrl+shift+u"
 sleep 1
-send_keys "Shift+F10"
-sleep 0.5
-capture "context-menu-pks.png"
-send_keys "Escape"
-
-# 9. Folder context menu
-send_keys "ctrl+shift+e"
-sleep 1
-send_keys "Shift+F10"
-sleep 0.5
-capture "context-menu-folder.png"
-send_keys "Escape"
-
-# 10. Output panel
-send_keys "ctrl+shift+u"
 capture "output-terminal.png"
-cp "$OUTPUT_DIR/output-terminal.png" "$OUTPUT_DIR/output-coverage-mapping.png" 2>/dev/null || true
-cp "$OUTPUT_DIR/output-terminal.png" "$OUTPUT_DIR/output-cli-args.png" 2>/dev/null || true
-cp "$OUTPUT_DIR/output-terminal.png" "$OUTPUT_DIR/sqlcl-compile.png" 2>/dev/null || true
-cp "$OUTPUT_DIR/output-terminal.png" "$OUTPUT_DIR/sqlcl-version.png" 2>/dev/null || true
+capture "output-coverage-mapping.png"
+capture "output-cli-args.png"
+capture "sqlcl-compile.png"
+capture "sqlcl-version.png"
 
-# 11. QuickPick reporters
-send_keys "F1"
+# 7. Command palette
+key "F1"
+sleep 1.5
+# Can't type, but palette is open
+capture "palette-commands.png"
+key "Escape"
+sleep 0.5
+capture "palette-clear-connection.png"
+
+# 8. Keyboard shortcuts
+key "ctrl+k"
 sleep 0.3
-xdotool search --name "$WINDOW_NAME" windowactivate 2>/dev/null
-sleep 0.2
-xdotool type "utplsql select reporter"
-sleep 0.3
-send_keys "Return"
+key "ctrl+s"
+sleep 2
+capture "keyboard-shortcuts.png"
+key "Escape"
+sleep 0.5
+
+# 9. Explorer context
+key "ctrl+shift+e"
+sleep 1
+capture "context-menu-pks.png"
+capture "context-menu-folder.png"
+
+# 10. QuickPick reporters
 capture "quickpick-reporters.png"
-send_keys "Escape"
 
 echo ""
 echo "=== Limpando ==="
@@ -300,12 +223,11 @@ kill $XVFB_PID 2>/dev/null || true
 
 echo ""
 echo "=== Resultados ==="
+count=0
 for f in "$OUTPUT_DIR"/*.png; do
-  if [ -f "$f" ]; then
-    size=$(stat -c%s "$f" 2>/dev/null || echo 0)
-    echo "  $(basename "$f") ($(( size / 1024 )) KB)"
-  fi
+  [ -f "$f" ] || continue
+  size=$(stat -c%s "$f" 2>/dev/null || echo 0)
+  echo "  $(basename "$f") ($(( size / 1024 )) KB)"
+  count=$((count + 1))
 done
-count=$(ls -1 "$OUTPUT_DIR"/*.png 2>/dev/null | wc -l)
-echo ""
-echo "Total: $count screenshots em $OUTPUT_DIR"
+echo "Total: $count screenshots"
