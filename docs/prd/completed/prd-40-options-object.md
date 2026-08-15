@@ -2,7 +2,7 @@
 
 | Campo | Valor |
 |---|---|
-| Status | Em desenvolvimento |
+| Status | Concluído |
 | Autor | Gil Cleber |
 | Data | 2026-08-08 |
 | Componente | Extensão `paneb.vscode-utplsql` |
@@ -152,11 +152,11 @@ Nenhuma nova setting.
 
 ## 10. Critérios de aceite
 
-- [ ] `OracleRunOptions` interface exportada com JSDoc
-- [ ] `executeRunOracle` aceita 2 parâmetros (`options` + `token`)
-- [ ] `runner.ts` constrói `OracleRunOptions` e passa como objeto
-- [ ] Nomes de variáveis locais preservados na desestruturação
-- [ ] `npm run compile && npm run lint && node --test` passam
+- [x] `OracleRunOptions` interface exportada com JSDoc
+- [x] `executeRunOracle` aceita 2 parâmetros (`options` + `token`)
+- [x] `runner.ts` constrói `OracleRunOptions` e passa como objeto
+- [x] Nomes de variáveis locais preservados na desestruturação
+- [x] `npm run compile && npm run lint && node --test` passam
 
 ## 11. Decisões
 

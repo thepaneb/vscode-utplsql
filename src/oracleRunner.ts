@@ -99,25 +99,52 @@ async function discoverUtplsqlSchema(conn: {
   return '';
 }
 
-export async function executeRunOracle(
-  connection: string,
-  pathArgs: string[],
-  coverage: boolean,
-  sourcePath: string,
-  root: string,
-  run: vscode.TestRun,
-  leafTests: vscode.TestItem[],
-  state: TestStateManager,
-  token: vscode.CancellationToken,
+export interface OracleRunOptions {
+  /** Connection string (user/pass@//host:port/service) */
+  connection: string;
+  /** Path args para ut_runner.run (ex.: ['package', 'package.proc']) */
+  pathArgs: string[];
+  /** Se true, coleta e aplica cobertura Cobertura */
+  coverage: boolean;
+  /** Caminho base do código-fonte para mapeamento de cobertura */
+  sourcePath: string;
+  /** fsPath do workspace folder raiz */
+  root: string;
+  /** TestRun atual do VSCode */
+  run: vscode.TestRun;
+  /** TestItems leaf (suites ou tests individuais) a executar */
+  leafTests: vscode.TestItem[];
+  /** State manager compartilhado */
+  state: TestStateManager;
+  /** Callback opcional ao finalizar com contagem de resultados */
   onComplete?: (
     passed: number,
     failed: number,
     skipped: number,
     errored: number,
     durationMs: number,
-  ) => void,
-  folders?: readonly vscode.WorkspaceFolder[],
+  ) => void;
+  /** Workspace folders para resolução de sourceUri */
+  folders?: readonly vscode.WorkspaceFolder[];
+}
+
+export async function executeRunOracle(
+  options: OracleRunOptions,
+  token: vscode.CancellationToken,
 ): Promise<void> {
+  const {
+    connection,
+    pathArgs,
+    coverage,
+    sourcePath,
+    root,
+    run,
+    leafTests,
+    state,
+    onComplete,
+    folders,
+  } = options;
+
   let oracledb: typeof import('oracledb');
   try {
     const mod = await import('oracledb');

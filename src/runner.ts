@@ -9,7 +9,7 @@ import { compilationDiagnostics } from './compilationDiagnostics';
 import { readConfig, resolveConnection } from './config';
 import { buildInvocation, isInvocationError } from './invocation';
 import { parseJUnit } from './junit';
-import { executeRunOracle } from './oracleRunner';
+import { executeRunOracle, type OracleRunOptions } from './oracleRunner';
 import { setupValidator } from './quickfix';
 import { applyCoverageFromXml, applyResultsFromCases, countResults } from './results';
 import type { TestStateManager } from './state';
@@ -127,19 +127,19 @@ export async function executeRun(
   const useOracle = cfg.runnerMode === 'oracle' || cfg.runnerMode === 'auto';
   if (useOracle) {
     try {
-      await executeRunOracle(
+      const oracleOpts: OracleRunOptions = {
         connection,
-        [...pathArgs],
+        pathArgs: [...pathArgs],
         coverage,
-        cfg.sourcePath,
+        sourcePath: cfg.sourcePath,
         root,
         run,
         leafTests,
         state,
-        token,
         onComplete,
         folders,
-      );
+      };
+      await executeRunOracle(oracleOpts, token);
       run.end();
       vscode.commands.executeCommand('setContext', 'utplsql:running', false);
       return;

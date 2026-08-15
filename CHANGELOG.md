@@ -19,6 +19,10 @@
   importa de `results.ts`. `matching.ts` permanece puro. Comportamento unificado: o modo CLI
   ganha "Go to Error" (stackFrames → `message.location`) e o modo Oracle ganha o aviso de
   testes sem match no JUnit. −380/+439 linhas, 7 testes unitários novos, cobertura 72.6%.
+- **Refatoração: Options Object no Oracle runner** (PRD-40): `executeRunOracle` passa a receber
+  `OracleRunOptions` (interface tipada com JSDoc) + `token` — os 11 parâmetros posicionais
+  viram um objeto com desestruturação preservando os nomes locais. Call site em `runner.ts`
+  constrói o objeto. Sem mudança de comportamento.
 - **Wiki: checklist manual de screenshots + diagramas** (PRD-23, reconciliada): automação de
   captura descartada (qualidade insatisfatória) em favor de checklist manual de 23 itens em
   `docs/wiki/images/README.md` + fixtures preservadas. Quatro diagramas vetoriais novos
