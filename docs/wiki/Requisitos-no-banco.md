@@ -49,24 +49,12 @@ SELECT ut_metadata.get_source_view_name FROM dual;
 
 ### Install compartilhado (recomendado)
 
-```
-┌─────────────────────┐
-│  UT3 (utPLSQL owner) │  ← grants SELECT ON DBA_SOURCE/OBJECTS/PROCEDURES
-└────────┬────────────┘
-         │ lê annotations
-    ┌────┴────┐
-    │ DEV     │  ← schemas de aplicação com os testes
-    │ TEST    │
-    └─────────┘
-```
+Owner `UT3` recebe grants `SELECT ON DBA_SOURCE/OBJECTS/PROCEDURES` para ler
+as annotations nos schemas de aplicação (`DEV`, `TEST`, ...).
 
 ### Install por schema
 
-```
-┌─────────────────────┐
-│  DEV (utPLSQL + testes) │  ← mesmo schema, sem grants cross-schema
-└─────────────────────┘
-```
+utPLSQL instalado **no mesmo schema** dos testes — sem grants cross-schema.
 
 > Em install **por schema**, os grants `DBA_SOURCE`/`DBA_OBJECTS`/
 > `DBA_PROCEDURES` **não** são necessários — o framework lê o próprio

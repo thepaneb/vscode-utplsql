@@ -17,17 +17,6 @@ esperar o batch completo.
 
 ![Streaming em tempo real](images/diagram-streaming.png)
 
-```
-Extension Host
-    │
-    ├─► conn1: ut_runner.run(...)          ← executa os testes (bloqueante)
-    │
-    └─► conn2: polling a cada 200ms        ← lê resultados incrementais
-              SELECT FROM UT_OUTPUT_BUFFER_TMP
-              WHERE message_id > :last
-              ORDER BY message_id
-```
-
 1. A extensão abre **duas conexões** Oracle via `node-oracledb` (thin driver, sem Instant Client).
 2. A **conn1** executa `ut_runner.run(a_paths => ..., a_reporters => ...)` — bloqueante.
 3. A **conn2** faz polling da tabela `UT_OUTPUT_BUFFER_TMP` a cada 200ms.
