@@ -6,12 +6,9 @@ Visão geral da arquitetura interna da extensão para contribuidores.
 
 ![Arquitetura de execução — dois modos](images/diagram-arquitetura.png)
 
-```
-discovery (.pks) → executeRun (runner.ts) monta: utplsql run <conn> -p=<suites>
-  -f=ut_junit_reporter -o=results.xml          → parseJUnit  → run.passed/failed
-  -f=ut_coverage_cobertura_reporter -o=cov.xml  → parseCobertura → run.addCoverage
-  -f=ut_documentation_reporter -c (stdout)      → run.appendOutput
-```
+### Modo CLI
+
+![Modo CLI — batch](images/diagram-cli.png)
 
 `src/extension.ts` é o orquestrador. `src/runner.ts` contém `executeRun` e
 `applyResults`.

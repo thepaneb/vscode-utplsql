@@ -79,27 +79,15 @@ Dois modos de execução estão disponíveis:
 ![Arquitetura de execução — dois modos](docs/wiki/images/diagram-arquitetura.png)
 
 ### Modo Oracle direto (v0.9.0) — `runnerMode: auto` ou `oracle`
-```
- Extension Host
-     │
-     ├─► node-oracledb conn1  →  ut_runner.run(...)             ──► testes executados
-     │
-     └─► node-oracledb conn2  →  poll UT_OUTPUT_BUFFER_TMP      ──► resultados streaming
-                                    (doc + JUnit + coverage)
-```
+
+![Modo Oracle direto — streaming](docs/wiki/images/diagram-streaming.png)
+
 Sem arquivos temporários, sem esperar o batch. Resultados aparecem no
 Test Explorer **conforme cada teste termina**.
 
 ### Modo CLI — `runnerMode: cli` (fallback)
-```
- Test Explorer / menu de contexto
-         │  (descobre %suite / %test nos .pks)
-         ▼
-  utplsql run <conn> -p=<suites>
-    -f=ut_junit_reporter             -o=results.xml    ──► resultados na view de testes
-    -f=ut_coverage_cobertura_reporter -o=coverage.xml  ──► gutters + % na aba Coverage
-    -f=ut_documentation_reporter -c                    ──► log no terminal de testes
-```
+
+![Modo CLI — batch](docs/wiki/images/diagram-cli.png)
 
 A extensão monta a linha de comando do CLI ou conecta via Oracle direto, lê os
 relatórios (JUnit + Cobertura) e os traduz para as APIs nativas do VSCode. O

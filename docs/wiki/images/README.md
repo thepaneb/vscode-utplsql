@@ -68,7 +68,7 @@ Marque cada item ao capturar. Os nomes de arquivo devem ser **exatamente** os li
 | 21 | `sqlcl-compile.png` | Guia-rápido.md | Output de compilação SQLcl com packages compilados |
 | 22 | `sqlcl-version.png` | Instalação-e-requisitos.md | Output de `utplsql info` com versão do CLI, API e DB utPLSQL |
 
-### Diagramas (5 arquivos, gerados via SVG)
+### Diagramas (6 arquivos, gerados via SVG)
 
 | # | Arquivo | Onde é usado | Como gerar |
 |---|---|---|---|
@@ -77,6 +77,7 @@ Marque cada item ao capturar. Os nomes de arquivo devem ser **exatamente** os li
 | 25 | `diagram-conexao.png` | Conexão.md | `npm run gen-diagram` |
 | 26 | `diagram-streaming.png` | Execução-Oracle-direta.md | `npm run gen-diagram` |
 | 27 | `diagram-diagnosticos.png` | Diagnósticos-e-quick-fix.md | `npm run gen-diagram` |
+| 28 | `diagram-cli.png` | README.md, Arquitetura.md | `npm run gen-diagram` |
 
 Os diagramas são mantidos como **SVG** (fonte da verdade, versionável) e
 renderizados para **PNG de 1200px** pelo script `scripts/gen-diagrams.cjs`
