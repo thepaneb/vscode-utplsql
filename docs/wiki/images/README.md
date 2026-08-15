@@ -36,7 +36,7 @@ Antes de capturar, configure o ambiente:
 
 Marque cada item ao capturar. Os nomes de arquivo devem ser **exatamente** os listados.
 
-### UI pura (15 prints)
+### UI pura (16 prints)
 
 | # | Arquivo | Onde na wiki | Como capturar |
 |---|---|---|---|
@@ -55,29 +55,30 @@ Marque cada item ao capturar. Os nomes de arquivo devem ser **exatamente** os li
 | 13 | `schema-mode-tree.png` | Organização-da-árvore.md | Test Explorer em modo schema mostrando `Schema: APP` e `Schema: INVENTORY` |
 | 14 | `diagnostics-squiggles.png` | Diagnósticos-e-quick-fix.md | Editor com `tst_broken.pks` aberto mostrando sublinhado vermelho + Problems Panel |
 | 15 | `quickpick-reporters.png` | Reporters.md | QuickPick de seleção de reporter adicional |
+| 16 | `annotations-display.png` | Guia-rápido.md | Editor com `tst_annotations.pks` aberto + Test Explorer mostrando `Hello customizado` (`%displayname`) e **sem** o teste `%disabled` |
 
 ### Com banco Oracle (7 prints)
 
 | # | Arquivo | Onde na wiki | Como capturar |
 |---|---|---|---|
-| 16 | `output-terminal.png` | Guia-rápido.md | Output panel após execução mostrando documentation reporter |
-| 17 | `editor-coverage-gutters.png` | Cobertura.md | Editor com `tst_coverage_sample.pks` mostrando gutters de cobertura (verde=coberto, vermelho=não coberto) |
-| 18 | `coverage-panel.png` | Cobertura.md | Painel Test Coverage com percentuais por arquivo |
-| 19 | `output-coverage-mapping.png` | Cobertura.md | Output panel mostrando log de mapeamento `-source_path` |
-| 20 | `output-cli-args.png` | Modo-de-invocação.md | Output panel mostrando `[debug] CLI:` com argumentos do launcher/java |
-| 21 | `sqlcl-compile.png` | Guia-rápido.md | Output de compilação SQLcl com packages compilados |
-| 22 | `sqlcl-version.png` | Instalação-e-requisitos.md | Output de `utplsql info` com versão do CLI, API e DB utPLSQL |
+| 17 | `output-terminal.png` | Guia-rápido.md | Output panel após execução mostrando documentation reporter |
+| 18 | `editor-coverage-gutters.png` | Cobertura.md | Editor com `tst_coverage_sample.pks` mostrando gutters de cobertura (verde=coberto, vermelho=não coberto) |
+| 19 | `coverage-panel.png` | Cobertura.md | Painel Test Coverage com percentuais por arquivo |
+| 20 | `output-coverage-mapping.png` | Cobertura.md | Output panel mostrando log de mapeamento `-source_path` |
+| 21 | `output-cli-args.png` | Modo-de-invocação.md | Output panel mostrando `[debug] CLI:` com argumentos do launcher/java |
+| 22 | `sqlcl-compile.png` | Guia-rápido.md | Output de compilação SQLcl com packages compilados |
+| 23 | `sqlcl-version.png` | Instalação-e-requisitos.md | Output de `utplsql info` com versão do CLI, API e DB utPLSQL |
 
 ### Diagramas (6 arquivos, gerados via SVG)
 
 | # | Arquivo | Onde é usado | Como gerar |
 |---|---|---|---|
-| 23 | `diagram-schemas.png` | Requisitos-no-banco.md | `npm run gen-diagram` (renderiza o SVG) |
-| 24 | `diagram-arquitetura.png` | README.md, Arquitetura.md | `npm run gen-diagram` |
-| 25 | `diagram-conexao.png` | Conexão.md | `npm run gen-diagram` |
-| 26 | `diagram-streaming.png` | Execução-Oracle-direta.md | `npm run gen-diagram` |
-| 27 | `diagram-diagnosticos.png` | Diagnósticos-e-quick-fix.md | `npm run gen-diagram` |
-| 28 | `diagram-cli.png` | README.md, Arquitetura.md | `npm run gen-diagram` |
+| 24 | `diagram-schemas.png` | Requisitos-no-banco.md | `npm run gen-diagram` (renderiza o SVG) |
+| 25 | `diagram-arquitetura.png` | README.md, Arquitetura.md | `npm run gen-diagram` |
+| 26 | `diagram-conexao.png` | Conexão.md | `npm run gen-diagram` |
+| 27 | `diagram-streaming.png` | Execução-Oracle-direta.md | `npm run gen-diagram` |
+| 28 | `diagram-diagnosticos.png` | Diagnósticos-e-quick-fix.md | `npm run gen-diagram` |
+| 29 | `diagram-cli.png` | README.md, Arquitetura.md | `npm run gen-diagram` |
 
 Os diagramas são mantidos como **SVG** (fonte da verdade, versionável) e
 renderizados para **PNG de 1200px** pelo script `scripts/gen-diagrams.cjs`

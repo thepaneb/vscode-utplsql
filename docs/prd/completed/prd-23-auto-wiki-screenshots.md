@@ -128,8 +128,9 @@ dependências de sistema.
 
 ## 8. Pendências
 
-- **Captura manual dos 22 screenshots** listados no checklist
+- **Captura manual dos 23 screenshots** listados no checklist
   (`docs/wiki/images/README.md`) — as páginas da wiki referenciam esses PNGs,
-  que foram removidos com a automação. Executar antes do release 0.10.0.
+  que foram removidos com a automação. Inclui o item novo `annotations-display.png`
+  (PRD-42, fixture `tst_annotations.pks`). Executar antes do release 0.10.0.
 - **Sincronização da wiki** (PRD-22): o workflow copia `docs/wiki/images/`
   para o repositório wiki no push/merge da branch — automático, sem ação manual.

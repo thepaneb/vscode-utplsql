@@ -65,6 +65,8 @@ procedure teste_desativado;
 Case-insensitive. Annotations no header da suíte (entre `%suite` e o primeiro
 `%test`) aplicam à suíte; após o `%test`, ao teste.
 
+![Annotations: displayname na árvore e teste disabled ausente](images/annotations-display.png)
+
 ## 2. Compile no banco
 
 Use sua ferramenta Oracle de preferência (SQLcl, SQL Developer, extensão Oracle
