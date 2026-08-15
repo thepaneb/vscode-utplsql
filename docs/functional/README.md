@@ -16,9 +16,9 @@ discovery (.pks)  ──►  executeRun  ──►  CLI / Oracle direto  ──�
 
 | Camada | Módulos | Responsabilidade |
 |---|---|---|
-| **Descoberta** | `suiteParser.ts`, `discovery.ts` | Encontrar suites/testes nos arquivos `.pks` via regex `%suite`/`%test` |
-| **Execução** | `runner.ts`, `cli.ts`, `oracleRunner.ts`, `invocation.ts` | Executar testes via CLI ou Oracle direto |
-| **Resultados** | `junit.ts`, `runner.ts`, `cliReporters.ts` | Parse do XML JUnit, mapeamento para `vscode.TestItem` |
+| **Descoberta** | `suiteParser.ts`, `discovery.ts` | Encontrar suites/testes nos arquivos `.pks` via regex `%suite`/`%test` + annotations estendidas |
+| **Execução** | `runner.ts`, `cli.ts`, `oracleRunner.ts`, `invocation.ts` | Executar testes via CLI ou Oracle direto (com connection pooling) |
+| **Resultados** | `junit.ts`, `results.ts`, `cliReporters.ts` | Parse do XML JUnit, mapeamento para `vscode.TestItem` (funções canônicas compartilhadas) |
 | **Cobertura** | `cobertura.ts`, `coverage.ts` | Parse do XML Cobertura, mapeamento para arquivos fonte |
 | **UX** | `codelens.ts`, `statusBar.ts`, `decorations.ts` | CodeLens, StatusBar, decorações inline |
 | **Diagnósticos** | `compilationDiagnostics.ts`, `quickfix.ts` | Erros PL/SQL no editor, validação de setup com quick-fix |
@@ -29,9 +29,9 @@ discovery (.pks)  ──►  executeRun  ──►  CLI / Oracle direto  ──�
 
 | Puro (testável com `node --test`) | Depende de `vscode` |
 |---|---|
-| `suiteParser.ts`, `junit.ts`, `cobertura.ts` | `extension.ts`, `runner.ts` |
+| `suiteParser.ts`, `junit.ts`, `cobertura.ts` | `extension.ts`, `runner.ts`, `results.ts` |
 | `invocation.ts`, `matching.ts` | `config.ts`, `cli.ts` |
-| `cliInfo.ts`, `cliReporters.ts`, `codelens.ts` (parse) | `discovery.ts`, `coverage.ts` |
+| `cliInfo.ts`, `cliReporters.ts`, `codelens.ts` (parse) | `discovery.ts`, `coverage.ts`, `oracleRunner.ts` |
 | `state.ts`, `types.ts` | `decorations.ts`, `statusBar.ts` |
 
 ### Context keys

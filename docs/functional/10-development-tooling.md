@@ -17,6 +17,7 @@ Ferramentas e infraestrutura de desenvolvimento do projeto.
 | `npm run test:integration` | `pretest:integration` (compile) → `vscode-test` |
 | `npm run package` | `vsce package` → `.vsix` |
 | `npm run sync-prds` | Atualiza labels/issues no GitHub |
+| `npm run gen-diagram` | `scripts/gen-diagrams.cjs` — renderiza todos os SVGs de `docs/wiki/images/` para PNG de 1200px via `@resvg/resvg-js` (cross-platform) |
 
 ## TypeScript Coverage (c8)
 

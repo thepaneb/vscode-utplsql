@@ -34,6 +34,18 @@ Todas as settings da extensão, com prefixo `utplsql.`. Configure no
 | `utplsql.cliHome` | `""` | Raiz do utPLSQL-cli. Vazio = derivado do `cliPath`. Só no modo `java`. |
 | `utplsql.runnerMode` | `auto` | Modo de execução: `auto` (Oracle direto via node-oracledb, fallback CLI), `cli` (sempre CLI), `oracle` (sempre Oracle direto). |
 
+## Pool do Oracle runner
+
+| Setting | Default | Descrição |
+|---|---|---|
+| `utplsql.oraclePoolMin` | `2` | Conexões mínimas mantidas no pool (node-oracledb). |
+| `utplsql.oraclePoolMax` | `10` | Conexões máximas no pool. |
+| `utplsql.oraclePoolIncrement` | `1` | Incremento ao expandir o pool. |
+| `utplsql.oraclePoolPingInterval` | `60` | Segundos entre health checks das conexões ociosas (ping no checkout). `0` = ping a cada checkout. |
+
+O pool é criado **lazy** na primeira execução Oracle, é recriado quando a
+conexão muda e fechado ao desativar a extensão. Veja [Execução Oracle direta](Execução-Oracle-direta).
+
 ## Flags do CLI
 
 | Setting | Default | Descrição |

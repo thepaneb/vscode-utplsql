@@ -13,12 +13,15 @@ workspace folders
     │       │
     │       ├─► suiteParser.ts: parseSuiteText(text)
     │       │       ├─► regex %suite → packageName, suiteDescription, suiteLine
-    │       │       └─► regex %test → procName, description, line
+    │       │       ├─► regex %test → procName, description, line
+    │       │       └─► annotations: %disabled, %throws, %tags, %displayname,
+    │       │           lifecycle (%beforeall/%beforeeach/%aftereach/%afterall)
     │       │
     │       └─► retorna ParsedSuite | null (sem %suite)
     │
     └─► discoverWorkspace(patterns, folders) → SuiteFile[]
             │
+            ├─► filtra suites com disabled e testes com disabled
             └─► resolveFolder(uri, folders) → WorkspaceFolder (prefixo mais longo)
 ```
 
@@ -41,12 +44,21 @@ interface SuiteFile {
   tests: TestProc[];         // lista de procedimentos de teste
   folder: vscode.WorkspaceFolder;
   suiteLine: number;         // linha do %suite (para decorações)
+  disabled?: boolean;        // %disabled no nível da suite (PRD-42)
+  hasBeforeAll?: boolean;    // lifecycle hooks (PRD-42)
+  hasAfterAll?: boolean;
+  hasBeforeEach?: boolean;
+  hasAfterEach?: boolean;
 }
 
 interface TestProc {
   procName: string;          // nome do procedure
   description: string;       // descrição do %test
   line: number;              // linha do %test
+  disabled?: boolean;        // %disabled (PRD-42)
+  expectedError?: number;    // %throws(-NNNNN) → valor absoluto (PRD-42)
+  tags?: string[];           // %tags(a,b,c) → array trimado (PRD-42)
+  displayName?: string;      // %displayname(nome) — sobrescreve description (PRD-42)
 }
 ```
 
@@ -72,6 +84,21 @@ O parser percorre o texto linha a linha:
 3. Se encontrar novo `%suite`, finaliza a suíte anterior
 4. Linha em branco entre `%suite` e primeiro `%test`/procedure é necessária
 
+## Annotations estendidas (PRD-42)
+
+| Annotation | Alvo | Campo | Comportamento |
+|---|---|---|---|
+| `-- %disabled` | suite / teste | `disabled` | Suites e testes desabilitados **não aparecem** no Test Explorer (`discoverWorkspace` filtra) |
+| `-- %throws(-20001)` | teste | `expectedError` | Código de erro esperado, **valor absoluto** (o `-` do utPLSQL é convenção de "espera lançar") |
+| `-- %tags(fast, critical)` | teste | `tags[]` | Array trimado, split por `,` (filtro por tag é PRD futura) |
+| `-- %displayname(Nome)` | teste | `displayName` | Sobrescreve a descrição exibida na árvore (`displayName ?? description`) |
+| `-- %beforeall` / `%beforeeach` / `%aftereach` / `%afterall` | suite | booleanos | Metadados de lifecycle (indicam setup/teardown) |
+
+Regras de escopo (blocos de annotation):
+- **Header da suite** (entre `%suite` e o primeiro `%test`) → annotations aplicam à **suite** (`%disabled` desabilita a suite inteira)
+- **Entre `%test` e a procedure** (ou entre a procedure anterior e o próximo `%test`) → aplicam ao **teste**
+- Case-insensitive (`%DISABLED` == `%disabled`)
+
 ## `discoverWorkspace`
 
 ```typescript
@@ -85,8 +112,9 @@ async function discoverWorkspace(
 2. Deduplica URIs via `Set`
 3. Lê cada arquivo com `vscode.workspace.fs.readFile(uri)`
 4. Chama `parseSuite()` — se retornar `null` (sem `%suite`) ou `tests.length === 0`, ignora
-5. Resolve `WorkspaceFolder` via `resolveFolder()` (prefixo mais longo)
-6. Arquivos ilegíveis são ignorados (catch silencioso)
+5. Filtra testes com `disabled: true`; se sobrarem 0 testes (ou `suite.disabled`), ignora a suite
+6. Resolve `WorkspaceFolder` via `resolveFolder()` (prefixo mais longo)
+7. Arquivos ilegíveis são ignorados (catch silencioso)
 
 ## `extractSchemaFromPath`
 

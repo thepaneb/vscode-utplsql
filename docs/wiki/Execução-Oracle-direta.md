@@ -41,6 +41,22 @@ npm install oracledb
 A dependência é **opcional** (`optionalDependencies` no `package.json`). O thin
 driver (puro JavaScript) não requer Oracle Instant Client.
 
+### Connection pooling (v0.10.0)
+
+As conexões do Oracle runner vêm de um **pool gerenciado** (não mais conexões
+raw por execução):
+
+- Pool criado **lazy** na primeira execução; reutilizado nas seguintes
+- **Recriado automaticamente** se a conexão mudar (setting editado ou
+  `utPLSQL: Limpar conexão` + nova conexão)
+- Health check de conexões ociosas via `poolPingInterval` (ping interno do
+  Thin driver — sem `SELECT 1 FROM DUAL` extra)
+- Fechado no `deactivate()` com drenagem de 10s
+- Tamanho configurável: `utplsql.oraclePoolMin/Max/Increment/PingInterval`
+
+Se o pool não puder ser criado (ex.: banco inacessível), o runner cai para
+conexão raw como fallback — e o modo `auto` continua caindo para CLI em erro.
+
 ### Grants no banco (shared install)
 
 Se o utPLSQL estiver instalado em um schema separado (ex.: `UT3`), o DBA precisa

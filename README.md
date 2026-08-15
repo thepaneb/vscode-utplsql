@@ -210,6 +210,21 @@ sem `cmd` no meio, então `^` e `|` passam **literais** — você pode usar `^â
 > dos `%test`/procedures, senão o `%suite` "gruda" na procedure e o package
 > não é reconhecido como suíte.
 
+### Annotations suportadas (v0.10.0)
+
+Além de `%suite` e `%test`, o discovery entende:
+
+| Annotation | Efeito no Test Explorer |
+|---|---|
+| `-- %disabled` | Suíte ou teste **não aparece** na árvore (pulado no discovery) |
+| `-- %throws(-20001)` | Marca que o teste espera a exceção 20001 (metadado `expectedError`) |
+| `-- %tags(fast, critical)` | Tags do teste (metadado; filtro por tag é roadmap) |
+| `-- %displayname(Nome)` | Nome customizado exibido no lugar da descrição do `%test` |
+| `-- %beforeall` / `%beforeeach` / `%aftereach` / `%afterall` | Marca a suíte com lifecycle hooks (metadado) |
+
+Annotations são case-insensitive. No header da suíte (entre `%suite` e o
+primeiro `%test`) aplicam à suíte; após o `%test`, aplicam ao teste.
+
 ## Comandos
 
 Todos os comandos da extensão (palette `Ctrl+Shift+P` prefixo `utPLSQL:`):

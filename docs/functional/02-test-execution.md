@@ -97,29 +97,70 @@ utplsql run <conn> -p=<suite> -f=ut_documentation_reporter -c
 ### `executeRunOracle` (src/oracleRunner.ts)
 
 ```typescript
-async function executeRunOracle(
-  connection: string,
-  pathArgs: string[],
-  coverage: boolean,
-  sourcePath: string,
-  root: string,
-  run: vscode.TestRun,
-  leafTests: vscode.TestItem[],
-  state: TestStateManager,
-  token: vscode.CancellationToken,
-  onComplete?: (...) => void,
-  folders?: WorkspaceFolder[],
-): Promise<void>
+interface OracleRunOptions {
+  connection: string;                       // user/pass@//host:port/service
+  pathArgs: string[];                       // ex.: ['package', 'package.proc']
+  coverage: boolean;
+  sourcePath: string;
+  root: string;                             // fsPath do workspace folder
+  run: vscode.TestRun;
+  leafTests: vscode.TestItem[];
+  state: TestStateManager;
+  onComplete?: (passed, failed, skipped, errored, durationMs) => void;
+  folders?: readonly vscode.WorkspaceFolder[];
+}
+
+async function executeRunOracle(options: OracleRunOptions, token: CancellationToken): Promise<void>
 ```
 
 1. **Import dinâmica**: `const oracledb = await import('oracledb')` — falha se não instalado
-2. **Schema discovery**: `discoverUtplsqlSchema(conn1)` — query `ALL_SYNONYMS` para prefixo
-3. **Limpeza**: `DELETE FROM ${utSchema}UT_OUTPUT_BUFFER_TMP` + `UT_OUTPUT_BUFFER_INFO_TMP`
-4. **Execução**: `conn1.execute('BEGIN ut_runner.run(...) END;')` — bloqueante
-5. **Polling**: `conn2.execute('SELECT ... FROM UT_OUTPUT_BUFFER_TMP WHERE message_id > :last')` a cada 200ms
-6. **Separacão doc/JUnit**: linhas iniciando com `<` são XML → acumular; demais → `run.appendOutput()`
-7. **Parse final**: `parseJUnit(xmlBuffer)` → `applyResultsFromCases()` + `applyCoverageFromXml()`
-8. **Cancelamento**: `conn1.break()` / `conn2.break()` + `Promise.race` com cancellation promise
+2. **Conexões**: `acquireRunnerConnections()` — pool gerenciado (veja abaixo)
+3. **Schema discovery**: `discoverUtplsqlSchema(conn1)` — query `ALL_SYNONYMS` para prefixo
+4. **Limpeza**: `DELETE FROM ${utSchema}UT_OUTPUT_BUFFER_TMP` + `UT_OUTPUT_BUFFER_INFO_TMP`
+5. **Execução**: `conn1.execute('BEGIN ut_runner.run(...) END;')` — bloqueante
+6. **Polling**: `conn2.execute('SELECT ... FROM UT_OUTPUT_BUFFER_TMP WHERE message_id > :last')` a cada 200ms
+7. **Separacão doc/JUnit**: linhas iniciando com `<` são XML → acumular; demais → `run.appendOutput()`
+8. **Parse final**: `parseJUnit(xmlBuffer)` → `applyResultsFromCases()` + `applyCoverageFromXml()` (src/results.ts)
+9. **Cancelamento**: `conn1.break()` / `conn2.break()` + `Promise.race` com cancellation promise
+
+### Connection pooling (PRD-38)
+
+O pool é criado **lazy** no primeiro run Oracle e gerenciado por
+`oracleRunner.ts`:
+
+```typescript
+let currentPool: { pool: oracledb.Pool; key: string } | undefined;
+
+async function ensurePool(oracledb, connection, cfg): Promise<Pool> {
+  if (currentPool?.key === connection) return currentPool.pool;  // reutiliza
+  await closeOraclePool();                                        // connection mudou
+  const parsed = parseConnString(connection);
+  const pool = await oracledb.createPool({
+    user, password, connectString,
+    poolMin: cfg.oraclePoolMin,          // 2
+    poolMax: cfg.oraclePoolMax,          // 10
+    poolIncrement: cfg.oraclePoolIncrement, // 1
+    poolPingInterval: cfg.oraclePoolPingInterval, // 60 (ping no checkout, Thin driver)
+    stmtCacheSize: 30,
+  });
+  currentPool = { pool, key: connection };
+  return pool;
+}
+
+async function acquireRunnerConnections(oracledb, connection, cfg) {
+  oracledb.outFormat = oracledb.OUT_FORMAT_OBJECT;
+  const pool = await ensurePool(...).catch(() => undefined);   // fallback
+  if (pool) return { conn1: await pool.getConnection(), conn2: await pool.getConnection() };
+  return { conn1: await oracledb.getConnection(parseConnString(connection)), ... };  // raw
+}
+
+async function closeOraclePool(): Promise<void>  // chamado no deactivate() (drain 10s)
+```
+
+- **Keyed pela connection string**: conexão alterada (setting/prompt) → pool antigo fechado, novo criado
+- **`poolPingInterval`** valida conexões ociosas no checkout (ping interno do Thin driver — sem `SELECT 1 FROM DUAL`)
+- **`outFormat = OBJECT`** global: acessos de rows por propriedade nomeada (`TABLE_OWNER`, `MESSAGE_ID`, `TEXT`)
+- **`conn.close()`** devolve ao pool; `deactivate()` fecha com drenagem de 10s
 
 ### `discoverUtplsqlSchema`
 
@@ -137,7 +178,7 @@ function parseConnString(connStr: string): { user, password, connectionString }
 ```
 
 Parse da string `user/pass@//host:port/service` para objeto de configuração do
-`oracledb.getConnection()`.
+`oracledb` (pool e conexão raw).
 
 ### Fluxo de dados
 
@@ -172,6 +213,10 @@ conn1 (run)                              conn2 (poll)
 | `utplsql.javaArgs` | `["-Xmx256m"]` | Flags JVM (modo java) |
 | `utplsql.cliHome` | `""` | Raiz do CLI (modo java) |
 | `utplsql.timeoutMinutes` | `60` | Timeout da execução |
+| `utplsql.oraclePoolMin` | `2` | Conexões mínimas do pool (Oracle runner) |
+| `utplsql.oraclePoolMax` | `10` | Conexões máximas do pool |
+| `utplsql.oraclePoolIncrement` | `1` | Incremento ao expandir o pool |
+| `utplsql.oraclePoolPingInterval` | `60` | Segundos entre health checks das conexões ociosas |
 | `utplsql.dbmsOutput` | `false` | Habilita DBMS_OUTPUT |
 | `utplsql.quiet` | `false` | Suprime logs |
 | `utplsql.failureExitCode` | `1` | Código de saída em falha |

@@ -67,7 +67,7 @@ if (failure !== undefined) {
 
 `stackFrames` é adicionado ao `TestCaseResult` e propagado para `applyResults`.
 
-## `resolveStackFrameToUri` (src/runner.ts)
+## `resolveStackFrameToUri` (src/results.ts)
 
 ```typescript
 function resolveStackFrameToUri(
@@ -82,20 +82,21 @@ function resolveStackFrameToUri(
 4. Fallback: `vscode.workspace.workspaceFolders` → `joinPath(folder, objectName.pks)`
 5. Se nada encontrado → `undefined`
 
-## Integração no `report()`
+Função canônica unificada (PRD-39) — os dois runners usam a mesma
+implementação em `results.ts`.
+
+## Integração no `applyResultsFromCases`
 
 ```typescript
-// src/runner.ts
-function report(run, item, status, message, ms, stackFrames, state) {
-  case 'failed':
-    testMessage = new TestMessage(message ?? 'Falhou');
-    if (stackFrames && state) {
-      const loc = resolveStackFrameToUri(stackFrames, state);
-      if (loc) testMessage.location = loc;
-    }
-    run.failed(item, testMessage, ms);
-  // idem para 'error'
-}
+// src/results.ts — switch unificado (CLI e Oracle)
+case 'failed':
+  testMessage = new TestMessage(message ?? 'Falhou');
+  if (stackFrames) {
+    const loc = resolveStackFrameToUri(stackFrames, state);
+    if (loc) testMessage.location = loc;
+  }
+  run.failed(item, testMessage, ms);
+// idem para 'error'
 ```
 
 Com `message.location` populado, o VSCode automaticamente:
@@ -103,21 +104,8 @@ Com `message.location` populado, o VSCode automaticamente:
 - Habilita peek view com a localização
 - Navega para o arquivo/linha ao clicar
 
-## Oracle direto (`oracleRunner.ts`)
-
-```typescript
-// applyResultsFromCases — mesmo mecanismo
-case 'failed':
-  const msg = new TestMessage(c.message ?? 'Falhou');
-  if (c.stackFrames) {
-    const loc = resolveStackLocation(c.stackFrames, state);
-    if (loc) msg.location = loc;
-  }
-  run.failed(item, msg, c.durationMs);
-```
-
-`resolveStackLocation` é análogo a `resolveStackFrameToUri`, mas sem workspace
-folders (usa apenas `state.cachedItems`).
+> Antes do PRD-39, o modo CLI usava `report()` e o Oracle usava
+> `resolveStackLocation` (sem fallback de workspace). Hoje é um único caminho.
 
 ## Filtro de frames internos
 

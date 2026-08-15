@@ -61,7 +61,7 @@ function resolveSourceUri(
 4. **Basename no sourcePath**: procura `file` recursivamente dentro de `sourcePath`
 5. **Não encontrado**: retorna `undefined`
 
-## `applyCoverage` (src/runner.ts)
+## `applyCoverage` (src/runner.ts) — wrapper CLI
 
 ```typescript
 function applyCoverage(
@@ -77,16 +77,21 @@ function applyCoverage(
 1. `state.clearCoverage()` — limpa cobertura anterior
 2. Se arquivo não existe → diagnóstico + `run.appendOutput()` com sugestão de grants
 3. Se `setupDiagnosticsEnabled` → `setupValidator.addCoverageDiagnostic()` (PRD-32)
-4. Para cada arquivo parseado:
+4. Lê o XML e delega para `applyCoverageFromXml` (src/results.ts)
+
+## `applyCoverageFromXml` (src/results.ts)
+
+Função canônica (PRD-39), usada pelos dois runners. Recebe a string XML
+(extraída do buffer no modo Oracle, do arquivo no modo CLI) e executa o
+pipeline de resolução:
+
+1. `parseCobertura(xml)` → `FileLines[]`
+2. Para cada arquivo parseado:
    - Resolve URI via `resolveSourceUri` (testa todos os workspace folders)
    - Cria `vscode.StatementCoverage` para cada linha
    - `FileCoverage.fromDetails(uri, details)` → `run.addCoverage(fc)`
    - `state.setCoverage(uri, details)` para `loadDetailedCoverage`
-
-## `applyCoverageFromXml` (src/oracleRunner.ts)
-
-Versão equivalente para o modo Oracle direto. Recebe XML string (extraído do buffer)
-em vez de caminho de arquivo. Mesmo pipeline de resolução.
+3. Se nenhum arquivo foi mapeado → aviso "nenhum arquivo mapeado"
 
 ## Mapeamento de objetos Oracle → arquivos
 

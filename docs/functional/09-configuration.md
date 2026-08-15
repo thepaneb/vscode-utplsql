@@ -14,6 +14,12 @@ interface UtConfig {
   cliHome: string;                    // default: ""
   runnerMode: 'auto' | 'cli' | 'oracle'; // default: "auto"
 
+  // Pool do Oracle runner (PRD-38)
+  oraclePoolMin: number;              // default: 2
+  oraclePoolMax: number;              // default: 10
+  oraclePoolIncrement: number;        // default: 1
+  oraclePoolPingInterval: number;     // default: 60 (health check de conexões ociosas)
+
   // Cobertura
   sourcePath: string;                 // default: "install"
   coverageOwner: string;              // default: ""
