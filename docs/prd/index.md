@@ -116,15 +116,15 @@ CONCLUIR
 
 ### 🟡 Em desenvolvimento
 
-_(vazio — nenhuma PRD em implementação)_
+| # | PRD | Versão alvo | Data |
+|---|---|---|---|
+| 42 | [SuiteParser: parse de annotations estendidas](in-progress/prd-42-suiteparser-annotations.md) | 0.10.0 | 2026-08-08 |
 
 ### 🔵 Aprovados
 
 #### 0.10.0
 
-| # | PRD | Versão alvo | Data |
-|---|---|---|---|
-| 42 | [SuiteParser: parse de annotations estendidas](approved/prd-42-suiteparser-annotations.md) | 0.10.0 | 2026-08-08 |
+_(vazio — aprovar novas PRDs em `proposed/`)_
 
 ### ⚪ Propostos
 
@@ -191,9 +191,9 @@ docs/prd/
 │   ├── prd-38-connection-pooling.md
 │   ├── prd-39-deduplicate-runners.md
 │   └── prd-40-options-object.md
-├── approved/         ← aprovados, aguardando implementação
+├── approved/         ← aprovados, aguardando implementação (vazio)
+├── in-progress/      ← sendo implementados agora
 │   └── prd-42-suiteparser-annotations.md
-├── in-progress/      ← sendo implementados agora (vazio)
 └── proposed/         ← em avaliação
     ├── prd-12-sql-coverage.md
     ├── prd-21-workflow-improvements.md
