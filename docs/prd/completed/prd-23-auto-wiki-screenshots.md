@@ -125,3 +125,11 @@ dependências de sistema.
 - **Frequência de regeneração** → sob demanda, com checklist por release
 - **VSCode estável vs insiders** → irrelevante (captura manual na máquina do dev)
 - **Porta CDP do Electron** → irrelevante (abordagem descartada)
+
+## 8. Pendências
+
+- **Captura manual dos 22 screenshots** listados no checklist
+  (`docs/wiki/images/README.md`) — as páginas da wiki referenciam esses PNGs,
+  que foram removidos com a automação. Executar antes do release 0.10.0.
+- **Sincronização da wiki** (PRD-22): o workflow copia `docs/wiki/images/`
+  para o repositório wiki no push/merge da branch — automático, sem ação manual.
