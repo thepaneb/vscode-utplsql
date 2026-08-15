@@ -2,7 +2,7 @@
 
 | Campo | Valor |
 |---|---|
-| Status | Aprovado |
+| Status | Em desenvolvimento |
 | Autor | Gil Cleber |
 | Data | 2026-08-08 |
 | Componente | Extensão `paneb.vscode-utplsql` |
@@ -158,7 +158,20 @@ Nenhuma nova setting.
 - [ ] Nomes de variáveis locais preservados na desestruturação
 - [ ] `npm run compile && npm run lint && node --test` passam
 
-## 11. Questões em aberto
+## 11. Decisões
 
-- Sub-interfaces para Data Clumps (`CoverageConfig`, `RunContext`) devem ser criadas neste PRD ou em follow-up?
-- `folders` pode ser derivado de `vscode.workspace.workspaceFolders` dentro da função para eliminar o parâmetro?
+**D1 — Interface plana, sem sub-interfaces para os Data Clumps**: os grupos
+`(coverage, sourcePath, root)`, `(run, state)` e `(connection, pathArgs, leafTests)`
+viajam juntos **apenas dentro de `executeRunOracle`** — um único consumidor. O
+smell Data Clumps se aplica a grupos que se repetem em múltiplas funções;
+criar `CoverageConfig`/`RunContext` para um único call site seria
+"Speculative Generality". Se um segundo consumidor surgir (ex.: opções
+compartilhadas com o CLI runner), extrai-se em follow-up. A PRD já marcava as
+sub-interfaces como "opcional, fase 2".
+
+**D2 — `folders` permanece no objeto de opções** (não derivado de
+`vscode.workspace.workspaceFolders`): a própria tabela de riscos da PRD já
+aponta que manter como parâmetro preserva a injetabilidade (testes unitários
+fornecem folders mockados) e evita acoplamento a estado global que pode mudar
+entre chamadas. Consistente com a assinatura de `applyCoverageFromXml`
+(results.ts), que também recebe `folders?`.

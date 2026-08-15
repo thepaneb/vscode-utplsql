@@ -115,7 +115,9 @@ CONCLUIR
 
 ### 🟡 Em desenvolvimento
 
-_(vazio — nenhuma PRD em implementação)_
+| # | PRD | Versão alvo | Data |
+|---|---|---|---|
+| 40 | [Refatorar executeRunOracle: Options Object](in-progress/prd-40-options-object.md) | 0.10.0 | 2026-08-08 |
 
 ### 🔵 Aprovados
 
@@ -123,7 +125,6 @@ _(vazio — nenhuma PRD em implementação)_
 
 | # | PRD | Versão alvo | Data |
 |---|---|---|---|
-| 40 | [Refatorar executeRunOracle: Options Object](approved/prd-40-options-object.md) | 0.10.0 | 2026-08-08 |
 | 42 | [SuiteParser: parse de annotations estendidas](approved/prd-42-suiteparser-annotations.md) | 0.10.0 | 2026-08-08 |
 
 ### ⚪ Propostos
@@ -191,9 +192,9 @@ docs/prd/
 │   ├── prd-38-connection-pooling.md
 │   └── prd-39-deduplicate-runners.md
 ├── approved/         ← aprovados, aguardando implementação
-│   ├── prd-40-options-object.md
 │   └── prd-42-suiteparser-annotations.md
-├── in-progress/      ← sendo implementados agora (vazio)
+├── in-progress/      ← sendo implementados agora
+│   └── prd-40-options-object.md
 └── proposed/         ← em avaliação
     ├── prd-12-sql-coverage.md
     ├── prd-21-workflow-improvements.md
