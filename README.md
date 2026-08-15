@@ -127,6 +127,10 @@ estiver instalado. Use `runnerMode: cli` para forçar CLI sempre.
 | `utplsql.statusBar.enabled` | `true` | Exibe indicador de status dos testes na barra de status. |
 | `utplsql.decorations.enabled` | `true` | Exibe decorações de pass/fail nas linhas `%suite` e `%test` após execução. |
 | `utplsql.runnerMode` | `auto` | Modo de execução: `auto` (Oracle direto via node-oracledb, fallback CLI), `cli` (sempre via linha de comando), `oracle` (sempre Oracle direto). |
+| `utplsql.oraclePoolMin` | `2` | Conexões mínimas mantidas no pool do Oracle runner (node-oracledb). |
+| `utplsql.oraclePoolMax` | `10` | Conexões máximas no pool do Oracle runner (node-oracledb). |
+| `utplsql.oraclePoolIncrement` | `1` | Incremento ao expandir o pool do Oracle runner (node-oracledb). |
+| `utplsql.oraclePoolPingInterval` | `60` | Segundos entre health checks das conexões ociosas do pool (node-oracledb). `0` = ping a cada checkout. |
 | `utplsql.javaArgs` | `["-Xmx256m"]` | Flags JVM para o modo `java` (ex.: `["-Xmx512m", "-Xms128m"]`). Inseridas antes de `-cp`. |
 | `utplsql.organization` | `file` | Organização da árvore: `file` (por caminho) ou `schema` (Schema > Package > Suite > Test). |
 | `utplsql.organization.schemaPattern` | `db/{schema}/**` | Padrão glob para extrair schema do caminho. Use `{schema}` como placeholder. |

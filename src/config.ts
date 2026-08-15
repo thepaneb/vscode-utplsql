@@ -20,6 +20,10 @@ export interface UtConfig {
   failureExitCode: number;
   additionalReporters: string[];
   runnerMode: 'auto' | 'cli' | 'oracle';
+  oraclePoolMin: number;
+  oraclePoolMax: number;
+  oraclePoolIncrement: number;
+  oraclePoolPingInterval: number;
   codeLensEnabled: boolean;
   statusBarEnabled: boolean;
   decorationsEnabled: boolean;
@@ -53,6 +57,10 @@ export function readConfig(): UtConfig {
     failureExitCode: c.get<number>('failureExitCode', 1),
     additionalReporters: c.get<string[]>('additionalReporters', []),
     runnerMode: c.get<'auto' | 'cli' | 'oracle'>('runnerMode', 'auto'),
+    oraclePoolMin: c.get<number>('oraclePoolMin', 2),
+    oraclePoolMax: c.get<number>('oraclePoolMax', 10),
+    oraclePoolIncrement: c.get<number>('oraclePoolIncrement', 1),
+    oraclePoolPingInterval: c.get<number>('oraclePoolPingInterval', 60),
     codeLensEnabled: c.get<boolean>('codeLens.enabled', true),
     statusBarEnabled: c.get<boolean>('statusBar.enabled', true),
     decorationsEnabled: c.get<boolean>('decorations.enabled', true),

@@ -1,8 +1,16 @@
 import './setup.js';
 import assert from 'node:assert';
 import { test } from 'node:test';
+import type { UtConfig } from '../../config';
 import type { TestCaseResult } from '../../junit';
-import { applyResultsFromCases, countResultsFromCases, parseConnString } from '../../oracleRunner';
+import {
+  acquireRunnerConnections,
+  applyResultsFromCases,
+  closeOraclePool,
+  countResultsFromCases,
+  ensurePool,
+  parseConnString,
+} from '../../oracleRunner';
 import type { ItemMeta } from '../../types';
 
 function makeMeta(over: Partial<ItemMeta>): ItemMeta {
@@ -257,4 +265,144 @@ test('countResultsFromCases: array vazio retorna zeros', () => {
   assert.strictEqual(r.skipped, 0);
   assert.strictEqual(r.errored, 0);
   assert.strictEqual(r.totalMs, 0);
+});
+
+// ── pool (ensurePool / closeOraclePool / acquireRunnerConnections) ──
+
+const POOL_CFG = {
+  oraclePoolMin: 3,
+  oraclePoolMax: 7,
+  oraclePoolIncrement: 2,
+  oraclePoolPingInterval: 30,
+} as unknown as UtConfig;
+
+function makeFakeOracledb(opts?: { createPoolThrows?: boolean }) {
+  const created: Record<string, unknown>[] = [];
+  const rawConns: unknown[] = [];
+  const pools: {
+    attrs: Record<string, unknown>;
+    closed: boolean;
+    getConnection(): Promise<unknown>;
+    close(): Promise<void>;
+  }[] = [];
+  const mod = {
+    OUT_FORMAT_OBJECT: { id: 'object' },
+    outFormat: undefined as unknown,
+    createPool: async (attrs: Record<string, unknown>) => {
+      created.push(attrs);
+      if (opts?.createPoolThrows) throw new Error('db down');
+      const pool = {
+        attrs,
+        closed: false,
+        getConnection: async () => {
+          if (pool.closed) throw new Error('pool fechado');
+          return { fromPool: true };
+        },
+        close: async () => {
+          pool.closed = true;
+        },
+      };
+      pools.push(pool);
+      return pool;
+    },
+    getConnection: async (attrs?: unknown) => {
+      rawConns.push(attrs);
+      return { fromPool: false };
+    },
+  };
+  return { mod, created, rawConns, pools };
+}
+
+test('ensurePool: cria pool com credenciais parseadas e settings', async () => {
+  const { mod, created } = makeFakeOracledb();
+  try {
+    await ensurePool(mod as never, 'ut3/senha@//localhost:1521/freepdb1', POOL_CFG);
+    assert.strictEqual(created.length, 1);
+    assert.strictEqual(created[0].user, 'ut3');
+    assert.strictEqual(created[0].password, 'senha');
+    assert.strictEqual(created[0].connectString, 'localhost:1521/freepdb1');
+    assert.strictEqual(created[0].poolMin, 3);
+    assert.strictEqual(created[0].poolMax, 7);
+    assert.strictEqual(created[0].poolIncrement, 2);
+    assert.strictEqual(created[0].poolPingInterval, 30);
+    assert.strictEqual(created[0].stmtCacheSize, 30);
+  } finally {
+    await closeOraclePool();
+  }
+});
+
+test('ensurePool: reutiliza pool quando connection string e igual', async () => {
+  const { mod, created } = makeFakeOracledb();
+  try {
+    const conn = 'u/p@//h:1521/s';
+    await ensurePool(mod as never, conn, POOL_CFG);
+    await ensurePool(mod as never, conn, POOL_CFG);
+    assert.strictEqual(created.length, 1);
+  } finally {
+    await closeOraclePool();
+  }
+});
+
+test('ensurePool: fecha pool antigo e cria novo quando connection muda', async () => {
+  const { mod, created, pools } = makeFakeOracledb();
+  try {
+    await ensurePool(mod as never, 'u1/p@//h1:1521/s1', POOL_CFG);
+    await ensurePool(mod as never, 'u2/p@//h2:1521/s2', POOL_CFG);
+    assert.strictEqual(created.length, 2);
+    assert.strictEqual(pools[0].closed, true);
+    assert.strictEqual(created[1].user, 'u2');
+  } finally {
+    await closeOraclePool();
+  }
+});
+
+test('closeOraclePool: fecha pool e reseta estado', async () => {
+  const { mod, created, pools } = makeFakeOracledb();
+  const conn = 'u/p@//h:1521/s';
+  try {
+    await ensurePool(mod as never, conn, POOL_CFG);
+    await closeOraclePool();
+    assert.strictEqual(pools[0].closed, true);
+    await ensurePool(mod as never, conn, POOL_CFG);
+    assert.strictEqual(created.length, 2);
+  } finally {
+    await closeOraclePool();
+  }
+});
+
+test('acquireRunnerConnections: usa pool quando disponivel', async () => {
+  const { mod, rawConns } = makeFakeOracledb();
+  try {
+    const { conn1, conn2 } = await acquireRunnerConnections(
+      mod as never,
+      'u/p@//h:1521/s',
+      POOL_CFG,
+    );
+    assert.strictEqual((conn1 as unknown as Record<string, unknown>).fromPool, true);
+    assert.strictEqual((conn2 as unknown as Record<string, unknown>).fromPool, true);
+    assert.strictEqual(rawConns.length, 0);
+    assert.strictEqual(mod.outFormat, mod.OUT_FORMAT_OBJECT);
+  } finally {
+    await closeOraclePool();
+  }
+});
+
+test('acquireRunnerConnections: fallback para conexao raw quando createPool falha', async () => {
+  const { mod, rawConns } = makeFakeOracledb({ createPoolThrows: true });
+  try {
+    const { conn1, conn2 } = await acquireRunnerConnections(
+      mod as never,
+      'u/p@//h:1521/s',
+      POOL_CFG,
+    );
+    assert.strictEqual((conn1 as unknown as Record<string, unknown>).fromPool, false);
+    assert.strictEqual((conn2 as unknown as Record<string, unknown>).fromPool, false);
+    assert.strictEqual(rawConns.length, 2);
+    const parsed = rawConns[0] as Record<string, unknown>;
+    assert.strictEqual(parsed.user, 'u');
+    assert.strictEqual(parsed.connectionString, 'h:1521/s');
+    assert.strictEqual(mod.outFormat, mod.OUT_FORMAT_OBJECT);
+  } finally {
+    await closeOraclePool();
+  }
 });

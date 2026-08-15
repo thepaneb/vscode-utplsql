@@ -1,8 +1,12 @@
 import * as vscode from 'vscode';
 import { parseCobertura } from './cobertura';
+import { readConfig, type UtConfig } from './config';
 import { resolveSourceUri } from './coverage';
 import { isUserFrame, parseJUnit, type StackFrame } from './junit';
 import type { TestStateManager } from './state';
+
+type OraclePool = import('oracledb').Pool;
+type OracleConnection = import('oracledb').Connection;
 
 export function parseConnString(connStr: string): {
   user: string;
@@ -22,6 +26,57 @@ export function parseConnString(connStr: string): {
   };
 }
 
+let currentPool: { pool: OraclePool; key: string } | undefined;
+
+export async function ensurePool(
+  oracledb: typeof import('oracledb'),
+  connection: string,
+  cfg: UtConfig,
+): Promise<OraclePool> {
+  if (currentPool?.key === connection) return currentPool.pool;
+  await closeOraclePool();
+  const parsed = parseConnString(connection);
+  const pool = await oracledb.createPool({
+    user: parsed.user,
+    password: parsed.password,
+    connectString: parsed.connectionString,
+    poolMin: cfg.oraclePoolMin,
+    poolMax: cfg.oraclePoolMax,
+    poolIncrement: cfg.oraclePoolIncrement,
+    poolPingInterval: cfg.oraclePoolPingInterval,
+    stmtCacheSize: 30,
+  });
+  currentPool = { pool, key: connection };
+  return pool;
+}
+
+export async function closeOraclePool(): Promise<void> {
+  if (currentPool) {
+    await currentPool.pool.close(10).catch(() => {});
+    currentPool = undefined;
+  }
+}
+
+export async function acquireRunnerConnections(
+  oracledb: typeof import('oracledb'),
+  connection: string,
+  cfg: UtConfig,
+): Promise<{ conn1: OracleConnection; conn2: OracleConnection }> {
+  oracledb.outFormat = oracledb.OUT_FORMAT_OBJECT;
+  const pool = await ensurePool(oracledb, connection, cfg).catch(() => undefined);
+  if (pool) {
+    return {
+      conn1: await pool.getConnection(),
+      conn2: await pool.getConnection(),
+    };
+  }
+  const parsed = parseConnString(connection);
+  return {
+    conn1: await oracledb.getConnection(parsed),
+    conn2: await oracledb.getConnection(parsed),
+  };
+}
+
 async function discoverUtplsqlSchema(conn: {
   execute(
     sql: string,
@@ -35,7 +90,7 @@ async function discoverUtplsqlSchema(conn: {
       {},
     );
     if ((result.rows?.length ?? 0) > 0) {
-      const owner = (result.rows?.[0] as [string])[0];
+      const owner = (result.rows?.[0] as { TABLE_OWNER?: string }).TABLE_OWNER;
       if (owner) return `${owner}.`;
     }
   } catch {
@@ -75,9 +130,8 @@ export async function executeRunOracle(
     );
   }
 
-  const parsed = parseConnString(connection);
-  const conn1 = await oracledb.getConnection(parsed);
-  const conn2 = await oracledb.getConnection(parsed);
+  const cfg = readConfig();
+  const { conn1, conn2 } = await acquireRunnerConnections(oracledb, connection, cfg);
 
   try {
     const utSchema = await discoverUtplsqlSchema(conn1);
@@ -130,9 +184,9 @@ export async function executeRunOracle(
         );
 
         for (const row of rows.rows ?? []) {
-          const r = row as unknown as [number, string | null, number];
-          lastMsgId = r[0];
-          const text = r[1];
+          const r = row as unknown as { MESSAGE_ID: number; TEXT: string | null };
+          lastMsgId = r.MESSAGE_ID;
+          const text = r.TEXT;
           if (text) {
             if (text.startsWith('<')) {
               xmlBuffer += `${text}\n`;

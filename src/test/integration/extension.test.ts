@@ -218,5 +218,41 @@ describe('utPLSQL extension', () => {
         });
       });
     }
+
+    describe('modo oracle (pool)', () => {
+      it('reutiliza pool entre execuções e devolve conexões (PRD-38)', async function () {
+        this.timeout(120_000);
+        let oracledb: typeof import('oracledb');
+        try {
+          const mod = await import('oracledb');
+          oracledb =
+            ((mod as Record<string, unknown>).default as typeof import('oracledb')) ??
+            (mod as typeof import('oracledb'));
+        } catch {
+          this.skip();
+          return;
+        }
+        const config = vscode.workspace.getConfiguration('utplsql');
+        const original = config.inspect<string>('runnerMode');
+        await config.update('runnerMode', 'oracle', vscode.ConfigurationTarget.Workspace);
+        try {
+          await vscode.commands.executeCommand('utplsql.runAll');
+          await vscode.commands.executeCommand('utplsql.runAll');
+          const pool = oracledb.getPool();
+          assert.ok(pool, 'pool default não encontrado após execução oracle');
+          assert.strictEqual(pool.connectionsInUse, 0);
+          assert.ok(
+            pool.connectionsOpen >= 2,
+            `pool deveria manter poolMin(2) conexões, tem ${pool.connectionsOpen}`,
+          );
+        } finally {
+          await config.update(
+            'runnerMode',
+            original?.workspaceValue !== undefined ? original.workspaceValue : undefined,
+            vscode.ConfigurationTarget.Workspace,
+          );
+        }
+      });
+    });
   });
 });

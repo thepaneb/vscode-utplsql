@@ -164,6 +164,30 @@
           "default": "auto",
           "markdownDescription": "Modo de execução dos testes. `auto` — tenta Oracle direto (via `node-oracledb`), fallback para CLI. `cli` — sempre via linha de comando (comportamento atual). `oracle` — sempre via conexão direta (erro se `oracledb` não disponível)."
         },
+        "utplsql.oraclePoolMin": {
+          "type": "number",
+          "default": 2,
+          "minimum": 0,
+          "description": "Conexões mínimas mantidas no pool do Oracle runner (node-oracledb)."
+        },
+        "utplsql.oraclePoolMax": {
+          "type": "number",
+          "default": 10,
+          "minimum": 1,
+          "description": "Conexões máximas no pool do Oracle runner (node-oracledb)."
+        },
+        "utplsql.oraclePoolIncrement": {
+          "type": "number",
+          "default": 1,
+          "minimum": 1,
+          "description": "Incremento ao expandir o pool do Oracle runner (node-oracledb)."
+        },
+        "utplsql.oraclePoolPingInterval": {
+          "type": "number",
+          "default": 60,
+          "minimum": 0,
+          "description": "Segundos entre health checks das conexões ociosas do pool (node-oracledb). 0 = ping a cada checkout."
+        },
         "utplsql.organization": {
           "type": "string",
           "enum": [

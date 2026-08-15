@@ -7,6 +7,7 @@ import { clearSessionConnection, readConfig, resolveConnection } from './config'
 import { DecorationManager } from './decorations';
 import { discoverWorkspace, extractSchemaFromPath } from './discovery';
 import { filterSuitesByFolder, filterSuitesByUri } from './matching';
+import { closeOraclePool } from './oracleRunner';
 import { setupValidator, UtplsqlCodeActionProvider } from './quickfix';
 import { executeRun } from './runner';
 import { TestStateManager } from './state';
@@ -281,8 +282,9 @@ export function activate(context: vscode.ExtensionContext) {
   refresh(controller);
 }
 
-export function deactivate() {
+export async function deactivate() {
   currentRunToken?.cancel();
+  await closeOraclePool();
 }
 
 async function runWithProgress(
