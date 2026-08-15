@@ -1,8 +1,7 @@
 import * as vscode from 'vscode';
-import { parseCobertura } from './cobertura';
 import { readConfig, type UtConfig } from './config';
-import { resolveSourceUri } from './coverage';
-import { isUserFrame, parseJUnit, type StackFrame } from './junit';
+import { parseJUnit } from './junit';
+import { applyCoverageFromXml, applyResultsFromCases, countResults } from './results';
 import type { TestStateManager } from './state';
 
 type OraclePool = import('oracledb').Pool;
@@ -225,7 +224,7 @@ export async function executeRunOracle(
     );
 
     if (onComplete) {
-      const r = countResultsFromCases(cases);
+      const r = countResults(cases);
       onComplete(r.passed, r.failed, r.skipped, r.errored, r.totalMs);
     }
 
@@ -257,168 +256,4 @@ function mapDbPathsToFiles(covXml: string): string {
       return `filename="${dir}/${name}.sql"`;
     },
   );
-}
-
-function resolveStackLocation(
-  stackFrames: StackFrame[],
-  state: TestStateManager,
-): vscode.Location | undefined {
-  const userFrame = stackFrames.find(isUserFrame);
-  if (!userFrame || userFrame.line <= 0) return undefined;
-
-  const objName = userFrame.objectName.toLowerCase();
-  for (const item of state.cachedItems) {
-    const meta = state.getMeta(item);
-    if (!meta?.uri || meta.kind !== 'suite') continue;
-    if (meta.packageName.toLowerCase() !== objName) continue;
-    const line = Math.max(0, userFrame.line - 1);
-    return new vscode.Location(meta.uri, new vscode.Position(line, 0));
-  }
-  return undefined;
-}
-
-export function applyResultsFromCases(
-  cases: ReturnType<typeof parseJUnit>,
-  leafTests: vscode.TestItem[],
-  run: vscode.TestRun,
-  state: TestStateManager,
-): Map<string, { status: 'passed' | 'failed' | 'error' | 'skipped'; message?: string }> {
-  const resultMap = new Map<
-    string,
-    { status: 'passed' | 'failed' | 'error' | 'skipped'; message?: string }
-  >();
-
-  const index = new Map<string, vscode.TestItem>();
-  for (const t of leafTests) {
-    const m = state.getMeta(t);
-    if (m?.kind !== 'test') continue;
-    const pkg = m.packageName.toLowerCase();
-    index.set(`${pkg}|${m.procName.toLowerCase()}`, t);
-    index.set(`${pkg}|${m.description.toLowerCase().trim()}`, t);
-  }
-
-  const matched = new Set<vscode.TestItem>();
-
-  for (const c of cases) {
-    const parts = c.classname.split(/[.:]/).filter(Boolean);
-    const pkg = (parts.length ? parts[parts.length - 1] : c.classname).toLowerCase();
-    const name = c.name.toLowerCase().trim();
-    let item = index.get(`${pkg}|${name}`);
-    if (!item) {
-      for (const t of leafTests) {
-        const m = state.getMeta(t);
-        if (m?.kind !== 'test') continue;
-        if (m.procName.toLowerCase() === name || m.description.toLowerCase().trim() === name) {
-          item = t;
-          break;
-        }
-      }
-    }
-    if (!item) continue;
-    matched.add(item);
-    resultMap.set(item.id, { status: c.status, message: c.message });
-
-    switch (c.status) {
-      case 'passed':
-        run.passed(item, c.durationMs);
-        break;
-      case 'failed': {
-        const msg = new vscode.TestMessage(c.message ?? 'Falhou');
-        if (c.stackFrames) {
-          const loc = resolveStackLocation(c.stackFrames, state);
-          if (loc) msg.location = loc;
-        }
-        run.failed(item, msg, c.durationMs);
-        break;
-      }
-      case 'error': {
-        const msg = new vscode.TestMessage(c.message ?? 'Erro');
-        if (c.stackFrames) {
-          const loc = resolveStackLocation(c.stackFrames, state);
-          if (loc) msg.location = loc;
-        }
-        run.errored(item, msg, c.durationMs);
-        break;
-      }
-      case 'skipped':
-        run.skipped(item);
-        break;
-    }
-  }
-
-  for (const t of leafTests) {
-    if (!matched.has(t)) {
-      run.skipped(t);
-    }
-  }
-
-  return resultMap;
-}
-
-export function countResultsFromCases(cases: ReturnType<typeof parseJUnit>): {
-  passed: number;
-  failed: number;
-  skipped: number;
-  errored: number;
-  totalMs: number;
-} {
-  let passed = 0;
-  let failed = 0;
-  let skipped = 0;
-  let errored = 0;
-  let totalMs = 0;
-  for (const c of cases) {
-    switch (c.status) {
-      case 'passed':
-        passed++;
-        break;
-      case 'failed':
-        failed++;
-        break;
-      case 'skipped':
-        skipped++;
-        break;
-      case 'error':
-        errored++;
-        break;
-    }
-    totalMs += c.durationMs ?? 0;
-  }
-  return { passed, failed, skipped, errored, totalMs };
-}
-
-export function applyCoverageFromXml(
-  covXml: string,
-  sourcePath: string,
-  _root: string,
-  run: vscode.TestRun,
-  state: TestStateManager,
-  folders?: readonly vscode.WorkspaceFolder[],
-): void {
-  state.clearCoverage();
-  const files = parseCobertura(covXml);
-  let mappedCount = 0;
-
-  for (const f of files) {
-    let uri: vscode.Uri | undefined;
-    for (const folder of folders ?? []) {
-      uri = resolveSourceUri(f.file, folder.uri.fsPath, sourcePath, folder.uri.fsPath);
-      if (uri) break;
-    }
-    if (!uri) continue;
-    const details: vscode.FileCoverageDetail[] = f.lines.map(
-      (l) => new vscode.StatementCoverage(l.hits, new vscode.Position(Math.max(0, l.line - 1), 0)),
-    );
-    if (details.length === 0) continue;
-    const fc = vscode.FileCoverage.fromDetails(uri, details);
-    state.setCoverage(uri.toString(), details);
-    run.addCoverage(fc);
-    mappedCount++;
-  }
-
-  if (mappedCount === 0) {
-    run.appendOutput(
-      '\r\n[cobertura] nenhum arquivo mapeado. Ajuste "utplsql.sourcePath" para a pasta do código-fonte.\r\n',
-    );
-  }
 }

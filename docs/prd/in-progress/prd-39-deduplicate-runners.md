@@ -164,14 +164,14 @@ Nenhuma nova setting.
 
 ## 10. Critérios de aceite
 
-- [ ] `countResultsFromCases` removido de `oracleRunner.ts`
-- [ ] `applyResultsFromCases` removido de `oracleRunner.ts` (importado de `results.ts`)
-- [ ] `applyCoverageFromXml` removido de `oracleRunner.ts` (importado de `results.ts`)
-- [ ] `resolveStackLocation` removido de `oracleRunner.ts` (importado de `results.ts`)
-- [ ] `results.ts` exporta `applyResultsFromCases`, `countResults`, `applyCoverageFromXml`, `resolveStackFrameToUri`
-- [ ] `runner.ts` exporta wrappers `applyResults` e `applyCoverage` (leitura de arquivo + diagnóstico CLI)
-- [ ] `matching.ts` permanece puro (sem import de `vscode`)
-- [ ] `npm run compile && npm run lint && node --test` passam
+- [x] `countResultsFromCases` removido de `oracleRunner.ts`
+- [x] `applyResultsFromCases` removido de `oracleRunner.ts` (importado de `results.ts`)
+- [x] `applyCoverageFromXml` removido de `oracleRunner.ts` (importado de `results.ts`)
+- [x] `resolveStackLocation` removido de `oracleRunner.ts` (importado de `results.ts`)
+- [x] `results.ts` exporta `applyResultsFromCases`, `countResults`, `applyCoverageFromXml`, `resolveStackFrameToUri`
+- [x] `runner.ts` exporta wrappers `applyResults` e `applyCoverage` (leitura de arquivo + diagnóstico CLI)
+- [x] `matching.ts` permanece puro (sem import de `vscode`)
+- [x] `npm run compile && npm run lint && node --test` passam
 
 ## 11. Decisões
 

@@ -5,12 +5,11 @@ import type { UtConfig } from '../../config';
 import type { TestCaseResult } from '../../junit';
 import {
   acquireRunnerConnections,
-  applyResultsFromCases,
   closeOraclePool,
-  countResultsFromCases,
   ensurePool,
   parseConnString,
 } from '../../oracleRunner';
+import { applyResultsFromCases, countResults } from '../../results';
 import type { ItemMeta } from '../../types';
 
 function makeMeta(over: Partial<ItemMeta>): ItemMeta {
@@ -233,7 +232,7 @@ test('applyResultsFromCases: multiplos cases com match misto', () => {
 
 // ── countResultsFromCases ────────────────────────────────────────────
 
-test('countResultsFromCases: conta todos os statuses', () => {
+test('countResults: conta todos os statuses', () => {
   const cases: TestCaseResult[] = [
     { classname: 'p', name: 'a', status: 'passed', durationMs: 100 },
     { classname: 'p', name: 'b', status: 'failed', durationMs: 50 },
@@ -241,7 +240,7 @@ test('countResultsFromCases: conta todos os statuses', () => {
     { classname: 'p', name: 'd', status: 'error', durationMs: 25 },
     { classname: 'p', name: 'e', status: 'passed', durationMs: 10 },
   ];
-  const r = countResultsFromCases(cases);
+  const r = countResults(cases);
   assert.strictEqual(r.passed, 2);
   assert.strictEqual(r.failed, 1);
   assert.strictEqual(r.skipped, 1);
@@ -249,17 +248,17 @@ test('countResultsFromCases: conta todos os statuses', () => {
   assert.strictEqual(r.totalMs, 185);
 });
 
-test('countResultsFromCases: durationMs undefined nao quebra', () => {
+test('countResults: durationMs undefined nao quebra', () => {
   const cases: TestCaseResult[] = [
     { classname: 'p', name: 'a', status: 'passed' },
     { classname: 'p', name: 'b', status: 'failed' },
   ];
-  const r = countResultsFromCases(cases);
+  const r = countResults(cases);
   assert.strictEqual(r.totalMs, 0);
 });
 
-test('countResultsFromCases: array vazio retorna zeros', () => {
-  const r = countResultsFromCases([]);
+test('countResults: array vazio retorna zeros', () => {
+  const r = countResults([]);
   assert.strictEqual(r.passed, 0);
   assert.strictEqual(r.failed, 0);
   assert.strictEqual(r.skipped, 0);

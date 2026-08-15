@@ -5,21 +5,16 @@ import * as vscode from 'vscode';
 import { runCli } from './cli';
 import { getCliInfo, semverLt } from './cliInfo';
 import { listReporters } from './cliReporters';
-import { parseCobertura } from './cobertura';
 import { compilationDiagnostics } from './compilationDiagnostics';
 import { readConfig, resolveConnection } from './config';
-import { resolveSourceUri } from './coverage';
 import { buildInvocation, isInvocationError } from './invocation';
-import {
-  isUserFrame,
-  parseJUnit,
-  type StackFrame,
-  type TestCaseResult,
-  type TestStatus,
-} from './junit';
+import { parseJUnit } from './junit';
 import { executeRunOracle } from './oracleRunner';
 import { setupValidator } from './quickfix';
+import { applyCoverageFromXml, applyResultsFromCases, countResults } from './results';
 import type { TestStateManager } from './state';
+
+export { countResults, findByNameOnly, lastSegment, type RunResults } from './results';
 
 export async function executeRun(
   controller: vscode.TestController,
@@ -300,184 +295,26 @@ export async function executeRun(
   vscode.commands.executeCommand('setContext', 'utplsql:running', false);
 }
 
-export interface RunResults {
-  passed: number;
-  failed: number;
-  skipped: number;
-  errored: number;
-  totalMs: number;
-}
-
-export function countResults(cases: TestCaseResult[]): RunResults {
-  let passed = 0;
-  let failed = 0;
-  let skipped = 0;
-  let errored = 0;
-  let totalMs = 0;
-  for (const c of cases) {
-    switch (c.status) {
-      case 'passed':
-        passed++;
-        break;
-      case 'failed':
-        failed++;
-        break;
-      case 'skipped':
-        skipped++;
-        break;
-      case 'error':
-        errored++;
-        break;
-    }
-    totalMs += c.durationMs ?? 0;
-  }
-  return { passed, failed, skipped, errored, totalMs };
-}
-
 export function applyResults(
   junitPath: string,
   leafTests: vscode.TestItem[],
   run: vscode.TestRun,
   state: TestStateManager,
-): Map<string, { status: TestStatus; message?: string }> {
-  const resultMap = new Map<string, { status: TestStatus; message?: string }>();
+): ReturnType<typeof applyResultsFromCases> {
   if (!fs.existsSync(junitPath)) {
     for (const t of leafTests) {
       run.errored(t, new vscode.TestMessage('Sem relatório de resultados (o CLI falhou?).'));
     }
-    return resultMap;
+    return new Map();
   }
 
   const cases = parseJUnit(fs.readFileSync(junitPath, 'utf8'));
-
-  const index = new Map<string, vscode.TestItem>();
-  for (const t of leafTests) {
-    const m = state.getMeta(t);
-    if (m?.kind !== 'test') continue;
-    const pkg = m.packageName.toLowerCase();
-    index.set(`${pkg}|${m.procName.toLowerCase()}`, t);
-    index.set(`${pkg}|${m.description.toLowerCase().trim()}`, t);
-  }
-
-  const matched = new Set<vscode.TestItem>();
-
-  for (const c of cases) {
-    const pkg = lastSegment(c.classname).toLowerCase();
-    const name = c.name.toLowerCase().trim();
-    const item = index.get(`${pkg}|${name}`) ?? findByNameOnly(leafTests, name, state);
-    if (!item) continue;
-    matched.add(item);
-    resultMap.set(item.id, { status: c.status, message: c.message });
-    report(run, item, c.status, c.message, c.durationMs, c.stackFrames, state);
-  }
-
-  for (const t of leafTests) {
-    if (!matched.has(t)) {
-      const m = state.getMeta(t);
-      run.appendOutput(
-        `[aviso] Nenhum resultado JUnit encontrado para "${t.id}".` +
-          (m && m.kind === 'test' ? ` packageName esperado: ${m.packageName}\r\n` : '\r\n'),
-      );
-      run.skipped(t);
-    }
-  }
-
-  return resultMap;
-}
-
-function report(
-  run: vscode.TestRun,
-  item: vscode.TestItem,
-  status: TestStatus,
-  message?: string,
-  ms?: number,
-  stackFrames?: StackFrame[],
-  state?: TestStateManager,
-): void {
-  let testMessage: vscode.TestMessage | undefined;
-  switch (status) {
-    case 'passed':
-      run.passed(item, ms);
-      break;
-    case 'failed':
-      testMessage = new vscode.TestMessage(message ?? 'Falhou');
-      if (stackFrames && state) {
-        const loc = resolveStackFrameToUri(stackFrames, state);
-        if (loc) testMessage.location = loc;
-      }
-      run.failed(item, testMessage, ms);
-      break;
-    case 'error':
-      testMessage = new vscode.TestMessage(message ?? 'Erro');
-      if (stackFrames && state) {
-        const loc = resolveStackFrameToUri(stackFrames, state);
-        if (loc) testMessage.location = loc;
-      }
-      run.errored(item, testMessage, ms);
-      break;
-    case 'skipped':
-      run.skipped(item);
-      break;
-  }
-}
-
-export function findByNameOnly(
-  items: vscode.TestItem[],
-  name: string,
-  state: TestStateManager,
-): vscode.TestItem | undefined {
-  for (const t of items) {
-    const m = state.getMeta(t);
-    if (m?.kind === 'test') {
-      if (m.procName.toLowerCase() === name || m.description.toLowerCase().trim() === name) {
-        return t;
-      }
-    }
-  }
-  return undefined;
-}
-
-export function lastSegment(classname: string): string {
-  const parts = classname.split(/[.:]/).filter(Boolean);
-  return parts.length ? parts[parts.length - 1] : classname;
-}
-
-function resolveStackFrameToUri(
-  stackFrames: StackFrame[],
-  state: TestStateManager,
-): vscode.Location | undefined {
-  const userFrame = stackFrames.find(isUserFrame);
-  if (!userFrame || userFrame.line <= 0) return undefined;
-
-  const objName = userFrame.objectName.toLowerCase();
-
-  for (const item of state.cachedItems) {
-    const meta = state.getMeta(item);
-    if (!meta?.uri) continue;
-    if (meta.kind !== 'suite') continue;
-    if (meta.packageName.toLowerCase() !== objName) continue;
-
-    const line = Math.max(0, userFrame.line - 1);
-    const pos = new vscode.Position(line, 0);
-    return new vscode.Location(meta.uri, pos);
-  }
-
-  const folders = vscode.workspace.workspaceFolders;
-  if (folders) {
-    for (const folder of folders) {
-      const pksUri = vscode.Uri.joinPath(folder.uri, `${objName}.pks`);
-      const line = Math.max(0, userFrame.line - 1);
-      const pos = new vscode.Position(line, 0);
-      return new vscode.Location(pksUri, pos);
-    }
-  }
-
-  return undefined;
+  return applyResultsFromCases(cases, leafTests, run, state);
 }
 
 export function applyCoverage(
   coveragePath: string,
-  _root: string,
+  root: string,
   sourcePath: string,
   run: vscode.TestRun,
   state: TestStateManager,
@@ -505,29 +342,12 @@ export function applyCoverage(
     return;
   }
 
-  const files = parseCobertura(fs.readFileSync(coveragePath, 'utf8'));
-  let mappedCount = 0;
-
-  for (const f of files) {
-    let uri: vscode.Uri | undefined;
-    for (const folder of folders ?? []) {
-      uri = resolveSourceUri(f.file, folder.uri.fsPath, sourcePath, folder.uri.fsPath);
-      if (uri) break;
-    }
-    if (!uri) continue;
-    const details: vscode.FileCoverageDetail[] = f.lines.map(
-      (l) => new vscode.StatementCoverage(l.hits, new vscode.Position(Math.max(0, l.line - 1), 0)),
-    );
-    if (details.length === 0) continue;
-    const fc = vscode.FileCoverage.fromDetails(uri, details);
-    state.setCoverage(uri.toString(), details);
-    run.addCoverage(fc);
-    mappedCount++;
-  }
-
-  if (mappedCount === 0) {
-    run.appendOutput(
-      '\r\n[cobertura] nenhum arquivo mapeado. Ajuste "utplsql.sourcePath" para a pasta do código-fonte.\r\n',
-    );
-  }
+  applyCoverageFromXml(
+    fs.readFileSync(coveragePath, 'utf8'),
+    sourcePath,
+    root,
+    run,
+    state,
+    folders,
+  );
 }
