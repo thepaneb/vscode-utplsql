@@ -26,12 +26,14 @@ const DIR_STATUS = {
   completed: 'completed',
   approved: 'approved',
   proposed: 'proposed',
+  'in-progress': 'in-progress',
 };
 
 const STATUS_LABEL = {
   completed: 'prd:completed',
   approved: 'prd:approved',
   proposed: 'prd:proposed',
+  'in-progress': 'prd:in-progress',
 };
 
 // ---------------------------------------------------------------------------
