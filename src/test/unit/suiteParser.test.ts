@@ -226,3 +226,16 @@ test('parseSuiteText: annotations sao case-insensitive', () => {
   assert.strictEqual(s.tests[0].expectedError, 1);
   assert.deepStrictEqual(s.tests[0].tags, ['um', 'dois']);
 });
+
+test('parseSuiteText: %displayname vazio nao define displayName', () => {
+  const src = `CREATE OR REPLACE PACKAGE pkg IS
+    -- %suite(Suite)
+    -- %test(Faz algo)
+    -- %displayname()
+    PROCEDURE faz_algo;
+  END;`;
+  const s = parseSuiteText(src);
+  assert.ok(s);
+  assert.strictEqual(s.tests[0].displayName, undefined);
+  assert.strictEqual(s.tests[0].description, 'Faz algo');
+});

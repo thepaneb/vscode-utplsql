@@ -76,7 +76,7 @@ export async function acquireRunnerConnections(
   };
 }
 
-async function discoverUtplsqlSchema(conn: {
+export async function discoverUtplsqlSchema(conn: {
   execute(
     sql: string,
     bindParams?: Record<string, unknown>,
@@ -275,7 +275,7 @@ export async function executeRunOracle(
   }
 }
 
-function mapDbPathsToFiles(covXml: string): string {
+export function mapDbPathsToFiles(covXml: string): string {
   return covXml.replace(
     /filename="(function|procedure|package body|package|view|trigger)\s+\w+\.(\w+)"/g,
     (_match, type: string, name: string) => {

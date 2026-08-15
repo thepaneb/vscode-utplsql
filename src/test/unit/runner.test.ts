@@ -497,3 +497,61 @@ test('countResults: array vazio retorna zeros', () => {
   assert.strictEqual(r.errored, 0);
   assert.strictEqual(r.totalMs, 0);
 });
+
+test('applyCoverage: arquivo existente delega para applyCoverageFromXml', () => {
+  const tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), 'runner-cov-ok-'));
+  const installDir = path.join(tmpDir, 'install', 'packages');
+  fs.mkdirSync(installDir, { recursive: true });
+  fs.writeFileSync(path.join(installDir, 'app.sql'), 'create package app;');
+  const coveragePath = path.join(tmpDir, 'coverage.xml');
+  const xml = `<?xml version="1.0"?>
+<coverage>
+  <packages>
+    <package name="pkg">
+      <classes>
+        <class name="app" filename="packages/app.sql">
+          <lines>
+            <line number="1" hits="1"/>
+          </lines>
+        </class>
+      </classes>
+    </package>
+  </packages>
+</coverage>`;
+  fs.writeFileSync(coveragePath, xml);
+
+  const coverageCalls: any[] = [];
+  const output: string[] = [];
+  const run = {
+    passed: () => {},
+    failed: () => {},
+    skipped: () => {},
+    errored: () => {},
+    appendOutput: (s: string) => output.push(s),
+    enqueued: () => {},
+    started: () => {},
+    addCoverage: (fc: unknown) => coverageCalls.push(fc),
+    end: () => {},
+  };
+  const state = {
+    clearCoverage: () => {},
+    setCoverage: () => {},
+    getMeta: () => undefined,
+    setMeta: () => {},
+    getCoverage: () => [],
+  } as any;
+
+  try {
+    const folders = [{ uri: { fsPath: tmpDir }, name: 'tmp', index: 0 }];
+    applyCoverage(coveragePath, tmpDir, 'install', run as any, state, folders as any);
+    assert.strictEqual(coverageCalls.length, 1);
+    const all = output.join('');
+    assert.ok(!all.includes('relatório não gerado'), 'não deveria emitir diagnóstico de ausência');
+  } finally {
+    try {
+      fs.rmSync(tmpDir, { recursive: true, force: true });
+    } catch {
+      /* ignore */
+    }
+  }
+});

@@ -6,7 +6,9 @@ import type { TestCaseResult } from '../../junit';
 import {
   acquireRunnerConnections,
   closeOraclePool,
+  discoverUtplsqlSchema,
   ensurePool,
+  mapDbPathsToFiles,
   parseConnString,
 } from '../../oracleRunner';
 import { applyResultsFromCases, countResults } from '../../results';
@@ -404,4 +406,49 @@ test('acquireRunnerConnections: fallback para conexao raw quando createPool falh
   } finally {
     await closeOraclePool();
   }
+});
+
+// ── discoverUtplsqlSchema ────────────────────────────────────────────
+
+test('discoverUtplsqlSchema: retorna prefixo do owner', async () => {
+  const conn = {
+    execute: async () => ({ rows: [{ TABLE_OWNER: 'UT3' }] }),
+  };
+  const prefix = await discoverUtplsqlSchema(conn as never);
+  assert.strictEqual(prefix, 'UT3.');
+});
+
+test('discoverUtplsqlSchema: sem synonym retorna vazio', async () => {
+  const conn = {
+    execute: async () => ({ rows: [] }),
+  };
+  const prefix = await discoverUtplsqlSchema(conn as never);
+  assert.strictEqual(prefix, '');
+});
+
+test('discoverUtplsqlSchema: erro de acesso retorna vazio', async () => {
+  const conn = {
+    execute: async () => {
+      throw new Error('ORA-00942');
+    },
+  };
+  const prefix = await discoverUtplsqlSchema(conn as never);
+  assert.strictEqual(prefix, '');
+});
+
+// ── mapDbPathsToFiles ────────────────────────────────────────────────
+
+test('mapDbPathsToFiles: mapeia tipo para pasta', () => {
+  const xml = `<coverage><filename="package body APP.CALC" /><filename="function APP.FN1" /><filename="procedure APP.PR1" /><filename="trigger APP.TR1" /><filename="view APP.VW1" /></coverage>`;
+  const mapped = mapDbPathsToFiles(xml);
+  assert.ok(mapped.includes('filename="packages/CALC.sql"'));
+  assert.ok(mapped.includes('filename="functions/FN1.sql"'));
+  assert.ok(mapped.includes('filename="procedures/PR1.sql"'));
+  assert.ok(mapped.includes('filename="triggers/TR1.sql"'));
+  assert.ok(mapped.includes('filename="views/VW1.sql"'));
+});
+
+test('mapDbPathsToFiles: xml sem filename permanece inalterado', () => {
+  const xml = '<coverage><nothing/></coverage>';
+  assert.strictEqual(mapDbPathsToFiles(xml), xml);
 });
