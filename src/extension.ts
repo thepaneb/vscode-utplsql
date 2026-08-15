@@ -419,7 +419,7 @@ function buildFileTree(
     for (const t of suite.tests) {
       const testItem = controller.createTestItem(
         `test:${suite.packageName.toLowerCase()}.${t.procName.toLowerCase()}`,
-        t.description,
+        t.displayName ?? t.description,
         suite.uri,
       );
       testItem.range = new vscode.Range(t.line, 0, t.line, 0);
@@ -427,7 +427,7 @@ function buildFileTree(
         kind: 'test',
         packageName: suite.packageName,
         procName: t.procName,
-        description: t.description,
+        description: t.displayName ?? t.description,
         uri: suite.uri,
         folder: suite.folder,
       });
@@ -499,7 +499,7 @@ function buildSchemaTree(
         for (const t of suite.tests) {
           const testItem = controller.createTestItem(
             `test:${suite.packageName.toLowerCase()}.${t.procName.toLowerCase()}`,
-            t.description,
+            t.displayName ?? t.description,
             suite.uri,
           );
           testItem.range = new vscode.Range(t.line, 0, t.line, 0);
@@ -507,7 +507,7 @@ function buildSchemaTree(
             kind: 'test',
             packageName: suite.packageName,
             procName: t.procName,
-            description: t.description,
+            description: t.displayName ?? t.description,
             uri: suite.uri,
             folder: suite.folder,
           });

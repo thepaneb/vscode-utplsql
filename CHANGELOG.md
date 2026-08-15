@@ -23,6 +23,12 @@
   `OracleRunOptions` (interface tipada com JSDoc) + `token` — os 11 parâmetros posicionais
   viram um objeto com desestruturação preservando os nomes locais. Call site em `runner.ts`
   constrói o objeto. Sem mudança de comportamento.
+- **SuiteParser: annotations estendidas** (PRD-42): `parseSuiteText` passa a extrair
+  `%disabled` (suite/teste), `%throws(-NNNNN)` (`expectedError`, valor absoluto),
+  `%tags(a,b)` (`tags[]`), `%displayname(name)` (sobrescreve a descrição na árvore) e os
+  lifecycle hooks `%beforeall`/`%beforeeach`/`%aftereach`/`%afterall` (booleanos na suíte).
+  `discoverWorkspace` pula suites e testes desabilitados. Annotations case-insensitive;
+  bloco no header da suíte aplica à suíte, bloco entre `%test` e procedure aplica ao teste.
 - **Wiki: checklist manual de screenshots + diagramas** (PRD-23, reconciliada): automação de
   captura descartada (qualidade insatisfatória) em favor de checklist manual de 23 itens em
   `docs/wiki/images/README.md` + fixtures preservadas. Quatro diagramas vetoriais novos

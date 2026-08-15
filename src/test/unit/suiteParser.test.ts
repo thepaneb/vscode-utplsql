@@ -103,3 +103,126 @@ test('parseSuiteText: arquivo sem CREATE PACKAGE retorna null mesmo com %suite',
 test('parseSuiteText: arquivo vazio', () => {
   assert.strictEqual(parseSuiteText(''), null);
 });
+
+// ── annotations estendidas (PRD-42) ──────────────────────────────────
+
+test('parseSuiteText: %throws(-20001) extrai codigo de erro absoluto', () => {
+  const s = parseSuiteText(PKS);
+  assert.ok(s);
+  assert.strictEqual(s.tests[1].expectedError, 20001);
+});
+
+test('parseSuiteText: %disabled no teste marca disabled', () => {
+  const src = `CREATE OR REPLACE PACKAGE pkg IS
+    -- %suite(Suite)
+    -- %test(Faz algo)
+    -- %disabled
+    PROCEDURE faz_algo;
+  END;`;
+  const s = parseSuiteText(src);
+  assert.ok(s);
+  assert.strictEqual(s.tests[0].disabled, true);
+});
+
+test('parseSuiteText: %disabled antes do primeiro %test pertence a suite', () => {
+  const src = `CREATE OR REPLACE PACKAGE pkg IS
+    -- %suite(Suite)
+    -- %disabled
+    -- %test(Faz algo)
+    PROCEDURE faz_algo;
+  END;`;
+  const s = parseSuiteText(src);
+  assert.ok(s);
+  assert.strictEqual(s.disabled, true);
+  assert.strictEqual(s.tests[0].disabled, undefined);
+});
+
+test('parseSuiteText: %disabled entre procedimentos aplica ao proximo teste', () => {
+  const src = `CREATE OR REPLACE PACKAGE pkg IS
+    -- %suite(Suite)
+    -- %test(Primeiro)
+    PROCEDURE primeiro;
+    -- %disabled
+    -- %test(Segundo)
+    PROCEDURE segundo;
+  END;`;
+  const s = parseSuiteText(src);
+  assert.ok(s);
+  assert.strictEqual(s.tests[0].disabled, undefined);
+  assert.strictEqual(s.tests[1].disabled, true);
+});
+
+test('parseSuiteText: %tags com espacos extrai array trimado', () => {
+  const src = `CREATE OR REPLACE PACKAGE pkg IS
+    -- %suite(Suite)
+    -- %test(Faz algo)
+    -- %tags(fast, critical,  slow )
+    PROCEDURE faz_algo;
+  END;`;
+  const s = parseSuiteText(src);
+  assert.ok(s);
+  assert.deepStrictEqual(s.tests[0].tags, ['fast', 'critical', 'slow']);
+});
+
+test('parseSuiteText: %displayname sobrescreve description', () => {
+  const src = `CREATE OR REPLACE PACKAGE pkg IS
+    -- %suite(Suite)
+    -- %test(Faz algo)
+    -- %displayname(Nome Customizado)
+    PROCEDURE faz_algo;
+  END;`;
+  const s = parseSuiteText(src);
+  assert.ok(s);
+  assert.strictEqual(s.tests[0].displayName, 'Nome Customizado');
+  assert.strictEqual(s.tests[0].description, 'Faz algo');
+});
+
+test('parseSuiteText: lifecycle hooks viram booleanos na suite', () => {
+  const src = `CREATE OR REPLACE PACKAGE pkg IS
+    -- %suite(Suite)
+    -- %beforeall
+    PROCEDURE setup_all;
+    -- %test(Faz algo)
+    PROCEDURE faz_algo;
+    -- %aftereach
+    PROCEDURE teardown_each;
+    -- %beforeeach
+    PROCEDURE setup_each;
+    -- %afterall
+    PROCEDURE teardown_all;
+  END;`;
+  const s = parseSuiteText(src);
+  assert.ok(s);
+  assert.strictEqual(s.hasBeforeAll, true);
+  assert.strictEqual(s.hasAfterAll, true);
+  assert.strictEqual(s.hasBeforeEach, true);
+  assert.strictEqual(s.hasAfterEach, true);
+});
+
+test('parseSuiteText: %disabled no nivel da suite marca suite disabled', () => {
+  const src = `CREATE OR REPLACE PACKAGE pkg IS
+    -- %suite(Suite)
+    -- %disabled
+    -- %test(Faz algo)
+    PROCEDURE faz_algo;
+  END;`;
+  const s = parseSuiteText(src);
+  assert.ok(s);
+  assert.strictEqual(s.disabled, true);
+});
+
+test('parseSuiteText: annotations sao case-insensitive', () => {
+  const src = `CREATE OR REPLACE PACKAGE pkg IS
+    -- %Suite(Suite)
+    -- %Test(Faz algo)
+    -- %Disabled
+    -- %Throws(-1)
+    -- %Tags(um, dois)
+    PROCEDURE faz_algo;
+  END;`;
+  const s = parseSuiteText(src);
+  assert.ok(s);
+  assert.strictEqual(s.tests[0].disabled, true);
+  assert.strictEqual(s.tests[0].expectedError, 1);
+  assert.deepStrictEqual(s.tests[0].tags, ['um', 'dois']);
+});

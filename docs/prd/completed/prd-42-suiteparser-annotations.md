@@ -2,7 +2,7 @@
 
 | Campo | Valor |
 |---|---|
-| Status | Em desenvolvimento |
+| Status | Concluído |
 | Autor | Gil Cleber |
 | Data | 2026-08-08 |
 | Componente | Extensão `paneb.vscode-utplsql` |
@@ -153,12 +153,12 @@ Nenhuma nova setting.
 
 ## 10. Critérios de aceite
 
-- [ ] `TestProc` com campos `disabled`, `expectedError`, `tags`, `displayName`
-- [ ] `ParsedSuite` com campos `disabled`, `hasBeforeAll`, `hasAfterAll`, `hasBeforeEach`, `hasAfterEach`
-- [ ] `discoverWorkspace` filtra testes com `disabled: true`
-- [ ] `discoverWorkspace` ignora suites com `disabled: true`
-- [ ] `suiteParser.test.ts` cobre todas as annotations novas
-- [ ] `npm run compile && npm run lint && node --test` passam
+- [x] `TestProc` com campos `disabled`, `expectedError`, `tags`, `displayName`
+- [x] `ParsedSuite` com campos `disabled`, `hasBeforeAll`, `hasAfterAll`, `hasBeforeEach`, `hasAfterEach`
+- [x] `discoverWorkspace` filtra testes com `disabled: true`
+- [x] `discoverWorkspace` ignora suites com `disabled: true`
+- [x] `suiteParser.test.ts` cobre todas as annotations novas
+- [x] `npm run compile && npm run lint && node --test` passam
 
 ## 11. Decisões
 
