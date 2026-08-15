@@ -15,6 +15,8 @@ esperar o batch completo.
 
 ## Como funciona o modo Oracle direto
 
+![Streaming em tempo real](images/diagram-streaming.png)
+
 ```
 Extension Host
     │

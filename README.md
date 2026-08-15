@@ -76,6 +76,8 @@ conexão e a mantém apenas em memória durante a sessão — use o comando
 
 Dois modos de execução estão disponíveis:
 
+![Arquitetura de execução — dois modos](docs/wiki/images/diagram-arquitetura.png)
+
 ### Modo Oracle direto (v0.9.0) — `runnerMode: auto` ou `oracle`
 ```
  Extension Host

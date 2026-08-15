@@ -4,6 +4,8 @@ Visão geral da arquitetura interna da extensão para contribuidores.
 
 ## Fluxo de execução
 
+![Arquitetura de execução — dois modos](images/diagram-arquitetura.png)
+
 ```
 discovery (.pks) → executeRun (runner.ts) monta: utplsql run <conn> -p=<suites>
   -f=ut_junit_reporter -o=results.xml          → parseJUnit  → run.passed/failed

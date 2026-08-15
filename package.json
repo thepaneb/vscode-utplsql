@@ -439,7 +439,7 @@
     "test:coverage": "npm run compile && c8 node --require ./scripts/test-setup.cjs --test out/test/unit/**/*.test.js",
     "package": "vsce package",
     "gen-icon": "node scripts/gen-icon.cjs",
-    "gen-diagram": "bash scripts/gen-diagram.sh",
+    "gen-diagram": "node scripts/gen-diagrams.cjs",
     "sync-prds": "node scripts/sync-prds.cjs",
     "publish": "echo '⚠️ Publicacao apenas via GitHub workflow (release). Use npm run package para .vsix local.' && exit 1",
     "publish:patch": "echo '⚠️ Publicacao apenas via GitHub workflow (release). Use npm run package para .vsix local.' && exit 1"

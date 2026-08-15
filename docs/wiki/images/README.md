@@ -56,7 +56,7 @@ Marque cada item ao capturar. Os nomes de arquivo devem ser **exatamente** os li
 | 14 | `diagnostics-squiggles.png` | Diagnósticos-e-quick-fix.md | Editor com `tst_broken.pks` aberto mostrando sublinhado vermelho + Problems Panel |
 | 15 | `quickpick-reporters.png` | Reporters.md | QuickPick de seleção de reporter adicional |
 
-### Com banco Oracle (6 prints)
+### Com banco Oracle (7 prints)
 
 | # | Arquivo | Onde na wiki | Como capturar |
 |---|---|---|---|
@@ -68,11 +68,20 @@ Marque cada item ao capturar. Os nomes de arquivo devem ser **exatamente** os li
 | 21 | `sqlcl-compile.png` | Guia-rápido.md | Output de compilação SQLcl com packages compilados |
 | 22 | `sqlcl-version.png` | Instalação-e-requisitos.md | Output de `utplsql info` com versão do CLI, API e DB utPLSQL |
 
-### Diagrama (1 arquivo)
+### Diagramas (5 arquivos, gerados via SVG)
 
-| # | Arquivo | Onde na wiki | Como criar |
+| # | Arquivo | Onde é usado | Como gerar |
 |---|---|---|---|
-| 23 | `diagram-schemas.png` | Requisitos-no-banco.md | Gerado via `rsvg-convert` a partir do SVG em `scripts/gen-diagram.sh` |
+| 23 | `diagram-schemas.png` | Requisitos-no-banco.md | `npm run gen-diagram` (renderiza o SVG) |
+| 24 | `diagram-arquitetura.png` | README.md, Arquitetura.md | `npm run gen-diagram` |
+| 25 | `diagram-conexao.png` | Conexão.md | `npm run gen-diagram` |
+| 26 | `diagram-streaming.png` | Execução-Oracle-direta.md | `npm run gen-diagram` |
+| 27 | `diagram-diagnosticos.png` | Diagnósticos-e-quick-fix.md | `npm run gen-diagram` |
+
+Os diagramas são mantidos como **SVG** (fonte da verdade, versionável) e
+renderizados para **PNG de 1200px** pelo script `scripts/gen-diagrams.cjs`
+(`@resvg/resvg-js`, cross-platform). Ao editar um SVG, rode `npm run
+gen-diagram` e commite os dois formatos.
 
 ---
 

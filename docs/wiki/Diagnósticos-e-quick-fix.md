@@ -117,6 +117,8 @@ Cada diagnostic oferece uma **Code Action** (ícone de lâmpada 💡 ou `Ctrl+.`
 
 O fluxo completo de diagnóstico cobre todo o ciclo de vida:
 
+![Ciclo de vida dos diagnósticos](images/diagram-diagnosticos.png)
+
 ```
 Abrir workspace
   → Setup diagnostics: CLI OK? Conexão OK? Versão OK?

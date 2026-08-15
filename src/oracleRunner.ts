@@ -89,8 +89,9 @@ async function discoverUtplsqlSchema(conn: {
       `SELECT table_owner FROM ALL_SYNONYMS WHERE synonym_name = 'UT_RUNNER' AND owner = 'PUBLIC'`,
       {},
     );
-    if ((result.rows?.length ?? 0) > 0) {
-      const owner = (result.rows?.[0] as { TABLE_OWNER?: string }).TABLE_OWNER;
+    const rows = result.rows;
+    if (rows && rows.length > 0) {
+      const owner = (rows[0] as { TABLE_OWNER?: string }).TABLE_OWNER;
       if (owner) return `${owner}.`;
     }
   } catch {
