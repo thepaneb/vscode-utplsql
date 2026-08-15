@@ -1,10 +1,10 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 560" font-family="Segoe UI, sans-serif">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 620" font-family="Segoe UI, sans-serif">
   <defs>
     <marker id="arrow" markerWidth="10" markerHeight="7" refX="10" refY="3.5" orient="auto">
       <polygon points="0 0, 10 3.5, 0 7" fill="#555"/>
     </marker>
   </defs>
-  <rect width="900" height="560" fill="#fff"/>
+  <rect width="900" height="620" fill="#fff"/>
   <text x="450" y="32" text-anchor="middle" font-size="18" font-weight="bold" fill="#333">Resolução da conexão Oracle</text>
 
   <rect x="330" y="52" width="240" height="44" rx="8" fill="#e2e3e5" stroke="#555" stroke-width="1.5"/>
