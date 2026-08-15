@@ -111,12 +111,11 @@ CONCLUIR
 | 36 | [Correção do parse de reporters com descrições](completed/prd-36-reporter-parse-fix.md) | 0.7.2 | 2026-07-21 |
 | 37 | [Cobertura de código TypeScript com `c8`](completed/prd-37-ts-coverage.md) | 0.9.0 | 2026-08-02 |
 | 38 | [Connection Pooling no Oracle Runner](completed/prd-38-connection-pooling.md) | 0.10.0 | 2026-08-08 |
+| 39 | [Eliminar código duplicado entre runners](completed/prd-39-deduplicate-runners.md) | 0.10.0 | 2026-08-08 |
 
 ### 🟡 Em desenvolvimento
 
-| # | PRD | Versão alvo | Data |
-|---|---|---|---|
-| 39 | [Eliminar código duplicado entre runners](in-progress/prd-39-deduplicate-runners.md) | 0.10.0 | 2026-08-08 |
+_(vazio — nenhuma PRD em implementação)_
 
 ### 🔵 Aprovados
 
@@ -189,12 +188,12 @@ docs/prd/
 │   ├── prd-35-windows-coverage-fix.md
 │   ├── prd-36-reporter-parse-fix.md
 │   ├── prd-37-ts-coverage.md
-│   └── prd-38-connection-pooling.md
+│   ├── prd-38-connection-pooling.md
+│   └── prd-39-deduplicate-runners.md
 ├── approved/         ← aprovados, aguardando implementação
 │   ├── prd-40-options-object.md
 │   └── prd-42-suiteparser-annotations.md
-├── in-progress/      ← sendo implementados agora
-│   └── prd-39-deduplicate-runners.md
+├── in-progress/      ← sendo implementados agora (vazio)
 └── proposed/         ← em avaliação
     ├── prd-12-sql-coverage.md
     ├── prd-21-workflow-improvements.md

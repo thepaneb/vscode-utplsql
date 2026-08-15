@@ -12,6 +12,13 @@
   `utplsql.oraclePoolMin` (2), `utplsql.oraclePoolMax` (10), `utplsql.oraclePoolIncrement` (1),
   `utplsql.oraclePoolPingInterval` (60). Testes unitários do pool + teste de integração com
   banco real (reuso do pool entre execuções).
+- **Refatoração: código compartilhado entre runners** (PRD-39): novo módulo `src/results.ts`
+  com as funções canônicas `applyResultsFromCases`, `applyCoverageFromXml`, `countResults` e
+  `resolveStackFrameToUri` (antes duplicadas entre `runner.ts` e `oracleRunner.ts`).
+  `runner.ts` mantém wrappers CLI (leitura de arquivo + setup diagnostics); `oracleRunner.ts`
+  importa de `results.ts`. `matching.ts` permanece puro. Comportamento unificado: o modo CLI
+  ganha "Go to Error" (stackFrames → `message.location`) e o modo Oracle ganha o aviso de
+  testes sem match no JUnit. −380/+439 linhas, 7 testes unitários novos, cobertura 72.6%.
 - **Wiki: checklist manual de screenshots + diagramas** (PRD-23, reconciliada): automação de
   captura descartada (qualidade insatisfatória) em favor de checklist manual de 23 itens em
   `docs/wiki/images/README.md` + fixtures preservadas. Quatro diagramas vetoriais novos
