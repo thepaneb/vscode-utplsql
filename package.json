@@ -445,7 +445,8 @@
     "publish:patch": "echo '⚠️ Publicacao apenas via GitHub workflow (release). Use npm run package para .vsix local.' && exit 1"
   },
   "dependencies": {
-    "fast-xml-parser": "^4.4.1"
+    "fast-xml-parser": "^4.4.1",
+    "iconv-lite": "^0.6.3"
   },
   "optionalDependencies": {
     "oracledb": "^6.6.0"

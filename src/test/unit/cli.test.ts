@@ -117,6 +117,19 @@ test('runCli: comando inexistente retorna codigo -1', async () => {
   assert.ok(result.stderr);
 });
 
+test('runCli: caminho inexistente retorna erro limpo sem spawn', async () => {
+  const result = await runCli(
+    `${os.tmpdir()}/nao_existe_xyz/utplsql`,
+    [],
+    true,
+    tmpCwd,
+    neverCancel,
+  );
+  assert.strictEqual(result.code, -1);
+  assert.match(result.stderr, /CLI não encontrado/);
+  assert.match(result.stderr, /nao_existe_xyz/);
+});
+
 test('runCli: cancelamento mata o processo', async () => {
   const callbacks: (() => void)[] = [];
   // biome-ignore lint/suspicious/noExplicitAny: partial CancellationToken mock
