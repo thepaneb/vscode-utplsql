@@ -8,6 +8,8 @@
 | Componente | Extensão `paneb.vscode-utplsql` |
 | Versão alvo | 0.12.0 |
 | Arquivos afetados | `src/config.ts`, `src/connectionProfiles.ts` (novo), `src/extension.ts`, `src/runner.ts`, `src/state.ts`, `package.json` |
+| Esforço estimado | 3–5 dias |
+| Complexidade | Média |
 
 ## 1. Resumo
 

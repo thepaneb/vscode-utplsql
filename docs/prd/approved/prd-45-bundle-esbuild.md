@@ -2,12 +2,14 @@
 
 | Campo | Valor |
 |---|---|
-| Status | Proposto |
+| Status | Aprovado |
 | Autor | Gil Cleber |
 | Data | 2026-08-26 |
 | Componente | Extensão `paneb.vscode-utplsql` |
 | Versão alvo | 0.11.0 |
 | Arquivos afetados | `esbuild.config.mjs` (novo), `package.json`, `.vscodeignore`, `.github/workflows/publish.yml` |
+| Esforço estimado | 1–2 dias |
+| Complexidade | Média |
 
 ## 1. Resumo
 

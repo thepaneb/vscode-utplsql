@@ -2,12 +2,14 @@
 
 | Campo | Valor |
 |---|---|
-| Status | Proposto |
+| Status | Aprovado |
 | Autor | Gil Cleber |
 | Data | 2026-08-08 |
 | Componente | Extensão `paneb.vscode-utplsql` |
 | Versão alvo | 0.11.0 |
 | Arquivos afetados | `src/discovery.ts`, `src/oracleRunner.ts`, `src/extension.ts`, `src/config.ts` |
+| Esforço estimado | 2–3 dias |
+| Complexidade | Média-Alta |
 
 ## 1. Resumo
 

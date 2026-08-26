@@ -8,6 +8,8 @@
 | Componente | Extensão `paneb.vscode-utplsql` |
 | Versão alvo | {x.y.z} |
 | Arquivos afetados | `{caminho/arquivo.ts}`, `{caminho/arquivo2.ts}` |
+| Esforço estimado | {0,5–1 dia \| 1–2 dias \| 2–3 dias \| ...} |
+| Complexidade | {Baixa \| Média \| Média-Alta \| Alta} |
 
 ## 1. Resumo
 

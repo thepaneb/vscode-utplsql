@@ -2,12 +2,14 @@
 
 | Campo | Valor |
 |---|---|
-| Status | Proposto |
+| Status | Aprovado |
 | Autor | Gil Cleber Barboza |
 | Data | 2026-07-18 |
 | Componente | CI/CD `.github/workflows/` |
 | Versão alvo | 0.11.0 |
 | Arquivos afetados | `.github/workflows/ci.yml`, `.github/workflows/publish.yml`, `package.json` |
+| Esforço estimado | 0,5–1 dia |
+| Complexidade | Baixa |
 
 ## 1. Resumo
 
