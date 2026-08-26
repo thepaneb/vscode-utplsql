@@ -133,6 +133,7 @@ _(vazio — aprovar novas PRDs em `proposed/`)_
 | 41 | [Verificação de instalação do utPLSQL](proposed/prd-41-utplsql-install-verification.md) | 0.11.0 | 2026-08-08 |
 | 43 | [Schema-mode: descoberta via ALL_OBJECTS](proposed/prd-43-schema-db-discovery.md) | 0.11.0 | 2026-08-08 |
 | 44 | [Matching resultado→teste como função pura](proposed/prd-44-pure-matching.md) | 0.11.0 | 2026-08-08 |
+| 45 | [Bundling com esbuild + poda do node-oracledb no VSIX](proposed/prd-45-bundle-esbuild.md) | 0.11.0 | 2026-08-26 |
 
 #### 0.12.0
 
@@ -198,7 +199,8 @@ docs/prd/
     ├── prd-34-multi-connection-profiles.md
     ├── prd-41-utplsql-install-verification.md
     ├── prd-43-schema-db-discovery.md
-    └── prd-44-pure-matching.md
+    ├── prd-44-pure-matching.md
+    └── prd-45-bundle-esbuild.md
 ```
 
 ---
