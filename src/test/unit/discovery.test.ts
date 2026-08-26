@@ -100,6 +100,60 @@ test('discoverWorkspace: pattern sem match retorna vazio', async () => {
   assert.strictEqual(result.length, 0);
 });
 
+test('discoverWorkspace: teste com %disabled e filtrado', async () => {
+  const { __setMockFile, __resetMockFiles } = await import('../vscode-stub.js');
+  __setMockFile(
+    '*.pks',
+    '/root/with_disabled.pks',
+    'CREATE OR REPLACE PACKAGE with_disabled IS\n  --%suite(Testes)\n' +
+      '  --%test(Ativo)\n  PROCEDURE ativo;\n' +
+      '  --%test(Desativado)\n  --%disabled\n  PROCEDURE desativado;\nEND;',
+  );
+  try {
+    const folder = { uri: { fsPath: '/root' }, name: 'root', index: 0 };
+    const result = await discoverWorkspace(['*.pks'], [folder as any]);
+    assert.strictEqual(result.length, 1);
+    assert.strictEqual(result[0].tests.length, 1);
+    assert.strictEqual(result[0].tests[0].procName, 'ativo');
+  } finally {
+    __resetMockFiles();
+  }
+});
+
+test('discoverWorkspace: suite com %disabled e ignorada', async () => {
+  const { __setMockFile, __resetMockFiles } = await import('../vscode-stub.js');
+  __setMockFile(
+    '*.pks',
+    '/root/disabled_suite.pks',
+    'CREATE OR REPLACE PACKAGE disabled_suite IS\n  --%suite(Desativada)\n  --%disabled\n' +
+      '  --%test(Um teste)\n  PROCEDURE um_teste;\nEND;',
+  );
+  try {
+    const folder = { uri: { fsPath: '/root' }, name: 'root', index: 0 };
+    const result = await discoverWorkspace(['*.pks'], [folder as any]);
+    assert.strictEqual(result.length, 0);
+  } finally {
+    __resetMockFiles();
+  }
+});
+
+test('discoverWorkspace: suite em que todos os testes sao disabled e ignorada', async () => {
+  const { __setMockFile, __resetMockFiles } = await import('../vscode-stub.js');
+  __setMockFile(
+    '*.pks',
+    '/root/all_disabled.pks',
+    'CREATE OR REPLACE PACKAGE all_disabled IS\n  --%suite(Testes)\n' +
+      '  --%test(Somente este)\n  --%disabled\n  PROCEDURE som_este;\nEND;',
+  );
+  try {
+    const folder = { uri: { fsPath: '/root' }, name: 'root', index: 0 };
+    const result = await discoverWorkspace(['*.pks'], [folder as any]);
+    assert.strictEqual(result.length, 0);
+  } finally {
+    __resetMockFiles();
+  }
+});
+
 test('extractSchemaFromPath: extrai schema com padrao db/{schema}/**', () => {
   assert.strictEqual(
     extractSchemaFromPath('/root/db/APP/tests/packages/ut_foo.pks', '/root', 'db/{schema}/**'),

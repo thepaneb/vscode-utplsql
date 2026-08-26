@@ -1,0 +1,18 @@
+utPLSQL Version Information
+============================
+
+CLI version:  3.1.10.1234
+API version:  1.2.3
+DB version:   3.1.10 (utPLSQL installed in UT3 schema)
+Database:     Oracle Database 19c Enterprise Edition 19.22.0.0.0
+Connection:   DEV_USER@//localhost:1521/XEPDB1
+
+All reporters available:
+  ut_documentation_reporter
+  ut_junit_reporter
+  ut_sonar_test_reporter
+  ut_teamcity_reporter
+  ut_tap_reporter
+  ut_coverage_html_reporter
+  ut_coverage_cobertura_reporter
+  ut_coverage_coveralls_reporter

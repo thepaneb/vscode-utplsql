@@ -9,6 +9,11 @@ export interface SuiteFile {
   tests: TestProc[];
   folder: vscode.WorkspaceFolder;
   suiteLine: number;
+  disabled?: boolean;
+  hasBeforeAll?: boolean;
+  hasAfterAll?: boolean;
+  hasBeforeEach?: boolean;
+  hasAfterEach?: boolean;
 }
 
 type ParsedSuite = Omit<SuiteFile, 'folder'>;
@@ -57,9 +62,12 @@ export async function discoverWorkspace(
         const bytes = await vscode.workspace.fs.readFile(uri);
         const text = Buffer.from(bytes).toString('utf8');
         const suite = parseSuite(uri, text);
-        if (suite && suite.tests.length > 0) {
-          const folder = resolveFolder(uri, targets);
-          results.push({ ...suite, folder });
+        if (suite && !suite.disabled && suite.tests.length > 0) {
+          const tests = suite.tests.filter((t) => !t.disabled);
+          if (tests.length > 0) {
+            const folder = resolveFolder(uri, targets);
+            results.push({ ...suite, tests, folder });
+          }
         }
       } catch {
         // arquivo ilegível — ignora

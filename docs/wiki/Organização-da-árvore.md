@@ -36,6 +36,8 @@ TestController
               └── test_case_3
 ```
 
+![Schema-mode tree](images/schema-mode-tree.png)
+
 ## Configuração
 
 ```jsonc

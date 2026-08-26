@@ -1,0 +1,13 @@
+{
+  "workbench.colorTheme": "Light+",
+  "utplsql.includePatterns": ["**/*.pks"],
+  "utplsql.connection": "UT3/XNtxj8eEgA6X6b6f@//host.docker.internal:1521/freepdb1",
+  "utplsql.cliPath": "D:\\utPLSQL-cli\\bin\\utplsql.bat",
+  //"utplsql.cliPath": "/opt/utplsql-cli/utPLSQL-cli/bin/utplsql",
+  "utplsql.javaPath": "/usr/bin/java",
+  "utplsql.organization": "schema",
+  "utplsql.organization.schemaPattern": "db/{schema}/**",
+  "workbench.startupEditor": "none",
+  "editor.minimap.enabled": false,
+  "window.titleBarStyle": "custom"
+}

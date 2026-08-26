@@ -1,5 +1,42 @@
 # Changelog
 
+## 0.10.0
+
+- **Connection pooling no Oracle runner** (PRD-38): pool lazy gerenciado por `ensurePool`
+  (keyed pela connection string — recriado quando a conexão muda), fechado no
+  `deactivate()` com drenagem de 10s. `acquireRunnerConnections` usa `pool.getConnection()`
+  com fallback para conexão raw quando o pool não está disponível. `oracledb.outFormat =
+  OUT_FORMAT_OBJECT` global, com acessos de rows por propriedade nomeada (`TABLE_OWNER`,
+  `MESSAGE_ID`, `TEXT`). `poolPingInterval` valida conexões ociosas no checkout (ping interno
+  do Thin driver — sem `SELECT 1 FROM DUAL` explícito). Novas settings:
+  `utplsql.oraclePoolMin` (2), `utplsql.oraclePoolMax` (10), `utplsql.oraclePoolIncrement` (1),
+  `utplsql.oraclePoolPingInterval` (60). Testes unitários do pool + teste de integração com
+  banco real (reuso do pool entre execuções).
+- **Refatoração: código compartilhado entre runners** (PRD-39): novo módulo `src/results.ts`
+  com as funções canônicas `applyResultsFromCases`, `applyCoverageFromXml`, `countResults` e
+  `resolveStackFrameToUri` (antes duplicadas entre `runner.ts` e `oracleRunner.ts`).
+  `runner.ts` mantém wrappers CLI (leitura de arquivo + setup diagnostics); `oracleRunner.ts`
+  importa de `results.ts`. `matching.ts` permanece puro. Comportamento unificado: o modo CLI
+  ganha "Go to Error" (stackFrames → `message.location`) e o modo Oracle ganha o aviso de
+  testes sem match no JUnit. −380/+439 linhas, 7 testes unitários novos, cobertura 72.6%.
+- **Refatoração: Options Object no Oracle runner** (PRD-40): `executeRunOracle` passa a receber
+  `OracleRunOptions` (interface tipada com JSDoc) + `token` — os 11 parâmetros posicionais
+  viram um objeto com desestruturação preservando os nomes locais. Call site em `runner.ts`
+  constrói o objeto. Sem mudança de comportamento.
+- **SuiteParser: annotations estendidas** (PRD-42): `parseSuiteText` passa a extrair
+  `%disabled` (suite/teste), `%throws(-NNNNN)` (`expectedError`, valor absoluto),
+  `%tags(a,b)` (`tags[]`), `%displayname(name)` (sobrescreve a descrição na árvore) e os
+  lifecycle hooks `%beforeall`/`%beforeeach`/`%aftereach`/`%afterall` (booleanos na suíte).
+  `discoverWorkspace` pula suites e testes desabilitados. Annotations case-insensitive;
+  bloco no header da suíte aplica à suíte, bloco entre `%test` e procedure aplica ao teste.
+- **Wiki: checklist manual de screenshots + diagramas** (PRD-23, reconciliada): automação de
+  captura descartada (qualidade insatisfatória) em favor de checklist manual de 23 itens em
+  `docs/wiki/images/README.md` + fixtures preservadas. Quatro diagramas vetoriais novos
+  (`diagram-arquitetura`, `diagram-conexao`, `diagram-streaming`, `diagram-diagnosticos`)
+  referenciados no README e na wiki. Script `npm run gen-diagram` reescrito em
+  `scripts/gen-diagrams.cjs` (`@resvg/resvg-js`, cross-platform) — renderiza todos os SVGs
+  para PNG de 1200px sem dependências de sistema.
+
 ## 0.9.0
 
 - **Execução Oracle direta com streaming** (PRD-11): novo `runnerMode` (`auto`, `cli`, `oracle`). Modo `auto` conecta via `node-oracledb` (thin driver, opcional) e faz polling incremental de `UT_OUTPUT_BUFFER_TMP` — cada teste aparece no Test Explorer em tempo real. Fallback automático para CLI se `oracledb` não estiver disponível. Suporte a shared install via `discoverUtplsqlSchema` (schema prefixado nas queries). Reporters (doc, JUnit, coverage) escrevem na mesma tabela VARCHAR2 — sem dependência de `UT_OUTPUT_CLOB_BUFFER_TMP`.

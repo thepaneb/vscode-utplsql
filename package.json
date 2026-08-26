@@ -2,7 +2,7 @@
   "name": "vscode-utplsql",
   "displayName": "utPLSQL Test Runner",
   "description": "Roda testes utPLSQL pelo Test Explorer do VSCode, com menu de contexto e cobertura visual (estilo pytest).",
-  "version": "0.9.0",
+  "version": "0.10.0",
   "publisher": "paneb",
   "author": "Gil Cleber Barboza",
   "license": "MIT",
@@ -163,6 +163,30 @@
           ],
           "default": "auto",
           "markdownDescription": "Modo de execução dos testes. `auto` — tenta Oracle direto (via `node-oracledb`), fallback para CLI. `cli` — sempre via linha de comando (comportamento atual). `oracle` — sempre via conexão direta (erro se `oracledb` não disponível)."
+        },
+        "utplsql.oraclePoolMin": {
+          "type": "number",
+          "default": 2,
+          "minimum": 0,
+          "description": "Conexões mínimas mantidas no pool do Oracle runner (node-oracledb)."
+        },
+        "utplsql.oraclePoolMax": {
+          "type": "number",
+          "default": 10,
+          "minimum": 1,
+          "description": "Conexões máximas no pool do Oracle runner (node-oracledb)."
+        },
+        "utplsql.oraclePoolIncrement": {
+          "type": "number",
+          "default": 1,
+          "minimum": 1,
+          "description": "Incremento ao expandir o pool do Oracle runner (node-oracledb)."
+        },
+        "utplsql.oraclePoolPingInterval": {
+          "type": "number",
+          "default": 60,
+          "minimum": 0,
+          "description": "Segundos entre health checks das conexões ociosas do pool (node-oracledb). 0 = ping a cada checkout."
         },
         "utplsql.organization": {
           "type": "string",
@@ -415,12 +439,14 @@
     "test:coverage": "npm run compile && c8 node --require ./scripts/test-setup.cjs --test out/test/unit/**/*.test.js",
     "package": "vsce package",
     "gen-icon": "node scripts/gen-icon.cjs",
+    "gen-diagram": "node scripts/gen-diagrams.cjs",
     "sync-prds": "node scripts/sync-prds.cjs",
     "publish": "echo '⚠️ Publicacao apenas via GitHub workflow (release). Use npm run package para .vsix local.' && exit 1",
     "publish:patch": "echo '⚠️ Publicacao apenas via GitHub workflow (release). Use npm run package para .vsix local.' && exit 1"
   },
   "dependencies": {
-    "fast-xml-parser": "^4.4.1"
+    "fast-xml-parser": "^4.4.1",
+    "iconv-lite": "^0.6.3"
   },
   "optionalDependencies": {
     "oracledb": "^6.6.0"

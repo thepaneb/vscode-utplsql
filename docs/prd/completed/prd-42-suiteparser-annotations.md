@@ -2,7 +2,7 @@
 
 | Campo | Valor |
 |---|---|
-| Status | Proposto |
+| Status | Concluído |
 | Autor | Gil Cleber |
 | Data | 2026-08-08 |
 | Componente | Extensão `paneb.vscode-utplsql` |
@@ -153,15 +153,30 @@ Nenhuma nova setting.
 
 ## 10. Critérios de aceite
 
-- [ ] `TestProc` com campos `disabled`, `expectedError`, `tags`, `displayName`
-- [ ] `ParsedSuite` com campos `disabled`, `hasBeforeAll`, `hasAfterAll`, `hasBeforeEach`, `hasAfterEach`
-- [ ] `discoverWorkspace` filtra testes com `disabled: true`
-- [ ] `discoverWorkspace` ignora suites com `disabled: true`
-- [ ] `suiteParser.test.ts` cobre todas as annotations novas
-- [ ] `npm run compile && npm run lint && node --test` passam
+- [x] `TestProc` com campos `disabled`, `expectedError`, `tags`, `displayName`
+- [x] `ParsedSuite` com campos `disabled`, `hasBeforeAll`, `hasAfterAll`, `hasBeforeEach`, `hasAfterEach`
+- [x] `discoverWorkspace` filtra testes com `disabled: true`
+- [x] `discoverWorkspace` ignora suites com `disabled: true`
+- [x] `suiteParser.test.ts` cobre todas as annotations novas
+- [x] `npm run compile && npm run lint && node --test` passam
 
-## 11. Questões em aberto
+## 11. Decisões
 
-- `%context` / `%endcontext` — implementar agrupamento hierárquico de sub-contextos? (complexo, deixar para PRD futuro)
-- `%suitepath(path)` — já existe na spec do utPLSQL mas não é parseado. Adicionar ao `ParsedSuite`?
-- Suites com `%disabled` — pular completamente (não criar TestItem) ou criar como disabled (VSCode suporta `TestItem.canRun = false`)?
+**D1 — `%context`/`%endcontext` ficam de fora (já são não-objetivo)**: agrupamento
+hierárquico de sub-contextos exige mudanças profundas no Test Explorer (grupos
+aninhados no meio da suíte), com ganho incerto. PRD futura dedicada.
+
+**D2 — `%suitepath` NÃO é parseado agora**: nenhum consumidor atual usa
+hierarquia por suitepath — o modo `schema` deriva a organização de
+`utplsql.organization.schemaPattern`, e o modo `file` usa o caminho do
+arquivo. Adicionar o campo sem consumidor seria Speculative Generality. Fica
+como follow-up junto com `%context` (uma futura PRD de "hierarquia avançada"
+pode consumir os dois — o `suitepath` define a posição na hierarquia, o
+`context` cria os grupos).
+
+**D3 — Suites/tests `%disabled` são pulados no discovery (não criados)**:
+consistente com RF1 e com o sketch da seção 5.3. Criar o `TestItem` com
+`canRun = false` manteria itens na árvore sem poder executar — ruído visual e
+divergência da semântica do utPLSQL (que simplesmente exclui da execução). Se
+houver demanda por visibilidade dos desabilitados, uma setting dedicada pode
+reexpor em follow-up.

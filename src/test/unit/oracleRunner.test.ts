@@ -1,8 +1,17 @@
 import './setup.js';
 import assert from 'node:assert';
 import { test } from 'node:test';
+import type { UtConfig } from '../../config';
 import type { TestCaseResult } from '../../junit';
-import { applyResultsFromCases, countResultsFromCases, parseConnString } from '../../oracleRunner';
+import {
+  acquireRunnerConnections,
+  closeOraclePool,
+  discoverUtplsqlSchema,
+  ensurePool,
+  mapDbPathsToFiles,
+  parseConnString,
+} from '../../oracleRunner';
+import { applyResultsFromCases, countResults } from '../../results';
 import type { ItemMeta } from '../../types';
 
 function makeMeta(over: Partial<ItemMeta>): ItemMeta {
@@ -225,7 +234,7 @@ test('applyResultsFromCases: multiplos cases com match misto', () => {
 
 // ── countResultsFromCases ────────────────────────────────────────────
 
-test('countResultsFromCases: conta todos os statuses', () => {
+test('countResults: conta todos os statuses', () => {
   const cases: TestCaseResult[] = [
     { classname: 'p', name: 'a', status: 'passed', durationMs: 100 },
     { classname: 'p', name: 'b', status: 'failed', durationMs: 50 },
@@ -233,7 +242,7 @@ test('countResultsFromCases: conta todos os statuses', () => {
     { classname: 'p', name: 'd', status: 'error', durationMs: 25 },
     { classname: 'p', name: 'e', status: 'passed', durationMs: 10 },
   ];
-  const r = countResultsFromCases(cases);
+  const r = countResults(cases);
   assert.strictEqual(r.passed, 2);
   assert.strictEqual(r.failed, 1);
   assert.strictEqual(r.skipped, 1);
@@ -241,20 +250,205 @@ test('countResultsFromCases: conta todos os statuses', () => {
   assert.strictEqual(r.totalMs, 185);
 });
 
-test('countResultsFromCases: durationMs undefined nao quebra', () => {
+test('countResults: durationMs undefined nao quebra', () => {
   const cases: TestCaseResult[] = [
     { classname: 'p', name: 'a', status: 'passed' },
     { classname: 'p', name: 'b', status: 'failed' },
   ];
-  const r = countResultsFromCases(cases);
+  const r = countResults(cases);
   assert.strictEqual(r.totalMs, 0);
 });
 
-test('countResultsFromCases: array vazio retorna zeros', () => {
-  const r = countResultsFromCases([]);
+test('countResults: array vazio retorna zeros', () => {
+  const r = countResults([]);
   assert.strictEqual(r.passed, 0);
   assert.strictEqual(r.failed, 0);
   assert.strictEqual(r.skipped, 0);
   assert.strictEqual(r.errored, 0);
   assert.strictEqual(r.totalMs, 0);
+});
+
+// ── pool (ensurePool / closeOraclePool / acquireRunnerConnections) ──
+
+const POOL_CFG = {
+  oraclePoolMin: 3,
+  oraclePoolMax: 7,
+  oraclePoolIncrement: 2,
+  oraclePoolPingInterval: 30,
+} as unknown as UtConfig;
+
+function makeFakeOracledb(opts?: { createPoolThrows?: boolean }) {
+  const created: Record<string, unknown>[] = [];
+  const rawConns: unknown[] = [];
+  const pools: {
+    attrs: Record<string, unknown>;
+    closed: boolean;
+    getConnection(): Promise<unknown>;
+    close(): Promise<void>;
+  }[] = [];
+  const mod = {
+    OUT_FORMAT_OBJECT: { id: 'object' },
+    outFormat: undefined as unknown,
+    createPool: async (attrs: Record<string, unknown>) => {
+      created.push(attrs);
+      if (opts?.createPoolThrows) throw new Error('db down');
+      const pool = {
+        attrs,
+        closed: false,
+        getConnection: async () => {
+          if (pool.closed) throw new Error('pool fechado');
+          return { fromPool: true };
+        },
+        close: async () => {
+          pool.closed = true;
+        },
+      };
+      pools.push(pool);
+      return pool;
+    },
+    getConnection: async (attrs?: unknown) => {
+      rawConns.push(attrs);
+      return { fromPool: false };
+    },
+  };
+  return { mod, created, rawConns, pools };
+}
+
+test('ensurePool: cria pool com credenciais parseadas e settings', async () => {
+  const { mod, created } = makeFakeOracledb();
+  try {
+    await ensurePool(mod as never, 'ut3/senha@//localhost:1521/freepdb1', POOL_CFG);
+    assert.strictEqual(created.length, 1);
+    assert.strictEqual(created[0].user, 'ut3');
+    assert.strictEqual(created[0].password, 'senha');
+    assert.strictEqual(created[0].connectString, 'localhost:1521/freepdb1');
+    assert.strictEqual(created[0].poolMin, 3);
+    assert.strictEqual(created[0].poolMax, 7);
+    assert.strictEqual(created[0].poolIncrement, 2);
+    assert.strictEqual(created[0].poolPingInterval, 30);
+    assert.strictEqual(created[0].stmtCacheSize, 30);
+  } finally {
+    await closeOraclePool();
+  }
+});
+
+test('ensurePool: reutiliza pool quando connection string e igual', async () => {
+  const { mod, created } = makeFakeOracledb();
+  try {
+    const conn = 'u/p@//h:1521/s';
+    await ensurePool(mod as never, conn, POOL_CFG);
+    await ensurePool(mod as never, conn, POOL_CFG);
+    assert.strictEqual(created.length, 1);
+  } finally {
+    await closeOraclePool();
+  }
+});
+
+test('ensurePool: fecha pool antigo e cria novo quando connection muda', async () => {
+  const { mod, created, pools } = makeFakeOracledb();
+  try {
+    await ensurePool(mod as never, 'u1/p@//h1:1521/s1', POOL_CFG);
+    await ensurePool(mod as never, 'u2/p@//h2:1521/s2', POOL_CFG);
+    assert.strictEqual(created.length, 2);
+    assert.strictEqual(pools[0].closed, true);
+    assert.strictEqual(created[1].user, 'u2');
+  } finally {
+    await closeOraclePool();
+  }
+});
+
+test('closeOraclePool: fecha pool e reseta estado', async () => {
+  const { mod, created, pools } = makeFakeOracledb();
+  const conn = 'u/p@//h:1521/s';
+  try {
+    await ensurePool(mod as never, conn, POOL_CFG);
+    await closeOraclePool();
+    assert.strictEqual(pools[0].closed, true);
+    await ensurePool(mod as never, conn, POOL_CFG);
+    assert.strictEqual(created.length, 2);
+  } finally {
+    await closeOraclePool();
+  }
+});
+
+test('acquireRunnerConnections: usa pool quando disponivel', async () => {
+  const { mod, rawConns } = makeFakeOracledb();
+  try {
+    const { conn1, conn2 } = await acquireRunnerConnections(
+      mod as never,
+      'u/p@//h:1521/s',
+      POOL_CFG,
+    );
+    assert.strictEqual((conn1 as unknown as Record<string, unknown>).fromPool, true);
+    assert.strictEqual((conn2 as unknown as Record<string, unknown>).fromPool, true);
+    assert.strictEqual(rawConns.length, 0);
+    assert.strictEqual(mod.outFormat, mod.OUT_FORMAT_OBJECT);
+  } finally {
+    await closeOraclePool();
+  }
+});
+
+test('acquireRunnerConnections: fallback para conexao raw quando createPool falha', async () => {
+  const { mod, rawConns } = makeFakeOracledb({ createPoolThrows: true });
+  try {
+    const { conn1, conn2 } = await acquireRunnerConnections(
+      mod as never,
+      'u/p@//h:1521/s',
+      POOL_CFG,
+    );
+    assert.strictEqual((conn1 as unknown as Record<string, unknown>).fromPool, false);
+    assert.strictEqual((conn2 as unknown as Record<string, unknown>).fromPool, false);
+    assert.strictEqual(rawConns.length, 2);
+    const parsed = rawConns[0] as Record<string, unknown>;
+    assert.strictEqual(parsed.user, 'u');
+    assert.strictEqual(parsed.connectionString, 'h:1521/s');
+    assert.strictEqual(mod.outFormat, mod.OUT_FORMAT_OBJECT);
+  } finally {
+    await closeOraclePool();
+  }
+});
+
+// ── discoverUtplsqlSchema ────────────────────────────────────────────
+
+test('discoverUtplsqlSchema: retorna prefixo do owner', async () => {
+  const conn = {
+    execute: async () => ({ rows: [{ TABLE_OWNER: 'UT3' }] }),
+  };
+  const prefix = await discoverUtplsqlSchema(conn as never);
+  assert.strictEqual(prefix, 'UT3.');
+});
+
+test('discoverUtplsqlSchema: sem synonym retorna vazio', async () => {
+  const conn = {
+    execute: async () => ({ rows: [] }),
+  };
+  const prefix = await discoverUtplsqlSchema(conn as never);
+  assert.strictEqual(prefix, '');
+});
+
+test('discoverUtplsqlSchema: erro de acesso retorna vazio', async () => {
+  const conn = {
+    execute: async () => {
+      throw new Error('ORA-00942');
+    },
+  };
+  const prefix = await discoverUtplsqlSchema(conn as never);
+  assert.strictEqual(prefix, '');
+});
+
+// ── mapDbPathsToFiles ────────────────────────────────────────────────
+
+test('mapDbPathsToFiles: mapeia tipo para pasta', () => {
+  const xml = `<coverage><filename="package body APP.CALC" /><filename="function APP.FN1" /><filename="procedure APP.PR1" /><filename="trigger APP.TR1" /><filename="view APP.VW1" /></coverage>`;
+  const mapped = mapDbPathsToFiles(xml);
+  assert.ok(mapped.includes('filename="packages/CALC.sql"'));
+  assert.ok(mapped.includes('filename="functions/FN1.sql"'));
+  assert.ok(mapped.includes('filename="procedures/PR1.sql"'));
+  assert.ok(mapped.includes('filename="triggers/TR1.sql"'));
+  assert.ok(mapped.includes('filename="views/VW1.sql"'));
+});
+
+test('mapDbPathsToFiles: xml sem filename permanece inalterado', () => {
+  const xml = '<coverage><nothing/></coverage>';
+  assert.strictEqual(mapDbPathsToFiles(xml), xml);
 });

@@ -76,28 +76,18 @@ conexão e a mantém apenas em memória durante a sessão — use o comando
 
 Dois modos de execução estão disponíveis:
 
+![Arquitetura de execução — dois modos](docs/wiki/images/diagram-arquitetura.png)
+
 ### Modo Oracle direto (v0.9.0) — `runnerMode: auto` ou `oracle`
-```
- Extension Host
-     │
-     ├─► node-oracledb conn1  →  ut_runner.run(...)             ──► testes executados
-     │
-     └─► node-oracledb conn2  →  poll UT_OUTPUT_BUFFER_TMP      ──► resultados streaming
-                                    (doc + JUnit + coverage)
-```
+
+![Modo Oracle direto — streaming](docs/wiki/images/diagram-streaming.png)
+
 Sem arquivos temporários, sem esperar o batch. Resultados aparecem no
 Test Explorer **conforme cada teste termina**.
 
 ### Modo CLI — `runnerMode: cli` (fallback)
-```
- Test Explorer / menu de contexto
-         │  (descobre %suite / %test nos .pks)
-         ▼
-  utplsql run <conn> -p=<suites>
-    -f=ut_junit_reporter             -o=results.xml    ──► resultados na view de testes
-    -f=ut_coverage_cobertura_reporter -o=coverage.xml  ──► gutters + % na aba Coverage
-    -f=ut_documentation_reporter -c                    ──► log no terminal de testes
-```
+
+![Modo CLI — batch](docs/wiki/images/diagram-cli.png)
 
 A extensão monta a linha de comando do CLI ou conecta via Oracle direto, lê os
 relatórios (JUnit + Cobertura) e os traduz para as APIs nativas do VSCode. O
@@ -127,6 +117,10 @@ estiver instalado. Use `runnerMode: cli` para forçar CLI sempre.
 | `utplsql.statusBar.enabled` | `true` | Exibe indicador de status dos testes na barra de status. |
 | `utplsql.decorations.enabled` | `true` | Exibe decorações de pass/fail nas linhas `%suite` e `%test` após execução. |
 | `utplsql.runnerMode` | `auto` | Modo de execução: `auto` (Oracle direto via node-oracledb, fallback CLI), `cli` (sempre via linha de comando), `oracle` (sempre Oracle direto). |
+| `utplsql.oraclePoolMin` | `2` | Conexões mínimas mantidas no pool do Oracle runner (node-oracledb). |
+| `utplsql.oraclePoolMax` | `10` | Conexões máximas no pool do Oracle runner (node-oracledb). |
+| `utplsql.oraclePoolIncrement` | `1` | Incremento ao expandir o pool do Oracle runner (node-oracledb). |
+| `utplsql.oraclePoolPingInterval` | `60` | Segundos entre health checks das conexões ociosas do pool (node-oracledb). `0` = ping a cada checkout. |
 | `utplsql.javaArgs` | `["-Xmx256m"]` | Flags JVM para o modo `java` (ex.: `["-Xmx512m", "-Xms128m"]`). Inseridas antes de `-cp`. |
 | `utplsql.organization` | `file` | Organização da árvore: `file` (por caminho) ou `schema` (Schema > Package > Suite > Test). |
 | `utplsql.organization.schemaPattern` | `db/{schema}/**` | Padrão glob para extrair schema do caminho. Use `{schema}` como placeholder. |
@@ -215,6 +209,21 @@ sem `cmd` no meio, então `^` e `|` passam **literais** — você pode usar `^â
 > 💡 **Ao escrever testes:** deixe uma **linha em branco** separando o `%suite`
 > dos `%test`/procedures, senão o `%suite` "gruda" na procedure e o package
 > não é reconhecido como suíte.
+
+### Annotations suportadas (v0.10.0)
+
+Além de `%suite` e `%test`, o discovery entende:
+
+| Annotation | Efeito no Test Explorer |
+|---|---|
+| `-- %disabled` | Suíte ou teste **não aparece** na árvore (pulado no discovery) |
+| `-- %throws(-20001)` | Marca que o teste espera a exceção 20001 (metadado `expectedError`) |
+| `-- %tags(fast, critical)` | Tags do teste (metadado; filtro por tag é roadmap) |
+| `-- %displayname(Nome)` | Nome customizado exibido no lugar da descrição do `%test` |
+| `-- %beforeall` / `%beforeeach` / `%aftereach` / `%afterall` | Marca a suíte com lifecycle hooks (metadado) |
+
+Annotations são case-insensitive. No header da suíte (entre `%suite` e o
+primeiro `%test`) aplicam à suíte; após o `%test`, aplicam ao teste.
 
 ## Comandos
 

@@ -1,0 +1,80 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 500" font-family="Segoe UI, sans-serif">
+  <defs>
+    <marker id="arrow" markerWidth="10" markerHeight="7" refX="10" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#555"/>
+    </marker>
+  </defs>
+  
+  <rect width="800" height="500" fill="#fff"/>
+  
+  <text x="400" y="30" text-anchor="middle" font-size="18" font-weight="bold" fill="#333">Arquitetura de Schemas utPLSQL</text>
+  
+  <rect x="60" y="60" width="680" height="400" rx="8" fill="#f0f4f8" stroke="#0366d6" stroke-width="2"/>
+  <text x="400" y="85" text-anchor="middle" font-size="14" font-weight="bold" fill="#0366d6">Oracle Database</text>
+  
+  <!-- UT3 Schema -->
+  <rect x="100" y="110" width="200" height="140" rx="6" fill="#fff3cd" stroke="#f0ad4e" stroke-width="2"/>
+  <text x="200" y="138" text-anchor="middle" font-size="13" font-weight="bold" fill="#856404">Schema UT3</text>
+  <text x="200" y="158" text-anchor="middle" font-size="11" fill="#856404">utPLSQL Framework</text>
+  <line x1="120" y1="168" x2="280" y2="168" stroke="#f0ad4e"/>
+  <text x="140" y="185" font-size="10" fill="#856404">ut_runner</text>
+  <text x="140" y="200" font-size="10" fill="#856404">ut_expectation</text>
+  <text x="140" y="215" font-size="10" fill="#856404">ut_output_buffer_tmp</text>
+  <text x="140" y="230" font-size="10" fill="#856404">ut_coverage_details</text>
+  
+  <!-- DEV Schema -->
+  <rect x="340" y="110" width="170" height="140" rx="6" fill="#d4edda" stroke="#28a745" stroke-width="2"/>
+  <text x="425" y="138" text-anchor="middle" font-size="13" font-weight="bold" fill="#155724">Schema DEV</text>
+  <text x="425" y="158" text-anchor="middle" font-size="11" fill="#155724">Código de Produção</text>
+  <line x1="360" y1="168" x2="490" y2="168" stroke="#28a745"/>
+  <text x="370" y="185" font-size="10" fill="#155724">PKG_ORDERS</text>
+  <text x="370" y="200" font-size="10" fill="#155724">CALC_TAX</text>
+  <text x="370" y="215" font-size="10" fill="#155724">CUSTOMERS (table)</text>
+  
+  <!-- TEST Schema -->
+  <rect x="550" y="110" width="170" height="140" rx="6" fill="#cce5ff" stroke="#004085" stroke-width="2"/>
+  <text x="635" y="138" text-anchor="middle" font-size="13" font-weight="bold" fill="#004085">Schema TEST</text>
+  <text x="635" y="158" text-anchor="middle" font-size="11" fill="#004085">Suites de Teste</text>
+  <line x1="570" y1="168" x2="700" y2="168" stroke="#004085"/>
+  <text x="580" y="185" font-size="10" fill="#004085">ut_pkg_orders</text>
+  <text x="580" y="200" font-size="10" fill="#004085">ut_calc_tax</text>
+  <text x="580" y="215" font-size="10" fill="#004085">%suite + %test</text>
+  
+  <!-- UT_RUNNER role grants -->
+  <line x1="300" y1="150" x2="340" y2="150" stroke="#28a745" stroke-width="1.5" marker-end="url(#arrow)"/>
+  <text x="305" y="142" font-size="9" fill="#28a745">ut_runner</text>
+  <line x1="300" y1="190" x2="340" y2="190" stroke="#28a745" stroke-width="1.5" marker-end="url(#arrow)"/>
+  <text x="305" y="182" font-size="9" fill="#28a745">ut_runner</text>
+  
+  <!-- PUBLIC synonyms -->
+  <line x1="200" y1="250" x2="425" y2="250" stroke="#888" stroke-width="1" stroke-dasharray="4,2" marker-end="url(#arrow)"/>
+  <text x="310" y="243" font-size="9" fill="#888">PUBLIC: UT_RUNNER → UT3.UT_RUNNER</text>
+  
+  <!-- DEV → TEST -->
+  <line x1="510" y1="150" x2="550" y2="150" stroke="#004085" stroke-width="1.5" marker-end="url(#arrow)"/>
+  <text x="515" y="142" font-size="9" fill="#004085">%suite</text>
+  
+  <!-- Shared Install -->
+  <rect x="100" y="290" width="620" height="60" rx="6" fill="#f8f9fa" stroke="#ccc" stroke-width="1" stroke-dasharray="6,3"/>
+  <text x="410" y="312" text-anchor="middle" font-size="12" font-weight="bold" fill="#555">Shared Install — múltiplos schemas DEV</text>
+  <rect x="120" y="325" width="140" height="18" rx="3" fill="#d4edda" stroke="#28a745" stroke-width="1"/>
+  <text x="190" y="338" text-anchor="middle" font-size="9" fill="#155724">DEV_HR</text>
+  <rect x="280" y="325" width="180" height="18" rx="3" fill="#d4edda" stroke="#28a745" stroke-width="1"/>
+  <text x="370" y="338" text-anchor="middle" font-size="9" fill="#155724">DEV_FINANCE</text>
+  <rect x="480" y="325" width="220" height="18" rx="3" fill="#d4edda" stroke="#28a745" stroke-width="1"/>
+  <text x="590" y="338" text-anchor="middle" font-size="9" fill="#155724">DEV_LOGISTICS</text>
+  
+  <!-- VSCode Extension -->
+  <rect x="100" y="380" width="620" height="55" rx="6" fill="#fff" stroke="#0366d6" stroke-width="1"/>
+  <text x="410" y="400" text-anchor="middle" font-size="12" font-weight="bold" fill="#0366d6">VSCode Extension (cliente)</text>
+  <text x="200" y="420" font-size="10" fill="#555">runnerMode: auto / cli / oracle</text>
+  <text x="500" y="420" font-size="10" fill="#555">organization: file / schema</text>
+  
+  <!-- Legend -->
+  <rect x="60" y="465" width="10" height="10" fill="#fff3cd" stroke="#f0ad4e" stroke-width="1"/>
+  <text x="75" y="474" font-size="9" fill="#555">UT3 = Framework</text>
+  <rect x="180" y="465" width="10" height="10" fill="#d4edda" stroke="#28a745" stroke-width="1"/>
+  <text x="195" y="474" font-size="9" fill="#555">DEV = Production code</text>
+  <rect x="340" y="465" width="10" height="10" fill="#cce5ff" stroke="#004085" stroke-width="1"/>
+  <text x="355" y="474" font-size="9" fill="#555">TEST = Test suites</text>
+</svg>

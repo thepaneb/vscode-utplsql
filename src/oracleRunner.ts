@@ -1,8 +1,11 @@
 import * as vscode from 'vscode';
-import { parseCobertura } from './cobertura';
-import { resolveSourceUri } from './coverage';
-import { isUserFrame, parseJUnit, type StackFrame } from './junit';
+import { readConfig, type UtConfig } from './config';
+import { parseJUnit } from './junit';
+import { applyCoverageFromXml, applyResultsFromCases, countResults } from './results';
 import type { TestStateManager } from './state';
+
+type OraclePool = import('oracledb').Pool;
+type OracleConnection = import('oracledb').Connection;
 
 export function parseConnString(connStr: string): {
   user: string;
@@ -22,7 +25,58 @@ export function parseConnString(connStr: string): {
   };
 }
 
-async function discoverUtplsqlSchema(conn: {
+let currentPool: { pool: OraclePool; key: string } | undefined;
+
+export async function ensurePool(
+  oracledb: typeof import('oracledb'),
+  connection: string,
+  cfg: UtConfig,
+): Promise<OraclePool> {
+  if (currentPool?.key === connection) return currentPool.pool;
+  await closeOraclePool();
+  const parsed = parseConnString(connection);
+  const pool = await oracledb.createPool({
+    user: parsed.user,
+    password: parsed.password,
+    connectString: parsed.connectionString,
+    poolMin: cfg.oraclePoolMin,
+    poolMax: cfg.oraclePoolMax,
+    poolIncrement: cfg.oraclePoolIncrement,
+    poolPingInterval: cfg.oraclePoolPingInterval,
+    stmtCacheSize: 30,
+  });
+  currentPool = { pool, key: connection };
+  return pool;
+}
+
+export async function closeOraclePool(): Promise<void> {
+  if (currentPool) {
+    await currentPool.pool.close(10).catch(() => {});
+    currentPool = undefined;
+  }
+}
+
+export async function acquireRunnerConnections(
+  oracledb: typeof import('oracledb'),
+  connection: string,
+  cfg: UtConfig,
+): Promise<{ conn1: OracleConnection; conn2: OracleConnection }> {
+  oracledb.outFormat = oracledb.OUT_FORMAT_OBJECT;
+  const pool = await ensurePool(oracledb, connection, cfg).catch(() => undefined);
+  if (pool) {
+    return {
+      conn1: await pool.getConnection(),
+      conn2: await pool.getConnection(),
+    };
+  }
+  const parsed = parseConnString(connection);
+  return {
+    conn1: await oracledb.getConnection(parsed),
+    conn2: await oracledb.getConnection(parsed),
+  };
+}
+
+export async function discoverUtplsqlSchema(conn: {
   execute(
     sql: string,
     bindParams?: Record<string, unknown>,
@@ -34,8 +88,9 @@ async function discoverUtplsqlSchema(conn: {
       `SELECT table_owner FROM ALL_SYNONYMS WHERE synonym_name = 'UT_RUNNER' AND owner = 'PUBLIC'`,
       {},
     );
-    if ((result.rows?.length ?? 0) > 0) {
-      const owner = (result.rows?.[0] as [string])[0];
+    const rows = result.rows;
+    if (rows && rows.length > 0) {
+      const owner = (rows[0] as { TABLE_OWNER?: string }).TABLE_OWNER;
       if (owner) return `${owner}.`;
     }
   } catch {
@@ -44,25 +99,52 @@ async function discoverUtplsqlSchema(conn: {
   return '';
 }
 
-export async function executeRunOracle(
-  connection: string,
-  pathArgs: string[],
-  coverage: boolean,
-  sourcePath: string,
-  root: string,
-  run: vscode.TestRun,
-  leafTests: vscode.TestItem[],
-  state: TestStateManager,
-  token: vscode.CancellationToken,
+export interface OracleRunOptions {
+  /** Connection string (user/pass@//host:port/service) */
+  connection: string;
+  /** Path args para ut_runner.run (ex.: ['package', 'package.proc']) */
+  pathArgs: string[];
+  /** Se true, coleta e aplica cobertura Cobertura */
+  coverage: boolean;
+  /** Caminho base do código-fonte para mapeamento de cobertura */
+  sourcePath: string;
+  /** fsPath do workspace folder raiz */
+  root: string;
+  /** TestRun atual do VSCode */
+  run: vscode.TestRun;
+  /** TestItems leaf (suites ou tests individuais) a executar */
+  leafTests: vscode.TestItem[];
+  /** State manager compartilhado */
+  state: TestStateManager;
+  /** Callback opcional ao finalizar com contagem de resultados */
   onComplete?: (
     passed: number,
     failed: number,
     skipped: number,
     errored: number,
     durationMs: number,
-  ) => void,
-  folders?: readonly vscode.WorkspaceFolder[],
+  ) => void;
+  /** Workspace folders para resolução de sourceUri */
+  folders?: readonly vscode.WorkspaceFolder[];
+}
+
+export async function executeRunOracle(
+  options: OracleRunOptions,
+  token: vscode.CancellationToken,
 ): Promise<void> {
+  const {
+    connection,
+    pathArgs,
+    coverage,
+    sourcePath,
+    root,
+    run,
+    leafTests,
+    state,
+    onComplete,
+    folders,
+  } = options;
+
   let oracledb: typeof import('oracledb');
   try {
     const mod = await import('oracledb');
@@ -75,9 +157,8 @@ export async function executeRunOracle(
     );
   }
 
-  const parsed = parseConnString(connection);
-  const conn1 = await oracledb.getConnection(parsed);
-  const conn2 = await oracledb.getConnection(parsed);
+  const cfg = readConfig();
+  const { conn1, conn2 } = await acquireRunnerConnections(oracledb, connection, cfg);
 
   try {
     const utSchema = await discoverUtplsqlSchema(conn1);
@@ -130,9 +211,9 @@ export async function executeRunOracle(
         );
 
         for (const row of rows.rows ?? []) {
-          const r = row as unknown as [number, string | null, number];
-          lastMsgId = r[0];
-          const text = r[1];
+          const r = row as unknown as { MESSAGE_ID: number; TEXT: string | null };
+          lastMsgId = r.MESSAGE_ID;
+          const text = r.TEXT;
           if (text) {
             if (text.startsWith('<')) {
               xmlBuffer += `${text}\n`;
@@ -170,7 +251,7 @@ export async function executeRunOracle(
     );
 
     if (onComplete) {
-      const r = countResultsFromCases(cases);
+      const r = countResults(cases);
       onComplete(r.passed, r.failed, r.skipped, r.errored, r.totalMs);
     }
 
@@ -194,7 +275,7 @@ export async function executeRunOracle(
   }
 }
 
-function mapDbPathsToFiles(covXml: string): string {
+export function mapDbPathsToFiles(covXml: string): string {
   return covXml.replace(
     /filename="(function|procedure|package body|package|view|trigger)\s+\w+\.(\w+)"/g,
     (_match, type: string, name: string) => {
@@ -202,168 +283,4 @@ function mapDbPathsToFiles(covXml: string): string {
       return `filename="${dir}/${name}.sql"`;
     },
   );
-}
-
-function resolveStackLocation(
-  stackFrames: StackFrame[],
-  state: TestStateManager,
-): vscode.Location | undefined {
-  const userFrame = stackFrames.find(isUserFrame);
-  if (!userFrame || userFrame.line <= 0) return undefined;
-
-  const objName = userFrame.objectName.toLowerCase();
-  for (const item of state.cachedItems) {
-    const meta = state.getMeta(item);
-    if (!meta?.uri || meta.kind !== 'suite') continue;
-    if (meta.packageName.toLowerCase() !== objName) continue;
-    const line = Math.max(0, userFrame.line - 1);
-    return new vscode.Location(meta.uri, new vscode.Position(line, 0));
-  }
-  return undefined;
-}
-
-export function applyResultsFromCases(
-  cases: ReturnType<typeof parseJUnit>,
-  leafTests: vscode.TestItem[],
-  run: vscode.TestRun,
-  state: TestStateManager,
-): Map<string, { status: 'passed' | 'failed' | 'error' | 'skipped'; message?: string }> {
-  const resultMap = new Map<
-    string,
-    { status: 'passed' | 'failed' | 'error' | 'skipped'; message?: string }
-  >();
-
-  const index = new Map<string, vscode.TestItem>();
-  for (const t of leafTests) {
-    const m = state.getMeta(t);
-    if (m?.kind !== 'test') continue;
-    const pkg = m.packageName.toLowerCase();
-    index.set(`${pkg}|${m.procName.toLowerCase()}`, t);
-    index.set(`${pkg}|${m.description.toLowerCase().trim()}`, t);
-  }
-
-  const matched = new Set<vscode.TestItem>();
-
-  for (const c of cases) {
-    const parts = c.classname.split(/[.:]/).filter(Boolean);
-    const pkg = (parts.length ? parts[parts.length - 1] : c.classname).toLowerCase();
-    const name = c.name.toLowerCase().trim();
-    let item = index.get(`${pkg}|${name}`);
-    if (!item) {
-      for (const t of leafTests) {
-        const m = state.getMeta(t);
-        if (m?.kind !== 'test') continue;
-        if (m.procName.toLowerCase() === name || m.description.toLowerCase().trim() === name) {
-          item = t;
-          break;
-        }
-      }
-    }
-    if (!item) continue;
-    matched.add(item);
-    resultMap.set(item.id, { status: c.status, message: c.message });
-
-    switch (c.status) {
-      case 'passed':
-        run.passed(item, c.durationMs);
-        break;
-      case 'failed': {
-        const msg = new vscode.TestMessage(c.message ?? 'Falhou');
-        if (c.stackFrames) {
-          const loc = resolveStackLocation(c.stackFrames, state);
-          if (loc) msg.location = loc;
-        }
-        run.failed(item, msg, c.durationMs);
-        break;
-      }
-      case 'error': {
-        const msg = new vscode.TestMessage(c.message ?? 'Erro');
-        if (c.stackFrames) {
-          const loc = resolveStackLocation(c.stackFrames, state);
-          if (loc) msg.location = loc;
-        }
-        run.errored(item, msg, c.durationMs);
-        break;
-      }
-      case 'skipped':
-        run.skipped(item);
-        break;
-    }
-  }
-
-  for (const t of leafTests) {
-    if (!matched.has(t)) {
-      run.skipped(t);
-    }
-  }
-
-  return resultMap;
-}
-
-export function countResultsFromCases(cases: ReturnType<typeof parseJUnit>): {
-  passed: number;
-  failed: number;
-  skipped: number;
-  errored: number;
-  totalMs: number;
-} {
-  let passed = 0;
-  let failed = 0;
-  let skipped = 0;
-  let errored = 0;
-  let totalMs = 0;
-  for (const c of cases) {
-    switch (c.status) {
-      case 'passed':
-        passed++;
-        break;
-      case 'failed':
-        failed++;
-        break;
-      case 'skipped':
-        skipped++;
-        break;
-      case 'error':
-        errored++;
-        break;
-    }
-    totalMs += c.durationMs ?? 0;
-  }
-  return { passed, failed, skipped, errored, totalMs };
-}
-
-export function applyCoverageFromXml(
-  covXml: string,
-  sourcePath: string,
-  _root: string,
-  run: vscode.TestRun,
-  state: TestStateManager,
-  folders?: readonly vscode.WorkspaceFolder[],
-): void {
-  state.clearCoverage();
-  const files = parseCobertura(covXml);
-  let mappedCount = 0;
-
-  for (const f of files) {
-    let uri: vscode.Uri | undefined;
-    for (const folder of folders ?? []) {
-      uri = resolveSourceUri(f.file, folder.uri.fsPath, sourcePath, folder.uri.fsPath);
-      if (uri) break;
-    }
-    if (!uri) continue;
-    const details: vscode.FileCoverageDetail[] = f.lines.map(
-      (l) => new vscode.StatementCoverage(l.hits, new vscode.Position(Math.max(0, l.line - 1), 0)),
-    );
-    if (details.length === 0) continue;
-    const fc = vscode.FileCoverage.fromDetails(uri, details);
-    state.setCoverage(uri.toString(), details);
-    run.addCoverage(fc);
-    mappedCount++;
-  }
-
-  if (mappedCount === 0) {
-    run.appendOutput(
-      '\r\n[cobertura] nenhum arquivo mapeado. Ajuste "utplsql.sourcePath" para a pasta do código-fonte.\r\n',
-    );
-  }
 }

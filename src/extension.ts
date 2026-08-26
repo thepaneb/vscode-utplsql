@@ -7,6 +7,7 @@ import { clearSessionConnection, readConfig, resolveConnection } from './config'
 import { DecorationManager } from './decorations';
 import { discoverWorkspace, extractSchemaFromPath } from './discovery';
 import { filterSuitesByFolder, filterSuitesByUri } from './matching';
+import { closeOraclePool } from './oracleRunner';
 import { setupValidator, UtplsqlCodeActionProvider } from './quickfix';
 import { executeRun } from './runner';
 import { TestStateManager } from './state';
@@ -281,8 +282,9 @@ export function activate(context: vscode.ExtensionContext) {
   refresh(controller);
 }
 
-export function deactivate() {
+export async function deactivate() {
   currentRunToken?.cancel();
+  await closeOraclePool();
 }
 
 async function runWithProgress(
@@ -417,7 +419,7 @@ function buildFileTree(
     for (const t of suite.tests) {
       const testItem = controller.createTestItem(
         `test:${suite.packageName.toLowerCase()}.${t.procName.toLowerCase()}`,
-        t.description,
+        t.displayName ?? t.description,
         suite.uri,
       );
       testItem.range = new vscode.Range(t.line, 0, t.line, 0);
@@ -425,7 +427,7 @@ function buildFileTree(
         kind: 'test',
         packageName: suite.packageName,
         procName: t.procName,
-        description: t.description,
+        description: t.displayName ?? t.description,
         uri: suite.uri,
         folder: suite.folder,
       });
@@ -497,7 +499,7 @@ function buildSchemaTree(
         for (const t of suite.tests) {
           const testItem = controller.createTestItem(
             `test:${suite.packageName.toLowerCase()}.${t.procName.toLowerCase()}`,
-            t.description,
+            t.displayName ?? t.description,
             suite.uri,
           );
           testItem.range = new vscode.Range(t.line, 0, t.line, 0);
@@ -505,7 +507,7 @@ function buildSchemaTree(
             kind: 'test',
             packageName: suite.packageName,
             procName: t.procName,
-            description: t.description,
+            description: t.displayName ?? t.description,
             uri: suite.uri,
             folder: suite.folder,
           });

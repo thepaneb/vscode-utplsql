@@ -61,7 +61,7 @@ Junta `@_message` (atributo) + `#text` (corpo) separados por `\n`. Fallback `"Fa
 
 Extrai `#text` do nó XML (usado por `parseStackFrames`).
 
-## `applyResults` (src/runner.ts)
+## `applyResults` (src/runner.ts) — wrapper CLI
 
 ```typescript
 function applyResults(
@@ -72,12 +72,21 @@ function applyResults(
 ): Map<string, { status: TestStatus; message?: string }>
 ```
 
-### Algoritmo de matching
+Wrapper que **lê o arquivo JUnit** e delega para `applyResultsFromCases`
+(src/results.ts). Arquivo ausente → todos os leafTests como `errored`
+("Sem relatório de resultados (o CLI falhou?).").
+
+### Algoritmo de matching (`applyResultsFromCases` — src/results.ts)
+
+Função canônica compartilhada pelos dois runners (PRD-39):
 
 1. **Índice**: para cada `leafTest`, indexa por `"pkg|procName"` e `"pkg|description"` (lowercase)
 2. **Match primário**: `lastSegment(c.classname) + c.name` → lookup no índice
 3. **Fallback**: `findByNameOnly` — varre todos os leafTests procurando `procName` ou `description`
-4. **Unmatched**: testes sem correspondência → `run.skipped(item)`
+4. **Unmatched**: testes sem correspondência → `run.appendOutput('[aviso] Nenhum resultado JUnit...')` + `run.skipped(item)`
+5. **Switch de status inline**: `passed`/`failed`/`error`/`skipped`; `failed`/`error` com
+   `stackFrames` populam `message.location` via `resolveStackFrameToUri`
+   (veja [08 — Jump to Failure](08-jump-to-failure.md))
 
 ### `lastSegment`
 
@@ -86,27 +95,16 @@ function lastSegment(classname: string): string
 ```
 Extrai último segmento separado por `.` ou `:` (ex: `"schema.pkg"` → `"pkg"`).
 
-### `report`
+## `results.ts` — funções canônicas (PRD-39)
 
-```typescript
-function report(
-  run: TestRun,
-  item: TestItem,
-  status: TestStatus,
-  message?: string,
-  ms?: number,
-  stackFrames?: StackFrame[],
-  state?: TestStateManager,
-): void
-```
+| Função | Antes (duplicada) | Agora |
+|---|---|---|
+| `applyResultsFromCases` | `runner.ts` + `oracleRunner.ts` | `results.ts` — ambos importam |
+| `countResults` / `countResultsFromCases` | idem | `results.ts` — nome único `countResults` |
+| `applyCoverageFromXml` | idem | `results.ts` — `runner.ts` mantém wrapper `applyCoverage` (lê arquivo + setup diagnostics) |
+| `resolveStackFrameToUri` / `resolveStackLocation` | idem | `results.ts` — com fallback para `{objName}.pks` no workspace |
 
-Cria `vscode.TestMessage` para falhas/erros. Se `stackFrames` presentes, popula
-`message.location` via `resolveStackFrameToUri` (veja [08 — Jump to Failure](08-jump-to-failure.md)).
-
-## `applyResultsFromCases` (src/oracleRunner.ts)
-
-Versão equivalente para o modo Oracle direto. Recebe `TestCaseResult[]` (já parseado)
-em vez de caminho de arquivo. Mesmo algoritmo de matching.
+`matching.ts` permanece **puro** (sem import de `vscode`).
 
 ## Reporters
 

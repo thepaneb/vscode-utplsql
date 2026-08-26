@@ -1,0 +1,5 @@
+[debug] CLI invocation: launcher mode
+[debug] CLI: java -Xmx256m -cp /opt/utplsql/lib/* org.utplsql.cli.Cli run *** -p=ut_pkg -f=ut_documentation_reporter -c -f=ut_junit_reporter -o=/tmp/results.xml
+
+[debug] CLI invocation: java mode
+[debug] CLI: java -Xmx256m -cp /opt/utplsql/lib/* org.utplsql.cli.Cli run *** -p=ut_pkg -f=ut_documentation_reporter -c -f=ut_junit_reporter -o=/tmp/results.xml

@@ -1,0 +1,19 @@
+SQLcl: Release 24.3 Production on Fri Aug 08 10:00:00 2026
+
+Copyright (c) 1982, 2026, Oracle.  All rights reserved.
+
+Connected to:
+Oracle Database 19c Enterprise Edition Release 19.0.0.0.0 - Production
+Version 19.22.0.0.0
+
+utPLSQL version: 3.1.10.1234
+utPLSQL-cli version: 3.1.10
+
+Compiling packages:
+  tst_hello_world.pks... VALID
+  tst_hello_world.pkb... VALID
+  tst_coverage_sample.pks... VALID
+  tst_coverage_sample.pkb... VALID
+
+4 packages compiled successfully
+0 compilation errors

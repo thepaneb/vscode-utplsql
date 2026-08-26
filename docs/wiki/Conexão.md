@@ -10,6 +10,8 @@ resolução segue esta ordem de prioridade:
 | 3 | Cache da sessão (prompt anterior) | Sim, até fechar o VSCode |
 | 4 | Prompt ao usuário | Não (memória volátil) |
 
+![Resolução da conexão Oracle](images/diagram-conexao.png)
+
 ## Recomendação de segurança
 
 A string de conexão contém senha. **NÃO** use o setting `utplsql.connection`

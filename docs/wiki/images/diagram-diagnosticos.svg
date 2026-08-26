@@ -1,0 +1,77 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 460" font-family="Segoe UI, sans-serif">
+  <defs>
+    <marker id="arrow" markerWidth="10" markerHeight="7" refX="10" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#555"/>
+    </marker>
+  </defs>
+  <rect width="1000" height="460" fill="#fff"/>
+  <text x="500" y="32" text-anchor="middle" font-size="18" font-weight="bold" fill="#333">Ciclo de vida dos diagnósticos</text>
+
+  <!-- Fase 1 -->
+  <rect x="30" y="56" width="290" height="368" rx="8" fill="#f0f4f8" stroke="#0366d6" stroke-width="2"/>
+  <text x="175" y="82" text-anchor="middle" font-size="14" font-weight="bold" fill="#0366d6">1 · Ativação — setup</text>
+
+  <rect x="52" y="100" width="246" height="44" rx="6" fill="#fff" stroke="#0366d6"/>
+  <text x="175" y="119" text-anchor="middle" font-size="12" font-weight="bold" fill="#333">SetupValidator</text>
+  <text x="175" y="135" text-anchor="middle" font-size="10" fill="#555">valida proativamente</text>
+
+  <rect x="52" y="168" width="246" height="120" rx="6" fill="#fff" stroke="#0366d6"/>
+  <text x="175" y="190" text-anchor="middle" font-size="12" font-weight="bold" fill="#333">O que é verificado</text>
+  <text x="175" y="212" text-anchor="middle" font-size="11" fill="#555">CLI no PATH · Java · conexão</text>
+  <text x="175" y="230" text-anchor="middle" font-size="11" fill="#555">versão utPLSQL ≥ 3.1.0</text>
+  <text x="175" y="248" text-anchor="middle" font-size="11" fill="#555">grants de cobertura</text>
+  <text x="175" y="266" text-anchor="middle" font-size="11" fill="#555">(DBMS_PROFILER)</text>
+
+  <rect x="52" y="312" width="246" height="84" rx="6" fill="#d4edda" stroke="#28a745" stroke-width="2"/>
+  <text x="175" y="334" text-anchor="middle" font-size="12" font-weight="bold" fill="#155724">Problems Panel</text>
+  <text x="175" y="354" text-anchor="middle" font-size="10" fill="#155724">source: "utPLSQL Setup"</text>
+  <text x="175" y="372" text-anchor="middle" font-size="10" fill="#155724">quick-fix: configurar CLI,</text>
+  <text x="175" y="388" text-anchor="middle" font-size="10" fill="#155724">conexão, copiar grants</text>
+
+  <!-- Fase 2 -->
+  <rect x="355" y="56" width="290" height="368" rx="8" fill="#f8f9fa" stroke="#555" stroke-width="2"/>
+  <text x="500" y="82" text-anchor="middle" font-size="14" font-weight="bold" fill="#555">2 · Execução — compilação</text>
+
+  <rect x="377" y="100" width="246" height="44" rx="6" fill="#fff" stroke="#555"/>
+  <text x="500" y="119" text-anchor="middle" font-size="12" font-weight="bold" fill="#333">Roda os testes</text>
+  <text x="500" y="135" text-anchor="middle" font-size="10" fill="#555">CLI executa os packages</text>
+
+  <rect x="377" y="168" width="246" height="120" rx="6" fill="#fff" stroke="#555"/>
+  <text x="500" y="190" text-anchor="middle" font-size="12" font-weight="bold" fill="#333">parseCompilationErrors</text>
+  <text x="500" y="212" text-anchor="middle" font-size="11" fill="#555">lê o stdout do CLI</text>
+  <text x="500" y="230" text-anchor="middle" font-size="11" fill="#555">captura PLS-* / ORA-06550</text>
+  <text x="500" y="248" text-anchor="middle" font-size="11" fill="#555">resolveFiles mapeia para</text>
+  <text x="500" y="266" text-anchor="middle" font-size="11" fill="#555">arquivos .pks / .pkb</text>
+
+  <rect x="377" y="312" width="246" height="84" rx="6" fill="#d4edda" stroke="#28a745" stroke-width="2"/>
+  <text x="500" y="334" text-anchor="middle" font-size="12" font-weight="bold" fill="#155724">Editor</text>
+  <text x="500" y="354" text-anchor="middle" font-size="10" fill="#155724">sublinhados vermelhos</text>
+  <text x="500" y="372" text-anchor="middle" font-size="10" fill="#155724">Problems Panel</text>
+  <text x="500" y="388" text-anchor="middle" font-size="10" fill="#155724">"utPLSQL Compilation"</text>
+
+  <!-- Fase 3 -->
+  <rect x="680" y="56" width="290" height="368" rx="8" fill="#fffdf5" stroke="#f0ad4e" stroke-width="2"/>
+  <text x="825" y="82" text-anchor="middle" font-size="14" font-weight="bold" fill="#856404">3 · Pós-execução</text>
+
+  <rect x="702" y="100" width="246" height="44" rx="6" fill="#fff" stroke="#f0ad4e"/>
+  <text x="825" y="119" text-anchor="middle" font-size="12" font-weight="bold" fill="#333">Resultado da cobertura</text>
+  <text x="825" y="135" text-anchor="middle" font-size="10" fill="#555">relatório vazio ou ausente</text>
+
+  <rect x="702" y="168" width="246" height="120" rx="6" fill="#fff" stroke="#f0ad4e"/>
+  <text x="825" y="190" text-anchor="middle" font-size="12" font-weight="bold" fill="#333">UTPLSQL_NO_COVERAGE</text>
+  <text x="825" y="212" text-anchor="middle" font-size="11" fill="#555">warning no Problems Panel</text>
+  <text x="825" y="230" text-anchor="middle" font-size="11" fill="#555">causa comum: falta grant</text>
+  <text x="825" y="248" text-anchor="middle" font-size="11" fill="#555">EXECUTE ON DBMS_PROFILER</text>
+  <text x="825" y="266" text-anchor="middle" font-size="11" fill="#555">+ DBMS_PLSQL_CODE_COVERAGE</text>
+
+  <rect x="702" y="312" width="246" height="84" rx="6" fill="#d4edda" stroke="#28a745" stroke-width="2"/>
+  <text x="825" y="334" text-anchor="middle" font-size="12" font-weight="bold" fill="#155724">Quick-fix</text>
+  <text x="825" y="354" text-anchor="middle" font-size="10" fill="#155724">Copiar grants para</text>
+  <text x="825" y="372" text-anchor="middle" font-size="10" fill="#155724">o clipboard (SQL pronto)</text>
+  <text x="825" y="388" text-anchor="middle" font-size="10" fill="#155724">ou Validar configuração</text>
+
+  <line x1="320" y1="240" x2="355" y2="240" stroke="#555" marker-end="url(#arrow)"/>
+  <line x1="645" y1="240" x2="680" y2="240" stroke="#555" marker-end="url(#arrow)"/>
+
+  <text x="500" y="450" text-anchor="middle" font-size="11" fill="#555">Todos os diagnósticos são não-bloqueantes — só erros críticos (sem CLI, sem conexão) impedem a execução.</text>
+</svg>

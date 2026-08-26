@@ -222,6 +222,26 @@ export class Range {
   }
 }
 
+export class Location {
+  uri: { fsPath: string; path: string; scheme: string };
+  range: Range;
+  constructor(
+    uri: { fsPath: string; path: string; scheme: string },
+    positionOrRange: Position | Range,
+  ) {
+    this.uri = uri;
+    this.range =
+      positionOrRange instanceof Range
+        ? positionOrRange
+        : new Range(
+            positionOrRange.line,
+            positionOrRange.character,
+            positionOrRange.line,
+            positionOrRange.character,
+          );
+  }
+}
+
 export class ThemeColor {
   constructor(public id: string) {}
 }

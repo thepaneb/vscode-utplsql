@@ -4,12 +4,11 @@ Visão geral da arquitetura interna da extensão para contribuidores.
 
 ## Fluxo de execução
 
-```
-discovery (.pks) → executeRun (runner.ts) monta: utplsql run <conn> -p=<suites>
-  -f=ut_junit_reporter -o=results.xml          → parseJUnit  → run.passed/failed
-  -f=ut_coverage_cobertura_reporter -o=cov.xml  → parseCobertura → run.addCoverage
-  -f=ut_documentation_reporter -c (stdout)      → run.appendOutput
-```
+![Arquitetura de execução — dois modos](images/diagram-arquitetura.png)
+
+### Modo CLI
+
+![Modo CLI — batch](images/diagram-cli.png)
 
 `src/extension.ts` é o orquestrador. `src/runner.ts` contém `executeRun` e
 `applyResults`.
@@ -32,22 +31,19 @@ Módulos da coluna esquerda **não importam `vscode`** e são testáveis com
 
 ## Fluxo de dados das configurações
 
-```
-package.json                    config.ts (readConfig)              runner.ts (executeRun)
-────────────                    ──────────────────────              ──────────────────────
-utplsql.cliPath         →       cfg.cliPath             →           invocation.ts (file)
-utplsql.sourcePath      →       cfg.sourcePath          →           -source_path / resolveSourceUri
-utplsql.includePatterns →       cfg.includePatterns     →           discovery.ts (findFiles)
-utplsql.invocation      →       cfg.invocation          →           invocation.ts (launcher vs java)
-utplsql.timeoutMinutes  →       cfg.timeoutMinutes      →           -t=N (só se !=60)
-utplsql.dbmsOutput      →       cfg.dbmsOutput          →           -D (só se true)
-utplsql.quiet           →       cfg.quiet               →           -q (só se true)
-utplsql.failureExitCode →       cfg.failureExitCode     →           --failure-exit-code (só se !=1)
-utplsql.additionalReporters →  cfg.additionalReporters  →           -f= flags (deduplicados)
-
-utplsql.connection      →       resolveConnection()     →           connection param CLI
-UTPLSQL_CONN (env)      →       resolveConnection() p2  →           connection param CLI
-```
+| Setting (package.json) | config.ts (`readConfig`) | Uso em runner.ts |
+|---|---|---|
+| `utplsql.cliPath` | `cfg.cliPath` | `invocation.ts` (file) |
+| `utplsql.sourcePath` | `cfg.sourcePath` | `-source_path` / `resolveSourceUri` |
+| `utplsql.includePatterns` | `cfg.includePatterns` | `discovery.ts` (findFiles) |
+| `utplsql.invocation` | `cfg.invocation` | `invocation.ts` (launcher vs java) |
+| `utplsql.timeoutMinutes` | `cfg.timeoutMinutes` | `-t=N` (só se !=60) |
+| `utplsql.dbmsOutput` | `cfg.dbmsOutput` | `-D` (só se true) |
+| `utplsql.quiet` | `cfg.quiet` | `-q` (só se true) |
+| `utplsql.failureExitCode` | `cfg.failureExitCode` | `--failure-exit-code` (só se !=1) |
+| `utplsql.additionalReporters` | `cfg.additionalReporters` | `-f=` flags (deduplicados) |
+| `utplsql.connection` | `resolveConnection()` | connection param CLI |
+| `UTPLSQL_CONN` (env) | `resolveConnection()` (2ª fonte) | connection param CLI |
 
 ## Test infrastructure
 

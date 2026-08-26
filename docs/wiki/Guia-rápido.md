@@ -37,6 +37,36 @@ end test_hello;
 > Deixe uma **linha em branco** entre o `%suite` e os `%test`/procedures —
 > senão o `%suite` "gruda" na procedure e o package não é reconhecido.
 
+### Annotations suportadas (v0.10.0)
+
+Além de `%suite` e `%test`, a extensão reconhece no discovery:
+
+| Annotation | Efeito |
+|---|---|
+| `-- %disabled` | Suíte ou teste **não aparece** no Test Explorer |
+| `-- %throws(-20001)` | Teste que espera a exceção 20001 (metadado) |
+| `-- %tags(fast, critical)` | Tags do teste (metadado) |
+| `-- %displayname(Nome)` | Nome exibido no lugar da descrição do `%test` |
+| `-- %beforeall` / `%beforeeach` / `%aftereach` / `%afterall` | Lifecycle hooks da suíte (metadado) |
+
+```sql
+-- %suite(Hello World)
+
+-- %test(Saudação retorna Hello)
+-- %displayname(Saudação)
+-- %tags(fast, smoke)
+procedure saudacao_retorna_hello;
+
+-- %test(Comportamento desativado temporariamente)
+-- %disabled
+procedure teste_desativado;
+```
+
+Case-insensitive. Annotations no header da suíte (entre `%suite` e o primeiro
+`%test`) aplicam à suíte; após o `%test`, ao teste.
+
+![Annotations: displayname na árvore e teste disabled ausente](images/annotations-display.png)
+
 ## 2. Compile no banco
 
 Use sua ferramenta Oracle de preferência (SQLcl, SQL Developer, extensão Oracle

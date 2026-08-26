@@ -97,6 +97,7 @@ CONCLUIR
 | 19 | [Normalização do sistema de PRDs](completed/prd-19-normalize-prd-system.md) | 0.7.1 | 2026-07-18 |
 | 20 | [Limpeza de dependências e configurações](completed/prd-20-cleanup-deps-config.md) | 0.7.1 | 2026-07-18 |
 | 22 | [Sincronizar imagens no workflow da wiki](completed/prd-22-wiki-image-sync.md) | 0.7.1 | 2026-07-21 |
+| 23 | [Screenshots da wiki: checklist manual + diagramas](completed/prd-23-auto-wiki-screenshots.md) | 0.10.0 | 2026-07-21 |
 | 24 | [CodeLens Integration](completed/prd-24-codelens-integration.md) | 0.8.0 | 2026-07-25 |
 | 25 | [Status Bar Indicator](completed/prd-25-status-bar-indicator.md) | 0.8.0 | 2026-07-25 |
 | 26 | [Inline Test Result Decorations](completed/prd-26-inline-test-decorations.md) | 0.8.0 | 2026-07-25 |
@@ -109,26 +110,20 @@ CONCLUIR
 | 35 | [Correção de cobertura no Windows + blindagem de testes](completed/prd-35-windows-coverage-fix.md) | 0.7.2 | 2026-07-21 |
 | 36 | [Correção do parse de reporters com descrições](completed/prd-36-reporter-parse-fix.md) | 0.7.2 | 2026-07-21 |
 | 37 | [Cobertura de código TypeScript com `c8`](completed/prd-37-ts-coverage.md) | 0.9.0 | 2026-08-02 |
+| 38 | [Connection Pooling no Oracle Runner](completed/prd-38-connection-pooling.md) | 0.10.0 | 2026-08-08 |
+| 39 | [Eliminar código duplicado entre runners](completed/prd-39-deduplicate-runners.md) | 0.10.0 | 2026-08-08 |
+| 40 | [Refatorar executeRunOracle: Options Object](completed/prd-40-options-object.md) | 0.10.0 | 2026-08-08 |
+| 42 | [SuiteParser: parse de annotations estendidas](completed/prd-42-suiteparser-annotations.md) | 0.10.0 | 2026-08-08 |
 
 ### 🟡 Em desenvolvimento
 
-*(nenhum)*
+_(vazio — nenhuma PRD em implementação)_
 
 ### 🔵 Aprovados
 
-*(nenhum)*
+_(vazio — aprovar novas PRDs em `proposed/`)_
 
 ### ⚪ Propostos
-
-#### 0.10.0
-
-| # | PRD | Versão alvo | Data |
-|---|---|---|---|
-| 23 | [Automatizar geração de screenshots da wiki](proposed/prd-23-auto-wiki-screenshots.md) | 0.10.0 | 2026-07-21 |
-| 38 | [Connection Pooling no Oracle Runner](proposed/prd-38-connection-pooling.md) | 0.10.0 | 2026-08-08 |
-| 39 | [Eliminar código duplicado entre runners](proposed/prd-39-deduplicate-runners.md) | 0.10.0 | 2026-08-08 |
-| 40 | [Refatorar executeRunOracle: Options Object](proposed/prd-40-options-object.md) | 0.10.0 | 2026-08-08 |
-| 42 | [SuiteParser: parse de annotations estendidas](proposed/prd-42-suiteparser-annotations.md) | 0.10.0 | 2026-08-08 |
 
 #### 0.11.0
 
@@ -177,6 +172,7 @@ docs/prd/
 │   ├── prd-19-normalize-prd-system.md
 │   ├── prd-20-cleanup-deps-config.md
 │   ├── prd-22-wiki-image-sync.md
+│   ├── prd-23-auto-wiki-screenshots.md
 │   ├── prd-24-codelens-integration.md
 │   ├── prd-25-status-bar-indicator.md
 │   ├── prd-26-inline-test-decorations.md
@@ -188,20 +184,19 @@ docs/prd/
 │   ├── prd-32-quickfix-setup-diagnostics.md
 │   ├── prd-35-windows-coverage-fix.md
 │   ├── prd-36-reporter-parse-fix.md
-│   └── prd-37-ts-coverage.md
-├── approved/         ← aprovados, aguardando implementação
-├── in-progress/      ← sendo implementados agora
+│   ├── prd-37-ts-coverage.md
+│   ├── prd-38-connection-pooling.md
+│   ├── prd-39-deduplicate-runners.md
+│   ├── prd-40-options-object.md
+│   └── prd-42-suiteparser-annotations.md
+├── approved/         ← aprovados, aguardando implementação (vazio)
+├── in-progress/      ← sendo implementados agora (vazio)
 └── proposed/         ← em avaliação
     ├── prd-12-sql-coverage.md
     ├── prd-21-workflow-improvements.md
-    ├── prd-23-auto-wiki-screenshots.md
     ├── prd-33-plsql-debugger-integration.md
     ├── prd-34-multi-connection-profiles.md
-    ├── prd-38-connection-pooling.md
-    ├── prd-39-deduplicate-runners.md
-    ├── prd-40-options-object.md
     ├── prd-41-utplsql-install-verification.md
-    ├── prd-42-suiteparser-annotations.md
     ├── prd-43-schema-db-discovery.md
     └── prd-44-pure-matching.md
 ```
