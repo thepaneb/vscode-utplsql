@@ -238,6 +238,12 @@ export function activate(context: vscode.ExtensionContext) {
     new UtplsqlCodeActionProvider(),
   );
   context.subscriptions.push(codeActionProvider);
+  context.subscriptions.push(
+    vscode.languages.registerCodeActionsProvider(
+      { scheme: 'utplsql-setup' },
+      new UtplsqlCodeActionProvider(),
+    ),
+  );
 
   context.subscriptions.push(
     vscode.commands.registerCommand('utplsql.configureConnection', async () => {
@@ -252,7 +258,11 @@ export function activate(context: vscode.ExtensionContext) {
       vscode.window.showInformationMessage('Grants copiados para o clipboard.');
     }),
     vscode.commands.registerCommand('utplsql.validateSetup', async () => {
-      const diags = await setupValidator.validateOnActivation();
+      const [activationDiags, installDiags] = await Promise.all([
+        setupValidator.validateOnActivation(),
+        setupValidator.validateUtplsqlInstall(),
+      ]);
+      const diags = [...activationDiags, ...installDiags];
       setupValidator.applyDiagnostics(diags);
       vscode.window.showInformationMessage(
         diags.length === 0
@@ -260,11 +270,16 @@ export function activate(context: vscode.ExtensionContext) {
           : `${diags.length} problema(s) de configuração encontrado(s). Veja o Problems Panel.`,
       );
     }),
+    vscode.commands.registerCommand('utplsql.recompileUt3', () => setupValidator.recompileUt3()),
   );
 
-  setupValidator.validateOnActivation().then((diags) => {
-    setupValidator.applyDiagnostics(diags);
-  });
+  void (async () => {
+    const [activationDiags, installDiags] = await Promise.all([
+      setupValidator.validateOnActivation(),
+      setupValidator.validateUtplsqlInstall(),
+    ]);
+    setupValidator.applyDiagnostics([...activationDiags, ...installDiags]);
+  })();
 
   context.subscriptions.push(
     vscode.window.onDidChangeActiveTextEditor((editor) => {

@@ -2,7 +2,7 @@
 
 | Campo | Valor |
 |---|---|
-| Status | Aprovado |
+| Status | Concluído |
 | Autor | Gil Cleber |
 | Data | 2026-08-08 |
 | Componente | Extensão `paneb.vscode-utplsql` |
@@ -158,6 +158,10 @@ Usa a setting existente `utplsql.setupDiagnosticsEnabled` (default `true`).
 
 ## 11. Questões em aberto
 
-- Verificar também schemas `UT3_*` de shared install (ex: `UT3_HR`, `UT3_FINANCE`)?
-- A query `all_objects` requer `SELECT ANY DICTIONARY` ou o owner UT3 concede acesso?
-- Deve-se verificar também a versão do utPLSQL (já feito em `getCliInfo`)?
+- **Decidido (2026-08-28)**: não verificar schemas `UT3_*` individualmente — usa o
+  prefixo descoberto via `ALL_SYNONYMS` (`discoverUtplsqlSchema`), fallback `UT3` apenas
+  quando o sinônimo não é encontrado. Shared installs com grants limitados são cobertos
+  pelo `try/catch` silencioso (validado contra banco real: sem `ORA-00942`).
+- A query `all_objects` não requer `SELECT ANY DICTIONARY` — `ALL_OBJECTS` é visível
+  para o usuário conectado; falha de acesso é ignorada silenciosamente.
+- Versão do utPLSQL: mantida apenas no `getCliInfo` (não duplicada aqui).

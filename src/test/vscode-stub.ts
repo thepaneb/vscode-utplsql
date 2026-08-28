@@ -123,6 +123,8 @@ export namespace window {
     return Promise.resolve(_inputBoxResult);
   }
   export function showErrorMessage(_message: string) {}
+  export function showInformationMessage(_message: string) {}
+  export function showWarningMessage(_message: string) {}
   export function createTextEditorDecorationType(
     // biome-ignore lint/suspicious/noExplicitAny: DecorationRenderOptions stub
     _opts: any,
@@ -323,6 +325,9 @@ export class DiagnosticCollection {
   private _diags = new Map<string, Diagnostic[]>();
   set(uri: { toString(): string }, diagnostics: Diagnostic[]) {
     this._diags.set(uri.toString(), diagnostics);
+  }
+  get(uri: { toString(): string }): Diagnostic[] | undefined {
+    return this._diags.get(uri.toString());
   }
   clear() {
     this._diags.clear();

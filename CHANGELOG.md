@@ -2,6 +2,17 @@
 
 ## 0.11.0
 
+- **Verificação de instalação do utPLSQL na ativação** (PRD-41): o `SetupValidator`
+  agora valida a integridade do schema UT3 (objetos inválidos em `ALL_OBJECTS` para
+  `PACKAGE`/`TYPE`/`PACKAGE BODY`) na ativação e no comando `Validar configuração`.
+  Best-effort: async, sem prompt de conexão (`resolveConnectionNoPrompt`), timeout de
+  5s (`callTimeout`), `try/catch` silencioso, pool do PRD-38 reutilizado
+  (`findInvalidUt3Objects` em `oracleRunner.ts`). Diagnostic `UTPLSQL_INVALID_OBJECTS`
+  (source "utPLSQL Setup", Warning) com quick-fix **"Recompilar UT3"**
+  (`utplsql.recompileUt3` → `DBMS_UTILITY.COMPILE_SCHEMA`), que re-verifica e limpa o
+  diagnostic se resolvido. Gates: `setupDiagnosticsEnabled: false` e `runnerMode: cli`
+  suprimem a verificação. +14 testes unitários; provider de Code Actions também
+  registrado para o scheme `utplsql-setup`.
 - **Bundling com esbuild + poda do node-oracledb no VSIX** (PRD-45): `main` agora
   aponta para `dist/extension.js` (bundle único, `fast-xml-parser`/`iconv-lite`
   embutidos; `vscode` e `oracledb` externos — `await import('oracledb')` preservado).

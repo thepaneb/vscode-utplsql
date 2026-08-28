@@ -244,7 +244,8 @@ Todos os comandos da extensão (palette `Ctrl+Shift+P` prefixo `utPLSQL:`):
 | `utPLSQL: Rerun Last Test` | Repete a última execução | `Ctrl+Shift+U L` |
 | `utPLSQL: Run Test at Cursor` | Executa o teste sob o cursor | `Ctrl+Shift+U U` |
 | `utPLSQL: Run Failed Tests` | Reexecuta apenas testes falhos | `Ctrl+Shift+U X` |
-| `utPLSQL: Validar configuração` | Roda validação completa do setup e mostra resultados | — |
+| `utPLSQL: Validar configuração` | Roda validação completa do setup (CLI, Java, conexão, instalação UT3) e mostra resultados | — |
+| `utPLSQL: Recompilar UT3` | Recompila o schema utPLSQL (`DBMS_UTILITY.COMPILE_SCHEMA`) e re-verifica objetos inválidos | Quick-fix do diagnóstico "utPLSQL Setup" |
 | `utPLSQL: Configurar conexão` | Abre settings em `utplsql.connection` | — |
 | `utPLSQL: Copiar grants de cobertura` | Copia grants SQL para clipboard | — |
 | `utPLSQL: Mostrar Test Explorer` | Foca a view Testing | Clique na status bar |

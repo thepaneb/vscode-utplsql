@@ -1,7 +1,13 @@
 import * as fs from 'node:fs';
 import * as vscode from 'vscode';
 import { getCliInfo, semverLt } from './cliInfo';
-import { readConfig, resolveConnection } from './config';
+import { readConfig, resolveConnection, resolveConnectionNoPrompt } from './config';
+import {
+  discoverUtplsqlSchema,
+  ensurePool,
+  findInvalidUt3Objects,
+  parseConnString,
+} from './oracleRunner';
 
 interface SetupDiagnostic {
   code: string;
@@ -131,6 +137,124 @@ export class SetupValidator {
     this.diagnosticCollection.set(vscode.Uri.parse('utplsql-setup:diagnostics'), [diag]);
   }
 
+  /**
+   * Verifica a integridade da instalação do utPLSQL (objetos inválidos no schema
+   * UT3). Best-effort: nunca lança, nunca pergunta conexão ao usuário.
+   */
+  async validateUtplsqlInstall(
+    oracledbOverride?: typeof import('oracledb'),
+  ): Promise<SetupDiagnostic[]> {
+    const cfg = readConfig();
+    if (!cfg.setupDiagnosticsEnabled) return [];
+    if (cfg.runnerMode === 'cli') return [];
+
+    const connStr = resolveConnectionNoPrompt();
+    if (!connStr) return [];
+
+    let oracledb: typeof import('oracledb');
+    try {
+      const mod = oracledbOverride ?? (await import('oracledb'));
+      oracledb =
+        ((mod as Record<string, unknown>).default as typeof import('oracledb')) ??
+        (mod as typeof import('oracledb'));
+    } catch {
+      return [];
+    }
+
+    const issue = await findInvalidUt3Objects(oracledb, connStr, cfg);
+    if (!issue || issue.invalid.length === 0) return [];
+
+    const names = issue.invalid.map((i) => `${i.name} (${i.type})`).join(', ');
+    return [
+      {
+        code: 'UTPLSQL_INVALID_OBJECTS',
+        severity: vscode.DiagnosticSeverity.Warning,
+        message: `Schema ${issue.schema} contém ${issue.invalid.length} objetos inválidos: ${names}`,
+        command: { title: 'Recompilar UT3', command: 'utplsql.recompileUt3' },
+      },
+    ];
+  }
+
+  /**
+   * Recompila o schema utPLSQL (DBMS_UTILITY.COMPILE_SCHEMA) e re-verifica
+   * objetos inválidos. Limpa o diagnostic se resolvido.
+   */
+  async recompileUt3(oracledbOverride?: typeof import('oracledb')): Promise<void> {
+    const cfg = readConfig();
+    const connStr = resolveConnectionNoPrompt();
+    if (!connStr) {
+      vscode.window.showErrorMessage('Conexão Oracle não configurada.');
+      return;
+    }
+
+    let oracledb: typeof import('oracledb');
+    try {
+      const mod = oracledbOverride ?? (await import('oracledb'));
+      oracledb =
+        ((mod as Record<string, unknown>).default as typeof import('oracledb')) ??
+        (mod as typeof import('oracledb'));
+    } catch {
+      vscode.window.showErrorMessage(
+        'oracledb não disponível. Instale com "npm install oracledb".',
+      );
+      return;
+    }
+
+    try {
+      const pool = await ensurePool(oracledb, connStr, cfg).catch(() => undefined);
+      const conn = pool
+        ? await pool.getConnection()
+        : await oracledb.getConnection(parseConnString(connStr));
+      try {
+        const prefix = await discoverUtplsqlSchema(conn);
+        const schema = prefix.replace(/\.$/, '') || 'UT3';
+        await conn.execute(
+          'BEGIN DBMS_UTILITY.COMPILE_SCHEMA(schema => :schema, compile_all => FALSE); END;',
+          { schema },
+          { autoCommit: true },
+        );
+
+        const issue = await findInvalidUt3Objects(oracledb, connStr, cfg);
+        if (!issue || issue.invalid.length === 0) {
+          this.removeDiagnostic('UTPLSQL_INVALID_OBJECTS');
+          vscode.window.showInformationMessage(
+            `Schema ${schema} recompilado — nenhum objeto inválido.`,
+          );
+        } else {
+          const names = issue.invalid.map((i) => i.name).join(', ');
+          vscode.window.showWarningMessage(
+            `Ainda há ${issue.invalid.length} objetos inválidos em ${schema}: ${names}`,
+          );
+        }
+      } finally {
+        await conn.close().catch(() => {});
+      }
+    } catch (e) {
+      const msg = e instanceof Error ? e.message : String(e);
+      vscode.window.showErrorMessage(
+        `Falha ao recompilar UT3: ${msg}. Requer ALTER ANY PROCEDURE ou execução como o owner do schema.`,
+      );
+    }
+  }
+
+  /** Remove do Problems Panel o diagnostic de um código específico (mantém os demais). */
+  private removeDiagnostic(code: string) {
+    const uri = vscode.Uri.parse('utplsql-setup:diagnostics');
+    const existing = this.diagnosticCollection.get(uri);
+    if (!existing) return;
+    this.diagnosticCollection.set(
+      uri,
+      existing.filter((d) => d.code !== code),
+    );
+  }
+
+  /** Diagnósticos atuais do Problems Panel (para verificação pós-ajuste). */
+  getDiagnostics(): vscode.Diagnostic[] {
+    return [
+      ...(this.diagnosticCollection.get(vscode.Uri.parse('utplsql-setup:diagnostics')) ?? []),
+    ];
+  }
+
   clear() {
     this.diagnosticCollection.clear();
   }
@@ -185,6 +309,13 @@ export class UtplsqlCodeActionProvider implements vscode.CodeActionProvider {
           command: 'utplsql.copyGrantsToClipboard',
           title: 'Copiar grants',
         };
+        action.diagnostics = [diagnostic];
+        actions.push(action);
+      }
+
+      if (diagnostic.code === 'UTPLSQL_INVALID_OBJECTS') {
+        const action = new vscode.CodeAction('Recompilar UT3', vscode.CodeActionKind.QuickFix);
+        action.command = { command: 'utplsql.recompileUt3', title: 'Recompilar UT3' };
         action.diagnostics = [diagnostic];
         actions.push(action);
       }

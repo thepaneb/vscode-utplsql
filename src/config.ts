@@ -72,13 +72,13 @@ export function readConfig(): UtConfig {
 }
 
 /**
- * Resolve a string de conexão na ordem:
+ * Resolve a string de conexão sem interagir com o usuário:
  *   1) setting utplsql.connection
  *   2) variável de ambiente UTPLSQL_CONN
- *   3) cache da sessão (se já perguntamos antes)
- *   4) pergunta ao usuário (e guarda só na sessão)
+ *   3) cache da sessão
+ * Retorna undefined se nada configurado (não mostra prompt).
  */
-export async function resolveConnection(): Promise<string | undefined> {
+export function resolveConnectionNoPrompt(): string | undefined {
   const fromSetting = vscode.workspace
     .getConfiguration('utplsql')
     .get<string>('connection', '')
@@ -96,6 +96,20 @@ export async function resolveConnection(): Promise<string | undefined> {
     vscode.commands.executeCommand('setContext', 'utplsql:connected', true);
     return sessionConnection;
   }
+  return undefined;
+}
+
+/**
+ * Resolve a string de conexão na ordem:
+ *   1) setting utplsql.connection
+ *   2) variável de ambiente UTPLSQL_CONN
+ *   3) cache da sessão (se já perguntamos antes)
+ *   4) pergunta ao usuário (e guarda só na sessão)
+ */
+export async function resolveConnection(): Promise<string | undefined> {
+  const existing = resolveConnectionNoPrompt();
+  if (existing) return existing;
+
   const input = await vscode.window.showInputBox({
     title: 'utPLSQL — conexão Oracle',
     prompt: 'Informe a conexão (usuario/senha@//host:porta/servico). Fica só nesta sessão.',

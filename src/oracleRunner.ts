@@ -99,6 +99,57 @@ export async function discoverUtplsqlSchema(conn: {
   return '';
 }
 
+export interface InvalidUt3Object {
+  name: string;
+  type: string;
+}
+
+/**
+ * Verifica objetos inválidos no schema utPLSQL (ALL_OBJECTS).
+ * Retorna undefined se a conexão falhar ou a query não for acessível
+ * (verificação best-effort, nunca lança).
+ */
+export async function findInvalidUt3Objects(
+  oracledb: typeof import('oracledb'),
+  connection: string,
+  cfg: UtConfig,
+): Promise<{ schema: string; invalid: InvalidUt3Object[] } | undefined> {
+  const pool = await ensurePool(oracledb, connection, cfg).catch(() => undefined);
+  let conn: OracleConnection;
+  try {
+    conn = pool
+      ? await pool.getConnection()
+      : await oracledb.getConnection(parseConnString(connection));
+  } catch {
+    return undefined;
+  }
+  try {
+    conn.callTimeout = 5000;
+    const prefix = await discoverUtplsqlSchema(conn);
+    const schema = prefix.replace(/\.$/, '') || 'UT3';
+    const result = await conn.execute(
+      `SELECT object_name, object_type FROM all_objects
+       WHERE owner = :schema AND status = 'INVALID'
+       AND object_type IN ('PACKAGE','TYPE','PACKAGE BODY')`,
+      { schema },
+    );
+    const invalid: InvalidUt3Object[] = [];
+    for (const r of result.rows ?? []) {
+      if (Array.isArray(r)) {
+        invalid.push({ name: String(r[0]), type: String(r[1]) });
+      } else {
+        const o = r as { OBJECT_NAME?: unknown; OBJECT_TYPE?: unknown };
+        invalid.push({ name: String(o.OBJECT_NAME ?? ''), type: String(o.OBJECT_TYPE ?? '') });
+      }
+    }
+    return { schema, invalid };
+  } catch {
+    return undefined;
+  } finally {
+    await conn.close().catch(() => {});
+  }
+}
+
 export interface OracleRunOptions {
   /** Connection string (user/pass@//host:port/service) */
   connection: string;

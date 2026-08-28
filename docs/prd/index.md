@@ -114,6 +114,7 @@ CONCLUIR
 | 38 | [Connection Pooling no Oracle Runner](completed/prd-38-connection-pooling.md) | 0.10.0 | 2026-08-08 |
 | 39 | [Eliminar código duplicado entre runners](completed/prd-39-deduplicate-runners.md) | 0.10.0 | 2026-08-08 |
 | 40 | [Refatorar executeRunOracle: Options Object](completed/prd-40-options-object.md) | 0.10.0 | 2026-08-08 |
+| 41 | [Verificação de instalação do utPLSQL](completed/prd-41-utplsql-install-verification.md) | 0.11.0 | 2026-08-08 |
 | 42 | [SuiteParser: parse de annotations estendidas](completed/prd-42-suiteparser-annotations.md) | 0.10.0 | 2026-08-08 |
 | 44 | [Matching resultado→teste como função pura](completed/prd-44-pure-matching.md) | 0.11.0 | 2026-08-08 |
 | 45 | [Bundling com esbuild + poda do node-oracledb no VSIX](completed/prd-45-bundle-esbuild.md) | 0.11.0 | 2026-08-26 |
@@ -188,11 +189,11 @@ docs/prd/
 │   ├── prd-38-connection-pooling.md
 │   ├── prd-39-deduplicate-runners.md
 │   ├── prd-40-options-object.md
+│   ├── prd-41-utplsql-install-verification.md
 │   ├── prd-42-suiteparser-annotations.md
 │   ├── prd-44-pure-matching.md
 │   └── prd-45-bundle-esbuild.md
 ├── approved/         ← aprovados, aguardando implementação
-│   ├── prd-41-utplsql-install-verification.md
 │   └── prd-43-schema-db-discovery.md
 ├── in-progress/      ← sendo implementados agora (vazio)
 └── proposed/         ← em avaliação
