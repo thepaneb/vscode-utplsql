@@ -5,6 +5,7 @@ docs/**
 src/**
 out/test/**
 scripts/**
+install/**
 images/*.svg
 **/*.ts
 **/*.map

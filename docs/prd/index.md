@@ -96,6 +96,7 @@ CONCLUIR
 | 18 | [Alinhamento `engines.node` com CI](completed/prd-18-engine-node-ci.md) | 0.7.1 | 2026-07-18 |
 | 19 | [Normalização do sistema de PRDs](completed/prd-19-normalize-prd-system.md) | 0.7.1 | 2026-07-18 |
 | 20 | [Limpeza de dependências e configurações](completed/prd-20-cleanup-deps-config.md) | 0.7.1 | 2026-07-18 |
+| 21 | [Melhorias nos workflows CI/CD](completed/prd-21-workflow-improvements.md) | 0.11.0 | 2026-07-18 |
 | 22 | [Sincronizar imagens no workflow da wiki](completed/prd-22-wiki-image-sync.md) | 0.7.1 | 2026-07-21 |
 | 23 | [Screenshots da wiki: checklist manual + diagramas](completed/prd-23-auto-wiki-screenshots.md) | 0.10.0 | 2026-07-21 |
 | 24 | [CodeLens Integration](completed/prd-24-codelens-integration.md) | 0.8.0 | 2026-07-25 |
@@ -126,7 +127,6 @@ _(vazio — nenhuma PRD em implementação)_
 
 | # | PRD | Versão alvo | Data |
 |---|---|---|---|
-| 21 | [Melhorias nos workflows CI/CD](approved/prd-21-workflow-improvements.md) | 0.11.0 | 2026-07-18 |
 | 41 | [Verificação de instalação do utPLSQL](approved/prd-41-utplsql-install-verification.md) | 0.11.0 | 2026-08-08 |
 | 43 | [Schema-mode: descoberta via ALL_OBJECTS](approved/prd-43-schema-db-discovery.md) | 0.11.0 | 2026-08-08 |
 | 45 | [Bundling com esbuild + poda do node-oracledb no VSIX](approved/prd-45-bundle-esbuild.md) | 0.11.0 | 2026-08-26 |
@@ -170,6 +170,7 @@ docs/prd/
 │   ├── prd-18-engine-node-ci.md
 │   ├── prd-19-normalize-prd-system.md
 │   ├── prd-20-cleanup-deps-config.md
+│   ├── prd-21-workflow-improvements.md
 │   ├── prd-22-wiki-image-sync.md
 │   ├── prd-23-auto-wiki-screenshots.md
 │   ├── prd-24-codelens-integration.md
@@ -190,7 +191,6 @@ docs/prd/
 │   ├── prd-42-suiteparser-annotations.md
 │   └── prd-44-pure-matching.md
 ├── approved/         ← aprovados, aguardando implementação
-│   ├── prd-21-workflow-improvements.md
 │   ├── prd-41-utplsql-install-verification.md
 │   ├── prd-43-schema-db-discovery.md
 │   └── prd-45-bundle-esbuild.md

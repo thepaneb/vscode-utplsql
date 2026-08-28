@@ -2,6 +2,13 @@
 
 ## 0.11.0
 
+- **Melhorias nos workflows CI/CD** (PRD-21): `ci.yml` e `publish.yml` unificados em
+  `actions/checkout@v7` + `actions/setup-node@v7`. Passos redundantes de compile/lint
+  removidos do CI (`npm test` já dispara `pretest:unit`). Publish usa `npm run package`
+  e `npm run publish` em vez de `npx @vscode/vsce`; novo `scripts/publish.cjs` mantém o
+  bloqueio local (publicação continua exclusiva via release) e bypassa quando
+  `CI=true` (setado pelo GitHub Actions). `.vscodeignore` passa a excluir `install/**`
+  (pasta local gitignored, impedia o `vsce package` quando continha `.env`).
 - **Matching resultado→teste como função pura** (PRD-44): `buildMatchIndex` e
   `findByNameOnly` extraídos para `matching.ts` como funções puras (`MatchEntry[]`
   → `Map`/item), sem dependência de `TestStateManager`/`WeakMap`. `applyResultsFromCases`
