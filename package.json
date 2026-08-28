@@ -37,7 +37,7 @@
     "workspaceContains:**/*.pks",
     "workspaceContains:**/*.pkb"
   ],
-  "main": "./out/extension.js",
+  "main": "./dist/extension.js",
   "contributes": {
     "configuration": {
       "title": "utPLSQL",
@@ -425,7 +425,7 @@
     ]
   },
   "scripts": {
-    "vscode:prepublish": "npm run compile",
+    "vscode:prepublish": "npm run compile && npm run bundle",
     "compile": "tsc -p ./",
     "watch": "tsc -watch -p ./",
     "lint": "biome check src/",
@@ -433,11 +433,12 @@
     "format": "biome format --write src/",
     "pretest:unit": "npm run compile && npm run lint",
     "test:unit": "node scripts/run-tests.cjs",
-    "pretest:integration": "npm run compile",
+    "pretest:integration": "npm run compile && npm run bundle",
     "test:integration": "vscode-test",
     "test": "npm run test:unit",
     "test:coverage": "npm run compile && c8 node --require ./scripts/test-setup.cjs --test out/test/unit/**/*.test.js",
-    "package": "vsce package",
+    "bundle": "node esbuild.config.mjs",
+    "package": "npm run compile && npm run bundle && vsce package",
     "gen-icon": "node scripts/gen-icon.cjs",
     "gen-diagram": "node scripts/gen-diagrams.cjs",
     "sync-prds": "node scripts/sync-prds.cjs",
@@ -462,6 +463,7 @@
     "@vscode/test-electron": "^2.4.1",
     "@vscode/vsce": "^3.2.1",
     "c8": "^12.0.0",
+    "esbuild": "^0.28.2",
     "typescript": "^6.0.3"
   }
 }

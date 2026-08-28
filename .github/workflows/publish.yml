@@ -32,6 +32,9 @@ jobs:
       - name: Run unit tests
         run: npm run test:unit
 
+      - name: Run bundle
+        run: npm run bundle
+
       - name: Package extension
         run: npm run package
 

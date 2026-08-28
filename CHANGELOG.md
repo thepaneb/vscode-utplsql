@@ -2,6 +2,16 @@
 
 ## 0.11.0
 
+- **Bundling com esbuild + poda do node-oracledb no VSIX** (PRD-45): `main` agora
+  aponta para `dist/extension.js` (bundle único, `fast-xml-parser`/`iconv-lite`
+  embutidos; `vscode` e `oracledb` externos — `await import('oracledb')` preservado).
+  Novo script `npm run bundle` (`esbuild.config.mjs`); `package` e `vscode:prepublish`
+  encadeiam `compile && bundle`; `pretest:integration` também. `.vscodeignore` exclui
+  `out/**`, os binários nativos (`oracledb/build/**`), `examples/`/`package/` do
+  oracledb e as deps puras já embutidas. VSIX: 281 → 153 arquivos, ~2.1 MB → 949 KB,
+  **warning de performance do vsce eliminado**. Validado: integração com banco real
+  (thin mode **sem** binários nativos), fallback CLI com oracledb removido, `vsce ls`
+  sem `.node` e sem `out/`.
 - **Melhorias nos workflows CI/CD** (PRD-21): `ci.yml` e `publish.yml` unificados em
   `actions/checkout@v7` + `actions/setup-node@v7`. Passos redundantes de compile/lint
   removidos do CI (`npm test` já dispara `pretest:unit`). Publish usa `npm run package`
