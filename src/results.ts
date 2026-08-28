@@ -2,6 +2,7 @@ import * as vscode from 'vscode';
 import { parseCobertura } from './cobertura';
 import { resolveSourceUri } from './coverage';
 import { isUserFrame, type StackFrame, type TestCaseResult, type TestStatus } from './junit';
+import { buildMatchIndex, findByNameOnly, type MatchEntry } from './matching';
 import type { TestStateManager } from './state';
 
 export interface RunResults {
@@ -43,22 +44,6 @@ export function lastSegment(classname: string): string {
   return parts.length ? parts[parts.length - 1] : classname;
 }
 
-export function findByNameOnly(
-  items: vscode.TestItem[],
-  name: string,
-  state: TestStateManager,
-): vscode.TestItem | undefined {
-  for (const t of items) {
-    const m = state.getMeta(t);
-    if (m?.kind === 'test') {
-      if (m.procName.toLowerCase() === name || m.description.toLowerCase().trim() === name) {
-        return t;
-      }
-    }
-  }
-  return undefined;
-}
-
 export function resolveStackFrameToUri(
   stackFrames: StackFrame[],
   state: TestStateManager,
@@ -94,14 +79,13 @@ export function applyResultsFromCases(
 ): Map<string, { status: TestStatus; message?: string }> {
   const resultMap = new Map<string, { status: TestStatus; message?: string }>();
 
-  const index = new Map<string, vscode.TestItem>();
+  const entries: MatchEntry[] = [];
   for (const t of leafTests) {
     const m = state.getMeta(t);
-    if (m?.kind !== 'test') continue;
-    const pkg = m.packageName.toLowerCase();
-    index.set(`${pkg}|${m.procName.toLowerCase()}`, t);
-    index.set(`${pkg}|${m.description.toLowerCase().trim()}`, t);
+    if (!m) continue;
+    entries.push({ item: t, meta: m });
   }
+  const index = buildMatchIndex(entries);
 
   const matched = new Set<vscode.TestItem>();
 
@@ -110,7 +94,7 @@ export function applyResultsFromCases(
     const name = c.name.toLowerCase().trim();
     let item = index.get(`${pkg}|${name}`);
     if (!item) {
-      item = findByNameOnly(leafTests, name, state);
+      item = findByNameOnly(entries, name);
     }
     if (!item) continue;
     matched.add(item);

@@ -5,14 +5,7 @@ import * as os from 'node:os';
 import * as path from 'node:path';
 import { test } from 'node:test';
 import type { TestCaseResult } from '../../junit';
-import {
-  applyCoverage,
-  applyResults,
-  countResults,
-  findByNameOnly,
-  lastSegment,
-} from '../../runner';
-import type { ItemMeta } from '../../types';
+import { applyCoverage, applyResults, countResults, lastSegment } from '../../runner';
 
 function makeState() {
   return {
@@ -25,26 +18,6 @@ function makeState() {
     runProfile: undefined,
     coverageProfile: undefined,
   } as any;
-}
-
-function makeMeta(over: Partial<ItemMeta>): ItemMeta {
-  return {
-    kind: 'test',
-    packageName: 'app',
-    procName: 'proc',
-    description: 'desc',
-    uri: { fsPath: '/x', path: '/x', scheme: 'file' } as any,
-    ...over,
-  } as ItemMeta;
-}
-
-function makeTestItem(id: string, meta?: ItemMeta) {
-  const item = { id, children: [] } as any;
-  if (meta) {
-    const state = { getMeta: () => meta };
-    return { item, state };
-  }
-  return { item, state: { getMeta: () => undefined } };
 }
 
 test('lastSegment: pega ultimo segmento separado por ponto', () => {
@@ -74,44 +47,6 @@ test('lastSegment: segmentos vazios sao ignorados', () => {
 
 test('lastSegment: varios separadores consecutivos', () => {
   assert.strictEqual(lastSegment('a..b...c'), 'c');
-});
-
-test('findByNameOnly: encontra por procName', () => {
-  const { item } = makeTestItem('test_1', makeMeta({ procName: 'proc_x', description: 'desc x' }));
-  const items = [item];
-  const state = { getMeta: (t: any) => t.meta } as any;
-  item.meta = makeMeta({ procName: 'proc_x', description: 'desc x' });
-  const found = findByNameOnly(items, 'proc_x', state);
-  assert.ok(found);
-  assert.strictEqual(found.id, 'test_1');
-});
-
-test('findByNameOnly: encontra por description', () => {
-  const { item } = makeTestItem('test_1', makeMeta({ procName: 'proc_x', description: 'desc x' }));
-  const items = [item];
-  const state = { getMeta: (t: any) => t.meta } as any;
-  item.meta = makeMeta({ procName: 'proc_x', description: 'desc x' });
-  const found = findByNameOnly(items, 'desc x', state);
-  assert.ok(found);
-  assert.strictEqual(found.id, 'test_1');
-});
-
-test('findByNameOnly: retorna undefined quando nao encontra', () => {
-  const { item } = makeTestItem('test_1', makeMeta({ procName: 'proc_x', description: 'desc x' }));
-  const items = [item];
-  const state = { getMeta: (t: any) => t.meta } as any;
-  item.meta = makeMeta({ procName: 'proc_x', description: 'desc x' });
-  const found = findByNameOnly(items, 'nao_existe', state);
-  assert.strictEqual(found, undefined);
-});
-
-test('findByNameOnly: ignora items que nao sao test', () => {
-  const item = { id: 'suite:app', children: [] } as any;
-  const suiteMeta = makeMeta({ kind: 'test', procName: 'proc_x', description: 'desc x' });
-  suiteMeta.kind = 'suite' as any;
-  const state = { getMeta: () => suiteMeta } as any;
-  const found = findByNameOnly([item], 'proc_x', state);
-  assert.strictEqual(found, undefined);
 });
 
 test('applyResults: processa JUnit e marca resultados no TestRun', () => {

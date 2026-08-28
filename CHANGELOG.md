@@ -1,5 +1,14 @@
 # Changelog
 
+## 0.11.0
+
+- **Matching resultado→teste como função pura** (PRD-44): `buildMatchIndex` e
+  `findByNameOnly` extraídos para `matching.ts` como funções puras (`MatchEntry[]`
+  → `Map`/item), sem dependência de `TestStateManager`/`WeakMap`. `applyResultsFromCases`
+  em `results.ts` constrói `entries` antes do loop de matching (nenhum acesso a
+  `state.getMeta()` dentro do loop). Sem mudança de comportamento. +10 testes unitários
+  em `matching.test.ts`; cobertura de `matching.ts` em 100%.
+
 ## 0.10.0
 
 - **Connection pooling no Oracle runner** (PRD-38): pool lazy gerenciado por `ensurePool`
