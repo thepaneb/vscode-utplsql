@@ -111,10 +111,8 @@ necessário. O bundle esbuild e o `vsce package` continuam funcionando.
 
 A partir do LTS do Node 26 (outubro/2026): `.nvmrc` → `26`; CI matrix →
 `[22, 24, 26]`. `engines.node` **permanece** `>= 22.0.0` (piso do host) e
-`@types/node` passa a tipar pelo piso (downgrade para `^22`) ou, se o time
-preferir manter `^24`, registrar explicitamente a restrição "não usar APIs
-pós-22" no AGENTS/docs. Validação: `npm test` na matrix e `npm run test:unit`
-local no Node 26.
+`@types/node` permanece em `^22` (tipa pelo piso — decisão já aplicada na
+0.11.0). Validação: `npm test` na matrix e `npm run test:unit` local no Node 26.
 
 **Não-funcionais**
 - RNF1 — Tamanho do VSIX não deve crescer além de ~5% (hoje ~950 KB)
@@ -191,8 +189,9 @@ se aplicável.
 
 ## 11. Questões em aberto
 
-- `@types/node`: alinhar ao piso do host (`^22`) ou manter `^24` com a
-  restrição "não usar APIs pós-22" documentada? (decisão do time)
+- ~~`@types/node`: alinhar ao piso do host (`^22`) ou manter `^24` com a
+  restrição "não usar APIs pós-22" documentada?~~ **Resolvido**: `^22`
+  (alinhado ao piso do host; já aplicado na 0.11.0)
 - Quando o Electron/VSCode embarcar Node ≥ 24, reavaliar `engines.node` e
   `@types/node` — acompanhar o roadmap do VSCode
 - `oracledb` 7: o projeto ainda precisa considerar usuários em thick? (hoje o
