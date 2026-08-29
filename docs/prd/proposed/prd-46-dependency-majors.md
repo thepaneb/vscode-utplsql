@@ -1,4 +1,4 @@
-# PRD-46 — Atualização de dependências major (oracledb 7, fast-xml-parser 5, iconv-lite 0.7, TypeScript 7)
+# PRD-46 — Atualização de dependências major + Node 26 no toolchain (oracledb 7, fast-xml-parser 5, iconv-lite 0.7, TypeScript 7)
 
 | Campo | Valor |
 |---|---|
@@ -15,8 +15,11 @@
 
 Atualizar as dependências com versões major disponíveis que foram adiadas na
 rodada de atualização da 0.11.0 (`b79fd06`): `oracledb` 7, `fast-xml-parser` 5,
-`iconv-lite` 0.7 e `typescript` 7. `@types/node` 26 fica **explicitamente fora**
-do escopo até a adoção de Node 26 como runtime.
+`iconv-lite` 0.7 e `typescript` 7. Inclui também a **adoção do Node 26 no
+toolchain de desenvolvimento** (`.nvmrc` + CI), a partir do seu LTS
+(outubro/2026). `engines.node` permanece no piso do host do VSCode e
+`@types/node` tipa pelo runtime mínimo onde o bundle executa — **não** sobem
+para 26.
 
 ## 2. Contexto e problema
 
@@ -31,7 +34,23 @@ liberou o caminho). Ficaram adiados por risco:
 | `fast-xml-parser` | 4.5.7 | 5.11.1 | Major com reescrita interna (v5) — usado no parse de JUnit/Cobertura |
 | `iconv-lite` | 0.6.3 | 0.7.3 | Minor pré-1.0 — usado no decode de output do CLI no Windows |
 | `typescript` | 6.0.3 | 7.0.2 | Major — TS 7 é o compilador nativo (Go); muda o pipeline de build |
-| `@types/node` | 24.13.3 | 26.4.0 | Descreve APIs de Node 26 que não existem no runtime do projeto (Node 24) |
+| `@types/node` | 24.13.3 | 26.4.0 | Descreve APIs de Node 26 que não existem no **host do VSCode** (Node 22) |
+
+### Dois runtimes — não confundir
+
+- **Runtime da extensão** = Node embutido no VSCode (host). `engines.node`
+  restringe onde a extensão **instala e executa**. Hosts atuais (VSCode 1.96+)
+  rodam Node 22; nenhum host tem Node 24/26 (o Electron acompanha o Node com
+  anos de atraso). `engines.node >= 26` bloquearia a instalação em todo VSCode
+  atual — **não pode subir além do piso do host** (hoje `>= 22`).
+- **Toolchain de desenvolvimento** = Node da máquina do dev/CI (`.nvmrc` 24,
+  matrix 22/24). Aqui o Node 26 **é bem-vindo** após o LTS (outubro/2026);
+  antes disso é "current" e CI em não-LTS é flaky.
+- **`@types/node`** deve tipar pelo **piso** (runtime mínimo onde o bundle
+  executa = host com Node 22): tipos do 24/26 deixariam usar APIs ausentes no
+  host, quebrando silenciosamente em produção. O valor atual (`^24`) já está
+  acima do piso — alinhar para `^22` junto com esta PRD, ou manter documentado
+  que o código não pode usar APIs pós-22.
 
 Usos atuais no código (superfície de impacto):
 
@@ -52,10 +71,13 @@ Usos atuais no código (superfície de impacto):
 - Subir `fast-xml-parser` para 5.x sem regressão de parse (fixtures JUnit/Cobertura)
 - Subir `iconv-lite` para 0.7.x (baixo risco)
 - Subir `typescript` para 7.x validando compile, lint, bundle e package
+- Adotar Node 26 no **toolchain** (`.nvmrc` + CI) a partir do LTS (out/2026)
+- Alinhar `@types/node` ao piso do host (Node 22) — ou documentar a restrição
 - Manter o VSIX enxuto (thin-only, sem binários nativos)
 
 **Não-objetivos**
-- `@types/node` 26 (até o runtime passar a ser Node 26 — `.nvmrc`/CI)
+- `engines.node` acima de `>= 22` (piso do host do VSCode — bloquearia instalação)
+- `@types/node` 26 (tipa acima do runtime real do bundle)
 - Adoção de `oracledb` thick (o projeto usa thin desde a 6.x)
 - Migração do esbuild para outro bundler (escopo do PRD-45 permanece)
 - Reescrita de parsing (mantém-se `fast-xml-parser`)
@@ -85,10 +107,20 @@ Validar que `tsc -p ./` continua produzindo `out/` com os mesmos artefatos
 (source maps incluídos — c8 depende deles), sem mudar `tsconfig.json` além do
 necessário. O bundle esbuild e o `vsce package` continuam funcionando.
 
+### RF5 — Node 26 no toolchain de desenvolvimento (pós-LTS)
+
+A partir do LTS do Node 26 (outubro/2026): `.nvmrc` → `26`; CI matrix →
+`[22, 24, 26]`. `engines.node` **permanece** `>= 22.0.0` (piso do host) e
+`@types/node` passa a tipar pelo piso (downgrade para `^22`) ou, se o time
+preferir manter `^24`, registrar explicitamente a restrição "não usar APIs
+pós-22" no AGENTS/docs. Validação: `npm test` na matrix e `npm run test:unit`
+local no Node 26.
+
 **Não-funcionais**
 - RNF1 — Tamanho do VSIX não deve crescer além de ~5% (hoje ~950 KB)
 - RNF2 — Cobertura c8 continua funcionando (source maps) e acima dos thresholds
 - RNF3 — Nenhuma mudança de comportamento observável para o usuário final
+- RNF4 — Bundle continua executável no host mínimo (VSCode com Node 22)
 
 ## 5. Solução proposta
 
@@ -103,6 +135,8 @@ necessário. O bundle esbuild e o `vsce package` continuam funcionando.
 4. **typescript 7.x** — instalar `typescript@^7.0.2`; `npm run compile` →
    corrigir erros; `npm run lint`; `npm run test:unit`; `npm run bundle` +
    `npm run package`; validar coverage
+5. **Node 26 no toolchain** (após LTS out/2026) — `.nvmrc` → 26; CI matrix
+   `[22, 24, 26]`; alinhar `@types/node` ao piso (22) ou documentar restrição
 
 ### 5.2 Gerenciamento de risco por pacote
 
@@ -140,26 +174,30 @@ se aplicável.
 ## 9. Rollout
 
 - Versão alvo: 0.12.0 (minor) — mudanças de dependência com risco moderado
-- Um commit por pacote (ordem: iconv-lite → fast-xml-parser → oracledb → typescript)
+- Um commit por pacote (ordem: iconv-lite → fast-xml-parser → oracledb →
+  typescript → Node 26 toolchain após LTS)
 - Entry no CHANGELOG.md ao concluir
 - Publicação exclusivamente via GitHub release (workflow)
 
 ## 10. Critérios de aceite
 
-- [ ] `npm outdated` não lista mais os majors do escopo (exceto `@types/node` 26)
+- [ ] `npm outdated` não lista mais os majors do escopo (exceto `@types/node` 26, intencional)
 - [ ] `npm run compile && npm run lint` verdes em cada etapa
 - [ ] 350 testes unitários verdes; coverage acima dos thresholds
 - [ ] 26 testes de integração com banco real verdes (oracledb 7 + fast-xml-parser 5)
 - [ ] `npm run package` gera VSIX thin-only (~950 KB ±5%)
+- [ ] Toolchain no Node 26 (pós-LTS): `.nvmrc`/CI atualizados; `engines.node` inalterado em `>= 22`
 - [ ] CHANGELOG + docs atualizados
 
 ## 11. Questões em aberto
 
-- `@types/node` 26: adiar até quando? (atrelado à adoção de Node 26 no
-  `.nvmrc`/CI — fora do escopo desta PRD)
+- `@types/node`: alinhar ao piso do host (`^22`) ou manter `^24` com a
+  restrição "não usar APIs pós-22" documentada? (decisão do time)
+- Quando o Electron/VSCode embarcar Node ≥ 24, reavaliar `engines.node` e
+  `@types/node` — acompanhar o roadmap do VSCode
 - `oracledb` 7: o projeto ainda precisa considerar usuários em thick? (hoje o
   VSIX é thin-only — se a v7 encarecer o thin, reavaliar)
 - `typescript` 7: há diferenças de emit/source maps que afetem o c8? (validar
   no passo 4 antes de consolidar)
-- Agrupar os 4 pacotes numa PRD só ou separar por pacote? (sugestão atual:
-  uma PRD, commits isolados)
+- Agrupar os itens numa PRD só ou separar por pacote? (sugestão atual: uma
+  PRD, commits isolados)
