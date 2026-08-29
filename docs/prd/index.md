@@ -116,6 +116,7 @@ CONCLUIR
 | 40 | [Refatorar executeRunOracle: Options Object](completed/prd-40-options-object.md) | 0.10.0 | 2026-08-08 |
 | 41 | [Verificação de instalação do utPLSQL](completed/prd-41-utplsql-install-verification.md) | 0.11.0 | 2026-08-08 |
 | 42 | [SuiteParser: parse de annotations estendidas](completed/prd-42-suiteparser-annotations.md) | 0.10.0 | 2026-08-08 |
+| 43 | [Schema-mode: descoberta via ALL_OBJECTS/ALL_SOURCE](completed/prd-43-schema-db-discovery.md) | 0.11.0 | 2026-08-29 |
 | 44 | [Matching resultado→teste como função pura](completed/prd-44-pure-matching.md) | 0.11.0 | 2026-08-08 |
 | 45 | [Bundling com esbuild + poda do node-oracledb no VSIX](completed/prd-45-bundle-esbuild.md) | 0.11.0 | 2026-08-26 |
 
@@ -125,12 +126,7 @@ _(vazio — nenhuma PRD em implementação)_
 
 ### 🔵 Aprovados
 
-#### 0.11.0
-
-| # | PRD | Versão alvo | Data |
-|---|---|---|---|
-| 41 | [Verificação de instalação do utPLSQL](approved/prd-41-utplsql-install-verification.md) | 0.11.0 | 2026-08-08 |
-| 43 | [Schema-mode: descoberta via ALL_OBJECTS](approved/prd-43-schema-db-discovery.md) | 0.11.0 | 2026-08-08 |
+_(vazio — nenhuma PRD aprovada aguardando implementação)_
 
 ### ⚪ Propostos
 
@@ -191,10 +187,9 @@ docs/prd/
 │   ├── prd-40-options-object.md
 │   ├── prd-41-utplsql-install-verification.md
 │   ├── prd-42-suiteparser-annotations.md
+│   ├── prd-43-schema-db-discovery.md
 │   ├── prd-44-pure-matching.md
-│   └── prd-45-bundle-esbuild.md
-├── approved/         ← aprovados, aguardando implementação
-│   └── prd-43-schema-db-discovery.md
+│   └── prd-45-bundle-esbuild.md├── approved/         ← aprovados, aguardando implementação (vazio)
 ├── in-progress/      ← sendo implementados agora (vazio)
 └── proposed/         ← em avaliação
     ├── prd-12-sql-coverage.md

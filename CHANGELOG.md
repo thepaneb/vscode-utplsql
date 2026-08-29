@@ -2,6 +2,21 @@
 
 ## 0.11.0
 
+- **Descoberta de suites via banco no modo schema** (PRD-43): com `organization: schema`
+  e `runnerMode` Oracle (`auto`/`oracle`), o refresh agora complementa a descoberta de
+  arquivos consultando `ALL_OBJECTS`/`ALL_SOURCE` (`discoverSchemaFromDb` em
+  `discovery.ts`) — útil para shared installs, CI e ambientes sem o código `.pks`
+  local. Schemas candidatos vêm da união dos schemas das suites locais com os
+  diretórios abaixo da base do `organization.schemaPattern` (`discoverSchemasFromFolders`,
+  ex.: `db/*`). Prioridade filesystem no merge (match por `packageName`, case-insensitive).
+  Packages `UT_*` (framework) são ignorados; `FETCH FIRST 10000 ROWS` + `console.warn`
+  de truncamento; `callTimeout` de 10s; fallback silencioso quando `ALL_SOURCE` é
+  inacessível ou o Oracle está indisponível (`import('oracledb')` falha → `[]`). Pool do
+  PRD-38 reutilizado; `resolveConnectionNoPrompt` (refresh não pergunta conexão).
+  Suites descobertas via DB usam URI virtual `utplsql-db:/SCHEMA/PKG.pks`
+  (`SuiteFile.dbSchema`); limitação documentada: essas suites não têm CodeLens,
+  Decorations nem jump to failure (só execução). +16 testes unitários; +3 testes de
+  integração com banco real, incluindo refresh E2E em modo schema.
 - **Verificação de instalação do utPLSQL na ativação** (PRD-41): o `SetupValidator`
   agora valida a integridade do schema UT3 (objetos inválidos em `ALL_OBJECTS` para
   `PACKAGE`/`TYPE`/`PACKAGE BODY`) na ativação e no comando `Validar configuração`.

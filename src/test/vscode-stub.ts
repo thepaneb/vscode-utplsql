@@ -3,6 +3,12 @@ export namespace Uri {
     return { fsPath: path, path, scheme: 'file', toString: () => path, toJSON: () => path };
   }
   export function parse(s: string) {
+    const schemeMatch = /^([a-zA-Z][a-zA-Z0-9+.-]*):(.*)$/.exec(s);
+    if (schemeMatch && !/^[a-zA-Z]:[\\/]/.test(s)) {
+      const scheme = schemeMatch[1];
+      const rest = schemeMatch[2] || '/';
+      return { fsPath: s, path: rest, scheme, toString: () => s, toJSON: () => s };
+    }
     return { fsPath: s, path: s, scheme: 'file', toString: () => s, toJSON: () => s };
   }
   export function joinPath(base: { fsPath: string }, ...pathSegments: string[]) {
@@ -51,6 +57,16 @@ export function __setMockFileError(path: string, hasError: boolean): void {
   _mockFileErrors[path] = hasError;
 }
 
+let _mockDirEntries: Record<string, [string, number][]> = {};
+
+export function __setMockDirectoryEntries(path: string, entries: [string, number][]): void {
+  _mockDirEntries[path] = entries;
+}
+
+export function __resetMockDirectoryEntries(): void {
+  _mockDirEntries = {};
+}
+
 export namespace workspace {
   export function getConfiguration(_section?: string) {
     return {
@@ -80,6 +96,15 @@ export namespace workspace {
       }
       const content = _mockFileContents[path] ?? '';
       return Promise.resolve(Buffer.from(content));
+    },
+    // biome-ignore lint/suspicious/noExplicitAny: VSCode Uri stringish stub
+    readDirectory: (uri: any) => {
+      const path = uri.fsPath ?? uri;
+      const entries = _mockDirEntries[path];
+      if (!entries) {
+        return Promise.reject(new Error(`mock: diretorio nao encontrado: ${path}`));
+      }
+      return Promise.resolve(entries.map(([name, type]) => [name, type] as [string, number]));
     },
   };
   export let workspaceFolders:
@@ -150,6 +175,13 @@ export namespace window {
 }
 
 export const StatusBarAlignment = { Left: 1, Right: 2 } as const;
+
+export const FileType = {
+  Unknown: 0,
+  File: 1,
+  Directory: 2,
+  SymbolicLink: 64,
+} as const;
 
 export class TestMessage {
   message: string;

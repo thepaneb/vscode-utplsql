@@ -277,6 +277,15 @@ Sem esses grants, use `runnerMode: cli`. Veja [Execução Oracle direta](Execuç
 O placeholder `{schema}` captura exatamente um nível de diretório.
 Use `**` para qualquer profundidade de subdiretórios após o schema.
 
+> **Descoberta via banco (0.11+):** no modo `schema`, quando o Oracle está
+> disponível (`runnerMode` `auto`/`oracle` e conexão configurada), a extensão
+> também descobre suites direto do banco (`ALL_OBJECTS`/`ALL_SOURCE`) para
+> schemas cujos arquivos `.pks` não estão no workspace. Os schemas consultados
+> são os diretórios abaixo da base do `schemaPattern` (ex.: `db/*`) e os schemas
+> das suites locais. Suites vindas do banco aparecem com URI virtual
+> `utplsql-db:/` e **não têm** CodeLens, decorações inline nem jump to failure
+> — apenas execução pela árvore. Packages `UT_*` (framework utPLSQL) são ignorados.
+
 ---
 
 ## Modo java lento com suites grandes

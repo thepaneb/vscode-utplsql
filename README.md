@@ -122,7 +122,7 @@ estiver instalado. Use `runnerMode: cli` para forçar CLI sempre.
 | `utplsql.oraclePoolIncrement` | `1` | Incremento ao expandir o pool do Oracle runner (node-oracledb). |
 | `utplsql.oraclePoolPingInterval` | `60` | Segundos entre health checks das conexões ociosas do pool (node-oracledb). `0` = ping a cada checkout. |
 | `utplsql.javaArgs` | `["-Xmx256m"]` | Flags JVM para o modo `java` (ex.: `["-Xmx512m", "-Xms128m"]`). Inseridas antes de `-cp`. |
-| `utplsql.organization` | `file` | Organização da árvore: `file` (por caminho) ou `schema` (Schema > Package > Suite > Test). |
+| `utplsql.organization` | `file` | Organização da árvore: `file` (por caminho) ou `schema` (Schema > Package > Suite > Test). No modo `schema` com Oracle disponível, suites também são descobertas do banco (`ALL_OBJECTS`) quando os arquivos `.pks` não estão no workspace. |
 | `utplsql.organization.schemaPattern` | `db/{schema}/**` | Padrão glob para extrair schema do caminho. Use `{schema}` como placeholder. |
 | `utplsql.compilationDiagnostics.enabled` | `true` | Exibe erros de compilação PL/SQL como sublinhados no editor e Problems Panel. |
 | `utplsql.setupDiagnostics.enabled` | `true` | Exibe diagnósticos de configuração (CLI, conexão, grants, versão) com quick-fix actions. |

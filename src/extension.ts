@@ -3,9 +3,20 @@ import { getCliInfo } from './cliInfo';
 import { listReporters } from './cliReporters';
 import { type CodeLensItem, parseCodeLensItems, UtplsqlCodeLensProvider } from './codelens';
 import { compilationDiagnostics } from './compilationDiagnostics';
-import { clearSessionConnection, readConfig, resolveConnection } from './config';
+import {
+  clearSessionConnection,
+  readConfig,
+  resolveConnection,
+  resolveConnectionNoPrompt,
+} from './config';
 import { DecorationManager } from './decorations';
-import { discoverWorkspace, extractSchemaFromPath } from './discovery';
+import {
+  discoverSchemaFromDb,
+  discoverSchemasFromFolders,
+  discoverWorkspace,
+  extractSchemaFromPath,
+  type SuiteFile,
+} from './discovery';
 import { filterSuitesByFolder, filterSuitesByUri } from './matching';
 import { closeOraclePool } from './oracleRunner';
 import { setupValidator, UtplsqlCodeActionProvider } from './quickfix';
@@ -408,9 +419,42 @@ async function doRefresh(controller: vscode.TestController): Promise<void> {
   state.clearSuiteMap();
 
   if (cfg.organization === 'schema' && folders?.length) {
+    if (cfg.runnerMode !== 'cli') {
+      await mergeDbSuites(suites, folders, cfg.organizationSchemaPattern);
+    }
     buildSchemaTree(controller, suites, cfg.organizationSchemaPattern);
   } else {
     buildFileTree(controller, suites);
+  }
+}
+
+async function mergeDbSuites(
+  suites: SuiteFile[],
+  folders: readonly vscode.WorkspaceFolder[],
+  schemaPattern: string,
+): Promise<void> {
+  const connStr = resolveConnectionNoPrompt();
+  if (!connStr) return;
+
+  const schemas = new Set<string>();
+  for (const suite of suites) {
+    const schema = extractSchemaFromPath(suite.uri.fsPath, suite.folder.uri.fsPath, schemaPattern);
+    if (schema) schemas.add(schema);
+  }
+  for (const schema of await discoverSchemasFromFolders(folders, schemaPattern)) {
+    schemas.add(schema);
+  }
+
+  for (const schema of schemas) {
+    const dbSuites = await discoverSchemaFromDb(connStr, schema, folders);
+    for (const dbSuite of dbSuites) {
+      const exists = suites.some(
+        (fs) => fs.packageName.toLowerCase() === dbSuite.packageName.toLowerCase(),
+      );
+      if (!exists) {
+        suites.push(dbSuite);
+      }
+    }
   }
 }
 
@@ -462,7 +506,9 @@ function buildSchemaTree(
   const bySchema = new Map<string, typeof suites>();
 
   for (const suite of suites) {
-    const schema = extractSchemaFromPath(suite.uri.fsPath, suite.folder.uri.fsPath, schemaPattern);
+    const schema =
+      suite.dbSchema ??
+      extractSchemaFromPath(suite.uri.fsPath, suite.folder.uri.fsPath, schemaPattern);
     const key = schema ?? 'UNKNOWN';
     if (!bySchema.has(key)) bySchema.set(key, []);
     bySchema.get(key)?.push(suite);
