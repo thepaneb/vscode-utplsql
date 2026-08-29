@@ -23,7 +23,9 @@
 | 2 | `fast-xml-parser` | `^5.11.1` | 0,5–1 dia | Médio | Major com reescrita; usado em `junit.ts`/`cobertura.ts`; precisa de unit + integração real |
 | 3 | `oracledb` + `@types/oracledb` | `^7.0.1` / `^7.0.2` | 0,5–1 dia | Médio-Alto | Vai dentro do VSIX; integração com banco real é o gate; conferir poda do thick |
 | 4 | `typescript` | `^7.0.2` | 0,5 dia | Médio | Compilador nativo (Go); validar emit/source maps (c8) + bundle esbuild + package |
-| 5 | Node 26 no toolchain | `.nvmrc`/CI | 0,5 dia | Baixo | **Só após LTS do Node 26 (out/2026)**; antes disso é "current" e flaky |
+
+> O passo 5 (Node 26 no toolchain) foi **separado na PRD-47** — será executado
+> após o LTS do Node 26 (out/2026).
 
 ## Comandos e gates por etapa
 
@@ -70,20 +72,13 @@ npm run test:coverage           # source maps intactos (c8)
 npm run package                 # bundle esbuild + vsce funcionam
 ```
 
-### 5. Node 26 no toolchain (pós-LTS — out/2026)
-
-```sh
-# .nvmrc → 26; ci.yml matrix → [22, 24, 26]
-npm test                        # local no Node 26
-```
-
 ## Rotina de conclusão da PRD
 
 1. Mover `docs/prd/proposed/prd-46-dependency-majors.md` → `docs/prd/completed/`
    (header Status → Concluído; critérios de aceite marcados)
-2. `docs/prd/index.md`: linha 46 p/ 🟢 Concluídos (Versão 0.12.0) + árvore Estrutura
+2. `docs/prd/index.md`: linha 46 p/ 🟢 Concluídos (Versão 0.11.0) + árvore Estrutura
 3. `docs/wiki/PRDs.md`: mover para Concluídos
-4. `CHANGELOG.md`: entry na 0.12.0
+4. `CHANGELOG.md`: entry na 0.11.0
 5. `sync-prds` (fecha a issue #63, label `prd:completed`)
 
 ## Observações
@@ -91,8 +86,6 @@ npm test                        # local no Node 26
 - **Não** subir `engines.node` nesta PRD (piso do host = Node 22; nenhum VSCode
   atual embarca Node 26).
 - Reavaliar `engines.node`/`@types/node` quando o VSCode embarcar Node ≥ 24
-  (acompanhar roadmap do Electron/VSCode).
-- O passo 5 pode ser entregue separadamente (PRD própria de toolchain) se o
-  release 0.12.0 sair antes do LTS do Node 26.
+  — acompanhado na PRD-47.
 - Sem mudanças de settings/comandos — atualizar apenas `docs/functional/10`
   e `docs/wiki/Como-contribuir` se números de Node/cobertura mudarem.
