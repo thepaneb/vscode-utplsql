@@ -20,7 +20,8 @@ interface CodeLensItem {
 }
 ```
 
-Usa o mesmo parser de `parseSuiteText` (veja [01 — Discovery](01-test-discovery.md)).
+Parser **próprio** em `codelens.ts` (regexes independentes de `suiteParser.ts`,
+comportamento equivalente para `%suite`/`%test`).
 Exportado para reuso por CodeLens, Decorations e Run at Cursor.
 
 ### `UtplsqlCodeLensProvider` (vscode)
@@ -38,7 +39,7 @@ class UtplsqlCodeLensProvider implements vscode.CodeLensProvider
 - `%suite` → executa todas as suites do arquivo
 - `%test` → executa apenas o procedimento de teste
 - `.sql` (não `.pks`) → sem CodeLens
-- Reset ao trocar de editor ativo
+- URIs virtuais (`utplsql-db:/`) → sem CodeLens (provider registrado só para `scheme: file`)
 
 ## StatusBar (`src/statusBar.ts`)
 
@@ -71,7 +72,8 @@ Respeita `utplsql.statusBar.enabled` (se `false`, métodos são no-op).
 ### Integração
 
 - `extension.ts`: instanciado no `activate()`, registrado em `context.subscriptions`
-- `runner.ts`: `onSuiteStart` → `showRunning`, `onComplete` → `showResults`
+- `extension.ts` `runWithProgress`: `onSuiteStart` → `showRunning`, `onComplete` →
+  `showResults` (callbacks repassados a `executeRun`)
 - Clique no item → comando `utplsql.showTestExplorer`
 
 ## Decorações inline (`src/decorations.ts`)
@@ -93,7 +95,7 @@ class DecorationManager implements vscode.Disposable
 ### Fluxo
 
 ```
-runner.ts: after executeRun
+extension.ts: runWithProgress, after executeRun
     │
     └─► decorationManager.update(state.getLastResults(), controller)
             │
@@ -113,8 +115,9 @@ runner.ts: after executeRun
 function findTestItem(controller, id: string): TestItem | undefined
 ```
 
-Busca recursiva: primeiro `controller.items.get(id)`, depois `suite.children`.
-Suporta tanto suite-level quanto test-level IDs.
+Busca em **dois níveis** (não recursiva): `controller.items.get(id)` + um loop
+em `children`. Suporta suite-level e test-level no modo `file`; no modo
+`schema` os testes estão 3 níveis abaixo (limitação conhecida).
 
 ### Hover
 

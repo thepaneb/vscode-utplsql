@@ -8,7 +8,7 @@ Execução de testes utPLSQL via CLI ou conexão Oracle direta.
 |---|---|---|
 | **CLI** | `runnerMode: cli` | Spawn `utplsql run` como processo filho |
 | **Oracle direto** | `runnerMode: oracle` | `node-oracledb` com 2 conexões (run + polling) |
-| **Auto** | `runnerMode: auto` (default) | Tenta Oracle direto; fallback CLI se `oracledb` indisponível |
+| **Auto** | `runnerMode: auto` (default) | Tenta Oracle direto; fallback CLI em **qualquer** erro do `executeRunOracle` (oracledb ausente, conexão falha, grants) |
 
 ## Fluxo — `executeRun()`
 
@@ -35,7 +35,7 @@ executeRun(controller, request, token, coverage, state, onSuiteStart, onComplete
     ├─► parseJUnit(results.xml) → TestCaseResult[]
     ├─► applyResults() → Map<TestItem.id, {status, message}>
     ├─► applyCoverage() → gutters + FileCoverage
-    ├─► compilationDiagnostics.parseAndApply() (se habilitado)
+    ├─► compilationDiagnostics.parseFromOutput → resolveFiles → apply (se habilitado)
     │
     └─► limpeza: fs.rmSync(tmpDir) + run.end()
 ```
@@ -140,7 +140,7 @@ async function ensurePool(oracledb, connection, cfg): Promise<Pool> {
     poolMin: cfg.oraclePoolMin,          // 2
     poolMax: cfg.oraclePoolMax,          // 10
     poolIncrement: cfg.oraclePoolIncrement, // 1
-    poolPingInterval: cfg.oraclePoolPingInterval, // 60 (ping no checkout, Thin driver)
+    poolPingInterval: cfg.oraclePoolPingInterval, // 60 (ping periódico das ociosas, Thin driver)
     stmtCacheSize: 30,
   });
   currentPool = { pool, key: connection };
@@ -158,7 +158,7 @@ async function closeOraclePool(): Promise<void>  // chamado no deactivate() (dra
 ```
 
 - **Keyed pela connection string**: conexão alterada (setting/prompt) → pool antigo fechado, novo criado
-- **`poolPingInterval`** valida conexões ociosas no checkout (ping interno do Thin driver — sem `SELECT 1 FROM DUAL`)
+- **`poolPingInterval`**: ping periódico (em segundos) das conexões **ociosas** (ping interno do Thin driver — sem `SELECT 1 FROM DUAL`); `0` = ping a cada checkout
 - **`outFormat = OBJECT`** global: acessos de rows por propriedade nomeada (`TABLE_OWNER`, `MESSAGE_ID`, `TEXT`)
 - **`conn.close()`** devolve ao pool; `deactivate()` fecha com drenagem de 10s
 

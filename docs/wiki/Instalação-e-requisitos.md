@@ -42,9 +42,13 @@ SELECT ut_meta.version() FROM dual;
 
 ### Máquina local
 
-- [**utPLSQL-cli**](https://github.com/utPLSQL/utPLSQL-cli/releases) + **Java** instalados.
+Depende do modo de execução:
 
-Para verificar:
+- **Modo CLI:** [**utPLSQL-cli**](https://github.com/utPLSQL/utPLSQL-cli/releases) + **Java** instalados.
+- **Modo Oracle direto** (`runnerMode: auto`/`oracle`): nada além do banco —
+  o VSIX já inclui o driver `oracledb` thin (sem Instant Client).
+
+Para verificar o CLI:
 ```bash
 java -version
 # openjdk version "21.0.5" 2024-10-15 LTS
@@ -62,4 +66,5 @@ utplsql --version
 | 19c+ | v3.1.0+ | v3.1.0+ | 1.88+ | 0.3.0+ |
 | 23ai | v3.2.0+ | v3.2.0+ | 1.88+ | 0.6.0+ |
 
-> A extensão é só o cliente gráfico — quem executa os testes é o banco Oracle via CLI.
+> A extensão é só o cliente gráfico — quem executa os testes é o banco: via
+> CLI (utPLSQL-cli + Java) ou direto (node-oracledb).

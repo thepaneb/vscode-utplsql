@@ -34,7 +34,7 @@ function buildFileTree(controller, suites: SuiteFile[]): void
    - Label: `${suiteDescription}  (${packageName})`
    - Range: linha do `%suite`
    - Para cada `t` em `suite.tests`:
-     - Cria `testItem` com id `test:${packageName}.${procName.toLowerCase()}`
+     - Cria `testItem` com id `test:${packageName.toLowerCase()}.${procName.toLowerCase()}`
      - Range: linha do `%test`
    - `controller.items.add(suiteItem)`
    - `state.cachedItems.push(suiteItem)`
@@ -61,7 +61,8 @@ TestController
 function buildSchemaTree(controller, suites: SuiteFile[], schemaPattern: string): void
 ```
 
-1. **Agrupa por schema**: `extractSchemaFromPath(suite.uri.fsPath, folder.fsPath, schemaPattern)`
+1. **Agrupa por schema**: `suite.dbSchema ?? extractSchemaFromPath(suite.uri.fsPath, folder.fsPath, schemaPattern)`
+   - Suites descobertas via DB trazem `dbSchema` preenchido (URI `utplsql-db:/` não tem fsPath local)
    - Schema extraído → chave do Map
    - Sem match → chave `"UNKNOWN"`
 2. **Ordena**: schemas alfabeticamente, `UNKNOWN` por último
@@ -74,6 +75,26 @@ function buildSchemaTree(controller, suites: SuiteFile[], schemaPattern: string)
      - `pkgItem.children.add(suiteItem)`
    - `schemaItem.children.add(pkgItem)`
    - `controller.items.add(schemaItem)`
+
+## Descoberta via DB (PRD-43)
+
+No modo `schema` com `runnerMode !== 'cli'`, o `doRefresh()` chama
+`mergeDbSuites()` antes de `buildSchemaTree`:
+
+1. `resolveConnectionNoPrompt()` — sem conexão configurada, descoberta DB é pulada
+2. Schemas candidatos: união dos schemas das suites locais com os diretórios
+   abaixo da base do `schemaPattern` (`discoverSchemasFromFolders`, ex.: `db/*`)
+3. `discoverSchemaFromDb(connStr, schema, folders)` — `ALL_OBJECTS` (packages
+   VALID, sem prefixo `UT_`) + `ALL_SOURCE` (limitado a 10000 linhas), parse com
+   `parseSuiteText` (prefixo sintético `CREATE OR REPLACE`)
+4. Merge: suites locais têm prioridade (match por `packageName`,
+   case-insensitive); suites novas são anexadas com `uri` virtual
+   `utplsql-db:/SCHEMA/PKG.pks` e `dbSchema` definido
+5. Fallback silencioso: Oracle indisponível, `ALL_SOURCE` inacessível ou erro
+   de conexão → só a descoberta por arquivos
+
+**Limitações das suites via DB:** sem CodeLens, decorações inline nem jump to
+failure (providers registram `{ scheme: 'file' }`) — apenas execução.
 
 ### IDs na árvore
 

@@ -34,8 +34,8 @@ end test_hello;
 /
 ```
 
-> Deixe uma **linha em branco** entre o `%suite` e os `%test`/procedures —
-> senão o `%suite` "gruda" na procedure e o package não é reconhecido.
+> O parser é dirigido por tokens — não há requisito de linha em branco entre
+> o `%suite` e os `%test`/procedures.
 
 ### Annotations suportadas (v0.10.0)
 

@@ -83,4 +83,22 @@ rapidamente arquivos fora da convenção esperada.
 - **Executar um package específico:** clique no nó `Package: UT_MY_TESTS`
 - **Toggle entre modos:** mude `organization` e a árvore é reconstruída no
   próximo refresh
-- **Fallback:** se o padrão não contiver `{schema}`, o modo `file` é usado
+- **Padrão sem `{schema}`:** todos os arquivos caem sob `UNKNOWN` — não há
+  fallback para o modo `file`
+
+## Descoberta via banco (a partir da 0.11.0)
+
+Quando `runnerMode` é `auto`/`oracle` e há conexão configurada (sem prompt), o
+refresh **complementa** as suites dos arquivos com suites descobertas direto do
+banco via `ALL_OBJECTS`/`ALL_SOURCE` — útil para shared installs e CI onde os
+`.pks` não estão no workspace.
+
+- Schemas consultados: união dos schemas extraídos das suites locais com os
+  diretórios imediatamente abaixo da base do `schemaPattern` (ex.: `db/*`)
+- **Filesystem tem prioridade** no merge (match por `packageName`,
+  case-insensitive)
+- Packages `UT_*` (framework utPLSQL) são ignorados
+- Suites vindas do banco usam URI virtual `utplsql-db:/SCHEMA/PKG.pks` e **não
+  têm** CodeLens, decorações inline nem jump to failure — apenas execução
+- Fallback silencioso: `ALL_SOURCE` inacessível, Oracle indisponível ou
+  `runnerMode: cli` → só a descoberta por arquivos

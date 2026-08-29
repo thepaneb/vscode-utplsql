@@ -10,22 +10,26 @@ com prefixo `utPLSQL:`.
 | Comando | Descrição | Atalho via UI |
 |---|---|---|
 | `utPLSQL: Rodar todos os testes` | Executa todas as suites do workspace | Botão ▶ na view Testing |
-| `utPLSQL: Rodar testes do arquivo` | Executa suites do `.pks`/`.pkb` ativo | Clique direito → arquivo |
-| `utPLSQL: Rodar testes do arquivo com cobertura` | Idem, com perfil de cobertura | Clique direito → arquivo |
-| `utPLSQL: Rodar testes da pasta` | Executa suites da pasta selecionada | Clique direito → pasta |
-| `utPLSQL: Rodar testes da pasta com cobertura` | Idem, com perfil de cobertura | Clique direito → pasta |
+| `utPLSQL: Rodar testes deste arquivo` | Executa suites do `.pks`/`.pkb` ativo | Clique direito → arquivo |
+| `utPLSQL: Rodar testes deste arquivo com cobertura` | Idem, com perfil de cobertura | Clique direito → arquivo |
+| `utPLSQL: Rodar testes desta pasta` | Executa suites da pasta selecionada | Clique direito → pasta |
+| `utPLSQL: Rodar testes desta pasta com cobertura` | Idem, com perfil de cobertura | Clique direito → pasta |
 | `utPLSQL: Atualizar testes` | Força rediscovery dos `.pks` | — |
-| `utPLSQL: Cancelar execução` | Interrompe o CLI em execução | — |
+| `utPLSQL: Cancelar execução` | Interrompe a execução em andamento (CLI ou Oracle) | `Escape` |
 | `utPLSQL: Mostrar informações do utPLSQL` | Versões CLI/API/DB | — |
 | `utPLSQL: Selecionar reporter adicional...` | QuickPick com reporters do banco | — |
 | `utPLSQL: Limpar conexão da sessão` | Remove conexão do cache | — |
-| `utPLSQL: Rerun Last Test` | Repete a última execução | `Ctrl+Shift+U L` |
+| `utPLSQL: Rerun Last` | Repete a última execução | `Ctrl+Shift+U L` |
 | `utPLSQL: Run Test at Cursor` | Executa o teste sob o cursor | `Ctrl+Shift+U U` |
 | `utPLSQL: Run Failed Tests` | Reexecuta apenas testes falhos | `Ctrl+Shift+U X` |
 | `utPLSQL: Mostrar Test Explorer` | Foca a view Testing | Clique na status bar |
-| `utPLSQL: Validar configuração` | Roda validação completa do setup | — |
+| `utPLSQL: Validar configuração` | Roda validação completa do setup (inclui integridade da instalação UT3) | — |
 | `utPLSQL: Configurar conexão` | Abre settings em `utplsql.connection` | — |
-| `utPLSQL: Copiar grants de cobertura` | Copia grants SQL para clipboard | — |
+| `utPLSQL: Copiar grants de cobertura para clipboard` | Copia grants SQL para clipboard | — |
+| `utPLSQL: Executar teste (CodeLens)` | Interno — disparado pelos botões de CodeLens | Botão ▶ sobre `%suite`/`%test` |
+
+> **Recompilar UT3** não aparece na palette — é um quick-fix interno do
+> diagnostic "utPLSQL Setup" (`UTPLSQL_INVALID_OBJECTS`).
 
 ## Menu de contexto
 

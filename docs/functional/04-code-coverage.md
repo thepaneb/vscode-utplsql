@@ -10,29 +10,31 @@ utPLSQL CLI / Oracle direto
     │
     └─► ut_coverage_cobertura_reporter → coverage.xml (ou buffer Oracle)
             │
-            ├─► parseCobertura(xml) → CoberturaFile[]
+            │   (modo Oracle) mapDbPathsToFiles(xml) → troca filename objeto→arquivo
+            │
+            ├─► parseCobertura(xml) → FileLines[]
             │       └─► file, lines[] (line, hits)
             │
-            ├─► resolveSourceUri(fileName, folderFsPath, sourcePath, root)
+            ├─► resolveSourceUri(file, workspaceRoot, sourcePath, folderRoot?)
             │       └─► mapeia nome de objeto Oracle → arquivo .sql local
             │
             └─► applyCoverage(coveragePath, root, sourcePath, run, state, folders)
                     │
                     ├─► FileCoverage.fromDetails(uri, details)
                     ├─► run.addCoverage(fc)
-                    └─► state.setCoverage(uri, details)
+                    └─► state.setCoverage(uri.toString(), details)
 ```
 
 ## `parseCobertura` (src/cobertura.ts)
 
 ```typescript
-function parseCobertura(xml: string): CoberturaFile[]
+function parseCobertura(xml: string): FileLines[]
 ```
 
 Usa `fast-xml-parser`. Extrai:
 
 ```typescript
-interface CoberturaFile {
+interface FileLines {
   file: string;     // nome do arquivo (ex: "packages/calculator.sql")
   lines: { line: number; hits: number }[];
 }
@@ -47,19 +49,31 @@ interface CoberturaFile {
 ```typescript
 function resolveSourceUri(
   file: string,              // nome do arquivo do XML (ex: "packages/calculator.sql")
-  folderFsPath: string,      // raiz do workspace folder
+  workspaceRoot: string,     // raiz do workspace folder
   sourcePath: string,        // setting utplsql.sourcePath
-  root: string,              // mesmo que folderFsPath
+  folderRoot?: string,       // raiz do folder atual (opcional)
 ): vscode.Uri | undefined
 ```
 
 ### Estratégia de resolução
 
 1. **Caminho absoluto**: se `file` é um caminho absoluto existente → retorna direto
-2. **Relativo ao workspace**: `folderFsPath + '/' + file` → se existe, retorna
-3. **Relativo ao sourcePath**: `folderFsPath + '/' + sourcePath + '/' + file`
-4. **Basename no sourcePath**: procura `file` recursivamente dentro de `sourcePath`
+2. **Relativo ao workspace**: `workspaceRoot + '/' + file` → se existe, retorna
+3. **Relativo ao sourcePath**: `workspaceRoot + '/' + sourcePath + '/' + file`
+4. **Basename no sourcePath**: testa `sourcePath + '/' + basename(file)`
+   (**não** é busca recursiva — apenas um `path.join` direto)
 5. **Não encontrado**: retorna `undefined`
+
+## `mapDbPathsToFiles` (src/oracleRunner.ts) — modo Oracle
+
+O XML de cobertura do buffer Oracle traz `filename="package body APP.CALC"`
+(nome de objeto, não arquivo). Antes de `applyCoverageFromXml`, o modo Oracle
+aplica `mapDbPathsToFiles(xml)`:
+
+- regex `filename="(function|procedure|package body|package|view|trigger)\s+\w+\.(\w+)"`
+- converte para `filename="<tipo plural>/<nome>.sql"` (ex.: `packages/CALC.sql`,
+  `functions/FN1.sql`) — casando com a estrutura `sourcePath/<tipo>/<nome>.sql`
+  esperada pelo `resolveSourceUri`
 
 ## `applyCoverage` (src/runner.ts) — wrapper CLI
 
@@ -90,7 +104,7 @@ pipeline de resolução:
    - Resolve URI via `resolveSourceUri` (testa todos os workspace folders)
    - Cria `vscode.StatementCoverage` para cada linha
    - `FileCoverage.fromDetails(uri, details)` → `run.addCoverage(fc)`
-   - `state.setCoverage(uri, details)` para `loadDetailedCoverage`
+   - `state.setCoverage(uri.toString(), details)` para `loadDetailedCoverage`
 3. Se nenhum arquivo foi mapeado → aviso "nenhum arquivo mapeado"
 
 ## Mapeamento de objetos Oracle → arquivos

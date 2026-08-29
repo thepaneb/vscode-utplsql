@@ -20,7 +20,7 @@ erros de compilação Oracle (`PLS-*`, `ORA-06550`) e os exibe como
 
 ```
 executeRun() → CLI executa → stdout contém erros de compilação
-  → parseCompilationErrors() → resolveFiles() → apply()
+  → compilationDiagnostics.parseFromOutput() → resolveFiles() → apply()
   → VSCode Problems Panel mostra os erros
   → Editor mostra sublinhados vermelhos
 ```
@@ -62,8 +62,8 @@ A extensão extrai isso e mostra no editor:
 
 ### Limitações
 
-- Funciona apenas no modo CLI (parse do stdout). Oracle direto usa mecanismo
-  similar internamente.
+- Funciona apenas no modo CLI (parse do stdout). O modo Oracle direto **não**
+  gera compilation diagnostics.
 - Mapeia erros para arquivos `.pks`/`.pkb` no workspace. Código externo
   (ex.: packages padrão Oracle) é ignorado.
 
@@ -80,7 +80,13 @@ comuns de configuração:
 | Java não encontrado (modo java) | `UTPLSQL_NO_JAVA` | Error |
 | Conexão Oracle inválida | `UTPLSQL_BAD_CONN` | Error |
 | utPLSQL < 3.1.0 no banco | `UTPLSQL_OLD_VERSION` | Warning |
+| Objetos inválidos no schema utPLSQL | `UTPLSQL_INVALID_OBJECTS` | Warning |
 | Cobertura falhou (pós-execução) | `UTPLSQL_NO_COVERAGE` | Warning |
+
+A verificação de objetos inválidos (`ALL_OBJECTS` para `PACKAGE`/`TYPE`/
+`PACKAGE BODY` no schema utPLSQL) é best-effort: assíncrona, sem prompt de
+conexão, timeout de 5s e silenciosa em falha. Gates: `setupDiagnostics.enabled:
+false` ou `runnerMode: cli` suprimem a verificação.
 
 Os resultados aparecem no **Problems Panel** com source "utPLSQL Setup".
 
@@ -93,14 +99,19 @@ Cada diagnostic oferece uma **Code Action** (ícone de lâmpada 💡 ou `Ctrl+.`
 | CLI não encontrado | **Configurar utplsql.cliPath** → abre settings.json |
 | Conexão inválida | **Reconfigurar conexão** → abre settings em `utplsql.connection` |
 | Grants de cobertura | **Copiar grants para clipboard** → copia SQL pronto para colar |
+| Objetos inválidos no utPLSQL | **Recompilar UT3** → `DBMS_UTILITY.COMPILE_SCHEMA` e re-verifica |
 
 ### Comandos
 
 | Comando | Descrição |
 |---|---|
-| `utPLSQL: Validar configuração` | Roda validação completa e mostra resultado no Problems Panel |
+| `utPLSQL: Validar configuração` | Roda validação completa (setup + integridade da instalação utPLSQL) e mostra resultado no Problems Panel |
 | `utPLSQL: Configurar conexão` | Abre settings em `utplsql.connection` |
 | `utPLSQL: Copiar grants de cobertura` | Copia `GRANT EXECUTE ON DBMS_PROFILER ...` para clipboard |
+
+> **Recompilar UT3** não é um comando da paleta — é um quick-fix
+> (`utplsql.recompileUt3`, interno) disponível apenas no diagnostic
+> `UTPLSQL_INVALID_OBJECTS`.
 
 ### Configuração
 
@@ -121,7 +132,7 @@ O fluxo completo de diagnóstico cobre todo o ciclo de vida:
 
 ```
 Abrir workspace
-  → Setup diagnostics: CLI OK? Conexão OK? Versão OK?
+  → Setup diagnostics: CLI OK? Conexão OK? Versão OK? Instalação utPLSQL íntegra?
   → Se problemas: Problems Panel + quick-fix actions
 
 Rodar testes

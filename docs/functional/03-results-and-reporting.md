@@ -102,9 +102,12 @@ Extrai último segmento separado por `.` ou `:` (ex: `"schema.pkg"` → `"pkg"`)
 | `applyResultsFromCases` | `runner.ts` + `oracleRunner.ts` | `results.ts` — ambos importam |
 | `countResults` / `countResultsFromCases` | idem | `results.ts` — nome único `countResults` |
 | `applyCoverageFromXml` | idem | `results.ts` — `runner.ts` mantém wrapper `applyCoverage` (lê arquivo + setup diagnostics) |
-| `resolveStackFrameToUri` / `resolveStackLocation` | idem | `results.ts` — com fallback para `{objName}.pks` no workspace |
+| `resolveStackFrameToUri` | idem | `results.ts` — com fallback para `{objName}.pks` no workspace |
 
-`matching.ts` permanece **puro** (sem import de `vscode`).
+> `resolveStackLocation` não existe mais — só `resolveStackFrameToUri`.
+
+`matching.ts` permanece **puro** em runtime (o `import type` de `vscode` é
+apagado na compilação).
 
 ## Reporters
 
