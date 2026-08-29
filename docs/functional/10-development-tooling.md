@@ -170,7 +170,7 @@ Sem `.env`, `describeDB` é pulado (`describe.skip`).
 ## CI
 
 Workflow `.github/workflows/ci.yml`:
-- Node 20/22/24 matrix
+- Node 22/24 matrix
 - `npm ci` → `npm test` (o `pretest:unit` do `npm test` já roda compile + lint)
 
 `.github/workflows/publish.yml`:
@@ -202,4 +202,4 @@ Comando local válido: `npm run package` (gera `.vsix`).
 
 ## Node
 
-`.nvmrc` → `24`. CI testa 20/22/24. Requer Node 20+ local.
+`.nvmrc` → `24`. CI testa 22/24 (Node 20 atingiu EOL). Requer Node 22+ local.

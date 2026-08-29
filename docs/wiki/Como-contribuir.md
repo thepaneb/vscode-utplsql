@@ -4,7 +4,7 @@ Guia para configurar o ambiente de desenvolvimento e enviar contribuições.
 
 ## Pré-requisitos
 
-- **Node.js 20+** (`.nvmrc` aponta para 24; CI testa 20/22/24)
+- **Node.js 22+** (`.nvmrc` aponta para 24; CI testa 22/24 — Node 20 atingiu EOL)
 - **npm** (vem com o Node)
 - **Git**
 - (Opcional) **Oracle Database** + **utPLSQL** para testes de integração
