@@ -137,6 +137,7 @@ _(vazio — nenhuma PRD aprovada aguardando implementação)_
 | 12 | [Cobertura de código para objetos SQL (views, queries)](proposed/prd-12-sql-coverage.md) | 0.12.0 | 2026-07-08 |
 | 33 | [PL/SQL Debugger Integration](proposed/prd-33-plsql-debugger-integration.md) | 0.12.0 | 2026-07-21 |
 | 34 | [Multi-Connection Profiles](proposed/prd-34-multi-connection-profiles.md) | 0.12.0 | 2026-07-21 |
+| 46 | [Atualização de dependências major](proposed/prd-46-dependency-majors.md) | 0.12.0 | 2026-08-29 |
 
 
 ---
@@ -189,12 +190,14 @@ docs/prd/
 │   ├── prd-42-suiteparser-annotations.md
 │   ├── prd-43-schema-db-discovery.md
 │   ├── prd-44-pure-matching.md
-│   └── prd-45-bundle-esbuild.md├── approved/         ← aprovados, aguardando implementação (vazio)
+│   └── prd-45-bundle-esbuild.md
+├── approved/         ← aprovados, aguardando implementação (vazio)
 ├── in-progress/      ← sendo implementados agora (vazio)
 └── proposed/         ← em avaliação
     ├── prd-12-sql-coverage.md
     ├── prd-33-plsql-debugger-integration.md
-    └── prd-34-multi-connection-profiles.md
+    ├── prd-34-multi-connection-profiles.md
+    └── prd-46-dependency-majors.md
 ```
 
 ---

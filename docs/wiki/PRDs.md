@@ -79,6 +79,7 @@ A **pasta** onde o arquivo está é a fonte da verdade do status. O arquivo
 | 12 | Cobertura SQL (views, queries) | 0.12.0 |
 | 33 | PL/SQL Debugger Integration | 0.12.0 |
 | 34 | Multi-Connection Profiles | 0.12.0 |
+| 46 | Atualização de dependências major | 0.12.0 |
 
 ## Como propor um PRD
 
