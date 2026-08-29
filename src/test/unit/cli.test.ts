@@ -150,3 +150,29 @@ test('runCli: cancelamento mata o processo', async () => {
   const result = await p;
   assert.ok(result.code !== 0 || result.stderr || result.stdout !== '');
 });
+
+test('runCli: output com bytes UTF-8 invalidos usa fallback sem quebrar', async () => {
+  const result = await runCli(
+    process.execPath,
+    ['-e', 'process.stdout.write(Buffer.from([0xff, 0xfe, 0x41]))'],
+    false,
+    tmpCwd,
+    neverCancel,
+  );
+  assert.strictEqual(result.code, 0);
+  // No Windows o fallback decodifica pelo codepage ANSI/OEM ('ÿþA'...); em
+  // POSIX substitui por U+FFFD. O que importa: não quebra e entrega o output.
+  assert.ok(result.stdout.includes('A'), 'output deveria conter o byte valido final');
+});
+
+test('runCli: erro com stderr UTF-8 invalido nao quebra', async () => {
+  const result = await runCli(
+    process.execPath,
+    ['-e', 'process.stderr.write(Buffer.from([0xff, 0x42])); process.exit(1)'],
+    false,
+    tmpCwd,
+    neverCancel,
+  );
+  assert.strictEqual(result.code, 1);
+  assert.ok(result.stderr.length > 0);
+});

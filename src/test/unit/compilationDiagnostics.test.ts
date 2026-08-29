@@ -170,3 +170,21 @@ test('resolveFiles: lista vazia nao quebra', () => {
   const state = makeState([]);
   assert.doesNotThrow(() => d.resolveFiles([], state));
 });
+
+test('resolveFiles: mensagem com body prefere .pkb', () => {
+  vscode.workspace.__setWorkspaceFolders([{ uri: { fsPath: '/root' }, name: 'root', index: 0 }]);
+
+  const d = new CompilationDiagnostics();
+  const state = makeState([{ uri: { fsPath: '/root/app.pks' }, uriStr: 'file:///root/app.pks' }]);
+
+  const errors = [
+    { line: 1, column: 1, code: 'PLS-123', message: 'x', fileUri: undefined },
+    { line: 2, column: 1, code: 'PLS-456', message: 'erro no package body', fileUri: undefined },
+  ];
+
+  assert.doesNotThrow(() => d.resolveFiles(errors, state));
+  assert.match(String(errors[0].fileUri), /app\.pks/);
+  assert.match(String(errors[1].fileUri), /app\.pkb/);
+
+  vscode.workspace.__setWorkspaceFolders(undefined);
+});

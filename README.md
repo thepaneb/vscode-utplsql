@@ -212,7 +212,7 @@ sem `cmd` no meio, então `^` e `|` passam **literais** — você pode usar `^â
 > e a declaração `create package` no arquivo, e cada `%test` seguido do seu
 > `PROCEDURE`. Não há requisito de linhas em branco.
 
-### Annotations suportadas (v0.10.0)
+### Annotations suportadas (v0.10.0+)
 
 Além de `%suite` e `%test`, o discovery entende:
 

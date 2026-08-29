@@ -1,9 +1,10 @@
 import './setup.js';
 import assert from 'node:assert';
-import { test } from 'node:test';
+import { mock, test } from 'node:test';
+import * as cliInfo from '../../cliInfo';
 import { closeOraclePool } from '../../oracleRunner';
-import { SetupValidator } from '../../quickfix';
-import { __resetConfigValues, __setConfigValue } from '../vscode-stub';
+import { SetupValidator, UtplsqlCodeActionProvider } from '../../quickfix';
+import { __resetConfigValues, __setConfigValue, Diagnostic, Range } from '../vscode-stub';
 
 const CONN = 'user/pass@//host:1521/svc';
 
@@ -186,6 +187,183 @@ test('recompileUt3: sem conexao mostra erro e nao quebra', async () => {
   } finally {
     process.env.UTPLSQL_CONN = origEnv;
   }
+});
+
+test('recompileUt3: usa conexao raw quando o pool falha', async () =>
+  withConnEnv(async () => {
+    __resetConfigValues();
+    const v = new SetupValidator();
+    v.applyDiagnostics([{ code: 'UTPLSQL_INVALID_OBJECTS', severity: 1, message: 'inválidos' }]);
+    const rawConn = makeFakeOracledb({ rows: [] });
+    const fake = {
+      getConnection: rawConn.getConnection,
+      createPool: () => Promise.reject(new Error('pool down')),
+    };
+    await assert.doesNotReject(() => v.recompileUt3(fake as any));
+  }));
+
+test('recompileUt3: falha total mostra erro e nao lanca', async () =>
+  withConnEnv(async () => {
+    __resetConfigValues();
+    const v = new SetupValidator();
+    const fake = {
+      getConnection: () => Promise.reject(new Error('db down')),
+      createPool: () => Promise.reject(new Error('pool down')),
+    };
+    await assert.doesNotReject(() => v.recompileUt3(fake as any));
+  }));
+
+test('recompileUt3: usa prefixo do ALL_SYNONYMS quando disponivel', async () =>
+  withConnEnv(async () => {
+    __resetConfigValues();
+    const v = new SetupValidator();
+    v.applyDiagnostics([{ code: 'UTPLSQL_INVALID_OBJECTS', severity: 1, message: 'inválidos' }]);
+    const executed: string[] = [];
+    const conn = {
+      callTimeout: 0,
+      execute: async (sql: string) => {
+        executed.push(sql);
+        if (sql.includes('ALL_SYNONYMS')) return { rows: [{ TABLE_OWNER: 'UT3' }] };
+        return { rows: [] };
+      },
+      close: async () => {},
+    };
+    const fake = {
+      getConnection: async () => conn,
+      createPool: async () => ({ getConnection: async () => conn, close: async () => {} }),
+    };
+    await v.recompileUt3(fake as any);
+    assert.ok(executed.some((s) => s.includes('DBMS_UTILITY.COMPILE_SCHEMA')));
+  }));
+
+// ── validateOnActivation ─────────────────────────────────────────────
+
+test('validateOnActivation: setupDiagnosticsEnabled false retorna vazio', async () => {
+  __setConfigValue('setupDiagnostics.enabled', false);
+  try {
+    const v = new SetupValidator();
+    assert.deepStrictEqual(await v.validateOnActivation(), []);
+  } finally {
+    __resetConfigValues();
+  }
+});
+
+test('validateOnActivation: CLI inexistente gera UTPLSQL_NO_CLI', async () => {
+  __resetConfigValues();
+  __setConfigValue('cliPath', '/caminho/inexistente/utplsql');
+  try {
+    const v = new SetupValidator();
+    const diags = await v.validateOnActivation();
+    assert.ok(diags.some((d) => d.code === 'UTPLSQL_NO_CLI'));
+  } finally {
+    __resetConfigValues();
+  }
+});
+
+test('validateOnActivation: java inexistente gera UTPLSQL_NO_JAVA', async () => {
+  __resetConfigValues();
+  __setConfigValue('cliPath', process.execPath);
+  __setConfigValue('invocation', 'java');
+  __setConfigValue('javaPath', '/caminho/inexistente/java');
+  try {
+    const v = new SetupValidator();
+    const diags = await v.validateOnActivation();
+    assert.ok(diags.some((d) => d.code === 'UTPLSQL_NO_JAVA'));
+  } finally {
+    __resetConfigValues();
+  }
+});
+
+test('validateOnActivation: conexao invalida gera UTPLSQL_BAD_CONN', async () =>
+  withConnEnv(async () => {
+    __resetConfigValues();
+    __setConfigValue('cliPath', process.execPath);
+    mock.method(cliInfo, 'getCliInfo', async () => ({ error: 'ORA-12541' }));
+    try {
+      const v = new SetupValidator();
+      const diags = await v.validateOnActivation();
+      assert.ok(diags.some((d) => d.code === 'UTPLSQL_BAD_CONN'));
+    } finally {
+      mock.restoreAll();
+      __resetConfigValues();
+    }
+  }));
+
+test('validateOnActivation: versao antiga gera UTPLSQL_OLD_VERSION', async () =>
+  withConnEnv(async () => {
+    __resetConfigValues();
+    __setConfigValue('cliPath', process.execPath);
+    mock.method(cliInfo, 'getCliInfo', async () => ({ cliVersion: '3.2.3', dbVersion: '3.0.4' }));
+    try {
+      const v = new SetupValidator();
+      const diags = await v.validateOnActivation();
+      assert.ok(diags.some((d) => d.code === 'UTPLSQL_OLD_VERSION'));
+    } finally {
+      mock.restoreAll();
+      __resetConfigValues();
+    }
+  }));
+
+test('validateOnActivation: tudo ok e sem conexao retorna vazio', async () => {
+  const origEnv = process.env.UTPLSQL_CONN;
+  delete process.env.UTPLSQL_CONN;
+  __resetConfigValues();
+  __setConfigValue('cliPath', process.execPath);
+  try {
+    const v = new SetupValidator();
+    assert.deepStrictEqual(await v.validateOnActivation(), []);
+  } finally {
+    process.env.UTPLSQL_CONN = origEnv;
+    __resetConfigValues();
+  }
+});
+
+// ── UtplsqlCodeActionProvider ────────────────────────────────────────
+
+function makeDiag(code: string, source = 'utPLSQL Setup') {
+  const diag = new Diagnostic(new Range(0, 0, 0, 0), 'msg');
+  diag.source = source;
+  diag.code = code;
+  return diag;
+}
+
+test('provideCodeActions: gera quick-fix para cada codigo conhecido', () => {
+  const provider = new UtplsqlCodeActionProvider();
+  const context = {
+    diagnostics: [
+      makeDiag('UTPLSQL_NO_CLI'),
+      makeDiag('UTPLSQL_BAD_CONN'),
+      makeDiag('UTPLSQL_NO_COVERAGE'),
+      makeDiag('UTPLSQL_INVALID_OBJECTS'),
+    ],
+  } as any;
+  const actions = provider.provideCodeActions({} as any, {} as any, context, {} as any);
+  assert.strictEqual(actions.length, 4);
+  const commands = actions.map((a) => a.command?.command);
+  assert.ok(commands.includes('workbench.action.openSettings'));
+  assert.ok(commands.includes('utplsql.configureConnection'));
+  assert.ok(commands.includes('utplsql.copyGrantsToClipboard'));
+  assert.ok(commands.includes('utplsql.recompileUt3'));
+});
+
+test('provideCodeActions: ignora diagnostics de outras sources', () => {
+  const provider = new UtplsqlCodeActionProvider();
+  const context = {
+    diagnostics: [makeDiag('UTPLSQL_NO_CLI', 'outra-source')],
+  } as any;
+  const actions = provider.provideCodeActions({} as any, {} as any, context, {} as any);
+  assert.strictEqual(actions.length, 0);
+});
+
+test('provideCodeActions: contexto vazio retorna vazio', () => {
+  const provider = new UtplsqlCodeActionProvider();
+  const actions = provider.provideCodeActions(
+    {} as any,
+    {} as any,
+    { diagnostics: [] } as any,
+    {} as any,
+  );
+  assert.strictEqual(actions.length, 0);
 });
 
 test('checkCli: retorna false quando arquivo nao existe', () => {

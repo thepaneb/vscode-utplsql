@@ -91,3 +91,24 @@ test('TestStateManager: setLastFailedItems e getLastFailedItems', () => {
   assert.strictEqual(mgr.getLastFailedItems().length, 2);
   assert.strictEqual(mgr.getLastFailedItems()[0].id, 'test:a');
 });
+
+test('TestStateManager: setSuiteItem e getSuiteItem', () => {
+  const mgr = new TestStateManager();
+  const item = { id: 'suite:app', children: [] } as any;
+  mgr.setSuiteItem('suite:app', item);
+  assert.strictEqual(mgr.getSuiteItem('suite:app'), item);
+});
+
+test('TestStateManager: getSuiteItem retorna undefined para id inexistente', () => {
+  const mgr = new TestStateManager();
+  assert.strictEqual(mgr.getSuiteItem('suite:nao_existe'), undefined);
+});
+
+test('TestStateManager: clearSuiteMap remove todos os itens', () => {
+  const mgr = new TestStateManager();
+  mgr.setSuiteItem('suite:a', { id: 'a' } as any);
+  mgr.setSuiteItem('suite:b', { id: 'b' } as any);
+  mgr.clearSuiteMap();
+  assert.strictEqual(mgr.getSuiteItem('suite:a'), undefined);
+  assert.strictEqual(mgr.getSuiteItem('suite:b'), undefined);
+});

@@ -137,6 +137,23 @@ export class CodeLens {
   }
 }
 
+export const CodeActionKind = {
+  Empty: 'empty',
+  QuickFix: 'quickfix',
+  Refactor: 'refactor',
+} as const;
+
+export class CodeAction {
+  title: string;
+  kind?: string;
+  command?: { title: string; command: string; arguments?: unknown[] };
+  diagnostics?: Diagnostic[];
+  constructor(title: string, kind?: string) {
+    this.title = title;
+    this.kind = kind;
+  }
+}
+
 export namespace window {
   export function showInputBox(_options?: {
     title?: string;
@@ -351,6 +368,7 @@ export class Diagnostic {
     public severity: number = DiagnosticSeverity.Error,
   ) {}
   source?: string;
+  code?: unknown;
 }
 
 export class DiagnosticCollection {

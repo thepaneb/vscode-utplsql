@@ -477,3 +477,45 @@ test('discoverSchemasFromFolders: base no nivel da raiz ({schema}/**)', async ()
     __resetMockDirectoryEntries();
   }
 });
+
+test('discoverSchemaFromDb: usa conexao raw quando createPool falha', async () => {
+  const rawConn = makeConn({
+    packages: [['APP_ORDERS']],
+    sources: { APP_ORDERS: SUITE_LINES },
+  });
+  const mod = {
+    createPool: async () => {
+      throw new Error('pool down');
+    },
+    getConnection: async (_attrs: unknown) => ({ ...rawConn, close: async () => {} }),
+  };
+  try {
+    const result = await discoverSchemaFromDb(
+      'u/p@//h:1521/s',
+      'hr',
+      [FOLDER],
+      async () => mod as never,
+    );
+    assert.strictEqual(result.length, 1);
+    assert.strictEqual(result[0].packageName, 'app_orders');
+  } finally {
+    await closeOraclePool();
+  }
+});
+
+test('discoverSchemasFromFolders: base com subdiretorios (src/{schema}/tests/**)', async () => {
+  const { __setMockDirectoryEntries, __resetMockDirectoryEntries } = await import(
+    '../vscode-stub.js'
+  );
+  __setMockDirectoryEntries('/root/src', [
+    ['MYSCHEMA', 2],
+    ['OTHER', 2],
+  ]);
+  try {
+    const folders = [{ uri: { fsPath: '/root' }, name: 'root', index: 0 }] as any;
+    const result = await discoverSchemasFromFolders(folders, 'src/{schema}/tests/**');
+    assert.deepStrictEqual(result, ['MYSCHEMA', 'OTHER']);
+  } finally {
+    __resetMockDirectoryEntries();
+  }
+});
