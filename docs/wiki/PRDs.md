@@ -82,6 +82,7 @@ A **pasta** onde o arquivo está é a fonte da verdade do status. O arquivo
 | 34 | Multi-Connection Profiles | 0.12.0 |
 | 47 | Node 26 no toolchain de desenvolvimento | 0.12.0 |
 | 48 | Function Coverage derivada (DeclarationCoverage) | 0.12.0 |
+| 49 | Internacionalização (i18n) dos conteúdos textuais | 0.12.0 |
 
 ## Como propor um PRD
 

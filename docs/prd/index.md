@@ -140,6 +140,7 @@ _(vazio — nenhuma PRD aprovada aguardando implementação)_
 | 34 | [Multi-Connection Profiles](proposed/prd-34-multi-connection-profiles.md) | 0.12.0 | 2026-07-21 |
 | 47 | [Node 26 no toolchain de desenvolvimento](proposed/prd-47-node-26-toolchain.md) | 0.12.0 | 2026-08-29 |
 | 48 | [Function Coverage derivada (DeclarationCoverage)](proposed/prd-48-function-coverage.md) | 0.12.0 | 2026-08-29 |
+| 49 | [Internacionalização (i18n) dos conteúdos textuais](proposed/prd-49-internacionalizacao.md) | 0.12.0 | 2026-08-29 |
 
 
 ---
@@ -200,7 +201,8 @@ docs/prd/
     ├── prd-33-plsql-debugger-integration.md
     ├── prd-34-multi-connection-profiles.md
     ├── prd-47-node-26-toolchain.md
-    └── prd-48-function-coverage.md
+    ├── prd-48-function-coverage.md
+    └── prd-49-internacionalizacao.md
 ```
 
 ---
