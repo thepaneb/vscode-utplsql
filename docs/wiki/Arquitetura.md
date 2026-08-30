@@ -29,7 +29,10 @@ As funções canônicas compartilhadas ficam em `src/results.ts`
 
 O `main` aponta para `dist/extension.js` — bundle único via **esbuild**
 (`npm run bundle`), com `vscode` e `oracledb` **externos**; os binários nativos
-do oracledb são podados no VSIX (`.vscodeignore`), sobrando só o thin driver.
+do oracledb são podados no VSIX (`.vscodeignore`), sobrando só o thin driver
+(`plugins/` de auth IAM/OCI também é podado — a extensão usa apenas conexão
+user/pass). Deps puras (fast-xml-parser v5 + transitivas, iconv-lite) vão
+embutidas no bundle.
 
 ## Separação crítica: módulos puros vs vscode-dependentes
 

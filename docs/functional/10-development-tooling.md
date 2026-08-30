@@ -21,13 +21,17 @@ Ferramentas e infraestrutura de desenvolvimento do projeto.
 | `npm run sync-prds` | Atualiza labels/issues no GitHub |
 | `npm run gen-diagram` | `scripts/gen-diagrams.cjs` — renderiza todos os SVGs de `docs/wiki/images/` para PNG de 1200px via `@resvg/resvg-js` (cross-platform) |
 
-## Bundling com esbuild (PRD-45)
+## Bundling com esbuild (PRD-45, ajustes na PRD-46)
 
 - `"main": "./dist/extension.js"` — bundle único gerado por `esbuild.config.mjs`
 - `vscode` e `oracledb` são **externos** (`await import('oracledb')` preservado)
-- `fast-xml-parser`/`iconv-lite` (e deps puras) são embutidas no bundle
+- `fast-xml-parser`/`iconv-lite` (e deps puras) são embutidas no bundle —
+  incluindo as transitivas do fast-xml-parser v5 (`@nodable/entities`, `anynum`,
+  `fast-xml-builder`, `is-unsafe`, `path-expression-matcher`, `xml-naming`)
 - `.vscodeignore` exclui `out/**`, os binários nativos do oracledb
-  (`oracledb/build/**`) e as deps puras já embutidas — VSIX ~950 KB
+  (`oracledb/build/**`), `oracledb/plugins/**` (auth IAM/OCI — fora do escopo),
+  docs não-licença do oracledb e as deps puras já embutidas — VSIX 151 arquivos,
+  ~990 KB (thin-only)
 
 ## TypeScript Coverage (c8)
 
@@ -60,10 +64,10 @@ Ferramentas e infraestrutura de desenvolvimento do projeto.
 
 | Métrica | Threshold | Atual (v0.11.0) |
 |---|---|---|
-| Lines | 65% | 78.1% |
-| Branches | 80% | 86.5% |
-| Functions | 70% | 88.7% |
-| Statements | 65% | 78.1% |
+| Lines | 65% | 89.7% |
+| Branches | 80% | 85.0% |
+| Functions | 70% | 95.2% |
+| Statements | 65% | 89.7% |
 
 ## Testes unitários
 
