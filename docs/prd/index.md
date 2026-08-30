@@ -119,6 +119,7 @@ CONCLUIR
 | 43 | [Schema-mode: descoberta via ALL_OBJECTS/ALL_SOURCE](completed/prd-43-schema-db-discovery.md) | 0.11.0 | 2026-08-29 |
 | 44 | [Matching resultado→teste como função pura](completed/prd-44-pure-matching.md) | 0.11.0 | 2026-08-08 |
 | 45 | [Bundling com esbuild + poda do node-oracledb no VSIX](completed/prd-45-bundle-esbuild.md) | 0.11.0 | 2026-08-26 |
+| 46 | [Atualização de dependências major](completed/prd-46-dependency-majors.md) | 0.11.0 | 2026-08-29 |
 
 ### 🟡 Em desenvolvimento
 
@@ -137,7 +138,6 @@ _(vazio — nenhuma PRD aprovada aguardando implementação)_
 | 12 | [Cobertura de código para objetos SQL (views, queries)](proposed/prd-12-sql-coverage.md) | 0.12.0 | 2026-07-08 |
 | 33 | [PL/SQL Debugger Integration](proposed/prd-33-plsql-debugger-integration.md) | 0.12.0 | 2026-07-21 |
 | 34 | [Multi-Connection Profiles](proposed/prd-34-multi-connection-profiles.md) | 0.12.0 | 2026-07-21 |
-| 46 | [Atualização de dependências major](proposed/prd-46-dependency-majors.md) | 0.11.0 | 2026-08-29 |
 | 47 | [Node 26 no toolchain de desenvolvimento](proposed/prd-47-node-26-toolchain.md) | 0.12.0 | 2026-08-29 |
 
 
@@ -198,7 +198,6 @@ docs/prd/
     ├── prd-12-sql-coverage.md
     ├── prd-33-plsql-debugger-integration.md
     ├── prd-34-multi-connection-profiles.md
-    ├── prd-46-dependency-majors.md
     └── prd-47-node-26-toolchain.md
 ```
 

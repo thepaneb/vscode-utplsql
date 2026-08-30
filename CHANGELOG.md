@@ -2,6 +2,19 @@
 
 ## 0.11.0
 
+- **Atualização de dependências major** (PRD-46): `oracledb` 6.10.0 → **7.0.1**
+  (+ `@types/oracledb` 7.0.2), `fast-xml-parser` 4.5.7 → **5.11.1**, `iconv-lite`
+  → **0.7.3** e `typescript` → **7.0.2** (compilador nativo) — sem mudanças de
+  código além do `.vscodeignore`. A v5 do fast-xml-parser trouxe transitivas
+  (`@nodable/entities`, `anynum`, `fast-xml-builder`, `is-unsafe`,
+  `path-expression-matcher`, `xml-naming`) que já vão embutidas no bundle
+  esbuild — podadas do VSIX. `oracledb/plugins` (auth IAM/OCI/Azure) e docs
+  não-licença também podados (extensão usa só conexão user/pass). VSIX: 153 →
+  151 arquivos, 952 → 989 KB (+3.9%), thin-only. `engines.node` segue `>= 22`
+  (piso do host do VSCode) e `@types/node` foi alinhado ao piso (`^22`) — o
+  bundle executa no Node 22 do host. Node 26 no toolchain fica para a PRD-47
+  (pós-LTS, out/2026). Validado: 350 unit, coverage 89.65%, 26 integração com
+  banco real (pool/streaming/cobertura/PRD-43), `vsce ls` sem `.node`.
 - **Descoberta de suites via banco no modo schema** (PRD-43): com `organization: schema`
   e `runnerMode` Oracle (`auto`/`oracle`), o refresh agora complementa a descoberta de
   arquivos consultando `ALL_OBJECTS`/`ALL_SOURCE` (`discoverSchemaFromDb` em

@@ -2,7 +2,7 @@
 
 | Campo | Valor |
 |---|---|
-| Status | Proposto |
+| Status | Concluído |
 | Autor | Gil Cleber |
 | Data | 2026-08-29 |
 | Componente | Extensão `paneb.vscode-utplsql` |
@@ -167,22 +167,39 @@ se aplicável.
 
 ## 10. Critérios de aceite
 
-- [ ] `npm outdated` não lista mais os majors do escopo (exceto `@types/node` 26, intencional)
-- [ ] `npm run compile && npm run lint` verdes em cada etapa
-- [ ] 350 testes unitários verdes; coverage acima dos thresholds
-- [ ] 26 testes de integração com banco real verdes (oracledb 7 + fast-xml-parser 5)
-- [ ] `npm run package` gera VSIX thin-only (~950 KB ±5%)
-- [ ] `engines.node` permanece `>= 22`; `@types/node` permanece `^22`
-- [ ] CHANGELOG + docs atualizados
+- [x] `npm outdated` não lista mais os majors do escopo (só `@types/node` 26, intencional)
+- [x] `npm run compile && npm run lint` verdes em cada etapa
+- [x] 350 testes unitários verdes; coverage acima dos thresholds (89.65% lines)
+- [x] 26 testes de integração com banco real verdes (oracledb 7 + fast-xml-parser 5)
+- [x] `npm run package` gera VSIX thin-only (989.65 KB = +3.9% do baseline, dentro do limite)
+- [x] `engines.node` permanece `>= 22`; `@types/node` permanece `^22`
+- [x] CHANGELOG + docs atualizados
 
 ## 11. Questões em aberto
 
 - ~~`@types/node`: alinhar ao piso do host (`^22`) ou manter `^24` com a
   restrição "não usar APIs pós-22" documentada?~~ **Resolvido**: `^22`
   (alinhado ao piso do host; já aplicado na 0.11.0)
-- `oracledb` 7: o projeto ainda precisa considerar usuários em thick? (hoje o
-  VSIX é thin-only — se a v7 encarecer o thin, reavaliar)
-- `typescript` 7: há diferenças de emit/source maps que afetem o c8? (validar
-  no passo 4 antes de consolidar)
+- ~~`oracledb` 7: o projeto ainda precisa considerar usuários em thick?~~
+  **Resolvido**: mantido thin-only; `plugins/` (auth IAM/OCI/Azure) podado do
+  VSIX — a extensão só usa conexão user/pass
+- ~~`typescript` 7: há diferenças de emit/source maps que afetem o c8?~~
+  **Resolvido**: sem mudanças no `tsconfig.json`; source maps intactos
+  (coverage idêntico 89.65%)
 - Node 26 no toolchain / reavaliação do piso quando o VSCode embarcar Node ≥ 24
   — acompanhado na PRD-47
+
+## 12. Notas de implementação
+
+- **fast-xml-parser 5**: nenhuma mudança de código necessária (`XMLParser` com
+  `ignoreAttributes`/`attributeNamePrefix` compatível); a v5 trouxe deps
+  transitivas novas (`@nodable/entities`, `anynum`, `fast-xml-builder`,
+  `is-unsafe`, `path-expression-matcher`, `xml-naming`) que **já vão embutidas
+  no bundle esbuild** — adicionadas ao `.vscodeignore` (estavam inflando o
+  VSIX desnecessariamente).
+- **oracledb 7**: cresceu a fonte do thin driver (`lib/`, `lib/impl/`,
+  `lib/thin/`); `.vscodeignore` ganhou `plugins/**` + docs não-licença
+  (sem hard-require no import — só auth por token, fora do escopo).
+  VSIX: 153 → 151 arquivos, 952 KB → 989 KB.
+- Commits isolados por pacote: `f244980` (iconv-lite), `763b901`
+  (fast-xml-parser), `7407ace` (oracledb), `960b7dc` (typescript).
