@@ -81,6 +81,7 @@ A **pasta** onde o arquivo está é a fonte da verdade do status. O arquivo
 | 33 | PL/SQL Debugger Integration | 0.12.0 |
 | 34 | Multi-Connection Profiles | 0.12.0 |
 | 47 | Node 26 no toolchain de desenvolvimento | 0.12.0 |
+| 48 | Function Coverage derivada (DeclarationCoverage) | 0.12.0 |
 
 ## Como propor um PRD
 
