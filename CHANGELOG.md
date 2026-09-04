@@ -2,6 +2,22 @@
 
 ## 0.11.0
 
+- **Correções de primeira execução de cobertura no Windows (launcher CLI)**:
+  - *Escaping de args no cmd.exe*: o branch Windows de `runCli` passava os args
+    crus para `cmd.exe /d /c`, e metacaracteres (`|`, `(`, `)`, `&` — comuns em
+    `-regex_expression` e em `-type_mapping` com espaço) eram interpretados pelo
+    shell (ex.: `'view' não é reconhecido como um comando`), quebrando o run com
+    cobertura no modo CLI. Agora, quando algum arg precisa, a invocação usa um
+    `.cmd` intermediário com escaping de batch (`%` → `%%`, aspas ao redor de
+    args fora do conjunto seguro) — validado E2E no cmd.exe real com os args de
+    cobertura.
+  - *`callTimeout` vazado em conexões do pool*: `findInvalidUt3Objects` (5s) e
+    `discoverSchemaFromDb` (10s) setavam `conn.callTimeout` e devolviam a
+    conexão ao pool com o timeout ativo (o node-oracledb não reseta). A
+    primeira execução após ativar a extensão herdava os 5s → `NJS-123: call
+    timeout of 5000 ms exceeded` no meio do run → fallback para CLI. Ambos
+    restauram o timeout anterior no `finally`, e `acquireRunnerConnections`
+    zera `callTimeout` ao check-out.
 - **Atualização de dependências major** (PRD-46): `oracledb` 6.10.0 → **7.0.1**
   (+ `@types/oracledb` 7.0.2), `fast-xml-parser` 4.5.7 → **5.11.1**, `iconv-lite`
   → **0.7.3** e `typescript` → **7.0.2** (compilador nativo) — sem mudanças de

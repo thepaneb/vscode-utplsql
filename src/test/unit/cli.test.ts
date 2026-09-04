@@ -1,7 +1,7 @@
 import assert from 'node:assert';
 import * as os from 'node:os';
 import { test } from 'node:test';
-import { quoteArg, runCli } from '../../cli';
+import { buildCliSpawn, buildCmdScript, quoteArg, runCli } from '../../cli';
 
 const tmpCwd = os.tmpdir();
 
@@ -64,10 +64,108 @@ test('quoteArg: type_mapping com espacos e barra e citado', () => {
   );
 });
 
+// ── buildCliSpawn / buildCmdScript ───────────────────────────────────
+
+test('buildCmdScript: args limpos ficam sem aspas', () => {
+  const script = buildCmdScript('D:\\cli\\utplsql.bat', ['-p=test_x', '-o=C:\\Temp\\cov.xml']);
+  assert.strictEqual(
+    script,
+    '@echo off\r\nD:\\cli\\utplsql.bat -p=test_x -o=C:\\Temp\\cov.xml\r\n',
+  );
+});
+
+test('buildCmdScript: metacaracteres e espacos sao citados', () => {
+  const script = buildCmdScript('D:\\cli\\utplsql.bat', [
+    '-regex_expression=.*[/\\\\](package|view)\\w*[/\\\\](\\w+)\\.sql$',
+    '-type_mapping=p=PACKAGE BODY/v=VIEW',
+  ]);
+  assert.ok(script.includes('"-regex_expression=.*[/\\\\](package|view)\\w*[/\\\\](\\w+)\\.sql$"'));
+  assert.ok(script.includes('"-type_mapping=p=PACKAGE BODY/v=VIEW"'));
+});
+
+test('buildCmdScript: percentual e dobrado para virar literal', () => {
+  const script = buildCmdScript('utplsql.bat', ['-p=50%_off']);
+  assert.ok(script.includes('-p=50%%_off'));
+});
+
+test('buildCmdScript: caminho do cli com espacos e citado', () => {
+  const script = buildCmdScript('C:\\Program Files\\utplsql\\utplsql.bat', []);
+  assert.strictEqual(script, '@echo off\r\n"C:\\Program Files\\utplsql\\utplsql.bat"\r\n');
+});
+
+test('buildCliSpawn: win32 com args limpos usa caminho direto', () => {
+  const plan = buildCliSpawn('D:\\cli\\utplsql.bat', ['-p=test_x'], true, 'win32');
+  assert.strictEqual(plan.command, 'cmd.exe');
+  assert.strictEqual(plan.shell, false);
+  assert.strictEqual(plan.script, undefined);
+  assert.deepStrictEqual(plan.args, ['/d', '/c', 'D:\\cli\\utplsql.bat', '-p=test_x']);
+});
+
+test('buildCliSpawn: win32 com metacaracteres gera script .cmd', () => {
+  const plan = buildCliSpawn(
+    'D:\\cli\\utplsql.bat',
+    ['-regex_expression=.*[/\\\\](package|view)\\w*[/\\\\](\\w+)\\.sql$'],
+    true,
+    'win32',
+  );
+  assert.strictEqual(plan.command, 'cmd.exe');
+  assert.strictEqual(plan.args.length, 0);
+  assert.ok(plan.script?.includes('"-regex_expression=.*[/\\\\](package|view)'));
+});
+
+test('buildCliSpawn: posix monta string unica com args citados', () => {
+  const plan = buildCliSpawn(
+    '/usr/bin/utplsql',
+    ['-f=ut_junit_reporter', '-regex_expression=.*(package|view).sql$'],
+    true,
+    'linux',
+  );
+  assert.strictEqual(plan.shell, true);
+  assert.deepStrictEqual(plan.args, []);
+  assert.ok(plan.command.startsWith('/usr/bin/utplsql -f=ut_junit_reporter '));
+  assert.ok(plan.command.includes('"-regex_expression=.*(package|view).sql$"'));
+});
+
+test('buildCliSpawn: sem shell passa file e args sem alteracao', () => {
+  const args = ['-cp', 'lib/*', '-regex_expression=.*(package|view).sql$'];
+  const plan = buildCliSpawn('java', args, false, 'win32');
+  assert.strictEqual(plan.command, 'java');
+  assert.strictEqual(plan.shell, false);
+  assert.strictEqual(plan.script, undefined);
+  assert.deepStrictEqual(plan.args, args);
+});
+
+test('buildCliSpawn: posix monta string unica com args citados', () => {
+  const plan = buildCliSpawn(
+    '/usr/bin/utplsql',
+    ['-f=ut_junit_reporter', '-regex_expression=.*(package|view).sql$'],
+    true,
+    'linux',
+  );
+  assert.strictEqual(plan.shell, true);
+  assert.deepStrictEqual(plan.args, []);
+  assert.ok(plan.command.startsWith('/usr/bin/utplsql -f=ut_junit_reporter '));
+  assert.ok(plan.command.includes('"-regex_expression=.*(package|view).sql$"'));
+});
+
+test('buildCliSpawn: sem shell passa file e args sem alteracao', () => {
+  const args = ['-cp', 'lib/*', '-regex_expression=.*(package|view).sql$'];
+  const plan = buildCliSpawn('java', args, false, 'win32');
+  assert.strictEqual(plan.command, 'java');
+  assert.strictEqual(plan.shell, false);
+  assert.deepStrictEqual(plan.args, args);
+});
+
 test('runCli: executa echo com shell e retorna stdout', async () => {
   const result = await runCli('echo', ['hello', 'world'], true, tmpCwd, neverCancel);
   assert.strictEqual(result.code, 0);
   assert.match(result.stdout, /hello world/);
+});
+
+test('runCli: argumento com metacaractere de shell chega intacto (win32 via .cmd)', async () => {
+  const result = await runCli('echo', ['a|b'], true, tmpCwd, neverCancel);
+  assert.strictEqual(result.code, 0);
+  assert.match(result.stdout, /a\|b/);
 });
 
 test('runCli: executa node sem shell e retorna stdout', async () => {

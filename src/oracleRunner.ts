@@ -64,10 +64,11 @@ export async function acquireRunnerConnections(
   oracledb.outFormat = oracledb.OUT_FORMAT_OBJECT;
   const pool = await ensurePool(oracledb, connection, cfg).catch(() => undefined);
   if (pool) {
-    return {
-      conn1: await pool.getConnection(),
-      conn2: await pool.getConnection(),
-    };
+    const conn1 = await pool.getConnection();
+    const conn2 = await pool.getConnection();
+    conn1.callTimeout = 0;
+    conn2.callTimeout = 0;
+    return { conn1, conn2 };
   }
   const parsed = parseConnString(connection);
   return {
@@ -123,6 +124,7 @@ export async function findInvalidUt3Objects(
   } catch {
     return undefined;
   }
+  const prevTimeout = conn.callTimeout;
   try {
     conn.callTimeout = 5000;
     const prefix = await discoverUtplsqlSchema(conn);
@@ -146,6 +148,7 @@ export async function findInvalidUt3Objects(
   } catch {
     return undefined;
   } finally {
+    conn.callTimeout = prevTimeout;
     await conn.close().catch(() => {});
   }
 }

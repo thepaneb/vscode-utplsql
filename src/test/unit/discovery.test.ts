@@ -503,6 +503,69 @@ test('discoverSchemaFromDb: usa conexao raw quando createPool falha', async () =
   }
 });
 
+// ── callTimeout (não deve vazar para o pool) ────────────────────────
+
+function makeTimeoutTrackingConn(opts: { sourceThrows?: boolean } = {}) {
+  const base = makeConn({
+    packages: [['APP_ORDERS']],
+    sources: { APP_ORDERS: SUITE_LINES },
+    sourceThrows: opts.sourceThrows,
+  });
+  const seenTimeouts: number[] = [];
+  const conn = {
+    callTimeout: 99,
+    execute: async (sql: string, binds?: Record<string, unknown>) => {
+      seenTimeouts.push(conn.callTimeout);
+      return base.execute(sql, binds);
+    },
+    close: async () => {},
+  };
+  const mod = {
+    createPool: async () => ({
+      getConnection: async () => conn,
+      close: async () => {},
+    }),
+    getConnection: async () => {
+      throw new Error('raw indisponivel');
+    },
+  };
+  return { conn, mod, seenTimeouts };
+}
+
+test('discoverSchemaFromDb: restaura callTimeout ao devolver a conexao', async () => {
+  const { conn, mod, seenTimeouts } = makeTimeoutTrackingConn();
+  try {
+    const result = await discoverSchemaFromDb(
+      'u/p@//h:1521/s',
+      'hr',
+      [FOLDER],
+      async () => mod as never,
+    );
+    assert.strictEqual(result.length, 1);
+    assert.strictEqual(conn.callTimeout, 99);
+    assert.ok(seenTimeouts.length > 0);
+    assert.ok(seenTimeouts.every((t) => t === 10_000));
+  } finally {
+    await closeOraclePool();
+  }
+});
+
+test('discoverSchemaFromDb: restaura callTimeout tambem em caso de erro', async () => {
+  const { conn, mod } = makeTimeoutTrackingConn({ sourceThrows: true });
+  try {
+    const result = await discoverSchemaFromDb(
+      'u/p@//h:1521/s',
+      'hr',
+      [FOLDER],
+      async () => mod as never,
+    );
+    assert.deepStrictEqual(result, []);
+    assert.strictEqual(conn.callTimeout, 99);
+  } finally {
+    await closeOraclePool();
+  }
+});
+
 test('discoverSchemasFromFolders: base com subdiretorios (src/{schema}/tests/**)', async () => {
   const { __setMockDirectoryEntries, __resetMockDirectoryEntries } = await import(
     '../vscode-stub.js'

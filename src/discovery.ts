@@ -217,12 +217,14 @@ export async function discoverSchemaFromDb(
     return [];
   }
 
+  const prevTimeout = conn.callTimeout;
   try {
     conn.callTimeout = 10_000;
     return await discoverSchemaFromConn(conn, schema, folder);
   } catch {
     return []; // fallback silencioso
   } finally {
+    conn.callTimeout = prevTimeout;
     await conn.close().catch(() => {});
   }
 }
