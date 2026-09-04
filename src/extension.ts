@@ -3,9 +3,20 @@ import { getCliInfo } from './cliInfo';
 import { listReporters } from './cliReporters';
 import { type CodeLensItem, parseCodeLensItems, UtplsqlCodeLensProvider } from './codelens';
 import { compilationDiagnostics } from './compilationDiagnostics';
-import { clearSessionConnection, readConfig, resolveConnection } from './config';
+import {
+  clearSessionConnection,
+  readConfig,
+  resolveConnection,
+  resolveConnectionNoPrompt,
+} from './config';
 import { DecorationManager } from './decorations';
-import { discoverWorkspace, extractSchemaFromPath } from './discovery';
+import {
+  discoverSchemaFromDb,
+  discoverSchemasFromFolders,
+  discoverWorkspace,
+  extractSchemaFromPath,
+  type SuiteFile,
+} from './discovery';
 import { filterSuitesByFolder, filterSuitesByUri } from './matching';
 import { closeOraclePool } from './oracleRunner';
 import { setupValidator, UtplsqlCodeActionProvider } from './quickfix';
@@ -238,6 +249,12 @@ export function activate(context: vscode.ExtensionContext) {
     new UtplsqlCodeActionProvider(),
   );
   context.subscriptions.push(codeActionProvider);
+  context.subscriptions.push(
+    vscode.languages.registerCodeActionsProvider(
+      { scheme: 'utplsql-setup' },
+      new UtplsqlCodeActionProvider(),
+    ),
+  );
 
   context.subscriptions.push(
     vscode.commands.registerCommand('utplsql.configureConnection', async () => {
@@ -252,7 +269,11 @@ export function activate(context: vscode.ExtensionContext) {
       vscode.window.showInformationMessage('Grants copiados para o clipboard.');
     }),
     vscode.commands.registerCommand('utplsql.validateSetup', async () => {
-      const diags = await setupValidator.validateOnActivation();
+      const [activationDiags, installDiags] = await Promise.all([
+        setupValidator.validateOnActivation(),
+        setupValidator.validateUtplsqlInstall(),
+      ]);
+      const diags = [...activationDiags, ...installDiags];
       setupValidator.applyDiagnostics(diags);
       vscode.window.showInformationMessage(
         diags.length === 0
@@ -260,11 +281,16 @@ export function activate(context: vscode.ExtensionContext) {
           : `${diags.length} problema(s) de configuração encontrado(s). Veja o Problems Panel.`,
       );
     }),
+    vscode.commands.registerCommand('utplsql.recompileUt3', () => setupValidator.recompileUt3()),
   );
 
-  setupValidator.validateOnActivation().then((diags) => {
-    setupValidator.applyDiagnostics(diags);
-  });
+  void (async () => {
+    const [activationDiags, installDiags] = await Promise.all([
+      setupValidator.validateOnActivation(),
+      setupValidator.validateUtplsqlInstall(),
+    ]);
+    setupValidator.applyDiagnostics([...activationDiags, ...installDiags]);
+  })();
 
   context.subscriptions.push(
     vscode.window.onDidChangeActiveTextEditor((editor) => {
@@ -393,9 +419,42 @@ async function doRefresh(controller: vscode.TestController): Promise<void> {
   state.clearSuiteMap();
 
   if (cfg.organization === 'schema' && folders?.length) {
+    if (cfg.runnerMode !== 'cli') {
+      await mergeDbSuites(suites, folders, cfg.organizationSchemaPattern);
+    }
     buildSchemaTree(controller, suites, cfg.organizationSchemaPattern);
   } else {
     buildFileTree(controller, suites);
+  }
+}
+
+async function mergeDbSuites(
+  suites: SuiteFile[],
+  folders: readonly vscode.WorkspaceFolder[],
+  schemaPattern: string,
+): Promise<void> {
+  const connStr = resolveConnectionNoPrompt();
+  if (!connStr) return;
+
+  const schemas = new Set<string>();
+  for (const suite of suites) {
+    const schema = extractSchemaFromPath(suite.uri.fsPath, suite.folder.uri.fsPath, schemaPattern);
+    if (schema) schemas.add(schema);
+  }
+  for (const schema of await discoverSchemasFromFolders(folders, schemaPattern)) {
+    schemas.add(schema);
+  }
+
+  for (const schema of schemas) {
+    const dbSuites = await discoverSchemaFromDb(connStr, schema, folders);
+    for (const dbSuite of dbSuites) {
+      const exists = suites.some(
+        (fs) => fs.packageName.toLowerCase() === dbSuite.packageName.toLowerCase(),
+      );
+      if (!exists) {
+        suites.push(dbSuite);
+      }
+    }
   }
 }
 
@@ -447,7 +506,9 @@ function buildSchemaTree(
   const bySchema = new Map<string, typeof suites>();
 
   for (const suite of suites) {
-    const schema = extractSchemaFromPath(suite.uri.fsPath, suite.folder.uri.fsPath, schemaPattern);
+    const schema =
+      suite.dbSchema ??
+      extractSchemaFromPath(suite.uri.fsPath, suite.folder.uri.fsPath, schemaPattern);
     const key = schema ?? 'UNKNOWN';
     if (!bySchema.has(key)) bySchema.set(key, []);
     bySchema.get(key)?.push(suite);

@@ -2,12 +2,14 @@
 
 | Campo | Valor |
 |---|---|
-| Status | Proposto |
+| Status | Concluído |
 | Autor | Gil Cleber Barboza |
 | Data | 2026-07-18 |
 | Componente | CI/CD `.github/workflows/` |
 | Versão alvo | 0.11.0 |
 | Arquivos afetados | `.github/workflows/ci.yml`, `.github/workflows/publish.yml`, `package.json` |
+| Esforço estimado | 0,5–1 dia |
+| Complexidade | Baixa |
 
 ## 1. Resumo
 
@@ -155,4 +157,7 @@ Nenhuma nova setting.
 
 ## 11. Questões em aberto
 
-- O script `"publish"` no `package.json` atualmente bloqueia publicação local. Para o CI usá-lo, precisamos de uma flag de ambiente (ex.: `CI=true`) que bypassa o bloqueio, ou criar um script separado `"publish:ci"`.
+- **Decidido (2026-08-28)**: flag de ambiente `CI=true` (setada automaticamente pelo
+  GitHub Actions) que bypassa o bloqueio. `publish` passa a chamar `node scripts/publish.cjs`,
+  que bloqueia localmente e roda `vsce publish` quando `CI` está definido. Sem script
+  `publish:ci` separado.

@@ -1,5 +1,6 @@
 import * as cp from 'node:child_process';
 import * as fs from 'node:fs';
+import * as os from 'node:os';
 import * as path from 'node:path';
 import type * as vscode from 'vscode';
 import {
@@ -22,6 +23,78 @@ export function quoteArg(arg: string): string {
     return `"${arg.replace(/"/g, '\\"')}"`;
   }
   return arg;
+}
+
+/**
+ * Só caracteres seguros para a linha de comando do cmd.exe (sem
+ * metacaracteres, aspas, espaços, `%` ou `^`).
+ */
+const CMD_SAFE = /^[A-Za-z0-9_\-.=/:,@\\]+$/;
+
+/**
+ * Escapa um argumento para uma linha de arquivo .cmd: `%` vira `%%`
+ * (expansão de variável) e o resultado é citado quando contém qualquer
+ * coisa fora do conjunto seguro — dentro de aspas, metacaracteres de
+ * shell (`|`, `&`, `<`, `>`, `(`) e `^` são literais no batch.
+ */
+function escapeArgBatch(arg: string): string {
+  const escaped = arg.replace(/%/g, '%%');
+  return CMD_SAFE.test(arg) ? escaped : `"${escaped}"`;
+}
+
+/**
+ * Conteúdo de um .cmd intermediário que invoca `file` com `args`.
+ * O parser do cmd.exe para invocação de .bat não honra `^` e interpreta
+ * `|`, `&`, `<`, `>` como operadores — apenas aspas protegem, e aspas
+ * passadas via array de spawn são corrompidas pelo libuv (`\"`), que o
+ * cmd.exe não entende. O .cmd resolve: dentro do arquivo, as aspas citam
+ * os argumentos com metacaracteres/`%`/`^` corretamente.
+ */
+export function buildCmdScript(file: string, args: string[]): string {
+  const head = escapeArgBatch(file);
+  const rest = args.map(escapeArgBatch).join(' ');
+  return `@echo off\r\n${rest ? `${head} ${rest}` : head}\r\n`;
+}
+
+export function needsCmdScript(file: string, args: string[]): boolean {
+  return !CMD_SAFE.test(file) || args.some((a) => !CMD_SAFE.test(a));
+}
+
+export interface SpawnPlan {
+  command: string;
+  args: string[];
+  shell: boolean;
+  /** Conteúdo do .cmd intermediário, quando necessário (win32 + shell). */
+  script?: string;
+}
+
+/**
+ * Decide como spawnar o CLI. PURO, testável por unidade:
+ *  - win32 + shell: `cmd.exe /d /c <file> <args>`; se algum argumento tem
+ *    metacaracteres, gera `script` (.cmd) que o runCli escreve em disco.
+ *  - outros SO + shell: string única com cada argumento citado para o /bin/sh.
+ *  - sem shell (java): passa o array — sem shell, sem quoting.
+ */
+export function buildCliSpawn(
+  file: string,
+  args: string[],
+  shell: boolean,
+  platform: NodeJS.Platform,
+): SpawnPlan {
+  if (shell) {
+    if (platform === 'win32') {
+      if (needsCmdScript(file, args)) {
+        return { command: 'cmd.exe', args: [], shell: false, script: buildCmdScript(file, args) };
+      }
+      return { command: 'cmd.exe', args: ['/d', '/c', file, ...args], shell: false };
+    }
+    return {
+      command: [file, ...args].map(quoteArg).join(' '),
+      args: [],
+      shell: true,
+    };
+  }
+  return { command: file, args, shell: false };
 }
 
 // Codepages do Windows, lidos uma única vez por sessão (reg.exe).
@@ -121,18 +194,25 @@ export function runCli(
       return;
     }
 
-    // shell=true (launcher .bat/script): junta tudo numa string e cita os args
-    // (necessário com shell). shell=false (java direto): passa o array — sem cmd,
-    // sem quoting, metacaracteres de regex passam literais.
-    const child = shell
-      ? process.platform === 'win32'
-        ? cp.spawn('cmd.exe', ['/d', '/c', file, ...args], {
-            cwd,
-            shell: false,
-            windowsHide: true,
-          })
-        : cp.spawn([file, ...args].map(quoteArg).join(' '), { cwd, shell: true, windowsHide: true })
-      : cp.spawn(file, args, { cwd, shell: false, windowsHide: true });
+    // shell=true (launcher .bat/script): buildCliSpawn cita cada argumento para
+    // o shell (cmd.exe no Windows interpreta |, &, (, ), espaços etc.).
+    // shell=false (java direto): passa o array — sem shell, sem quoting,
+    // metacaracteres de regex passam literais.
+    const plan = buildCliSpawn(file, args, shell, process.platform);
+
+    let scriptDir: string | undefined;
+    let scriptPath: string | undefined;
+    if (plan.script) {
+      scriptDir = fs.mkdtempSync(path.join(os.tmpdir(), 'utplsql-cmd-'));
+      scriptPath = path.join(scriptDir, 'run.cmd');
+      fs.writeFileSync(scriptPath, plan.script);
+    }
+
+    const child = cp.spawn(plan.command, scriptPath ? ['/d', '/c', scriptPath] : plan.args, {
+      cwd,
+      shell: plan.shell,
+      windowsHide: true,
+    });
 
     let stdout = '';
     let stderr = '';
@@ -155,9 +235,20 @@ export function runCli(
       }
     });
 
+    const cleanup = () => {
+      if (scriptDir) {
+        try {
+          fs.rmSync(scriptDir, { recursive: true, force: true });
+        } catch {
+          /* ignore */
+        }
+      }
+    };
+
     child.on('error', (err) => {
       killSub.dispose();
       void Promise.all([outSink.waitIdle(), errSink.waitIdle()]).then(() => {
+        cleanup();
         resolve({ code: -1, stdout, stderr: `${stderr}\n${String(err)}` });
       });
     });
@@ -165,6 +256,7 @@ export function runCli(
     child.on('close', (code) => {
       killSub.dispose();
       void Promise.all([outSink.waitIdle(), errSink.waitIdle()]).then(() => {
+        cleanup();
         resolve({ code: code ?? -1, stdout, stderr });
       });
     });

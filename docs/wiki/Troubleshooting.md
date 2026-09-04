@@ -38,8 +38,8 @@ sublinhados.
 "utplsql.compilationDiagnostics.enabled": true
 ```
 
-O diagnóstico funciona no modo CLI (parse do stdout). No modo Oracle direto,
-o comportamento é similar internamente.
+O diagnóstico funciona apenas no modo CLI (parse do stdout). O modo Oracle
+direto **não** gera compilation diagnostics.
 
 ---
 
@@ -126,12 +126,12 @@ Veja [Modo de invocação](Modo-de-invocação) para detalhes.
 
 **Sintoma:** O package existe, mas não aparece como suite no Test Explorer.
 
-**Causa:** Falta uma **linha em branco** entre o `%suite` e os `%test`/procedures.
+**Causas prováveis:** o arquivo não tem `%suite` **e** a declaração
+`create [or replace] package` (ambos são exigidos pelo parser); ou nenhum
+`%test` associado a uma procedure.
 
-O parser da extensão trata o `%suite` como uma annotation separada que precisa
-de uma linha vazia antes do início do código PL/SQL.
+O parser é dirigido por tokens — **não** há requisito de linha em branco:
 
-**Errado:**
 ```sql
 create or replace package test_foo as
   -- %suite(Foo)
@@ -140,15 +140,8 @@ create or replace package test_foo as
 end;
 ```
 
-**Correto:**
-```sql
-create or replace package test_foo as
-  -- %suite(Foo)
-
-  -- %test(bar)
-  procedure bar;
-end;
-```
+Verifique também que o arquivo está coberto por `utplsql.includePatterns` e
+rode `utPLSQL: Atualizar testes`.
 
 ---
 
@@ -240,9 +233,10 @@ C:\tools\utPLSQL-cli\bin\utplsql.bat --version
 **Sintoma:** `runnerMode: oracle` falha com "oracledb não disponível" ou
 erro de conexão.
 
-**Causa 1:** `node-oracledb` não está instalado.
+**Causa 1:** `node-oracledb` não está disponível (só ocorre em desenvolvimento
+— o VSIX já inclui o driver thin).
 
-**Solução:** Instale a dependência opcional:
+**Solução:** Instale a dependência opcional no ambiente de dev:
 ```bash
 npm install oracledb
 ```
@@ -276,6 +270,15 @@ Sem esses grants, use `runnerMode: cli`. Veja [Execução Oracle direta](Execuç
 
 O placeholder `{schema}` captura exatamente um nível de diretório.
 Use `**` para qualquer profundidade de subdiretórios após o schema.
+
+> **Descoberta via banco (0.11.0):** no modo `schema`, quando o Oracle está
+> disponível (`runnerMode` `auto`/`oracle` e conexão configurada), a extensão
+> também descobre suites direto do banco (`ALL_OBJECTS`/`ALL_SOURCE`) para
+> schemas cujos arquivos `.pks` não estão no workspace. Os schemas consultados
+> são os diretórios abaixo da base do `schemaPattern` (ex.: `db/*`) e os schemas
+> das suites locais. Suites vindas do banco aparecem com URI virtual
+> `utplsql-db:/` e **não têm** CodeLens, decorações inline nem jump to failure
+> — apenas execução pela árvore. Packages `UT_*` (framework utPLSQL) são ignorados.
 
 ---
 

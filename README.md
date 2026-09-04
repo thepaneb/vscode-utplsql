@@ -8,7 +8,7 @@ Integra o [utPLSQL](https://www.utplsql.org/) ao VSCode, trazendo os testes de P
 
 - 🧪 **Test Explorer nativo** — suites e testes aparecem na view de testes; rode por teste, suite, arquivo ou pasta.
 - 🔍 **CodeLens** — botões Run/Run with Coverage sobre `%suite` e `%test` no editor, sem sair do código.
-- ⌨️ **Atalhos de teclado** — prefixo `Ctrl+Shift+U` + tecla para todos os comandos (R = Run All, T = Run File, L = Rerun Last, etc.).
+- ⌨️ **Atalhos de teclado** — prefixo `Ctrl+Shift+U` + tecla para os comandos principais (R = Run All, T = Run File, L = Rerun Last, etc.).
 - 🖱️ **Menu de contexto** — clique direito em uma **pasta** ou em um arquivo **`.pks`/`.pkb`** (no Explorer ou no editor) para rodar os testes.
 - 📊 **Cobertura visual** — gutters coloridos por linha (coberta/não coberta) e percentual por arquivo na aba **Coverage**.
 - ✅ **Decorações inline** — ícones ✓/✗/⚠ no editor após execução, com tooltip da falha e overview ruler.
@@ -31,10 +31,12 @@ A extensão pode ser instalada de duas formas:
 ## Requisitos
 
 - [**utPLSQL**](https://github.com/utPLSQL/utPLSQL) **(UT3)** instalado no banco Oracle.
-- [**utPLSQL-cli**](https://github.com/utPLSQL/utPLSQL-cli/releases) + **Java** instalados na máquina (a extensão chama o CLI).
+- **Para o modo CLI:** [**utPLSQL-cli**](https://github.com/utPLSQL/utPLSQL-cli/releases) + **Java** instalados na máquina (a extensão chama o CLI).
+- **Para o modo Oracle direto:** nada além do banco — o VSIX já inclui o driver `oracledb` thin (sem Instant Client).
 - **VSCode 1.88+** (Test Coverage API).
 
-A extensão é só o "cliente gráfico" — quem executa os testes é o banco, via CLI.
+A extensão é só o "cliente gráfico" — quem executa os testes é o banco: via
+CLI (utPLSQL-cli + Java) ou direto (node-oracledb, `runnerMode: auto` por padrão).
 
 ## Conexão
 
@@ -122,10 +124,10 @@ estiver instalado. Use `runnerMode: cli` para forçar CLI sempre.
 | `utplsql.oraclePoolIncrement` | `1` | Incremento ao expandir o pool do Oracle runner (node-oracledb). |
 | `utplsql.oraclePoolPingInterval` | `60` | Segundos entre health checks das conexões ociosas do pool (node-oracledb). `0` = ping a cada checkout. |
 | `utplsql.javaArgs` | `["-Xmx256m"]` | Flags JVM para o modo `java` (ex.: `["-Xmx512m", "-Xms128m"]`). Inseridas antes de `-cp`. |
-| `utplsql.organization` | `file` | Organização da árvore: `file` (por caminho) ou `schema` (Schema > Package > Suite > Test). |
-| `utplsql.organization.schemaPattern` | `db/{schema}/**` | Padrão glob para extrair schema do caminho. Use `{schema}` como placeholder. |
-| `utplsql.compilationDiagnostics.enabled` | `true` | Exibe erros de compilação PL/SQL como sublinhados no editor e Problems Panel. |
-| `utplsql.setupDiagnostics.enabled` | `true` | Exibe diagnósticos de configuração (CLI, conexão, grants, versão) com quick-fix actions. |
+| `utplsql.organization` | `file` | Organização da árvore: `file` (por caminho) ou `schema` (Schema > Package > Suite > Test). No modo `schema` com `runnerMode` Oracle (`auto`/`oracle`), suites também são descobertas do banco (`ALL_OBJECTS`/`ALL_SOURCE`) quando os arquivos `.pks` não estão no workspace — com URI virtual `utplsql-db:/` (sem CodeLens/decorations/jump to failure). |
+| `utplsql.organization.schemaPattern` | `db/{schema}/**` | Padrão glob para extrair schema do caminho. Use `{schema}` como placeholder. No modo `schema`, os diretórios abaixo da base do padrão (ex.: `db/*`) definem os schemas consultados no banco. |
+| `utplsql.compilationDiagnostics.enabled` | `true` | Exibe erros de compilação PL/SQL como sublinhados no editor e Problems Panel (modo CLI). |
+| `utplsql.setupDiagnostics.enabled` | `true` | Exibe diagnósticos de configuração (CLI, conexão, grants, versão) e de **integridade da instalação utPLSQL** (objetos inválidos no schema UT3, com quick-fix "Recompilar UT3") com quick-fix actions. |
 
 Exemplo (`.vscode/settings.json` do projeto):
 
@@ -200,17 +202,17 @@ sem `cmd` no meio, então `^` e `|` passam **literais** — você pode usar `^â
    - `Ctrl+Shift+U L` — **Rerun Last** (repete a última execução, com ou sem coverage).
    - `Ctrl+Shift+U U` — **Run at Cursor** (executa o `%test`/`%suite` sob o cursor).
    - `Ctrl+Shift+U X` — **Run Failed Only** (executa apenas os testes que falharam).
-8. **Para Oracle direto (streaming):** instale `npm install oracledb` (opcional). Sem ele, o modo `auto` usa CLI automaticamente.
+8. **Para Oracle direto (streaming):** nada a instalar — o VSIX já inclui o driver `oracledb` thin. O modo `auto` cai para CLI se o Oracle não estiver acessível.
 9. Para diagnóstico, use `utPLSQL: Mostrar informações` na palette — exibe versões CLI/API/DB com opção de copiar.
-9. **utPLSQL: Selecionar reporter adicional...** — QuickPick com reporters disponíveis no banco.
-10. **utPLSQL: Cancelar execução** — interrompe o CLI em execução (`Escape` durante execução).
-11. **utPLSQL: Atualizar testes** — força rediscovery dos `.pks`.
+10. **utPLSQL: Selecionar reporter adicional...** — QuickPick com reporters disponíveis no banco.
+11. **utPLSQL: Cancelar execução** — interrompe a execução em andamento (`Escape` durante execução).
+12. **utPLSQL: Atualizar testes** — força rediscovery dos `.pks`.
 
-> 💡 **Ao escrever testes:** deixe uma **linha em branco** separando o `%suite`
-> dos `%test`/procedures, senão o `%suite` "gruda" na procedure e o package
-> não é reconhecido como suíte.
+> 💡 **Ao escrever testes:** o parser é dirigido por tokens — basta ter `%suite`
+> e a declaração `create package` no arquivo, e cada `%test` seguido do seu
+> `PROCEDURE`. Não há requisito de linhas em branco.
 
-### Annotations suportadas (v0.10.0)
+### Annotations suportadas (v0.10.0+)
 
 Além de `%suite` e `%test`, o discovery entende:
 
@@ -232,22 +234,26 @@ Todos os comandos da extensão (palette `Ctrl+Shift+P` prefixo `utPLSQL:`):
 | Comando | Descrição | Atalho via UI |
 |---|---|---|
 | `utPLSQL: Rodar todos os testes` | Executa todas as suites do workspace | Botão ▶ na view Testing |
-| `utPLSQL: Rodar testes do arquivo` | Executa suites do `.pks`/`.pkb` ativo | Clique direito → arquivo |
-| `utPLSQL: Rodar testes do arquivo com cobertura` | Idem, perfil com cobertura | Clique direito → arquivo |
-| `utPLSQL: Rodar testes da pasta` | Executa suites da pasta selecionada | Clique direito → pasta |
-| `utPLSQL: Rodar testes da pasta com cobertura` | Idem, perfil com cobertura | Clique direito → pasta |
+| `utPLSQL: Rodar testes deste arquivo` | Executa suites do `.pks`/`.pkb` ativo | Clique direito → arquivo |
+| `utPLSQL: Rodar testes deste arquivo com cobertura` | Idem, perfil com cobertura | Clique direito → arquivo |
+| `utPLSQL: Rodar testes desta pasta` | Executa suites da pasta selecionada | Clique direito → pasta |
+| `utPLSQL: Rodar testes desta pasta com cobertura` | Idem, perfil com cobertura | Clique direito → pasta |
 | `utPLSQL: Atualizar testes` | Força rediscovery dos `.pks` | — |
 | `utPLSQL: Cancelar execução` | Interrompe o CLI em execução | — |
 | `utPLSQL: Mostrar informações do utPLSQL` | Versões CLI/API/DB com opção de copiar | — |
 | `utPLSQL: Selecionar reporter adicional...` | QuickPick com reporters do banco | — |
 | `utPLSQL: Limpar conexão da sessão` | Remove a conexão do cache da sessão | — |
-| `utPLSQL: Rerun Last Test` | Repete a última execução | `Ctrl+Shift+U L` |
+| `utPLSQL: Rerun Last` | Repete a última execução | `Ctrl+Shift+U L` |
 | `utPLSQL: Run Test at Cursor` | Executa o teste sob o cursor | `Ctrl+Shift+U U` |
 | `utPLSQL: Run Failed Tests` | Reexecuta apenas testes falhos | `Ctrl+Shift+U X` |
-| `utPLSQL: Validar configuração` | Roda validação completa do setup e mostra resultados | — |
+| `utPLSQL: Validar configuração` | Roda validação completa do setup (CLI, Java, conexão, instalação UT3) e mostra resultados | — |
 | `utPLSQL: Configurar conexão` | Abre settings em `utplsql.connection` | — |
-| `utPLSQL: Copiar grants de cobertura` | Copia grants SQL para clipboard | — |
+| `utPLSQL: Copiar grants de cobertura para clipboard` | Copia grants SQL para clipboard | — |
 | `utPLSQL: Mostrar Test Explorer` | Foca a view Testing | Clique na status bar |
+
+> **Recompilar UT3** (`utplsql.recompileUt3`) **não** é um comando da paleta — é
+> um quick-fix interno do diagnostic "utPLSQL Setup" (objetos inválidos no
+> schema utPLSQL).
 
 ## Keybindings
 
@@ -392,14 +398,14 @@ GRANT SELECT ON SYS.DBA_PROCEDURES TO <ut3_owner>;
 | Sintoma | Causa provável | Solução |
 |---|---|---|
 | Suites não aparecem | CLI não encontrado | Rode `utPLSQL: Validar configuração` para diagnóstico |
-| Cobertura vazia | Falta `GRANT EXECUTE ON DBMS_PROFILER` | Execute grants em [Requisitos](#requisitos-no-banco) ou use `utPLSQL: Copiar grants` |
+| Cobertura vazia | Falta `GRANT EXECUTE ON DBMS_PROFILER` | Execute grants em [Requisitos](#requisitos-no-banco) ou use `utPLSQL: Copiar grants de cobertura para clipboard` |
 | Cobertura vazia | Oracle 19c exige grants adicionais | `GRANT EXECUTE ON DBMS_PROFILER` + `GRANT EXECUTE ON DBMS_PLSQL_CODE_COVERAGE` |
 | Desempenho lento | Suites grandes exigem mais heap JVM | Aumente `utplsql.javaArgs` (ex.: `["-Xmx1024m"]`) |
 | Erro de compilação sem indicação | Código com erro de sintaxe PL/SQL | Ative `utplsql.compilationDiagnostics.enabled` (default ativo); veja Problems Panel |
 | Erro de conexão | String malformada ou DB inacessível | Use `utPLSQL: Validar configuração` |
 | Timeout ao executar | Testes demoram mais que `timeoutMinutes` | Aumente `utplsql.timeoutMinutes` |
 | Regex de cobertura não casa | `cmd` do Windows consome `^` e `\|` | Use `utplsql.invocation: "java"` (veja [Modo de invocação](#modo-de-invocação-launcher-vs-java)) |
-| `%suite` não reconhecido | Falta linha em branco após `%suite` | Deixe uma linha em branco entre `%suite` e o primeiro `%test`/procedure |
+| `%suite` não reconhecido | Falta `%suite`/`create package` no arquivo, ou `%test` sem `PROCEDURE` | Verifique o spec; rode `utPLSQL: Atualizar testes` |
 | "relatório não gerado" | CLI não conseguiu gerar XML de saída | Verifique permissões de escrita em `%TEMP%` e grants do utPLSQL |
 | CodeLens não aparece | `editor.codeLens` desabilitado ou conflito | Habilite `"editor.codeLens": true`; verifique `utplsql.codeLens.enabled` |
 | Atalhos não funcionam | Conflito com outra extensão ou atalho do VSCode | Vá em File → Preferences → Keyboard Shortcuts e busque `utplsql` para redefinir |

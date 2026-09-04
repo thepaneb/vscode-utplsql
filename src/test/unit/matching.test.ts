@@ -1,7 +1,29 @@
 import assert from 'node:assert';
 import { test } from 'node:test';
-import { filterSuitesByFolder, filterSuitesByUri } from '../../matching';
+import {
+  buildMatchIndex,
+  filterSuitesByFolder,
+  filterSuitesByUri,
+  findByNameOnly,
+  type MatchEntry,
+} from '../../matching';
 import type { ItemMeta } from '../../types';
+
+function testMeta(over: Partial<ItemMeta>): ItemMeta {
+  return {
+    kind: 'test',
+    packageName: 'app',
+    procName: 'proc',
+    description: 'desc',
+    uri: { fsPath: '/root/app.pks', path: '/root/app.pks', scheme: 'file' } as any,
+    folder: { uri: { fsPath: '/root' }, name: 'root', index: 0 } as any,
+    ...over,
+  } as ItemMeta;
+}
+
+function entry(id: string, meta: ItemMeta): MatchEntry {
+  return { item: { id } as any, meta };
+}
 
 function suiteMeta(pkg: string, uriFsPath: string): ItemMeta {
   return {
@@ -104,4 +126,79 @@ test('filterSuitesByUri: lista vazia retorna vazio', () => {
 test('filterSuitesByFolder: lista vazia retorna vazio', () => {
   const result = filterSuitesByFolder([], '/root');
   assert.strictEqual(result.length, 0);
+});
+
+// ── buildMatchIndex ──────────────────────────────────────────────────
+
+test('buildMatchIndex: 2 testes no mesmo package geram 4 chaves', () => {
+  const index = buildMatchIndex([
+    entry('t1', testMeta({ packageName: 'ut_pkg', procName: 'proc_a', description: 'Desc A' })),
+    entry('t2', testMeta({ packageName: 'ut_pkg', procName: 'proc_b', description: 'Desc B' })),
+  ]);
+  assert.strictEqual(index.size, 4);
+  assert.strictEqual(index.get('ut_pkg|proc_a')?.id, 't1');
+  assert.strictEqual(index.get('ut_pkg|desc a')?.id, 't1');
+  assert.strictEqual(index.get('ut_pkg|proc_b')?.id, 't2');
+  assert.strictEqual(index.get('ut_pkg|desc b')?.id, 't2');
+});
+
+test('buildMatchIndex: 0 entradas retorna Map vazio', () => {
+  const index = buildMatchIndex([]);
+  assert.ok(index instanceof Map);
+  assert.strictEqual(index.size, 0);
+});
+
+test('buildMatchIndex: entrada kind suite e ignorada', () => {
+  const meta = testMeta({}) as any;
+  meta.kind = 'suite';
+  const index = buildMatchIndex([entry('suite:app', meta)]);
+  assert.strictEqual(index.size, 0);
+});
+
+// ── findByNameOnly ───────────────────────────────────────────────────
+
+test('findByNameOnly: encontra por procName', () => {
+  const e = entry('t1', testMeta({ procName: 'proc_x', description: 'desc x' }));
+  const found = findByNameOnly([e], 'proc_x');
+  assert.ok(found);
+  assert.strictEqual(found?.id, 't1');
+});
+
+test('findByNameOnly: encontra por description', () => {
+  const e = entry('t1', testMeta({ procName: 'proc_x', description: 'desc x' }));
+  const found = findByNameOnly([e], 'desc x');
+  assert.ok(found);
+  assert.strictEqual(found?.id, 't1');
+});
+
+test('findByNameOnly: description com trailing space encontra via trim', () => {
+  const e = entry('t1', testMeta({ procName: 'proc_x', description: 'desc x ' }));
+  const found = findByNameOnly([e], 'desc x');
+  assert.ok(found);
+  assert.strictEqual(found?.id, 't1');
+});
+
+test('findByNameOnly: case insensitive', () => {
+  const e = entry('t1', testMeta({ procName: 'proc_x', description: 'desc x' }));
+  const found = findByNameOnly([e], 'PROC_X');
+  assert.ok(found);
+  assert.strictEqual(found?.id, 't1');
+});
+
+test('findByNameOnly: nome inexistente retorna undefined', () => {
+  const e = entry('t1', testMeta({ procName: 'proc_x', description: 'desc x' }));
+  const found = findByNameOnly([e], 'nao_existe');
+  assert.strictEqual(found, undefined);
+});
+
+test('findByNameOnly: ignora entries que nao sao test', () => {
+  const meta = testMeta({ procName: 'proc_x', description: 'desc x' }) as any;
+  meta.kind = 'suite';
+  const found = findByNameOnly([entry('suite:app', meta)], 'proc_x');
+  assert.strictEqual(found, undefined);
+});
+
+test('findByNameOnly: lista vazia retorna undefined', () => {
+  const found = findByNameOnly([], 'proc_x');
+  assert.strictEqual(found, undefined);
 });

@@ -2,12 +2,14 @@
 
 | Campo | Valor |
 |---|---|
-| Status | Proposto |
+| Status | Concluído |
 | Autor | Gil Cleber |
 | Data | 2026-08-08 |
 | Componente | Extensão `paneb.vscode-utplsql` |
 | Versão alvo | 0.11.0 |
 | Arquivos afetados | `src/matching.ts`, `src/runner.ts`, `src/oracleRunner.ts`, `src/test/unit/matching.test.ts` |
+| Esforço estimado | 0,5–1 dia |
+| Complexidade | Baixa |
 
 ## 1. Resumo
 

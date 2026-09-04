@@ -8,6 +8,8 @@
 | Componente | Extensão `paneb.vscode-utplsql` |
 | Versão alvo | 0.12.0 |
 | Arquivos afetados | `src/config.ts`, `src/viewCoverage.ts`, `src/extension.ts`, `src/runner.ts`, `docs/coverage-views.md` |
+| Esforço estimado | 2–3 dias |
+| Complexidade | Média-Alta |
 
 ## 1. Resumo
 

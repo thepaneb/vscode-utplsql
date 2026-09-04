@@ -2,14 +2,14 @@
   "name": "vscode-utplsql",
   "displayName": "utPLSQL Test Runner",
   "description": "Roda testes utPLSQL pelo Test Explorer do VSCode, com menu de contexto e cobertura visual (estilo pytest).",
-  "version": "0.10.0",
+  "version": "0.11.0",
   "publisher": "paneb",
   "author": "Gil Cleber Barboza",
   "license": "MIT",
   "icon": "images/icon.png",
   "engines": {
     "vscode": "^1.88.0",
-    "node": ">=20.0.0"
+    "node": ">=22.0.0"
   },
   "categories": [
     "Testing"
@@ -37,7 +37,7 @@
     "workspaceContains:**/*.pks",
     "workspaceContains:**/*.pkb"
   ],
-  "main": "./out/extension.js",
+  "main": "./dist/extension.js",
   "contributes": {
     "configuration": {
       "title": "utPLSQL",
@@ -425,7 +425,7 @@
     ]
   },
   "scripts": {
-    "vscode:prepublish": "npm run compile",
+    "vscode:prepublish": "npm run compile && npm run bundle",
     "compile": "tsc -p ./",
     "watch": "tsc -watch -p ./",
     "lint": "biome check src/",
@@ -433,35 +433,37 @@
     "format": "biome format --write src/",
     "pretest:unit": "npm run compile && npm run lint",
     "test:unit": "node scripts/run-tests.cjs",
-    "pretest:integration": "npm run compile",
+    "pretest:integration": "npm run compile && npm run bundle",
     "test:integration": "vscode-test",
     "test": "npm run test:unit",
     "test:coverage": "npm run compile && c8 node --require ./scripts/test-setup.cjs --test out/test/unit/**/*.test.js",
-    "package": "vsce package",
+    "bundle": "node esbuild.config.mjs",
+    "package": "npm run compile && npm run bundle && vsce package",
     "gen-icon": "node scripts/gen-icon.cjs",
     "gen-diagram": "node scripts/gen-diagrams.cjs",
     "sync-prds": "node scripts/sync-prds.cjs",
-    "publish": "echo '⚠️ Publicacao apenas via GitHub workflow (release). Use npm run package para .vsix local.' && exit 1",
+    "publish": "node scripts/publish.cjs",
     "publish:patch": "echo '⚠️ Publicacao apenas via GitHub workflow (release). Use npm run package para .vsix local.' && exit 1"
   },
   "dependencies": {
-    "fast-xml-parser": "^4.4.1",
-    "iconv-lite": "^0.6.3"
+    "fast-xml-parser": "^5.11.1",
+    "iconv-lite": "^0.7.3"
   },
   "optionalDependencies": {
-    "oracledb": "^6.6.0"
+    "oracledb": "^7.0.1"
   },
   "devDependencies": {
     "@biomejs/biome": "^2.5.2",
     "@resvg/resvg-js": "^2.6.2",
     "@types/mocha": "^10.0.7",
-    "@types/node": "^24.0.0",
-    "@types/oracledb": "^6.10.4",
+    "@types/node": "^22.20.1",
+    "@types/oracledb": "^7.0.2",
     "@types/vscode": "^1.88.0",
-    "@vscode/test-cli": "^0.0.10",
-    "@vscode/test-electron": "^2.4.1",
+    "@vscode/test-cli": "^0.0.15",
+    "@vscode/test-electron": "^3.1.0",
     "@vscode/vsce": "^3.2.1",
     "c8": "^12.0.0",
-    "typescript": "^6.0.3"
+    "esbuild": "^0.28.2",
+    "typescript": "^7.0.2"
   }
 }

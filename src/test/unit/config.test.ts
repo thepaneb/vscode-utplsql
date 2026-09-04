@@ -1,7 +1,12 @@
 import './setup.js';
 import assert from 'node:assert';
 import { test } from 'node:test';
-import { clearSessionConnection, readConfig, resolveConnection } from '../../config';
+import {
+  clearSessionConnection,
+  readConfig,
+  resolveConnection,
+  resolveConnectionNoPrompt,
+} from '../../config';
 import { __resetConfigValues, __setConfigValue, __setInputBoxResult } from '../vscode-stub';
 
 test('readConfig: defaults sao usados quando sem config', () => {
@@ -152,3 +157,39 @@ test('resolveConnection: prefere env var sobre cache da sessao', async () =>
       __setInputBoxResult(undefined);
     }
   }));
+
+test('resolveConnectionNoPrompt: retorna undefined sem configuracao (sem prompt)', async () =>
+  withCleanResolve(async () => {
+    __setInputBoxResult('user/nao-deveria-aparecer@db');
+    const origEnv = process.env.UTPLSQL_CONN;
+    delete process.env.UTPLSQL_CONN;
+    try {
+      const result = resolveConnectionNoPrompt();
+      assert.strictEqual(result, undefined);
+    } finally {
+      process.env.UTPLSQL_CONN = origEnv;
+      __setInputBoxResult(undefined);
+    }
+  }));
+
+test('resolveConnectionNoPrompt: usa env var UTPLSQL_CONN', () => {
+  const origEnv = process.env.UTPLSQL_CONN;
+  process.env.UTPLSQL_CONN = 'user/env@db';
+  try {
+    assert.strictEqual(resolveConnectionNoPrompt(), 'user/env@db');
+  } finally {
+    process.env.UTPLSQL_CONN = origEnv;
+  }
+});
+
+test('resolveConnectionNoPrompt: usa setting utplsql.connection', () => {
+  __setConfigValue('connection', 'user/setting@db');
+  const origEnv = process.env.UTPLSQL_CONN;
+  delete process.env.UTPLSQL_CONN;
+  try {
+    assert.strictEqual(resolveConnectionNoPrompt(), 'user/setting@db');
+  } finally {
+    process.env.UTPLSQL_CONN = origEnv;
+    __resetConfigValues();
+  }
+});

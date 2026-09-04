@@ -4,7 +4,7 @@ Guia para configurar o ambiente de desenvolvimento e enviar contribuições.
 
 ## Pré-requisitos
 
-- **Node.js 20+** (`.nvmrc` aponta para 24; CI testa 20/22/24)
+- **Node.js 22+** (`.nvmrc` aponta para 24; CI testa 22/24 — Node 20 atingiu EOL)
 - **npm** (vem com o Node)
 - **Git**
 - (Opcional) **Oracle Database** + **utPLSQL** para testes de integração
@@ -29,26 +29,37 @@ npm run compile
 vscode-utplsql/
 ├── src/
 │   ├── extension.ts         ← orquestrador (entry point)
-│   ├── runner.ts            ← executeRun + applyResults
-│   ├── config.ts            ← leitura de settings + env vars
-│   ├── discovery.ts         ← findFiles + parse annotations
+│   ├── runner.ts            ← executeRun (CLI) + wrappers applyResults/applyCoverage
+│   ├── oracleRunner.ts      ← executeRunOracle (streaming + pool) + descoberta de schema utPLSQL
+│   ├── results.ts           ← funções canônicas de resultado/cobertura (PRD-44)
+│   ├── config.ts            ← leitura de settings + env vars + resolveConnection
+│   ├── discovery.ts         ← findFiles + parse + descoberta via DB (PRD-43)
 │   ├── invocation.ts        ← buildInvocation (launcher/java)
 │   ├── cli.ts               ← executa processo CLI
-│   ├── suiteParser.ts       ← regex %suite/%test (puro)
-│   ├── junit.ts             ← parse XML JUnit (puro)
+│   ├── cliEncoding.ts       ← decode de output (iconv)
+│   ├── suiteParser.ts       ← regex %suite/%test + annotations (puro)
+│   ├── junit.ts             ← parse XML JUnit + stack frames (puro)
 │   ├── cobertura.ts         ← parse XML Cobertura (puro)
 │   ├── cliInfo.ts           ← parse utplsql info (puro)
 │   ├── cliReporters.ts      ← parse utplsql reporters (puro)
-│   ├── matching.ts          ← filtro URI/pasta (puro)
-│   ├── state.ts             ← cache de sessão (puro)
+│   ├── matching.ts          ← filtro URI/pasta + matching resultado→teste (puro)
+│   ├── codelens.ts          ← parseCodeLensItems (puro) + CodeLensProvider
+│   ├── compilationDiagnostics.ts ← erros PL/SQL no editor
+│   ├── quickfix.ts          ← SetupValidator + Code Actions
+│   ├── decorations.ts       ← decorações inline de pass/fail
+│   ├── statusBar.ts         ← indicador de status
+│   ├── state.ts             ← estado da sessão (puro)
 │   ├── types.ts             ← interfaces (type-only)
 │   └── test/
 │       ├── unit/            ← testes com node --test
 │       └── integration/     ← testes com @vscode/test-cli
+├── dist/                    ← bundle esbuild (gerado; main = dist/extension.js)
 ├── docs/
 │   ├── prd/                 ← Product Requirements Documents
+│   ├── functional/          ← especificação funcional
 │   └── wiki/                ← conteúdo do wiki
 ├── .github/workflows/       ← CI/CD
+├── esbuild.config.mjs       ← bundling (PRD-45)
 ├── package.json
 ├── tsconfig.json
 ├── biome.json               ← linter + formatter
@@ -64,10 +75,13 @@ npm run watch            # compilação incremental
 npm run lint             # biome check src/
 npm run lint:fix         # biome check --write src/
 npm run format           # biome format --write src/
-npm run test:unit        # compila + lint + node --test out/test/unit/**/*.test.js
-npm run test:integration # compila + vscode-test
+npm run test:unit        # pretest:unit (compile+lint) → node scripts/run-tests.cjs
+npm run test:integration # pretest:integration (compile+bundle) → vscode-test
+npm run test:coverage    # compile → c8 node --test (thresholds 65/80/70)
 npm test                 # = test:unit
-npm run package          # vsce package → .vsix
+npm run bundle           # esbuild → dist/ (main real da extensão)
+npm run package          # compile + bundle + vsce package → .vsix
+npm run sync-prds        # sincroniza PRDs com issues do GitHub
 ```
 
 Rodar um único teste unitário:

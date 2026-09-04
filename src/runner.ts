@@ -14,7 +14,7 @@ import { setupValidator } from './quickfix';
 import { applyCoverageFromXml, applyResultsFromCases, countResults } from './results';
 import type { TestStateManager } from './state';
 
-export { countResults, findByNameOnly, lastSegment, type RunResults } from './results';
+export { countResults, lastSegment, type RunResults } from './results';
 
 export async function executeRun(
   controller: vscode.TestController,

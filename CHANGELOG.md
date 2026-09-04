@@ -1,5 +1,86 @@
 # Changelog
 
+## 0.11.0
+
+- **Correções de primeira execução de cobertura no Windows (launcher CLI)**:
+  - *Escaping de args no cmd.exe*: o branch Windows de `runCli` passava os args
+    crus para `cmd.exe /d /c`, e metacaracteres (`|`, `(`, `)`, `&` — comuns em
+    `-regex_expression` e em `-type_mapping` com espaço) eram interpretados pelo
+    shell (ex.: `'view' não é reconhecido como um comando`), quebrando o run com
+    cobertura no modo CLI. Agora, quando algum arg precisa, a invocação usa um
+    `.cmd` intermediário com escaping de batch (`%` → `%%`, aspas ao redor de
+    args fora do conjunto seguro) — validado E2E no cmd.exe real com os args de
+    cobertura.
+  - *`callTimeout` vazado em conexões do pool*: `findInvalidUt3Objects` (5s) e
+    `discoverSchemaFromDb` (10s) setavam `conn.callTimeout` e devolviam a
+    conexão ao pool com o timeout ativo (o node-oracledb não reseta). A
+    primeira execução após ativar a extensão herdava os 5s → `NJS-123: call
+    timeout of 5000 ms exceeded` no meio do run → fallback para CLI. Ambos
+    restauram o timeout anterior no `finally`, e `acquireRunnerConnections`
+    zera `callTimeout` ao check-out.
+- **Atualização de dependências major** (PRD-46): `oracledb` 6.10.0 → **7.0.1**
+  (+ `@types/oracledb` 7.0.2), `fast-xml-parser` 4.5.7 → **5.11.1**, `iconv-lite`
+  → **0.7.3** e `typescript` → **7.0.2** (compilador nativo) — sem mudanças de
+  código além do `.vscodeignore`. A v5 do fast-xml-parser trouxe transitivas
+  (`@nodable/entities`, `anynum`, `fast-xml-builder`, `is-unsafe`,
+  `path-expression-matcher`, `xml-naming`) que já vão embutidas no bundle
+  esbuild — podadas do VSIX. `oracledb/plugins` (auth IAM/OCI/Azure) e docs
+  não-licença também podados (extensão usa só conexão user/pass). VSIX: 153 →
+  151 arquivos, 952 → 989 KB (+3.9%), thin-only. `engines.node` segue `>= 22`
+  (piso do host do VSCode) e `@types/node` foi alinhado ao piso (`^22`) — o
+  bundle executa no Node 22 do host. Node 26 no toolchain fica para a PRD-47
+  (pós-LTS, out/2026). Validado: 350 unit, coverage 89.65%, 26 integração com
+  banco real (pool/streaming/cobertura/PRD-43), `vsce ls` sem `.node`.
+- **Descoberta de suites via banco no modo schema** (PRD-43): com `organization: schema`
+  e `runnerMode` Oracle (`auto`/`oracle`), o refresh agora complementa a descoberta de
+  arquivos consultando `ALL_OBJECTS`/`ALL_SOURCE` (`discoverSchemaFromDb` em
+  `discovery.ts`) — útil para shared installs, CI e ambientes sem o código `.pks`
+  local. Schemas candidatos vêm da união dos schemas das suites locais com os
+  diretórios abaixo da base do `organization.schemaPattern` (`discoverSchemasFromFolders`,
+  ex.: `db/*`). Prioridade filesystem no merge (match por `packageName`, case-insensitive).
+  Packages `UT_*` (framework) são ignorados; `FETCH FIRST 10000 ROWS` + `console.warn`
+  de truncamento; `callTimeout` de 10s; fallback silencioso quando `ALL_SOURCE` é
+  inacessível ou o Oracle está indisponível (`import('oracledb')` falha → `[]`). Pool do
+  PRD-38 reutilizado; `resolveConnectionNoPrompt` (refresh não pergunta conexão).
+  Suites descobertas via DB usam URI virtual `utplsql-db:/SCHEMA/PKG.pks`
+  (`SuiteFile.dbSchema`); limitação documentada: essas suites não têm CodeLens,
+  Decorations nem jump to failure (só execução). +16 testes unitários; +3 testes de
+  integração com banco real, incluindo refresh E2E em modo schema.
+- **Verificação de instalação do utPLSQL na ativação** (PRD-41): o `SetupValidator`
+  agora valida a integridade do schema UT3 (objetos inválidos em `ALL_OBJECTS` para
+  `PACKAGE`/`TYPE`/`PACKAGE BODY`) na ativação e no comando `Validar configuração`.
+  Best-effort: async, sem prompt de conexão (`resolveConnectionNoPrompt`), timeout de
+  5s (`callTimeout`), `try/catch` silencioso, pool do PRD-38 reutilizado
+  (`findInvalidUt3Objects` em `oracleRunner.ts`). Diagnostic `UTPLSQL_INVALID_OBJECTS`
+  (source "utPLSQL Setup", Warning) com quick-fix **"Recompilar UT3"**
+  (`utplsql.recompileUt3` → `DBMS_UTILITY.COMPILE_SCHEMA`), que re-verifica e limpa o
+  diagnostic se resolvido. Gates: `setupDiagnosticsEnabled: false` e `runnerMode: cli`
+  suprimem a verificação. +14 testes unitários; provider de Code Actions também
+  registrado para o scheme `utplsql-setup`.
+- **Bundling com esbuild + poda do node-oracledb no VSIX** (PRD-45): `main` agora
+  aponta para `dist/extension.js` (bundle único, `fast-xml-parser`/`iconv-lite`
+  embutidos; `vscode` e `oracledb` externos — `await import('oracledb')` preservado).
+  Novo script `npm run bundle` (`esbuild.config.mjs`); `package` e `vscode:prepublish`
+  encadeiam `compile && bundle`; `pretest:integration` também. `.vscodeignore` exclui
+  `out/**`, os binários nativos (`oracledb/build/**`), `examples/`/`package/` do
+  oracledb e as deps puras já embutidas. VSIX: 281 → 153 arquivos, ~2.1 MB → 949 KB,
+  **warning de performance do vsce eliminado**. Validado: integração com banco real
+  (thin mode **sem** binários nativos), fallback CLI com oracledb removido, `vsce ls`
+  sem `.node` e sem `out/`.
+- **Melhorias nos workflows CI/CD** (PRD-21): `ci.yml` e `publish.yml` unificados em
+  `actions/checkout@v7` + `actions/setup-node@v7`. Passos redundantes de compile/lint
+  removidos do CI (`npm test` já dispara `pretest:unit`). Publish usa `npm run package`
+  e `npm run publish` em vez de `npx @vscode/vsce`; novo `scripts/publish.cjs` mantém o
+  bloqueio local (publicação continua exclusiva via release) e bypassa quando
+  `CI=true` (setado pelo GitHub Actions). `.vscodeignore` passa a excluir `install/**`
+  (pasta local gitignored, impedia o `vsce package` quando continha `.env`).
+- **Matching resultado→teste como função pura** (PRD-44): `buildMatchIndex` e
+  `findByNameOnly` extraídos para `matching.ts` como funções puras (`MatchEntry[]`
+  → `Map`/item), sem dependência de `TestStateManager`/`WeakMap`. `applyResultsFromCases`
+  em `results.ts` constrói `entries` antes do loop de matching (nenhum acesso a
+  `state.getMeta()` dentro do loop). Sem mudança de comportamento. +10 testes unitários
+  em `matching.test.ts`; cobertura de `matching.ts` em 100%.
+
 ## 0.10.0
 
 - **Connection pooling no Oracle runner** (PRD-38): pool lazy gerenciado por `ensurePool`

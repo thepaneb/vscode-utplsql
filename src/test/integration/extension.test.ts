@@ -254,5 +254,75 @@ describe('utPLSQL extension', () => {
         }
       });
     });
+
+    describe('descoberta via DB no modo schema (PRD-43)', () => {
+      it('discoverSchemaFromDb descobre suites de packages sem arquivo local', async function () {
+        this.timeout(60_000);
+        const conn = process.env.UTPLSQL_CONN as string;
+        const folders = vscode.workspace.workspaceFolders ?? [];
+        const { discoverSchemaFromDb } = await import('../../discovery.js');
+
+        const user = conn.split('/')[0];
+        const schemas = [...new Set([user, 'UTPLSQL_TEST'])];
+        const discovered = (
+          await Promise.all(schemas.map((schema) => discoverSchemaFromDb(conn, schema, folders)))
+        ).flat();
+
+        assert.ok(
+          discovered.some((s) => s.packageName.toLowerCase() === 'test_math'),
+          'test_math deveria ser descoberto via ALL_OBJECTS/ALL_SOURCE',
+        );
+        for (const s of discovered) {
+          assert.strictEqual(
+            s.uri.scheme,
+            'utplsql-db',
+            `URI virtual esperado para ${s.packageName}`,
+          );
+        }
+      });
+
+      it('discoverSchemaFromDb com schema inexistente retorna vazio sem erro', async function () {
+        this.timeout(60_000);
+        const conn = process.env.UTPLSQL_CONN as string;
+        const folders = vscode.workspace.workspaceFolders ?? [];
+        const { discoverSchemaFromDb } = await import('../../discovery.js');
+        const result = await discoverSchemaFromDb(conn, 'SCHEMA_NAO_EXISTE_XYZ', folders);
+        assert.deepStrictEqual(result, []);
+      });
+
+      it('refresh no modo schema mescla suites do banco sem erro', async function () {
+        this.timeout(60_000);
+        const root = vscode.workspace.workspaceFolders?.[0]?.uri;
+        assert.ok(root, 'workspace folder required');
+        const schemaDir = vscode.Uri.joinPath(root, 'db', 'UT3');
+        await vscode.workspace.fs.createDirectory(schemaDir);
+
+        const config = vscode.workspace.getConfiguration('utplsql');
+        const origOrg = config.inspect<string>('organization');
+        const origPattern = config.inspect<string>('organization.schemaPattern');
+        try {
+          await config.update('organization', 'schema', vscode.ConfigurationTarget.Workspace);
+          await config.update(
+            'organization.schemaPattern',
+            'db/{schema}/**',
+            vscode.ConfigurationTarget.Workspace,
+          );
+          await vscode.commands.executeCommand('utplsql.refresh');
+        } finally {
+          await config.update(
+            'organization',
+            origOrg?.workspaceValue !== undefined ? origOrg.workspaceValue : undefined,
+            vscode.ConfigurationTarget.Workspace,
+          );
+          await config.update(
+            'organization.schemaPattern',
+            origPattern?.workspaceValue !== undefined ? origPattern.workspaceValue : undefined,
+            vscode.ConfigurationTarget.Workspace,
+          );
+          await vscode.workspace.fs.delete(schemaDir, { recursive: true });
+          await vscode.commands.executeCommand('utplsql.refresh');
+        }
+      });
+    });
   });
 });

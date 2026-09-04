@@ -41,7 +41,7 @@ Todas as settings da extensão, com prefixo `utplsql.`. Configure no
 | `utplsql.oraclePoolMin` | `2` | Conexões mínimas mantidas no pool (node-oracledb). |
 | `utplsql.oraclePoolMax` | `10` | Conexões máximas no pool. |
 | `utplsql.oraclePoolIncrement` | `1` | Incremento ao expandir o pool. |
-| `utplsql.oraclePoolPingInterval` | `60` | Segundos entre health checks das conexões ociosas (ping no checkout). `0` = ping a cada checkout. |
+| `utplsql.oraclePoolPingInterval` | `60` | Segundos entre health checks das conexões ociosas do pool. `0` = ping a cada checkout. |
 
 O pool é criado **lazy** na primeira execução Oracle, é recriado quando a
 conexão muda e fechado ao desativar a extensão. Veja [Execução Oracle direta](Execução-Oracle-direta).
@@ -69,8 +69,8 @@ conexão muda e fechado ao desativar a extensão. Veja [Execução Oracle direta
 | `utplsql.codeLens.enabled` | `true` | Botões CodeLens Run/Run with Coverage sobre `%suite` e `%test`. |
 | `utplsql.statusBar.enabled` | `true` | Indicador de status na barra de status (pass/fail + duração). |
 | `utplsql.decorations.enabled` | `true` | Ícones inline ✓/✗/⚠ no editor após execução. |
-| `utplsql.compilationDiagnostics.enabled` | `true` | Exibe erros de compilação PL/SQL como sublinhados e no Problems Panel. |
-| `utplsql.setupDiagnostics.enabled` | `true` | Exibe diagnósticos de setup (CLI, conexão, grants) com quick-fix. |
+| `utplsql.compilationDiagnostics.enabled` | `true` | Exibe erros de compilação PL/SQL como sublinhados e no Problems Panel (modo CLI). |
+| `utplsql.setupDiagnostics.enabled` | `true` | Exibe diagnósticos de setup (CLI, conexão, grants, versão) e de integridade da instalação utPLSQL (objetos inválidos, quick-fix "Recompilar UT3") com quick-fix. |
 
 ## Organização da árvore
 
@@ -78,6 +78,12 @@ conexão muda e fechado ao desativar a extensão. Veja [Execução Oracle direta
 |---|---|---|
 | `utplsql.organization` | `file` | `file` (por caminho) ou `schema` (Schema > Package > Suite > Test). |
 | `utplsql.organization.schemaPattern` | `db/{schema}/**` | Padrão glob para extrair schema do caminho. Use `{schema}` como placeholder. |
+
+No modo `schema` com `runnerMode` `auto`/`oracle` e conexão configurada (sem
+prompt), o refresh também descobre suites direto do banco (`ALL_OBJECTS`/
+`ALL_SOURCE`) para schemas cujos arquivos não estão no workspace — os schemas
+consultados são os diretórios abaixo da base do padrão (ex.: `db/*`) e os
+schemas das suites locais. Veja [Organização da árvore](Organização-da-árvore).
 
 ## Hierarquia de settings
 

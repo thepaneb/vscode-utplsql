@@ -11,22 +11,28 @@ Visão geral dos testes da extensão e como executá-los.
 
 ## Testes unitários
 
-Testam módulos puros (sem dependência de `vscode`):
+Testam módulos puros (sem dependência de `vscode`) — a lista completa de
+arquivos compilados:
 
 ```
-src/test/unit/
-├── cli.test.js
-├── cliInfo.test.js
-├── cliReporters.test.js
-├── cobertura.test.js
-├── config.test.js
-├── discovery.test.js
-├── invocation.test.js
-├── junit.test.js
-├── matching.test.js
-├── runner.test.js
-├── state.test.js
-└── suiteParser.test.js
+src/test/unit/  (origem TypeScript; execução em out/test/unit/)
+├── cli.test.ts            ├── invocation.test.ts
+├── cliEncoding.test.ts    ├── junit.test.ts
+├── cliInfo.test.ts        ├── matching.test.ts
+├── cliReporters.test.ts   ├── oracleRunner.test.ts
+├── cobertura.test.ts      ├── quickfix.test.ts
+├── codelens.test.ts       ├── rerun.test.ts
+├── compilationDiagnostics.test.ts  ├── results.test.ts
+├── config.test.ts         ├── runner.test.ts
+├── coverage.test.ts       ├── state.test.ts
+├── decorations.test.ts    ├── statusBar.test.ts
+├── discovery.test.ts      └── suiteParser.test.ts
+```
+
+Há também **cobertura TypeScript** com `c8`:
+
+```bash
+npm run test:coverage   # thresholds: 65% lines/statements, 80% branches, 70% functions
 ```
 
 ### Como criar um teste
@@ -98,17 +104,19 @@ UTPLSQL_CLI_HOME=/home/user/utplsql-cli
 
 ### Fixtures de banco
 
-Os testes com banco usam um schema `utplsql_test` com packages de exemplo:
+Os testes com banco usam um schema de teste com packages de exemplo:
 
 ```
 src/test/integration/fixtures/
 ├── setup.sh                       ← script de configuração do ambiente
+├── setup.sql                      ← criação do schema + grants (idempotente)
+├── compile_packages.sql           ← compilação dos packages de teste
+├── settings.example.json          ← exemplo de settings para o workspace
 ├── test_betwnvarchar.pks          ← suite de exemplo 1
-├── test_betwnvarchar.pkb
-├── test_math.pks                  ← suite de exemplo 2
-├── test_math.pkb
+├── test_calculator.pks/.sql       ← suite + objeto de produção
 ├── test_employees.pks             ← suite de exemplo 3
-└── test_employees.pkb
+├── test_math.pks                  ← suite de exemplo 4
+└── test_math_fail.pks             ← suite com falha proposital
 ```
 
 ### Como rodar

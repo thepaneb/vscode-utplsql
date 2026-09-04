@@ -8,6 +8,7 @@ import {
   closeOraclePool,
   discoverUtplsqlSchema,
   ensurePool,
+  findInvalidUt3Objects,
   mapDbPathsToFiles,
   parseConnString,
 } from '../../oracleRunner';
@@ -297,7 +298,7 @@ function makeFakeOracledb(opts?: { createPoolThrows?: boolean }) {
         closed: false,
         getConnection: async () => {
           if (pool.closed) throw new Error('pool fechado');
-          return { fromPool: true };
+          return { fromPool: true, callTimeout: 1234 };
         },
         close: async () => {
           pool.closed = true;
@@ -403,6 +404,92 @@ test('acquireRunnerConnections: fallback para conexao raw quando createPool falh
     assert.strictEqual(parsed.user, 'u');
     assert.strictEqual(parsed.connectionString, 'h:1521/s');
     assert.strictEqual(mod.outFormat, mod.OUT_FORMAT_OBJECT);
+  } finally {
+    await closeOraclePool();
+  }
+});
+
+test('acquireRunnerConnections: zera callTimeout vazado de conexoes do pool', async () => {
+  const { mod } = makeFakeOracledb();
+  try {
+    const { conn1, conn2 } = await acquireRunnerConnections(
+      mod as never,
+      'u/p@//h:1521/s',
+      POOL_CFG,
+    );
+    assert.strictEqual((conn1 as unknown as Record<string, unknown>).callTimeout, 0);
+    assert.strictEqual((conn2 as unknown as Record<string, unknown>).callTimeout, 0);
+  } finally {
+    await closeOraclePool();
+  }
+});
+
+// ── findInvalidUt3Objects (callTimeout não deve vazar para o pool) ───
+
+function makeFindInvalidMod(conn: {
+  execute: (sql: string) => Promise<{ rows: unknown[] }>;
+  callTimeout: number;
+  close: () => Promise<void>;
+}) {
+  const mod = {
+    OUT_FORMAT_OBJECT: { id: 'object' },
+    createPool: async () => ({
+      getConnection: async () => conn,
+      close: async () => {},
+    }),
+    getConnection: async () => {
+      throw new Error('raw indisponivel');
+    },
+  };
+  return mod;
+}
+
+test('findInvalidUt3Objects: restaura callTimeout original ao devolver conexao', async () => {
+  const seenTimeouts: number[] = [];
+  let closed = false;
+  const conn = {
+    callTimeout: 777,
+    execute: async (sql: string) => {
+      seenTimeouts.push(conn.callTimeout);
+      if (/ALL_SYNONYMS/i.test(sql)) return { rows: [{ TABLE_OWNER: 'UT3' }] };
+      return { rows: [] };
+    },
+    close: async () => {
+      closed = true;
+    },
+  };
+  try {
+    const result = await findInvalidUt3Objects(
+      makeFindInvalidMod(conn) as never,
+      'u/p@//h:1521/s',
+      POOL_CFG,
+    );
+    assert.deepStrictEqual(result, { schema: 'UT3', invalid: [] });
+    assert.strictEqual(closed, true);
+    assert.strictEqual(conn.callTimeout, 777);
+    assert.ok(seenTimeouts.length > 0);
+    assert.ok(seenTimeouts.every((t) => t === 5000));
+  } finally {
+    await closeOraclePool();
+  }
+});
+
+test('findInvalidUt3Objects: restaura callTimeout tambem em caso de erro', async () => {
+  const conn = {
+    callTimeout: 777,
+    execute: async () => {
+      throw new Error('ORA-00942');
+    },
+    close: async () => {},
+  };
+  try {
+    const result = await findInvalidUt3Objects(
+      makeFindInvalidMod(conn) as never,
+      'u/p@//h:1521/s',
+      POOL_CFG,
+    );
+    assert.strictEqual(result, undefined);
+    assert.strictEqual(conn.callTimeout, 777);
   } finally {
     await closeOraclePool();
   }

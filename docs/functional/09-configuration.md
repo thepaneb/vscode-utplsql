@@ -115,8 +115,8 @@ class TestStateManager {
   getMeta(item): ItemMeta | undefined;
 
   // Cobertura
-  setCoverage(uri, details): void;
-  getCoverage(uri): FileCoverageDetail[];
+  setCoverage(uriStr, details): void;
+  getCoverage(uriStr): FileCoverageDetail[];   // chave = uri.toString()
   clearCoverage(): void;
 
   // Resultados da última execução

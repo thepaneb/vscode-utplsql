@@ -96,6 +96,7 @@ CONCLUIR
 | 18 | [Alinhamento `engines.node` com CI](completed/prd-18-engine-node-ci.md) | 0.7.1 | 2026-07-18 |
 | 19 | [Normalização do sistema de PRDs](completed/prd-19-normalize-prd-system.md) | 0.7.1 | 2026-07-18 |
 | 20 | [Limpeza de dependências e configurações](completed/prd-20-cleanup-deps-config.md) | 0.7.1 | 2026-07-18 |
+| 21 | [Melhorias nos workflows CI/CD](completed/prd-21-workflow-improvements.md) | 0.11.0 | 2026-07-18 |
 | 22 | [Sincronizar imagens no workflow da wiki](completed/prd-22-wiki-image-sync.md) | 0.7.1 | 2026-07-21 |
 | 23 | [Screenshots da wiki: checklist manual + diagramas](completed/prd-23-auto-wiki-screenshots.md) | 0.10.0 | 2026-07-21 |
 | 24 | [CodeLens Integration](completed/prd-24-codelens-integration.md) | 0.8.0 | 2026-07-25 |
@@ -113,7 +114,12 @@ CONCLUIR
 | 38 | [Connection Pooling no Oracle Runner](completed/prd-38-connection-pooling.md) | 0.10.0 | 2026-08-08 |
 | 39 | [Eliminar código duplicado entre runners](completed/prd-39-deduplicate-runners.md) | 0.10.0 | 2026-08-08 |
 | 40 | [Refatorar executeRunOracle: Options Object](completed/prd-40-options-object.md) | 0.10.0 | 2026-08-08 |
+| 41 | [Verificação de instalação do utPLSQL](completed/prd-41-utplsql-install-verification.md) | 0.11.0 | 2026-08-08 |
 | 42 | [SuiteParser: parse de annotations estendidas](completed/prd-42-suiteparser-annotations.md) | 0.10.0 | 2026-08-08 |
+| 43 | [Schema-mode: descoberta via ALL_OBJECTS/ALL_SOURCE](completed/prd-43-schema-db-discovery.md) | 0.11.0 | 2026-08-29 |
+| 44 | [Matching resultado→teste como função pura](completed/prd-44-pure-matching.md) | 0.11.0 | 2026-08-08 |
+| 45 | [Bundling com esbuild + poda do node-oracledb no VSIX](completed/prd-45-bundle-esbuild.md) | 0.11.0 | 2026-08-26 |
+| 46 | [Atualização de dependências major](completed/prd-46-dependency-majors.md) | 0.11.0 | 2026-08-29 |
 
 ### 🟡 Em desenvolvimento
 
@@ -121,19 +127,9 @@ _(vazio — nenhuma PRD em implementação)_
 
 ### 🔵 Aprovados
 
-_(vazio — aprovar novas PRDs em `proposed/`)_
+_(vazio — nenhuma PRD aprovada aguardando implementação)_
 
 ### ⚪ Propostos
-
-#### 0.11.0
-
-| # | PRD | Versão alvo | Data |
-|---|---|---|---|
-| 21 | [Melhorias nos workflows CI/CD](proposed/prd-21-workflow-improvements.md) | 0.11.0 | 2026-07-18 |
-| 41 | [Verificação de instalação do utPLSQL](proposed/prd-41-utplsql-install-verification.md) | 0.11.0 | 2026-08-08 |
-| 43 | [Schema-mode: descoberta via ALL_OBJECTS](proposed/prd-43-schema-db-discovery.md) | 0.11.0 | 2026-08-08 |
-| 44 | [Matching resultado→teste como função pura](proposed/prd-44-pure-matching.md) | 0.11.0 | 2026-08-08 |
-| 45 | [Bundling com esbuild + poda do node-oracledb no VSIX](proposed/prd-45-bundle-esbuild.md) | 0.11.0 | 2026-08-26 |
 
 #### 0.12.0
 
@@ -142,6 +138,9 @@ _(vazio — aprovar novas PRDs em `proposed/`)_
 | 12 | [Cobertura de código para objetos SQL (views, queries)](proposed/prd-12-sql-coverage.md) | 0.12.0 | 2026-07-08 |
 | 33 | [PL/SQL Debugger Integration](proposed/prd-33-plsql-debugger-integration.md) | 0.12.0 | 2026-07-21 |
 | 34 | [Multi-Connection Profiles](proposed/prd-34-multi-connection-profiles.md) | 0.12.0 | 2026-07-21 |
+| 47 | [Node 26 no toolchain de desenvolvimento](proposed/prd-47-node-26-toolchain.md) | 0.12.0 | 2026-08-29 |
+| 48 | [Function Coverage derivada (DeclarationCoverage)](proposed/prd-48-function-coverage.md) | 0.12.0 | 2026-08-29 |
+| 49 | [Internacionalização (i18n) dos conteúdos textuais](proposed/prd-49-internacionalizacao.md) | 0.12.0 | 2026-08-29 |
 
 
 ---
@@ -172,6 +171,7 @@ docs/prd/
 │   ├── prd-18-engine-node-ci.md
 │   ├── prd-19-normalize-prd-system.md
 │   ├── prd-20-cleanup-deps-config.md
+│   ├── prd-21-workflow-improvements.md
 │   ├── prd-22-wiki-image-sync.md
 │   ├── prd-23-auto-wiki-screenshots.md
 │   ├── prd-24-codelens-integration.md
@@ -189,18 +189,20 @@ docs/prd/
 │   ├── prd-38-connection-pooling.md
 │   ├── prd-39-deduplicate-runners.md
 │   ├── prd-40-options-object.md
-│   └── prd-42-suiteparser-annotations.md
+│   ├── prd-41-utplsql-install-verification.md
+│   ├── prd-42-suiteparser-annotations.md
+│   ├── prd-43-schema-db-discovery.md
+│   ├── prd-44-pure-matching.md
+│   └── prd-45-bundle-esbuild.md
 ├── approved/         ← aprovados, aguardando implementação (vazio)
 ├── in-progress/      ← sendo implementados agora (vazio)
 └── proposed/         ← em avaliação
     ├── prd-12-sql-coverage.md
-    ├── prd-21-workflow-improvements.md
     ├── prd-33-plsql-debugger-integration.md
     ├── prd-34-multi-connection-profiles.md
-    ├── prd-41-utplsql-install-verification.md
-    ├── prd-43-schema-db-discovery.md
-    ├── prd-44-pure-matching.md
-    └── prd-45-bundle-esbuild.md
+    ├── prd-47-node-26-toolchain.md
+    ├── prd-48-function-coverage.md
+    └── prd-49-internacionalizacao.md
 ```
 
 ---

@@ -7,7 +7,7 @@
 Verifique:
 1. Os arquivos têm extensão coberta por `utplsql.includePatterns` (default: `**/*.pks`)
 2. As annotations `%suite` e `%test` estão no **spec** (`.pks`), não no body
-3. Há uma **linha em branco** entre `%suite` e o primeiro `%test`/procedure
+3. O arquivo tem a declaração `create package` e ao menos um `%test` seguido de `PROCEDURE`
 4. Rode `utPLSQL: Atualizar testes` para forçar rediscovery
 5. Rode `utPLSQL: Validar configuração` para diagnóstico automático de CLI, conexão e grants
 
@@ -203,8 +203,8 @@ publicação no Marketplace é feita **exclusivamente** via GitHub release
 
 ```bash
 npm run package
-# gera: vscode-utplsql-0.10.0.vsix
-code --install-extension vscode-utplsql-0.10.0.vsix
+# gera: vscode-utplsql-0.11.0.vsix
+code --install-extension vscode-utplsql-0.11.0.vsix
 ```
 
 ---
@@ -219,12 +219,9 @@ banco via `node-oracledb` e mostra cada teste **em tempo real** no Explorer.
 
 ### Preciso instalar algo para usar o Oracle direto?
 
-Sim, `node-oracledb` é uma dependência opcional. Instale com:
-```bash
-npm install oracledb
-```
-
-No modo `auto` (default), se não estiver instalado, a extensão usa CLI
+Não — o VSIX já inclui o driver `oracledb` **thin** (puro JavaScript, sem
+Instant Client). Em desenvolvimento, `node-oracledb` é uma dependência
+opcional (`optionalDependencies`); sem ela, o modo `auto` usa CLI
 automaticamente. Use `runnerMode: cli` para forçar CLI sempre.
 
 ### Funciona com shared install (UT3)?
@@ -250,13 +247,15 @@ Compilation"). Desabilite com `utplsql.compilationDiagnostics.enabled: false`.
 ### Como valido se minha configuração está correta?
 
 Rode `utPLSQL: Validar configuração` (palette `Ctrl+Shift+P`). A extensão
-verifica CLI, Java (modo java), conexão Oracle e versão do utPLSQL. Os
-resultados aparecem no Problems Panel com **quick-fix actions** (ícone 💡).
+verifica CLI, Java (modo java), conexão Oracle, versão do utPLSQL e a
+**integridade da instalação** (objetos inválidos no schema utPLSQL). Os
+resultados aparecem no Problems Panel com **quick-fix actions** (ícone 💡) —
+incluindo **"Recompilar UT3"** quando há objetos inválidos.
 
 ### Como consigo os grants de cobertura sem digitar?
 
-Use `utPLSQL: Copiar grants de cobertura` — copia o SQL pronto para o
-clipboard. Cole no SQL*Plus/SQL Developer como DBA.
+Use `utPLSQL: Copiar grants de cobertura para clipboard` — copia o SQL pronto
+para o clipboard. Cole no SQL*Plus/SQL Developer como DBA.
 
 ---
 
@@ -275,6 +274,14 @@ Mude `utplsql.organization` para `schema` e configure `organization.schemaPatter
 
 Com estrutura `db/APP/tests/` e `db/LOGIC/tests/`, o Test Explorer mostra
 `Schema: APP` e `Schema: LOGIC` como nós raiz. Veja [Organização da árvore](Organização-da-árvore).
+
+### Os testes aparecem mesmo sem os arquivos `.pks` no workspace?
+
+Sim — com `runnerMode` `auto`/`oracle` e conexão configurada, o refresh também
+descobre suites direto do banco (`ALL_OBJECTS`/`ALL_SOURCE`) para os schemas
+dos diretórios abaixo da base do `schemaPattern` (ex.: `db/*`). Essas suites
+aparecem com URI virtual (`utplsql-db:/`) e executam normalmente, mas **não**
+têm CodeLens, decorações inline nem jump to failure.
 
 ### Funciona com multi-root?
 

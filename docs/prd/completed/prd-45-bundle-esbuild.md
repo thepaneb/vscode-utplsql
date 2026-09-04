@@ -2,12 +2,14 @@
 
 | Campo | Valor |
 |---|---|
-| Status | Proposto |
+| Status | Concluído |
 | Autor | Gil Cleber |
 | Data | 2026-08-26 |
 | Componente | Extensão `paneb.vscode-utplsql` |
 | Versão alvo | 0.11.0 |
 | Arquivos afetados | `esbuild.config.mjs` (novo), `package.json`, `.vscodeignore`, `.github/workflows/publish.yml` |
+| Esforço estimado | 1–2 dias |
+| Complexidade | Média |
 
 ## 1. Resumo
 
@@ -197,7 +199,11 @@ devDependency `esbuild`), `.vscodeignore` e `publish.yml`.
 
 ## 11. Questões em aberto
 
-- Confirmar se o warning do vsce desaparece com ~108 JS files (threshold exato
-  não documentado) — se persistir, aplicar plano B (seção 5.3)
-- Decidir se `dist/` substitui `out/` também em `.vscodeignore` de uma vez ou
-  se `out/` permanece por segurança na transição
+- **Decidido (2026-08-28)**: o warning do `vsce` **desapareceu** — com o bundle
+  (1 JS), o oracledb thin (~107 JS) e a poda das dependências puras já embutidas
+  (`fast-xml-parser`, `iconv-lite`, `strnum`, `safer-buffer`) excluídas do VSIX,
+  o pacote final tem ~72 arquivos JS (VSIX: 153 arquivos, 949 KB).
+- **Decidido**: `dist/` substitui `out/` de imediato no `.vscodeignore` (sem fase
+  de transição) — `out/` continua gerado pelo `tsc` localmente apenas para testes.
+- **Extra**: `vscode:prepublish` e `pretest:integration` encadeiam `compile && bundle`
+  (o `main` aponta para `dist/` e `vsce`/integração precisam do bundle).

@@ -26,7 +26,8 @@ esperar o batch completo.
 
 **Vantagens sobre o CLI:**
 - Feedback instantâneo — cada teste aparece no Explorer assim que termina
-- Cancelamento mata a sessão Oracle (sem `child.kill()`)
+- Cancelamento interrompe o statement em execução (`conn.break()` nas duas
+  conexões + `Promise.race`) — sem `child.kill()` e sem matar a sessão
 - Sem arquivos temporários (`results.xml`, `coverage.xml`)
 - Resultados preservados mesmo se o processo falhar no meio
 
@@ -34,12 +35,11 @@ esperar o batch completo.
 
 ### node-oracledb
 
-```bash
-npm install oracledb
-```
-
-A dependência é **opcional** (`optionalDependencies` no `package.json`). O thin
-driver (puro JavaScript) não requer Oracle Instant Client.
+Nenhum requisito para o usuário: o VSIX já inclui o `oracledb` **thin**
+(puro JavaScript, sem Oracle Instant Client — os binários nativos do thick
+são podados no empacotamento). Em desenvolvimento, a dependência é
+**opcional** (`optionalDependencies` no `package.json`); sem ela, a extensão
+funciona apenas com `runnerMode: cli` (modo `auto` cai para CLI).
 
 ### Connection pooling (v0.10.0)
 
@@ -96,7 +96,7 @@ A cobertura requer `GRANT EXECUTE ON SYS.DBMS_PROFILER` no schema dos testes
 | Aspecto | CLI | Oracle direto |
 |---|---|---|
 | Feedback | Batch (espera tudo terminar) | Streaming (teste por teste) |
-| Cancelamento | `child.kill()` | `ALTER SYSTEM KILL SESSION` |
+| Cancelamento | `child.kill()` | `conn.break()` + `Promise.race` |
 | Arquivos temp | `results.xml`, `coverage.xml` | Nenhum |
 | Dependências | Java + utPLSQL-cli | node-oracledb (opcional) |
 | Latência extra | Spawn de processo + JVM startup | Conexão TCP direta |
@@ -106,7 +106,7 @@ A cobertura requer `GRANT EXECUTE ON SYS.DBMS_PROFILER` no schema dos testes
 
 | Sintoma | Solução |
 |---|---|
-| "oracledb não disponível" | `npm install oracledb` ou use `runnerMode: cli` |
+| "oracledb não disponível" | Ocorre apenas em desenvolvimento (VSIX já inclui o driver thin). Use `runnerMode: cli` ou `npm install oracledb` |
 | `ORA-00942: table does not exist` | Execute os grants nas tabelas de buffer (veja acima) |
 | Conexão recusada | Verifique formato: `user/pass@//host:port/service` |
 | Coverage não funciona | Mesmo requisito do CLI: `GRANT EXECUTE ON DBMS_PROFILER` |

@@ -7,22 +7,22 @@ por schema.
 ## Visão geral
 
 ```
-discovery (.pks)  ──►  executeRun  ──►  CLI / Oracle direto  ──►  parseJUnit  ──►  Test Explorer
-                              │                                      │
-                              └─► parseCobertura  ──►  Coverage gutters
+discovery (.pks + banco)  ──►  executeRun  ──►  CLI / Oracle direto  ──►  parseJUnit  ──►  Test Explorer
+                                       │                                      │
+                                       └─► parseCobertura  ──►  Coverage gutters
 ```
 
 ### Arquitetura de alto nível
 
 | Camada | Módulos | Responsabilidade |
 |---|---|---|
-| **Descoberta** | `suiteParser.ts`, `discovery.ts` | Encontrar suites/testes nos arquivos `.pks` via regex `%suite`/`%test` + annotations estendidas |
-| **Execução** | `runner.ts`, `cli.ts`, `oracleRunner.ts`, `invocation.ts` | Executar testes via CLI ou Oracle direto (com connection pooling) |
-| **Resultados** | `junit.ts`, `results.ts`, `cliReporters.ts` | Parse do XML JUnit, mapeamento para `vscode.TestItem` (funções canônicas compartilhadas) |
+| **Descoberta** | `suiteParser.ts`, `discovery.ts` | Encontrar suites/testes nos arquivos `.pks` via regex `%suite`/`%test` + annotations estendidas; no modo schema, complementa com descoberta via banco (`ALL_OBJECTS`/`ALL_SOURCE`) |
+| **Execução** | `runner.ts`, `cli.ts`, `oracleRunner.ts`, `invocation.ts`, `cliEncoding.ts` | Executar testes via CLI ou Oracle direto (com connection pooling) |
+| **Resultados** | `junit.ts`, `results.ts`, `cliReporters.ts`, `cliInfo.ts`, `matching.ts` | Parse do XML JUnit, mapeamento para `vscode.TestItem` (funções canônicas compartilhadas) |
 | **Cobertura** | `cobertura.ts`, `coverage.ts` | Parse do XML Cobertura, mapeamento para arquivos fonte |
 | **UX** | `codelens.ts`, `statusBar.ts`, `decorations.ts` | CodeLens, StatusBar, decorações inline |
-| **Diagnósticos** | `compilationDiagnostics.ts`, `quickfix.ts` | Erros PL/SQL no editor, validação de setup com quick-fix |
-| **Configuração** | `config.ts`, `state.ts` | Settings, conexão, estado persistente |
+| **Diagnósticos** | `compilationDiagnostics.ts`, `quickfix.ts` | Erros PL/SQL no editor, validação de setup/integridade UT3 com quick-fix |
+| **Configuração** | `config.ts`, `state.ts`, `types.ts` | Settings, conexão, estado persistente |
 | **Orquestração** | `extension.ts` | Registro de comandos, providers, ciclo de vida |
 
 ### Separação módulos puros vs vscode
@@ -30,9 +30,9 @@ discovery (.pks)  ──►  executeRun  ──►  CLI / Oracle direto  ──�
 | Puro (testável com `node --test`) | Depende de `vscode` |
 |---|---|
 | `suiteParser.ts`, `junit.ts`, `cobertura.ts` | `extension.ts`, `runner.ts`, `results.ts` |
-| `invocation.ts`, `matching.ts` | `config.ts`, `cli.ts` |
+| `invocation.ts`, `matching.ts`, `cliEncoding.ts` | `config.ts`, `cli.ts` |
 | `cliInfo.ts`, `cliReporters.ts`, `codelens.ts` (parse) | `discovery.ts`, `coverage.ts`, `oracleRunner.ts` |
-| `state.ts`, `types.ts` | `decorations.ts`, `statusBar.ts` |
+| `state.ts`, `types.ts` | `decorations.ts`, `statusBar.ts`, `compilationDiagnostics.ts`, `quickfix.ts` |
 
 ### Context keys
 

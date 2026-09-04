@@ -1,6 +1,7 @@
 # 01 — Test Discovery
 
-Descoberta de suites e testes utPLSQL nos arquivos `.pks` do workspace.
+Descoberta de suites e testes utPLSQL nos arquivos `.pks` do workspace e,
+no modo `schema`, complementada por descoberta direto do banco (PRD-43).
 
 ## Fluxo
 
@@ -12,25 +13,32 @@ workspace folders
     ├─► parseSuite(uri, text)
     │       │
     │       ├─► suiteParser.ts: parseSuiteText(text)
-    │       │       ├─► regex %suite → packageName, suiteDescription, suiteLine
+    │       │       ├─► RE_PACKAGE (create package) → packageName
+    │       │       ├─► regex %suite → suiteDescription, suiteLine
     │       │       ├─► regex %test → procName, description, line
     │       │       └─► annotations: %disabled, %throws, %tags, %displayname,
     │       │           lifecycle (%beforeall/%beforeeach/%aftereach/%afterall)
     │       │
-    │       └─► retorna ParsedSuite | null (sem %suite)
+    │       └─► retorna ParsedSuite | null (sem %suite ou sem CREATE PACKAGE)
     │
-    └─► discoverWorkspace(patterns, folders) → SuiteFile[]
+    ├─► discoverWorkspace(patterns, folders) → SuiteFile[]
+    │       │
+    │       ├─► filtra suites com disabled e testes com disabled
+    │       └─► resolveFolder(uri, folders) → WorkspaceFolder (prefixo mais longo)
+    │
+    └─► (modo schema + Oracle) discoverSchemaFromDb() → SuiteFile[] (PRD-43)
             │
-            ├─► filtra suites com disabled e testes com disabled
-            └─► resolveFolder(uri, folders) → WorkspaceFolder (prefixo mais longo)
+            ├─► ALL_OBJECTS → packages VALID (sem prefixo UT_)
+            ├─► ALL_SOURCE → texto da spec (prefixo sintético CREATE OR REPLACE)
+            └─► merge: filesystem tem prioridade sobre o banco
 ```
 
 ## Arquivos
 
 | Arquivo | Tipo | Descrição |
 |---|---|---|
-| `src/suiteParser.ts` | Puro | `parseSuiteText(text)` — extrai `packageName`, `suiteDescription`, `tests[]` via regex |
-| `src/discovery.ts` | vscode | `discoverWorkspace()`, `parseSuite()`, `extractSchemaFromPath()`, `SuiteFile` |
+| `src/suiteParser.ts` | Puro | `parseSuiteText(text)` — extrai `packageName` (via regex de `create package`), `suiteDescription`, `tests[]` |
+| `src/discovery.ts` | vscode | `discoverWorkspace()`, `parseSuite()`, `extractSchemaFromPath()`, `discoverSchemaFromDb()`, `discoverSchemaFromConn()`, `discoverSchemasFromFolders()`, `SuiteFile` |
 | `src/matching.ts` | Puro | `filterSuitesByUri()`, `filterSuitesByFolder()` — filtragem por URI/pasta |
 | `src/codelens.ts` | Híbrido | `parseCodeLensItems()` puro + `UtplsqlCodeLensProvider` vscode |
 
@@ -49,6 +57,7 @@ interface SuiteFile {
   hasAfterAll?: boolean;
   hasBeforeEach?: boolean;
   hasAfterEach?: boolean;
+  dbSchema?: string;         // schema Oracle de suites descobertas via DB (PRD-43)
 }
 
 interface TestProc {
@@ -65,24 +74,28 @@ interface TestProc {
 ## `parseSuiteText` — parsing
 
 ```typescript
-// Regex para %suite: captura nome opcional (descrição) e posição
+// Package: exige a declaração create [or replace] package
+// (no ALL_SOURCE do banco o texto começa em "PACKAGE …" — a descoberta via DB
+//  prefixa "CREATE OR REPLACE " sinteticamente)
+const RE_PACKAGE = /create\s+(?:or\s+replace\s+)?package\s+(?:body\s+)?(?:"?(\w+)"?\.)?"?(\w+)"?/i;
+
+// Regex para %suite: captura nome opcional (descrição)
 // %suite(Descrição) ou %suite
-const suiteRegex = /--\s*%suite\s*(?:\(\s*(.+?)\s*\))?/i;
+const RE_SUITE = /--\s*%suite\s*(?:\(([^)]*)\))?/i;
 
 // Regex para %test: captura nome opcional (descrição)
-// %test(Descrição)
-const testRegex = /--\s*%test\s*(?:\(\s*(.+?)\s*\))?/i;
+const RE_TEST = /--\s*%test\s*(?:\(([^)]*)\))?/i;
 
-// Regex para procedure: captura nome e linha
-// PROCEDURE nome_do_proc
-const procRegex = /^\s*PROCEDURE\s+(\w+)/mi;
+// Regex para procedure: captura nome (case-insensitive, sem âncora de linha)
+const RE_PROC = /\bprocedure\s+"?(\w+)"?/i;
 ```
 
 O parser percorre o texto linha a linha:
-1. Encontra `%suite` → armazena descrição + linha
-2. Encontra `%test` → armazena descrição + linha, associa ao próximo `PROCEDURE`
-3. Se encontrar novo `%suite`, finaliza a suíte anterior
-4. Linha em branco entre `%suite` e primeiro `%test`/procedure é necessária
+1. Exige `%suite` no texto e a declaração `create … package` — sem ambos, retorna `null`
+2. Encontra `%test` → associa as annotations seguintes ao próximo `PROCEDURE`
+3. Um arquivo produz **uma única** `ParsedSuite` (múltiplos `%suite` no mesmo
+   arquivo não são divididos — o primeiro define `suiteLine`)
+4. Não há requisito de linha em branco — o parser é dirigido por tokens
 
 ## Annotations estendidas (PRD-42)
 

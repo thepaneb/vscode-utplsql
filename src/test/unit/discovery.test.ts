@@ -1,7 +1,15 @@
 import './setup.js';
 import assert from 'node:assert';
 import { test } from 'node:test';
-import { discoverWorkspace, extractSchemaFromPath, parseSuite } from '../../discovery';
+import {
+  discoverSchemaFromConn,
+  discoverSchemaFromDb,
+  discoverSchemasFromFolders,
+  discoverWorkspace,
+  extractSchemaFromPath,
+  parseSuite,
+} from '../../discovery';
+import { closeOraclePool } from '../../oracleRunner';
 
 test('parseSuite: retorna ParsedSuite para arquivo com %suite', () => {
   const text = `CREATE OR REPLACE PACKAGE test_app IS
@@ -204,4 +212,373 @@ test('extractSchemaFromPath: caminho Windows com backslash', () => {
     'db/{schema}/**',
   );
   assert.strictEqual(result, 'SALES');
+});
+
+// ── discoverSchemaFromConn ───────────────────────────────────────────
+
+const SUITE_LINES = [
+  'CREATE OR REPLACE PACKAGE app_orders IS',
+  '  --%suite(Orders)',
+  '  --%test(Adds order)',
+  '  PROCEDURE add_order;',
+  '  --%test(Cancels order)',
+  '  PROCEDURE cancel_order;',
+  'END;',
+];
+
+function makeConn(opts: {
+  packages?: unknown[];
+  sources?: Record<string, string[]>;
+  sourceThrows?: boolean;
+}) {
+  return {
+    execute: async (sql: string, binds?: Record<string, unknown>) => {
+      if (/all_objects/i.test(sql)) {
+        return { rows: opts.packages ?? [] };
+      }
+      if (opts.sourceThrows) {
+        throw new Error('ORA-00942: table or view does not exist');
+      }
+      const name = String(binds?.name ?? '');
+      return { rows: ((opts.sources ?? {})[name] ?? []).map((l) => [l]) };
+    },
+  };
+}
+
+const FOLDER = { uri: { fsPath: '/root' }, name: 'root', index: 0 } as any;
+
+test('discoverSchemaFromConn: retorna suites de packages com %suite', async () => {
+  const conn = makeConn({
+    packages: [['APP_ORDERS'], ['PLAIN_PKG']],
+    sources: {
+      APP_ORDERS: SUITE_LINES,
+      PLAIN_PKG: ['CREATE OR REPLACE PACKAGE plain_pkg IS', '  PROCEDURE x;', 'END;'],
+    },
+  });
+  const result = await discoverSchemaFromConn(conn, 'hr', FOLDER);
+  assert.strictEqual(result.length, 1);
+  assert.strictEqual(result[0].packageName, 'app_orders');
+  assert.strictEqual(result[0].suiteDescription, 'Orders');
+  assert.strictEqual(result[0].tests.length, 2);
+  assert.strictEqual(result[0].dbSchema, 'HR');
+  assert.strictEqual(result[0].uri.scheme, 'utplsql-db');
+  assert.strictEqual(result[0].uri.toString(), 'utplsql-db:/HR/APP_ORDERS.pks');
+  assert.strictEqual(result[0].folder, FOLDER);
+});
+
+test('discoverSchemaFromConn: zero packages retorna vazio', async () => {
+  const conn = makeConn({ packages: [] });
+  const result = await discoverSchemaFromConn(conn, 'hr', FOLDER);
+  assert.strictEqual(result.length, 0);
+});
+
+test('discoverSchemaFromConn: package sem %suite e filtrado', async () => {
+  const conn = makeConn({
+    packages: [['PLAIN_PKG']],
+    sources: { PLAIN_PKG: ['CREATE OR REPLACE PACKAGE plain_pkg IS', 'PROCEDURE x;', 'END;'] },
+  });
+  const result = await discoverSchemaFromConn(conn, 'hr', FOLDER);
+  assert.strictEqual(result.length, 0);
+});
+
+test('discoverSchemaFromConn: packages UT_* sao ignorados', async () => {
+  const conn = makeConn({
+    packages: [['UT_RUNNER'], ['APP_ORDERS']],
+    sources: {
+      UT_RUNNER: SUITE_LINES,
+      APP_ORDERS: SUITE_LINES,
+    },
+  });
+  const result = await discoverSchemaFromConn(conn, 'hr', FOLDER);
+  assert.strictEqual(result.length, 1);
+  assert.strictEqual(result[0].packageName, 'app_orders');
+});
+
+test('discoverSchemaFromConn: ALL_SOURCE inacessivel retorna vazio sem erro', async () => {
+  const conn = makeConn({ packages: [['APP_ORDERS']], sourceThrows: true });
+  const result = await discoverSchemaFromConn(conn, 'hr', FOLDER);
+  assert.strictEqual(result.length, 0);
+});
+
+test('discoverSchemaFromConn: rows em formato objeto (OUT_FORMAT_OBJECT)', async () => {
+  const conn = {
+    execute: async (sql: string, binds?: Record<string, unknown>) => {
+      if (/all_objects/i.test(sql)) {
+        return { rows: [{ OBJECT_NAME: 'APP_ORDERS' }] };
+      }
+      return {
+        rows: SUITE_LINES.map((text) => ({ TEXT: text })),
+      };
+    },
+  };
+  const result = await discoverSchemaFromConn(conn, 'hr', FOLDER);
+  assert.strictEqual(result.length, 1);
+  assert.strictEqual(result[0].tests.length, 2);
+});
+
+test('discoverSchemaFromConn: suite com todos os testes disabled e ignorada', async () => {
+  const conn = makeConn({
+    packages: [['APP_ORDERS']],
+    sources: {
+      APP_ORDERS: [
+        'CREATE OR REPLACE PACKAGE app_orders IS',
+        '  --%suite(Orders)',
+        '  --%test(Skipped)',
+        '  --%disabled',
+        '  PROCEDURE skipped_test;',
+        'END;',
+      ],
+    },
+  });
+  const result = await discoverSchemaFromConn(conn, 'hr', FOLDER);
+  assert.strictEqual(result.length, 0);
+});
+
+test('discoverSchemaFromConn: fonte sem CREATE OR REPLACE (ALL_SOURCE do banco)', async () => {
+  const conn = makeConn({
+    packages: [['APP_ORDERS']],
+    sources: {
+      APP_ORDERS: [
+        'PACKAGE app_orders AS',
+        '  --%suite(Orders)',
+        '  --%test(Adds order)',
+        '  PROCEDURE add_order;',
+        'END;',
+      ],
+    },
+  });
+  const result = await discoverSchemaFromConn(conn, 'hr', FOLDER);
+  assert.strictEqual(result.length, 1);
+  assert.strictEqual(result[0].packageName, 'app_orders');
+  assert.strictEqual(result[0].tests[0].procName, 'add_order');
+});
+
+// ── discoverSchemaFromDb ─────────────────────────────────────────────
+
+function makeFakeOracledb(sources: Record<string, string[]>) {
+  const createdConns: unknown[] = [];
+  const mod = {
+    createPool: async (_attrs: Record<string, unknown>) => ({
+      getConnection: async () => {
+        const conn = {
+          ...makeConn({ packages: [['APP_ORDERS']], sources }),
+          close: async () => {},
+        };
+        createdConns.push(conn);
+        return conn;
+      },
+      close: async () => {},
+    }),
+    getConnection: async () => {
+      throw new Error('sem conexao raw');
+    },
+  };
+  return { mod, createdConns };
+}
+
+test('discoverSchemaFromDb: retorna suites via pool', async () => {
+  const { mod } = makeFakeOracledb({ APP_ORDERS: SUITE_LINES });
+  try {
+    const result = await discoverSchemaFromDb(
+      'u/p@//h:1521/s',
+      'hr',
+      [FOLDER],
+      async () => mod as never,
+    );
+    assert.strictEqual(result.length, 1);
+    assert.strictEqual(result[0].packageName, 'app_orders');
+  } finally {
+    await closeOraclePool();
+  }
+});
+
+test('discoverSchemaFromDb: oracledb indisponivel retorna vazio', async () => {
+  const result = await discoverSchemaFromDb('u/p@//h:1521/s', 'hr', [FOLDER], async () => {
+    throw new Error('oracledb not found');
+  });
+  assert.strictEqual(result.length, 0);
+});
+
+test('discoverSchemaFromDb: createPool falha retorna vazio', async () => {
+  const mod = {
+    createPool: async () => {
+      throw new Error('db down');
+    },
+    getConnection: async () => {
+      throw new Error('db down');
+    },
+  };
+  try {
+    const result = await discoverSchemaFromDb(
+      'u/p@//h:1521/s',
+      'hr',
+      [FOLDER],
+      async () => mod as never,
+    );
+    assert.strictEqual(result.length, 0);
+  } finally {
+    await closeOraclePool();
+  }
+});
+
+test('discoverSchemaFromDb: sem folders retorna vazio', async () => {
+  const { mod } = makeFakeOracledb({ APP_ORDERS: SUITE_LINES });
+  const result = await discoverSchemaFromDb('u/p@//h:1521/s', 'hr', [], async () => mod as never);
+  assert.strictEqual(result.length, 0);
+});
+
+// ── discoverSchemasFromFolders ───────────────────────────────────────
+
+test('discoverSchemasFromFolders: lista diretorios com padrao db/{schema}/**', async () => {
+  const { __setMockDirectoryEntries, __resetMockDirectoryEntries } = await import(
+    '../vscode-stub.js'
+  );
+  __setMockDirectoryEntries('/root/db', [
+    ['APP', 2],
+    ['LOGIC', 2],
+    ['readme.txt', 1],
+  ]);
+  try {
+    const folders = [{ uri: { fsPath: '/root' }, name: 'root', index: 0 }] as any;
+    const result = await discoverSchemasFromFolders(folders, 'db/{schema}/**');
+    assert.deepStrictEqual(result, ['APP', 'LOGIC']);
+  } finally {
+    __resetMockDirectoryEntries();
+  }
+});
+
+test('discoverSchemasFromFolders: pasta base inexistente retorna vazio', async () => {
+  const { __resetMockDirectoryEntries } = await import('../vscode-stub.js');
+  __resetMockDirectoryEntries();
+  const folders = [{ uri: { fsPath: '/root' }, name: 'root', index: 0 }] as any;
+  const result = await discoverSchemasFromFolders(folders, 'db/{schema}/**');
+  assert.deepStrictEqual(result, []);
+});
+
+test('discoverSchemasFromFolders: padrao sem {schema} retorna vazio', async () => {
+  const folders = [{ uri: { fsPath: '/root' }, name: 'root', index: 0 }] as any;
+  const result = await discoverSchemasFromFolders(folders, 'db/**');
+  assert.deepStrictEqual(result, []);
+});
+
+test('discoverSchemasFromFolders: base no nivel da raiz ({schema}/**)', async () => {
+  const { __setMockDirectoryEntries, __resetMockDirectoryEntries } = await import(
+    '../vscode-stub.js'
+  );
+  __setMockDirectoryEntries('/root', [
+    ['SALES', 2],
+    ['notes.md', 1],
+  ]);
+  try {
+    const folders = [{ uri: { fsPath: '/root' }, name: 'root', index: 0 }] as any;
+    const result = await discoverSchemasFromFolders(folders, '{schema}/**');
+    assert.deepStrictEqual(result, ['SALES']);
+  } finally {
+    __resetMockDirectoryEntries();
+  }
+});
+
+test('discoverSchemaFromDb: usa conexao raw quando createPool falha', async () => {
+  const rawConn = makeConn({
+    packages: [['APP_ORDERS']],
+    sources: { APP_ORDERS: SUITE_LINES },
+  });
+  const mod = {
+    createPool: async () => {
+      throw new Error('pool down');
+    },
+    getConnection: async (_attrs: unknown) => ({ ...rawConn, close: async () => {} }),
+  };
+  try {
+    const result = await discoverSchemaFromDb(
+      'u/p@//h:1521/s',
+      'hr',
+      [FOLDER],
+      async () => mod as never,
+    );
+    assert.strictEqual(result.length, 1);
+    assert.strictEqual(result[0].packageName, 'app_orders');
+  } finally {
+    await closeOraclePool();
+  }
+});
+
+// ── callTimeout (não deve vazar para o pool) ────────────────────────
+
+function makeTimeoutTrackingConn(opts: { sourceThrows?: boolean } = {}) {
+  const base = makeConn({
+    packages: [['APP_ORDERS']],
+    sources: { APP_ORDERS: SUITE_LINES },
+    sourceThrows: opts.sourceThrows,
+  });
+  const seenTimeouts: number[] = [];
+  const conn = {
+    callTimeout: 99,
+    execute: async (sql: string, binds?: Record<string, unknown>) => {
+      seenTimeouts.push(conn.callTimeout);
+      return base.execute(sql, binds);
+    },
+    close: async () => {},
+  };
+  const mod = {
+    createPool: async () => ({
+      getConnection: async () => conn,
+      close: async () => {},
+    }),
+    getConnection: async () => {
+      throw new Error('raw indisponivel');
+    },
+  };
+  return { conn, mod, seenTimeouts };
+}
+
+test('discoverSchemaFromDb: restaura callTimeout ao devolver a conexao', async () => {
+  const { conn, mod, seenTimeouts } = makeTimeoutTrackingConn();
+  try {
+    const result = await discoverSchemaFromDb(
+      'u/p@//h:1521/s',
+      'hr',
+      [FOLDER],
+      async () => mod as never,
+    );
+    assert.strictEqual(result.length, 1);
+    assert.strictEqual(conn.callTimeout, 99);
+    assert.ok(seenTimeouts.length > 0);
+    assert.ok(seenTimeouts.every((t) => t === 10_000));
+  } finally {
+    await closeOraclePool();
+  }
+});
+
+test('discoverSchemaFromDb: restaura callTimeout tambem em caso de erro', async () => {
+  const { conn, mod } = makeTimeoutTrackingConn({ sourceThrows: true });
+  try {
+    const result = await discoverSchemaFromDb(
+      'u/p@//h:1521/s',
+      'hr',
+      [FOLDER],
+      async () => mod as never,
+    );
+    assert.deepStrictEqual(result, []);
+    assert.strictEqual(conn.callTimeout, 99);
+  } finally {
+    await closeOraclePool();
+  }
+});
+
+test('discoverSchemasFromFolders: base com subdiretorios (src/{schema}/tests/**)', async () => {
+  const { __setMockDirectoryEntries, __resetMockDirectoryEntries } = await import(
+    '../vscode-stub.js'
+  );
+  __setMockDirectoryEntries('/root/src', [
+    ['MYSCHEMA', 2],
+    ['OTHER', 2],
+  ]);
+  try {
+    const folders = [{ uri: { fsPath: '/root' }, name: 'root', index: 0 }] as any;
+    const result = await discoverSchemasFromFolders(folders, 'src/{schema}/tests/**');
+    assert.deepStrictEqual(result, ['MYSCHEMA', 'OTHER']);
+  } finally {
+    __resetMockDirectoryEntries();
+  }
 });

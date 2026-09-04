@@ -2,12 +2,14 @@
 
 | Campo | Valor |
 |---|---|
-| Status | Proposto |
+| Status | Concluído |
 | Autor | Gil Cleber |
 | Data | 2026-08-08 |
 | Componente | Extensão `paneb.vscode-utplsql` |
 | Versão alvo | 0.11.0 |
 | Arquivos afetados | `src/discovery.ts`, `src/oracleRunner.ts`, `src/extension.ts`, `src/config.ts` |
+| Esforço estimado | 2–3 dias |
+| Complexidade | Média-Alta |
 
 ## 1. Resumo
 
@@ -170,16 +172,25 @@ Usa settings existentes:
 
 ## 10. Critérios de aceite
 
-- [ ] `discoverSchemaFromDb` retorna suites de packages no schema
-- [ ] Merge com filesystem: local tem prioridade, DB complementa
-- [ ] Fallback silencioso se `ALL_SOURCE` não acessível
-- [ ] Packages `UT_*` (suites de teste) são ignorados na descoberta DB
-- [ ] `npm run compile && npm run lint && node --test` passam
-- [ ] Documentada limitação: URIs virtuais não têm CodeLens/Decorations
+- [x] `discoverSchemaFromDb` retorna suites de packages no schema
+- [x] Merge com filesystem: local tem prioridade, DB complementa
+- [x] Fallback silencioso se `ALL_SOURCE` não acessível
+- [x] Packages `UT_*` (suites de teste) são ignorados na descoberta DB
+- [x] `npm run compile && npm run lint && node --test` passam
+- [x] Documentada limitação: URIs virtuais não têm CodeLens/Decorations
 
 ## 11. Questões em aberto
 
 - Suporte a `ALL_SOURCE` para package bodies também (para coverage em PRD futuro)?
 - Cache da descoberta DB: invalidar no refresh manual ou cache por 5 minutos?
-- Schemas múltiplos: como extrair lista de schemas do `organizationSchemaPattern` quando o padrão é `db/{schema}/**` e múltiplos folders?
+- ~~Schemas múltiplos: como extrair lista de schemas do `organizationSchemaPattern` quando o padrão é `db/{schema}/**` e múltiplos folders?~~ **Resolvido na implementação**: `discoverSchemasFromFolders` enumera os diretórios abaixo da base do padrão (ex.: `db/*`) em cada workspace folder, união com os schemas extraídos das suites locais. Se a estrutura local de diretórios não existir (repositório separado), nenhum schema é conhecido — a descoberta precisa de pelo menos a estrutura de pastas ou um arquivo local.
 - Jump to failure em packages descobertos via DB: abrir editor virtual readonly com conteúdo do `ALL_SOURCE`?
+
+## 12. Notas de implementação
+
+- `discoverSchemaFromConn(conn, schema, folder)` contém o núcleo testável (queries + parse + filtros); `discoverSchemaFromDb` é o wrapper de lifecycle (import do oracledb, pool do PRD-38, `callTimeout` de 10s, `close` no `finally`).
+- `ALL_SOURCE.TEXT` não inclui `CREATE OR REPLACE` — a implementação prefixa sinteticamente antes do `parseSuiteText`.
+- A query de `ALL_SOURCE` limita a 10000 linhas (`FETCH FIRST`); se o limite for atingido, `console.warn` de truncamento.
+- O merge no `doRefresh` usa `resolveConnectionNoPrompt` (não prompa em refresh); conexão indisponível → descoberta DB silenciosamente pulada.
+- `SuiteFile.dbSchema` marca suites descobertas via DB; `buildSchemaTree` usa esse campo em vez de `extractSchemaFromPath` (URIs `utplsql-db:/` não têm fsPath local).
+- Testes: +16 unitários em `discovery.test.ts`; +3 de integração com banco real (`describeDB`), incluindo E2E de refresh em modo schema com merge filesystem+DB.

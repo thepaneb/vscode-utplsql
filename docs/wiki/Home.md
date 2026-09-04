@@ -5,7 +5,7 @@ para o **Test Explorer** nativo, com menu de contexto e cobertura visual.
 
 - **Test Explorer nativo** — suites e testes aparecem na view de testes
 - **CodeLens** — botões Run/Run with Coverage sobre `%suite` e `%test` no editor
-- **Atalhos de teclado** — prefixo `Ctrl+Shift+U` + tecla para todos os comandos (R = Run All, T = Run File, L = Rerun Last, etc.)
+- **Atalhos de teclado** — prefixo `Ctrl+Shift+U` + tecla para os comandos principais (R = Run All, T = Run File, L = Rerun Last, etc.)
 - **Menu de contexto** — clique direito em pasta ou arquivo `.pks`/`.pkb`
 - **Cobertura visual** — gutters coloridos + percentual por arquivo
 - **Decorações inline** — ícones ✓/✗/⚠ no editor após execução com tooltip da falha

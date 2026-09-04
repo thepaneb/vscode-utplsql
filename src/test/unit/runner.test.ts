@@ -3,16 +3,14 @@ import assert from 'node:assert';
 import * as fs from 'node:fs';
 import * as os from 'node:os';
 import * as path from 'node:path';
-import { test } from 'node:test';
+import { mock, test } from 'node:test';
+import * as cli from '../../cli';
+import * as cliInfo from '../../cliInfo';
 import type { TestCaseResult } from '../../junit';
-import {
-  applyCoverage,
-  applyResults,
-  countResults,
-  findByNameOnly,
-  lastSegment,
-} from '../../runner';
-import type { ItemMeta } from '../../types';
+import * as oracleRunner from '../../oracleRunner';
+import { applyCoverage, applyResults, countResults, executeRun, lastSegment } from '../../runner';
+import { TestStateManager } from '../../state';
+import * as vscode from '../vscode-stub';
 
 function makeState() {
   return {
@@ -25,26 +23,6 @@ function makeState() {
     runProfile: undefined,
     coverageProfile: undefined,
   } as any;
-}
-
-function makeMeta(over: Partial<ItemMeta>): ItemMeta {
-  return {
-    kind: 'test',
-    packageName: 'app',
-    procName: 'proc',
-    description: 'desc',
-    uri: { fsPath: '/x', path: '/x', scheme: 'file' } as any,
-    ...over,
-  } as ItemMeta;
-}
-
-function makeTestItem(id: string, meta?: ItemMeta) {
-  const item = { id, children: [] } as any;
-  if (meta) {
-    const state = { getMeta: () => meta };
-    return { item, state };
-  }
-  return { item, state: { getMeta: () => undefined } };
 }
 
 test('lastSegment: pega ultimo segmento separado por ponto', () => {
@@ -74,44 +52,6 @@ test('lastSegment: segmentos vazios sao ignorados', () => {
 
 test('lastSegment: varios separadores consecutivos', () => {
   assert.strictEqual(lastSegment('a..b...c'), 'c');
-});
-
-test('findByNameOnly: encontra por procName', () => {
-  const { item } = makeTestItem('test_1', makeMeta({ procName: 'proc_x', description: 'desc x' }));
-  const items = [item];
-  const state = { getMeta: (t: any) => t.meta } as any;
-  item.meta = makeMeta({ procName: 'proc_x', description: 'desc x' });
-  const found = findByNameOnly(items, 'proc_x', state);
-  assert.ok(found);
-  assert.strictEqual(found.id, 'test_1');
-});
-
-test('findByNameOnly: encontra por description', () => {
-  const { item } = makeTestItem('test_1', makeMeta({ procName: 'proc_x', description: 'desc x' }));
-  const items = [item];
-  const state = { getMeta: (t: any) => t.meta } as any;
-  item.meta = makeMeta({ procName: 'proc_x', description: 'desc x' });
-  const found = findByNameOnly(items, 'desc x', state);
-  assert.ok(found);
-  assert.strictEqual(found.id, 'test_1');
-});
-
-test('findByNameOnly: retorna undefined quando nao encontra', () => {
-  const { item } = makeTestItem('test_1', makeMeta({ procName: 'proc_x', description: 'desc x' }));
-  const items = [item];
-  const state = { getMeta: (t: any) => t.meta } as any;
-  item.meta = makeMeta({ procName: 'proc_x', description: 'desc x' });
-  const found = findByNameOnly(items, 'nao_existe', state);
-  assert.strictEqual(found, undefined);
-});
-
-test('findByNameOnly: ignora items que nao sao test', () => {
-  const item = { id: 'suite:app', children: [] } as any;
-  const suiteMeta = makeMeta({ kind: 'test', procName: 'proc_x', description: 'desc x' });
-  suiteMeta.kind = 'suite' as any;
-  const state = { getMeta: () => suiteMeta } as any;
-  const found = findByNameOnly([item], 'proc_x', state);
-  assert.strictEqual(found, undefined);
 });
 
 test('applyResults: processa JUnit e marca resultados no TestRun', () => {
@@ -555,3 +495,179 @@ test('applyCoverage: arquivo existente delega para applyCoverageFromXml', () => 
     }
   }
 });
+
+// ── executeRun ───────────────────────────────────────────────────────
+
+const EXEC_CONN = 'user/pass@//host:1521/svc';
+
+const JUNIT_OK = `<?xml version="1.0"?>
+<testsuites>
+  <testsuite name="app">
+    <testcase classname="app" name="t_one" time="0.01"/>
+  </testsuite>
+</testsuites>`;
+
+const NEVER_TOKEN = {
+  isCancellationRequested: false,
+  onCancellationRequested: () => ({ dispose: () => {} }),
+};
+
+function makeExecState(): { state: TestStateManager; suiteItem: any; testItem: any } {
+  const state = new TestStateManager();
+  const suiteItem = { id: 'suite:app', children: new Map() };
+  const testItem = { id: 'test:app.t_one', children: [] };
+  suiteItem.children.set(testItem.id, testItem);
+  const uri = vscode.Uri.file('/root/app.pks');
+  const folder = { uri: vscode.Uri.file('/root'), name: 'root', index: 0 } as any;
+  state.setMeta(suiteItem as any, {
+    kind: 'suite',
+    packageName: 'app',
+    uri: uri as any,
+    folder,
+  });
+  state.setMeta(testItem as any, {
+    kind: 'test',
+    packageName: 'app',
+    procName: 't_one',
+    description: 'Teste um',
+    uri: uri as any,
+    folder,
+  });
+  return { state, suiteItem, testItem };
+}
+
+async function withExecEnv(
+  fn: () => Promise<void>,
+  opts?: { noConn?: boolean; noFolders?: boolean },
+): Promise<void> {
+  const origEnv = process.env.UTPLSQL_CONN;
+  if (opts?.noConn) {
+    delete process.env.UTPLSQL_CONN;
+  } else {
+    process.env.UTPLSQL_CONN = EXEC_CONN;
+  }
+  const { __setInputBoxResult, __resetConfigValues } = await import('../vscode-stub.js');
+  __resetConfigValues();
+  __setInputBoxResult(undefined);
+  if (opts?.noFolders) {
+    vscode.workspace.__setWorkspaceFolders(undefined);
+  } else {
+    vscode.workspace.__setWorkspaceFolders([{ uri: { fsPath: '/root' }, name: 'root', index: 0 }]);
+  }
+  try {
+    await fn();
+  } finally {
+    process.env.UTPLSQL_CONN = origEnv;
+    vscode.workspace.__setWorkspaceFolders(undefined);
+    __resetConfigValues();
+    mock.restoreAll();
+  }
+}
+
+test('executeRun: executa via CLI (fallback auto) e aplica resultados', async () =>
+  withExecEnv(async () => {
+    const { state, suiteItem } = makeExecState();
+    const run = new vscode.TestRun();
+    const controller = {
+      createTestRun: () => run,
+      items: { forEach: () => {} },
+    } as any;
+    const request = { include: [suiteItem] } as any;
+
+    mock.method(cliInfo, 'getCliInfo', async () => ({ cliVersion: '3.2.3', apiVersion: '3.2.3' }));
+    mock.method(oracleRunner, 'executeRunOracle', async () => {
+      throw new Error('sem oracle');
+    });
+    mock.method(cli, 'runCli', async (_file: string, args: string[]) => {
+      const o = args.find((a) => a.startsWith('-o='));
+      assert.ok(o, 'runCli deveria receber -o=<junitPath>');
+      fs.writeFileSync(String(o).slice(3), JUNIT_OK);
+      return { code: 0, stdout: '', stderr: '' };
+    });
+
+    await executeRun(controller, request, NEVER_TOKEN as any, false, state);
+
+    assert.strictEqual(run.passedCount(), 1);
+    assert.strictEqual(run.failedCount(), 0);
+    assert.match(run.output(), /fallback para CLI/);
+  }));
+
+test('executeRun: runnerMode oracle com falha marca todos como erro', async () =>
+  withExecEnv(async () => {
+    const { state, suiteItem } = makeExecState();
+    const run = new vscode.TestRun();
+    const controller = {
+      createTestRun: () => run,
+      items: { forEach: () => {} },
+    } as any;
+    const request = { include: [suiteItem] } as any;
+
+    const { __setConfigValue } = await import('../vscode-stub.js');
+    __setConfigValue('runnerMode', 'oracle');
+
+    mock.method(cliInfo, 'getCliInfo', async () => ({ cliVersion: '3.2.3', apiVersion: '3.2.3' }));
+    mock.method(oracleRunner, 'executeRunOracle', async () => {
+      throw new Error('ORA-00942');
+    });
+
+    await executeRun(controller, request, NEVER_TOKEN as any, false, state);
+
+    assert.strictEqual(run.erroredCount(), 1);
+    assert.match(run.output(), /\[erro\] Oracle runner/);
+  }));
+
+test('executeRun: info do CLI indisponivel nao bloqueia a execucao', async () =>
+  withExecEnv(async () => {
+    const { state, suiteItem } = makeExecState();
+    const run = new vscode.TestRun();
+    const controller = {
+      createTestRun: () => run,
+      items: { forEach: () => {} },
+    } as any;
+    const request = { include: [suiteItem] } as any;
+
+    const { __setConfigValue } = await import('../vscode-stub.js');
+    __setConfigValue('runnerMode', 'cli');
+
+    mock.method(cliInfo, 'getCliInfo', async () => ({ error: 'cli quebrado' }));
+    mock.method(cli, 'runCli', async (_file: string, args: string[]) => {
+      const o = args.find((a) => a.startsWith('-o='));
+      fs.writeFileSync(String(o).slice(3), JUNIT_OK);
+      return { code: 0, stdout: '', stderr: '' };
+    });
+
+    await executeRun(controller, request, NEVER_TOKEN as any, false, state);
+
+    assert.strictEqual(run.passedCount(), 1);
+    assert.match(run.output(), /\[aviso\] Não foi possível obter info do CLI/);
+  }));
+
+test('executeRun: sem workspace folders mostra erro e retorna', async () =>
+  withExecEnv(
+    async () => {
+      const { state } = makeExecState();
+      const run = new vscode.TestRun();
+      const controller = {
+        createTestRun: () => run,
+        items: { forEach: () => {} },
+      } as any;
+      await executeRun(controller, {} as any, NEVER_TOKEN as any, false, state);
+      assert.strictEqual(run.passedCount(), 0);
+    },
+    { noFolders: true },
+  ));
+
+test('executeRun: sem conexao mostra erro e retorna', async () =>
+  withExecEnv(
+    async () => {
+      const { state } = makeExecState();
+      const run = new vscode.TestRun();
+      const controller = {
+        createTestRun: () => run,
+        items: { forEach: () => {} },
+      } as any;
+      await executeRun(controller, {} as any, NEVER_TOKEN as any, false, state);
+      assert.strictEqual(run.passedCount(), 0);
+    },
+    { noConn: true },
+  ));

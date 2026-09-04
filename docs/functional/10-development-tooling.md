@@ -11,13 +11,27 @@ Ferramentas e infraestrutura de desenvolvimento do projeto.
 | `npm run watch` | Compilação incremental |
 | `npm run lint` | `biome check src/` |
 | `npm run lint:fix` | `biome check --write src/` |
+| `npm run format` | `biome format --write src/` |
 | `npm test` | = `test:unit` |
 | `npm run test:unit` | `pretest:unit` (compile + lint) → `node scripts/run-tests.cjs` |
-| `npm run test:coverage` | `compile` → `c8 node --require test-setup.cjs --test out/test/unit/**/*.test.js` |
-| `npm run test:integration` | `pretest:integration` (compile) → `vscode-test` |
-| `npm run package` | `vsce package` → `.vsix` |
+| `npm run test:coverage` | `compile` → `c8 node --require ./scripts/test-setup.cjs --test out/test/unit/**/*.test.js` |
+| `npm run test:integration` | `pretest:integration` (compile + bundle) → `vscode-test` |
+| `npm run bundle` | `node esbuild.config.mjs` → `dist/extension.js` (**entry point real da extensão**) |
+| `npm run package` | `compile && bundle && vsce package` → `.vsix` |
 | `npm run sync-prds` | Atualiza labels/issues no GitHub |
 | `npm run gen-diagram` | `scripts/gen-diagrams.cjs` — renderiza todos os SVGs de `docs/wiki/images/` para PNG de 1200px via `@resvg/resvg-js` (cross-platform) |
+
+## Bundling com esbuild (PRD-45, ajustes na PRD-46)
+
+- `"main": "./dist/extension.js"` — bundle único gerado por `esbuild.config.mjs`
+- `vscode` e `oracledb` são **externos** (`await import('oracledb')` preservado)
+- `fast-xml-parser`/`iconv-lite` (e deps puras) são embutidas no bundle —
+  incluindo as transitivas do fast-xml-parser v5 (`@nodable/entities`, `anynum`,
+  `fast-xml-builder`, `is-unsafe`, `path-expression-matcher`, `xml-naming`)
+- `.vscodeignore` exclui `out/**`, os binários nativos do oracledb
+  (`oracledb/build/**`), `oracledb/plugins/**` (auth IAM/OCI — fora do escopo),
+  docs não-licença do oracledb e as deps puras já embutidas — VSIX 151 arquivos,
+  ~990 KB (thin-only)
 
 ## TypeScript Coverage (c8)
 
@@ -46,14 +60,14 @@ Ferramentas e infraestrutura de desenvolvimento do projeto.
 - `coverage/index.html`: relatório navegável
 - `coverage/` no `.gitignore` e `.vscodeignore`
 
-### Coverage atual
+### Coverage atual (aprox. — pode variar por PRD)
 
-| Métrica | Threshold | Atual |
+| Métrica | Threshold | Atual (v0.11.0) |
 |---|---|---|
-| Lines | 65% | 69.4% |
-| Branches | 80% | 83.6% |
-| Functions | 70% | 84.8% |
-| Statements | 65% | 69.4% |
+| Lines | 65% | 89.7% |
+| Branches | 80% | 85.0% |
+| Functions | 70% | 95.2% |
+| Statements | 65% | 89.7% |
 
 ## Testes unitários
 
@@ -63,6 +77,7 @@ Ferramentas e infraestrutura de desenvolvimento do projeto.
 src/test/
 ├── unit/
 │   ├── cli.test.ts
+│   ├── cliEncoding.test.ts
 │   ├── cliInfo.test.ts
 │   ├── cliReporters.test.ts
 │   ├── cobertura.test.ts
@@ -77,7 +92,10 @@ src/test/
 │   ├── matching.test.ts
 │   ├── oracleRunner.test.ts
 │   ├── quickfix.test.ts
+│   ├── rerun.test.ts
+│   ├── results.test.ts
 │   ├── runner.test.ts
+│   ├── setup.ts
 │   ├── state.test.ts
 │   ├── statusBar.test.ts
 │   └── suiteParser.test.ts
@@ -116,12 +134,12 @@ Mock completo da API `vscode` para testes unitários. Duas camadas:
 
 | Namespace | Funções mockadas |
 |---|---|
-| `Uri` | `file()`, `parse()`, `joinPath()` |
-| `workspace` | `getConfiguration()`, `findFiles()`, `fs.readFile()`, `workspaceFolders` |
+| `Uri` | `file()`, `parse()` (com detecção de scheme), `joinPath()` |
+| `workspace` | `getConfiguration()`, `findFiles()`, `fs.readFile()`, `fs.readDirectory()`, `workspaceFolders` |
 | `window` | `showInputBox()`, `showErrorMessage()`, `createTextEditorDecorationType()`, `createStatusBarItem()`, `visibleTextEditors` |
 | `commands` | `executeCommand()` |
 | Classes | `TestMessage`, `TestRun`, `TestItem`, `Range`, `Position`, `Diagnostic`, `DiagnosticCollection`, `FileCoverage`, `StatementCoverage`, `MarkdownString`, `DecorationOptions`, `RelativePattern`, `Location` |
-| Enums | `StatusBarAlignment`, `OverviewRulerLane`, `DiagnosticSeverity` |
+| Enums | `StatusBarAlignment`, `OverviewRulerLane`, `DiagnosticSeverity`, `FileType` |
 
 ### Helpers
 
@@ -133,6 +151,8 @@ Mock completo da API `vscode` para testes unitários. Duas camadas:
 | `__setMockFile(pattern, path, content)` | Simula arquivo no workspace |
 | `__setMockFileError(path, hasError)` | Simula erro de leitura |
 | `__resetMockFiles()` | Limpa arquivos mockados |
+| `__setMockDirectoryEntries(path, entries)` | Simula entradas de `fs.readDirectory` |
+| `__resetMockDirectoryEntries()` | Limpa diretórios mockados |
 | `__setWorkspaceFolders(folders)` | Simula workspace folders |
 | `__setVisibleEditors(editors)` | Simula editores visíveis |
 
@@ -154,12 +174,13 @@ Sem `.env`, `describeDB` é pulado (`describe.skip`).
 ## CI
 
 Workflow `.github/workflows/ci.yml`:
-- Node 20/22/24 matrix
-- `npm ci` → `npm run lint` → `npm test`
+- Node 22/24 matrix
+- `npm ci` → `npm test` (o `pretest:unit` do `npm test` já roda compile + lint)
 
 `.github/workflows/publish.yml`:
 - Disparado ao publicar release no GitHub
-- `npm run package` → upload do `.vsix` como asset
+- Roda compile, lint, `test:unit`, bundle, `npm run publish` (marketplace via
+  `VSCE_PAT`) e upload do `.vsix` como asset
 
 ## PRDs
 
@@ -185,4 +206,4 @@ Comando local válido: `npm run package` (gera `.vsix`).
 
 ## Node
 
-`.nvmrc` → `24`. CI testa 20/22/24. Requer Node 20+ local.
+`.nvmrc` → `24`. CI testa 22/24 (Node 20 atingiu EOL). Requer Node 22+ local.
