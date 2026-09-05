@@ -49,22 +49,66 @@
           "items": {
             "type": "object",
             "properties": {
-              "id": { "type": "string" },
-              "name": { "type": "string" },
-              "connection": { "type": "string" },
-              "sourcePath": { "type": "string" },
-              "coverageOwner": { "type": "string" },
-              "coverageSourceArgs": { "type": "array", "items": { "type": "string" } },
-              "includePatterns": { "type": "array", "items": { "type": "string" } },
-              "invocation": { "type": "string", "enum": ["launcher", "java"] },
-              "cliPath": { "type": "string" },
-              "cliHome": { "type": "string" },
-              "javaPath": { "type": "string" },
-              "extraRunArgs": { "type": "array", "items": { "type": "string" } },
-              "isDefault": { "type": "boolean" },
-              "lastUsed": { "type": "string" }
+              "id": {
+                "type": "string"
+              },
+              "name": {
+                "type": "string"
+              },
+              "connection": {
+                "type": "string"
+              },
+              "sourcePath": {
+                "type": "string"
+              },
+              "coverageOwner": {
+                "type": "string"
+              },
+              "coverageSourceArgs": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "includePatterns": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "invocation": {
+                "type": "string",
+                "enum": [
+                  "launcher",
+                  "java"
+                ]
+              },
+              "cliPath": {
+                "type": "string"
+              },
+              "cliHome": {
+                "type": "string"
+              },
+              "javaPath": {
+                "type": "string"
+              },
+              "extraRunArgs": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "isDefault": {
+                "type": "boolean"
+              },
+              "lastUsed": {
+                "type": "string"
+              }
             },
-            "required": ["name", "connection"]
+            "required": [
+              "name",
+              "connection"
+            ]
           }
         },
         "utplsql.activeProfile": {
@@ -281,124 +325,134 @@
           "default": 300,
           "minimum": 30,
           "description": "Timeout (s) da sessão de debug para evitar conexões Oracle zumbis."
+        },
+        "utplsql.language": {
+          "type": "string",
+          "enum": [
+            "auto",
+            "pt-br",
+            "en"
+          ],
+          "default": "auto",
+          "markdownDescription": "Idioma dos conteúdos textuais da extensão. `auto` segue o idioma do VSCode (`pt*` → pt-br; senão en)."
         }
       }
     },
     "commands": [
       {
         "command": "utplsql.showTestExplorer",
-        "title": "Mostrar Test Explorer",
+        "title": "%nls.command.showTestExplorer%",
         "category": "utPLSQL"
       },
       {
         "command": "utplsql.runLens",
-        "title": "Executar teste (CodeLens)",
+        "title": "%nls.command.runLens%",
         "category": "utPLSQL"
       },
       {
         "command": "utplsql.refresh",
-        "title": "Atualizar testes",
+        "title": "%nls.command.refresh%",
         "category": "utPLSQL",
         "icon": "$(refresh)"
       },
       {
         "command": "utplsql.runAll",
-        "title": "Rodar todos os testes",
+        "title": "%nls.command.runAll%",
         "category": "utPLSQL"
       },
       {
         "command": "utplsql.runFile",
-        "title": "utPLSQL: Rodar testes deste arquivo",
+        "title": "%nls.command.runFile%",
         "category": "utPLSQL"
       },
       {
         "command": "utplsql.runFileCoverage",
-        "title": "utPLSQL: Rodar testes deste arquivo (com cobertura)",
+        "title": "%nls.command.runFileCoverage%",
         "category": "utPLSQL"
       },
       {
         "command": "utplsql.runFolder",
-        "title": "utPLSQL: Rodar testes desta pasta",
+        "title": "%nls.command.runFolder%",
         "category": "utPLSQL"
       },
       {
         "command": "utplsql.runFolderCoverage",
-        "title": "utPLSQL: Rodar testes desta pasta (com cobertura)",
+        "title": "%nls.command.runFolderCoverage%",
         "category": "utPLSQL"
       },
       {
         "command": "utplsql.cancelRun",
-        "title": "Cancelar execução",
+        "title": "%nls.command.cancelRun%",
         "category": "utPLSQL"
       },
       {
         "command": "utplsql.clearConnection",
-        "title": "Limpar conexão da sessão",
+        "title": "%nls.command.clearConnection%",
         "category": "utPLSQL"
       },
       {
         "command": "utplsql.showInfo",
-        "title": "Mostrar informações do utPLSQL",
+        "title": "%nls.command.showInfo%",
         "category": "utPLSQL"
       },
       {
         "command": "utplsql.selectReporter",
-        "title": "Selecionar reporter adicional...",
+        "title": "%nls.command.selectReporter%",
         "category": "utPLSQL"
       },
       {
         "command": "utplsql.rerunLast",
-        "title": "utPLSQL: Rerun Last",
+        "title": "%nls.command.rerunLast%",
         "category": "utPLSQL"
       },
       {
         "command": "utplsql.runAtCursor",
-        "title": "utPLSQL: Run Test at Cursor",
+        "title": "%nls.command.runAtCursor%",
         "category": "utPLSQL"
       },
       {
         "command": "utplsql.runFailed",
-        "title": "utPLSQL: Run Failed Tests",
+        "title": "%nls.command.runFailed%",
         "category": "utPLSQL"
       },
       {
         "command": "utplsql.configureConnection",
-        "title": "Configurar conexão",
+        "title": "%nls.command.configureConnection%",
         "category": "utPLSQL"
       },
       {
         "command": "utplsql.copyGrantsToClipboard",
-        "title": "Copiar grants de cobertura para clipboard",
+        "title": "%nls.command.copyGrantsToClipboard%",
         "category": "utPLSQL"
       },
       {
         "command": "utplsql.validateSetup",
-        "title": "Validar configuração",
+        "title": "%nls.command.validateSetup%",
         "category": "utPLSQL"
       },
       {
         "command": "utplsql.switchProfile",
-        "title": "Switch Connection Profile...",
+        "title": "%nls.command.switchProfile%",
         "category": "utPLSQL"
       },
       {
         "command": "utplsql.newProfile",
-        "title": "New Connection Profile...",
+        "title": "%nls.command.newProfile%",
         "category": "utPLSQL"
       },
       {
         "command": "utplsql.manageProfiles",
-        "title": "Manage Connection Profiles",
+        "title": "%nls.command.manageProfiles%",
         "category": "utPLSQL"
       },
       {
         "command": "utplsql.importSqlDevConnections",
-        "title": "Import SQL Developer Connections",
+        "title": "%nls.command.importSqlDevConnections%",
         "category": "utPLSQL"
       },
       {
         "command": "utplsql.debugTest",
-        "title": "Debug Test (PL/SQL)",
+        "title": "%nls.command.debugTest%",
         "category": "utPLSQL"
       }
     ],

@@ -1,3 +1,4 @@
+import './setup.js';
 import assert from 'node:assert';
 import * as os from 'node:os';
 import { test } from 'node:test';

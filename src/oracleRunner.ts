@@ -1,5 +1,6 @@
 import * as vscode from 'vscode';
-import { readConfig, type UtConfig } from './config';
+import { getExtensionLocale, readConfig, type UtConfig } from './config';
+import { t } from './i18n';
 import { parseJUnit } from './junit';
 import { applyCoverageFromXml, applyResultsFromCases, countResults } from './results';
 import type { TestStateManager } from './state';
@@ -206,9 +207,7 @@ export async function executeRunOracle(
       ((mod as Record<string, unknown>).default as typeof import('oracledb')) ??
       (mod as typeof import('oracledb'));
   } catch {
-    throw new Error(
-      'oracledb não disponível. Instale com "npm install oracledb" ou use runnerMode "cli".',
-    );
+    throw new Error(t(getExtensionLocale(), 'common.oracledbMissing'));
   }
 
   const cfg = readConfig();
@@ -314,14 +313,12 @@ export async function executeRunOracle(
         const mappedXml = mapDbPathsToFiles(covXml);
         applyCoverageFromXml(mappedXml, sourcePath, root, run, state, folders);
       } else {
-        run.appendOutput(
-          '\r\n[cobertura] relatório não gerado. Verifique o GRANT EXECUTE ON SYS.DBMS_PROFILER.\r\n',
-        );
+        run.appendOutput(`\r\n${t(getExtensionLocale(), 'oracleRunner.coverNotGenerated')}\r\n`);
       }
     }
 
     run.appendOutput(
-      `\r\n[info] Oracle runner ${runnerMs}ms | ${junitPart.length} chars JUnit\r\n`,
+      `\r\n${t(getExtensionLocale(), 'runner.oracleInfo', { ms: runnerMs, chars: junitPart.length })}\r\n`,
     );
   } finally {
     await conn1.close().catch(() => {});

@@ -9,6 +9,8 @@ import {
   parseRegCodePage,
   type WindowsCodepages,
 } from './cliEncoding';
+import { getExtensionLocale } from './config';
+import { t } from './i18n';
 
 export interface CliResult {
   code: number;
@@ -190,7 +192,11 @@ export function runCli(
     // Caminho explícito inexistente: responde com erro limpo em vez de spawnar
     // o cmd.exe, cuja mensagem localizada sairia no codepage OEM.
     if (/[\\/]/.test(file) && !fs.existsSync(path.resolve(cwd, file))) {
-      resolve({ code: -1, stdout: '', stderr: `CLI não encontrado: ${file}` });
+      resolve({
+        code: -1,
+        stdout: '',
+        stderr: t(getExtensionLocale(), 'cli.notFound', { path: file }),
+      });
       return;
     }
 

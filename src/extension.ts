@@ -5,6 +5,7 @@ import { type CodeLensItem, parseCodeLensItems, UtplsqlCodeLensProvider } from '
 import { compilationDiagnostics } from './compilationDiagnostics';
 import {
   clearSessionConnection,
+  getExtensionLocale,
   readConfig,
   resolveConnection,
   resolveConnectionNoPrompt,
@@ -30,6 +31,7 @@ import {
   extractSchemaFromPath,
   type SuiteFile,
 } from './discovery';
+import { t } from './i18n';
 import { filterSuitesByFolder, filterSuitesByUri } from './matching';
 import { closeOraclePool } from './oracleRunner';
 import { setupValidator, UtplsqlCodeActionProvider } from './quickfix';
@@ -46,6 +48,7 @@ let statusBar: UtplsqlStatusBar | undefined;
 let decorationManager: DecorationManager | undefined;
 
 export function activate(context: vscode.ExtensionContext) {
+  const locale = getExtensionLocale();
   vscode.commands.executeCommand('setContext', 'utplsql:activated', true);
 
   const controller = vscode.tests.createTestController('utplsql', 'utPLSQL');
@@ -105,33 +108,35 @@ export function activate(context: vscode.ExtensionContext) {
       const cfg = readConfig();
       const reporters = await listReporters(cfg, conn);
       if ('error' in reporters) {
-        vscode.window.showErrorMessage(`Falha ao listar reporters: ${reporters.error}`);
+        vscode.window.showErrorMessage(
+          t(locale, 'ext.reporters.listFailed', { error: reporters.error }),
+        );
         return;
       }
       const selected = await vscode.window.showQuickPick(reporters, {
-        placeHolder: 'Selecione um reporter adicional para esta execução',
+        placeHolder: t(locale, 'ext.reporters.placeholder'),
       });
       if (selected) {
         state.setExtraReporter(selected);
         vscode.window.showInformationMessage(
-          `Reporter "${selected}" será usado na próxima execução.`,
+          t(locale, 'ext.reporters.willUse', { name: selected }),
         );
       }
     }),
     vscode.commands.registerCommand('utplsql.clearConnection', () => {
       clearSessionConnection();
-      vscode.window.showInformationMessage('Conexão limpa da sessão.');
+      vscode.window.showInformationMessage(t(locale, 'ext.connection.cleared'));
     }),
     vscode.commands.registerCommand('utplsql.showInfo', async () => {
       const cfg = readConfig();
       const info = await getCliInfo(cfg);
       if ('error' in info) {
-        vscode.window.showErrorMessage(`utPLSQL info: ${info.error}`);
+        vscode.window.showErrorMessage(t(locale, 'ext.info.failed', { error: info.error }));
         return;
       }
       let msg = `CLI: ${info.cliVersion}\nAPI: ${info.apiVersion}`;
       if (info.dbVersion) msg += `\nDB:  ${info.dbVersion}`;
-      const copy = await vscode.window.showInformationMessage(msg, 'Copiar');
+      const copy = await vscode.window.showInformationMessage(msg, t(locale, 'common.copy'));
       if (copy) vscode.env.clipboard.writeText(msg);
     }),
     vscode.commands.registerCommand(
@@ -176,7 +181,7 @@ export function activate(context: vscode.ExtensionContext) {
     vscode.commands.registerCommand('utplsql.rerunLast', async () => {
       const lr = state.getLastRun();
       if (!lr) {
-        vscode.window.showInformationMessage('Nenhuma execução anterior para repetir.');
+        vscode.window.showInformationMessage(t(locale, 'ext.noPreviousRun'));
         return;
       }
       switch (lr.type) {
@@ -197,12 +202,12 @@ export function activate(context: vscode.ExtensionContext) {
     vscode.commands.registerCommand('utplsql.runAtCursor', async () => {
       const editor = vscode.window.activeTextEditor;
       if (!editor?.document.fileName.endsWith('.pks')) {
-        vscode.window.showWarningMessage('Run at cursor disponível apenas em arquivos .pks.');
+        vscode.window.showWarningMessage(t(locale, 'ext.runAtCursor.onlyPks'));
         return;
       }
       const annotation = findAnnotationAtLine(editor.document, editor.selection.active.line);
       if (!annotation) {
-        vscode.window.showWarningMessage('Nenhuma anotação %suite/%test encontrada na posição.');
+        vscode.window.showWarningMessage(t(locale, 'ext.runAtCursor.noAnnotation'));
         return;
       }
       if (annotation.type === 'test' && annotation.procName) {
@@ -220,7 +225,7 @@ export function activate(context: vscode.ExtensionContext) {
     vscode.commands.registerCommand('utplsql.runFailed', async () => {
       const failed = state.getLastFailedItems();
       if (failed.length === 0) {
-        vscode.window.showInformationMessage('Nenhum teste falhou na última execução.');
+        vscode.window.showInformationMessage(t(locale, 'ext.runFailed.none'));
         return;
       }
       await runWithProgress(
@@ -290,7 +295,7 @@ export function activate(context: vscode.ExtensionContext) {
         'GRANT EXECUTE ON SYS.DBMS_PLSQL_CODE_COVERAGE TO <your_schema>;',
       ].join('\n');
       vscode.env.clipboard.writeText(grants);
-      vscode.window.showInformationMessage('Grants copiados para o clipboard.');
+      vscode.window.showInformationMessage(t(locale, 'ext.grants.copied'));
     }),
     vscode.commands.registerCommand('utplsql.validateSetup', async () => {
       const [activationDiags, installDiags] = await Promise.all([
@@ -301,16 +306,14 @@ export function activate(context: vscode.ExtensionContext) {
       setupValidator.applyDiagnostics(diags);
       vscode.window.showInformationMessage(
         diags.length === 0
-          ? 'Configuração utPLSQL OK — nenhum problema encontrado.'
-          : `${diags.length} problema(s) de configuração encontrado(s). Veja o Problems Panel.`,
+          ? t(locale, 'ext.validate.ok')
+          : t(locale, 'ext.validate.problems', { count: diags.length }),
       );
     }),
     vscode.commands.registerCommand('utplsql.recompileUt3', () => setupValidator.recompileUt3()),
     vscode.commands.registerCommand('utplsql.debugTest', async () => {
       if (!readConfig().debuggerEnabled) {
-        vscode.window.showInformationMessage(
-          'Debug PL/SQL desabilitado (utplsql.debugger.enabled).',
-        );
+        vscode.window.showInformationMessage(t(locale, 'ext.debug.disabled'));
         return;
       }
       const editor = vscode.window.activeTextEditor;
@@ -318,7 +321,7 @@ export function activate(context: vscode.ExtensionContext) {
       const base = file.split(/[\\/]/).pop() ?? '';
       const packageName = base.replace(/\.(pks|pkb|sql)$/i, '');
       if (!packageName) {
-        vscode.window.showWarningMessage('Abra um arquivo .pks/.pkb para debugar.');
+        vscode.window.showWarningMessage(t(locale, 'ext.debug.openPks'));
         return;
       }
       await startDebugSession(packageName);
@@ -326,16 +329,16 @@ export function activate(context: vscode.ExtensionContext) {
     vscode.commands.registerCommand('utplsql.switchProfile', async () => {
       const profiles = getAllProfiles();
       if (profiles.length === 0) {
-        vscode.window.showInformationMessage(
-          'Nenhum perfil de conexão salvo. Use "utPLSQL: New Connection Profile...".',
-        );
+        vscode.window.showInformationMessage(t(locale, 'ext.profile.none'));
         return;
       }
       const selected = await selectProfile(profiles);
       if (!selected) return;
       await setActiveProfile(selected.id);
       statusBar?.showIdle();
-      vscode.window.showInformationMessage(`Perfil ativo: ${selected.name}`);
+      vscode.window.showInformationMessage(
+        t(locale, 'ext.profile.active', { name: selected.name }),
+      );
     }),
     vscode.commands.registerCommand('utplsql.manageProfiles', async () => {
       await vscode.commands.executeCommand('workbench.action.openSettings', 'utplsql.profiles');
@@ -343,34 +346,32 @@ export function activate(context: vscode.ExtensionContext) {
     vscode.commands.registerCommand('utplsql.importSqlDevConnections', async () => {
       const imported = await importFromSqlDeveloper();
       if (imported.length === 0) {
-        vscode.window.showWarningMessage(
-          'Nenhuma conexão do SQL Developer encontrada (connections.xml).',
-        );
+        vscode.window.showWarningMessage(t(locale, 'ext.sqlDev.import.none'));
         return;
       }
       const merged = [...getAllProfiles(), ...imported];
       await saveProfiles(merged);
       vscode.window.showInformationMessage(
-        `${imported.length} conexão(ões) importada(s) do SQL Developer.`,
+        t(locale, 'ext.sqlDev.import.ok', { count: imported.length }),
       );
     }),
     vscode.commands.registerCommand('utplsql.newProfile', async () => {
       const name = await vscode.window.showInputBox({
-        title: 'utPLSQL — Novo perfil',
-        prompt: 'Nome amigável do perfil (ex.: DEV Local)',
-        placeHolder: 'DEV Local',
+        title: t(locale, 'ext.profile.new.title'),
+        prompt: t(locale, 'ext.profile.new.namePrompt'),
+        placeHolder: t(locale, 'ext.profile.new.namePlaceholder'),
       });
       if (!name?.trim()) return;
       const connection = await vscode.window.showInputBox({
-        title: 'utPLSQL — Novo perfil',
-        prompt: 'Conexão Oracle (usuario/senha@//host:porta/servico)',
+        title: t(locale, 'ext.profile.new.title'),
+        prompt: t(locale, 'ext.profile.new.connPrompt'),
         password: true,
       });
       if (!connection?.trim()) return;
       const sourcePath = await vscode.window.showInputBox({
-        title: 'utPLSQL — Novo perfil',
-        prompt: 'sourcePath (opcional — Enter para pular)',
-        placeHolder: 'install',
+        title: t(locale, 'ext.profile.new.title'),
+        prompt: t(locale, 'ext.profile.new.sourcePrompt'),
+        placeHolder: t(locale, 'ext.profile.new.sourcePlaceholder'),
       });
       const profile: ConnectionProfile = {
         id: generateId(),
@@ -382,7 +383,9 @@ export function activate(context: vscode.ExtensionContext) {
       await saveProfiles([...profiles, profile]);
       await setActiveProfile(profile.id);
       statusBar?.showIdle();
-      vscode.window.showInformationMessage(`Perfil "${profile.name}" criado e ativado.`);
+      vscode.window.showInformationMessage(
+        t(locale, 'ext.profile.new.created', { name: profile.name }),
+      );
     }),
   );
 
@@ -701,6 +704,7 @@ function collectAllItems(controller: vscode.TestController): vscode.TestItem[] {
 }
 
 async function runForUri(controller: vscode.TestController, uri: vscode.Uri, coverage: boolean) {
+  const locale = getExtensionLocale();
   const metas = collectAllItems(controller)
     .map((i) => state.getMeta(i))
     .filter(Boolean) as ItemMeta[];
@@ -708,7 +712,7 @@ async function runForUri(controller: vscode.TestController, uri: vscode.Uri, cov
     .map((m) => state.getSuiteItem(`suite:${m.packageName.toLowerCase()}`))
     .filter(Boolean) as vscode.TestItem[];
   if (!include.length) {
-    vscode.window.showWarningMessage('Nenhuma suite utPLSQL encontrada neste arquivo.');
+    vscode.window.showWarningMessage(t(locale, 'ext.noSuiteInFile'));
     return;
   }
   await runWithProgress(
@@ -725,6 +729,7 @@ async function runForUri(controller: vscode.TestController, uri: vscode.Uri, cov
 }
 
 async function runForFolder(controller: vscode.TestController, uri: vscode.Uri, coverage: boolean) {
+  const locale = getExtensionLocale();
   const metas = collectAllItems(controller)
     .map((i) => state.getMeta(i))
     .filter(Boolean) as ItemMeta[];
@@ -732,7 +737,7 @@ async function runForFolder(controller: vscode.TestController, uri: vscode.Uri, 
     .map((m) => state.getSuiteItem(`suite:${m.packageName.toLowerCase()}`))
     .filter(Boolean) as vscode.TestItem[];
   if (!include.length) {
-    vscode.window.showWarningMessage('Nenhuma suite utPLSQL encontrada nesta pasta.');
+    vscode.window.showWarningMessage(t(locale, 'ext.noSuiteInFolder'));
     return;
   }
   await runWithProgress(

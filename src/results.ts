@@ -1,7 +1,9 @@
 import * as fs from 'node:fs';
 import * as vscode from 'vscode';
 import { parseCobertura } from './cobertura';
+import { getExtensionLocale } from './config';
 import { resolveSourceUri } from './coverage';
+import { t } from './i18n';
 import { isUserFrame, type StackFrame, type TestCaseResult, type TestStatus } from './junit';
 import { buildMatchIndex, findByNameOnly, type MatchEntry } from './matching';
 import { deriveDeclarationCoverage } from './plsqlDeclarations';
@@ -79,6 +81,7 @@ export function applyResultsFromCases(
   run: vscode.TestRun,
   state: TestStateManager,
 ): Map<string, { status: TestStatus; message?: string }> {
+  const locale = getExtensionLocale();
   const resultMap = new Map<string, { status: TestStatus; message?: string }>();
 
   const entries: MatchEntry[] = [];
@@ -130,14 +133,16 @@ export function applyResultsFromCases(
     }
   }
 
-  for (const t of leafTests) {
-    if (!matched.has(t)) {
-      const m = state.getMeta(t);
+  for (const item of leafTests) {
+    if (!matched.has(item)) {
+      const m = state.getMeta(item);
       run.appendOutput(
-        `[aviso] Nenhum resultado JUnit encontrado para "${t.id}".` +
-          (m && m.kind === 'test' ? ` packageName esperado: ${m.packageName}\r\n` : '\r\n'),
+        `${t(locale, 'runner.noJunitResult', { id: item.id })}` +
+          (m && m.kind === 'test'
+            ? t(locale, 'runner.noJunitResultPkg', { package: m.packageName }) + '\r\n'
+            : '\r\n'),
       );
-      run.skipped(t);
+      run.skipped(item);
     }
   }
 
@@ -152,6 +157,7 @@ export function applyCoverageFromXml(
   state: TestStateManager,
   folders?: readonly vscode.WorkspaceFolder[],
 ): void {
+  const locale = getExtensionLocale();
   state.clearCoverage();
   const files = parseCobertura(covXml);
   let mappedCount = 0;
@@ -189,8 +195,6 @@ export function applyCoverageFromXml(
   }
 
   if (mappedCount === 0) {
-    run.appendOutput(
-      '\r\n[cobertura] nenhum arquivo mapeado. Ajuste "utplsql.sourcePath" para a pasta do código-fonte.\r\n',
-    );
+    run.appendOutput(`\r\n${t(locale, 'results.noMapped')}\r\n`);
   }
 }

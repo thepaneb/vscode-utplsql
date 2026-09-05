@@ -1,6 +1,7 @@
 import * as vscode from 'vscode';
-import { readConfig } from './config';
+import { getExtensionLocale, readConfig } from './config';
 import { activeProfileName } from './connectionProfiles';
+import { t } from './i18n';
 
 export interface StatusBarFormat {
   icon: string;
@@ -15,16 +16,18 @@ export function formatResults(
   errored: number,
   durationMs: number,
 ): StatusBarFormat {
+  const locale = getExtensionLocale();
   const total = passed + failed + skipped + errored;
   const icon = failed > 0 || errored > 0 ? '$(testing-failed)' : '$(testing-passed)';
   const duration = (durationMs / 1000).toFixed(1);
   const text = `${icon} ${passed}/${total} ${duration}s`;
 
   const parts: string[] = [];
-  if (passed > 0) parts.push(`$(check) ${passed} passed`);
-  if (failed > 0) parts.push(`$(error) ${failed} failed`);
-  if (errored > 0) parts.push(`$(warning) ${errored} errored`);
-  if (skipped > 0) parts.push(`$(debug-step-over) ${skipped} skipped`);
+  if (passed > 0) parts.push(`$(check) ${t(locale, 'status.passed', { count: passed })}`);
+  if (failed > 0) parts.push(`$(error) ${t(locale, 'status.failed', { count: failed })}`);
+  if (errored > 0) parts.push(`$(warning) ${t(locale, 'status.errored', { count: errored })}`);
+  if (skipped > 0)
+    parts.push(`$(debug-step-over) ${t(locale, 'status.skipped', { count: skipped })}`);
   parts.push(`$(watch) ${duration}s`);
 
   return { icon, text, tooltip: parts.join('\n') };
@@ -43,21 +46,23 @@ export class UtplsqlStatusBar implements vscode.Disposable {
 
   showIdle(): void {
     if (!readConfig().statusBarEnabled) return;
+    const locale = getExtensionLocale();
     const profile = activeProfileName();
     this.item.text = profile ? `$(database) ${profile}` : '$(beaker) utPLSQL';
     this.item.tooltip = profile
-      ? `Perfil: ${profile}. Click to switch profile.`
-      : 'No tests run yet. Click to open Test Explorer.';
+      ? t(locale, 'status.profileTooltip', { name: profile })
+      : t(locale, 'status.idle');
     this.item.show();
   }
 
   showRunning(current: number, total: number): void {
     if (!readConfig().statusBarEnabled) return;
+    const locale = getExtensionLocale();
     const now = Date.now();
     if (now - this.lastUpdate < 200) return;
     this.lastUpdate = now;
-    this.item.text = `$(sync~spin) Running ${current}/${total} suites`;
-    this.item.tooltip = `${current} of ${total} test suites executing...`;
+    this.item.text = `$(sync~spin) ${t(locale, 'status.running', { current, total })}`;
+    this.item.tooltip = t(locale, 'status.runningDetail', { current, total });
     this.item.show();
   }
 

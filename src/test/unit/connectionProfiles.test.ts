@@ -49,6 +49,10 @@ function makeGlobal(over: Partial<UtConfig> = {}): UtConfig {
     organizationSchemaPattern: 'db/{schema}/**',
     setupDiagnosticsEnabled: true,
     sqlCoverageEnabled: false,
+    debuggerEnabled: true,
+    debuggerStopOnException: true,
+    debuggerTimeoutSeconds: 300,
+    language: 'auto',
     ...over,
   };
 }

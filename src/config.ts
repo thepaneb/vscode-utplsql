@@ -1,5 +1,6 @@
 import * as vscode from 'vscode';
 import { getActiveProfile, mergeProfileConfig } from './connectionProfiles';
+import { type ExtensionLocale, resolveLocale, t } from './i18n';
 
 /** Conexão mantida apenas em memória durante a sessão (quando o usuário digita). */
 let sessionConnection: string | undefined;
@@ -36,6 +37,12 @@ export interface UtConfig {
   debuggerEnabled: boolean;
   debuggerStopOnException: boolean;
   debuggerTimeoutSeconds: number;
+  language: 'auto' | 'pt-br' | 'en';
+}
+
+/** Idioma efetivo das mensagens de runtime (setting + idioma do editor). */
+export function getExtensionLocale(): ExtensionLocale {
+  return resolveLocale(readConfig().language, vscode.env.language);
 }
 
 export function readConfig(): UtConfig {
@@ -77,6 +84,7 @@ export function readConfig(): UtConfig {
     debuggerEnabled: c.get<boolean>('debugger.enabled', true),
     debuggerStopOnException: c.get<boolean>('debugger.stopOnException', true),
     debuggerTimeoutSeconds: c.get<number>('debugger.timeoutSeconds', 300),
+    language: c.get<'auto' | 'pt-br' | 'en'>('language', 'auto'),
   };
   return mergeProfileConfig(global, getActiveProfile());
 }
@@ -128,9 +136,9 @@ export async function resolveConnection(): Promise<string | undefined> {
   if (existing) return existing;
 
   const input = await vscode.window.showInputBox({
-    title: 'utPLSQL — conexão Oracle',
-    prompt: 'Informe a conexão (usuario/senha@//host:porta/servico). Fica só nesta sessão.',
-    placeHolder: 'DEV_FULANO/senha@//localhost:1521/XEPDB1',
+    title: 'utPLSQL',
+    prompt: t(getExtensionLocale(), 'ext.conn.prompt'),
+    placeHolder: t(getExtensionLocale(), 'ext.conn.placeholder'),
     password: true,
     ignoreFocusOut: true,
   });

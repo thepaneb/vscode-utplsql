@@ -130,6 +130,11 @@ export namespace commands {
   export function executeCommand(_cmd: string, ..._args: unknown[]): void {}
 }
 
+export namespace env {
+  export const language = 'pt-BR';
+  export const clipboard = { writeText: async (_s: string) => {} };
+}
+
 export class EventEmitter<T> {
   private listeners: Array<(e: T) => void> = [];
   event = (listener: (e: T) => void) => {

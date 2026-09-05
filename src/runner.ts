@@ -6,7 +6,8 @@ import { runCli } from './cli';
 import { getCliInfo, semverLt } from './cliInfo';
 import { listReporters } from './cliReporters';
 import { compilationDiagnostics } from './compilationDiagnostics';
-import { readConfig, resolveConnection } from './config';
+import { getExtensionLocale, readConfig, resolveConnection } from './config';
+import { t } from './i18n';
 import { buildInvocation, isInvocationError } from './invocation';
 import { parseJUnit } from './junit';
 import { executeRunOracle, type OracleRunOptions } from './oracleRunner';
@@ -34,16 +35,17 @@ export async function executeRun(
 ): Promise<void> {
   const folders = vscode.workspace.workspaceFolders;
   if (!folders?.length) {
-    vscode.window.showErrorMessage('Abra uma pasta/projeto para rodar os testes utPLSQL.');
+    vscode.window.showErrorMessage(t(getExtensionLocale(), 'ext.openFolder'));
     return;
   }
   const connection = await resolveConnection();
   if (!connection) {
-    vscode.window.showErrorMessage('Conexão Oracle não informada.');
+    vscode.window.showErrorMessage(t(getExtensionLocale(), 'ext.noConnection'));
     return;
   }
 
   const cfg = readConfig();
+  const locale = getExtensionLocale();
   const root = folders[0].uri.fsPath;
   const run = controller.createTestRun(request);
 
@@ -77,17 +79,17 @@ export async function executeRun(
 
   const info = await getCliInfo(cfg, connection);
   if ('error' in info) {
-    run.appendOutput(`[aviso] Não foi possível obter info do CLI: ${info.error}\r\n`);
+    run.appendOutput(`${t(locale, 'runner.infoCli', { error: info.error })}\r\n`);
   } else {
     run.appendOutput(
-      `[info] CLI ${info.cliVersion} | API ${info.apiVersion}` +
-        (info.dbVersion ? ` | DB utPLSQL ${info.dbVersion}` : '') +
-        '\r\n',
+      t(locale, 'runner.cliInfo', {
+        cli: info.cliVersion,
+        api: info.apiVersion,
+        db: info.dbVersion ? t(locale, 'runner.dbVersion', { version: info.dbVersion }) : '',
+      }) + '\r\n',
     );
     if (info.dbVersion && semverLt(info.dbVersion, '3.1.0')) {
-      run.appendOutput(
-        '[aviso] utPLSQL no banco é anterior a 3.1.0 — cobertura pode não funcionar.\r\n',
-      );
+      run.appendOutput(`${t(locale, 'runner.oldVersion')}\r\n`);
     }
   }
 
@@ -157,16 +159,19 @@ export async function executeRun(
     } catch (e) {
       if (cfg.runnerMode === 'oracle') {
         const msg = e instanceof Error ? e.message : String(e);
-        run.appendOutput(`\r\n[erro] Oracle runner: ${msg}\r\n`);
-        for (const t of leafTests) {
-          run.errored(t, new vscode.TestMessage(`Oracle runner: ${msg}`));
+        run.appendOutput(`\r\n${t(locale, 'runner.oracleErrorHeader', { error: msg })}\r\n`);
+        for (const item of leafTests) {
+          run.errored(
+            item,
+            new vscode.TestMessage(t(locale, 'runner.oracleError', { error: msg })),
+          );
         }
         run.end();
         vscode.commands.executeCommand('setContext', 'utplsql:running', false);
         return;
       }
       run.appendOutput(
-        `[aviso] Oracle runner indisponível, fallback para CLI: ${e instanceof Error ? e.message : String(e)}\r\n`,
+        `${t(locale, 'runner.oracleUnavailable', { error: e instanceof Error ? e.message : String(e) })}\r\n`,
       );
     }
   }
@@ -184,7 +189,7 @@ export async function executeRun(
 
   const extraReporter = state.consumeExtraReporter();
   if (extraReporter) {
-    run.appendOutput(`[info] Reporter adicional da sessão: ${extraReporter}\r\n`);
+    run.appendOutput(`${t(locale, 'runner.extraReporter', { name: extraReporter })}\r\n`);
     args.push(`-f=${extraReporter}`);
   }
 
@@ -193,14 +198,11 @@ export async function executeRun(
     const reporters = await listReporters(cfg, connection);
     if ('error' in reporters) {
       coverageEnabled = false;
-      run.appendOutput(`[aviso] Não foi possível listar reporters: ${reporters.error}\r\n`);
-      run.appendOutput('[aviso] Continuando sem cobertura.\r\n');
+      run.appendOutput(`${t(locale, 'runner.reporterListFailed', { error: reporters.error })}\r\n`);
+      run.appendOutput(`${t(locale, 'runner.reporterListNoCoverage')}\r\n`);
     } else if (!reporters.some((r) => r.toUpperCase() === 'UT_COVERAGE_COBERTURA_REPORTER')) {
       coverageEnabled = false;
-      run.appendOutput(
-        '\r\n[aviso] Reporter UT_COVERAGE_COBERTURA_REPORTER não disponível no banco.\r\n' +
-          'Cobertura desabilitada. Verifique se o pacote utPLSQL está atualizado.\r\n',
-      );
+      run.appendOutput(`\r\n${t(locale, 'runner.reporterMissing')}\r\n`);
     } else {
       args.push('-f=ut_coverage_cobertura_reporter', `-o=${coveragePath}`);
       args.push(`-source_path=${cfg.sourcePath}`);
@@ -235,11 +237,13 @@ export async function executeRun(
   }
   args.push(...cfg.extraRunArgs);
 
-  run.appendOutput(`Rodando utPLSQL${coverage ? ' (com cobertura)' : ''}...\r\n`);
+  run.appendOutput(
+    `${t(locale, 'runner.running', { coverage: coverage ? t(locale, 'runner.withCoverage') : '' })}\r\n`,
+  );
 
   const inv = buildInvocation(cfg, args);
   if (isInvocationError(inv)) {
-    run.appendOutput(`\r\n[erro] ${inv.error}\r\n`);
+    run.appendOutput(`\r\n[erro] ${t(locale, 'runner.invocationError', { error: inv.error })}\r\n`);
     vscode.window.showErrorMessage(inv.error);
     for (const t of leafTests) run.errored(t, new vscode.TestMessage(inv.error));
     try {
@@ -263,7 +267,9 @@ export async function executeRun(
 
   if (result.stderr.trim()) {
     compilerOutput += result.stderr;
-    run.appendOutput(`\r\n[stderr]\r\n${result.stderr.replace(/\r?\n/g, '\r\n')}\r\n`);
+    run.appendOutput(
+      `\r\n${t(locale, 'runner.stderr')}\r\n${result.stderr.replace(/\r?\n/g, '\r\n')}\r\n`,
+    );
   }
 
   if (cfg.compilationDiagnosticsEnabled && compilerOutput) {
@@ -317,8 +323,8 @@ export function applyResults(
   state: TestStateManager,
 ): ReturnType<typeof applyResultsFromCases> {
   if (!fs.existsSync(junitPath)) {
-    for (const t of leafTests) {
-      run.errored(t, new vscode.TestMessage('Sem relatório de resultados (o CLI falhou?).'));
+    for (const item of leafTests) {
+      run.errored(item, new vscode.TestMessage(t(getExtensionLocale(), 'runner.noResults')));
     }
     return new Map();
   }
@@ -335,6 +341,7 @@ export function applyCoverage(
   state: TestStateManager,
   folders?: readonly vscode.WorkspaceFolder[],
 ): void {
+  const locale = getExtensionLocale();
   state.clearCoverage();
   if (!fs.existsSync(coveragePath)) {
     const tmpDir = path.dirname(coveragePath);
@@ -346,10 +353,11 @@ export function applyCoverage(
       }
     })();
     run.appendOutput(
-      `\r\n[cobertura] relatório não gerado.\r\n` +
-        `  esperado em: ${coveragePath}\r\n` +
-        `  arquivos em ${tmpDir}: ${siblingFiles}\r\n` +
-        `  verifique o GRANT EXECUTE ON SYS.DBMS_PROFILER.\r\n`,
+      t(locale, 'runner.coverNoReport', {
+        path: coveragePath,
+        dir: tmpDir,
+        files: siblingFiles,
+      }) + '\r\n',
     );
     if (readConfig().setupDiagnosticsEnabled) {
       setupValidator.addCoverageDiagnostic();

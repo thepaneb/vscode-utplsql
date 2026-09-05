@@ -1,7 +1,13 @@
 import * as fs from 'node:fs';
 import * as vscode from 'vscode';
 import { getCliInfo, semverLt } from './cliInfo';
-import { readConfig, resolveConnection, resolveConnectionNoPrompt } from './config';
+import {
+  getExtensionLocale,
+  readConfig,
+  resolveConnection,
+  resolveConnectionNoPrompt,
+} from './config';
+import { t } from './i18n';
 import {
   discoverUtplsqlSchema,
   ensurePool,
@@ -25,6 +31,7 @@ export class SetupValidator {
   }
 
   async validateOnActivation(): Promise<SetupDiagnostic[]> {
+    const locale = getExtensionLocale();
     const diagnostics: SetupDiagnostic[] = [];
     const cfg = readConfig();
     if (!cfg.setupDiagnosticsEnabled) return diagnostics;
@@ -34,9 +41,9 @@ export class SetupValidator {
       diagnostics.push({
         code: 'UTPLSQL_NO_CLI',
         severity: vscode.DiagnosticSeverity.Error,
-        message: `utPLSQL CLI não encontrado em "${cfg.cliPath}". Instale via npm: npm install -g utplsql-cli ou ajuste utplsql.cliPath.`,
+        message: t(locale, 'quickfix.noCli', { path: cfg.cliPath }),
         command: {
-          title: 'Configurar utplsql.cliPath',
+          title: t(locale, 'nls.command.configureConnection'),
           command: 'workbench.action.openSettings',
           arguments: ['utplsql.cliPath'],
         },
@@ -51,9 +58,9 @@ export class SetupValidator {
         diagnostics.push({
           code: 'UTPLSQL_NO_JAVA',
           severity: vscode.DiagnosticSeverity.Error,
-          message: `Java não encontrado em "${cfg.javaPath}${ext}". Instale o JDK ou ajuste utplsql.javaPath.`,
+          message: t(locale, 'quickfix.noJava', { path: `${cfg.javaPath}${ext}` }),
           command: {
-            title: 'Configurar utplsql.javaPath',
+            title: t(locale, 'nls.command.configureConnection'),
             command: 'workbench.action.openSettings',
             arguments: ['utplsql.javaPath'],
           },
@@ -69,9 +76,9 @@ export class SetupValidator {
           diagnostics.push({
             code: 'UTPLSQL_BAD_CONN',
             severity: vscode.DiagnosticSeverity.Error,
-            message: `Falha ao conectar: ${info.error}. Verifique utplsql.connection ou env UTPLSQL_CONN.`,
+            message: t(locale, 'quickfix.badConn', { error: info.error }),
             command: {
-              title: 'Reconfigurar conexão',
+              title: t(locale, 'nls.command.configureConnection'),
               command: 'utplsql.configureConnection',
             },
           });
@@ -79,9 +86,9 @@ export class SetupValidator {
           diagnostics.push({
             code: 'UTPLSQL_OLD_VERSION',
             severity: vscode.DiagnosticSeverity.Warning,
-            message: `Versão utPLSQL no banco (${info.dbVersion}) é anterior a 3.1.0. Cobertura pode não funcionar.`,
+            message: t(locale, 'quickfix.oldVersion', { version: info.dbVersion }),
             command: {
-              title: 'Como atualizar o utPLSQL',
+              title: t(locale, 'quickfix.oldVersionUpgrade'),
               command: 'vscode.open',
               arguments: [vscode.Uri.parse('https://github.com/utPLSQL/utPLSQL/releases')],
             },
@@ -129,7 +136,7 @@ export class SetupValidator {
   addCoverageDiagnostic() {
     const diag = new vscode.Diagnostic(
       new vscode.Range(0, 0, 0, 0),
-      'Relatório de cobertura não foi gerado. Execute os grants: GRANT EXECUTE ON SYS.DBMS_PROFILER TO <schema>;',
+      t(getExtensionLocale(), 'quickfix.noCoverage'),
       vscode.DiagnosticSeverity.Warning,
     );
     diag.source = 'utPLSQL Setup';
@@ -169,8 +176,15 @@ export class SetupValidator {
       {
         code: 'UTPLSQL_INVALID_OBJECTS',
         severity: vscode.DiagnosticSeverity.Warning,
-        message: `Schema ${issue.schema} contém ${issue.invalid.length} objetos inválidos: ${names}`,
-        command: { title: 'Recompilar UT3', command: 'utplsql.recompileUt3' },
+        message: t(getExtensionLocale(), 'quickfix.invalidObjects', {
+          schema: issue.schema,
+          count: issue.invalid.length,
+          names,
+        }),
+        command: {
+          title: t(getExtensionLocale(), 'quickfix.recompile'),
+          command: 'utplsql.recompileUt3',
+        },
       },
     ];
   }
@@ -181,9 +195,10 @@ export class SetupValidator {
    */
   async recompileUt3(oracledbOverride?: typeof import('oracledb')): Promise<void> {
     const cfg = readConfig();
+    const locale = getExtensionLocale();
     const connStr = resolveConnectionNoPrompt();
     if (!connStr) {
-      vscode.window.showErrorMessage('Conexão Oracle não configurada.');
+      vscode.window.showErrorMessage(t(locale, 'quickfix.noConnection'));
       return;
     }
 
@@ -194,9 +209,7 @@ export class SetupValidator {
         ((mod as Record<string, unknown>).default as typeof import('oracledb')) ??
         (mod as typeof import('oracledb'));
     } catch {
-      vscode.window.showErrorMessage(
-        'oracledb não disponível. Instale com "npm install oracledb".',
-      );
+      vscode.window.showErrorMessage(t(locale, 'quickfix.oracledbMissing'));
       return;
     }
 
@@ -217,13 +230,15 @@ export class SetupValidator {
         const issue = await findInvalidUt3Objects(oracledb, connStr, cfg);
         if (!issue || issue.invalid.length === 0) {
           this.removeDiagnostic('UTPLSQL_INVALID_OBJECTS');
-          vscode.window.showInformationMessage(
-            `Schema ${schema} recompilado — nenhum objeto inválido.`,
-          );
+          vscode.window.showInformationMessage(t(locale, 'quickfix.recompiledOk', { schema }));
         } else {
           const names = issue.invalid.map((i) => i.name).join(', ');
           vscode.window.showWarningMessage(
-            `Ainda há ${issue.invalid.length} objetos inválidos em ${schema}: ${names}`,
+            t(locale, 'quickfix.stillInvalid', {
+              count: issue.invalid.length,
+              schema,
+              names,
+            }),
           );
         }
       } finally {
@@ -231,9 +246,7 @@ export class SetupValidator {
       }
     } catch (e) {
       const msg = e instanceof Error ? e.message : String(e);
-      vscode.window.showErrorMessage(
-        `Falha ao recompilar UT3: ${msg}. Requer ALTER ANY PROCEDURE ou execução como o owner do schema.`,
-      );
+      vscode.window.showErrorMessage(t(locale, 'quickfix.recompileFail', { error: msg }));
     }
   }
 
