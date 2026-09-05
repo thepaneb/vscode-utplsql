@@ -254,6 +254,73 @@ test('applyCoverageFromXml: mapeia arquivo quando folders resolve', async () => 
   }
 });
 
+test('applyCoverageFromXml: emite DeclarationCoverage derivado do fonte', async () => {
+  const fs = await import('node:fs');
+  const os = await import('node:os');
+  const path = await import('node:path');
+
+  const tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), 'cov-decl-'));
+  const installDir = path.join(tmpDir, 'install', 'packages');
+  fs.mkdirSync(installDir, { recursive: true });
+  fs.writeFileSync(
+    path.join(installDir, 'app.sql'),
+    `PACKAGE BODY app IS
+  PROCEDURE calc IS
+  BEGIN
+    NULL;
+  END;
+  FUNCTION get_total RETURN NUMBER IS
+  BEGIN
+    RETURN 1;
+  END;
+END;`,
+  );
+  const xml = `<?xml version="1.0"?>
+<coverage>
+  <packages>
+    <package name="pkg">
+      <classes>
+        <class name="app" filename="packages/app.sql">
+          <lines>
+            <line number="3" hits="1"/>
+            <line number="8" hits="0"/>
+          </lines>
+        </class>
+      </classes>
+    </package>
+  </packages>
+</coverage>`;
+
+  try {
+    const run = makeRun() as any;
+    const state = makeState(new Map());
+    const setCoverageCalls: [string, unknown][] = [];
+    state.setCoverage = (k: string, v: unknown) => setCoverageCalls.push([k, v]);
+
+    const folders = [{ uri: { fsPath: tmpDir }, name: 'tmp', index: 0 }];
+    applyCoverageFromXml(xml, 'install', tmpDir, run, state, folders as any);
+
+    assert.strictEqual(run.coverageList.length, 1);
+    const details = setCoverageCalls[0][1] as unknown[];
+    const declarations = details.filter(
+      // biome-ignore lint/suspicious/noExplicitAny: detail de cobertura stub
+      (d) => (d as any).constructor?.name === 'DeclarationCoverage',
+    );
+    assert.strictEqual(declarations.length, 2);
+    // calc (linha 2) tem hits na linha 3; get_total não → só calc executada
+    const execNames = declarations.map(
+      // biome-ignore lint/suspicious/noExplicitAny: detail de cobertura stub
+      (d) => [(d as any).name, (d as any).executed],
+    );
+    assert.deepStrictEqual(execNames, [
+      ['calc', true],
+      ['get_total', false],
+    ]);
+  } finally {
+    fs.rmSync(tmpDir, { recursive: true, force: true });
+  }
+});
+
 test('applyCoverageFromXml: classe sem linhas emite aviso de nao mapeado', () => {
   const xml = `<?xml version="1.0"?>
 <coverage>

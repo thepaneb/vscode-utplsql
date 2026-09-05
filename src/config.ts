@@ -1,4 +1,5 @@
 import * as vscode from 'vscode';
+import { getActiveProfile, mergeProfileConfig } from './connectionProfiles';
 
 /** Conexão mantida apenas em memória durante a sessão (quando o usuário digita). */
 let sessionConnection: string | undefined;
@@ -31,11 +32,12 @@ export interface UtConfig {
   organization: 'file' | 'schema';
   organizationSchemaPattern: string;
   setupDiagnosticsEnabled: boolean;
+  sqlCoverageEnabled: boolean;
 }
 
 export function readConfig(): UtConfig {
   const c = vscode.workspace.getConfiguration('utplsql');
-  return {
+  const global: UtConfig = {
     cliPath: c.get<string>('cliPath', 'utplsql'),
     sourcePath: c.get<string>('sourcePath', 'install'),
     includePatterns: c.get<string[]>('includePatterns', ['**/*.pks']),
@@ -45,7 +47,7 @@ export function readConfig(): UtConfig {
       '-regex_expression=.*[/\\\\](\\w+)[/\\\\](\\w+)\\.sql$',
       '-type_subexpression=1',
       '-name_subexpression=2',
-      '-type_mapping=packages=PACKAGE BODY/functions=FUNCTION/procedures=PROCEDURE/triggers=TRIGGER',
+      '-type_mapping=packages=PACKAGE BODY/functions=FUNCTION/procedures=PROCEDURE/triggers=TRIGGER/views=VIEW',
     ]),
     invocation: c.get<string>('invocation', 'launcher'),
     javaPath: c.get<string>('javaPath', 'java'),
@@ -68,17 +70,25 @@ export function readConfig(): UtConfig {
     organization: c.get<'file' | 'schema'>('organization', 'file'),
     organizationSchemaPattern: c.get<string>('organization.schemaPattern', 'db/{schema}/**'),
     setupDiagnosticsEnabled: c.get<boolean>('setupDiagnostics.enabled', true),
+    sqlCoverageEnabled: c.get<boolean>('sqlCoverageEnabled', false),
   };
+  return mergeProfileConfig(global, getActiveProfile());
 }
 
 /**
  * Resolve a string de conexão sem interagir com o usuário:
- *   1) setting utplsql.connection
- *   2) variável de ambiente UTPLSQL_CONN
- *   3) cache da sessão
+ *   1) perfil ativo (utplsql.activeProfile)
+ *   2) setting utplsql.connection
+ *   3) variável de ambiente UTPLSQL_CONN
+ *   4) cache da sessão
  * Retorna undefined se nada configurado (não mostra prompt).
  */
 export function resolveConnectionNoPrompt(): string | undefined {
+  const active = getActiveProfile();
+  if (active?.connection) {
+    vscode.commands.executeCommand('setContext', 'utplsql:connected', true);
+    return active.connection;
+  }
   const fromSetting = vscode.workspace
     .getConfiguration('utplsql')
     .get<string>('connection', '')
@@ -101,10 +111,11 @@ export function resolveConnectionNoPrompt(): string | undefined {
 
 /**
  * Resolve a string de conexão na ordem:
- *   1) setting utplsql.connection
- *   2) variável de ambiente UTPLSQL_CONN
- *   3) cache da sessão (se já perguntamos antes)
- *   4) pergunta ao usuário (e guarda só na sessão)
+ *   1) perfil ativo (utplsql.activeProfile)
+ *   2) setting utplsql.connection
+ *   3) variável de ambiente UTPLSQL_CONN
+ *   4) cache da sessão (se já perguntamos antes)
+ *   5) pergunta ao usuário (e guarda só na sessão)
  */
 export async function resolveConnection(): Promise<string | undefined> {
   const existing = resolveConnectionNoPrompt();

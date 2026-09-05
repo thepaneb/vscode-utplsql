@@ -1,5 +1,6 @@
 import * as vscode from 'vscode';
 import { readConfig } from './config';
+import { activeProfileName } from './connectionProfiles';
 
 export interface StatusBarFormat {
   icon: string;
@@ -35,15 +36,18 @@ export class UtplsqlStatusBar implements vscode.Disposable {
 
   constructor() {
     this.item = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Left, 100);
-    this.item.command = 'utplsql.showTestExplorer';
+    this.item.command = 'utplsql.switchProfile';
     if (!readConfig().statusBarEnabled) return;
     this.showIdle();
   }
 
   showIdle(): void {
     if (!readConfig().statusBarEnabled) return;
-    this.item.text = '$(beaker) utPLSQL';
-    this.item.tooltip = 'No tests run yet. Click to open Test Explorer.';
+    const profile = activeProfileName();
+    this.item.text = profile ? `$(database) ${profile}` : '$(beaker) utPLSQL';
+    this.item.tooltip = profile
+      ? `Perfil: ${profile}. Click to switch profile.`
+      : 'No tests run yet. Click to open Test Explorer.';
     this.item.show();
   }
 
@@ -66,7 +70,8 @@ export class UtplsqlStatusBar implements vscode.Disposable {
   ): void {
     if (!readConfig().statusBarEnabled) return;
     const fmt = formatResults(passed, failed, skipped, errored, durationMs);
-    this.item.text = fmt.text;
+    const profile = activeProfileName();
+    this.item.text = profile ? `$(database) ${profile}  ${fmt.text}` : fmt.text;
     this.item.tooltip = fmt.tooltip;
     this.item.show();
   }

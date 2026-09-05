@@ -1,8 +1,10 @@
+import * as fs from 'node:fs';
 import * as vscode from 'vscode';
 import { parseCobertura } from './cobertura';
 import { resolveSourceUri } from './coverage';
 import { isUserFrame, type StackFrame, type TestCaseResult, type TestStatus } from './junit';
 import { buildMatchIndex, findByNameOnly, type MatchEntry } from './matching';
+import { deriveDeclarationCoverage } from './plsqlDeclarations';
 import type { TestStateManager } from './state';
 
 export interface RunResults {
@@ -165,6 +167,21 @@ export function applyCoverageFromXml(
       (l) => new vscode.StatementCoverage(l.hits, new vscode.Position(Math.max(0, l.line - 1), 0)),
     );
     if (details.length === 0) continue;
+
+    // Cobertura por declaração (PROCEDURE/FUNCTION) derivada do fonte local.
+    // Arquivo ilegível → só StatementCoverage (fallback silencioso).
+    try {
+      const srcText = fs.readFileSync(uri.fsPath, 'utf-8');
+      const declarations = deriveDeclarationCoverage(srcText, f.lines);
+      for (const d of declarations) {
+        details.push(
+          new vscode.DeclarationCoverage(d.name, d.executed, new vscode.Position(d.line, 0)),
+        );
+      }
+    } catch {
+      /* arquivo ilegível — sem declarações */
+    }
+
     const fc = vscode.FileCoverage.fromDetails(uri, details);
     state.setCoverage(uri.toString(), details);
     run.addCoverage(fc);

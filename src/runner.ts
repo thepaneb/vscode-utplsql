@@ -13,6 +13,7 @@ import { executeRunOracle, type OracleRunOptions } from './oracleRunner';
 import { setupValidator } from './quickfix';
 import { applyCoverageFromXml, applyResultsFromCases, countResults } from './results';
 import type { TestStateManager } from './state';
+import { applySqlCoverage } from './viewCoverage';
 
 export { countResults, lastSegment, type RunResults } from './results';
 
@@ -140,6 +141,16 @@ export async function executeRun(
         folders,
       };
       await executeRunOracle(oracleOpts, token);
+      if (cfg.sqlCoverageEnabled) {
+        await applySqlCoverage({
+          connection,
+          root,
+          sourcePath: cfg.sourcePath,
+          run,
+          state,
+          folders,
+        });
+      }
       run.end();
       vscode.commands.executeCommand('setContext', 'utplsql:running', false);
       return;
@@ -278,6 +289,10 @@ export async function executeRun(
   );
   if (coverageEnabled) {
     applyCoverage(coveragePath, root, cfg.sourcePath, run, state, folders);
+  }
+
+  if (cfg.sqlCoverageEnabled) {
+    await applySqlCoverage({ connection, root, sourcePath: cfg.sourcePath, run, state, folders });
   }
 
   if (onComplete && fs.existsSync(junitPath)) {

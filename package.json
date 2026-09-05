@@ -42,6 +42,36 @@
     "configuration": {
       "title": "utPLSQL",
       "properties": {
+        "utplsql.profiles": {
+          "type": "array",
+          "default": [],
+          "markdownDescription": "Perfis de conexão Oracle salvos para alternar rapidamente entre ambientes (DEV, TEST, PROD). Cada perfil pode sobrescrever `connection`, `sourcePath`, `coverageOwner`, `invocation`, `cliPath`, etc. **A senha fica em texto plano nas settings** — prefira `env`/`UTPLSQL_CONN` para produção.",
+          "items": {
+            "type": "object",
+            "properties": {
+              "id": { "type": "string" },
+              "name": { "type": "string" },
+              "connection": { "type": "string" },
+              "sourcePath": { "type": "string" },
+              "coverageOwner": { "type": "string" },
+              "coverageSourceArgs": { "type": "array", "items": { "type": "string" } },
+              "includePatterns": { "type": "array", "items": { "type": "string" } },
+              "invocation": { "type": "string", "enum": ["launcher", "java"] },
+              "cliPath": { "type": "string" },
+              "cliHome": { "type": "string" },
+              "javaPath": { "type": "string" },
+              "extraRunArgs": { "type": "array", "items": { "type": "string" } },
+              "isDefault": { "type": "boolean" },
+              "lastUsed": { "type": "string" }
+            },
+            "required": ["name", "connection"]
+          }
+        },
+        "utplsql.activeProfile": {
+          "type": "string",
+          "default": "",
+          "markdownDescription": "ID do perfil de conexão ativo (`utplsql.profiles`). Quando definido, sobrescreve `utplsql.connection`."
+        },
         "utplsql.connection": {
           "type": "string",
           "default": "",
@@ -230,6 +260,11 @@
           "type": "boolean",
           "default": true,
           "description": "Exibe diagnósticos de configuração (CLI, conexão, grants, versão) no Problems Panel e oferece quick-fix actions."
+        },
+        "utplsql.sqlCoverageEnabled": {
+          "type": "boolean",
+          "default": false,
+          "markdownDescription": "Habilita rastreio de views via `V$SQL` (cobertura booleana: executada = 100%, não executada = 0%). Requer `GRANT SELECT ON V$SQL` no Oracle. Views já aparecem no relatório com 0 hits via `type_mapping` mesmo desligado."
         }
       }
     },
@@ -323,6 +358,26 @@
       {
         "command": "utplsql.validateSetup",
         "title": "Validar configuração",
+        "category": "utPLSQL"
+      },
+      {
+        "command": "utplsql.switchProfile",
+        "title": "Switch Connection Profile...",
+        "category": "utPLSQL"
+      },
+      {
+        "command": "utplsql.newProfile",
+        "title": "New Connection Profile...",
+        "category": "utPLSQL"
+      },
+      {
+        "command": "utplsql.manageProfiles",
+        "title": "Manage Connection Profiles",
+        "category": "utPLSQL"
+      },
+      {
+        "command": "utplsql.importSqlDevConnections",
+        "title": "Import SQL Developer Connections",
         "category": "utPLSQL"
       }
     ],

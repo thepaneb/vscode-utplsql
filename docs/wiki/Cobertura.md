@@ -51,7 +51,7 @@ install/
   "-regex_expression=.*[/\\\\](\\w+)[/\\\\](\\w+)\\.sql$",
   "-type_subexpression=1",
   "-name_subexpression=2",
-  "-type_mapping=packages=PACKAGE BODY/functions=FUNCTION/procedures=PROCEDURE/triggers=TRIGGER"
+  "-type_mapping=packages=PACKAGE BODY/functions=FUNCTION/procedures=PROCEDURE/triggers=TRIGGER/views=VIEW"
 ]
 ```
 
@@ -107,6 +107,22 @@ install/
 - **Validação dinâmica**: antes de rodar cobertura, a extensão verifica se
   `UT_COVERAGE_COBERTURA_REPORTER` existe no banco. Se não, cobertura é pulada
   com aviso — a execução nunca é bloqueada.
+
+## Cobertura de views (objetos SQL)
+
+O `DBMS_PROFILER`/`DBMS_PLSQL_CODE_COVERAGE` só instrumenta PL/SQL — views não
+têm linhas para perfilar. Opções:
+
+1. **`type_mapping` com `views=VIEW`** (padrão): as views do schema coberto
+   aparecem no relatório com **0 hits** (arquivo listado, não executado).
+   Estrutura esperada: `sourcePath/views/<nome>.sql`.
+2. **Rastreio via `V$SQL`** (`utplsql.sqlCoverageEnabled: true`): após o run a
+   extensão consulta `V$SQL` e marca cada view como **executada** (100%, verde)
+   ou **não executada** (0%, vermelho). Requer `GRANT SELECT ON V$SQL`.
+   Best-effort: falha de acesso/timeout não quebra a execução.
+3. **Instrumentação manual**: para granularidade linha-a-linha, converta a
+   query em um **package function** que retorna a view/cursor — o corpo entra
+   na cobertura PL/SQL normal.
 
 ## Depurando regex de cobertura
 

@@ -20,6 +20,7 @@ export namespace Uri {
 
 const _configValues: Record<string, unknown> = {};
 let _inputBoxResult: string | undefined;
+let _quickPickResult: unknown;
 let _mockFileContents: Record<string, string> = {};
 let _mockFindFilesResult: Record<string, string[]> = {};
 let _mockFileErrors: Record<string, boolean> = {};
@@ -37,6 +38,10 @@ export function __resetConfigValues(): void {
 
 export function __setInputBoxResult(value: string | undefined): void {
   _inputBoxResult = value;
+}
+
+export function __setQuickPickResult(value: unknown): void {
+  _quickPickResult = value;
 }
 
 export function __setMockFile(pattern: string, path: string, content: string): void {
@@ -72,6 +77,9 @@ export namespace workspace {
     return {
       get: <T>(_key: string, defaultValue?: T) =>
         (_key in _configValues ? _configValues[_key] : defaultValue) as T,
+      update: async <T>(_key: string, value: T, _target?: unknown) => {
+        _configValues[_key] = value;
+      },
     };
   }
   export function findFiles(pattern: string | RelativePattern) {
@@ -164,6 +172,12 @@ export namespace window {
   }) {
     return Promise.resolve(_inputBoxResult);
   }
+  export function showQuickPick(
+    _items: readonly unknown[],
+    _options?: { placeHolder?: string; matchOnDescription?: boolean },
+  ) {
+    return Promise.resolve(_quickPickResult);
+  }
   export function showErrorMessage(_message: string) {}
   export function showInformationMessage(_message: string) {}
   export function showWarningMessage(_message: string) {}
@@ -192,6 +206,8 @@ export namespace window {
 }
 
 export const StatusBarAlignment = { Left: 1, Right: 2 } as const;
+
+export const ConfigurationTarget = { Global: 1, Workspace: 2, WorkspaceFolder: 3 } as const;
 
 export const FileType = {
   Unknown: 0,
@@ -342,6 +358,14 @@ export class FileCoverage {
 export class StatementCoverage {
   constructor(
     public hits: number,
+    public position: Position,
+  ) {}
+}
+
+export class DeclarationCoverage {
+  constructor(
+    public name: string,
+    public executed: boolean | number,
     public position: Position,
   ) {}
 }

@@ -9,6 +9,14 @@ import {
   resolveConnection,
   resolveConnectionNoPrompt,
 } from './config';
+import {
+  generateId,
+  getAllProfiles,
+  importFromSqlDeveloper,
+  saveProfiles,
+  selectProfile,
+  setActiveProfile,
+} from './connectionProfiles';
 import { DecorationManager } from './decorations';
 import {
   discoverSchemaFromDb,
@@ -23,7 +31,7 @@ import { setupValidator, UtplsqlCodeActionProvider } from './quickfix';
 import { executeRun } from './runner';
 import { TestStateManager } from './state';
 import { UtplsqlStatusBar } from './statusBar';
-import type { ItemMeta } from './types';
+import type { ConnectionProfile, ItemMeta } from './types';
 
 const state = new TestStateManager();
 let currentRunToken: vscode.CancellationTokenSource | undefined;
@@ -282,6 +290,67 @@ export function activate(context: vscode.ExtensionContext) {
       );
     }),
     vscode.commands.registerCommand('utplsql.recompileUt3', () => setupValidator.recompileUt3()),
+    vscode.commands.registerCommand('utplsql.switchProfile', async () => {
+      const profiles = getAllProfiles();
+      if (profiles.length === 0) {
+        vscode.window.showInformationMessage(
+          'Nenhum perfil de conexão salvo. Use "utPLSQL: New Connection Profile...".',
+        );
+        return;
+      }
+      const selected = await selectProfile(profiles);
+      if (!selected) return;
+      await setActiveProfile(selected.id);
+      statusBar?.showIdle();
+      vscode.window.showInformationMessage(`Perfil ativo: ${selected.name}`);
+    }),
+    vscode.commands.registerCommand('utplsql.manageProfiles', async () => {
+      await vscode.commands.executeCommand('workbench.action.openSettings', 'utplsql.profiles');
+    }),
+    vscode.commands.registerCommand('utplsql.importSqlDevConnections', async () => {
+      const imported = await importFromSqlDeveloper();
+      if (imported.length === 0) {
+        vscode.window.showWarningMessage(
+          'Nenhuma conexão do SQL Developer encontrada (connections.xml).',
+        );
+        return;
+      }
+      const merged = [...getAllProfiles(), ...imported];
+      await saveProfiles(merged);
+      vscode.window.showInformationMessage(
+        `${imported.length} conexão(ões) importada(s) do SQL Developer.`,
+      );
+    }),
+    vscode.commands.registerCommand('utplsql.newProfile', async () => {
+      const name = await vscode.window.showInputBox({
+        title: 'utPLSQL — Novo perfil',
+        prompt: 'Nome amigável do perfil (ex.: DEV Local)',
+        placeHolder: 'DEV Local',
+      });
+      if (!name?.trim()) return;
+      const connection = await vscode.window.showInputBox({
+        title: 'utPLSQL — Novo perfil',
+        prompt: 'Conexão Oracle (usuario/senha@//host:porta/servico)',
+        password: true,
+      });
+      if (!connection?.trim()) return;
+      const sourcePath = await vscode.window.showInputBox({
+        title: 'utPLSQL — Novo perfil',
+        prompt: 'sourcePath (opcional — Enter para pular)',
+        placeHolder: 'install',
+      });
+      const profile: ConnectionProfile = {
+        id: generateId(),
+        name: name.trim(),
+        connection: connection.trim(),
+      };
+      if (sourcePath?.trim()) profile.sourcePath = sourcePath.trim();
+      const profiles = getAllProfiles();
+      await saveProfiles([...profiles, profile]);
+      await setActiveProfile(profile.id);
+      statusBar?.showIdle();
+      vscode.window.showInformationMessage(`Perfil "${profile.name}" criado e ativado.`);
+    }),
   );
 
   void (async () => {

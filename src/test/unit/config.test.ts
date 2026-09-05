@@ -43,6 +43,18 @@ test('readConfig: runnerMode default e auto', () => {
   assert.strictEqual(cfg.runnerMode, 'auto');
 });
 
+test('readConfig: sqlCoverageEnabled default e false', () => {
+  const cfg = readConfig();
+  assert.strictEqual(cfg.sqlCoverageEnabled, false);
+});
+
+test('readConfig: type_mapping default inclui views=VIEW', () => {
+  const cfg = readConfig();
+  const mapping = cfg.coverageSourceArgs.find((a) => a.startsWith('-type_mapping='));
+  assert.ok(mapping, 'type_mapping deveria existir');
+  assert.ok(mapping.includes('views=VIEW'), 'type_mapping deveria incluir views=VIEW');
+});
+
 test('readConfig: javaArgs default e -Xmx256m', () => {
   const cfg = readConfig();
   assert.deepStrictEqual(cfg.javaArgs, ['-Xmx256m']);
@@ -190,6 +202,44 @@ test('resolveConnectionNoPrompt: usa setting utplsql.connection', () => {
     assert.strictEqual(resolveConnectionNoPrompt(), 'user/setting@db');
   } finally {
     process.env.UTPLSQL_CONN = origEnv;
+    __resetConfigValues();
+  }
+});
+
+test('resolveConnectionNoPrompt: usa perfil ativo antes do setting', () => {
+  __setConfigValue('profiles', [{ id: 'p1', name: 'DEV', connection: 'dev/profile@db' }]);
+  __setConfigValue('activeProfile', 'p1');
+  __setConfigValue('connection', 'user/setting@db');
+  const origEnv = process.env.UTPLSQL_CONN;
+  delete process.env.UTPLSQL_CONN;
+  try {
+    assert.strictEqual(resolveConnectionNoPrompt(), 'dev/profile@db');
+  } finally {
+    process.env.UTPLSQL_CONN = origEnv;
+    __resetConfigValues();
+  }
+});
+
+test('readConfig: perfil ativo sobrescreve settings globais', () => {
+  __setConfigValue('profiles', [
+    {
+      id: 'p1',
+      name: 'DEV',
+      connection: 'dev/pass@db',
+      sourcePath: 'db/dev',
+      coverageOwner: 'APP',
+      invocation: 'java',
+    },
+  ]);
+  __setConfigValue('activeProfile', 'p1');
+  __setConfigValue('sourcePath', 'install');
+  try {
+    const cfg = readConfig();
+    assert.strictEqual(cfg.sourcePath, 'db/dev');
+    assert.strictEqual(cfg.coverageOwner, 'APP');
+    assert.strictEqual(cfg.invocation, 'java');
+    assert.strictEqual(cfg.runnerMode, 'auto');
+  } finally {
     __resetConfigValues();
   }
 });
