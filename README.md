@@ -256,7 +256,12 @@ Todos os comandos da extensão (palette `Ctrl+Shift+P` prefixo `utPLSQL:`):
 | `utPLSQL: Validar configuração` | Roda validação completa do setup (CLI, Java, conexão, instalação UT3) e mostra resultados | — |
 | `utPLSQL: Configurar conexão` | Abre settings em `utplsql.connection` | — |
 | `utPLSQL: Copiar grants de cobertura para clipboard` | Copia grants SQL para clipboard | — |
-| `utPLSQL: Mostrar Test Explorer` | Foca a view Testing | Clique na status bar |
+| `utPLSQL: Mostrar Test Explorer` | Foca a view Testing | — |
+| `utPLSQL: Switch Connection Profile...` | Alterna o perfil de conexão ativo (QuickPick) | Clique na status bar (com perfil ativo) |
+| `utPLSQL: New Connection Profile...` | Wizard para criar e ativar um perfil | — |
+| `utPLSQL: Manage Connection Profiles` | Abre settings em `utplsql.profiles` | — |
+| `utPLSQL: Import SQL Developer Connections` | Importa conexões do SQL Developer (connections.xml) | — |
+| `utPLSQL: Debug Test (PL/SQL)` | Inicia sessão de debug do teste sob o arquivo ativo | — |
 
 > **Recompilar UT3** (`utplsql.recompileUt3`) **não** é um comando da paleta — é
 > um quick-fix interno do diagnostic "utPLSQL Setup" (objetos inválidos no

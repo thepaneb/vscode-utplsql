@@ -17,13 +17,16 @@ export interface DebuggerRuntime {
   runTest(conn: DebugConnection, packageName: string, testName?: string): Promise<void>;
 }
 
-function loadOracledb(): Promise<typeof import('oracledb') | undefined> {
-  return import('oracledb').then((mod) => {
+async function loadOracledb(): Promise<typeof import('oracledb') | undefined> {
+  try {
+    const mod = await import('oracledb');
     return (
       ((mod as Record<string, unknown>).default as typeof import('oracledb')) ??
       (mod as typeof import('oracledb'))
     );
-  });
+  } catch {
+    return undefined;
+  }
 }
 
 /** Implementação real: conexões via pool/raw + ut_runner.run no debuggee. */

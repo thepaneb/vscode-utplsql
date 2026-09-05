@@ -96,7 +96,9 @@ export const ptBr = {
 
   // quickfix.ts
   'quickfix.noCli': 'utPLSQL CLI não configurado ({path}).',
+  'quickfix.noCliAction': 'Configurar utplsql.cliPath',
   'quickfix.noJava': 'Java não encontrado ({path}).',
+  'quickfix.noJavaAction': 'Configurar utplsql.javaPath',
   'quickfix.badConn': 'Conexão Oracle inválida: {error}',
   'quickfix.oldVersion': 'Versão do utPLSQL no banco antiga ({version}); mínimo 3.1.0.',
   'quickfix.oldVersionUpgrade': 'Como atualizar o utPLSQL',
@@ -224,7 +226,9 @@ export const en: Record<string, string> = {
   'status.skipped': '{count} skipped',
 
   'quickfix.noCli': 'utPLSQL CLI not configured ({path}).',
+  'quickfix.noCliAction': 'Configure utplsql.cliPath',
   'quickfix.noJava': 'Java not found ({path}).',
+  'quickfix.noJavaAction': 'Configure utplsql.javaPath',
   'quickfix.badConn': 'Invalid Oracle connection: {error}',
   'quickfix.oldVersion': 'utPLSQL database version is old ({version}); minimum 3.1.0.',
   'quickfix.oldVersionUpgrade': 'How to upgrade utPLSQL',

@@ -43,7 +43,7 @@ export class SetupValidator {
         severity: vscode.DiagnosticSeverity.Error,
         message: t(locale, 'quickfix.noCli', { path: cfg.cliPath }),
         command: {
-          title: t(locale, 'nls.command.configureConnection'),
+          title: t(locale, 'quickfix.noCliAction'),
           command: 'workbench.action.openSettings',
           arguments: ['utplsql.cliPath'],
         },
@@ -60,7 +60,7 @@ export class SetupValidator {
           severity: vscode.DiagnosticSeverity.Error,
           message: t(locale, 'quickfix.noJava', { path: `${cfg.javaPath}${ext}` }),
           command: {
-            title: t(locale, 'nls.command.configureConnection'),
+            title: t(locale, 'quickfix.noJavaAction'),
             command: 'workbench.action.openSettings',
             arguments: ['utplsql.javaPath'],
           },
