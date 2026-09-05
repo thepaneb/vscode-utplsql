@@ -11,15 +11,15 @@
   "nls.command.clearConnection": "Limpar conexão da sessão",
   "nls.command.showInfo": "Mostrar informações do utPLSQL",
   "nls.command.selectReporter": "Selecionar reporter adicional...",
-  "nls.command.rerunLast": "utPLSQL: Rerun Last",
-  "nls.command.runAtCursor": "utPLSQL: Run Test at Cursor",
-  "nls.command.runFailed": "utPLSQL: Run Failed Tests",
+  "nls.command.rerunLast": "utPLSQL: Repetir última execução",
+  "nls.command.runAtCursor": "utPLSQL: Executar teste no cursor",
+  "nls.command.runFailed": "utPLSQL: Executar testes com falha",
   "nls.command.configureConnection": "Configurar conexão",
   "nls.command.copyGrantsToClipboard": "Copiar grants de cobertura para clipboard",
   "nls.command.validateSetup": "Validar configuração",
-  "nls.command.switchProfile": "Switch Connection Profile...",
-  "nls.command.newProfile": "New Connection Profile...",
-  "nls.command.manageProfiles": "Manage Connection Profiles",
-  "nls.command.importSqlDevConnections": "Import SQL Developer Connections",
-  "nls.command.debugTest": "Debug Test (PL/SQL)"
+  "nls.command.switchProfile": "utPLSQL: Alternar perfil de conexão...",
+  "nls.command.newProfile": "utPLSQL: Novo perfil de conexão...",
+  "nls.command.manageProfiles": "utPLSQL: Gerenciar perfis de conexão",
+  "nls.command.importSqlDevConnections": "utPLSQL: Importar conexões do SQL Developer",
+  "nls.command.debugTest": "utPLSQL: Depurar teste (PL/SQL)"
 }
