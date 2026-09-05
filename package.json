@@ -331,10 +331,15 @@
           "enum": [
             "auto",
             "pt-br",
-            "en"
+            "en",
+            "es",
+            "zh-cn",
+            "ja",
+            "de",
+            "fr"
           ],
           "default": "auto",
-          "markdownDescription": "Idioma dos conteúdos textuais da extensão. `auto` segue o idioma do VSCode (`pt*` → pt-br; senão en)."
+          "markdownDescription": "Idioma dos conteúdos textuais da extensão. `auto` segue o idioma do VSCode (pt, es, zh, ja, de, fr; senão en)."
         }
       }
     },

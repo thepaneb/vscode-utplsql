@@ -134,7 +134,7 @@ estiver instalado. Use `runnerMode: cli` para forçar CLI sempre.
 | `utplsql.debugger.enabled` | `true` | Habilita o debug PL/SQL de testes (`DBMS_DEBUG`). Requer `node-oracledb` + grants. |
 | `utplsql.debugger.stopOnException` | `true` | Pausa em exceções PL/SQL durante o debug. |
 | `utplsql.debugger.timeoutSeconds` | `300` | Timeout (s) da sessão de debug. |
-| `utplsql.language` | `auto` | Idioma das mensagens de runtime: `auto` (segue o VSCode: `pt*` → pt-br, senão en), `pt-br`, `en`. |
+| `utplsql.language` | `auto` | Idioma das mensagens de runtime: `auto` (segue o VSCode: `pt*` → pt-br, `zh*` → zh-cn, `es*` → es, `ja*` → ja, `de*` → de, `fr*` → fr; senão en), ou `pt-br`, `en`, `es`, `zh-cn`, `ja`, `de`, `fr`. |
 
 Exemplo (`.vscode/settings.json` do projeto):
 

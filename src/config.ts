@@ -37,7 +37,7 @@ export interface UtConfig {
   debuggerEnabled: boolean;
   debuggerStopOnException: boolean;
   debuggerTimeoutSeconds: number;
-  language: 'auto' | 'pt-br' | 'en';
+  language: 'auto' | 'pt-br' | 'en' | 'es' | 'zh-cn' | 'ja' | 'de' | 'fr';
 }
 
 /** Idioma efetivo das mensagens de runtime (setting + idioma do editor). */
@@ -84,7 +84,10 @@ export function readConfig(): UtConfig {
     debuggerEnabled: c.get<boolean>('debugger.enabled', true),
     debuggerStopOnException: c.get<boolean>('debugger.stopOnException', true),
     debuggerTimeoutSeconds: c.get<number>('debugger.timeoutSeconds', 300),
-    language: c.get<'auto' | 'pt-br' | 'en'>('language', 'auto'),
+    language: c.get<'auto' | 'pt-br' | 'en' | 'es' | 'zh-cn' | 'ja' | 'de' | 'fr'>(
+      'language',
+      'auto',
+    ),
   };
   return mergeProfileConfig(global, getActiveProfile());
 }
