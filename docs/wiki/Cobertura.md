@@ -129,7 +129,9 @@ têm linhas para perfilar. Opções:
    Estrutura esperada: `sourcePath/views/<nome>.sql`.
 2. **Rastreio via `V$SQL`** (`utplsql.sqlCoverageEnabled: true`): após o run a
    extensão consulta `V$SQL` e marca cada view como **executada** (100%, verde)
-   ou **não executada** (0%, vermelho). Requer `GRANT SELECT ON V$SQL`.
+   ou **não executada** (0%, vermelho). O arquivo recebe gutter **por linha**
+   (todas verdes ou todas vermelhas — cobertura booleana, não há hits reais
+   por linha em SQL). Requer `GRANT SELECT ON V$SQL`.
    Best-effort: falha de acesso/timeout não quebra a execução.
 3. **Instrumentação manual**: para granularidade linha-a-linha, converta a
    query em um **package function** que retorna a view/cursor — o corpo entra

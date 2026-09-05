@@ -163,7 +163,7 @@ export async function applySqlCoverage(options: SqlCoverageOptions): Promise<voi
 function readLines(filePath: string): string[] {
   try {
     const text = fs.readFileSync(filePath, 'utf-8');
-    return text.split(/\r?\n/).filter((l) => l.length > 0);
+    return text.split(/\r?\n/);
   } catch {
     return [];
   }
