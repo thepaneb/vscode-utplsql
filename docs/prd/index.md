@@ -127,20 +127,23 @@ _(vazio — nenhuma PRD em implementação)_
 
 ### 🔵 Aprovados
 
-_(vazio — nenhuma PRD aprovada aguardando implementação)_
-
-### ⚪ Propostos
-
 #### 0.12.0
 
 | # | PRD | Versão alvo | Data |
 |---|---|---|---|
-| 12 | [Cobertura de código para objetos SQL (views, queries)](proposed/prd-12-sql-coverage.md) | 0.12.0 | 2026-07-08 |
-| 33 | [PL/SQL Debugger Integration](proposed/prd-33-plsql-debugger-integration.md) | 0.12.0 | 2026-07-21 |
-| 34 | [Multi-Connection Profiles](proposed/prd-34-multi-connection-profiles.md) | 0.12.0 | 2026-07-21 |
-| 47 | [Node 26 no toolchain de desenvolvimento](proposed/prd-47-node-26-toolchain.md) | 0.12.0 | 2026-08-29 |
-| 48 | [Function Coverage derivada (DeclarationCoverage)](proposed/prd-48-function-coverage.md) | 0.12.0 | 2026-08-29 |
-| 49 | [Internacionalização (i18n) dos conteúdos textuais](proposed/prd-49-internacionalizacao.md) | 0.12.0 | 2026-08-29 |
+| 34 | [Multi-Connection Profiles](approved/prd-34-multi-connection-profiles.md) | 0.12.0 | 2026-09-04 |
+| 48 | [Function Coverage derivada (DeclarationCoverage)](approved/prd-48-function-coverage.md) | 0.12.0 | 2026-09-04 |
+| 12 | [Cobertura de código para objetos SQL (views, queries)](approved/prd-12-sql-coverage.md) | 0.12.0 | 2026-09-04 |
+| 33 | [PL/SQL Debugger Integration](approved/prd-33-plsql-debugger-integration.md) | 0.12.0 | 2026-09-04 |
+| 49 | [Internacionalização (i18n) dos conteúdos textuais](approved/prd-49-internacionalizacao.md) | 0.12.0 | 2026-09-04 |
+
+### ⚪ Propostos
+
+#### 0.13.0
+
+| # | PRD | Versão alvo | Data |
+|---|---|---|---|
+| 47 | [Node 26 no toolchain de desenvolvimento](proposed/prd-47-node-26-toolchain.md) | 0.13.0 | 2026-08-29 |
 
 
 ---
@@ -194,15 +197,15 @@ docs/prd/
 │   ├── prd-43-schema-db-discovery.md
 │   ├── prd-44-pure-matching.md
 │   └── prd-45-bundle-esbuild.md
-├── approved/         ← aprovados, aguardando implementação (vazio)
+├── approved/         ← aprovados, aguardando implementação
+│   ├── prd-12-sql-coverage.md
+│   ├── prd-33-plsql-debugger-integration.md
+│   ├── prd-34-multi-connection-profiles.md
+│   ├── prd-48-function-coverage.md
+│   └── prd-49-internacionalizacao.md
 ├── in-progress/      ← sendo implementados agora (vazio)
 └── proposed/         ← em avaliação
-    ├── prd-12-sql-coverage.md
-    ├── prd-33-plsql-debugger-integration.md
-    ├── prd-34-multi-connection-profiles.md
-    ├── prd-47-node-26-toolchain.md
-    ├── prd-48-function-coverage.md
-    └── prd-49-internacionalizacao.md
+    └── prd-47-node-26-toolchain.md
 ```
 
 ---
