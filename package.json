@@ -334,12 +334,20 @@
             "en",
             "es",
             "zh-cn",
+            "zh-tw",
             "ja",
             "de",
-            "fr"
+            "fr",
+            "it",
+            "ko",
+            "ru",
+            "tr",
+            "pl",
+            "cs",
+            "hu"
           ],
           "default": "auto",
-          "markdownDescription": "Idioma dos conteúdos textuais da extensão. `auto` segue o idioma do VSCode (pt, es, zh, ja, de, fr; senão en)."
+          "markdownDescription": "Idioma dos conteúdos textuais da extensão. `auto` segue o idioma do VSCode (pt, es, zh-cn/zh-tw, ja, de, fr, it, ko, ru, tr, pl, cs, hu; senão en)."
         }
       }
     },
