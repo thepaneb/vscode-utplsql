@@ -128,6 +128,13 @@ estiver instalado. Use `runnerMode: cli` para forçar CLI sempre.
 | `utplsql.organization.schemaPattern` | `db/{schema}/**` | Padrão glob para extrair schema do caminho. Use `{schema}` como placeholder. No modo `schema`, os diretórios abaixo da base do padrão (ex.: `db/*`) definem os schemas consultados no banco. |
 | `utplsql.compilationDiagnostics.enabled` | `true` | Exibe erros de compilação PL/SQL como sublinhados no editor e Problems Panel (modo CLI). |
 | `utplsql.setupDiagnostics.enabled` | `true` | Exibe diagnósticos de configuração (CLI, conexão, grants, versão) e de **integridade da instalação utPLSQL** (objetos inválidos no schema UT3, com quick-fix "Recompilar UT3") com quick-fix actions. |
+| `utplsql.profiles` | `[]` | Perfis de conexão Oracle salvos (nome, connection, e overrides de `sourcePath`/`coverageOwner`/`invocation`/`cliPath`/etc.) para alternar entre ambientes. |
+| `utplsql.activeProfile` | `""` | ID do perfil ativo (`utplsql.profiles`). Quando definido, sobrescreve `utplsql.connection`. |
+| `utplsql.sqlCoverageEnabled` | `false` | Rastreia views executadas via `V$SQL` (cobertura booleana). Requer `GRANT SELECT ON V$SQL`. |
+| `utplsql.debugger.enabled` | `true` | Habilita o debug PL/SQL de testes (`DBMS_DEBUG`). Requer `node-oracledb` + grants. |
+| `utplsql.debugger.stopOnException` | `true` | Pausa em exceções PL/SQL durante o debug. |
+| `utplsql.debugger.timeoutSeconds` | `300` | Timeout (s) da sessão de debug. |
+| `utplsql.language` | `auto` | Idioma das mensagens de runtime: `auto` (segue o VSCode: `pt*` → pt-br, senão en), `pt-br`, `en`. |
 
 Exemplo (`.vscode/settings.json` do projeto):
 

@@ -120,6 +120,11 @@ CONCLUIR
 | 44 | [Matching resultado→teste como função pura](completed/prd-44-pure-matching.md) | 0.11.0 | 2026-08-08 |
 | 45 | [Bundling com esbuild + poda do node-oracledb no VSIX](completed/prd-45-bundle-esbuild.md) | 0.11.0 | 2026-08-26 |
 | 46 | [Atualização de dependências major](completed/prd-46-dependency-majors.md) | 0.11.0 | 2026-08-29 |
+| 34 | [Multi-Connection Profiles](completed/prd-34-multi-connection-profiles.md) | 0.12.0 | 2026-09-04 |
+| 48 | [Function Coverage derivada (DeclarationCoverage)](completed/prd-48-function-coverage.md) | 0.12.0 | 2026-09-04 |
+| 12 | [Cobertura de código para objetos SQL (views, queries)](completed/prd-12-sql-coverage.md) | 0.12.0 | 2026-09-04 |
+| 33 | [PL/SQL Debugger Integration](completed/prd-33-plsql-debugger-integration.md) | 0.12.0 | 2026-09-04 |
+| 49 | [Internacionalização (i18n) dos conteúdos textuais](completed/prd-49-internacionalizacao.md) | 0.12.0 | 2026-09-04 |
 
 ### 🟡 Em desenvolvimento
 
@@ -127,15 +132,7 @@ _(vazio — nenhuma PRD em implementação)_
 
 ### 🔵 Aprovados
 
-#### 0.12.0
-
-| # | PRD | Versão alvo | Data |
-|---|---|---|---|
-| 34 | [Multi-Connection Profiles](approved/prd-34-multi-connection-profiles.md) | 0.12.0 | 2026-09-04 |
-| 48 | [Function Coverage derivada (DeclarationCoverage)](approved/prd-48-function-coverage.md) | 0.12.0 | 2026-09-04 |
-| 12 | [Cobertura de código para objetos SQL (views, queries)](approved/prd-12-sql-coverage.md) | 0.12.0 | 2026-09-04 |
-| 33 | [PL/SQL Debugger Integration](approved/prd-33-plsql-debugger-integration.md) | 0.12.0 | 2026-09-04 |
-| 49 | [Internacionalização (i18n) dos conteúdos textuais](approved/prd-49-internacionalizacao.md) | 0.12.0 | 2026-09-04 |
+_(vazio — nenhuma PRD aprovada aguardando implementação)_
 
 ### ⚪ Propostos
 
@@ -196,13 +193,14 @@ docs/prd/
 │   ├── prd-42-suiteparser-annotations.md
 │   ├── prd-43-schema-db-discovery.md
 │   ├── prd-44-pure-matching.md
-│   └── prd-45-bundle-esbuild.md
-├── approved/         ← aprovados, aguardando implementação
+│   ├── prd-45-bundle-esbuild.md
+│   ├── prd-46-dependency-majors.md
 │   ├── prd-12-sql-coverage.md
 │   ├── prd-33-plsql-debugger-integration.md
 │   ├── prd-34-multi-connection-profiles.md
 │   ├── prd-48-function-coverage.md
 │   └── prd-49-internacionalizacao.md
+├── approved/         ← aprovados, aguardando implementação (vazio)
 ├── in-progress/      ← sendo implementados agora (vazio)
 └── proposed/         ← em avaliação
     └── prd-47-node-26-toolchain.md

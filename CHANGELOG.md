@@ -1,5 +1,31 @@
 # Changelog
 
+## 0.12.0
+
+- **Perfis de conexão (PRD-34)**: salve e alterne entre múltiplas conexões
+  Oracle (`utplsql.profiles` + `utplsql.activeProfile`) com configurações por
+  perfil (`sourcePath`, `coverageOwner`, `invocation`, `cliPath`, etc.).
+  Comandos: Switch/New/Manage Connection Profile e Import do SQL Developer.
+  Status bar mostra o perfil ativo; sem perfil, comportamento inalterado.
+- **Function Coverage derivada (PRD-48)**: a view Test Coverage agora mostra
+  `% de declarações` por arquivo — declarações `PROCEDURE`/`FUNCTION` são
+  derivadas do fonte (hits por escopo) e emitidas como `DeclarationCoverage`
+  junto dos gutters por linha. Sem regressão nos percentuais existentes.
+- **Cobertura de views (PRD-12)**: `type_mapping` default inclui `views=VIEW`
+  (views aparecem no relatório com 0 hits); novo setting
+  `utplsql.sqlCoverageEnabled` rastreia views executadas via `V$SQL`
+  (cobertura booleana, off por default). Guia em `docs/wiki/Cobertura.md`.
+- **PL/SQL Debugger (PRD-33)**: debug de testes utPLSQL via `DBMS_DEBUG` —
+  breakpoints em `.pks`/`.pkb`, Step Into/Over/Out, Continue/Stop e inspeção
+  de variáveis locais (Debug Adapter `type: "utplsql"` + comando
+  `utplsql.debugTest`). Requer `node-oracledb` + grants `DBMS_DEBUG`/
+  `DEBUG CONNECT SESSION`. Settings `utplsql.debugger.*`. Integração com
+  banco real pendente de validação (suíte `describeDB`).
+- **Internacionalização (PRD-49)**: setting `utplsql.language`
+  (`auto` | `pt-br` | `en`) para as mensagens de runtime; títulos de comandos
+  via `package.nls` (seguem o idioma do editor). `auto` em editor `pt*`
+  reproduz as mensagens atuais.
+
 ## 0.11.0
 
 - **Correções de primeira execução de cobertura no Windows (launcher CLI)**:
