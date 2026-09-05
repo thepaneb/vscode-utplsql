@@ -26,6 +26,17 @@ utplsql run <conn> -p=<suites>
 A extensão lê o XML Cobertura e mapeia cada objeto coberto ao arquivo-fonte
 usando `resolveSourceUri` (absoluto → workspace → sourcePath).
 
+## Cobertura por declaração (Function Coverage)
+
+Além da cobertura linha-a-linha (gutters), a aba **Test Coverage** exibe o
+percentual de **declarações** (`PROCEDURE`/`FUNCTION`) executadas por arquivo.
+A extensão deriva as declarações do próprio fonte e emite `DeclarationCoverage`
+para a Test Coverage API:
+
+- **Aba Test Coverage** → % de declarações por arquivo/pasta
+- **Gutters por linha** → sem regressão: a cobertura linha-a-linha continua
+  sendo emitida normalmente
+
 ## Mapeamento da cobertura aos arquivos
 
 O `type_mapping` traduz o tipo capturado pelo regex no tipo Oracle.

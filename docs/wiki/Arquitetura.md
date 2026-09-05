@@ -48,9 +48,18 @@ embutidas no bundle.
 | `cliEncoding.ts` — decode de output | `decorations.ts`, `statusBar.ts` |
 | `codelens.ts` (parse) — `parseCodeLensItems` | |
 | `state.ts`, `types.ts` (type-only) | |
+| `plsqlDeclarations.ts` — extrai declarações PROCEDURE/FUNCTION do fonte | |
+| `i18n.ts`, `i18nLocales.ts` — localização (15 locais) | |
+| | `connectionProfiles.ts` — perfis de conexão |
+| | `viewCoverage.ts` — DeclarationCoverage na aba Test Coverage |
+| | `dbmsDebug.ts`, `debugger.ts` — debug PL/SQL via DBMS_DEBUG |
 
 Módulos da coluna esquerda **não importam `vscode`** (em runtime) e são
 testáveis com `node --test` sem qualquer setup.
+
+![Diagrama de internacionalização (i18n)](images/diagram-i18n.png)
+
+![Diagrama do debugger PL/SQL (DBMS_DEBUG)](images/diagram-debugger.png)
 
 ## Context keys
 

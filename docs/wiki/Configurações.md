@@ -9,6 +9,8 @@ Todas as settings da extensão, com prefixo `utplsql.`. Configure no
 |---|---|---|
 | `utplsql.connection` | `""` | Conexão Oracle. Deixe vazio e use `UTPLSQL_CONN` para não gravar senha. |
 | `utplsql.cliPath` | `utplsql` | Caminho do utPLSQL-cli. Ex.: `C:\tools\utPLSQL-cli\bin\utplsql.bat` |
+| `utplsql.profiles` | `[]` | Perfis de conexão salvos (array de objetos com nome e connection string). |
+| `utplsql.activeProfile` | `""` | Perfil de conexão ativo. Vazio = usa `connection`/`UTPLSQL_CONN`. |
 
 ## Cobertura
 
@@ -17,6 +19,15 @@ Todas as settings da extensão, com prefixo `utplsql.`. Configure no
 | `utplsql.sourcePath` | `install` | Pasta do código de produção para mapear cobertura. |
 | `utplsql.coverageOwner` | `""` | Schema dos objetos cobertos. Vazio = usuário da conexão. |
 | `utplsql.coverageSourceArgs` | (regex) | Args CLI que mapeiam objetos aos arquivos. Veja [Cobertura](Cobertura). |
+| `utplsql.sqlCoverageEnabled` | `false` | Rastreia views (objetos SQL) via `V$SQL` após o run, marcando-as como executadas/não executadas. Requer `GRANT SELECT ON V$SQL`. Best-effort. |
+
+## Debug PL/SQL
+
+| Setting | Default | Descrição |
+|---|---|---|
+| `utplsql.debugger.enabled` | `true` | Habilita o debug de testes PL/SQL via DBMS_DEBUG (Debug Adapter `utplsql`). |
+| `utplsql.debugger.stopOnException` | `true` | Pausa a execução quando uma exceção não tratada é lançada. |
+| `utplsql.debugger.timeoutSeconds` | `300` | Timeout em segundos da sessão de debug. |
 
 ## Descoberta de testes
 
@@ -84,6 +95,12 @@ prompt), o refresh também descobre suites direto do banco (`ALL_OBJECTS`/
 `ALL_SOURCE`) para schemas cujos arquivos não estão no workspace — os schemas
 consultados são os diretórios abaixo da base do padrão (ex.: `db/*`) e os
 schemas das suites locais. Veja [Organização da árvore](Organização-da-árvore).
+
+## Idioma (i18n)
+
+| Setting | Default | Descrição |
+|---|---|---|
+| `utplsql.language` | `auto` | Idioma da interface da extensão. `auto` segue o idioma do VSCode. Valores: `auto`, `pt-br`, `en`, `es`, `zh-cn`, `zh-tw`, `ja`, `de`, `fr`, `it`, `ko`, `ru`, `tr`, `pl`, `cs`, `hu`. |
 
 ## Hierarquia de settings
 

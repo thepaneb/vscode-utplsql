@@ -22,9 +22,10 @@
   `DEBUG CONNECT SESSION`. Settings `utplsql.debugger.*`. Integração com
   banco real pendente de validação (suíte `describeDB`).
 - **Internacionalização (PRD-49)**: setting `utplsql.language`
-  (`auto` | `pt-br` | `en`) para as mensagens de runtime; títulos de comandos
-  via `package.nls` (seguem o idioma do editor). `auto` em editor `pt*`
-  reproduz as mensagens atuais.
+  (`auto` | 15 locais nativos do VSCode) para as mensagens de runtime —
+  pt-br, en, es, zh-cn, zh-tw, ja, de, fr, it, ko, ru, tr, pl, cs, hu;
+  títulos de comandos via `package.nls` (seguem o idioma do editor). `auto`
+  em editor `pt*` reproduz as mensagens atuais.
 
 ## 0.11.0
 

@@ -24,6 +24,31 @@ interface UtConfig {
   sourcePath: string;                 // default: "install"
   coverageOwner: string;              // default: ""
   coverageSourceArgs: string[];       // regex + type_mapping
+  sqlCoverageEnabled: boolean;        // default: false (PRD-12)
+
+  // Debugger (PRD-33)
+  debuggerEnabled: boolean;           // default: true
+  debuggerStopOnException: boolean;   // default: true
+  debuggerTimeoutSeconds: number;     // default: 300
+
+  // i18n (PRD-49)
+  language:
+    | 'auto'
+    | 'pt-br'
+    | 'en'
+    | 'es'
+    | 'zh-cn'
+    | 'zh-tw'
+    | 'ja'
+    | 'de'
+    | 'fr'
+    | 'it'
+    | 'ko'
+    | 'ru'
+    | 'tr'
+    | 'pl'
+    | 'cs'
+    | 'hu';                           // default: "auto"
 
   // Descoberta
   includePatterns: string[];          // default: ["**/*.pks"]
@@ -69,13 +94,19 @@ async function resolveConnection(): Promise<string | undefined>
 ```
 
 Ordem de resolução:
-1. Setting `utplsql.connection` (settings.json do usuário/workspace)
-2. Variável de ambiente `UTPLSQL_CONN`
-3. Cache da sessão (`sessionConnection` — se já digitou antes)
-4. Prompt `vscode.window.showInputBox` (password: true, ignoreFocusOut: true)
+1. Perfil ativo (`utplsql.activeProfile` → `profile.connection`)
+2. Setting `utplsql.connection` (settings.json do usuário/workspace)
+3. Variável de ambiente `UTPLSQL_CONN`
+4. Cache da sessão (`sessionConnection` — se já digitou antes)
+5. Prompt `vscode.window.showInputBox` (password: true, ignoreFocusOut: true)
 
 Ao resolver com sucesso, seta `utplsql:connected` context key.
 `clearSessionConnection()` limpa o cache.
+`resolveConnectionNoPrompt()` percorre os passos 1–4 sem exibir prompt
+(retorna `undefined` se nada estiver configurado).
+
+> `readConfig()` aplica `mergeProfileConfig(global, getActiveProfile())` — o
+> perfil ativo sobrescreve campos como `sourcePath`, `coverageOwner` e `cliPath`.
 
 ### Segurança
 
@@ -88,6 +119,80 @@ Ao resolver com sucesso, seta `utplsql:connected` context key.
 - **EZ Connect**: `user/pass@//host:port/service`
 - **TNS**: `user/pass@tns_alias` (requer `TNS_ADMIN`)
 - **Wallet**: `user/pass@tcps://host:port/service?wallet_location=/path`
+
+## Connection Profiles (PRD-34)
+
+`src/connectionProfiles.ts` (vscode-dependente). Perfis reutilizáveis de
+conexão que encapsulam a string de conexão **e** a configuração associada
+(sourcePath, coverageOwner, CLI, etc.).
+
+```typescript
+interface ConnectionProfile {
+  id: string;
+  name: string;
+  connection: string;
+  sourcePath?: string;
+  coverageOwner?: string;
+  coverageSourceArgs?: string[];
+  includePatterns?: string[];
+  invocation?: string;
+  cliPath?: string;
+  cliHome?: string;
+  javaPath?: string;
+  extraRunArgs?: string[];
+  isDefault?: boolean;
+  lastUsed?: string;
+}
+```
+
+### Settings
+
+| Setting | Descrição |
+|---|---|
+| `utplsql.profiles` | Array de `ConnectionProfile` (global) |
+| `utplsql.activeProfile` | `id` do perfil ativo (vazio = nenhum) |
+
+### API
+
+```typescript
+maskConnection(conn: string): string;                     // "scott/tiger@host" → "scott@host"
+selectProfile(profiles): Promise<ConnectionProfile | undefined>;  // QuickPick
+importFromSqlDeveloper(): Promise<ConnectionProfile[]>;   // parse de connections.xml
+getActiveProfile(): ConnectionProfile | undefined;
+saveProfiles(profiles): Promise<void>;
+setActiveProfile(id: string | undefined): Promise<void>;
+mergeProfileConfig(global: UtConfig, profile?): UtConfig;
+```
+
+- `importFromSqlDeveloper` localiza `connections.xml` do SQL Developer sob
+  `~/.sqldeveloper` e `%APPDATA%/SQL Developer` (subpastas `system*`)
+- `mergeProfileConfig` aplica os campos do perfil sobre a config global; sem
+  perfil → global intacto
+- `resolveConnection()` checa o perfil ativo **antes** do setting `utplsql.connection`
+
+## i18n (PRD-49)
+
+Motor de tradução das mensagens de runtime. `src/i18n.ts` (puro) + catálogos
+em `src/i18nLocales.ts` para 15 idiomas.
+
+```typescript
+function resolveLocale(setting: string, vscodeLanguage: string): ExtensionLocale
+function t(locale: ExtensionLocale, key: string, params?): string
+```
+
+- `resolveLocale`: se a setting é um idioma válido, usa; senão infere do
+  idioma do editor (ex.: `pt` → `pt-br`, `zh-tw`/`zh-hk` → `zh-tw`); fallback `en`
+- `t`: traduz a chave; chave ausente → pt-BR → a própria chave. Nunca lança.
+- `{param}` interpolados por `t(locale, key, { param: valor })`
+
+| Setting | Valores | Default |
+|---|---|---|
+| `utplsql.language` | `auto` \| `pt-br` \| `en` \| `es` \| `zh-cn` \| `zh-tw` \| `ja` \| `de` \| `fr` \| `it` \| `ko` \| `ru` \| `tr` \| `pl` \| `cs` \| `hu` | `auto` |
+
+`package.nls*.json` traduzem os títulos de comandos; o motor i18n cobre as
+mensagens de runtime (prompts, outputs, diagnósticos).
+
+![Arquitetura de internacionalização (i18n)](../wiki/images/diagram-i18n.png)
 
 ## `InvocationConfig` (src/invocation.ts)
 

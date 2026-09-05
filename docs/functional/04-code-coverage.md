@@ -166,3 +166,87 @@ Se `coverage.xml` não for gerado:
 | `utplsql.sourcePath` | `install` | Pasta do código fonte |
 | `utplsql.coverageOwner` | `""` | Schema owner (vazio = usuário conexão) |
 | `utplsql.coverageSourceArgs` | (regex) | Args de mapeamento objeto→arquivo |
+
+## Cobertura por declaração (PRD-48)
+
+`src/plsqlDeclarations.ts` (puro, sem `vscode`). Deriva cobertura por
+`PROCEDURE`/`FUNCTION` a partir do fonte local + hits de linha.
+
+```typescript
+interface PlsqlDeclaration {
+  name: string;
+  line: number; // linha 0-based da declaração
+}
+
+interface PlsqlDeclarationCoverage extends PlsqlDeclaration {
+  executed: boolean;
+}
+
+function parsePlsqlDeclarations(text: string): PlsqlDeclaration[]
+function deriveDeclarationCoverage(
+  text: string,
+  fileLines: { line: number; hits: number }[],
+): PlsqlDeclarationCoverage[]
+```
+
+- `parsePlsqlDeclarations` mascara strings e comentários (preservando quebras
+  de linha) e extrai `PROCEDURE`/`FUNCTION` — ignora `MEMBER PROCEDURE/FUNCTION`
+- `deriveDeclarationCoverage` agrega os hits por escopo: da declaração até a
+  próxima (ou fim do arquivo); `executed = true` se qualquer linha do escopo
+  tem hits > 0
+- `applyCoverageFromXml` (src/results.ts) lê o fonte local e emite
+  `vscode.DeclarationCoverage` junto dos `StatementCoverage`:
+
+```typescript
+const srcText = fs.readFileSync(uri.fsPath, 'utf-8');
+const declarations = deriveDeclarationCoverage(srcText, f.lines);
+for (const d of declarations) {
+  details.push(
+    new vscode.DeclarationCoverage(d.name, d.executed, new vscode.Position(d.line, 0)),
+  );
+}
+```
+
+- Arquivo ilegível → fallback silencioso (só `StatementCoverage`)
+
+## Cobertura de views (PRD-12)
+
+`src/viewCoverage.ts` (vscode-dependente). Rastreia views executadas durante o
+run via `V$SQL` e emite cobertura booleana. Controlado pelo setting
+`utplsql.sqlCoverageEnabled` (bool, default `false`).
+
+```typescript
+interface SqlCoverageOptions {
+  connection: string;
+  root: string;
+  sourcePath: string;
+  run: vscode.TestRun;
+  state: TestStateManager;
+  folders?: readonly vscode.WorkspaceFolder[];
+}
+
+async function applySqlCoverage(options: SqlCoverageOptions): Promise<void>
+```
+
+Funções puras (testáveis por unidade):
+
+```typescript
+function matchExecutedViews(sqlTexts: string[], viewFiles: ViewFile[]): boolean[]
+function viewNameFromPath(filePath: string): string; // "views/foo.sql" → "FOO"
+function discoverViewFiles(root: string, sourcePath: string): string[];
+```
+
+- Descobre arquivos `views/*.sql` sob `<root>/<sourcePath>/views/` (recursivo)
+- Consulta `V$SQL` (`command_type = 3 AND executions > 0`) e faz match
+  word-boundary do nome da view em qualquer `SQL_TEXT`
+- Executada = 100%, não executada = 0%
+- **Best-effort**: qualquer falha (sem oracledb, sem acesso a `V$SQL`,
+  timeout) silencia e mantém o comportamento atual
+- `type_mapping` default inclui `views=VIEW` (`coverageSourceArgs`)
+
+### Grants
+
+```sql
+-- Acesso de leitura ao V$SQL para rastrear views executadas
+GRANT SELECT ON SYS.V_$SQL TO <schema>;
+```

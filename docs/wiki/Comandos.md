@@ -25,6 +25,11 @@ com prefixo `utPLSQL:`.
 | `utPLSQL: Mostrar Test Explorer` | Foca a view Testing | Clique na status bar |
 | `utPLSQL: Validar configuração` | Roda validação completa do setup (inclui integridade da instalação UT3) | — |
 | `utPLSQL: Configurar conexão` | Abre settings em `utplsql.connection` | — |
+| `utPLSQL: Alternar perfil de conexão...` | QuickPick para trocar o perfil de conexão ativo | Clique na status bar |
+| `utPLSQL: Novo perfil de conexão...` | Cria um novo perfil de conexão | — |
+| `utPLSQL: Gerenciar perfis de conexão` | Abre os perfis de conexão salvos | — |
+| `utPLSQL: Importar conexões do SQL Developer` | Importa conexões do SQL Developer como perfis | — |
+| `utPLSQL: Depurar teste (PL/SQL)` | Inicia o debug de um teste via DBMS_DEBUG (Debug Adapter `utplsql`) | — |
 | `utPLSQL: Copiar grants de cobertura para clipboard` | Copia grants SQL para clipboard | — |
 | `utPLSQL: Executar teste (CodeLens)` | Interno — disparado pelos botões de CodeLens | Botão ▶ sobre `%suite`/`%test` |
 

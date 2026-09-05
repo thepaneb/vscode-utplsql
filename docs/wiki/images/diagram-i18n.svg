@@ -1,0 +1,60 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 640" font-family="Segoe UI, sans-serif">
+  <defs>
+    <marker id="arrow" markerWidth="10" markerHeight="7" refX="10" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#555"/>
+    </marker>
+  </defs>
+  <rect width="900" height="640" fill="#fff"/>
+  <text x="450" y="32" text-anchor="middle" font-size="18" font-weight="bold" fill="#333">Internacionalização (i18n) — 15 idiomas</text>
+
+  <!-- setting -->
+  <rect x="60" y="70" width="250" height="56" rx="8" fill="#e2e3e5" stroke="#555" stroke-width="1.5"/>
+  <text x="185" y="93" text-anchor="middle" font-size="13" font-weight="bold" fill="#333">utplsql.language</text>
+  <text x="185" y="110" text-anchor="middle" font-size="10" fill="#555">auto | pt-br | en | es | zh-cn | ...</text>
+
+  <rect x="390" y="70" width="250" height="56" rx="8" fill="#fff" stroke="#0366d6" stroke-width="2"/>
+  <text x="515" y="93" text-anchor="middle" font-size="13" font-weight="bold" fill="#0366d6">vscode.env.language</text>
+  <text x="515" y="110" text-anchor="middle" font-size="10" fill="#555">idioma do editor (somente em auto)</text>
+
+  <line x1="310" y1="98" x2="386" y2="98" stroke="#555" marker-end="url(#arrow)"/>
+
+  <!-- engine -->
+  <rect x="160" y="180" width="580" height="70" rx="10" fill="#d6e4f7" stroke="#0366d6" stroke-width="2"/>
+  <text x="450" y="206" text-anchor="middle" font-size="14" font-weight="bold" fill="#0b4f9e">src/i18n.ts (motor, puro)</text>
+  <text x="450" y="226" text-anchor="middle" font-size="11" fill="#0b4f9e">resolveLocale(setting, vscodeLanguage) → ExtensionLocale</text>
+  <text x="450" y="241" text-anchor="middle" font-size="11" fill="#0b4f9e">t(locale, key, params) — fallback pt-BR → chave</text>
+
+  <line x1="185" y1="126" x2="320" y2="176" stroke="#555" marker-end="url(#arrow)"/>
+  <line x1="515" y1="126" x2="515" y2="176" stroke="#555" marker-end="url(#arrow)"/>
+
+  <!-- catalogs -->
+  <rect x="60" y="300" width="360" height="150" rx="10" fill="#fff" stroke="#555" stroke-width="1.5"/>
+  <text x="240" y="324" text-anchor="middle" font-size="13" font-weight="bold" fill="#333">src/i18nLocales.ts (catálogos)</text>
+  <text x="240" y="346" text-anchor="middle" font-size="11" fill="#333">pt-br (base) · en · es · zh-cn · zh-tw</text>
+  <text x="240" y="364" text-anchor="middle" font-size="11" fill="#333">ja · de · fr · it · ko · ru · tr · pl</text>
+  <text x="240" y="382" text-anchor="middle" font-size="11" fill="#333">cs · hu</text>
+  <text x="240" y="408" text-anchor="middle" font-size="10" fill="#6a737d">paridade de chaves garantida por teste</text>
+  <text x="240" y="424" text-anchor="middle" font-size="10" fill="#6a737d">t() usa o catálogo do locale; ausente → pt-BR</text>
+
+  <!-- manifest nls -->
+  <rect x="500" y="300" width="340" height="150" rx="10" fill="#fff" stroke="#555" stroke-width="1.5"/>
+  <text x="670" y="324" text-anchor="middle" font-size="13" font-weight="bold" fill="#333">package.json + package.nls*.json</text>
+  <text x="670" y="346" text-anchor="middle" font-size="11" fill="#333">títulos de comandos em %key%</text>
+  <text x="670" y="364" text-anchor="middle" font-size="11" fill="#333">package.nls.json (en) + pt-br, es, zh-cn,</text>
+  <text x="670" y="382" text-anchor="middle" font-size="11" fill="#333">zh-tw, ja, de, fr, it, ko, ru, tr, pl, cs, hu</text>
+  <text x="670" y="408" text-anchor="middle" font-size="10" fill="#6a737d">resolvidos automaticamente pelo idioma</text>
+  <text x="670" y="424" text-anchor="middle" font-size="10" fill="#6a737d">do editor (vsce)</text>
+
+  <line x1="450" y1="250" x2="250" y2="296" stroke="#555" marker-end="url(#arrow)"/>
+  <line x1="450" y1="250" x2="670" y2="296" stroke="#555" marker-end="url(#arrow)"/>
+
+  <!-- consumers -->
+  <rect x="140" y="510" width="620" height="90" rx="10" fill="#e2e3e5" stroke="#555" stroke-width="1.5"/>
+  <text x="450" y="536" text-anchor="middle" font-size="13" font-weight="bold" fill="#333">Módulos consumidores</text>
+  <text x="450" y="558" text-anchor="middle" font-size="11" fill="#333">extension.ts · runner.ts · oracleRunner.ts · results.ts · cli.ts</text>
+  <text x="450" y="576" text-anchor="middle" font-size="11" fill="#333">quickfix.ts · statusBar.ts · connectionProfiles.ts · debugger.ts</text>
+  <text x="450" y="594" text-anchor="middle" font-size="10" fill="#6a737d">t(getExtensionLocale(), 'key', params) nas ~40 mensagens de UI</text>
+
+  <line x1="240" y1="450" x2="330" y2="506" stroke="#555" marker-end="url(#arrow)"/>
+  <line x1="670" y1="450" x2="600" y2="506" stroke="#555" marker-end="url(#arrow)"/>
+</svg>

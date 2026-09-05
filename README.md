@@ -18,6 +18,10 @@ Integra o [utPLSQL](https://www.utplsql.org/) ao VSCode, trazendo os testes de P
 - 🔧 **Diagnósticos de setup** — validação proativa de CLI, conexão, grants e versão com quick-fix.
 - 🧩 **Schema-aware tree** — organize testes por Schema > Package > Suite > Test no Test Explorer.
 - 🎯 **Jump to failure** — navegação direta para a linha da asserção que falhou (via "Go to Error" nativo).
+- 🔌 **Perfis de conexão** — salve e alterne entre múltiplos ambientes (DEV/TEST/PROD) com configurações por perfil, via status bar ou command palette.
+- 📈 **Cobertura por declaração e de views** — a aba Coverage mostra `% de declarações` (PROCEDURE/FUNCTION) por arquivo e rastreia views executadas via `V$SQL`.
+- 🐛 **Debug PL/SQL** — breakpoints e step debugging de testes utPLSQL via `DBMS_DEBUG` (Debug Adapter nativo).
+- 🌍 **i18n — 15 idiomas** — `utplsql.language` segue o VSCode (pt-br, en, es, zh-cn, zh-tw, ja, de, fr, it, ko, ru, tr, pl, cs, hu).
 
 ## Instalação
 
@@ -43,10 +47,13 @@ CLI (utPLSQL-cli + Java) ou direto (node-oracledb, `runnerMode: auto` por padrã
 A extensão precisa de uma string de conexão Oracle para rodar os testes. A
 resolução segue esta ordem:
 
-1. **Setting `utplsql.connection`** — lido do `settings.json` do projeto/usuário.
-2. **Variável de ambiente `UTPLSQL_CONN`** — definida antes de abrir o VSCode.
-3. **Cache da sessão** — se o usuário já digitou a conexão via prompt.
-4. **Prompt ao usuário** — pergunta e mantém só na sessão atual.
+1. **Perfil de conexão ativo** — `utplsql.activeProfile` apontando para um perfil em `utplsql.profiles` (sobrescreve tudo abaixo).
+2. **Setting `utplsql.connection`** — lido do `settings.json` do projeto/usuário.
+3. **Variável de ambiente `UTPLSQL_CONN`** — definida antes de abrir o VSCode.
+4. **Cache da sessão** — se o usuário já digitou a conexão via prompt.
+5. **Prompt ao usuário** — pergunta e mantém só na sessão atual.
+
+Perfis de conexão (`utplsql.profiles`) também podem sobrescrever `sourcePath`, `coverageOwner`, `invocation`, `cliPath` etc. por ambiente — veja `utplsql.activeProfile` na tabela de configuração.
 
 ⚠️ **Recomendação de segurança:** a string de conexão contém senha. **NÃO** use o
 setting `utplsql.connection` em ambientes compartilhados (o settings.json pode
