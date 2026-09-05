@@ -17,6 +17,11 @@ import {
   selectProfile,
   setActiveProfile,
 } from './connectionProfiles';
+import {
+  startDebugSession,
+  UtplsqlDebugAdapterDescriptorFactory,
+  UtplsqlDebugConfigurationProvider,
+} from './debugger';
 import { DecorationManager } from './decorations';
 import {
   discoverSchemaFromDb,
@@ -252,6 +257,17 @@ export function activate(context: vscode.ExtensionContext) {
 
   context.subscriptions.push(setupValidator);
 
+  context.subscriptions.push(
+    vscode.debug.registerDebugAdapterDescriptorFactory(
+      'utplsql',
+      new UtplsqlDebugAdapterDescriptorFactory(),
+    ),
+    vscode.debug.registerDebugConfigurationProvider(
+      'utplsql',
+      new UtplsqlDebugConfigurationProvider(),
+    ),
+  );
+
   const codeActionProvider = vscode.languages.registerCodeActionsProvider(
     { scheme: 'file', pattern: '**/*.pks' },
     new UtplsqlCodeActionProvider(),
@@ -290,6 +306,23 @@ export function activate(context: vscode.ExtensionContext) {
       );
     }),
     vscode.commands.registerCommand('utplsql.recompileUt3', () => setupValidator.recompileUt3()),
+    vscode.commands.registerCommand('utplsql.debugTest', async () => {
+      if (!readConfig().debuggerEnabled) {
+        vscode.window.showInformationMessage(
+          'Debug PL/SQL desabilitado (utplsql.debugger.enabled).',
+        );
+        return;
+      }
+      const editor = vscode.window.activeTextEditor;
+      const file = editor?.document.fileName ?? '';
+      const base = file.split(/[\\/]/).pop() ?? '';
+      const packageName = base.replace(/\.(pks|pkb|sql)$/i, '');
+      if (!packageName) {
+        vscode.window.showWarningMessage('Abra um arquivo .pks/.pkb para debugar.');
+        return;
+      }
+      await startDebugSession(packageName);
+    }),
     vscode.commands.registerCommand('utplsql.switchProfile', async () => {
       const profiles = getAllProfiles();
       if (profiles.length === 0) {

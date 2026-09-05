@@ -265,6 +265,22 @@
           "type": "boolean",
           "default": false,
           "markdownDescription": "Habilita rastreio de views via `V$SQL` (cobertura booleana: executada = 100%, não executada = 0%). Requer `GRANT SELECT ON V$SQL` no Oracle. Views já aparecem no relatório com 0 hits via `type_mapping` mesmo desligado."
+        },
+        "utplsql.debugger.enabled": {
+          "type": "boolean",
+          "default": true,
+          "description": "Habilita o suporte a debug de testes PL/SQL (DBMS_DEBUG). Requer node-oracledb e grants."
+        },
+        "utplsql.debugger.stopOnException": {
+          "type": "boolean",
+          "default": true,
+          "description": "Pausa automaticamente em exceções PL/SQL durante o debug."
+        },
+        "utplsql.debugger.timeoutSeconds": {
+          "type": "number",
+          "default": 300,
+          "minimum": 30,
+          "description": "Timeout (s) da sessão de debug para evitar conexões Oracle zumbis."
         }
       }
     },
@@ -379,6 +395,11 @@
         "command": "utplsql.importSqlDevConnections",
         "title": "Import SQL Developer Connections",
         "category": "utPLSQL"
+      },
+      {
+        "command": "utplsql.debugTest",
+        "title": "Debug Test (PL/SQL)",
+        "category": "utPLSQL"
       }
     ],
     "menus": {
@@ -479,6 +500,37 @@
       }
     ]
   },
+  "debuggers": [
+    {
+      "type": "utplsql",
+      "label": "utPLSQL Debugger",
+      "languages": [
+        "plsql"
+      ],
+      "configurationAttributes": {
+        "launch": {
+          "properties": {
+            "packageName": {
+              "type": "string",
+              "description": "Test package to debug"
+            },
+            "testName": {
+              "type": "string",
+              "description": "Specific test procedure"
+            },
+            "connection": {
+              "type": "string",
+              "description": "Oracle connection string"
+            },
+            "stopOnException": {
+              "type": "boolean",
+              "default": true
+            }
+          }
+        }
+      }
+    }
+  ],
   "scripts": {
     "vscode:prepublish": "npm run compile && npm run bundle",
     "compile": "tsc -p ./",

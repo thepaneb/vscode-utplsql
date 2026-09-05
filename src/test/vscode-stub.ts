@@ -131,9 +131,21 @@ export namespace commands {
 }
 
 export class EventEmitter<T> {
-  event = (_listener: (e: T) => void) => ({ dispose: () => {} });
-  fire(_data?: T) {}
-  dispose() {}
+  private listeners: Array<(e: T) => void> = [];
+  event = (listener: (e: T) => void) => {
+    this.listeners.push(listener);
+    return {
+      dispose: () => {
+        this.listeners = this.listeners.filter((l) => l !== listener);
+      },
+    };
+  };
+  fire(data?: T) {
+    for (const l of [...this.listeners]) l(data as T);
+  }
+  dispose() {
+    this.listeners = [];
+  }
 }
 
 export class CodeLens {

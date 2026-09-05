@@ -33,6 +33,9 @@ export interface UtConfig {
   organizationSchemaPattern: string;
   setupDiagnosticsEnabled: boolean;
   sqlCoverageEnabled: boolean;
+  debuggerEnabled: boolean;
+  debuggerStopOnException: boolean;
+  debuggerTimeoutSeconds: number;
 }
 
 export function readConfig(): UtConfig {
@@ -71,6 +74,9 @@ export function readConfig(): UtConfig {
     organizationSchemaPattern: c.get<string>('organization.schemaPattern', 'db/{schema}/**'),
     setupDiagnosticsEnabled: c.get<boolean>('setupDiagnostics.enabled', true),
     sqlCoverageEnabled: c.get<boolean>('sqlCoverageEnabled', false),
+    debuggerEnabled: c.get<boolean>('debugger.enabled', true),
+    debuggerStopOnException: c.get<boolean>('debugger.stopOnException', true),
+    debuggerTimeoutSeconds: c.get<number>('debugger.timeoutSeconds', 300),
   };
   return mergeProfileConfig(global, getActiveProfile());
 }
