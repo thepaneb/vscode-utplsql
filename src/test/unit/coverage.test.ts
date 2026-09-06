@@ -91,3 +91,29 @@ test('resolveSourceUri: caminho com folderRoot tem prioridade', () => {
     assert.strictEqual(uri.fsPath, filePath);
   });
 });
+
+test('resolveSourceUri: path traversal (../) fora da raiz retorna undefined', () => {
+  withTempDir((dir) => {
+    const outside = path.join(dir, '..', 'cov-traversal-leak.txt');
+    fs.writeFileSync(outside, 'sensitive');
+    try {
+      const uri = resolveSourceUri('../../../cov-traversal-leak.txt', dir, 'install');
+      assert.strictEqual(uri, undefined);
+    } finally {
+      fs.rmSync(outside, { force: true });
+    }
+  });
+});
+
+test('resolveSourceUri: caminho absoluto fora da raiz retorna undefined', () => {
+  withTempDir((dir) => {
+    const outside = path.join(dir, '..', 'cov-absolute-leak.txt');
+    fs.writeFileSync(outside, 'sensitive');
+    try {
+      const uri = resolveSourceUri(outside, dir, 'install');
+      assert.strictEqual(uri, undefined);
+    } finally {
+      fs.rmSync(outside, { force: true });
+    }
+  });
+});
