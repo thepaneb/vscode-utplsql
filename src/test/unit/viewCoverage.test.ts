@@ -4,7 +4,13 @@ import * as fs from 'node:fs';
 import * as os from 'node:os';
 import * as path from 'node:path';
 import { test } from 'node:test';
-import { discoverViewFiles, matchExecutedViews, viewNameFromPath } from '../../viewCoverage';
+import { closeOraclePool } from '../../oracleRunner';
+import {
+  applySqlCoverage,
+  discoverViewFiles,
+  matchExecutedViews,
+  viewNameFromPath,
+} from '../../viewCoverage';
 
 test('viewNameFromPath: extrai nome do objeto em maiusculas', () => {
   assert.strictEqual(viewNameFromPath('/ws/install/views/vw_vendedor.sql'), 'VW_VENDEDOR');
@@ -59,6 +65,123 @@ test('discoverViewFiles: sem pasta views retorna vazio', () => {
   const base = fs.mkdtempSync(path.join(os.tmpdir(), 'views-'));
   try {
     assert.deepStrictEqual(discoverViewFiles(base, 'install'), []);
+  } finally {
+    fs.rmSync(base, { recursive: true, force: true });
+  }
+});
+
+// ── applySqlCoverage (V$SQL) ─────────────────────────────────────────
+
+function makeRun() {
+  const output: string[] = [];
+  const coverageList: unknown[] = [];
+  return {
+    output,
+    coverageList,
+    appendOutput: (s: string) => output.push(s),
+    addCoverage: (fc: unknown) => coverageList.push(fc),
+  };
+}
+
+test('applySqlCoverage: V$SQL negado emite aviso com grant (não quebra)', async () => {
+  const base = fs.mkdtempSync(path.join(os.tmpdir(), 'vsql-'));
+  try {
+    const viewsDir = path.join(base, 'install', 'views');
+    fs.mkdirSync(viewsDir, { recursive: true });
+    fs.writeFileSync(path.join(viewsDir, 'vw_total_por_vendedor.sql'), 'CREATE VIEW ...');
+
+    const conn = {
+      callTimeout: 0,
+      execute: async () => {
+        throw new Error('ORA-00942: table or view "SYS"."V_$SQL" does not exist');
+      },
+      close: async () => {},
+    };
+    const fakeOracledb = {
+      OUT_FORMAT_OBJECT: {},
+      createPool: async () => ({
+        getConnection: async () => conn,
+        close: async () => {},
+      }),
+      getConnection: async () => conn,
+    };
+
+    const run = makeRun() as never;
+    const state = { setCoverage: () => {}, clearCoverage: () => {} } as never;
+    const folders = [{ uri: { fsPath: base }, name: 'r', index: 0 }];
+
+    try {
+      await applySqlCoverage(
+        {
+          connection: 'UT3/pass@//localhost:1521/freepdb1',
+          root: base,
+          sourcePath: 'install',
+          run,
+          state,
+          folders: folders as never,
+        },
+        async () => fakeOracledb as never,
+      );
+    } finally {
+      await closeOraclePool();
+    }
+
+    const out = (run as unknown as { output: string[] }).output.join('\n');
+    assert.ok(out.includes('V$SQL'), 'deveria avisar sobre o V$SQL');
+    assert.ok(out.includes('GRANT SELECT ON SYS.V_$SQL'), 'deveria citar o grant');
+    assert.strictEqual((run as unknown as { coverageList: unknown[] }).coverageList.length, 0);
+  } finally {
+    fs.rmSync(base, { recursive: true, force: true });
+  }
+});
+
+test('applySqlCoverage: com V$SQL ok emite cobertura por linha', async () => {
+  const base = fs.mkdtempSync(path.join(os.tmpdir(), 'vsql-'));
+  try {
+    const viewsDir = path.join(base, 'install', 'views');
+    fs.mkdirSync(viewsDir, { recursive: true });
+    fs.writeFileSync(
+      path.join(viewsDir, 'vw_total_por_vendedor.sql'),
+      'CREATE VIEW vw_total_por_vendedor AS\nSELECT 1 FROM dual\n',
+    );
+
+    const conn = {
+      callTimeout: 0,
+      execute: async () => ({
+        rows: [['SELECT * FROM vw_total_por_vendedor WHERE 1=1']],
+      }),
+      close: async () => {},
+    };
+    const fakeOracledb = {
+      OUT_FORMAT_OBJECT: {},
+      createPool: async () => ({
+        getConnection: async () => conn,
+        close: async () => {},
+      }),
+      getConnection: async () => conn,
+    };
+
+    const run = makeRun() as never;
+    const state = { setCoverage: () => {}, clearCoverage: () => {} } as never;
+    const folders = [{ uri: { fsPath: base }, name: 'r', index: 0 }];
+
+    try {
+      await applySqlCoverage(
+        {
+          connection: 'UT3/pass@//localhost:1521/freepdb1',
+          root: base,
+          sourcePath: 'install',
+          run,
+          state,
+          folders: folders as never,
+        },
+        async () => fakeOracledb as never,
+      );
+    } finally {
+      await closeOraclePool();
+    }
+
+    assert.strictEqual((run as unknown as { coverageList: unknown[] }).coverageList.length, 1);
   } finally {
     fs.rmSync(base, { recursive: true, force: true });
   }

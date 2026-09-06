@@ -1,7 +1,8 @@
 import * as fs from 'node:fs';
 import * as path from 'node:path';
 import * as vscode from 'vscode';
-import { readConfig } from './config';
+import { getExtensionLocale, readConfig } from './config';
+import { t } from './i18n';
 import { ensurePool, parseConnString } from './oracleRunner';
 import type { TestStateManager } from './state';
 
@@ -89,12 +90,15 @@ export interface SqlCoverageOptions {
  * oracledb, sem acesso a V$SQL, timeout) silencia e mantém o comportamento
  * atual.
  */
-export async function applySqlCoverage(options: SqlCoverageOptions): Promise<void> {
+export async function applySqlCoverage(
+  options: SqlCoverageOptions,
+  loadOracledbMod: () => Promise<LoadedOracledb | undefined> = loadOracledb,
+): Promise<void> {
   const { connection, root, sourcePath, run, state, folders } = options;
   const files = discoverViewFiles(root, sourcePath);
   if (files.length === 0) return;
 
-  const oracledb = await loadOracledb();
+  const oracledb = await loadOracledbMod();
   if (!oracledb) return;
 
   const cfg = readConfig();
@@ -111,11 +115,17 @@ export async function applySqlCoverage(options: SqlCoverageOptions): Promise<voi
   const prevTimeout = conn.callTimeout;
   try {
     conn.callTimeout = 5000;
-    const result = await conn.execute(
-      `SELECT sql_text FROM v$sql WHERE command_type = 3 AND executions > 0`,
-      {},
-    );
-    const rows = result.rows ?? [];
+    let rows: unknown[];
+    try {
+      const result = await conn.execute(
+        `SELECT sql_text FROM v$sql WHERE command_type = 3 AND executions > 0`,
+        {},
+      );
+      rows = result.rows ?? [];
+    } catch {
+      run.appendOutput(`${t(getExtensionLocale(), 'viewCoverage.vsqlDenied')}\r\n`);
+      return;
+    }
     const sqlTexts = rows
       .map((r) => {
         if (Array.isArray(r)) return String(r[0] ?? '');

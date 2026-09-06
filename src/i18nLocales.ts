@@ -102,6 +102,8 @@ export const ptBr: Record<string, string> = {
   'quickfix.oracledbMissing': 'oracledb não disponível. Instale com "npm install oracledb".',
 
   'viewCoverage.none': '[cobertura] nenhum arquivo mapeado.',
+  'viewCoverage.vsqlDenied':
+    '[cobertura] rastreio de views via V$SQL indisponível. Conceda acesso: GRANT SELECT ON SYS.V_$SQL TO <schema>.',
 
   'nls.command.showTestExplorer': 'Mostrar Test Explorer',
   'nls.command.runLens': 'Executar teste (CodeLens)',
@@ -228,6 +230,8 @@ export const en: Record<string, string> = {
   'quickfix.oracledbMissing': 'oracledb not available. Install with "npm install oracledb".',
 
   'viewCoverage.none': '[coverage] no file mapped.',
+  'viewCoverage.vsqlDenied':
+    '[coverage] V$SQL view tracking unavailable. Grant access: GRANT SELECT ON SYS.V_$SQL TO <schema>.',
 
   'nls.command.showTestExplorer': 'Show Test Explorer',
   'nls.command.runLens': 'Run test (CodeLens)',
@@ -356,6 +360,8 @@ export const es: Record<string, string> = {
   'quickfix.oracledbMissing': 'oracledb no disponible. Instale con "npm install oracledb".',
 
   'viewCoverage.none': '[cobertura] ningún archivo mapeado.',
+  'viewCoverage.vsqlDenied':
+    '[cobertura] seguimiento de vistas por V$SQL no disponible. Conceda acceso: GRANT SELECT ON SYS.V_$SQL TO <schema>.',
 
   'nls.command.showTestExplorer': 'Mostrar Test Explorer',
   'nls.command.runLens': 'Ejecutar test (CodeLens)',
@@ -478,6 +484,8 @@ export const zhCn: Record<string, string> = {
   'quickfix.oracledbMissing': 'oracledb 不可用。请使用 "npm install oracledb" 安装。',
 
   'viewCoverage.none': '[覆盖率] 未映射任何文件。',
+  'viewCoverage.vsqlDenied':
+    '[覆盖率] 无法通过 V$SQL 跟踪视图。请授予访问权限：GRANT SELECT ON SYS.V_$SQL TO <schema>。',
 
   'nls.command.showTestExplorer': '显示 Test Explorer',
   'nls.command.runLens': '运行测试（CodeLens）',
@@ -608,6 +616,8 @@ export const ja: Record<string, string> = {
     'oracledb が利用できません。「npm install oracledb」でインストールしてください。',
 
   'viewCoverage.none': '[カバレッジ] マップされたファイルがありません。',
+  'viewCoverage.vsqlDenied':
+    '[カバレッジ] V$SQL によるビューの追跡ができません。アクセス権を付与してください：GRANT SELECT ON SYS.V_$SQL TO <schema>。',
 
   'nls.command.showTestExplorer': 'Test Explorer を表示',
   'nls.command.runLens': 'テストを実行（CodeLens）',
@@ -735,6 +745,8 @@ export const de: Record<string, string> = {
     'oracledb nicht verfügbar. Installieren Sie mit "npm install oracledb".',
 
   'viewCoverage.none': '[Coverage] keine Datei zugeordnet.',
+  'viewCoverage.vsqlDenied':
+    '[Coverage] V$SQL-View-Verfolgung nicht verfügbar. Zugriff gewähren: GRANT SELECT ON SYS.V_$SQL TO <schema>.',
 
   'nls.command.showTestExplorer': 'Test Explorer anzeigen',
   'nls.command.runLens': 'Test ausführen (CodeLens)',
@@ -862,6 +874,8 @@ export const fr: Record<string, string> = {
   'quickfix.oracledbMissing': 'oracledb non disponible. Installez avec « npm install oracledb ».',
 
   'viewCoverage.none': '[couverture] aucun fichier mappé.',
+  'viewCoverage.vsqlDenied':
+    "[couverture] suivi des vues via V$SQL indisponible. Accordez l'accès : GRANT SELECT ON SYS.V_$SQL TO <schema>.",
 
   'nls.command.showTestExplorer': 'Afficher l’explorateur de tests',
   'nls.command.runLens': 'Exécuter le test (CodeLens)',
@@ -984,6 +998,8 @@ export const zhTw: Record<string, string> = {
   'quickfix.oracledbMissing': 'oracledb 無法使用。請使用「npm install oracledb」安裝。',
 
   'viewCoverage.none': '[涵蓋範圍] 未對應任何檔案。',
+  'viewCoverage.vsqlDenied':
+    '[涵蓋範圍] 無法透過 V$SQL 追蹤檢視。請授予存取權限：GRANT SELECT ON SYS.V_$SQL TO <schema>。',
 
   'nls.command.showTestExplorer': '顯示 Test Explorer',
   'nls.command.runLens': '執行測試（CodeLens）',
@@ -1111,6 +1127,8 @@ export const it: Record<string, string> = {
   'quickfix.oracledbMissing': 'oracledb non disponibile. Installare con "npm install oracledb".',
 
   'viewCoverage.none': '[copertura] nessun file mappato.',
+  'viewCoverage.vsqlDenied':
+    '[copertura] tracciamento viste via V$SQL non disponibile. Concedere accesso: GRANT SELECT ON SYS.V_$SQL TO <schema>.',
 
   'nls.command.showTestExplorer': 'Mostra Test Explorer',
   'nls.command.runLens': 'Esegui test (CodeLens)',
@@ -1236,6 +1254,8 @@ export const ko: Record<string, string> = {
   'quickfix.oracledbMissing': 'oracledb를 사용할 수 없습니다. "npm install oracledb"로 설치하세요.',
 
   'viewCoverage.none': '[커버리지] 매핑된 파일이 없습니다.',
+  'viewCoverage.vsqlDenied':
+    '[커버리지] V$SQL을 통한 뷰 추적이 불가능합니다. 액세스 권한을 부여하세요: GRANT SELECT ON SYS.V_$SQL TO <schema>.',
 
   'nls.command.showTestExplorer': 'Test Explorer 표시',
   'nls.command.runLens': '테스트 실행 (CodeLens)',
@@ -1361,6 +1381,8 @@ export const ru: Record<string, string> = {
   'quickfix.oracledbMissing': 'oracledb недоступен. Установите с помощью «npm install oracledb».',
 
   'viewCoverage.none': '[покрытие] файлы не сопоставлены.',
+  'viewCoverage.vsqlDenied':
+    '[покрытие] отслеживание представлений через V$SQL недоступно. Предоставьте доступ: GRANT SELECT ON SYS.V_$SQL TO <schema>.',
 
   'nls.command.showTestExplorer': 'Показать Test Explorer',
   'nls.command.runLens': 'Запустить тест (CodeLens)',
@@ -1485,6 +1507,8 @@ export const tr: Record<string, string> = {
   'quickfix.oracledbMissing': 'oracledb kullanılamıyor. "npm install oracledb" ile kurun.',
 
   'viewCoverage.none': '[kapsam] eşleştirilen dosya yok.',
+  'viewCoverage.vsqlDenied':
+    '[kapsam] V$SQL üzerinden görünüm takibi kullanılamıyor. Erişim izni verin: GRANT SELECT ON SYS.V_$SQL TO <schema>.',
 
   'nls.command.showTestExplorer': "Test Explorer'ı göster",
   'nls.command.runLens': 'Testi çalıştır (CodeLens)',
@@ -1611,6 +1635,8 @@ export const pl: Record<string, string> = {
   'quickfix.oracledbMissing': 'oracledb niedostępny. Zainstaluj przez „npm install oracledb”.',
 
   'viewCoverage.none': '[pokrycie] brak przypisanych plików.',
+  'viewCoverage.vsqlDenied':
+    '[pokrycie] śledzenie widoków przez V$SQL niedostępne. Nadaj dostęp: GRANT SELECT ON SYS.V_$SQL TO <schema>.',
 
   'nls.command.showTestExplorer': 'Pokaż Test Explorer',
   'nls.command.runLens': 'Uruchom test (CodeLens)',
@@ -1738,6 +1764,8 @@ export const cs: Record<string, string> = {
     'oracledb není k dispozici. Nainstalujte pomocí „npm install oracledb“.',
 
   'viewCoverage.none': '[pokrytí] nebyl mapován žádný soubor.',
+  'viewCoverage.vsqlDenied':
+    '[pokrytí] sledování pohledů přes V$SQL není dostupné. Udělte přístup: GRANT SELECT ON SYS.V_$SQL TO <schema>.',
 
   'nls.command.showTestExplorer': 'Zobrazit Test Explorer',
   'nls.command.runLens': 'Spustit test (CodeLens)',
@@ -1865,6 +1893,8 @@ export const hu: Record<string, string> = {
     'az oracledb nem érhető el. Telepítse a „npm install oracledb” paranccsal.',
 
   'viewCoverage.none': '[lefedettség] nem lett fájl hozzárendelve.',
+  'viewCoverage.vsqlDenied':
+    '[lefedettség] nézetek követése V$SQL-en keresztül nem érhető el. Adjon hozzáférést: GRANT SELECT ON SYS.V_$SQL TO <schema>.',
 
   'nls.command.showTestExplorer': 'Test Explorer megjelenítése',
   'nls.command.runLens': 'Teszt futtatása (CodeLens)',
