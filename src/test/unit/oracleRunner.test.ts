@@ -8,6 +8,7 @@ import {
   closeOraclePool,
   discoverUtplsqlSchema,
   ensurePool,
+  executeRunOracle,
   findInvalidUt3Objects,
   mapDbPathsToFiles,
   parseConnString,
@@ -42,6 +43,11 @@ function makeRun() {
     started: () => {},
     addCoverage: () => {},
     end: () => {},
+    passedList: passed,
+    failedList: failed,
+    skippedList: skipped,
+    erroredList: errored,
+    output,
   };
 }
 
@@ -538,4 +544,231 @@ test('mapDbPathsToFiles: mapeia tipo para pasta', () => {
 test('mapDbPathsToFiles: xml sem filename permanece inalterado', () => {
   const xml = '<coverage><nothing/></coverage>';
   assert.strictEqual(mapDbPathsToFiles(xml), xml);
+});
+
+// ── executeRunOracle (fluxo streaming/poll) ──────────────────────────
+
+const JUNIT_XML =
+  '<testsuites tests="1" failures="0"><testsuite name="pkg" tests="1">' +
+  '<testcase classname="pkg" name="t1" time="0.05"/></testsuite></testsuites>';
+const COV_XML =
+  '<coverage><packages><package name="pkg"><classes><class name="app" ' +
+  'filename="packages/app.sql"><lines><line number="1" hits="1"/>' +
+  '</lines></class></classes></package></packages></coverage>';
+
+const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
+
+function makeOracleRunFake(opts: { runMs?: number; buffer: string[]; runThrows?: boolean }) {
+  const conn1 = {
+    callTimeout: 0,
+    execute: async (sql: string) => {
+      if (/ALL_SYNONYMS/.test(sql)) return { rows: [{ TABLE_OWNER: 'UT3' }] };
+      if (/DELETE FROM/.test(sql)) return {};
+      if (/ut_runner\.run/.test(sql)) {
+        if (opts.runThrows) throw new Error('ORA-04068: existing state');
+        await sleep(opts.runMs ?? 350);
+        return {};
+      }
+      return {};
+    },
+    close: async () => {},
+    break: async () => {},
+  };
+  let polls = 0;
+  const conn2 = {
+    callTimeout: 0,
+    execute: async (sql: string) => {
+      if (/UT_OUTPUT_BUFFER_TMP/.test(sql) && /SELECT/.test(sql)) {
+        polls++;
+        if (polls === 1) return { rows: [{ MESSAGE_ID: 1, TEXT: 'Doc output' }] };
+        return {
+          rows: opts.buffer.map((text, i) => ({ MESSAGE_ID: 2 + i, TEXT: text })),
+        };
+      }
+      return {};
+    },
+    close: async () => {},
+    break: async () => {},
+  };
+  const mod = {
+    OUT_FORMAT_OBJECT: { id: 'object' },
+    createPool: async () => {
+      let i = 0;
+      return {
+        getConnection: async () => (i++ === 0 ? conn1 : conn2),
+        close: async () => {},
+      };
+    },
+    getConnection: async () => {
+      throw new Error('raw indisponivel');
+    },
+  };
+  return { mod, conn1, conn2 };
+}
+
+function makeOracleRunState(metaMap: Map<any, ItemMeta>) {
+  return {
+    getMeta: (t: any) => metaMap.get(t),
+    setMeta: () => {},
+    setCoverage: () => {},
+    getCoverage: () => [],
+    clearCoverage: () => {},
+    cachedItems: [] as any[],
+    setLastResults: () => {},
+    setLastFailedItems: () => {},
+    getLastFailedItems: () => [] as any[],
+  } as any;
+}
+
+function makeLeaf() {
+  const item = { id: 't1', children: [] };
+  const metaMap = new Map<any, ItemMeta>();
+  metaMap.set(item, makeMeta({ packageName: 'pkg', procName: 't1' }));
+  return { item, metaMap };
+}
+
+const neverCancel = {
+  isCancellationRequested: false,
+  onCancellationRequested: () => ({ dispose: () => {} }),
+};
+
+test('executeRunOracle: fluxo feliz aplica resultados e info no output', async () => {
+  const { mod } = makeOracleRunFake({ buffer: [JUNIT_XML] });
+  const run = makeRun() as any;
+  const { item, metaMap } = makeLeaf();
+  let complete: number[] | undefined;
+  try {
+    await executeRunOracle(
+      {
+        connection: 'u/p@//h:1521/s',
+        pathArgs: ['pkg'],
+        coverage: false,
+        sourcePath: 'install',
+        root: '/root',
+        run,
+        leafTests: [item as any],
+        state: makeOracleRunState(metaMap),
+        onComplete: (p, f, s, e, ms) => {
+          complete = [p, f, s, e, ms];
+        },
+      },
+      neverCancel as never,
+      async () => mod as never,
+    );
+  } finally {
+    await closeOraclePool();
+  }
+
+  assert.strictEqual(run.passedList.length, 1);
+  assert.strictEqual(complete?.[0], 1);
+  const out = run.output.join('\n');
+  assert.match(out, /Oracle runner/);
+  assert.ok(out.includes('Doc output'), 'deveria streamar o reporter de documentação');
+});
+
+test('executeRunOracle: cobertura sem <coverage> avisa o GRANT DBMS_PROFILER', async () => {
+  const { mod } = makeOracleRunFake({ buffer: [JUNIT_XML] });
+  const run = makeRun() as any;
+  const { item, metaMap } = makeLeaf();
+  try {
+    await executeRunOracle(
+      {
+        connection: 'u/p@//h:1521/s',
+        pathArgs: ['pkg'],
+        coverage: true,
+        sourcePath: 'install',
+        root: '/root',
+        run,
+        leafTests: [item as any],
+        state: makeOracleRunState(metaMap),
+      },
+      neverCancel as never,
+      async () => mod as never,
+    );
+  } finally {
+    await closeOraclePool();
+  }
+  const out = run.output.join('\n');
+  assert.match(out, /relatório não gerado/);
+  assert.match(out, /GRANT EXECUTE ON SYS\.DBMS_PROFILER/);
+});
+
+test('executeRunOracle: cobertura sem arquivos mapeados emite aviso', async () => {
+  const { mod } = makeOracleRunFake({ buffer: [JUNIT_XML, COV_XML] });
+  const run = makeRun() as any;
+  const { item, metaMap } = makeLeaf();
+  try {
+    await executeRunOracle(
+      {
+        connection: 'u/p@//h:1521/s',
+        pathArgs: ['pkg'],
+        coverage: true,
+        sourcePath: 'install',
+        root: '/root',
+        run,
+        leafTests: [item as any],
+        state: makeOracleRunState(metaMap),
+        folders: [],
+      },
+      neverCancel as never,
+      async () => mod as never,
+    );
+  } finally {
+    await closeOraclePool();
+  }
+  const out = run.output.join('\n');
+  assert.match(out, /nenhum arquivo mapeado/);
+});
+
+test('executeRunOracle: erro do ut_runner.run propaga (fallback CLI no runner.ts)', async () => {
+  const { mod } = makeOracleRunFake({ buffer: [], runThrows: true });
+  const run = makeRun() as any;
+  const { item, metaMap } = makeLeaf();
+  let err: Error | undefined;
+  try {
+    await executeRunOracle(
+      {
+        connection: 'u/p@//h:1521/s',
+        pathArgs: ['pkg'],
+        coverage: false,
+        sourcePath: 'install',
+        root: '/root',
+        run,
+        leafTests: [item as any],
+        state: makeOracleRunState(metaMap),
+      },
+      neverCancel as never,
+      async () => mod as never,
+    ).catch((e: Error) => {
+      err = e;
+    });
+  } finally {
+    await closeOraclePool();
+  }
+  assert.ok(err, 'deveria propagar o erro');
+  assert.match(String(err?.message), /ORA-04068/);
+});
+
+test('executeRunOracle: sem oracledb lanca erro orientando a instalar', async () => {
+  const run = makeRun() as any;
+  const { item, metaMap } = makeLeaf();
+  let err: Error | undefined;
+  await executeRunOracle(
+    {
+      connection: 'u/p@//h:1521/s',
+      pathArgs: ['pkg'],
+      coverage: false,
+      sourcePath: 'install',
+      root: '/root',
+      run,
+      leafTests: [item as any],
+      state: makeOracleRunState(metaMap),
+    },
+    neverCancel as never,
+    async () => undefined,
+  ).catch((e: Error) => {
+    err = e;
+  });
+  assert.ok(err);
+  assert.match(String(err?.message), /oracledb/);
 });

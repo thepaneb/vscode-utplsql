@@ -183,9 +183,21 @@ export interface OracleRunOptions {
   folders?: readonly vscode.WorkspaceFolder[];
 }
 
+type LoadedOracledb = typeof import('oracledb');
+
+async function loadOracledb(): Promise<LoadedOracledb | undefined> {
+  try {
+    const mod = await import('oracledb');
+    return ((mod as Record<string, unknown>).default as LoadedOracledb) ?? (mod as LoadedOracledb);
+  } catch {
+    return undefined;
+  }
+}
+
 export async function executeRunOracle(
   options: OracleRunOptions,
   token: vscode.CancellationToken,
+  loadOracledbMod: () => Promise<LoadedOracledb | undefined> = loadOracledb,
 ): Promise<void> {
   const {
     connection,
@@ -200,13 +212,8 @@ export async function executeRunOracle(
     folders,
   } = options;
 
-  let oracledb: typeof import('oracledb');
-  try {
-    const mod = await import('oracledb');
-    oracledb =
-      ((mod as Record<string, unknown>).default as typeof import('oracledb')) ??
-      (mod as typeof import('oracledb'));
-  } catch {
+  const oracledb = await loadOracledbMod();
+  if (!oracledb) {
     throw new Error(t(getExtensionLocale(), 'common.oracledbMissing'));
   }
 

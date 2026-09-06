@@ -186,3 +186,63 @@ test('applySqlCoverage: com V$SQL ok emite cobertura por linha', async () => {
     fs.rmSync(base, { recursive: true, force: true });
   }
 });
+
+test('applySqlCoverage: multi-root filtra views fora da raiz analisada', async () => {
+  const base = fs.mkdtempSync(path.join(os.tmpdir(), 'vsql-'));
+  const other = fs.mkdtempSync(path.join(os.tmpdir(), 'vsql-other-'));
+  try {
+    // raiz analisada: base/install/views
+    const viewsDir = path.join(base, 'install', 'views');
+    fs.mkdirSync(viewsDir, { recursive: true });
+    fs.writeFileSync(path.join(viewsDir, 'vw_a.sql'), 'CREATE VIEW vw_a AS\nSELECT 1\n');
+    // outra pasta multi-root: other/install/views (fora da raiz)
+    const otherViews = path.join(other, 'install', 'views');
+    fs.mkdirSync(otherViews, { recursive: true });
+    fs.writeFileSync(path.join(otherViews, 'vw_b.sql'), 'CREATE VIEW vw_b AS\nSELECT 1\n');
+
+    const conn = {
+      callTimeout: 0,
+      execute: async () => ({
+        rows: [['SELECT * FROM vw_a'], ['SELECT * FROM vw_b']],
+      }),
+      close: async () => {},
+    };
+    const fakeOracledb = {
+      OUT_FORMAT_OBJECT: {},
+      createPool: async () => ({
+        getConnection: async () => conn,
+        close: async () => {},
+      }),
+      getConnection: async () => conn,
+    };
+
+    const run = makeRun() as never;
+    const state = { setCoverage: () => {}, clearCoverage: () => {} } as never;
+    const folders = [
+      { uri: { fsPath: base }, name: 'base', index: 0 },
+      { uri: { fsPath: other }, name: 'other', index: 1 },
+    ];
+
+    try {
+      await applySqlCoverage(
+        {
+          connection: 'UT3/pass@//localhost:1521/freepdb1',
+          root: base,
+          sourcePath: 'install',
+          run,
+          state,
+          folders: folders as never,
+        },
+        async () => fakeOracledb as never,
+      );
+    } finally {
+      await closeOraclePool();
+    }
+
+    // só a view da raiz analisada (vw_a) deve ser emitida — vw_b fica de fora
+    assert.strictEqual((run as unknown as { coverageList: unknown[] }).coverageList.length, 1);
+  } finally {
+    fs.rmSync(base, { recursive: true, force: true });
+    fs.rmSync(other, { recursive: true, force: true });
+  }
+});

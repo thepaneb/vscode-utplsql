@@ -171,6 +171,48 @@ test('debugger: pause nao suportado responde erro', () => {
   adapter.dispose();
 });
 
+test('debugger: ATTACH_SESSION falha emite output com grants', async () => {
+  const calls: string[] = [];
+  const conn = {
+    execute: async (sql: string) => {
+      calls.push(sql);
+      if (/DBMS_DEBUG\.DEBUG_ON/.test(sql)) return { outBinds: { session: 'SESS1' } };
+      if (/ATTACH_SESSION/.test(sql)) throw new Error('ORA-06553');
+      return {};
+    },
+    close: async () => {},
+  };
+  const runtime: DebuggerRuntime = {
+    acquireConnection: async () => conn as never,
+    runTest: async () => {},
+  };
+  const adapter = new UtplsqlDebugAdapter(runtime);
+  const sent: Msg[] = [];
+  adapter.onDidSendMessage((m) => sent.push(m));
+
+  adapter.handleMessage({ type: 'request', seq: 1, command: 'initialize' });
+  adapter.handleMessage({
+    type: 'request',
+    seq: 2,
+    command: 'launch',
+    arguments: { packageName: 'test_app', connection: 'UT3/pass@//h:1521/svc' },
+  });
+  await flushN(5);
+
+  const events = sent.filter((m) => m.type === 'event').map((m) => m.event);
+  assert.ok(events.includes('terminated'), 'deveria encerrar quando o attach falha');
+  const output = sent
+    .filter((m) => m.type === 'event' && m.event === 'output')
+    .map((m) => (m.body as { output?: string }).output ?? '')
+    .join('\n');
+  assert.ok(String(output).includes('DBMS_DEBUG'), 'deveria citar o DBMS_DEBUG');
+  assert.ok(
+    String(output).includes('GRANT EXECUTE ON SYS.DBMS_DEBUG'),
+    'deveria oferecer o grant SQL',
+  );
+  adapter.dispose();
+});
+
 // ── dbmsDebug: helpers puros ─────────────────────────────────────────
 
 test('parseBreakpointTarget: deriva owner/unit/linha do caminho', () => {
