@@ -18,7 +18,7 @@ e instale:
 
 **Linha de comando:**
 ```bash
-code --install-extension vscode-utplsql-0.11.0.vsix
+code --install-extension vscode-utplsql-0.12.0.vsix
 ```
 
 **Interface:** Painel de Extensões (`Ctrl+Shift+X`) → `...` (canto superior direito)

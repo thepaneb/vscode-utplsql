@@ -203,8 +203,8 @@ publicação no Marketplace é feita **exclusivamente** via GitHub release
 
 ```bash
 npm run package
-# gera: vscode-utplsql-0.11.0.vsix
-code --install-extension vscode-utplsql-0.11.0.vsix
+# gera: vscode-utplsql-0.12.0.vsix
+code --install-extension vscode-utplsql-0.12.0.vsix
 ```
 
 ---
