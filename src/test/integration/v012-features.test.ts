@@ -62,10 +62,7 @@ describeDB('v0.12.0 — integração com banco Oracle', () => {
       assert.strictEqual(resolveConnectionNoPrompt(), conn);
 
       await cfg.update('activeProfile', 'pB', vscode.ConfigurationTarget.Workspace);
-      assert.strictEqual(
-        resolveConnectionNoPrompt(),
-        'B/override@//localhost:1521/XEPDB1',
-      );
+      assert.strictEqual(resolveConnectionNoPrompt(), 'B/override@//localhost:1521/XEPDB1');
     });
 
     it('executa testes usando a conexão do perfil ativo', async function () {
@@ -110,8 +107,7 @@ describeDB('v0.12.0 — integração com banco Oracle', () => {
       try {
         const { runCli } = require('../../cli.js');
         const sourcePath = cfg.get<string>('sourcePath', 'install');
-        const owner =
-          cfg.get<string>('coverageOwner', '') || conn.split('/')[0].toUpperCase();
+        const owner = cfg.get<string>('coverageOwner', '') || conn.split('/')[0].toUpperCase();
         const coverageSourceArgs = cfg.get<string[]>('coverageSourceArgs', []);
         const schema = conn.split('/')[0];
         const args = [
@@ -150,7 +146,7 @@ describeDB('v0.12.0 — integração com banco Oracle', () => {
           }
           for (const e of entries) {
             const full = path.join(dir, e);
-            let st;
+            let st: fs.Stats;
             try {
               st = fs.statSync(full);
             } catch {
@@ -164,14 +160,23 @@ describeDB('v0.12.0 — integração com banco Oracle', () => {
         walk(path.join(root, sourcePath), installFiles);
         const byName = new Map<string, string>();
         for (const f of installFiles) {
-          byName.set(path.basename(f).replace(/\.sql$/i, '').toLowerCase(), f);
+          byName.set(
+            path
+              .basename(f)
+              .replace(/\.sql$/i, '')
+              .toLowerCase(),
+            f,
+          );
         }
 
         let derived = 0;
         for (const f of files) {
           let uri = resolveSourceUri(f.file, root, sourcePath);
           if (!uri) {
-            const base = path.basename(f.file).replace(/\.sql$/i, '').toLowerCase();
+            const base = path
+              .basename(f.file)
+              .replace(/\.sql$/i, '')
+              .toLowerCase();
             const found = byName.get(base);
             if (found) uri = vscode.Uri.file(found);
           }
@@ -198,7 +203,10 @@ describeDB('v0.12.0 — integração com banco Oracle', () => {
       await cfg.update('language', 'en', vscode.ConfigurationTarget.Workspace);
       try {
         assert.strictEqual(getExtensionLocale(), 'en');
-        assert.strictEqual(t(getExtensionLocale(), 'ext.noConnection'), 'Oracle connection not set.');
+        assert.strictEqual(
+          t(getExtensionLocale(), 'ext.noConnection'),
+          'Oracle connection not set.',
+        );
       } finally {
         await cfg.update('language', undefined, vscode.ConfigurationTarget.Workspace);
       }
@@ -206,7 +214,10 @@ describeDB('v0.12.0 — integração com banco Oracle', () => {
       await cfg.update('language', 'pt-br', vscode.ConfigurationTarget.Workspace);
       try {
         assert.strictEqual(getExtensionLocale(), 'pt-br');
-        assert.strictEqual(t(getExtensionLocale(), 'ext.noConnection'), 'Conexão Oracle não informada.');
+        assert.strictEqual(
+          t(getExtensionLocale(), 'ext.noConnection'),
+          'Conexão Oracle não informada.',
+        );
       } finally {
         await cfg.update('language', undefined, vscode.ConfigurationTarget.Workspace);
       }
@@ -296,7 +307,14 @@ describeDB('v0.12.0 — integração com banco Oracle', () => {
       assert.ok(m, 'UTPLSQL_CONN deve ser user/pass@//host:port/svc');
       const [, user, password, host] = m;
       const root = vscode.workspace.workspaceFolders?.[0]?.uri.fsPath as string;
-      const compilePath = path.join(root, 'src', 'test', 'integration', 'fixtures', 'compile_packages.sql');
+      const compilePath = path.join(
+        root,
+        'src',
+        'test',
+        'integration',
+        'fixtures',
+        'compile_packages.sql',
+      );
       const created: string[] = ['TEST_CALCULATOR', 'CALCULATOR'];
 
       let dbc: import('oracledb').Connection;
@@ -309,8 +327,16 @@ describeDB('v0.12.0 — integração com banco Oracle', () => {
       try {
         // 1) Compila produção + suite no schema da conexão (dono → sem grants cross-schema)
         const script = fs.readFileSync(compilePath, 'utf8');
-        const cal = extractObj(script, 'create or replace package calculator as', 'create or replace function greet');
-        const tcal = extractObj(script, 'create or replace package test_calculator as', 'create or replace package test_betwnvarchar');
+        const cal = extractObj(
+          script,
+          'create or replace package calculator as',
+          'create or replace function greet',
+        );
+        const tcal = extractObj(
+          script,
+          'create or replace package test_calculator as',
+          'create or replace package test_betwnvarchar',
+        );
         for (const stmt of splitSql(`${cal}\n/\n${tcal}\n/`)) {
           await dbc.execute(stmt, {}, { autoCommit: true });
         }
@@ -329,7 +355,10 @@ describeDB('v0.12.0 — integração com banco Oracle', () => {
             {},
             { autoCommit: true },
           );
-          const r = await dbc.execute('SELECT text FROM ut3.UT_OUTPUT_BUFFER_TMP ORDER BY message_id', {});
+          const r = await dbc.execute(
+            'SELECT text FROM ut3.UT_OUTPUT_BUFFER_TMP ORDER BY message_id',
+            {},
+          );
           const text = (r.rows ?? []).map((x) => String((x as unknown[])[0])).join('\n');
           coverageText = text.slice(text.indexOf('<coverage'));
         } catch {
@@ -380,4 +409,37 @@ describeDB('v0.12.0 — integração com banco Oracle', () => {
         await dbc.close().catch(() => {});
       }
     });
-  });});
+  });
+  describe('runtime live (debugger/loaders) contra o banco real', () => {
+    it('liveRuntime.acquireConnection abre conexão e runTest executa ut_runner', async function () {
+      this.timeout(120_000);
+      const { liveRuntime } = require('../../debugger.js');
+      const conn = await liveRuntime.acquireConnection();
+      assert.ok(conn, 'deveria abrir conexão real via pool');
+      try {
+        await liveRuntime.runTest(conn, 'test_math');
+      } finally {
+        await conn.close();
+      }
+    });
+
+    it('applySqlCoverage com loader padrão (oracledb real) não quebra', async function () {
+      this.timeout(120_000);
+      const conn = process.env.UTPLSQL_CONN as string;
+      const root = vscode.workspace.workspaceFolders?.[0]?.uri.fsPath as string;
+      const { applySqlCoverage } = require('../../viewCoverage.js');
+      const run = { appendOutput: () => {}, addCoverage: () => {} } as never;
+      const state = { setCoverage: () => {}, clearCoverage: () => {} } as never;
+      const folders = vscode.workspace.workspaceFolders as never;
+      // Sem o 3º parâmetro (loader injetável) -> usa o oracledb real (V$SQL negado -> aviso, não lança)
+      await applySqlCoverage({
+        connection: conn,
+        root,
+        sourcePath: 'install',
+        run,
+        state,
+        folders,
+      });
+    });
+  });
+});

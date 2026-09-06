@@ -82,7 +82,7 @@ export class DbmsDebugClient {
       { session: { dir: 1 } as never },
       { outFormat: 4002 } as never,
     );
-    return String((result.outBinds as Record<string, unknown>).session ?? '');
+    return String(((result.outBinds ?? {}) as Record<string, unknown>).session ?? '');
   }
 
   /** Debugger: anexa à sessão do debuggee e aguarda o primeiro evento. */
@@ -125,7 +125,7 @@ export class DbmsDebugClient {
       { owner: target.owner, unit: target.unit, line: target.line, brkpt: { dir: 1 } as never },
       { outFormat: 4002 } as never,
     );
-    return Number((result.outBinds as Record<string, unknown>).brkpt ?? -1);
+    return Number(((result.outBinds ?? {}) as Record<string, unknown>).brkpt ?? -1);
   }
 
   async deleteBreakpoint(breakpointId: number): Promise<void> {
@@ -144,7 +144,7 @@ export class DbmsDebugClient {
       { status: { dir: 1 } as never },
       { outFormat: 4002 } as never,
     );
-    return parseProceedStatus((result.outBinds as Record<string, unknown>).status);
+    return parseProceedStatus(((result.outBinds ?? {}) as Record<string, unknown>).status);
   }
 
   async continueRun(): Promise<string> {
@@ -158,7 +158,7 @@ export class DbmsDebugClient {
       { status: { dir: 1 } as never },
       { outFormat: 4002 } as never,
     );
-    return parseProceedStatus((result.outBinds as Record<string, unknown>).status);
+    return parseProceedStatus(((result.outBinds ?? {}) as Record<string, unknown>).status);
   }
 
   async stepInto(): Promise<string> {
@@ -172,7 +172,7 @@ export class DbmsDebugClient {
       { status: { dir: 1 } as never },
       { outFormat: 4002 } as never,
     );
-    return parseProceedStatus((result.outBinds as Record<string, unknown>).status);
+    return parseProceedStatus(((result.outBinds ?? {}) as Record<string, unknown>).status);
   }
 
   async stepOver(): Promise<string> {
@@ -186,7 +186,7 @@ export class DbmsDebugClient {
       { status: { dir: 1 } as never },
       { outFormat: 4002 } as never,
     );
-    return parseProceedStatus((result.outBinds as Record<string, unknown>).status);
+    return parseProceedStatus(((result.outBinds ?? {}) as Record<string, unknown>).status);
   }
 
   async stepOut(): Promise<string> {
@@ -200,7 +200,7 @@ export class DbmsDebugClient {
       { status: { dir: 1 } as never },
       { outFormat: 4002 } as never,
     );
-    return parseProceedStatus((result.outBinds as Record<string, unknown>).status);
+    return parseProceedStatus(((result.outBinds ?? {}) as Record<string, unknown>).status);
   }
 
   /** Stack: nome da unidade atual + linha via DBMS_DEBUG runtime info. */

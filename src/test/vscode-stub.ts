@@ -226,6 +226,30 @@ export const StatusBarAlignment = { Left: 1, Right: 2 } as const;
 
 export const ConfigurationTarget = { Global: 1, Workspace: 2, WorkspaceFolder: 3 } as const;
 
+export class DebugAdapterInlineImplementation {
+  _adapter: unknown;
+  constructor(adapter: unknown) {
+    this._adapter = adapter;
+  }
+}
+
+export namespace debug {
+  const started: Record<string, unknown>[] = [];
+  export function startDebugging(_folder: unknown, config: Record<string, unknown>) {
+    started.push(config);
+    return Promise.resolve();
+  }
+  export function __getStartedConfigs(): Record<string, unknown>[] {
+    return started;
+  }
+  export function registerDebugAdapterDescriptorFactory(_type: string, _factory: unknown) {
+    return { dispose: () => {} };
+  }
+  export function registerDebugConfigurationProvider(_type: string, _provider: unknown) {
+    return { dispose: () => {} };
+  }
+}
+
 export const FileType = {
   Unknown: 0,
   File: 1,

@@ -9,6 +9,8 @@ import {
   findProfileById,
   findSqlDevConnectionsPath,
   getActiveProfile,
+  getAllProfiles,
+  importFromSqlDeveloper,
   maskConnection,
   mergeProfileConfig,
   parseSqlDevConnections,
@@ -205,4 +207,63 @@ test('selectProfile: cancelado retorna undefined', async () => {
   __setQuickPickResult(undefined);
   const selected = await selectProfile([{ id: 'p1', name: 'DEV', connection: 'c' }]);
   assert.strictEqual(selected, undefined);
+});
+
+test('getAllProfiles: retorna a lista salva em utplsql.profiles', () => {
+  __resetConfigValues();
+  __setConfigValue('profiles', [
+    { id: 'p1', name: 'DEV', connection: 'dev/pass@db' },
+    { id: 'p2', name: 'TEST', connection: 'test/pass@db' },
+  ]);
+  try {
+    const profiles = getAllProfiles();
+    assert.strictEqual(profiles.length, 2);
+    assert.strictEqual(profiles[1].name, 'TEST');
+  } finally {
+    __resetConfigValues();
+  }
+});
+
+test('getAllProfiles: sem config retorna []', () => {
+  __resetConfigValues();
+  assert.deepStrictEqual(getAllProfiles(), []);
+});
+
+test('importFromSqlDeveloper: lê connections.xml do APPDATA e gera perfis', async () => {
+  const base = fs.mkdtempSync(path.join(os.tmpdir(), 'appdata-'));
+  const connDir = path.join(base, 'SQL Developer', 'system19.4.0', 'o.jdeveloper.db.connection');
+  fs.mkdirSync(connDir, { recursive: true });
+  fs.writeFileSync(
+    path.join(connDir, 'connections.xml'),
+    `<Reference name="DEV" className="oracle.jdeveloper.db.adapter.DatabaseProvider"
+       userName="scott" password="tiger">
+      <StringRefAddr addrType="hostname">localhost</StringRefAddr>
+      <StringRefAddr addrType="port">1521</StringRefAddr>
+      <StringRefAddr addrType="serviceName">XEPDB1</StringRefAddr>
+    </Reference>`,
+  );
+  const origAppdata = process.env.APPDATA;
+  process.env.APPDATA = base;
+  try {
+    const profiles = await importFromSqlDeveloper();
+    assert.strictEqual(profiles.length, 1);
+    assert.strictEqual(profiles[0].name, 'DEV');
+    assert.strictEqual(profiles[0].connection, 'scott/tiger@localhost:1521/XEPDB1');
+  } finally {
+    if (origAppdata === undefined) delete process.env.APPDATA;
+    else process.env.APPDATA = origAppdata;
+    fs.rmSync(base, { recursive: true, force: true });
+  }
+});
+
+test('importFromSqlDeveloper: sem connections.xml retorna []', async () => {
+  const origAppdata = process.env.APPDATA;
+  process.env.APPDATA = fs.mkdtempSync(path.join(os.tmpdir(), 'appdata-empty-'));
+  try {
+    const profiles = await importFromSqlDeveloper();
+    assert.deepStrictEqual(profiles, []);
+  } finally {
+    if (origAppdata === undefined) delete process.env.APPDATA;
+    else process.env.APPDATA = origAppdata;
+  }
 });

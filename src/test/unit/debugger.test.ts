@@ -2,7 +2,14 @@ import './setup.js';
 import assert from 'node:assert';
 import { test } from 'node:test';
 import { parseBreakpointTarget, parseProceedStatus } from '../../dbmsDebug';
-import { type DebuggerRuntime, UtplsqlDebugAdapter } from '../../debugger';
+import {
+  type DebuggerRuntime,
+  startDebugSession,
+  UtplsqlDebugAdapter,
+  UtplsqlDebugAdapterDescriptorFactory,
+  UtplsqlDebugConfigurationProvider,
+} from '../../debugger';
+import { __resetConfigValues, __setConfigValue } from '../vscode-stub';
 
 const flush = () => new Promise((r) => setTimeout(r, 0));
 const flushN = async (n: number) => {
@@ -228,4 +235,55 @@ test('parseProceedStatus: traduz codigos DBMS_DEBUG', () => {
   assert.strictEqual(parseProceedStatus(5), 'exiting');
   assert.strictEqual(parseProceedStatus(4), 'killed');
   assert.strictEqual(parseProceedStatus(99), 'unknown');
+});
+
+// ── registros do debugger (factory / config provider / startDebugSession) ──
+
+test('debugger factory: createDebugAdapterDescriptor retorna adapter inline', () => {
+  const desc = new UtplsqlDebugAdapterDescriptorFactory().createDebugAdapterDescriptor({} as never);
+  assert.ok(desc, 'deveria retornar um descriptor');
+  assert.strictEqual(
+    (desc as { _adapter?: unknown })._adapter?.constructor?.name,
+    'UtplsqlDebugAdapter',
+  );
+});
+
+test('debugger config provider: preenche type/request/stopOnException/connection', async () => {
+  __setConfigValue('connection', 'user/senha@//h:1521/svc');
+  try {
+    const provider = new UtplsqlDebugConfigurationProvider();
+    const cfg = (await provider.resolveDebugConfiguration(undefined, {} as never)) as Record<
+      string,
+      unknown
+    >;
+    assert.strictEqual(cfg.type, 'utplsql');
+    assert.strictEqual(cfg.request, 'launch');
+    assert.strictEqual(cfg.stopOnException, true);
+    assert.strictEqual(cfg.connection, 'user/senha@//h:1521/svc');
+  } finally {
+    __resetConfigValues();
+  }
+});
+
+test('startDebugSession: monta config e chama vscode.debug.startDebugging', async () => {
+  const { debug } = await import('../vscode-stub.js');
+  __setConfigValue('connection', 'user/senha@//h:1521/svc');
+  try {
+    await startDebugSession('test_app', 't1');
+    const started = debug.__getStartedConfigs();
+    assert.strictEqual(started.length, 1);
+    const cfg = started[0] as Record<string, unknown>;
+    assert.strictEqual(cfg.packageName, 'test_app');
+    assert.strictEqual(cfg.testName, 't1');
+    assert.strictEqual(cfg.type, 'utplsql');
+  } finally {
+    __resetConfigValues();
+  }
+});
+
+test('liveRuntime.acquireConnection: sem conexão configurada retorna undefined', async () => {
+  __resetConfigValues();
+  const { liveRuntime } = await import('../../debugger.js');
+  const conn = await liveRuntime.acquireConnection();
+  assert.strictEqual(conn, undefined);
 });
