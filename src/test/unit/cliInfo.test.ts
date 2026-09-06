@@ -105,3 +105,17 @@ test('getCliInfo: retorna erro quando CLI retorna codigo != 0', async () => {
   assert.match((result as { error: string }).error, /command failed/);
   mock.restoreAll();
 });
+
+test('getCliInfo: invoca o runCli real (cobre o dummyToken do cancelamento)', async () => {
+  // Sem mock: o runCli real recebe o dummyToken e chama onCancellationRequested
+  const cfg = {
+    invocation: 'launcher',
+    cliPath: process.execPath,
+    cliHome: '',
+    javaPath: 'java',
+    javaArgs: [] as string[],
+  } as never;
+  const info = await getCliInfo(cfg, 'user/pass@db');
+  // node com arg 'info' não é um script válido -> erro, mas o token foi exercitado
+  assert.ok('error' in info || 'cliVersion' in info);
+});

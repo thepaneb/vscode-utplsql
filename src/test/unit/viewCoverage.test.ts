@@ -246,3 +246,26 @@ test('applySqlCoverage: multi-root filtra views fora da raiz analisada', async (
     fs.rmSync(other, { recursive: true, force: true });
   }
 });
+
+test('applySqlCoverage: loader padrão (oracledb real) com conexão inválida não lança', async () => {
+  const base = fs.mkdtempSync(path.join(os.tmpdir(), 'vsql-def-'));
+  try {
+    const viewsDir = path.join(base, 'install', 'views');
+    fs.mkdirSync(viewsDir, { recursive: true });
+    fs.writeFileSync(path.join(viewsDir, 'vw_a.sql'), 'CREATE VIEW vw_a AS\nSELECT 1\n');
+    const run = makeRun() as never;
+    const state = { setCoverage: () => {}, clearCoverage: () => {} } as never;
+    const folders = [{ uri: { fsPath: base }, name: 'r', index: 0 }];
+    // Sem o 3º parâmetro -> usa o loadOracledb real (import) e falha no parseConnString antes de conectar
+    await applySqlCoverage({
+      connection: 'formato-invalido',
+      root: base,
+      sourcePath: 'install',
+      run,
+      state,
+      folders: folders as never,
+    });
+  } finally {
+    fs.rmSync(base, { recursive: true, force: true });
+  }
+});

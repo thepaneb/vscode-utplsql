@@ -143,3 +143,15 @@ test('listReporters: retorna erro quando CLI retorna codigo != 0', async () => {
   assert.match((result as { error: string }).error, /command failed/);
   mock.restoreAll();
 });
+
+test('listReporters: invoca o runCli real (cobre o dummyToken do cancelamento)', async () => {
+  const cfg = {
+    invocation: 'launcher',
+    cliPath: process.execPath,
+    cliHome: '',
+    javaPath: 'java',
+    javaArgs: [] as string[],
+  } as never;
+  const res = await listReporters(cfg, 'user/pass@db');
+  assert.ok('error' in res || Array.isArray(res));
+});

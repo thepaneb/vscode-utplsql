@@ -287,3 +287,18 @@ test('liveRuntime.acquireConnection: sem conexão configurada retorna undefined'
   const conn = await liveRuntime.acquireConnection();
   assert.strictEqual(conn, undefined);
 });
+
+test('liveRuntime.runTest: executa ut_runner.run no conn', async () => {
+  const calls: string[] = [];
+  const conn = {
+    execute: async (sql: string) => {
+      calls.push(sql);
+    },
+    close: async () => {},
+  };
+  const { liveRuntime } = await import('../../debugger.js');
+  await liveRuntime.runTest(conn as never, 'test_app', 't1');
+  assert.strictEqual(calls.length, 1);
+  assert.match(calls[0], /ut_runner\.run/);
+  assert.match(calls[0], /test_app\.t1/);
+});

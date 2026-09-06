@@ -582,3 +582,8 @@ test('discoverSchemasFromFolders: base com subdiretorios (src/{schema}/tests/**)
     __resetMockDirectoryEntries();
   }
 });
+
+test('discoverSchemaFromDb: loader padrão com conexão inválida retorna []', async () => {
+  const result = await discoverSchemaFromDb('formato-invalido', 'hr', [FOLDER]);
+  assert.deepStrictEqual(result, []);
+});

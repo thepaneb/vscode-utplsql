@@ -110,3 +110,15 @@ test('UtplsqlCodeLensProvider: arquivo .sql e ignorado', () => {
   const lenses = provider.provideCodeLenses(doc, {} as any);
   assert.strictEqual(lenses.length, 0);
 });
+
+test('UtplsqlCodeLensProvider: refresh dispara onDidChangeCodeLenses', () => {
+  const provider = new UtplsqlCodeLensProvider();
+  let fired = 0;
+  const sub = provider.onDidChangeCodeLenses(() => {
+    fired++;
+  });
+  provider.refresh();
+  provider.refresh();
+  assert.strictEqual(fired, 2);
+  sub.dispose();
+});

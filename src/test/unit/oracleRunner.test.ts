@@ -772,3 +772,23 @@ test('executeRunOracle: sem oracledb lanca erro orientando a instalar', async ()
   assert.ok(err);
   assert.match(String(err?.message), /oracledb/);
 });
+
+test('executeRunOracle: loader padrão com conexão inválida rejeita (loadOracledb real)', async () => {
+  const run = makeRun() as any;
+  const { item, metaMap } = makeLeaf();
+  await assert.rejects(() =>
+    executeRunOracle(
+      {
+        connection: 'formato-invalido',
+        pathArgs: ['pkg'],
+        coverage: false,
+        sourcePath: 'install',
+        root: '/root',
+        run,
+        leafTests: [item as any],
+        state: makeOracleRunState(metaMap),
+      },
+      neverCancel as never,
+    ),
+  );
+});
