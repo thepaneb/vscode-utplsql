@@ -173,7 +173,7 @@ mergeProfileConfig(global: UtConfig, profile?): UtConfig;
 ## i18n (PRD-49)
 
 Motor de tradução das mensagens de runtime. `src/i18n.ts` (puro) + catálogos
-em `src/i18nLocales.ts` para 15 idiomas.
+em `src/i18nLocales.ts` para 24 idiomas (15 nativos do VSCode + 9 da comunidade).
 
 ```typescript
 function resolveLocale(setting: string, vscodeLanguage: string): ExtensionLocale
@@ -187,7 +187,7 @@ function t(locale: ExtensionLocale, key: string, params?): string
 
 | Setting | Valores | Default |
 |---|---|---|
-| `utplsql.language` | `auto` \| `pt-br` \| `en` \| `es` \| `zh-cn` \| `zh-tw` \| `ja` \| `de` \| `fr` \| `it` \| `ko` \| `ru` \| `tr` \| `pl` \| `cs` \| `hu` | `auto` |
+| `utplsql.language` | `auto` \| `pt-br` \| `en` \| `en-gb` \| `es` \| `zh-cn` \| `zh-tw` \| `ja` \| `de` \| `fr` \| `it` \| `ko` \| `ru` \| `tr` \| `pl` \| `cs` \| `hu` \| `bg` \| `el` \| `id` \| `ro` \| `sr` \| `th` \| `uk` \| `vi` | `auto` |
 
 `package.nls*.json` traduzem os títulos de comandos; o motor i18n cobre as
 mensagens de runtime (prompts, outputs, diagnósticos).

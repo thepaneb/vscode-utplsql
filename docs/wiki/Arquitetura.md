@@ -49,7 +49,7 @@ embutidas no bundle.
 | `codelens.ts` (parse) — `parseCodeLensItems` | |
 | `state.ts`, `types.ts` (type-only) | |
 | `plsqlDeclarations.ts` — extrai declarações PROCEDURE/FUNCTION do fonte | |
-| `i18n.ts`, `i18nLocales.ts` — localização (15 locais) | |
+| `i18n.ts`, `i18nLocales.ts` — localização (24 locais) | |
 | | `connectionProfiles.ts` — perfis de conexão |
 | | `viewCoverage.ts` — DeclarationCoverage na aba Test Coverage |
 | | `dbmsDebug.ts`, `debugger.ts` — debug PL/SQL via DBMS_DEBUG |

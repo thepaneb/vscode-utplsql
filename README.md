@@ -21,7 +21,7 @@ Integra o [utPLSQL](https://www.utplsql.org/) ao VSCode, trazendo os testes de P
 - 🔌 **Perfis de conexão** — salve e alterne entre múltiplos ambientes (DEV/TEST/PROD) com configurações por perfil, via status bar ou command palette.
 - 📈 **Cobertura por declaração e de views** — a aba Coverage mostra `% de declarações` (PROCEDURE/FUNCTION) por arquivo e rastreia views executadas via `V$SQL`.
 - 🐛 **Debug PL/SQL** — breakpoints e step debugging de testes utPLSQL via `DBMS_DEBUG` (Debug Adapter nativo).
-- 🌍 **i18n — 15 idiomas** — `utplsql.language` segue o VSCode (pt-br, en, es, zh-cn, zh-tw, ja, de, fr, it, ko, ru, tr, pl, cs, hu).
+- 🌍 **i18n — 24 idiomas** — `utplsql.language` segue o VSCode (15 nativos + 9 da comunidade: pt-br, en, en-gb, es, zh-cn, zh-tw, ja, de, fr, it, ko, ru, tr, pl, cs, hu, bg, el, id, ro, sr, th, uk, vi).
 
 ## Instalação
 
@@ -141,7 +141,7 @@ estiver instalado. Use `runnerMode: cli` para forçar CLI sempre.
 | `utplsql.debugger.enabled` | `true` | Habilita o debug PL/SQL de testes (`DBMS_DEBUG`). Requer `node-oracledb` + grants. |
 | `utplsql.debugger.stopOnException` | `true` | Pausa em exceções PL/SQL durante o debug. |
 | `utplsql.debugger.timeoutSeconds` | `300` | Timeout (s) da sessão de debug. |
-| `utplsql.language` | `auto` | Idioma das mensagens de runtime. `auto` segue o VSCode (`pt*`→pt-br, `zh-tw`/`zh-hk`→zh-tw, `zh*`→zh-cn, `es*`→es, `ja*`→ja, `de*`→de, `fr*`→fr, `it*`→it, `ko*`→ko, `ru*`→ru, `tr*`→tr, `pl*`→pl, `cs*`→cs, `hu*`→hu; senão en). Cobre os 15 locais nativos do VSCode. |
+| `utplsql.language` | `auto` | Idioma das mensagens de runtime. `auto` segue o VSCode (pt, zh-tw/zh-hk, zh, es, ja, de, fr, it, ko, ru, tr, pl, cs, hu, bg, el, id, ro, sr, th, uk, vi, en-gb; senão en). Cobre os **24 locais** (15 nativos + 9 da comunidade). |
 
 Exemplo (`.vscode/settings.json` do projeto):
 

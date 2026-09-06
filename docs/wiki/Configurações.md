@@ -100,7 +100,7 @@ schemas das suites locais. Veja [Organização da árvore](Organização-da-árv
 
 | Setting | Default | Descrição |
 |---|---|---|
-| `utplsql.language` | `auto` | Idioma da interface da extensão. `auto` segue o idioma do VSCode. Valores: `auto`, `pt-br`, `en`, `es`, `zh-cn`, `zh-tw`, `ja`, `de`, `fr`, `it`, `ko`, `ru`, `tr`, `pl`, `cs`, `hu`. |
+| `utplsql.language` | `auto` | Idioma da interface da extensão. `auto` segue o idioma do VSCode. Valores: `auto`, `pt-br`, `en`, `en-gb`, `es`, `zh-cn`, `zh-tw`, `ja`, `de`, `fr`, `it`, `ko`, `ru`, `tr`, `pl`, `cs`, `hu`, `bg`, `el`, `id`, `ro`, `sr`, `th`, `uk`, `vi`. |
 
 ## Hierarquia de settings
 
