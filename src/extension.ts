@@ -262,16 +262,20 @@ export function activate(context: vscode.ExtensionContext) {
 
   context.subscriptions.push(setupValidator);
 
-  context.subscriptions.push(
-    vscode.debug.registerDebugAdapterDescriptorFactory(
-      'utplsql',
-      new UtplsqlDebugAdapterDescriptorFactory(),
-    ),
-    vscode.debug.registerDebugConfigurationProvider(
-      'utplsql',
-      new UtplsqlDebugConfigurationProvider(),
-    ),
-  );
+  try {
+    context.subscriptions.push(
+      vscode.debug.registerDebugAdapterDescriptorFactory(
+        'utplsql',
+        new UtplsqlDebugAdapterDescriptorFactory(),
+      ),
+      vscode.debug.registerDebugConfigurationProvider(
+        'utplsql',
+        new UtplsqlDebugConfigurationProvider(),
+      ),
+    );
+  } catch {
+    // Registro do debugger é opcional — falha aqui não pode derrubar a ativação.
+  }
 
   const codeActionProvider = vscode.languages.registerCodeActionsProvider(
     { scheme: 'file', pattern: '**/*.pks' },

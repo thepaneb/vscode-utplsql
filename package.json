@@ -571,9 +571,6 @@
     {
       "type": "utplsql",
       "label": "utPLSQL Debugger",
-      "languages": [
-        "plsql"
-      ],
       "configurationAttributes": {
         "launch": {
           "properties": {
