@@ -193,3 +193,7 @@ test('catalogos nao vazios', () => {
     assert.ok(Object.keys(cat).length > 90);
   }
 });
+
+test('t: placeholder ausente nos params permanece literal (branch não-coberto)', () => {
+  assert.strictEqual(t('pt-br', 'ext.profile.active', {}), 'Perfil ativo: {name}');
+});

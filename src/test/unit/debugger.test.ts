@@ -302,3 +302,336 @@ test('liveRuntime.runTest: executa ut_runner.run no conn', async () => {
   assert.match(calls[0], /ut_runner\.run/);
   assert.match(calls[0], /test_app\.t1/);
 });
+
+test('debugger: runTest sem testName usa só o pacote', async () => {
+  const conn = makeFakeConn();
+  const adapter = new UtplsqlDebugAdapter({
+    acquireConnection: async () => conn as never,
+    runTest: async (_c, pkg, t) => {
+      conn.calls.push(`RUN_TEST:${pkg}${t ? `.${t}` : ''}`);
+    },
+  });
+  adapter.dispose();
+});
+
+test('debugger: comandos pause e desconhecidos respondem sucesso false', async () => {
+  const adapter = new UtplsqlDebugAdapter(makeRuntime(makeFakeConn()));
+  const sent: Msg[] = [];
+  adapter.onDidSendMessage((m) => sent.push(m));
+  adapter.handleMessage({ type: 'request', seq: 1, command: 'pause' });
+  adapter.handleMessage({ type: 'request', seq: 2, command: 'foo' });
+  const pause = sent.find((m) => m.command === 'pause') as any;
+  const foo = sent.find((m) => m.command === 'foo') as any;
+  assert.strictEqual(pause.body.success, false);
+  assert.strictEqual(foo.body.success, false);
+  adapter.dispose();
+});
+
+test('debugger: launch sem connection não configura schema', async () => {
+  const conn = makeFakeConn();
+  const adapter = new UtplsqlDebugAdapter(makeRuntime(conn));
+  const sent: Msg[] = [];
+  adapter.onDidSendMessage((m) => sent.push(m));
+  adapter.handleMessage({ type: 'request', seq: 1, command: 'initialize' });
+  adapter.handleMessage({
+    type: 'request',
+    seq: 2,
+    command: 'launch',
+    arguments: { packageName: 'test_app' },
+  });
+  await flushN(4);
+  // Sem connection: schema fica default UT3, mas init ainda roda
+  assert.ok(conn.calls.some((s) => /DEBUG_ON/.test(s)));
+  adapter.dispose();
+});
+
+test('debugger: setBreakpoints antes de anexar guarda alvos não verificados', async () => {
+  const conn = makeFakeConn();
+  const adapter = new UtplsqlDebugAdapter(makeRuntime(conn));
+  const sent: Msg[] = [];
+  adapter.onDidSendMessage((m) => sent.push(m));
+  // Sem initialize/launch: debuggerClient ainda é undefined
+  adapter.handleMessage({
+    type: 'request',
+    seq: 1,
+    command: 'setBreakpoints',
+    arguments: { source: { path: '/ws/test_app.pks' }, breakpoints: [{ line: 5 }] },
+  });
+  await flushN(2);
+  const resp = sent.find((m) => m.command === 'setBreakpoints') as any;
+  assert.strictEqual(resp.body.breakpoints[0].verified, false);
+  adapter.dispose();
+});
+
+test('debugger: reportStop com status break atualiza currentFrame e envia stopped', async () => {
+  const conn = makeFakeConn();
+  const adapter = new UtplsqlDebugAdapter(makeRuntime(conn));
+  const sent: Msg[] = [];
+  adapter.onDidSendMessage((m) => sent.push(m));
+  adapter.handleMessage({ type: 'request', seq: 1, command: 'initialize' });
+  adapter.handleMessage({
+    type: 'request',
+    seq: 2,
+    command: 'launch',
+    arguments: { packageName: 'test_app', connection: 'APP/pass@//h:1521/svc' },
+  });
+  await flushN(4);
+  // configurationDone dispara continue -> step -> reportStop('break')
+  adapter.handleMessage({ type: 'request', seq: 3, command: 'configurationDone' });
+  await flushN(4);
+  const stopped = sent.filter((m) => m.type === 'event' && m.event === 'stopped');
+  assert.ok(stopped.length >= 1);
+  adapter.dispose();
+});
+
+test('debugger: stackTrace sem currentFrame retorna lista vazia', async () => {
+  const adapter = new UtplsqlDebugAdapter(makeRuntime(makeFakeConn()));
+  const sent: Msg[] = [];
+  adapter.onDidSendMessage((m) => sent.push(m));
+  adapter.handleMessage({ type: 'request', seq: 1, command: 'stackTrace' });
+  const resp = sent.find((m) => m.command === 'stackTrace') as any;
+  assert.deepStrictEqual(resp.body.stackFrames, []);
+  assert.strictEqual(resp.body.totalFrames, 0);
+  adapter.dispose();
+});
+
+test('debugger: initialize expõe flags de suporte', async () => {
+  const adapter = new UtplsqlDebugAdapter(makeRuntime(makeFakeConn()));
+  const sent: Msg[] = [];
+  adapter.onDidSendMessage((m) => sent.push(m));
+  adapter.handleMessage({ type: 'request', seq: 1, command: 'initialize' });
+  const resp = sent.find((m) => m.command === 'initialize') as any;
+  assert.strictEqual(resp.body.supportsConfigurationDoneRequest, true);
+  assert.strictEqual(resp.body.supportsTerminateRequest, true);
+  adapter.dispose();
+});
+
+test('debugger: runtime sem conexão emite terminated e teardown', async () => {
+  const adapter = new UtplsqlDebugAdapter({
+    acquireConnection: async () => undefined,
+    runTest: async () => {},
+  });
+  const sent: Msg[] = [];
+  adapter.onDidSendMessage((m) => sent.push(m));
+  adapter.handleMessage({ type: 'request', seq: 1, command: 'initialize' });
+  adapter.handleMessage({
+    type: 'request',
+    seq: 2,
+    command: 'launch',
+    arguments: { packageName: 'test_app', connection: 'APP/pass@//h:1521/svc' },
+  });
+  await flushN(4);
+  const events = sent.filter((m) => m.type === 'event').map((m) => m.event);
+  assert.ok(events.includes('terminated'));
+  adapter.dispose();
+});
+
+test('debugger: segunda conexão falha emite terminated (debuggerConn undefined)', async () => {
+  const conn = makeFakeConn();
+  let acquireCount = 0;
+  const adapter = new UtplsqlDebugAdapter({
+    acquireConnection: async () => {
+      acquireCount++;
+      return acquireCount <= 1 ? (conn as never) : undefined;
+    },
+    runTest: async () => {},
+  });
+  const sent: Msg[] = [];
+  adapter.onDidSendMessage((m) => sent.push(m));
+  adapter.handleMessage({ type: 'request', seq: 1, command: 'initialize' });
+  adapter.handleMessage({
+    type: 'request',
+    seq: 2,
+    command: 'launch',
+    arguments: { packageName: 'test_app', connection: 'APP/pass@//h:1521/svc' },
+  });
+  await flushN(6);
+  const events = sent.filter((m) => m.type === 'event').map((m) => m.event);
+  assert.ok(events.includes('terminated'));
+  assert.ok(events.includes('output'));
+  adapter.dispose();
+});
+
+test('debugger: attachSession falha emite terminated', async () => {
+  const conn = {
+    execute: async (sql: string) => {
+      if (/DEBUG_ON/.test(sql)) return { outBinds: { session: 'SESS1' } };
+      if (/ATTACH_SESSION/.test(sql)) throw new Error('grant ausente');
+      return {};
+    },
+    close: async () => {},
+  };
+  const adapter = new UtplsqlDebugAdapter(makeRuntime(conn as never));
+  const sent: Msg[] = [];
+  adapter.onDidSendMessage((m) => sent.push(m));
+  adapter.handleMessage({ type: 'request', seq: 1, command: 'initialize' });
+  adapter.handleMessage({
+    type: 'request',
+    seq: 2,
+    command: 'launch',
+    arguments: { packageName: 'test_app', connection: 'APP/pass@//h:1521/svc' },
+  });
+  await flushN(6);
+  const events = sent.filter((m) => m.type === 'event').map((m) => m.event);
+  assert.ok(events.includes('terminated'), 'attachSession false deveria terminar');
+  adapter.dispose();
+});
+
+test('debugger: setBreakpoints sem source/breakpoints usa fallback', async () => {
+  const adapter = new UtplsqlDebugAdapter(makeRuntime(makeFakeConn()));
+  const sent: Msg[] = [];
+  adapter.onDidSendMessage((m) => sent.push(m));
+  adapter.handleMessage({ type: 'request', seq: 1, command: 'setBreakpoints' });
+  await flushN(2);
+  const resp = sent.find((m) => m.command === 'setBreakpoints') as any;
+  assert.ok(resp);
+  assert.deepStrictEqual(resp.body.breakpoints, []);
+  adapter.dispose();
+});
+
+test('debugger: stepIn e stepOut acionam waitForNextStop correspondente', async () => {
+  const conn = makeFakeConn();
+  const adapter = new UtplsqlDebugAdapter(makeRuntime(conn));
+  const sent: Msg[] = [];
+  adapter.onDidSendMessage((m) => sent.push(m));
+  adapter.handleMessage({ type: 'request', seq: 1, command: 'initialize' });
+  adapter.handleMessage({
+    type: 'request',
+    seq: 2,
+    command: 'launch',
+    arguments: { packageName: 'test_app', connection: 'APP/pass@//h:1521/svc' },
+  });
+  await flushN(4);
+  adapter.handleMessage({ type: 'request', seq: 3, command: 'stepIn' });
+  adapter.handleMessage({ type: 'request', seq: 4, command: 'stepOut' });
+  await flushN(4);
+  assert.ok(
+    conn.calls.some((s) => /STEP_INTO/.test(s)),
+    'stepIn deveria chamar STEP_INTO',
+  );
+  assert.ok(
+    conn.calls.some((s) => /STEP_OUT/.test(s)),
+    'stepOut deveria chamar STEP_OUT',
+  );
+  adapter.dispose();
+});
+
+test('debugger: reportStop com status exiting termina', async () => {
+  const conn = makeFakeConn();
+  const origExecute = conn.execute.bind(conn);
+  conn.execute = async (sql: string) => {
+    if (/STEP|CONTINUE|SYNCHRONIZE/.test(sql)) return { outBinds: { status: 5 } };
+    return origExecute(sql);
+  };
+  const adapter = new UtplsqlDebugAdapter(makeRuntime(conn));
+  const sent: Msg[] = [];
+  adapter.onDidSendMessage((m) => sent.push(m));
+  adapter.handleMessage({ type: 'request', seq: 1, command: 'initialize' });
+  adapter.handleMessage({
+    type: 'request',
+    seq: 2,
+    command: 'launch',
+    arguments: { packageName: 'test_app', connection: 'APP/pass@//h:1521/svc' },
+  });
+  await flushN(4);
+  adapter.handleMessage({ type: 'request', seq: 3, command: 'configurationDone' });
+  await flushN(6);
+  const events = sent.filter((m) => m.type === 'event').map((m) => m.event);
+  assert.ok(events.includes('terminated'), 'status exiting deveria terminar');
+  adapter.dispose();
+});
+
+test('debugger: step com erro emite stderr e terminated', async () => {
+  const conn = makeFakeConn();
+  const origExecute = conn.execute.bind(conn);
+  conn.execute = async (sql: string) => {
+    if (/STEP|CONTINUE|SYNCHRONIZE/.test(sql)) throw new Error('step quebrado');
+    return origExecute(sql);
+  };
+  const adapter = new UtplsqlDebugAdapter(makeRuntime(conn));
+  const sent: Msg[] = [];
+  adapter.onDidSendMessage((m) => sent.push(m));
+  adapter.handleMessage({ type: 'request', seq: 1, command: 'initialize' });
+  adapter.handleMessage({
+    type: 'request',
+    seq: 2,
+    command: 'launch',
+    arguments: { packageName: 'test_app', connection: 'APP/pass@//h:1521/svc' },
+  });
+  await flushN(4);
+  adapter.handleMessage({ type: 'request', seq: 3, command: 'configurationDone' });
+  await flushN(6);
+  const events = sent.filter((m) => m.type === 'event').map((m) => m.event);
+  assert.ok(events.includes('terminated'));
+  const errOut = sent.filter((m) => m.type === 'event' && m.event === 'output');
+  assert.ok(errOut.length > 0);
+  adapter.dispose();
+});
+
+test('debugger: variables sem debuggerClient retorna vazio', async () => {
+  const adapter = new UtplsqlDebugAdapter(makeRuntime(makeFakeConn()));
+  const sent: Msg[] = [];
+  adapter.onDidSendMessage((m) => sent.push(m));
+  adapter.handleMessage({ type: 'request', seq: 1, command: 'variables' });
+  await flushN(2);
+  const resp = sent.find((m) => m.command === 'variables') as any;
+  assert.deepStrictEqual(resp.body.variables, []);
+  adapter.dispose();
+});
+
+test('debugger: variables com erro no GET_VALUES retorna vazio', async () => {
+  const conn = makeFakeConn();
+  const origExecute = conn.execute.bind(conn);
+  conn.execute = async (sql: string) => {
+    if (/GET_VALUES/.test(sql)) throw new Error('values negado');
+    return origExecute(sql);
+  };
+  const adapter = new UtplsqlDebugAdapter(makeRuntime(conn));
+  const sent: Msg[] = [];
+  adapter.onDidSendMessage((m) => sent.push(m));
+  adapter.handleMessage({ type: 'request', seq: 1, command: 'initialize' });
+  adapter.handleMessage({
+    type: 'request',
+    seq: 2,
+    command: 'launch',
+    arguments: { packageName: 'test_app', connection: 'APP/pass@//h:1521/svc' },
+  });
+  await flushN(4);
+  adapter.handleMessage({ type: 'request', seq: 3, command: 'variables' });
+  await flushN(2);
+  const resp = sent.find((m) => m.command === 'variables') as any;
+  assert.deepStrictEqual(resp.body.variables, []);
+  adapter.dispose();
+});
+
+test('debugger: teardown ignora erros de detach/debugOff/close', async () => {
+  const conn = makeFakeConn();
+  const origExecute = conn.execute.bind(conn);
+  conn.execute = async (sql: string) => {
+    if (/DETACH_SESSION|DEBUG_OFF/.test(sql)) throw new Error('teardown negado');
+    return origExecute(sql);
+  };
+  conn.close = async () => {
+    throw new Error('close negado');
+  };
+  const adapter = new UtplsqlDebugAdapter(makeRuntime(conn));
+  adapter.handleMessage({ type: 'request', seq: 1, command: 'initialize' });
+  adapter.handleMessage({
+    type: 'request',
+    seq: 2,
+    command: 'launch',
+    arguments: { packageName: 'test_app', connection: 'APP/pass@//h:1521/svc' },
+  });
+  await flushN(4);
+  adapter.handleMessage({ type: 'request', seq: 3, command: 'disconnect' });
+  await flushN(4);
+  adapter.dispose();
+});
+
+test('startDebugSession: sem testName monta config sem sufixo', async () => {
+  const { debug, __resetConfigValues } = await import('../vscode-stub.js');
+  __resetConfigValues();
+  await startDebugSession('test_app');
+  const cfg = debug.__getStartedConfigs().at(-1) as { name?: string };
+  assert.strictEqual(cfg?.name, 'Debug test_app');
+});

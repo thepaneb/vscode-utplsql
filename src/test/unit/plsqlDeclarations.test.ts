@@ -106,3 +106,13 @@ test('deriveDeclarationCoverage: arquivo sem declaracoes retorna []', () => {
   const cov = deriveDeclarationCoverage('SELECT 1 FROM dual;', [{ line: 1, hits: 5 }]);
   assert.deepStrictEqual(cov, []);
 });
+
+test('parsePlsqlDeclarations: string multilinha preserva quebras no masking', () => {
+  const text = `PROCEDURE p IS
+  v := 'linha1
+linha2';
+BEGIN NULL; END;`;
+  const decls = parsePlsqlDeclarations(text);
+  assert.strictEqual(decls.length, 1);
+  assert.strictEqual(decls[0].name, 'p');
+});

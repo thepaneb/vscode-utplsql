@@ -155,3 +155,18 @@ test('isInvocationError discrimina Spawn de InvocationError', () => {
   assert.strictEqual(isInvocationError({ file: 'java', args: [], shell: false }), false);
   assert.strictEqual(isInvocationError({ error: 'x' }), true);
 });
+
+test('buildInvocation: javaPath vazio cai para "java"', () => {
+  const inv = buildInvocation(
+    {
+      invocation: 'java',
+      cliPath: 'C:\\cli\\bin\\utplsql.bat',
+      javaPath: '',
+      javaArgs: ['-Xmx256m'],
+      cliHome: 'C:\\cli',
+    },
+    ['run'],
+  );
+  assert.ok(!isInvocationError(inv));
+  if (!isInvocationError(inv)) assert.strictEqual(inv.file, 'java');
+});

@@ -194,3 +194,32 @@ test('DecorationManager: desabilitado via config nao aplica', () => {
 
   __setVisibleEditors([]);
 });
+
+test('DecorationManager: item sem range e ignorado', () => {
+  __setConfigValue('decorations.enabled', true);
+  const mgr = new DecorationManager();
+  const itemNoRange: any = {
+    id: 'test:no.range',
+    label: 'nr',
+    uri: vscode.Uri.file('/x.pks'),
+    children: new Map(),
+  };
+  const itemNoUri: any = {
+    id: 'test:no.uri',
+    label: 'nu',
+    range: new vscode.Range(1, 0, 1, 0),
+    children: new Map(),
+  };
+  const controller = {
+    items: new Map([
+      ['test:no.range', itemNoRange],
+      ['test:no.uri', itemNoUri],
+    ]),
+  };
+  const resultMap = new Map([
+    ['test:no.range', { status: 'failed' }],
+    ['test:no.uri', { status: 'failed' }],
+  ]);
+  mgr.update(resultMap, controller as any);
+  assert.strictEqual(mgr.hasResults(), false);
+});

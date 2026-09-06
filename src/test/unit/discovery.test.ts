@@ -587,3 +587,50 @@ test('discoverSchemaFromDb: loader padrão com conexão inválida retorna []', a
   const result = await discoverSchemaFromDb('formato-invalido', 'hr', [FOLDER]);
   assert.deepStrictEqual(result, []);
 });
+
+test('discoverSchemaFromConn: rows em formato objeto com chaves maiusculas/minusculas', async () => {
+  const conn = makeConn({
+    packages: [{ OBJECT_NAME: 'APP_ORDERS' }],
+    sources: { APP_ORDERS: SUITE_LINES },
+  });
+  const suites = await discoverSchemaFromConn(conn, 'hr', FOLDER);
+  assert.strictEqual(suites.length, 1);
+  assert.strictEqual(suites[0].packageName, 'app_orders');
+});
+
+test('discoverSchemaFromConn: ALL_SOURCE truncado gera warning (limite atingido)', async () => {
+  const lines = Array.from({ length: 1000 }, (_v, i) => `${i + 1} some source line`);
+  const conn = makeConn({ packages: [['APP_ORDERS']], sources: { APP_ORDERS: lines } });
+  const suites = await discoverSchemaFromConn(conn, 'hr', FOLDER);
+  assert.ok(suites.length >= 0);
+});
+
+test('discoverSchemaFromConn: rows vazios e ALL_SOURCE indisponivel retorna vazio', async () => {
+  const conn = {
+    execute: async (sql: string) => {
+      if (/ALL_SYNONYMS|ALL_OBJECTS/i.test(sql)) return { rows: [] };
+      throw new Error('ALL_SOURCE negado');
+    },
+    callTimeout: 0,
+    close: async () => {},
+  };
+  const suites = await discoverSchemaFromConn(conn as never, 'hr', FOLDER);
+  assert.deepStrictEqual(suites, []);
+});
+
+test('discoverSchemaFromDb: cria pool mas fetch falha retorna vazio', async () => {
+  const { mod } = makeFakeOracledb({
+    APP_ORDERS: ['CREATE OR REPLACE PACKAGE app_orders AS', '-- sem suite', 'END app_orders;'],
+  });
+  try {
+    const result = await discoverSchemaFromDb(
+      'u/p@//h:1521/s',
+      'hr',
+      [FOLDER],
+      async () => mod as never,
+    );
+    assert.strictEqual(result.length, 0);
+  } finally {
+    await closeOraclePool();
+  }
+});

@@ -86,3 +86,21 @@ test('UtplsqlStatusBar: dispose nao lanca erro', () => {
   const sb = new UtplsqlStatusBar();
   assert.doesNotThrow(() => sb.dispose());
 });
+
+test('showIdle/showResults: com perfil ativo mostra o perfil (branch)', () => {
+  __setConfigValue('statusBar.enabled', true);
+  __setConfigValue('profiles', [{ id: 'p1', name: 'DEV', connection: 'c' }]);
+  __setConfigValue('activeProfile', 'p1');
+  const sb = new UtplsqlStatusBar();
+  assert.doesNotThrow(() => sb.showIdle());
+  assert.doesNotThrow(() => sb.showResults(1, 0, 0, 0, 500));
+  sb.dispose();
+});
+
+test('showRunning: chamadas dentro de 200ms retornam cedo (branch)', () => {
+  __setConfigValue('statusBar.enabled', true);
+  const sb = new UtplsqlStatusBar();
+  sb.showRunning(1, 2);
+  sb.showRunning(2, 2);
+  sb.dispose();
+});

@@ -267,3 +267,54 @@ test('importFromSqlDeveloper: sem connections.xml retorna []', async () => {
     else process.env.APPDATA = origAppdata;
   }
 });
+
+test('parseSqlDevConnections: Reference sem name é ignorado', () => {
+  const xml = `<Reference userName="scott" password="t">
+    <StringRefAddr addrType="hostname">h</StringRefAddr>
+  </Reference>`;
+  assert.deepStrictEqual(parseSqlDevConnections(xml), []);
+});
+
+test('parseSqlDevConnections: host sem porta/serviço usa vazio', () => {
+  const xml = `<Reference name="X" userName="u" password="p">
+    <StringRefAddr addrType="hostname">h</StringRefAddr>
+  </Reference>`;
+  const ps = parseSqlDevConnections(xml);
+  assert.strictEqual(ps[0].connection, 'u/p@h:/');
+});
+
+test('findSqlDevConnectionsPath: sem system dirs retorna undefined', () => {
+  const base = fs.mkdtempSync(path.join(os.tmpdir(), 'sqldev-none-'));
+  try {
+    fs.mkdirSync(path.join(base, 'not-system'));
+    assert.strictEqual(findSqlDevConnectionsPath([base]), undefined);
+  } finally {
+    fs.rmSync(base, { recursive: true, force: true });
+  }
+});
+
+test('activeProfileName: sem perfil ativo retorna undefined', () => {
+  __resetConfigValues();
+  const { activeProfileName } = require('../../connectionProfiles.js');
+  assert.strictEqual(activeProfileName(), undefined);
+});
+
+test('mergeProfileConfig: perfil com coverageSourceArgs/arrays usa os do perfil', () => {
+  const global = makeGlobal();
+  const profile: ConnectionProfile = {
+    id: 'p1',
+    name: 'DEV',
+    connection: 'c',
+    coverageSourceArgs: ['-a=1'],
+    includePatterns: ['**/*.pks'],
+    extraRunArgs: ['-D'],
+    cliPath: 'C:\\cli.bat',
+    cliHome: 'C:\\cli',
+  };
+  const merged = mergeProfileConfig(global, profile);
+  assert.deepStrictEqual(merged.coverageSourceArgs, ['-a=1']);
+  assert.deepStrictEqual(merged.includePatterns, ['**/*.pks']);
+  assert.deepStrictEqual(merged.extraRunArgs, ['-D']);
+  assert.strictEqual(merged.cliPath, 'C:\\cli.bat');
+  assert.strictEqual(merged.cliHome, 'C:\\cli');
+});

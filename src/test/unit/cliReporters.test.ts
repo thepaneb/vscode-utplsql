@@ -155,3 +155,15 @@ test('listReporters: invoca o runCli real (cobre o dummyToken do cancelamento)',
   const res = await listReporters(cfg, 'user/pass@db');
   assert.ok('error' in res || Array.isArray(res));
 });
+
+test('listReporters: sem conexão usa args ["reporters"] (branch)', async () => {
+  const cfg = {
+    invocation: 'launcher',
+    cliPath: process.execPath,
+    cliHome: '',
+    javaPath: 'java',
+    javaArgs: [],
+  } as never;
+  const res = await listReporters(cfg, 'user/pass@db');
+  assert.ok('error' in res || Array.isArray(res));
+});

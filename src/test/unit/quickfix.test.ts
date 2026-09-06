@@ -420,3 +420,37 @@ test('dispose: nao quebra', () => {
   const v = new SetupValidator();
   assert.doesNotThrow(() => v.dispose());
 });
+
+test('recompileUt3: oracledb override falha mostra oracledbMissing', async () =>
+  withConnEnv(async () => {
+    __resetConfigValues();
+    const v = new SetupValidator();
+    await assert.doesNotReject(() =>
+      v.recompileUt3((() => {
+        throw new Error('oracledb not found');
+      }) as any),
+    );
+  }));
+
+test('recompileUt3: erro não-Error é stringificado no recompileFail', async () =>
+  withConnEnv(async () => {
+    __resetConfigValues();
+    const v = new SetupValidator();
+    const fake = {
+      getConnection: async () => {
+        throw 'conexao crua';
+      },
+      createPool: async () => {
+        throw 'pool cru';
+      },
+    };
+    await assert.doesNotReject(() => v.recompileUt3(fake as any));
+  }));
+
+test('recompileUt3: removeDiagnostic com coleção vazia retorna cedo', async () =>
+  withConnEnv(async () => {
+    __resetConfigValues();
+    const v = new SetupValidator();
+    const fake = makeFakeOracledb({ rows: [] });
+    await assert.doesNotReject(() => v.recompileUt3(fake as any));
+  }));

@@ -6,6 +6,7 @@ import * as path from 'node:path';
 import { mock, test } from 'node:test';
 import * as cli from '../../cli';
 import * as cliInfo from '../../cliInfo';
+import * as cliReporters from '../../cliReporters';
 import type { TestCaseResult } from '../../junit';
 import * as oracleRunner from '../../oracleRunner';
 import { applyCoverage, applyResults, countResults, executeRun, lastSegment } from '../../runner';
@@ -671,3 +672,343 @@ test('executeRun: sem conexao mostra erro e retorna', async () =>
     },
     { noConn: true },
   ));
+
+test('executeRun: include de teste único seta lastRun type test', async () =>
+  withExecEnv(async () => {
+    const { state, testItem } = makeExecState();
+    const run = new vscode.TestRun();
+    const controller = { createTestRun: () => run, items: { forEach: () => {} } } as any;
+    const request = { include: [testItem] } as any;
+
+    mock.method(cliInfo, 'getCliInfo', async () => ({ cliVersion: '3.2.3', apiVersion: '3.2.3' }));
+    mock.method(oracleRunner, 'executeRunOracle', async () => {
+      throw new Error('sem oracle');
+    });
+    mock.method(cli, 'runCli', async (_file: string, args: string[]) => {
+      const o = args.find((a) => a.startsWith('-o='));
+      fs.writeFileSync(String(o).slice(3), JUNIT_OK);
+      return { code: 0, stdout: '', stderr: '' };
+    });
+
+    await executeRun(controller, request, NEVER_TOKEN as any, false, state);
+    assert.strictEqual(run.passedCount(), 1);
+    assert.strictEqual(state.getLastRun()?.type, 'test');
+  }));
+
+test('executeRun: include múltiplo seta lastRun type file', async () =>
+  withExecEnv(async () => {
+    const { state, suiteItem, testItem } = makeExecState();
+    const run = new vscode.TestRun();
+    const controller = { createTestRun: () => run, items: { forEach: () => {} } } as any;
+    const request = { include: [suiteItem, testItem] } as any;
+
+    mock.method(cliInfo, 'getCliInfo', async () => ({ cliVersion: '3.2.3', apiVersion: '3.2.3' }));
+    mock.method(oracleRunner, 'executeRunOracle', async () => {
+      throw new Error('sem oracle');
+    });
+    mock.method(cli, 'runCli', async (_file: string, args: string[]) => {
+      const o = args.find((a) => a.startsWith('-o='));
+      fs.writeFileSync(String(o).slice(3), JUNIT_OK);
+      return { code: 0, stdout: '', stderr: '' };
+    });
+
+    await executeRun(controller, request, NEVER_TOKEN as any, false, state);
+    assert.strictEqual(state.getLastRun()?.type, 'file');
+  }));
+
+test('executeRun: sem include roda "all" via controller.items', async () =>
+  withExecEnv(async () => {
+    const { state, suiteItem } = makeExecState();
+    const run = new vscode.TestRun();
+    const controller = {
+      createTestRun: () => run,
+      items: { forEach: (cb: (i: any) => void) => [suiteItem].forEach(cb) },
+    } as any;
+
+    mock.method(cliInfo, 'getCliInfo', async () => ({ cliVersion: '3.2.3', apiVersion: '3.2.3' }));
+    mock.method(oracleRunner, 'executeRunOracle', async () => {
+      throw new Error('sem oracle');
+    });
+    mock.method(cli, 'runCli', async (_file: string, args: string[]) => {
+      const o = args.find((a) => a.startsWith('-o='));
+      fs.writeFileSync(String(o).slice(3), JUNIT_OK);
+      return { code: 0, stdout: '', stderr: '' };
+    });
+
+    await executeRun(controller, {} as any, NEVER_TOKEN as any, false, state);
+    assert.strictEqual(run.passedCount(), 1);
+    assert.strictEqual(state.getLastRun()?.type, 'all');
+  }));
+
+test('executeRun: info com db antigo mostra aviso de versão', async () =>
+  withExecEnv(async () => {
+    const { state, suiteItem } = makeExecState();
+    const run = new vscode.TestRun();
+    const controller = { createTestRun: () => run, items: { forEach: () => {} } } as any;
+    const request = { include: [suiteItem] } as any;
+
+    mock.method(cliInfo, 'getCliInfo', async () => ({
+      cliVersion: '3.2.3',
+      apiVersion: '3.2.3',
+      dbVersion: '3.0.9',
+    }));
+    mock.method(oracleRunner, 'executeRunOracle', async () => {
+      throw new Error('sem oracle');
+    });
+    mock.method(cli, 'runCli', async (_file: string, args: string[]) => {
+      const o = args.find((a) => a.startsWith('-o='));
+      fs.writeFileSync(String(o).slice(3), JUNIT_OK);
+      return { code: 0, stdout: '', stderr: '' };
+    });
+
+    await executeRun(controller, request, NEVER_TOKEN as any, false, state);
+    assert.match(run.output(), /anterior a 3\.1\.0/);
+  }));
+
+test('executeRun: erro oracle não-Error é stringificado', async () =>
+  withExecEnv(async () => {
+    const { state, suiteItem } = makeExecState();
+    const run = new vscode.TestRun();
+    const controller = { createTestRun: () => run, items: { forEach: () => {} } } as any;
+    const request = { include: [suiteItem] } as any;
+
+    const { __setConfigValue } = await import('../vscode-stub.js');
+    __setConfigValue('runnerMode', 'oracle');
+    mock.method(cliInfo, 'getCliInfo', async () => ({ cliVersion: '3.2.3', apiVersion: '3.2.3' }));
+    mock.method(oracleRunner, 'executeRunOracle', async () => {
+      throw 'mensagem crua';
+    });
+
+    await executeRun(controller, request, NEVER_TOKEN as any, false, state);
+    assert.match(run.output(), /mensagem crua/);
+  }));
+
+test('executeRun: extraReporter adiciona -f ao CLI', async () =>
+  withExecEnv(async () => {
+    const { state, suiteItem } = makeExecState();
+    state.setExtraReporter('ut_custom');
+    const run = new vscode.TestRun();
+    const controller = { createTestRun: () => run, items: { forEach: () => {} } } as any;
+    const request = { include: [suiteItem] } as any;
+
+    mock.method(cliInfo, 'getCliInfo', async () => ({ cliVersion: '3.2.3', apiVersion: '3.2.3' }));
+    mock.method(oracleRunner, 'executeRunOracle', async () => {
+      throw new Error('sem oracle');
+    });
+    mock.method(cli, 'runCli', async (_file: string, args: string[]) => {
+      assert.ok(args.includes('-f=ut_custom'), 'deveria incluir -f=ut_custom');
+      const o = args.find((a) => a.startsWith('-o='));
+      fs.writeFileSync(String(o).slice(3), JUNIT_OK);
+      return { code: 0, stdout: '', stderr: '' };
+    });
+
+    await executeRun(controller, request, NEVER_TOKEN as any, false, state);
+    assert.strictEqual(run.passedCount(), 1);
+  }));
+
+test('executeRun: coverage true chama applyCoverage', async () =>
+  withExecEnv(async () => {
+    const { state, suiteItem } = makeExecState();
+    const run = new vscode.TestRun();
+    const controller = { createTestRun: () => run, items: { forEach: () => {} } } as any;
+    const request = { include: [suiteItem] } as any;
+
+    const { __setConfigValue } = await import('../vscode-stub.js');
+    __setConfigValue('sqlCoverageEnabled', false);
+    mock.method(cliInfo, 'getCliInfo', async () => ({ cliVersion: '3.2.3', apiVersion: '3.2.3' }));
+    mock.method(oracleRunner, 'executeRunOracle', async () => {
+      throw new Error('sem oracle');
+    });
+    mock.method(cli, 'runCli', async (_file: string, args: string[]) => {
+      const o = args.find((a) => a.startsWith('-o='));
+      fs.writeFileSync(String(o).slice(3), JUNIT_OK);
+      return { code: 0, stdout: '', stderr: '' };
+    });
+
+    await executeRun(controller, request, NEVER_TOKEN as any, true, state);
+    assert.strictEqual(run.passedCount(), 1);
+    assert.match(run.output(), /com cobertura/);
+  }));
+
+test('executeRun: additionalReporters filtra built-in e adiciona custom', async () =>
+  withExecEnv(async () => {
+    const { state, suiteItem } = makeExecState();
+    const run = new vscode.TestRun();
+    const controller = { createTestRun: () => run, items: { forEach: () => {} } } as any;
+    const request = { include: [suiteItem] } as any;
+
+    const { __setConfigValue } = await import('../vscode-stub.js');
+    __setConfigValue('additionalReporters', ['UT_JUNIT_REPORTER', 'ut_custom']);
+    __setConfigValue('timeoutMinutes', 30);
+    __setConfigValue('dbmsOutput', true);
+    mock.method(cliInfo, 'getCliInfo', async () => ({ cliVersion: '3.2.3', apiVersion: '3.2.3' }));
+    mock.method(oracleRunner, 'executeRunOracle', async () => {
+      throw new Error('sem oracle');
+    });
+    mock.method(cli, 'runCli', async (_file: string, args: string[]) => {
+      assert.ok(args.includes('-f=ut_custom'), 'custom reporter deveria ser adicionado');
+      assert.ok(!args.some((a) => a === '-f=UT_JUNIT_REPORTER'), 'built-in deveria ser filtrado');
+      assert.ok(args.includes('-t=30'), 'timeout deveria ser 30');
+      assert.ok(args.includes('-D'), 'dbmsOutput deveria adicionar -D');
+      const o = args.find((a) => a.startsWith('-o='));
+      fs.writeFileSync(String(o).slice(3), JUNIT_OK);
+      return { code: 0, stdout: '', stderr: '' };
+    });
+
+    await executeRun(controller, request, NEVER_TOKEN as any, false, state);
+    assert.strictEqual(run.passedCount(), 1);
+  }));
+
+test('executeRun: stderr gera diagnóstico de compilação', async () =>
+  withExecEnv(async () => {
+    const { state, suiteItem } = makeExecState();
+    const run = new vscode.TestRun();
+    const controller = { createTestRun: () => run, items: { forEach: () => {} } } as any;
+    const request = { include: [suiteItem] } as any;
+
+    const { __setConfigValue } = await import('../vscode-stub.js');
+    __setConfigValue('compilationDiagnosticsEnabled', true);
+    mock.method(cliInfo, 'getCliInfo', async () => ({ cliVersion: '3.2.3', apiVersion: '3.2.3' }));
+    mock.method(oracleRunner, 'executeRunOracle', async () => {
+      throw new Error('sem oracle');
+    });
+    mock.method(cli, 'runCli', async (_file: string, args: string[]) => {
+      const o = args.find((a) => a.startsWith('-o='));
+      fs.writeFileSync(String(o).slice(3), JUNIT_OK);
+      return { code: 0, stdout: '', stderr: 'PLS-00103: erro sintaxe' };
+    });
+
+    await executeRun(controller, request, NEVER_TOKEN as any, false, state);
+    assert.strictEqual(run.passedCount(), 1);
+    assert.match(run.output(), /PLS-00103/);
+  }));
+
+test('executeRun: erro de invocação do CLI é reportado', async () =>
+  withExecEnv(async () => {
+    const { state, suiteItem } = makeExecState();
+    const run = new vscode.TestRun();
+    const controller = { createTestRun: () => run, items: { forEach: () => {} } } as any;
+    const request = { include: [suiteItem] } as any;
+
+    const { __setConfigValue } = await import('../vscode-stub.js');
+    __setConfigValue('invocation', 'java');
+    __setConfigValue('javaPath', '');
+    mock.method(cliInfo, 'getCliInfo', async () => ({ cliVersion: '3.2.3', apiVersion: '3.2.3' }));
+    mock.method(oracleRunner, 'executeRunOracle', async () => {
+      throw new Error('sem oracle');
+    });
+    mock.method(cli, 'runCli', async () => ({ code: 0, stdout: '', stderr: '' }));
+
+    await executeRun(controller, request, NEVER_TOKEN as any, false, state);
+    assert.match(run.output(), /erro/i);
+  }));
+
+test('executeRun: coverage com listReporters com erro desabilita cobertura', async () =>
+  withExecEnv(async () => {
+    const { state, suiteItem } = makeExecState();
+    const run = new vscode.TestRun();
+    const controller = { createTestRun: () => run, items: { forEach: () => {} } } as any;
+    const request = { include: [suiteItem] } as any;
+
+    const { __setConfigValue } = await import('../vscode-stub.js');
+    __setConfigValue('sqlCoverageEnabled', false);
+    mock.method(cliInfo, 'getCliInfo', async () => ({ cliVersion: '3.2.3', apiVersion: '3.2.3' }));
+    mock.method(oracleRunner, 'executeRunOracle', async () => {
+      throw new Error('sem oracle');
+    });
+    mock.method(cli, 'runCli', async (_file: string, args: string[]) => {
+      const o = args.find((a) => a.startsWith('-o='));
+      fs.writeFileSync(String(o).slice(3), JUNIT_OK);
+      return { code: 0, stdout: '', stderr: '' };
+    });
+    mock.method(cliReporters, 'listReporters', async () => ({ error: 'falha' }));
+
+    await executeRun(controller, request, NEVER_TOKEN as any, true, state);
+    assert.match(run.output(), /cobertura.*desabilitada|reporterListFailed|cobertura/i);
+  }));
+
+test('executeRun: coverage sem reporter cobertura desabilita', async () =>
+  withExecEnv(async () => {
+    const { state, suiteItem } = makeExecState();
+    const run = new vscode.TestRun();
+    const controller = { createTestRun: () => run, items: { forEach: () => {} } } as any;
+    const request = { include: [suiteItem] } as any;
+
+    const { __setConfigValue } = await import('../vscode-stub.js');
+    __setConfigValue('sqlCoverageEnabled', false);
+    mock.method(cliInfo, 'getCliInfo', async () => ({ cliVersion: '3.2.3', apiVersion: '3.2.3' }));
+    mock.method(oracleRunner, 'executeRunOracle', async () => {
+      throw new Error('sem oracle');
+    });
+    mock.method(cli, 'runCli', async (_file: string, args: string[]) => {
+      const o = args.find((a) => a.startsWith('-o='));
+      fs.writeFileSync(String(o).slice(3), JUNIT_OK);
+      return { code: 0, stdout: '', stderr: '' };
+    });
+    mock.method(cliReporters, 'listReporters', async () => ['ut_documentation_reporter']);
+
+    await executeRun(controller, request, NEVER_TOKEN as any, true, state);
+    assert.match(run.output(), /reporter.*cobertura|cobertura/i);
+  }));
+
+test('executeRun: quiet, failureExitCode e extraRunArgs passam ao CLI', async () =>
+  withExecEnv(async () => {
+    const { state, suiteItem } = makeExecState();
+    const run = new vscode.TestRun();
+    const controller = { createTestRun: () => run, items: { forEach: () => {} } } as any;
+    const request = { include: [suiteItem] } as any;
+
+    const { __setConfigValue } = await import('../vscode-stub.js');
+    __setConfigValue('quiet', true);
+    __setConfigValue('failureExitCode', 3);
+    __setConfigValue('extraRunArgs', ['-Dcustom', '--foo=1']);
+    mock.method(cliInfo, 'getCliInfo', async () => ({ cliVersion: '3.2.3', apiVersion: '3.2.3' }));
+    mock.method(oracleRunner, 'executeRunOracle', async () => {
+      throw new Error('sem oracle');
+    });
+    mock.method(cli, 'runCli', async (_file: string, args: string[]) => {
+      assert.ok(args.includes('-q'), 'quiet deveria adicionar -q');
+      assert.ok(args.includes('--failure-exit-code=3'));
+      assert.ok(args.includes('-Dcustom'));
+      assert.ok(args.includes('--foo=1'));
+      const o = args.find((a) => a.startsWith('-o='));
+      fs.writeFileSync(String(o).slice(3), JUNIT_OK);
+      return { code: 0, stdout: '', stderr: '' };
+    });
+
+    await executeRun(controller, request, NEVER_TOKEN as any, false, state);
+    assert.strictEqual(run.passedCount(), 1);
+  }));
+
+test('executeRun: onComplete recebe contagens do JUnit', async () =>
+  withExecEnv(async () => {
+    const { state, suiteItem } = makeExecState();
+    const run = new vscode.TestRun();
+    const controller = { createTestRun: () => run, items: { forEach: () => {} } } as any;
+    const request = { include: [suiteItem] } as any;
+
+    mock.method(cliInfo, 'getCliInfo', async () => ({ cliVersion: '3.2.3', apiVersion: '3.2.3' }));
+    mock.method(oracleRunner, 'executeRunOracle', async () => {
+      throw new Error('sem oracle');
+    });
+    mock.method(cli, 'runCli', async (_file: string, args: string[]) => {
+      const o = args.find((a) => a.startsWith('-o='));
+      fs.writeFileSync(String(o).slice(3), JUNIT_OK);
+      return { code: 0, stdout: '', stderr: '' };
+    });
+
+    let complete: number[] | undefined;
+    await executeRun(
+      controller,
+      request,
+      NEVER_TOKEN as any,
+      false,
+      state,
+      undefined,
+      (p: number, f: number, s: number, e: number) => {
+        complete = [p, f, s, e];
+      },
+    );
+    assert.ok(complete, 'onComplete deveria ser chamado');
+    assert.deepStrictEqual(complete, [1, 0, 0, 0]);
+  }));

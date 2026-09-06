@@ -792,3 +792,185 @@ test('executeRunOracle: loader padrão com conexão inválida rejeita (loadOracl
     ),
   );
 });
+
+test('findInvalidUt3Objects: rows em formato objeto (OUT_FORMAT_OBJECT)', async () => {
+  const conn = {
+    callTimeout: 0,
+    execute: async (sql: string) => {
+      if (/ALL_SYNONYMS/i.test(sql)) return { rows: [{ TABLE_OWNER: 'UT3' }] };
+      return { rows: [{ OBJECT_NAME: 'UT_RUNNER', OBJECT_TYPE: 'PACKAGE' }] };
+    },
+    close: async () => {},
+  };
+  const mod = {
+    OUT_FORMAT_OBJECT: {},
+    createPool: async () => ({ getConnection: async () => conn, close: async () => {} }),
+    getConnection: async () => conn,
+  };
+  try {
+    const r = await findInvalidUt3Objects(mod as never, 'u/p@//h:1521/s', POOL_CFG);
+    assert.strictEqual(r?.invalid[0].name, 'UT_RUNNER');
+  } finally {
+    await closeOraclePool();
+  }
+});
+
+test('executeRunOracle: pathArgs vazio gera ut_varchar2_list() vazia', async () => {
+  const { mod } = makeOracleRunFake({ buffer: [JUNIT_XML] });
+  const run = makeRun() as any;
+  const { item, metaMap } = makeLeaf();
+  try {
+    await executeRunOracle(
+      {
+        connection: 'u/p@//h:1521/s',
+        pathArgs: [],
+        coverage: false,
+        sourcePath: 'install',
+        root: '/root',
+        run,
+        leafTests: [item as any],
+        state: makeOracleRunState(metaMap),
+      },
+      neverCancel as never,
+      async () => mod as never,
+    );
+  } finally {
+    await closeOraclePool();
+  }
+});
+
+test('executeRunOracle: rows com TEXT null são ignorados no poll', async () => {
+  let polled = 0;
+  const conn1 = {
+    callTimeout: 0,
+    execute: async (sql: string) => {
+      if (/ALL_SYNONYMS/.test(sql)) return { rows: [{ TABLE_OWNER: 'UT3' }] };
+      if (/DELETE FROM/.test(sql)) return {};
+      if (/ut_runner\.run/.test(sql)) {
+        await new Promise((r) => setTimeout(r, 300));
+        return {};
+      }
+      return {};
+    },
+    close: async () => {},
+    break: async () => {},
+  };
+  const conn2 = {
+    callTimeout: 0,
+    execute: async () => {
+      polled++;
+      if (polled === 1) return { rows: [{ MESSAGE_ID: 1, TEXT: null }] };
+      return { rows: [{ MESSAGE_ID: 2, TEXT: JUNIT_XML }] };
+    },
+    close: async () => {},
+    break: async () => {},
+  };
+  const mod = {
+    OUT_FORMAT_OBJECT: {},
+    createPool: async () => {
+      let i = 0;
+      return { getConnection: async () => (i++ === 0 ? conn1 : conn2), close: async () => {} };
+    },
+    getConnection: async () => conn1,
+  };
+  const run = makeRun() as any;
+  const { item, metaMap } = makeLeaf();
+  try {
+    await executeRunOracle(
+      {
+        connection: 'u/p@//h:1521/s',
+        pathArgs: ['pkg'],
+        coverage: false,
+        sourcePath: 'install',
+        root: '/root',
+        run,
+        leafTests: [item as any],
+        state: makeOracleRunState(metaMap),
+      },
+      neverCancel as never,
+      async () => mod as never,
+    );
+  } finally {
+    await closeOraclePool();
+  }
+  assert.strictEqual(run.passedList.length, 1);
+});
+
+test('findInvalidUt3Objects: objeto sem OBJECT_NAME usa vazio', async () => {
+  const conn = {
+    callTimeout: 0,
+    execute: async (sql: string) => {
+      if (/ALL_SYNONYMS/i.test(sql)) return { rows: [{ TABLE_OWNER: 'UT3' }] };
+      return { rows: [{}] };
+    },
+    close: async () => {},
+  };
+  const mod = {
+    OUT_FORMAT_OBJECT: {},
+    createPool: async () => ({ getConnection: async () => conn, close: async () => {} }),
+    getConnection: async () => conn,
+  };
+  try {
+    const r = await findInvalidUt3Objects(mod as never, 'u/p@//h:1521/s', POOL_CFG);
+    assert.strictEqual(r?.invalid[0].name, '');
+  } finally {
+    await closeOraclePool();
+  }
+});
+
+test('executeRunOracle: poll com erro em conn2 é ignorado', async () => {
+  let polled = 0;
+  const conn1 = {
+    callTimeout: 0,
+    execute: async (sql: string) => {
+      if (/ALL_SYNONYMS/.test(sql)) return { rows: [{ TABLE_OWNER: 'UT3' }] };
+      if (/DELETE FROM/.test(sql)) return {};
+      if (/ut_runner\.run/.test(sql)) {
+        await new Promise((r) => setTimeout(r, 300));
+        return {};
+      }
+      return {};
+    },
+    close: async () => {},
+    break: async () => {},
+  };
+  const conn2 = {
+    callTimeout: 0,
+    execute: async () => {
+      polled++;
+      if (polled === 1) throw new Error('poll temporario');
+      return { rows: [{ MESSAGE_ID: 1, TEXT: JUNIT_XML }] };
+    },
+    close: async () => {},
+    break: async () => {},
+  };
+  const mod = {
+    OUT_FORMAT_OBJECT: {},
+    createPool: async () => {
+      let i = 0;
+      return { getConnection: async () => (i++ === 0 ? conn1 : conn2), close: async () => {} };
+    },
+    getConnection: async () => conn1,
+  };
+  const run = makeRun() as any;
+  const { item, metaMap } = makeLeaf();
+  try {
+    await executeRunOracle(
+      {
+        connection: 'u/p@//h:1521/s',
+        pathArgs: ['pkg'],
+        coverage: false,
+        sourcePath: 'install',
+        root: '/root',
+        run,
+        leafTests: [item as any],
+        state: makeOracleRunState(metaMap),
+      },
+      neverCancel as never,
+      async () => mod as never,
+    );
+  } finally {
+    await closeOraclePool();
+  }
+  assert.strictEqual(run.passedList.length, 1);
+});

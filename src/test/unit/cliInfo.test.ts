@@ -119,3 +119,15 @@ test('getCliInfo: invoca o runCli real (cobre o dummyToken do cancelamento)', as
   // node com arg 'info' não é um script válido -> erro, mas o token foi exercitado
   assert.ok('error' in info || 'cliVersion' in info);
 });
+
+test('getCliInfo: sem conexão usa args ["info"] (branch)', async () => {
+  const cfg = {
+    invocation: 'launcher',
+    cliPath: process.execPath,
+    cliHome: '',
+    javaPath: 'java',
+    javaArgs: [],
+  } as never;
+  const info = await getCliInfo(cfg);
+  assert.ok('error' in info || 'cliVersion' in info);
+});

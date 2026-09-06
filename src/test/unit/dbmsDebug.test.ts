@@ -6,6 +6,7 @@ import {
   DbmsDebugClient,
   type DebugConnection,
   parseBreakpointTarget,
+  parseProceedStatus,
 } from '../../dbmsDebug';
 
 function makeConn(
@@ -115,4 +116,79 @@ test('checkDebugAccess: acesso ok retorna true; erro retorna false', async () =>
 test('parseBreakpointTarget: extrai owner/unit do caminho', () => {
   const t = parseBreakpointTarget('/ws/install/packages/test_app.pkb', 'DEV');
   assert.deepStrictEqual(t, { owner: 'DEV', unit: 'test_app', line: 0 });
+});
+
+test('parseProceedStatus: valor não numérico retorna unknown', () => {
+  assert.strictEqual(parseProceedStatus('abc'), 'unknown');
+  assert.strictEqual(parseProceedStatus(null), 'unknown');
+});
+
+test('dbmsDebugClient: statuses no_break/attaching/killed/unknown', async () => {
+  const statuses = { no_break: 1, attaching: 3, killed: 4, unknown: 99 };
+  for (const [expected, code] of Object.entries(statuses)) {
+    const { conn } = makeConn(async () => ({ outBinds: { status: code } }));
+    const client = new DbmsDebugClient(conn);
+    assert.strictEqual(await client.stepOver(), expected);
+  }
+});
+
+test('dbmsDebugClient: debugOn sem outBinds retorna vazio', async () => {
+  const { conn } = makeConn(async () => ({}));
+  const client = new DbmsDebugClient(conn);
+  assert.strictEqual(await client.debugOn(), '');
+});
+
+test('dbmsDebugClient: getRuntimeFrame sem outBinds usa anonymous/linha 1', async () => {
+  const { conn } = makeConn(async () => ({}));
+  const client = new DbmsDebugClient(conn);
+  const frame = await client.getRuntimeFrame(3);
+  assert.deepStrictEqual(frame, { name: 'anonymous', line: 1, frameId: 3 });
+});
+
+test('dbmsDebugClient: getVariables com rows em formato objeto', async () => {
+  const { conn } = makeConn(async () => ({
+    rows: [{ NAME: 'x', VAL: '1', TYPE: 'NUMBER' }],
+  }));
+  const client = new DbmsDebugClient(conn);
+  const vars = await client.getVariables();
+  assert.deepStrictEqual(vars, [{ name: 'x', value: '1', type: 'NUMBER' }]);
+});
+
+test('dbmsDebugClient: getVariables com val/type ausentes usa vazio', async () => {
+  const { conn } = makeConn(async () => ({
+    rows: [['x', null, null]],
+  }));
+  const client = new DbmsDebugClient(conn);
+  const vars = await client.getVariables();
+  assert.deepStrictEqual(vars, [{ name: 'x', value: '', type: '' }]);
+});
+
+test('parseBreakpointTarget: extensão desconhecida mantém o nome', () => {
+  const t = parseBreakpointTarget('/x/foo.txt', 'S');
+  assert.strictEqual(t.unit, 'foo.txt');
+});
+
+test('dbmsDebugClient: steps sem outBinds retornam unknown (?? {})', async () => {
+  const { conn } = makeConn(async () => ({}));
+  const client = new DbmsDebugClient(conn);
+  assert.strictEqual(await client.stepInto(), 'unknown');
+  assert.strictEqual(await client.stepOver(), 'unknown');
+  assert.strictEqual(await client.stepOut(), 'unknown');
+  assert.strictEqual(await client.continueRun(), 'unknown');
+  assert.strictEqual(await client.synchronize(), 'unknown');
+});
+
+test('dbmsDebugClient: getVariables sem rows retorna vazio', async () => {
+  const { conn } = makeConn(async () => ({}));
+  const client = new DbmsDebugClient(conn);
+  assert.deepStrictEqual(await client.getVariables(), []);
+});
+
+test('dbmsDebugClient: getVariables com objeto sem VAL usa vazio', async () => {
+  const { conn } = makeConn(async () => ({
+    rows: [{ NAME: 'x', TYPE: 'NUMBER' }],
+  }));
+  const client = new DbmsDebugClient(conn);
+  const vars = await client.getVariables();
+  assert.deepStrictEqual(vars, [{ name: 'x', value: '', type: 'NUMBER' }]);
 });

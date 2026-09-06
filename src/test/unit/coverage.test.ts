@@ -117,3 +117,17 @@ test('resolveSourceUri: caminho absoluto fora da raiz retorna undefined', () => 
     }
   });
 });
+
+test('resolveSourceUri: file vazio cobre o branch rc === rb', () => {
+  withTempDir((dir) => {
+    const uri = resolveSourceUri('', dir, 'install');
+    assert.strictEqual(uri, undefined);
+  });
+});
+
+test('resolveSourceUri: path inválido (estat lança) é ignorado no catch', () => {
+  withTempDir((dir) => {
+    const uri = resolveSourceUri('\u0000', dir, 'install');
+    assert.strictEqual(uri, undefined);
+  });
+});
