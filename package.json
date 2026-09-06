@@ -332,6 +332,7 @@
             "auto",
             "pt-br",
             "en",
+            "en-gb",
             "es",
             "zh-cn",
             "zh-tw",
@@ -344,10 +345,18 @@
             "tr",
             "pl",
             "cs",
-            "hu"
+            "hu",
+            "bg",
+            "el",
+            "id",
+            "ro",
+            "sr",
+            "th",
+            "uk",
+            "vi"
           ],
           "default": "auto",
-          "markdownDescription": "Idioma dos conteúdos textuais da extensão. `auto` segue o idioma do VSCode (pt, es, zh-cn/zh-tw, ja, de, fr, it, ko, ru, tr, pl, cs, hu; senão en)."
+          "markdownDescription": "Idioma dos conteúdos textuais da extensão. `auto` segue o idioma do VSCode (15 nativos + bg, el, en-gb, id, ro, sr, th, uk, vi; senão en)."
         }
       }
     },

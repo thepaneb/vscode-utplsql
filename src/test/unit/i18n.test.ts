@@ -2,12 +2,16 @@ import './setup.js';
 import assert from 'node:assert';
 import { test } from 'node:test';
 import {
+  bg,
   cs,
   de,
+  el,
   en,
+  enGb,
   es,
   fr,
   hu,
+  id,
   it,
   ja,
   ko,
@@ -15,12 +19,43 @@ import {
   pl,
   ptBr,
   resolveLocale,
+  ro,
   ru,
+  sr,
   t,
+  th,
   tr,
+  uk,
+  vi,
   zhCn,
   zhTw,
 } from '../../i18n';
+
+const ALL_CATALOGS: [string, Record<string, string>][] = [
+  ['en', en],
+  ['en-gb', enGb],
+  ['es', es],
+  ['zh-cn', zhCn],
+  ['zh-tw', zhTw],
+  ['ja', ja],
+  ['de', de],
+  ['fr', fr],
+  ['it', it],
+  ['ko', ko],
+  ['ru', ru],
+  ['tr', tr],
+  ['pl', pl],
+  ['cs', cs],
+  ['hu', hu],
+  ['bg', bg],
+  ['el', el],
+  ['id', id],
+  ['ro', ro],
+  ['sr', sr],
+  ['th', th],
+  ['uk', uk],
+  ['vi', vi],
+];
 
 test('resolveLocale: auto com editor pt -> pt-br', () => {
   assert.strictEqual(resolveLocale('auto', 'pt-BR'), 'pt-br');
@@ -48,6 +83,15 @@ test('resolveLocale: auto detecta os idiomas suportados', () => {
   assert.strictEqual(resolveLocale('auto', 'pl'), 'pl');
   assert.strictEqual(resolveLocale('auto', 'cs'), 'cs');
   assert.strictEqual(resolveLocale('auto', 'hu'), 'hu');
+  assert.strictEqual(resolveLocale('auto', 'bg'), 'bg');
+  assert.strictEqual(resolveLocale('auto', 'el'), 'el');
+  assert.strictEqual(resolveLocale('auto', 'id'), 'id');
+  assert.strictEqual(resolveLocale('auto', 'ro'), 'ro');
+  assert.strictEqual(resolveLocale('auto', 'sr'), 'sr');
+  assert.strictEqual(resolveLocale('auto', 'th'), 'th');
+  assert.strictEqual(resolveLocale('auto', 'uk'), 'uk');
+  assert.strictEqual(resolveLocale('auto', 'vi'), 'vi');
+  assert.strictEqual(resolveLocale('auto', 'en-GB'), 'en-gb');
 });
 
 test('resolveLocale: forçado ignora idioma do editor', () => {
@@ -61,6 +105,15 @@ test('resolveLocale: forçado ignora idioma do editor', () => {
   assert.strictEqual(resolveLocale('pl', 'en'), 'pl');
   assert.strictEqual(resolveLocale('cs', 'en'), 'cs');
   assert.strictEqual(resolveLocale('hu', 'en'), 'hu');
+  assert.strictEqual(resolveLocale('en-gb', 'en'), 'en-gb');
+  assert.strictEqual(resolveLocale('bg', 'en'), 'bg');
+  assert.strictEqual(resolveLocale('el', 'en'), 'el');
+  assert.strictEqual(resolveLocale('id', 'en'), 'id');
+  assert.strictEqual(resolveLocale('ro', 'en'), 'ro');
+  assert.strictEqual(resolveLocale('sr', 'en'), 'sr');
+  assert.strictEqual(resolveLocale('th', 'en'), 'th');
+  assert.strictEqual(resolveLocale('uk', 'en'), 'uk');
+  assert.strictEqual(resolveLocale('vi', 'en'), 'vi');
 });
 
 test('resolveLocale: valor invalido cai no auto', () => {
@@ -86,6 +139,15 @@ test('t: novos idiomas retornam suas traduções', () => {
   assert.strictEqual(t('pl', 'ext.noConnection'), 'Połączenie Oracle nie ustawione.');
   assert.strictEqual(t('cs', 'ext.noConnection'), 'Připojení Oracle není nastaveno.');
   assert.strictEqual(t('hu', 'ext.noConnection'), 'Oracle-kapcsolat nincs beállítva.');
+  assert.strictEqual(t('en-gb', 'ext.noConnection'), 'Oracle connection not set.');
+  assert.strictEqual(t('bg', 'ext.noConnection'), 'Oracle връзката не е зададена.');
+  assert.strictEqual(t('el', 'ext.noConnection'), 'Η σύνδεση Oracle δεν έχει οριστεί.');
+  assert.strictEqual(t('id', 'ext.noConnection'), 'Koneksi Oracle belum diatur.');
+  assert.strictEqual(t('ro', 'ext.noConnection'), 'Conexiunea Oracle nu este setată.');
+  assert.strictEqual(t('sr', 'ext.noConnection'), 'Oracle веза није подешена.');
+  assert.strictEqual(t('th', 'ext.noConnection'), 'ยังไม่ได้ตั้งค่าการเชื่อมต่อ Oracle');
+  assert.strictEqual(t('uk', 'ext.noConnection'), "З'єднання Oracle не вказано.");
+  assert.strictEqual(t('vi', 'ext.noConnection'), 'Chưa đặt kết nối Oracle.');
 });
 
 test('t: interpolacao parametrizada', () => {
@@ -121,28 +183,13 @@ test('t: placeholder nao fornecido permanece literal', () => {
 });
 
 test('paridade: todos os catálogos têm as mesmas chaves de pt-BR', () => {
-  for (const [name, cat] of [
-    ['en', en],
-    ['es', es],
-    ['zh-cn', zhCn],
-    ['zh-tw', zhTw],
-    ['ja', ja],
-    ['de', de],
-    ['fr', fr],
-    ['it', it],
-    ['ko', ko],
-    ['ru', ru],
-    ['tr', tr],
-    ['pl', pl],
-    ['cs', cs],
-    ['hu', hu],
-  ] as const) {
+  for (const [name, cat] of ALL_CATALOGS) {
     assert.deepStrictEqual(missingCatalogKeys(cat), [], `chaves ausentes em ${name}`);
   }
 });
 
 test('catalogos nao vazios', () => {
-  for (const cat of [ptBr, en, es, zhCn, zhTw, ja, de, fr, it, ko, ru, tr, pl, cs, hu]) {
+  for (const cat of [ptBr, ...ALL_CATALOGS.map(([, c]) => c)]) {
     assert.ok(Object.keys(cat).length > 90);
   }
 });

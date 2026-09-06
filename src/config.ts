@@ -41,6 +41,7 @@ export interface UtConfig {
     | 'auto'
     | 'pt-br'
     | 'en'
+    | 'en-gb'
     | 'es'
     | 'zh-cn'
     | 'zh-tw'
@@ -53,7 +54,15 @@ export interface UtConfig {
     | 'tr'
     | 'pl'
     | 'cs'
-    | 'hu';
+    | 'hu'
+    | 'bg'
+    | 'el'
+    | 'id'
+    | 'ro'
+    | 'sr'
+    | 'th'
+    | 'uk'
+    | 'vi';
 }
 
 /** Idioma efetivo das mensagens de runtime (setting + idioma do editor). */
@@ -104,6 +113,7 @@ export function readConfig(): UtConfig {
       | 'auto'
       | 'pt-br'
       | 'en'
+      | 'en-gb'
       | 'es'
       | 'zh-cn'
       | 'zh-tw'
@@ -117,6 +127,14 @@ export function readConfig(): UtConfig {
       | 'pl'
       | 'cs'
       | 'hu'
+      | 'bg'
+      | 'el'
+      | 'id'
+      | 'ro'
+      | 'sr'
+      | 'th'
+      | 'uk'
+      | 'vi'
     >('language', 'auto'),
   };
   return mergeProfileConfig(global, getActiveProfile());

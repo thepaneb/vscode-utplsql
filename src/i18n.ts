@@ -1,11 +1,37 @@
 // Motor i18n da extensão. PURO (sem 'vscode') — testável com node --test.
 // Catálogos em i18nLocales.ts. Chave ausente → pt-BR → a própria chave.
 
-import { cs, de, en, es, fr, hu, it, ja, ko, pl, ptBr, ru, tr, zhCn, zhTw } from './i18nLocales';
+import {
+  bg,
+  cs,
+  de,
+  el,
+  en,
+  enGb,
+  es,
+  fr,
+  hu,
+  id,
+  it,
+  ja,
+  ko,
+  pl,
+  ptBr,
+  ro,
+  ru,
+  sr,
+  th,
+  tr,
+  uk,
+  vi,
+  zhCn,
+  zhTw,
+} from './i18nLocales';
 
 export type ExtensionLocale =
   | 'pt-br'
   | 'en'
+  | 'en-gb'
   | 'es'
   | 'zh-cn'
   | 'zh-tw'
@@ -18,13 +44,47 @@ export type ExtensionLocale =
   | 'tr'
   | 'pl'
   | 'cs'
-  | 'hu';
+  | 'hu'
+  | 'bg'
+  | 'el'
+  | 'id'
+  | 'ro'
+  | 'sr'
+  | 'th'
+  | 'uk'
+  | 'vi';
 
-export { cs, de, en, es, fr, hu, it, ja, ko, pl, ptBr, ru, tr, zhCn, zhTw } from './i18nLocales';
+export {
+  bg,
+  cs,
+  de,
+  el,
+  en,
+  enGb,
+  es,
+  fr,
+  hu,
+  id,
+  it,
+  ja,
+  ko,
+  pl,
+  ptBr,
+  ro,
+  ru,
+  sr,
+  th,
+  tr,
+  uk,
+  vi,
+  zhCn,
+  zhTw,
+} from './i18nLocales';
 
 const catalogs: Record<ExtensionLocale, Record<string, string>> = {
   'pt-br': ptBr,
   en,
+  'en-gb': enGb,
   es,
   'zh-cn': zhCn,
   'zh-tw': zhTw,
@@ -38,6 +98,14 @@ const catalogs: Record<ExtensionLocale, Record<string, string>> = {
   pl,
   cs,
   hu,
+  bg,
+  el,
+  id,
+  ro,
+  sr,
+  th,
+  uk,
+  vi,
 };
 
 /** Chaves do catálogo base (pt-BR) ausentes em um catálogo alvo. */
@@ -63,6 +131,15 @@ export function resolveLocale(setting: string, vscodeLanguage: string): Extensio
   if (lang.startsWith('pl')) return 'pl';
   if (lang.startsWith('cs')) return 'cs';
   if (lang.startsWith('hu')) return 'hu';
+  if (lang.startsWith('bg')) return 'bg';
+  if (lang.startsWith('el')) return 'el';
+  if (lang.startsWith('id')) return 'id';
+  if (lang.startsWith('ro')) return 'ro';
+  if (lang.startsWith('sr')) return 'sr';
+  if (lang.startsWith('th')) return 'th';
+  if (lang.startsWith('uk')) return 'uk';
+  if (lang.startsWith('vi')) return 'vi';
+  if (lang === 'en-gb') return 'en-gb';
   return 'en';
 }
 
