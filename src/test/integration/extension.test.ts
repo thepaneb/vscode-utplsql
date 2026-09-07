@@ -319,7 +319,7 @@ describe('utPLSQL extension', () => {
             origPattern?.workspaceValue !== undefined ? origPattern.workspaceValue : undefined,
             vscode.ConfigurationTarget.Workspace,
           );
-          await vscode.workspace.fs.delete(schemaDir, { recursive: true });
+          await vscode.workspace.fs.delete(vscode.Uri.joinPath(root, 'db'), { recursive: true });
           await vscode.commands.executeCommand('utplsql.refresh');
         }
       });
