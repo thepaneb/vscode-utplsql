@@ -634,3 +634,18 @@ test('discoverSchemaFromDb: cria pool mas fetch falha retorna vazio', async () =
     await closeOraclePool();
   }
 });
+
+test('discoverWorkspace: arquivo duplicado entre padrões é deduplicado', async () => {
+  const { __setMockFile, __resetMockFiles } = await import('../vscode-stub.js');
+  const text =
+    'CREATE OR REPLACE PACKAGE test_app IS\n  --%suite(Testes)\n  --%test(Cenario)\n  PROCEDURE proc1;\nEND;';
+  __setMockFile('*.pks', '/root/test_app.pks', text);
+  __setMockFile('**/test_*.pks', '/root/test_app.pks', text);
+  try {
+    const folder = { uri: { fsPath: '/root' }, name: 'root', index: 0 };
+    const result = await discoverWorkspace(['*.pks', '**/test_*.pks'], [folder as any]);
+    assert.strictEqual(result.length, 1);
+  } finally {
+    __resetMockFiles();
+  }
+});

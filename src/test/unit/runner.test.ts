@@ -1012,3 +1012,36 @@ test('executeRun: onComplete recebe contagens do JUnit', async () =>
     assert.ok(complete, 'onComplete deveria ser chamado');
     assert.deepStrictEqual(complete, [1, 0, 0, 0]);
   }));
+
+test('executeRun: onSuiteStart é chamado para suites', async () =>
+  withExecEnv(async () => {
+    const { state, suiteItem } = makeExecState();
+    const run = new vscode.TestRun();
+    const controller = { createTestRun: () => run, items: { forEach: () => {} } } as any;
+    const request = { include: [suiteItem] } as any;
+
+    mock.method(cliInfo, 'getCliInfo', async () => ({ cliVersion: '3.2.3', apiVersion: '3.2.3' }));
+    mock.method(oracleRunner, 'executeRunOracle', async () => {
+      throw new Error('sem oracle');
+    });
+    mock.method(cli, 'runCli', async (_file: string, args: string[]) => {
+      const o = args.find((a) => a.startsWith('-o='));
+      fs.writeFileSync(String(o).slice(3), JUNIT_OK);
+      return { code: 0, stdout: '', stderr: '' };
+    });
+
+    let suiteStarts = 0;
+    await executeRun(
+      controller,
+      request,
+      NEVER_TOKEN as any,
+      false,
+      state,
+      () => {
+        suiteStarts++;
+      },
+      undefined,
+    );
+    assert.strictEqual(run.passedCount(), 1);
+    assert.strictEqual(suiteStarts, 1);
+  }));

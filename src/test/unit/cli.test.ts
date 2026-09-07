@@ -275,3 +275,18 @@ test('runCli: erro com stderr UTF-8 invalido nao quebra', async () => {
   assert.strictEqual(result.code, 1);
   assert.ok(result.stderr.length > 0);
 });
+
+test('runCli: segundo chunk inválido usa o fallback já configurado', async () => {
+  const result = await runCli(
+    process.execPath,
+    [
+      '-e',
+      'process.stdout.write(Buffer.from([0xff, 0xfe])); setTimeout(() => process.stdout.write(Buffer.from([0xff, 0x41])), 500);',
+    ],
+    false,
+    tmpCwd,
+    neverCancel,
+  );
+  assert.strictEqual(result.code, 0);
+  assert.ok(result.stdout.includes('A'), 'output deveria conter o byte valido final');
+});

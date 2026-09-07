@@ -223,3 +223,34 @@ test('DecorationManager: item sem range e ignorado', () => {
   mgr.update(resultMap, controller as any);
   assert.strictEqual(mgr.hasResults(), false);
 });
+
+test('DecorationManager: resultado para item inexistente é ignorado', () => {
+  __setConfigValue('decorations.enabled', true);
+  const mgr = new DecorationManager();
+  const controller = { items: new Map() };
+  const resultMap = new Map([['test:fantasma', { status: 'failed' }]]);
+  mgr.update(resultMap, controller as any);
+  assert.strictEqual(mgr.hasResults(), false);
+});
+
+test('DecorationManager: item aninhado (recursão) recebe resultado', () => {
+  __setConfigValue('decorations.enabled', true);
+  const mgr = new DecorationManager();
+  const uri = vscode.Uri.file('/test/math.pks');
+  const leaf: any = {
+    id: 'test:math.deep',
+    label: 'deep',
+    uri,
+    range: new vscode.Range(5, 0, 5, 0),
+    children: new Map(),
+  };
+  const top: any = {
+    id: 'suite:math',
+    label: 'math',
+    children: new Map([['test:math.deep', leaf]]),
+  };
+  const controller = { items: new Map([['suite:math', top]]) };
+  const resultMap = new Map([['test:math.deep', { status: 'passed' }]]);
+  mgr.update(resultMap, controller as any);
+  assert.strictEqual(mgr.hasResults(), true);
+});
