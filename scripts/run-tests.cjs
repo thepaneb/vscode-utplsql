@@ -32,5 +32,11 @@ if (testFiles.length === 0) {
 }
 
 const setupPath = path.join(__dirname, 'test-setup.cjs');
-const res = spawnSync('node', ['--require', setupPath, '--test', ...testFiles], { stdio: 'inherit' });
+// --experimental-test-module-mocks: necessário para mock.module() em
+// src/test/unit/oracledb-*-.test.ts (simula ausência/variação do driver).
+const res = spawnSync(
+  'node',
+  ['--experimental-test-module-mocks', '--require', setupPath, '--test', ...testFiles],
+  { stdio: 'inherit' },
+);
 process.exit(res.status ?? 0);

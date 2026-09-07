@@ -616,7 +616,7 @@
     "pretest:integration": "npm run compile && npm run bundle",
     "test:integration": "vscode-test",
     "test": "npm run test:unit",
-    "test:coverage": "npm run compile && c8 node --require ./scripts/test-setup.cjs --test out/test/unit/**/*.test.js",
+    "test:coverage": "npm run compile && c8 node --experimental-test-module-mocks --require ./scripts/test-setup.cjs --test out/test/unit/**/*.test.js",
     "bundle": "node esbuild.config.mjs",
     "package": "npm run compile && npm run bundle && vsce package",
     "gen-icon": "node scripts/gen-icon.cjs",
