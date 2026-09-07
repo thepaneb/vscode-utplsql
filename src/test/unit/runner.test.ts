@@ -633,7 +633,7 @@ test('executeRun: info do CLI indisponivel nao bloqueia a execucao', async () =>
     mock.method(cliInfo, 'getCliInfo', async () => ({ error: 'cli quebrado' }));
     mock.method(cli, 'runCli', async (_file: string, args: string[]) => {
       const o = args.find((a) => a.startsWith('-o='));
-      fs.writeFileSync(String(o).slice(3), JUNIT_OK);
+      if (o) fs.writeFileSync(String(o).slice(3), JUNIT_OK);
       return { code: 0, stdout: '', stderr: '' };
     });
 
@@ -686,7 +686,7 @@ test('executeRun: include de teste único seta lastRun type test', async () =>
     });
     mock.method(cli, 'runCli', async (_file: string, args: string[]) => {
       const o = args.find((a) => a.startsWith('-o='));
-      fs.writeFileSync(String(o).slice(3), JUNIT_OK);
+      if (o) fs.writeFileSync(String(o).slice(3), JUNIT_OK);
       return { code: 0, stdout: '', stderr: '' };
     });
 
@@ -708,7 +708,7 @@ test('executeRun: include múltiplo seta lastRun type file', async () =>
     });
     mock.method(cli, 'runCli', async (_file: string, args: string[]) => {
       const o = args.find((a) => a.startsWith('-o='));
-      fs.writeFileSync(String(o).slice(3), JUNIT_OK);
+      if (o) fs.writeFileSync(String(o).slice(3), JUNIT_OK);
       return { code: 0, stdout: '', stderr: '' };
     });
 
@@ -731,7 +731,7 @@ test('executeRun: sem include roda "all" via controller.items', async () =>
     });
     mock.method(cli, 'runCli', async (_file: string, args: string[]) => {
       const o = args.find((a) => a.startsWith('-o='));
-      fs.writeFileSync(String(o).slice(3), JUNIT_OK);
+      if (o) fs.writeFileSync(String(o).slice(3), JUNIT_OK);
       return { code: 0, stdout: '', stderr: '' };
     });
 
@@ -757,7 +757,7 @@ test('executeRun: info com db antigo mostra aviso de versão', async () =>
     });
     mock.method(cli, 'runCli', async (_file: string, args: string[]) => {
       const o = args.find((a) => a.startsWith('-o='));
-      fs.writeFileSync(String(o).slice(3), JUNIT_OK);
+      if (o) fs.writeFileSync(String(o).slice(3), JUNIT_OK);
       return { code: 0, stdout: '', stderr: '' };
     });
 
@@ -798,7 +798,7 @@ test('executeRun: extraReporter adiciona -f ao CLI', async () =>
     mock.method(cli, 'runCli', async (_file: string, args: string[]) => {
       assert.ok(args.includes('-f=ut_custom'), 'deveria incluir -f=ut_custom');
       const o = args.find((a) => a.startsWith('-o='));
-      fs.writeFileSync(String(o).slice(3), JUNIT_OK);
+      if (o) fs.writeFileSync(String(o).slice(3), JUNIT_OK);
       return { code: 0, stdout: '', stderr: '' };
     });
 
@@ -816,11 +816,16 @@ test('executeRun: coverage true chama applyCoverage', async () =>
     const { __setConfigValue } = await import('../vscode-stub.js');
     __setConfigValue('sqlCoverageEnabled', false);
     mock.method(cliInfo, 'getCliInfo', async () => ({ cliVersion: '3.2.3', apiVersion: '3.2.3' }));
+    mock.method(cliReporters, 'listReporters', async () => [
+      'ut_documentation_reporter',
+      'ut_coverage_cobertura_reporter',
+    ]);
     mock.method(oracleRunner, 'executeRunOracle', async () => {
       throw new Error('sem oracle');
     });
     mock.method(cli, 'runCli', async (_file: string, args: string[]) => {
       const o = args.find((a) => a.startsWith('-o='));
+      assert.ok(o, 'runCli deveria receber -o=<junitPath>');
       fs.writeFileSync(String(o).slice(3), JUNIT_OK);
       return { code: 0, stdout: '', stderr: '' };
     });
@@ -851,7 +856,7 @@ test('executeRun: additionalReporters filtra built-in e adiciona custom', async 
       assert.ok(args.includes('-t=30'), 'timeout deveria ser 30');
       assert.ok(args.includes('-D'), 'dbmsOutput deveria adicionar -D');
       const o = args.find((a) => a.startsWith('-o='));
-      fs.writeFileSync(String(o).slice(3), JUNIT_OK);
+      if (o) fs.writeFileSync(String(o).slice(3), JUNIT_OK);
       return { code: 0, stdout: '', stderr: '' };
     });
 
@@ -874,7 +879,7 @@ test('executeRun: stderr gera diagnóstico de compilação', async () =>
     });
     mock.method(cli, 'runCli', async (_file: string, args: string[]) => {
       const o = args.find((a) => a.startsWith('-o='));
-      fs.writeFileSync(String(o).slice(3), JUNIT_OK);
+      if (o) fs.writeFileSync(String(o).slice(3), JUNIT_OK);
       return { code: 0, stdout: '', stderr: 'PLS-00103: erro sintaxe' };
     });
 
@@ -918,7 +923,7 @@ test('executeRun: coverage com listReporters com erro desabilita cobertura', asy
     });
     mock.method(cli, 'runCli', async (_file: string, args: string[]) => {
       const o = args.find((a) => a.startsWith('-o='));
-      fs.writeFileSync(String(o).slice(3), JUNIT_OK);
+      if (o) fs.writeFileSync(String(o).slice(3), JUNIT_OK);
       return { code: 0, stdout: '', stderr: '' };
     });
     mock.method(cliReporters, 'listReporters', async () => ({ error: 'falha' }));
@@ -942,7 +947,7 @@ test('executeRun: coverage sem reporter cobertura desabilita', async () =>
     });
     mock.method(cli, 'runCli', async (_file: string, args: string[]) => {
       const o = args.find((a) => a.startsWith('-o='));
-      fs.writeFileSync(String(o).slice(3), JUNIT_OK);
+      if (o) fs.writeFileSync(String(o).slice(3), JUNIT_OK);
       return { code: 0, stdout: '', stderr: '' };
     });
     mock.method(cliReporters, 'listReporters', async () => ['ut_documentation_reporter']);
@@ -972,7 +977,7 @@ test('executeRun: quiet, failureExitCode e extraRunArgs passam ao CLI', async ()
       assert.ok(args.includes('-Dcustom'));
       assert.ok(args.includes('--foo=1'));
       const o = args.find((a) => a.startsWith('-o='));
-      fs.writeFileSync(String(o).slice(3), JUNIT_OK);
+      if (o) fs.writeFileSync(String(o).slice(3), JUNIT_OK);
       return { code: 0, stdout: '', stderr: '' };
     });
 
@@ -993,7 +998,7 @@ test('executeRun: onComplete recebe contagens do JUnit', async () =>
     });
     mock.method(cli, 'runCli', async (_file: string, args: string[]) => {
       const o = args.find((a) => a.startsWith('-o='));
-      fs.writeFileSync(String(o).slice(3), JUNIT_OK);
+      if (o) fs.writeFileSync(String(o).slice(3), JUNIT_OK);
       return { code: 0, stdout: '', stderr: '' };
     });
 
@@ -1026,7 +1031,7 @@ test('executeRun: onSuiteStart é chamado para suites', async () =>
     });
     mock.method(cli, 'runCli', async (_file: string, args: string[]) => {
       const o = args.find((a) => a.startsWith('-o='));
-      fs.writeFileSync(String(o).slice(3), JUNIT_OK);
+      if (o) fs.writeFileSync(String(o).slice(3), JUNIT_OK);
       return { code: 0, stdout: '', stderr: '' };
     });
 
