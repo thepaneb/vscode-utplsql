@@ -142,6 +142,39 @@ _(vazio — nenhuma PRD aprovada aguardando implementação)_
 |---|---|---|---|
 | 47 | [Node 26 no toolchain de desenvolvimento](proposed/prd-47-node-26-toolchain.md) | 0.13.0 | 2026-08-29 |
 
+#### 0.14.0
+
+| # | PRD | Versão alvo | Data |
+|---|---|---|---|
+| 50 | [Auto-run on Save (Watch Mode)](proposed/prd-50-auto-run-on-save.md) | 0.14.0 | 2026-09-06 |
+| 51 | [Execução e seleção por Tag (`%tags`)](proposed/prd-51-run-by-tag.md) | 0.14.0 | 2026-09-06 |
+| 52 | [Diff inline esperado × obtido nas falhas](proposed/prd-52-inline-diff-expected-actual.md) | 0.14.0 | 2026-09-06 |
+| 53 | [Debug de testes: variações (cursor, falhos, último)](proposed/prd-53-debug-test-variants.md) | 0.14.0 | 2026-09-06 |
+| 54 | [Toggle de cobertura na status bar](proposed/prd-54-coverage-toggle.md) | 0.14.0 | 2026-09-06 |
+
+#### 0.15.0
+
+| # | PRD | Versão alvo | Data |
+|---|---|---|---|
+| 55 | [Organização da árvore de testes por tag](proposed/prd-55-tag-organization.md) | 0.15.0 | 2026-09-06 |
+| 56 | [Duração por teste e persistência de resultados](proposed/prd-56-duration-persistence.md) | 0.15.0 | 2026-09-06 |
+| 57 | [Multi-root: resolução de `root`/`sourcePath` por folder](proposed/prd-57-multiroot-root-resolution.md) | 0.15.0 | 2026-09-06 |
+
+#### 0.16.0
+
+| # | PRD | Versão alvo | Data |
+|---|---|---|---|
+| 58 | [Run Related Tests](proposed/prd-58-run-related-tests.md) | 0.16.0 | 2026-09-06 |
+| 59 | [Scaffold de suíte de teste](proposed/prd-59-scaffold-suite.md) | 0.16.0 | 2026-09-06 |
+| 60 | [Cobertura de branch (investigação de viabilidade)](proposed/prd-60-branch-coverage-investigation.md) | — | 2026-09-06 |
+| 61 | [Auto-provisionamento do utPLSQL-cli](proposed/prd-61-cli-auto-provision.md) | 0.16.0 | 2026-09-06 |
+
+#### 0.17.0
+
+| # | PRD | Versão alvo | Data |
+|---|---|---|---|
+| 62 | [Execução de scripts SQL contra perfil de conexão](proposed/prd-62-run-scripts-against-profiles.md) | 0.17.0 | 2026-09-06 |
+
 
 ---
 
@@ -203,7 +236,20 @@ docs/prd/
 ├── approved/         ← aprovados, aguardando implementação (vazio)
 ├── in-progress/      ← sendo implementados agora (vazio)
 └── proposed/         ← em avaliação
-    └── prd-47-node-26-toolchain.md
+    ├── prd-47-node-26-toolchain.md
+    ├── prd-50-auto-run-on-save.md
+    ├── prd-51-run-by-tag.md
+    ├── prd-52-inline-diff-expected-actual.md
+    ├── prd-53-debug-test-variants.md
+    ├── prd-54-coverage-toggle.md
+    ├── prd-55-tag-organization.md
+    ├── prd-56-duration-persistence.md
+    ├── prd-57-multiroot-root-resolution.md
+    ├── prd-58-run-related-tests.md
+    ├── prd-59-scaffold-suite.md
+    ├── prd-60-branch-coverage-investigation.md
+    ├── prd-61-cli-auto-provision.md
+    └── prd-62-run-scripts-against-profiles.md
 ```
 
 ---
