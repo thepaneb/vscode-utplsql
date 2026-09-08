@@ -3,7 +3,7 @@
 </p>
 
 <p align="center">
-  **English** · [Português](README.pt-BR.md) · [Español](README.es.md) · [Français](README.fr.md) · [Deutsch](README.de.md) · [Italiano](README.it.md) · [日本語](README.ja.md) · [中文(简体)](README.zh-CN.md) · [中文(繁體)](README.zh-TW.md) · [한국어](README.ko.md) · [Русский](README.ru.md) · [Türkçe](README.tr.md) · [Polski](README.pl.md) · [Čeština](README.cs.md) · [Magyar](README.hu.md) · [Български](README.bg.md) · [Ελληνικά](README.el.md) · [Bahasa Indonesia](README.id.md) · [Română](README.ro.md) · [Српски](README.sr.md) · [ไทย](README.th.md) · [Українська](README.uk.md) · [Tiếng Việt](README.vi.md) · [English (UK)](README.en-GB.md)
+  [English](README.md) · [Português](README.pt-BR.md) · [Español](README.es.md) · [Français](README.fr.md) · [Deutsch](README.de.md) · [Italiano](README.it.md) · [日本語](README.ja.md) · [中文(简体)](README.zh-CN.md) · [中文(繁體)](README.zh-TW.md) · [한국어](README.ko.md) · [Русский](README.ru.md) · [Türkçe](README.tr.md) · [Polski](README.pl.md) · [Čeština](README.cs.md) · [Magyar](README.hu.md) · [Български](README.bg.md) · [Ελληνικά](README.el.md) · [Bahasa Indonesia](README.id.md) · [Română](README.ro.md) · [Српски](README.sr.md) · [ไทย](README.th.md) · [Українська](README.uk.md) · [Tiếng Việt](README.vi.md) · **English (UK)**
 </p>
 
 # utPLSQL Test Runner
@@ -14,13 +14,13 @@ Integrates [utPLSQL](https://www.utplsql.org/) into VSCode, bringing PL/SQL test
 - 🔍 **CodeLens** — Run/Run with Coverage buttons over `%suite` and `%test` in the editor, without leaving your code.
 - ⌨️ **Keyboard shortcuts** — `Ctrl+Shift+U` prefix + key for the main commands (R = Run All, T = Run File, L = Rerun Last, etc.).
 - 🖱️ **Context menu** — right-click a **folder** or a **`.pks`/`.pkb`** file (in the Explorer or in the editor) to run tests.
-- 📊 **Visual coverage** — colored gutters per line (covered/not covered) and per-file percentage in the **Coverage** tab.
+- 📊 **Visual coverage** — coloured gutters per line (covered/not covered) and per-file percentage in the **Coverage** tab.
 - ✅ **Inline decorations** — ✓/✗/⚠ icons in the editor after execution, with failure tooltip and overview ruler.
 - 📌 **Status Bar** — indicator with pass/fail count, duration, and real-time progress.
 - 🔁 **Smart Re-run** — Rerun Last, Run at Cursor, Run Failed Only with a single shortcut.
 - 🚀 **Oracle direct (via node-oracledb)** — real-time streaming, without waiting for the batch to finish.
 - 🔧 **Setup diagnostics** — proactive validation of CLI, connection, grants, and version with quick-fix.
-- 🧩 **Schema-aware tree** — organize tests by Schema > Package > Suite > Test in the Test Explorer.
+- 🧩 **Schema-aware tree** — organise tests by Schema > Package > Suite > Test in the Test Explorer.
 - 🎯 **Jump to failure** — direct navigation to the line of the assertion that failed (via native "Go to Error").
 - 🔌 **Connection profiles** — save and switch between multiple environments (DEV/TEST/PROD) with per-profile settings, via status bar or command palette.
 - 📈 **Statement and view coverage** — the Coverage tab shows `% of statements` (PROCEDURE/FUNCTION) per file and tracks views executed via `V$SQL`.
@@ -410,7 +410,7 @@ GRANT SELECT ON SYS.DBA_PROCEDURES TO <ut3_owner>;
 
 - The result→test mapping is done by package name + test name/description;
   identical descriptions in different packages can create ambiguity (the index is
-  scoped by package to minimize this).
+  scoped by package to minimise this).
 - Considers the **first** workspace folder to resolve `sourcePath`.
 - Discovery reads the `.pks` (specs); keep the `%suite`/`%test` annotations in the spec.
 
