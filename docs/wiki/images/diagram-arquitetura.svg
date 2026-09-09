@@ -5,10 +5,10 @@
     </marker>
   </defs>
   <rect width="1200" height="560" fill="#fff"/>
-  <text x="600" y="32" text-anchor="middle" font-size="18" font-weight="bold" fill="#333">Arquitetura de execução — dois modos</text>
+  <text x="600" y="32" text-anchor="middle" font-size="18" font-weight="bold" fill="#333">Execution architecture — two modes</text>
 
   <rect x="420" y="50" width="360" height="44" rx="8" fill="#e2e3e5" stroke="#555" stroke-width="1.5"/>
-  <text x="600" y="77" text-anchor="middle" font-size="13" fill="#333">Test Explorer · CodeLens · Menu de contexto · Atalhos</text>
+  <text x="600" y="77" text-anchor="middle" font-size="13" fill="#333">Test Explorer · CodeLens · Context menu · Shortcuts</text>
 
   <line x1="600" y1="94" x2="600" y2="106" stroke="#555"/>
   <polygon points="600,106 662,140 600,174 538,140" fill="#fff3cd" stroke="#f0ad4e" stroke-width="2"/>
@@ -17,10 +17,10 @@
   <line x1="538" y1="140" x2="300" y2="198" stroke="#555" marker-end="url(#arrow)"/>
   <line x1="662" y1="140" x2="900" y2="198" stroke="#555" marker-end="url(#arrow)"/>
   <text x="330" y="185" font-size="11" fill="#0366d6">oracle / auto</text>
-  <text x="820" y="185" font-size="11" fill="#555">cli (ou fallback)</text>
+  <text x="820" y="185" font-size="11" fill="#555">cli (or fallback)</text>
 
   <rect x="30" y="200" width="540" height="340" rx="8" fill="#f0f4f8" stroke="#0366d6" stroke-width="2"/>
-  <text x="300" y="224" text-anchor="middle" font-size="14" font-weight="bold" fill="#0366d6">Modo Oracle direto — streaming</text>
+  <text x="300" y="224" text-anchor="middle" font-size="14" font-weight="bold" fill="#0366d6">Direct Oracle mode — streaming</text>
 
   <rect x="60" y="244" width="220" height="54" rx="6" fill="#fff" stroke="#0366d6"/>
   <text x="170" y="267" text-anchor="middle" font-size="12" font-weight="bold" fill="#333">Extension Host</text>
@@ -28,21 +28,21 @@
 
   <rect x="60" y="322" width="220" height="46" rx="6" fill="#fff" stroke="#0366d6"/>
   <text x="170" y="342" text-anchor="middle" font-size="12" font-weight="bold" fill="#333">conn1 (pool)</text>
-  <text x="170" y="358" text-anchor="middle" font-size="11" fill="#555">ut_runner.run(...) — bloqueante</text>
+  <text x="170" y="358" text-anchor="middle" font-size="11" fill="#555">ut_runner.run(...) — blocking</text>
 
   <rect x="60" y="392" width="220" height="46" rx="6" fill="#fff" stroke="#0366d6"/>
   <text x="170" y="412" text-anchor="middle" font-size="12" font-weight="bold" fill="#333">conn2 (pool)</text>
-  <text x="170" y="428" text-anchor="middle" font-size="11" fill="#555">poll 200ms do buffer</text>
+  <text x="170" y="428" text-anchor="middle" font-size="11" fill="#555">poll 200ms from buffer</text>
 
   <rect x="330" y="312" width="210" height="126" rx="6" fill="#cce5ff" stroke="#004085" stroke-width="2"/>
   <text x="435" y="336" text-anchor="middle" font-size="12" font-weight="bold" fill="#004085">Oracle DB</text>
   <text x="435" y="356" text-anchor="middle" font-size="10" fill="#004085">UT_OUTPUT_BUFFER_TMP</text>
   <text x="435" y="372" text-anchor="middle" font-size="10" fill="#004085">(VARCHAR2)</text>
   <text x="435" y="392" text-anchor="middle" font-size="10" fill="#004085">doc + JUnit</text>
-  <text x="435" y="408" text-anchor="middle" font-size="10" fill="#004085">+ cobertura</text>
+  <text x="435" y="408" text-anchor="middle" font-size="10" fill="#004085">+ coverage</text>
 
   <rect x="330" y="462" width="210" height="56" rx="6" fill="#d4edda" stroke="#28a745" stroke-width="2"/>
-  <text x="435" y="485" text-anchor="middle" font-size="12" font-weight="bold" fill="#155724">Resultados em tempo real</text>
+  <text x="435" y="485" text-anchor="middle" font-size="12" font-weight="bold" fill="#155724">Real-time results</text>
   <text x="435" y="503" text-anchor="middle" font-size="10" fill="#155724">Test Explorer + Output + gutters</text>
 
   <line x1="170" y1="298" x2="170" y2="322" stroke="#555" marker-end="url(#arrow)"/>
@@ -52,7 +52,7 @@
   <line x1="435" y1="438" x2="435" y2="462" stroke="#555" marker-end="url(#arrow)"/>
 
   <rect x="630" y="200" width="540" height="340" rx="8" fill="#f8f9fa" stroke="#555" stroke-width="2"/>
-  <text x="900" y="224" text-anchor="middle" font-size="14" font-weight="bold" fill="#555">Modo CLI — batch</text>
+  <text x="900" y="224" text-anchor="middle" font-size="14" font-weight="bold" fill="#555">CLI mode — batch</text>
 
   <rect x="660" y="244" width="220" height="46" rx="6" fill="#fff" stroke="#555"/>
   <text x="770" y="264" text-anchor="middle" font-size="12" font-weight="bold" fill="#333">Discovery</text>
@@ -69,7 +69,7 @@
 
   <rect x="660" y="478" width="220" height="42" rx="6" fill="#d4edda" stroke="#28a745" stroke-width="2"/>
   <text x="770" y="497" text-anchor="middle" font-size="12" font-weight="bold" fill="#155724">Test Explorer + Coverage</text>
-  <text x="770" y="512" text-anchor="middle" font-size="10" fill="#155724">resultados após o batch</text>
+  <text x="770" y="512" text-anchor="middle" font-size="10" fill="#155724">results after batch</text>
 
   <line x1="770" y1="290" x2="770" y2="316" stroke="#555" marker-end="url(#arrow)"/>
   <line x1="770" y1="382" x2="770" y2="408" stroke="#555" marker-end="url(#arrow)"/>

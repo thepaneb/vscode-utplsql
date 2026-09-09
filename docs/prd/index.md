@@ -141,6 +141,7 @@ _(vazio — nenhuma PRD aprovada aguardando implementação)_
 | # | PRD | Versão alvo | Data |
 |---|---|---|---|
 | 47 | [Node 26 no toolchain de desenvolvimento](proposed/prd-47-node-26-toolchain.md) | 0.13.0 | 2026-08-29 |
+| 64 | [Migração para Oracle-Only: eliminação do utPLSQL-cli e Java](proposed/prd-64-oracle-only-migration.md) | 0.13.0 | 2026-09-09 |
 
 #### 0.14.0
 
@@ -174,6 +175,7 @@ _(vazio — nenhuma PRD aprovada aguardando implementação)_
 | # | PRD | Versão alvo | Data |
 |---|---|---|---|
 | 62 | [Execução de scripts SQL contra perfil de conexão](proposed/prd-62-run-scripts-against-profiles.md) | 0.17.0 | 2026-09-06 |
+| 63 | [Diagramas i18n para READMEs](proposed/prd-63-diagram-i18n.md) | 0.17.0 | 2026-09-08 |
 
 
 ---
@@ -249,7 +251,9 @@ docs/prd/
     ├── prd-59-scaffold-suite.md
     ├── prd-60-branch-coverage-investigation.md
     ├── prd-61-cli-auto-provision.md
-    └── prd-62-run-scripts-against-profiles.md
+    ├── prd-62-run-scripts-against-profiles.md
+    ├── prd-63-diagram-i18n.md
+    └── prd-64-oracle-only-migration.md
 ```
 
 ---

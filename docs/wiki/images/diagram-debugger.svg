@@ -12,7 +12,7 @@
   <text x="200" y="94" text-anchor="middle" font-size="13" font-weight="bold" fill="#333">VSCode Debug UI</text>
   <text x="200" y="114" text-anchor="middle" font-size="11" fill="#333">breakpoints · call stack</text>
   <text x="200" y="130" text-anchor="middle" font-size="11" fill="#333">Step Into/Over/Out · Continue · Stop</text>
-  <text x="200" y="150" text-anchor="middle" font-size="11" fill="#333">variáveis locais (Debug Console)</text>
+  <text x="200" y="150" text-anchor="middle" font-size="11" fill="#333">local variables (Debug Console)</text>
 
   <rect x="50" y="240" width="300" height="130" rx="10" fill="#d6e4f7" stroke="#0366d6" stroke-width="2"/>
   <text x="200" y="266" text-anchor="middle" font-size="13" font-weight="bold" fill="#0b4f9e">src/debugger.ts</text>
@@ -25,14 +25,14 @@
 
   <!-- DBMS_DEBUG client -->
   <rect x="480" y="200" width="370" height="200" rx="10" fill="#fff" stroke="#555" stroke-width="1.5"/>
-  <text x="665" y="226" text-anchor="middle" font-size="13" font-weight="bold" fill="#333">src/dbmsDebug.ts (cliente DBMS_DEBUG)</text>
+  <text x="665" y="226" text-anchor="middle" font-size="13" font-weight="bold" fill="#333">src/dbmsDebug.ts (DBMS_DEBUG client)</text>
   <text x="665" y="250" text-anchor="middle" font-size="11" fill="#333">DEBUG_ON / ATTACH_SESSION</text>
   <text x="665" y="268" text-anchor="middle" font-size="11" fill="#333">SET_BREAKPOINT / DELETE_BREAKPOINT</text>
   <text x="665" y="286" text-anchor="middle" font-size="11" fill="#333">SYNCHRONIZE / CONTINUE</text>
   <text x="665" y="304" text-anchor="middle" font-size="11" fill="#333">STEP_INTO / STEP_OVER / STEP_OUT</text>
   <text x="665" y="322" text-anchor="middle" font-size="11" fill="#333">GET_RUNTIME_INFO / GET_VALUES</text>
-  <text x="665" y="346" text-anchor="middle" font-size="10" fill="#6a737d">gera SQL puro — testável com conexão fake</text>
-  <text x="665" y="362" text-anchor="middle" font-size="10" fill="#6a737d">integração real: suíte describeDB</text>
+  <text x="665" y="346" text-anchor="middle" font-size="10" fill="#6a737d">generates pure SQL — testable with fake connection</text>
+  <text x="665" y="362" text-anchor="middle" font-size="10" fill="#6a737d">real integration: describeDB suite</text>
 
   <line x1="350" y1="300" x2="476" y2="300" stroke="#555" marker-end="url(#arrow)"/>
   <text x="413" y="292" text-anchor="middle" font-size="10" fill="#555">DAP messages</text>
@@ -40,8 +40,8 @@
   <!-- Oracle -->
   <rect x="480" y="430" width="370" height="130" rx="10" fill="#fff" stroke="#555" stroke-width="1.5"/>
   <text x="665" y="456" text-anchor="middle" font-size="13" font-weight="bold" fill="#333">Oracle Database</text>
-  <text x="665" y="478" text-anchor="middle" font-size="11" fill="#333">sessão debuggee: ut_runner.run(...)</text>
-  <text x="665" y="496" text-anchor="middle" font-size="11" fill="#333">sessão debugger: controle DBMS_DEBUG</text>
+  <text x="665" y="478" text-anchor="middle" font-size="11" fill="#333">debuggee session: ut_runner.run(...)</text>
+  <text x="665" y="496" text-anchor="middle" font-size="11" fill="#333">debugger session: DBMS_DEBUG control</text>
   <text x="665" y="518" text-anchor="middle" font-size="10" fill="#6a737d">grants: EXECUTE ON SYS.DBMS_DEBUG</text>
   <text x="665" y="534" text-anchor="middle" font-size="10" fill="#6a737d">+ DEBUG CONNECT SESSION</text>
   <text x="665" y="550" text-anchor="middle" font-size="10" fill="#6a737d">single-session · timeout 5 min default</text>
