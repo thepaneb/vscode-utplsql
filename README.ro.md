@@ -83,8 +83,6 @@ conexiune și o păstrează doar în memorie pe durata sesiunii — folosește c
 
 ## Cum funcționează
 
-![Modul Oracle direct — streaming](docs/wiki/images/diagram-streaming.png)
-
 Fără fișiere temporare, fără a aștepta lotul. Rezultatele apar în
 Test Explorer **pe măsură ce fiecare test se termină**.
 

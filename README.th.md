@@ -82,11 +82,7 @@ code .
 
 ## วิธีการทำงาน
 
-![สถาปัตยกรรมการทำงาน](docs/wiki/images/diagram-arquitetura.png)
-
 ### โหมด Oracle แบบตรง (v0.9.0)
-
-![โหมด Oracle แบบตรง — สตรีมมิง](docs/wiki/images/diagram-streaming.png)
 
 ไม่มีไฟล์ชั่วคราว ไม่ต้องรอ batch ผลลัพธ์จะปรากฏใน
 Test Explorer **เมื่อแต่ละเทสต์เสร็จสิ้น** VSIX มีไดรเวอร์ `oracledb` แบบ thin ในตัวแล้ว (ไม่ต้องใช้ Instant Client)

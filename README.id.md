@@ -83,8 +83,6 @@ koneksi dan menyimpannya hanya di memori selama sesi — gunakan perintah
 
 ## Cara kerja
 
-![Mode Oracle langsung — streaming](docs/wiki/images/diagram-streaming.png)
-
 Tanpa file sementara, tanpa menunggu batch. Hasil muncul di
 Test Explorer **begitu setiap pengujian selesai**.
 

@@ -1,0 +1,25 @@
+[Português](../_Sidebar.md)
+
+- **Getting Started**
+  - [Installation and Requirements](Instalação-e-requisitos)
+  - [Connection Setup](Conexão)
+- **Usage**
+  - [Quick Start Guide](Guia-rápido)
+  - [Code Coverage](Cobertura)
+  - [Custom Reporters](Reporters)
+- **Advanced Tools**
+  - [Direct Oracle Execution](Execução-Oracle-direta)
+  - [Diagnostics and Quick-fix](Diagnósticos-e-quick-fix)
+  - [Tree Organization](Organização-da-árvore)
+- **Reference**
+  - [Settings](Configurações)
+  - [Commands](Comandos)
+  - [Database Requirements (Grants)](Requisitos-no-banco)
+- **Development**
+  - [Architecture](Arquitetura)
+  - [Contributing](Como-contribuir)
+  - [Tests](Testes)
+  - [PRDs and Roadmap](PRDs)
+- **Help**
+  - [Troubleshooting](Troubleshooting)
+  - [FAQ](FAQ)

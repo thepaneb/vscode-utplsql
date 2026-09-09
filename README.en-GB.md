@@ -82,11 +82,7 @@ keeps it only in memory during the session — use the command
 
 ## How it works
 
-![Execution architecture](docs/wiki/images/diagram-arquitetura.png)
-
 ### Oracle direct mode (v0.9.0)
-
-![Oracle direct mode — streaming](docs/wiki/images/diagram-streaming.png)
 
 No temporary files, no waiting for the batch. Results appear in the
 Test Explorer **as each test finishes**. The VSIX already includes the thin `oracledb` driver (no Instant Client).

@@ -82,11 +82,7 @@ code .
 
 ## Како функционише
 
-![Архитектура извршавања](docs/wiki/images/diagram-arquitetura.png)
-
 ### Oracle директан режим (v0.9.0)
-
-![Oracle директан режим — стримовање](docs/wiki/images/diagram-streaming.png)
 
 Нема привремених датотека, нема чекања на серију. Резултати се појављују у
 Test Explorer-у **како се сваки тест заврши**. VSIX већ укључује танки `oracledb` драјвер (без Instant Client-а).

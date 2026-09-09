@@ -84,8 +84,6 @@ keeps it only in memory during the session — use the command
 
 The extension connects directly to the Oracle database via `node-oracledb`, streams test results in real-time, and translates them into VSCode's native APIs.
 
-![Oracle direct mode — streaming](docs/wiki/images/diagram-streaming.png)
-
 No temporary files, no waiting for the batch. Results appear in the
 Test Explorer **as each test finishes**.
 

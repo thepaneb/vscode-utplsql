@@ -80,8 +80,6 @@ code .
 
 この拡張機能は `node-oracledb` を使用して Oracle データベースに直接接続し、テスト結果をリアルタイムでストリーミングし、VSCode のネイティブ API に変換します。
 
-![Oracle 直接モード — ストリーミング](docs/wiki/images/diagram-streaming.png)
-
 一時ファイルなし、バッチの完了を待つ必要なし。結果は **各テストが終了するたびに**
 Test Explorer に表示されます。
 

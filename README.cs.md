@@ -83,8 +83,6 @@ a ponechá je pouze v paměti během relace — použijte příkaz
 
 ## Jak to funguje
 
-![Oracle direct mode — streaming](docs/wiki/images/diagram-streaming.png)
-
 Žádné dočasné soubory, žádné čekání na dávku. Výsledky se objeví v
 Test Exploreru **jakmile každý test skončí**.
 

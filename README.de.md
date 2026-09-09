@@ -84,8 +84,6 @@ Verbindung und behält sie nur im Speicher während der Sitzung — verwenden Si
 
 Die Erweiterung verbindet sich direkt mit der Oracle-Datenbank über `node-oracledb`, streamt Testergebnisse in Echtzeit und übersetzt sie in die nativen APIs von VSCode.
 
-![Oracle-Direktmodus — Streaming](docs/wiki/images/diagram-streaming.png)
-
 Keine temporären Dateien, kein Warten auf die Batch-Ausführung. Ergebnisse erscheinen im
 Test Explorer, **sobald jeder Test fertig ist**.
 

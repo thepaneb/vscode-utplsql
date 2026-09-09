@@ -82,11 +82,7 @@ chỉ giữ nó trong bộ nhớ ở phiên hiện tại — dùng lệnh
 
 ## Cách hoạt động
 
-![Kiến trúc thực thi](docs/wiki/images/diagram-arquitetura.png)
-
 ### Chế độ Oracle trực tiếp (v0.9.0)
-
-![Chế độ Oracle trực tiếp — streaming](docs/wiki/images/diagram-streaming.png)
 
 Không có tệp tạm, không chờ batch. Kết quả xuất hiện trong
 Test Explorer **ngay khi từng bài kiểm thử hoàn tất**. VSIX đã kèm driver mỏng `oracledb` (không cần Instant Client).

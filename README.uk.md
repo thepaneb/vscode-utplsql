@@ -80,11 +80,7 @@ code .
 
 ## Як це працює
 
-![Архітектура виконання](docs/wiki/images/diagram-arquitetura.png)
-
 ### Прямий режим Oracle (v0.9.0)
-
-![Прямий режим Oracle — потокова передача](docs/wiki/images/diagram-streaming.png)
 
 Жодних тимчасових файлів, жодного очікування завершення пакету. Результати з'являються в
 Test Explorer **у міру завершення кожного тесту**. VSIX вже містить тонкий драйвер `oracledb` (без Instant Client).

@@ -85,8 +85,6 @@ o połączenie i przechowa je tylko w pamięci podczas sesji — użyj polecenia
 
 Rozszerzenie łączy się bezpośrednio z bazą danych Oracle przez node-oracledb, aby uruchamiać testy.
 
-![Tryb bezpośredni Oracle — streaming](docs/wiki/images/diagram-streaming.png)
-
 Brak plików tymczasowych, brak czekania na partię. Wyniki pojawiają się w
 Test Explorerze **w miarę kończenia każdego testu**.
 

@@ -84,8 +84,6 @@ la conserva solo en memoria durante la sesión — use el comando
 
 La extensión se conecta directamente a la base de datos Oracle mediante `node-oracledb`, transmite los resultados en tiempo real y los traduce a las APIs nativas de VSCode.
 
-![Modo Oracle directo — streaming](docs/wiki/images/diagram-streaming.png)
-
 Sin archivos temporales, sin esperar al lote. Los resultados aparecen en el
 Test Explorer **a medida que cada test termina**.
 

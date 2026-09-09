@@ -84,8 +84,6 @@ code .
 
 扩展通过 node-oracledb 直连 Oracle 数据库运行测试。
 
-![Oracle 直连模式 — 流式传输](docs/wiki/images/diagram-streaming.png)
-
 无临时文件，无需等待批处理。结果会在 **每个测试完成时** 出现在
 Test Explorer 中。
 

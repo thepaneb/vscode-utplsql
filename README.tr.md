@@ -84,8 +84,6 @@ oturum sırasında bellekte tutar — temizlemek için
 
 Uzantı, node-oracledb üzerinden Oracle veritabanına doğrudan bağlanarak testleri çalıştırır.
 
-![Oracle doğrudan modu — akış](docs/wiki/images/diagram-streaming.png)
-
 Geçici dosya yok, toplu işin bitmesi beklenmez. Sonuçlar Test Explorer'da
 **her test bittiğinde** görünür.
 

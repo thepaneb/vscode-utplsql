@@ -85,8 +85,6 @@ code .
 
 확장 프로그램이 node-oracledb를 통해 Oracle 데이터베이스에 직접 연결하여 테스트를 실행합니다.
 
-![Oracle 직접 모드 — 스트리밍](docs/wiki/images/diagram-streaming.png)
-
 임시 파일이 없고 배치를 기다리지 않습니다. 결과는 **각 테스트가 완료될 때마다**
 Test Explorer에 나타납니다.
 

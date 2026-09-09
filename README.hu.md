@@ -83,8 +83,6 @@ kapcsolatot, és azt csak a memóriában őrzi meg a munkamenet során — a
 
 ## Működés
 
-![Oracle direct mode — streaming](docs/wiki/images/diagram-streaming.png)
-
 Nincsenek ideiglenes fájlok, nem kell megvárni a köteg végét. Az eredmények a
 Test Explorerben **ahogy az egyes tesztek befejeződnek** jelennek meg.
 

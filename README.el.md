@@ -84,8 +84,6 @@ code .
 
 ## Πώς λειτουργεί
 
-![Oracle direct mode — streaming](docs/wiki/images/diagram-streaming.png)
-
 Χωρίς προσωρινά αρχεία, χωρίς αναμονή για το batch. Τα αποτελέσματα εμφανίζονται στο
 Test Explorer **καθώς ολοκληρώνεται κάθε test**.
 

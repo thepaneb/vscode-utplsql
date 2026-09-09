@@ -84,8 +84,6 @@ code .
 
 擴充功能透過 node-oracledb 直連 Oracle 資料庫執行測試。
 
-![Oracle 直連模式 — 串流](docs/wiki/images/diagram-streaming.png)
-
 無暫存檔，無需等待批次執行完成。結果會**在每個測試結束時**立即顯示在
 Test Explorer 中。
 
