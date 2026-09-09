@@ -12,7 +12,6 @@
 - **Referência**
   - [Configurações (settings)](Configurações)
   - [Comandos](Comandos)
-  - [Modo de invocação Java](Modo-de-invocação)
   - [Requisitos no banco (grants)](Requisitos-no-banco)
 - **Desenvolvimento**
   - [Arquitetura](Arquitetura)

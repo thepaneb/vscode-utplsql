@@ -6,7 +6,7 @@
 | Autor | Gil Cleber |
 | Data | 2026-09-09 |
 | Componente | Extensão `paneb.vscode-utplsql` |
-| Versão alvo | 0.13.0 |
+| Versão alvo | 0.12.0 |
 | Arquivos afetados | `src/oracleRunner.ts`, `src/runner.ts`, `src/config.ts`, `src/quickfix.ts`, `src/extension.ts`, `src/types.ts`, `src/connectionProfiles.ts`, `src/i18nLocales.ts`, `src/cli.ts`, `src/cliInfo.ts`, `src/cliReporters.ts`, `src/cliEncoding.ts`, `src/invocation.ts`, `src/compilationDiagnostics.ts`, `package.json` + ~11 testes + ~40 documentos |
 | Esforço estimado | 3–5 dias |
 | Complexidade | Alta |
@@ -448,7 +448,7 @@ Reescrever seções CLI em ~40 arquivos de documentação. Movimentizar PRDs CLI
 
 ## 9. Rollout
 
-- **Release alvo**: 0.13.0 (minor — breaking change documentado)
+- **Release alvo**: 0.12.0 (minor — breaking change documentado)
 - **Estratégia**: Publicar como minor com nota de breaking change no CHANGELOG
 - **BREAKING CHANGE**: Settings `cliPath`, `invocation`, `javaPath`, `javaArgs`, `cliHome`, `runnerMode` e"profile.*.invocation", "profile.*.cliPath", "profile.*.cliHome", "profile.*.javaPath" são ignorados (settings removidos)
 - **CHANGELOG.md**: Entrada no topo documentando remoção de CLI e novas funcionalidades Oracle

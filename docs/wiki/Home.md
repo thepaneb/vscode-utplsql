@@ -25,7 +25,7 @@ Use a sidebar à esquerda (ou o menu ≡ no mobile) para navegar entre as seçõ
 - **Começando**: [Instalação e requisitos](Instalação-e-requisitos) · [Conexão](Conexão)
 - **Uso**: [Guia rápido](Guia-rápido) · [Cobertura](Cobertura) · [Reporters](Reporters)
 - **Avançado**: [Execução Oracle direta](Execução-Oracle-direta) · [Diagnósticos e quick-fix](Diagnósticos-e-quick-fix) · [Organização da árvore](Organização-da-árvore)
-- **Referência**: [Configurações](Configurações) · [Comandos](Comandos) · [Modo de invocação](Modo-de-invocação) · [Requisitos no banco](Requisitos-no-banco)
+- **Referência**: [Configurações](Configurações) · [Comandos](Comandos) · [Requisitos no banco](Requisitos-no-banco)
 - **Desenvolvimento**: [Arquitetura](Arquitetura) · [Como contribuir](Como-contribuir) · [Testes](Testes) · [PRDs e roadmap](PRDs)
 - **Ajuda**: [Troubleshooting](Troubleshooting) · [FAQ](FAQ)
 
@@ -34,4 +34,3 @@ Use a sidebar à esquerda (ou o menu ≡ no mobile) para navegar entre as seçõ
 - [Repositório](https://github.com/thepaneb/vscode-utplsql)
 - [Marketplace](https://marketplace.visualstudio.com/items?itemName=paneb.vscode-utplsql)
 - [utPLSQL Framework](https://github.com/utPLSQL/utPLSQL)
-- [utPLSQL-cli](https://github.com/utPLSQL/utPLSQL-cli/releases)

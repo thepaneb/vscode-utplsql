@@ -11,7 +11,7 @@ A extensão inclui três reporters padrão em toda execução:
 ## Validação dinâmica de cobertura
 
 Antes de rodar com cobertura, a extensão consulta o banco via
-`utplsql reporters <conn>`. Se `UT_COVERAGE_COBERTURA_REPORTER` não existir
+`ALL_OBJECTS`. Se `UT_COVERAGE_COBERTURA_REPORTER` não existir
 (ex.: utPLSQL desatualizado), a cobertura é **pulada com aviso** no output.
 A execução dos testes nunca é bloqueada.
 

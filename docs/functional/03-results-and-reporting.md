@@ -5,12 +5,12 @@ Parse dos resultados de teste e mapeamento para `vscode.TestItem`.
 ## Fluxo
 
 ```
-CLI/Oracle execução
+Execução
     │
-    ├─► JUnit XML (results.xml ou buffer Oracle)
+    ├─► JUnit XML (buffer Oracle)
     │       └─► parseJUnit(xml) → TestCaseResult[]
     │
-    ├─► applyResults(junitPath, leafTests, run, state) → Map<TestItem.id, status>
+    ├─► applyResultsFromCases(cases, leafTests, run, state) → Map<TestItem.id, status>
     │       │
     │       ├─► index: Map<"pkg|procName" | "pkg|description", TestItem>
     │       ├─► match: lastSegment(classname) + name → TestItem
@@ -61,24 +61,9 @@ Junta `@_message` (atributo) + `#text` (corpo) separados por `\n`. Fallback `"Fa
 
 Extrai `#text` do nó XML (usado por `parseStackFrames`).
 
-## `applyResults` (src/runner.ts) — wrapper CLI
+## Algoritmo de matching (`applyResultsFromCases` — src/results.ts)
 
-```typescript
-function applyResults(
-  junitPath: string,
-  leafTests: vscode.TestItem[],
-  run: vscode.TestRun,
-  state: TestStateManager,
-): Map<string, { status: TestStatus; message?: string }>
-```
-
-Wrapper que **lê o arquivo JUnit** e delega para `applyResultsFromCases`
-(src/results.ts). Arquivo ausente → todos os leafTests como `errored`
-("Sem relatório de resultados (o CLI falhou?).").
-
-### Algoritmo de matching (`applyResultsFromCases` — src/results.ts)
-
-Função canônica compartilhada pelos dois runners (PRD-39):
+Função canônica compartilhada pelo runner (PRD-39):
 
 1. **Índice**: para cada `leafTest`, indexa por `"pkg|procName"` e `"pkg|description"` (lowercase)
 2. **Match primário**: `lastSegment(c.classname) + c.name` → lookup no índice
@@ -97,12 +82,12 @@ Extrai último segmento separado por `.` ou `:` (ex: `"schema.pkg"` → `"pkg"`)
 
 ## `results.ts` — funções canônicas (PRD-39)
 
-| Função | Antes (duplicada) | Agora |
-|---|---|---|
-| `applyResultsFromCases` | `runner.ts` + `oracleRunner.ts` | `results.ts` — ambos importam |
-| `countResults` / `countResultsFromCases` | idem | `results.ts` — nome único `countResults` |
-| `applyCoverageFromXml` | idem | `results.ts` — `runner.ts` mantém wrapper `applyCoverage` (lê arquivo + setup diagnostics) |
-| `resolveStackFrameToUri` | idem | `results.ts` — com fallback para `{objName}.pks` no workspace |
+| Função | Descrição |
+|---|---|
+| `applyResultsFromCases` | Mapeia TestCaseResult[] para TestItem por matching de classname+name |
+| `countResults` | Conta passed/failed/skipped/errored |
+| `applyCoverageFromXml` | Aplica cobertura a partir de XML Cobertura |
+| `resolveStackFrameToUri` | Resolve frames de stack trace para URIs de arquivo |
 
 > `resolveStackLocation` não existe mais — só `resolveStackFrameToUri`.
 
@@ -114,9 +99,9 @@ apagado na compilação).
 ### Reporters padrão
 
 Sempre incluídos:
-- `ut_documentation_reporter` — stdout (-c)
-- `ut_junit_reporter` — XML para resultados (-o results.xml)
-- `ut_coverage_cobertura_reporter` — XML para cobertura (-o coverage.xml, se coverage=true)
+- `ut_documentation_reporter` — streaming (linhas não-XML exibidas em tempo real)
+- `ut_junit_reporter` — XML para resultados (buffer Oracle)
+- `ut_coverage_cobertura_reporter` — XML para cobertura (buffer Oracle, se coverage=true)
 
 ### Reporters adicionais
 
@@ -127,16 +112,6 @@ Sempre incluídos:
 // Volátil (comando, uma execução)
 state.setExtraReporter(name) → state.consumeExtraReporter()
 ```
-
-### Validação dinâmica (`listReporters`)
-
-```typescript
-function listReporters(cfg: InvocationConfig, conn: string): Promise<string[] | { error: string }>
-```
-
-Executa `utplsql reporters <conn>` e faz parse da saída. Usado para:
-- Verificar disponibilidade de `UT_COVERAGE_COBERTURA_REPORTER` antes de habilitar cobertura
-- Popular QuickPick do comando `utplsql.selectReporter`
 
 ### `parseReportersOutput`
 
@@ -151,8 +126,7 @@ function parseReportersOutput(stdout: string): string[]
 ## Output
 
 O output do documentation reporter é exibido em tempo real via `run.appendOutput()`.
-No modo Oracle, linhas não-XML são exibidas; no modo CLI, o callback `onStdout`
-alimenta o output.
+Linhas não-XML são exibidas diretamente; linhas XML são acumuladas para parse.
 
 Após execução, `compilationDiagnostics.parseFromOutput()` analisa o output em busca
 de erros de compilação (veja [07 — Diagnostics](07-diagnostics-and-validation.md)).

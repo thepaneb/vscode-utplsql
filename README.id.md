@@ -19,7 +19,7 @@ Mengintegrasikan [utPLSQL](https://www.utplsql.org/) ke dalam VSCode, membawa pe
 - 📌 **Status Bar** — indikator dengan jumlah lolos/gagal, durasi, dan progres waktu nyata.
 - 🔁 **Smart Re-run** — Rerun Last, Run at Cursor, Run Failed Only dengan satu pintasan.
 - 🚀 **Oracle langsung (via node-oracledb)** — streaming waktu nyata, tanpa menunggu batch selesai.
-- 🔧 **Diagnostik pengaturan** — validasi proaktif terhadap CLI, koneksi, grant, dan versi dengan quick-fix.
+- 🔧 **Diagnostik pengaturan** — validasi proaktif terhadap koneksi, grant, dan versi dengan quick-fix.
 - 🧩 **Pohon sadar-schema** — atur pengujian berdasarkan Schema > Package > Suite > Test di Test Explorer.
 - 🎯 **Langsung ke kegagalan** — navigasi langsung ke baris asersi yang gagal (melalui "Go to Error" asli).
 - 🔌 **Profil koneksi** — simpan dan beralih antar beberapa lingkungan (DEV/TEST/PROD) dengan pengaturan per profil, melalui bilah status atau palet perintah.
@@ -39,12 +39,10 @@ Ekstensi dapat diinstal dengan dua cara:
 ## Persyaratan
 
 - [**utPLSQL**](https://github.com/utPLSQL/utPLSQL) **(UT3)** terinstal di database Oracle.
-- **Untuk mode CLI:** [**utPLSQL-cli**](https://github.com/utPLSQL/utPLSQL-cli/releases) + **Java** terinstal di mesin (ekstensi memanggil CLI).
-- **Untuk mode Oracle langsung:** hanya perlu database — VSIX sudah menyertakan driver tipis `oracledb` (tanpa Instant Client).
+- Hanya perlu database — VSIX sudah menyertakan driver tipis `oracledb` (tanpa Instant Client).
 - **VSCode 1.88+** (Test Coverage API).
 
-Ekstensi hanyalah "klien grafis" — yang menjalankan pengujian adalah database: melalui
-CLI (utPLSQL-cli + Java) atau langsung (node-oracledb, default `runnerMode: auto`).
+Ekstensi hanyalah "klien grafis" — yang menjalankan pengujian adalah database langsung via node-oracledb.
 
 ## Koneksi
 
@@ -56,8 +54,7 @@ Ekstensi membutuhkan string koneksi Oracle untuk menjalankan pengujian. Resolusi
 4. **Cache sesi** — jika pengguna sudah mengetik koneksi melalui prompt.
 5. **Prompt kepada pengguna** — bertanya dan menyimpannya hanya di sesi saat ini.
 
-Profil koneksi (`utplsql.profiles`) juga dapat menimpa `sourcePath`, `coverageOwner`,
-`invocation`, `cliPath`, dll. per lingkungan — lihat `utplsql.activeProfile` di tabel konfigurasi.
+Profil koneksi (`utplsql.profiles`) juga dapat menimpa `sourcePath`, `coverageOwner` dll. per lingkungan — lihat `utplsql.activeProfile` di tabel konfigurasi.
 
 ⚠️ **Rekomendasi keamanan:** string koneksi berisi kata sandi. **JANGAN** gunakan
 pengaturan `utplsql.connection` di lingkungan bersama (settings.json dapat dikelola versinya
@@ -86,59 +83,34 @@ koneksi dan menyimpannya hanya di memori selama sesi — gunakan perintah
 
 ## Cara kerja
 
-Tersedia dua mode eksekusi:
-
-![Arsitektur eksekusi — dua mode](docs/wiki/images/diagram-arquitetura.png)
-
-### Mode Oracle langsung (v0.9.0) — `runnerMode: auto` atau `oracle`
-
 ![Mode Oracle langsung — streaming](docs/wiki/images/diagram-streaming.png)
 
 Tanpa file sementara, tanpa menunggu batch. Hasil muncul di
 Test Explorer **begitu setiap pengujian selesai**.
 
-### Mode CLI — `runnerMode: cli` (fallback)
-
-![Mode CLI — batch](docs/wiki/images/diagram-cli.png)
-
-Ekstensi menyusun baris perintah CLI atau terhubung langsung ke Oracle, membaca
-laporan (JUnit + Coverage) lalu menerjemahkannya ke API asli VSCode. Mode
-`auto` (default) mencoba Oracle langsung dan beralih ke CLI jika `node-oracledb`
-tidak terinstal. Gunakan `runnerMode: cli` untuk selalu memaksa CLI.
+Ekstensi terhubung langsung ke Oracle, membaca laporan (JUnit + Coverage) lalu menerjemahkannya ke API asli VSCode.
 
 ## Konfigurasi
 
 | Pengaturan | Default | Deskripsi |
 |---|---|---|
 | `utplsql.connection` | `""` | Koneksi Oracle. **Biarkan kosong** dan gunakan variabel lingkungan `UTPLSQL_CONN` untuk menghindari penyimpanan kata sandi. Jika keduanya kosong, ekstensi akan bertanya (hanya menyimpannya di sesi). |
-| `utplsql.cliPath` | `utplsql` | Path ke executable utPLSQL-cli (mis. `C:\tools\utPLSQL-cli\bin\utplsql.bat`). |
 | `utplsql.sourcePath` | `install` | Folder kode produksi (untuk memetakan coverage ke file). |
 | `utplsql.includePatterns` | `["**/*.pks"]` | Glob untuk menemukan spec dengan `%suite`/`%test`. Jika pengujian Anda di `.sql`, gunakan `["**/*.sql"]`. |
-| `utplsql.extraRunArgs` | `[]` | Argumen tambahan untuk `utplsql run`. |
 | `utplsql.coverageOwner` | `""` | Pemilik schema dari objek yang dicakup. Kosong = memakai user koneksi (huruf besar). |
-| `utplsql.coverageSourceArgs` | (lihat **Cakupan**) | Argumen CLI yang memetakan coverage ke file sumber. |
-| `utplsql.invocation` | `launcher` | Cara memanggil CLI: `launcher` (melalui `.bat`/skrip, default) atau `java` (JVM langsung, **tanpa shell**). Lihat **Mode pemanggilan**. |
-| `utplsql.javaPath` | `java` | Executable Java (PATH atau path lengkap). Hanya dipakai pada mode `java`. |
-| `utplsql.cliHome` | `""` | Root utPLSQL-cli (folder berisi `bin/` dan `lib/`). Kosong = diturunkan dari `cliPath`. Hanya dipakai pada mode `java`. |
-| `utplsql.timeoutMinutes` | `60` | Waktu tunggu (timeout) dalam menit untuk CLI. Bendera `-t` hanya dikirim jika nilainya berbeda dari `60`. |
-| `utplsql.dbmsOutput` | `false` | Mengaktifkan `DBMS_OUTPUT` di sesi pengujian. Bendera `-D` hanya dikirim saat `true`. |
-| `utplsql.quiet` | `false` | Menyembunyikan log informasi CLI. Bendera `-q` hanya dikirim saat `true`. |
-| `utplsql.failureExitCode` | `1` | Kode keluar saat gagal. Bendera `--failure-exit-code` hanya dikirim jika nilainya berbeda dari `1`. `0` membuat CLI selalu keluar dengan sukses. |
 | `utplsql.additionalReporters` | `[]` | Reporter tambahan yang disertakan pada setiap eksekusi (mis. `["ut_coverage_html_reporter"]`). Default (documentation, junit, coverage) selalu disertakan dan tidak perlu didaftarkan. |
 | `utplsql.codeLens.enabled` | `true` | Menampilkan tombol CodeLens Run/Run with Coverage di atas `%suite` dan `%test`. |
 | `utplsql.statusBar.enabled` | `true` | Menampilkan indikator status pengujian di bilah status. |
 | `utplsql.decorations.enabled` | `true` | Menampilkan dekorasi lolos/gagal pada baris `%suite` dan `%test` setelah eksekusi. |
-| `utplsql.runnerMode` | `auto` | Mode eksekusi: `auto` (Oracle langsung via node-oracledb, fallback CLI), `cli` (selalu melalui baris perintah), `oracle` (selalu Oracle langsung). |
 | `utplsql.oraclePoolMin` | `2` | Jumlah minimum koneksi yang disimpan di pool runner Oracle (node-oracledb). |
 | `utplsql.oraclePoolMax` | `10` | Jumlah maksimum koneksi di pool runner Oracle (node-oracledb). |
 | `utplsql.oraclePoolIncrement` | `1` | Kenaikan saat memperluas pool runner Oracle (node-oracledb). |
 | `utplsql.oraclePoolPingInterval` | `60` | Detik antara pemeriksaan kesehatan koneksi idle di pool (node-oracledb). `0` = ping pada setiap checkout. |
-| `utplsql.javaArgs` | `["-Xmx256m"]` | Bendera JVM untuk mode `java` (mis. `["-Xmx512m", "-Xms128m"]`). Disisipkan sebelum `-cp`. |
-| `utplsql.organization` | `file` | Organisasi pohon: `file` (berdasarkan path) atau `schema` (Schema > Package > Suite > Test). Pada mode `schema` dengan `runnerMode` Oracle (`auto`/`oracle`), suite juga ditemukan dari database (`ALL_OBJECTS`/`ALL_SOURCE`) ketika file `.pks` tidak ada di workspace — dengan URI virtual `utplsql-db:/` (tanpa CodeLens/dekorasi/langsung ke kegagalan). |
+| `utplsql.organization` | `file` | Organisasi pohon: `file` (berdasarkan path) atau `schema` (Schema > Package > Suite > Test). Pada mode `schema`, suite juga ditemukan dari database (`ALL_OBJECTS`/`ALL_SOURCE`) ketika file `.pks` tidak ada di workspace — dengan URI virtual `utplsql-db:/` (tanpa CodeLens/dekorasi/langsung ke kegagalan). |
 | `utplsql.organization.schemaPattern` | `db/{schema}/**` | Pola glob untuk mengekstrak schema dari path. Gunakan `{schema}` sebagai placeholder. Pada mode `schema`, direktori di bawah basis pola (mis. `db/*`) menentukan schema yang ditanyakan di database. |
-| `utplsql.compilationDiagnostics.enabled` | `true` | Menampilkan error kompilasi PL/SQL sebagai garis bawah di editor dan Panel Problems (mode CLI). |
-| `utplsql.setupDiagnostics.enabled` | `true` | Menampilkan diagnostik konfigurasi (CLI, koneksi, grant, versi) serta **integritas instalasi utPLSQL** (objek tidak valid di schema UT3, dengan quick-fix "Recompile UT3") beserta aksi quick-fix. |
-| `utplsql.profiles` | `[]` | Profil koneksi Oracle yang tersimpan (nama, koneksi, dan penimpaan `sourcePath`/`coverageOwner`/`invocation`/`cliPath`/dll.) untuk berpindah antar lingkungan. |
+| `utplsql.compilationDiagnostics.enabled` | `true` | Menampilkan error kompilasi PL/SQL sebagai garis bawah di editor dan Panel Problems. |
+| `utplsql.setupDiagnostics.enabled` | `true` | Menampilkan diagnostik konfigurasi (koneksi, grant, versi) serta **integritas instalasi utPLSQL** (objek tidak valid di schema UT3, dengan quick-fix "Recompile UT3") beserta aksi quick-fix. |
+| `utplsql.profiles` | `[]` | Profil koneksi Oracle yang tersimpan (nama, koneksi, dan penimpaan `sourcePath`/`coverageOwner`/dll.) untuk berpindah antar lingkungan. |
 | `utplsql.activeProfile` | `""` | ID profil aktif (`utplsql.profiles`). Jika diatur, menimpa `utplsql.connection`. |
 | `utplsql.sqlCoverageEnabled` | `false` | Melacak view yang dieksekusi melalui `V$SQL` (coverage boolean). Memerlukan `GRANT SELECT ON V$SQL`. |
 | `utplsql.debugger.enabled` | `true` | Mengaktifkan debugging pengujian PL/SQL (`DBMS_DEBUG`). Memerlukan `node-oracledb` + grant. |
@@ -150,7 +122,6 @@ Contoh (`.vscode/settings.json` proyek):
 
 ```jsonc
 {
-  "utplsql.cliPath": "C:\\tools\\utPLSQL-cli\\bin\\utplsql.bat",
   "utplsql.sourcePath": "install",
   // utplsql.connection stays empty -> use the UTPLSQL_CONN environment variable
 }
@@ -169,35 +140,7 @@ lingkungan yang dipakai oleh pengujian integrasi:
 
 ```bash
 UTPLSQL_CONN=your_user/password@//host:1521/service
-UTPLSQL_CLI_PATH=/path/to/utplsql
-UTPLSQL_CLI_HOME=/path/to/utplsql-cli
 ```
-
-### Mode pemanggilan (`launcher` vs `java`)
-
-Secara default (`utplsql.invocation = "launcher"`) ekstensi memanggil launcher
-`utplsql`/`utplsql.bat`. Di Windows ini melewati `cmd`, yang
-**memakan/menginterpretasikan metakarakter** (`^` menjadi escape, `|` menjadi pipe) — sehingga
-merusak regex di `coverageSourceArgs`.
-
-Mode `java` memanggil JVM **secara langsung** (`java -cp <home>/etc;<home>/lib/* …
-org.utplsql.cli.Cli`), **tanpa shell**. Argumen dikirim ke proses sebagai array,
-tanpa `cmd` di antaranya, sehingga `^` dan `|` diteruskan **secara literal** — Anda dapat memakai `^anchors$` dan
-`(a|b|c)` di regex tanpa trik apa pun.
-
-```jsonc
-{
-  "utplsql.invocation": "java",
-  "utplsql.cliPath": "C:\\tools\\utPLSQL-cli\\bin\\utplsql.bat", // cliHome is derived from here
-  // "utplsql.cliHome": "C:\\tools\\utPLSQL-cli",  // only if cliPath is a PATH command
-  // "utplsql.javaPath": "java"                     // PATH, or full path to java.exe
-}
-```
-
-> Mode `java` meniru dengan setia apa yang dilakukan `.bat` (classpath dan properti
-> `-D` yang sama); satu-satunya perbedaan adalah tidak melewati `cmd`. Memerlukan `java` di PATH
-> (atau di `utplsql.javaPath`) dan root CLI yang dapat diselesaikan — baik melalui `cliPath`
-> yang menunjuk ke `…/bin/utplsql(.bat)`, maupun dengan mengatur `cliHome`.
 
 ## Penggunaan
 
@@ -219,8 +162,8 @@ tanpa `cmd` di antaranya, sehingga `^` dan `|` diteruskan **secara literal** —
    - `Ctrl+Shift+U L` — **Rerun Last** (mengulang eksekusi terakhir, dengan atau tanpa coverage).
    - `Ctrl+Shift+U U` — **Run at Cursor** (menjalankan `%test`/`%suite` di bawah kursor).
    - `Ctrl+Shift+U X` — **Run Failed Only** (hanya menjalankan pengujian yang gagal).
-8. **Untuk Oracle langsung (streaming):** tidak perlu menginstal apa pun — VSIX sudah menyertakan driver tipis `oracledb`. Mode `auto` beralih ke CLI jika Oracle tidak dapat diakses.
-9. Untuk diagnostik, gunakan `utPLSQL: Show information` di palet — menampilkan versi CLI/API/DB dengan opsi salin.
+8. **Untuk Oracle langsung (streaming):** tidak perlu menginstal apa pun — VSIX sudah menyertakan driver tipis `oracledb`.
+9. Untuk diagnostik, gunakan `utPLSQL: Show information` di palet — menampilkan versi API/DB dengan opsi salin.
 10. **utPLSQL: Select additional reporter...** — QuickPick berisi reporter yang tersedia di database.
 11. **utPLSQL: Cancel execution** — menghentikan eksekusi yang berjalan (`Escape` selama eksekusi).
 12. **utPLSQL: Refresh tests** — memaksa penemuan ulang `.pks`.
@@ -256,14 +199,14 @@ Semua perintah ekstensi (palet `Ctrl+Shift+P`, prefiks `utPLSQL:`):
 | `utPLSQL: Run tests in this folder` | Menjalankan suite dari folder yang dipilih | Klik kanan → folder |
 | `utPLSQL: Run tests in this folder with coverage` | Sama, dengan profil coverage | Klik kanan → folder |
 | `utPLSQL: Refresh tests` | Memaksa penemuan ulang `.pks` | — |
-| `utPLSQL: Cancel execution` | Menghentikan CLI yang sedang berjalan | — |
-| `utPLSQL: Show utPLSQL information` | Versi CLI/API/DB dengan opsi salin | — |
+| `utPLSQL: Cancel execution` | Menghentikan eksekusi yang berjalan | — |
+| `utPLSQL: Show utPLSQL information` | Versi API/DB dengan opsi salin | — |
 | `utPLSQL: Select additional reporter...` | QuickPick berisi reporter database | — |
 | `utPLSQL: Clear session connection` | Menghapus koneksi dari cache sesi | — |
 | `utPLSQL: Rerun Last` | Mengulang eksekusi terakhir | `Ctrl+Shift+U L` |
 | `utPLSQL: Run Test at Cursor` | Menjalankan pengujian di bawah kursor | `Ctrl+Shift+U U` |
 | `utPLSQL: Run Failed Tests` | Menjalankan ulang hanya pengujian yang gagal | `Ctrl+Shift+U X` |
-| `utPLSQL: Validate configuration` | Menjalankan validasi pengaturan lengkap (CLI, Java, koneksi, instalasi UT3) dan menampilkan hasilnya | — |
+| `utPLSQL: Validate configuration` | Menjalankan validasi pengaturan lengkap (koneksi, instalasi UT3) dan menampilkan hasilnya | — |
 | `utPLSQL: Configure connection` | Membuka pengaturan di `utplsql.connection` | — |
 | `utPLSQL: Copy coverage grants to clipboard` | Menyalin SQL grant ke clipboard | — |
 | `utPLSQL: Show Test Explorer` | Memfokuskan tampilan Testing | — |
@@ -349,13 +292,6 @@ diturunkan dari koneksi (atau dari `utplsql.coverageOwner`).
 
 **Catatan penting:**
 - **Package → `PACKAGE BODY`** (bukan `PACKAGE`): coverage dikumpulkan di **body** package.
-- **Windows / metakarakter regex:** pada mode `launcher` (default), `.bat` melewati `cmd`,
-  yang **memakan `^`** dan **menginterpretasikan `|` sebagai pipe** — itulah sebabnya contoh di atas memakai `\w` dan
-  `[/\\]` (tanpa `^`), dan `|` pada contoh 2 hanya berfungsi di dalam ekstensi. **Solusinya:** gunakan **`utplsql.invocation = "java"`** (lihat
-  [Mode pemanggilan](#mode-pemanggilan-launcher-vs-java)) — tanpa `cmd` di antaranya, `^` dan `|` diteruskan
-  secara literal dan Anda bebas menulis regex secara normal.
-- **Windows / `cmd`:** hindari **`^`** di regex (`cmd` pada `.bat` memakannya) — itulah sebabnya contoh
-  memakai `\w` dan `[/\\]`.
 
 ## Reporter
 
@@ -419,16 +355,11 @@ GRANT SELECT ON SYS.DBA_PROCEDURES TO <ut3_owner>;
 
 | Gejala | Kemungkinan penyebab | Solusi |
 |---|---|---|
-| Suite tidak muncul | CLI tidak ditemukan | Jalankan `utPLSQL: Validate configuration` untuk diagnostik |
 | Coverage kosong | `GRANT EXECUTE ON DBMS_PROFILER` tidak ada | Jalankan grant di [Persyaratan basis data](#persyaratan-basis-data) atau gunakan `utPLSQL: Copy coverage grants to clipboard` |
 | Coverage kosong | Oracle 19c memerlukan grant tambahan | `GRANT EXECUTE ON DBMS_PROFILER` + `GRANT EXECUTE ON DBMS_PLSQL_CODE_COVERAGE` |
-| Kinerja lambat | Suite besar memerlukan heap JVM lebih besar | Tingkatkan `utplsql.javaArgs` (mis. `["-Xmx1024m"]`) |
 | Error kompilasi tanpa keterangan | Kode dengan error sintaks PL/SQL | Aktifkan `utplsql.compilationDiagnostics.enabled` (default aktif); lihat Panel Problems |
 | Error koneksi | String tidak valid atau DB tidak dapat dijangkau | Gunakan `utPLSQL: Validate configuration` |
-| Timeout saat berjalan | Pengujian memakan waktu lebih lama dari `timeoutMinutes` | Tingkatkan `utplsql.timeoutMinutes` |
-| Regex coverage tidak cocok | `cmd` Windows memakan `^` dan `\|` | Gunakan `utplsql.invocation: "java"` (lihat [Mode pemanggilan](#mode-pemanggilan-launcher-vs-java)) |
 | `%suite` tidak dikenali | Tidak ada `%suite`/`create package` di file, atau `%test` tanpa `PROCEDURE` | Periksa spec; jalankan `utPLSQL: Refresh tests` |
-| "report tidak dibuat" | CLI tidak dapat menghasilkan XML output | Periksa izin tulis di `%TEMP%` dan grant utPLSQL |
 | CodeLens tidak muncul | `editor.codeLens` nonaktif atau konflik | Aktifkan `"editor.codeLens": true`; periksa `utplsql.codeLens.enabled` |
 | Pintasan tidak berfungsi | Konflik dengan ekstensi lain atau pintasan VSCode | Buka File → Preferences → Keyboard Shortcuts dan cari `utplsql` untuk mendefinisikan ulang |
 

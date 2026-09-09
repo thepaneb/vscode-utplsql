@@ -19,7 +19,7 @@ Intègre [utPLSQL](https://www.utplsql.org/) dans VSCode, apportant les tests PL
 - 📌 **Barre d'état** — indicateur avec nombre de réussites/échecs, durée et progression en temps réel.
 - 🔁 **Ré-exécution intelligente** — Réexécuter le dernier, Exécuter sous le curseur, Exécuter uniquement les échecs avec un seul raccourci.
 - 🚀 **Oracle direct (via node-oracledb)** — streaming en temps réel, sans attendre la fin du lot.
-- 🔧 **Diagnostics de configuration** — validation proactive de la CLI, de la connexion, des privilèges (grants) et de la version avec action rapide.
+- 🔧 **Diagnostics de configuration** — validation proactive de la connexion, des privilèges (grants) et de la version avec action rapide.
 - 🧩 **Arborescence tenant compte du schéma** — organisez les tests par Schéma > Package > Suite > Test dans l'Explorateur de tests.
 - 🎯 **Accès direct à l'échec** — navigation directe vers la ligne de l'assertion ayant échoué (via « Go to Error » natif).
 - 🔌 **Profils de connexion** — enregistrez et basculez entre plusieurs environnements (DEV/TEST/PROD) avec des paramètres par profil, via la barre d'état ou la palette de commandes.
@@ -39,12 +39,9 @@ L'extension peut être installée de deux manières :
 ## Prérequis
 
 - [**utPLSQL**](https://github.com/utPLSQL/utPLSQL) **(UT3)** installé dans la base de données Oracle.
-- **Pour le mode CLI :** [**utPLSQL-cli**](https://github.com/utPLSQL/utPLSQL-cli/releases) + **Java** installés sur la machine (l'extension invoque la CLI).
-- **Pour le mode Oracle direct :** rien d'autre que la base de données — le VSIX inclut déjà le pilote thin `oracledb` (sans Instant Client).
 - **VSCode 1.88+** (API Test Coverage).
 
-L'extension n'est que le « client graphique » — c'est la base de données qui exécute les tests : via
-la CLI (utPLSQL-cli + Java) ou directement (node-oracledb, `runnerMode: auto` par défaut).
+L'extension se connecte directement à la base de données Oracle via `node-oracledb` (pilote thin, sans Instant Client). Le VSIX inclut déjà le paquet `oracledb`.
 
 ## Connexion
 
@@ -56,7 +53,7 @@ L'extension a besoin d'une chaîne de connexion Oracle pour exécuter les tests.
 4. **Cache de session** — si l'utilisateur a déjà saisi la connexion via l'invite.
 5. **Invite à l'utilisateur** — demande la connexion et ne la conserve que pour la session en cours.
 
-Les profils de connexion (`utplsql.profiles`) peuvent également remplacer `sourcePath`, `coverageOwner`, `invocation`, `cliPath`, etc. par environnement — voir `utplsql.activeProfile` dans le tableau de configuration.
+Les profils de connexion (`utplsql.profiles`) peuvent également remplacer `sourcePath`, `coverageOwner`, etc. par environnement — voir `utplsql.activeProfile` dans le tableau de configuration.
 
 ⚠️ **Recommandation de sécurité :** la chaîne de connexion contient un mot de passe. **N'UTILISEZ PAS** le
 paramètre `utplsql.connection` dans les environnements partagés (settings.json peut être versionné ou visible
@@ -85,59 +82,36 @@ conserve qu'en mémoire pendant la session — utilisez la commande
 
 ## Fonctionnement
 
-Deux modes d'exécution sont disponibles :
-
-![Architecture d'exécution — deux modes](docs/wiki/images/diagram-arquitetura.png)
-
-### Mode Oracle direct (v0.9.0) — `runnerMode: auto` ou `oracle`
+L'extension se connecte directement à la base de données Oracle via `node-oracledb`, diffuse les résultats en temps réel et les traduit dans les API natives de VSCode.
 
 ![Mode Oracle direct — streaming](docs/wiki/images/diagram-streaming.png)
 
 Pas de fichiers temporaires, pas d'attente de la fin du lot. Les résultats apparaissent dans
 l'Explorateur de tests **au fur et à mesure que chaque test se termine**.
 
-### Mode CLI — `runnerMode: cli` (repli)
-
-![Mode CLI — lot](docs/wiki/images/diagram-cli.png)
-
-L'extension construit la ligne de commande CLI ou se connecte via Oracle direct, lit les
-rapports (JUnit + Coverage) et les traduit dans les API natives de VSCode. Le
-mode `auto` (par défaut) essaie Oracle direct et retombe sur la CLI si `node-oracledb` n'est
-pas installé. Utilisez `runnerMode: cli` pour toujours forcer la CLI.
-
 ## Configuration
 
 | Paramètre | Défaut | Description |
 |---|---|---|
 | `utplsql.connection` | `""` | Connexion Oracle. **Laissez vide** et utilisez la variable d'environnement `UTPLSQL_CONN` pour éviter de stocker le mot de passe. Si les deux sont vides, l'extension demande la connexion (conservée uniquement pour la session). |
-| `utplsql.cliPath` | `utplsql` | Chemin vers l'exécutable utPLSQL-cli (par ex. `C:\tools\utPLSQL-cli\bin\utplsql.bat`). |
 | `utplsql.sourcePath` | `install` | Dossier du code de production (pour mapper la couverture vers les fichiers). |
 | `utplsql.includePatterns` | `["**/*.pks"]` | Globs pour découvrir les specs contenant `%suite`/`%test`. Si vos tests sont dans des `.sql`, utilisez `["**/*.sql"]`. |
-| `utplsql.extraRunArgs` | `[]` | Arguments supplémentaires pour `utplsql run`. |
 | `utplsql.coverageOwner` | `""` | Schéma propriétaire des objets couverts. Vide = utilise l'utilisateur de la connexion (en majuscules). |
-| `utplsql.coverageSourceArgs` | (voir **Couverture**) | Arguments CLI qui mappent la couverture vers les fichiers sources. |
-| `utplsql.invocation` | `launcher` | Comment appeler la CLI : `launcher` (via `.bat`/script, par défaut) ou `java` (JVM directe, **sans shell**). Voir **Mode d'invocation**. |
-| `utplsql.javaPath` | `java` | Exécutable Java (PATH ou chemin complet). Utilisé uniquement en mode `java`. |
-| `utplsql.cliHome` | `""` | Racine d'utPLSQL-cli (dossier contenant `bin/` et `lib/`). Vide = dérivé de `cliPath`. Utilisé uniquement en mode `java`. |
-| `utplsql.timeoutMinutes` | `60` | Délai d'expiration en minutes pour la CLI. Le drapeau `-t` n'est envoyé que si la valeur diffère de `60`. |
-| `utplsql.dbmsOutput` | `false` | Active `DBMS_OUTPUT` dans la session de test. Le drapeau `-D` n'est envoyé que lorsqu'il vaut `true`. |
-| `utplsql.quiet` | `false` | Supprime les journaux informatifs de la CLI. Le drapeau `-q` n'est envoyé que lorsqu'il vaut `true`. |
-| `utplsql.failureExitCode` | `1` | Code de sortie en cas d'échec. Le drapeau `--failure-exit-code` n'est envoyé que si la valeur diffère de `1`. `0` fait que la CLI sort toujours avec succès. |
+| `utplsql.timeoutMinutes` | `60` | Délai d'expiration en minutes pour l'exécution des tests. |
+| `utplsql.dbmsOutput` | `false` | Active `DBMS_OUTPUT` dans la session de test. Utile pour le débogage. |
 | `utplsql.additionalReporters` | `[]` | Reporters supplémentaires à inclure à chaque exécution (par ex. `["ut_coverage_html_reporter"]`). Les reporters par défaut (documentation, junit, coverage) sont toujours inclus et n'ont pas besoin d'être listés. |
 | `utplsql.codeLens.enabled` | `true` | Affiche les boutons CodeLens Exécuter/Exécuter avec couverture au-dessus des `%suite` et `%test`. |
 | `utplsql.statusBar.enabled` | `true` | Affiche l'indicateur d'état des tests dans la barre d'état. |
 | `utplsql.decorations.enabled` | `true` | Affiche les décorations réussite/échec sur les lignes `%suite` et `%test` après l'exécution. |
-| `utplsql.runnerMode` | `auto` | Mode d'exécution : `auto` (Oracle direct via node-oracledb, repli CLI), `cli` (toujours via la ligne de commande), `oracle` (toujours Oracle direct). |
 | `utplsql.oraclePoolMin` | `2` | Nombre minimum de connexions conservées dans le pool du runner Oracle (node-oracledb). |
 | `utplsql.oraclePoolMax` | `10` | Nombre maximum de connexions dans le pool du runner Oracle (node-oracledb). |
 | `utplsql.oraclePoolIncrement` | `1` | Incrément lors de l'expansion du pool du runner Oracle (node-oracledb). |
 | `utplsql.oraclePoolPingInterval` | `60` | Secondes entre les vérifications de santé des connexions inactives du pool (node-oracledb). `0` = ping à chaque extraction. |
-| `utplsql.javaArgs` | `["-Xmx256m"]` | Drapeaux JVM pour le mode `java` (par ex. `["-Xmx512m", "-Xms128m"]`). Insérés avant `-cp`. |
-| `utplsql.organization` | `file` | Organisation de l'arborescence : `file` (par chemin) ou `schema` (Schéma > Package > Suite > Test). En mode `schema` avec `runnerMode` Oracle (`auto`/`oracle`), les suites sont également découvertes depuis la base de données (`ALL_OBJECTS`/`ALL_SOURCE`) lorsque les fichiers `.pks` ne sont pas dans l'espace de travail — avec l'URI virtuel `utplsql-db:/` (sans CodeLens/décorations/accès direct à l'échec). |
+| `utplsql.organization` | `file` | Organisation de l'arborescence : `file` (par chemin) ou `schema` (Schéma > Package > Suite > Test). En mode `schema`, les suites sont également découvertes depuis la base de données (`ALL_OBJECTS`/`ALL_SOURCE`) lorsque les fichiers `.pks` ne sont pas dans l'espace de travail — avec l'URI virtuel `utplsql-db:/` (sans CodeLens/décorations/accès direct à l'échec). |
 | `utplsql.organization.schemaPattern` | `db/{schema}/**` | Glob pour extraire le schéma du chemin. Utilisez `{schema}` comme espace réservé. En mode `schema`, les dossiers sous la base du motif (par ex. `db/*`) définissent les schémas interrogés dans la base de données. |
-| `utplsql.compilationDiagnostics.enabled` | `true` | Affiche les erreurs de compilation PL/SQL comme soulignements dans l'éditeur et le panneau Problèmes (mode CLI). |
-| `utplsql.setupDiagnostics.enabled` | `true` | Affiche les diagnostics de configuration (CLI, connexion, privilèges, version) et **l'intégrité de l'installation utPLSQL** (objets invalides dans le schéma UT3, avec action rapide « Recompile UT3 ») avec des actions rapides. |
-| `utplsql.profiles` | `[]` | Profils de connexion Oracle enregistrés (nom, connexion et remplacements de `sourcePath`/`coverageOwner`/`invocation`/`cliPath`/etc.) pour basculer entre les environnements. |
+| `utplsql.compilationDiagnostics.enabled` | `true` | Affiche les erreurs de compilation PL/SQL comme soulignements dans l'éditeur et le panneau Problèmes. |
+| `utplsql.setupDiagnostics.enabled` | `true` | Affiche les diagnostics de configuration (connexion, privilèges, version) et **l'intégrité de l'installation utPLSQL** (objets invalides dans le schéma UT3, avec action rapide « Recompile UT3 ») avec des actions rapides. |
+| `utplsql.profiles` | `[]` | Profils de connexion Oracle enregistrés (nom, connexion et remplacements de `sourcePath`/`coverageOwner`/etc.) pour basculer entre les environnements. |
 | `utplsql.activeProfile` | `""` | ID du profil actif (`utplsql.profiles`). Lorsqu'il est défini, remplace `utplsql.connection`. |
 | `utplsql.sqlCoverageEnabled` | `false` | Suit les vues exécutées via `V$SQL` (couverture booléenne). Nécessite `GRANT SELECT ON V$SQL`. |
 | `utplsql.debugger.enabled` | `true` | Active le débogage des tests PL/SQL (`DBMS_DEBUG`). Nécessite `node-oracledb` + privilèges. |
@@ -149,7 +123,6 @@ Exemple (`.vscode/settings.json` du projet) :
 
 ```jsonc
 {
-  "utplsql.cliPath": "C:\\tools\\utPLSQL-cli\\bin\\utplsql.bat",
   "utplsql.sourcePath": "install",
   // utplsql.connection stays empty -> use the UTPLSQL_CONN environment variable
 }
@@ -168,35 +141,7 @@ d'environnement utilisées par les tests d'intégration :
 
 ```bash
 UTPLSQL_CONN=your_user/password@//host:1521/service
-UTPLSQL_CLI_PATH=/path/to/utplsql
-UTPLSQL_CLI_HOME=/path/to/utplsql-cli
 ```
-
-### Mode d'invocation (`launcher` vs `java`)
-
-Par défaut (`utplsql.invocation = "launcher"`), l'extension appelle le
-lanceur `utplsql`/`utplsql.bat`. Sous Windows, cela passe par `cmd`, qui
-**consomme/interprète les métacaractères** (`^` devient une échappement, `|` devient un pipe) — ce qui
-casse les regex dans `coverageSourceArgs`.
-
-Le mode `java` appelle la JVM **directement** (`java -cp <home>/etc;<home>/lib/* …
-org.utplsql.cli.Cli`), **sans shell**. Les arguments vont au processus sous forme de tableau,
-sans `cmd` intermédiaire, donc `^` et `|` passent **littéralement** — vous pouvez utiliser `^ancres$` et
-`(a|b|c)` dans la regex sans contournements.
-
-```jsonc
-{
-  "utplsql.invocation": "java",
-  "utplsql.cliPath": "C:\\tools\\utPLSQL-cli\\bin\\utplsql.bat", // cliHome est dérivé d'ici
-  // "utplsql.cliHome": "C:\\tools\\utPLSQL-cli",  // uniquement si cliPath est une commande du PATH
-  // "utplsql.javaPath": "java"                     // PATH, ou chemin complet vers java.exe
-}
-```
-
-> Le mode `java` reproduit fidèlement ce que fait le `.bat` (même classpath et mêmes
-> propriétés `-D`) ; la seule différence est de ne pas passer par `cmd`. Nécessite `java` sur le PATH
-> (ou dans `utplsql.javaPath`) et que la racine de la CLI soit résoluble — soit via `cliPath`
-> pointant vers `…/bin/utplsql(.bat)`, soit en définissant `cliHome`.
 
 ## Utilisation
 
@@ -218,11 +163,10 @@ sans `cmd` intermédiaire, donc `^` et `|` passent **littéralement** — vous p
    - `Ctrl+Shift+U L` — **Réexécuter le dernier** (répète la dernière exécution, avec ou sans couverture).
    - `Ctrl+Shift+U U` — **Exécuter sous le curseur** (exécute le `%test`/`%suite` sous le curseur).
    - `Ctrl+Shift+U X` — **Exécuter uniquement les échecs** (exécute uniquement les tests ayant échoué).
-8. **Pour Oracle direct (streaming) :** rien à installer — le VSIX inclut déjà le pilote thin `oracledb`. Le mode `auto` retombe sur la CLI si Oracle n'est pas accessible.
-9. Pour les diagnostics, utilisez `utPLSQL: Show information` dans la palette — affiche les versions CLI/API/DB avec une option de copie.
-10. **utPLSQL: Select additional reporter...** — QuickPick avec les reporters disponibles dans la base de données.
-11. **utPLSQL: Cancel execution** — arrête l'exécution en cours (`Escape` pendant l'exécution).
-12. **utPLSQL: Refresh tests** — force la redécouverte des `.pks`.
+8. Pour les diagnostics, utilisez `utPLSQL: Show information` dans la palette — affiche les versions API/DB avec une option de copie.
+9. **utPLSQL: Select additional reporter...** — QuickPick avec les reporters disponibles dans la base de données.
+10. **utPLSQL: Cancel execution** — arrête l'exécution en cours (`Escape` pendant l'exécution).
+11. **utPLSQL: Refresh tests** — force la redécouverte des `.pks`.
 
 > 💡 **Lors de l'écriture des tests :** le parseur est piloté par les jetons — il suffit d'avoir `%suite`
 > et la déclaration `create package` dans le fichier, ainsi que chaque `%test` suivi de son
@@ -255,14 +199,14 @@ Toutes les commandes de l'extension (palette `Ctrl+Shift+P` préfixe `utPLSQL:`)
 | `utPLSQL: Run tests in this folder` | Exécute les suites du dossier sélectionné | Clic droit → dossier |
 | `utPLSQL: Run tests in this folder with coverage` | Identique, avec profil de couverture | Clic droit → dossier |
 | `utPLSQL: Refresh tests` | Force la redécouverte des `.pks` | — |
-| `utPLSQL: Cancel execution` | Arrête la CLI en cours d'exécution | — |
-| `utPLSQL: Show utPLSQL information` | Versions CLI/API/DB avec option de copie | — |
+| `utPLSQL: Cancel execution` | Arrête l'exécution en cours | — |
+| `utPLSQL: Show utPLSQL information` | Versions API/DB avec option de copie | — |
 | `utPLSQL: Select additional reporter...` | QuickPick avec les reporters de la base | — |
 | `utPLSQL: Clear session connection` | Supprime la connexion du cache de session | — |
 | `utPLSQL: Rerun Last` | Répète la dernière exécution | `Ctrl+Shift+U L` |
 | `utPLSQL: Run Test at Cursor` | Exécute le test sous le curseur | `Ctrl+Shift+U U` |
 | `utPLSQL: Run Failed Tests` | Ré-exécute uniquement les tests ayant échoué | `Ctrl+Shift+U X` |
-| `utPLSQL: Validate configuration` | Lance la validation complète de la configuration (CLI, Java, connexion, installation UT3) et affiche les résultats | — |
+| `utPLSQL: Validate configuration` | Lance la validation complète de la configuration (connexion, installation UT3) et affiche les résultats | — |
 | `utPLSQL: Configure connection` | Ouvre les paramètres sur `utplsql.connection` | — |
 | `utPLSQL: Copy coverage grants to clipboard` | Copie le SQL des privilèges dans le presse-papiers | — |
 | `utPLSQL: Show Test Explorer` | Met la vue Testing au premier plan | — |
@@ -306,55 +250,9 @@ Tous les raccourcis utilisent le préfixe `Ctrl+Shift+U` (`Cmd+Shift+U` sur Mac)
   <img src="images/image2.png" alt="Explorateur de tests" width="600" height="400">
 </p>
 
-L'extension passe `-source_path` (= `utplsql.sourcePath`) et mappe les objets couverts
-vers les fichiers sources via `utplsql.coverageSourceArgs` (regex + `type_mapping`). Le `-owner`
-est dérivé de la connexion (ou de `utplsql.coverageOwner`).
-
-### Mapper la couverture vers les fichiers (`coverageSourceArgs`)
-
-Le `type_mapping` traduit le « type » capturé par la regex en type Oracle. Trois conventions courantes :
-
-**1) Par dossier** — structure `sourcePath/<type>/<name>.sql` (dossiers `functions/`, `procedures/`, `packages/`, …) :
-```jsonc
-"utplsql.coverageSourceArgs": [
-  "-regex_expression=.*[/\\\\](\\w+)[/\\\\](\\w+)\\.sql$",
-  "-type_subexpression=1",   // groupe 1 = dossier (type)
-  "-name_subexpression=2",   // groupe 2 = fichier (nom de l'objet)
-  "-type_mapping=packages=PACKAGE BODY/functions=FUNCTION/procedures=PROCEDURE/triggers=TRIGGER"
-]
-```
-> Fonctionne à n'importe quelle profondeur (le `.*` absorbe les modules au-dessus). Des noms de dossiers
-> variés (par ex. `package`, `pkg`, `pacote`) peuvent être énumérés dans le `type_mapping`.
-
-**2) Par préfixe de nom** — convention `pkg_*`, `prc_*`, `vw_*` (indépendante du dossier) :
-```jsonc
-"utplsql.coverageSourceArgs": [
-  "-regex_expression=.*[/\\\\]((pkg|prc|fnc|trg|vw)_\\w+)\\.sql$",
-  "-name_subexpression=1",   // groupe 1 = nom complet (par ex. PKG_EXAMPLE)
-  "-type_subexpression=2",   // groupe 2 = préfixe (type)
-  "-type_mapping=pkg=PACKAGE BODY/prc=PROCEDURE/fnc=FUNCTION/trg=TRIGGER/vw=VIEW"
-]
-```
-
-**3) Par extension typée** — fichiers `*.pkb`, `*.fnc`, `*.prc`, `*.trg` (indépendante du dossier) :
-```jsonc
-"utplsql.coverageSourceArgs": [
-  "-regex_expression=.*[/\\\\](\\w+)\\.(\\w+)$",
-  "-name_subexpression=1",   // groupe 1 = nom
-  "-type_subexpression=2",   // groupe 2 = extension (type)
-  "-type_mapping=pkb=PACKAGE BODY/fnc=FUNCTION/prc=PROCEDURE/trg=TRIGGER"
-]
-```
-
-**Remarques importantes :**
-- **Packages → `PACKAGE BODY`** (pas `PACKAGE`) : la couverture est collectée dans le **body** du package.
-- **Windows / métacaractères de regex :** en mode `launcher` (par défaut), le `.bat` passe par `cmd`,
-  qui **consomme `^`** et **interprète `|` comme un pipe** — c'est pourquoi les exemples ci-dessus utilisent `\w` et
-  `[/\\]` (pas de `^`), et le `|` de l'exemple 2 ne fonctionne qu'à l'intérieur de l'extension. **Solution :** utilisez **`utplsql.invocation = "java"`** (voir
-  [Mode d'invocation](#mode-dinvocation-launcher-vs-java)) — sans `cmd` intermédiaire, `^` et `|` passent
-  littéralement et vous êtes libre d'écrire la regex normalement.
-- **Windows / `cmd` :** évitez **`^`** dans la regex (le `cmd` du `.bat` la consomme) — c'est pourquoi les exemples
-  utilisent `\w` et `[/\\]`.
+La couverture est collectée via `ut_file_mapper.build_file_mappings()` et rapportée via
+`ut_coverage_cobertura_reporter`. L'extension mappe les objets couverts vers les fichiers sources
+automatiquement en utilisant le paramètre `utplsql.sourcePath` et le schéma `utplsql.coverageOwner`.
 
 ## Reporters
 
@@ -364,8 +262,8 @@ L'extension inclut toujours trois reporters par défaut :
 `ut_coverage_cobertura_reporter` (couverture, si disponible).
 
 **Validation dynamique** — avant d'exécuter avec couverture, l'extension interroge
-la base de données via `utplsql reporters <conn>`. Si
-`UT_COVERAGE_COBERTURA_REPORTER` n'existe pas dans la base de données (par ex. utPLSQL
+la base de données via `ALL_OBJECTS` pour vérifier que `UT_COVERAGE_COBERTURA_REPORTER`
+existe. Si ce n'est pas le cas (par ex. utPLSQL
 obsolète), la couverture est ignorée avec un avertissement dans la sortie. L'exécution des tests
 n'est jamais bloquée.
 
@@ -418,16 +316,13 @@ GRANT SELECT ON SYS.DBA_PROCEDURES TO <ut3_owner>;
 
 | Symptôme | Cause probable | Solution |
 |---|---|---|
-| Les suites n'apparaissent pas | CLI introuvable | Exécutez `utPLSQL: Validate configuration` pour obtenir des diagnostics |
+| Les suites n'apparaissent pas | Problème de connexion | Exécutez `utPLSQL: Validate configuration` pour obtenir des diagnostics |
 | Couverture vide | `GRANT EXECUTE ON DBMS_PROFILER` manquant | Exécutez les privilèges de [Prérequis de la base de données](#prérequis-de-la-base-de-données) ou utilisez `utPLSQL: Copy coverage grants to clipboard` |
 | Couverture vide | Oracle 19c nécessite des privilèges supplémentaires | `GRANT EXECUTE ON DBMS_PROFILER` + `GRANT EXECUTE ON DBMS_PLSQL_CODE_COVERAGE` |
-| Performances lentes | Les grandes suites nécessitent plus de heap JVM | Augmentez `utplsql.javaArgs` (par ex. `["-Xmx1024m"]`) |
 | Erreur de compilation sans indication | Code avec erreur de syntaxe PL/SQL | Activez `utplsql.compilationDiagnostics.enabled` (activé par défaut) ; voir le panneau Problèmes |
 | Erreur de connexion | Chaîne mal formée ou base inaccessible | Utilisez `utPLSQL: Validate configuration` |
 | Délai d'expiration pendant l'exécution | Les tests prennent plus de temps que `timeoutMinutes` | Augmentez `utplsql.timeoutMinutes` |
-| La regex de couverture ne correspond pas | Le `cmd` de Windows consomme `^` et `\|` | Utilisez `utplsql.invocation: "java"` (voir [Mode d'invocation](#mode-dinvocation-launcher-vs-java)) |
 | `%suite` non reconnu | `%suite`/`create package` manquant dans le fichier, ou `%test` sans `PROCEDURE` | Vérifiez la spec ; exécutez `utPLSQL: Refresh tests` |
-| « report not generated » | La CLI n'a pas pu générer le XML de sortie | Vérifiez les permissions d'écriture dans `%TEMP%` et les privilèges utPLSQL |
 | CodeLens n'apparaît pas | `editor.codeLens` désactivé ou conflit | Activez `"editor.codeLens": true` ; vérifiez `utplsql.codeLens.enabled` |
 | Les raccourcis ne fonctionnent pas | Conflit avec une autre extension ou un raccourci VSCode | Allez dans Fichier → Préférences → Raccourcis clavier et recherchez `utplsql` pour redéfinir |
 

@@ -1,8 +1,5 @@
 import * as vscode from 'vscode';
-import { getCliInfo } from './cliInfo';
-import { listReporters } from './cliReporters';
 import { type CodeLensItem, parseCodeLensItems, UtplsqlCodeLensProvider } from './codelens';
-import { compilationDiagnostics } from './compilationDiagnostics';
 import {
   clearSessionConnection,
   getExtensionLocale,
@@ -105,22 +102,48 @@ export function activate(context: vscode.ExtensionContext) {
     vscode.commands.registerCommand('utplsql.selectReporter', async () => {
       const conn = await resolveConnection();
       if (!conn) return;
-      const cfg = readConfig();
-      const reporters = await listReporters(cfg, conn);
-      if ('error' in reporters) {
-        vscode.window.showErrorMessage(
-          t(locale, 'ext.reporters.listFailed', { error: reporters.error }),
-        );
+      let oracledb: typeof import('oracledb');
+      try {
+        const mod = await import('oracledb');
+        oracledb =
+          ((mod as Record<string, unknown>).default as typeof import('oracledb')) ??
+          (mod as typeof import('oracledb'));
+      } catch {
+        vscode.window.showErrorMessage(t(locale, 'common.oracledbMissing'));
         return;
       }
-      const selected = await vscode.window.showQuickPick(reporters, {
-        placeHolder: t(locale, 'ext.reporters.placeholder'),
-      });
-      if (selected) {
-        state.setExtraReporter(selected);
-        vscode.window.showInformationMessage(
-          t(locale, 'ext.reporters.willUse', { name: selected }),
-        );
+      const { ensurePool, listReportersOracle, parseConnString } = await import(
+        './oracleRunner.js'
+      );
+      const cfg = readConfig();
+      const pool = await ensurePool(oracledb, conn, cfg).catch(() => undefined);
+      let oracleConn: import('oracledb').Connection;
+      try {
+        oracleConn = pool
+          ? await pool.getConnection()
+          : await oracledb.getConnection(parseConnString(conn));
+      } catch {
+        return;
+      }
+      try {
+        const reporters = await listReportersOracle(oracleConn);
+        if (reporters.length === 0) {
+          vscode.window.showErrorMessage(
+            t(locale, 'ext.reporters.listFailed', { error: 'no reporters found' }),
+          );
+          return;
+        }
+        const selected = await vscode.window.showQuickPick(reporters, {
+          placeHolder: t(locale, 'ext.reporters.placeholder'),
+        });
+        if (selected) {
+          state.setExtraReporter(selected);
+          vscode.window.showInformationMessage(
+            t(locale, 'ext.reporters.willUse', { name: selected }),
+          );
+        }
+      } finally {
+        await oracleConn.close().catch(() => {});
       }
     }),
     vscode.commands.registerCommand('utplsql.clearConnection', () => {
@@ -128,16 +151,40 @@ export function activate(context: vscode.ExtensionContext) {
       vscode.window.showInformationMessage(t(locale, 'ext.connection.cleared'));
     }),
     vscode.commands.registerCommand('utplsql.showInfo', async () => {
-      const cfg = readConfig();
-      const info = await getCliInfo(cfg);
-      if ('error' in info) {
-        vscode.window.showErrorMessage(t(locale, 'ext.info.failed', { error: info.error }));
+      const conn = await resolveConnection();
+      if (!conn) {
+        vscode.window.showErrorMessage(t(locale, 'ext.noConnection'));
         return;
       }
-      let msg = `CLI: ${info.cliVersion}\nAPI: ${info.apiVersion}`;
-      if (info.dbVersion) msg += `\nDB:  ${info.dbVersion}`;
-      const copy = await vscode.window.showInformationMessage(msg, t(locale, 'common.copy'));
-      if (copy) vscode.env.clipboard.writeText(msg);
+      let oracledb: typeof import('oracledb');
+      try {
+        const mod = await import('oracledb');
+        oracledb =
+          ((mod as Record<string, unknown>).default as typeof import('oracledb')) ??
+          (mod as typeof import('oracledb'));
+      } catch {
+        vscode.window.showErrorMessage(t(locale, 'common.oracledbMissing'));
+        return;
+      }
+      const { ensurePool, getOracleInfo, parseConnString } = await import('./oracleRunner.js');
+      const cfg = readConfig();
+      const pool = await ensurePool(oracledb, conn, cfg).catch(() => undefined);
+      let oracleConn: import('oracledb').Connection;
+      try {
+        oracleConn = pool
+          ? await pool.getConnection()
+          : await oracledb.getConnection(parseConnString(conn));
+      } catch {
+        return;
+      }
+      try {
+        const info = await getOracleInfo(oracleConn);
+        const msg = `utPLSQL: ${info.utVersion ?? 'unknown'}\nOracle DB: ${info.dbVersion ?? 'unknown'}`;
+        const copy = await vscode.window.showInformationMessage(msg, t(locale, 'common.copy'));
+        if (copy) vscode.env.clipboard.writeText(msg);
+      } finally {
+        await oracleConn.close().catch(() => {});
+      }
     }),
     vscode.commands.registerCommand(
       'utplsql.runLens',
@@ -257,8 +304,6 @@ export function activate(context: vscode.ExtensionContext) {
 
   decorationManager = new DecorationManager();
   context.subscriptions.push(decorationManager);
-
-  context.subscriptions.push(compilationDiagnostics);
 
   context.subscriptions.push(setupValidator);
 
@@ -528,9 +573,7 @@ async function doRefresh(controller: vscode.TestController): Promise<void> {
   state.clearSuiteMap();
 
   if (cfg.organization === 'schema' && folders?.length) {
-    if (cfg.runnerMode !== 'cli') {
-      await mergeDbSuites(suites, folders, cfg.organizationSchemaPattern);
-    }
+    await mergeDbSuites(suites, folders, cfg.organizationSchemaPattern);
     buildSchemaTree(controller, suites, cfg.organizationSchemaPattern);
   } else {
     buildFileTree(controller, suites);

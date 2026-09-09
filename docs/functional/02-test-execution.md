@@ -1,14 +1,6 @@
 # 02 — Test Execution
 
-Execução de testes utPLSQL via CLI ou conexão Oracle direta.
-
-## Modos de execução
-
-| Modo | Setting | Mecanismo |
-|---|---|---|
-| **CLI** | `runnerMode: cli` | Spawn `utplsql run` como processo filho |
-| **Oracle direto** | `runnerMode: oracle` | `node-oracledb` com 2 conexões (run + polling) |
-| **Auto** | `runnerMode: auto` (default) | Tenta Oracle direto; fallback CLI em **qualquer** erro do `executeRunOracle` (oracledb ausente, conexão falha, grants) |
+Execução de testes utPLSQL via conexão Oracle direta (node-oracledb).
 
 ## Fluxo — `executeRun()`
 
@@ -16,85 +8,23 @@ Execução de testes utPLSQL via CLI ou conexão Oracle direta.
 executeRun(controller, request, token, coverage, state, onSuiteStart, onComplete)
     │
     ├─► resolveConnection() → connection string
-    ├─► readConfig() → cfg (inclui runnerMode)
+    ├─► readConfig() → cfg
     ├─► resolve items (include / all suites)
     │       └─► pathArgs = Set de nomes de package
     │
-    ├─► runnerMode === 'oracle' || runnerMode === 'auto'
-    │       ├─► tenta executeRunOracle(...)
-    │       │       ├─► sucesso → run.end() → return
-    │       │       └─► erro + runnerMode === 'oracle' → errored todos → return
-    │       └─► fallback: continua com CLI
-    │
-    ├─► CLI: monta args (run, connection, paths, reporters, flags)
-    │       └─► buildInvocation(cfg, args) → { file, args, shell }
-    │
-    ├─► runCli(file, args, shell, cwd, token, onStdout)
-    │       └─► child_process.spawn (com ou sem shell)
+    ├─► executeRunOracle(...)
+    │       ├─► sucesso → run.end() → return
+    │       └─► erro → errored todos → return
     │
     ├─► parseJUnit(results.xml) → TestCaseResult[]
     ├─► applyResults() → Map<TestItem.id, {status, message}>
     ├─► applyCoverage() → gutters + FileCoverage
     ├─► compilationDiagnostics.parseFromOutput → resolveFiles → apply (se habilitado)
     │
-    └─► limpeza: fs.rmSync(tmpDir) + run.end()
+    └─► limpeza: run.end()
 ```
 
-## CLI mode — detalhes
-
-### `buildInvocation` (src/invocation.ts)
-
-```typescript
-function buildInvocation(cfg: InvocationConfig, cliArgs: string[]): Spawn | InvocationError
-```
-
-**Modo `launcher`** (shell=true):
-- `file = cfg.cliPath`, `args = cliArgs`, `shell = true`
-- Windows: `cmd.exe /d /c cliPath args...`
-
-**Modo `java`** (shell=false):
-- `file = cfg.javaPath || 'java'`
-- `args = [...cfg.javaArgs, '-cp', classpath, '-Dapp.*', UTPLSQL_MAIN_CLASS, ...cliArgs]`
-- classpath: `<cliHome>/etc` + `<cliHome>/lib/*`
-- `javaArgs` (default `['-Xmx256m']`) inserido antes de `-cp`
-
-### `runCli` (src/cli.ts)
-
-```typescript
-function runCli(
-  file: string,
-  args: string[],
-  shell: boolean,
-  cwd: string,
-  token: CancellationToken,
-  onStdout?: (chunk: string) => void,
-): Promise<CliResult>
-```
-
-- `shell=true`: usa `cmd.exe /d /c` no Windows, `sh -c` no Linux
-- `shell=false`: spawn direto (array de args, sem quoting)
-- Callback `onStdout` em streaming (documentation reporter)
-- Cancelamento: `token.onCancellationRequested` → `child.kill()`
-- Timeout: configurado via `utplsql.timeoutMinutes` → flag `-t`
-
-### Argumentos do CLI
-
-```
-utplsql run <conn> -p=<suite> -f=ut_documentation_reporter -c
-  -f=ut_junit_reporter -o=<tmpDir>/results.xml
-  -f=ut_coverage_cobertura_reporter -o=<tmpDir>/coverage.xml
-  -source_path=<sourcePath> -owner=<owner> <coverageSourceArgs>
-  -t=<timeoutMinutes>  (se !== 60)
-  -D                    (se dbmsOutput)
-  -q                    (se quiet)
-  --failure-exit-code=N (se !== 1)
-  <extraRunArgs>
-  <additionalReporters>
-```
-
-## Oracle direto — detalhes
-
-### `executeRunOracle` (src/oracleRunner.ts)
+## `executeRunOracle` (src/oracleRunner.ts)
 
 ```typescript
 interface OracleRunOptions {
@@ -125,7 +55,7 @@ async function executeRunOracle(options: OracleRunOptions, token: CancellationTo
 
 ### Connection pooling (PRD-38)
 
-O pool é criado **lazy** no primeiro run Oracle e gerenciado por
+O pool é criado **lazy** no primeiro run e gerenciado por
 `oracleRunner.ts`:
 
 ```typescript
@@ -198,26 +128,16 @@ conn1 (run)                              conn2 (poll)
 
 ## Cancelamento
 
-- **CLI**: `token.onCancellationRequested` → `child.kill()` → processo termina
-- **Oracle**: `token.onCancellationRequested` → `conn.break()` → `ut_runner.run` interrompido
-- Ambos retornam `run.end()` após cancelamento
+`token.onCancellationRequested` → `conn.break()` → `ut_runner.run` interrompido → `run.end()`.
 
 ## Settings
 
 | Setting | Default | Descrição |
 |---|---|---|
-| `utplsql.runnerMode` | `auto` | `auto`, `cli`, `oracle` |
-| `utplsql.invocation` | `launcher` | `launcher` ou `java` |
-| `utplsql.cliPath` | `utplsql` | Caminho do executável CLI |
-| `utplsql.javaPath` | `java` | Executável Java |
-| `utplsql.javaArgs` | `["-Xmx256m"]` | Flags JVM (modo java) |
-| `utplsql.cliHome` | `""` | Raiz do CLI (modo java) |
 | `utplsql.timeoutMinutes` | `60` | Timeout da execução |
-| `utplsql.oraclePoolMin` | `2` | Conexões mínimas do pool (Oracle runner) |
+| `utplsql.oraclePoolMin` | `2` | Conexões mínimas do pool |
 | `utplsql.oraclePoolMax` | `10` | Conexões máximas do pool |
 | `utplsql.oraclePoolIncrement` | `1` | Incremento ao expandir o pool |
 | `utplsql.oraclePoolPingInterval` | `60` | Segundos entre health checks das conexões ociosas |
 | `utplsql.dbmsOutput` | `false` | Habilita DBMS_OUTPUT |
 | `utplsql.quiet` | `false` | Suprime logs |
-| `utplsql.failureExitCode` | `1` | Código de saída em falha |
-| `utplsql.extraRunArgs` | `[]` | Argumentos extras |

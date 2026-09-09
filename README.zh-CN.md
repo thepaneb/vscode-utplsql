@@ -19,7 +19,7 @@
 - 📌 **状态栏** — 显示通过/失败数量、持续时间和实时进度的指示器。
 - 🔁 **智能重新运行** — Rerun Last、Run at Cursor、Run Failed Only 只需一个快捷键。
 - 🚀 **Oracle 直连（通过 node-oracledb）** — 实时流式传输，无需等待批处理完成。
-- 🔧 **配置诊断** — 主动验证 CLI、连接、授权和版本，并提供快速修复。
+- 🔧 **配置诊断** — 主动验证连接、授权和版本，并提供快速修复。
 - 🧩 **Schema 感知的树** — 在 Test Explorer 中按 Schema > Package > Suite > Test 组织测试。
 - 🎯 **跳转到失败** — 直接导航到失败的断言所在行（通过原生的 "Go to Error"）。
 - 🔌 **连接配置** — 通过状态栏或命令面板，保存并切换多个环境（DEV/TEST/PROD），支持按配置自定义设置。
@@ -39,12 +39,10 @@
 ## 环境要求
 
 - [**utPLSQL**](https://github.com/utPLSQL/utPLSQL) **(UT3)** 已安装到 Oracle 数据库中。
-- **对于 CLI 模式：** 在机器上安装 [**utPLSQL-cli**](https://github.com/utPLSQL/utPLSQL-cli/releases) + **Java**（扩展会调用 CLI）。
-- **对于 Oracle 直连模式：** 只需数据库即可 — VSIX 已包含精简版 `oracledb` 驱动（无需 Instant Client）。
+- 只需数据库即可 — VSIX 已包含精简版 `oracledb` 驱动（无需 Instant Client）。
 - **VSCode 1.88+**（测试覆盖率 API）。
 
-扩展只是"图形客户端" — 真正运行测试的是数据库：通过
-CLI（utPLSQL-cli + Java）或直连（node-oracledb，默认 `runnerMode: auto`）。
+扩展只是"图形客户端" — 真正运行测试的是数据库，通过 node-oracledb 直连。
 
 ## 连接
 
@@ -56,7 +54,7 @@ CLI（utPLSQL-cli + Java）或直连（node-oracledb，默认 `runnerMode: auto`
 4. **会话缓存** — 如果用户已经通过提示输入了连接。
 5. **提示用户** — 询问并在当前会话中仅保留在内存中。
 
-连接配置（`utplsql.profiles`）还可以按环境覆盖 `sourcePath`、`coverageOwner`、`invocation`、`cliPath` 等 — 请参阅配置表中的 `utplsql.activeProfile`。
+连接配置（`utplsql.profiles`）还可以按环境覆盖 `sourcePath`、`coverageOwner` 等 — 请参阅配置表中的 `utplsql.activeProfile`。
 
 ⚠️ **安全建议：** 连接字符串包含密码。**不要**在共享环境中使用
 `utplsql.connection` 设置（settings.json 可能会被版本管理或对其他人可见）。
@@ -74,7 +72,7 @@ export UTPLSQL_CONN="user/password@//host:1521/service"
 code .
 ```
 
-如果设置和环境变量均未定义，扩展会询问连接并在会话期间仅保存在内存中 — 使用命令
+如果设置和环境变量均未定义，扩展会在会话期间仅保存在内存中 — 使用命令
 **utPLSQL: Clear session connection**（命令面板）来清除它。
 
 **支持的格式：**
@@ -84,57 +82,36 @@ code .
 
 ## 工作原理
 
-有两种执行模式可用：
-
-![执行架构 — 两种模式](docs/wiki/images/diagram-arquitetura.png)
-
-### Oracle 直连模式（v0.9.0）— `runnerMode: auto` 或 `oracle`
+扩展通过 node-oracledb 直连 Oracle 数据库运行测试。
 
 ![Oracle 直连模式 — 流式传输](docs/wiki/images/diagram-streaming.png)
 
 无临时文件，无需等待批处理。结果会在 **每个测试完成时** 出现在
 Test Explorer 中。
 
-### CLI 模式 — `runnerMode: cli`（回退）
-
-![CLI 模式 — 批处理](docs/wiki/images/diagram-cli.png)
-
-扩展会构建 CLI 命令行，或通过 Oracle 直连，读取报告（JUnit + 覆盖率），并将其转换为 VSCode 的原生 API。
-`auto` 模式（默认）会先尝试 Oracle 直连，如果未安装 `node-oracledb` 则回退到 CLI。使用 `runnerMode: cli` 可始终强制使用 CLI。
-
 ## 配置
 
 | 设置 | 默认值 | 说明 |
 |---|---|---|
 | `utplsql.connection` | `""` | Oracle 连接。**留空**并使用 `UTPLSQL_CONN` 环境变量，以避免存储密码。如果两者均为空，扩展会询问（仅在会话中保留）。 |
-| `utplsql.cliPath` | `utplsql` | utPLSQL-cli 可执行文件的路径（例如 `C:\tools\utPLSQL-cli\bin\utplsql.bat`）。 |
 | `utplsql.sourcePath` | `install` | 生产代码的文件夹（用于将覆盖率映射到文件）。 |
 | `utplsql.includePatterns` | `["**/*.pks"]` | 用于发现包含 `%suite`/`%test` 的 spec 的 glob 模式。如果您的测试在 `.sql` 中，请使用 `["**/*.sql"]`。 |
-| `utplsql.extraRunArgs` | `[]` | `utplsql run` 的额外参数。 |
 | `utplsql.coverageOwner` | `""` | 被覆盖对象的 schema 所有者。留空 = 使用连接用户（大写）。 |
-| `utplsql.coverageSourceArgs` | （见 **覆盖率**） | 将覆盖率映射到源文件的 CLI 参数。 |
-| `utplsql.invocation` | `launcher` | 如何调用 CLI：`launcher`（通过 `.bat`/脚本，默认）或 `java`（直接 JVM，**无 shell**）。见 **调用模式**。 |
-| `utplsql.javaPath` | `java` | Java 可执行文件（PATH 或完整路径）。仅在 `java` 模式下使用。 |
-| `utplsql.cliHome` | `""` | utPLSQL-cli 的根目录（包含 `bin/` 和 `lib/` 的文件夹）。留空 = 从 `cliPath` 推导。仅在 `java` 模式下使用。 |
-| `utplsql.timeoutMinutes` | `60` | CLI 的超时时间（分钟）。仅当值不同于 `60` 时才发送 `-t` 标志。 |
-| `utplsql.dbmsOutput` | `false` | 在测试会话中启用 `DBMS_OUTPUT`。仅当为 `true` 时才发送 `-D` 标志。 |
-| `utplsql.quiet` | `false` | 抑制信息性 CLI 日志。仅当为 `true` 时才发送 `-q` 标志。 |
-| `utplsql.failureExitCode` | `1` | 失败时的退出码。仅当值不同于 `1` 时才发送 `--failure-exit-code` 标志。`0` 使 CLI 始终成功退出。 |
+| `utplsql.timeoutMinutes` | `60` | 执行超时时间（分钟）。 |
+| `utplsql.dbmsOutput` | `false` | 在测试会话中启用 `DBMS_OUTPUT`。 |
 | `utplsql.additionalReporters` | `[]` | 每次运行时要包含的额外 reporter（例如 `["ut_coverage_html_reporter"]`）。默认的（documentation、junit、coverage）始终包含，无需列出。 |
 | `utplsql.codeLens.enabled` | `true` | 在 `%suite` 和 `%test` 上显示 Run/Run with Coverage CodeLens 按钮。 |
 | `utplsql.statusBar.enabled` | `true` | 在状态栏中显示测试状态指示器。 |
 | `utplsql.decorations.enabled` | `true` | 执行后在 `%suite` 和 `%test` 行上显示通过/失败装饰。 |
-| `utplsql.runnerMode` | `auto` | 执行模式：`auto`（通过 node-oracledb 的 Oracle 直连，CLI 回退）、`cli`（始终通过命令行）、`oracle`（始终 Oracle 直连）。 |
 | `utplsql.oraclePoolMin` | `2` | Oracle runner 池（node-oracledb）中保持的最小连接数。 |
 | `utplsql.oraclePoolMax` | `10` | Oracle runner 池（node-oracledb）中的最大连接数。 |
 | `utplsql.oraclePoolIncrement` | `1` | 扩展 Oracle runner 池（node-oracledb）时的增量。 |
 | `utplsql.oraclePoolPingInterval` | `60` | 空闲池连接健康检查之间的秒数（node-oracledb）。`0` = 每次签出时 ping。 |
-| `utplsql.javaArgs` | `["-Xmx256m"]` | `java` 模式的 JVM 标志（例如 `["-Xmx512m", "-Xms128m"]`）。插入在 `-cp` 之前。 |
-| `utplsql.organization` | `file` | 树组织方式：`file`（按路径）或 `schema`（Schema > Package > Suite > Test）。在 `schema` 模式配合 Oracle `runnerMode`（`auto`/`oracle`）时，如果工作区中没有 `.pks` 文件，还会从数据库（`ALL_OBJECTS`/`ALL_SOURCE`）发现套件 — 使用虚拟 URI `utplsql-db:/`（无 CodeLens/装饰/跳转到失败）。 |
+| `utplsql.organization` | `file` | 树组织方式：`file`（按路径）或 `schema`（Schema > Package > Suite > Test）。在 `schema` 模式时，如果工作区中没有 `.pks` 文件，还会从数据库（`ALL_OBJECTS`/`ALL_SOURCE`）发现套件 — 使用虚拟 URI `utplsql-db:/`（无 CodeLens/装饰/跳转到失败）。 |
 | `utplsql.organization.schemaPattern` | `db/{schema}/**` | 用于从路径中提取 schema 的 glob 模式。使用 `{schema}` 作为占位符。在 `schema` 模式下，模式基准目录（例如 `db/*`）下方的目录定义了在数据库中查询的 schemas。 |
-| `utplsql.compilationDiagnostics.enabled` | `true` | 在编辑器和问题面板中显示 PL/SQL 编译错误（CLI 模式）。 |
-| `utplsql.setupDiagnostics.enabled` | `true` | 显示配置诊断（CLI、连接、授权、版本）以及 **utPLSQL 安装完整性**（UT3 schema 中的无效对象，带有 "Recompile UT3" 快速修复），并带有快速修复操作。 |
-| `utplsql.profiles` | `[]` | 已保存的 Oracle 连接配置（名称、连接，以及 `sourcePath`/`coverageOwner`/`invocation`/`cliPath` 等的覆盖项），用于在环境之间切换。 |
+| `utplsql.compilationDiagnostics.enabled` | `true` | 在编辑器和问题面板中显示 PL/SQL 编译错误。 |
+| `utplsql.setupDiagnostics.enabled` | `true` | 显示配置诊断（连接、授权、版本）以及 **utPLSQL 安装完整性**（UT3 schema 中的无效对象，带有 "Recompile UT3" 快速修复），并带有快速修复操作。 |
+| `utplsql.profiles` | `[]` | 已保存的 Oracle 连接配置（名称、连接，以及 `sourcePath`/`coverageOwner` 等的覆盖项），用于在环境之间切换。 |
 | `utplsql.activeProfile` | `""` | 活动配置的 ID（`utplsql.profiles`）。设置后，会覆盖 `utplsql.connection`。 |
 | `utplsql.sqlCoverageEnabled` | `false` | 通过 `V$SQL` 跟踪执行的视图（布尔覆盖率）。需要 `GRANT SELECT ON V$SQL`。 |
 | `utplsql.debugger.enabled` | `true` | 启用 PL/SQL 测试调试（`DBMS_DEBUG`）。需要 `node-oracledb` + 授权。 |
@@ -146,7 +123,6 @@ Test Explorer 中。
 
 ```jsonc
 {
-  "utplsql.cliPath": "C:\\tools\\utPLSQL-cli\\bin\\utplsql.bat",
   "utplsql.sourcePath": "install",
   // utplsql.connection 保持为空 -> 使用 UTPLSQL_CONN 环境变量
 }
@@ -164,35 +140,7 @@ $env:UTPLSQL_CONN = "DEV/password@//localhost:1521/XEPDB1"
 
 ```bash
 UTPLSQL_CONN=your_user/password@//host:1521/service
-UTPLSQL_CLI_PATH=/path/to/utplsql
-UTPLSQL_CLI_HOME=/path/to/utplsql-cli
 ```
-
-### 调用模式（`launcher` vs `java`）
-
-默认情况下（`utplsql.invocation = "launcher"`），扩展调用
-`utplsql`/`utplsql.bat` 启动器。在 Windows 上，这会通过 `cmd`，它会
-**消费/解释元字符**（`^` 变为转义符，`|` 变为管道）— 这会破坏
-`coverageSourceArgs` 中的正则表达式。
-
-`java` 模式**直接**调用 JVM（`java -cp <home>/etc;<home>/lib/* …
-org.utplsql.cli.Cli`），**不使用 shell**。参数以数组形式传递给进程，
-中间没有 `cmd`，因此 `^` 和 `|` **按字面**传递 — 您可以在正则表达式中直接使用 `^anchors$` 和
-`(a|b|c)`，无需变通方法。
-
-```jsonc
-{
-  "utplsql.invocation": "java",
-  "utplsql.cliPath": "C:\\tools\\utPLSQL-cli\\bin\\utplsql.bat", // cliHome 由此推导
-  // "utplsql.cliHome": "C:\\tools\\utPLSQL-cli",  // 仅当 cliPath 是 PATH 命令时
-  // "utplsql.javaPath": "java"                     // PATH，或 java.exe 的完整路径
-}
-```
-
-> `java` 模式忠实复现了 `.bat` 的功能（相同的 classpath 和相同的
-> `-D` 属性）；唯一的区别是不经过 `cmd`。需要 PATH 上有 `java`
-> （或在 `utplsql.javaPath` 中），并且 CLI 根目录可解析 — 要么通过 `cliPath`
-> 指向 `…/bin/utplsql(.bat)`，要么设置 `cliHome`。
 
 ## 使用方法
 
@@ -214,8 +162,8 @@ org.utplsql.cli.Cli`），**不使用 shell**。参数以数组形式传递给�
    - `Ctrl+Shift+U L` — **Rerun Last**（重复上次执行，带或不带覆盖率）。
    - `Ctrl+Shift+U U` — **Run at Cursor**（运行光标下的 `%test`/`%suite`）。
    - `Ctrl+Shift+U X` — **Run Failed Only**（仅运行失败的测试）。
-8. **对于 Oracle 直连（流式）：** 无需安装任何东西 — VSIX 已包含精简版 `oracledb` 驱动。如果 Oracle 不可访问，`auto` 模式会回退到 CLI。
-9. 对于诊断，在面板中使用 `utPLSQL: Show information` — 显示 CLI/API/DB 版本并提供复制选项。
+8. **Oracle 直连（流式）：** 无需安装任何东西 — VSIX 已包含精简版 `oracledb` 驱动。
+9. 对于诊断，在面板中使用 `utPLSQL: Show information` — 显示版本信息并提供复制选项。
 10. **utPLSQL: Select additional reporter...** — 使用数据库中可用的 reporter 进行 QuickPick 选择。
 11. **utPLSQL: Cancel execution** — 停止正在运行的执行（执行期间按 `Escape`）。
 12. **utPLSQL: Refresh tests** — 强制重新发现 `.pks`。
@@ -250,14 +198,14 @@ org.utplsql.cli.Cli`），**不使用 shell**。参数以数组形式传递给�
 | `utPLSQL: Run tests in this folder` | 运行所选文件夹的套件 | 右键单击 → 文件夹 |
 | `utPLSQL: Run tests in this folder with coverage` | 同上，带覆盖率配置 | 右键单击 → 文件夹 |
 | `utPLSQL: Refresh tests` | 强制重新发现 `.pks` | — |
-| `utPLSQL: Cancel execution` | 停止正在运行的 CLI | — |
-| `utPLSQL: Show utPLSQL information` | CLI/API/DB 版本并提供复制选项 | — |
+| `utPLSQL: Cancel execution` | 停止正在运行的执行 | — |
+| `utPLSQL: Show utPLSQL information` | 版本信息并提供复制选项 | — |
 | `utPLSQL: Select additional reporter...` | 使用数据库 reporter 进行 QuickPick 选择 | — |
 | `utPLSQL: Clear session connection` | 从会话缓存中移除连接 | — |
 | `utPLSQL: Rerun Last` | 重复上次执行 | `Ctrl+Shift+U L` |
 | `utPLSQL: Run Test at Cursor` | 运行光标下的测试 | `Ctrl+Shift+U U` |
 | `utPLSQL: Run Failed Tests` | 仅重新运行失败的测试 | `Ctrl+Shift+U X` |
-| `utPLSQL: Validate configuration` | 运行完整的配置验证（CLI、Java、连接、UT3 安装）并显示结果 | — |
+| `utPLSQL: Validate configuration` | 运行完整的配置验证（连接、UT3 安装）并显示结果 | — |
 | `utPLSQL: Configure connection` | 打开 `utplsql.connection` 的设置 | — |
 | `utPLSQL: Copy coverage grants to clipboard` | 将授权 SQL 复制到剪贴板 | — |
 | `utPLSQL: Show Test Explorer` | 聚焦 Testing 视图 | — |
@@ -300,54 +248,8 @@ org.utplsql.cli.Cli`），**不使用 shell**。参数以数组形式传递给�
   <img src="images/image2.png" alt="Test Explorer" width="600" height="400">
 </p>
 
-扩展传递 `-source_path`（= `utplsql.sourcePath`），并通过 `utplsql.coverageSourceArgs`（正则 + `type_mapping`）将被覆盖的对象映射到源文件。`-owner`
+扩展通过 `utplsql.sourcePath` 映射覆盖率到源文件。`-owner`
 由连接推导（或来自 `utplsql.coverageOwner`）。
-
-### 将覆盖率映射到文件（`coverageSourceArgs`）
-
-`type_mapping` 将正则捕获的"类型"转换为 Oracle 类型。三种常见约定：
-
-**1) 按目录** — 结构 `sourcePath/<type>/<name>.sql`（文件夹 `functions/`、`procedures/`、`packages/`、…）：
-```jsonc
-"utplsql.coverageSourceArgs": [
-  "-regex_expression=.*[/\\\\](\\w+)[/\\\\](\\w+)\\.sql$",
-  "-type_subexpression=1",   // 组 1 = 文件夹（类型）
-  "-name_subexpression=2",   // 组 2 = 文件（对象名）
-  "-type_mapping=packages=PACKAGE BODY/functions=FUNCTION/procedures=PROCEDURE/triggers=TRIGGER"
-]
-```
-> 适用于任何深度（`.*` 会吸收上方的模块）。不同的文件夹名称
->（例如 `package`、`pkg`、`pacote`）可以在 `type_mapping` 中枚举。
-
-**2) 按名称前缀** — 约定 `pkg_*`、`prc_*`、`vw_*`（与文件夹无关）：
-```jsonc
-"utplsql.coverageSourceArgs": [
-  "-regex_expression=.*[/\\\\]((pkg|prc|fnc|trg|vw)_\\w+)\\.sql$",
-  "-name_subexpression=1",   // 组 1 = 完整名称（例如 PKG_EXAMPLE）
-  "-type_subexpression=2",   // 组 2 = 前缀（类型）
-  "-type_mapping=pkg=PACKAGE BODY/prc=PROCEDURE/fnc=FUNCTION/trg=TRIGGER/vw=VIEW"
-]
-```
-
-**3) 按类型化扩展名** — 文件 `*.pkb`、`*.fnc`、`*.prc`、`*.trg`（与文件夹无关）：
-```jsonc
-"utplsql.coverageSourceArgs": [
-  "-regex_expression=.*[/\\\\](\\w+)\\.(\\w+)$",
-  "-name_subexpression=1",   // 组 1 = 名称
-  "-type_subexpression=2",   // 组 2 = 扩展名（类型）
-  "-type_mapping=pkb=PACKAGE BODY/fnc=FUNCTION/prc=PROCEDURE/trg=TRIGGER"
-]
-```
-
-**重要说明：**
-- **包 → `PACKAGE BODY`**（不是 `PACKAGE`）：覆盖率在包的**主体**中收集。
-- **Windows / 正则元字符：** 在 `launcher` 模式（默认）下，`.bat` 会经过 `cmd`，
-  它会**消费 `^`** 并**将 `|` 解释为管道** — 这就是为什么上面的示例使用 `\w` 和
-  `[/\\]`（无 `^`），而示例 2 中的 `|` 只能在扩展内部工作。**解决方案：** 使用 **`utplsql.invocation = "java"`**（见
-  [调用模式](#调用模式-launcher-vs-java)）— 中间没有 `cmd`，`^` 和 `|` 会按字面
-  传递，您可以自由地正常编写正则表达式。
-- **Windows / `cmd`：** 避免在正则表达式中使用 **`^`**（`.bat` 的 `cmd` 会消费它）— 这就是示例
-  使用 `\w` 和 `[/\\]` 的原因。
 
 ## Reporters
 
@@ -410,16 +312,13 @@ GRANT SELECT ON SYS.DBA_PROCEDURES TO <ut3_owner>;
 
 | 症状 | 可能的原因 | 解决方案 |
 |---|---|---|
-| 套件不显示 | 未找到 CLI | 运行 `utPLSQL: Validate configuration` 进行诊断 |
+| 套件不显示 | 未找到数据库 | 运行 `utPLSQL: Validate configuration` 进行诊断 |
 | 覆盖率空 | 缺少 `GRANT EXECUTE ON DBMS_PROFILER` | 在 [数据库要求](#数据库要求) 中运行授权，或使用 `utPLSQL: Copy coverage grants to clipboard` |
 | 覆盖率空 | Oracle 19c 需要额外授权 | `GRANT EXECUTE ON DBMS_PROFILER` + `GRANT EXECUTE ON DBMS_PLSQL_CODE_COVERAGE` |
-| 性能缓慢 | 大型套件需要更多 JVM 堆 | 增加 `utplsql.javaArgs`（例如 `["-Xmx1024m"]`） |
 | 编译错误无提示 | 代码有 PL/SQL 语法错误 | 启用 `utplsql.compilationDiagnostics.enabled`（默认开启）；查看问题面板 |
 | 连接错误 | 字符串格式错误或数据库不可达 | 使用 `utPLSQL: Validate configuration` |
 | 运行超时 | 测试耗时超过 `timeoutMinutes` | 增加 `utplsql.timeoutMinutes` |
-| 覆盖率正则不匹配 | Windows `cmd` 消费了 `^` 和 `\|` | 使用 `utplsql.invocation: "java"`（见 [调用模式](#调用模式-launcher-vs-java)） |
 | `%suite` 未识别 | 文件中缺少 `%suite`/`create package`，或 `%test` 没有 `PROCEDURE` | 检查 spec；运行 `utPLSQL: Refresh tests` |
-| "report not generated" | CLI 无法生成输出 XML | 检查 `%TEMP%` 中的写入权限和 utPLSQL 授权 |
 | CodeLens 不显示 | `editor.codeLens` 被禁用或有冲突 | 启用 `"editor.codeLens": true`；检查 `utplsql.codeLens.enabled` |
 | 快捷键不工作 | 与另一个扩展或 VSCode 快捷键冲突 | 转到 File → Preferences → Keyboard Shortcuts，搜索 `utplsql` 重新定义 |
 

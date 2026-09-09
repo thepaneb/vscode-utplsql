@@ -23,22 +23,12 @@ import { __resetConfigValues, __setConfigValue, __setQuickPickResult } from '../
 
 function makeGlobal(over: Partial<UtConfig> = {}): UtConfig {
   return {
-    cliPath: 'utplsql',
     sourcePath: 'install',
     includePatterns: ['**/*.pks'],
-    extraRunArgs: [],
     coverageOwner: '',
-    coverageSourceArgs: ['-a=1'],
-    invocation: 'launcher',
-    javaPath: 'java',
-    javaArgs: ['-Xmx256m'],
-    cliHome: '',
+    additionalReporters: [],
     timeoutMinutes: 60,
     dbmsOutput: false,
-    quiet: false,
-    failureExitCode: 1,
-    additionalReporters: [],
-    runnerMode: 'auto',
     oraclePoolMin: 2,
     oraclePoolMax: 10,
     oraclePoolIncrement: 1,
@@ -136,16 +126,10 @@ test('mergeProfileConfig: perfil sobrescreve campos e herda o resto', () => {
     name: 'DEV',
     connection: 'dev/pass@//host:1521/svc',
     sourcePath: 'db/dev',
-    invocation: 'java',
-    javaPath: 'C:\\java\\java.exe',
   };
   const merged = mergeProfileConfig(global, profile);
   assert.strictEqual(merged.sourcePath, 'db/dev');
-  assert.strictEqual(merged.invocation, 'java');
-  assert.strictEqual(merged.javaPath, 'C:\\java\\java.exe');
   assert.strictEqual(merged.coverageOwner, 'UT3');
-  assert.strictEqual(merged.cliPath, 'utplsql');
-  assert.deepStrictEqual(merged.coverageSourceArgs, global.coverageSourceArgs);
 });
 
 test('findProfileById: encontra por id', () => {
@@ -299,22 +283,14 @@ test('activeProfileName: sem perfil ativo retorna undefined', () => {
   assert.strictEqual(activeProfileName(), undefined);
 });
 
-test('mergeProfileConfig: perfil com coverageSourceArgs/arrays usa os do perfil', () => {
+test('mergeProfileConfig: perfil com includePatterns usa os do perfil', () => {
   const global = makeGlobal();
   const profile: ConnectionProfile = {
     id: 'p1',
     name: 'DEV',
     connection: 'c',
-    coverageSourceArgs: ['-a=1'],
-    includePatterns: ['**/*.pks'],
-    extraRunArgs: ['-D'],
-    cliPath: 'C:\\cli.bat',
-    cliHome: 'C:\\cli',
+    includePatterns: ['**/*.pkb'],
   };
   const merged = mergeProfileConfig(global, profile);
-  assert.deepStrictEqual(merged.coverageSourceArgs, ['-a=1']);
-  assert.deepStrictEqual(merged.includePatterns, ['**/*.pks']);
-  assert.deepStrictEqual(merged.extraRunArgs, ['-D']);
-  assert.strictEqual(merged.cliPath, 'C:\\cli.bat');
-  assert.strictEqual(merged.cliHome, 'C:\\cli');
+  assert.deepStrictEqual(merged.includePatterns, ['**/*.pkb']);
 });

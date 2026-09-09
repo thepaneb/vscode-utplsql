@@ -19,7 +19,7 @@
 - 📌 **Рядок стану** — індикатор із кількістю пройдених/провалених тестів, тривалістю та прогресом у реальному часі.
 - 🔁 **Розумний повторний запуск** — Rerun Last, Run at Cursor, Run Failed Only одним сполученням клавіш.
 - 🚀 **Прямий режим Oracle (через node-oracledb)** — потокове виконання в реальному часі, без очікування завершення пакету.
-- 🔧 **Діагностика налаштувань** — проактивна перевірка CLI, підключення, привілеїв та версії зі швидким виправленням.
+- 🔧 **Діагностика налаштувань** — проактивна перевірка підключення, привілеїв та версії зі швидким виправленням.
 - 🧩 **Дерево з урахуванням схем** — організація тестів у Test Explorer за схемою Schema > Package > Suite > Test.
 - 🎯 **Перехід до помилки** — пряма навігація до рядка перевірки, яка не вдалася (через нативну функцію "Go to Error").
 - 🔌 **Профілі підключення** — збереження та перемикання між кількома середовищами (DEV/TEST/PROD) із налаштуваннями на профіль, через рядок стану або палітру команд.
@@ -39,12 +39,9 @@
 ## Вимоги
 
 - [**utPLSQL**](https://github.com/utPLSQL/utPLSQL) **(UT3)** встановлений у базі даних Oracle.
-- **Для режиму CLI:** [**utPLSQL-cli**](https://github.com/utPLSQL/utPLSQL-cli/releases) + **Java** встановлені на машині (розширення викликає CLI).
-- **Для прямого режиму Oracle:** потрібна лише база даних — VSIX вже містить тонкий драйвер `oracledb` (без Instant Client).
 - **VSCode 1.88+** (Test Coverage API).
 
-Розширення — це лише "графічний клієнт": тести виконує база даних — через
-CLI (utPLSQL-cli + Java) або безпосередньо (node-oracledb, `runnerMode: auto` за замовчуванням).
+Розширення — це лише "графічний клієнт": тести виконує база даних безпосередньо (node-oracledb).
 
 ## Підключення
 
@@ -56,7 +53,7 @@ CLI (utPLSQL-cli + Java) або безпосередньо (node-oracledb, `runn
 4. **Кеш сесії** — якщо користувач уже ввів підключення через запит.
 5. **Запит користувачеві** — запитує та зберігає лише в поточній сесії.
 
-Профілі підключення (`utplsql.profiles`) також можуть перевизначати `sourcePath`, `coverageOwner`, `invocation`, `cliPath` тощо для кожного середовища — див. `utplsql.activeProfile` у таблиці конфігурації.
+Профілі підключення (`utplsql.profiles`) також можуть перевизначати `sourcePath`, `coverageOwner` тощо для кожного середовища — див. `utplsql.activeProfile` у таблиці конфігурації.
 
 ⚠️ **Рекомендація щодо безпеки:** рядок підключення містить пароль. **НЕ використовуйте** налаштування `utplsql.connection` у спільних середовищах (settings.json може зберігатися в системі контролю версій або бути видимим для інших). Натомість **використовуйте змінну середовища `UTPLSQL_CONN`**:
 
@@ -83,59 +80,38 @@ code .
 
 ## Як це працює
 
-Доступні два режими виконання:
+![Архітектура виконання](docs/wiki/images/diagram-arquitetura.png)
 
-![Архітектура виконання — два режими](docs/wiki/images/diagram-arquitetura.png)
-
-### Прямий режим Oracle (v0.9.0) — `runnerMode: auto` або `oracle`
+### Прямий режим Oracle (v0.9.0)
 
 ![Прямий режим Oracle — потокова передача](docs/wiki/images/diagram-streaming.png)
 
 Жодних тимчасових файлів, жодного очікування завершення пакету. Результати з'являються в
-Test Explorer **у міру завершення кожного тесту**.
-
-### Режим CLI — `runnerMode: cli` (fallback)
-
-![Режим CLI — пакетний запуск](docs/wiki/images/diagram-cli.png)
-
-Розширення формує командний рядок CLI або підключається безпосередньо через Oracle, читає
-звіти (JUnit + Coverage) та переводить їх у нативні API VSCode. Режим
-`auto` (за замовчуванням) пробує прямий режим Oracle і переходить на CLI, якщо `node-oracledb` не
-встановлено. Використовуйте `runnerMode: cli`, щоб завжди примусово використовувати CLI.
+Test Explorer **у міру завершення кожного тесту**. VSIX вже містить тонкий драйвер `oracledb` (без Instant Client).
 
 ## Конфігурація
 
 | Параметр | За замовчуванням | Опис |
 |---|---|---|
 | `utplsql.connection` | `""` | Підключення до Oracle. **Залиште порожнім** і використовуйте змінну середовища `UTPLSQL_CONN`, щоб не зберігати пароль. Якщо обидва значення порожні, розширення запитає підключення (зберігає його лише в сесії). |
-| `utplsql.cliPath` | `utplsql` | Шлях до виконуваного файлу utPLSQL-cli (напр. `C:\tools\utPLSQL-cli\bin\utplsql.bat`). |
 | `utplsql.sourcePath` | `install` | Папка виробничого коду (для зіставлення покриття з файлами). |
 | `utplsql.includePatterns` | `["**/*.pks"]` | Globs для пошуку специфікацій із `%suite`/`%test`. Якщо ваші тести у `.sql`, використовуйте `["**/*.sql"]`. |
-| `utplsql.extraRunArgs` | `[]` | Додаткові аргументи для `utplsql run`. |
 | `utplsql.coverageOwner` | `""` | Схема-власник покритих об'єктів. Порожньо = використовується користувач підключення (великими літерами). |
-| `utplsql.coverageSourceArgs` | (див. **Покриття**) | Аргументи CLI, що зіставляють покриття з файлами вихідного коду. |
-| `utplsql.invocation` | `launcher` | Спосіб виклику CLI: `launcher` (через `.bat`/скрипт, за замовчуванням) або `java` (безпосередньо через JVM, **без shell**). Див. **Режим виклику**. |
-| `utplsql.javaPath` | `java` | Виконуваний файл Java (PATH або повний шлях). Використовується лише в режимі `java`. |
-| `utplsql.cliHome` | `""` | Корінь utPLSQL-cli (папка з `bin/` та `lib/`). Порожньо = визначається з `cliPath`. Використовується лише в режимі `java`. |
-| `utplsql.timeoutMinutes` | `60` | Час очікування у хвилинах для CLI. Прапорець `-t` надсилається лише якщо значення відрізняється від `60`. |
-| `utplsql.dbmsOutput` | `false` | Увімкнення `DBMS_OUTPUT` у сесії тестування. Прапорець `-D` надсилається лише коли `true`. |
-| `utplsql.quiet` | `false` | Приховує інформаційні журнали CLI. Прапорець `-q` надсилається лише коли `true`. |
-| `utplsql.failureExitCode` | `1` | Код виходу при помилці. Прапорець `--failure-exit-code` надсилається лише якщо значення відрізняється від `1`. Значення `0` робить так, що CLI завжди завершується успішно. |
+| `utplsql.timeoutMinutes` | `60` | Час очікування у хвилинах. |
+| `utplsql.dbmsOutput` | `false` | Увімкнення `DBMS_OUTPUT` у сесії тестування. |
 | `utplsql.additionalReporters` | `[]` | Додаткові репортери, які включаються в кожен запуск (напр. `["ut_coverage_html_reporter"]`). Стандартні (documentation, junit, coverage) завжди включаються, їх не потрібно перелічувати. |
 | `utplsql.codeLens.enabled` | `true` | Показує кнопки CodeLens Run/Run with Coverage над `%suite` та `%test`. |
 | `utplsql.statusBar.enabled` | `true` | Показує індикатор статусу тестів у рядку стану. |
 | `utplsql.decorations.enabled` | `true` | Показує декорації пройдено/не пройдено на рядках `%suite` та `%test` після виконання. |
-| `utplsql.runnerMode` | `auto` | Режим виконання: `auto` (прямий режим Oracle через node-oracledb, fallback на CLI), `cli` (завжди через командний рядок), `oracle` (завжди прямий режим Oracle). |
 | `utplsql.oraclePoolMin` | `2` | Мінімальна кількість з'єднань у пулі Oracle runner (node-oracledb). |
 | `utplsql.oraclePoolMax` | `10` | Максимальна кількість з'єднань у пулі Oracle runner (node-oracledb). |
 | `utplsql.oraclePoolIncrement` | `1` | Приріст при розширенні пулу Oracle runner (node-oracledb). |
 | `utplsql.oraclePoolPingInterval` | `60` | Інтервал у секундах між перевірками стану простаючих з'єднань пулу (node-oracledb). `0` = ping при кожній перевірці з'єднання. |
-| `utplsql.javaArgs` | `["-Xmx256m"]` | Прапорці JVM для режиму `java` (напр. `["-Xmx512m", "-Xms128m"]`). Вставляються перед `-cp`. |
-| `utplsql.organization` | `file` | Організація дерева: `file` (за шляхом) або `schema` (Schema > Package > Suite > Test). У режимі `schema` з Oracle `runnerMode` (`auto`/`oracle`) набори також виявляються з бази даних (`ALL_OBJECTS`/`ALL_SOURCE`), коли у робочій області немає файлів `.pks` — з віртуальним URI `utplsql-db:/` (без CodeLens/декорацій/переходу до помилки). |
+| `utplsql.organization` | `file` | Організація дерева: `file` (за шляхом) або `schema` (Schema > Package > Suite > Test). У режимі `schema` набори також виявляються з бази даних (`ALL_OBJECTS`/`ALL_SOURCE`), коли у робочій області немає файлів `.pks` — з віртуальним URI `utplsql-db:/` (без CodeLens/декорацій/переходу до помилки). |
 | `utplsql.organization.schemaPattern` | `db/{schema}/**` | Glob-шаблон для вилучення схеми зі шляху. Використовуйте `{schema}` як заповнювач. У режимі `schema` каталоги нижче бази шаблону (напр. `db/*`) визначають схеми, які запитуються в базі даних. |
-| `utplsql.compilationDiagnostics.enabled` | `true` | Показує помилки компіляції PL/SQL як підкреслення в редакторі та на панелі Problems (режим CLI). |
-| `utplsql.setupDiagnostics.enabled` | `true` | Показує діагностику конфігурації (CLI, підключення, привілеї, версія) та **цілісність інсталяції utPLSQL** (недійсні об'єкти у схемі UT3, зі швидким виправленням "Recompile UT3") з діями швидкого виправлення. |
-| `utplsql.profiles` | `[]` | Збережені профілі підключення Oracle (ім'я, підключення та перевизначення `sourcePath`/`coverageOwner`/`invocation`/`cliPath` тощо) для перемикання між середовищами. |
+| `utplsql.compilationDiagnostics.enabled` | `true` | Показує помилки компіляції PL/SQL як підкреслення в редакторі та на панелі Problems. |
+| `utplsql.setupDiagnostics.enabled` | `true` | Показує діагностику конфігурації (підключення, привілеї, версія) та **цілісність інсталяції utPLSQL** (недійсні об'єкти у схемі UT3, зі швидким виправленням "Recompile UT3") з діями швидкого виправлення. |
+| `utplsql.profiles` | `[]` | Збережені профілі підключення Oracle (ім'я, підключення та перевизначення `sourcePath`/`coverageOwner` тощо) для перемикання між середовищами. |
 | `utplsql.activeProfile` | `""` | ID активного профілю (`utplsql.profiles`). Якщо встановлено, перевизначає `utplsql.connection`. |
 | `utplsql.sqlCoverageEnabled` | `false` | Відстежує представлення, виконані через `V$SQL` (boolean-покриття). Потребує `GRANT SELECT ON V$SQL`. |
 | `utplsql.debugger.enabled` | `true` | Увімкнення налагодження тестів PL/SQL (`DBMS_DEBUG`). Потребує `node-oracledb` + привілеї. |
@@ -147,7 +123,6 @@ Test Explorer **у міру завершення кожного тесту**.
 
 ```jsonc
 {
-  "utplsql.cliPath": "C:\\tools\\utPLSQL-cli\\bin\\utplsql.bat",
   "utplsql.sourcePath": "install",
   // utplsql.connection stays empty -> use the UTPLSQL_CONN environment variable
 }
@@ -166,35 +141,7 @@ $env:UTPLSQL_CONN = "DEV/password@//localhost:1521/XEPDB1"
 
 ```bash
 UTPLSQL_CONN=your_user/password@//host:1521/service
-UTPLSQL_CLI_PATH=/path/to/utplsql
-UTPLSQL_CLI_HOME=/path/to/utplsql-cli
 ```
-
-### Режим виклику (`launcher` vs `java`)
-
-За замовчуванням (`utplsql.invocation = "launcher"`) розширення викликає
-лаунчер `utplsql`/`utplsql.bat`. У Windows це відбувається через `cmd`, який
-**споживає/інтерпретує метасимволи** (`^` стає escape-символом, `|` стає конвеєром) — що
-ламає regex у `coverageSourceArgs`.
-
-Режим `java` викликає JVM **безпосередньо** (`java -cp <home>/etc;<home>/lib/* …
-org.utplsql.cli.Cli`), **без shell**. Аргументи передаються процесу як масив,
-без `cmd` між ними, тому `^` та `|` передаються **буквально** — можна використовувати `^anchors$` і
-`(a|b|c)` у regex без обхідних шляхів.
-
-```jsonc
-{
-  "utplsql.invocation": "java",
-  "utplsql.cliPath": "C:\\tools\\utPLSQL-cli\\bin\\utplsql.bat", // cliHome is derived from here
-  // "utplsql.cliHome": "C:\\tools\\utPLSQL-cli",  // only if cliPath is a PATH command
-  // "utplsql.javaPath": "java"                     // PATH, or full path to java.exe
-}
-```
-
-> Режим `java` точно відтворює те, що робить `.bat` (той самий classpath і ті самі
-> властивості `-D`); єдина відмінність — відсутність `cmd`. Потребує `java` у PATH
-> (або в `utplsql.javaPath`) і того, щоб корінь CLI був розв'язуваний — або через `cliPath`,
-> що вказує на `…/bin/utplsql(.bat)`, або через `cliHome`.
 
 ## Використання
 
@@ -216,8 +163,8 @@ org.utplsql.cli.Cli`), **без shell**. Аргументи передаютьс
    - `Ctrl+Shift+U L` — **Rerun Last** (повторює останнє виконання, з покриттям або без).
    - `Ctrl+Shift+U U` — **Run at Cursor** (запускає `%test`/`%suite` під курсором).
    - `Ctrl+Shift+U X` — **Run Failed Only** (запускає лише тести, які не пройшли).
-8. **Для прямого режиму Oracle (streaming):** нічого встановлювати не потрібно — VSIX вже містить тонкий драйвер `oracledb`. Режим `auto` переходить на CLI, якщо Oracle недоступний.
-9. Для діагностики використовуйте `utPLSQL: Show information` у палітрі — показує версії CLI/API/DB з опцією копіювання.
+8. **Для прямого режиму Oracle (streaming):** нічого встановлювати не потрібно — VSIX вже містить тонкий драйвер `oracledb`.
+9. Для діагностики використовуйте `utPLSQL: Show information` у палітрі — показує версії API/DB з опцією копіювання.
 10. **utPLSQL: Select additional reporter...** — QuickPick із репортерами, доступними в базі даних.
 11. **utPLSQL: Cancel execution** — зупиняє виконання, що триває (`Escape` під час виконання).
 12. **utPLSQL: Refresh tests** — примусове повторне виявлення `.pks`.
@@ -253,14 +200,14 @@ org.utplsql.cli.Cli`), **без shell**. Аргументи передаютьс
 | `utPLSQL: Run tests in this folder` | Запускає набори вибраної папки | Правий клік → папка |
 | `utPLSQL: Run tests in this folder with coverage` | Те саме, з профілем покриття | Правий клік → папка |
 | `utPLSQL: Refresh tests` | Примусове повторне виявлення `.pks` | — |
-| `utPLSQL: Cancel execution` | Зупиняє запущений CLI | — |
-| `utPLSQL: Show utPLSQL information` | Версії CLI/API/DB з опцією копіювання | — |
+| `utPLSQL: Cancel execution` | Зупиняє запущене виконання | — |
+| `utPLSQL: Show utPLSQL information` | Версії API/DB з опцією копіювання | — |
 | `utPLSQL: Select additional reporter...` | QuickPick із репортерами бази даних | — |
 | `utPLSQL: Clear session connection` | Видаляє підключення з кешу сесії | — |
 | `utPLSQL: Rerun Last` | Повторює останнє виконання | `Ctrl+Shift+U L` |
 | `utPLSQL: Run Test at Cursor` | Запускає тест під курсором | `Ctrl+Shift+U U` |
 | `utPLSQL: Run Failed Tests` | Повторно запускає лише невдалі тести | `Ctrl+Shift+U X` |
-| `utPLSQL: Validate configuration` | Виконує повну перевірку налаштувань (CLI, Java, підключення, інсталяція UT3) і показує результати | — |
+| `utPLSQL: Validate configuration` | Виконує повну перевірку налаштувань (підключення, інсталяція UT3) і показує результати | — |
 | `utPLSQL: Configure connection` | Відкриває налаштування на `utplsql.connection` | — |
 | `utPLSQL: Copy coverage grants to clipboard` | Копіює SQL привілеїв у буфер обміну | — |
 | `utPLSQL: Show Test Explorer` | Фокусує подання Testing | — |
@@ -346,12 +293,7 @@ org.utplsql.cli.Cli`), **без shell**. Аргументи передаютьс
 
 **Важливі зауваження:**
 - **Пакети → `PACKAGE BODY`** (не `PACKAGE`): покриття збирається в **body** пакета.
-- **Windows / метасимволи регулярних виразів:** у режимі `launcher` (за замовчуванням) `.bat` проходить через `cmd`,
-  який **споживає `^`** та **інтерпретує `|` як конвеєр** — тому в прикладах вище використовуються `\w` і
-  `[/\\]` (без `^`), а `|` у прикладі 2 працює лише всередині розширення. **Рішення:** використовуйте **`utplsql.invocation = "java"`** (див.
-  [Режим виклику](#режим-виклику-launcher-vs-java)) — без `cmd` між ними `^` та `|` проходять
-  буквально, і ви можете писати регулярні вирази звичайним чином.
-- **Windows / `cmd`:** уникайте **`^`** у регулярних виразах (його споживає `cmd` із `.bat`) — тому в прикладах
+- **Windows / метасимволи регулярних виразів:** уникайте **`^`** у регулярних виразах (його споживає `cmd` із `.bat`) — тому в прикладах
   використовуються `\w` і `[/\\]`.
 
 ## Репортери
@@ -416,16 +358,13 @@ GRANT SELECT ON SYS.DBA_PROCEDURES TO <ut3_owner>;
 
 | Симптом | Ймовірна причина | Рішення |
 |---|---|---|
-| Набори не з'являються | CLI не знайдено | Виконайте `utPLSQL: Validate configuration` для діагностики |
+| Набори не з'являються | Немає покритих `.pks` файлів | Виконайте `utPLSQL: Validate configuration` для діагностики |
 | Порожнє покриття | Відсутній `GRANT EXECUTE ON DBMS_PROFILER` | Виконайте привілеї з [Вимоги до бази даних](#вимоги-до-бази-даних) або використайте `utPLSQL: Copy coverage grants to clipboard` |
 | Порожнє покриття | Oracle 19c потребує додаткові привілеї | `GRANT EXECUTE ON DBMS_PROFILER` + `GRANT EXECUTE ON DBMS_PLSQL_CODE_COVERAGE` |
-| Повільна робота | Великим наборам потрібно більше купи JVM | Збільште `utplsql.javaArgs` (напр. `["-Xmx1024m"]`) |
 | Помилка компіляції без пояснення | Код із синтаксичною помилкою PL/SQL | Увімкніть `utplsql.compilationDiagnostics.enabled` (увімкнено за замовчуванням); див. панель Problems |
 | Помилка підключення | Некоректний рядок або недоступна БД | Використайте `utPLSQL: Validate configuration` |
 | Тайм-аут під час виконання | Тести виконуються довше, ніж `timeoutMinutes` | Збільште `utplsql.timeoutMinutes` |
-| Regex покриття не збігається | Windows `cmd` споживає `^` і `\|` | Використайте `utplsql.invocation: "java"` (див. [Режим виклику](#режим-виклику-launcher-vs-java)) |
 | `%suite` не розпізнано | Відсутні `%suite`/`create package` у файлі, або `%test` без `PROCEDURE` | Перевірте специфікацію; виконайте `utPLSQL: Refresh tests` |
-| «report not generated» | CLI не зміг створити вихідний XML | Перевірте права на запис у `%TEMP%` і привілеї utPLSQL |
 | CodeLens не з'являється | `editor.codeLens` вимкнено або конфлікт | Увімкніть `"editor.codeLens": true`; перевірте `utplsql.codeLens.enabled` |
 | Гарячі клавіші не працюють | Конфлікт з іншим розширенням або сполученням VSCode | Відкрийте File → Preferences → Keyboard Shortcuts і знайдіть `utplsql`, щоб переназначити |
 

@@ -15,8 +15,8 @@ com prefixo `utPLSQL:`.
 | `utPLSQL: Rodar testes desta pasta` | Executa suites da pasta selecionada | Clique direito → pasta |
 | `utPLSQL: Rodar testes desta pasta com cobertura` | Idem, com perfil de cobertura | Clique direito → pasta |
 | `utPLSQL: Atualizar testes` | Força rediscovery dos `.pks` | — |
-| `utPLSQL: Cancelar execução` | Interrompe a execução em andamento (CLI ou Oracle) | `Escape` |
-| `utPLSQL: Mostrar informações do utPLSQL` | Versões CLI/API/DB | — |
+| `utPLSQL: Cancelar execução` | Interrompe a execução em andamento | `Escape` |
+| `utPLSQL: Mostrar informações do utPLSQL` | Versões API/DB | — |
 | `utPLSQL: Selecionar reporter adicional...` | QuickPick com reporters do banco | — |
 | `utPLSQL: Limpar conexão da sessão` | Remove conexão do cache | — |
 | `utPLSQL: Rerun Last` | Repete a última execução | `Ctrl+Shift+U L` |

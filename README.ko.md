@@ -19,7 +19,7 @@
 - 📌 **상태 표시줄** — 통과/실패 개수, 소요 시간, 실시간 진행률 표시기.
 - 🔁 **스마트 재실행** — 단일 단축키로 Rerun Last, Run at Cursor, Run Failed Only.
 - 🚀 **Oracle 직접 실행(node-oracledb 사용)** — 배치 완료를 기다리지 않고 실시간 스트리밍.
-- 🔧 **설정 진단** — CLI, 연결, 권한 및 버전에 대한 선제적 검증 및 quick-fix.
+- 🔧 **설정 진단** — 연결, 권한 및 버전에 대한 선제적 검증 및 quick-fix.
 - 🧩 **스키마 인식 트리** — Test Explorer에서 Schema > Package > Suite > Test로 테스트를 구성.
 - 🎯 **실패 지점으로 이동** — 실패한 단언의 줄로 직접 이동(네이티브 "Go to Error" 사용).
 - 🔌 **연결 프로필** — 프로필별 설정으로 여러 환경(DEV/TEST/PROD)을 저장하고 전환(상태 표시줄 또는 명령 팔레트를 통해).
@@ -39,11 +39,10 @@
 ## 요구 사항
 
 - [**utPLSQL**](https://github.com/utPLSQL/utPLSQL) **(UT3)** 이 Oracle 데이터베이스에 설치되어 있어야 합니다.
-- **CLI 모드:** [**utPLSQL-cli**](https://github.com/utPLSQL/utPLSQL-cli/releases) + **Java**가 머신에 설치되어 있어야 합니다(확장 프로그램이 CLI를 호출합니다).
-- **Oracle 직접 모드:** 데이터베이스 외에는 아무것도 필요하지 않습니다 — VSIX에 thin `oracledb` 드라이버가 이미 포함되어 있습니다(Instant Client 불필요).
+- 데이터베이스 외에는 아무것도 필요하지 않습니다 — VSIX에 thin `oracledb` 드라이버가 이미 포함되어 있습니다(Instant Client 불필요).
 - **VSCode 1.88+** (Test Coverage API).
 
-확장 프로그램은 "그래픽 클라이언트"일 뿐입니다 — 테스트를 실행하는 것은 데이터베이스입니다: CLI(utPLSQL-cli + Java) 또는 직접(node-oracledb, 기본적으로 `runnerMode: auto`).
+확장 프로그램은 "그래픽 클라이언트"일 뿐입니다 — 테스트를 실행하는 것은 데이터베이스입니다: node-oracledb 직접 연결을 통해.
 
 ## 연결
 
@@ -55,7 +54,7 @@
 4. **세션 캐시** — 사용자가 프롬프트를 통해 연결을 이미 입력한 경우.
 5. **사용자에게 프롬프트** — 현재 세션에만 물어보고 유지합니다.
 
-연결 프로필(`utplsql.profiles`)은 환경별로 `sourcePath`, `coverageOwner`, `invocation`, `cliPath` 등을 재정의할 수도 있습니다 — 구성 표의 `utplsql.activeProfile`을 참조하세요.
+연결 프로필(`utplsql.profiles`)은 환경별로 `sourcePath`, `coverageOwner` 등을 재정의할 수도 있습니다 — 구성 표의 `utplsql.activeProfile`을 참조하세요.
 
 ⚠️ **보안 권장 사항:** 연결 문자열에는 비밀번호가 포함됩니다. 공유 환경에서 `utplsql.connection`
 설정을 **사용하지 마세요**(settings.json이 버전 관리되거나 다른 사람에게 보일 수 있음).
@@ -84,59 +83,36 @@ code .
 
 ## 작동 방식
 
-두 가지 실행 모드가 있습니다:
-
-![실행 아키텍처 — 두 가지 모드](docs/wiki/images/diagram-arquitetura.png)
-
-### Oracle 직접 모드(v0.9.0) — `runnerMode: auto` 또는 `oracle`
+확장 프로그램이 node-oracledb를 통해 Oracle 데이터베이스에 직접 연결하여 테스트를 실행합니다.
 
 ![Oracle 직접 모드 — 스트리밍](docs/wiki/images/diagram-streaming.png)
 
 임시 파일이 없고 배치를 기다리지 않습니다. 결과는 **각 테스트가 완료될 때마다**
 Test Explorer에 나타납니다.
 
-### CLI 모드 — `runnerMode: cli`(폴백)
-
-![CLI 모드 — 배치](docs/wiki/images/diagram-cli.png)
-
-확장 프로그램이 CLI 명령줄을 구성하거나 Oracle 직접 연결로 연결하여
-리포트(JUnit + Coverage)를 읽고 이를 VSCode의 네이티브 API로 변환합니다.
-`auto` 모드(기본값)는 Oracle 직접 실행을 시도하고 `node-oracledb`가
-설치되어 있지 않으면 CLI로 폴백합니다. 항상 CLI를 강제하려면 `runnerMode: cli`를 사용하세요.
-
 ## 구성
 
 | 설정 | 기본값 | 설명 |
 |---|---|---|
 | `utplsql.connection` | `""` | Oracle 연결. **비워 두고** 비밀번호 저장을 피하려면 `UTPLSQL_CONN` 환경 변수를 사용하세요. 둘 다 비어 있으면 확장 프로그램이 묻습니다(세션에만 유지). |
-| `utplsql.cliPath` | `utplsql` | utPLSQL-cli 실행 파일 경로(예: `C:\tools\utPLSQL-cli\bin\utplsql.bat`). |
 | `utplsql.sourcePath` | `install` | 프로덕션 코드 폴더(커버리지를 파일에 매핑하기 위해). |
 | `utplsql.includePatterns` | `["**/*.pks"]` | `%suite`/`%test`가 있는 스펙을 발견하기 위한 glob. 테스트가 `.sql`에 있으면 `["**/*.sql"]`을 사용하세요. |
-| `utplsql.extraRunArgs` | `[]` | `utplsql run`에 대한 추가 인수. |
 | `utplsql.coverageOwner` | `""` | 커버리지 대상 객체의 스키마 소유자. 비어 있음 = 연결 사용자 사용(대문자). |
-| `utplsql.coverageSourceArgs` | (참조 **Coverage**) | 커버리지를 소스 파일에 매핑하는 CLI 인수. |
-| `utplsql.invocation` | `launcher` | CLI 호출 방법: `launcher`(`.bat`/스크립트 통해, 기본값) 또는 `java`(직접 JVM, **쉘 없음**). **Invocation mode**를 참조하세요. |
-| `utplsql.javaPath` | `java` | Java 실행 파일(PATH 또는 전체 경로). `java` 모드에서만 사용. |
-| `utplsql.cliHome` | `""` | utPLSQL-cli의 루트(`bin/` 및 `lib/` 폴더). 비어 있음 = `cliPath`에서 파생. `java` 모드에서만 사용. |
-| `utplsql.timeoutMinutes` | `60` | CLI의 시간 제한(분). `-t` 플래그는 값이 `60`과 다를 때만 전송됩니다. |
-| `utplsql.dbmsOutput` | `false` | 테스트 세션에서 `DBMS_OUTPUT`을 활성화합니다. `-D` 플래그는 `true`일 때만 전송됩니다. |
-| `utplsql.quiet` | `false` | 정보성 CLI 로그를 억제합니다. `-q` 플래그는 `true`일 때만 전송됩니다. |
-| `utplsql.failureExitCode` | `1` | 실패 시 종료 코드. `--failure-exit-code` 플래그는 값이 `1`과 다를 때만 전송됩니다. `0`이면 CLI가 항상 성공으로 종료됩니다. |
+| `utplsql.timeoutMinutes` | `60` | 실행 시간 제한(분). |
+| `utplsql.dbmsOutput` | `false` | 테스트 세션에서 `DBMS_OUTPUT`을 활성화합니다. |
 | `utplsql.additionalReporters` | `[]` | 모든 실행에 포함할 추가 리포터(예: `["ut_coverage_html_reporter"]`). 기본값(documentation, junit, coverage)은 항상 포함되며 나열할 필요가 없습니다. |
 | `utplsql.codeLens.enabled` | `true` | `%suite` 및 `%test` 위에 Run/Run with Coverage CodeLens 버튼을 표시합니다. |
 | `utplsql.statusBar.enabled` | `true` | 상태 표시줄에 테스트 상태 표시기를 표시합니다. |
 | `utplsql.decorations.enabled` | `true` | 실행 후 `%suite` 및 `%test` 줄에 통과/실패 데코레이션을 표시합니다. |
-| `utplsql.runnerMode` | `auto` | 실행 모드: `auto`(node-oracledb를 통한 Oracle 직접 실행, CLI 폴백), `cli`(항상 명령줄), `oracle`(항상 Oracle 직접 실행). |
 | `utplsql.oraclePoolMin` | `2` | Oracle 러너 풀에 유지되는 최소 연결 수(node-oracledb). |
 | `utplsql.oraclePoolMax` | `10` | Oracle 러너 풀의 최대 연결 수(node-oracledb). |
 | `utplsql.oraclePoolIncrement` | `1` | Oracle 러너 풀 확장 시 증가분(node-oracledb). |
 | `utplsql.oraclePoolPingInterval` | `60` | 유휴 풀 연결의 상태 검사 간격(초)(node-oracledb). `0` = 모든 체크아웃 시 ping. |
-| `utplsql.javaArgs` | `["-Xmx256m"]` | `java` 모드의 JVM 플래그(예: `["-Xmx512m", "-Xms128m"]`). `-cp` 앞에 삽입됩니다. |
-| `utplsql.organization` | `file` | 트리 구성: `file`(경로별) 또는 `schema`(Schema > Package > Suite > Test). Oracle `runnerMode`(`auto`/`oracle`)의 `schema` 모드에서 워크스페이스에 `.pks` 파일이 없으면 스위트가 데이터베이스(`ALL_OBJECTS`/`ALL_SOURCE`)에서도 발견됩니다 — 가상 URI `utplsql-db:/`(CodeLens/데코레이션/실패 지점 이동 없음). |
+| `utplsql.organization` | `file` | 트리 구성: `file`(경로별) 또는 `schema`(Schema > Package > Suite > Test). `schema` 모드에서 워크스페이스에 `.pks` 파일이 없으면 스위트가 데이터베이스(`ALL_OBJECTS`/`ALL_SOURCE`)에서도 발견됩니다 — 가상 URI `utplsql-db:/`(CodeLens/데코레이션/실패 지점 이동 없음). |
 | `utplsql.organization.schemaPattern` | `db/{schema}/**` | 경로에서 스키마를 추출하는 glob 패턴. `{schema}`를 자리 표시자로 사용하세요. `schema` 모드에서 패턴 기본 아래의 디렉터리(예: `db/*`)는 데이터베이스에서 조회할 스키마를 정의합니다. |
-| `utplsql.compilationDiagnostics.enabled` | `true` | PL/SQL 컴파일 오류를 편집기의 밑줄과 Problems 패널에 표시합니다(CLI 모드). |
-| `utplsql.setupDiagnostics.enabled` | `true` | 구성 진단(CLI, 연결, 권한, 버전) 및 **utPLSQL 설치 무결성**(UT3 스키마의 잘못된 객체, "Recompile UT3" quick-fix 포함)을 quick-fix 작업과 함께 표시합니다. |
-| `utplsql.profiles` | `[]` | 저장된 Oracle 연결 프로필(이름, 연결, 그리고 `sourcePath`/`coverageOwner`/`invocation`/`cliPath` 등의 재정의) — 환경 간 전환용. |
+| `utplsql.compilationDiagnostics.enabled` | `true` | PL/SQL 컴파일 오류를 편집기의 밑줄과 Problems 패널에 표시합니다. |
+| `utplsql.setupDiagnostics.enabled` | `true` | 구성 진단(연결, 권한, 버전) 및 **utPLSQL 설치 무결성**(UT3 스키마의 잘못된 객체, "Recompile UT3" quick-fix 포함)을 quick-fix 작업과 함께 표시합니다. |
+| `utplsql.profiles` | `[]` | 저장된 Oracle 연결 프로필(이름, 연결, 그리고 `sourcePath`/`coverageOwner` 등의 재정의) — 환경 간 전환용. |
 | `utplsql.activeProfile` | `""` | 활성 프로필(`utplsql.profiles`)의 ID. 설정 시 `utplsql.connection`을 재정의합니다. |
 | `utplsql.sqlCoverageEnabled` | `false` | `V$SQL`을 통해 실행된 뷰를 추적합니다(불리언 커버리지). `GRANT SELECT ON V$SQL` 필요. |
 | `utplsql.debugger.enabled` | `true` | PL/SQL 테스트 디버깅(`DBMS_DEBUG`)을 활성화합니다. `node-oracledb` + 권한 필요. |
@@ -148,7 +124,6 @@ Test Explorer에 나타납니다.
 
 ```jsonc
 {
-  "utplsql.cliPath": "C:\\tools\\utPLSQL-cli\\bin\\utplsql.bat",
   "utplsql.sourcePath": "install",
   // utplsql.connection stays empty -> use the UTPLSQL_CONN environment variable
 }
@@ -166,35 +141,7 @@ $env:UTPLSQL_CONN = "DEV/password@//localhost:1521/XEPDB1"
 
 ```bash
 UTPLSQL_CONN=your_user/password@//host:1521/service
-UTPLSQL_CLI_PATH=/path/to/utplsql
-UTPLSQL_CLI_HOME=/path/to/utplsql-cli
 ```
-
-### Invocation mode(`launcher` vs `java`)
-
-기본적으로(`utplsql.invocation = "launcher"`) 확장 프로그램은
-`utplsql`/`utplsql.bat` 런처를 호출합니다. Windows에서는 `cmd`를 거치며,
-이는 **메타 문자를 소비/해석**합니다(`^`는 이스케이프가 되고, `|`는 파이프가 됩니다) — 따라서
-`coverageSourceArgs`의 정규식이 깨집니다.
-
-`java` 모드는 JVM을 **직접** 호출합니다(`java -cp <home>/etc;<home>/lib/* …
-org.utplsql.cli.Cli`), **쉘 없이**. 인수는 프로세스에 배열로 전달되며
-사이에 `cmd`가 없으므로 `^`와 `|`가 **문자 그대로** 통과합니다 — 정규식에서
-`^anchors$`와 `(a|b|c)`를 해결 방법 없이 사용할 수 있습니다.
-
-```jsonc
-{
-  "utplsql.invocation": "java",
-  "utplsql.cliPath": "C:\\tools\\utPLSQL-cli\\bin\\utplsql.bat", // cliHome is derived from here
-  // "utplsql.cliHome": "C:\\tools\\utPLSQL-cli",  // only if cliPath is a PATH command
-  // "utplsql.javaPath": "java"                     // PATH, or full path to java.exe
-}
-```
-
-> `java` 모드는 `.bat`이 하는 것을 충실히 재현합니다(동일한 클래스패스 및 동일한
-> `-D` 속성); 유일한 차이는 `cmd`를 거치지 않는 것입니다. PATH에 `java`가 있어야 하며
-> (`utplsql.javaPath` 또는) CLI 루트가 확인 가능해야 합니다 — `cliPath`가
-> `…/bin/utplsql(.bat)`를 가리키거나 `cliHome`을 설정하면 됩니다.
 
 ## 사용법
 
@@ -216,8 +163,8 @@ org.utplsql.cli.Cli`), **쉘 없이**. 인수는 프로세스에 배열로 전�
    - `Ctrl+Shift+U L` — **Rerun Last**(마지막 실행 반복, 커버리지 포함/미포함).
    - `Ctrl+Shift+U U` — **Run at Cursor**(커서 아래의 `%test`/`%suite` 실행).
    - `Ctrl+Shift+U X` — **Run Failed Only**(실패한 테스트만 실행).
-8. **Oracle 직접 실행(스트리밍)의 경우:** 설치할 것이 없습니다 — VSIX에 thin `oracledb` 드라이버가 이미 포함되어 있습니다. `auto` 모드는 Oracle에 접근할 수 없으면 CLI로 폴백합니다.
-9. 진단의 경우 팔레트에서 `utPLSQL: Show information`을 사용하세요 — 복사 옵션과 함께 CLI/API/DB 버전을 표시합니다.
+8. **Oracle 직접 실행(스트리밍)의 경우:** 설치할 것이 없습니다 — VSIX에 thin `oracledb` 드라이버가 이미 포함되어 있습니다.
+9. 진단의 경우 팔레트에서 `utPLSQL: Show information`을 사용하세요 — 복사 옵션과 함께 버전 정보를 표시합니다.
 10. **utPLSQL: Select additional reporter...** — 데이터베이스에서 사용 가능한 리포터가 있는 QuickPick.
 11. **utPLSQL: Cancel execution** — 실행 중인 실행을 중지합니다(실행 중 `Escape`).
 12. **utPLSQL: Refresh tests** — `.pks`의 재발견을 강제합니다.
@@ -253,14 +200,14 @@ org.utplsql.cli.Cli`), **쉘 없이**. 인수는 프로세스에 배열로 전�
 | `utPLSQL: Run tests in this folder` | 선택한 폴더의 스위트 실행 | 마우스 오른쪽 버튼 → 폴더 |
 | `utPLSQL: Run tests in this folder with coverage` | 동일, 커버리지 프로필 사용 | 마우스 오른쪽 버튼 → 폴더 |
 | `utPLSQL: Refresh tests` | `.pks`의 재발견 강제 | — |
-| `utPLSQL: Cancel execution` | 실행 중인 CLI 중지 | — |
-| `utPLSQL: Show utPLSQL information` | 복사 옵션이 있는 CLI/API/DB 버전 | — |
+| `utPLSQL: Cancel execution` | 실행 중인 실행 중지 | — |
+| `utPLSQL: Show utPLSQL information` | 복사 옵션이 있는 버전 정보 | — |
 | `utPLSQL: Select additional reporter...` | 데이터베이스 리포터가 있는 QuickPick | — |
 | `utPLSQL: Clear session connection` | 세션 캐시에서 연결 제거 | — |
 | `utPLSQL: Rerun Last` | 마지막 실행 반복 | `Ctrl+Shift+U L` |
 | `utPLSQL: Run Test at Cursor` | 커서 아래의 테스트 실행 | `Ctrl+Shift+U U` |
 | `utPLSQL: Run Failed Tests` | 실패한 테스트만 재실행 | `Ctrl+Shift+U X` |
-| `utPLSQL: Validate configuration` | 전체 설정 검증(CLI, Java, 연결, UT3 설치) 실행 및 결과 표시 | — |
+| `utPLSQL: Validate configuration` | 전체 설정 검증(연결, UT3 설치) 실행 및 결과 표시 | — |
 | `utPLSQL: Configure connection` | `utplsql.connection`에서 설정 열기 | — |
 | `utPLSQL: Copy coverage grants to clipboard` | 권한 SQL을 클립보드에 복사 | — |
 | `utPLSQL: Show Test Explorer` | Testing 뷰에 포커스 | — |
@@ -303,55 +250,8 @@ org.utplsql.cli.Cli`), **쉘 없이**. 인수는 프로세스에 배열로 전�
   <img src="images/image2.png" alt="Test Explorer" width="600" height="400">
 </p>
 
-확장 프로그램은 `-source_path`(= `utplsql.sourcePath`)를 전달하고 `utplsql.coverageSourceArgs`
-(정규식 + `type_mapping`)를 통해 커버리지 대상 객체를 소스 파일에 매핑합니다. `-owner`는
+확장 프로그램은 `utplsql.sourcePath`를 통해 커버리지를 소스 파일에 매핑합니다. `-owner`는
 연결에서(또는 `utplsql.coverageOwner`에서) 파생됩니다.
-
-### 커버리지를 파일에 매핑(`coverageSourceArgs`)
-
-`type_mapping`은 정규식이 캡처한 "type"을 Oracle 유형으로 변환합니다. 세 가지 일반적인 규칙:
-
-**1) 디렉터리별** — `sourcePath/<type>/<name>.sql` 구조(폴더 `functions/`, `procedures/`, `packages/`, …):
-```jsonc
-"utplsql.coverageSourceArgs": [
-  "-regex_expression=.*[/\\\\](\\w+)[/\\\\](\\w+)\\.sql$",
-  "-type_subexpression=1",   // group 1 = folder (type)
-  "-name_subexpression=2",   // group 2 = file (object name)
-  "-type_mapping=packages=PACKAGE BODY/functions=FUNCTION/procedures=PROCEDURE/triggers=TRIGGER"
-]
-```
-> 모든 깊이에서 작동합니다(`.*`가 위의 모듈을 흡수). 다양한 폴더 이름
-> (예: `package`, `pkg`, `pacote`)은 `type_mapping`에 열거할 수 있습니다.
-
-**2) 이름 접두사별** — `pkg_*`, `prc_*`, `vw_*` 규칙(폴더와 무관):
-```jsonc
-"utplsql.coverageSourceArgs": [
-  "-regex_expression=.*[/\\\\]((pkg|prc|fnc|trg|vw)_\\w+)\\.sql$",
-  "-name_subexpression=1",   // group 1 = full name (e.g. PKG_EXAMPLE)
-  "-type_subexpression=2",   // group 2 = prefix (type)
-  "-type_mapping=pkg=PACKAGE BODY/prc=PROCEDURE/fnc=FUNCTION/trg=TRIGGER/vw=VIEW"
-]
-```
-
-**3) 유형별 확장자** — 파일 `*.pkb`, `*.fnc`, `*.prc`, `*.trg`(폴더와 무관):
-```jsonc
-"utplsql.coverageSourceArgs": [
-  "-regex_expression=.*[/\\\\](\\w+)\\.(\\w+)$",
-  "-name_subexpression=1",   // group 1 = name
-  "-type_subexpression=2",   // group 2 = extension (type)
-  "-type_mapping=pkb=PACKAGE BODY/fnc=FUNCTION/prc=PROCEDURE/trg=TRIGGER"
-]
-```
-
-**중요한 참고 사항:**
-- **패키지 → `PACKAGE BODY`**(`PACKAGE` 아님): 커버리지는 패키지 **본문**에서 수집됩니다.
-- **Windows / 정규식 메타 문자:** `launcher` 모드(기본값)에서 `.bat`는 `cmd`를 거치며,
-  이는 **`^`을 소비**하고 **`|`을 파이프로 해석**합니다 — 그래서 위 예제가 `\w`와
-  `[/\\]`를 사용하는 이유입니다(`^` 없음), 예제 2의 `|`는 확장 프로그램 내에서만 작동합니다. **해결책:** **`utplsql.invocation = "java"`**를 사용하세요
-  (참조 [Invocation mode](#invocation-mode-launcher-vs-java)) — 사이에 `cmd`가 없으면 `^`와 `|`가
-  문자 그대로 통과하고 정규식을 정상적으로 작성할 수 있습니다.
-- **Windows / `cmd`:** 정규식에서 **`^`**를 피하세요(`.bat`의 `cmd`가 소비함) — 그래서 예제는
-  `\w`와 `[/\\]`를 사용합니다.
 
 ## 리포터
 
@@ -414,16 +314,13 @@ GRANT SELECT ON SYS.DBA_PROCEDURES TO <ut3_owner>;
 
 | 증상 | 가능한 원인 | 해결책 |
 |---|---|---|
-| 스위트가 나타나지 않음 | CLI를 찾을 수 없음 | 진단을 위해 `utPLSQL: Validate configuration` 실행 |
+| 스위트가 나타나지 않음 | 데이터베이스를 찾을 수 없음 | 진단을 위해 `utPLSQL: Validate configuration` 실행 |
 | 빈 커버리지 | `GRANT EXECUTE ON DBMS_PROFILER` 누락 | [Requirements](#database-requirements)의 권한을 실행하거나 `utPLSQL: Copy coverage grants to clipboard` 사용 |
 | 빈 커버리지 | Oracle 19c에는 추가 권한 필요 | `GRANT EXECUTE ON DBMS_PROFILER` + `GRANT EXECUTE ON DBMS_PLSQL_CODE_COVERAGE` |
-| 느린 성능 | 큰 스위트는 더 많은 JVM 힙 필요 | `utplsql.javaArgs` 증가(예: `["-Xmx1024m"]`) |
 | 표시가 없는 컴파일 오류 | PL/SQL 구문 오류가 있는 코드 | `utplsql.compilationDiagnostics.enabled` 활성화(기본 켜짐); Problems 패널 참조 |
 | 연결 오류 | 잘못된 문자열 또는 접근 불가능한 DB | `utPLSQL: Validate configuration` 사용 |
 | 실행 중 시간 초과 | 테스트가 `timeoutMinutes`보다 오래 걸림 | `utplsql.timeoutMinutes` 증가 |
-| 커버리지 정규식이 일치하지 않음 | Windows `cmd`가 `^` 및 `\|` 소비 | `utplsql.invocation: "java"` 사용(참조 [Invocation mode](#invocation-mode-launcher-vs-java)) |
 | `%suite`가 인식되지 않음 | 파일에 `%suite`/`create package` 누락, 또는 `PROCEDURE` 없는 `%test` | 스펙 확인; `utPLSQL: Refresh tests` 실행 |
-| "report not generated" | CLI가 출력 XML을 생성할 수 없음 | `%TEMP%`의 쓰기 권한 및 utPLSQL 권한 확인 |
 | CodeLens가 나타나지 않음 | `editor.codeLens` 비활성화 또는 충돌 | `"editor.codeLens": true` 활성화; `utplsql.codeLens.enabled` 확인 |
 | 단축키가 작동하지 않음 | 다른 확장 프로그램 또는 VSCode 단축키와 충돌 | File → Preferences → Keyboard Shortcuts로 이동하여 `utplsql` 검색 후 재정의 |
 

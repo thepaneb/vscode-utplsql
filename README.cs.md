@@ -19,7 +19,7 @@ Integruje [utPLSQL](https://www.utplsql.org/) do VSCode a přináší PL/SQL tes
 - 📌 **Stavový řádek** — indikátor s počtem prošlých/selhávajících, délkou trvání a průběhem v reálném čase.
 - 🔁 **Chytré opětovné spuštění** — Rerun Last, Run at Cursor, Run Failed Only jedinou zkratkou.
 - 🚀 **Oracle přímý (přes node-oracledb)** — streamování v reálném čase, bez čekání na dokončení dávky.
-- 🔧 **Diagnostika nastavení** — proaktivní ověření CLI, připojení, grantů a verze s rychlou opravou (quick-fix).
+- 🔧 **Diagnostika nastavení** — proaktivní ověření připojení, grantů a verze s rychlou opravou (quick-fix).
 - 🧩 **Strom podle schémat** — uspořádání testů podle Schema > Package > Suite > Test v Test Exploreru.
 - 🎯 **Skok na selhání** — přímá navigace na řádek tvrzení, které selhalo (přes nativní „Go to Error").
 - 🔌 **Profily připojení** — ukládání a přepínání mezi více prostředími (DEV/TEST/PROD) s nastavením podle profilu, přes stavový řádek nebo paletu příkazů.
@@ -39,12 +39,10 @@ Rozšíření lze nainstalovat dvěma způsoby:
 ## Požadavky
 
 - [**utPLSQL**](https://github.com/utPLSQL/utPLSQL) **(UT3)** nainstalovaný v databázi Oracle.
-- **Pro režim CLI:** [**utPLSQL-cli**](https://github.com/utPLSQL/utPLSQL-cli/releases) + **Java** nainstalované na počítači (rozšíření volá CLI).
-- **Pro režim Oracle direct:** pouze databáze — VSIX už obsahuje tenký ovladač `oracledb` (bez Instant Client).
+- Pouze databáze — VSIX už obsahuje tenký ovladač `oracledb` (bez Instant Client).
 - **VSCode 1.88+** (Test Coverage API).
 
-Rozšíření je pouze „grafický klient" — to, co testy spouští, je databáze: přes
-CLI (utPLSQL-cli + Java) nebo přímo (node-oracledb, `runnerMode: auto` ve výchozím stavu).
+Rozšíření je pouze „grafický klient" — to, co testy spouští, je databáze přímo přes node-oracledb.
 
 ## Připojení
 
@@ -56,7 +54,7 @@ Rozšíření potřebuje k spuštění testů připojovací řetězec k Oracle. 
 4. **Mezipaměť relace** — pokud uživatel připojení zadal přes výzvu.
 5. **Dotaz uživatele** — zeptá se a ponechá pouze v aktuální relaci.
 
-Profily připojení (`utplsql.profiles`) mohou také přebíjet `sourcePath`, `coverageOwner`, `invocation`, `cliPath` atd. podle prostředí — viz `utplsql.activeProfile` v tabulce konfigurace.
+Profily připojení (`utplsql.profiles`) mohou také přebíjet `sourcePath`, `coverageOwner` atd. podle prostředí — viz `utplsql.activeProfile` v tabulce konfigurace.
 
 ⚠️ **Bezpečnostní doporučení:** připojovací řetězec obsahuje heslo. **NEPOUŽÍVEJTE**
 nastavení `utplsql.connection` ve sdílených prostředích (settings.json může být ve verzování
@@ -85,59 +83,35 @@ a ponechá je pouze v paměti během relace — použijte příkaz
 
 ## Jak to funguje
 
-Jsou k dispozici dva režimy spouštění:
-
-![Execution architecture — two modes](docs/wiki/images/diagram-arquitetura.png)
-
-### Režim Oracle direct (v0.9.0) — `runnerMode: auto` nebo `oracle`
-
 ![Oracle direct mode — streaming](docs/wiki/images/diagram-streaming.png)
 
 Žádné dočasné soubory, žádné čekání na dávku. Výsledky se objeví v
 Test Exploreru **jakmile každý test skončí**.
 
-### Režim CLI — `runnerMode: cli` (fallback)
-
-![CLI mode — batch](docs/wiki/images/diagram-cli.png)
-
-Rozšíření sestaví příkazový řádek CLI nebo se připojí přes Oracle direct, přečte
-sestavy (JUnit + Coverage) a převede je do nativních API VSCode. Režim
-`auto` (výchozí) zkusí Oracle direct a pokud `node-oracledb` není
-nainstalovaný, spadne na CLI. Pro vždy vynucení CLI použijte `runnerMode: cli`.
+Rozšíření se připojí přímo přes Oracle, přečte sestavy (JUnit + Coverage) a převede je do
+nativních API VSCode.
 
 ## Konfigurace
 
 | Nastavení | Výchozí | Popis |
 |---|---|---|
 | `utplsql.connection` | `""` | Připojení k Oracle. **Nechte prázdné** a použijte proměnnou prostředí `UTPLSQL_CONN`, abyste neukládali heslo. Pokud jsou obě prázdné, rozšíření se zeptá (uchová pouze v relaci). |
-| `utplsql.cliPath` | `utplsql` | Cesta ke spustitelnému souboru utPLSQL-cli (např. `C:\tools\utPLSQL-cli\bin\utplsql.bat`). |
 | `utplsql.sourcePath` | `install` | Složka produkčního kódu (pro mapování pokrytí na soubory). |
 | `utplsql.includePatterns` | `["**/*.pks"]` | Globy pro objevení specifikací s `%suite`/`%test`. Pokud jsou vaše testy v `.sql`, použijte `["**/*.sql"]`. |
-| `utplsql.extraRunArgs` | `[]` | Další argumenty pro `utplsql run`. |
 | `utplsql.coverageOwner` | `""` | Vlastník schématu pokrytých objektů. Prázdné = použije uživatele připojení (velkými písmeny). |
-| `utplsql.coverageSourceArgs` | (viz **Coverage**) | Argumenty CLI, které mapují pokrytí na zdrojové soubory. |
-| `utplsql.invocation` | `launcher` | Jak volat CLI: `launcher` (přes `.bat`/skript, výchozí) nebo `java` (přímé JVM, **bez shellu**). Viz **Režim volání**. |
-| `utplsql.javaPath` | `java` | Spustitelný soubor Java (PATH nebo plná cesta). Používá se pouze v režimu `java`. |
-| `utplsql.cliHome` | `""` | Kořen utPLSQL-cli (složka s `bin/` a `lib/`). Prázdné = odvozeno z `cliPath`. Používá se pouze v režimu `java`. |
-| `utplsql.timeoutMinutes` | `60` | Časový limit v minutách pro CLI. Příznak `-t` se odesílá pouze v případě, že se hodnota liší od `60`. |
-| `utplsql.dbmsOutput` | `false` | Povolí `DBMS_OUTPUT` v testovací relaci. Příznak `-D` se odesílá pouze při `true`. |
-| `utplsql.quiet` | `false` | Potlačí informativní logy CLI. Příznak `-q` se odesílá pouze při `true`. |
-| `utplsql.failureExitCode` | `1` | Kód návratu při selhání. Příznak `--failure-exit-code` se odesílá pouze v případě, že se hodnota liší od `1`. `0` zajistí, že CLI vždy skončí úspěšně. |
 | `utplsql.additionalReporters` | `[]` | Další reportéry zahrnuté do každého spuštění (např. `["ut_coverage_html_reporter"]`). Výchozí (documentation, junit, coverage) jsou vždy zahrnuty a není třeba je vypisovat. |
 | `utplsql.codeLens.enabled` | `true` | Zobrazuje tlačítka CodeLens Run/Run with Coverage nad `%suite` a `%test`. |
 | `utplsql.statusBar.enabled` | `true` | Zobrazuje indikátor stavu testů ve stavovém řádku. |
 | `utplsql.decorations.enabled` | `true` | Zobrazuje dekorace prošlo/selháno na řádcích `%suite` a `%test` po spuštění. |
-| `utplsql.runnerMode` | `auto` | Režim spouštění: `auto` (Oracle direct přes node-oracledb, fallback CLI), `cli` (vždy přes příkazový řádek), `oracle` (vždy Oracle direct). |
 | `utplsql.oraclePoolMin` | `2` | Minimální počet připojení udržovaných v poolu Oracle runneru (node-oracledb). |
 | `utplsql.oraclePoolMax` | `10` | Maximální počet připojení v poolu Oracle runneru (node-oracledb). |
 | `utplsql.oraclePoolIncrement` | `1` | Přírůstek při rozšiřování poolu Oracle runneru (node-oracledb). |
 | `utplsql.oraclePoolPingInterval` | `60` | Sekundy mezi kontrolami stavu nečinných připojení v poolu (node-oracledb). `0` = ping při každém checkoutu. |
-| `utplsql.javaArgs` | `["-Xmx256m"]` | JVM příznaky pro režim `java` (např. `["-Xmx512m", "-Xms128m"]`). Vloženo před `-cp`. |
-| `utplsql.organization` | `file` | Uspořádání stromu: `file` (podle cesty) nebo `schema` (Schema > Package > Suite > Test). V režimu `schema` s Oracle `runnerMode` (`auto`/`oracle`) se sady také objevují z databáze (`ALL_OBJECTS`/`ALL_SOURCE`), když soubory `.pks` nejsou v pracovním prostoru — s virtuální URI `utplsql-db:/` (bez CodeLens/dekorací/skoku na selhání). |
+| `utplsql.organization` | `file` | Uspořádání stromu: `file` (podle cesty) nebo `schema` (Schema > Package > Suite > Test). V režimu `schema` se sady také objevují z databáze (`ALL_OBJECTS`/`ALL_SOURCE`), když soubory `.pks` nejsou v pracovním prostoru — s virtuální URI `utplsql-db:/` (bez CodeLens/dekorací/skoku na selhání). |
 | `utplsql.organization.schemaPattern` | `db/{schema}/**` | Glob vzor pro extrakci schématu z cesty. Použijte `{schema}` jako zástupný symbol. V režimu `schema` adresáře pod základnou vzoru (např. `db/*`) definují schémata dotazovaná v databázi. |
-| `utplsql.compilationDiagnostics.enabled` | `true` | Zobrazuje chyby kompilace PL/SQL jako podtržení v editoru a v panelu Problémy (režim CLI). |
-| `utplsql.setupDiagnostics.enabled` | `true` | Zobrazuje diagnostiku konfigurace (CLI, připojení, granty, verze) a **integritu instalace utPLSQL** (neplatné objekty ve schématu UT3, s rychlou opravou „Recompile UT3") s akcemi rychlé opravy. |
-| `utplsql.profiles` | `[]` | Uložené profily připojení k Oracle (název, připojení a přebití `sourcePath`/`coverageOwner`/`invocation`/`cliPath`/atd.) pro přepínání mezi prostředími. |
+| `utplsql.compilationDiagnostics.enabled` | `true` | Zobrazuje chyby kompilace PL/SQL jako podtržení v editoru a v panelu Problémy. |
+| `utplsql.setupDiagnostics.enabled` | `true` | Zobrazuje diagnostiku konfigurace (připojení, granty, verze) a **integritu instalace utPLSQL** (neplatné objekty ve schématu UT3, s rychlou opravou „Recompile UT3") s akcemi rychlé opravy. |
+| `utplsql.profiles` | `[]` | Uložené profily připojení k Oracle (název, připojení a přebití `sourcePath`/`coverageOwner`/atd.) pro přepínání mezi prostředími. |
 | `utplsql.activeProfile` | `""` | ID aktivního profilu (`utplsql.profiles`). Pokud je nastaveno, přebíjí `utplsql.connection`. |
 | `utplsql.sqlCoverageEnabled` | `false` | Sleduje pohledy spuštěné přes `V$SQL` (boolean pokrytí). Vyžaduje `GRANT SELECT ON V$SQL`. |
 | `utplsql.debugger.enabled` | `true` | Povoluje ladění PL/SQL testů (`DBMS_DEBUG`). Vyžaduje `node-oracledb` + granty. |
@@ -149,7 +123,6 @@ Příklad (soubor `.vscode/settings.json` projektu):
 
 ```jsonc
 {
-  "utplsql.cliPath": "C:\\tools\\utPLSQL-cli\\bin\\utplsql.bat",
   "utplsql.sourcePath": "install",
   // utplsql.connection stays empty -> use the UTPLSQL_CONN environment variable
 }
@@ -168,35 +141,7 @@ prostředí používanými integračními testy:
 
 ```bash
 UTPLSQL_CONN=your_user/password@//host:1521/service
-UTPLSQL_CLI_PATH=/path/to/utplsql
-UTPLSQL_CLI_HOME=/path/to/utplsql-cli
 ```
-
-### Režim volání (`launcher` vs `java`)
-
-Ve výchozím nastavení (`utplsql.invocation = "launcher"`) rozšíření volá
-launcher `utplsql`/`utplsql.bat`. Na Windows to prochází přes `cmd`, které
-**spotřebovává/interpretuje metaznaky** (`^` se stane escape, `|` se stane pipe) — což
-rozbíjí regex v `coverageSourceArgs`.
-
-Režim `java` volá JVM **přímo** (`java -cp <home>/etc;<home>/lib/* …
-org.utplsql.cli.Cli`), **bez shellu**. Argumenty jdou do procesu jako pole,
-bez `cmd` mezi nimi, takže `^` a `|` procházejí **doslovně** — můžete použít `^anchors$` a
-`(a|b|c)` v regexu bez obcházení.
-
-```jsonc
-{
-  "utplsql.invocation": "java",
-  "utplsql.cliPath": "C:\\tools\\utPLSQL-cli\\bin\\utplsql.bat", // cliHome is derived from here
-  // "utplsql.cliHome": "C:\\tools\\utPLSQL-cli",  // only if cliPath is a PATH command
-  // "utplsql.javaPath": "java"                     // PATH, or full path to java.exe
-}
-```
-
-> Režim `java` věrně replikuje to, co dělá `.bat` (stejný classpath a stejné
-> vlastnosti `-D`); jediný rozdíl je, že neprochází přes `cmd`. Vyžaduje `java` na PATH
-> (nebo v `utplsql.javaPath`) a to, že kořen CLI je řešitelný — buď přes `cliPath`
-> ukazující na `…/bin/utplsql(.bat)`, nebo nastavením `cliHome`.
 
 ## Použití
 
@@ -218,8 +163,8 @@ bez `cmd` mezi nimi, takže `^` a `|` procházejí **doslovně** — můžete po
    - `Ctrl+Shift+U L` — **Rerun Last** (zopakuje poslední spuštění, s pokrytím nebo bez).
    - `Ctrl+Shift+U U` — **Run at Cursor** (spustí `%test`/`%suite` pod kurzorem).
    - `Ctrl+Shift+U X` — **Run Failed Only** (spustí pouze testy, které selhaly).
-8. **Pro Oracle direct (streaming):** není co instalovat — VSIX už obsahuje tenký ovladač `oracledb`. Režim `auto` spadne na CLI, pokud Oracle není dostupný.
-9. Pro diagnostiku použijte `utPLSQL: Show information` v paletě — zobrazí verze CLI/API/DB s možností kopírování.
+8. **Pro Oracle direct (streaming):** není co instalovat — VSIX už obsahuje tenký ovladač `oracledb`.
+9. Pro diagnostiku použijte `utPLSQL: Show information` v paletě — zobrazí verze API/DB s možností kopírování.
 10. **utPLSQL: Select additional reporter...** — QuickPick s reportéry dostupnými v databázi.
 11. **utPLSQL: Cancel execution** — zastaví probíhající spuštění (`Escape` během spuštění).
 12. **utPLSQL: Refresh tests** — vynutí znovuobjevení `.pks`.
@@ -255,14 +200,14 @@ Všechny příkazy rozšíření (paleta `Ctrl+Shift+P`, předpona `utPLSQL:`):
 | `utPLSQL: Run tests in this folder` | Spustí sady vybrané složky | Pravé kliknutí → složka |
 | `utPLSQL: Run tests in this folder with coverage` | Totéž s profilem pokrytí | Pravé kliknutí → složka |
 | `utPLSQL: Refresh tests` | Vynutí znovuobjevení `.pks` | — |
-| `utPLSQL: Cancel execution` | Zastaví běžící CLI | — |
-| `utPLSQL: Show utPLSQL information` | Verze CLI/API/DB s možností kopírování | — |
+| `utPLSQL: Cancel execution` | Zastaví běžící spuštění | — |
+| `utPLSQL: Show utPLSQL information` | Verze API/DB s možností kopírování | — |
 | `utPLSQL: Select additional reporter...` | QuickPick s reportéry databáze | — |
 | `utPLSQL: Clear session connection` | Odstraní připojení z mezipaměti relace | — |
 | `utPLSQL: Rerun Last` | Zopakuje poslední spuštění | `Ctrl+Shift+U L` |
 | `utPLSQL: Run Test at Cursor` | Spustí test pod kurzorem | `Ctrl+Shift+U U` |
 | `utPLSQL: Run Failed Tests` | Spustí znovu pouze selhané testy | `Ctrl+Shift+U X` |
-| `utPLSQL: Validate configuration` | Spustí úplné ověření nastavení (CLI, Java, připojení, instalace UT3) a zobrazí výsledky | — |
+| `utPLSQL: Validate configuration` | Spustí úplné ověření nastavení (připojení, instalace UT3) a zobrazí výsledky | — |
 | `utPLSQL: Configure connection` | Otevře nastavení na `utplsql.connection` | — |
 | `utPLSQL: Copy coverage grants to clipboard` | Zkopíruje SQL grantů do schránky | — |
 | `utPLSQL: Show Test Explorer` | Zaměří pohled Testing | — |
@@ -348,13 +293,6 @@ je odvozen z připojení (nebo z `utplsql.coverageOwner`).
 
 **Důležité poznámky:**
 - **Balíčky → `PACKAGE BODY`** (ne `PACKAGE`): pokrytí se sbírá v **těle** balíčku.
-- **Windows / metaznaky regexu:** v režimu `launcher` (výchozí) prochází `.bat` přes `cmd`,
-  které **spotřebovává `^`** a **interpretuje `|` jako pipe** — proto příklady výše používají `\w` a
-  `[/\\]` (bez `^`), a `|` v příkladu 2 funguje pouze uvnitř rozšíření. **Řešení:** použijte **`utplsql.invocation = "java"`** (viz
-  [Režim volání](#režim-volání-launcher-vs-java)) — bez `cmd` mezi nimi procházejí `^` a `|`
-  doslovně a regex můžete psát normálně.
-- **Windows / `cmd`:** vyhněte se **`^`** v regexu (`cmd` v `.bat` ho spotřebovává) — proto příklady
-  používají `\w` a `[/\\]`.
 
 ## Reportéry
 
@@ -418,16 +356,11 @@ GRANT SELECT ON SYS.DBA_PROCEDURES TO <ut3_owner>;
 
 | Příznak | Pravděpodobná příčina | Řešení |
 |---|---|---|
-| Sady se nezobrazují | CLI nebylo nalezeno | Spusťte `utPLSQL: Validate configuration` pro diagnostiku |
 | Prázdné pokrytí | Chybí `GRANT EXECUTE ON DBMS_PROFILER` | Spusťte granty v [Požadavky](#požadavky-na-databázi) nebo použijte `utPLSQL: Copy coverage grants to clipboard` |
 | Prázdné pokrytí | Oracle 19c vyžaduje další granty | `GRANT EXECUTE ON DBMS_PROFILER` + `GRANT EXECUTE ON DBMS_PLSQL_CODE_COVERAGE` |
-| Pomalý výkon | Velké sady vyžadují více paměti JVM heap | Zvyšte `utplsql.javaArgs` (např. `["-Xmx1024m"]`) |
 | Chyba kompilace bez indikace | Kód se syntaktickou chybou PL/SQL | Povolte `utplsql.compilationDiagnostics.enabled` (výchozí zapnuto); viz panel Problémy |
 | Chyba připojení | Chybný řetězec nebo nedostupná DB | Použijte `utPLSQL: Validate configuration` |
-| Časový limit při běhu | Testy trvají déle než `timeoutMinutes` | Zvyšte `utplsql.timeoutMinutes` |
-| Regex pokrytí se neshoduje | Windows `cmd` spotřebovává `^` a `\|` | Použijte `utplsql.invocation: "java"` (viz [Režim volání](#režim-volání-launcher-vs-java)) |
 | `%suite` není rozpoznán | Chybí `%suite`/`create package` v souboru, nebo `%test` bez `PROCEDURE` | Zkontrolujte specifikaci; spusťte `utPLSQL: Refresh tests` |
-| „report not generated" | CLI nemohlo vygenerovat výstupní XML | Zkontrolujte oprávnění k zápisu v `%TEMP%` a granty utPLSQL |
 | CodeLens se nezobrazuje | Vypnutý `editor.codeLens` nebo konflikt | Povolte `"editor.codeLens": true`; zkontrolujte `utplsql.codeLens.enabled` |
 | Zkratky nefungují | Konflikt s jiným rozšířením nebo zkratkou VSCode | Přejděte do Soubor → Předvolby → Klávesové zkratky a vyhledejte `utplsql` pro předefinování |
 

@@ -1,6 +1,4 @@
-import * as fs from 'node:fs';
 import * as vscode from 'vscode';
-import { getCliInfo, semverLt } from './cliInfo';
 import {
   getExtensionLocale,
   readConfig,
@@ -12,6 +10,7 @@ import {
   discoverUtplsqlSchema,
   ensurePool,
   findInvalidUt3Objects,
+  getOracleInfo,
   parseConnString,
 } from './oracleRunner';
 
@@ -36,78 +35,56 @@ export class SetupValidator {
     const cfg = readConfig();
     if (!cfg.setupDiagnosticsEnabled) return diagnostics;
 
-    const cliExists = this.checkCli(cfg.cliPath);
-    if (!cliExists) {
-      diagnostics.push({
-        code: 'UTPLSQL_NO_CLI',
-        severity: vscode.DiagnosticSeverity.Error,
-        message: t(locale, 'quickfix.noCli', { path: cfg.cliPath }),
-        command: {
-          title: t(locale, 'quickfix.noCliAction'),
-          command: 'workbench.action.openSettings',
-          arguments: ['utplsql.cliPath'],
-        },
-      });
-    }
-
-    if (cfg.invocation === 'java' && cfg.javaPath) {
+    const conn = await resolveConnection();
+    if (conn) {
+      let oracledb: typeof import('oracledb');
       try {
-        fs.accessSync(cfg.javaPath, fs.constants.X_OK);
+        const mod = await import('oracledb');
+        oracledb =
+          ((mod as Record<string, unknown>).default as typeof import('oracledb')) ??
+          (mod as typeof import('oracledb'));
       } catch {
-        const ext = process.platform === 'win32' ? '.exe' : '';
-        diagnostics.push({
-          code: 'UTPLSQL_NO_JAVA',
-          severity: vscode.DiagnosticSeverity.Error,
-          message: t(locale, 'quickfix.noJava', { path: `${cfg.javaPath}${ext}` }),
-          command: {
-            title: t(locale, 'quickfix.noJavaAction'),
-            command: 'workbench.action.openSettings',
-            arguments: ['utplsql.javaPath'],
-          },
-        });
+        return diagnostics;
       }
-    }
 
-    if (cliExists) {
-      const conn = await resolveConnection();
-      if (conn) {
-        const info = await getCliInfo(cfg, conn);
-        if ('error' in info) {
-          diagnostics.push({
-            code: 'UTPLSQL_BAD_CONN',
-            severity: vscode.DiagnosticSeverity.Error,
-            message: t(locale, 'quickfix.badConn', { error: info.error }),
-            command: {
-              title: t(locale, 'nls.command.configureConnection'),
-              command: 'utplsql.configureConnection',
-            },
-          });
-        } else if (info.dbVersion && semverLt(info.dbVersion, '3.1.0')) {
-          diagnostics.push({
-            code: 'UTPLSQL_OLD_VERSION',
-            severity: vscode.DiagnosticSeverity.Warning,
-            message: t(locale, 'quickfix.oldVersion', { version: info.dbVersion }),
-            command: {
-              title: t(locale, 'quickfix.oldVersionUpgrade'),
-              command: 'vscode.open',
-              arguments: [vscode.Uri.parse('https://github.com/utPLSQL/utPLSQL/releases')],
-            },
-            helpUrl: 'https://github.com/utPLSQL/utPLSQL/releases',
-          });
+      const pool = await ensurePool(oracledb, conn, cfg).catch(() => undefined);
+      let oracleConn: import('oracledb').Connection;
+      try {
+        oracleConn = pool
+          ? await pool.getConnection()
+          : await oracledb.getConnection(parseConnString(conn));
+      } catch {
+        return diagnostics;
+      }
+
+      try {
+        const info = await getOracleInfo(oracleConn);
+        if (info.utVersion && info.dbVersion) {
+          const major = parseInt(info.utVersion.replace(/^v/, '').split('.')[0], 10);
+          if (major < 3) {
+            diagnostics.push({
+              code: 'UTPLSQL_OLD_VERSION',
+              severity: vscode.DiagnosticSeverity.Warning,
+              message: t(locale, 'quickfix.oldVersion', { version: info.utVersion }),
+              command: {
+                title: t(locale, 'quickfix.oldVersionUpgrade'),
+                command: 'vscode.open',
+                arguments: [vscode.Uri.parse('https://github.com/utPLSQL/utPLSQL/releases')],
+              },
+              helpUrl: 'https://github.com/utPLSQL/utPLSQL/releases',
+            });
+          }
         }
+      } finally {
+        await oracleConn.close().catch(() => {});
       }
     }
 
     return diagnostics;
   }
 
-  checkCli(cliPath: string): boolean {
-    try {
-      fs.accessSync(cliPath, fs.constants.X_OK);
-      return true;
-    } catch {
-      return false;
-    }
+  checkCli(_cliPath: string): boolean {
+    return true;
   }
 
   applyDiagnostics(diagnostics: SetupDiagnostic[]) {
@@ -153,7 +130,6 @@ export class SetupValidator {
   ): Promise<SetupDiagnostic[]> {
     const cfg = readConfig();
     if (!cfg.setupDiagnosticsEnabled) return [];
-    if (cfg.runnerMode === 'cli') return [];
 
     const connStr = resolveConnectionNoPrompt();
     if (!connStr) return [];
@@ -288,20 +264,6 @@ export class UtplsqlCodeActionProvider implements vscode.CodeActionProvider {
 
     for (const diagnostic of context.diagnostics) {
       if (diagnostic.source !== 'utPLSQL Setup') continue;
-
-      if (diagnostic.code === 'UTPLSQL_NO_CLI') {
-        const action = new vscode.CodeAction(
-          'Configurar utplsql.cliPath',
-          vscode.CodeActionKind.QuickFix,
-        );
-        action.command = {
-          command: 'workbench.action.openSettings',
-          title: 'Configurar utplsql.cliPath',
-          arguments: ['utplsql.cliPath'],
-        };
-        action.diagnostics = [diagnostic];
-        actions.push(action);
-      }
 
       if (diagnostic.code === 'UTPLSQL_BAD_CONN') {
         const action = new vscode.CodeAction(

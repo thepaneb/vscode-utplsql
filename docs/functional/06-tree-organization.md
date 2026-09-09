@@ -78,7 +78,7 @@ function buildSchemaTree(controller, suites: SuiteFile[], schemaPattern: string)
 
 ## Descoberta via DB (PRD-43)
 
-No modo `schema` com `runnerMode !== 'cli'`, o `doRefresh()` chama
+No modo `schema`, o `doRefresh()` chama
 `mergeDbSuites()` antes de `buildSchemaTree`:
 
 1. `resolveConnectionNoPrompt()` — sem conexão configurada, descoberta DB é pulada

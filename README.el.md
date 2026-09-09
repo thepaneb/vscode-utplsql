@@ -19,7 +19,7 @@
 - 📌 **Status Bar** — ένδειξη με πλήθος επιτυχιών/αποτυχιών, διάρκεια και πρόοδο σε πραγματικό χρόνο.
 - 🔁 **Smart Re-run** — Rerun Last, Run at Cursor, Run Failed Only με μία μόνο συντόμευση.
 - 🚀 **Oracle direct (μέσω node-oracledb)** — streaming σε πραγματικό χρόνο, χωρίς να περιμένετε το τέλος του batch.
-- 🔧 **Διαγνωστικά ρυθμίσεων** — προληπτική επικύρωση CLI, σύνδεσης, grants και έκδοσης με quick-fix.
+- 🔧 **Διαγνωστικά ρυθμίσεων** — προληπτική επικύρωση σύνδεσης, grants και έκδοσης με quick-fix.
 - 🧩 **Schema-aware tree** — οργάνωση tests ανά Schema > Package > Suite > Test στο Test Explorer.
 - 🎯 **Jump to failure** — άμεση μετάβαση στη γραμμή του assertion που απέτυχε (μέσω του εγγενούς "Go to Error").
 - 🔌 **Connection profiles** — αποθήκευση και εναλλαγή μεταξύ πολλών περιβαλλόντων (DEV/TEST/PROD) με ρυθμίσεις ανά profile, μέσω status bar ή command palette.
@@ -39,12 +39,10 @@
 ## Απαιτήσεις
 
 - [**utPLSQL**](https://github.com/utPLSQL/utPLSQL) **(UT3)** εγκατεστημένο στη βάση Oracle.
-- **Για CLI mode:** [**utPLSQL-cli**](https://github.com/utPLSQL/utPLSQL-cli/releases) + **Java** εγκατεστημένα στη μηχανή (η επέκταση καλεί το CLI).
-- **Για Oracle direct mode:** τίποτα άλλο εκτός από τη βάση — το VSIX περιλαμβάνει ήδη τον thin driver `oracledb` (χωρίς Instant Client).
+- Τίποτα άλλο εκτός από τη βάση — το VSIX περιλαμβάνει ήδη τον thin driver `oracledb` (χωρίς Instant Client).
 - **VSCode 1.88+** (Test Coverage API).
 
-Η επέκταση είναι μόνο ο «γραφικός πελάτης» — αυτό που εκτελεί τα tests είναι η βάση: μέσω
-CLI (utPLSQL-cli + Java) ή απευθείας (node-oracledb, `runnerMode: auto` από προεπιλογή).
+Η επέκταση είναι μόνο ο «γραφικός πελάτης» — αυτό που εκτελεί τα tests είναι η βάση απευθείας μέσω node-oracledb.
 
 ## Σύνδεση
 
@@ -56,7 +54,7 @@ CLI (utPLSQL-cli + Java) ή απευθείας (node-oracledb, `runnerMode: auto
 4. **Cache συνόδου** — αν ο χρήστης έχει ήδη πληκτρολογήσει τη σύνδεση μέσω prompt.
 5. **Prompt προς τον χρήστη** — ρωτά και τη διατηρεί μόνο στην τρέχουσα σύνοδο.
 
-Τα profiles σύνδεσης (`utplsql.profiles`) μπορούν επίσης να παρακάμψουν τα `sourcePath`, `coverageOwner`, `invocation`, `cliPath`, κ.λπ. ανά περιβάλλον — δείτε το `utplsql.activeProfile` στον πίνακα ρυθμίσεων.
+Τα profiles σύνδεσης (`utplsql.profiles`) μπορούν επίσης να παρακάμψουν τα `sourcePath`, `coverageOwner`, κ.λπ. ανά περιβάλλον — δείτε το `utplsql.activeProfile` στον πίνακα ρυθμίσεων.
 
 ⚠️ **Σύσταση ασφαλείας:** η συμβολοσειρά σύνδεσης περιέχει κωδικό πρόσβασης. **ΜΗΝ**
 χρησιμοποιείτε τη ρύθμιση `utplsql.connection` σε κοινόχρηστα περιβάλλοντα (το settings.json μπορεί
@@ -86,59 +84,34 @@ code .
 
 ## Πώς λειτουργεί
 
-Διατίθενται δύο τρόποι εκτέλεσης:
-
-![Execution architecture — two modes](docs/wiki/images/diagram-arquitetura.png)
-
-### Oracle direct mode (v0.9.0) — `runnerMode: auto` ή `oracle`
-
 ![Oracle direct mode — streaming](docs/wiki/images/diagram-streaming.png)
 
 Χωρίς προσωρινά αρχεία, χωρίς αναμονή για το batch. Τα αποτελέσματα εμφανίζονται στο
 Test Explorer **καθώς ολοκληρώνεται κάθε test**.
 
-### CLI mode — `runnerMode: cli` (fallback)
-
-![CLI mode — batch](docs/wiki/images/diagram-cli.png)
-
-Η επέκταση χτίζει τη γραμμή εντολών του CLI ή συνδέεται απευθείας μέσω Oracle, διαβάζει τις
-αναφορές (JUnit + Coverage) και τις μεταφράζει στα εγγενή APIs του VSCode. Η
-λειτουργία `auto` (προεπιλογή) δοκιμάζει το Oracle direct και υποχωρεί στο CLI αν το
-`node-oracledb` δεν είναι εγκατεστημένο. Χρησιμοποιήστε το `runnerMode: cli` για να επιβάλετε πάντα το CLI.
+Η επέκταση συνδέεται απευθείας μέσω Oracle, διαβάζει τις αναφορές (JUnit + Coverage) και τις μεταφράζει στα εγγενή APIs του VSCode.
 
 ## Ρυθμίσεις
 
 | Ρύθμιση | Προεπιλογή | Περιγραφή |
 |---|---|---|
 | `utplsql.connection` | `""` | Σύνδεση Oracle. **Αφήστε το κενό** και χρησιμοποιήστε τη μεταβλητή περιβάλλοντος `UTPLSQL_CONN` για να αποφύγετε την αποθήκευση του κωδικού. Αν και τα δύο είναι κενά, η επέκταση ρωτά (το διατηρεί μόνο στη σύνοδο). |
-| `utplsql.cliPath` | `utplsql` | Διαδρομή προς το εκτελέσιμο του utPLSQL-cli (π.χ. `C:\tools\utPLSQL-cli\bin\utplsql.bat`). |
 | `utplsql.sourcePath` | `install` | Φάκελος του κώδικα παραγωγής (για την αντιστοίχιση της κάλυψης σε αρχεία). |
 | `utplsql.includePatterns` | `["**/*.pks"]` | Globs για την εύρεση των specs με `%suite`/`%test`. Αν τα tests σας είναι σε `.sql`, χρησιμοποιήστε `["**/*.sql"]`. |
-| `utplsql.extraRunArgs` | `[]` | Επιπλέον ορίσματα για το `utplsql run`. |
 | `utplsql.coverageOwner` | `""` | Schema-owner των καλυπτόμενων αντικειμένων. Κενό = χρησιμοποιεί τον χρήστη της σύνδεσης (κεφαλαία). |
-| `utplsql.coverageSourceArgs` | (βλ. **Coverage**) | Ορίσματα CLI που αντιστοιχίζουν την κάλυψη σε αρχεία πηγαίου κώδικα. |
-| `utplsql.invocation` | `launcher` | Πώς καλείται το CLI: `launcher` (μέσω `.bat`/script, προεπιλογή) ή `java` (άμεσο JVM, **χωρίς shell**). Δείτε **Λειτουργία κλήσης**. |
-| `utplsql.javaPath` | `java` | Εκτελέσιμο της Java (PATH ή πλήρης διαδρομή). Χρησιμοποιείται μόνο στη λειτουργία `java`. |
-| `utplsql.cliHome` | `""` | Ρίζα του utPLSQL-cli (φάκελος με `bin/` και `lib/`). Κενό = προκύπτει από το `cliPath`. Χρησιμοποιείται μόνο στη λειτουργία `java`. |
-| `utplsql.timeoutMinutes` | `60` | Χρονικό όριο σε λεπτά για το CLI. Το flag `-t` στέλνεται μόνο αν η τιμή διαφέρει από το `60`. |
-| `utplsql.dbmsOutput` | `false` | Ενεργοποιεί το `DBMS_OUTPUT` στη σύνοδο του test. Το flag `-D` στέλνεται μόνο όταν είναι `true`. |
-| `utplsql.quiet` | `false` | Καταστέλλει τα ενημερωτικά logs του CLI. Το flag `-q` στέλνεται μόνο όταν είναι `true`. |
-| `utplsql.failureExitCode` | `1` | Κωδικός εξόδου σε αποτυχία. Το flag `--failure-exit-code` στέλνεται μόνο αν η τιμή διαφέρει από το `1`. Το `0` κάνει το CLI να εξέρχεται πάντα με επιτυχία. |
 | `utplsql.additionalReporters` | `[]` | Επιπλέον reporters που περιλαμβάνονται σε κάθε εκτέλεση (π.χ. `["ut_coverage_html_reporter"]`). Οι προεπιλεγμένοι (documentation, junit, coverage) περιλαμβάνονται πάντα και δεν χρειάζεται να αναφέρονται. |
 | `utplsql.codeLens.enabled` | `true` | Εμφανίζει κουμπιά CodeLens Run/Run with Coverage πάνω από τα `%suite` και `%test`. |
 | `utplsql.statusBar.enabled` | `true` | Εμφανίζει ένδειξη κατάστασης των tests στη status bar. |
 | `utplsql.decorations.enabled` | `true` | Εμφανίζει decorations επιτυχίας/αποτυχίας στις γραμμές `%suite` και `%test` μετά την εκτέλεση. |
-| `utplsql.runnerMode` | `auto` | Τρόπος εκτέλεσης: `auto` (Oracle direct μέσω node-oracledb, fallback στο CLI), `cli` (πάντα μέσω γραμμής εντολών), `oracle` (πάντα Oracle direct). |
 | `utplsql.oraclePoolMin` | `2` | Ελάχιστες συνδέσεις που διατηρούνται στο pool του Oracle runner (node-oracledb). |
 | `utplsql.oraclePoolMax` | `10` | Μέγιστες συνδέσεις στο pool του Oracle runner (node-oracledb). |
 | `utplsql.oraclePoolIncrement` | `1` | Βήμα αύξησης όταν επεκτείνεται το pool του Oracle runner (node-oracledb). |
 | `utplsql.oraclePoolPingInterval` | `60` | Δευτερόλεπτα μεταξύ των ελέγχων υγείας των αδρανών συνδέσεων του pool (node-oracledb). `0` = ping σε κάθε checkout. |
-| `utplsql.javaArgs` | `["-Xmx256m"]` | JVM flags για τη λειτουργία `java` (π.χ. `["-Xmx512m", "-Xms128m"]`). Εισάγονται πριν από το `-cp`. |
-| `utplsql.organization` | `file` | Οργάνωση δέντρου: `file` (ανά διαδρομή) ή `schema` (Schema > Package > Suite > Test). Στη λειτουργία `schema` με Oracle `runnerMode` (`auto`/`oracle`), τα suites ανακαλύπτονται επίσης από τη βάση (`ALL_OBJECTS`/`ALL_SOURCE`) όταν τα αρχεία `.pks` δεν υπάρχουν στο workspace — με εικονικό URI `utplsql-db:/` (χωρίς CodeLens/decorations/jump to failure). |
+| `utplsql.organization` | `file` | Οργάνωση δέντρου: `file` (ανά διαδρομή) ή `schema` (Schema > Package > Suite > Test). Στη λειτουργία `schema` τα suites ανακαλύπτονται επίσης από τη βάση (`ALL_OBJECTS`/`ALL_SOURCE`) όταν τα αρχεία `.pks` δεν υπάρχουν στο workspace — με εικονικό URI `utplsql-db:/` (χωρίς CodeLens/decorations/jump to failure). |
 | `utplsql.organization.schemaPattern` | `db/{schema}/**` | Glob pattern για την εξαγωγή του schema από τη διαδρομή. Χρησιμοποιήστε το `{schema}` ως placeholder. Στη λειτουργία `schema`, οι κατάλογοι κάτω από τη βάση του pattern (π.χ. `db/*`) ορίζουν τα schemas που ερωτώνται στη βάση. |
-| `utplsql.compilationDiagnostics.enabled` | `true` | Εμφανίζει τα PL/SQL σφάλματα μεταγλώττισης ως υπογραμμίσεις στον editor και στο Problems Panel (CLI mode). |
-| `utplsql.setupDiagnostics.enabled` | `true` | Εμφανίζει διαγνωστικά ρυθμίσεων (CLI, σύνδεση, grants, έκδοση) και **ακεραιότητα εγκατάστασης utPLSQL** (άκυρα αντικείμενα στο schema UT3, με quick-fix "Recompile UT3") με ενέργειες quick-fix. |
-| `utplsql.profiles` | `[]` | Αποθηκευμένα profiles σύνδεσης Oracle (όνομα, σύνδεση και παρακάμψεις των `sourcePath`/`coverageOwner`/`invocation`/`cliPath`/κ.λπ.) για εναλλαγή μεταξύ περιβαλλόντων. |
+| `utplsql.compilationDiagnostics.enabled` | `true` | Εμφανίζει τα PL/SQL σφάλματα μεταγλώττισης ως υπογραμμίσεις στον editor και στο Problems Panel. |
+| `utplsql.setupDiagnostics.enabled` | `true` | Εμφανίζει διαγνωστικά ρυθμίσεων (σύνδεση, grants, έκδοση) και **ακεραιότητα εγκατάστασης utPLSQL** (άκυρα αντικείμενα στο schema UT3, με quick-fix "Recompile UT3") με ενέργειες quick-fix. |
+| `utplsql.profiles` | `[]` | Αποθηκευμένα profiles σύνδεσης Oracle (όνομα, σύνδεση και παρακάμψεις των `sourcePath`/`coverageOwner`/κ.λπ.) για εναλλαγή μεταξύ περιβαλλόντων. |
 | `utplsql.activeProfile` | `""` | ID του ενεργού profile (`utplsql.profiles`). Όταν ορίζεται, υπερισχύει του `utplsql.connection`. |
 | `utplsql.sqlCoverageEnabled` | `false` | Παρακολουθεί τα views που εκτελέστηκαν μέσω `V$SQL` (boolean coverage). Απαιτεί `GRANT SELECT ON V$SQL`. |
 | `utplsql.debugger.enabled` | `true` | Ενεργοποιεί την αποσφαλμάτωση PL/SQL tests (`DBMS_DEBUG`). Απαιτεί `node-oracledb` + grants. |
@@ -150,7 +123,6 @@ Test Explorer **καθώς ολοκληρώνεται κάθε test**.
 
 ```jsonc
 {
-  "utplsql.cliPath": "C:\\tools\\utPLSQL-cli\\bin\\utplsql.bat",
   "utplsql.sourcePath": "install",
   // utplsql.connection stays empty -> use the UTPLSQL_CONN environment variable
 }
@@ -169,35 +141,7 @@ $env:UTPLSQL_CONN = "DEV/password@//localhost:1521/XEPDB1"
 
 ```bash
 UTPLSQL_CONN=your_user/password@//host:1521/service
-UTPLSQL_CLI_PATH=/path/to/utplsql
-UTPLSQL_CLI_HOME=/path/to/utplsql-cli
 ```
-
-### Λειτουργία κλήσης (`launcher` vs `java`)
-
-Από προεπιλογή (`utplsql.invocation = "launcher"`) η επέκταση καλεί το
-launcher `utplsql`/`utplsql.bat`. Στα Windows αυτό περνά μέσα από το `cmd`, το οποίο
-**καταναλώνει/ερμηνεύει metacharacters** (το `^` γίνεται escape, το `|` γίνεται pipe) — κάτι
-που σπάει τα regex στο `coverageSourceArgs`.
-
-Η λειτουργία `java` καλεί το JVM **απευθείας** (`java -cp <home>/etc;<home>/lib/* …
-org.utplsql.cli.Cli`), **χωρίς shell**. Τα ορίσματα περνούν στη διεργασία ως πίνακας,
-χωρίς `cmd` στη μέση, οπότε το `^` και το `|` περνούν **κατά λέξη** — μπορείτε να
-χρησιμοποιήσετε `^anchors$` και `(a|b|c)` στα regex χωρίς παρακάμψεις.
-
-```jsonc
-{
-  "utplsql.invocation": "java",
-  "utplsql.cliPath": "C:\\tools\\utPLSQL-cli\\bin\\utplsql.bat", // cliHome is derived from here
-  // "utplsql.cliHome": "C:\\tools\\utPLSQL-cli",  // only if cliPath is a PATH command
-  // "utplsql.javaPath": "java"                     // PATH, or full path to java.exe
-}
-```
-
-> Η λειτουργία `java` αναπαράγει πιστά ό,τι κάνει το `.bat` (ίδιο classpath και ίδιες
-> ιδιότητες `-D`)· η μόνη διαφορά είναι ότι δεν περνά από το `cmd`. Απαιτεί `java` στο PATH
-> (ή στο `utplsql.javaPath`) και η ρίζα του CLI να είναι αναλύσιμη — είτε μέσω του `cliPath`
-> που δείχνει σε `…/bin/utplsql(.bat)`, είτε ορίζοντας το `cliHome`.
 
 ## Χρήση
 
@@ -219,8 +163,8 @@ org.utplsql.cli.Cli`), **χωρίς shell**. Τα ορίσματα περνού�
    - `Ctrl+Shift+U L` — **Rerun Last** (επαναλαμβάνει την τελευταία εκτέλεση, με ή χωρίς coverage).
    - `Ctrl+Shift+U U` — **Run at Cursor** (εκτελεί το `%test`/`%suite` κάτω από τον κέρσορα).
    - `Ctrl+Shift+U X` — **Run Failed Only** (εκτελεί μόνο τα tests που απέτυχαν).
-8. **Για Oracle direct (streaming):** δεν χρειάζεται τίποτα να εγκατασταθεί — το VSIX περιλαμβάνει ήδη τον thin driver `oracledb`. Η λειτουργία `auto` υποχωρεί στο CLI αν το Oracle δεν είναι προσβάσιμο.
-9. Για διαγνωστικά, χρησιμοποιήστε το `utPLSQL: Show information` στην palette — δείχνει εκδόσεις CLI/API/DB με επιλογή αντιγραφής.
+8. **Για Oracle direct (streaming):** δεν χρειάζεται τίποτα να εγκατασταθεί — το VSIX περιλαμβάνει ήδη τον thin driver `oracledb`.
+9. Για διαγνωστικά, χρησιμοποιήστε το `utPLSQL: Show information` στην palette — δείχνει εκδόσεις API/DB με επιλογή αντιγραφής.
 10. **utPLSQL: Select additional reporter...** — QuickPick με τους reporters που είναι διαθέσιμοι στη βάση.
 11. **utPLSQL: Cancel execution** — σταματά την τρέχουσα εκτέλεση (`Escape` κατά την εκτέλεση).
 12. **utPLSQL: Refresh tests** — επιβάλλει εκ νέου εύρεση των `.pks`.
@@ -256,14 +200,14 @@ org.utplsql.cli.Cli`), **χωρίς shell**. Τα ορίσματα περνού�
 | `utPLSQL: Run tests in this folder` | Εκτελεί τα suites του επιλεγμένου φακέλου | Δεξί κλικ → φάκελος |
 | `utPLSQL: Run tests in this folder with coverage` | Ίδιο, με profile coverage | Δεξί κλικ → φάκελος |
 | `utPLSQL: Refresh tests` | Επιβάλλει εκ νέου εύρεση των `.pks` | — |
-| `utPLSQL: Cancel execution` | Σταματά το CLI που εκτελείται | — |
-| `utPLSQL: Show utPLSQL information` | Εκδόσεις CLI/API/DB με επιλογή αντιγραφής | — |
+| `utPLSQL: Cancel execution` | Σταματά την τρέχουσα εκτέλεση | — |
+| `utPLSQL: Show utPLSQL information` | Εκδόσεις API/DB με επιλογή αντιγραφής | — |
 | `utPLSQL: Select additional reporter...` | QuickPick με τους reporters της βάσης | — |
 | `utPLSQL: Clear session connection` | Αφαιρεί τη σύνδεση από την cache της συνόδου | — |
 | `utPLSQL: Rerun Last` | Επαναλαμβάνει την τελευταία εκτέλεση | `Ctrl+Shift+U L` |
 | `utPLSQL: Run Test at Cursor` | Εκτελεί το test κάτω από τον κέρσορα | `Ctrl+Shift+U U` |
 | `utPLSQL: Run Failed Tests` | Εκτελεί ξανά μόνο τα tests που απέτυχαν | `Ctrl+Shift+U X` |
-| `utPLSQL: Validate configuration` | Εκτελεί πλήρη επικύρωση ρυθμίσεων (CLI, Java, σύνδεση, εγκατάσταση UT3) και εμφανίζει τα αποτελέσματα | — |
+| `utPLSQL: Validate configuration` | Εκτελεί πλήρη επικύρωση ρυθμίσεων (σύνδεση, εγκατάσταση UT3) και εμφανίζει τα αποτελέσματα | — |
 | `utPLSQL: Configure connection` | Ανοίγει τις ρυθμίσεις στο `utplsql.connection` | — |
 | `utPLSQL: Copy coverage grants to clipboard` | Αντιγράφει το SQL των grants στο πρόχειρο | — |
 | `utPLSQL: Show Test Explorer` | Εστιάζει στην προβολή Testing | — |
@@ -349,13 +293,6 @@ org.utplsql.cli.Cli`), **χωρίς shell**. Τα ορίσματα περνού�
 
 **Σημαντικές σημειώσεις:**
 - **Packages → `PACKAGE BODY`** (όχι `PACKAGE`): η κάλυψη συλλέγεται στο **body** του package.
-- **Windows / regex metacharacters:** στη λειτουργία `launcher` (προεπιλογή), το `.bat` περνά από το `cmd`,
-  το οποίο **καταναλώνει το `^`** και **ερμηνεύει το `|` ως pipe** — γι' αυτό τα παραπάνω παραδείγματα χρησιμοποιούν `\w` και
-  `[/\\]` (χωρίς `^`), και το `|` στο παράδειγμα 2 λειτουργεί μόνο εντός της επέκτασης. **Λύση:** χρησιμοποιήστε το **`utplsql.invocation = "java"`** (δείτε
-  [Λειτουργία κλήσης](#λειτουργία-κλήσης-launcher-vs-java)) — χωρίς `cmd` στη μέση, το `^` και το `|` περνούν
-  κατά λέξη και είστε ελεύθεροι να γράψετε το regex κανονικά.
-- **Windows / `cmd`:** αποφύγετε το **`^`** στα regex (το `cmd` του `.bat` το καταναλώνει) — γι' αυτό τα παραδείγματα
-  χρησιμοποιούν `\w` και `[/\\]`.
 
 ## Reporters
 
@@ -419,16 +356,11 @@ GRANT SELECT ON SYS.DBA_PROCEDURES TO <ut3_owner>;
 
 | Σύμπτωμα | Πιθανή αιτία | Λύση |
 |---|---|---|
-| Τα suites δεν εμφανίζονται | Δεν βρέθηκε το CLI | Εκτελέστε το `utPLSQL: Validate configuration` για διαγνωστικά |
 | Κενό coverage | Λείπει το `GRANT EXECUTE ON DBMS_PROFILER` | Εκτελέστε τα grants στις [Απαιτήσεις βάσης δεδομένων](#απαιτήσεις-βάσης-δεδομένων) ή χρησιμοποιήστε το `utPLSQL: Copy coverage grants to clipboard` |
 | Κενό coverage | Το Oracle 19c απαιτεί επιπλέον grants | `GRANT EXECUTE ON DBMS_PROFILER` + `GRANT EXECUTE ON DBMS_PLSQL_CODE_COVERAGE` |
-| Αργή απόδοση | Τα μεγάλα suites απαιτούν μεγαλύτερο JVM heap | Αυξήστε το `utplsql.javaArgs` (π.χ. `["-Xmx1024m"]`) |
 | Σφάλμα μεταγλώττισης χωρίς ένδειξη | Κώδικας με συντακτικό σφάλμα PL/SQL | Ενεργοποιήστε το `utplsql.compilationDiagnostics.enabled` (ενεργό από προεπιλογή)· δείτε το Problems Panel |
 | Σφάλμα σύνδεσης | Κακοσχηματισμένη συμβολοσειρά ή μη προσβάσιμη βάση | Χρησιμοποιήστε το `utPLSQL: Validate configuration` |
-| Χρονικό όριο κατά την εκτέλεση | Τα tests διαρκούν περισσότερο από το `timeoutMinutes` | Αυξήστε το `utplsql.timeoutMinutes` |
-| Το regex κάλυψης δεν ταιριάζει | Το `cmd` των Windows καταναλώνει το `^` και το `\|` | Χρησιμοποιήστε το `utplsql.invocation: "java"` (δείτε [Λειτουργία κλήσης](#λειτουργία-κλήσης-launcher-vs-java)) |
 | Το `%suite` δεν αναγνωρίζεται | Λείπει το `%suite`/`create package` στο αρχείο ή `%test` χωρίς `PROCEDURE` | Ελέγξτε το spec· εκτελέστε το `utPLSQL: Refresh tests` |
-| "report not generated" | Το CLI δεν μπόρεσε να δημιουργήσει το XML εξόδου | Ελέγξτε τα δικαιώματα εγγραφής στο `%TEMP%` και τα grants του utPLSQL |
 | Το CodeLens δεν εμφανίζεται | `editor.codeLens` απενεργοποιημένο ή σύγκρουση | Ενεργοποιήστε το `"editor.codeLens": true`· ελέγξτε το `utplsql.codeLens.enabled` |
 | Οι συντομεύσεις δεν λειτουργούν | Σύγκρουση με άλλη επέκταση ή συντόμευση του VSCode | Πηγαίνετε σε File → Preferences → Keyboard Shortcuts και αναζητήστε το `utplsql` για να το επαναπροσδιορίσετε |
 

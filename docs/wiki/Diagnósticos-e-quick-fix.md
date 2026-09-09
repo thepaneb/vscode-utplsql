@@ -3,23 +3,23 @@
 A extensão oferece dois tipos de diagnóstico automático para reduzir o atrito
 de configuração e acelerar o ciclo TDD:
 
-1. **Compilation diagnostics** — erros de compilação PL/SQL capturados do output
-   dos testes e exibidos como sublinhados no editor.
-2. **Setup diagnostics** — validação proativa de CLI, conexão, grants e versão
+1. **Compilation diagnostics** — erros de compilação PL/SQL capturados via
+   query `ALL_ERRORS` e exibidos como sublinhados no editor.
+2. **Setup diagnostics** — validação proativa de conexão, grants e versão
    do utPLSQL, com **quick-fix actions** no Problems Panel.
 
 ---
 
 ## Compilation diagnostics
 
-Após cada execução de testes, a extensão analisa o output do CLI em busca de
-erros de compilação Oracle (`PLS-*`, `ORA-06550`) e os exibe como
+Após cada execução de testes, a extensão consulta a view `ALL_ERRORS` do banco
+de dados Oracle em busca de erros de compilação e os exibe como
 `vscode.Diagnostic` no editor.
 
 ### Como funciona
 
 ```
-executeRun() → CLI executa → stdout contém erros de compilação
+executeRun() → Oracle executa → conn1 coleta erros via ALL_ERRORS
   → compilationDiagnostics.parseFromOutput() → resolveFiles() → apply()
   → VSCode Problems Panel mostra os erros
   → Editor mostra sublinhados vermelhos
@@ -37,11 +37,9 @@ end;
 -- falta o END; no body
 ```
 
-O output do CLI conterá:
+A query `ALL_ERRORS` retornará:
 ```
-Package TEST_FOO compiled with errors
-ORA-06550: line 12, column 5:
-PLS-00103: Encountered the symbol "END"
+TEST_FOO  PACKAGE BODY  12  5  PLS-00103: Encountered the symbol "END"
 ```
 
 A extensão extrai isso e mostra no editor:
@@ -62,8 +60,6 @@ A extensão extrai isso e mostra no editor:
 
 ### Limitações
 
-- Funciona apenas no modo CLI (parse do stdout). O modo Oracle direto **não**
-  gera compilation diagnostics.
 - Mapeia erros para arquivos `.pks`/`.pkb` no workspace. Código externo
   (ex.: packages padrão Oracle) é ignorado.
 
@@ -76,8 +72,6 @@ comuns de configuração:
 
 | Verificação | Diagnostic | Severity |
 |---|---|---|
-| CLI não encontrado | `UTPLSQL_NO_CLI` | Error |
-| Java não encontrado (modo java) | `UTPLSQL_NO_JAVA` | Error |
 | Conexão Oracle inválida | `UTPLSQL_BAD_CONN` | Error |
 | utPLSQL < 3.1.0 no banco | `UTPLSQL_OLD_VERSION` | Warning |
 | Objetos inválidos no schema utPLSQL | `UTPLSQL_INVALID_OBJECTS` | Warning |
@@ -85,18 +79,17 @@ comuns de configuração:
 
 A verificação de objetos inválidos (`ALL_OBJECTS` para `PACKAGE`/`TYPE`/
 `PACKAGE BODY` no schema utPLSQL) é best-effort: assíncrona, sem prompt de
-conexão, timeout de 5s e silenciosa em falha. Gates: `setupDiagnostics.enabled:
-false` ou `runnerMode: cli` suprimem a verificação.
+conexão, timeout de 5s e silenciosa em falha. A configuração
+`setupDiagnostics.enabled: false` suprime a verificação.
 
 Os resultados aparecem no **Problems Panel** com source "utPLSQL Setup".
 
 ### Quick-fix actions
 
-Cada diagnostic oferece uma **Code Action** (ícone de lâmpada 💡 ou `Ctrl+.`):
+Cada diagnostic oferece uma **Code Action** (ícone de lâmpada ou `Ctrl+.`):
 
 | Diagnostic | Quick-fix |
 |---|---|
-| CLI não encontrado | **Configurar utplsql.cliPath** → abre settings.json |
 | Conexão inválida | **Reconfigurar conexão** → abre settings em `utplsql.connection` |
 | Grants de cobertura | **Copiar grants para clipboard** → copia SQL pronto para colar |
 | Objetos inválidos no utPLSQL | **Recompilar UT3** → `DBMS_UTILITY.COMPILE_SCHEMA` e re-verifica |
@@ -132,7 +125,7 @@ O fluxo completo de diagnóstico cobre todo o ciclo de vida:
 
 ```
 Abrir workspace
-  → Setup diagnostics: CLI OK? Conexão OK? Versão OK? Instalação utPLSQL íntegra?
+  → Setup diagnostics: Conexão OK? Versão OK? Instalação utPLSQL íntegra?
   → Se problemas: Problems Panel + quick-fix actions
 
 Rodar testes
@@ -143,4 +136,4 @@ Após execução
 ```
 
 Todos os diagnósticos são **não-bloqueantes** — os testes rodam mesmo com
-warnings. Apenas erros críticos (sem CLI, sem conexão) impedem a execução.
+warnings. Apenas erros críticos (sem conexão) impedem a execução.

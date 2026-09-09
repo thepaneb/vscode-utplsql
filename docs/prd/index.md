@@ -128,7 +128,9 @@ CONCLUIR
 
 ### 🟡 Em desenvolvimento
 
-_(vazio — nenhuma PRD em implementação)_
+| # | PRD | Versão | Data |
+|---|---|---|---|
+| 64 | [Migração para Oracle-Only: eliminação do utPLSQL-cli e Java](in-progress/prd-64-oracle-only-migration.md) | 0.12.0 | 2026-09-09 |
 
 ### 🔵 Aprovados
 
@@ -141,7 +143,6 @@ _(vazio — nenhuma PRD aprovada aguardando implementação)_
 | # | PRD | Versão alvo | Data |
 |---|---|---|---|
 | 47 | [Node 26 no toolchain de desenvolvimento](proposed/prd-47-node-26-toolchain.md) | 0.13.0 | 2026-08-29 |
-| 64 | [Migração para Oracle-Only: eliminação do utPLSQL-cli e Java](proposed/prd-64-oracle-only-migration.md) | 0.13.0 | 2026-09-09 |
 
 #### 0.14.0
 
@@ -236,7 +237,8 @@ docs/prd/
 │   ├── prd-48-function-coverage.md
 │   └── prd-49-internacionalizacao.md
 ├── approved/         ← aprovados, aguardando implementação (vazio)
-├── in-progress/      ← sendo implementados agora (vazio)
+├── in-progress/      ← sendo implementados agora
+│   └── prd-64-oracle-only-migration.md
 └── proposed/         ← em avaliação
     ├── prd-47-node-26-toolchain.md
     ├── prd-50-auto-run-on-save.md
@@ -252,8 +254,7 @@ docs/prd/
     ├── prd-60-branch-coverage-investigation.md
     ├── prd-61-cli-auto-provision.md
     ├── prd-62-run-scripts-against-profiles.md
-    ├── prd-63-diagram-i18n.md
-    └── prd-64-oracle-only-migration.md
+    └── prd-63-diagram-i18n.md
 ```
 
 ---

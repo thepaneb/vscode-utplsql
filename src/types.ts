@@ -13,18 +13,12 @@ export type ItemMeta =
 
 /** Perfil de conexão Oracle salvo em `utplsql.profiles`. */
 export interface ConnectionProfile {
-  id: string; // UUID
+  id: string;
   name: string;
-  connection: string; // user/pass@//host:port/service
+  connection: string;
   sourcePath?: string;
   coverageOwner?: string;
-  coverageSourceArgs?: string[];
   includePatterns?: string[];
-  invocation?: 'launcher' | 'java';
-  cliPath?: string;
-  cliHome?: string;
-  javaPath?: string;
-  extraRunArgs?: string[];
   isDefault?: boolean;
   lastUsed?: string;
 }

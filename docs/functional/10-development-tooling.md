@@ -76,10 +76,6 @@ Ferramentas e infraestrutura de desenvolvimento do projeto.
 ```
 src/test/
 ├── unit/
-│   ├── cli.test.ts
-│   ├── cliEncoding.test.ts
-│   ├── cliInfo.test.ts
-│   ├── cliReporters.test.ts
 │   ├── cobertura.test.ts
 │   ├── codelens.test.ts
 │   ├── compilationDiagnostics.test.ts
@@ -87,7 +83,6 @@ src/test/
 │   ├── coverage.test.ts
 │   ├── decorations.test.ts
 │   ├── discovery.test.ts
-│   ├── invocation.test.ts
 │   ├── junit.test.ts
 │   ├── matching.test.ts
 │   ├── oracleRunner.test.ts
@@ -166,8 +161,6 @@ Setup em `.vscode-test.mjs`. Sobe instância VSCode via `@vscode/test-cli`.
 
 Testes com banco (`describeDB`) exigem `.env` na raiz com:
 - `UTPLSQL_CONN` — string de conexão Oracle
-- `UTPLSQL_CLI_PATH` — caminho do executável utPLSQL-cli
-- `UTPLSQL_CLI_HOME` — raiz do CLI (obrigatório no modo `java`)
 
 Sem `.env`, `describeDB` é pulado (`describe.skip`).
 

@@ -45,7 +45,7 @@
         "utplsql.profiles": {
           "type": "array",
           "default": [],
-          "markdownDescription": "Perfis de conexão Oracle salvos para alternar rapidamente entre ambientes (DEV, TEST, PROD). Cada perfil pode sobrescrever `connection`, `sourcePath`, `coverageOwner`, `invocation`, `cliPath`, etc. **A senha fica em texto plano nas settings** — prefira `env`/`UTPLSQL_CONN` para produção.",
+          "markdownDescription": "Perfis de conexão Oracle salvos para alternar rapidamente entre ambientes (DEV, TEST, PROD). Cada perfil pode sobrescrever `connection`, `sourcePath`, `coverageOwner`, etc. **A senha fica em texto plano nas settings** — prefira `env`/`UTPLSQL_CONN` para produção.",
           "items": {
             "type": "object",
             "properties": {
@@ -64,35 +64,7 @@
               "coverageOwner": {
                 "type": "string"
               },
-              "coverageSourceArgs": {
-                "type": "array",
-                "items": {
-                  "type": "string"
-                }
-              },
               "includePatterns": {
-                "type": "array",
-                "items": {
-                  "type": "string"
-                }
-              },
-              "invocation": {
-                "type": "string",
-                "enum": [
-                  "launcher",
-                  "java"
-                ]
-              },
-              "cliPath": {
-                "type": "string"
-              },
-              "cliHome": {
-                "type": "string"
-              },
-              "javaPath": {
-                "type": "string"
-              },
-              "extraRunArgs": {
                 "type": "array",
                 "items": {
                   "type": "string"
@@ -121,11 +93,6 @@
           "default": "",
           "markdownDescription": "String de conexão Oracle (`usuario/senha@//host:porta/servico`). Se vazio, usa a variável de ambiente `UTPLSQL_CONN`; se ainda assim vazio, a extensão pergunta (e mantém só na sessão). **Recomendado deixar vazio e usar a variável de ambiente** para não gravar a senha nas settings."
         },
-        "utplsql.cliPath": {
-          "type": "string",
-          "default": "utplsql",
-          "description": "Caminho do executável do utPLSQL-cli. Use o caminho completo se não estiver no PATH (ex.: C:\\tools\\utPLSQL-cli\\bin\\utplsql.bat)."
-        },
         "utplsql.sourcePath": {
           "type": "string",
           "default": "install",
@@ -141,60 +108,10 @@
           ],
           "description": "Globs para descobrir os specs de teste que contêm as annotations %suite/%test."
         },
-        "utplsql.extraRunArgs": {
-          "type": "array",
-          "items": {
-            "type": "string"
-          },
-          "default": [],
-          "description": "Argumentos extras passados ao 'utplsql run' (ex.: [\"-color\"])."
-        },
         "utplsql.coverageOwner": {
           "type": "string",
           "default": "",
           "description": "Schema dono dos objetos para o mapeamento de cobertura. Se vazio, usa o usuário da conexão (parte antes de '/'), em maiúsculas."
-        },
-        "utplsql.coverageSourceArgs": {
-          "type": "array",
-          "items": {
-            "type": "string"
-          },
-          "default": [
-            "-regex_expression=.*[/\\\\](\\w+)[/\\\\](\\w+)\\.sql$",
-            "-type_subexpression=1",
-            "-name_subexpression=2",
-            "-type_mapping=packages=PACKAGE BODY/functions=FUNCTION/procedures=PROCEDURE/triggers=TRIGGER/views=VIEW"
-          ],
-          "markdownDescription": "Args do utPLSQL-cli para mapear a cobertura aos arquivos-fonte (estrutura `sourcePath/<tipo>/<nome>.sql`). O default casa as pastas `functions/`, `procedures/`, `packages/`, `triggers/`. Sem isso, a cobertura sai por nome de objeto (sem gutters)."
-        },
-        "utplsql.invocation": {
-          "type": "string",
-          "enum": [
-            "launcher",
-            "java"
-          ],
-          "default": "launcher",
-          "markdownDescription": "Como invocar o utPLSQL-cli. `launcher` (padrão): via o executável `utplsql`/`.bat`. `java`: chama a JVM direto (`java -cp … org.utplsql.cli.Cli`), **sem shell** — evita o `cmd` e o tratamento de metacaracteres (útil para regex em `coverageSourceArgs`)."
-        },
-        "utplsql.javaPath": {
-          "type": "string",
-          "default": "java",
-          "description": "Executável do Java (no PATH ou caminho completo). Usado apenas no modo de invocação 'java'."
-        },
-        "utplsql.javaArgs": {
-          "type": "array",
-          "items": {
-            "type": "string"
-          },
-          "default": [
-            "-Xmx256m"
-          ],
-          "markdownDescription": "Flags JVM usadas no modo `java` (ex.: `[\"-Xmx512m\", \"-Xms128m\"]`). Inseridas **antes** de `-cp`. Vazio = nenhuma flag."
-        },
-        "utplsql.cliHome": {
-          "type": "string",
-          "default": "",
-          "description": "Raiz do utPLSQL-cli (pasta que contém bin/ e lib/). Vazio = derivado do cliPath. Usado apenas no modo de invocação 'java'."
         },
         "utplsql.timeoutMinutes": {
           "type": "number",
@@ -208,18 +125,6 @@
           "default": false,
           "description": "Habilita DBMS_OUTPUT na sessão de teste (flag -D). Útil para debugar."
         },
-        "utplsql.quiet": {
-          "type": "boolean",
-          "default": false,
-          "description": "Suprime logs informativos do CLI (flag -q). Útil para CI ou output mais limpo."
-        },
-        "utplsql.failureExitCode": {
-          "type": "number",
-          "default": 1,
-          "minimum": 0,
-          "maximum": 255,
-          "description": "Código de saída quando há falha (flag --failure-exit-code). 0 faz o CLI sempre exitar com sucesso."
-        },
         "utplsql.additionalReporters": {
           "type": "array",
           "items": {
@@ -227,16 +132,6 @@
           },
           "default": [],
           "description": "Reporters adicionais para incluir em toda execução (ex.: [\"ut_coverage_html_reporter\"]). Os reporters padrão (documentation, junit e cobertura) são sempre incluídos."
-        },
-        "utplsql.runnerMode": {
-          "type": "string",
-          "enum": [
-            "auto",
-            "cli",
-            "oracle"
-          ],
-          "default": "auto",
-          "markdownDescription": "Modo de execução dos testes. `auto` — tenta Oracle direto (via `node-oracledb`), fallback para CLI. `cli` — sempre via linha de comando (comportamento atual). `oracle` — sempre via conexão direta (erro se `oracledb` não disponível)."
         },
         "utplsql.oraclePoolMin": {
           "type": "number",
@@ -627,9 +522,6 @@
   },
   "dependencies": {
     "fast-xml-parser": "^5.11.1",
-    "iconv-lite": "^0.7.3"
-  },
-  "optionalDependencies": {
     "oracledb": "^7.0.1"
   },
   "devDependencies": {

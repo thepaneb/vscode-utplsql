@@ -1,19 +1,11 @@
 # Execução Oracle direta (streaming)
 
-A partir da v0.9.0, a extensão suporta execução de testes diretamente no banco
-Oracle via [node-oracledb](https://node-oracle.readthedocs.io/), com resultados
-em **tempo real** — cada teste aparece no Test Explorer assim que termina, sem
+A extensão executa testes diretamente no banco Oracle via
+[node-oracledb](https://node-oracle.readthedocs.io/), com resultados em
+**tempo real** — cada teste aparece no Test Explorer assim que termina, sem
 esperar o batch completo.
 
-## Modos de execução (`utplsql.runnerMode`)
-
-| Modo | Comportamento |
-|---|---|
-| `auto` (default) | Tenta conexão Oracle direta; se `oracledb` não estiver instalado, cai para CLI automaticamente. |
-| `oracle` | Sempre via Oracle direto. Erro se `oracledb` não disponível. |
-| `cli` | Sempre via linha de comando (comportamento tradicional). |
-
-## Como funciona o modo Oracle direto
+## Como funciona
 
 ![Streaming em tempo real](images/diagram-streaming.png)
 
@@ -24,10 +16,10 @@ esperar o batch completo.
 5. Linhas XML (JUnit) são acumuladas e parseadas ao final com `parseJUnit()`.
 6. Coverage é extraído do mesmo buffer (tag `<coverage` no XML).
 
-**Vantagens sobre o CLI:**
+**Vantagens:**
 - Feedback instantâneo — cada teste aparece no Explorer assim que termina
 - Cancelamento interrompe o statement em execução (`conn.break()` nas duas
-  conexões + `Promise.race`) — sem `child.kill()` e sem matar a sessão
+  conexões + `Promise.race`)
 - Sem arquivos temporários (`results.xml`, `coverage.xml`)
 - Resultados preservados mesmo se o processo falhar no meio
 
@@ -35,11 +27,8 @@ esperar o batch completo.
 
 ### node-oracledb
 
-Nenhum requisito para o usuário: o VSIX já inclui o `oracledb` **thin**
-(puro JavaScript, sem Oracle Instant Client — os binários nativos do thick
-são podados no empacotamento). Em desenvolvimento, a dependência é
-**opcional** (`optionalDependencies` no `package.json`); sem ela, a extensão
-funciona apenas com `runnerMode: cli` (modo `auto` cai para CLI).
+O VSIX já inclui o `oracledb` **thin** (puro JavaScript, sem Oracle Instant
+Client — os binários nativos do thick são podados no empacotamento).
 
 ### Connection pooling (v0.10.0)
 
@@ -54,8 +43,8 @@ raw por execução):
 - Fechado no `deactivate()` com drenagem de 10s
 - Tamanho configurável: `utplsql.oraclePoolMin/Max/Increment/PingInterval`
 
-Se o pool não puder ser criado (ex.: banco inacessível), o runner cai para
-conexão raw como fallback — e o modo `auto` continua caindo para CLI em erro.
+Se o pool não puder ser criado (ex.: banco inacessível), o runner usa conexão
+raw como fallback.
 
 ### Grants no banco (shared install)
 
@@ -68,45 +57,19 @@ GRANT SELECT, DELETE ON UT3.UT_OUTPUT_BUFFER_TMP TO PUBLIC;
 GRANT SELECT, DELETE ON UT3.UT_OUTPUT_BUFFER_INFO_TMP TO PUBLIC;
 ```
 
-Sem esses grants, o modo Oracle direto falha com `ORA-00942`. Nesse caso, use
-`runnerMode: auto` — a extensão detecta o erro e cai para CLI automaticamente.
+Sem esses grants, a execução falha com `ORA-00942`.
 
 > Em instalação **por schema** (utPLSQL no mesmo schema dos testes), esses grants
 > não são necessários — as tabelas estão no próprio schema.
 
 ### Cobertura
 
-A cobertura requer `GRANT EXECUTE ON SYS.DBMS_PROFILER` no schema dos testes
-(mesmo requisito do modo CLI).
-
-## Configuração
-
-```jsonc
-{
-  // Recomendado: modo auto (tenta Oracle, fallback CLI)
-  "utplsql.runnerMode": "auto"
-
-  // Sempre Oracle (erro se oracledb não disponível)
-  // "utplsql.runnerMode": "oracle"
-}
-```
-
-## Comparação CLI vs Oracle direto
-
-| Aspecto | CLI | Oracle direto |
-|---|---|---|
-| Feedback | Batch (espera tudo terminar) | Streaming (teste por teste) |
-| Cancelamento | `child.kill()` | `conn.break()` + `Promise.race` |
-| Arquivos temp | `results.xml`, `coverage.xml` | Nenhum |
-| Dependências | Java + utPLSQL-cli | node-oracledb (opcional) |
-| Latência extra | Spawn de processo + JVM startup | Conexão TCP direta |
-| Shared install | Funciona sempre | Requer grants nas tabelas de buffer |
+A cobertura requer `GRANT EXECUTE ON SYS.DBMS_PROFILER` no schema dos testes.
 
 ## Troubleshooting
 
 | Sintoma | Solução |
 |---|---|
-| "oracledb não disponível" | Ocorre apenas em desenvolvimento (VSIX já inclui o driver thin). Use `runnerMode: cli` ou `npm install oracledb` |
 | `ORA-00942: table does not exist` | Execute os grants nas tabelas de buffer (veja acima) |
 | Conexão recusada | Verifique formato: `user/pass@//host:port/service` |
-| Coverage não funciona | Mesmo requisito do CLI: `GRANT EXECUTE ON DBMS_PROFILER` |
+| Coverage não funciona | `GRANT EXECUTE ON DBMS_PROFILER` no schema dos testes |

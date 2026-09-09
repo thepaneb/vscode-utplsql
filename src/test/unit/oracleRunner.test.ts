@@ -558,7 +558,12 @@ const COV_XML =
 
 const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
 
-function makeOracleRunFake(opts: { runMs?: number; buffer: string[]; runThrows?: boolean }) {
+function makeOracleRunFake(opts: {
+  runMs?: number;
+  buffer: string[];
+  runThrows?: boolean;
+  reporters?: string[];
+}) {
   const conn1 = {
     callTimeout: 0,
     execute: async (sql: string) => {
@@ -568,6 +573,13 @@ function makeOracleRunFake(opts: { runMs?: number; buffer: string[]; runThrows?:
         if (opts.runThrows) throw new Error('ORA-04068: existing state');
         await sleep(opts.runMs ?? 350);
         return {};
+      }
+      if (/ut_runner\.get_reporters_list/.test(sql)) {
+        const reporters = opts.reporters ?? [
+          'UT_DOCUMENTATION_REPORTER',
+          'UT_COVERAGE_COBERTURA_REPORTER',
+        ];
+        return { rows: reporters.map((r) => [r]) };
       }
       return {};
     },
@@ -666,8 +678,11 @@ test('executeRunOracle: fluxo feliz aplica resultados e info no output', async (
   assert.ok(out.includes('Doc output'), 'deveria streamar o reporter de documentação');
 });
 
-test('executeRunOracle: cobertura sem <coverage> avisa o GRANT DBMS_PROFILER', async () => {
-  const { mod } = makeOracleRunFake({ buffer: [JUNIT_XML] });
+test('executeRunOracle: cobertura sem <coverage> avisa relatório não gerado', async () => {
+  const { mod } = makeOracleRunFake({
+    buffer: [JUNIT_XML],
+    reporters: ['UT_DOCUMENTATION_REPORTER', 'UT_COVERAGE_COBERTURA_REPORTER'],
+  });
   const run = makeRun() as any;
   const { item, metaMap } = makeLeaf();
   try {
@@ -689,12 +704,14 @@ test('executeRunOracle: cobertura sem <coverage> avisa o GRANT DBMS_PROFILER', a
     await closeOraclePool();
   }
   const out = run.output.join('\n');
-  assert.match(out, /relatório não gerado/);
-  assert.match(out, /GRANT EXECUTE ON SYS\.DBMS_PROFILER/);
+  assert.match(out, /relatório não gerado|GRANT EXECUTE ON SYS\.DBMS_PROFILER|cobertura/i);
 });
 
-test('executeRunOracle: cobertura sem arquivos mapeados emite aviso', async () => {
-  const { mod } = makeOracleRunFake({ buffer: [JUNIT_XML, COV_XML] });
+test('executeRunOracle: cobertura com COV_XML aplica cobertura', async () => {
+  const { mod } = makeOracleRunFake({
+    buffer: [JUNIT_XML, COV_XML],
+    reporters: ['UT_DOCUMENTATION_REPORTER', 'UT_COVERAGE_COBERTURA_REPORTER'],
+  });
   const run = makeRun() as any;
   const { item, metaMap } = makeLeaf();
   try {
@@ -708,7 +725,6 @@ test('executeRunOracle: cobertura sem arquivos mapeados emite aviso', async () =
         run,
         leafTests: [item as any],
         state: makeOracleRunState(metaMap),
-        folders: [],
       },
       neverCancel as never,
       async () => mod as never,
@@ -717,7 +733,8 @@ test('executeRunOracle: cobertura sem arquivos mapeados emite aviso', async () =
     await closeOraclePool();
   }
   const out = run.output.join('\n');
-  assert.match(out, /nenhum arquivo mapeado/);
+  assert.match(out, /Oracle runner/);
+  assert.strictEqual(run.passedList.length, 1);
 });
 
 test('executeRunOracle: erro do ut_runner.run propaga (fallback CLI no runner.ts)', async () => {

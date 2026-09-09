@@ -154,6 +154,124 @@ export async function findInvalidUt3Objects(
   }
 }
 
+function extractScalar(row: unknown, colName?: string): string | null {
+  if (!row) return null;
+  if (Array.isArray(row)) return row[0] != null ? String(row[0]) : null;
+  const obj = row as Record<string, unknown>;
+  if (colName && obj[colName] != null) return String(obj[colName]);
+  const vals = Object.values(obj);
+  return vals.length > 0 && vals[0] != null ? String(vals[0]) : null;
+}
+
+export async function getOracleInfo(conn: {
+  execute(
+    sql: string,
+    bindParams?: Record<string, unknown>,
+    options?: Record<string, unknown>,
+  ): Promise<{ rows?: unknown[] }>;
+}): Promise<{ utVersion: string | null; dbVersion: string | null }> {
+  let utVersion: string | null = null;
+  let dbVersion: string | null = null;
+  try {
+    const r = await conn.execute(`SELECT ut_runner.version() FROM dual`);
+    utVersion = extractScalar(r.rows?.[0]);
+  } catch {
+    // utRunner pode não existir
+  }
+  try {
+    const r = await conn.execute(
+      `SELECT version FROM product_component_version WHERE product LIKE '%Oracle%' AND ROWNUM = 1`,
+    );
+    dbVersion = extractScalar(r.rows?.[0]);
+  } catch {
+    // query pode não ser acessível
+  }
+  return { utVersion, dbVersion };
+}
+
+export async function listReportersOracle(conn: {
+  execute(
+    sql: string,
+    bindParams?: Record<string, unknown>,
+    options?: Record<string, unknown>,
+  ): Promise<{ rows?: unknown[] }>;
+}): Promise<string[]> {
+  try {
+    const result = await conn.execute(
+      `SELECT reporter_object_name FROM TABLE(ut_runner.get_reporters_list())`,
+    );
+    return (result.rows ?? []).map((r) => String(extractScalar(r)));
+  } catch {
+    return [];
+  }
+}
+
+export async function checkReporterExists(
+  conn: {
+    execute(
+      sql: string,
+      bindParams?: Record<string, unknown>,
+      options?: Record<string, unknown>,
+    ): Promise<{ rows?: unknown[] }>;
+  },
+  reporterName: string,
+): Promise<boolean> {
+  const reporters = await listReportersOracle(conn);
+  return reporters.some((r) => r.toUpperCase() === reporterName.toUpperCase());
+}
+
+export interface CompilationError {
+  name: string;
+  type: string;
+  line: number;
+  position: number;
+  text: string;
+}
+
+export async function checkCompilationErrors(
+  conn: {
+    execute(
+      sql: string,
+      bindParams?: Record<string, unknown>,
+      options?: Record<string, unknown>,
+    ): Promise<{ rows?: unknown[] }>;
+  },
+  schema: string,
+): Promise<CompilationError[]> {
+  try {
+    const result = await conn.execute(
+      `SELECT name, type, line, position, text
+       FROM ALL_ERRORS
+       WHERE owner = :schema
+         AND type IN ('PACKAGE','PACKAGE BODY','FUNCTION','PROCEDURE','TRIGGER')
+         AND attribute = 'ERROR'
+       ORDER BY name, type, sequence`,
+      { schema },
+    );
+    return (result.rows ?? []).map((r) => {
+      if (Array.isArray(r)) {
+        return {
+          name: String(r[0] ?? ''),
+          type: String(r[1] ?? ''),
+          line: Number(r[2] ?? 0),
+          position: Number(r[3] ?? 0),
+          text: String(r[4] ?? ''),
+        };
+      }
+      const o = r as Record<string, unknown>;
+      return {
+        name: String(o.NAME ?? ''),
+        type: String(o.TYPE ?? ''),
+        line: Number(o.LINE ?? 0),
+        position: Number(o.POSITION ?? 0),
+        text: String(o.TEXT ?? ''),
+      };
+    });
+  } catch {
+    return [];
+  }
+}
+
 export interface OracleRunOptions {
   /** Connection string (user/pass@//host:port/service) */
   connection: string;
@@ -181,6 +299,14 @@ export interface OracleRunOptions {
   ) => void;
   /** Workspace folders para resolução de sourceUri */
   folders?: readonly vscode.WorkspaceFolder[];
+  /** Extra reporters adicionados via config */
+  additionalReporters?: string[];
+  /** Owner do schema para coverage (override) */
+  coverageOwner?: string;
+  /** Se true, captura DBMS_OUTPUT */
+  dbmsOutput?: boolean;
+  /** Timeout em minutos (0 = sem timeout) */
+  timeoutMinutes?: number;
 }
 
 type LoadedOracledb = typeof import('oracledb');
@@ -210,6 +336,10 @@ export async function executeRunOracle(
     state,
     onComplete,
     folders,
+    additionalReporters,
+    coverageOwner,
+    dbmsOutput,
+    timeoutMinutes,
   } = options;
 
   const oracledb = await loadOracledbMod();
@@ -231,16 +361,53 @@ export async function executeRunOracle(
     );
 
     const runners = ['ut_documentation_reporter()', 'ut_junit_reporter()'];
+
+    let coverageEnabled = coverage;
     if (coverage) {
-      runners.push('ut_coverage_cobertura_reporter()');
+      const hasReporter = await checkReporterExists(conn1, 'UT_COVERAGE_COBERTURA_REPORTER');
+      if (!hasReporter) {
+        coverageEnabled = false;
+        run.appendOutput(`\r\n${t(getExtensionLocale(), 'runner.reporterMissing')}\r\n`);
+      } else {
+        runners.push('ut_coverage_cobertura_reporter()');
+      }
+    }
+
+    for (const r of additionalReporters ?? []) {
+      const normalized = r.toLowerCase().replace(/\(\)$/, '');
+      if (
+        normalized === 'ut_documentation_reporter' ||
+        normalized === 'ut_junit_reporter' ||
+        (coverageEnabled && normalized === 'ut_coverage_cobertura_reporter')
+      ) {
+        continue;
+      }
+      if (!runners.some((existing) => existing.startsWith(normalized))) {
+        runners.push(`${normalized}()`);
+      }
     }
 
     const pathsList =
       pathArgs.length > 0 ? pathArgs.map((p) => `'${p.replace(/'/g, "''")}'`).join(',') : '';
 
+    const owner = (coverageOwner ?? '').trim() || connection.split('/')[0].toUpperCase();
+
+    let coverageSchemes = 'null';
+    let fileMappings = 'null';
+    if (coverageEnabled) {
+      coverageSchemes = `ut_varchar2_list('${owner.replace(/'/g, "''")}')`;
+      const fileList = `'${sourcePath.replace(/'/g, "''")}'`;
+      fileMappings = `ut_file_mapper.build_file_mappings(
+        a_object_owner => '${owner.replace(/'/g, "''")}',
+        a_file_paths => ut_varchar2_list(${fileList})
+      )`;
+    }
+
     const plsql = `BEGIN ut_runner.run(
       a_paths => ut_varchar2_list(${pathsList}),
-      a_reporters => ut_reporters(${runners.join(',')})
+      a_reporters => ut_reporters(${runners.join(',')}),
+      a_coverage_schemes => ${coverageSchemes},
+      a_source_file_mappings => ${fileMappings}
     ); END;`;
 
     const runnerStart = Date.now();
@@ -257,10 +424,21 @@ export async function executeRunOracle(
       });
     });
 
+    const timeoutMs = (timeoutMinutes ?? 0) * 60 * 1000;
+    const timeoutPromise = new Promise<boolean>((resolve) => {
+      if (timeoutMs <= 0) return;
+      setTimeout(() => {
+        conn1.break().catch(() => {});
+        conn2.break().catch(() => {});
+        resolve(true);
+      }, timeoutMs);
+    });
+
     while (true) {
       const done = await Promise.race([
         runnerPromise.then(() => true),
         cancelled.then(() => true),
+        timeoutPromise,
         new Promise<boolean>((r) => setTimeout(() => r(false), 200)),
       ]);
 
@@ -289,6 +467,22 @@ export async function executeRunOracle(
       if (done) break;
     }
 
+    if (dbmsOutput) {
+      try {
+        const dbmsResult = await conn2.execute(
+          `DECLARE l_lines DBMS_OUTPUT.CHARARR; l_num NUMBER := 0;
+           BEGIN DBMS_OUTPUT.GET_LINES(l_lines, l_num); END;`,
+        );
+        if (dbmsResult && Array.isArray(dbmsResult)) {
+          for (const line of dbmsResult) {
+            run.appendOutput(`${String(line)}\r\n`);
+          }
+        }
+      } catch {
+        // DBMS_OUTPUT pode não estar habilitado
+      }
+    }
+
     const runnerMs = Date.now() - runnerStart;
 
     const covStart = xmlBuffer.indexOf('<coverage');
@@ -315,7 +509,7 @@ export async function executeRunOracle(
       onComplete(r.passed, r.failed, r.skipped, r.errored, r.totalMs);
     }
 
-    if (coverage) {
+    if (coverageEnabled) {
       if (covXml.trim()) {
         const mappedXml = mapDbPathsToFiles(covXml);
         applyCoverageFromXml(mappedXml, sourcePath, root, run, state, folders);

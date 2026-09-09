@@ -1,7 +1,6 @@
 import './setup.js';
 import assert from 'node:assert';
 import { mock, test } from 'node:test';
-import * as cliInfo from '../../cliInfo';
 import { closeOraclePool } from '../../oracleRunner';
 import { SetupValidator, UtplsqlCodeActionProvider } from '../../quickfix';
 import { __resetConfigValues, __setConfigValue, Diagnostic, Range } from '../vscode-stub';
@@ -104,20 +103,6 @@ test('validateUtplsqlInstall: falha de conexao nao gera diagnostic', async () =>
 test('validateUtplsqlInstall: setupDiagnosticsEnabled false suprime verificacao', async () =>
   withConnEnv(async () => {
     __setConfigValue('setupDiagnostics.enabled', false);
-    try {
-      const v = new SetupValidator();
-      const diags = await v.validateUtplsqlInstall(
-        makeFakeOracledb({ rows: [['PKG_A', 'PACKAGE']] }) as any,
-      );
-      assert.strictEqual(diags.length, 0);
-    } finally {
-      __resetConfigValues();
-    }
-  }));
-
-test('validateUtplsqlInstall: runnerMode cli pula verificacao', async () =>
-  withConnEnv(async () => {
-    __setConfigValue('runnerMode', 'cli');
     try {
       const v = new SetupValidator();
       const diags = await v.validateUtplsqlInstall(
@@ -248,67 +233,10 @@ test('validateOnActivation: setupDiagnosticsEnabled false retorna vazio', async 
   }
 });
 
-test('validateOnActivation: CLI inexistente gera UTPLSQL_NO_CLI', async () => {
-  __resetConfigValues();
-  __setConfigValue('cliPath', '/caminho/inexistente/utplsql');
-  try {
-    const v = new SetupValidator();
-    const diags = await v.validateOnActivation();
-    assert.ok(diags.some((d) => d.code === 'UTPLSQL_NO_CLI'));
-  } finally {
-    __resetConfigValues();
-  }
-});
-
-test('validateOnActivation: java inexistente gera UTPLSQL_NO_JAVA', async () => {
-  __resetConfigValues();
-  __setConfigValue('cliPath', process.execPath);
-  __setConfigValue('invocation', 'java');
-  __setConfigValue('javaPath', '/caminho/inexistente/java');
-  try {
-    const v = new SetupValidator();
-    const diags = await v.validateOnActivation();
-    assert.ok(diags.some((d) => d.code === 'UTPLSQL_NO_JAVA'));
-  } finally {
-    __resetConfigValues();
-  }
-});
-
-test('validateOnActivation: conexao invalida gera UTPLSQL_BAD_CONN', async () =>
-  withConnEnv(async () => {
-    __resetConfigValues();
-    __setConfigValue('cliPath', process.execPath);
-    mock.method(cliInfo, 'getCliInfo', async () => ({ error: 'ORA-12541' }));
-    try {
-      const v = new SetupValidator();
-      const diags = await v.validateOnActivation();
-      assert.ok(diags.some((d) => d.code === 'UTPLSQL_BAD_CONN'));
-    } finally {
-      mock.restoreAll();
-      __resetConfigValues();
-    }
-  }));
-
-test('validateOnActivation: versao antiga gera UTPLSQL_OLD_VERSION', async () =>
-  withConnEnv(async () => {
-    __resetConfigValues();
-    __setConfigValue('cliPath', process.execPath);
-    mock.method(cliInfo, 'getCliInfo', async () => ({ cliVersion: '3.2.3', dbVersion: '3.0.4' }));
-    try {
-      const v = new SetupValidator();
-      const diags = await v.validateOnActivation();
-      assert.ok(diags.some((d) => d.code === 'UTPLSQL_OLD_VERSION'));
-    } finally {
-      mock.restoreAll();
-      __resetConfigValues();
-    }
-  }));
-
 test('validateOnActivation: tudo ok e sem conexao retorna vazio', async () => {
   const origEnv = process.env.UTPLSQL_CONN;
   delete process.env.UTPLSQL_CONN;
   __resetConfigValues();
-  __setConfigValue('cliPath', process.execPath);
   try {
     const v = new SetupValidator();
     assert.deepStrictEqual(await v.validateOnActivation(), []);
@@ -331,16 +259,14 @@ test('provideCodeActions: gera quick-fix para cada codigo conhecido', () => {
   const provider = new UtplsqlCodeActionProvider();
   const context = {
     diagnostics: [
-      makeDiag('UTPLSQL_NO_CLI'),
       makeDiag('UTPLSQL_BAD_CONN'),
       makeDiag('UTPLSQL_NO_COVERAGE'),
       makeDiag('UTPLSQL_INVALID_OBJECTS'),
     ],
   } as any;
   const actions = provider.provideCodeActions({} as any, {} as any, context, {} as any);
-  assert.strictEqual(actions.length, 4);
+  assert.strictEqual(actions.length, 3);
   const commands = actions.map((a) => a.command?.command);
-  assert.ok(commands.includes('workbench.action.openSettings'));
   assert.ok(commands.includes('utplsql.configureConnection'));
   assert.ok(commands.includes('utplsql.copyGrantsToClipboard'));
   assert.ok(commands.includes('utplsql.recompileUt3'));
@@ -366,13 +292,9 @@ test('provideCodeActions: contexto vazio retorna vazio', () => {
   assert.strictEqual(actions.length, 0);
 });
 
-test('checkCli: retorna false quando arquivo nao existe', () => {
+test('checkCli: sempre retorna true (CLI removido)', () => {
   const v = new SetupValidator();
-  assert.strictEqual(v.checkCli('/caminho/inexistente/utplsql'), false);
-});
-
-test('checkCli: retorna true quando arquivo existe', () => {
-  const v = new SetupValidator();
+  assert.strictEqual(v.checkCli('/caminho/inexistente/utplsql'), true);
   assert.strictEqual(v.checkCli(process.execPath), true);
 });
 

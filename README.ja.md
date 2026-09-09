@@ -19,7 +19,7 @@
 - 📌 **ステータスバー** — 合格/失敗数、所要時間、リアルタイムの進行状況を示すインジケーター。
 - 🔁 **スマート再実行** — ショートカット 1 つで Rerun Last / Run at Cursor / Run Failed Only。
 - 🚀 **Oracle 直接実行（node-oracledb 経由）** — バッチの完了を待たずにリアルタイムでストリーミング。
-- 🔧 **セットアップ診断** — CLI・接続・権限・バージョンのプロアクティブな検証とクイックフィックス。
+- 🔧 **セットアップ診断** — 接続・権限・バージョンのプロアクティブな検証とクイックフィックス。
 - 🧩 **スキーマ認識ツリー** — Test Explorer で Schema > Package > Suite > Test の順にテストを整理。
 - 🎯 **失敗箇所へのジャンプ** — 失敗したアサーションの行へ直接移動（ネイティブの "Go to Error" 経由）。
 - 🔌 **接続プロファイル** — DEV/TEST/PROD などの複数環境をプロファイルごとの設定で保存・切替。ステータスバーまたはコマンドパレットから。
@@ -39,12 +39,9 @@
 ## 要件
 
 - [**utPLSQL**](https://github.com/utPLSQL/utPLSQL) **(UT3)** が Oracle データベースにインストールされていること。
-- **CLI モードの場合:** [**utPLSQL-cli**](https://github.com/utPLSQL/utPLSQL-cli/releases) + **Java** がマシンにインストールされていること（拡張機能が CLI を呼び出します）。
-- **Oracle 直接モードの場合:** データベース以外は不要 — VSIX にはシン `oracledb` ドライバーが同梱されています（Instant Client 不要）。
 - **VSCode 1.88 以降**（Test Coverage API）。
 
-この拡張機能は単なる「グラフィカルクライアント」です — テストを実行するのはデータベース側です:
-CLI（utPLSQL-cli + Java）経由、または直接（node-oracledb、デフォルトは `runnerMode: auto`）。
+この拡張機能は `node-oracledb` を使用して Oracle データベースに直接接続します（シンドライバー、Instant Client 不要）。VSIX には `oracledb` パッケージが同梱されています。
 
 ## 接続
 
@@ -56,7 +53,7 @@ CLI（utPLSQL-cli + Java）経由、または直接（node-oracledb、デフォ�
 4. **セッションキャッシュ** — ユーザーがプロンプトで接続文字列を入力済みの場合。
 5. **ユーザーへのプロンプト** — 入力を求め、現在のセッションのみ保持。
 
-接続プロファイル（`utplsql.profiles`）では、環境ごとに `sourcePath`、`coverageOwner`、`invocation`、`cliPath` などを上書きすることもできます — 設定テーブルの `utplsql.activeProfile` を参照してください。
+接続プロファイル（`utplsql.profiles`）では、環境ごとに `sourcePath`、`coverageOwner` などを上書きすることもできます — 設定テーブルの `utplsql.activeProfile` を参照してください。
 
 ⚠️ **セキュリティ上の推奨事項:** 接続文字列にはパスワードが含まれます。共有環境では **`utplsql.connection` 設定を使用しないでください**（settings.json がバージョン管理されたり他人に見えたりする可能性があります）。代わりに **`UTPLSQL_CONN` 環境変数を使用してください**:
 
@@ -81,59 +78,36 @@ code .
 
 ## 仕組み
 
-2 つの実行モードが利用可能です:
-
-![実行アーキテクチャ — 2 つのモード](docs/wiki/images/diagram-arquitetura.png)
-
-### Oracle 直接モード（v0.9.0）— `runnerMode: auto` または `oracle`
+この拡張機能は `node-oracledb` を使用して Oracle データベースに直接接続し、テスト結果をリアルタイムでストリーミングし、VSCode のネイティブ API に変換します。
 
 ![Oracle 直接モード — ストリーミング](docs/wiki/images/diagram-streaming.png)
 
 一時ファイルなし、バッチの完了を待つ必要なし。結果は **各テストが終了するたびに**
 Test Explorer に表示されます。
 
-### CLI モード — `runnerMode: cli`（フォールバック）
-
-![CLI モード — バッチ](docs/wiki/images/diagram-cli.png)
-
-拡張機能は CLI のコマンドラインを構築するか、Oracle 直接で接続して、レポート
-（JUnit + Coverage）を読み取り、VSCode のネイティブ API に変換します。`auto` モード
-（デフォルト）は Oracle 直接を試し、`node-oracledb` がインストールされていない場合は
-CLI にフォールバックします。常に CLI を強制するには `runnerMode: cli` を使用します。
-
 ## 設定
 
 | 設定 | デフォルト | 説明 |
 |---|---|---|
 | `utplsql.connection` | `""` | Oracle 接続。**空のまま**にして `UTPLSQL_CONN` 環境変数を使うとパスワードを保存せずに済みます。両方とも空の場合は拡張機能が尋ねます（セッション中のみ保持）。 |
-| `utplsql.cliPath` | `utplsql` | utPLSQL-cli 実行ファイルへのパス（例: `C:\tools\utPLSQL-cli\bin\utplsql.bat`）。 |
 | `utplsql.sourcePath` | `install` | 本番コードのフォルダー（カバレッジをファイルにマッピングするため）。 |
 | `utplsql.includePatterns` | `["**/*.pks"]` | `%suite`/`%test` を含むスペックを検出するグロブ。テストが `.sql` 内にある場合は `["**/*.sql"]` を使用します。 |
-| `utplsql.extraRunArgs` | `[]` | `utplsql run` への追加引数。 |
 | `utplsql.coverageOwner` | `""` | カバレッジ対象オブジェクトのスキーマ所有者。空 = 接続ユーザーを使用（大文字）。 |
-| `utplsql.coverageSourceArgs` | （**カバレッジ**を参照） | カバレッジをソースファイルにマッピングする CLI 引数。 |
-| `utplsql.invocation` | `launcher` | CLI の呼び出し方法: `launcher`（`.bat`/スクリプト経由、デフォルト）または `java`（JVM を直接、**シェルなし**）。**起動モード**を参照。 |
-| `utplsql.javaPath` | `java` | Java 実行ファイル（PATH または絶対パス）。`java` モードでのみ使用。 |
-| `utplsql.cliHome` | `""` | utPLSQL-cli のルート（`bin/` と `lib/` を含むフォルダー）。空 = `cliPath` から導出。`java` モードでのみ使用。 |
-| `utplsql.timeoutMinutes` | `60` | CLI のタイムアウト（分）。`-t` フラグは値が `60` と異なる場合のみ送信。 |
-| `utplsql.dbmsOutput` | `false` | テストセッションで `DBMS_OUTPUT` を有効化。`-D` フラグは `true` の場合のみ送信。 |
-| `utplsql.quiet` | `false` | CLI の情報ログを抑制。`-q` フラグは `true` の場合のみ送信。 |
-| `utplsql.failureExitCode` | `1` | 失敗時の終了コード。`--failure-exit-code` フラグは値が `1` と異なる場合のみ送信。`0` にすると CLI は常に正常終了します。 |
+| `utplsql.timeoutMinutes` | `60` | テスト実行のタイムアウト（分）。 |
+| `utplsql.dbmsOutput` | `false` | テストセッションで `DBMS_OUTPUT` を有効化。デバッグに便利。 |
 | `utplsql.additionalReporters` | `[]` | 毎回の実行に含める追加レポーター（例: `["ut_coverage_html_reporter"]`）。デフォルト（documentation、junit、coverage）は常に含まれ、リスト化する必要はありません。 |
 | `utplsql.codeLens.enabled` | `true` | `%suite` と `%test` の上に Run/Run with Coverage の CodeLens ボタンを表示。 |
 | `utplsql.statusBar.enabled` | `true` | ステータスバーにテスト状態インジケーターを表示。 |
 | `utplsql.decorations.enabled` | `true` | 実行後に `%suite` と `%test` の行へ合格/失敗のデコレーションを表示。 |
-| `utplsql.runnerMode` | `auto` | 実行モード: `auto`（node-oracledb による Oracle 直接、CLI にフォールバック）、`cli`（常にコマンドライン経由）、`oracle`（常に Oracle 直接）。 |
 | `utplsql.oraclePoolMin` | `2` | Oracle ランナープール（node-oracledb）で保持する最小接続数。 |
 | `utplsql.oraclePoolMax` | `10` | Oracle ランナープール（node-oracledb）の最大接続数。 |
 | `utplsql.oraclePoolIncrement` | `1` | Oracle ランナープール（node-oracledb）拡張時の増分。 |
 | `utplsql.oraclePoolPingInterval` | `60` | アイドルプール接続のヘルスチェック間隔（秒）（node-oracledb）。`0` = チェックアウトのたびに ping。 |
-| `utplsql.javaArgs` | `["-Xmx256m"]` | `java` モードの JVM フラグ（例: `["-Xmx512m", "-Xms128m"]`）。`-cp` の前に挿入されます。 |
-| `utplsql.organization` | `file` | ツリーの構成: `file`（パス単位）または `schema`（Schema > Package > Suite > Test）。`schema` モードで Oracle の `runnerMode`（`auto`/`oracle`）を使用する場合、`.pks` ファイルがワークスペースにないときはスイートもデータベース（`ALL_OBJECTS`/`ALL_SOURCE`）から検出されます — 仮想 URI は `utplsql-db:/`（CodeLens/デコレーション/失敗ジャンプなし）。 |
+| `utplsql.organization` | `file` | ツリーの構成: `file`（パス単位）または `schema`（Schema > Package > Suite > Test）。`schema` モードでは、`.pks` ファイルがワークスペースにないときはスイートもデータベース（`ALL_OBJECTS`/`ALL_SOURCE`）から検出されます — 仮想 URI は `utplsql-db:/`（CodeLens/デコレーション/失敗ジャンプなし）。 |
 | `utplsql.organization.schemaPattern` | `db/{schema}/**` | パスからスキーマを抽出するためのグロブパターン。プレースホルダーには `{schema}` を使用します。`schema` モードでは、パターンベースより下のディレクトリ（例: `db/*`）がデータベースでクエリされるスキーマを定義します。 |
-| `utplsql.compilationDiagnostics.enabled` | `true` | PL/SQL コンパイルエラーをエディターと Problems パネルに下線として表示（CLI モード）。 |
-| `utplsql.setupDiagnostics.enabled` | `true` | 設定診断（CLI、接続、権限、バージョン）と **utPLSQL インストールの整合性**（UT3 スキーマ内の無効オブジェクト。"Recompile UT3" クイックフィックスあり）をクイックフィックスアクション付きで表示。 |
-| `utplsql.profiles` | `[]` | 保存された Oracle 接続プロファイル（名前、接続、`sourcePath`/`coverageOwner`/`invocation`/`cliPath` などの上書き）。環境の切り替え用。 |
+| `utplsql.compilationDiagnostics.enabled` | `true` | PL/SQL コンパイルエラーをエディターと Problems パネルに下線として表示。 |
+| `utplsql.setupDiagnostics.enabled` | `true` | 設定診断（接続、権限、バージョン）と **utPLSQL インストールの整合性**（UT3 スキーマ内の無効オブジェクト。"Recompile UT3" クイックフィックスあり）をクイックフィックスアクション付きで表示。 |
+| `utplsql.profiles` | `[]` | 保存された Oracle 接続プロファイル（名前、接続、`sourcePath`/`coverageOwner` などの上書き）。環境の切り替え用。 |
 | `utplsql.activeProfile` | `""` | アクティブなプロファイルの ID（`utplsql.profiles`）。設定すると `utplsql.connection` を上書きします。 |
 | `utplsql.sqlCoverageEnabled` | `false` | `V$SQL` 経由で実行されたビューを追跡（boolean カバレッジ）。`GRANT SELECT ON V$SQL` が必要。 |
 | `utplsql.debugger.enabled` | `true` | PL/SQL テストデバッグ（`DBMS_DEBUG`）を有効化。`node-oracledb` + 権限が必要。 |
@@ -145,7 +119,6 @@ CLI にフォールバックします。常に CLI を強制するには `runner
 
 ```jsonc
 {
-  "utplsql.cliPath": "C:\\tools\\utPLSQL-cli\\bin\\utplsql.bat",
   "utplsql.sourcePath": "install",
   // utplsql.connection stays empty -> use the UTPLSQL_CONN environment variable
 }
@@ -163,35 +136,7 @@ $env:UTPLSQL_CONN = "DEV/password@//localhost:1521/XEPDB1"
 
 ```bash
 UTPLSQL_CONN=your_user/password@//host:1521/service
-UTPLSQL_CLI_PATH=/path/to/utplsql
-UTPLSQL_CLI_HOME=/path/to/utplsql-cli
 ```
-
-### 起動モード（`launcher` vs `java`）
-
-デフォルト（`utplsql.invocation = "launcher"`）では、拡張機能は `utplsql`/`utplsql.bat`
-ランチャーを呼び出します。Windows ではこれは `cmd` を経由するため、メタ文字を
-**消費/解釈**します（`^` はエスケープに、`|` はパイプになります）— これにより
-`coverageSourceArgs` の正規表現が壊れます。
-
-`java` モードは JVM を**直接**呼び出します（`java -cp <home>/etc;<home>/lib/* …
-org.utplsql.cli.Cli`）— **シェルなし**。引数は配列としてプロセスに渡され、間に
-`cmd` がないため、`^` と `|` は**文字通り**に渡されます — 回避策なしで正規表現に
-`^anchors$` や `(a|b|c)` を使用できます。
-
-```jsonc
-{
-  "utplsql.invocation": "java",
-  "utplsql.cliPath": "C:\\tools\\utPLSQL-cli\\bin\\utplsql.bat", // cliHome is derived from here
-  // "utplsql.cliHome": "C:\\tools\\utPLSQL-cli",  // only if cliPath is a PATH command
-  // "utplsql.javaPath": "java"                     // PATH, or full path to java.exe
-}
-```
-
-> `java` モードは `.bat` が行うことを忠実に再現します（同じクラスパスと同じ
-> `-D` プロパティ）。唯一の違いは `cmd` を経由しないことです。`java` が PATH
-> （または `utplsql.javaPath`）にあり、CLI ルートが解決可能である必要があります —
-> `cliPath` が `…/bin/utplsql(.bat)` を指すか、`cliHome` を設定します。
 
 ## 使用方法
 
@@ -213,11 +158,10 @@ org.utplsql.cli.Cli`）— **シェルなし**。引数は配列としてプロ�
    - `Ctrl+Shift+U L` — **Rerun Last**（最後の実行を繰り返します。カバレッジあり/なし）。
    - `Ctrl+Shift+U U` — **Run at Cursor**（カーソル位置の `%test`/`%suite` を実行）。
    - `Ctrl+Shift+U X` — **Run Failed Only**（失敗したテストのみ実行）。
-8. **Oracle 直接（ストリーミング）の場合:** インストール不要 — VSIX にシン `oracledb` ドライバーが同梱されています。`auto` モードは Oracle にアクセスできない場合 CLI にフォールバックします。
-9. 診断にはパレットで **utPLSQL: Show information** を使用します — CLI/API/DB のバージョンをコピーオプション付きで表示します。
-10. **utPLSQL: Select additional reporter...** — データベースで利用可能なレポーターを表示する QuickPick。
-11. **utPLSQL: Cancel execution** — 実行中の処理を停止（実行中の `Escape`）。
-12. **utPLSQL: Refresh tests** — `.pks` の再検出を強制します。
+8. 診断にはパレットで **utPLSQL: Show information** を使用します — API/DB のバージョンをコピーオプション付きで表示します。
+9. **utPLSQL: Select additional reporter...** — データベースで利用可能なレポーターを表示する QuickPick。
+10. **utPLSQL: Cancel execution** — 実行中の処理を停止（実行中の `Escape`）。
+11. **utPLSQL: Refresh tests** — `.pks` の再検出を強制します。
 
 > 💡 **テスト作成時のヒント:** パーサーはトークン駆動です — ファイルに `%suite`
 > と `create package` 宣言があれば十分で、各 `%test` の後にその `PROCEDURE` が
@@ -250,14 +194,14 @@ org.utplsql.cli.Cli`）— **シェルなし**。引数は配列としてプロ�
 | `utPLSQL: Run tests in this folder` | 選択したフォルダーのスイートを実行 | 右クリック → フォルダー |
 | `utPLSQL: Run tests in this folder with coverage` | 同上、カバレッジプロファイル付き | 右クリック → フォルダー |
 | `utPLSQL: Refresh tests` | `.pks` の再検出を強制 | — |
-| `utPLSQL: Cancel execution` | 実行中の CLI を停止 | — |
-| `utPLSQL: Show utPLSQL information` | CLI/API/DB のバージョンをコピーオプション付きで表示 | — |
+| `utPLSQL: Cancel execution` | 実行中の処理を停止 | — |
+| `utPLSQL: Show utPLSQL information` | API/DB のバージョンをコピーオプション付きで表示 | — |
 | `utPLSQL: Select additional reporter...` | データベースのレポーターを表示する QuickPick | — |
 | `utPLSQL: Clear session connection` | セッションキャッシュから接続を削除 | — |
 | `utPLSQL: Rerun Last` | 最後の実行を繰り返す | `Ctrl+Shift+U L` |
 | `utPLSQL: Run Test at Cursor` | カーソル位置のテストを実行 | `Ctrl+Shift+U U` |
 | `utPLSQL: Run Failed Tests` | 失敗したテストのみ再実行 | `Ctrl+Shift+U X` |
-| `utPLSQL: Validate configuration` | セットアップ全体の検証（CLI、Java、接続、UT3 インストール）を実行し、結果を表示 | — |
+| `utPLSQL: Validate configuration` | セットアップ全体の検証（接続、UT3 インストール）を実行し、結果を表示 | — |
 | `utPLSQL: Configure connection` | `utplsql.connection` で設定を開く | — |
 | `utPLSQL: Copy coverage grants to clipboard` | 権限付与 SQL をクリップボードにコピー | — |
 | `utPLSQL: Show Test Explorer` | Testing ビューにフォーカス | — |
@@ -300,55 +244,9 @@ org.utplsql.cli.Cli`）— **シェルなし**。引数は配列としてプロ�
   <img src="images/image2.png" alt="Test Explorer" width="600" height="400">
 </p>
 
-拡張機能は `-source_path`（= `utplsql.sourcePath`）を渡し、カバレッジ対象オブジェクト
-を `utplsql.coverageSourceArgs`（regex + `type_mapping`）でソースファイルにマッピングします。`-owner`
-は接続（または `utplsql.coverageOwner`）から導出されます。
-
-### ファイルへのカバレッジマッピング（`coverageSourceArgs`）
-
-`type_mapping` は、正規表現でキャプチャした「type」を Oracle 型に変換します。3 つの一般的な規約:
-
-**1) ディレクトリ単位** — 構造 `sourcePath/<type>/<name>.sql`（フォルダー `functions/`、`procedures/`、`packages/`、…）:
-```jsonc
-"utplsql.coverageSourceArgs": [
-  "-regex_expression=.*[/\\\\](\\w+)[/\\\\](\\w+)\\.sql$",
-  "-type_subexpression=1",   // group 1 = folder (type)
-  "-name_subexpression=2",   // group 2 = file (object name)
-  "-type_mapping=packages=PACKAGE BODY/functions=FUNCTION/procedures=PROCEDURE/triggers=TRIGGER"
-]
-```
-> 任意の深さで動作します（`.*` が上位のモジュールを吸収します）。さまざまなフォルダー名
-> （例: `package`、`pkg`、`pacote`）は `type_mapping` に列挙できます。
-
-**2) 名前のプレフィックス単位** — 規約 `pkg_*`、`prc_*`、`vw_*`（フォルダーに依存しない）:
-```jsonc
-"utplsql.coverageSourceArgs": [
-  "-regex_expression=.*[/\\\\]((pkg|prc|fnc|trg|vw)_\\w+)\\.sql$",
-  "-name_subexpression=1",   // group 1 = full name (e.g. PKG_EXAMPLE)
-  "-type_subexpression=2",   // group 2 = prefix (type)
-  "-type_mapping=pkg=PACKAGE BODY/prc=PROCEDURE/fnc=FUNCTION/trg=TRIGGER/vw=VIEW"
-]
-```
-
-**3) 拡張子タイプ単位** — ファイル `*.pkb`、`*.fnc`、`*.prc`、`*.trg`（フォルダーに依存しない）:
-```jsonc
-"utplsql.coverageSourceArgs": [
-  "-regex_expression=.*[/\\\\](\\w+)\\.(\\w+)$",
-  "-name_subexpression=1",   // group 1 = name
-  "-type_subexpression=2",   // group 2 = extension (type)
-  "-type_mapping=pkb=PACKAGE BODY/fnc=FUNCTION/prc=PROCEDURE/trg=TRIGGER"
-]
-```
-
-**重要な注意点:**
-- **パッケージ → `PACKAGE BODY`**（`PACKAGE` ではありません）: カバレッジはパッケージ**本体**で収集されます。
-- **Windows / 正規表現メタ文字:** `launcher` モード（デフォルト）では、`.bat` が `cmd` を経由するため、
-  `^` を**消費**し、`|` を**パイプとして解釈**します — そのため上記の例では `\w` と
-  `[/\\]` を使用しています（`^` なし）。また例 2 の `|` は拡張機能内部でのみ機能します。**解決策:** **`utplsql.invocation = "java"`** を使用します（
-  [起動モード](#起動モードlauncher-vs-java) を参照）— 間に `cmd` がないため、`^` と `|` は文字通り
-  渡され、正規表現を通常どおり自由に書けます。
-- **Windows / `cmd`:** 正規表現内の **`^`** を避けてください（`.bat` の `cmd` が消費します）— そのため例
-  では `\w` と `[/\\]` を使用しています。
+カバレッジは `ut_file_mapper.build_file_mappings()` を使用して収集され、
+`ut_coverage_cobertura_reporter` を使用して報告されます。この拡張機能は、カバレッジ対象オブジェクトを
+設定 `utplsql.sourcePath` とスキーマ `utplsql.coverageOwner` を使用してソースファイルに自動的にマッピングします。
 
 ## レポーター
 
@@ -357,9 +255,10 @@ org.utplsql.cli.Cli`）— **シェルなし**。引数は配列としてプロ�
 `ut_junit_reporter`（結果 → Test Explorer）、
 `ut_coverage_cobertura_reporter`（利用可能な場合のカバレッジ）。
 
-**動的検証** — カバレッジ付きで実行する前に、拡張機能は `utplsql reporters <conn>` で
-データベースに問い合わせます。`UT_COVERAGE_COBERTURA_REPORTER` がデータベースに存在しない場合
-（例: utPLSQL が古い）、カバレッジはスキップされ、出力に警告が表示されます。テストの実行
+**動的検証** — カバレッジ付きで実行する前に、拡張機能は `ALL_OBJECTS` で
+データベースに問い合わせ、`UT_COVERAGE_COBERTURA_REPORTER`
+が存在するかを確認します。存在しない場合（例: utPLSQL が古い）、
+カバレッジはスキップされ、出力に警告が表示されます。テストの実行
 がブロックされることはありません。
 
 **追加の固定レポーター** — `utplsql.additionalReporters` 設定:
@@ -411,16 +310,13 @@ GRANT SELECT ON SYS.DBA_PROCEDURES TO <ut3_owner>;
 
 | 症状 | 考えられる原因 | 解決策 |
 |---|---|---|
-| スイートが表示されない | CLI が見つからない | 診断には `utPLSQL: Validate configuration` を実行 |
+| スイートが表示されない | 接続の問題 | 診断には `utPLSQL: Validate configuration` を実行 |
 | カバレッジが空 | `GRANT EXECUTE ON DBMS_PROFILER` が不足 | [データベースの要件](#データベースの要件)の権限を実行、または `utPLSQL: Copy coverage grants to clipboard` を使用 |
 | カバレッジが空 | Oracle 19c では追加の権限が必要 | `GRANT EXECUTE ON DBMS_PROFILER` + `GRANT EXECUTE ON DBMS_PLSQL_CODE_COVERAGE` |
-| パフォーマンスが遅い | 大規模なスイートはより多くの JVM ヒープが必要 | `utplsql.javaArgs` を増やす（例: `["-Xmx1024m"]`） |
 | 原因不明のコンパイルエラー | PL/SQL 構文エラーを含むコード | `utplsql.compilationDiagnostics.enabled` を有効化（デフォルトでオン）; Problems パネルを参照 |
 | 接続エラー | 文字列の形式が不正、または DB に到達できない | `utPLSQL: Validate configuration` を使用 |
 | 実行中のタイムアウト | テストが `timeoutMinutes` より長い | `utplsql.timeoutMinutes` を増やす |
-| カバレッジ正規表現が一致しない | Windows の `cmd` が `^` と `\|` を消費 | `utplsql.invocation: "java"` を使用（[起動モード](#起動モードlauncher-vs-java) を参照） |
 | `%suite` が認識されない | ファイルに `%suite`/`create package` がない、または `PROCEDURE` のない `%test` | スペックを確認; `utPLSQL: Refresh tests` を実行 |
-| "report not generated" | CLI が出力 XML を生成できなかった | `%TEMP%` の書き込み権限と utPLSQL の権限を確認 |
 | CodeLens が表示されない | `editor.codeLens` が無効、または競合 | `"editor.codeLens": true` を有効化; `utplsql.codeLens.enabled` を確認 |
 | ショートカットが機能しない | 他の拡張機能や VSCode のショートカットと競合 | ファイル → 基本設定 → キーボードショートカット を開き、`utplsql` を検索して再定義 |
 

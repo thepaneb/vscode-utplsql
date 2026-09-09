@@ -29,19 +29,14 @@ npm run compile
 vscode-utplsql/
 ├── src/
 │   ├── extension.ts         ← orquestrador (entry point)
-│   ├── runner.ts            ← executeRun (CLI) + wrappers applyResults/applyCoverage
+│   ├── runner.ts            ← executeRun + wrappers applyResults/applyCoverage
 │   ├── oracleRunner.ts      ← executeRunOracle (streaming + pool) + descoberta de schema utPLSQL
 │   ├── results.ts           ← funções canônicas de resultado/cobertura (PRD-44)
 │   ├── config.ts            ← leitura de settings + env vars + resolveConnection
 │   ├── discovery.ts         ← findFiles + parse + descoberta via DB (PRD-43)
-│   ├── invocation.ts        ← buildInvocation (launcher/java)
-│   ├── cli.ts               ← executa processo CLI
-│   ├── cliEncoding.ts       ← decode de output (iconv)
 │   ├── suiteParser.ts       ← regex %suite/%test + annotations (puro)
 │   ├── junit.ts             ← parse XML JUnit + stack frames (puro)
 │   ├── cobertura.ts         ← parse XML Cobertura (puro)
-│   ├── cliInfo.ts           ← parse utplsql info (puro)
-│   ├── cliReporters.ts      ← parse utplsql reporters (puro)
 │   ├── matching.ts          ← filtro URI/pasta + matching resultado→teste (puro)
 │   ├── codelens.ts          ← parseCodeLensItems (puro) + CodeLensProvider
 │   ├── compilationDiagnostics.ts ← erros PL/SQL no editor
@@ -106,8 +101,6 @@ Crie um arquivo `.env` na raiz (gitignorado):
 
 ```bash
 UTPLSQL_CONN=seu_user/senha@//host:1521/service
-UTPLSQL_CLI_PATH=/caminho/para/utplsql
-UTPLSQL_CLI_HOME=/caminho/para/utplsql-cli
 ```
 
 Rode:

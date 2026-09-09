@@ -6,22 +6,12 @@ import { type ExtensionLocale, resolveLocale, t } from './i18n';
 let sessionConnection: string | undefined;
 
 export interface UtConfig {
-  cliPath: string;
   sourcePath: string;
   includePatterns: string[];
-  extraRunArgs: string[];
   coverageOwner: string;
-  coverageSourceArgs: string[];
-  invocation: string;
-  javaPath: string;
-  javaArgs: string[];
-  cliHome: string;
+  additionalReporters: string[];
   timeoutMinutes: number;
   dbmsOutput: boolean;
-  quiet: boolean;
-  failureExitCode: number;
-  additionalReporters: string[];
-  runnerMode: 'auto' | 'cli' | 'oracle';
   oraclePoolMin: number;
   oraclePoolMax: number;
   oraclePoolIncrement: number;
@@ -73,27 +63,12 @@ export function getExtensionLocale(): ExtensionLocale {
 export function readConfig(): UtConfig {
   const c = vscode.workspace.getConfiguration('utplsql');
   const global: UtConfig = {
-    cliPath: c.get<string>('cliPath', 'utplsql'),
     sourcePath: c.get<string>('sourcePath', 'install'),
     includePatterns: c.get<string[]>('includePatterns', ['**/*.pks']),
-    extraRunArgs: c.get<string[]>('extraRunArgs', []),
     coverageOwner: c.get<string>('coverageOwner', ''),
-    coverageSourceArgs: c.get<string[]>('coverageSourceArgs', [
-      '-regex_expression=.*[/\\\\](\\w+)[/\\\\](\\w+)\\.sql$',
-      '-type_subexpression=1',
-      '-name_subexpression=2',
-      '-type_mapping=packages=PACKAGE BODY/functions=FUNCTION/procedures=PROCEDURE/triggers=TRIGGER/views=VIEW',
-    ]),
-    invocation: c.get<string>('invocation', 'launcher'),
-    javaPath: c.get<string>('javaPath', 'java'),
-    javaArgs: c.get<string[]>('javaArgs', ['-Xmx256m']),
-    cliHome: c.get<string>('cliHome', ''),
+    additionalReporters: c.get<string[]>('additionalReporters', []),
     timeoutMinutes: c.get<number>('timeoutMinutes', 60),
     dbmsOutput: c.get<boolean>('dbmsOutput', false),
-    quiet: c.get<boolean>('quiet', false),
-    failureExitCode: c.get<number>('failureExitCode', 1),
-    additionalReporters: c.get<string[]>('additionalReporters', []),
-    runnerMode: c.get<'auto' | 'cli' | 'oracle'>('runnerMode', 'auto'),
     oraclePoolMin: c.get<number>('oraclePoolMin', 2),
     oraclePoolMax: c.get<number>('oraclePoolMax', 10),
     oraclePoolIncrement: c.get<number>('oraclePoolIncrement', 1),

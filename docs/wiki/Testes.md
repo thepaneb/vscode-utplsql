@@ -16,17 +16,15 @@ arquivos compilados:
 
 ```
 src/test/unit/  (origem TypeScript; execução em out/test/unit/)
-├── cli.test.ts            ├── invocation.test.ts
-├── cliEncoding.test.ts    ├── junit.test.ts
-├── cliInfo.test.ts        ├── matching.test.ts
-├── cliReporters.test.ts   ├── oracleRunner.test.ts
-├── cobertura.test.ts      ├── quickfix.test.ts
-├── codelens.test.ts       ├── rerun.test.ts
-├── compilationDiagnostics.test.ts  ├── results.test.ts
-├── config.test.ts         ├── runner.test.ts
-├── coverage.test.ts       ├── state.test.ts
-├── decorations.test.ts    ├── statusBar.test.ts
-├── discovery.test.ts      └── suiteParser.test.ts
+├── codelens.test.ts          ├── matching.test.ts
+├── compilationDiagnostics.test.ts  ├── oracleRunner.test.ts
+├── config.test.ts            ├── quickfix.test.ts
+├── coverage.test.ts          ├── rerun.test.ts
+├── decorations.test.ts       ├── results.test.ts
+├── discovery.test.ts         ├── runner.test.ts
+├── junit.test.ts             ├── state.test.ts
+├── cobertura.test.ts         ├── statusBar.test.ts
+└── suiteParser.test.ts
 ```
 
 Há também **cobertura TypeScript** com `c8`:
@@ -98,8 +96,6 @@ Crie um arquivo `.env` na raiz:
 
 ```bash
 UTPLSQL_CONN=UT3/senha@//localhost:1521/XEPDB1
-UTPLSQL_CLI_PATH=/home/user/utplsql-cli/bin/utplsql
-UTPLSQL_CLI_HOME=/home/user/utplsql-cli
 ```
 
 ### Fixtures de banco

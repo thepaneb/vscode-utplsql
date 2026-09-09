@@ -4,19 +4,12 @@ Visão geral da arquitetura interna da extensão para contribuidores.
 
 ## Fluxo de execução
 
-![Arquitetura de execução — dois modos](images/diagram-arquitetura.png)
+![Arquitetura de execução](images/diagram-arquitetura.png)
 
-### Modo CLI
-
-![Modo CLI — batch](images/diagram-cli.png)
-
-`src/extension.ts` é o orquestrador. `src/runner.ts` contém `executeRun` (modo
-CLI) e `src/oracleRunner.ts` contém `executeRunOracle` (modo Oracle direto).
-As funções canônicas compartilhadas ficam em `src/results.ts`
-(`applyResultsFromCases`, `applyCoverageFromXml`, `countResults`,
-`resolveStackFrameToUri`).
-
-### Modo Oracle direto (v0.9.0+)
+`src/extension.ts` é o orquestrador. `src/runner.ts` contém `executeRun`.
+`src/oracleRunner.ts` contém `executeRunOracle`. As funções canônicas
+compartilhadas ficam em `src/results.ts` (`applyResultsFromCases`,
+`applyCoverageFromXml`, `countResults`, `resolveStackFrameToUri`).
 
 - `oracleRunner.ts`: conn1 executa `ut_runner.run(...)` (bloqueante); conn2 faz
   polling de `UT_OUTPUT_BUFFER_TMP` a cada 200ms (documentação em tempo real +
@@ -41,11 +34,7 @@ embutidas no bundle.
 | `suiteParser.ts` — regex `%suite`/`%test` + annotations | `extension.ts` |
 | `junit.ts` — parse XML JUnit + stack frames | `runner.ts`, `results.ts` |
 | `cobertura.ts` — parse XML Cobertura | `config.ts` |
-| `invocation.ts` — monta args CLI | `cli.ts` |
 | `matching.ts` — filtro por URI/pasta + matching resultado→teste | `discovery.ts` |
-| `cliInfo.ts` — parse `utplsql info` | `coverage.ts`, `oracleRunner.ts` |
-| `cliReporters.ts` — parse `utplsql reporters` | `compilationDiagnostics.ts`, `quickfix.ts` |
-| `cliEncoding.ts` — decode de output | `decorations.ts`, `statusBar.ts` |
 | `codelens.ts` (parse) — `parseCodeLensItems` | |
 | `state.ts`, `types.ts` (type-only) | |
 | `plsqlDeclarations.ts` — extrai declarações PROCEDURE/FUNCTION do fonte | |
@@ -74,27 +63,20 @@ testáveis com `node --test` sem qualquer setup.
 
 | Setting (package.json) | config.ts (`readConfig`) | Uso |
 |---|---|---|
-| `utplsql.cliPath` | `cfg.cliPath` | `invocation.ts` (file) |
-| `utplsql.cliHome` | `cfg.cliHome` | `invocation.ts` (classpath modo java) |
-| `utplsql.invocation` | `cfg.invocation` | `invocation.ts` (launcher vs java) |
-| `utplsql.javaPath`/`javaArgs` | `cfg.javaPath`/`cfg.javaArgs` | `invocation.ts` (modo java) |
 | `utplsql.sourcePath` | `cfg.sourcePath` | `-source_path` / `resolveSourceUri` |
 | `utplsql.includePatterns` | `cfg.includePatterns` | `discovery.ts` (findFiles) |
-| `utplsql.extraRunArgs` | `cfg.extraRunArgs` | args extras do CLI |
-| `utplsql.coverageOwner`/`coverageSourceArgs` | `cfg.coverageOwner`/`cfg.coverageSourceArgs` | mapeamento de cobertura CLI |
 | `utplsql.timeoutMinutes` | `cfg.timeoutMinutes` | `-t=N` (só se !=60) |
 | `utplsql.dbmsOutput` | `cfg.dbmsOutput` | `-D` (só se true) |
 | `utplsql.quiet` | `cfg.quiet` | `-q` (só se true) |
 | `utplsql.failureExitCode` | `cfg.failureExitCode` | `--failure-exit-code` (só se !=1) |
 | `utplsql.additionalReporters` | `cfg.additionalReporters` | `-f=` flags (deduplicados) |
-| `utplsql.runnerMode` | `cfg.runnerMode` | `runner.ts` (auto/cli/oracle) |
 | `utplsql.oraclePoolMin/Max/Increment/PingInterval` | `cfg.oraclePool*` | `oracleRunner.ts` (`ensurePool`) |
 | `utplsql.codeLens/statusBar/decorations.enabled` | `cfg.*Enabled` | providers UX |
 | `utplsql.compilationDiagnostics.enabled` | `cfg.compilationDiagnosticsEnabled` | `runner.ts` |
 | `utplsql.setupDiagnostics.enabled` | `cfg.setupDiagnosticsEnabled` | `quickfix.ts` |
 | `utplsql.organization`/`organization.schemaPattern` | `cfg.organization`/`organizationSchemaPattern` | `extension.ts` (árvore + descoberta via DB) |
-| `utplsql.connection` | `resolveConnection()` | connection param CLI/Oracle |
-| `UTPLSQL_CONN` (env) | `resolveConnection()` (2ª fonte) | connection param CLI/Oracle |
+| `utplsql.connection` | `resolveConnection()` | connection param Oracle |
+| `UTPLSQL_CONN` (env) | `resolveConnection()` (2ª fonte) | connection param Oracle |
 
 ## Test infrastructure
 
@@ -111,8 +93,7 @@ em duas camadas:
 ### Testes de integração
 
 `npm run test:integration` sobe uma instância VSCode via `@vscode/test-cli`.
-Requer banco Oracle real + `UTPLSQL_CONN`, `UTPLSQL_CLI_PATH`, `UTPLSQL_CLI_HOME`
-definidos em `.env`.
+Requer banco Oracle real + `UTPLSQL_CONN` definido em `.env`.
 
 ## Mapeamento resultado → teste
 

@@ -6,14 +6,6 @@ Sistema de configuração da extensão: settings, conexão, ambiente.
 
 ```typescript
 interface UtConfig {
-  // Conexão e CLI
-  cliPath: string;                    // default: "utplsql"
-  invocation: string;                 // default: "launcher"
-  javaPath: string;                   // default: "java"
-  javaArgs: string[];                 // default: ["-Xmx256m"]
-  cliHome: string;                    // default: ""
-  runnerMode: 'auto' | 'cli' | 'oracle'; // default: "auto"
-
   // Pool do Oracle runner (PRD-38)
   oraclePoolMin: number;              // default: 2
   oraclePoolMax: number;              // default: 10
@@ -23,7 +15,6 @@ interface UtConfig {
   // Cobertura
   sourcePath: string;                 // default: "install"
   coverageOwner: string;              // default: ""
-  coverageSourceArgs: string[];       // regex + type_mapping
   sqlCoverageEnabled: boolean;        // default: false (PRD-12)
 
   // Debugger (PRD-33)
@@ -52,13 +43,6 @@ interface UtConfig {
 
   // Descoberta
   includePatterns: string[];          // default: ["**/*.pks"]
-
-  // Execução
-  timeoutMinutes: number;             // default: 60
-  dbmsOutput: boolean;                // default: false
-  quiet: boolean;                     // default: false
-  failureExitCode: number;            // default: 1
-  extraRunArgs: string[];             // default: []
 
   // Reporters
   additionalReporters: string[];      // default: []
@@ -106,7 +90,7 @@ Ao resolver com sucesso, seta `utplsql:connected` context key.
 (retorna `undefined` se nada estiver configurado).
 
 > `readConfig()` aplica `mergeProfileConfig(global, getActiveProfile())` — o
-> perfil ativo sobrescreve campos como `sourcePath`, `coverageOwner` e `cliPath`.
+> perfil ativo sobrescreve campos como `sourcePath` e `coverageOwner`.
 
 ### Segurança
 
@@ -124,7 +108,7 @@ Ao resolver com sucesso, seta `utplsql:connected` context key.
 
 `src/connectionProfiles.ts` (vscode-dependente). Perfis reutilizáveis de
 conexão que encapsulam a string de conexão **e** a configuração associada
-(sourcePath, coverageOwner, CLI, etc.).
+(sourcePath, coverageOwner, etc.).
 
 ```typescript
 interface ConnectionProfile {
@@ -133,13 +117,7 @@ interface ConnectionProfile {
   connection: string;
   sourcePath?: string;
   coverageOwner?: string;
-  coverageSourceArgs?: string[];
   includePatterns?: string[];
-  invocation?: string;
-  cliPath?: string;
-  cliHome?: string;
-  javaPath?: string;
-  extraRunArgs?: string[];
   isDefault?: boolean;
   lastUsed?: string;
 }
@@ -193,21 +171,6 @@ function t(locale: ExtensionLocale, key: string, params?): string
 mensagens de runtime (prompts, outputs, diagnósticos).
 
 ![Arquitetura de internacionalização (i18n)](../wiki/images/diagram-i18n.png)
-
-## `InvocationConfig` (src/invocation.ts)
-
-```typescript
-interface InvocationConfig {
-  invocation: string;
-  cliPath: string;
-  javaPath: string;
-  javaArgs: string[];
-  cliHome: string;
-}
-```
-
-Subconjunto de `UtConfig` usado para decidir como invocar o CLI. Passado para
-`buildInvocation`, `getCliInfo`, `listReporters`.
 
 ## `TestStateManager` (src/state.ts)
 
@@ -266,8 +229,6 @@ Armazenado via `WeakMap<TestItem, ItemMeta>` no `TestStateManager`.
 | Variável | Uso |
 |---|---|
 | `UTPLSQL_CONN` | String de conexão Oracle |
-| `UTPLSQL_CLI_PATH` | Caminho do CLI (testes de integração) |
-| `UTPLSQL_CLI_HOME` | Raiz do CLI (testes de integração, modo java) |
 
 ## Hierarquia de settings
 
@@ -277,5 +238,5 @@ O VSCode aplica settings nesta ordem (última sobrescreve):
 3. Workspace settings (`.vscode/settings.json`)
 4. Workspace Folder settings (multi-root)
 
-Recomendação: `cliPath`, `sourcePath`, `coverageSourceArgs` no workspace.
-`connection` via env var (nunca em settings versionadas).
+Recomendação: `sourcePath` no workspace. `connection` via env var (nunca em
+settings versionadas).

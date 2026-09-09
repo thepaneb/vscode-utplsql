@@ -6,11 +6,11 @@ mapeada para arquivos fonte do workspace.
 ## Fluxo
 
 ```
-utPLSQL CLI / Oracle direto
+Oracle direto
     │
-    └─► ut_coverage_cobertura_reporter → coverage.xml (ou buffer Oracle)
+    └─► ut_coverage_cobertura_reporter → coverage.xml (buffer Oracle)
             │
-            │   (modo Oracle) mapDbPathsToFiles(xml) → troca filename objeto→arquivo
+            │   mapDbPathsToFiles(xml) → troca filename objeto→arquivo
             │
             ├─► parseCobertura(xml) → FileLines[]
             │       └─► file, lines[] (line, hits)
@@ -18,7 +18,7 @@ utPLSQL CLI / Oracle direto
             ├─► resolveSourceUri(file, workspaceRoot, sourcePath, folderRoot?)
             │       └─► mapeia nome de objeto Oracle → arquivo .sql local
             │
-            └─► applyCoverage(coveragePath, root, sourcePath, run, state, folders)
+            └─► applyCoverageFromXml(xml, root, sourcePath, run, state, folders)
                     │
                     ├─► FileCoverage.fromDetails(uri, details)
                     ├─► run.addCoverage(fc)
@@ -64,39 +64,20 @@ function resolveSourceUri(
    (**não** é busca recursiva — apenas um `path.join` direto)
 5. **Não encontrado**: retorna `undefined`
 
-## `mapDbPathsToFiles` (src/oracleRunner.ts) — modo Oracle
+## `mapDbPathsToFiles` (src/oracleRunner.ts)
 
 O XML de cobertura do buffer Oracle traz `filename="package body APP.CALC"`
-(nome de objeto, não arquivo). Antes de `applyCoverageFromXml`, o modo Oracle
-aplica `mapDbPathsToFiles(xml)`:
+(nome de objeto, não arquivo). Antes de `applyCoverageFromXml`, aplica-se
+`mapDbPathsToFiles(xml)`:
 
 - regex `filename="(function|procedure|package body|package|view|trigger)\s+\w+\.(\w+)"`
 - converte para `filename="<tipo plural>/<nome>.sql"` (ex.: `packages/CALC.sql`,
   `functions/FN1.sql`) — casando com a estrutura `sourcePath/<tipo>/<nome>.sql`
   esperada pelo `resolveSourceUri`
 
-## `applyCoverage` (src/runner.ts) — wrapper CLI
-
-```typescript
-function applyCoverage(
-  coveragePath: string,
-  _root: string,
-  sourcePath: string,
-  run: vscode.TestRun,
-  state: TestStateManager,
-  folders?: WorkspaceFolder[],
-): void
-```
-
-1. `state.clearCoverage()` — limpa cobertura anterior
-2. Se arquivo não existe → diagnóstico + `run.appendOutput()` com sugestão de grants
-3. Se `setupDiagnosticsEnabled` → `setupValidator.addCoverageDiagnostic()` (PRD-32)
-4. Lê o XML e delega para `applyCoverageFromXml` (src/results.ts)
-
 ## `applyCoverageFromXml` (src/results.ts)
 
-Função canônica (PRD-39), usada pelos dois runners. Recebe a string XML
-(extraída do buffer no modo Oracle, do arquivo no modo CLI) e executa o
+Função canônica (PRD-39). Recebe a string XML extraída do buffer Oracle e executa o
 pipeline de resolução:
 
 1. `parseCobertura(xml)` → `FileLines[]`
@@ -111,7 +92,9 @@ pipeline de resolução:
 
 ### Configuração (`coverageSourceArgs`)
 
-O utPLSQL-cli aceita args para mapear objetos cobertos a arquivos:
+O utPLSQL usa `ut_file_mapper.build_file_mappings()` internamente para mapear
+objetos cobertos a arquivos. A configuração define regex de extração e mapeamento
+de tipos:
 
 ```jsonc
 {

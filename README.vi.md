@@ -19,7 +19,7 @@ Tích hợp [utPLSQL](https://www.utplsql.org/) vào VSCode, đưa các bài ki�
 - 📌 **Thanh trạng thái** — chỉ báo số lượng đạt/không đạt, thời lượng và tiến trình theo thời gian thực.
 - 🔁 **Chạy lại thông minh** — Chạy lại lần cuối, Chạy tại con trỏ, Chỉ chạy các bài thất bại chỉ với một phím tắt.
 - 🚀 **Oracle trực tiếp (qua node-oracledb)** — streaming theo thời gian thực, không cần chờ batch hoàn tất.
-- 🔧 **Chẩn đoán thiết lập** — xác thực chủ động CLI, kết nối, quyền (grants) và phiên bản kèm quick-fix.
+- 🔧 **Chẩn đoán thiết lập** — xác thực chủ động kết nối, quyền (grants) và phiên bản kèm quick-fix.
 - 🧩 **Cây theo schema** — tổ chức kiểm thử theo Schema > Package > Suite > Test trong Test Explorer.
 - 🎯 **Nhảy tới lỗi** — điều hướng trực tiếp tới dòng của assertion bị lỗi (qua "Go to Error" gốc).
 - 🔌 **Hồ sơ kết nối** — lưu và chuyển đổi giữa nhiều môi trường (DEV/TEST/PROD) với cài đặt theo hồ sơ, qua thanh trạng thái hoặc command palette.
@@ -39,12 +39,9 @@ Extension có thể được cài đặt theo hai cách:
 ## Yêu cầu
 
 - [**utPLSQL**](https://github.com/utPLSQL/utPLSQL) **(UT3)** được cài đặt trong cơ sở dữ liệu Oracle.
-- **Cho chế độ CLI:** [**utPLSQL-cli**](https://github.com/utPLSQL/utPLSQL-cli/releases) + **Java** được cài trên máy (extension gọi CLI).
-- **Cho chế độ Oracle trực tiếp:** không cần gì ngoài cơ sở dữ liệu — VSIX đã kèm sẵn driver mỏng `oracledb` (không cần Instant Client).
 - **VSCode 1.88+** (Test Coverage API).
 
-Extension chỉ là "client đồ họa" — thứ thực sự chạy kiểm thử là cơ sở dữ liệu: qua
-CLI (utPLSQL-cli + Java) hoặc trực tiếp (node-oracledb, `runnerMode: auto` mặc định).
+Extension chỉ là "client đồ họa" — thứ thực sự chạy kiểm thử là cơ sở dữ liệu trực tiếp (node-oracledb).
 
 ## Kết nối
 
@@ -56,8 +53,7 @@ Extension cần một chuỗi kết nối Oracle để chạy kiểm thử. Th�
 4. **Bộ nhớ đệm phiên** — nếu người dùng đã gõ kết nối qua prompt.
 5. **Hỏi người dùng** — hỏi và chỉ giữ trong phiên hiện tại.
 
-Các hồ sơ kết nối (`utplsql.profiles`) cũng có thể ghi đè `sourcePath`, `coverageOwner`,
-`invocation`, `cliPath`, v.v. theo từng môi trường — xem `utplsql.activeProfile` trong bảng cấu hình.
+Các hồ sơ kết nối (`utplsql.profiles`) cũng có thể ghi đè `sourcePath`, `coverageOwner` v.v. theo từng môi trường — xem `utplsql.activeProfile` trong bảng cấu hình.
 
 ⚠️ **Khuyến nghị bảo mật:** chuỗi kết nối chứa mật khẩu. **KHÔNG** dùng cài đặt
 `utplsql.connection` trong các môi trường dùng chung (settings.json có thể bị quản lý phiên bản
@@ -86,59 +82,38 @@ chỉ giữ nó trong bộ nhớ ở phiên hiện tại — dùng lệnh
 
 ## Cách hoạt động
 
-Có hai chế độ thực thi:
+![Kiến trúc thực thi](docs/wiki/images/diagram-arquitetura.png)
 
-![Kiến trúc thực thi — hai chế độ](docs/wiki/images/diagram-arquitetura.png)
-
-### Chế độ Oracle trực tiếp (v0.9.0) — `runnerMode: auto` hoặc `oracle`
+### Chế độ Oracle trực tiếp (v0.9.0)
 
 ![Chế độ Oracle trực tiếp — streaming](docs/wiki/images/diagram-streaming.png)
 
 Không có tệp tạm, không chờ batch. Kết quả xuất hiện trong
-Test Explorer **ngay khi từng bài kiểm thử hoàn tất**.
-
-### Chế độ CLI — `runnerMode: cli` (dự phòng)
-
-![Chế độ CLI — batch](docs/wiki/images/diagram-cli.png)
-
-Extension dựng dòng lệnh CLI hoặc kết nối Oracle trực tiếp, đọc các báo cáo
-(JUnit + Coverage) rồi chuyển chúng thành các API gốc của VSCode. Chế độ `auto`
-(mặc định) thử Oracle trực tiếp và rơi về CLI nếu `node-oracledb` chưa được cài.
-Dùng `runnerMode: cli` để luôn ép dùng CLI.
+Test Explorer **ngay khi từng bài kiểm thử hoàn tất**. VSIX đã kèm driver mỏng `oracledb` (không cần Instant Client).
 
 ## Cấu hình
 
 | Cài đặt | Mặc định | Mô tả |
 |---|---|---|
 | `utplsql.connection` | `""` | Chuỗi kết nối Oracle. **Để trống** và dùng biến môi trường `UTPLSQL_CONN` để tránh lưu mật khẩu. Nếu cả hai đều trống, extension sẽ hỏi (chỉ giữ trong phiên). |
-| `utplsql.cliPath` | `utplsql` | Đường dẫn tới tệp thực thi utPLSQL-cli (ví dụ `C:\tools\utPLSQL-cli\bin\utplsql.bat`). |
 | `utplsql.sourcePath` | `install` | Thư mục chứa mã sản phẩm (để ánh xạ độ phủ tới các tệp). |
 | `utplsql.includePatterns` | `["**/*.pks"]` | Các glob để tìm các spec chứa `%suite`/`%test`. Nếu kiểm thử của bạn nằm trong `.sql`, dùng `["**/*.sql"]`. |
-| `utplsql.extraRunArgs` | `[]` | Các đối số bổ sung cho `utplsql run`. |
 | `utplsql.coverageOwner` | `""` | Schema sở hữu các đối tượng được phủ. Trống = dùng người dùng kết nối (in hoa). |
-| `utplsql.coverageSourceArgs` | (xem **Độ phủ**) | Các đối số CLI để ánh xạ độ phủ tới các tệp nguồn. |
-| `utplsql.invocation` | `launcher` | Cách gọi CLI: `launcher` (qua `.bat`/script, mặc định) hoặc `java` (JVM trực tiếp, **không qua shell**). Xem **Chế độ gọi**. |
-| `utplsql.javaPath` | `java` | Tệp thực thi Java (PATH hoặc đường dẫn đầy đủ). Chỉ dùng trong chế độ `java`. |
-| `utplsql.cliHome` | `""` | Thư mục gốc của utPLSQL-cli (thư mục chứa `bin/` và `lib/`). Trống = suy ra từ `cliPath`. Chỉ dùng trong chế độ `java`. |
-| `utplsql.timeoutMinutes` | `60` | Thời gian chờ (phút) cho CLI. Cờ `-t` chỉ được gửi nếu giá trị khác `60`. |
-| `utplsql.dbmsOutput` | `false` | Bật `DBMS_OUTPUT` trong phiên kiểm thử. Cờ `-D` chỉ được gửi khi `true`. |
-| `utplsql.quiet` | `false` | Ẩn các log CLI dạng thông tin. Cờ `-q` chỉ được gửi khi `true`. |
-| `utplsql.failureExitCode` | `1` | Mã thoát khi gặp lỗi. Cờ `--failure-exit-code` chỉ được gửi nếu giá trị khác `1`. `0` khiến CLI luôn thoát thành công. |
+| `utplsql.timeoutMinutes` | `60` | Thời gian chờ (phút). |
+| `utplsql.dbmsOutput` | `false` | Bật `DBMS_OUTPUT` trong phiên kiểm thử. |
 | `utplsql.additionalReporters` | `[]` | Các reporter bổ sung đưa vào mỗi lần chạy (ví dụ `["ut_coverage_html_reporter"]`). Các reporter mặc định (documentation, junit, coverage) luôn được bao gồm và không cần liệt kê. |
 | `utplsql.codeLens.enabled` | `true` | Hiển thị các nút CodeLens Run/Run with Coverage trên `%suite` và `%test`. |
 | `utplsql.statusBar.enabled` | `true` | Hiển thị chỉ báo trạng thái kiểm thử trên thanh trạng thái. |
 | `utplsql.decorations.enabled` | `true` | Hiển thị các trang trí đạt/không đạt trên các dòng `%suite` và `%test` sau khi chạy. |
-| `utplsql.runnerMode` | `auto` | Chế độ thực thi: `auto` (Oracle trực tiếp qua node-oracledb, dự phòng CLI), `cli` (luôn qua dòng lệnh), `oracle` (luôn Oracle trực tiếp). |
 | `utplsql.oraclePoolMin` | `2` | Số kết nối tối thiểu giữ trong pool của Oracle runner (node-oracledb). |
 | `utplsql.oraclePoolMax` | `10` | Số kết nối tối đa trong pool của Oracle runner (node-oracledb). |
 | `utplsql.oraclePoolIncrement` | `1` | Mức tăng khi mở rộng pool của Oracle runner (node-oracledb). |
 | `utplsql.oraclePoolPingInterval` | `60` | Số giây giữa các lần kiểm tra sức khỏe của các kết nối nhàn rỗi trong pool (node-oracledb). `0` = ping mỗi lần checkout. |
-| `utplsql.javaArgs` | `["-Xmx256m"]` | Các cờ JVM cho chế độ `java` (ví dụ `["-Xmx512m", "-Xms128m"]`). Được chèn trước `-cp`. |
-| `utplsql.organization` | `file` | Tổ chức cây: `file` (theo đường dẫn) hoặc `schema` (Schema > Package > Suite > Test). Trong chế độ `schema` với `runnerMode` Oracle (`auto`/`oracle`), các suite cũng được phát hiện từ cơ sở dữ liệu (`ALL_OBJECTS`/`ALL_SOURCE`) khi các tệp `.pks` không nằm trong workspace — với URI ảo `utplsql-db:/` (không có CodeLens/trang trí/nhảy tới lỗi). |
+| `utplsql.organization` | `file` | Tổ chức cây: `file` (theo đường dẫn) hoặc `schema` (Schema > Package > Suite > Test). Trong chế độ `schema`, các suite cũng được phát hiện từ cơ sở dữ liệu (`ALL_OBJECTS`/`ALL_SOURCE`) khi các tệp `.pks` không nằm trong workspace — với URI ảo `utplsql-db:/` (không có CodeLens/trang trí/nhảy tới lỗi). |
 | `utplsql.organization.schemaPattern` | `db/{schema}/**` | Glob để trích xuất schema từ đường dẫn. Dùng `{schema}` làm placeholder. Trong chế độ `schema`, các thư mục bên dưới gốc của pattern (ví dụ `db/*`) định nghĩa các schema được truy vấn trong cơ sở dữ liệu. |
-| `utplsql.compilationDiagnostics.enabled` | `true` | Hiển thị lỗi biên dịch PL/SQL dưới dạng gạch chân trong trình soạn thảo và Problems Panel (chế độ CLI). |
-| `utplsql.setupDiagnostics.enabled` | `true` | Hiển thị chẩn đoán cấu hình (CLI, kết nối, grants, phiên bản) và **tính toàn vẹn của bản cài utPLSQL** (các đối tượng không hợp lệ trong schema UT3, kèm quick-fix "Recompile UT3") với các hành động quick-fix. |
-| `utplsql.profiles` | `[]` | Các hồ sơ kết nối Oracle đã lưu (tên, kết nối và ghi đè `sourcePath`/`coverageOwner`/`invocation`/`cliPath`/v.v.) để chuyển đổi giữa các môi trường. |
+| `utplsql.compilationDiagnostics.enabled` | `true` | Hiển thị lỗi biên dịch PL/SQL dưới dạng gạch chân trong trình soạn thảo và Problems Panel. |
+| `utplsql.setupDiagnostics.enabled` | `true` | Hiển thị chẩn đoán cấu hình (kết nối, quyền, phiên bản) và **tính toàn vẹn của bản cài utPLSQL** (các đối tượng không hợp lệ trong schema UT3, kèm quick-fix "Recompile UT3") với các hành động quick-fix. |
+| `utplsql.profiles` | `[]` | Các hồ sơ kết nối Oracle đã lưu (tên, kết nối và ghi đè `sourcePath`/`coverageOwner`/v.v.) để chuyển đổi giữa các môi trường. |
 | `utplsql.activeProfile` | `""` | ID của hồ sơ đang hoạt động (`utplsql.profiles`). Khi được đặt, ghi đè `utplsql.connection`. |
 | `utplsql.sqlCoverageEnabled` | `false` | Theo dõi các view được thực thi qua `V$SQL` (độ phủ boolean). Cần `GRANT SELECT ON V$SQL`. |
 | `utplsql.debugger.enabled` | `true` | Bật gỡ lỗi kiểm thử PL/SQL (`DBMS_DEBUG`). Cần `node-oracledb` + grants. |
@@ -150,7 +125,6 @@ Ví dụ (`.vscode/settings.json` của dự án):
 
 ```jsonc
 {
-  "utplsql.cliPath": "C:\\tools\\utPLSQL-cli\\bin\\utplsql.bat",
   "utplsql.sourcePath": "install",
   // utplsql.connection stays empty -> use the UTPLSQL_CONN environment variable
 }
@@ -169,35 +143,7 @@ trường được dùng bởi các bài kiểm thử tích hợp:
 
 ```bash
 UTPLSQL_CONN=your_user/password@//host:1521/service
-UTPLSQL_CLI_PATH=/path/to/utplsql
-UTPLSQL_CLI_HOME=/path/to/utplsql-cli
 ```
-
-### Chế độ gọi (`launcher` vs `java`)
-
-Mặc định (`utplsql.invocation = "launcher"`) extension gọi launcher
-`utplsql`/`utplsql.bat`. Trên Windows điều này đi qua `cmd`, vốn
-**tiêu thụ/giải thích các ký tự đặc biệt (metacharacters)** (`^` trở thành escape, `|` trở thành
-pipe) — điều này làm hỏng regex trong `coverageSourceArgs`.
-
-Chế độ `java` gọi JVM **trực tiếp** (`java -cp <home>/etc;<home>/lib/* …
-org.utplsql.cli.Cli`), **không qua shell**. Các đối số được truyền tới tiến trình dưới
-dạng mảng, không có `cmd` xen giữa, nên `^` và `|` đi qua **nguyên văn** — bạn có thể dùng
-`^anchors$` và `(a|b|c)` trong regex mà không cần workaround.
-
-```jsonc
-{
-  "utplsql.invocation": "java",
-  "utplsql.cliPath": "C:\\tools\\utPLSQL-cli\\bin\\utplsql.bat", // cliHome is derived from here
-  // "utplsql.cliHome": "C:\\tools\\utPLSQL-cli",  // only if cliPath is a PATH command
-  // "utplsql.javaPath": "java"                     // PATH, or full path to java.exe
-}
-```
-
-> Chế độ `java` tái hiện trung thực những gì `.bat` làm (cùng classpath và cùng các
-> thuộc tính `-D`); điểm khác biệt duy nhất là không đi qua `cmd`. Cần `java` trên PATH
-> (hoặc trong `utplsql.javaPath`) và thư mục gốc của CLI phải phân giải được — hoặc qua `cliPath`
-> trỏ tới `…/bin/utplsql(.bat)`, hoặc bằng cách đặt `cliHome`.
 
 ## Sử dụng
 
@@ -219,8 +165,8 @@ dạng mảng, không có `cmd` xen giữa, nên `^` và `|` đi qua **nguyên v
    - `Ctrl+Shift+U L` — **Rerun Last** (lặp lại lần chạy cuối, có hoặc không có coverage).
    - `Ctrl+Shift+U U` — **Run at Cursor** (chạy `%test`/`%suite` dưới con trỏ).
    - `Ctrl+Shift+U X` — **Run Failed Only** (chỉ chạy các bài kiểm thử bị lỗi).
-8. **Với Oracle trực tiếp (streaming):** không cần cài gì thêm — VSIX đã kèm driver mỏng `oracledb`. Chế độ `auto` rơi về CLI nếu Oracle không truy cập được.
-9. Để chẩn đoán, dùng `utPLSQL: Show information` trong palette — hiển thị phiên bản CLI/API/DB kèm tùy chọn sao chép.
+8. **Với Oracle trực tiếp (streaming):** không cần cài gì thêm — VSIX đã kèm driver mỏng `oracledb`.
+9. Để chẩn đoán, dùng `utPLSQL: Show information` trong palette — hiển thị phiên bản API/DB kèm tùy chọn sao chép.
 10. **utPLSQL: Select additional reporter...** — QuickPick với các reporter có sẵn trong cơ sở dữ liệu.
 11. **utPLSQL: Cancel execution** — dừng lần chạy đang thực hiện (`Escape` trong lúc chạy).
 12. **utPLSQL: Refresh tests** — ép phát hiện lại các tệp `.pks`.
@@ -256,14 +202,14 @@ Tất cả các lệnh của extension (palette `Ctrl+Shift+P` tiền tố `utPL
 | `utPLSQL: Run tests in this folder` | Chạy các suite của thư mục đã chọn | Chuột phải → thư mục |
 | `utPLSQL: Run tests in this folder with coverage` | Tương tự, với profile coverage | Chuột phải → thư mục |
 | `utPLSQL: Refresh tests` | Ép phát hiện lại các tệp `.pks` | — |
-| `utPLSQL: Cancel execution` | Dừng CLI đang chạy | — |
-| `utPLSQL: Show utPLSQL information` | Phiên bản CLI/API/DB kèm tùy chọn sao chép | — |
+| `utPLSQL: Cancel execution` | Dừng lần chạy đang thực hiện | — |
+| `utPLSQL: Show utPLSQL information` | Phiên bản API/DB kèm tùy chọn sao chép | — |
 | `utPLSQL: Select additional reporter...` | QuickPick với các reporter trong cơ sở dữ liệu | — |
 | `utPLSQL: Clear session connection` | Xóa kết nối khỏi bộ nhớ đệm phiên | — |
 | `utPLSQL: Rerun Last` | Lặp lại lần chạy cuối | `Ctrl+Shift+U L` |
 | `utPLSQL: Run Test at Cursor` | Chạy bài kiểm thử dưới con trỏ | `Ctrl+Shift+U U` |
 | `utPLSQL: Run Failed Tests` | Chạy lại chỉ các bài kiểm thử bị lỗi | `Ctrl+Shift+U X` |
-| `utPLSQL: Validate configuration` | Chạy xác thực thiết lập đầy đủ (CLI, Java, kết nối, cài đặt UT3) và hiển thị kết quả | — |
+| `utPLSQL: Validate configuration` | Chạy xác thực thiết lập đầy đủ (kết nối, cài đặt UT3) và hiển thị kết quả | — |
 | `utPLSQL: Configure connection` | Mở cài đặt tại `utplsql.connection` | — |
 | `utPLSQL: Copy coverage grants to clipboard` | Sao chép SQL grants vào clipboard | — |
 | `utPLSQL: Show Test Explorer` | Đưa tiêu điểm vào khung Testing | — |
@@ -349,12 +295,7 @@ tới các tệp nguồn qua `utplsql.coverageSourceArgs` (regex + `type_mapping
 
 **Các lưu ý quan trọng:**
 - **Packages → `PACKAGE BODY`** (không phải `PACKAGE`): độ phủ được thu thập trong **body** của package.
-- **Windows / metacharacter của regex:** trong chế độ `launcher` (mặc định), `.bat` đi qua `cmd`,
-  vốn **tiêu thụ `^`** và **giải thích `|` như pipe** — đó là lý do các ví dụ trên dùng `\w` và
-  `[/\\]` (không có `^`), và `|` trong ví dụ 2 chỉ hoạt động bên trong extension. **Giải pháp:** dùng **`utplsql.invocation = "java"`** (xem
-  [Chế độ gọi](#chế-độ-gọi-launcher-vs-java)) — không có `cmd` xen giữa, `^` và `|` đi qua
-  nguyên văn và bạn có thể viết regex bình thường.
-- **Windows / `cmd`:** tránh **`^`** trong regex (`cmd` của `.bat` tiêu thụ nó) — đó là lý do các ví dụ
+- **Windows / metacharacter của regex:** tránh **`^`** trong regex (`cmd` của `.bat` tiêu thụ nó) — đó là lý do các ví dụ
   dùng `\w` và `[/\\]`.
 
 ## Bộ báo cáo (Reporters)
@@ -419,16 +360,13 @@ GRANT SELECT ON SYS.DBA_PROCEDURES TO <ut3_owner>;
 
 | Triệu chứng | Nguyên nhân có thể | Giải pháp |
 |---|---|---|
-| Các suite không xuất hiện | Không tìm thấy CLI | Chạy `utPLSQL: Validate configuration` để chẩn đoán |
+| Các suite không xuất hiện | Không có tệp `.pks` được phát hiện | Chạy `utPLSQL: Validate configuration` để chẩn đoán |
 | Độ phủ trống | Thiếu `GRANT EXECUTE ON DBMS_PROFILER` | Chạy các grant trong [Yêu cầu cơ sở dữ liệu](#yêu-cầu-cơ-sở-dữ-liệu) hoặc dùng `utPLSQL: Copy coverage grants to clipboard` |
 | Độ phủ trống | Oracle 19c cần thêm grant | `GRANT EXECUTE ON DBMS_PROFILER` + `GRANT EXECUTE ON DBMS_PLSQL_CODE_COVERAGE` |
-| Hiệu năng chậm | Suite lớn cần heap JVM nhiều hơn | Tăng `utplsql.javaArgs` (ví dụ `["-Xmx1024m"]`) |
 | Lỗi biên dịch không kèm chỉ dẫn | Mã có lỗi cú pháp PL/SQL | Bật `utplsql.compilationDiagnostics.enabled` (mặc định bật); xem Problems Panel |
 | Lỗi kết nối | Chuỗi sai định dạng hoặc DB không truy cập được | Dùng `utPLSQL: Validate configuration` |
 | Hết thời gian khi chạy | Kiểm thử lâu hơn `timeoutMinutes` | Tăng `utplsql.timeoutMinutes` |
-| Regex độ phủ không khớp | `cmd` của Windows tiêu thụ `^` và `\|` | Dùng `utplsql.invocation: "java"` (xem [Chế độ gọi](#chế-độ-gọi-launcher-vs-java)) |
 | `%suite` không được nhận diện | Thiếu `%suite`/`create package` trong tệp, hoặc `%test` không có `PROCEDURE` | Kiểm tra spec; chạy `utPLSQL: Refresh tests` |
-| "report not generated" | CLI không tạo được XML output | Kiểm tra quyền ghi trong `%TEMP%` và các grant utPLSQL |
 | CodeLens không xuất hiện | `editor.codeLens` bị tắt hoặc xung đột | Bật `"editor.codeLens": true`; kiểm tra `utplsql.codeLens.enabled` |
 | Phím tắt không hoạt động | Xung đột với extension hoặc phím tắt VSCode khác | Vào File → Preferences → Keyboard Shortcuts và tìm `utplsql` để gán lại |
 

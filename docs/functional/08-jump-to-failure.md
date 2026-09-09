@@ -104,9 +104,6 @@ Com `message.location` populado, o VSCode automaticamente:
 - Habilita peek view com a localização
 - Navega para o arquivo/linha ao clicar
 
-> Antes do PRD-39, o modo CLI usava `report()` e o Oracle usava
-> `resolveStackLocation` (sem fallback de workspace). Hoje é um único caminho.
-
 ## Filtro de frames internos
 
 ```typescript

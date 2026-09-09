@@ -9,7 +9,7 @@ Problemas comuns e suas soluções.
 **Sintoma:** A view Testing está vazia, nenhuma suite listada.
 
 **Causa provável:** `utplsql.includePatterns` não cobre seus arquivos de
-teste, ou CLI não está configurado.
+teste.
 
 **Solução:** Ajuste o padrão glob. Exemplos:
 
@@ -38,15 +38,11 @@ sublinhados.
 "utplsql.compilationDiagnostics.enabled": true
 ```
 
-O diagnóstico funciona apenas no modo CLI (parse do stdout). O modo Oracle
-direto **não** gera compilation diagnostics.
-
 ---
 
 ## Cobertura vazia (0%)
 
 **Sintoma:** Testes passam, mas cobertura mostra 0% em todos os arquivos.
-Ou output mostra "relatório não gerado".
 
 **Causa 1:** Falta `GRANT EXECUTE ON DBMS_PROFILER`.
 
@@ -64,8 +60,8 @@ para verificar a versão.
 
 **Causa 3:** Regex em `coverageSourceArgs` não casa com os nomes dos arquivos.
 
-**Solução:** Ative `utplsql.dbmsOutput: true` e inspecione o output do CLI.
-O utPLSQL loga quais objetos foram mapeados. Ajuste o regex.
+**Solução:** Verifique os nomes dos arquivos mapeados no Log Output da
+extensão (canal `utPLSQL`). Ajuste o regex em `coverageSourceArgs`.
 
 ---
 
@@ -81,9 +77,6 @@ timeout.
 ```jsonc
 "utplsql.timeoutMinutes": 120
 ```
-
-> A flag `-t` só é enviada se o valor for diferente de 60 — se você
-> definir `60`, nenhuma flag é passada (usa o default do CLI).
 
 ---
 
@@ -101,24 +94,6 @@ não configurado.
    - EZ Connect: `user/pass@//host:port/service` (note as **duas** barras)
    - TNS: `user/pass@tns_alias` (requer `TNS_ADMIN` e `tnsnames.ora`)
 3. Teste a conectividade com `tnsping` ou `sqlplus`
-
----
-
-## Regex de cobertura não funciona no Windows
-
-**Sintoma:** Cobertura funciona no Linux mas não no Windows (0%), ou
-mapeamento inconsistente.
-
-**Causa:** No modo `launcher`, o `cmd` do Windows consome `^` e interpreta
-`|` como pipe, corrompendo o regex.
-
-**Solução:** Use `utplsql.invocation: "java"`:
-
-```jsonc
-"utplsql.invocation": "java"
-```
-
-Veja [Modo de invocação](Modo-de-invocação) para detalhes.
 
 ---
 
@@ -142,28 +117,6 @@ end;
 
 Verifique também que o arquivo está coberto por `utplsql.includePatterns` e
 rode `utPLSQL: Atualizar testes`.
-
----
-
-## "relatório não gerado"
-
-**Sintoma:** Output mostra "relatório não gerado — verifique GRANT EXECUTE
-ON SYS.DBMS_PROFILER".
-
-**Causa:** O CLI não conseguiu gerar o XML de saída (JUnit ou Cobertura).
-
-**Solução:**
-1. Verifique permissões de escrita no diretório temporário (`%TEMP%` no
-   Windows, `/tmp` no Linux)
-2. Verifique os grants do utPLSQL no banco (veja [Requisitos no banco](Requisitos-no-banco))
-3. Rode o CLI manualmente para ver o erro completo:
-
-```bash
-utplsql run "DEV/senha@//localhost:1521/XEPDB1" \
-  -p=test_hello \
-  -f=ut_junit_reporter -o=/tmp/results.xml \
-  -f=ut_documentation_reporter -c
-```
 
 ---
 
@@ -200,34 +153,6 @@ e redefina as teclas conforme necessário.
 
 ---
 
-## CLI não encontrado
-
-**Sintoma:** "utplsql não é reconhecido como comando interno".
-
-**Causa:** `utplsql.cliPath` aponta para um executável que não existe ou
-não está no PATH.
-
-**Solução:** Defina o caminho absoluto:
-
-```jsonc
-// Windows
-"utplsql.cliPath": "C:\\tools\\utPLSQL-cli\\bin\\utplsql.bat"
-
-// Linux/macOS
-"utplsql.cliPath": "/home/user/utplsql-cli/bin/utplsql"
-```
-
-Verifique no terminal:
-```bash
-# Windows
-C:\tools\utPLSQL-cli\bin\utplsql.bat --version
-
-# Linux/macOS
-/home/user/utplsql-cli/bin/utplsql --version
-```
-
----
-
 ## Oracle direto não conecta
 
 **Sintoma:** `runnerMode: oracle` falha com "oracledb não disponível" ou
@@ -240,7 +165,6 @@ erro de conexão.
 ```bash
 npm install oracledb
 ```
-Ou use `runnerMode: auto` (fallback automático para CLI) ou `runnerMode: cli`.
 
 **Causa 2:** Grants ausentes nas tabelas de buffer (shared install).
 
@@ -249,7 +173,7 @@ Ou use `runnerMode: auto` (fallback automático para CLI) ou `runnerMode: cli`.
 GRANT SELECT, DELETE ON UT3.UT_OUTPUT_BUFFER_TMP TO PUBLIC;
 GRANT SELECT, DELETE ON UT3.UT_OUTPUT_BUFFER_INFO_TMP TO PUBLIC;
 ```
-Sem esses grants, use `runnerMode: cli`. Veja [Execução Oracle direta](Execução-Oracle-direta).
+Veja [Execução Oracle direta](Execução-Oracle-direta).
 
 ---
 
@@ -279,18 +203,3 @@ Use `**` para qualquer profundidade de subdiretórios após o schema.
 > das suites locais. Suites vindas do banco aparecem com URI virtual
 > `utplsql-db:/` e **não têm** CodeLens, decorações inline nem jump to failure
 > — apenas execução pela árvore. Packages `UT_*` (framework utPLSQL) são ignorados.
-
----
-
-## Modo java lento com suites grandes
-
-**Sintoma:** Execução no modo `java` demora muito ou falha com
-`OutOfMemoryError`.
-
-**Causa:** Heap JVM padrão (`-Xmx256m`) insuficiente para o projeto.
-
-**Solução:** Aumente a memória:
-```jsonc
-"utplsql.javaArgs": ["-Xmx1024m", "-Xms256m"]
-```
-As flags são inseridas antes de `-cp` e só afetam o modo `java`.

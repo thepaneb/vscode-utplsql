@@ -5,7 +5,7 @@ configuração do ambiente.
 
 ## Compilation Diagnostics (`src/compilationDiagnostics.ts`)
 
-Captura erros de compilação Oracle do output do CLI e os exibe como
+Captura erros de compilação Oracle do output do ALL_ERRORS e os exibe como
 `vscode.Diagnostic` no editor.
 
 ### `CompilationDiagnostics`
@@ -23,7 +23,7 @@ class CompilationDiagnostics {
 ### Fluxo
 
 ```
-runner.ts: after runCli
+runner.ts: after executeRunOracle
     │
     ├─► compilerOutput += chunk (callback onStdout)
     ├─► compilerOutput += result.stderr
@@ -85,7 +85,6 @@ class SetupValidator {
   async validateOnActivation(): Promise<SetupDiagnostic[]>;
   async validateUtplsqlInstall(): Promise<SetupDiagnostic[]>;   // PRD-41
   async recompileUt3(oracledbOverride?): Promise<void>;         // PRD-41
-  checkCli(cliPath: string): boolean;
   applyDiagnostics(diagnostics: SetupDiagnostic[]): void;
   addCoverageDiagnostic(): void;
   clear(): void;
@@ -97,9 +96,7 @@ class SetupValidator {
 
 | Verificação | Condição | Diagnostic |
 |---|---|---|
-| CLI | `fs.accessSync(cliPath, X_OK)` falha | `UTPLSQL_NO_CLI` (Error) |
-| Java | Modo `java` + `javaPath` não executável | `UTPLSQL_NO_JAVA` (Error) |
-| Conexão | `getCliInfo(cfg, conn)` retorna erro | `UTPLSQL_BAD_CONN` (Error) |
+| Conexão | `getOracleInfo(conn)` retorna erro | `UTPLSQL_BAD_CONN` (Error) |
 | Versão | `semverLt(dbVersion, '3.1.0')` | `UTPLSQL_OLD_VERSION` (Warning) |
 | Instalação utPLSQL | objetos inválidos em `ALL_OBJECTS` no schema utPLSQL | `UTPLSQL_INVALID_OBJECTS` (Warning) |
 | Cobertura | `coverage.xml` não gerado pós-run | `UTPLSQL_NO_COVERAGE` (Warning) |
@@ -107,7 +104,7 @@ class SetupValidator {
 ### `validateUtplsqlInstall` (PRD-41)
 
 Best-effort, roda junto com `validateOnActivation` na ativação:
-- Gates: `setupDiagnosticsEnabled: false` ou `runnerMode: cli` → `[]`
+- Gates: `setupDiagnosticsEnabled: false` → `[]`
 - Conexão sem prompt (`resolveConnectionNoPrompt`); pool do PRD-38
   (`findInvalidUt3Objects` em `oracleRunner.ts`, `callTimeout` de 5s)
 - Silencioso em falha (sem conexão, sem acesso a `ALL_OBJECTS`)
@@ -119,9 +116,7 @@ async validateOnActivation(): Promise<SetupDiagnostic[]>
 ```
 
 1. Verifica `cfg.setupDiagnosticsEnabled` → se false, retorna `[]`
-2. `checkCli(cfg.cliPath)` → `UTPLSQL_NO_CLI`
-3. Modo java: `fs.accessSync(javaPath, X_OK)` → `UTPLSQL_NO_JAVA`
-4. Se CLI existe + conexão configurada: `getCliInfo(cfg, conn)` → `UTPLSQL_BAD_CONN` / `UTPLSQL_OLD_VERSION`
+2. Conexão: `getOracleInfo(cfg, conn)` → `UTPLSQL_BAD_CONN` / `UTPLSQL_OLD_VERSION`
 
 ### `applyDiagnostics`
 
@@ -146,7 +141,6 @@ Registrado em `{ scheme: 'file', pattern: '**/*.pks' }` e também em
 
 | Diagnostic Code | Quick-fix |
 |---|---|
-| `UTPLSQL_NO_CLI` | "Configurar utplsql.cliPath" → abre settings |
 | `UTPLSQL_BAD_CONN` | "Reconfigurar conexão" → comando `utplsql.configureConnection` |
 | `UTPLSQL_NO_COVERAGE` | "Copiar grants para clipboard" → comando `utplsql.copyGrantsToClipboard` |
 | `UTPLSQL_INVALID_OBJECTS` | "Recompilar UT3" → comando `utplsql.recompileUt3` (`DBMS_UTILITY.COMPILE_SCHEMA` + re-verificação) |
@@ -175,7 +169,7 @@ extension.ts activate()
 
 runner.ts
     ├─► compilationDiagnostics.clear()  (início do run)
-    ├─► captura output CLI → parseFromOutput → resolveFiles → apply  (após runCli)
+    ├─► captura output Oracle → parseFromOutput → resolveFiles → apply  (após executeRunOracle)
     └─► setupValidator.addCoverageDiagnostic()  (se coverage.xml ausente)
 ```
 

@@ -19,7 +19,7 @@ Integrálja a [utPLSQL](https://www.utplsql.org/) teszteket a VSCode-ba, és a P
 - 📌 **Állapotsor** — mutató a sikeres/sikertelen tesztek számával, időtartammal és valós idejű előrehaladással.
 - 🔁 **Okos újrafuttatás** — Rerun Last, Run at Cursor, Run Failed Only egyetlen billentyűparanccsal.
 - 🚀 **Közvetlen Oracle (node-oracledb segítségével)** — valós idejű adatfolyam, nem kell megvárni a köteg végét.
-- 🔧 **Beállítás-diagnosztika** — proaktív ellenőrzés: CLI, kapcsolat, jogosultságok és verzió, gyorsjavítással.
+- 🔧 **Beállítás-diagnosztika** — proaktív ellenőrzés: kapcsolat, jogosultságok és verzió, gyorsjavítással.
 - 🧩 **Séma-tudatos fa** — a tesztek szervezése Séma > Package > Suite > Teszt szerint a Test Explorerben.
 - 🎯 **Ugrás a hibához** — közvetlen navigáció a hibát kiváltó állítás sorához (a natív „Go to Error" segítségével).
 - 🔌 **Kapcsolati profilok** — több környezet (DEV/TEST/PROD) mentése és váltása köztük profil-specifikus beállításokkal, az állapotsorból vagy a parancspalettáról.
@@ -39,12 +39,10 @@ A bővítmény kétféleképpen telepíthető:
 ## Követelmények
 
 - [**utPLSQL**](https://github.com/utPLSQL/utPLSQL) **(UT3)** telepítve az Oracle adatbázisban.
-- **CLI módhoz:** [**utPLSQL-cli**](https://github.com/utPLSQL/utPLSQL-cli/releases) + **Java** telepítve a gépre (a bővítmény a CLI-t hívja meg).
-- **Közvetlen Oracle módhoz:** csak az adatbázis kell — a VSIX már tartalmazza a thin `oracledb` illesztőt (Instant Client nélkül).
+- Csak az adatbázis kell — a VSIX már tartalmazza a thin `oracledb` illesztőt (Instant Client nélkül).
 - **VSCode 1.88+** (Test Coverage API).
 
-A bővítmény csupán a „grafikus kliens" — a teszteket ténylegesen az adatbázis futtatja:
-CLI-n (utPLSQL-cli + Java) vagy közvetlenül (node-oracledb, `runnerMode: auto` alapértelmezés szerint).
+A bővítmény csupán a „grafikus kliens" — a teszteket ténylegesen az adatbázis futtatja közvetlenül a node-oracledb-n keresztül.
 
 ## Kapcsolat
 
@@ -56,7 +54,7 @@ A bővítménynek Oracle kapcsolati sztringre van szüksége a tesztek futtatás
 4. **Munkamenet-gyorsítótár** — ha a felhasználó már beírta a kapcsolatot a promptban.
 5. **Megkérdezi a felhasználót** — és csak az aktuális munkamenetben őrzi meg.
 
-A kapcsolati profilok (`utplsql.profiles`) környezetenként felülírhatják a `sourcePath`, `coverageOwner`, `invocation`, `cliPath` stb. értékeket is — lásd `utplsql.activeProfile` a konfigurációs táblázatban.
+A kapcsolati profilok (`utplsql.profiles`) környezetenként felülírhatják a `sourcePath`, `coverageOwner` stb. értékeket is — lásd `utplsql.activeProfile` a konfigurációs táblázatban.
 
 ⚠️ **Biztonsági javaslat:** a kapcsolati sztring jelszót tartalmaz. **NE** használd a
 `utplsql.connection` beállítást megosztott környezetekben (a settings.json verziókezelés alatt
@@ -85,59 +83,34 @@ kapcsolatot, és azt csak a memóriában őrzi meg a munkamenet során — a
 
 ## Működés
 
-Két végrehajtási mód érhető el:
-
-![Execution architecture — two modes](docs/wiki/images/diagram-arquitetura.png)
-
-### Közvetlen Oracle mód (v0.9.0) — `runnerMode: auto` vagy `oracle`
-
 ![Oracle direct mode — streaming](docs/wiki/images/diagram-streaming.png)
 
 Nincsenek ideiglenes fájlok, nem kell megvárni a köteg végét. Az eredmények a
 Test Explorerben **ahogy az egyes tesztek befejeződnek** jelennek meg.
 
-### CLI mód — `runnerMode: cli` (tartalék)
-
-![CLI mode — batch](docs/wiki/images/diagram-cli.png)
-
-A bővítmény felépíti a CLI parancssort, vagy közvetlen Oracle-kapcsolaton keresztül
-csatlakozik, beolvassa a riportokat (JUnit + Coverage), és lefordítja azokat a VSCode
-natív API-jaira. Az `auto` mód (alapértelmezés) először a közvetlen Oracle módot próbálja,
-és CLI-re vált, ha a `node-oracledb` nincs telepítve. Használd a `runnerMode: cli` értéket, hogy mindig CLI-t kényszeríts ki.
+A bővítmény közvetlenül Oracle-on keresztül csatlakozik, beolvassa a riportokat (JUnit + Coverage), és lefordítja azokat a VSCode natív API-jaira.
 
 ## Konfiguráció
 
 | Beállítás | Alapértelmezés | Leírás |
 |---|---|---|
 | `utplsql.connection` | `""` | Oracle-kapcsolat. **Hagyd üresen**, és használd a `UTPLSQL_CONN` környezeti változót, hogy ne tárold a jelszót. Ha mindkettő üres, a bővítmény megkérdezi (csak a munkamenetben őrzi meg). |
-| `utplsql.cliPath` | `utplsql` | A utPLSQL-cli futtatható állomány elérési útja (pl. `C:\tools\utPLSQL-cli\bin\utplsql.bat`). |
 | `utplsql.sourcePath` | `install` | Az éles kód mappája (a lefedettség fájlokhoz rendeléséhez). |
 | `utplsql.includePatterns` | `["**/*.pks"]` | A `%suite`/`%test` tartalmú specifikációk felderítésére szolgáló globok. Ha a tesztjeid `.sql` fájlokban vannak, használd a `["**/*.sql"]` értéket. |
-| `utplsql.extraRunArgs` | `[]` | Extra argumentumok a `utplsql run` parancshoz. |
 | `utplsql.coverageOwner` | `""` | A lefedett objektumok séma-tulajdonosa. Üres = a kapcsolati felhasználó (nagybetűvel). |
-| `utplsql.coverageSourceArgs` | (lásd **Coverage**) | CLI-argumentumok, amelyek a lefedettséget a forrásfájlokhoz rendelik. |
-| `utplsql.invocation` | `launcher` | Hogyan hívjuk a CLI-t: `launcher` (`.bat`/scripten keresztül, alapértelmezés) vagy `java` (közvetlen JVM, **héj nélkül**). Lásd **Indítási mód**. |
-| `utplsql.javaPath` | `java` | Java futtatható állomány (PATH vagy teljes elérési út). Csak `java` módban használatos. |
-| `utplsql.cliHome` | `""` | A utPLSQL-cli gyökere (a `bin/` és `lib/` mappát tartalmazó könyvtár). Üres = a `cliPath`-ből származtatva. Csak `java` módban használatos. |
-| `utplsql.timeoutMinutes` | `60` | Időtúllépés percekben a CLI-hez. A `-t` kapcsoló csak akkor kerül elküldésre, ha az érték eltér a `60`-tól. |
-| `utplsql.dbmsOutput` | `false` | Engedélyezi a `DBMS_OUTPUT` használatát a teszt-munkamenetben. A `-D` kapcsoló csak `true` esetén kerül elküldésre. |
-| `utplsql.quiet` | `false` | Elnyomja a CLI információs naplóit. A `-q` kapcsoló csak `true` esetén kerül elküldésre. |
-| `utplsql.failureExitCode` | `1` | Kilépési kód hiba esetén. A `--failure-exit-code` kapcsoló csak akkor kerül elküldésre, ha az érték eltér az `1`-től. A `0` azt eredményezi, hogy a CLI mindig sikeresen lép ki. |
-| `utplsql.additionalReporters` | `[]` | Továbbíti riporterek, amelyek minden futtatáskor bekerülnek (pl. `["ut_coverage_html_reporter"]`). Az alapértelmezettek (documentation, junit, coverage) mindig szerepelnek, és nem kell felsorolni őket. |
+| `utplsql.additionalReporters` | `[]` | További riporterek, amelyek minden futtatáskor bekerülnek (pl. `["ut_coverage_html_reporter"]`). Az alapértelmezettek (documentation, junit, coverage) mindig szerepelnek, és nem kell felsorolni őket. |
 | `utplsql.codeLens.enabled` | `true` | Run/Run with Coverage CodeLens-gombokat jelenít meg a `%suite` és `%test` fölött. |
 | `utplsql.statusBar.enabled` | `true` | A tesztek állapotát jelző mutatót jelenít meg az állapotsorban. |
 | `utplsql.decorations.enabled` | `true` | Sikeres/sikertelen dekorációkat jelenít meg a `%suite` és `%test` sorokon a futtatás után. |
-| `utplsql.runnerMode` | `auto` | Végrehajtási mód: `auto` (közvetlen Oracle a node-oracledb-n keresztül, CLI-tartalékkal), `cli` (mindig parancssorból), `oracle` (mindig közvetlen Oracle). |
 | `utplsql.oraclePoolMin` | `2` | Az Oracle futtatókészlet (node-oracledb) által fenntartott minimális kapcsolatok száma. |
 | `utplsql.oraclePoolMax` | `10` | Az Oracle futtatókészlet (node-oracledb) maximális kapcsolatszáma. |
 | `utplsql.oraclePoolIncrement` | `1` | Az Oracle futtatókészlet (node-oracledb) bővítésének lépésköze. |
 | `utplsql.oraclePoolPingInterval` | `60` | Az üresjárati készletkapcsolatok állapotellenőrzései közötti másodpercek száma (node-oracledb). `0` = ping minden kivételkor. |
-| `utplsql.javaArgs` | `["-Xmx256m"]` | JVM-kapcsolók `java` módhoz (pl. `["-Xmx512m", "-Xms128m"]`). A `-cp` elé kerülnek beillesztésre. |
-| `utplsql.organization` | `file` | Fa-szervezés: `file` (elérési út szerint) vagy `schema` (Séma > Package > Suite > Teszt). `schema` módban Oracle `runnerMode` (`auto`/`oracle`) esetén a suite-ok az adatbázisból is felderítésre kerülnek (`ALL_OBJECTS`/`ALL_SOURCE`), ha a `.pks` fájlok nincsenek a munkaterületen — virtuális URI-vel `utplsql-db:/` (CodeLens/dekorációk/ugrás a hibához nélkül). |
+| `utplsql.organization` | `file` | Fa-szervezés: `file` (elérési út szerint) vagy `schema` (Séma > Package > Suite > Teszt). `schema` módban a suite-ok az adatbázisból is felderítésre kerülnek (`ALL_OBJECTS`/`ALL_SOURCE`), ha a `.pks` fájlok nincsenek a munkaterületen — virtuális URI-vel `utplsql-db:/` (CodeLens/dekorációk/ugrás a hibához nélkül). |
 | `utplsql.organization.schemaPattern` | `db/{schema}/**` | Glob-minta a séma kinyeréséhez az elérési útból. Helyőrzőként a `{schema}` használható. `schema` módban a minta alapja alatti könyvtárak (pl. `db/*`) határozzák meg az adatbázisban lekérdezett sémákat. |
-| `utplsql.compilationDiagnostics.enabled` | `true` | A PL/SQL fordítási hibákat aláhúzásként jeleníti meg a szerkesztőben és a Problems Panelben (CLI mód). |
-| `utplsql.setupDiagnostics.enabled` | `true` | Konfigurációs diagnosztikát (CLI, kapcsolat, jogosultságok, verzió) és **utPLSQL-telepítési integritást** (érvénytelen objektumok az UT3 sémában, „Recompile UT3" gyorsjavítással) jelenít meg gyorsjavítási műveletekkel. |
-| `utplsql.profiles` | `[]` | Mentett Oracle kapcsolati profilok (név, kapcsolat és `sourcePath`/`coverageOwner`/`invocation`/`cliPath` stb. felülírások) a környezetek közötti váltáshoz. |
+| `utplsql.compilationDiagnostics.enabled` | `true` | A PL/SQL fordítási hibákat aláhúzásként jeleníti meg a szerkesztőben és a Problems Panelben. |
+| `utplsql.setupDiagnostics.enabled` | `true` | Konfigurációs diagnosztikát (kapcsolat, jogosultságok, verzió) és **utPLSQL-telepítési integritást** (érvénytelen objektumok az UT3 sémában, „Recompile UT3" gyorsjavítással) jelenít meg gyorsjavítási műveletekkel. |
+| `utplsql.profiles` | `[]` | Mentett Oracle kapcsolati profilok (név, kapcsolat és `sourcePath`/`coverageOwner`/stb. felülírások) a környezetek közötti váltáshoz. |
 | `utplsql.activeProfile` | `""` | Az aktív profil azonosítója (`utplsql.profiles`). Ha be van állítva, felülírja a `utplsql.connection` értékét. |
 | `utplsql.sqlCoverageEnabled` | `false` | A `V$SQL`-on keresztül végrehajtott nézeteket követi nyomon (boolean lefedettség). `GRANT SELECT ON V$SQL` jogosultságot igényel. |
 | `utplsql.debugger.enabled` | `true` | Engedélyezi a PL/SQL-tesztek hibakeresését (`DBMS_DEBUG`). `node-oracledb` + jogosultságok szükségesek. |
@@ -149,7 +122,6 @@ Példa (projekt `.vscode/settings.json`):
 
 ```jsonc
 {
-  "utplsql.cliPath": "C:\\tools\\utPLSQL-cli\\bin\\utplsql.bat",
   "utplsql.sourcePath": "install",
   // utplsql.connection stays empty -> use the UTPLSQL_CONN environment variable
 }
@@ -168,35 +140,7 @@ Hozz létre egy `.env` fájlt a projekt gyökerében (gitignored) az integráci�
 
 ```bash
 UTPLSQL_CONN=your_user/password@//host:1521/service
-UTPLSQL_CLI_PATH=/path/to/utplsql
-UTPLSQL_CLI_HOME=/path/to/utplsql-cli
 ```
-
-### Indítási mód (`launcher` vs `java`)
-
-Alapértelmezés szerint (`utplsql.invocation = "launcher"`) a bővítmény a
-`utplsql`/`utplsql.bat` indítót hívja. Windows alatt ez a `cmd`-n megy keresztül, amely
-**felemészti/értelmezi a meta karaktereket** (`^` escape lesz, `|` csővezeték) — ami
-megtöri a regexet a `coverageSourceArgs`-ban.
-
-A `java` mód **közvetlenül** hívja a JVM-et (`java -cp <home>/etc;<home>/lib/* …
-org.utplsql.cli.Cli`), **héj nélkül**. Az argumentumok tömbként jutnak el a folyamathoz,
-közte `cmd` nélkül, így a `^` és a `|` **szó szerint** halad át — használhatod a `^anchors$` és
-a `(a|b|c)` regexet mindenféle trükk nélkül.
-
-```jsonc
-{
-  "utplsql.invocation": "java",
-  "utplsql.cliPath": "C:\\tools\\utPLSQL-cli\\bin\\utplsql.bat", // cliHome is derived from here
-  // "utplsql.cliHome": "C:\\tools\\utPLSQL-cli",  // only if cliPath is a PATH command
-  // "utplsql.javaPath": "java"                     // PATH, or full path to java.exe
-}
-```
-
-> A `java` mód hűen reprodukálja, amit a `.bat` csinál (ugyanaz a classpath és ugyanazok a
-> `-D` tulajdonságok); az egyetlen különbség, hogy nem megy keresztül a `cmd`-n. `java` a PATH-on
-> (vagy a `utplsql.javaPath`-ban) szükséges, és a CLI gyökerének feloldhatónak kell lennie — vagy a
-> `cliPath` a `…/bin/utplsql(.bat)` fájlra mutat, vagy a `cliHome` van beállítva.
 
 ## Használat
 
@@ -218,8 +162,8 @@ a `(a|b|c)` regexet mindenféle trükk nélkül.
    - `Ctrl+Shift+U L` — **Rerun Last** (megismétli az utolsó futtatást, lefedettséggel vagy anélkül).
    - `Ctrl+Shift+U U` — **Run at Cursor** (a kurzor alatti `%test`/`%suite` futtatása).
    - `Ctrl+Shift+U X` — **Run Failed Only** (csak a sikertelen teszteket futtatja).
-8. **Közvetlen Oracle (adatfolyam) esetén:** nincs mit telepíteni — a VSIX már tartalmazza a thin `oracledb` illesztőt. Az `auto` mód CLI-re vált, ha az Oracle nem érhető el.
-9. Diagnosztikához használd a palettán a `utPLSQL: Show information` parancsot — CLI/API/DB-verziókat mutat másolási lehetőséggel.
+8. **Közvetlen Oracle (adatfolyam) esetén:** nincs mit telepíteni — a VSIX már tartalmazza a thin `oracledb` illesztőt.
+9. Diagnosztikához használd a palettán a `utPLSQL: Show information` parancsot — API/DB-verziókat mutat másolási lehetőséggel.
 10. **utPLSQL: Select additional reporter...** — QuickPick az adatbázisban elérhető riporterekkel.
 11. **utPLSQL: Cancel execution** — leállítja a futó végrehajtást (`Escape` a futtatás alatt).
 12. **utPLSQL: Refresh tests** — a `.pks` fájlok újrafelfedezését kényszeríti ki.
@@ -255,14 +199,14 @@ A bővítmény összes parancsa (paletta `Ctrl+Shift+P`, előtag `utPLSQL:`):
 | `utPLSQL: Run tests in this folder` | A kiválasztott mappa suite-jait futtatja | Jobb gomb → mappa |
 | `utPLSQL: Run tests in this folder with coverage` | Ugyanaz, lefedettségi profillal | Jobb gomb → mappa |
 | `utPLSQL: Refresh tests` | A `.pks` fájlok újrafelfedezését kényszeríti ki | — |
-| `utPLSQL: Cancel execution` | Leállítja a futó CLI-t | — |
-| `utPLSQL: Show utPLSQL information` | CLI/API/DB-verziók másolási lehetőséggel | — |
+| `utPLSQL: Cancel execution` | Leállítja a futó végrehajtást | — |
+| `utPLSQL: Show utPLSQL information` | API/DB-verziók másolási lehetőséggel | — |
 | `utPLSQL: Select additional reporter...` | QuickPick az adatbázis riportereivel | — |
 | `utPLSQL: Clear session connection` | Eltávolítja a kapcsolatot a munkamenet-gyorsítótárból | — |
 | `utPLSQL: Rerun Last` | Megismétli az utolsó futtatást | `Ctrl+Shift+U L` |
 | `utPLSQL: Run Test at Cursor` | A kurzor alatti tesztet futtatja | `Ctrl+Shift+U U` |
 | `utPLSQL: Run Failed Tests` | Csak a sikertelen teszteket futtatja újra | `Ctrl+Shift+U X` |
-| `utPLSQL: Validate configuration` | Teljes beállítás-ellenőrzést futtat (CLI, Java, kapcsolat, UT3-telepítés), és megmutatja az eredményt | — |
+| `utPLSQL: Validate configuration` | Teljes beállítás-ellenőrzést futtat (kapcsolat, UT3-telepítés), és megmutatja az eredményt | — |
 | `utPLSQL: Configure connection` | Megnyitja a beállításokat a `utplsql.connection` értéknél | — |
 | `utPLSQL: Copy coverage grants to clipboard` | A jogosultságok SQL-jét a vágólapra másolja | — |
 | `utPLSQL: Show Test Explorer` | A Testing nézetre fókuszál | — |
@@ -348,13 +292,6 @@ A `type_mapping` a regex által kinyert „típust" Oracle-típussá alakítja. 
 
 **Fontos megjegyzések:**
 - **Csomagok → `PACKAGE BODY`** (nem `PACKAGE`): a lefedettség a csomag **törzsében** gyűlik össze.
-- **Windows / regex-meta karakterek:** `launcher` módban (alapértelmezés) a `.bat` a `cmd`-n megy keresztül,
-  amely **felemészti a `^` jelet** és **csővezetékként értelmezi a `|` jelet** — ezért használnak a fenti példák `\w` és
-  `[/\\]` karaktereket (`^` nélkül), és a 2. példa `|` jele csak a bővítményen belül működik. **Megoldás:** használd a **`utplsql.invocation = "java"`** értéket (lásd
-  [Indítási mód](#indítási-mód-launcher-vs-java)) — közte `cmd` nélkül a `^` és a `|` szó szerint halad át,
-  így nyugodtan írhatod normál módon a regexet.
-- **Windows / `cmd`:** kerüld a **`^`** jelet a regexben (a `.bat` `cmd`-je felemészti) — ezért használnak
-  a példák `\w` és `[/\\]` karaktereket.
 
 ## Riporterek
 
@@ -418,16 +355,11 @@ GRANT SELECT ON SYS.DBA_PROCEDURES TO <ut3_owner>;
 
 | Tünet | Valószínű ok | Megoldás |
 |---|---|---|
-| A suite-ok nem jelennek meg | A CLI nem található | Futtasd a `utPLSQL: Validate configuration` parancsot a diagnosztikához |
 | Üres lefedettség | Hiányzó `GRANT EXECUTE ON DBMS_PROFILER` | Futtasd a jogosultságokat az [Adatbázis-követelmények](#adatbázis-követelmények) rész szerint, vagy használd a `utPLSQL: Copy coverage grants to clipboard` parancsot |
 | Üres lefedettség | Az Oracle 19c további jogosultságokat igényel | `GRANT EXECUTE ON DBMS_PROFILER` + `GRANT EXECUTE ON DBMS_PLSQL_CODE_COVERAGE` |
-| Lassú teljesítmény | A nagy suite-ok nagyobb JVM-halommemóriát igényelnek | Növeld a `utplsql.javaArgs` értékét (pl. `["-Xmx1024m"]`) |
 | Fordítási hiba minden jelzés nélkül | PL/SQL szintaktikai hibát tartalmazó kód | Kapcsold be a `utplsql.compilationDiagnostics.enabled` beállítást (alapból be van kapcsolva); nézd meg a Problems Panelt |
 | Kapcsolati hiba | Hibás sztring vagy elérhetetlen adatbázis | Használd a `utPLSQL: Validate configuration` parancsot |
-| Időtúllépés futtatás közben | A tesztek tovább tartanak, mint a `timeoutMinutes` | Növeld a `utplsql.timeoutMinutes` értékét |
-| A lefedettségi regex nem illeszkedik | A Windows `cmd` felemészti a `^` és a `\|` jeleket | Használd a `utplsql.invocation: "java"` értéket (lásd [Indítási mód](#indítási-mód-launcher-vs-java)) |
 | A `%suite` nem kerül felismerésre | Hiányzó `%suite`/`create package` a fájlban, vagy `%test` `PROCEDURE` nélkül | Ellenőrizd a specifikációt; futtasd a `utPLSQL: Refresh tests` parancsot |
-| „report not generated" | A CLI nem tudta előállítani a kimeneti XML-t | Ellenőrizd a `%TEMP%` írási jogosultságait és a utPLSQL-jogosultságokat |
 | A CodeLens nem jelenik meg | `editor.codeLens` kikapcsolva vagy ütközés | Kapcsold be a `"editor.codeLens": true` értéket; ellenőrizd a `utplsql.codeLens.enabled` beállítást |
 | A billentyűparancsok nem működnek | Ütközés másik bővítménnyel vagy VSCode-parancsikonnal | Menj a Fájl → Beállítások → Billentyűparancsok menübe, és keress rá a `utplsql` kifejezésre az újradefiniáláshoz |
 

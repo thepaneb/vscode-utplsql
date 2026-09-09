@@ -19,7 +19,7 @@
 - 📌 **Durum çubuğu** — geçti/kaldı sayısı, süre ve gerçek zamanlı ilerleme gösteren gösterge.
 - 🔁 **Akıllı Yeniden Çalıştır** — tek bir kısayolla Sonuncuyu Yeniden Çalıştır, İmleçte Çalıştır, Yalnızca Başarısızları Çalıştır.
 - 🚀 **Oracle doğrudan (node-oracledb üzerinden)** — toplu işin bitmesini beklemeden gerçek zamanlı akış.
-- 🔧 **Kurulum tanılama** — CLI, bağlantı, yetkiler ve sürümün hızlı düzeltmeyle (quick-fix) proaktif doğrulaması.
+- 🔧 **Kurulum tanılama** — bağlantı, yetkiler ve sürümün hızlı düzeltmeyle (quick-fix) proaktif doğrulaması.
 - 🧩 **Şema farkındalıklı ağaç** — testleri Test Explorer'da Schema > Package > Suite > Test olarak düzenleyin.
 - 🎯 **Hataya atlama** — başarısız olan iddianın satırına doğrudan gezinme (doğal "Go to Error" ile).
 - 🔌 **Bağlantı profilleri** — status bar veya komut paleti aracılığıyla profil başına ayarlarla birden fazla ortam (DEV/TEST/PROD) arasında kaydedin ve geçiş yapın.
@@ -39,12 +39,10 @@ Uzantı iki şekilde kurulabilir:
 ## Gereksinimler
 
 - [**utPLSQL**](https://github.com/utPLSQL/utPLSQL) **(UT3)** Oracle veritabanına kurulu.
-- **CLI modu için:** Makineye [**utPLSQL-cli**](https://github.com/utPLSQL/utPLSQL-cli/releases) + **Java** kurulu (uzantı CLI'yı çağırır).
-- **Oracle doğrudan modu için:** veritabanı dışında hiçbir şey gerekmez — VSIX ince `oracledb` sürücüsünü zaten içerir (Instant Client gerekmez).
+- Veritabanı dışında hiçbir şey gerekmez — VSIX ince `oracledb` sürücüsünü zaten içerir (Instant Client gerekmez).
 - **VSCode 1.88+** (Test Coverage API).
 
-Uzantı yalnızca "grafik istemcidir" — testleri çalıştıran veritabanıdır: CLI
-(utPLSQL-cli + Java) üzerinden veya doğrudan (node-oracledb, varsayılan `runnerMode: auto`).
+Uzantı yalnızca "grafik istemcidir" — testleri çalıştıran veritabanıdır: node-oracledb doğrudan bağlantısı üzerinden.
 
 ## Bağlantı
 
@@ -56,7 +54,7 @@ Uzantının testleri çalıştırmak için bir Oracle bağlantı dizesine ihtiya
 4. **Oturum önbelleği** — kullanıcı bağlantıyı zaten istem üzerinden yazmışsa.
 5. **Kullanıcıya sor** — sorar ve yalnızca geçerli oturumda tutar.
 
-Bağlantı profilleri (`utplsql.profiles`) ortam başına `sourcePath`, `coverageOwner`, `invocation`, `cliPath` vb. değerlerini de geçersiz kılabilir — yapılandırma tablosundaki `utplsql.activeProfile` bölümüne bakın.
+Bağlantı profilleri (`utplsql.profiles`) ortam başına `sourcePath`, `coverageOwner` vb. değerlerini de geçersiz kılabilir — yapılandırma tablosundaki `utplsql.activeProfile` bölümüne bakın.
 
 ⚠️ **Güvenlik önerisi:** bağlantı dizesi bir parola içerir. Paylaşılan ortamlarda **`utplsql.connection` ayarını KULLANMAYIN** (settings.json sürümlenebilir veya başkaları tarafından görülebilir).
 Bunun yerine **`UTPLSQL_CONN` ortam değişkenini kullanın**:
@@ -84,59 +82,36 @@ oturum sırasında bellekte tutar — temizlemek için
 
 ## Nasıl çalışır
 
-İki çalıştırma modu mevcuttur:
-
-![Çalıştırma mimarisi — iki mod](docs/wiki/images/diagram-arquitetura.png)
-
-### Oracle doğrudan modu (v0.9.0) — `runnerMode: auto` veya `oracle`
+Uzantı, node-oracledb üzerinden Oracle veritabanına doğrudan bağlanarak testleri çalıştırır.
 
 ![Oracle doğrudan modu — akış](docs/wiki/images/diagram-streaming.png)
 
 Geçici dosya yok, toplu işin bitmesi beklenmez. Sonuçlar Test Explorer'da
 **her test bittiğinde** görünür.
 
-### CLI modu — `runnerMode: cli` (yedek)
-
-![CLI modu — toplu](docs/wiki/images/diagram-cli.png)
-
-Uzantı CLI komut satırını oluşturur veya Oracle doğrudan bağlanır, raporları
-(JUnit + Coverage) okur ve VSCode'un doğal API'lerine çevirir. `auto` modu (varsayılan)
-Oracle doğrudanı dener ve `node-oracledb` kurulu değilse CLI'ya geri döner. Her zaman CLI'yı
-zorlamak için `runnerMode: cli` kullanın.
-
 ## Yapılandırma
 
 | Ayar | Varsayılan | Açıklama |
 |---|---|---|
 | `utplsql.connection` | `""` | Oracle bağlantısı. **Boş bırakın** ve parolayı saklamamak için `UTPLSQL_CONN` ortam değişkenini kullanın. İkisi de boşsa, uzantı sorar (yalnızca oturumda tutar). |
-| `utplsql.cliPath` | `utplsql` | utPLSQL-cli çalıştırılabilirinin yolu (örn. `C:\tools\utPLSQL-cli\bin\utplsql.bat`). |
 | `utplsql.sourcePath` | `install` | Üretim kodunun klasörü (kapsamı dosyalara eşlemek için). |
 | `utplsql.includePatterns` | `["**/*.pks"]` | `%suite`/`%test` içeren şemaları keşfetmek için glob'lar. Testleriniz `.sql` içindeyse `["**/*.sql"]` kullanın. |
-| `utplsql.extraRunArgs` | `[]` | `utplsql run` için ekstra argümanlar. |
 | `utplsql.coverageOwner` | `""` | Kapsanan nesnelerin şema sahibi. Boş = bağlantı kullanıcısını kullanır (büyük harfle). |
-| `utplsql.coverageSourceArgs` | (bkz. **Coverage**) | Kapsamı kaynak dosyalara eşleyen CLI argümanları. |
-| `utplsql.invocation` | `launcher` | CLI'yı nasıl çağırır: `launcher` (`.bat`/script üzerinden, varsayılan) veya `java` (doğrudan JVM, **shell yok**). **Invocation moduna** bakın. |
-| `utplsql.javaPath` | `java` | Java çalıştırılabiliri (PATH veya tam yol). Yalnızca `java` modunda kullanılır. |
-| `utplsql.cliHome` | `""` | utPLSQL-cli'nin kökü (`bin/` ve `lib/` içeren klasör). Boş = `cliPath`'ten türetilir. Yalnızca `java` modunda kullanılır. |
-| `utplsql.timeoutMinutes` | `60` | CLI için dakika cinsinden zaman aşımı. `-t` bayrağı yalnızca değer `60`'tan farklıysa gönderilir. |
-| `utplsql.dbmsOutput` | `false` | Test oturumunda `DBMS_OUTPUT`'u etkinleştirir. `-D` bayrağı yalnızca `true` olduğunda gönderilir. |
-| `utplsql.quiet` | `false` | Bilgilendirici CLI günlüklerini bastırır. `-q` bayrağı yalnızca `true` olduğunda gönderilir. |
-| `utplsql.failureExitCode` | `1` | Başarısızlık durumunda çıkış kodu. `--failure-exit-code` bayrağı yalnızca değer `1`'den farklıysa gönderilir. `0`, CLI'nın her zaman başarıyla çıkmasını sağlar. |
+| `utplsql.timeoutMinutes` | `60` | Çalıştırma zaman aşımı (dakika). |
+| `utplsql.dbmsOutput` | `false` | Test oturumunda `DBMS_OUTPUT`'u etkinleştirir. |
 | `utplsql.additionalReporters` | `[]` | Her çalıştırmada eklenecek ek raporlayıcılar (örn. `["ut_coverage_html_reporter"]`). Varsayılanlar (documentation, junit, coverage) her zaman dahildir ve listelenmeleri gerekmez. |
 | `utplsql.codeLens.enabled` | `true` | `%suite` ve `%test` üzerinde Run/Run with Coverage CodeLens düğmelerini gösterir. |
 | `utplsql.statusBar.enabled` | `true` | Durum çubuğunda test durum göstergesini gösterir. |
 | `utplsql.decorations.enabled` | `true` | Çalıştırmadan sonra `%suite` ve `%test` satırlarında geçti/kaldı süslemelerini gösterir. |
-| `utplsql.runnerMode` | `auto` | Çalıştırma modu: `auto` (node-oracledb üzerinden Oracle doğrudan, CLI yedeği), `cli` (her zaman komut satırı üzerinden), `oracle` (her zaman Oracle doğrudan). |
 | `utplsql.oraclePoolMin` | `2` | Oracle runner havuzunda tutulan minimum bağlantı sayısı (node-oracledb). |
 | `utplsql.oraclePoolMax` | `10` | Oracle runner havuzundaki maksimum bağlantı sayısı (node-oracledb). |
 | `utplsql.oraclePoolIncrement` | `1` | Oracle runner havuzunu genişletirken artış miktarı (node-oracledb). |
 | `utplsql.oraclePoolPingInterval` | `60` | Boştaki havuz bağlantılarının sağlık kontrolleri arasındaki saniye (node-oracledb). `0` = her kullanımda ping. |
-| `utplsql.javaArgs` | `["-Xmx256m"]` | `java` modu için JVM bayrakları (örn. `["-Xmx512m", "-Xms128m"]`). `-cp`'den önce eklenir. |
-| `utplsql.organization` | `file` | Ağaç düzeni: `file` (yola göre) veya `schema` (Schema > Package > Suite > Test). `schema` modunda Oracle `runnerMode` (`auto`/`oracle`) ile, `.pks` dosyaları çalışma alanında yoksa paketler de veritabanından (`ALL_OBJECTS`/`ALL_SOURCE`) keşfedilir — sanal URI `utplsql-db:/` ile (CodeLens/süsleme/hataya atlama yok). |
+| `utplsql.organization` | `file` | Ağaç düzeni: `file` (yola göre) veya `schema` (Schema > Package > Suite > Test). `schema` modunda, `.pks` dosyaları çalışma alanında yoksa paketler de veritabanından (`ALL_OBJECTS`/`ALL_SOURCE`) keşfedilir — sanal URI `utplsql-db:/` ile (CodeLens/süsleme/hataya atlama yok). |
 | `utplsql.organization.schemaPattern` | `db/{schema}/**` | Şemayı yoldan çıkarmak için glob deseni. Yer tutucu olarak `{schema}` kullanın. `schema` modunda desen tabanının altındaki dizinler (örn. `db/*`) veritabanında sorgulanan şemaları tanımlar. |
-| `utplsql.compilationDiagnostics.enabled` | `true` | PL/SQL derleme hatalarını editörde ve Sorunlar Paneli'nde (Problems Panel) altı çizili olarak gösterir (CLI modu). |
-| `utplsql.setupDiagnostics.enabled` | `true` | Yapılandırma tanılamalarını (CLI, bağlantı, yetkiler, sürüm) ve **utPLSQL kurulum bütünlüğünü** (UT3 şemasındaki geçersiz nesneler, "Recompile UT3" hızlı düzeltmesiyle) hızlı düzeltme eylemleriyle gösterir. |
-| `utplsql.profiles` | `[]` | Ortamlar arasında geçiş yapmak için kaydedilen Oracle bağlantı profilleri (ad, bağlantı ve `sourcePath`/`coverageOwner`/`invocation`/`cliPath`/vb. geçersiz kılmaları). |
+| `utplsql.compilationDiagnostics.enabled` | `true` | PL/SQL derleme hatalarını editörde ve Sorunlar Paneli'nde (Problems Panel) altı çizili olarak gösterir. |
+| `utplsql.setupDiagnostics.enabled` | `true` | Yapılandırma tanılamalarını (bağlantı, yetkiler, sürüm) ve **utPLSQL kurulum bütünlüğünü** (UT3 şemasındaki geçersiz nesneler, "Recompile UT3" hızlı düzeltmesiyle) hızlı düzeltme eylemleriyle gösterir. |
+| `utplsql.profiles` | `[]` | Ortamlar arasında geçiş yapmak için kaydedilen Oracle bağlantı profilleri (ad, bağlantı ve `sourcePath`/`coverageOwner`/vb. geçersiz kılmaları). |
 | `utplsql.activeProfile` | `""` | Etkin profilin kimliği (`utplsql.profiles`). Ayarlandığında `utplsql.connection`'ı geçersiz kılar. |
 | `utplsql.sqlCoverageEnabled` | `false` | `V$SQL` üzerinden çalıştırılan görünümleri izler (boolean kapsam). `GRANT SELECT ON V$SQL` gerektirir. |
 | `utplsql.debugger.enabled` | `true` | PL/SQL test hata ayıklamayı etkinleştirir (`DBMS_DEBUG`). `node-oracledb` + yetkiler gerektirir. |
@@ -148,7 +123,6 @@ zorlamak için `runnerMode: cli` kullanın.
 
 ```jsonc
 {
-  "utplsql.cliPath": "C:\\tools\\utPLSQL-cli\\bin\\utplsql.bat",
   "utplsql.sourcePath": "install",
   // utplsql.connection stays empty -> use the UTPLSQL_CONN environment variable
 }
@@ -167,35 +141,7 @@ Entegrasyon testlerinin kullandığı ortam değişkenleriyle proje kökünde
 
 ```bash
 UTPLSQL_CONN=your_user/password@//host:1521/service
-UTPLSQL_CLI_PATH=/path/to/utplsql
-UTPLSQL_CLI_HOME=/path/to/utplsql-cli
 ```
-
-### Invocation modu (`launcher` vs `java`)
-
-Varsayılan olarak (`utplsql.invocation = "launcher"`) uzantı
-`utplsql`/`utplsql.bat` başlatıcısını çağırır. Windows'ta bu `cmd` üzerinden gider ve bu da
-**meta karakterleri tüketir/yorumlar** (`^` escape olur, `|` boru olur) — bu,
-`coverageSourceArgs` içindeki regex'i bozar.
-
-`java` modu JVM'i **doğrudan** çağırır (`java -cp <home>/etc;<home>/lib/* …
-org.utplsql.cli.Cli`), **shell olmadan**. Argümanlar işleme dizi olarak gider,
-arada `cmd` yoktur; böylece `^` ve `|` **birebir** geçer — regex'te `^anchors$` ve
-`(a|b|c)` kullanabilirsiniz, geçici çözüm gerekmeden.
-
-```jsonc
-{
-  "utplsql.invocation": "java",
-  "utplsql.cliPath": "C:\\tools\\utPLSQL-cli\\bin\\utplsql.bat", // cliHome is derived from here
-  // "utplsql.cliHome": "C:\\tools\\utPLSQL-cli",  // only if cliPath is a PATH command
-  // "utplsql.javaPath": "java"                     // PATH, or full path to java.exe
-}
-```
-
-> `java` modu, `.bat`'in yaptığını sadakatle yeniden üretir (aynı classpath ve aynı
-> `-D` özellikleri); tek fark `cmd` üzerinden geçmemesidir. `java`'nın PATH'te olmasını
-> (veya `utplsql.javaPath` içinde) ve CLI kökünün çözümlenebilir olmasını gerektirir — ya `cliPath`
-> `…/bin/utplsql(.bat)`'i göstererek ya da `cliHome` ayarlanarak.
 
 ## Kullanım
 
@@ -217,8 +163,8 @@ arada `cmd` yoktur; böylece `^` ve `|` **birebir** geçer — regex'te `^anchor
    - `Ctrl+Shift+U L` — **Sonuncuyu Yeniden Çalıştır** (son çalıştırmayı kapsamla veya kapsamsız tekrarlar).
    - `Ctrl+Shift+U U` — **İmleçte Çalıştır** (imlecin altındaki `%test`/`%suite`'i çalıştırır).
    - `Ctrl+Shift+U X` — **Yalnızca Başarısızları Çalıştır** (yalnızca başarısız olan testleri çalıştırır).
-8. **Oracle doğrudan (akış) için:** kurulacak bir şey yok — VSIX ince `oracledb` sürücüsünü zaten içerir. `auto` modu Oracle erişilebilir değilse CLI'ya geri döner.
-9. Tanılama için palette `utPLSQL: Show information` kullanın — kopyalama seçeneğiyle CLI/API/DB sürümlerini gösterir.
+8. **Oracle doğrudan (akış) için:** kurulacak bir şey yok — VSIX ince `oracledb` sürücüsünü zaten içerir.
+9. Tanılama için palette `utPLSQL: Show information` kullanın — kopyalama seçeneğiyle sürüm bilgilerini gösterir.
 10. **utPLSQL: Select additional reporter...** — veritabanında bulunan raporlayıcılarla QuickPick.
 11. **utPLSQL: Cancel execution** — çalışan çalıştırmayı durdurur (çalıştırma sırasında `Escape`).
 12. **utPLSQL: Refresh tests** — `.pks` dosyalarının yeniden keşfini zorlar.
@@ -254,14 +200,14 @@ Tüm uzantı komutları (palet `Ctrl+Shift+P` öneki `utPLSQL:`):
 | `utPLSQL: Run tests in this folder` | Seçili klasörün paketlerini çalıştırır | Sağ tık → klasör |
 | `utPLSQL: Run tests in this folder with coverage` | Aynısı, kapsam profiliyle | Sağ tık → klasör |
 | `utPLSQL: Refresh tests` | `.pks` dosyalarının yeniden keşfini zorlar | — |
-| `utPLSQL: Cancel execution` | Çalışan CLI'yı durdurur | — |
-| `utPLSQL: Show utPLSQL information` | Kopyalama seçeneğiyle CLI/API/DB sürümleri | — |
+| `utPLSQL: Cancel execution` | Çalışan çalıştırmayı durdurur | — |
+| `utPLSQL: Show utPLSQL information` | Kopyalama seçeneğiyle sürüm bilgileri | — |
 | `utPLSQL: Select additional reporter...` | Veritabanı raporlayıcılarıyla QuickPick | — |
 | `utPLSQL: Clear session connection` | Bağlantıyı oturum önbelleğinden kaldırır | — |
 | `utPLSQL: Rerun Last` | Son çalıştırmayı tekrarlar | `Ctrl+Shift+U L` |
 | `utPLSQL: Run Test at Cursor` | İmlecin altındaki testi çalıştırır | `Ctrl+Shift+U U` |
 | `utPLSQL: Run Failed Tests` | Yalnızca başarısız testleri yeniden çalıştırır | `Ctrl+Shift+U X` |
-| `utPLSQL: Validate configuration` | Tam kurulum doğrulaması yapar (CLI, Java, bağlantı, UT3 kurulumu) ve sonuçları gösterir | — |
+| `utPLSQL: Validate configuration` | Tam kurulum doğrulaması yapar (bağlantı, UT3 kurulumu) ve sonuçları gösterir | — |
 | `utPLSQL: Configure connection` | Ayarları `utplsql.connection` konumunda açar | — |
 | `utPLSQL: Copy coverage grants to clipboard` | Yetki SQL'ini panoya kopyalar | — |
 | `utPLSQL: Show Test Explorer` | Testing görünümüne odaklanır | — |
@@ -304,55 +250,8 @@ Tüm kısayollar `Ctrl+Shift+U` önekini kullanır (Mac'te `Cmd+Shift+U`):
   <img src="images/image2.png" alt="Test Explorer" width="600" height="400">
 </p>
 
-Uzantı `-source_path` (= `utplsql.sourcePath`) değerini geçer ve kapsanan nesneleri
-`utplsql.coverageSourceArgs` (regex + `type_mapping`) üzerinden kaynak dosyalara eşler. `-owner`
+Uzantı `utplsql.sourcePath` üzerinden kapsamı kaynak dosyalara eşler. `-owner`
 bağlantıdan (veya `utplsql.coverageOwner`'dan) türetilir.
-
-### Kapsamı dosyalara eşleme (`coverageSourceArgs`)
-
-`type_mapping`, regex tarafından yakalanan "türü" Oracle türüne çevirir. Üç yaygın kural:
-
-**1) Dizine göre** — `sourcePath/<type>/<name>.sql` yapısı (klasörler `functions/`, `procedures/`, `packages/`, …):
-```jsonc
-"utplsql.coverageSourceArgs": [
-  "-regex_expression=.*[/\\\\](\\w+)[/\\\\](\\w+)\\.sql$",
-  "-type_subexpression=1",   // group 1 = folder (type)
-  "-name_subexpression=2",   // group 2 = file (object name)
-  "-type_mapping=packages=PACKAGE BODY/functions=FUNCTION/procedures=PROCEDURE/triggers=TRIGGER"
-]
-```
-> Herhangi bir derinlikte çalışır (`.*` üstteki modülleri emer). Değişken klasör adları
-> (örn. `package`, `pkg`, `pacote`) `type_mapping` içinde sıralanabilir.
-
-**2) Ad ön ekine göre** — `pkg_*`, `prc_*`, `vw_*` kuralı (klasörden bağımsız):
-```jsonc
-"utplsql.coverageSourceArgs": [
-  "-regex_expression=.*[/\\\\]((pkg|prc|fnc|trg|vw)_\\w+)\\.sql$",
-  "-name_subexpression=1",   // group 1 = full name (e.g. PKG_EXAMPLE)
-  "-type_subexpression=2",   // group 2 = prefix (type)
-  "-type_mapping=pkg=PACKAGE BODY/prc=PROCEDURE/fnc=FUNCTION/trg=TRIGGER/vw=VIEW"
-]
-```
-
-**3) Tür ekine göre** — `*.pkb`, `*.fnc`, `*.prc`, `*.trg` dosyaları (klasörden bağımsız):
-```jsonc
-"utplsql.coverageSourceArgs": [
-  "-regex_expression=.*[/\\\\](\\w+)\\.(\\w+)$",
-  "-name_subexpression=1",   // group 1 = name
-  "-type_subexpression=2",   // group 2 = extension (type)
-  "-type_mapping=pkb=PACKAGE BODY/fnc=FUNCTION/prc=PROCEDURE/trg=TRIGGER"
-]
-```
-
-**Önemli notlar:**
-- **Paketler → `PACKAGE BODY`** (`PACKAGE` değil): kapsam paket **gövdesinde** toplanır.
-- **Windows / regex meta karakterleri:** `launcher` modunda (varsayılan), `.bat` `cmd` üzerinden geçer;
-  bu da **`^` tüketir** ve **`|`'yi boru olarak yorumlar** — bu yüzden yukarıdaki örnekler `\w` ve
-  `[/\\]` kullanır (`^` yok) ve örnek 2'deki `|` yalnızca uzantı içinde çalışır. **Çözüm:** **`utplsql.invocation = "java"`** kullanın (bkz.
-  [Invocation modu](#invocation-modu-launcher-vs-java)) — arada `cmd` olmadan, `^` ve `|` birebir
-  geçer ve regex'i normal şekilde yazmakta özgürsünüz.
-- **Windows / `cmd`:** regex'te **`^`** kullanmaktan kaçının (`.bat`'in `cmd`'si onu tüketir) — bu yüzden örnekler
-  `\w` ve `[/\\]` kullanır.
 
 ## Raporlayıcılar
 
@@ -416,16 +315,13 @@ GRANT SELECT ON SYS.DBA_PROCEDURES TO <ut3_owner>;
 
 | Belirti | Olası neden | Çözüm |
 |---|---|---|
-| Paketler görünmüyor | CLI bulunamadı | Tanılama için `utPLSQL: Validate configuration` çalıştırın |
+| Paketler görünmüyor | Veritabanı bulunamadı | Tanılama için `utPLSQL: Validate configuration` çalıştırın |
 | Boş kapsam | `GRANT EXECUTE ON DBMS_PROFILER` eksik | [Veritabanı gereksinimleri](#veritabanı-gereksinimleri) içindeki yetkileri çalıştırın veya `utPLSQL: Copy coverage grants to clipboard` kullanın |
 | Boş kapsam | Oracle 19c ek yetkiler gerektirir | `GRANT EXECUTE ON DBMS_PROFILER` + `GRANT EXECUTE ON DBMS_PLSQL_CODE_COVERAGE` |
-| Yavaş performans | Büyük paketler daha fazla JVM yığını gerektirir | `utplsql.javaArgs` artırın (örn. `["-Xmx1024m"]`) |
 | Neden belirtilmeyen derleme hatası | PL/SQL sözdizimi hatası olan kod | `utplsql.compilationDiagnostics.enabled` etkinleştirin (varsayılan açık); Sorunlar Paneli'ne bakın |
 | Bağlantı hatası | Hatalı biçimli dize veya erişilemeyen veritabanı | `utPLSQL: Validate configuration` kullanın |
 | Çalışırken zaman aşımı | Testler `timeoutMinutes` değerinden uzun sürüyor | `utplsql.timeoutMinutes` değerini artırın |
-| Kapsam regex'i eşleşmiyor | Windows `cmd` `^` ve `\|` tüketir | `utplsql.invocation: "java"` kullanın (bkz. [Invocation modu](#invocation-modu-launcher-vs-java)) |
 | `%suite` tanınmıyor | Dosyada `%suite`/`create package` eksik veya `%test` `PROCEDURE` olmadan | Şemayı kontrol edin; `utPLSQL: Refresh tests` çalıştırın |
-| "report not generated" | CLI çıktı XML'ini üretemedi | `%TEMP%` içindeki yazma izinlerini ve utPLSQL yetkilerini kontrol edin |
 | CodeLens görünmüyor | `editor.codeLens` devre dışı veya çakışma | `"editor.codeLens": true` ayarlayın; `utplsql.codeLens.enabled` değerini kontrol edin |
 | Kısayollar çalışmıyor | Başka bir uzantıyla veya VSCode kısayoluyla çakışma | Dosya → Tercihler → Klavye Kısayolları'na gidin ve yeniden tanımlamak için `utplsql` arayın |
 

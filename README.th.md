@@ -19,7 +19,7 @@
 - 📌 **แถบสถานะ (Status Bar)** — ตัวบ่งชี้พร้อมจำนวนผ่าน/ล้มเหลว ระยะเวลา และความคืบหน้าแบบเรียลไทม์
 - 🔁 **Smart Re-run** — Rerun Last, Run at Cursor, Run Failed Only ด้วยปุ่มลัดเพียงปุ่มเดียว
 - 🚀 **Oracle แบบตรง (ผ่าน node-oracledb)** — สตรีมมิงแบบเรียลไทม์ โดยไม่ต้องรอให้ batch เสร็จสิ้น
-- 🔧 **การวินิจฉัยการตั้งค่า (Setup diagnostics)** — ตรวจสอบ CLI, การเชื่อมต่อ, grants และเวอร์ชันเชิงรุกพร้อม quick-fix
+- 🔧 **การวินิจฉัยการตั้งค่า (Setup diagnostics)** — ตรวจสอบการเชื่อมต่อ, grants และเวอร์ชันเชิงรุกพร้อม quick-fix
 - 🧩 **แผนผังที่รับรู้ schema** — จัดระเบียบการทดสอบตาม Schema > Package > Suite > Test ใน Test Explorer
 - 🎯 **Jump to failure** — นำทางตรงไปยังบรรทัดของ assertion ที่ล้มเหลว (ผ่าน "Go to Error" เนทีฟ)
 - 🔌 **โปรไฟล์การเชื่อมต่อ** — บันทึกและสลับระหว่างหลายสภาพแวดล้อม (DEV/TEST/PROD) พร้อมการตั้งค่าต่อโปรไฟล์ ผ่านแถบสถานะหรือ command palette
@@ -39,12 +39,9 @@
 ## ข้อกำหนด
 
 - [**utPLSQL**](https://github.com/utPLSQL/utPLSQL) **(UT3)** ติดตั้งในฐานข้อมูล Oracle
-- **สำหรับโหมด CLI:** [**utPLSQL-cli**](https://github.com/utPLSQL/utPLSQL-cli/releases) + **Java** ติดตั้งบนเครื่อง (ส่วนขยายจะเรียกใช้ CLI)
-- **สำหรับโหมด Oracle แบบตรง:** ไม่ต้องมีอะไรนอกจากฐานข้อมูล — VSIX มีไดรเวอร์ `oracledb` แบบ thin ในตัวแล้ว (ไม่ต้องใช้ Instant Client)
 - **VSCode 1.88+** (Test Coverage API)
 
-ส่วนขยายเป็นเพียง "ไคลเอนต์กราฟิก" — สิ่งที่รันการทดสอบคือฐานข้อมูล: ผ่าน
-CLI (utPLSQL-cli + Java) หรือโดยตรง (node-oracledb, `runnerMode: auto` โดยค่าเริ่มต้น)
+ส่วนขยายเป็นเพียง "ไคลเอนต์กราฟิก" — สิ่งที่รันการทดสอบคือฐานข้อมูลโดยตรง (node-oracledb)
 
 ## การเชื่อมต่อ
 
@@ -56,7 +53,7 @@ CLI (utPLSQL-cli + Java) หรือโดยตรง (node-oracledb, `runnerM
 4. **แคชเซสชัน** — หากผู้ใช้พิมพ์การเชื่อมต่อผ่าน prompt แล้ว
 5. **สอบถามผู้ใช้** — ถามและเก็บไว้เฉพาะในเซสชันปัจจุบันเท่านั้น
 
-โปรไฟล์การเชื่อมต่อ (`utplsql.profiles`) ยังสามารถแทนที่ `sourcePath`, `coverageOwner`, `invocation`, `cliPath`, ฯลฯ ตามสภาพแวดล้อมได้ — ดู `utplsql.activeProfile` ในตารางการกำหนดค่า
+โปรไฟล์การเชื่อมต่อ (`utplsql.profiles`) ยังสามารถแทนที่ `sourcePath`, `coverageOwner` ฯลฯ ตามสภาพแวดล้อมได้ — ดู `utplsql.activeProfile` ในตารางการกำหนดค่า
 
 ⚠️ **คำแนะนำด้านความปลอดภัย:** connection string มีรหัสผ่าน **อย่า**ใช้
 การตั้งค่า `utplsql.connection` ในสภาพแวดล้อมที่ใช้ร่วมกัน (settings.json อาจถูกจัดเวอร์ชัน
@@ -85,59 +82,38 @@ code .
 
 ## วิธีการทำงาน
 
-มีโหมดการทำงานสองแบบ:
+![สถาปัตยกรรมการทำงาน](docs/wiki/images/diagram-arquitetura.png)
 
-![สถาปัตยกรรมการทำงาน — สองโหมด](docs/wiki/images/diagram-arquitetura.png)
-
-### โหมด Oracle แบบตรง (v0.9.0) — `runnerMode: auto` หรือ `oracle`
+### โหมด Oracle แบบตรง (v0.9.0)
 
 ![โหมด Oracle แบบตรง — สตรีมมิง](docs/wiki/images/diagram-streaming.png)
 
 ไม่มีไฟล์ชั่วคราว ไม่ต้องรอ batch ผลลัพธ์จะปรากฏใน
-Test Explorer **เมื่อแต่ละเทสต์เสร็จสิ้น**
-
-### โหมด CLI — `runnerMode: cli` (สำรอง/fallback)
-
-![โหมด CLI — batch](docs/wiki/images/diagram-cli.png)
-
-ส่วนขยายสร้างบรรทัดคำสั่ง CLI หรือเชื่อมต่อผ่าน Oracle แบบตรง อ่าน
-รายงาน (JUnit + Coverage) แล้วแปลงเป็น API เนทีฟของ VSCode
-โหมด `auto` (ค่าเริ่มต้น) จะลองใช้ Oracle แบบตรงก่อนและสำรองไปใช้ CLI หากไม่ได้ติดตั้ง
-`node-oracledb` ใช้ `runnerMode: cli` เพื่อบังคับ CLI เสมอ
+Test Explorer **เมื่อแต่ละเทสต์เสร็จสิ้น** VSIX มีไดรเวอร์ `oracledb` แบบ thin ในตัวแล้ว (ไม่ต้องใช้ Instant Client)
 
 ## การกำหนดค่า
 
 | Setting | Default | Description |
 |---|---|---|
 | `utplsql.connection` | `""` | การเชื่อมต่อ Oracle **ปล่อยว่างไว้**และใช้ตัวแปรสภาพแวดล้อม `UTPLSQL_CONN` เพื่อหลีกเลี่ยงการเก็บรหัสผ่าน หากทั้งคู่ว่าง ส่วนขยายจะถาม (เก็บไว้เฉพาะในเซสชัน) |
-| `utplsql.cliPath` | `utplsql` | พาธไปยังไฟล์ปฏิบัติการ utPLSQL-cli (เช่น `C:\tools\utPLSQL-cli\bin\utplsql.bat`) |
 | `utplsql.sourcePath` | `install` | โฟลเดอร์ของโค้ด production (เพื่อจับคู่ความครอบคลุมกับไฟล์) |
 | `utplsql.includePatterns` | `["**/*.pks"]` | Globs สำหรับค้นหา specs ที่มี `%suite`/`%test` หากเทสต์ของคุณอยู่ในไฟล์ `.sql` ให้ใช้ `["**/*.sql"]` |
-| `utplsql.extraRunArgs` | `[]` | อาร์กิวเมนต์เพิ่มเติมสำหรับ `utplsql run` |
 | `utplsql.coverageOwner` | `""` | เจ้าของ schema ของอ็อบเจกต์ที่ครอบคลุม ว่าง = ใช้ผู้ใช้จากการเชื่อมต่อ (ตัวพิมพ์ใหญ่) |
-| `utplsql.coverageSourceArgs` | (ดู **Coverage**) | อาร์กิวเมนต์ CLI ที่จับคู่ความครอบคลุมกับไฟล์ต้นฉบับ |
-| `utplsql.invocation` | `launcher` | วิธีเรียกใช้ CLI: `launcher` (ผ่าน `.bat`/สคริปต์, ค่าเริ่มต้น) หรือ `java` (JVM ตรง, **ไม่มี shell**) ดู **โหมดการเรียกใช้** |
-| `utplsql.javaPath` | `java` | ไฟล์ปฏิบัติการ Java (PATH หรือพาธเต็ม) ใช้เฉพาะในโหมด `java` |
-| `utplsql.cliHome` | `""` | รากของ utPLSQL-cli (โฟลเดอร์ที่มี `bin/` และ `lib/`) ว่าง = อนุมานจาก `cliPath` ใช้เฉพาะในโหมด `java` |
-| `utplsql.timeoutMinutes` | `60` | Timeout เป็นนาทีสำหรับ CLI แฟล็ก `-t` จะถูกส่งเฉพาะเมื่อค่าแตกต่างจาก `60` |
-| `utplsql.dbmsOutput` | `false` | เปิดใช้งาน `DBMS_OUTPUT` ในเซสชันการทดสอบ แฟล็ก `-D` จะถูกส่งเฉพาะเมื่อเป็น `true` |
-| `utplsql.quiet` | `false` | ระงับบันทึก CLI ที่เป็นข้อมูล แฟล็ก `-q` จะถูกส่งเฉพาะเมื่อเป็น `true` |
-| `utplsql.failureExitCode` | `1` | รหัสออกเมื่อล้มเหลว แฟล็ก `--failure-exit-code` จะถูกส่งเฉพาะเมื่อค่าแตกต่างจาก `1` `0` ทำให้ CLI ออกสำเร็จเสมอ |
+| `utplsql.timeoutMinutes` | `60` | Timeout เป็นนาที |
+| `utplsql.dbmsOutput` | `false` | เปิดใช้งาน `DBMS_OUTPUT` ในเซสชันการทดสอบ |
 | `utplsql.additionalReporters` | `[]` | Reporters เพิ่มเติมที่จะรวมในทุกรัน (เช่น `["ut_coverage_html_reporter"]`) ค่าเริ่มต้น (documentation, junit, coverage) จะถูกรวมเสมอและไม่จำเป็นต้องระบุ |
 | `utplsql.codeLens.enabled` | `true` | แสดงปุ่ม CodeLens Run/Run with Coverage เหนือ `%suite` และ `%test` |
 | `utplsql.statusBar.enabled` | `true` | แสดงตัวบ่งชี้สถานะการทดสอบในแถบสถานะ |
 | `utplsql.decorations.enabled` | `true` | แสดงการตกแต่งผ่าน/ล้มเหลวบนบรรทัด `%suite` และ `%test` หลังการรัน |
-| `utplsql.runnerMode` | `auto` | โหมดการทำงาน: `auto` (Oracle แบบตรงผ่าน node-oracledb, สำรองด้วย CLI), `cli` (ผ่านบรรทัดคำสั่งเสมอ), `oracle` (Oracle แบบตรงเสมอ) |
 | `utplsql.oraclePoolMin` | `2` | จำนวนการเชื่อมต่อขั้นต่ำที่เก็บไว้ในพูลของ Oracle runner (node-oracledb) |
 | `utplsql.oraclePoolMax` | `10` | จำนวนการเชื่อมต่อสูงสุดในพูลของ Oracle runner (node-oracledb) |
 | `utplsql.oraclePoolIncrement` | `1` | จำนวนที่เพิ่มเมื่อขยายพูลของ Oracle runner (node-oracledb) |
 | `utplsql.oraclePoolPingInterval` | `60` | วินาทีระหว่างการตรวจสอบความสมบูรณ์ของการเชื่อมต่อที่ว่างในพูล (node-oracledb) `0` = ping ทุกครั้งที่ยืมการเชื่อมต่อ |
-| `utplsql.javaArgs` | `["-Xmx256m"]` | แฟล็ก JVM สำหรับโหมด `java` (เช่น `["-Xmx512m", "-Xms128m"]`) แทรกก่อน `-cp` |
-| `utplsql.organization` | `file` | การจัดระเบียบแผนผัง: `file` (ตามพาธ) หรือ `schema` (Schema > Package > Suite > Test) ในโหมด `schema` กับ `runnerMode` แบบ Oracle (`auto`/`oracle`) suites จะถูกค้นพบจากฐานข้อมูล (`ALL_OBJECTS`/`ALL_SOURCE`) ด้วยเมื่อไม่มีไฟล์ `.pks` ในเวิร์กสเปซ — ด้วย URI เสมือน `utplsql-db:/` (ไม่มี CodeLens/การตกแต่ง/jump to failure) |
+| `utplsql.organization` | `file` | การจัดระเบียบแผนผัง: `file` (ตามพาธ) หรือ `schema` (Schema > Package > Suite > Test) ในโหมด `schema` suites จะถูกค้นพบจากฐานข้อมูล (`ALL_OBJECTS`/`ALL_SOURCE`) ด้วยเมื่อไม่มีไฟล์ `.pks` ในเวิร์กสเปซ — ด้วย URI เสมือน `utplsql-db:/` (ไม่มี CodeLens/การตกแต่ง/jump to failure) |
 | `utplsql.organization.schemaPattern` | `db/{schema}/**` | รูปแบบ Glob เพื่อแยก schema จากพาธ ใช้ `{schema}` เป็นตัวยึดตำแหน่ง ในโหมด `schema` ไดเรกทอรีใต้ฐานของรูปแบบ (เช่น `db/*`) กำหนด schemas ที่จะสอบถามในฐานข้อมูล |
-| `utplsql.compilationDiagnostics.enabled` | `true` | แสดงข้อผิดพลาดการคอมไพล์ PL/SQL เป็นเส้นใต้ในตัวแก้ไขและแผง Problems (โหมด CLI) |
-| `utplsql.setupDiagnostics.enabled` | `true` | แสดงการวินิจฉัยการกำหนดค่า (CLI, การเชื่อมต่อ, grants, เวอร์ชัน) และ **ความสมบูรณ์ของการติดตั้ง utPLSQL** (อ็อบเจกต์ที่ไม่ถูกต้องใน schema UT3, พร้อม quick-fix "Recompile UT3") พร้อมการทำงาน quick-fix |
-| `utplsql.profiles` | `[]` | โปรไฟล์การเชื่อมต่อ Oracle ที่บันทึกไว้ (ชื่อ, การเชื่อมต่อ, และการแทนที่ `sourcePath`/`coverageOwner`/`invocation`/`cliPath`/ฯลฯ) เพื่อสลับระหว่างสภาพแวดล้อม |
+| `utplsql.compilationDiagnostics.enabled` | `true` | แสดงข้อผิดพลาดการคอมไพล์ PL/SQL เป็นเส้นใต้ในตัวแก้ไขและแผง Problems |
+| `utplsql.setupDiagnostics.enabled` | `true` | แสดงการวินิจฉัยการกำหนดค่า (การเชื่อมต่อ, grants, เวอร์ชัน) และ **ความสมบูรณ์ของการติดตั้ง utPLSQL** (อ็อบเจกต์ที่ไม่ถูกต้องใน schema UT3, พร้อม quick-fix "Recompile UT3") พร้อมการทำงาน quick-fix |
+| `utplsql.profiles` | `[]` | โปรไฟล์การเชื่อมต่อ Oracle ที่บันทึกไว้ (ชื่อ, การเชื่อมต่อ, และการแทนที่ `sourcePath`/`coverageOwner`/ฯลฯ) เพื่อสลับระหว่างสภาพแวดล้อม |
 | `utplsql.activeProfile` | `""` | ID ของโปรไฟล์ที่ใช้งานอยู่ (`utplsql.profiles`) เมื่อตั้งค่า จะแทนที่ `utplsql.connection` |
 | `utplsql.sqlCoverageEnabled` | `false` | ติดตาม views ที่ถูกเรียกใช้ผ่าน `V$SQL` (boolean coverage) ต้องใช้ `GRANT SELECT ON V$SQL` |
 | `utplsql.debugger.enabled` | `true` | เปิดใช้งานการดีบักเทสต์ PL/SQL (`DBMS_DEBUG`) ต้องใช้ `node-oracledb` + grants |
@@ -149,7 +125,6 @@ Test Explorer **เมื่อแต่ละเทสต์เสร็จส�
 
 ```jsonc
 {
-  "utplsql.cliPath": "C:\\tools\\utPLSQL-cli\\bin\\utplsql.bat",
   "utplsql.sourcePath": "install",
   // utplsql.connection stays empty -> use the UTPLSQL_CONN environment variable
 }
@@ -168,35 +143,7 @@ $env:UTPLSQL_CONN = "DEV/password@//localhost:1521/XEPDB1"
 
 ```bash
 UTPLSQL_CONN=your_user/password@//host:1521/service
-UTPLSQL_CLI_PATH=/path/to/utplsql
-UTPLSQL_CLI_HOME=/path/to/utplsql-cli
 ```
-
-### โหมดการเรียกใช้ (`launcher` vs `java`)
-
-โดยค่าเริ่มต้น (`utplsql.invocation = "launcher"`) ส่วนขยายจะเรียกใช้
-ตัวเรียกใช้ `utplsql`/`utplsql.bat` บน Windows การดำเนินการนี้จะผ่าน `cmd` ซึ่ง
-**กิน/ตีความอักขระพิเศษ (metacharacters)** (`^` กลายเป็น escape, `|` กลายเป็น pipe) —
-ซึ่งทำลาย regex ใน `coverageSourceArgs`
-
-โหมด `java` เรียก JVM **โดยตรง** (`java -cp <home>/etc;<home>/lib/* …
-org.utplsql.cli.Cli`) **โดยไม่มี shell** อาร์กิวเมนต์ถูกส่งไปยังกระบวนการเป็นอาร์เรย์
-โดยไม่มี `cmd` คั่นกลาง ดังนั้น `^` และ `|` จึงผ่านไป **ตามตัวอักษร** — คุณสามารถใช้ `^anchors$` และ
-`(a|b|c)` ใน regex ได้โดยไม่ต้องมีวิธีเลี่ยง
-
-```jsonc
-{
-  "utplsql.invocation": "java",
-  "utplsql.cliPath": "C:\\tools\\utPLSQL-cli\\bin\\utplsql.bat", // cliHome is derived from here
-  // "utplsql.cliHome": "C:\\tools\\utPLSQL-cli",  // only if cliPath is a PATH command
-  // "utplsql.javaPath": "java"                     // PATH, or full path to java.exe
-}
-```
-
-> โหมด `java` จำลองสิ่งที่ `.bat` ทำได้อย่างเที่ยงตรง (classpath เดียวกันและคุณสมบัติ
-> `-D` เดียวกัน); ข้อแตกต่างเพียงอย่างเดียวคือไม่ผ่าน `cmd` ต้องมี `java` ใน PATH
-> (หรือใน `utplsql.javaPath`) และสามารถระบุตำแหน่งรากของ CLI ได้ — ไม่ว่าจะผ่าน `cliPath`
-> ที่ชี้ไปที่ `…/bin/utplsql(.bat)` หรือโดยการตั้งค่า `cliHome`
 
 ## การใช้งาน
 
@@ -218,8 +165,8 @@ org.utplsql.cli.Cli`) **โดยไม่มี shell** อาร์กิว�
    - `Ctrl+Shift+U L` — **Rerun Last** (ทำซ้ำการรันครั้งล่าสุด มีหรือไม่มีความครอบคลุม)
    - `Ctrl+Shift+U U` — **Run at Cursor** (รัน `%test`/`%suite` ใต้เคอร์เซอร์)
    - `Ctrl+Shift+U X` — **Run Failed Only** (รันเฉพาะเทสต์ที่ล้มเหลว)
-8. **สำหรับ Oracle แบบตรง (สตรีมมิง):** ไม่ต้องติดตั้งอะไร — VSIX มีไดรเวอร์ `oracledb` แบบ thin ในตัวแล้ว โหมด `auto` จะสำรองไปใช้ CLI หาก Oracle ไม่สามารถเข้าถึงได้
-9. สำหรับการวินิจฉัย ใช้ `utPLSQL: Show information` ใน palette — แสดงเวอร์ชัน CLI/API/DB พร้อมตัวเลือกคัดลอก
+8. **สำหรับ Oracle แบบตรง (สตรีมมิง):** ไม่ต้องติดตั้งอะไร — VSIX มีไดรเวอร์ `oracledb` แบบ thin ในตัวแล้ว
+9. สำหรับการวินิจฉัย ใช้ `utPLSQL: Show information` ใน palette — แสดงเวอร์ชัน API/DB พร้อมตัวเลือกคัดลอก
 10. **utPLSQL: Select additional reporter...** — QuickPick พร้อม reporters ที่มีอยู่ในฐานข้อมูล
 11. **utPLSQL: Cancel execution** — หยุดการรันที่กำลังทำงาน (`Escape` ระหว่างการรัน)
 12. **utPLSQL: Refresh tests** — บังคับให้ค้นพบ `.pks` อีกครั้ง
@@ -255,14 +202,14 @@ Annotation ไม่คำนึงถึงตัวพิมพ์เล็ก
 | `utPLSQL: Run tests in this folder` | รัน suites ของโฟลเดอร์ที่เลือก | คลิกขวา → โฟลเดอร์ |
 | `utPLSQL: Run tests in this folder with coverage` | เหมือนเดิม พร้อมโปรไฟล์ความครอบคลุม | คลิกขวา → โฟลเดอร์ |
 | `utPLSQL: Refresh tests` | บังคับให้ค้นพบ `.pks` อีกครั้ง | — |
-| `utPLSQL: Cancel execution` | หยุด CLI ที่กำลังทำงาน | — |
-| `utPLSQL: Show utPLSQL information` | เวอร์ชัน CLI/API/DB พร้อมตัวเลือกคัดลอก | — |
+| `utPLSQL: Cancel execution` | หยุดการรันที่กำลังทำงาน | — |
+| `utPLSQL: Show utPLSQL information` | เวอร์ชัน API/DB พร้อมตัวเลือกคัดลอก | — |
 | `utPLSQL: Select additional reporter...` | QuickPick พร้อม reporters จากฐานข้อมูล | — |
 | `utPLSQL: Clear session connection` | ลบการเชื่อมต่อออกจากแคชเซสชัน | — |
 | `utPLSQL: Rerun Last` | ทำซ้ำการรันครั้งล่าสุด | `Ctrl+Shift+U L` |
 | `utPLSQL: Run Test at Cursor` | รันเทสต์ใต้เคอร์เซอร์ | `Ctrl+Shift+U U` |
 | `utPLSQL: Run Failed Tests` | รันเฉพาะเทสต์ที่ล้มเหลวซ้ำ | `Ctrl+Shift+U X` |
-| `utPLSQL: Validate configuration` | รันการตรวจสอบการตั้งค่าทั้งหมด (CLI, Java, การเชื่อมต่อ, การติดตั้ง UT3) และแสดงผลลัพธ์ | — |
+| `utPLSQL: Validate configuration` | รันการตรวจสอบการตั้งค่าทั้งหมด (การเชื่อมต่อ, การติดตั้ง UT3) และแสดงผลลัพธ์ | — |
 | `utPLSQL: Configure connection` | เปิดการตั้งค่าที่ `utplsql.connection` | — |
 | `utPLSQL: Copy coverage grants to clipboard` | คัดลอก SQL ของ grants ไปยังคลิปบอร์ด | — |
 | `utPLSQL: Show Test Explorer` | โฟกัสมุมมอง Testing | — |
@@ -348,12 +295,7 @@ Annotation ไม่คำนึงถึงตัวพิมพ์เล็ก
 
 **หมายเหตุสำคัญ:**
 - **Packages → `PACKAGE BODY`** (ไม่ใช่ `PACKAGE`): ความครอบคลุมจะถูกเก็บใน **body** ของแพ็กเกจ
-- **Windows / อักขระพิเศษใน regex:** ในโหมด `launcher` (ค่าเริ่มต้น) `.bat` จะผ่าน `cmd`
-  ซึ่ง **กิน `^`** และ **ตีความ `|` เป็น pipe** — นั่นคือเหตุผลที่ตัวอย่างด้านบนใช้ `\w` และ
-  `[/\\]` (ไม่มี `^`) และ `|` ในตัวอย่างที่ 2 ใช้ได้เฉพาะภายในส่วนขยายเท่านั้น **วิธีแก้:** ใช้ **`utplsql.invocation = "java"`** (ดู
-  [โหมดการเรียกใช้](#โหมดการเรียกใช้-launcher-vs-java)) — โดยไม่มี `cmd` คั่นกลาง `^` และ `|` จะผ่านไป
-  ตามตัวอักษรและคุณสามารถเขียน regex ได้ตามปกติ
-- **Windows / `cmd`:** หลีกเลี่ยง **`^`** ใน regex (`cmd` ของ `.bat` กินมัน) — นั่นคือเหตุผลที่ตัวอย่าง
+- **Windows / อักขระพิเศษใน regex:** หลีกเลี่ยง **`^`** ใน regex (`cmd` ของ `.bat` กินมัน) — นั่นคือเหตุผลที่ตัวอย่าง
   ใช้ `\w` และ `[/\\]`
 
 ## Reporters
@@ -418,16 +360,13 @@ GRANT SELECT ON SYS.DBA_PROCEDURES TO <ut3_owner>;
 
 | อาการ | สาเหตุที่เป็นไปได้ | วิธีแก้ |
 |---|---|---|
-| Suites ไม่ปรากฏ | ไม่พบ CLI | รัน `utPLSQL: Validate configuration` เพื่อการวินิจฉัย |
+| Suites ไม่ปรากฏ | ไม่มีไฟล์ `.pks` ที่ค้นพบ | รัน `utPLSQL: Validate configuration` เพื่อการวินิจฉัย |
 | ความครอบคลุมว่างเปล่า | ขาด `GRANT EXECUTE ON DBMS_PROFILER` | รัน grants ใน [ข้อกำหนด](#ข้อกำหนดฐานข้อมูล) หรือใช้ `utPLSQL: Copy coverage grants to clipboard` |
 | ความครอบคลุมว่างเปล่า | Oracle 19c ต้องใช้ grants เพิ่มเติม | `GRANT EXECUTE ON DBMS_PROFILER` + `GRANT EXECUTE ON DBMS_PLSQL_CODE_COVERAGE` |
-| ประสิทธิภาพช้า | suites ขนาดใหญ่ต้องใช้ JVM heap มากขึ้น | เพิ่ม `utplsql.javaArgs` (เช่น `["-Xmx1024m"]`) |
 | ข้อผิดพลาดการคอมไพล์โดยไม่มีข้อบ่งชี้ | โค้ดที่มีข้อผิดพลาดไวยากรณ์ PL/SQL | เปิดใช้งาน `utplsql.compilationDiagnostics.enabled` (ค่าเริ่มต้นเปิด); ดูแผง Problems |
 | ข้อผิดพลาดการเชื่อมต่อ | สตริงไม่ถูกต้องหรือฐานข้อมูลเข้าไม่ถึง | ใช้ `utPLSQL: Validate configuration` |
 | Timeout ระหว่างรัน | เทสต์ใช้เวลานานกว่า `timeoutMinutes` | เพิ่ม `utplsql.timeoutMinutes` |
-| regex ความครอบคลุมไม่ตรงกัน | Windows `cmd` กิน `^` และ `\|` | ใช้ `utplsql.invocation: "java"` (ดู [โหมดการเรียกใช้](#โหมดการเรียกใช้-launcher-vs-java)) |
 | `%suite` ไม่ได้รับการรู้จัก | ขาด `%suite`/`create package` ในไฟล์ หรือ `%test` ไม่มี `PROCEDURE` | ตรวจสอบ spec; รัน `utPLSQL: Refresh tests` |
-| "report not generated" | CLI ไม่สามารถสร้าง XML เอาต์พุตได้ | ตรวจสอบสิทธิ์การเขียนใน `%TEMP%` และ grants ของ utPLSQL |
 | CodeLens ไม่ปรากฏ | `editor.codeLens` ถูกปิดหรือขัดแย้ง | เปิดใช้งาน `"editor.codeLens": true`; ตรวจสอบ `utplsql.codeLens.enabled` |
 | ปุ่มลัดไม่ทำงาน | ขัดแย้งกับส่วนขยายอื่นหรือปุ่มลัดของ VSCode | ไปที่ File → Preferences → Keyboard Shortcuts และค้นหา `utplsql` เพื่อกำหนดใหม่ |
 

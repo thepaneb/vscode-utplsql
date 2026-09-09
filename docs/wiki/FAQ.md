@@ -9,7 +9,7 @@ Verifique:
 2. As annotations `%suite` e `%test` estão no **spec** (`.pks`), não no body
 3. O arquivo tem a declaração `create package` e ao menos um `%test` seguido de `PROCEDURE`
 4. Rode `utPLSQL: Atualizar testes` para forçar rediscovery
-5. Rode `utPLSQL: Validar configuração` para diagnóstico automático de CLI, conexão e grants
+5. Rode `utPLSQL: Validar configuração` para diagnóstico automático de conexão e grants
 
 ### Posso usar com Oracle XE?
 
@@ -28,15 +28,7 @@ Veja [Conexão](Conexão) para detalhes.
 
 ### A extensão funciona no Linux? E no macOS?
 
-Sim. A extensão é multiplataforma. O `cliPath` precisa apontar para o
-executável do utPLSQL-cli no seu sistema. No Linux/macOS, é comum ser
-um script shell (sem `.bat`).
-
-### Preciso do Java mesmo no modo `launcher`?
-
-Sim. O utPLSQL-cli é uma aplicação Java — o launcher (`utplsql.bat` ou
-`utplsql`) invoca a JVM internamente. O Java precisa estar instalado e
-no PATH.
+Sim. A extensão é multiplataforma.
 
 ### Os botões Run/Run with Coverage não aparecem sobre %suite/%test
 
@@ -97,7 +89,7 @@ Veja [Troubleshooting](Troubleshooting) para diagnóstico detalhado.
 
 ### Como sei se o regex de cobertura está funcionando?
 
-Ative `utplsql.dbmsOutput: true` e veja o output do CLI no terminal da
+Ative `utplsql.dbmsOutput: true` e veja o output do teste no terminal da
 view de testes. O utPLSQL loga quais objetos SQL foram mapeados para
 arquivos.
 
@@ -139,33 +131,6 @@ Sem o `/pass` no formato — o Oracle autentica via certificado.
 
 ---
 
-## Modo de invocação
-
-### Qual a diferença prática entre `launcher` e `java`?
-
-No Windows, o modo `launcher` passa pelo `cmd`, que **altera metacaracteres**
-no regex da cobertura. O modo `java` evita isso. No Linux/macOS, a diferença
-é menor porque o shell não consome `^`.
-
-Se você **não** usa regex complexo no `coverageSourceArgs`, o modo `launcher`
-funciona perfeitamente. Se usa `^`, `$` ou `|` no regex, mude para `java`.
-
-### Como migrar do launcher para java?
-
-```jsonc
-{
-  "utplsql.invocation": "java",
-  // cliHome é derivado automaticamente do cliPath na maioria dos casos
-  // se cliPath for "C:\tools\utPLSQL-cli\bin\utplsql.bat",
-  // cliHome será "C:\tools\utPLSQL-cli" automaticamente
-}
-```
-
-A maioria das configurações não muda — apenas `invocation` + `javaPath`
-se o Java não estiver no PATH.
-
----
-
 ## CI/CD e desenvolvimento
 
 ### Dá pra usar com GitHub Actions?
@@ -185,15 +150,13 @@ no job:
 ### Por que meus testes de integração são pulados?
 
 Os testes com banco real (`describeDB` em `extension.test.ts`) exigem
-três variáveis de ambiente definidas no `.env`:
+a variável de ambiente definida no `.env`:
 
 ```bash
 UTPLSQL_CONN=...
-UTPLSQL_CLI_PATH=...
-UTPLSQL_CLI_HOME=...
 ```
 
-Sem elas, `describeDB` é automaticamente pulado com `describe.skip`.
+Sem ela, `describeDB` é automaticamente pulado com `describe.skip`.
 
 ### Posso publicar a extensão localmente?
 
@@ -211,18 +174,10 @@ code --install-extension vscode-utplsql-0.12.0.vsix
 
 ## Oracle direto (streaming)
 
-### Qual a diferença entre CLI e Oracle direto?
-
-O modo CLI (tradicional) executa o `utplsql` como processo externo e só mostra
-resultados quando o batch termina. O modo Oracle direto (v0.9.0+) conecta no
-banco via `node-oracledb` e mostra cada teste **em tempo real** no Explorer.
-
 ### Preciso instalar algo para usar o Oracle direto?
 
 Não — o VSIX já inclui o driver `oracledb` **thin** (puro JavaScript, sem
-Instant Client). Em desenvolvimento, `node-oracledb` é uma dependência
-opcional (`optionalDependencies`); sem ela, o modo `auto` usa CLI
-automaticamente. Use `runnerMode: cli` para forçar CLI sempre.
+Instant Client).
 
 ### Funciona com shared install (UT3)?
 
@@ -231,7 +186,8 @@ Sim, mas requer grants nas tabelas de buffer:
 GRANT SELECT, DELETE ON UT3.UT_OUTPUT_BUFFER_TMP TO PUBLIC;
 GRANT SELECT, DELETE ON UT3.UT_OUTPUT_BUFFER_INFO_TMP TO PUBLIC;
 ```
-Sem esses grants, use `runnerMode: cli` ou `auto` (fallback automático).
+Sem esses grants, a execução direta não funcionará — configure um schema
+dedicado para utPLSQL.
 
 ---
 
@@ -239,7 +195,7 @@ Sem esses grants, use `runnerMode: cli` ou `auto` (fallback automático).
 
 ### Como vejo erros de compilação PL/SQL no editor?
 
-É automático. Após rodar testes, a extensão analisa o output do CLI. Se houver
+É automático. Após rodar testes, a extensão analisa o output. Se houver
 erros como `PLS-00201` ou `ORA-06550`, eles aparecem como **sublinhados
 vermelhos** no arquivo `.pks`/`.pkb` e no **Problems Panel** (source: "utPLSQL
 Compilation"). Desabilite com `utplsql.compilationDiagnostics.enabled: false`.
@@ -247,7 +203,7 @@ Compilation"). Desabilite com `utplsql.compilationDiagnostics.enabled: false`.
 ### Como valido se minha configuração está correta?
 
 Rode `utPLSQL: Validar configuração` (palette `Ctrl+Shift+P`). A extensão
-verifica CLI, Java (modo java), conexão Oracle, versão do utPLSQL e a
+verifica conexão Oracle, versão do utPLSQL e a
 **integridade da instalação** (objetos inválidos no schema utPLSQL). Os
 resultados aparecem no Problems Panel com **quick-fix actions** (ícone 💡) —
 incluindo **"Recompilar UT3"** quando há objetos inválidos.
@@ -298,11 +254,3 @@ Quando um teste falha, o VSCode mostra um botão **"Go to Error"** no Test
 Explorer (ícone de seta). Clicar nele abre o arquivo `.pks`/`.pkb` na linha
 exata da falha. Funciona automaticamente — a extensão extrai o stack trace do
 JUnit e resolve para o arquivo fonte.
-
-### Modo `java` está lento com muitas suites?
-
-Aumente a memória da JVM com `utplsql.javaArgs`:
-```jsonc
-"utplsql.javaArgs": ["-Xmx1024m", "-Xms256m"]
-```
-O default é `-Xmx256m`. Ajuste conforme o tamanho do seu projeto.

@@ -125,13 +125,7 @@ export function mergeProfileConfig(global: UtConfig, profile?: ConnectionProfile
     ...global,
     sourcePath: profile.sourcePath || global.sourcePath,
     coverageOwner: profile.coverageOwner || global.coverageOwner,
-    coverageSourceArgs: profile.coverageSourceArgs ?? global.coverageSourceArgs,
     includePatterns: profile.includePatterns ?? global.includePatterns,
-    invocation: profile.invocation || global.invocation,
-    cliPath: profile.cliPath || global.cliPath,
-    cliHome: profile.cliHome || global.cliHome,
-    javaPath: profile.javaPath || global.javaPath,
-    extraRunArgs: profile.extraRunArgs ?? global.extraRunArgs,
   };
 }
 

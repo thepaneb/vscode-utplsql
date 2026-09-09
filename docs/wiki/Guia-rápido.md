@@ -107,7 +107,7 @@ Você pode rodar de várias formas:
 
 ## 6. Veja o output
 
-O output do CLI (incluindo o reporter de documentação) aparece no terminal
+O output do teste (incluindo o reporter de documentação) aparece no terminal
 da view de testes. Clique no teste para ver o log completo.
 
 ![Terminal de output do teste](images/output-terminal.png)
@@ -145,7 +145,6 @@ Settings recomendadas (`.vscode/settings.json`):
 
 ```jsonc
 {
-  "utplsql.cliPath": "C:\\tools\\utPLSQL-cli\\bin\\utplsql.bat",
   "utplsql.sourcePath": "install"
   // connection via env var UTPLSQL_CONN
 }

@@ -11,53 +11,17 @@ import { __resetConfigValues, __setConfigValue, __setInputBoxResult } from '../v
 
 test('readConfig: defaults sao usados quando sem config', () => {
   const cfg = readConfig();
-  assert.strictEqual(cfg.cliPath, 'utplsql');
   assert.strictEqual(cfg.sourcePath, 'install');
-  assert.strictEqual(cfg.invocation, 'launcher');
-  assert.strictEqual(cfg.javaPath, 'java');
   assert.strictEqual(cfg.coverageOwner, '');
   assert.strictEqual(cfg.includePatterns.length, 1);
   assert.strictEqual(cfg.includePatterns[0], '**/*.pks');
   assert.strictEqual(cfg.timeoutMinutes, 60);
   assert.strictEqual(cfg.dbmsOutput, false);
-  assert.strictEqual(cfg.quiet, false);
-  assert.strictEqual(cfg.failureExitCode, 1);
-});
-
-test('readConfig: valores customizados sao lidos via vscode.getConfiguration', () => {
-  const cfg = readConfig();
-  assert.strictEqual(cfg.cliPath, 'utplsql');
-  assert.strictEqual(cfg.extraRunArgs.length, 0);
-});
-
-test('readConfig: novos settings CLI', () => {
-  const cfg = readConfig();
-  assert.strictEqual(cfg.timeoutMinutes, 60);
-  assert.strictEqual(cfg.dbmsOutput, false);
-  assert.strictEqual(cfg.quiet, false);
-  assert.strictEqual(cfg.failureExitCode, 1);
-});
-
-test('readConfig: runnerMode default e auto', () => {
-  const cfg = readConfig();
-  assert.strictEqual(cfg.runnerMode, 'auto');
 });
 
 test('readConfig: sqlCoverageEnabled default e false', () => {
   const cfg = readConfig();
   assert.strictEqual(cfg.sqlCoverageEnabled, false);
-});
-
-test('readConfig: type_mapping default inclui views=VIEW', () => {
-  const cfg = readConfig();
-  const mapping = cfg.coverageSourceArgs.find((a) => a.startsWith('-type_mapping='));
-  assert.ok(mapping, 'type_mapping deveria existir');
-  assert.ok(mapping.includes('views=VIEW'), 'type_mapping deveria incluir views=VIEW');
-});
-
-test('readConfig: javaArgs default e -Xmx256m', () => {
-  const cfg = readConfig();
-  assert.deepStrictEqual(cfg.javaArgs, ['-Xmx256m']);
 });
 
 async function withCleanResolve(fn: () => Promise<void>): Promise<void> {
@@ -228,7 +192,6 @@ test('readConfig: perfil ativo sobrescreve settings globais', () => {
       connection: 'dev/pass@db',
       sourcePath: 'db/dev',
       coverageOwner: 'APP',
-      invocation: 'java',
     },
   ]);
   __setConfigValue('activeProfile', 'p1');
@@ -237,8 +200,6 @@ test('readConfig: perfil ativo sobrescreve settings globais', () => {
     const cfg = readConfig();
     assert.strictEqual(cfg.sourcePath, 'db/dev');
     assert.strictEqual(cfg.coverageOwner, 'APP');
-    assert.strictEqual(cfg.invocation, 'java');
-    assert.strictEqual(cfg.runnerMode, 'auto');
   } finally {
     __resetConfigValues();
   }

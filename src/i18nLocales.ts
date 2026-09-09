@@ -5,8 +5,7 @@ export const ptBr: Record<string, string> = {
   'common.error': 'Erro',
   'common.failed': 'Falhou',
   'common.copy': 'Copiar',
-  'common.oracledbMissing':
-    'oracledb não disponível. Instale com "npm install oracledb" ou use runnerMode "cli".',
+  'common.oracledbMissing': 'oracledb não disponível. Instale com "npm install oracledb".',
 
   'ext.reporters.listFailed': 'Falha ao listar reporters: {error}',
   'ext.reporters.placeholder': 'Selecione um reporter adicional para esta execução',
@@ -134,8 +133,7 @@ export const en: Record<string, string> = {
   'common.error': 'Error',
   'common.failed': 'Failed',
   'common.copy': 'Copy',
-  'common.oracledbMissing':
-    'oracledb not available. Install with "npm install oracledb" or use runnerMode "cli".',
+  'common.oracledbMissing': 'oracledb not available. Install with "npm install oracledb".',
 
   'ext.reporters.listFailed': 'Failed to list reporters: {error}',
   'ext.reporters.placeholder': 'Select an additional reporter for this run',
@@ -262,8 +260,7 @@ export const es: Record<string, string> = {
   'common.error': 'Error',
   'common.failed': 'Falló',
   'common.copy': 'Copiar',
-  'common.oracledbMissing':
-    'oracledb no disponible. Instale con "npm install oracledb" o use runnerMode "cli".',
+  'common.oracledbMissing': 'oracledb no disponible. Instale con "npm install oracledb".',
 
   'ext.reporters.listFailed': 'Error al listar reporters: {error}',
   'ext.reporters.placeholder': 'Seleccione un reporter adicional para esta ejecución',
@@ -392,8 +389,7 @@ export const zhCn: Record<string, string> = {
   'common.error': '错误',
   'common.failed': '失败',
   'common.copy': '复制',
-  'common.oracledbMissing':
-    'oracledb 不可用。请使用 "npm install oracledb" 安装，或使用 runnerMode "cli"。',
+  'common.oracledbMissing': 'oracledb 不可用。请使用 "npm install oracledb" 安装，。',
 
   'ext.reporters.listFailed': '列出 reporters 失败：{error}',
   'ext.reporters.placeholder': '为本次运行选择一个附加 reporter',
@@ -517,7 +513,7 @@ export const ja: Record<string, string> = {
   'common.failed': '失敗',
   'common.copy': 'コピー',
   'common.oracledbMissing':
-    'oracledb が利用できません。「npm install oracledb」でインストールするか、runnerMode "cli" を使用してください。',
+    'oracledb が利用できません。「npm install oracledb」でインストールするか、',
 
   'ext.reporters.listFailed': 'レポーターの一覧取得に失敗しました: {error}',
   'ext.reporters.placeholder': 'この実行で使用する追加レポーターを選択',
@@ -648,8 +644,7 @@ export const de: Record<string, string> = {
   'common.error': 'Fehler',
   'common.failed': 'Fehlgeschlagen',
   'common.copy': 'Kopieren',
-  'common.oracledbMissing':
-    'oracledb nicht verfügbar. Installieren Sie mit "npm install oracledb" oder verwenden Sie runnerMode "cli".',
+  'common.oracledbMissing': 'oracledb nicht verfügbar. Installieren Sie mit "npm install oracledb"',
 
   'ext.reporters.listFailed': 'Reporter auflisten fehlgeschlagen: {error}',
   'ext.reporters.placeholder': 'Zusätzlichen Reporter für diesen Lauf auswählen',
@@ -906,8 +901,7 @@ export const zhTw: Record<string, string> = {
   'common.error': '錯誤',
   'common.failed': '失敗',
   'common.copy': '複製',
-  'common.oracledbMissing':
-    'oracledb 無法使用。請使用「npm install oracledb」安裝，或使用 runnerMode "cli"。',
+  'common.oracledbMissing': 'oracledb 無法使用。請使用「npm install oracledb」安裝，。',
 
   'ext.reporters.listFailed': '列出 reporters 失敗：{error}',
   'ext.reporters.placeholder': '為本次執行選擇一個額外 reporter',
@@ -1030,8 +1024,7 @@ export const it: Record<string, string> = {
   'common.error': 'Errore',
   'common.failed': 'Fallito',
   'common.copy': 'Copia',
-  'common.oracledbMissing':
-    'oracledb non disponibile. Installare con "npm install oracledb" oppure usare runnerMode "cli".',
+  'common.oracledbMissing': 'oracledb non disponibile. Installare con "npm install oracledb"',
 
   'ext.reporters.listFailed': 'Errore nell’elencare i reporter: {error}',
   'ext.reporters.placeholder': 'Seleziona un reporter aggiuntivo per questa esecuzione',
@@ -1159,8 +1152,7 @@ export const ko: Record<string, string> = {
   'common.error': '오류',
   'common.failed': '실패',
   'common.copy': '복사',
-  'common.oracledbMissing':
-    'oracledb를 사용할 수 없습니다. "npm install oracledb"로 설치하거나 runnerMode "cli"를 사용하세요.',
+  'common.oracledbMissing': 'oracledb를 사용할 수 없습니다. "npm install oracledb"로 설치하거나 ',
 
   'ext.reporters.listFailed': 'reporter 목록을 가져오지 못했습니다: {error}',
   'ext.reporters.placeholder': '이 실행에 사용할 추가 reporter 선택',
@@ -1286,8 +1278,7 @@ export const ru: Record<string, string> = {
   'common.error': 'Ошибка',
   'common.failed': 'Не пройден',
   'common.copy': 'Копировать',
-  'common.oracledbMissing':
-    'oracledb недоступен. Установите с помощью «npm install oracledb» или используйте runnerMode "cli".',
+  'common.oracledbMissing': 'oracledb недоступен. Установите с помощью «npm install oracledb».',
 
   'ext.reporters.listFailed': 'Не удалось получить список reporters: {error}',
   'ext.reporters.placeholder': 'Выберите дополнительный reporter для этого запуска',
@@ -1413,8 +1404,7 @@ export const tr: Record<string, string> = {
   'common.error': 'Hata',
   'common.failed': 'Başarısız',
   'common.copy': 'Kopyala',
-  'common.oracledbMissing':
-    'oracledb kullanılamıyor. "npm install oracledb" ile kurun veya runnerMode "cli" kullanın.',
+  'common.oracledbMissing': 'oracledb kullanılamıyor. "npm install oracledb" ile kurunkullanın.',
 
   'ext.reporters.listFailed': 'Reporter listesi alınamadı: {error}',
   'ext.reporters.placeholder': 'Bu çalıştırma için ek bir reporter seçin',
@@ -1539,8 +1529,7 @@ export const pl: Record<string, string> = {
   'common.error': 'Błąd',
   'common.failed': 'Nie powiodło się',
   'common.copy': 'Kopiuj',
-  'common.oracledbMissing':
-    'oracledb niedostępny. Zainstaluj przez „npm install oracledb” lub użyj runnerMode "cli".',
+  'common.oracledbMissing': 'oracledb niedostępny. Zainstaluj przez „npm install oracledb”',
 
   'ext.reporters.listFailed': 'Nie udało się pobrać listy reporterów: {error}',
   'ext.reporters.placeholder': 'Wybierz dodatkowy reporter dla tego uruchomienia',
@@ -1668,7 +1657,7 @@ export const cs: Record<string, string> = {
   'common.failed': 'Selhalo',
   'common.copy': 'Kopírovat',
   'common.oracledbMissing':
-    'oracledb není k dispozici. Nainstalujte pomocí „npm install oracledb“ nebo použijte runnerMode "cli".',
+    'oracledb není k dispozici. Nainstalujte pomocí „npm install oracledb“.',
 
   'ext.reporters.listFailed': 'Nepodařilo se vypsat reportery: {error}',
   'ext.reporters.placeholder': 'Vyberte další reporter pro toto spuštění',
@@ -1797,7 +1786,7 @@ export const hu: Record<string, string> = {
   'common.failed': 'Sikertelen',
   'common.copy': 'Másolás',
   'common.oracledbMissing':
-    'az oracledb nem érhető el. Telepítse a „npm install oracledb” paranccsal, vagy használja a runnerMode "cli" értéket.',
+    'az oracledb nem érhető el. Telepítse a „npm install oracledb” paranccsal,értéket.',
 
   'ext.reporters.listFailed': 'A riporterek listázása sikertelen: {error}',
   'ext.reporters.placeholder': 'Válasszon további riportert ehhez a futtatáshoz',
@@ -1927,8 +1916,7 @@ export const bg: Record<string, string> = {
   'common.error': 'Грешка',
   'common.failed': 'Неуспешно',
   'common.copy': 'Копиране',
-  'common.oracledbMissing':
-    'oracledb не е наличен. Инсталирайте с "npm install oracledb" или използвайте runnerMode "cli".',
+  'common.oracledbMissing': 'oracledb не е наличен. Инсталирайте с "npm install oracledb".',
   'ext.reporters.listFailed': 'Неуспешно изброяване на reporters: {error}',
   'ext.reporters.placeholder': 'Изберете допълнителен reporter за това изпълнение',
   'ext.reporters.willUse': 'Reporter "{name}" ще бъде използван при следващото изпълнение.',
@@ -2049,7 +2037,7 @@ export const el: Record<string, string> = {
   'common.failed': 'Απέτυχε',
   'common.copy': 'Αντιγραφή',
   'common.oracledbMissing':
-    'Η oracledb δεν είναι διαθέσιμη. Εγκαταστήστε με "npm install oracledb" ή χρησιμοποιήστε runnerMode "cli".',
+    'Η oracledb δεν είναι διαθέσιμη. Εγκαταστήστε με "npm install oracledb".',
   'ext.reporters.listFailed': 'Αποτυχία λίστας reporters: {error}',
   'ext.reporters.placeholder': 'Επιλέξτε έναν επιπλέον reporter για αυτή την εκτέλεση',
   'ext.reporters.willUse': 'Ο reporter "{name}" θα χρησιμοποιηθεί στην επόμενη εκτέλεση.',
@@ -2170,8 +2158,7 @@ export const id: Record<string, string> = {
   'common.error': 'Kesalahan',
   'common.failed': 'Gagal',
   'common.copy': 'Salin',
-  'common.oracledbMissing':
-    'oracledb tidak tersedia. Instal dengan "npm install oracledb" atau gunakan runnerMode "cli".',
+  'common.oracledbMissing': 'oracledb tidak tersedia. Instal dengan "npm install oracledb".',
   'ext.reporters.listFailed': 'Gagal mendaftar reporter: {error}',
   'ext.reporters.placeholder': 'Pilih reporter tambahan untuk eksekusi ini',
   'ext.reporters.willUse': 'Reporter "{name}" akan digunakan pada eksekusi berikutnya.',
@@ -2291,8 +2278,7 @@ export const ro: Record<string, string> = {
   'common.error': 'Eroare',
   'common.failed': 'Eșuat',
   'common.copy': 'Copiază',
-  'common.oracledbMissing':
-    'oracledb indisponibil. Instalați cu "npm install oracledb" sau folosiți runnerMode "cli".',
+  'common.oracledbMissing': 'oracledb indisponibil. Instalați cu "npm install oracledb".',
   'ext.reporters.listFailed': 'Eroare la listarea reporterilor: {error}',
   'ext.reporters.placeholder': 'Selectați un reporter suplimentar pentru această execuție',
   'ext.reporters.willUse': 'Reporterul "{name}" va fi folosit la următoarea execuție.',
@@ -2412,8 +2398,7 @@ export const sr: Record<string, string> = {
   'common.error': 'Грешка',
   'common.failed': 'Неуспешно',
   'common.copy': 'Копирај',
-  'common.oracledbMissing':
-    'oracledb није доступан. Инсталирајте са "npm install oracledb" или користите runnerMode "cli".',
+  'common.oracledbMissing': 'oracledb није доступан. Инсталирајте са "npm install oracledb".',
   'ext.reporters.listFailed': 'Неуспешно листање reporterа: {error}',
   'ext.reporters.placeholder': 'Изаберите додатни reporter за ово извршавање',
   'ext.reporters.willUse': 'Reporter "{name}" ће бити коришћен при следећем извршавању.',
@@ -2533,8 +2518,7 @@ export const th: Record<string, string> = {
   'common.error': 'ข้อผิดพลาด',
   'common.failed': 'ล้มเหลว',
   'common.copy': 'คัดลอก',
-  'common.oracledbMissing':
-    'oracledb ไม่พร้อมใช้งาน ติดตั้งด้วย "npm install oracledb" หรือใช้ runnerMode "cli"',
+  'common.oracledbMissing': 'oracledb ไม่พร้อมใช้งาน ติดตั้งด้วย "npm install oracledb"',
   'ext.reporters.listFailed': 'ไม่สามารถแสดงรายการ reporter ได้: {error}',
   'ext.reporters.placeholder': 'เลือก reporter เพิ่มเติมสำหรับการรันนี้',
   'ext.reporters.willUse': 'จะใช้ reporter "{name}" ในการรันครั้งถัดไป',
@@ -2651,7 +2635,7 @@ export const uk: Record<string, string> = {
   'common.failed': 'Не вдалося',
   'common.copy': 'Копіювати',
   'common.oracledbMissing':
-    'oracledb недоступний. Встановіть за допомогою "npm install oracledb" або використайте runnerMode "cli".',
+    'oracledb недоступний. Встановіть за допомогою "npm install oracledb" .',
   'ext.reporters.listFailed': 'Не вдалося отримати список reporters: {error}',
   'ext.reporters.placeholder': 'Виберіть додатковий reporter для цього запуску',
   'ext.reporters.willUse': 'Reporter "{name}" буде використано при наступному запуску.',
@@ -2772,8 +2756,7 @@ export const vi: Record<string, string> = {
   'common.error': 'Lỗi',
   'common.failed': 'Thất bại',
   'common.copy': 'Sao chép',
-  'common.oracledbMissing':
-    'oracledb không khả dụng. Cài đặt bằng "npm install oracledb" hoặc dùng runnerMode "cli".',
+  'common.oracledbMissing': 'oracledb không khả dụng. Cài đặt bằng "npm install oracledb".',
   'ext.reporters.listFailed': 'Không thể liệt kê reporter: {error}',
   'ext.reporters.placeholder': 'Chọn reporter bổ sung cho lần chạy này',
   'ext.reporters.willUse': 'Reporter "{name}" sẽ được dùng ở lần chạy tiếp theo.',
