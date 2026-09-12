@@ -21,5 +21,8 @@
   "nls.command.newProfile": "utPLSQL: Hồ sơ kết nối mới...",
   "nls.command.manageProfiles": "utPLSQL: Quản lý hồ sơ kết nối",
   "nls.command.importSqlDevConnections": "utPLSQL: Nhập kết nối SQL Developer",
-  "nls.command.debugTest": "utPLSQL: Gỡ lỗi kiểm thử (PL/SQL)"
+  "nls.command.debugTest": "utPLSQL: Gỡ lỗi kiểm thử (PL/SQL)",
+  "nls.command.runScript": "utPLSQL: Run script",
+  "nls.command.runScriptFile": "utPLSQL: Run script file",
+  "nls.command.runScriptFolder": "utPLSQL: Run script folder"
 }

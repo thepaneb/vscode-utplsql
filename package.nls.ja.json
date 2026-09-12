@@ -21,5 +21,8 @@
   "nls.command.newProfile": "utPLSQL: 接続プロファイルを新規作成...",
   "nls.command.manageProfiles": "utPLSQL: 接続プロファイルを管理",
   "nls.command.importSqlDevConnections": "utPLSQL: SQL Developer の接続をインポート",
-  "nls.command.debugTest": "utPLSQL: テストをデバッグ（PL/SQL）"
+  "nls.command.debugTest": "utPLSQL: テストをデバッグ（PL/SQL）",
+  "nls.command.runScript": "utPLSQL: Run script",
+  "nls.command.runScriptFile": "utPLSQL: Run script file",
+  "nls.command.runScriptFolder": "utPLSQL: Run script folder"
 }

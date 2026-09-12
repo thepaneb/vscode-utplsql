@@ -14,12 +14,21 @@ import {
   maskConnection,
   mergeProfileConfig,
   parseSqlDevConnections,
+  pickProfileOrGuide,
   saveProfiles,
   selectProfile,
   setActiveProfile,
 } from '../../connectionProfiles';
 import type { ConnectionProfile } from '../../types';
-import { __resetConfigValues, __setConfigValue, __setQuickPickResult } from '../vscode-stub';
+import {
+  __getLastQuickPickItems,
+  __resetConfigValues,
+  __resetLastQuickPickItems,
+  __setConfigValue,
+  __setQuickPickResult,
+  __setWarningResult,
+  commands as stubCommands,
+} from '../vscode-stub';
 
 function makeGlobal(over: Partial<UtConfig> = {}): UtConfig {
   return {
@@ -44,6 +53,11 @@ function makeGlobal(over: Partial<UtConfig> = {}): UtConfig {
     debuggerEnabled: true,
     debuggerStopOnException: true,
     debuggerTimeoutSeconds: 300,
+    scriptRunnerStopOnError: true,
+    scriptRunnerAutoCommit: true,
+    scriptRunnerFilePattern: '**/*.{sql,pks,pkb,fnc,prc,trg}',
+    scriptRunnerDbmsOutput: false,
+    scriptRunnerTimeoutSeconds: 300,
     language: 'auto',
     ...over,
   };
@@ -293,4 +307,142 @@ test('mergeProfileConfig: perfil com includePatterns usa os do perfil', () => {
   };
   const merged = mergeProfileConfig(global, profile);
   assert.deepStrictEqual(merged.includePatterns, ['**/*.pkb']);
+});
+
+interface QuickPickItem {
+  label: string;
+  description: string;
+  detail?: string;
+  profile: ConnectionProfile;
+}
+
+function lastItems(): QuickPickItem[] {
+  return (__getLastQuickPickItems() ?? []) as QuickPickItem[];
+}
+
+test('selectProfile: exibe description no detail e máscara a conexão', async () => {
+  const profiles: ConnectionProfile[] = [
+    {
+      id: 'p1',
+      name: 'DEV Local',
+      connection: 'dev/secret@localhost:1521/XE',
+      description: 'Banco local de desenvolvimento',
+      isDefault: true,
+    },
+  ];
+  __resetLastQuickPickItems();
+  __setQuickPickResult({ label: 'DEV Local', profile: profiles[0] });
+  try {
+    const selected = await selectProfile(profiles);
+    assert.strictEqual(selected?.id, 'p1');
+    const items = lastItems();
+    assert.strictEqual(items.length, 1);
+    assert.strictEqual(items[0].description, 'dev@localhost:1521/XE');
+    assert.ok(!items[0].description.includes('secret'));
+    assert.ok(items[0].detail?.includes('Banco local de desenvolvimento'));
+    assert.ok(items[0].detail?.includes('Default'));
+  } finally {
+    __setQuickPickResult(undefined);
+    __resetLastQuickPickItems();
+  }
+});
+
+test('selectProfile: charset não-utf8 aparece ao lado da conexão', async () => {
+  const profiles: ConnectionProfile[] = [
+    { id: 'p1', name: 'LEGADO', connection: 'u/p@h:1521/s', charset: 'win1252' },
+    { id: 'p2', name: 'DEV', connection: 'u/p@h:1521/s', charset: 'utf8' },
+    { id: 'p3', name: 'PLAIN', connection: 'u/p@h:1521/s' },
+  ];
+  __resetLastQuickPickItems();
+  __setQuickPickResult(undefined);
+  try {
+    await selectProfile(profiles);
+    const items = lastItems();
+    assert.ok(items[0].description.includes('win1252'));
+    assert.ok(!items[1].description.includes('utf8'));
+    assert.ok(!items[2].description.includes('utf8'));
+  } finally {
+    __setQuickPickResult(undefined);
+    __resetLastQuickPickItems();
+  }
+});
+
+test('pickProfileOrGuide: com perfis delega ao QuickPick', async () => {
+  const profiles: ConnectionProfile[] = [{ id: 'p1', name: 'DEV', connection: 'c' }];
+  __resetConfigValues();
+  __setConfigValue('profiles', profiles);
+  __setQuickPickResult({ label: 'DEV', profile: profiles[0] });
+  try {
+    assert.strictEqual((await pickProfileOrGuide())?.id, 'p1');
+  } finally {
+    __setQuickPickResult(undefined);
+    __resetConfigValues();
+  }
+});
+
+test('pickProfileOrGuide: sem perfis e sem escolha retorna undefined', async () => {
+  __resetConfigValues();
+  __setWarningResult(undefined);
+  try {
+    assert.strictEqual(await pickProfileOrGuide(), undefined);
+  } finally {
+    __setWarningResult(undefined);
+    __resetConfigValues();
+  }
+});
+
+test('findSqlDevConnectionsPath: system dir sem connections.xml é ignorado', () => {
+  const base = fs.mkdtempSync(path.join(os.tmpdir(), 'sqldev-noconn-'));
+  try {
+    fs.mkdirSync(path.join(base, 'system21.1.0'));
+    assert.strictEqual(findSqlDevConnectionsPath([base]), undefined);
+  } finally {
+    fs.rmSync(base, { recursive: true, force: true });
+  }
+});
+
+test('pickProfileOrGuide: escolha "Novo perfil" dispara utplsql.newProfile', async () => {
+  __resetConfigValues();
+  __setWarningResult('Novo perfil');
+  stubCommands.__resetExecutedCommands();
+  try {
+    assert.strictEqual(await pickProfileOrGuide(), undefined);
+    assert.ok(stubCommands.__getExecutedCommands().includes('utplsql.newProfile'));
+  } finally {
+    __setWarningResult(undefined);
+    stubCommands.__resetExecutedCommands();
+    __resetConfigValues();
+  }
+});
+
+test('pickProfileOrGuide: escolha "Importar" dispara importSqlDevConnections', async () => {
+  __resetConfigValues();
+  __setWarningResult('Importar do SQL Developer');
+  stubCommands.__resetExecutedCommands();
+  try {
+    assert.strictEqual(await pickProfileOrGuide(), undefined);
+    assert.ok(stubCommands.__getExecutedCommands().includes('utplsql.importSqlDevConnections'));
+  } finally {
+    __setWarningResult(undefined);
+    stubCommands.__resetExecutedCommands();
+    __resetConfigValues();
+  }
+});
+
+test('pickProfileOrGuide: após criar perfil, repete o picker e retorna', async () => {
+  const created: ConnectionProfile[] = [{ id: 'p9', name: 'NOVO', connection: 'c' }];
+  __resetConfigValues();
+  __setWarningResult('Novo perfil');
+  __setQuickPickResult({ label: 'NOVO', profile: created[0] });
+  stubCommands.__setExecuteCommandImpl(() => {
+    __setConfigValue('profiles', created);
+  });
+  try {
+    assert.strictEqual((await pickProfileOrGuide())?.id, 'p9');
+  } finally {
+    __setWarningResult(undefined);
+    __setQuickPickResult(undefined);
+    stubCommands.__setExecuteCommandImpl(undefined);
+    __resetConfigValues();
+  }
 });

@@ -21,5 +21,8 @@
   "nls.command.newProfile": "utPLSQL: Νέο προφίλ σύνδεσης...",
   "nls.command.manageProfiles": "utPLSQL: Διαχείριση προφίλ σύνδεσης",
   "nls.command.importSqlDevConnections": "utPLSQL: Εισαγωγή συνδέσεων SQL Developer",
-  "nls.command.debugTest": "utPLSQL: Αποσφαλμάτωση τεστ (PL/SQL)"
+  "nls.command.debugTest": "utPLSQL: Αποσφαλμάτωση τεστ (PL/SQL)",
+  "nls.command.runScript": "utPLSQL: Run script",
+  "nls.command.runScriptFile": "utPLSQL: Run script file",
+  "nls.command.runScriptFolder": "utPLSQL: Run script folder"
 }

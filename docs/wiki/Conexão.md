@@ -5,10 +5,11 @@ resolução segue esta ordem de prioridade:
 
 | Prioridade | Fonte | Persiste? |
 |---|---|---|
-| 1 | Setting `utplsql.connection` | Sim (settings.json) |
-| 2 | Variável de ambiente `UTPLSQL_CONN` | Não (apenas na sessão do shell) |
-| 3 | Cache da sessão (prompt anterior) | Sim, até fechar o VSCode |
-| 4 | Prompt ao usuário | Não (memória volátil) |
+| 1 | Perfil ativo (`utplsql.activeProfile` → `profile.connection`) | Sim (settings.json) |
+| 2 | Setting `utplsql.connection` | Sim (settings.json) |
+| 3 | Variável de ambiente `UTPLSQL_CONN` | Não (apenas na sessão do shell) |
+| 4 | Cache da sessão (prompt anterior) | Sim, até fechar o VSCode |
+| 5 | Prompt ao usuário | Não (memória volátil) |
 
 ![Resolução da conexão Oracle](images/diagram-conexao.png)
 

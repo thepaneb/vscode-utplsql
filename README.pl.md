@@ -112,12 +112,17 @@ Test Explorerze **w miarę kończenia każdego testu**.
 | `utplsql.organization.schemaPattern` | `db/{schema}/**` | Wzorzec glob do wyodrębnienia schematu ze ścieżki. Użyj `{schema}` jako symbolu zastępczego. W trybie `schema` katalogi poniżej podstawy wzorca (np. `db/*`) definiują schematy odpytywane w bazie danych. |
 | `utplsql.compilationDiagnostics.enabled` | `true` | Pokazuje błędy kompilacji PL/SQL jako podkreślenia w edytorze i w panelu Problemów. |
 | `utplsql.setupDiagnostics.enabled` | `true` | Pokazuje diagnostykę konfiguracji (połączenie, granty, wersja) oraz **integralność instalacji utPLSQL** (nieprawidłowe obiekty w schemacie UT3, z quick-fixem "Recompile UT3") z akcjami quick-fix. |
-| `utplsql.profiles` | `[]` | Zapisane profile połączeń Oracle (nazwa, połączenie oraz nadpisania `sourcePath`/`coverageOwner`/itd.) do przełączania między środowiskami. |
+| `utplsql.profiles` | `[]` | Zapisane profile połączeń Oracle (nazwa, połączenie oraz nadpisania `sourcePath`/`coverageOwner`/itd.) do przełączania między środowiskami. (Full field reference: [wiki](https://github.com/thepaneb/vscode-utplsql/wiki/Configuration)). |
 | `utplsql.activeProfile` | `""` | ID aktywnego profilu (`utplsql.profiles`). Gdy ustawione, nadpisuje `utplsql.connection`. |
 | `utplsql.sqlCoverageEnabled` | `false` | Śledzi widoki wykonane przez `V$SQL` (pokrycie boolowskie). Wymaga `GRANT SELECT ON V$SQL`. |
 | `utplsql.debugger.enabled` | `true` | Włącza debugowanie testów PL/SQL (`DBMS_DEBUG`). Wymaga `node-oracledb` + grantów. |
 | `utplsql.debugger.stopOnException` | `true` | Wstrzymuje na wyjątkach PL/SQL podczas debugowania. |
 | `utplsql.debugger.timeoutSeconds` | `300` | Limit czasu (s) sesji debugowania. |
+| `utplsql.scriptRunner.stopOnError` | `true` | Stops script execution on the first failure (`false` = keeps logging the rest). |
+| `utplsql.scriptRunner.autoCommit` | `true` | `autoCommit` on each script statement. |
+| `utplsql.scriptRunner.filePattern` | `**/*.{sql,pks,pkb,fnc,prc,trg}` | Globs to list files when running a script folder. |
+| `utplsql.scriptRunner.dbmsOutput` | `false` | Captures and displays `DBMS_OUTPUT` during script execution. |
+| `utplsql.scriptRunner.timeoutSeconds` | `300` | Per-statement timeout (s) for scripts (`callTimeout`). |
 | `utplsql.language` | `auto` | Język komunikatów środowiska uruchomieniowego. `auto` podąża za VSCode (pt, zh-tw/zh-hk, zh, es, ja, de, fr, it, ko, ru, tr, pl, cs, hu, bg, el, id, ro, sr, th, uk, vi, en-gb; w przeciwnym razie en). Obejmuje **24 lokalizacje** (15 natywnych + 9 społeczności). |
 
 Przykład (`settings.json` projektu):
@@ -217,6 +222,9 @@ Wszystkie polecenia rozszerzenia (paleta `Ctrl+Shift+P`, prefiks `utPLSQL:`):
 | `utPLSQL: Manage connection profiles` | Otwiera ustawienia przy `utplsql.profiles` | — |
 | `utPLSQL: Import connections from SQL Developer` | Importuje połączenia z SQL Developera (connections.xml) | — |
 | `utPLSQL: Debug test (PL/SQL)` | Uruchamia sesję debugowania testu w aktywnym pliku | — |
+| `utPLSQL: Run script` | Runs the script open in the editor against a connection profile | Right-click → script file |
+| `utPLSQL: Run script file` | Runs an Explorer script file (decoded with the profile charset) | Right-click → file |
+| `utPLSQL: Run script folder` | Runs the folder scripts in alphabetical order | Right-click → folder |
 
 > **Recompile UT3** (`utplsql.recompileUt3`) **nie jest** poleceniem palety — to
 > wewnętrzny quick-fix diagnostyki "utPLSQL Setup" (nieprawidłowe obiekty w

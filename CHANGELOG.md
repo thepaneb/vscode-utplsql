@@ -2,6 +2,16 @@
 
 ## 0.12.0
 
+- **Execução de scripts SQL contra perfis (PRD-62)**: rode scripts
+  SQL/PL/SQL (migrações, seeds, setup) contra um perfil de conexão via
+  `utPLSQL: Executar script` (editor), `utPLSQL: Executar arquivo de script`
+  e `utPLSQL: Executar pasta de scripts` (Explorer) — QuickPick de conexão
+  após a invocação, saída por statement no OutputChannel "utPLSQL Script".
+  Perfis ganham `description` (exibida no picker) e `charset`
+  (`utf8`/`latin1`/`win1252`, para ler arquivos no encoding correto).
+  Settings `utplsql.scriptRunner.*` (`stopOnError`, `autoCommit`,
+  `filePattern`, `dbmsOutput`, `timeoutSeconds`).
+
 - **Perfis de conexão (PRD-34)**: salve e alterne entre múltiplas conexões
   Oracle (`utplsql.profiles` + `utplsql.activeProfile`) com configurações por
   perfil (`sourcePath`, `coverageOwner`, `invocation`, `cliPath`, etc.).

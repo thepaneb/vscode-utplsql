@@ -22,6 +22,13 @@ interface UtConfig {
   debuggerStopOnException: boolean;   // default: true
   debuggerTimeoutSeconds: number;     // default: 300
 
+  // Script runner (PRD-62)
+  scriptRunnerStopOnError: boolean;   // default: true
+  scriptRunnerAutoCommit: boolean;    // default: true
+  scriptRunnerFilePattern: string;    // default: "**/*.{sql,pks,pkb,fnc,prc,trg}"
+  scriptRunnerDbmsOutput: boolean;    // default: false
+  scriptRunnerTimeoutSeconds: number; // default: 300
+
   // i18n (PRD-49)
   language:
     | 'auto'
@@ -115,12 +122,16 @@ interface ConnectionProfile {
   id: string;
   name: string;
   connection: string;
+  description?: string;          // PRD-62: exibido no picker
+  charset?: ProfileCharset;      // PRD-62: 'utf8' | 'latin1' | 'win1252'
   sourcePath?: string;
   coverageOwner?: string;
   includePatterns?: string[];
   isDefault?: boolean;
   lastUsed?: string;
 }
+
+type ProfileCharset = 'utf8' | 'latin1' | 'win1252';
 ```
 
 ### Settings
@@ -135,6 +146,7 @@ interface ConnectionProfile {
 ```typescript
 maskConnection(conn: string): string;                     // "scott/tiger@host" → "scott@host"
 selectProfile(profiles): Promise<ConnectionProfile | undefined>;  // QuickPick
+pickProfileOrGuide(): Promise<ConnectionProfile | undefined>;     // PRD-62: picker obrigatório pós-invocação
 importFromSqlDeveloper(): Promise<ConnectionProfile[]>;   // parse de connections.xml
 getActiveProfile(): ConnectionProfile | undefined;
 saveProfiles(profiles): Promise<void>;
@@ -147,6 +159,50 @@ mergeProfileConfig(global: UtConfig, profile?): UtConfig;
 - `mergeProfileConfig` aplica os campos do perfil sobre a config global; sem
   perfil → global intacto
 - `resolveConnection()` checa o perfil ativo **antes** do setting `utplsql.connection`
+- `selectProfile` exibe `description` no `detail` e o `charset` ao lado da
+  conexão mascarada quando diferente de `utf8` (PRD-62)
+- `pickProfileOrGuide` (PRD-62): se há perfis, delega ao `selectProfile`; se
+  não há, oferece criar (`utplsql.newProfile`) ou importar
+  (`utplsql.importSqlDevConnections`), e só então repete o picker
+
+## Script Runner (PRD-62)
+
+`src/scriptRunner.ts`. Execução de scripts SQL/PL/SQL arbitrários contra um
+perfil de conexão, via Oracle direto (`connectOracle` + `ensurePool` de
+`oracleRunner.ts`). Comandos: `utplsql.runScript` (editor),
+`utplsql.runScriptFile` (arquivo), `utplsql.runScriptFolder` (pasta).
+
+```typescript
+type ProfileCharset = 'utf8' | 'latin1' | 'win1252';
+interface SqlStatement { text: string; index: number; line: number }
+
+splitScript(text: string): SqlStatement[];              // puro
+decodeScript(bytes: Uint8Array, charset?): string;      // puro
+filterScriptFiles(paths: string[], filePattern: string): string[];  // puro
+executeScript(connect: ScriptConnect, opts: ScriptRunOptions): Promise<ScriptRunResult>;
+connectOracle(connection: string, opts?): Promise<ScriptDb>;
+```
+
+- `splitScript`: blocos PL/SQL (`BEGIN`/`DECLARE`/`CREATE ... FUNCTION,
+  PROCEDURE, PACKAGE, TRIGGER, TYPE) terminam em `/` em linha própria;
+  demais statements terminam em `;`. Comentários e literais nunca quebram o
+  split. Classificação preguiçosa no primeiro `;`/`/` (cabeçalho pode
+  abranger várias linhas).
+- `decodeScript`: `utf8`/`win1252` via `TextDecoder`; `latin1` via
+  `Buffer.toString('latin1')` (ISO-8859-1 real — `TextDecoder('iso-8859-1')`
+  decodificaria como windows-1252 pelo WHATWG). Ausente/inválido → `utf8`.
+- `executeScript`: sequencial, saída `[N] (ok|erro) <ms> — <resumo>` no
+  `OutputChannel`, `stopOnError` (default `true`), `autoCommit`,
+  `DBMS_OUTPUT` opcional, cancelamento via `token` + `conn.break()`, senha
+  mascarada via `maskConnection`.
+
+| Setting | Default |
+|---|---|
+| `utplsql.scriptRunner.stopOnError` | `true` |
+| `utplsql.scriptRunner.autoCommit` | `true` |
+| `utplsql.scriptRunner.filePattern` | `**/*.{sql,pks,pkb,fnc,prc,trg}` |
+| `utplsql.scriptRunner.dbmsOutput` | `false` |
+| `utplsql.scriptRunner.timeoutSeconds` | `300` |
 
 ## i18n (PRD-49)
 

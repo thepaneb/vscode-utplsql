@@ -111,12 +111,17 @@ Test Explorer **ngay khi từng bài kiểm thử hoàn tất**. VSIX đã kèm 
 | `utplsql.organization.schemaPattern` | `db/{schema}/**` | Glob để trích xuất schema từ đường dẫn. Dùng `{schema}` làm placeholder. Trong chế độ `schema`, các thư mục bên dưới gốc của pattern (ví dụ `db/*`) định nghĩa các schema được truy vấn trong cơ sở dữ liệu. |
 | `utplsql.compilationDiagnostics.enabled` | `true` | Hiển thị lỗi biên dịch PL/SQL dưới dạng gạch chân trong trình soạn thảo và Problems Panel. |
 | `utplsql.setupDiagnostics.enabled` | `true` | Hiển thị chẩn đoán cấu hình (kết nối, quyền, phiên bản) và **tính toàn vẹn của bản cài utPLSQL** (các đối tượng không hợp lệ trong schema UT3, kèm quick-fix "Recompile UT3") với các hành động quick-fix. |
-| `utplsql.profiles` | `[]` | Các hồ sơ kết nối Oracle đã lưu (tên, kết nối và ghi đè `sourcePath`/`coverageOwner`/v.v.) để chuyển đổi giữa các môi trường. |
+| `utplsql.profiles` | `[]` | Các hồ sơ kết nối Oracle đã lưu (tên, kết nối và ghi đè `sourcePath`/`coverageOwner`/v.v.) để chuyển đổi giữa các môi trường. (Full field reference: [wiki](https://github.com/thepaneb/vscode-utplsql/wiki/Configuration)). |
 | `utplsql.activeProfile` | `""` | ID của hồ sơ đang hoạt động (`utplsql.profiles`). Khi được đặt, ghi đè `utplsql.connection`. |
 | `utplsql.sqlCoverageEnabled` | `false` | Theo dõi các view được thực thi qua `V$SQL` (độ phủ boolean). Cần `GRANT SELECT ON V$SQL`. |
 | `utplsql.debugger.enabled` | `true` | Bật gỡ lỗi kiểm thử PL/SQL (`DBMS_DEBUG`). Cần `node-oracledb` + grants. |
 | `utplsql.debugger.stopOnException` | `true` | Tạm dừng khi có exception PL/SQL trong lúc gỡ lỗi. |
 | `utplsql.debugger.timeoutSeconds` | `300` | Thời gian chờ (giây) của phiên gỡ lỗi. |
+| `utplsql.scriptRunner.stopOnError` | `true` | Stops script execution on the first failure (`false` = keeps logging the rest). |
+| `utplsql.scriptRunner.autoCommit` | `true` | `autoCommit` on each script statement. |
+| `utplsql.scriptRunner.filePattern` | `**/*.{sql,pks,pkb,fnc,prc,trg}` | Globs to list files when running a script folder. |
+| `utplsql.scriptRunner.dbmsOutput` | `false` | Captures and displays `DBMS_OUTPUT` during script execution. |
+| `utplsql.scriptRunner.timeoutSeconds` | `300` | Per-statement timeout (s) for scripts (`callTimeout`). |
 | `utplsql.language` | `auto` | Ngôn ngữ của các thông báo runtime. `auto` theo VSCode (pt, zh-tw/zh-hk, zh, es, ja, de, fr, it, ko, ru, tr, pl, cs, hu, bg, el, id, ro, sr, th, uk, vi, en-gb; nếu không thì en). Bao phủ **24 locale** (15 gốc + 9 cộng đồng). |
 
 Ví dụ (`.vscode/settings.json` của dự án):
@@ -216,6 +221,9 @@ Tất cả các lệnh của extension (palette `Ctrl+Shift+P` tiền tố `utPL
 | `utPLSQL: Manage connection profiles` | Mở cài đặt tại `utplsql.profiles` | — |
 | `utPLSQL: Import connections from SQL Developer` | Nhập kết nối từ SQL Developer (connections.xml) | — |
 | `utPLSQL: Debug test (PL/SQL)` | Bắt đầu phiên gỡ lỗi của bài kiểm thử trong tệp đang mở | — |
+| `utPLSQL: Run script` | Runs the script open in the editor against a connection profile | Right-click → script file |
+| `utPLSQL: Run script file` | Runs an Explorer script file (decoded with the profile charset) | Right-click → file |
+| `utPLSQL: Run script folder` | Runs the folder scripts in alphabetical order | Right-click → folder |
 
 > **Recompile UT3** (`utplsql.recompileUt3`) **không phải** là lệnh palette — nó là
 > quick-fix nội bộ của diagnostic "utPLSQL Setup" (các đối tượng không hợp lệ trong

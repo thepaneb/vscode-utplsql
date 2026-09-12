@@ -11,6 +11,7 @@ import {
   generateId,
   getAllProfiles,
   importFromSqlDeveloper,
+  pickProfileOrGuide,
   saveProfiles,
   selectProfile,
   setActiveProfile,
@@ -33,9 +34,16 @@ import { filterSuitesByFolder, filterSuitesByUri } from './matching';
 import { closeOraclePool } from './oracleRunner';
 import { setupValidator, UtplsqlCodeActionProvider } from './quickfix';
 import { executeRun } from './runner';
+import {
+  connectOracle,
+  decodeScript,
+  executeScript,
+  filterScriptFiles,
+  splitScript,
+} from './scriptRunner';
 import { TestStateManager } from './state';
 import { UtplsqlStatusBar } from './statusBar';
-import type { ConnectionProfile, ItemMeta } from './types';
+import type { ConnectionProfile, ItemMeta, ProfileCharset } from './types';
 
 const state = new TestStateManager();
 let currentRunToken: vscode.CancellationTokenSource | undefined;
@@ -43,6 +51,13 @@ let refreshPromise: Promise<void> | undefined;
 let needsRefresh = false;
 let statusBar: UtplsqlStatusBar | undefined;
 let decorationManager: DecorationManager | undefined;
+let scriptChannel: vscode.OutputChannel | undefined;
+
+/** OutputChannel dedicado ("utPLSQL Script") — criado sob demanda. */
+function getScriptChannel(): vscode.OutputChannel {
+  if (!scriptChannel) scriptChannel = vscode.window.createOutputChannel('utPLSQL Script');
+  return scriptChannel;
+}
 
 export function activate(context: vscode.ExtensionContext) {
   const locale = getExtensionLocale();
@@ -422,12 +437,32 @@ export function activate(context: vscode.ExtensionContext) {
         prompt: t(locale, 'ext.profile.new.sourcePrompt'),
         placeHolder: t(locale, 'ext.profile.new.sourcePlaceholder'),
       });
+      const description = await vscode.window.showInputBox({
+        title: t(locale, 'ext.profile.new.title'),
+        prompt: t(locale, 'ext.profile.new.descPrompt'),
+        placeHolder: t(locale, 'ext.profile.new.descPlaceholder'),
+      });
+      const charsetPick = await vscode.window.showQuickPick(
+        [
+          { label: 'utf8', description: t(locale, 'ext.profile.new.charsetDefault') },
+          { label: 'latin1' },
+          { label: 'win1252' },
+        ],
+        {
+          title: t(locale, 'ext.profile.new.title'),
+          placeHolder: t(locale, 'ext.profile.new.charsetPrompt'),
+        },
+      );
       const profile: ConnectionProfile = {
         id: generateId(),
         name: name.trim(),
         connection: connection.trim(),
       };
       if (sourcePath?.trim()) profile.sourcePath = sourcePath.trim();
+      if (description?.trim()) profile.description = description.trim();
+      if (charsetPick && charsetPick.label !== 'utf8') {
+        profile.charset = charsetPick.label as ProfileCharset;
+      }
       const profiles = getAllProfiles();
       await saveProfiles([...profiles, profile]);
       await setActiveProfile(profile.id);
@@ -435,6 +470,54 @@ export function activate(context: vscode.ExtensionContext) {
       vscode.window.showInformationMessage(
         t(locale, 'ext.profile.new.created', { name: profile.name }),
       );
+    }),
+    vscode.commands.registerCommand('utplsql.runScript', async () => {
+      const editor = vscode.window.activeTextEditor;
+      if (!editor) {
+        vscode.window.showWarningMessage(t(locale, 'script.noEditor'));
+        return;
+      }
+      const profile = await pickProfileOrGuide();
+      if (!profile) return;
+      const text = editor.document.getText();
+      await runScriptText(editor.document.fileName, text, profile, undefined);
+    }),
+    vscode.commands.registerCommand('utplsql.runScriptFile', async (uri?: vscode.Uri) => {
+      const target = uri ?? vscode.window.activeTextEditor?.document.uri;
+      if (!target) {
+        vscode.window.showWarningMessage(t(locale, 'script.noEditor'));
+        return;
+      }
+      const profile = await pickProfileOrGuide();
+      if (!profile) return;
+      await runScriptFiles([target.fsPath], profile);
+    }),
+    vscode.commands.registerCommand('utplsql.runScriptFolder', async (uri?: vscode.Uri) => {
+      const target = uri ?? vscode.window.activeTextEditor?.document.uri;
+      if (!target) {
+        vscode.window.showWarningMessage(t(locale, 'script.noEditor'));
+        return;
+      }
+      const folderUri = target;
+      try {
+        const stat = await vscode.workspace.fs.stat(folderUri);
+        if (stat.type !== vscode.FileType.Directory) {
+          vscode.window.showWarningMessage(t(locale, 'script.notFolder'));
+          return;
+        }
+      } catch {
+        vscode.window.showWarningMessage(t(locale, 'script.notFolder'));
+        return;
+      }
+      const profile = await pickProfileOrGuide();
+      if (!profile) return;
+      const all = await listFilesRecursive(folderUri);
+      const files = filterScriptFiles(all, readConfig().scriptRunnerFilePattern);
+      if (files.length === 0) {
+        vscode.window.showWarningMessage(t(locale, 'script.noScriptsInFolder'));
+        return;
+      }
+      await runScriptFiles(files, profile);
     }),
   );
 
@@ -843,4 +926,84 @@ async function runSingleTest(
     coverage,
     state,
   );
+}
+
+/** Lista todos os arquivos sob uma pasta, recursivamente (fsPaths). */
+async function listFilesRecursive(folder: vscode.Uri): Promise<string[]> {
+  const out: string[] = [];
+  const entries = await vscode.workspace.fs.readDirectory(folder);
+  for (const [name, type] of entries) {
+    const child = vscode.Uri.joinPath(folder, name);
+    if (type === vscode.FileType.Directory) {
+      out.push(...(await listFilesRecursive(child)));
+    } else if (type === vscode.FileType.File) {
+      out.push(child.fsPath);
+    }
+  }
+  return out;
+}
+
+/**
+ * Executa um texto de script já carregado (editor) contra o perfil.
+ * `charset` omitido — o texto já vem decodificado pelo VSCode.
+ */
+async function runScriptText(
+  label: string,
+  text: string,
+  profile: ConnectionProfile,
+  charset: ProfileCharset | undefined,
+): Promise<void> {
+  const locale = getExtensionLocale();
+  const statements = splitScript(text);
+  if (statements.length === 0) {
+    vscode.window.showInformationMessage(t(locale, 'script.noStatements'));
+    return;
+  }
+  const cfg = readConfig();
+  const channel = getScriptChannel();
+  channel.show(true);
+  await vscode.window.withProgress(
+    {
+      location: vscode.ProgressLocation.Notification,
+      title: 'utPLSQL Script',
+      cancellable: true,
+    },
+    async (_progress, token) => {
+      const connect = (conn: string) =>
+        connectOracle(conn, { timeoutSeconds: cfg.scriptRunnerTimeoutSeconds });
+      await executeScript(connect, {
+        connection: profile.connection,
+        statements,
+        output: channel,
+        token,
+        autoCommit: cfg.scriptRunnerAutoCommit,
+        stopOnError: cfg.scriptRunnerStopOnError,
+        dbmsOutput: cfg.scriptRunnerDbmsOutput,
+        label,
+        charset,
+      });
+    },
+  );
+}
+
+/**
+ * Executa arquivos de script do Explorer: lê bytes, decodifica no charset do
+ * perfil e executa em sequência no mesmo OutputChannel.
+ */
+async function runScriptFiles(paths: string[], profile: ConnectionProfile): Promise<void> {
+  const charset = profile.charset ?? 'utf8';
+  for (const fsPath of paths) {
+    const base = fsPath.split(/[\\/]/).pop() ?? fsPath;
+    let text: string;
+    try {
+      const bytes = await vscode.workspace.fs.readFile(vscode.Uri.file(fsPath));
+      text = decodeScript(bytes, profile.charset);
+    } catch (err) {
+      const channel = getScriptChannel();
+      channel.show(true);
+      channel.appendLine(`${base}: ${err instanceof Error ? err.message : String(err)}`);
+      return;
+    }
+    await runScriptText(base, text, profile, charset);
+  }
 }

@@ -111,12 +111,17 @@ Test Explorer-у **како се сваки тест заврши**. VSIX већ
 | `utplsql.organization.schemaPattern` | `db/{schema}/**` | Glob узорак за издвајање шеме из путање. Користите `{schema}` као placeholder. У `schema` режиму, директоријуми испод основе узорка (нпр. `db/*`) дефинишу шеме упитане у бази података. |
 | `utplsql.compilationDiagnostics.enabled` | `true` | Приказује PL/SQL грешке компилације као подвлачења у едитору и Problems панелу. |
 | `utplsql.setupDiagnostics.enabled` | `true` | Приказује дијагностику конфигурације (веза, grant-ови, верзија) и **интегритет utPLSQL инсталације** (неважећи објекти у UT3 шеми, са „Recompile UT3" quick-fix-ом) са quick-fix радњама. |
-| `utplsql.profiles` | `[]` | Сачувани Oracle профили веза (име, веза и замене `sourcePath`-а/`coverageOwner`-а/итд.) за пребацивање између окружења. |
+| `utplsql.profiles` | `[]` | Сачувани Oracle профили веза (име, веза и замене `sourcePath`-а/`coverageOwner`-а/итд.) за пребацивање између окружења. (Full field reference: [wiki](https://github.com/thepaneb/vscode-utplsql/wiki/Configuration)). |
 | `utplsql.activeProfile` | `""` | ID активног профила (`utplsql.profiles`). Када је постављен, поништава `utplsql.connection`. |
 | `utplsql.sqlCoverageEnabled` | `false` | Прати погледе извршене преко `V$SQL` (булова покривеност). Захтева `GRANT SELECT ON V$SQL`. |
 | `utplsql.debugger.enabled` | `true` | Омогућава отклањање грешака PL/SQL тестова (`DBMS_DEBUG`). Захтева `node-oracledb` + grant-ове. |
 | `utplsql.debugger.stopOnException` | `true` | Паузира на PL/SQL изузецима током отклањања грешака. |
 | `utplsql.debugger.timeoutSeconds` | `300` | Тимеаут (с) сесије отклањања грешака. |
+| `utplsql.scriptRunner.stopOnError` | `true` | Stops script execution on the first failure (`false` = keeps logging the rest). |
+| `utplsql.scriptRunner.autoCommit` | `true` | `autoCommit` on each script statement. |
+| `utplsql.scriptRunner.filePattern` | `**/*.{sql,pks,pkb,fnc,prc,trg}` | Globs to list files when running a script folder. |
+| `utplsql.scriptRunner.dbmsOutput` | `false` | Captures and displays `DBMS_OUTPUT` during script execution. |
+| `utplsql.scriptRunner.timeoutSeconds` | `300` | Per-statement timeout (s) for scripts (`callTimeout`). |
 | `utplsql.language` | `auto` | Језик порука у реалном времену. `auto` прати VSCode (pt, zh-tw/zh-hk, zh, es, ja, de, fr, it, ko, ru, tr, pl, cs, hu, bg, el, id, ro, sr, th, uk, vi, en-gb; у супротном en). Покрива **24 локала** (15 изворних + 9 заједничких). |
 
 Пример (пројектни `.vscode/settings.json`):
@@ -216,6 +221,9 @@ UTPLSQL_CONN=your_user/password@//host:1521/service
 | `utPLSQL: Manage connection profiles` | Отвара подешавања на `utplsql.profiles` | — |
 | `utPLSQL: Import connections from SQL Developer` | Увози везе из SQL Developer-а (connections.xml) | — |
 | `utPLSQL: Debug test (PL/SQL)` | Покреће сесију отклањања грешака теста у активној датотеци | — |
+| `utPLSQL: Run script` | Runs the script open in the editor against a connection profile | Right-click → script file |
+| `utPLSQL: Run script file` | Runs an Explorer script file (decoded with the profile charset) | Right-click → file |
+| `utPLSQL: Run script folder` | Runs the folder scripts in alphabetical order | Right-click → folder |
 
 > **Recompile UT3** (`utplsql.recompileUt3`) **није** команда у палети — то је
 > интерни quick-fix дијагностике „utPLSQL Setup" (неважећи објекти у

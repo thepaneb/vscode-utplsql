@@ -110,12 +110,17 @@ Extensia se conectează direct prin Oracle, citește rapoartele (JUnit + Coverag
 | `utplsql.organization.schemaPattern` | `db/{schema}/**` | Model glob pentru extragerea schemei din cale. Folosește `{schema}` ca substituent. În modul `schema`, directoarele de sub baza modelului (ex.: `db/*`) definesc schemele interogate în baza de date. |
 | `utplsql.compilationDiagnostics.enabled` | `true` | Afișează erorile de compilare PL/SQL ca sublinieri în editor și în panoul de probleme. |
 | `utplsql.setupDiagnostics.enabled` | `true` | Afișează diagnostice de configurare (conexiune, granturi, versiune) și **integritatea instalării utPLSQL** (obiecte invalide în schema UT3, cu quick-fix „Recompile UT3") cu acțiuni quick-fix. |
-| `utplsql.profiles` | `[]` | Profiluri de conexiune Oracle salvate (nume, conexiune și suprascrieri ale `sourcePath`/`coverageOwner`/etc.) pentru a comuta între medii. |
+| `utplsql.profiles` | `[]` | Profiluri de conexiune Oracle salvate (nume, conexiune și suprascrieri ale `sourcePath`/`coverageOwner`/etc.) pentru a comuta între medii. (Full field reference: [wiki](https://github.com/thepaneb/vscode-utplsql/wiki/Configuration)). |
 | `utplsql.activeProfile` | `""` | ID-ul profilului activ (`utplsql.profiles`). Când este setat, suprascrie `utplsql.connection`. |
 | `utplsql.sqlCoverageEnabled` | `false` | Urmărește vizualizările executate prin `V$SQL` (acoperire booleană). Necesită `GRANT SELECT ON V$SQL`. |
 | `utplsql.debugger.enabled` | `true` | Activează depanarea testelor PL/SQL (`DBMS_DEBUG`). Necesită `node-oracledb` + granturi. |
 | `utplsql.debugger.stopOnException` | `true` | Se oprește la excepțiile PL/SQL în timpul depanării. |
 | `utplsql.debugger.timeoutSeconds` | `300` | Timeout (s) al sesiunii de depanare. |
+| `utplsql.scriptRunner.stopOnError` | `true` | Stops script execution on the first failure (`false` = keeps logging the rest). |
+| `utplsql.scriptRunner.autoCommit` | `true` | `autoCommit` on each script statement. |
+| `utplsql.scriptRunner.filePattern` | `**/*.{sql,pks,pkb,fnc,prc,trg}` | Globs to list files when running a script folder. |
+| `utplsql.scriptRunner.dbmsOutput` | `false` | Captures and displays `DBMS_OUTPUT` during script execution. |
+| `utplsql.scriptRunner.timeoutSeconds` | `300` | Per-statement timeout (s) for scripts (`callTimeout`). |
 | `utplsql.language` | `auto` | Limba mesajelor runtime. `auto` urmează VSCode (pt, zh-tw/zh-hk, zh, es, ja, de, fr, it, ko, ru, tr, pl, cs, hu, bg, el, id, ro, sr, th, uk, vi, en-gb; altfel en). Acoperă cele **24 de localizări** (15 native + 9 comunitare). |
 
 Exemplu (`.vscode/settings.json` din proiect):
@@ -215,6 +220,9 @@ Toate comenzile extensiei (paletă `Ctrl+Shift+P`, prefix `utPLSQL:`):
 | `utPLSQL: Manage connection profiles` | Deschide setările la `utplsql.profiles` | — |
 | `utPLSQL: Import connections from SQL Developer` | Importă conexiuni din SQL Developer (connections.xml) | — |
 | `utPLSQL: Debug test (PL/SQL)` | Pornește o sesiune de depanare a testului din fișierul activ | — |
+| `utPLSQL: Run script` | Runs the script open in the editor against a connection profile | Right-click → script file |
+| `utPLSQL: Run script file` | Runs an Explorer script file (decoded with the profile charset) | Right-click → file |
+| `utPLSQL: Run script folder` | Runs the folder scripts in alphabetical order | Right-click → folder |
 
 > **Recompile UT3** (`utplsql.recompileUt3`) **nu** este o comandă din paletă — este
 > un quick-fix intern al diagnosticului „utPLSQL Setup" (obiecte invalide în

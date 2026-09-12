@@ -30,6 +30,9 @@ prefixed with `utPLSQL:`.
 | `utPLSQL: Manage connection profiles` | Opens saved connection profiles | — |
 | `utPLSQL: Import connections from SQL Developer` | Imports SQL Developer connections as profiles | — |
 | `utPLSQL: Debug test (PL/SQL)` | Starts debugging a test via DBMS_DEBUG (`utplsql` Debug Adapter) | — |
+| `utPLSQL: Run script` | Runs the script open in the editor against a profile (connection QuickPick) | Right-click → `.sql`/`.pks`/`.pkb`/`.fnc`/`.prc`/`.trg` file |
+| `utPLSQL: Run script file` | Runs an Explorer script file (decoded with the profile `charset`) | Right-click → file |
+| `utPLSQL: Run script folder` | Runs the folder scripts in alphabetical order (`utplsql.scriptRunner.filePattern` filter) | Right-click → folder |
 | `utPLSQL: Copy coverage grants to clipboard` | Copies SQL grants to clipboard | — |
 | `utPLSQL: Execute test (CodeLens)` | Internal — triggered by CodeLens buttons | ▶ button over `%suite`/`%test` |
 
@@ -42,6 +45,8 @@ Execution commands also appear in the context menu:
 
 - **Right-click on a file** `.pks`/`.pkb` → runs the suites in that file
 - **Right-click on a folder** → runs the suites in all `.pks` files inside it
+- **Right-click on a file** `.sql`/`.pks`/`.pkb`/`.fnc`/`.prc`/`.trg` → runs the script against a connection profile (output in the "utPLSQL Script" OutputChannel)
+- **Right-click on a folder** → runs the folder scripts in alphabetical order
 
 ![Context menu on a folder](../images/context-menu-folder.png)
 

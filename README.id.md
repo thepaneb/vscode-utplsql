@@ -110,12 +110,17 @@ Ekstensi terhubung langsung ke Oracle, membaca laporan (JUnit + Coverage) lalu m
 | `utplsql.organization.schemaPattern` | `db/{schema}/**` | Pola glob untuk mengekstrak schema dari path. Gunakan `{schema}` sebagai placeholder. Pada mode `schema`, direktori di bawah basis pola (mis. `db/*`) menentukan schema yang ditanyakan di database. |
 | `utplsql.compilationDiagnostics.enabled` | `true` | Menampilkan error kompilasi PL/SQL sebagai garis bawah di editor dan Panel Problems. |
 | `utplsql.setupDiagnostics.enabled` | `true` | Menampilkan diagnostik konfigurasi (koneksi, grant, versi) serta **integritas instalasi utPLSQL** (objek tidak valid di schema UT3, dengan quick-fix "Recompile UT3") beserta aksi quick-fix. |
-| `utplsql.profiles` | `[]` | Profil koneksi Oracle yang tersimpan (nama, koneksi, dan penimpaan `sourcePath`/`coverageOwner`/dll.) untuk berpindah antar lingkungan. |
+| `utplsql.profiles` | `[]` | Profil koneksi Oracle yang tersimpan (nama, koneksi, dan penimpaan `sourcePath`/`coverageOwner`/dll.) untuk berpindah antar lingkungan. (Full field reference: [wiki](https://github.com/thepaneb/vscode-utplsql/wiki/Configuration)). |
 | `utplsql.activeProfile` | `""` | ID profil aktif (`utplsql.profiles`). Jika diatur, menimpa `utplsql.connection`. |
 | `utplsql.sqlCoverageEnabled` | `false` | Melacak view yang dieksekusi melalui `V$SQL` (coverage boolean). Memerlukan `GRANT SELECT ON V$SQL`. |
 | `utplsql.debugger.enabled` | `true` | Mengaktifkan debugging pengujian PL/SQL (`DBMS_DEBUG`). Memerlukan `node-oracledb` + grant. |
 | `utplsql.debugger.stopOnException` | `true` | Berhenti pada exception PL/SQL saat debugging. |
 | `utplsql.debugger.timeoutSeconds` | `300` | Waktu tunggu (detik) dari sesi debug. |
+| `utplsql.scriptRunner.stopOnError` | `true` | Stops script execution on the first failure (`false` = keeps logging the rest). |
+| `utplsql.scriptRunner.autoCommit` | `true` | `autoCommit` on each script statement. |
+| `utplsql.scriptRunner.filePattern` | `**/*.{sql,pks,pkb,fnc,prc,trg}` | Globs to list files when running a script folder. |
+| `utplsql.scriptRunner.dbmsOutput` | `false` | Captures and displays `DBMS_OUTPUT` during script execution. |
+| `utplsql.scriptRunner.timeoutSeconds` | `300` | Per-statement timeout (s) for scripts (`callTimeout`). |
 | `utplsql.language` | `auto` | Bahasa pesan runtime. `auto` mengikuti VSCode (pt, zh-tw/zh-hk, zh, es, ja, de, fr, it, ko, ru, tr, pl, cs, hu, bg, el, id, ro, sr, th, uk, vi, en-gb; selain itu en). Mencakup **24 locale** (15 asli + 9 komunitas). |
 
 Contoh (`.vscode/settings.json` proyek):
@@ -215,6 +220,9 @@ Semua perintah ekstensi (palet `Ctrl+Shift+P`, prefiks `utPLSQL:`):
 | `utPLSQL: Manage connection profiles` | Membuka pengaturan di `utplsql.profiles` | — |
 | `utPLSQL: Import connections from SQL Developer` | Mengimpor koneksi dari SQL Developer (connections.xml) | — |
 | `utPLSQL: Debug test (PL/SQL)` | Memulai sesi debug untuk pengujian di bawah file aktif | — |
+| `utPLSQL: Run script` | Runs the script open in the editor against a connection profile | Right-click → script file |
+| `utPLSQL: Run script file` | Runs an Explorer script file (decoded with the profile charset) | Right-click → file |
+| `utPLSQL: Run script folder` | Runs the folder scripts in alphabetical order | Right-click → folder |
 
 > **Recompile UT3** (`utplsql.recompileUt3`) **bukan** perintah palet — ini adalah
 > quick-fix internal dari diagnostik "utPLSQL Setup" (objek tidak valid di

@@ -21,5 +21,8 @@
   "nls.command.newProfile": "utPLSQL: 新建连接配置...",
   "nls.command.manageProfiles": "utPLSQL: 管理连接配置",
   "nls.command.importSqlDevConnections": "utPLSQL: 导入 SQL Developer 连接",
-  "nls.command.debugTest": "utPLSQL: 调试测试（PL/SQL）"
+  "nls.command.debugTest": "utPLSQL: 调试测试（PL/SQL）",
+  "nls.command.runScript": "utPLSQL: Run script",
+  "nls.command.runScriptFile": "utPLSQL: Run script file",
+  "nls.command.runScriptFolder": "utPLSQL: Run script folder"
 }

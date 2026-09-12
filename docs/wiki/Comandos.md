@@ -30,6 +30,9 @@ com prefixo `utPLSQL:`.
 | `utPLSQL: Gerenciar perfis de conexão` | Abre os perfis de conexão salvos | — |
 | `utPLSQL: Importar conexões do SQL Developer` | Importa conexões do SQL Developer como perfis | — |
 | `utPLSQL: Depurar teste (PL/SQL)` | Inicia o debug de um teste via DBMS_DEBUG (Debug Adapter `utplsql`) | — |
+| `utPLSQL: Executar script` | Executa o script aberto no editor contra um perfil (QuickPick de conexão) | Clique direito → arquivo `.sql`/`.pks`/`.pkb`/`.fnc`/`.prc`/`.trg` |
+| `utPLSQL: Executar arquivo de script` | Executa um arquivo de script do Explorer (decodificado no `charset` do perfil) | Clique direito → arquivo |
+| `utPLSQL: Executar pasta de scripts` | Executa os scripts da pasta em ordem alfabética (filtro `utplsql.scriptRunner.filePattern`) | Clique direito → pasta |
 | `utPLSQL: Copiar grants de cobertura para clipboard` | Copia grants SQL para clipboard | — |
 | `utPLSQL: Executar teste (CodeLens)` | Interno — disparado pelos botões de CodeLens | Botão ▶ sobre `%suite`/`%test` |
 
@@ -42,6 +45,8 @@ Os comandos de execução também aparecem no menu de contexto:
 
 - **Clique direito num arquivo** `.pks`/`.pkb` → executa as suites daquele arquivo
 - **Clique direito numa pasta** → executa as suites de todos os `.pks` dentro dela
+- **Clique direito num arquivo** `.sql`/`.pks`/`.pkb`/`.fnc`/`.prc`/`.trg` → executa o script contra um perfil de conexão (saída no OutputChannel "utPLSQL Script")
+- **Clique direito numa pasta** → executa os scripts da pasta em ordem alfabética
 
 ![Menu de contexto sobre uma pasta](images/context-menu-folder.png)
 

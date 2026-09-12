@@ -4,7 +4,14 @@ import * as os from 'node:os';
 import * as path from 'node:path';
 import * as vscode from 'vscode';
 import type { UtConfig } from './config';
+import { resolveLocale, t } from './i18n';
 import type { ConnectionProfile } from './types';
+
+/** Idioma efetivo sem importar `config.ts` (evita dependência circular). */
+function profileLocale() {
+  const setting = vscode.workspace.getConfiguration('utplsql').get<string>('language', 'auto');
+  return resolveLocale(setting, vscode.env.language);
+}
 
 /** `scott/tiger@localhost:1521/XE` → `scott@localhost:1521/XE`. */
 export function maskConnection(conn: string): string {
@@ -129,20 +136,52 @@ export function mergeProfileConfig(global: UtConfig, profile?: ConnectionProfile
   };
 }
 
+/**
+ * QuickPick de perfis. Exibe `description` no `detail` (com charset ao lado
+ * quando diferente de `utf8`) e a conexão mascarada na `description`.
+ */
 export async function selectProfile(
   profiles: ConnectionProfile[],
 ): Promise<ConnectionProfile | undefined> {
-  const items = profiles.map((p) => ({
-    label: p.name,
-    description: maskConnection(p.connection),
-    detail: p.isDefault ? 'Default' : undefined,
-    profile: p,
-  }));
+  const items = profiles.map((p) => {
+    const charsetSuffix = p.charset && p.charset !== 'utf8' ? ` • ${p.charset}` : '';
+    const detail = [p.description, p.isDefault ? 'Default' : undefined].filter(Boolean).join(' • ');
+    return {
+      label: p.name,
+      description: `${maskConnection(p.connection)}${charsetSuffix}`,
+      detail: detail || undefined,
+      profile: p,
+    };
+  });
   const selected = await vscode.window.showQuickPick(items, {
     placeHolder: 'Select a connection profile',
     matchOnDescription: true,
   });
   return selected?.profile;
+}
+
+/**
+ * Picker obrigatório pós-invocação (PRD-62): se não houver perfis, oferece
+ * criar/importar (reusa os comandos existentes) ou cancela com aviso.
+ * Retorna o perfil escolhido ou `undefined` quando cancelado/sem perfis.
+ */
+export async function pickProfileOrGuide(): Promise<ConnectionProfile | undefined> {
+  const profiles = getAllProfiles();
+  if (profiles.length > 0) return selectProfile(profiles);
+  const locale = profileLocale();
+  const choice = await vscode.window.showWarningMessage(
+    t(locale, 'ext.profile.guide.none'),
+    t(locale, 'ext.profile.guide.new'),
+    t(locale, 'ext.profile.guide.import'),
+  );
+  if (choice === t(locale, 'ext.profile.guide.new')) {
+    await vscode.commands.executeCommand('utplsql.newProfile');
+  } else if (choice === t(locale, 'ext.profile.guide.import')) {
+    await vscode.commands.executeCommand('utplsql.importSqlDevConnections');
+  }
+  const retry = getAllProfiles();
+  if (retry.length === 0) return undefined;
+  return selectProfile(retry);
 }
 
 /** Importa conexões do SQL Developer; vazio se o XML não for encontrado. */

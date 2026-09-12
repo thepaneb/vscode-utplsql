@@ -154,6 +154,189 @@ describeDB('v0.12.0 — integração com banco Oracle', () => {
     });
   });
 
+  // ── PRD-62: scripts SQL contra perfis (motor + Oracle direto) ──
+  describeDB('scripts SQL contra perfis (PRD-62)', () => {
+    const TABLE = 'UTPLSQL_SCRIPT_IT62';
+    const { splitScript, decodeScript, executeScript, connectOracle } =
+      require('../../scriptRunner.js');
+
+    function collector() {
+      const lines: string[] = [];
+      return {
+        lines,
+        output: { appendLine: (value: string): void => void lines.push(value) },
+      };
+    }
+
+    function parseEnv(): { user: string; password: string; connectString: string } {
+      const conn = process.env.UTPLSQL_CONN as string;
+      const m = conn.match(/^([^/]+)\/([^@]+)@\/\/(.+)$/);
+      assert.ok(m, 'UTPLSQL_CONN deve ser user/pass@//host:port/svc');
+      return { user: m[1], password: m[2], connectString: m[3] };
+    }
+
+    async function openRaw() {
+      const mod = await import('oracledb');
+      const oracledb =
+        ((mod as Record<string, unknown>).default as typeof import('oracledb')) ??
+        (mod as typeof import('oracledb'));
+      const { user, password, connectString } = parseEnv();
+      return oracledb.getConnection({ user, password, connectString });
+    }
+
+    async function dropTableIfExists(
+      dbc: import('oracledb').Connection,
+      table: string = TABLE,
+    ): Promise<void> {
+      try {
+        await dbc.execute(
+          `BEGIN EXECUTE IMMEDIATE 'DROP TABLE ${table}'; EXCEPTION WHEN OTHERS THEN NULL; END;`,
+          {},
+          { autoCommit: true },
+        );
+      } catch {
+        /* ignore */
+      }
+    }
+
+    async function countRows(dbc: import('oracledb').Connection): Promise<number> {
+      const r = await dbc.execute(`SELECT COUNT(*) FROM ${TABLE}`, {});
+      return Number(firstCol(r.rows?.[0]));
+    }
+
+    /** Primeira coluna tolerante a ARRAY ou OBJECT (outFormat global pode variar). */
+    function firstCol(row: unknown): unknown {
+      if (Array.isArray(row)) return row[0];
+      return Object.values((row ?? {}) as Record<string, unknown>)[0];
+    }
+
+    it('split + execute: DDL + bloco PL/SQL (/) + DML executam em sequência', async function () {
+      this.timeout(120_000);
+      const connStr = process.env.UTPLSQL_CONN as string;
+      const dbc = await openRaw();
+      try {
+        await dropTableIfExists(dbc);
+        const { lines, output } = collector();
+        const result = await executeScript(
+          (c: string) => connectOracle(c, { timeoutSeconds: 60 }),
+          {
+            connection: connStr,
+            statements: splitScript(
+              `CREATE TABLE ${TABLE} (id NUMBER, txt VARCHAR2(100));\n` +
+                `BEGIN\n  INSERT INTO ${TABLE} VALUES (1, 'um');\n  INSERT INTO ${TABLE} VALUES (2, 'dois');\nEND;\n/\n` +
+                `INSERT INTO ${TABLE} VALUES (3, 'tres');`,
+            ),
+            output,
+            label: 'seed-62.sql',
+            charset: 'utf8',
+          },
+        );
+        assert.deepStrictEqual([result.executed, result.ok, result.failed], [3, 3, 0]);
+        assert.strictEqual(await countRows(dbc), 3);
+        assert.ok(lines[0].includes('seed-62.sql (utf8)'));
+      } finally {
+        await dropTableIfExists(dbc);
+        await dbc.close().catch(() => {});
+      }
+    });
+
+    it('stopOnError=false continua após ORA-00942; true para na falha', async function () {
+      this.timeout(120_000);
+      const connStr = process.env.UTPLSQL_CONN as string;
+      const dbc = await openRaw();
+      try {
+        await dropTableIfExists(dbc);
+        await dbc.execute(`CREATE TABLE ${TABLE} (id NUMBER)`, {}, { autoCommit: true });
+        const text =
+          `INSERT INTO ${TABLE} VALUES (1);\n` +
+          `INSERT INTO ${TABLE}_INEXISTENTE VALUES (2);\n` +
+          `INSERT INTO ${TABLE} VALUES (3);`;
+        const connect = (c: string) => connectOracle(c, { timeoutSeconds: 60 });
+
+        const cont = await executeScript(connect, {
+          connection: connStr,
+          statements: splitScript(text),
+          output: collector().output,
+          stopOnError: false,
+        });
+        assert.deepStrictEqual([cont.executed, cont.ok, cont.failed], [3, 2, 1]);
+        assert.strictEqual(await countRows(dbc), 2);
+
+        await dbc.execute(`DELETE FROM ${TABLE}`, {}, { autoCommit: true });
+        const stop = await executeScript(connect, {
+          connection: connStr,
+          statements: splitScript(text),
+          output: collector().output,
+          stopOnError: true,
+        });
+        assert.deepStrictEqual([stop.executed, stop.ok, stop.failed], [2, 1, 1]);
+        assert.strictEqual(await countRows(dbc), 1);
+      } finally {
+        await dropTableIfExists(dbc);
+        await dbc.close().catch(() => {});
+      }
+    });
+
+    it('dbmsOutput captura PUT_LINE real do banco', async function () {
+      this.timeout(120_000);
+      const connStr = process.env.UTPLSQL_CONN as string;
+      const { lines, output } = collector();
+      const result = await executeScript((c: string) => connectOracle(c, { timeoutSeconds: 60 }), {
+        connection: connStr,
+        statements: splitScript(`BEGIN DBMS_OUTPUT.PUT_LINE('ola-62'); END;\n/`),
+        output,
+        dbmsOutput: true,
+      });
+      assert.strictEqual(result.failed, 0);
+      assert.ok(
+        lines.some((l) => l.includes('ola-62')),
+        `DBMS_OUTPUT deveria aparecer, veio: ${lines.join('|')}`,
+      );
+    });
+
+    it('charset win1252: çãõ € fazem round-trip sem corrupção', async function () {
+      this.timeout(120_000);
+      const connStr = process.env.UTPLSQL_CONN as string;
+      const dbc = await openRaw();
+      try {
+        await dropTableIfExists(dbc);
+        await dbc.execute(`CREATE TABLE ${TABLE} (txt VARCHAR2(100))`, {}, { autoCommit: true });
+        // 'çãõ €' em Windows-1252: E7 E3 F5 20 80
+        const decoded = decodeScript(Uint8Array.from([0xe7, 0xe3, 0xf5, 0x20, 0x80]), 'win1252');
+        assert.strictEqual(decoded, 'çãõ €');
+        const { output } = collector();
+        const result = await executeScript(
+          (c: string) => connectOracle(c, { timeoutSeconds: 60 }),
+          {
+            connection: connStr,
+            statements: splitScript(`INSERT INTO ${TABLE} VALUES ('${decoded}');`),
+            output,
+            label: 'acentos.sql',
+            charset: 'win1252',
+          },
+        );
+        assert.strictEqual(result.failed, 0);
+        const r = await dbc.execute(`SELECT txt FROM ${TABLE}`, {});
+        assert.strictEqual(String(firstCol(r.rows?.[0])), 'çãõ €');
+      } finally {
+        await dropTableIfExists(dbc);
+        await dbc.close().catch(() => {});
+      }
+    });
+
+    it('connectOracle abre, executa e fecha contra o banco real', async function () {
+      this.timeout(120_000);
+      const connStr = process.env.UTPLSQL_CONN as string;
+      const db = await connectOracle(connStr, { timeoutSeconds: 60 });
+      try {
+        const r = await db.execute('SELECT 1 FROM dual', { autoCommit: true });
+        assert.ok(r);
+      } finally {
+        await db.close();
+      }
+    });
+  });
+
   // ── PRD-48 E2E: setup do schema UTPLSQL_TEST (sysdba) + cobertura real ──
   const describeSetup = hasConnection() ? describe : describe.skip;
   describeSetup('cobertura por declaração E2E (PRD-48, schema da conexão)', () => {

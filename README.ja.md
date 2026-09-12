@@ -107,12 +107,17 @@ Test Explorer に表示されます。
 | `utplsql.organization.schemaPattern` | `db/{schema}/**` | パスからスキーマを抽出するためのグロブパターン。プレースホルダーには `{schema}` を使用します。`schema` モードでは、パターンベースより下のディレクトリ（例: `db/*`）がデータベースでクエリされるスキーマを定義します。 |
 | `utplsql.compilationDiagnostics.enabled` | `true` | PL/SQL コンパイルエラーをエディターと Problems パネルに下線として表示。 |
 | `utplsql.setupDiagnostics.enabled` | `true` | 設定診断（接続、権限、バージョン）と **utPLSQL インストールの整合性**（UT3 スキーマ内の無効オブジェクト。"Recompile UT3" クイックフィックスあり）をクイックフィックスアクション付きで表示。 |
-| `utplsql.profiles` | `[]` | 保存された Oracle 接続プロファイル（名前、接続、`sourcePath`/`coverageOwner` などの上書き）。環境の切り替え用。 |
+| `utplsql.profiles` | `[]` | 保存された Oracle 接続プロファイル（名前、接続、`sourcePath`/`coverageOwner` などの上書き）。環境の切り替え用。 (Full field reference: [wiki](https://github.com/thepaneb/vscode-utplsql/wiki/Configuration)). |
 | `utplsql.activeProfile` | `""` | アクティブなプロファイルの ID（`utplsql.profiles`）。設定すると `utplsql.connection` を上書きします。 |
 | `utplsql.sqlCoverageEnabled` | `false` | `V$SQL` 経由で実行されたビューを追跡（boolean カバレッジ）。`GRANT SELECT ON V$SQL` が必要。 |
 | `utplsql.debugger.enabled` | `true` | PL/SQL テストデバッグ（`DBMS_DEBUG`）を有効化。`node-oracledb` + 権限が必要。 |
 | `utplsql.debugger.stopOnException` | `true` | デバッグ中に PL/SQL 例外で一時停止。 |
 | `utplsql.debugger.timeoutSeconds` | `300` | デバッグセッションのタイムアウト（秒）。 |
+| `utplsql.scriptRunner.stopOnError` | `true` | Stops script execution on the first failure (`false` = keeps logging the rest). |
+| `utplsql.scriptRunner.autoCommit` | `true` | `autoCommit` on each script statement. |
+| `utplsql.scriptRunner.filePattern` | `**/*.{sql,pks,pkb,fnc,prc,trg}` | Globs to list files when running a script folder. |
+| `utplsql.scriptRunner.dbmsOutput` | `false` | Captures and displays `DBMS_OUTPUT` during script execution. |
+| `utplsql.scriptRunner.timeoutSeconds` | `300` | Per-statement timeout (s) for scripts (`callTimeout`). |
 | `utplsql.language` | `auto` | ランタイムメッセージの言語。`auto` は VSCode に追従（pt, zh-tw/zh-hk, zh, es, ja, de, fr, it, ko, ru, tr, pl, cs, hu, bg, el, id, ro, sr, th, uk, vi, en-gb; それ以外は en）。**24 ロケール**（ネイティブ 15 + コミュニティ 9）をカバー。 |
 
 例（プロジェクト `.vscode/settings.json`）:
@@ -210,6 +215,9 @@ UTPLSQL_CONN=your_user/password@//host:1521/service
 | `utPLSQL: Manage connection profiles` | `utplsql.profiles` で設定を開く | — |
 | `utPLSQL: Import connections from SQL Developer` | SQL Developer から接続をインポート（connections.xml） | — |
 | `utPLSQL: Debug test (PL/SQL)` | アクティブなファイルのテストのデバッグセッションを開始 | — |
+| `utPLSQL: Run script` | Runs the script open in the editor against a connection profile | Right-click → script file |
+| `utPLSQL: Run script file` | Runs an Explorer script file (decoded with the profile charset) | Right-click → file |
+| `utPLSQL: Run script folder` | Runs the folder scripts in alphabetical order | Right-click → folder |
 
 > **Recompile UT3**（`utplsql.recompileUt3`）はパレットコマンド**ではありません** —
 > "utPLSQL Setup" 診断（utPLSQL スキーマ内の無効オブジェクト）の内部クイックフィックスです。

@@ -95,6 +95,27 @@ configured.
 
 ---
 
+## Garbled characters when running scripts (`ç`, `ã`, `€`)
+
+**Symptom:** accents or symbols arrive mangled in the database after
+`utPLSQL: Run script file` / `utPLSQL: Run script folder`.
+
+**Cause:** the file was decoded with the wrong encoding. The Oracle driver in
+thin mode always uses AL32UTF8 on the connection — the profile `charset` only
+controls how the **file** is read before sending.
+
+**Solution:**
+1. Check the file's real encoding and set the profile `charset`
+   (`utf8` | `latin1` | `win1252`, default `utf8`)
+2. The "utPLSQL Script" OutputChannel logs the charset used in the header
+   (e.g. `seed.sql (win1252)`) — use it to diagnose
+3. There is no encoding auto-detection (unreliable): mark the correct
+   charset on the profile
+4. Note: `latin1` (true ISO-8859-1) ≠ `win1252` for bytes `0x80`–`0x9F`
+   (e.g. `€` only exists in `win1252`)
+
+---
+
 ## `%suite` not recognized
 
 **Symptom:** The package exists but does not appear as a suite in the Test Explorer.

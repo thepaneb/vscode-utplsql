@@ -111,12 +111,17 @@ Test Explorer **เมื่อแต่ละเทสต์เสร็จส�
 | `utplsql.organization.schemaPattern` | `db/{schema}/**` | รูปแบบ Glob เพื่อแยก schema จากพาธ ใช้ `{schema}` เป็นตัวยึดตำแหน่ง ในโหมด `schema` ไดเรกทอรีใต้ฐานของรูปแบบ (เช่น `db/*`) กำหนด schemas ที่จะสอบถามในฐานข้อมูล |
 | `utplsql.compilationDiagnostics.enabled` | `true` | แสดงข้อผิดพลาดการคอมไพล์ PL/SQL เป็นเส้นใต้ในตัวแก้ไขและแผง Problems |
 | `utplsql.setupDiagnostics.enabled` | `true` | แสดงการวินิจฉัยการกำหนดค่า (การเชื่อมต่อ, grants, เวอร์ชัน) และ **ความสมบูรณ์ของการติดตั้ง utPLSQL** (อ็อบเจกต์ที่ไม่ถูกต้องใน schema UT3, พร้อม quick-fix "Recompile UT3") พร้อมการทำงาน quick-fix |
-| `utplsql.profiles` | `[]` | โปรไฟล์การเชื่อมต่อ Oracle ที่บันทึกไว้ (ชื่อ, การเชื่อมต่อ, และการแทนที่ `sourcePath`/`coverageOwner`/ฯลฯ) เพื่อสลับระหว่างสภาพแวดล้อม |
+| `utplsql.profiles` | `[]` | โปรไฟล์การเชื่อมต่อ Oracle ที่บันทึกไว้ (ชื่อ, การเชื่อมต่อ, และการแทนที่ `sourcePath`/`coverageOwner`/ฯลฯ) เพื่อสลับระหว่างสภาพแวดล้อม (Full field reference: [wiki](https://github.com/thepaneb/vscode-utplsql/wiki/Configuration)). |
 | `utplsql.activeProfile` | `""` | ID ของโปรไฟล์ที่ใช้งานอยู่ (`utplsql.profiles`) เมื่อตั้งค่า จะแทนที่ `utplsql.connection` |
 | `utplsql.sqlCoverageEnabled` | `false` | ติดตาม views ที่ถูกเรียกใช้ผ่าน `V$SQL` (boolean coverage) ต้องใช้ `GRANT SELECT ON V$SQL` |
 | `utplsql.debugger.enabled` | `true` | เปิดใช้งานการดีบักเทสต์ PL/SQL (`DBMS_DEBUG`) ต้องใช้ `node-oracledb` + grants |
 | `utplsql.debugger.stopOnException` | `true` | หยุดชั่วคราวเมื่อเกิด PL/SQL exceptions ระหว่างการดีบัก |
 | `utplsql.debugger.timeoutSeconds` | `300` | Timeout (วินาที) ของเซสชันการดีบัก |
+| `utplsql.scriptRunner.stopOnError` | `true` | Stops script execution on the first failure (`false` = keeps logging the rest). |
+| `utplsql.scriptRunner.autoCommit` | `true` | `autoCommit` on each script statement. |
+| `utplsql.scriptRunner.filePattern` | `**/*.{sql,pks,pkb,fnc,prc,trg}` | Globs to list files when running a script folder. |
+| `utplsql.scriptRunner.dbmsOutput` | `false` | Captures and displays `DBMS_OUTPUT` during script execution. |
+| `utplsql.scriptRunner.timeoutSeconds` | `300` | Per-statement timeout (s) for scripts (`callTimeout`). |
 | `utplsql.language` | `auto` | ภาษาของข้อความรันไทม์ `auto` เป็นไปตาม VSCode (pt, zh-tw/zh-hk, zh, es, ja, de, fr, it, ko, ru, tr, pl, cs, hu, bg, el, id, ro, sr, th, uk, vi, en-gb; นอกนั้น en) ครอบคลุม **24 ภาษาท้องถิ่น** (15 ภาษาหลัก + 9 จากชุมชน) |
 
 ตัวอย่าง (`.vscode/settings.json` ของโปรเจกต์):
@@ -216,6 +221,9 @@ Annotation ไม่คำนึงถึงตัวพิมพ์เล็ก
 | `utPLSQL: Manage connection profiles` | เปิดการตั้งค่าที่ `utplsql.profiles` | — |
 | `utPLSQL: Import connections from SQL Developer` | นำเข้าการเชื่อมต่อจาก SQL Developer (connections.xml) | — |
 | `utPLSQL: Debug test (PL/SQL)` | เริ่มเซสชันการดีบักของเทสต์ภายใต้ไฟล์ที่ใช้งานอยู่ | — |
+| `utPLSQL: Run script` | Runs the script open in the editor against a connection profile | Right-click → script file |
+| `utPLSQL: Run script file` | Runs an Explorer script file (decoded with the profile charset) | Right-click → file |
+| `utPLSQL: Run script folder` | Runs the folder scripts in alphabetical order | Right-click → folder |
 
 > **Recompile UT3** (`utplsql.recompileUt3`) **ไม่ใช่**คำสั่งใน palette — เป็น
 > quick-fix ภายในของการวินิจฉัย "utPLSQL Setup" (อ็อบเจกต์ที่ไม่ถูกต้องใน

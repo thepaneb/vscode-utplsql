@@ -8,8 +8,70 @@ Todas as settings da extensão, com prefixo `utplsql.`. Configure no
 | Setting | Default | Descrição |
 |---|---|---|
 | `utplsql.connection` | `""` | Conexão Oracle. Deixe vazio e use `UTPLSQL_CONN` para não gravar senha. |
-| `utplsql.profiles` | `[]` | Perfis de conexão salvos (array de objetos com nome e connection string). |
+| `utplsql.profiles` | `[]` | Perfis de conexão salvos (veja tabela de campos abaixo). |
 | `utplsql.activeProfile` | `""` | Perfil de conexão ativo. Vazio = usa `connection`/`UTPLSQL_CONN`. |
+
+### Campos do perfil (`utplsql.profiles`)
+
+| Campo | Tipo | Obrigatório | Default | Descrição |
+|---|---|---|---|---|
+| `id` | string | Sim (auto-gerado) | — | UUID do perfil. |
+| `name` | string | Sim | — | Nome amigável (ex. "DEV Local"). |
+| `connection` | string | Sim | — | String de conexão (`user/pass@//host:port/service`). |
+| `description` | string | Não | — | Descrição exibida no picker de conexão. |
+| `charset` | enum | Não | `utf8` | Encoding para ler arquivos de script: `utf8`, `latin1` ou `win1252`. |
+| `sourcePath` | string | Não | herda do global | Sobrescreve `utplsql.sourcePath`. |
+| `coverageOwner` | string | Não | herda do global | Sobrescreve `utplsql.coverageOwner`. |
+| `includePatterns` | string[] | Não | herda do global | Sobrescreve `utplsql.includePatterns`. |
+| `isDefault` | boolean | Não | `false` | Marca perfil como padrão ao carregar workspace. |
+| `lastUsed` | string | Não | — | Timestamp ISO do último uso. |
+
+Exemplo:
+
+```jsonc
+// .vscode/settings.json ou settings do usuário
+{
+  "utplsql.activeProfile": "dev",
+  "utplsql.profiles": [
+    {
+      "id": "a1b2c3d4-...",
+      "name": "DEV Local",
+      "connection": "app/senha@//localhost:1521/XEPDB1",
+      "description": "Banco local de desenvolvimento",
+      "charset": "utf8",
+      "sourcePath": "src"
+    },
+    {
+      "id": "e5f6g7h8-...",
+      "name": "LEGADO Windows",
+      "connection": "legacy/senha@//db-antigo:1521/LEGADO",
+      "description": "Banco legado Windows-1252",
+      "charset": "win1252",
+      "sourcePath": "legacy/src"
+    }
+  ]
+}
+```
+
+## Execução de scripts SQL
+
+Roda scripts SQL/PL/SQL arbitrários (migrações, seeds, setup) contra um perfil
+de conexão escolhido num QuickPick após a invocação — pelo editor
+(`utplsql.runScript`), por arquivo (`utplsql.runScriptFile`) ou por pasta
+(`utplsql.runScriptFolder`) no Explorer. A saída vai para o OutputChannel
+"utPLSQL Script", um statement por linha. Veja [Comandos](Comandos).
+
+| Setting | Default | Descrição |
+|---|---|---|
+| `utplsql.scriptRunner.stopOnError` | `true` | Para na primeira falha (`false` = continua registrando as demais). |
+| `utplsql.scriptRunner.autoCommit` | `true` | `autoCommit` em cada statement. |
+| `utplsql.scriptRunner.filePattern` | `**/*.{sql,pks,pkb,fnc,prc,trg}` | Globs para listar arquivos na execução de pasta. |
+| `utplsql.scriptRunner.dbmsOutput` | `false` | Captura e exibe `DBMS_OUTPUT` durante a execução. |
+| `utplsql.scriptRunner.timeoutSeconds` | `300` | Timeout em segundos por statement (`callTimeout`). |
+
+O `charset` do perfil vale para `runScriptFile`/`runScriptFolder` (arquivo lido
+como bytes e decodificado). No `runScript` (editor) o texto já vem decodificado
+pelo VSCode — o charset do perfil não se aplica.
 
 ## Cobertura
 

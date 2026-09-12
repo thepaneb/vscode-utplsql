@@ -127,6 +127,7 @@ CONCLUIR
 | 49 | [Internacionalização (i18n) dos conteúdos textuais](completed/prd-49-internacionalizacao.md) | 0.12.0 | 2026-09-04 |
 | 64 | [Migração para Oracle-Only: eliminação do utPLSQL-cli e Java](completed/prd-64-oracle-only-migration.md) | 0.12.0 | 2026-09-09 |
 | 63 | [Wiki bilíngue (pt-BR/en) + correção de links + limpeza de READMEs](completed/prd-63-diagram-i18n.md) | 0.12.0 | 2026-09-09 |
+| 62 | [Execução de scripts SQL contra perfil de conexão](completed/prd-62-run-scripts-against-profiles.md) | 0.12.0 | 2026-09-12 |
 
 ### 🟡 Em desenvolvimento
 
@@ -170,13 +171,6 @@ _(vazio — nenhuma PRD aprovada aguardando implementação)_
 | 59 | [Scaffold de suíte de teste](proposed/prd-59-scaffold-suite.md) | 0.16.0 | 2026-09-06 |
 | 60 | [Cobertura de branch (investigação de viabilidade)](proposed/prd-60-branch-coverage-investigation.md) | — | 2026-09-06 |
 | 61 | [Auto-provisionamento do utPLSQL-cli](proposed/prd-61-cli-auto-provision.md) | 0.16.0 | 2026-09-06 |
-
-#### 0.17.0
-
-| # | PRD | Versão alvo | Data |
-|---|---|---|---|
-| 62 | [Execução de scripts SQL contra perfil de conexão](proposed/prd-62-run-scripts-against-profiles.md) | 0.17.0 | 2026-09-06 |
-
 
 ---
 
@@ -236,7 +230,8 @@ docs/prd/
 │   ├── prd-48-function-coverage.md
 │   ├── prd-49-internacionalizacao.md
 │   ├── prd-64-oracle-only-migration.md
-│   └── prd-63-diagram-i18n.md
+│   ├── prd-63-diagram-i18n.md
+│   └── prd-62-run-scripts-against-profiles.md
 ├── approved/         ← aprovados, aguardando implementação (vazio)
 ├── in-progress/      ← sendo implementados agora (vazio)
 └── proposed/         ← em avaliação
@@ -252,8 +247,7 @@ docs/prd/
     ├── prd-58-run-related-tests.md
     ├── prd-59-scaffold-suite.md
     ├── prd-60-branch-coverage-investigation.md
-    ├── prd-61-cli-auto-provision.md
-    └── prd-62-run-scripts-against-profiles.md
+    └── prd-61-cli-auto-provision.md
 ```
 
 ---

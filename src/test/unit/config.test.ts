@@ -24,6 +24,15 @@ test('readConfig: sqlCoverageEnabled default e false', () => {
   assert.strictEqual(cfg.sqlCoverageEnabled, false);
 });
 
+test('readConfig: scriptRunner defaults', () => {
+  const cfg = readConfig();
+  assert.strictEqual(cfg.scriptRunnerStopOnError, true);
+  assert.strictEqual(cfg.scriptRunnerAutoCommit, true);
+  assert.strictEqual(cfg.scriptRunnerFilePattern, '**/*.{sql,pks,pkb,fnc,prc,trg}');
+  assert.strictEqual(cfg.scriptRunnerDbmsOutput, false);
+  assert.strictEqual(cfg.scriptRunnerTimeoutSeconds, 300);
+});
+
 async function withCleanResolve(fn: () => Promise<void>): Promise<void> {
   clearSessionConnection();
   await fn();

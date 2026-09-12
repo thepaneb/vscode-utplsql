@@ -97,6 +97,27 @@ não configurado.
 
 ---
 
+## Caracteres corrompidos ao executar script (`ç`, `ã`, `€`)
+
+**Sintoma:** acentos ou símbolos aparecem trocados no banco após
+`utPLSQL: Executar arquivo de script` / `utPLSQL: Executar pasta de scripts`.
+
+**Causa:** o arquivo foi decodificado no encoding errado. O driver Oracle em
+modo thin sempre usa AL32UTF8 na conexão — o `charset` do perfil só controla
+como o **arquivo** é lido antes do envio.
+
+**Solução:**
+1. Confira o encoding real do arquivo e ajuste o `charset` do perfil
+   (`utf8` | `latin1` | `win1252`, default `utf8`)
+2. O OutputChannel "utPLSQL Script" registra o charset usado no cabeçalho
+   (ex.: `seed.sql (win1252)`) — use-o para diagnosticar
+3. Não há auto-detecção de encoding (não confiável): marque o charset
+   correto no perfil
+4. Nota: `latin1` (ISO-8859-1 real) ≠ `win1252` nos bytes `0x80`–`0x9F`
+   (ex.: `€` só existe em `win1252`)
+
+---
+
 ## `%suite` não é reconhecido
 
 **Sintoma:** O package existe, mas não aparece como suite no Test Explorer.

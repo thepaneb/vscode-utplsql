@@ -21,5 +21,8 @@
   "nls.command.newProfile": "utPLSQL: Nový profil připojení...",
   "nls.command.manageProfiles": "utPLSQL: Správa profilů připojení",
   "nls.command.importSqlDevConnections": "utPLSQL: Importovat připojení SQL Developer",
-  "nls.command.debugTest": "utPLSQL: Ladit test (PL/SQL)"
+  "nls.command.debugTest": "utPLSQL: Ladit test (PL/SQL)",
+  "nls.command.runScript": "utPLSQL: Run script",
+  "nls.command.runScriptFile": "utPLSQL: Run script file",
+  "nls.command.runScriptFolder": "utPLSQL: Run script folder"
 }

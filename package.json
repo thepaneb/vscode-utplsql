@@ -58,6 +58,20 @@
               "connection": {
                 "type": "string"
               },
+              "description": {
+                "type": "string",
+                "description": "Descrição amigável exibida no picker de conexão."
+              },
+              "charset": {
+                "type": "string",
+                "enum": [
+                  "utf8",
+                  "latin1",
+                  "win1252"
+                ],
+                "default": "utf8",
+                "description": "Encoding para ler arquivos de script (runScriptFile/runScriptFolder). Omitido = utf8."
+              },
               "sourcePath": {
                 "type": "string"
               },
@@ -221,6 +235,32 @@
           "minimum": 30,
           "description": "Timeout (s) da sessão de debug para evitar conexões Oracle zumbis."
         },
+        "utplsql.scriptRunner.stopOnError": {
+          "type": "boolean",
+          "default": true,
+          "description": "Para a execução do script na primeira falha (false = continua registrando as demais)."
+        },
+        "utplsql.scriptRunner.autoCommit": {
+          "type": "boolean",
+          "default": true,
+          "description": "autoCommit em cada statement do script."
+        },
+        "utplsql.scriptRunner.filePattern": {
+          "type": "string",
+          "default": "**/*.{sql,pks,pkb,fnc,prc,trg}",
+          "description": "Globs para listar arquivos na execução de pasta de scripts."
+        },
+        "utplsql.scriptRunner.dbmsOutput": {
+          "type": "boolean",
+          "default": false,
+          "description": "Captura e exibe DBMS_OUTPUT durante a execução do script."
+        },
+        "utplsql.scriptRunner.timeoutSeconds": {
+          "type": "number",
+          "default": 300,
+          "minimum": 30,
+          "description": "Timeout (s) por statement do script (callTimeout)."
+        },
         "utplsql.language": {
           "type": "string",
           "enum": [
@@ -371,6 +411,21 @@
         "command": "utplsql.debugTest",
         "title": "%nls.command.debugTest%",
         "category": "utPLSQL"
+      },
+      {
+        "command": "utplsql.runScript",
+        "title": "%nls.command.runScript%",
+        "category": "utPLSQL"
+      },
+      {
+        "command": "utplsql.runScriptFile",
+        "title": "%nls.command.runScriptFile%",
+        "category": "utPLSQL"
+      },
+      {
+        "command": "utplsql.runScriptFolder",
+        "title": "%nls.command.runScriptFolder%",
+        "category": "utPLSQL"
       }
     ],
     "menus": {
@@ -384,6 +439,16 @@
           "command": "utplsql.runFileCoverage",
           "group": "utplsql@2",
           "when": "resourceExtname == .pks || resourceExtname == .pkb"
+        },
+        {
+          "command": "utplsql.runScriptFile",
+          "group": "utplsql@3",
+          "when": "resourceExtname == .sql || resourceExtname == .pks || resourceExtname == .pkb || resourceExtname == .fnc || resourceExtname == .prc || resourceExtname == .trg"
+        },
+        {
+          "command": "utplsql.runScriptFolder",
+          "group": "utplsql@3",
+          "when": "explorerResourceIsFolder"
         },
         {
           "command": "utplsql.runFolder",
@@ -406,6 +471,11 @@
           "command": "utplsql.runFileCoverage",
           "group": "utplsql@2",
           "when": "resourceExtname == .pks || resourceExtname == .pkb"
+        },
+        {
+          "command": "utplsql.runScript",
+          "group": "utplsql@3",
+          "when": "resourceExtname == .sql || resourceExtname == .pks || resourceExtname == .pkb || resourceExtname == .fnc || resourceExtname == .prc || resourceExtname == .trg"
         }
       ]
     },

@@ -111,12 +111,17 @@ nativních API VSCode.
 | `utplsql.organization.schemaPattern` | `db/{schema}/**` | Glob vzor pro extrakci schématu z cesty. Použijte `{schema}` jako zástupný symbol. V režimu `schema` adresáře pod základnou vzoru (např. `db/*`) definují schémata dotazovaná v databázi. |
 | `utplsql.compilationDiagnostics.enabled` | `true` | Zobrazuje chyby kompilace PL/SQL jako podtržení v editoru a v panelu Problémy. |
 | `utplsql.setupDiagnostics.enabled` | `true` | Zobrazuje diagnostiku konfigurace (připojení, granty, verze) a **integritu instalace utPLSQL** (neplatné objekty ve schématu UT3, s rychlou opravou „Recompile UT3") s akcemi rychlé opravy. |
-| `utplsql.profiles` | `[]` | Uložené profily připojení k Oracle (název, připojení a přebití `sourcePath`/`coverageOwner`/atd.) pro přepínání mezi prostředími. |
+| `utplsql.profiles` | `[]` | Uložené profily připojení k Oracle (název, připojení a přebití `sourcePath`/`coverageOwner`/atd.) pro přepínání mezi prostředími. (Full field reference: [wiki](https://github.com/thepaneb/vscode-utplsql/wiki/Configuration)). |
 | `utplsql.activeProfile` | `""` | ID aktivního profilu (`utplsql.profiles`). Pokud je nastaveno, přebíjí `utplsql.connection`. |
 | `utplsql.sqlCoverageEnabled` | `false` | Sleduje pohledy spuštěné přes `V$SQL` (boolean pokrytí). Vyžaduje `GRANT SELECT ON V$SQL`. |
 | `utplsql.debugger.enabled` | `true` | Povoluje ladění PL/SQL testů (`DBMS_DEBUG`). Vyžaduje `node-oracledb` + granty. |
 | `utplsql.debugger.stopOnException` | `true` | Pozastaví se při výjimkách PL/SQL během ladění. |
 | `utplsql.debugger.timeoutSeconds` | `300` | Časový limit (s) ladící relace. |
+| `utplsql.scriptRunner.stopOnError` | `true` | Stops script execution on the first failure (`false` = keeps logging the rest). |
+| `utplsql.scriptRunner.autoCommit` | `true` | `autoCommit` on each script statement. |
+| `utplsql.scriptRunner.filePattern` | `**/*.{sql,pks,pkb,fnc,prc,trg}` | Globs to list files when running a script folder. |
+| `utplsql.scriptRunner.dbmsOutput` | `false` | Captures and displays `DBMS_OUTPUT` during script execution. |
+| `utplsql.scriptRunner.timeoutSeconds` | `300` | Per-statement timeout (s) for scripts (`callTimeout`). |
 | `utplsql.language` | `auto` | Jazyk běhových zpráv. `auto` se řídí VSCode (pt, zh-tw/zh-hk, zh, es, ja, de, fr, it, ko, ru, tr, pl, cs, hu, bg, el, id, ro, sr, th, uk, vi, en-gb; jinak en). Pokrývá **24 locale** (15 nativních + 9 komunitních). |
 
 Příklad (soubor `.vscode/settings.json` projektu):
@@ -216,6 +221,9 @@ Všechny příkazy rozšíření (paleta `Ctrl+Shift+P`, předpona `utPLSQL:`):
 | `utPLSQL: Manage connection profiles` | Otevře nastavení na `utplsql.profiles` | — |
 | `utPLSQL: Import connections from SQL Developer` | Importuje připojení ze SQL Developeru (connections.xml) | — |
 | `utPLSQL: Debug test (PL/SQL)` | Spustí ladící relaci testu pod aktivním souborem | — |
+| `utPLSQL: Run script` | Runs the script open in the editor against a connection profile | Right-click → script file |
+| `utPLSQL: Run script file` | Runs an Explorer script file (decoded with the profile charset) | Right-click → file |
+| `utPLSQL: Run script folder` | Runs the folder scripts in alphabetical order | Right-click → folder |
 
 > **Recompile UT3** (`utplsql.recompileUt3`) **není** příkaz palety — je to
 > interní rychlá oprava diagnostiky „utPLSQL Setup" (neplatné objekty ve

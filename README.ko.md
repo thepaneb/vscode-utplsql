@@ -112,12 +112,17 @@ Test Explorer에 나타납니다.
 | `utplsql.organization.schemaPattern` | `db/{schema}/**` | 경로에서 스키마를 추출하는 glob 패턴. `{schema}`를 자리 표시자로 사용하세요. `schema` 모드에서 패턴 기본 아래의 디렉터리(예: `db/*`)는 데이터베이스에서 조회할 스키마를 정의합니다. |
 | `utplsql.compilationDiagnostics.enabled` | `true` | PL/SQL 컴파일 오류를 편집기의 밑줄과 Problems 패널에 표시합니다. |
 | `utplsql.setupDiagnostics.enabled` | `true` | 구성 진단(연결, 권한, 버전) 및 **utPLSQL 설치 무결성**(UT3 스키마의 잘못된 객체, "Recompile UT3" quick-fix 포함)을 quick-fix 작업과 함께 표시합니다. |
-| `utplsql.profiles` | `[]` | 저장된 Oracle 연결 프로필(이름, 연결, 그리고 `sourcePath`/`coverageOwner` 등의 재정의) — 환경 간 전환용. |
+| `utplsql.profiles` | `[]` | 저장된 Oracle 연결 프로필(이름, 연결, 그리고 `sourcePath`/`coverageOwner` 등의 재정의) — 환경 간 전환용. (Full field reference: [wiki](https://github.com/thepaneb/vscode-utplsql/wiki/Configuration)). |
 | `utplsql.activeProfile` | `""` | 활성 프로필(`utplsql.profiles`)의 ID. 설정 시 `utplsql.connection`을 재정의합니다. |
 | `utplsql.sqlCoverageEnabled` | `false` | `V$SQL`을 통해 실행된 뷰를 추적합니다(불리언 커버리지). `GRANT SELECT ON V$SQL` 필요. |
 | `utplsql.debugger.enabled` | `true` | PL/SQL 테스트 디버깅(`DBMS_DEBUG`)을 활성화합니다. `node-oracledb` + 권한 필요. |
 | `utplsql.debugger.stopOnException` | `true` | 디버깅 중 PL/SQL 예외에서 일시 중지합니다. |
 | `utplsql.debugger.timeoutSeconds` | `300` | 디버그 세션의 시간 제한(초). |
+| `utplsql.scriptRunner.stopOnError` | `true` | Stops script execution on the first failure (`false` = keeps logging the rest). |
+| `utplsql.scriptRunner.autoCommit` | `true` | `autoCommit` on each script statement. |
+| `utplsql.scriptRunner.filePattern` | `**/*.{sql,pks,pkb,fnc,prc,trg}` | Globs to list files when running a script folder. |
+| `utplsql.scriptRunner.dbmsOutput` | `false` | Captures and displays `DBMS_OUTPUT` during script execution. |
+| `utplsql.scriptRunner.timeoutSeconds` | `300` | Per-statement timeout (s) for scripts (`callTimeout`). |
 | `utplsql.language` | `auto` | 런타임 메시지의 언어. `auto`는 VSCode를 따릅니다(pt, zh-tw/zh-hk, zh, es, ja, de, fr, it, ko, ru, tr, pl, cs, hu, bg, el, id, ro, sr, th, uk, vi, en-gb; 그 외에는 en). **24개 로케일**(15개 네이티브 + 9개 커뮤니티)을 다룹니다. |
 
 예시(프로젝트 `.vscode/settings.json`):
@@ -216,6 +221,9 @@ UTPLSQL_CONN=your_user/password@//host:1521/service
 | `utPLSQL: Manage connection profiles` | `utplsql.profiles`에서 설정 열기 | — |
 | `utPLSQL: Import connections from SQL Developer` | SQL Developer에서 연결 가져오기(connections.xml) | — |
 | `utPLSQL: Debug test (PL/SQL)` | 활성 파일 아래의 테스트 디버그 세션 시작 | — |
+| `utPLSQL: Run script` | Runs the script open in the editor against a connection profile | Right-click → script file |
+| `utPLSQL: Run script file` | Runs an Explorer script file (decoded with the profile charset) | Right-click → file |
+| `utPLSQL: Run script folder` | Runs the folder scripts in alphabetical order | Right-click → folder |
 
 > **Recompile UT3**(`utplsql.recompileUt3`)은 팔레트 명령이 **아닙니다** —
 > "utPLSQL Setup" 진단(utPLSQL 스키마의 잘못된 객체)의 내부 quick-fix입니다.

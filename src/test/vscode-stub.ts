@@ -44,6 +44,22 @@ export function __setQuickPickResult(value: unknown): void {
   _quickPickResult = value;
 }
 
+let _lastQuickPickItems: readonly unknown[] | undefined;
+
+export function __getLastQuickPickItems(): readonly unknown[] | undefined {
+  return _lastQuickPickItems;
+}
+
+export function __resetLastQuickPickItems(): void {
+  _lastQuickPickItems = undefined;
+}
+
+let _warningResult: string | undefined;
+
+export function __setWarningResult(value: string | undefined): void {
+  _warningResult = value;
+}
+
 export function __setMockFile(pattern: string, path: string, content: string): void {
   _mockFileContents[path] = content;
   if (!_mockFindFilesResult[pattern]) {
@@ -127,7 +143,27 @@ export namespace workspace {
 }
 
 export namespace commands {
-  export function executeCommand(_cmd: string, ..._args: unknown[]): void {}
+  const _executedCommands: string[] = [];
+  let _executeCommandImpl: ((cmd: string, ...args: unknown[]) => unknown) | undefined;
+
+  export function executeCommand(_cmd: string, ..._args: unknown[]): unknown {
+    _executedCommands.push(_cmd);
+    return _executeCommandImpl?.(_cmd, ..._args);
+  }
+
+  export function __getExecutedCommands(): string[] {
+    return [..._executedCommands];
+  }
+
+  export function __resetExecutedCommands(): void {
+    _executedCommands.length = 0;
+  }
+
+  export function __setExecuteCommandImpl(
+    fn: ((cmd: string, ...args: unknown[]) => unknown) | undefined,
+  ): void {
+    _executeCommandImpl = fn;
+  }
 }
 
 export namespace env {
@@ -193,11 +229,14 @@ export namespace window {
     _items: readonly unknown[],
     _options?: { placeHolder?: string; matchOnDescription?: boolean },
   ) {
+    _lastQuickPickItems = _items;
     return Promise.resolve(_quickPickResult);
   }
   export function showErrorMessage(_message: string) {}
   export function showInformationMessage(_message: string) {}
-  export function showWarningMessage(_message: string) {}
+  export function showWarningMessage(_message: string, ..._items: string[]) {
+    return Promise.resolve(_warningResult);
+  }
   export function createTextEditorDecorationType(
     // biome-ignore lint/suspicious/noExplicitAny: DecorationRenderOptions stub
     _opts: any,

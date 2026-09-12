@@ -27,6 +27,11 @@ export interface UtConfig {
   debuggerEnabled: boolean;
   debuggerStopOnException: boolean;
   debuggerTimeoutSeconds: number;
+  scriptRunnerStopOnError: boolean;
+  scriptRunnerAutoCommit: boolean;
+  scriptRunnerFilePattern: string;
+  scriptRunnerDbmsOutput: boolean;
+  scriptRunnerTimeoutSeconds: number;
   language:
     | 'auto'
     | 'pt-br'
@@ -84,6 +89,14 @@ export function readConfig(): UtConfig {
     debuggerEnabled: c.get<boolean>('debugger.enabled', true),
     debuggerStopOnException: c.get<boolean>('debugger.stopOnException', true),
     debuggerTimeoutSeconds: c.get<number>('debugger.timeoutSeconds', 300),
+    scriptRunnerStopOnError: c.get<boolean>('scriptRunner.stopOnError', true),
+    scriptRunnerAutoCommit: c.get<boolean>('scriptRunner.autoCommit', true),
+    scriptRunnerFilePattern: c.get<string>(
+      'scriptRunner.filePattern',
+      '**/*.{sql,pks,pkb,fnc,prc,trg}',
+    ),
+    scriptRunnerDbmsOutput: c.get<boolean>('scriptRunner.dbmsOutput', false),
+    scriptRunnerTimeoutSeconds: c.get<number>('scriptRunner.timeoutSeconds', 300),
     language: c.get<
       | 'auto'
       | 'pt-br'

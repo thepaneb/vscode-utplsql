@@ -21,5 +21,8 @@
   "nls.command.newProfile": "utPLSQL: Yeni bağlantı profili...",
   "nls.command.manageProfiles": "utPLSQL: Bağlantı profillerini yönet",
   "nls.command.importSqlDevConnections": "utPLSQL: SQL Developer bağlantılarını içe aktar",
-  "nls.command.debugTest": "utPLSQL: Testte hata ayıkla (PL/SQL)"
+  "nls.command.debugTest": "utPLSQL: Testte hata ayıkla (PL/SQL)",
+  "nls.command.runScript": "utPLSQL: Run script",
+  "nls.command.runScriptFile": "utPLSQL: Run script file",
+  "nls.command.runScriptFolder": "utPLSQL: Run script folder"
 }

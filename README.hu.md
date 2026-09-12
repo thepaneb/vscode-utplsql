@@ -110,12 +110,17 @@ A bővítmény közvetlenül Oracle-on keresztül csatlakozik, beolvassa a ripor
 | `utplsql.organization.schemaPattern` | `db/{schema}/**` | Glob-minta a séma kinyeréséhez az elérési útból. Helyőrzőként a `{schema}` használható. `schema` módban a minta alapja alatti könyvtárak (pl. `db/*`) határozzák meg az adatbázisban lekérdezett sémákat. |
 | `utplsql.compilationDiagnostics.enabled` | `true` | A PL/SQL fordítási hibákat aláhúzásként jeleníti meg a szerkesztőben és a Problems Panelben. |
 | `utplsql.setupDiagnostics.enabled` | `true` | Konfigurációs diagnosztikát (kapcsolat, jogosultságok, verzió) és **utPLSQL-telepítési integritást** (érvénytelen objektumok az UT3 sémában, „Recompile UT3" gyorsjavítással) jelenít meg gyorsjavítási műveletekkel. |
-| `utplsql.profiles` | `[]` | Mentett Oracle kapcsolati profilok (név, kapcsolat és `sourcePath`/`coverageOwner`/stb. felülírások) a környezetek közötti váltáshoz. |
+| `utplsql.profiles` | `[]` | Mentett Oracle kapcsolati profilok (név, kapcsolat és `sourcePath`/`coverageOwner`/stb. felülírások) a környezetek közötti váltáshoz. (Full field reference: [wiki](https://github.com/thepaneb/vscode-utplsql/wiki/Configuration)). |
 | `utplsql.activeProfile` | `""` | Az aktív profil azonosítója (`utplsql.profiles`). Ha be van állítva, felülírja a `utplsql.connection` értékét. |
 | `utplsql.sqlCoverageEnabled` | `false` | A `V$SQL`-on keresztül végrehajtott nézeteket követi nyomon (boolean lefedettség). `GRANT SELECT ON V$SQL` jogosultságot igényel. |
 | `utplsql.debugger.enabled` | `true` | Engedélyezi a PL/SQL-tesztek hibakeresését (`DBMS_DEBUG`). `node-oracledb` + jogosultságok szükségesek. |
 | `utplsql.debugger.stopOnException` | `true` | Megáll a PL/SQL-kivételeknél a hibakeresés során. |
 | `utplsql.debugger.timeoutSeconds` | `300` | A hibakeresési munkamenet időtúllépése (másodperc). |
+| `utplsql.scriptRunner.stopOnError` | `true` | Stops script execution on the first failure (`false` = keeps logging the rest). |
+| `utplsql.scriptRunner.autoCommit` | `true` | `autoCommit` on each script statement. |
+| `utplsql.scriptRunner.filePattern` | `**/*.{sql,pks,pkb,fnc,prc,trg}` | Globs to list files when running a script folder. |
+| `utplsql.scriptRunner.dbmsOutput` | `false` | Captures and displays `DBMS_OUTPUT` during script execution. |
+| `utplsql.scriptRunner.timeoutSeconds` | `300` | Per-statement timeout (s) for scripts (`callTimeout`). |
 | `utplsql.language` | `auto` | A futásidejű üzenetek nyelve. `auto` esetén a VSCode-ot követi (pt, zh-tw/zh-hk, zh, es, ja, de, fr, it, ko, ru, tr, pl, cs, hu, bg, el, id, ro, sr, th, uk, vi, en-gb; egyébként en). A **24 területi beállítást** fedi le (15 natív + 9 közösségi). |
 
 Példa (projekt `.vscode/settings.json`):
@@ -215,6 +220,9 @@ A bővítmény összes parancsa (paletta `Ctrl+Shift+P`, előtag `utPLSQL:`):
 | `utPLSQL: Manage connection profiles` | Megnyitja a beállításokat a `utplsql.profiles` értéknél | — |
 | `utPLSQL: Import connections from SQL Developer` | Kapcsolatok importálása az SQL Developerből (connections.xml) | — |
 | `utPLSQL: Debug test (PL/SQL)` | Hibakeresési munkamenetet indít az aktív fájlban lévő tesztre | — |
+| `utPLSQL: Run script` | Runs the script open in the editor against a connection profile | Right-click → script file |
+| `utPLSQL: Run script file` | Runs an Explorer script file (decoded with the profile charset) | Right-click → file |
+| `utPLSQL: Run script folder` | Runs the folder scripts in alphabetical order | Right-click → folder |
 
 > **Recompile UT3** (`utplsql.recompileUt3`) **nem** palettaparancs — ez a
 > „utPLSQL Setup" diagnosztika belső gyorsjavítása (érvénytelen objektumok a

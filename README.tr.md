@@ -111,12 +111,17 @@ Geçici dosya yok, toplu işin bitmesi beklenmez. Sonuçlar Test Explorer'da
 | `utplsql.organization.schemaPattern` | `db/{schema}/**` | Şemayı yoldan çıkarmak için glob deseni. Yer tutucu olarak `{schema}` kullanın. `schema` modunda desen tabanının altındaki dizinler (örn. `db/*`) veritabanında sorgulanan şemaları tanımlar. |
 | `utplsql.compilationDiagnostics.enabled` | `true` | PL/SQL derleme hatalarını editörde ve Sorunlar Paneli'nde (Problems Panel) altı çizili olarak gösterir. |
 | `utplsql.setupDiagnostics.enabled` | `true` | Yapılandırma tanılamalarını (bağlantı, yetkiler, sürüm) ve **utPLSQL kurulum bütünlüğünü** (UT3 şemasındaki geçersiz nesneler, "Recompile UT3" hızlı düzeltmesiyle) hızlı düzeltme eylemleriyle gösterir. |
-| `utplsql.profiles` | `[]` | Ortamlar arasında geçiş yapmak için kaydedilen Oracle bağlantı profilleri (ad, bağlantı ve `sourcePath`/`coverageOwner`/vb. geçersiz kılmaları). |
+| `utplsql.profiles` | `[]` | Ortamlar arasında geçiş yapmak için kaydedilen Oracle bağlantı profilleri (ad, bağlantı ve `sourcePath`/`coverageOwner`/vb. geçersiz kılmaları). (Full field reference: [wiki](https://github.com/thepaneb/vscode-utplsql/wiki/Configuration)). |
 | `utplsql.activeProfile` | `""` | Etkin profilin kimliği (`utplsql.profiles`). Ayarlandığında `utplsql.connection`'ı geçersiz kılar. |
 | `utplsql.sqlCoverageEnabled` | `false` | `V$SQL` üzerinden çalıştırılan görünümleri izler (boolean kapsam). `GRANT SELECT ON V$SQL` gerektirir. |
 | `utplsql.debugger.enabled` | `true` | PL/SQL test hata ayıklamayı etkinleştirir (`DBMS_DEBUG`). `node-oracledb` + yetkiler gerektirir. |
 | `utplsql.debugger.stopOnException` | `true` | Hata ayıklama sırasında PL/SQL istisnalarında durur. |
 | `utplsql.debugger.timeoutSeconds` | `300` | Hata ayıklama oturumunun zaman aşımı (s). |
+| `utplsql.scriptRunner.stopOnError` | `true` | Stops script execution on the first failure (`false` = keeps logging the rest). |
+| `utplsql.scriptRunner.autoCommit` | `true` | `autoCommit` on each script statement. |
+| `utplsql.scriptRunner.filePattern` | `**/*.{sql,pks,pkb,fnc,prc,trg}` | Globs to list files when running a script folder. |
+| `utplsql.scriptRunner.dbmsOutput` | `false` | Captures and displays `DBMS_OUTPUT` during script execution. |
+| `utplsql.scriptRunner.timeoutSeconds` | `300` | Per-statement timeout (s) for scripts (`callTimeout`). |
 | `utplsql.language` | `auto` | Çalışma zamanı mesajlarının dili. `auto`, VSCode'u takip eder (pt, zh-tw/zh-hk, zh, es, ja, de, fr, it, ko, ru, tr, pl, cs, hu, bg, el, id, ro, sr, th, uk, vi, en-gb; aksi halde en). **24 yerel ayarı** kapsar (15 yerel + 9 topluluk). |
 
 Örnek (proje `.vscode/settings.json`):
@@ -216,6 +221,9 @@ Tüm uzantı komutları (palet `Ctrl+Shift+P` öneki `utPLSQL:`):
 | `utPLSQL: Manage connection profiles` | Ayarları `utplsql.profiles` konumunda açar | — |
 | `utPLSQL: Import connections from SQL Developer` | SQL Developer'dan bağlantıları içe aktarır (connections.xml) | — |
 | `utPLSQL: Debug test (PL/SQL)` | Etkin dosyanın altındaki testin hata ayıklama oturumunu başlatır | — |
+| `utPLSQL: Run script` | Runs the script open in the editor against a connection profile | Right-click → script file |
+| `utPLSQL: Run script file` | Runs an Explorer script file (decoded with the profile charset) | Right-click → file |
+| `utPLSQL: Run script folder` | Runs the folder scripts in alphabetical order | Right-click → folder |
 
 > **Recompile UT3** (`utplsql.recompileUt3`) bir **palet komutu değildir** — "utPLSQL Setup"
 > tanılamasının iç bir hızlı düzeltmesidir (utPLSQL şemasındaki geçersiz nesneler).

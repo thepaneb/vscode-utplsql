@@ -5,10 +5,11 @@ resolution follows this priority order:
 
 | Priority | Source | Persists? |
 |---|---|---|
-| 1 | Setting `utplsql.connection` | Yes (settings.json) |
-| 2 | Environment variable `UTPLSQL_CONN` | No (shell session only) |
-| 3 | Session cache (previous prompt) | Yes, until VSCode is closed |
-| 4 | User prompt | No (volatile memory) |
+| 1 | Active profile (`utplsql.activeProfile` → `profile.connection`) | Yes (settings.json) |
+| 2 | Setting `utplsql.connection` | Yes (settings.json) |
+| 3 | Environment variable `UTPLSQL_CONN` | No (shell session only) |
+| 4 | Session cache (previous prompt) | Yes, until VSCode is closed |
+| 5 | User prompt | No (volatile memory) |
 
 ![Oracle Connection Resolution](../images/diagram-conexao.png)
 

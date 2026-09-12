@@ -111,12 +111,17 @@ Test Explorer **καθώς ολοκληρώνεται κάθε test**.
 | `utplsql.organization.schemaPattern` | `db/{schema}/**` | Glob pattern για την εξαγωγή του schema από τη διαδρομή. Χρησιμοποιήστε το `{schema}` ως placeholder. Στη λειτουργία `schema`, οι κατάλογοι κάτω από τη βάση του pattern (π.χ. `db/*`) ορίζουν τα schemas που ερωτώνται στη βάση. |
 | `utplsql.compilationDiagnostics.enabled` | `true` | Εμφανίζει τα PL/SQL σφάλματα μεταγλώττισης ως υπογραμμίσεις στον editor και στο Problems Panel. |
 | `utplsql.setupDiagnostics.enabled` | `true` | Εμφανίζει διαγνωστικά ρυθμίσεων (σύνδεση, grants, έκδοση) και **ακεραιότητα εγκατάστασης utPLSQL** (άκυρα αντικείμενα στο schema UT3, με quick-fix "Recompile UT3") με ενέργειες quick-fix. |
-| `utplsql.profiles` | `[]` | Αποθηκευμένα profiles σύνδεσης Oracle (όνομα, σύνδεση και παρακάμψεις των `sourcePath`/`coverageOwner`/κ.λπ.) για εναλλαγή μεταξύ περιβαλλόντων. |
+| `utplsql.profiles` | `[]` | Αποθηκευμένα profiles σύνδεσης Oracle (όνομα, σύνδεση και παρακάμψεις των `sourcePath`/`coverageOwner`/κ.λπ.) για εναλλαγή μεταξύ περιβαλλόντων. (Full field reference: [wiki](https://github.com/thepaneb/vscode-utplsql/wiki/Configuration)). |
 | `utplsql.activeProfile` | `""` | ID του ενεργού profile (`utplsql.profiles`). Όταν ορίζεται, υπερισχύει του `utplsql.connection`. |
 | `utplsql.sqlCoverageEnabled` | `false` | Παρακολουθεί τα views που εκτελέστηκαν μέσω `V$SQL` (boolean coverage). Απαιτεί `GRANT SELECT ON V$SQL`. |
 | `utplsql.debugger.enabled` | `true` | Ενεργοποιεί την αποσφαλμάτωση PL/SQL tests (`DBMS_DEBUG`). Απαιτεί `node-oracledb` + grants. |
 | `utplsql.debugger.stopOnException` | `true` | Κάνει παύση σε PL/SQL exceptions κατά την αποσφαλμάτωση. |
 | `utplsql.debugger.timeoutSeconds` | `300` | Χρονικό όριο (δευτ.) της συνόδου αποσφαλμάτωσης. |
+| `utplsql.scriptRunner.stopOnError` | `true` | Stops script execution on the first failure (`false` = keeps logging the rest). |
+| `utplsql.scriptRunner.autoCommit` | `true` | `autoCommit` on each script statement. |
+| `utplsql.scriptRunner.filePattern` | `**/*.{sql,pks,pkb,fnc,prc,trg}` | Globs to list files when running a script folder. |
+| `utplsql.scriptRunner.dbmsOutput` | `false` | Captures and displays `DBMS_OUTPUT` during script execution. |
+| `utplsql.scriptRunner.timeoutSeconds` | `300` | Per-statement timeout (s) for scripts (`callTimeout`). |
 | `utplsql.language` | `auto` | Γλώσσα των μηνυμάτων του runtime. Το `auto` ακολουθεί το VSCode (pt, zh-tw/zh-hk, zh, es, ja, de, fr, it, ko, ru, tr, pl, cs, hu, bg, el, id, ro, sr, th, uk, vi, en-gb· διαφορετικά en). Καλύπτει τις **24 τοπικές ρυθμίσεις** (15 εγγενείς + 9 κοινοτικές). |
 
 Παράδειγμα (`.vscode/settings.json` του project):
@@ -216,6 +221,9 @@ UTPLSQL_CONN=your_user/password@//host:1521/service
 | `utPLSQL: Manage connection profiles` | Ανοίγει τις ρυθμίσεις στο `utplsql.profiles` | — |
 | `utPLSQL: Import connections from SQL Developer` | Εισάγει συνδέσεις από το SQL Developer (connections.xml) | — |
 | `utPLSQL: Debug test (PL/SQL)` | Ξεκινά σύνοδο αποσφαλμάτωσης του test στο ενεργό αρχείο | — |
+| `utPLSQL: Run script` | Runs the script open in the editor against a connection profile | Right-click → script file |
+| `utPLSQL: Run script file` | Runs an Explorer script file (decoded with the profile charset) | Right-click → file |
+| `utPLSQL: Run script folder` | Runs the folder scripts in alphabetical order | Right-click → folder |
 
 > **Recompile UT3** (`utplsql.recompileUt3`) **δεν** είναι εντολή palette — είναι
 > ένα εσωτερικό quick-fix του διαγνωστικού "utPLSQL Setup" (άκυρα αντικείμενα στο

@@ -21,5 +21,8 @@
   "nls.command.newProfile": "utPLSQL: 새 연결 프로필...",
   "nls.command.manageProfiles": "utPLSQL: 연결 프로필 관리",
   "nls.command.importSqlDevConnections": "utPLSQL: SQL Developer 연결 가져오기",
-  "nls.command.debugTest": "utPLSQL: 테스트 디버그 (PL/SQL)"
+  "nls.command.debugTest": "utPLSQL: 테스트 디버그 (PL/SQL)",
+  "nls.command.runScript": "utPLSQL: Run script",
+  "nls.command.runScriptFile": "utPLSQL: Run script file",
+  "nls.command.runScriptFolder": "utPLSQL: Run script folder"
 }

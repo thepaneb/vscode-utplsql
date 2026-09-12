@@ -111,12 +111,17 @@ Test Explorer 中。
 | `utplsql.organization.schemaPattern` | `db/{schema}/**` | 用于从路径中提取 schema 的 glob 模式。使用 `{schema}` 作为占位符。在 `schema` 模式下，模式基准目录（例如 `db/*`）下方的目录定义了在数据库中查询的 schemas。 |
 | `utplsql.compilationDiagnostics.enabled` | `true` | 在编辑器和问题面板中显示 PL/SQL 编译错误。 |
 | `utplsql.setupDiagnostics.enabled` | `true` | 显示配置诊断（连接、授权、版本）以及 **utPLSQL 安装完整性**（UT3 schema 中的无效对象，带有 "Recompile UT3" 快速修复），并带有快速修复操作。 |
-| `utplsql.profiles` | `[]` | 已保存的 Oracle 连接配置（名称、连接，以及 `sourcePath`/`coverageOwner` 等的覆盖项），用于在环境之间切换。 |
+| `utplsql.profiles` | `[]` | 已保存的 Oracle 连接配置（名称、连接，以及 `sourcePath`/`coverageOwner` 等的覆盖项），用于在环境之间切换。 (Full field reference: [wiki](https://github.com/thepaneb/vscode-utplsql/wiki/Configuration)). |
 | `utplsql.activeProfile` | `""` | 活动配置的 ID（`utplsql.profiles`）。设置后，会覆盖 `utplsql.connection`。 |
 | `utplsql.sqlCoverageEnabled` | `false` | 通过 `V$SQL` 跟踪执行的视图（布尔覆盖率）。需要 `GRANT SELECT ON V$SQL`。 |
 | `utplsql.debugger.enabled` | `true` | 启用 PL/SQL 测试调试（`DBMS_DEBUG`）。需要 `node-oracledb` + 授权。 |
 | `utplsql.debugger.stopOnException` | `true` | 调试期间在 PL/SQL 异常时暂停。 |
 | `utplsql.debugger.timeoutSeconds` | `300` | 调试会话的超时时间（秒）。 |
+| `utplsql.scriptRunner.stopOnError` | `true` | Stops script execution on the first failure (`false` = keeps logging the rest). |
+| `utplsql.scriptRunner.autoCommit` | `true` | `autoCommit` on each script statement. |
+| `utplsql.scriptRunner.filePattern` | `**/*.{sql,pks,pkb,fnc,prc,trg}` | Globs to list files when running a script folder. |
+| `utplsql.scriptRunner.dbmsOutput` | `false` | Captures and displays `DBMS_OUTPUT` during script execution. |
+| `utplsql.scriptRunner.timeoutSeconds` | `300` | Per-statement timeout (s) for scripts (`callTimeout`). |
 | `utplsql.language` | `auto` | 运行时消息的语言。`auto` 跟随 VSCode（pt、zh-tw/zh-hk、zh、es、ja、de、fr、it、ko、ru、tr、pl、cs、hu、bg、el、id、ro、sr、th、uk、vi、en-gb；否则为 en）。覆盖 **24 种语言环境**（15 种原生 + 9 种社区）。 |
 
 示例（项目 `.vscode/settings.json`）：
@@ -214,6 +219,9 @@ UTPLSQL_CONN=your_user/password@//host:1521/service
 | `utPLSQL: Manage connection profiles` | 打开 `utplsql.profiles` 的设置 | — |
 | `utPLSQL: Import connections from SQL Developer` | 从 SQL Developer（connections.xml）导入连接 | — |
 | `utPLSQL: Debug test (PL/SQL)` | 为活动文件下的测试启动调试会话 | — |
+| `utPLSQL: Run script` | Runs the script open in the editor against a connection profile | Right-click → script file |
+| `utPLSQL: Run script file` | Runs an Explorer script file (decoded with the profile charset) | Right-click → file |
+| `utPLSQL: Run script folder` | Runs the folder scripts in alphabetical order | Right-click → folder |
 
 > **Recompile UT3**（`utplsql.recompileUt3`）**不是**面板命令 — 它是
 > "utPLSQL Setup" 诊断（utPLSQL schema 中的无效对象）的内部快速修复。
