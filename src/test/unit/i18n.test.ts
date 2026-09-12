@@ -152,14 +152,8 @@ test('t: novos idiomas retornam suas traduções', () => {
 
 test('t: interpolacao parametrizada', () => {
   assert.strictEqual(t('pt-br', 'ext.profile.active', { name: 'DEV' }), 'Perfil ativo: DEV');
-  assert.strictEqual(
-    t('en', 'runner.oracleUnavailable', { error: 'ORA-1' }),
-    'Oracle runner unavailable, falling back to CLI: ORA-1',
-  );
-  assert.strictEqual(
-    t('zh-cn', 'runner.oracleUnavailable', { error: 'ORA-1' }),
-    'Oracle 运行器不可用，回退到 CLI：ORA-1',
-  );
+  assert.strictEqual(t('en', 'runner.oracleError', { error: 'ORA-1' }), 'Oracle runner: ORA-1');
+  assert.strictEqual(t('zh-cn', 'runner.oracleError', { error: 'ORA-1' }), 'Oracle 运行器：ORA-1');
 });
 
 test('t: chave ausente em en cai para pt-br', () => {

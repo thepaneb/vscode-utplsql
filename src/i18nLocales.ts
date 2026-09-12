@@ -5,7 +5,7 @@ export const ptBr: Record<string, string> = {
   'common.error': 'Erro',
   'common.failed': 'Falhou',
   'common.copy': 'Copiar',
-  'common.oracledbMissing': 'oracledb não disponível. Instale com "npm install oracledb".',
+  'common.oracledbMissing': 'oracledb não disponível. Reinstale as dependências com "npm install".',
 
   'ext.reporters.listFailed': 'Falha ao listar reporters: {error}',
   'ext.reporters.placeholder': 'Selecione um reporter adicional para esta execução',
@@ -42,13 +42,10 @@ export const ptBr: Record<string, string> = {
   'ext.conn.placeholder': 'DEV_FULANO/senha@//localhost:1521/XEPDB1',
   'ext.runCancel': 'Execução cancelada.',
 
-  'runner.oracleUnavailable': 'Oracle runner indisponível, fallback para CLI: {error}',
   'runner.oracleError': 'Oracle runner: {error}',
   'runner.oracleErrorHeader': '[erro] Oracle runner: {error}',
   'runner.running': 'Rodando utPLSQL{coverage}...',
   'runner.withCoverage': ' (com cobertura)',
-  'runner.infoCli': '[aviso] Não foi possível obter info do CLI: {error}',
-  'runner.cliInfo': '[info] CLI {cli} | API {api}{db}',
   'runner.dbVersion': ' | DB utPLSQL {version}',
   'runner.oldVersion':
     '[aviso] utPLSQL no banco é anterior a 3.1.0 — cobertura pode não funcionar.',
@@ -58,8 +55,7 @@ export const ptBr: Record<string, string> = {
     '[aviso] Reporter UT_COVERAGE_COBERTURA_REPORTER não disponível no banco.\n' +
     'Cobertura desabilitada. Verifique se o pacote utPLSQL está atualizado.',
   'runner.extraReporter': '[info] Reporter adicional da sessão: {name}',
-  'runner.invocationError': '{error}',
-  'runner.noResults': 'Sem relatório de resultados (o CLI falhou?).',
+  'runner.noResults': 'Sem relatório de resultados.',
   'runner.noJunitResult': '[aviso] Nenhum resultado JUnit encontrado para "{id}".',
   'runner.noJunitResultPkg': ' packageName esperado: {package}',
   'runner.coverNoReport':
@@ -71,7 +67,6 @@ export const ptBr: Record<string, string> = {
     '[cobertura] relatório não gerado. Verifique o GRANT EXECUTE ON SYS.DBMS_PROFILER.',
   'results.noMapped':
     '[cobertura] nenhum arquivo mapeado. Ajuste "utplsql.sourcePath" para a pasta do código-fonte.',
-  'cli.notFound': 'CLI não encontrado: {path}',
 
   'status.idle': 'Nenhum teste executado ainda. Clique para abrir o Test Explorer.',
   'status.running': 'Executando {current}/{total} suites',
@@ -82,11 +77,6 @@ export const ptBr: Record<string, string> = {
   'status.errored': '{count} erros',
   'status.skipped': '{count} pulados',
 
-  'quickfix.noCli': 'utPLSQL CLI não configurado ({path}).',
-  'quickfix.noCliAction': 'Configurar utplsql.cliPath',
-  'quickfix.noJava': 'Java não encontrado ({path}).',
-  'quickfix.noJavaAction': 'Configurar utplsql.javaPath',
-  'quickfix.badConn': 'Conexão Oracle inválida: {error}',
   'quickfix.oldVersion': 'Versão do utPLSQL no banco antiga ({version}); mínimo 3.1.0.',
   'quickfix.oldVersionUpgrade': 'Como atualizar o utPLSQL',
   'quickfix.invalidObjects': 'Schema {schema} contém {count} objetos inválidos: {names}',
@@ -98,7 +88,8 @@ export const ptBr: Record<string, string> = {
   'quickfix.recompileFail':
     'Falha ao recompilar UT3: {error}. Requer ALTER ANY PROCEDURE ou execução como o owner do schema.',
   'quickfix.noConnection': 'Conexão Oracle não configurada.',
-  'quickfix.oracledbMissing': 'oracledb não disponível. Instale com "npm install oracledb".',
+  'quickfix.oracledbMissing':
+    'oracledb não disponível. Reinstale as dependências com "npm install".',
 
   'viewCoverage.none': '[cobertura] nenhum arquivo mapeado.',
   'viewCoverage.vsqlDenied':
@@ -149,13 +140,35 @@ export const ptBr: Record<string, string> = {
   'ext.profile.new.descPrompt': 'Descrição (opcional — Enter para pular)',
   'ext.profile.new.descPlaceholder': 'Banco local de desenvolvimento',
   'ext.profile.new.charsetDefault': 'padrão',
+
+  'results.failedFallback': 'Falhou',
+  'results.errorFallback': 'Erro',
+  'runner.coverEmptyDir': '(vazio)',
+  'runner.coverDirMissing': '(diretório não encontrado)',
+  'profile.isDefault': 'Padrão',
+  'profile.selectPlaceholder': 'Selecione um perfil de conexão',
+  'codelens.runSuite': '▶ Executar Suite',
+  'codelens.runTest': '▶ Executar Test',
+  'codelens.runSuiteCoverage': '▶ Executar Suite com Cobertura',
+  'codelens.runTestCoverage': '▶ Executar Test com Cobertura',
+  'codelens.runTip': 'Executar {desc}',
+  'codelens.runCoverageTip': 'Executar {desc} com cobertura',
+  'ext.reporters.listEmpty': 'nenhum reporter encontrado',
+  'quickfix.reconfigureConn': 'Reconfigurar conexão',
+  'quickfix.copyGrants': 'Copiar grants para clipboard',
+
+  'debug.noConnection':
+    'oracledb indisponível ou conexão não configurada. Reinstale as dependências com "npm install".',
+  'debug.controlFail': 'Falha ao abrir a sessão de controle do DBMS_DEBUG.',
+  'debug.attachFail':
+    'Não foi possível anexar ao DBMS_DEBUG. Verifique os grants:\n  GRANT EXECUTE ON SYS.DBMS_DEBUG TO <schema>;\n  GRANT DEBUG CONNECT SESSION TO <schema>;',
 };
 
 export const en: Record<string, string> = {
   'common.error': 'Error',
   'common.failed': 'Failed',
   'common.copy': 'Copy',
-  'common.oracledbMissing': 'oracledb not available. Install with "npm install oracledb".',
+  'common.oracledbMissing': 'oracledb not available. Reinstall dependencies with "npm install".',
 
   'ext.reporters.listFailed': 'Failed to list reporters: {error}',
   'ext.reporters.placeholder': 'Select an additional reporter for this run',
@@ -191,13 +204,10 @@ export const en: Record<string, string> = {
   'ext.conn.placeholder': 'DEV_FULANO/pass@//localhost:1521/XEPDB1',
   'ext.runCancel': 'Run cancelled.',
 
-  'runner.oracleUnavailable': 'Oracle runner unavailable, falling back to CLI: {error}',
   'runner.oracleError': 'Oracle runner: {error}',
   'runner.oracleErrorHeader': '[error] Oracle runner: {error}',
   'runner.running': 'Running utPLSQL{coverage}...',
   'runner.withCoverage': ' (with coverage)',
-  'runner.infoCli': '[warning] Could not get CLI info: {error}',
-  'runner.cliInfo': '[info] CLI {cli} | API {api}{db}',
   'runner.dbVersion': ' | DB utPLSQL {version}',
   'runner.oldVersion':
     '[warning] utPLSQL in the database is older than 3.1.0 — coverage may not work.',
@@ -207,8 +217,7 @@ export const en: Record<string, string> = {
     '[warning] UT_COVERAGE_COBERTURA_REPORTER not available in the database.\n' +
     'Coverage disabled. Check if the utPLSQL package is up to date.',
   'runner.extraReporter': '[info] Additional session reporter: {name}',
-  'runner.invocationError': '{error}',
-  'runner.noResults': 'No results report (did the CLI fail?).',
+  'runner.noResults': 'No results report.',
   'runner.noJunitResult': '[warning] No JUnit result found for "{id}".',
   'runner.noJunitResultPkg': ' expected packageName: {package}',
   'runner.coverNoReport':
@@ -220,7 +229,6 @@ export const en: Record<string, string> = {
     '[coverage] report not generated. Check GRANT EXECUTE ON SYS.DBMS_PROFILER.',
   'results.noMapped':
     '[coverage] no file mapped. Adjust "utplsql.sourcePath" to the source code folder.',
-  'cli.notFound': 'CLI not found: {path}',
 
   'status.idle': 'No tests run yet. Click to open Test Explorer.',
   'status.running': 'Running {current}/{total} suites',
@@ -231,11 +239,6 @@ export const en: Record<string, string> = {
   'status.errored': '{count} errored',
   'status.skipped': '{count} skipped',
 
-  'quickfix.noCli': 'utPLSQL CLI not configured ({path}).',
-  'quickfix.noCliAction': 'Configure utplsql.cliPath',
-  'quickfix.noJava': 'Java not found ({path}).',
-  'quickfix.noJavaAction': 'Configure utplsql.javaPath',
-  'quickfix.badConn': 'Invalid Oracle connection: {error}',
   'quickfix.oldVersion': 'utPLSQL database version is old ({version}); minimum 3.1.0.',
   'quickfix.oldVersionUpgrade': 'How to upgrade utPLSQL',
   'quickfix.invalidObjects': 'Schema {schema} has {count} invalid objects: {names}',
@@ -247,7 +250,7 @@ export const en: Record<string, string> = {
   'quickfix.recompileFail':
     'Failed to recompile UT3: {error}. Requires ALTER ANY PROCEDURE or execution as the schema owner.',
   'quickfix.noConnection': 'Oracle connection not configured.',
-  'quickfix.oracledbMissing': 'oracledb not available. Install with "npm install oracledb".',
+  'quickfix.oracledbMissing': 'oracledb not available. Reinstall dependencies with "npm install".',
 
   'viewCoverage.none': '[coverage] no file mapped.',
   'viewCoverage.vsqlDenied':
@@ -298,13 +301,35 @@ export const en: Record<string, string> = {
   'ext.profile.new.descPrompt': 'Description (optional — Enter to skip)',
   'ext.profile.new.descPlaceholder': 'Local development database',
   'ext.profile.new.charsetDefault': 'default',
+
+  'results.failedFallback': 'Failed',
+  'results.errorFallback': 'Error',
+  'runner.coverEmptyDir': '(empty)',
+  'runner.coverDirMissing': '(directory not found)',
+  'profile.isDefault': 'Default',
+  'profile.selectPlaceholder': 'Select a connection profile',
+  'codelens.runSuite': '▶ Run Suite',
+  'codelens.runTest': '▶ Run Test',
+  'codelens.runSuiteCoverage': '▶ Run Suite with Coverage',
+  'codelens.runTestCoverage': '▶ Run Test with Coverage',
+  'codelens.runTip': 'Run {desc}',
+  'codelens.runCoverageTip': 'Run {desc} with coverage',
+  'ext.reporters.listEmpty': 'no reporters found',
+  'quickfix.reconfigureConn': 'Reconfigure connection',
+  'quickfix.copyGrants': 'Copy grants to clipboard',
+
+  'debug.noConnection':
+    'oracledb unavailable or connection not configured. Reinstall dependencies with "npm install".',
+  'debug.controlFail': 'Failed to open the DBMS_DEBUG control session.',
+  'debug.attachFail':
+    'Could not attach to DBMS_DEBUG. Check the grants:\n  GRANT EXECUTE ON SYS.DBMS_DEBUG TO <schema>;\n  GRANT DEBUG CONNECT SESSION TO <schema>;',
 };
 
 export const es: Record<string, string> = {
   'common.error': 'Error',
   'common.failed': 'Falló',
   'common.copy': 'Copiar',
-  'common.oracledbMissing': 'oracledb no disponible. Instale con "npm install oracledb".',
+  'common.oracledbMissing': 'oracledb no disponible. Reinstale las dependencias con "npm install".',
 
   'ext.reporters.listFailed': 'Error al listar reporters: {error}',
   'ext.reporters.placeholder': 'Seleccione un reporter adicional para esta ejecución',
@@ -342,13 +367,10 @@ export const es: Record<string, string> = {
   'ext.conn.placeholder': 'DEV_FULANO/contraseña@//localhost:1521/XEPDB1',
   'ext.runCancel': 'Ejecución cancelada.',
 
-  'runner.oracleUnavailable': 'Runner Oracle no disponible, fallback a CLI: {error}',
   'runner.oracleError': 'Runner Oracle: {error}',
   'runner.oracleErrorHeader': '[error] Runner Oracle: {error}',
   'runner.running': 'Ejecutando utPLSQL{coverage}...',
   'runner.withCoverage': ' (con cobertura)',
-  'runner.infoCli': '[aviso] No se pudo obtener info del CLI: {error}',
-  'runner.cliInfo': '[info] CLI {cli} | API {api}{db}',
   'runner.dbVersion': ' | DB utPLSQL {version}',
   'runner.oldVersion':
     '[aviso] utPLSQL en la base es anterior a 3.1.0 — la cobertura puede no funcionar.',
@@ -358,8 +380,7 @@ export const es: Record<string, string> = {
     '[aviso] El reporter UT_COVERAGE_COBERTURA_REPORTER no está disponible en la base.\n' +
     'Cobertura deshabilitada. Verifique que el paquete utPLSQL esté actualizado.',
   'runner.extraReporter': '[info] Reporter adicional de la sesión: {name}',
-  'runner.invocationError': '{error}',
-  'runner.noResults': 'Sin informe de resultados (¿falló el CLI?).',
+  'runner.noResults': 'Sin informe de resultados.',
   'runner.noJunitResult': '[aviso] No se encontró un resultado JUnit para "{id}".',
   'runner.noJunitResultPkg': ' packageName esperado: {package}',
   'runner.coverNoReport':
@@ -371,7 +392,6 @@ export const es: Record<string, string> = {
     '[cobertura] informe no generado. Verifique GRANT EXECUTE ON SYS.DBMS_PROFILER.',
   'results.noMapped':
     '[cobertura] ningún archivo mapeado. Ajuste "utplsql.sourcePath" a la carpeta del código fuente.',
-  'cli.notFound': 'CLI no encontrado: {path}',
 
   'status.idle': 'Aún no se ejecutaron tests. Haga clic para abrir el Test Explorer.',
   'status.running': 'Ejecutando {current}/{total} suites',
@@ -382,11 +402,6 @@ export const es: Record<string, string> = {
   'status.errored': '{count} errores',
   'status.skipped': '{count} omitidos',
 
-  'quickfix.noCli': 'CLI de utPLSQL no configurado ({path}).',
-  'quickfix.noCliAction': 'Configurar utplsql.cliPath',
-  'quickfix.noJava': 'Java no encontrado ({path}).',
-  'quickfix.noJavaAction': 'Configurar utplsql.javaPath',
-  'quickfix.badConn': 'Conexión Oracle inválida: {error}',
   'quickfix.oldVersion': 'La versión de utPLSQL en la base es antigua ({version}); mínimo 3.1.0.',
   'quickfix.oldVersionUpgrade': 'Cómo actualizar utPLSQL',
   'quickfix.invalidObjects': 'El esquema {schema} tiene {count} objetos inválidos: {names}',
@@ -398,7 +413,8 @@ export const es: Record<string, string> = {
   'quickfix.recompileFail':
     'Error al recompilar UT3: {error}. Requiere ALTER ANY PROCEDURE o ejecución como owner del esquema.',
   'quickfix.noConnection': 'Conexión Oracle no configurada.',
-  'quickfix.oracledbMissing': 'oracledb no disponible. Instale con "npm install oracledb".',
+  'quickfix.oracledbMissing':
+    'oracledb no disponible. Reinstale las dependencias con "npm install".',
 
   'viewCoverage.none': '[cobertura] ningún archivo mapeado.',
   'viewCoverage.vsqlDenied':
@@ -449,13 +465,35 @@ export const es: Record<string, string> = {
   'ext.profile.new.descPrompt': 'Description (optional — Enter to skip)',
   'ext.profile.new.descPlaceholder': 'Local development database',
   'ext.profile.new.charsetDefault': 'default',
+
+  'results.failedFallback': 'Falló',
+  'results.errorFallback': 'Error',
+  'runner.coverEmptyDir': '(vacío)',
+  'runner.coverDirMissing': '(directorio no encontrado)',
+  'profile.isDefault': 'Predeterminado',
+  'profile.selectPlaceholder': 'Seleccione un perfil de conexión',
+  'codelens.runSuite': '▶ Ejecutar Suite',
+  'codelens.runTest': '▶ Ejecutar Test',
+  'codelens.runSuiteCoverage': '▶ Ejecutar Suite con Cobertura',
+  'codelens.runTestCoverage': '▶ Ejecutar Test con Cobertura',
+  'codelens.runTip': 'Ejecutar {desc}',
+  'codelens.runCoverageTip': 'Ejecutar {desc} con cobertura',
+  'ext.reporters.listEmpty': 'no se encontraron reporters',
+  'quickfix.reconfigureConn': 'Reconfigurar conexión',
+  'quickfix.copyGrants': 'Copiar grants al portapapeles',
+
+  'debug.noConnection':
+    'oracledb no disponible o conexión no configurada. Reinstale las dependencias con "npm install".',
+  'debug.controlFail': 'No se pudo abrir la sesión de control de DBMS_DEBUG.',
+  'debug.attachFail':
+    'No se pudo adjuntar a DBMS_DEBUG. Verifique los grants:\n  GRANT EXECUTE ON SYS.DBMS_DEBUG TO <schema>;\n  GRANT DEBUG CONNECT SESSION TO <schema>;',
 };
 
 export const zhCn: Record<string, string> = {
   'common.error': '错误',
   'common.failed': '失败',
   'common.copy': '复制',
-  'common.oracledbMissing': 'oracledb 不可用。请使用 "npm install oracledb" 安装，。',
+  'common.oracledbMissing': 'oracledb 不可用。请使用 "npm install" 重新安装依赖。',
 
   'ext.reporters.listFailed': '列出 reporters 失败：{error}',
   'ext.reporters.placeholder': '为本次运行选择一个附加 reporter',
@@ -490,13 +528,10 @@ export const zhCn: Record<string, string> = {
   'ext.conn.placeholder': 'DEV_FULANO/密码@//localhost:1521/XEPDB1',
   'ext.runCancel': '运行已取消。',
 
-  'runner.oracleUnavailable': 'Oracle 运行器不可用，回退到 CLI：{error}',
   'runner.oracleError': 'Oracle 运行器：{error}',
   'runner.oracleErrorHeader': '[错误] Oracle 运行器：{error}',
   'runner.running': '正在运行 utPLSQL{coverage}...',
   'runner.withCoverage': '（带覆盖率）',
-  'runner.infoCli': '[警告] 无法获取 CLI 信息：{error}',
-  'runner.cliInfo': '[信息] CLI {cli} | API {api}{db}',
   'runner.dbVersion': ' | 数据库 utPLSQL {version}',
   'runner.oldVersion': '[警告] 数据库中的 utPLSQL 早于 3.1.0 — 覆盖率可能无法工作。',
   'runner.reporterListFailed': '[警告] 无法列出 reporters：{error}',
@@ -504,8 +539,7 @@ export const zhCn: Record<string, string> = {
   'runner.reporterMissing':
     '[警告] 数据库中不可用 UT_COVERAGE_COBERTURA_REPORTER。\n覆盖率已禁用。请检查 utPLSQL 包是否最新。',
   'runner.extraReporter': '[信息] 会话附加 reporter：{name}',
-  'runner.invocationError': '{error}',
-  'runner.noResults': '没有结果报告（CLI 是否失败？）。',
+  'runner.noResults': '没有结果报告。',
   'runner.noJunitResult': '[警告] 未找到 "{id}" 的 JUnit 结果。',
   'runner.noJunitResultPkg': ' 期望的 packageName：{package}',
   'runner.coverNoReport':
@@ -516,7 +550,6 @@ export const zhCn: Record<string, string> = {
   'oracleRunner.coverNotGenerated':
     '[覆盖率] 未生成报告。请检查 GRANT EXECUTE ON SYS.DBMS_PROFILER。',
   'results.noMapped': '[覆盖率] 未映射任何文件。请将 "utplsql.sourcePath" 调整为源代码文件夹。',
-  'cli.notFound': '未找到 CLI：{path}',
 
   'status.idle': '尚未运行测试。单击以打开 Test Explorer。',
   'status.running': '正在运行 {current}/{total} 个套件',
@@ -527,11 +560,6 @@ export const zhCn: Record<string, string> = {
   'status.errored': '{count} 错误',
   'status.skipped': '{count} 跳过',
 
-  'quickfix.noCli': 'utPLSQL CLI 未配置（{path}）。',
-  'quickfix.noCliAction': '配置 utplsql.cliPath',
-  'quickfix.noJava': '未找到 Java（{path}）。',
-  'quickfix.noJavaAction': '配置 utplsql.javaPath',
-  'quickfix.badConn': '无效的 Oracle 连接：{error}',
   'quickfix.oldVersion': '数据库中的 utPLSQL 版本较旧（{version}）；最低要求 3.1.0。',
   'quickfix.oldVersionUpgrade': '如何升级 utPLSQL',
   'quickfix.invalidObjects': '架构 {schema} 包含 {count} 个无效对象：{names}',
@@ -543,7 +571,7 @@ export const zhCn: Record<string, string> = {
   'quickfix.recompileFail':
     '重新编译 UT3 失败：{error}。需要 ALTER ANY PROCEDURE 或以架构所有者身份执行。',
   'quickfix.noConnection': '未配置 Oracle 连接。',
-  'quickfix.oracledbMissing': 'oracledb 不可用。请使用 "npm install oracledb" 安装。',
+  'quickfix.oracledbMissing': 'oracledb 不可用。请使用 "npm install" 重新安装依赖。',
 
   'viewCoverage.none': '[覆盖率] 未映射任何文件。',
   'viewCoverage.vsqlDenied':
@@ -594,6 +622,27 @@ export const zhCn: Record<string, string> = {
   'ext.profile.new.descPrompt': 'Description (optional — Enter to skip)',
   'ext.profile.new.descPlaceholder': 'Local development database',
   'ext.profile.new.charsetDefault': 'default',
+
+  'results.failedFallback': '失败',
+  'results.errorFallback': '错误',
+  'runner.coverEmptyDir': '（空）',
+  'runner.coverDirMissing': '（未找到目录）',
+  'profile.isDefault': '默认',
+  'profile.selectPlaceholder': '选择连接配置文件',
+  'codelens.runSuite': '▶ 运行 Suite',
+  'codelens.runTest': '▶ 运行 Test',
+  'codelens.runSuiteCoverage': '▶ 运行 Suite（带覆盖率）',
+  'codelens.runTestCoverage': '▶ 运行 Test（带覆盖率）',
+  'codelens.runTip': '运行 {desc}',
+  'codelens.runCoverageTip': '运行 {desc}（带覆盖率）',
+  'ext.reporters.listEmpty': '未找到 reporter',
+  'quickfix.reconfigureConn': '重新配置连接',
+  'quickfix.copyGrants': '将 grants 复制到剪贴板',
+
+  'debug.noConnection': 'oracledb 不可用或连接未配置。请使用 "npm install" 重新安装依赖。',
+  'debug.controlFail': '无法打开 DBMS_DEBUG 控制会话。',
+  'debug.attachFail':
+    '无法附加到 DBMS_DEBUG。请检查授权：\n  GRANT EXECUTE ON SYS.DBMS_DEBUG TO <schema>;\n  GRANT DEBUG CONNECT SESSION TO <schema>;',
 };
 
 export const ja: Record<string, string> = {
@@ -601,7 +650,7 @@ export const ja: Record<string, string> = {
   'common.failed': '失敗',
   'common.copy': 'コピー',
   'common.oracledbMissing':
-    'oracledb が利用できません。「npm install oracledb」でインストールするか、',
+    'oracledb が利用できません。「npm install」で依存関係を再インストールしてください。',
 
   'ext.reporters.listFailed': 'レポーターの一覧取得に失敗しました: {error}',
   'ext.reporters.placeholder': 'この実行で使用する追加レポーターを選択',
@@ -638,14 +687,10 @@ export const ja: Record<string, string> = {
   'ext.conn.placeholder': 'DEV_FULANO/パスワード@//localhost:1521/XEPDB1',
   'ext.runCancel': '実行をキャンセルしました。',
 
-  'runner.oracleUnavailable':
-    'Oracle ランナーを利用できないため CLI にフォールバックします: {error}',
   'runner.oracleError': 'Oracle ランナー: {error}',
   'runner.oracleErrorHeader': '[エラー] Oracle ランナー: {error}',
   'runner.running': 'utPLSQL{coverage} を実行中...',
   'runner.withCoverage': '（カバレッジ付き）',
-  'runner.infoCli': '[警告] CLI 情報を取得できませんでした: {error}',
-  'runner.cliInfo': '[情報] CLI {cli} | API {api}{db}',
   'runner.dbVersion': ' | DB utPLSQL {version}',
   'runner.oldVersion':
     '[警告] データベースの utPLSQL が 3.1.0 より古い — カバレッジが機能しない可能性があります。',
@@ -654,8 +699,7 @@ export const ja: Record<string, string> = {
   'runner.reporterMissing':
     '[警告] UT_COVERAGE_COBERTURA_REPORTER がデータベースで利用できません。\nカバレッジを無効にしました。utPLSQL パッケージが最新か確認してください。',
   'runner.extraReporter': '[情報] セッションの追加レポーター: {name}',
-  'runner.invocationError': '{error}',
-  'runner.noResults': '結果レポートがありません（CLI が失敗しましたか？）。',
+  'runner.noResults': '結果レポートがありません。',
   'runner.noJunitResult': '[警告] 「{id}」の JUnit 結果が見つかりません。',
   'runner.noJunitResultPkg': ' 期待される packageName: {package}',
   'runner.coverNoReport':
@@ -667,7 +711,6 @@ export const ja: Record<string, string> = {
     '[カバレッジ] レポートが生成されませんでした。GRANT EXECUTE ON SYS.DBMS_PROFILER を確認してください。',
   'results.noMapped':
     '[カバレッジ] マップされたファイルがありません。「utplsql.sourcePath」をソースコードのフォルダーに調整してください。',
-  'cli.notFound': 'CLI が見つかりません: {path}',
 
   'status.idle': 'まだテストは実行されていません。クリックして Test Explorer を開きます。',
   'status.running': '{current}/{total} スイートを実行中',
@@ -678,11 +721,6 @@ export const ja: Record<string, string> = {
   'status.errored': '{count} エラー',
   'status.skipped': '{count} スキップ',
 
-  'quickfix.noCli': 'utPLSQL CLI が設定されていません（{path}）。',
-  'quickfix.noCliAction': 'utplsql.cliPath を設定',
-  'quickfix.noJava': 'Java が見つかりません（{path}）。',
-  'quickfix.noJavaAction': 'utplsql.javaPath を設定',
-  'quickfix.badConn': '無効な Oracle 接続です: {error}',
   'quickfix.oldVersion':
     'データベースの utPLSQL のバージョンが古い（{version}）；最低 3.1.0 が必要です。',
   'quickfix.oldVersionUpgrade': 'utPLSQL をアップグレードする方法',
@@ -697,7 +735,7 @@ export const ja: Record<string, string> = {
     'UT3 の再コンパイルに失敗しました: {error}。ALTER ANY PROCEDURE またはスキーマ所有者としての実行が必要です。',
   'quickfix.noConnection': 'Oracle 接続が設定されていません。',
   'quickfix.oracledbMissing':
-    'oracledb が利用できません。「npm install oracledb」でインストールしてください。',
+    'oracledb が利用できません。「npm install」で依存関係を再インストールしてください。',
 
   'viewCoverage.none': '[カバレッジ] マップされたファイルがありません。',
   'viewCoverage.vsqlDenied':
@@ -748,13 +786,36 @@ export const ja: Record<string, string> = {
   'ext.profile.new.descPrompt': 'Description (optional — Enter to skip)',
   'ext.profile.new.descPlaceholder': 'Local development database',
   'ext.profile.new.charsetDefault': 'default',
+
+  'results.failedFallback': '失敗',
+  'results.errorFallback': 'エラー',
+  'runner.coverEmptyDir': '（空）',
+  'runner.coverDirMissing': '（ディレクトリが見つかりません）',
+  'profile.isDefault': 'デフォルト',
+  'profile.selectPlaceholder': '接続プロファイルを選択',
+  'codelens.runSuite': '▶ Suite を実行',
+  'codelens.runTest': '▶ Test を実行',
+  'codelens.runSuiteCoverage': '▶ Suite を実行（カバレッジ付き）',
+  'codelens.runTestCoverage': '▶ Test を実行（カバレッジ付き）',
+  'codelens.runTip': '{desc} を実行',
+  'codelens.runCoverageTip': '{desc} を実行（カバレッジ付き）',
+  'ext.reporters.listEmpty': 'レポーターが見つかりません',
+  'quickfix.reconfigureConn': '接続を再設定',
+  'quickfix.copyGrants': 'grants をクリップボードにコピー',
+
+  'debug.noConnection':
+    'oracledb が利用できないか、接続が設定されていません。「npm install」で依存関係を再インストールしてください。',
+  'debug.controlFail': 'DBMS_DEBUG 制御セッションを開けませんでした。',
+  'debug.attachFail':
+    'DBMS_DEBUG にアタッチできませんでした。権限を確認してください：\n  GRANT EXECUTE ON SYS.DBMS_DEBUG TO <schema>;\n  GRANT DEBUG CONNECT SESSION TO <schema>;',
 };
 
 export const de: Record<string, string> = {
   'common.error': 'Fehler',
   'common.failed': 'Fehlgeschlagen',
   'common.copy': 'Kopieren',
-  'common.oracledbMissing': 'oracledb nicht verfügbar. Installieren Sie mit "npm install oracledb"',
+  'common.oracledbMissing':
+    'oracledb nicht verfügbar. Installieren Sie die Abhängigkeiten mit "npm install" neu.',
 
   'ext.reporters.listFailed': 'Reporter auflisten fehlgeschlagen: {error}',
   'ext.reporters.placeholder': 'Zusätzlichen Reporter für diesen Lauf auswählen',
@@ -791,13 +852,10 @@ export const de: Record<string, string> = {
   'ext.conn.placeholder': 'DEV_FULANO/Passwort@//localhost:1521/XEPDB1',
   'ext.runCancel': 'Lauf abgebrochen.',
 
-  'runner.oracleUnavailable': 'Oracle-Runner nicht verfügbar, Fallback auf CLI: {error}',
   'runner.oracleError': 'Oracle-Runner: {error}',
   'runner.oracleErrorHeader': '[Fehler] Oracle-Runner: {error}',
   'runner.running': 'utPLSQL{coverage} wird ausgeführt...',
   'runner.withCoverage': ' (mit Coverage)',
-  'runner.infoCli': '[Warnung] CLI-Info konnte nicht abgerufen werden: {error}',
-  'runner.cliInfo': '[Info] CLI {cli} | API {api}{db}',
   'runner.dbVersion': ' | DB utPLSQL {version}',
   'runner.oldVersion':
     '[Warnung] utPLSQL in der Datenbank ist älter als 3.1.0 — Coverage funktioniert möglicherweise nicht.',
@@ -806,8 +864,7 @@ export const de: Record<string, string> = {
   'runner.reporterMissing':
     '[Warnung] UT_COVERAGE_COBERTURA_REPORTER ist in der Datenbank nicht verfügbar.\nCoverage deaktiviert. Prüfen Sie, ob das utPLSQL-Paket aktuell ist.',
   'runner.extraReporter': '[Info] Zusätzlicher Sitzungs-Reporter: {name}',
-  'runner.invocationError': '{error}',
-  'runner.noResults': 'Kein Ergebnisbericht (ist der CLI fehlgeschlagen?).',
+  'runner.noResults': 'Kein Ergebnisbericht.',
   'runner.noJunitResult': '[Warnung] Kein JUnit-Ergebnis für „{id}" gefunden.',
   'runner.noJunitResultPkg': ' erwarteter packageName: {package}',
   'runner.coverNoReport':
@@ -819,7 +876,6 @@ export const de: Record<string, string> = {
     '[Coverage] Bericht nicht generiert. Prüfen Sie GRANT EXECUTE ON SYS.DBMS_PROFILER.',
   'results.noMapped':
     '[Coverage] keine Datei zugeordnet. Passen Sie „utplsql.sourcePath" auf den Quellcode-Ordner an.',
-  'cli.notFound': 'CLI nicht gefunden: {path}',
 
   'status.idle': 'Noch keine Tests ausgeführt. Klicken Sie, um den Test Explorer zu öffnen.',
   'status.running': '{current}/{total} Suites werden ausgeführt',
@@ -830,11 +886,6 @@ export const de: Record<string, string> = {
   'status.errored': '{count} Fehler',
   'status.skipped': '{count} übersprungen',
 
-  'quickfix.noCli': 'utPLSQL-CLI nicht konfiguriert ({path}).',
-  'quickfix.noCliAction': 'utplsql.cliPath konfigurieren',
-  'quickfix.noJava': 'Java nicht gefunden ({path}).',
-  'quickfix.noJavaAction': 'utplsql.javaPath konfigurieren',
-  'quickfix.badConn': 'Ungültige Oracle-Verbindung: {error}',
   'quickfix.oldVersion': 'utPLSQL-Datenbankversion ist alt ({version}); mindestens 3.1.0.',
   'quickfix.oldVersionUpgrade': 'utPLSQL aktualisieren',
   'quickfix.invalidObjects': 'Schema {schema} enthält {count} ungültige Objekte: {names}',
@@ -847,7 +898,7 @@ export const de: Record<string, string> = {
     'Neu kompilieren von UT3 fehlgeschlagen: {error}. Erfordert ALTER ANY PROCEDURE oder Ausführung als Schema-Eigentümer.',
   'quickfix.noConnection': 'Oracle-Verbindung nicht konfiguriert.',
   'quickfix.oracledbMissing':
-    'oracledb nicht verfügbar. Installieren Sie mit "npm install oracledb".',
+    'oracledb nicht verfügbar. Installieren Sie die Abhängigkeiten mit "npm install" neu.',
 
   'viewCoverage.none': '[Coverage] keine Datei zugeordnet.',
   'viewCoverage.vsqlDenied':
@@ -898,6 +949,28 @@ export const de: Record<string, string> = {
   'ext.profile.new.descPrompt': 'Description (optional — Enter to skip)',
   'ext.profile.new.descPlaceholder': 'Local development database',
   'ext.profile.new.charsetDefault': 'default',
+
+  'results.failedFallback': 'Fehlgeschlagen',
+  'results.errorFallback': 'Fehler',
+  'runner.coverEmptyDir': '(leer)',
+  'runner.coverDirMissing': '(Verzeichnis nicht gefunden)',
+  'profile.isDefault': 'Standard',
+  'profile.selectPlaceholder': 'Verbindungsprofil auswählen',
+  'codelens.runSuite': '▶ Suite ausführen',
+  'codelens.runTest': '▶ Test ausführen',
+  'codelens.runSuiteCoverage': '▶ Suite mit Coverage ausführen',
+  'codelens.runTestCoverage': '▶ Test mit Coverage ausführen',
+  'codelens.runTip': '{desc} ausführen',
+  'codelens.runCoverageTip': '{desc} mit Coverage ausführen',
+  'ext.reporters.listEmpty': 'keine Reporter gefunden',
+  'quickfix.reconfigureConn': 'Verbindung neu konfigurieren',
+  'quickfix.copyGrants': 'Grants in Zwischenablage kopieren',
+
+  'debug.noConnection':
+    'oracledb nicht verfügbar oder Verbindung nicht konfiguriert. Installieren Sie die Abhängigkeiten mit "npm install" neu.',
+  'debug.controlFail': 'Steuersitzung von DBMS_DEBUG konnte nicht geöffnet werden.',
+  'debug.attachFail':
+    'An DBMS_DEBUG konnte nicht angehängt werden. Prüfen Sie die Grants:\n  GRANT EXECUTE ON SYS.DBMS_DEBUG TO <schema>;\n  GRANT DEBUG CONNECT SESSION TO <schema>;',
 };
 
 export const fr: Record<string, string> = {
@@ -905,7 +978,7 @@ export const fr: Record<string, string> = {
   'common.failed': 'Échec',
   'common.copy': 'Copier',
   'common.oracledbMissing':
-    'oracledb non disponible. Installez avec « npm install oracledb » ou utilisez runnerMode « cli ».',
+    'oracledb non disponible. Réinstallez les dépendances avec « npm install ».',
 
   'ext.reporters.listFailed': 'Échec de la liste des reporters : {error}',
   'ext.reporters.placeholder': 'Sélectionnez un reporter supplémentaire pour cette exécution',
@@ -943,13 +1016,10 @@ export const fr: Record<string, string> = {
   'ext.conn.placeholder': 'DEV_FULANO/mot de passe@//localhost:1521/XEPDB1',
   'ext.runCancel': 'Exécution annulée.',
 
-  'runner.oracleUnavailable': 'Runner Oracle indisponible, repli sur le CLI : {error}',
   'runner.oracleError': 'Runner Oracle : {error}',
   'runner.oracleErrorHeader': '[erreur] Runner Oracle : {error}',
   'runner.running': 'Exécution de utPLSQL{coverage}...',
   'runner.withCoverage': ' (avec couverture)',
-  'runner.infoCli': '[avertissement] Impossible d’obtenir les infos du CLI : {error}',
-  'runner.cliInfo': '[info] CLI {cli} | API {api}{db}',
   'runner.dbVersion': ' | DB utPLSQL {version}',
   'runner.oldVersion':
     '[avertissement] utPLSQL en base est antérieur à 3.1.0 — la couverture risque de ne pas fonctionner.',
@@ -958,8 +1028,7 @@ export const fr: Record<string, string> = {
   'runner.reporterMissing':
     '[avertissement] UT_COVERAGE_COBERTURA_REPORTER indisponible en base.\nCouverture désactivée. Vérifiez que le paquet utPLSQL est à jour.',
   'runner.extraReporter': '[info] Reporter supplémentaire de session : {name}',
-  'runner.invocationError': '{error}',
-  'runner.noResults': 'Aucun rapport de résultats (le CLI a-t-il échoué ?).',
+  'runner.noResults': 'Aucun rapport de résultats.',
   'runner.noJunitResult': '[avertissement] Aucun résultat JUnit trouvé pour « {id} ».',
   'runner.noJunitResultPkg': ' packageName attendu : {package}',
   'runner.coverNoReport':
@@ -971,7 +1040,6 @@ export const fr: Record<string, string> = {
     '[couverture] rapport non généré. Vérifiez GRANT EXECUTE ON SYS.DBMS_PROFILER.',
   'results.noMapped':
     '[couverture] aucun fichier mappé. Ajustez « utplsql.sourcePath » au dossier du code source.',
-  'cli.notFound': 'CLI introuvable : {path}',
 
   'status.idle': 'Aucun test exécuté pour l’instant. Cliquez pour ouvrir l’explorateur de tests.',
   'status.running': 'Exécution de {current}/{total} suites',
@@ -982,11 +1050,6 @@ export const fr: Record<string, string> = {
   'status.errored': '{count} erreurs',
   'status.skipped': '{count} ignorés',
 
-  'quickfix.noCli': 'CLI utPLSQL non configuré ({path}).',
-  'quickfix.noCliAction': 'Configurer utplsql.cliPath',
-  'quickfix.noJava': 'Java introuvable ({path}).',
-  'quickfix.noJavaAction': 'Configurer utplsql.javaPath',
-  'quickfix.badConn': 'Connexion Oracle invalide : {error}',
   'quickfix.oldVersion': 'La version d’utPLSQL en base est ancienne ({version}) ; minimum 3.1.0.',
   'quickfix.oldVersionUpgrade': 'Comment mettre à jour utPLSQL',
   'quickfix.invalidObjects': 'Le schéma {schema} contient {count} objets invalides : {names}',
@@ -998,7 +1061,8 @@ export const fr: Record<string, string> = {
   'quickfix.recompileFail':
     'Échec de la recompilation de UT3 : {error}. Nécessite ALTER ANY PROCEDURE ou une exécution en tant que propriétaire du schéma.',
   'quickfix.noConnection': 'Connexion Oracle non configurée.',
-  'quickfix.oracledbMissing': 'oracledb non disponible. Installez avec « npm install oracledb ».',
+  'quickfix.oracledbMissing':
+    'oracledb non disponible. Réinstallez les dépendances avec « npm install ».',
 
   'viewCoverage.none': '[couverture] aucun fichier mappé.',
   'viewCoverage.vsqlDenied':
@@ -1049,13 +1113,35 @@ export const fr: Record<string, string> = {
   'ext.profile.new.descPrompt': 'Description (optional — Enter to skip)',
   'ext.profile.new.descPlaceholder': 'Local development database',
   'ext.profile.new.charsetDefault': 'default',
+
+  'results.failedFallback': 'Échoué',
+  'results.errorFallback': 'Erreur',
+  'runner.coverEmptyDir': '(vide)',
+  'runner.coverDirMissing': '(répertoire introuvable)',
+  'profile.isDefault': 'Par défaut',
+  'profile.selectPlaceholder': 'Sélectionner un profil de connexion',
+  'codelens.runSuite': '▶ Exécuter la Suite',
+  'codelens.runTest': '▶ Exécuter le Test',
+  'codelens.runSuiteCoverage': '▶ Exécuter la Suite avec Couverture',
+  'codelens.runTestCoverage': '▶ Exécuter le Test avec Couverture',
+  'codelens.runTip': 'Exécuter {desc}',
+  'codelens.runCoverageTip': 'Exécuter {desc} avec couverture',
+  'ext.reporters.listEmpty': 'aucun reporter trouvé',
+  'quickfix.reconfigureConn': 'Reconfigurer la connexion',
+  'quickfix.copyGrants': 'Copier les grants dans le presse-papiers',
+
+  'debug.noConnection':
+    'oracledb non disponible ou connexion non configurée. Réinstallez les dépendances avec « npm install ».',
+  'debug.controlFail': 'Échec d’ouverture de la session de contrôle DBMS_DEBUG.',
+  'debug.attachFail':
+    'Impossible de s’attacher à DBMS_DEBUG. Vérifiez les grants :\n  GRANT EXECUTE ON SYS.DBMS_DEBUG TO <schema>;\n  GRANT DEBUG CONNECT SESSION TO <schema>;',
 };
 
 export const zhTw: Record<string, string> = {
   'common.error': '錯誤',
   'common.failed': '失敗',
   'common.copy': '複製',
-  'common.oracledbMissing': 'oracledb 無法使用。請使用「npm install oracledb」安裝，。',
+  'common.oracledbMissing': 'oracledb 無法使用。請使用「npm install」重新安裝相依性。',
 
   'ext.reporters.listFailed': '列出 reporters 失敗：{error}',
   'ext.reporters.placeholder': '為本次執行選擇一個額外 reporter',
@@ -1090,13 +1176,10 @@ export const zhTw: Record<string, string> = {
   'ext.conn.placeholder': 'DEV_FULANO/密碼@//localhost:1521/XEPDB1',
   'ext.runCancel': '執行已取消。',
 
-  'runner.oracleUnavailable': 'Oracle 執行器無法使用，改用 CLI：{error}',
   'runner.oracleError': 'Oracle 執行器：{error}',
   'runner.oracleErrorHeader': '[錯誤] Oracle 執行器：{error}',
   'runner.running': '正在執行 utPLSQL{coverage}...',
   'runner.withCoverage': '（含涵蓋範圍）',
-  'runner.infoCli': '[警告] 無法取得 CLI 資訊：{error}',
-  'runner.cliInfo': '[資訊] CLI {cli} | API {api}{db}',
   'runner.dbVersion': ' | 資料庫 utPLSQL {version}',
   'runner.oldVersion': '[警告] 資料庫中的 utPLSQL 早於 3.1.0 — 涵蓋範圍可能無法運作。',
   'runner.reporterListFailed': '[警告] 無法列出 reporters：{error}',
@@ -1104,8 +1187,7 @@ export const zhTw: Record<string, string> = {
   'runner.reporterMissing':
     '[警告] 資料庫中沒有 UT_COVERAGE_COBERTURA_REPORTER。\n已停用涵蓋範圍。請檢查 utPLSQL 套件是否為最新版本。',
   'runner.extraReporter': '[資訊] 工作階段額外 reporter：{name}',
-  'runner.invocationError': '{error}',
-  'runner.noResults': '沒有結果報告（CLI 是否失敗？）。',
+  'runner.noResults': '沒有結果報告。',
   'runner.noJunitResult': '[警告] 找不到「{id}」的 JUnit 結果。',
   'runner.noJunitResultPkg': ' 預期的 packageName：{package}',
   'runner.coverNoReport':
@@ -1116,7 +1198,6 @@ export const zhTw: Record<string, string> = {
   'oracleRunner.coverNotGenerated':
     '[涵蓋範圍] 未產生報告。請檢查 GRANT EXECUTE ON SYS.DBMS_PROFILER。',
   'results.noMapped': '[涵蓋範圍] 未對應任何檔案。請將「utplsql.sourcePath」調整為原始碼資料夾。',
-  'cli.notFound': '找不到 CLI：{path}',
 
   'status.idle': '尚未執行測試。按一下以開啟 Test Explorer。',
   'status.running': '正在執行 {current}/{total} 個套件',
@@ -1127,11 +1208,6 @@ export const zhTw: Record<string, string> = {
   'status.errored': '{count} 錯誤',
   'status.skipped': '{count} 略過',
 
-  'quickfix.noCli': 'utPLSQL CLI 未設定（{path}）。',
-  'quickfix.noCliAction': '設定 utplsql.cliPath',
-  'quickfix.noJava': '找不到 Java（{path}）。',
-  'quickfix.noJavaAction': '設定 utplsql.javaPath',
-  'quickfix.badConn': '無效的 Oracle 連線：{error}',
   'quickfix.oldVersion': '資料庫中的 utPLSQL 版本過舊（{version}）；最低要求 3.1.0。',
   'quickfix.oldVersionUpgrade': '如何升級 utPLSQL',
   'quickfix.invalidObjects': '結構描述 {schema} 包含 {count} 個無效物件：{names}',
@@ -1143,7 +1219,7 @@ export const zhTw: Record<string, string> = {
   'quickfix.recompileFail':
     '重新編譯 UT3 失敗：{error}。需要 ALTER ANY PROCEDURE 或以結構描述擁有者身分執行。',
   'quickfix.noConnection': '未設定 Oracle 連線。',
-  'quickfix.oracledbMissing': 'oracledb 無法使用。請使用「npm install oracledb」安裝。',
+  'quickfix.oracledbMissing': 'oracledb 無法使用。請使用「npm install」重新安裝相依性。',
 
   'viewCoverage.none': '[涵蓋範圍] 未對應任何檔案。',
   'viewCoverage.vsqlDenied':
@@ -1194,13 +1270,35 @@ export const zhTw: Record<string, string> = {
   'ext.profile.new.descPrompt': 'Description (optional — Enter to skip)',
   'ext.profile.new.descPlaceholder': 'Local development database',
   'ext.profile.new.charsetDefault': 'default',
+
+  'results.failedFallback': '失敗',
+  'results.errorFallback': '錯誤',
+  'runner.coverEmptyDir': '（空白）',
+  'runner.coverDirMissing': '（找不到目錄）',
+  'profile.isDefault': '預設',
+  'profile.selectPlaceholder': '選擇連線設定檔',
+  'codelens.runSuite': '▶ 執行 Suite',
+  'codelens.runTest': '▶ 執行 Test',
+  'codelens.runSuiteCoverage': '▶ 執行 Suite（含涵蓋率）',
+  'codelens.runTestCoverage': '▶ 執行 Test（含涵蓋率）',
+  'codelens.runTip': '執行 {desc}',
+  'codelens.runCoverageTip': '執行 {desc}（含涵蓋率）',
+  'ext.reporters.listEmpty': '找不到 reporter',
+  'quickfix.reconfigureConn': '重新設定連線',
+  'quickfix.copyGrants': '將 grants 複製到剪貼簿',
+
+  'debug.noConnection': 'oracledb 無法使用或連線未設定。請使用「npm install」重新安裝相依性。',
+  'debug.controlFail': '無法開啟 DBMS_DEBUG 控制工作階段。',
+  'debug.attachFail':
+    '無法附加至 DBMS_DEBUG。請檢查授權：\n  GRANT EXECUTE ON SYS.DBMS_DEBUG TO <schema>;\n  GRANT DEBUG CONNECT SESSION TO <schema>;',
 };
 
 export const it: Record<string, string> = {
   'common.error': 'Errore',
   'common.failed': 'Fallito',
   'common.copy': 'Copia',
-  'common.oracledbMissing': 'oracledb non disponibile. Installare con "npm install oracledb"',
+  'common.oracledbMissing':
+    'oracledb non disponibile. Reinstallare le dipendenze con "npm install".',
 
   'ext.reporters.listFailed': 'Errore nell’elencare i reporter: {error}',
   'ext.reporters.placeholder': 'Seleziona un reporter aggiuntivo per questa esecuzione',
@@ -1238,13 +1336,10 @@ export const it: Record<string, string> = {
   'ext.conn.placeholder': 'DEV_FULANO/password@//localhost:1521/XEPDB1',
   'ext.runCancel': 'Esecuzione annullata.',
 
-  'runner.oracleUnavailable': 'Runner Oracle non disponibile, fallback su CLI: {error}',
   'runner.oracleError': 'Runner Oracle: {error}',
   'runner.oracleErrorHeader': '[errore] Runner Oracle: {error}',
   'runner.running': 'Esecuzione di utPLSQL{coverage}...',
   'runner.withCoverage': ' (con copertura)',
-  'runner.infoCli': '[avviso] Impossibile ottenere le info del CLI: {error}',
-  'runner.cliInfo': '[info] CLI {cli} | API {api}{db}',
   'runner.dbVersion': ' | DB utPLSQL {version}',
   'runner.oldVersion':
     '[avviso] utPLSQL nel database è precedente a 3.1.0 — la copertura potrebbe non funzionare.',
@@ -1253,8 +1348,7 @@ export const it: Record<string, string> = {
   'runner.reporterMissing':
     '[avviso] UT_COVERAGE_COBERTURA_REPORTER non disponibile nel database.\nCopertura disabilitata. Verificare che il pacchetto utPLSQL sia aggiornato.',
   'runner.extraReporter': '[info] Reporter aggiuntivo di sessione: {name}',
-  'runner.invocationError': '{error}',
-  'runner.noResults': 'Nessun report dei risultati (il CLI è fallito?).',
+  'runner.noResults': 'Nessun report dei risultati.',
   'runner.noJunitResult': '[avviso] Nessun risultato JUnit trovato per "{id}".',
   'runner.noJunitResultPkg': ' packageName atteso: {package}',
   'runner.coverNoReport':
@@ -1266,7 +1360,6 @@ export const it: Record<string, string> = {
     '[copertura] report non generato. Verificare GRANT EXECUTE ON SYS.DBMS_PROFILER.',
   'results.noMapped':
     '[copertura] nessun file mappato. Impostare "utplsql.sourcePath" sulla cartella del codice sorgente.',
-  'cli.notFound': 'CLI non trovato: {path}',
 
   'status.idle': 'Nessun test eseguito finora. Fare clic per aprire il Test Explorer.',
   'status.running': 'Esecuzione di {current}/{total} suite',
@@ -1277,11 +1370,6 @@ export const it: Record<string, string> = {
   'status.errored': '{count} errori',
   'status.skipped': '{count} saltati',
 
-  'quickfix.noCli': 'CLI utPLSQL non configurato ({path}).',
-  'quickfix.noCliAction': 'Configura utplsql.cliPath',
-  'quickfix.noJava': 'Java non trovato ({path}).',
-  'quickfix.noJavaAction': 'Configura utplsql.javaPath',
-  'quickfix.badConn': 'Connessione Oracle non valida: {error}',
   'quickfix.oldVersion': 'La versione di utPLSQL nel database è vecchia ({version}); minimo 3.1.0.',
   'quickfix.oldVersionUpgrade': 'Come aggiornare utPLSQL',
   'quickfix.invalidObjects': 'Lo schema {schema} contiene {count} oggetti non validi: {names}',
@@ -1293,7 +1381,8 @@ export const it: Record<string, string> = {
   'quickfix.recompileFail':
     'Ricompilazione di UT3 fallita: {error}. Richiede ALTER ANY PROCEDURE o esecuzione come proprietario dello schema.',
   'quickfix.noConnection': 'Connessione Oracle non configurata.',
-  'quickfix.oracledbMissing': 'oracledb non disponibile. Installare con "npm install oracledb".',
+  'quickfix.oracledbMissing':
+    'oracledb non disponibile. Reinstallare le dipendenze con "npm install".',
 
   'viewCoverage.none': '[copertura] nessun file mappato.',
   'viewCoverage.vsqlDenied':
@@ -1344,13 +1433,36 @@ export const it: Record<string, string> = {
   'ext.profile.new.descPrompt': 'Description (optional — Enter to skip)',
   'ext.profile.new.descPlaceholder': 'Local development database',
   'ext.profile.new.charsetDefault': 'default',
+
+  'results.failedFallback': 'Fallito',
+  'results.errorFallback': 'Errore',
+  'runner.coverEmptyDir': '(vuoto)',
+  'runner.coverDirMissing': '(directory non trovata)',
+  'profile.isDefault': 'Predefinito',
+  'profile.selectPlaceholder': 'Seleziona un profilo di connessione',
+  'codelens.runSuite': '▶ Esegui Suite',
+  'codelens.runTest': '▶ Esegui Test',
+  'codelens.runSuiteCoverage': '▶ Esegui Suite con Copertura',
+  'codelens.runTestCoverage': '▶ Esegui Test con Copertura',
+  'codelens.runTip': 'Esegui {desc}',
+  'codelens.runCoverageTip': 'Esegui {desc} con copertura',
+  'ext.reporters.listEmpty': 'nessun reporter trovato',
+  'quickfix.reconfigureConn': 'Riconfigura connessione',
+  'quickfix.copyGrants': 'Copia grants negli appunti',
+
+  'debug.noConnection':
+    'oracledb non disponibile o connessione non configurata. Reinstallare le dipendenze con "npm install".',
+  'debug.controlFail': 'Apertura della sessione di controllo DBMS_DEBUG non riuscita.',
+  'debug.attachFail':
+    'Impossibile collegarsi a DBMS_DEBUG. Verificare i grant:\n  GRANT EXECUTE ON SYS.DBMS_DEBUG TO <schema>;\n  GRANT DEBUG CONNECT SESSION TO <schema>;',
 };
 
 export const ko: Record<string, string> = {
   'common.error': '오류',
   'common.failed': '실패',
   'common.copy': '복사',
-  'common.oracledbMissing': 'oracledb를 사용할 수 없습니다. "npm install oracledb"로 설치하거나 ',
+  'common.oracledbMissing':
+    'oracledb를 사용할 수 없습니다. "npm install"로 종속성을 다시 설치하세요.',
 
   'ext.reporters.listFailed': 'reporter 목록을 가져오지 못했습니다: {error}',
   'ext.reporters.placeholder': '이 실행에 사용할 추가 reporter 선택',
@@ -1386,13 +1498,10 @@ export const ko: Record<string, string> = {
   'ext.conn.placeholder': 'DEV_FULANO/비밀번호@//localhost:1521/XEPDB1',
   'ext.runCancel': '실행이 취소되었습니다.',
 
-  'runner.oracleUnavailable': 'Oracle 러너를 사용할 수 없어 CLI로 대체합니다: {error}',
   'runner.oracleError': 'Oracle 러너: {error}',
   'runner.oracleErrorHeader': '[오류] Oracle 러너: {error}',
   'runner.running': 'utPLSQL{coverage} 실행 중...',
   'runner.withCoverage': ' (커버리지 포함)',
-  'runner.infoCli': '[경고] CLI 정보를 가져올 수 없습니다: {error}',
-  'runner.cliInfo': '[정보] CLI {cli} | API {api}{db}',
   'runner.dbVersion': ' | DB utPLSQL {version}',
   'runner.oldVersion':
     '[경고] 데이터베이스의 utPLSQL이 3.1.0보다 오래되었습니다 — 커버리지가 작동하지 않을 수 있습니다.',
@@ -1401,8 +1510,7 @@ export const ko: Record<string, string> = {
   'runner.reporterMissing':
     '[경고] 데이터베이스에서 UT_COVERAGE_COBERTURA_REPORTER를 사용할 수 없습니다.\n커버리지가 비활성화되었습니다. utPLSQL 패키지가 최신인지 확인하세요.',
   'runner.extraReporter': '[정보] 세션 추가 reporter: {name}',
-  'runner.invocationError': '{error}',
-  'runner.noResults': '결과 보고서가 없습니다 (CLI가 실패했나요?).',
+  'runner.noResults': '결과 보고서가 없습니다.',
   'runner.noJunitResult': '[경고] "{id}"의 JUnit 결과를 찾을 수 없습니다.',
   'runner.noJunitResultPkg': ' 예상 packageName: {package}',
   'runner.coverNoReport':
@@ -1414,7 +1522,6 @@ export const ko: Record<string, string> = {
     '[커버리지] 보고서가 생성되지 않았습니다. GRANT EXECUTE ON SYS.DBMS_PROFILER를 확인하세요.',
   'results.noMapped':
     '[커버리지] 매핑된 파일이 없습니다. "utplsql.sourcePath"를 소스 코드 폴더로 조정하세요.',
-  'cli.notFound': 'CLI를 찾을 수 없습니다: {path}',
 
   'status.idle': '아직 테스트가 실행되지 않았습니다. 클릭하여 Test Explorer를 여세요.',
   'status.running': '{current}/{total} 스위트 실행 중',
@@ -1425,11 +1532,6 @@ export const ko: Record<string, string> = {
   'status.errored': '{count} 오류',
   'status.skipped': '{count} 건너뜀',
 
-  'quickfix.noCli': 'utPLSQL CLI가 구성되지 않았습니다 ({path}).',
-  'quickfix.noCliAction': 'utplsql.cliPath 구성',
-  'quickfix.noJava': 'Java를 찾을 수 없습니다 ({path}).',
-  'quickfix.noJavaAction': 'utplsql.javaPath 구성',
-  'quickfix.badConn': '잘못된 Oracle 연결입니다: {error}',
   'quickfix.oldVersion': '데이터베이스의 utPLSQL 버전이 오래되었습니다 ({version}); 최소 3.1.0.',
   'quickfix.oldVersionUpgrade': 'utPLSQL 업그레이드 방법',
   'quickfix.invalidObjects': '스키마 {schema}에 잘못된 객체가 {count}개 있습니다: {names}',
@@ -1441,7 +1543,8 @@ export const ko: Record<string, string> = {
   'quickfix.recompileFail':
     'UT3 다시 컴파일에 실패했습니다: {error}. ALTER ANY PROCEDURE 또는 스키마 소유자로 실행해야 합니다.',
   'quickfix.noConnection': 'Oracle 연결이 구성되지 않았습니다.',
-  'quickfix.oracledbMissing': 'oracledb를 사용할 수 없습니다. "npm install oracledb"로 설치하세요.',
+  'quickfix.oracledbMissing':
+    'oracledb를 사용할 수 없습니다. "npm install"로 종속성을 다시 설치하세요.',
 
   'viewCoverage.none': '[커버리지] 매핑된 파일이 없습니다.',
   'viewCoverage.vsqlDenied':
@@ -1492,13 +1595,36 @@ export const ko: Record<string, string> = {
   'ext.profile.new.descPrompt': 'Description (optional — Enter to skip)',
   'ext.profile.new.descPlaceholder': 'Local development database',
   'ext.profile.new.charsetDefault': 'default',
+
+  'results.failedFallback': '실패',
+  'results.errorFallback': '오류',
+  'runner.coverEmptyDir': '(비어 있음)',
+  'runner.coverDirMissing': '(디렉터리를 찾을 수 없음)',
+  'profile.isDefault': '기본값',
+  'profile.selectPlaceholder': '연결 프로필 선택',
+  'codelens.runSuite': '▶ Suite 실행',
+  'codelens.runTest': '▶ Test 실행',
+  'codelens.runSuiteCoverage': '▶ Suite 실행(커버리지 포함)',
+  'codelens.runTestCoverage': '▶ Test 실행(커버리지 포함)',
+  'codelens.runTip': '{desc} 실행',
+  'codelens.runCoverageTip': '{desc} 실행(커버리지 포함)',
+  'ext.reporters.listEmpty': 'reporter를 찾을 수 없음',
+  'quickfix.reconfigureConn': '연결 다시 구성',
+  'quickfix.copyGrants': 'grants를 클립보드에 복사',
+
+  'debug.noConnection':
+    'oracledb를 사용할 수 없거나 연결이 구성되지 않았습니다. "npm install"로 종속성을 다시 설치하세요.',
+  'debug.controlFail': 'DBMS_DEBUG 제어 세션을 열지 못했습니다.',
+  'debug.attachFail':
+    'DBMS_DEBUG에 연결할 수 없습니다. 권한을 확인하세요:\n  GRANT EXECUTE ON SYS.DBMS_DEBUG TO <schema>;\n  GRANT DEBUG CONNECT SESSION TO <schema>;',
 };
 
 export const ru: Record<string, string> = {
   'common.error': 'Ошибка',
   'common.failed': 'Не пройден',
   'common.copy': 'Копировать',
-  'common.oracledbMissing': 'oracledb недоступен. Установите с помощью «npm install oracledb».',
+  'common.oracledbMissing':
+    'oracledb недоступен. Переустановите зависимости с помощью «npm install».',
 
   'ext.reporters.listFailed': 'Не удалось получить список reporters: {error}',
   'ext.reporters.placeholder': 'Выберите дополнительный reporter для этого запуска',
@@ -1535,13 +1661,10 @@ export const ru: Record<string, string> = {
   'ext.conn.placeholder': 'DEV_FULANO/пароль@//localhost:1521/XEPDB1',
   'ext.runCancel': 'Запуск отменён.',
 
-  'runner.oracleUnavailable': 'Oracle runner недоступен, откат на CLI: {error}',
   'runner.oracleError': 'Oracle runner: {error}',
   'runner.oracleErrorHeader': '[ошибка] Oracle runner: {error}',
   'runner.running': 'Запуск utPLSQL{coverage}...',
   'runner.withCoverage': ' (с покрытием)',
-  'runner.infoCli': '[предупреждение] Не удалось получить информацию о CLI: {error}',
-  'runner.cliInfo': '[инфо] CLI {cli} | API {api}{db}',
   'runner.dbVersion': ' | БД utPLSQL {version}',
   'runner.oldVersion': '[предупреждение] utPLSQL в БД старше 3.1.0 — покрытие может не работать.',
   'runner.reporterListFailed': '[предупреждение] Не удалось получить список reporters: {error}',
@@ -1549,8 +1672,7 @@ export const ru: Record<string, string> = {
   'runner.reporterMissing':
     '[предупреждение] UT_COVERAGE_COBERTURA_REPORTER недоступен в БД.\nПокрытие отключено. Проверьте актуальность пакета utPLSQL.',
   'runner.extraReporter': '[инфо] Дополнительный reporter сеанса: {name}',
-  'runner.invocationError': '{error}',
-  'runner.noResults': 'Нет отчёта о результатах (CLI завершился ошибкой?).',
+  'runner.noResults': 'Нет отчёта о результатах.',
   'runner.noJunitResult': '[предупреждение] Результат JUnit для «{id}» не найден.',
   'runner.noJunitResultPkg': ' ожидаемый packageName: {package}',
   'runner.coverNoReport':
@@ -1562,7 +1684,6 @@ export const ru: Record<string, string> = {
     '[покрытие] отчёт не создан. Проверьте GRANT EXECUTE ON SYS.DBMS_PROFILER.',
   'results.noMapped':
     '[покрытие] файлы не сопоставлены. Укажите «utplsql.sourcePath» на папку с исходным кодом.',
-  'cli.notFound': 'CLI не найден: {path}',
 
   'status.idle': 'Тесты ещё не запускались. Нажмите, чтобы открыть Test Explorer.',
   'status.running': 'Запуск {current}/{total} наборов',
@@ -1573,11 +1694,6 @@ export const ru: Record<string, string> = {
   'status.errored': '{count} ошибок',
   'status.skipped': '{count} пропущено',
 
-  'quickfix.noCli': 'CLI utPLSQL не настроен ({path}).',
-  'quickfix.noCliAction': 'Настроить utplsql.cliPath',
-  'quickfix.noJava': 'Java не найден ({path}).',
-  'quickfix.noJavaAction': 'Настроить utplsql.javaPath',
-  'quickfix.badConn': 'Недопустимое подключение Oracle: {error}',
   'quickfix.oldVersion': 'Версия utPLSQL в БД устарела ({version}); минимум 3.1.0.',
   'quickfix.oldVersionUpgrade': 'Как обновить utPLSQL',
   'quickfix.invalidObjects': 'Схема {schema} содержит {count} недопустимых объектов: {names}',
@@ -1589,7 +1705,8 @@ export const ru: Record<string, string> = {
   'quickfix.recompileFail':
     'Не удалось перекомпилировать UT3: {error}. Требуется ALTER ANY PROCEDURE или выполнение от имени владельца схемы.',
   'quickfix.noConnection': 'Подключение Oracle не настроено.',
-  'quickfix.oracledbMissing': 'oracledb недоступен. Установите с помощью «npm install oracledb».',
+  'quickfix.oracledbMissing':
+    'oracledb недоступен. Переустановите зависимости с помощью «npm install».',
 
   'viewCoverage.none': '[покрытие] файлы не сопоставлены.',
   'viewCoverage.vsqlDenied':
@@ -1640,13 +1757,36 @@ export const ru: Record<string, string> = {
   'ext.profile.new.descPrompt': 'Description (optional — Enter to skip)',
   'ext.profile.new.descPlaceholder': 'Local development database',
   'ext.profile.new.charsetDefault': 'default',
+
+  'results.failedFallback': 'Не пройден',
+  'results.errorFallback': 'Ошибка',
+  'runner.coverEmptyDir': '(пусто)',
+  'runner.coverDirMissing': '(каталог не найден)',
+  'profile.isDefault': 'По умолчанию',
+  'profile.selectPlaceholder': 'Выберите профиль подключения',
+  'codelens.runSuite': '▶ Запустить Suite',
+  'codelens.runTest': '▶ Запустить Test',
+  'codelens.runSuiteCoverage': '▶ Запустить Suite с покрытием',
+  'codelens.runTestCoverage': '▶ Запустить Test с покрытием',
+  'codelens.runTip': 'Запустить {desc}',
+  'codelens.runCoverageTip': 'Запустить {desc} с покрытием',
+  'ext.reporters.listEmpty': 'репортеры не найдены',
+  'quickfix.reconfigureConn': 'Перенастроить подключение',
+  'quickfix.copyGrants': 'Скопировать grants в буфер обмена',
+
+  'debug.noConnection':
+    'oracledb недоступен или подключение не настроено. Переустановите зависимости с помощью «npm install».',
+  'debug.controlFail': 'Не удалось открыть управляющий сеанс DBMS_DEBUG.',
+  'debug.attachFail':
+    'Не удалось подключиться к DBMS_DEBUG. Проверьте гранты:\n  GRANT EXECUTE ON SYS.DBMS_DEBUG TO <schema>;\n  GRANT DEBUG CONNECT SESSION TO <schema>;',
 };
 
 export const tr: Record<string, string> = {
   'common.error': 'Hata',
   'common.failed': 'Başarısız',
   'common.copy': 'Kopyala',
-  'common.oracledbMissing': 'oracledb kullanılamıyor. "npm install oracledb" ile kurunkullanın.',
+  'common.oracledbMissing':
+    'oracledb kullanılamıyor. Bağımlılıkları "npm install" ile yeniden yükleyin.',
 
   'ext.reporters.listFailed': 'Reporter listesi alınamadı: {error}',
   'ext.reporters.placeholder': 'Bu çalıştırma için ek bir reporter seçin',
@@ -1682,13 +1822,10 @@ export const tr: Record<string, string> = {
   'ext.conn.placeholder': 'DEV_FULANO/parola@//localhost:1521/XEPDB1',
   'ext.runCancel': 'Çalıştırma iptal edildi.',
 
-  'runner.oracleUnavailable': "Oracle çalıştırıcısı kullanılamıyor, CLI'ye dönülüyor: {error}",
   'runner.oracleError': 'Oracle çalıştırıcısı: {error}',
   'runner.oracleErrorHeader': '[hata] Oracle çalıştırıcısı: {error}',
   'runner.running': 'utPLSQL{coverage} çalıştırılıyor...',
   'runner.withCoverage': ' (kapsamlı)',
-  'runner.infoCli': '[uyarı] CLI bilgisi alınamadı: {error}',
-  'runner.cliInfo': '[bilgi] CLI {cli} | API {api}{db}',
   'runner.dbVersion': ' | DB utPLSQL {version}',
   'runner.oldVersion': "[uyarı] Veritabanındaki utPLSQL 3.1.0'dan eski — kapsam çalışmayabilir.",
   'runner.reporterListFailed': '[uyarı] Reporter listesi alınamadı: {error}',
@@ -1696,8 +1833,7 @@ export const tr: Record<string, string> = {
   'runner.reporterMissing':
     '[uyarı] UT_COVERAGE_COBERTURA_REPORTER veritabanında yok.\nKapsam devre dışı. utPLSQL paketinin güncel olduğunu doğrulayın.',
   'runner.extraReporter': "[bilgi] Oturum ek reporter'ı: {name}",
-  'runner.invocationError': '{error}',
-  'runner.noResults': 'Sonuç raporu yok (CLI başarısız mı oldu?).',
+  'runner.noResults': 'Sonuç raporu yok.',
   'runner.noJunitResult': '[uyarı] "{id}" için JUnit sonucu bulunamadı.',
   'runner.noJunitResultPkg': ' beklenen packageName: {package}',
   'runner.coverNoReport':
@@ -1709,7 +1845,6 @@ export const tr: Record<string, string> = {
     "[kapsam] rapor oluşturulmadı. GRANT EXECUTE ON SYS.DBMS_PROFILER'ı doğrulayın.",
   'results.noMapped':
     '[kapsam] eşleştirilen dosya yok. "utplsql.sourcePath" değerini kaynak kod klasörüne ayarlayın.',
-  'cli.notFound': 'CLI bulunamadı: {path}',
 
   'status.idle': "Henüz test çalıştırılmadı. Test Explorer'ı açmak için tıklayın.",
   'status.running': '{current}/{total} paket çalıştırılıyor',
@@ -1720,11 +1855,6 @@ export const tr: Record<string, string> = {
   'status.errored': '{count} hata',
   'status.skipped': '{count} atlandı',
 
-  'quickfix.noCli': 'utPLSQL CLI yapılandırılmadı ({path}).',
-  'quickfix.noCliAction': 'utplsql.cliPath yapılandır',
-  'quickfix.noJava': 'Java bulunamadı ({path}).',
-  'quickfix.noJavaAction': 'utplsql.javaPath yapılandır',
-  'quickfix.badConn': 'Geçersiz Oracle bağlantısı: {error}',
   'quickfix.oldVersion': 'Veritabanındaki utPLSQL sürümü eski ({version}); minimum 3.1.0.',
   'quickfix.oldVersionUpgrade': 'utPLSQL nasıl güncellenir',
   'quickfix.invalidObjects': '{schema} şemasında {count} geçersiz nesne var: {names}',
@@ -1736,7 +1866,8 @@ export const tr: Record<string, string> = {
   'quickfix.recompileFail':
     'UT3 yeniden derlenemedi: {error}. ALTER ANY PROCEDURE veya şema sahibi olarak çalıştırma gerekir.',
   'quickfix.noConnection': 'Oracle bağlantısı yapılandırılmadı.',
-  'quickfix.oracledbMissing': 'oracledb kullanılamıyor. "npm install oracledb" ile kurun.',
+  'quickfix.oracledbMissing':
+    'oracledb kullanılamıyor. Bağımlılıkları "npm install" ile yeniden yükleyin.',
 
   'viewCoverage.none': '[kapsam] eşleştirilen dosya yok.',
   'viewCoverage.vsqlDenied':
@@ -1787,13 +1918,36 @@ export const tr: Record<string, string> = {
   'ext.profile.new.descPrompt': 'Description (optional — Enter to skip)',
   'ext.profile.new.descPlaceholder': 'Local development database',
   'ext.profile.new.charsetDefault': 'default',
+
+  'results.failedFallback': 'Başarısız',
+  'results.errorFallback': 'Hata',
+  'runner.coverEmptyDir': '(boş)',
+  'runner.coverDirMissing': '(dizin bulunamadı)',
+  'profile.isDefault': 'Varsayılan',
+  'profile.selectPlaceholder': 'Bağlantı profili seç',
+  'codelens.runSuite': '▶ Suite Çalıştır',
+  'codelens.runTest': '▶ Test Çalıştır',
+  'codelens.runSuiteCoverage': '▶ Suite Çalıştır (Kapsama ile)',
+  'codelens.runTestCoverage': '▶ Test Çalıştır (Kapsama ile)',
+  'codelens.runTip': '{desc} çalıştır',
+  'codelens.runCoverageTip': '{desc} çalıştır (kapsama ile)',
+  'ext.reporters.listEmpty': 'reporter bulunamadı',
+  'quickfix.reconfigureConn': 'Bağlantıyı yeniden yapılandır',
+  'quickfix.copyGrants': "Grants'leri panoya kopyala",
+
+  'debug.noConnection':
+    'oracledb kullanılamıyor veya bağlantı yapılandırılmamış. Bağımlılıkları "npm install" ile yeniden yükleyin.',
+  'debug.controlFail': 'DBMS_DEBUG denetim oturumu açılamadı.',
+  'debug.attachFail':
+    'DBMS_DEBUG öğesine eklenemedi. Yetkileri denetleyin:\n  GRANT EXECUTE ON SYS.DBMS_DEBUG TO <schema>;\n  GRANT DEBUG CONNECT SESSION TO <schema>;',
 };
 
 export const pl: Record<string, string> = {
   'common.error': 'Błąd',
   'common.failed': 'Nie powiodło się',
   'common.copy': 'Kopiuj',
-  'common.oracledbMissing': 'oracledb niedostępny. Zainstaluj przez „npm install oracledb”',
+  'common.oracledbMissing':
+    'oracledb niedostępny. Zainstaluj ponownie zależności przez „npm install”.',
 
   'ext.reporters.listFailed': 'Nie udało się pobrać listy reporterów: {error}',
   'ext.reporters.placeholder': 'Wybierz dodatkowy reporter dla tego uruchomienia',
@@ -1830,13 +1984,10 @@ export const pl: Record<string, string> = {
   'ext.conn.placeholder': 'DEV_FULANO/hasło@//localhost:1521/XEPDB1',
   'ext.runCancel': 'Anulowano uruchomienie.',
 
-  'runner.oracleUnavailable': 'Runner Oracle niedostępny, powrót do CLI: {error}',
   'runner.oracleError': 'Runner Oracle: {error}',
   'runner.oracleErrorHeader': '[błąd] Runner Oracle: {error}',
   'runner.running': 'Uruchamianie utPLSQL{coverage}...',
   'runner.withCoverage': ' (z pokryciem)',
-  'runner.infoCli': '[ostrzeżenie] Nie udało się pobrać informacji o CLI: {error}',
-  'runner.cliInfo': '[info] CLI {cli} | API {api}{db}',
   'runner.dbVersion': ' | DB utPLSQL {version}',
   'runner.oldVersion':
     '[ostrzeżenie] utPLSQL w bazie jest starszy niż 3.1.0 — pokrycie może nie działać.',
@@ -1845,8 +1996,7 @@ export const pl: Record<string, string> = {
   'runner.reporterMissing':
     '[ostrzeżenie] UT_COVERAGE_COBERTURA_REPORTER niedostępny w bazie.\nPokrycie wyłączone. Sprawdź, czy pakiet utPLSQL jest aktualny.',
   'runner.extraReporter': '[info] Dodatkowy reporter sesji: {name}',
-  'runner.invocationError': '{error}',
-  'runner.noResults': 'Brak raportu wyników (czy CLI nie powiodło się?).',
+  'runner.noResults': 'Brak raportu wyników.',
   'runner.noJunitResult': '[ostrzeżenie] Nie znaleziono wyniku JUnit dla „{id}”.',
   'runner.noJunitResultPkg': ' oczekiwany packageName: {package}',
   'runner.coverNoReport':
@@ -1858,7 +2008,6 @@ export const pl: Record<string, string> = {
     '[pokrycie] raport nie został wygenerowany. Sprawdź GRANT EXECUTE ON SYS.DBMS_PROFILER.',
   'results.noMapped':
     '[pokrycie] brak przypisanych plików. Ustaw „utplsql.sourcePath” na folder kodu źródłowego.',
-  'cli.notFound': 'Nie znaleziono CLI: {path}',
 
   'status.idle': 'Nie uruchomiono jeszcze testów. Kliknij, aby otworzyć Test Explorer.',
   'status.running': 'Uruchamianie {current}/{total} pakietów',
@@ -1869,11 +2018,6 @@ export const pl: Record<string, string> = {
   'status.errored': '{count} błędów',
   'status.skipped': '{count} pominięte',
 
-  'quickfix.noCli': 'CLI utPLSQL nie skonfigurowany ({path}).',
-  'quickfix.noCliAction': 'Skonfiguruj utplsql.cliPath',
-  'quickfix.noJava': 'Nie znaleziono Javy ({path}).',
-  'quickfix.noJavaAction': 'Skonfiguruj utplsql.javaPath',
-  'quickfix.badConn': 'Nieprawidłowe połączenie Oracle: {error}',
   'quickfix.oldVersion': 'Wersja utPLSQL w bazie jest stara ({version}); minimum 3.1.0.',
   'quickfix.oldVersionUpgrade': 'Jak zaktualizować utPLSQL',
   'quickfix.invalidObjects': 'Schemat {schema} zawiera {count} nieprawidłowych obiektów: {names}',
@@ -1885,7 +2029,8 @@ export const pl: Record<string, string> = {
   'quickfix.recompileFail':
     'Nie udało się przekompilować UT3: {error}. Wymaga ALTER ANY PROCEDURE lub uruchomienia jako właściciel schematu.',
   'quickfix.noConnection': 'Połączenie Oracle nie skonfigurowane.',
-  'quickfix.oracledbMissing': 'oracledb niedostępny. Zainstaluj przez „npm install oracledb”.',
+  'quickfix.oracledbMissing':
+    'oracledb niedostępny. Zainstaluj ponownie zależności przez „npm install”.',
 
   'viewCoverage.none': '[pokrycie] brak przypisanych plików.',
   'viewCoverage.vsqlDenied':
@@ -1936,6 +2081,28 @@ export const pl: Record<string, string> = {
   'ext.profile.new.descPrompt': 'Description (optional — Enter to skip)',
   'ext.profile.new.descPlaceholder': 'Local development database',
   'ext.profile.new.charsetDefault': 'default',
+
+  'results.failedFallback': 'Niezaliczony',
+  'results.errorFallback': 'Błąd',
+  'runner.coverEmptyDir': '(pusty)',
+  'runner.coverDirMissing': '(nie znaleziono katalogu)',
+  'profile.isDefault': 'Domyślny',
+  'profile.selectPlaceholder': 'Wybierz profil połączenia',
+  'codelens.runSuite': '▶ Uruchom Suite',
+  'codelens.runTest': '▶ Uruchom Test',
+  'codelens.runSuiteCoverage': '▶ Uruchom Suite z pokryciem',
+  'codelens.runTestCoverage': '▶ Uruchom Test z pokryciem',
+  'codelens.runTip': 'Uruchom {desc}',
+  'codelens.runCoverageTip': 'Uruchom {desc} z pokryciem',
+  'ext.reporters.listEmpty': 'nie znaleziono reporterów',
+  'quickfix.reconfigureConn': 'Skonfiguruj połączenie ponownie',
+  'quickfix.copyGrants': 'Kopiuj granty do schowka',
+
+  'debug.noConnection':
+    'oracledb niedostępny lub połączenie nieskonfigurowane. Zainstaluj ponownie zależności przez „npm install”.',
+  'debug.controlFail': 'Nie można otworzyć sesji kontrolnej DBMS_DEBUG.',
+  'debug.attachFail':
+    'Nie można dołączyć do DBMS_DEBUG. Sprawdź granty:\n  GRANT EXECUTE ON SYS.DBMS_DEBUG TO <schema>;\n  GRANT DEBUG CONNECT SESSION TO <schema>;',
 };
 
 export const cs: Record<string, string> = {
@@ -1943,7 +2110,7 @@ export const cs: Record<string, string> = {
   'common.failed': 'Selhalo',
   'common.copy': 'Kopírovat',
   'common.oracledbMissing':
-    'oracledb není k dispozici. Nainstalujte pomocí „npm install oracledb“.',
+    'oracledb není k dispozici. Přeinstalujte závislosti pomocí „npm install“.',
 
   'ext.reporters.listFailed': 'Nepodařilo se vypsat reportery: {error}',
   'ext.reporters.placeholder': 'Vyberte další reporter pro toto spuštění',
@@ -1980,13 +2147,10 @@ export const cs: Record<string, string> = {
   'ext.conn.placeholder': 'DEV_FULANO/heslo@//localhost:1521/XEPDB1',
   'ext.runCancel': 'Spuštění zrušeno.',
 
-  'runner.oracleUnavailable': 'Oracle runner není k dispozici, přechod na CLI: {error}',
   'runner.oracleError': 'Oracle runner: {error}',
   'runner.oracleErrorHeader': '[chyba] Oracle runner: {error}',
   'runner.running': 'Spouští se utPLSQL{coverage}...',
   'runner.withCoverage': ' (s pokrytím)',
-  'runner.infoCli': '[varování] Informace o CLI se nepodařilo získat: {error}',
-  'runner.cliInfo': '[info] CLI {cli} | API {api}{db}',
   'runner.dbVersion': ' | DB utPLSQL {version}',
   'runner.oldVersion':
     '[varování] utPLSQL v databázi je starší než 3.1.0 — pokrytí nemusí fungovat.',
@@ -1995,8 +2159,7 @@ export const cs: Record<string, string> = {
   'runner.reporterMissing':
     '[varování] UT_COVERAGE_COBERTURA_REPORTER není v databázi k dispozici.\nPokrytí zakázáno. Ověřte aktuálnost balíčku utPLSQL.',
   'runner.extraReporter': '[info] Další reporter relace: {name}',
-  'runner.invocationError': '{error}',
-  'runner.noResults': 'Žádná zpráva o výsledcích (selhal CLI?).',
+  'runner.noResults': 'Žádná zpráva o výsledcích.',
   'runner.noJunitResult': '[varování] Pro „{id}“ nebyl nalezen výsledek JUnit.',
   'runner.noJunitResultPkg': ' očekávaný packageName: {package}',
   'runner.coverNoReport':
@@ -2008,7 +2171,6 @@ export const cs: Record<string, string> = {
     '[pokrytí] zpráva nebyla vytvořena. Ověřte GRANT EXECUTE ON SYS.DBMS_PROFILER.',
   'results.noMapped':
     '[pokrytí] nebyl mapován žádný soubor. Nastavte „utplsql.sourcePath“ na složku se zdrojovým kódem.',
-  'cli.notFound': 'CLI nebyl nalezen: {path}',
 
   'status.idle': 'Zatím nebyly spuštěny žádné testy. Klepnutím otevřete Test Explorer.',
   'status.running': 'Spouští se {current}/{total} sad',
@@ -2019,11 +2181,6 @@ export const cs: Record<string, string> = {
   'status.errored': '{count} chyb',
   'status.skipped': '{count} přeskočeno',
 
-  'quickfix.noCli': 'CLI utPLSQL není nakonfigurován ({path}).',
-  'quickfix.noCliAction': 'Nakonfigurovat utplsql.cliPath',
-  'quickfix.noJava': 'Java nebyla nalezena ({path}).',
-  'quickfix.noJavaAction': 'Nakonfigurovat utplsql.javaPath',
-  'quickfix.badConn': 'Neplatné připojení Oracle: {error}',
   'quickfix.oldVersion': 'Verze utPLSQL v databázi je stará ({version}); minimum 3.1.0.',
   'quickfix.oldVersionUpgrade': 'Jak aktualizovat utPLSQL',
   'quickfix.invalidObjects': 'Schéma {schema} obsahuje {count} neplatných objektů: {names}',
@@ -2036,7 +2193,7 @@ export const cs: Record<string, string> = {
     'Překompilování UT3 se nezdařilo: {error}. Vyžaduje ALTER ANY PROCEDURE nebo spuštění jako vlastník schématu.',
   'quickfix.noConnection': 'Připojení Oracle není nakonfigurováno.',
   'quickfix.oracledbMissing':
-    'oracledb není k dispozici. Nainstalujte pomocí „npm install oracledb“.',
+    'oracledb není k dispozici. Přeinstalujte závislosti pomocí „npm install“.',
 
   'viewCoverage.none': '[pokrytí] nebyl mapován žádný soubor.',
   'viewCoverage.vsqlDenied':
@@ -2087,6 +2244,28 @@ export const cs: Record<string, string> = {
   'ext.profile.new.descPrompt': 'Description (optional — Enter to skip)',
   'ext.profile.new.descPlaceholder': 'Local development database',
   'ext.profile.new.charsetDefault': 'default',
+
+  'results.failedFallback': 'Neúspěšný',
+  'results.errorFallback': 'Chyba',
+  'runner.coverEmptyDir': '(prázdné)',
+  'runner.coverDirMissing': '(adresář nenalezen)',
+  'profile.isDefault': 'Výchozí',
+  'profile.selectPlaceholder': 'Vyberte profil připojení',
+  'codelens.runSuite': '▶ Spustit Suite',
+  'codelens.runTest': '▶ Spustit Test',
+  'codelens.runSuiteCoverage': '▶ Spustit Suite s pokrytím',
+  'codelens.runTestCoverage': '▶ Spustit Test s pokrytím',
+  'codelens.runTip': 'Spustit {desc}',
+  'codelens.runCoverageTip': 'Spustit {desc} s pokrytím',
+  'ext.reporters.listEmpty': 'nebyly nalezeny reportery',
+  'quickfix.reconfigureConn': 'Znovu nakonfigurovat připojení',
+  'quickfix.copyGrants': 'Zkopírovat granty do schránky',
+
+  'debug.noConnection':
+    'oracledb není k dispozici nebo připojení není nakonfigurováno. Přeinstalujte závislosti pomocí „npm install“.',
+  'debug.controlFail': 'Nepodařilo se otevřít řídicí relaci DBMS_DEBUG.',
+  'debug.attachFail':
+    'Nepodařilo se připojit k DBMS_DEBUG. Zkontrolujte granty:\n  GRANT EXECUTE ON SYS.DBMS_DEBUG TO <schema>;\n  GRANT DEBUG CONNECT SESSION TO <schema>;',
 };
 
 export const hu: Record<string, string> = {
@@ -2094,7 +2273,7 @@ export const hu: Record<string, string> = {
   'common.failed': 'Sikertelen',
   'common.copy': 'Másolás',
   'common.oracledbMissing':
-    'az oracledb nem érhető el. Telepítse a „npm install oracledb” paranccsal,értéket.',
+    'az oracledb nem érhető el. Telepítse újra a függőségeket a „npm install” paranccsal.',
 
   'ext.reporters.listFailed': 'A riporterek listázása sikertelen: {error}',
   'ext.reporters.placeholder': 'Válasszon további riportert ehhez a futtatáshoz',
@@ -2131,13 +2310,10 @@ export const hu: Record<string, string> = {
   'ext.conn.placeholder': 'DEV_FULANO/jelszó@//localhost:1521/XEPDB1',
   'ext.runCancel': 'A futtatás megszakítva.',
 
-  'runner.oracleUnavailable': 'Oracle-futtató nem érhető el, átállás CLI-re: {error}',
   'runner.oracleError': 'Oracle-futtató: {error}',
   'runner.oracleErrorHeader': '[hiba] Oracle-futtató: {error}',
   'runner.running': 'utPLSQL{coverage} futtatása...',
   'runner.withCoverage': ' (lefedettséggel)',
-  'runner.infoCli': '[figyelmeztetés] Nem sikerült lekérni a CLI-információt: {error}',
-  'runner.cliInfo': '[info] CLI {cli} | API {api}{db}',
   'runner.dbVersion': ' | DB utPLSQL {version}',
   'runner.oldVersion':
     '[figyelmeztetés] Az adatbázisban lévő utPLSQL régebbi, mint 3.1.0 — a lefedettség lehet, hogy nem működik.',
@@ -2146,8 +2322,7 @@ export const hu: Record<string, string> = {
   'runner.reporterMissing':
     '[figyelmeztetés] Az UT_COVERAGE_COBERTURA_REPORTER nem érhető el az adatbázisban.\nA lefedettség letiltva. Ellenőrizze, hogy az utPLSQL-csomag naprakész-e.',
   'runner.extraReporter': '[info] Munkamenet további riportere: {name}',
-  'runner.invocationError': '{error}',
-  'runner.noResults': 'Nincs eredményjelentés (sikertelen volt a CLI?).',
+  'runner.noResults': 'Nincs eredményjelentés.',
   'runner.noJunitResult': '[figyelmeztetés] Nem található JUnit-eredmény ehhez: „{id}”.',
   'runner.noJunitResultPkg': ' várt packageName: {package}',
   'runner.coverNoReport':
@@ -2159,7 +2334,6 @@ export const hu: Record<string, string> = {
     '[lefedettség] jelentés nem készült. Ellenőrizze: GRANT EXECUTE ON SYS.DBMS_PROFILER.',
   'results.noMapped':
     '[lefedettség] nem lett fájl hozzárendelve. Állítsa a „utplsql.sourcePath” értéket a forráskód mappájára.',
-  'cli.notFound': 'CLI nem található: {path}',
 
   'status.idle': 'Még nem futottak tesztek. Kattintson a Test Explorer megnyitásához.',
   'status.running': '{current}/{total} szvit fut',
@@ -2170,11 +2344,6 @@ export const hu: Record<string, string> = {
   'status.errored': '{count} hiba',
   'status.skipped': '{count} kihagyva',
 
-  'quickfix.noCli': 'utPLSQL CLI nincs beállítva ({path}).',
-  'quickfix.noCliAction': 'utplsql.cliPath beállítása',
-  'quickfix.noJava': 'Java nem található ({path}).',
-  'quickfix.noJavaAction': 'utplsql.javaPath beállítása',
-  'quickfix.badConn': 'Érvénytelen Oracle-kapcsolat: {error}',
   'quickfix.oldVersion': 'Az adatbázis utPLSQL-verziója régi ({version}); minimum 3.1.0.',
   'quickfix.oldVersionUpgrade': 'Az utPLSQL frissítése',
   'quickfix.invalidObjects': 'A {schema} séma {count} érvénytelen objektumot tartalmaz: {names}',
@@ -2187,7 +2356,7 @@ export const hu: Record<string, string> = {
     'Az UT3 újrafordítása nem sikerült: {error}. ALTER ANY PROCEDURE jogosultság vagy sématulajdonosként való futtatás szükséges.',
   'quickfix.noConnection': 'Oracle-kapcsolat nincs beállítva.',
   'quickfix.oracledbMissing':
-    'az oracledb nem érhető el. Telepítse a „npm install oracledb” paranccsal.',
+    'az oracledb nem érhető el. Telepítse újra a függőségeket a „npm install” paranccsal.',
 
   'viewCoverage.none': '[lefedettség] nem lett fájl hozzárendelve.',
   'viewCoverage.vsqlDenied':
@@ -2238,6 +2407,28 @@ export const hu: Record<string, string> = {
   'ext.profile.new.descPrompt': 'Description (optional — Enter to skip)',
   'ext.profile.new.descPlaceholder': 'Local development database',
   'ext.profile.new.charsetDefault': 'default',
+
+  'results.failedFallback': 'Sikertelen',
+  'results.errorFallback': 'Hiba',
+  'runner.coverEmptyDir': '(üres)',
+  'runner.coverDirMissing': '(könyvtár nem található)',
+  'profile.isDefault': 'Alapértelmezett',
+  'profile.selectPlaceholder': 'Válasszon kapcsolati profilt',
+  'codelens.runSuite': '▶ Suite futtatása',
+  'codelens.runTest': '▶ Test futtatása',
+  'codelens.runSuiteCoverage': '▶ Suite futtatása lefedettséggel',
+  'codelens.runTestCoverage': '▶ Test futtatása lefedettséggel',
+  'codelens.runTip': '{desc} futtatása',
+  'codelens.runCoverageTip': '{desc} futtatása lefedettséggel',
+  'ext.reporters.listEmpty': 'nem található reporter',
+  'quickfix.reconfigureConn': 'Kapcsolat újrakonfigurálása',
+  'quickfix.copyGrants': 'Grants másolása a vágólapra',
+
+  'debug.noConnection':
+    'az oracledb nem érhető el, vagy a kapcsolat nincs beállítva. Telepítse újra a függőségeket a „npm install” paranccsal.',
+  'debug.controlFail': 'Nem sikerült megnyitni a DBMS_DEBUG vezérlőmunkamenetet.',
+  'debug.attachFail':
+    'Nem sikerült csatlakozni a DBMS_DEBUG rendszerhez. Ellenőrizze a grantokat:\n  GRANT EXECUTE ON SYS.DBMS_DEBUG TO <schema>;\n  GRANT DEBUG CONNECT SESSION TO <schema>;',
 };
 
 export const enGb: Record<string, string> = { ...en };
@@ -2246,7 +2437,7 @@ export const bg: Record<string, string> = {
   'common.error': 'Грешка',
   'common.failed': 'Неуспешно',
   'common.copy': 'Копиране',
-  'common.oracledbMissing': 'oracledb не е наличен. Инсталирайте с "npm install oracledb".',
+  'common.oracledbMissing': 'oracledb не е наличен. Преинсталирайте зависимостите с "npm install".',
   'ext.reporters.listFailed': 'Неуспешно изброяване на reporters: {error}',
   'ext.reporters.placeholder': 'Изберете допълнителен reporter за това изпълнение',
   'ext.reporters.willUse': 'Reporter "{name}" ще бъде използван при следващото изпълнение.',
@@ -2281,13 +2472,10 @@ export const bg: Record<string, string> = {
     'Въведете връзката (потребител/парола@//хост:порт/услуга). Запазва се само в тази сесия.',
   'ext.conn.placeholder': 'DEV_FULANO/парола@//localhost:1521/XEPDB1',
   'ext.runCancel': 'Изпълнението е отменено.',
-  'runner.oracleUnavailable': 'Oracle runner не е наличен, преминаване към CLI: {error}',
   'runner.oracleError': 'Oracle runner: {error}',
   'runner.oracleErrorHeader': '[грешка] Oracle runner: {error}',
   'runner.running': 'Изпълнение на utPLSQL{coverage}...',
   'runner.withCoverage': ' (с покритие)',
-  'runner.infoCli': '[предупреждение] Неуспешно получаване на CLI информация: {error}',
-  'runner.cliInfo': '[инфо] CLI {cli} | API {api}{db}',
   'runner.dbVersion': ' | БД utPLSQL {version}',
   'runner.oldVersion':
     '[предупреждение] utPLSQL в базата е по-стар от 3.1.0 — покритието може да не работи.',
@@ -2296,8 +2484,7 @@ export const bg: Record<string, string> = {
   'runner.reporterMissing':
     '[предупреждение] UT_COVERAGE_COBERTURA_REPORTER не е наличен в базата.\nПокритието е деактивирано. Проверете дали utPLSQL пакетът е актуален.',
   'runner.extraReporter': '[инфо] Допълнителен reporter на сесията: {name}',
-  'runner.invocationError': '{error}',
-  'runner.noResults': 'Няма отчет за резултатите (CLI неуспешен ли е?).',
+  'runner.noResults': 'Няма отчет за резултатите.',
   'runner.noJunitResult': '[предупреждение] Няма JUnit резултат за "{id}".',
   'runner.noJunitResultPkg': ' очакван packageName: {package}',
   'runner.coverNoReport':
@@ -2308,7 +2495,6 @@ export const bg: Record<string, string> = {
     '[покритие] отчетът не е създаден. Проверете GRANT EXECUTE ON SYS.DBMS_PROFILER.',
   'results.noMapped':
     '[покритие] няма картографирани файлове. Задайте "utplsql.sourcePath" на папката с изходния код.',
-  'cli.notFound': 'CLI не е намерен: {path}',
   'status.idle': 'Все още няма изпълнени тестове. Кликнете, за да отворите Test Explorer.',
   'status.running': 'Изпълнение на {current}/{total} пакета',
   'status.runningDetail': 'Изпълняват се {current} от {total} тестови пакета...',
@@ -2317,11 +2503,6 @@ export const bg: Record<string, string> = {
   'status.failed': '{count} неуспешни',
   'status.errored': '{count} грешки',
   'status.skipped': '{count} пропуснати',
-  'quickfix.noCli': 'utPLSQL CLI не е конфигуриран ({path}).',
-  'quickfix.noCliAction': 'Конфигуриране на utplsql.cliPath',
-  'quickfix.noJava': 'Java не е намерен ({path}).',
-  'quickfix.noJavaAction': 'Конфигуриране на utplsql.javaPath',
-  'quickfix.badConn': 'Невалидна Oracle връзка: {error}',
   'quickfix.oldVersion': 'Версията на utPLSQL в базата е стара ({version}); минимум 3.1.0.',
   'quickfix.oldVersionUpgrade': 'Как да обновите utPLSQL',
   'quickfix.invalidObjects': 'Схемата {schema} съдържа {count} невалидни обекта: {names}',
@@ -2333,7 +2514,8 @@ export const bg: Record<string, string> = {
   'quickfix.recompileFail':
     'Неуспешно прекомпилиране на UT3: {error}. Изисква ALTER ANY PROCEDURE или изпълнение като собственик на схемата.',
   'quickfix.noConnection': 'Oracle връзката не е конфигурирана.',
-  'quickfix.oracledbMissing': 'oracledb не е наличен. Инсталирайте с "npm install oracledb".',
+  'quickfix.oracledbMissing':
+    'oracledb не е наличен. Преинсталирайте зависимостите с "npm install".',
   'viewCoverage.none': '[покритие] няма картографирани файлове.',
   'viewCoverage.vsqlDenied':
     '[покритие] проследяването на изгледи чрез V$SQL е недостъпно. Предоставете достъп: GRANT SELECT ON SYS.V_$SQL TO <schema>.',
@@ -2382,6 +2564,28 @@ export const bg: Record<string, string> = {
   'ext.profile.new.descPrompt': 'Description (optional — Enter to skip)',
   'ext.profile.new.descPlaceholder': 'Local development database',
   'ext.profile.new.charsetDefault': 'default',
+
+  'results.failedFallback': 'Неуспешен',
+  'results.errorFallback': 'Грешка',
+  'runner.coverEmptyDir': '(празно)',
+  'runner.coverDirMissing': '(директорията не е намерена)',
+  'profile.isDefault': 'По подразбиране',
+  'profile.selectPlaceholder': 'Изберете профил за връзка',
+  'codelens.runSuite': '▶ Стартирай Suite',
+  'codelens.runTest': '▶ Стартирай Test',
+  'codelens.runSuiteCoverage': '▶ Стартирай Suite с покритие',
+  'codelens.runTestCoverage': '▶ Стартирай Test с покритие',
+  'codelens.runTip': 'Стартирай {desc}',
+  'codelens.runCoverageTip': 'Стартирай {desc} с покритие',
+  'ext.reporters.listEmpty': 'не са намерени репортери',
+  'quickfix.reconfigureConn': 'Преконфигурирай връзката',
+  'quickfix.copyGrants': 'Копирай grants в клипборда',
+
+  'debug.noConnection':
+    'oracledb не е наличен или връзката не е конфигурирана. Преинсталирайте зависимостите с "npm install".',
+  'debug.controlFail': 'Неуспешно отваряне на контролната сесия на DBMS_DEBUG.',
+  'debug.attachFail':
+    'Неуспешно прикачване към DBMS_DEBUG. Проверете грантовете:\n  GRANT EXECUTE ON SYS.DBMS_DEBUG TO <schema>;\n  GRANT DEBUG CONNECT SESSION TO <schema>;',
 };
 
 export const el: Record<string, string> = {
@@ -2389,7 +2593,7 @@ export const el: Record<string, string> = {
   'common.failed': 'Απέτυχε',
   'common.copy': 'Αντιγραφή',
   'common.oracledbMissing':
-    'Η oracledb δεν είναι διαθέσιμη. Εγκαταστήστε με "npm install oracledb".',
+    'Η oracledb δεν είναι διαθέσιμη. Επανεγκαταστήστε τις εξαρτήσεις με "npm install".',
   'ext.reporters.listFailed': 'Αποτυχία λίστας reporters: {error}',
   'ext.reporters.placeholder': 'Επιλέξτε έναν επιπλέον reporter για αυτή την εκτέλεση',
   'ext.reporters.willUse': 'Ο reporter "{name}" θα χρησιμοποιηθεί στην επόμενη εκτέλεση.',
@@ -2424,13 +2628,10 @@ export const el: Record<string, string> = {
     'Εισαγάγετε τη σύνδεση (χρήστης/κωδικός@//host:port/υπηρεσία). Παραμένει μόνο σε αυτή τη συνεδρία.',
   'ext.conn.placeholder': 'DEV_FULANO/κωδικός@//localhost:1521/XEPDB1',
   'ext.runCancel': 'Η εκτέλεση ακυρώθηκε.',
-  'runner.oracleUnavailable': 'Ο Oracle runner δεν είναι διαθέσιμος, επιστροφή σε CLI: {error}',
   'runner.oracleError': 'Oracle runner: {error}',
   'runner.oracleErrorHeader': '[σφάλμα] Oracle runner: {error}',
   'runner.running': 'Εκτέλεση utPLSQL{coverage}...',
   'runner.withCoverage': ' (με κάλυψη)',
-  'runner.infoCli': '[προειδοποίηση] Αδυναμία λήψης πληροφοριών CLI: {error}',
-  'runner.cliInfo': '[info] CLI {cli} | API {api}{db}',
   'runner.dbVersion': ' | DB utPLSQL {version}',
   'runner.oldVersion':
     '[προειδοποίηση] Το utPLSQL στη βάση είναι παλαιότερο από 3.1.0 — η κάλυψη μπορεί να μην λειτουργεί.',
@@ -2439,8 +2640,7 @@ export const el: Record<string, string> = {
   'runner.reporterMissing':
     '[προειδοποίηση] Το UT_COVERAGE_COBERTURA_REPORTER δεν είναι διαθέσιμο στη βάση.\nΗ κάλυψη απενεργοποιήθηκε. Ελέγξτε αν το πακέτο utPLSQL είναι ενημερωμένο.',
   'runner.extraReporter': '[info] Επιπλέον reporter συνεδρίας: {name}',
-  'runner.invocationError': '{error}',
-  'runner.noResults': 'Δεν υπάρχει αναφορά αποτελεσμάτων (απέτυχε το CLI;).',
+  'runner.noResults': 'Δεν υπάρχει αναφορά αποτελεσμάτων.',
   'runner.noJunitResult': '[προειδοποίηση] Δεν βρέθηκε αποτέλεσμα JUnit για "{id}".',
   'runner.noJunitResultPkg': ' αναμενόμενο packageName: {package}',
   'runner.coverNoReport':
@@ -2451,7 +2651,6 @@ export const el: Record<string, string> = {
     '[κάλυψη] δεν δημιουργήθηκε αναφορά. Ελέγξτε GRANT EXECUTE ON SYS.DBMS_PROFILER.',
   'results.noMapped':
     '[κάλυψη] κανένα αρχείο δεν αντιστοιχίστηκε. Ρυθμίστε το "utplsql.sourcePath" στον φάκελο του πηγαίου κώδικα.',
-  'cli.notFound': 'Το CLI δεν βρέθηκε: {path}',
   'status.idle': 'Δεν έχουν εκτελεστεί ακόμη τεστ. Κάντε κλικ για να ανοίξετε το Test Explorer.',
   'status.running': 'Εκτέλεση {current}/{total} suites',
   'status.runningDetail': 'Εκτελούνται {current} από {total} test suites...',
@@ -2460,11 +2659,6 @@ export const el: Record<string, string> = {
   'status.failed': '{count} αποτυχημένα',
   'status.errored': '{count} σφάλματα',
   'status.skipped': '{count} παραλειφθέντα',
-  'quickfix.noCli': 'Το utPLSQL CLI δεν έχει ρυθμιστεί ({path}).',
-  'quickfix.noCliAction': 'Ρύθμιση utplsql.cliPath',
-  'quickfix.noJava': 'Η Java δεν βρέθηκε ({path}).',
-  'quickfix.noJavaAction': 'Ρύθμιση utplsql.javaPath',
-  'quickfix.badConn': 'Μη έγκυρη σύνδεση Oracle: {error}',
   'quickfix.oldVersion': 'Η έκδοση utPLSQL στη βάση είναι παλιά ({version}); ελάχιστο 3.1.0.',
   'quickfix.oldVersionUpgrade': 'Πώς να αναβαθμίσετε το utPLSQL',
   'quickfix.invalidObjects': 'Το σχήμα {schema} περιέχει {count} μη έγκυρα αντικείμενα: {names}',
@@ -2477,7 +2671,7 @@ export const el: Record<string, string> = {
     'Αποτυχία μεταγλώττισης UT3: {error}. Απαιτεί ALTER ANY PROCEDURE ή εκτέλεση ως κάτοχος του σχήματος.',
   'quickfix.noConnection': 'Η σύνδεση Oracle δεν έχει ρυθμιστεί.',
   'quickfix.oracledbMissing':
-    'Η oracledb δεν είναι διαθέσιμη. Εγκαταστήστε με "npm install oracledb".',
+    'Η oracledb δεν είναι διαθέσιμη. Επανεγκαταστήστε τις εξαρτήσεις με "npm install".',
   'viewCoverage.none': '[κάλυψη] κανένα αρχείο δεν αντιστοιχίστηκε.',
   'viewCoverage.vsqlDenied':
     '[κάλυψη] η παρακολούθηση προβολών μέσω V$SQL δεν είναι διαθέσιμη. Παραχωρήστε πρόσβαση: GRANT SELECT ON SYS.V_$SQL TO <schema>.',
@@ -2526,13 +2720,36 @@ export const el: Record<string, string> = {
   'ext.profile.new.descPrompt': 'Description (optional — Enter to skip)',
   'ext.profile.new.descPlaceholder': 'Local development database',
   'ext.profile.new.charsetDefault': 'default',
+
+  'results.failedFallback': 'Αποτυχημένο',
+  'results.errorFallback': 'Σφάλμα',
+  'runner.coverEmptyDir': '(κενό)',
+  'runner.coverDirMissing': '(ο κατάλογος δεν βρέθηκε)',
+  'profile.isDefault': 'Προεπιλογή',
+  'profile.selectPlaceholder': 'Επιλέξτε προφίλ σύνδεσης',
+  'codelens.runSuite': '▶ Εκτέλεση Suite',
+  'codelens.runTest': '▶ Εκτέλεση Test',
+  'codelens.runSuiteCoverage': '▶ Εκτέλεση Suite με Κάλυψη',
+  'codelens.runTestCoverage': '▶ Εκτέλεση Test με Κάλυψη',
+  'codelens.runTip': 'Εκτέλεση {desc}',
+  'codelens.runCoverageTip': 'Εκτέλεση {desc} με κάλυψη',
+  'ext.reporters.listEmpty': 'δεν βρέθηκαν reporters',
+  'quickfix.reconfigureConn': 'Επαναρύθμιση σύνδεσης',
+  'quickfix.copyGrants': 'Αντιγραφή grants στο πρόχειρο',
+
+  'debug.noConnection':
+    'Η oracledb δεν είναι διαθέσιμη ή η σύνδεση δεν έχει ρυθμιστεί. Επανεγκαταστήστε τις εξαρτήσεις με "npm install".',
+  'debug.controlFail': 'Αποτυχία ανοίγματος της συνεδρίας ελέγχου DBMS_DEBUG.',
+  'debug.attachFail':
+    'Αδυναμία προσάρτησης στο DBMS_DEBUG. Ελέγξτε τα grants:\n  GRANT EXECUTE ON SYS.DBMS_DEBUG TO <schema>;\n  GRANT DEBUG CONNECT SESSION TO <schema>;',
 };
 
 export const id: Record<string, string> = {
   'common.error': 'Kesalahan',
   'common.failed': 'Gagal',
   'common.copy': 'Salin',
-  'common.oracledbMissing': 'oracledb tidak tersedia. Instal dengan "npm install oracledb".',
+  'common.oracledbMissing':
+    'oracledb tidak tersedia. Instal ulang dependensi dengan "npm install".',
   'ext.reporters.listFailed': 'Gagal mendaftar reporter: {error}',
   'ext.reporters.placeholder': 'Pilih reporter tambahan untuk eksekusi ini',
   'ext.reporters.willUse': 'Reporter "{name}" akan digunakan pada eksekusi berikutnya.',
@@ -2567,13 +2784,10 @@ export const id: Record<string, string> = {
     'Masukkan koneksi (pengguna/kata sandi@//host:port/layanan). Hanya disimpan di sesi ini.',
   'ext.conn.placeholder': 'DEV_FULANO/kata sandi@//localhost:1521/XEPDB1',
   'ext.runCancel': 'Eksekusi dibatalkan.',
-  'runner.oracleUnavailable': 'Runner Oracle tidak tersedia, fallback ke CLI: {error}',
   'runner.oracleError': 'Runner Oracle: {error}',
   'runner.oracleErrorHeader': '[kesalahan] Runner Oracle: {error}',
   'runner.running': 'Menjalankan utPLSQL{coverage}...',
   'runner.withCoverage': ' (dengan cakupan)',
-  'runner.infoCli': '[peringatan] Gagal mendapatkan info CLI: {error}',
-  'runner.cliInfo': '[info] CLI {cli} | API {api}{db}',
   'runner.dbVersion': ' | DB utPLSQL {version}',
   'runner.oldVersion':
     '[peringatan] utPLSQL di database lebih lama dari 3.1.0 — cakupan mungkin tidak berfungsi.',
@@ -2582,8 +2796,7 @@ export const id: Record<string, string> = {
   'runner.reporterMissing':
     '[peringatan] UT_COVERAGE_COBERTURA_REPORTER tidak tersedia di database.\nCakupan dinonaktifkan. Periksa apakah paket utPLSQL sudah diperbarui.',
   'runner.extraReporter': '[info] Reporter tambahan sesi: {name}',
-  'runner.invocationError': '{error}',
-  'runner.noResults': 'Tidak ada laporan hasil (CLI gagal?).',
+  'runner.noResults': 'Tidak ada laporan hasil.',
   'runner.noJunitResult': '[peringatan] Tidak ada hasil JUnit untuk "{id}".',
   'runner.noJunitResultPkg': ' packageName yang diharapkan: {package}',
   'runner.coverNoReport':
@@ -2594,7 +2807,6 @@ export const id: Record<string, string> = {
     '[cakupan] laporan tidak dibuat. Periksa GRANT EXECUTE ON SYS.DBMS_PROFILER.',
   'results.noMapped':
     '[cakupan] tidak ada file yang dipetakan. Atur "utplsql.sourcePath" ke folder kode sumber.',
-  'cli.notFound': 'CLI tidak ditemukan: {path}',
   'status.idle': 'Belum ada tes yang dijalankan. Klik untuk membuka Test Explorer.',
   'status.running': 'Menjalankan {current}/{total} suite',
   'status.runningDetail': 'Menjalankan {current} dari {total} suite tes...',
@@ -2603,11 +2815,6 @@ export const id: Record<string, string> = {
   'status.failed': '{count} gagal',
   'status.errored': '{count} kesalahan',
   'status.skipped': '{count} dilewati',
-  'quickfix.noCli': 'CLI utPLSQL belum dikonfigurasi ({path}).',
-  'quickfix.noCliAction': 'Konfigurasi utplsql.cliPath',
-  'quickfix.noJava': 'Java tidak ditemukan ({path}).',
-  'quickfix.noJavaAction': 'Konfigurasi utplsql.javaPath',
-  'quickfix.badConn': 'Koneksi Oracle tidak valid: {error}',
   'quickfix.oldVersion': 'Versi utPLSQL di database sudah lama ({version}); minimal 3.1.0.',
   'quickfix.oldVersionUpgrade': 'Cara memperbarui utPLSQL',
   'quickfix.invalidObjects': 'Skema {schema} memiliki {count} objek tidak valid: {names}',
@@ -2619,7 +2826,8 @@ export const id: Record<string, string> = {
   'quickfix.recompileFail':
     'Gagal mengompilasi ulang UT3: {error}. Membutuhkan ALTER ANY PROCEDURE atau eksekusi sebagai pemilik skema.',
   'quickfix.noConnection': 'Koneksi Oracle belum dikonfigurasi.',
-  'quickfix.oracledbMissing': 'oracledb tidak tersedia. Instal dengan "npm install oracledb".',
+  'quickfix.oracledbMissing':
+    'oracledb tidak tersedia. Instal ulang dependensi dengan "npm install".',
   'viewCoverage.none': '[cakupan] tidak ada file yang dipetakan.',
   'viewCoverage.vsqlDenied':
     '[cakupan] pelacakan tampilan via V$SQL tidak tersedia. Berikan akses: GRANT SELECT ON SYS.V_$SQL TO <schema>.',
@@ -2668,13 +2876,35 @@ export const id: Record<string, string> = {
   'ext.profile.new.descPrompt': 'Description (optional — Enter to skip)',
   'ext.profile.new.descPlaceholder': 'Local development database',
   'ext.profile.new.charsetDefault': 'default',
+
+  'results.failedFallback': 'Gagal',
+  'results.errorFallback': 'Kesalahan',
+  'runner.coverEmptyDir': '(kosong)',
+  'runner.coverDirMissing': '(direktori tidak ditemukan)',
+  'profile.isDefault': 'Default',
+  'profile.selectPlaceholder': 'Pilih profil koneksi',
+  'codelens.runSuite': '▶ Jalankan Suite',
+  'codelens.runTest': '▶ Jalankan Test',
+  'codelens.runSuiteCoverage': '▶ Jalankan Suite dengan Coverage',
+  'codelens.runTestCoverage': '▶ Jalankan Test dengan Coverage',
+  'codelens.runTip': 'Jalankan {desc}',
+  'codelens.runCoverageTip': 'Jalankan {desc} dengan coverage',
+  'ext.reporters.listEmpty': 'tidak ada reporter ditemukan',
+  'quickfix.reconfigureConn': 'Konfigurasi ulang koneksi',
+  'quickfix.copyGrants': 'Salin grants ke clipboard',
+
+  'debug.noConnection':
+    'oracledb tidak tersedia atau koneksi belum dikonfigurasi. Instal ulang dependensi dengan "npm install".',
+  'debug.controlFail': 'Gagal membuka sesi kontrol DBMS_DEBUG.',
+  'debug.attachFail':
+    'Tidak dapat melampirkan ke DBMS_DEBUG. Periksa grants:\n  GRANT EXECUTE ON SYS.DBMS_DEBUG TO <schema>;\n  GRANT DEBUG CONNECT SESSION TO <schema>;',
 };
 
 export const ro: Record<string, string> = {
   'common.error': 'Eroare',
   'common.failed': 'Eșuat',
   'common.copy': 'Copiază',
-  'common.oracledbMissing': 'oracledb indisponibil. Instalați cu "npm install oracledb".',
+  'common.oracledbMissing': 'oracledb indisponibil. Reinstalați dependențele cu "npm install".',
   'ext.reporters.listFailed': 'Eroare la listarea reporterilor: {error}',
   'ext.reporters.placeholder': 'Selectați un reporter suplimentar pentru această execuție',
   'ext.reporters.willUse': 'Reporterul "{name}" va fi folosit la următoarea execuție.',
@@ -2709,13 +2939,10 @@ export const ro: Record<string, string> = {
     'Introduceți conexiunea (utilizator/parolă@//host:port/serviciu). Se păstrează doar în această sesiune.',
   'ext.conn.placeholder': 'DEV_FULANO/parolă@//localhost:1521/XEPDB1',
   'ext.runCancel': 'Execuție anulată.',
-  'runner.oracleUnavailable': 'Runner Oracle indisponibil, fallback la CLI: {error}',
   'runner.oracleError': 'Runner Oracle: {error}',
   'runner.oracleErrorHeader': '[eroare] Runner Oracle: {error}',
   'runner.running': 'Se execută utPLSQL{coverage}...',
   'runner.withCoverage': ' (cu acoperire)',
-  'runner.infoCli': '[avertisment] Nu s-a putut obține info CLI: {error}',
-  'runner.cliInfo': '[info] CLI {cli} | API {api}{db}',
   'runner.dbVersion': ' | DB utPLSQL {version}',
   'runner.oldVersion':
     '[avertisment] utPLSQL în baza de date este mai vechi de 3.1.0 — acoperirea poate să nu funcționeze.',
@@ -2724,8 +2951,7 @@ export const ro: Record<string, string> = {
   'runner.reporterMissing':
     '[avertisment] UT_COVERAGE_COBERTURA_REPORTER indisponibil în baza de date.\nAcoperirea a fost dezactivată. Verificați dacă pachetul utPLSQL este actualizat.',
   'runner.extraReporter': '[info] Reporter suplimentar de sesiune: {name}',
-  'runner.invocationError': '{error}',
-  'runner.noResults': 'Fără raport de rezultate (CLI a eșuat?).',
+  'runner.noResults': 'Fără raport de rezultate.',
   'runner.noJunitResult': '[avertisment] Niciun rezultat JUnit pentru "{id}".',
   'runner.noJunitResultPkg': ' packageName așteptat: {package}',
   'runner.coverNoReport':
@@ -2736,7 +2962,6 @@ export const ro: Record<string, string> = {
     '[acoperire] raportul nu a fost generat. Verificați GRANT EXECUTE ON SYS.DBMS_PROFILER.',
   'results.noMapped':
     '[acoperire] niciun fișier mapat. Setați "utplsql.sourcePath" la folderul codului sursă.',
-  'cli.notFound': 'CLI negăsit: {path}',
   'status.idle': 'Încă nu s-au executat teste. Faceți clic pentru a deschide Test Explorer.',
   'status.running': 'Se execută {current}/{total} suite',
   'status.runningDetail': 'Se execută {current} din {total} suite de teste...',
@@ -2745,11 +2970,6 @@ export const ro: Record<string, string> = {
   'status.failed': '{count} eșuate',
   'status.errored': '{count} erori',
   'status.skipped': '{count} sărite',
-  'quickfix.noCli': 'CLI utPLSQL neconfigurat ({path}).',
-  'quickfix.noCliAction': 'Configurează utplsql.cliPath',
-  'quickfix.noJava': 'Java negăsit ({path}).',
-  'quickfix.noJavaAction': 'Configurează utplsql.javaPath',
-  'quickfix.badConn': 'Conexiune Oracle invalidă: {error}',
   'quickfix.oldVersion': 'Versiunea utPLSQL din baza de date este veche ({version}); minim 3.1.0.',
   'quickfix.oldVersionUpgrade': 'Cum să actualizați utPLSQL',
   'quickfix.invalidObjects': 'Schema {schema} conține {count} obiecte invalide: {names}',
@@ -2761,7 +2981,7 @@ export const ro: Record<string, string> = {
   'quickfix.recompileFail':
     'Eroare la recompilarea UT3: {error}. Necesită ALTER ANY PROCEDURE sau execuție ca proprietar al schemei.',
   'quickfix.noConnection': 'Conexiunea Oracle nu este configurată.',
-  'quickfix.oracledbMissing': 'oracledb indisponibil. Instalați cu "npm install oracledb".',
+  'quickfix.oracledbMissing': 'oracledb indisponibil. Reinstalați dependențele cu "npm install".',
   'viewCoverage.none': '[acoperire] niciun fișier mapat.',
   'viewCoverage.vsqlDenied':
     '[acoperire] urmărirea vizualizărilor via V$SQL indisponibilă. Acordați acces: GRANT SELECT ON SYS.V_$SQL TO <schema>.',
@@ -2810,13 +3030,35 @@ export const ro: Record<string, string> = {
   'ext.profile.new.descPrompt': 'Description (optional — Enter to skip)',
   'ext.profile.new.descPlaceholder': 'Local development database',
   'ext.profile.new.charsetDefault': 'default',
+
+  'results.failedFallback': 'Eșuat',
+  'results.errorFallback': 'Eroare',
+  'runner.coverEmptyDir': '(gol)',
+  'runner.coverDirMissing': '(directorul nu a fost găsit)',
+  'profile.isDefault': 'Implicit',
+  'profile.selectPlaceholder': 'Selectați un profil de conexiune',
+  'codelens.runSuite': '▶ Rulează Suite',
+  'codelens.runTest': '▶ Rulează Test',
+  'codelens.runSuiteCoverage': '▶ Rulează Suite cu Coverage',
+  'codelens.runTestCoverage': '▶ Rulează Test cu Coverage',
+  'codelens.runTip': 'Rulează {desc}',
+  'codelens.runCoverageTip': 'Rulează {desc} cu coverage',
+  'ext.reporters.listEmpty': 'nu a fost găsit niciun reporter',
+  'quickfix.reconfigureConn': 'Reconfigurează conexiunea',
+  'quickfix.copyGrants': 'Copiază grants în clipboard',
+
+  'debug.noConnection':
+    'oracledb indisponibil sau conexiunea nu este configurată. Reinstalați dependențele cu "npm install".',
+  'debug.controlFail': 'Deschiderea sesiunii de control DBMS_DEBUG a eșuat.',
+  'debug.attachFail':
+    'Atașarea la DBMS_DEBUG a eșuat. Verificați granturile:\n  GRANT EXECUTE ON SYS.DBMS_DEBUG TO <schema>;\n  GRANT DEBUG CONNECT SESSION TO <schema>;',
 };
 
 export const sr: Record<string, string> = {
   'common.error': 'Грешка',
   'common.failed': 'Неуспешно',
   'common.copy': 'Копирај',
-  'common.oracledbMissing': 'oracledb није доступан. Инсталирајте са "npm install oracledb".',
+  'common.oracledbMissing': 'oracledb није доступан. Реинсталирајте зависности са "npm install".',
   'ext.reporters.listFailed': 'Неуспешно листање reporterа: {error}',
   'ext.reporters.placeholder': 'Изаберите додатни reporter за ово извршавање',
   'ext.reporters.willUse': 'Reporter "{name}" ће бити коришћен при следећем извршавању.',
@@ -2851,13 +3093,10 @@ export const sr: Record<string, string> = {
     'Унесите везу (корисник/лозинка@//host:port/услуга). Чува се само у овој сесији.',
   'ext.conn.placeholder': 'DEV_FULANO/лозинка@//localhost:1521/XEPDB1',
   'ext.runCancel': 'Извршавање је отказано.',
-  'runner.oracleUnavailable': 'Oracle runner није доступан, прелазак на CLI: {error}',
   'runner.oracleError': 'Oracle runner: {error}',
   'runner.oracleErrorHeader': '[грешка] Oracle runner: {error}',
   'runner.running': 'Извршавање utPLSQL{coverage}...',
   'runner.withCoverage': ' (са покрићем)',
-  'runner.infoCli': '[упозорење] Неуспешно добијање CLI информација: {error}',
-  'runner.cliInfo': '[инфо] CLI {cli} | API {api}{db}',
   'runner.dbVersion': ' | БД utPLSQL {version}',
   'runner.oldVersion':
     '[упозорење] utPLSQL у бази је старији од 3.1.0 — покриће можда неће радити.',
@@ -2866,8 +3105,7 @@ export const sr: Record<string, string> = {
   'runner.reporterMissing':
     '[упозорење] UT_COVERAGE_COBERTURA_REPORTER није доступан у бази.\nПокриће је онемогућено. Проверите да ли је utPLSQL пакет ажуран.',
   'runner.extraReporter': '[инфо] Додатни reporter сесије: {name}',
-  'runner.invocationError': '{error}',
-  'runner.noResults': 'Нема извештаја о резултатима (CLI је неуспео?).',
+  'runner.noResults': 'Нема извештаја о резултатима.',
   'runner.noJunitResult': '[упозорење] Нема JUnit резултата за "{id}".',
   'runner.noJunitResultPkg': ' очекивани packageName: {package}',
   'runner.coverNoReport':
@@ -2878,7 +3116,6 @@ export const sr: Record<string, string> = {
     '[покриће] извештај није генерисан. Проверите GRANT EXECUTE ON SYS.DBMS_PROFILER.',
   'results.noMapped':
     '[покриће] нема мапираних датотека. Подесите "utplsql.sourcePath" на фасциклу са изворним кодом.',
-  'cli.notFound': 'CLI није пронађен: {path}',
   'status.idle': 'Још нема извршених тестова. Кликните за отварање Test Explorer-а.',
   'status.running': 'Извршавање {current}/{total} пакета',
   'status.runningDetail': 'Извршава се {current} од {total} тест пакета...',
@@ -2887,11 +3124,6 @@ export const sr: Record<string, string> = {
   'status.failed': '{count} неуспешних',
   'status.errored': '{count} грешака',
   'status.skipped': '{count} прескочених',
-  'quickfix.noCli': 'utPLSQL CLI није конфигурисан ({path}).',
-  'quickfix.noCliAction': 'Конфигурисање utplsql.cliPath',
-  'quickfix.noJava': 'Java није пронађен ({path}).',
-  'quickfix.noJavaAction': 'Конфигурисање utplsql.javaPath',
-  'quickfix.badConn': 'Невалидна Oracle веза: {error}',
   'quickfix.oldVersion': 'Верзија utPLSQL у бази је стара ({version}); минимум 3.1.0.',
   'quickfix.oldVersionUpgrade': 'Како ажурирати utPLSQL',
   'quickfix.invalidObjects': 'Шема {schema} садржи {count} невалидних објеката: {names}',
@@ -2903,7 +3135,7 @@ export const sr: Record<string, string> = {
   'quickfix.recompileFail':
     'Неуспешно поновно компилирање UT3: {error}. Захтева ALTER ANY PROCEDURE или извршавање као власник шеме.',
   'quickfix.noConnection': 'Oracle веза није конфигурисана.',
-  'quickfix.oracledbMissing': 'oracledb није доступан. Инсталирајте са "npm install oracledb".',
+  'quickfix.oracledbMissing': 'oracledb није доступан. Реинсталирајте зависности са "npm install".',
   'viewCoverage.none': '[покриће] нема мапираних датотека.',
   'viewCoverage.vsqlDenied':
     '[покриће] праћење приказа преко V$SQL није доступно. Одобрите приступ: GRANT SELECT ON SYS.V_$SQL TO <schema>.',
@@ -2952,13 +3184,35 @@ export const sr: Record<string, string> = {
   'ext.profile.new.descPrompt': 'Description (optional — Enter to skip)',
   'ext.profile.new.descPlaceholder': 'Local development database',
   'ext.profile.new.charsetDefault': 'default',
+
+  'results.failedFallback': 'Neuspešno',
+  'results.errorFallback': 'Greška',
+  'runner.coverEmptyDir': '(prazno)',
+  'runner.coverDirMissing': '(direktorijum nije pronađen)',
+  'profile.isDefault': 'Podrazumevano',
+  'profile.selectPlaceholder': 'Izaberite profil veze',
+  'codelens.runSuite': '▶ Pokreni Suite',
+  'codelens.runTest': '▶ Pokreni Test',
+  'codelens.runSuiteCoverage': '▶ Pokreni Suite sa pokrivenošću',
+  'codelens.runTestCoverage': '▶ Pokreni Test sa pokrivenošću',
+  'codelens.runTip': 'Pokreni {desc}',
+  'codelens.runCoverageTip': 'Pokreni {desc} sa pokrivenošću',
+  'ext.reporters.listEmpty': 'nije pronađen nijedan reporter',
+  'quickfix.reconfigureConn': 'Rekonfiguriši vezu',
+  'quickfix.copyGrants': 'Kopiraj grants u clipboard',
+
+  'debug.noConnection':
+    'oracledb није доступан или веза није конфигурисана. Реинсталирајте зависности са "npm install".',
+  'debug.controlFail': 'Neuspešno otvaranje kontrolne sesije DBMS_DEBUG.',
+  'debug.attachFail':
+    'Neuspešno kačenje na DBMS_DEBUG. Proverite grantove:\n  GRANT EXECUTE ON SYS.DBMS_DEBUG TO <schema>;\n  GRANT DEBUG CONNECT SESSION TO <schema>;',
 };
 
 export const th: Record<string, string> = {
   'common.error': 'ข้อผิดพลาด',
   'common.failed': 'ล้มเหลว',
   'common.copy': 'คัดลอก',
-  'common.oracledbMissing': 'oracledb ไม่พร้อมใช้งาน ติดตั้งด้วย "npm install oracledb"',
+  'common.oracledbMissing': 'oracledb ไม่พร้อมใช้งาน ติดตั้งการพึ่งพาใหม่ด้วย "npm install"',
   'ext.reporters.listFailed': 'ไม่สามารถแสดงรายการ reporter ได้: {error}',
   'ext.reporters.placeholder': 'เลือก reporter เพิ่มเติมสำหรับการรันนี้',
   'ext.reporters.willUse': 'จะใช้ reporter "{name}" ในการรันครั้งถัดไป',
@@ -2991,13 +3245,10 @@ export const th: Record<string, string> = {
   'ext.conn.prompt': 'ป้อนการเชื่อมต่อ (ผู้ใช้/รหัสผ่าน@//host:port/บริการ) เก็บไว้เฉพาะเซสชันนี้',
   'ext.conn.placeholder': 'DEV_FULANO/รหัสผ่าน@//localhost:1521/XEPDB1',
   'ext.runCancel': 'ยกเลิกการรันแล้ว',
-  'runner.oracleUnavailable': 'Oracle runner ไม่พร้อมใช้งาน ใช้ CLI แทน: {error}',
   'runner.oracleError': 'Oracle runner: {error}',
   'runner.oracleErrorHeader': '[ข้อผิดพลาด] Oracle runner: {error}',
   'runner.running': 'กำลังรัน utPLSQL{coverage}...',
   'runner.withCoverage': ' (พร้อมความครอบคลุม)',
-  'runner.infoCli': '[คำเตือน] ไม่สามารถรับข้อมูล CLI: {error}',
-  'runner.cliInfo': '[ข้อมูล] CLI {cli} | API {api}{db}',
   'runner.dbVersion': ' | DB utPLSQL {version}',
   'runner.oldVersion': '[คำเตือน] utPLSQL ในฐานข้อมูลเก่ากว่า 3.1.0 — ความครอบคลุมอาจไม่ทำงาน',
   'runner.reporterListFailed': '[คำเตือน] ไม่สามารถแสดงรายการ reporter: {error}',
@@ -3005,8 +3256,7 @@ export const th: Record<string, string> = {
   'runner.reporterMissing':
     '[คำเตือน] ไม่มี UT_COVERAGE_COBERTURA_REPORTER ในฐานข้อมูล\nปิดความครอบคลุม ตรวจสอบว่าแพ็กเกจ utPLSQL เป็นเวอร์ชันล่าสุด',
   'runner.extraReporter': '[ข้อมูล] reporter เพิ่มเติมของเซสชัน: {name}',
-  'runner.invocationError': '{error}',
-  'runner.noResults': 'ไม่มีรายงานผลลัพธ์ (CLI ล้มเหลวหรือไม่)',
+  'runner.noResults': 'ไม่มีรายงานผลลัพธ์',
   'runner.noJunitResult': '[คำเตือน] ไม่พบผลลัพธ์ JUnit สำหรับ "{id}"',
   'runner.noJunitResultPkg': ' packageName ที่คาดหวัง: {package}',
   'runner.coverNoReport':
@@ -3016,7 +3266,6 @@ export const th: Record<string, string> = {
   'oracleRunner.coverNotGenerated':
     '[ความครอบคลุม] ไม่ได้สร้างรายงาน ตรวจสอบ GRANT EXECUTE ON SYS.DBMS_PROFILER',
   'results.noMapped': '[ความครอบคลุม] ไม่มีไฟล์ที่จับคู่ ตั้งค่า "utplsql.sourcePath" เป็นโฟลเดอร์ซอร์สโค้ด',
-  'cli.notFound': 'ไม่พบ CLI: {path}',
   'status.idle': 'ยังไม่มีการรันเทสต์ คลิกเพื่อเปิด Test Explorer',
   'status.running': 'กำลังรัน {current}/{total} ชุดเทสต์',
   'status.runningDetail': 'กำลังรัน {current} จาก {total} ชุดเทสต์...',
@@ -3025,11 +3274,6 @@ export const th: Record<string, string> = {
   'status.failed': 'ล้มเหลว {count}',
   'status.errored': 'ข้อผิดพลาด {count}',
   'status.skipped': 'ข้าม {count}',
-  'quickfix.noCli': 'ยังไม่ได้ตั้งค่า utPLSQL CLI ({path})',
-  'quickfix.noCliAction': 'ตั้งค่า utplsql.cliPath',
-  'quickfix.noJava': 'ไม่พบ Java ({path})',
-  'quickfix.noJavaAction': 'ตั้งค่า utplsql.javaPath',
-  'quickfix.badConn': 'การเชื่อมต่อ Oracle ไม่ถูกต้อง: {error}',
   'quickfix.oldVersion': 'เวอร์ชัน utPLSQL ในฐานข้อมูลเก่า ({version}); ขั้นต่ำ 3.1.0',
   'quickfix.oldVersionUpgrade': 'วิธีอัปเกรด utPLSQL',
   'quickfix.invalidObjects': 'สคีมา {schema} มีวัตถุไม่ถูกต้อง {count} รายการ: {names}',
@@ -3041,7 +3285,7 @@ export const th: Record<string, string> = {
   'quickfix.recompileFail':
     'คอมไพล์ UT3 ใหม่ล้มเหลว: {error} ต้องใช้ ALTER ANY PROCEDURE หรือรันในฐานะเจ้าของสคีมา',
   'quickfix.noConnection': 'ยังไม่ได้ตั้งค่าการเชื่อมต่อ Oracle',
-  'quickfix.oracledbMissing': 'oracledb ไม่พร้อมใช้งาน ติดตั้งด้วย "npm install oracledb"',
+  'quickfix.oracledbMissing': 'oracledb ไม่พร้อมใช้งาน ติดตั้งการพึ่งพาใหม่ด้วย "npm install"',
   'viewCoverage.none': '[ความครอบคลุม] ไม่มีไฟล์ที่จับคู่',
   'viewCoverage.vsqlDenied':
     '[ความครอบคลุม] การติดตามวิวผ่าน V$SQL ไม่พร้อมใช้งาน ให้สิทธิ์: GRANT SELECT ON SYS.V_$SQL TO <schema>',
@@ -3090,6 +3334,28 @@ export const th: Record<string, string> = {
   'ext.profile.new.descPrompt': 'Description (optional — Enter to skip)',
   'ext.profile.new.descPlaceholder': 'Local development database',
   'ext.profile.new.charsetDefault': 'default',
+
+  'results.failedFallback': 'ไม่ผ่าน',
+  'results.errorFallback': 'ข้อผิดพลาด',
+  'runner.coverEmptyDir': '(ว่าง)',
+  'runner.coverDirMissing': '(ไม่พบไดเรกทอรี)',
+  'profile.isDefault': 'ค่าเริ่มต้น',
+  'profile.selectPlaceholder': 'เลือกโปรไฟล์การเชื่อมต่อ',
+  'codelens.runSuite': '▶ เรียกใช้ Suite',
+  'codelens.runTest': '▶ เรียกใช้ Test',
+  'codelens.runSuiteCoverage': '▶ เรียกใช้ Suite พร้อม Coverage',
+  'codelens.runTestCoverage': '▶ เรียกใช้ Test พร้อม Coverage',
+  'codelens.runTip': 'เรียกใช้ {desc}',
+  'codelens.runCoverageTip': 'เรียกใช้ {desc} พร้อม coverage',
+  'ext.reporters.listEmpty': 'ไม่พบ reporter',
+  'quickfix.reconfigureConn': 'กำหนดค่าการเชื่อมต่อใหม่',
+  'quickfix.copyGrants': 'คัดลอก grants ไปยังคลิปบอร์ด',
+
+  'debug.noConnection':
+    'oracledb ไม่พร้อมใช้งานหรือยังไม่ได้กำหนดค่าการเชื่อมต่อ ติดตั้งการพึ่งพาใหม่ด้วย "npm install"',
+  'debug.controlFail': 'ไม่สามารถเปิดเซสชันการควบคุม DBMS_DEBUG ได้',
+  'debug.attachFail':
+    'ไม่สามารถแนบกับ DBMS_DEBUG ได้ โปรดตรวจสอบ grants:\n  GRANT EXECUTE ON SYS.DBMS_DEBUG TO <schema>;\n  GRANT DEBUG CONNECT SESSION TO <schema>;',
 };
 
 export const uk: Record<string, string> = {
@@ -3097,7 +3363,7 @@ export const uk: Record<string, string> = {
   'common.failed': 'Не вдалося',
   'common.copy': 'Копіювати',
   'common.oracledbMissing':
-    'oracledb недоступний. Встановіть за допомогою "npm install oracledb" .',
+    'oracledb недоступний. Перевстановіть залежності за допомогою "npm install".',
   'ext.reporters.listFailed': 'Не вдалося отримати список reporters: {error}',
   'ext.reporters.placeholder': 'Виберіть додатковий reporter для цього запуску',
   'ext.reporters.willUse': 'Reporter "{name}" буде використано при наступному запуску.',
@@ -3132,13 +3398,10 @@ export const uk: Record<string, string> = {
     "Введіть з'єднання (користувач/пароль@//host:port/служба). Зберігається лише в цьому сеансі.",
   'ext.conn.placeholder': 'DEV_FULANO/пароль@//localhost:1521/XEPDB1',
   'ext.runCancel': 'Запуск скасовано.',
-  'runner.oracleUnavailable': 'Oracle runner недоступний, перехід до CLI: {error}',
   'runner.oracleError': 'Oracle runner: {error}',
   'runner.oracleErrorHeader': '[помилка] Oracle runner: {error}',
   'runner.running': 'Запуск utPLSQL{coverage}...',
   'runner.withCoverage': ' (з покриттям)',
-  'runner.infoCli': '[попередження] Не вдалося отримати інформацію про CLI: {error}',
-  'runner.cliInfo': '[інфо] CLI {cli} | API {api}{db}',
   'runner.dbVersion': ' | БД utPLSQL {version}',
   'runner.oldVersion':
     '[попередження] utPLSQL у БД старіший за 3.1.0 — покриття може не працювати.',
@@ -3147,8 +3410,7 @@ export const uk: Record<string, string> = {
   'runner.reporterMissing':
     '[попередження] UT_COVERAGE_COBERTURA_REPORTER недоступний у БД.\nПокриття вимкнено. Перевірте актуальність пакета utPLSQL.',
   'runner.extraReporter': '[інфо] Додатковий reporter сеансу: {name}',
-  'runner.invocationError': '{error}',
-  'runner.noResults': 'Немає звіту про результати (CLI завершився помилкою?).',
+  'runner.noResults': 'Немає звіту про результати.',
   'runner.noJunitResult': '[попередження] Не знайдено результату JUnit для "{id}".',
   'runner.noJunitResultPkg': ' очікуваний packageName: {package}',
   'runner.coverNoReport':
@@ -3159,7 +3421,6 @@ export const uk: Record<string, string> = {
     '[покриття] звіт не створено. Перевірте GRANT EXECUTE ON SYS.DBMS_PROFILER.',
   'results.noMapped':
     '[покриття] немає зіставлених файлів. Вкажіть "utplsql.sourcePath" на папку з вихідним кодом.',
-  'cli.notFound': 'CLI не знайдено: {path}',
   'status.idle': 'Тести ще не запускалися. Натисніть, щоб відкрити Test Explorer.',
   'status.running': 'Запуск {current}/{total} наборів',
   'status.runningDetail': 'Виконується {current} з {total} тестових наборів...',
@@ -3168,11 +3429,6 @@ export const uk: Record<string, string> = {
   'status.failed': '{count} невдало',
   'status.errored': '{count} помилок',
   'status.skipped': '{count} пропущено',
-  'quickfix.noCli': 'CLI utPLSQL не налаштовано ({path}).',
-  'quickfix.noCliAction': 'Налаштувати utplsql.cliPath',
-  'quickfix.noJava': 'Java не знайдено ({path}).',
-  'quickfix.noJavaAction': 'Налаштувати utplsql.javaPath',
-  'quickfix.badConn': "Недійсне з'єднання Oracle: {error}",
   'quickfix.oldVersion': 'Версія utPLSQL у БД застаріла ({version}); мінімум 3.1.0.',
   'quickfix.oldVersionUpgrade': 'Як оновити utPLSQL',
   'quickfix.invalidObjects': "Схема {schema} містить {count} недійсних об'єктів: {names}",
@@ -3185,7 +3441,7 @@ export const uk: Record<string, string> = {
     'Не вдалося перекомпілювати UT3: {error}. Потрібно ALTER ANY PROCEDURE або виконання як власник схеми.',
   'quickfix.noConnection': "З'єднання Oracle не налаштовано.",
   'quickfix.oracledbMissing':
-    'oracledb недоступний. Встановіть за допомогою "npm install oracledb".',
+    'oracledb недоступний. Перевстановіть залежності за допомогою "npm install".',
   'viewCoverage.none': '[покриття] немає зіставлених файлів.',
   'viewCoverage.vsqlDenied':
     '[покриття] відстеження представлень через V$SQL недоступне. Надайте доступ: GRANT SELECT ON SYS.V_$SQL TO <schema>.',
@@ -3234,13 +3490,36 @@ export const uk: Record<string, string> = {
   'ext.profile.new.descPrompt': 'Description (optional — Enter to skip)',
   'ext.profile.new.descPlaceholder': 'Local development database',
   'ext.profile.new.charsetDefault': 'default',
+
+  'results.failedFallback': 'Не пройдено',
+  'results.errorFallback': 'Помилка',
+  'runner.coverEmptyDir': '(порожньо)',
+  'runner.coverDirMissing': '(каталог не знайдено)',
+  'profile.isDefault': 'За замовчуванням',
+  'profile.selectPlaceholder': 'Виберіть профіль підключення',
+  'codelens.runSuite': '▶ Запустити Suite',
+  'codelens.runTest': '▶ Запустити Test',
+  'codelens.runSuiteCoverage': '▶ Запустити Suite з покриттям',
+  'codelens.runTestCoverage': '▶ Запустити Test з покриттям',
+  'codelens.runTip': 'Запустити {desc}',
+  'codelens.runCoverageTip': 'Запустити {desc} з покриттям',
+  'ext.reporters.listEmpty': 'репортери не знайдені',
+  'quickfix.reconfigureConn': 'Переналаштувати підключення',
+  'quickfix.copyGrants': 'Скопіювати grants до буфера обміну',
+
+  'debug.noConnection':
+    'oracledb недоступний або підключення не налаштовано. Перевстановіть залежності за допомогою "npm install".',
+  'debug.controlFail': 'Не вдалося відкрити керувальний сеанс DBMS_DEBUG.',
+  'debug.attachFail':
+    'Не вдалося приєднатися до DBMS_DEBUG. Перевірте гранти:\n  GRANT EXECUTE ON SYS.DBMS_DEBUG TO <schema>;\n  GRANT DEBUG CONNECT SESSION TO <schema>;',
 };
 
 export const vi: Record<string, string> = {
   'common.error': 'Lỗi',
   'common.failed': 'Thất bại',
   'common.copy': 'Sao chép',
-  'common.oracledbMissing': 'oracledb không khả dụng. Cài đặt bằng "npm install oracledb".',
+  'common.oracledbMissing':
+    'oracledb không khả dụng. Cài đặt lại các phụ thuộc bằng "npm install".',
   'ext.reporters.listFailed': 'Không thể liệt kê reporter: {error}',
   'ext.reporters.placeholder': 'Chọn reporter bổ sung cho lần chạy này',
   'ext.reporters.willUse': 'Reporter "{name}" sẽ được dùng ở lần chạy tiếp theo.',
@@ -3274,13 +3553,10 @@ export const vi: Record<string, string> = {
     'Nhập kết nối (người dùng/mật khẩu@//host:port/dịch vụ). Chỉ lưu trong phiên này.',
   'ext.conn.placeholder': 'DEV_FULANO/mật khẩu@//localhost:1521/XEPDB1',
   'ext.runCancel': 'Đã hủy lần chạy.',
-  'runner.oracleUnavailable': 'Oracle runner không khả dụng, chuyển sang CLI: {error}',
   'runner.oracleError': 'Oracle runner: {error}',
   'runner.oracleErrorHeader': '[lỗi] Oracle runner: {error}',
   'runner.running': 'Đang chạy utPLSQL{coverage}...',
   'runner.withCoverage': ' (có phủ sóng)',
-  'runner.infoCli': '[cảnh báo] Không lấy được thông tin CLI: {error}',
-  'runner.cliInfo': '[thông tin] CLI {cli} | API {api}{db}',
   'runner.dbVersion': ' | DB utPLSQL {version}',
   'runner.oldVersion':
     '[cảnh báo] utPLSQL trong cơ sở dữ liệu cũ hơn 3.1.0 — phủ sóng có thể không hoạt động.',
@@ -3289,8 +3565,7 @@ export const vi: Record<string, string> = {
   'runner.reporterMissing':
     '[cảnh báo] UT_COVERAGE_COBERTURA_REPORTER không khả dụng trong cơ sở dữ liệu.\nĐã tắt phủ sóng. Kiểm tra gói utPLSQL đã cập nhật.',
   'runner.extraReporter': '[thông tin] Reporter bổ sung của phiên: {name}',
-  'runner.invocationError': '{error}',
-  'runner.noResults': 'Không có báo cáo kết quả (CLI thất bại?).',
+  'runner.noResults': 'Không có báo cáo kết quả.',
   'runner.noJunitResult': '[cảnh báo] Không tìm thấy kết quả JUnit cho "{id}".',
   'runner.noJunitResultPkg': ' packageName dự kiến: {package}',
   'runner.coverNoReport':
@@ -3301,7 +3576,6 @@ export const vi: Record<string, string> = {
     '[phủ sóng] chưa tạo báo cáo. Kiểm tra GRANT EXECUTE ON SYS.DBMS_PROFILER.',
   'results.noMapped':
     '[phủ sóng] không có tệp nào được ánh xạ. Đặt "utplsql.sourcePath" vào thư mục mã nguồn.',
-  'cli.notFound': 'Không tìm thấy CLI: {path}',
   'status.idle': 'Chưa chạy kiểm thử nào. Nhấp để mở Test Explorer.',
   'status.running': 'Đang chạy {current}/{total} bộ',
   'status.runningDetail': 'Đang chạy {current}/{total} bộ kiểm thử...',
@@ -3310,11 +3584,6 @@ export const vi: Record<string, string> = {
   'status.failed': '{count} thất bại',
   'status.errored': '{count} lỗi',
   'status.skipped': '{count} bỏ qua',
-  'quickfix.noCli': 'Chưa cấu hình CLI utPLSQL ({path}).',
-  'quickfix.noCliAction': 'Cấu hình utplsql.cliPath',
-  'quickfix.noJava': 'Không tìm thấy Java ({path}).',
-  'quickfix.noJavaAction': 'Cấu hình utplsql.javaPath',
-  'quickfix.badConn': 'Kết nối Oracle không hợp lệ: {error}',
   'quickfix.oldVersion': 'Phiên bản utPLSQL trong cơ sở dữ liệu cũ ({version}); tối thiểu 3.1.0.',
   'quickfix.oldVersionUpgrade': 'Cách nâng cấp utPLSQL',
   'quickfix.invalidObjects': 'Lược đồ {schema} chứa {count} đối tượng không hợp lệ: {names}',
@@ -3326,7 +3595,8 @@ export const vi: Record<string, string> = {
   'quickfix.recompileFail':
     'Biên dịch lại UT3 thất bại: {error}. Cần ALTER ANY PROCEDURE hoặc chạy với tư cách chủ sở hữu lược đồ.',
   'quickfix.noConnection': 'Chưa cấu hình kết nối Oracle.',
-  'quickfix.oracledbMissing': 'oracledb không khả dụng. Cài đặt bằng "npm install oracledb".',
+  'quickfix.oracledbMissing':
+    'oracledb không khả dụng. Cài đặt lại các phụ thuộc bằng "npm install".',
   'viewCoverage.none': '[phủ sóng] không có tệp nào được ánh xạ.',
   'viewCoverage.vsqlDenied':
     '[phủ sóng] theo dõi view qua V$SQL không khả dụng. Cấp quyền: GRANT SELECT ON SYS.V_$SQL TO <schema>.',
@@ -3375,4 +3645,26 @@ export const vi: Record<string, string> = {
   'ext.profile.new.descPrompt': 'Description (optional — Enter to skip)',
   'ext.profile.new.descPlaceholder': 'Local development database',
   'ext.profile.new.charsetDefault': 'default',
+
+  'results.failedFallback': 'Thất bại',
+  'results.errorFallback': 'Lỗi',
+  'runner.coverEmptyDir': '(trống)',
+  'runner.coverDirMissing': '(không tìm thấy thư mục)',
+  'profile.isDefault': 'Mặc định',
+  'profile.selectPlaceholder': 'Chọn hồ sơ kết nối',
+  'codelens.runSuite': '▶ Chạy Suite',
+  'codelens.runTest': '▶ Chạy Test',
+  'codelens.runSuiteCoverage': '▶ Chạy Suite với Coverage',
+  'codelens.runTestCoverage': '▶ Chạy Test với Coverage',
+  'codelens.runTip': 'Chạy {desc}',
+  'codelens.runCoverageTip': 'Chạy {desc} với coverage',
+  'ext.reporters.listEmpty': 'không tìm thấy reporter',
+  'quickfix.reconfigureConn': 'Cấu hình lại kết nối',
+  'quickfix.copyGrants': 'Sao chép grants vào clipboard',
+
+  'debug.noConnection':
+    'oracledb không khả dụng hoặc chưa cấu hình kết nối. Cài đặt lại các phụ thuộc bằng "npm install".',
+  'debug.controlFail': 'Không mở được phiên điều khiển DBMS_DEBUG.',
+  'debug.attachFail':
+    'Không thể đính kèm vào DBMS_DEBUG. Kiểm tra các grant:\n  GRANT EXECUTE ON SYS.DBMS_DEBUG TO <schema>;\n  GRANT DEBUG CONNECT SESSION TO <schema>;',
 };

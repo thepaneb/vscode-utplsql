@@ -2,7 +2,6 @@ import './setup.js';
 import assert from 'node:assert';
 import { test } from 'node:test';
 import { parseCodeLensItems, UtplsqlCodeLensProvider } from '../../codelens';
-import * as vscode from '../vscode-stub';
 import { __setConfigValue } from '../vscode-stub';
 
 function pkgWrapper(inner: string): string {
@@ -80,10 +79,10 @@ test('UtplsqlCodeLensProvider: gera 2 lenses por anotacao', () => {
   // biome-ignore lint/suspicious/noExplicitAny: partial CancellationToken mock
   const lenses = provider.provideCodeLenses(doc, {} as any);
   assert.strictEqual(lenses.length, 4);
-  assert.strictEqual(lenses[0].command?.title, '▶ Run Suite');
-  assert.strictEqual(lenses[1].command?.title, '▶ Run Suite with Coverage');
-  assert.strictEqual(lenses[2].command?.title, '▶ Run Test');
-  assert.strictEqual(lenses[3].command?.title, '▶ Run Test with Coverage');
+  assert.strictEqual(lenses[0].command?.title, '▶ Executar Suite');
+  assert.strictEqual(lenses[1].command?.title, '▶ Executar Suite com Cobertura');
+  assert.strictEqual(lenses[2].command?.title, '▶ Executar Test');
+  assert.strictEqual(lenses[3].command?.title, '▶ Executar Test com Cobertura');
 });
 
 test('UtplsqlCodeLensProvider: arquivo sem anotacoes retorna vazio', () => {

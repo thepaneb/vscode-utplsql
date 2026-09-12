@@ -1,5 +1,6 @@
 import * as vscode from 'vscode';
-import { readConfig } from './config';
+import { getExtensionLocale, readConfig } from './config';
+import { t } from './i18n';
 
 const RE_PACKAGE = /create\s+(?:or\s+replace\s+)?package\s+(?:body\s+)?(?:"?(\w+)"?\.)?"?(\w+)"?/i;
 const RE_SUITE = /--\s*%suite\s*(?:\(([^)]*)\))?/i;
@@ -84,14 +85,15 @@ export class UtplsqlCodeLensProvider implements vscode.CodeLensProvider {
 
     for (const item of items) {
       const range = new vscode.Range(item.line, 0, item.line, 0);
-      const label = item.type === 'suite' ? 'Suite' : 'Test';
+      const locale = getExtensionLocale();
+      const isSuite = item.type === 'suite';
       const desc = item.description;
 
       lenses.push(
         new vscode.CodeLens(range, {
-          title: `▶ Run ${label}`,
+          title: t(locale, isSuite ? 'codelens.runSuite' : 'codelens.runTest'),
           command: 'utplsql.runLens',
-          tooltip: `Run ${desc}`,
+          tooltip: t(locale, 'codelens.runTip', { desc }),
           arguments: [
             {
               type: item.type,
@@ -103,9 +105,9 @@ export class UtplsqlCodeLensProvider implements vscode.CodeLensProvider {
           ],
         }),
         new vscode.CodeLens(range, {
-          title: `▶ Run ${label} with Coverage`,
+          title: t(locale, isSuite ? 'codelens.runSuiteCoverage' : 'codelens.runTestCoverage'),
           command: 'utplsql.runLens',
-          tooltip: `Run ${desc} with coverage`,
+          tooltip: t(locale, 'codelens.runCoverageTip', { desc }),
           arguments: [
             {
               type: item.type,

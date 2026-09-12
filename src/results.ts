@@ -110,7 +110,7 @@ export function applyResultsFromCases(
         run.passed(item, c.durationMs);
         break;
       case 'failed': {
-        const msg = new vscode.TestMessage(c.message ?? 'Falhou');
+        const msg = new vscode.TestMessage(c.message ?? t(locale, 'results.failedFallback'));
         if (c.stackFrames) {
           const loc = resolveStackFrameToUri(c.stackFrames, state);
           if (loc) msg.location = loc;
@@ -119,7 +119,7 @@ export function applyResultsFromCases(
         break;
       }
       case 'error': {
-        const msg = new vscode.TestMessage(c.message ?? 'Erro');
+        const msg = new vscode.TestMessage(c.message ?? t(locale, 'results.errorFallback'));
         if (c.stackFrames) {
           const loc = resolveStackFrameToUri(c.stackFrames, state);
           if (loc) msg.location = loc;
@@ -139,7 +139,7 @@ export function applyResultsFromCases(
       run.appendOutput(
         `${t(locale, 'runner.noJunitResult', { id: item.id })}` +
           (m && m.kind === 'test'
-            ? t(locale, 'runner.noJunitResultPkg', { package: m.packageName }) + '\r\n'
+            ? `${t(locale, 'runner.noJunitResultPkg', { package: m.packageName })}\r\n`
             : '\r\n'),
       );
       run.skipped(item);

@@ -144,7 +144,7 @@ export function activate(context: vscode.ExtensionContext) {
         const reporters = await listReportersOracle(oracleConn);
         if (reporters.length === 0) {
           vscode.window.showErrorMessage(
-            t(locale, 'ext.reporters.listFailed', { error: 'no reporters found' }),
+            t(locale, 'ext.reporters.listFailed', { error: t(locale, 'ext.reporters.listEmpty') }),
           );
           return;
         }

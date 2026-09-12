@@ -1,11 +1,12 @@
 import * as vscode from 'vscode';
-import { readConfig, resolveConnectionNoPrompt } from './config';
+import { getExtensionLocale, readConfig, resolveConnectionNoPrompt } from './config';
 import {
   type BreakpointTarget,
   DbmsDebugClient,
   type DebugConnection,
   parseBreakpointTarget,
 } from './dbmsDebug';
+import { t } from './i18n';
 import { ensurePool, parseConnString } from './oracleRunner';
 
 // ---------------------------------------------------------------------------
@@ -273,25 +274,19 @@ export class UtplsqlDebugAdapter implements vscode.DebugAdapter {
     try {
       this.debuggeeConn = await this.runtime.acquireConnection();
       if (!this.debuggeeConn) {
-        throw new Error(
-          'oracledb indisponível ou conexão não configurada. Instale com "npm install oracledb".',
-        );
+        throw new Error(t(getExtensionLocale(), 'debug.noConnection'));
       }
       this.debuggeeClient = new DbmsDebugClient(this.debuggeeConn);
       this.sessionId = await this.debuggeeClient.debugOn();
 
       this.debuggerConn = await this.runtime.acquireConnection();
       if (!this.debuggerConn) {
-        throw new Error('Falha ao abrir a sessão de controle do DBMS_DEBUG.');
+        throw new Error(t(getExtensionLocale(), 'debug.controlFail'));
       }
       this.debuggerClient = new DbmsDebugClient(this.debuggerConn);
       const attached = await this.debuggerClient.attachSession(this.sessionId, 30);
       if (!attached) {
-        throw new Error(
-          'Não foi possível anexar ao DBMS_DEBUG. Verifique os grants:\n' +
-            '  GRANT EXECUTE ON SYS.DBMS_DEBUG TO <schema>;\n' +
-            '  GRANT DEBUG CONNECT SESSION TO <schema>;',
-        );
+        throw new Error(t(getExtensionLocale(), 'debug.attachFail'));
       }
 
       this.startTimeout();

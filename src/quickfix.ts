@@ -261,36 +261,34 @@ export class UtplsqlCodeActionProvider implements vscode.CodeActionProvider {
     _token: vscode.CancellationToken,
   ): vscode.CodeAction[] {
     const actions: vscode.CodeAction[] = [];
+    const locale = getExtensionLocale();
 
     for (const diagnostic of context.diagnostics) {
       if (diagnostic.source !== 'utPLSQL Setup') continue;
 
       if (diagnostic.code === 'UTPLSQL_BAD_CONN') {
-        const action = new vscode.CodeAction(
-          'Reconfigurar conexão',
-          vscode.CodeActionKind.QuickFix,
-        );
-        action.command = { command: 'utplsql.configureConnection', title: 'Reconfigurar conexão' };
+        const title = t(locale, 'quickfix.reconfigureConn');
+        const action = new vscode.CodeAction(title, vscode.CodeActionKind.QuickFix);
+        action.command = { command: 'utplsql.configureConnection', title };
         action.diagnostics = [diagnostic];
         actions.push(action);
       }
 
       if (diagnostic.code === 'UTPLSQL_NO_COVERAGE') {
-        const action = new vscode.CodeAction(
-          'Copiar grants para clipboard',
-          vscode.CodeActionKind.QuickFix,
-        );
+        const title = t(locale, 'quickfix.copyGrants');
+        const action = new vscode.CodeAction(title, vscode.CodeActionKind.QuickFix);
         action.command = {
           command: 'utplsql.copyGrantsToClipboard',
-          title: 'Copiar grants',
+          title,
         };
         action.diagnostics = [diagnostic];
         actions.push(action);
       }
 
       if (diagnostic.code === 'UTPLSQL_INVALID_OBJECTS') {
-        const action = new vscode.CodeAction('Recompilar UT3', vscode.CodeActionKind.QuickFix);
-        action.command = { command: 'utplsql.recompileUt3', title: 'Recompilar UT3' };
+        const title = t(locale, 'quickfix.recompile');
+        const action = new vscode.CodeAction(title, vscode.CodeActionKind.QuickFix);
+        action.command = { command: 'utplsql.recompileUt3', title };
         action.diagnostics = [diagnostic];
         actions.push(action);
       }

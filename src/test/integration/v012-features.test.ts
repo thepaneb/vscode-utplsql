@@ -1,7 +1,6 @@
 /// <reference types="mocha" />
 import * as assert from 'node:assert';
 import * as fs from 'node:fs';
-import * as os from 'node:os';
 import * as path from 'node:path';
 import * as vscode from 'vscode';
 
@@ -12,11 +11,6 @@ function hasConnection(): boolean {
   return !!process.env.UTPLSQL_CONN;
 }
 const describeDB = hasConnection() ? describe : describe.skip;
-
-const dummyToken = {
-  isCancellationRequested: false,
-  onCancellationRequested: () => ({ dispose: () => {} }),
-};
 
 describeDB('v0.12.0 — integração com banco Oracle', () => {
   before(async () => {

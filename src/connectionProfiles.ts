@@ -143,9 +143,12 @@ export function mergeProfileConfig(global: UtConfig, profile?: ConnectionProfile
 export async function selectProfile(
   profiles: ConnectionProfile[],
 ): Promise<ConnectionProfile | undefined> {
+  const locale = profileLocale();
   const items = profiles.map((p) => {
     const charsetSuffix = p.charset && p.charset !== 'utf8' ? ` • ${p.charset}` : '';
-    const detail = [p.description, p.isDefault ? 'Default' : undefined].filter(Boolean).join(' • ');
+    const detail = [p.description, p.isDefault ? t(locale, 'profile.isDefault') : undefined]
+      .filter(Boolean)
+      .join(' • ');
     return {
       label: p.name,
       description: `${maskConnection(p.connection)}${charsetSuffix}`,
@@ -154,7 +157,7 @@ export async function selectProfile(
     };
   });
   const selected = await vscode.window.showQuickPick(items, {
-    placeHolder: 'Select a connection profile',
+    placeHolder: t(locale, 'profile.selectPlaceholder'),
     matchOnDescription: true,
   });
   return selected?.profile;

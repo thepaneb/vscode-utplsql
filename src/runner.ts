@@ -181,17 +181,17 @@ export function applyCoverage(
     const tmpDir = path.dirname(coveragePath);
     const siblingFiles = (() => {
       try {
-        return fs.readdirSync(tmpDir).join(', ') || '(vazio)';
+        return fs.readdirSync(tmpDir).join(', ') || t(locale, 'runner.coverEmptyDir');
       } catch {
-        return '(diretório não encontrado)';
+        return t(locale, 'runner.coverDirMissing');
       }
     })();
     run.appendOutput(
-      t(locale, 'runner.coverNoReport', {
+      `${t(locale, 'runner.coverNoReport', {
         path: coveragePath,
         dir: tmpDir,
         files: siblingFiles,
-      }) + '\r\n',
+      })}\r\n`,
     );
     if (readConfig().setupDiagnosticsEnabled) {
       setupValidator.addCoverageDiagnostic();

@@ -340,7 +340,7 @@ test('selectProfile: exibe description no detail e máscara a conexão', async (
     assert.strictEqual(items[0].description, 'dev@localhost:1521/XE');
     assert.ok(!items[0].description.includes('secret'));
     assert.ok(items[0].detail?.includes('Banco local de desenvolvimento'));
-    assert.ok(items[0].detail?.includes('Default'));
+    assert.ok(items[0].detail?.includes('Padrão'));
   } finally {
     __setQuickPickResult(undefined);
     __resetLastQuickPickItems();
