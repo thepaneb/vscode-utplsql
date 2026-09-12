@@ -5,11 +5,15 @@ import type { UtConfig } from '../../config';
 import type { TestCaseResult } from '../../junit';
 import {
   acquireRunnerConnections,
+  checkCompilationErrors,
+  checkReporterExists,
   closeOraclePool,
   discoverUtplsqlSchema,
   ensurePool,
   executeRunOracle,
   findInvalidUt3Objects,
+  getOracleInfo,
+  listReportersOracle,
   mapDbPathsToFiles,
   parseConnString,
 } from '../../oracleRunner';
@@ -990,4 +994,112 @@ test('executeRunOracle: poll com erro em conn2 é ignorado', async () => {
     await closeOraclePool();
   }
   assert.strictEqual(run.passedList.length, 1);
+});
+
+// ── getOracleInfo ────────────────────────────────────────────────────
+
+function infoConn(handler: (sql: string) => unknown) {
+  return { execute: async (sql: string) => handler(sql) } as never;
+}
+
+test('getOracleInfo: retorna versões das duas queries (linhas array)', async () => {
+  const conn = infoConn((sql) =>
+    sql.includes('ut_runner.version') ? { rows: [['3.1.10']] } : { rows: [['19.0.0.0.0']] },
+  );
+  assert.deepStrictEqual(await getOracleInfo(conn), {
+    utVersion: '3.1.10',
+    dbVersion: '19.0.0.0.0',
+  });
+});
+
+test('getOracleInfo: lê primeira coluna de linhas objeto', async () => {
+  const conn = infoConn((sql) =>
+    sql.includes('ut_runner.version')
+      ? { rows: [{ VERSION: '3.1.10' }] }
+      : { rows: [{ VERSION: '19.0.0.0.0' }] },
+  );
+  assert.deepStrictEqual(await getOracleInfo(conn), {
+    utVersion: '3.1.10',
+    dbVersion: '19.0.0.0.0',
+  });
+});
+
+test('getOracleInfo: falha na primeira query zera só utVersion', async () => {
+  const conn = infoConn((sql) => {
+    if (sql.includes('ut_runner.version')) throw new Error('ORA-00904');
+    return { rows: [['19.0.0.0.0']] };
+  });
+  assert.deepStrictEqual(await getOracleInfo(conn), { utVersion: null, dbVersion: '19.0.0.0.0' });
+});
+
+test('getOracleInfo: falha na segunda query zera só dbVersion', async () => {
+  const conn = infoConn((sql) => {
+    if (sql.includes('product_component_version')) throw new Error('ORA-00942');
+    return { rows: [['3.1.10']] };
+  });
+  assert.deepStrictEqual(await getOracleInfo(conn), { utVersion: '3.1.10', dbVersion: null });
+});
+
+test('getOracleInfo: sem linhas retorna nulos', async () => {
+  const conn = infoConn(() => ({ rows: [] }));
+  assert.deepStrictEqual(await getOracleInfo(conn), { utVersion: null, dbVersion: null });
+});
+
+// ── listReportersOracle / checkReporterExists ────────────────────────
+
+test('listReportersOracle: mapeia linhas em nomes', async () => {
+  const conn = infoConn(() => ({ rows: [['UT_FOO_REPORTER'], ['UT_BAR_REPORTER']] }));
+  assert.deepStrictEqual(await listReportersOracle(conn), ['UT_FOO_REPORTER', 'UT_BAR_REPORTER']);
+});
+
+test('listReportersOracle: erro retorna array vazio', async () => {
+  const conn = infoConn(() => {
+    throw new Error('ORA-00942');
+  });
+  assert.deepStrictEqual(await listReportersOracle(conn), []);
+});
+
+test('checkReporterExists: compara sem case', async () => {
+  const conn = infoConn(() => ({ rows: [['ut_junit_reporter']] }));
+  assert.strictEqual(await checkReporterExists(conn, 'UT_JUNIT_REPORTER'), true);
+  assert.strictEqual(await checkReporterExists(conn, 'UT_XYZ'), false);
+});
+
+// ── checkCompilationErrors ───────────────────────────────────────────
+
+test('checkCompilationErrors: mapeia linhas array', async () => {
+  const conn = infoConn(() => ({
+    rows: [['UT_PKG', 'PACKAGE BODY', 10, 5, 'PLS-00103']],
+  }));
+  assert.deepStrictEqual(await checkCompilationErrors(conn, 'APP'), [
+    { name: 'UT_PKG', type: 'PACKAGE BODY', line: 10, position: 5, text: 'PLS-00103' },
+  ]);
+});
+
+test('checkCompilationErrors: mapeia linhas objeto', async () => {
+  const conn = infoConn(() => ({
+    rows: [{ NAME: 'UT_FN', TYPE: 'FUNCTION', LINE: 3, POSITION: 1, TEXT: 'PLS-00201' }],
+  }));
+  assert.deepStrictEqual(await checkCompilationErrors(conn, 'APP'), [
+    { name: 'UT_FN', type: 'FUNCTION', line: 3, position: 1, text: 'PLS-00201' },
+  ]);
+});
+
+test('checkCompilationErrors: envia o schema como bind', async () => {
+  let seenBinds: unknown;
+  const conn = {
+    execute: async (_sql: string, binds?: Record<string, unknown>) => {
+      seenBinds = binds;
+      return { rows: [] };
+    },
+  } as never;
+  await checkCompilationErrors(conn, 'APP');
+  assert.deepStrictEqual(seenBinds, { schema: 'APP' });
+});
+
+test('checkCompilationErrors: erro retorna array vazio', async () => {
+  const conn = infoConn(() => {
+    throw new Error('ORA-00942');
+  });
+  assert.deepStrictEqual(await checkCompilationErrors(conn, 'APP'), []);
 });

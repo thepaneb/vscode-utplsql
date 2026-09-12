@@ -8,6 +8,7 @@ import * as oracleRunner from '../../oracleRunner';
 import { applyCoverage, applyResults, countResults, executeRun, lastSegment } from '../../runner';
 import { TestStateManager } from '../../state';
 import type { ItemMeta } from '../../types';
+import * as viewCoverage from '../../viewCoverage';
 import * as vscode from '../vscode-stub';
 
 const NEVER_TOKEN = {
@@ -88,7 +89,8 @@ async function withExecEnv(
     }
     await fn();
   } finally {
-    process.env.UTPLSQL_CONN = origConn;
+    if (origConn === undefined) delete process.env.UTPLSQL_CONN;
+    else process.env.UTPLSQL_CONN = origConn;
     vscode.workspace.__setWorkspaceFolders(origFolders);
     __resetConfigValues();
     mock.restoreAll();
@@ -158,6 +160,26 @@ test('applyCoverage: arquivo existente delega para applyCoverageFromXml', () => 
   } finally {
     fs.rmSync(tmp, { recursive: true });
   }
+});
+
+test('applyCoverage: arquivo ausente registra aviso com arquivos vizinhos', () => {
+  const { state } = makeExecState();
+  const run = new vscode.TestRun() as any;
+  const tmp = fs.mkdtempSync(path.join(os.tmpdir(), 'cov-missing-'));
+  try {
+    applyCoverage(path.join(tmp, 'coverage.xml'), tmp, 'src', run, state);
+    assert.match(run.output(), /relatório não gerado/);
+  } finally {
+    fs.rmSync(tmp, { recursive: true });
+  }
+});
+
+test('applyCoverage: diretório inexistente informa que não foi encontrado', () => {
+  const { state } = makeExecState();
+  const run = new vscode.TestRun() as any;
+  const missing = path.join(os.tmpdir(), `cov-nodir-${Date.now()}`, 'coverage.xml');
+  applyCoverage(missing, os.tmpdir(), 'src', run, state);
+  assert.match(run.output(), /diretório não encontrado/);
 });
 
 // ── countResults ───────────────────────────────────────────────────
@@ -420,4 +442,22 @@ test('executeRun: coverageOwner é passado para oracle', async () =>
 
     await executeRun(controller, request, NEVER_TOKEN as any, false, state);
     assert.strictEqual(receivedOwner, 'MY_SCHEMA');
+  }));
+
+test('executeRun: sqlCoverageEnabled delega para applySqlCoverage no sucesso', async () =>
+  withExecEnv(async () => {
+    const { state, suiteItem } = makeExecState();
+    const run = new vscode.TestRun() as any;
+    const controller = { createTestRun: () => run, items: { forEach: () => {} } } as any;
+    const request = { include: [suiteItem] } as any;
+
+    __setConfigValue('sqlCoverageEnabled', true);
+    mock.method(oracleRunner, 'executeRunOracle', async () => {});
+    let receivedConn = '';
+    mock.method(viewCoverage, 'applySqlCoverage', async (opts: any) => {
+      receivedConn = opts.connection;
+    });
+
+    await executeRun(controller, request, NEVER_TOKEN as any, false, state);
+    assert.strictEqual(receivedConn, 'user/pass@//host:1521/svc');
   }));
