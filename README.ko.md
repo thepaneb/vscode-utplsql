@@ -326,6 +326,10 @@ GRANT SELECT ON SYS.DBA_PROCEDURES TO <ut3_owner>;
 | CodeLens가 나타나지 않음 | `editor.codeLens` 비활성화 또는 충돌 | `"editor.codeLens": true` 활성화; `utplsql.codeLens.enabled` 확인 |
 | 단축키가 작동하지 않음 | 다른 확장 프로그램 또는 VSCode 단축키와 충돌 | File → Preferences → Keyboard Shortcuts로 이동하여 `utplsql` 검색 후 재정의 |
 
+## 면책 조항
+
+이 프로젝트는 독립적인 커뮤니티 프로젝트입니다. utPLSQL 프레임워크 팀 또는 Oracle Corporation과 제휴, 보증 또는 후원 관계에 있지 않습니다. utPLSQL 및 Oracle은 각 소유자의 상표입니다.
+
 ## 라이선스
 
 MIT © Gil Cleber Barboza

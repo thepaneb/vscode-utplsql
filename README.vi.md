@@ -370,6 +370,10 @@ GRANT SELECT ON SYS.DBA_PROCEDURES TO <ut3_owner>;
 | CodeLens không xuất hiện | `editor.codeLens` bị tắt hoặc xung đột | Bật `"editor.codeLens": true`; kiểm tra `utplsql.codeLens.enabled` |
 | Phím tắt không hoạt động | Xung đột với extension hoặc phím tắt VSCode khác | Vào File → Preferences → Keyboard Shortcuts và tìm `utplsql` để gán lại |
 
+## Tuyên bố miễn trừ trách nhiệm
+
+Đây là một dự án cộng đồng độc lập. Dự án này không liên kết, không được xác nhận hay tài trợ bởi nhóm phát triển framework utPLSQL hay Oracle Corporation. utPLSQL và Oracle là nhãn hiệu của chủ sở hữu tương ứng.
+
 ## Giấy phép
 
 MIT © Gil Cleber Barboza

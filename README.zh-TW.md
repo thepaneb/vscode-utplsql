@@ -325,6 +325,10 @@ GRANT SELECT ON SYS.DBA_PROCEDURES TO <ut3_owner>;
 | CodeLens 不出現 | `editor.codeLens` 已停用或衝突 | 啟用 `"editor.codeLens": true`；檢查 `utplsql.codeLens.enabled` |
 | 快捷鍵無作用 | 與其他擴充功能或 VSCode 快捷鍵衝突 | 前往 File → Preferences → Keyboard Shortcuts 並搜尋 `utplsql` 以重新定義 |
 
+## 免責聲明
+
+這是一個獨立的社群專案，與 utPLSQL 框架團隊或 Oracle Corporation 沒有任何附屬、認可或贊助關係。utPLSQL 和 Oracle 是其各自擁有者的商標。
+
 ## 授權
 
 MIT © Gil Cleber Barboza

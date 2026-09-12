@@ -324,6 +324,10 @@ GRANT SELECT ON SYS.DBA_PROCEDURES TO <ut3_owner>;
 | CodeLens 不显示 | `editor.codeLens` 被禁用或有冲突 | 启用 `"editor.codeLens": true`；检查 `utplsql.codeLens.enabled` |
 | 快捷键不工作 | 与另一个扩展或 VSCode 快捷键冲突 | 转到 File → Preferences → Keyboard Shortcuts，搜索 `utplsql` 重新定义 |
 
+## 免责声明
+
+这是一个独立的社区项目，与 utPLSQL 框架团队或 Oracle Corporation 没有任何附属、认可或赞助关系。utPLSQL 和 Oracle 是其各自所有者的商标。
+
 ## 许可证
 
 MIT © Gil Cleber Barboza

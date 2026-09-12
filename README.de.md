@@ -328,6 +328,10 @@ GRANT SELECT ON SYS.DBA_PROCEDURES TO <ut3_owner>;
 | CodeLens erscheint nicht | `editor.codeLens` deaktiviert oder Konflikt | Aktivieren Sie `"editor.codeLens": true`; prüfen Sie `utplsql.codeLens.enabled` |
 | Kürzel funktionieren nicht | Konflikt mit einer anderen Erweiterung oder VSCode-Verknüpfung | Gehen Sie zu Datei → Einstellungen → Tastenkürzel und suchen Sie nach `utplsql`, um neu zu belegen |
 
+## Hinweis
+
+Dies ist ein unabhängiges Community-Projekt. Es ist nicht mit dem utPLSQL-Framework-Team oder der Oracle Corporation verbunden und wird von ihnen weder unterstützt noch gesponsert. utPLSQL und Oracle sind Marken der jeweiligen Inhaber.
+
 ## Lizenz
 
 MIT © Gil Cleber Barboza

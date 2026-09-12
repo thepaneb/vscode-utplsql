@@ -365,6 +365,10 @@ GRANT SELECT ON SYS.DBA_PROCEDURES TO <ut3_owner>;
 | A CodeLens nem jelenik meg | `editor.codeLens` kikapcsolva vagy ütközés | Kapcsold be a `"editor.codeLens": true` értéket; ellenőrizd a `utplsql.codeLens.enabled` beállítást |
 | A billentyűparancsok nem működnek | Ütközés másik bővítménnyel vagy VSCode-parancsikonnal | Menj a Fájl → Beállítások → Billentyűparancsok menübe, és keress rá a `utplsql` kifejezésre az újradefiniáláshoz |
 
+## Jogi nyilatkozat
+
+Ez egy független közösségi projekt. Nem áll kapcsolatban a utPLSQL keretrendszer csapatával és az Oracle Corporationnel, azok nem támogatják és nem szponzorálják. A utPLSQL és az Oracle a megfelelő tulajdonosok védjegyei.
+
 ## Licenc
 
 MIT © Gil Cleber Barboza

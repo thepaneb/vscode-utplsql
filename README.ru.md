@@ -329,6 +329,10 @@ GRANT SELECT ON SYS.DBA_PROCEDURES TO <ut3_owner>;
 | CodeLens не появляется | `editor.codeLens` отключён или конфликт | Включите `"editor.codeLens": true`; проверьте `utplsql.codeLens.enabled` |
 | Горячие клавиши не работают | Конфликт с другим расширением или сочетанием VSCode | Откройте File → Preferences → Keyboard Shortcuts и найдите `utplsql`, чтобы переназначить |
 
+## Примечание
+
+Это независимый общественный проект. Он не аффилирован с командой фреймворка utPLSQL и корпорацией Oracle, не одобрен и не спонсируется ими. utPLSQL и Oracle являются товарными знаками соответствующих владельцев.
+
 ## Лицензия
 
 MIT © Gil Cleber Barboza

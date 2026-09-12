@@ -370,6 +370,10 @@ GRANT SELECT ON SYS.DBA_PROCEDURES TO <ut3_owner>;
 | CodeLens се не појављује | `editor.codeLens` онемогућен или конфликт | Омогућите `"editor.codeLens": true`; проверите `utplsql.codeLens.enabled` |
 | Пречице не раде | Конфликт са другом екстензијом или VSCode пречицом | Идите на File → Preferences → Keyboard Shortcuts и потражите `utplsql` да бисте их редефинисали |
 
+## Напомена
+
+Ово је независан пројекат заједнице. Није повезан, одобрен нити спонзорисан од стране тима utPLSQL радног оквира нити Oracle Corporation. utPLSQL и Oracle су заштитни знаци њихових власника.
+
 ## Лиценца
 
 MIT © Gil Cleber Barboza

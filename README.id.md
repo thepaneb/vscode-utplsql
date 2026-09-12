@@ -365,6 +365,10 @@ GRANT SELECT ON SYS.DBA_PROCEDURES TO <ut3_owner>;
 | CodeLens tidak muncul | `editor.codeLens` nonaktif atau konflik | Aktifkan `"editor.codeLens": true`; periksa `utplsql.codeLens.enabled` |
 | Pintasan tidak berfungsi | Konflik dengan ekstensi lain atau pintasan VSCode | Buka File → Preferences → Keyboard Shortcuts dan cari `utplsql` untuk mendefinisikan ulang |
 
+## Penafian
+
+Ini adalah proyek komunitas yang independen. Proyek ini tidak berafiliasi, didukung, atau disponsori oleh tim framework utPLSQL maupun Oracle Corporation. utPLSQL dan Oracle adalah merek dagang dari pemiliknya masing-masing.
+
 ## Lisensi
 
 MIT © Gil Cleber Barboza

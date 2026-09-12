@@ -327,6 +327,10 @@ GRANT SELECT ON SYS.DBA_PROCEDURES TO <ut3_owner>;
 | CodeLens görünmüyor | `editor.codeLens` devre dışı veya çakışma | `"editor.codeLens": true` ayarlayın; `utplsql.codeLens.enabled` değerini kontrol edin |
 | Kısayollar çalışmıyor | Başka bir uzantıyla veya VSCode kısayoluyla çakışma | Dosya → Tercihler → Klavye Kısayolları'na gidin ve yeniden tanımlamak için `utplsql` arayın |
 
+## Feragatname
+
+Bu bağımsız bir topluluk projesidir. utPLSQL çerçeve ekibi veya Oracle Corporation ile bağlantılı değildir; onlar tarafından onaylanmaz veya desteklenmez. utPLSQL ve Oracle, ilgili sahiplerinin ticari markalarıdır.
+
 ## Lisans
 
 MIT © Gil Cleber Barboza

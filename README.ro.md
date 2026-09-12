@@ -365,6 +365,10 @@ GRANT SELECT ON SYS.DBA_PROCEDURES TO <ut3_owner>;
 | CodeLens nu apare | `editor.codeLens` dezactivat sau conflict | Activează `"editor.codeLens": true`; verifică `utplsql.codeLens.enabled` |
 | Scurtăturile nu funcționează | Conflict cu altă extensie sau scurtătură VSCode | Mergi la File → Preferences → Keyboard Shortcuts și caută `utplsql` pentru a redefini |
 
+## Notă legală
+
+Acesta este un proiect comunitar independent. Nu este afiliat, aprobat sau sponsorizat de echipa framework-ului utPLSQL și nici de Oracle Corporation. utPLSQL și Oracle sunt mărci înregistrate ale proprietarilor respectivi.
+
 ## Licență
 
 MIT © Gil Cleber Barboza
