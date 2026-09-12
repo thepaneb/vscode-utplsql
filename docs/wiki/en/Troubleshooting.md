@@ -170,7 +170,7 @@ npm install oracledb
 GRANT SELECT, DELETE ON UT3.UT_OUTPUT_BUFFER_TMP TO PUBLIC;
 GRANT SELECT, DELETE ON UT3.UT_OUTPUT_BUFFER_INFO_TMP TO PUBLIC;
 ```
-See [Direct Oracle Execution](Direct-Oracle-Execution).
+See [Direct Oracle Execution](Oracle-direct-execution).
 
 ---
 

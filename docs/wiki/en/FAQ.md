@@ -14,7 +14,7 @@ Check the following:
 ### Can I use it with Oracle XE?
 
 Yes. utPLSQL works with Oracle XE 18c+. Coverage requires the `DBMS_PROFILER`
-grants (see [Database Requirements](Database-Requirements)).
+grants (see [Database Requirements](Database-requirements)).
 
 ### Does it work with Oracle Cloud (Autonomous Database)?
 
@@ -230,7 +230,7 @@ Change `utplsql.organization` to `schema` and configure `organization.schemaPatt
 ```
 
 With a `db/APP/tests/` and `db/LOGIC/tests/` structure, the Test Explorer shows
-`Schema: APP` and `Schema: LOGIC` as root nodes. See [Tree Organization](Tree-Organization).
+`Schema: APP` and `Schema: LOGIC` as root nodes. See [Tree Organization](Tree-organization).
 
 ### Do tests appear even without the `.pks` files in the workspace?
 

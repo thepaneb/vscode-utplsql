@@ -2,9 +2,11 @@
   <img src="images/icon.png" alt="utPLSQL Test Runner Logo" width="128" height="128">
 </p>
 
-<p align="center">
-  [English](README.md) · [Português](README.pt-BR.md) · [Español](README.es.md) · [Français](README.fr.md) · [Deutsch](README.de.md) · [Italiano](README.it.md) · **日本語** · [中文(简体)](README.zh-CN.md) · [中文(繁體)](README.zh-TW.md) · [한국어](README.ko.md) · [Русский](README.ru.md) · [Türkçe](README.tr.md) · [Polski](README.pl.md) · [Čeština](README.cs.md) · [Magyar](README.hu.md) · [Български](README.bg.md) · [Ελληνικά](README.el.md) · [Bahasa Indonesia](README.id.md) · [Română](README.ro.md) · [Српски](README.sr.md) · [ไทย](README.th.md) · [Українська](README.uk.md) · [Tiếng Việt](README.vi.md) · [English (UK)](README.en-GB.md)
-</p>
+<div align="center">
+
+[English](README.md) · [Português](README.pt-BR.md) · [Español](README.es.md) · [Français](README.fr.md) · [Deutsch](README.de.md) · [Italiano](README.it.md) · **日本語** · [中文(简体)](README.zh-CN.md) · [中文(繁體)](README.zh-TW.md) · [한국어](README.ko.md) · [Русский](README.ru.md) · [Türkçe](README.tr.md) · [Polski](README.pl.md) · [Čeština](README.cs.md) · [Magyar](README.hu.md) · [Български](README.bg.md) · [Ελληνικά](README.el.md) · [Bahasa Indonesia](README.id.md) · [Română](README.ro.md) · [Српски](README.sr.md) · [ไทย](README.th.md) · [Українська](README.uk.md) · [Tiếng Việt](README.vi.md) · [English (UK)](README.en-GB.md)
+
+</div>
 
 # utPLSQL Test Runner
 
@@ -234,13 +236,7 @@ UTPLSQL_CONN=your_user/password@//host:1521/service
 - **実行済み**の行はガターで緑色になります。**未実行**の行は赤色になります。
 - **Test Coverage** タブに**ファイル/フォルダーごとのパーセンテージ**が表示されます。
 
-<p align="center">
-  <img src="images/image1.png" alt="Coverage" width="600" height="400">
-</p>
 
-<p align="center">
-  <img src="images/image2.png" alt="Test Explorer" width="600" height="400">
-</p>
 
 カバレッジは `ut_file_mapper.build_file_mappings()` を使用して収集され、
 `ut_coverage_cobertura_reporter` を使用して報告されます。この拡張機能は、カバレッジ対象オブジェクトを

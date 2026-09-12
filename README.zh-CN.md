@@ -2,9 +2,11 @@
   <img src="images/icon.png" alt="utPLSQL Test Runner Logo" width="128" height="128">
 </p>
 
-<p align="center">
-  [English](README.md) · [Português](README.pt-BR.md) · [Español](README.es.md) · [Français](README.fr.md) · [Deutsch](README.de.md) · [Italiano](README.it.md) · [日本語](README.ja.md) · **中文(简体)** · [中文(繁體)](README.zh-TW.md) · [한국어](README.ko.md) · [Русский](README.ru.md) · [Türkçe](README.tr.md) · [Polski](README.pl.md) · [Čeština](README.cs.md) · [Magyar](README.hu.md) · [Български](README.bg.md) · [Ελληνικά](README.el.md) · [Bahasa Indonesia](README.id.md) · [Română](README.ro.md) · [Српски](README.sr.md) · [ไทย](README.th.md) · [Українська](README.uk.md) · [Tiếng Việt](README.vi.md) · [English (UK)](README.en-GB.md)
-</p>
+<div align="center">
+
+[English](README.md) · [Português](README.pt-BR.md) · [Español](README.es.md) · [Français](README.fr.md) · [Deutsch](README.de.md) · [Italiano](README.it.md) · [日本語](README.ja.md) · **中文(简体)** · [中文(繁體)](README.zh-TW.md) · [한국어](README.ko.md) · [Русский](README.ru.md) · [Türkçe](README.tr.md) · [Polski](README.pl.md) · [Čeština](README.cs.md) · [Magyar](README.hu.md) · [Български](README.bg.md) · [Ελληνικά](README.el.md) · [Bahasa Indonesia](README.id.md) · [Română](README.ro.md) · [Српски](README.sr.md) · [ไทย](README.th.md) · [Українська](README.uk.md) · [Tiếng Việt](README.vi.md) · [English (UK)](README.en-GB.md)
+
+</div>
 
 # utPLSQL Test Runner
 
@@ -238,13 +240,7 @@ UTPLSQL_CONN=your_user/password@//host:1521/service
 - **已执行**的行在边线中变为绿色；**未执行**的行变为红色。
 - **Test Coverage** 选项卡显示**每个文件/文件夹的百分比**。
 
-<p align="center">
-  <img src="images/image1.png" alt="Coverage" width="600" height="400">
-</p>
 
-<p align="center">
-  <img src="images/image2.png" alt="Test Explorer" width="600" height="400">
-</p>
 
 扩展通过 `utplsql.sourcePath` 映射覆盖率到源文件。`-owner`
 由连接推导（或来自 `utplsql.coverageOwner`）。

@@ -18,18 +18,18 @@ into the native **Test Explorer**, with context menu and visual coverage.
 - **Diagnostics and quick-fix** — PL/SQL errors in the editor + setup validation with Code Actions
 - **Jump to failure** — navigation to the failed assertion line (native Go to Error)
 
-![Test Explorer with expanded suites](images/test-explorer-suites.png)
+![Test Explorer with expanded suites](../images/test-explorer-suites.png)
 
 ## Navigation
 
 Use the sidebar on the left (or the ≡ menu on mobile) to navigate between sections.
 
-- **Getting Started**: [Installation and Requirements](Instalação-e-requisitos) · [Connection](Conexão)
-- **Usage**: [Quick Start Guide](Guia-rápido) · [Coverage](Cobertura) · [Reporters](Reporters)
-- **Advanced**: [Direct Oracle Execution](Execução-Oracle-direta) · [Diagnostics and Quick-fix](Diagnósticos-e-quick-fix) · [Tree Organization](Organização-da-árvore)
-- **Reference**: [Settings](Configurações) · [Commands](Comandos) · [Database Requirements](Requisitos-no-banco)
-- **Development**: [Architecture](Arquitetura) · [Contributing](Como-contribuir) · [Tests](Testes) · [PRDs and Roadmap](PRDs)
-- **Help**: [Troubleshooting](Troubleshooting) · [FAQ](FAQ)
+- **Getting Started**: [Installation and Requirements](../Instalação-e-requisitos) · [Connection](../Conexão)
+- **Usage**: [Quick Start Guide](../Guia-rápido) · [Coverage](../Cobertura) · [Reporters](../Reporters)
+- **Advanced**: [Direct Oracle Execution](../Execução-Oracle-direta) · [Diagnostics and Quick-fix](../Diagnósticos-e-quick-fix) · [Tree Organization](../Organização-da-árvore)
+- **Reference**: [Settings](../Configurações) · [Commands](../Comandos) · [Database Requirements](../Requisitos-no-banco)
+- **Development**: [Architecture](../Arquitetura) · [Contributing](../Como-contribuir) · [Tests](../Testes) · [PRDs and Roadmap](../PRDs)
+- **Help**: [Troubleshooting](../Troubleshooting) · [FAQ](../FAQ)
 
 ## Links
 

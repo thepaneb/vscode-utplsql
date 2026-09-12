@@ -125,12 +125,12 @@ CONCLUIR
 | 12 | [Cobertura de código para objetos SQL (views, queries)](completed/prd-12-sql-coverage.md) | 0.12.0 | 2026-09-04 |
 | 33 | [PL/SQL Debugger Integration](completed/prd-33-plsql-debugger-integration.md) | 0.12.0 | 2026-09-04 |
 | 49 | [Internacionalização (i18n) dos conteúdos textuais](completed/prd-49-internacionalizacao.md) | 0.12.0 | 2026-09-04 |
+| 64 | [Migração para Oracle-Only: eliminação do utPLSQL-cli e Java](completed/prd-64-oracle-only-migration.md) | 0.12.0 | 2026-09-09 |
+| 63 | [Wiki bilíngue (pt-BR/en) + correção de links + limpeza de READMEs](completed/prd-63-diagram-i18n.md) | 0.12.0 | 2026-09-09 |
 
 ### 🟡 Em desenvolvimento
 
-| # | PRD | Versão | Data |
-|---|---|---|---|
-| 64 | [Migração para Oracle-Only: eliminação do utPLSQL-cli e Java](in-progress/prd-64-oracle-only-migration.md) | 0.12.0 | 2026-09-09 |
+_(vazio — nenhuma PRD em desenvolvimento)_
 
 ### 🔵 Aprovados
 
@@ -176,7 +176,6 @@ _(vazio — nenhuma PRD aprovada aguardando implementação)_
 | # | PRD | Versão alvo | Data |
 |---|---|---|---|
 | 62 | [Execução de scripts SQL contra perfil de conexão](proposed/prd-62-run-scripts-against-profiles.md) | 0.17.0 | 2026-09-06 |
-| 63 | [Diagramas i18n para READMEs](proposed/prd-63-diagram-i18n.md) | 0.17.0 | 2026-09-08 |
 
 
 ---
@@ -235,10 +234,11 @@ docs/prd/
 │   ├── prd-33-plsql-debugger-integration.md
 │   ├── prd-34-multi-connection-profiles.md
 │   ├── prd-48-function-coverage.md
-│   └── prd-49-internacionalizacao.md
+│   ├── prd-49-internacionalizacao.md
+│   ├── prd-64-oracle-only-migration.md
+│   └── prd-63-diagram-i18n.md
 ├── approved/         ← aprovados, aguardando implementação (vazio)
-├── in-progress/      ← sendo implementados agora
-│   └── prd-64-oracle-only-migration.md
+├── in-progress/      ← sendo implementados agora (vazio)
 └── proposed/         ← em avaliação
     ├── prd-47-node-26-toolchain.md
     ├── prd-50-auto-run-on-save.md
@@ -253,8 +253,7 @@ docs/prd/
     ├── prd-59-scaffold-suite.md
     ├── prd-60-branch-coverage-investigation.md
     ├── prd-61-cli-auto-provision.md
-    ├── prd-62-run-scripts-against-profiles.md
-    └── prd-63-diagram-i18n.md
+    └── prd-62-run-scripts-against-profiles.md
 ```
 
 ---

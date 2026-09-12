@@ -2,9 +2,11 @@
   <img src="images/icon.png" alt="utPLSQL Test Runner Logo" width="128" height="128">
 </p>
 
-<p align="center">
-  [English](README.md) · [Português](README.pt-BR.md) · [Español](README.es.md) · [Français](README.fr.md) · [Deutsch](README.de.md) · [Italiano](README.it.md) · [日本語](README.ja.md) · [中文(简体)](README.zh-CN.md) · [中文(繁體)](README.zh-TW.md) · [한국어](README.ko.md) · [Русский](README.ru.md) · [Türkçe](README.tr.md) · [Polski](README.pl.md) · [Čeština](README.cs.md) · [Magyar](README.hu.md) · [Български](README.bg.md) · [Ελληνικά](README.el.md) · [Bahasa Indonesia](README.id.md) · **Română** · [Српски](README.sr.md) · [ไทย](README.th.md) · [Українська](README.uk.md) · [Tiếng Việt](README.vi.md) · [English (UK)](README.en-GB.md)
-</p>
+<div align="center">
+
+[English](README.md) · [Português](README.pt-BR.md) · [Español](README.es.md) · [Français](README.fr.md) · [Deutsch](README.de.md) · [Italiano](README.it.md) · [日本語](README.ja.md) · [中文(简体)](README.zh-CN.md) · [中文(繁體)](README.zh-TW.md) · [한국어](README.ko.md) · [Русский](README.ru.md) · [Türkçe](README.tr.md) · [Polski](README.pl.md) · [Čeština](README.cs.md) · [Magyar](README.hu.md) · [Български](README.bg.md) · [Ελληνικά](README.el.md) · [Bahasa Indonesia](README.id.md) · **Română** · [Српски](README.sr.md) · [ไทย](README.th.md) · [Українська](README.uk.md) · [Tiếng Việt](README.vi.md) · [English (UK)](README.en-GB.md)
+
+</div>
 
 # utPLSQL Test Runner
 
@@ -240,13 +242,7 @@ Toate combinațiile folosesc prefixul `Ctrl+Shift+U` (`Cmd+Shift+U` pe Mac):
 - Liniile **executate** devin verzi în jgheab; liniile **neexecutate** devin roșii.
 - Fila **Test Coverage** arată **procentul per fișier/folder**.
 
-<p align="center">
-  <img src="images/image1.png" alt="Coverage" width="600" height="400">
-</p>
 
-<p align="center">
-  <img src="images/image2.png" alt="Test Explorer" width="600" height="400">
-</p>
 
 Extensia trimite `-source_path` (= `utplsql.sourcePath`) și mapează obiectele acoperite
 pe fișierele sursă prin `utplsql.coverageSourceArgs` (regex + `type_mapping`). `-owner`

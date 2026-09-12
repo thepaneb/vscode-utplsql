@@ -2,9 +2,11 @@
   <img src="images/icon.png" alt="utPLSQL Test Runner Logo" width="128" height="128">
 </p>
 
-<p align="center">
-  [English](README.md) · [Português](README.pt-BR.md) · [Español](README.es.md) · [Français](README.fr.md) · [Deutsch](README.de.md) · [Italiano](README.it.md) · [日本語](README.ja.md) · [中文(简体)](README.zh-CN.md) · [中文(繁體)](README.zh-TW.md) · **한국어** · [Русский](README.ru.md) · [Türkçe](README.tr.md) · [Polski](README.pl.md) · [Čeština](README.cs.md) · [Magyar](README.hu.md) · [Български](README.bg.md) · [Ελληνικά](README.el.md) · [Bahasa Indonesia](README.id.md) · [Română](README.ro.md) · [Српски](README.sr.md) · [ไทย](README.th.md) · [Українська](README.uk.md) · [Tiếng Việt](README.vi.md) · [English (UK)](README.en-GB.md)
-</p>
+<div align="center">
+
+[English](README.md) · [Português](README.pt-BR.md) · [Español](README.es.md) · [Français](README.fr.md) · [Deutsch](README.de.md) · [Italiano](README.it.md) · [日本語](README.ja.md) · [中文(简体)](README.zh-CN.md) · [中文(繁體)](README.zh-TW.md) · **한국어** · [Русский](README.ru.md) · [Türkçe](README.tr.md) · [Polski](README.pl.md) · [Čeština](README.cs.md) · [Magyar](README.hu.md) · [Български](README.bg.md) · [Ελληνικά](README.el.md) · [Bahasa Indonesia](README.id.md) · [Română](README.ro.md) · [Српски](README.sr.md) · [ไทย](README.th.md) · [Українська](README.uk.md) · [Tiếng Việt](README.vi.md) · [English (UK)](README.en-GB.md)
+
+</div>
 
 # utPLSQL Test Runner
 
@@ -240,13 +242,7 @@ UTPLSQL_CONN=your_user/password@//host:1521/service
 - **실행된** 줄은 구터에서 초록색이 되고, **실행되지 않은** 줄은 빨간색이 됩니다.
 - **Test Coverage** 탭에 **파일/폴더별 백분율**이 표시됩니다.
 
-<p align="center">
-  <img src="images/image1.png" alt="Coverage" width="600" height="400">
-</p>
 
-<p align="center">
-  <img src="images/image2.png" alt="Test Explorer" width="600" height="400">
-</p>
 
 확장 프로그램은 `utplsql.sourcePath`를 통해 커버리지를 소스 파일에 매핑합니다. `-owner`는
 연결에서(또는 `utplsql.coverageOwner`에서) 파생됩니다.

@@ -2,9 +2,11 @@
   <img src="images/icon.png" alt="utPLSQL Test Runner Logo" width="128" height="128">
 </p>
 
-<p align="center">
-  [English](README.md) · [Português](README.pt-BR.md) · [Español](README.es.md) · [Français](README.fr.md) · [Deutsch](README.de.md) · [Italiano](README.it.md) · [日本語](README.ja.md) · [中文(简体)](README.zh-CN.md) · [中文(繁體)](README.zh-TW.md) · [한국어](README.ko.md) · [Русский](README.ru.md) · [Türkçe](README.tr.md) · [Polski](README.pl.md) · [Čeština](README.cs.md) · **Magyar** · [Български](README.bg.md) · [Ελληνικά](README.el.md) · [Bahasa Indonesia](README.id.md) · [Română](README.ro.md) · [Српски](README.sr.md) · [ไทย](README.th.md) · [Українська](README.uk.md) · [Tiếng Việt](README.vi.md) · [English (UK)](README.en-GB.md)
-</p>
+<div align="center">
+
+[English](README.md) · [Português](README.pt-BR.md) · [Español](README.es.md) · [Français](README.fr.md) · [Deutsch](README.de.md) · [Italiano](README.it.md) · [日本語](README.ja.md) · [中文(简体)](README.zh-CN.md) · [中文(繁體)](README.zh-TW.md) · [한국어](README.ko.md) · [Русский](README.ru.md) · [Türkçe](README.tr.md) · [Polski](README.pl.md) · [Čeština](README.cs.md) · **Magyar** · [Български](README.bg.md) · [Ελληνικά](README.el.md) · [Bahasa Indonesia](README.id.md) · [Română](README.ro.md) · [Српски](README.sr.md) · [ไทย](README.th.md) · [Українська](README.uk.md) · [Tiếng Việt](README.vi.md) · [English (UK)](README.en-GB.md)
+
+</div>
 
 # utPLSQL Test Runner
 
@@ -240,13 +242,7 @@ Minden parancsikon a `Ctrl+Shift+U` előtagot használja (`Cmd+Shift+U` Macen):
 - A **végrehajtott** sorok zöldre váltanak a sávban (gutter); a **nem végrehajtott** sorok pirosra váltanak.
 - A **Test Coverage** lap a **fájlonkénti/mappánkénti százalékot** mutatja.
 
-<p align="center">
-  <img src="images/image1.png" alt="Coverage" width="600" height="400">
-</p>
 
-<p align="center">
-  <img src="images/image2.png" alt="Test Explorer" width="600" height="400">
-</p>
 
 A bővítmény átadja a `-source_path` értéket (= `utplsql.sourcePath`), és a lefedett objektumokat
 a `utplsql.coverageSourceArgs` segítségével rendeli a forrásfájlokhoz (regex + `type_mapping`). A `-owner`

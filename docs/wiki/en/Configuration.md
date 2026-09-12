@@ -43,7 +43,7 @@ user or workspace `settings.json` (`.vscode/settings.json`).
 | `utplsql.oraclePoolPingInterval` | `60` | Seconds between health checks for idle pool connections. `0` = ping on every checkout. |
 
 The pool is created **lazily** on the first Oracle execution, recreated when the
-connection changes, and closed when the extension is deactivated. See [Direct Oracle Execution](Direct-Oracle-Execution).
+connection changes, and closed when the extension is deactivated. See [Direct Oracle Execution](Oracle-direct-execution).
 
 ## Reporters
 
@@ -72,7 +72,7 @@ In `schema` mode with a configured connection (no prompt), the refresh also
 discovers suites directly from the database (`ALL_OBJECTS`/`ALL_SOURCE`) for schemas whose
 files are not in the workspace — the queried schemas are the directories
 below the pattern root (e.g., `db/*`) and the schemas of local suites.
-See [Tree Organization](Tree-Organization).
+See [Tree Organization](Tree-organization).
 
 ## Language (i18n)
 

@@ -1,3 +1,5 @@
+[English](en/_Sidebar.md)
+
 - **Começando**
   - [Instalação e requisitos](Instalação-e-requisitos)
   - [Configuração da conexão](Conexão)
