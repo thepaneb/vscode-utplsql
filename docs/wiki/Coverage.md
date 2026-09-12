@@ -65,13 +65,13 @@ no lines to profile. Options:
    query into a **package function** that returns the view/cursor — the body enters
    normal PL/SQL coverage.
 
-## Debugging Coverage Regex
+## Debugging the Coverage Mapping
 
-Enable `utplsql.dbmsOutput: true` and check the **Log Output** in the VSCode
-output panel. utPLSQL logs which objects were mapped and which failed:
+Check the **Log Output** in the VSCode output panel. The object-to-file
+mapping (`ut_file_mapper` + `resolveSourceUri`) is logged there, including
+which objects were mapped and which failed:
 
 ```
--- objects mapped by regex:
 --   CALCULADORA → PACKAGE BODY → install/packages/calculadora.sql
 --   DOBRO → FUNCTION → install/functions/dobro.sql
 --   LOG_AUDITORIA → (not mapped — no file matched)

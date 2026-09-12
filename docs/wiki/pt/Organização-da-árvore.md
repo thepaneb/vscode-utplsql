@@ -36,7 +36,7 @@ TestController
               └── test_case_3
 ```
 
-![Schema-mode tree](images/schema-mode-tree.png)
+![Schema-mode tree](../images/schema-mode-tree.png)
 
 ## Configuração
 
@@ -88,7 +88,7 @@ rapidamente arquivos fora da convenção esperada.
 
 ## Descoberta via banco (a partir da 0.11.0)
 
-Quando `runnerMode` é `auto`/`oracle` e há conexão configurada (sem prompt), o
+Quando há conexão configurada (sem prompt), o
 refresh **complementa** as suites dos arquivos com suites descobertas direto do
 banco via `ALL_OBJECTS`/`ALL_SOURCE` — útil para shared installs e CI onde os
 `.pks` não estão no workspace.
@@ -100,5 +100,5 @@ banco via `ALL_OBJECTS`/`ALL_SOURCE` — útil para shared installs e CI onde os
 - Packages `UT_*` (framework utPLSQL) são ignorados
 - Suites vindas do banco usam URI virtual `utplsql-db:/SCHEMA/PKG.pks` e **não
   têm** CodeLens, decorações inline nem jump to failure — apenas execução
-- Fallback silencioso: `ALL_SOURCE` inacessível, Oracle indisponível ou
-  `runnerMode: cli` → só a descoberta por arquivos
+- Fallback silencioso: `ALL_SOURCE` inacessível ou Oracle indisponível
+  → só a descoberta por arquivos

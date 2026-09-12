@@ -3,7 +3,7 @@
 All extension commands available in the command palette (`Ctrl+Shift+P`),
 prefixed with `utPLSQL:`.
 
-![Command palette with utPLSQL prefix](../images/palette-commands.png)
+![Command palette with utPLSQL prefix](images/palette-commands.png)
 
 ## Full list
 
@@ -48,7 +48,7 @@ Execution commands also appear in the context menu:
 - **Right-click on a file** `.sql`/`.pks`/`.pkb`/`.fnc`/`.prc`/`.trg` → runs the script against a connection profile (output in the "utPLSQL Script" OutputChannel)
 - **Right-click on a folder** → runs the folder scripts in alphabetical order
 
-![Context menu on a folder](../images/context-menu-folder.png)
+![Context menu on a folder](images/context-menu-folder.png)
 
 ## Keyboard shortcuts
 
@@ -69,4 +69,4 @@ All shortcuts use the prefix `Ctrl+Shift+U` (`Cmd+Shift+U` on Mac):
 
 To customize, go to File → Preferences → Keyboard Shortcuts and search for `utplsql`.
 
-![Keyboard shortcuts filtered by utplsql](../images/keyboard-shortcuts.png)
+![Keyboard shortcuts filtered by utplsql](images/keyboard-shortcuts.png)

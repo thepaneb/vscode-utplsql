@@ -1,25 +1,25 @@
-[English](en/_Sidebar.md)
+[Português](pt/_Sidebar.md)
 
-- **Começando**
-  - [Instalação e requisitos](Instalação-e-requisitos)
-  - [Configuração da conexão](Conexão)
-- **Uso**
-  - [Guia rápido](Guia-rápido)
-  - [Cobertura de código](Cobertura)
-  - [Reporters customizados](Reporters)
-- **Ferramentas avançadas**
-  - [Execução Oracle direta](Execução-Oracle-direta)
-  - [Diagnósticos e quick-fix](Diagnósticos-e-quick-fix)
-  - [Organização da árvore](Organização-da-árvore)
-- **Referência**
-  - [Configurações (settings)](Configurações)
-  - [Comandos](Comandos)
-  - [Requisitos no banco (grants)](Requisitos-no-banco)
-- **Desenvolvimento**
-  - [Arquitetura](Arquitetura)
-  - [Como contribuir](Como-contribuir)
-  - [Testes](Testes)
-  - [PRDs e roadmap](PRDs)
-- **Ajuda**
+- **Getting Started**
+  - [Installation and Requirements](Installation-and-requirements)
+  - [Connection Setup](Connection)
+- **Usage**
+  - [Quick Start Guide](Quick-start)
+  - [Code Coverage](Coverage)
+  - [Custom Reporters](Reporters)
+- **Advanced Tools**
+  - [Direct Oracle Execution](Oracle-direct-execution)
+  - [Diagnostics and Quick-fix](Diagnostics-and-quick-fix)
+  - [Tree Organization](Tree-organization)
+- **Reference**
+  - [Settings](Configuration)
+  - [Commands](Commands)
+  - [Database Requirements (Grants)](Database-requirements)
+- **Development**
+  - [Architecture](Architecture)
+  - [Contributing](Contributing)
+  - [Tests](Tests)
+  - [PRDs and Roadmap](PRDs)
+- **Help**
   - [Troubleshooting](Troubleshooting)
   - [FAQ](FAQ)

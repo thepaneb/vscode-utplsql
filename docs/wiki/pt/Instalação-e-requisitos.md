@@ -9,7 +9,7 @@ A extensão pode ser instalada de duas formas:
 Procure por **utPLSQL Test Runner** no painel de extensões do VSCode
 (`Ctrl+Shift+X`) e clique em **Instalar**.
 
-![Marketplace do VSCode com busca utPLSQL Test Runner](images/marketplace-card.png)
+![Marketplace do VSCode com busca utPLSQL Test Runner](../images/marketplace-card.png)
 
 ### 2. Manualmente (.vsix)
 
@@ -24,7 +24,7 @@ code --install-extension vscode-utplsql-0.12.0.vsix
 **Interface:** Painel de Extensões (`Ctrl+Shift+X`) → `...` (canto superior direito)
 → **Install from VSIX...**
 
-![Opção Install from VSIX no painel de extensões](images/install-from-vsix.png)
+![Opção Install from VSIX no painel de extensões](../images/install-from-vsix.png)
 
 ## Requisitos
 
@@ -38,7 +38,7 @@ SELECT ut_meta.version() FROM dual;
 -- deve retornar algo como: v3.2.3
 ```
 
-![Versão do utPLSQL consultada no banco](images/sqlcl-version.png)
+![Versão do utPLSQL consultada no banco](../images/sqlcl-version.png)
 
 ### Máquina local
 

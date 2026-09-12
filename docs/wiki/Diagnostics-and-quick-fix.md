@@ -47,7 +47,7 @@ The extension extracts this and shows it in the editor:
 - **Line 12, column 5** — red underline
 - **Problems Panel:** `[PLS-00103] Encountered the symbol "END"` (source: "utPLSQL Compilation")
 
-![Compilation diagnostics](../images/diagnostics-squiggles.png)
+![Compilation diagnostics](images/diagnostics-squiggles.png)
 
 ### Configuration
 
@@ -121,7 +121,7 @@ Each diagnostic provides a **Code Action** (lightbulb icon or `Ctrl+.`):
 
 The full diagnostic flow covers the entire lifecycle:
 
-![Diagnostics lifecycle](../images/diagram-diagnosticos.png)
+![Diagnostics lifecycle](images/diagram-diagnosticos.png)
 
 ```
 Open workspace

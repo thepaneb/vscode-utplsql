@@ -134,10 +134,9 @@ conn1 (run)                              conn2 (poll)
 
 | Setting | Default | Descrição |
 |---|---|---|
-| `utplsql.timeoutMinutes` | `60` | Timeout da execução |
+| `utplsql.timeoutMinutes` | `60` | Timeout da execução (`Promise.race` com cancelamento) |
 | `utplsql.oraclePoolMin` | `2` | Conexões mínimas do pool |
 | `utplsql.oraclePoolMax` | `10` | Conexões máximas do pool |
 | `utplsql.oraclePoolIncrement` | `1` | Incremento ao expandir o pool |
 | `utplsql.oraclePoolPingInterval` | `60` | Segundos entre health checks das conexões ociosas |
-| `utplsql.dbmsOutput` | `false` | Habilita DBMS_OUTPUT |
-| `utplsql.quiet` | `false` | Suprime logs |
+| `utplsql.dbmsOutput` | `false` | Captura `DBMS_OUTPUT` via `GET_LINES` na sessão de polling |

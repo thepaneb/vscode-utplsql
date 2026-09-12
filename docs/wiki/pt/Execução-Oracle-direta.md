@@ -7,7 +7,7 @@ esperar o batch completo.
 
 ## Como funciona
 
-![Streaming em tempo real](images/diagram-streaming.png)
+![Streaming em tempo real](../images/diagram-streaming.png)
 
 1. A extensão abre **duas conexões** Oracle via `node-oracledb` (thin driver, sem Instant Client).
 2. A **conn1** executa `ut_runner.run(a_paths => ..., a_reporters => ...)` — bloqueante.

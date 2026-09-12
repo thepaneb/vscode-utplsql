@@ -14,7 +14,8 @@
 
 - **Perfis de conexão (PRD-34)**: salve e alterne entre múltiplas conexões
   Oracle (`utplsql.profiles` + `utplsql.activeProfile`) com configurações por
-  perfil (`sourcePath`, `coverageOwner`, `invocation`, `cliPath`, etc.).
+  perfil (`sourcePath`, `coverageOwner`, `includePatterns`, além de
+  `description` e `charset`).
   Comandos: Switch/New/Manage Connection Profile e Import do SQL Developer.
   Status bar mostra o perfil ativo; sem perfil, comportamento inalterado.
 - **Function Coverage derivada (PRD-48)**: a view Test Coverage agora mostra

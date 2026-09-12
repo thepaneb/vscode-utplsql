@@ -1,46 +1,46 @@
-# Reporters customizados
+# Custom Reporters
 
-A extensão inclui três reporters padrão em toda execução:
+The extension includes three default reporters in every run:
 
-| Reporter | Saída | Função |
+| Reporter | Output | Purpose |
 |---|---|---|
-| `ut_documentation_reporter` | stdout | Log no terminal de testes |
-| `ut_junit_reporter` | `results.xml` | Resultados → Test Explorer |
-| `ut_coverage_cobertura_reporter` | `coverage.xml` | Cobertura → gutters + aba Coverage |
+| `ut_documentation_reporter` | stdout | Test terminal log |
+| `ut_junit_reporter` | `results.xml` | Results → Test Explorer |
+| `ut_coverage_cobertura_reporter` | `coverage.xml` | Coverage → gutters + Coverage tab |
 
-## Validação dinâmica de cobertura
+## Dynamic Coverage Validation
 
-Antes de rodar com cobertura, a extensão consulta o banco via
-`ALL_OBJECTS`. Se `UT_COVERAGE_COBERTURA_REPORTER` não existir
-(ex.: utPLSQL desatualizado), a cobertura é **pulada com aviso** no output.
-A execução dos testes nunca é bloqueada.
+Before running with coverage, the extension queries the database via
+`ALL_OBJECTS`. If `UT_COVERAGE_COBERTURA_REPORTER` does not exist
+(e.g., outdated utPLSQL), coverage is **skipped with a warning** in the output.
+Test execution is never blocked.
 
-## Reporters adicionais fixos
+## Fixed Additional Reporters
 
-Setting `utplsql.additionalReporters` — incluídos em toda execução:
+Setting `utplsql.additionalReporters` — included in every run:
 
 ```jsonc
 "utplsql.additionalReporters": ["UT_COVERAGE_HTML_REPORTER"]
 ```
 
-Os três reporters padrão são deduplicados automaticamente — não precisa
-removê-los da lista.
+The three default reporters are automatically deduplicated — you don't need
+to remove them from the list.
 
-## Reporter volátil por sessão
+## Volatile Session Reporter
 
-Comando da palette **utPLSQL: Selecionar reporter adicional...**:
+Palette command **utPLSQL: Select Additional Reporter...**:
 
-1. Abre um QuickPick com a lista dinâmica de reporters disponíveis no banco
-2. O reporter escolhido é usado na **execução seguinte**
-3. Descartado após (não persiste nas settings)
+1. Opens a QuickPick with the dynamic list of reporters available in the database
+2. The chosen reporter is used in the **next run**
+3. Discarded afterward (does not persist in settings)
 
-![QuickPick com lista de reporters disponíveis](images/quickpick-reporters.png)
+![QuickPick with available reporters list](images/quickpick-reporters.png)
 
-Use para testar um custom reporter sem poluir as settings do workspace.
+Use this to test a custom reporter without polluting workspace settings.
 
-## Criando um custom reporter
+## Creating a Custom Reporter
 
-Exemplo mínimo de reporter PL/SQL que loga em uma tabela:
+Minimal example of a PL/SQL reporter that logs to a table:
 
 ```sql
 create table test_report_log (
@@ -90,12 +90,12 @@ end;
 /
 ```
 
-Para usar, adicione ao `additionalReporters`:
+To use it, add it to `additionalReporters`:
 
 ```jsonc
 "utplsql.additionalReporters": ["CUSTOM_REPORTER"]
 ```
 
-> Reporters customizados recebem chamadas de callback do framework utPLSQL
-> durante a execução. Para detalhes da API, veja a
-> [documentação do utPLSQL](https://github.com/utPLSQL/utPLSQL).
+> Custom reporters receive callback calls from the utPLSQL framework
+> during execution. For API details, see the
+> [utPLSQL documentation](https://github.com/utPLSQL/utPLSQL).

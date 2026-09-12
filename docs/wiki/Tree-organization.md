@@ -88,7 +88,7 @@ quickly identify files outside the expected convention.
 
 ## Database discovery (from 0.11.0)
 
-When `runnerMode` is `auto`/`oracle` and there is a configured connection (without prompt),
+When there is a configured connection (without prompt),
 the refresh **supplements** file-based suites with suites discovered directly from
 the database via `ALL_OBJECTS`/`ALL_SOURCE` — useful for shared installs and CI
 where the `.pks` files are not in the workspace.
@@ -100,5 +100,5 @@ where the `.pks` files are not in the workspace.
 - `UT_*` packages (utPLSQL framework) are ignored
 - Suites from the database use the virtual URI `utplsql-db:/SCHEMA/PKG.pks` and
   **do not have** CodeLens, inline decorations, or jump to failure — only execution
-- Silent fallback: `ALL_SOURCE` inaccessible, Oracle unavailable, or
-  `runnerMode: cli` → file-based discovery only
+- Silent fallback: `ALL_SOURCE` inaccessible or Oracle unavailable
+  → file-based discovery only

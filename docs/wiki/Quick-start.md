@@ -65,24 +65,24 @@ procedure disabled_test;
 Case-insensitive. Annotations in the suite header (between `%suite` and the first
 `%test`) apply to the suite; after `%test`, they apply to the test.
 
-![Annotations: displayname in tree and disabled test absent](../images/annotations-display.png)
+![Annotations: displayname in tree and disabled test absent](images/annotations-display.png)
 
 ## 2. Compile to the database
 
 Use your preferred Oracle tool (SQLcl, SQL Developer, VSCode Oracle
 extension) to compile the package:
 
-![Compiling package to the database via SQLcl](../images/sqlcl-compile.png)
+![Compiling package to the database via SQLcl](images/sqlcl-compile.png)
 
 ## 3. Open the test view
 
 Click the **Testing** icon in the sidebar (flask/lab icon):
 
-![Testing icon in VSCode sidebar](../images/sidebar-testing-icon.png)
+![Testing icon in VSCode sidebar](images/sidebar-testing-icon.png)
 
 The suites appear in the tree:
 
-![Test Explorer with Hello World suite](../images/test-explorer-hello-world.png)
+![Test Explorer with Hello World suite](images/test-explorer-hello-world.png)
 
 ## 4. Run the tests
 
@@ -95,7 +95,7 @@ You can run tests in several ways:
   *utPLSQL: Run tests...*
 - **Palette**: `Ctrl+Shift+P` → `utPLSQL: Run all tests`
 
-![Context menu on .pks file](../images/context-menu-pks.png)
+![Context menu on .pks file](images/context-menu-pks.png)
 
 ## 5. Interpret the results
 
@@ -103,14 +103,14 @@ You can run tests in several ways:
 - **Red** ❌ — test failed (the utPLSQL failure message appears in
   the tooltip and output panel)
 
-![Test Explorer with passing and failing tests](../images/test-explorer-pass-fail.png)
+![Test Explorer with passing and failing tests](images/test-explorer-pass-fail.png)
 
 ## 6. View the output
 
 The test output (including the documentation reporter) appears in the
 Test View terminal. Click on a test to see the full log.
 
-![Test output terminal](../images/output-terminal.png)
+![Test output terminal](images/output-terminal.png)
 
 ## 7. Coverage (optional)
 

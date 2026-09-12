@@ -7,9 +7,9 @@ diretamente no editor e na aba Coverage.
 - Linhas **não executadas** → gutter vermelho 🔴
 - Aba **Test Coverage** → percentual por arquivo/pasta
 
-![Gutters de cobertura verde e vermelho no editor](images/editor-coverage-gutters.png)
+![Gutters de cobertura verde e vermelho no editor](../images/editor-coverage-gutters.png)
 
-![Painel Test Coverage com percentuais por arquivo](images/coverage-panel.png)
+![Painel Test Coverage com percentuais por arquivo](../images/coverage-panel.png)
 
 ## Como funciona
 
@@ -65,16 +65,16 @@ têm linhas para perfilar. Opções:
    query em um **package function** que retorna a view/cursor — o corpo entra
    na cobertura PL/SQL normal.
 
-## Depurando regex de cobertura
+## Depurando o mapeamento de cobertura
 
-Ative `utplsql.dbmsOutput: true` e consulte a **Log Output** no painel de
-output do VSCode. O utPLSQL loga quais objetos foram mapeados e quais falharam:
+Confira a **Log Output** no painel de output do VSCode. O mapeamento de
+objetos para arquivos (`ut_file_mapper` + `resolveSourceUri`) é registrado
+ali, incluindo quais objetos foram mapeados e quais falharam:
 
 ```
--- objetos mapeados pelo regex:
 --   CALCULADORA → PACKAGE BODY → install/packages/calculadora.sql
 --   DOBRO → FUNCTION → install/functions/dobro.sql
 --   LOG_AUDITORIA → (não mapeado — nenhum arquivo correspondeu)
 ```
 
-![Log de mapeamento de cobertura no terminal](images/output-coverage-mapping.png)
+![Log de mapeamento de cobertura no terminal](../images/output-coverage-mapping.png)

@@ -67,7 +67,7 @@
   <!-- VSCode Extension -->
   <rect x="100" y="380" width="620" height="55" rx="6" fill="#fff" stroke="#0366d6" stroke-width="1"/>
   <text x="410" y="400" text-anchor="middle" font-size="12" font-weight="bold" fill="#0366d6">VSCode Extension (client)</text>
-  <text x="200" y="420" font-size="10" fill="#555">runnerMode: auto / cli / oracle</text>
+  <text x="200" y="420" font-size="10" fill="#555">Oracle direto via node-oracledb</text>
   <text x="500" y="420" font-size="10" fill="#555">organization: file / schema</text>
   
   <!-- Legend -->

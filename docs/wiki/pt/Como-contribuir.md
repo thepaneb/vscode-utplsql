@@ -93,7 +93,7 @@ uma instância do **Extension Development Host** com a extensão carregada.
 Você pode abrir um projeto PL/SQL nessa janela e testar a extensão
 interativamente.
 
-![Extension Development Host com view Testing](images/dev-host-testing.png)
+![Extension Development Host com view Testing](../images/dev-host-testing.png)
 
 ## Testes de integração com banco real
 

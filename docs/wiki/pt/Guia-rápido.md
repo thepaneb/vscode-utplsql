@@ -65,24 +65,24 @@ procedure teste_desativado;
 Case-insensitive. Annotations no header da suíte (entre `%suite` e o primeiro
 `%test`) aplicam à suíte; após o `%test`, ao teste.
 
-![Annotations: displayname na árvore e teste disabled ausente](images/annotations-display.png)
+![Annotations: displayname na árvore e teste disabled ausente](../images/annotations-display.png)
 
 ## 2. Compile no banco
 
 Use sua ferramenta Oracle de preferência (SQLcl, SQL Developer, extensão Oracle
 do VSCode) para compilar o package:
 
-![Compilando package no banco via SQLcl](images/sqlcl-compile.png)
+![Compilando package no banco via SQLcl](../images/sqlcl-compile.png)
 
 ## 3. Abra a view de testes
 
 Clique no ícone do **Testing** na barra lateral (ícone de frasco/lab):
 
-![Ícone Testing na barra lateral do VSCode](images/sidebar-testing-icon.png)
+![Ícone Testing na barra lateral do VSCode](../images/sidebar-testing-icon.png)
 
 As suites aparecem na árvore:
 
-![Test Explorer com suite Hello World](images/test-explorer-hello-world.png)
+![Test Explorer com suite Hello World](../images/test-explorer-hello-world.png)
 
 ## 4. Execute os testes
 
@@ -95,7 +95,7 @@ Você pode rodar de várias formas:
   *utPLSQL: Rodar testes...*
 - **Paleta**: `Ctrl+Shift+P` → `utPLSQL: Rodar todos os testes`
 
-![Menu de contexto sobre arquivo .pks](images/context-menu-pks.png)
+![Menu de contexto sobre arquivo .pks](../images/context-menu-pks.png)
 
 ## 5. Interprete os resultados
 
@@ -103,14 +103,14 @@ Você pode rodar de várias formas:
 - **Vermelho** ❌ — teste falhou (mensagem de falha do utPLSQL aparece no
   tooltip e no painel de output)
 
-![Test Explorer com testes passando e falhando](images/test-explorer-pass-fail.png)
+![Test Explorer com testes passando e falhando](../images/test-explorer-pass-fail.png)
 
 ## 6. Veja o output
 
 O output do teste (incluindo o reporter de documentação) aparece no terminal
 da view de testes. Clique no teste para ver o log completo.
 
-![Terminal de output do teste](images/output-terminal.png)
+![Terminal de output do teste](../images/output-terminal.png)
 
 ## 7. Cobertura (opcional)
 

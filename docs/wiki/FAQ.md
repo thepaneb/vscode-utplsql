@@ -1,142 +1,145 @@
 # FAQ
 
-## Geral
+## General
 
-### Meus testes não aparecem no Test Explorer
+### My tests do not appear in the Test Explorer
 
-Verifique:
-1. Os arquivos têm extensão coberta por `utplsql.includePatterns` (default: `**/*.pks`)
-2. As annotations `%suite` e `%test` estão no **spec** (`.pks`), não no body
-3. O arquivo tem a declaração `create package` e ao menos um `%test` seguido de `PROCEDURE`
-4. Rode `utPLSQL: Atualizar testes` para forçar rediscovery
-5. Rode `utPLSQL: Validar configuração` para diagnóstico automático de conexão e grants
+Check the following:
+1. The files have an extension covered by `utplsql.includePatterns` (default: `**/*.pks`)
+2. The `%suite` and `%test` annotations are in the **spec** (`.pks`), not the body
+3. The file has a `create package` declaration and at least one `%test` followed by `PROCEDURE`
+4. Run `utPLSQL: Refresh Tests` to force rediscovery
+5. Run `utPLSQL: Validate Configuration` for automatic diagnostics on connection and grants
 
-### Posso usar com Oracle XE?
+### Can I use it with Oracle XE?
 
-Sim. O utPLSQL funciona com Oracle XE 18c+. A cobertura requer os grants
-de `DBMS_PROFILER` (veja [Requisitos no banco](Requisitos-no-banco)).
+Yes. utPLSQL works with Oracle XE 18c+. Coverage requires the `DBMS_PROFILER`
+grants (see [Database Requirements](Database-requirements)).
 
-### Funciona com Oracle Cloud (Autonomous Database)?
+### Does it work with Oracle Cloud (Autonomous Database)?
 
-Sim. Use o formato Wallet na string de conexão:
+Yes. Use the Wallet format in the connection string:
 
 ```
 user/pass@tcps://adb.region.oraclecloud.com:1522/service?wallet_location=/path/to/wallet
 ```
 
-Veja [Conexão](Conexão) para detalhes.
+See [Connection](Connection) for details.
 
-### A extensão funciona no Linux? E no macOS?
+### Does the extension work on Linux? And on macOS?
 
-Sim. A extensão é multiplataforma.
+Yes. The extension is cross-platform.
 
-### Os botões Run/Run with Coverage não aparecem sobre %suite/%test
+### The Run/Run with Coverage buttons do not appear above %suite/%test
 
-Verifique se `utplsql.codeLens.enabled` está `true` (é o default). Também
-confira que `editor.codeLens` não está desabilitado em settings do VSCode.
+Check that `utplsql.codeLens.enabled` is `true` (the default). Also make sure
+that `editor.codeLens` is not disabled in VS Code settings.
 
-### O que significam os ícones nas linhas após executar os testes?
+### What do the icons on the lines mean after running tests?
 
-Após cada execução, a extensão mostra decorações inline no editor:
-- ✓ verde — teste passou
-- ✗ vermelho — teste falhou (tooltip mostra a mensagem de erro)
-- ⚠ amarelo — teste pulado (skipped) ou com erro
+After each run, the extension displays inline decorations in the editor:
+- ✓ green — test passed
+- ✗ red — test failed (the tooltip shows the error message)
+- ⚠ yellow — test skipped or with an error
 
-Passe o mouse sobre o ícone para ver a mensagem de falha. Desabilite com
+Hover over the icon to see the failure message. Disable with
 `utplsql.decorations.enabled: false`.
 
-### Quais são os atalhos de teclado?
+### What are the keyboard shortcuts?
 
-Use o prefixo `Ctrl+Shift+U` + uma tecla mnemônica. Os principais:
+Use the prefix `Ctrl+Shift+U` + a mnemonic key. The main ones:
 
-| Atalho | Ação |
+| Shortcut | Action |
 |---|---|
-| `Ctrl+Shift+U R` | Rodar todos os testes |
-| `Ctrl+Shift+U T` | Rodar testes do arquivo |
-| `Ctrl+Shift+U F` | Atualizar (refresh) |
-| `Ctrl+Shift+U L` | Rerun last (último teste) |
+| `Ctrl+Shift+U R` | Run all tests |
+| `Ctrl+Shift+U T` | Run tests in file |
+| `Ctrl+Shift+U F` | Refresh |
+| `Ctrl+Shift+U L` | Rerun last |
 | `Ctrl+Shift+U U` | Run at cursor |
 | `Ctrl+Shift+U X` | Run failed only |
-| `Escape` | Cancelar execução |
+| `Escape` | Cancel execution |
 
-Para ver todos, vá em File → Preferences → Keyboard Shortcuts e busque `utplsql`.
+To see all shortcuts, go to File → Preferences → Keyboard Shortcuts and search
+for `utplsql`.
 
-### Como reexecutar apenas os testes que falharam?
+### How do I re-run only the tests that failed?
 
-Use `Ctrl+Shift+U X` (Run Failed Only) ou o comando `utPLSQL: Run Failed Tests`
-na palette. A extensão armazena quais testes falharam na última execução e os
-reexecuta isoladamente.
+Use `Ctrl+Shift+U X` (Run Failed Only) or the `utPLSQL: Run Failed Tests`
+command in the palette. The extension stores which tests failed in the last run
+and re-executes them in isolation.
 
-### Como executar o teste que está sob o cursor?
+### How do I run the test under the cursor?
 
-Com um arquivo `.pks` aberto, pressione `Ctrl+Shift+U U` (Run at Cursor).
-A extensão procura a anotação `%suite` ou `%test` acima do cursor e executa
-apenas aquele teste/suite.
-
----
-
-## Cobertura
-
-### Cobertura sempre dá 0%
-
-As causas mais comuns:
-1. Falta `GRANT EXECUTE ON DBMS_PROFILER` — execute os grants
-2. Reporter de cobertura não instalado — atualize o utPLSQL
-3. Regex em `coverageSourceArgs` não casa — ative `dbmsOutput` para depurar
-4. `sourcePath` aponta para uma pasta que não contém os fontes
-
-Veja [Troubleshooting](Troubleshooting) para diagnóstico detalhado.
-
-### Como sei se o regex de cobertura está funcionando?
-
-Ative `utplsql.dbmsOutput: true` e veja o output do teste no terminal da
-view de testes. O utPLSQL loga quais objetos SQL foram mapeados para
-arquivos.
-
-### Posso mapear cobertura de objetos que não são packages?
-
-Sim. O `type_mapping` suporta `FUNCTION`, `PROCEDURE`, `TRIGGER`, `VIEW`,
-`PACKAGE BODY`, etc. Configure conforme sua convenção de arquivos no
-`coverageSourceArgs`. Veja [Cobertura](Cobertura) para exemplos.
-
-### A cobertura funciona sem o reporter de cobertura?
-
-Não. Se `UT_COVERAGE_COBERTURA_REPORTER` não existir no banco, a cobertura
-é **automaticamente desabilitada** com um aviso no output. Os testes rodam
-normalmente, mas sem cobertura.
+With a `.pks` file open, press `Ctrl+Shift+U U` (Run at Cursor). The extension
+finds the `%suite` or `%test` annotation above the cursor and runs only that
+test/suite.
 
 ---
 
-## Conexão e segurança
+## Coverage
 
-### Como não expor minha senha no settings.json?
+### Coverage always shows 0%
 
-Use a variável de ambiente `UTPLSQL_CONN` em vez da setting
-`utplsql.connection`. Defina antes de abrir o VSCode:
+The most common causes:
+1. Missing `GRANT EXECUTE ON DBMS_PROFILER` — run the grants
+2. Coverage reporter not installed — update utPLSQL
+3. `sourcePath` points to a folder that does not contain the sources, or the
+   `sourcePath/<type>/<name>.sql` layout does not match — check the extension's
+   Log Output (channel `utPLSQL`)
+
+See [Troubleshooting](Troubleshooting) for detailed diagnostics.
+
+### How do I know if the coverage mapping is working?
+
+Check the extension's Log Output (channel `utPLSQL`): the object-to-file
+mapping (`ut_file_mapper.build_file_mappings()` + `resolveSourceUri`) is
+logged there, including which objects were mapped and which failed.
+
+### Can I map coverage for objects that are not packages?
+
+Yes. The default `type_mapping` covers `PACKAGE BODY`, `FUNCTION`,
+`PROCEDURE`, `TRIGGER`, `VIEW`, etc. Just keep the
+`sourcePath/<type>/<name>.sql` file convention
+(e.g. `install/views/my_view.sql`). See [Coverage](Coverage) for examples.
+
+### Does coverage work without the coverage reporter?
+
+No. If `UT_COVERAGE_COBERTURA_REPORTER` does not exist in the database,
+coverage is **automatically disabled** with a warning in the output. Tests run
+normally, but without coverage.
+
+---
+
+## Connection and security
+
+### How do I avoid exposing my password in settings.json?
+
+Use the `UTPLSQL_CONN` environment variable instead of the
+`utplsql.connection` setting. Set it before opening VS Code:
 
 ```bash
 export UTPLSQL_CONN="user/pass@//host:1521/service"
 code .
 ```
 
-### Posso usar wallet do Oracle sem senha?
+### Can I use an Oracle wallet without a password?
 
-Sim, se sua wallet estiver configurada com autenticação SSO (Single Sign-On):
+Yes, if your wallet is configured with SSO (Single Sign-On) authentication:
 
 ```
 user@tcps://host:1522/service?wallet_location=/path/to/wallet
 ```
 
-Sem o `/pass` no formato — o Oracle autentica via certificado.
+Without `/pass` in the format — Oracle authenticates via certificate.
 
 ---
 
-## CI/CD e desenvolvimento
+## CI/CD and development
 
-### Dá pra usar com GitHub Actions?
+### Can I use it with GitHub Actions?
 
-Sim. Exponha a env var `UTPLSQL_CONN` como secret e configure as settings
-no job:
+Yes. Expose the `UTPLSQL_CONN` env var as a secret and configure the settings
+in the job:
 
 ```yaml
 - uses: actions/checkout@v7
@@ -147,79 +150,81 @@ no job:
     UTPLSQL_CONN: ${{ secrets.UTPLSQL_CONN }}
 ```
 
-### Por que meus testes de integração são pulados?
+### Why are my integration tests skipped?
 
-Os testes com banco real (`describeDB` em `extension.test.ts`) exigem
-a variável de ambiente definida no `.env`:
+Tests that use a real database (`describeDB` in `extension.test.ts`) require
+the environment variable to be defined in `.env`:
 
 ```bash
 UTPLSQL_CONN=...
 ```
 
-Sem ela, `describeDB` é automaticamente pulado com `describe.skip`.
+Without it, `describeDB` is automatically skipped with `describe.skip`.
 
-### Posso publicar a extensão localmente?
+### Can I publish the extension locally?
 
-Use `npm run package` para gerar um `.vsix` para testes internos. A
-publicação no Marketplace é feita **exclusivamente** via GitHub release
-(pelo workflow `publish.yml`).
+Use `npm run package` to generate a `.vsix` for internal testing. Publishing
+to the Marketplace is done **exclusively** via a GitHub release (through the
+`publish.yml` workflow).
 
 ```bash
 npm run package
-# gera: vscode-utplsql-0.12.0.vsix
+# generates: vscode-utplsql-0.12.0.vsix
 code --install-extension vscode-utplsql-0.12.0.vsix
 ```
 
 ---
 
-## Oracle direto (streaming)
+## Direct Oracle (streaming)
 
-### Preciso instalar algo para usar o Oracle direto?
+### Do I need to install anything to use Direct Oracle?
 
-Não — o VSIX já inclui o driver `oracledb` **thin** (puro JavaScript, sem
-Instant Client).
+No — the VSIX already includes the `oracledb` **thin** driver (pure JavaScript,
+no Instant Client).
 
-### Funciona com shared install (UT3)?
+### Does it work with a shared install (UT3)?
 
-Sim, mas requer grants nas tabelas de buffer:
+Yes, but it requires grants on the buffer tables:
 ```sql
 GRANT SELECT, DELETE ON UT3.UT_OUTPUT_BUFFER_TMP TO PUBLIC;
 GRANT SELECT, DELETE ON UT3.UT_OUTPUT_BUFFER_INFO_TMP TO PUBLIC;
 ```
-Sem esses grants, a execução direta não funcionará — configure um schema
-dedicado para utPLSQL.
+Without these grants, direct execution will not work — set up a dedicated
+schema for utPLSQL.
 
 ---
 
-## Diagnósticos
+## Diagnostics
 
-### Como vejo erros de compilação PL/SQL no editor?
+### How do I see PL/SQL compilation errors in the editor?
 
-É automático. Após rodar testes, a extensão analisa o output. Se houver
-erros como `PLS-00201` ou `ORA-06550`, eles aparecem como **sublinhados
-vermelhos** no arquivo `.pks`/`.pkb` e no **Problems Panel** (source: "utPLSQL
-Compilation"). Desabilite com `utplsql.compilationDiagnostics.enabled: false`.
+It is automatic. After running tests, the extension queries compilation
+errors from the database (`ALL_ERRORS`). If
+there are errors like `PLS-00201` or `ORA-06550`, they appear as **red
+squiggly underlines** in the `.pks`/`.pkb` file and in the **Problems Panel**
+(source: "utPLSQL Compilation"). Disable with
+`utplsql.compilationDiagnostics.enabled: false`.
 
-### Como valido se minha configuração está correta?
+### How do I validate that my configuration is correct?
 
-Rode `utPLSQL: Validar configuração` (palette `Ctrl+Shift+P`). A extensão
-verifica conexão Oracle, versão do utPLSQL e a
-**integridade da instalação** (objetos inválidos no schema utPLSQL). Os
-resultados aparecem no Problems Panel com **quick-fix actions** (ícone 💡) —
-incluindo **"Recompilar UT3"** quando há objetos inválidos.
+Run `utPLSQL: Validate Configuration` (palette `Ctrl+Shift+P`). The extension
+checks the Oracle connection, utPLSQL version, and the **installation integrity**
+(invalid objects in the utPLSQL schema). Results appear in the Problems Panel
+with **quick-fix actions** (💡 icon) — including **"Recompile UT3"** when there
+are invalid objects.
 
-### Como consigo os grants de cobertura sem digitar?
+### How do I get the coverage grants without typing?
 
-Use `utPLSQL: Copiar grants de cobertura para clipboard` — copia o SQL pronto
-para o clipboard. Cole no SQL*Plus/SQL Developer como DBA.
+Use `utPLSQL: Copy Coverage Grants to Clipboard` — copies the ready-to-use SQL
+to the clipboard. Paste it in SQL*Plus/SQL Developer as DBA.
 
 ---
 
-## Organização da árvore
+## Tree organization
 
-### Como organizar os testes por schema?
+### How do I organize tests by schema?
 
-Mude `utplsql.organization` para `schema` e configure `organization.schemaPattern`:
+Change `utplsql.organization` to `schema` and configure `organization.schemaPattern`:
 
 ```jsonc
 {
@@ -228,29 +233,29 @@ Mude `utplsql.organization` para `schema` e configure `organization.schemaPatter
 }
 ```
 
-Com estrutura `db/APP/tests/` e `db/LOGIC/tests/`, o Test Explorer mostra
-`Schema: APP` e `Schema: LOGIC` como nós raiz. Veja [Organização da árvore](Organização-da-árvore).
+With a `db/APP/tests/` and `db/LOGIC/tests/` structure, the Test Explorer shows
+`Schema: APP` and `Schema: LOGIC` as root nodes. See [Tree Organization](Tree-organization).
 
-### Os testes aparecem mesmo sem os arquivos `.pks` no workspace?
+### Do tests appear even without the `.pks` files in the workspace?
 
-Sim — com `runnerMode` `auto`/`oracle` e conexão configurada, o refresh também
-descobre suites direto do banco (`ALL_OBJECTS`/`ALL_SOURCE`) para os schemas
-dos diretórios abaixo da base do `schemaPattern` (ex.: `db/*`). Essas suites
-aparecem com URI virtual (`utplsql-db:/`) e executam normalmente, mas **não**
-têm CodeLens, decorações inline nem jump to failure.
+Yes — with a connection configured, the refresh
+also discovers suites directly from the database (`ALL_OBJECTS`/`ALL_SOURCE`) for
+schemas in the directories under the base of the `schemaPattern` (e.g., `db/*`).
+These suites appear with a virtual URI (`utplsql-db:/`) and execute normally, but
+**do not** have CodeLens, inline decorations, or jump to failure.
 
-### Funciona com multi-root?
+### Does it work with multi-root workspaces?
 
-Sim. Cada workspace folder mantém seus próprios schemas. O `schemaPattern` é
-aplicado ao caminho relativo dentro de cada folder.
+Yes. Each workspace folder maintains its own schemas. The `schemaPattern` is
+applied to the relative path within each folder.
 
 ---
 
-## Navegação e produtividade
+## Navigation and productivity
 
-### Como pular direto para a linha da asserção que falhou?
+### How do I jump directly to the failed assertion line?
 
-Quando um teste falha, o VSCode mostra um botão **"Go to Error"** no Test
-Explorer (ícone de seta). Clicar nele abre o arquivo `.pks`/`.pkb` na linha
-exata da falha. Funciona automaticamente — a extensão extrai o stack trace do
-JUnit e resolve para o arquivo fonte.
+When a test fails, VS Code shows a **"Go to Error"** button in the Test
+Explorer (arrow icon). Clicking it opens the `.pks`/`.pkb` file at the exact
+line of the failure. This works automatically — the extension extracts the stack
+trace from the JUnit output and resolves it to the source file.

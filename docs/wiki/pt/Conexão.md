@@ -11,7 +11,7 @@ resolução segue esta ordem de prioridade:
 | 4 | Cache da sessão (prompt anterior) | Sim, até fechar o VSCode |
 | 5 | Prompt ao usuário | Não (memória volátil) |
 
-![Resolução da conexão Oracle](images/diagram-conexao.png)
+![Resolução da conexão Oracle](../images/diagram-conexao.png)
 
 ## Recomendação de segurança
 
@@ -63,7 +63,7 @@ Se você usou o prompt e quer trocar a conexão, use o comando da palette:
 
 `Ctrl+Shift+P` → **utPLSQL: Limpar conexão da sessão**
 
-![Palette com comando Limpar conexão da sessão](images/palette-clear-connection.png)
+![Palette com comando Limpar conexão da sessão](../images/palette-clear-connection.png)
 
 Na próxima execução, a extensão pergunta a nova conexão.
 

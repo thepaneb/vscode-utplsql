@@ -24,6 +24,7 @@ jobs:
       - name: Copy wiki pages
         run: |
           cp docs/wiki/*.md /tmp/wiki/
+          [ -d docs/wiki/pt ] && mkdir -p /tmp/wiki/pt && cp docs/wiki/pt/*.md /tmp/wiki/pt/
           [ -d docs/wiki/images ] && cp -r docs/wiki/images /tmp/wiki/
 
       - name: Commit and push

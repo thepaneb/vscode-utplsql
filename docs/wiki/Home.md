@@ -1,38 +1,38 @@
 # utPLSQL Test Runner
 
-**[English](en/Home.md)** · Português
+English · **[Português](pt/Home.md)**
 
-Integra o [utPLSQL](https://www.utplsql.org/) ao VSCode, trazendo testes de PL/SQL
-para o **Test Explorer** nativo, com menu de contexto e cobertura visual.
+Integrates [utPLSQL](https://www.utplsql.org/) into VSCode, bringing PL/SQL tests
+into the native **Test Explorer**, with context menu and visual coverage.
 
-- **Test Explorer nativo** — suites e testes aparecem na view de testes
-- **CodeLens** — botões Run/Run with Coverage sobre `%suite` e `%test` no editor
-- **Atalhos de teclado** — prefixo `Ctrl+Shift+U` + tecla para os comandos principais (R = Run All, T = Run File, L = Rerun Last, etc.)
-- **Menu de contexto** — clique direito em pasta ou arquivo `.pks`/`.pkb`
-- **Cobertura visual** — gutters coloridos + percentual por arquivo
-- **Decorações inline** — ícones ✓/✗/⚠ no editor após execução com tooltip da falha
-- **Status Bar** — indicador com contagem pass/fail e duração
-- **Smart Re-run** — Rerun Last, Run at Cursor, Run Failed Only com um atalho
-- **Oracle streaming** — execução direta via node-oracledb com resultados em tempo real
-- **Schema-aware tree** — organize testes por Schema > Package > Suite > Test
-- **Diagnósticos e quick-fix** — erros PL/SQL no editor + validação de setup com Code Actions
-- **Jump to failure** — navegação para a linha da asserção que falhou (Go to Error nativo)
+- **Native Test Explorer** — suites and tests appear in the test view
+- **CodeLens** — Run/Run with Coverage buttons over `%suite` and `%test` in the editor
+- **Keyboard shortcuts** — `Ctrl+Shift+U` prefix + key for main commands (R = Run All, T = Run File, L = Rerun Last, etc.)
+- **Context menu** — right-click on a folder or `.pks`/`.pkb` file
+- **Visual coverage** — colored gutters + percentage per file
+- **Inline decorations** — ✓/✗/⚠ icons in the editor after execution with failure tooltip
+- **Status Bar** — indicator with pass/fail count and duration
+- **Smart Re-run** — Rerun Last, Run at Cursor, Run Failed Only with a shortcut
+- **Oracle streaming** — direct execution via node-oracledb with real-time results
+- **Schema-aware tree** — organize tests by Schema > Package > Suite > Test
+- **Diagnostics and quick-fix** — PL/SQL errors in the editor + setup validation with Code Actions
+- **Jump to failure** — navigation to the failed assertion line (native Go to Error)
 
-![Test Explorer com suites expandidas](images/test-explorer-suites.png)
+![Test Explorer with expanded suites](images/test-explorer-suites.png)
 
-## Navegação
+## Navigation
 
-Use a sidebar à esquerda (ou o menu ≡ no mobile) para navegar entre as seções.
+Use the sidebar on the left (or the ≡ menu on mobile) to navigate between sections.
 
-- **Começando**: [Instalação e requisitos](Instalação-e-requisitos) · [Conexão](Conexão)
-- **Uso**: [Guia rápido](Guia-rápido) · [Cobertura](Cobertura) · [Reporters](Reporters)
-- **Avançado**: [Execução Oracle direta](Execução-Oracle-direta) · [Diagnósticos e quick-fix](Diagnósticos-e-quick-fix) · [Organização da árvore](Organização-da-árvore)
-- **Referência**: [Configurações](Configurações) · [Comandos](Comandos) · [Requisitos no banco](Requisitos-no-banco)
-- **Desenvolvimento**: [Arquitetura](Arquitetura) · [Como contribuir](Como-contribuir) · [Testes](Testes) · [PRDs e roadmap](PRDs)
-- **Ajuda**: [Troubleshooting](Troubleshooting) · [FAQ](FAQ)
+- **Getting Started**: [Installation and Requirements](Installation-and-requirements) · [Connection](Connection)
+- **Usage**: [Quick Start Guide](Quick-start) · [Coverage](Coverage) · [Reporters](Reporters)
+- **Advanced**: [Direct Oracle Execution](Oracle-direct-execution) · [Diagnostics and Quick-fix](Diagnostics-and-quick-fix) · [Tree Organization](Tree-organization)
+- **Reference**: [Settings](Configuration) · [Commands](Commands) · [Database Requirements](Database-requirements)
+- **Development**: [Architecture](Architecture) · [Contributing](Contributing) · [Tests](Tests) · [PRDs and Roadmap](PRDs)
+- **Help**: [Troubleshooting](Troubleshooting) · [FAQ](FAQ)
 
 ## Links
 
-- [Repositório](https://github.com/thepaneb/vscode-utplsql)
+- [Repository](https://github.com/thepaneb/vscode-utplsql)
 - [Marketplace](https://marketplace.visualstudio.com/items?itemName=paneb.vscode-utplsql)
 - [utPLSQL Framework](https://github.com/utPLSQL/utPLSQL)

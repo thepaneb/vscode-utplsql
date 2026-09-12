@@ -11,7 +11,7 @@ resolution follows this priority order:
 | 4 | Session cache (previous prompt) | Yes, until VSCode is closed |
 | 5 | User prompt | No (volatile memory) |
 
-![Oracle Connection Resolution](../images/diagram-conexao.png)
+![Oracle Connection Resolution](images/diagram-conexao.png)
 
 ## Security Recommendation
 
@@ -63,7 +63,7 @@ If you used the prompt and want to switch connections, use the palette command:
 
 `Ctrl+Shift+P` → **utPLSQL: Clear Session Connection**
 
-![Palette with Clear Session Connection command](../images/palette-clear-connection.png)
+![Palette with Clear Session Connection command](images/palette-clear-connection.png)
 
 On the next run, the extension will ask for the new connection.
 

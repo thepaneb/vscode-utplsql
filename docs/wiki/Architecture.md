@@ -4,7 +4,7 @@ Overview of the extension's internal architecture for contributors.
 
 ## Execution flow
 
-![Execution architecture](../images/diagram-arquitetura.png)
+![Execution architecture](images/diagram-arquitetura.png)
 
 `src/extension.ts` is the orchestrator. `src/runner.ts` contains `executeRun`.
 `src/oracleRunner.ts` contains `executeRunOracle`. The shared canonical
@@ -24,7 +24,7 @@ functions live in `src/results.ts` (`applyResultsFromCases`,
 (`npm run bundle`), with `vscode` and `oracledb` **external**; native oracledb
 binaries are stripped from the VSIX (`.vscodeignore`), leaving only the thin
 driver (IAM/OCI auth `plugins/` are also stripped — the extension only uses
-user/pass connection). Pure deps (fast-xml-parser v5 + transitive, iconv-lite)
+user/pass connection). Pure deps (fast-xml-parser v5 + transitive)
 are bundled.
 
 ## Critical separation: pure modules vs vscode-dependent
@@ -46,9 +46,9 @@ are bundled.
 Modules in the left column **do not import `vscode`** (at runtime) and are
 testable with `node --test` without any setup.
 
-![Internationalization (i18n) diagram](../images/diagram-i18n.png)
+![Internationalization (i18n) diagram](images/diagram-i18n.png)
 
-![PL/SQL debugger (DBMS_DEBUG) diagram](../images/diagram-debugger.png)
+![PL/SQL debugger (DBMS_DEBUG) diagram](images/diagram-debugger.png)
 
 ## Context keys
 
@@ -63,13 +63,11 @@ testable with `node --test` without any setup.
 
 | Setting (package.json) | config.ts (`readConfig`) | Usage |
 |---|---|---|
-| `utplsql.sourcePath` | `cfg.sourcePath` | `-source_path` / `resolveSourceUri` |
+| `utplsql.sourcePath` | `cfg.sourcePath` | `resolveSourceUri` (coverage mapping) |
 | `utplsql.includePatterns` | `cfg.includePatterns` | `discovery.ts` (findFiles) |
-| `utplsql.timeoutMinutes` | `cfg.timeoutMinutes` | `-t=N` (only if !=60) |
-| `utplsql.dbmsOutput` | `cfg.dbmsOutput` | `-D` (only if true) |
-| `utplsql.quiet` | `cfg.quiet` | `-q` (only if true) |
-| `utplsql.failureExitCode` | `cfg.failureExitCode` | `--failure-exit-code` (only if !=1) |
-| `utplsql.additionalReporters` | `cfg.additionalReporters` | `-f=` flags (deduplicated) |
+| `utplsql.timeoutMinutes` | `cfg.timeoutMinutes` | run timeout (`Promise.race` + cancellation) |
+| `utplsql.dbmsOutput` | `cfg.dbmsOutput` | captures `DBMS_OUTPUT` via `GET_LINES` on the polling session |
+| `utplsql.additionalReporters` | `cfg.additionalReporters` | extra reporters in the `a_reporters` param of `ut_runner.run` (deduplicated) |
 | `utplsql.oraclePoolMin/Max/Increment/PingInterval` | `cfg.oraclePool*` | `oracleRunner.ts` (`ensurePool`) |
 | `utplsql.codeLens/statusBar/decorations.enabled` | `cfg.*Enabled` | UX providers |
 | `utplsql.compilationDiagnostics.enabled` | `cfg.compilationDiagnosticsEnabled` | `runner.ts` |

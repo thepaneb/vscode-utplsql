@@ -45,7 +45,7 @@ SELECT ut_metadata.get_source_view_name FROM dual;
 
 ## Arquitetura de schemas
 
-![Arquitetura de schemas — owner UT3 + app schemas](images/diagram-schemas.png)
+![Arquitetura de schemas — owner UT3 + app schemas](../images/diagram-schemas.png)
 
 ### Install compartilhado (recomendado)
 

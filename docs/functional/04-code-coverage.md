@@ -90,24 +90,14 @@ pipeline de resolução:
 
 ## Mapeamento de objetos Oracle → arquivos
 
-### Configuração (`coverageSourceArgs`)
+### Configuração (`ut_file_mapper`)
 
 O utPLSQL usa `ut_file_mapper.build_file_mappings()` internamente para mapear
-objetos cobertos a arquivos. A configuração define regex de extração e mapeamento
-de tipos:
+objetos cobertos a arquivos. O `type_mapping` padrão inclui
+`packages=PACKAGE BODY`, `functions=FUNCTION`, `procedures=PROCEDURE`,
+`triggers=TRIGGER` e `views=VIEW`.
 
-```jsonc
-{
-  "utplsql.coverageSourceArgs": [
-    "-regex_expression=.*[/\\\\](\\w+)[/\\\\](\\w+)\\.sql$",
-    "-type_subexpression=1",    // grupo 1 = tipo (pasta)
-    "-name_subexpression=2",    // grupo 2 = nome do objeto
-    "-type_mapping=packages=PACKAGE BODY/functions=FUNCTION/procedures=PROCEDURE/triggers=TRIGGER"
-  ]
-}
-```
-
-O XML de saída contém `filename="functions/calculate.sql"` — o `resolveSourceUri`
+O XML de saída contém `filename="packages/calculate.sql"` — o `resolveSourceUri`
 mapeia isso para o arquivo físico no workspace.
 
 ### Estrutura esperada
@@ -148,7 +138,6 @@ Se `coverage.xml` não for gerado:
 |---|---|---|
 | `utplsql.sourcePath` | `install` | Pasta do código fonte |
 | `utplsql.coverageOwner` | `""` | Schema owner (vazio = usuário conexão) |
-| `utplsql.coverageSourceArgs` | (regex) | Args de mapeamento objeto→arquivo |
 
 ## Cobertura por declaração (PRD-48)
 
@@ -225,7 +214,7 @@ function discoverViewFiles(root: string, sourcePath: string): string[];
 - Executada = 100%, não executada = 0%
 - **Best-effort**: qualquer falha (sem oracledb, sem acesso a `V$SQL`,
   timeout) silencia e mantém o comportamento atual
-- `type_mapping` default inclui `views=VIEW` (`coverageSourceArgs`)
+- `type_mapping` padrão inclui `views=VIEW`
 
 ### Grants
 

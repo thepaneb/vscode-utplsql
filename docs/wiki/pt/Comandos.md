@@ -3,7 +3,7 @@
 Todos os comandos da extensão disponíveis na palette (`Ctrl+Shift+P`),
 com prefixo `utPLSQL:`.
 
-![Palette de comandos com prefixo utPLSQL](images/palette-commands.png)
+![Palette de comandos com prefixo utPLSQL](../images/palette-commands.png)
 
 ## Lista completa
 
@@ -48,7 +48,7 @@ Os comandos de execução também aparecem no menu de contexto:
 - **Clique direito num arquivo** `.sql`/`.pks`/`.pkb`/`.fnc`/`.prc`/`.trg` → executa o script contra um perfil de conexão (saída no OutputChannel "utPLSQL Script")
 - **Clique direito numa pasta** → executa os scripts da pasta em ordem alfabética
 
-![Menu de contexto sobre uma pasta](images/context-menu-folder.png)
+![Menu de contexto sobre uma pasta](../images/context-menu-folder.png)
 
 ## Atalhos de teclado
 
@@ -69,4 +69,4 @@ Todos os atalhos usam o prefixo `Ctrl+Shift+U` (`Cmd+Shift+U` no Mac):
 
 Para redefinir, vá em File → Preferences → Keyboard Shortcuts e busque `utplsql`.
 
-![Atalhos de teclado filtrados por utplsql](images/keyboard-shortcuts.png)
+![Atalhos de teclado filtrados por utplsql](../images/keyboard-shortcuts.png)

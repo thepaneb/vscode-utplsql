@@ -47,7 +47,7 @@ A extensão extrai isso e mostra no editor:
 - **Linha 12, coluna 5** — sublinhado vermelho
 - **Problems Panel:** `[PLS-00103] Encountered the symbol "END"` (source: "utPLSQL Compilation")
 
-![Compilation diagnostics](images/diagnostics-squiggles.png)
+![Compilation diagnostics](../images/diagnostics-squiggles.png)
 
 ### Configuração
 
@@ -121,7 +121,7 @@ Cada diagnostic oferece uma **Code Action** (ícone de lâmpada ou `Ctrl+.`):
 
 O fluxo completo de diagnóstico cobre todo o ciclo de vida:
 
-![Ciclo de vida dos diagnósticos](images/diagram-diagnosticos.png)
+![Ciclo de vida dos diagnósticos](../images/diagram-diagnosticos.png)
 
 ```
 Abrir workspace
