@@ -21,6 +21,7 @@ Liste o que a mudança afeta e cruze com a tabela abaixo. Só então edite.
 | Nova string de UI | `package.nls.json` + `package.nls.<locale>.json` (23) |
 | Arquitetura / módulo | `docs/wiki/Architecture.md` (+ `pt/`), MOCs do vault |
 | PRD (criar/aprovar/implementar/concluir) | usar a skill **`prd-workflow`** |
+| Feature/versão (divulgação) | posts LinkedIn `docs/linkedin/` → skill **`linkedin-posts`** |
 | Correção relevante | `CHANGELOG.md` |
 | Sugestão/troubleshooting | README (Troubleshooting) |
 | Cobertura Oracle / grants | `docs/wiki/Coverage.md`, README |
