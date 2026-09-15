@@ -596,6 +596,7 @@
     "brain:check": "node scripts/brain.cjs check",
     "docs:check": "node scripts/docs-check.cjs",
     "sync-prds": "node scripts/sync-prds.cjs",
+    "pr:create": "node scripts/create-pr.cjs",
     "publish": "node scripts/publish.cjs",
     "publish:patch": "echo '⚠️ Publicacao apenas via GitHub workflow (release). Use npm run package para .vsix local.' && exit 1"
   },
