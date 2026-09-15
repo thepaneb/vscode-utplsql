@@ -1,19 +1,25 @@
 # Custom Reporters
 
-The extension includes three default reporters in every run:
+The extension registers reporters per run. Two are always present; coverage is
+added only when running **with coverage**:
 
 | Reporter | Output | Purpose |
 |---|---|---|
-| `ut_documentation_reporter` | stdout | Test terminal log |
-| `ut_junit_reporter` | `results.xml` | Results → Test Explorer |
-| `ut_coverage_cobertura_reporter` | `coverage.xml` | Coverage → gutters + Coverage tab |
+| `ut_documentation_reporter` | `UT_OUTPUT_BUFFER_TMP` (in-database, streamed) | Test output in the run log |
+| `ut_junit_reporter` | `UT_OUTPUT_BUFFER_TMP` (in-database, streamed) | Results → Test Explorer |
+| `ut_coverage_cobertura_reporter` | `UT_OUTPUT_BUFFER_TMP` (in-database, streamed) | Coverage → gutters + Coverage tab (only with coverage) |
+
+All reporters write to the same in-database buffer table
+(`UT_OUTPUT_BUFFER_TMP`); there are no `results.xml`/`coverage.xml` files. The
+extension polls the buffer and streams the output in real time.
 
 ## Dynamic Coverage Validation
 
 Before running with coverage, the extension queries the database via
-`ALL_OBJECTS`. If `UT_COVERAGE_COBERTURA_REPORTER` does not exist
-(e.g., outdated utPLSQL), coverage is **skipped with a warning** in the output.
-Test execution is never blocked.
+`TABLE(ut_runner.get_reporters_list())` — scoped to the discovered utPLSQL schema
+prefix. If `UT_COVERAGE_COBERTURA_REPORTER` does not exist (e.g., outdated
+utPLSQL), coverage is **skipped with a warning** in the output. Test execution is
+never blocked.
 
 ## Fixed Additional Reporters
 
@@ -23,7 +29,7 @@ Setting `utplsql.additionalReporters` — included in every run:
 "utplsql.additionalReporters": ["UT_COVERAGE_HTML_REPORTER"]
 ```
 
-The three default reporters are automatically deduplicated — you don't need
+The default reporters are automatically deduplicated — you don't need
 to remove them from the list.
 
 ## Volatile Session Reporter
@@ -31,12 +37,17 @@ to remove them from the list.
 Palette command **utPLSQL: Select Additional Reporter...**:
 
 1. Opens a QuickPick with the dynamic list of reporters available in the database
-2. The chosen reporter is used in the **next run**
-3. Discarded afterward (does not persist in settings)
+2. The chosen reporter is stored in the session state
+3. **The selection is not applied** in the current Oracle-only version
+   (`consumeExtraReporter()` is never called)
+
+To actually include an extra reporter, use the fixed `utplsql.additionalReporters`
+setting.
 
 ![QuickPick with available reporters list](images/quickpick-reporters.png)
 
-Use this to test a custom reporter without polluting workspace settings.
+The QuickPick lists the reporters reported by the database; the current version
+does not apply the selection.
 
 ## Creating a Custom Reporter
 

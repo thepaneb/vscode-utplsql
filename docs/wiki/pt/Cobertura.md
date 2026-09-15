@@ -67,14 +67,13 @@ têm linhas para perfilar. Opções:
 
 ## Depurando o mapeamento de cobertura
 
-Confira a **Log Output** no painel de output do VSCode. O mapeamento de
-objetos para arquivos (`ut_file_mapper` + `resolveSourceUri`) é registrado
-ali, incluindo quais objetos foram mapeados e quais falharam:
+Não há Output channel dedicado nem log por objeto. A extensão só anexa uma
+mensagem genérica ao output da execução quando **nenhum** arquivo pôde ser
+mapeado:
 
 ```
---   CALCULADORA → PACKAGE BODY → install/packages/calculadora.sql
---   DOBRO → FUNCTION → install/functions/dobro.sql
---   LOG_AUDITORIA → (não mapeado — nenhum arquivo correspondeu)
+[cobertura] nenhum arquivo mapeado. Ajuste "utplsql.sourcePath" para a pasta do código-fonte.
 ```
 
-![Log de mapeamento de cobertura no terminal](../images/output-coverage-mapping.png)
+Quando o mapeamento funciona, o resultado aparece no editor (gutters
+verdes/vermelhos) e na aba **Test Coverage**.

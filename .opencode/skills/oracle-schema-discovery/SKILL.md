@@ -8,7 +8,7 @@ compatibility: opencode
 
 ## Project patterns
 
-### discoverUtplsqlSchema (oracleRunner.ts:25-45)
+### discoverUtplsqlSchema (oracleRunner.ts:91-111)
 
 Queries `ALL_SYNONYMS` to find the UT3 schema prefix for shared installs:
 ```sql
@@ -18,11 +18,11 @@ WHERE synonym_name = 'UT_RUNNER' AND owner = 'PUBLIC'
 
 Returns `'UT3.'` prefix (or empty string on failure) used in buffer queries.
 
-### Schema-mode (discovery.ts:73-92)
+### Schema-mode (discovery.ts:85-104)
 
 `extractSchemaFromPath` uses `path.posix.relative` + pattern matching with `{schema}` placeholder to extract schema name from file paths. E.g., `db/{schema}/**` → matches `db/HR/package.pks` → schema = `HR`.
 
-### File-based discovery (discovery.ts:41-71)
+### File-based discovery (discovery.ts:50-83)
 
 `discoverWorkspace` reads `.pks` files and parses test suites via `suiteParser.ts`. Does NOT query the database.
 

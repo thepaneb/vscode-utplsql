@@ -38,8 +38,6 @@ SELECT ut_meta.version() FROM dual;
 -- deve retornar algo como: v3.2.3
 ```
 
-![Versão do utPLSQL consultada no banco](../images/sqlcl-version.png)
-
 ### Máquina local
 
 - **VSCode 1.88+** (requerido pela Test Coverage API).

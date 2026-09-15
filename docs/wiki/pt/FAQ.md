@@ -83,16 +83,17 @@ As causas mais comuns:
 1. Falta `GRANT EXECUTE ON DBMS_PROFILER` — execute os grants
 2. Reporter de cobertura não instalado — atualize o utPLSQL
 3. `sourcePath` aponta para uma pasta que não contém os fontes ou a
-   estrutura `sourcePath/<tipo>/<nome>.sql` não confere — confira o Log
-   Output da extensão (canal `utPLSQL`)
+   estrutura `sourcePath/<tipo>/<nome>.sql` não confere — ajuste
+   `utplsql.sourcePath` e o layout de pastas
 
 Veja [Troubleshooting](Troubleshooting) para diagnóstico detalhado.
 
 ### Como sei se o mapeamento de cobertura está funcionando?
 
-Confira o Log Output da extensão (canal `utPLSQL`): o mapeamento de objetos
-para arquivos (`ut_file_mapper.build_file_mappings()` + `resolveSourceUri`)
-é registrado ali, incluindo quais objetos foram mapeados e quais falharam.
+Após um run com cobertura, os arquivos mapeados mostram gutters verdes/vermelhos
+e aparecem na aba **Test Coverage**. Não há log por objeto: a extensão só emite
+uma mensagem genérica no output da execução quando **nenhum** arquivo pôde ser
+mapeado (`[cobertura] nenhum arquivo mapeado`).
 
 ### Posso mapear cobertura de objetos que não são packages?
 
@@ -197,11 +198,10 @@ dedicado para utPLSQL.
 
 ### Como vejo erros de compilação PL/SQL no editor?
 
-É automático. Após rodar testes, a extensão consulta os erros de compilação
-no banco (`ALL_ERRORS`). Se houver
-erros como `PLS-00201` ou `ORA-06550`, eles aparecem como **sublinhados
-vermelhos** no arquivo `.pks`/`.pkb` e no **Problems Panel** (source: "utPLSQL
-Compilation"). Desabilite com `utplsql.compilationDiagnostics.enabled: false`.
+**Não é automático** na versão atual. Os compilation diagnostics não estão
+ligados na versão Oracle-only, e `utplsql.compilationDiagnostics.enabled` não
+tem efeito. Compile ou rode os testes para expor erros como `PLS-00201` ou
+`ORA-06550` no output da execução.
 
 ### Como valido se minha configuração está correta?
 

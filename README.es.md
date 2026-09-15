@@ -27,7 +27,7 @@ Integra [utPLSQL](https://www.utplsql.org/) en VSCode, llevando las pruebas de P
 - 🔌 **Perfiles de conexión** — guarde y alterne entre múltiples entornos (DEV/TEST/PROD) con configuración por perfil, desde la barra de estado o la paleta de comandos.
 - 📈 **Cobertura por declaración y de vistas** — la pestaña Coverage muestra `% de declaraciones` (PROCEDURE/FUNCTION) por archivo y rastrea las vistas ejecutadas vía `V$SQL`.
 - 🐛 **Depuración PL/SQL** — breakpoints y depuración paso a paso de tests utPLSQL vía `DBMS_DEBUG` (Debug Adapter nativo).
-- 🌍 **i18n — 24 idiomas** — `utplsql.language` sigue a VSCode (15 nativos + 9 de la comunidad: pt-br, en, en-gb, es, zh-cn, zh-tw, ja, de, fr, it, ko, ru, tr, pl, cs, hu, bg, el, id, ro, sr, th, uk, vi).
+- 🌍 **i18n — 24 idiomas** — `utplsql.language` sigue a VSCode (24 locales: pt-br, en, en-gb, es, zh-cn, zh-tw, ja, de, fr, it, ko, ru, tr, pl, cs, hu, bg, el, id, ro, sr, th, uk, vi).
 
 ## Instalación
 
@@ -99,7 +99,7 @@ Test Explorer **a medida que cada test termina**.
 | `utplsql.coverageOwner` | `""` | Esquema propietario de los objetos cubiertos. Vacío = usa el usuario de la conexión (en mayúsculas). |
 | `utplsql.timeoutMinutes` | `60` | Timeout en minutos para la ejecución de los tests. |
 | `utplsql.dbmsOutput` | `false` | Habilita `DBMS_OUTPUT` en la sesión de pruebas. Útil para depuración. |
-| `utplsql.additionalReporters` | `[]` | Reporters adicionales para incluir en cada ejecución (p. ej. `["ut_coverage_html_reporter"]`). Los predeterminados (documentation, junit, coverage) siempre se incluyen y no es necesario listarlos. |
+| `utplsql.additionalReporters` | `[]` | Reporters adicionales para incluir en cada ejecución (p. ej. `["ut_coverage_html_reporter"]`). Los predeterminados (documentation, junit) siempre se incluyen y no es necesario listarlos. |
 | `utplsql.codeLens.enabled` | `true` | Muestra los botones CodeLens Run/Run with Coverage sobre `%suite` y `%test`. |
 | `utplsql.statusBar.enabled` | `true` | Muestra el indicador de estado de las pruebas en la barra de estado. |
 | `utplsql.decorations.enabled` | `true` | Muestra las decoraciones de pass/fail en las líneas `%suite` y `%test` después de la ejecución. |
@@ -109,7 +109,7 @@ Test Explorer **a medida que cada test termina**.
 | `utplsql.oraclePoolPingInterval` | `60` | Segundos entre comprobaciones de salud de las conexiones ociosas del pool (node-oracledb). `0` = ping en cada checkout. |
 | `utplsql.organization` | `file` | Organización del árbol: `file` (por ruta) o `schema` (Schema > Package > Suite > Test). En el modo `schema`, las suites también se descubren desde la base de datos (`ALL_OBJECTS`/`ALL_SOURCE`) cuando los archivos `.pks` no están en el workspace — con URI virtual `utplsql-db:/` (sin CodeLens/decoraciones/jump to failure). |
 | `utplsql.organization.schemaPattern` | `db/{schema}/**` | Patrón glob para extraer el esquema de la ruta. Use `{schema}` como marcador de posición. En el modo `schema`, los directorios bajo la base del patrón (p. ej. `db/*`) definen los esquemas consultados en la base de datos. |
-| `utplsql.compilationDiagnostics.enabled` | `true` | Muestra los errores de compilación PL/SQL como subrayados en el editor y en el Panel de problemas. |
+| `utplsql.compilationDiagnostics.enabled` | `true` | Reservado para diagnósticos de compilación PL/SQL. **Actualmente sin efecto** en la versión Oracle-only — la función no está conectada (aún no reactivada). |
 | `utplsql.setupDiagnostics.enabled` | `true` | Muestra diagnósticos de configuración (conexión, grants, versión) y de **integridad de la instalación de utPLSQL** (objetos inválidos en el esquema UT3, con quick-fix "Recompilar UT3") con acciones de quick-fix. |
 | `utplsql.profiles` | `[]` | Perfiles de conexión Oracle guardados (nombre, connection y overrides de `sourcePath`/`coverageOwner`/etc.) para alternar entre entornos. (Full field reference: [wiki](https://github.com/thepaneb/vscode-utplsql/wiki/Configuration)). |
 | `utplsql.activeProfile` | `""` | ID del perfil activo (`utplsql.profiles`). Cuando está definido, sobrescribe `utplsql.connection`. |
@@ -122,7 +122,7 @@ Test Explorer **a medida que cada test termina**.
 | `utplsql.scriptRunner.filePattern` | `**/*.{sql,pks,pkb,fnc,prc,trg}` | Globs to list files when running a script folder. |
 | `utplsql.scriptRunner.dbmsOutput` | `false` | Captures and displays `DBMS_OUTPUT` during script execution. |
 | `utplsql.scriptRunner.timeoutSeconds` | `300` | Per-statement timeout (s) for scripts (`callTimeout`). |
-| `utplsql.language` | `auto` | Idioma de los mensajes en tiempo de ejecución. `auto` sigue a VSCode (pt, zh-tw/zh-hk, zh, es, ja, de, fr, it, ko, ru, tr, pl, cs, hu, bg, el, id, ro, sr, th, uk, vi, en-gb; si no, en). Cubre los **24 locales** (15 nativos + 9 de la comunidad). |
+| `utplsql.language` | `auto` | Idioma de los mensajes en tiempo de ejecución. `auto` sigue a VSCode (pt, zh-tw/zh-hk, zh, es, ja, de, fr, it, ko, ru, tr, pl, cs, hu, bg, el, id, ro, sr, th, uk, vi, en-gb; si no, en). Cubre los **24 locales**. |
 
 Ejemplo (`.vscode/settings.json` del proyecto):
 
@@ -258,13 +258,13 @@ automáticamente usando el setting `utplsql.sourcePath` y el esquema `utplsql.co
 
 ## Reporters
 
-La extensión siempre incluye tres reporters predeterminados:
-`ut_documentation_reporter` (stdout),
-`ut_junit_reporter` (resultados → Test Explorer) y
-`ut_coverage_cobertura_reporter` (cobertura, si está disponible).
+La extensión siempre incluye **dos** reporters predeterminados:
+`ut_documentation_reporter` (stdout) y
+`ut_junit_reporter` (resultados → Test Explorer). El
+`ut_coverage_cobertura_reporter` se añade **solo al ejecutar con cobertura**.
 
 **Validación dinámica** — antes de ejecutar con cobertura, la extensión consulta
-la base de datos vía `ALL_OBJECTS` para verificar que `UT_COVERAGE_COBERTURA_REPORTER`
+la base de datos vía `TABLE(ut_runner.get_reporters_list())` para verificar que `UT_COVERAGE_COBERTURA_REPORTER`
 existe. Si no existe (p. ej. utPLSQL
 desactualizado), la cobertura se omite con una advertencia en la salida. La ejecución
 de los tests nunca se bloquea.
@@ -273,13 +273,13 @@ de los tests nunca se bloquea.
 ```jsonc
 "utplsql.additionalReporters": ["UT_COVERAGE_HTML_REPORTER"]
 ```
-Los tres reporters predeterminados se deduplican automáticamente, incluso si se
+Los reporters predeterminados se deduplican automáticamente, incluso si se
 listan aquí.
 
 **Reporter volátil por sesión** — el comando **utPLSQL: Select additional
 reporter...** abre un QuickPick con la lista dinámica de la base de datos. El
-reporter elegido se usa en la siguiente ejecución y se descarta después (no
-persiste en la configuración).
+reporter elegido se guarda en la sesión, pero la selección **no se aplica** en
+la versión Oracle-only actual.
 
 ## Requisitos en la base de datos
 
@@ -321,7 +321,7 @@ GRANT SELECT ON SYS.DBA_PROCEDURES TO <ut3_owner>;
 | Las suites no aparecen | Problema de conexión | Ejecute `utPLSQL: Validate configuration` para el diagnóstico |
 | Cobertura vacía | Falta `GRANT EXECUTE ON DBMS_PROFILER` | Ejecute los grants de [Requisitos](#requisitos-en-la-base-de-datos) o use `utPLSQL: Copy coverage grants to clipboard` |
 | Cobertura vacía | Oracle 19c exige grants adicionales | `GRANT EXECUTE ON DBMS_PROFILER` + `GRANT EXECUTE ON DBMS_PLSQL_CODE_COVERAGE` |
-| Error de compilación sin indicación | Código con error de sintaxis PL/SQL | Active `utplsql.compilationDiagnostics.enabled` (activo por defecto); vea el Panel de problemas |
+| Error de compilación sin indicación | Código con error de sintaxis PL/SQL | Los diagnósticos de compilación aún no están conectados en la versión Oracle-only (`utplsql.compilationDiagnostics.enabled` no tiene efecto); compile/ejecute para exponer el error |
 | Error de conexión | Cadena mal formada o DB inaccesible | Use `utPLSQL: Validate configuration` |
 | Timeout al ejecutar | Los tests tardan más que `timeoutMinutes` | Aumente `utplsql.timeoutMinutes` |
 | `%suite` no reconocido | Falta `%suite`/`create package` en el archivo, o `%test` sin `PROCEDURE` | Revise el spec; ejecute `utPLSQL: Refresh tests` |

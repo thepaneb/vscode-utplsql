@@ -1,6 +1,6 @@
 ---
 name: debugging
-description: Systematic debugging approach for this VSCode utPLSQL extension. Multi-component debugging — VSCode Extension Host, Oracle DB, utPLSQL CLI, node-oracledb.
+description: Systematic debugging approach for this VSCode utPLSQL extension. Multi-component debugging — VSCode Extension Host, Oracle DB, node-oracledb.
 compatibility: opencode
 ---
 
@@ -21,12 +21,6 @@ This project bridges multiple systems. When debugging failures, identify the com
 - Ensure `GRANT EXECUTE ON DBMS_PROFILER` for coverage
 - Check `ALL_SYNONYMS` access for shared install prefix
 
-### CLI Runner (runner.ts + cli.ts)
-- Check Java availability (`java` in PATH)
-- Check utPLSQL-cli version compatibility
-- Check temp directory permissions
-- Check `stderr` for compilation errors (captured as `compilerOutput`)
-
 ### Test Discovery (discovery.ts + suiteParser.ts)
 - Verify `.pks` files contain `%suite` and `%test` annotations
 - In schema-mode, verify path pattern matches `{schema}` placeholder
@@ -36,21 +30,20 @@ This project bridges multiple systems. When debugging failures, identify the com
 - `isUserFrame`: filters UT_*, UT$*, UT3_*, UT3$*, UT3.* prefixes
 - Reporter matching: `l.match(/^([A-Za-z0-9_]+)/)` — **sem `.trim()`**
 
-### Result Mapping (runner.ts:applyResults)
+### Result Mapping (results.ts:applyResultsFromCases)
 - Match by `lastSegment(classname)` + `name`/`description`
 - Fallback by name only
 - Returns `Map<id, {status, message}>`
 
 ## Common Failure Patterns
 
-1. **ORA-00942 (table/view not found)**: Shared install without grants → fallback CLI
+1. **ORA-00942 (table/view not found)**: Shared install without grants → friendly error (no CLI fallback)
 2. **Coverage not generated**: Missing `EXECUTE ON DBMS_PROFILER` grant
 3. **Tests show as "skipped"**: JUnit not mapping to leaf tests — check package name case
 4. **Schema mode not finding suites**: Check `organization.schemaPattern` configuration
-5. **CLI fails silently**: Check Java/CLI path, temp dir, connection string
 
 ## Diagnostics
 
-- **Compilation**: `compilationDiagnostics.ts` reads from runner's `compilerOutput` (stdout + stderr)
-- **Setup**: `SetupValidator.validateOnActivation()` checks CLI, Java, connection, version
+- **Compilation**: `oracleRunner.checkCompilationErrors()` queries `ALL_ERRORS`, but has no production wiring (no `DiagnosticCollection`); `utplsql.compilationDiagnostics.enabled` is read but has no effect
+- **Setup**: `SetupValidator.validateOnActivation()` checks connection and version (`checkCli` is an unused stub)
 - **Quick-fix**: `UtplsqlCodeActionProvider` in `**/*.pks`

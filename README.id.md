@@ -27,7 +27,7 @@ Mengintegrasikan [utPLSQL](https://www.utplsql.org/) ke dalam VSCode, membawa pe
 - 🔌 **Profil koneksi** — simpan dan beralih antar beberapa lingkungan (DEV/TEST/PROD) dengan pengaturan per profil, melalui bilah status atau palet perintah.
 - 📈 **Cakupan pernyataan dan view** — tab Coverage menampilkan `% pernyataan` (PROCEDURE/FUNCTION) per file dan melacak view yang dieksekusi melalui `V$SQL`.
 - 🐛 **Debug PL/SQL** — breakpoint dan debugging langkah demi langkah untuk pengujian utPLSQL melalui `DBMS_DEBUG` (Debug Adapter asli).
-- 🌍 **i18n — 24 bahasa** — `utplsql.language` mengikuti VSCode (15 asli + 9 komunitas: pt-br, en, en-gb, es, zh-cn, zh-tw, ja, de, fr, it, ko, ru, tr, pl, cs, hu, bg, el, id, ro, sr, th, uk, vi).
+- 🌍 **i18n — 24 bahasa** — `utplsql.language` mengikuti VSCode (24 locale: pt-br, en, en-gb, es, zh-cn, zh-tw, ja, de, fr, it, ko, ru, tr, pl, cs, hu, bg, el, id, ro, sr, th, uk, vi).
 
 ## Instalasi
 
@@ -98,7 +98,7 @@ Ekstensi terhubung langsung ke Oracle, membaca laporan (JUnit + Coverage) lalu m
 | `utplsql.sourcePath` | `install` | Folder kode produksi (untuk memetakan coverage ke file). |
 | `utplsql.includePatterns` | `["**/*.pks"]` | Glob untuk menemukan spec dengan `%suite`/`%test`. Jika pengujian Anda di `.sql`, gunakan `["**/*.sql"]`. |
 | `utplsql.coverageOwner` | `""` | Pemilik schema dari objek yang dicakup. Kosong = memakai user koneksi (huruf besar). |
-| `utplsql.additionalReporters` | `[]` | Reporter tambahan yang disertakan pada setiap eksekusi (mis. `["ut_coverage_html_reporter"]`). Default (documentation, junit, coverage) selalu disertakan dan tidak perlu didaftarkan. |
+| `utplsql.additionalReporters` | `[]` | Reporter tambahan yang disertakan pada setiap eksekusi (mis. `["ut_coverage_html_reporter"]`). Default (documentation, junit) selalu disertakan dan tidak perlu didaftarkan. |
 | `utplsql.codeLens.enabled` | `true` | Menampilkan tombol CodeLens Run/Run with Coverage di atas `%suite` dan `%test`. |
 | `utplsql.statusBar.enabled` | `true` | Menampilkan indikator status pengujian di bilah status. |
 | `utplsql.decorations.enabled` | `true` | Menampilkan dekorasi lolos/gagal pada baris `%suite` dan `%test` setelah eksekusi. |
@@ -108,7 +108,7 @@ Ekstensi terhubung langsung ke Oracle, membaca laporan (JUnit + Coverage) lalu m
 | `utplsql.oraclePoolPingInterval` | `60` | Detik antara pemeriksaan kesehatan koneksi idle di pool (node-oracledb). `0` = ping pada setiap checkout. |
 | `utplsql.organization` | `file` | Organisasi pohon: `file` (berdasarkan path) atau `schema` (Schema > Package > Suite > Test). Pada mode `schema`, suite juga ditemukan dari database (`ALL_OBJECTS`/`ALL_SOURCE`) ketika file `.pks` tidak ada di workspace — dengan URI virtual `utplsql-db:/` (tanpa CodeLens/dekorasi/langsung ke kegagalan). |
 | `utplsql.organization.schemaPattern` | `db/{schema}/**` | Pola glob untuk mengekstrak schema dari path. Gunakan `{schema}` sebagai placeholder. Pada mode `schema`, direktori di bawah basis pola (mis. `db/*`) menentukan schema yang ditanyakan di database. |
-| `utplsql.compilationDiagnostics.enabled` | `true` | Menampilkan error kompilasi PL/SQL sebagai garis bawah di editor dan Panel Problems. |
+| `utplsql.compilationDiagnostics.enabled` | `true` | Direservasikan untuk diagnostik kompilasi PL/SQL. **Saat ini tanpa efek** di versi Oracle-only — fitur ini belum terhubung (belum diaktifkan kembali). |
 | `utplsql.setupDiagnostics.enabled` | `true` | Menampilkan diagnostik konfigurasi (koneksi, grant, versi) serta **integritas instalasi utPLSQL** (objek tidak valid di schema UT3, dengan quick-fix "Recompile UT3") beserta aksi quick-fix. |
 | `utplsql.profiles` | `[]` | Profil koneksi Oracle yang tersimpan (nama, koneksi, dan penimpaan `sourcePath`/`coverageOwner`/dll.) untuk berpindah antar lingkungan. (Full field reference: [wiki](https://github.com/thepaneb/vscode-utplsql/wiki/Configuration)). |
 | `utplsql.activeProfile` | `""` | ID profil aktif (`utplsql.profiles`). Jika diatur, menimpa `utplsql.connection`. |
@@ -121,7 +121,7 @@ Ekstensi terhubung langsung ke Oracle, membaca laporan (JUnit + Coverage) lalu m
 | `utplsql.scriptRunner.filePattern` | `**/*.{sql,pks,pkb,fnc,prc,trg}` | Globs to list files when running a script folder. |
 | `utplsql.scriptRunner.dbmsOutput` | `false` | Captures and displays `DBMS_OUTPUT` during script execution. |
 | `utplsql.scriptRunner.timeoutSeconds` | `300` | Per-statement timeout (s) for scripts (`callTimeout`). |
-| `utplsql.language` | `auto` | Bahasa pesan runtime. `auto` mengikuti VSCode (pt, zh-tw/zh-hk, zh, es, ja, de, fr, it, ko, ru, tr, pl, cs, hu, bg, el, id, ro, sr, th, uk, vi, en-gb; selain itu en). Mencakup **24 locale** (15 asli + 9 komunitas). |
+| `utplsql.language` | `auto` | Bahasa pesan runtime. `auto` mengikuti VSCode (pt, zh-tw/zh-hk, zh, es, ja, de, fr, it, ko, ru, tr, pl, cs, hu, bg, el, id, ro, sr, th, uk, vi, en-gb; selain itu en). Mencakup **24 locale**. |
 
 Contoh (`.vscode/settings.json` proyek):
 
@@ -297,13 +297,13 @@ diturunkan dari koneksi (atau dari `utplsql.coverageOwner`).
 
 ## Reporter
 
-Ekstensi selalu menyertakan tiga reporter default:
-`ut_documentation_reporter` (stdout),
-`ut_junit_reporter` (hasil → Test Explorer) dan
-`ut_coverage_cobertura_reporter` (coverage, jika tersedia).
+Ekstensi selalu menyertakan **dua** reporter default:
+`ut_documentation_reporter` (stdout) dan
+`ut_junit_reporter` (hasil → Test Explorer). `ut_coverage_cobertura_reporter`
+ditambahkan **hanya saat menjalankan dengan coverage**.
 
 **Validasi dinamis** — sebelum menjalankan dengan coverage, ekstensi menanyakan
-database melalui `utplsql reporters <conn>`. Jika
+database melalui `TABLE(ut_runner.get_reporters_list())`. Jika
 `UT_COVERAGE_COBERTURA_REPORTER` tidak ada di database (mis. utPLSQL
 usang), coverage dilewati dengan peringatan di output. Eksekusi pengujian
 tidak pernah terblokir.
@@ -312,13 +312,13 @@ tidak pernah terblokir.
 ```jsonc
 "utplsql.additionalReporters": ["UT_COVERAGE_HTML_REPORTER"]
 ```
-Tiga reporter default otomatis di-deduplikasi, meskipun
+Reporter default otomatis di-deduplikasi, meskipun
 didaftarkan di sini.
 
 **Reporter per-sesi yang volatile** — perintah **utPLSQL: Select additional
 reporter...** membuka QuickPick berisi daftar dinamis dari database. Reporter
-yang dipilih dipakai pada eksekusi berikutnya lalu dibuang setelahnya (tidak
-disimpan di pengaturan).
+yang dipilih disimpan di sesi, tetapi seleksi **tidak diterapkan** di versi
+Oracle-only saat ini.
 
 ## Persyaratan basis data
 
@@ -359,7 +359,7 @@ GRANT SELECT ON SYS.DBA_PROCEDURES TO <ut3_owner>;
 |---|---|---|
 | Coverage kosong | `GRANT EXECUTE ON DBMS_PROFILER` tidak ada | Jalankan grant di [Persyaratan basis data](#persyaratan-basis-data) atau gunakan `utPLSQL: Copy coverage grants to clipboard` |
 | Coverage kosong | Oracle 19c memerlukan grant tambahan | `GRANT EXECUTE ON DBMS_PROFILER` + `GRANT EXECUTE ON DBMS_PLSQL_CODE_COVERAGE` |
-| Error kompilasi tanpa keterangan | Kode dengan error sintaks PL/SQL | Aktifkan `utplsql.compilationDiagnostics.enabled` (default aktif); lihat Panel Problems |
+| Error kompilasi tanpa keterangan | Kode dengan error sintaks PL/SQL | Diagnostik kompilasi belum terhubung di versi Oracle-only (`utplsql.compilationDiagnostics.enabled` tidak berpengaruh); kompilasi/jalankan untuk memunculkan error |
 | Error koneksi | String tidak valid atau DB tidak dapat dijangkau | Gunakan `utPLSQL: Validate configuration` |
 | `%suite` tidak dikenali | Tidak ada `%suite`/`create package` di file, atau `%test` tanpa `PROCEDURE` | Periksa spec; jalankan `utPLSQL: Refresh tests` |
 | CodeLens tidak muncul | `editor.codeLens` nonaktif atau konflik | Aktifkan `"editor.codeLens": true`; periksa `utplsql.codeLens.enabled` |

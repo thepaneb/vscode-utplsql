@@ -70,7 +70,7 @@ testáveis com `node --test` sem qualquer setup.
 | `utplsql.additionalReporters` | `cfg.additionalReporters` | reporters extras no parâmetro `a_reporters` do `ut_runner.run` (deduplicados) |
 | `utplsql.oraclePoolMin/Max/Increment/PingInterval` | `cfg.oraclePool*` | `oracleRunner.ts` (`ensurePool`) |
 | `utplsql.codeLens/statusBar/decorations.enabled` | `cfg.*Enabled` | providers UX |
-| `utplsql.compilationDiagnostics.enabled` | `cfg.compilationDiagnosticsEnabled` | `runner.ts` |
+| `utplsql.compilationDiagnostics.enabled` | `cfg.compilationDiagnosticsEnabled` | Reservada — sem efeito (feature não ligada na versão Oracle-only) |
 | `utplsql.setupDiagnostics.enabled` | `cfg.setupDiagnosticsEnabled` | `quickfix.ts` |
 | `utplsql.organization`/`organization.schemaPattern` | `cfg.organization`/`organizationSchemaPattern` | `extension.ts` (árvore + descoberta via DB) |
 | `utplsql.connection` | `resolveConnection()` | connection param Oracle |

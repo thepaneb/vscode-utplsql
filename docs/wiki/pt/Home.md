@@ -15,7 +15,7 @@ para o **Test Explorer** nativo, com menu de contexto e cobertura visual.
 - **Smart Re-run** — Rerun Last, Run at Cursor, Run Failed Only com um atalho
 - **Oracle streaming** — execução direta via node-oracledb com resultados em tempo real
 - **Schema-aware tree** — organize testes por Schema > Package > Suite > Test
-- **Diagnósticos e quick-fix** — erros PL/SQL no editor + validação de setup com Code Actions
+- **Diagnósticos e quick-fix** — validação de setup com Code Actions
 - **Jump to failure** — navegação para a linha da asserção que falhou (Go to Error nativo)
 
 ![Test Explorer com suites expandidas](../images/test-explorer-suites.png)

@@ -11,7 +11,7 @@ compatibility: opencode
 ```sh
 npm run compile        # tsc → out/
 npm run lint           # biome check src/
-npm run test:unit      # compile + lint → node --test out/test/unit/
+npm run test:unit      # compile + lint → scripts/run-tests.cjs (glob)
 npm run test:coverage  # compile → c8 node --test (sem lint)
 npm test               # = test:unit
 ```
@@ -24,8 +24,8 @@ node --test --test-name-pattern "pattern" out/test/unit/**/*.test.js
 
 ## Test Infrastructure
 
-- **Pure modules** (testable via `node --test`): suiteParser, junit, cobertura, invocation, matching, cliInfo, cliReporters, codelens (parse), state, types
-- **VSCode modules** (need Extension Host): extension, runner, config, cli, discovery, coverage, compilationDiagnostics, quickfix, decorations, statusBar, oracleRunner
+- **Pure modules** (testable via `node --test`): suiteParser, junit, cobertura, matching, plsqlDeclarations, i18n, codelens (parse), state, types
+- **VSCode modules** (need Extension Host): extension, runner, config, discovery, coverage, quickfix, decorations, statusBar, oracleRunner, connectionProfiles, scriptRunner, debugger, dbmsDebug, viewCoverage
 - **VSCode stub**: `src/test/vscode-stub.ts` — add stub entries when importing new vscode APIs
 - **Integration tests**: `@vscode/test-cli`, requires `.env` with `UTPLSQL_CONN`
 
@@ -51,7 +51,7 @@ node --test --test-name-pattern "pattern" out/test/unit/**/*.test.js
 
 1. **Red**: Write a failing `node --test` in `src/test/unit/`
 2. **Green**: Write minimal code in `src/` to make the test pass
-3. **Verify**: `npm run compile && npm run lint && node --test out/test/unit/`
+3. **Verify**: `npm run compile && npm run lint && npm run test:unit`
 4. **Refactor**: fica para a revisão (`code-review`), não para o loop.
 
 ## Coverage Thresholds (c8)

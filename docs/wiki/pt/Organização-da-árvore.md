@@ -69,6 +69,10 @@ Arquivos que não correspondem ao `schemaPattern` são agrupados sob o schema
 **"UNKNOWN"**, que aparece por último na árvore. Isso permite identificar
 rapidamente arquivos fora da convenção esperada.
 
+Sempre inclua o placeholder `{schema}` no padrão — sem ele não há grupo de
+captura, então nenhum schema é extraído e todos os arquivos caem sob
+`UNKNOWN`.
+
 ### Dicas para multi-schema
 
 - Use uma estrutura de diretórios consistente: `db/{schema}/tests/packages/`
@@ -83,8 +87,9 @@ rapidamente arquivos fora da convenção esperada.
 - **Executar um package específico:** clique no nó `Package: UT_MY_TESTS`
 - **Toggle entre modos:** mude `organization` e a árvore é reconstruída no
   próximo refresh
-- **Padrão sem `{schema}`:** todos os arquivos caem sob `UNKNOWN` — não há
-  fallback para o modo `file`
+- **Sempre inclua `{schema}`:** sem o placeholder não há grupo de captura,
+  então nenhum schema é extraído e todos os arquivos caem sob `UNKNOWN` —
+  não há fallback para o modo `file`
 
 ## Descoberta via banco (a partir da 0.11.0)
 

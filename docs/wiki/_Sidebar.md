@@ -13,6 +13,7 @@
   - [Tree Organization](Tree-organization)
 - **Reference**
   - [Settings](Configuration)
+  - [Configuration Examples](Configuration-examples)
   - [Commands](Commands)
   - [Database Requirements (Grants)](Database-requirements)
 - **Development**

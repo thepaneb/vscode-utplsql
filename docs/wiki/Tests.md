@@ -16,16 +16,36 @@ files:
 
 ```
 src/test/unit/  (TypeScript source; runs in out/test/unit/)
-├── codelens.test.ts          ├── matching.test.ts
-├── compilationDiagnostics.test.ts  ├── oracleRunner.test.ts
-├── config.test.ts            ├── quickfix.test.ts
-├── coverage.test.ts          ├── rerun.test.ts
-├── decorations.test.ts       ├── results.test.ts
-├── discovery.test.ts         ├── runner.test.ts
-├── junit.test.ts             ├── state.test.ts
-├── cobertura.test.ts         ├── statusBar.test.ts
-└── suiteParser.test.ts
+├── cobertura.test.ts
+├── codelens.test.ts
+├── config.test.ts
+├── connectionProfiles.test.ts
+├── coverage.test.ts
+├── dbmsDebug.test.ts
+├── debugger.test.ts
+├── decorations.test.ts
+├── discovery.test.ts
+├── i18n.test.ts
+├── junit.test.ts
+├── matching.test.ts
+├── oracleRunner.test.ts
+├── oracledb-default-absent.test.ts
+├── oracledb-missing-catch.test.ts
+├── plsqlDeclarations.test.ts
+├── quickfix.test.ts
+├── rerun.test.ts
+├── results.test.ts
+├── runner.test.ts
+├── scriptRunner.test.ts
+├── state.test.ts
+├── statusBar.test.ts
+├── suiteParser.test.ts
+└── viewCoverage.test.ts
 ```
+
+> Tests using `mock.module` (`oracledb-missing-catch.test.ts`,
+> `oracledb-default-absent.test.ts`) need `--experimental-test-module-mocks`.
+> That flag is already wired into `npm run test:unit` and `npm run test:coverage`.
 
 There is also **TypeScript coverage** with `c8`:
 
@@ -81,7 +101,9 @@ Test the extension inside a real VSCode instance:
 
 ```
 src/test/integration/
-└── extension.test.ts
+├── extension.test.ts
+├── oracleCapabilities.test.ts
+└── v012-features.test.ts
 ```
 
 Integration tests have two modes:

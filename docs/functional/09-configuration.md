@@ -34,6 +34,7 @@ interface UtConfig {
     | 'auto'
     | 'pt-br'
     | 'en'
+    | 'en-gb'
     | 'es'
     | 'zh-cn'
     | 'zh-tw'
@@ -46,7 +47,15 @@ interface UtConfig {
     | 'tr'
     | 'pl'
     | 'cs'
-    | 'hu';                           // default: "auto"
+    | 'hu'
+    | 'bg'
+    | 'el'
+    | 'id'
+    | 'ro'
+    | 'sr'
+    | 'th'
+    | 'uk'
+    | 'vi';                           // default: "auto"
 
   // Descoberta
   includePatterns: string[];          // default: ["**/*.pks"]
@@ -107,9 +116,11 @@ Ao resolver com sucesso, seta `utplsql:connected` context key.
 
 ### Formatos aceitos
 
-- **EZ Connect**: `user/pass@//host:port/service`
-- **TNS**: `user/pass@tns_alias` (requer `TNS_ADMIN`)
-- **Wallet**: `user/pass@tcps://host:port/service?wallet_location=/path`
+- **EZ Connect**: `user/pass@//host:port/service` — **único formato suportado**
+  por `parseConnString` (`src/oracleRunner.ts`)
+- **TNS** (`user/pass@tns_alias`) e **Wallet**
+  (`user/pass@tcps://host:port/service?wallet_location=...`) **não são
+  suportados** — `parseConnString` lança erro nesses formatos
 
 ## Connection Profiles (PRD-34)
 
@@ -207,7 +218,7 @@ connectOracle(connection: string, opts?): Promise<ScriptDb>;
 ## i18n (PRD-49)
 
 Motor de tradução das mensagens de runtime. `src/i18n.ts` (puro) + catálogos
-em `src/i18nLocales.ts` para 24 idiomas (15 nativos do VSCode + 9 da comunidade).
+em `src/i18nLocales.ts` para 24 locales + `auto` (25 valores da setting).
 
 ```typescript
 function resolveLocale(setting: string, vscodeLanguage: string): ExtensionLocale

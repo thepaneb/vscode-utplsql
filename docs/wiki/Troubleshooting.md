@@ -30,12 +30,11 @@ For automatic diagnostics, run `utPLSQL: Validate Configuration`.
 **Symptom:** Tests fail with a compilation error, but the editor does not show
 squiggly underlines.
 
-**Solution:** Check if `utplsql.compilationDiagnostics.enabled` is `true`
-(default). If it is disabled, re-enable it:
+**Cause:** Compilation diagnostics are **not active** in the current Oracle-only
+version — `utplsql.compilationDiagnostics.enabled` exists but has **no effect**.
 
-```jsonc
-"utplsql.compilationDiagnostics.enabled": true
-```
+**Solution:** Compile or run the tests and read the error in the run output.
+There is no automatic underline in the editor yet.
 
 ---
 
@@ -60,9 +59,10 @@ to verify the version.
 **Cause 3:** `sourcePath` points to the wrong folder, or the
 `sourcePath/<type>/<name>.sql` layout does not match the covered objects.
 
-**Solution:** Check the mapped objects in the extension's Log Output
-(channel `utPLSQL`). Adjust `utplsql.sourcePath` and the folder layout
-(`functions/`, `procedures/`, `packages/`, `views/`, ...).
+**Solution:** Adjust `utplsql.sourcePath` and the folder layout
+(`functions/`, `procedures/`, `packages/`, `views/`, ...). There is no
+per-object log: when nothing is mapped, the run output shows the generic
+message `[coverage] no file mapped`.
 
 ---
 

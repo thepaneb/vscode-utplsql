@@ -18,7 +18,7 @@ Oracle direto
             ├─► resolveSourceUri(file, workspaceRoot, sourcePath, folderRoot?)
             │       └─► mapeia nome de objeto Oracle → arquivo .sql local
             │
-            └─► applyCoverageFromXml(xml, root, sourcePath, run, state, folders)
+            └─► applyCoverageFromXml(covXml, sourcePath, _root, run, state, folders)
                     │
                     ├─► FileCoverage.fromDetails(uri, details)
                     ├─► run.addCoverage(fc)
@@ -129,7 +129,7 @@ GRANT EXECUTE ON SYS.DBMS_PLSQL_CODE_COVERAGE TO <schema>;
 
 Se `coverage.xml` não for gerado:
 - Output mostra caminho esperado + arquivos no diretório temp
-- Se `setupDiagnosticsEnabled`: diagnostic `UTPLSQL_NO_COVERAGE` no Problems Panel
+- `UTPLSQL_NO_COVERAGE` só era emitido no fluxo legado (CLI) — **não** é emitido no fluxo Oracle-direto atual
 - Comando `utplsql.copyGrantsToClipboard` copia grants para clipboard
 
 ## Settings

@@ -67,14 +67,12 @@ no lines to profile. Options:
 
 ## Debugging the Coverage Mapping
 
-Check the **Log Output** in the VSCode output panel. The object-to-file
-mapping (`ut_file_mapper` + `resolveSourceUri`) is logged there, including
-which objects were mapped and which failed:
+There is no dedicated Output channel and no per-object log. The extension only
+appends a generic message to the run output when **no** file could be mapped:
 
 ```
---   CALCULADORA → PACKAGE BODY → install/packages/calculadora.sql
---   DOBRO → FUNCTION → install/functions/dobro.sql
---   LOG_AUDITORIA → (not mapped — no file matched)
+[coverage] no file mapped. Adjust "utplsql.sourcePath" to the source code folder.
 ```
 
-![Coverage mapping log in the terminal](images/output-coverage-mapping.png)
+When mapping succeeds, the result is visible in the editor (green/red gutters)
+and in the **Test Coverage** tab.

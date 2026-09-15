@@ -27,7 +27,7 @@
 - 🔌 **연결 프로필** — 프로필별 설정으로 여러 환경(DEV/TEST/PROD)을 저장하고 전환(상태 표시줄 또는 명령 팔레트를 통해).
 - 📈 **문장 및 뷰 커버리지** — Coverage 탭에 파일별 `% of statements`(PROCEDURE/FUNCTION)를 표시하고 `V$SQL`을 통해 실행된 뷰를 추적.
 - 🐛 **PL/SQL 디버그** — `DBMS_DEBUG`를 통한 utPLSQL 테스트의 중단점 및 단계 디버깅(네이티브 Debug Adapter).
-- 🌍 **i18n — 24개 언어** — `utplsql.language`가 VSCode를 따릅니다(15개 네이티브 + 9개 커뮤니티: pt-br, en, en-gb, es, zh-cn, zh-tw, ja, de, fr, it, ko, ru, tr, pl, cs, hu, bg, el, id, ro, sr, th, uk, vi).
+- 🌍 **i18n — 24개 언어** — `utplsql.language`가 VSCode를 따릅니다(24개 로케일: pt-br, en, en-gb, es, zh-cn, zh-tw, ja, de, fr, it, ko, ru, tr, pl, cs, hu, bg, el, id, ro, sr, th, uk, vi).
 
 ## 설치
 
@@ -100,7 +100,7 @@ Test Explorer에 나타납니다.
 | `utplsql.coverageOwner` | `""` | 커버리지 대상 객체의 스키마 소유자. 비어 있음 = 연결 사용자 사용(대문자). |
 | `utplsql.timeoutMinutes` | `60` | 실행 시간 제한(분). |
 | `utplsql.dbmsOutput` | `false` | 테스트 세션에서 `DBMS_OUTPUT`을 활성화합니다. |
-| `utplsql.additionalReporters` | `[]` | 모든 실행에 포함할 추가 리포터(예: `["ut_coverage_html_reporter"]`). 기본값(documentation, junit, coverage)은 항상 포함되며 나열할 필요가 없습니다. |
+| `utplsql.additionalReporters` | `[]` | 모든 실행에 포함할 추가 리포터(예: `["ut_coverage_html_reporter"]`). 기본값(documentation, junit)은 항상 포함되며 나열할 필요가 없습니다. |
 | `utplsql.codeLens.enabled` | `true` | `%suite` 및 `%test` 위에 Run/Run with Coverage CodeLens 버튼을 표시합니다. |
 | `utplsql.statusBar.enabled` | `true` | 상태 표시줄에 테스트 상태 표시기를 표시합니다. |
 | `utplsql.decorations.enabled` | `true` | 실행 후 `%suite` 및 `%test` 줄에 통과/실패 데코레이션을 표시합니다. |
@@ -110,7 +110,7 @@ Test Explorer에 나타납니다.
 | `utplsql.oraclePoolPingInterval` | `60` | 유휴 풀 연결의 상태 검사 간격(초)(node-oracledb). `0` = 모든 체크아웃 시 ping. |
 | `utplsql.organization` | `file` | 트리 구성: `file`(경로별) 또는 `schema`(Schema > Package > Suite > Test). `schema` 모드에서 워크스페이스에 `.pks` 파일이 없으면 스위트가 데이터베이스(`ALL_OBJECTS`/`ALL_SOURCE`)에서도 발견됩니다 — 가상 URI `utplsql-db:/`(CodeLens/데코레이션/실패 지점 이동 없음). |
 | `utplsql.organization.schemaPattern` | `db/{schema}/**` | 경로에서 스키마를 추출하는 glob 패턴. `{schema}`를 자리 표시자로 사용하세요. `schema` 모드에서 패턴 기본 아래의 디렉터리(예: `db/*`)는 데이터베이스에서 조회할 스키마를 정의합니다. |
-| `utplsql.compilationDiagnostics.enabled` | `true` | PL/SQL 컴파일 오류를 편집기의 밑줄과 Problems 패널에 표시합니다. |
+| `utplsql.compilationDiagnostics.enabled` | `true` | PL/SQL 컴파일 진단용으로 예약되어 있습니다. **현재 Oracle-only 버전에서는 효과가 없습니다** — 이 기능은 연결되어 있지 않습니다(아직 다시 활성화되지 않음). |
 | `utplsql.setupDiagnostics.enabled` | `true` | 구성 진단(연결, 권한, 버전) 및 **utPLSQL 설치 무결성**(UT3 스키마의 잘못된 객체, "Recompile UT3" quick-fix 포함)을 quick-fix 작업과 함께 표시합니다. |
 | `utplsql.profiles` | `[]` | 저장된 Oracle 연결 프로필(이름, 연결, 그리고 `sourcePath`/`coverageOwner` 등의 재정의) — 환경 간 전환용. (Full field reference: [wiki](https://github.com/thepaneb/vscode-utplsql/wiki/Configuration)). |
 | `utplsql.activeProfile` | `""` | 활성 프로필(`utplsql.profiles`)의 ID. 설정 시 `utplsql.connection`을 재정의합니다. |
@@ -123,7 +123,7 @@ Test Explorer에 나타납니다.
 | `utplsql.scriptRunner.filePattern` | `**/*.{sql,pks,pkb,fnc,prc,trg}` | Globs to list files when running a script folder. |
 | `utplsql.scriptRunner.dbmsOutput` | `false` | Captures and displays `DBMS_OUTPUT` during script execution. |
 | `utplsql.scriptRunner.timeoutSeconds` | `300` | Per-statement timeout (s) for scripts (`callTimeout`). |
-| `utplsql.language` | `auto` | 런타임 메시지의 언어. `auto`는 VSCode를 따릅니다(pt, zh-tw/zh-hk, zh, es, ja, de, fr, it, ko, ru, tr, pl, cs, hu, bg, el, id, ro, sr, th, uk, vi, en-gb; 그 외에는 en). **24개 로케일**(15개 네이티브 + 9개 커뮤니티)을 다룹니다. |
+| `utplsql.language` | `auto` | 런타임 메시지의 언어. `auto`는 VSCode를 따릅니다(pt, zh-tw/zh-hk, zh, es, ja, de, fr, it, ko, ru, tr, pl, cs, hu, bg, el, id, ro, sr, th, uk, vi, en-gb; 그 외에는 en). **24개 로케일**을 다룹니다. |
 
 예시(프로젝트 `.vscode/settings.json`):
 
@@ -257,12 +257,12 @@ UTPLSQL_CONN=your_user/password@//host:1521/service
 
 ## 리포터
 
-확장 프로그램은 항상 세 가지 기본 리포터를 포함합니다:
-`ut_documentation_reporter`(stdout),
-`ut_junit_reporter`(결과 → Test Explorer) 및
-`ut_coverage_cobertura_reporter`(사용 가능한 경우 커버리지).
+확장 프로그램은 항상 **두 개**의 기본 리포터를 포함합니다:
+`ut_documentation_reporter`(stdout) 및
+`ut_junit_reporter`(결과 → Test Explorer).
+`ut_coverage_cobertura_reporter`는 **커버리지로 실행할 때만** 추가됩니다.
 
-**동적 검증** — 커버리지로 실행하기 전에 확장 프로그램은 `utplsql reporters <conn>`을 통해
+**동적 검증** — 커버리지로 실행하기 전에 확장 프로그램은 `TABLE(ut_runner.get_reporters_list())`을 통해
 데이터베이스를 조회합니다. 데이터베이스에
 `UT_COVERAGE_COBERTURA_REPORTER`가 없으면(예: 오래된 utPLSQL)
 커버리지는 출력에 경고와 함께 건너뜁니다. 테스트 실행은
@@ -272,12 +272,12 @@ UTPLSQL_CONN=your_user/password@//host:1521/service
 ```jsonc
 "utplsql.additionalReporters": ["UT_COVERAGE_HTML_REPORTER"]
 ```
-세 가지 기본 리포터는 여기에 나열되어 있어도
+기본 리포터는 여기에 나열되어 있어도
 자동으로 중복 제거됩니다.
 
 **일시적 세션별 리포터** — **utPLSQL: Select additional reporter...** 명령은
-데이터베이스의 동적 목록이 있는 QuickPick을 엽니다. 선택한 리포터는 다음 실행에 사용되고
-이후 폐기됩니다(설정에 유지되지 않음).
+데이터베이스의 동적 목록이 있는 QuickPick을 엽니다. 선택한 리포터는 세션에 저장되지만,
+그 선택은 **현재 Oracle-only 버전에서는 적용되지 않습니다**.
 
 ## 데이터베이스 요구 사항
 
@@ -319,7 +319,7 @@ GRANT SELECT ON SYS.DBA_PROCEDURES TO <ut3_owner>;
 | 스위트가 나타나지 않음 | 데이터베이스를 찾을 수 없음 | 진단을 위해 `utPLSQL: Validate configuration` 실행 |
 | 빈 커버리지 | `GRANT EXECUTE ON DBMS_PROFILER` 누락 | [Requirements](#database-requirements)의 권한을 실행하거나 `utPLSQL: Copy coverage grants to clipboard` 사용 |
 | 빈 커버리지 | Oracle 19c에는 추가 권한 필요 | `GRANT EXECUTE ON DBMS_PROFILER` + `GRANT EXECUTE ON DBMS_PLSQL_CODE_COVERAGE` |
-| 표시가 없는 컴파일 오류 | PL/SQL 구문 오류가 있는 코드 | `utplsql.compilationDiagnostics.enabled` 활성화(기본 켜짐); Problems 패널 참조 |
+| 표시가 없는 컴파일 오류 | PL/SQL 구문 오류가 있는 코드 | 컴파일 진단은 Oracle-only 버전에서 아직 연결되지 않았습니다(`utplsql.compilationDiagnostics.enabled`는 효과가 없음); 오류를 표시하려면 컴파일/실행하세요 |
 | 연결 오류 | 잘못된 문자열 또는 접근 불가능한 DB | `utPLSQL: Validate configuration` 사용 |
 | 실행 중 시간 초과 | 테스트가 `timeoutMinutes`보다 오래 걸림 | `utplsql.timeoutMinutes` 증가 |
 | `%suite`가 인식되지 않음 | 파일에 `%suite`/`create package` 누락, 또는 `PROCEDURE` 없는 `%test` | 스펙 확인; `utPLSQL: Refresh tests` 실행 |

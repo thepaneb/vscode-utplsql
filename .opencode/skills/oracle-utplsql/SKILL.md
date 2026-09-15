@@ -54,15 +54,11 @@ END ut_my_tests;
 
 The Oracle direct runner calls `ut_runner.run()` with reporters, polls `UT_OUTPUT_BUFFER_TMP` every 200ms for real-time output, and separates JUnit XML from Cobertura XML for parsing.
 
-## CLI Runner (runner.ts + cli.ts)
-
-The CLI runner uses utPLSQL-cli with `-f=ut_junit_reporter -o=results.xml`. Reports are read from temp files.
-
 ## Key project conventions
 
 - Discovery reads `.pks` files (specification only) to find `%suite` and `%test` annotations
 - `suiteParser.ts` parses suite text to extract package name, description, and tests
-- `applyResults` matches JUnit classname (last segment = package) + test name to TestItems
+- `applyResultsFromCases` matches JUnit classname (last segment = package) + test name to TestItems
 - Stack frames are parsed from quoted `"SCHEMA.PKG"."PROC", line N` patterns
 - `isUserFrame` filters out UT_*, UT$*, UT3_*, UT3$*, UT3.* frames
 

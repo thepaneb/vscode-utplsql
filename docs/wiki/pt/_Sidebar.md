@@ -13,6 +13,7 @@
   - [Organização da árvore](Organização-da-árvore)
 - **Referência**
   - [Configurações (settings)](Configurações)
+  - [Exemplos de configuração](Exemplos-de-configuração)
   - [Comandos](Comandos)
   - [Requisitos no banco (grants)](Requisitos-no-banco)
 - **Desenvolvimento**

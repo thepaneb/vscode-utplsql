@@ -1,67 +1,41 @@
 # Diagnostics and quick-fix
 
-The extension provides two types of automatic diagnostics to reduce setup
-friction and accelerate the TDD cycle:
+The extension provides automatic diagnostics to reduce setup friction and
+accelerate the TDD cycle:
 
-1. **Compilation diagnostics** — PL/SQL compilation errors captured via
-   the `ALL_ERRORS` query and displayed as underlines in the editor.
-2. **Setup diagnostics** — proactive validation of connection, grants, and
+1. **Setup diagnostics** — proactive validation of connection, grants, and
    utPLSQL version, with **quick-fix actions** in the Problems Panel.
+2. **Compilation diagnostics** — PL/SQL compilation errors displayed as
+   underlines in the editor. **Not active in the current version.**
 
 ---
 
-## Compilation diagnostics
+## Compilation diagnostics (not active)
 
-After each test execution, the extension queries the Oracle database's
-`ALL_ERRORS` view for compilation errors and displays them as
-`vscode.Diagnostic` in the editor.
+> ⚠️ This feature is **not wired** in the current Oracle-only version. The
+> `utplsql.compilationDiagnostics.enabled` setting still exists but has **no
+> effect**: no diagnostics are emitted and there is no `DiagnosticCollection`
+> with source "utPLSQL Compilation". The old `src/compilationDiagnostics.ts`
+> was removed in the Oracle-only migration (PRD-64); `checkCompilationErrors()`
+> remains in `oracleRunner.ts` but has **no production caller**.
+>
+> Until it is re-enabled, compile or run the tests to surface PL/SQL errors.
 
-### How it works
+### Intended flow (when re-enabled)
 
 ```
-executeRun() → Oracle executes → conn1 collects errors via ALL_ERRORS
-  → compilationDiagnostics.parseFromOutput() → resolveFiles() → apply()
-  → VSCode Problems Panel shows the errors
-  → Editor shows red underlines
+executeRun() → Oracle executes → errors parsed → Problems Panel
+  → editor shows red underlines
 ```
-
-### Example
-
-If a test package has a syntax error:
-
-```sql
-create or replace package test_foo as
-  -- %suite(Foo)
-  procedure bar;
-end;
--- missing END; in body
-```
-
-The `ALL_ERRORS` query will return:
-```
-TEST_FOO  PACKAGE BODY  12  5  PLS-00103: Encountered the symbol "END"
-```
-
-The extension extracts this and shows it in the editor:
-- **File:** `tests/test_foo.pks`
-- **Line 12, column 5** — red underline
-- **Problems Panel:** `[PLS-00103] Encountered the symbol "END"` (source: "utPLSQL Compilation")
-
-![Compilation diagnostics](images/diagnostics-squiggles.png)
 
 ### Configuration
 
 ```jsonc
 {
-  // Enabled by default. Disable to remove underlines:
+  // Reserved. Currently has NO effect in the Oracle-only version:
   "utplsql.compilationDiagnostics.enabled": false
 }
 ```
-
-### Limitations
-
-- Maps errors to `.pks`/`.pkb` files in the workspace. External code
-  (e.g., Oracle standard packages) is ignored.
 
 ---
 
@@ -72,10 +46,13 @@ common setup issues:
 
 | Check | Diagnostic | Severity |
 |---|---|---|
-| Invalid Oracle connection | `UTPLSQL_BAD_CONN` | Error |
-| utPLSQL < 3.1.0 on the database | `UTPLSQL_OLD_VERSION` | Warning |
+| utPLSQL older than major version 3 on the database | `UTPLSQL_OLD_VERSION` | Warning |
 | Invalid objects in the utPLSQL schema | `UTPLSQL_INVALID_OBJECTS` | Warning |
-| Coverage failed (post-execution) | `UTPLSQL_NO_COVERAGE` | Warning |
+
+> The codes `UTPLSQL_BAD_CONN` and `UTPLSQL_NO_COVERAGE` still have quick-fix
+> handlers in `quickfix.ts`, but **no producer** in the current code:
+> `UTPLSQL_BAD_CONN` is never emitted, and the coverage diagnostic is not added
+> in the Oracle-only execution flow.
 
 The invalid objects check (`ALL_OBJECTS` for `PACKAGE`/`TYPE`/
 `PACKAGE BODY` in the utPLSQL schema) is best-effort: asynchronous, no
@@ -90,9 +67,9 @@ Each diagnostic provides a **Code Action** (lightbulb icon or `Ctrl+.`):
 
 | Diagnostic | Quick-fix |
 |---|---|
-| Invalid connection | **Reconfigure connection** → opens settings at `utplsql.connection` |
-| Coverage grants | **Copy grants to clipboard** → copies ready-to-paste SQL |
-| Invalid objects in utPLSQL | **Recompile UT3** → `DBMS_UTILITY.COMPILE_SCHEMA` and re-checks |
+| Invalid connection (`UTPLSQL_BAD_CONN`) | **Reconfigure connection** → opens settings at `utplsql.connection` (handler only — this diagnostic is not emitted today) |
+| Coverage grants (`UTPLSQL_NO_COVERAGE`) | **Copy coverage grants to clipboard** → copies ready-to-paste SQL (handler only — not emitted in the Oracle flow) |
+| Invalid objects in utPLSQL (`UTPLSQL_INVALID_OBJECTS`) | **Recompile UT3** → `DBMS_UTILITY.COMPILE_SCHEMA` and re-checks |
 
 ### Commands
 
@@ -100,7 +77,7 @@ Each diagnostic provides a **Code Action** (lightbulb icon or `Ctrl+.`):
 |---|---|
 | `utPLSQL: Validate configuration` | Runs full validation (setup + utPLSQL installation integrity) and shows result in Problems Panel |
 | `utPLSQL: Configure connection` | Opens settings at `utplsql.connection` |
-| `utPLSQL: Copy coverage grants` | Copies `GRANT EXECUTE ON DBMS_PROFILER ...` to clipboard |
+| `utPLSQL: Copy coverage grants to clipboard` | Copies `GRANT EXECUTE ON SYS.DBMS_PROFILER` **and** `GRANT EXECUTE ON SYS.DBMS_PLSQL_CODE_COVERAGE` to clipboard |
 
 > **Recompile UT3** is not a palette command — it is a quick-fix
 > (`utplsql.recompileUt3`, internal) available only in the
@@ -129,10 +106,10 @@ Open workspace
   → If issues: Problems Panel + quick-fix actions
 
 Run tests
-  → Compilation diagnostics: PL/SQL errors in the editor
+  → Compilation diagnostics: not active in the current version
 
 After execution
-  → If coverage failed: diagnostic with grants
+  → Coverage failures are reported in the run output, not as a diagnostic
 ```
 
 All diagnostics are **non-blocking** — tests run even with warnings.

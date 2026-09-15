@@ -88,7 +88,7 @@ implementação em `results.ts`.
 ## Integração no `applyResultsFromCases`
 
 ```typescript
-// src/results.ts — switch unificado (CLI e Oracle)
+// src/results.ts — switch unificado (Oracle direto)
 case 'failed':
   testMessage = new TestMessage(message ?? 'Falhou');
   if (stackFrames) {

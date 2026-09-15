@@ -11,9 +11,9 @@ com prefixo `utPLSQL:`.
 |---|---|---|
 | `utPLSQL: Rodar todos os testes` | Executa todas as suites do workspace | Botão ▶ na view Testing |
 | `utPLSQL: Rodar testes deste arquivo` | Executa suites do `.pks`/`.pkb` ativo | Clique direito → arquivo |
-| `utPLSQL: Rodar testes deste arquivo com cobertura` | Idem, com perfil de cobertura | Clique direito → arquivo |
+| `utPLSQL: Rodar testes deste arquivo (com cobertura)` | Idem, com perfil de cobertura | Clique direito → arquivo |
 | `utPLSQL: Rodar testes desta pasta` | Executa suites da pasta selecionada | Clique direito → pasta |
-| `utPLSQL: Rodar testes desta pasta com cobertura` | Idem, com perfil de cobertura | Clique direito → pasta |
+| `utPLSQL: Rodar testes desta pasta (com cobertura)` | Idem, com perfil de cobertura | Clique direito → pasta |
 | `utPLSQL: Atualizar testes` | Força rediscovery dos `.pks` | — |
 | `utPLSQL: Cancelar execução` | Interrompe a execução em andamento | `Escape` |
 | `utPLSQL: Mostrar informações do utPLSQL` | Versões API/DB | — |
@@ -22,7 +22,7 @@ com prefixo `utPLSQL:`.
 | `utPLSQL: Rerun Last` | Repete a última execução | `Ctrl+Shift+U L` |
 | `utPLSQL: Run Test at Cursor` | Executa o teste sob o cursor | `Ctrl+Shift+U U` |
 | `utPLSQL: Run Failed Tests` | Reexecuta apenas testes falhos | `Ctrl+Shift+U X` |
-| `utPLSQL: Mostrar Test Explorer` | Foca a view Testing | Clique na status bar |
+| `utPLSQL: Mostrar Test Explorer` | Foca a view Testing | — |
 | `utPLSQL: Validar configuração` | Roda validação completa do setup (inclui integridade da instalação UT3) | — |
 | `utPLSQL: Configurar conexão` | Abre settings em `utplsql.connection` | — |
 | `utPLSQL: Alternar perfil de conexão...` | QuickPick para trocar o perfil de conexão ativo | Clique na status bar |
@@ -34,7 +34,7 @@ com prefixo `utPLSQL:`.
 | `utPLSQL: Executar arquivo de script` | Executa um arquivo de script do Explorer (decodificado no `charset` do perfil) | Clique direito → arquivo |
 | `utPLSQL: Executar pasta de scripts` | Executa os scripts da pasta em ordem alfabética (filtro `utplsql.scriptRunner.filePattern`) | Clique direito → pasta |
 | `utPLSQL: Copiar grants de cobertura para clipboard` | Copia grants SQL para clipboard | — |
-| `utPLSQL: Executar teste (CodeLens)` | Interno — disparado pelos botões de CodeLens | Botão ▶ sobre `%suite`/`%test` |
+| `Executar teste (CodeLens)` | Interno — disparado pelos botões de CodeLens | Botão ▶ sobre `%suite`/`%test` |
 
 > **Recompilar UT3** não aparece na palette — é um quick-fix interno do
 > diagnostic "utPLSQL Setup" (`UTPLSQL_INVALID_OBJECTS`).

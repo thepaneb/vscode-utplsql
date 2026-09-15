@@ -10,10 +10,10 @@ prefixed with `utPLSQL:`.
 | Command | Description | UI shortcut |
 |---|---|---|
 | `utPLSQL: Run all tests` | Runs all suites in the workspace | ▶ button in Testing view |
-| `utPLSQL: Run tests from this file` | Runs suites from the active `.pks`/`.pkb` | Right-click → file |
-| `utPLSQL: Run tests from this file with coverage` | Same, with coverage profile | Right-click → file |
-| `utPLSQL: Run tests from this folder` | Runs suites from the selected folder | Right-click → folder |
-| `utPLSQL: Run tests from this folder with coverage` | Same, with coverage profile | Right-click → folder |
+| `utPLSQL: Run tests in this file` | Runs suites from the active `.pks`/`.pkb` | Right-click → file |
+| `utPLSQL: Run tests in this file (with coverage)` | Same, with coverage profile | Right-click → file |
+| `utPLSQL: Run tests in this folder` | Runs suites from the selected folder | Right-click → folder |
+| `utPLSQL: Run tests in this folder (with coverage)` | Same, with coverage profile | Right-click → folder |
 | `utPLSQL: Refresh tests` | Forces rediscovery of `.pks` files | — |
 | `utPLSQL: Cancel run` | Stops the current execution | `Escape` |
 | `utPLSQL: Show utPLSQL info` | API/DB versions | — |
@@ -22,7 +22,7 @@ prefixed with `utPLSQL:`.
 | `utPLSQL: Rerun Last` | Repeats the last run | `Ctrl+Shift+U L` |
 | `utPLSQL: Run Test at Cursor` | Runs the test under the cursor | `Ctrl+Shift+U U` |
 | `utPLSQL: Run Failed Tests` | Re-runs only failed tests | `Ctrl+Shift+U X` |
-| `utPLSQL: Show Test Explorer` | Focuses the Testing view | Click on status bar |
+| `utPLSQL: Show Test Explorer` | Focuses the Testing view | — |
 | `utPLSQL: Validate setup` | Runs full setup validation (including UT3 installation integrity) | — |
 | `utPLSQL: Configure connection` | Opens settings at `utplsql.connection` | — |
 | `utPLSQL: Switch connection profile...` | QuickPick to switch the active connection profile | Click on status bar |
@@ -34,7 +34,7 @@ prefixed with `utPLSQL:`.
 | `utPLSQL: Run script file` | Runs an Explorer script file (decoded with the profile `charset`) | Right-click → file |
 | `utPLSQL: Run script folder` | Runs the folder scripts in alphabetical order (`utplsql.scriptRunner.filePattern` filter) | Right-click → folder |
 | `utPLSQL: Copy coverage grants to clipboard` | Copies SQL grants to clipboard | — |
-| `utPLSQL: Execute test (CodeLens)` | Internal — triggered by CodeLens buttons | ▶ button over `%suite`/`%test` |
+| `Run test (CodeLens)` | Internal — triggered by CodeLens buttons | ▶ button over `%suite`/`%test` |
 
 > **Recompile UT3** does not appear in the palette — it is an internal quick-fix of
 > the "utPLSQL Setup" diagnostic (`UTPLSQL_INVALID_OBJECTS`).
@@ -57,8 +57,8 @@ All shortcuts use the prefix `Ctrl+Shift+U` (`Cmd+Shift+U` on Mac):
 | Shortcut | Command |
 |---|---|
 | `Ctrl+Shift+U R` | Run all tests |
-| `Ctrl+Shift+U T` | Run tests from file |
-| `Ctrl+Shift+U Shift+T` | Run tests from file with coverage |
+| `Ctrl+Shift+U T` | Run tests in file |
+| `Ctrl+Shift+U Shift+T` | Run tests in file with coverage |
 | `Ctrl+Shift+U F` | Refresh tests |
 | `Ctrl+Shift+U I` | Show utPLSQL info |
 | `Ctrl+Shift+U C` | Clear session connection |

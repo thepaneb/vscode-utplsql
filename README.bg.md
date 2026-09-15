@@ -27,7 +27,7 @@
 - 🔌 **Профили за връзка** — запазвайте и превключвайте между няколко среди (DEV/TEST/PROD) с настройки по профил, чрез status bar или командната палитра.
 - 📈 **Покритие на оператори и изгледи** — разделът Coverage показва `% of statements` (PROCEDURE/FUNCTION) по файл и проследява изгледите, изпълнени чрез `V$SQL`.
 - 🐛 **PL/SQL Debug** — точки на прекъсване и поетапно дебъгване на utPLSQL тестове чрез `DBMS_DEBUG` (роден Debug Adapter).
-- 🌍 **i18n — 24 езика** — `utplsql.language` следва VSCode (15 родни + 9 от общността: pt-br, en, en-gb, es, zh-cn, zh-tw, ja, de, fr, it, ko, ru, tr, pl, cs, hu, bg, el, id, ro, sr, th, uk, vi).
+- 🌍 **i18n — 24 езика** — `utplsql.language` следва VSCode (24 локали: pt-br, en, en-gb, es, zh-cn, zh-tw, ja, de, fr, it, ko, ru, tr, pl, cs, hu, bg, el, id, ro, sr, th, uk, vi).
 
 ## Инсталация
 
@@ -98,7 +98,7 @@ Test Explorer **с приключването на всеки тест**.
 | `utplsql.sourcePath` | `install` | Папка на производствения код (за картографиране на покритието към файлове). |
 | `utplsql.includePatterns` | `["**/*.pks"]` | Globs за откриване на спецификациите с `%suite`/`%test`. Ако тестовете ви са в `.sql`, използвайте `["**/*.sql"]`. |
 | `utplsql.coverageOwner` | `""` | Схема-собственик на покритите обекти. Празно = използва се потребителят на връзката (главни букви). |
-| `utplsql.additionalReporters` | `[]` | Допълнителни reporters, които да се включат при всяко изпълнение (напр. `["ut_coverage_html_reporter"]`). По подразбиране (documentation, junit, coverage) винаги са включени и не е нужно да се изброяват. |
+| `utplsql.additionalReporters` | `[]` | Допълнителни reporters, които да се включат при всяко изпълнение (напр. `["ut_coverage_html_reporter"]`). По подразбиране (documentation, junit) винаги са включени и не е нужно да се изброяват. |
 | `utplsql.codeLens.enabled` | `true` | Показва CodeLens бутони Run/Run with Coverage над `%suite` и `%test`. |
 | `utplsql.statusBar.enabled` | `true` | Показва индикатора за статус на тестовете в status bar. |
 | `utplsql.decorations.enabled` | `true` | Показва декорации за успех/неуспех на редовете с `%suite` и `%test` след изпълнение. |
@@ -108,7 +108,7 @@ Test Explorer **с приключването на всеки тест**.
 | `utplsql.oraclePoolPingInterval` | `60` | Секунди между проверките за здраве на неактивните връзки в пула (node-oracledb). `0` = ping при всяко извличане. |
 | `utplsql.organization` | `file` | Организация на дървото: `file` (по път) или `schema` (Schema > Package > Suite > Test). В режим `schema` комплектите също се откриват от базата данни (`ALL_OBJECTS`/`ALL_SOURCE`), когато `.pks` файлове не са в работната област — с виртуален URI `utplsql-db:/` (без CodeLens/декорации/преминаване към грешката). |
 | `utplsql.organization.schemaPattern` | `db/{schema}/**` | Glob шаблон за извличане на схемата от пътя. Използвайте `{schema}` като плейсхолдър. В режим `schema` директориите под основата на шаблона (напр. `db/*`) определят схемите, по които се прави заявка в базата данни. |
-| `utplsql.compilationDiagnostics.enabled` | `true` | Показва грешките при компилация на PL/SQL като подчертаване в редактора и в панела Problems. |
+| `utplsql.compilationDiagnostics.enabled` | `true` | Резервирано за диагностика на компилация на PL/SQL. **В момента няма ефект** във версията само с Oracle — функцията не е свързана (още не е повторно активирана). |
 | `utplsql.setupDiagnostics.enabled` | `true` | Показва диагностика на конфигурацията (връзка, привилегии, версия) и **целостта на инсталацията на utPLSQL** (невалидни обекти в схемата UT3, с quick-fix „Recompile UT3") с quick-fix действия. |
 | `utplsql.profiles` | `[]` | Записани профили за връзка с Oracle (име, връзка и презаписвания на `sourcePath`/`coverageOwner`/и т.н.) за превключване между среди. (Full field reference: [wiki](https://github.com/thepaneb/vscode-utplsql/wiki/Configuration)). |
 | `utplsql.activeProfile` | `""` | ID на активния профил (`utplsql.profiles`). Когато е зададен, презаписва `utplsql.connection`. |
@@ -121,7 +121,7 @@ Test Explorer **с приключването на всеки тест**.
 | `utplsql.scriptRunner.filePattern` | `**/*.{sql,pks,pkb,fnc,prc,trg}` | Globs to list files when running a script folder. |
 | `utplsql.scriptRunner.dbmsOutput` | `false` | Captures and displays `DBMS_OUTPUT` during script execution. |
 | `utplsql.scriptRunner.timeoutSeconds` | `300` | Per-statement timeout (s) for scripts (`callTimeout`). |
-| `utplsql.language` | `auto` | Език на съобщенията по време на изпълнение. `auto` следва VSCode (pt, zh-tw/zh-hk, zh, es, ja, de, fr, it, ko, ru, tr, pl, cs, hu, bg, el, id, ro, sr, th, uk, vi, en-gb; иначе en). Покрива **24 локали** (15 родни + 9 от общността). |
+| `utplsql.language` | `auto` | Език на съобщенията по време на изпълнение. `auto` следва VSCode (pt, zh-tw/zh-hk, zh, es, ja, de, fr, it, ko, ru, tr, pl, cs, hu, bg, el, id, ro, sr, th, uk, vi, en-gb; иначе en). Покрива **24 локали**. |
 
 Пример (проект `.vscode/settings.json`):
 
@@ -297,13 +297,13 @@ UTPLSQL_CONN=your_user/password@//host:1521/service
 
 ## Reporters
 
-Разширението винаги включва три reporters по подразбиране:
-`ut_documentation_reporter` (stdout),
-`ut_junit_reporter` (резултати → Test Explorer) и
-`ut_coverage_cobertura_reporter` (покритие, ако е наличен).
+Разширението винаги включва **два** reporters по подразбиране:
+`ut_documentation_reporter` (stdout) и
+`ut_junit_reporter` (резултати → Test Explorer).
+`ut_coverage_cobertura_reporter` се добавя **само при стартиране с покритие**.
 
 **Динамична валидация** — преди стартиране с покритие разширението запитва
-базата данни чрез `utplsql reporters <conn>`. Ако
+базата данни чрез `TABLE(ut_runner.get_reporters_list())`. Ако
 `UT_COVERAGE_COBERTURA_REPORTER` не съществува в базата данни (напр. остарял
 utPLSQL), покритието се пропуска с предупреждение в изхода. Изпълнението на тестовете
 никога не се блокира.
@@ -312,13 +312,13 @@ utPLSQL), покритието се пропуска с предупрежден
 ```jsonc
 "utplsql.additionalReporters": ["UT_COVERAGE_HTML_REPORTER"]
 ```
-Трите reporters по подразбиране автоматично се дедупликират, дори ако са
+Reporters по подразбиране автоматично се дедупликират, дори ако са
 изброени тук.
 
 **Временен reporter за сесията** — команда **utPLSQL: Select additional
 reporter...** отваря QuickPick с динамичния списък от базата данни. Избраният
-reporter се използва при следващото изпълнение и след това се изхвърля (не
-се запазва в настройките).
+reporter се запазва в сесията, но изборът **не се прилага**
+в текущата версия само с Oracle.
 
 ## Изисквания към базата данни
 
@@ -359,7 +359,7 @@ GRANT SELECT ON SYS.DBA_PROCEDURES TO <ut3_owner>;
 |---|---|---|
 | Празно покритие | Липсва `GRANT EXECUTE ON DBMS_PROFILER` | Изпълнете привилегиите от [Изисквания към базата данни](#изисквания-към-базата-данни) или използвайте `utPLSQL: Copy coverage grants to clipboard` |
 | Празно покритие | Oracle 19c изисква допълнителни привилегии | `GRANT EXECUTE ON DBMS_PROFILER` + `GRANT EXECUTE ON DBMS_PLSQL_CODE_COVERAGE` |
-| Грешка при компилация без индикация | Код с PL/SQL синтактична грешка | Активирайте `utplsql.compilationDiagnostics.enabled` (по подразбиране е активен); вижте панела Problems |
+| Грешка при компилация без индикация | Код с PL/SQL синтактична грешка | Диагностиката на компилация още не е свързана във версията само с Oracle (`utplsql.compilationDiagnostics.enabled` няма ефект); компилирайте/стартирайте, за да се покаже грешката |
 | Грешка при връзка | Невалиден низ или недостъпна БД | Използвайте `utPLSQL: Validate configuration` |
 | `%suite` не се разпознава | Липсва `%suite`/`create package` във файла, или `%test` без `PROCEDURE` | Проверете спецификацията; изпълнете `utPLSQL: Refresh tests` |
 | CodeLens не се появява | `editor.codeLens` е изключен или има конфликт | Активирайте `"editor.codeLens": true`; проверете `utplsql.codeLens.enabled` |

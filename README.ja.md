@@ -27,7 +27,7 @@
 - 🔌 **接続プロファイル** — DEV/TEST/PROD などの複数環境をプロファイルごとの設定で保存・切替。ステータスバーまたはコマンドパレットから。
 - 📈 **ステートメントとビューのカバレッジ** — Coverage タブにファイルごとの `% of statements`（PROCEDURE/FUNCTION）を表示し、`V$SQL` 経由で実行されたビューを追跡。
 - 🐛 **PL/SQL デバッグ** — `DBMS_DEBUG` による utPLSQL テストのブレークポイントとステップデバッグ（ネイティブ Debug Adapter）。
-- 🌍 **i18n — 24 言語** — `utplsql.language` は VSCode に追従（ネイティブ 15 + コミュニティ 9: pt-br, en, en-gb, es, zh-cn, zh-tw, ja, de, fr, it, ko, ru, tr, pl, cs, hu, bg, el, id, ro, sr, th, uk, vi）。
+- 🌍 **i18n — 24 言語** — `utplsql.language` は VSCode に追従（24 ロケール: pt-br, en, en-gb, es, zh-cn, zh-tw, ja, de, fr, it, ko, ru, tr, pl, cs, hu, bg, el, id, ro, sr, th, uk, vi）。
 
 ## インストール
 
@@ -95,7 +95,7 @@ Test Explorer に表示されます。
 | `utplsql.coverageOwner` | `""` | カバレッジ対象オブジェクトのスキーマ所有者。空 = 接続ユーザーを使用（大文字）。 |
 | `utplsql.timeoutMinutes` | `60` | テスト実行のタイムアウト（分）。 |
 | `utplsql.dbmsOutput` | `false` | テストセッションで `DBMS_OUTPUT` を有効化。デバッグに便利。 |
-| `utplsql.additionalReporters` | `[]` | 毎回の実行に含める追加レポーター（例: `["ut_coverage_html_reporter"]`）。デフォルト（documentation、junit、coverage）は常に含まれ、リスト化する必要はありません。 |
+| `utplsql.additionalReporters` | `[]` | 毎回の実行に含める追加レポーター（例: `["ut_coverage_html_reporter"]`）。デフォルト（documentation、junit）は常に含まれ、リスト化する必要はありません。 |
 | `utplsql.codeLens.enabled` | `true` | `%suite` と `%test` の上に Run/Run with Coverage の CodeLens ボタンを表示。 |
 | `utplsql.statusBar.enabled` | `true` | ステータスバーにテスト状態インジケーターを表示。 |
 | `utplsql.decorations.enabled` | `true` | 実行後に `%suite` と `%test` の行へ合格/失敗のデコレーションを表示。 |
@@ -105,7 +105,7 @@ Test Explorer に表示されます。
 | `utplsql.oraclePoolPingInterval` | `60` | アイドルプール接続のヘルスチェック間隔（秒）（node-oracledb）。`0` = チェックアウトのたびに ping。 |
 | `utplsql.organization` | `file` | ツリーの構成: `file`（パス単位）または `schema`（Schema > Package > Suite > Test）。`schema` モードでは、`.pks` ファイルがワークスペースにないときはスイートもデータベース（`ALL_OBJECTS`/`ALL_SOURCE`）から検出されます — 仮想 URI は `utplsql-db:/`（CodeLens/デコレーション/失敗ジャンプなし）。 |
 | `utplsql.organization.schemaPattern` | `db/{schema}/**` | パスからスキーマを抽出するためのグロブパターン。プレースホルダーには `{schema}` を使用します。`schema` モードでは、パターンベースより下のディレクトリ（例: `db/*`）がデータベースでクエリされるスキーマを定義します。 |
-| `utplsql.compilationDiagnostics.enabled` | `true` | PL/SQL コンパイルエラーをエディターと Problems パネルに下線として表示。 |
+| `utplsql.compilationDiagnostics.enabled` | `true` | PL/SQL コンパイル診断用に予約されています。**現在の Oracle-only 版では効果がありません** — この機能は接続されていません（まだ再有効化されていません）。 |
 | `utplsql.setupDiagnostics.enabled` | `true` | 設定診断（接続、権限、バージョン）と **utPLSQL インストールの整合性**（UT3 スキーマ内の無効オブジェクト。"Recompile UT3" クイックフィックスあり）をクイックフィックスアクション付きで表示。 |
 | `utplsql.profiles` | `[]` | 保存された Oracle 接続プロファイル（名前、接続、`sourcePath`/`coverageOwner` などの上書き）。環境の切り替え用。 (Full field reference: [wiki](https://github.com/thepaneb/vscode-utplsql/wiki/Configuration)). |
 | `utplsql.activeProfile` | `""` | アクティブなプロファイルの ID（`utplsql.profiles`）。設定すると `utplsql.connection` を上書きします。 |
@@ -118,7 +118,7 @@ Test Explorer に表示されます。
 | `utplsql.scriptRunner.filePattern` | `**/*.{sql,pks,pkb,fnc,prc,trg}` | Globs to list files when running a script folder. |
 | `utplsql.scriptRunner.dbmsOutput` | `false` | Captures and displays `DBMS_OUTPUT` during script execution. |
 | `utplsql.scriptRunner.timeoutSeconds` | `300` | Per-statement timeout (s) for scripts (`callTimeout`). |
-| `utplsql.language` | `auto` | ランタイムメッセージの言語。`auto` は VSCode に追従（pt, zh-tw/zh-hk, zh, es, ja, de, fr, it, ko, ru, tr, pl, cs, hu, bg, el, id, ro, sr, th, uk, vi, en-gb; それ以外は en）。**24 ロケール**（ネイティブ 15 + コミュニティ 9）をカバー。 |
+| `utplsql.language` | `auto` | ランタイムメッセージの言語。`auto` は VSCode に追従（pt, zh-tw/zh-hk, zh, es, ja, de, fr, it, ko, ru, tr, pl, cs, hu, bg, el, id, ro, sr, th, uk, vi, en-gb; それ以外は en）。**24 ロケール**をカバー。 |
 
 例（プロジェクト `.vscode/settings.json`）:
 
@@ -252,12 +252,13 @@ UTPLSQL_CONN=your_user/password@//host:1521/service
 
 ## レポーター
 
-拡張機能は常に 3 つのデフォルトレポーターを含みます:
-`ut_documentation_reporter`（stdout）、
-`ut_junit_reporter`（結果 → Test Explorer）、
-`ut_coverage_cobertura_reporter`（利用可能な場合のカバレッジ）。
+拡張機能は常に **2 つ**のデフォルトレポーターを含みます:
+`ut_documentation_reporter`（stdout）と
+`ut_junit_reporter`（結果 → Test Explorer）。
+`ut_coverage_cobertura_reporter` は**カバレッジ付きで実行する場合にのみ**追加されます。
 
-**動的検証** — カバレッジ付きで実行する前に、拡張機能は `ALL_OBJECTS` で
+**動的検証** — カバレッジ付きで実行する前に、拡張機能は
+`TABLE(ut_runner.get_reporters_list())` で
 データベースに問い合わせ、`UT_COVERAGE_COBERTURA_REPORTER`
 が存在するかを確認します。存在しない場合（例: utPLSQL が古い）、
 カバレッジはスキップされ、出力に警告が表示されます。テストの実行
@@ -267,13 +268,12 @@ UTPLSQL_CONN=your_user/password@//host:1521/service
 ```jsonc
 "utplsql.additionalReporters": ["UT_COVERAGE_HTML_REPORTER"]
 ```
-3 つのデフォルトレポーターは、ここにリストしても自動的に
+デフォルトレポーターは、ここにリストしても自動的に
 重複排除されます。
 
 **セッションごとの一時レポーター** — **utPLSQL: Select additional
 reporter...** コマンドは、データベースから動的リストを取得して QuickPick を開きます。
-選択したレポーターは次の実行で使用され、その後破棄されます（設定には
-保持されません）。
+選択したレポーターはセッションに保存されますが、その選択は**現在の Oracle-only 版では適用されません**。
 
 ## データベースの要件
 
@@ -315,7 +315,7 @@ GRANT SELECT ON SYS.DBA_PROCEDURES TO <ut3_owner>;
 | スイートが表示されない | 接続の問題 | 診断には `utPLSQL: Validate configuration` を実行 |
 | カバレッジが空 | `GRANT EXECUTE ON DBMS_PROFILER` が不足 | [データベースの要件](#データベースの要件)の権限を実行、または `utPLSQL: Copy coverage grants to clipboard` を使用 |
 | カバレッジが空 | Oracle 19c では追加の権限が必要 | `GRANT EXECUTE ON DBMS_PROFILER` + `GRANT EXECUTE ON DBMS_PLSQL_CODE_COVERAGE` |
-| 原因不明のコンパイルエラー | PL/SQL 構文エラーを含むコード | `utplsql.compilationDiagnostics.enabled` を有効化（デフォルトでオン）; Problems パネルを参照 |
+| 原因不明のコンパイルエラー | PL/SQL 構文エラーを含むコード | コンパイル診断は Oracle-only 版ではまだ接続されていません（`utplsql.compilationDiagnostics.enabled` は効果がありません）; エラーを表示するにはコンパイル/実行してください |
 | 接続エラー | 文字列の形式が不正、または DB に到達できない | `utPLSQL: Validate configuration` を使用 |
 | 実行中のタイムアウト | テストが `timeoutMinutes` より長い | `utplsql.timeoutMinutes` を増やす |
 | `%suite` が認識されない | ファイルに `%suite`/`create package` がない、または `PROCEDURE` のない `%test` | スペックを確認; `utPLSQL: Refresh tests` を実行 |

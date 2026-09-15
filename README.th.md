@@ -27,7 +27,7 @@
 - 🔌 **โปรไฟล์การเชื่อมต่อ** — บันทึกและสลับระหว่างหลายสภาพแวดล้อม (DEV/TEST/PROD) พร้อมการตั้งค่าต่อโปรไฟล์ ผ่านแถบสถานะหรือ command palette
 - 📈 **ความครอบคลุมของ statement และ view** — แท็บ Coverage แสดง `% ของ statements` (PROCEDURE/FUNCTION) ต่อไฟล์และติดตาม views ที่ถูกเรียกใช้ผ่าน `V$SQL`
 - 🐛 **การดีบัก PL/SQL** — breakpoints และการดีบักแบบทีละขั้นของเทสต์ utPLSQL ผ่าน `DBMS_DEBUG` (Debug Adapter เนทีฟ)
-- 🌍 **i18n — 24 ภาษา** — `utplsql.language` เป็นไปตาม VSCode (15 ภาษาหลัก + 9 จากชุมชน: pt-br, en, en-gb, es, zh-cn, zh-tw, ja, de, fr, it, ko, ru, tr, pl, cs, hu, bg, el, id, ro, sr, th, uk, vi)
+- 🌍 **i18n — 24 ภาษา** — `utplsql.language` เป็นไปตาม VSCode (24 ภาษาท้องถิ่น: pt-br, en, en-gb, es, zh-cn, zh-tw, ja, de, fr, it, ko, ru, tr, pl, cs, hu, bg, el, id, ro, sr, th, uk, vi)
 
 ## การติดตั้ง
 
@@ -99,7 +99,7 @@ Test Explorer **เมื่อแต่ละเทสต์เสร็จส�
 | `utplsql.coverageOwner` | `""` | เจ้าของ schema ของอ็อบเจกต์ที่ครอบคลุม ว่าง = ใช้ผู้ใช้จากการเชื่อมต่อ (ตัวพิมพ์ใหญ่) |
 | `utplsql.timeoutMinutes` | `60` | Timeout เป็นนาที |
 | `utplsql.dbmsOutput` | `false` | เปิดใช้งาน `DBMS_OUTPUT` ในเซสชันการทดสอบ |
-| `utplsql.additionalReporters` | `[]` | Reporters เพิ่มเติมที่จะรวมในทุกรัน (เช่น `["ut_coverage_html_reporter"]`) ค่าเริ่มต้น (documentation, junit, coverage) จะถูกรวมเสมอและไม่จำเป็นต้องระบุ |
+| `utplsql.additionalReporters` | `[]` | Reporters เพิ่มเติมที่จะรวมในทุกรัน (เช่น `["ut_coverage_html_reporter"]`) ค่าเริ่มต้น (documentation, junit) จะถูกรวมเสมอและไม่จำเป็นต้องระบุ |
 | `utplsql.codeLens.enabled` | `true` | แสดงปุ่ม CodeLens Run/Run with Coverage เหนือ `%suite` และ `%test` |
 | `utplsql.statusBar.enabled` | `true` | แสดงตัวบ่งชี้สถานะการทดสอบในแถบสถานะ |
 | `utplsql.decorations.enabled` | `true` | แสดงการตกแต่งผ่าน/ล้มเหลวบนบรรทัด `%suite` และ `%test` หลังการรัน |
@@ -109,7 +109,7 @@ Test Explorer **เมื่อแต่ละเทสต์เสร็จส�
 | `utplsql.oraclePoolPingInterval` | `60` | วินาทีระหว่างการตรวจสอบความสมบูรณ์ของการเชื่อมต่อที่ว่างในพูล (node-oracledb) `0` = ping ทุกครั้งที่ยืมการเชื่อมต่อ |
 | `utplsql.organization` | `file` | การจัดระเบียบแผนผัง: `file` (ตามพาธ) หรือ `schema` (Schema > Package > Suite > Test) ในโหมด `schema` suites จะถูกค้นพบจากฐานข้อมูล (`ALL_OBJECTS`/`ALL_SOURCE`) ด้วยเมื่อไม่มีไฟล์ `.pks` ในเวิร์กสเปซ — ด้วย URI เสมือน `utplsql-db:/` (ไม่มี CodeLens/การตกแต่ง/jump to failure) |
 | `utplsql.organization.schemaPattern` | `db/{schema}/**` | รูปแบบ Glob เพื่อแยก schema จากพาธ ใช้ `{schema}` เป็นตัวยึดตำแหน่ง ในโหมด `schema` ไดเรกทอรีใต้ฐานของรูปแบบ (เช่น `db/*`) กำหนด schemas ที่จะสอบถามในฐานข้อมูล |
-| `utplsql.compilationDiagnostics.enabled` | `true` | แสดงข้อผิดพลาดการคอมไพล์ PL/SQL เป็นเส้นใต้ในตัวแก้ไขและแผง Problems |
+| `utplsql.compilationDiagnostics.enabled` | `true` | สงวนไว้สำหรับการวินิจฉัยการคอมไพล์ PL/SQL **ขณะนี้ไม่มีผล** ในเวอร์ชัน Oracle-only — ฟีเจอร์นี้ยังไม่ถูกเชื่อมต่อ (ยังไม่ได้เปิดใช้งานใหม่) |
 | `utplsql.setupDiagnostics.enabled` | `true` | แสดงการวินิจฉัยการกำหนดค่า (การเชื่อมต่อ, grants, เวอร์ชัน) และ **ความสมบูรณ์ของการติดตั้ง utPLSQL** (อ็อบเจกต์ที่ไม่ถูกต้องใน schema UT3, พร้อม quick-fix "Recompile UT3") พร้อมการทำงาน quick-fix |
 | `utplsql.profiles` | `[]` | โปรไฟล์การเชื่อมต่อ Oracle ที่บันทึกไว้ (ชื่อ, การเชื่อมต่อ, และการแทนที่ `sourcePath`/`coverageOwner`/ฯลฯ) เพื่อสลับระหว่างสภาพแวดล้อม (Full field reference: [wiki](https://github.com/thepaneb/vscode-utplsql/wiki/Configuration)). |
 | `utplsql.activeProfile` | `""` | ID ของโปรไฟล์ที่ใช้งานอยู่ (`utplsql.profiles`) เมื่อตั้งค่า จะแทนที่ `utplsql.connection` |
@@ -122,7 +122,7 @@ Test Explorer **เมื่อแต่ละเทสต์เสร็จส�
 | `utplsql.scriptRunner.filePattern` | `**/*.{sql,pks,pkb,fnc,prc,trg}` | Globs to list files when running a script folder. |
 | `utplsql.scriptRunner.dbmsOutput` | `false` | Captures and displays `DBMS_OUTPUT` during script execution. |
 | `utplsql.scriptRunner.timeoutSeconds` | `300` | Per-statement timeout (s) for scripts (`callTimeout`). |
-| `utplsql.language` | `auto` | ภาษาของข้อความรันไทม์ `auto` เป็นไปตาม VSCode (pt, zh-tw/zh-hk, zh, es, ja, de, fr, it, ko, ru, tr, pl, cs, hu, bg, el, id, ro, sr, th, uk, vi, en-gb; นอกนั้น en) ครอบคลุม **24 ภาษาท้องถิ่น** (15 ภาษาหลัก + 9 จากชุมชน) |
+| `utplsql.language` | `auto` | ภาษาของข้อความรันไทม์ `auto` เป็นไปตาม VSCode (pt, zh-tw/zh-hk, zh, es, ja, de, fr, it, ko, ru, tr, pl, cs, hu, bg, el, id, ro, sr, th, uk, vi, en-gb; นอกนั้น en) ครอบคลุม **24 ภาษาท้องถิ่น** |
 
 ตัวอย่าง (`.vscode/settings.json` ของโปรเจกต์):
 
@@ -300,13 +300,13 @@ Annotation ไม่คำนึงถึงตัวพิมพ์เล็ก
 
 ## Reporters
 
-ส่วนขยายรวม reporters เริ่มต้นสามตัวเสมอ:
-`ut_documentation_reporter` (stdout),
-`ut_junit_reporter` (ผลลัพธ์ → Test Explorer) และ
-`ut_coverage_cobertura_reporter` (ความครอบคลุม หากมี)
+ส่วนขยายรวม reporters เริ่มต้น **สอง** ตัวเสมอ:
+`ut_documentation_reporter` (stdout) และ
+`ut_junit_reporter` (ผลลัพธ์ → Test Explorer) โดย
+`ut_coverage_cobertura_reporter` จะถูกเพิ่ม **เฉพาะเมื่อรันพร้อมความครอบคลุม**
 
 **การตรวจสอบแบบไดนามิก** — ก่อนรันพร้อมความครอบคลุม ส่วนขยายจะสอบถาม
-ฐานข้อมูลผ่าน `utplsql reporters <conn>` หาก
+ฐานข้อมูลผ่าน `TABLE(ut_runner.get_reporters_list())` หาก
 `UT_COVERAGE_COBERTURA_REPORTER` ไม่มีอยู่ในฐานข้อมูล (เช่น utPLSQL
 ที่เก่าเกินไป) ความครอบคลุมจะถูกข้ามพร้อมคำเตือนในเอาต์พุต การรันเทสต์
 จะไม่ถูกบล็อก
@@ -315,13 +315,13 @@ Annotation ไม่คำนึงถึงตัวพิมพ์เล็ก
 ```jsonc
 "utplsql.additionalReporters": ["UT_COVERAGE_HTML_REPORTER"]
 ```
-reporters เริ่มต้นสามตัวจะถูกตัดรายการซ้ำโดยอัตโนมัติ แม้จะ
+reporters เริ่มต้นจะถูกตัดรายการซ้ำโดยอัตโนมัติ แม้จะ
 ระบุไว้ที่นี่
 
 **Reporter แบบชั่วคราวต่อเซสชัน** — คำสั่ง **utPLSQL: Select additional
 reporter...** เปิด QuickPick พร้อมรายการแบบไดนามิกจากฐานข้อมูล
-reporter ที่เลือกจะถูกใช้ในการรันครั้งถัดไปและถูกทิ้งหลังจากนั้น (ไม่
-คงอยู่ใน settings)
+reporter ที่เลือกจะถูกเก็บไว้ในเซสชัน แต่การเลือกนั้น **ไม่ถูกนำไปใช้**
+ในเวอร์ชัน Oracle-only ปัจจุบัน
 
 ## ข้อกำหนดฐานข้อมูล
 
@@ -363,7 +363,7 @@ GRANT SELECT ON SYS.DBA_PROCEDURES TO <ut3_owner>;
 | Suites ไม่ปรากฏ | ไม่มีไฟล์ `.pks` ที่ค้นพบ | รัน `utPLSQL: Validate configuration` เพื่อการวินิจฉัย |
 | ความครอบคลุมว่างเปล่า | ขาด `GRANT EXECUTE ON DBMS_PROFILER` | รัน grants ใน [ข้อกำหนด](#ข้อกำหนดฐานข้อมูล) หรือใช้ `utPLSQL: Copy coverage grants to clipboard` |
 | ความครอบคลุมว่างเปล่า | Oracle 19c ต้องใช้ grants เพิ่มเติม | `GRANT EXECUTE ON DBMS_PROFILER` + `GRANT EXECUTE ON DBMS_PLSQL_CODE_COVERAGE` |
-| ข้อผิดพลาดการคอมไพล์โดยไม่มีข้อบ่งชี้ | โค้ดที่มีข้อผิดพลาดไวยากรณ์ PL/SQL | เปิดใช้งาน `utplsql.compilationDiagnostics.enabled` (ค่าเริ่มต้นเปิด); ดูแผง Problems |
+| ข้อผิดพลาดการคอมไพล์โดยไม่มีข้อบ่งชี้ | โค้ดที่มีข้อผิดพลาดไวยากรณ์ PL/SQL | การวินิจฉัยการคอมไพล์ยังไม่ถูกเชื่อมต่อในเวอร์ชัน Oracle-only (`utplsql.compilationDiagnostics.enabled` ไม่มีผล); คอมไพล์/รันเพื่อแสดงข้อผิดพลาด |
 | ข้อผิดพลาดการเชื่อมต่อ | สตริงไม่ถูกต้องหรือฐานข้อมูลเข้าไม่ถึง | ใช้ `utPLSQL: Validate configuration` |
 | Timeout ระหว่างรัน | เทสต์ใช้เวลานานกว่า `timeoutMinutes` | เพิ่ม `utplsql.timeoutMinutes` |
 | `%suite` ไม่ได้รับการรู้จัก | ขาด `%suite`/`create package` ในไฟล์ หรือ `%test` ไม่มี `PROCEDURE` | ตรวจสอบ spec; รัน `utPLSQL: Refresh tests` |

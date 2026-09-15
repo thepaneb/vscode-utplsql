@@ -33,16 +33,24 @@ vscode-utplsql/
 │   ├── oracleRunner.ts      ← executeRunOracle (streaming + pool) + descoberta de schema utPLSQL
 │   ├── results.ts           ← funções canônicas de resultado/cobertura (PRD-44)
 │   ├── config.ts            ← leitura de settings + env vars + resolveConnection
+│   ├── connectionProfiles.ts ← CRUD de perfis de conexão + picker
 │   ├── discovery.ts         ← findFiles + parse + descoberta via DB (PRD-43)
 │   ├── suiteParser.ts       ← regex %suite/%test + annotations (puro)
 │   ├── junit.ts             ← parse XML JUnit + stack frames (puro)
 │   ├── cobertura.ts         ← parse XML Cobertura (puro)
+│   ├── coverage.ts          ← resolução de filename de cobertura → URI fonte
+│   ├── viewCoverage.ts      ← rastreio opcional de views via V$SQL
 │   ├── matching.ts          ← filtro URI/pasta + matching resultado→teste (puro)
 │   ├── codelens.ts          ← parseCodeLensItems (puro) + CodeLensProvider
-│   ├── compilationDiagnostics.ts ← erros PL/SQL no editor
+│   ├── plsqlDeclarations.ts ← cobertura por declaração derivada do fonte (puro)
 │   ├── quickfix.ts          ← SetupValidator + Code Actions
 │   ├── decorations.ts       ← decorações inline de pass/fail
 │   ├── statusBar.ts         ← indicador de status
+│   ├── scriptRunner.ts      ← execução de scripts SQL (editor/arquivo/pasta, PRD-62)
+│   ├── debugger.ts          ← Debug Adapter via DBMS_DEBUG
+│   ├── dbmsDebug.ts         ← cliente DBMS_DEBUG (SQL/parse puro)
+│   ├── i18n.ts              ← runtime de tradução (puro)
+│   ├── i18nLocales.ts       ← catálogos de locale (puro)
 │   ├── state.ts             ← estado da sessão (puro)
 │   ├── types.ts             ← interfaces (type-only)
 │   └── test/

@@ -113,20 +113,20 @@ Sempre incluídos:
 state.setExtraReporter(name) → state.consumeExtraReporter()
 ```
 
-### `parseReportersOutput`
+### `listReportersOracle` (src/oracleRunner.ts)
 
 ```typescript
-function parseReportersOutput(stdout: string): string[]
+function listReportersOracle(conn): Promise<string[]>
 ```
 
-- Linhas com `:` são nomes de reporter (formato 3.2.x)
-- Descrições indentadas são ignoradas
-- Usa `l.match(/^([A-Za-z0-9_]+)/)` **sem `.trim()`** — `.trim()` quebrava linhas indentadas
+- Consulta `SELECT reporter_object_name FROM TABLE(ut_runner.get_reporters_list())`
+- Erro de acesso/instalação → retorna array vazio (best-effort)
+- `checkReporterExists(conn, name)` valida o nome (case-insensitive) contra essa lista
 
 ## Output
 
 O output do documentation reporter é exibido em tempo real via `run.appendOutput()`.
 Linhas não-XML são exibidas diretamente; linhas XML são acumuladas para parse.
 
-Após execução, `compilationDiagnostics.parseFromOutput()` analisa o output em busca
-de erros de compilação (veja [07 — Diagnostics](07-diagnostics-and-validation.md)).
+> Diagnósticos de compilação **não estão ativos** no fluxo atual — o módulo
+> `compilationDiagnostics.ts` foi removido (veja [07 — Diagnostics](07-diagnostics-and-validation.md)).

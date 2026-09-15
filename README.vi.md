@@ -27,7 +27,7 @@ Tích hợp [utPLSQL](https://www.utplsql.org/) vào VSCode, đưa các bài ki�
 - 🔌 **Hồ sơ kết nối** — lưu và chuyển đổi giữa nhiều môi trường (DEV/TEST/PROD) với cài đặt theo hồ sơ, qua thanh trạng thái hoặc command palette.
 - 📈 **Độ phủ câu lệnh và view** — tab Coverage hiển thị `% câu lệnh` (PROCEDURE/FUNCTION) theo tệp và theo dõi các view được thực thi qua `V$SQL`.
 - 🐛 **Gỡ lỗi PL/SQL** — breakpoint và gỡ lỗi từng bước các bài kiểm thử utPLSQL qua `DBMS_DEBUG` (Debug Adapter gốc).
-- 🌍 **i18n — 24 ngôn ngữ** — `utplsql.language` theo VSCode (15 gốc + 9 cộng đồng: pt-br, en, en-gb, es, zh-cn, zh-tw, ja, de, fr, it, ko, ru, tr, pl, cs, hu, bg, el, id, ro, sr, th, uk, vi).
+- 🌍 **i18n — 24 ngôn ngữ** — `utplsql.language` theo VSCode (24 locale: pt-br, en, en-gb, es, zh-cn, zh-tw, ja, de, fr, it, ko, ru, tr, pl, cs, hu, bg, el, id, ro, sr, th, uk, vi).
 
 ## Cài đặt
 
@@ -99,7 +99,7 @@ Test Explorer **ngay khi từng bài kiểm thử hoàn tất**. VSIX đã kèm 
 | `utplsql.coverageOwner` | `""` | Schema sở hữu các đối tượng được phủ. Trống = dùng người dùng kết nối (in hoa). |
 | `utplsql.timeoutMinutes` | `60` | Thời gian chờ (phút). |
 | `utplsql.dbmsOutput` | `false` | Bật `DBMS_OUTPUT` trong phiên kiểm thử. |
-| `utplsql.additionalReporters` | `[]` | Các reporter bổ sung đưa vào mỗi lần chạy (ví dụ `["ut_coverage_html_reporter"]`). Các reporter mặc định (documentation, junit, coverage) luôn được bao gồm và không cần liệt kê. |
+| `utplsql.additionalReporters` | `[]` | Các reporter bổ sung đưa vào mỗi lần chạy (ví dụ `["ut_coverage_html_reporter"]`). Các reporter mặc định (documentation, junit) luôn được bao gồm và không cần liệt kê. |
 | `utplsql.codeLens.enabled` | `true` | Hiển thị các nút CodeLens Run/Run with Coverage trên `%suite` và `%test`. |
 | `utplsql.statusBar.enabled` | `true` | Hiển thị chỉ báo trạng thái kiểm thử trên thanh trạng thái. |
 | `utplsql.decorations.enabled` | `true` | Hiển thị các trang trí đạt/không đạt trên các dòng `%suite` và `%test` sau khi chạy. |
@@ -109,7 +109,7 @@ Test Explorer **ngay khi từng bài kiểm thử hoàn tất**. VSIX đã kèm 
 | `utplsql.oraclePoolPingInterval` | `60` | Số giây giữa các lần kiểm tra sức khỏe của các kết nối nhàn rỗi trong pool (node-oracledb). `0` = ping mỗi lần checkout. |
 | `utplsql.organization` | `file` | Tổ chức cây: `file` (theo đường dẫn) hoặc `schema` (Schema > Package > Suite > Test). Trong chế độ `schema`, các suite cũng được phát hiện từ cơ sở dữ liệu (`ALL_OBJECTS`/`ALL_SOURCE`) khi các tệp `.pks` không nằm trong workspace — với URI ảo `utplsql-db:/` (không có CodeLens/trang trí/nhảy tới lỗi). |
 | `utplsql.organization.schemaPattern` | `db/{schema}/**` | Glob để trích xuất schema từ đường dẫn. Dùng `{schema}` làm placeholder. Trong chế độ `schema`, các thư mục bên dưới gốc của pattern (ví dụ `db/*`) định nghĩa các schema được truy vấn trong cơ sở dữ liệu. |
-| `utplsql.compilationDiagnostics.enabled` | `true` | Hiển thị lỗi biên dịch PL/SQL dưới dạng gạch chân trong trình soạn thảo và Problems Panel. |
+| `utplsql.compilationDiagnostics.enabled` | `true` | Dành riêng cho chẩn đoán biên dịch PL/SQL. **Hiện không có hiệu lực** trong phiên bản Oracle-only — tính năng chưa được kết nối (chưa bật lại). |
 | `utplsql.setupDiagnostics.enabled` | `true` | Hiển thị chẩn đoán cấu hình (kết nối, quyền, phiên bản) và **tính toàn vẹn của bản cài utPLSQL** (các đối tượng không hợp lệ trong schema UT3, kèm quick-fix "Recompile UT3") với các hành động quick-fix. |
 | `utplsql.profiles` | `[]` | Các hồ sơ kết nối Oracle đã lưu (tên, kết nối và ghi đè `sourcePath`/`coverageOwner`/v.v.) để chuyển đổi giữa các môi trường. (Full field reference: [wiki](https://github.com/thepaneb/vscode-utplsql/wiki/Configuration)). |
 | `utplsql.activeProfile` | `""` | ID của hồ sơ đang hoạt động (`utplsql.profiles`). Khi được đặt, ghi đè `utplsql.connection`. |
@@ -122,7 +122,7 @@ Test Explorer **ngay khi từng bài kiểm thử hoàn tất**. VSIX đã kèm 
 | `utplsql.scriptRunner.filePattern` | `**/*.{sql,pks,pkb,fnc,prc,trg}` | Globs to list files when running a script folder. |
 | `utplsql.scriptRunner.dbmsOutput` | `false` | Captures and displays `DBMS_OUTPUT` during script execution. |
 | `utplsql.scriptRunner.timeoutSeconds` | `300` | Per-statement timeout (s) for scripts (`callTimeout`). |
-| `utplsql.language` | `auto` | Ngôn ngữ của các thông báo runtime. `auto` theo VSCode (pt, zh-tw/zh-hk, zh, es, ja, de, fr, it, ko, ru, tr, pl, cs, hu, bg, el, id, ro, sr, th, uk, vi, en-gb; nếu không thì en). Bao phủ **24 locale** (15 gốc + 9 cộng đồng). |
+| `utplsql.language` | `auto` | Ngôn ngữ của các thông báo runtime. `auto` theo VSCode (pt, zh-tw/zh-hk, zh, es, ja, de, fr, it, ko, ru, tr, pl, cs, hu, bg, el, id, ro, sr, th, uk, vi, en-gb; nếu không thì en). Bao phủ **24 locale**. |
 
 Ví dụ (`.vscode/settings.json` của dự án):
 
@@ -300,13 +300,13 @@ tới các tệp nguồn qua `utplsql.coverageSourceArgs` (regex + `type_mapping
 
 ## Bộ báo cáo (Reporters)
 
-Extension luôn kèm ba reporter mặc định:
-`ut_documentation_reporter` (stdout),
-`ut_junit_reporter` (kết quả → Test Explorer) và
-`ut_coverage_cobertura_reporter` (độ phủ, nếu có).
+Extension luôn kèm **hai** reporter mặc định:
+`ut_documentation_reporter` (stdout) và
+`ut_junit_reporter` (kết quả → Test Explorer). `ut_coverage_cobertura_reporter`
+được thêm **chỉ khi chạy với độ phủ**.
 
 **Xác thực động** — trước khi chạy với độ phủ, extension truy vấn
-cơ sở dữ liệu qua `utplsql reporters <conn>`. Nếu
+cơ sở dữ liệu qua `TABLE(ut_runner.get_reporters_list())`. Nếu
 `UT_COVERAGE_COBERTURA_REPORTER` không tồn tại trong cơ sở dữ liệu (ví dụ utPLSQL
 đã cũ), độ phủ sẽ bị bỏ qua kèm cảnh báo trong output. Việc thực thi kiểm thử
 không bao giờ bị chặn.
@@ -315,13 +315,13 @@ không bao giờ bị chặn.
 ```jsonc
 "utplsql.additionalReporters": ["UT_COVERAGE_HTML_REPORTER"]
 ```
-Ba reporter mặc định tự động được loại bỏ trùng (deduplicated), kể cả khi được
+Các reporter mặc định tự động được loại bỏ trùng (deduplicated), kể cả khi được
 liệt kê ở đây.
 
 **Reporter thay đổi theo phiên** — lệnh **utPLSQL: Select additional
 reporter...** mở QuickPick với danh sách động từ cơ sở dữ liệu. Reporter
-được chọn sẽ được dùng ở lần chạy kế tiếp rồi bị loại bỏ sau đó (không lưu
-trong cài đặt).
+được chọn được lưu trong phiên, nhưng lựa chọn **không được áp dụng** trong
+phiên bản Oracle-only hiện tại.
 
 ## Yêu cầu cơ sở dữ liệu
 
@@ -363,7 +363,7 @@ GRANT SELECT ON SYS.DBA_PROCEDURES TO <ut3_owner>;
 | Các suite không xuất hiện | Không có tệp `.pks` được phát hiện | Chạy `utPLSQL: Validate configuration` để chẩn đoán |
 | Độ phủ trống | Thiếu `GRANT EXECUTE ON DBMS_PROFILER` | Chạy các grant trong [Yêu cầu cơ sở dữ liệu](#yêu-cầu-cơ-sở-dữ-liệu) hoặc dùng `utPLSQL: Copy coverage grants to clipboard` |
 | Độ phủ trống | Oracle 19c cần thêm grant | `GRANT EXECUTE ON DBMS_PROFILER` + `GRANT EXECUTE ON DBMS_PLSQL_CODE_COVERAGE` |
-| Lỗi biên dịch không kèm chỉ dẫn | Mã có lỗi cú pháp PL/SQL | Bật `utplsql.compilationDiagnostics.enabled` (mặc định bật); xem Problems Panel |
+| Lỗi biên dịch không kèm chỉ dẫn | Mã có lỗi cú pháp PL/SQL | Chẩn đoán biên dịch chưa được kết nối trong phiên bản Oracle-only (`utplsql.compilationDiagnostics.enabled` không có hiệu lực); hãy biên dịch/chạy để lộ lỗi |
 | Lỗi kết nối | Chuỗi sai định dạng hoặc DB không truy cập được | Dùng `utPLSQL: Validate configuration` |
 | Hết thời gian khi chạy | Kiểm thử lâu hơn `timeoutMinutes` | Tăng `utplsql.timeoutMinutes` |
 | `%suite` không được nhận diện | Thiếu `%suite`/`create package` trong tệp, hoặc `%test` không có `PROCEDURE` | Kiểm tra spec; chạy `utPLSQL: Refresh tests` |

@@ -3,76 +3,27 @@
 Diagnósticos automáticos para erros de compilação PL/SQL e validação de
 configuração do ambiente.
 
-## Compilation Diagnostics (`src/compilationDiagnostics.ts`)
+## Compilation Diagnostics — NÃO ATIVO hoje
 
-Captura erros de compilação Oracle do output do ALL_ERRORS e os exibe como
-`vscode.Diagnostic` no editor.
+> **A feature não está ativa.** O módulo `src/compilationDiagnostics.ts` foi
+> removido na migração Oracle-only (PRD-64) e não existe `DiagnosticCollection`
+> de compilação — nenhum diagnostic com source `"utPLSQL Compilation"` é
+> criado. A setting `utplsql.compilationDiagnostics.enabled` é lida em
+> `config.ts` (`compilationDiagnosticsEnabled`) e exposta no `UtConfig`, mas
+> **não tem efeito**: nenhum consumidor a utiliza.
 
-### `CompilationDiagnostics`
-
-```typescript
-class CompilationDiagnostics {
-  parseFromOutput(output: string): CompilationError[];
-  resolveFiles(errors: CompilationError[], state: TestStateManager): void;
-  apply(errors: CompilationError[]): void;
-  clear(): void;
-  dispose(): void;
-}
-```
-
-### Fluxo
-
-```
-runner.ts: after executeRunOracle
-    │
-    ├─► compilerOutput += chunk (callback onStdout)
-    ├─► compilerOutput += result.stderr
-    │
-    └─► if cfg.compilationDiagnosticsEnabled && compilerOutput
-            │
-            ├─► parseFromOutput(compilerOutput) → CompilationError[]
-            │       │
-            │       ├─► detecta "Package X compiled with errors"
-            │       ├─► detecta "ORA-06550: line N, column M:"
-            │       └─► detecta "PLS-NNNNN: message"
-            │
-            ├─► resolveFiles(errors, state)
-            │       └─► associa erros a URIs de .pks/.pkb no workspace
-            │
-            └─► apply(errors)
-                    └─► vscode.Diagnostic no Problems Panel (source: "utPLSQL Compilation")
-```
-
-### `parseFromOutput`
-
-Máquina de estados que processa o output linha a linha:
-
-1. **Objeto atual**: `"Package APP compiled with errors"` → `currentObj = { name: 'app' }`
-2. **Linha ORA**: `"ORA-06550: line 12, column 5:"` → `pendingOra = { line: 12, col: 5 }`
-3. **Linha PLS**: `"PLS-00201: identifier X must be declared"` → combina com `pendingOra`
-4. **PLS sem ORA**: `"PLS-00123: message"` → erro com linha/coluna = 1
-5. **Fallback**: ao final, se `pendingPls` sem `pendingOra`, usa linha/coluna = 1
-
-### `resolveFiles`
+A consulta a `ALL_ERRORS` sobrevive em:
 
 ```typescript
-function resolveFiles(errors, state): void
+function checkCompilationErrors(conn, schema: string): Promise<CompilationError[]>
 ```
 
-- Itera `state.cachedItems` → obtém `meta.uri.fsPath`
-- Extrai `baseName` do caminho (remove `.pks`/`.pkb`)
-- Se mensagem contém "body" ou "package body" → prefere `.pkb`
-- Caso contrário → prefere `.pks`
-- Se `workspaceFolders` é undefined → no-op (diagnostics sem URI)
+Retorna `CompilationError[]` (`name`, `type`, `line`, `position`, `text`) via
+`SELECT ... FROM ALL_ERRORS WHERE owner = :schema AND attribute = 'ERROR'`.
+**Não tem caller de produção** — nenhum fluxo atual chama essa função; ela só é
+exercitada pelos testes de unidade/integração.
 
-### `apply`
-
-Agrupa erros por URI e cria `vscode.Diagnostic` com:
-- Range: `(line-1, col-1)` até `(line-1, 999)`
-- Severity: `Error`
-- Source: `"utPLSQL Compilation"`
-- Mensagem: `[${err.code}] ${err.message}` (o `diagnostic.code` **não** é
-  populado — o código PLS vai no texto da mensagem)
+PRD-68 (proposto) prevê religar a feature com um novo `DiagnosticCollection`.
 
 ## Setup Diagnostics (`src/quickfix.ts`)
 
@@ -83,23 +34,31 @@ Validação proativa de configuração na ativação da extensão.
 ```typescript
 class SetupValidator {
   async validateOnActivation(): Promise<SetupDiagnostic[]>;
-  async validateUtplsqlInstall(): Promise<SetupDiagnostic[]>;   // PRD-41
-  async recompileUt3(oracledbOverride?): Promise<void>;         // PRD-41
+  async validateUtplsqlInstall(oracledbOverride?): Promise<SetupDiagnostic[]>;  // PRD-41
+  async recompileUt3(oracledbOverride?): Promise<void>;                         // PRD-41
   applyDiagnostics(diagnostics: SetupDiagnostic[]): void;
   addCoverageDiagnostic(): void;
   clear(): void;
   dispose(): void;
+  checkCli(_cliPath: string): boolean;   // stub legado (sempre true, sem uso)
 }
 ```
+
+> `checkCli` é um stub do runner CLI removido — sempre retorna `true` e não tem
+> chamador de produção.
 
 ### Verificações
 
 | Verificação | Condição | Diagnostic |
 |---|---|---|
-| Conexão | `getOracleInfo(conn)` retorna erro | `UTPLSQL_BAD_CONN` (Error) |
-| Versão | `semverLt(dbVersion, '3.1.0')` | `UTPLSQL_OLD_VERSION` (Warning) |
+| Versão | `parseInt(utVersion) < 3` | `UTPLSQL_OLD_VERSION` (Warning) |
 | Instalação utPLSQL | objetos inválidos em `ALL_OBJECTS` no schema utPLSQL | `UTPLSQL_INVALID_OBJECTS` (Warning) |
-| Cobertura | `coverage.xml` não gerado pós-run | `UTPLSQL_NO_COVERAGE` (Warning) |
+
+> `UTPLSQL_BAD_CONN` e `UTPLSQL_NO_COVERAGE` **não são produzidos** no fluxo
+> atual: `validateOnActivation` não emite erro de conexão (apenas retorna `[]`)
+> e `addCoverageDiagnostic` só era chamado pelo fluxo legado (CLI). Os
+> quick-fixes correspondentes no `UtplsqlCodeActionProvider` permanecem
+> registrados, mas nunca disparam.
 
 ### `validateUtplsqlInstall` (PRD-41)
 
@@ -116,7 +75,9 @@ async validateOnActivation(): Promise<SetupDiagnostic[]>
 ```
 
 1. Verifica `cfg.setupDiagnosticsEnabled` → se false, retorna `[]`
-2. Conexão: `getOracleInfo(cfg, conn)` → `UTPLSQL_BAD_CONN` / `UTPLSQL_OLD_VERSION`
+2. Resolve conexão e chama `getOracleInfo(conn)` (sem parâmetro de config) →
+   emite `UTPLSQL_OLD_VERSION` quando `parseInt(utVersion) < 3`; não emite
+   diagnóstico de conexão (`UTPLSQL_BAD_CONN` não é produzido)
 
 ### `applyDiagnostics`
 
@@ -125,8 +86,9 @@ Cria `vscode.Diagnostic` com source `"utPLSQL Setup"`. Agrupados em URI virtual
 
 ### `addCoverageDiagnostic`
 
-Chamado após `applyCoverage` quando `coverage.xml` não existe. Só se
-`setupDiagnosticsEnabled` for true.
+Emite `UTPLSQL_NO_COVERAGE` no URI virtual quando `coverage.xml` não existe e
+`setupDiagnosticsEnabled` é true. Só é chamado por `applyCoverage` em
+`runner.ts`, um wrapper **legado** (não usado pelo fluxo Oracle-direto atual).
 
 ## Code Actions (`UtplsqlCodeActionProvider`)
 
@@ -167,15 +129,16 @@ extension.ts activate()
     └─► Promise.all([validateOnActivation(), validateUtplsqlInstall()])
             .then(([a, i]) => applyDiagnostics([...a, ...i]))
 
-runner.ts
-    ├─► compilationDiagnostics.clear()  (início do run)
-    ├─► captura output Oracle → parseFromOutput → resolveFiles → apply  (após executeRunOracle)
-    └─► setupValidator.addCoverageDiagnostic()  (se coverage.xml ausente)
+runner.ts (wrappers legados)
+    └─► applyCoverage → setupValidator.addCoverageDiagnostic()  (se coverage.xml ausente)
+
+oracleRunner.ts
+    └─► checkCompilationErrors(conn, schema)  — existe, mas sem caller de produção
 ```
 
 ## Settings
 
 | Setting | Default | Descrição |
 |---|---|---|
-| `utplsql.compilationDiagnostics.enabled` | `true` | Diagnóstico de compilação PL/SQL |
+| `utplsql.compilationDiagnostics.enabled` | `true` | Lida, mas **sem efeito** (feature removida) |
 | `utplsql.setupDiagnostics.enabled` | `true` | Diagnóstico de configuração |

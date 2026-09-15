@@ -27,7 +27,7 @@ Integrează [utPLSQL](https://www.utplsql.org/) în VSCode, aducând testele PL/
 - 🔌 **Profiluri de conexiune** — salvează și comută între mai multe medii (DEV/TEST/PROD) cu setări per profil, prin bara de stare sau paleta de comenzi.
 - 📈 **Acoperire pe instrucțiuni și vizualizări** — fila Coverage arată `% din instrucțiuni` (PROCEDURE/FUNCTION) per fișier și urmărește vizualizările executate prin `V$SQL`.
 - 🐛 **Debug PL/SQL** — breakpoint-uri și depanare pas cu pas a testelor utPLSQL prin `DBMS_DEBUG` (Debug Adapter nativ).
-- 🌍 **i18n — 24 de limbi** — `utplsql.language` urmărește VSCode (15 native + 9 comunitare: pt-br, en, en-gb, es, zh-cn, zh-tw, ja, de, fr, it, ko, ru, tr, pl, cs, hu, bg, el, id, ro, sr, th, uk, vi).
+- 🌍 **i18n — 24 de limbi** — `utplsql.language` urmărește VSCode (24 de localizări: pt-br, en, en-gb, es, zh-cn, zh-tw, ja, de, fr, it, ko, ru, tr, pl, cs, hu, bg, el, id, ro, sr, th, uk, vi).
 
 ## Instalare
 
@@ -98,7 +98,7 @@ Extensia se conectează direct prin Oracle, citește rapoartele (JUnit + Coverag
 | `utplsql.sourcePath` | `install` | Folderul codului de producție (pentru maparea acoperirii pe fișiere). |
 | `utplsql.includePatterns` | `["**/*.pks"]` | Glob-uri pentru descoperirea spec-urilor cu `%suite`/`%test`. Dacă testele tale sunt în `.sql`, folosește `["**/*.sql"]`. |
 | `utplsql.coverageOwner` | `""` | Schema proprietară a obiectelor acoperite. Gol = folosește utilizatorul conexiunii (cu majuscule). |
-| `utplsql.additionalReporters` | `[]` | Reporteri suplimentari de inclus la fiecare rulare (ex.: `["ut_coverage_html_reporter"]`). Cei implicați (documentation, junit, coverage) sunt întotdeauna incluși și nu trebuie listați. |
+| `utplsql.additionalReporters` | `[]` | Reporteri suplimentari de inclus la fiecare rulare (ex.: `["ut_coverage_html_reporter"]`). Cei implicați (documentation, junit) sunt întotdeauna incluși și nu trebuie listați. |
 | `utplsql.codeLens.enabled` | `true` | Afișează butoanele CodeLens Run/Run with Coverage deasupra `%suite` și `%test`. |
 | `utplsql.statusBar.enabled` | `true` | Afișează indicatorul de stare al testelor în bara de stare. |
 | `utplsql.decorations.enabled` | `true` | Afișează decorări reușit/eșuat pe liniile `%suite` și `%test` după execuție. |
@@ -108,7 +108,7 @@ Extensia se conectează direct prin Oracle, citește rapoartele (JUnit + Coverag
 | `utplsql.oraclePoolPingInterval` | `60` | Secunde între verificările de sănătate ale conexiunilor idle din pool (node-oracledb). `0` = ping la fiecare checkout. |
 | `utplsql.organization` | `file` | Organizarea arborelui: `file` (după cale) sau `schema` (Schema > Package > Suite > Test). În modul `schema` suitele sunt descoperite și din baza de date (`ALL_OBJECTS`/`ALL_SOURCE`) atunci când fișierele `.pks` nu sunt în workspace — cu URI virtual `utplsql-db:/` (fără CodeLens/decorări/salt la eșec). |
 | `utplsql.organization.schemaPattern` | `db/{schema}/**` | Model glob pentru extragerea schemei din cale. Folosește `{schema}` ca substituent. În modul `schema`, directoarele de sub baza modelului (ex.: `db/*`) definesc schemele interogate în baza de date. |
-| `utplsql.compilationDiagnostics.enabled` | `true` | Afișează erorile de compilare PL/SQL ca sublinieri în editor și în panoul de probleme. |
+| `utplsql.compilationDiagnostics.enabled` | `true` | Rezervat pentru diagnosticele de compilare PL/SQL. **Momentan fără efect** în versiunea Oracle-only — funcția nu este conectată (nu a fost încă reactivată). |
 | `utplsql.setupDiagnostics.enabled` | `true` | Afișează diagnostice de configurare (conexiune, granturi, versiune) și **integritatea instalării utPLSQL** (obiecte invalide în schema UT3, cu quick-fix „Recompile UT3") cu acțiuni quick-fix. |
 | `utplsql.profiles` | `[]` | Profiluri de conexiune Oracle salvate (nume, conexiune și suprascrieri ale `sourcePath`/`coverageOwner`/etc.) pentru a comuta între medii. (Full field reference: [wiki](https://github.com/thepaneb/vscode-utplsql/wiki/Configuration)). |
 | `utplsql.activeProfile` | `""` | ID-ul profilului activ (`utplsql.profiles`). Când este setat, suprascrie `utplsql.connection`. |
@@ -121,7 +121,7 @@ Extensia se conectează direct prin Oracle, citește rapoartele (JUnit + Coverag
 | `utplsql.scriptRunner.filePattern` | `**/*.{sql,pks,pkb,fnc,prc,trg}` | Globs to list files when running a script folder. |
 | `utplsql.scriptRunner.dbmsOutput` | `false` | Captures and displays `DBMS_OUTPUT` during script execution. |
 | `utplsql.scriptRunner.timeoutSeconds` | `300` | Per-statement timeout (s) for scripts (`callTimeout`). |
-| `utplsql.language` | `auto` | Limba mesajelor runtime. `auto` urmează VSCode (pt, zh-tw/zh-hk, zh, es, ja, de, fr, it, ko, ru, tr, pl, cs, hu, bg, el, id, ro, sr, th, uk, vi, en-gb; altfel en). Acoperă cele **24 de localizări** (15 native + 9 comunitare). |
+| `utplsql.language` | `auto` | Limba mesajelor runtime. `auto` urmează VSCode (pt, zh-tw/zh-hk, zh, es, ja, de, fr, it, ko, ru, tr, pl, cs, hu, bg, el, id, ro, sr, th, uk, vi, en-gb; altfel en). Acoperă cele **24 de localizări**. |
 
 Exemplu (`.vscode/settings.json` din proiect):
 
@@ -297,13 +297,13 @@ este derivat din conexiune (sau din `utplsql.coverageOwner`).
 
 ## Reporteri
 
-Extensia include întotdeauna trei reporteri implicați:
-`ut_documentation_reporter` (stdout),
-`ut_junit_reporter` (rezultate → Test Explorer) și
-`ut_coverage_cobertura_reporter` (acoperire, dacă este disponibil).
+Extensia include întotdeauna **doi** reporteri implicați:
+`ut_documentation_reporter` (stdout) și
+`ut_junit_reporter` (rezultate → Test Explorer). `ut_coverage_cobertura_reporter`
+este adăugat **doar când rulezi cu acoperire**.
 
 **Validare dinamică** — înainte de a rula cu acoperire, extensia interoghează
-baza de date prin `utplsql reporters <conn>`. Dacă
+baza de date prin `TABLE(ut_runner.get_reporters_list())`. Dacă
 `UT_COVERAGE_COBERTURA_REPORTER` nu există în baza de date (ex.: utPLSQL
 învechit), acoperirea este omisă cu un avertisment în output. Execuția testelor
 nu este niciodată blocată.
@@ -312,13 +312,13 @@ nu este niciodată blocată.
 ```jsonc
 "utplsql.additionalReporters": ["UT_COVERAGE_HTML_REPORTER"]
 ```
-Cei trei reporteri implicați sunt deduplicați automat, chiar dacă sunt
+Cei implicați reporteri sunt deduplicați automat, chiar dacă sunt
 listați aici.
 
 **Reporter volatil per sesiune** — comanda **utPLSQL: Select additional
 reporter...** deschide un QuickPick cu lista dinamică din baza de date.
-Reporterul ales este folosit la următoarea execuție și apoi eliminat (nu persistă
-în setări).
+Reporterul ales este stocat în sesiune, dar selecția **nu este aplicată** în
+versiunea Oracle-only actuală.
 
 ## Cerințe pentru baza de date
 
@@ -359,7 +359,7 @@ GRANT SELECT ON SYS.DBA_PROCEDURES TO <ut3_owner>;
 |---|---|---|
 | Acoperire goală | Lipsește `GRANT EXECUTE ON DBMS_PROFILER` | Rulează granturile din [Cerințe pentru baza de date](#cerințe-pentru-baza-de-date) sau folosește `utPLSQL: Copy coverage grants to clipboard` |
 | Acoperire goală | Oracle 19c necesită granturi suplimentare | `GRANT EXECUTE ON DBMS_PROFILER` + `GRANT EXECUTE ON DBMS_PLSQL_CODE_COVERAGE` |
-| Eroare de compilare fără indicație | Cod cu eroare de sintaxă PL/SQL | Activează `utplsql.compilationDiagnostics.enabled` (implicit activ); vezi panoul de probleme |
+| Eroare de compilare fără indicație | Cod cu eroare de sintaxă PL/SQL | Diagnosticele de compilare nu sunt încă conectate în versiunea Oracle-only (`utplsql.compilationDiagnostics.enabled` nu are efect); compilează/rulează pentru a expune eroarea |
 | Eroare de conexiune | String malformat sau bază de date inaccesibilă | Folosește `utPLSQL: Validate configuration` |
 | `%suite` nu este recunoscut | Lipsesc `%suite`/`create package` în fișier, sau `%test` fără `PROCEDURE` | Verifică spec-ul; rulează `utPLSQL: Refresh tests` |
 | CodeLens nu apare | `editor.codeLens` dezactivat sau conflict | Activează `"editor.codeLens": true`; verifică `utplsql.codeLens.enabled` |

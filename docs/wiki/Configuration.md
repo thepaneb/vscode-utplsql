@@ -3,6 +3,8 @@
 All extension settings, prefixed with `utplsql.`. Configure them in the
 user or workspace `settings.json` (`.vscode/settings.json`).
 
+Looking for ready-to-use snippets? See [Configuration Examples](Configuration-examples).
+
 ## Connection
 
 | Setting | Default | Description |
@@ -15,7 +17,7 @@ user or workspace `settings.json` (`.vscode/settings.json`).
 
 | Field | Type | Required | Default | Description |
 |---|---|---|---|---|
-| `id` | string | Yes (auto-generated) | — | Profile UUID. |
+| `id` | string | No (auto-generated) | — | Profile UUID. Generated when omitted. |
 | `name` | string | Yes | — | Friendly name (e.g. "DEV Local"). |
 | `connection` | string | Yes | — | Connection string (`user/pass@//host:port/service`). |
 | `description` | string | No | — | Description shown in the connection picker. |
@@ -23,8 +25,8 @@ user or workspace `settings.json` (`.vscode/settings.json`).
 | `sourcePath` | string | No | inherits global | Overrides `utplsql.sourcePath`. |
 | `coverageOwner` | string | No | inherits global | Overrides `utplsql.coverageOwner`. |
 | `includePatterns` | string[] | No | inherits global | Overrides `utplsql.includePatterns`. |
-| `isDefault` | boolean | No | `false` | Marks the profile as default when loading the workspace. |
-| `lastUsed` | string | No | — | ISO timestamp of last use. |
+| `isDefault` | boolean | No | `false` | Shows a default badge in the profile picker. It does **not** auto-select the profile on load. |
+| `lastUsed` | string | No | — | Reserved — not written or read by the extension today. |
 
 Example:
 
@@ -73,6 +75,13 @@ The profile `charset` applies to `runScriptFile`/`runScriptFolder` (files are
 read as bytes and decoded). For `runScript` (editor) the text already comes
 decoded by VSCode — the profile charset does not apply.
 
+## Test Execution
+
+| Setting | Default | Description |
+|---|---|---|
+| `utplsql.timeoutMinutes` | `60` | Timeout for a test run, in minutes (1–1440). On expiry the run is cancelled. |
+| `utplsql.dbmsOutput` | `false` | Captures `DBMS_OUTPUT` from the test session and appends it to the run output. Best-effort; useful for debugging. |
+
 ## Coverage
 
 | Setting | Default | Description |
@@ -120,7 +129,7 @@ connection changes, and closed when the extension is deactivated. See [Direct Or
 | `utplsql.codeLens.enabled` | `true` | CodeLens Run/Run with Coverage buttons above `%suite` and `%test`. |
 | `utplsql.statusBar.enabled` | `true` | Status indicator in the status bar (pass/fail + duration). |
 | `utplsql.decorations.enabled` | `true` | Inline ✓/✗/⚠ icons in the editor after execution. |
-| `utplsql.compilationDiagnostics.enabled` | `true` | Displays PL/SQL compilation errors as underlines and in the Problems Panel. |
+| `utplsql.compilationDiagnostics.enabled` | `true` | Reserved for PL/SQL compilation diagnostics. **Currently has no effect** in the Oracle-only version — the feature is not wired (not yet re-enabled). |
 | `utplsql.setupDiagnostics.enabled` | `true` | Displays setup diagnostics (connection, grants, version) and utPLSQL installation integrity diagnostics (invalid objects, "Recompile UT3" quick-fix) with quick-fix. |
 
 ## Tree Organization

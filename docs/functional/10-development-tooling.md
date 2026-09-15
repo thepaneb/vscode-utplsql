@@ -6,7 +6,7 @@ Ferramentas e infraestrutura de desenvolvimento do projeto.
 
 | Script | Descrição |
 |---|---|
-| `npm install` | Instala dependências (inclui `oracledb` como optional) |
+| `npm install` | Instala dependências (inclui `oracledb` em `dependencies`) |
 | `npm run compile` | `tsc -p ./` → compila para `out/` |
 | `npm run watch` | Compilação incremental |
 | `npm run lint` | `biome check src/` |
@@ -14,7 +14,7 @@ Ferramentas e infraestrutura de desenvolvimento do projeto.
 | `npm run format` | `biome format --write src/` |
 | `npm test` | = `test:unit` |
 | `npm run test:unit` | `pretest:unit` (compile + lint) → `node scripts/run-tests.cjs` |
-| `npm run test:coverage` | `compile` → `c8 node --require ./scripts/test-setup.cjs --test out/test/unit/**/*.test.js` |
+| `npm run test:coverage` | `compile` → `c8 node --experimental-test-module-mocks --require ./scripts/test-setup.cjs --test out/test/unit/**/*.test.js` |
 | `npm run test:integration` | `pretest:integration` (compile + bundle) → `vscode-test` |
 | `npm run bundle` | `node esbuild.config.mjs` → `dist/extension.js` (**entry point real da extensão**) |
 | `npm run package` | `compile && bundle && vsce package` → `.vsix` |
@@ -62,7 +62,7 @@ Ferramentas e infraestrutura de desenvolvimento do projeto.
 
 ### Coverage atual (aprox. — pode variar por PRD)
 
-| Métrica | Threshold | Atual (v0.11.0) |
+| Métrica | Threshold | Atual (v0.12.0) |
 |---|---|---|
 | Lines | 65% | 89.7% |
 | Branches | 80% | 85.0% |
@@ -78,22 +78,30 @@ src/test/
 ├── unit/
 │   ├── cobertura.test.ts
 │   ├── codelens.test.ts
-│   ├── compilationDiagnostics.test.ts
 │   ├── config.test.ts
+│   ├── connectionProfiles.test.ts
 │   ├── coverage.test.ts
+│   ├── dbmsDebug.test.ts
+│   ├── debugger.test.ts
 │   ├── decorations.test.ts
 │   ├── discovery.test.ts
+│   ├── i18n.test.ts
 │   ├── junit.test.ts
 │   ├── matching.test.ts
 │   ├── oracleRunner.test.ts
+│   ├── oracledb-default-absent.test.ts
+│   ├── oracledb-missing-catch.test.ts
+│   ├── plsqlDeclarations.test.ts
 │   ├── quickfix.test.ts
 │   ├── rerun.test.ts
 │   ├── results.test.ts
 │   ├── runner.test.ts
+│   ├── scriptRunner.test.ts
 │   ├── setup.ts
 │   ├── state.test.ts
 │   ├── statusBar.test.ts
-│   └── suiteParser.test.ts
+│   ├── suiteParser.test.ts
+│   └── viewCoverage.test.ts
 ├── integration/
 │   └── extension.test.ts
 ├── fixtures/           (Oracle DB fixtures)
@@ -104,7 +112,7 @@ src/test/
 
 `scripts/run-tests.cjs`:
 1. Encontra recursivamente `out/test/unit/**/*.test.js`
-2. Executa `node --require scripts/test-setup.cjs --test <files>`
+2. Executa `node --experimental-test-module-mocks --require scripts/test-setup.cjs --test <files>`
 
 `scripts/test-setup.cjs`: carrega `out/test/vscode-stub.js` como mock global.
 

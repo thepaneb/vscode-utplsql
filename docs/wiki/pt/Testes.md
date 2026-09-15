@@ -16,16 +16,36 @@ arquivos compilados:
 
 ```
 src/test/unit/  (origem TypeScript; execução em out/test/unit/)
-├── codelens.test.ts          ├── matching.test.ts
-├── compilationDiagnostics.test.ts  ├── oracleRunner.test.ts
-├── config.test.ts            ├── quickfix.test.ts
-├── coverage.test.ts          ├── rerun.test.ts
-├── decorations.test.ts       ├── results.test.ts
-├── discovery.test.ts         ├── runner.test.ts
-├── junit.test.ts             ├── state.test.ts
-├── cobertura.test.ts         ├── statusBar.test.ts
-└── suiteParser.test.ts
+├── cobertura.test.ts
+├── codelens.test.ts
+├── config.test.ts
+├── connectionProfiles.test.ts
+├── coverage.test.ts
+├── dbmsDebug.test.ts
+├── debugger.test.ts
+├── decorations.test.ts
+├── discovery.test.ts
+├── i18n.test.ts
+├── junit.test.ts
+├── matching.test.ts
+├── oracleRunner.test.ts
+├── oracledb-default-absent.test.ts
+├── oracledb-missing-catch.test.ts
+├── plsqlDeclarations.test.ts
+├── quickfix.test.ts
+├── rerun.test.ts
+├── results.test.ts
+├── runner.test.ts
+├── scriptRunner.test.ts
+├── state.test.ts
+├── statusBar.test.ts
+├── suiteParser.test.ts
+└── viewCoverage.test.ts
 ```
+
+> Testes que usam `mock.module` (`oracledb-missing-catch.test.ts`,
+> `oracledb-default-absent.test.ts`) exigem `--experimental-test-module-mocks`.
+> O flag já vem embutido em `npm run test:unit` e `npm run test:coverage`.
 
 Há também **cobertura TypeScript** com `c8`:
 
@@ -81,7 +101,9 @@ Testam a extensão dentro de uma instância real do VSCode:
 
 ```
 src/test/integration/
-└── extension.test.ts
+├── extension.test.ts
+├── oracleCapabilities.test.ts
+└── v012-features.test.ts
 ```
 
 Os testes de integração têm dois modos:

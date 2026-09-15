@@ -146,6 +146,7 @@ _(vazio — nenhuma PRD aprovada aguardando implementação)_
 | 65 | [Correções críticas de schema-mode e segurança](proposed/prd-65-schema-mode-security-fixes.md) | 0.12.0 | 2026-09-15 |
 | 66 | [Robustez de conexão, logging e cache](proposed/prd-66-connection-robustness-logging.md) | 0.12.0 | 2026-09-15 |
 | 67 | [Qualidade, limpeza e performance](proposed/prd-67-code-quality-cleanup.md) | 0.12.0 | 2026-09-15 |
+| 68 | [Religar diagnostics e reporter de sessão perdidos na migração Oracle-only](proposed/prd-68-restore-oracle-diagnostics-and-reporter.md) | 0.12.0 | 2026-09-15 |
 
 #### 0.13.0
 
@@ -246,6 +247,7 @@ docs/prd/
     ├── prd-65-schema-mode-security-fixes.md
     ├── prd-66-connection-robustness-logging.md
     ├── prd-67-code-quality-cleanup.md
+    ├── prd-68-restore-oracle-diagnostics-and-reporter.md
     ├── prd-47-node-26-toolchain.md
     ├── prd-50-auto-run-on-save.md
     ├── prd-51-run-by-tag.md

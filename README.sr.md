@@ -27,7 +27,7 @@
 - 🔌 **Профили веза** — сачувај и пребацуј се између више окружења (DEV/TEST/PROD) са подешавањима по профилу, преко статусне траке или палете команди.
 - 📈 **Покривеност израза и погледа** — картица Coverage приказује `% израза` (PROCEDURE/FUNCTION) по датотеци и прати погледе извршене преко `V$SQL`.
 - 🐛 **PL/SQL Debug** — breakpoint-и и степеновано отклањање грешака utPLSQL тестова преко `DBMS_DEBUG` (нативни Debug Adapter).
-- 🌍 **i18n — 24 језика** — `utplsql.language` прати VSCode (15 изворних + 9 заједничких: pt-br, en, en-gb, es, zh-cn, zh-tw, ja, de, fr, it, ko, ru, tr, pl, cs, hu, bg, el, id, ro, sr, th, uk, vi).
+- 🌍 **i18n — 24 језика** — `utplsql.language` прати VSCode (24 локала: pt-br, en, en-gb, es, zh-cn, zh-tw, ja, de, fr, it, ko, ru, tr, pl, cs, hu, bg, el, id, ro, sr, th, uk, vi).
 
 ## Инсталација
 
@@ -99,7 +99,7 @@ Test Explorer-у **како се сваки тест заврши**. VSIX већ
 | `utplsql.coverageOwner` | `""` | Власник шеме покривених објеката. Празно = користи корисника везе (велика слова). |
 | `utplsql.timeoutMinutes` | `60` | Тимеаут у минутима. |
 | `utplsql.dbmsOutput` | `false` | Омогућава `DBMS_OUTPUT` у тест сесији. |
-| `utplsql.additionalReporters` | `[]` | Додатни reporter-и за укључивање у свако извршавање (нпр. `["ut_coverage_html_reporter"]`). Подразумевани (documentation, junit, coverage) су увек укључени и не морају се наводити. |
+| `utplsql.additionalReporters` | `[]` | Додатни reporter-и за укључивање у свако извршавање (нпр. `["ut_coverage_html_reporter"]`). Подразумевани (documentation, junit) су увек укључени и не морају се наводити. |
 | `utplsql.codeLens.enabled` | `true` | Приказује Run/Run with Coverage CodeLens дугмад изнад `%suite` и `%test`. |
 | `utplsql.statusBar.enabled` | `true` | Приказује индикатор статуса тестова у статусној траци. |
 | `utplsql.decorations.enabled` | `true` | Приказује pass/fail декорације на `%suite` и `%test` линијама након извршавања. |
@@ -109,7 +109,7 @@ Test Explorer-у **како се сваки тест заврши**. VSIX већ
 | `utplsql.oraclePoolPingInterval` | `60` | Секунде између провера здравља неактивних веза у пулу (node-oracledb). `0` = ping при сваком преузимању. |
 | `utplsql.organization` | `file` | Организација стабла: `file` (по путањи) или `schema` (Schema > Package > Suite > Test). У `schema` режиму, суитови се такође откривају из базе података (`ALL_OBJECTS`/`ALL_SOURCE`) када `.pks` датотеке нису у радном простору — са виртуелним URI-јем `utplsql-db:/` (без CodeLens-а/декорација/скока до грешке). |
 | `utplsql.organization.schemaPattern` | `db/{schema}/**` | Glob узорак за издвајање шеме из путање. Користите `{schema}` као placeholder. У `schema` режиму, директоријуми испод основе узорка (нпр. `db/*`) дефинишу шеме упитане у бази података. |
-| `utplsql.compilationDiagnostics.enabled` | `true` | Приказује PL/SQL грешке компилације као подвлачења у едитору и Problems панелу. |
+| `utplsql.compilationDiagnostics.enabled` | `true` | Резервисано за дијагностику компилације PL/SQL. **Тренутно нема ефекта** у Oracle-only верзији — функција није повезана (још није поново омогућена). |
 | `utplsql.setupDiagnostics.enabled` | `true` | Приказује дијагностику конфигурације (веза, grant-ови, верзија) и **интегритет utPLSQL инсталације** (неважећи објекти у UT3 шеми, са „Recompile UT3" quick-fix-ом) са quick-fix радњама. |
 | `utplsql.profiles` | `[]` | Сачувани Oracle профили веза (име, веза и замене `sourcePath`-а/`coverageOwner`-а/итд.) за пребацивање између окружења. (Full field reference: [wiki](https://github.com/thepaneb/vscode-utplsql/wiki/Configuration)). |
 | `utplsql.activeProfile` | `""` | ID активног профила (`utplsql.profiles`). Када је постављен, поништава `utplsql.connection`. |
@@ -122,7 +122,7 @@ Test Explorer-у **како се сваки тест заврши**. VSIX већ
 | `utplsql.scriptRunner.filePattern` | `**/*.{sql,pks,pkb,fnc,prc,trg}` | Globs to list files when running a script folder. |
 | `utplsql.scriptRunner.dbmsOutput` | `false` | Captures and displays `DBMS_OUTPUT` during script execution. |
 | `utplsql.scriptRunner.timeoutSeconds` | `300` | Per-statement timeout (s) for scripts (`callTimeout`). |
-| `utplsql.language` | `auto` | Језик порука у реалном времену. `auto` прати VSCode (pt, zh-tw/zh-hk, zh, es, ja, de, fr, it, ko, ru, tr, pl, cs, hu, bg, el, id, ro, sr, th, uk, vi, en-gb; у супротном en). Покрива **24 локала** (15 изворних + 9 заједничких). |
+| `utplsql.language` | `auto` | Језик порука у реалном времену. `auto` прати VSCode (pt, zh-tw/zh-hk, zh, es, ja, de, fr, it, ko, ru, tr, pl, cs, hu, bg, el, id, ro, sr, th, uk, vi, en-gb; у супротном en). Покрива **24 локала**. |
 
 Пример (пројектни `.vscode/settings.json`):
 
@@ -300,13 +300,13 @@ UTPLSQL_CONN=your_user/password@//host:1521/service
 
 ## Репортери
 
-Екстензија увек укључује три подразумевана reporter-а:
-`ut_documentation_reporter` (stdout),
-`ut_junit_reporter` (резултати → Test Explorer) и
-`ut_coverage_cobertura_reporter` (покривеност, ако је доступан).
+Екстензија увек укључује **два** подразумевана reporter-а:
+`ut_documentation_reporter` (stdout) и
+`ut_junit_reporter` (резултати → Test Explorer).
+`ut_coverage_cobertura_reporter` се додаје **само приликом покретања са покривеношћу**.
 
 **Динамичка валидација** — пре покретања са покривеношћу, екстензија упитује
-базу података преко `utplsql reporters <conn>`. Ако
+базу података преко `TABLE(ut_runner.get_reporters_list())`. Ако
 `UT_COVERAGE_COBERTURA_REPORTER` не постоји у бази података (нпр. застарели
 utPLSQL), покривеност се прескаче са упозорењем у излазу. Извршавање тестова
 никада није блокирано.
@@ -315,13 +315,13 @@ utPLSQL), покривеност се прескаче са упозорењем
 ```jsonc
 "utplsql.additionalReporters": ["UT_COVERAGE_HTML_REPORTER"]
 ```
-Три подразумевана reporter-а се аутоматски дедупликују, чак и ако су
+Подразумевани reporter-и се аутоматски дедупликују, чак и ако су
 овде наведени.
 
 **Променљив reporter по сесији** — команда **utPLSQL: Select additional
 reporter...** отвара QuickPick са динамичком листом из базе података.
-Изабрани reporter се користи при следећем извршавању и потом одбацује (не
-чува се у подешавањима).
+Изабрани reporter се чува у сесији, али се избор **не примењује**
+у тренутној Oracle-only верзији.
 
 ## Захтеви базе података
 
@@ -363,7 +363,7 @@ GRANT SELECT ON SYS.DBA_PROCEDURES TO <ut3_owner>;
 | Суитови се не појављују | Нема покривених `.pks` датотека | Покрените `utPLSQL: Validate configuration` за дијагностику |
 | Празна покривеност | Недостаје `GRANT EXECUTE ON DBMS_PROFILER` | Покрените grant-ове из [Захтева базе података](#захтеви-базе-података) или користите `utPLSQL: Copy coverage grants to clipboard` |
 | Празна покривеност | Oracle 19c захтева додатне grant-ове | `GRANT EXECUTE ON DBMS_PROFILER` + `GRANT EXECUTE ON DBMS_PLSQL_CODE_COVERAGE` |
-| Грешка компилације без назнаке | Код са PL/SQL синтаксном грешком | Омогућите `utplsql.compilationDiagnostics.enabled` (подразумевано укључен); погледајте Problems панел |
+| Грешка компилације без назнаке | Код са PL/SQL синтаксном грешком | Дијагностика компилације још није повезана у Oracle-only верзији (`utplsql.compilationDiagnostics.enabled` нема ефекта); компајлирајте/покрените да бисте открили грешку |
 | Грешка у вези | Погрешан стринг или недоступна база | Користите `utPLSQL: Validate configuration` |
 | Тимеаут током извршавања | Тестови трају дуже од `timeoutMinutes`-а | Повећајте `utplsql.timeoutMinutes` |
 | `%suite` није препознат | Недостаје `%suite`/`create package` у датотеци, или `%test` без `PROCEDURE`-а | Проверите спецификацију; покрените `utPLSQL: Refresh tests` |

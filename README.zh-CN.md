@@ -27,7 +27,7 @@
 - 🔌 **连接配置** — 通过状态栏或命令面板，保存并切换多个环境（DEV/TEST/PROD），支持按配置自定义设置。
 - 📈 **语句和视图覆盖率** — Coverage 选项卡显示每个文件的语句百分比（PROCEDURE/FUNCTION），并通过 `V$SQL` 跟踪执行的视图。
 - 🐛 **PL/SQL 调试** — 通过 `DBMS_DEBUG` 对 utPLSQL 测试进行断点和单步调试（原生调试适配器）。
-- 🌍 **i18n — 24 种语言** — `utplsql.language` 跟随 VSCode（15 种原生 + 9 种社区：pt-br、en、en-gb、es、zh-cn、zh-tw、ja、de、fr、it、ko、ru、tr、pl、cs、hu、bg、el、id、ro、sr、th、uk、vi）。
+- 🌍 **i18n — 24 种语言** — `utplsql.language` 跟随 VSCode（24 locales：pt-br、en、en-gb、es、zh-cn、zh-tw、ja、de、fr、it、ko、ru、tr、pl、cs、hu、bg、el、id、ro、sr、th、uk、vi）。
 
 ## 安装
 
@@ -99,7 +99,7 @@ Test Explorer 中。
 | `utplsql.coverageOwner` | `""` | 被覆盖对象的 schema 所有者。留空 = 使用连接用户（大写）。 |
 | `utplsql.timeoutMinutes` | `60` | 执行超时时间（分钟）。 |
 | `utplsql.dbmsOutput` | `false` | 在测试会话中启用 `DBMS_OUTPUT`。 |
-| `utplsql.additionalReporters` | `[]` | 每次运行时要包含的额外 reporter（例如 `["ut_coverage_html_reporter"]`）。默认的（documentation、junit、coverage）始终包含，无需列出。 |
+| `utplsql.additionalReporters` | `[]` | 每次运行时要包含的额外 reporter（例如 `["ut_coverage_html_reporter"]`）。默认的（documentation、junit）始终包含，无需列出。 |
 | `utplsql.codeLens.enabled` | `true` | 在 `%suite` 和 `%test` 上显示 Run/Run with Coverage CodeLens 按钮。 |
 | `utplsql.statusBar.enabled` | `true` | 在状态栏中显示测试状态指示器。 |
 | `utplsql.decorations.enabled` | `true` | 执行后在 `%suite` 和 `%test` 行上显示通过/失败装饰。 |
@@ -109,7 +109,7 @@ Test Explorer 中。
 | `utplsql.oraclePoolPingInterval` | `60` | 空闲池连接健康检查之间的秒数（node-oracledb）。`0` = 每次签出时 ping。 |
 | `utplsql.organization` | `file` | 树组织方式：`file`（按路径）或 `schema`（Schema > Package > Suite > Test）。在 `schema` 模式时，如果工作区中没有 `.pks` 文件，还会从数据库（`ALL_OBJECTS`/`ALL_SOURCE`）发现套件 — 使用虚拟 URI `utplsql-db:/`（无 CodeLens/装饰/跳转到失败）。 |
 | `utplsql.organization.schemaPattern` | `db/{schema}/**` | 用于从路径中提取 schema 的 glob 模式。使用 `{schema}` 作为占位符。在 `schema` 模式下，模式基准目录（例如 `db/*`）下方的目录定义了在数据库中查询的 schemas。 |
-| `utplsql.compilationDiagnostics.enabled` | `true` | 在编辑器和问题面板中显示 PL/SQL 编译错误。 |
+| `utplsql.compilationDiagnostics.enabled` | `true` | 保留用于 PL/SQL 编译诊断。**目前在 Oracle-only 版本中无效** — 该功能尚未连接（尚未重新启用）。 |
 | `utplsql.setupDiagnostics.enabled` | `true` | 显示配置诊断（连接、授权、版本）以及 **utPLSQL 安装完整性**（UT3 schema 中的无效对象，带有 "Recompile UT3" 快速修复），并带有快速修复操作。 |
 | `utplsql.profiles` | `[]` | 已保存的 Oracle 连接配置（名称、连接，以及 `sourcePath`/`coverageOwner` 等的覆盖项），用于在环境之间切换。 (Full field reference: [wiki](https://github.com/thepaneb/vscode-utplsql/wiki/Configuration)). |
 | `utplsql.activeProfile` | `""` | 活动配置的 ID（`utplsql.profiles`）。设置后，会覆盖 `utplsql.connection`。 |
@@ -122,7 +122,7 @@ Test Explorer 中。
 | `utplsql.scriptRunner.filePattern` | `**/*.{sql,pks,pkb,fnc,prc,trg}` | Globs to list files when running a script folder. |
 | `utplsql.scriptRunner.dbmsOutput` | `false` | Captures and displays `DBMS_OUTPUT` during script execution. |
 | `utplsql.scriptRunner.timeoutSeconds` | `300` | Per-statement timeout (s) for scripts (`callTimeout`). |
-| `utplsql.language` | `auto` | 运行时消息的语言。`auto` 跟随 VSCode（pt、zh-tw/zh-hk、zh、es、ja、de、fr、it、ko、ru、tr、pl、cs、hu、bg、el、id、ro、sr、th、uk、vi、en-gb；否则为 en）。覆盖 **24 种语言环境**（15 种原生 + 9 种社区）。 |
+| `utplsql.language` | `auto` | 运行时消息的语言。`auto` 跟随 VSCode（pt、zh-tw/zh-hk、zh、es、ja、de、fr、it、ko、ru、tr、pl、cs、hu、bg、el、id、ro、sr、th、uk、vi、en-gb；否则为 en）。覆盖 **24 种语言环境**。 |
 
 示例（项目 `.vscode/settings.json`）：
 
@@ -255,12 +255,12 @@ UTPLSQL_CONN=your_user/password@//host:1521/service
 
 ## Reporters
 
-扩展始终包含三个默认 reporter：
-`ut_documentation_reporter`（stdout）、
-`ut_junit_reporter`（结果 → Test Explorer）和
-`ut_coverage_cobertura_reporter`（覆盖率，如果可用）。
+扩展始终包含**两个**默认 reporter：
+`ut_documentation_reporter`（stdout）和
+`ut_junit_reporter`（结果 → Test Explorer）。
+`ut_coverage_cobertura_reporter` 仅在带覆盖率运行时添加。
 
-**动态验证** — 在运行覆盖率之前，扩展通过 `utplsql reporters <conn>` 查询
+**动态验证** — 在运行覆盖率之前，扩展通过 `TABLE(ut_runner.get_reporters_list())` 查询
 数据库。如果数据库中没有 `UT_COVERAGE_COBERTURA_REPORTER`（例如过时的
 utPLSQL），覆盖率会被跳过并在输出中显示警告。测试执行
 永远不会被阻止。
@@ -269,13 +269,13 @@ utPLSQL），覆盖率会被跳过并在输出中显示警告。测试执行
 ```jsonc
 "utplsql.additionalReporters": ["UT_COVERAGE_HTML_REPORTER"]
 ```
-三个默认 reporter 会自动去重，即使在这里列出
+默认 reporter 会自动去重，即使在这里列出
 也会被去重。
 
 **按会话变化的 reporter** — 命令 **utPLSQL: Select additional
 reporter...** 会打开一个 QuickPick，显示数据库中的动态列表。所选的
-reporter 会在下次执行时使用，之后被丢弃（不会持久化到
-设置中）。
+reporter 会保存在会话中，但该选择在当前的 Oracle-only 版本中
+**不会被应用**。
 
 ## 数据库要求
 
@@ -317,7 +317,7 @@ GRANT SELECT ON SYS.DBA_PROCEDURES TO <ut3_owner>;
 | 套件不显示 | 未找到数据库 | 运行 `utPLSQL: Validate configuration` 进行诊断 |
 | 覆盖率空 | 缺少 `GRANT EXECUTE ON DBMS_PROFILER` | 在 [数据库要求](#数据库要求) 中运行授权，或使用 `utPLSQL: Copy coverage grants to clipboard` |
 | 覆盖率空 | Oracle 19c 需要额外授权 | `GRANT EXECUTE ON DBMS_PROFILER` + `GRANT EXECUTE ON DBMS_PLSQL_CODE_COVERAGE` |
-| 编译错误无提示 | 代码有 PL/SQL 语法错误 | 启用 `utplsql.compilationDiagnostics.enabled`（默认开启）；查看问题面板 |
+| 编译错误无提示 | 代码有 PL/SQL 语法错误 | 编译诊断在 Oracle-only 版本中尚未连接（`utplsql.compilationDiagnostics.enabled` 无效）；请编译/执行以暴露错误 |
 | 连接错误 | 字符串格式错误或数据库不可达 | 使用 `utPLSQL: Validate configuration` |
 | 运行超时 | 测试耗时超过 `timeoutMinutes` | 增加 `utplsql.timeoutMinutes` |
 | `%suite` 未识别 | 文件中缺少 `%suite`/`create package`，或 `%test` 没有 `PROCEDURE` | 检查 spec；运行 `utPLSQL: Refresh tests` |

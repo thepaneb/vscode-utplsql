@@ -11,7 +11,7 @@ compatibility: opencode
 **Always use connection pooling for applications, not raw connections.**
 
 ```js
-// Create pool ONCE at extension activation
+// Pool is created lazily on the first run (ensurePool in oracleRunner.ts)
 await oracledb.createPool({
   user:          'hr',
   password:      'password',
@@ -34,13 +34,6 @@ finally {
 // Close pool at extension deactivation
 await oracledb.getPool().close(10);
 ```
-
-## Current project gaps (oracleRunner.ts)
-
-1. **No pool**: Creates 2 raw `getConnection()` calls per run — should use `createPool` at activation
-2. **No connection validation**: Should set `poolPingInterval`
-3. **No outFormat**: Should set `oracledb.outFormat = oracledb.OUT_FORMAT_OBJECT`
-4. **No statement caching**: Should set `stmtCacheSize`
 
 ## Bind Variables
 

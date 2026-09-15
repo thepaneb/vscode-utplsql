@@ -27,7 +27,7 @@
 - 🔌 **Bağlantı profilleri** — status bar veya komut paleti aracılığıyla profil başına ayarlarla birden fazla ortam (DEV/TEST/PROD) arasında kaydedin ve geçiş yapın.
 - 📈 **İfade ve görünüm kapsamı** — Coverage sekmesi dosya başına `% of statements` (PROCEDURE/FUNCTION) gösterir ve `V$SQL` üzerinden çalıştırılan görünümleri izler.
 - 🐛 **PL/SQL Hata Ayıklama** — `DBMS_DEBUG` üzerinden utPLSQL testlerinde kesme noktaları ve adım adım hata ayıklama (doğal Debug Adapter).
-- 🌍 **i18n — 24 dil** — `utplsql.language` VSCode'u takip eder (15 yerel + 9 topluluk: pt-br, en, en-gb, es, zh-cn, zh-tw, ja, de, fr, it, ko, ru, tr, pl, cs, hu, bg, el, id, ro, sr, th, uk, vi).
+- 🌍 **i18n — 24 dil** — `utplsql.language` VSCode'u takip eder (24 yerel ayar: pt-br, en, en-gb, es, zh-cn, zh-tw, ja, de, fr, it, ko, ru, tr, pl, cs, hu, bg, el, id, ro, sr, th, uk, vi).
 
 ## Kurulum
 
@@ -99,7 +99,7 @@ Geçici dosya yok, toplu işin bitmesi beklenmez. Sonuçlar Test Explorer'da
 | `utplsql.coverageOwner` | `""` | Kapsanan nesnelerin şema sahibi. Boş = bağlantı kullanıcısını kullanır (büyük harfle). |
 | `utplsql.timeoutMinutes` | `60` | Çalıştırma zaman aşımı (dakika). |
 | `utplsql.dbmsOutput` | `false` | Test oturumunda `DBMS_OUTPUT`'u etkinleştirir. |
-| `utplsql.additionalReporters` | `[]` | Her çalıştırmada eklenecek ek raporlayıcılar (örn. `["ut_coverage_html_reporter"]`). Varsayılanlar (documentation, junit, coverage) her zaman dahildir ve listelenmeleri gerekmez. |
+| `utplsql.additionalReporters` | `[]` | Her çalıştırmada eklenecek ek raporlayıcılar (örn. `["ut_coverage_html_reporter"]`). Varsayılanlar (documentation, junit) her zaman dahildir ve listelenmeleri gerekmez. |
 | `utplsql.codeLens.enabled` | `true` | `%suite` ve `%test` üzerinde Run/Run with Coverage CodeLens düğmelerini gösterir. |
 | `utplsql.statusBar.enabled` | `true` | Durum çubuğunda test durum göstergesini gösterir. |
 | `utplsql.decorations.enabled` | `true` | Çalıştırmadan sonra `%suite` ve `%test` satırlarında geçti/kaldı süslemelerini gösterir. |
@@ -109,7 +109,7 @@ Geçici dosya yok, toplu işin bitmesi beklenmez. Sonuçlar Test Explorer'da
 | `utplsql.oraclePoolPingInterval` | `60` | Boştaki havuz bağlantılarının sağlık kontrolleri arasındaki saniye (node-oracledb). `0` = her kullanımda ping. |
 | `utplsql.organization` | `file` | Ağaç düzeni: `file` (yola göre) veya `schema` (Schema > Package > Suite > Test). `schema` modunda, `.pks` dosyaları çalışma alanında yoksa paketler de veritabanından (`ALL_OBJECTS`/`ALL_SOURCE`) keşfedilir — sanal URI `utplsql-db:/` ile (CodeLens/süsleme/hataya atlama yok). |
 | `utplsql.organization.schemaPattern` | `db/{schema}/**` | Şemayı yoldan çıkarmak için glob deseni. Yer tutucu olarak `{schema}` kullanın. `schema` modunda desen tabanının altındaki dizinler (örn. `db/*`) veritabanında sorgulanan şemaları tanımlar. |
-| `utplsql.compilationDiagnostics.enabled` | `true` | PL/SQL derleme hatalarını editörde ve Sorunlar Paneli'nde (Problems Panel) altı çizili olarak gösterir. |
+| `utplsql.compilationDiagnostics.enabled` | `true` | PL/SQL derleme tanılamaları için ayrılmıştır. Oracle-only sürümünde **şu anda hiçbir etkisi yoktur** — özellik bağlı değildir (henüz yeniden etkinleştirilmedi). |
 | `utplsql.setupDiagnostics.enabled` | `true` | Yapılandırma tanılamalarını (bağlantı, yetkiler, sürüm) ve **utPLSQL kurulum bütünlüğünü** (UT3 şemasındaki geçersiz nesneler, "Recompile UT3" hızlı düzeltmesiyle) hızlı düzeltme eylemleriyle gösterir. |
 | `utplsql.profiles` | `[]` | Ortamlar arasında geçiş yapmak için kaydedilen Oracle bağlantı profilleri (ad, bağlantı ve `sourcePath`/`coverageOwner`/vb. geçersiz kılmaları). (Full field reference: [wiki](https://github.com/thepaneb/vscode-utplsql/wiki/Configuration)). |
 | `utplsql.activeProfile` | `""` | Etkin profilin kimliği (`utplsql.profiles`). Ayarlandığında `utplsql.connection`'ı geçersiz kılar. |
@@ -122,7 +122,7 @@ Geçici dosya yok, toplu işin bitmesi beklenmez. Sonuçlar Test Explorer'da
 | `utplsql.scriptRunner.filePattern` | `**/*.{sql,pks,pkb,fnc,prc,trg}` | Globs to list files when running a script folder. |
 | `utplsql.scriptRunner.dbmsOutput` | `false` | Captures and displays `DBMS_OUTPUT` during script execution. |
 | `utplsql.scriptRunner.timeoutSeconds` | `300` | Per-statement timeout (s) for scripts (`callTimeout`). |
-| `utplsql.language` | `auto` | Çalışma zamanı mesajlarının dili. `auto`, VSCode'u takip eder (pt, zh-tw/zh-hk, zh, es, ja, de, fr, it, ko, ru, tr, pl, cs, hu, bg, el, id, ro, sr, th, uk, vi, en-gb; aksi halde en). **24 yerel ayarı** kapsar (15 yerel + 9 topluluk). |
+| `utplsql.language` | `auto` | Çalışma zamanı mesajlarının dili. `auto`, VSCode'u takip eder (pt, zh-tw/zh-hk, zh, es, ja, de, fr, it, ko, ru, tr, pl, cs, hu, bg, el, id, ro, sr, th, uk, vi, en-gb; aksi halde en). **24 yerel ayarı** kapsar. |
 
 Örnek (proje `.vscode/settings.json`):
 
@@ -257,13 +257,13 @@ bağlantıdan (veya `utplsql.coverageOwner`'dan) türetilir.
 
 ## Raporlayıcılar
 
-Uzantı her zaman üç varsayılan raporlayıcı içerir:
-`ut_documentation_reporter` (stdout),
-`ut_junit_reporter` (sonuçlar → Test Explorer) ve
-`ut_coverage_cobertura_reporter` (kapsam, varsa).
+Uzantı her zaman **iki** varsayılan raporlayıcı içerir:
+`ut_documentation_reporter` (stdout) ve
+`ut_junit_reporter` (sonuçlar → Test Explorer).
+`ut_coverage_cobertura_reporter` ise **yalnızca kapsamla çalıştırıldığında** eklenir.
 
 **Dinamik doğrulama** — kapsamla çalıştırmadan önce, uzantı veritabanını
-`utplsql reporters <conn>` üzerinden sorgular. Veritabanında
+`TABLE(ut_runner.get_reporters_list())` üzerinden sorgular. Veritabanında
 `UT_COVERAGE_COBERTURA_REPORTER` yoksa (örn. eski utPLSQL),
 kapsam çıktıda bir uyarıyla atlanır. Test çalıştırması asla
 engellenmez.
@@ -272,13 +272,12 @@ engellenmez.
 ```jsonc
 "utplsql.additionalReporters": ["UT_COVERAGE_HTML_REPORTER"]
 ```
-Üç varsayılan raporlayıcı, burada listelense bile otomatik olarak
+Varsayılan raporlayıcılar, burada listelense bile otomatik olarak
 yinelenmekten (dedupe) çıkarılır.
 
 **Oturum başına geçici raporlayıcı** — **utPLSQL: Select additional
 reporter...** komutu, veritabanındaki dinamik listeyle bir QuickPick açar. Seçilen
-raporlayıcı bir sonraki çalıştırmada kullanılır ve sonrasında atılır (ayarlarda
-kalıcı olmaz).
+raporlayıcı oturumda saklanır, ancak seçim mevcut Oracle-only sürümünde **uygulanmaz**.
 
 ## Veritabanı gereksinimleri
 
@@ -320,7 +319,7 @@ GRANT SELECT ON SYS.DBA_PROCEDURES TO <ut3_owner>;
 | Paketler görünmüyor | Veritabanı bulunamadı | Tanılama için `utPLSQL: Validate configuration` çalıştırın |
 | Boş kapsam | `GRANT EXECUTE ON DBMS_PROFILER` eksik | [Veritabanı gereksinimleri](#veritabanı-gereksinimleri) içindeki yetkileri çalıştırın veya `utPLSQL: Copy coverage grants to clipboard` kullanın |
 | Boş kapsam | Oracle 19c ek yetkiler gerektirir | `GRANT EXECUTE ON DBMS_PROFILER` + `GRANT EXECUTE ON DBMS_PLSQL_CODE_COVERAGE` |
-| Neden belirtilmeyen derleme hatası | PL/SQL sözdizimi hatası olan kod | `utplsql.compilationDiagnostics.enabled` etkinleştirin (varsayılan açık); Sorunlar Paneli'ne bakın |
+| Neden belirtilmeyen derleme hatası | PL/SQL sözdizimi hatası olan kod | Derleme tanılamaları Oracle-only sürümünde henüz bağlı değil (`utplsql.compilationDiagnostics.enabled` etkisiz); hatayı görmek için derleyin/çalıştırın |
 | Bağlantı hatası | Hatalı biçimli dize veya erişilemeyen veritabanı | `utPLSQL: Validate configuration` kullanın |
 | Çalışırken zaman aşımı | Testler `timeoutMinutes` değerinden uzun sürüyor | `utplsql.timeoutMinutes` değerini artırın |
 | `%suite` tanınmıyor | Dosyada `%suite`/`create package` eksik veya `%test` `PROCEDURE` olmadan | Şemayı kontrol edin; `utPLSQL: Refresh tests` çalıştırın |

@@ -19,12 +19,11 @@ For detailed guidance on specific topics, reference the following sub-skills:
 
 This project is a VSCode extension for utPLSQL testing. Key patterns:
 
-1. Two runner modes coexist: CLI (utPLSQL-cli + Java) and Oracle direct (node-oracledb)
-2. `runnerMode: auto` defaults to Oracle → fallback CLI
-3. Oracle direct mode uses `UT_OUTPUT_BUFFER_TMP` for polling real-time output
-4. Schema discovery queries `ALL_SYNONYMS` to find UT3 schema prefix for shared installs
-5. Connection is resolved via: setting → env `UTPLSQL_CONN` → session cache → prompt
-6. Never log connection strings in plaintext
+1. Execution is Oracle direct only (node-oracledb); there is no CLI/Java runner mode
+2. Oracle direct mode uses `UT_OUTPUT_BUFFER_TMP` for polling real-time output
+3. Schema discovery queries `ALL_SYNONYMS` to find UT3 schema prefix for shared installs
+4. Connection is resolved via: setting → env `UTPLSQL_CONN` → session cache → prompt
+5. Never log connection strings in plaintext
 
 ## When to load other skills
 

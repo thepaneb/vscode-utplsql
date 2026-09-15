@@ -33,16 +33,24 @@ vscode-utplsql/
 │   ├── oracleRunner.ts      ← executeRunOracle (streaming + pool) + utPLSQL schema discovery
 │   ├── results.ts           ← canonical result/coverage functions (PRD-44)
 │   ├── config.ts            ← settings + env vars reading + resolveConnection
+│   ├── connectionProfiles.ts ← connection profile CRUD + picker
 │   ├── discovery.ts         ← findFiles + parse + DB-based discovery (PRD-43)
 │   ├── suiteParser.ts       ← regex %suite/%test + annotations (pure)
 │   ├── junit.ts             ← JUnit XML parsing + stack frames (pure)
 │   ├── cobertura.ts         ← Cobertura XML parsing (pure)
+│   ├── coverage.ts          ← coverage filename → source URI resolution
+│   ├── viewCoverage.ts      ← optional V$SQL view tracking
 │   ├── matching.ts          ← URI/folder filtering + result→test matching (pure)
 │   ├── codelens.ts          ← parseCodeLensItems (pure) + CodeLensProvider
-│   ├── compilationDiagnostics.ts ← PL/SQL errors in editor
+│   ├── plsqlDeclarations.ts ← declaration coverage derived from source (pure)
 │   ├── quickfix.ts          ← SetupValidator + Code Actions
 │   ├── decorations.ts       ← inline pass/fail decorations
 │   ├── statusBar.ts         ← status indicator
+│   ├── scriptRunner.ts      ← SQL script execution (editor/file/folder, PRD-62)
+│   ├── debugger.ts          ← DBMS_DEBUG debug adapter
+│   ├── dbmsDebug.ts         ← DBMS_DEBUG client (pure SQL/parse)
+│   ├── i18n.ts              ← translation runtime (pure)
+│   ├── i18nLocales.ts       ← locale catalogs (pure)
 │   ├── state.ts             ← session state (pure)
 │   ├── types.ts             ← interfaces (type-only)
 │   └── test/

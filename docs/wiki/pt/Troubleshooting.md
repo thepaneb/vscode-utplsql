@@ -31,12 +31,11 @@ Para diagnóstico automático, rode `utPLSQL: Validar configuração`.
 **Sintoma:** Testes falham com erro de compilação, mas o editor não mostra
 sublinhados.
 
-**Solução:** Verifique se `utplsql.compilationDiagnostics.enabled` está `true`
-(default). Se estiver desabilitado, reabilite:
+**Causa:** Os compilation diagnostics **não estão ativos** na versão Oracle-only
+atual — `utplsql.compilationDiagnostics.enabled` existe, mas **não tem efeito**.
 
-```jsonc
-"utplsql.compilationDiagnostics.enabled": true
-```
+**Solução:** Compile ou rode os testes e leia o erro no output da execução.
+Ainda não há sublinhado automático no editor.
 
 ---
 
@@ -61,9 +60,10 @@ para verificar a versão.
 **Causa 3:** `sourcePath` aponta para a pasta errada ou a estrutura
 `sourcePath/<tipo>/<nome>.sql` não confere com os objetos cobertos.
 
-**Solução:** Verifique os objetos mapeados no Log Output da
-extensão (canal `utPLSQL`). Ajuste `utplsql.sourcePath` e a estrutura de
-pastas (`functions/`, `procedures/`, `packages/`, `views/`, ...).
+**Solução:** Ajuste `utplsql.sourcePath` e a estrutura de
+pastas (`functions/`, `procedures/`, `packages/`, `views/`, ...). Não há log
+por objeto: quando nada é mapeado, o output da execução mostra a mensagem
+genérica `[cobertura] nenhum arquivo mapeado`.
 
 ---
 

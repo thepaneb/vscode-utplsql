@@ -27,7 +27,7 @@
 - 🔌 **Connection profiles** — αποθήκευση και εναλλαγή μεταξύ πολλών περιβαλλόντων (DEV/TEST/PROD) με ρυθμίσεις ανά profile, μέσω status bar ή command palette.
 - 📈 **Κάλυψη εντολών και views** — η καρτέλα Coverage δείχνει το `% των εντολών` (PROCEDURE/FUNCTION) ανά αρχείο και παρακολουθεί τα views που εκτελέστηκαν μέσω `V$SQL`.
 - 🐛 **PL/SQL Debug** — breakpoints και βηματική αποσφαλμάτωση utPLSQL tests μέσω `DBMS_DEBUG` (native Debug Adapter).
-- 🌍 **i18n — 24 γλώσσες** — το `utplsql.language` ακολουθεί το VSCode (15 εγγενείς + 9 κοινοτικές: pt-br, en, en-gb, es, zh-cn, zh-tw, ja, de, fr, it, ko, ru, tr, pl, cs, hu, bg, el, id, ro, sr, th, uk, vi).
+- 🌍 **i18n — 24 γλώσσες** — το `utplsql.language` ακολουθεί το VSCode (24 τοπικές ρυθμίσεις: pt-br, en, en-gb, es, zh-cn, zh-tw, ja, de, fr, it, ko, ru, tr, pl, cs, hu, bg, el, id, ro, sr, th, uk, vi).
 
 ## Εγκατάσταση
 
@@ -99,7 +99,7 @@ Test Explorer **καθώς ολοκληρώνεται κάθε test**.
 | `utplsql.sourcePath` | `install` | Φάκελος του κώδικα παραγωγής (για την αντιστοίχιση της κάλυψης σε αρχεία). |
 | `utplsql.includePatterns` | `["**/*.pks"]` | Globs για την εύρεση των specs με `%suite`/`%test`. Αν τα tests σας είναι σε `.sql`, χρησιμοποιήστε `["**/*.sql"]`. |
 | `utplsql.coverageOwner` | `""` | Schema-owner των καλυπτόμενων αντικειμένων. Κενό = χρησιμοποιεί τον χρήστη της σύνδεσης (κεφαλαία). |
-| `utplsql.additionalReporters` | `[]` | Επιπλέον reporters που περιλαμβάνονται σε κάθε εκτέλεση (π.χ. `["ut_coverage_html_reporter"]`). Οι προεπιλεγμένοι (documentation, junit, coverage) περιλαμβάνονται πάντα και δεν χρειάζεται να αναφέρονται. |
+| `utplsql.additionalReporters` | `[]` | Επιπλέον reporters που περιλαμβάνονται σε κάθε εκτέλεση (π.χ. `["ut_coverage_html_reporter"]`). Οι προεπιλεγμένοι (documentation, junit) περιλαμβάνονται πάντα και δεν χρειάζεται να αναφέρονται. |
 | `utplsql.codeLens.enabled` | `true` | Εμφανίζει κουμπιά CodeLens Run/Run with Coverage πάνω από τα `%suite` και `%test`. |
 | `utplsql.statusBar.enabled` | `true` | Εμφανίζει ένδειξη κατάστασης των tests στη status bar. |
 | `utplsql.decorations.enabled` | `true` | Εμφανίζει decorations επιτυχίας/αποτυχίας στις γραμμές `%suite` και `%test` μετά την εκτέλεση. |
@@ -109,7 +109,7 @@ Test Explorer **καθώς ολοκληρώνεται κάθε test**.
 | `utplsql.oraclePoolPingInterval` | `60` | Δευτερόλεπτα μεταξύ των ελέγχων υγείας των αδρανών συνδέσεων του pool (node-oracledb). `0` = ping σε κάθε checkout. |
 | `utplsql.organization` | `file` | Οργάνωση δέντρου: `file` (ανά διαδρομή) ή `schema` (Schema > Package > Suite > Test). Στη λειτουργία `schema` τα suites ανακαλύπτονται επίσης από τη βάση (`ALL_OBJECTS`/`ALL_SOURCE`) όταν τα αρχεία `.pks` δεν υπάρχουν στο workspace — με εικονικό URI `utplsql-db:/` (χωρίς CodeLens/decorations/jump to failure). |
 | `utplsql.organization.schemaPattern` | `db/{schema}/**` | Glob pattern για την εξαγωγή του schema από τη διαδρομή. Χρησιμοποιήστε το `{schema}` ως placeholder. Στη λειτουργία `schema`, οι κατάλογοι κάτω από τη βάση του pattern (π.χ. `db/*`) ορίζουν τα schemas που ερωτώνται στη βάση. |
-| `utplsql.compilationDiagnostics.enabled` | `true` | Εμφανίζει τα PL/SQL σφάλματα μεταγλώττισης ως υπογραμμίσεις στον editor και στο Problems Panel. |
+| `utplsql.compilationDiagnostics.enabled` | `true` | Προορίζεται για διαγνωστικά μεταγλώττισης PL/SQL. **Προς το παρόν δεν έχει κανένα αποτέλεσμα** στην έκδοση Oracle-only — η λειτουργία δεν είναι συνδεδεμένη (δεν έχει επανενεργοποιηθεί ακόμη). |
 | `utplsql.setupDiagnostics.enabled` | `true` | Εμφανίζει διαγνωστικά ρυθμίσεων (σύνδεση, grants, έκδοση) και **ακεραιότητα εγκατάστασης utPLSQL** (άκυρα αντικείμενα στο schema UT3, με quick-fix "Recompile UT3") με ενέργειες quick-fix. |
 | `utplsql.profiles` | `[]` | Αποθηκευμένα profiles σύνδεσης Oracle (όνομα, σύνδεση και παρακάμψεις των `sourcePath`/`coverageOwner`/κ.λπ.) για εναλλαγή μεταξύ περιβαλλόντων. (Full field reference: [wiki](https://github.com/thepaneb/vscode-utplsql/wiki/Configuration)). |
 | `utplsql.activeProfile` | `""` | ID του ενεργού profile (`utplsql.profiles`). Όταν ορίζεται, υπερισχύει του `utplsql.connection`. |
@@ -122,7 +122,7 @@ Test Explorer **καθώς ολοκληρώνεται κάθε test**.
 | `utplsql.scriptRunner.filePattern` | `**/*.{sql,pks,pkb,fnc,prc,trg}` | Globs to list files when running a script folder. |
 | `utplsql.scriptRunner.dbmsOutput` | `false` | Captures and displays `DBMS_OUTPUT` during script execution. |
 | `utplsql.scriptRunner.timeoutSeconds` | `300` | Per-statement timeout (s) for scripts (`callTimeout`). |
-| `utplsql.language` | `auto` | Γλώσσα των μηνυμάτων του runtime. Το `auto` ακολουθεί το VSCode (pt, zh-tw/zh-hk, zh, es, ja, de, fr, it, ko, ru, tr, pl, cs, hu, bg, el, id, ro, sr, th, uk, vi, en-gb· διαφορετικά en). Καλύπτει τις **24 τοπικές ρυθμίσεις** (15 εγγενείς + 9 κοινοτικές). |
+| `utplsql.language` | `auto` | Γλώσσα των μηνυμάτων του runtime. Το `auto` ακολουθεί το VSCode (pt, zh-tw/zh-hk, zh, es, ja, de, fr, it, ko, ru, tr, pl, cs, hu, bg, el, id, ro, sr, th, uk, vi, en-gb· διαφορετικά en). Καλύπτει τις **24 τοπικές ρυθμίσεις**. |
 
 Παράδειγμα (`.vscode/settings.json` του project):
 
@@ -298,13 +298,13 @@ UTPLSQL_CONN=your_user/password@//host:1521/service
 
 ## Reporters
 
-Η επέκταση περιλαμβάνει πάντα τρεις προεπιλεγμένους reporters:
-`ut_documentation_reporter` (stdout),
-`ut_junit_reporter` (αποτελέσματα → Test Explorer) και
-`ut_coverage_cobertura_reporter` (coverage, αν είναι διαθέσιμος).
+Η επέκταση περιλαμβάνει πάντα **δύο** προεπιλεγμένους reporters:
+`ut_documentation_reporter` (stdout) και
+`ut_junit_reporter` (αποτελέσματα → Test Explorer). Ο
+`ut_coverage_cobertura_reporter` προστίθεται **μόνο όταν εκτελείται με coverage**.
 
 **Δυναμική επικύρωση** — πριν εκτελέσει με coverage, η επέκταση ερωτά
-τη βάση μέσω του `utplsql reporters <conn>`. Αν το
+τη βάση μέσω του `TABLE(ut_runner.get_reporters_list())`. Αν το
 `UT_COVERAGE_COBERTURA_REPORTER` δεν υπάρχει στη βάση (π.χ. παλιό
 utPLSQL), το coverage παραλείπεται με προειδοποίηση στην έξοδο. Η εκτέλεση
 των tests δεν μπλοκάρεται ποτέ.
@@ -313,13 +313,13 @@ utPLSQL), το coverage παραλείπεται με προειδοποίηση
 ```jsonc
 "utplsql.additionalReporters": ["UT_COVERAGE_HTML_REPORTER"]
 ```
-Οι τρεις προεπιλεγμένοι reporters αφαιρούνται αυτόματα ως διπλότυπα, ακόμη κι αν
+Οι προεπιλεγμένοι reporters αφαιρούνται αυτόματα ως διπλότυπα, ακόμη κι αν
 αναφέρονται εδώ.
 
 **Προσωρινός reporter ανά σύνοδο** — η εντολή **utPLSQL: Select additional
 reporter...** ανοίγει ένα QuickPick με τη δυναμική λίστα από τη βάση. Ο
-επιλεγμένος reporter χρησιμοποιείται στην επόμενη εκτέλεση και απορρίπτεται μετά (δεν
-αποθηκεύεται στις ρυθμίσεις).
+επιλεγμένος reporter αποθηκεύεται στη σύνοδο, αλλά η επιλογή **δεν εφαρμόζεται**
+στην τρέχουσα έκδοση Oracle-only.
 
 ## Απαιτήσεις βάσης δεδομένων
 
@@ -360,7 +360,7 @@ GRANT SELECT ON SYS.DBA_PROCEDURES TO <ut3_owner>;
 |---|---|---|
 | Κενό coverage | Λείπει το `GRANT EXECUTE ON DBMS_PROFILER` | Εκτελέστε τα grants στις [Απαιτήσεις βάσης δεδομένων](#απαιτήσεις-βάσης-δεδομένων) ή χρησιμοποιήστε το `utPLSQL: Copy coverage grants to clipboard` |
 | Κενό coverage | Το Oracle 19c απαιτεί επιπλέον grants | `GRANT EXECUTE ON DBMS_PROFILER` + `GRANT EXECUTE ON DBMS_PLSQL_CODE_COVERAGE` |
-| Σφάλμα μεταγλώττισης χωρίς ένδειξη | Κώδικας με συντακτικό σφάλμα PL/SQL | Ενεργοποιήστε το `utplsql.compilationDiagnostics.enabled` (ενεργό από προεπιλογή)· δείτε το Problems Panel |
+| Σφάλμα μεταγλώττισης χωρίς ένδειξη | Κώδικας με συντακτικό σφάλμα PL/SQL | Τα διαγνωστικά μεταγλώττισης δεν είναι ακόμη συνδεδεμένα στην έκδοση Oracle-only (το `utplsql.compilationDiagnostics.enabled` δεν έχει αποτέλεσμα)· μεταγλωττίστε/εκτελέστε για να εμφανιστεί το σφάλμα |
 | Σφάλμα σύνδεσης | Κακοσχηματισμένη συμβολοσειρά ή μη προσβάσιμη βάση | Χρησιμοποιήστε το `utPLSQL: Validate configuration` |
 | Το `%suite` δεν αναγνωρίζεται | Λείπει το `%suite`/`create package` στο αρχείο ή `%test` χωρίς `PROCEDURE` | Ελέγξτε το spec· εκτελέστε το `utPLSQL: Refresh tests` |
 | Το CodeLens δεν εμφανίζεται | `editor.codeLens` απενεργοποιημένο ή σύγκρουση | Ενεργοποιήστε το `"editor.codeLens": true`· ελέγξτε το `utplsql.codeLens.enabled` |

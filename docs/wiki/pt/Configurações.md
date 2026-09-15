@@ -3,6 +3,8 @@
 Todas as settings da extensão, com prefixo `utplsql.`. Configure no
 `settings.json` do usuário ou do workspace (`.vscode/settings.json`).
 
+Procurando exemplos prontos? Veja [Exemplos de configuração](Exemplos-de-configuração).
+
 ## Conexão
 
 | Setting | Default | Descrição |
@@ -15,7 +17,7 @@ Todas as settings da extensão, com prefixo `utplsql.`. Configure no
 
 | Campo | Tipo | Obrigatório | Default | Descrição |
 |---|---|---|---|---|
-| `id` | string | Sim (auto-gerado) | — | UUID do perfil. |
+| `id` | string | Não (auto-gerado) | — | UUID do perfil. Gerado quando omitido. |
 | `name` | string | Sim | — | Nome amigável (ex. "DEV Local"). |
 | `connection` | string | Sim | — | String de conexão (`user/pass@//host:port/service`). |
 | `description` | string | Não | — | Descrição exibida no picker de conexão. |
@@ -23,8 +25,8 @@ Todas as settings da extensão, com prefixo `utplsql.`. Configure no
 | `sourcePath` | string | Não | herda do global | Sobrescreve `utplsql.sourcePath`. |
 | `coverageOwner` | string | Não | herda do global | Sobrescreve `utplsql.coverageOwner`. |
 | `includePatterns` | string[] | Não | herda do global | Sobrescreve `utplsql.includePatterns`. |
-| `isDefault` | boolean | Não | `false` | Marca perfil como padrão ao carregar workspace. |
-| `lastUsed` | string | Não | — | Timestamp ISO do último uso. |
+| `isDefault` | boolean | Não | `false` | Mostra um badge de padrão no picker de perfis. **Não** seleciona o perfil automaticamente ao carregar. |
+| `lastUsed` | string | Não | — | Reservado — não é escrito nem lido pela extensão hoje. |
 
 Exemplo:
 
@@ -73,6 +75,13 @@ O `charset` do perfil vale para `runScriptFile`/`runScriptFolder` (arquivo lido
 como bytes e decodificado). No `runScript` (editor) o texto já vem decodificado
 pelo VSCode — o charset do perfil não se aplica.
 
+## Execução de testes
+
+| Setting | Default | Descrição |
+|---|---|---|
+| `utplsql.timeoutMinutes` | `60` | Timeout de uma execução de testes, em minutos (1–1440). Ao expirar, a execução é cancelada. |
+| `utplsql.dbmsOutput` | `false` | Captura o `DBMS_OUTPUT` da sessão de teste e anexa à saída da execução. Best-effort; útil para depurar. |
+
 ## Cobertura
 
 | Setting | Default | Descrição |
@@ -120,7 +129,7 @@ conexão muda e fechado ao desativar a extensão. Veja [Execução Oracle direta
 | `utplsql.codeLens.enabled` | `true` | Botões CodeLens Run/Run with Coverage sobre `%suite` e `%test`. |
 | `utplsql.statusBar.enabled` | `true` | Indicador de status na barra de status (pass/fail + duração). |
 | `utplsql.decorations.enabled` | `true` | Ícones inline ✓/✗/⚠ no editor após execução. |
-| `utplsql.compilationDiagnostics.enabled` | `true` | Exibe erros de compilação PL/SQL como sublinhados e no Problems Panel. |
+| `utplsql.compilationDiagnostics.enabled` | `true` | Reservada para compilation diagnostics de PL/SQL. **Atualmente não tem efeito** na versão Oracle-only — a feature não está ligada (ainda não foi religada). |
 | `utplsql.setupDiagnostics.enabled` | `true` | Exibe diagnósticos de setup (conexão, grants, versão) e de integridade da instalação utPLSQL (objetos inválidos, quick-fix "Recompilar UT3") com quick-fix. |
 
 ## Organização da árvore

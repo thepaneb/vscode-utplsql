@@ -13,13 +13,11 @@ executeRun(controller, request, token, coverage, state, onSuiteStart, onComplete
     │       └─► pathArgs = Set de nomes de package
     │
     ├─► executeRunOracle(...)
+    │       ├─► parseJUnit(xml do buffer Oracle) → applyResultsFromCases()
+    │       │       └─► Map<TestItem.id, {status, message}> + run.passed/failed/...
+    │       ├─► applyCoverageFromXml() → gutters + FileCoverage (se coverage)
     │       ├─► sucesso → run.end() → return
     │       └─► erro → errored todos → return
-    │
-    ├─► parseJUnit(results.xml) → TestCaseResult[]
-    ├─► applyResults() → Map<TestItem.id, {status, message}>
-    ├─► applyCoverage() → gutters + FileCoverage
-    ├─► compilationDiagnostics.parseFromOutput → resolveFiles → apply (se habilitado)
     │
     └─► limpeza: run.end()
 ```

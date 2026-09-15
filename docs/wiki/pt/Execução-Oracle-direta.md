@@ -64,7 +64,8 @@ Sem esses grants, a execução falha com `ORA-00942`.
 
 ### Cobertura
 
-A cobertura requer `GRANT EXECUTE ON SYS.DBMS_PROFILER` no schema dos testes.
+A cobertura requer **os dois** `GRANT EXECUTE ON SYS.DBMS_PROFILER` e
+`GRANT EXECUTE ON SYS.DBMS_PLSQL_CODE_COVERAGE` no schema dos testes.
 
 ## Troubleshooting
 
@@ -72,4 +73,4 @@ A cobertura requer `GRANT EXECUTE ON SYS.DBMS_PROFILER` no schema dos testes.
 |---|---|
 | `ORA-00942: table does not exist` | Execute os grants nas tabelas de buffer (veja acima) |
 | Conexão recusada | Verifique formato: `user/pass@//host:port/service` |
-| Coverage não funciona | `GRANT EXECUTE ON DBMS_PROFILER` no schema dos testes |
+| Coverage não funciona | `GRANT EXECUTE ON DBMS_PROFILER` + `GRANT EXECUTE ON DBMS_PLSQL_CODE_COVERAGE` no schema dos testes |

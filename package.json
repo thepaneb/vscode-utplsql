@@ -132,12 +132,12 @@
           "default": 60,
           "minimum": 1,
           "maximum": 1440,
-          "description": "Timeout em minutos para o utPLSQL-cli (flag -t)."
+          "description": "Timeout de uma execução de testes, em minutos. Ao expirar, a execução é cancelada."
         },
         "utplsql.dbmsOutput": {
           "type": "boolean",
           "default": false,
-          "description": "Habilita DBMS_OUTPUT na sessão de teste (flag -D). Útil para debugar."
+          "description": "Captura o DBMS_OUTPUT da sessão de teste e anexa à saída da execução. Útil para depurar."
         },
         "utplsql.additionalReporters": {
           "type": "array",
@@ -212,7 +212,7 @@
         "utplsql.setupDiagnostics.enabled": {
           "type": "boolean",
           "default": true,
-          "description": "Exibe diagnósticos de configuração (CLI, conexão, grants, versão) no Problems Panel e oferece quick-fix actions."
+          "description": "Exibe diagnósticos de configuração (conexão, grants, versão) no Problems Panel e oferece quick-fix actions."
         },
         "utplsql.sqlCoverageEnabled": {
           "type": "boolean",

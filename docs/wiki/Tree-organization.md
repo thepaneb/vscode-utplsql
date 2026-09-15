@@ -69,6 +69,10 @@ Files that do not match the `schemaPattern` are grouped under the
 **"UNKNOWN"** schema, which appears last in the tree. This makes it easy to
 quickly identify files outside the expected convention.
 
+Always include the `{schema}` placeholder in the pattern — without it there is
+no capture group, so no schema can be extracted and every file ends up under
+`UNKNOWN`.
+
 ### Multi-schema tips
 
 - Use a consistent directory structure: `db/{schema}/tests/packages/`
@@ -83,8 +87,9 @@ quickly identify files outside the expected convention.
 - **Run a specific package:** click the `Package: UT_MY_TESTS` node
 - **Toggle between modes:** change `organization` and the tree is rebuilt on
   the next refresh
-- **Pattern without `{schema}`:** all files fall under `UNKNOWN` — there is no
-  fallback to `file` mode
+- **Always include `{schema}`:** without the placeholder there is no capture
+  group, so no schema is extracted and every file is grouped under `UNKNOWN`
+  — there is no fallback to `file` mode
 
 ## Database discovery (from 0.11.0)
 

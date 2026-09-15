@@ -15,7 +15,7 @@ into the native **Test Explorer**, with context menu and visual coverage.
 - **Smart Re-run** — Rerun Last, Run at Cursor, Run Failed Only with a shortcut
 - **Oracle streaming** — direct execution via node-oracledb with real-time results
 - **Schema-aware tree** — organize tests by Schema > Package > Suite > Test
-- **Diagnostics and quick-fix** — PL/SQL errors in the editor + setup validation with Code Actions
+- **Diagnostics and quick-fix** — setup validation with Code Actions
 - **Jump to failure** — navigation to the failed assertion line (native Go to Error)
 
 ![Test Explorer with expanded suites](images/test-explorer-suites.png)

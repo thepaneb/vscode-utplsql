@@ -14,9 +14,9 @@ GRANT EXECUTE ON SYS.DBMS_PLSQL_CODE_COVERAGE TO <schema_que_roda_os_testes>;
 
 Sem esses grants, os testes rodam mas a cobertura sai **vazia** (0%).
 
-> No Oracle 19c, o pacote `DBMS_PLSQL_CODE_COVERAGE` pode não existir.
-> Nesse caso, apenas `DBMS_PROFILER` basta — mas a cobertura será menos
-> precisa.
+> Mantenha **os dois** grants: a cobertura usa `DBMS_PROFILER` e, no Oracle 19c+,
+> também `DBMS_PLSQL_CODE_COVERAGE`. O comando `Copiar grants de cobertura para
+> clipboard` copia os dois statements.
 
 ## Descoberta de testes em OUTROS schemas
 

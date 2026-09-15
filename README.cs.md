@@ -27,7 +27,7 @@ Integruje [utPLSQL](https://www.utplsql.org/) do VSCode a přináší PL/SQL tes
 - 🔌 **Profily připojení** — ukládání a přepínání mezi více prostředími (DEV/TEST/PROD) s nastavením podle profilu, přes stavový řádek nebo paletu příkazů.
 - 📈 **Pokrytí příkazů a pohledů** — karta Coverage zobrazuje `% of statements` (PROCEDURE/FUNCTION) podle souboru a sleduje pohledy spuštěné přes `V$SQL`.
 - 🐛 **PL/SQL Debug** — breakpointy a krokování testů utPLSQL přes `DBMS_DEBUG` (nativní Debug Adapter).
-- 🌍 **i18n — 24 jazyků** — `utplsql.language` se řídí VSCode (15 nativních + 9 komunitních: pt-br, en, en-gb, es, zh-cn, zh-tw, ja, de, fr, it, ko, ru, tr, pl, cs, hu, bg, el, id, ro, sr, th, uk, vi).
+- 🌍 **i18n — 24 jazyků** — `utplsql.language` se řídí VSCode (24 locale: pt-br, en, en-gb, es, zh-cn, zh-tw, ja, de, fr, it, ko, ru, tr, pl, cs, hu, bg, el, id, ro, sr, th, uk, vi).
 
 ## Instalace
 
@@ -99,7 +99,7 @@ nativních API VSCode.
 | `utplsql.sourcePath` | `install` | Složka produkčního kódu (pro mapování pokrytí na soubory). |
 | `utplsql.includePatterns` | `["**/*.pks"]` | Globy pro objevení specifikací s `%suite`/`%test`. Pokud jsou vaše testy v `.sql`, použijte `["**/*.sql"]`. |
 | `utplsql.coverageOwner` | `""` | Vlastník schématu pokrytých objektů. Prázdné = použije uživatele připojení (velkými písmeny). |
-| `utplsql.additionalReporters` | `[]` | Další reportéry zahrnuté do každého spuštění (např. `["ut_coverage_html_reporter"]`). Výchozí (documentation, junit, coverage) jsou vždy zahrnuty a není třeba je vypisovat. |
+| `utplsql.additionalReporters` | `[]` | Další reportéry zahrnuté do každého spuštění (např. `["ut_coverage_html_reporter"]`). Výchozí (documentation, junit) jsou vždy zahrnuty a není třeba je vypisovat. |
 | `utplsql.codeLens.enabled` | `true` | Zobrazuje tlačítka CodeLens Run/Run with Coverage nad `%suite` a `%test`. |
 | `utplsql.statusBar.enabled` | `true` | Zobrazuje indikátor stavu testů ve stavovém řádku. |
 | `utplsql.decorations.enabled` | `true` | Zobrazuje dekorace prošlo/selháno na řádcích `%suite` a `%test` po spuštění. |
@@ -109,7 +109,7 @@ nativních API VSCode.
 | `utplsql.oraclePoolPingInterval` | `60` | Sekundy mezi kontrolami stavu nečinných připojení v poolu (node-oracledb). `0` = ping při každém checkoutu. |
 | `utplsql.organization` | `file` | Uspořádání stromu: `file` (podle cesty) nebo `schema` (Schema > Package > Suite > Test). V režimu `schema` se sady také objevují z databáze (`ALL_OBJECTS`/`ALL_SOURCE`), když soubory `.pks` nejsou v pracovním prostoru — s virtuální URI `utplsql-db:/` (bez CodeLens/dekorací/skoku na selhání). |
 | `utplsql.organization.schemaPattern` | `db/{schema}/**` | Glob vzor pro extrakci schématu z cesty. Použijte `{schema}` jako zástupný symbol. V režimu `schema` adresáře pod základnou vzoru (např. `db/*`) definují schémata dotazovaná v databázi. |
-| `utplsql.compilationDiagnostics.enabled` | `true` | Zobrazuje chyby kompilace PL/SQL jako podtržení v editoru a v panelu Problémy. |
+| `utplsql.compilationDiagnostics.enabled` | `true` | Vyhrazeno pro diagnostiku kompilace PL/SQL. **V současnosti nemá žádný efekt** ve verzi pouze pro Oracle — funkce není zapojena (ještě není znovu povolena). |
 | `utplsql.setupDiagnostics.enabled` | `true` | Zobrazuje diagnostiku konfigurace (připojení, granty, verze) a **integritu instalace utPLSQL** (neplatné objekty ve schématu UT3, s rychlou opravou „Recompile UT3") s akcemi rychlé opravy. |
 | `utplsql.profiles` | `[]` | Uložené profily připojení k Oracle (název, připojení a přebití `sourcePath`/`coverageOwner`/atd.) pro přepínání mezi prostředími. (Full field reference: [wiki](https://github.com/thepaneb/vscode-utplsql/wiki/Configuration)). |
 | `utplsql.activeProfile` | `""` | ID aktivního profilu (`utplsql.profiles`). Pokud je nastaveno, přebíjí `utplsql.connection`. |
@@ -122,7 +122,7 @@ nativních API VSCode.
 | `utplsql.scriptRunner.filePattern` | `**/*.{sql,pks,pkb,fnc,prc,trg}` | Globs to list files when running a script folder. |
 | `utplsql.scriptRunner.dbmsOutput` | `false` | Captures and displays `DBMS_OUTPUT` during script execution. |
 | `utplsql.scriptRunner.timeoutSeconds` | `300` | Per-statement timeout (s) for scripts (`callTimeout`). |
-| `utplsql.language` | `auto` | Jazyk běhových zpráv. `auto` se řídí VSCode (pt, zh-tw/zh-hk, zh, es, ja, de, fr, it, ko, ru, tr, pl, cs, hu, bg, el, id, ro, sr, th, uk, vi, en-gb; jinak en). Pokrývá **24 locale** (15 nativních + 9 komunitních). |
+| `utplsql.language` | `auto` | Jazyk běhových zpráv. `auto` se řídí VSCode (pt, zh-tw/zh-hk, zh, es, ja, de, fr, it, ko, ru, tr, pl, cs, hu, bg, el, id, ro, sr, th, uk, vi, en-gb; jinak en). Pokrývá **24 locale**. |
 
 Příklad (soubor `.vscode/settings.json` projektu):
 
@@ -298,13 +298,13 @@ je odvozen z připojení (nebo z `utplsql.coverageOwner`).
 
 ## Reportéry
 
-Rozšíření vždy zahrnuje tři výchozí reportéry:
-`ut_documentation_reporter` (stdout),
-`ut_junit_reporter` (výsledky → Test Explorer) a
-`ut_coverage_cobertura_reporter` (pokrytí, pokud je k dispozici).
+Rozšíření vždy zahrnuje **dva** výchozí reportéry:
+`ut_documentation_reporter` (stdout) a
+`ut_junit_reporter` (výsledky → Test Explorer).
+`ut_coverage_cobertura_reporter` se přidává **pouze při spuštění s pokrytím**.
 
 **Dynamické ověření** — před spuštěním s pokrytím rozšíření dotazuje
-databázi přes `utplsql reporters <conn>`. Pokud
+databázi přes `TABLE(ut_runner.get_reporters_list())`. Pokud
 `UT_COVERAGE_COBERTURA_REPORTER` v databázi neexistuje (např. zastaralý
 utPLSQL), pokrytí se přeskočí s varováním ve výstupu. Spuštění testů
 není nikdy blokováno.
@@ -313,13 +313,13 @@ není nikdy blokováno.
 ```jsonc
 "utplsql.additionalReporters": ["UT_COVERAGE_HTML_REPORTER"]
 ```
-Tři výchozí reportéry jsou automaticky deduplikovány, i když jsou
+Výchozí reportéry jsou automaticky deduplikovány, i když jsou
 zde uvedeny.
 
 **Volatilní reportér pro relaci** — příkaz **utPLSQL: Select additional
 reporter...** otevře QuickPick s dynamickým seznamem z databáze. Vybraný
-reportér se použije při příštím spuštění a poté se zahodí (neukládá se
-do nastavení).
+reportér se uloží do relace, ale volba se **nepoužije**
+v aktuální verzi pouze pro Oracle.
 
 ## Požadavky na databázi
 
@@ -360,7 +360,7 @@ GRANT SELECT ON SYS.DBA_PROCEDURES TO <ut3_owner>;
 |---|---|---|
 | Prázdné pokrytí | Chybí `GRANT EXECUTE ON DBMS_PROFILER` | Spusťte granty v [Požadavky](#požadavky-na-databázi) nebo použijte `utPLSQL: Copy coverage grants to clipboard` |
 | Prázdné pokrytí | Oracle 19c vyžaduje další granty | `GRANT EXECUTE ON DBMS_PROFILER` + `GRANT EXECUTE ON DBMS_PLSQL_CODE_COVERAGE` |
-| Chyba kompilace bez indikace | Kód se syntaktickou chybou PL/SQL | Povolte `utplsql.compilationDiagnostics.enabled` (výchozí zapnuto); viz panel Problémy |
+| Chyba kompilace bez indikace | Kód se syntaktickou chybou PL/SQL | Diagnostika kompilace ještě není ve verzi pouze pro Oracle zapojena (`utplsql.compilationDiagnostics.enabled` nemá žádný efekt); zkompilujte/spusťte pro zobrazení chyby |
 | Chyba připojení | Chybný řetězec nebo nedostupná DB | Použijte `utPLSQL: Validate configuration` |
 | `%suite` není rozpoznán | Chybí `%suite`/`create package` v souboru, nebo `%test` bez `PROCEDURE` | Zkontrolujte specifikaci; spusťte `utPLSQL: Refresh tests` |
 | CodeLens se nezobrazuje | Vypnutý `editor.codeLens` nebo konflikt | Povolte `"editor.codeLens": true`; zkontrolujte `utplsql.codeLens.enabled` |

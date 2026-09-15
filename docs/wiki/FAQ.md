@@ -84,16 +84,17 @@ The most common causes:
 1. Missing `GRANT EXECUTE ON DBMS_PROFILER` — run the grants
 2. Coverage reporter not installed — update utPLSQL
 3. `sourcePath` points to a folder that does not contain the sources, or the
-   `sourcePath/<type>/<name>.sql` layout does not match — check the extension's
-   Log Output (channel `utPLSQL`)
+   `sourcePath/<type>/<name>.sql` layout does not match — adjust
+   `utplsql.sourcePath` and the folder layout
 
 See [Troubleshooting](Troubleshooting) for detailed diagnostics.
 
 ### How do I know if the coverage mapping is working?
 
-Check the extension's Log Output (channel `utPLSQL`): the object-to-file
-mapping (`ut_file_mapper.build_file_mappings()` + `resolveSourceUri`) is
-logged there, including which objects were mapped and which failed.
+After a run with coverage, mapped files show green/red gutters and appear in the
+**Test Coverage** tab. There is no per-object log: the extension only emits a
+generic message in the run output when **no** file could be mapped
+(`[coverage] no file mapped`).
 
 ### Can I map coverage for objects that are not packages?
 
@@ -198,12 +199,10 @@ schema for utPLSQL.
 
 ### How do I see PL/SQL compilation errors in the editor?
 
-It is automatic. After running tests, the extension queries compilation
-errors from the database (`ALL_ERRORS`). If
-there are errors like `PLS-00201` or `ORA-06550`, they appear as **red
-squiggly underlines** in the `.pks`/`.pkb` file and in the **Problems Panel**
-(source: "utPLSQL Compilation"). Disable with
-`utplsql.compilationDiagnostics.enabled: false`.
+It is **not automatic** in the current version. Compilation diagnostics are not
+wired in the Oracle-only version, and `utplsql.compilationDiagnostics.enabled`
+has no effect. Compile or run the tests to surface errors such as `PLS-00201`
+or `ORA-06550` in the run output.
 
 ### How do I validate that my configuration is correct?
 
