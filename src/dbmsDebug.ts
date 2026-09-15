@@ -4,6 +4,8 @@
 // Validação de integração com Oracle real (grants + DBMS_DEBUG) fica para a
 // suíte de integração (describeDB).
 
+import { logger } from './logger';
+
 export interface DebugConnection {
   execute(
     sql: string,
@@ -244,12 +246,36 @@ export class DbmsDebugClient {
   }
 }
 
-/** Pré-checagem de grants: true se o usuário consegue ler DBMS_DEBUG. */
+/** Pré-checagem de grants: true se o usuário consegue usar DBMS_DEBUG. */
 export async function checkDebugAccess(conn: DebugConnection): Promise<boolean> {
   try {
-    await conn.execute(`SELECT COUNT(*) FROM user_objects WHERE object_name = 'DBMS_DEBUG'`, {});
-    return true;
-  } catch {
+    const result = await conn.execute(
+      `SELECT
+         (SELECT COUNT(*) FROM user_tab_privs
+           WHERE table_name = 'DBMS_DEBUG' AND privilege = 'EXECUTE') +
+         (SELECT COUNT(*) FROM user_sys_privs
+           WHERE privilege = 'DEBUG CONNECT SESSION') AS n
+       FROM dual`,
+      {},
+    );
+    const row = (result.rows ?? [])[0];
+    const n = Array.isArray(row)
+      ? Number(row[0])
+      : Number((row as Record<string, unknown> | undefined)?.N ?? 0);
+    if (n > 0) return true;
+
+    // Roles privilegiadas herdam os grants sem entrada explícita.
+    const roles = await conn.execute(
+      `SELECT COUNT(*) AS n FROM user_role_privs WHERE granted_role IN ('DBA','PDB_DBA')`,
+      {},
+    );
+    const rrow = (roles.rows ?? [])[0];
+    const rn = Array.isArray(rrow)
+      ? Number(rrow[0])
+      : Number((rrow as Record<string, unknown> | undefined)?.N ?? 0);
+    return rn > 0;
+  } catch (e) {
+    logger.debug('checkDebugAccess: falha ao verificar grants', { error: String(e) });
     return false;
   }
 }

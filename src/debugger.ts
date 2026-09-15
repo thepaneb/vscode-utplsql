@@ -54,11 +54,11 @@ export const liveRuntime: DebuggerRuntime = {
     await conn.execute(
       `BEGIN
          ut_runner.run(
-           a_paths     => ut_varchar2_list('${path.replace(/'/g, "''")}'),
+           a_paths     => ut_varchar2_list(:path),
            a_reporters => ut_reporters()
          );
        END;`,
-      {},
+      { path },
       { autoCommit: true },
     );
   },

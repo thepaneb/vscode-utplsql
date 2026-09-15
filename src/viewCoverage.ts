@@ -117,9 +117,12 @@ export async function applySqlCoverage(
     conn.callTimeout = 5000;
     let rows: unknown[];
     try {
+      // Restringe ao schema que executa os testes (evita varrer v$sql global).
+      const owner = connection.split('/')[0].trim().toUpperCase();
       const result = await conn.execute(
-        `SELECT sql_text FROM v$sql WHERE command_type = 3 AND executions > 0`,
-        {},
+        `SELECT sql_text FROM v$sql
+         WHERE command_type = 3 AND executions > 0 AND parsing_schema_name = :owner`,
+        { owner },
       );
       rows = result.rows ?? [];
     } catch {
@@ -138,10 +141,13 @@ export async function applySqlCoverage(
       if (f.uri.fsPath === root) {
         for (const file of files) viewFiles.push({ uri: vscode.Uri.file(file) });
       } else {
-        // multi-root: só as views sob a raiz analisada
-        const base = f.uri.fsPath;
+        // multi-root: só as views sob a raiz analisada (limite de path, não prefixo)
+        const base = f.uri.fsPath.replace(/\\/g, '/').replace(/\/+$/, '');
         for (const file of files) {
-          if (file.startsWith(base)) viewFiles.push({ uri: vscode.Uri.file(file) });
+          const norm = file.replace(/\\/g, '/');
+          if (norm === base || norm.startsWith(`${base}/`)) {
+            viewFiles.push({ uri: vscode.Uri.file(file) });
+          }
         }
       }
     }

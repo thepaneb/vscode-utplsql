@@ -288,19 +288,20 @@ test('liveRuntime.acquireConnection: sem conexão configurada retorna undefined'
   assert.strictEqual(conn, undefined);
 });
 
-test('liveRuntime.runTest: executa ut_runner.run no conn', async () => {
-  const calls: string[] = [];
+test('liveRuntime.runTest: executa ut_runner.run no conn com bind', async () => {
+  const calls: { sql: string; binds?: Record<string, unknown> }[] = [];
   const conn = {
-    execute: async (sql: string) => {
-      calls.push(sql);
+    execute: async (sql: string, binds?: Record<string, unknown>) => {
+      calls.push({ sql, binds });
     },
     close: async () => {},
   };
   const { liveRuntime } = await import('../../debugger.js');
   await liveRuntime.runTest(conn as never, 'test_app', 't1');
   assert.strictEqual(calls.length, 1);
-  assert.match(calls[0], /ut_runner\.run/);
-  assert.match(calls[0], /test_app\.t1/);
+  assert.match(calls[0].sql, /ut_runner\.run/);
+  assert.match(calls[0].sql, /ut_varchar2_list\(:path\)/);
+  assert.strictEqual(calls[0].binds?.path, 'test_app.t1');
 });
 
 test('debugger: runTest sem testName usa só o pacote', async () => {

@@ -97,12 +97,18 @@ test('dbmsDebugClient: attachSession ok retorna true; erro retorna false', async
   assert.strictEqual(await client.attachSession('S', 30), false);
 });
 
-test('checkDebugAccess: acesso ok retorna true; erro retorna false', async () => {
-  const ok = await checkDebugAccess({
-    execute: async () => ({ rows: [] }),
+test('checkDebugAccess: reflete os grants reais', async () => {
+  const granted = await checkDebugAccess({
+    execute: async () => ({ rows: [{ N: 1 }] }),
     close: async () => {},
   });
-  assert.strictEqual(ok, true);
+  assert.strictEqual(granted, true);
+
+  const none = await checkDebugAccess({
+    execute: async () => ({ rows: [{ N: 0 }] }),
+    close: async () => {},
+  });
+  assert.strictEqual(none, false);
 
   const denied = await checkDebugAccess({
     execute: async () => {
