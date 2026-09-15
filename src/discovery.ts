@@ -1,6 +1,7 @@
 import * as path from 'node:path';
 import * as vscode from 'vscode';
 import { readConfig } from './config';
+import { logger } from './logger';
 import { ensurePool, parseConnString } from './oracleRunner';
 import { parseSuiteText, type TestProc } from './suiteParser';
 
@@ -73,8 +74,9 @@ export async function discoverWorkspace(
             results.push({ ...suite, tests, folder });
           }
         }
-      } catch {
+      } catch (e) {
         // arquivo ilegível — ignora
+        logger.debug('discovery: arquivo ilegível', { uri: uri.toString(), error: String(e) });
       }
     }
   }
@@ -161,8 +163,13 @@ export async function discoverSchemaFromConn(
         );
       }
       text = `CREATE OR REPLACE ${rows.map((r) => rowValue(r, 0, 'TEXT')).join('\n')}`;
-    } catch {
+    } catch (e) {
       // ALL_SOURCE inacessível (ex.: ORA-00942) — fallback silencioso
+      logger.debug('discoverSchemaFromConn: ALL_SOURCE inacessível', {
+        schema: upper,
+        name: pkgName,
+        error: String(e),
+      });
       continue;
     }
 
@@ -202,8 +209,9 @@ export async function discoverSchemaFromDb(
   let oracledb: typeof import('oracledb');
   try {
     oracledb = await loadOracledbMod();
-  } catch {
-    return []; // Oracle indisponível — fallback silencioso (modo auto/CLI)
+  } catch (e) {
+    logger.debug('discoverSchemaFromDb: oracledb indisponível', { error: String(e) });
+    return [];
   }
 
   const cfg = readConfig();
@@ -213,7 +221,8 @@ export async function discoverSchemaFromDb(
     conn = pool
       ? await pool.getConnection()
       : await oracledb.getConnection(parseConnString(connStr));
-  } catch {
+  } catch (e) {
+    logger.debug('discoverSchemaFromDb: falha ao obter conexão', { error: String(e) });
     return [];
   }
 
@@ -221,8 +230,12 @@ export async function discoverSchemaFromDb(
   try {
     conn.callTimeout = 10_000;
     return await discoverSchemaFromConn(conn, schema, folder);
-  } catch {
-    return []; // fallback silencioso
+  } catch (e) {
+    logger.debug('discoverSchemaFromDb: descoberta via banco falhou', {
+      schema,
+      error: String(e),
+    });
+    return [];
   } finally {
     conn.callTimeout = prevTimeout;
     await conn.close().catch(() => {});
@@ -256,7 +269,11 @@ export async function discoverSchemasFromFolders(
     let entries: [string, vscode.FileType][];
     try {
       entries = await vscode.workspace.fs.readDirectory(dir);
-    } catch {
+    } catch (e) {
+      logger.debug('discoverSchemasFromFolders: pasta base ausente', {
+        dir: dir.fsPath,
+        error: String(e),
+      });
       continue; // pasta base não existe neste folder
     }
     for (const [name, type] of entries) {

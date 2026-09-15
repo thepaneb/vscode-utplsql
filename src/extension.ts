@@ -134,20 +134,9 @@ export function activate(context: vscode.ExtensionContext) {
         vscode.window.showErrorMessage(t(locale, 'common.oracledbMissing'));
         return;
       }
-      const { ensurePool, listReportersOracle, parseConnString } = await import(
-        './oracleRunner.js'
-      );
+      const { withOracleConnection, listReportersOracle } = await import('./oracleRunner.js');
       const cfg = readConfig();
-      const pool = await ensurePool(oracledb, conn, cfg).catch(() => undefined);
-      let oracleConn: import('oracledb').Connection;
-      try {
-        oracleConn = pool
-          ? await pool.getConnection()
-          : await oracledb.getConnection(parseConnString(conn));
-      } catch {
-        return;
-      }
-      try {
+      await withOracleConnection(oracledb, conn, cfg, async (oracleConn) => {
         const reporters = await listReportersOracle(oracleConn);
         if (reporters.length === 0) {
           vscode.window.showErrorMessage(
@@ -164,9 +153,7 @@ export function activate(context: vscode.ExtensionContext) {
             t(locale, 'ext.reporters.willUse', { name: selected }),
           );
         }
-      } finally {
-        await oracleConn.close().catch(() => {});
-      }
+      });
     }),
     vscode.commands.registerCommand('utplsql.clearConnection', () => {
       clearSessionConnection();
@@ -188,25 +175,14 @@ export function activate(context: vscode.ExtensionContext) {
         vscode.window.showErrorMessage(t(locale, 'common.oracledbMissing'));
         return;
       }
-      const { ensurePool, getOracleInfo, parseConnString } = await import('./oracleRunner.js');
+      const { withOracleConnection, getOracleInfo } = await import('./oracleRunner.js');
       const cfg = readConfig();
-      const pool = await ensurePool(oracledb, conn, cfg).catch(() => undefined);
-      let oracleConn: import('oracledb').Connection;
-      try {
-        oracleConn = pool
-          ? await pool.getConnection()
-          : await oracledb.getConnection(parseConnString(conn));
-      } catch {
-        return;
-      }
-      try {
+      await withOracleConnection(oracledb, conn, cfg, async (oracleConn) => {
         const info = await getOracleInfo(oracleConn);
         const msg = `utPLSQL: ${info.utVersion ?? 'unknown'}\nOracle DB: ${info.dbVersion ?? 'unknown'}`;
         const copy = await vscode.window.showInformationMessage(msg, t(locale, 'common.copy'));
         if (copy) vscode.env.clipboard.writeText(msg);
-      } finally {
-        await oracleConn.close().catch(() => {});
-      }
+      });
     }),
     vscode.commands.registerCommand(
       'utplsql.runLens',

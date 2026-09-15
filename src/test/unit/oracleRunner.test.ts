@@ -16,6 +16,7 @@ import {
   listReportersOracle,
   mapDbPathsToFiles,
   parseConnString,
+  withOracleConnection,
 } from '../../oracleRunner';
 import { applyResultsFromCases, countResults } from '../../results';
 import type { ItemMeta } from '../../types';
@@ -1130,4 +1131,59 @@ test('checkCompilationErrors: erro retorna array vazio', async () => {
     throw new Error('ORA-00942');
   });
   assert.deepStrictEqual(await checkCompilationErrors(conn, 'APP'), []);
+});
+
+test('withOracleConnection: executa fn e fecha a conexão', async () => {
+  await closeOraclePool();
+  let closed = 0;
+  const conn = {
+    fromPool: false,
+    close: async () => {
+      closed++;
+    },
+  };
+  const mod = {
+    createPool: async () => {
+      throw new Error('sem pool');
+    },
+    getConnection: async () => conn,
+  };
+  try {
+    const result = await withOracleConnection(
+      mod as never,
+      'u/p@//h:1521/s',
+      POOL_CFG,
+      async (c: unknown) => {
+        assert.strictEqual(c, conn);
+        return 42;
+      },
+    );
+    assert.strictEqual(result, 42);
+    assert.strictEqual(closed, 1);
+  } finally {
+    await closeOraclePool();
+  }
+});
+
+test('withOracleConnection: conexão indisponível retorna undefined', async () => {
+  await closeOraclePool();
+  const mod = {
+    createPool: async () => {
+      throw new Error('sem pool');
+    },
+    getConnection: async () => {
+      throw new Error('db down');
+    },
+  };
+  try {
+    const result = await withOracleConnection(
+      mod as never,
+      'u/p@//h:1521/s',
+      POOL_CFG,
+      async () => 1,
+    );
+    assert.strictEqual(result, undefined);
+  } finally {
+    await closeOraclePool();
+  }
 });

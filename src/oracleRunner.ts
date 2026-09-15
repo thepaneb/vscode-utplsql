@@ -2,6 +2,7 @@ import * as vscode from 'vscode';
 import { getExtensionLocale, readConfig, type UtConfig } from './config';
 import { t } from './i18n';
 import { parseJUnit } from './junit';
+import { logger } from './logger';
 import { applyCoverageFromXml, applyResultsFromCases, countResults } from './results';
 import type { TestStateManager } from './state';
 
@@ -61,6 +62,33 @@ export async function closeOraclePool(): Promise<void> {
   }
 }
 
+/**
+ * Executa `fn` com uma conexão Oracle (pool ou raw) garantindo o fechamento.
+ * Retorna `undefined` se a conexão não puder ser aberta (PRD-66 RF5).
+ */
+export async function withOracleConnection<T>(
+  oracledb: typeof import('oracledb'),
+  connection: string,
+  cfg: UtConfig,
+  fn: (conn: OracleConnection) => Promise<T>,
+): Promise<T | undefined> {
+  const pool = await ensurePool(oracledb, connection, cfg).catch(() => undefined);
+  let conn: OracleConnection;
+  try {
+    conn = pool
+      ? await pool.getConnection()
+      : await oracledb.getConnection(parseConnString(connection));
+  } catch (e) {
+    logger.debug('withOracleConnection: falha ao obter conexão', { error: String(e) });
+    return undefined;
+  }
+  try {
+    return await fn(conn);
+  } finally {
+    await conn.close().catch(() => {});
+  }
+}
+
 export async function acquireRunnerConnections(
   oracledb: typeof import('oracledb'),
   connection: string,
@@ -99,8 +127,9 @@ export async function discoverUtplsqlSchema(conn: {
       const owner = (rows[0] as { TABLE_OWNER?: string }).TABLE_OWNER;
       if (owner) return `${owner}.`;
     }
-  } catch {
+  } catch (e) {
     // ALL_SYNONYMS pode não estar acessível — sem prefixo
+    logger.debug('discoverUtplsqlSchema: ALL_SYNONYMS inacessível', { error: String(e) });
   }
   return '';
 }
@@ -126,7 +155,8 @@ export async function findInvalidUt3Objects(
     conn = pool
       ? await pool.getConnection()
       : await oracledb.getConnection(parseConnString(connection));
-  } catch {
+  } catch (e) {
+    logger.debug('findInvalidUt3Objects: falha ao obter conexão', { error: String(e) });
     return undefined;
   }
   const prevTimeout = conn.callTimeout;
@@ -150,7 +180,10 @@ export async function findInvalidUt3Objects(
       }
     }
     return { schema, invalid };
-  } catch {
+  } catch (e) {
+    logger.debug('findInvalidUt3Objects: ALL_OBJECTS inacessível', {
+      error: String(e),
+    });
     return undefined;
   } finally {
     conn.callTimeout = prevTimeout;
@@ -179,16 +212,18 @@ export async function getOracleInfo(conn: {
   try {
     const r = await conn.execute(`SELECT ut_runner.version() FROM dual`);
     utVersion = extractScalar(r.rows?.[0]);
-  } catch {
+  } catch (e) {
     // utRunner pode não existir
+    logger.debug('getOracleInfo: ut_runner.version indisponível', { error: String(e) });
   }
   try {
     const r = await conn.execute(
       `SELECT version FROM product_component_version WHERE product LIKE '%Oracle%' AND ROWNUM = 1`,
     );
     dbVersion = extractScalar(r.rows?.[0]);
-  } catch {
+  } catch (e) {
     // query pode não ser acessível
+    logger.debug('getOracleInfo: versão do banco indisponível', { error: String(e) });
   }
   return { utVersion, dbVersion };
 }
@@ -205,7 +240,10 @@ export async function listReportersOracle(conn: {
       `SELECT reporter_object_name FROM TABLE(ut_runner.get_reporters_list())`,
     );
     return (result.rows ?? []).map((r) => String(extractScalar(r)));
-  } catch {
+  } catch (e) {
+    logger.debug('listReportersOracle: ut_runner.get_reporters_list falhou', {
+      error: String(e),
+    });
     return [];
   }
 }
@@ -271,7 +309,8 @@ export async function checkCompilationErrors(
         text: String(o.TEXT ?? ''),
       };
     });
-  } catch {
+  } catch (e) {
+    logger.debug('checkCompilationErrors: ALL_ERRORS inacessível', { schema, error: String(e) });
     return [];
   }
 }
@@ -319,7 +358,8 @@ async function loadOracledb(): Promise<LoadedOracledb | undefined> {
   try {
     const mod = await import('oracledb');
     return ((mod as Record<string, unknown>).default as LoadedOracledb) ?? (mod as LoadedOracledb);
-  } catch {
+  } catch (e) {
+    logger.debug('loadOracledb: oracledb indisponível', { error: String(e) });
     return undefined;
   }
 }
@@ -464,8 +504,9 @@ export async function executeRunOracle(
             }
           }
         }
-      } catch {
+      } catch (e) {
         // polling pode falhar se conn1 ainda não escreveu — ignorar
+        logger.debug('executeRunOracle: poll do buffer falhou', { error: String(e) });
       }
 
       if (done) break;
@@ -482,8 +523,9 @@ export async function executeRunOracle(
             run.appendOutput(`${String(line)}\r\n`);
           }
         }
-      } catch {
+      } catch (e) {
         // DBMS_OUTPUT pode não estar habilitado
+        logger.debug('executeRunOracle: DBMS_OUTPUT indisponível', { error: String(e) });
       }
     }
 
