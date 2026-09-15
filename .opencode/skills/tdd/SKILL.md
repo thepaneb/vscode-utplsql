@@ -29,12 +29,30 @@ node --test --test-name-pattern "pattern" out/test/unit/**/*.test.js
 - **VSCode stub**: `src/test/vscode-stub.ts` — add stub entries when importing new vscode APIs
 - **Integration tests**: `@vscode/test-cli`, requires `.env` with `UTPLSQL_CONN`
 
+## Princípios
+
+- **Comportamento, não implementação**: teste pela interface pública; o teste deve
+  sobreviver a refatorações.
+- **Seams**: teste só em fronteiras públicas pré-acordadas com o usuário.
+- **Red antes de green**: escreva o teste que falha primeiro, depois o mínimo para passar.
+- **Uma fatia por vez (vertical slice)**: um teste → uma implementação → repete.
+- **Refatorar não é parte do loop**: fica para a revisão (`code-review`).
+
+## Anti-padrões
+
+- **Acoplado à implementação**: mocka colaboradores internos ou testa métodos privados
+  — quebra ao refatorar sem mudar comportamento.
+- **Tautológico**: a asserção recalcula o esperado como o código
+  (`expect(add(a, b)).toBe(a + b)`); o valor esperado deve vir de fonte independente.
+- **Fatiamento horizontal**: escrever todos os testes antes da implementação testa o
+  formato imaginado. Use fatias verticais.
+
 ## TDD Cycle for This Project
 
 1. **Red**: Write a failing `node --test` in `src/test/unit/`
 2. **Green**: Write minimal code in `src/` to make the test pass
-3. **Refactor**: Clean up while keeping tests green
-4. **Verify**: `npm run compile && npm run lint && node --test out/test/unit/`
+3. **Verify**: `npm run compile && npm run lint && node --test out/test/unit/`
+4. **Refactor**: fica para a revisão (`code-review`), não para o loop.
 
 ## Coverage Thresholds (c8)
 

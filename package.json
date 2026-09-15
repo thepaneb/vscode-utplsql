@@ -586,6 +586,9 @@
     "package": "npm run compile && npm run bundle && vsce package",
     "gen-icon": "node scripts/gen-icon.cjs",
     "gen-diagram": "node scripts/gen-diagrams.cjs",
+    "brain:sync": "node scripts/brain.cjs sync",
+    "brain:check": "node scripts/brain.cjs check",
+    "docs:check": "node scripts/docs-check.cjs",
     "sync-prds": "node scripts/sync-prds.cjs",
     "publish": "node scripts/publish.cjs",
     "publish:patch": "echo '⚠️ Publicacao apenas via GitHub workflow (release). Use npm run package para .vsix local.' && exit 1"

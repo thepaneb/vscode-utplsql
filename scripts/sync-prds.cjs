@@ -213,6 +213,15 @@ async function sync() {
 
   saveMapping(mapping);
   console.log('\n✅ Sincronização concluída.');
+
+  // Atualiza o "second brain" local (docs/brain), se existir. Best-effort:
+  // nunca falha a sincronização de PRDs por causa do vault.
+  try {
+    console.log('\n🧠 Atualizando o second brain (docs/brain)...');
+    require('./brain.cjs').sync();
+  } catch (err) {
+    console.warn(`  ⚠️  brain: ${err.message}`);
+  }
 }
 
 sync().catch((err) => {
