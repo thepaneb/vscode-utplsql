@@ -130,6 +130,7 @@ CONCLUIR
 | 62 | [Execução de scripts SQL contra perfil de conexão](completed/prd-62-run-scripts-against-profiles.md) | 0.12.0 | 2026-09-12 |
 | 65 | [Correções críticas de schema-mode e segurança](completed/prd-65-schema-mode-security-fixes.md) | 0.12.0 | 2026-09-15 |
 | 66 | [Robustez de conexão, logging e cache](completed/prd-66-connection-robustness-logging.md) | 0.12.0 | 2026-09-15 |
+| 68 | [Religar diagnostics e reporter de sessão perdidos na migração Oracle-only](completed/prd-68-restore-oracle-diagnostics-and-reporter.md) | 0.12.0 | 2026-09-15 |
 
 ### 🟡 Em desenvolvimento
 
@@ -140,7 +141,6 @@ _(vazio — nenhuma PRD em desenvolvimento)_
 | # | PRD | Versão alvo | Data |
 |---|---|---|---|
 | 67 | [Qualidade, limpeza e performance](approved/prd-67-code-quality-cleanup.md) | 0.12.0 | 2026-09-15 |
-| 68 | [Religar diagnostics e reporter de sessão perdidos na migração Oracle-only](approved/prd-68-restore-oracle-diagnostics-and-reporter.md) | 0.12.0 | 2026-09-15 |
 
 ### ⚪ Propostos
 
@@ -238,10 +238,10 @@ docs/prd/
 │   ├── prd-63-diagram-i18n.md
 │   ├── prd-62-run-scripts-against-profiles.md
 │   ├── prd-65-schema-mode-security-fixes.md
-│   └── prd-66-connection-robustness-logging.md
-├── approved/         ← aprovados, aguardando implementação
-│   ├── prd-67-code-quality-cleanup.md
+│   ├── prd-66-connection-robustness-logging.md
 │   └── prd-68-restore-oracle-diagnostics-and-reporter.md
+├── approved/         ← aprovados, aguardando implementação
+│   └── prd-67-code-quality-cleanup.md
 ├── in-progress/      ← sendo implementados agora (vazio)
 └── proposed/         ← em avaliação
     ├── prd-47-node-26-toolchain.md
