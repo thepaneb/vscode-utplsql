@@ -56,13 +56,13 @@ export class DecorationManager implements vscode.Disposable {
 
   update(
     resultMap: Map<string, { status: string; message?: string }>,
-    controller: vscode.TestController,
+    resolveItem: (id: string) => vscode.TestItem | undefined,
   ): void {
     if (!readConfig().decorationsEnabled) return;
     this.lastEntries.clear();
 
     for (const [id, result] of resultMap) {
-      const item = findTestItem(controller, id);
+      const item = resolveItem(id);
       if (!item) continue;
       const range = item.range;
       if (!range) continue;
@@ -137,16 +137,4 @@ export class DecorationManager implements vscode.Disposable {
     skippedDecoration.dispose();
     erroredDecoration.dispose();
   }
-}
-
-function findTestItem(controller: vscode.TestController, id: string): vscode.TestItem | undefined {
-  const suiteMatch = controller.items.get(id);
-  if (suiteMatch) return suiteMatch;
-
-  for (const [, suite] of controller.items) {
-    for (const [, child] of suite.children) {
-      if (child.id === id) return child;
-    }
-  }
-  return undefined;
 }

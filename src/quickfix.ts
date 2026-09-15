@@ -1,10 +1,5 @@
 import * as vscode from 'vscode';
-import {
-  getExtensionLocale,
-  readConfig,
-  resolveConnection,
-  resolveConnectionNoPrompt,
-} from './config';
+import { getExtensionLocale, readConfig, resolveConnectionNoPrompt } from './config';
 import { t } from './i18n';
 import {
   discoverUtplsqlSchema,
@@ -35,7 +30,7 @@ export class SetupValidator {
     const cfg = readConfig();
     if (!cfg.setupDiagnosticsEnabled) return diagnostics;
 
-    const conn = await resolveConnection();
+    const conn = resolveConnectionNoPrompt();
     if (conn) {
       let oracledb: typeof import('oracledb');
       try {

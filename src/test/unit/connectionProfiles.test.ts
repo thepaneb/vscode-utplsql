@@ -68,6 +68,11 @@ test('maskConnection: esconde a senha', () => {
   assert.strictEqual(maskConnection('user/pass@//host:1521/svc'), 'user@//host:1521/svc');
 });
 
+test('maskConnection: senha com @ ou / e mascarada corretamente', () => {
+  assert.strictEqual(maskConnection('user/p@ss@//host:1521/svc'), 'user@//host:1521/svc');
+  assert.strictEqual(maskConnection('user/pa/ss@//host:1521/svc'), 'user@//host:1521/svc');
+});
+
 test('maskConnection: sem senha nao altera', () => {
   assert.strictEqual(maskConnection('scott@localhost:1521/XE'), 'scott@localhost:1521/XE');
 });

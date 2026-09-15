@@ -87,4 +87,16 @@ export class TestStateManager {
   clearSuiteMap(): void {
     this.suiteMap.clear();
   }
+
+  /** Mapa id → item para todos os nós da árvore (file e schema). */
+  private itemMap = new Map<string, vscode.TestItem>();
+  setItem(id: string, item: vscode.TestItem): void {
+    this.itemMap.set(id, item);
+  }
+  getItem(id: string): vscode.TestItem | undefined {
+    return this.itemMap.get(id);
+  }
+  clearItemMap(): void {
+    this.itemMap.clear();
+  }
 }

@@ -620,7 +620,7 @@ async function runWithProgress(
       );
 
       if (decorationManager) {
-        decorationManager.update(state.getLastResults(), controller);
+        decorationManager.update(state.getLastResults(), (id) => state.getItem(id));
       }
 
       progress.report({ message: 'Parseando resultados...' });
@@ -654,6 +654,7 @@ async function doRefresh(controller: vscode.TestController): Promise<void> {
   controller.items.replace([]);
   state.cachedItems = [];
   state.clearSuiteMap();
+  state.clearItemMap();
 
   if (cfg.organization === 'schema' && folders?.length) {
     await mergeDbSuites(suites, folders, cfg.organizationSchemaPattern);
@@ -726,10 +727,12 @@ function buildFileTree(
         folder: suite.folder,
       });
       suiteItem.children.add(testItem);
+      state.setItem(testItem.id, testItem);
     }
     controller.items.add(suiteItem);
     state.cachedItems.push(suiteItem);
     state.setSuiteItem(`suite:${suite.packageName.toLowerCase()}`, suiteItem);
+    state.setItem(suiteItem.id, suiteItem);
   }
 }
 
@@ -808,14 +811,18 @@ function buildSchemaTree(
             folder: suite.folder,
           });
           suiteItem.children.add(testItem);
+          state.setItem(testItem.id, testItem);
         }
         pkgItem.children.add(suiteItem);
         state.cachedItems.push(suiteItem);
         state.setSuiteItem(`suite:${suite.packageName.toLowerCase()}`, suiteItem);
+        state.setItem(suiteItem.id, suiteItem);
       }
       schemaItem.children.add(pkgItem);
+      state.setItem(pkgItem.id, pkgItem);
     }
     controller.items.add(schemaItem);
+    state.setItem(schemaItem.id, schemaItem);
   }
 }
 

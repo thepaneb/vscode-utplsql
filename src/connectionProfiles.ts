@@ -15,10 +15,12 @@ function profileLocale() {
 
 /** `scott/tiger@localhost:1521/XE` → `scott@localhost:1521/XE`. */
 export function maskConnection(conn: string): string {
-  const slash = conn.indexOf('/');
-  const at = slash >= 0 ? conn.indexOf('@', slash) : -1;
-  if (slash < 0 || at < 0) return conn;
-  return `${conn.slice(0, slash)}${conn.slice(at)}`;
+  const at = conn.lastIndexOf('@');
+  if (at < 0) return conn;
+  const cred = conn.slice(0, at);
+  const slash = cred.indexOf('/');
+  const user = slash >= 0 ? cred.slice(0, slash) : cred;
+  return `${user}${conn.slice(at)}`;
 }
 
 export function generateId(): string {

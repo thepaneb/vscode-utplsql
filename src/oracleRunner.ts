@@ -13,17 +13,21 @@ export function parseConnString(connStr: string): {
   password: string;
   connectionString: string;
 } {
-  const m = connStr.match(/^([^/]+)\/([^@]+)@\/\/([^:]+):(\d+)\/(.+)$/);
-  if (!m) {
+  // Split no último '@' e no primeiro '/' das credenciais, para aceitar
+  // senhas contendo '/' ou '@'. O connectString é entregue ao oracledb
+  // inalterado (Easy Connect, TNS alias, SID…).
+  const at = connStr.lastIndexOf('@');
+  const cred = at >= 0 ? connStr.slice(0, at) : connStr;
+  const connectionString = at >= 0 ? connStr.slice(at + 1) : '';
+  const slash = cred.indexOf('/');
+  const user = slash >= 0 ? cred.slice(0, slash) : cred;
+  const password = slash >= 0 ? cred.slice(slash + 1) : '';
+  if (!user || !connectionString) {
     throw new Error(
       `Formato de conexão inválido: "${connStr}". Use usuario/senha@//host:porta/servico.`,
     );
   }
-  return {
-    user: m[1],
-    password: m[2],
-    connectionString: `${m[3]}:${m[4]}/${m[5]}`,
-  };
+  return { user, password, connectionString };
 }
 
 let currentPool: { pool: OraclePool; key: string } | undefined;

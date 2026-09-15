@@ -72,35 +72,63 @@ test('parseConnString: string valida', () => {
   const r = parseConnString('UT3/senha@//localhost:1521/freepdb1');
   assert.strictEqual(r.user, 'UT3');
   assert.strictEqual(r.password, 'senha');
-  assert.strictEqual(r.connectionString, 'localhost:1521/freepdb1');
+  assert.strictEqual(r.connectionString, '//localhost:1521/freepdb1');
 });
 
 test('parseConnString: host com ip e porta customizada', () => {
   const r = parseConnString('user/pass@//192.168.1.100:9999/XE');
   assert.strictEqual(r.user, 'user');
   assert.strictEqual(r.password, 'pass');
-  assert.strictEqual(r.connectionString, '192.168.1.100:9999/XE');
+  assert.strictEqual(r.connectionString, '//192.168.1.100:9999/XE');
 });
 
 test('parseConnString: servico com underscore e caracteres validos', () => {
   const r = parseConnString('ADMIN/pass_123@//db.example.com:1521/pdb_svc1');
   assert.strictEqual(r.user, 'ADMIN');
   assert.strictEqual(r.password, 'pass_123');
-  assert.strictEqual(r.connectionString, 'db.example.com:1521/pdb_svc1');
+  assert.strictEqual(r.connectionString, '//db.example.com:1521/pdb_svc1');
+});
+
+test('parseConnString: senha com / e @ (split no 1o / e ultimo @)', () => {
+  const a = parseConnString('user/pa/ss@//host:1521/svc');
+  assert.deepStrictEqual(a, {
+    user: 'user',
+    password: 'pa/ss',
+    connectionString: '//host:1521/svc',
+  });
+
+  const b = parseConnString('user/p@ss@//host:1521/svc');
+  assert.deepStrictEqual(b, {
+    user: 'user',
+    password: 'p@ss',
+    connectionString: '//host:1521/svc',
+  });
+
+  const c = parseConnString('user/p@/ss@//host:1521/svc');
+  assert.deepStrictEqual(c, {
+    user: 'user',
+    password: 'p@/ss',
+    connectionString: '//host:1521/svc',
+  });
+});
+
+test('parseConnString: TNS alias e SID ficam opacos', () => {
+  assert.strictEqual(parseConnString('user/pass@MYTNS').connectionString, 'MYTNS');
+  assert.strictEqual(parseConnString('user/pass@host:1521:SID').connectionString, 'host:1521:SID');
 });
 
 test('parseConnString: formato invalido lanca erro', () => {
   assert.throws(() => parseConnString('invalid'));
-  assert.throws(() => parseConnString('user/pass@host'));
-  assert.throws(() => parseConnString('user/pass@host:port'));
   assert.throws(() => parseConnString(''));
+  assert.throws(() => parseConnString('user/pass@'));
+  assert.throws(() => parseConnString('/pass@host'));
 });
 
 test('parseConnString: hostname com subdominios', () => {
   const r = parseConnString('u/p@//ora-prod.us-east1.company.com:1521/proddb');
   assert.strictEqual(r.user, 'u');
   assert.strictEqual(r.password, 'p');
-  assert.strictEqual(r.connectionString, 'ora-prod.us-east1.company.com:1521/proddb');
+  assert.strictEqual(r.connectionString, '//ora-prod.us-east1.company.com:1521/proddb');
 });
 
 // ── applyResultsFromCases ────────────────────────────────────────────
@@ -332,7 +360,7 @@ test('ensurePool: cria pool com credenciais parseadas e settings', async () => {
     assert.strictEqual(created.length, 1);
     assert.strictEqual(created[0].user, 'ut3');
     assert.strictEqual(created[0].password, 'senha');
-    assert.strictEqual(created[0].connectString, 'localhost:1521/freepdb1');
+    assert.strictEqual(created[0].connectString, '//localhost:1521/freepdb1');
     assert.strictEqual(created[0].poolMin, 3);
     assert.strictEqual(created[0].poolMax, 7);
     assert.strictEqual(created[0].poolIncrement, 2);
@@ -412,7 +440,7 @@ test('acquireRunnerConnections: fallback para conexao raw quando createPool falh
     assert.strictEqual(rawConns.length, 2);
     const parsed = rawConns[0] as Record<string, unknown>;
     assert.strictEqual(parsed.user, 'u');
-    assert.strictEqual(parsed.connectionString, 'h:1521/s');
+    assert.strictEqual(parsed.connectionString, '//h:1521/s');
     assert.strictEqual(mod.outFormat, mod.OUT_FORMAT_OBJECT);
   } finally {
     await closeOraclePool();
