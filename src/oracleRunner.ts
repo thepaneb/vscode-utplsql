@@ -39,9 +39,7 @@ export function parseConnString(connStr: string): {
   const user = slash >= 0 ? cred.slice(0, slash) : cred;
   const password = slash >= 0 ? cred.slice(slash + 1) : '';
   if (!user || !connectionString) {
-    throw new Error(
-      `Formato de conexão inválido: "${connStr}". Use usuario/senha@//host:porta/servico.`,
-    );
+    throw new Error(t(getExtensionLocale(), 'oracleRunner.badConnFormat', { conn: connStr }));
   }
   return { user, password, connectionString };
 }

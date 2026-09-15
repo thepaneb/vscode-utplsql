@@ -8,4 +8,8 @@ export const logger = {
     // biome-ignore lint/suspicious/noConsole: log de diagnóstico opt-in
     console.debug('[utplsql]', msg, ctx ?? '');
   },
+  warn(msg: string, ctx?: Record<string, unknown>): void {
+    // biome-ignore lint/suspicious/noConsole: aviso de runtime
+    console.warn('[utplsql]', msg, ctx ?? '');
+  },
 };

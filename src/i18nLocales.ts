@@ -65,6 +65,10 @@ export const ptBr: Record<string, string> = {
 
   'oracleRunner.coverNotGenerated':
     '[cobertura] relatório não gerado. Verifique o GRANT EXECUTE ON SYS.DBMS_PROFILER.',
+  'oracleRunner.badConnFormat':
+    'Formato de conexão inválido: "{conn}". Use usuario/senha@//host:porta/servico.',
+  'discovery.sourceTruncated':
+    'Fonte de {schema}.{name} truncada em {max} linhas na descoberta via DB.',
   'results.noMapped':
     '[cobertura] nenhum arquivo mapeado. Ajuste "utplsql.sourcePath" para a pasta do código-fonte.',
 
@@ -228,6 +232,10 @@ export const en: Record<string, string> = {
 
   'oracleRunner.coverNotGenerated':
     '[coverage] report not generated. Check GRANT EXECUTE ON SYS.DBMS_PROFILER.',
+  'oracleRunner.badConnFormat':
+    'Invalid connection format: "{conn}". Use user/password@//host:port/service.',
+  'discovery.sourceTruncated':
+    'Source of {schema}.{name} truncated at {max} lines in DB discovery.',
   'results.noMapped':
     '[coverage] no file mapped. Adjust "utplsql.sourcePath" to the source code folder.',
 
@@ -392,6 +400,10 @@ export const es: Record<string, string> = {
 
   'oracleRunner.coverNotGenerated':
     '[cobertura] informe no generado. Verifique GRANT EXECUTE ON SYS.DBMS_PROFILER.',
+  'oracleRunner.badConnFormat':
+    'Formato de conexión no válido: "{conn}". Use usuario/contraseña@//host:puerto/servicio.',
+  'discovery.sourceTruncated':
+    'Fuente de {schema}.{name} truncada en {max} líneas en el descubrimiento por BD.',
   'results.noMapped':
     '[cobertura] ningún archivo mapeado. Ajuste "utplsql.sourcePath" a la carpeta del código fuente.',
 
@@ -552,6 +564,8 @@ export const zhCn: Record<string, string> = {
 
   'oracleRunner.coverNotGenerated':
     '[覆盖率] 未生成报告。请检查 GRANT EXECUTE ON SYS.DBMS_PROFILER。',
+  'oracleRunner.badConnFormat': '连接格式无效："{conn}"。请使用 用户名/密码@//主机:端口/服务。',
+  'discovery.sourceTruncated': '数据库发现中 {schema}.{name} 的源代码在 {max} 行处被截断。',
   'results.noMapped': '[覆盖率] 未映射任何文件。请将 "utplsql.sourcePath" 调整为源代码文件夹。',
 
   'status.idle': '尚未运行测试。单击以打开 Test Explorer。',
@@ -713,6 +727,10 @@ export const ja: Record<string, string> = {
 
   'oracleRunner.coverNotGenerated':
     '[カバレッジ] レポートが生成されませんでした。GRANT EXECUTE ON SYS.DBMS_PROFILER を確認してください。',
+  'oracleRunner.badConnFormat':
+    '接続形式が無効です: "{conn}"。ユーザー/パスワード@//ホスト:ポート/サービス を使用してください。',
+  'discovery.sourceTruncated':
+    'DB 検出で {schema}.{name} のソースが {max} 行で切り捨てられました。',
   'results.noMapped':
     '[カバレッジ] マップされたファイルがありません。「utplsql.sourcePath」をソースコードのフォルダーに調整してください。',
 
@@ -879,6 +897,10 @@ export const de: Record<string, string> = {
 
   'oracleRunner.coverNotGenerated':
     '[Coverage] Bericht nicht generiert. Prüfen Sie GRANT EXECUTE ON SYS.DBMS_PROFILER.',
+  'oracleRunner.badConnFormat':
+    'Ungültiges Verbindungsformat: "{conn}". Verwenden Sie benutzer/passwort@//host:port/service.',
+  'discovery.sourceTruncated':
+    'Quelltext von {schema}.{name} bei der DB-Erkennung auf {max} Zeilen abgeschnitten.',
   'results.noMapped':
     '[Coverage] keine Datei zugeordnet. Passen Sie „utplsql.sourcePath" auf den Quellcode-Ordner an.',
 
@@ -1044,6 +1066,10 @@ export const fr: Record<string, string> = {
 
   'oracleRunner.coverNotGenerated':
     '[couverture] rapport non généré. Vérifiez GRANT EXECUTE ON SYS.DBMS_PROFILER.',
+  'oracleRunner.badConnFormat':
+    'Format de connexion invalide : "{conn}". Utilisez utilisateur/motdepasse@//hote:port/service.',
+  'discovery.sourceTruncated':
+    'Source de {schema}.{name} tronquée à {max} lignes lors de la découverte en base.',
   'results.noMapped':
     '[couverture] aucun fichier mappé. Ajustez « utplsql.sourcePath » au dossier du code source.',
 
@@ -1204,6 +1230,8 @@ export const zhTw: Record<string, string> = {
 
   'oracleRunner.coverNotGenerated':
     '[涵蓋範圍] 未產生報告。請檢查 GRANT EXECUTE ON SYS.DBMS_PROFILER。',
+  'oracleRunner.badConnFormat': '連線格式無效："{conn}"。請使用 使用者/密碼@//主機:連接埠/服務。',
+  'discovery.sourceTruncated': '資料庫探索中 {schema}.{name} 的原始碼在 {max} 行處被截斷。',
   'results.noMapped': '[涵蓋範圍] 未對應任何檔案。請將「utplsql.sourcePath」調整為原始碼資料夾。',
 
   'status.idle': '尚未執行測試。按一下以開啟 Test Explorer。',
@@ -1366,6 +1394,10 @@ export const it: Record<string, string> = {
 
   'oracleRunner.coverNotGenerated':
     '[copertura] report non generato. Verificare GRANT EXECUTE ON SYS.DBMS_PROFILER.',
+  'oracleRunner.badConnFormat':
+    'Formato di connessione non valido: "{conn}". Usa utente/password@//host:porta/servizio.',
+  'discovery.sourceTruncated':
+    'Sorgente di {schema}.{name} troncata a {max} righe nel rilevamento dal DB.',
   'results.noMapped':
     '[copertura] nessun file mappato. Impostare "utplsql.sourcePath" sulla cartella del codice sorgente.',
 
@@ -1529,6 +1561,9 @@ export const ko: Record<string, string> = {
 
   'oracleRunner.coverNotGenerated':
     '[커버리지] 보고서가 생성되지 않았습니다. GRANT EXECUTE ON SYS.DBMS_PROFILER를 확인하세요.',
+  'oracleRunner.badConnFormat':
+    '연결 형식이 잘못되었습니다: "{conn}". 사용자/비밀번호@//호스트:포트/서비스 를 사용하세요.',
+  'discovery.sourceTruncated': 'DB 검색에서 {schema}.{name} 소스가 {max}줄로 잘렸습니다.',
   'results.noMapped':
     '[커버리지] 매핑된 파일이 없습니다. "utplsql.sourcePath"를 소스 코드 폴더로 조정하세요.',
 
@@ -1692,6 +1727,10 @@ export const ru: Record<string, string> = {
 
   'oracleRunner.coverNotGenerated':
     '[покрытие] отчёт не создан. Проверьте GRANT EXECUTE ON SYS.DBMS_PROFILER.',
+  'oracleRunner.badConnFormat':
+    'Неверный формат подключения: "{conn}". Используйте пользователь/пароль@//хост:порт/сервис.',
+  'discovery.sourceTruncated':
+    'Исходный код {schema}.{name} обрезан на {max} строках при обнаружении в БД.',
   'results.noMapped':
     '[покрытие] файлы не сопоставлены. Укажите «utplsql.sourcePath» на папку с исходным кодом.',
 
@@ -1854,6 +1893,9 @@ export const tr: Record<string, string> = {
 
   'oracleRunner.coverNotGenerated':
     "[kapsam] rapor oluşturulmadı. GRANT EXECUTE ON SYS.DBMS_PROFILER'ı doğrulayın.",
+  'oracleRunner.badConnFormat':
+    'Geçersiz bağlantı biçimi: "{conn}". kullanıcı/parola@//host:port/servis kullanın.',
+  'discovery.sourceTruncated': '{schema}.{name} kaynağı, DB keşfinde {max} satırda kesildi.',
   'results.noMapped':
     '[kapsam] eşleştirilen dosya yok. "utplsql.sourcePath" değerini kaynak kod klasörüne ayarlayın.',
 
@@ -2018,6 +2060,10 @@ export const pl: Record<string, string> = {
 
   'oracleRunner.coverNotGenerated':
     '[pokrycie] raport nie został wygenerowany. Sprawdź GRANT EXECUTE ON SYS.DBMS_PROFILER.',
+  'oracleRunner.badConnFormat':
+    'Nieprawidłowy format połączenia: "{conn}". Użyj użytkownik/hasło@//host:port/serwis.',
+  'discovery.sourceTruncated':
+    'Źródło {schema}.{name} obcięte na {max} wierszach w wykrywaniu w bazie.',
   'results.noMapped':
     '[pokrycie] brak przypisanych plików. Ustaw „utplsql.sourcePath” na folder kodu źródłowego.',
 
@@ -2182,6 +2228,10 @@ export const cs: Record<string, string> = {
 
   'oracleRunner.coverNotGenerated':
     '[pokrytí] zpráva nebyla vytvořena. Ověřte GRANT EXECUTE ON SYS.DBMS_PROFILER.',
+  'oracleRunner.badConnFormat':
+    'Neplatný formát připojení: "{conn}". Použijte uživatel/heslo@//host:port/služba.',
+  'discovery.sourceTruncated':
+    'Zdroj {schema}.{name} zkrácen na {max} řádcích při zjišťování v DB.',
   'results.noMapped':
     '[pokrytí] nebyl mapován žádný soubor. Nastavte „utplsql.sourcePath“ na složku se zdrojovým kódem.',
 
@@ -2346,6 +2396,10 @@ export const hu: Record<string, string> = {
 
   'oracleRunner.coverNotGenerated':
     '[lefedettség] jelentés nem készült. Ellenőrizze: GRANT EXECUTE ON SYS.DBMS_PROFILER.',
+  'oracleRunner.badConnFormat':
+    'Érvénytelen kapcsolati formátum: "{conn}". Használja: felhasználó/jelszó@//host:port/szolgáltatás.',
+  'discovery.sourceTruncated':
+    'A(z) {schema}.{name} forrása {max} sornál csonkolva az adatbázis-felderítés során.',
   'results.noMapped':
     '[lefedettség] nem lett fájl hozzárendelve. Állítsa a „utplsql.sourcePath” értéket a forráskód mappájára.',
 
@@ -2509,6 +2563,10 @@ export const bg: Record<string, string> = {
   'runner.stderr': '[stderr]',
   'oracleRunner.coverNotGenerated':
     '[покритие] отчетът не е създаден. Проверете GRANT EXECUTE ON SYS.DBMS_PROFILER.',
+  'oracleRunner.badConnFormat':
+    'Невалиден формат на връзката: "{conn}". Използвайте потребител/парола@//хост:порт/услуга.',
+  'discovery.sourceTruncated':
+    'Изходният код на {schema}.{name} е отрязан на {max} реда при откриване в БД.',
   'results.noMapped':
     '[покритие] няма картографирани файлове. Задайте "utplsql.sourcePath" на папката с изходния код.',
   'status.idle': 'Все още няма изпълнени тестове. Кликнете, за да отворите Test Explorer.',
@@ -2666,6 +2724,10 @@ export const el: Record<string, string> = {
   'runner.stderr': '[stderr]',
   'oracleRunner.coverNotGenerated':
     '[κάλυψη] δεν δημιουργήθηκε αναφορά. Ελέγξτε GRANT EXECUTE ON SYS.DBMS_PROFILER.',
+  'oracleRunner.badConnFormat':
+    'Μη έγκυρη μορφή σύνδεσης: "{conn}". Χρησιμοποιήστε χρήστης/κωδικός@//host:port/service.',
+  'discovery.sourceTruncated':
+    'Η πηγή του {schema}.{name} περικόπηκε στις {max} γραμμές κατά την ανακάλυψη στη ΒΔ.',
   'results.noMapped':
     '[κάλυψη] κανένα αρχείο δεν αντιστοιχίστηκε. Ρυθμίστε το "utplsql.sourcePath" στον φάκελο του πηγαίου κώδικα.',
   'status.idle': 'Δεν έχουν εκτελεστεί ακόμη τεστ. Κάντε κλικ για να ανοίξετε το Test Explorer.',
@@ -2823,6 +2885,10 @@ export const id: Record<string, string> = {
   'runner.stderr': '[stderr]',
   'oracleRunner.coverNotGenerated':
     '[cakupan] laporan tidak dibuat. Periksa GRANT EXECUTE ON SYS.DBMS_PROFILER.',
+  'oracleRunner.badConnFormat':
+    'Format koneksi tidak valid: "{conn}". Gunakan pengguna/kata-sandi@//host:port/layanan.',
+  'discovery.sourceTruncated':
+    'Sumber {schema}.{name} dipotong pada {max} baris saat penemuan di DB.',
   'results.noMapped':
     '[cakupan] tidak ada file yang dipetakan. Atur "utplsql.sourcePath" ke folder kode sumber.',
   'status.idle': 'Belum ada tes yang dijalankan. Klik untuk membuka Test Explorer.',
@@ -2979,6 +3045,10 @@ export const ro: Record<string, string> = {
   'runner.stderr': '[stderr]',
   'oracleRunner.coverNotGenerated':
     '[acoperire] raportul nu a fost generat. Verificați GRANT EXECUTE ON SYS.DBMS_PROFILER.',
+  'oracleRunner.badConnFormat':
+    'Format de conexiune invalid: "{conn}". Folosiți utilizator/parolă@//host:port/serviciu.',
+  'discovery.sourceTruncated':
+    'Sursa {schema}.{name} trunchiată la {max} linii la descoperirea în BD.',
   'results.noMapped':
     '[acoperire] niciun fișier mapat. Setați "utplsql.sourcePath" la folderul codului sursă.',
   'status.idle': 'Încă nu s-au executat teste. Faceți clic pentru a deschide Test Explorer.',
@@ -3134,6 +3204,10 @@ export const sr: Record<string, string> = {
   'runner.stderr': '[stderr]',
   'oracleRunner.coverNotGenerated':
     '[покриће] извештај није генерисан. Проверите GRANT EXECUTE ON SYS.DBMS_PROFILER.',
+  'oracleRunner.badConnFormat':
+    'Неважећи формат везе: "{conn}". Користите корисник/лозинка@//хост:порт/сервис.',
+  'discovery.sourceTruncated':
+    'Извор {schema}.{name} скраћен на {max} линија при откривању у бази.',
   'results.noMapped':
     '[покриће] нема мапираних датотека. Подесите "utplsql.sourcePath" на фасциклу са изворним кодом.',
   'status.idle': 'Још нема извршених тестова. Кликните за отварање Test Explorer-а.',
@@ -3286,6 +3360,8 @@ export const th: Record<string, string> = {
   'runner.stderr': '[stderr]',
   'oracleRunner.coverNotGenerated':
     '[ความครอบคลุม] ไม่ได้สร้างรายงาน ตรวจสอบ GRANT EXECUTE ON SYS.DBMS_PROFILER',
+  'oracleRunner.badConnFormat': 'รูปแบบการเชื่อมต่อไม่ถูกต้อง: "{conn}" ใช้ ผู้ใช้/รหัสผ่าน@//โฮสต์:พอร์ต/บริการ',
+  'discovery.sourceTruncated': 'ซอร์สของ {schema}.{name} ถูกตัดที่ {max} บรรทัดในการค้นหาผ่านฐานข้อมูล',
   'results.noMapped': '[ความครอบคลุม] ไม่มีไฟล์ที่จับคู่ ตั้งค่า "utplsql.sourcePath" เป็นโฟลเดอร์ซอร์สโค้ด',
   'status.idle': 'ยังไม่มีการรันเทสต์ คลิกเพื่อเปิด Test Explorer',
   'status.running': 'กำลังรัน {current}/{total} ชุดเทสต์',
@@ -3441,6 +3517,10 @@ export const uk: Record<string, string> = {
   'runner.stderr': '[stderr]',
   'oracleRunner.coverNotGenerated':
     '[покриття] звіт не створено. Перевірте GRANT EXECUTE ON SYS.DBMS_PROFILER.',
+  'oracleRunner.badConnFormat':
+    'Невірний формат підключення: "{conn}". Використовуйте користувач/пароль@//хост:порт/сервіс.',
+  'discovery.sourceTruncated':
+    'Джерело {schema}.{name} обрізано на {max} рядках під час виявлення в БД.',
   'results.noMapped':
     '[покриття] немає зіставлених файлів. Вкажіть "utplsql.sourcePath" на папку з вихідним кодом.',
   'status.idle': 'Тести ще не запускалися. Натисніть, щоб відкрити Test Explorer.',
@@ -3597,6 +3677,10 @@ export const vi: Record<string, string> = {
   'runner.stderr': '[stderr]',
   'oracleRunner.coverNotGenerated':
     '[phủ sóng] chưa tạo báo cáo. Kiểm tra GRANT EXECUTE ON SYS.DBMS_PROFILER.',
+  'oracleRunner.badConnFormat':
+    'Định dạng kết nối không hợp lệ: "{conn}". Dùng người-dùng/mật-khẩu@//máy-chủ:cổng/dịch-vụ.',
+  'discovery.sourceTruncated':
+    'Mã nguồn của {schema}.{name} bị cắt tại {max} dòng khi dò tìm trong DB.',
   'results.noMapped':
     '[phủ sóng] không có tệp nào được ánh xạ. Đặt "utplsql.sourcePath" vào thư mục mã nguồn.',
   'status.idle': 'Chưa chạy kiểm thử nào. Nhấp để mở Test Explorer.',

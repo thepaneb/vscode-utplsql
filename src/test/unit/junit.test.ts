@@ -93,11 +93,11 @@ test('parseJUnit: failure tag auto-fechada sem message retorna string vazia', ()
   assert.strictEqual(cases[0].message, '');
 });
 
-test('parseJUnit: failure sem message e sem texto retorna Falhou', () => {
+test('parseJUnit: failure sem message e sem texto retorna undefined (i18n no chamador)', () => {
   const xml = `<testsuites><testsuite name="s"><testcase classname="s" name="f" time="0.1"><failure dummy="x"/></testcase></testsuite></testsuites>`;
   const cases = parseJUnit(xml);
   assert.strictEqual(cases[0].status, 'failed');
-  assert.strictEqual(cases[0].message, 'Falhou');
+  assert.strictEqual(cases[0].message, undefined);
 });
 
 test('parseJUnit: failure com message attr sem texto', () => {

@@ -1,6 +1,7 @@
 import * as path from 'node:path';
 import * as vscode from 'vscode';
-import { readConfig } from './config';
+import { getExtensionLocale, readConfig } from './config';
+import { t } from './i18n';
 import { logger } from './logger';
 import { ensurePool, parseConnString } from './oracleRunner';
 import { parseSuiteText, type TestProc } from './suiteParser';
@@ -173,8 +174,12 @@ export async function discoverSchemaFromConn(
       );
       const rows = source.rows ?? [];
       if (rows.length >= ALL_SOURCE_MAX_ROWS) {
-        console.warn(
-          `[utplsql] Fonte de ${upper}.${pkgName} truncada em ${ALL_SOURCE_MAX_ROWS} linhas na descoberta via DB.`,
+        logger.warn(
+          t(getExtensionLocale(), 'discovery.sourceTruncated', {
+            schema: upper,
+            name: pkgName,
+            max: ALL_SOURCE_MAX_ROWS,
+          }),
         );
       }
       text = `CREATE OR REPLACE ${rows.map((r) => rowValue(r, 0, 'TEXT')).join('\n')}`;
