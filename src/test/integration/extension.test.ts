@@ -212,6 +212,27 @@ describe('utPLSQL extension', () => {
         }
       });
 
+      it('provider utplsql-db abre a fonte de uma suite só-DB (PRD-65 RF1)', async function () {
+        this.timeout(60_000);
+        const conn = process.env.UTPLSQL_CONN as string;
+        const folders = vscode.workspace.workspaceFolders ?? [];
+        const { discoverSchemaFromDb } = await import('../../discovery.js');
+
+        const user = conn.split('/')[0];
+        const schemas = [...new Set([user, 'UTPLSQL_TEST'])];
+        const discovered = (
+          await Promise.all(schemas.map((schema) => discoverSchemaFromDb(conn, schema, folders)))
+        ).flat();
+        const suite =
+          discovered.find((s) => s.packageName.toLowerCase() === 'test_math') ?? discovered[0];
+        assert.ok(suite, 'esperava ao menos uma suite descoberta via ALL_SOURCE');
+
+        const doc = await vscode.workspace.openTextDocument(suite.uri);
+        const text = doc.getText();
+        assert.ok(text.length > 0, 'provider deveria retornar o fonte do package');
+        assert.ok(/PACKAGE/i.test(text), 'fonte deve conter a definição do package');
+      });
+
       it('discoverSchemaFromDb com schema inexistente retorna vazio sem erro', async function () {
         this.timeout(60_000);
         const conn = process.env.UTPLSQL_CONN as string;
