@@ -1,6 +1,6 @@
 # Changelog
 
-## Unreleased
+## 0.12.0
 
 - **Cobertura PL/SQL**: corrige os gutters ausentes em `package`/`package body`,
   `function`, `procedure`, `type body` e `trigger` (só views apareciam, via
@@ -16,8 +16,6 @@
   desabilitada com o aviso "UT_COVERAGE_COBERTURA_REPORTER not available" mesmo
   com o reporter instalado, e o QuickPick de reporter adicional recebia nomes
   qualificados e os descartava.
-
-## 0.12.0
 
 - **Correções de execução e cobertura**: `DBMS_OUTPUT` dos testes agora é
   habilitado e drenado na **mesma sessão** que executa o `ut_runner.run` (antes
