@@ -17,6 +17,7 @@ import {
   listReportersOracle,
   mapDbPathsToFiles,
   parseConnString,
+  semverLt,
   withOracleConnection,
 } from '../../oracleRunner';
 import { applyResultsFromCases, countResults } from '../../results';
@@ -122,6 +123,14 @@ test('parseConnString: TNS alias e SID ficam opacos', () => {
 test('parseConnString: IPv6 e sem // ficam opacos (RF3)', () => {
   assert.strictEqual(parseConnString('u/p@[::1]:1521/svc').connectionString, '[::1]:1521/svc');
   assert.strictEqual(parseConnString('u/p@host/svc').connectionString, 'host/svc');
+});
+
+test('semverLt: compara major.minor.patch tolerando prefixo v (RF4)', () => {
+  assert.strictEqual(semverLt('3.0.0', '3.1.0'), true);
+  assert.strictEqual(semverLt('3.1.0', '3.1.0'), false);
+  assert.strictEqual(semverLt('v3.1.0', '3.1.0'), false);
+  assert.strictEqual(semverLt('3.1.0', 'v2.9.9'), false);
+  assert.strictEqual(semverLt('2.9.9', '3.0.0'), true);
 });
 
 test('parseConnString: formato invalido lanca erro', () => {

@@ -78,6 +78,7 @@ export const ptBr: Record<string, string> = {
   'status.skipped': '{count} pulados',
 
   'quickfix.oldVersion': 'Versão do utPLSQL no banco antiga ({version}); mínimo 3.1.0.',
+  'quickfix.badConn': 'Não foi possível conectar ao banco. Verifique a conexão/perfil.',
   'quickfix.oldVersionUpgrade': 'Como atualizar o utPLSQL',
   'quickfix.invalidObjects': 'Schema {schema} contém {count} objetos inválidos: {names}',
   'quickfix.noCoverage':
@@ -240,6 +241,7 @@ export const en: Record<string, string> = {
   'status.skipped': '{count} skipped',
 
   'quickfix.oldVersion': 'utPLSQL database version is old ({version}); minimum 3.1.0.',
+  'quickfix.badConn': 'Could not connect to the database. Check the connection/profile.',
   'quickfix.oldVersionUpgrade': 'How to upgrade utPLSQL',
   'quickfix.invalidObjects': 'Schema {schema} has {count} invalid objects: {names}',
   'quickfix.noCoverage':
@@ -403,6 +405,7 @@ export const es: Record<string, string> = {
   'status.skipped': '{count} omitidos',
 
   'quickfix.oldVersion': 'La versión de utPLSQL en la base es antigua ({version}); mínimo 3.1.0.',
+  'quickfix.badConn': 'No se pudo conectar a la base. Verifique la conexión/perfil.',
   'quickfix.oldVersionUpgrade': 'Cómo actualizar utPLSQL',
   'quickfix.invalidObjects': 'El esquema {schema} tiene {count} objetos inválidos: {names}',
   'quickfix.noCoverage':
@@ -561,6 +564,7 @@ export const zhCn: Record<string, string> = {
   'status.skipped': '{count} 跳过',
 
   'quickfix.oldVersion': '数据库中的 utPLSQL 版本较旧（{version}）；最低要求 3.1.0。',
+  'quickfix.badConn': '无法连接到数据库。请检查连接/配置。',
   'quickfix.oldVersionUpgrade': '如何升级 utPLSQL',
   'quickfix.invalidObjects': '架构 {schema} 包含 {count} 个无效对象：{names}',
   'quickfix.noCoverage':
@@ -723,6 +727,7 @@ export const ja: Record<string, string> = {
 
   'quickfix.oldVersion':
     'データベースの utPLSQL のバージョンが古い（{version}）；最低 3.1.0 が必要です。',
+  'quickfix.badConn': 'データベースに接続できませんでした。接続/プロファイルを確認してください。',
   'quickfix.oldVersionUpgrade': 'utPLSQL をアップグレードする方法',
   'quickfix.invalidObjects': 'スキーマ {schema} に無効なオブジェクトが {count} 個あります: {names}',
   'quickfix.noCoverage':
@@ -887,6 +892,7 @@ export const de: Record<string, string> = {
   'status.skipped': '{count} übersprungen',
 
   'quickfix.oldVersion': 'utPLSQL-Datenbankversion ist alt ({version}); mindestens 3.1.0.',
+  'quickfix.badConn': 'Verbindung zur Datenbank fehlgeschlagen. Prüfen Sie Verbindung/Profil.',
   'quickfix.oldVersionUpgrade': 'utPLSQL aktualisieren',
   'quickfix.invalidObjects': 'Schema {schema} enthält {count} ungültige Objekte: {names}',
   'quickfix.noCoverage':
@@ -1051,6 +1057,7 @@ export const fr: Record<string, string> = {
   'status.skipped': '{count} ignorés',
 
   'quickfix.oldVersion': 'La version d’utPLSQL en base est ancienne ({version}) ; minimum 3.1.0.',
+  'quickfix.badConn': 'Impossible de se connecter à la base. Vérifiez la connexion/le profil.',
   'quickfix.oldVersionUpgrade': 'Comment mettre à jour utPLSQL',
   'quickfix.invalidObjects': 'Le schéma {schema} contient {count} objets invalides : {names}',
   'quickfix.noCoverage':
@@ -1209,6 +1216,7 @@ export const zhTw: Record<string, string> = {
   'status.skipped': '{count} 略過',
 
   'quickfix.oldVersion': '資料庫中的 utPLSQL 版本過舊（{version}）；最低要求 3.1.0。',
+  'quickfix.badConn': '無法連線到資料庫。請檢查連線/設定。',
   'quickfix.oldVersionUpgrade': '如何升級 utPLSQL',
   'quickfix.invalidObjects': '結構描述 {schema} 包含 {count} 個無效物件：{names}',
   'quickfix.noCoverage':
@@ -1371,6 +1379,7 @@ export const it: Record<string, string> = {
   'status.skipped': '{count} saltati',
 
   'quickfix.oldVersion': 'La versione di utPLSQL nel database è vecchia ({version}); minimo 3.1.0.',
+  'quickfix.badConn': 'Impossibile connettersi al database. Controlla connessione/profilo.',
   'quickfix.oldVersionUpgrade': 'Come aggiornare utPLSQL',
   'quickfix.invalidObjects': 'Lo schema {schema} contiene {count} oggetti non validi: {names}',
   'quickfix.noCoverage':
@@ -1533,6 +1542,7 @@ export const ko: Record<string, string> = {
   'status.skipped': '{count} 건너뜀',
 
   'quickfix.oldVersion': '데이터베이스의 utPLSQL 버전이 오래되었습니다 ({version}); 최소 3.1.0.',
+  'quickfix.badConn': '데이터베이스에 연결할 수 없습니다. 연결/프로필을 확인하세요.',
   'quickfix.oldVersionUpgrade': 'utPLSQL 업그레이드 방법',
   'quickfix.invalidObjects': '스키마 {schema}에 잘못된 객체가 {count}개 있습니다: {names}',
   'quickfix.noCoverage':
@@ -1695,6 +1705,7 @@ export const ru: Record<string, string> = {
   'status.skipped': '{count} пропущено',
 
   'quickfix.oldVersion': 'Версия utPLSQL в БД устарела ({version}); минимум 3.1.0.',
+  'quickfix.badConn': 'Не удалось подключиться к базе. Проверьте подключение/профиль.',
   'quickfix.oldVersionUpgrade': 'Как обновить utPLSQL',
   'quickfix.invalidObjects': 'Схема {schema} содержит {count} недопустимых объектов: {names}',
   'quickfix.noCoverage':
@@ -1856,6 +1867,7 @@ export const tr: Record<string, string> = {
   'status.skipped': '{count} atlandı',
 
   'quickfix.oldVersion': 'Veritabanındaki utPLSQL sürümü eski ({version}); minimum 3.1.0.',
+  'quickfix.badConn': 'Veritabanına bağlanılamadı. Bağlantıyı/profili kontrol edin.',
   'quickfix.oldVersionUpgrade': 'utPLSQL nasıl güncellenir',
   'quickfix.invalidObjects': '{schema} şemasında {count} geçersiz nesne var: {names}',
   'quickfix.noCoverage':
@@ -2019,6 +2031,7 @@ export const pl: Record<string, string> = {
   'status.skipped': '{count} pominięte',
 
   'quickfix.oldVersion': 'Wersja utPLSQL w bazie jest stara ({version}); minimum 3.1.0.',
+  'quickfix.badConn': 'Nie można połączyć się z bazą. Sprawdź połączenie/profil.',
   'quickfix.oldVersionUpgrade': 'Jak zaktualizować utPLSQL',
   'quickfix.invalidObjects': 'Schemat {schema} zawiera {count} nieprawidłowych obiektów: {names}',
   'quickfix.noCoverage':
@@ -2182,6 +2195,7 @@ export const cs: Record<string, string> = {
   'status.skipped': '{count} přeskočeno',
 
   'quickfix.oldVersion': 'Verze utPLSQL v databázi je stará ({version}); minimum 3.1.0.',
+  'quickfix.badConn': 'Nelze se připojit k databázi. Zkontrolujte připojení/profil.',
   'quickfix.oldVersionUpgrade': 'Jak aktualizovat utPLSQL',
   'quickfix.invalidObjects': 'Schéma {schema} obsahuje {count} neplatných objektů: {names}',
   'quickfix.noCoverage':
@@ -2345,6 +2359,8 @@ export const hu: Record<string, string> = {
   'status.skipped': '{count} kihagyva',
 
   'quickfix.oldVersion': 'Az adatbázis utPLSQL-verziója régi ({version}); minimum 3.1.0.',
+  'quickfix.badConn':
+    'Nem sikerült csatlakozni az adatbázishoz. Ellenőrizze a kapcsolatot/profilt.',
   'quickfix.oldVersionUpgrade': 'Az utPLSQL frissítése',
   'quickfix.invalidObjects': 'A {schema} séma {count} érvénytelen objektumot tartalmaz: {names}',
   'quickfix.noCoverage':
@@ -2504,6 +2520,7 @@ export const bg: Record<string, string> = {
   'status.errored': '{count} грешки',
   'status.skipped': '{count} пропуснати',
   'quickfix.oldVersion': 'Версията на utPLSQL в базата е стара ({version}); минимум 3.1.0.',
+  'quickfix.badConn': 'Неуспешно свързване с базата. Проверете връзката/профила.',
   'quickfix.oldVersionUpgrade': 'Как да обновите utPLSQL',
   'quickfix.invalidObjects': 'Схемата {schema} съдържа {count} невалидни обекта: {names}',
   'quickfix.noCoverage':
@@ -2660,6 +2677,7 @@ export const el: Record<string, string> = {
   'status.errored': '{count} σφάλματα',
   'status.skipped': '{count} παραλειφθέντα',
   'quickfix.oldVersion': 'Η έκδοση utPLSQL στη βάση είναι παλιά ({version}); ελάχιστο 3.1.0.',
+  'quickfix.badConn': 'Δεν ήταν δυνατή η σύνδεση στη βάση. Ελέγξτε τη σύνδεση/προφίλ.',
   'quickfix.oldVersionUpgrade': 'Πώς να αναβαθμίσετε το utPLSQL',
   'quickfix.invalidObjects': 'Το σχήμα {schema} περιέχει {count} μη έγκυρα αντικείμενα: {names}',
   'quickfix.noCoverage':
@@ -2816,6 +2834,7 @@ export const id: Record<string, string> = {
   'status.errored': '{count} kesalahan',
   'status.skipped': '{count} dilewati',
   'quickfix.oldVersion': 'Versi utPLSQL di database sudah lama ({version}); minimal 3.1.0.',
+  'quickfix.badConn': 'Tidak dapat terhubung ke database. Periksa koneksi/profil.',
   'quickfix.oldVersionUpgrade': 'Cara memperbarui utPLSQL',
   'quickfix.invalidObjects': 'Skema {schema} memiliki {count} objek tidak valid: {names}',
   'quickfix.noCoverage':
@@ -2971,6 +2990,7 @@ export const ro: Record<string, string> = {
   'status.errored': '{count} erori',
   'status.skipped': '{count} sărite',
   'quickfix.oldVersion': 'Versiunea utPLSQL din baza de date este veche ({version}); minim 3.1.0.',
+  'quickfix.badConn': 'Nu s-a putut conecta la baza de date. Verificați conexiunea/profilul.',
   'quickfix.oldVersionUpgrade': 'Cum să actualizați utPLSQL',
   'quickfix.invalidObjects': 'Schema {schema} conține {count} obiecte invalide: {names}',
   'quickfix.noCoverage':
@@ -3125,6 +3145,7 @@ export const sr: Record<string, string> = {
   'status.errored': '{count} грешака',
   'status.skipped': '{count} прескочених',
   'quickfix.oldVersion': 'Верзија utPLSQL у бази је стара ({version}); минимум 3.1.0.',
+  'quickfix.badConn': 'Није могуће повезивање са базом. Проверите везу/профил.',
   'quickfix.oldVersionUpgrade': 'Како ажурирати utPLSQL',
   'quickfix.invalidObjects': 'Шема {schema} садржи {count} невалидних објеката: {names}',
   'quickfix.noCoverage':
@@ -3275,6 +3296,7 @@ export const th: Record<string, string> = {
   'status.errored': 'ข้อผิดพลาด {count}',
   'status.skipped': 'ข้าม {count}',
   'quickfix.oldVersion': 'เวอร์ชัน utPLSQL ในฐานข้อมูลเก่า ({version}); ขั้นต่ำ 3.1.0',
+  'quickfix.badConn': 'ไม่สามารถเชื่อมต่อฐานข้อมูลได้ ตรวจสอบการเชื่อมต่อ/โปรไฟล์',
   'quickfix.oldVersionUpgrade': 'วิธีอัปเกรด utPLSQL',
   'quickfix.invalidObjects': 'สคีมา {schema} มีวัตถุไม่ถูกต้อง {count} รายการ: {names}',
   'quickfix.noCoverage':
@@ -3430,6 +3452,7 @@ export const uk: Record<string, string> = {
   'status.errored': '{count} помилок',
   'status.skipped': '{count} пропущено',
   'quickfix.oldVersion': 'Версія utPLSQL у БД застаріла ({version}); мінімум 3.1.0.',
+  'quickfix.badConn': 'Не вдалося підключитися до бази. Перевірте з’єднання/профіль.',
   'quickfix.oldVersionUpgrade': 'Як оновити utPLSQL',
   'quickfix.invalidObjects': "Схема {schema} містить {count} недійсних об'єктів: {names}",
   'quickfix.noCoverage':
@@ -3585,6 +3608,7 @@ export const vi: Record<string, string> = {
   'status.errored': '{count} lỗi',
   'status.skipped': '{count} bỏ qua',
   'quickfix.oldVersion': 'Phiên bản utPLSQL trong cơ sở dữ liệu cũ ({version}); tối thiểu 3.1.0.',
+  'quickfix.badConn': 'Không thể kết nối tới cơ sở dữ liệu. Kiểm tra kết nối/hồ sơ.',
   'quickfix.oldVersionUpgrade': 'Cách nâng cấp utPLSQL',
   'quickfix.invalidObjects': 'Lược đồ {schema} chứa {count} đối tượng không hợp lệ: {names}',
   'quickfix.noCoverage':

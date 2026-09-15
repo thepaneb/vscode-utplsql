@@ -2,6 +2,14 @@
 
 ## 0.12.0
 
+- **Diagnostics e reporter de sessão (PRD-68)**: diagnóstico de compilação
+  PL/SQL religado — erros de `ALL_ERRORS` aparecem no Problems Panel (source
+  "utPLSQL Compilation") após um run, controlado por
+  `utplsql.compilationDiagnostics.enabled`. Reporter adicional volátil da
+  sessão passa a valer para a próxima execução; `UTPLSQL_BAD_CONN` é emitido em
+  falha de conexão; threshold de versão centralizado (3.1.0) e guard em
+  `extractSchemaFromPath` para padrões sem `{schema}`.
+
 - **Robustez de conexão, logging e cache (PRD-66)**: connection string aceita
   TNS/SID/IPv6; logs de diagnóstico opt-in com `UTPLSQL_DEBUG=1`; pool recriado
   ao mudar `utplsql.oraclePool*` (chave composta + `onDidChangeConfiguration`);

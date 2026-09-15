@@ -180,6 +180,11 @@ test('extractSchemaFromPath: retorna undefined quando nao da match', () => {
   );
 });
 
+test('extractSchemaFromPath: padrao sem {schema} nao lanca (RF5)', () => {
+  assert.doesNotThrow(() => extractSchemaFromPath('/root/db/APP/x.pks', '/root', 'db/**'));
+  assert.strictEqual(extractSchemaFromPath('/root/db/APP/x.pks', '/root', 'db/**'), undefined);
+});
+
 test('extractSchemaFromPath: padrao customizado src/{schema}/tests/**', () => {
   assert.strictEqual(
     extractSchemaFromPath('/root/src/MYSCHEMA/tests/ut_foo.pks', '/root', 'src/{schema}/tests/**'),

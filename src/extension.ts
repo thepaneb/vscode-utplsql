@@ -1,6 +1,10 @@
 import * as vscode from 'vscode';
 import { type CodeLensItem, parseCodeLensItems, UtplsqlCodeLensProvider } from './codelens';
 import {
+  refreshCompilationDiagnostics,
+  registerCompilationDiagnostics,
+} from './compilationDiagnostics';
+import {
   clearSessionConnection,
   getExtensionLocale,
   readConfig,
@@ -304,6 +308,7 @@ export function activate(context: vscode.ExtensionContext) {
   context.subscriptions.push(decorationManager);
 
   registerDbSourceProvider(context);
+  registerCompilationDiagnostics(context);
 
   context.subscriptions.push(
     vscode.workspace.onDidChangeConfiguration((e) => {
@@ -610,6 +615,9 @@ async function runWithProgress(
               sb.showResults(passed, failed, skipped, errored, durationMs)
           : undefined,
       );
+
+      // Diagnóstico de compilação PL/SQL pós-run (PRD-68 RF1).
+      await refreshCompilationDiagnostics(state).catch(() => {});
 
       if (decorationManager) {
         decorationManager.update(state.getLastResults(), (id) => state.getItem(id));

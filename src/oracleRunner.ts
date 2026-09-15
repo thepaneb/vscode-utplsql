@@ -9,6 +9,21 @@ import type { TestStateManager } from './state';
 type OraclePool = import('oracledb').Pool;
 type OracleConnection = import('oracledb').Connection;
 
+/** Versão mínima do utPLSQL exigida pela extensão (PRD-68 RF4). */
+export const UTPLSQL_MIN_VERSION = '3.1.0';
+
+/** Comparação semver simplificada (major.minor.patch); tolera prefixo `v`. */
+export function semverLt(a: string, b: string): boolean {
+  const pa = a.replace(/^v/, '').split('.');
+  const pb = b.replace(/^v/, '').split('.');
+  for (let i = 0; i < 3; i++) {
+    const x = Number.parseInt(pa[i] ?? '0', 10) || 0;
+    const y = Number.parseInt(pb[i] ?? '0', 10) || 0;
+    if (x !== y) return x < y;
+  }
+  return false;
+}
+
 export function parseConnString(connStr: string): {
   user: string;
   password: string;
@@ -426,7 +441,17 @@ export async function executeRunOracle(
       }
     }
 
-    for (const r of additionalReporters ?? []) {
+    // Reporter adicional volátil da sessão (PRD-68 RF2): consumo único.
+    const sessionReporter = state.consumeExtraReporter?.();
+    const extraReporters = [...(additionalReporters ?? [])];
+    if (sessionReporter) {
+      extraReporters.push(sessionReporter);
+      run.appendOutput(
+        `\r\n${t(getExtensionLocale(), 'runner.extraReporter', { name: sessionReporter })}\r\n`,
+      );
+    }
+
+    for (const r of extraReporters) {
       const normalized = r.toLowerCase().replace(/\(\)$/, '');
       if (
         normalized === 'ut_documentation_reporter' ||

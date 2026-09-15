@@ -1,12 +1,15 @@
 import * as vscode from 'vscode';
 import { getExtensionLocale, readConfig, resolveConnectionNoPrompt } from './config';
 import { t } from './i18n';
+import { logger } from './logger';
 import {
   discoverUtplsqlSchema,
   ensurePool,
   findInvalidUt3Objects,
   getOracleInfo,
   parseConnString,
+  semverLt,
+  UTPLSQL_MIN_VERSION,
 } from './oracleRunner';
 
 interface SetupDiagnostic {
@@ -48,15 +51,24 @@ export class SetupValidator {
         oracleConn = pool
           ? await pool.getConnection()
           : await oracledb.getConnection(parseConnString(conn));
-      } catch {
+      } catch (e) {
+        logger.debug('validateOnActivation: falha ao conectar', { error: String(e) });
+        diagnostics.push({
+          code: 'UTPLSQL_BAD_CONN',
+          severity: vscode.DiagnosticSeverity.Error,
+          message: t(locale, 'quickfix.badConn'),
+          command: {
+            title: t(locale, 'quickfix.reconfigureConn'),
+            command: 'utplsql.configureConnection',
+          },
+        });
         return diagnostics;
       }
 
       try {
         const info = await getOracleInfo(oracleConn);
         if (info.utVersion && info.dbVersion) {
-          const major = parseInt(info.utVersion.replace(/^v/, '').split('.')[0], 10);
-          if (major < 3) {
+          if (semverLt(info.utVersion, UTPLSQL_MIN_VERSION)) {
             diagnostics.push({
               code: 'UTPLSQL_OLD_VERSION',
               severity: vscode.DiagnosticSeverity.Warning,

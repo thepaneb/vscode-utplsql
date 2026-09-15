@@ -3,16 +3,20 @@
 Diagnósticos automáticos para erros de compilação PL/SQL e validação de
 configuração do ambiente.
 
-## Compilation Diagnostics — NÃO ATIVO hoje
+## Compilation Diagnostics (`src/compilationDiagnostics.ts`)
 
-> **A feature não está ativa.** O módulo `src/compilationDiagnostics.ts` foi
-> removido na migração Oracle-only (PRD-64) e não existe `DiagnosticCollection`
-> de compilação — nenhum diagnostic com source `"utPLSQL Compilation"` é
-> criado. A setting `utplsql.compilationDiagnostics.enabled` é lida em
-> `config.ts` (`compilationDiagnosticsEnabled`) e exposta no `UtConfig`, mas
-> **não tem efeito**: nenhum consumidor a utiliza.
+Diagnóstico de compilação PL/SQL religado na PRD-68: após um run, consulta
+`ALL_ERRORS` no schema da conexão e publica no Problems Panel com source
+`"utPLSQL Compilation"`, mapeando cada erro para a suite descoberta
+(`file:line`). Controlado por `utplsql.compilationDiagnostics.enabled`.
 
-A consulta a `ALL_ERRORS` sobrevive em:
+```typescript
+function registerCompilationDiagnostics(context): void;
+function refreshCompilationDiagnostics(state): Promise<void>;  // pós-run
+function clearCompilationDiagnostics(): void;
+```
+
+A consulta vive em `oracleRunner.ts`:
 
 ```typescript
 function checkCompilationErrors(conn, schema: string): Promise<CompilationError[]>
@@ -20,10 +24,8 @@ function checkCompilationErrors(conn, schema: string): Promise<CompilationError[
 
 Retorna `CompilationError[]` (`name`, `type`, `line`, `position`, `text`) via
 `SELECT ... FROM ALL_ERRORS WHERE owner = :schema AND attribute = 'ERROR'`.
-**Não tem caller de produção** — nenhum fluxo atual chama essa função; ela só é
-exercitada pelos testes de unidade/integração.
 
-PRD-68 (proposto) prevê religar a feature com um novo `DiagnosticCollection`.
+> Erros em packages não descobertos no workspace são ignorados (best-effort).
 
 ## Setup Diagnostics (`src/quickfix.ts`)
 
@@ -51,7 +53,8 @@ class SetupValidator {
 
 | Verificação | Condição | Diagnostic |
 |---|---|---|
-| Versão | `parseInt(utVersion) < 3` | `UTPLSQL_OLD_VERSION` (Warning) |
+| Conexão | falha ao conectar | `UTPLSQL_BAD_CONN` (Error) |
+| Versão | `semverLt(utVersion, '3.1.0')` | `UTPLSQL_OLD_VERSION` (Warning) |
 | Instalação utPLSQL | objetos inválidos em `ALL_OBJECTS` no schema utPLSQL | `UTPLSQL_INVALID_OBJECTS` (Warning) |
 
 > `UTPLSQL_BAD_CONN` e `UTPLSQL_NO_COVERAGE` **não são produzidos** no fluxo

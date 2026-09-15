@@ -6,35 +6,27 @@ configuração e acelerar o ciclo TDD:
 1. **Setup diagnostics** — validação proativa de conexão, grants e versão
    do utPLSQL, com **quick-fix actions** no Problems Panel.
 2. **Compilation diagnostics** — erros de compilação PL/SQL exibidos como
-   sublinhados no editor. **Não está ativo na versão atual.**
+   sublinhados no editor e no Problems Panel.
 
 ---
 
-## Compilation diagnostics (não ativo)
+## Compilation diagnostics
 
-> ⚠️ Esta feature **não está ligada** na versão Oracle-only atual. A setting
-> `utplsql.compilationDiagnostics.enabled` continua existindo, mas **não tem
-> efeito**: nenhum diagnostic é emitido e não há `DiagnosticCollection` com
-> source "utPLSQL Compilation". O antigo `src/compilationDiagnostics.ts` foi
-> removido na migração Oracle-only (PRD-64); `checkCompilationErrors()`
-> permanece em `oracleRunner.ts`, mas **sem caller de produção**.
->
-> Enquanto não for religada, compile ou rode os testes para expor os erros
-> PL/SQL.
-
-### Fluxo previsto (quando religada)
+Após um run de testes, a extensão consulta `ALL_ERRORS` no schema da conexão e
+publica os erros de compilação com source **"utPLSQL Compilation"**, mapeando
+cada erro para a suite descoberta (`file:line`). Erros em packages não
+descobertos no workspace são ignorados.
 
 ```
-executeRun() → Oracle executa → erros parseados → Problems Panel
-  → editor mostra sublinhados vermelhos
+executeRunOracle() → checkCompilationErrors(ALL_ERRORS) → Problems Panel
+  → editor mostra sublinhados
 ```
 
 ### Configuração
 
 ```jsonc
 {
-  // Reservada. Atualmente NÃO tem efeito na versão Oracle-only:
-  "utplsql.compilationDiagnostics.enabled": false
+  "utplsql.compilationDiagnostics.enabled": true
 }
 ```
 

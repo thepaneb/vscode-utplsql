@@ -102,7 +102,8 @@ export function extractSchemaFromPath(
 
   const regex = new RegExp(`^${escaped}$`);
   const match = regex.exec(relative);
-  return match ? match[1].toUpperCase() : undefined;
+  // Padrão sem `{schema}` (sem grupo de captura) → undefined (caller usa UNKNOWN).
+  return match?.[1] ? match[1].toUpperCase() : undefined;
 }
 
 // ── Descoberta via banco (PRD-43) ────────────────────────────────────
