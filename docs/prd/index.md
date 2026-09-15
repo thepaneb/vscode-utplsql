@@ -139,6 +139,14 @@ _(vazio — nenhuma PRD aprovada aguardando implementação)_
 
 ### ⚪ Propostos
 
+#### 0.12.0
+
+| # | PRD | Versão alvo | Data |
+|---|---|---|---|
+| 65 | [Correções críticas de schema-mode e segurança](proposed/prd-65-schema-mode-security-fixes.md) | 0.12.0 | 2026-09-15 |
+| 66 | [Robustez de conexão, logging e cache](proposed/prd-66-connection-robustness-logging.md) | 0.12.0 | 2026-09-15 |
+| 67 | [Qualidade, limpeza e performance](proposed/prd-67-code-quality-cleanup.md) | 0.12.0 | 2026-09-15 |
+
 #### 0.13.0
 
 | # | PRD | Versão alvo | Data |
@@ -235,6 +243,9 @@ docs/prd/
 ├── approved/         ← aprovados, aguardando implementação (vazio)
 ├── in-progress/      ← sendo implementados agora (vazio)
 └── proposed/         ← em avaliação
+    ├── prd-65-schema-mode-security-fixes.md
+    ├── prd-66-connection-robustness-logging.md
+    ├── prd-67-code-quality-cleanup.md
     ├── prd-47-node-26-toolchain.md
     ├── prd-50-auto-run-on-save.md
     ├── prd-51-run-by-tag.md
