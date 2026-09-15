@@ -109,9 +109,9 @@ Test Explorer-у **како се сваки тест заврши**. VSIX већ
 | `utplsql.oraclePoolPingInterval` | `60` | Секунде између провера здравља неактивних веза у пулу (node-oracledb). `0` = ping при сваком преузимању. |
 | `utplsql.organization` | `file` | Организација стабла: `file` (по путањи) или `schema` (Schema > Package > Suite > Test). У `schema` режиму, суитови се такође откривају из базе података (`ALL_OBJECTS`/`ALL_SOURCE`) када `.pks` датотеке нису у радном простору — са виртуелним URI-јем `utplsql-db:/` (без CodeLens-а/декорација/скока до грешке). |
 | `utplsql.organization.schemaPattern` | `db/{schema}/**` | Glob узорак за издвајање шеме из путање. Користите `{schema}` као placeholder. У `schema` режиму, директоријуми испод основе узорка (нпр. `db/*`) дефинишу шеме упитане у бази података. |
-| `utplsql.compilationDiagnostics.enabled` | `true` | Резервисано за дијагностику компилације PL/SQL. **Тренутно нема ефекта** у Oracle-only верзији — функција није повезана (још није поново омогућена). |
+| `utplsql.compilationDiagnostics.enabled` | `true` | Приказује грешке компилације PL/SQL из базе података (`ALL_ERRORS`) као подвлачења у едитору и у панелу „Проблеми" (извор "utPLSQL Compilation"). |
 | `utplsql.setupDiagnostics.enabled` | `true` | Приказује дијагностику конфигурације (веза, grant-ови, верзија) и **интегритет utPLSQL инсталације** (неважећи објекти у UT3 шеми, са „Recompile UT3" quick-fix-ом) са quick-fix радњама. |
-| `utplsql.profiles` | `[]` | Сачувани Oracle профили веза (име, веза и замене `sourcePath`-а/`coverageOwner`-а/итд.) за пребацивање између окружења. (Full field reference: [wiki](https://github.com/thepaneb/vscode-utplsql/wiki/Configuration)). |
+| `utplsql.profiles` | `[]` | Сачувани Oracle профили веза (име, веза и замене `sourcePath`-а/`coverageOwner`-а/итд.) за пребацивање између окружења. **Лозинке се чувају у привеску кључева ОС-а (VS Code SecretStorage), а не у подешавањима** — поље `connection` чува само `user@//host:port/service`. Стари профили са уграђеном лозинком се аутоматски мигрирају при првој употреби. (Full field reference: [wiki](https://github.com/thepaneb/vscode-utplsql/wiki/Configuration)). |
 | `utplsql.activeProfile` | `""` | ID активног профила (`utplsql.profiles`). Када је постављен, поништава `utplsql.connection`. |
 | `utplsql.sqlCoverageEnabled` | `false` | Прати погледе извршене преко `V$SQL` (булова покривеност). Захтева `GRANT SELECT ON V$SQL`. |
 | `utplsql.debugger.enabled` | `true` | Омогућава отклањање грешака PL/SQL тестова (`DBMS_DEBUG`). Захтева `node-oracledb` + grant-ове. |
@@ -363,12 +363,13 @@ GRANT SELECT ON SYS.DBA_PROCEDURES TO <ut3_owner>;
 | Суитови се не појављују | Нема покривених `.pks` датотека | Покрените `utPLSQL: Validate configuration` за дијагностику |
 | Празна покривеност | Недостаје `GRANT EXECUTE ON DBMS_PROFILER` | Покрените grant-ове из [Захтева базе података](#захтеви-базе-података) или користите `utPLSQL: Copy coverage grants to clipboard` |
 | Празна покривеност | Oracle 19c захтева додатне grant-ове | `GRANT EXECUTE ON DBMS_PROFILER` + `GRANT EXECUTE ON DBMS_PLSQL_CODE_COVERAGE` |
-| Грешка компилације без назнаке | Код са PL/SQL синтаксном грешком | Дијагностика компилације још није повезана у Oracle-only верзији (`utplsql.compilationDiagnostics.enabled` нема ефекта); компајлирајте/покрените да бисте открили грешку |
+| Грешка компилације без назнаке | Код са PL/SQL синтаксном грешком | Оставите `utplsql.compilationDiagnostics.enabled` укључен (подразумевано); грешке из `ALL_ERRORS` се појављују у панелу „Проблеми" након покретања |
 | Грешка у вези | Погрешан стринг или недоступна база | Користите `utPLSQL: Validate configuration` |
 | Тимеаут током извршавања | Тестови трају дуже од `timeoutMinutes`-а | Повећајте `utplsql.timeoutMinutes` |
 | `%suite` није препознат | Недостаје `%suite`/`create package` у датотеци, или `%test` без `PROCEDURE`-а | Проверите спецификацију; покрените `utPLSQL: Refresh tests` |
 | CodeLens се не појављује | `editor.codeLens` онемогућен или конфликт | Омогућите `"editor.codeLens": true`; проверите `utplsql.codeLens.enabled` |
 | Пречице не раде | Конфликт са другом екстензијом или VSCode пречицом | Идите на File → Preferences → Keyboard Shortcuts и потражите `utplsql` да бисте их редефинисали |
+| Потребна је дијагностика | Нејасно шта екстензија ради интерно | Поставите `UTPLSQL_DEBUG=1` пре покретања VSCode-а за укључивање дијагностичких логова (контекст кварова везе/откривања/покривености) у конзоли Extension Host |
 
 ## Напомена
 

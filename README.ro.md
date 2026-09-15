@@ -108,9 +108,9 @@ Extensia se conectează direct prin Oracle, citește rapoartele (JUnit + Coverag
 | `utplsql.oraclePoolPingInterval` | `60` | Secunde între verificările de sănătate ale conexiunilor idle din pool (node-oracledb). `0` = ping la fiecare checkout. |
 | `utplsql.organization` | `file` | Organizarea arborelui: `file` (după cale) sau `schema` (Schema > Package > Suite > Test). În modul `schema` suitele sunt descoperite și din baza de date (`ALL_OBJECTS`/`ALL_SOURCE`) atunci când fișierele `.pks` nu sunt în workspace — cu URI virtual `utplsql-db:/` (fără CodeLens/decorări/salt la eșec). |
 | `utplsql.organization.schemaPattern` | `db/{schema}/**` | Model glob pentru extragerea schemei din cale. Folosește `{schema}` ca substituent. În modul `schema`, directoarele de sub baza modelului (ex.: `db/*`) definesc schemele interogate în baza de date. |
-| `utplsql.compilationDiagnostics.enabled` | `true` | Rezervat pentru diagnosticele de compilare PL/SQL. **Momentan fără efect** în versiunea Oracle-only — funcția nu este conectată (nu a fost încă reactivată). |
+| `utplsql.compilationDiagnostics.enabled` | `true` | Afișează erorile de compilare PL/SQL din baza de date (`ALL_ERRORS`) ca subliniere în editor și în Problems Panel (sursa „utPLSQL Compilation"). |
 | `utplsql.setupDiagnostics.enabled` | `true` | Afișează diagnostice de configurare (conexiune, granturi, versiune) și **integritatea instalării utPLSQL** (obiecte invalide în schema UT3, cu quick-fix „Recompile UT3") cu acțiuni quick-fix. |
-| `utplsql.profiles` | `[]` | Profiluri de conexiune Oracle salvate (nume, conexiune și suprascrieri ale `sourcePath`/`coverageOwner`/etc.) pentru a comuta între medii. (Full field reference: [wiki](https://github.com/thepaneb/vscode-utplsql/wiki/Configuration)). |
+| `utplsql.profiles` | `[]` | Profiluri de conexiune Oracle salvate (nume, conexiune și suprascrieri ale `sourcePath`/`coverageOwner`/etc.) pentru a comuta între medii. **Parolele sunt păstrate în keychain-ul sistemului de operare (VS Code SecretStorage), nu în setări** — câmpul `connection` stochează doar `user@//host:port/service`. Profilurile vechi cu parolă inline sunt migrate automat la prima utilizare. (Full field reference: [wiki](https://github.com/thepaneb/vscode-utplsql/wiki/Configuration)). |
 | `utplsql.activeProfile` | `""` | ID-ul profilului activ (`utplsql.profiles`). Când este setat, suprascrie `utplsql.connection`. |
 | `utplsql.sqlCoverageEnabled` | `false` | Urmărește vizualizările executate prin `V$SQL` (acoperire booleană). Necesită `GRANT SELECT ON V$SQL`. |
 | `utplsql.debugger.enabled` | `true` | Activează depanarea testelor PL/SQL (`DBMS_DEBUG`). Necesită `node-oracledb` + granturi. |
@@ -359,11 +359,12 @@ GRANT SELECT ON SYS.DBA_PROCEDURES TO <ut3_owner>;
 |---|---|---|
 | Acoperire goală | Lipsește `GRANT EXECUTE ON DBMS_PROFILER` | Rulează granturile din [Cerințe pentru baza de date](#cerințe-pentru-baza-de-date) sau folosește `utPLSQL: Copy coverage grants to clipboard` |
 | Acoperire goală | Oracle 19c necesită granturi suplimentare | `GRANT EXECUTE ON DBMS_PROFILER` + `GRANT EXECUTE ON DBMS_PLSQL_CODE_COVERAGE` |
-| Eroare de compilare fără indicație | Cod cu eroare de sintaxă PL/SQL | Diagnosticele de compilare nu sunt încă conectate în versiunea Oracle-only (`utplsql.compilationDiagnostics.enabled` nu are efect); compilează/rulează pentru a expune eroarea |
+| Eroare de compilare fără indicație | Cod cu eroare de sintaxă PL/SQL | Menține `utplsql.compilationDiagnostics.enabled` activat (implicit); erorile din `ALL_ERRORS` apar în Problems Panel după o rulare |
 | Eroare de conexiune | String malformat sau bază de date inaccesibilă | Folosește `utPLSQL: Validate configuration` |
 | `%suite` nu este recunoscut | Lipsesc `%suite`/`create package` în fișier, sau `%test` fără `PROCEDURE` | Verifică spec-ul; rulează `utPLSQL: Refresh tests` |
 | CodeLens nu apare | `editor.codeLens` dezactivat sau conflict | Activează `"editor.codeLens": true`; verifică `utplsql.codeLens.enabled` |
 | Scurtăturile nu funcționează | Conflict cu altă extensie sau scurtătură VSCode | Mergi la File → Preferences → Keyboard Shortcuts și caută `utplsql` pentru a redefini |
+| Nevoie de diagnostice | Nu este clar ce face extensia intern | Setează `UTPLSQL_DEBUG=1` înainte de a lansa VSCode pentru jurnale de diagnosticare opt-in (contextul defecțiunilor de conexiune/discovery/acoperire) în consola Extension Host |
 
 ## Notă legală
 

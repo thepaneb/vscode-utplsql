@@ -108,9 +108,9 @@ Test Explorer **с приключването на всеки тест**.
 | `utplsql.oraclePoolPingInterval` | `60` | Секунди между проверките за здраве на неактивните връзки в пула (node-oracledb). `0` = ping при всяко извличане. |
 | `utplsql.organization` | `file` | Организация на дървото: `file` (по път) или `schema` (Schema > Package > Suite > Test). В режим `schema` комплектите също се откриват от базата данни (`ALL_OBJECTS`/`ALL_SOURCE`), когато `.pks` файлове не са в работната област — с виртуален URI `utplsql-db:/` (без CodeLens/декорации/преминаване към грешката). |
 | `utplsql.organization.schemaPattern` | `db/{schema}/**` | Glob шаблон за извличане на схемата от пътя. Използвайте `{schema}` като плейсхолдър. В режим `schema` директориите под основата на шаблона (напр. `db/*`) определят схемите, по които се прави заявка в базата данни. |
-| `utplsql.compilationDiagnostics.enabled` | `true` | Резервирано за диагностика на компилация на PL/SQL. **В момента няма ефект** във версията само с Oracle — функцията не е свързана (още не е повторно активирана). |
+| `utplsql.compilationDiagnostics.enabled` | `true` | Показва грешки при компилация на PL/SQL от базата данни (`ALL_ERRORS`) като подчертавания в редактора и в панела „Проблеми" (източник "utPLSQL Compilation"). |
 | `utplsql.setupDiagnostics.enabled` | `true` | Показва диагностика на конфигурацията (връзка, привилегии, версия) и **целостта на инсталацията на utPLSQL** (невалидни обекти в схемата UT3, с quick-fix „Recompile UT3") с quick-fix действия. |
-| `utplsql.profiles` | `[]` | Записани профили за връзка с Oracle (име, връзка и презаписвания на `sourcePath`/`coverageOwner`/и т.н.) за превключване между среди. (Full field reference: [wiki](https://github.com/thepaneb/vscode-utplsql/wiki/Configuration)). |
+| `utplsql.profiles` | `[]` | Записани профили за връзка с Oracle (име, връзка и презаписвания на `sourcePath`/`coverageOwner`/и т.н.) за превключване между среди. **Паролите се съхраняват в ключодържателя на ОС (VS Code SecretStorage), а не в настройките** — полето `connection` съхранява само `user@//host:port/service`. Стари профили с вграден пароль се мигрират автоматично при първо използване. (Full field reference: [wiki](https://github.com/thepaneb/vscode-utplsql/wiki/Configuration)). |
 | `utplsql.activeProfile` | `""` | ID на активния профил (`utplsql.profiles`). Когато е зададен, презаписва `utplsql.connection`. |
 | `utplsql.sqlCoverageEnabled` | `false` | Проследява изгледите, изпълнени чрез `V$SQL` (булево покритие). Изисква `GRANT SELECT ON V$SQL`. |
 | `utplsql.debugger.enabled` | `true` | Активира дебъгване на PL/SQL тестове (`DBMS_DEBUG`). Изисква `node-oracledb` + привилегии. |
@@ -359,11 +359,12 @@ GRANT SELECT ON SYS.DBA_PROCEDURES TO <ut3_owner>;
 |---|---|---|
 | Празно покритие | Липсва `GRANT EXECUTE ON DBMS_PROFILER` | Изпълнете привилегиите от [Изисквания към базата данни](#изисквания-към-базата-данни) или използвайте `utPLSQL: Copy coverage grants to clipboard` |
 | Празно покритие | Oracle 19c изисква допълнителни привилегии | `GRANT EXECUTE ON DBMS_PROFILER` + `GRANT EXECUTE ON DBMS_PLSQL_CODE_COVERAGE` |
-| Грешка при компилация без индикация | Код с PL/SQL синтактична грешка | Диагностиката на компилация още не е свързана във версията само с Oracle (`utplsql.compilationDiagnostics.enabled` няма ефект); компилирайте/стартирайте, за да се покаже грешката |
+| Грешка при компилация без индикация | Код с PL/SQL синтактична грешка | Оставете `utplsql.compilationDiagnostics.enabled` включен (по подразбиране); грешките от `ALL_ERRORS` се появяват в панела „Проблеми" след изпълнение |
 | Грешка при връзка | Невалиден низ или недостъпна БД | Използвайте `utPLSQL: Validate configuration` |
 | `%suite` не се разпознава | Липсва `%suite`/`create package` във файла, или `%test` без `PROCEDURE` | Проверете спецификацията; изпълнете `utPLSQL: Refresh tests` |
 | CodeLens не се появява | `editor.codeLens` е изключен или има конфликт | Активирайте `"editor.codeLens": true`; проверете `utplsql.codeLens.enabled` |
 | Комбинациите не работят | Конфликт с друго разширение или комбинация на VSCode | Отидете на File → Preferences → Keyboard Shortcuts и потърсете `utplsql`, за да предефинирате |
+| Нужна диагностика | Неясно какво прави разширението вътрешно | Задайте `UTPLSQL_DEBUG=1` преди стартиране на VSCode за включване на диагностични логове (контекст на грешки при връзка/откриване/покритие) в конзолата Extension Host |
 
 ## Забележка
 

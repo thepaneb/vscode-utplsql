@@ -109,9 +109,9 @@ Test Explorer 中。
 | `utplsql.oraclePoolPingInterval` | `60` | 空闲池连接健康检查之间的秒数（node-oracledb）。`0` = 每次签出时 ping。 |
 | `utplsql.organization` | `file` | 树组织方式：`file`（按路径）或 `schema`（Schema > Package > Suite > Test）。在 `schema` 模式时，如果工作区中没有 `.pks` 文件，还会从数据库（`ALL_OBJECTS`/`ALL_SOURCE`）发现套件 — 使用虚拟 URI `utplsql-db:/`（无 CodeLens/装饰/跳转到失败）。 |
 | `utplsql.organization.schemaPattern` | `db/{schema}/**` | 用于从路径中提取 schema 的 glob 模式。使用 `{schema}` 作为占位符。在 `schema` 模式下，模式基准目录（例如 `db/*`）下方的目录定义了在数据库中查询的 schemas。 |
-| `utplsql.compilationDiagnostics.enabled` | `true` | 保留用于 PL/SQL 编译诊断。**目前在 Oracle-only 版本中无效** — 该功能尚未连接（尚未重新启用）。 |
+| `utplsql.compilationDiagnostics.enabled` | `true` | 将数据库中的 PL/SQL 编译错误（`ALL_ERRORS`）以编辑器下划线形式显示，并显示在“问题”面板中（来源 "utPLSQL Compilation"）。 |
 | `utplsql.setupDiagnostics.enabled` | `true` | 显示配置诊断（连接、授权、版本）以及 **utPLSQL 安装完整性**（UT3 schema 中的无效对象，带有 "Recompile UT3" 快速修复），并带有快速修复操作。 |
-| `utplsql.profiles` | `[]` | 已保存的 Oracle 连接配置（名称、连接，以及 `sourcePath`/`coverageOwner` 等的覆盖项），用于在环境之间切换。 (Full field reference: [wiki](https://github.com/thepaneb/vscode-utplsql/wiki/Configuration)). |
+| `utplsql.profiles` | `[]` | 已保存的 Oracle 连接配置（名称、连接，以及 `sourcePath`/`coverageOwner` 等的覆盖项），用于在环境之间切换。**密码保存在操作系统钥匙串（VS Code SecretStorage）中，而非设置中** — `connection` 字段仅存储 `user@//host:port/service`。带有内联密码的旧配置会在首次使用时自动迁移。 (Full field reference: [wiki](https://github.com/thepaneb/vscode-utplsql/wiki/Configuration)). |
 | `utplsql.activeProfile` | `""` | 活动配置的 ID（`utplsql.profiles`）。设置后，会覆盖 `utplsql.connection`。 |
 | `utplsql.sqlCoverageEnabled` | `false` | 通过 `V$SQL` 跟踪执行的视图（布尔覆盖率）。需要 `GRANT SELECT ON V$SQL`。 |
 | `utplsql.debugger.enabled` | `true` | 启用 PL/SQL 测试调试（`DBMS_DEBUG`）。需要 `node-oracledb` + 授权。 |
@@ -317,12 +317,13 @@ GRANT SELECT ON SYS.DBA_PROCEDURES TO <ut3_owner>;
 | 套件不显示 | 未找到数据库 | 运行 `utPLSQL: Validate configuration` 进行诊断 |
 | 覆盖率空 | 缺少 `GRANT EXECUTE ON DBMS_PROFILER` | 在 [数据库要求](#数据库要求) 中运行授权，或使用 `utPLSQL: Copy coverage grants to clipboard` |
 | 覆盖率空 | Oracle 19c 需要额外授权 | `GRANT EXECUTE ON DBMS_PROFILER` + `GRANT EXECUTE ON DBMS_PLSQL_CODE_COVERAGE` |
-| 编译错误无提示 | 代码有 PL/SQL 语法错误 | 编译诊断在 Oracle-only 版本中尚未连接（`utplsql.compilationDiagnostics.enabled` 无效）；请编译/执行以暴露错误 |
+| 编译错误无提示 | 代码有 PL/SQL 语法错误 | 保持 `utplsql.compilationDiagnostics.enabled` 开启（默认）；运行后，来自 `ALL_ERRORS` 的错误会显示在“问题”面板中 |
 | 连接错误 | 字符串格式错误或数据库不可达 | 使用 `utPLSQL: Validate configuration` |
 | 运行超时 | 测试耗时超过 `timeoutMinutes` | 增加 `utplsql.timeoutMinutes` |
 | `%suite` 未识别 | 文件中缺少 `%suite`/`create package`，或 `%test` 没有 `PROCEDURE` | 检查 spec；运行 `utPLSQL: Refresh tests` |
 | CodeLens 不显示 | `editor.codeLens` 被禁用或有冲突 | 启用 `"editor.codeLens": true`；检查 `utplsql.codeLens.enabled` |
 | 快捷键不工作 | 与另一个扩展或 VSCode 快捷键冲突 | 转到 File → Preferences → Keyboard Shortcuts，搜索 `utplsql` 重新定义 |
+| 需要诊断 | 不清楚扩展内部正在做什么 | 在启动 VSCode 前设置 `UTPLSQL_DEBUG=1`，以在扩展主机控制台中启用可选诊断日志（连接/发现/覆盖率失败的上下文） |
 
 ## 免责声明
 

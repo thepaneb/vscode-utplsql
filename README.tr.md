@@ -109,9 +109,9 @@ Geçici dosya yok, toplu işin bitmesi beklenmez. Sonuçlar Test Explorer'da
 | `utplsql.oraclePoolPingInterval` | `60` | Boştaki havuz bağlantılarının sağlık kontrolleri arasındaki saniye (node-oracledb). `0` = her kullanımda ping. |
 | `utplsql.organization` | `file` | Ağaç düzeni: `file` (yola göre) veya `schema` (Schema > Package > Suite > Test). `schema` modunda, `.pks` dosyaları çalışma alanında yoksa paketler de veritabanından (`ALL_OBJECTS`/`ALL_SOURCE`) keşfedilir — sanal URI `utplsql-db:/` ile (CodeLens/süsleme/hataya atlama yok). |
 | `utplsql.organization.schemaPattern` | `db/{schema}/**` | Şemayı yoldan çıkarmak için glob deseni. Yer tutucu olarak `{schema}` kullanın. `schema` modunda desen tabanının altındaki dizinler (örn. `db/*`) veritabanında sorgulanan şemaları tanımlar. |
-| `utplsql.compilationDiagnostics.enabled` | `true` | PL/SQL derleme tanılamaları için ayrılmıştır. Oracle-only sürümünde **şu anda hiçbir etkisi yoktur** — özellik bağlı değildir (henüz yeniden etkinleştirilmedi). |
+| `utplsql.compilationDiagnostics.enabled` | `true` | Veritabanındaki PL/SQL derleme hatalarını (`ALL_ERRORS`) editörde ve Problems Panel'inde (source "utPLSQL Compilation") alt çizgi olarak gösterir. |
 | `utplsql.setupDiagnostics.enabled` | `true` | Yapılandırma tanılamalarını (bağlantı, yetkiler, sürüm) ve **utPLSQL kurulum bütünlüğünü** (UT3 şemasındaki geçersiz nesneler, "Recompile UT3" hızlı düzeltmesiyle) hızlı düzeltme eylemleriyle gösterir. |
-| `utplsql.profiles` | `[]` | Ortamlar arasında geçiş yapmak için kaydedilen Oracle bağlantı profilleri (ad, bağlantı ve `sourcePath`/`coverageOwner`/vb. geçersiz kılmaları). (Full field reference: [wiki](https://github.com/thepaneb/vscode-utplsql/wiki/Configuration)). |
+| `utplsql.profiles` | `[]` | Ortamlar arasında geçiş yapmak için kaydedilen Oracle bağlantı profilleri (ad, bağlantı ve `sourcePath`/`coverageOwner`/vb. geçersiz kılmaları). **Parolalar settings'te değil, işletim sistemi anahtarlığında (VS Code SecretStorage) saklanır** — `connection` alanı yalnızca `user@//host:port/service` değerini saklar. Satır içi parola içeren eski profiller ilk kullanımda otomatik olarak taşınır. (Full field reference: [wiki](https://github.com/thepaneb/vscode-utplsql/wiki/Configuration)). |
 | `utplsql.activeProfile` | `""` | Etkin profilin kimliği (`utplsql.profiles`). Ayarlandığında `utplsql.connection`'ı geçersiz kılar. |
 | `utplsql.sqlCoverageEnabled` | `false` | `V$SQL` üzerinden çalıştırılan görünümleri izler (boolean kapsam). `GRANT SELECT ON V$SQL` gerektirir. |
 | `utplsql.debugger.enabled` | `true` | PL/SQL test hata ayıklamayı etkinleştirir (`DBMS_DEBUG`). `node-oracledb` + yetkiler gerektirir. |
@@ -319,12 +319,13 @@ GRANT SELECT ON SYS.DBA_PROCEDURES TO <ut3_owner>;
 | Paketler görünmüyor | Veritabanı bulunamadı | Tanılama için `utPLSQL: Validate configuration` çalıştırın |
 | Boş kapsam | `GRANT EXECUTE ON DBMS_PROFILER` eksik | [Veritabanı gereksinimleri](#veritabanı-gereksinimleri) içindeki yetkileri çalıştırın veya `utPLSQL: Copy coverage grants to clipboard` kullanın |
 | Boş kapsam | Oracle 19c ek yetkiler gerektirir | `GRANT EXECUTE ON DBMS_PROFILER` + `GRANT EXECUTE ON DBMS_PLSQL_CODE_COVERAGE` |
-| Neden belirtilmeyen derleme hatası | PL/SQL sözdizimi hatası olan kod | Derleme tanılamaları Oracle-only sürümünde henüz bağlı değil (`utplsql.compilationDiagnostics.enabled` etkisiz); hatayı görmek için derleyin/çalıştırın |
+| Neden belirtilmeyen derleme hatası | PL/SQL sözdizimi hatası olan kod | `utplsql.compilationDiagnostics.enabled` seçeneğini açık tutun (varsayılan); `ALL_ERRORS` kaynaklı hatalar bir çalıştırmadan sonra Problems Panel'inde görünür |
 | Bağlantı hatası | Hatalı biçimli dize veya erişilemeyen veritabanı | `utPLSQL: Validate configuration` kullanın |
 | Çalışırken zaman aşımı | Testler `timeoutMinutes` değerinden uzun sürüyor | `utplsql.timeoutMinutes` değerini artırın |
 | `%suite` tanınmıyor | Dosyada `%suite`/`create package` eksik veya `%test` `PROCEDURE` olmadan | Şemayı kontrol edin; `utPLSQL: Refresh tests` çalıştırın |
 | CodeLens görünmüyor | `editor.codeLens` devre dışı veya çakışma | `"editor.codeLens": true` ayarlayın; `utplsql.codeLens.enabled` değerini kontrol edin |
 | Kısayollar çalışmıyor | Başka bir uzantıyla veya VSCode kısayoluyla çakışma | Dosya → Tercihler → Klavye Kısayolları'na gidin ve yeniden tanımlamak için `utplsql` arayın |
+| Tanılama gerekli | Uzantının dahili olarak ne yaptığı belirsiz | Extension Host konsolunda isteğe bağlı tanılama günlükleri (bağlantı/keşif/kapsam hatalarının bağlamı) için VSCode'u başlatmadan önce `UTPLSQL_DEBUG=1` ayarlayın |
 
 ## Feragatname
 

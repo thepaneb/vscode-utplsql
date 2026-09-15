@@ -105,9 +105,9 @@ Test Explorer に表示されます。
 | `utplsql.oraclePoolPingInterval` | `60` | アイドルプール接続のヘルスチェック間隔（秒）（node-oracledb）。`0` = チェックアウトのたびに ping。 |
 | `utplsql.organization` | `file` | ツリーの構成: `file`（パス単位）または `schema`（Schema > Package > Suite > Test）。`schema` モードでは、`.pks` ファイルがワークスペースにないときはスイートもデータベース（`ALL_OBJECTS`/`ALL_SOURCE`）から検出されます — 仮想 URI は `utplsql-db:/`（CodeLens/デコレーション/失敗ジャンプなし）。 |
 | `utplsql.organization.schemaPattern` | `db/{schema}/**` | パスからスキーマを抽出するためのグロブパターン。プレースホルダーには `{schema}` を使用します。`schema` モードでは、パターンベースより下のディレクトリ（例: `db/*`）がデータベースでクエリされるスキーマを定義します。 |
-| `utplsql.compilationDiagnostics.enabled` | `true` | PL/SQL コンパイル診断用に予約されています。**現在の Oracle-only 版では効果がありません** — この機能は接続されていません（まだ再有効化されていません）。 |
+| `utplsql.compilationDiagnostics.enabled` | `true` | データベースからの PL/SQL コンパイルエラー（`ALL_ERRORS`）をエディターの下線および「問題」パネルに表示します（ソース "utPLSQL Compilation"）。 |
 | `utplsql.setupDiagnostics.enabled` | `true` | 設定診断（接続、権限、バージョン）と **utPLSQL インストールの整合性**（UT3 スキーマ内の無効オブジェクト。"Recompile UT3" クイックフィックスあり）をクイックフィックスアクション付きで表示。 |
-| `utplsql.profiles` | `[]` | 保存された Oracle 接続プロファイル（名前、接続、`sourcePath`/`coverageOwner` などの上書き）。環境の切り替え用。 (Full field reference: [wiki](https://github.com/thepaneb/vscode-utplsql/wiki/Configuration)). |
+| `utplsql.profiles` | `[]` | 保存された Oracle 接続プロファイル（名前、接続、`sourcePath`/`coverageOwner` などの上書き）。環境の切り替え用。**パスワードは OS キーチェーン（VS Code SecretStorage）に保存され、設定には保存されません** — `connection` フィールドには `user@//host:port/service` のみが保存されます。インラインパスワード付きの旧プロファイルは初回使用時に自動的に移行されます。 (Full field reference: [wiki](https://github.com/thepaneb/vscode-utplsql/wiki/Configuration)). |
 | `utplsql.activeProfile` | `""` | アクティブなプロファイルの ID（`utplsql.profiles`）。設定すると `utplsql.connection` を上書きします。 |
 | `utplsql.sqlCoverageEnabled` | `false` | `V$SQL` 経由で実行されたビューを追跡（boolean カバレッジ）。`GRANT SELECT ON V$SQL` が必要。 |
 | `utplsql.debugger.enabled` | `true` | PL/SQL テストデバッグ（`DBMS_DEBUG`）を有効化。`node-oracledb` + 権限が必要。 |
@@ -315,12 +315,13 @@ GRANT SELECT ON SYS.DBA_PROCEDURES TO <ut3_owner>;
 | スイートが表示されない | 接続の問題 | 診断には `utPLSQL: Validate configuration` を実行 |
 | カバレッジが空 | `GRANT EXECUTE ON DBMS_PROFILER` が不足 | [データベースの要件](#データベースの要件)の権限を実行、または `utPLSQL: Copy coverage grants to clipboard` を使用 |
 | カバレッジが空 | Oracle 19c では追加の権限が必要 | `GRANT EXECUTE ON DBMS_PROFILER` + `GRANT EXECUTE ON DBMS_PLSQL_CODE_COVERAGE` |
-| 原因不明のコンパイルエラー | PL/SQL 構文エラーを含むコード | コンパイル診断は Oracle-only 版ではまだ接続されていません（`utplsql.compilationDiagnostics.enabled` は効果がありません）; エラーを表示するにはコンパイル/実行してください |
+| 原因不明のコンパイルエラー | PL/SQL 構文エラーを含むコード | `utplsql.compilationDiagnostics.enabled` をオン（既定）のままにします; 実行後、`ALL_ERRORS` からのエラーが「問題」パネルに表示されます |
 | 接続エラー | 文字列の形式が不正、または DB に到達できない | `utPLSQL: Validate configuration` を使用 |
 | 実行中のタイムアウト | テストが `timeoutMinutes` より長い | `utplsql.timeoutMinutes` を増やす |
 | `%suite` が認識されない | ファイルに `%suite`/`create package` がない、または `PROCEDURE` のない `%test` | スペックを確認; `utPLSQL: Refresh tests` を実行 |
 | CodeLens が表示されない | `editor.codeLens` が無効、または競合 | `"editor.codeLens": true` を有効化; `utplsql.codeLens.enabled` を確認 |
 | ショートカットが機能しない | 他の拡張機能や VSCode のショートカットと競合 | ファイル → 基本設定 → キーボードショートカット を開き、`utplsql` を検索して再定義 |
+| 診断が必要 | 拡張機能が内部で何をしているか不明 | VSCode を起動する前に `UTPLSQL_DEBUG=1` を設定すると、拡張機能ホストのコンソールでオプトインの診断ログ（接続/検出/カバレッジの失敗のコンテキスト）が有効になります |
 
 ## 免責事項
 

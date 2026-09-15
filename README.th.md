@@ -109,9 +109,9 @@ Test Explorer **เมื่อแต่ละเทสต์เสร็จส�
 | `utplsql.oraclePoolPingInterval` | `60` | วินาทีระหว่างการตรวจสอบความสมบูรณ์ของการเชื่อมต่อที่ว่างในพูล (node-oracledb) `0` = ping ทุกครั้งที่ยืมการเชื่อมต่อ |
 | `utplsql.organization` | `file` | การจัดระเบียบแผนผัง: `file` (ตามพาธ) หรือ `schema` (Schema > Package > Suite > Test) ในโหมด `schema` suites จะถูกค้นพบจากฐานข้อมูล (`ALL_OBJECTS`/`ALL_SOURCE`) ด้วยเมื่อไม่มีไฟล์ `.pks` ในเวิร์กสเปซ — ด้วย URI เสมือน `utplsql-db:/` (ไม่มี CodeLens/การตกแต่ง/jump to failure) |
 | `utplsql.organization.schemaPattern` | `db/{schema}/**` | รูปแบบ Glob เพื่อแยก schema จากพาธ ใช้ `{schema}` เป็นตัวยึดตำแหน่ง ในโหมด `schema` ไดเรกทอรีใต้ฐานของรูปแบบ (เช่น `db/*`) กำหนด schemas ที่จะสอบถามในฐานข้อมูล |
-| `utplsql.compilationDiagnostics.enabled` | `true` | สงวนไว้สำหรับการวินิจฉัยการคอมไพล์ PL/SQL **ขณะนี้ไม่มีผล** ในเวอร์ชัน Oracle-only — ฟีเจอร์นี้ยังไม่ถูกเชื่อมต่อ (ยังไม่ได้เปิดใช้งานใหม่) |
+| `utplsql.compilationDiagnostics.enabled` | `true` | แสดงข้อผิดพลาดการคอมไพล์ PL/SQL จากฐานข้อมูล (`ALL_ERRORS`) เป็นขีดเส้นใต้ในเอดิเตอร์และใน Problems Panel (source "utPLSQL Compilation") |
 | `utplsql.setupDiagnostics.enabled` | `true` | แสดงการวินิจฉัยการกำหนดค่า (การเชื่อมต่อ, grants, เวอร์ชัน) และ **ความสมบูรณ์ของการติดตั้ง utPLSQL** (อ็อบเจกต์ที่ไม่ถูกต้องใน schema UT3, พร้อม quick-fix "Recompile UT3") พร้อมการทำงาน quick-fix |
-| `utplsql.profiles` | `[]` | โปรไฟล์การเชื่อมต่อ Oracle ที่บันทึกไว้ (ชื่อ, การเชื่อมต่อ, และการแทนที่ `sourcePath`/`coverageOwner`/ฯลฯ) เพื่อสลับระหว่างสภาพแวดล้อม (Full field reference: [wiki](https://github.com/thepaneb/vscode-utplsql/wiki/Configuration)). |
+| `utplsql.profiles` | `[]` | โปรไฟล์การเชื่อมต่อ Oracle ที่บันทึกไว้ (ชื่อ, การเชื่อมต่อ, และการแทนที่ `sourcePath`/`coverageOwner`/ฯลฯ) เพื่อสลับระหว่างสภาพแวดล้อม **รหัสผ่านถูกเก็บไว้ใน keychain ของระบบปฏิบัติการ (VS Code SecretStorage) ไม่ใช่ใน settings** — ฟิลด์ `connection` เก็บเฉพาะ `user@//host:port/service` โปรไฟล์แบบเก่าที่มีรหัสผ่านฝังอยู่จะถูกย้ายโดยอัตโนมัติเมื่อใช้งานครั้งแรก (Full field reference: [wiki](https://github.com/thepaneb/vscode-utplsql/wiki/Configuration)). |
 | `utplsql.activeProfile` | `""` | ID ของโปรไฟล์ที่ใช้งานอยู่ (`utplsql.profiles`) เมื่อตั้งค่า จะแทนที่ `utplsql.connection` |
 | `utplsql.sqlCoverageEnabled` | `false` | ติดตาม views ที่ถูกเรียกใช้ผ่าน `V$SQL` (boolean coverage) ต้องใช้ `GRANT SELECT ON V$SQL` |
 | `utplsql.debugger.enabled` | `true` | เปิดใช้งานการดีบักเทสต์ PL/SQL (`DBMS_DEBUG`) ต้องใช้ `node-oracledb` + grants |
@@ -363,12 +363,13 @@ GRANT SELECT ON SYS.DBA_PROCEDURES TO <ut3_owner>;
 | Suites ไม่ปรากฏ | ไม่มีไฟล์ `.pks` ที่ค้นพบ | รัน `utPLSQL: Validate configuration` เพื่อการวินิจฉัย |
 | ความครอบคลุมว่างเปล่า | ขาด `GRANT EXECUTE ON DBMS_PROFILER` | รัน grants ใน [ข้อกำหนด](#ข้อกำหนดฐานข้อมูล) หรือใช้ `utPLSQL: Copy coverage grants to clipboard` |
 | ความครอบคลุมว่างเปล่า | Oracle 19c ต้องใช้ grants เพิ่มเติม | `GRANT EXECUTE ON DBMS_PROFILER` + `GRANT EXECUTE ON DBMS_PLSQL_CODE_COVERAGE` |
-| ข้อผิดพลาดการคอมไพล์โดยไม่มีข้อบ่งชี้ | โค้ดที่มีข้อผิดพลาดไวยากรณ์ PL/SQL | การวินิจฉัยการคอมไพล์ยังไม่ถูกเชื่อมต่อในเวอร์ชัน Oracle-only (`utplsql.compilationDiagnostics.enabled` ไม่มีผล); คอมไพล์/รันเพื่อแสดงข้อผิดพลาด |
+| ข้อผิดพลาดการคอมไพล์โดยไม่มีข้อบ่งชี้ | โค้ดที่มีข้อผิดพลาดไวยากรณ์ PL/SQL | เปิดใช้งาน `utplsql.compilationDiagnostics.enabled` ไว้ (ค่าเริ่มต้น); ข้อผิดพลาดจาก `ALL_ERRORS` จะปรากฏใน Problems Panel หลังจากการรัน |
 | ข้อผิดพลาดการเชื่อมต่อ | สตริงไม่ถูกต้องหรือฐานข้อมูลเข้าไม่ถึง | ใช้ `utPLSQL: Validate configuration` |
 | Timeout ระหว่างรัน | เทสต์ใช้เวลานานกว่า `timeoutMinutes` | เพิ่ม `utplsql.timeoutMinutes` |
 | `%suite` ไม่ได้รับการรู้จัก | ขาด `%suite`/`create package` ในไฟล์ หรือ `%test` ไม่มี `PROCEDURE` | ตรวจสอบ spec; รัน `utPLSQL: Refresh tests` |
 | CodeLens ไม่ปรากฏ | `editor.codeLens` ถูกปิดหรือขัดแย้ง | เปิดใช้งาน `"editor.codeLens": true`; ตรวจสอบ `utplsql.codeLens.enabled` |
 | ปุ่มลัดไม่ทำงาน | ขัดแย้งกับส่วนขยายอื่นหรือปุ่มลัดของ VSCode | ไปที่ File → Preferences → Keyboard Shortcuts และค้นหา `utplsql` เพื่อกำหนดใหม่ |
+| ต้องการการวินิจฉัย | ไม่ชัดเจนว่าส่วนขยายกำลังทำอะไรอยู่ภายใน | ตั้งค่า `UTPLSQL_DEBUG=1` ก่อนเปิด VSCode เพื่อเปิดใช้บันทึกการวินิจฉัย (บริบทของความล้มเหลวในการเชื่อมต่อ/การค้นพบ/ความครอบคลุม) ในคอนโซล Extension Host |
 
 ## ข้อจำกัดความรับผิดชอบ
 

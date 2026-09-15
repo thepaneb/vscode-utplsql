@@ -108,9 +108,9 @@ Ekstensi terhubung langsung ke Oracle, membaca laporan (JUnit + Coverage) lalu m
 | `utplsql.oraclePoolPingInterval` | `60` | Detik antara pemeriksaan kesehatan koneksi idle di pool (node-oracledb). `0` = ping pada setiap checkout. |
 | `utplsql.organization` | `file` | Organisasi pohon: `file` (berdasarkan path) atau `schema` (Schema > Package > Suite > Test). Pada mode `schema`, suite juga ditemukan dari database (`ALL_OBJECTS`/`ALL_SOURCE`) ketika file `.pks` tidak ada di workspace — dengan URI virtual `utplsql-db:/` (tanpa CodeLens/dekorasi/langsung ke kegagalan). |
 | `utplsql.organization.schemaPattern` | `db/{schema}/**` | Pola glob untuk mengekstrak schema dari path. Gunakan `{schema}` sebagai placeholder. Pada mode `schema`, direktori di bawah basis pola (mis. `db/*`) menentukan schema yang ditanyakan di database. |
-| `utplsql.compilationDiagnostics.enabled` | `true` | Direservasikan untuk diagnostik kompilasi PL/SQL. **Saat ini tanpa efek** di versi Oracle-only — fitur ini belum terhubung (belum diaktifkan kembali). |
+| `utplsql.compilationDiagnostics.enabled` | `true` | Menampilkan error kompilasi PL/SQL dari database (`ALL_ERRORS`) sebagai garis bawah di editor dan di Problems Panel (sumber "utPLSQL Compilation"). |
 | `utplsql.setupDiagnostics.enabled` | `true` | Menampilkan diagnostik konfigurasi (koneksi, grant, versi) serta **integritas instalasi utPLSQL** (objek tidak valid di schema UT3, dengan quick-fix "Recompile UT3") beserta aksi quick-fix. |
-| `utplsql.profiles` | `[]` | Profil koneksi Oracle yang tersimpan (nama, koneksi, dan penimpaan `sourcePath`/`coverageOwner`/dll.) untuk berpindah antar lingkungan. (Full field reference: [wiki](https://github.com/thepaneb/vscode-utplsql/wiki/Configuration)). |
+| `utplsql.profiles` | `[]` | Profil koneksi Oracle yang tersimpan (nama, koneksi, dan penimpaan `sourcePath`/`coverageOwner`/dll.) untuk berpindah antar lingkungan. **Kata sandi disimpan di keychain OS (VS Code SecretStorage), bukan di pengaturan** — kolom `connection` hanya menyimpan `user@//host:port/service`. Profil lama dengan kata sandi inline dimigrasikan secara otomatis saat pertama kali digunakan. (Full field reference: [wiki](https://github.com/thepaneb/vscode-utplsql/wiki/Configuration)). |
 | `utplsql.activeProfile` | `""` | ID profil aktif (`utplsql.profiles`). Jika diatur, menimpa `utplsql.connection`. |
 | `utplsql.sqlCoverageEnabled` | `false` | Melacak view yang dieksekusi melalui `V$SQL` (coverage boolean). Memerlukan `GRANT SELECT ON V$SQL`. |
 | `utplsql.debugger.enabled` | `true` | Mengaktifkan debugging pengujian PL/SQL (`DBMS_DEBUG`). Memerlukan `node-oracledb` + grant. |
@@ -359,11 +359,12 @@ GRANT SELECT ON SYS.DBA_PROCEDURES TO <ut3_owner>;
 |---|---|---|
 | Coverage kosong | `GRANT EXECUTE ON DBMS_PROFILER` tidak ada | Jalankan grant di [Persyaratan basis data](#persyaratan-basis-data) atau gunakan `utPLSQL: Copy coverage grants to clipboard` |
 | Coverage kosong | Oracle 19c memerlukan grant tambahan | `GRANT EXECUTE ON DBMS_PROFILER` + `GRANT EXECUTE ON DBMS_PLSQL_CODE_COVERAGE` |
-| Error kompilasi tanpa keterangan | Kode dengan error sintaks PL/SQL | Diagnostik kompilasi belum terhubung di versi Oracle-only (`utplsql.compilationDiagnostics.enabled` tidak berpengaruh); kompilasi/jalankan untuk memunculkan error |
+| Error kompilasi tanpa keterangan | Kode dengan error sintaks PL/SQL | Biarkan `utplsql.compilationDiagnostics.enabled` tetap aktif (default); error dari `ALL_ERRORS` muncul di Problems Panel setelah dijalankan |
 | Error koneksi | String tidak valid atau DB tidak dapat dijangkau | Gunakan `utPLSQL: Validate configuration` |
 | `%suite` tidak dikenali | Tidak ada `%suite`/`create package` di file, atau `%test` tanpa `PROCEDURE` | Periksa spec; jalankan `utPLSQL: Refresh tests` |
 | CodeLens tidak muncul | `editor.codeLens` nonaktif atau konflik | Aktifkan `"editor.codeLens": true`; periksa `utplsql.codeLens.enabled` |
 | Pintasan tidak berfungsi | Konflik dengan ekstensi lain atau pintasan VSCode | Buka File → Preferences → Keyboard Shortcuts dan cari `utplsql` untuk mendefinisikan ulang |
+| Perlu diagnostik | Tidak jelas apa yang dilakukan ekstensi secara internal | Setel `UTPLSQL_DEBUG=1` sebelum meluncurkan VSCode untuk log diagnostik opt-in (konteks kegagalan koneksi/penemuan/coverage) di konsol Extension Host |
 
 ## Penafian
 

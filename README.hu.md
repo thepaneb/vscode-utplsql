@@ -108,9 +108,9 @@ A bővítmény közvetlenül Oracle-on keresztül csatlakozik, beolvassa a ripor
 | `utplsql.oraclePoolPingInterval` | `60` | Az üresjárati készletkapcsolatok állapotellenőrzései közötti másodpercek száma (node-oracledb). `0` = ping minden kivételkor. |
 | `utplsql.organization` | `file` | Fa-szervezés: `file` (elérési út szerint) vagy `schema` (Séma > Package > Suite > Teszt). `schema` módban a suite-ok az adatbázisból is felderítésre kerülnek (`ALL_OBJECTS`/`ALL_SOURCE`), ha a `.pks` fájlok nincsenek a munkaterületen — virtuális URI-vel `utplsql-db:/` (CodeLens/dekorációk/ugrás a hibához nélkül). |
 | `utplsql.organization.schemaPattern` | `db/{schema}/**` | Glob-minta a séma kinyeréséhez az elérési útból. Helyőrzőként a `{schema}` használható. `schema` módban a minta alapja alatti könyvtárak (pl. `db/*`) határozzák meg az adatbázisban lekérdezett sémákat. |
-| `utplsql.compilationDiagnostics.enabled` | `true` | PL/SQL fordítási diagnosztikák számára fenntartva. **Jelenleg nincs hatása** az Oracle-only verzióban — a funkció nincs bekötve (még nincs újra engedélyezve). |
+| `utplsql.compilationDiagnostics.enabled` | `true` | A PL/SQL fordítási hibákat az adatbázisból (`ALL_ERRORS`) aláhúzásként jeleníti meg a szerkesztőben és a Problems panelben (forrás: „utPLSQL Compilation"). |
 | `utplsql.setupDiagnostics.enabled` | `true` | Konfigurációs diagnosztikát (kapcsolat, jogosultságok, verzió) és **utPLSQL-telepítési integritást** (érvénytelen objektumok az UT3 sémában, „Recompile UT3" gyorsjavítással) jelenít meg gyorsjavítási műveletekkel. |
-| `utplsql.profiles` | `[]` | Mentett Oracle kapcsolati profilok (név, kapcsolat és `sourcePath`/`coverageOwner`/stb. felülírások) a környezetek közötti váltáshoz. (Full field reference: [wiki](https://github.com/thepaneb/vscode-utplsql/wiki/Configuration)). |
+| `utplsql.profiles` | `[]` | Mentett Oracle kapcsolati profilok (név, kapcsolat és `sourcePath`/`coverageOwner`/stb. felülírások) a környezetek közötti váltáshoz. **A jelszavak az operációs rendszer kulcstartójában (VS Code SecretStorage) tárolódnak, nem a beállításokban** — a `connection` mező csak a `user@//host:port/service` értéket tárolja. A beágyazott jelszót tartalmazó örökölt profilok az első használatkor automatikusan áttelepítésre kerülnek. (Full field reference: [wiki](https://github.com/thepaneb/vscode-utplsql/wiki/Configuration)). |
 | `utplsql.activeProfile` | `""` | Az aktív profil azonosítója (`utplsql.profiles`). Ha be van állítva, felülírja a `utplsql.connection` értékét. |
 | `utplsql.sqlCoverageEnabled` | `false` | A `V$SQL`-on keresztül végrehajtott nézeteket követi nyomon (boolean lefedettség). `GRANT SELECT ON V$SQL` jogosultságot igényel. |
 | `utplsql.debugger.enabled` | `true` | Engedélyezi a PL/SQL-tesztek hibakeresését (`DBMS_DEBUG`). `node-oracledb` + jogosultságok szükségesek. |
@@ -359,11 +359,12 @@ GRANT SELECT ON SYS.DBA_PROCEDURES TO <ut3_owner>;
 |---|---|---|
 | Üres lefedettség | Hiányzó `GRANT EXECUTE ON DBMS_PROFILER` | Futtasd a jogosultságokat az [Adatbázis-követelmények](#adatbázis-követelmények) rész szerint, vagy használd a `utPLSQL: Copy coverage grants to clipboard` parancsot |
 | Üres lefedettség | Az Oracle 19c további jogosultságokat igényel | `GRANT EXECUTE ON DBMS_PROFILER` + `GRANT EXECUTE ON DBMS_PLSQL_CODE_COVERAGE` |
-| Fordítási hiba minden jelzés nélkül | PL/SQL szintaktikai hibát tartalmazó kód | A fordítási diagnosztikák még nincsenek bekötve az Oracle-only verzióban (`utplsql.compilationDiagnostics.enabled` nincs hatással); fordítással/futtatással hozd elő a hibát |
+| Fordítási hiba minden jelzés nélkül | PL/SQL szintaktikai hibát tartalmazó kód | Tartsd bekapcsolva a `utplsql.compilationDiagnostics.enabled` beállítást (alapértelmezett); az `ALL_ERRORS` hibái egy futtatás után megjelennek a Problems panelben |
 | Kapcsolati hiba | Hibás sztring vagy elérhetetlen adatbázis | Használd a `utPLSQL: Validate configuration` parancsot |
 | A `%suite` nem kerül felismerésre | Hiányzó `%suite`/`create package` a fájlban, vagy `%test` `PROCEDURE` nélkül | Ellenőrizd a specifikációt; futtasd a `utPLSQL: Refresh tests` parancsot |
 | A CodeLens nem jelenik meg | `editor.codeLens` kikapcsolva vagy ütközés | Kapcsold be a `"editor.codeLens": true` értéket; ellenőrizd a `utplsql.codeLens.enabled` beállítást |
 | A billentyűparancsok nem működnek | Ütközés másik bővítménnyel vagy VSCode-parancsikonnal | Menj a Fájl → Beállítások → Billentyűparancsok menübe, és keress rá a `utplsql` kifejezésre az újradefiniáláshoz |
+| Diagnosztikára van szükség | Nem világos, mit tesz a bővítmény belsőleg | Állítsd be a `UTPLSQL_DEBUG=1` értéket a VSCode indítása előtt az opcionális diagnosztikai naplókhoz (kapcsolati/felderítési/lefedettségi hibák kontextusa) az Extension Host konzoljában |
 
 ## Jogi nyilatkozat
 

@@ -110,9 +110,9 @@ Test Explorer에 나타납니다.
 | `utplsql.oraclePoolPingInterval` | `60` | 유휴 풀 연결의 상태 검사 간격(초)(node-oracledb). `0` = 모든 체크아웃 시 ping. |
 | `utplsql.organization` | `file` | 트리 구성: `file`(경로별) 또는 `schema`(Schema > Package > Suite > Test). `schema` 모드에서 워크스페이스에 `.pks` 파일이 없으면 스위트가 데이터베이스(`ALL_OBJECTS`/`ALL_SOURCE`)에서도 발견됩니다 — 가상 URI `utplsql-db:/`(CodeLens/데코레이션/실패 지점 이동 없음). |
 | `utplsql.organization.schemaPattern` | `db/{schema}/**` | 경로에서 스키마를 추출하는 glob 패턴. `{schema}`를 자리 표시자로 사용하세요. `schema` 모드에서 패턴 기본 아래의 디렉터리(예: `db/*`)는 데이터베이스에서 조회할 스키마를 정의합니다. |
-| `utplsql.compilationDiagnostics.enabled` | `true` | PL/SQL 컴파일 진단용으로 예약되어 있습니다. **현재 Oracle-only 버전에서는 효과가 없습니다** — 이 기능은 연결되어 있지 않습니다(아직 다시 활성화되지 않음). |
+| `utplsql.compilationDiagnostics.enabled` | `true` | 데이터베이스의 PL/SQL 컴파일 오류(`ALL_ERRORS`)를 편집기 밑줄과 "문제" 패널에 표시합니다(출처 "utPLSQL Compilation"). |
 | `utplsql.setupDiagnostics.enabled` | `true` | 구성 진단(연결, 권한, 버전) 및 **utPLSQL 설치 무결성**(UT3 스키마의 잘못된 객체, "Recompile UT3" quick-fix 포함)을 quick-fix 작업과 함께 표시합니다. |
-| `utplsql.profiles` | `[]` | 저장된 Oracle 연결 프로필(이름, 연결, 그리고 `sourcePath`/`coverageOwner` 등의 재정의) — 환경 간 전환용. (Full field reference: [wiki](https://github.com/thepaneb/vscode-utplsql/wiki/Configuration)). |
+| `utplsql.profiles` | `[]` | 저장된 Oracle 연결 프로필(이름, 연결, 그리고 `sourcePath`/`coverageOwner` 등의 재정의) — 환경 간 전환용. **비밀번호는 OS 키체인(VS Code SecretStorage)에 보관되며 설정에는 저장되지 않습니다** — `connection` 필드에는 `user@//host:port/service`만 저장됩니다. 인라인 비밀번호가 포함된 기존 프로필은 처음 사용할 때 자동으로 마이그레이션됩니다. (Full field reference: [wiki](https://github.com/thepaneb/vscode-utplsql/wiki/Configuration)). |
 | `utplsql.activeProfile` | `""` | 활성 프로필(`utplsql.profiles`)의 ID. 설정 시 `utplsql.connection`을 재정의합니다. |
 | `utplsql.sqlCoverageEnabled` | `false` | `V$SQL`을 통해 실행된 뷰를 추적합니다(불리언 커버리지). `GRANT SELECT ON V$SQL` 필요. |
 | `utplsql.debugger.enabled` | `true` | PL/SQL 테스트 디버깅(`DBMS_DEBUG`)을 활성화합니다. `node-oracledb` + 권한 필요. |
@@ -319,12 +319,13 @@ GRANT SELECT ON SYS.DBA_PROCEDURES TO <ut3_owner>;
 | 스위트가 나타나지 않음 | 데이터베이스를 찾을 수 없음 | 진단을 위해 `utPLSQL: Validate configuration` 실행 |
 | 빈 커버리지 | `GRANT EXECUTE ON DBMS_PROFILER` 누락 | [Requirements](#database-requirements)의 권한을 실행하거나 `utPLSQL: Copy coverage grants to clipboard` 사용 |
 | 빈 커버리지 | Oracle 19c에는 추가 권한 필요 | `GRANT EXECUTE ON DBMS_PROFILER` + `GRANT EXECUTE ON DBMS_PLSQL_CODE_COVERAGE` |
-| 표시가 없는 컴파일 오류 | PL/SQL 구문 오류가 있는 코드 | 컴파일 진단은 Oracle-only 버전에서 아직 연결되지 않았습니다(`utplsql.compilationDiagnostics.enabled`는 효과가 없음); 오류를 표시하려면 컴파일/실행하세요 |
+| 표시가 없는 컴파일 오류 | PL/SQL 구문 오류가 있는 코드 | `utplsql.compilationDiagnostics.enabled`를 켜 둔 상태(기본값)로 유지하세요; 실행 후 `ALL_ERRORS`의 오류가 "문제" 패널에 표시됩니다 |
 | 연결 오류 | 잘못된 문자열 또는 접근 불가능한 DB | `utPLSQL: Validate configuration` 사용 |
 | 실행 중 시간 초과 | 테스트가 `timeoutMinutes`보다 오래 걸림 | `utplsql.timeoutMinutes` 증가 |
 | `%suite`가 인식되지 않음 | 파일에 `%suite`/`create package` 누락, 또는 `PROCEDURE` 없는 `%test` | 스펙 확인; `utPLSQL: Refresh tests` 실행 |
 | CodeLens가 나타나지 않음 | `editor.codeLens` 비활성화 또는 충돌 | `"editor.codeLens": true` 활성화; `utplsql.codeLens.enabled` 확인 |
 | 단축키가 작동하지 않음 | 다른 확장 프로그램 또는 VSCode 단축키와 충돌 | File → Preferences → Keyboard Shortcuts로 이동하여 `utplsql` 검색 후 재정의 |
+| 진단 필요 | 확장 프로그램이 내부적으로 무엇을 하는지 불명확 | VSCode 실행 전 `UTPLSQL_DEBUG=1`을 설정하면 확장 호스트 콘솔에서 선택적 진단 로그(연결/검색/커버리지 실패의 컨텍스트)를 사용할 수 있습니다 |
 
 ## 면책 조항
 

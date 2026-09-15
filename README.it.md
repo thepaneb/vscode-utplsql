@@ -109,9 +109,9 @@ Test Explorer **appena ogni test termina**.
 | `utplsql.oraclePoolPingInterval` | `60` | Secondi tra i controlli di salute delle connessioni idle del pool (node-oracledb). `0` = ping a ogni checkout. |
 | `utplsql.organization` | `file` | Organizzazione dell'albero: `file` (per percorso) o `schema` (Schema > Package > Suite > Test). In modalità `schema`, le suite vengono scoperte anche dal database (`ALL_OBJECTS`/`ALL_SOURCE`) quando i file `.pks` non sono nel workspace — con URI virtuale `utplsql-db:/` (niente CodeLens/decorazioni/vai all'errore). |
 | `utplsql.organization.schemaPattern` | `db/{schema}/**` | Pattern Glob per estrarre lo schema dal percorso. Usa `{schema}` come segnaposto. In modalità `schema`, le directory sotto la base del pattern (es. `db/*`) definiscono gli schemi interrogati nel database. |
-| `utplsql.compilationDiagnostics.enabled` | `true` | Riservato per la diagnostica di compilazione PL/SQL. **Attualmente senza effetto** nella versione Oracle-only — la funzionalità non è collegata (non ancora riattivata). |
+| `utplsql.compilationDiagnostics.enabled` | `true` | Mostra gli errori di compilazione PL/SQL dal database (`ALL_ERRORS`) come sottolineature nell'editor e nel Problems Panel (origine "utPLSQL Compilation"). |
 | `utplsql.setupDiagnostics.enabled` | `true` | Mostra i diagnostici di configurazione (connessione, grants, versione) e **l'integrità dell'installazione di utPLSQL** (oggetti non validi nello schema UT3, con quick-fix "Recompile UT3") con azioni di quick-fix. |
-| `utplsql.profiles` | `[]` | Profili di connessione Oracle salvati (nome, connessione e override di `sourcePath`/`coverageOwner`/ecc.) per passare da un ambiente all'altro. (Full field reference: [wiki](https://github.com/thepaneb/vscode-utplsql/wiki/Configuration)). |
+| `utplsql.profiles` | `[]` | Profili di connessione Oracle salvati (nome, connessione e override di `sourcePath`/`coverageOwner`/ecc.) per passare da un ambiente all'altro. **Le password sono conservate nel portachiavi del SO (VS Code SecretStorage), non nelle impostazioni** — il campo `connection` memorizza solo `user@//host:port/service`. I profili legacy con password inline vengono migrati automaticamente al primo utilizzo. (Full field reference: [wiki](https://github.com/thepaneb/vscode-utplsql/wiki/Configuration)). |
 | `utplsql.activeProfile` | `""` | ID del profilo attivo (`utplsql.profiles`). Quando impostato, sovrascrive `utplsql.connection`. |
 | `utplsql.sqlCoverageEnabled` | `false` | Tiene traccia delle viste eseguite tramite `V$SQL` (copertura booleana). Richiede `GRANT SELECT ON V$SQL`. |
 | `utplsql.debugger.enabled` | `true` | Abilita il debug dei test PL/SQL (`DBMS_DEBUG`). Richiede `node-oracledb` + grants. |
@@ -321,12 +321,13 @@ GRANT SELECT ON SYS.DBA_PROCEDURES TO <ut3_owner>;
 | Le suite non appaiono | Problema di connessione | Esegui `utPLSQL: Validate configuration` per i diagnostici |
 | Copertura vuota | Manca `GRANT EXECUTE ON DBMS_PROFILER` | Esegui i grants in [Requisiti del database](#requisiti-del-database) o usa `utPLSQL: Copy coverage grants to clipboard` |
 | Copertura vuota | Oracle 19c richiede grants aggiuntivi | `GRANT EXECUTE ON DBMS_PROFILER` + `GRANT EXECUTE ON DBMS_PLSQL_CODE_COVERAGE` |
-| Errore di compilazione senza indicazione | Codice con errore di sintassi PL/SQL | La diagnostica di compilazione non è ancora collegata nella versione Oracle-only (`utplsql.compilationDiagnostics.enabled` non ha effetto); compila/esegui per far emergere l'errore |
+| Errore di compilazione senza indicazione | Codice con errore di sintassi PL/SQL | Mantieni `utplsql.compilationDiagnostics.enabled` attivo (predefinito); gli errori di `ALL_ERRORS` compaiono nel Problems Panel dopo un'esecuzione |
 | Errore di connessione | Stringa malformata o DB non raggiungibile | Usa `utPLSQL: Validate configuration` |
 | Timeout durante l'esecuzione | I test impiegano più di `timeoutMinutes` | Aumenta `utplsql.timeoutMinutes` |
 | `%suite` non riconosciuto | Manca `%suite`/`create package` nel file, o `%test` senza `PROCEDURE` | Controlla la spec; esegui `utPLSQL: Refresh tests` |
 | CodeLens non appare | `editor.codeLens` disabilitato o conflitto | Abilita `"editor.codeLens": true`; controlla `utplsql.codeLens.enabled` |
 | Le scorciatoie non funzionano | Conflitto con un'altra estensione o scorciatoia VSCode | Vai a File → Preferenze → Scorciatoie da tastiera e cerca `utplsql` per ridefinire |
+| Serve la diagnostica | Non è chiaro cosa stia facendo internamente l'estensione | Imposta `UTPLSQL_DEBUG=1` prima di avviare VSCode per log diagnostici opt-in (contesto di errori di connessione/discovery/copertura) nella console dell'Extension Host |
 
 ## Nota legale
 

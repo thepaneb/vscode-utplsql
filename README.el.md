@@ -109,9 +109,9 @@ Test Explorer **καθώς ολοκληρώνεται κάθε test**.
 | `utplsql.oraclePoolPingInterval` | `60` | Δευτερόλεπτα μεταξύ των ελέγχων υγείας των αδρανών συνδέσεων του pool (node-oracledb). `0` = ping σε κάθε checkout. |
 | `utplsql.organization` | `file` | Οργάνωση δέντρου: `file` (ανά διαδρομή) ή `schema` (Schema > Package > Suite > Test). Στη λειτουργία `schema` τα suites ανακαλύπτονται επίσης από τη βάση (`ALL_OBJECTS`/`ALL_SOURCE`) όταν τα αρχεία `.pks` δεν υπάρχουν στο workspace — με εικονικό URI `utplsql-db:/` (χωρίς CodeLens/decorations/jump to failure). |
 | `utplsql.organization.schemaPattern` | `db/{schema}/**` | Glob pattern για την εξαγωγή του schema από τη διαδρομή. Χρησιμοποιήστε το `{schema}` ως placeholder. Στη λειτουργία `schema`, οι κατάλογοι κάτω από τη βάση του pattern (π.χ. `db/*`) ορίζουν τα schemas που ερωτώνται στη βάση. |
-| `utplsql.compilationDiagnostics.enabled` | `true` | Προορίζεται για διαγνωστικά μεταγλώττισης PL/SQL. **Προς το παρόν δεν έχει κανένα αποτέλεσμα** στην έκδοση Oracle-only — η λειτουργία δεν είναι συνδεδεμένη (δεν έχει επανενεργοποιηθεί ακόμη). |
+| `utplsql.compilationDiagnostics.enabled` | `true` | Εμφανίζει τα σφάλματα μεταγλώττισης PL/SQL από τη βάση δεδομένων (`ALL_ERRORS`) ως υπογραμμίσεις στον editor και στο Problems Panel (πηγή "utPLSQL Compilation"). |
 | `utplsql.setupDiagnostics.enabled` | `true` | Εμφανίζει διαγνωστικά ρυθμίσεων (σύνδεση, grants, έκδοση) και **ακεραιότητα εγκατάστασης utPLSQL** (άκυρα αντικείμενα στο schema UT3, με quick-fix "Recompile UT3") με ενέργειες quick-fix. |
-| `utplsql.profiles` | `[]` | Αποθηκευμένα profiles σύνδεσης Oracle (όνομα, σύνδεση και παρακάμψεις των `sourcePath`/`coverageOwner`/κ.λπ.) για εναλλαγή μεταξύ περιβαλλόντων. (Full field reference: [wiki](https://github.com/thepaneb/vscode-utplsql/wiki/Configuration)). |
+| `utplsql.profiles` | `[]` | Αποθηκευμένα profiles σύνδεσης Oracle (όνομα, σύνδεση και παρακάμψεις των `sourcePath`/`coverageOwner`/κ.λπ.) για εναλλαγή μεταξύ περιβαλλόντων. **Οι κωδικοί πρόσβασης τηρούνται στο keychain του λειτουργικού συστήματος (VS Code SecretStorage), όχι στις ρυθμίσεις** — το πεδίο `connection` αποθηκεύει μόνο `user@//host:port/service`. Τα παλαιότερα profiles με ενσωματωμένο κωδικό πρόσβασης μεταφέρονται αυτόματα κατά την πρώτη χρήση. (Full field reference: [wiki](https://github.com/thepaneb/vscode-utplsql/wiki/Configuration)). |
 | `utplsql.activeProfile` | `""` | ID του ενεργού profile (`utplsql.profiles`). Όταν ορίζεται, υπερισχύει του `utplsql.connection`. |
 | `utplsql.sqlCoverageEnabled` | `false` | Παρακολουθεί τα views που εκτελέστηκαν μέσω `V$SQL` (boolean coverage). Απαιτεί `GRANT SELECT ON V$SQL`. |
 | `utplsql.debugger.enabled` | `true` | Ενεργοποιεί την αποσφαλμάτωση PL/SQL tests (`DBMS_DEBUG`). Απαιτεί `node-oracledb` + grants. |
@@ -360,11 +360,12 @@ GRANT SELECT ON SYS.DBA_PROCEDURES TO <ut3_owner>;
 |---|---|---|
 | Κενό coverage | Λείπει το `GRANT EXECUTE ON DBMS_PROFILER` | Εκτελέστε τα grants στις [Απαιτήσεις βάσης δεδομένων](#απαιτήσεις-βάσης-δεδομένων) ή χρησιμοποιήστε το `utPLSQL: Copy coverage grants to clipboard` |
 | Κενό coverage | Το Oracle 19c απαιτεί επιπλέον grants | `GRANT EXECUTE ON DBMS_PROFILER` + `GRANT EXECUTE ON DBMS_PLSQL_CODE_COVERAGE` |
-| Σφάλμα μεταγλώττισης χωρίς ένδειξη | Κώδικας με συντακτικό σφάλμα PL/SQL | Τα διαγνωστικά μεταγλώττισης δεν είναι ακόμη συνδεδεμένα στην έκδοση Oracle-only (το `utplsql.compilationDiagnostics.enabled` δεν έχει αποτέλεσμα)· μεταγλωττίστε/εκτελέστε για να εμφανιστεί το σφάλμα |
+| Σφάλμα μεταγλώττισης χωρίς ένδειξη | Κώδικας με συντακτικό σφάλμα PL/SQL | Διατηρήστε ενεργοποιημένο το `utplsql.compilationDiagnostics.enabled` (προεπιλογή)· τα σφάλματα από το `ALL_ERRORS` εμφανίζονται στο Problems Panel μετά από μια εκτέλεση |
 | Σφάλμα σύνδεσης | Κακοσχηματισμένη συμβολοσειρά ή μη προσβάσιμη βάση | Χρησιμοποιήστε το `utPLSQL: Validate configuration` |
 | Το `%suite` δεν αναγνωρίζεται | Λείπει το `%suite`/`create package` στο αρχείο ή `%test` χωρίς `PROCEDURE` | Ελέγξτε το spec· εκτελέστε το `utPLSQL: Refresh tests` |
 | Το CodeLens δεν εμφανίζεται | `editor.codeLens` απενεργοποιημένο ή σύγκρουση | Ενεργοποιήστε το `"editor.codeLens": true`· ελέγξτε το `utplsql.codeLens.enabled` |
 | Οι συντομεύσεις δεν λειτουργούν | Σύγκρουση με άλλη επέκταση ή συντόμευση του VSCode | Πηγαίνετε σε File → Preferences → Keyboard Shortcuts και αναζητήστε το `utplsql` για να το επαναπροσδιορίσετε |
+| Χρειάζονται διαγνωστικά | Δεν είναι σαφές τι κάνει εσωτερικά η επέκταση | Ορίστε `UTPLSQL_DEBUG=1` πριν την εκκίνηση του VSCode για προαιρετικά αρχεία καταγραφής διαγνωστικών (πλαίσιο αποτυχιών σύνδεσης/ανακάλυψης/coverage) στην κονσόλα του Extension Host |
 
 ## Σημείωση
 

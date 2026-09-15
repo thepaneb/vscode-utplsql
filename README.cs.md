@@ -109,9 +109,9 @@ nativních API VSCode.
 | `utplsql.oraclePoolPingInterval` | `60` | Sekundy mezi kontrolami stavu nečinných připojení v poolu (node-oracledb). `0` = ping při každém checkoutu. |
 | `utplsql.organization` | `file` | Uspořádání stromu: `file` (podle cesty) nebo `schema` (Schema > Package > Suite > Test). V režimu `schema` se sady také objevují z databáze (`ALL_OBJECTS`/`ALL_SOURCE`), když soubory `.pks` nejsou v pracovním prostoru — s virtuální URI `utplsql-db:/` (bez CodeLens/dekorací/skoku na selhání). |
 | `utplsql.organization.schemaPattern` | `db/{schema}/**` | Glob vzor pro extrakci schématu z cesty. Použijte `{schema}` jako zástupný symbol. V režimu `schema` adresáře pod základnou vzoru (např. `db/*`) definují schémata dotazovaná v databázi. |
-| `utplsql.compilationDiagnostics.enabled` | `true` | Vyhrazeno pro diagnostiku kompilace PL/SQL. **V současnosti nemá žádný efekt** ve verzi pouze pro Oracle — funkce není zapojena (ještě není znovu povolena). |
+| `utplsql.compilationDiagnostics.enabled` | `true` | Zobrazuje chyby kompilace PL/SQL z databáze (`ALL_ERRORS`) jako podtržení v editoru a v panelu „Problémy" (zdroj "utPLSQL Compilation"). |
 | `utplsql.setupDiagnostics.enabled` | `true` | Zobrazuje diagnostiku konfigurace (připojení, granty, verze) a **integritu instalace utPLSQL** (neplatné objekty ve schématu UT3, s rychlou opravou „Recompile UT3") s akcemi rychlé opravy. |
-| `utplsql.profiles` | `[]` | Uložené profily připojení k Oracle (název, připojení a přebití `sourcePath`/`coverageOwner`/atd.) pro přepínání mezi prostředími. (Full field reference: [wiki](https://github.com/thepaneb/vscode-utplsql/wiki/Configuration)). |
+| `utplsql.profiles` | `[]` | Uložené profily připojení k Oracle (název, připojení a přebití `sourcePath`/`coverageOwner`/atd.) pro přepínání mezi prostředími. **Hesla se ukládají do klíčenky OS (VS Code SecretStorage), nikoli do nastavení** — pole `connection` ukládá pouze `user@//host:port/service`. Starší profily s vloženým heslem se při prvním použití migrují automaticky. (Full field reference: [wiki](https://github.com/thepaneb/vscode-utplsql/wiki/Configuration)). |
 | `utplsql.activeProfile` | `""` | ID aktivního profilu (`utplsql.profiles`). Pokud je nastaveno, přebíjí `utplsql.connection`. |
 | `utplsql.sqlCoverageEnabled` | `false` | Sleduje pohledy spuštěné přes `V$SQL` (boolean pokrytí). Vyžaduje `GRANT SELECT ON V$SQL`. |
 | `utplsql.debugger.enabled` | `true` | Povoluje ladění PL/SQL testů (`DBMS_DEBUG`). Vyžaduje `node-oracledb` + granty. |
@@ -360,11 +360,12 @@ GRANT SELECT ON SYS.DBA_PROCEDURES TO <ut3_owner>;
 |---|---|---|
 | Prázdné pokrytí | Chybí `GRANT EXECUTE ON DBMS_PROFILER` | Spusťte granty v [Požadavky](#požadavky-na-databázi) nebo použijte `utPLSQL: Copy coverage grants to clipboard` |
 | Prázdné pokrytí | Oracle 19c vyžaduje další granty | `GRANT EXECUTE ON DBMS_PROFILER` + `GRANT EXECUTE ON DBMS_PLSQL_CODE_COVERAGE` |
-| Chyba kompilace bez indikace | Kód se syntaktickou chybou PL/SQL | Diagnostika kompilace ještě není ve verzi pouze pro Oracle zapojena (`utplsql.compilationDiagnostics.enabled` nemá žádný efekt); zkompilujte/spusťte pro zobrazení chyby |
+| Chyba kompilace bez indikace | Kód se syntaktickou chybou PL/SQL | Ponechte `utplsql.compilationDiagnostics.enabled` zapnuté (výchozí); chyby z `ALL_ERRORS` se po spuštění zobrazí v panelu „Problémy" |
 | Chyba připojení | Chybný řetězec nebo nedostupná DB | Použijte `utPLSQL: Validate configuration` |
 | `%suite` není rozpoznán | Chybí `%suite`/`create package` v souboru, nebo `%test` bez `PROCEDURE` | Zkontrolujte specifikaci; spusťte `utPLSQL: Refresh tests` |
 | CodeLens se nezobrazuje | Vypnutý `editor.codeLens` nebo konflikt | Povolte `"editor.codeLens": true`; zkontrolujte `utplsql.codeLens.enabled` |
 | Zkratky nefungují | Konflikt s jiným rozšířením nebo zkratkou VSCode | Přejděte do Soubor → Předvolby → Klávesové zkratky a vyhledejte `utplsql` pro předefinování |
+| Potřebujete diagnostiku | Není jasné, co rozšíření interně dělá | Před spuštěním VSCode nastavte `UTPLSQL_DEBUG=1` pro zapnutí diagnostických logů (kontext selhání připojení/vyhledávání/pokrytí) v konzoli Extension Host |
 
 ## Prohlášení
 

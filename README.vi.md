@@ -109,9 +109,9 @@ Test Explorer **ngay khi từng bài kiểm thử hoàn tất**. VSIX đã kèm 
 | `utplsql.oraclePoolPingInterval` | `60` | Số giây giữa các lần kiểm tra sức khỏe của các kết nối nhàn rỗi trong pool (node-oracledb). `0` = ping mỗi lần checkout. |
 | `utplsql.organization` | `file` | Tổ chức cây: `file` (theo đường dẫn) hoặc `schema` (Schema > Package > Suite > Test). Trong chế độ `schema`, các suite cũng được phát hiện từ cơ sở dữ liệu (`ALL_OBJECTS`/`ALL_SOURCE`) khi các tệp `.pks` không nằm trong workspace — với URI ảo `utplsql-db:/` (không có CodeLens/trang trí/nhảy tới lỗi). |
 | `utplsql.organization.schemaPattern` | `db/{schema}/**` | Glob để trích xuất schema từ đường dẫn. Dùng `{schema}` làm placeholder. Trong chế độ `schema`, các thư mục bên dưới gốc của pattern (ví dụ `db/*`) định nghĩa các schema được truy vấn trong cơ sở dữ liệu. |
-| `utplsql.compilationDiagnostics.enabled` | `true` | Dành riêng cho chẩn đoán biên dịch PL/SQL. **Hiện không có hiệu lực** trong phiên bản Oracle-only — tính năng chưa được kết nối (chưa bật lại). |
+| `utplsql.compilationDiagnostics.enabled` | `true` | Hiển thị lỗi biên dịch PL/SQL từ cơ sở dữ liệu (`ALL_ERRORS`) dưới dạng gạch chân trong trình soạn thảo và trong bảng Problems (nguồn "utPLSQL Compilation"). |
 | `utplsql.setupDiagnostics.enabled` | `true` | Hiển thị chẩn đoán cấu hình (kết nối, quyền, phiên bản) và **tính toàn vẹn của bản cài utPLSQL** (các đối tượng không hợp lệ trong schema UT3, kèm quick-fix "Recompile UT3") với các hành động quick-fix. |
-| `utplsql.profiles` | `[]` | Các hồ sơ kết nối Oracle đã lưu (tên, kết nối và ghi đè `sourcePath`/`coverageOwner`/v.v.) để chuyển đổi giữa các môi trường. (Full field reference: [wiki](https://github.com/thepaneb/vscode-utplsql/wiki/Configuration)). |
+| `utplsql.profiles` | `[]` | Các hồ sơ kết nối Oracle đã lưu (tên, kết nối và ghi đè `sourcePath`/`coverageOwner`/v.v.) để chuyển đổi giữa các môi trường. **Mật khẩu được lưu trong keychain của hệ điều hành (VS Code SecretStorage), không lưu trong cài đặt** — trường `connection` chỉ lưu `user@//host:port/service`. Các hồ sơ cũ có mật khẩu nội tuyến sẽ được tự động di trú trong lần sử dụng đầu tiên. (Full field reference: [wiki](https://github.com/thepaneb/vscode-utplsql/wiki/Configuration)). |
 | `utplsql.activeProfile` | `""` | ID của hồ sơ đang hoạt động (`utplsql.profiles`). Khi được đặt, ghi đè `utplsql.connection`. |
 | `utplsql.sqlCoverageEnabled` | `false` | Theo dõi các view được thực thi qua `V$SQL` (độ phủ boolean). Cần `GRANT SELECT ON V$SQL`. |
 | `utplsql.debugger.enabled` | `true` | Bật gỡ lỗi kiểm thử PL/SQL (`DBMS_DEBUG`). Cần `node-oracledb` + grants. |
@@ -363,12 +363,13 @@ GRANT SELECT ON SYS.DBA_PROCEDURES TO <ut3_owner>;
 | Các suite không xuất hiện | Không có tệp `.pks` được phát hiện | Chạy `utPLSQL: Validate configuration` để chẩn đoán |
 | Độ phủ trống | Thiếu `GRANT EXECUTE ON DBMS_PROFILER` | Chạy các grant trong [Yêu cầu cơ sở dữ liệu](#yêu-cầu-cơ-sở-dữ-liệu) hoặc dùng `utPLSQL: Copy coverage grants to clipboard` |
 | Độ phủ trống | Oracle 19c cần thêm grant | `GRANT EXECUTE ON DBMS_PROFILER` + `GRANT EXECUTE ON DBMS_PLSQL_CODE_COVERAGE` |
-| Lỗi biên dịch không kèm chỉ dẫn | Mã có lỗi cú pháp PL/SQL | Chẩn đoán biên dịch chưa được kết nối trong phiên bản Oracle-only (`utplsql.compilationDiagnostics.enabled` không có hiệu lực); hãy biên dịch/chạy để lộ lỗi |
+| Lỗi biên dịch không kèm chỉ dẫn | Mã có lỗi cú pháp PL/SQL | Giữ bật `utplsql.compilationDiagnostics.enabled` (mặc định); lỗi từ `ALL_ERRORS` xuất hiện trong bảng Problems sau khi chạy |
 | Lỗi kết nối | Chuỗi sai định dạng hoặc DB không truy cập được | Dùng `utPLSQL: Validate configuration` |
 | Hết thời gian khi chạy | Kiểm thử lâu hơn `timeoutMinutes` | Tăng `utplsql.timeoutMinutes` |
 | `%suite` không được nhận diện | Thiếu `%suite`/`create package` trong tệp, hoặc `%test` không có `PROCEDURE` | Kiểm tra spec; chạy `utPLSQL: Refresh tests` |
 | CodeLens không xuất hiện | `editor.codeLens` bị tắt hoặc xung đột | Bật `"editor.codeLens": true`; kiểm tra `utplsql.codeLens.enabled` |
 | Phím tắt không hoạt động | Xung đột với extension hoặc phím tắt VSCode khác | Vào File → Preferences → Keyboard Shortcuts và tìm `utplsql` để gán lại |
+| Cần chẩn đoán | Không rõ extension đang làm gì bên trong | Đặt `UTPLSQL_DEBUG=1` trước khi khởi chạy VSCode để bật log chẩn đoán (ngữ cảnh của lỗi kết nối/discovery/coverage) trong bảng điều khiển Extension Host |
 
 ## Tuyên bố miễn trừ trách nhiệm
 
