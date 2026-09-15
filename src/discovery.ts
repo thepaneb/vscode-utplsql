@@ -84,13 +84,27 @@ export async function discoverWorkspace(
   return results;
 }
 
+/** Normaliza separadores e casing da letra de drive (Windows é case-insensitive). */
+function normalizeFsPath(p: string): string {
+  return p.replace(/\\/g, '/').replace(/^([a-zA-Z]):/, (_m, d: string) => `${d.toLowerCase()}:`);
+}
+
+/** Letra de drive (`c:`) já normalizada, ou undefined em paths POSIX. */
+function driveOf(normPath: string): string | undefined {
+  return /^([a-zA-Z]:)/.exec(normPath)?.[1].toLowerCase();
+}
+
 export function extractSchemaFromPath(
   filePath: string,
   workspaceFsPath: string,
   schemaPattern: string,
 ): string | undefined {
-  const normFile = filePath.replace(/\\/g, '/');
-  const normWs = workspaceFsPath.replace(/\\/g, '/');
+  const normFile = normalizeFsPath(filePath);
+  const normWs = normalizeFsPath(workspaceFsPath);
+  const fileDrive = driveOf(normFile);
+  const wsDrive = driveOf(normWs);
+  if (fileDrive && wsDrive && fileDrive !== wsDrive) return undefined;
+
   const relative = path.posix.relative(normWs, normFile);
   if (relative.startsWith('..')) return undefined;
 

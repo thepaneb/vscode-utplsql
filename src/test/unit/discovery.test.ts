@@ -219,6 +219,24 @@ test('extractSchemaFromPath: caminho Windows com backslash', () => {
   assert.strictEqual(result, 'SALES');
 });
 
+test('extractSchemaFromPath: casing de drive divergente (C: vs c:)', () => {
+  assert.strictEqual(
+    extractSchemaFromPath('C:/root/db/APP/x.pks', 'c:/root', 'db/{schema}/**'),
+    'APP',
+  );
+  assert.strictEqual(
+    extractSchemaFromPath('c:/root/db/APP/x.pks', 'C:\\root', 'db/{schema}/**'),
+    'APP',
+  );
+});
+
+test('extractSchemaFromPath: drives distintos retorna undefined', () => {
+  assert.strictEqual(
+    extractSchemaFromPath('D:/root/db/APP/x.pks', 'C:/root', 'db/{schema}/**'),
+    undefined,
+  );
+});
+
 // ── discoverSchemaFromConn ───────────────────────────────────────────
 
 const SUITE_LINES = [
