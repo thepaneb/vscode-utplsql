@@ -148,6 +148,7 @@ _(vazio — nenhuma PRD aprovada)_
 | # | PRD | Versão alvo | Data |
 |---|---|---|---|
 | 47 | [Node 26 no toolchain de desenvolvimento](proposed/prd-47-node-26-toolchain.md) | 0.13.0 | 2026-08-29 |
+| 69 | [Runner Oracle: binds tipados, `a_tags` e validação de reporters](proposed/prd-69-oracle-runner-typed-binds.md) | 0.13.0 | 2026-09-15 |
 
 #### 0.14.0
 
@@ -256,7 +257,8 @@ docs/prd/
     ├── prd-58-run-related-tests.md
     ├── prd-59-scaffold-suite.md
     ├── prd-60-branch-coverage-investigation.md
-    └── prd-61-cli-auto-provision.md
+    ├── prd-61-cli-auto-provision.md
+    └── prd-69-oracle-runner-typed-binds.md
 ```
 
 ---
