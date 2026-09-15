@@ -38,7 +38,8 @@ export async function ensurePool(
   connection: string,
   cfg: UtConfig,
 ): Promise<OraclePool> {
-  if (currentPool?.key === connection) return currentPool.pool;
+  const key = `${connection}|${cfg.oraclePoolMin}|${cfg.oraclePoolMax}|${cfg.oraclePoolIncrement}|${cfg.oraclePoolPingInterval}`;
+  if (currentPool?.key === key) return currentPool.pool;
   await closeOraclePool();
   const parsed = parseConnString(connection);
   const pool = await oracledb.createPool({
@@ -51,8 +52,16 @@ export async function ensurePool(
     poolPingInterval: cfg.oraclePoolPingInterval,
     stmtCacheSize: 30,
   });
-  currentPool = { pool, key: connection };
+  currentPool = { pool, key };
   return pool;
+}
+
+/**
+ * Marca o pool para recriação no próximo `ensurePool` (lazy), sem derrubar
+ * conexões em uso (PRD-66 RF4).
+ */
+export function invalidatePool(): void {
+  if (currentPool) currentPool.key = '';
 }
 
 export async function closeOraclePool(): Promise<void> {

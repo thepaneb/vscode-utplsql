@@ -3,6 +3,7 @@ import { type CodeLensItem, parseCodeLensItems, UtplsqlCodeLensProvider } from '
 import {
   clearSessionConnection,
   getExtensionLocale,
+  invalidateConfigCache,
   readConfig,
   resolveConnection,
   resolveConnectionNoPrompt,
@@ -35,7 +36,7 @@ import {
 } from './discovery';
 import { t } from './i18n';
 import { filterSuitesByFolder, filterSuitesByUri } from './matching';
-import { closeOraclePool } from './oracleRunner';
+import { closeOraclePool, invalidatePool } from './oracleRunner';
 import { setupValidator, UtplsqlCodeActionProvider } from './quickfix';
 import { executeRun } from './runner';
 import {
@@ -304,6 +305,14 @@ export function activate(context: vscode.ExtensionContext) {
   context.subscriptions.push(decorationManager);
 
   registerDbSourceProvider(context);
+
+  context.subscriptions.push(
+    vscode.workspace.onDidChangeConfiguration((e) => {
+      if (!e.affectsConfiguration('utplsql')) return;
+      invalidateConfigCache();
+      invalidatePool();
+    }),
+  );
 
   context.subscriptions.push(setupValidator);
 

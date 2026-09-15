@@ -5,6 +5,13 @@ import { type ExtensionLocale, resolveLocale, t } from './i18n';
 /** Conexão mantida apenas em memória durante a sessão (quando o usuário digita). */
 let sessionConnection: string | undefined;
 
+/** Cache de `readConfig()`; invalidado por `onDidChangeConfiguration`. */
+let configCache: UtConfig | undefined;
+
+export function invalidateConfigCache(): void {
+  configCache = undefined;
+}
+
 export interface UtConfig {
   sourcePath: string;
   includePatterns: string[];
@@ -66,6 +73,7 @@ export function getExtensionLocale(): ExtensionLocale {
 }
 
 export function readConfig(): UtConfig {
+  if (configCache) return configCache;
   const c = vscode.workspace.getConfiguration('utplsql');
   const global: UtConfig = {
     sourcePath: c.get<string>('sourcePath', 'install'),
@@ -125,7 +133,8 @@ export function readConfig(): UtConfig {
       | 'vi'
     >('language', 'auto'),
   };
-  return mergeProfileConfig(global, getActiveProfile());
+  configCache = mergeProfileConfig(global, getActiveProfile());
+  return configCache;
 }
 
 /**

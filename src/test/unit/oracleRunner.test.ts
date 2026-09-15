@@ -13,6 +13,7 @@ import {
   executeRunOracle,
   findInvalidUt3Objects,
   getOracleInfo,
+  invalidatePool,
   listReportersOracle,
   mapDbPathsToFiles,
   parseConnString,
@@ -116,6 +117,11 @@ test('parseConnString: senha com / e @ (split no 1o / e ultimo @)', () => {
 test('parseConnString: TNS alias e SID ficam opacos', () => {
   assert.strictEqual(parseConnString('user/pass@MYTNS').connectionString, 'MYTNS');
   assert.strictEqual(parseConnString('user/pass@host:1521:SID').connectionString, 'host:1521:SID');
+});
+
+test('parseConnString: IPv6 e sem // ficam opacos (RF3)', () => {
+  assert.strictEqual(parseConnString('u/p@[::1]:1521/svc').connectionString, '[::1]:1521/svc');
+  assert.strictEqual(parseConnString('u/p@host/svc').connectionString, 'host/svc');
 });
 
 test('parseConnString: formato invalido lanca erro', () => {
@@ -1183,6 +1189,37 @@ test('withOracleConnection: conexão indisponível retorna undefined', async () 
       async () => 1,
     );
     assert.strictEqual(result, undefined);
+  } finally {
+    await closeOraclePool();
+  }
+});
+
+test('ensurePool: recria quando as settings de pool mudam', async () => {
+  await closeOraclePool();
+  const { mod, pools } = makeFakeOracledb();
+  try {
+    await ensurePool(mod as never, 'u/p@//h:1521/s', POOL_CFG);
+    await ensurePool(mod as never, 'u/p@//h:1521/s', POOL_CFG);
+    assert.strictEqual(pools.length, 1, 'mesma key reutiliza o pool');
+
+    await ensurePool(mod as never, 'u/p@//h:1521/s', {
+      ...POOL_CFG,
+      oraclePoolMax: 99,
+    } as UtConfig);
+    assert.strictEqual(pools.length, 2, 'settings diferentes recriam o pool');
+  } finally {
+    await closeOraclePool();
+  }
+});
+
+test('invalidatePool: força recriação no próximo ensurePool', async () => {
+  await closeOraclePool();
+  const { mod, pools } = makeFakeOracledb();
+  try {
+    await ensurePool(mod as never, 'u/p@//h:1521/s', POOL_CFG);
+    invalidatePool();
+    await ensurePool(mod as never, 'u/p@//h:1521/s', POOL_CFG);
+    assert.strictEqual(pools.length, 2);
   } finally {
     await closeOraclePool();
   }

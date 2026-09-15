@@ -26,14 +26,26 @@ let _mockFindFilesResult: Record<string, string[]> = {};
 let _mockFileErrors: Record<string, boolean> = {};
 const _mockVisibleEditors: TextEditor[] = [];
 
+/** Invalida o cache de `readConfig()` (require lazy evita ciclo stub <-> config). */
+function invalidateConfigCache(): void {
+  try {
+    const mod = require('../config') as { invalidateConfigCache?: () => void };
+    mod.invalidateConfigCache?.();
+  } catch {
+    /* config ainda não carregado */
+  }
+}
+
 export function __setConfigValue(key: string, value: unknown): void {
   _configValues[key] = value;
+  invalidateConfigCache();
 }
 
 export function __resetConfigValues(): void {
   for (const key of Object.keys(_configValues)) {
     delete _configValues[key];
   }
+  invalidateConfigCache();
 }
 
 export function __setInputBoxResult(value: string | undefined): void {
@@ -95,6 +107,7 @@ export namespace workspace {
         (_key in _configValues ? _configValues[_key] : defaultValue) as T,
       update: async <T>(_key: string, value: T, _target?: unknown) => {
         _configValues[_key] = value;
+        invalidateConfigCache();
       },
     };
   }
