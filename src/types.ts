@@ -18,6 +18,7 @@ export type ProfileCharset = 'utf8' | 'latin1' | 'win1252';
 export interface ConnectionProfile {
   id: string;
   name: string;
+  /** `usuario@//host:port/service` — sem senha; a senha fica no SecretStorage. */
   connection: string;
   /** Descrição amigável exibida no picker de conexão (PRD-62). */
   description?: string;

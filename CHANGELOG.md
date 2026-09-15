@@ -2,6 +2,13 @@
 
 ## 0.12.0
 
+- **Segurança de perfis e schema-mode (PRD-65)**: senhas de perfis passam a
+  ficar no cofre do SO (VS Code SecretStorage) — `utplsql.profiles` não guarda
+  mais a senha e perfis legados são migrados no primeiro uso. Credenciais com
+  `/` ou `@` na senha são aceitas. "Go to Error" abre suites descobertas apenas
+  no banco (provider de conteúdo `utplsql-db`), as decorações inline passam a
+  funcionar no modo `schema` e a ativação não pede mais conexão.
+
 - **Execução de scripts SQL contra perfis (PRD-62)**: rode scripts
   SQL/PL/SQL (migrações, seeds, setup) contra um perfil de conexão via
   `utPLSQL: Executar script` (editor), `utPLSQL: Executar arquivo de script`

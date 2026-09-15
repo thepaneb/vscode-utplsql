@@ -19,7 +19,7 @@ Looking for ready-to-use snippets? See [Configuration Examples](Configuration-ex
 |---|---|---|---|---|
 | `id` | string | No (auto-generated) | — | Profile UUID. Generated when omitted. |
 | `name` | string | Yes | — | Friendly name (e.g. "DEV Local"). |
-| `connection` | string | Yes | — | Connection string (`user/pass@//host:port/service`). |
+| `connection` | string | Yes | — | Connection string **without password** (`user@//host:port/service`). The password is kept in the OS keychain (VS Code SecretStorage), keyed by profile `id`. |
 | `description` | string | No | — | Description shown in the connection picker. |
 | `charset` | enum | No | `utf8` | Encoding used to read script files: `utf8`, `latin1` or `win1252`. |
 | `sourcePath` | string | No | inherits global | Overrides `utplsql.sourcePath`. |
@@ -38,7 +38,7 @@ Example:
     {
       "id": "a1b2c3d4-...",
       "name": "DEV Local",
-      "connection": "app/password@//localhost:1521/XEPDB1",
+      "connection": "app@//localhost:1521/XEPDB1",
       "description": "Local development database",
       "charset": "utf8",
       "sourcePath": "src"
@@ -46,7 +46,7 @@ Example:
     {
       "id": "e5f6g7h8-...",
       "name": "LEGACY Windows",
-      "connection": "legacy/password@//old-db:1521/LEGACY",
+      "connection": "legacy@//old-db:1521/LEGACY",
       "description": "Legacy Windows-1252 database",
       "charset": "win1252",
       "sourcePath": "legacy/src"
@@ -54,6 +54,10 @@ Example:
   ]
 }
 ```
+
+> The password is **not** stored here — it lives in the OS keychain (SecretStorage)
+> and is recombined at connection time. Profiles saved before this change (with an
+> inline password) are migrated automatically on first use.
 
 ## Running SQL scripts
 

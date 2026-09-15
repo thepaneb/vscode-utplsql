@@ -19,7 +19,7 @@ Procurando exemplos prontos? Veja [Exemplos de configuração](Exemplos-de-confi
 |---|---|---|---|---|
 | `id` | string | Não (auto-gerado) | — | UUID do perfil. Gerado quando omitido. |
 | `name` | string | Sim | — | Nome amigável (ex. "DEV Local"). |
-| `connection` | string | Sim | — | String de conexão (`user/pass@//host:port/service`). |
+| `connection` | string | Sim | — | String de conexão **sem senha** (`usuario@//host:port/service`). A senha fica no cofre do SO (VS Code SecretStorage), com chave pelo `id` do perfil. |
 | `description` | string | Não | — | Descrição exibida no picker de conexão. |
 | `charset` | enum | Não | `utf8` | Encoding para ler arquivos de script: `utf8`, `latin1` ou `win1252`. |
 | `sourcePath` | string | Não | herda do global | Sobrescreve `utplsql.sourcePath`. |
@@ -38,7 +38,7 @@ Exemplo:
     {
       "id": "a1b2c3d4-...",
       "name": "DEV Local",
-      "connection": "app/senha@//localhost:1521/XEPDB1",
+      "connection": "app@//localhost:1521/XEPDB1",
       "description": "Banco local de desenvolvimento",
       "charset": "utf8",
       "sourcePath": "src"
@@ -46,7 +46,7 @@ Exemplo:
     {
       "id": "e5f6g7h8-...",
       "name": "LEGADO Windows",
-      "connection": "legacy/senha@//db-antigo:1521/LEGADO",
+      "connection": "legacy@//db-antigo:1521/LEGADO",
       "description": "Banco legado Windows-1252",
       "charset": "win1252",
       "sourcePath": "legacy/src"
@@ -54,6 +54,10 @@ Exemplo:
   ]
 }
 ```
+
+> A senha **não** é guardada aqui — fica no cofre do SO (SecretStorage) e é
+> recomposta no momento da conexão. Perfis salvos antes desta mudança (com senha
+> inline) são migrados automaticamente no primeiro uso.
 
 ## Execução de scripts SQL
 
