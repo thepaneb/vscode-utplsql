@@ -2,6 +2,15 @@
 
 ## 0.12.0
 
+- **Qualidade, limpeza e performance (PRD-67)**: `extension.ts` reduzido a
+  orquestrador (143 linhas) com os comandos extraídos para `src/commands/`
+  (`run`, `debug`, `script`, `profile`, `connection`, `utility`) e a árvore de
+  testes em `src/testTree.ts` (testável). Novo debounce do watcher
+  (`utplsql.refreshDebounceMs`, default 300 ms) coalesce saves rápidos;
+  debugger e script runner carregados sob demanda; paths cross-platform com
+  casing de drive e drives distintos; strings de runtime de `junit`/
+  `oracleRunner`/`discovery` roteadas pelo i18n; remoção de código morto da
+  era CLI (`checkCli`, `applyResults`/`applyCoverage`).
 - **Diagnostics e reporter de sessão (PRD-68)**: diagnóstico de compilação
   PL/SQL religado — erros de `ALL_ERRORS` aparecem no Problems Panel (source
   "utPLSQL Compilation") após um run, controlado por
