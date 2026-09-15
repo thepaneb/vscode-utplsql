@@ -25,11 +25,6 @@ import {
 } from './connectionProfiles';
 import { clearDbSourceCache, registerDbSourceProvider } from './dbSourceProvider';
 import { createDebounced } from './debounce';
-import {
-  startDebugSession,
-  UtplsqlDebugAdapterDescriptorFactory,
-  UtplsqlDebugConfigurationProvider,
-} from './debugger';
 import { DecorationManager } from './decorations';
 import {
   discoverSchemaFromDb,
@@ -43,13 +38,6 @@ import { filterSuitesByFolder, filterSuitesByUri } from './matching';
 import { closeOraclePool, invalidatePool } from './oracleRunner';
 import { setupValidator, UtplsqlCodeActionProvider } from './quickfix';
 import { executeRun } from './runner';
-import {
-  connectOracle,
-  decodeScript,
-  executeScript,
-  filterScriptFiles,
-  splitScript,
-} from './scriptRunner';
 import { TestStateManager } from './state';
 import { UtplsqlStatusBar } from './statusBar';
 import type { ConnectionProfile, ItemMeta, ProfileCharset } from './types';
@@ -61,6 +49,20 @@ let needsRefresh = false;
 let statusBar: UtplsqlStatusBar | undefined;
 let decorationManager: DecorationManager | undefined;
 let scriptChannel: vscode.OutputChannel | undefined;
+
+// RF5: debugger e script runner carregados sob demanda (bundle menor).
+let debuggerModule: Promise<typeof import('./debugger')> | undefined;
+let scriptRunnerModule: Promise<typeof import('./scriptRunner')> | undefined;
+
+function loadDebugger(): Promise<typeof import('./debugger')> {
+  if (!debuggerModule) debuggerModule = import('./debugger.js');
+  return debuggerModule;
+}
+
+function loadScriptRunner(): Promise<typeof import('./scriptRunner')> {
+  if (!scriptRunnerModule) scriptRunnerModule = import('./scriptRunner.js');
+  return scriptRunnerModule;
+}
 
 /** OutputChannel dedicado ("utPLSQL Script") — criado sob demanda. */
 function getScriptChannel(): vscode.OutputChannel {
@@ -321,15 +323,21 @@ export function activate(context: vscode.ExtensionContext) {
   context.subscriptions.push(setupValidator);
 
   try {
+    const descriptorFactory: vscode.DebugAdapterDescriptorFactory = {
+      async createDebugAdapterDescriptor(session) {
+        const { UtplsqlDebugAdapterDescriptorFactory } = await loadDebugger();
+        return new UtplsqlDebugAdapterDescriptorFactory().createDebugAdapterDescriptor(session);
+      },
+    };
+    const configurationProvider: vscode.DebugConfigurationProvider = {
+      async resolveDebugConfiguration(folder, config) {
+        const { UtplsqlDebugConfigurationProvider } = await loadDebugger();
+        return new UtplsqlDebugConfigurationProvider().resolveDebugConfiguration(folder, config);
+      },
+    };
     context.subscriptions.push(
-      vscode.debug.registerDebugAdapterDescriptorFactory(
-        'utplsql',
-        new UtplsqlDebugAdapterDescriptorFactory(),
-      ),
-      vscode.debug.registerDebugConfigurationProvider(
-        'utplsql',
-        new UtplsqlDebugConfigurationProvider(),
-      ),
+      vscode.debug.registerDebugAdapterDescriptorFactory('utplsql', descriptorFactory),
+      vscode.debug.registerDebugConfigurationProvider('utplsql', configurationProvider),
     );
   } catch {
     // Registro do debugger é opcional — falha aqui não pode derrubar a ativação.
@@ -386,6 +394,7 @@ export function activate(context: vscode.ExtensionContext) {
         vscode.window.showWarningMessage(t(locale, 'ext.debug.openPks'));
         return;
       }
+      const { startDebugSession } = await loadDebugger();
       await startDebugSession(packageName);
     }),
     vscode.commands.registerCommand('utplsql.switchProfile', async () => {
@@ -510,6 +519,7 @@ export function activate(context: vscode.ExtensionContext) {
       const profile = await pickProfileOrGuide();
       if (!profile) return;
       const all = await listFilesRecursive(folderUri);
+      const { filterScriptFiles } = await loadScriptRunner();
       const files = filterScriptFiles(all, readConfig().scriptRunnerFilePattern);
       if (files.length === 0) {
         vscode.window.showWarningMessage(t(locale, 'script.noScriptsInFolder'));
@@ -967,6 +977,7 @@ async function runScriptText(
   charset: ProfileCharset | undefined,
 ): Promise<void> {
   const locale = getExtensionLocale();
+  const { connectOracle, executeScript, splitScript } = await loadScriptRunner();
   const statements = splitScript(text);
   if (statements.length === 0) {
     vscode.window.showInformationMessage(t(locale, 'script.noStatements'));
@@ -1005,6 +1016,7 @@ async function runScriptText(
  */
 async function runScriptFiles(paths: string[], profile: ConnectionProfile): Promise<void> {
   const charset = profile.charset ?? 'utf8';
+  const { decodeScript } = await loadScriptRunner();
   for (const fsPath of paths) {
     const base = fsPath.split(/[\\/]/).pop() ?? fsPath;
     let text: string;
