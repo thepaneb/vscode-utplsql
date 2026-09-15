@@ -14,12 +14,10 @@ diretamente no editor e na aba Coverage.
 ## Como funciona
 
 A execução é feita diretamente no Oracle via `node-oracledb` — sem CLI externo.
-O reporter `ut_coverage_cobertura_reporter` gera o XML dentro do banco.
-O mapeamento de objetos cobertos para arquivos-fonte é resolvido pela função
-`ut_file_mapper.build_file_mappings()` no próprio Oracle, que retorna o
-caminho de cada objeto coberto. A extensão lê o XML Cobertura e usa esses
-mapeamentos (com fallback para `resolveSourceUri`) para associar cada objeto
-ao arquivo-fonte no workspace.
+O reporter `ut_coverage_cobertura_reporter` gera o XML dentro do banco,
+identificando cada objeto coberto como `<tipo> <schema>.<objeto>`
+(ex.: `package body UT3.CALC`). A extensão mapeia esses nomes para os arquivos-fonte
+locais usando o setting `utplsql.sourcePath` e o schema `utplsql.coverageOwner`.
 
 ## Cobertura por declaração (Function Coverage)
 
@@ -34,10 +32,13 @@ para a Test Coverage API:
 
 ## Mapeamento da cobertura aos arquivos
 
-O mapeamento de cobertura para arquivos-fonte é feito internamente pelo Oracle
-via `ut_file_mapper.build_file_mappings()`. A função retorna o caminho
-absoluto de cada objeto coberto, que a extensão mapeia para o workspace local
-usando `resolveSourceUri` (absoluto → workspace → sourcePath).
+A extensão mapeia o `filename` do Cobertura (ex.: `package body UT3.CALC`) para o
+layout local (`packages/CALC.sql`, `functions/FN.sql`, `procedures/PR.sql`,
+`types/TY.sql`, `triggers/TR.sql`, `views/VW.sql`) e o resolve com
+`resolveSourceUri` (absoluto → workspace → `sourcePath`), testando as extensões
+`.sql`, `.pks`, `.pkb`, `.prc`, `.fnc`, `.trg`, `.tpb` e `.bdy`. A extensão **não**
+usa `ut_file_mapper.build_file_mappings()` (que espera uma lista de **arquivos**, não
+a pasta `sourcePath`).
 
 ## Notas importantes
 
@@ -50,18 +51,15 @@ usando `resolveSourceUri` (absoluto → workspace → sourcePath).
 ## Cobertura de views (objetos SQL)
 
 O `DBMS_PROFILER`/`DBMS_PLSQL_CODE_COVERAGE` só instrumenta PL/SQL — views não
-têm linhas para perfilar. Opções:
+têm linhas para perfilar e não entram no relatório Cobertura. Opções:
 
-1. **`type_mapping` com `views=VIEW`** (padrão): as views do schema coberto
-   aparecem no relatório com **0 hits** (arquivo listado, não executado).
-   Estrutura esperada: `sourcePath/views/<nome>.sql`.
-2. **Rastreio via `V$SQL`** (`utplsql.sqlCoverageEnabled: true`): após o run a
+1. **Rastreio via `V$SQL`** (`utplsql.sqlCoverageEnabled: true`): após o run a
    extensão consulta `V$SQL` e marca cada view como **executada** (100%, verde)
    ou **não executada** (0%, vermelho). O arquivo recebe gutter **por linha**
    (todas verdes ou todas vermelhas — cobertura booleana, não há hits reais
    por linha em SQL). Requer `GRANT SELECT ON V$SQL`.
    Best-effort: falha de acesso/timeout não quebra a execução.
-3. **Instrumentação manual**: para granularidade linha-a-linha, converta a
+2. **Instrumentação manual**: para granularidade linha-a-linha, converta a
    query em um **package function** que retorna a view/cursor — o corpo entra
    na cobertura PL/SQL normal.
 

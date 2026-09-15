@@ -253,10 +253,11 @@ All shortcuts use the `Ctrl+Shift+U` prefix (`Cmd+Shift+U` on Mac):
 
 
 
-Coverage is collected via `ut_file_mapper.build_file_mappings()` and reported via
-`ut_coverage_cobertura_reporter`. The extension maps covered objects to source files
+Coverage is reported via `ut_coverage_cobertura_reporter` and mapped to source files
 automatically using the `utplsql.sourcePath` setting and the `utplsql.coverageOwner`
-schema.
+schema. The extension resolves `package`, `package body`, `function`, `procedure`,
+`type body`, `trigger` and `view` objects, trying `.sql`, `.pks`, `.pkb`, `.prc`,
+`.fnc`, `.trg`, `.tpb` and `.bdy` under the source folders.
 
 ## Reporters
 

@@ -2,6 +2,7 @@
 import * as assert from 'node:assert';
 import * as vscode from 'vscode';
 import type { DebugConnection } from '../../dbmsDebug';
+import { firstCol, installOutFormatIsolation } from './helpers';
 
 // Capacidades lidas do banco Oracle real: metadados do utPLSQL, erros de
 // compilação (ALL_ERRORS), validação de setup e acesso a debug.
@@ -14,6 +15,8 @@ function hasConnection(): boolean {
 const describeDB = hasConnection() ? describe : describe.skip;
 
 describeDB('capacidades Oracle do banco real', () => {
+  installOutFormatIsolation();
+
   before(async () => {
     const ext = vscode.extensions.getExtension('paneb.vscode-utplsql');
     await ext?.activate();
@@ -60,11 +63,16 @@ describeDB('capacidades Oracle do banco real', () => {
           `SELECT table_owner FROM ALL_SYNONYMS WHERE synonym_name = 'UT_RUNNER' AND owner = 'PUBLIC'`,
           {},
         );
-        const owner = (r.rows?.[0] as { TABLE_OWNER?: string } | undefined)?.TABLE_OWNER;
+        const owner = r.rows?.[0] ? firstCol(r.rows[0]) : '';
         return owner ? `${owner}.` : '';
       });
       const prefix: string = await withObjectFormat(() => discoverUtplsqlSchema(dbc));
       assert.strictEqual(prefix, expected);
+      // Contrato de normalização: prefixo é 'SCHEMA.' (sem espaços) ou vazio.
+      assert.ok(
+        prefix === '' || /^[A-Z0-9_$#]+\.$/.test(prefix),
+        `prefixo deveria ser 'SCHEMA.' ou vazio, veio: ${JSON.stringify(prefix)}`,
+      );
     } finally {
       await dbc.close().catch(() => {});
     }
@@ -78,6 +86,10 @@ describeDB('capacidades Oracle do banco real', () => {
       const info = await getOracleInfo(dbc);
       assert.ok(info.utVersion, 'versão do utPLSQL deveria vir do banco');
       assert.ok(info.dbVersion, 'versão do banco deveria vir do banco');
+      // `extractScalar` pode receber ARRAY ou OBJECT; o valor precisa sair
+      // como string de versão limpa (sem rótulo de coluna).
+      assert.match(String(info.utVersion), /^v?\d+\.\d+/, `utVersion: ${info.utVersion}`);
+      assert.match(String(info.dbVersion), /^\d+\.\d+/, `dbVersion: ${info.dbVersion}`);
     } finally {
       await dbc.close().catch(() => {});
     }
@@ -90,9 +102,30 @@ describeDB('capacidades Oracle do banco real', () => {
     try {
       const reporters = await listReportersOracle(dbc);
       assert.ok(reporters.length > 0, 'banco deveria listar reporters');
+      assert.ok(
+        reporters.every((r: string) => !r.includes('.')),
+        `nomes devem vir sem prefixo de schema, veio: ${reporters.join(',')}`,
+      );
+      // Os nomes alimentam a setting `additionalReporters` e o QuickPick; todos
+      // precisam ser identificadores PL/SQL válidos (guard anti-injeção do runner).
+      assert.ok(
+        reporters.every((r: string) => /^[a-z0-9_]+$/i.test(r)),
+        `nomes devem ser identificadores PL/SQL, veio: ${reporters.join(',')}`,
+      );
       const doc = reporters.find((r: string) => /documentation/i.test(r));
       assert.ok(doc, `reporter de documentação esperado, veio: ${reporters.join(',')}`);
       assert.strictEqual(await checkReporterExists(dbc, doc), true);
+      for (const used of [
+        'UT_DOCUMENTATION_REPORTER',
+        'UT_JUNIT_REPORTER',
+        'UT_COVERAGE_COBERTURA_REPORTER',
+      ]) {
+        assert.strictEqual(
+          await checkReporterExists(dbc, used),
+          true,
+          `reporter usado pela extensão deveria existir pelo nome sem prefixo: ${used}`,
+        );
+      }
       assert.strictEqual(await checkReporterExists(dbc, 'UT_REPORTER_INEXISTENTE_XYZ'), false);
     } finally {
       await dbc.close().catch(() => {});
@@ -134,8 +167,13 @@ describeDB('capacidades Oracle do banco real', () => {
       const errors = await checkCompilationErrors(dbc, schema);
       const mine = errors.filter((e: { name: string }) => e.name === pkg);
       assert.ok(mine.length > 0, 'ALL_ERRORS deveria conter o package inválido');
-      assert.ok(mine[0].line > 0);
-      assert.ok(mine[0].text.length > 0);
+      // Contrato dos campos: nome em MAIÚSCULAS, tipo conhecido, PLS-* e
+      // posições numéricas — evita regressão de mapeamento ARRAY/OBJECT.
+      assert.strictEqual(mine[0].name, pkg);
+      assert.match(mine[0].type, /^(PACKAGE|PACKAGE BODY|FUNCTION|PROCEDURE|TRIGGER)$/);
+      assert.ok(Number.isInteger(mine[0].line) && mine[0].line > 0);
+      assert.ok(Number.isInteger(mine[0].position) && mine[0].position >= 0);
+      assert.match(mine[0].text, /PLS-\d+/, `texto do erro: ${mine[0].text}`);
       await dbc.execute(`DROP PACKAGE ${pkg}`, {}, { autoCommit: true });
       const after = await checkCompilationErrors(dbc, schema);
       assert.ok(

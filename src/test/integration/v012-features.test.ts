@@ -1,8 +1,10 @@
 /// <reference types="mocha" />
 import * as assert from 'node:assert';
 import * as fs from 'node:fs';
+import * as os from 'node:os';
 import * as path from 'node:path';
 import * as vscode from 'vscode';
+import { firstCol, installOutFormatIsolation } from './helpers';
 
 // Testes de integração das features 0.12.0 contra o banco Oracle real.
 // Gate: UTPLSQL_CONN no .env (mesma regra do extension.test.ts).
@@ -13,6 +15,8 @@ function hasConnection(): boolean {
 const describeDB = hasConnection() ? describe : describe.skip;
 
 describeDB('v0.12.0 — integração com banco Oracle', () => {
+  installOutFormatIsolation();
+
   before(async () => {
     const ext = vscode.extensions.getExtension('paneb.vscode-utplsql');
     await ext?.activate();
@@ -83,12 +87,6 @@ describeDB('v0.12.0 — integração com banco Oracle', () => {
       const doc = await vscode.workspace.openTextDocument(fixtureUri);
       await vscode.window.showTextDocument(doc);
       await vscode.commands.executeCommand('utplsql.runFile', fixtureUri);
-    });
-  });
-
-  describe('cobertura por declaração (PRD-48)', () => {
-    it.skip('deriveDeclarationCoverage — requer reescrita para Oracle direto (CLI removido)', () => {
-      // TODO: reescrever usando executeRunOracle + applyCoverageFromXml em vez de runCli
     });
   });
 
@@ -196,12 +194,6 @@ describeDB('v0.12.0 — integração com banco Oracle', () => {
     async function countRows(dbc: import('oracledb').Connection): Promise<number> {
       const r = await dbc.execute(`SELECT COUNT(*) FROM ${TABLE}`, {});
       return Number(firstCol(r.rows?.[0]));
-    }
-
-    /** Primeira coluna tolerante a ARRAY ou OBJECT (outFormat global pode variar). */
-    function firstCol(row: unknown): unknown {
-      if (Array.isArray(row)) return row[0];
-      return Object.values((row ?? {}) as Record<string, unknown>)[0];
     }
 
     it('split + execute: DDL + bloco PL/SQL (/) + DML executam em sequência', async function () {
@@ -334,40 +326,34 @@ describeDB('v0.12.0 — integração com banco Oracle', () => {
   // ── PRD-48 E2E: setup do schema UTPLSQL_TEST (sysdba) + cobertura real ──
   const describeSetup = hasConnection() ? describe : describe.skip;
   describeSetup('cobertura por declaração E2E (PRD-48, schema da conexão)', () => {
-    /** Divide um script sqlplus em statements: blocos PL/SQL (CREATE OR
-     * REPLACE PACKAGE/PROCEDURE/FUNCTION/TYPE/TRIGGER ou DECLARE) terminam
-     * em '/'; DDL/DML simples termina em ';'. */
-    function splitSql(text: string): string[] {
-      const blockStart =
-        /^(CREATE\s+OR\s+REPLACE\s+(PACKAGE(\s+BODY)?|PROCEDURE|FUNCTION|TYPE(\s+BODY)?|TRIGGER)\b|DECLARE\b)/i;
-      const out: string[] = [];
-      let buf = '';
-      for (const rawLine of text.split(/\r?\n/)) {
-        const line = rawLine.replace(/\s+$/, '');
-        const t = line.trim();
-        if (!t || t.startsWith('--') || /^(set |prompt |show |define |spool |whenever )/i.test(t)) {
-          continue;
-        }
-        if (t === '/') {
-          if (buf.trim()) out.push(buf.trim());
-          buf = '';
-          continue;
-        }
-        buf += (buf ? '\n' : '') + line;
-        if (line.endsWith(';') && !blockStart.test(buf)) {
-          out.push(buf.trim());
-          buf = '';
-        }
-      }
-      if (buf.trim()) out.push(buf.trim());
-      return out;
-    }
-
     /** Extrai do compile_packages.sql o trecho de um objeto (até o próximo prompt). */
     function extractObj(script: string, from: string, to: string): string {
       const i = script.indexOf(from);
       const j = script.indexOf(to, i);
       return script.slice(i, j >= 0 ? j : script.length);
+    }
+
+    /**
+     * Divide um script nos blocos terminados por `/` **preservando comentários**.
+     * As anotações `%suite`/`%test` vivem em linhas de comentário — descartá-las
+     * faz o utPLSQL não reconhecer a suite ("Suite package ... does not exist"),
+     * que era o motivo do teste irmão sempre pular.
+     */
+    function compileScript(text: string): string[] {
+      const out: string[] = [];
+      let buf = '';
+      for (const raw of text.split(/\r?\n/)) {
+        const t = raw.trim();
+        if (t === '/') {
+          if (buf.trim()) out.push(buf);
+          buf = '';
+          continue;
+        }
+        if (/^(set|show|prompt|spool|whenever|@|exit|rem)\b/i.test(t)) continue;
+        buf += (buf ? '\n' : '') + raw;
+      }
+      if (buf.trim()) out.push(buf);
+      return out;
     }
 
     it('coverage real de calculator deriva add/subtract/multiply/divide', async function () {
@@ -418,40 +404,35 @@ describeDB('v0.12.0 — integração com banco Oracle', () => {
           'create or replace package test_calculator as',
           'create or replace package test_betwnvarchar',
         );
-        for (const stmt of splitSql(`${cal}\n/\n${tcal}\n/`)) {
+        for (const stmt of compileScript(`${cal}\n/\n${tcal}\n/`)) {
           await dbc.execute(stmt, {}, { autoCommit: true });
         }
+        await dbc.execute(
+          `BEGIN ut3.ut_runner.rebuild_annotation_cache(a_object_owner => :owner); END;`,
+          { owner: user.toUpperCase() },
+        );
 
-        // 2) Cobertura real via ut_runner (cobertura reporter no buffer)
+        // 2) Cobertura real via ut_runner (cobertura reporter no buffer).
+        // `a_coverage_schemes` é obrigatório: sem ele o relatório sai vazio.
         await dbc.execute('DELETE FROM ut3.UT_OUTPUT_BUFFER_TMP', {}, { autoCommit: true });
-        let coverageText = '';
-        try {
-          await dbc.execute(
-            `BEGIN
-               ut3.ut_runner.run(
-                 a_paths     => ut_varchar2_list('test_calculator'),
-                 a_reporters => ut_reporters(ut_coverage_cobertura_reporter())
-               );
-             END;`,
-            {},
-            { autoCommit: true },
-          );
-          const r = await dbc.execute(
-            'SELECT text FROM ut3.UT_OUTPUT_BUFFER_TMP ORDER BY message_id',
-            {},
-          );
-          const text = (r.rows ?? []).map((x) => String((x as unknown[])[0])).join('\n');
-          coverageText = text.slice(text.indexOf('<coverage'));
-        } catch {
-          // Cache de anotações do utPLSQL pode estar stale (schema recriado) —
-          // admin do utPLSQL, não da extensão. Pula com elegância.
-          this.skip();
-          return;
-        }
-        if (!coverageText) {
-          this.skip();
-          return;
-        }
+        await dbc.execute(
+          `BEGIN
+             ut3.ut_runner.run(
+               a_paths            => ut_varchar2_list('test_calculator'),
+               a_reporters        => ut_reporters(ut_coverage_cobertura_reporter()),
+               a_coverage_schemes => ut_varchar2_list(:owner)
+             );
+           END;`,
+          { owner: user.toUpperCase() },
+          { autoCommit: true },
+        );
+        const r = await dbc.execute(
+          'SELECT text FROM ut3.UT_OUTPUT_BUFFER_TMP ORDER BY message_id',
+          {},
+        );
+        const text = (r.rows ?? []).map(firstCol).join('\n');
+        const coverageText = text.slice(text.indexOf('<coverage'));
+        assert.ok(coverageText, 'reporter Cobertura deveria ter produzido XML');
 
         // 3) Parse + deriva das declarações do fonte real (ALL_SOURCE)
         const { parseCobertura } = require('../../cobertura.js');
@@ -459,13 +440,18 @@ describeDB('v0.12.0 — integração com banco Oracle', () => {
         type FileLines = { file: string; lines: { line: number; hits: number }[] };
         const files = parseCobertura(coverageText) as FileLines[];
         const calc = files.find((f) => /calculator/i.test(f.file));
-        assert.ok(calc, 'cobertura deveria incluir o package calculator');
+        assert.ok(
+          calc,
+          `cobertura deveria incluir o package calculator, veio: ${
+            files.map((f) => f.file).join(', ') || '(nenhum)'
+          }`,
+        );
 
         const src = await dbc.execute(
           `SELECT text FROM all_source WHERE owner = '${user.toUpperCase()}' AND name = 'CALCULATOR' AND type = 'PACKAGE BODY' ORDER BY line`,
           {},
         );
-        const bodySource = (src.rows ?? []).map((x) => String((x as unknown[])[0])).join('');
+        const bodySource = (src.rows ?? []).map(firstCol).join('');
         assert.ok(/FUNCTION/i.test(bodySource), 'source do calculator deveria ter FUNCTIONs');
 
         type Decl = { name: string; executed: boolean; line: number };
@@ -483,6 +469,143 @@ describeDB('v0.12.0 — integração com banco Oracle', () => {
         for (const obj of created) {
           try {
             await dbc.execute(`DROP PACKAGE ${user}.${obj}`, {}, { autoCommit: true });
+          } catch {
+            /* ignore */
+          }
+        }
+        await dbc.close().catch(() => {});
+      }
+    });
+
+    // Regressão: a extensão já passou o diretório `sourcePath` como
+    // `a_file_paths` de `ut_file_mapper.build_file_mappings()`, o que zerava o
+    // relatório Cobertura. Este teste roda o pipeline real (executeRunOracle →
+    // buffer → mapDbPathsToFiles → resolveSourceUri) e exige que o arquivo-fonte
+    // local receba cobertura.
+    it('executeRunOracle com coverage mapeia objetos PL/SQL para arquivo local', async function () {
+      this.timeout(180_000);
+      const conn = process.env.UTPLSQL_CONN as string;
+      const parsed = conn.match(/^([^/]+)\/([^@]+)@\/\/(.+)$/);
+      assert.ok(parsed, 'UTPLSQL_CONN deve ser user/pass@//host:port/svc');
+      const [, dbUser, dbPass, dbHost] = parsed;
+      const owner = dbUser.toUpperCase();
+
+      let oracledb: typeof import('oracledb');
+      try {
+        const mod = await import('oracledb');
+        oracledb =
+          ((mod as Record<string, unknown>).default as typeof import('oracledb')) ??
+          (mod as typeof import('oracledb'));
+      } catch {
+        this.skip();
+        return;
+      }
+
+      let dbc: import('oracledb').Connection;
+      try {
+        dbc = await oracledb.getConnection({
+          user: dbUser,
+          password: dbPass,
+          connectString: dbHost,
+        });
+      } catch {
+        this.skip();
+        return;
+      }
+
+      const { executeRunOracle, closeOraclePool } = require('../../oracleRunner.js');
+
+      // Workspace temporário com `install/packages/calculator.pkb`.
+      const tmpRoot = fs.mkdtempSync(path.join(os.tmpdir(), 'utplsql-cov-e2e-'));
+      const pkgDir = path.join(tmpRoot, 'install', 'packages');
+      fs.mkdirSync(pkgDir, { recursive: true });
+      fs.writeFileSync(
+        path.join(pkgDir, 'CALCULATOR.pkb'),
+        'create or replace package body calculator as\n' +
+          '  function add(a number, b number) return number is begin return a + b; end;\n' +
+          '  function subtract(a number, b number) return number is begin return a - b; end;\n' +
+          'end calculator;\n',
+      );
+
+      const coverages: any[] = [];
+      const run = {
+        appendOutput: () => {},
+        passed: () => {},
+        failed: () => {},
+        errored: () => {},
+        skipped: () => {},
+        addCoverage: (fc: any) => coverages.push(fc),
+      };
+      const state = {
+        getMeta: () => undefined,
+        setLastResults: () => {},
+        setLastFailedItems: () => {},
+        getLastFailedItems: () => [],
+        setCoverage: () => {},
+        getCoverage: () => [],
+        clearCoverage: () => {},
+        cachedItems: [],
+      };
+      const token = {
+        isCancellationRequested: false,
+        onCancellationRequested: () => ({ dispose: () => {} }),
+      };
+
+      try {
+        const root = vscode.workspace.workspaceFolders?.[0]?.uri.fsPath as string;
+        const script = fs.readFileSync(
+          path.join(root, 'src', 'test', 'integration', 'fixtures', 'compile_packages.sql'),
+          'utf8',
+        );
+        const cal = extractObj(
+          script,
+          'create or replace package calculator as',
+          'create or replace function greet',
+        );
+        const tcal = extractObj(
+          script,
+          'create or replace package test_calculator as',
+          'create or replace package test_betwnvarchar',
+        );
+        for (const stmt of compileScript(`${cal}\n/\n${tcal}\n/`)) {
+          await dbc.execute(stmt, {}, { autoCommit: true });
+        }
+        // Objetos recém-compilados podem não constar no cache de anotações do
+        // utPLSQL; rebuilda para que o `ut_runner.run` enxergue a suite.
+        await dbc.execute(
+          `BEGIN ut_runner.rebuild_annotation_cache(a_object_owner => :owner); END;`,
+          {
+            owner,
+          },
+        );
+
+        await executeRunOracle(
+          {
+            connection: conn,
+            pathArgs: ['test_calculator'],
+            coverage: true,
+            sourcePath: 'install',
+            root: tmpRoot,
+            run: run as never,
+            leafTests: [],
+            state: state as never,
+            folders: [{ uri: vscode.Uri.file(tmpRoot), name: 'tmp', index: 0 }],
+          },
+          token as never,
+        );
+
+        assert.ok(coverages.length > 0, 'coverage deveria ser aplicada a algum arquivo');
+        const calc = coverages.find((fc) => /calculator/i.test(fc.uri.fsPath));
+        assert.ok(
+          calc,
+          `cobertura deveria mapear calculator, veio: ${coverages.map((c) => c.uri.fsPath).join(', ') || '(nenhum)'}`,
+        );
+      } finally {
+        await closeOraclePool();
+        fs.rmSync(tmpRoot, { recursive: true, force: true });
+        for (const obj of ['TEST_CALCULATOR', 'CALCULATOR']) {
+          try {
+            await dbc.execute(`DROP PACKAGE ${owner}.${obj}`, {}, { autoCommit: true });
           } catch {
             /* ignore */
           }

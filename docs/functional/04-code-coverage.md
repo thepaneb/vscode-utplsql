@@ -90,15 +90,20 @@ pipeline de resolução:
 
 ## Mapeamento de objetos Oracle → arquivos
 
-### Configuração (`ut_file_mapper`)
+### Mecânica
 
-O utPLSQL usa `ut_file_mapper.build_file_mappings()` internamente para mapear
-objetos cobertos a arquivos. O `type_mapping` padrão inclui
-`packages=PACKAGE BODY`, `functions=FUNCTION`, `procedures=PROCEDURE`,
-`triggers=TRIGGER` e `views=VIEW`.
+Sem `a_source_file_mappings`, o `ut_coverage_cobertura_reporter` emite
+`filename="<tipo> <schema>.<objeto>"` (ex.: `filename="package body UT3.CALC"`).
+O `mapDbPathsToFiles()` converte para o layout local (`packages/CALC.sql`,
+`functions/FN.sql`, `procedures/PR.sql`, `types/TY.sql`, `triggers/TR.sql`,
+`views/VW.sql`) e o `resolveSourceUri` localiza o arquivo físico, testando
+variantes de extensão (`.sql`, `.pks`, `.pkb`, `.prc`, `.fnc`, `.trg`, `.tpb`,
+`.bdy`) — o arquivo real pode não usar `.sql`.
 
-O XML de saída contém `filename="packages/calculate.sql"` — o `resolveSourceUri`
-mapeia isso para o arquivo físico no workspace.
+> ⚠️ Passar o diretório `sourcePath` como `a_file_paths` de
+> `ut_file_mapper.build_file_mappings()` **zera o relatório**: a função espera
+> uma lista de **arquivos**, não de diretórios. Por isso a extensão não usa file
+> mappings e faz o mapeamento no lado do cliente.
 
 ### Estrutura esperada
 
@@ -106,11 +111,11 @@ mapeia isso para o arquivo físico no workspace.
 workspace/
 ├── install/                    ← sourcePath
 │   ├── functions/
-│   │   └── calculate.sql
+│   │   └── calculate.sql       (ou .fnc)
 │   ├── procedures/
-│   │   └── process.sql
+│   │   └── process.sql         (ou .prc)
 │   └── packages/
-│       └── calculator.sql
+│       └── calculator.sql      (ou .pks/.pkb)
 ```
 
 ### `-owner`

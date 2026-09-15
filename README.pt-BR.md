@@ -255,9 +255,11 @@ Todos os atalhos usam o prefixo `Ctrl+Shift+U` (`Cmd+Shift+U` no Mac):
 
 
 
-A cobertura é coletada via `ut_file_mapper.build_file_mappings()` e reportada via
-`ut_coverage_cobertura_reporter`. A extensão mapeia os objetos cobertos aos arquivos-fonte
+A cobertura é reportada via `ut_coverage_cobertura_reporter` e mapeada aos arquivos-fonte
 automaticamente usando o setting `utplsql.sourcePath` e o schema `utplsql.coverageOwner`.
+A extensão resolve objetos `package`, `package body`, `function`, `procedure`,
+`type body`, `trigger` e `view`, testando `.sql`, `.pks`, `.pkb`, `.prc`, `.fnc`,
+`.trg`, `.tpb` e `.bdy` sob as pastas de código-fonte.
 
 ## Reporters
 

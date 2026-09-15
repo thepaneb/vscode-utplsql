@@ -247,9 +247,10 @@ UTPLSQL_CONN=your_user/password@//host:1521/service
 
 
 
-カバレッジは `ut_file_mapper.build_file_mappings()` を使用して収集され、
-`ut_coverage_cobertura_reporter` を使用して報告されます。この拡張機能は、カバレッジ対象オブジェクトを
-設定 `utplsql.sourcePath` とスキーマ `utplsql.coverageOwner` を使用してソースファイルに自動的にマッピングします。
+カバレッジは `ut_coverage_cobertura_reporter` によって報告され、設定 `utplsql.sourcePath` と
+スキーマ `utplsql.coverageOwner` を使用してソースファイルに自動的にマッピングされます。この拡張機能は
+`package`、`package body`、`function`、`procedure`、`type body`、`trigger`、`view` の各オブジェクトを解決し、
+ソースフォルダー配下で `.sql`、`.pks`、`.pkb`、`.prc`、`.fnc`、`.trg`、`.tpb`、`.bdy` を試します。
 
 ## レポーター
 

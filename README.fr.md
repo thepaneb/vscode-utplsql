@@ -253,9 +253,11 @@ Tous les raccourcis utilisent le préfixe `Ctrl+Shift+U` (`Cmd+Shift+U` sur Mac)
 
 
 
-La couverture est collectée via `ut_file_mapper.build_file_mappings()` et rapportée via
-`ut_coverage_cobertura_reporter`. L'extension mappe les objets couverts vers les fichiers sources
-automatiquement en utilisant le paramètre `utplsql.sourcePath` et le schéma `utplsql.coverageOwner`.
+La couverture est rapportée via `ut_coverage_cobertura_reporter` et mappée vers les fichiers
+sources automatiquement en utilisant le paramètre `utplsql.sourcePath` et le schéma
+`utplsql.coverageOwner`. L'extension résout les objets `package`, `package body`, `function`,
+`procedure`, `type body`, `trigger` et `view`, en essayant `.sql`, `.pks`, `.pkb`, `.prc`, `.fnc`,
+`.trg`, `.tpb` et `.bdy` sous les dossiers sources.
 
 ## Reporters
 

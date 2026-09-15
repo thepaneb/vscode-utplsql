@@ -253,9 +253,11 @@ Todos los atajos usan el prefijo `Ctrl+Shift+U` (`Cmd+Shift+U` en Mac):
 
 
 
-La cobertura se recopila mediante `ut_file_mapper.build_file_mappings()` y se reporta mediante
-`ut_coverage_cobertura_reporter`. La extensión mapea los objetos cubiertos a los archivos fuente
-automáticamente usando el setting `utplsql.sourcePath` y el esquema `utplsql.coverageOwner`.
+La cobertura se reporta mediante `ut_coverage_cobertura_reporter` y se mapea a los archivos
+fuente automáticamente usando el setting `utplsql.sourcePath` y el esquema
+`utplsql.coverageOwner`. La extensión resuelve objetos `package`, `package body`, `function`,
+`procedure`, `type body`, `trigger` y `view`, probando `.sql`, `.pks`, `.pkb`, `.prc`, `.fnc`,
+`.trg`, `.tpb` y `.bdy` bajo las carpetas de código fuente.
 
 ## Reporters
 

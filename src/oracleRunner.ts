@@ -261,7 +261,14 @@ export async function listReportersOracle(conn: {
     const result = await conn.execute(
       `SELECT reporter_object_name FROM TABLE(ut_runner.get_reporters_list())`,
     );
-    return (result.rows ?? []).map((r) => String(extractScalar(r)));
+    // `get_reporters_list()` devolve o nome qualificado pelo schema
+    // (ex.: `UT3.UT_COVERAGE_COBERTURA_REPORTER`); normalizamos para o nome do
+    // objeto, que é o que os callers (check de cobertura, QuickPick de
+    // reporter) usam.
+    return (result.rows ?? []).map((r) => {
+      const name = String(extractScalar(r));
+      return name.slice(name.lastIndexOf('.') + 1);
+    });
   } catch (e) {
     logger.debug('listReportersOracle: ut_runner.get_reporters_list falhou', {
       error: String(e),
@@ -280,8 +287,9 @@ export async function checkReporterExists(
   },
   reporterName: string,
 ): Promise<boolean> {
+  const bare = (s: string) => s.slice(s.lastIndexOf('.') + 1).toUpperCase();
   const reporters = await listReportersOracle(conn);
-  return reporters.some((r) => r.toUpperCase() === reporterName.toUpperCase());
+  return reporters.some((r) => bare(r) === bare(reporterName));
 }
 
 export interface CompilationError {
@@ -474,22 +482,20 @@ export async function executeRunOracle(
 
     const owner = (coverageOwner ?? '').trim() || parseConnString(connection).user.toUpperCase();
 
+    // Sem `a_source_file_mappings`: o reporter Cobertura então usa
+    // `filename="<tipo> <schema>.<objeto>"`, que `mapDbPathsToFiles` converte
+    // para caminhos locais (`packages/OBJ.sql`, etc.). Passar o diretório
+    // `sourcePath` como `a_file_paths` (diretório, não arquivos) zerava a
+    // cobertura — ver PRD-64 e testes de `mapDbPathsToFiles`.
     let coverageSchemes = 'null';
-    let fileMappings = 'null';
     if (coverageEnabled) {
       coverageSchemes = `ut_varchar2_list('${owner.replace(/'/g, "''")}')`;
-      const fileList = `'${sourcePath.replace(/'/g, "''")}'`;
-      fileMappings = `ut_file_mapper.build_file_mappings(
-        a_object_owner => '${owner.replace(/'/g, "''")}',
-        a_file_paths => ut_varchar2_list(${fileList})
-      )`;
     }
 
     const plsql = `BEGIN ut_runner.run(
       a_paths => ut_varchar2_list(${pathsList}),
       a_reporters => ut_reporters(${runners.join(',')}),
-      a_coverage_schemes => ${coverageSchemes},
-      a_source_file_mappings => ${fileMappings}
+      a_coverage_schemes => ${coverageSchemes}
     ); END;`;
 
     if (dbmsOutput) {
@@ -635,11 +641,22 @@ export async function executeRunOracle(
   }
 }
 
+const COVERAGE_DIRS: Record<string, string> = {
+  function: 'functions',
+  procedure: 'procedures',
+  'package body': 'packages',
+  package: 'packages',
+  'type body': 'types',
+  type: 'types',
+  view: 'views',
+  trigger: 'triggers',
+};
+
 export function mapDbPathsToFiles(covXml: string): string {
   return covXml.replace(
-    /filename="(function|procedure|package body|package|view|trigger)\s+\w+\.(\w+)"/g,
+    /filename="(function|procedure|package body|package|type body|type|view|trigger)\s+[\w$#]+\.([\w$#]+)"/g,
     (_match, type: string, name: string) => {
-      const dir = type === 'package body' ? 'packages' : `${type}s`;
+      const dir = COVERAGE_DIRS[type] ?? `${type}s`;
       return `filename="${dir}/${name}.sql"`;
     },
   );

@@ -1,6 +1,7 @@
 /// <reference types="mocha" />
 import * as assert from 'node:assert';
 import * as vscode from 'vscode';
+import { installOutFormatIsolation } from './helpers';
 
 const COMMANDS = [
   'utplsql.runAll',
@@ -81,6 +82,8 @@ describe('utPLSQL extension', () => {
   });
 
   describeDB('integração com banco Oracle', () => {
+    installOutFormatIsolation();
+
     it('utplsql.runAll executa todos os testes', async function () {
       this.timeout(120_000);
       await vscode.commands.executeCommand('utplsql.runAll');

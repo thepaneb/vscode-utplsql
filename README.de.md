@@ -253,9 +253,11 @@ Alle Kürzel verwenden das Präfix `Ctrl+Shift+U` (`Cmd+Shift+U` unter Mac):
 
 
 
-Die Coverage wird über `ut_file_mapper.build_file_mappings()` gesammelt und über
-`ut_coverage_cobertura_reporter` gemeldet. Die Erweiterung ordnet abgedeckte Objekte Quelldateien
-automatisch über die Einstellung `utplsql.sourcePath` und das Schema `utplsql.coverageOwner` zu.
+Die Coverage wird über `ut_coverage_cobertura_reporter` gemeldet. Die Erweiterung ordnet
+abgedeckte Objekte automatisch Quelldateien zu — über die Einstellung `utplsql.sourcePath`
+und das Schema `utplsql.coverageOwner`. Sie löst Objekte `package`, `package body`, `function`,
+`procedure`, `type body`, `trigger` und `view` auf und probiert `.sql`, `.pks`, `.pkb`, `.prc`,
+`.fnc`, `.trg`, `.tpb` und `.bdy` unter den Quellordnern aus.
 
 ## Reporter
 

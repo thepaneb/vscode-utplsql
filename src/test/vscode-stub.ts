@@ -165,6 +165,30 @@ export namespace commands {
   ): void {
     _executeCommandImpl = fn;
   }
+
+  const _registeredCommands: Record<string, (...args: unknown[]) => unknown> = {};
+
+  export function registerCommand(
+    command: string,
+    callback: (...args: unknown[]) => unknown,
+  ): { dispose: () => void } {
+    _registeredCommands[command] = callback;
+    return {
+      dispose: () => {
+        delete _registeredCommands[command];
+      },
+    };
+  }
+
+  export function __getRegisteredCommand(
+    command: string,
+  ): ((...args: unknown[]) => unknown) | undefined {
+    return _registeredCommands[command];
+  }
+
+  export function __resetRegisteredCommands(): void {
+    for (const key of Object.keys(_registeredCommands)) delete _registeredCommands[key];
+  }
 }
 
 export namespace env {

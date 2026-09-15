@@ -1,5 +1,22 @@
 # Changelog
 
+## Unreleased
+
+- **Cobertura PL/SQL**: corrige os gutters ausentes em `package`/`package body`,
+  `function`, `procedure`, `type body` e `trigger` (só views apareciam, via
+  `V$SQL`). A execução passava o diretório `utplsql.sourcePath` como
+  `a_file_paths` de `ut_file_mapper.build_file_mappings()`, que espera uma lista
+  de **arquivos** — o relatório Cobertura saía vazio (0 classes). O mapeamento
+  agora é feito no cliente (`mapDbPathsToFiles` + `resolveSourceUri`), com
+  fallback de extensão (`.sql`, `.pks`, `.pkb`, `.prc`, `.fnc`, `.trg`, `.tpb`,
+  `.bdy`) na resolução do arquivo-fonte.
+- **Validação de reporter**: `ut_runner.get_reporters_list()` devolve o nome
+  qualificado pelo schema (`UT3.UT_COVERAGE_COBERTURA_REPORTER`). A extensão
+  agora remove esse prefixo antes de comparar — sem isso a cobertura era
+  desabilitada com o aviso "UT_COVERAGE_COBERTURA_REPORTER not available" mesmo
+  com o reporter instalado, e o QuickPick de reporter adicional recebia nomes
+  qualificados e os descartava.
+
 ## 0.12.0
 
 - **Correções de execução e cobertura**: `DBMS_OUTPUT` dos testes agora é

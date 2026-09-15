@@ -1,6 +1,7 @@
 /// <reference types="mocha" />
 import * as assert from 'node:assert';
 import * as vscode from 'vscode';
+import { installOutFormatIsolation } from './helpers';
 
 // Caminhos que dependem do banco e não são cobertos por testes unitários:
 //   - dbSourceProvider.fetchDbSource (ALL_SOURCE real) + cache do provider
@@ -85,6 +86,8 @@ const DB_ONLY_PKG = 'UTPLSQL_DBONLY_IT62';
 const OUT_PKG = 'UTPLSQL_OUT_IT62';
 
 describeDB('caminhos só-DB (provider, setup, merge de schema, DBMS_OUTPUT)', () => {
+  installOutFormatIsolation();
+
   before(async () => {
     const ext = vscode.extensions.getExtension('paneb.vscode-utplsql');
     await ext?.activate();

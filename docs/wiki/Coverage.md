@@ -14,12 +14,10 @@ directly in the editor and in the Coverage tab.
 ## How It Works
 
 Execution is performed directly on Oracle via `node-oracledb` — no external CLI.
-The `ut_coverage_cobertura_reporter` reporter generates the XML inside the database.
-The mapping of covered objects to source files is resolved by the
-`ut_file_mapper.build_file_mappings()` function in Oracle itself, which returns the
-path of each covered object. The extension reads the Coverage XML and uses these
-mappings (with fallback to `resolveSourceUri`) to associate each object
-to a source file in the workspace.
+The `ut_coverage_cobertura_reporter` reporter generates the XML inside the database,
+identifying each covered object as `<type> <schema>.<object>`
+(e.g. `package body UT3.CALC`). The extension maps those names to local source files
+using the `utplsql.sourcePath` setting and the `utplsql.coverageOwner` schema.
 
 ## Declaration Coverage (Function Coverage)
 
@@ -34,10 +32,13 @@ to the Test Coverage API:
 
 ## Coverage-to-File Mapping
 
-Coverage-to-source-file mapping is handled internally by Oracle
-via `ut_file_mapper.build_file_mappings()`. The function returns the absolute
-path of each covered object, which the extension maps to the local workspace
-using `resolveSourceUri` (absolute → workspace → sourcePath).
+The extension maps the Cobertura `filename` (e.g. `package body UT3.CALC`) to the
+local layout (`packages/CALC.sql`, `functions/FN.sql`, `procedures/PR.sql`,
+`types/TY.sql`, `triggers/TR.sql`, `views/VW.sql`) and resolves it with
+`resolveSourceUri` (absolute → workspace → `sourcePath`), trying the `.sql`, `.pks`,
+`.pkb`, `.prc`, `.fnc`, `.trg`, `.tpb` and `.bdy` extensions. It does **not** rely on
+`ut_file_mapper.build_file_mappings()` (which expects a list of **files**, not the
+`sourcePath` folder).
 
 ## Important Notes
 
@@ -50,18 +51,15 @@ using `resolveSourceUri` (absolute → workspace → sourcePath).
 ## View Coverage (SQL Objects)
 
 `DBMS_PROFILER`/`DBMS_PLSQL_CODE_COVERAGE` only instruments PL/SQL — views have
-no lines to profile. Options:
+no lines to profile and are not part of the Cobertura report. Options:
 
-1. **`type_mapping` with `views=VIEW`** (default): views in the covered schema
-   appear in the report with **0 hits** (file listed, not executed).
-   Expected structure: `sourcePath/views/<name>.sql`.
-2. **Tracking via `V$SQL`** (`utplsql.sqlCoverageEnabled: true`): after the run the
+1. **Tracking via `V$SQL`** (`utplsql.sqlCoverageEnabled: true`): after the run the
    extension queries `V$SQL` and marks each view as **executed** (100%, green) or
    **not executed** (0%, red). The file receives a gutter **per line**
    (all green or all red — boolean coverage, no real per-line hits
    in SQL). Requires `GRANT SELECT ON V$SQL`.
    Best-effort: access failure/timeout does not break execution.
-3. **Manual instrumentation**: for line-by-line granularity, convert the
+2. **Manual instrumentation**: for line-by-line granularity, convert the
    query into a **package function** that returns the view/cursor — the body enters
    normal PL/SQL coverage.
 

@@ -253,9 +253,11 @@ Tutte le scorciatoie usano il prefisso `Ctrl+Shift+U` (`Cmd+Shift+U` su Mac):
 
 
 
-La copertura viene raccolta tramite `ut_file_mapper.build_file_mappings()` e reportata tramite
-`ut_coverage_cobertura_reporter`. L'estensione mappa gli oggetti coperti ai file sorgente
-automaticamente usando l'impostazione `utplsql.sourcePath` e lo schema `utplsql.coverageOwner`.
+La copertura viene reportata tramite `ut_coverage_cobertura_reporter` e mappata ai file
+sorgente automaticamente usando l'impostazione `utplsql.sourcePath` e lo schema
+`utplsql.coverageOwner`. L'estensione risolve gli oggetti `package`, `package body`, `function`,
+`procedure`, `type body`, `trigger` e `view`, provando `.sql`, `.pks`, `.pkb`, `.prc`, `.fnc`,
+`.trg`, `.tpb` e `.bdy` nelle cartelle sorgente.
 
 ## Reporter
 

@@ -14,6 +14,18 @@
       "problemMatcher": "$tsc-watch",
       "isBackground": true,
       "label": "npm: watch"
+    },
+    {
+      "type": "npm",
+      "script": "bundle",
+      "problemMatcher": [],
+      "label": "npm: bundle"
+    },
+    {
+      "label": "extension: build",
+      "dependsOrder": "sequence",
+      "dependsOn": ["npm: compile", "npm: bundle"],
+      "problemMatcher": []
     }
   ]
 }

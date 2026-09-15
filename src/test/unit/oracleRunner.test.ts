@@ -580,13 +580,23 @@ test('discoverUtplsqlSchema: erro de acesso retorna vazio', async () => {
 // ── mapDbPathsToFiles ────────────────────────────────────────────────
 
 test('mapDbPathsToFiles: mapeia tipo para pasta', () => {
-  const xml = `<coverage><filename="package body APP.CALC" /><filename="function APP.FN1" /><filename="procedure APP.PR1" /><filename="trigger APP.TR1" /><filename="view APP.VW1" /></coverage>`;
+  const xml = `<coverage><filename="package body APP.CALC" /><filename="package APP.CALC" /><filename="function APP.FN1" /><filename="procedure APP.PR1" /><filename="trigger APP.TR1" /><filename="type body APP.TY1" /><filename="view APP.VW1" /></coverage>`;
   const mapped = mapDbPathsToFiles(xml);
   assert.ok(mapped.includes('filename="packages/CALC.sql"'));
   assert.ok(mapped.includes('filename="functions/FN1.sql"'));
   assert.ok(mapped.includes('filename="procedures/PR1.sql"'));
   assert.ok(mapped.includes('filename="triggers/TR1.sql"'));
+  assert.ok(mapped.includes('filename="types/TY1.sql"'));
   assert.ok(mapped.includes('filename="views/VW1.sql"'));
+});
+
+test('mapDbPathsToFiles: formato real lower-case do reporter (tipo schema.objeto)', () => {
+  const xml =
+    '<class filename="function ut3.calcular_desconto" /><class filename="procedure ut3.reajustar_salario" /><class filename="package body ut3.pkg$#1" />';
+  const mapped = mapDbPathsToFiles(xml);
+  assert.ok(mapped.includes('filename="functions/calcular_desconto.sql"'));
+  assert.ok(mapped.includes('filename="procedures/reajustar_salario.sql"'));
+  assert.ok(mapped.includes('filename="packages/pkg$#1.sql"'));
 });
 
 test('mapDbPathsToFiles: xml sem filename permanece inalterado', () => {
@@ -612,12 +622,14 @@ function makeOracleRunFake(opts: {
   runThrows?: boolean;
   reporters?: string[];
 }) {
+  const captured: { runSql?: string } = {};
   const conn1 = {
     callTimeout: 0,
     execute: async (sql: string) => {
       if (/ALL_SYNONYMS/.test(sql)) return { rows: [{ TABLE_OWNER: 'UT3' }] };
       if (/DELETE FROM/.test(sql)) return {};
       if (/ut_runner\.run/.test(sql)) {
+        captured.runSql = sql;
         if (opts.runThrows) throw new Error('ORA-04068: existing state');
         await sleep(opts.runMs ?? 350);
         return {};
@@ -663,7 +675,7 @@ function makeOracleRunFake(opts: {
       throw new Error('raw indisponivel');
     },
   };
-  return { mod, conn1, conn2 };
+  return { mod, conn1, conn2, captured };
 }
 
 function makeOracleRunState(metaMap: Map<any, ItemMeta>) {
@@ -906,6 +918,39 @@ test('executeRunOracle: cobertura com COV_XML aplica cobertura', async () => {
   const out = run.output.join('\n');
   assert.match(out, /Oracle runner/);
   assert.strictEqual(run.passedList.length, 1);
+});
+
+test('executeRunOracle: cobertura não envia a_source_file_mappings (senão zera o relatório)', async () => {
+  const { mod, captured } = makeOracleRunFake({
+    buffer: [JUNIT_XML, COV_XML],
+    reporters: ['UT_DOCUMENTATION_REPORTER', 'UT_COVERAGE_COBERTURA_REPORTER'],
+  });
+  const run = makeRun() as any;
+  const { item, metaMap } = makeLeaf();
+  try {
+    await executeRunOracle(
+      {
+        connection: 'u/p@//h:1521/s',
+        pathArgs: ['pkg'],
+        coverage: true,
+        sourcePath: 'install',
+        root: '/root',
+        run,
+        leafTests: [item as any],
+        state: makeOracleRunState(metaMap),
+      },
+      neverCancel as never,
+      async () => mod as never,
+    );
+  } finally {
+    await closeOraclePool();
+  }
+  assert.ok(captured.runSql, 'deveria capturar o SQL do ut_runner.run');
+  assert.ok(
+    !captured.runSql?.includes('a_source_file_mappings'),
+    `não deveria enviar source file mappings: ${captured.runSql}`,
+  );
+  assert.ok(captured.runSql?.includes('a_coverage_schemes'), 'deveria enviar a_coverage_schemes');
 });
 
 test('executeRunOracle: erro do ut_runner.run propaga (fallback CLI no runner.ts)', async () => {
@@ -1230,6 +1275,23 @@ test('checkReporterExists: compara sem case', async () => {
   const conn = infoConn(() => ({ rows: [['ut_junit_reporter']] }));
   assert.strictEqual(await checkReporterExists(conn, 'UT_JUNIT_REPORTER'), true);
   assert.strictEqual(await checkReporterExists(conn, 'UT_XYZ'), false);
+});
+
+test('listReportersOracle: remove o prefixo de schema do nome', async () => {
+  const conn = infoConn(() => ({
+    rows: [['UT3.UT_COVERAGE_COBERTURA_REPORTER'], ['UT3.UT_JUNIT_REPORTER']],
+  }));
+  assert.deepStrictEqual(await listReportersOracle(conn), [
+    'UT_COVERAGE_COBERTURA_REPORTER',
+    'UT_JUNIT_REPORTER',
+  ]);
+});
+
+test('checkReporterExists: aceita nome qualificado e não qualificado', async () => {
+  const conn = infoConn(() => ({ rows: [['UT3.UT_COVERAGE_COBERTURA_REPORTER']] }));
+  assert.strictEqual(await checkReporterExists(conn, 'UT_COVERAGE_COBERTURA_REPORTER'), true);
+  assert.strictEqual(await checkReporterExists(conn, 'UT3.UT_COVERAGE_COBERTURA_REPORTER'), true);
+  assert.strictEqual(await checkReporterExists(conn, 'UT_DOCUMENTATION_REPORTER'), false);
 });
 
 // ── checkCompilationErrors ───────────────────────────────────────────
