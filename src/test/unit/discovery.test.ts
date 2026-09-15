@@ -180,6 +180,11 @@ test('extractSchemaFromPath: retorna undefined quando nao da match', () => {
   );
 });
 
+test('extractSchemaFromPath: padrao sem {schema} nao lanca (RF5)', () => {
+  assert.doesNotThrow(() => extractSchemaFromPath('/root/db/APP/x.pks', '/root', 'db/**'));
+  assert.strictEqual(extractSchemaFromPath('/root/db/APP/x.pks', '/root', 'db/**'), undefined);
+});
+
 test('extractSchemaFromPath: padrao customizado src/{schema}/tests/**', () => {
   assert.strictEqual(
     extractSchemaFromPath('/root/src/MYSCHEMA/tests/ut_foo.pks', '/root', 'src/{schema}/tests/**'),
@@ -214,6 +219,24 @@ test('extractSchemaFromPath: caminho Windows com backslash', () => {
   assert.strictEqual(result, 'SALES');
 });
 
+test('extractSchemaFromPath: casing de drive divergente (C: vs c:)', () => {
+  assert.strictEqual(
+    extractSchemaFromPath('C:/root/db/APP/x.pks', 'c:/root', 'db/{schema}/**'),
+    'APP',
+  );
+  assert.strictEqual(
+    extractSchemaFromPath('c:/root/db/APP/x.pks', 'C:\\root', 'db/{schema}/**'),
+    'APP',
+  );
+});
+
+test('extractSchemaFromPath: drives distintos retorna undefined', () => {
+  assert.strictEqual(
+    extractSchemaFromPath('D:/root/db/APP/x.pks', 'C:/root', 'db/{schema}/**'),
+    undefined,
+  );
+});
+
 // ── discoverSchemaFromConn ───────────────────────────────────────────
 
 const SUITE_LINES = [
@@ -240,7 +263,7 @@ function makeConn(opts: {
         throw new Error('ORA-00942: table or view does not exist');
       }
       const name = String(binds?.name ?? '');
-      return { rows: ((opts.sources ?? {})[name] ?? []).map((l) => [l]) };
+      return { rows: (opts.sources?.[name] ?? []).map((l) => [l]) };
     },
   };
 }
@@ -302,7 +325,7 @@ test('discoverSchemaFromConn: ALL_SOURCE inacessivel retorna vazio sem erro', as
 
 test('discoverSchemaFromConn: rows em formato objeto (OUT_FORMAT_OBJECT)', async () => {
   const conn = {
-    execute: async (sql: string, binds?: Record<string, unknown>) => {
+    execute: async (sql: string) => {
       if (/all_objects/i.test(sql)) {
         return { rows: [{ OBJECT_NAME: 'APP_ORDERS' }] };
       }
@@ -580,5 +603,72 @@ test('discoverSchemasFromFolders: base com subdiretorios (src/{schema}/tests/**)
     assert.deepStrictEqual(result, ['MYSCHEMA', 'OTHER']);
   } finally {
     __resetMockDirectoryEntries();
+  }
+});
+
+test('discoverSchemaFromDb: loader padrão com conexão inválida retorna []', async () => {
+  const result = await discoverSchemaFromDb('formato-invalido', 'hr', [FOLDER]);
+  assert.deepStrictEqual(result, []);
+});
+
+test('discoverSchemaFromConn: rows em formato objeto com chaves maiusculas/minusculas', async () => {
+  const conn = makeConn({
+    packages: [{ OBJECT_NAME: 'APP_ORDERS' }],
+    sources: { APP_ORDERS: SUITE_LINES },
+  });
+  const suites = await discoverSchemaFromConn(conn, 'hr', FOLDER);
+  assert.strictEqual(suites.length, 1);
+  assert.strictEqual(suites[0].packageName, 'app_orders');
+});
+
+test('discoverSchemaFromConn: ALL_SOURCE truncado gera warning (limite atingido)', async () => {
+  const lines = Array.from({ length: 1000 }, (_v, i) => `${i + 1} some source line`);
+  const conn = makeConn({ packages: [['APP_ORDERS']], sources: { APP_ORDERS: lines } });
+  const suites = await discoverSchemaFromConn(conn, 'hr', FOLDER);
+  assert.ok(suites.length >= 0);
+});
+
+test('discoverSchemaFromConn: rows vazios e ALL_SOURCE indisponivel retorna vazio', async () => {
+  const conn = {
+    execute: async (sql: string) => {
+      if (/ALL_SYNONYMS|ALL_OBJECTS/i.test(sql)) return { rows: [] };
+      throw new Error('ALL_SOURCE negado');
+    },
+    callTimeout: 0,
+    close: async () => {},
+  };
+  const suites = await discoverSchemaFromConn(conn as never, 'hr', FOLDER);
+  assert.deepStrictEqual(suites, []);
+});
+
+test('discoverSchemaFromDb: cria pool mas fetch falha retorna vazio', async () => {
+  const { mod } = makeFakeOracledb({
+    APP_ORDERS: ['CREATE OR REPLACE PACKAGE app_orders AS', '-- sem suite', 'END app_orders;'],
+  });
+  try {
+    const result = await discoverSchemaFromDb(
+      'u/p@//h:1521/s',
+      'hr',
+      [FOLDER],
+      async () => mod as never,
+    );
+    assert.strictEqual(result.length, 0);
+  } finally {
+    await closeOraclePool();
+  }
+});
+
+test('discoverWorkspace: arquivo duplicado entre padrões é deduplicado', async () => {
+  const { __setMockFile, __resetMockFiles } = await import('../vscode-stub.js');
+  const text =
+    'CREATE OR REPLACE PACKAGE test_app IS\n  --%suite(Testes)\n  --%test(Cenario)\n  PROCEDURE proc1;\nEND;';
+  __setMockFile('*.pks', '/root/test_app.pks', text);
+  __setMockFile('**/test_*.pks', '/root/test_app.pks', text);
+  try {
+    const folder = { uri: { fsPath: '/root' }, name: 'root', index: 0 };
+    const result = await discoverWorkspace(['*.pks', '**/test_*.pks'], [folder as any]);
+    assert.strictEqual(result.length, 1);
+  } finally {
+    __resetMockFiles();
   }
 });

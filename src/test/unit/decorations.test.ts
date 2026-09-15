@@ -5,11 +5,23 @@ import * as vscode from 'vscode';
 import { DecorationManager } from '../../decorations';
 import { __setConfigValue, __setVisibleEditors } from '../../test/vscode-stub';
 
+/** Resolver plano (id → item) a partir de uma árvore de controller fake. */
+function flatResolver(controller: any) {
+  const map = new Map<string, any>();
+  const walk = (item: any) => {
+    if (!item?.id) return;
+    map.set(item.id, item);
+    for (const [, child] of item.children ?? []) walk(child);
+  };
+  for (const [, i] of controller.items ?? []) walk(i);
+  return (id: string) => map.get(id);
+}
+
 test('DecorationManager: update com results vazio nao quebra', () => {
   __setConfigValue('decorations.enabled', true);
   const mgr = new DecorationManager();
   assert.doesNotThrow(() => {
-    mgr.update(new Map(), { items: new Map() } as any);
+    mgr.update(new Map(), flatResolver({ items: new Map() }));
   });
   assert.strictEqual(mgr.hasResults(), false);
 });
@@ -38,7 +50,7 @@ test('DecorationManager: update com TestItem populado armazena resultados', () =
     items: new Map([['suite:test_math', suiteItem]]),
   };
   const resultMap = new Map([['test:test_math.add', { status: 'passed' }]]);
-  mgr.update(resultMap, controller as any);
+  mgr.update(resultMap, flatResolver(controller));
   assert.strictEqual(mgr.hasResults(), true);
 });
 
@@ -58,7 +70,7 @@ test('DecorationManager: clear limpa os resultados', () => {
       ],
     ]),
   };
-  mgr.update(new Map([['suite:x', { status: 'failed' }]]), controller as any);
+  mgr.update(new Map([['suite:x', { status: 'failed' }]]), flatResolver(controller));
   assert.strictEqual(mgr.hasResults(), true);
   mgr.clear();
   assert.strictEqual(mgr.hasResults(), false);
@@ -104,7 +116,7 @@ test('DecorationManager: applyToVisibleEditors com editor visivel', () => {
     ]),
   };
 
-  mgr.update(new Map([['test:test_math.add', { status: 'passed' }]]), controller as any);
+  mgr.update(new Map([['test:test_math.add', { status: 'passed' }]]), flatResolver(controller));
   assert.strictEqual(mgr.hasResults(), true);
   assert.ok(decoratedCalls.length > 0, 'setDecorations deveria ter sido chamado');
 
@@ -188,9 +200,82 @@ test('DecorationManager: desabilitado via config nao aplica', () => {
       ],
     ]),
   };
-  mgr.update(new Map([['suite:x', { status: 'failed' }]]), controller as any);
+  mgr.update(new Map([['suite:x', { status: 'failed' }]]), flatResolver(controller));
   assert.strictEqual(mgr.hasResults(), false);
   assert.strictEqual(decoratedCalls.length, 0);
 
   __setVisibleEditors([]);
+});
+
+test('DecorationManager: item sem range e ignorado', () => {
+  __setConfigValue('decorations.enabled', true);
+  const mgr = new DecorationManager();
+  const itemNoRange: any = {
+    id: 'test:no.range',
+    label: 'nr',
+    uri: vscode.Uri.file('/x.pks'),
+    children: new Map(),
+  };
+  const itemNoUri: any = {
+    id: 'test:no.uri',
+    label: 'nu',
+    range: new vscode.Range(1, 0, 1, 0),
+    children: new Map(),
+  };
+  const controller = {
+    items: new Map([
+      ['test:no.range', itemNoRange],
+      ['test:no.uri', itemNoUri],
+    ]),
+  };
+  const resultMap = new Map([
+    ['test:no.range', { status: 'failed' }],
+    ['test:no.uri', { status: 'failed' }],
+  ]);
+  mgr.update(resultMap, flatResolver(controller));
+  assert.strictEqual(mgr.hasResults(), false);
+});
+
+test('DecorationManager: resultado para item inexistente é ignorado', () => {
+  __setConfigValue('decorations.enabled', true);
+  const mgr = new DecorationManager();
+  const controller = { items: new Map() };
+  const resultMap = new Map([['test:fantasma', { status: 'failed' }]]);
+  mgr.update(resultMap, flatResolver(controller));
+  assert.strictEqual(mgr.hasResults(), false);
+});
+
+test('DecorationManager: item aninhado (recursão) recebe resultado', () => {
+  __setConfigValue('decorations.enabled', true);
+  const mgr = new DecorationManager();
+  const uri = vscode.Uri.file('/test/math.pks');
+  const leaf: any = {
+    id: 'test:math.deep',
+    label: 'deep',
+    uri,
+    range: new vscode.Range(5, 0, 5, 0),
+    children: new Map(),
+  };
+  const top: any = {
+    id: 'suite:math',
+    label: 'math',
+    children: new Map([['test:math.deep', leaf]]),
+  };
+  const controller = { items: new Map([['suite:math', top]]) };
+  const resultMap = new Map([['test:math.deep', { status: 'passed' }]]);
+  mgr.update(resultMap, flatResolver(controller));
+  assert.strictEqual(mgr.hasResults(), true);
+});
+
+test('DecorationManager: resolve test em árvore schema (4 níveis)', () => {
+  __setConfigValue('decorations.enabled', true);
+  const mgr = new DecorationManager();
+  const uri = vscode.Uri.file('/db/APP/pkg.pks');
+  const testItem: any = { id: 'test:app.t1', uri, range: new vscode.Range(9, 0, 9, 0) };
+  const suiteItem: any = { id: 'suite:app', children: new Map([['test:app.t1', testItem]]) };
+  const pkgItem: any = { id: 'package:APP:app', children: new Map([['suite:app', suiteItem]]) };
+  const schemaItem: any = { id: 'schema:APP', children: new Map([['package:APP:app', pkgItem]]) };
+  const controller = { items: new Map([['schema:APP', schemaItem]]) };
+  mgr.update(new Map([['test:app.t1', { status: 'passed' }]]), flatResolver(controller));
+  assert.strictEqual(mgr.hasResults(), true);
 });

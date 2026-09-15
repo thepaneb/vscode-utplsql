@@ -1,46 +1,57 @@
-# Reporters customizados
+# Custom Reporters
 
-A extensão inclui três reporters padrão em toda execução:
+The extension registers reporters per run. Two are always present; coverage is
+added only when running **with coverage**:
 
-| Reporter | Saída | Função |
+| Reporter | Output | Purpose |
 |---|---|---|
-| `ut_documentation_reporter` | stdout | Log no terminal de testes |
-| `ut_junit_reporter` | `results.xml` | Resultados → Test Explorer |
-| `ut_coverage_cobertura_reporter` | `coverage.xml` | Cobertura → gutters + aba Coverage |
+| `ut_documentation_reporter` | `UT_OUTPUT_BUFFER_TMP` (in-database, streamed) | Test output in the run log |
+| `ut_junit_reporter` | `UT_OUTPUT_BUFFER_TMP` (in-database, streamed) | Results → Test Explorer |
+| `ut_coverage_cobertura_reporter` | `UT_OUTPUT_BUFFER_TMP` (in-database, streamed) | Coverage → gutters + Coverage tab (only with coverage) |
 
-## Validação dinâmica de cobertura
+All reporters write to the same in-database buffer table
+(`UT_OUTPUT_BUFFER_TMP`); there are no `results.xml`/`coverage.xml` files. The
+extension polls the buffer and streams the output in real time.
 
-Antes de rodar com cobertura, a extensão consulta o banco via
-`utplsql reporters <conn>`. Se `UT_COVERAGE_COBERTURA_REPORTER` não existir
-(ex.: utPLSQL desatualizado), a cobertura é **pulada com aviso** no output.
-A execução dos testes nunca é bloqueada.
+## Dynamic Coverage Validation
 
-## Reporters adicionais fixos
+Before running with coverage, the extension queries the database via
+`TABLE(ut_runner.get_reporters_list())` — scoped to the discovered utPLSQL schema
+prefix. If `UT_COVERAGE_COBERTURA_REPORTER` does not exist (e.g., outdated
+utPLSQL), coverage is **skipped with a warning** in the output. Test execution is
+never blocked.
 
-Setting `utplsql.additionalReporters` — incluídos em toda execução:
+## Fixed Additional Reporters
+
+Setting `utplsql.additionalReporters` — included in every run:
 
 ```jsonc
 "utplsql.additionalReporters": ["UT_COVERAGE_HTML_REPORTER"]
 ```
 
-Os três reporters padrão são deduplicados automaticamente — não precisa
-removê-los da lista.
+The default reporters are automatically deduplicated — you don't need
+to remove them from the list.
 
-## Reporter volátil por sessão
+## Volatile Session Reporter
 
-Comando da palette **utPLSQL: Selecionar reporter adicional...**:
+Palette command **utPLSQL: Select Additional Reporter...**:
 
-1. Abre um QuickPick com a lista dinâmica de reporters disponíveis no banco
-2. O reporter escolhido é usado na **execução seguinte**
-3. Descartado após (não persiste nas settings)
+1. Opens a QuickPick with the dynamic list of reporters available in the database
+2. The chosen reporter is stored in the session state
+3. **The selection is not applied** in the current Oracle-only version
+   (`consumeExtraReporter()` is never called)
 
-![QuickPick com lista de reporters disponíveis](images/quickpick-reporters.png)
+To actually include an extra reporter, use the fixed `utplsql.additionalReporters`
+setting.
 
-Use para testar um custom reporter sem poluir as settings do workspace.
+![QuickPick with available reporters list](images/quickpick-reporters.png)
 
-## Criando um custom reporter
+The QuickPick lists the reporters reported by the database; the current version
+does not apply the selection.
 
-Exemplo mínimo de reporter PL/SQL que loga em uma tabela:
+## Creating a Custom Reporter
+
+Minimal example of a PL/SQL reporter that logs to a table:
 
 ```sql
 create table test_report_log (
@@ -90,12 +101,12 @@ end;
 /
 ```
 
-Para usar, adicione ao `additionalReporters`:
+To use it, add it to `additionalReporters`:
 
 ```jsonc
 "utplsql.additionalReporters": ["CUSTOM_REPORTER"]
 ```
 
-> Reporters customizados recebem chamadas de callback do framework utPLSQL
-> durante a execução. Para detalhes da API, veja a
-> [documentação do utPLSQL](https://github.com/utPLSQL/utPLSQL).
+> Custom reporters receive callback calls from the utPLSQL framework
+> during execution. For API details, see the
+> [utPLSQL documentation](https://github.com/utPLSQL/utPLSQL).

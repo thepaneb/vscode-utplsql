@@ -18,10 +18,6 @@ function makeMeta(over: Partial<ItemMeta>): ItemMeta {
 }
 
 function makeRun() {
-  const passed: any[] = [];
-  const failed: any[] = [];
-  const skipped: any[] = [];
-  const errored: any[] = [];
   const passedList: any[] = [];
   const failedList: any[] = [];
   const skippedList: any[] = [];
@@ -254,6 +250,69 @@ test('applyCoverageFromXml: mapeia arquivo quando folders resolve', async () => 
   }
 });
 
+test('applyCoverageFromXml: emite DeclarationCoverage derivado do fonte', async () => {
+  const fs = await import('node:fs');
+  const os = await import('node:os');
+  const path = await import('node:path');
+
+  const tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), 'cov-decl-'));
+  const installDir = path.join(tmpDir, 'install', 'packages');
+  fs.mkdirSync(installDir, { recursive: true });
+  fs.writeFileSync(
+    path.join(installDir, 'app.sql'),
+    `PACKAGE BODY app IS
+  PROCEDURE calc IS
+  BEGIN
+    NULL;
+  END;
+  FUNCTION get_total RETURN NUMBER IS
+  BEGIN
+    RETURN 1;
+  END;
+END;`,
+  );
+  const xml = `<?xml version="1.0"?>
+<coverage>
+  <packages>
+    <package name="pkg">
+      <classes>
+        <class name="app" filename="packages/app.sql">
+          <lines>
+            <line number="3" hits="1"/>
+            <line number="8" hits="0"/>
+          </lines>
+        </class>
+      </classes>
+    </package>
+  </packages>
+</coverage>`;
+
+  try {
+    const run = makeRun() as any;
+    const state = makeState(new Map());
+    const setCoverageCalls: [string, unknown][] = [];
+    state.setCoverage = (k: string, v: unknown) => setCoverageCalls.push([k, v]);
+
+    const folders = [{ uri: { fsPath: tmpDir }, name: 'tmp', index: 0 }];
+    applyCoverageFromXml(xml, 'install', tmpDir, run, state, folders as any);
+
+    assert.strictEqual(run.coverageList.length, 1);
+    const details = setCoverageCalls[0][1] as unknown[];
+    const declarations = details.filter(
+      (d) => (d as any).constructor?.name === 'DeclarationCoverage',
+    );
+    assert.strictEqual(declarations.length, 2);
+    // calc (linha 2) tem hits na linha 3; get_total não → só calc executada
+    const execNames = declarations.map((d) => [(d as any).name, (d as any).executed]);
+    assert.deepStrictEqual(execNames, [
+      ['calc', true],
+      ['get_total', false],
+    ]);
+  } finally {
+    fs.rmSync(tmpDir, { recursive: true, force: true });
+  }
+});
+
 test('applyCoverageFromXml: classe sem linhas emite aviso de nao mapeado', () => {
   const xml = `<?xml version="1.0"?>
 <coverage>
@@ -271,4 +330,95 @@ test('applyCoverageFromXml: classe sem linhas emite aviso de nao mapeado', () =>
   applyCoverageFromXml(xml, 'install', '/root', run, state, []);
   const warnings = run.output.filter((s: string) => s.includes('nenhum arquivo mapeado'));
   assert.strictEqual(warnings.length, 1);
+});
+
+test('resolveStackFrameToUri: itens de teste são ignorados (continue)', () => {
+  vscode.workspace.__setWorkspaceFolders(undefined);
+  const suiteItem = { id: 'suite:app' };
+  const testItem = { id: 't1', children: [] };
+  const metaMap = new Map<any, ItemMeta>();
+  metaMap.set(testItem, makeMeta({ packageName: 'app', procName: 't1' }));
+  metaMap.set(suiteItem, makeMeta({ kind: 'suite', packageName: 'app' }));
+  const state = makeState(metaMap, [testItem as any]);
+  const loc = resolveStackFrameToUri([{ objectName: 'APP', line: 42 }], state);
+  assert.strictEqual(loc, undefined);
+});
+
+test('resolveStackFrameToUri: com workspace folders retorna Location', () => {
+  const folders = [{ uri: { fsPath: '/ws' }, name: 'ws', index: 0 }];
+  vscode.workspace.__setWorkspaceFolders(folders as any);
+  try {
+    const state = makeState(new Map(), []);
+    const loc = resolveStackFrameToUri([{ objectName: 'APP', line: 10 }], state);
+    assert.ok(loc, 'deveria resolver via workspace folder');
+    assert.strictEqual((loc as any).uri.fsPath, '/ws/app.pks');
+  } finally {
+    vscode.workspace.__setWorkspaceFolders(undefined);
+  }
+});
+
+test('applyResultsFromCases: failed sem message usa "Falhou"', () => {
+  const cases: TestCaseResult[] = [
+    { classname: 'pkg', name: 't1', status: 'failed', durationMs: 5 },
+  ];
+  const item = { id: 't1', children: [] };
+  const metaMap = new Map<any, ItemMeta>();
+  metaMap.set(item, makeMeta({ packageName: 'pkg', procName: 't1' }));
+  const run = makeRun() as any;
+  const state = makeState(metaMap);
+  applyResultsFromCases(cases, [item as any], run, state);
+  assert.strictEqual(run.failedList.length, 1);
+  assert.strictEqual(run.failedList[0].m.message, 'Falhou');
+});
+
+test('applyResultsFromCases: failed com stackFrames ganha location', () => {
+  const cases: TestCaseResult[] = [
+    {
+      classname: 'pkg',
+      name: 't1',
+      status: 'failed',
+      message: 'x',
+      stackFrames: [{ objectName: 'APP', line: 9 }],
+    },
+  ];
+  const suiteUri = { fsPath: '/ws/ut_app.pks', path: '/ws/ut_app.pks', scheme: 'file' };
+  const suiteItem = { id: 'suite:app' };
+  const item = { id: 't1', children: [] };
+  const metaMap = new Map<any, ItemMeta>();
+  metaMap.set(suiteItem, makeMeta({ kind: 'suite', packageName: 'app', uri: suiteUri as any }));
+  metaMap.set(item, makeMeta({ packageName: 'app', procName: 't1' }));
+  const run = makeRun() as any;
+  const state = makeState(metaMap, [suiteItem as any]);
+  applyResultsFromCases(cases, [item as any], run, state);
+  const msg = run.failedList[0].m as any;
+  assert.ok(msg.location, 'failed com stack deveria ter location');
+});
+
+test('resolveStackFrameToUri: item não correspondente cai para workspace folders', () => {
+  const folders = [{ uri: { fsPath: '/ws' }, name: 'ws', index: 0 }];
+  vscode.workspace.__setWorkspaceFolders(folders as any);
+  try {
+    const suiteItem = { id: 'suite:other' };
+    const metaMap = new Map<any, ItemMeta>();
+    metaMap.set(suiteItem, makeMeta({ kind: 'suite', packageName: 'other' }));
+    const state = makeState(metaMap, [suiteItem as any]);
+    const loc = resolveStackFrameToUri([{ objectName: 'APP', line: 3 }], state);
+    assert.ok(loc, 'deveria resolver via workspace folders');
+  } finally {
+    vscode.workspace.__setWorkspaceFolders(undefined);
+  }
+});
+
+test('applyResultsFromCases: error sem message usa "Erro"', () => {
+  const cases: TestCaseResult[] = [
+    { classname: 'pkg', name: 't1', status: 'error', durationMs: 5 },
+  ];
+  const item = { id: 't1', children: [] };
+  const metaMap = new Map<any, ItemMeta>();
+  metaMap.set(item, makeMeta({ packageName: 'pkg', procName: 't1' }));
+  const run = makeRun() as any;
+  const state = makeState(metaMap);
+  applyResultsFromCases(cases, [item as any], run, state);
+  assert.strictEqual(run.erroredList.length, 1);
+  assert.strictEqual(run.erroredList[0].m.message, 'Erro');
 });

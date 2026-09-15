@@ -1,136 +1,131 @@
 # Troubleshooting
 
-Problemas comuns e suas soluções.
+Common issues and their solutions.
 
-<!-- Capturas de tela de sintomas serão adicionadas conforme necessidade em cada seção -->
+<!-- Screenshots of symptoms will be added as needed in each section -->
 
-## Suites não aparecem
+## Suites not appearing
 
-**Sintoma:** A view Testing está vazia, nenhuma suite listada.
+**Symptom:** The Testing view is empty, no suites listed.
 
-**Causa provável:** `utplsql.includePatterns` não cobre seus arquivos de
-teste, ou CLI não está configurado.
+**Likely cause:** `utplsql.includePatterns` does not cover your test files.
 
-**Solução:** Ajuste o padrão glob. Exemplos:
+**Solution:** Adjust the glob pattern. Examples:
 
 ```jsonc
-// Se seus testes estão em arquivos .sql (não .pks)
+// If your tests are in .sql files (not .pks)
 "utplsql.includePatterns": ["**/*.sql"]
 
-// Se quer incluir também .pkb
+// If you want to include .pkb as well
 "utplsql.includePatterns": ["**/*.pks", "**/*.pkb"]
 ```
 
-Use `utPLSQL: Atualizar testes` (palette) para forçar rediscovery.
-Para diagnóstico automático, rode `utPLSQL: Validar configuração`.
+Use `utPLSQL: Refresh Tests` (palette) to force rediscovery.
+For automatic diagnostics, run `utPLSQL: Validate Configuration`.
 
 ---
 
-## Erros de compilação não aparecem no editor
+## Compilation errors not showing in the editor
 
-**Sintoma:** Testes falham com erro de compilação, mas o editor não mostra
-sublinhados.
+**Symptom:** Tests fail with a compilation error, but the editor does not show
+squiggly underlines.
 
-**Solução:** Verifique se `utplsql.compilationDiagnostics.enabled` está `true`
-(default). Se estiver desabilitado, reabilite:
+**Cause:** Compilation diagnostics are **not active** in the current Oracle-only
+version — `utplsql.compilationDiagnostics.enabled` exists but has **no effect**.
 
-```jsonc
-"utplsql.compilationDiagnostics.enabled": true
-```
-
-O diagnóstico funciona apenas no modo CLI (parse do stdout). O modo Oracle
-direto **não** gera compilation diagnostics.
+**Solution:** Compile or run the tests and read the error in the run output.
+There is no automatic underline in the editor yet.
 
 ---
 
-## Cobertura vazia (0%)
+## Empty coverage (0%)
 
-**Sintoma:** Testes passam, mas cobertura mostra 0% em todos os arquivos.
-Ou output mostra "relatório não gerado".
+**Symptom:** Tests pass, but coverage shows 0% across all files.
 
-**Causa 1:** Falta `GRANT EXECUTE ON DBMS_PROFILER`.
+**Cause 1:** Missing `GRANT EXECUTE ON DBMS_PROFILER`.
 
-**Solução:** Execute como DBA:
+**Solution:** Run as DBA:
 ```sql
 GRANT EXECUTE ON SYS.DBMS_PROFILER TO <schema>;
 GRANT EXECUTE ON SYS.DBMS_PLSQL_CODE_COVERAGE TO <schema>;
 ```
 
-**Causa 2:** Reporter `UT_COVERAGE_COBERTURA_REPORTER` não existe no banco
-(utPLSQL desatualizado).
+**Cause 2:** The `UT_COVERAGE_COBERTURA_REPORTER` reporter does not exist in the
+database (outdated utPLSQL).
 
-**Solução:** Atualize o utPLSQL no banco. Use `utPLSQL: Mostrar informações`
-para verificar a versão.
+**Solution:** Update utPLSQL on the database. Use `utPLSQL: Show Information`
+to verify the version.
 
-**Causa 3:** Regex em `coverageSourceArgs` não casa com os nomes dos arquivos.
+**Cause 3:** `sourcePath` points to the wrong folder, or the
+`sourcePath/<type>/<name>.sql` layout does not match the covered objects.
 
-**Solução:** Ative `utplsql.dbmsOutput: true` e inspecione o output do CLI.
-O utPLSQL loga quais objetos foram mapeados. Ajuste o regex.
+**Solution:** Adjust `utplsql.sourcePath` and the folder layout
+(`functions/`, `procedures/`, `packages/`, `views/`, ...). There is no
+per-object log: when nothing is mapped, the run output shows the generic
+message `[coverage] no file mapped`.
 
 ---
 
-## Timeout ao executar
+## Timeout during execution
 
-**Sintoma:** Execução é interrompida antes de terminar, com mensagem de
-timeout.
+**Symptom:** Execution is interrupted before completing, with a timeout message.
 
-**Causa:** Testes demoram mais que `utplsql.timeoutMinutes` (default 60 min).
+**Cause:** Tests take longer than `utplsql.timeoutMinutes` (default 60 min).
 
-**Solução:** Aumente o timeout:
+**Solution:** Increase the timeout:
 
 ```jsonc
 "utplsql.timeoutMinutes": 120
 ```
 
-> A flag `-t` só é enviada se o valor for diferente de 60 — se você
-> definir `60`, nenhuma flag é passada (usa o default do CLI).
+---
+
+## Connection error
+
+**Symptom:** "Connection failed", "ORA-12154", or "Could not resolve
+service name".
+
+**Cause:** Malformed connection string, database unreachable, or TNS not
+configured.
+
+**Solution:**
+1. Use `utPLSQL: Show Information` to validate the connection directly
+2. Check the format:
+   - EZ Connect: `user/pass@//host:port/service` (note the **double** slash)
+   - TNS: `user/pass@tns_alias` (requires `TNS_ADMIN` and `tnsnames.ora`)
+3. Test connectivity with `tnsping` or `sqlplus`
 
 ---
 
-## Erro de conexão
+## Garbled characters when running scripts (`ç`, `ã`, `€`)
 
-**Sintoma:** "Falha ao conectar", "ORA-12154", ou "Não foi possível
-resolver o nome do serviço".
+**Symptom:** accents or symbols arrive mangled in the database after
+`utPLSQL: Run script file` / `utPLSQL: Run script folder`.
 
-**Causa:** String de conexão malformada, banco inacessível, ou TNS
-não configurado.
+**Cause:** the file was decoded with the wrong encoding. The Oracle driver in
+thin mode always uses AL32UTF8 on the connection — the profile `charset` only
+controls how the **file** is read before sending.
 
-**Solução:**
-1. Use `utPLSQL: Mostrar informações` para validar a conexão diretamente
-2. Verifique o formato:
-   - EZ Connect: `user/pass@//host:port/service` (note as **duas** barras)
-   - TNS: `user/pass@tns_alias` (requer `TNS_ADMIN` e `tnsnames.ora`)
-3. Teste a conectividade com `tnsping` ou `sqlplus`
-
----
-
-## Regex de cobertura não funciona no Windows
-
-**Sintoma:** Cobertura funciona no Linux mas não no Windows (0%), ou
-mapeamento inconsistente.
-
-**Causa:** No modo `launcher`, o `cmd` do Windows consome `^` e interpreta
-`|` como pipe, corrompendo o regex.
-
-**Solução:** Use `utplsql.invocation: "java"`:
-
-```jsonc
-"utplsql.invocation": "java"
-```
-
-Veja [Modo de invocação](Modo-de-invocação) para detalhes.
+**Solution:**
+1. Check the file's real encoding and set the profile `charset`
+   (`utf8` | `latin1` | `win1252`, default `utf8`)
+2. The "utPLSQL Script" OutputChannel logs the charset used in the header
+   (e.g. `seed.sql (win1252)`) — use it to diagnose
+3. There is no encoding auto-detection (unreliable): mark the correct
+   charset on the profile
+4. Note: `latin1` (true ISO-8859-1) ≠ `win1252` for bytes `0x80`–`0x9F`
+   (e.g. `€` only exists in `win1252`)
 
 ---
 
-## `%suite` não é reconhecido
+## `%suite` not recognized
 
-**Sintoma:** O package existe, mas não aparece como suite no Test Explorer.
+**Symptom:** The package exists but does not appear as a suite in the Test Explorer.
 
-**Causas prováveis:** o arquivo não tem `%suite` **e** a declaração
-`create [or replace] package` (ambos são exigidos pelo parser); ou nenhum
-`%test` associado a uma procedure.
+**Likely causes:** The file does not have `%suite` **and** the `create [or replace] package`
+declaration (both are required by the parser); or no `%test` is associated with a procedure.
 
-O parser é dirigido por tokens — **não** há requisito de linha em branco:
+The parser is token-driven — there is **no** blank-line requirement:
 
 ```sql
 create or replace package test_foo as
@@ -140,157 +135,99 @@ create or replace package test_foo as
 end;
 ```
 
-Verifique também que o arquivo está coberto por `utplsql.includePatterns` e
-rode `utPLSQL: Atualizar testes`.
+Also verify that the file is covered by `utplsql.includePatterns` and run
+`utPLSQL: Refresh Tests`.
 
 ---
 
-## "relatório não gerado"
+## CodeLens not appearing
 
-**Sintoma:** Output mostra "relatório não gerado — verifique GRANT EXECUTE
-ON SYS.DBMS_PROFILER".
+**Symptom:** Run/Run with Coverage buttons do not appear above `%suite` and
+`%test` in `.pks` files.
 
-**Causa:** O CLI não conseguiu gerar o XML de saída (JUnit ou Cobertura).
+**Cause 1:** `utplsql.codeLens.enabled` is disabled.
 
-**Solução:**
-1. Verifique permissões de escrita no diretório temporário (`%TEMP%` no
-   Windows, `/tmp` no Linux)
-2. Verifique os grants do utPLSQL no banco (veja [Requisitos no banco](Requisitos-no-banco))
-3. Rode o CLI manualmente para ver o erro completo:
-
-```bash
-utplsql run "DEV/senha@//localhost:1521/XEPDB1" \
-  -p=test_hello \
-  -f=ut_junit_reporter -o=/tmp/results.xml \
-  -f=ut_documentation_reporter -c
-```
-
----
-
-## CodeLens não aparece
-
-**Sintoma:** Botões Run/Run with Coverage não aparecem sobre `%suite` e
-`%test` nos arquivos `.pks`.
-
-**Causa 1:** `utplsql.codeLens.enabled` desabilitado.
-
-**Solução:** Verifique no `settings.json`:
+**Solution:** Check in `settings.json`:
 ```jsonc
-"utplsql.codeLens.enabled": true  // default é true
+"utplsql.codeLens.enabled": true  // default is true
 ```
 
-**Causa 2:** `editor.codeLens` desabilitado no VSCode.
+**Cause 2:** `editor.codeLens` is disabled in VS Code.
 
-**Solução:** Habilite:
+**Solution:** Enable it:
 ```jsonc
 "editor.codeLens": true
 ```
 
 ---
 
-## Atalhos de teclado não funcionam
+## Keyboard shortcuts not working
 
-**Sintoma:** Os atalhos com prefixo `Ctrl+Shift+U` não executam a ação
-esperada, ou executam comando de outra extensão.
+**Symptom:** Shortcuts with the `Ctrl+Shift+U` prefix do not perform the
+expected action, or they trigger a command from another extension.
 
-**Causa:** Conflito com outra extensão ou atalho do VSCode.
+**Cause:** Conflict with another extension or a VS Code shortcut.
 
-**Solução:** Vá em File → Preferences → Keyboard Shortcuts, busque `utplsql`
-e redefina as teclas conforme necessário.
-
----
-
-## CLI não encontrado
-
-**Sintoma:** "utplsql não é reconhecido como comando interno".
-
-**Causa:** `utplsql.cliPath` aponta para um executável que não existe ou
-não está no PATH.
-
-**Solução:** Defina o caminho absoluto:
-
-```jsonc
-// Windows
-"utplsql.cliPath": "C:\\tools\\utPLSQL-cli\\bin\\utplsql.bat"
-
-// Linux/macOS
-"utplsql.cliPath": "/home/user/utplsql-cli/bin/utplsql"
-```
-
-Verifique no terminal:
-```bash
-# Windows
-C:\tools\utPLSQL-cli\bin\utplsql.bat --version
-
-# Linux/macOS
-/home/user/utplsql-cli/bin/utplsql --version
-```
+**Solution:** Go to File → Preferences → Keyboard Shortcuts, search for `utplsql`,
+and reassign the keys as needed.
 
 ---
 
-## Oracle direto não conecta
+## Direct Oracle does not connect
 
-**Sintoma:** `runnerMode: oracle` falha com "oracledb não disponível" ou
-erro de conexão.
+**Symptom:** the run fails with "oracledb not available" or a
+connection error.
 
-**Causa 1:** `node-oracledb` não está disponível (só ocorre em desenvolvimento
-— o VSIX já inclui o driver thin).
+**Cause 1:** `node-oracledb` is not installed (the VSIX already ships the
+thin driver as a mandatory dependency; in development, run `npm install`).
 
-**Solução:** Instale a dependência opcional no ambiente de dev:
+**Solution:** reinstall dependencies:
 ```bash
-npm install oracledb
+npm install
 ```
-Ou use `runnerMode: auto` (fallback automático para CLI) ou `runnerMode: cli`.
 
-**Causa 2:** Grants ausentes nas tabelas de buffer (shared install).
+**Cause 2:** Missing grants on the buffer tables (shared install).
 
-**Solução:** Execute como DBA:
+**Solution:** Run as DBA:
 ```sql
 GRANT SELECT, DELETE ON UT3.UT_OUTPUT_BUFFER_TMP TO PUBLIC;
 GRANT SELECT, DELETE ON UT3.UT_OUTPUT_BUFFER_INFO_TMP TO PUBLIC;
 ```
-Sem esses grants, use `runnerMode: cli`. Veja [Execução Oracle direta](Execução-Oracle-direta).
+See [Direct Oracle Execution](Oracle-direct-execution).
 
 ---
 
-## Schema sempre "UNKNOWN"
+## Schema always shows "UNKNOWN"
 
-**Sintoma:** No modo `schema`, todos os testes aparecem sob "UNKNOWN".
+**Symptom:** In `schema` mode, all tests appear under "UNKNOWN".
 
-**Causa:** O `schemaPattern` não corresponde à estrutura de diretórios.
+**Cause:** The `schemaPattern` does not match the directory structure.
 
-**Solução:** Ajuste o padrão. Exemplos:
+**Solution:** Adjust the pattern. Examples:
 ```jsonc
-// Estrutura: src/HR/tests/ut_hr.pks
+// Structure: src/HR/tests/ut_hr.pks
 "utplsql.organization.schemaPattern": "src/{schema}/tests/**"
 
-// Estrutura: db/APP/packages/ut_foo.pks
+// Structure: db/APP/packages/ut_foo.pks
 "utplsql.organization.schemaPattern": "db/{schema}/**"
 ```
 
-O placeholder `{schema}` captura exatamente um nível de diretório.
-Use `**` para qualquer profundidade de subdiretórios após o schema.
+The `{schema}` placeholder captures exactly one directory level.
+Use `**` for any depth of subdirectories after the schema.
 
-> **Descoberta via banco (0.11.0):** no modo `schema`, quando o Oracle está
-> disponível (`runnerMode` `auto`/`oracle` e conexão configurada), a extensão
-> também descobre suites direto do banco (`ALL_OBJECTS`/`ALL_SOURCE`) para
-> schemas cujos arquivos `.pks` não estão no workspace. Os schemas consultados
-> são os diretórios abaixo da base do `schemaPattern` (ex.: `db/*`) e os schemas
-> das suites locais. Suites vindas do banco aparecem com URI virtual
-> `utplsql-db:/` e **não têm** CodeLens, decorações inline nem jump to failure
-> — apenas execução pela árvore. Packages `UT_*` (framework utPLSQL) são ignorados.
+> **Database discovery (0.11.0):** In `schema` mode, when there is a
+> configured connection (without prompt), the extension also
+> discovers suites directly from the database (`ALL_OBJECTS`/`ALL_SOURCE`) for
+> schemas whose `.pks` files are not in the workspace. The schemas queried are
+> the directories under the base of the `schemaPattern` (e.g., `db/*`) and the
+> schemas of local suites. Suites from the database appear with virtual URI
+> `utplsql-db:/`, open **read-only** (source from `ALL_SOURCE`) so **jump to
+> failure** works, and inline decorations work in schema mode too. They still
+> have no CodeLens — execution is from the tree. `UT_*` packages (utPLSQL
+> framework) are ignored.
 
----
+## Opt-in diagnostics (`UTPLSQL_DEBUG`)
 
-## Modo java lento com suites grandes
-
-**Sintoma:** Execução no modo `java` demora muito ou falha com
-`OutOfMemoryError`.
-
-**Causa:** Heap JVM padrão (`-Xmx256m`) insuficiente para o projeto.
-
-**Solução:** Aumente a memória:
-```jsonc
-"utplsql.javaArgs": ["-Xmx1024m", "-Xms256m"]
-```
-As flags são inseridas antes de `-cp` e só afetam o modo `java`.
+Set `UTPLSQL_DEBUG=1` before launching VSCode to enable diagnostic logs in the
+Extension Host console (connection, discovery and coverage failures with
+context). Unset = silent. Credentials are never logged.

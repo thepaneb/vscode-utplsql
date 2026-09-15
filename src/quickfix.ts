@@ -1,12 +1,15 @@
-import * as fs from 'node:fs';
 import * as vscode from 'vscode';
-import { getCliInfo, semverLt } from './cliInfo';
-import { readConfig, resolveConnection, resolveConnectionNoPrompt } from './config';
+import { getExtensionLocale, readConfig, resolveConnectionNoPrompt } from './config';
+import { t } from './i18n';
+import { logger } from './logger';
 import {
   discoverUtplsqlSchema,
   ensurePool,
   findInvalidUt3Objects,
+  getOracleInfo,
   parseConnString,
+  semverLt,
+  UTPLSQL_MIN_VERSION,
 } from './oracleRunner';
 
 interface SetupDiagnostic {
@@ -25,82 +28,66 @@ export class SetupValidator {
   }
 
   async validateOnActivation(): Promise<SetupDiagnostic[]> {
+    const locale = getExtensionLocale();
     const diagnostics: SetupDiagnostic[] = [];
     const cfg = readConfig();
     if (!cfg.setupDiagnosticsEnabled) return diagnostics;
 
-    const cliExists = this.checkCli(cfg.cliPath);
-    if (!cliExists) {
-      diagnostics.push({
-        code: 'UTPLSQL_NO_CLI',
-        severity: vscode.DiagnosticSeverity.Error,
-        message: `utPLSQL CLI não encontrado em "${cfg.cliPath}". Instale via npm: npm install -g utplsql-cli ou ajuste utplsql.cliPath.`,
-        command: {
-          title: 'Configurar utplsql.cliPath',
-          command: 'workbench.action.openSettings',
-          arguments: ['utplsql.cliPath'],
-        },
-      });
-    }
-
-    if (cfg.invocation === 'java' && cfg.javaPath) {
+    const conn = resolveConnectionNoPrompt();
+    if (conn) {
+      let oracledb: typeof import('oracledb');
       try {
-        fs.accessSync(cfg.javaPath, fs.constants.X_OK);
+        const mod = await import('oracledb');
+        oracledb =
+          ((mod as Record<string, unknown>).default as typeof import('oracledb')) ??
+          (mod as typeof import('oracledb'));
       } catch {
-        const ext = process.platform === 'win32' ? '.exe' : '';
+        return diagnostics;
+      }
+
+      const pool = await ensurePool(oracledb, conn, cfg).catch(() => undefined);
+      let oracleConn: import('oracledb').Connection;
+      try {
+        oracleConn = pool
+          ? await pool.getConnection()
+          : await oracledb.getConnection(parseConnString(conn));
+      } catch (e) {
+        logger.debug('validateOnActivation: falha ao conectar', { error: String(e) });
         diagnostics.push({
-          code: 'UTPLSQL_NO_JAVA',
+          code: 'UTPLSQL_BAD_CONN',
           severity: vscode.DiagnosticSeverity.Error,
-          message: `Java não encontrado em "${cfg.javaPath}${ext}". Instale o JDK ou ajuste utplsql.javaPath.`,
+          message: t(locale, 'quickfix.badConn'),
           command: {
-            title: 'Configurar utplsql.javaPath',
-            command: 'workbench.action.openSettings',
-            arguments: ['utplsql.javaPath'],
+            title: t(locale, 'quickfix.reconfigureConn'),
+            command: 'utplsql.configureConnection',
           },
         });
+        return diagnostics;
       }
-    }
 
-    if (cliExists) {
-      const conn = await resolveConnection();
-      if (conn) {
-        const info = await getCliInfo(cfg, conn);
-        if ('error' in info) {
-          diagnostics.push({
-            code: 'UTPLSQL_BAD_CONN',
-            severity: vscode.DiagnosticSeverity.Error,
-            message: `Falha ao conectar: ${info.error}. Verifique utplsql.connection ou env UTPLSQL_CONN.`,
-            command: {
-              title: 'Reconfigurar conexão',
-              command: 'utplsql.configureConnection',
-            },
-          });
-        } else if (info.dbVersion && semverLt(info.dbVersion, '3.1.0')) {
-          diagnostics.push({
-            code: 'UTPLSQL_OLD_VERSION',
-            severity: vscode.DiagnosticSeverity.Warning,
-            message: `Versão utPLSQL no banco (${info.dbVersion}) é anterior a 3.1.0. Cobertura pode não funcionar.`,
-            command: {
-              title: 'Como atualizar o utPLSQL',
-              command: 'vscode.open',
-              arguments: [vscode.Uri.parse('https://github.com/utPLSQL/utPLSQL/releases')],
-            },
-            helpUrl: 'https://github.com/utPLSQL/utPLSQL/releases',
-          });
+      try {
+        const info = await getOracleInfo(oracleConn);
+        if (info.utVersion && info.dbVersion) {
+          if (semverLt(info.utVersion, UTPLSQL_MIN_VERSION)) {
+            diagnostics.push({
+              code: 'UTPLSQL_OLD_VERSION',
+              severity: vscode.DiagnosticSeverity.Warning,
+              message: t(locale, 'quickfix.oldVersion', { version: info.utVersion }),
+              command: {
+                title: t(locale, 'quickfix.oldVersionUpgrade'),
+                command: 'vscode.open',
+                arguments: [vscode.Uri.parse('https://github.com/utPLSQL/utPLSQL/releases')],
+              },
+              helpUrl: 'https://github.com/utPLSQL/utPLSQL/releases',
+            });
+          }
         }
+      } finally {
+        await oracleConn.close().catch(() => {});
       }
     }
 
     return diagnostics;
-  }
-
-  checkCli(cliPath: string): boolean {
-    try {
-      fs.accessSync(cliPath, fs.constants.X_OK);
-      return true;
-    } catch {
-      return false;
-    }
   }
 
   applyDiagnostics(diagnostics: SetupDiagnostic[]) {
@@ -129,7 +116,7 @@ export class SetupValidator {
   addCoverageDiagnostic() {
     const diag = new vscode.Diagnostic(
       new vscode.Range(0, 0, 0, 0),
-      'Relatório de cobertura não foi gerado. Execute os grants: GRANT EXECUTE ON SYS.DBMS_PROFILER TO <schema>;',
+      t(getExtensionLocale(), 'quickfix.noCoverage'),
       vscode.DiagnosticSeverity.Warning,
     );
     diag.source = 'utPLSQL Setup';
@@ -146,7 +133,6 @@ export class SetupValidator {
   ): Promise<SetupDiagnostic[]> {
     const cfg = readConfig();
     if (!cfg.setupDiagnosticsEnabled) return [];
-    if (cfg.runnerMode === 'cli') return [];
 
     const connStr = resolveConnectionNoPrompt();
     if (!connStr) return [];
@@ -169,8 +155,15 @@ export class SetupValidator {
       {
         code: 'UTPLSQL_INVALID_OBJECTS',
         severity: vscode.DiagnosticSeverity.Warning,
-        message: `Schema ${issue.schema} contém ${issue.invalid.length} objetos inválidos: ${names}`,
-        command: { title: 'Recompilar UT3', command: 'utplsql.recompileUt3' },
+        message: t(getExtensionLocale(), 'quickfix.invalidObjects', {
+          schema: issue.schema,
+          count: issue.invalid.length,
+          names,
+        }),
+        command: {
+          title: t(getExtensionLocale(), 'quickfix.recompile'),
+          command: 'utplsql.recompileUt3',
+        },
       },
     ];
   }
@@ -181,9 +174,10 @@ export class SetupValidator {
    */
   async recompileUt3(oracledbOverride?: typeof import('oracledb')): Promise<void> {
     const cfg = readConfig();
+    const locale = getExtensionLocale();
     const connStr = resolveConnectionNoPrompt();
     if (!connStr) {
-      vscode.window.showErrorMessage('Conexão Oracle não configurada.');
+      vscode.window.showErrorMessage(t(locale, 'quickfix.noConnection'));
       return;
     }
 
@@ -194,9 +188,7 @@ export class SetupValidator {
         ((mod as Record<string, unknown>).default as typeof import('oracledb')) ??
         (mod as typeof import('oracledb'));
     } catch {
-      vscode.window.showErrorMessage(
-        'oracledb não disponível. Instale com "npm install oracledb".',
-      );
+      vscode.window.showErrorMessage(t(locale, 'quickfix.oracledbMissing'));
       return;
     }
 
@@ -217,13 +209,15 @@ export class SetupValidator {
         const issue = await findInvalidUt3Objects(oracledb, connStr, cfg);
         if (!issue || issue.invalid.length === 0) {
           this.removeDiagnostic('UTPLSQL_INVALID_OBJECTS');
-          vscode.window.showInformationMessage(
-            `Schema ${schema} recompilado — nenhum objeto inválido.`,
-          );
+          vscode.window.showInformationMessage(t(locale, 'quickfix.recompiledOk', { schema }));
         } else {
           const names = issue.invalid.map((i) => i.name).join(', ');
           vscode.window.showWarningMessage(
-            `Ainda há ${issue.invalid.length} objetos inválidos em ${schema}: ${names}`,
+            t(locale, 'quickfix.stillInvalid', {
+              count: issue.invalid.length,
+              schema,
+              names,
+            }),
           );
         }
       } finally {
@@ -231,9 +225,7 @@ export class SetupValidator {
       }
     } catch (e) {
       const msg = e instanceof Error ? e.message : String(e);
-      vscode.window.showErrorMessage(
-        `Falha ao recompilar UT3: ${msg}. Requer ALTER ANY PROCEDURE ou execução como o owner do schema.`,
-      );
+      vscode.window.showErrorMessage(t(locale, 'quickfix.recompileFail', { error: msg }));
     }
   }
 
@@ -272,50 +264,34 @@ export class UtplsqlCodeActionProvider implements vscode.CodeActionProvider {
     _token: vscode.CancellationToken,
   ): vscode.CodeAction[] {
     const actions: vscode.CodeAction[] = [];
+    const locale = getExtensionLocale();
 
     for (const diagnostic of context.diagnostics) {
       if (diagnostic.source !== 'utPLSQL Setup') continue;
 
-      if (diagnostic.code === 'UTPLSQL_NO_CLI') {
-        const action = new vscode.CodeAction(
-          'Configurar utplsql.cliPath',
-          vscode.CodeActionKind.QuickFix,
-        );
-        action.command = {
-          command: 'workbench.action.openSettings',
-          title: 'Configurar utplsql.cliPath',
-          arguments: ['utplsql.cliPath'],
-        };
-        action.diagnostics = [diagnostic];
-        actions.push(action);
-      }
-
       if (diagnostic.code === 'UTPLSQL_BAD_CONN') {
-        const action = new vscode.CodeAction(
-          'Reconfigurar conexão',
-          vscode.CodeActionKind.QuickFix,
-        );
-        action.command = { command: 'utplsql.configureConnection', title: 'Reconfigurar conexão' };
+        const title = t(locale, 'quickfix.reconfigureConn');
+        const action = new vscode.CodeAction(title, vscode.CodeActionKind.QuickFix);
+        action.command = { command: 'utplsql.configureConnection', title };
         action.diagnostics = [diagnostic];
         actions.push(action);
       }
 
       if (diagnostic.code === 'UTPLSQL_NO_COVERAGE') {
-        const action = new vscode.CodeAction(
-          'Copiar grants para clipboard',
-          vscode.CodeActionKind.QuickFix,
-        );
+        const title = t(locale, 'quickfix.copyGrants');
+        const action = new vscode.CodeAction(title, vscode.CodeActionKind.QuickFix);
         action.command = {
           command: 'utplsql.copyGrantsToClipboard',
-          title: 'Copiar grants',
+          title,
         };
         action.diagnostics = [diagnostic];
         actions.push(action);
       }
 
       if (diagnostic.code === 'UTPLSQL_INVALID_OBJECTS') {
-        const action = new vscode.CodeAction('Recompilar UT3', vscode.CodeActionKind.QuickFix);
-        action.command = { command: 'utplsql.recompileUt3', title: 'Recompilar UT3' };
+        const title = t(locale, 'quickfix.recompile');
+        const action = new vscode.CodeAction(title, vscode.CodeActionKind.QuickFix);
+        action.command = { command: 'utplsql.recompileUt3', title };
         action.diagnostics = [diagnostic];
         actions.push(action);
       }

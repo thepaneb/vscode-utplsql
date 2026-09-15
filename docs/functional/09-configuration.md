@@ -6,14 +6,6 @@ Sistema de configuração da extensão: settings, conexão, ambiente.
 
 ```typescript
 interface UtConfig {
-  // Conexão e CLI
-  cliPath: string;                    // default: "utplsql"
-  invocation: string;                 // default: "launcher"
-  javaPath: string;                   // default: "java"
-  javaArgs: string[];                 // default: ["-Xmx256m"]
-  cliHome: string;                    // default: ""
-  runnerMode: 'auto' | 'cli' | 'oracle'; // default: "auto"
-
   // Pool do Oracle runner (PRD-38)
   oraclePoolMin: number;              // default: 2
   oraclePoolMax: number;              // default: 10
@@ -23,17 +15,50 @@ interface UtConfig {
   // Cobertura
   sourcePath: string;                 // default: "install"
   coverageOwner: string;              // default: ""
-  coverageSourceArgs: string[];       // regex + type_mapping
+  sqlCoverageEnabled: boolean;        // default: false (PRD-12)
+
+  // Debugger (PRD-33)
+  debuggerEnabled: boolean;           // default: true
+  debuggerStopOnException: boolean;   // default: true
+  debuggerTimeoutSeconds: number;     // default: 300
+
+  // Script runner (PRD-62)
+  scriptRunnerStopOnError: boolean;   // default: true
+  scriptRunnerAutoCommit: boolean;    // default: true
+  scriptRunnerFilePattern: string;    // default: "**/*.{sql,pks,pkb,fnc,prc,trg}"
+  scriptRunnerDbmsOutput: boolean;    // default: false
+  scriptRunnerTimeoutSeconds: number; // default: 300
+
+  // i18n (PRD-49)
+  language:
+    | 'auto'
+    | 'pt-br'
+    | 'en'
+    | 'en-gb'
+    | 'es'
+    | 'zh-cn'
+    | 'zh-tw'
+    | 'ja'
+    | 'de'
+    | 'fr'
+    | 'it'
+    | 'ko'
+    | 'ru'
+    | 'tr'
+    | 'pl'
+    | 'cs'
+    | 'hu'
+    | 'bg'
+    | 'el'
+    | 'id'
+    | 'ro'
+    | 'sr'
+    | 'th'
+    | 'uk'
+    | 'vi';                           // default: "auto"
 
   // Descoberta
   includePatterns: string[];          // default: ["**/*.pks"]
-
-  // Execução
-  timeoutMinutes: number;             // default: 60
-  dbmsOutput: boolean;                // default: false
-  quiet: boolean;                     // default: false
-  failureExitCode: number;            // default: 1
-  extraRunArgs: string[];             // default: []
 
   // Reporters
   additionalReporters: string[];      // default: []
@@ -69,13 +94,19 @@ async function resolveConnection(): Promise<string | undefined>
 ```
 
 Ordem de resolução:
-1. Setting `utplsql.connection` (settings.json do usuário/workspace)
-2. Variável de ambiente `UTPLSQL_CONN`
-3. Cache da sessão (`sessionConnection` — se já digitou antes)
-4. Prompt `vscode.window.showInputBox` (password: true, ignoreFocusOut: true)
+1. Perfil ativo (`utplsql.activeProfile` → `profile.connection`)
+2. Setting `utplsql.connection` (settings.json do usuário/workspace)
+3. Variável de ambiente `UTPLSQL_CONN`
+4. Cache da sessão (`sessionConnection` — se já digitou antes)
+5. Prompt `vscode.window.showInputBox` (password: true, ignoreFocusOut: true)
 
 Ao resolver com sucesso, seta `utplsql:connected` context key.
 `clearSessionConnection()` limpa o cache.
+`resolveConnectionNoPrompt()` percorre os passos 1–4 sem exibir prompt
+(retorna `undefined` se nada estiver configurado).
+
+> `readConfig()` aplica `mergeProfileConfig(global, getActiveProfile())` — o
+> perfil ativo sobrescreve campos como `sourcePath` e `coverageOwner`.
 
 ### Segurança
 
@@ -85,24 +116,128 @@ Ao resolver com sucesso, seta `utplsql:connected` context key.
 
 ### Formatos aceitos
 
-- **EZ Connect**: `user/pass@//host:port/service`
-- **TNS**: `user/pass@tns_alias` (requer `TNS_ADMIN`)
-- **Wallet**: `user/pass@tcps://host:port/service?wallet_location=/path`
+- **EZ Connect**: `user/pass@//host:port/service` — **único formato suportado**
+  por `parseConnString` (`src/oracleRunner.ts`)
+- **TNS** (`user/pass@tns_alias`) e **Wallet**
+  (`user/pass@tcps://host:port/service?wallet_location=...`) **não são
+  suportados** — `parseConnString` lança erro nesses formatos
 
-## `InvocationConfig` (src/invocation.ts)
+## Connection Profiles (PRD-34)
+
+`src/connectionProfiles.ts` (vscode-dependente). Perfis reutilizáveis de
+conexão que encapsulam a string de conexão **e** a configuração associada
+(sourcePath, coverageOwner, etc.).
 
 ```typescript
-interface InvocationConfig {
-  invocation: string;
-  cliPath: string;
-  javaPath: string;
-  javaArgs: string[];
-  cliHome: string;
+interface ConnectionProfile {
+  id: string;
+  name: string;
+  connection: string;
+  description?: string;          // PRD-62: exibido no picker
+  charset?: ProfileCharset;      // PRD-62: 'utf8' | 'latin1' | 'win1252'
+  sourcePath?: string;
+  coverageOwner?: string;
+  includePatterns?: string[];
+  isDefault?: boolean;
+  lastUsed?: string;
 }
+
+type ProfileCharset = 'utf8' | 'latin1' | 'win1252';
 ```
 
-Subconjunto de `UtConfig` usado para decidir como invocar o CLI. Passado para
-`buildInvocation`, `getCliInfo`, `listReporters`.
+### Settings
+
+| Setting | Descrição |
+|---|---|
+| `utplsql.profiles` | Array de `ConnectionProfile` (global) |
+| `utplsql.activeProfile` | `id` do perfil ativo (vazio = nenhum) |
+
+### API
+
+```typescript
+maskConnection(conn: string): string;                     // "scott/tiger@host" → "scott@host"
+selectProfile(profiles): Promise<ConnectionProfile | undefined>;  // QuickPick
+pickProfileOrGuide(): Promise<ConnectionProfile | undefined>;     // PRD-62: picker obrigatório pós-invocação
+importFromSqlDeveloper(): Promise<ConnectionProfile[]>;   // parse de connections.xml
+getActiveProfile(): ConnectionProfile | undefined;
+saveProfiles(profiles): Promise<void>;
+setActiveProfile(id: string | undefined): Promise<void>;
+mergeProfileConfig(global: UtConfig, profile?): UtConfig;
+```
+
+- `importFromSqlDeveloper` localiza `connections.xml` do SQL Developer sob
+  `~/.sqldeveloper` e `%APPDATA%/SQL Developer` (subpastas `system*`)
+- `mergeProfileConfig` aplica os campos do perfil sobre a config global; sem
+  perfil → global intacto
+- `resolveConnection()` checa o perfil ativo **antes** do setting `utplsql.connection`
+- `selectProfile` exibe `description` no `detail` e o `charset` ao lado da
+  conexão mascarada quando diferente de `utf8` (PRD-62)
+- `pickProfileOrGuide` (PRD-62): se há perfis, delega ao `selectProfile`; se
+  não há, oferece criar (`utplsql.newProfile`) ou importar
+  (`utplsql.importSqlDevConnections`), e só então repete o picker
+
+## Script Runner (PRD-62)
+
+`src/scriptRunner.ts`. Execução de scripts SQL/PL/SQL arbitrários contra um
+perfil de conexão, via Oracle direto (`connectOracle` + `ensurePool` de
+`oracleRunner.ts`). Comandos: `utplsql.runScript` (editor),
+`utplsql.runScriptFile` (arquivo), `utplsql.runScriptFolder` (pasta).
+
+```typescript
+type ProfileCharset = 'utf8' | 'latin1' | 'win1252';
+interface SqlStatement { text: string; index: number; line: number }
+
+splitScript(text: string): SqlStatement[];              // puro
+decodeScript(bytes: Uint8Array, charset?): string;      // puro
+filterScriptFiles(paths: string[], filePattern: string): string[];  // puro
+executeScript(connect: ScriptConnect, opts: ScriptRunOptions): Promise<ScriptRunResult>;
+connectOracle(connection: string, opts?): Promise<ScriptDb>;
+```
+
+- `splitScript`: blocos PL/SQL (`BEGIN`/`DECLARE`/`CREATE ... FUNCTION,
+  PROCEDURE, PACKAGE, TRIGGER, TYPE) terminam em `/` em linha própria;
+  demais statements terminam em `;`. Comentários e literais nunca quebram o
+  split. Classificação preguiçosa no primeiro `;`/`/` (cabeçalho pode
+  abranger várias linhas).
+- `decodeScript`: `utf8`/`win1252` via `TextDecoder`; `latin1` via
+  `Buffer.toString('latin1')` (ISO-8859-1 real — `TextDecoder('iso-8859-1')`
+  decodificaria como windows-1252 pelo WHATWG). Ausente/inválido → `utf8`.
+- `executeScript`: sequencial, saída `[N] (ok|erro) <ms> — <resumo>` no
+  `OutputChannel`, `stopOnError` (default `true`), `autoCommit`,
+  `DBMS_OUTPUT` opcional, cancelamento via `token` + `conn.break()`, senha
+  mascarada via `maskConnection`.
+
+| Setting | Default |
+|---|---|
+| `utplsql.scriptRunner.stopOnError` | `true` |
+| `utplsql.scriptRunner.autoCommit` | `true` |
+| `utplsql.scriptRunner.filePattern` | `**/*.{sql,pks,pkb,fnc,prc,trg}` |
+| `utplsql.scriptRunner.dbmsOutput` | `false` |
+| `utplsql.scriptRunner.timeoutSeconds` | `300` |
+
+## i18n (PRD-49)
+
+Motor de tradução das mensagens de runtime. `src/i18n.ts` (puro) + catálogos
+em `src/i18nLocales.ts` para 24 locales + `auto` (25 valores da setting).
+
+```typescript
+function resolveLocale(setting: string, vscodeLanguage: string): ExtensionLocale
+function t(locale: ExtensionLocale, key: string, params?): string
+```
+
+- `resolveLocale`: se a setting é um idioma válido, usa; senão infere do
+  idioma do editor (ex.: `pt` → `pt-br`, `zh-tw`/`zh-hk` → `zh-tw`); fallback `en`
+- `t`: traduz a chave; chave ausente → pt-BR → a própria chave. Nunca lança.
+- `{param}` interpolados por `t(locale, key, { param: valor })`
+
+| Setting | Valores | Default |
+|---|---|---|
+| `utplsql.language` | `auto` \| `pt-br` \| `en` \| `en-gb` \| `es` \| `zh-cn` \| `zh-tw` \| `ja` \| `de` \| `fr` \| `it` \| `ko` \| `ru` \| `tr` \| `pl` \| `cs` \| `hu` \| `bg` \| `el` \| `id` \| `ro` \| `sr` \| `th` \| `uk` \| `vi` | `auto` |
+
+`package.nls*.json` traduzem os títulos de comandos; o motor i18n cobre as
+mensagens de runtime (prompts, outputs, diagnósticos).
+
+![Arquitetura de internacionalização (i18n)](../wiki/images/diagram-i18n.png)
 
 ## `TestStateManager` (src/state.ts)
 
@@ -161,8 +296,6 @@ Armazenado via `WeakMap<TestItem, ItemMeta>` no `TestStateManager`.
 | Variável | Uso |
 |---|---|
 | `UTPLSQL_CONN` | String de conexão Oracle |
-| `UTPLSQL_CLI_PATH` | Caminho do CLI (testes de integração) |
-| `UTPLSQL_CLI_HOME` | Raiz do CLI (testes de integração, modo java) |
 
 ## Hierarquia de settings
 
@@ -172,5 +305,5 @@ O VSCode aplica settings nesta ordem (última sobrescreve):
 3. Workspace settings (`.vscode/settings.json`)
 4. Workspace Folder settings (multi-root)
 
-Recomendação: `cliPath`, `sourcePath`, `coverageSourceArgs` no workspace.
-`connection` via env var (nunca em settings versionadas).
+Recomendação: `sourcePath` no workspace. `connection` via env var (nunca em
+settings versionadas).

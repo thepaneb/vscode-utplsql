@@ -20,6 +20,7 @@ export namespace Uri {
 
 const _configValues: Record<string, unknown> = {};
 let _inputBoxResult: string | undefined;
+let _quickPickResult: unknown;
 let _mockFileContents: Record<string, string> = {};
 let _mockFindFilesResult: Record<string, string[]> = {};
 let _mockFileErrors: Record<string, boolean> = {};
@@ -37,6 +38,26 @@ export function __resetConfigValues(): void {
 
 export function __setInputBoxResult(value: string | undefined): void {
   _inputBoxResult = value;
+}
+
+export function __setQuickPickResult(value: unknown): void {
+  _quickPickResult = value;
+}
+
+let _lastQuickPickItems: readonly unknown[] | undefined;
+
+export function __getLastQuickPickItems(): readonly unknown[] | undefined {
+  return _lastQuickPickItems;
+}
+
+export function __resetLastQuickPickItems(): void {
+  _lastQuickPickItems = undefined;
+}
+
+let _warningResult: string | undefined;
+
+export function __setWarningResult(value: string | undefined): void {
+  _warningResult = value;
 }
 
 export function __setMockFile(pattern: string, path: string, content: string): void {
@@ -72,6 +93,9 @@ export namespace workspace {
     return {
       get: <T>(_key: string, defaultValue?: T) =>
         (_key in _configValues ? _configValues[_key] : defaultValue) as T,
+      update: async <T>(_key: string, value: T, _target?: unknown) => {
+        _configValues[_key] = value;
+      },
     };
   }
   export function findFiles(pattern: string | RelativePattern) {
@@ -87,8 +111,10 @@ export namespace workspace {
       })),
     );
   }
+  export function registerTextDocumentContentProvider(_scheme: string, _provider: any) {
+    return { dispose: () => {} };
+  }
   export const fs = {
-    // biome-ignore lint/suspicious/noExplicitAny: VSCode Uri stringish stub
     readFile: (uri: any) => {
       const path = uri.fsPath ?? uri;
       if (_mockFileErrors[path]) {
@@ -97,7 +123,6 @@ export namespace workspace {
       const content = _mockFileContents[path] ?? '';
       return Promise.resolve(Buffer.from(content));
     },
-    // biome-ignore lint/suspicious/noExplicitAny: VSCode Uri stringish stub
     readDirectory: (uri: any) => {
       const path = uri.fsPath ?? uri;
       const entries = _mockDirEntries[path];
@@ -119,13 +144,74 @@ export namespace workspace {
 }
 
 export namespace commands {
-  export function executeCommand(_cmd: string, ..._args: unknown[]): void {}
+  const _executedCommands: string[] = [];
+  let _executeCommandImpl: ((cmd: string, ...args: unknown[]) => unknown) | undefined;
+
+  export function executeCommand(_cmd: string, ..._args: unknown[]): unknown {
+    _executedCommands.push(_cmd);
+    return _executeCommandImpl?.(_cmd, ..._args);
+  }
+
+  export function __getExecutedCommands(): string[] {
+    return [..._executedCommands];
+  }
+
+  export function __resetExecutedCommands(): void {
+    _executedCommands.length = 0;
+  }
+
+  export function __setExecuteCommandImpl(
+    fn: ((cmd: string, ...args: unknown[]) => unknown) | undefined,
+  ): void {
+    _executeCommandImpl = fn;
+  }
+
+  const _registeredCommands: Record<string, (...args: unknown[]) => unknown> = {};
+
+  export function registerCommand(
+    command: string,
+    callback: (...args: unknown[]) => unknown,
+  ): { dispose: () => void } {
+    _registeredCommands[command] = callback;
+    return {
+      dispose: () => {
+        delete _registeredCommands[command];
+      },
+    };
+  }
+
+  export function __getRegisteredCommand(
+    command: string,
+  ): ((...args: unknown[]) => unknown) | undefined {
+    return _registeredCommands[command];
+  }
+
+  export function __resetRegisteredCommands(): void {
+    for (const key of Object.keys(_registeredCommands)) delete _registeredCommands[key];
+  }
+}
+
+export namespace env {
+  export const language = 'pt-BR';
+  export const clipboard = { writeText: async (_s: string) => {} };
 }
 
 export class EventEmitter<T> {
-  event = (_listener: (e: T) => void) => ({ dispose: () => {} });
-  fire(_data?: T) {}
-  dispose() {}
+  private listeners: Array<(e: T) => void> = [];
+  event = (listener: (e: T) => void) => {
+    this.listeners.push(listener);
+    return {
+      dispose: () => {
+        this.listeners = this.listeners.filter((l) => l !== listener);
+      },
+    };
+  };
+  fire(data?: T) {
+    for (const l of [...this.listeners]) l(data as T);
+  }
+  dispose() {
+    this.listeners = [];
+  }
 }
 
 export class CodeLens {
@@ -164,13 +250,19 @@ export namespace window {
   }) {
     return Promise.resolve(_inputBoxResult);
   }
+  export function showQuickPick(
+    _items: readonly unknown[],
+    _options?: { placeHolder?: string; matchOnDescription?: boolean },
+  ) {
+    _lastQuickPickItems = _items;
+    return Promise.resolve(_quickPickResult);
+  }
   export function showErrorMessage(_message: string) {}
   export function showInformationMessage(_message: string) {}
-  export function showWarningMessage(_message: string) {}
-  export function createTextEditorDecorationType(
-    // biome-ignore lint/suspicious/noExplicitAny: DecorationRenderOptions stub
-    _opts: any,
-  ) {
+  export function showWarningMessage(_message: string, ..._items: string[]) {
+    return Promise.resolve(_warningResult);
+  }
+  export function createTextEditorDecorationType(_opts: any) {
     return { dispose: () => {} } as TextEditorDecorationType;
   }
   export function createStatusBarItem(_alignment: number, _priority: number) {
@@ -192,6 +284,32 @@ export namespace window {
 }
 
 export const StatusBarAlignment = { Left: 1, Right: 2 } as const;
+
+export const ConfigurationTarget = { Global: 1, Workspace: 2, WorkspaceFolder: 3 } as const;
+
+export class DebugAdapterInlineImplementation {
+  _adapter: unknown;
+  constructor(adapter: unknown) {
+    this._adapter = adapter;
+  }
+}
+
+export namespace debug {
+  const started: Record<string, unknown>[] = [];
+  export function startDebugging(_folder: unknown, config: Record<string, unknown>) {
+    started.push(config);
+    return Promise.resolve();
+  }
+  export function __getStartedConfigs(): Record<string, unknown>[] {
+    return started;
+  }
+  export function registerDebugAdapterDescriptorFactory(_type: string, _factory: unknown) {
+    return { dispose: () => {} };
+  }
+  export function registerDebugConfigurationProvider(_type: string, _provider: unknown) {
+    return { dispose: () => {} };
+  }
+}
 
 export const FileType = {
   Unknown: 0,
@@ -333,7 +451,6 @@ export function __setVisibleEditors(editors: TextEditor[]): void {
 
 // biome-ignore lint/complexity/noStaticOnlyClass: mimics vscode.FileCoverage API
 export class FileCoverage {
-  // biome-ignore lint/suspicious/noExplicitAny: VSCode Uri stub
   static fromDetails(_uri: any, _details: StatementCoverage[]) {
     return new FileCoverage();
   }
@@ -342,6 +459,14 @@ export class FileCoverage {
 export class StatementCoverage {
   constructor(
     public hits: number,
+    public position: Position,
+  ) {}
+}
+
+export class DeclarationCoverage {
+  constructor(
+    public name: string,
+    public executed: boolean | number,
     public position: Position,
   ) {}
 }
@@ -394,11 +519,7 @@ export const languages = {
 export class RelativePattern {
   pattern: string;
   base: string;
-  constructor(
-    // biome-ignore lint/suspicious/noExplicitAny: stringish-forgiving constructor
-    base: any,
-    pattern: string,
-  ) {
+  constructor(base: any, pattern: string) {
     this.base =
       typeof base === 'string' ? base : (base?.uri?.fsPath ?? base?.fsPath ?? String(base));
     this.pattern = pattern;

@@ -2,7 +2,7 @@ import './setup.js';
 import assert from 'node:assert';
 import { test } from 'node:test';
 import { parseCodeLensItems, UtplsqlCodeLensProvider } from '../../codelens';
-import { __setConfigValue } from '../../test/vscode-stub';
+import { __setConfigValue } from '../vscode-stub';
 
 function pkgWrapper(inner: string): string {
   return ['CREATE OR REPLACE PACKAGE test_math IS', inner, 'END;'].join('\n');
@@ -74,15 +74,13 @@ test('UtplsqlCodeLensProvider: gera 2 lenses por anotacao', () => {
     getText: () => pkgWrapper('--%suite(Math)\n  --%test(Add)\n  PROCEDURE add;'),
     fileName: '/test/test_math.pks',
     uri: { toString: () => 'file:///test/test_math.pks' },
-    // biome-ignore lint/suspicious/noExplicitAny: partial TextDocument mock
   } as any;
-  // biome-ignore lint/suspicious/noExplicitAny: partial CancellationToken mock
   const lenses = provider.provideCodeLenses(doc, {} as any);
   assert.strictEqual(lenses.length, 4);
-  assert.strictEqual(lenses[0].command?.title, '▶ Run Suite');
-  assert.strictEqual(lenses[1].command?.title, '▶ Run Suite with Coverage');
-  assert.strictEqual(lenses[2].command?.title, '▶ Run Test');
-  assert.strictEqual(lenses[3].command?.title, '▶ Run Test with Coverage');
+  assert.strictEqual(lenses[0].command?.title, '▶ Executar Suite');
+  assert.strictEqual(lenses[1].command?.title, '▶ Executar Suite com Cobertura');
+  assert.strictEqual(lenses[2].command?.title, '▶ Executar Test');
+  assert.strictEqual(lenses[3].command?.title, '▶ Executar Test com Cobertura');
 });
 
 test('UtplsqlCodeLensProvider: arquivo sem anotacoes retorna vazio', () => {
@@ -91,9 +89,7 @@ test('UtplsqlCodeLensProvider: arquivo sem anotacoes retorna vazio', () => {
     getText: () => pkgWrapper('  PROCEDURE add;'),
     fileName: '/test/test_math.pks',
     uri: { toString: () => 'file:///test/test_math.pks' },
-    // biome-ignore lint/suspicious/noExplicitAny: partial TextDocument mock
   } as any;
-  // biome-ignore lint/suspicious/noExplicitAny: partial CancellationToken mock
   const lenses = provider.provideCodeLenses(doc, {} as any);
   assert.strictEqual(lenses.length, 0);
 });
@@ -104,9 +100,47 @@ test('UtplsqlCodeLensProvider: arquivo .sql e ignorado', () => {
     getText: () => pkgWrapper('--%suite(Math)\n  PROCEDURE add;'),
     fileName: '/test/test_math.sql',
     uri: { toString: () => 'file:///test/test_math.sql' },
-    // biome-ignore lint/suspicious/noExplicitAny: partial TextDocument mock
   } as any;
-  // biome-ignore lint/suspicious/noExplicitAny: partial CancellationToken mock
   const lenses = provider.provideCodeLenses(doc, {} as any);
   assert.strictEqual(lenses.length, 0);
+});
+
+test('UtplsqlCodeLensProvider: refresh dispara onDidChangeCodeLenses', () => {
+  const provider = new UtplsqlCodeLensProvider();
+  let fired = 0;
+  const sub = provider.onDidChangeCodeLenses(() => {
+    fired++;
+  });
+  provider.refresh();
+  provider.refresh();
+  assert.strictEqual(fired, 2);
+  sub.dispose();
+});
+
+test('UtplsqlCodeLensProvider: codeLensEnabled false retorna vazio', async () => {
+  const { __setConfigValue } = await import('../vscode-stub.js');
+  __setConfigValue('codeLens.enabled', false);
+  const provider = new UtplsqlCodeLensProvider();
+  const doc = {
+    getText: () => '--%suite(Math)\n',
+    fileName: '/test/test_math.pks',
+    uri: { toString: () => 'file:///test/test_math.pks' },
+  } as any;
+  const lenses = provider.provideCodeLenses(doc, {} as any);
+  assert.strictEqual(lenses.length, 0);
+});
+
+test('parseCodeLensItems: test sem descrição usa procName', () => {
+  const text = [
+    'CREATE OR REPLACE PACKAGE ut_ex AS',
+    '  --%suite',
+    '  PROCEDURE add;',
+    '  --%test',
+    '  PROCEDURE add_ok;',
+  ].join('\n');
+  const items = parseCodeLensItems(text);
+  assert.strictEqual(items.length, 2);
+  const testItem = items[1];
+  assert.strictEqual(testItem.type, 'test');
+  assert.strictEqual(testItem.description, 'add_ok');
 });

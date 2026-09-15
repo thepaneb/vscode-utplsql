@@ -1,6 +1,7 @@
 /// <reference types="mocha" />
 import * as assert from 'node:assert';
 import * as vscode from 'vscode';
+import { installOutFormatIsolation } from './helpers';
 
 const COMMANDS = [
   'utplsql.runAll',
@@ -13,44 +14,30 @@ const COMMANDS = [
   'utplsql.showInfo',
   'utplsql.selectReporter',
   'utplsql.clearConnection',
+  'utplsql.runLens',
+  'utplsql.rerunLast',
+  'utplsql.runAtCursor',
+  'utplsql.runFailed',
+  'utplsql.showTestExplorer',
+  'utplsql.configureConnection',
+  'utplsql.copyGrantsToClipboard',
+  'utplsql.validateSetup',
+  'utplsql.recompileUt3',
+  'utplsql.debugTest',
+  'utplsql.switchProfile',
+  'utplsql.manageProfiles',
+  'utplsql.importSqlDevConnections',
+  'utplsql.newProfile',
+  'utplsql.runScript',
+  'utplsql.runScriptFile',
+  'utplsql.runScriptFolder',
 ] as const;
-
-const MODES = ['launcher', 'java'] as const;
 
 function hasConnection(): boolean {
   return !!process.env.UTPLSQL_CONN;
 }
 
 const describeDB = hasConnection() ? describe : describe.skip;
-
-// cliHome lido de process.env — repassado ao VSCode host via env no .vscode-test.mjs
-const cliHome = process.env.UTPLSQL_CLI_HOME || '';
-
-async function withInvocationMode<T>(mode: string, fn: () => Promise<T>): Promise<T> {
-  const config = vscode.workspace.getConfiguration('utplsql');
-  const original = config.inspect<string>('invocation');
-
-  await config.update('invocation', mode, vscode.ConfigurationTarget.Workspace);
-
-  // Modo java precisa de cliHome; aplica de process.env se não houver na setting
-  if (mode === 'java' && !config.get<string>('cliHome')) {
-    await config.update(
-      'cliHome',
-      process.env.UTPLSQL_CLI_HOME || '',
-      vscode.ConfigurationTarget.Workspace,
-    );
-  }
-
-  try {
-    return await fn();
-  } finally {
-    await config.update(
-      'invocation',
-      original?.workspaceValue ?? original?.defaultValue ?? 'launcher',
-      vscode.ConfigurationTarget.Workspace,
-    );
-  }
-}
 
 describe('utPLSQL extension', () => {
   let ext: vscode.Extension<unknown> | undefined;
@@ -95,132 +82,107 @@ describe('utPLSQL extension', () => {
   });
 
   describeDB('integração com banco Oracle', () => {
-    for (const mode of MODES) {
-      if (mode === 'java' && !cliHome) {
-        describe(`modo ${mode}`, () => {
-          it.skip('cliHome não configurado — defina UTPLSQL_CLI_HOME no .env', () => {});
-        });
-        continue;
+    installOutFormatIsolation();
+
+    it('utplsql.runAll executa todos os testes', async function () {
+      this.timeout(120_000);
+      await vscode.commands.executeCommand('utplsql.runAll');
+    });
+
+    it('utplsql.runFile com arquivo ativo (sem cobertura)', async function () {
+      this.timeout(120_000);
+      const root = vscode.workspace.workspaceFolders?.[0]?.uri;
+      assert.ok(root, 'workspace folder required');
+      const fixtureUri = vscode.Uri.joinPath(
+        root,
+        'src',
+        'test',
+        'integration',
+        'fixtures',
+        'test_math.pks',
+      );
+      const doc = await vscode.workspace.openTextDocument(fixtureUri);
+      await vscode.window.showTextDocument(doc);
+      await vscode.commands.executeCommand('utplsql.runFile', fixtureUri);
+    });
+
+    it('utplsql.runFileCoverage com arquivo ativo', async function () {
+      this.timeout(120_000);
+      const root = vscode.workspace.workspaceFolders?.[0]?.uri;
+      assert.ok(root, 'workspace folder required');
+      const fixtureUri = vscode.Uri.joinPath(
+        root,
+        'src',
+        'test',
+        'integration',
+        'fixtures',
+        'test_math.pks',
+      );
+      const doc = await vscode.workspace.openTextDocument(fixtureUri);
+      await vscode.window.showTextDocument(doc);
+      await vscode.commands.executeCommand('utplsql.runFileCoverage', fixtureUri);
+    });
+
+    it('utplsql.runFolder com pasta fixtures', async function () {
+      this.timeout(120_000);
+      const root = vscode.workspace.workspaceFolders?.[0]?.uri;
+      assert.ok(root, 'workspace folder required');
+      const fixturesUri = vscode.Uri.joinPath(root, 'src', 'test', 'integration', 'fixtures');
+      await vscode.commands.executeCommand('utplsql.runFolder', fixturesUri);
+    });
+
+    it('utplsql.runFolderCoverage com pasta fixtures', async function () {
+      this.timeout(120_000);
+      const root = vscode.workspace.workspaceFolders?.[0]?.uri;
+      assert.ok(root, 'workspace folder required');
+      const fixturesUri = vscode.Uri.joinPath(root, 'src', 'test', 'integration', 'fixtures');
+      await vscode.commands.executeCommand('utplsql.runFolderCoverage', fixturesUri);
+    });
+
+    it('utplsql.additionalReporters com reporter extra', async function () {
+      this.timeout(120_000);
+      const config = vscode.workspace.getConfiguration('utplsql');
+      const original = config.inspect<string[]>('additionalReporters');
+      await config.update(
+        'additionalReporters',
+        ['UT_DOCUMENTATION_REPORTER'],
+        vscode.ConfigurationTarget.Workspace,
+      );
+      try {
+        await vscode.commands.executeCommand('utplsql.runAll');
+      } finally {
+        await config.update(
+          'additionalReporters',
+          original?.workspaceValue ?? original?.defaultValue ?? [],
+          vscode.ConfigurationTarget.Workspace,
+        );
       }
+    });
 
-      describe(`modo ${mode}`, () => {
-        it('utplsql.runAll executa todos os testes', async function () {
-          this.timeout(120_000);
-          await withInvocationMode(mode, async () => {
-            await vscode.commands.executeCommand('utplsql.runAll');
-          });
-        });
+    it('utplsql.rerunLast repete última execução', async function () {
+      this.timeout(120_000);
+      await vscode.commands.executeCommand('utplsql.runAll');
+      await vscode.commands.executeCommand('utplsql.rerunLast');
+    });
 
-        it('utplsql.runFile com arquivo ativo (sem cobertura)', async function () {
-          this.timeout(120_000);
-          const root = vscode.workspace.workspaceFolders?.[0]?.uri;
-          assert.ok(root, 'workspace folder required');
-          const fixtureUri = vscode.Uri.joinPath(
-            root,
-            'src',
-            'test',
-            'integration',
-            'fixtures',
-            'test_math.pks',
-          );
-          const doc = await vscode.workspace.openTextDocument(fixtureUri);
-          await vscode.window.showTextDocument(doc);
-          await withInvocationMode(mode, async () => {
-            await vscode.commands.executeCommand('utplsql.runFile', fixtureUri);
-          });
-        });
+    it('utplsql.runFailed executa sem erro', async function () {
+      this.timeout(120_000);
+      const root = vscode.workspace.workspaceFolders?.[0]?.uri;
+      assert.ok(root, 'workspace folder required');
+      const fixtureUri = vscode.Uri.joinPath(
+        root,
+        'src',
+        'test',
+        'integration',
+        'fixtures',
+        'test_math.pks',
+      );
+      await vscode.commands.executeCommand('utplsql.runFile', fixtureUri);
+      await vscode.commands.executeCommand('utplsql.runFailed');
+    });
 
-        it('utplsql.runFileCoverage com arquivo ativo', async function () {
-          this.timeout(120_000);
-          const root = vscode.workspace.workspaceFolders?.[0]?.uri;
-          assert.ok(root, 'workspace folder required');
-          const fixtureUri = vscode.Uri.joinPath(
-            root,
-            'src',
-            'test',
-            'integration',
-            'fixtures',
-            'test_math.pks',
-          );
-          const doc = await vscode.workspace.openTextDocument(fixtureUri);
-          await vscode.window.showTextDocument(doc);
-          await withInvocationMode(mode, async () => {
-            await vscode.commands.executeCommand('utplsql.runFileCoverage', fixtureUri);
-          });
-        });
-
-        it('utplsql.runFolder com pasta fixtures', async function () {
-          this.timeout(120_000);
-          const root = vscode.workspace.workspaceFolders?.[0]?.uri;
-          assert.ok(root, 'workspace folder required');
-          const fixturesUri = vscode.Uri.joinPath(root, 'src', 'test', 'integration', 'fixtures');
-          await withInvocationMode(mode, async () => {
-            await vscode.commands.executeCommand('utplsql.runFolder', fixturesUri);
-          });
-        });
-
-        it('utplsql.runFolderCoverage com pasta fixtures', async function () {
-          this.timeout(120_000);
-          const root = vscode.workspace.workspaceFolders?.[0]?.uri;
-          assert.ok(root, 'workspace folder required');
-          const fixturesUri = vscode.Uri.joinPath(root, 'src', 'test', 'integration', 'fixtures');
-          await withInvocationMode(mode, async () => {
-            await vscode.commands.executeCommand('utplsql.runFolderCoverage', fixturesUri);
-          });
-        });
-
-        it('utplsql.additionalReporters com reporter extra', async function () {
-          this.timeout(120_000);
-          const config = vscode.workspace.getConfiguration('utplsql');
-          const original = config.inspect<string[]>('additionalReporters');
-          await config.update(
-            'additionalReporters',
-            ['UT_DOCUMENTATION_REPORTER'],
-            vscode.ConfigurationTarget.Workspace,
-          );
-          try {
-            await withInvocationMode(mode, async () => {
-              await vscode.commands.executeCommand('utplsql.runAll');
-            });
-          } finally {
-            await config.update(
-              'additionalReporters',
-              original?.workspaceValue ?? original?.defaultValue ?? [],
-              vscode.ConfigurationTarget.Workspace,
-            );
-          }
-        });
-
-        it('utplsql.rerunLast repete última execução', async function () {
-          this.timeout(120_000);
-          await withInvocationMode(mode, async () => {
-            await vscode.commands.executeCommand('utplsql.runAll');
-            await vscode.commands.executeCommand('utplsql.rerunLast');
-          });
-        });
-
-        it('utplsql.runFailed executa sem erro', async function () {
-          this.timeout(120_000);
-          const root = vscode.workspace.workspaceFolders?.[0]?.uri;
-          assert.ok(root, 'workspace folder required');
-          const fixtureUri = vscode.Uri.joinPath(
-            root,
-            'src',
-            'test',
-            'integration',
-            'fixtures',
-            'test_math.pks',
-          );
-          await withInvocationMode(mode, async () => {
-            await vscode.commands.executeCommand('utplsql.runFile', fixtureUri);
-            await vscode.commands.executeCommand('utplsql.runFailed');
-          });
-        });
-      });
-    }
-
-    describe('modo oracle (pool)', () => {
-      it('reutiliza pool entre execuções e devolve conexões (PRD-38)', async function () {
+    describe('oracle pool (PRD-38)', () => {
+      it('reutiliza pool entre execuções e devolve conexões', async function () {
         this.timeout(120_000);
         let oracledb: typeof import('oracledb');
         try {
@@ -232,26 +194,15 @@ describe('utPLSQL extension', () => {
           this.skip();
           return;
         }
-        const config = vscode.workspace.getConfiguration('utplsql');
-        const original = config.inspect<string>('runnerMode');
-        await config.update('runnerMode', 'oracle', vscode.ConfigurationTarget.Workspace);
-        try {
-          await vscode.commands.executeCommand('utplsql.runAll');
-          await vscode.commands.executeCommand('utplsql.runAll');
-          const pool = oracledb.getPool();
-          assert.ok(pool, 'pool default não encontrado após execução oracle');
-          assert.strictEqual(pool.connectionsInUse, 0);
-          assert.ok(
-            pool.connectionsOpen >= 2,
-            `pool deveria manter poolMin(2) conexões, tem ${pool.connectionsOpen}`,
-          );
-        } finally {
-          await config.update(
-            'runnerMode',
-            original?.workspaceValue !== undefined ? original.workspaceValue : undefined,
-            vscode.ConfigurationTarget.Workspace,
-          );
-        }
+        await vscode.commands.executeCommand('utplsql.runAll');
+        await vscode.commands.executeCommand('utplsql.runAll');
+        const pool = oracledb.getPool();
+        assert.ok(pool, 'pool default não encontrado após execução');
+        assert.strictEqual(pool.connectionsInUse, 0);
+        assert.ok(
+          pool.connectionsOpen >= 2,
+          `pool deveria manter poolMin(2) conexões, tem ${pool.connectionsOpen}`,
+        );
       });
     });
 
@@ -279,6 +230,27 @@ describe('utPLSQL extension', () => {
             `URI virtual esperado para ${s.packageName}`,
           );
         }
+      });
+
+      it('provider utplsql-db abre a fonte de uma suite só-DB (PRD-65 RF1)', async function () {
+        this.timeout(60_000);
+        const conn = process.env.UTPLSQL_CONN as string;
+        const folders = vscode.workspace.workspaceFolders ?? [];
+        const { discoverSchemaFromDb } = await import('../../discovery.js');
+
+        const user = conn.split('/')[0];
+        const schemas = [...new Set([user, 'UTPLSQL_TEST'])];
+        const discovered = (
+          await Promise.all(schemas.map((schema) => discoverSchemaFromDb(conn, schema, folders)))
+        ).flat();
+        const suite =
+          discovered.find((s) => s.packageName.toLowerCase() === 'test_math') ?? discovered[0];
+        assert.ok(suite, 'esperava ao menos uma suite descoberta via ALL_SOURCE');
+
+        const doc = await vscode.workspace.openTextDocument(suite.uri);
+        const text = doc.getText();
+        assert.ok(text.length > 0, 'provider deveria retornar o fonte do package');
+        assert.ok(/PACKAGE/i.test(text), 'fonte deve conter a definição do package');
       });
 
       it('discoverSchemaFromDb com schema inexistente retorna vazio sem erro', async function () {
@@ -319,7 +291,7 @@ describe('utPLSQL extension', () => {
             origPattern?.workspaceValue !== undefined ? origPattern.workspaceValue : undefined,
             vscode.ConfigurationTarget.Workspace,
           );
-          await vscode.workspace.fs.delete(schemaDir, { recursive: true });
+          await vscode.workspace.fs.delete(vscode.Uri.joinPath(root, 'db'), { recursive: true });
           await vscode.commands.executeCommand('utplsql.refresh');
         }
       });

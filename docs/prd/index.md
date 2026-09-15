@@ -120,28 +120,62 @@ CONCLUIR
 | 44 | [Matching resultado→teste como função pura](completed/prd-44-pure-matching.md) | 0.11.0 | 2026-08-08 |
 | 45 | [Bundling com esbuild + poda do node-oracledb no VSIX](completed/prd-45-bundle-esbuild.md) | 0.11.0 | 2026-08-26 |
 | 46 | [Atualização de dependências major](completed/prd-46-dependency-majors.md) | 0.11.0 | 2026-08-29 |
+| 34 | [Multi-Connection Profiles](completed/prd-34-multi-connection-profiles.md) | 0.12.0 | 2026-09-04 |
+| 48 | [Function Coverage derivada (DeclarationCoverage)](completed/prd-48-function-coverage.md) | 0.12.0 | 2026-09-04 |
+| 12 | [Cobertura de código para objetos SQL (views, queries)](completed/prd-12-sql-coverage.md) | 0.12.0 | 2026-09-04 |
+| 33 | [PL/SQL Debugger Integration](completed/prd-33-plsql-debugger-integration.md) | 0.12.0 | 2026-09-04 |
+| 49 | [Internacionalização (i18n) dos conteúdos textuais](completed/prd-49-internacionalizacao.md) | 0.12.0 | 2026-09-04 |
+| 64 | [Migração para Oracle-Only: eliminação do utPLSQL-cli e Java](completed/prd-64-oracle-only-migration.md) | 0.12.0 | 2026-09-09 |
+| 63 | [Wiki bilíngue (pt-BR/en) + correção de links + limpeza de READMEs](completed/prd-63-diagram-i18n.md) | 0.12.0 | 2026-09-09 |
+| 62 | [Execução de scripts SQL contra perfil de conexão](completed/prd-62-run-scripts-against-profiles.md) | 0.12.0 | 2026-09-12 |
+| 65 | [Correções críticas de schema-mode e segurança](completed/prd-65-schema-mode-security-fixes.md) | 0.12.0 | 2026-09-15 |
+| 66 | [Robustez de conexão, logging e cache](completed/prd-66-connection-robustness-logging.md) | 0.12.0 | 2026-09-15 |
+| 68 | [Religar diagnostics e reporter de sessão perdidos na migração Oracle-only](completed/prd-68-restore-oracle-diagnostics-and-reporter.md) | 0.12.0 | 2026-09-15 |
+| 67 | [Qualidade, limpeza e performance](completed/prd-67-code-quality-cleanup.md) | 0.12.0 | 2026-09-15 |
 
 ### 🟡 Em desenvolvimento
 
-_(vazio — nenhuma PRD em implementação)_
+_(vazio — nenhuma PRD em desenvolvimento)_
 
 ### 🔵 Aprovados
 
-_(vazio — nenhuma PRD aprovada aguardando implementação)_
+_(vazio — nenhuma PRD aprovada)_
 
 ### ⚪ Propostos
 
-#### 0.12.0
+#### 0.13.0
 
 | # | PRD | Versão alvo | Data |
 |---|---|---|---|
-| 12 | [Cobertura de código para objetos SQL (views, queries)](proposed/prd-12-sql-coverage.md) | 0.12.0 | 2026-07-08 |
-| 33 | [PL/SQL Debugger Integration](proposed/prd-33-plsql-debugger-integration.md) | 0.12.0 | 2026-07-21 |
-| 34 | [Multi-Connection Profiles](proposed/prd-34-multi-connection-profiles.md) | 0.12.0 | 2026-07-21 |
-| 47 | [Node 26 no toolchain de desenvolvimento](proposed/prd-47-node-26-toolchain.md) | 0.12.0 | 2026-08-29 |
-| 48 | [Function Coverage derivada (DeclarationCoverage)](proposed/prd-48-function-coverage.md) | 0.12.0 | 2026-08-29 |
-| 49 | [Internacionalização (i18n) dos conteúdos textuais](proposed/prd-49-internacionalizacao.md) | 0.12.0 | 2026-08-29 |
+| 47 | [Node 26 no toolchain de desenvolvimento](proposed/prd-47-node-26-toolchain.md) | 0.13.0 | 2026-08-29 |
+| 69 | [Runner Oracle: binds tipados, `a_tags` e validação de reporters](proposed/prd-69-oracle-runner-typed-binds.md) | 0.13.0 | 2026-09-15 |
 
+#### 0.14.0
+
+| # | PRD | Versão alvo | Data |
+|---|---|---|---|
+| 50 | [Auto-run on Save (Watch Mode)](proposed/prd-50-auto-run-on-save.md) | 0.14.0 | 2026-09-06 |
+| 51 | [Execução e seleção por Tag (`%tags`)](proposed/prd-51-run-by-tag.md) | 0.14.0 | 2026-09-06 |
+| 52 | [Diff inline esperado × obtido nas falhas](proposed/prd-52-inline-diff-expected-actual.md) | 0.14.0 | 2026-09-06 |
+| 53 | [Debug de testes: variações (cursor, falhos, último)](proposed/prd-53-debug-test-variants.md) | 0.14.0 | 2026-09-06 |
+| 54 | [Toggle de cobertura na status bar](proposed/prd-54-coverage-toggle.md) | 0.14.0 | 2026-09-06 |
+
+#### 0.15.0
+
+| # | PRD | Versão alvo | Data |
+|---|---|---|---|
+| 55 | [Organização da árvore de testes por tag](proposed/prd-55-tag-organization.md) | 0.15.0 | 2026-09-06 |
+| 56 | [Duração por teste e persistência de resultados](proposed/prd-56-duration-persistence.md) | 0.15.0 | 2026-09-06 |
+| 57 | [Multi-root: resolução de `root`/`sourcePath` por folder](proposed/prd-57-multiroot-root-resolution.md) | 0.15.0 | 2026-09-06 |
+
+#### 0.16.0
+
+| # | PRD | Versão alvo | Data |
+|---|---|---|---|
+| 58 | [Run Related Tests](proposed/prd-58-run-related-tests.md) | 0.16.0 | 2026-09-06 |
+| 59 | [Scaffold de suíte de teste](proposed/prd-59-scaffold-suite.md) | 0.16.0 | 2026-09-06 |
+| 60 | [Cobertura de branch (investigação de viabilidade)](proposed/prd-60-branch-coverage-investigation.md) | — | 2026-09-06 |
+| 61 | [Auto-provisionamento do utPLSQL-cli](proposed/prd-61-cli-auto-provision.md) | 0.16.0 | 2026-09-06 |
 
 ---
 
@@ -193,16 +227,38 @@ docs/prd/
 │   ├── prd-42-suiteparser-annotations.md
 │   ├── prd-43-schema-db-discovery.md
 │   ├── prd-44-pure-matching.md
-│   └── prd-45-bundle-esbuild.md
-├── approved/         ← aprovados, aguardando implementação (vazio)
+│   ├── prd-45-bundle-esbuild.md
+│   ├── prd-46-dependency-majors.md
+│   ├── prd-12-sql-coverage.md
+│   ├── prd-33-plsql-debugger-integration.md
+│   ├── prd-34-multi-connection-profiles.md
+│   ├── prd-48-function-coverage.md
+│   ├── prd-49-internacionalizacao.md
+│   ├── prd-64-oracle-only-migration.md
+│   ├── prd-63-diagram-i18n.md
+│   ├── prd-62-run-scripts-against-profiles.md
+│   ├── prd-65-schema-mode-security-fixes.md
+│   ├── prd-66-connection-robustness-logging.md
+│   ├── prd-67-code-quality-cleanup.md
+│   └── prd-68-restore-oracle-diagnostics-and-reporter.md
+├── approved/         ← aprovados, aguardando implementação
+│   └── (vazio)
 ├── in-progress/      ← sendo implementados agora (vazio)
 └── proposed/         ← em avaliação
-    ├── prd-12-sql-coverage.md
-    ├── prd-33-plsql-debugger-integration.md
-    ├── prd-34-multi-connection-profiles.md
     ├── prd-47-node-26-toolchain.md
-    ├── prd-48-function-coverage.md
-    └── prd-49-internacionalizacao.md
+    ├── prd-50-auto-run-on-save.md
+    ├── prd-51-run-by-tag.md
+    ├── prd-52-inline-diff-expected-actual.md
+    ├── prd-53-debug-test-variants.md
+    ├── prd-54-coverage-toggle.md
+    ├── prd-55-tag-organization.md
+    ├── prd-56-duration-persistence.md
+    ├── prd-57-multiroot-root-resolution.md
+    ├── prd-58-run-related-tests.md
+    ├── prd-59-scaffold-suite.md
+    ├── prd-60-branch-coverage-investigation.md
+    ├── prd-61-cli-auto-provision.md
+    └── prd-69-oracle-runner-typed-binds.md
 ```
 
 ---

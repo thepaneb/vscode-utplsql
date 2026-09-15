@@ -1,5 +1,104 @@
 # Changelog
 
+## 0.12.0
+
+- **Cobertura PL/SQL**: corrige os gutters ausentes em `package`/`package body`,
+  `function`, `procedure`, `type body` e `trigger` (só views apareciam, via
+  `V$SQL`). A execução passava o diretório `utplsql.sourcePath` como
+  `a_file_paths` de `ut_file_mapper.build_file_mappings()`, que espera uma lista
+  de **arquivos** — o relatório Cobertura saía vazio (0 classes). O mapeamento
+  agora é feito no cliente (`mapDbPathsToFiles` + `resolveSourceUri`), com
+  fallback de extensão (`.sql`, `.pks`, `.pkb`, `.prc`, `.fnc`, `.trg`, `.tpb`,
+  `.bdy`) na resolução do arquivo-fonte.
+- **Validação de reporter**: `ut_runner.get_reporters_list()` devolve o nome
+  qualificado pelo schema (`UT3.UT_COVERAGE_COBERTURA_REPORTER`). A extensão
+  agora remove esse prefixo antes de comparar — sem isso a cobertura era
+  desabilitada com o aviso "UT_COVERAGE_COBERTURA_REPORTER not available" mesmo
+  com o reporter instalado, e o QuickPick de reporter adicional recebia nomes
+  qualificados e os descartava.
+
+- **Correções de execução e cobertura**: `DBMS_OUTPUT` dos testes agora é
+  habilitado e drenado na **mesma sessão** que executa o `ut_runner.run` (antes
+  a drenagem ocorria numa segunda conexão, sem saída); o XML do JUnit com
+  `<system-out><![CDATA[...]]>` fragmentado não corrompe mais o parse — as
+  linhas de conteúdo e o fechamento `]]>`, que não começam com `<`, passam a ser
+  roteadas para o XML enquanto o CDATA está aberto; reporter adicional com nome
+  inválido é ignorado (guard anti-injeção); schema owner resolvido via
+  `parseConnString` (TNS/SID/IPv6) em vez de `split('/')`; "Go to Error" testa
+  todas as raízes do workspace e prefere um arquivo existente; senhas de perfis
+  são reidratadas do SecretStorage ao recarregar a janela
+  (`hydrateProfilePasswords`); listener de cancelamento e timer de timeout são
+  liberados ao fim do run. Thresholds de cobertura do TypeScript sobem para 90%
+  linhas/statements, 85% branches e 90% funções (atual 97/91/97/97), com novos
+  testes unitários e de integração dos caminhos só-DB.
+
+- **Qualidade, limpeza e performance (PRD-67)**: `extension.ts` reduzido a
+  orquestrador (143 linhas) com os comandos extraídos para `src/commands/`
+  (`run`, `debug`, `script`, `profile`, `connection`, `utility`) e a árvore de
+  testes em `src/testTree.ts` (testável). Novo debounce do watcher
+  (`utplsql.refreshDebounceMs`, default 300 ms) coalesce saves rápidos;
+  debugger e script runner carregados sob demanda; paths cross-platform com
+  casing de drive e drives distintos; strings de runtime de `junit`/
+  `oracleRunner`/`discovery` roteadas pelo i18n; remoção de código morto da
+  era CLI (`checkCli`, `applyResults`/`applyCoverage`).
+- **Diagnostics e reporter de sessão (PRD-68)**: diagnóstico de compilação
+  PL/SQL religado — erros de `ALL_ERRORS` aparecem no Problems Panel (source
+  "utPLSQL Compilation") após um run, controlado por
+  `utplsql.compilationDiagnostics.enabled`. Reporter adicional volátil da
+  sessão passa a valer para a próxima execução; `UTPLSQL_BAD_CONN` é emitido em
+  falha de conexão; threshold de versão centralizado (3.1.0) e guard em
+  `extractSchemaFromPath` para padrões sem `{schema}`.
+
+- **Robustez de conexão, logging e cache (PRD-66)**: connection string aceita
+  TNS/SID/IPv6; logs de diagnóstico opt-in com `UTPLSQL_DEBUG=1`; pool recriado
+  ao mudar `utplsql.oraclePool*` (chave composta + `onDidChangeConfiguration`);
+  helper de conexão compartilhado; verificação real de grants de `DBMS_DEBUG`,
+  bind no debugger e `v$sql` restrito ao schema.
+
+- **Segurança de perfis e schema-mode (PRD-65)**: senhas de perfis passam a
+  ficar no cofre do SO (VS Code SecretStorage) — `utplsql.profiles` não guarda
+  mais a senha e perfis legados são migrados no primeiro uso. Credenciais com
+  `/` ou `@` na senha são aceitas. "Go to Error" abre suites descobertas apenas
+  no banco (provider de conteúdo `utplsql-db`), as decorações inline passam a
+  funcionar no modo `schema` e a ativação não pede mais conexão.
+
+- **Execução de scripts SQL contra perfis (PRD-62)**: rode scripts
+  SQL/PL/SQL (migrações, seeds, setup) contra um perfil de conexão via
+  `utPLSQL: Executar script` (editor), `utPLSQL: Executar arquivo de script`
+  e `utPLSQL: Executar pasta de scripts` (Explorer) — QuickPick de conexão
+  após a invocação, saída por statement no OutputChannel "utPLSQL Script".
+  Perfis ganham `description` (exibida no picker) e `charset`
+  (`utf8`/`latin1`/`win1252`, para ler arquivos no encoding correto).
+  Settings `utplsql.scriptRunner.*` (`stopOnError`, `autoCommit`,
+  `filePattern`, `dbmsOutput`, `timeoutSeconds`).
+
+- **Perfis de conexão (PRD-34)**: salve e alterne entre múltiplas conexões
+  Oracle (`utplsql.profiles` + `utplsql.activeProfile`) com configurações por
+  perfil (`sourcePath`, `coverageOwner`, `includePatterns`, além de
+  `description` e `charset`).
+  Comandos: Switch/New/Manage Connection Profile e Import do SQL Developer.
+  Status bar mostra o perfil ativo; sem perfil, comportamento inalterado.
+- **Function Coverage derivada (PRD-48)**: a view Test Coverage agora mostra
+  `% de declarações` por arquivo — declarações `PROCEDURE`/`FUNCTION` são
+  derivadas do fonte (hits por escopo) e emitidas como `DeclarationCoverage`
+  junto dos gutters por linha. Sem regressão nos percentuais existentes.
+- **Cobertura de views (PRD-12)**: `type_mapping` default inclui `views=VIEW`
+  (views aparecem no relatório com 0 hits); novo setting
+  `utplsql.sqlCoverageEnabled` rastreia views executadas via `V$SQL`
+  (cobertura booleana, off por default). Guia em `docs/wiki/Cobertura.md`.
+- **PL/SQL Debugger (PRD-33)**: debug de testes utPLSQL via `DBMS_DEBUG` —
+  breakpoints em `.pks`/`.pkb`, Step Into/Over/Out, Continue/Stop e inspeção
+  de variáveis locais (Debug Adapter `type: "utplsql"` + comando
+  `utplsql.debugTest`). Requer `node-oracledb` + grants `DBMS_DEBUG`/
+  `DEBUG CONNECT SESSION`. Settings `utplsql.debugger.*`. Integração com
+  banco real pendente de validação (suíte `describeDB`).
+- **Internacionalização (PRD-49)**: setting `utplsql.language`
+  (`auto` | 24 locais — 15 nativos do VSCode + 9 da comunidade) para as
+  mensagens de runtime: pt-br, en, en-gb, es, zh-cn, zh-tw, ja, de, fr,
+  it, ko, ru, tr, pl, cs, hu, bg, el, id, ro, sr, th, uk, vi; títulos de
+  comandos via `package.nls` (seguem o idioma do editor). `auto` em editor
+  `pt*` reproduz as mensagens atuais.
+
 ## 0.11.0
 
 - **Correções de primeira execução de cobertura no Windows (launcher CLI)**:

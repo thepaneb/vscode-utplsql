@@ -93,11 +93,11 @@ test('parseJUnit: failure tag auto-fechada sem message retorna string vazia', ()
   assert.strictEqual(cases[0].message, '');
 });
 
-test('parseJUnit: failure sem message e sem texto retorna Falhou', () => {
+test('parseJUnit: failure sem message e sem texto retorna undefined (i18n no chamador)', () => {
   const xml = `<testsuites><testsuite name="s"><testcase classname="s" name="f" time="0.1"><failure dummy="x"/></testcase></testsuite></testsuites>`;
   const cases = parseJUnit(xml);
   assert.strictEqual(cases[0].status, 'failed');
-  assert.strictEqual(cases[0].message, 'Falhou');
+  assert.strictEqual(cases[0].message, undefined);
 });
 
 test('parseJUnit: failure com message attr sem texto', () => {
@@ -166,4 +166,47 @@ test('isUserFrame: mantem frames de usuario', () => {
 
 test('isUserFrame: frame com line 0 e descartado', () => {
   assert.strictEqual(isUserFrame({ objectName: 'APP.X', line: 0 }), false);
+});
+
+test('parseJUnit: raiz sem testsuites (apenas testsuite) usa o doc', () => {
+  const xml = '<testsuite name="pkg" tests="1"><testcase name="t1" time="0.05"/></testsuite>';
+  const cases = parseJUnit(xml);
+  assert.strictEqual(cases.length, 1);
+  assert.strictEqual(cases[0].name, 't1');
+});
+
+test('parseJUnit: testcase sem classname herda o nome da suite', () => {
+  const xml =
+    '<testsuites><testsuite name="app"><testcase name="t1" time="0.05"/></testsuite></testsuites>';
+  const cases = parseJUnit(xml);
+  assert.strictEqual(cases[0].classname, 'app');
+});
+
+test('parseJUnit: testcase sem name resulta em vazio', () => {
+  const xml =
+    '<testsuites><testsuite name="app"><testcase classname="pkg" time="0.05"/></testsuite></testsuites>';
+  const cases = parseJUnit(xml);
+  assert.strictEqual(cases[0].name, '');
+});
+
+test('parseJUnit: tempo não numérico resulta em durationMs undefined', () => {
+  const xml =
+    '<testsuites><testsuite name="app"><testcase classname="pkg" name="t1" time="abc"/></testsuite></testsuites>';
+  const cases = parseJUnit(xml);
+  assert.strictEqual(cases[0].durationMs, undefined);
+});
+
+test('parseJUnit: testcase e suite sem name/classname resultam vazio', () => {
+  const xml = '<testsuites><testsuite tests="1"><testcase time="0.05"/></testsuite></testsuites>';
+  const cases = parseJUnit(xml);
+  assert.strictEqual(cases[0].classname, '');
+  assert.strictEqual(cases[0].name, '');
+});
+
+test('parseStackFrames: frame sem aspas usa grupo unquoted', () => {
+  const body = 'at APP.CALC, line 42\n';
+  const frames = parseStackFrames(body);
+  assert.ok(frames);
+  assert.strictEqual(frames?.[0]?.objectName, 'APP.CALC');
+  assert.strictEqual(frames?.[0]?.line, 42);
 });

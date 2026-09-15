@@ -11,41 +11,26 @@ import { __resetConfigValues, __setConfigValue, __setInputBoxResult } from '../v
 
 test('readConfig: defaults sao usados quando sem config', () => {
   const cfg = readConfig();
-  assert.strictEqual(cfg.cliPath, 'utplsql');
   assert.strictEqual(cfg.sourcePath, 'install');
-  assert.strictEqual(cfg.invocation, 'launcher');
-  assert.strictEqual(cfg.javaPath, 'java');
   assert.strictEqual(cfg.coverageOwner, '');
   assert.strictEqual(cfg.includePatterns.length, 1);
   assert.strictEqual(cfg.includePatterns[0], '**/*.pks');
   assert.strictEqual(cfg.timeoutMinutes, 60);
   assert.strictEqual(cfg.dbmsOutput, false);
-  assert.strictEqual(cfg.quiet, false);
-  assert.strictEqual(cfg.failureExitCode, 1);
 });
 
-test('readConfig: valores customizados sao lidos via vscode.getConfiguration', () => {
+test('readConfig: sqlCoverageEnabled default e false', () => {
   const cfg = readConfig();
-  assert.strictEqual(cfg.cliPath, 'utplsql');
-  assert.strictEqual(cfg.extraRunArgs.length, 0);
+  assert.strictEqual(cfg.sqlCoverageEnabled, false);
 });
 
-test('readConfig: novos settings CLI', () => {
+test('readConfig: scriptRunner defaults', () => {
   const cfg = readConfig();
-  assert.strictEqual(cfg.timeoutMinutes, 60);
-  assert.strictEqual(cfg.dbmsOutput, false);
-  assert.strictEqual(cfg.quiet, false);
-  assert.strictEqual(cfg.failureExitCode, 1);
-});
-
-test('readConfig: runnerMode default e auto', () => {
-  const cfg = readConfig();
-  assert.strictEqual(cfg.runnerMode, 'auto');
-});
-
-test('readConfig: javaArgs default e -Xmx256m', () => {
-  const cfg = readConfig();
-  assert.deepStrictEqual(cfg.javaArgs, ['-Xmx256m']);
+  assert.strictEqual(cfg.scriptRunnerStopOnError, true);
+  assert.strictEqual(cfg.scriptRunnerAutoCommit, true);
+  assert.strictEqual(cfg.scriptRunnerFilePattern, '**/*.{sql,pks,pkb,fnc,prc,trg}');
+  assert.strictEqual(cfg.scriptRunnerDbmsOutput, false);
+  assert.strictEqual(cfg.scriptRunnerTimeoutSeconds, 300);
 });
 
 async function withCleanResolve(fn: () => Promise<void>): Promise<void> {
@@ -190,6 +175,41 @@ test('resolveConnectionNoPrompt: usa setting utplsql.connection', () => {
     assert.strictEqual(resolveConnectionNoPrompt(), 'user/setting@db');
   } finally {
     process.env.UTPLSQL_CONN = origEnv;
+    __resetConfigValues();
+  }
+});
+
+test('resolveConnectionNoPrompt: usa perfil ativo antes do setting', () => {
+  __setConfigValue('profiles', [{ id: 'p1', name: 'DEV', connection: 'dev/profile@db' }]);
+  __setConfigValue('activeProfile', 'p1');
+  __setConfigValue('connection', 'user/setting@db');
+  const origEnv = process.env.UTPLSQL_CONN;
+  delete process.env.UTPLSQL_CONN;
+  try {
+    assert.strictEqual(resolveConnectionNoPrompt(), 'dev/profile@db');
+  } finally {
+    process.env.UTPLSQL_CONN = origEnv;
+    __resetConfigValues();
+  }
+});
+
+test('readConfig: perfil ativo sobrescreve settings globais', () => {
+  __setConfigValue('profiles', [
+    {
+      id: 'p1',
+      name: 'DEV',
+      connection: 'dev/pass@db',
+      sourcePath: 'db/dev',
+      coverageOwner: 'APP',
+    },
+  ]);
+  __setConfigValue('activeProfile', 'p1');
+  __setConfigValue('sourcePath', 'install');
+  try {
+    const cfg = readConfig();
+    assert.strictEqual(cfg.sourcePath, 'db/dev');
+    assert.strictEqual(cfg.coverageOwner, 'APP');
+  } finally {
     __resetConfigValues();
   }
 });

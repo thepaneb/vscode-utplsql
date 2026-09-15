@@ -1,8 +1,12 @@
+import * as fs from 'node:fs';
 import * as vscode from 'vscode';
 import { parseCobertura } from './cobertura';
+import { getExtensionLocale } from './config';
 import { resolveSourceUri } from './coverage';
+import { t } from './i18n';
 import { isUserFrame, type StackFrame, type TestCaseResult, type TestStatus } from './junit';
 import { buildMatchIndex, findByNameOnly, type MatchEntry } from './matching';
+import { deriveDeclarationCoverage } from './plsqlDeclarations';
 import type { TestStateManager } from './state';
 
 export interface RunResults {
@@ -62,10 +66,19 @@ export function resolveStackFrameToUri(
   }
 
   const folders = vscode.workspace.workspaceFolders;
-  if (folders) {
+  if (folders?.length) {
+    // Tenta todas as raízes do workspace, preferindo um arquivo que exista
+    // (case-insensitive); sem nenhum, mantém o primeiro candidato.
+    const names = [objName, userFrame.objectName];
+    let fallback: vscode.Location | undefined;
     for (const folder of folders) {
-      return new vscode.Location(vscode.Uri.joinPath(folder.uri, `${objName}.pks`), pos);
+      for (const name of names) {
+        const candidate = vscode.Uri.joinPath(folder.uri, `${name}.pks`);
+        fallback ??= new vscode.Location(candidate, pos);
+        if (fs.existsSync(candidate.fsPath)) return new vscode.Location(candidate, pos);
+      }
     }
+    if (fallback) return fallback;
   }
 
   return undefined;
@@ -77,6 +90,7 @@ export function applyResultsFromCases(
   run: vscode.TestRun,
   state: TestStateManager,
 ): Map<string, { status: TestStatus; message?: string }> {
+  const locale = getExtensionLocale();
   const resultMap = new Map<string, { status: TestStatus; message?: string }>();
 
   const entries: MatchEntry[] = [];
@@ -105,7 +119,7 @@ export function applyResultsFromCases(
         run.passed(item, c.durationMs);
         break;
       case 'failed': {
-        const msg = new vscode.TestMessage(c.message ?? 'Falhou');
+        const msg = new vscode.TestMessage(c.message ?? t(locale, 'results.failedFallback'));
         if (c.stackFrames) {
           const loc = resolveStackFrameToUri(c.stackFrames, state);
           if (loc) msg.location = loc;
@@ -114,7 +128,7 @@ export function applyResultsFromCases(
         break;
       }
       case 'error': {
-        const msg = new vscode.TestMessage(c.message ?? 'Erro');
+        const msg = new vscode.TestMessage(c.message ?? t(locale, 'results.errorFallback'));
         if (c.stackFrames) {
           const loc = resolveStackFrameToUri(c.stackFrames, state);
           if (loc) msg.location = loc;
@@ -128,14 +142,16 @@ export function applyResultsFromCases(
     }
   }
 
-  for (const t of leafTests) {
-    if (!matched.has(t)) {
-      const m = state.getMeta(t);
+  for (const item of leafTests) {
+    if (!matched.has(item)) {
+      const m = state.getMeta(item);
       run.appendOutput(
-        `[aviso] Nenhum resultado JUnit encontrado para "${t.id}".` +
-          (m && m.kind === 'test' ? ` packageName esperado: ${m.packageName}\r\n` : '\r\n'),
+        `${t(locale, 'runner.noJunitResult', { id: item.id })}` +
+          (m && m.kind === 'test'
+            ? `${t(locale, 'runner.noJunitResultPkg', { package: m.packageName })}\r\n`
+            : '\r\n'),
       );
-      run.skipped(t);
+      run.skipped(item);
     }
   }
 
@@ -150,6 +166,7 @@ export function applyCoverageFromXml(
   state: TestStateManager,
   folders?: readonly vscode.WorkspaceFolder[],
 ): void {
+  const locale = getExtensionLocale();
   state.clearCoverage();
   const files = parseCobertura(covXml);
   let mappedCount = 0;
@@ -165,6 +182,21 @@ export function applyCoverageFromXml(
       (l) => new vscode.StatementCoverage(l.hits, new vscode.Position(Math.max(0, l.line - 1), 0)),
     );
     if (details.length === 0) continue;
+
+    // Cobertura por declaração (PROCEDURE/FUNCTION) derivada do fonte local.
+    // Arquivo ilegível → só StatementCoverage (fallback silencioso).
+    try {
+      const srcText = fs.readFileSync(uri.fsPath, 'utf-8');
+      const declarations = deriveDeclarationCoverage(srcText, f.lines);
+      for (const d of declarations) {
+        details.push(
+          new vscode.DeclarationCoverage(d.name, d.executed, new vscode.Position(d.line, 0)),
+        );
+      }
+    } catch {
+      /* arquivo ilegível — sem declarações */
+    }
+
     const fc = vscode.FileCoverage.fromDetails(uri, details);
     state.setCoverage(uri.toString(), details);
     run.addCoverage(fc);
@@ -172,8 +204,6 @@ export function applyCoverageFromXml(
   }
 
   if (mappedCount === 0) {
-    run.appendOutput(
-      '\r\n[cobertura] nenhum arquivo mapeado. Ajuste "utplsql.sourcePath" para a pasta do código-fonte.\r\n',
-    );
+    run.appendOutput(`\r\n${t(locale, 'results.noMapped')}\r\n`);
   }
 }

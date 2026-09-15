@@ -9,7 +9,7 @@ test('formatResults: todos pass', () => {
   assert.strictEqual(fmt.icon, '$(testing-passed)');
   assert.match(fmt.text, /4\/4/);
   assert.match(fmt.text, /2\.5s/);
-  assert.match(fmt.tooltip, /4 passed/);
+  assert.match(fmt.tooltip, /4 aprovados/);
 });
 
 test('formatResults: com falhas', () => {
@@ -17,23 +17,23 @@ test('formatResults: com falhas', () => {
   assert.strictEqual(fmt.icon, '$(testing-failed)');
   assert.match(fmt.text, /3\/5/);
   assert.match(fmt.text, /5\.1s/);
-  assert.match(fmt.tooltip, /3 passed/);
-  assert.match(fmt.tooltip, /2 failed/);
+  assert.match(fmt.tooltip, /3 aprovados/);
+  assert.match(fmt.tooltip, /2 falhas/);
 });
 
 test('formatResults: com erros', () => {
   const fmt = formatResults(0, 0, 0, 2, 1000);
   assert.strictEqual(fmt.icon, '$(testing-failed)');
   assert.match(fmt.text, /0\/2/);
-  assert.match(fmt.tooltip, /2 errored/);
+  assert.match(fmt.tooltip, /2 erros/);
 });
 
 test('formatResults: com skipped', () => {
   const fmt = formatResults(5, 1, 2, 0, 3000);
   assert.strictEqual(fmt.icon, '$(testing-failed)');
   assert.match(fmt.text, /5\/8/);
-  assert.match(fmt.tooltip, /5 passed/);
-  assert.match(fmt.tooltip, /2 skipped/);
+  assert.match(fmt.tooltip, /5 aprovados/);
+  assert.match(fmt.tooltip, /2 pulados/);
 });
 
 test('formatResults: tooltip com duracao', () => {
@@ -85,4 +85,22 @@ test('UtplsqlStatusBar: dispose nao lanca erro', () => {
   __setConfigValue('statusBar.enabled', true);
   const sb = new UtplsqlStatusBar();
   assert.doesNotThrow(() => sb.dispose());
+});
+
+test('showIdle/showResults: com perfil ativo mostra o perfil (branch)', () => {
+  __setConfigValue('statusBar.enabled', true);
+  __setConfigValue('profiles', [{ id: 'p1', name: 'DEV', connection: 'c' }]);
+  __setConfigValue('activeProfile', 'p1');
+  const sb = new UtplsqlStatusBar();
+  assert.doesNotThrow(() => sb.showIdle());
+  assert.doesNotThrow(() => sb.showResults(1, 0, 0, 0, 500));
+  sb.dispose();
+});
+
+test('showRunning: chamadas dentro de 200ms retornam cedo (branch)', () => {
+  __setConfigValue('statusBar.enabled', true);
+  const sb = new UtplsqlStatusBar();
+  sb.showRunning(1, 2);
+  sb.showRunning(2, 2);
+  sb.dispose();
 });

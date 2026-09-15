@@ -6,7 +6,7 @@ Ferramentas e infraestrutura de desenvolvimento do projeto.
 
 | Script | Descrição |
 |---|---|
-| `npm install` | Instala dependências (inclui `oracledb` como optional) |
+| `npm install` | Instala dependências (inclui `oracledb` em `dependencies`) |
 | `npm run compile` | `tsc -p ./` → compila para `out/` |
 | `npm run watch` | Compilação incremental |
 | `npm run lint` | `biome check src/` |
@@ -14,7 +14,7 @@ Ferramentas e infraestrutura de desenvolvimento do projeto.
 | `npm run format` | `biome format --write src/` |
 | `npm test` | = `test:unit` |
 | `npm run test:unit` | `pretest:unit` (compile + lint) → `node scripts/run-tests.cjs` |
-| `npm run test:coverage` | `compile` → `c8 node --require ./scripts/test-setup.cjs --test out/test/unit/**/*.test.js` |
+| `npm run test:coverage` | `compile` → `c8 node --experimental-test-module-mocks --require ./scripts/test-setup.cjs --test out/test/unit/**/*.test.js` |
 | `npm run test:integration` | `pretest:integration` (compile + bundle) → `vscode-test` |
 | `npm run bundle` | `node esbuild.config.mjs` → `dist/extension.js` (**entry point real da extensão**) |
 | `npm run package` | `compile && bundle && vsce package` → `.vsix` |
@@ -42,10 +42,10 @@ Ferramentas e infraestrutura de desenvolvimento do projeto.
   "exclude": ["out/test/**", "src/test/**"],
   "reporter": ["text", "lcov", "html"],
   "check-coverage": true,
-  "lines": 65,
-  "branches": 80,
-  "functions": 70,
-  "statements": 65
+  "lines": 90,
+  "branches": 85,
+  "functions": 90,
+  "statements": 90
 }
 ```
 
@@ -62,12 +62,12 @@ Ferramentas e infraestrutura de desenvolvimento do projeto.
 
 ### Coverage atual (aprox. — pode variar por PRD)
 
-| Métrica | Threshold | Atual (v0.11.0) |
+| Métrica | Threshold | Atual (v0.12.0) |
 |---|---|---|
-| Lines | 65% | 89.7% |
-| Branches | 80% | 85.0% |
-| Functions | 70% | 95.2% |
-| Statements | 65% | 89.7% |
+| Lines | 90% | 97.2% |
+| Branches | 85% | 90.7% |
+| Functions | 90% | 97.3% |
+| Statements | 90% | 97.2% |
 
 ## Testes unitários
 
@@ -76,29 +76,32 @@ Ferramentas e infraestrutura de desenvolvimento do projeto.
 ```
 src/test/
 ├── unit/
-│   ├── cli.test.ts
-│   ├── cliEncoding.test.ts
-│   ├── cliInfo.test.ts
-│   ├── cliReporters.test.ts
 │   ├── cobertura.test.ts
 │   ├── codelens.test.ts
-│   ├── compilationDiagnostics.test.ts
 │   ├── config.test.ts
+│   ├── connectionProfiles.test.ts
 │   ├── coverage.test.ts
+│   ├── dbmsDebug.test.ts
+│   ├── debugger.test.ts
 │   ├── decorations.test.ts
 │   ├── discovery.test.ts
-│   ├── invocation.test.ts
+│   ├── i18n.test.ts
 │   ├── junit.test.ts
 │   ├── matching.test.ts
 │   ├── oracleRunner.test.ts
+│   ├── oracledb-default-absent.test.ts
+│   ├── oracledb-missing-catch.test.ts
+│   ├── plsqlDeclarations.test.ts
 │   ├── quickfix.test.ts
 │   ├── rerun.test.ts
 │   ├── results.test.ts
 │   ├── runner.test.ts
+│   ├── scriptRunner.test.ts
 │   ├── setup.ts
 │   ├── state.test.ts
 │   ├── statusBar.test.ts
-│   └── suiteParser.test.ts
+│   ├── suiteParser.test.ts
+│   └── viewCoverage.test.ts
 ├── integration/
 │   └── extension.test.ts
 ├── fixtures/           (Oracle DB fixtures)
@@ -109,7 +112,7 @@ src/test/
 
 `scripts/run-tests.cjs`:
 1. Encontra recursivamente `out/test/unit/**/*.test.js`
-2. Executa `node --require scripts/test-setup.cjs --test <files>`
+2. Executa `node --experimental-test-module-mocks --require scripts/test-setup.cjs --test <files>`
 
 `scripts/test-setup.cjs`: carrega `out/test/vscode-stub.js` como mock global.
 
@@ -166,8 +169,6 @@ Setup em `.vscode-test.mjs`. Sobe instância VSCode via `@vscode/test-cli`.
 
 Testes com banco (`describeDB`) exigem `.env` na raiz com:
 - `UTPLSQL_CONN` — string de conexão Oracle
-- `UTPLSQL_CLI_PATH` — caminho do executável utPLSQL-cli
-- `UTPLSQL_CLI_HOME` — raiz do CLI (obrigatório no modo `java`)
 
 Sem `.env`, `describeDB` é pulado (`describe.skip`).
 

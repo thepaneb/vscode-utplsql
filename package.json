@@ -2,7 +2,7 @@
   "name": "vscode-utplsql",
   "displayName": "utPLSQL Test Runner",
   "description": "Roda testes utPLSQL pelo Test Explorer do VSCode, com menu de contexto e cobertura visual (estilo pytest).",
-  "version": "0.11.0",
+  "version": "0.12.0",
   "publisher": "paneb",
   "author": "Gil Cleber Barboza",
   "license": "MIT",
@@ -42,15 +42,70 @@
     "configuration": {
       "title": "utPLSQL",
       "properties": {
+        "utplsql.profiles": {
+          "type": "array",
+          "default": [],
+          "markdownDescription": "Perfis de conexão Oracle salvos para alternar rapidamente entre ambientes (DEV, TEST, PROD). Cada perfil pode sobrescrever `connection`, `sourcePath`, `coverageOwner`, etc. **A senha fica em texto plano nas settings** — prefira `env`/`UTPLSQL_CONN` para produção.",
+          "items": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string"
+              },
+              "name": {
+                "type": "string"
+              },
+              "connection": {
+                "type": "string"
+              },
+              "description": {
+                "type": "string",
+                "description": "Descrição amigável exibida no picker de conexão."
+              },
+              "charset": {
+                "type": "string",
+                "enum": [
+                  "utf8",
+                  "latin1",
+                  "win1252"
+                ],
+                "default": "utf8",
+                "description": "Encoding para ler arquivos de script (runScriptFile/runScriptFolder). Omitido = utf8."
+              },
+              "sourcePath": {
+                "type": "string"
+              },
+              "coverageOwner": {
+                "type": "string"
+              },
+              "includePatterns": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "isDefault": {
+                "type": "boolean"
+              },
+              "lastUsed": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "name",
+              "connection"
+            ]
+          }
+        },
+        "utplsql.activeProfile": {
+          "type": "string",
+          "default": "",
+          "markdownDescription": "ID do perfil de conexão ativo (`utplsql.profiles`). Quando definido, sobrescreve `utplsql.connection`."
+        },
         "utplsql.connection": {
           "type": "string",
           "default": "",
           "markdownDescription": "String de conexão Oracle (`usuario/senha@//host:porta/servico`). Se vazio, usa a variável de ambiente `UTPLSQL_CONN`; se ainda assim vazio, a extensão pergunta (e mantém só na sessão). **Recomendado deixar vazio e usar a variável de ambiente** para não gravar a senha nas settings."
-        },
-        "utplsql.cliPath": {
-          "type": "string",
-          "default": "utplsql",
-          "description": "Caminho do executável do utPLSQL-cli. Use o caminho completo se não estiver no PATH (ex.: C:\\tools\\utPLSQL-cli\\bin\\utplsql.bat)."
         },
         "utplsql.sourcePath": {
           "type": "string",
@@ -67,84 +122,22 @@
           ],
           "description": "Globs para descobrir os specs de teste que contêm as annotations %suite/%test."
         },
-        "utplsql.extraRunArgs": {
-          "type": "array",
-          "items": {
-            "type": "string"
-          },
-          "default": [],
-          "description": "Argumentos extras passados ao 'utplsql run' (ex.: [\"-color\"])."
-        },
         "utplsql.coverageOwner": {
           "type": "string",
           "default": "",
           "description": "Schema dono dos objetos para o mapeamento de cobertura. Se vazio, usa o usuário da conexão (parte antes de '/'), em maiúsculas."
-        },
-        "utplsql.coverageSourceArgs": {
-          "type": "array",
-          "items": {
-            "type": "string"
-          },
-          "default": [
-            "-regex_expression=.*[/\\\\](\\w+)[/\\\\](\\w+)\\.sql$",
-            "-type_subexpression=1",
-            "-name_subexpression=2",
-            "-type_mapping=packages=PACKAGE BODY/functions=FUNCTION/procedures=PROCEDURE/triggers=TRIGGER"
-          ],
-          "markdownDescription": "Args do utPLSQL-cli para mapear a cobertura aos arquivos-fonte (estrutura `sourcePath/<tipo>/<nome>.sql`). O default casa as pastas `functions/`, `procedures/`, `packages/`, `triggers/`. Sem isso, a cobertura sai por nome de objeto (sem gutters)."
-        },
-        "utplsql.invocation": {
-          "type": "string",
-          "enum": [
-            "launcher",
-            "java"
-          ],
-          "default": "launcher",
-          "markdownDescription": "Como invocar o utPLSQL-cli. `launcher` (padrão): via o executável `utplsql`/`.bat`. `java`: chama a JVM direto (`java -cp … org.utplsql.cli.Cli`), **sem shell** — evita o `cmd` e o tratamento de metacaracteres (útil para regex em `coverageSourceArgs`)."
-        },
-        "utplsql.javaPath": {
-          "type": "string",
-          "default": "java",
-          "description": "Executável do Java (no PATH ou caminho completo). Usado apenas no modo de invocação 'java'."
-        },
-        "utplsql.javaArgs": {
-          "type": "array",
-          "items": {
-            "type": "string"
-          },
-          "default": [
-            "-Xmx256m"
-          ],
-          "markdownDescription": "Flags JVM usadas no modo `java` (ex.: `[\"-Xmx512m\", \"-Xms128m\"]`). Inseridas **antes** de `-cp`. Vazio = nenhuma flag."
-        },
-        "utplsql.cliHome": {
-          "type": "string",
-          "default": "",
-          "description": "Raiz do utPLSQL-cli (pasta que contém bin/ e lib/). Vazio = derivado do cliPath. Usado apenas no modo de invocação 'java'."
         },
         "utplsql.timeoutMinutes": {
           "type": "number",
           "default": 60,
           "minimum": 1,
           "maximum": 1440,
-          "description": "Timeout em minutos para o utPLSQL-cli (flag -t)."
+          "description": "Timeout de uma execução de testes, em minutos. Ao expirar, a execução é cancelada."
         },
         "utplsql.dbmsOutput": {
           "type": "boolean",
           "default": false,
-          "description": "Habilita DBMS_OUTPUT na sessão de teste (flag -D). Útil para debugar."
-        },
-        "utplsql.quiet": {
-          "type": "boolean",
-          "default": false,
-          "description": "Suprime logs informativos do CLI (flag -q). Útil para CI ou output mais limpo."
-        },
-        "utplsql.failureExitCode": {
-          "type": "number",
-          "default": 1,
-          "minimum": 0,
-          "maximum": 255,
-          "description": "Código de saída quando há falha (flag --failure-exit-code). 0 faz o CLI sempre exitar com sucesso."
+          "description": "Captura o DBMS_OUTPUT da sessão de teste e anexa à saída da execução. Útil para depurar."
         },
         "utplsql.additionalReporters": {
           "type": "array",
@@ -153,16 +146,6 @@
           },
           "default": [],
           "description": "Reporters adicionais para incluir em toda execução (ex.: [\"ut_coverage_html_reporter\"]). Os reporters padrão (documentation, junit e cobertura) são sempre incluídos."
-        },
-        "utplsql.runnerMode": {
-          "type": "string",
-          "enum": [
-            "auto",
-            "cli",
-            "oracle"
-          ],
-          "default": "auto",
-          "markdownDescription": "Modo de execução dos testes. `auto` — tenta Oracle direto (via `node-oracledb`), fallback para CLI. `cli` — sempre via linha de comando (comportamento atual). `oracle` — sempre via conexão direta (erro se `oracledb` não disponível)."
         },
         "utplsql.oraclePoolMin": {
           "type": "number",
@@ -206,6 +189,12 @@
           "default": "db/{schema}/**",
           "markdownDescription": "Padrão glob para extrair o nome do schema a partir do caminho do arquivo. Use `{schema}` como placeholder. Ex: `db/{schema}/**` extrai `APP` de `db/APP/tests/ut_foo.pks`. Só usado quando `#utplsql.organization#` é `schema`."
         },
+        "utplsql.refreshDebounceMs": {
+          "type": "number",
+          "default": 300,
+          "minimum": 0,
+          "description": "Debounce (ms) para coalescer eventos do watcher de arquivos .pks/.pkb antes de atualizar o Test Explorer."
+        },
         "utplsql.codeLens.enabled": {
           "type": "boolean",
           "default": true,
@@ -229,100 +218,219 @@
         "utplsql.setupDiagnostics.enabled": {
           "type": "boolean",
           "default": true,
-          "description": "Exibe diagnósticos de configuração (CLI, conexão, grants, versão) no Problems Panel e oferece quick-fix actions."
+          "description": "Exibe diagnósticos de configuração (conexão, grants, versão) no Problems Panel e oferece quick-fix actions."
+        },
+        "utplsql.sqlCoverageEnabled": {
+          "type": "boolean",
+          "default": false,
+          "markdownDescription": "Habilita rastreio de views via `V$SQL` (cobertura booleana: executada = 100%, não executada = 0%). Requer `GRANT SELECT ON V$SQL` no Oracle. Views já aparecem no relatório com 0 hits via `type_mapping` mesmo desligado."
+        },
+        "utplsql.debugger.enabled": {
+          "type": "boolean",
+          "default": true,
+          "description": "Habilita o suporte a debug de testes PL/SQL (DBMS_DEBUG). Requer node-oracledb e grants."
+        },
+        "utplsql.debugger.stopOnException": {
+          "type": "boolean",
+          "default": true,
+          "description": "Pausa automaticamente em exceções PL/SQL durante o debug."
+        },
+        "utplsql.debugger.timeoutSeconds": {
+          "type": "number",
+          "default": 300,
+          "minimum": 30,
+          "description": "Timeout (s) da sessão de debug para evitar conexões Oracle zumbis."
+        },
+        "utplsql.scriptRunner.stopOnError": {
+          "type": "boolean",
+          "default": true,
+          "description": "Para a execução do script na primeira falha (false = continua registrando as demais)."
+        },
+        "utplsql.scriptRunner.autoCommit": {
+          "type": "boolean",
+          "default": true,
+          "description": "autoCommit em cada statement do script."
+        },
+        "utplsql.scriptRunner.filePattern": {
+          "type": "string",
+          "default": "**/*.{sql,pks,pkb,fnc,prc,trg}",
+          "description": "Globs para listar arquivos na execução de pasta de scripts."
+        },
+        "utplsql.scriptRunner.dbmsOutput": {
+          "type": "boolean",
+          "default": false,
+          "description": "Captura e exibe DBMS_OUTPUT durante a execução do script."
+        },
+        "utplsql.scriptRunner.timeoutSeconds": {
+          "type": "number",
+          "default": 300,
+          "minimum": 30,
+          "description": "Timeout (s) por statement do script (callTimeout)."
+        },
+        "utplsql.language": {
+          "type": "string",
+          "enum": [
+            "auto",
+            "pt-br",
+            "en",
+            "en-gb",
+            "es",
+            "zh-cn",
+            "zh-tw",
+            "ja",
+            "de",
+            "fr",
+            "it",
+            "ko",
+            "ru",
+            "tr",
+            "pl",
+            "cs",
+            "hu",
+            "bg",
+            "el",
+            "id",
+            "ro",
+            "sr",
+            "th",
+            "uk",
+            "vi"
+          ],
+          "default": "auto",
+          "markdownDescription": "Idioma dos conteúdos textuais da extensão. `auto` segue o idioma do VSCode (15 nativos + bg, el, en-gb, id, ro, sr, th, uk, vi; senão en)."
         }
       }
     },
     "commands": [
       {
         "command": "utplsql.showTestExplorer",
-        "title": "Mostrar Test Explorer",
+        "title": "%nls.command.showTestExplorer%",
         "category": "utPLSQL"
       },
       {
         "command": "utplsql.runLens",
-        "title": "Executar teste (CodeLens)",
+        "title": "%nls.command.runLens%",
         "category": "utPLSQL"
       },
       {
         "command": "utplsql.refresh",
-        "title": "Atualizar testes",
+        "title": "%nls.command.refresh%",
         "category": "utPLSQL",
         "icon": "$(refresh)"
       },
       {
         "command": "utplsql.runAll",
-        "title": "Rodar todos os testes",
+        "title": "%nls.command.runAll%",
         "category": "utPLSQL"
       },
       {
         "command": "utplsql.runFile",
-        "title": "utPLSQL: Rodar testes deste arquivo",
+        "title": "%nls.command.runFile%",
         "category": "utPLSQL"
       },
       {
         "command": "utplsql.runFileCoverage",
-        "title": "utPLSQL: Rodar testes deste arquivo (com cobertura)",
+        "title": "%nls.command.runFileCoverage%",
         "category": "utPLSQL"
       },
       {
         "command": "utplsql.runFolder",
-        "title": "utPLSQL: Rodar testes desta pasta",
+        "title": "%nls.command.runFolder%",
         "category": "utPLSQL"
       },
       {
         "command": "utplsql.runFolderCoverage",
-        "title": "utPLSQL: Rodar testes desta pasta (com cobertura)",
+        "title": "%nls.command.runFolderCoverage%",
         "category": "utPLSQL"
       },
       {
         "command": "utplsql.cancelRun",
-        "title": "Cancelar execução",
+        "title": "%nls.command.cancelRun%",
         "category": "utPLSQL"
       },
       {
         "command": "utplsql.clearConnection",
-        "title": "Limpar conexão da sessão",
+        "title": "%nls.command.clearConnection%",
         "category": "utPLSQL"
       },
       {
         "command": "utplsql.showInfo",
-        "title": "Mostrar informações do utPLSQL",
+        "title": "%nls.command.showInfo%",
         "category": "utPLSQL"
       },
       {
         "command": "utplsql.selectReporter",
-        "title": "Selecionar reporter adicional...",
+        "title": "%nls.command.selectReporter%",
         "category": "utPLSQL"
       },
       {
         "command": "utplsql.rerunLast",
-        "title": "utPLSQL: Rerun Last",
+        "title": "%nls.command.rerunLast%",
         "category": "utPLSQL"
       },
       {
         "command": "utplsql.runAtCursor",
-        "title": "utPLSQL: Run Test at Cursor",
+        "title": "%nls.command.runAtCursor%",
         "category": "utPLSQL"
       },
       {
         "command": "utplsql.runFailed",
-        "title": "utPLSQL: Run Failed Tests",
+        "title": "%nls.command.runFailed%",
         "category": "utPLSQL"
       },
       {
         "command": "utplsql.configureConnection",
-        "title": "Configurar conexão",
+        "title": "%nls.command.configureConnection%",
         "category": "utPLSQL"
       },
       {
         "command": "utplsql.copyGrantsToClipboard",
-        "title": "Copiar grants de cobertura para clipboard",
+        "title": "%nls.command.copyGrantsToClipboard%",
         "category": "utPLSQL"
       },
       {
         "command": "utplsql.validateSetup",
-        "title": "Validar configuração",
+        "title": "%nls.command.validateSetup%",
+        "category": "utPLSQL"
+      },
+      {
+        "command": "utplsql.switchProfile",
+        "title": "%nls.command.switchProfile%",
+        "category": "utPLSQL"
+      },
+      {
+        "command": "utplsql.newProfile",
+        "title": "%nls.command.newProfile%",
+        "category": "utPLSQL"
+      },
+      {
+        "command": "utplsql.manageProfiles",
+        "title": "%nls.command.manageProfiles%",
+        "category": "utPLSQL"
+      },
+      {
+        "command": "utplsql.importSqlDevConnections",
+        "title": "%nls.command.importSqlDevConnections%",
+        "category": "utPLSQL"
+      },
+      {
+        "command": "utplsql.debugTest",
+        "title": "%nls.command.debugTest%",
+        "category": "utPLSQL"
+      },
+      {
+        "command": "utplsql.runScript",
+        "title": "%nls.command.runScript%",
+        "category": "utPLSQL"
+      },
+      {
+        "command": "utplsql.runScriptFile",
+        "title": "%nls.command.runScriptFile%",
+        "category": "utPLSQL"
+      },
+      {
+        "command": "utplsql.runScriptFolder",
+        "title": "%nls.command.runScriptFolder%",
         "category": "utPLSQL"
       }
     ],
@@ -337,6 +445,16 @@
           "command": "utplsql.runFileCoverage",
           "group": "utplsql@2",
           "when": "resourceExtname == .pks || resourceExtname == .pkb"
+        },
+        {
+          "command": "utplsql.runScriptFile",
+          "group": "utplsql@3",
+          "when": "resourceExtname == .sql || resourceExtname == .pks || resourceExtname == .pkb || resourceExtname == .fnc || resourceExtname == .prc || resourceExtname == .trg"
+        },
+        {
+          "command": "utplsql.runScriptFolder",
+          "group": "utplsql@3",
+          "when": "explorerResourceIsFolder"
         },
         {
           "command": "utplsql.runFolder",
@@ -359,6 +477,11 @@
           "command": "utplsql.runFileCoverage",
           "group": "utplsql@2",
           "when": "resourceExtname == .pks || resourceExtname == .pkb"
+        },
+        {
+          "command": "utplsql.runScript",
+          "group": "utplsql@3",
+          "when": "resourceExtname == .sql || resourceExtname == .pks || resourceExtname == .pkb || resourceExtname == .fnc || resourceExtname == .prc || resourceExtname == .trg"
         }
       ]
     },
@@ -424,6 +547,34 @@
       }
     ]
   },
+  "debuggers": [
+    {
+      "type": "utplsql",
+      "label": "utPLSQL Debugger",
+      "configurationAttributes": {
+        "launch": {
+          "properties": {
+            "packageName": {
+              "type": "string",
+              "description": "Test package to debug"
+            },
+            "testName": {
+              "type": "string",
+              "description": "Specific test procedure"
+            },
+            "connection": {
+              "type": "string",
+              "description": "Oracle connection string"
+            },
+            "stopOnException": {
+              "type": "boolean",
+              "default": true
+            }
+          }
+        }
+      }
+    }
+  ],
   "scripts": {
     "vscode:prepublish": "npm run compile && npm run bundle",
     "compile": "tsc -p ./",
@@ -436,20 +587,21 @@
     "pretest:integration": "npm run compile && npm run bundle",
     "test:integration": "vscode-test",
     "test": "npm run test:unit",
-    "test:coverage": "npm run compile && c8 node --require ./scripts/test-setup.cjs --test out/test/unit/**/*.test.js",
+    "test:coverage": "npm run compile && c8 node --experimental-test-module-mocks --require ./scripts/test-setup.cjs --test out/test/unit/**/*.test.js",
     "bundle": "node esbuild.config.mjs",
     "package": "npm run compile && npm run bundle && vsce package",
     "gen-icon": "node scripts/gen-icon.cjs",
     "gen-diagram": "node scripts/gen-diagrams.cjs",
+    "brain:sync": "node scripts/brain.cjs sync",
+    "brain:check": "node scripts/brain.cjs check",
+    "docs:check": "node scripts/docs-check.cjs",
     "sync-prds": "node scripts/sync-prds.cjs",
+    "pr:create": "node scripts/create-pr.cjs",
     "publish": "node scripts/publish.cjs",
     "publish:patch": "echo '⚠️ Publicacao apenas via GitHub workflow (release). Use npm run package para .vsix local.' && exit 1"
   },
   "dependencies": {
     "fast-xml-parser": "^5.11.1",
-    "iconv-lite": "^0.7.3"
-  },
-  "optionalDependencies": {
     "oracledb": "^7.0.1"
   },
   "devDependencies": {
@@ -465,5 +617,9 @@
     "c8": "^12.0.0",
     "esbuild": "^0.28.2",
     "typescript": "^7.0.2"
+  },
+  "overrides": {
+    "diff": "8.0.3",
+    "serialize-javascript": "7.0.5"
   }
 }

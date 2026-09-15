@@ -62,7 +62,7 @@ class UtplsqlStatusBar implements vscode.Disposable
 ```
 
 Métodos:
-- `showIdle()` — estado inicial: `$(beaker) utPLSQL`
+- `showIdle()` — estado inicial: `$(beaker) utPLSQL`; com perfil ativo: `$(database) <perfil>`
 - `showRunning(current, total)` — progresso: `$(sync~spin) Running N/M suites` (throttle 200ms)
 - `showResults(passed, failed, skipped, errored, durationMs)` — resultado final
 - `dispose()` — limpeza
@@ -74,7 +74,7 @@ Respeita `utplsql.statusBar.enabled` (se `false`, métodos são no-op).
 - `extension.ts`: instanciado no `activate()`, registrado em `context.subscriptions`
 - `extension.ts` `runWithProgress`: `onSuiteStart` → `showRunning`, `onComplete` →
   `showResults` (callbacks repassados a `executeRun`)
-- Clique no item → comando `utplsql.showTestExplorer`
+- Clique no item → comando `utplsql.switchProfile`
 
 ## Decorações inline (`src/decorations.ts`)
 

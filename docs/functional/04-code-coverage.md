@@ -6,11 +6,11 @@ mapeada para arquivos fonte do workspace.
 ## Fluxo
 
 ```
-utPLSQL CLI / Oracle direto
+Oracle direto
     │
-    └─► ut_coverage_cobertura_reporter → coverage.xml (ou buffer Oracle)
+    └─► ut_coverage_cobertura_reporter → coverage.xml (buffer Oracle)
             │
-            │   (modo Oracle) mapDbPathsToFiles(xml) → troca filename objeto→arquivo
+            │   mapDbPathsToFiles(xml) → troca filename objeto→arquivo
             │
             ├─► parseCobertura(xml) → FileLines[]
             │       └─► file, lines[] (line, hits)
@@ -18,7 +18,7 @@ utPLSQL CLI / Oracle direto
             ├─► resolveSourceUri(file, workspaceRoot, sourcePath, folderRoot?)
             │       └─► mapeia nome de objeto Oracle → arquivo .sql local
             │
-            └─► applyCoverage(coveragePath, root, sourcePath, run, state, folders)
+            └─► applyCoverageFromXml(covXml, sourcePath, _root, run, state, folders)
                     │
                     ├─► FileCoverage.fromDetails(uri, details)
                     ├─► run.addCoverage(fc)
@@ -64,39 +64,20 @@ function resolveSourceUri(
    (**não** é busca recursiva — apenas um `path.join` direto)
 5. **Não encontrado**: retorna `undefined`
 
-## `mapDbPathsToFiles` (src/oracleRunner.ts) — modo Oracle
+## `mapDbPathsToFiles` (src/oracleRunner.ts)
 
 O XML de cobertura do buffer Oracle traz `filename="package body APP.CALC"`
-(nome de objeto, não arquivo). Antes de `applyCoverageFromXml`, o modo Oracle
-aplica `mapDbPathsToFiles(xml)`:
+(nome de objeto, não arquivo). Antes de `applyCoverageFromXml`, aplica-se
+`mapDbPathsToFiles(xml)`:
 
 - regex `filename="(function|procedure|package body|package|view|trigger)\s+\w+\.(\w+)"`
 - converte para `filename="<tipo plural>/<nome>.sql"` (ex.: `packages/CALC.sql`,
   `functions/FN1.sql`) — casando com a estrutura `sourcePath/<tipo>/<nome>.sql`
   esperada pelo `resolveSourceUri`
 
-## `applyCoverage` (src/runner.ts) — wrapper CLI
-
-```typescript
-function applyCoverage(
-  coveragePath: string,
-  _root: string,
-  sourcePath: string,
-  run: vscode.TestRun,
-  state: TestStateManager,
-  folders?: WorkspaceFolder[],
-): void
-```
-
-1. `state.clearCoverage()` — limpa cobertura anterior
-2. Se arquivo não existe → diagnóstico + `run.appendOutput()` com sugestão de grants
-3. Se `setupDiagnosticsEnabled` → `setupValidator.addCoverageDiagnostic()` (PRD-32)
-4. Lê o XML e delega para `applyCoverageFromXml` (src/results.ts)
-
 ## `applyCoverageFromXml` (src/results.ts)
 
-Função canônica (PRD-39), usada pelos dois runners. Recebe a string XML
-(extraída do buffer no modo Oracle, do arquivo no modo CLI) e executa o
+Função canônica (PRD-39). Recebe a string XML extraída do buffer Oracle e executa o
 pipeline de resolução:
 
 1. `parseCobertura(xml)` → `FileLines[]`
@@ -109,23 +90,20 @@ pipeline de resolução:
 
 ## Mapeamento de objetos Oracle → arquivos
 
-### Configuração (`coverageSourceArgs`)
+### Mecânica
 
-O utPLSQL-cli aceita args para mapear objetos cobertos a arquivos:
+Sem `a_source_file_mappings`, o `ut_coverage_cobertura_reporter` emite
+`filename="<tipo> <schema>.<objeto>"` (ex.: `filename="package body UT3.CALC"`).
+O `mapDbPathsToFiles()` converte para o layout local (`packages/CALC.sql`,
+`functions/FN.sql`, `procedures/PR.sql`, `types/TY.sql`, `triggers/TR.sql`,
+`views/VW.sql`) e o `resolveSourceUri` localiza o arquivo físico, testando
+variantes de extensão (`.sql`, `.pks`, `.pkb`, `.prc`, `.fnc`, `.trg`, `.tpb`,
+`.bdy`) — o arquivo real pode não usar `.sql`.
 
-```jsonc
-{
-  "utplsql.coverageSourceArgs": [
-    "-regex_expression=.*[/\\\\](\\w+)[/\\\\](\\w+)\\.sql$",
-    "-type_subexpression=1",    // grupo 1 = tipo (pasta)
-    "-name_subexpression=2",    // grupo 2 = nome do objeto
-    "-type_mapping=packages=PACKAGE BODY/functions=FUNCTION/procedures=PROCEDURE/triggers=TRIGGER"
-  ]
-}
-```
-
-O XML de saída contém `filename="functions/calculate.sql"` — o `resolveSourceUri`
-mapeia isso para o arquivo físico no workspace.
+> ⚠️ Passar o diretório `sourcePath` como `a_file_paths` de
+> `ut_file_mapper.build_file_mappings()` **zera o relatório**: a função espera
+> uma lista de **arquivos**, não de diretórios. Por isso a extensão não usa file
+> mappings e faz o mapeamento no lado do cliente.
 
 ### Estrutura esperada
 
@@ -133,11 +111,11 @@ mapeia isso para o arquivo físico no workspace.
 workspace/
 ├── install/                    ← sourcePath
 │   ├── functions/
-│   │   └── calculate.sql
+│   │   └── calculate.sql       (ou .fnc)
 │   ├── procedures/
-│   │   └── process.sql
+│   │   └── process.sql         (ou .prc)
 │   └── packages/
-│       └── calculator.sql
+│       └── calculator.sql      (ou .pks/.pkb)
 ```
 
 ### `-owner`
@@ -156,7 +134,7 @@ GRANT EXECUTE ON SYS.DBMS_PLSQL_CODE_COVERAGE TO <schema>;
 
 Se `coverage.xml` não for gerado:
 - Output mostra caminho esperado + arquivos no diretório temp
-- Se `setupDiagnosticsEnabled`: diagnostic `UTPLSQL_NO_COVERAGE` no Problems Panel
+- `UTPLSQL_NO_COVERAGE` só era emitido no fluxo legado (CLI) — **não** é emitido no fluxo Oracle-direto atual
 - Comando `utplsql.copyGrantsToClipboard` copia grants para clipboard
 
 ## Settings
@@ -165,4 +143,87 @@ Se `coverage.xml` não for gerado:
 |---|---|---|
 | `utplsql.sourcePath` | `install` | Pasta do código fonte |
 | `utplsql.coverageOwner` | `""` | Schema owner (vazio = usuário conexão) |
-| `utplsql.coverageSourceArgs` | (regex) | Args de mapeamento objeto→arquivo |
+
+## Cobertura por declaração (PRD-48)
+
+`src/plsqlDeclarations.ts` (puro, sem `vscode`). Deriva cobertura por
+`PROCEDURE`/`FUNCTION` a partir do fonte local + hits de linha.
+
+```typescript
+interface PlsqlDeclaration {
+  name: string;
+  line: number; // linha 0-based da declaração
+}
+
+interface PlsqlDeclarationCoverage extends PlsqlDeclaration {
+  executed: boolean;
+}
+
+function parsePlsqlDeclarations(text: string): PlsqlDeclaration[]
+function deriveDeclarationCoverage(
+  text: string,
+  fileLines: { line: number; hits: number }[],
+): PlsqlDeclarationCoverage[]
+```
+
+- `parsePlsqlDeclarations` mascara strings e comentários (preservando quebras
+  de linha) e extrai `PROCEDURE`/`FUNCTION` — ignora `MEMBER PROCEDURE/FUNCTION`
+- `deriveDeclarationCoverage` agrega os hits por escopo: da declaração até a
+  próxima (ou fim do arquivo); `executed = true` se qualquer linha do escopo
+  tem hits > 0
+- `applyCoverageFromXml` (src/results.ts) lê o fonte local e emite
+  `vscode.DeclarationCoverage` junto dos `StatementCoverage`:
+
+```typescript
+const srcText = fs.readFileSync(uri.fsPath, 'utf-8');
+const declarations = deriveDeclarationCoverage(srcText, f.lines);
+for (const d of declarations) {
+  details.push(
+    new vscode.DeclarationCoverage(d.name, d.executed, new vscode.Position(d.line, 0)),
+  );
+}
+```
+
+- Arquivo ilegível → fallback silencioso (só `StatementCoverage`)
+
+## Cobertura de views (PRD-12)
+
+`src/viewCoverage.ts` (vscode-dependente). Rastreia views executadas durante o
+run via `V$SQL` e emite cobertura booleana. Controlado pelo setting
+`utplsql.sqlCoverageEnabled` (bool, default `false`).
+
+```typescript
+interface SqlCoverageOptions {
+  connection: string;
+  root: string;
+  sourcePath: string;
+  run: vscode.TestRun;
+  state: TestStateManager;
+  folders?: readonly vscode.WorkspaceFolder[];
+}
+
+async function applySqlCoverage(options: SqlCoverageOptions): Promise<void>
+```
+
+Funções puras (testáveis por unidade):
+
+```typescript
+function matchExecutedViews(sqlTexts: string[], viewFiles: ViewFile[]): boolean[]
+function viewNameFromPath(filePath: string): string; // "views/foo.sql" → "FOO"
+function discoverViewFiles(root: string, sourcePath: string): string[];
+```
+
+- Descobre arquivos `views/*.sql` sob `<root>/<sourcePath>/views/` (recursivo)
+- Consulta `V$SQL` (`command_type = 3 AND executions > 0`) e faz match
+  word-boundary do nome da view em qualquer `SQL_TEXT`
+- Executada = 100%, não executada = 0%
+- **Best-effort**: qualquer falha (sem oracledb, sem acesso a `V$SQL`,
+  timeout) silencia e mantém o comportamento atual
+- `type_mapping` padrão inclui `views=VIEW`
+
+### Grants
+
+```sql
+-- Acesso de leitura ao V$SQL para rastrear views executadas
+GRANT SELECT ON SYS.V_$SQL TO <schema>;
+```

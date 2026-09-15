@@ -1,6 +1,8 @@
 import * as path from 'node:path';
 import * as vscode from 'vscode';
-import { readConfig } from './config';
+import { getExtensionLocale, readConfig } from './config';
+import { t } from './i18n';
+import { logger } from './logger';
 import { ensurePool, parseConnString } from './oracleRunner';
 import { parseSuiteText, type TestProc } from './suiteParser';
 
@@ -73,8 +75,9 @@ export async function discoverWorkspace(
             results.push({ ...suite, tests, folder });
           }
         }
-      } catch {
+      } catch (e) {
         // arquivo ilegível — ignora
+        logger.debug('discovery: arquivo ilegível', { uri: uri.toString(), error: String(e) });
       }
     }
   }
@@ -82,13 +85,27 @@ export async function discoverWorkspace(
   return results;
 }
 
+/** Normaliza separadores e casing da letra de drive (Windows é case-insensitive). */
+function normalizeFsPath(p: string): string {
+  return p.replace(/\\/g, '/').replace(/^([a-zA-Z]):/, (_m, d: string) => `${d.toLowerCase()}:`);
+}
+
+/** Letra de drive (`c:`) já normalizada, ou undefined em paths POSIX. */
+function driveOf(normPath: string): string | undefined {
+  return /^([a-zA-Z]:)/.exec(normPath)?.[1].toLowerCase();
+}
+
 export function extractSchemaFromPath(
   filePath: string,
   workspaceFsPath: string,
   schemaPattern: string,
 ): string | undefined {
-  const normFile = filePath.replace(/\\/g, '/');
-  const normWs = workspaceFsPath.replace(/\\/g, '/');
+  const normFile = normalizeFsPath(filePath);
+  const normWs = normalizeFsPath(workspaceFsPath);
+  const fileDrive = driveOf(normFile);
+  const wsDrive = driveOf(normWs);
+  if (fileDrive && wsDrive && fileDrive !== wsDrive) return undefined;
+
   const relative = path.posix.relative(normWs, normFile);
   if (relative.startsWith('..')) return undefined;
 
@@ -100,7 +117,8 @@ export function extractSchemaFromPath(
 
   const regex = new RegExp(`^${escaped}$`);
   const match = regex.exec(relative);
-  return match ? match[1].toUpperCase() : undefined;
+  // Padrão sem `{schema}` (sem grupo de captura) → undefined (caller usa UNKNOWN).
+  return match?.[1] ? match[1].toUpperCase() : undefined;
 }
 
 // ── Descoberta via banco (PRD-43) ────────────────────────────────────
@@ -156,13 +174,22 @@ export async function discoverSchemaFromConn(
       );
       const rows = source.rows ?? [];
       if (rows.length >= ALL_SOURCE_MAX_ROWS) {
-        console.warn(
-          `[utplsql] Fonte de ${upper}.${pkgName} truncada em ${ALL_SOURCE_MAX_ROWS} linhas na descoberta via DB.`,
+        logger.warn(
+          t(getExtensionLocale(), 'discovery.sourceTruncated', {
+            schema: upper,
+            name: pkgName,
+            max: ALL_SOURCE_MAX_ROWS,
+          }),
         );
       }
       text = `CREATE OR REPLACE ${rows.map((r) => rowValue(r, 0, 'TEXT')).join('\n')}`;
-    } catch {
+    } catch (e) {
       // ALL_SOURCE inacessível (ex.: ORA-00942) — fallback silencioso
+      logger.debug('discoverSchemaFromConn: ALL_SOURCE inacessível', {
+        schema: upper,
+        name: pkgName,
+        error: String(e),
+      });
       continue;
     }
 
@@ -202,8 +229,9 @@ export async function discoverSchemaFromDb(
   let oracledb: typeof import('oracledb');
   try {
     oracledb = await loadOracledbMod();
-  } catch {
-    return []; // Oracle indisponível — fallback silencioso (modo auto/CLI)
+  } catch (e) {
+    logger.debug('discoverSchemaFromDb: oracledb indisponível', { error: String(e) });
+    return [];
   }
 
   const cfg = readConfig();
@@ -213,7 +241,8 @@ export async function discoverSchemaFromDb(
     conn = pool
       ? await pool.getConnection()
       : await oracledb.getConnection(parseConnString(connStr));
-  } catch {
+  } catch (e) {
+    logger.debug('discoverSchemaFromDb: falha ao obter conexão', { error: String(e) });
     return [];
   }
 
@@ -221,8 +250,12 @@ export async function discoverSchemaFromDb(
   try {
     conn.callTimeout = 10_000;
     return await discoverSchemaFromConn(conn, schema, folder);
-  } catch {
-    return []; // fallback silencioso
+  } catch (e) {
+    logger.debug('discoverSchemaFromDb: descoberta via banco falhou', {
+      schema,
+      error: String(e),
+    });
+    return [];
   } finally {
     conn.callTimeout = prevTimeout;
     await conn.close().catch(() => {});
@@ -256,7 +289,11 @@ export async function discoverSchemasFromFolders(
     let entries: [string, vscode.FileType][];
     try {
       entries = await vscode.workspace.fs.readDirectory(dir);
-    } catch {
+    } catch (e) {
+      logger.debug('discoverSchemasFromFolders: pasta base ausente', {
+        dir: dir.fsPath,
+        error: String(e),
+      });
       continue; // pasta base não existe neste folder
     }
     for (const [name, type] of entries) {

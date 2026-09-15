@@ -69,18 +69,18 @@ export function parseJUnit(xml: string): TestCaseResult[] {
 }
 
 // biome-ignore lint/suspicious/noExplicitAny: XML parsing — structure is dynamic
-function extractMessage(node: any): string {
+function extractMessage(node: any): string | undefined {
   // biome-ignore lint/suspicious/noExplicitAny: XML parsing — structure is dynamic
   const first = toArray<any>(node)[0];
   if (first === undefined) {
-    return 'Falhou';
+    return undefined;
   }
   if (typeof first === 'string') {
     return first;
   }
   const attrMsg = first['@_message'];
   const text = first['#text'];
-  return [attrMsg, text].filter(Boolean).join('\n').trim() || 'Falhou';
+  return [attrMsg, text].filter(Boolean).join('\n').trim() || undefined;
 }
 
 // biome-ignore lint/suspicious/noExplicitAny: XML parsing — structure is dynamic

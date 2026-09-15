@@ -23,3 +23,6 @@ docs/*
 !docs/wiki/**
 !docs/functional/
 !docs/functional/**
+
+# Ferramentas locais de agentes
+.kilo/

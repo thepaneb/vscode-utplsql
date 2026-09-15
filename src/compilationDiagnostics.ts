@@ -1,178 +1,84 @@
 import * as vscode from 'vscode';
+import { readConfig, resolveConnectionNoPrompt } from './config';
+import { logger } from './logger';
+import { checkCompilationErrors, withOracleConnection } from './oracleRunner';
 import type { TestStateManager } from './state';
 
-interface CompilationError {
-  line: number;
-  column: number;
-  code: string;
-  message: string;
-  fileUri?: vscode.Uri;
+/**
+ * Diagnóstico de compilação PL/SQL via Oracle (PRD-68 RF1).
+ * Consulta `ALL_ERRORS` para o schema da conexão e publica no Problems Panel
+ * (source "utPLSQL Compilation"), mapeando cada erro para a suite descoberta.
+ * Best-effort: nunca lança.
+ */
+const SOURCE = 'utPLSQL Compilation';
+let collection: vscode.DiagnosticCollection | undefined;
+
+export function registerCompilationDiagnostics(context: vscode.ExtensionContext): void {
+  collection = vscode.languages.createDiagnosticCollection('utplsql-compilation');
+  context.subscriptions.push(collection);
 }
 
-export class CompilationDiagnostics {
-  private diagnosticCollection: vscode.DiagnosticCollection;
+export function clearCompilationDiagnostics(): void {
+  collection?.clear();
+}
 
-  constructor() {
-    this.diagnosticCollection = vscode.languages.createDiagnosticCollection('utplsql-compilation');
+export async function refreshCompilationDiagnostics(state: TestStateManager): Promise<void> {
+  if (!collection) return;
+  collection.clear();
+
+  const cfg = readConfig();
+  if (!cfg.compilationDiagnosticsEnabled) return;
+
+  const connStr = resolveConnectionNoPrompt();
+  if (!connStr) return;
+  const schema = connStr.split('/')[0].trim().toUpperCase();
+
+  let oracledb: typeof import('oracledb');
+  try {
+    const mod = await import('oracledb');
+    oracledb =
+      ((mod as Record<string, unknown>).default as typeof import('oracledb')) ??
+      (mod as typeof import('oracledb'));
+  } catch {
+    return;
   }
 
-  parseFromOutput(output: string): CompilationError[] {
-    const errors: CompilationError[] = [];
-    const lines = output.split(/\r?\n/);
+  try {
+    await withOracleConnection(oracledb, connStr, cfg, async (conn) => {
+      const errors = await checkCompilationErrors(conn, schema);
+      if (errors.length === 0) return;
 
-    let currentObj: { name: string; isBody?: boolean } | undefined;
-    let pendingOra: { line: number; column: number } | undefined;
-    let pendingPls: { code: string; message: string } | undefined;
+      const metas = state.cachedItems.map((i) => state.getMeta(i)).filter(Boolean) as Array<{
+        kind: string;
+        packageName?: string;
+        uri?: vscode.Uri;
+      }>;
 
-    for (const line of lines) {
-      const objMatch = line.match(/(?:Package|Package Body|Function|Procedure|Trigger)\s+(\S+)\s/i);
-      if (objMatch) {
-        if (pendingPls && currentObj) {
-          errors.push({
-            line: pendingOra?.line ?? 1,
-            column: pendingOra?.column ?? 1,
-            code: pendingPls.code,
-            message: pendingPls.message,
-            fileUri: undefined,
-          });
-          pendingPls = undefined;
-          pendingOra = undefined;
-        }
-        currentObj = {
-          name: objMatch[1].toLowerCase(),
-          isBody: /body/i.test(line),
-        };
-        continue;
-      }
-
-      const oraMatch = line.match(/ORA-\d+:\s*line\s+(\d+),\s*column\s+(\d+)/i);
-      if (oraMatch && currentObj) {
-        pendingOra = {
-          line: parseInt(oraMatch[1], 10) || 1,
-          column: parseInt(oraMatch[2], 10) || 1,
-        };
-        const plsOnSameLine = line.match(/(PLS-\d+):\s*(.+)/);
-        if (plsOnSameLine) {
-          errors.push({
-            line: pendingOra.line,
-            column: pendingOra.column,
-            code: plsOnSameLine[1],
-            message: plsOnSameLine[2].trim(),
-            fileUri: undefined,
-          });
-          pendingOra = undefined;
-        }
-        continue;
-      }
-
-      const plsMatch = line.match(/^(PLS-\d+):\s*(.+)/);
-      if (plsMatch) {
-        if (pendingOra && currentObj) {
-          errors.push({
-            line: pendingOra.line,
-            column: pendingOra.column,
-            code: plsMatch[1],
-            message: plsMatch[2].trim(),
-            fileUri: undefined,
-          });
-          pendingOra = undefined;
-        } else if (currentObj) {
-          pendingPls = { code: plsMatch[1], message: plsMatch[2].trim() };
-        }
-      }
-    }
-
-    if (pendingPls && currentObj) {
-      errors.push({
-        line: pendingOra?.line ?? 1,
-        column: pendingOra?.column ?? 1,
-        code: pendingPls.code,
-        message: pendingPls.message,
-        fileUri: undefined,
-      });
-    }
-
-    return errors;
-  }
-
-  resolveFiles(errors: CompilationError[], state: TestStateManager): void {
-    const workspaceFolders = vscode.workspace.workspaceFolders;
-    if (!workspaceFolders?.length) return;
-
-    for (const err of errors) {
-      if (err.fileUri) continue;
-
-      const stateItems = state.cachedItems;
-      for (const item of stateItems) {
-        const meta = state.getMeta(item);
+      const byUri = new Map<string, vscode.Diagnostic[]>();
+      for (const err of errors) {
+        const meta = metas.find(
+          (m) =>
+            m.kind === 'suite' &&
+            String(m.packageName ?? '').toLowerCase() === err.name.toLowerCase(),
+        );
         if (!meta?.uri) continue;
-
-        const baseName = meta.uri.fsPath
-          .split(/[/\\]/)
-          .pop()
-          ?.toLowerCase()
-          .replace(/\.pks$/, '')
-          .replace(/\.pkb$/, '');
-
-        if (!baseName) continue;
-
-        for (const folder of workspaceFolders) {
-          const pksPath = vscode.Uri.joinPath(folder.uri, `${baseName}.pks`);
-          const pkbPath = vscode.Uri.joinPath(folder.uri, `${baseName}.pkb`);
-
-          try {
-            if (
-              err.message.toLowerCase().includes('body') ||
-              err.message.toLowerCase().includes('package body')
-            ) {
-              err.fileUri = pkbPath;
-            } else {
-              err.fileUri = pksPath;
-            }
-          } catch {
-            err.fileUri = meta.uri;
-          }
-        }
+        const line = Math.max(0, (err.line || 1) - 1);
+        const diag = new vscode.Diagnostic(
+          new vscode.Range(line, 0, line, Number.MAX_SAFE_INTEGER),
+          `${err.type}: ${err.text}`,
+          vscode.DiagnosticSeverity.Error,
+        );
+        diag.source = SOURCE;
+        const key = meta.uri.toString();
+        const list = byUri.get(key) ?? [];
+        list.push(diag);
+        byUri.set(key, list);
       }
-    }
-  }
-
-  apply(errors: CompilationError[]) {
-    this.diagnosticCollection.clear();
-
-    const byUri = new Map<string, vscode.Diagnostic[]>();
-    for (const err of errors) {
-      if (!err.fileUri) continue;
-      const key = err.fileUri.toString();
-      if (!byUri.has(key)) byUri.set(key, []);
-
-      const range = new vscode.Range(
-        Math.max(0, err.line - 1),
-        Math.max(0, err.column - 1),
-        Math.max(0, err.line - 1),
-        999,
-      );
-      const diagnostic = new vscode.Diagnostic(
-        range,
-        `[${err.code}] ${err.message}`,
-        vscode.DiagnosticSeverity.Error,
-      );
-      diagnostic.source = 'utPLSQL Compilation';
-      byUri.get(key)?.push(diagnostic);
-    }
-
-    for (const [uri, diagnostics] of byUri) {
-      this.diagnosticCollection.set(vscode.Uri.parse(uri), diagnostics);
-    }
-  }
-
-  clear() {
-    this.diagnosticCollection.clear();
-  }
-
-  dispose() {
-    this.diagnosticCollection.dispose();
+      for (const [key, diags] of byUri) {
+        collection?.set(vscode.Uri.parse(key), diags);
+      }
+    });
+  } catch (e) {
+    logger.debug('refreshCompilationDiagnostics falhou', { error: String(e) });
   }
 }
-
-export const compilationDiagnostics = new CompilationDiagnostics();

@@ -7,7 +7,7 @@ por schema.
 ## Visão geral
 
 ```
-discovery (.pks + banco)  ──►  executeRun  ──►  CLI / Oracle direto  ──►  parseJUnit  ──►  Test Explorer
+discovery (.pks + banco)  ──►  executeRun  ──►  Oracle direto  ──►  parseJUnit  ──►  Test Explorer
                                        │                                      │
                                        └─► parseCobertura  ──►  Coverage gutters
 ```
@@ -17,12 +17,12 @@ discovery (.pks + banco)  ──►  executeRun  ──►  CLI / Oracle direto 
 | Camada | Módulos | Responsabilidade |
 |---|---|---|
 | **Descoberta** | `suiteParser.ts`, `discovery.ts` | Encontrar suites/testes nos arquivos `.pks` via regex `%suite`/`%test` + annotations estendidas; no modo schema, complementa com descoberta via banco (`ALL_OBJECTS`/`ALL_SOURCE`) |
-| **Execução** | `runner.ts`, `cli.ts`, `oracleRunner.ts`, `invocation.ts`, `cliEncoding.ts` | Executar testes via CLI ou Oracle direto (com connection pooling) |
-| **Resultados** | `junit.ts`, `results.ts`, `cliReporters.ts`, `cliInfo.ts`, `matching.ts` | Parse do XML JUnit, mapeamento para `vscode.TestItem` (funções canônicas compartilhadas) |
-| **Cobertura** | `cobertura.ts`, `coverage.ts` | Parse do XML Cobertura, mapeamento para arquivos fonte |
+| **Execução** | `runner.ts`, `oracleRunner.ts`, `scriptRunner.ts`, `debugger.ts`, `dbmsDebug.ts` | Executar testes via Oracle direto (com connection pooling), scripts SQL/PL-SQL e depuração |
+| **Resultados** | `junit.ts`, `results.ts`, `matching.ts` | Parse do XML JUnit, mapeamento para `vscode.TestItem` (funções canônicas compartilhadas) |
+| **Cobertura** | `cobertura.ts`, `coverage.ts`, `viewCoverage.ts`, `plsqlDeclarations.ts` | Parse do XML Cobertura, mapeamento para arquivos fonte, cobertura de views e por declaração |
 | **UX** | `codelens.ts`, `statusBar.ts`, `decorations.ts` | CodeLens, StatusBar, decorações inline |
-| **Diagnósticos** | `compilationDiagnostics.ts`, `quickfix.ts` | Erros PL/SQL no editor, validação de setup/integridade UT3 com quick-fix |
-| **Configuração** | `config.ts`, `state.ts`, `types.ts` | Settings, conexão, estado persistente |
+| **Diagnósticos** | `quickfix.ts` + `oracleRunner.checkCompilationErrors()` | Validação de setup/integridade UT3 com quick-fix; consulta a `ALL_ERRORS` (sem wiring atual) |
+| **Configuração** | `config.ts`, `state.ts`, `types.ts`, `connectionProfiles.ts`, `i18n.ts`, `i18nLocales.ts` | Settings, conexão, perfis, i18n e estado persistente |
 | **Orquestração** | `extension.ts` | Registro de comandos, providers, ciclo de vida |
 
 ### Separação módulos puros vs vscode
@@ -30,9 +30,9 @@ discovery (.pks + banco)  ──►  executeRun  ──►  CLI / Oracle direto 
 | Puro (testável com `node --test`) | Depende de `vscode` |
 |---|---|
 | `suiteParser.ts`, `junit.ts`, `cobertura.ts` | `extension.ts`, `runner.ts`, `results.ts` |
-| `invocation.ts`, `matching.ts`, `cliEncoding.ts` | `config.ts`, `cli.ts` |
-| `cliInfo.ts`, `cliReporters.ts`, `codelens.ts` (parse) | `discovery.ts`, `coverage.ts`, `oracleRunner.ts` |
-| `state.ts`, `types.ts` | `decorations.ts`, `statusBar.ts`, `compilationDiagnostics.ts`, `quickfix.ts` |
+| `matching.ts` | `config.ts` |
+| `codelens.ts` (parse), `i18n.ts`, `plsqlDeclarations.ts` | `discovery.ts`, `coverage.ts`, `oracleRunner.ts` |
+| `state.ts`, `types.ts` | `decorations.ts`, `statusBar.ts`, `quickfix.ts` |
 
 ### Context keys
 
@@ -53,7 +53,7 @@ discovery (.pks + banco)  ──►  executeRun  ──►  CLI / Oracle direto 
 | # | Documento | Descrição |
 |---|---|---|
 | 01 | [Test Discovery](01-test-discovery.md) | Como suites e testes são descobertos nos arquivos `.pks` |
-| 02 | [Test Execution](02-test-execution.md) | Modos de execução (CLI, Oracle streaming), cancelamento |
+| 02 | [Test Execution](02-test-execution.md) | Execução (Oracle streaming), cancelamento |
 | 03 | [Results and Reporting](03-results-and-reporting.md) | Parse JUnit, mapping resultado→TestItem, reporters |
 | 04 | [Code Coverage](04-code-coverage.md) | Parse Cobertura, source mapping, grants |
 | 05 | [UX Components](05-ux-components.md) | CodeLens, StatusBar, Decorations, Keybindings |
