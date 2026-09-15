@@ -189,6 +189,12 @@
           "default": "db/{schema}/**",
           "markdownDescription": "Padrão glob para extrair o nome do schema a partir do caminho do arquivo. Use `{schema}` como placeholder. Ex: `db/{schema}/**` extrai `APP` de `db/APP/tests/ut_foo.pks`. Só usado quando `#utplsql.organization#` é `schema`."
         },
+        "utplsql.refreshDebounceMs": {
+          "type": "number",
+          "default": 300,
+          "minimum": 0,
+          "description": "Debounce (ms) para coalescer eventos do watcher de arquivos .pks/.pkb antes de atualizar o Test Explorer."
+        },
         "utplsql.codeLens.enabled": {
           "type": "boolean",
           "default": true,

@@ -105,6 +105,7 @@ Test Explorer に表示されます。
 | `utplsql.oraclePoolPingInterval` | `60` | アイドルプール接続のヘルスチェック間隔（秒）（node-oracledb）。`0` = チェックアウトのたびに ping。 |
 | `utplsql.organization` | `file` | ツリーの構成: `file`（パス単位）または `schema`（Schema > Package > Suite > Test）。`schema` モードでは、`.pks` ファイルがワークスペースにないときはスイートもデータベース（`ALL_OBJECTS`/`ALL_SOURCE`）から検出されます — 仮想 URI は `utplsql-db:/`（CodeLens/デコレーション/失敗ジャンプなし）。 |
 | `utplsql.organization.schemaPattern` | `db/{schema}/**` | パスからスキーマを抽出するためのグロブパターン。プレースホルダーには `{schema}` を使用します。`schema` モードでは、パターンベースより下のディレクトリ（例: `db/*`）がデータベースでクエリされるスキーマを定義します。 |
+| `utplsql.refreshDebounceMs` | `300` | Test Explorer を更新する前に `.pks`/`.pkb` ファイル監視イベントをまとめるデバウンス（ミリ秒）。 |
 | `utplsql.compilationDiagnostics.enabled` | `true` | データベースからの PL/SQL コンパイルエラー（`ALL_ERRORS`）をエディターの下線および「問題」パネルに表示します（ソース "utPLSQL Compilation"）。 |
 | `utplsql.setupDiagnostics.enabled` | `true` | 設定診断（接続、権限、バージョン）と **utPLSQL インストールの整合性**（UT3 スキーマ内の無効オブジェクト。"Recompile UT3" クイックフィックスあり）をクイックフィックスアクション付きで表示。 |
 | `utplsql.profiles` | `[]` | 保存された Oracle 接続プロファイル（名前、接続、`sourcePath`/`coverageOwner` などの上書き）。環境の切り替え用。**パスワードは OS キーチェーン（VS Code SecretStorage）に保存され、設定には保存されません** — `connection` フィールドには `user@//host:port/service` のみが保存されます。インラインパスワード付きの旧プロファイルは初回使用時に自動的に移行されます。 (Full field reference: [wiki](https://github.com/thepaneb/vscode-utplsql/wiki/Configuration)). |

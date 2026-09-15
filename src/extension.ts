@@ -24,6 +24,7 @@ import {
   setActiveProfile,
 } from './connectionProfiles';
 import { clearDbSourceCache, registerDbSourceProvider } from './dbSourceProvider';
+import { createDebounced } from './debounce';
 import {
   startDebugSession,
   UtplsqlDebugAdapterDescriptorFactory,
@@ -535,10 +536,14 @@ export function activate(context: vscode.ExtensionContext) {
   );
 
   const watcher = vscode.workspace.createFileSystemWatcher('**/*.{pks,pkb}');
-  watcher.onDidCreate(() => refresh(controller));
-  watcher.onDidChange(() => refresh(controller));
-  watcher.onDidDelete(() => refresh(controller));
-  context.subscriptions.push(watcher);
+  const scheduleRefresh = createDebounced(
+    () => void refresh(controller),
+    () => readConfig().refreshDebounceMs,
+  );
+  watcher.onDidCreate(() => scheduleRefresh.schedule());
+  watcher.onDidChange(() => scheduleRefresh.schedule());
+  watcher.onDidDelete(() => scheduleRefresh.schedule());
+  context.subscriptions.push(watcher, { dispose: () => scheduleRefresh.cancel() });
   refresh(controller);
 }
 

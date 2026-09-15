@@ -142,6 +142,7 @@ connection changes, and closed when the extension is deactivated. See [Direct Or
 |---|---|---|
 | `utplsql.organization` | `file` | `file` (by path) or `schema` (Schema > Package > Suite > Test). |
 | `utplsql.organization.schemaPattern` | `db/{schema}/**` | Glob pattern to extract schema from the path. Use `{schema}` as a placeholder. |
+| `utplsql.refreshDebounceMs` | `300` | Debounce (ms) to coalesce `.pks`/`.pkb` file watcher events before refreshing the Test Explorer. |
 
 In `schema` mode with a configured connection (no prompt), the refresh also
 discovers suites directly from the database (`ALL_OBJECTS`/`ALL_SOURCE`) for schemas whose

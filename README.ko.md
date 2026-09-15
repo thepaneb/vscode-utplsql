@@ -110,6 +110,7 @@ Test Explorer에 나타납니다.
 | `utplsql.oraclePoolPingInterval` | `60` | 유휴 풀 연결의 상태 검사 간격(초)(node-oracledb). `0` = 모든 체크아웃 시 ping. |
 | `utplsql.organization` | `file` | 트리 구성: `file`(경로별) 또는 `schema`(Schema > Package > Suite > Test). `schema` 모드에서 워크스페이스에 `.pks` 파일이 없으면 스위트가 데이터베이스(`ALL_OBJECTS`/`ALL_SOURCE`)에서도 발견됩니다 — 가상 URI `utplsql-db:/`(CodeLens/데코레이션/실패 지점 이동 없음). |
 | `utplsql.organization.schemaPattern` | `db/{schema}/**` | 경로에서 스키마를 추출하는 glob 패턴. `{schema}`를 자리 표시자로 사용하세요. `schema` 모드에서 패턴 기본 아래의 디렉터리(예: `db/*`)는 데이터베이스에서 조회할 스키마를 정의합니다. |
+| `utplsql.refreshDebounceMs` | `300` | Test Explorer를 새로 고치기 전에 `.pks`/`.pkb` 파일 감시 이벤트를 병합하는 디바운스(ms). |
 | `utplsql.compilationDiagnostics.enabled` | `true` | 데이터베이스의 PL/SQL 컴파일 오류(`ALL_ERRORS`)를 편집기 밑줄과 "문제" 패널에 표시합니다(출처 "utPLSQL Compilation"). |
 | `utplsql.setupDiagnostics.enabled` | `true` | 구성 진단(연결, 권한, 버전) 및 **utPLSQL 설치 무결성**(UT3 스키마의 잘못된 객체, "Recompile UT3" quick-fix 포함)을 quick-fix 작업과 함께 표시합니다. |
 | `utplsql.profiles` | `[]` | 저장된 Oracle 연결 프로필(이름, 연결, 그리고 `sourcePath`/`coverageOwner` 등의 재정의) — 환경 간 전환용. **비밀번호는 OS 키체인(VS Code SecretStorage)에 보관되며 설정에는 저장되지 않습니다** — `connection` 필드에는 `user@//host:port/service`만 저장됩니다. 인라인 비밀번호가 포함된 기존 프로필은 처음 사용할 때 자동으로 마이그레이션됩니다. (Full field reference: [wiki](https://github.com/thepaneb/vscode-utplsql/wiki/Configuration)). |

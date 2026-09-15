@@ -142,6 +142,7 @@ conexão muda e fechado ao desativar a extensão. Veja [Execução Oracle direta
 |---|---|---|
 | `utplsql.organization` | `file` | `file` (por caminho) ou `schema` (Schema > Package > Suite > Test). |
 | `utplsql.organization.schemaPattern` | `db/{schema}/**` | Padrão glob para extrair schema do caminho. Use `{schema}` como placeholder. |
+| `utplsql.refreshDebounceMs` | `300` | Debounce (ms) para agrupar eventos do watcher de arquivos `.pks`/`.pkb` antes de atualizar o Test Explorer. |
 
 No modo `schema` com conexão configurada (sem prompt), o refresh também
 descobre suites direto do banco (`ALL_OBJECTS`/`ALL_SOURCE`) para schemas cujos
