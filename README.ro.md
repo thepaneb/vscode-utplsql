@@ -25,6 +25,7 @@ Integrează [utPLSQL](https://www.utplsql.org/) în VSCode, aducând testele PL/
 - 🧩 **Arbore conștient de schemă** — organizează testele după Schema > Package > Suite > Test în Test Explorer.
 - 🎯 **Salt la eșec** — navigare directă la linia aserțiunii care a eșuat (prin „Go to Error" nativ).
 - 🔌 **Profiluri de conexiune** — salvează și comută între mai multe medii (DEV/TEST/PROD) cu setări per profil, prin bara de stare sau paleta de comenzi.
+- 📜 **Scripturi SQL** — rulează scriptul curent, un fișier din Explorer sau un întreg folder pe profilul de conexiune activ (cu respectarea charset, cu `DBMS_OUTPUT` și `stopOnError`).
 - 📈 **Acoperire pe instrucțiuni și vizualizări** — fila Coverage arată `% din instrucțiuni` (PROCEDURE/FUNCTION) per fișier și urmărește vizualizările executate prin `V$SQL`.
 - 🐛 **Debug PL/SQL** — breakpoint-uri și depanare pas cu pas a testelor utPLSQL prin `DBMS_DEBUG` (Debug Adapter nativ).
 - 🌍 **i18n — 24 de limbi** — `utplsql.language` urmărește VSCode (24 de localizări: pt-br, en, en-gb, es, zh-cn, zh-tw, ja, de, fr, it, ko, ru, tr, pl, cs, hu, bg, el, id, ro, sr, th, uk, vi).

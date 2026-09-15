@@ -25,6 +25,7 @@
 - 🧩 **Schema 感知的樹狀結構** — 在 Test Explorer 中依 Schema > Package > Suite > Test 組織測試。
 - 🎯 **跳轉至失敗** — 直接導覽到失敗的斷言所在行（透過原生的 "Go to Error"）。
 - 🔌 **連線設定檔** — 透過狀態列或命令面板，儲存並切換多個環境（DEV/TEST/PROD），支援依設定檔自訂設定。
+- 📜 **SQL 指令碼** — 在目前連線設定檔上執行目前指令碼、Explorer 中的檔案或整個資料夾（支援 charset、`DBMS_OUTPUT` 與 `stopOnError`）。
 - 📈 **陳述式與檢視涵蓋率** — Coverage 分頁顯示每個檔案的陳述式百分比（PROCEDURE/FUNCTION），並透過 `V$SQL` 追蹤執行的檢視。
 - 🐛 **PL/SQL 除錯** — 透過 `DBMS_DEBUG` 對 utPLSQL 測試進行中斷點與逐步除錯（原生除錯介面卡）。
 - 🌍 **i18n — 24 種語言** — `utplsql.language` 跟隨 VSCode（24 locales：pt-br、en、en-gb、es、zh-cn、zh-tw、ja、de、fr、it、ko、ru、tr、pl、cs、hu、bg、el、id、ro、sr、th、uk、vi）。

@@ -25,6 +25,7 @@ Integriert [utPLSQL](https://www.utplsql.org/) in VSCode und bringt PL/SQL-Tests
 - 🧩 **Schema-bewusster Baum** — Tests nach Schema > Package > Suite > Test im Test Explorer organisieren.
 - 🎯 **Sprung zum Fehler** — direkte Navigation zur Zeile der fehlgeschlagenen Assertion (über natives „Go to Error").
 - 🔌 **Verbindungsprofile** — mehrere Umgebungen (DEV/TEST/PROD) mit profilbezogenen Einstellungen speichern und zwischen ihnen wechseln, über Statusleiste oder Befehlspalette.
+- 📜 **SQL-Skripte** — das aktuelle Skript, eine Datei aus dem Explorer oder einen ganzen Ordner gegen das aktive Verbindungsprofil ausführen (charset-korrekt, mit `DBMS_OUTPUT` und `stopOnError`).
 - 📈 **Statement- und View-Abdeckung** — der Coverage-Tab zeigt `% of statements` (PROCEDURE/FUNCTION) pro Datei und verfolgt über `V$SQL` ausgeführte Views.
 - 🐛 **PL/SQL-Debugging** — Breakpoints und Schritt-für-Schritt-Debugging von utPLSQL-Tests über `DBMS_DEBUG` (nattiver Debug-Adapter).
 - 🌍 **i18n — 24 Sprachen** — `utplsql.language` folgt VSCode (24 Locales: pt-br, en, en-gb, es, zh-cn, zh-tw, ja, de, fr, it, ko, ru, tr, pl, cs, hu, bg, el, id, ro, sr, th, uk, vi).

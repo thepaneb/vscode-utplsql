@@ -25,6 +25,7 @@
 - 🧩 **แผนผังที่รับรู้ schema** — จัดระเบียบการทดสอบตาม Schema > Package > Suite > Test ใน Test Explorer
 - 🎯 **Jump to failure** — นำทางตรงไปยังบรรทัดของ assertion ที่ล้มเหลว (ผ่าน "Go to Error" เนทีฟ)
 - 🔌 **โปรไฟล์การเชื่อมต่อ** — บันทึกและสลับระหว่างหลายสภาพแวดล้อม (DEV/TEST/PROD) พร้อมการตั้งค่าต่อโปรไฟล์ ผ่านแถบสถานะหรือ command palette
+- 📜 **สคริปต์ SQL** — รันสคริปต์ปัจจุบัน ไฟล์จาก Explorer หรือทั้งโฟลเดอร์บนโปรไฟล์การเชื่อมต่อที่ใช้งานอยู่ (รองรับ charset พร้อม `DBMS_OUTPUT` และ `stopOnError`).
 - 📈 **ความครอบคลุมของ statement และ view** — แท็บ Coverage แสดง `% ของ statements` (PROCEDURE/FUNCTION) ต่อไฟล์และติดตาม views ที่ถูกเรียกใช้ผ่าน `V$SQL`
 - 🐛 **การดีบัก PL/SQL** — breakpoints และการดีบักแบบทีละขั้นของเทสต์ utPLSQL ผ่าน `DBMS_DEBUG` (Debug Adapter เนทีฟ)
 - 🌍 **i18n — 24 ภาษา** — `utplsql.language` เป็นไปตาม VSCode (24 ภาษาท้องถิ่น: pt-br, en, en-gb, es, zh-cn, zh-tw, ja, de, fr, it, ko, ru, tr, pl, cs, hu, bg, el, id, ro, sr, th, uk, vi)

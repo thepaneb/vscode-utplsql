@@ -17,6 +17,11 @@ into the native **Test Explorer**, with context menu and visual coverage.
 - **Schema-aware tree** — organize tests by Schema > Package > Suite > Test
 - **Diagnostics and quick-fix** — setup validation with Code Actions
 - **Jump to failure** — navigation to the failed assertion line (native Go to Error)
+- **Connection profiles** — save and switch between environments (DEV/TEST/PROD) with per-profile settings
+- **Statement and view coverage** — `% of statements` per file, and views tracked via `V$SQL`
+- **PL/SQL Debug** — breakpoints and step debugging via `DBMS_DEBUG`
+- **i18n — 24 languages** — follows the VSCode display language
+- **SQL scripts** — run the current script, a file, or a whole folder against the active connection profile
 
 ![Test Explorer with expanded suites](images/test-explorer-suites.png)
 

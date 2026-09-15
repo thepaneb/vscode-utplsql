@@ -25,6 +25,7 @@ Mengintegrasikan [utPLSQL](https://www.utplsql.org/) ke dalam VSCode, membawa pe
 - 🧩 **Pohon sadar-schema** — atur pengujian berdasarkan Schema > Package > Suite > Test di Test Explorer.
 - 🎯 **Langsung ke kegagalan** — navigasi langsung ke baris asersi yang gagal (melalui "Go to Error" asli).
 - 🔌 **Profil koneksi** — simpan dan beralih antar beberapa lingkungan (DEV/TEST/PROD) dengan pengaturan per profil, melalui bilah status atau palet perintah.
+- 📜 **Skrip SQL** — jalankan skrip saat ini, file dari Explorer, atau seluruh folder pada profil koneksi aktif (mengikuti charset, dengan `DBMS_OUTPUT` dan `stopOnError`).
 - 📈 **Cakupan pernyataan dan view** — tab Coverage menampilkan `% pernyataan` (PROCEDURE/FUNCTION) per file dan melacak view yang dieksekusi melalui `V$SQL`.
 - 🐛 **Debug PL/SQL** — breakpoint dan debugging langkah demi langkah untuk pengujian utPLSQL melalui `DBMS_DEBUG` (Debug Adapter asli).
 - 🌍 **i18n — 24 bahasa** — `utplsql.language` mengikuti VSCode (24 locale: pt-br, en, en-gb, es, zh-cn, zh-tw, ja, de, fr, it, ko, ru, tr, pl, cs, hu, bg, el, id, ro, sr, th, uk, vi).
