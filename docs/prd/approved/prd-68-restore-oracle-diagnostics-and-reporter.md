@@ -2,7 +2,7 @@
 
 | Campo | Valor |
 |---|---|
-| Status | Proposto |
+| Status | Aprovado |
 | Autor | Gil Cleber |
 | Data | 2026-09-15 |
 | Componente | Extensão `paneb.vscode-utplsql` |

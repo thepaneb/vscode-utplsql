@@ -135,18 +135,14 @@ _(vazio — nenhuma PRD em desenvolvimento)_
 
 ### 🔵 Aprovados
 
-_(vazio — nenhuma PRD aprovada aguardando implementação)_
-
-### ⚪ Propostos
-
-#### 0.12.0
-
 | # | PRD | Versão alvo | Data |
 |---|---|---|---|
-| 65 | [Correções críticas de schema-mode e segurança](proposed/prd-65-schema-mode-security-fixes.md) | 0.12.0 | 2026-09-15 |
-| 66 | [Robustez de conexão, logging e cache](proposed/prd-66-connection-robustness-logging.md) | 0.12.0 | 2026-09-15 |
-| 67 | [Qualidade, limpeza e performance](proposed/prd-67-code-quality-cleanup.md) | 0.12.0 | 2026-09-15 |
-| 68 | [Religar diagnostics e reporter de sessão perdidos na migração Oracle-only](proposed/prd-68-restore-oracle-diagnostics-and-reporter.md) | 0.12.0 | 2026-09-15 |
+| 65 | [Correções críticas de schema-mode e segurança](approved/prd-65-schema-mode-security-fixes.md) | 0.12.0 | 2026-09-15 |
+| 66 | [Robustez de conexão, logging e cache](approved/prd-66-connection-robustness-logging.md) | 0.12.0 | 2026-09-15 |
+| 67 | [Qualidade, limpeza e performance](approved/prd-67-code-quality-cleanup.md) | 0.12.0 | 2026-09-15 |
+| 68 | [Religar diagnostics e reporter de sessão perdidos na migração Oracle-only](approved/prd-68-restore-oracle-diagnostics-and-reporter.md) | 0.12.0 | 2026-09-15 |
+
+### ⚪ Propostos
 
 #### 0.13.0
 
@@ -241,13 +237,13 @@ docs/prd/
 │   ├── prd-64-oracle-only-migration.md
 │   ├── prd-63-diagram-i18n.md
 │   └── prd-62-run-scripts-against-profiles.md
-├── approved/         ← aprovados, aguardando implementação (vazio)
+├── approved/         ← aprovados, aguardando implementação
+│   ├── prd-65-schema-mode-security-fixes.md
+│   ├── prd-66-connection-robustness-logging.md
+│   ├── prd-67-code-quality-cleanup.md
+│   └── prd-68-restore-oracle-diagnostics-and-reporter.md
 ├── in-progress/      ← sendo implementados agora (vazio)
 └── proposed/         ← em avaliação
-    ├── prd-65-schema-mode-security-fixes.md
-    ├── prd-66-connection-robustness-logging.md
-    ├── prd-67-code-quality-cleanup.md
-    ├── prd-68-restore-oracle-diagnostics-and-reporter.md
     ├── prd-47-node-26-toolchain.md
     ├── prd-50-auto-run-on-save.md
     ├── prd-51-run-by-tag.md

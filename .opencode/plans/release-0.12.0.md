@@ -48,3 +48,28 @@
 - Antes do release 0.12.0: atualizar README (config/Comandos/Keybindings/
   Troubleshooting se houver mudanças — obrigatório após 49), `npm run package`
   e publicação exclusivamente via GitHub release.
+
+## Segunda onda — PRDs 65–68 (aprovadas em 2026-09-15)
+
+| Ordem | PRD | Esforço | Complexidade | Por quê |
+|---|---|---|---|---|
+| 1 | 65 — Schema-mode + segurança | 2–3 dias | Média-Alta | Fundação: split de credenciais (RF4) e formato de perfil (SecretStorage) que a 66 consome. Mexe em `oracleRunner`/`connectionProfiles` cedo. |
+| 2 | 66 — Conexão, logging e cache | 2–3 dias | Média | Constrói sobre o split da 65 (RF4→RF3) e fornece `withOracleConnection` que a 65 RF1 usa. Cache de config + invalidação de pool. |
+| 3 | 68 — Religar diagnostics/reporter | 2–3 dias | Média | Independente, mas precisa vir **antes da 67** (a 67 remove o branch `UTPLSQL_BAD_CONN`, que a 68 passa a produzir). Reativa docs hoje marcadas como inativas. |
+| 4 | 67 — Qualidade, limpeza e performance | 3–4 dias | Média | Refactor amplo de `extension.ts` (`src/commands/`) + remoção de código morto + i18n + debounce. Por último para rebasear em 65/66/68. |
+
+Planos detalhados: `.opencode/plans/prd-65-*.md`, `prd-66-*.md`, `prd-68-*.md`,
+`prd-67-*.md`.
+
+### Regras da segunda onda
+
+- **Sequencial** (não paralela): 65 e 66 compartilham `oracleRunner.ts`/
+  `connectionProfiles.ts`; 67 refatora `extension.ts`, tocado por todas.
+- **Ordem crítica 68 → 67**: a 67 deve **preservar** o produtor de
+  `UTPLSQL_BAD_CONN` criado pela 68.
+- **Gates por PRD**: `npm run compile && npm run lint && npm run test:unit` verdes
+  + critérios de aceite. Banco real obrigatório em 65 RF1/65 RF3, 66 RF6 e 68 RF1/RF3.
+- **Docs**: 65 (formato de perfis), 66 (`UTPLSQL_DEBUG`) e 67
+  (`utplsql.refreshDebounceMs`) exigem atualização de README/wiki + revalidar 68
+  (reativar compilation diagnostics na doc). Rodar `docs:check` + `brain:sync`.
+- **Release**: somar ao release 0.12.0; `CHANGELOG.md` por PRD.
