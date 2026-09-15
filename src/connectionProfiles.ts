@@ -65,7 +65,7 @@ export function parseSqlDevConnections(xml: string): ConnectionProfile[] {
     profiles.push({
       id: generateId(),
       name,
-      connection: `${userName}/${password}@${host}:${port}/${service}`,
+      connection: `${userName}${password ? `/${password}` : ''}@${host}:${port}/${service}`,
     });
   }
   return profiles;
@@ -109,9 +109,83 @@ export function getAllProfiles(): ConnectionProfile[] {
 }
 
 export async function saveProfiles(profiles: ConnectionProfile[]): Promise<void> {
+  const sanitized: ConnectionProfile[] = [];
+  for (const p of profiles) {
+    const { connection, password } = splitPassword(p.connection);
+    if (password) {
+      rememberPassword(p.id, password);
+      await persistPassword(p.id, password);
+      sanitized.push({ ...p, connection });
+    } else {
+      sanitized.push(p);
+    }
+  }
   await vscode.workspace
     .getConfiguration('utplsql')
-    .update('profiles', profiles, vscode.ConfigurationTarget.Global);
+    .update('profiles', sanitized, vscode.ConfigurationTarget.Global);
+}
+
+// ── Senhas em SecretStorage (PRD-65 RF3) ────────────────────────────────
+
+const SECRET_PREFIX = 'utplsql.profile.';
+let secretStorage: vscode.SecretStorage | undefined;
+const passwordCache = new Map<string, string>();
+
+export function initSecretStorage(secrets: vscode.SecretStorage): void {
+  secretStorage = secrets;
+}
+
+/** `user/pass@host` → `{ connection: 'user@host', password: 'pass' }`. */
+export function splitPassword(conn: string): { connection: string; password: string } {
+  const at = conn.lastIndexOf('@');
+  if (at < 0) return { connection: conn, password: '' };
+  const cred = conn.slice(0, at);
+  const slash = cred.indexOf('/');
+  if (slash < 0) return { connection: conn, password: '' };
+  return {
+    connection: `${cred.slice(0, slash)}${conn.slice(at)}`,
+    password: cred.slice(slash + 1),
+  };
+}
+
+function rememberPassword(id: string, password: string): void {
+  passwordCache.set(id, password);
+}
+
+async function persistPassword(id: string, password: string): Promise<void> {
+  if (secretStorage) await secretStorage.store(`${SECRET_PREFIX}${id}`, password);
+}
+
+/** Recompõe a connection do perfil com a senha do cache (ou do secret). */
+export function getProfileConnection(profile: ConnectionProfile): string {
+  const at = profile.connection.lastIndexOf('@');
+  if (at < 0) return profile.connection;
+  const cred = profile.connection.slice(0, at);
+  if (cred.includes('/')) return profile.connection; // legado com senha inline
+  const pw = passwordCache.get(profile.id);
+  return pw ? `${cred}/${pw}${profile.connection.slice(at)}` : profile.connection;
+}
+
+/**
+ * Migra perfis legados (senha em texto puro) para o SecretStorage e reescreve
+ * `utplsql.profiles` sem a senha. Idempotente.
+ */
+export async function migrateLegacyProfiles(): Promise<void> {
+  const profiles = getAllProfiles();
+  const next: ConnectionProfile[] = [];
+  let changed = false;
+  for (const p of profiles) {
+    const { connection, password } = splitPassword(p.connection);
+    if (password) {
+      rememberPassword(p.id, password);
+      await persistPassword(p.id, password);
+      next.push({ ...p, connection });
+      changed = true;
+    } else {
+      next.push(p);
+    }
+  }
+  if (changed) await saveProfiles(next);
 }
 
 export async function setActiveProfile(id: string | undefined): Promise<void> {

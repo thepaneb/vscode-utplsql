@@ -10,14 +10,18 @@ import {
   findSqlDevConnectionsPath,
   getActiveProfile,
   getAllProfiles,
+  getProfileConnection,
   importFromSqlDeveloper,
+  initSecretStorage,
   maskConnection,
   mergeProfileConfig,
+  migrateLegacyProfiles,
   parseSqlDevConnections,
   pickProfileOrGuide,
   saveProfiles,
   selectProfile,
   setActiveProfile,
+  splitPassword,
 } from '../../connectionProfiles';
 import type { ConnectionProfile } from '../../types';
 import {
@@ -448,6 +452,76 @@ test('pickProfileOrGuide: após criar perfil, repete o picker e retorna', async 
     __setWarningResult(undefined);
     __setQuickPickResult(undefined);
     stubCommands.__setExecuteCommandImpl(undefined);
+    __resetConfigValues();
+  }
+});
+
+// ── Senhas em SecretStorage (RF3) ────────────────────────────────────
+
+function fakeSecrets() {
+  const map = new Map<string, string>();
+  return {
+    map,
+    storage: {
+      store: async (k: string, v: string) => {
+        map.set(k, v);
+      },
+      get: async (k: string) => map.get(k),
+      delete: async (k: string) => {
+        map.delete(k);
+      },
+      onDidChange: () => ({ dispose() {} }),
+    } as any,
+  };
+}
+
+test('splitPassword: separa senha inline (com / e @) e sem senha', () => {
+  assert.deepStrictEqual(splitPassword('user/pass@host:1521/svc'), {
+    connection: 'user@host:1521/svc',
+    password: 'pass',
+  });
+  assert.deepStrictEqual(splitPassword('user@host:1521/svc'), {
+    connection: 'user@host:1521/svc',
+    password: '',
+  });
+  assert.deepStrictEqual(splitPassword('user/p@/ss@host'), {
+    connection: 'user@host',
+    password: 'p@/ss',
+  });
+});
+
+test('saveProfiles: move a senha para o SecretStorage e remove da settings', async () => {
+  __resetConfigValues();
+  const { map, storage } = fakeSecrets();
+  initSecretStorage(storage);
+  try {
+    await saveProfiles([{ id: 'p1', name: 'DEV', connection: 'dev/s3cr3t@//host:1521/svc' }]);
+    assert.strictEqual(getAllProfiles()[0].connection, 'dev@//host:1521/svc');
+    assert.strictEqual(map.get('utplsql.profile.p1'), 's3cr3t');
+    assert.strictEqual(getProfileConnection(getAllProfiles()[0]), 'dev/s3cr3t@//host:1521/svc');
+  } finally {
+    __resetConfigValues();
+  }
+});
+
+test('getProfileConnection: legado com senha inline retorna como esta', () => {
+  assert.strictEqual(
+    getProfileConnection({ id: 'leg', name: 'L', connection: 'u/p@h:1521/s' }),
+    'u/p@h:1521/s',
+  );
+});
+
+test('migrateLegacyProfiles: move senha legada e reescreve a settings', async () => {
+  __resetConfigValues();
+  const { map, storage } = fakeSecrets();
+  initSecretStorage(storage);
+  __setConfigValue('profiles', [{ id: 'm1', name: 'LEG', connection: 'u/secret@h:1521/s' }]);
+  try {
+    await migrateLegacyProfiles();
+    assert.strictEqual(getAllProfiles()[0].connection, 'u@h:1521/s');
+    assert.strictEqual(map.get('utplsql.profile.m1'), 'secret');
+    assert.strictEqual(getProfileConnection(getAllProfiles()[0]), 'u/secret@h:1521/s');
+  } finally {
     __resetConfigValues();
   }
 });

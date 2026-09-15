@@ -10,12 +10,16 @@ import {
 import {
   generateId,
   getAllProfiles,
+  getProfileConnection,
   importFromSqlDeveloper,
+  initSecretStorage,
+  migrateLegacyProfiles,
   pickProfileOrGuide,
   saveProfiles,
   selectProfile,
   setActiveProfile,
 } from './connectionProfiles';
+import { clearDbSourceCache, registerDbSourceProvider } from './dbSourceProvider';
 import {
   startDebugSession,
   UtplsqlDebugAdapterDescriptorFactory,
@@ -62,6 +66,9 @@ function getScriptChannel(): vscode.OutputChannel {
 export function activate(context: vscode.ExtensionContext) {
   const locale = getExtensionLocale();
   vscode.commands.executeCommand('setContext', 'utplsql:activated', true);
+
+  initSecretStorage(context.secrets);
+  void migrateLegacyProfiles();
 
   const controller = vscode.tests.createTestController('utplsql', 'utPLSQL');
   context.subscriptions.push(controller);
@@ -319,6 +326,8 @@ export function activate(context: vscode.ExtensionContext) {
 
   decorationManager = new DecorationManager();
   context.subscriptions.push(decorationManager);
+
+  registerDbSourceProvider(context);
 
   context.subscriptions.push(setupValidator);
 
@@ -655,6 +664,7 @@ async function doRefresh(controller: vscode.TestController): Promise<void> {
   state.cachedItems = [];
   state.clearSuiteMap();
   state.clearItemMap();
+  clearDbSourceCache();
 
   if (cfg.organization === 'schema' && folders?.length) {
     await mergeDbSuites(suites, folders, cfg.organizationSchemaPattern);
@@ -979,7 +989,7 @@ async function runScriptText(
       const connect = (conn: string) =>
         connectOracle(conn, { timeoutSeconds: cfg.scriptRunnerTimeoutSeconds });
       await executeScript(connect, {
-        connection: profile.connection,
+        connection: getProfileConnection(profile),
         statements,
         output: channel,
         token,

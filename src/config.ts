@@ -1,5 +1,5 @@
 import * as vscode from 'vscode';
-import { getActiveProfile, mergeProfileConfig } from './connectionProfiles';
+import { getActiveProfile, getProfileConnection, mergeProfileConfig } from './connectionProfiles';
 import { type ExtensionLocale, resolveLocale, t } from './i18n';
 
 /** Conexão mantida apenas em memória durante a sessão (quando o usuário digita). */
@@ -140,7 +140,7 @@ export function resolveConnectionNoPrompt(): string | undefined {
   const active = getActiveProfile();
   if (active?.connection) {
     vscode.commands.executeCommand('setContext', 'utplsql:connected', true);
-    return active.connection;
+    return getProfileConnection(active);
   }
   const fromSetting = vscode.workspace
     .getConfiguration('utplsql')

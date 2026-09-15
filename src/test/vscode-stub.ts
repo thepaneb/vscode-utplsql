@@ -111,6 +111,13 @@ export namespace workspace {
       })),
     );
   }
+  export function registerTextDocumentContentProvider(
+    // biome-ignore lint/suspicious/noExplicitAny: VSCode provider stub
+    _scheme: string,
+    _provider: any,
+  ) {
+    return { dispose: () => {} };
+  }
   export const fs = {
     // biome-ignore lint/suspicious/noExplicitAny: VSCode Uri stringish stub
     readFile: (uri: any) => {
