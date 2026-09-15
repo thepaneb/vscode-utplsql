@@ -5,11 +5,9 @@
 export const logger = {
   debug(msg: string, ctx?: Record<string, unknown>): void {
     if (process.env.UTPLSQL_DEBUG !== '1') return;
-    // biome-ignore lint/suspicious/noConsole: log de diagnóstico opt-in
     console.debug('[utplsql]', msg, ctx ?? '');
   },
   warn(msg: string, ctx?: Record<string, unknown>): void {
-    // biome-ignore lint/suspicious/noConsole: aviso de runtime
     console.warn('[utplsql]', msg, ctx ?? '');
   },
 };

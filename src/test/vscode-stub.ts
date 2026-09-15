@@ -111,15 +111,10 @@ export namespace workspace {
       })),
     );
   }
-  export function registerTextDocumentContentProvider(
-    // biome-ignore lint/suspicious/noExplicitAny: VSCode provider stub
-    _scheme: string,
-    _provider: any,
-  ) {
+  export function registerTextDocumentContentProvider(_scheme: string, _provider: any) {
     return { dispose: () => {} };
   }
   export const fs = {
-    // biome-ignore lint/suspicious/noExplicitAny: VSCode Uri stringish stub
     readFile: (uri: any) => {
       const path = uri.fsPath ?? uri;
       if (_mockFileErrors[path]) {
@@ -128,7 +123,6 @@ export namespace workspace {
       const content = _mockFileContents[path] ?? '';
       return Promise.resolve(Buffer.from(content));
     },
-    // biome-ignore lint/suspicious/noExplicitAny: VSCode Uri stringish stub
     readDirectory: (uri: any) => {
       const path = uri.fsPath ?? uri;
       const entries = _mockDirEntries[path];
@@ -244,10 +238,7 @@ export namespace window {
   export function showWarningMessage(_message: string, ..._items: string[]) {
     return Promise.resolve(_warningResult);
   }
-  export function createTextEditorDecorationType(
-    // biome-ignore lint/suspicious/noExplicitAny: DecorationRenderOptions stub
-    _opts: any,
-  ) {
+  export function createTextEditorDecorationType(_opts: any) {
     return { dispose: () => {} } as TextEditorDecorationType;
   }
   export function createStatusBarItem(_alignment: number, _priority: number) {
@@ -436,7 +427,6 @@ export function __setVisibleEditors(editors: TextEditor[]): void {
 
 // biome-ignore lint/complexity/noStaticOnlyClass: mimics vscode.FileCoverage API
 export class FileCoverage {
-  // biome-ignore lint/suspicious/noExplicitAny: VSCode Uri stub
   static fromDetails(_uri: any, _details: StatementCoverage[]) {
     return new FileCoverage();
   }
@@ -505,11 +495,7 @@ export const languages = {
 export class RelativePattern {
   pattern: string;
   base: string;
-  constructor(
-    // biome-ignore lint/suspicious/noExplicitAny: stringish-forgiving constructor
-    base: any,
-    pattern: string,
-  ) {
+  constructor(base: any, pattern: string) {
     this.base =
       typeof base === 'string' ? base : (base?.uri?.fsPath ?? base?.fsPath ?? String(base));
     this.pattern = pattern;

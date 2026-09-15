@@ -1,10 +1,9 @@
-// biome-ignore-all lint/suspicious/noExplicitAny: stubs de teste para a árvore
 import './setup.js';
 import assert from 'node:assert';
 import { test } from 'node:test';
 import type { SuiteFile } from '../../discovery';
 import { TestStateManager } from '../../state';
-import { buildFileTree, buildSchemaTree, collectAllItems } from '../../testTree';
+import { buildFileTree, buildSchemaTree, collectAllItems, createRefresher } from '../../testTree';
 
 function makeItem(id: string, uri?: unknown) {
   const children: any[] = [];
@@ -156,4 +155,16 @@ test('collectAllItems: percorre até 3 níveis quando cache vazio', () => {
 
   const items = collectAllItems(controller, state);
   assert.strictEqual(items.length, 3);
+});
+
+test('createRefresher: coalesce chamadas concorrentes e substitui a árvore', async () => {
+  const controller = makeController();
+  const state = new TestStateManager();
+  const refresh = createRefresher(controller, state);
+
+  // Duas chamadas simultâneas: a segunda espera a primeira e dispara um novo run.
+  await Promise.all([refresh(), refresh()]);
+
+  assert.strictEqual(controller._items.length, 0);
+  assert.strictEqual(state.cachedItems.length, 0);
 });

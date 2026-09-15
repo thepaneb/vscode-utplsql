@@ -141,7 +141,7 @@ export function readConfig(): UtConfig {
 export function resolveConnectionNoPrompt(): string | undefined {
   const active = getActiveProfile();
   if (active?.connection) {
-    vscode.commands.executeCommand('setContext', 'utplsql:connected', true);
+    void vscode.commands.executeCommand('setContext', 'utplsql:connected', true);
     return getProfileConnection(active);
   }
   const fromSetting = vscode.workspace
@@ -149,16 +149,16 @@ export function resolveConnectionNoPrompt(): string | undefined {
     .get<string>('connection', '')
     .trim();
   if (fromSetting) {
-    vscode.commands.executeCommand('setContext', 'utplsql:connected', true);
+    void vscode.commands.executeCommand('setContext', 'utplsql:connected', true);
     return fromSetting;
   }
   const fromEnv = (process.env.UTPLSQL_CONN ?? '').trim();
   if (fromEnv) {
-    vscode.commands.executeCommand('setContext', 'utplsql:connected', true);
+    void vscode.commands.executeCommand('setContext', 'utplsql:connected', true);
     return fromEnv;
   }
   if (sessionConnection) {
-    vscode.commands.executeCommand('setContext', 'utplsql:connected', true);
+    void vscode.commands.executeCommand('setContext', 'utplsql:connected', true);
     return sessionConnection;
   }
   return undefined;
@@ -185,7 +185,7 @@ export async function resolveConnection(): Promise<string | undefined> {
   });
   if (input?.trim()) {
     sessionConnection = input.trim();
-    vscode.commands.executeCommand('setContext', 'utplsql:connected', true);
+    void vscode.commands.executeCommand('setContext', 'utplsql:connected', true);
     return sessionConnection;
   }
   return undefined;
@@ -193,5 +193,5 @@ export async function resolveConnection(): Promise<string | undefined> {
 
 export function clearSessionConnection(): void {
   sessionConnection = undefined;
-  vscode.commands.executeCommand('setContext', 'utplsql:connected', false);
+  void vscode.commands.executeCommand('setContext', 'utplsql:connected', false);
 }

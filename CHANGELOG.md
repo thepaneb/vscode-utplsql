@@ -2,6 +2,21 @@
 
 ## 0.12.0
 
+- **Correções de execução e cobertura**: `DBMS_OUTPUT` dos testes agora é
+  habilitado e drenado na **mesma sessão** que executa o `ut_runner.run` (antes
+  a drenagem ocorria numa segunda conexão, sem saída); o XML do JUnit com
+  `<system-out><![CDATA[...]]>` fragmentado não corrompe mais o parse — as
+  linhas de conteúdo e o fechamento `]]>`, que não começam com `<`, passam a ser
+  roteadas para o XML enquanto o CDATA está aberto; reporter adicional com nome
+  inválido é ignorado (guard anti-injeção); schema owner resolvido via
+  `parseConnString` (TNS/SID/IPv6) em vez de `split('/')`; "Go to Error" testa
+  todas as raízes do workspace e prefere um arquivo existente; senhas de perfis
+  são reidratadas do SecretStorage ao recarregar a janela
+  (`hydrateProfilePasswords`); listener de cancelamento e timer de timeout são
+  liberados ao fim do run. Thresholds de cobertura do TypeScript sobem para 90%
+  linhas/statements, 85% branches e 90% funções (atual 97/91/97/97), com novos
+  testes unitários e de integração dos caminhos só-DB.
+
 - **Qualidade, limpeza e performance (PRD-67)**: `extension.ts` reduzido a
   orquestrador (143 linhas) com os comandos extraídos para `src/commands/`
   (`run`, `debug`, `script`, `profile`, `connection`, `utility`) e a árvore de

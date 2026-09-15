@@ -18,10 +18,6 @@ function makeMeta(over: Partial<ItemMeta>): ItemMeta {
 }
 
 function makeRun() {
-  const passed: any[] = [];
-  const failed: any[] = [];
-  const skipped: any[] = [];
-  const errored: any[] = [];
   const passedList: any[] = [];
   const failedList: any[] = [];
   const skippedList: any[] = [];
@@ -303,15 +299,11 @@ END;`,
     assert.strictEqual(run.coverageList.length, 1);
     const details = setCoverageCalls[0][1] as unknown[];
     const declarations = details.filter(
-      // biome-ignore lint/suspicious/noExplicitAny: detail de cobertura stub
       (d) => (d as any).constructor?.name === 'DeclarationCoverage',
     );
     assert.strictEqual(declarations.length, 2);
     // calc (linha 2) tem hits na linha 3; get_total não → só calc executada
-    const execNames = declarations.map(
-      // biome-ignore lint/suspicious/noExplicitAny: detail de cobertura stub
-      (d) => [(d as any).name, (d as any).executed],
-    );
+    const execNames = declarations.map((d) => [(d as any).name, (d as any).executed]);
     assert.deepStrictEqual(execNames, [
       ['calc', true],
       ['get_total', false],

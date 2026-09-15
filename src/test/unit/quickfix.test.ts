@@ -1,6 +1,6 @@
 import './setup.js';
 import assert from 'node:assert';
-import { mock, test } from 'node:test';
+import { test } from 'node:test';
 import { closeOraclePool } from '../../oracleRunner';
 import { SetupValidator, UtplsqlCodeActionProvider } from '../../quickfix';
 import { __resetConfigValues, __setConfigValue, Diagnostic, Range } from '../vscode-stub';

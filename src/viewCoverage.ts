@@ -118,7 +118,7 @@ export async function applySqlCoverage(
     let rows: unknown[];
     try {
       // Restringe ao schema que executa os testes (evita varrer v$sql global).
-      const owner = connection.split('/')[0].trim().toUpperCase();
+      const owner = parseConnString(connection).user.toUpperCase();
       const result = await conn.execute(
         `SELECT sql_text FROM v$sql
          WHERE command_type = 3 AND executions > 0 AND parsing_schema_name = :owner`,

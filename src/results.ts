@@ -66,10 +66,19 @@ export function resolveStackFrameToUri(
   }
 
   const folders = vscode.workspace.workspaceFolders;
-  if (folders) {
+  if (folders?.length) {
+    // Tenta todas as raízes do workspace, preferindo um arquivo que exista
+    // (case-insensitive); sem nenhum, mantém o primeiro candidato.
+    const names = [objName, userFrame.objectName];
+    let fallback: vscode.Location | undefined;
     for (const folder of folders) {
-      return new vscode.Location(vscode.Uri.joinPath(folder.uri, `${objName}.pks`), pos);
+      for (const name of names) {
+        const candidate = vscode.Uri.joinPath(folder.uri, `${name}.pks`);
+        fallback ??= new vscode.Location(candidate, pos);
+        if (fs.existsSync(candidate.fsPath)) return new vscode.Location(candidate, pos);
+      }
     }
+    if (fallback) return fallback;
   }
 
   return undefined;

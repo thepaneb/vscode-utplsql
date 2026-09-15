@@ -135,6 +135,19 @@ export function initSecretStorage(secrets: vscode.SecretStorage): void {
   secretStorage = secrets;
 }
 
+/**
+ * Carrega as senhas persistidas no SecretStorage para o cache em memória.
+ * Deve rodar após `initSecretStorage` (ex.: na ativação) para que os perfis
+ * continuem utilizáveis depois de recarregar a janela (PRD-65 RF3).
+ */
+export async function hydrateProfilePasswords(): Promise<void> {
+  if (!secretStorage) return;
+  for (const p of getAllProfiles()) {
+    const pw = await secretStorage.get(`${SECRET_PREFIX}${p.id}`);
+    if (pw) rememberPassword(p.id, pw);
+  }
+}
+
 /** `user/pass@host` → `{ connection: 'user@host', password: 'pass' }`. */
 export function splitPassword(conn: string): { connection: string; password: string } {
   const at = conn.lastIndexOf('@');

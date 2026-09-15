@@ -42,10 +42,10 @@ Ferramentas e infraestrutura de desenvolvimento do projeto.
   "exclude": ["out/test/**", "src/test/**"],
   "reporter": ["text", "lcov", "html"],
   "check-coverage": true,
-  "lines": 65,
-  "branches": 80,
-  "functions": 70,
-  "statements": 65
+  "lines": 90,
+  "branches": 85,
+  "functions": 90,
+  "statements": 90
 }
 ```
 
@@ -64,10 +64,10 @@ Ferramentas e infraestrutura de desenvolvimento do projeto.
 
 | Métrica | Threshold | Atual (v0.12.0) |
 |---|---|---|
-| Lines | 65% | 89.7% |
-| Branches | 80% | 85.0% |
-| Functions | 70% | 95.2% |
-| Statements | 65% | 89.7% |
+| Lines | 90% | 97.2% |
+| Branches | 85% | 90.7% |
+| Functions | 90% | 97.3% |
+| Statements | 90% | 97.2% |
 
 ## Testes unitários
 

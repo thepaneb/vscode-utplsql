@@ -11,6 +11,7 @@ import {
   getActiveProfile,
   getAllProfiles,
   getProfileConnection,
+  hydrateProfilePasswords,
   importFromSqlDeveloper,
   initSecretStorage,
   maskConnection,
@@ -500,6 +501,20 @@ test('saveProfiles: move a senha para o SecretStorage e remove da settings', asy
     assert.strictEqual(getAllProfiles()[0].connection, 'dev@//host:1521/svc');
     assert.strictEqual(map.get('utplsql.profile.p1'), 's3cr3t');
     assert.strictEqual(getProfileConnection(getAllProfiles()[0]), 'dev/s3cr3t@//host:1521/svc');
+  } finally {
+    __resetConfigValues();
+  }
+});
+
+test('hydrateProfilePasswords: restaura senha do SecretStorage após reload', async () => {
+  __resetConfigValues();
+  const { storage } = fakeSecrets();
+  initSecretStorage(storage);
+  __setConfigValue('profiles', [{ id: 'hydrate-unico-1', name: 'DEV', connection: 'h@h:1521/s' }]);
+  await storage.store('utplsql.profile.hydrate-unico-1', 'p4ss');
+  try {
+    await hydrateProfilePasswords();
+    assert.strictEqual(getProfileConnection(getAllProfiles()[0]), 'h/p4ss@h:1521/s');
   } finally {
     __resetConfigValues();
   }

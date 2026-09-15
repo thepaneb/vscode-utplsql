@@ -9,7 +9,11 @@ import { registerScriptCommands } from './commands/script';
 import { registerUtilityCommands } from './commands/utility';
 import { registerCompilationDiagnostics } from './compilationDiagnostics';
 import { readConfig } from './config';
-import { initSecretStorage, migrateLegacyProfiles } from './connectionProfiles';
+import {
+  hydrateProfilePasswords,
+  initSecretStorage,
+  migrateLegacyProfiles,
+} from './connectionProfiles';
 import { registerDbSourceProvider } from './dbSourceProvider';
 import { createDebounced } from './debounce';
 import { DecorationManager } from './decorations';
@@ -25,10 +29,13 @@ let decorationManager: DecorationManager | undefined;
 let cancelCurrentRun: (() => void) | undefined;
 
 export function activate(context: vscode.ExtensionContext) {
-  vscode.commands.executeCommand('setContext', 'utplsql:activated', true);
+  void vscode.commands.executeCommand('setContext', 'utplsql:activated', true);
 
   initSecretStorage(context.secrets);
-  void migrateLegacyProfiles();
+  const profilesReady = (async () => {
+    await migrateLegacyProfiles();
+    await hydrateProfilePasswords();
+  })();
 
   const controller = vscode.tests.createTestController('utplsql', 'utPLSQL');
   context.subscriptions.push(controller);
@@ -134,7 +141,7 @@ export function activate(context: vscode.ExtensionContext) {
   watcher.onDidDelete(() => scheduleRefresh.schedule());
   context.subscriptions.push(watcher, { dispose: () => scheduleRefresh.cancel() });
 
-  refresh();
+  void profilesReady.then(() => refresh());
 }
 
 export async function deactivate() {

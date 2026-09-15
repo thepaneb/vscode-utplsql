@@ -63,7 +63,7 @@ export async function executeRun(
     state.setLastRun({ type: 'all', coverage });
   }
 
-  vscode.commands.executeCommand('setContext', 'utplsql:running', true);
+  void vscode.commands.executeCommand('setContext', 'utplsql:running', true);
 
   const leafTests: vscode.TestItem[] = [];
   const pathArgs = new Set<string>();
@@ -140,5 +140,5 @@ export async function executeRun(
   }
 
   run.end();
-  vscode.commands.executeCommand('setContext', 'utplsql:running', false);
+  void vscode.commands.executeCommand('setContext', 'utplsql:running', false);
 }

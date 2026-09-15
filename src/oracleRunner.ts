@@ -451,6 +451,12 @@ export async function executeRunOracle(
 
     for (const r of extraReporters) {
       const normalized = r.toLowerCase().replace(/\(\)$/, '');
+      // Só aceita identificadores PL/SQL simples: o nome vem de settings (que
+      // podem ser definidas pelo workspace) e é concatenado no PL/SQL abaixo.
+      if (!/^[a-z0-9_]+$/.test(normalized)) {
+        logger.warn('reporter adicional ignorado (nome inválido)', { reporter: r });
+        continue;
+      }
       if (
         normalized === 'ut_documentation_reporter' ||
         normalized === 'ut_junit_reporter' ||
@@ -466,7 +472,7 @@ export async function executeRunOracle(
     const pathsList =
       pathArgs.length > 0 ? pathArgs.map((p) => `'${p.replace(/'/g, "''")}'`).join(',') : '';
 
-    const owner = (coverageOwner ?? '').trim() || connection.split('/')[0].toUpperCase();
+    const owner = (coverageOwner ?? '').trim() || parseConnString(connection).user.toUpperCase();
 
     let coverageSchemes = 'null';
     let fileMappings = 'null';
@@ -486,74 +492,98 @@ export async function executeRunOracle(
       a_source_file_mappings => ${fileMappings}
     ); END;`;
 
+    if (dbmsOutput) {
+      try {
+        // DBMS_OUTPUT é por sessão: habilita em conn1, que executa os testes.
+        await conn1.execute(`BEGIN DBMS_OUTPUT.ENABLE(NULL); END;`);
+      } catch (e) {
+        logger.debug('executeRunOracle: DBMS_OUTPUT.ENABLE falhou', { error: String(e) });
+      }
+    }
+
     const runnerStart = Date.now();
     const runnerPromise = conn1.execute(plsql, {}, { autoCommit: true });
 
     let lastMsgId = 0;
     let xmlBuffer = '';
+    // O reporter JUnit emite o DBMS_OUTPUT capturado dentro de
+    // `<system-out><![CDATA[...]]></system-out>`. As linhas de conteúdo e o
+    // fechamento `]]>` não começam com '<', então precisam ser roteadas para o
+    // XML enquanto um CDATA estiver aberto (senão o parse do JUnit quebra).
+    let inCdata = false;
 
-    const cancelled = new Promise<void>((resolve) => {
-      token.onCancellationRequested(() => {
-        conn1.break().catch(() => {});
-        conn2.break().catch(() => {});
-        resolve();
-      });
+    const cancelRun = () => {
+      conn1.break().catch(() => {});
+      conn2.break().catch(() => {});
+    };
+    let wakeRun: () => void = () => {};
+    const woken = new Promise<void>((resolve) => {
+      wakeRun = resolve;
     });
-
+    const cancelSub = token.onCancellationRequested(() => {
+      cancelRun();
+      wakeRun();
+    });
     const timeoutMs = (timeoutMinutes ?? 0) * 60 * 1000;
-    const timeoutPromise = new Promise<boolean>((resolve) => {
-      if (timeoutMs <= 0) return;
-      setTimeout(() => {
-        conn1.break().catch(() => {});
-        conn2.break().catch(() => {});
-        resolve(true);
-      }, timeoutMs);
-    });
+    const timeoutTimer =
+      timeoutMs > 0
+        ? setTimeout(() => {
+            cancelRun();
+            wakeRun();
+          }, timeoutMs)
+        : undefined;
 
-    while (true) {
-      const done = await Promise.race([
-        runnerPromise.then(() => true),
-        cancelled.then(() => true),
-        timeoutPromise,
-        new Promise<boolean>((r) => setTimeout(() => r(false), 200)),
-      ]);
+    try {
+      while (true) {
+        const done = await Promise.race([
+          runnerPromise.then(() => true),
+          woken.then(() => true),
+          new Promise<boolean>((r) => setTimeout(() => r(false), 200)),
+        ]);
 
-      try {
-        const rows = await conn2.execute(
-          `SELECT message_id, text, is_finished FROM ${utSchema}UT_OUTPUT_BUFFER_TMP WHERE message_id > :last ORDER BY message_id`,
-          { last: lastMsgId },
-        );
+        try {
+          const rows = await conn2.execute(
+            `SELECT message_id, text, is_finished FROM ${utSchema}UT_OUTPUT_BUFFER_TMP WHERE message_id > :last ORDER BY message_id`,
+            { last: lastMsgId },
+          );
 
-        for (const row of rows.rows ?? []) {
-          const r = row as unknown as { MESSAGE_ID: number; TEXT: string | null };
-          lastMsgId = r.MESSAGE_ID;
-          const text = r.TEXT;
-          if (text) {
-            if (text.startsWith('<')) {
-              xmlBuffer += `${text}\n`;
-            } else {
-              run.appendOutput(`${text}\r\n`);
+          for (const row of rows.rows ?? []) {
+            const r = row as unknown as { MESSAGE_ID: number; TEXT: string | null };
+            lastMsgId = r.MESSAGE_ID;
+            const text = r.TEXT;
+            if (text) {
+              if (inCdata || text.startsWith('<')) {
+                xmlBuffer += `${text}\n`;
+                if (text.includes('<![CDATA[')) inCdata = true;
+                if (text.includes(']]>')) inCdata = false;
+              } else {
+                run.appendOutput(`${text}\r\n`);
+              }
             }
           }
+        } catch (e) {
+          // polling pode falhar se conn1 ainda não escreveu — ignorar
+          logger.debug('executeRunOracle: poll do buffer falhou', { error: String(e) });
         }
-      } catch (e) {
-        // polling pode falhar se conn1 ainda não escreveu — ignorar
-        logger.debug('executeRunOracle: poll do buffer falhou', { error: String(e) });
-      }
 
-      if (done) break;
+        if (done) break;
+      }
+    } finally {
+      cancelSub.dispose();
+      if (timeoutTimer) clearTimeout(timeoutTimer);
     }
 
     if (dbmsOutput) {
       try {
-        const dbmsResult = await conn2.execute(
-          `DECLARE l_lines DBMS_OUTPUT.CHARARR; l_num NUMBER := 0;
-           BEGIN DBMS_OUTPUT.GET_LINES(l_lines, l_num); END;`,
-        );
-        if (dbmsResult && Array.isArray(dbmsResult)) {
-          for (const line of dbmsResult) {
-            run.appendOutput(`${String(line)}\r\n`);
-          }
+        // Drena a mesma sessão (conn1) que rodou os testes.
+        for (;;) {
+          const r = await conn1.execute(`BEGIN DBMS_OUTPUT.GET_LINE(:line, :status); END;`, {
+            line: { dir: oracledb.BIND_OUT, type: oracledb.STRING, maxSize: 32767 },
+            status: { dir: oracledb.BIND_OUT, type: oracledb.NUMBER },
+          });
+          const out = (r.outBinds ?? {}) as { line?: unknown; status?: unknown };
+          if (Number(out.status) !== 0 || out.line == null) break;
+          run.appendOutput(`${String(out.line)}\r\n`);
         }
       } catch (e) {
         // DBMS_OUTPUT pode não estar habilitado
@@ -576,7 +606,7 @@ export async function executeRunOracle(
         return r?.status === 'failed' || r?.status === 'error';
       }),
     );
-    vscode.commands.executeCommand(
+    void vscode.commands.executeCommand(
       'setContext',
       'utplsql:hasFailures',
       state.getLastFailedItems().length > 0,

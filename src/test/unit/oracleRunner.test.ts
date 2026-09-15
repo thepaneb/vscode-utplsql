@@ -726,6 +726,129 @@ test('executeRunOracle: fluxo feliz aplica resultados e info no output', async (
   assert.ok(out.includes('Doc output'), 'deveria streamar o reporter de documentação');
 });
 
+test('executeRunOracle: dbmsOutput habilita e drena DBMS_OUTPUT na conn1', async () => {
+  const lines = ['ola-62', 'linha-2'];
+  let enabled = false;
+  let drainIndex = 0;
+  const conn1 = {
+    callTimeout: 0,
+    execute: async (sql: string) => {
+      if (/ALL_SYNONYMS/.test(sql)) return { rows: [{ TABLE_OWNER: 'UT3' }] };
+      if (/DELETE FROM/.test(sql)) return {};
+      if (/DBMS_OUTPUT\.ENABLE/.test(sql)) {
+        enabled = true;
+        return {};
+      }
+      if (/DBMS_OUTPUT\.GET_LINE/.test(sql)) {
+        const line = lines[drainIndex];
+        drainIndex++;
+        return { outBinds: line != null ? { line, status: 0 } : { line: null, status: 1 } };
+      }
+      return {};
+    },
+    close: async () => {},
+    break: async () => {},
+  };
+  let polls = 0;
+  const conn2 = {
+    callTimeout: 0,
+    execute: async (sql: string) => {
+      if (/UT_OUTPUT_BUFFER_TMP/.test(sql) && /SELECT/.test(sql)) {
+        polls++;
+        if (polls === 1) return { rows: [{ MESSAGE_ID: 1, TEXT: JUNIT_XML }] };
+        return { rows: [] };
+      }
+      return {};
+    },
+    close: async () => {},
+    break: async () => {},
+  };
+  const mod = {
+    OUT_FORMAT_OBJECT: { id: 'object' },
+    BIND_OUT: { dir: 'out' },
+    STRING: 'STRING',
+    NUMBER: 'NUMBER',
+    createPool: async () => {
+      let i = 0;
+      return {
+        getConnection: async () => (i++ === 0 ? conn1 : conn2),
+        close: async () => {},
+      };
+    },
+    getConnection: async () => {
+      throw new Error('raw indisponivel');
+    },
+  };
+  const run = makeRun() as any;
+  const { item, metaMap } = makeLeaf();
+  try {
+    await executeRunOracle(
+      {
+        connection: 'u/p@//h:1521/s',
+        pathArgs: ['pkg'],
+        coverage: false,
+        sourcePath: 'install',
+        root: '/root',
+        run,
+        leafTests: [item as any],
+        state: makeOracleRunState(metaMap),
+        dbmsOutput: true,
+      },
+      neverCancel as never,
+      async () => mod as never,
+    );
+  } finally {
+    await closeOraclePool();
+  }
+
+  assert.ok(enabled, 'deveria habilitar DBMS_OUTPUT na sessão dos testes');
+  const out = run.output.join('\n');
+  assert.ok(out.includes('ola-62'), `deveria drenar a primeira linha: ${out}`);
+  assert.ok(out.includes('linha-2'), 'deveria drenar a segunda linha');
+});
+
+test('executeRunOracle: CDATA fragmentado do system-out não corrompe o parse do JUnit', async () => {
+  // Reproduz a saída do ut_junit_reporter com DBMS_OUTPUT capturado: as linhas
+  // de conteúdo e o fechamento `]]>` não começam com '<' e vinham parar no
+  // output de documentação, deixando o CDATA aberto no XML.
+  const { mod } = makeOracleRunFake({
+    buffer: [
+      '<testsuites tests="1" failures="0"><testsuite name="pkg" tests="1">',
+      '<testcase classname="pkg" name="t1" time="0.05">',
+      '<system-out>',
+      '<![CDATA[linha 1',
+      'linha 2 com "aspas"',
+      ']]>',
+      '</system-out>',
+      '</testcase></testsuite></testsuites>',
+    ],
+  });
+  const run = makeRun() as any;
+  const { item, metaMap } = makeLeaf();
+  try {
+    await executeRunOracle(
+      {
+        connection: 'u/p@//h:1521/s',
+        pathArgs: ['pkg'],
+        coverage: false,
+        sourcePath: 'install',
+        root: '/root',
+        run,
+        leafTests: [item as any],
+        state: makeOracleRunState(metaMap),
+      },
+      neverCancel as never,
+      async () => mod as never,
+    );
+  } finally {
+    await closeOraclePool();
+  }
+
+  assert.strictEqual(run.passedList.length, 1, 'deveria aplicar o resultado mesmo com CDATA');
+  const out = run.output.join('\n');
+  assert.ok(!out.includes('linha 1'), 'conteúdo do CDATA não deve vazar para o output');
+});
+
 test('executeRunOracle: cobertura sem <coverage> avisa relatório não gerado', async () => {
   const { mod } = makeOracleRunFake({
     buffer: [JUNIT_XML],

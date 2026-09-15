@@ -15,10 +15,17 @@ function cell(row: unknown, key: string): string {
   return '';
 }
 
-async function fetchSource(uri: vscode.Uri): Promise<string> {
+/** `utplsql-db:/APP/UT_ORDERS.pks` → `{ schema: 'APP', pkg: 'UT_ORDERS' }`. */
+export function parseDbSourceUri(uri: vscode.Uri): { schema: string; pkg: string } {
   const segments = uri.path.split('/').filter(Boolean);
-  const schema = (segments[0] ?? '').toUpperCase();
-  const pkg = (segments[1] ?? '').replace(/\.pks$/i, '').toUpperCase();
+  return {
+    schema: (segments[0] ?? '').toUpperCase(),
+    pkg: (segments[1] ?? '').replace(/\.pks$/i, '').toUpperCase(),
+  };
+}
+
+export async function fetchDbSource(uri: vscode.Uri): Promise<string> {
+  const { schema, pkg } = parseDbSourceUri(uri);
   if (!schema || !pkg) return '';
 
   const connStr = resolveConnectionNoPrompt();
@@ -66,7 +73,7 @@ export function registerDbSourceProvider(context: vscode.ExtensionContext): void
       const key = uri.toString();
       const cached = cache.get(key);
       if (cached !== undefined) return cached;
-      const text = await fetchSource(uri);
+      const text = await fetchDbSource(uri);
       cache.set(key, text);
       return text;
     },

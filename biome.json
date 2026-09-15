@@ -29,5 +29,17 @@
       "!**/*.vsix",
       "!**/images/**"
     ]
-  }
+  },
+  "overrides": [
+    {
+      "includes": ["src/test/**"],
+      "linter": {
+        "rules": {
+          "suspicious": {
+            "noExplicitAny": "off"
+          }
+        }
+      }
+    }
+  ]
 }

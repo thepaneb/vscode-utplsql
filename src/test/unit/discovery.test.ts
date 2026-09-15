@@ -263,7 +263,7 @@ function makeConn(opts: {
         throw new Error('ORA-00942: table or view does not exist');
       }
       const name = String(binds?.name ?? '');
-      return { rows: ((opts.sources ?? {})[name] ?? []).map((l) => [l]) };
+      return { rows: (opts.sources?.[name] ?? []).map((l) => [l]) };
     },
   };
 }
@@ -325,7 +325,7 @@ test('discoverSchemaFromConn: ALL_SOURCE inacessivel retorna vazio sem erro', as
 
 test('discoverSchemaFromConn: rows em formato objeto (OUT_FORMAT_OBJECT)', async () => {
   const conn = {
-    execute: async (sql: string, binds?: Record<string, unknown>) => {
+    execute: async (sql: string) => {
       if (/all_objects/i.test(sql)) {
         return { rows: [{ OBJECT_NAME: 'APP_ORDERS' }] };
       }
