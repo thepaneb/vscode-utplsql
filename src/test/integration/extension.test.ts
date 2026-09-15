@@ -13,6 +13,23 @@ const COMMANDS = [
   'utplsql.showInfo',
   'utplsql.selectReporter',
   'utplsql.clearConnection',
+  'utplsql.runLens',
+  'utplsql.rerunLast',
+  'utplsql.runAtCursor',
+  'utplsql.runFailed',
+  'utplsql.showTestExplorer',
+  'utplsql.configureConnection',
+  'utplsql.copyGrantsToClipboard',
+  'utplsql.validateSetup',
+  'utplsql.recompileUt3',
+  'utplsql.debugTest',
+  'utplsql.switchProfile',
+  'utplsql.manageProfiles',
+  'utplsql.importSqlDevConnections',
+  'utplsql.newProfile',
+  'utplsql.runScript',
+  'utplsql.runScriptFile',
+  'utplsql.runScriptFolder',
 ] as const;
 
 function hasConnection(): boolean {
