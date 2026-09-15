@@ -3,7 +3,6 @@ import { type CodeLensItem, parseCodeLensItems, UtplsqlCodeLensProvider } from '
 import {
   clearSessionConnection,
   getExtensionLocale,
-  invalidateConfigCache,
   readConfig,
   resolveConnection,
   resolveConnectionNoPrompt,
@@ -309,7 +308,6 @@ export function activate(context: vscode.ExtensionContext) {
   context.subscriptions.push(
     vscode.workspace.onDidChangeConfiguration((e) => {
       if (!e.affectsConfiguration('utplsql')) return;
-      invalidateConfigCache();
       invalidatePool();
     }),
   );

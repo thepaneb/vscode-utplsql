@@ -3,7 +3,6 @@ import assert from 'node:assert';
 import { test } from 'node:test';
 import {
   clearSessionConnection,
-  invalidateConfigCache,
   readConfig,
   resolveConnection,
   resolveConnectionNoPrompt,
@@ -213,16 +212,4 @@ test('readConfig: perfil ativo sobrescreve settings globais', () => {
   } finally {
     __resetConfigValues();
   }
-});
-
-test('readConfig: cacheado e invalidado por invalidateConfigCache', () => {
-  __resetConfigValues();
-  invalidateConfigCache();
-  const a = readConfig();
-  const b = readConfig();
-  assert.strictEqual(a, b, 'mesma instância enquanto cacheado');
-
-  invalidateConfigCache();
-  const c = readConfig();
-  assert.notStrictEqual(a, c, 'nova instância após invalidar');
 });

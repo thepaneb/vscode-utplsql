@@ -327,6 +327,7 @@ GRANT SELECT ON SYS.DBA_PROCEDURES TO <ut3_owner>;
 | `%suite` not recognized | Missing `%suite`/`create package` in the file, or `%test` without `PROCEDURE` | Check the spec; run `utPLSQL: Refresh tests` |
 | CodeLens doesn't appear | `editor.codeLens` disabled or conflict | Enable `"editor.codeLens": true`; check `utplsql.codeLens.enabled` |
 | Shortcuts don't work | Conflict with another extension or VSCode shortcut | Go to File → Preferences → Keyboard Shortcuts and search for `utplsql` to redefine |
+| Need diagnostics | Unclear what the extension is doing internally | Set `UTPLSQL_DEBUG=1` before launching VSCode for opt-in diagnostic logs (context of connection/discovery/coverage failures) in the Extension Host console |
 
 ## Disclaimer
 

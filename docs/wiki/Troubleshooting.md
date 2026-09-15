@@ -221,6 +221,13 @@ Use `**` for any depth of subdirectories after the schema.
 > schemas whose `.pks` files are not in the workspace. The schemas queried are
 > the directories under the base of the `schemaPattern` (e.g., `db/*`) and the
 > schemas of local suites. Suites from the database appear with virtual URI
-> `utplsql-db:/` and **do not have** CodeLens, inline decorations, or jump to
-> failure — only execution from the tree. `UT_*` packages (utPLSQL framework)
-> are ignored.
+> `utplsql-db:/`, open **read-only** (source from `ALL_SOURCE`) so **jump to
+> failure** works, and inline decorations work in schema mode too. They still
+> have no CodeLens — execution is from the tree. `UT_*` packages (utPLSQL
+> framework) are ignored.
+
+## Opt-in diagnostics (`UTPLSQL_DEBUG`)
+
+Set `UTPLSQL_DEBUG=1` before launching VSCode to enable diagnostic logs in the
+Extension Host console (connection, discovery and coverage failures with
+context). Unset = silent. Credentials are never logged.

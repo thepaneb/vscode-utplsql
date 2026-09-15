@@ -2,6 +2,12 @@
 
 ## 0.12.0
 
+- **Robustez de conexão, logging e cache (PRD-66)**: connection string aceita
+  TNS/SID/IPv6; logs de diagnóstico opt-in com `UTPLSQL_DEBUG=1`; pool recriado
+  ao mudar `utplsql.oraclePool*` (chave composta + `onDidChangeConfiguration`);
+  helper de conexão compartilhado; verificação real de grants de `DBMS_DEBUG`,
+  bind no debugger e `v$sql` restrito ao schema.
+
 - **Segurança de perfis e schema-mode (PRD-65)**: senhas de perfis passam a
   ficar no cofre do SO (VS Code SecretStorage) — `utplsql.profiles` não guarda
   mais a senha e perfis legados são migrados no primeiro uso. Credenciais com
