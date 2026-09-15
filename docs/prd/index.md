@@ -128,6 +128,7 @@ CONCLUIR
 | 64 | [Migração para Oracle-Only: eliminação do utPLSQL-cli e Java](completed/prd-64-oracle-only-migration.md) | 0.12.0 | 2026-09-09 |
 | 63 | [Wiki bilíngue (pt-BR/en) + correção de links + limpeza de READMEs](completed/prd-63-diagram-i18n.md) | 0.12.0 | 2026-09-09 |
 | 62 | [Execução de scripts SQL contra perfil de conexão](completed/prd-62-run-scripts-against-profiles.md) | 0.12.0 | 2026-09-12 |
+| 65 | [Correções críticas de schema-mode e segurança](completed/prd-65-schema-mode-security-fixes.md) | 0.12.0 | 2026-09-15 |
 
 ### 🟡 Em desenvolvimento
 
@@ -137,7 +138,6 @@ _(vazio — nenhuma PRD em desenvolvimento)_
 
 | # | PRD | Versão alvo | Data |
 |---|---|---|---|
-| 65 | [Correções críticas de schema-mode e segurança](approved/prd-65-schema-mode-security-fixes.md) | 0.12.0 | 2026-09-15 |
 | 66 | [Robustez de conexão, logging e cache](approved/prd-66-connection-robustness-logging.md) | 0.12.0 | 2026-09-15 |
 | 67 | [Qualidade, limpeza e performance](approved/prd-67-code-quality-cleanup.md) | 0.12.0 | 2026-09-15 |
 | 68 | [Religar diagnostics e reporter de sessão perdidos na migração Oracle-only](approved/prd-68-restore-oracle-diagnostics-and-reporter.md) | 0.12.0 | 2026-09-15 |
@@ -236,9 +236,9 @@ docs/prd/
 │   ├── prd-49-internacionalizacao.md
 │   ├── prd-64-oracle-only-migration.md
 │   ├── prd-63-diagram-i18n.md
-│   └── prd-62-run-scripts-against-profiles.md
+│   ├── prd-62-run-scripts-against-profiles.md
+│   └── prd-65-schema-mode-security-fixes.md
 ├── approved/         ← aprovados, aguardando implementação
-│   ├── prd-65-schema-mode-security-fixes.md
 │   ├── prd-66-connection-robustness-logging.md
 │   ├── prd-67-code-quality-cleanup.md
 │   └── prd-68-restore-oracle-diagnostics-and-reporter.md
