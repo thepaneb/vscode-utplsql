@@ -292,12 +292,6 @@ test('provideCodeActions: contexto vazio retorna vazio', () => {
   assert.strictEqual(actions.length, 0);
 });
 
-test('checkCli: sempre retorna true (CLI removido)', () => {
-  const v = new SetupValidator();
-  assert.strictEqual(v.checkCli('/caminho/inexistente/utplsql'), true);
-  assert.strictEqual(v.checkCli(process.execPath), true);
-});
-
 test('applyDiagnostics: array vazio nao quebra', () => {
   const v = new SetupValidator();
   assert.doesNotThrow(() => v.applyDiagnostics([]));

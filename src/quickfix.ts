@@ -90,10 +90,6 @@ export class SetupValidator {
     return diagnostics;
   }
 
-  checkCli(_cliPath: string): boolean {
-    return true;
-  }
-
   applyDiagnostics(diagnostics: SetupDiagnostic[]) {
     this.diagnosticCollection.clear();
     if (diagnostics.length === 0) return;

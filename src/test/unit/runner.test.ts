@@ -1,11 +1,8 @@
 import './setup.js';
 import assert from 'node:assert';
-import fs from 'node:fs';
-import os from 'node:os';
-import path from 'node:path';
 import { mock, test } from 'node:test';
 import * as oracleRunner from '../../oracleRunner';
-import { applyCoverage, applyResults, countResults, executeRun, lastSegment } from '../../runner';
+import { countResults, executeRun, lastSegment } from '../../runner';
 import { TestStateManager } from '../../state';
 import type { ItemMeta } from '../../types';
 import * as viewCoverage from '../../viewCoverage';
@@ -15,38 +12,6 @@ const NEVER_TOKEN = {
   isCancellationRequested: false,
   onCancellationRequested: () => ({ dispose: () => {} }),
 } as any;
-
-const JUNIT_OK = `<?xml version="1.0" encoding="UTF-8"?>
-<testsuites>
-  <testsuite name="TEST_PKG" tests="1" failures="0" errors="0" skipped="0" time="0.5">
-    <testcase name="test_pass" classname="TEST_PKG" time="0.5"/>
-  </testsuite>
-</testsuites>`;
-
-const JUNIT_FAIL = `<?xml version="1.0" encoding="UTF-8"?>
-<testsuites>
-  <testsuite name="TEST_PKG" tests="1" failures="1" errors="0" skipped="0" time="0.3">
-    <testcase name="test_fail" classname="TEST_PKG" time="0.3">
-      <failure message="expected 1=2">Assertion failed</failure>
-    </testcase>
-  </testsuite>
-</testsuites>`;
-
-const COBertura_XML = `<?xml version="1.0" encoding="UTF-8"?>
-<coverage version="5.7" timestamp="1234567890">
-  <packages>
-    <package name="TEST_PKG">
-      <classes>
-        <class name="TEST_PKG" filename="test.pkg" line-rate="0.8" branch-rate="0.5">
-          <lines>
-            <line number="1" hits="1"/>
-            <line number="2" hits="0"/>
-          </lines>
-        </class>
-      </classes>
-    </package>
-  </packages>
-</coverage>`;
 
 function makeExecState() {
   const state = new TestStateManager();
@@ -119,67 +84,6 @@ test('lastSegment: retorna o proprio se sem separador', () => {
 
 test('lastSegment: string vazia retorna vazio', () => {
   assert.strictEqual(lastSegment(''), '');
-});
-
-// ── applyResults ───────────────────────────────────────────────────
-
-test('applyResults: processa JUnit e marca resultados no TestRun', async () => {
-  const { state, suiteItem, testItem } = makeExecState();
-  const run = new vscode.TestRun() as any;
-  const tmp = fs.mkdtempSync(path.join(os.tmpdir(), 'test-'));
-  const junitPath = path.join(tmp, 'results.xml');
-  fs.writeFileSync(junitPath, JUNIT_OK);
-  try {
-    const results = applyResults(junitPath, [testItem], run, state);
-    assert.strictEqual(run.passedCount(), 1);
-    assert.strictEqual(results.size, 1);
-  } finally {
-    fs.rmSync(tmp, { recursive: true });
-  }
-});
-
-test('applyResults: arquivo inexistente marca todos como erro', () => {
-  const { state, testItem } = makeExecState();
-  const run = new vscode.TestRun() as any;
-  const results = applyResults('/nonexistent.xml', [testItem], run, state);
-  assert.strictEqual(run.erroredCount(), 1);
-  assert.strictEqual(results.size, 0);
-});
-
-// ── applyCoverage ──────────────────────────────────────────────────
-
-test('applyCoverage: arquivo existente delega para applyCoverageFromXml', () => {
-  const { state, suiteItem } = makeExecState();
-  const run = new vscode.TestRun() as any;
-  const tmp = fs.mkdtempSync(path.join(os.tmpdir(), 'cov-'));
-  const covPath = path.join(tmp, 'coverage.xml');
-  fs.writeFileSync(covPath, COBertura_XML);
-  try {
-    applyCoverage(covPath, tmp, 'src', run, state);
-    assert.ok(run.output().length > 0 || true);
-  } finally {
-    fs.rmSync(tmp, { recursive: true });
-  }
-});
-
-test('applyCoverage: arquivo ausente registra aviso com arquivos vizinhos', () => {
-  const { state } = makeExecState();
-  const run = new vscode.TestRun() as any;
-  const tmp = fs.mkdtempSync(path.join(os.tmpdir(), 'cov-missing-'));
-  try {
-    applyCoverage(path.join(tmp, 'coverage.xml'), tmp, 'src', run, state);
-    assert.match(run.output(), /relatório não gerado/);
-  } finally {
-    fs.rmSync(tmp, { recursive: true });
-  }
-});
-
-test('applyCoverage: diretório inexistente informa que não foi encontrado', () => {
-  const { state } = makeExecState();
-  const run = new vscode.TestRun() as any;
-  const missing = path.join(os.tmpdir(), `cov-nodir-${Date.now()}`, 'coverage.xml');
-  applyCoverage(missing, os.tmpdir(), 'src', run, state);
-  assert.match(run.output(), /diretório não encontrado/);
 });
 
 // ── countResults ───────────────────────────────────────────────────

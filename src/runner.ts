@@ -1,10 +1,7 @@
 import * as vscode from 'vscode';
 import { getExtensionLocale, readConfig, resolveConnection } from './config';
 import { t } from './i18n';
-import { parseJUnit } from './junit';
 import { executeRunOracle, type OracleRunOptions } from './oracleRunner';
-import { setupValidator } from './quickfix';
-import { applyCoverageFromXml, applyResultsFromCases } from './results';
 import type { TestStateManager } from './state';
 import { applySqlCoverage } from './viewCoverage';
 
@@ -97,10 +94,10 @@ export async function executeRun(
     }
   }
 
-  for (const t of leafTests) {
-    run.enqueued(t);
+  for (const item of leafTests) {
+    run.enqueued(item);
   }
-  for (const t of leafTests) run.started(t);
+  for (const item of leafTests) run.started(item);
 
   run.appendOutput(
     `${t(locale, 'runner.running', { coverage: coverage ? t(locale, 'runner.withCoverage') : '' })}\r\n`,
@@ -144,67 +141,4 @@ export async function executeRun(
 
   run.end();
   vscode.commands.executeCommand('setContext', 'utplsql:running', false);
-}
-
-export function applyResults(
-  junitPath: string,
-  leafTests: vscode.TestItem[],
-  run: vscode.TestRun,
-  state: TestStateManager,
-): ReturnType<typeof applyResultsFromCases> {
-  const locale = getExtensionLocale();
-  const fs = require('node:fs') as typeof import('node:fs');
-  if (!fs.existsSync(junitPath)) {
-    for (const item of leafTests) {
-      run.errored(item, new vscode.TestMessage(t(locale, 'runner.noResults')));
-    }
-    return new Map();
-  }
-
-  const cases = parseJUnit(fs.readFileSync(junitPath, 'utf8'));
-  return applyResultsFromCases(cases, leafTests, run, state);
-}
-
-export function applyCoverage(
-  coveragePath: string,
-  root: string,
-  sourcePath: string,
-  run: vscode.TestRun,
-  state: TestStateManager,
-  folders?: readonly vscode.WorkspaceFolder[],
-): void {
-  const locale = getExtensionLocale();
-  const fs = require('node:fs') as typeof import('node:fs');
-  const path = require('node:path') as typeof import('node:path');
-  state.clearCoverage();
-  if (!fs.existsSync(coveragePath)) {
-    const tmpDir = path.dirname(coveragePath);
-    const siblingFiles = (() => {
-      try {
-        return fs.readdirSync(tmpDir).join(', ') || t(locale, 'runner.coverEmptyDir');
-      } catch {
-        return t(locale, 'runner.coverDirMissing');
-      }
-    })();
-    run.appendOutput(
-      `${t(locale, 'runner.coverNoReport', {
-        path: coveragePath,
-        dir: tmpDir,
-        files: siblingFiles,
-      })}\r\n`,
-    );
-    if (readConfig().setupDiagnosticsEnabled) {
-      setupValidator.addCoverageDiagnostic();
-    }
-    return;
-  }
-
-  applyCoverageFromXml(
-    fs.readFileSync(coveragePath, 'utf8'),
-    sourcePath,
-    root,
-    run,
-    state,
-    folders,
-  );
 }
