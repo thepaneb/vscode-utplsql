@@ -5,7 +5,7 @@ import * as os from 'node:os';
 import * as path from 'node:path';
 import { mock, test } from 'node:test';
 import { closeOraclePool } from '../../oracleRunner';
-import { __resetConfigValues } from '../vscode-stub';
+import { __resetConfigValues, __setConfigValue, commands } from '../vscode-stub';
 
 // Simula a ausência do driver: import('oracledb') resolve, mas acessar
 // .default lança -> loadOracledb cai no catch e retorna undefined.
@@ -130,5 +130,74 @@ test('recompileUt3: oracledb ausente mostra erro sem lançar', async () => {
     await closeOraclePool();
   } finally {
     process.env.UTPLSQL_CONN = origEnv;
+  }
+});
+
+test('fetchDbSource: oracledb ausente retorna vazio (catch do loader)', async () => {
+  const origEnv = process.env.UTPLSQL_CONN;
+  process.env.UTPLSQL_CONN = 'u/p@//h:1521/s';
+  __resetConfigValues();
+  try {
+    const { fetchDbSource } = await import('../../dbSourceProvider.js');
+    const { Uri } = await import('../vscode-stub.js');
+    const text = await fetchDbSource(Uri.parse('utplsql-db:/APP/UT_PKG.pks') as never);
+    assert.strictEqual(text, '');
+  } finally {
+    process.env.UTPLSQL_CONN = origEnv;
+    __resetConfigValues();
+  }
+});
+
+test('validateOnActivation: thick com oracledb ausente não gera diagnóstico', async () => {
+  const origEnv = process.env.UTPLSQL_CONN;
+  delete process.env.UTPLSQL_CONN;
+  __resetConfigValues();
+  try {
+    // readConfig default é thin; forçamos thick via stub de config.
+    __setConfigValue('oracleClientMode', 'thick');
+    const { SetupValidator } = await import('../../quickfix.js');
+    const diags = await new SetupValidator().validateOnActivation();
+    assert.deepStrictEqual(diags, []);
+  } finally {
+    process.env.UTPLSQL_CONN = origEnv;
+    __resetConfigValues();
+  }
+});
+
+test('validateOnActivation: conexão com oracledb ausente retorna sem diagnóstico', async () => {
+  const origEnv = process.env.UTPLSQL_CONN;
+  process.env.UTPLSQL_CONN = 'u/p@//h:1521/s';
+  __resetConfigValues();
+  try {
+    const { SetupValidator } = await import('../../quickfix.js');
+    const diags = await new SetupValidator().validateOnActivation();
+    assert.deepStrictEqual(diags, []);
+  } finally {
+    process.env.UTPLSQL_CONN = origEnv;
+    __resetConfigValues();
+  }
+});
+
+test('selectReporter/showInfo: oracledb ausente mostra erro sem lançar', async () => {
+  const origEnv = process.env.UTPLSQL_CONN;
+  process.env.UTPLSQL_CONN = 'u/p@//h:1521/s';
+  __resetConfigValues();
+  commands.__resetRegisteredCommands();
+  try {
+    const { registerConnectionCommands } = await import('../../commands/connection.js');
+    registerConnectionCommands(
+      { subscriptions: [] } as never,
+      { state: { setExtraReporter: () => {} } } as never,
+    );
+    await assert.doesNotReject(
+      () => commands.__getRegisteredCommand('utplsql.selectReporter')?.() as Promise<void>,
+    );
+    await assert.doesNotReject(
+      () => commands.__getRegisteredCommand('utplsql.showInfo')?.() as Promise<void>,
+    );
+  } finally {
+    process.env.UTPLSQL_CONN = origEnv;
+    __resetConfigValues();
+    commands.__resetRegisteredCommands();
   }
 });

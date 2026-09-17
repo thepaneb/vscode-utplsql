@@ -4,6 +4,7 @@ import { test } from 'node:test';
 import type { SuiteFile } from '../../discovery';
 import { TestStateManager } from '../../state';
 import { buildFileTree, buildSchemaTree, collectAllItems, createRefresher } from '../../testTree';
+import { __resetConfigValues, __setConfigValue, workspace } from '../vscode-stub';
 
 function makeItem(id: string, uri?: unknown) {
   const children: any[] = [];
@@ -135,6 +136,44 @@ test('buildSchemaTree: schema desconhecido vai para UNKNOWN por último', () => 
   assert.deepStrictEqual(ids, ['schema:APP', 'schema:UNKNOWN']);
 });
 
+test('buildSchemaTree: ordena schemas alfabéticos com UNKNOWN por último', () => {
+  const controller = makeController();
+  const state = new TestStateManager();
+  buildSchemaTree(
+    controller,
+    state,
+    [
+      suite({ dbSchema: undefined, uri: { fsPath: '/ws/z.pks', scheme: 'file' } as any }),
+      suite({ dbSchema: 'ZZZ' }),
+      suite({ dbSchema: 'APP' }),
+    ],
+    'db/{schema}/**',
+  );
+  assert.deepStrictEqual(
+    controller._items.map((i: any) => i.id),
+    ['schema:APP', 'schema:ZZZ', 'schema:UNKNOWN'],
+  );
+});
+
+test('createRefresher: modo schema sem conexão monta árvore vazia (merge early-return)', async () => {
+  const controller = makeController();
+  const state = new TestStateManager();
+  const origEnv = process.env.UTPLSQL_CONN;
+  delete process.env.UTPLSQL_CONN;
+  __resetConfigValues();
+  __setConfigValue('organization', 'schema');
+  workspace.__setWorkspaceFolders([{ uri: { fsPath: '/ws' }, name: 'ws', index: 0 }] as never);
+  try {
+    const refresh = createRefresher(controller, state);
+    await refresh();
+    assert.strictEqual(controller._items.length, 0);
+  } finally {
+    process.env.UTPLSQL_CONN = origEnv;
+    __resetConfigValues();
+    workspace.__setWorkspaceFolders(undefined);
+  }
+});
+
 test('collectAllItems: usa cachedItems quando já populado', () => {
   const controller = makeController();
   const state = new TestStateManager();
@@ -164,6 +203,17 @@ test('createRefresher: coalesce chamadas concorrentes e substitui a árvore', as
 
   // Duas chamadas simultâneas: a segunda espera a primeira e dispara um novo run.
   await Promise.all([refresh(), refresh()]);
+
+  assert.strictEqual(controller._items.length, 0);
+  assert.strictEqual(state.cachedItems.length, 0);
+});
+
+test('createRefresher: 3 chamadas concorrentes — as excedentes retornam sem novo run', async () => {
+  const controller = makeController();
+  const state = new TestStateManager();
+  const refresh = createRefresher(controller, state);
+
+  await Promise.all([refresh(), refresh(), refresh()]);
 
   assert.strictEqual(controller._items.length, 0);
   assert.strictEqual(state.cachedItems.length, 0);

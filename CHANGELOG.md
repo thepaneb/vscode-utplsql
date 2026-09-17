@@ -1,5 +1,30 @@
 # Changelog
 
+## 0.12.1
+
+- **Thick mode opcional (PRD-70)**: nova setting `utplsql.oracleClientMode`
+  (`thin` default | `thick`) para bancos que exigem **NNE** (Native Network
+  Encryption), não suportado pelo driver thin. Com `thick`, um Oracle Instant
+  Client local é carregado via `oracledb.initOracleClient` antes de qualquer
+  conexão (settings `utplsql.oracleClientLibDir` e
+  `utplsql.oracleClientConfigDir` / TNS_ADMIN). A inicialização é idempotente e
+  ocorre no `ensurePool` (`src/oracleClient.ts`); falhas viram diagnóstico no
+  Problems Panel (`UTPLSQL_THICK_MODE`) com quick-fix para as settings. Default
+  inalterado: sem a setting, permanece thin.
+- **Publicação por plataforma (PRD-70 Opção B)**: o `publish.yml` passa a
+  publicar um VSIX por alvo via matriz — `win32-x64`/`linux-x64`/`linux-arm64`/
+  `darwin-arm64` com apenas a glue do alvo (thick+thin) e `win32-arm64`/
+  `darwin-x64`/`linux-armhf`/`alpine-x64`/`alpine-arm64` como **fallback
+  thin-only** (sem binário nativo, roda bancos sem NNE). A publicação usa
+  `vsce publish --packagePath`, garantindo que o VSIX anexado à release é o
+  mesmo artefato publicado. O VSIX universal (4 glues, ~2,5 MB) fica para teste
+  local (`npm run package`).
+- **Script runner — diretivas SQL*Plus**: scripts com `PROMPT`, `SHOW ERRORS`,
+  `SET`, `SPOOL`, `@arquivo`/`!comando` no início de um statement não falham mais
+  com `ORA-00900`. `splitScript` ignora essas linhas (preservando a numeração)
+  quando o buffer só tem brancos/comentários, sem afetar usos legítimos como
+  `UPDATE … SET …`.
+
 ## 0.12.0
 
 - **Cobertura PL/SQL**: corrige os gutters ausentes em `package`/`package body`,

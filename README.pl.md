@@ -109,6 +109,9 @@ Test Explorerze **w miarę kończenia każdego testu**.
 | `utplsql.oraclePoolMax` | `10` | Maksymalna liczba połączeń w puli runnera Oracle (node-oracledb). |
 | `utplsql.oraclePoolIncrement` | `1` | Przyrost przy rozszerzaniu puli runnera Oracle (node-oracledb). |
 | `utplsql.oraclePoolPingInterval` | `60` | Sekundy między kontrolami stanu nieaktywnych połączeń w puli (node-oracledb). `0` = ping przy każdym pobraniu połączenia. |
+| `utplsql.oracleClientMode` | `thin` | Tryb sterownika: `thin` (czysty JavaScript, bez natywnego klienta) lub `thick` (używa Oracle Instant Client). Używaj `thick` tylko dla baz wymagających NNE (Native Network Encryption); wymaga `utplsql.oracleClientLibDir` i przeładowania okna. |
+| `utplsql.oracleClientLibDir` | `""` | Katalog Oracle Instant Client. Wymagany, gdy `utplsql.oracleClientMode` to `thick` (np. `C:\oracle\instantclient_23_5`). |
+| `utplsql.oracleClientConfigDir` | `""` | Katalog konfiguracji Oracle (TNS_ADMIN) z `sqlnet.ora`/`tnsnames.ora`. Opcjonalny; używany tylko przez tryb thick. |
 | `utplsql.organization` | `file` | Organizacja drzewa: `file` (według ścieżki) lub `schema` (Schema > Package > Suite > Test). W trybie `schema` suite'y są również wykrywane z bazy danych (`ALL_OBJECTS`/`ALL_SOURCE`), gdy plików `.pks` nie ma w workspace — z wirtualnym URI `utplsql-db:/` (bez CodeLens/dekoracji/skoku do błędu). |
 | `utplsql.organization.schemaPattern` | `db/{schema}/**` | Wzorzec glob do wyodrębnienia schematu ze ścieżki. Użyj `{schema}` jako symbolu zastępczego. W trybie `schema` katalogi poniżej podstawy wzorca (np. `db/*`) definiują schematy odpytywane w bazie danych. |
 | `utplsql.refreshDebounceMs` | `300` | Debounce (ms) do scalania zdarzeń obserwatora plików `.pks`/`.pkb` przed odświeżeniem Test Explorer. |

@@ -2,6 +2,7 @@ import * as vscode from 'vscode';
 import { getExtensionLocale, readConfig, resolveConnectionNoPrompt } from './config';
 import { t } from './i18n';
 import { logger } from './logger';
+import { ensureOracleClient } from './oracleClient';
 import {
   discoverUtplsqlSchema,
   ensurePool,
@@ -32,6 +33,40 @@ export class SetupValidator {
     const diagnostics: SetupDiagnostic[] = [];
     const cfg = readConfig();
     if (!cfg.setupDiagnosticsEnabled) return diagnostics;
+
+    if (cfg.oracleClientMode === 'thick') {
+      try {
+        const mod = await import('oracledb');
+        const oracledb =
+          ((mod as Record<string, unknown>).default as typeof import('oracledb')) ??
+          (mod as typeof import('oracledb'));
+        const client = ensureOracleClient(
+          oracledb,
+          cfg.oracleClientMode,
+          cfg.oracleClientLibDir,
+          cfg.oracleClientConfigDir,
+        );
+        if (!client.thick) {
+          diagnostics.push({
+            code: 'UTPLSQL_THICK_MODE',
+            severity: vscode.DiagnosticSeverity.Error,
+            message:
+              `utPLSQL: falha ao inicializar o Oracle Client em thick mode. ${client.error ?? ''}`.trim(),
+            command: {
+              title: 'Abrir configurações do cliente Oracle',
+              command: 'workbench.action.openSettings',
+              arguments: ['utplsql.oracleClientMode'],
+            },
+          });
+        }
+      } catch {
+        logger.debug('validateOnActivation: oracledb indisponível para thick mode');
+      }
+    } else if (cfg.oracleClientLibDir.trim()) {
+      logger.warn(
+        'utplsql.oracleClientLibDir está preenchido, mas oracleClientMode é thin; o Instant Client não será usado.',
+      );
+    }
 
     const conn = resolveConnectionNoPrompt();
     if (conn) {
@@ -283,6 +318,18 @@ export class UtplsqlCodeActionProvider implements vscode.CodeActionProvider {
         action.command = {
           command: 'utplsql.copyGrantsToClipboard',
           title,
+        };
+        action.diagnostics = [diagnostic];
+        actions.push(action);
+      }
+
+      if (diagnostic.code === 'UTPLSQL_THICK_MODE') {
+        const title = 'Abrir configurações do cliente Oracle';
+        const action = new vscode.CodeAction(title, vscode.CodeActionKind.QuickFix);
+        action.command = {
+          command: 'workbench.action.openSettings',
+          title,
+          arguments: ['utplsql.oracleClientMode'],
         };
         action.diagnostics = [diagnostic];
         actions.push(action);

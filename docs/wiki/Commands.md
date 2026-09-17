@@ -48,6 +48,10 @@ Execution commands also appear in the context menu:
 - **Right-click on a file** `.sql`/`.pks`/`.pkb`/`.fnc`/`.prc`/`.trg` → runs the script against a connection profile (output in the "utPLSQL Script" OutputChannel)
 - **Right-click on a folder** → runs the folder scripts in alphabetical order
 
+> SQL*Plus client directives (`PROMPT`, `SHOW ERRORS`, `SET`, `SPOOL`, `@file`, …)
+> at the start of a statement are ignored (not sent to Oracle). `SET` is skipped
+> only when it starts a statement, so `UPDATE … SET …` keeps working.
+
 ![Context menu on a folder](images/context-menu-folder.png)
 
 ## Keyboard shortcuts

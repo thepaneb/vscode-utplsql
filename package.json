@@ -2,7 +2,7 @@
   "name": "vscode-utplsql",
   "displayName": "utPLSQL Test Runner",
   "description": "Roda testes utPLSQL pelo Test Explorer do VSCode, com menu de contexto e cobertura visual (estilo pytest).",
-  "version": "0.12.0",
+  "version": "0.12.1",
   "publisher": "paneb",
   "author": "Gil Cleber Barboza",
   "license": "MIT",
@@ -170,6 +170,29 @@
           "default": 60,
           "minimum": 0,
           "description": "Segundos entre health checks das conexões ociosas do pool (node-oracledb). 0 = ping a cada checkout."
+        },
+        "utplsql.oracleClientMode": {
+          "type": "string",
+          "enum": [
+            "thin",
+            "thick"
+          ],
+          "enumDescriptions": [
+            "Driver thin (padrão): puro JavaScript, sem cliente nativo.",
+            "Driver thick: usa o Oracle Instant Client. Necessário para bancos com NNE (Native Network Encryption). Exige oracleClientLibDir e Reload Window."
+          ],
+          "default": "thin",
+          "description": "Modo do driver node-oracledb. Thick é opt-in, pois o NNE não está ativo em todos os bancos."
+        },
+        "utplsql.oracleClientLibDir": {
+          "type": "string",
+          "default": "",
+          "markdownDescription": "Diretório do Oracle Instant Client. Obrigatório quando `#utplsql.oracleClientMode#` é `thick`. Ex.: `C:\\oracle\\instantclient_23_5`."
+        },
+        "utplsql.oracleClientConfigDir": {
+          "type": "string",
+          "default": "",
+          "markdownDescription": "Diretório de configuração Oracle (TNS_ADMIN) com `sqlnet.ora`/`tnsnames.ora`. Opcional; só tem efeito no `thick`."
         },
         "utplsql.organization": {
           "type": "string",
@@ -590,6 +613,11 @@
     "test:coverage": "npm run compile && c8 node --experimental-test-module-mocks --require ./scripts/test-setup.cjs --test out/test/unit/**/*.test.js",
     "bundle": "node esbuild.config.mjs",
     "package": "npm run compile && npm run bundle && vsce package",
+    "package:win32-x64": "npm run compile && npm run bundle && node scripts/package-target.cjs win32-x64",
+    "package:linux-x64": "npm run compile && npm run bundle && node scripts/package-target.cjs linux-x64",
+    "package:linux-arm64": "npm run compile && npm run bundle && node scripts/package-target.cjs linux-arm64",
+    "package:darwin-arm64": "npm run compile && npm run bundle && node scripts/package-target.cjs darwin-arm64",
+    "package:target": "node scripts/package-target.cjs",
     "gen-icon": "node scripts/gen-icon.cjs",
     "gen-diagram": "node scripts/gen-diagrams.cjs",
     "brain:sync": "node scripts/brain.cjs sync",

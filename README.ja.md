@@ -104,6 +104,9 @@ Test Explorer に表示されます。
 | `utplsql.oraclePoolMax` | `10` | Oracle ランナープール（node-oracledb）の最大接続数。 |
 | `utplsql.oraclePoolIncrement` | `1` | Oracle ランナープール（node-oracledb）拡張時の増分。 |
 | `utplsql.oraclePoolPingInterval` | `60` | アイドルプール接続のヘルスチェック間隔（秒）（node-oracledb）。`0` = チェックアウトのたびに ping。 |
+| `utplsql.oracleClientMode` | `thin` | ドライバーモード: `thin`（純粋な JavaScript、ネイティブクライアント不要）または `thick`（Oracle Instant Client を使用）。`thick` は NNE（Native Network Encryption）が必要なデータベースにのみ使用してください。`utplsql.oracleClientLibDir` とウィンドウの再読み込みが必要です。 |
+| `utplsql.oracleClientLibDir` | `""` | Oracle Instant Client のディレクトリ。`utplsql.oracleClientMode` が `thick` の場合は必須です（例: `C:\oracle\instantclient_23_5`）。 |
+| `utplsql.oracleClientConfigDir` | `""` | `sqlnet.ora`/`tnsnames.ora` を含む Oracle 構成ディレクトリ（TNS_ADMIN）。任意。thick モードでのみ使用されます。 |
 | `utplsql.organization` | `file` | ツリーの構成: `file`（パス単位）または `schema`（Schema > Package > Suite > Test）。`schema` モードでは、`.pks` ファイルがワークスペースにないときはスイートもデータベース（`ALL_OBJECTS`/`ALL_SOURCE`）から検出されます — 仮想 URI は `utplsql-db:/`（CodeLens/デコレーション/失敗ジャンプなし）。 |
 | `utplsql.organization.schemaPattern` | `db/{schema}/**` | パスからスキーマを抽出するためのグロブパターン。プレースホルダーには `{schema}` を使用します。`schema` モードでは、パターンベースより下のディレクトリ（例: `db/*`）がデータベースでクエリされるスキーマを定義します。 |
 | `utplsql.refreshDebounceMs` | `300` | Test Explorer を更新する前に `.pks`/`.pkb` ファイル監視イベントをまとめるデバウンス（ミリ秒）。 |

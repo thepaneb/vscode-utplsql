@@ -10,7 +10,7 @@ install/**
 images/*.svg
 **/*.ts
 **/*.map
-node_modules/oracledb/build/**
+node_modules/oracledb/build/**/*.txt
 node_modules/oracledb/examples/**
 node_modules/oracledb/package/**
 node_modules/oracledb/plugins/**

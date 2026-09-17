@@ -135,7 +135,9 @@ CONCLUIR
 
 ### 🟡 Em desenvolvimento
 
-_(vazio — nenhuma PRD em desenvolvimento)_
+| # | PRD | Versão alvo | Data |
+|---|---|---|---|
+| 70 | [Thick mode opcional (Instant Client) para bancos com NNE](in-progress/prd-70-thick-mode-nne.md) | 0.13.0 | 2026-09-17 |
 
 ### 🔵 Aprovados
 
@@ -243,7 +245,8 @@ docs/prd/
 │   └── prd-68-restore-oracle-diagnostics-and-reporter.md
 ├── approved/         ← aprovados, aguardando implementação
 │   └── (vazio)
-├── in-progress/      ← sendo implementados agora (vazio)
+├── in-progress/      ← sendo implementados agora
+│   └── prd-70-thick-mode-nne.md
 └── proposed/         ← em avaliação
     ├── prd-47-node-26-toolchain.md
     ├── prd-50-auto-run-on-save.md

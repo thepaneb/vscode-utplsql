@@ -108,6 +108,9 @@ Test Explorer **เมื่อแต่ละเทสต์เสร็จส�
 | `utplsql.oraclePoolMax` | `10` | จำนวนการเชื่อมต่อสูงสุดในพูลของ Oracle runner (node-oracledb) |
 | `utplsql.oraclePoolIncrement` | `1` | จำนวนที่เพิ่มเมื่อขยายพูลของ Oracle runner (node-oracledb) |
 | `utplsql.oraclePoolPingInterval` | `60` | วินาทีระหว่างการตรวจสอบความสมบูรณ์ของการเชื่อมต่อที่ว่างในพูล (node-oracledb) `0` = ping ทุกครั้งที่ยืมการเชื่อมต่อ |
+| `utplsql.oracleClientMode` | `thin` | โหมดไดรเวอร์: `thin` (JavaScript ล้วน ไม่ต้องมีไคลเอนต์เนทีฟ) หรือ `thick` (ใช้ Oracle Instant Client) ใช้ `thick` เฉพาะฐานข้อมูลที่ต้องการ NNE (Native Network Encryption) ต้องตั้ง `utplsql.oracleClientLibDir` และโหลดหน้าต่างใหม่ |
+| `utplsql.oracleClientLibDir` | `""` | ไดเรกทอรี Oracle Instant Client จำเป็นเมื่อ `utplsql.oracleClientMode` เป็น `thick` (เช่น `C:\oracle\instantclient_23_5`) |
+| `utplsql.oracleClientConfigDir` | `""` | ไดเรกทอรีการกำหนดค่า Oracle (TNS_ADMIN) ที่มี `sqlnet.ora`/`tnsnames.ora` ไม่บังคับ ใช้เฉพาะโหมด thick |
 | `utplsql.organization` | `file` | การจัดระเบียบแผนผัง: `file` (ตามพาธ) หรือ `schema` (Schema > Package > Suite > Test) ในโหมด `schema` suites จะถูกค้นพบจากฐานข้อมูล (`ALL_OBJECTS`/`ALL_SOURCE`) ด้วยเมื่อไม่มีไฟล์ `.pks` ในเวิร์กสเปซ — ด้วย URI เสมือน `utplsql-db:/` (ไม่มี CodeLens/การตกแต่ง/jump to failure) |
 | `utplsql.organization.schemaPattern` | `db/{schema}/**` | รูปแบบ Glob เพื่อแยก schema จากพาธ ใช้ `{schema}` เป็นตัวยึดตำแหน่ง ในโหมด `schema` ไดเรกทอรีใต้ฐานของรูปแบบ (เช่น `db/*`) กำหนด schemas ที่จะสอบถามในฐานข้อมูล |
 | `utplsql.refreshDebounceMs` | `300` | Debounce (ms) เพื่อรวมเหตุการณ์ของตัวเฝ้าดูไฟล์ `.pks`/`.pkb` ก่อนรีเฟรช Test Explorer |

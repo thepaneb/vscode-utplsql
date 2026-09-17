@@ -116,6 +116,9 @@ decoded by VSCode — the profile charset does not apply.
 | `utplsql.oraclePoolMax` | `10` | Maximum connections in the pool. |
 | `utplsql.oraclePoolIncrement` | `1` | Increment when expanding the pool. |
 | `utplsql.oraclePoolPingInterval` | `60` | Seconds between health checks for idle pool connections. `0` = ping on every checkout. |
+| `utplsql.oracleClientMode` | `thin` | Driver mode: `thin` (default, pure JavaScript) or `thick` (Oracle Instant Client). Required for databases with NNE. |
+| `utplsql.oracleClientLibDir` | `""` | Oracle Instant Client directory (required in `thick` mode). |
+| `utplsql.oracleClientConfigDir` | `""` | Oracle config directory (TNS_ADMIN) with `sqlnet.ora`/`tnsnames.ora` (thick only). |
 
 The pool is created **lazily** on the first Oracle execution, recreated when the
 connection changes, and closed when the extension is deactivated. See [Direct Oracle Execution](Oracle-direct-execution).

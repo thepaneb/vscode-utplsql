@@ -110,6 +110,9 @@ Test Explorer **conforme cada teste termina**.
 | `utplsql.oraclePoolMax` | `10` | Conexões máximas no pool do Oracle runner (node-oracledb). |
 | `utplsql.oraclePoolIncrement` | `1` | Incremento ao expandir o pool do Oracle runner (node-oracledb). |
 | `utplsql.oraclePoolPingInterval` | `60` | Segundos entre health checks das conexões ociosas do pool (node-oracledb). `0` = ping a cada checkout. |
+| `utplsql.oracleClientMode` | `thin` | Modo do driver: `thin` (JavaScript puro, sem cliente nativo) ou `thick` (usa o Oracle Instant Client). Use `thick` apenas em bancos que exigem NNE (Native Network Encryption); requer `utplsql.oracleClientLibDir` e recarregar a janela. |
+| `utplsql.oracleClientLibDir` | `""` | Diretório do Oracle Instant Client. Obrigatório quando `utplsql.oracleClientMode` é `thick` (ex.: `C:\oracle\instantclient_23_5`). |
+| `utplsql.oracleClientConfigDir` | `""` | Diretório de configuração Oracle (TNS_ADMIN) com `sqlnet.ora`/`tnsnames.ora`. Opcional; usado apenas pelo driver thick. |
 | `utplsql.organization` | `file` | Organização da árvore: `file` (por caminho) ou `schema` (Schema > Package > Suite > Test). No modo `schema`, suites também são descobertas do banco (`ALL_OBJECTS`/`ALL_SOURCE`) quando os arquivos `.pks` não estão no workspace — com URI virtual `utplsql-db:/` (sem CodeLens/decorations/jump to failure). |
 | `utplsql.organization.schemaPattern` | `db/{schema}/**` | Padrão glob para extrair schema do caminho. Use `{schema}` como placeholder. No modo `schema`, os diretórios abaixo da base do padrão (ex.: `db/*`) definem os schemas consultados no banco. |
 | `utplsql.refreshDebounceMs` | `300` | Debounce (ms) para agrupar eventos do watcher de arquivos `.pks`/`.pkb` antes de atualizar o Test Explorer. |

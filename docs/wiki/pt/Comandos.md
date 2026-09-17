@@ -48,6 +48,10 @@ Os comandos de execução também aparecem no menu de contexto:
 - **Clique direito num arquivo** `.sql`/`.pks`/`.pkb`/`.fnc`/`.prc`/`.trg` → executa o script contra um perfil de conexão (saída no OutputChannel "utPLSQL Script")
 - **Clique direito numa pasta** → executa os scripts da pasta em ordem alfabética
 
+> Diretivas client do SQL*Plus (`PROMPT`, `SHOW ERRORS`, `SET`, `SPOOL`, `@arquivo`, …)
+> no início de um statement são ignoradas (não vão para o Oracle). `SET` só é
+> ignorado quando inicia um statement, então `UPDATE … SET …` continua funcionando.
+
 ![Menu de contexto sobre uma pasta](../images/context-menu-folder.png)
 
 ## Atalhos de teclado

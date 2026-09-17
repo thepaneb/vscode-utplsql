@@ -107,6 +107,9 @@ A bővítmény közvetlenül Oracle-on keresztül csatlakozik, beolvassa a ripor
 | `utplsql.oraclePoolMax` | `10` | Az Oracle futtatókészlet (node-oracledb) maximális kapcsolatszáma. |
 | `utplsql.oraclePoolIncrement` | `1` | Az Oracle futtatókészlet (node-oracledb) bővítésének lépésköze. |
 | `utplsql.oraclePoolPingInterval` | `60` | Az üresjárati készletkapcsolatok állapotellenőrzései közötti másodpercek száma (node-oracledb). `0` = ping minden kivételkor. |
+| `utplsql.oracleClientMode` | `thin` | Illesztőprogram-mód: `thin` (tiszta JavaScript, natív kliens nélkül) vagy `thick` (az Oracle Instant Clientet használja). A `thick` módot csak NNE-t (Native Network Encryption) igénylő adatbázisokhoz használja; `utplsql.oracleClientLibDir` és az ablak újratöltése szükséges. |
+| `utplsql.oracleClientLibDir` | `""` | Az Oracle Instant Client könyvtára. Kötelező, ha az `utplsql.oracleClientMode` értéke `thick` (pl. `C:\oracle\instantclient_23_5`). |
+| `utplsql.oracleClientConfigDir` | `""` | Oracle konfigurációs könyvtár (TNS_ADMIN) a `sqlnet.ora`/`tnsnames.ora` fájlokkal. Opcionális; csak a thick mód használja. |
 | `utplsql.organization` | `file` | Fa-szervezés: `file` (elérési út szerint) vagy `schema` (Séma > Package > Suite > Teszt). `schema` módban a suite-ok az adatbázisból is felderítésre kerülnek (`ALL_OBJECTS`/`ALL_SOURCE`), ha a `.pks` fájlok nincsenek a munkaterületen — virtuális URI-vel `utplsql-db:/` (CodeLens/dekorációk/ugrás a hibához nélkül). |
 | `utplsql.organization.schemaPattern` | `db/{schema}/**` | Glob-minta a séma kinyeréséhez az elérési útból. Helyőrzőként a `{schema}` használható. `schema` módban a minta alapja alatti könyvtárak (pl. `db/*`) határozzák meg az adatbázisban lekérdezett sémákat. |
 | `utplsql.refreshDebounceMs` | `300` | Debounce (ms) a `.pks`/`.pkb` fájlfigyelő eseményeinek összevonásához a Test Explorer frissítése előtt. |

@@ -45,6 +45,18 @@ const PLSQL_START_RE =
   /^(?:DECLARE|BEGIN)\b|^CREATE\s+(?:OR\s+REPLACE\s+)?(?:\w+\s+)*(?:FUNCTION|PROCEDURE|PACKAGE|TRIGGER|TYPE)\b/i;
 const SLASH_LINE_RE = /^\s*\/\s*$/;
 
+/**
+ * Comandos client do SQL*Plus que o Oracle não executa via OCI. Devem ser
+ * ignorados (não viram statement nem quebram a classificação PL/SQL).
+ */
+const SQLPLUS_DIRECTIVE_RE =
+  /^(?:PROMPT|REMARK|REM|SPOOL|WHENEVER|TTITLE|BTITLE|COLUMN|COL|DEFINE|UNDEFINE|ACCEPT|PAUSE|HOST|CONNECT|DISCONNECT|SHOW|CLEAR|BREAK|COMPUTE|STORE|SAVE|GET|RUN|EDIT|ED|TIMING|SET|START)(?:\s|$)/i;
+const SQLPLUS_SYMBOL_RE = /^(?:@@?|!)/;
+
+function isSqlplusDirectiveLine(rest: string): boolean {
+  return SQLPLUS_DIRECTIVE_RE.test(rest) || SQLPLUS_SYMBOL_RE.test(rest);
+}
+
 function stripComments(text: string): string {
   return text.replace(/\/\*[\s\S]*?\*\//g, '').replace(/--[^\n]*/g, '');
 }
@@ -131,6 +143,30 @@ export function splitScript(text: string): SqlStatement[] {
   while (i < text.length) {
     const c = text[i];
     const next = i + 1 < text.length ? text[i + 1] : '';
+
+    // Diretiva SQL*Plus no início de um statement (buffer só com brancos/
+    // comentários): ignora a linha inteira, preservando a contagem de linhas.
+    if (
+      !inLine &&
+      !inBlock &&
+      !inStr &&
+      !inIdent &&
+      lineBuf.trim() === '' &&
+      /\S/.test(c) &&
+      isSqlplusDirectiveLine(text.slice(i, i + 16)) &&
+      !stripComments(buf).trim()
+    ) {
+      const nl = text.indexOf('\n', i);
+      buf = buf.replace(/[ \t]+$/, '');
+      if (nl < 0) {
+        i = text.length;
+      } else {
+        i = nl + 1;
+        line++;
+        lineBuf = '';
+      }
+      continue;
+    }
 
     if (inLine) {
       buf += c;

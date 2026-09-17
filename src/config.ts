@@ -16,6 +16,9 @@ export interface UtConfig {
   oraclePoolMax: number;
   oraclePoolIncrement: number;
   oraclePoolPingInterval: number;
+  oracleClientMode: 'thin' | 'thick';
+  oracleClientLibDir: string;
+  oracleClientConfigDir: string;
   codeLensEnabled: boolean;
   statusBarEnabled: boolean;
   decorationsEnabled: boolean;
@@ -79,6 +82,9 @@ export function readConfig(): UtConfig {
     oraclePoolMax: c.get<number>('oraclePoolMax', 10),
     oraclePoolIncrement: c.get<number>('oraclePoolIncrement', 1),
     oraclePoolPingInterval: c.get<number>('oraclePoolPingInterval', 60),
+    oracleClientMode: c.get<'thin' | 'thick'>('oracleClientMode', 'thin'),
+    oracleClientLibDir: c.get<string>('oracleClientLibDir', ''),
+    oracleClientConfigDir: c.get<string>('oracleClientConfigDir', ''),
     codeLensEnabled: c.get<boolean>('codeLens.enabled', true),
     statusBarEnabled: c.get<boolean>('statusBar.enabled', true),
     decorationsEnabled: c.get<boolean>('decorations.enabled', true),

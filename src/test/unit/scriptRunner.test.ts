@@ -137,6 +137,62 @@ test('splitScript: casos de borda (sem terminador, / separador, linhas)', () => 
   assert.strictEqual(stmts[0].line, 3);
 });
 
+test('splitScript: diretivas SQL*Plus (PROMPT/SHOW ERRORS) são ignoradas', () => {
+  const sql = [
+    '-- header',
+    '-- @D:\\reposit\\x.sql',
+    "PROMPT Creating Function 'ABREVIAR_NOME_USUARIO'",
+    'CREATE OR REPLACE FUNCTION abreviar_nome_usuario(p IN VARCHAR2) RETURN VARCHAR2',
+    'IS',
+    '  v_nome VARCHAR2(100);',
+    'BEGIN',
+    '  v_nome := fwutl.x(p);',
+    '  RETURN v_nome;',
+    'END;',
+    '/',
+    'SHOW ERRORS FUNCTION abreviar_nome_usuario',
+  ].join('\n');
+  const stmts = splitScript(sql);
+  assert.strictEqual(stmts.length, 1);
+  assert.ok(stmts[0].text.includes('CREATE OR REPLACE FUNCTION abreviar_nome_usuario'));
+  assert.ok(stmts[0].text.includes('v_nome := fwutl.x(p);'));
+  assert.ok(!/PROMPT|SHOW ERRORS/.test(stmts[0].text));
+  assert.strictEqual(stmts[0].line, 4);
+});
+
+test('splitScript: SET/DEFINE/SPOOL no início são ignorados', () => {
+  const stmts = splitScript('SET DEFINE OFF\nSPOOL out.log\nSELECT 1;\nSPOOL OFF');
+  assert.strictEqual(stmts.length, 1);
+  assert.strictEqual(stmts[0].text, 'SELECT 1;');
+});
+
+test('splitScript: @ e ! são ignorados', () => {
+  assert.deepStrictEqual(
+    splitScript('@@a.sql').map((s) => s.text),
+    [],
+  );
+  assert.deepStrictEqual(
+    splitScript('@a.sql\nSELECT 1;').map((s) => s.text),
+    ['SELECT 1;'],
+  );
+});
+
+test('splitScript: só diretivas retorna []', () => {
+  assert.deepStrictEqual(splitScript('PROMPT hi\nSHOW ERRORS'), []);
+});
+
+test('splitScript: SET no meio de UPDATE não é diretiva', () => {
+  const stmts = splitScript('UPDATE t\nSET x = 1;');
+  assert.strictEqual(stmts.length, 1);
+  assert.strictEqual(stmts[0].text, 'UPDATE t\nSET x = 1;');
+});
+
+test('splitScript: diretiva dentro de literal não é ignorada', () => {
+  const stmts = splitScript("INSERT INTO t VALUES ('a\nSET b');");
+  assert.strictEqual(stmts.length, 1);
+  assert.ok(stmts[0].text.includes('SET b'));
+});
+
 test('splitScript: barra solta inicial é separador, não statement', () => {
   assert.deepStrictEqual(
     splitScript('/\nSELECT 1;').map((s) => s.text),

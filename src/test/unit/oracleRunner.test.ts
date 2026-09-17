@@ -3,6 +3,7 @@ import assert from 'node:assert';
 import { test } from 'node:test';
 import type { UtConfig } from '../../config';
 import type { TestCaseResult } from '../../junit';
+import { resetOracleClientStateForTests } from '../../oracleClient';
 import {
   acquireRunnerConnections,
   checkCompilationErrors,
@@ -384,6 +385,46 @@ test('ensurePool: cria pool com credenciais parseadas e settings', async () => {
     assert.strictEqual(created[0].stmtCacheSize, 30);
   } finally {
     await closeOraclePool();
+  }
+});
+
+test('ensurePool: inicializa thick mode quando configurado', async () => {
+  resetOracleClientStateForTests();
+  const { mod } = makeFakeOracledb();
+  const initCalls: unknown[] = [];
+  (mod as Record<string, unknown>).initOracleClient = (o: unknown) => initCalls.push(o);
+  const cfg = {
+    ...POOL_CFG,
+    oracleClientMode: 'thick',
+    oracleClientLibDir: '/opt/ic',
+    oracleClientConfigDir: '/opt/ic/network/admin',
+  } as unknown as UtConfig;
+  try {
+    await ensurePool(mod as never, 'u/p@//h:1521/s', cfg);
+    assert.strictEqual(initCalls.length, 1);
+    assert.deepStrictEqual(initCalls[0], {
+      libDir: '/opt/ic',
+      configDir: '/opt/ic/network/admin',
+    });
+  } finally {
+    await closeOraclePool();
+    resetOracleClientStateForTests();
+  }
+});
+
+test('ensurePool: nao inicializa thick em thin (default)', async () => {
+  resetOracleClientStateForTests();
+  const { mod } = makeFakeOracledb();
+  let called = 0;
+  (mod as Record<string, unknown>).initOracleClient = () => {
+    called++;
+  };
+  try {
+    await ensurePool(mod as never, 'u/p@//h:1521/s', POOL_CFG);
+    assert.strictEqual(called, 0);
+  } finally {
+    await closeOraclePool();
+    resetOracleClientStateForTests();
   }
 });
 

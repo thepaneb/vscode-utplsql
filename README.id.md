@@ -107,6 +107,9 @@ Ekstensi terhubung langsung ke Oracle, membaca laporan (JUnit + Coverage) lalu m
 | `utplsql.oraclePoolMax` | `10` | Jumlah maksimum koneksi di pool runner Oracle (node-oracledb). |
 | `utplsql.oraclePoolIncrement` | `1` | Kenaikan saat memperluas pool runner Oracle (node-oracledb). |
 | `utplsql.oraclePoolPingInterval` | `60` | Detik antara pemeriksaan kesehatan koneksi idle di pool (node-oracledb). `0` = ping pada setiap checkout. |
+| `utplsql.oracleClientMode` | `thin` | Mode driver: `thin` (JavaScript murni, tanpa klien native) atau `thick` (memakai Oracle Instant Client). Gunakan `thick` hanya untuk database yang memerlukan NNE (Native Network Encryption); perlu `utplsql.oracleClientLibDir` dan memuat ulang jendela. |
+| `utplsql.oracleClientLibDir` | `""` | Direktori Oracle Instant Client. Wajib saat `utplsql.oracleClientMode` bernilai `thick` (mis. `C:\oracle\instantclient_23_5`). |
+| `utplsql.oracleClientConfigDir` | `""` | Direktori konfigurasi Oracle (TNS_ADMIN) berisi `sqlnet.ora`/`tnsnames.ora`. Opsional; hanya dipakai oleh mode thick. |
 | `utplsql.organization` | `file` | Organisasi pohon: `file` (berdasarkan path) atau `schema` (Schema > Package > Suite > Test). Pada mode `schema`, suite juga ditemukan dari database (`ALL_OBJECTS`/`ALL_SOURCE`) ketika file `.pks` tidak ada di workspace — dengan URI virtual `utplsql-db:/` (tanpa CodeLens/dekorasi/langsung ke kegagalan). |
 | `utplsql.organization.schemaPattern` | `db/{schema}/**` | Pola glob untuk mengekstrak schema dari path. Gunakan `{schema}` sebagai placeholder. Pada mode `schema`, direktori di bawah basis pola (mis. `db/*`) menentukan schema yang ditanyakan di database. |
 | `utplsql.refreshDebounceMs` | `300` | Debounce (ms) untuk menggabungkan peristiwa watcher file `.pks`/`.pkb` sebelum menyegarkan Test Explorer. |

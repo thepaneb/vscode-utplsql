@@ -169,8 +169,8 @@ publicação no Marketplace é feita **exclusivamente** via GitHub release
 
 ```bash
 npm run package
-# gera: vscode-utplsql-0.12.0.vsix
-code --install-extension vscode-utplsql-0.12.0.vsix
+# gera: vscode-utplsql-0.12.1.vsix
+code --install-extension vscode-utplsql-0.12.1.vsix
 ```
 
 ---
@@ -180,7 +180,10 @@ code --install-extension vscode-utplsql-0.12.0.vsix
 ### Preciso instalar algo para usar o Oracle direto?
 
 Não — o VSIX já inclui o driver `oracledb` **thin** (puro JavaScript, sem
-Instant Client).
+Instant Client). Exceção: bancos com **NNE (Native Network Encryption)** não são
+suportados pelo thin mode — defina `utplsql.oracleClientMode` como `thick` e
+aponte `utplsql.oracleClientLibDir` para um Oracle Instant Client local, depois
+recarregue a janela.
 
 ### Funciona com shared install (UT3)?
 

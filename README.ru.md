@@ -109,6 +109,9 @@ Test Explorer **по мере завершения каждого теста**.
 | `utplsql.oraclePoolMax` | `10` | Максимум подключений в пуле Oracle runner (node-oracledb). |
 | `utplsql.oraclePoolIncrement` | `1` | Приращение при расширении пула Oracle runner (node-oracledb). |
 | `utplsql.oraclePoolPingInterval` | `60` | Секунды между проверками работоспособности простаивающих подключений пула (node-oracledb). `0` = пинг при каждой выдаче из пула. |
+| `utplsql.oracleClientMode` | `thin` | Режим драйвера: `thin` (чистый JavaScript, без нативного клиента) или `thick` (использует Oracle Instant Client). Используйте `thick` только для баз, требующих NNE (Native Network Encryption); требует `utplsql.oracleClientLibDir` и перезагрузки окна. |
+| `utplsql.oracleClientLibDir` | `""` | Каталог Oracle Instant Client. Обязателен, когда `utplsql.oracleClientMode` имеет значение `thick` (например, `C:\oracle\instantclient_23_5`). |
+| `utplsql.oracleClientConfigDir` | `""` | Каталог конфигурации Oracle (TNS_ADMIN) с `sqlnet.ora`/`tnsnames.ora`. Необязателен; используется только в режиме thick. |
 | `utplsql.organization` | `file` | Организация дерева: `file` (по пути) или `schema` (Schema > Package > Suite > Test). В режиме `schema` наборы также обнаруживаются в базе данных (`ALL_OBJECTS`/`ALL_SOURCE`), когда файлов `.pks` нет в рабочей области, — с виртуальным URI `utplsql-db:/` (без CodeLens/декораций/перехода к ошибке). |
 | `utplsql.organization.schemaPattern` | `db/{schema}/**` | Глоб-шаблон для извлечения схемы из пути. Используйте `{schema}` в качестве плейсхолдера. В режиме `schema` каталоги ниже базового шаблона (например, `db/*`) определяют схемы, по которым выполняется запрос в базе данных. |
 | `utplsql.refreshDebounceMs` | `300` | Задержка (мс) для объединения событий наблюдателя файлов `.pks`/`.pkb` перед обновлением Test Explorer. |

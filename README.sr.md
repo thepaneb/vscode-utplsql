@@ -108,6 +108,9 @@ Test Explorer-у **како се сваки тест заврши**. VSIX већ
 | `utplsql.oraclePoolMax` | `10` | Максимални број веза у Oracle runner пулу (node-oracledb). |
 | `utplsql.oraclePoolIncrement` | `1` | Повећање при проширењу Oracle runner пула (node-oracledb). |
 | `utplsql.oraclePoolPingInterval` | `60` | Секунде између провера здравља неактивних веза у пулу (node-oracledb). `0` = ping при сваком преузимању. |
+| `utplsql.oracleClientMode` | `thin` | Режим драјвера: `thin` (чист JavaScript, без нативног клијента) или `thick` (користи Oracle Instant Client). Користите `thick` само за базе које захтевају NNE (Native Network Encryption); захтева `utplsql.oracleClientLibDir` и поновно учитавање прозора. |
+| `utplsql.oracleClientLibDir` | `""` | Директоријум Oracle Instant Client-а. Обавезан када је `utplsql.oracleClientMode` постављен на `thick` (нпр. `C:\oracle\instantclient_23_5`). |
+| `utplsql.oracleClientConfigDir` | `""` | Директоријум Oracle конфигурације (TNS_ADMIN) са `sqlnet.ora`/`tnsnames.ora`. Опционо; користи га само thick режим. |
 | `utplsql.organization` | `file` | Организација стабла: `file` (по путањи) или `schema` (Schema > Package > Suite > Test). У `schema` режиму, суитови се такође откривају из базе података (`ALL_OBJECTS`/`ALL_SOURCE`) када `.pks` датотеке нису у радном простору — са виртуелним URI-јем `utplsql-db:/` (без CodeLens-а/декорација/скока до грешке). |
 | `utplsql.organization.schemaPattern` | `db/{schema}/**` | Glob узорак за издвајање шеме из путање. Користите `{schema}` као placeholder. У `schema` режиму, директоријуми испод основе узорка (нпр. `db/*`) дефинишу шеме упитане у бази података. |
 | `utplsql.refreshDebounceMs` | `300` | Debounce (ms) за objedinjavanje događaja nadzora datoteka `.pks`/`.pkb` pre osvežavanja Test Explorer-a. |

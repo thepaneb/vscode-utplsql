@@ -108,6 +108,9 @@ Test Explorer 中。
 | `utplsql.oraclePoolMax` | `10` | Oracle 執行器連線集區（node-oracledb）中的最大連線數。 |
 | `utplsql.oraclePoolIncrement` | `1` | 擴充 Oracle 執行器連線集區（node-oracledb）時的增量。 |
 | `utplsql.oraclePoolPingInterval` | `60` | 閒置集區連線健康檢查之間的秒數（node-oracledb）。`0` = 每次取出連線時皆 ping。 |
+| `utplsql.oracleClientMode` | `thin` | 驅動程式模式：`thin`（純 JavaScript，不需原生用戶端）或 `thick`（使用 Oracle Instant Client）。僅在需要 NNE（原生網路加密）的資料庫上使用 `thick`；需要 `utplsql.oracleClientLibDir` 並重新載入視窗。 |
+| `utplsql.oracleClientLibDir` | `""` | Oracle Instant Client 目錄。當 `utplsql.oracleClientMode` 為 `thick` 時必填（例如 `C:\oracle\instantclient_23_5`）。 |
+| `utplsql.oracleClientConfigDir` | `""` | 包含 `sqlnet.ora`/`tnsnames.ora` 的 Oracle 設定目錄（TNS_ADMIN）。選用；僅 thick 模式使用。 |
 | `utplsql.organization` | `file` | 樹狀結構組織：`file`（依路徑）或 `schema`（Schema > Package > Suite > Test）。在 `schema` 模式時，若工作區中沒有 `.pks` 檔案，也會從資料庫（`ALL_OBJECTS`/`ALL_SOURCE`）探索套件 — 使用虛擬 URI `utplsql-db:/`（無 CodeLens/裝飾/跳轉至失敗）。 |
 | `utplsql.organization.schemaPattern` | `db/{schema}/**` | 用於從路徑擷取 schema 的 glob 模式。使用 `{schema}` 作為佔位符。在 `schema` 模式中，模式基礎目錄下方的目錄（例如 `db/*`）定義了要在資料庫中查詢的 schema。 |
 | `utplsql.refreshDebounceMs` | `300` | 在重新整理 Test Explorer 之前，合併 `.pks`/`.pkb` 檔案監看事件的防抖時間（毫秒）。 |

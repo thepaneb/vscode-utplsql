@@ -108,6 +108,9 @@ Test Explorer **καθώς ολοκληρώνεται κάθε test**.
 | `utplsql.oraclePoolMax` | `10` | Μέγιστες συνδέσεις στο pool του Oracle runner (node-oracledb). |
 | `utplsql.oraclePoolIncrement` | `1` | Βήμα αύξησης όταν επεκτείνεται το pool του Oracle runner (node-oracledb). |
 | `utplsql.oraclePoolPingInterval` | `60` | Δευτερόλεπτα μεταξύ των ελέγχων υγείας των αδρανών συνδέσεων του pool (node-oracledb). `0` = ping σε κάθε checkout. |
+| `utplsql.oracleClientMode` | `thin` | Λειτουργία προγράμματος οδήγησης: `thin` (καθαρή JavaScript, χωρίς εγγενή πελάτη) ή `thick` (χρησιμοποιεί το Oracle Instant Client). Χρησιμοποιήστε `thick` μόνο για βάσεις που απαιτούν NNE (Native Network Encryption)· απαιτεί `utplsql.oracleClientLibDir` και επαναφόρτωση του παραθύρου. |
+| `utplsql.oracleClientLibDir` | `""` | Κατάλογος του Oracle Instant Client. Απαιτείται όταν το `utplsql.oracleClientMode` είναι `thick` (π.χ. `C:\oracle\instantclient_23_5`). |
+| `utplsql.oracleClientConfigDir` | `""` | Κατάλογος διαμόρφωσης Oracle (TNS_ADMIN) με `sqlnet.ora`/`tnsnames.ora`. Προαιρετικός· χρησιμοποιείται μόνο από τη λειτουργία thick. |
 | `utplsql.organization` | `file` | Οργάνωση δέντρου: `file` (ανά διαδρομή) ή `schema` (Schema > Package > Suite > Test). Στη λειτουργία `schema` τα suites ανακαλύπτονται επίσης από τη βάση (`ALL_OBJECTS`/`ALL_SOURCE`) όταν τα αρχεία `.pks` δεν υπάρχουν στο workspace — με εικονικό URI `utplsql-db:/` (χωρίς CodeLens/decorations/jump to failure). |
 | `utplsql.organization.schemaPattern` | `db/{schema}/**` | Glob pattern για την εξαγωγή του schema από τη διαδρομή. Χρησιμοποιήστε το `{schema}` ως placeholder. Στη λειτουργία `schema`, οι κατάλογοι κάτω από τη βάση του pattern (π.χ. `db/*`) ορίζουν τα schemas που ερωτώνται στη βάση. |
 | `utplsql.refreshDebounceMs` | `300` | Debounce (ms) για συγχώνευση συμβάντων του watcher αρχείων `.pks`/`.pkb` πριν από την ανανέωση του Test Explorer. |

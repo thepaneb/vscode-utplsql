@@ -5,11 +5,9 @@ on:
     types: [published]
 
 jobs:
-  publish:
-    name: Package and Publish
+  verify:
+    name: Verify
     runs-on: ubuntu-latest
-    permissions:
-      contents: write
     steps:
       - name: Checkout repository
         uses: actions/checkout@v7
@@ -32,14 +30,44 @@ jobs:
       - name: Run unit tests
         run: npm run test:unit
 
-      - name: Run bundle
-        run: npm run bundle
+  publish:
+    name: Publish (${{ matrix.target }})
+    needs: verify
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    strategy:
+      fail-fast: false
+      matrix:
+        # 4 alvos com glue thick; os demais vão thin-only (fallback sem binário).
+        target:
+          - win32-x64
+          - linux-x64
+          - linux-arm64
+          - darwin-arm64
+          - win32-arm64
+          - darwin-x64
+          - linux-armhf
+          - alpine-x64
+          - alpine-arm64
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v7
 
-      - name: Package extension
-        run: npm run package
+      - name: Setup Node.js
+        uses: actions/setup-node@v7
+        with:
+          node-version: 24
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Package extension (${{ matrix.target }})
+        run: npm run package:target -- ${{ matrix.target }}
 
       - name: Publish to VS Code Marketplace
-        run: npm run publish
+        run: npm run publish -- --packagePath vscode-utplsql-*@${{ matrix.target }}.vsix
         env:
           VSCE_PAT: ${{ secrets.VSCE_PAT }}
 

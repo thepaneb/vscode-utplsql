@@ -107,6 +107,9 @@ Extensia se conectează direct prin Oracle, citește rapoartele (JUnit + Coverag
 | `utplsql.oraclePoolMax` | `10` | Conexiuni maxime în pool-ul runner-ului Oracle (node-oracledb). |
 | `utplsql.oraclePoolIncrement` | `1` | Increment la extinderea pool-ului runner-ului Oracle (node-oracledb). |
 | `utplsql.oraclePoolPingInterval` | `60` | Secunde între verificările de sănătate ale conexiunilor idle din pool (node-oracledb). `0` = ping la fiecare checkout. |
+| `utplsql.oracleClientMode` | `thin` | Modul driverului: `thin` (JavaScript pur, fără client nativ) sau `thick` (folosește Oracle Instant Client). Folosiți `thick` doar pentru bazele care necesită NNE (Native Network Encryption); necesită `utplsql.oracleClientLibDir` și reîncărcarea ferestrei. |
+| `utplsql.oracleClientLibDir` | `""` | Directorul Oracle Instant Client. Obligatoriu când `utplsql.oracleClientMode` este `thick` (ex. `C:\oracle\instantclient_23_5`). |
+| `utplsql.oracleClientConfigDir` | `""` | Directorul de configurare Oracle (TNS_ADMIN) cu `sqlnet.ora`/`tnsnames.ora`. Opțional; folosit doar de driverul thick. |
 | `utplsql.organization` | `file` | Organizarea arborelui: `file` (după cale) sau `schema` (Schema > Package > Suite > Test). În modul `schema` suitele sunt descoperite și din baza de date (`ALL_OBJECTS`/`ALL_SOURCE`) atunci când fișierele `.pks` nu sunt în workspace — cu URI virtual `utplsql-db:/` (fără CodeLens/decorări/salt la eșec). |
 | `utplsql.organization.schemaPattern` | `db/{schema}/**` | Model glob pentru extragerea schemei din cale. Folosește `{schema}` ca substituent. În modul `schema`, directoarele de sub baza modelului (ex.: `db/*`) definesc schemele interogate în baza de date. |
 | `utplsql.refreshDebounceMs` | `300` | Debounce (ms) pentru a unifica evenimentele watcher-ului de fișiere `.pks`/`.pkb` înainte de a reîmprospăta Test Explorer. |

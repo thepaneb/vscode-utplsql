@@ -108,6 +108,9 @@ nativních API VSCode.
 | `utplsql.oraclePoolMax` | `10` | Maximální počet připojení v poolu Oracle runneru (node-oracledb). |
 | `utplsql.oraclePoolIncrement` | `1` | Přírůstek při rozšiřování poolu Oracle runneru (node-oracledb). |
 | `utplsql.oraclePoolPingInterval` | `60` | Sekundy mezi kontrolami stavu nečinných připojení v poolu (node-oracledb). `0` = ping při každém checkoutu. |
+| `utplsql.oracleClientMode` | `thin` | Režim ovladače: `thin` (čistý JavaScript, bez nativního klienta) nebo `thick` (používá Oracle Instant Client). `thick` používejte jen pro databáze vyžadující NNE (Native Network Encryption); vyžaduje `utplsql.oracleClientLibDir` a znovu načtení okna. |
+| `utplsql.oracleClientLibDir` | `""` | Adresář Oracle Instant Client. Povinný, když je `utplsql.oracleClientMode` nastaveno na `thick` (např. `C:\oracle\instantclient_23_5`). |
+| `utplsql.oracleClientConfigDir` | `""` | Adresář konfigurace Oracle (TNS_ADMIN) s `sqlnet.ora`/`tnsnames.ora`. Volitelný; používá jej pouze thick režim. |
 | `utplsql.organization` | `file` | Uspořádání stromu: `file` (podle cesty) nebo `schema` (Schema > Package > Suite > Test). V režimu `schema` se sady také objevují z databáze (`ALL_OBJECTS`/`ALL_SOURCE`), když soubory `.pks` nejsou v pracovním prostoru — s virtuální URI `utplsql-db:/` (bez CodeLens/dekorací/skoku na selhání). |
 | `utplsql.organization.schemaPattern` | `db/{schema}/**` | Glob vzor pro extrakci schématu z cesty. Použijte `{schema}` jako zástupný symbol. V režimu `schema` adresáře pod základnou vzoru (např. `db/*`) definují schémata dotazovaná v databázi. |
 | `utplsql.refreshDebounceMs` | `300` | Debounce (ms) pro sloučení událostí sledování souborů `.pks`/`.pkb` před obnovením Test Exploreru. |

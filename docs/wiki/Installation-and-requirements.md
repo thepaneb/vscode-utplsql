@@ -18,7 +18,7 @@ and install:
 
 **Command line:**
 ```bash
-code --install-extension vscode-utplsql-0.12.0.vsix
+code --install-extension vscode-utplsql-0.12.1.vsix
 ```
 
 **UI:** Extensions Panel (`Ctrl+Shift+X`) → `...` (top-right corner)
@@ -41,7 +41,7 @@ SELECT ut_meta.version() FROM dual;
 ### Local machine
 
 - **VSCode 1.88+** (required by the Test Coverage API).
-- Nothing else — the VSIX already includes the `oracledb` thin driver (no Instant Client needed).
+- Nothing else — the VSIX already includes the `oracledb` thin driver (no Instant Client needed). For databases with **NNE**, opt into thick mode with a local Oracle Instant Client via `utplsql.oracleClientMode`/`utplsql.oracleClientLibDir`.
 
 ### Compatibility
 
@@ -51,4 +51,4 @@ SELECT ut_meta.version() FROM dual;
 | 23ai | v3.2.0+ | 1.88+ | 0.6.0+ |
 
 > The extension is just the GUI client — tests are executed by the Oracle
-> database, via node-oracledb (thin driver).
+> database, via node-oracledb (thin driver, or thick when configured).

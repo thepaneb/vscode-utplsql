@@ -3,6 +3,7 @@ import { getExtensionLocale, readConfig, type UtConfig } from './config';
 import { t } from './i18n';
 import { parseJUnit } from './junit';
 import { logger } from './logger';
+import { ensureOracleClient } from './oracleClient';
 import { applyCoverageFromXml, applyResultsFromCases, countResults } from './results';
 import type { TestStateManager } from './state';
 
@@ -52,6 +53,15 @@ export async function ensurePool(
   cfg: UtConfig,
 ): Promise<OraclePool> {
   const key = `${connection}|${cfg.oraclePoolMin}|${cfg.oraclePoolMax}|${cfg.oraclePoolIncrement}|${cfg.oraclePoolPingInterval}`;
+  const client = ensureOracleClient(
+    oracledb,
+    cfg.oracleClientMode,
+    cfg.oracleClientLibDir,
+    cfg.oracleClientConfigDir,
+  );
+  if (client.error) {
+    logger.warn('ensurePool: cliente Oracle thick não inicializou', { error: client.error });
+  }
   if (currentPool?.key === key) return currentPool.pool;
   await closeOraclePool();
   const parsed = parseConnString(connection);

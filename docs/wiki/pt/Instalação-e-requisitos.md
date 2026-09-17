@@ -18,7 +18,7 @@ e instale:
 
 **Linha de comando:**
 ```bash
-code --install-extension vscode-utplsql-0.12.0.vsix
+code --install-extension vscode-utplsql-0.12.1.vsix
 ```
 
 **Interface:** Painel de Extensões (`Ctrl+Shift+X`) → `...` (canto superior direito)
@@ -41,7 +41,7 @@ SELECT ut_meta.version() FROM dual;
 ### Máquina local
 
 - **VSCode 1.88+** (requerido pela Test Coverage API).
-- Nada mais — o VSIX já inclui o driver `oracledb` thin (sem Instant Client).
+- Nada mais — o VSIX já inclui o driver `oracledb` thin (sem Instant Client). Para bancos com **NNE**, ative o thick mode com um Oracle Instant Client local via `utplsql.oracleClientMode`/`utplsql.oracleClientLibDir`.
 
 ### Compatibilidade
 
@@ -51,4 +51,4 @@ SELECT ut_meta.version() FROM dual;
 | 23ai | v3.2.0+ | 1.88+ | 0.6.0+ |
 
 > A extensão é só o cliente gráfico — quem executa os testes é o banco
-> Oracle, via node-oracledb (driver thin).
+> Oracle, via node-oracledb (driver thin, ou thick quando configurado).

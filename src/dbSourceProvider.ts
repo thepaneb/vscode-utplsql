@@ -24,22 +24,29 @@ export function parseDbSourceUri(uri: vscode.Uri): { schema: string; pkg: string
   };
 }
 
-export async function fetchDbSource(uri: vscode.Uri): Promise<string> {
+type LoadedOracledb = typeof import('oracledb');
+
+async function loadOracledb(): Promise<LoadedOracledb | undefined> {
+  try {
+    const mod = await import('oracledb');
+    return ((mod as Record<string, unknown>).default as LoadedOracledb) ?? (mod as LoadedOracledb);
+  } catch {
+    return undefined;
+  }
+}
+
+export async function fetchDbSource(
+  uri: vscode.Uri,
+  loadOracledbMod: () => Promise<LoadedOracledb | undefined> = loadOracledb,
+): Promise<string> {
   const { schema, pkg } = parseDbSourceUri(uri);
   if (!schema || !pkg) return '';
 
   const connStr = resolveConnectionNoPrompt();
   if (!connStr) return '';
 
-  let oracledb: typeof import('oracledb');
-  try {
-    const mod = await import('oracledb');
-    oracledb =
-      ((mod as Record<string, unknown>).default as typeof import('oracledb')) ??
-      (mod as typeof import('oracledb'));
-  } catch {
-    return '';
-  }
+  const oracledb = await loadOracledbMod();
+  if (!oracledb) return '';
 
   const cfg = readConfig();
   const pool = await ensurePool(oracledb, connStr, cfg).catch(() => undefined);

@@ -1,6 +1,7 @@
 import './setup.js';
 import assert from 'node:assert';
 import { test } from 'node:test';
+import { resetOracleClientStateForTests } from '../../oracleClient';
 import { closeOraclePool } from '../../oracleRunner';
 import { SetupValidator, UtplsqlCodeActionProvider } from '../../quickfix';
 import { __resetConfigValues, __setConfigValue, Diagnostic, Range } from '../vscode-stub';
@@ -246,6 +247,43 @@ test('validateOnActivation: tudo ok e sem conexao retorna vazio', async () => {
   }
 });
 
+test('validateOnActivation: thick sem libDir gera diagnostic', async () => {
+  const origEnv = process.env.UTPLSQL_CONN;
+  delete process.env.UTPLSQL_CONN;
+  __resetConfigValues();
+  resetOracleClientStateForTests();
+  __setConfigValue('oracleClientMode', 'thick');
+  try {
+    const v = new SetupValidator();
+    const diags = await v.validateOnActivation();
+    assert.strictEqual(diags.length, 1);
+    assert.strictEqual(diags[0].code, 'UTPLSQL_THICK_MODE');
+    assert.strictEqual(diags[0].severity, 0);
+    assert.match(diags[0].message, /thick mode/);
+    assert.strictEqual(diags[0].command?.command, 'workbench.action.openSettings');
+  } finally {
+    process.env.UTPLSQL_CONN = origEnv;
+    __resetConfigValues();
+    resetOracleClientStateForTests();
+  }
+});
+
+test('validateOnActivation: libDir preenchido em thin apenas avisa (sem diagnostic)', async () => {
+  const origEnv = process.env.UTPLSQL_CONN;
+  delete process.env.UTPLSQL_CONN;
+  __resetConfigValues();
+  resetOracleClientStateForTests();
+  __setConfigValue('oracleClientLibDir', '/opt/instantclient');
+  try {
+    const v = new SetupValidator();
+    assert.deepStrictEqual(await v.validateOnActivation(), []);
+  } finally {
+    process.env.UTPLSQL_CONN = origEnv;
+    __resetConfigValues();
+    resetOracleClientStateForTests();
+  }
+});
+
 // ── UtplsqlCodeActionProvider ────────────────────────────────────────
 
 function makeDiag(code: string, source = 'utPLSQL Setup') {
@@ -262,14 +300,16 @@ test('provideCodeActions: gera quick-fix para cada codigo conhecido', () => {
       makeDiag('UTPLSQL_BAD_CONN'),
       makeDiag('UTPLSQL_NO_COVERAGE'),
       makeDiag('UTPLSQL_INVALID_OBJECTS'),
+      makeDiag('UTPLSQL_THICK_MODE'),
     ],
   } as any;
   const actions = provider.provideCodeActions({} as any, {} as any, context, {} as any);
-  assert.strictEqual(actions.length, 3);
+  assert.strictEqual(actions.length, 4);
   const commands = actions.map((a) => a.command?.command);
   assert.ok(commands.includes('utplsql.configureConnection'));
   assert.ok(commands.includes('utplsql.copyGrantsToClipboard'));
   assert.ok(commands.includes('utplsql.recompileUt3'));
+  assert.ok(commands.includes('workbench.action.openSettings'));
 });
 
 test('provideCodeActions: ignora diagnostics de outras sources', () => {

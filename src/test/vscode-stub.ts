@@ -111,8 +111,23 @@ export namespace workspace {
       })),
     );
   }
-  export function registerTextDocumentContentProvider(_scheme: string, _provider: any) {
-    return { dispose: () => {} };
+  const _contentProviders: Record<string, any> = {};
+
+  export function registerTextDocumentContentProvider(scheme: string, provider: any) {
+    _contentProviders[scheme] = provider;
+    return {
+      dispose: () => {
+        delete _contentProviders[scheme];
+      },
+    };
+  }
+
+  export function __getTextDocumentContentProvider(scheme: string): any {
+    return _contentProviders[scheme];
+  }
+
+  export function __resetTextDocumentContentProviders(): void {
+    for (const key of Object.keys(_contentProviders)) delete _contentProviders[key];
   }
   export const fs = {
     readFile: (uri: any) => {
