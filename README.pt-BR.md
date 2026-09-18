@@ -112,6 +112,7 @@ Test Explorer **conforme cada teste termina**.
 | `utplsql.oraclePoolPingInterval` | `60` | Segundos entre health checks das conexões ociosas do pool (node-oracledb). `0` = ping a cada checkout. |
 | `utplsql.oracleClientMode` | `thin` | Modo do driver: `thin` (JavaScript puro, sem cliente nativo) ou `thick` (usa o Oracle Instant Client). Use `thick` apenas em bancos que exigem NNE (Native Network Encryption); requer `utplsql.oracleClientLibDir` e recarregar a janela. |
 | `utplsql.oracleClientLibDir` | `""` | Diretório do Oracle Instant Client. Obrigatório quando `utplsql.oracleClientMode` é `thick` (ex.: `C:\oracle\instantclient_23_5`). |
+| O debug não para no breakpoint | Package sem debug info ou grants de debug ausentes | Compile com `PLSQL_OPTIMIZE_LEVEL <= 1` (ou `ALTER PACKAGE ... COMPILE DEBUG`) e conceda `DEBUG CONNECT SESSION` + `EXECUTE ON SYS.DBMS_DEBUG` |
 | `utplsql.oracleClientConfigDir` | `""` | Diretório de configuração Oracle (TNS_ADMIN) com `sqlnet.ora`/`tnsnames.ora`. Opcional; usado apenas pelo driver thick. |
 | `utplsql.organization` | `file` | Organização da árvore: `file` (por caminho) ou `schema` (Schema > Package > Suite > Test). No modo `schema`, suites também são descobertas do banco (`ALL_OBJECTS`/`ALL_SOURCE`) quando os arquivos `.pks` não estão no workspace — com URI virtual `utplsql-db:/` (sem CodeLens/decorations/jump to failure). |
 | `utplsql.organization.schemaPattern` | `db/{schema}/**` | Padrão glob para extrair schema do caminho. Use `{schema}` como placeholder. No modo `schema`, os diretórios abaixo da base do padrão (ex.: `db/*`) definem os schemas consultados no banco. |
@@ -121,7 +122,7 @@ Test Explorer **conforme cada teste termina**.
 | `utplsql.profiles` | `[]` | Perfis de conexão Oracle salvos (nome, connection, e overrides de `sourcePath`/`coverageOwner`/etc.) para alternar entre ambientes. **As senhas ficam no keychain do SO (VS Code SecretStorage), não nas configurações** — o campo `connection` armazena apenas `user@//host:port/service`. Perfis legados com senha embutida são migrados automaticamente no primeiro uso. (Referência completa dos campos: [wiki](https://github.com/thepaneb/vscode-utplsql/wiki/Configuration)). |
 | `utplsql.activeProfile` | `""` | ID do perfil ativo (`utplsql.profiles`). Quando definido, sobrescreve `utplsql.connection`. |
 | `utplsql.sqlCoverageEnabled` | `false` | Rastreia views executadas via `V$SQL` (cobertura booleana). Requer `GRANT SELECT ON V$SQL`. |
-| `utplsql.debugger.enabled` | `true` | Habilita o debug PL/SQL de testes (`DBMS_DEBUG`). Requer `node-oracledb` + grants. |
+| `utplsql.debugger.enabled` | `true` | Habilita o debug PL/SQL de testes (`DBMS_DEBUG`). Requer `node-oracledb` + grants. Compile o package alvo com debug info (`PLSQL_OPTIMIZE_LEVEL <= 1`) e conceda `DEBUG CONNECT SESSION` + `EXECUTE ON SYS.DBMS_DEBUG`. |
 | `utplsql.debugger.stopOnException` | `true` | Pausa em exceções PL/SQL durante o debug. |
 | `utplsql.debugger.timeoutSeconds` | `300` | Timeout (s) da sessão de debug. |
 | `utplsql.scriptRunner.stopOnError` | `true` | Para a execução do script na primeira falha (`false` = continua registrando as demais). |

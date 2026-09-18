@@ -111,6 +111,7 @@ Test Explorer에 나타납니다.
 | `utplsql.oraclePoolPingInterval` | `60` | 유휴 풀 연결의 상태 검사 간격(초)(node-oracledb). `0` = 모든 체크아웃 시 ping. |
 | `utplsql.oracleClientMode` | `thin` | 드라이버 모드: `thin`(순수 JavaScript, 네이티브 클라이언트 불필요) 또는 `thick`(Oracle Instant Client 사용). `thick`는 NNE(Native Network Encryption)가 필요한 데이터베이스에만 사용하십시오. `utplsql.oracleClientLibDir`와 창 새로 고침이 필요합니다. |
 | `utplsql.oracleClientLibDir` | `""` | Oracle Instant Client 디렉터리. `utplsql.oracleClientMode`가 `thick`일 때 필수입니다(예: `C:\oracle\instantclient_23_5`). |
+| 디버그가 브레이크포인트에서 멈추지 않음 | 디버그 정보 없이 컴파일된 패키지, 또는 디버그 권한 누락 | `PLSQL_OPTIMIZE_LEVEL <= 1`로 컴파일(또는 `ALTER PACKAGE ... COMPILE DEBUG`)하고 `DEBUG CONNECT SESSION` + `EXECUTE ON SYS.DBMS_DEBUG` 부여 |
 | `utplsql.oracleClientConfigDir` | `""` | `sqlnet.ora`/`tnsnames.ora`가 있는 Oracle 구성 디렉터리(TNS_ADMIN). 선택 사항이며 thick 모드에서만 사용됩니다. |
 | `utplsql.organization` | `file` | 트리 구성: `file`(경로별) 또는 `schema`(Schema > Package > Suite > Test). `schema` 모드에서 워크스페이스에 `.pks` 파일이 없으면 스위트가 데이터베이스(`ALL_OBJECTS`/`ALL_SOURCE`)에서도 발견됩니다 — 가상 URI `utplsql-db:/`(CodeLens/데코레이션/실패 지점 이동 없음). |
 | `utplsql.organization.schemaPattern` | `db/{schema}/**` | 경로에서 스키마를 추출하는 glob 패턴. `{schema}`를 자리 표시자로 사용하세요. `schema` 모드에서 패턴 기본 아래의 디렉터리(예: `db/*`)는 데이터베이스에서 조회할 스키마를 정의합니다. |
@@ -120,7 +121,7 @@ Test Explorer에 나타납니다.
 | `utplsql.profiles` | `[]` | 저장된 Oracle 연결 프로필(이름, 연결, 그리고 `sourcePath`/`coverageOwner` 등의 재정의) — 환경 간 전환용. **비밀번호는 OS 키체인(VS Code SecretStorage)에 보관되며 설정에는 저장되지 않습니다** — `connection` 필드에는 `user@//host:port/service`만 저장됩니다. 인라인 비밀번호가 포함된 기존 프로필은 처음 사용할 때 자동으로 마이그레이션됩니다. (Full field reference: [wiki](https://github.com/thepaneb/vscode-utplsql/wiki/Configuration)). |
 | `utplsql.activeProfile` | `""` | 활성 프로필(`utplsql.profiles`)의 ID. 설정 시 `utplsql.connection`을 재정의합니다. |
 | `utplsql.sqlCoverageEnabled` | `false` | `V$SQL`을 통해 실행된 뷰를 추적합니다(불리언 커버리지). `GRANT SELECT ON V$SQL` 필요. |
-| `utplsql.debugger.enabled` | `true` | PL/SQL 테스트 디버깅(`DBMS_DEBUG`)을 활성화합니다. `node-oracledb` + 권한 필요. |
+| `utplsql.debugger.enabled` | `true` | PL/SQL 테스트 디버깅(`DBMS_DEBUG`)을 활성화합니다. `node-oracledb` + 권한 필요. 대상 패키지를 디버그 정보로 컴파일하고(`PLSQL_OPTIMIZE_LEVEL <= 1`) `DEBUG CONNECT SESSION` + `EXECUTE ON SYS.DBMS_DEBUG`를 부여하세요. |
 | `utplsql.debugger.stopOnException` | `true` | 디버깅 중 PL/SQL 예외에서 일시 중지합니다. |
 | `utplsql.debugger.timeoutSeconds` | `300` | 디버그 세션의 시간 제한(초). |
 | `utplsql.scriptRunner.stopOnError` | `true` | Stops script execution on the first failure (`false` = keeps logging the rest). |

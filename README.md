@@ -119,7 +119,7 @@ Test Explorer **as each test finishes**.
 | `utplsql.profiles` | `[]` | Saved Oracle connection profiles (name, connection, and overrides of `sourcePath`/`coverageOwner`/etc.) to switch between environments. **Passwords are kept in the OS keychain (VS Code SecretStorage), not in settings** — the `connection` field stores only `user@//host:port/service`. Legacy profiles with an inline password are migrated automatically on first use. (Full field reference: [wiki](https://github.com/thepaneb/vscode-utplsql/wiki/Configuration)). |
 | `utplsql.activeProfile` | `""` | ID of the active profile (`utplsql.profiles`). When set, overrides `utplsql.connection`. |
 | `utplsql.sqlCoverageEnabled` | `false` | Tracks views executed via `V$SQL` (boolean coverage). Requires `GRANT SELECT ON V$SQL`. |
-| `utplsql.debugger.enabled` | `true` | Enables PL/SQL test debugging (`DBMS_DEBUG`). Requires `node-oracledb` + grants. |
+| `utplsql.debugger.enabled` | `true` | Enables PL/SQL test debugging (`DBMS_DEBUG`). Requires `node-oracledb` + grants. Compile the target package with debug info (`PLSQL_OPTIMIZE_LEVEL <= 1`) and grant `DEBUG CONNECT SESSION` + `EXECUTE ON SYS.DBMS_DEBUG`. |
 | `utplsql.debugger.stopOnException` | `true` | Pauses on PL/SQL exceptions during debugging. |
 | `utplsql.debugger.timeoutSeconds` | `300` | Timeout (s) of the debug session. |
 | `utplsql.scriptRunner.stopOnError` | `true` | Stops script execution on the first failure (`false` = keeps logging the rest). |
@@ -330,6 +330,7 @@ GRANT SELECT ON SYS.DBA_PROCEDURES TO <ut3_owner>;
 | Compilation error with no indication | Code with PL/SQL syntax error | Keep `utplsql.compilationDiagnostics.enabled` on (default); errors from `ALL_ERRORS` appear in the Problems Panel after a run |
 | Connection error | Malformed string or unreachable DB | Use `utPLSQL: Validate configuration` |
 | Connection error / `ORA-12660` / `NJS-500` | Database requires NNE (Native Network Encryption), unsupported by the thin driver | Set `utplsql.oracleClientMode` to `thick` and `utplsql.oracleClientLibDir` to your Oracle Instant Client, then reload the window |
+| Debug doesn't stop at the breakpoint | Package compiled without debug info, or missing debug grants | Compile with `PLSQL_OPTIMIZE_LEVEL <= 1` (or `ALTER PACKAGE ... COMPILE DEBUG`) and grant `DEBUG CONNECT SESSION` + `EXECUTE ON SYS.DBMS_DEBUG` |
 | Timeout while running | Tests take longer than `timeoutMinutes` | Increase `utplsql.timeoutMinutes` |
 | `%suite` not recognized | Missing `%suite`/`create package` in the file, or `%test` without `PROCEDURE` | Check the spec; run `utPLSQL: Refresh tests` |
 | CodeLens doesn't appear | `editor.codeLens` disabled or conflict | Enable `"editor.codeLens": true`; check `utplsql.codeLens.enabled` |

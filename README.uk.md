@@ -108,6 +108,7 @@ Test Explorer **у міру завершення кожного тесту**. VS
 | `utplsql.oraclePoolPingInterval` | `60` | Інтервал у секундах між перевірками стану простаючих з'єднань пулу (node-oracledb). `0` = ping при кожній перевірці з'єднання. |
 | `utplsql.oracleClientMode` | `thin` | Режим драйвера: `thin` (чистий JavaScript, без нативного клієнта) або `thick` (використовує Oracle Instant Client). Використовуйте `thick` лише для баз, що потребують NNE (Native Network Encryption); потрібні `utplsql.oracleClientLibDir` і перезавантаження вікна. |
 | `utplsql.oracleClientLibDir` | `""` | Каталог Oracle Instant Client. Обов'язковий, коли `utplsql.oracleClientMode` дорівнює `thick` (напр. `C:\oracle\instantclient_23_5`). |
+| Налагодження не зупиняється на точці зупину | Пакет без налагоджувальної інформації або бракує привілеїв | Скомпілюйте з `PLSQL_OPTIMIZE_LEVEL <= 1` (або `ALTER PACKAGE ... COMPILE DEBUG`) і надайте `DEBUG CONNECT SESSION` + `EXECUTE ON SYS.DBMS_DEBUG` |
 | `utplsql.oracleClientConfigDir` | `""` | Каталог конфігурації Oracle (TNS_ADMIN) з `sqlnet.ora`/`tnsnames.ora`. Необов'язковий; використовується лише в режимі thick. |
 | `utplsql.organization` | `file` | Організація дерева: `file` (за шляхом) або `schema` (Schema > Package > Suite > Test). У режимі `schema` набори також виявляються з бази даних (`ALL_OBJECTS`/`ALL_SOURCE`), коли у робочій області немає файлів `.pks` — з віртуальним URI `utplsql-db:/` (без CodeLens/декорацій/переходу до помилки). |
 | `utplsql.organization.schemaPattern` | `db/{schema}/**` | Glob-шаблон для вилучення схеми зі шляху. Використовуйте `{schema}` як заповнювач. У режимі `schema` каталоги нижче бази шаблону (напр. `db/*`) визначають схеми, які запитуються в базі даних. |
@@ -117,7 +118,7 @@ Test Explorer **у міру завершення кожного тесту**. VS
 | `utplsql.profiles` | `[]` | Збережені профілі підключення Oracle (ім'я, підключення та перевизначення `sourcePath`/`coverageOwner` тощо) для перемикання між середовищами. **Паролі зберігаються у сховищі ключів ОС (VS Code SecretStorage), а не в налаштуваннях** — поле `connection` зберігає лише `user@//host:port/service`. Старі профілі з вбудованим паролем автоматично переносяться під час першого використання. (Full field reference: [wiki](https://github.com/thepaneb/vscode-utplsql/wiki/Configuration)). |
 | `utplsql.activeProfile` | `""` | ID активного профілю (`utplsql.profiles`). Якщо встановлено, перевизначає `utplsql.connection`. |
 | `utplsql.sqlCoverageEnabled` | `false` | Відстежує представлення, виконані через `V$SQL` (boolean-покриття). Потребує `GRANT SELECT ON V$SQL`. |
-| `utplsql.debugger.enabled` | `true` | Увімкнення налагодження тестів PL/SQL (`DBMS_DEBUG`). Потребує `node-oracledb` + привілеї. |
+| `utplsql.debugger.enabled` | `true` | Увімкнення налагодження тестів PL/SQL (`DBMS_DEBUG`). Потребує `node-oracledb` + привілеї. Скомпілюйте цільовий пакет з налагоджувальною інформацією (`PLSQL_OPTIMIZE_LEVEL <= 1`) і надайте `DEBUG CONNECT SESSION` + `EXECUTE ON SYS.DBMS_DEBUG`. |
 | `utplsql.debugger.stopOnException` | `true` | Зупинка на винятках PL/SQL під час налагодження. |
 | `utplsql.debugger.timeoutSeconds` | `300` | Час очікування (с) сеансу налагодження. |
 | `utplsql.scriptRunner.stopOnError` | `true` | Stops script execution on the first failure (`false` = keeps logging the rest). |

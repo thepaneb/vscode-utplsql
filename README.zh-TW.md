@@ -110,6 +110,7 @@ Test Explorer 中。
 | `utplsql.oraclePoolPingInterval` | `60` | 閒置集區連線健康檢查之間的秒數（node-oracledb）。`0` = 每次取出連線時皆 ping。 |
 | `utplsql.oracleClientMode` | `thin` | 驅動程式模式：`thin`（純 JavaScript，不需原生用戶端）或 `thick`（使用 Oracle Instant Client）。僅在需要 NNE（原生網路加密）的資料庫上使用 `thick`；需要 `utplsql.oracleClientLibDir` 並重新載入視窗。 |
 | `utplsql.oracleClientLibDir` | `""` | Oracle Instant Client 目錄。當 `utplsql.oracleClientMode` 為 `thick` 時必填（例如 `C:\oracle\instantclient_23_5`）。 |
+| 除錯不會在斷點停下 | 套件編譯時沒有除錯資訊，或缺少除錯授權 | 使用 `PLSQL_OPTIMIZE_LEVEL <= 1` 編譯（或 `ALTER PACKAGE ... COMPILE DEBUG`），並授予 `DEBUG CONNECT SESSION` + `EXECUTE ON SYS.DBMS_DEBUG` |
 | `utplsql.oracleClientConfigDir` | `""` | 包含 `sqlnet.ora`/`tnsnames.ora` 的 Oracle 設定目錄（TNS_ADMIN）。選用；僅 thick 模式使用。 |
 | `utplsql.organization` | `file` | 樹狀結構組織：`file`（依路徑）或 `schema`（Schema > Package > Suite > Test）。在 `schema` 模式時，若工作區中沒有 `.pks` 檔案，也會從資料庫（`ALL_OBJECTS`/`ALL_SOURCE`）探索套件 — 使用虛擬 URI `utplsql-db:/`（無 CodeLens/裝飾/跳轉至失敗）。 |
 | `utplsql.organization.schemaPattern` | `db/{schema}/**` | 用於從路徑擷取 schema 的 glob 模式。使用 `{schema}` 作為佔位符。在 `schema` 模式中，模式基礎目錄下方的目錄（例如 `db/*`）定義了要在資料庫中查詢的 schema。 |
@@ -119,7 +120,7 @@ Test Explorer 中。
 | `utplsql.profiles` | `[]` | 已儲存的 Oracle 連線設定檔（名稱、連線，以及對 `sourcePath`/`coverageOwner` 等的覆蓋），用於切換環境。**密碼保存在作業系統鑰匙圈（VS Code SecretStorage）中，而非設定中** — `connection` 欄位僅儲存 `user@//host:port/service`。帶有內嵌密碼的舊設定檔會在首次使用時自動遷移。 (Full field reference: [wiki](https://github.com/thepaneb/vscode-utplsql/wiki/Configuration)). |
 | `utplsql.activeProfile` | `""` | 作用中設定檔的 ID（`utplsql.profiles`）。設定時，會覆蓋 `utplsql.connection`。 |
 | `utplsql.sqlCoverageEnabled` | `false` | 透過 `V$SQL` 追蹤執行的檢視（布林涵蓋率）。需要 `GRANT SELECT ON V$SQL`。 |
-| `utplsql.debugger.enabled` | `true` | 啟用 PL/SQL 測試除錯（`DBMS_DEBUG`）。需要 `node-oracledb` + 授權。 |
+| `utplsql.debugger.enabled` | `true` | 啟用 PL/SQL 測試除錯（`DBMS_DEBUG`）。需要 `node-oracledb` + 授權。 使用除錯資訊編譯目標套件（`PLSQL_OPTIMIZE_LEVEL <= 1`），並授予 `DEBUG CONNECT SESSION` + `EXECUTE ON SYS.DBMS_DEBUG`。 |
 | `utplsql.debugger.stopOnException` | `true` | 在除錯期間於 PL/SQL 例外上暫停。 |
 | `utplsql.debugger.timeoutSeconds` | `300` | 除錯工作階段的逾時（秒）。 |
 | `utplsql.scriptRunner.stopOnError` | `true` | Stops script execution on the first failure (`false` = keeps logging the rest). |

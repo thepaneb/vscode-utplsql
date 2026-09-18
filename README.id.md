@@ -109,6 +109,7 @@ Ekstensi terhubung langsung ke Oracle, membaca laporan (JUnit + Coverage) lalu m
 | `utplsql.oraclePoolPingInterval` | `60` | Detik antara pemeriksaan kesehatan koneksi idle di pool (node-oracledb). `0` = ping pada setiap checkout. |
 | `utplsql.oracleClientMode` | `thin` | Mode driver: `thin` (JavaScript murni, tanpa klien native) atau `thick` (memakai Oracle Instant Client). Gunakan `thick` hanya untuk database yang memerlukan NNE (Native Network Encryption); perlu `utplsql.oracleClientLibDir` dan memuat ulang jendela. |
 | `utplsql.oracleClientLibDir` | `""` | Direktori Oracle Instant Client. Wajib saat `utplsql.oracleClientMode` bernilai `thick` (mis. `C:\oracle\instantclient_23_5`). |
+| Debug tidak berhenti di breakpoint | Paket tanpa info debug atau grant debug tidak ada | Kompilasi dengan `PLSQL_OPTIMIZE_LEVEL <= 1` (atau `ALTER PACKAGE ... COMPILE DEBUG`) dan berikan `DEBUG CONNECT SESSION` + `EXECUTE ON SYS.DBMS_DEBUG` |
 | `utplsql.oracleClientConfigDir` | `""` | Direktori konfigurasi Oracle (TNS_ADMIN) berisi `sqlnet.ora`/`tnsnames.ora`. Opsional; hanya dipakai oleh mode thick. |
 | `utplsql.organization` | `file` | Organisasi pohon: `file` (berdasarkan path) atau `schema` (Schema > Package > Suite > Test). Pada mode `schema`, suite juga ditemukan dari database (`ALL_OBJECTS`/`ALL_SOURCE`) ketika file `.pks` tidak ada di workspace — dengan URI virtual `utplsql-db:/` (tanpa CodeLens/dekorasi/langsung ke kegagalan). |
 | `utplsql.organization.schemaPattern` | `db/{schema}/**` | Pola glob untuk mengekstrak schema dari path. Gunakan `{schema}` sebagai placeholder. Pada mode `schema`, direktori di bawah basis pola (mis. `db/*`) menentukan schema yang ditanyakan di database. |
@@ -118,7 +119,7 @@ Ekstensi terhubung langsung ke Oracle, membaca laporan (JUnit + Coverage) lalu m
 | `utplsql.profiles` | `[]` | Profil koneksi Oracle yang tersimpan (nama, koneksi, dan penimpaan `sourcePath`/`coverageOwner`/dll.) untuk berpindah antar lingkungan. **Kata sandi disimpan di keychain OS (VS Code SecretStorage), bukan di pengaturan** — kolom `connection` hanya menyimpan `user@//host:port/service`. Profil lama dengan kata sandi inline dimigrasikan secara otomatis saat pertama kali digunakan. (Full field reference: [wiki](https://github.com/thepaneb/vscode-utplsql/wiki/Configuration)). |
 | `utplsql.activeProfile` | `""` | ID profil aktif (`utplsql.profiles`). Jika diatur, menimpa `utplsql.connection`. |
 | `utplsql.sqlCoverageEnabled` | `false` | Melacak view yang dieksekusi melalui `V$SQL` (coverage boolean). Memerlukan `GRANT SELECT ON V$SQL`. |
-| `utplsql.debugger.enabled` | `true` | Mengaktifkan debugging pengujian PL/SQL (`DBMS_DEBUG`). Memerlukan `node-oracledb` + grant. |
+| `utplsql.debugger.enabled` | `true` | Mengaktifkan debugging pengujian PL/SQL (`DBMS_DEBUG`). Memerlukan `node-oracledb` + grant. Kompilasi paket target dengan info debug (`PLSQL_OPTIMIZE_LEVEL <= 1`) dan berikan `DEBUG CONNECT SESSION` + `EXECUTE ON SYS.DBMS_DEBUG`. |
 | `utplsql.debugger.stopOnException` | `true` | Berhenti pada exception PL/SQL saat debugging. |
 | `utplsql.debugger.timeoutSeconds` | `300` | Waktu tunggu (detik) dari sesi debug. |
 | `utplsql.scriptRunner.stopOnError` | `true` | Stops script execution on the first failure (`false` = keeps logging the rest). |

@@ -226,6 +226,20 @@ Use `**` for any depth of subdirectories after the schema.
 > have no CodeLens — execution is from the tree. `UT_*` packages (utPLSQL
 > framework) are ignored.
 
+## Debugger doesn't stop at breakpoints
+
+The PL/SQL debugger uses `DBMS_DEBUG`, which requires:
+
+- the target package compiled **with debug information** — Oracle strips it at
+  `PLSQL_OPTIMIZE_LEVEL = 2` (the default). Compile with
+  `ALTER SESSION SET PLSQL_OPTIMIZE_LEVEL = 1` before creating the package, or
+  recompile with `ALTER PACKAGE <pkg> COMPILE DEBUG`;
+- `GRANT DEBUG CONNECT SESSION` and `GRANT EXECUTE ON SYS.DBMS_DEBUG` — see
+  [Database requirements](Database-requirements).
+
+Also make sure `utplsql.debugger.enabled` is on (default). Without debug info the
+breakpoints are **silently ignored** and the test runs to completion.
+
 ## Opt-in diagnostics (`UTPLSQL_DEBUG`)
 
 Set `UTPLSQL_DEBUG=1` before launching VSCode to enable diagnostic logs in the

@@ -110,6 +110,7 @@ Test Explorer 中。
 | `utplsql.oraclePoolPingInterval` | `60` | 空闲池连接健康检查之间的秒数（node-oracledb）。`0` = 每次签出时 ping。 |
 | `utplsql.oracleClientMode` | `thin` | 驱动程序模式：`thin`（纯 JavaScript，无需本机客户端）或 `thick`（使用 Oracle Instant Client）。仅在需要 NNE（原生网络加密）的数据库上使用 `thick`；需要 `utplsql.oracleClientLibDir` 并重新加载窗口。 |
 | `utplsql.oracleClientLibDir` | `""` | Oracle Instant Client 目录。当 `utplsql.oracleClientMode` 为 `thick` 时必填（例如 `C:\oracle\instantclient_23_5`）。 |
+| 调试不在断点处停止 | 包编译时没有调试信息，或缺少调试授权 | 使用 `PLSQL_OPTIMIZE_LEVEL <= 1` 编译（或 `ALTER PACKAGE ... COMPILE DEBUG`），并授予 `DEBUG CONNECT SESSION` + `EXECUTE ON SYS.DBMS_DEBUG` |
 | `utplsql.oracleClientConfigDir` | `""` | 包含 `sqlnet.ora`/`tnsnames.ora` 的 Oracle 配置目录（TNS_ADMIN）。可选；仅 thick 模式使用。 |
 | `utplsql.organization` | `file` | 树组织方式：`file`（按路径）或 `schema`（Schema > Package > Suite > Test）。在 `schema` 模式时，如果工作区中没有 `.pks` 文件，还会从数据库（`ALL_OBJECTS`/`ALL_SOURCE`）发现套件 — 使用虚拟 URI `utplsql-db:/`（无 CodeLens/装饰/跳转到失败）。 |
 | `utplsql.organization.schemaPattern` | `db/{schema}/**` | 用于从路径中提取 schema 的 glob 模式。使用 `{schema}` 作为占位符。在 `schema` 模式下，模式基准目录（例如 `db/*`）下方的目录定义了在数据库中查询的 schemas。 |
@@ -119,7 +120,7 @@ Test Explorer 中。
 | `utplsql.profiles` | `[]` | 已保存的 Oracle 连接配置（名称、连接，以及 `sourcePath`/`coverageOwner` 等的覆盖项），用于在环境之间切换。**密码保存在操作系统钥匙串（VS Code SecretStorage）中，而非设置中** — `connection` 字段仅存储 `user@//host:port/service`。带有内联密码的旧配置会在首次使用时自动迁移。 (Full field reference: [wiki](https://github.com/thepaneb/vscode-utplsql/wiki/Configuration)). |
 | `utplsql.activeProfile` | `""` | 活动配置的 ID（`utplsql.profiles`）。设置后，会覆盖 `utplsql.connection`。 |
 | `utplsql.sqlCoverageEnabled` | `false` | 通过 `V$SQL` 跟踪执行的视图（布尔覆盖率）。需要 `GRANT SELECT ON V$SQL`。 |
-| `utplsql.debugger.enabled` | `true` | 启用 PL/SQL 测试调试（`DBMS_DEBUG`）。需要 `node-oracledb` + 授权。 |
+| `utplsql.debugger.enabled` | `true` | 启用 PL/SQL 测试调试（`DBMS_DEBUG`）。需要 `node-oracledb` + 授权。 使用调试信息编译目标包（`PLSQL_OPTIMIZE_LEVEL <= 1`），并授予 `DEBUG CONNECT SESSION` + `EXECUTE ON SYS.DBMS_DEBUG`。 |
 | `utplsql.debugger.stopOnException` | `true` | 调试期间在 PL/SQL 异常时暂停。 |
 | `utplsql.debugger.timeoutSeconds` | `300` | 调试会话的超时时间（秒）。 |
 | `utplsql.scriptRunner.stopOnError` | `true` | Stops script execution on the first failure (`false` = keeps logging the rest). |

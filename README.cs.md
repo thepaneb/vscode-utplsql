@@ -110,6 +110,7 @@ nativních API VSCode.
 | `utplsql.oraclePoolPingInterval` | `60` | Sekundy mezi kontrolami stavu nečinných připojení v poolu (node-oracledb). `0` = ping při každém checkoutu. |
 | `utplsql.oracleClientMode` | `thin` | Režim ovladače: `thin` (čistý JavaScript, bez nativního klienta) nebo `thick` (používá Oracle Instant Client). `thick` používejte jen pro databáze vyžadující NNE (Native Network Encryption); vyžaduje `utplsql.oracleClientLibDir` a znovu načtení okna. |
 | `utplsql.oracleClientLibDir` | `""` | Adresář Oracle Instant Client. Povinný, když je `utplsql.oracleClientMode` nastaveno na `thick` (např. `C:\oracle\instantclient_23_5`). |
+| Ladění se nezastaví na zarážce | Balíček bez ladicích informací nebo chybějící ladicí granty | Zkompilujte s `PLSQL_OPTIMIZE_LEVEL <= 1` (nebo `ALTER PACKAGE ... COMPILE DEBUG`) a udělte `DEBUG CONNECT SESSION` + `EXECUTE ON SYS.DBMS_DEBUG` |
 | `utplsql.oracleClientConfigDir` | `""` | Adresář konfigurace Oracle (TNS_ADMIN) s `sqlnet.ora`/`tnsnames.ora`. Volitelný; používá jej pouze thick režim. |
 | `utplsql.organization` | `file` | Uspořádání stromu: `file` (podle cesty) nebo `schema` (Schema > Package > Suite > Test). V režimu `schema` se sady také objevují z databáze (`ALL_OBJECTS`/`ALL_SOURCE`), když soubory `.pks` nejsou v pracovním prostoru — s virtuální URI `utplsql-db:/` (bez CodeLens/dekorací/skoku na selhání). |
 | `utplsql.organization.schemaPattern` | `db/{schema}/**` | Glob vzor pro extrakci schématu z cesty. Použijte `{schema}` jako zástupný symbol. V režimu `schema` adresáře pod základnou vzoru (např. `db/*`) definují schémata dotazovaná v databázi. |
@@ -119,7 +120,7 @@ nativních API VSCode.
 | `utplsql.profiles` | `[]` | Uložené profily připojení k Oracle (název, připojení a přebití `sourcePath`/`coverageOwner`/atd.) pro přepínání mezi prostředími. **Hesla se ukládají do klíčenky OS (VS Code SecretStorage), nikoli do nastavení** — pole `connection` ukládá pouze `user@//host:port/service`. Starší profily s vloženým heslem se při prvním použití migrují automaticky. (Full field reference: [wiki](https://github.com/thepaneb/vscode-utplsql/wiki/Configuration)). |
 | `utplsql.activeProfile` | `""` | ID aktivního profilu (`utplsql.profiles`). Pokud je nastaveno, přebíjí `utplsql.connection`. |
 | `utplsql.sqlCoverageEnabled` | `false` | Sleduje pohledy spuštěné přes `V$SQL` (boolean pokrytí). Vyžaduje `GRANT SELECT ON V$SQL`. |
-| `utplsql.debugger.enabled` | `true` | Povoluje ladění PL/SQL testů (`DBMS_DEBUG`). Vyžaduje `node-oracledb` + granty. |
+| `utplsql.debugger.enabled` | `true` | Povoluje ladění PL/SQL testů (`DBMS_DEBUG`). Vyžaduje `node-oracledb` + granty. Zkompilujte cílový balíček s ladicími informacemi (`PLSQL_OPTIMIZE_LEVEL <= 1`) a udělte `DEBUG CONNECT SESSION` + `EXECUTE ON SYS.DBMS_DEBUG`. |
 | `utplsql.debugger.stopOnException` | `true` | Pozastaví se při výjimkách PL/SQL během ladění. |
 | `utplsql.debugger.timeoutSeconds` | `300` | Časový limit (s) ladící relace. |
 | `utplsql.scriptRunner.stopOnError` | `true` | Stops script execution on the first failure (`false` = keeps logging the rest). |

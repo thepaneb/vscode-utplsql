@@ -60,6 +60,20 @@ utPLSQL installed **in the same schema** as the tests — no cross-schema grants
 > `DBA_PROCEDURES` grants are **not** required — the framework reads its
 > own source.
 
+## PL/SQL debugging (`DBMS_DEBUG`)
+
+To debug tests (Debug Adapter `utplsql`), the schema that runs the tests needs:
+
+```sql
+GRANT DEBUG CONNECT SESSION      TO <schema_that_runs_the_tests>;
+GRANT EXECUTE ON SYS.DBMS_DEBUG  TO <schema_that_runs_the_tests>;
+```
+
+The target package must also be compiled with **debug information**: Oracle
+strips it at `PLSQL_OPTIMIZE_LEVEL = 2` (the default). Compile with
+`PLSQL_OPTIMIZE_LEVEL <= 1` (or `ALTER PACKAGE <pkg> COMPILE DEBUG`), otherwise
+breakpoints are silently ignored.
+
 ## Full verification
 
 Run this script as DBA to audit the configuration:

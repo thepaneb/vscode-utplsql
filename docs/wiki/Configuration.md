@@ -102,6 +102,11 @@ decoded by VSCode — the profile charset does not apply.
 | `utplsql.debugger.stopOnException` | `true` | Pauses execution when an unhandled exception is raised. |
 | `utplsql.debugger.timeoutSeconds` | `300` | Debug session timeout in seconds. |
 
+> Prerequisites: the target package must be compiled with debug info
+> (`PLSQL_OPTIMIZE_LEVEL <= 1`, or `ALTER PACKAGE ... COMPILE DEBUG`) and the
+> user needs `GRANT DEBUG CONNECT SESSION` + `GRANT EXECUTE ON SYS.DBMS_DEBUG`.
+> See [Database requirements](Database-requirements).
+
 ## Test Discovery
 
 | Setting | Default | Description |
