@@ -21,25 +21,33 @@ src/test/unit/  (TypeScript source; runs in out/test/unit/)
 ├── config.test.ts
 ├── connectionProfiles.test.ts
 ├── coverage.test.ts
+├── dbSourceProvider.test.ts
 ├── dbmsDebug.test.ts
+├── debounce.test.ts
 ├── debugger.test.ts
 ├── decorations.test.ts
 ├── discovery.test.ts
 ├── i18n.test.ts
 ├── junit.test.ts
+├── logger.test.ts
 ├── matching.test.ts
+├── oracleClient.test.ts
 ├── oracleRunner.test.ts
 ├── oracledb-default-absent.test.ts
 ├── oracledb-missing-catch.test.ts
+├── packageTarget.test.ts
 ├── plsqlDeclarations.test.ts
 ├── quickfix.test.ts
+├── quickfixActivation.test.ts
 ├── rerun.test.ts
 ├── results.test.ts
 ├── runner.test.ts
 ├── scriptRunner.test.ts
+├── selectReporterCommand.test.ts
 ├── state.test.ts
 ├── statusBar.test.ts
 ├── suiteParser.test.ts
+├── testTree.test.ts
 └── viewCoverage.test.ts
 ```
 
@@ -50,7 +58,7 @@ src/test/unit/  (TypeScript source; runs in out/test/unit/)
 There is also **TypeScript coverage** with `c8`:
 
 ```bash
-npm run test:coverage   # thresholds: 65% lines/statements, 80% branches, 70% functions
+npm run test:coverage   # thresholds: 90% lines/statements/functions, 85% branches
 ```
 
 ### How to create a test
@@ -103,7 +111,12 @@ Test the extension inside a real VSCode instance:
 src/test/integration/
 ├── extension.test.ts
 ├── oracleCapabilities.test.ts
-└── v012-features.test.ts
+├── v012-features.test.ts
+├── dbPaths.test.ts
+├── prd70-sqlplus.test.ts
+├── schemaRun.test.ts
+├── debuggerE2E.test.ts
+└── thickMode.test.ts
 ```
 
 Integration tests have two modes:
@@ -111,6 +124,15 @@ Integration tests have two modes:
 - **Without database**: test discovery, commands, UI — do not require Oracle
 - **With database** (`describeDB`): test real execution, coverage, reporters —
   require Oracle + environment variables
+
+Fast subsets / modes:
+
+- `npm run test:integration:smoke` — only Oracle capabilities + the DBMS_DEBUG
+  cycle (~1 min).
+- `npm run test:integration:thick` — thick mode (Instant Client) in an isolated
+  host; needs `ORACLE_CLIENT_LIB_DIR`.
+- `npm run db:matrix` — runs the suite against multiple Oracle versions (see
+  [Contributing](Contributing)).
 
 ### Setup
 

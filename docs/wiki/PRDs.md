@@ -65,6 +65,21 @@ The file is moved between folders as it progresses.
 | 44 | Result→test matching as a pure function | 0.11.0 |
 | 45 | Bundling with esbuild + node-oracledb tree-shaking | 0.11.0 |
 | 46 | Major dependency updates | 0.11.0 |
+| 34 | Multi-Connection Profiles | 0.12.0 |
+| 48 | Derived Function Coverage (DeclarationCoverage) | 0.12.0 |
+| 12 | SQL coverage (views, queries) | 0.12.0 |
+| 33 | PL/SQL Debugger Integration | 0.12.0 |
+| 49 | Internationalization (i18n) of text content | 0.12.0 |
+| 62 | SQL script execution against connection profiles | 0.12.0 |
+| 63 | Bilingual wiki (pt-BR/en) | 0.12.0 |
+| 64 | Oracle-only migration (drop utPLSQL-cli/Java) | 0.12.0 |
+| 65 | Schema-mode and security fixes | 0.12.0 |
+| 66 | Connection robustness, logging and cache | 0.12.0 |
+| 67 | Code quality, cleanup and performance | 0.12.0 |
+| 68 | Restore Oracle diagnostics and session reporter | 0.12.0 |
+| 70 | Optional thick mode (Instant Client) for NNE | 0.12.1 |
+| 71 | Fix the debugger for the real `DBMS_DEBUG` | 0.12.1 |
+| 72 | Oracle database test matrix | 0.12.1 |
 
 ### 🔵 Approved / 🟡 In development
 
@@ -74,12 +89,9 @@ The file is moved between folders as it progresses.
 
 | # | PRD | Target version |
 |---|---|---|
-| 12 | SQL coverage (views, queries) | 0.12.0 |
-| 33 | PL/SQL Debugger Integration | 0.12.0 |
-| 34 | Multi-Connection Profiles | 0.12.0 |
-| 47 | Node 26 in development toolchain | 0.12.0 |
-| 48 | Derived Function Coverage (DeclarationCoverage) | 0.12.0 |
-| 49 | Internationalization (i18n) of text content | 0.12.0 |
+| 47 | Node 26 in development toolchain | 0.13.0 |
+| 69 | Oracle Runner: typed binds, `a_tags` and reporter validation | 0.13.0 |
+| 50–61 | Auto-run, tags, inline diff, debug variants, coverage toggle, multi-root, scaffold… | 0.14.0+ |
 
 ## How to propose a PRD
 
