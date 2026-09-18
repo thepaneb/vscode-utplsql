@@ -136,7 +136,9 @@ CONCLUIR
 
 ### 🟡 Em desenvolvimento
 
-_(vazio — nenhuma PRD em desenvolvimento)_
+| # | PRD | Versão alvo | Data |
+|---|---|---|---|
+| 72 | [Matriz de bancos Oracle para testes de integração](in-progress/prd-72-db-test-matrix.md) | 0.13.0 | 2026-09-18 |
 
 ### 🔵 Aprovados
 
@@ -247,7 +249,7 @@ docs/prd/
 ├── approved/         ← aprovados, aguardando implementação
 │   └── (vazio)
 ├── in-progress/      ← sendo implementados agora
-│   └── (vazio)
+│   └── prd-72-db-test-matrix.md
 └── proposed/         ← em avaliação
     ├── prd-47-node-26-toolchain.md
     ├── prd-50-auto-run-on-save.md
