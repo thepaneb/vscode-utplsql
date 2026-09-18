@@ -25,6 +25,9 @@ export default defineConfig({
   env: {
     UTPLSQL_CLI_PATH: process.env.UTPLSQL_CLI_PATH ?? '',
     UTPLSQL_CLI_HOME: process.env.UTPLSQL_CLI_HOME ?? '',
+    // Conexão dos testes de integração. Exportada explicitamente para o host:
+    // em WSL, o `node` é o binário do Windows e só recebe o que atravessa o WSLENV.
+    UTPLSQL_CONN: process.env.UTPLSQL_CONN ?? '',
   },
   mocha: {
     ui: 'bdd',

@@ -63,27 +63,32 @@ describeDB('debugger DBMS_DEBUG (contrato do ambiente)', () => {
       return;
     }
     const dbc = await openRaw();
+    const mod = await import('oracledb');
+    const oracledb =
+      ((mod as Record<string, unknown>).default as typeof import('oracledb')) ??
+      (mod as typeof import('oracledb'));
     try {
       // INITIALIZE é a função que devolve o debugID (DEBUG_ON é procedure e não
       // retorna id — divergência com o cliente atual da extensão).
+      //
+      // DEBUG_ON e DEBUG_OFF vão no MESMO bloco: entre execuções separadas o
+      // Probe pausa a sessão esperando um debugger anexado (o fluxo real da
+      // extensão exige o ATTACH_SESSION do outro lado).
       const r = await dbc.execute(
         `DECLARE
            v_id VARCHAR2(100);
          BEGIN
            v_id := DBMS_DEBUG.INITIALIZE();
+           DBMS_DEBUG.DEBUG_ON();
+           DBMS_DEBUG.DEBUG_OFF();
            :id := v_id;
          END;`,
-        { id: { dir: 1 } as never },
-        { outFormat: 4002 } as never,
+        { id: { dir: oracledb.BIND_OUT, type: oracledb.STRING, maxSize: 100 } },
       );
       const id = String(((r.outBinds ?? {}) as Record<string, unknown>).id ?? '');
       assert.ok(id.length > 0, 'INITIALIZE deveria retornar um debug session id');
-
-      await dbc.execute(`BEGIN DBMS_DEBUG.DEBUG_ON(); END;`, {}, { autoCommit: false });
-      await dbc.execute(`BEGIN DBMS_DEBUG.DEBUG_OFF(); END;`, {}, { autoCommit: false });
     } finally {
-      // Garante DEBUG_OFF mesmo em falha, sem mascarar o erro do teste.
-      await dbc.execute(`BEGIN DBMS_DEBUG.DEBUG_OFF(); END;`, {}).catch(() => {});
+      // (sem DEBUG_OFF separado aqui: entre execuções o Probe pausaria a sessão)
       await dbc.close().catch(() => {});
     }
   });
