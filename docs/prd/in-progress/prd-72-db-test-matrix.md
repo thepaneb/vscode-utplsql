@@ -208,7 +208,7 @@ Nenhuma setting da extensão. Variáveis do orquestrador documentadas em
 
 ## 11. Questões em aberto
 
-- Documentar o uso no WSL (`WSLENV`) em `CONTRIBUTING`.
 - Reavaliar 12.2 caso o utPLSQL seja atualizado (o problema é o
   `DBMS_PREPROCESSOR.SOURCE_LINES_T` sem construtor no 12.2 base).
 - Reavaliar `19.19.0.0` se a Oracle publicar a variante amd64.
+- Concluir a PRD (mover para `completed/`) quando a 0.13.0 for publicada.
