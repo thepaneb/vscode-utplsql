@@ -5,11 +5,15 @@
 #
 # Uso:
 #   scripts/db-matrix/run.sh --list
-#   scripts/db-matrix/run.sh --only 23lite
-#   scripts/db-matrix/run.sh --only 12slim,19ee
+#   scripts/db-matrix/run.sh                        # roda a matriz inteira
+#   scripts/db-matrix/run.sh --only 21xe
+#   scripts/db-matrix/run.sh --only 18xe,19ee
+#   scripts/db-matrix/run.sh --smoke                # só capacidades + debugger (~1 min/versão)
 #   scripts/db-matrix/run.sh --bootstrap-only --only 21xe
-#   scripts/db-matrix/run.sh --keep-db --only 23lite     # não derruba no fim
+#   scripts/db-matrix/run.sh --keep-db --only 23free     # não derruba no fim
 #   scripts/db-matrix/run.sh --tests "npm run test:integration"
+#
+# Atalhos npm: `npm run db:matrix` e `npm run db:matrix:list`.
 #
 # Credenciais das imagens EE (database/enterprise) vêm de ORACLE_AUTH_USER e
 # ORACLE_AUTH_TOKEN (ambiente ou .env.dbmatrix). Free/Express são anônimas.
@@ -51,6 +55,7 @@ while [ $# -gt 0 ]; do
     --list) echo "$VERSIONS" | sed '/^$/d'; exit 0 ;;
     --only) ONLY="$2"; shift 2 ;;
     --tests) TESTS_CMD="$2"; shift 2 ;;
+    --smoke) TESTS_CMD="npm run test:integration:smoke"; shift ;;
     --bootstrap-only) BOOTSTRAP_ONLY=1; shift ;;
     --keep-db) KEEP_DB=1; shift ;;
     --keep-image) KEEP_IMAGE=1; shift ;;

@@ -13,9 +13,9 @@ Antes de abrir uma issue, verifique se ela já não existe na lista de [issues](
 - **Título claro e descritivo**
 - **Passos para reproduzir** o problema
 - **Comportamento esperado** vs. **comportamento observado**
-- **Configuração relevante** (`utplsql.*` no `settings.json`, modo de invocação `launcher`/`java`)
-- **Ambiente**: versão do VSCode, versão do utPLSQL-cli, SO, versão do Oracle/utPLSQL (UT3)
-- **Logs** do terminal de testes ou saída do CLI, se possível
+- **Configuração relevante** (`utplsql.*` no `settings.json`)
+- **Ambiente**: versão do VSCode, SO, versão do Oracle e do utPLSQL (UT3)
+- **Logs** do terminal de testes, se possível
 
 ### Sugerindo melhorias
 
@@ -30,7 +30,7 @@ Abra uma issue descrevendo:
 Bons pontos de partida:
 
 - Issues marcadas `good first issue` ou `help wanted`
-- Melhorias na documentação (README, exemplos de `coverageSourceArgs`)
+- Melhorias na documentação (README, wiki, exemplos)
 - Cobertura de casos extras nas convenções de mapeamento (por diretório, prefixo, extensão)
 
 ## Configurando o ambiente de desenvolvimento
@@ -40,7 +40,7 @@ Bons pontos de partida:
 - **Node.js** e npm
 - **VSCode 1.88+**
 - Um banco **Oracle** com o framework **utPLSQL (UT3)** instalado, para testar a extensão de ponta a ponta
-- **utPLSQL-cli** + **Java** instalados localmente
+- **Docker** (opcional) para a matriz de versões (`npm run db:matrix`)
 
 ### Passos
 
@@ -61,10 +61,46 @@ Para testar a extensão em modo desenvolvimento, abra o projeto no VSCode e pres
 ### Rodando os testes
 
 ```bash
-npm test
+npm test              # unitários + lint (rápido, sem banco)
+npm run test:coverage # unitários com thresholds de cobertura
 ```
 
-Os testes usam `@vscode/test-cli` (configurado em `.vscode-test.mjs`).
+Os unitários usam `node --test`; os de integração usam `@vscode/test-cli`
+(`.vscode-test.mjs`).
+
+### Testes de integração
+
+Rodam contra um Oracle real e são habilitados pela env `UTPLSQL_CONN` (sem ela,
+viram `describe.skip`):
+
+```bash
+export UTPLSQL_CONN='UT3/senha@//localhost:1521/freepdb1'
+npm run test:integration        # suíte completa
+npm run test:integration:smoke  # subconjunto rápido (capacidades + DBMS_DEBUG)
+```
+
+> No WSL, como o `node` é o binário do Windows, a variável precisa atravessar
+> via `WSLENV`: `export WSLENV="UTPLSQL_CONN${WSLENV:+:$WSLENV}"`. O
+> `npm run db:matrix` já faz isso.
+
+### Matriz de bancos (local, várias versões)
+
+Para validar contra várias versões do Oracle sem depender de um banco fixo:
+
+```bash
+npm run db:matrix:list                 # lista as versões da matriz
+npm run db:matrix                      # roda a matriz inteira (uma versão por vez)
+npm run db:matrix -- --only 21xe       # só uma versão
+npm run db:matrix -- --smoke           # subconjunto rápido por versão
+npm run db:matrix -- --keep-db --only 23free  # não derruba o banco no fim
+```
+
+O orquestrador (`scripts/db-matrix/run.sh`) baixa a imagem, sobe o container,
+espera o PDB abrir, instala o utPLSQL + grants + schemas/fixtures e roda os
+testes, derrubando tudo no fim. Requisitos: Docker e, para as imagens
+`database/enterprise`, `ORACLE_AUTH_USER`/`ORACLE_AUTH_TOKEN` em `.env.dbmatrix`
+(veja `.env.dbmatrix.example`). O CI **não** roda a matriz — ela é local e manual.
+A versão alvo e os detalhes estão na PRD-72.
 
 ## Estrutura do projeto
 
@@ -93,7 +129,9 @@ Os testes usam `@vscode/test-cli` (configurado em `.vscode-test.mjs`).
 
 - TypeScript, seguindo o estilo já usado em `src/`
 - Evite introduzir dependências novas sem discutir antes em uma issue
-- Ao lidar com o modo `launcher` (via `cmd` no Windows) vs. modo `java` (chamada direta à JVM), tenha atenção especial ao escaping de regex e argumentos — é uma fonte comum de bugs sutis
+- A execução é **Oracle direto** (node-oracledb, thin por padrão; thick é opt-in)
+  — mudanças em `oracleRunner.ts`/`discovery.ts` devem considerar as duas versões
+  do driver e o shared install (`ALL_SYNONYMS`)
 
 ## Processo de revisão
 

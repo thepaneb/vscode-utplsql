@@ -74,10 +74,15 @@ services:
 
 ### RF3 — Orquestrador
 
-`scripts/db-matrix/run.sh` com opções `--list`, `--only`, `--bootstrap-only`,
-`--keep-db`, `--keep-image`, `--no-pull`, `--tests`. Exporta
+`scripts/db-matrix/run.sh` com opções `--list`, `--only`, `--smoke`,
+`--bootstrap-only`, `--keep-db`, `--keep-image`, `--no-pull`, `--tests`. Exporta
 `UTPLSQL_CONN=UT3/<pass>@//localhost:<porta>/<pdb>` e `WSLENV` (necessário
 porque, no WSL, o `node` é o binário do Windows e não herda env do WSL).
+Atalhos npm: `npm run db:matrix` e `npm run db:matrix:list`.
+
+O modo **smoke** (`npm run test:integration:smoke`, config
+`.vscode-test.smoke.mjs`) roda só as capacidades Oracle + o contrato do
+`DBMS_DEBUG` (~7s por versão, após o bootstrap).
 
 ### RF4 — Credenciais e versionamento
 
@@ -144,8 +149,10 @@ Nenhuma setting da extensão. Variáveis do orquestrador documentadas em
 
 ## 7. Plano de testes
 
-- **Smoke**: `run.sh --only 23free --bootstrap-only` (sobe + bootstrap).
-- **Full**: `run.sh --only <versão>` (roda `npm run test:integration`).
+- **Smoke**: `npm run db:matrix -- --smoke` (capacidades + `DBMS_DEBUG`, ~7s por
+  versão após o bootstrap).
+- **Full**: `npm run db:matrix` (suíte de integração completa por versão).
+- **Bootstrap only**: `npm run db:matrix -- --bootstrap-only --only 23free`.
 - **Unitários**: a infra não tem lógica testável por `node --test`; a validação
   é a execução da matriz.
 
@@ -174,8 +181,6 @@ Nenhuma setting da extensão. Variáveis do orquestrador documentadas em
 ## 11. Questões em aberto
 
 - Documentar o uso no WSL (`WSLENV`) em `CONTRIBUTING`.
-- Avaliar um modo `smoke` (só capacidades Oracle + probe do debugger) para
-  feedback rápido.
 - Reavaliar 12.2 caso o utPLSQL seja atualizado (o problema é o
   `DBMS_PREPROCESSOR.SOURCE_LINES_T` sem construtor no 12.2 base).
 - Reavaliar `19.19.0.0` se a Oracle publicar a variante amd64.
