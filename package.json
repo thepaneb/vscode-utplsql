@@ -601,6 +601,7 @@
   "scripts": {
     "vscode:prepublish": "npm run compile && npm run bundle",
     "compile": "tsc -p ./",
+    "typecheck": "tsc -p ./ --noEmit",
     "watch": "tsc -watch -p ./",
     "lint": "biome check src/",
     "lint:fix": "biome check --write src/",

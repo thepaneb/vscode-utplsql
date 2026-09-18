@@ -1,5 +1,24 @@
 # Changelog
 
+## Unreleased
+
+- **Schema-mode — execução por Schema/Package e Run All**: os nós `Schema:` e
+  `Package:` não eram expandidos. Rodar um deles (ou Run All no modo schema)
+  executava **toda** a suíte do banco sem aplicar resultados no Test Explorer.
+  A expansão agora desce a árvore `schema → package → suite → test` antes de
+  montar os paths e não chama o Oracle quando não há testes.
+- **Robustez de conexão**: owner do schema nos diagnósticos de compilação e no
+  debug passa a usar `parseConnString().user` (tolera connection sem senha,
+  ex.: perfil `user@host/service`); a 2ª conexão do runner devolve a 1ª ao pool
+  se falhar (sem vazar); listeners de cancelamento são descartados ao fim do run.
+- **Reporters adicionais**: nomes inexistentes em
+  `utplsql.additionalReporters` são ignorados com aviso em vez de abortar o
+  `ut_runner.run` com ORA.
+- **Descoberta de suites**: arquivos `.pks/.pkb` são decodificados no charset do
+  perfil ativo (`latin1`/`win1252`) em vez de forçar UTF-8.
+- **CI**: passa a rodar `npm run typecheck` e `npm run test:coverage` (enforça
+  os thresholds de cobertura do c8).
+
 ## 0.12.1
 
 - **Thick mode opcional (PRD-70)**: nova setting `utplsql.oracleClientMode`

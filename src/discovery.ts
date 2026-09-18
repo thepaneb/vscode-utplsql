@@ -1,6 +1,8 @@
 import * as path from 'node:path';
 import * as vscode from 'vscode';
+import { decodeBytes } from './charset';
 import { getExtensionLocale, readConfig } from './config';
+import { getActiveProfile } from './connectionProfiles';
 import { t } from './i18n';
 import { logger } from './logger';
 import { ensurePool, parseConnString } from './oracleRunner';
@@ -66,7 +68,7 @@ export async function discoverWorkspace(
       seen.add(uri.toString());
       try {
         const bytes = await vscode.workspace.fs.readFile(uri);
-        const text = Buffer.from(bytes).toString('utf8');
+        const text = decodeBytes(bytes, getActiveProfile()?.charset);
         const suite = parseSuite(uri, text);
         if (suite && !suite.disabled && suite.tests.length > 0) {
           const tests = suite.tests.filter((t) => !t.disabled);

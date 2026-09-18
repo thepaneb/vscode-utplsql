@@ -9,6 +9,7 @@ import {
   checkCompilationErrors,
   checkReporterExists,
   closeOraclePool,
+  connectionUser,
   discoverUtplsqlSchema,
   ensurePool,
   executeRunOracle,
@@ -146,6 +147,19 @@ test('parseConnString: hostname com subdominios', () => {
   assert.strictEqual(r.user, 'u');
   assert.strictEqual(r.password, 'p');
   assert.strictEqual(r.connectionString, '//ora-prod.us-east1.company.com:1521/proddb');
+});
+
+test('connectionUser: extrai login com e sem senha', () => {
+  assert.strictEqual(connectionUser('scott/tiger@//h:1521/s'), 'SCOTT');
+  assert.strictEqual(connectionUser('scott@//h:1521/s'), 'SCOTT');
+  assert.strictEqual(connectionUser('user/p@ss@host/svc'), 'USER');
+  assert.strictEqual(connectionUser('UT3/senha@MYTNS'), 'UT3');
+});
+
+test('connectionUser: formato invalido retorna undefined', () => {
+  assert.strictEqual(connectionUser('invalid'), undefined);
+  assert.strictEqual(connectionUser(''), undefined);
+  assert.strictEqual(connectionUser('user/pass@'), undefined);
 });
 
 // ── applyResultsFromCases ────────────────────────────────────────────
@@ -519,6 +533,66 @@ test('acquireRunnerConnections: zera callTimeout vazado de conexoes do pool', as
   }
 });
 
+test('acquireRunnerConnections: fecha conn1 se a 2ª conexão do pool falhar', async () => {
+  await closeOraclePool();
+  let calls = 0;
+  let conn1Closed = 0;
+  const pool = {
+    getConnection: async () => {
+      calls++;
+      if (calls === 2) throw new Error('pool exhausted');
+      return {
+        fromPool: true,
+        callTimeout: 1234,
+        close: async () => {
+          conn1Closed++;
+        },
+      };
+    },
+    close: async () => {},
+  };
+  const mod = {
+    OUT_FORMAT_OBJECT: {},
+    outFormat: undefined as unknown,
+    createPool: async () => pool,
+    getConnection: async () => ({}),
+  };
+  await assert.rejects(
+    () => acquireRunnerConnections(mod as never, 'u/p@//h:1521/s', POOL_CFG),
+    /pool exhausted/,
+  );
+  assert.strictEqual(conn1Closed, 1);
+  await closeOraclePool();
+});
+
+test('acquireRunnerConnections: fecha conn1 raw se a 2ª conexão raw falhar', async () => {
+  await closeOraclePool();
+  let calls = 0;
+  let conn1Closed = 0;
+  const mod = {
+    OUT_FORMAT_OBJECT: {},
+    outFormat: undefined as unknown,
+    createPool: async () => {
+      throw new Error('no pool');
+    },
+    getConnection: async () => {
+      calls++;
+      if (calls === 2) throw new Error('db down');
+      return {
+        fromPool: false,
+        close: async () => {
+          conn1Closed++;
+        },
+      };
+    },
+  };
+  await assert.rejects(
+    () => acquireRunnerConnections(mod as never, 'u/p@//h:1521/s', POOL_CFG),
+    /db down/,
+  );
+  assert.strictEqual(conn1Closed, 1);
+});
+
 // ── findInvalidUt3Objects (callTimeout não deve vazar para o pool) ───
 
 function makeFindInvalidMod(conn: {
@@ -777,6 +851,65 @@ test('executeRunOracle: fluxo feliz aplica resultados e info no output', async (
   const out = run.output.join('\n');
   assert.match(out, /Oracle runner/);
   assert.ok(out.includes('Doc output'), 'deveria streamar o reporter de documentação');
+});
+
+test('executeRunOracle: reporter adicional inexistente é ignorado (não aborta o run)', async () => {
+  const { mod, captured } = makeOracleRunFake({ buffer: [JUNIT_XML] });
+  const run = makeRun() as any;
+  const { item, metaMap } = makeLeaf();
+  try {
+    await executeRunOracle(
+      {
+        connection: 'u/p@//h:1521/s',
+        pathArgs: ['pkg'],
+        coverage: false,
+        sourcePath: 'install',
+        root: '/root',
+        run,
+        leafTests: [item as any],
+        state: makeOracleRunState(metaMap),
+        additionalReporters: ['ut_nao_existe_reporter'],
+      },
+      neverCancel as never,
+      async () => mod as never,
+    );
+  } finally {
+    await closeOraclePool();
+  }
+  assert.ok(
+    !captured.runSql?.includes('ut_nao_existe_reporter'),
+    'não deve incluir reporter desconhecido no PL/SQL',
+  );
+  assert.match(run.output.join('\n'), /ut_nao_existe_reporter/);
+});
+
+test('executeRunOracle: reporter adicional existente é incluído no run', async () => {
+  const { mod, captured } = makeOracleRunFake({
+    buffer: [JUNIT_XML],
+    reporters: ['UT_DOCUMENTATION_REPORTER', 'UT_CUSTOM_REPORTER'],
+  });
+  const run = makeRun() as any;
+  const { item, metaMap } = makeLeaf();
+  try {
+    await executeRunOracle(
+      {
+        connection: 'u/p@//h:1521/s',
+        pathArgs: ['pkg'],
+        coverage: false,
+        sourcePath: 'install',
+        root: '/root',
+        run,
+        leafTests: [item as any],
+        state: makeOracleRunState(metaMap),
+        additionalReporters: ['ut_custom_reporter'],
+      },
+      neverCancel as never,
+      async () => mod as never,
+    );
+  } finally {
+    await closeOraclePool();
+  }
+  assert.match(captured.runSql ?? '', /ut_custom_reporter\(\)/);
 });
 
 test('executeRunOracle: dbmsOutput habilita e drena DBMS_OUTPUT na conn1', async () => {

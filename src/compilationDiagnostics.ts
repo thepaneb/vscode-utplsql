@@ -1,7 +1,7 @@
 import * as vscode from 'vscode';
 import { readConfig, resolveConnectionNoPrompt } from './config';
 import { logger } from './logger';
-import { checkCompilationErrors, withOracleConnection } from './oracleRunner';
+import { checkCompilationErrors, connectionUser, withOracleConnection } from './oracleRunner';
 import type { TestStateManager } from './state';
 
 /**
@@ -31,7 +31,8 @@ export async function refreshCompilationDiagnostics(state: TestStateManager): Pr
 
   const connStr = resolveConnectionNoPrompt();
   if (!connStr) return;
-  const schema = connStr.split('/')[0].trim().toUpperCase();
+  const schema = connectionUser(connStr);
+  if (!schema) return;
 
   let oracledb: typeof import('oracledb');
   try {

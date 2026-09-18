@@ -7,7 +7,7 @@ import {
   parseBreakpointTarget,
 } from './dbmsDebug';
 import { t } from './i18n';
-import { ensurePool, parseConnString } from './oracleRunner';
+import { connectionUser, ensurePool, parseConnString } from './oracleRunner';
 
 // ---------------------------------------------------------------------------
 // Contratos injetáveis (testáveis com fake)
@@ -140,7 +140,7 @@ export class UtplsqlDebugAdapter implements vscode.DebugAdapter {
           stopOnException: Boolean(args.stopOnException ?? true),
         };
         if (this.config.connection) {
-          this.schema = this.config.connection.split('/')[0].toUpperCase();
+          this.schema = connectionUser(this.config.connection) ?? this.schema;
         }
         this.sendResponse(message, {});
         void this.initSession();

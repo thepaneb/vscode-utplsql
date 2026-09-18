@@ -55,7 +55,10 @@ export const ptBr: Record<string, string> = {
     '[aviso] Reporter UT_COVERAGE_COBERTURA_REPORTER não disponível no banco.\n' +
     'Cobertura desabilitada. Verifique se o pacote utPLSQL está atualizado.',
   'runner.extraReporter': '[info] Reporter adicional da sessão: {name}',
+  'runner.reporterUnknown':
+    '[aviso] Reporter adicional "{name}" não encontrado no banco; ignorado.',
   'runner.noResults': 'Sem relatório de resultados.',
+  'runner.noTests': 'Nenhum teste utPLSQL encontrado para executar.',
   'runner.noJunitResult': '[aviso] Nenhum resultado JUnit encontrado para "{id}".',
   'runner.noJunitResultPkg': ' packageName esperado: {package}',
   'runner.coverNoReport':
@@ -222,7 +225,10 @@ export const en: Record<string, string> = {
     '[warning] UT_COVERAGE_COBERTURA_REPORTER not available in the database.\n' +
     'Coverage disabled. Check if the utPLSQL package is up to date.',
   'runner.extraReporter': '[info] Additional session reporter: {name}',
+  'runner.reporterUnknown':
+    '[warning] Additional reporter "{name}" not found in the database; ignored.',
   'runner.noResults': 'No results report.',
+  'runner.noTests': 'No utPLSQL tests found to run.',
   'runner.noJunitResult': '[warning] No JUnit result found for "{id}".',
   'runner.noJunitResultPkg': ' expected packageName: {package}',
   'runner.coverNoReport':
@@ -390,7 +396,10 @@ export const es: Record<string, string> = {
     '[aviso] El reporter UT_COVERAGE_COBERTURA_REPORTER no está disponible en la base.\n' +
     'Cobertura deshabilitada. Verifique que el paquete utPLSQL esté actualizado.',
   'runner.extraReporter': '[info] Reporter adicional de la sesión: {name}',
+  'runner.reporterUnknown':
+    '[aviso] Reporter adicional "{name}" no encontrado en la base; ignorado.',
   'runner.noResults': 'Sin informe de resultados.',
+  'runner.noTests': 'No se encontraron pruebas utPLSQL para ejecutar.',
   'runner.noJunitResult': '[aviso] No se encontró un resultado JUnit para "{id}".',
   'runner.noJunitResultPkg': ' packageName esperado: {package}',
   'runner.coverNoReport':
@@ -554,7 +563,9 @@ export const zhCn: Record<string, string> = {
   'runner.reporterMissing':
     '[警告] 数据库中不可用 UT_COVERAGE_COBERTURA_REPORTER。\n覆盖率已禁用。请检查 utPLSQL 包是否最新。',
   'runner.extraReporter': '[信息] 会话附加 reporter：{name}',
+  'runner.reporterUnknown': '[警告] 数据库中未找到附加报告器 "{name}"；已忽略。',
   'runner.noResults': '没有结果报告。',
+  'runner.noTests': '未找到可运行的 utPLSQL 测试。',
   'runner.noJunitResult': '[警告] 未找到 "{id}" 的 JUnit 结果。',
   'runner.noJunitResultPkg': ' 期望的 packageName：{package}',
   'runner.coverNoReport':
@@ -717,7 +728,10 @@ export const ja: Record<string, string> = {
   'runner.reporterMissing':
     '[警告] UT_COVERAGE_COBERTURA_REPORTER がデータベースで利用できません。\nカバレッジを無効にしました。utPLSQL パッケージが最新か確認してください。',
   'runner.extraReporter': '[情報] セッションの追加レポーター: {name}',
+  'runner.reporterUnknown':
+    '[警告] 追加レポーター "{name}" がデータベースに見つかりません。無視します。',
   'runner.noResults': '結果レポートがありません。',
+  'runner.noTests': '実行する utPLSQL テストが見つかりません。',
   'runner.noJunitResult': '[警告] 「{id}」の JUnit 結果が見つかりません。',
   'runner.noJunitResultPkg': ' 期待される packageName: {package}',
   'runner.coverNoReport':
@@ -887,7 +901,10 @@ export const de: Record<string, string> = {
   'runner.reporterMissing':
     '[Warnung] UT_COVERAGE_COBERTURA_REPORTER ist in der Datenbank nicht verfügbar.\nCoverage deaktiviert. Prüfen Sie, ob das utPLSQL-Paket aktuell ist.',
   'runner.extraReporter': '[Info] Zusätzlicher Sitzungs-Reporter: {name}',
+  'runner.reporterUnknown':
+    '[Warnung] Zusätzlicher Reporter "{name}" nicht in der Datenbank gefunden; ignoriert.',
   'runner.noResults': 'Kein Ergebnisbericht.',
+  'runner.noTests': 'Keine utPLSQL-Tests zum Ausführen gefunden.',
   'runner.noJunitResult': '[Warnung] Kein JUnit-Ergebnis für „{id}" gefunden.',
   'runner.noJunitResultPkg': ' erwarteter packageName: {package}',
   'runner.coverNoReport':
@@ -1056,7 +1073,10 @@ export const fr: Record<string, string> = {
   'runner.reporterMissing':
     '[avertissement] UT_COVERAGE_COBERTURA_REPORTER indisponible en base.\nCouverture désactivée. Vérifiez que le paquet utPLSQL est à jour.',
   'runner.extraReporter': '[info] Reporter supplémentaire de session : {name}',
+  'runner.reporterUnknown':
+    '[avertissement] Reporter supplémentaire "{name}" introuvable dans la base ; ignoré.',
   'runner.noResults': 'Aucun rapport de résultats.',
+  'runner.noTests': 'Aucun test utPLSQL à exécuter.',
   'runner.noJunitResult': '[avertissement] Aucun résultat JUnit trouvé pour « {id} ».',
   'runner.noJunitResultPkg': ' packageName attendu : {package}',
   'runner.coverNoReport':
@@ -1220,7 +1240,9 @@ export const zhTw: Record<string, string> = {
   'runner.reporterMissing':
     '[警告] 資料庫中沒有 UT_COVERAGE_COBERTURA_REPORTER。\n已停用涵蓋範圍。請檢查 utPLSQL 套件是否為最新版本。',
   'runner.extraReporter': '[資訊] 工作階段額外 reporter：{name}',
+  'runner.reporterUnknown': '[警告] 資料庫中未找到附加報告器 "{name}"；已忽略。',
   'runner.noResults': '沒有結果報告。',
+  'runner.noTests': '未找到可執行的 utPLSQL 測試。',
   'runner.noJunitResult': '[警告] 找不到「{id}」的 JUnit 結果。',
   'runner.noJunitResultPkg': ' 預期的 packageName：{package}',
   'runner.coverNoReport':
@@ -1384,7 +1406,10 @@ export const it: Record<string, string> = {
   'runner.reporterMissing':
     '[avviso] UT_COVERAGE_COBERTURA_REPORTER non disponibile nel database.\nCopertura disabilitata. Verificare che il pacchetto utPLSQL sia aggiornato.',
   'runner.extraReporter': '[info] Reporter aggiuntivo di sessione: {name}',
+  'runner.reporterUnknown':
+    '[avviso] Reporter aggiuntivo "{name}" non trovato nel database; ignorato.',
   'runner.noResults': 'Nessun report dei risultati.',
+  'runner.noTests': 'Nessun test utPLSQL da eseguire.',
   'runner.noJunitResult': '[avviso] Nessun risultato JUnit trovato per "{id}".',
   'runner.noJunitResultPkg': ' packageName atteso: {package}',
   'runner.coverNoReport':
@@ -1551,7 +1576,10 @@ export const ko: Record<string, string> = {
   'runner.reporterMissing':
     '[경고] 데이터베이스에서 UT_COVERAGE_COBERTURA_REPORTER를 사용할 수 없습니다.\n커버리지가 비활성화되었습니다. utPLSQL 패키지가 최신인지 확인하세요.',
   'runner.extraReporter': '[정보] 세션 추가 reporter: {name}',
+  'runner.reporterUnknown':
+    '[경고] 데이터베이스에서 추가 리포터 "{name}"를 찾을 수 없습니다. 무시합니다.',
   'runner.noResults': '결과 보고서가 없습니다.',
+  'runner.noTests': '실행할 utPLSQL 테스트를 찾을 수 없습니다.',
   'runner.noJunitResult': '[경고] "{id}"의 JUnit 결과를 찾을 수 없습니다.',
   'runner.noJunitResultPkg': ' 예상 packageName: {package}',
   'runner.coverNoReport':
@@ -1717,7 +1745,10 @@ export const ru: Record<string, string> = {
   'runner.reporterMissing':
     '[предупреждение] UT_COVERAGE_COBERTURA_REPORTER недоступен в БД.\nПокрытие отключено. Проверьте актуальность пакета utPLSQL.',
   'runner.extraReporter': '[инфо] Дополнительный reporter сеанса: {name}',
+  'runner.reporterUnknown':
+    '[предупреждение] Дополнительный репортёр "{name}" не найден в базе; пропущен.',
   'runner.noResults': 'Нет отчёта о результатах.',
+  'runner.noTests': 'Не найдено тестов utPLSQL для запуска.',
   'runner.noJunitResult': '[предупреждение] Результат JUnit для «{id}» не найден.',
   'runner.noJunitResultPkg': ' ожидаемый packageName: {package}',
   'runner.coverNoReport':
@@ -1883,7 +1914,9 @@ export const tr: Record<string, string> = {
   'runner.reporterMissing':
     '[uyarı] UT_COVERAGE_COBERTURA_REPORTER veritabanında yok.\nKapsam devre dışı. utPLSQL paketinin güncel olduğunu doğrulayın.',
   'runner.extraReporter': "[bilgi] Oturum ek reporter'ı: {name}",
+  'runner.reporterUnknown': '[uyarı] Ek reporter "{name}" veritabanında bulunamadı; yok sayıldı.',
   'runner.noResults': 'Sonuç raporu yok.',
+  'runner.noTests': 'Çalıştırılacak utPLSQL testi bulunamadı.',
   'runner.noJunitResult': '[uyarı] "{id}" için JUnit sonucu bulunamadı.',
   'runner.noJunitResultPkg': ' beklenen packageName: {package}',
   'runner.coverNoReport':
@@ -2050,7 +2083,10 @@ export const pl: Record<string, string> = {
   'runner.reporterMissing':
     '[ostrzeżenie] UT_COVERAGE_COBERTURA_REPORTER niedostępny w bazie.\nPokrycie wyłączone. Sprawdź, czy pakiet utPLSQL jest aktualny.',
   'runner.extraReporter': '[info] Dodatkowy reporter sesji: {name}',
+  'runner.reporterUnknown':
+    '[ostrzeżenie] Dodatkowy reporter "{name}" nie znaleziony w bazie; pominięto.',
   'runner.noResults': 'Brak raportu wyników.',
+  'runner.noTests': 'Nie znaleziono testów utPLSQL do uruchomienia.',
   'runner.noJunitResult': '[ostrzeżenie] Nie znaleziono wyniku JUnit dla „{id}”.',
   'runner.noJunitResultPkg': ' oczekiwany packageName: {package}',
   'runner.coverNoReport':
@@ -2218,7 +2254,10 @@ export const cs: Record<string, string> = {
   'runner.reporterMissing':
     '[varování] UT_COVERAGE_COBERTURA_REPORTER není v databázi k dispozici.\nPokrytí zakázáno. Ověřte aktuálnost balíčku utPLSQL.',
   'runner.extraReporter': '[info] Další reporter relace: {name}',
+  'runner.reporterUnknown':
+    '[varování] Doplňkový reporter "{name}" nebyl v databázi nalezen; přeskočeno.',
   'runner.noResults': 'Žádná zpráva o výsledcích.',
+  'runner.noTests': 'Nebyly nalezeny žádné testy utPLSQL ke spuštění.',
   'runner.noJunitResult': '[varování] Pro „{id}“ nebyl nalezen výsledek JUnit.',
   'runner.noJunitResultPkg': ' očekávaný packageName: {package}',
   'runner.coverNoReport':
@@ -2386,7 +2425,10 @@ export const hu: Record<string, string> = {
   'runner.reporterMissing':
     '[figyelmeztetés] Az UT_COVERAGE_COBERTURA_REPORTER nem érhető el az adatbázisban.\nA lefedettség letiltva. Ellenőrizze, hogy az utPLSQL-csomag naprakész-e.',
   'runner.extraReporter': '[info] Munkamenet további riportere: {name}',
+  'runner.reporterUnknown':
+    '[figyelem] A(z) "{name}" kiegészítő reporter nem található az adatbázisban; kihagyva.',
   'runner.noResults': 'Nincs eredményjelentés.',
+  'runner.noTests': 'Nem található futtatható utPLSQL teszt.',
   'runner.noJunitResult': '[figyelmeztetés] Nem található JUnit-eredmény ehhez: „{id}”.',
   'runner.noJunitResultPkg': ' várt packageName: {package}',
   'runner.coverNoReport':
@@ -2554,7 +2596,10 @@ export const bg: Record<string, string> = {
   'runner.reporterMissing':
     '[предупреждение] UT_COVERAGE_COBERTURA_REPORTER не е наличен в базата.\nПокритието е деактивирано. Проверете дали utPLSQL пакетът е актуален.',
   'runner.extraReporter': '[инфо] Допълнителен reporter на сесията: {name}',
+  'runner.reporterUnknown':
+    '[предупреждение] Допълнителен reporter "{name}" не е намерен в базата; пропуснат.',
   'runner.noResults': 'Няма отчет за резултатите.',
+  'runner.noTests': 'Не са намерени utPLSQL тестове за изпълнение.',
   'runner.noJunitResult': '[предупреждение] Няма JUnit резултат за "{id}".',
   'runner.noJunitResultPkg': ' очакван packageName: {package}',
   'runner.coverNoReport':
@@ -2715,7 +2760,10 @@ export const el: Record<string, string> = {
   'runner.reporterMissing':
     '[προειδοποίηση] Το UT_COVERAGE_COBERTURA_REPORTER δεν είναι διαθέσιμο στη βάση.\nΗ κάλυψη απενεργοποιήθηκε. Ελέγξτε αν το πακέτο utPLSQL είναι ενημερωμένο.',
   'runner.extraReporter': '[info] Επιπλέον reporter συνεδρίας: {name}',
+  'runner.reporterUnknown':
+    '[προειδοποίηση] Ο πρόσθετος reporter "{name}" δεν βρέθηκε στη βάση· παραλείπεται.',
   'runner.noResults': 'Δεν υπάρχει αναφορά αποτελεσμάτων.',
+  'runner.noTests': 'Δεν βρέθηκαν δοκιμές utPLSQL για εκτέλεση.',
   'runner.noJunitResult': '[προειδοποίηση] Δεν βρέθηκε αποτέλεσμα JUnit για "{id}".',
   'runner.noJunitResultPkg': ' αναμενόμενο packageName: {package}',
   'runner.coverNoReport':
@@ -2876,7 +2924,10 @@ export const id: Record<string, string> = {
   'runner.reporterMissing':
     '[peringatan] UT_COVERAGE_COBERTURA_REPORTER tidak tersedia di database.\nCakupan dinonaktifkan. Periksa apakah paket utPLSQL sudah diperbarui.',
   'runner.extraReporter': '[info] Reporter tambahan sesi: {name}',
+  'runner.reporterUnknown':
+    '[peringatan] Reporter tambahan "{name}" tidak ditemukan di database; diabaikan.',
   'runner.noResults': 'Tidak ada laporan hasil.',
+  'runner.noTests': 'Tidak ada tes utPLSQL untuk dijalankan.',
   'runner.noJunitResult': '[peringatan] Tidak ada hasil JUnit untuk "{id}".',
   'runner.noJunitResultPkg': ' packageName yang diharapkan: {package}',
   'runner.coverNoReport':
@@ -3036,7 +3087,10 @@ export const ro: Record<string, string> = {
   'runner.reporterMissing':
     '[avertisment] UT_COVERAGE_COBERTURA_REPORTER indisponibil în baza de date.\nAcoperirea a fost dezactivată. Verificați dacă pachetul utPLSQL este actualizat.',
   'runner.extraReporter': '[info] Reporter suplimentar de sesiune: {name}',
+  'runner.reporterUnknown':
+    '[avertisment] Reporterul suplimentar "{name}" nu a fost găsit în baza de date; ignorat.',
   'runner.noResults': 'Fără raport de rezultate.',
+  'runner.noTests': 'Nu s-au găsit teste utPLSQL de executat.',
   'runner.noJunitResult': '[avertisment] Niciun rezultat JUnit pentru "{id}".',
   'runner.noJunitResultPkg': ' packageName așteptat: {package}',
   'runner.coverNoReport':
@@ -3195,7 +3249,10 @@ export const sr: Record<string, string> = {
   'runner.reporterMissing':
     '[упозорење] UT_COVERAGE_COBERTURA_REPORTER није доступан у бази.\nПокриће је онемогућено. Проверите да ли је utPLSQL пакет ажуран.',
   'runner.extraReporter': '[инфо] Додатни reporter сесије: {name}',
+  'runner.reporterUnknown':
+    '[упозорење] Додатни reporter "{name}" није пронађен у бази; прескочено.',
   'runner.noResults': 'Нема извештаја о резултатима.',
+  'runner.noTests': 'Нема utPLSQL тестова за покретање.',
   'runner.noJunitResult': '[упозорење] Нема JUnit резултата за "{id}".',
   'runner.noJunitResultPkg': ' очекивани packageName: {package}',
   'runner.coverNoReport':
@@ -3351,7 +3408,9 @@ export const th: Record<string, string> = {
   'runner.reporterMissing':
     '[คำเตือน] ไม่มี UT_COVERAGE_COBERTURA_REPORTER ในฐานข้อมูล\nปิดความครอบคลุม ตรวจสอบว่าแพ็กเกจ utPLSQL เป็นเวอร์ชันล่าสุด',
   'runner.extraReporter': '[ข้อมูล] reporter เพิ่มเติมของเซสชัน: {name}',
+  'runner.reporterUnknown': '[คำเตือน] ไม่พบ reporter เพิ่มเติม "{name}" ในฐานข้อมูล; ข้าม',
   'runner.noResults': 'ไม่มีรายงานผลลัพธ์',
+  'runner.noTests': 'ไม่พบการทดสอบ utPLSQL ที่จะเรียกใช้',
   'runner.noJunitResult': '[คำเตือน] ไม่พบผลลัพธ์ JUnit สำหรับ "{id}"',
   'runner.noJunitResultPkg': ' packageName ที่คาดหวัง: {package}',
   'runner.coverNoReport':
@@ -3508,7 +3567,10 @@ export const uk: Record<string, string> = {
   'runner.reporterMissing':
     '[попередження] UT_COVERAGE_COBERTURA_REPORTER недоступний у БД.\nПокриття вимкнено. Перевірте актуальність пакета utPLSQL.',
   'runner.extraReporter': '[інфо] Додатковий reporter сеансу: {name}',
+  'runner.reporterUnknown':
+    '[попередження] Додатковий reporter "{name}" не знайдено в базі; пропущено.',
   'runner.noResults': 'Немає звіту про результати.',
+  'runner.noTests': 'Не знайдено тестів utPLSQL для запуску.',
   'runner.noJunitResult': '[попередження] Не знайдено результату JUnit для "{id}".',
   'runner.noJunitResultPkg': ' очікуваний packageName: {package}',
   'runner.coverNoReport':
@@ -3668,7 +3730,10 @@ export const vi: Record<string, string> = {
   'runner.reporterMissing':
     '[cảnh báo] UT_COVERAGE_COBERTURA_REPORTER không khả dụng trong cơ sở dữ liệu.\nĐã tắt phủ sóng. Kiểm tra gói utPLSQL đã cập nhật.',
   'runner.extraReporter': '[thông tin] Reporter bổ sung của phiên: {name}',
+  'runner.reporterUnknown':
+    '[cảnh báo] Không tìm thấy reporter bổ sung "{name}" trong cơ sở dữ liệu; bỏ qua.',
   'runner.noResults': 'Không có báo cáo kết quả.',
+  'runner.noTests': 'Không tìm thấy bài kiểm thử utPLSQL nào để chạy.',
   'runner.noJunitResult': '[cảnh báo] Không tìm thấy kết quả JUnit cho "{id}".',
   'runner.noJunitResultPkg': ' packageName dự kiến: {package}',
   'runner.coverNoReport':

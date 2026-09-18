@@ -2,7 +2,13 @@ import './setup.js';
 import assert from 'node:assert';
 import { mock, test } from 'node:test';
 import * as oracleRunner from '../../oracleRunner';
-import { countResults, executeRun, lastSegment } from '../../runner';
+import {
+  collectRunTargets,
+  countResults,
+  deriveLastRun,
+  executeRun,
+  lastSegment,
+} from '../../runner';
 import { TestStateManager } from '../../state';
 import type { ItemMeta } from '../../types';
 import * as viewCoverage from '../../viewCoverage';
@@ -364,4 +370,118 @@ test('executeRun: sqlCoverageEnabled delega para applySqlCoverage no sucesso', a
 
     await executeRun(controller, request, NEVER_TOKEN as any, false, state);
     assert.strictEqual(receivedConn, 'user/pass@//host:1521/svc');
+  }));
+
+// ── collectRunTargets / schema-mode ───────────────────────────────
+
+function makeSchemaHierarchy(suiteItem: any) {
+  const pkg = new vscode.TestItem(`package:APP:${suiteItem.id}`) as any;
+  pkg.children = [suiteItem];
+  const schema = new vscode.TestItem('schema:APP') as any;
+  schema.children = [pkg];
+  return { schema, pkg };
+}
+
+test('collectRunTargets: expande schema/package sem meta até suites e testes', () => {
+  const { state, suiteItem } = makeExecState();
+  const { schema } = makeSchemaHierarchy(suiteItem);
+
+  const result = collectRunTargets([schema], state);
+
+  assert.deepStrictEqual([...result.pathArgs], ['TEST_PKG']);
+  assert.strictEqual(result.leafTests.length, 1);
+  assert.strictEqual(result.leafTests[0].id, 'test1');
+  assert.strictEqual(result.suiteCount, 1);
+});
+
+test('collectRunTargets: teste direto (sem suite) usa path PKG.PROC', () => {
+  const { state, testItem } = makeExecState();
+
+  const result = collectRunTargets([testItem], state);
+
+  assert.deepStrictEqual([...result.pathArgs], ['TEST_PKG.test_pass']);
+  assert.strictEqual(result.leafTests.length, 1);
+  assert.strictEqual(result.suiteCount, 0);
+});
+
+test('executeRun: include de nó schema expande suites e passa path do package', async () =>
+  withExecEnv(async () => {
+    const { state, suiteItem } = makeExecState();
+    const { schema } = makeSchemaHierarchy(suiteItem);
+    const run = new vscode.TestRun() as any;
+    const controller = { createTestRun: () => run, items: { forEach: () => {} } } as any;
+    const request = { include: [schema] } as any;
+
+    let receivedPaths: string[] = [];
+    mock.method(oracleRunner, 'executeRunOracle', async (opts: any) => {
+      receivedPaths = opts.pathArgs;
+    });
+
+    await executeRun(controller, request, NEVER_TOKEN as any, false, state);
+    assert.deepStrictEqual(receivedPaths, ['TEST_PKG']);
+  }));
+
+test('executeRun: nó sem testes não chama o Oracle e avisa', async () =>
+  withExecEnv(async () => {
+    const state = new TestStateManager();
+    const schema = new vscode.TestItem('schema:EMPTY') as any;
+    schema.children = [];
+    const run = new vscode.TestRun() as any;
+    const controller = { createTestRun: () => run, items: { forEach: () => {} } } as any;
+    const request = { include: [schema] } as any;
+
+    let called = false;
+    mock.method(oracleRunner, 'executeRunOracle', async () => {
+      called = true;
+    });
+
+    await executeRun(controller, request, NEVER_TOKEN as any, false, state);
+    assert.strictEqual(called, false);
+    assert.match(run.output(), /Nenhum teste/);
+  }));
+
+test('deriveLastRun: schema com uma suite vira lastRun suite', () => {
+  const { state, suiteItem } = makeExecState();
+  const { schema } = makeSchemaHierarchy(suiteItem);
+
+  const lr = deriveLastRun([schema], true, false, state);
+  assert.strictEqual(lr.type, 'suite');
+  assert.strictEqual(lr.packageName, 'TEST_PKG');
+});
+
+test('deriveLastRun: schema com várias suites vira lastRun file', () => {
+  const { state, suiteItem } = makeExecState();
+  const { schema } = makeSchemaHierarchy(suiteItem);
+  const otherSuite = new vscode.TestItem('suite:other') as any;
+  otherSuite.children = [];
+  state.setMeta(otherSuite, {
+    kind: 'suite',
+    packageName: 'OTHER_PKG',
+    uri: { fsPath: '/tmp/other.pks', path: '/tmp/other.pks', scheme: 'file' },
+    folder: { uri: { fsPath: '/tmp', path: '/tmp', scheme: 'file' }, name: 'tmp', index: 0 },
+  } as ItemMeta);
+  schema.children[0].children.push(otherSuite);
+
+  const lr = deriveLastRun([schema], true, false, state);
+  assert.strictEqual(lr.type, 'file');
+});
+
+test('deriveLastRun: sem include vira lastRun all', () => {
+  const { state } = makeExecState();
+  const lr = deriveLastRun([], false, true, state);
+  assert.strictEqual(lr.type, 'all');
+  assert.strictEqual(lr.coverage, true);
+});
+
+test('executeRun: include de nó schema registra lastRun suite', async () =>
+  withExecEnv(async () => {
+    const { state, suiteItem } = makeExecState();
+    const { schema } = makeSchemaHierarchy(suiteItem);
+    const run = new vscode.TestRun() as any;
+    const controller = { createTestRun: () => run, items: { forEach: () => {} } } as any;
+    const request = { include: [schema] } as any;
+
+    mock.method(oracleRunner, 'executeRunOracle', async () => {});
+    await executeRun(controller, request, NEVER_TOKEN as any, false, state);
+    assert.strictEqual(state.getLastRun()?.type, 'suite');
   }));

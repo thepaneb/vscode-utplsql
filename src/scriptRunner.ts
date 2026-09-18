@@ -6,6 +6,7 @@
 // (node-oracledb via `oracleRunner.ts`).
 
 import type * as vscode from 'vscode';
+import { decodeBytes } from './charset';
 import { getExtensionLocale } from './config';
 import { maskConnection } from './connectionProfiles';
 import { t } from './i18n';
@@ -20,24 +21,13 @@ export interface SqlStatement {
   line: number;
 }
 
-const VALID_CHARSETS: ReadonlySet<string> = new Set(['utf8', 'latin1', 'win1252']);
-
 /**
  * Converte bytes em string JS no encoding do perfil. Sem `iconv-lite`:
  * `utf8`/`win1252` via `TextDecoder` nativo; `latin1` via
- * `Buffer.toString('latin1')` (ISO-8859-1 real — `TextDecoder('iso-8859-1')`
- * decodificaria como windows-1252 pelo WHATWG). Ausente/inválido → `utf8`
- * (fail-safe). Remove BOM.
+ * `Buffer.toString('latin1')`. Ausente/inválido → `utf8` (fail-safe). Remove BOM.
  */
 export function decodeScript(bytes: Uint8Array, charset?: ProfileCharset): string {
-  const normalized = charset && VALID_CHARSETS.has(charset) ? charset : 'utf8';
-  if (normalized === 'latin1') {
-    const text = Buffer.from(bytes).toString('latin1');
-    return text.startsWith('﻿') ? text.slice(1) : text;
-  }
-  const label = normalized === 'utf8' ? 'utf-8' : 'windows-1252';
-  const text = new TextDecoder(label, { fatal: false }).decode(bytes);
-  return text.startsWith('﻿') ? text.slice(1) : text;
+  return decodeBytes(bytes, charset);
 }
 
 /** Blocos PL/SQL terminam em `/` em linha própria; o resto termina em `;`. */
