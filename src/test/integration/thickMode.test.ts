@@ -1,11 +1,13 @@
 /// <reference types="mocha" />
 import * as assert from 'node:assert';
-import * as vscode from 'vscode';
 
 // Thick mode (Instant Client) — opt-in. Só roda quando ORACLE_CLIENT_LIB_DIR
 // aponta para um Instant Client compatível; sem isso o bloco é skipado.
-// ATENÇÃO: a inicialização thick é global e irreversível no processo — por isso
-// este arquivo é separado e só deve rodar quando o ambiente for thick-capable.
+//
+// A inicialização thick é GLOBAL e irreversível no processo. Por isso este
+// arquivo roda com `npm run test:integration:thick`, num workspace vazio
+// (`.vscode-test.thick.mjs`) e SEM ativar a extensão: se a extensão ativasse
+// antes, criaria uma conexão thin e o thick falharia com NJS-118.
 
 const libDir = process.env.ORACLE_CLIENT_LIB_DIR;
 const describeThick = libDir ? describe : describe.skip;
@@ -23,12 +25,6 @@ async function loadOracledb(): Promise<typeof import('oracledb')> {
 }
 
 describeThick('thick mode (Instant Client) — opt-in', () => {
-  before(async function () {
-    this.timeout(60_000);
-    const ext = vscode.extensions.getExtension('paneb.vscode-utplsql');
-    await ext?.activate();
-  });
-
   it('ensureOracleClient inicializa thick e fixa o modo do processo', async function () {
     this.timeout(60_000);
     const {
@@ -46,6 +42,7 @@ describeThick('thick mode (Instant Client) — opt-in', () => {
     );
     assert.strictEqual(res.thick, true, `thick deveria inicializar: ${res.error ?? ''}`);
     assert.strictEqual(getOracleClientMode(), 'thick');
+    assert.strictEqual(oracledb.thin, false, 'o driver deveria estar em thick mode');
   });
 
   it('conecta no banco já em thick mode', async function () {

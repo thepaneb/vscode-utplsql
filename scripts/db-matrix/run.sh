@@ -9,6 +9,7 @@
 #   scripts/db-matrix/run.sh --only 21xe
 #   scripts/db-matrix/run.sh --only 18xe,19ee
 #   scripts/db-matrix/run.sh --smoke                # só capacidades + debugger (~1 min/versão)
+#   scripts/db-matrix/run.sh --thick                # thick mode (Instant Client) por versão
 #   scripts/db-matrix/run.sh --bootstrap-only --only 21xe
 #   scripts/db-matrix/run.sh --keep-db --only 23free     # não derruba no fim
 #   scripts/db-matrix/run.sh --tests "npm run test:integration"
@@ -56,6 +57,7 @@ while [ $# -gt 0 ]; do
     --only) ONLY="$2"; shift 2 ;;
     --tests) TESTS_CMD="$2"; shift 2 ;;
     --smoke) TESTS_CMD="npm run test:integration:smoke"; shift ;;
+    --thick) TESTS_CMD="npm run test:integration:thick"; shift ;;
     --bootstrap-only) BOOTSTRAP_ONLY=1; shift ;;
     --keep-db) KEEP_DB=1; shift ;;
     --keep-image) KEEP_IMAGE=1; shift ;;
@@ -95,8 +97,9 @@ echo "$VERSIONS" | sed '/^$/d' | while IFS='|' read -r label image service; do
   if [ "$BOOTSTRAP_ONLY" = 0 ]; then
     export UTPLSQL_CONN="UT3/${UT3_PASSWORD}@//localhost:${DB_PORT}/${service}"
     # WSL: o `node` é o binário do Windows e não herda env do WSL — WSLENV faz
-    # a variável atravessar para o processo dos testes.
-    export WSLENV="UTPLSQL_CONN${WSLENV:+:$WSLENV}"
+    # a variável atravessar para o processo dos testes. ORACLE_CLIENT_LIB_DIR/
+    # TNS_ADMIN só são usados pelo modo --thick.
+    export WSLENV="UTPLSQL_CONN${ORACLE_CLIENT_LIB_DIR:+:ORACLE_CLIENT_LIB_DIR}${TNS_ADMIN:+:TNS_ADMIN}${WSLENV:+:$WSLENV}"
     log "rodando testes: $TESTS_CMD  (UTPLSQL_CONN=$UTPLSQL_CONN)"
     (cd "$ROOT_DIR" && eval "$TESTS_CMD")
   fi

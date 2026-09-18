@@ -92,6 +92,7 @@ npm run db:matrix:list                 # lista as versões da matriz
 npm run db:matrix                      # roda a matriz inteira (uma versão por vez)
 npm run db:matrix -- --only 21xe       # só uma versão
 npm run db:matrix -- --smoke           # subconjunto rápido por versão
+npm run db:matrix -- --thick           # thick mode (Instant Client) por versão
 npm run db:matrix -- --keep-db --only 23free  # não derruba o banco no fim
 ```
 
@@ -101,6 +102,21 @@ testes, derrubando tudo no fim. Requisitos: Docker e, para as imagens
 `database/enterprise`, `ORACLE_AUTH_USER`/`ORACLE_AUTH_TOKEN` em `.env.dbmatrix`
 (veja `.env.dbmatrix.example`). O CI **não** roda a matriz — ela é local e manual.
 A versão alvo e os detalhes estão na PRD-72.
+
+### Thick mode (Instant Client)
+
+Opcional e local. A inicialização do thick é **global e irreversível** no
+processo do extension host, então roda em host isolado (workspace sem `.pks`,
+para a extensão não auto-ativar e criar uma conexão thin antes — NJS-118):
+
+```bash
+# aponte para um Oracle Instant Client (Basic/Basic Light) da sua máquina
+export ORACLE_CLIENT_LIB_DIR='C:\oracle\instantclient_23_0'
+npm run test:integration:thick
+```
+
+Na matriz: `npm run db:matrix -- --thick` (ou `--only <versão> --thick`).
+Sem `ORACLE_CLIENT_LIB_DIR`, o `thickMode.test.ts` fica `skip`.
 
 ## Estrutura do projeto
 

@@ -139,8 +139,14 @@ scripts/db-matrix/run.sh
   auth quando disponível.
 - **`-lite` do Free**: omite o XDB e o utPLSQL falha no install
   (`ORA-00600 [unable to load XDB library]`). Usar a imagem cheia.
+- **Thick mode (Instant Client)**: não pode rodar junto com a suíte normal — a
+  inicialização é global e irreversível no processo, e `prd70-sqlplus` exige o
+  thin default (além de a auto-ativação da extensão criar conexão thin antes,
+  gerando `NJS-118`). Solução: `npm run test:integration:thick`
+  (`.vscode-test.thick.mjs`) num workspace vazio, sem ativar a extensão.
 
-> Resultado: **18xe, 19ee, 21xe e 23free** passam com 52 passing / 2 pending.
+> Resultado: **18xe, 19ee, 21xe e 23free** passam com 52 passing / 2 pending na
+> suíte normal; o eixo **thick** (`--thick`) passa com 2 passing em cada uma.
 
 ## 6. Configuração
 
@@ -152,6 +158,8 @@ Nenhuma setting da extensão. Variáveis do orquestrador documentadas em
 - **Smoke**: `npm run db:matrix -- --smoke` (capacidades + `DBMS_DEBUG`, ~7s por
   versão após o bootstrap).
 - **Full**: `npm run db:matrix` (suíte de integração completa por versão).
+- **Thick**: `npm run db:matrix -- --thick` (host isolado; exige
+  `ORACLE_CLIENT_LIB_DIR`).
 - **Bootstrap only**: `npm run db:matrix -- --bootstrap-only --only 23free`.
 - **Unitários**: a infra não tem lógica testável por `node --test`; a validação
   é a execução da matriz.
@@ -175,6 +183,8 @@ Nenhuma setting da extensão. Variáveis do orquestrador documentadas em
 
 - `run.sh --only <versão>` para `18xe`, `19ee`, `21xe` e `23free` termina com os
   testes de integração verdes (52 passing / 2 pending).
+- `npm run test:integration:thick` passa em cada versão (2 passing) com
+  `ORACLE_CLIENT_LIB_DIR` apontando para um Instant Client.
 - Bootstrap instala o utPLSQL e compila os fixtures sem intervenção manual.
 - `docs:check` e `brain:check` verdes.
 

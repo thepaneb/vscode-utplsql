@@ -612,6 +612,8 @@
     "test:integration": "vscode-test",
     "pretest:integration:smoke": "npm run compile && npm run bundle",
     "test:integration:smoke": "vscode-test --config .vscode-test.smoke.mjs",
+    "pretest:integration:thick": "npm run compile && npm run bundle",
+    "test:integration:thick": "vscode-test --config .vscode-test.thick.mjs",
     "db:matrix": "bash scripts/db-matrix/run.sh",
     "db:matrix:list": "bash scripts/db-matrix/run.sh --list",
     "test": "npm run test:unit",
