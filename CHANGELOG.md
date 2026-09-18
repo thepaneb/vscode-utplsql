@@ -1,6 +1,6 @@
 # Changelog
 
-## Unreleased
+## 0.12.1
 
 - **Script runner — `;` final em statements SQL**: o `;` (terminador do cliente)
   era enviado ao servidor. O Oracle 23ai tolera via OCI, mas 19c/21c rejeitam
@@ -29,9 +29,6 @@
   perfil ativo (`latin1`/`win1252`) em vez de forçar UTF-8.
 - **CI**: passa a rodar `npm run typecheck` e `npm run test:coverage` (enforça
   os thresholds de cobertura do c8).
-
-## 0.12.1
-
 - **Thick mode opcional (PRD-70)**: nova setting `utplsql.oracleClientMode`
   (`thin` default | `thick`) para bancos que exigem **NNE** (Native Network
   Encryption), não suportado pelo driver thin. Com `thick`, um Oracle Instant

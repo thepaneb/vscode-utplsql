@@ -2,11 +2,11 @@
 
 | Campo | Valor |
 |---|---|
-| Status | Em desenvolvimento |
+| Status | Concluído |
 | Autor | Gil Cleber Barboza |
 | Data | 2026-09-18 |
 | Componente | Infra local (não vai no VSIX) |
-| Versão alvo | 0.13.0 |
+| Versão alvo | 0.12.1 |
 | Arquivos afetados | `docker/db-matrix/compose.yaml`, `scripts/db-matrix/*`, `.env.dbmatrix.example`, `.gitignore`, `.vscode-test.mjs` |
 | Esforço estimado | 2–3 dias |
 | Complexidade | Média |
@@ -211,4 +211,3 @@ Nenhuma setting da extensão. Variáveis do orquestrador documentadas em
 - Reavaliar 12.2 caso o utPLSQL seja atualizado (o problema é o
   `DBMS_PREPROCESSOR.SOURCE_LINES_T` sem construtor no 12.2 base).
 - Reavaliar `19.19.0.0` se a Oracle publicar a variante amd64.
-- Concluir a PRD (mover para `completed/`) quando a 0.13.0 for publicada.

@@ -133,12 +133,11 @@ CONCLUIR
 | 68 | [Religar diagnostics e reporter de sessão perdidos na migração Oracle-only](completed/prd-68-restore-oracle-diagnostics-and-reporter.md) | 0.12.0 | 2026-09-15 |
 | 67 | [Qualidade, limpeza e performance](completed/prd-67-code-quality-cleanup.md) | 0.12.0 | 2026-09-15 |
 | 70 | [Thick mode opcional (Instant Client) para bancos com NNE](completed/prd-70-thick-mode-nne.md) | 0.12.1 | 2026-09-17 |
+| 72 | [Matriz de bancos Oracle para testes de integração](completed/prd-72-db-test-matrix.md) | 0.12.1 | 2026-09-18 |
 
 ### 🟡 Em desenvolvimento
 
-| # | PRD | Versão alvo | Data |
-|---|---|---|---|
-| 72 | [Matriz de bancos Oracle para testes de integração](in-progress/prd-72-db-test-matrix.md) | 0.13.0 | 2026-09-18 |
+_(vazio — nenhuma PRD em desenvolvimento)_
 
 ### 🔵 Aprovados
 
@@ -245,11 +244,12 @@ docs/prd/
 │   ├── prd-66-connection-robustness-logging.md
 │   ├── prd-67-code-quality-cleanup.md
 │   ├── prd-68-restore-oracle-diagnostics-and-reporter.md
-│   └── prd-70-thick-mode-nne.md
+│   ├── prd-70-thick-mode-nne.md
+│   └── prd-72-db-test-matrix.md
 ├── approved/         ← aprovados, aguardando implementação
 │   └── (vazio)
 ├── in-progress/      ← sendo implementados agora
-│   └── prd-72-db-test-matrix.md
+│   └── (vazio)
 └── proposed/         ← em avaliação
     ├── prd-47-node-26-toolchain.md
     ├── prd-50-auto-run-on-save.md
