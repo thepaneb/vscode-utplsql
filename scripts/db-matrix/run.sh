@@ -74,20 +74,21 @@ selected() { [ -z "$ONLY" ] && return 0; case ",$ONLY," in *",$1,"*) return 0 ;;
 
 login_registry
 
-echo "$VERSIONS" | sed '/^$/d' | while IFS='|' read -r label image pdb; do
+echo "$VERSIONS" | sed '/^$/d' | while IFS='|' read -r label image service; do
   selected "$label" || continue
-  log "$label — $image (PDB $pdb)"
+  log "$label — $image (serviço $service)"
 
   export DB_IMAGE="$image" DB_CONTAINER="$CONTAINER" DB_PORT ORACLE_PWD
   export UT3_PASSWORD TEST_PASSWORD UTPLSQL_VERSION
 
   [ "$NO_PULL" = 1 ] || compose pull --quiet db
   compose up -d db
-  "$SCRIPT_DIR/wait-ready.sh" "$CONTAINER" "$pdb" 900
-  "$SCRIPT_DIR/bootstrap.sh" "$CONTAINER" "$pdb"
+  # Imagens que criam o banco do zero (ex.: 18c XE) levam ~15 min.
+  "$SCRIPT_DIR/wait-ready.sh" "$CONTAINER" "$service" "${WAIT_TIMEOUT:-1800}"
+  "$SCRIPT_DIR/bootstrap.sh" "$CONTAINER" "$service"
 
   if [ "$BOOTSTRAP_ONLY" = 0 ]; then
-    export UTPLSQL_CONN="UT3/${UT3_PASSWORD}@//localhost:${DB_PORT}/${pdb}"
+    export UTPLSQL_CONN="UT3/${UT3_PASSWORD}@//localhost:${DB_PORT}/${service}"
     # WSL: o `node` é o binário do Windows e não herda env do WSL — WSLENV faz
     # a variável atravessar para o processo dos testes.
     export WSLENV="UTPLSQL_CONN${WSLENV:+:$WSLENV}"
@@ -96,7 +97,7 @@ echo "$VERSIONS" | sed '/^$/d' | while IFS='|' read -r label image pdb; do
   fi
 
   if [ "$KEEP_DB" = 1 ]; then
-    log "mantendo o banco no ar (--keep-db): $CONTAINER em localhost:$DB_PORT/$pdb"
+    log "mantendo o banco no ar (--keep-db): $CONTAINER em localhost:$DB_PORT/$service"
   else
     log "derrubando $label"
     compose down -v --remove-orphans >/dev/null 2>&1 || true

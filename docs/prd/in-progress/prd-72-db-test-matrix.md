@@ -110,15 +110,32 @@ scripts/db-matrix/run.sh
 
 ### Matriz padrão
 
-| Rótulo | Imagem | Papel |
-|---|---|---|
-| `12slim` | `database/enterprise:12.2.0.1-slim` | piso útil (12.2+, slim) |
-| `19ee` | `database/enterprise:19.19.0.0` | LTS |
-| `21xe` | `database/express:21.3.0-xe` | 21c (engine igual à EE) |
-| `23free` | `database/free:23.26.3.0` | 23ai (imagem cheia) |
+| Rótulo | Imagem | Serviço | Papel |
+|---|---|---|---|
+| `18xe` | `database/express:18.4.0-xe` | `XEPDB1` | 18c XE (piso efetivo) |
+| `19ee` | `database/enterprise:19.3.0.0` | `orclpdb1` | LTS |
+| `21xe` | `database/express:21.3.0-xe` | `XEPDB1` | 21c (engine igual à EE) |
+| `23free` | `database/free:23.26.3.0` | `FREEPDB1` | 23ai (imagem cheia) |
 
-> A variante `-lite` do Free **não serve**: omite o XDB e o utPLSQL falha com
-> `ORA-00600 [unable to load XDB library]`.
+### Descobertas da validação
+
+- **18c XE**: o `sqlplus / as sysdba` (bequeath/OS auth) falha com `ORA-12547`;
+  só o **SYSDBA por rede** funciona. Além disso, a imagem **cria o banco do
+  zero (~15 min)**, estourando o timeout original de 900s. Corrigido com
+  `WAIT_TIMEOUT` (default 1800s) e conexões por rede no wait/bootstrap.
+- **19c**: a tag `19.19.0.0` é **arm64-only** no registry (`exec format error`
+  em amd64). Usar `19.3.0.0` (amd64) e forçar `platform: linux/amd64` no
+  compose. O serviço do PDB é `orclpdb1` (sem domínio).
+- **12.2 (slim)**: **incompatível com o utPLSQL 3.2.3**.
+  `DBMS_PREPROCESSOR.SOURCE_LINES_T` é array associativo (sem construtor) e o
+  pacote chama `source_lines_t()` → `PLS-00222`. Removido da matriz padrão.
+- **12.2 EE** registra o serviço com domínio (`orclpdb1.localdomain`) e **ignora
+  `ORACLE_PWD`** (senha default); por isso o wait-ready normaliza a senha via OS
+  auth quando disponível.
+- **`-lite` do Free**: omite o XDB e o utPLSQL falha no install
+  (`ORA-00600 [unable to load XDB library]`). Usar a imagem cheia.
+
+> Resultado: **18xe, 19ee, 21xe e 23free** passam com 52 passing / 2 pending.
 
 ## 6. Configuração
 
@@ -149,14 +166,16 @@ Nenhuma setting da extensão. Variáveis do orquestrador documentadas em
 
 ## 10. Critérios de aceite
 
-- `run.sh --only 23free` e `--only 21xe` terminam com os testes de integração
-  verdes (52 passing / 2 pending).
+- `run.sh --only <versão>` para `18xe`, `19ee`, `21xe` e `23free` termina com os
+  testes de integração verdes (52 passing / 2 pending).
 - Bootstrap instala o utPLSQL e compila os fixtures sem intervenção manual.
 - `docs:check` e `brain:check` verdes.
 
 ## 11. Questões em aberto
 
-- Validar `12slim` e `19ee` (pulls grandes) e registrá-los.
-- Rodar a matriz no WSL exigiu `WSLENV`; documentar em `CONTRIBUTING`.
+- Documentar o uso no WSL (`WSLENV`) em `CONTRIBUTING`.
 - Avaliar um modo `smoke` (só capacidades Oracle + probe do debugger) para
   feedback rápido.
+- Reavaliar 12.2 caso o utPLSQL seja atualizado (o problema é o
+  `DBMS_PREPROCESSOR.SOURCE_LINES_T` sem construtor no 12.2 base).
+- Reavaliar `19.19.0.0` se a Oracle publicar a variante amd64.

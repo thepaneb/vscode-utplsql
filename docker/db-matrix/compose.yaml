@@ -19,6 +19,9 @@ name: utplsql-dbmatrix
 services:
   db:
     image: "${DB_IMAGE:?defina DB_IMAGE, ex database/free:23.26.3.0}"
+    # Falha clara se a tag não tiver a arquitetura (ex.: enterprise:19.19.0.0 é
+    # arm64-only no registry) em vez de "exec format error" no startup.
+    platform: "${DB_PLATFORM:-linux/amd64}"
     container_name: "${DB_CONTAINER:-utplsql-dbmatrix}"
     shm_size: "${DB_SHM_SIZE:-2gb}"
     ports:
@@ -27,13 +30,10 @@ services:
       ORACLE_PWD: "${ORACLE_PWD:?defina ORACLE_PWD}"
       ORACLE_CHARACTERSET: "${ORACLE_CHARACTERSET:-AL32UTF8}"
     healthcheck:
-      # OS auth no CDB root: confirma que a instância responde. O bootstrap
-      # espera especificamente o PDB abrir (wait-ready.sh).
-      test:
-        [
-          "CMD-SHELL",
-          "echo 'SELECT 1 FROM dual;' | $${ORACLE_HOME}/bin/sqlplus -s / as sysdba | grep -q 1",
-        ]
+      # Checa só o processo da instância: OS auth (`/ as sysdba`) falha em
+      # algumas imagens (18c XE) e um grep por "1" casaria com "ORA-12547".
+      # O wait-ready.sh confirma o PDB via SYSDBA por rede.
+      test: ["CMD-SHELL", "ps -ef | grep -v grep | grep -q pmon"]
       interval: 15s
       timeout: 10s
       retries: 60

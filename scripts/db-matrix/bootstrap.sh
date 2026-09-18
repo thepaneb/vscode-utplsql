@@ -10,6 +10,7 @@ set -euo pipefail
 
 CONTAINER="${1:?uso: bootstrap.sh <container> <pdb>}"
 PDB="${2:?uso: bootstrap.sh <container> <pdb>}"
+ORACLE_PWD="${ORACLE_PWD:?defina ORACLE_PWD}"
 UT3_PASSWORD="${UT3_PASSWORD:?defina UT3_PASSWORD}"
 TEST_PASSWORD="${TEST_PASSWORD:?defina TEST_PASSWORD}"
 UTPLSQL_VERSION="${UTPLSQL_VERSION:-v.3.2.3}"
@@ -21,14 +22,14 @@ log() { printf '\n\033[1m[bootstrap]\033[0m %s\n' "$*"; }
 
 # ── helpers de SQL ────────────────────────────────────────────────────
 
-# Executa SQL como SYSDBA no PDB (root + ALTER SESSION SET CONTAINER).
+# Executa SQL como SYSDBA por rede no PDB (OS auth quebra no 18c XE).
 sys_sql() {
   {
     printf 'SET DEFINE OFF FEEDBACK OFF HEADING OFF PAGESIZE 0\n'
-    printf 'ALTER SESSION SET CONTAINER=%s;\n' "$PDB"
     printf '%s\n' "$1"
     printf 'EXIT\n'
-  } | docker exec -i "$CONTAINER" bash -lc "\$ORACLE_HOME/bin/sqlplus -s / as sysdba"
+  } | docker exec -i -e "DBP=$ORACLE_PWD" -e "DBS=$PDB" "$CONTAINER" \
+    bash -lc '$ORACLE_HOME/bin/sqlplus -s "sys/$DBP@//localhost:1521/$DBS" as sysdba'
 }
 
 # Executa um arquivo local como um schema do PDB.
@@ -106,11 +107,11 @@ END;
   docker exec "$CONTAINER" bash -lc 'rm -rf /tmp/utplsql-source && mkdir -p /tmp/utplsql-source'
   docker cp "$UTPLSQL_SRC/." "$CONTAINER:/tmp/utplsql-source/" >/dev/null
   # install_headless.sql cria o owner e instala (precisa de SYSDBA no PDB).
-  docker exec -i -e "DBS=$PDB" -e "OWNER=UT3" -e "DBPASS=$UT3_PASSWORD" "$CONTAINER" bash -lc '
+  docker exec -i -e "DBS=$PDB" -e "DBP=$ORACLE_PWD" -e "OWNER=UT3" -e "DBPASS=$UT3_PASSWORD" \
+    "$CONTAINER" bash -lc '
     cd /tmp/utplsql-source || exit 1
-    { echo "ALTER SESSION SET CONTAINER=$DBS;";
-      echo "@install_headless.sql $OWNER $DBPASS users";
-      echo "EXIT"; } | $ORACLE_HOME/bin/sqlplus -s / as sysdba
+    { echo "@install_headless.sql $OWNER $DBPASS users"; echo "EXIT"; } \
+      | $ORACLE_HOME/bin/sqlplus -s "sys/$DBP@//localhost:1521/$DBS" as sysdba
   ' > /tmp/utplsql-install.log 2>&1 || true
   local n
   n="$(sys_sql "SELECT COUNT(*) FROM dba_objects WHERE owner='UT3';" | tr -dc '0-9')"
