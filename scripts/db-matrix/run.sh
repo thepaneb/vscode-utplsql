@@ -10,9 +10,15 @@
 #   scripts/db-matrix/run.sh --only 18xe,19ee
 #   scripts/db-matrix/run.sh --smoke                # só capacidades + debugger (~1 min/versão)
 #   scripts/db-matrix/run.sh --thick                # thick mode (Instant Client) por versão
+#   scripts/db-matrix/run.sh --clean --only 18xe    # apaga o volume e recria o banco
+#   scripts/db-matrix/run.sh --skip-bootstrap       # volume já preparado: pula o bootstrap
 #   scripts/db-matrix/run.sh --bootstrap-only --only 21xe
 #   scripts/db-matrix/run.sh --keep-db --only 23free     # não derruba no fim
 #   scripts/db-matrix/run.sh --tests "npm run test:integration"
+#
+# Persistência: os dados ficam num volume nomeado por versão
+# (`utplsql-dbmatrix-<label>`). A 1ª run cria o banco (~15-25 min); as seguintes
+# sobem em ~1-2 min. Use DOCKER volume ls/rm para gerenciar; `--clean` recria.
 #
 # Atalhos npm: `npm run db:matrix` e `npm run db:matrix:list`.
 #
@@ -43,13 +49,15 @@ TESTS_CMD="npm run test:integration"
 CONTAINER="utplsql-dbmatrix"
 ONLY=""
 BOOTSTRAP_ONLY=0
+SKIP_BOOTSTRAP=0
 KEEP_DB=0
 KEEP_IMAGE=0
 NO_PULL=0
+CLEAN=0
 
 log() { printf '\n\033[1m== %s\033[0m\n' "$*"; }
 
-usage() { sed -n '2,25p' "$0" | sed 's/^# \{0,1\}//'; }
+usage() { grep '^#' "$0" | sed 's/^# \{0,1\}//'; }
 
 while [ $# -gt 0 ]; do
   case "$1" in
@@ -59,6 +67,8 @@ while [ $# -gt 0 ]; do
     --smoke) TESTS_CMD="npm run test:integration:smoke"; shift ;;
     --thick) TESTS_CMD="npm run test:integration:thick"; shift ;;
     --bootstrap-only) BOOTSTRAP_ONLY=1; shift ;;
+    --skip-bootstrap) SKIP_BOOTSTRAP=1; shift ;;
+    --clean) CLEAN=1; shift ;;
     --keep-db) KEEP_DB=1; shift ;;
     --keep-image) KEEP_IMAGE=1; shift ;;
     --no-pull) NO_PULL=1; shift ;;
@@ -85,14 +95,28 @@ echo "$VERSIONS" | sed '/^$/d' | while IFS='|' read -r label image service; do
   selected "$label" || continue
   log "$label — $image (serviço $service)"
 
+  # Volume de dados por versão: a 1ª subida cria o banco; as demais reaproveitam.
+  export DB_VOLUME="${DB_VOLUME_PREFIX:-utplsql-dbmatrix}-${label}"
   export DB_IMAGE="$image" DB_CONTAINER="$CONTAINER" DB_PORT ORACLE_PWD
   export UT3_PASSWORD TEST_PASSWORD UTPLSQL_VERSION
 
+  if [ "$CLEAN" = 1 ]; then
+    log "limpando volume $DB_VOLUME (--clean)"
+    compose down --remove-orphans >/dev/null 2>&1 || true
+    docker volume rm "$DB_VOLUME" >/dev/null 2>&1 || true
+  fi
+
   [ "$NO_PULL" = 1 ] || compose pull --quiet db
   compose up -d db
-  # Imagens que criam o banco do zero (ex.: 18c XE) levam ~15 min.
+  # 1ª subida de uma imagem que cria o banco do zero (ex.: 18c/19c) leva ~15-25
+  # min; com o volume já populado o boot é ~1-2 min.
   "$SCRIPT_DIR/wait-ready.sh" "$CONTAINER" "$service" "${WAIT_TIMEOUT:-1800}"
-  "$SCRIPT_DIR/bootstrap.sh" "$CONTAINER" "$service"
+
+  if [ "$SKIP_BOOTSTRAP" = 0 ]; then
+    "$SCRIPT_DIR/bootstrap.sh" "$CONTAINER" "$service"
+  else
+    log "pulando bootstrap (--skip-bootstrap): usando UT3/UTPLSQL_TEST já no volume"
+  fi
 
   if [ "$BOOTSTRAP_ONLY" = 0 ]; then
     export UTPLSQL_CONN="UT3/${UT3_PASSWORD}@//localhost:${DB_PORT}/${service}"
@@ -107,8 +131,9 @@ echo "$VERSIONS" | sed '/^$/d' | while IFS='|' read -r label image service; do
   if [ "$KEEP_DB" = 1 ]; then
     log "mantendo o banco no ar (--keep-db): $CONTAINER em localhost:$DB_PORT/$service"
   else
-    log "derrubando $label"
-    compose down -v --remove-orphans >/dev/null 2>&1 || true
+    # `down` (sem -v) preserva o volume nomeado da versão para a próxima run.
+    log "derrubando $label (volume $DB_VOLUME preservado)"
+    compose down --remove-orphans >/dev/null 2>&1 || true
     if [ "$KEEP_IMAGE" = 0 ]; then
       docker image rm "$image" >/dev/null 2>&1 || true
     fi

@@ -10,7 +10,8 @@
 - **Matriz de bancos para testes de integração** (infra local): compose
   paramétrico + bootstrap (utPLSQL, grants do README/debugger, schemas e
   fixtures) para validar o projeto contra 18c/19c/21c/23ai, uma versão por vez
-  (`npm run db:matrix`). Inclui modo `--smoke` (rápido) e `--thick`
+  (`npm run db:matrix`). Volume persistente por versão (re-run em ~1–2 min;
+  `--clean` recria), modo `--smoke` (rápido) e `--thick`
   (`npm run test:integration:thick`, com Oracle Instant Client).
 - **Schema-mode — execução por Schema/Package e Run All**: os nós `Schema:` e
   `Package:` não eram expandidos. Rodar um deles (ou Run All no modo schema)

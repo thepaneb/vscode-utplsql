@@ -4,15 +4,18 @@
 # orquestrador `scripts/db-matrix/run.sh` define a partir de `matrix.env`.
 # Assim não há duplicação de definição de serviço e o "um por vez" é natural.
 #
+# Persistência: os datafiles ficam num volume NOMEADO por versão
+# (`DB_VOLUME`), montado em `/opt/oracle/oradata` (caminho comum às imagens
+# 18c/19c/21c/23ai). A primeira subida cria o banco (~15-25 min); as seguintes
+# reaproveitam o volume e sobem em ~1-2 min. `run.sh --clean` apaga o volume
+# para recomeçar do zero.
+#
 # Uso manual (equivalente ao que o run.sh faz):
-#   export DB_IMAGE=container-registry.oracle.com/database/free:23.26.3.0-lite
-#   export DB_PORT=1531 ORACLE_PWD='Oracle#2026' ORACLE_CHARACTERSET=AL32UTF8
+#   export DB_IMAGE=container-registry.oracle.com/database/free:23.26.3.0
+#   export DB_PORT=1531 ORACLE_PWD='Oracle#2026' DB_VOLUME=utplsql-dbmatrix-23free
 #   docker compose -f docker/db-matrix/compose.yaml up -d
 #   ... bootstrap/testes ...
-#   docker compose -f docker/db-matrix/compose.yaml down -v
-#
-# Sem volume nomeado: o banco é efêmero (recriado a cada versão). Isso evita
-# dados incompatíveis entre versões e mantém o disco sob controle.
+#   docker compose -f docker/db-matrix/compose.yaml down   # preserva o volume
 
 name: utplsql-dbmatrix
 
@@ -29,6 +32,8 @@ services:
     environment:
       ORACLE_PWD: "${ORACLE_PWD:?defina ORACLE_PWD}"
       ORACLE_CHARACTERSET: "${ORACLE_CHARACTERSET:-AL32UTF8}"
+    volumes:
+      - oracle-data:/opt/oracle/oradata
     healthcheck:
       # Checa só o processo da instância: OS auth (`/ as sysdba`) falha em
       # algumas imagens (18c XE) e um grep por "1" casaria com "ORA-12547".
@@ -38,3 +43,8 @@ services:
       timeout: 10s
       retries: 60
       start_period: 180s
+
+volumes:
+  oracle-data:
+    name: "${DB_VOLUME:-utplsql-dbmatrix-oracle-data}"
+

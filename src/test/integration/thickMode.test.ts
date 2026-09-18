@@ -1,16 +1,19 @@
 /// <reference types="mocha" />
 import * as assert from 'node:assert';
 
-// Thick mode (Instant Client) — opt-in. Só roda quando ORACLE_CLIENT_LIB_DIR
-// aponta para um Instant Client compatível; sem isso o bloco é skipado.
+// Thick mode (Instant Client) — opt-in. Só roda quando
+// UTPLSQL_THICK_TEST=1 **e** ORACLE_CLIENT_LIB_DIR aponta para um Instant Client
+// compatível. A flag dedicada evita que a suíte normal (que herda o
+// ORACLE_CLIENT_LIB_DIR do .env) rode o thick por engano — o thick é global e
+// irreversível, e quebraria o teste que garante o thin default.
 //
-// A inicialização thick é GLOBAL e irreversível no processo. Por isso este
-// arquivo roda com `npm run test:integration:thick`, num workspace vazio
+// Roda com `npm run test:integration:thick`, num workspace vazio
 // (`.vscode-test.thick.mjs`) e SEM ativar a extensão: se a extensão ativasse
 // antes, criaria uma conexão thin e o thick falharia com NJS-118.
 
 const libDir = process.env.ORACLE_CLIENT_LIB_DIR;
-const describeThick = libDir ? describe : describe.skip;
+const thickEnabled = process.env.UTPLSQL_THICK_TEST === '1' && !!libDir;
+const describeThick = thickEnabled ? describe : describe.skip;
 
 function hasConnection(): boolean {
   return !!process.env.UTPLSQL_CONN;

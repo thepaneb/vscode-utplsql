@@ -74,8 +74,9 @@ services:
 
 ### RF3 — Orquestrador
 
-`scripts/db-matrix/run.sh` com opções `--list`, `--only`, `--smoke`,
-`--bootstrap-only`, `--keep-db`, `--keep-image`, `--no-pull`, `--tests`. Exporta
+`scripts/db-matrix/run.sh` com opções `--list`, `--only`, `--smoke`, `--thick`,
+`--bootstrap-only`, `--skip-bootstrap`, `--clean`, `--keep-db`, `--keep-image`,
+`--no-pull`, `--tests`. Exporta
 `UTPLSQL_CONN=UT3/<pass>@//localhost:<porta>/<pdb>` e `WSLENV` (necessário
 porque, no WSL, o `node` é o binário do Windows e não herda env do WSL).
 Atalhos npm: `npm run db:matrix` e `npm run db:matrix:list`.
@@ -95,9 +96,17 @@ O modo **smoke** (`npm run test:integration:smoke`, config
 Com os grants de debug, `debuggerE2E.test.ts` executa de fato o contrato do
 `DBMS_DEBUG` (`INITIALIZE`/`DEBUG_ON`/`DEBUG_OFF`) em vez de `skip`.
 
+### RF6 — Persistência por versão
+
+Os datafiles ficam num volume nomeado por versão (`utplsql-dbmatrix-<label>`),
+montado em `/opt/oracle/oradata` (caminho comum às imagens da matriz). A 1ª
+subida cria o banco; as seguintes sobem em ~1–2 min. `run.sh --clean` apaga o
+volume para recomeçar do zero; `--skip-bootstrap` pula o reinstall do
+utPLSQL/fixtures quando o volume já está preparado.
+
 **Não-funcionais**
-- RNF1 — Uma versão por vez; `down -v` ao final (sem volume persistente entre
-  versões).
+- RNF1 — Uma versão por vez; o container é derrubado no fim, mas o volume da
+  versão é preservado (rápido re-run). `--clean` remove o volume.
 - RNF2 — Bootstrap idempotente e fail-fast (aborta se o utPLSQL não instalar).
 
 ## 5. Solução proposta
@@ -168,10 +177,11 @@ Nenhuma setting da extensão. Variáveis do orquestrador documentadas em
 
 | Risco | Mitigação |
 |---|---|
-| Imagens grandes estouram o disco | Uma por vez; `down -v`; opção de `docker rmi` ao final |
+| Imagens grandes estouram o disco | Uma por vez; `docker image rm` ao final (default) |
+| Volumes por versão acumulam disco | `run.sh --clean` remove o volume; `docker volume ls/rm` para gerenciar |
 | OOM com um `oracle-data` rodando | Rodar a matriz sozinha (`docker stop oracle-data`) |
 | Credenciais EE expostas | `.env.dbmatrix` gitignored; token nunca no compose |
-| Diferenças de PDB (FREEPDB1/XEPDB1/ORCLPDB1) | PDB vem da tabela por versão |
+| Volume de versão incompatível (imagem trocada) | `run.sh --clean` recria o volume |
 
 ## 9. Rollout
 
@@ -185,6 +195,8 @@ Nenhuma setting da extensão. Variáveis do orquestrador documentadas em
   testes de integração verdes (52 passing / 2 pending).
 - `npm run test:integration:thick` passa em cada versão (2 passing) com
   `ORACLE_CLIENT_LIB_DIR` apontando para um Instant Client.
+- A 2ª run de uma versão reaproveita o volume (sem recriar o banco): boot em
+  ~1–2 min; `--skip-bootstrap --smoke` conclui em ~1 min.
 - Bootstrap instala o utPLSQL e compila os fixtures sem intervenção manual.
 - `docs:check` e `brain:check` verdes.
 

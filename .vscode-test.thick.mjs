@@ -19,6 +19,7 @@ export default {
   workspaceFolder: 'src/test/integration/fixtures/thick-workspace',
   env: {
     ...base.env,
+    UTPLSQL_THICK_TEST: '1',
     ORACLE_CLIENT_LIB_DIR: process.env.ORACLE_CLIENT_LIB_DIR ?? '',
     TNS_ADMIN: process.env.TNS_ADMIN ?? '',
   },

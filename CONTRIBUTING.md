@@ -93,14 +93,23 @@ npm run db:matrix                      # roda a matriz inteira (uma versão por 
 npm run db:matrix -- --only 21xe       # só uma versão
 npm run db:matrix -- --smoke           # subconjunto rápido por versão
 npm run db:matrix -- --thick           # thick mode (Instant Client) por versão
-npm run db:matrix -- --keep-db --only 23free  # não derruba o banco no fim
+npm run db:matrix -- --skip-bootstrap  # volume já preparado: pula o utPLSQL/fixtures
+npm run db:matrix -- --clean           # apaga o volume e recria o banco do zero
+npm run db:matrix -- --keep-db --only 23free  # não derruba o container no fim
 ```
 
 O orquestrador (`scripts/db-matrix/run.sh`) baixa a imagem, sobe o container,
 espera o PDB abrir, instala o utPLSQL + grants + schemas/fixtures e roda os
-testes, derrubando tudo no fim. Requisitos: Docker e, para as imagens
-`database/enterprise`, `ORACLE_AUTH_USER`/`ORACLE_AUTH_TOKEN` em `.env.dbmatrix`
-(veja `.env.dbmatrix.example`). O CI **não** roda a matriz — ela é local e manual.
+testes; no fim derruba o container, **preservando o volume de dados**.
+
+**Persistência:** cada versão tem seu volume nomeado
+(`utplsql-dbmatrix-<label>`, montado em `/opt/oracle/oradata`). A **1ª** run cria
+o banco (~15–25 min para 18c/19c); as seguintes sobem do volume em ~1–2 min. Use
+`--skip-bootstrap` quando o volume já estiver preparado (pula o reinstall do
+utPLSQL) e `--clean` para apagar o volume e recomeçar do zero. Requisitos:
+Docker e, para as imagens `database/enterprise`,
+`ORACLE_AUTH_USER`/`ORACLE_AUTH_TOKEN` em `.env.dbmatrix` (veja
+`.env.dbmatrix.example`). O CI **não** roda a matriz — ela é local e manual.
 A versão alvo e os detalhes estão na PRD-72.
 
 ### Thick mode (Instant Client)
