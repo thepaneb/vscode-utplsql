@@ -636,3 +636,114 @@ test('startDebugSession: sem testName monta config sem sufixo', async () => {
   const cfg = debug.__getStartedConfigs().at(-1) as { name?: string };
   assert.strictEqual(cfg?.name, 'Debug test_app');
 });
+
+test('debugger: setBreakpoints com SET_BREAKPOINT falhando marca verified=false', async () => {
+  const conn = makeFakeConn();
+  const origExecute = conn.execute.bind(conn);
+  conn.execute = async (sql: string) => {
+    if (/SET_BREAKPOINT/.test(sql)) throw new Error('breakpoint negado');
+    return origExecute(sql);
+  };
+  const adapter = new UtplsqlDebugAdapter(makeRuntime(conn));
+  const sent: Msg[] = [];
+  adapter.onDidSendMessage((m) => sent.push(m));
+  adapter.handleMessage({ type: 'request', seq: 1, command: 'initialize' });
+  adapter.handleMessage({
+    type: 'request',
+    seq: 2,
+    command: 'launch',
+    arguments: { packageName: 'test_app', connection: 'APP/pass@//h:1521/svc' },
+  });
+  await flushN(4);
+  adapter.handleMessage({
+    type: 'request',
+    seq: 3,
+    command: 'setBreakpoints',
+    arguments: { source: { path: '/ws/test_app.pks' }, breakpoints: [{ line: 7 }] },
+  });
+  await flushN(2);
+  const resp = sent.find((m) => m.command === 'setBreakpoints') as any;
+  assert.strictEqual(resp.body.breakpoints[0].verified, false);
+  adapter.dispose();
+});
+
+test('debugger: comando next aciona STEP_OVER', async () => {
+  const conn = makeFakeConn();
+  const adapter = new UtplsqlDebugAdapter(makeRuntime(conn));
+  const sent: Msg[] = [];
+  adapter.onDidSendMessage((m) => sent.push(m));
+  adapter.handleMessage({ type: 'request', seq: 1, command: 'initialize' });
+  adapter.handleMessage({
+    type: 'request',
+    seq: 2,
+    command: 'launch',
+    arguments: { packageName: 'test_app', connection: 'APP/pass@//h:1521/svc' },
+  });
+  await flushN(4);
+  adapter.handleMessage({ type: 'request', seq: 3, command: 'next' });
+  await flushN(4);
+  assert.ok(
+    conn.calls.some((s) => /STEP_OVER/.test(s)),
+    'next deveria chamar STEP_OVER',
+  );
+  adapter.dispose();
+});
+
+test('debugger: reportStop no_break continua até exiting', async () => {
+  const conn = makeFakeConn();
+  const origExecute = conn.execute.bind(conn);
+  let continues = 0;
+  conn.execute = async (sql: string) => {
+    if (/CONTINUE|SYNCHRONIZE/.test(sql)) {
+      continues++;
+      return { outBinds: { status: continues === 1 ? 1 : 5 } }; // no_break -> exiting
+    }
+    return origExecute(sql);
+  };
+  const adapter = new UtplsqlDebugAdapter(makeRuntime(conn));
+  const sent: Msg[] = [];
+  adapter.onDidSendMessage((m) => sent.push(m));
+  adapter.handleMessage({ type: 'request', seq: 1, command: 'initialize' });
+  adapter.handleMessage({
+    type: 'request',
+    seq: 2,
+    command: 'launch',
+    arguments: { packageName: 'test_app', connection: 'APP/pass@//h:1521/svc' },
+  });
+  await flushN(4);
+  adapter.handleMessage({ type: 'request', seq: 3, command: 'configurationDone' });
+  await flushN(6);
+  const events = sent.filter((m) => m.type === 'event').map((m) => m.event);
+  assert.ok(events.includes('terminated'), 'deveria terminar no exiting após no_break');
+  assert.ok(continues >= 2, 'deveria reexecutar continue após no_break');
+  adapter.dispose();
+});
+
+test('debugger: timeout da sessão encerra e loga no console', async () => {
+  __setConfigValue('debugger.timeoutSeconds', 0.01);
+  try {
+    const conn = makeFakeConn();
+    const adapter = new UtplsqlDebugAdapter(makeRuntime(conn));
+    const sent: Msg[] = [];
+    adapter.onDidSendMessage((m) => sent.push(m));
+    adapter.handleMessage({ type: 'request', seq: 1, command: 'initialize' });
+    adapter.handleMessage({
+      type: 'request',
+      seq: 2,
+      command: 'launch',
+      arguments: { packageName: 'test_app', connection: 'APP/pass@//h:1521/svc' },
+    });
+    await flushN(4);
+    await new Promise((r) => setTimeout(r, 40));
+    const events = sent.filter((m) => m.type === 'event').map((m) => m.event);
+    assert.ok(events.includes('terminated'), 'timeout deveria terminar a sessão');
+    const out = sent
+      .filter((m) => m.type === 'event' && m.event === 'output')
+      .map((m) => (m.body as { output?: string }).output ?? '')
+      .join('\n');
+    assert.ok(out.includes('Timeout'), 'deveria logar o timeout');
+    adapter.dispose();
+  } finally {
+    __resetConfigValues();
+  }
+});

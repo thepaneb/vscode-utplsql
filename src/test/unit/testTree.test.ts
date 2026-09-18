@@ -3,7 +3,14 @@ import assert from 'node:assert';
 import { test } from 'node:test';
 import type { SuiteFile } from '../../discovery';
 import { TestStateManager } from '../../state';
-import { buildFileTree, buildSchemaTree, collectAllItems, createRefresher } from '../../testTree';
+import {
+  buildFileTree,
+  buildSchemaTree,
+  collectAllItems,
+  createRefresher,
+  type MergeDbDeps,
+  mergeDbSuites,
+} from '../../testTree';
 import { __resetConfigValues, __setConfigValue, workspace } from '../vscode-stub';
 
 function makeItem(id: string, uri?: unknown) {
@@ -217,4 +224,81 @@ test('createRefresher: 3 chamadas concorrentes — as excedentes retornam sem no
 
   assert.strictEqual(controller._items.length, 0);
   assert.strictEqual(state.cachedItems.length, 0);
+});
+
+// ── mergeDbSuites (injeção de dependências) ─────────────────────────
+
+function mergeDeps(over: Partial<MergeDbDeps> = {}): MergeDbDeps {
+  return {
+    resolveConnection: () => 'u/p@//h:1521/s',
+    extractSchemaFromPath: () => undefined,
+    discoverSchemasFromFolders: async () => [],
+    discoverSchemaFromDb: async () => [],
+    ...over,
+  };
+}
+
+test('mergeDbSuites: sem conexão não busca suites do banco', async () => {
+  const suites = [suite({})];
+  let discovered = 0;
+  await mergeDbSuites(
+    suites,
+    [],
+    'db/{schema}/**',
+    mergeDeps({
+      resolveConnection: () => undefined,
+      discoverSchemasFromFolders: async () => {
+        discovered++;
+        return ['APP'];
+      },
+    }),
+  );
+  assert.strictEqual(discovered, 0);
+  assert.strictEqual(suites.length, 1);
+});
+
+test('mergeDbSuites: une schemas do path e das pastas e mescla sem duplicar', async () => {
+  const suites = [suite({ packageName: 'UT_APP' })];
+  const onlyDb = suite({ packageName: 'UT_NEW', dbSchema: 'APP' });
+  const duplicate = suite({ packageName: 'ut_app', dbSchema: 'APP' });
+  const seen: string[] = [];
+
+  await mergeDbSuites(
+    suites,
+    [{ uri: { fsPath: '/ws' }, name: 'ws', index: 0 }] as never,
+    'db/{schema}/**',
+    mergeDeps({
+      extractSchemaFromPath: () => 'APP',
+      discoverSchemasFromFolders: async () => ['OTHER'],
+      discoverSchemaFromDb: async (_conn, schema) => {
+        seen.push(schema);
+        return schema === 'APP' ? [duplicate, onlyDb] : [];
+      },
+    }),
+  );
+
+  assert.deepStrictEqual(seen.sort(), ['APP', 'OTHER']);
+  assert.strictEqual(suites.length, 2);
+  assert.ok(suites.some((s) => s.packageName === 'UT_NEW'));
+  assert.ok(!suites.some((s) => s.packageName === 'ut_app'));
+});
+
+test('mergeDbSuites: várias suites só-DB do mesmo schema entram na ordem', async () => {
+  const suites: SuiteFile[] = [];
+  await mergeDbSuites(
+    suites,
+    [],
+    'db/{schema}/**',
+    mergeDeps({
+      discoverSchemasFromFolders: async () => ['APP'],
+      discoverSchemaFromDb: async () => [
+        suite({ packageName: 'UT_B' }),
+        suite({ packageName: 'UT_A' }),
+      ],
+    }),
+  );
+  assert.deepStrictEqual(
+    suites.map((s) => s.packageName),
+    ['UT_B', 'UT_A'],
+  );
 });

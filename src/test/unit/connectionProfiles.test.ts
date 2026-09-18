@@ -544,3 +544,23 @@ test('migrateLegacyProfiles: move senha legada e reescreve a settings', async ()
     __resetConfigValues();
   }
 });
+
+test('migrateLegacyProfiles: mantém perfis já sanitizados sem reescrever', async () => {
+  __resetConfigValues();
+  const { storage } = fakeSecrets();
+  initSecretStorage(storage);
+  __setConfigValue('profiles', [
+    { id: 'leg', name: 'LEG', connection: 'u/secret@h:1521/s' },
+    { id: 'ok', name: 'OK', connection: 'u@h:1521/s' },
+  ]);
+  try {
+    await migrateLegacyProfiles();
+    const profiles = getAllProfiles();
+    assert.strictEqual(profiles.length, 2);
+    assert.strictEqual(profiles[0].connection, 'u@h:1521/s');
+    assert.strictEqual(profiles[1].connection, 'u@h:1521/s');
+    assert.strictEqual(profiles[1].id, 'ok');
+  } finally {
+    __resetConfigValues();
+  }
+});

@@ -11,8 +11,8 @@ const VALID_CHARSETS: ReadonlySet<string> = new Set(['utf8', 'latin1', 'win1252'
 export function decodeBytes(bytes: Uint8Array, charset?: ProfileCharset): string {
   const normalized = charset && VALID_CHARSETS.has(charset) ? charset : 'utf8';
   if (normalized === 'latin1') {
-    const text = Buffer.from(bytes).toString('latin1');
-    return text.startsWith('\ufeff') ? text.slice(1) : text;
+    // ISO-8859-1 mapeia byte→code point 1:1, então um BOM UTF-8 não vira U+FEFF.
+    return Buffer.from(bytes).toString('latin1');
   }
   const label = normalized === 'utf8' ? 'utf-8' : 'windows-1252';
   const text = new TextDecoder(label, { fatal: false }).decode(bytes);

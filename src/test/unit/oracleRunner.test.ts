@@ -779,6 +779,9 @@ function makeOracleRunFake(opts: {
   };
   const mod = {
     OUT_FORMAT_OBJECT: { id: 'object' },
+    BIND_OUT: { dir: 'out' },
+    STRING: 'STRING',
+    NUMBER: 'NUMBER',
     createPool: async () => {
       let i = 0;
       return {
@@ -991,6 +994,151 @@ test('executeRunOracle: dbmsOutput habilita e drena DBMS_OUTPUT na conn1', async
   const out = run.output.join('\n');
   assert.ok(out.includes('ola-62'), `deveria drenar a primeira linha: ${out}`);
   assert.ok(out.includes('linha-2'), 'deveria drenar a segunda linha');
+});
+
+function makeControllableToken() {
+  let cb: (() => void) | undefined;
+  return {
+    token: {
+      isCancellationRequested: false,
+      onCancellationRequested: (fn: () => void) => {
+        cb = fn;
+        return {
+          dispose: () => {
+            cb = undefined;
+          },
+        };
+      },
+    },
+    cancel: () => cb?.(),
+  };
+}
+
+function runOpts(
+  run: any,
+  item: any,
+  metaMap: Map<any, ItemMeta>,
+  extra: Record<string, unknown> = {},
+) {
+  return {
+    connection: 'u/p@//h:1521/s',
+    pathArgs: ['pkg'],
+    coverage: false,
+    sourcePath: 'install',
+    root: '/root',
+    run,
+    leafTests: [item as any],
+    state: makeOracleRunState(metaMap),
+    ...extra,
+  };
+}
+
+function makeGatedRunFake() {
+  let release: () => void = () => {};
+  const gate = new Promise<void>((r) => {
+    release = r;
+  });
+  let broke1 = 0;
+  let broke2 = 0;
+  const conn1 = {
+    callTimeout: 0,
+    execute: async (sql: string) => {
+      if (/ALL_SYNONYMS/.test(sql)) return { rows: [{ TABLE_OWNER: 'UT3' }] };
+      if (/DELETE FROM/.test(sql)) return {};
+      if (/ut_runner\.run/.test(sql)) {
+        await gate;
+        return {};
+      }
+      return {};
+    },
+    close: async () => {},
+    break: async () => {
+      broke1 += 1;
+      release();
+    },
+  };
+  const conn2 = {
+    callTimeout: 0,
+    execute: async (sql: string) => {
+      if (/UT_OUTPUT_BUFFER_TMP/.test(sql) && /SELECT/.test(sql)) return { rows: [] };
+      return {};
+    },
+    close: async () => {},
+    break: async () => {
+      broke2 += 1;
+    },
+  };
+  const mod = {
+    OUT_FORMAT_OBJECT: { id: 'object' },
+    createPool: async () => {
+      let i = 0;
+      return {
+        getConnection: async () => (i++ === 0 ? conn1 : conn2),
+        close: async () => {},
+      };
+    },
+    getConnection: async () => {
+      throw new Error('raw indisponivel');
+    },
+  };
+  return { mod, conn1, conn2, broke: () => ({ broke1, broke2 }) };
+}
+
+test('executeRunOracle: cancelamento chama break nas duas conexões', async () => {
+  const { mod, broke } = makeGatedRunFake();
+  const run = makeRun() as any;
+  const { item, metaMap } = makeLeaf();
+  const ctl = makeControllableToken();
+  try {
+    const p = executeRunOracle(
+      runOpts(run, item, metaMap),
+      ctl.token as never,
+      async () => mod as never,
+    );
+    await new Promise((r) => setTimeout(r, 20));
+    ctl.cancel();
+    await p;
+  } finally {
+    await closeOraclePool();
+  }
+  assert.deepStrictEqual(broke(), { broke1: 1, broke2: 1 });
+});
+
+test('executeRunOracle: timeout dispara break e finaliza sem lançar', async () => {
+  const { mod, broke } = makeGatedRunFake();
+  const run = makeRun() as any;
+  const { item, metaMap } = makeLeaf();
+  try {
+    await executeRunOracle(
+      runOpts(run, item, metaMap, { timeoutMinutes: 0.002 }),
+      neverCancel as never,
+      async () => mod as never,
+    );
+  } finally {
+    await closeOraclePool();
+  }
+  assert.strictEqual(broke().broke1, 1, 'timeout deveria interromper o run');
+});
+
+test('executeRunOracle: erro ao drenar DBMS_OUTPUT não interrompe o run', async () => {
+  const { mod, conn1 } = makeOracleRunFake({ buffer: [JUNIT_XML] });
+  const orig = conn1.execute.bind(conn1);
+  conn1.execute = async (sql: string) => {
+    if (/DBMS_OUTPUT\.GET_LINE/.test(sql)) throw new Error('dbms off');
+    return orig(sql);
+  };
+  const run = makeRun() as any;
+  const { item, metaMap } = makeLeaf();
+  try {
+    await executeRunOracle(
+      runOpts(run, item, metaMap, { dbmsOutput: true }),
+      neverCancel as never,
+      async () => mod as never,
+    );
+  } finally {
+    await closeOraclePool();
+  }
+  assert.strictEqual(run.passedList.length, 1, 'resultados ainda devem ser aplicados');
 });
 
 test('executeRunOracle: CDATA fragmentado do system-out não corrompe o parse do JUnit', async () => {

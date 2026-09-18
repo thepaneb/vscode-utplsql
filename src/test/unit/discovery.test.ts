@@ -628,6 +628,19 @@ test('discoverSchemaFromConn: ALL_SOURCE truncado gera warning (limite atingido)
   assert.ok(suites.length >= 0);
 });
 
+test('discoverSchemaFromConn: ALL_SOURCE com 10k linhas dispara warning e ainda parseia', async () => {
+  const lines = Array.from({ length: 10_000 }, (_v, i) =>
+    i === 0 ? 'CREATE OR REPLACE PACKAGE app_orders IS' : `  -- linha ${i}`,
+  );
+  lines[1] = '  --%suite(Orders)';
+  lines[2] = '  --%test(Adds order)';
+  lines[3] = '  PROCEDURE add_order;';
+  const conn = makeConn({ packages: [['APP_ORDERS']], sources: { APP_ORDERS: lines } });
+  const suites = await discoverSchemaFromConn(conn, 'hr', FOLDER);
+  assert.strictEqual(suites.length, 1);
+  assert.strictEqual(suites[0].packageName, 'app_orders');
+});
+
 test('discoverSchemaFromConn: rows vazios e ALL_SOURCE indisponivel retorna vazio', async () => {
   const conn = {
     execute: async (sql: string) => {
@@ -653,6 +666,37 @@ test('discoverSchemaFromDb: cria pool mas fetch falha retorna vazio', async () =
       async () => mod as never,
     );
     assert.strictEqual(result.length, 0);
+  } finally {
+    await closeOraclePool();
+  }
+});
+
+test('discoverSchemaFromDb: ALL_OBJECTS inacessível cai no catch e restaura timeout', async () => {
+  const conn = {
+    callTimeout: 7,
+    execute: async () => {
+      throw new Error('ORA-00942: ALL_OBJECTS negado');
+    },
+    close: async () => {},
+  };
+  const mod = {
+    createPool: async () => ({
+      getConnection: async () => conn,
+      close: async () => {},
+    }),
+    getConnection: async () => {
+      throw new Error('raw indisponivel');
+    },
+  };
+  try {
+    const result = await discoverSchemaFromDb(
+      'u/p@//h:1521/s',
+      'hr',
+      [FOLDER],
+      async () => mod as never,
+    );
+    assert.deepStrictEqual(result, []);
+    assert.strictEqual(conn.callTimeout, 7, 'callTimeout deveria ser restaurado');
   } finally {
     await closeOraclePool();
   }

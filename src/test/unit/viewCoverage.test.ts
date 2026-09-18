@@ -417,6 +417,52 @@ test('applySqlCoverage: createPool falha cai para getConnection raw', async () =
   }
 });
 
+test('applySqlCoverage: erro inesperado no processamento é silenciado', async () => {
+  const base = fs.mkdtempSync(path.join(os.tmpdir(), 'vsql-boom-'));
+  try {
+    const viewsDir = path.join(base, 'install', 'views');
+    fs.mkdirSync(viewsDir, { recursive: true });
+    fs.writeFileSync(path.join(viewsDir, 'vw_a.sql'), 'CREATE VIEW vw_a AS\nSELECT 1\n');
+    const conn = {
+      callTimeout: 0,
+      execute: async () => ({ rows: [['SELECT * FROM vw_a']] }),
+      close: async () => {},
+    };
+    const fakeOracledb = {
+      OUT_FORMAT_OBJECT: {},
+      createPool: async () => ({ getConnection: async () => conn, close: async () => {} }),
+      getConnection: async () => conn,
+    };
+    const run = makeRun() as never;
+    const state = {
+      setCoverage: () => {
+        throw new Error('boom');
+      },
+      clearCoverage: () => {},
+    } as never;
+    const folders = [{ uri: { fsPath: base }, name: 'r', index: 0 }];
+    try {
+      await assert.doesNotReject(() =>
+        applySqlCoverage(
+          {
+            connection: 'u/p@//h:1521/s',
+            root: base,
+            sourcePath: 'install',
+            run,
+            state,
+            folders: folders as never,
+          },
+          async () => fakeOracledb as never,
+        ),
+      );
+    } finally {
+      await closeOraclePool();
+    }
+  } finally {
+    fs.rmSync(base, { recursive: true, force: true });
+  }
+});
+
 test('applySqlCoverage: view não executada ganha hits 0', async () => {
   const base = fs.mkdtempSync(path.join(os.tmpdir(), 'vsql-hits0-'));
   try {
