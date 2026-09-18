@@ -1,7 +1,5 @@
 # utPLSQL Test Runner
 
-English · **[Português](pt/Home.md)**
-
 Integrates [utPLSQL](https://www.utplsql.org/) into VSCode, bringing PL/SQL tests
 into the native **Test Explorer**, with context menu and visual coverage.
 

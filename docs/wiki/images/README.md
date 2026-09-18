@@ -40,40 +40,40 @@ Marque cada item ao capturar. Os nomes de arquivo devem ser **exatamente** os li
 
 | # | Arquivo | Onde na wiki | Como capturar |
 |---|---|---|---|
-| 1 | `test-explorer-suites.png` | pt/Home.md | Test Explorer com suites expandidas mostrando `tst_hello_world`, `tst_coverage_sample`, `tst_multi_suite` |
-| 2 | `sidebar-testing-icon.png` | pt/Guia-rápido.md | Ícone do Testing na barra lateral (frasco/beaker) |
-| 3 | `test-explorer-hello-world.png` | pt/Guia-rápido.md | Resultado de execução: indicadores ✓ verdes nos testes |
-| 4 | `test-explorer-pass-fail.png` | pt/Guia-rápido.md | Test Explorer após execução com tooltip de falha visível (hover sobre ✗) |
-| 5 | `context-menu-pks.png` | pt/Guia-rápido.md | Menu de contexto sobre arquivo `.pks` no Explorer mostrando comandos utPLSQL |
-| 6 | `context-menu-folder.png` | pt/Comandos.md | Menu de contexto sobre pasta no Explorer |
-| 7 | `palette-commands.png` | pt/Comandos.md | Command Palette (`F1`) filtrando "utplsql" — mostrar a lista de comandos |
-| 8 | `palette-clear-connection.png` | pt/Conexão.md | Command Palette com "utplsql clear" selecionado |
-| 9 | `keyboard-shortcuts.png` | pt/Comandos.md | Painel de Keyboard Shortcuts (`Ctrl+K Ctrl+S`) |
-| 10 | `marketplace-card.png` | pt/Instalação-e-requisitos.md | Card da extensão no marketplace do VSCode |
-| 11 | `install-from-vsix.png` | pt/Instalação-e-requisitos.md | Menu "Install from VSIX..." no Command Palette |
-| 12 | `dev-host-testing.png` | pt/Como-contribuir.md | Janela do Extension Development Host (`F5`) |
-| 13 | `schema-mode-tree.png` | pt/Organização-da-árvore.md | Test Explorer em modo schema mostrando `Schema: APP` e `Schema: INVENTORY` |
-| 14 | `quickpick-reporters.png` | pt/Reporters.md | QuickPick de seleção de reporter adicional |
-| 15 | `annotations-display.png` | pt/Guia-rápido.md | Editor com `tst_annotations.pks` aberto + Test Explorer mostrando `Hello customizado` (`%displayname`) e **sem** o teste `%disabled` |
+| 1 | `test-explorer-suites.png` | Home.md | Test Explorer com suites expandidas mostrando `tst_hello_world`, `tst_coverage_sample`, `tst_multi_suite` |
+| 2 | `sidebar-testing-icon.png` | Quick-start.md | Ícone do Testing na barra lateral (frasco/beaker) |
+| 3 | `test-explorer-hello-world.png` | Quick-start.md | Resultado de execução: indicadores ✓ verdes nos testes |
+| 4 | `test-explorer-pass-fail.png` | Quick-start.md | Test Explorer após execução com tooltip de falha visível (hover sobre ✗) |
+| 5 | `context-menu-pks.png` | Quick-start.md | Menu de contexto sobre arquivo `.pks` no Explorer mostrando comandos utPLSQL |
+| 6 | `context-menu-folder.png` | Commands.md | Menu de contexto sobre pasta no Explorer |
+| 7 | `palette-commands.png` | Commands.md | Command Palette (`F1`) filtrando "utplsql" — mostrar a lista de comandos |
+| 8 | `palette-clear-connection.png` | Connection.md | Command Palette com "utplsql clear" selecionado |
+| 9 | `keyboard-shortcuts.png` | Commands.md | Painel de Keyboard Shortcuts (`Ctrl+K Ctrl+S`) |
+| 10 | `marketplace-card.png` | Installation-and-requirements.md | Card da extensão no marketplace do VSCode |
+| 11 | `install-from-vsix.png` | Installation-and-requirements.md | Menu "Install from VSIX..." no Command Palette |
+| 12 | `dev-host-testing.png` | Contributing.md | Janela do Extension Development Host (`F5`) |
+| 13 | `schema-mode-tree.png` | Tree-organization.md | Test Explorer em modo schema mostrando `Schema: APP` e `Schema: INVENTORY` |
+| 14 | `quickpick-reporters.png` | Reporters.md | QuickPick de seleção de reporter adicional |
+| 15 | `annotations-display.png` | Quick-start.md | Editor com `tst_annotations.pks` aberto + Test Explorer mostrando `Hello customizado` (`%displayname`) e **sem** o teste `%disabled` |
 
 ### Com banco Oracle (4 prints)
 
 | # | Arquivo | Onde na wiki | Como capturar |
 |---|---|---|---|
-| 17 | `output-terminal.png` | pt/Guia-rápido.md | Output panel após execução mostrando documentation reporter |
-| 18 | `editor-coverage-gutters.png` | pt/Cobertura.md | Editor com `tst_coverage_sample.pks` mostrando gutters de cobertura (verde=coberto, vermelho=não coberto) |
-| 19 | `coverage-panel.png` | pt/Cobertura.md | Painel Test Coverage com percentuais por arquivo |
-| 20 | `sqlcl-compile.png` | pt/Guia-rápido.md | Output de compilação SQLcl com packages compilados |
+| 17 | `output-terminal.png` | Quick-start.md | Output panel após execução mostrando documentation reporter |
+| 18 | `editor-coverage-gutters.png` | Coverage.md | Editor com `tst_coverage_sample.pks` mostrando gutters de cobertura (verde=coberto, vermelho=não coberto) |
+| 19 | `coverage-panel.png` | Coverage.md | Painel Test Coverage com percentuais por arquivo |
+| 20 | `sqlcl-compile.png` | Quick-start.md | Output de compilação SQLcl com packages compilados |
 
 ### Diagramas (5 arquivos, gerados via SVG)
 
 | # | Arquivo | Onde é usado | Como gerar |
 |---|---|---|---|
-| 21 | `diagram-schemas.png` | pt/Requisitos-no-banco.md | `npm run gen-diagram` (renderiza o SVG) |
+| 21 | `diagram-schemas.png` | Database-requirements.md | `npm run gen-diagram` (renderiza o SVG) |
 | 22 | `diagram-arquitetura.png` | Architecture.md | `npm run gen-diagram` |
-| 23 | `diagram-conexao.png` | pt/Conexão.md | `npm run gen-diagram` |
-| 24 | `diagram-streaming.png` | pt/Execução-Oracle-direta.md | `npm run gen-diagram` |
-| 25 | `diagram-diagnosticos.png` | pt/Diagnósticos-e-quick-fix.md | `npm run gen-diagram` |
+| 23 | `diagram-conexao.png` | Connection.md | `npm run gen-diagram` |
+| 24 | `diagram-streaming.png` | Oracle-direct-execution.md | `npm run gen-diagram` |
+| 25 | `diagram-diagnosticos.png` | Diagnostics-and-quick-fix.md | `npm run gen-diagram` |
 
 Os diagramas são mantidos como **SVG** (fonte da verdade, versionável) e
 renderizados para **PNG de 1200px** pelo script `scripts/gen-diagrams.cjs`

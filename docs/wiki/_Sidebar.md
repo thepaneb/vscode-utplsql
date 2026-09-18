@@ -1,5 +1,3 @@
-[Português](pt/_Sidebar.md)
-
 - **Getting Started**
   - [Installation and Requirements](Installation-and-requirements)
   - [Connection Setup](Connection)

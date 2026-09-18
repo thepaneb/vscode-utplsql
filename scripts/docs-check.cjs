@@ -7,7 +7,7 @@
  * Verifica:
  *   - README.md ↔ variantes de idioma (README.<locale>.md) em ambas as direções
  *   - docs/prd/ ↔ docs/prd/index.md (tabela + Estrutura) e status ↔ pasta
- *   - paridade de contagem en/pt em docs/wiki/
+ *   - existência de páginas em docs/wiki/
  *
  * Exit 1 se houver qualquer inconsistência.
  */
@@ -119,17 +119,16 @@ function checkPrd() {
   }
 }
 
-// ── Wiki en/pt ─────────────────────────────────────────────────────────
+// ── Wiki (en) ──────────────────────────────────────────────────────────
 
 function checkWiki() {
-  console.log('Wiki (en ↔ pt)');
+  console.log('Wiki (en)');
   const en = mdFiles(WIKI_DIR).filter((f) => f !== '_Sidebar.md');
-  const pt = mdFiles(path.join(WIKI_DIR, 'pt')).filter((f) => f !== '_Sidebar.md');
-  if (en.length !== pt.length) {
-    fail(`wiki en tem ${en.length} páginas e pt tem ${pt.length} (paridade esperada)`);
-  } else {
-    ok(`${en.length} páginas em cada idioma`);
+  if (en.length === 0) {
+    fail('docs/wiki/ não tem páginas');
+    return;
   }
+  ok(`${en.length} páginas`);
 }
 
 // ── main ───────────────────────────────────────────────────────────────
