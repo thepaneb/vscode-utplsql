@@ -148,11 +148,17 @@ scripts/db-matrix/run.sh
   auth quando disponível.
 - **`-lite` do Free**: omite o XDB e o utPLSQL falha no install
   (`ORA-00600 [unable to load XDB library]`). Usar a imagem cheia.
+- **Volume e datafiles**: o 18c XE tem `db_create_file_dest` vazio, então um
+  `CREATE TABLESPACE users DATAFILE 'users01.dbf'` (relativo) caía em
+  `$ORACLE_HOME/dbs` — fora do volume — e o PDB ficava preso em `MOUNTED` após
+  recriar o container. O bootstrap usa caminho absoluto dentro de
+  `/opt/oracle/oradata`.
 - **Thick mode (Instant Client)**: não pode rodar junto com a suíte normal — a
   inicialização é global e irreversível no processo, e `prd70-sqlplus` exige o
   thin default (além de a auto-ativação da extensão criar conexão thin antes,
   gerando `NJS-118`). Solução: `npm run test:integration:thick`
-  (`.vscode-test.thick.mjs`) num workspace vazio, sem ativar a extensão.
+  (`.vscode-test.thick.mjs`) num workspace vazio, sem ativar a extensão; o gate
+  é `UTPLSQL_THICK_TEST=1` (evita rodar thick na suíte normal via `.env`).
 
 > Resultado: **18xe, 19ee, 21xe e 23free** passam com 52 passing / 2 pending na
 > suíte normal; o eixo **thick** (`--thick`) passa com 2 passing em cada uma.

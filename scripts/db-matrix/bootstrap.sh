@@ -76,13 +76,17 @@ ensure_utplsql_source() {
 
 ensure_tablespace() {
   log "garantindo tablespace USERS"
+  # Datafile em caminho ABSOLUTO dentro do volume persistido
+  # (`/opt/oracle/oradata`): algumas imagens (18c XE) têm db_create_file_dest
+  # vazio, então um nome relativo cairia em $ORACLE_HOME/dbs — fora do volume —
+  # e o PDB ficaria preso em MOUNTED após recriar o container.
   sys_sql "
 DECLARE
   v_exists NUMBER;
 BEGIN
   SELECT COUNT(*) INTO v_exists FROM dba_tablespaces WHERE tablespace_name = 'USERS';
   IF v_exists = 0 THEN
-    EXECUTE IMMEDIATE 'CREATE TABLESPACE users DATAFILE ''users01.dbf'' SIZE 200M AUTOEXTEND ON NEXT 100M MAXSIZE 4G';
+    EXECUTE IMMEDIATE 'CREATE TABLESPACE users DATAFILE ''/opt/oracle/oradata/users01.dbf'' SIZE 200M REUSE AUTOEXTEND ON NEXT 100M MAXSIZE 4G';
   END IF;
 END;
 /
