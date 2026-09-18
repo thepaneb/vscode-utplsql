@@ -1,9 +1,10 @@
 import './setup.js';
 import assert from 'node:assert';
 import { test } from 'node:test';
-import { parseBreakpointTarget, parseProceedStatus } from '../../dbmsDebug';
+import { parseBreakpointTarget } from '../../dbmsDebug';
 import {
   type DebuggerRuntime,
+  extractParamNames,
   startDebugSession,
   UtplsqlDebugAdapter,
   UtplsqlDebugAdapterDescriptorFactory,
@@ -20,21 +21,18 @@ function makeFakeConn() {
   const calls: string[] = [];
   const conn = {
     calls,
-    execute: async (sql: string) => {
+    execute: async (
+      sql: string,
+    ): Promise<{ rows?: unknown[]; outBinds?: Record<string, unknown> }> => {
       calls.push(sql);
-      if (/DBMS_DEBUG\.DEBUG_ON/.test(sql)) return { outBinds: { session: 'SESS1' } };
-      if (/SYNCHRONIZE|DBMS_DEBUG\.CONTINUE|STEP_(INTO|OVER|OUT)/.test(sql)) {
-        return { outBinds: { status: 2 } }; // BREAK
+      if (/DBMS_DEBUG\.INITIALIZE|DBMS_DEBUG\.DEBUG_ON/.test(sql)) {
+        return { outBinds: { session: 'SESS1' } };
       }
-      if (/GET_RUNTIME_INFO/.test(sql)) return { outBinds: { name: 'APP.CALC', line: 10 } };
-      if (/GET_VALUES/.test(sql)) {
-        return {
-          rows: [
-            ['x', '1', 'NUMBER'],
-            ['y', 'foo', 'VARCHAR2'],
-          ],
-        };
+      if (/DBMS_DEBUG\.CONTINUE|SYNCHRONIZE/.test(sql)) {
+        return { outBinds: { status: 0, stopped: 1, ended: 0, line: 10, unit: 'APP.CALC' } };
       }
+      if (/GET_RUNTIME_INFO/.test(sql)) return { outBinds: { line: 10, unit: 'APP.CALC' } };
+      if (/GET_VALUE/.test(sql)) return { outBinds: { value: '1' } };
       if (/SET_BREAKPOINT/.test(sql)) return { outBinds: { brkpt: 42 } };
       if (/ATTACH_SESSION|DETACH_SESSION|DEBUG_OFF|DELETE_BREAKPOINT/.test(sql)) return {};
       return {};
@@ -116,13 +114,8 @@ test('debugger: ciclo launch -> breakpoint -> stack/scopes/variables -> disconne
   const varResp = sent.find((m) => m.type === 'response' && m.command === 'variables');
   const vars = (varResp?.body as { variables?: { name: string; value: string }[] } | undefined)
     ?.variables;
-  assert.deepStrictEqual(
-    vars?.map((v) => [v.name, v.value]),
-    [
-      ['x', '1'],
-      ['y', 'foo'],
-    ],
-  );
+  // Sem nomes conhecidos (fonte não disponível), GET_VALUE não é chamado.
+  assert.deepStrictEqual(vars, []);
 
   adapter.handleMessage({ type: 'request', seq: 8, command: 'disconnect' });
   await flushN(3);
@@ -229,12 +222,15 @@ test('parseBreakpointTarget: deriva owner/unit/linha do caminho', () => {
   assert.strictEqual(t.line, 12);
 });
 
-test('parseProceedStatus: traduz codigos DBMS_DEBUG', () => {
-  assert.strictEqual(parseProceedStatus(2), 'break');
-  assert.strictEqual(parseProceedStatus(1), 'no_break');
-  assert.strictEqual(parseProceedStatus(5), 'exiting');
-  assert.strictEqual(parseProceedStatus(4), 'killed');
-  assert.strictEqual(parseProceedStatus(99), 'unknown');
+test('extractParamNames: extrai nomes de parâmetros da procedure', () => {
+  const src = 'PROCEDURE calc(a IN NUMBER, b IN OUT VARCHAR2, c VARCHAR2) IS BEGIN NULL; END;';
+  assert.deepStrictEqual(extractParamNames(src, 'calc'), ['a', 'b', 'c']);
+});
+
+test('extractParamNames: sem parênteses ou proc inexistente retorna vazio', () => {
+  assert.deepStrictEqual(extractParamNames('PROCEDURE p IS BEGIN NULL; END;', 'p'), []);
+  assert.deepStrictEqual(extractParamNames('PROCEDURE x(a NUMBER)', 'y'), []);
+  assert.deepStrictEqual(extractParamNames('PROCEDURE x(a NUMBER)', ''), []);
 });
 
 // ── registros do debugger (factory / config provider / startDebugSession) ──
@@ -507,12 +503,8 @@ test('debugger: stepIn e stepOut acionam waitForNextStop correspondente', async 
   adapter.handleMessage({ type: 'request', seq: 4, command: 'stepOut' });
   await flushN(4);
   assert.ok(
-    conn.calls.some((s) => /STEP_INTO/.test(s)),
-    'stepIn deveria chamar STEP_INTO',
-  );
-  assert.ok(
-    conn.calls.some((s) => /STEP_OUT/.test(s)),
-    'stepOut deveria chamar STEP_OUT',
+    conn.calls.some((s) => /DBMS_DEBUG\.CONTINUE/.test(s)),
+    'stepIn/stepOut deveriam usar CONTINUE (com breakflags)',
   );
   adapter.dispose();
 });
@@ -521,7 +513,9 @@ test('debugger: reportStop com status exiting termina', async () => {
   const conn = makeFakeConn();
   const origExecute = conn.execute.bind(conn);
   conn.execute = async (sql: string) => {
-    if (/STEP|CONTINUE|SYNCHRONIZE/.test(sql)) return { outBinds: { status: 5 } };
+    if (/STEP|CONTINUE|SYNCHRONIZE/.test(sql)) {
+      return { outBinds: { status: 0, stopped: 0, ended: 1 } };
+    }
     return origExecute(sql);
   };
   const adapter = new UtplsqlDebugAdapter(makeRuntime(conn));
@@ -667,7 +661,7 @@ test('debugger: setBreakpoints com SET_BREAKPOINT falhando marca verified=false'
   adapter.dispose();
 });
 
-test('debugger: comando next aciona STEP_OVER', async () => {
+test('debugger: comando next usa CONTINUE (break_next_line)', async () => {
   const conn = makeFakeConn();
   const adapter = new UtplsqlDebugAdapter(makeRuntime(conn));
   const sent: Msg[] = [];
@@ -683,8 +677,8 @@ test('debugger: comando next aciona STEP_OVER', async () => {
   adapter.handleMessage({ type: 'request', seq: 3, command: 'next' });
   await flushN(4);
   assert.ok(
-    conn.calls.some((s) => /STEP_OVER/.test(s)),
-    'next deveria chamar STEP_OVER',
+    conn.calls.some((s) => /DBMS_DEBUG\.CONTINUE/.test(s)),
+    'next deveria usar CONTINUE com breakflags',
   );
   adapter.dispose();
 });
@@ -696,7 +690,10 @@ test('debugger: reportStop no_break continua até exiting', async () => {
   conn.execute = async (sql: string) => {
     if (/CONTINUE|SYNCHRONIZE/.test(sql)) {
       continues++;
-      return { outBinds: { status: continues === 1 ? 1 : 5 } }; // no_break -> exiting
+      // 1º: sem evento (no_break); 2º: encerra (ended).
+      return continues === 1
+        ? { outBinds: { status: 0, stopped: 0, ended: 0 } }
+        : { outBinds: { status: 0, stopped: 0, ended: 1 } };
     }
     return origExecute(sql);
   };

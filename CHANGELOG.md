@@ -2,6 +2,15 @@
 
 ## 0.12.1
 
+- **Debugger — DBMS_DEBUG real (PRD-71)**: o cliente usava assinaturas
+  inexistentes (`DEBUG_ON()` como função, `STEP_INTO/OVER/OUT`, `GET_VALUES`,
+  `ATTACH_SESSION(session_id=>,timeout=>)`), então o debug não funcionava contra
+  Oracle real. Reescrito para a API documentada: `INITIALIZE` + `DEBUG_ON`;
+  `ATTACH_SESSION(debug_session_id, diagnostics)`; `SET_BREAKPOINT` com
+  `program_info`; stepping via `CONTINUE` com `breakflags`; variáveis via
+  `GET_VALUE` (nomes conhecidos). Breakpoints passam a ser aplicados após o
+  entry (o DBMS_DEBUG ignora "deferred"). Validado por um teste de integração
+  que executa breakpoint → stop → frame → variável nas 4 versões da matriz.
 - **Script runner — `;` final em statements SQL**: o `;` (terminador do cliente)
   era enviado ao servidor. O Oracle 23ai tolera via OCI, mas 19c/21c rejeitam
   (`ORA-00933`/`ORA-00922`), então scripts SQL falhavam em bancos mais antigos.

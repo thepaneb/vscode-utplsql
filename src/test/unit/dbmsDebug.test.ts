@@ -6,16 +6,15 @@ import {
   DbmsDebugClient,
   type DebugConnection,
   parseBreakpointTarget,
-  parseProceedStatus,
 } from '../../dbmsDebug';
 
 function makeConn(
   executeImpl: (sql: string) => Promise<{ rows?: unknown[]; outBinds?: Record<string, unknown> }>,
 ) {
-  const calls: string[] = [];
+  const calls: { sql: string; binds?: Record<string, unknown> }[] = [];
   const conn: DebugConnection = {
-    execute: async (sql: string) => {
-      calls.push(sql);
+    execute: async (sql: string, binds?: Record<string, unknown>) => {
+      calls.push({ sql, binds });
       return executeImpl(sql);
     },
     close: async () => {},
@@ -23,76 +22,141 @@ function makeConn(
   return { conn, calls };
 }
 
-test('dbmsDebugClient: debugOn retorna session id', async () => {
-  const { conn } = makeConn(async () => ({ outBinds: { session: 'SESS-XYZ' } }));
+test('dbmsDebugClient: debugOn usa INITIALIZE + DEBUG_ON e retorna session id', async () => {
+  const { conn, calls } = makeConn(async () => ({ outBinds: { session: 'SESS-XYZ' } }));
   const client = new DbmsDebugClient(conn);
   assert.strictEqual(await client.debugOn(), 'SESS-XYZ');
+  assert.ok(calls[0].sql.includes('DBMS_DEBUG.INITIALIZE'));
+  assert.ok(calls[0].sql.includes('DBMS_DEBUG.DEBUG_ON'));
+  // DEBUG_ON é procedure: não pode ser usado como função.
+  assert.ok(!/v_id\s*:=\s*DBMS_DEBUG\.DEBUG_ON/.test(calls[0].sql));
 });
 
-test('dbmsDebugClient: setBreakpoint retorna id', async () => {
-  const { conn } = makeConn(async () => ({ outBinds: { brkpt: 42 } }));
+test('dbmsDebugClient: debugOn sem outBinds retorna vazio', async () => {
+  const { conn } = makeConn(async () => ({}));
+  const client = new DbmsDebugClient(conn);
+  assert.strictEqual(await client.debugOn(), '');
+});
+
+test('dbmsDebugClient: setBreakpoint usa program_info e retorna o id', async () => {
+  const { conn, calls } = makeConn(async () => ({ outBinds: { brkpt: 42 } }));
   const client = new DbmsDebugClient(conn);
   const id = await client.setBreakpoint({ owner: 'APP', unit: 'PKG', line: 5 });
   assert.strictEqual(id, 42);
+  assert.ok(calls[0].sql.includes('DBMS_DEBUG.program_info'));
+  assert.ok(calls[0].sql.includes('DBMS_DEBUG.SET_BREAKPOINT'));
 });
 
-test('dbmsDebugClient: setBreakpoint sem outBinds retorna -1', async () => {
+test('dbmsDebugClient: setBreakpoint sem id retorna -1', async () => {
   const { conn } = makeConn(async () => ({}));
   const client = new DbmsDebugClient(conn);
   assert.strictEqual(await client.setBreakpoint({ owner: 'A', unit: 'B', line: 1 }), -1);
 });
 
-test('dbmsDebugClient: deleteBreakpoint nao lanca', async () => {
-  const { conn, calls } = makeConn(async () => ({}));
+test('dbmsDebugClient: deleteBreakpoint retorna status', async () => {
+  const { conn, calls } = makeConn(async () => ({ outBinds: { status: 0 } }));
   const client = new DbmsDebugClient(conn);
-  await client.deleteBreakpoint(7);
-  assert.ok(calls[0].includes('DELETE_BREAKPOINT'));
+  assert.strictEqual(await client.deleteBreakpoint(7), 0);
+  assert.ok(calls[0].sql.includes('DELETE_BREAKPOINT'));
 });
 
-test('dbmsDebugClient: synchronize/continue/stepInto/stepOver/stepOut traduzem BREAK', async () => {
-  const { conn } = makeConn(async () => ({ outBinds: { status: 2 } }));
+test('dbmsDebugClient: continue/step usam CONTINUE e mapeiam a parada', async () => {
+  const { conn, calls } = makeConn(async () => ({
+    outBinds: { status: 0, stopped: 1, ended: 0, line: 10, unit: 'APP.CALC' },
+  }));
   const client = new DbmsDebugClient(conn);
-  assert.strictEqual(await client.synchronize(), 'break');
   assert.strictEqual(await client.continueRun(), 'break');
   assert.strictEqual(await client.stepInto(), 'break');
   assert.strictEqual(await client.stepOver(), 'break');
   assert.strictEqual(await client.stepOut(), 'break');
+  // Não existe STEP_INTO/STEP_OVER/STEP_OUT: tudo é CONTINUE com breakflags.
+  assert.ok(calls.every((c) => c.sql.includes('DBMS_DEBUG.CONTINUE')));
+  assert.ok(calls.every((c) => !/DBMS_DEBUG\.STEP_/.test(c.sql)));
+  const actions = calls.map((c) => c.binds?.action);
+  assert.deepStrictEqual(actions, ['continue', 'into', 'over', 'out']);
 });
 
-test('dbmsDebugClient: step com status EXITING vira exiting', async () => {
-  const { conn } = makeConn(async () => ({ outBinds: { status: 5 } }));
+test('dbmsDebugClient: run com ended=1 vira exiting', async () => {
+  const { conn } = makeConn(async () => ({ outBinds: { status: 0, stopped: 0, ended: 1 } }));
   const client = new DbmsDebugClient(conn);
   assert.strictEqual(await client.stepOver(), 'exiting');
 });
 
-test('dbmsDebugClient: getRuntimeFrame retorna name/line', async () => {
-  const { conn } = makeConn(async () => ({ outBinds: { name: 'APP.CALC', line: 10 } }));
-  const client = new DbmsDebugClient(conn);
-  const frame = await client.getRuntimeFrame(1);
-  assert.deepStrictEqual(frame, { name: 'APP.CALC', line: 10, frameId: 1 });
+test('dbmsDebugClient: run sem evento vira no_break; status de erro vira unknown', async () => {
+  const ok = makeConn(async () => ({ outBinds: { status: 0, stopped: 0, ended: 0 } }));
+  assert.strictEqual(await new DbmsDebugClient(ok.conn).continueRun(), 'no_break');
+  const err = makeConn(async () => ({ outBinds: { status: 1, stopped: 0, ended: 0 } }));
+  assert.strictEqual(await new DbmsDebugClient(err.conn).continueRun(), 'unknown');
 });
 
-test('dbmsDebugClient: getVariables retorna linhas', async () => {
+test('dbmsDebugClient: getRuntimeFrame usa o último frame do CONTINUE', async () => {
   const { conn } = makeConn(async () => ({
-    rows: [
-      ['x', '1', 'NUMBER'],
-      ['y', 'foo', 'VARCHAR2'],
-    ],
+    outBinds: { status: 0, stopped: 1, ended: 0, line: 10, unit: 'APP.CALC' },
   }));
   const client = new DbmsDebugClient(conn);
-  const vars = await client.getVariables();
+  await client.stepOver();
+  assert.deepStrictEqual(await client.getRuntimeFrame(1), {
+    name: 'APP.CALC',
+    line: 10,
+    frameId: 1,
+  });
+});
+
+test('dbmsDebugClient: getRuntimeFrame sem frame prévio consulta GET_RUNTIME_INFO', async () => {
+  const { conn, calls } = makeConn(async () => ({ outBinds: { line: 7, unit: 'S.P' } }));
+  const client = new DbmsDebugClient(conn);
+  assert.deepStrictEqual(await client.getRuntimeFrame(3), { name: 'S.P', line: 7, frameId: 3 });
+  assert.ok(calls[0].sql.includes('GET_RUNTIME_INFO'));
+});
+
+test('dbmsDebugClient: getRuntimeFrame sem outBinds usa anonymous/1', async () => {
+  const { conn } = makeConn(async () => ({}));
+  const client = new DbmsDebugClient(conn);
+  assert.deepStrictEqual(await client.getRuntimeFrame(3), {
+    name: 'anonymous',
+    line: 1,
+    frameId: 3,
+  });
+});
+
+test('dbmsDebugClient: getVariables consulta GET_VALUE por nome', async () => {
+  const { conn, calls } = makeConn(async () => ({ outBinds: { value: '1' } }));
+  const client = new DbmsDebugClient(conn);
+  const vars = await client.getVariables(['x', 'y']);
   assert.strictEqual(vars.length, 2);
-  assert.deepStrictEqual(vars[0], { name: 'x', value: '1', type: 'NUMBER' });
+  assert.deepStrictEqual(vars[0], { name: 'x', value: '1', type: '' });
+  assert.ok(calls.every((c) => c.sql.includes('DBMS_DEBUG.GET_VALUE')));
+  assert.ok(!calls.some((c) => /GET_VALUES/.test(c.sql)));
+});
+
+test('dbmsDebugClient: getVariables sem nomes retorna vazio', async () => {
+  const { conn } = makeConn(async () => ({}));
+  const client = new DbmsDebugClient(conn);
+  assert.deepStrictEqual(await client.getVariables(), []);
+});
+
+test('dbmsDebugClient: getVariables ignora nome com erro (sem debug info)', async () => {
+  let call = 0;
+  const { conn } = makeConn(async () => {
+    call++;
+    if (call === 1) throw new Error('ORA-01337');
+    return { outBinds: { value: 'ok' } };
+  });
+  const client = new DbmsDebugClient(conn);
+  assert.deepStrictEqual(await client.getVariables(['bad', 'good']), [
+    { name: 'good', value: 'ok', type: '' },
+  ]);
 });
 
 test('dbmsDebugClient: attachSession ok retorna true; erro retorna false', async () => {
   let fail = false;
-  const { conn } = makeConn(async () => {
+  const { conn, calls } = makeConn(async () => {
     if (fail) throw new Error('ORA-00001');
     return {};
   });
   const client = new DbmsDebugClient(conn);
   assert.strictEqual(await client.attachSession('S', 30), true);
+  assert.ok(calls[0].sql.includes('ATTACH_SESSION'));
   fail = true;
   assert.strictEqual(await client.attachSession('S', 30), false);
 });
@@ -124,77 +188,7 @@ test('parseBreakpointTarget: extrai owner/unit do caminho', () => {
   assert.deepStrictEqual(t, { owner: 'DEV', unit: 'test_app', line: 0 });
 });
 
-test('parseProceedStatus: valor não numérico retorna unknown', () => {
-  assert.strictEqual(parseProceedStatus('abc'), 'unknown');
-  assert.strictEqual(parseProceedStatus(null), 'unknown');
-});
-
-test('dbmsDebugClient: statuses no_break/attaching/killed/unknown', async () => {
-  const statuses = { no_break: 1, attaching: 3, killed: 4, unknown: 99 };
-  for (const [expected, code] of Object.entries(statuses)) {
-    const { conn } = makeConn(async () => ({ outBinds: { status: code } }));
-    const client = new DbmsDebugClient(conn);
-    assert.strictEqual(await client.stepOver(), expected);
-  }
-});
-
-test('dbmsDebugClient: debugOn sem outBinds retorna vazio', async () => {
-  const { conn } = makeConn(async () => ({}));
-  const client = new DbmsDebugClient(conn);
-  assert.strictEqual(await client.debugOn(), '');
-});
-
-test('dbmsDebugClient: getRuntimeFrame sem outBinds usa anonymous/linha 1', async () => {
-  const { conn } = makeConn(async () => ({}));
-  const client = new DbmsDebugClient(conn);
-  const frame = await client.getRuntimeFrame(3);
-  assert.deepStrictEqual(frame, { name: 'anonymous', line: 1, frameId: 3 });
-});
-
-test('dbmsDebugClient: getVariables com rows em formato objeto', async () => {
-  const { conn } = makeConn(async () => ({
-    rows: [{ NAME: 'x', VAL: '1', TYPE: 'NUMBER' }],
-  }));
-  const client = new DbmsDebugClient(conn);
-  const vars = await client.getVariables();
-  assert.deepStrictEqual(vars, [{ name: 'x', value: '1', type: 'NUMBER' }]);
-});
-
-test('dbmsDebugClient: getVariables com val/type ausentes usa vazio', async () => {
-  const { conn } = makeConn(async () => ({
-    rows: [['x', null, null]],
-  }));
-  const client = new DbmsDebugClient(conn);
-  const vars = await client.getVariables();
-  assert.deepStrictEqual(vars, [{ name: 'x', value: '', type: '' }]);
-});
-
 test('parseBreakpointTarget: extensão desconhecida mantém o nome', () => {
   const t = parseBreakpointTarget('/x/foo.txt', 'S');
   assert.strictEqual(t.unit, 'foo.txt');
-});
-
-test('dbmsDebugClient: steps sem outBinds retornam unknown (?? {})', async () => {
-  const { conn } = makeConn(async () => ({}));
-  const client = new DbmsDebugClient(conn);
-  assert.strictEqual(await client.stepInto(), 'unknown');
-  assert.strictEqual(await client.stepOver(), 'unknown');
-  assert.strictEqual(await client.stepOut(), 'unknown');
-  assert.strictEqual(await client.continueRun(), 'unknown');
-  assert.strictEqual(await client.synchronize(), 'unknown');
-});
-
-test('dbmsDebugClient: getVariables sem rows retorna vazio', async () => {
-  const { conn } = makeConn(async () => ({}));
-  const client = new DbmsDebugClient(conn);
-  assert.deepStrictEqual(await client.getVariables(), []);
-});
-
-test('dbmsDebugClient: getVariables com objeto sem VAL usa vazio', async () => {
-  const { conn } = makeConn(async () => ({
-    rows: [{ NAME: 'x', TYPE: 'NUMBER' }],
-  }));
-  const client = new DbmsDebugClient(conn);
-  const vars = await client.getVariables();
-  assert.deepStrictEqual(vars, [{ name: 'x', value: '', type: 'NUMBER' }]);
 });

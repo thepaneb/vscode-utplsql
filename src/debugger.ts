@@ -1,8 +1,10 @@
+import * as fs from 'node:fs';
 import * as vscode from 'vscode';
 import { getExtensionLocale, readConfig, resolveConnectionNoPrompt } from './config';
 import {
   type BreakpointTarget,
   DbmsDebugClient,
+  type DebugBindCodes,
   type DebugConnection,
   parseBreakpointTarget,
 } from './dbmsDebug';
@@ -28,6 +30,20 @@ async function loadOracledb(): Promise<typeof import('oracledb') | undefined> {
   } catch {
     return undefined;
   }
+}
+
+let bindCodesPromise: Promise<DebugBindCodes | undefined> | undefined;
+
+/** Constantes de bind do driver (para os OUT binds do DBMS_DEBUG). */
+function loadBindCodes(): Promise<DebugBindCodes | undefined> {
+  if (!bindCodesPromise) {
+    bindCodesPromise = loadOracledb().then((oracledb) =>
+      oracledb
+        ? { BIND_OUT: oracledb.BIND_OUT, STRING: oracledb.STRING, NUMBER: oracledb.NUMBER }
+        : undefined,
+    );
+  }
+  return bindCodesPromise;
 }
 
 /** Implementação real: conexões via pool/raw + ut_runner.run no debuggee. */
@@ -63,6 +79,23 @@ export const liveRuntime: DebuggerRuntime = {
     );
   },
 };
+
+/**
+ * Extrai os nomes de parâmetros de uma procedure/function do fonte PL/SQL.
+ * Heurística conservadora usada para alimentar `GET_VALUE` (RF5): não há como
+ * enumerar variáveis locais via DBMS_DEBUG.
+ */
+export function extractParamNames(text: string, procName: string): string[] {
+  if (!procName) return [];
+  const esc = procName.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  const re = new RegExp(`\\b(?:PROCEDURE|FUNCTION)\\s+"?${esc}"?\\s*\\(([^)]*)\\)`, 'i');
+  const m = re.exec(text);
+  if (!m) return [];
+  return m[1]
+    .split(',')
+    .map((p) => p.trim().split(/\s+/)[0].replace(/^"|"$/g, ''))
+    .filter((n) => n && !/^(IN|OUT|IN\s+OUT|NOCOPY)$/i.test(n));
+}
 
 // ---------------------------------------------------------------------------
 // Protocolo (subconjunto do Debug Adapter Protocol)
@@ -108,7 +141,10 @@ export class UtplsqlDebugAdapter implements vscode.DebugAdapter {
   private debuggerClient: DbmsDebugClient | undefined;
   private sessionId: string | undefined;
   private breakpoints = new Map<number, BreakpointTarget>();
+  private pendingBreakpoints: { id: number; target: BreakpointTarget }[] = [];
+  private breakpointsApplied = false;
   private currentFrame: { name: string; line: number } | undefined;
+  private sourcePath = '';
   private terminated = false;
   private controlPromise: Promise<void> = Promise.resolve();
   private breakpointPromise: Promise<void> = Promise.resolve();
@@ -237,16 +273,19 @@ export class UtplsqlDebugAdapter implements vscode.DebugAdapter {
   ): Promise<{ id: number; verified: boolean }[]> {
     const source = (args.source ?? {}) as { path?: string; name?: string };
     const file = source.path ?? source.name ?? '';
+    this.sourcePath = file;
     const lines = (args.breakpoints ?? []) as { line?: number }[];
     const result: { id: number; verified: boolean }[] = [];
 
-    if (!this.debuggerClient) {
-      // Sessão ainda não anexada: guarda os alvos e aplica na init.
+    // Breakpoints precisam ser definidos DEPOIS de o target chegar ao entry
+    // (o DBMS_DEBUG ignora silenciosamente breakpoints "deferred"). Enquanto a
+    // sessão não chega lá, guardamos como pendentes.
+    if (!this.debuggerClient || !this.breakpointsApplied) {
       for (const b of lines) {
         const target = parseBreakpointTarget(file, this.schema);
         target.line = b.line ?? 1;
         const id = ++this.seq;
-        this.breakpoints.set(id, target);
+        this.pendingBreakpoints.push({ id, target });
         result.push({ id, verified: false });
       }
       return result;
@@ -276,14 +315,15 @@ export class UtplsqlDebugAdapter implements vscode.DebugAdapter {
       if (!this.debuggeeConn) {
         throw new Error(t(getExtensionLocale(), 'debug.noConnection'));
       }
-      this.debuggeeClient = new DbmsDebugClient(this.debuggeeConn);
+      const codes = await loadBindCodes();
+      this.debuggeeClient = new DbmsDebugClient(this.debuggeeConn, codes);
       this.sessionId = await this.debuggeeClient.debugOn();
 
       this.debuggerConn = await this.runtime.acquireConnection();
       if (!this.debuggerConn) {
         throw new Error(t(getExtensionLocale(), 'debug.controlFail'));
       }
-      this.debuggerClient = new DbmsDebugClient(this.debuggerConn);
+      this.debuggerClient = new DbmsDebugClient(this.debuggerConn, codes);
       const attached = await this.debuggerClient.attachSession(this.sessionId, 30);
       if (!attached) {
         throw new Error(t(getExtensionLocale(), 'debug.attachFail'));
@@ -298,12 +338,34 @@ export class UtplsqlDebugAdapter implements vscode.DebugAdapter {
       if (this.config) {
         void this.runTestInBackground(this.config);
       }
+      // Espera o interpreter iniciar e só então instala os breakpoints
+      // (deferred breakpoints são ignorados pelo DBMS_DEBUG).
+      await this.debuggerClient.synchronize().catch(() => {});
+      await this.flushPendingBreakpoints();
+      this.breakpointsApplied = true;
       this.sendEvent('stopped', { reason: 'entry', threadId: 1, allThreadsStopped: true });
     } catch (e) {
       const msg = e instanceof Error ? e.message : String(e);
       this.sendEvent('output', { category: 'console', output: `${msg}\n` });
       this.sendEvent('terminated', {});
       void this.teardown();
+    }
+  }
+
+  /** Instala os breakpoints que chegaram antes do entry. */
+  private async flushPendingBreakpoints(): Promise<void> {
+    if (!this.debuggerClient) return;
+    const pending = this.pendingBreakpoints;
+    this.pendingBreakpoints = [];
+    for (const { id, target } of pending) {
+      try {
+        const bkId = await this.debuggerClient.setBreakpoint(target);
+        const verified = bkId >= 0;
+        this.breakpoints.set(id, target);
+        this.sendEvent('breakpoint', { reason: 'changed', breakpoint: { id, verified } });
+      } catch {
+        /* ignora alvo inválido */
+      }
     }
   }
 
@@ -345,7 +407,9 @@ export class UtplsqlDebugAdapter implements vscode.DebugAdapter {
   }
 
   private async reportStop(status: string): Promise<void> {
-    if (status === 'exiting' || status === 'killed') {
+    // 'unknown' indica erro/timeout do CONTINUE — encerra em vez de re-continuar
+    // (evita loop infinito quando o debugger não responde).
+    if (status === 'exiting' || status === 'killed' || status === 'unknown') {
       this.sendEvent('terminated', {});
       void this.teardown();
       return;
@@ -366,8 +430,18 @@ export class UtplsqlDebugAdapter implements vscode.DebugAdapter {
 
   private async readVariables(): Promise<{ name: string; value: string; type: string }[]> {
     if (!this.debuggerClient) return [];
+    let names: string[] = [];
     try {
-      return await this.debuggerClient.getVariables();
+      if (this.sourcePath && this.currentFrame) {
+        const proc = this.currentFrame.name.split('.').pop() ?? '';
+        const text = fs.readFileSync(this.sourcePath, 'utf-8');
+        names = extractParamNames(text, proc);
+      }
+    } catch {
+      /* fonte indisponível: segue sem nomes */
+    }
+    try {
+      return await this.debuggerClient.getVariables(names);
     } catch {
       return [];
     }

@@ -2,7 +2,7 @@
 
 | Campo | Valor |
 |---|---|
-| Status | Em desenvolvimento |
+| Status | Concluído |
 | Autor | Gil Cleber Barboza |
 | Data | 2026-09-18 |
 | Componente | Extensão `paneb.vscode-utplsql` |
@@ -204,9 +204,12 @@ nomes a exibir.)
   um ciclo breakpoint → stop → frame.
 - `npm test`, `npm run test:coverage` e `npm run test:integration` verdes.
 
-## 11. Questões em aberto
+## 11. Decisões e questões em aberto
 
-- Vale migrar para `DBMS_DEBUG_JDWP` (protocolo padrão, não deprecado) já nesta
-  PRD, ou manter `DBMS_DEBUG`?
-- De onde obter a lista de variáveis para `GET_VALUE` (parse do fonte da suíte,
-  `ALL_SOURCE`, ou setting)?
+- **DBMS_DEBUG** mantido (assinaturas idênticas em 11.2–26ai); migrar para o
+  `DBMS_DEBUG_JDWP` (não deprecado, mas exige cliente JDWP/TCP) fica para uma
+  PRD futura, se houver demanda.
+- **Variáveis**: `GET_VALUE` para **nomes conhecidos** extraídos dos parâmetros
+  da procedure atual no fonte (`extractParamNames`); sem nomes, lista vazia.
+- Melhoria futura: enumerar variáveis locais (exigiria parse mais completo do
+  corpo e o mapa de linhas do `GET_LINE_MAP`).
