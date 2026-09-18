@@ -2,11 +2,11 @@
 
 | Campo | Valor |
 |---|---|
-| Status | Proposto |
+| Status | Em desenvolvimento |
 | Autor | Gil Cleber Barboza |
 | Data | 2026-09-18 |
 | Componente | Extensão `paneb.vscode-utplsql` |
-| Versão alvo | 0.13.0 |
+| Versão alvo | 0.12.1 |
 | Arquivos afetados | `src/dbmsDebug.ts`, `src/debugger.ts`, `src/test/unit/dbmsDebug.test.ts`, `src/test/unit/debugger.test.ts`, `src/test/integration/debuggerE2E.test.ts`, `CHANGELOG.md` |
 | Esforço estimado | 3–5 dias |
 | Complexidade | Alta |

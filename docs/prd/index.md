@@ -137,7 +137,9 @@ CONCLUIR
 
 ### 🟡 Em desenvolvimento
 
-_(vazio — nenhuma PRD em desenvolvimento)_
+| # | PRD | Versão alvo | Data |
+|---|---|---|---|
+| 71 | [Corrigir o debugger para o DBMS_DEBUG real](in-progress/prd-71-debugger-dbms-debug-fix.md) | 0.12.1 | 2026-09-18 |
 
 ### 🔵 Aprovados
 
@@ -151,7 +153,6 @@ _(vazio — nenhuma PRD aprovada)_
 |---|---|---|---|
 | 47 | [Node 26 no toolchain de desenvolvimento](proposed/prd-47-node-26-toolchain.md) | 0.13.0 | 2026-08-29 |
 | 69 | [Runner Oracle: binds tipados, `a_tags` e validação de reporters](proposed/prd-69-oracle-runner-typed-binds.md) | 0.13.0 | 2026-09-15 |
-| 71 | [Corrigir o debugger para o DBMS_DEBUG real](proposed/prd-71-debugger-dbms-debug-fix.md) | 0.13.0 | 2026-09-18 |
 
 #### 0.14.0
 
@@ -249,7 +250,7 @@ docs/prd/
 ├── approved/         ← aprovados, aguardando implementação
 │   └── (vazio)
 ├── in-progress/      ← sendo implementados agora
-│   └── (vazio)
+│   └── prd-71-debugger-dbms-debug-fix.md
 └── proposed/         ← em avaliação
     ├── prd-47-node-26-toolchain.md
     ├── prd-50-auto-run-on-save.md
@@ -264,8 +265,7 @@ docs/prd/
     ├── prd-59-scaffold-suite.md
     ├── prd-60-branch-coverage-investigation.md
     ├── prd-61-cli-auto-provision.md
-    ├── prd-69-oracle-runner-typed-binds.md
-    └── prd-71-debugger-dbms-debug-fix.md
+    └── prd-69-oracle-runner-typed-binds.md
 ```
 
 ---
