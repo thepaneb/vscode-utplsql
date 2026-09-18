@@ -16,6 +16,7 @@ import {
   type ScriptDb,
   type SqlStatement,
   splitScript,
+  stripSqlTerminator,
   summarizeStatement,
 } from '../../scriptRunner';
 
@@ -212,6 +213,19 @@ test('splitScript: aspas escapadas dentro de string não quebram o split', () =>
   assert.ok(stmts[0].text.includes(`'a''b'`));
 });
 
+test('splitScript: marca plsql (bloco) vs sql (statement)', () => {
+  const stmts = splitScript('BEGIN\n  NULL;\nEND;\n/\nSELECT 1;');
+  assert.strictEqual(stmts.length, 2);
+  assert.strictEqual(stmts[0].plsql, true);
+  assert.strictEqual(stmts[1].plsql, false);
+});
+
+test('stripSqlTerminator: remove o ; final (e espaços)', () => {
+  assert.strictEqual(stripSqlTerminator('SELECT 1;'), 'SELECT 1');
+  assert.strictEqual(stripSqlTerminator('SELECT 1 ;  '), 'SELECT 1');
+  assert.strictEqual(stripSqlTerminator('SELECT 1'), 'SELECT 1');
+});
+
 test('summarizeStatement: primeira linha truncada', () => {
   assert.strictEqual(summarizeStatement('SELECT 1\nFROM t'), 'SELECT 1');
   assert.strictEqual(summarizeStatement(`SELECT ${'x'.repeat(100)}`).length, 80);
@@ -276,6 +290,18 @@ test('executeScript: saída por statement com header, ok e rowsAffected', async 
   assert.match(lines[1], /^\[1\] ok \d+ms — SELECT 1; \(3 linhas afetadas\)$/);
   assert.match(lines[2], /^\[2\] ok \d+ms — SELECT 2; \(3 linhas afetadas\)$/);
   assert.ok(lines[3].startsWith('Concluído'));
+});
+
+test('executeScript: remove o ; final de SQL e mantém o de PL/SQL', async () => {
+  const db = fakeDb();
+  const { output } = collector();
+  await executeScript(() => Promise.resolve(db), {
+    connection: 'u/p@//h:1521/s',
+    statements: splitScript('CREATE TABLE t (id NUMBER);\nBEGIN\n  NULL;\nEND;\n/'),
+    output,
+  });
+  assert.strictEqual(db.calls[0], 'CREATE TABLE t (id NUMBER)');
+  assert.strictEqual(db.calls[1], 'BEGIN\n  NULL;\nEND;');
 });
 
 test('executeScript: stopOnError interrompe na primeira falha', async () => {

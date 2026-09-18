@@ -19,6 +19,8 @@ export interface SqlStatement {
   text: string;
   index: number;
   line: number;
+  /** `true` para blocos PL/SQL (terminados por `/`); `false`/ausente para SQL. */
+  plsql?: boolean;
 }
 
 /**
@@ -112,7 +114,7 @@ export function splitScript(text: string): SqlStatement[] {
     const text = buf.trim();
     // Ignora vazio, só-comentário e restos de separador (`;` ou `/` soltos).
     if (text && !/^[;\s/]+$/.test(text) && stripComments(text).trim()) {
-      statements.push({ text, index: statements.length, line: startLine });
+      statements.push({ text, index: statements.length, line: startLine, plsql: isPlSql === true });
     }
     buf = '';
     isPlSql = undefined;
@@ -282,7 +284,12 @@ export function splitScript(text: string): SqlStatement[] {
     while (lines.length > 1 && /^\s*(\/)?\s*$/.test(lines[lines.length - 1])) lines.pop();
     const body = lines.join('\n').trim();
     if (body && !/^[;\s/]+$/.test(body) && stripComments(body).trim()) {
-      statements.push({ text: body, index: statements.length, line: startLine });
+      statements.push({
+        text: body,
+        index: statements.length,
+        line: startLine,
+        plsql: PLSQL_START_RE.test(statementHead(body)),
+      });
     }
   }
   return statements;
@@ -292,6 +299,15 @@ export function splitScript(text: string): SqlStatement[] {
 export function summarizeStatement(text: string, max = 80): string {
   const first = text.split('\n')[0].trim();
   return first.length > max ? `${first.slice(0, max - 1)}…` : first;
+}
+
+/**
+ * Remove o `;` final (terminador do cliente SQL*Plus) de um statement SQL.
+ * O Oracle 23ai tolera o `;` via OCI, mas 19c/21c rejeitam (ORA-00933/00922).
+ * Blocos PL/SQL não passam por aqui: o `;` do `END;` é sintaxe.
+ */
+export function stripSqlTerminator(text: string): string {
+  return text.replace(/;\s*$/, '').trimEnd();
 }
 
 /** Extensões suportadas pelos comandos de script (PRD-62). */
@@ -412,8 +428,9 @@ export async function executeScript(
     for (const stmt of statements) {
       if (result.cancelled) break;
       const start = Date.now();
+      const sql = stmt.plsql ? stmt.text : stripSqlTerminator(stmt.text);
       try {
-        const execResult = await db.execute(stmt.text, { autoCommit });
+        const execResult = await db.execute(sql, { autoCommit });
         const ms = Date.now() - start;
         result.executed++;
         result.ok++;
