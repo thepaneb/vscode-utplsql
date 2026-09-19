@@ -111,7 +111,7 @@ Extensia se conectează direct prin Oracle, citește rapoartele (JUnit + Coverag
 | `utplsql.oraclePoolPingInterval` | `60` | Secunde între verificările de sănătate ale conexiunilor idle din pool (node-oracledb). `0` = ping la fiecare checkout. |
 | `utplsql.oracleClientMode` | `thin` | Modul driverului: `thin` (JavaScript pur, fără client nativ) sau `thick` (folosește Oracle Instant Client). Folosiți `thick` doar pentru bazele care necesită NNE (Native Network Encryption); necesită `utplsql.oracleClientLibDir` și reîncărcarea ferestrei. |
 | `utplsql.oracleClientLibDir` | `""` | Directorul Oracle Instant Client. Obligatoriu când `utplsql.oracleClientMode` este `thick` (ex. `C:\oracle\instantclient_23_5`). |
-| Debug nu se oprește la punctul de întrerupere | Pachet fără informații de depanare sau granturi de depanare lipsă | Compilați cu `PLSQL_OPTIMIZE_LEVEL <= 1` (sau `ALTER PACKAGE ... COMPILE DEBUG`) și acordați `DEBUG CONNECT SESSION` + `EXECUTE ON SYS.DBMS_DEBUG` |
+| Debug nu se oprește la punctul de întrerupere | Pachet fără informații de depanare sau granturi de depanare lipsă | Compilați cu `PLSQL_OPTIMIZE_LEVEL <= 1` (sau `ALTER PACKAGE ... COMPILE DEBUG PLSQL_OPTIMIZE_LEVEL = 1`) și acordați `DEBUG CONNECT SESSION` + `EXECUTE ON SYS.DBMS_DEBUG`. Punctele de întrerupere din `test_*.pkb` pot să nu se declanșeze (utPLSQL rulează testele prin SQL dinamic); puneți-le în codul testat. |
 | `utplsql.oracleClientConfigDir` | `""` | Directorul de configurare Oracle (TNS_ADMIN) cu `sqlnet.ora`/`tnsnames.ora`. Opțional; folosit doar de driverul thick. |
 | `utplsql.organization` | `file` | Organizarea arborelui: `file` (după cale) sau `schema` (Schema > Package > Suite > Test). În modul `schema` suitele sunt descoperite și din baza de date (`ALL_OBJECTS`/`ALL_SOURCE`) atunci când fișierele `.pks` nu sunt în workspace — cu URI virtual `utplsql-db:/` (fără CodeLens/decorări/salt la eșec). |
 | `utplsql.organization.schemaPattern` | `db/{schema}/**` | Model glob pentru extragerea schemei din cale. Folosește `{schema}` ca substituent. În modul `schema`, directoarele de sub baza modelului (ex.: `db/*`) definesc schemele interogate în baza de date. |
@@ -124,7 +124,7 @@ Extensia se conectează direct prin Oracle, citește rapoartele (JUnit + Coverag
 | `utplsql.debugger.enabled` | `true` | Activează depanarea testelor PL/SQL (`DBMS_DEBUG`). Necesită `node-oracledb` + granturi. Compilați pachetul țintă cu informații de depanare (`PLSQL_OPTIMIZE_LEVEL <= 1`) și acordați `DEBUG CONNECT SESSION` + `EXECUTE ON SYS.DBMS_DEBUG`. |
 | `utplsql.debugger.stopOnException` | `true` | Se oprește la excepțiile PL/SQL în timpul depanării. |
 | `utplsql.debugger.timeoutSeconds` | `300` | Timeout (s) al sesiunii de depanare. |
-| `utplsql.debugger.compileOnDebug` | `false` | Compilează obiectul cu informații de depanare (`ALTER … COMPILE DEBUG`) înainte de a începe sesiunea de depanare. |
+| `utplsql.debugger.compileOnDebug` | `false` | Compilează obiectul cu informații de depanare (`ALTER … COMPILE DEBUG PLSQL_OPTIMIZE_LEVEL = 1`) înainte de a începe sesiunea de depanare. |
 | `utplsql.scriptRunner.stopOnError` | `true` | Stops script execution on the first failure (`false` = keeps logging the rest). |
 | `utplsql.scriptRunner.autoCommit` | `true` | `autoCommit` on each script statement. |
 | `utplsql.scriptRunner.filePattern` | `**/*.{sql,pks,pkb,fnc,prc,trg}` | Globs to list files when running a script folder. |

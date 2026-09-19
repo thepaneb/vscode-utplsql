@@ -147,7 +147,8 @@ Além do `ALTER … COMPILE DEBUG` manual, a extensão oferece:
 
 - `utplsql.debugger.enabled` = `true` (default).
 - Pacote-alvo compilado com informação de debug
-  (`PLSQL_OPTIMIZE_LEVEL <= 1`, ou `ALTER PACKAGE ... COMPILE DEBUG`).
+  (`PLSQL_OPTIMIZE_LEVEL <= 1`, ou `ALTER PACKAGE ... COMPILE DEBUG
+  PLSQL_OPTIMIZE_LEVEL = 1`, ou o comando `utPLSQL: Compile for Debug`).
 - Grants: `DEBUG CONNECT SESSION` e `EXECUTE ON SYS.DBMS_DEBUG`.
 - `oracledb` disponível (o VSIX já embarca o driver).
 

@@ -103,6 +103,12 @@ interactively.
 
 ![Extension Development Host with Testing view](images/dev-host-testing.png)
 
+> If the **Extension Host** output shows `TypeError: Missing dataLength in event`
+> (`node:inspector`), it comes from the JS debugger's experimental *Network
+> View*, not from this extension. `.vscode/launch.json` already sets
+> `"experimentalNetworking": "off"`; if it still appears, set
+> `"debug.javascript.enableNetworkView": false` in your User settings.
+
 ## Integration tests with a real database
 
 Create a `.env` file in the project root (gitignored):

@@ -33,6 +33,19 @@ Ferramentas e infraestrutura de desenvolvimento do projeto.
 | `npm run pr:create` | Cria pull request (`scripts/create-pr.cjs`) |
 | `npm run publish` | Publicação é **exclusiva via GitHub release**; o script é o helper do workflow |
 
+## Depurar a extensão (F5)
+
+**F5** abre o **Extension Development Host** (`.vscode/launch.json`,
+`preLaunchTask: extension: build`). No host, abra um projeto PL/SQL e use a
+extensão normalmente.
+
+> Se o canal **Extension Host** mostrar
+> `TypeError: Missing dataLength in event` (`node:inspector`), é o inspetor do
+> Node disparado pela *Network View* experimental do debugger JavaScript — **não
+> é da extensão**. O `.vscode/launch.json` já usa
+> `"experimentalNetworking": "off"`; se persistir, defina
+> `"debug.javascript.enableNetworkView": false` nas User settings.
+
 ## Bundling com esbuild (PRD-45, ajustes na PRD-46)
 
 - `"main": "./dist/extension.js"` — bundle único gerado por `esbuild.config.mjs`

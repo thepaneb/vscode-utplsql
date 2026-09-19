@@ -110,7 +110,7 @@ Test Explorer-у **како се сваки тест заврши**. VSIX већ
 | `utplsql.oraclePoolPingInterval` | `60` | Секунде између провера здравља неактивних веза у пулу (node-oracledb). `0` = ping при сваком преузимању. |
 | `utplsql.oracleClientMode` | `thin` | Режим драјвера: `thin` (чист JavaScript, без нативног клијента) или `thick` (користи Oracle Instant Client). Користите `thick` само за базе које захтевају NNE (Native Network Encryption); захтева `utplsql.oracleClientLibDir` и поновно учитавање прозора. |
 | `utplsql.oracleClientLibDir` | `""` | Директоријум Oracle Instant Client-а. Обавезан када је `utplsql.oracleClientMode` постављен на `thick` (нпр. `C:\oracle\instantclient_23_5`). |
-| Дебагер се не зауставља на тачки прекида | Пакет без debug информација или недостају debug дозволе | Компајлирајте са `PLSQL_OPTIMIZE_LEVEL <= 1` (или `ALTER PACKAGE ... COMPILE DEBUG`) и доделите `DEBUG CONNECT SESSION` + `EXECUTE ON SYS.DBMS_DEBUG` |
+| Дебагер се не зауставља на тачки прекида | Пакет без debug информација или недостају debug дозволе | Компајлирајте са `PLSQL_OPTIMIZE_LEVEL <= 1` (или `ALTER PACKAGE ... COMPILE DEBUG PLSQL_OPTIMIZE_LEVEL = 1`) и доделите `DEBUG CONNECT SESSION` + `EXECUTE ON SYS.DBMS_DEBUG`. Тачке прекида у `test_*.pkb` можда неће ухватити (utPLSQL покреће тестове преко динамичког SQL-а); поставите их у тестирани код. |
 | `utplsql.oracleClientConfigDir` | `""` | Директоријум Oracle конфигурације (TNS_ADMIN) са `sqlnet.ora`/`tnsnames.ora`. Опционо; користи га само thick режим. |
 | `utplsql.organization` | `file` | Организација стабла: `file` (по путањи) или `schema` (Schema > Package > Suite > Test). У `schema` режиму, суитови се такође откривају из базе података (`ALL_OBJECTS`/`ALL_SOURCE`) када `.pks` датотеке нису у радном простору — са виртуелним URI-јем `utplsql-db:/` (без CodeLens-а/декорација/скока до грешке). |
 | `utplsql.organization.schemaPattern` | `db/{schema}/**` | Glob узорак за издвајање шеме из путање. Користите `{schema}` као placeholder. У `schema` режиму, директоријуми испод основе узорка (нпр. `db/*`) дефинишу шеме упитане у бази података. |
@@ -123,7 +123,7 @@ Test Explorer-у **како се сваки тест заврши**. VSIX већ
 | `utplsql.debugger.enabled` | `true` | Омогућава отклањање грешака PL/SQL тестова (`DBMS_DEBUG`). Захтева `node-oracledb` + grant-ове. Компајлирајте циљни пакет са debug информацијама (`PLSQL_OPTIMIZE_LEVEL <= 1`) и доделите `DEBUG CONNECT SESSION` + `EXECUTE ON SYS.DBMS_DEBUG`. |
 | `utplsql.debugger.stopOnException` | `true` | Паузира на PL/SQL изузецима током отклањања грешака. |
 | `utplsql.debugger.timeoutSeconds` | `300` | Тимеаут (с) сесије отклањања грешака. |
-| `utplsql.debugger.compileOnDebug` | `false` | Компилира објекат са информацијама за отстрањивање грешака (`ALTER … COMPILE DEBUG`) пре покретања сесије за отстрањивање грешака. |
+| `utplsql.debugger.compileOnDebug` | `false` | Компилира објекат са информацијама за отстрањивање грешака (`ALTER … COMPILE DEBUG PLSQL_OPTIMIZE_LEVEL = 1`) пре покретања сесије за отстрањивање грешака. |
 | `utplsql.scriptRunner.stopOnError` | `true` | Stops script execution on the first failure (`false` = keeps logging the rest). |
 | `utplsql.scriptRunner.autoCommit` | `true` | `autoCommit` on each script statement. |
 | `utplsql.scriptRunner.filePattern` | `**/*.{sql,pks,pkb,fnc,prc,trg}` | Globs to list files when running a script folder. |

@@ -111,7 +111,7 @@ Test Explorer에 나타납니다.
 | `utplsql.oraclePoolPingInterval` | `60` | 유휴 풀 연결의 상태 검사 간격(초)(node-oracledb). `0` = 모든 체크아웃 시 ping. |
 | `utplsql.oracleClientMode` | `thin` | 드라이버 모드: `thin`(순수 JavaScript, 네이티브 클라이언트 불필요) 또는 `thick`(Oracle Instant Client 사용). `thick`는 NNE(Native Network Encryption)가 필요한 데이터베이스에만 사용하십시오. `utplsql.oracleClientLibDir`와 창 새로 고침이 필요합니다. |
 | `utplsql.oracleClientLibDir` | `""` | Oracle Instant Client 디렉터리. `utplsql.oracleClientMode`가 `thick`일 때 필수입니다(예: `C:\oracle\instantclient_23_5`). |
-| 디버그가 브레이크포인트에서 멈추지 않음 | 디버그 정보 없이 컴파일된 패키지, 또는 디버그 권한 누락 | `PLSQL_OPTIMIZE_LEVEL <= 1`로 컴파일(또는 `ALTER PACKAGE ... COMPILE DEBUG`)하고 `DEBUG CONNECT SESSION` + `EXECUTE ON SYS.DBMS_DEBUG` 부여 |
+| 디버그가 브레이크포인트에서 멈추지 않음 | 디버그 정보 없이 컴파일된 패키지, 또는 디버그 권한 누락 | `PLSQL_OPTIMIZE_LEVEL <= 1`로 컴파일(또는 `ALTER PACKAGE ... COMPILE DEBUG PLSQL_OPTIMIZE_LEVEL = 1`)하고 `DEBUG CONNECT SESSION` + `EXECUTE ON SYS.DBMS_DEBUG` 부여. `test_*.pkb`의 브레이크포인트가 적중하지 않을 수 있습니다(utPLSQL은 동적 SQL로 테스트를 실행). 테스트 대상 코드에 설정하세요. |
 | `utplsql.oracleClientConfigDir` | `""` | `sqlnet.ora`/`tnsnames.ora`가 있는 Oracle 구성 디렉터리(TNS_ADMIN). 선택 사항이며 thick 모드에서만 사용됩니다. |
 | `utplsql.organization` | `file` | 트리 구성: `file`(경로별) 또는 `schema`(Schema > Package > Suite > Test). `schema` 모드에서 워크스페이스에 `.pks` 파일이 없으면 스위트가 데이터베이스(`ALL_OBJECTS`/`ALL_SOURCE`)에서도 발견됩니다 — 가상 URI `utplsql-db:/`(CodeLens/데코레이션/실패 지점 이동 없음). |
 | `utplsql.organization.schemaPattern` | `db/{schema}/**` | 경로에서 스키마를 추출하는 glob 패턴. `{schema}`를 자리 표시자로 사용하세요. `schema` 모드에서 패턴 기본 아래의 디렉터리(예: `db/*`)는 데이터베이스에서 조회할 스키마를 정의합니다. |
@@ -124,7 +124,7 @@ Test Explorer에 나타납니다.
 | `utplsql.debugger.enabled` | `true` | PL/SQL 테스트 디버깅(`DBMS_DEBUG`)을 활성화합니다. `node-oracledb` + 권한 필요. 대상 패키지를 디버그 정보로 컴파일하고(`PLSQL_OPTIMIZE_LEVEL <= 1`) `DEBUG CONNECT SESSION` + `EXECUTE ON SYS.DBMS_DEBUG`를 부여하세요. |
 | `utplsql.debugger.stopOnException` | `true` | 디버깅 중 PL/SQL 예외에서 일시 중지합니다. |
 | `utplsql.debugger.timeoutSeconds` | `300` | 디버그 세션의 시간 제한(초). |
-| `utplsql.debugger.compileOnDebug` | `false` | 디버그 세션을 시작하기 전에 개체를 디버그 정보와 함께 컴파일합니다(`ALTER … COMPILE DEBUG`). |
+| `utplsql.debugger.compileOnDebug` | `false` | 디버그 세션을 시작하기 전에 개체를 디버그 정보와 함께 컴파일합니다(`ALTER … COMPILE DEBUG PLSQL_OPTIMIZE_LEVEL = 1`). |
 | `utplsql.scriptRunner.stopOnError` | `true` | Stops script execution on the first failure (`false` = keeps logging the rest). |
 | `utplsql.scriptRunner.autoCommit` | `true` | `autoCommit` on each script statement. |
 | `utplsql.scriptRunner.filePattern` | `**/*.{sql,pks,pkb,fnc,prc,trg}` | Globs to list files when running a script folder. |

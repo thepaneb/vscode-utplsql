@@ -110,7 +110,7 @@ Test Explorer, **sobald jeder Test fertig ist**.
 | `utplsql.oraclePoolPingInterval` | `60` | Sekunden zwischen den Health-Checks der Verbindungen im Leerlauf (node-oracledb). `0` = Ping bei jedem Checkout. |
 | `utplsql.oracleClientMode` | `thin` | Treibermodus: `thin` (reines JavaScript, kein nativer Client) oder `thick` (nutzt den Oracle Instant Client). `thick` nur für Datenbanken mit NNE (Native Network Encryption); erfordert `utplsql.oracleClientLibDir` und ein Neuladen des Fensters. |
 | `utplsql.oracleClientLibDir` | `""` | Verzeichnis des Oracle Instant Client. Erforderlich, wenn `utplsql.oracleClientMode` `thick` ist (z. B. `C:\oracle\instantclient_23_5`). |
-| Debug hält nicht am Breakpoint an | Package ohne Debug-Infos kompiliert oder fehlende Debug-Grants | Mit `PLSQL_OPTIMIZE_LEVEL <= 1` kompilieren (oder `ALTER PACKAGE ... COMPILE DEBUG`) und `DEBUG CONNECT SESSION` + `EXECUTE ON SYS.DBMS_DEBUG` gewähren |
+| Debug hält nicht am Breakpoint an | Package ohne Debug-Infos kompiliert oder fehlende Debug-Grants | Mit `PLSQL_OPTIMIZE_LEVEL <= 1` kompilieren (oder `ALTER PACKAGE ... COMPILE DEBUG PLSQL_OPTIMIZE_LEVEL = 1`) und `DEBUG CONNECT SESSION` + `EXECUTE ON SYS.DBMS_DEBUG` gewähren. Breakpoints in `test_*.pkb` greifen ggf. nicht (utPLSQL führt Tests per dynamischem SQL aus); setzen Sie sie im getesteten Code. |
 | `utplsql.oracleClientConfigDir` | `""` | Oracle-Konfigurationsverzeichnis (TNS_ADMIN) mit `sqlnet.ora`/`tnsnames.ora`. Optional; wird nur im Thick-Modus verwendet. |
 | `utplsql.organization` | `file` | Baumorganisation: `file` (nach Pfad) oder `schema` (Schema > Package > Suite > Test). Im `schema`-Modus werden Suiten auch aus der Datenbank (`ALL_OBJECTS`/`ALL_SOURCE`) ermittelt, wenn keine `.pks`-Dateien im Arbeitsbereich liegen — mit virtuellem URI `utplsql-db:/` (kein CodeLens/keine Dekorationen/kein Sprung zum Fehler). |
 | `utplsql.organization.schemaPattern` | `db/{schema}/**` | Glob-Muster zum Extrahieren des Schemas aus dem Pfad. Verwenden Sie `{schema}` als Platzhalter. Im `schema`-Modus definieren die Verzeichnisse unterhalb der Musterbasis (z. B. `db/*`) die in der Datenbank abgefragten Schemas. |
@@ -123,7 +123,7 @@ Test Explorer, **sobald jeder Test fertig ist**.
 | `utplsql.debugger.enabled` | `true` | Aktiviert das Debugging von PL/SQL-Tests (`DBMS_DEBUG`). Erfordert `node-oracledb` + Grants. Kompilieren Sie das Ziel-Package mit Debug-Infos (`PLSQL_OPTIMIZE_LEVEL <= 1`) und gewähren Sie `DEBUG CONNECT SESSION` + `EXECUTE ON SYS.DBMS_DEBUG`. |
 | `utplsql.debugger.stopOnException` | `true` | Hält bei PL/SQL-Ausnahmen während des Debuggens an. |
 | `utplsql.debugger.timeoutSeconds` | `300` | Timeout (s) der Debug-Sitzung. |
-| `utplsql.debugger.compileOnDebug` | `false` | Kompiliert das Objekt mit Debug-Informationen (`ALTER … COMPILE DEBUG`), bevor die Debug-Sitzung gestartet wird. |
+| `utplsql.debugger.compileOnDebug` | `false` | Kompiliert das Objekt mit Debug-Informationen (`ALTER … COMPILE DEBUG PLSQL_OPTIMIZE_LEVEL = 1`), bevor die Debug-Sitzung gestartet wird. |
 | `utplsql.scriptRunner.stopOnError` | `true` | Stops script execution on the first failure (`false` = keeps logging the rest). |
 | `utplsql.scriptRunner.autoCommit` | `true` | `autoCommit` on each script statement. |
 | `utplsql.scriptRunner.filePattern` | `**/*.{sql,pks,pkb,fnc,prc,trg}` | Globs to list files when running a script folder. |

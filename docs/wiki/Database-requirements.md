@@ -71,8 +71,12 @@ GRANT EXECUTE ON SYS.DBMS_DEBUG  TO <schema_that_runs_the_tests>;
 
 The target package must also be compiled with **debug information**: Oracle
 strips it at `PLSQL_OPTIMIZE_LEVEL = 2` (the default). Compile with
-`PLSQL_OPTIMIZE_LEVEL <= 1` (or `ALTER PACKAGE <pkg> COMPILE DEBUG`), otherwise
-breakpoints are silently ignored.
+`PLSQL_OPTIMIZE_LEVEL <= 1` (or `ALTER PACKAGE <pkg> COMPILE DEBUG
+PLSQL_OPTIMIZE_LEVEL = 1`, or use the **`utPLSQL: Compile for Debug`**
+command), otherwise breakpoints are silently ignored.
+
+> `ALTER ... COMPILE DEBUG` alone only sets `PLSQL_DEBUG` and keeps the
+> optimizer level — it must be combined with `PLSQL_OPTIMIZE_LEVEL = 1`.
 
 ## Full verification
 

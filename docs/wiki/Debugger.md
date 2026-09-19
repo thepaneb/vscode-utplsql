@@ -89,14 +89,15 @@ then compiles the package with debug info before starting the debug session.
 
 - `utplsql.debugger.enabled` = `true` (default).
 - Target package compiled with debug information
-  (`PLSQL_OPTIMIZE_LEVEL <= 1`, or `ALTER PACKAGE ... COMPILE DEBUG`).
+  (`PLSQL_OPTIMIZE_LEVEL <= 1`, or `ALTER PACKAGE ... COMPILE DEBUG
+  PLSQL_OPTIMIZE_LEVEL = 1`).
 - Grants: `GRANT DEBUG CONNECT SESSION` and `GRANT EXECUTE ON SYS.DBMS_DEBUG`.
   See [Database Requirements](Database-requirements).
 
 ```sql
 GRANT DEBUG CONNECT SESSION TO <schema>;
 GRANT EXECUTE ON SYS.DBMS_DEBUG TO <schema>;
-ALTER PACKAGE <schema>.<package> COMPILE DEBUG;
+ALTER PACKAGE <schema>.<package> COMPILE DEBUG PLSQL_OPTIMIZE_LEVEL = 1;
 ```
 
 ## Settings

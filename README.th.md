@@ -110,7 +110,7 @@ Test Explorer **เมื่อแต่ละเทสต์เสร็จส�
 | `utplsql.oraclePoolPingInterval` | `60` | วินาทีระหว่างการตรวจสอบความสมบูรณ์ของการเชื่อมต่อที่ว่างในพูล (node-oracledb) `0` = ping ทุกครั้งที่ยืมการเชื่อมต่อ |
 | `utplsql.oracleClientMode` | `thin` | โหมดไดรเวอร์: `thin` (JavaScript ล้วน ไม่ต้องมีไคลเอนต์เนทีฟ) หรือ `thick` (ใช้ Oracle Instant Client) ใช้ `thick` เฉพาะฐานข้อมูลที่ต้องการ NNE (Native Network Encryption) ต้องตั้ง `utplsql.oracleClientLibDir` และโหลดหน้าต่างใหม่ |
 | `utplsql.oracleClientLibDir` | `""` | ไดเรกทอรี Oracle Instant Client จำเป็นเมื่อ `utplsql.oracleClientMode` เป็น `thick` (เช่น `C:\oracle\instantclient_23_5`) |
-| ดีบักไม่หยุดที่เบรกพอยต์ | แพ็กเกจไม่มีข้อมูลดีบัก หรือขาดสิทธิ์ดีบัก | คอมไพล์ด้วย `PLSQL_OPTIMIZE_LEVEL <= 1` (หรือ `ALTER PACKAGE ... COMPILE DEBUG`) และให้สิทธิ์ `DEBUG CONNECT SESSION` + `EXECUTE ON SYS.DBMS_DEBUG` |
+| ดีบักไม่หยุดที่เบรกพอยต์ | แพ็กเกจไม่มีข้อมูลดีบัก หรือขาดสิทธิ์ดีบัก | คอมไพล์ด้วย `PLSQL_OPTIMIZE_LEVEL <= 1` (หรือ `ALTER PACKAGE ... COMPILE DEBUG PLSQL_OPTIMIZE_LEVEL = 1`) และให้สิทธิ์ `DEBUG CONNECT SESSION` + `EXECUTE ON SYS.DBMS_DEBUG`. เบรกพอยต์ใน `test_*.pkb` อาจไม่หยุด (utPLSQL รันเทสต์ผ่าน SQL แบบไดนามิก) ให้ตั้งในโค้ดที่ทดสอบ |
 | `utplsql.oracleClientConfigDir` | `""` | ไดเรกทอรีการกำหนดค่า Oracle (TNS_ADMIN) ที่มี `sqlnet.ora`/`tnsnames.ora` ไม่บังคับ ใช้เฉพาะโหมด thick |
 | `utplsql.organization` | `file` | การจัดระเบียบแผนผัง: `file` (ตามพาธ) หรือ `schema` (Schema > Package > Suite > Test) ในโหมด `schema` suites จะถูกค้นพบจากฐานข้อมูล (`ALL_OBJECTS`/`ALL_SOURCE`) ด้วยเมื่อไม่มีไฟล์ `.pks` ในเวิร์กสเปซ — ด้วย URI เสมือน `utplsql-db:/` (ไม่มี CodeLens/การตกแต่ง/jump to failure) |
 | `utplsql.organization.schemaPattern` | `db/{schema}/**` | รูปแบบ Glob เพื่อแยก schema จากพาธ ใช้ `{schema}` เป็นตัวยึดตำแหน่ง ในโหมด `schema` ไดเรกทอรีใต้ฐานของรูปแบบ (เช่น `db/*`) กำหนด schemas ที่จะสอบถามในฐานข้อมูล |
@@ -123,7 +123,7 @@ Test Explorer **เมื่อแต่ละเทสต์เสร็จส�
 | `utplsql.debugger.enabled` | `true` | เปิดใช้งานการดีบักเทสต์ PL/SQL (`DBMS_DEBUG`) ต้องใช้ `node-oracledb` + grants คอมไพล์แพ็กเกจเป้าหมายพร้อมข้อมูลดีบัก (`PLSQL_OPTIMIZE_LEVEL <= 1`) และให้สิทธิ์ `DEBUG CONNECT SESSION` + `EXECUTE ON SYS.DBMS_DEBUG` |
 | `utplsql.debugger.stopOnException` | `true` | หยุดชั่วคราวเมื่อเกิด PL/SQL exceptions ระหว่างการดีบัก |
 | `utplsql.debugger.timeoutSeconds` | `300` | Timeout (วินาที) ของเซสชันการดีบัก |
-| `utplsql.debugger.compileOnDebug` | `false` | คอมไพล์ออบเจ็กต์พร้อมข้อมูลดีบัก (`ALTER … COMPILE DEBUG`) ก่อนเริ่มเซสชันดีบัก |
+| `utplsql.debugger.compileOnDebug` | `false` | คอมไพล์ออบเจ็กต์พร้อมข้อมูลดีบัก (`ALTER … COMPILE DEBUG PLSQL_OPTIMIZE_LEVEL = 1`) ก่อนเริ่มเซสชันดีบัก |
 | `utplsql.scriptRunner.stopOnError` | `true` | Stops script execution on the first failure (`false` = keeps logging the rest). |
 | `utplsql.scriptRunner.autoCommit` | `true` | `autoCommit` on each script statement. |
 | `utplsql.scriptRunner.filePattern` | `**/*.{sql,pks,pkb,fnc,prc,trg}` | Globs to list files when running a script folder. |

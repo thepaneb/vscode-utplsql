@@ -112,7 +112,7 @@ Test Explorer **καθώς ολοκληρώνεται κάθε test**.
 | `utplsql.oraclePoolPingInterval` | `60` | Δευτερόλεπτα μεταξύ των ελέγχων υγείας των αδρανών συνδέσεων του pool (node-oracledb). `0` = ping σε κάθε checkout. |
 | `utplsql.oracleClientMode` | `thin` | Λειτουργία προγράμματος οδήγησης: `thin` (καθαρή JavaScript, χωρίς εγγενή πελάτη) ή `thick` (χρησιμοποιεί το Oracle Instant Client). Χρησιμοποιήστε `thick` μόνο για βάσεις που απαιτούν NNE (Native Network Encryption)· απαιτεί `utplsql.oracleClientLibDir` και επαναφόρτωση του παραθύρου. |
 | `utplsql.oracleClientLibDir` | `""` | Κατάλογος του Oracle Instant Client. Απαιτείται όταν το `utplsql.oracleClientMode` είναι `thick` (π.χ. `C:\oracle\instantclient_23_5`). |
-| Το debug δεν σταματά στο σημείο διακοπής | Πακέτο χωρίς πληροφορίες debug ή λείπουν τα δικαιώματα debug | Μεταγλωττίστε με `PLSQL_OPTIMIZE_LEVEL <= 1` (ή `ALTER PACKAGE ... COMPILE DEBUG`) και δώστε `DEBUG CONNECT SESSION` + `EXECUTE ON SYS.DBMS_DEBUG` |
+| Το debug δεν σταματά στο σημείο διακοπής | Πακέτο χωρίς πληροφορίες debug ή λείπουν τα δικαιώματα debug | Μεταγλωττίστε με `PLSQL_OPTIMIZE_LEVEL <= 1` (ή `ALTER PACKAGE ... COMPILE DEBUG PLSQL_OPTIMIZE_LEVEL = 1`) και δώστε `DEBUG CONNECT SESSION` + `EXECUTE ON SYS.DBMS_DEBUG`. Τα σημεία διακοπής στο `test_*.pkb` μπορεί να μην πιάνονται (το utPLSQL εκτελεί τα test μέσω δυναμικού SQL)· βάλτε τα στον κώδικα υπό δοκιμή. |
 | `utplsql.oracleClientConfigDir` | `""` | Κατάλογος διαμόρφωσης Oracle (TNS_ADMIN) με `sqlnet.ora`/`tnsnames.ora`. Προαιρετικός· χρησιμοποιείται μόνο από τη λειτουργία thick. |
 | `utplsql.organization` | `file` | Οργάνωση δέντρου: `file` (ανά διαδρομή) ή `schema` (Schema > Package > Suite > Test). Στη λειτουργία `schema` τα suites ανακαλύπτονται επίσης από τη βάση (`ALL_OBJECTS`/`ALL_SOURCE`) όταν τα αρχεία `.pks` δεν υπάρχουν στο workspace — με εικονικό URI `utplsql-db:/` (χωρίς CodeLens/decorations/jump to failure). |
 | `utplsql.organization.schemaPattern` | `db/{schema}/**` | Glob pattern για την εξαγωγή του schema από τη διαδρομή. Χρησιμοποιήστε το `{schema}` ως placeholder. Στη λειτουργία `schema`, οι κατάλογοι κάτω από τη βάση του pattern (π.χ. `db/*`) ορίζουν τα schemas που ερωτώνται στη βάση. |
@@ -125,7 +125,7 @@ Test Explorer **καθώς ολοκληρώνεται κάθε test**.
 | `utplsql.debugger.enabled` | `true` | Ενεργοποιεί την αποσφαλμάτωση PL/SQL tests (`DBMS_DEBUG`). Απαιτεί `node-oracledb` + grants. Μεταγλωττίστε το πακέτο-στόχο με πληροφορίες debug (`PLSQL_OPTIMIZE_LEVEL <= 1`) και δώστε `DEBUG CONNECT SESSION` + `EXECUTE ON SYS.DBMS_DEBUG`. |
 | `utplsql.debugger.stopOnException` | `true` | Κάνει παύση σε PL/SQL exceptions κατά την αποσφαλμάτωση. |
 | `utplsql.debugger.timeoutSeconds` | `300` | Χρονικό όριο (δευτ.) της συνόδου αποσφαλμάτωσης. |
-| `utplsql.debugger.compileOnDebug` | `false` | Μεταγλωττίζει το αντικείμενο με πληροφορίες αποσφαλμάτωσης (`ALTER … COMPILE DEBUG`) πριν από την έναρξη της συνεδρίας αποσφαλμάτωσης. |
+| `utplsql.debugger.compileOnDebug` | `false` | Μεταγλωττίζει το αντικείμενο με πληροφορίες αποσφαλμάτωσης (`ALTER … COMPILE DEBUG PLSQL_OPTIMIZE_LEVEL = 1`) πριν από την έναρξη της συνεδρίας αποσφαλμάτωσης. |
 | `utplsql.scriptRunner.stopOnError` | `true` | Stops script execution on the first failure (`false` = keeps logging the rest). |
 | `utplsql.scriptRunner.autoCommit` | `true` | `autoCommit` on each script statement. |
 | `utplsql.scriptRunner.filePattern` | `**/*.{sql,pks,pkb,fnc,prc,trg}` | Globs to list files when running a script folder. |
