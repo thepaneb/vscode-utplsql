@@ -70,7 +70,7 @@ O XML de cobertura do buffer Oracle traz `filename="package body APP.CALC"`
 (nome de objeto, não arquivo). Antes de `applyCoverageFromXml`, aplica-se
 `mapDbPathsToFiles(xml)`:
 
-- regex `filename="(function|procedure|package body|package|view|trigger)\s+\w+\.(\w+)"`
+- regex `filename="(function|procedure|package body|package|type body|type|view|trigger)\s+[\w$#]+\.([\w$#]+)"`
 - converte para `filename="<tipo plural>/<nome>.sql"` (ex.: `packages/CALC.sql`,
   `functions/FN1.sql`) — casando com a estrutura `sourcePath/<tipo>/<nome>.sql`
   esperada pelo `resolveSourceUri`
@@ -214,12 +214,13 @@ function discoverViewFiles(root: string, sourcePath: string): string[];
 ```
 
 - Descobre arquivos `views/*.sql` sob `<root>/<sourcePath>/views/` (recursivo)
-- Consulta `V$SQL` (`command_type = 3 AND executions > 0`) e faz match
+- Consulta `V$SQL` (`command_type = 3 AND executions > 0 AND parsing_schema_name =
+  :owner`, restrito ao usuário da conexão) e faz match
   word-boundary do nome da view em qualquer `SQL_TEXT`
 - Executada = 100%, não executada = 0%
 - **Best-effort**: qualquer falha (sem oracledb, sem acesso a `V$SQL`,
   timeout) silencia e mantém o comportamento atual
-- `type_mapping` padrão inclui `views=VIEW`
+- `callTimeout` de 5s durante a query; a conexão é devolvida ao pool no fim
 
 ### Grants
 

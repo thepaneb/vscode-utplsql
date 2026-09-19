@@ -99,6 +99,8 @@ Test Explorer **с приключването на всеки тест**.
 | `utplsql.sourcePath` | `install` | Папка на производствения код (за картографиране на покритието към файлове). |
 | `utplsql.includePatterns` | `["**/*.pks"]` | Globs за откриване на спецификациите с `%suite`/`%test`. Ако тестовете ви са в `.sql`, използвайте `["**/*.sql"]`. |
 | `utplsql.coverageOwner` | `""` | Схема-собственик на покритите обекти. Празно = използва се потребителят на връзката (главни букви). |
+| `utplsql.timeoutMinutes` | `60` | Таймаут в минути за изпълнението на тестовете. |
+| `utplsql.dbmsOutput` | `false` | Активира `DBMS_OUTPUT` в тестовата сесия. Полезно за отстраняване на грешки. |
 | `utplsql.additionalReporters` | `[]` | Допълнителни reporters, които да се включат при всяко изпълнение (напр. `["ut_coverage_html_reporter"]`). По подразбиране (documentation, junit) винаги са включени и не е нужно да се изброяват. |
 | `utplsql.codeLens.enabled` | `true` | Показва CodeLens бутони Run/Run with Coverage над `%suite` и `%test`. |
 | `utplsql.statusBar.enabled` | `true` | Показва индикатора за статус на тестовете в status bar. |

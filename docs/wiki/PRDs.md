@@ -71,7 +71,7 @@ The file is moved between folders as it progresses.
 | 33 | PL/SQL Debugger Integration | 0.12.0 |
 | 49 | Internationalization (i18n) of text content | 0.12.0 |
 | 62 | SQL script execution against connection profiles | 0.12.0 |
-| 63 | Bilingual wiki (pt-BR/en) | 0.12.0 |
+| 63 | Bilingual wiki (pt-BR/en); English-only since 0.12.1 | 0.12.0 |
 | 64 | Oracle-only migration (drop utPLSQL-cli/Java) | 0.12.0 |
 | 65 | Schema-mode and security fixes | 0.12.0 |
 | 66 | Connection robustness, logging and cache | 0.12.0 |

@@ -3,16 +3,22 @@
   - [Connection Setup](Connection)
 - **Usage**
   - [Quick Start Guide](Quick-start)
+  - [Test Explorer](Test-explorer)
+  - [Editor Integration](Editor-integration)
   - [Code Coverage](Coverage)
+  - [SQL Scripts](SQL-scripts)
   - [Custom Reporters](Reporters)
 - **Advanced Tools**
   - [Direct Oracle Execution](Oracle-direct-execution)
+  - [PL/SQL Debugger](Debugger)
+  - [Connection Profiles](Connection-profiles)
   - [Diagnostics and Quick-fix](Diagnostics-and-quick-fix)
   - [Tree Organization](Tree-organization)
 - **Reference**
   - [Settings](Configuration)
   - [Configuration Examples](Configuration-examples)
   - [Commands](Commands)
+  - [Internationalization (i18n)](Internationalization)
   - [Database Requirements (Grants)](Database-requirements)
 - **Development**
   - [Architecture](Architecture)

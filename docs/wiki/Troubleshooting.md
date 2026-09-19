@@ -30,11 +30,14 @@ For automatic diagnostics, run `utPLSQL: Validate Configuration`.
 **Symptom:** Tests fail with a compilation error, but the editor does not show
 squiggly underlines.
 
-**Cause:** Compilation diagnostics are **not active** in the current Oracle-only
-version — `utplsql.compilationDiagnostics.enabled` exists but has **no effect**.
+**Cause 1:** `utplsql.compilationDiagnostics.enabled` is `false` (default is `true`).
 
-**Solution:** Compile or run the tests and read the error in the run output.
-There is no automatic underline in the editor yet.
+**Cause 2:** Diagnostics are published **after a test run**, and only for packages
+discovered in the workspace (best-effort) — nothing appears before the first run.
+
+**Solution:** Enable `utplsql.compilationDiagnostics.enabled` and run the tests.
+Errors from `ALL_ERRORS` are then mapped to the suite files and shown as
+underlines in the editor and in the Problems Panel (source "utPLSQL Compilation").
 
 ---
 

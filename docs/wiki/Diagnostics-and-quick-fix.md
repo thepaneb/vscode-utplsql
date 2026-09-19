@@ -99,7 +99,8 @@ Open workspace
   → If issues: Problems Panel + quick-fix actions
 
 Run tests
-  → Compilation diagnostics: not active in the current version
+  → Compilation diagnostics: after the run, PL/SQL errors from `ALL_ERRORS`
+    are published in the Problems Panel (source "utPLSQL Compilation")
 
 After execution
   → Coverage failures are reported in the run output, not as a diagnostic

@@ -8,6 +8,7 @@ Ferramentas e infraestrutura de desenvolvimento do projeto.
 |---|---|
 | `npm install` | Instala dependências (inclui `oracledb` em `dependencies`) |
 | `npm run compile` | `tsc -p ./` → compila para `out/` |
+| `npm run typecheck` | `tsc -p ./ --noEmit` (usado no CI) |
 | `npm run watch` | Compilação incremental |
 | `npm run lint` | `biome check src/` |
 | `npm run lint:fix` | `biome check --write src/` |
@@ -16,22 +17,36 @@ Ferramentas e infraestrutura de desenvolvimento do projeto.
 | `npm run test:unit` | `pretest:unit` (compile + lint) → `node scripts/run-tests.cjs` |
 | `npm run test:coverage` | `compile` → `c8 node --experimental-test-module-mocks --require ./scripts/test-setup.cjs --test out/test/unit/**/*.test.js` |
 | `npm run test:integration` | `pretest:integration` (compile + bundle) → `vscode-test` |
+| `npm run test:integration:smoke` | idem, com `.vscode-test.smoke.mjs` (subconjunto rápido) |
+| `npm run test:integration:thick` | idem, com `.vscode-test.thick.mjs` (Instant Client/thick) |
+| `npm run db:matrix` | `bash scripts/db-matrix/run.sh` — testa contra Oracle 18c/19c/21c/23ai local (compose) |
+| `npm run db:matrix:list` | Lista as versões da matriz |
 | `npm run bundle` | `node esbuild.config.mjs` → `dist/extension.js` (**entry point real da extensão**) |
-| `npm run package` | `compile && bundle && vsce package` → `.vsix` |
-| `npm run sync-prds` | Atualiza labels/issues no GitHub |
+| `npm run package` | `compile && bundle && vsce package` → `.vsix` universal |
+| `npm run package:win32-x64` / `:linux-x64` / `:linux-arm64` / `:darwin-arm64` | VSIX por plataforma (glue thick do alvo) |
+| `npm run package:target -- <target>` | VSIX genérico por target (usado pelo `publish.yml`) |
+| `npm run gen-icon` | `scripts/gen-icon.cjs` — gera o ícone |
 | `npm run gen-diagram` | `scripts/gen-diagrams.cjs` — renderiza todos os SVGs de `docs/wiki/images/` para PNG de 1200px via `@resvg/resvg-js` (cross-platform) |
+| `npm run brain:sync` / `brain:check` | Sincroniza/valida o vault Obsidian (`docs/brain`) |
+| `npm run docs:check` | Consistência da documentação versionada (roda no CI) |
+| `npm run sync-prds` | Atualiza labels/issues no GitHub |
+| `npm run pr:create` | Cria pull request (`scripts/create-pr.cjs`) |
+| `npm run publish` | Publicação é **exclusiva via GitHub release**; o script é o helper do workflow |
 
 ## Bundling com esbuild (PRD-45, ajustes na PRD-46)
 
 - `"main": "./dist/extension.js"` — bundle único gerado por `esbuild.config.mjs`
 - `vscode` e `oracledb` são **externos** (`await import('oracledb')` preservado)
-- `fast-xml-parser`/`iconv-lite` (e deps puras) são embutidas no bundle —
-  incluindo as transitivas do fast-xml-parser v5 (`@nodable/entities`, `anynum`,
-  `fast-xml-builder`, `is-unsafe`, `path-expression-matcher`, `xml-naming`)
-- `.vscodeignore` exclui `out/**`, os binários nativos do oracledb
-  (`oracledb/build/**`), `oracledb/plugins/**` (auth IAM/OCI — fora do escopo),
-  docs não-licença do oracledb e as deps puras já embutidas — VSIX 151 arquivos,
-  ~990 KB (thin-only)
+- `fast-xml-parser` (e deps puras) é embutido no bundle — incluindo as transitivas
+  do fast-xml-parser v5 (`@nodable/entities`, `anynum`, `fast-xml-builder`,
+  `is-unsafe`, `path-expression-matcher`, `xml-naming`). Não há `iconv-lite`: o
+  charset é tratado com `TextDecoder`/`Buffer` nativos (`src/charset.ts`)
+- `.vscodeignore` exclui `out/**`, `oracledb/plugins/**` (auth IAM/OCI — fora do
+  escopo), docs não-licença do oracledb e as deps puras já embutidas. A regra
+  `node_modules/oracledb/build/**/*.txt` **mantém as glues thick `.node`** no VSIX
+  (`+~2,5 MB`, PRD-70)
+- Os VSIXs por plataforma (`package:target`) embarcam apenas a glue do alvo;
+  alvos thin-only vão sem nenhum `.node`
 
 ## TypeScript Coverage (c8)
 
@@ -62,12 +77,12 @@ Ferramentas e infraestrutura de desenvolvimento do projeto.
 
 ### Coverage atual (aprox. — pode variar por PRD)
 
-| Métrica | Threshold | Atual (v0.12.0) |
+| Métrica | Threshold | Atual (v0.12.1) |
 |---|---|---|
-| Lines | 90% | 97.2% |
-| Branches | 85% | 90.7% |
-| Functions | 90% | 97.3% |
-| Statements | 90% | 97.2% |
+| Lines | 90% | 98.6% |
+| Branches | 85% | 91.2% |
+| Functions | 90% | 98.3% |
+| Statements | 90% | 98.6% |
 
 ## Testes unitários
 
@@ -75,37 +90,21 @@ Ferramentas e infraestrutura de desenvolvimento do projeto.
 
 ```
 src/test/
-├── unit/
-│   ├── cobertura.test.ts
-│   ├── codelens.test.ts
-│   ├── config.test.ts
-│   ├── connectionProfiles.test.ts
-│   ├── coverage.test.ts
-│   ├── dbmsDebug.test.ts
-│   ├── debugger.test.ts
-│   ├── decorations.test.ts
-│   ├── discovery.test.ts
-│   ├── i18n.test.ts
-│   ├── junit.test.ts
-│   ├── matching.test.ts
-│   ├── oracleRunner.test.ts
-│   ├── oracledb-default-absent.test.ts
-│   ├── oracledb-missing-catch.test.ts
-│   ├── plsqlDeclarations.test.ts
-│   ├── quickfix.test.ts
-│   ├── rerun.test.ts
-│   ├── results.test.ts
-│   ├── runner.test.ts
-│   ├── scriptRunner.test.ts
-│   ├── setup.ts
-│   ├── state.test.ts
-│   ├── statusBar.test.ts
-│   ├── suiteParser.test.ts
-│   └── viewCoverage.test.ts
-├── integration/
-│   └── extension.test.ts
-├── fixtures/           (Oracle DB fixtures)
-└── vscode-stub.ts      (mock da API vscode)
+├── unit/                       (34 arquivos .test.ts + setup.ts)
+│   ├── cobertura / codelens / config / connectionProfiles / coverage
+│   ├── dbSourceProvider / dbmsDebug / debounce / debugger / decorations
+│   ├── discovery / i18n / junit / logger / matching / oracleClient / oracleRunner
+│   ├── oracledb-default-absent / oracledb-missing-catch / packageTarget
+│   ├── plsqlDeclarations / quickfix / quickfixActivation / rerun / results / runner
+│   ├── scriptRunner / selectReporterCommand / state / statusBar / suiteParser
+│   ├── testTree / viewCoverage
+│   └── setup.ts
+├── integration/                (extension host; banco via describeDB)
+│   ├── extension.test.ts
+│   ├── dbPaths / schemaRun / debuggerE2E / thickMode / oracleCapabilities
+│   ├── prd70-sqlplus / v012-features / helpers.ts
+│   └── fixtures/
+└── vscode-stub.ts              (mock da API vscode)
 ```
 
 ### Runner
@@ -174,14 +173,19 @@ Sem `.env`, `describeDB` é pulado (`describe.skip`).
 
 ## CI
 
-Workflow `.github/workflows/ci.yml`:
+Workflow `.github/workflows/ci.yml` (push/PR para `main`):
 - Node 22/24 matrix
-- `npm ci` → `npm test` (o `pretest:unit` do `npm test` já roda compile + lint)
+- `npm ci` → `npm run docs:check` → `npm run lint` → `npm run typecheck` →
+  `npm run test:coverage` (enforça os thresholds do c8)
 
-`.github/workflows/publish.yml`:
-- Disparado ao publicar release no GitHub
-- Roda compile, lint, `test:unit`, bundle, `npm run publish` (marketplace via
-  `VSCE_PAT`) e upload do `.vsix` como asset
+`.github/workflows/publish.yml` (release publicada no GitHub):
+- Job **verify** (1×): `compile`, `lint`, `test:unit`
+- Job **publish** em **matriz** sobre 9 targets (4 com glue thick:
+  `win32-x64`/`linux-x64`/`linux-arm64`/`darwin-arm64`; 5 thin-only:
+  `win32-arm64`/`darwin-x64`/`linux-armhf`/`alpine-x64`/`alpine-arm64`)
+  - `npm run package:target -- <target>` gera o VSIX do alvo
+  - `npm run publish -- --packagePath …` publica no Marketplace (`VSCE_PAT`)
+  - `gh release upload <tag> *.vsix` anexa o artefato à release
 
 ## PRDs
 
@@ -202,8 +206,9 @@ GITHUB_TOKEN="$(echo "$GITHUB_TOKEN" | tr -d '\r')" npm run sync-prds
 
 ## Publicação
 
-**Exclusivamente via GitHub workflow**. `npm run publish` local é bloqueado.
-Comando local válido: `npm run package` (gera `.vsix`).
+**Exclusivamente via GitHub workflow** (`publish.yml`, disparado na release).
+Não rode `npm run publish`/`vsce publish` localmente — `npm run publish:patch`
+inclusive falha de propósito. Comando local válido: `npm run package` (gera `.vsix`).
 
 ## Node
 

@@ -12,10 +12,19 @@ interface UtConfig {
   oraclePoolIncrement: number;        // default: 1
   oraclePoolPingInterval: number;     // default: 60 (health check de conexões ociosas)
 
+  // Cliente Oracle (PRD-70)
+  oracleClientMode: 'thin' | 'thick'; // default: "thin"
+  oracleClientLibDir: string;         // default: "" (Instant Client; obrigatório no thick)
+  oracleClientConfigDir: string;      // default: "" (TNS_ADMIN; só tem efeito no thick)
+
   // Cobertura
   sourcePath: string;                 // default: "install"
   coverageOwner: string;              // default: ""
   sqlCoverageEnabled: boolean;        // default: false (PRD-12)
+
+  // Execução
+  timeoutMinutes: number;             // default: 60
+  dbmsOutput: boolean;                // default: false
 
   // Debugger (PRD-33)
   debuggerEnabled: boolean;           // default: true
@@ -75,6 +84,7 @@ interface UtConfig {
   // Organização
   organization: 'file' | 'schema';    // default: "file"
   organizationSchemaPattern: string;  // default: "db/{schema}/**"
+  refreshDebounceMs: number;          // default: 300
 }
 ```
 
@@ -116,11 +126,18 @@ Ao resolver com sucesso, seta `utplsql:connected` context key.
 
 ### Formatos aceitos
 
-- **EZ Connect**: `user/pass@//host:port/service` — **único formato suportado**
-  por `parseConnString` (`src/oracleRunner.ts`)
-- **TNS** (`user/pass@tns_alias`) e **Wallet**
-  (`user/pass@tcps://host:port/service?wallet_location=...`) **não são
-  suportados** — `parseConnString` lança erro nesses formatos
+`parseConnString` (`src/oracleRunner.ts`) separa as credenciais no **último** `@`
+e o usuário no **primeiro** `/`, e entrega o restante (`connectionString`) ao
+`node-oracledb` sem alterar. Por isso valem os formatos do próprio driver:
+
+- **EZ Connect**: `user/pass@//host:port/service`
+- **TNS alias**: `user/pass@tns_alias` (requer `TNS_ADMIN`; no thick mode pode
+  vir de `utplsql.oracleClientConfigDir`)
+- **Wallet (Oracle Cloud)**: `user/pass@tcps://host:1522/service?wallet_location=/path/wallet`
+- Senhas com `/` ou `@` são aceitas (split no último `@` e no primeiro `/`)
+
+Só é inválido quando falta o usuário ou o `connectionString` — nesse caso
+`parseConnString` lança `oracleRunner.badConnFormat`.
 
 ## Connection Profiles (PRD-34)
 
@@ -132,7 +149,7 @@ conexão que encapsulam a string de conexão **e** a configuração associada
 interface ConnectionProfile {
   id: string;
   name: string;
-  connection: string;
+  connection: string;            // user@//host:port/service — SEM senha
   description?: string;          // PRD-62: exibido no picker
   charset?: ProfileCharset;      // PRD-62: 'utf8' | 'latin1' | 'win1252'
   sourcePath?: string;
@@ -167,6 +184,10 @@ mergeProfileConfig(global: UtConfig, profile?): UtConfig;
 
 - `importFromSqlDeveloper` localiza `connections.xml` do SQL Developer sob
   `~/.sqldeveloper` e `%APPDATA%/SQL Developer` (subpastas `system*`)
+- A senha **não** é gravada em `utplsql.profiles`: `connection` guarda só
+  `user@//host:port/service` e a senha fica no **SecretStorage** (keychain do
+  SO), indexada pelo `id` do perfil. Perfis antigos com senha inline são
+  migrados automaticamente no primeiro uso.
 - `mergeProfileConfig` aplica os campos do perfil sobre a config global; sem
   perfil → global intacto
 - `resolveConnection()` checa o perfil ativo **antes** do setting `utplsql.connection`
@@ -202,6 +223,9 @@ connectOracle(connection: string, opts?): Promise<ScriptDb>;
 - `decodeScript`: `utf8`/`win1252` via `TextDecoder`; `latin1` via
   `Buffer.toString('latin1')` (ISO-8859-1 real — `TextDecoder('iso-8859-1')`
   decodificaria como windows-1252 pelo WHATWG). Ausente/inválido → `utf8`.
+- `stripSqlTerminator`: remove o `;` final (terminador do cliente) dos
+  statements **SQL** antes de enviar — 19c/21c rejeitavam com
+  `ORA-00933`/`ORA-00922` (o 23ai tolerava). Blocos PL/SQL mantêm o `;` do `END;`.
 - `executeScript`: sequencial, saída `[N] (ok|erro) <ms> — <resumo>` no
   `OutputChannel`, `stopOnError` (default `true`), `autoCommit`,
   `DBMS_OUTPUT` opcional, cancelamento via `token` + `conn.break()`, senha

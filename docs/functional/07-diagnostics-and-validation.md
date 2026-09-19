@@ -42,26 +42,25 @@ class SetupValidator {
   addCoverageDiagnostic(): void;
   clear(): void;
   dispose(): void;
-  checkCli(_cliPath: string): boolean;   // stub legado (sempre true, sem uso)
 }
 ```
-
-> `checkCli` é um stub do runner CLI removido — sempre retorna `true` e não tem
-> chamador de produção.
 
 ### Verificações
 
 | Verificação | Condição | Diagnostic |
 |---|---|---|
-| Conexão | falha ao conectar | `UTPLSQL_BAD_CONN` (Error) |
-| Versão | `semverLt(utVersion, '3.1.0')` | `UTPLSQL_OLD_VERSION` (Warning) |
+| Cliente thick (PRD-70) | `oracleClientMode: "thick"` e `ensureOracleClient` falha | `UTPLSQL_THICK_MODE` (Error) |
+| Conexão | falha ao conectar (`resolveConnectionNoPrompt` + pool) | `UTPLSQL_BAD_CONN` (Error) |
+| Versão | `semverLt(utVersion, UTPLSQL_MIN_VERSION = "3.1.0")` | `UTPLSQL_OLD_VERSION` (Warning) |
 | Instalação utPLSQL | objetos inválidos em `ALL_OBJECTS` no schema utPLSQL | `UTPLSQL_INVALID_OBJECTS` (Warning) |
 
-> `UTPLSQL_BAD_CONN` e `UTPLSQL_NO_COVERAGE` **não são produzidos** no fluxo
-> atual: `validateOnActivation` não emite erro de conexão (apenas retorna `[]`)
-> e `addCoverageDiagnostic` só era chamado pelo fluxo legado (CLI). Os
-> quick-fixes correspondentes no `UtplsqlCodeActionProvider` permanecem
-> registrados, mas nunca disparam.
+> `UTPLSQL_NO_COVERAGE` **não é produzido** no fluxo atual:
+> `addCoverageDiagnostic` só era chamado por `applyCoverage` em `runner.ts`, um
+> wrapper **legado** (CLI) removido. O quick-fix correspondente no
+> `UtplsqlCodeActionProvider` permanece registrado, mas não dispara.
+>
+> Quando `oracleClientMode` é `thin` e `oracleClientLibDir` está preenchido, a
+> extensão apenas registra um aviso no log (não gera diagnostic).
 
 ### `validateUtplsqlInstall` (PRD-41)
 
@@ -77,10 +76,13 @@ Best-effort, roda junto com `validateOnActivation` na ativação:
 async validateOnActivation(): Promise<SetupDiagnostic[]>
 ```
 
-1. Verifica `cfg.setupDiagnosticsEnabled` → se false, retorna `[]`
-2. Resolve conexão e chama `getOracleInfo(conn)` (sem parâmetro de config) →
-   emite `UTPLSQL_OLD_VERSION` quando `parseInt(utVersion) < 3`; não emite
-   diagnóstico de conexão (`UTPLSQL_BAD_CONN` não é produzido)
+1. Gate: `cfg.setupDiagnosticsEnabled` false → `[]`
+2. Se `oracleClientMode === 'thick'`, chama `ensureOracleClient`; se não
+   inicializar, emite `UTPLSQL_THICK_MODE` (Error) com quick-fix para as settings
+3. Se `resolveConnectionNoPrompt()` retorna conexão, abre pool/conexão; falha →
+   `UTPLSQL_BAD_CONN` (Error) + quick-fix `utplsql.configureConnection`
+4. Chama `getOracleInfo(conn)`; `semverLt(utVersion, '3.1.0')` →
+   `UTPLSQL_OLD_VERSION` (Warning)
 
 ### `applyDiagnostics`
 
@@ -108,6 +110,7 @@ Registrado em `{ scheme: 'file', pattern: '**/*.pks' }` e também em
 |---|---|
 | `UTPLSQL_BAD_CONN` | "Reconfigurar conexão" → comando `utplsql.configureConnection` |
 | `UTPLSQL_NO_COVERAGE` | "Copiar grants para clipboard" → comando `utplsql.copyGrantsToClipboard` |
+| `UTPLSQL_THICK_MODE` | "Abrir configurações do cliente Oracle" → `workbench.action.openSettings` em `utplsql.oracleClientMode` |
 | `UTPLSQL_INVALID_OBJECTS` | "Recompilar UT3" → comando `utplsql.recompileUt3` (`DBMS_UTILITY.COMPILE_SCHEMA` + re-verificação) |
 
 ## Comandos auxiliares
@@ -135,13 +138,14 @@ extension.ts activate()
 runner.ts (wrappers legados)
     └─► applyCoverage → setupValidator.addCoverageDiagnostic()  (se coverage.xml ausente)
 
-oracleRunner.ts
-    └─► checkCompilationErrors(conn, schema)  — existe, mas sem caller de produção
+commands/run.ts (pós-run, PRD-68)
+    └─► refreshCompilationDiagnostics(state)
+            └─► oracleRunner.checkCompilationErrors(conn, schema)  — ALL_ERRORS → Problems Panel
 ```
 
 ## Settings
 
 | Setting | Default | Descrição |
 |---|---|---|
-| `utplsql.compilationDiagnostics.enabled` | `true` | Lida, mas **sem efeito** (feature removida) |
+| `utplsql.compilationDiagnostics.enabled` | `true` | Publica erros de compilação PL/SQL (`ALL_ERRORS`) no Problems Panel após cada run (PRD-68) |
 | `utplsql.setupDiagnostics.enabled` | `true` | Diagnóstico de configuração |

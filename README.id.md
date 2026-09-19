@@ -99,6 +99,8 @@ Ekstensi terhubung langsung ke Oracle, membaca laporan (JUnit + Coverage) lalu m
 | `utplsql.sourcePath` | `install` | Folder kode produksi (untuk memetakan coverage ke file). |
 | `utplsql.includePatterns` | `["**/*.pks"]` | Glob untuk menemukan spec dengan `%suite`/`%test`. Jika pengujian Anda di `.sql`, gunakan `["**/*.sql"]`. |
 | `utplsql.coverageOwner` | `""` | Pemilik schema dari objek yang dicakup. Kosong = memakai user koneksi (huruf besar). |
+| `utplsql.timeoutMinutes` | `60` | Batas waktu (timeout) dalam menit untuk eksekusi pengujian. |
+| `utplsql.dbmsOutput` | `false` | Mengaktifkan `DBMS_OUTPUT` di sesi pengujian. Berguna untuk debugging. |
 | `utplsql.additionalReporters` | `[]` | Reporter tambahan yang disertakan pada setiap eksekusi (mis. `["ut_coverage_html_reporter"]`). Default (documentation, junit) selalu disertakan dan tidak perlu didaftarkan. |
 | `utplsql.codeLens.enabled` | `true` | Menampilkan tombol CodeLens Run/Run with Coverage di atas `%suite` dan `%test`. |
 | `utplsql.statusBar.enabled` | `true` | Menampilkan indikator status pengujian di bilah status. |

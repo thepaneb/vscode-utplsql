@@ -23,10 +23,10 @@ TestController
                   └── test_case_3
 ```
 
-### Implementação: `buildFileTree`
+### Implementação: `buildFileTree` (`src/testTree.ts`)
 
 ```typescript
-function buildFileTree(controller, suites: SuiteFile[]): void
+function buildFileTree(controller, state, suites: SuiteFile[]): void
 ```
 
 1. Para cada `suite` em `suites`:
@@ -55,10 +55,10 @@ TestController
               └── test_case_3
 ```
 
-### Implementação: `buildSchemaTree`
+### Implementação: `buildSchemaTree` (`src/testTree.ts`)
 
 ```typescript
-function buildSchemaTree(controller, suites: SuiteFile[], schemaPattern: string): void
+function buildSchemaTree(controller, state, suites: SuiteFile[], schemaPattern: string): void
 ```
 
 1. **Agrupa por schema**: `suite.dbSchema ?? extractSchemaFromPath(suite.uri.fsPath, folder.fsPath, schemaPattern)`
@@ -153,10 +153,10 @@ Usado por:
 - `runSingleTest`: idem
 - `collectAllItems`: fallback via `cachedItems` (já contém suites)
 
-## `collectAllItems` — recursão
+## `collectAllItems` — recursão (`src/testTree.ts`)
 
 ```typescript
-function collectAllItems(controller): TestItem[]
+function collectAllItems(controller, state): TestItem[]
 ```
 
 Se `state.cachedItems` não vazio → retorna direto. Se vazio, percorre

@@ -99,6 +99,8 @@ Extensia se conectează direct prin Oracle, citește rapoartele (JUnit + Coverag
 | `utplsql.sourcePath` | `install` | Folderul codului de producție (pentru maparea acoperirii pe fișiere). |
 | `utplsql.includePatterns` | `["**/*.pks"]` | Glob-uri pentru descoperirea spec-urilor cu `%suite`/`%test`. Dacă testele tale sunt în `.sql`, folosește `["**/*.sql"]`. |
 | `utplsql.coverageOwner` | `""` | Schema proprietară a obiectelor acoperite. Gol = folosește utilizatorul conexiunii (cu majuscule). |
+| `utplsql.timeoutMinutes` | `60` | Timeout în minute pentru executarea testelor. |
+| `utplsql.dbmsOutput` | `false` | Activează `DBMS_OUTPUT` în sesiunea de test. Util pentru depanare. |
 | `utplsql.additionalReporters` | `[]` | Reporteri suplimentari de inclus la fiecare rulare (ex.: `["ut_coverage_html_reporter"]`). Cei implicați (documentation, junit) sunt întotdeauna incluși și nu trebuie listați. |
 | `utplsql.codeLens.enabled` | `true` | Afișează butoanele CodeLens Run/Run with Coverage deasupra `%suite` și `%test`. |
 | `utplsql.statusBar.enabled` | `true` | Afișează indicatorul de stare al testelor în bara de stare. |

@@ -100,6 +100,8 @@ nativních API VSCode.
 | `utplsql.sourcePath` | `install` | Složka produkčního kódu (pro mapování pokrytí na soubory). |
 | `utplsql.includePatterns` | `["**/*.pks"]` | Globy pro objevení specifikací s `%suite`/`%test`. Pokud jsou vaše testy v `.sql`, použijte `["**/*.sql"]`. |
 | `utplsql.coverageOwner` | `""` | Vlastník schématu pokrytých objektů. Prázdné = použije uživatele připojení (velkými písmeny). |
+| `utplsql.timeoutMinutes` | `60` | Časový limit v minutách pro spuštění testů. |
+| `utplsql.dbmsOutput` | `false` | Povolí `DBMS_OUTPUT` v testovací relaci. Užitečné pro ladění. |
 | `utplsql.additionalReporters` | `[]` | Další reportéry zahrnuté do každého spuštění (např. `["ut_coverage_html_reporter"]`). Výchozí (documentation, junit) jsou vždy zahrnuty a není třeba je vypisovat. |
 | `utplsql.codeLens.enabled` | `true` | Zobrazuje tlačítka CodeLens Run/Run with Coverage nad `%suite` a `%test`. |
 | `utplsql.statusBar.enabled` | `true` | Zobrazuje indikátor stavu testů ve stavovém řádku. |

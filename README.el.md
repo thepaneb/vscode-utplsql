@@ -100,6 +100,8 @@ Test Explorer **καθώς ολοκληρώνεται κάθε test**.
 | `utplsql.sourcePath` | `install` | Φάκελος του κώδικα παραγωγής (για την αντιστοίχιση της κάλυψης σε αρχεία). |
 | `utplsql.includePatterns` | `["**/*.pks"]` | Globs για την εύρεση των specs με `%suite`/`%test`. Αν τα tests σας είναι σε `.sql`, χρησιμοποιήστε `["**/*.sql"]`. |
 | `utplsql.coverageOwner` | `""` | Schema-owner των καλυπτόμενων αντικειμένων. Κενό = χρησιμοποιεί τον χρήστη της σύνδεσης (κεφαλαία). |
+| `utplsql.timeoutMinutes` | `60` | Χρονικό όριο σε λεπτά για την εκτέλεση των tests. |
+| `utplsql.dbmsOutput` | `false` | Ενεργοποιεί το `DBMS_OUTPUT` στη σύνοδο του test. Χρήσιμο για debugging. |
 | `utplsql.additionalReporters` | `[]` | Επιπλέον reporters που περιλαμβάνονται σε κάθε εκτέλεση (π.χ. `["ut_coverage_html_reporter"]`). Οι προεπιλεγμένοι (documentation, junit) περιλαμβάνονται πάντα και δεν χρειάζεται να αναφέρονται. |
 | `utplsql.codeLens.enabled` | `true` | Εμφανίζει κουμπιά CodeLens Run/Run with Coverage πάνω από τα `%suite` και `%test`. |
 | `utplsql.statusBar.enabled` | `true` | Εμφανίζει ένδειξη κατάστασης των tests στη status bar. |

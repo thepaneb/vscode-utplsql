@@ -25,7 +25,7 @@ roda compile/lint/test/package e publica no Marketplace). **Nunca** rode
    preencher a coluna **Versão**) usando a skill **`prd-workflow`**; rode
    `npm run sync-prds` no fim.
 5. **Docs** — se houve settings/comandos/features, aplique a skill
-   **`docs-fidelity`** (README + 23 variantes, `docs/wiki` en/pt, functional).
+   **`docs-fidelity`** (README + 23 variantes, `docs/wiki` (en), functional).
 6. **Commit + push** da branch de release.
 7. **GitHub release** — crie a release com a tag `vX.Y.Z` e as notas do
    `CHANGELOG` (`gh release create` ou pela UI). O `publish.yml` dispara no

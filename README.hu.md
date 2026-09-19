@@ -99,6 +99,8 @@ A bővítmény közvetlenül Oracle-on keresztül csatlakozik, beolvassa a ripor
 | `utplsql.sourcePath` | `install` | Az éles kód mappája (a lefedettség fájlokhoz rendeléséhez). |
 | `utplsql.includePatterns` | `["**/*.pks"]` | A `%suite`/`%test` tartalmú specifikációk felderítésére szolgáló globok. Ha a tesztjeid `.sql` fájlokban vannak, használd a `["**/*.sql"]` értéket. |
 | `utplsql.coverageOwner` | `""` | A lefedett objektumok séma-tulajdonosa. Üres = a kapcsolati felhasználó (nagybetűvel). |
+| `utplsql.timeoutMinutes` | `60` | Időtúllépés percben a tesztek futtatásához. |
+| `utplsql.dbmsOutput` | `false` | Engedélyezi a `DBMS_OUTPUT` használatát a teszt-munkamenetben. Hasznos hibakereséshez. |
 | `utplsql.additionalReporters` | `[]` | További riporterek, amelyek minden futtatáskor bekerülnek (pl. `["ut_coverage_html_reporter"]`). Az alapértelmezettek (documentation, junit) mindig szerepelnek, és nem kell felsorolni őket. |
 | `utplsql.codeLens.enabled` | `true` | Run/Run with Coverage CodeLens-gombokat jelenít meg a `%suite` és `%test` fölött. |
 | `utplsql.statusBar.enabled` | `true` | A tesztek állapotát jelző mutatót jelenít meg az állapotsorban. |

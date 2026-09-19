@@ -128,5 +128,6 @@ function listReportersOracle(conn): Promise<string[]>
 O output do documentation reporter é exibido em tempo real via `run.appendOutput()`.
 Linhas não-XML são exibidas diretamente; linhas XML são acumuladas para parse.
 
-> Diagnósticos de compilação **não estão ativos** no fluxo atual — o módulo
-> `compilationDiagnostics.ts` foi removido (veja [07 — Diagnostics](07-diagnostics-and-validation.md)).
+> Diagnósticos de compilação são publicados **após o run** por
+> `commands/run.ts` → `refreshCompilationDiagnostics()` (veja
+> [07 — Diagnostics](07-diagnostics-and-validation.md)).

@@ -60,6 +60,13 @@
   com `ORA-00900`. `splitScript` ignora essas linhas (preservando a numeração)
   quando o buffer só tem brancos/comentários, sem afetar usos legítimos como
   `UPDATE … SET …`.
+- **Debugger — contribution point**: o bloco `debuggers` estava no topo do
+  `package.json` em vez de dentro de `contributes`, então o VSCode não registrava
+  o tipo de debug `utplsql` no manifesto. Movido para `contributes.debuggers`.
+- **Documentação**: `docs/wiki` ganha páginas dedicadas para Test Explorer,
+  Debugger, Connection Profiles, SQL Scripts, i18n e Editor Integration;
+  `docs/functional` ganha a especificação do debugger (11) e é alinhado ao código
+  atual (thick mode, diagnostics, tree/profiles/scripts).
 
 ## 0.12.0
 
