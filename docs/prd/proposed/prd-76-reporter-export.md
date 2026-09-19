@@ -6,7 +6,7 @@
 | Autor | Gil Cleber Barboza |
 | Data | 2026-09-19 |
 | Componente | Extensão `paneb.vscode-utplsql` |
-| Versão alvo | 0.13.0 |
+| Versão alvo | 0.14.0 |
 | Arquivos afetados | `src/oracleRunner.ts`, `src/commands/run.ts`, `src/commands/deps.ts`, `src/config.ts`, `package.json`, `README.md` |
 | Esforço estimado | 1–2 dias |
 | Complexidade | Média |
@@ -147,7 +147,7 @@ documentar que cor só faz sentido para reporters textuais.
 
 ## 9. Rollout
 
-- Release 0.13.0 (minor).
+- Release 0.14.0 (minor).
 - `CHANGELOG.md`: "Execução e export com reporter arbitrário".
 
 ## 10. Critérios de aceite

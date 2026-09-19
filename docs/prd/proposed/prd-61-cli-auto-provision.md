@@ -6,12 +6,18 @@
 | Autor | Gil Cleber Barboza |
 | Data | 2026-09-06 |
 | Componente | Extensão `paneb.vscode-utplsql` |
-| Versão alvo | 0.16.0 |
+| Versão alvo | Suspenso — a reavaliar (PRD-64 removeu o CLI) |
 | Arquivos afetados | `src/cli.ts`, `src/config.ts`, `src/quickfix.ts`, `package.json` |
 | Esforço estimado | 2–3 dias |
 | Complexidade | Média-Alta |
 
 ## 1. Resumo
+
+> **Suspensa (2026-09-19).** A PRD-64 migrou a extensão para Oracle-only e
+> removeu o `utPLSQL-cli`/Java. Esta PRD pressupõe `src/cli.ts`,
+> `utplsql.cliPath`/`cliHome` e o modo de invocação `java`, que não existem
+> mais. Mantida apenas como registro histórico — reavaliar somente se o CLI
+> voltar a ser pré-requisito.
 
 Oferecer download/verificação automática do `utPLSQL-cli` (analogia ao Python
 Extension que instala `pytest`), com quick-fix no diagnóstico de setup. Hoje o
@@ -94,8 +100,8 @@ pós-instalação.
 
 ## 9. Rollout
 
-- Release 0.16.0 (minor).
-- CHANGELOG: "Auto-provisionamento do utPLSQL-cli".
+- Sem release: suspensa até reavaliação (a arquitetura Oracle-only atual não usa
+  o CLI).
 
 ## 10. Critérios de aceite
 
@@ -106,5 +112,7 @@ pós-instalação.
 
 ## 11. Questões em aberto
 
+- Esta PRD ainda faz sentido depois da PRD-64 (Oracle-only, sem CLI)? — Provavelmente
+  não; reescrever como "verificar versão do utPLSQL no banco" ou encerrar.
 - Baixar o `oracledb` binary específico por plataforma? — Já é optionalDependency.
 - Auto-update do CLI quando a versão do banco subir? — Follow-up.

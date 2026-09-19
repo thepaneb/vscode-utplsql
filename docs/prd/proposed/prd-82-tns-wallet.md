@@ -6,7 +6,7 @@
 | Autor | Gil Cleber Barboza |
 | Data | 2026-09-19 |
 | Componente | Extensão `paneb.vscode-utplsql` |
-| Versão alvo | 0.13.0 |
+| Versão alvo | 0.14.0 |
 | Arquivos afetados | `src/tnsnames.ts` (novo), `src/oracleRunner.ts`, `src/config.ts`, `src/connectionProfiles.ts`, `src/types.ts`, `package.json`, `README.md` |
 | Esforço estimado | 1–2 dias |
 | Complexidade | Média |
@@ -131,7 +131,7 @@ TNS e houver diretório resolvido, passar o descriptor resolvido ao
 
 ## 9. Rollout
 
-- Release 0.13.0 (minor).
+- Release 0.14.0 (minor).
 - `CHANGELOG.md`: "Resolução TNS no thin e senha de wallet no SecretStorage".
 
 ## 10. Critérios de aceite

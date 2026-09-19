@@ -6,7 +6,7 @@
 | Autor | Gil Cleber Barboza |
 | Data | 2026-09-06 |
 | Componente | Extensão `paneb.vscode-utplsql` |
-| Versão alvo | 0.14.0 |
+| Versão alvo | 0.15.0 |
 | Arquivos afetados | `src/types.ts`, `src/extension.ts`, `src/suiteParser.ts`, `src/state.ts`, `package.json` |
 | Esforço estimado | 1–2 dias |
 | Complexidade | Média |
@@ -143,7 +143,7 @@ Registrar `utplsql.runByTag` e a setting `utplsql.showTagsInTree`.
 
 ## 9. Rollout
 
-- Release 0.14.0 (minor).
+- Release 0.15.0 (minor).
 - CHANGELOG: "Run by tag (`%tags`) com QuickPick inclusão/exclusão".
 
 ## 10. Critérios de aceite
