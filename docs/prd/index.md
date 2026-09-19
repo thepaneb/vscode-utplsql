@@ -153,6 +153,12 @@ _(vazio — nenhuma PRD aprovada)_
 |---|---|---|---|
 | 47 | [Node 26 no toolchain de desenvolvimento](proposed/prd-47-node-26-toolchain.md) | 0.13.0 | 2026-08-29 |
 | 69 | [Runner Oracle: binds tipados, `a_tags` e validação de reporters](proposed/prd-69-oracle-runner-typed-binds.md) | 0.13.0 | 2026-09-15 |
+| 74 | [Descoberta de suítes direto do banco (`get_suites_info`)](proposed/prd-74-db-first-discovery.md) | 0.13.0 | 2026-09-19 |
+| 76 | [Execução e export com reporter arbitrário](proposed/prd-76-reporter-export.md) | 0.13.0 | 2026-09-19 |
+| 77 | [Reconstruir o cache de anotações do utPLSQL](proposed/prd-77-rebuild-annotation-cache.md) | 0.13.0 | 2026-09-19 |
+| 78 | [Ordem aleatória de execução com seed](proposed/prd-78-random-test-order.md) | 0.13.0 | 2026-09-19 |
+| 79 | [Escopo avançado de cobertura (regex + exclusões)](proposed/prd-79-coverage-scope.md) | 0.13.0 | 2026-09-19 |
+| 82 | [Resolução TNS no thin e senha de wallet no SecretStorage](proposed/prd-82-tns-wallet.md) | 0.13.0 | 2026-09-19 |
 
 #### 0.14.0
 
@@ -163,6 +169,9 @@ _(vazio — nenhuma PRD aprovada)_
 | 52 | [Diff inline esperado × obtido nas falhas](proposed/prd-52-inline-diff-expected-actual.md) | 0.14.0 | 2026-09-06 |
 | 53 | [Debug de testes: variações (cursor, falhos, último)](proposed/prd-53-debug-test-variants.md) | 0.14.0 | 2026-09-06 |
 | 54 | [Toggle de cobertura na status bar](proposed/prd-54-coverage-toggle.md) | 0.14.0 | 2026-09-06 |
+| 75 | [Árvore de testes lazy (resolução incremental)](proposed/prd-75-lazy-test-tree.md) | 0.14.0 | 2026-09-19 |
+| 80 | [Documento virtual de fonte do banco](proposed/prd-80-virtual-db-source.md) | 0.14.0 | 2026-09-19 |
+| 81 | [Hardening de segurança das settings de conexão](proposed/prd-81-security-hardening.md) | 0.14.0 | 2026-09-19 |
 
 #### 0.15.0
 
@@ -267,7 +276,16 @@ docs/prd/
     ├── prd-59-scaffold-suite.md
     ├── prd-60-branch-coverage-investigation.md
     ├── prd-61-cli-auto-provision.md
-    └── prd-69-oracle-runner-typed-binds.md
+    ├── prd-69-oracle-runner-typed-binds.md
+    ├── prd-74-db-first-discovery.md
+    ├── prd-75-lazy-test-tree.md
+    ├── prd-76-reporter-export.md
+    ├── prd-77-rebuild-annotation-cache.md
+    ├── prd-78-random-test-order.md
+    ├── prd-79-coverage-scope.md
+    ├── prd-80-virtual-db-source.md
+    ├── prd-81-security-hardening.md
+    └── prd-82-tns-wallet.md
 ```
 
 ---
