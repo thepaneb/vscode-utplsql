@@ -113,7 +113,13 @@ function scanPRDs() {
       if (!file.endsWith('.md') || file === 'template.md') continue;
       const filepath = path.join(dirPath, file);
       const content = fs.readFileSync(filepath, 'utf8');
-      const title = content.split('\n')[0].replace(/^#\s+PRD\s*[—–-]\s*/, '').trim();
+      // Aceita tanto `# PRD-01 — Título` quanto `# PRD — Título`; sem o
+      // `(?:-\d+)?` o número do PRD sobrava no título da issue
+      // (ex.: "PRD-01: 01 — Título").
+      const title = content
+        .split('\n')[0]
+        .replace(/^#\s+PRD(?:-\d+)?\s*[—–:-]\s*/i, '')
+        .trim();
       const number = prdNumber(file);
       prds.push({ number, title, status, file, content });
     }
