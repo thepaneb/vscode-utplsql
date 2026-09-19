@@ -8,22 +8,18 @@ import { closeOraclePool } from '../../oracleRunner';
 import { __resetConfigValues, __setConfigValue, commands } from '../vscode-stub';
 
 // Simula a ausência do driver: import('oracledb') resolve, mas acessar
-// .default lança -> loadOracledb cai no catch e retorna undefined.
+// `default` lança -> loadOracledb cai no catch e retorna undefined.
 // Requer --experimental-test-module-mocks (mock.module só intercepta o
 // primeiro registro do specifier — por isso este arquivo isola o cenário).
-const boom = new Proxy(
-  {},
-  {
-    ownKeys: () => ['default'],
-    getOwnPropertyDescriptor: () => ({
-      configurable: true,
-      enumerable: true,
-      get() {
-        throw new Error('driver oracledb ausente');
-      },
-    }),
+//
+// Usa um objeto com getter (não um Proxy): o Node 22 não materializa o getter
+// de um Proxy via `namedExports`, e aí o import não lança (o teste passaria no
+// Node 24 mas falharia no 22).
+const boom = {
+  get default(): never {
+    throw new Error('driver oracledb ausente');
   },
-);
+};
 mock.module('oracledb', { namedExports: boom });
 
 test('debugger liveRuntime: oracledb ausente retorna undefined (catch)', async () => {

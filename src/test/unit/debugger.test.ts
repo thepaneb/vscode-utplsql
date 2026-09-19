@@ -70,11 +70,14 @@ test('debugger: ciclo launch -> breakpoint -> stack/scopes/variables -> disconne
   adapter.handleMessage({ type: 'request', seq: 1, command: 'initialize' });
   adapter.handleMessage({
     type: 'request',
-    seq: 2,
+    seq: 4,
     command: 'launch',
     arguments: { packageName: 'test_app', connection: 'APP/pass@//h:1521/svc' },
   });
-  await flushN(4);
+  // initSession é assíncrono (acquireConnection -> debugOn -> attach); aguarda.
+  for (let i = 0; i < 40 && !conn.calls.some((s) => /DBMS_DEBUG\.DEBUG_ON/.test(s)); i++) {
+    await flush();
+  }
 
   const events = sent.filter((m) => m.type === 'event').map((m) => m.event);
   assert.ok(events.includes('initialized'));

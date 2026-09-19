@@ -80,6 +80,12 @@
 - **Integração — build limpo**: `pretest:integration*` agora roda `npm run clean`
   antes de compilar, evitando executar `.test.js` órfãos (testes removidos ou
   renomeados) que ficam em `out/` (o `tsc` não apaga saídas órfãs).
+- **Testes — compatibilidade Node 22/24**: o mock de "oracledb ausente"
+  (`oracledb-missing-catch`) usava um `Proxy`, cujo getter o Node 22 não
+  materializava via `namedExports` (o teste passava no 24 e falhava no 22);
+  trocado por um objeto com getter. O ciclo `launch` do `debugger.test` passou a
+  aguardar `initSession` de forma robusta, eliminando a corrida entre versões.
+  Suíte roda verde em Node 22 e 24.
 - **Compile for Debug — `PLSQL_OPTIMIZE_LEVEL = 1`**: o comando rodava apenas
   `ALTER … COMPILE DEBUG`, que liga `PLSQL_DEBUG` mas mantém o nível de
   otimização (default 2) — que pode remover/reordenar linhas e o breakpoint não
