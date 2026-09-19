@@ -568,36 +568,36 @@
         "mac": "cmd+shift+u x",
         "when": "utplsql:hasFailures"
       }
-    ]
-  },
-  "debuggers": [
-    {
-      "type": "utplsql",
-      "label": "utPLSQL Debugger",
-      "configurationAttributes": {
-        "launch": {
-          "properties": {
-            "packageName": {
-              "type": "string",
-              "description": "Test package to debug"
-            },
-            "testName": {
-              "type": "string",
-              "description": "Specific test procedure"
-            },
-            "connection": {
-              "type": "string",
-              "description": "Oracle connection string"
-            },
-            "stopOnException": {
-              "type": "boolean",
-              "default": true
+    ],
+    "debuggers": [
+      {
+        "type": "utplsql",
+        "label": "utPLSQL Debugger",
+        "configurationAttributes": {
+          "launch": {
+            "properties": {
+              "packageName": {
+                "type": "string",
+                "description": "Test package to debug"
+              },
+              "testName": {
+                "type": "string",
+                "description": "Specific test procedure"
+              },
+              "connection": {
+                "type": "string",
+                "description": "Oracle connection string"
+              },
+              "stopOnException": {
+                "type": "boolean",
+                "default": true
+              }
             }
           }
         }
       }
-    }
-  ],
+    ]
+  },
   "scripts": {
     "vscode:prepublish": "npm run compile && npm run bundle",
     "compile": "tsc -p ./",
