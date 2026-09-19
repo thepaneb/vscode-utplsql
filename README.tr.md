@@ -123,6 +123,7 @@ Geçici dosya yok, toplu işin bitmesi beklenmez. Sonuçlar Test Explorer'da
 | `utplsql.debugger.enabled` | `true` | PL/SQL test hata ayıklamayı etkinleştirir (`DBMS_DEBUG`). `node-oracledb` + yetkiler gerektirir. Hedef paketi hata ayıklama bilgisiyle derleyin (`PLSQL_OPTIMIZE_LEVEL <= 1`) ve `DEBUG CONNECT SESSION` + `EXECUTE ON SYS.DBMS_DEBUG` verin. |
 | `utplsql.debugger.stopOnException` | `true` | Hata ayıklama sırasında PL/SQL istisnalarında durur. |
 | `utplsql.debugger.timeoutSeconds` | `300` | Hata ayıklama oturumunun zaman aşımı (s). |
+| `utplsql.debugger.compileOnDebug` | `false` | Hata ayıklama oturumunu başlatmadan önce nesneyi hata ayıklama bilgileriyle derler (`ALTER … COMPILE DEBUG`). |
 | `utplsql.scriptRunner.stopOnError` | `true` | Stops script execution on the first failure (`false` = keeps logging the rest). |
 | `utplsql.scriptRunner.autoCommit` | `true` | `autoCommit` on each script statement. |
 | `utplsql.scriptRunner.filePattern` | `**/*.{sql,pks,pkb,fnc,prc,trg}` | Globs to list files when running a script folder. |
@@ -227,6 +228,7 @@ Tüm uzantı komutları (palet `Ctrl+Shift+P` öneki `utPLSQL:`):
 | `utPLSQL: Manage connection profiles` | Ayarları `utplsql.profiles` konumunda açar | — |
 | `utPLSQL: Import connections from SQL Developer` | SQL Developer'dan bağlantıları içe aktarır (connections.xml) | — |
 | `utPLSQL: Debug test (PL/SQL)` | Etkin dosyanın altındaki testin hata ayıklama oturumunu başlatır | — |
+| `utPLSQL: Hata ayıklama için derle` | Seçili dosya/klasör nesnesini hata ayıklama bilgileriyle derler | — |
 | `utPLSQL: Run script` | Runs the script open in the editor against a connection profile | Right-click → script file |
 | `utPLSQL: Run script file` | Runs an Explorer script file (decoded with the profile charset) | Right-click → file |
 | `utPLSQL: Run script folder` | Runs the folder scripts in alphabetical order | Right-click → folder |

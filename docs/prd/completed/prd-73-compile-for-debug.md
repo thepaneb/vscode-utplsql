@@ -2,11 +2,11 @@
 
 | Campo | Valor |
 |---|---|
-| Status | Proposto |
+| Status | Concluído |
 | Autor | Gil Cleber Barboza |
 | Data | 2026-09-18 |
 | Componente | Extensão `paneb.vscode-utplsql` |
-| Versão alvo | 0.13.0 |
+| Versão alvo | 0.12.1 |
 | Arquivos afetados | `package.json`, `package.nls.json` + `package.nls.<locale>.json` (24), `src/commands/debug.ts`, `src/oracleRunner.ts`, `src/i18nLocales.ts`, `README.md` (+ 23 variantes), `docs/wiki/Debugger.md`, `docs/wiki/Database-requirements.md`, `docs/functional/11-debugger.md` |
 | Esforço estimado | 1–2 dias |
 | Complexidade | Baixa-Média |
@@ -197,7 +197,7 @@ Sem keybinding novo por padrão (evitar conflito); pode ser adicionado depois.
 
 ## 9. Rollout
 
-- Feature de minor → **0.13.0** (junto dos PRDs 47/69).
+- Feature de patch → **0.12.1** (junto dos PRDs 70/71/72).
 - Atualizar README (tabela de config + Comandos + Troubleshooting), as 23
   variantes, `docs/wiki/Debugger.md`, `Database-requirements.md` e
   `docs/functional/11-debugger.md`.

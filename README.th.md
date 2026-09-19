@@ -123,6 +123,7 @@ Test Explorer **เมื่อแต่ละเทสต์เสร็จส�
 | `utplsql.debugger.enabled` | `true` | เปิดใช้งานการดีบักเทสต์ PL/SQL (`DBMS_DEBUG`) ต้องใช้ `node-oracledb` + grants คอมไพล์แพ็กเกจเป้าหมายพร้อมข้อมูลดีบัก (`PLSQL_OPTIMIZE_LEVEL <= 1`) และให้สิทธิ์ `DEBUG CONNECT SESSION` + `EXECUTE ON SYS.DBMS_DEBUG` |
 | `utplsql.debugger.stopOnException` | `true` | หยุดชั่วคราวเมื่อเกิด PL/SQL exceptions ระหว่างการดีบัก |
 | `utplsql.debugger.timeoutSeconds` | `300` | Timeout (วินาที) ของเซสชันการดีบัก |
+| `utplsql.debugger.compileOnDebug` | `false` | คอมไพล์ออบเจ็กต์พร้อมข้อมูลดีบัก (`ALTER … COMPILE DEBUG`) ก่อนเริ่มเซสชันดีบัก |
 | `utplsql.scriptRunner.stopOnError` | `true` | Stops script execution on the first failure (`false` = keeps logging the rest). |
 | `utplsql.scriptRunner.autoCommit` | `true` | `autoCommit` on each script statement. |
 | `utplsql.scriptRunner.filePattern` | `**/*.{sql,pks,pkb,fnc,prc,trg}` | Globs to list files when running a script folder. |
@@ -227,6 +228,7 @@ Annotation ไม่คำนึงถึงตัวพิมพ์เล็ก
 | `utPLSQL: Manage connection profiles` | เปิดการตั้งค่าที่ `utplsql.profiles` | — |
 | `utPLSQL: Import connections from SQL Developer` | นำเข้าการเชื่อมต่อจาก SQL Developer (connections.xml) | — |
 | `utPLSQL: Debug test (PL/SQL)` | เริ่มเซสชันการดีบักของเทสต์ภายใต้ไฟล์ที่ใช้งานอยู่ | — |
+| `utPLSQL: คอมไพล์สำหรับดีบัก` | คอมไพล์ออบเจ็กต์ของไฟล์/โฟลเดอร์ที่เลือกพร้อมข้อมูลดีบัก | — |
 | `utPLSQL: Run script` | Runs the script open in the editor against a connection profile | Right-click → script file |
 | `utPLSQL: Run script file` | Runs an Explorer script file (decoded with the profile charset) | Right-click → file |
 | `utPLSQL: Run script folder` | Runs the folder scripts in alphabetical order | Right-click → folder |

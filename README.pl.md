@@ -124,6 +124,7 @@ Test Explorerze **w miarę kończenia każdego testu**.
 | `utplsql.debugger.enabled` | `true` | Włącza debugowanie testów PL/SQL (`DBMS_DEBUG`). Wymaga `node-oracledb` + grantów. Skompiluj pakiet docelowy z informacjami debugowania (`PLSQL_OPTIMIZE_LEVEL <= 1`) i nadaj `DEBUG CONNECT SESSION` + `EXECUTE ON SYS.DBMS_DEBUG`. |
 | `utplsql.debugger.stopOnException` | `true` | Wstrzymuje na wyjątkach PL/SQL podczas debugowania. |
 | `utplsql.debugger.timeoutSeconds` | `300` | Limit czasu (s) sesji debugowania. |
+| `utplsql.debugger.compileOnDebug` | `false` | Kompiluje obiekt z informacjami debugowania (`ALTER … COMPILE DEBUG`) przed rozpoczęciem sesji debugowania. |
 | `utplsql.scriptRunner.stopOnError` | `true` | Stops script execution on the first failure (`false` = keeps logging the rest). |
 | `utplsql.scriptRunner.autoCommit` | `true` | `autoCommit` on each script statement. |
 | `utplsql.scriptRunner.filePattern` | `**/*.{sql,pks,pkb,fnc,prc,trg}` | Globs to list files when running a script folder. |
@@ -228,6 +229,7 @@ Wszystkie polecenia rozszerzenia (paleta `Ctrl+Shift+P`, prefiks `utPLSQL:`):
 | `utPLSQL: Manage connection profiles` | Otwiera ustawienia przy `utplsql.profiles` | — |
 | `utPLSQL: Import connections from SQL Developer` | Importuje połączenia z SQL Developera (connections.xml) | — |
 | `utPLSQL: Debug test (PL/SQL)` | Uruchamia sesję debugowania testu w aktywnym pliku | — |
+| `utPLSQL: Skompiluj do debugowania` | Kompiluje obiekt wybranego pliku/folderu z informacjami debugowania | — |
 | `utPLSQL: Run script` | Runs the script open in the editor against a connection profile | Right-click → script file |
 | `utPLSQL: Run script file` | Runs an Explorer script file (decoded with the profile charset) | Right-click → file |
 | `utPLSQL: Run script folder` | Runs the folder scripts in alphabetical order | Right-click → folder |

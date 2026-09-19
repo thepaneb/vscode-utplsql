@@ -124,6 +124,7 @@ Test Explorer **по мере завершения каждого теста**.
 | `utplsql.debugger.enabled` | `true` | Включает отладку тестов PL/SQL (`DBMS_DEBUG`). Требуется `node-oracledb` + привилегии. Скомпилируйте целевой пакет с отладочной информацией (`PLSQL_OPTIMIZE_LEVEL <= 1`) и выдайте `DEBUG CONNECT SESSION` + `EXECUTE ON SYS.DBMS_DEBUG`. |
 | `utplsql.debugger.stopOnException` | `true` | Останавливается на исключениях PL/SQL во время отладки. |
 | `utplsql.debugger.timeoutSeconds` | `300` | Тайм-аут (с) сеанса отладки. |
+| `utplsql.debugger.compileOnDebug` | `false` | Компилирует объект с отладочной информацией (`ALTER … COMPILE DEBUG`) перед запуском сеанса отладки. |
 | `utplsql.scriptRunner.stopOnError` | `true` | Stops script execution on the first failure (`false` = keeps logging the rest). |
 | `utplsql.scriptRunner.autoCommit` | `true` | `autoCommit` on each script statement. |
 | `utplsql.scriptRunner.filePattern` | `**/*.{sql,pks,pkb,fnc,prc,trg}` | Globs to list files when running a script folder. |
@@ -228,6 +229,7 @@ UTPLSQL_CONN=your_user/password@//host:1521/service
 | `utPLSQL: Manage connection profiles` | Открывает настройки в `utplsql.profiles` | — |
 | `utPLSQL: Import connections from SQL Developer` | Импортирует подключения из SQL Developer (connections.xml) | — |
 | `utPLSQL: Debug test (PL/SQL)` | Запускает сеанс отладки теста в активном файле | — |
+| `utPLSQL: Скомпилировать для отладки` | Компилирует объект выбранного файла/папки с отладочной информацией | — |
 | `utPLSQL: Run script` | Runs the script open in the editor against a connection profile | Right-click → script file |
 | `utPLSQL: Run script file` | Runs an Explorer script file (decoded with the profile charset) | Right-click → file |
 | `utPLSQL: Run script folder` | Runs the folder scripts in alphabetical order | Right-click → folder |

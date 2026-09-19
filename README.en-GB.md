@@ -123,6 +123,7 @@ Test Explorer **as each test finishes**. The VSIX already includes the thin `ora
 | `utplsql.debugger.enabled` | `true` | Enables PL/SQL test debugging (`DBMS_DEBUG`). Requires `node-oracledb` + grants. Compile the target package with debug info (`PLSQL_OPTIMIZE_LEVEL <= 1`) and grant `DEBUG CONNECT SESSION` + `EXECUTE ON SYS.DBMS_DEBUG`. |
 | `utplsql.debugger.stopOnException` | `true` | Pauses on PL/SQL exceptions during debugging. |
 | `utplsql.debugger.timeoutSeconds` | `300` | Timeout (s) of the debug session. |
+| `utplsql.debugger.compileOnDebug` | `false` | Compiles the object with debug information (`ALTER … COMPILE DEBUG`) before starting the debug session. |
 | `utplsql.scriptRunner.stopOnError` | `true` | Stops script execution on the first failure (`false` = keeps logging the rest). |
 | `utplsql.scriptRunner.autoCommit` | `true` | `autoCommit` on each script statement. |
 | `utplsql.scriptRunner.filePattern` | `**/*.{sql,pks,pkb,fnc,prc,trg}` | Globs to list files when running a script folder. |
@@ -227,6 +228,7 @@ All extension commands (palette `Ctrl+Shift+P` prefix `utPLSQL:`):
 | `utPLSQL: Manage connection profiles` | Opens settings at `utplsql.profiles` | — |
 | `utPLSQL: Import connections from SQL Developer` | Imports connections from SQL Developer (connections.xml) | — |
 | `utPLSQL: Debug test (PL/SQL)` | Starts a debug session of the test under the active file | — |
+| `utPLSQL: Compile for Debug` | Compiles the selected file/folder object with debug information | — |
 | `utPLSQL: Run script` | Runs the script open in the editor against a connection profile | Right-click → script file |
 | `utPLSQL: Run script file` | Runs an Explorer script file (decoded with the profile charset) | Right-click → file |
 | `utPLSQL: Run script folder` | Runs the folder scripts in alphabetical order | Right-click → folder |

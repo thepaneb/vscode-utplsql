@@ -135,6 +135,7 @@ CONCLUIR
 | 70 | [Thick mode opcional (Instant Client) para bancos com NNE](completed/prd-70-thick-mode-nne.md) | 0.12.1 | 2026-09-17 |
 | 72 | [Matriz de bancos Oracle para testes de integração](completed/prd-72-db-test-matrix.md) | 0.12.1 | 2026-09-18 |
 | 71 | [Corrigir o debugger para o DBMS_DEBUG real](completed/prd-71-debugger-dbms-debug-fix.md) | 0.12.1 | 2026-09-18 |
+| 73 | [Compilar objeto para debug (comando + menus)](completed/prd-73-compile-for-debug.md) | 0.12.1 | 2026-09-19 |
 
 ### 🟡 Em desenvolvimento
 
@@ -152,7 +153,6 @@ _(vazio — nenhuma PRD aprovada)_
 |---|---|---|---|
 | 47 | [Node 26 no toolchain de desenvolvimento](proposed/prd-47-node-26-toolchain.md) | 0.13.0 | 2026-08-29 |
 | 69 | [Runner Oracle: binds tipados, `a_tags` e validação de reporters](proposed/prd-69-oracle-runner-typed-binds.md) | 0.13.0 | 2026-09-15 |
-| 73 | [Compilar objeto para debug (comando + menus)](proposed/prd-73-compile-for-debug.md) | 0.13.0 | 2026-09-18 |
 
 #### 0.14.0
 
@@ -247,7 +247,8 @@ docs/prd/
 │   ├── prd-68-restore-oracle-diagnostics-and-reporter.md
 │   ├── prd-70-thick-mode-nne.md
 │   ├── prd-71-debugger-dbms-debug-fix.md
-│   └── prd-72-db-test-matrix.md
+│   ├── prd-72-db-test-matrix.md
+│   └── prd-73-compile-for-debug.md
 ├── approved/         ← aprovados, aguardando implementação
 │   └── (vazio)
 ├── in-progress/      ← sendo implementados agora
@@ -266,8 +267,7 @@ docs/prd/
     ├── prd-59-scaffold-suite.md
     ├── prd-60-branch-coverage-investigation.md
     ├── prd-61-cli-auto-provision.md
-    ├── prd-69-oracle-runner-typed-binds.md
-    └── prd-73-compile-for-debug.md
+    └── prd-69-oracle-runner-typed-binds.md
 ```
 
 ---

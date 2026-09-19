@@ -123,6 +123,7 @@ Test Explorer 中。
 | `utplsql.debugger.enabled` | `true` | 启用 PL/SQL 测试调试（`DBMS_DEBUG`）。需要 `node-oracledb` + 授权。 使用调试信息编译目标包（`PLSQL_OPTIMIZE_LEVEL <= 1`），并授予 `DEBUG CONNECT SESSION` + `EXECUTE ON SYS.DBMS_DEBUG`。 |
 | `utplsql.debugger.stopOnException` | `true` | 调试期间在 PL/SQL 异常时暂停。 |
 | `utplsql.debugger.timeoutSeconds` | `300` | 调试会话的超时时间（秒）。 |
+| `utplsql.debugger.compileOnDebug` | `false` | 在启动调试会话之前，使用调试信息编译对象（`ALTER … COMPILE DEBUG`）。 |
 | `utplsql.scriptRunner.stopOnError` | `true` | Stops script execution on the first failure (`false` = keeps logging the rest). |
 | `utplsql.scriptRunner.autoCommit` | `true` | `autoCommit` on each script statement. |
 | `utplsql.scriptRunner.filePattern` | `**/*.{sql,pks,pkb,fnc,prc,trg}` | Globs to list files when running a script folder. |
@@ -225,6 +226,7 @@ UTPLSQL_CONN=your_user/password@//host:1521/service
 | `utPLSQL: Manage connection profiles` | 打开 `utplsql.profiles` 的设置 | — |
 | `utPLSQL: Import connections from SQL Developer` | 从 SQL Developer（connections.xml）导入连接 | — |
 | `utPLSQL: Debug test (PL/SQL)` | 为活动文件下的测试启动调试会话 | — |
+| `utPLSQL: 编译以进行调试` | 使用调试信息编译所选文件/文件夹的对象 | — |
 | `utPLSQL: Run script` | Runs the script open in the editor against a connection profile | Right-click → script file |
 | `utPLSQL: Run script file` | Runs an Explorer script file (decoded with the profile charset) | Right-click → file |
 | `utPLSQL: Run script folder` | Runs the folder scripts in alphabetical order | Right-click → folder |

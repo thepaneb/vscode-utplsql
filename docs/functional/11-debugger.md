@@ -95,6 +95,22 @@ async function startDebugSession(packageName: string, testName?: string): Promis
   resolvida) e `stopOnException` (`utplsql.debugger.stopOnException`) se não
   vierem na launch config.
 
+## Compilação para debug (PRD-73)
+
+Para que o breakpoint pare, o objeto precisa ter sido compilado com debug info.
+Além do `ALTER … COMPILE DEBUG` manual, a extensão oferece:
+
+- comando **`utPLSQL: Compile for Debug`** (`utplsql.compileForDebug`) na paleta,
+  no menu de contexto do editor e do Explorer (arquivo ou pasta);
+- deriva o objeto do arquivo (`.pks`/`.pkb` → package, `.fnc` → function,
+  `.prc` → procedure, `.trg` → trigger; `.sql` tenta package → procedure →
+  function → trigger);
+- owner = schema extraído do caminho (modo schema) ou usuário da conexão;
+- executa `ALTER <TYPE> "OWNER"."NAME" COMPILE DEBUG` reusando o pool do runner
+  (`src/compileForDebug.ts`, best-effort).
+- setting `utplsql.debugger.compileOnDebug` (default `false`): o adapter compila
+  o pacote com debug info em `initSession()` antes de iniciar a sessão.
+
 ## Requisitos
 
 - `utplsql.debugger.enabled` = `true` (default).
@@ -110,6 +126,7 @@ async function startDebugSession(packageName: string, testName?: string): Promis
 | `utplsql.debugger.enabled` | `true` | Habilita o debug de testes PL/SQL |
 | `utplsql.debugger.stopOnException` | `true` | Para quando uma exceção não tratada é levantada |
 | `utplsql.debugger.timeoutSeconds` | `300` | Timeout da sessão de debug (encerra ao expirar) |
+| `utplsql.debugger.compileOnDebug` | `false` | Compila o objeto com debug info antes de iniciar a sessão |
 
 ## Eventos e mensagens
 

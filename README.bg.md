@@ -124,6 +124,7 @@ Test Explorer **с приключването на всеки тест**.
 | `utplsql.debugger.enabled` | `true` | Активира дебъгване на PL/SQL тестове (`DBMS_DEBUG`). Изисква `node-oracledb` + привилегии. Компилирайте целевия пакет с debug информация (`PLSQL_OPTIMIZE_LEVEL <= 1`) и дайте `DEBUG CONNECT SESSION` + `EXECUTE ON SYS.DBMS_DEBUG`. |
 | `utplsql.debugger.stopOnException` | `true` | Спира при PL/SQL изключения по време на дебъгване. |
 | `utplsql.debugger.timeoutSeconds` | `300` | Таймаут (секунди) на дебъг сесията. |
+| `utplsql.debugger.compileOnDebug` | `false` | Компилира обекта с информация за отстраняване на грешки (`ALTER … COMPILE DEBUG`) преди стартиране на сесията за отстраняване на грешки. |
 | `utplsql.scriptRunner.stopOnError` | `true` | Stops script execution on the first failure (`false` = keeps logging the rest). |
 | `utplsql.scriptRunner.autoCommit` | `true` | `autoCommit` on each script statement. |
 | `utplsql.scriptRunner.filePattern` | `**/*.{sql,pks,pkb,fnc,prc,trg}` | Globs to list files when running a script folder. |
@@ -228,6 +229,7 @@ UTPLSQL_CONN=your_user/password@//host:1521/service
 | `utPLSQL: Manage connection profiles` | Отваря настройките на `utplsql.profiles` | — |
 | `utPLSQL: Import connections from SQL Developer` | Импортира връзки от SQL Developer (connections.xml) | — |
 | `utPLSQL: Debug test (PL/SQL)` | Стартира дебъг сесия на теста под активния файл | — |
+| `utPLSQL: Компилиране за отстраняване на грешки` | Компилира обекта на избрания файл/папка с информация за отстраняване на грешки | — |
 | `utPLSQL: Run script` | Runs the script open in the editor against a connection profile | Right-click → script file |
 | `utPLSQL: Run script file` | Runs an Explorer script file (decoded with the profile charset) | Right-click → file |
 | `utPLSQL: Run script folder` | Runs the folder scripts in alphabetical order | Right-click → folder |

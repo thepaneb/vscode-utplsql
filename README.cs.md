@@ -125,6 +125,7 @@ nativních API VSCode.
 | `utplsql.debugger.enabled` | `true` | Povoluje ladění PL/SQL testů (`DBMS_DEBUG`). Vyžaduje `node-oracledb` + granty. Zkompilujte cílový balíček s ladicími informacemi (`PLSQL_OPTIMIZE_LEVEL <= 1`) a udělte `DEBUG CONNECT SESSION` + `EXECUTE ON SYS.DBMS_DEBUG`. |
 | `utplsql.debugger.stopOnException` | `true` | Pozastaví se při výjimkách PL/SQL během ladění. |
 | `utplsql.debugger.timeoutSeconds` | `300` | Časový limit (s) ladící relace. |
+| `utplsql.debugger.compileOnDebug` | `false` | Zkompiluje objekt s ladicími informacemi (`ALTER … COMPILE DEBUG`) před spuštěním ladicí relace. |
 | `utplsql.scriptRunner.stopOnError` | `true` | Stops script execution on the first failure (`false` = keeps logging the rest). |
 | `utplsql.scriptRunner.autoCommit` | `true` | `autoCommit` on each script statement. |
 | `utplsql.scriptRunner.filePattern` | `**/*.{sql,pks,pkb,fnc,prc,trg}` | Globs to list files when running a script folder. |
@@ -229,6 +230,7 @@ Všechny příkazy rozšíření (paleta `Ctrl+Shift+P`, předpona `utPLSQL:`):
 | `utPLSQL: Manage connection profiles` | Otevře nastavení na `utplsql.profiles` | — |
 | `utPLSQL: Import connections from SQL Developer` | Importuje připojení ze SQL Developeru (connections.xml) | — |
 | `utPLSQL: Debug test (PL/SQL)` | Spustí ladící relaci testu pod aktivním souborem | — |
+| `utPLSQL: Zkompilovat pro ladění` | Zkompiluje objekt vybraného souboru/složky s ladicími informacemi | — |
 | `utPLSQL: Run script` | Runs the script open in the editor against a connection profile | Right-click → script file |
 | `utPLSQL: Run script file` | Runs an Explorer script file (decoded with the profile charset) | Right-click → file |
 | `utPLSQL: Run script folder` | Runs the folder scripts in alphabetical order | Right-click → folder |

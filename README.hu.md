@@ -124,6 +124,7 @@ A bővítmény közvetlenül Oracle-on keresztül csatlakozik, beolvassa a ripor
 | `utplsql.debugger.enabled` | `true` | Engedélyezi a PL/SQL-tesztek hibakeresését (`DBMS_DEBUG`). `node-oracledb` + jogosultságok szükségesek. Fordítsd a célcsomagot hibakeresési infóval (`PLSQL_OPTIMIZE_LEVEL <= 1`), és adj `DEBUG CONNECT SESSION` + `EXECUTE ON SYS.DBMS_DEBUG` jogosultságot. |
 | `utplsql.debugger.stopOnException` | `true` | Megáll a PL/SQL-kivételeknél a hibakeresés során. |
 | `utplsql.debugger.timeoutSeconds` | `300` | A hibakeresési munkamenet időtúllépése (másodperc). |
+| `utplsql.debugger.compileOnDebug` | `false` | A hibakeresési munkamenet indítása előtt lefordítja az objektumot hibakeresési információkkal (`ALTER … COMPILE DEBUG`). |
 | `utplsql.scriptRunner.stopOnError` | `true` | Stops script execution on the first failure (`false` = keeps logging the rest). |
 | `utplsql.scriptRunner.autoCommit` | `true` | `autoCommit` on each script statement. |
 | `utplsql.scriptRunner.filePattern` | `**/*.{sql,pks,pkb,fnc,prc,trg}` | Globs to list files when running a script folder. |
@@ -228,6 +229,7 @@ A bővítmény összes parancsa (paletta `Ctrl+Shift+P`, előtag `utPLSQL:`):
 | `utPLSQL: Manage connection profiles` | Megnyitja a beállításokat a `utplsql.profiles` értéknél | — |
 | `utPLSQL: Import connections from SQL Developer` | Kapcsolatok importálása az SQL Developerből (connections.xml) | — |
 | `utPLSQL: Debug test (PL/SQL)` | Hibakeresési munkamenetet indít az aktív fájlban lévő tesztre | — |
+| `utPLSQL: Fordítás hibakereséshez` | A kijelölt fájl/mappa objektumát hibakeresési információkkal fordítja le | — |
 | `utPLSQL: Run script` | Runs the script open in the editor against a connection profile | Right-click → script file |
 | `utPLSQL: Run script file` | Runs an Explorer script file (decoded with the profile charset) | Right-click → file |
 | `utPLSQL: Run script folder` | Runs the folder scripts in alphabetical order | Right-click → folder |

@@ -48,6 +48,25 @@ The `utplsql` debugger type is declared with these `launch` attributes:
 | `connection` | No | Oracle connection string (resolved from profile/setting if omitted) |
 | `stopOnException` | No | Pause on unhandled exceptions (default from `utplsql.debugger.stopOnException`) |
 
+## Compiling for debug
+
+The target object must be compiled with debug information for breakpoints to
+hit. Instead of running the `ALTER` manually, use **`utPLSQL: Compile for
+Debug`** (`utplsql.compileForDebug`):
+
+- Command palette, editor context menu (`.pks`/`.pkb`/`.fnc`/`.prc`/`.trg`/`.sql`)
+  and Explorer context menu (file or folder).
+- It derives the Oracle object from the file (`.pks`/`.pkb` → package,
+  `.fnc` → function, `.prc` → procedure, `.trg` → trigger; `.sql` is tried as
+  package → procedure → function → trigger).
+- The owner is the schema extracted from the path in `schema` mode, otherwise the
+  connection user.
+- It runs `ALTER <TYPE> "OWNER"."NAME" COMPILE DEBUG` on the active
+  connection/profile (reusing the runner pool) and reports the result.
+
+To automate it, set `utplsql.debugger.compileOnDebug` to `true`: the extension
+then compiles the package with debug info before starting the debug session.
+
 ## Requirements
 
 - `utplsql.debugger.enabled` = `true` (default).

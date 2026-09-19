@@ -124,6 +124,7 @@ Test Explorer에 나타납니다.
 | `utplsql.debugger.enabled` | `true` | PL/SQL 테스트 디버깅(`DBMS_DEBUG`)을 활성화합니다. `node-oracledb` + 권한 필요. 대상 패키지를 디버그 정보로 컴파일하고(`PLSQL_OPTIMIZE_LEVEL <= 1`) `DEBUG CONNECT SESSION` + `EXECUTE ON SYS.DBMS_DEBUG`를 부여하세요. |
 | `utplsql.debugger.stopOnException` | `true` | 디버깅 중 PL/SQL 예외에서 일시 중지합니다. |
 | `utplsql.debugger.timeoutSeconds` | `300` | 디버그 세션의 시간 제한(초). |
+| `utplsql.debugger.compileOnDebug` | `false` | 디버그 세션을 시작하기 전에 개체를 디버그 정보와 함께 컴파일합니다(`ALTER … COMPILE DEBUG`). |
 | `utplsql.scriptRunner.stopOnError` | `true` | Stops script execution on the first failure (`false` = keeps logging the rest). |
 | `utplsql.scriptRunner.autoCommit` | `true` | `autoCommit` on each script statement. |
 | `utplsql.scriptRunner.filePattern` | `**/*.{sql,pks,pkb,fnc,prc,trg}` | Globs to list files when running a script folder. |
@@ -227,6 +228,7 @@ UTPLSQL_CONN=your_user/password@//host:1521/service
 | `utPLSQL: Manage connection profiles` | `utplsql.profiles`에서 설정 열기 | — |
 | `utPLSQL: Import connections from SQL Developer` | SQL Developer에서 연결 가져오기(connections.xml) | — |
 | `utPLSQL: Debug test (PL/SQL)` | 활성 파일 아래의 테스트 디버그 세션 시작 | — |
+| `utPLSQL: 디버그용으로 컴파일` | 선택한 파일/폴더의 개체를 디버그 정보와 함께 컴파일합니다 | — |
 | `utPLSQL: Run script` | Runs the script open in the editor against a connection profile | Right-click → script file |
 | `utPLSQL: Run script file` | Runs an Explorer script file (decoded with the profile charset) | Right-click → file |
 | `utPLSQL: Run script folder` | Runs the folder scripts in alphabetical order | Right-click → folder |

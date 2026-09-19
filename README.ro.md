@@ -124,6 +124,7 @@ Extensia se conectează direct prin Oracle, citește rapoartele (JUnit + Coverag
 | `utplsql.debugger.enabled` | `true` | Activează depanarea testelor PL/SQL (`DBMS_DEBUG`). Necesită `node-oracledb` + granturi. Compilați pachetul țintă cu informații de depanare (`PLSQL_OPTIMIZE_LEVEL <= 1`) și acordați `DEBUG CONNECT SESSION` + `EXECUTE ON SYS.DBMS_DEBUG`. |
 | `utplsql.debugger.stopOnException` | `true` | Se oprește la excepțiile PL/SQL în timpul depanării. |
 | `utplsql.debugger.timeoutSeconds` | `300` | Timeout (s) al sesiunii de depanare. |
+| `utplsql.debugger.compileOnDebug` | `false` | Compilează obiectul cu informații de depanare (`ALTER … COMPILE DEBUG`) înainte de a începe sesiunea de depanare. |
 | `utplsql.scriptRunner.stopOnError` | `true` | Stops script execution on the first failure (`false` = keeps logging the rest). |
 | `utplsql.scriptRunner.autoCommit` | `true` | `autoCommit` on each script statement. |
 | `utplsql.scriptRunner.filePattern` | `**/*.{sql,pks,pkb,fnc,prc,trg}` | Globs to list files when running a script folder. |
@@ -228,6 +229,7 @@ Toate comenzile extensiei (paletă `Ctrl+Shift+P`, prefix `utPLSQL:`):
 | `utPLSQL: Manage connection profiles` | Deschide setările la `utplsql.profiles` | — |
 | `utPLSQL: Import connections from SQL Developer` | Importă conexiuni din SQL Developer (connections.xml) | — |
 | `utPLSQL: Debug test (PL/SQL)` | Pornește o sesiune de depanare a testului din fișierul activ | — |
+| `utPLSQL: Compilare pentru depanare` | Compilează obiectul fișierului/dosarului selectat cu informații de depanare | — |
 | `utPLSQL: Run script` | Runs the script open in the editor against a connection profile | Right-click → script file |
 | `utPLSQL: Run script file` | Runs an Explorer script file (decoded with the profile charset) | Right-click → file |
 | `utPLSQL: Run script folder` | Runs the folder scripts in alphabetical order | Right-click → folder |

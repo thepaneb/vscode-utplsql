@@ -125,6 +125,7 @@ Test Explorer **καθώς ολοκληρώνεται κάθε test**.
 | `utplsql.debugger.enabled` | `true` | Ενεργοποιεί την αποσφαλμάτωση PL/SQL tests (`DBMS_DEBUG`). Απαιτεί `node-oracledb` + grants. Μεταγλωττίστε το πακέτο-στόχο με πληροφορίες debug (`PLSQL_OPTIMIZE_LEVEL <= 1`) και δώστε `DEBUG CONNECT SESSION` + `EXECUTE ON SYS.DBMS_DEBUG`. |
 | `utplsql.debugger.stopOnException` | `true` | Κάνει παύση σε PL/SQL exceptions κατά την αποσφαλμάτωση. |
 | `utplsql.debugger.timeoutSeconds` | `300` | Χρονικό όριο (δευτ.) της συνόδου αποσφαλμάτωσης. |
+| `utplsql.debugger.compileOnDebug` | `false` | Μεταγλωττίζει το αντικείμενο με πληροφορίες αποσφαλμάτωσης (`ALTER … COMPILE DEBUG`) πριν από την έναρξη της συνεδρίας αποσφαλμάτωσης. |
 | `utplsql.scriptRunner.stopOnError` | `true` | Stops script execution on the first failure (`false` = keeps logging the rest). |
 | `utplsql.scriptRunner.autoCommit` | `true` | `autoCommit` on each script statement. |
 | `utplsql.scriptRunner.filePattern` | `**/*.{sql,pks,pkb,fnc,prc,trg}` | Globs to list files when running a script folder. |
@@ -229,6 +230,7 @@ UTPLSQL_CONN=your_user/password@//host:1521/service
 | `utPLSQL: Manage connection profiles` | Ανοίγει τις ρυθμίσεις στο `utplsql.profiles` | — |
 | `utPLSQL: Import connections from SQL Developer` | Εισάγει συνδέσεις από το SQL Developer (connections.xml) | — |
 | `utPLSQL: Debug test (PL/SQL)` | Ξεκινά σύνοδο αποσφαλμάτωσης του test στο ενεργό αρχείο | — |
+| `utPLSQL: Μεταγλώττιση για αποσφαλμάτωση` | Μεταγλωττίζει το αντικείμενο του επιλεγμένου αρχείου/φακέλου με πληροφορίες αποσφαλμάτωσης | — |
 | `utPLSQL: Run script` | Runs the script open in the editor against a connection profile | Right-click → script file |
 | `utPLSQL: Run script file` | Runs an Explorer script file (decoded with the profile charset) | Right-click → file |
 | `utPLSQL: Run script folder` | Runs the folder scripts in alphabetical order | Right-click → folder |

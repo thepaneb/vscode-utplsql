@@ -124,6 +124,7 @@ Ekstensi terhubung langsung ke Oracle, membaca laporan (JUnit + Coverage) lalu m
 | `utplsql.debugger.enabled` | `true` | Mengaktifkan debugging pengujian PL/SQL (`DBMS_DEBUG`). Memerlukan `node-oracledb` + grant. Kompilasi paket target dengan info debug (`PLSQL_OPTIMIZE_LEVEL <= 1`) dan berikan `DEBUG CONNECT SESSION` + `EXECUTE ON SYS.DBMS_DEBUG`. |
 | `utplsql.debugger.stopOnException` | `true` | Berhenti pada exception PL/SQL saat debugging. |
 | `utplsql.debugger.timeoutSeconds` | `300` | Waktu tunggu (detik) dari sesi debug. |
+| `utplsql.debugger.compileOnDebug` | `false` | Mengompilasi objek dengan informasi debug (`ALTER … COMPILE DEBUG`) sebelum memulai sesi debug. |
 | `utplsql.scriptRunner.stopOnError` | `true` | Stops script execution on the first failure (`false` = keeps logging the rest). |
 | `utplsql.scriptRunner.autoCommit` | `true` | `autoCommit` on each script statement. |
 | `utplsql.scriptRunner.filePattern` | `**/*.{sql,pks,pkb,fnc,prc,trg}` | Globs to list files when running a script folder. |
@@ -228,6 +229,7 @@ Semua perintah ekstensi (palet `Ctrl+Shift+P`, prefiks `utPLSQL:`):
 | `utPLSQL: Manage connection profiles` | Membuka pengaturan di `utplsql.profiles` | — |
 | `utPLSQL: Import connections from SQL Developer` | Mengimpor koneksi dari SQL Developer (connections.xml) | — |
 | `utPLSQL: Debug test (PL/SQL)` | Memulai sesi debug untuk pengujian di bawah file aktif | — |
+| `utPLSQL: Kompilasi untuk debug` | Mengompilasi objek file/folder yang dipilih dengan informasi debug | — |
 | `utPLSQL: Run script` | Runs the script open in the editor against a connection profile | Right-click → script file |
 | `utPLSQL: Run script file` | Runs an Explorer script file (decoded with the profile charset) | Right-click → file |
 | `utPLSQL: Run script folder` | Runs the folder scripts in alphabetical order | Right-click → folder |

@@ -121,6 +121,7 @@ Test Explorer **у міру завершення кожного тесту**. VS
 | `utplsql.debugger.enabled` | `true` | Увімкнення налагодження тестів PL/SQL (`DBMS_DEBUG`). Потребує `node-oracledb` + привілеї. Скомпілюйте цільовий пакет з налагоджувальною інформацією (`PLSQL_OPTIMIZE_LEVEL <= 1`) і надайте `DEBUG CONNECT SESSION` + `EXECUTE ON SYS.DBMS_DEBUG`. |
 | `utplsql.debugger.stopOnException` | `true` | Зупинка на винятках PL/SQL під час налагодження. |
 | `utplsql.debugger.timeoutSeconds` | `300` | Час очікування (с) сеансу налагодження. |
+| `utplsql.debugger.compileOnDebug` | `false` | Компілює об’єкт з налагоджувальною інформацією (`ALTER … COMPILE DEBUG`) перед запуском сеансу налагодження. |
 | `utplsql.scriptRunner.stopOnError` | `true` | Stops script execution on the first failure (`false` = keeps logging the rest). |
 | `utplsql.scriptRunner.autoCommit` | `true` | `autoCommit` on each script statement. |
 | `utplsql.scriptRunner.filePattern` | `**/*.{sql,pks,pkb,fnc,prc,trg}` | Globs to list files when running a script folder. |
@@ -225,6 +226,7 @@ UTPLSQL_CONN=your_user/password@//host:1521/service
 | `utPLSQL: Manage connection profiles` | Відкриває налаштування на `utplsql.profiles` | — |
 | `utPLSQL: Import connections from SQL Developer` | Імпортує підключення з SQL Developer (connections.xml) | — |
 | `utPLSQL: Debug test (PL/SQL)` | Запускає сеанс налагодження тесту в активному файлі | — |
+| `utPLSQL: Скомпілювати для налагодження` | Компілює об’єкт вибраного файлу/папки з налагоджувальною інформацією | — |
 | `utPLSQL: Run script` | Runs the script open in the editor against a connection profile | Right-click → script file |
 | `utPLSQL: Run script file` | Runs an Explorer script file (decoded with the profile charset) | Right-click → file |
 | `utPLSQL: Run script folder` | Runs the folder scripts in alphabetical order | Right-click → folder |

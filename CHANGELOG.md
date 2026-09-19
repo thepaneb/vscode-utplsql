@@ -60,6 +60,13 @@
   com `ORA-00900`. `splitScript` ignora essas linhas (preservando a numeração)
   quando o buffer só tem brancos/comentários, sem afetar usos legítimos como
   `UPDATE … SET …`.
+- **Compilar para debug (PRD-73)**: novo comando
+  `utPLSQL: Compile for Debug` (`utplsql.compileForDebug`) na paleta e nos menus
+  de contexto do editor e do Explorer (arquivo/pasta). Deriva o objeto do arquivo
+  (`.pks`/`.pkb` → package, `.fnc`/`.prc`/`.trg` → função/procedure/trigger;
+  `.sql` tenta em ordem) e executa `ALTER … COMPILE DEBUG` reusando o pool do
+  runner. Setting `utplsql.debugger.compileOnDebug` (default `false`) compila o
+  pacote antes de iniciar a sessão de debug.
 - **Debugger — contribution point**: o bloco `debuggers` estava no topo do
   `package.json` em vez de dentro de `contributes`, então o VSCode não registrava
   o tipo de debug `utplsql` no manifesto. Movido para `contributes.debuggers`.

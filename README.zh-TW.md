@@ -123,6 +123,7 @@ Test Explorer 中。
 | `utplsql.debugger.enabled` | `true` | 啟用 PL/SQL 測試除錯（`DBMS_DEBUG`）。需要 `node-oracledb` + 授權。 使用除錯資訊編譯目標套件（`PLSQL_OPTIMIZE_LEVEL <= 1`），並授予 `DEBUG CONNECT SESSION` + `EXECUTE ON SYS.DBMS_DEBUG`。 |
 | `utplsql.debugger.stopOnException` | `true` | 在除錯期間於 PL/SQL 例外上暫停。 |
 | `utplsql.debugger.timeoutSeconds` | `300` | 除錯工作階段的逾時（秒）。 |
+| `utplsql.debugger.compileOnDebug` | `false` | 在啟動偵錯工作階段之前，使用偵錯資訊編譯物件（`ALTER … COMPILE DEBUG`）。 |
 | `utplsql.scriptRunner.stopOnError` | `true` | Stops script execution on the first failure (`false` = keeps logging the rest). |
 | `utplsql.scriptRunner.autoCommit` | `true` | `autoCommit` on each script statement. |
 | `utplsql.scriptRunner.filePattern` | `**/*.{sql,pks,pkb,fnc,prc,trg}` | Globs to list files when running a script folder. |
@@ -226,6 +227,7 @@ UTPLSQL_CONN=your_user/password@//host:1521/service
 | `utPLSQL: Manage connection profiles` | 在 `utplsql.profiles` 開啟設定 | — |
 | `utPLSQL: Import connections from SQL Developer` | 從 SQL Developer（connections.xml）匯入連線 | — |
 | `utPLSQL: Debug test (PL/SQL)` | 對作用中檔案下的測試啟動除錯工作階段 | — |
+| `utPLSQL: 編譯以供偵錯` | 使用偵錯資訊編譯所選檔案/資料夾的物件 | — |
 | `utPLSQL: Run script` | Runs the script open in the editor against a connection profile | Right-click → script file |
 | `utPLSQL: Run script file` | Runs an Explorer script file (decoded with the profile charset) | Right-click → file |
 | `utPLSQL: Run script folder` | Runs the folder scripts in alphabetical order | Right-click → folder |

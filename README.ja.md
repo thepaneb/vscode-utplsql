@@ -119,6 +119,7 @@ Test Explorer に表示されます。
 | `utplsql.debugger.enabled` | `true` | PL/SQL テストデバッグ（`DBMS_DEBUG`）を有効化。`node-oracledb` + 権限が必要。 対象パッケージをデバッグ情報付きでコンパイルし（`PLSQL_OPTIMIZE_LEVEL <= 1`）、`DEBUG CONNECT SESSION` + `EXECUTE ON SYS.DBMS_DEBUG` を付与してください。 |
 | `utplsql.debugger.stopOnException` | `true` | デバッグ中に PL/SQL 例外で一時停止。 |
 | `utplsql.debugger.timeoutSeconds` | `300` | デバッグセッションのタイムアウト（秒）。 |
+| `utplsql.debugger.compileOnDebug` | `false` | デバッグセッションを開始する前に、オブジェクトをデバッグ情報付きでコンパイルします（`ALTER … COMPILE DEBUG`）。 |
 | `utplsql.scriptRunner.stopOnError` | `true` | Stops script execution on the first failure (`false` = keeps logging the rest). |
 | `utplsql.scriptRunner.autoCommit` | `true` | `autoCommit` on each script statement. |
 | `utplsql.scriptRunner.filePattern` | `**/*.{sql,pks,pkb,fnc,prc,trg}` | Globs to list files when running a script folder. |
@@ -221,6 +222,7 @@ UTPLSQL_CONN=your_user/password@//host:1521/service
 | `utPLSQL: Manage connection profiles` | `utplsql.profiles` で設定を開く | — |
 | `utPLSQL: Import connections from SQL Developer` | SQL Developer から接続をインポート（connections.xml） | — |
 | `utPLSQL: Debug test (PL/SQL)` | アクティブなファイルのテストのデバッグセッションを開始 | — |
+| `utPLSQL: デバッグ用にコンパイル` | 選択したファイル/フォルダーのオブジェクトをデバッグ情報付きでコンパイルします | — |
 | `utPLSQL: Run script` | Runs the script open in the editor against a connection profile | Right-click → script file |
 | `utPLSQL: Run script file` | Runs an Explorer script file (decoded with the profile charset) | Right-click → file |
 | `utPLSQL: Run script folder` | Runs the folder scripts in alphabetical order | Right-click → folder |

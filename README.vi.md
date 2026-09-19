@@ -123,6 +123,7 @@ Test Explorer **ngay khi từng bài kiểm thử hoàn tất**. VSIX đã kèm 
 | `utplsql.debugger.enabled` | `true` | Bật gỡ lỗi kiểm thử PL/SQL (`DBMS_DEBUG`). Cần `node-oracledb` + grants. Biên dịch gói đích với thông tin gỡ lỗi (`PLSQL_OPTIMIZE_LEVEL <= 1`) và cấp `DEBUG CONNECT SESSION` + `EXECUTE ON SYS.DBMS_DEBUG`. |
 | `utplsql.debugger.stopOnException` | `true` | Tạm dừng khi có exception PL/SQL trong lúc gỡ lỗi. |
 | `utplsql.debugger.timeoutSeconds` | `300` | Thời gian chờ (giây) của phiên gỡ lỗi. |
+| `utplsql.debugger.compileOnDebug` | `false` | Biên dịch đối tượng với thông tin gỡ lỗi (`ALTER … COMPILE DEBUG`) trước khi bắt đầu phiên gỡ lỗi. |
 | `utplsql.scriptRunner.stopOnError` | `true` | Stops script execution on the first failure (`false` = keeps logging the rest). |
 | `utplsql.scriptRunner.autoCommit` | `true` | `autoCommit` on each script statement. |
 | `utplsql.scriptRunner.filePattern` | `**/*.{sql,pks,pkb,fnc,prc,trg}` | Globs to list files when running a script folder. |
@@ -227,6 +228,7 @@ Tất cả các lệnh của extension (palette `Ctrl+Shift+P` tiền tố `utPL
 | `utPLSQL: Manage connection profiles` | Mở cài đặt tại `utplsql.profiles` | — |
 | `utPLSQL: Import connections from SQL Developer` | Nhập kết nối từ SQL Developer (connections.xml) | — |
 | `utPLSQL: Debug test (PL/SQL)` | Bắt đầu phiên gỡ lỗi của bài kiểm thử trong tệp đang mở | — |
+| `utPLSQL: Biên dịch để gỡ lỗi` | Biên dịch đối tượng của tệp/thư mục đã chọn với thông tin gỡ lỗi | — |
 | `utPLSQL: Run script` | Runs the script open in the editor against a connection profile | Right-click → script file |
 | `utPLSQL: Run script file` | Runs an Explorer script file (decoded with the profile charset) | Right-click → file |
 | `utPLSQL: Run script folder` | Runs the folder scripts in alphabetical order | Right-click → folder |

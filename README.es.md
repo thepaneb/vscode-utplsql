@@ -123,6 +123,7 @@ Test Explorer **a medida que cada test termina**.
 | `utplsql.debugger.enabled` | `true` | Habilita la depuración PL/SQL de tests (`DBMS_DEBUG`). Requiere `node-oracledb` + grants. Compila el paquete destino con información de depuración (`PLSQL_OPTIMIZE_LEVEL <= 1`) y concede `DEBUG CONNECT SESSION` + `EXECUTE ON SYS.DBMS_DEBUG`. |
 | `utplsql.debugger.stopOnException` | `true` | Pausa en las excepciones PL/SQL durante la depuración. |
 | `utplsql.debugger.timeoutSeconds` | `300` | Timeout (s) de la sesión de depuración. |
+| `utplsql.debugger.compileOnDebug` | `false` | Compila el objeto con información de depuración (`ALTER … COMPILE DEBUG`) antes de iniciar la sesión de depuración. |
 | `utplsql.scriptRunner.stopOnError` | `true` | Stops script execution on the first failure (`false` = keeps logging the rest). |
 | `utplsql.scriptRunner.autoCommit` | `true` | `autoCommit` on each script statement. |
 | `utplsql.scriptRunner.filePattern` | `**/*.{sql,pks,pkb,fnc,prc,trg}` | Globs to list files when running a script folder. |
@@ -226,6 +227,7 @@ Todos los comandos de la extensión (paleta `Ctrl+Shift+P`, prefijo `utPLSQL:`):
 | `utPLSQL: Manage connection profiles` | Abre la configuración en `utplsql.profiles` | — |
 | `utPLSQL: Import connections from SQL Developer` | Importa conexiones desde SQL Developer (connections.xml) | — |
 | `utPLSQL: Debug test (PL/SQL)` | Inicia una sesión de depuración del test bajo el archivo activo | — |
+| `utPLSQL: Compilar para depuración` | Compila el objeto del archivo/carpeta seleccionado con información de depuración | — |
 | `utPLSQL: Run script` | Runs the script open in the editor against a connection profile | Right-click → script file |
 | `utPLSQL: Run script file` | Runs an Explorer script file (decoded with the profile charset) | Right-click → file |
 | `utPLSQL: Run script folder` | Runs the folder scripts in alphabetical order | Right-click → folder |
