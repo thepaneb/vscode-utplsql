@@ -174,6 +174,20 @@ export const ptBr: Record<string, string> = {
   'debug.controlFail': 'Falha ao abrir a sessão de controle do DBMS_DEBUG.',
   'debug.attachFail':
     'Não foi possível anexar ao DBMS_DEBUG. Verifique os grants:\n  GRANT EXECUTE ON SYS.DBMS_DEBUG TO <schema>;\n  GRANT DEBUG CONNECT SESSION TO <schema>;',
+  'debug.pauseUnsupported': 'Pause não suportado pelo DBMS_DEBUG.',
+  'debug.commandUnsupported': 'Comando não suportado: {cmd}',
+  'debug.sessionAttached': 'Sessão {id} anexada.',
+  'debug.breakpointsApplied': '{count} breakpoint(s) aplicado(s); sessão pronta.',
+  'debug.stoppedAtEntry': 'Parado no entry — use Continue para ir ao breakpoint.',
+  'debug.sessionTimeout': 'Timeout da sessão de debug — encerrando.',
+  'debug.runTestFailed': 'Falha ao executar o teste: {error}',
+  'debug.syncTimeout':
+    'Timeout aguardando o debuggee iniciar (synchronize). Verifique se o teste existe e se a conexão/schema ativos são os corretos.',
+  'ext.run.parsingResults': 'Parseando resultados...',
+  'quickfix.thickInitFail': 'utPLSQL: falha ao inicializar o Oracle Client em modo thick. {error}',
+  'quickfix.openClientSettings': 'Abrir configurações do cliente Oracle',
+  'testTree.schemaNode': 'Schema: {schema}',
+  'testTree.packageNode': 'Package: {package}',
 };
 
 export const en: Record<string, string> = {
@@ -347,6 +361,21 @@ export const en: Record<string, string> = {
   'debug.controlFail': 'Failed to open the DBMS_DEBUG control session.',
   'debug.attachFail':
     'Could not attach to DBMS_DEBUG. Check the grants:\n  GRANT EXECUTE ON SYS.DBMS_DEBUG TO <schema>;\n  GRANT DEBUG CONNECT SESSION TO <schema>;',
+  'debug.pauseUnsupported': 'Pause is not supported by DBMS_DEBUG.',
+  'debug.commandUnsupported': 'Unsupported command: {cmd}',
+  'debug.sessionAttached': 'Session {id} attached.',
+  'debug.breakpointsApplied': '{count} breakpoint(s) applied; session ready.',
+  'debug.stoppedAtEntry': 'Stopped at entry — use Continue to reach the breakpoint.',
+  'debug.sessionTimeout': 'Debug session timed out — terminating.',
+  'debug.runTestFailed': 'Failed to run the test: {error}',
+  'debug.syncTimeout':
+    'Timed out waiting for the debuggee to start (synchronize). Check that the test exists and that the active connection/schema are correct.',
+  'ext.run.parsingResults': 'Parsing results...',
+  'quickfix.thickInitFail':
+    'utPLSQL: failed to initialize the Oracle Client in thick mode. {error}',
+  'quickfix.openClientSettings': 'Open Oracle Client settings',
+  'testTree.schemaNode': 'Schema: {schema}',
+  'testTree.packageNode': 'Package: {package}',
 };
 
 export const es: Record<string, string> = {
@@ -524,6 +553,20 @@ export const es: Record<string, string> = {
   'debug.controlFail': 'No se pudo abrir la sesión de control de DBMS_DEBUG.',
   'debug.attachFail':
     'No se pudo adjuntar a DBMS_DEBUG. Verifique los grants:\n  GRANT EXECUTE ON SYS.DBMS_DEBUG TO <schema>;\n  GRANT DEBUG CONNECT SESSION TO <schema>;',
+  'debug.pauseUnsupported': 'Pause no soportado por DBMS_DEBUG.',
+  'debug.commandUnsupported': 'Comando no soportado: {cmd}',
+  'debug.sessionAttached': 'Sesión {id} adjuntada.',
+  'debug.breakpointsApplied': '{count} breakpoint(s) aplicado(s); sesión lista.',
+  'debug.stoppedAtEntry': 'Detenido en el entry — use Continue para llegar al breakpoint.',
+  'debug.sessionTimeout': 'Tiempo de espera de la sesión de depuración — finalizando.',
+  'debug.runTestFailed': 'Error al ejecutar el test: {error}',
+  'debug.syncTimeout':
+    'Se agotó el tiempo esperando a que el debuggee inicie (synchronize). Verifique que el test existe y que la conexión/esquema activos son correctos.',
+  'ext.run.parsingResults': 'Analizando resultados...',
+  'quickfix.thickInitFail': 'utPLSQL: error al inicializar el Oracle Client en modo thick. {error}',
+  'quickfix.openClientSettings': 'Abrir configuración del cliente Oracle',
+  'testTree.schemaNode': 'Esquema: {schema}',
+  'testTree.packageNode': 'Paquete: {package}',
 };
 
 export const zhCn: Record<string, string> = {
@@ -689,6 +732,20 @@ export const zhCn: Record<string, string> = {
   'debug.controlFail': '无法打开 DBMS_DEBUG 控制会话。',
   'debug.attachFail':
     '无法附加到 DBMS_DEBUG。请检查授权：\n  GRANT EXECUTE ON SYS.DBMS_DEBUG TO <schema>;\n  GRANT DEBUG CONNECT SESSION TO <schema>;',
+  'debug.pauseUnsupported': 'DBMS_DEBUG 不支持暂停。',
+  'debug.commandUnsupported': '不支持的命令：{cmd}',
+  'debug.sessionAttached': '会话 {id} 已附加。',
+  'debug.breakpointsApplied': '已应用 {count} 个断点；会话就绪。',
+  'debug.stoppedAtEntry': '已在入口处暂停 — 使用“继续”到达断点。',
+  'debug.sessionTimeout': '调试会话超时 — 正在终止。',
+  'debug.runTestFailed': '执行测试失败：{error}',
+  'debug.syncTimeout':
+    '等待调试目标启动（synchronize）超时。请检查测试是否存在，以及活动连接/架构是否正确。',
+  'ext.run.parsingResults': '正在解析结果...',
+  'quickfix.thickInitFail': 'utPLSQL：在 thick 模式下初始化 Oracle Client 失败。{error}',
+  'quickfix.openClientSettings': '打开 Oracle Client 设置',
+  'testTree.schemaNode': '架构：{schema}',
+  'testTree.packageNode': '包：{package}',
 };
 
 export const ja: Record<string, string> = {
@@ -867,6 +924,20 @@ export const ja: Record<string, string> = {
   'debug.controlFail': 'DBMS_DEBUG 制御セッションを開けませんでした。',
   'debug.attachFail':
     'DBMS_DEBUG にアタッチできませんでした。権限を確認してください：\n  GRANT EXECUTE ON SYS.DBMS_DEBUG TO <schema>;\n  GRANT DEBUG CONNECT SESSION TO <schema>;',
+  'debug.pauseUnsupported': 'DBMS_DEBUG は Pause をサポートしていません。',
+  'debug.commandUnsupported': 'サポートされていないコマンド: {cmd}',
+  'debug.sessionAttached': 'セッション {id} をアタッチしました。',
+  'debug.breakpointsApplied': '{count} 個のブレークポイントを適用しました。セッション準備完了。',
+  'debug.stoppedAtEntry': 'entry で停止しました — Continue でブレークポイントへ移動してください。',
+  'debug.sessionTimeout': 'デバッグセッションがタイムアウトしました — 終了します。',
+  'debug.runTestFailed': 'テストの実行に失敗しました: {error}',
+  'debug.syncTimeout':
+    'debuggee の開始 (synchronize) を待機中にタイムアウトしました。テストが存在することと、アクティブな接続/スキーマが正しいことを確認してください。',
+  'ext.run.parsingResults': '結果を解析中...',
+  'quickfix.thickInitFail': 'utPLSQL: thick モードで Oracle Client の初期化に失敗しました。{error}',
+  'quickfix.openClientSettings': 'Oracle Client 設定を開く',
+  'testTree.schemaNode': 'スキーマ: {schema}',
+  'testTree.packageNode': 'パッケージ: {package}',
 };
 
 export const de: Record<string, string> = {
@@ -1042,6 +1113,21 @@ export const de: Record<string, string> = {
   'debug.controlFail': 'Steuersitzung von DBMS_DEBUG konnte nicht geöffnet werden.',
   'debug.attachFail':
     'An DBMS_DEBUG konnte nicht angehängt werden. Prüfen Sie die Grants:\n  GRANT EXECUTE ON SYS.DBMS_DEBUG TO <schema>;\n  GRANT DEBUG CONNECT SESSION TO <schema>;',
+  'debug.pauseUnsupported': 'Pause wird von DBMS_DEBUG nicht unterstützt.',
+  'debug.commandUnsupported': 'Nicht unterstützter Befehl: {cmd}',
+  'debug.sessionAttached': 'Sitzung {id} angehängt.',
+  'debug.breakpointsApplied': '{count} Breakpoint(s) gesetzt; Sitzung bereit.',
+  'debug.stoppedAtEntry': 'Am Entry angehalten — mit Continue zum Breakpoint.',
+  'debug.sessionTimeout': 'Debug-Sitzung hat das Zeitlimit überschritten — wird beendet.',
+  'debug.runTestFailed': 'Test konnte nicht ausgeführt werden: {error}',
+  'debug.syncTimeout':
+    'Zeitüberschreitung beim Warten auf den Start des Debuggee (synchronize). Prüfen Sie, ob der Test existiert und ob Verbindung/Schema korrekt sind.',
+  'ext.run.parsingResults': 'Ergebnisse werden analysiert...',
+  'quickfix.thickInitFail':
+    'utPLSQL: Oracle Client konnte im Thick-Modus nicht initialisiert werden. {error}',
+  'quickfix.openClientSettings': 'Oracle-Client-Einstellungen öffnen',
+  'testTree.schemaNode': 'Schema: {schema}',
+  'testTree.packageNode': 'Paket: {package}',
 };
 
 export const fr: Record<string, string> = {
@@ -1219,6 +1305,21 @@ export const fr: Record<string, string> = {
   'debug.controlFail': 'Échec d’ouverture de la session de contrôle DBMS_DEBUG.',
   'debug.attachFail':
     'Impossible de s’attacher à DBMS_DEBUG. Vérifiez les grants :\n  GRANT EXECUTE ON SYS.DBMS_DEBUG TO <schema>;\n  GRANT DEBUG CONNECT SESSION TO <schema>;',
+  'debug.pauseUnsupported': 'Pause n’est pas pris en charge par DBMS_DEBUG.',
+  'debug.commandUnsupported': 'Commande non prise en charge : {cmd}',
+  'debug.sessionAttached': 'Session {id} attachée.',
+  'debug.breakpointsApplied': '{count} point(s) d’arrêt appliqué(s) ; session prête.',
+  'debug.stoppedAtEntry': 'Arrêté à l’entry — utilisez Continue pour atteindre le point d’arrêt.',
+  'debug.sessionTimeout': 'Délai de la session de débogage dépassé — fermeture.',
+  'debug.runTestFailed': 'Échec de l’exécution du test : {error}',
+  'debug.syncTimeout':
+    'Délai dépassé en attendant le démarrage du debuggee (synchronize). Vérifiez que le test existe et que la connexion/schéma actifs sont corrects.',
+  'ext.run.parsingResults': 'Analyse des résultats...',
+  'quickfix.thickInitFail':
+    'utPLSQL : échec de l’initialisation de l’Oracle Client en mode thick. {error}',
+  'quickfix.openClientSettings': 'Ouvrir les paramètres du client Oracle',
+  'testTree.schemaNode': 'Schéma : {schema}',
+  'testTree.packageNode': 'Package : {package}',
 };
 
 export const zhTw: Record<string, string> = {
@@ -1384,6 +1485,20 @@ export const zhTw: Record<string, string> = {
   'debug.controlFail': '無法開啟 DBMS_DEBUG 控制工作階段。',
   'debug.attachFail':
     '無法附加至 DBMS_DEBUG。請檢查授權：\n  GRANT EXECUTE ON SYS.DBMS_DEBUG TO <schema>;\n  GRANT DEBUG CONNECT SESSION TO <schema>;',
+  'debug.pauseUnsupported': 'DBMS_DEBUG 不支援暫停。',
+  'debug.commandUnsupported': '不支援的指令：{cmd}',
+  'debug.sessionAttached': '工作階段 {id} 已附加。',
+  'debug.breakpointsApplied': '已套用 {count} 個中斷點；工作階段就緒。',
+  'debug.stoppedAtEntry': '已在入口暫停 — 使用「繼續」到達中斷點。',
+  'debug.sessionTimeout': '偵錯工作階段逾時 — 正在終止。',
+  'debug.runTestFailed': '執行測試失敗：{error}',
+  'debug.syncTimeout':
+    '等待偵錯目標啟動（synchronize）逾時。請檢查測試是否存在，以及使用中的連線/結構描述是否正確。',
+  'ext.run.parsingResults': '正在解析結果...',
+  'quickfix.thickInitFail': 'utPLSQL：在 thick 模式下初始化 Oracle Client 失敗。{error}',
+  'quickfix.openClientSettings': '開啟 Oracle Client 設定',
+  'testTree.schemaNode': '結構描述：{schema}',
+  'testTree.packageNode': '套件：{package}',
 };
 
 export const it: Record<string, string> = {
@@ -1561,6 +1676,21 @@ export const it: Record<string, string> = {
   'debug.controlFail': 'Apertura della sessione di controllo DBMS_DEBUG non riuscita.',
   'debug.attachFail':
     'Impossibile collegarsi a DBMS_DEBUG. Verificare i grant:\n  GRANT EXECUTE ON SYS.DBMS_DEBUG TO <schema>;\n  GRANT DEBUG CONNECT SESSION TO <schema>;',
+  'debug.pauseUnsupported': 'Pause non supportato da DBMS_DEBUG.',
+  'debug.commandUnsupported': 'Comando non supportato: {cmd}',
+  'debug.sessionAttached': 'Sessione {id} collegata.',
+  'debug.breakpointsApplied': '{count} breakpoint applicati; sessione pronta.',
+  'debug.stoppedAtEntry': 'Fermato all’entry — usa Continue per raggiungere il breakpoint.',
+  'debug.sessionTimeout': 'Timeout della sessione di debug — chiusura.',
+  'debug.runTestFailed': 'Esecuzione del test non riuscita: {error}',
+  'debug.syncTimeout':
+    'Timeout in attesa dell’avvio del debuggee (synchronize). Verifica che il test esista e che connessione/schema attivi siano corretti.',
+  'ext.run.parsingResults': 'Analisi dei risultati...',
+  'quickfix.thickInitFail':
+    'utPLSQL: inizializzazione dell’Oracle Client in modalità thick non riuscita. {error}',
+  'quickfix.openClientSettings': 'Apri impostazioni client Oracle',
+  'testTree.schemaNode': 'Schema: {schema}',
+  'testTree.packageNode': 'Package: {package}',
 };
 
 export const ko: Record<string, string> = {
@@ -1734,6 +1864,20 @@ export const ko: Record<string, string> = {
   'debug.controlFail': 'DBMS_DEBUG 제어 세션을 열지 못했습니다.',
   'debug.attachFail':
     'DBMS_DEBUG에 연결할 수 없습니다. 권한을 확인하세요:\n  GRANT EXECUTE ON SYS.DBMS_DEBUG TO <schema>;\n  GRANT DEBUG CONNECT SESSION TO <schema>;',
+  'debug.pauseUnsupported': 'DBMS_DEBUG는 Pause를 지원하지 않습니다.',
+  'debug.commandUnsupported': '지원되지 않는 명령: {cmd}',
+  'debug.sessionAttached': '세션 {id}이(가) 연결되었습니다.',
+  'debug.breakpointsApplied': '브레이크포인트 {count}개가 적용되었습니다. 세션 준비 완료.',
+  'debug.stoppedAtEntry': 'entry에서 중지되었습니다 — Continue로 브레이크포인트로 이동하세요.',
+  'debug.sessionTimeout': '디버그 세션 시간이 초과되었습니다 — 종료합니다.',
+  'debug.runTestFailed': '테스트 실행 실패: {error}',
+  'debug.syncTimeout':
+    'debuggee 시작(synchronize)을 기다리는 동안 시간이 초과되었습니다. 테스트가 존재하는지, 활성 연결/스키마가 올바른지 확인하세요.',
+  'ext.run.parsingResults': '결과 분석 중...',
+  'quickfix.thickInitFail': 'utPLSQL: thick 모드에서 Oracle Client 초기화에 실패했습니다. {error}',
+  'quickfix.openClientSettings': 'Oracle Client 설정 열기',
+  'testTree.schemaNode': '스키마: {schema}',
+  'testTree.packageNode': '패키지: {package}',
 };
 
 export const ru: Record<string, string> = {
@@ -1908,6 +2052,21 @@ export const ru: Record<string, string> = {
   'debug.controlFail': 'Не удалось открыть управляющий сеанс DBMS_DEBUG.',
   'debug.attachFail':
     'Не удалось подключиться к DBMS_DEBUG. Проверьте гранты:\n  GRANT EXECUTE ON SYS.DBMS_DEBUG TO <schema>;\n  GRANT DEBUG CONNECT SESSION TO <schema>;',
+  'debug.pauseUnsupported': 'Pause не поддерживается DBMS_DEBUG.',
+  'debug.commandUnsupported': 'Неподдерживаемая команда: {cmd}',
+  'debug.sessionAttached': 'Сессия {id} подключена.',
+  'debug.breakpointsApplied': 'Применено точек останова: {count}; сессия готова.',
+  'debug.stoppedAtEntry': 'Остановлено на entry — нажмите Continue, чтобы дойти до точки останова.',
+  'debug.sessionTimeout': 'Время сессии отладки истекло — завершение.',
+  'debug.runTestFailed': 'Не удалось выполнить тест: {error}',
+  'debug.syncTimeout':
+    'Истекло время ожидания запуска debuggee (synchronize). Проверьте, что тест существует и активные подключение/схема верны.',
+  'ext.run.parsingResults': 'Анализ результатов...',
+  'quickfix.thickInitFail':
+    'utPLSQL: не удалось инициализировать Oracle Client в режиме thick. {error}',
+  'quickfix.openClientSettings': 'Открыть настройки Oracle Client',
+  'testTree.schemaNode': 'Схема: {schema}',
+  'testTree.packageNode': 'Пакет: {package}',
 };
 
 export const tr: Record<string, string> = {
@@ -2079,6 +2238,20 @@ export const tr: Record<string, string> = {
   'debug.controlFail': 'DBMS_DEBUG denetim oturumu açılamadı.',
   'debug.attachFail':
     'DBMS_DEBUG öğesine eklenemedi. Yetkileri denetleyin:\n  GRANT EXECUTE ON SYS.DBMS_DEBUG TO <schema>;\n  GRANT DEBUG CONNECT SESSION TO <schema>;',
+  'debug.pauseUnsupported': 'Pause DBMS_DEBUG tarafından desteklenmiyor.',
+  'debug.commandUnsupported': 'Desteklenmeyen komut: {cmd}',
+  'debug.sessionAttached': '{id} oturumu eklendi.',
+  'debug.breakpointsApplied': '{count} kesme noktası uygulandı; oturum hazır.',
+  'debug.stoppedAtEntry': 'entry noktasında durdu — kesme noktasına gitmek için Continue kullanın.',
+  'debug.sessionTimeout': 'Hata ayıklama oturumu zaman aşımına uğradı — sonlandırılıyor.',
+  'debug.runTestFailed': 'Test çalıştırılamadı: {error}',
+  'debug.syncTimeout':
+    'debuggee başlatılması (synchronize) beklenirken zaman aşımı. Testin var olduğunu ve etkin bağlantı/şemanın doğru olduğunu kontrol edin.',
+  'ext.run.parsingResults': 'Sonuçlar ayrıştırılıyor...',
+  'quickfix.thickInitFail': 'utPLSQL: Oracle Client thick modda başlatılamadı. {error}',
+  'quickfix.openClientSettings': 'Oracle Client ayarlarını aç',
+  'testTree.schemaNode': 'Şema: {schema}',
+  'testTree.packageNode': 'Paket: {package}',
 };
 
 export const pl: Record<string, string> = {
@@ -2254,6 +2427,21 @@ export const pl: Record<string, string> = {
   'debug.controlFail': 'Nie można otworzyć sesji kontrolnej DBMS_DEBUG.',
   'debug.attachFail':
     'Nie można dołączyć do DBMS_DEBUG. Sprawdź granty:\n  GRANT EXECUTE ON SYS.DBMS_DEBUG TO <schema>;\n  GRANT DEBUG CONNECT SESSION TO <schema>;',
+  'debug.pauseUnsupported': 'Pause nie jest obsługiwane przez DBMS_DEBUG.',
+  'debug.commandUnsupported': 'Nieobsługiwane polecenie: {cmd}',
+  'debug.sessionAttached': 'Dołączono sesję {id}.',
+  'debug.breakpointsApplied': 'Zastosowano {count} punktów przerwania; sesja gotowa.',
+  'debug.stoppedAtEntry': 'Zatrzymano na entry — użyj Continue, aby dojść do punktu przerwania.',
+  'debug.sessionTimeout': 'Przekroczono limit czasu sesji debugowania — zamykanie.',
+  'debug.runTestFailed': 'Nie udało się uruchomić testu: {error}',
+  'debug.syncTimeout':
+    'Przekroczono limit czasu oczekiwania na start debuggee (synchronize). Sprawdź, czy test istnieje i czy aktywne połączenie/schemat są poprawne.',
+  'ext.run.parsingResults': 'Analizowanie wyników...',
+  'quickfix.thickInitFail':
+    'utPLSQL: nie udało się zainicjować Oracle Client w trybie thick. {error}',
+  'quickfix.openClientSettings': 'Otwórz ustawienia klienta Oracle',
+  'testTree.schemaNode': 'Schemat: {schema}',
+  'testTree.packageNode': 'Pakiet: {package}',
 };
 
 export const cs: Record<string, string> = {
@@ -2429,6 +2617,20 @@ export const cs: Record<string, string> = {
   'debug.controlFail': 'Nepodařilo se otevřít řídicí relaci DBMS_DEBUG.',
   'debug.attachFail':
     'Nepodařilo se připojit k DBMS_DEBUG. Zkontrolujte granty:\n  GRANT EXECUTE ON SYS.DBMS_DEBUG TO <schema>;\n  GRANT DEBUG CONNECT SESSION TO <schema>;',
+  'debug.pauseUnsupported': 'Pause není podporováno DBMS_DEBUG.',
+  'debug.commandUnsupported': 'Nepodporovaný příkaz: {cmd}',
+  'debug.sessionAttached': 'Relace {id} připojena.',
+  'debug.breakpointsApplied': 'Použito {count} zarážek; relace připravena.',
+  'debug.stoppedAtEntry': 'Zastaveno na entry — použijte Continue k dosažení zarážky.',
+  'debug.sessionTimeout': 'Časový limit ladicí relace vypršel — ukončuji.',
+  'debug.runTestFailed': 'Test se nepodařilo spustit: {error}',
+  'debug.syncTimeout':
+    'Vypršel časový limit čekání na spuštění debuggee (synchronize). Zkontrolujte, že test existuje a že aktivní připojení/schéma jsou správné.',
+  'ext.run.parsingResults': 'Analyzuji výsledky...',
+  'quickfix.thickInitFail': 'utPLSQL: inicializace Oracle Client v režimu thick selhala. {error}',
+  'quickfix.openClientSettings': 'Otevřít nastavení klienta Oracle',
+  'testTree.schemaNode': 'Schéma: {schema}',
+  'testTree.packageNode': 'Balíček: {package}',
 };
 
 export const hu: Record<string, string> = {
@@ -2606,6 +2808,21 @@ export const hu: Record<string, string> = {
   'debug.controlFail': 'Nem sikerült megnyitni a DBMS_DEBUG vezérlőmunkamenetet.',
   'debug.attachFail':
     'Nem sikerült csatlakozni a DBMS_DEBUG rendszerhez. Ellenőrizze a grantokat:\n  GRANT EXECUTE ON SYS.DBMS_DEBUG TO <schema>;\n  GRANT DEBUG CONNECT SESSION TO <schema>;',
+  'debug.pauseUnsupported': 'A Pause nem támogatott a DBMS_DEBUG-ban.',
+  'debug.commandUnsupported': 'Nem támogatott parancs: {cmd}',
+  'debug.sessionAttached': '{id} munkamenet csatolva.',
+  'debug.breakpointsApplied': '{count} töréspont alkalmazva; a munkamenet kész.',
+  'debug.stoppedAtEntry': 'Megállva az entry ponton — a Continue gombbal érsz el a töréspontig.',
+  'debug.sessionTimeout': 'A hibakeresési munkamenet túllépte az időkorlátot — leállítás.',
+  'debug.runTestFailed': 'A teszt futtatása sikertelen: {error}',
+  'debug.syncTimeout':
+    'Időtúllépés a debuggee indulására várva (synchronize). Ellenőrizd, hogy létezik-e a teszt, és hogy az aktív kapcsolat/séma megfelelő-e.',
+  'ext.run.parsingResults': 'Eredmények elemzése...',
+  'quickfix.thickInitFail':
+    'utPLSQL: az Oracle Client inicializálása thick módban sikertelen. {error}',
+  'quickfix.openClientSettings': 'Oracle Client beállítások megnyitása',
+  'testTree.schemaNode': 'Séma: {schema}',
+  'testTree.packageNode': 'Csomag: {package}',
 };
 
 export const enGb: Record<string, string> = { ...en };
@@ -2776,6 +2993,22 @@ export const bg: Record<string, string> = {
   'debug.controlFail': 'Неуспешно отваряне на контролната сесия на DBMS_DEBUG.',
   'debug.attachFail':
     'Неуспешно прикачване към DBMS_DEBUG. Проверете грантовете:\n  GRANT EXECUTE ON SYS.DBMS_DEBUG TO <schema>;\n  GRANT DEBUG CONNECT SESSION TO <schema>;',
+  'debug.pauseUnsupported': 'Pause не се поддържа от DBMS_DEBUG.',
+  'debug.commandUnsupported': 'Неподдържана команда: {cmd}',
+  'debug.sessionAttached': 'Сесия {id} е прикачена.',
+  'debug.breakpointsApplied': 'Приложени {count} точки на прекъсване; сесията е готова.',
+  'debug.stoppedAtEntry':
+    'Спряно на entry — използвайте Continue, за да стигнете до точката на прекъсване.',
+  'debug.sessionTimeout': 'Времето на сесията за отстраняване на грешки изтече — прекратяване.',
+  'debug.runTestFailed': 'Неуспешно изпълнение на теста: {error}',
+  'debug.syncTimeout':
+    'Изтече времето за изчакване на стартирането на debuggee (synchronize). Проверете дали тестът съществува и дали активната връзка/схема са правилни.',
+  'ext.run.parsingResults': 'Анализиране на резултатите...',
+  'quickfix.thickInitFail':
+    'utPLSQL: неуспешна инициализация на Oracle Client в thick режим. {error}',
+  'quickfix.openClientSettings': 'Отвори настройките на Oracle Client',
+  'testTree.schemaNode': 'Схема: {schema}',
+  'testTree.packageNode': 'Пакет: {package}',
 };
 
 export const el: Record<string, string> = {
@@ -2945,6 +3178,22 @@ export const el: Record<string, string> = {
   'debug.controlFail': 'Αποτυχία ανοίγματος της συνεδρίας ελέγχου DBMS_DEBUG.',
   'debug.attachFail':
     'Αδυναμία προσάρτησης στο DBMS_DEBUG. Ελέγξτε τα grants:\n  GRANT EXECUTE ON SYS.DBMS_DEBUG TO <schema>;\n  GRANT DEBUG CONNECT SESSION TO <schema>;',
+  'debug.pauseUnsupported': 'Το Pause δεν υποστηρίζεται από το DBMS_DEBUG.',
+  'debug.commandUnsupported': 'Μη υποστηριζόμενη εντολή: {cmd}',
+  'debug.sessionAttached': 'Η συνεδρία {id} προσαρτήθηκε.',
+  'debug.breakpointsApplied': 'Εφαρμόστηκαν {count} σημεία διακοπής· η συνεδρία είναι έτοιμη.',
+  'debug.stoppedAtEntry':
+    'Σταμάτησε στο entry — χρησιμοποιήστε το Continue για να φτάσετε στο σημείο διακοπής.',
+  'debug.sessionTimeout': 'Το χρονικό όριο της συνεδρίας αποσφαλμάτωσης έληξε — τερματισμός.',
+  'debug.runTestFailed': 'Αποτυχία εκτέλεσης του test: {error}',
+  'debug.syncTimeout':
+    'Έληξε το χρονικό όριο αναμονής για την εκκίνηση του debuggee (synchronize). Ελέγξτε ότι το test υπάρχει και ότι η ενεργή σύνδεση/schema είναι σωστά.',
+  'ext.run.parsingResults': 'Ανάλυση αποτελεσμάτων...',
+  'quickfix.thickInitFail':
+    'utPLSQL: αποτυχία αρχικοποίησης του Oracle Client σε λειτουργία thick. {error}',
+  'quickfix.openClientSettings': 'Άνοιγμα ρυθμίσεων Oracle Client',
+  'testTree.schemaNode': 'Schema: {schema}',
+  'testTree.packageNode': 'Package: {package}',
 };
 
 export const id: Record<string, string> = {
@@ -3114,6 +3363,21 @@ export const id: Record<string, string> = {
   'debug.controlFail': 'Gagal membuka sesi kontrol DBMS_DEBUG.',
   'debug.attachFail':
     'Tidak dapat melampirkan ke DBMS_DEBUG. Periksa grants:\n  GRANT EXECUTE ON SYS.DBMS_DEBUG TO <schema>;\n  GRANT DEBUG CONNECT SESSION TO <schema>;',
+  'debug.pauseUnsupported': 'Pause tidak didukung oleh DBMS_DEBUG.',
+  'debug.commandUnsupported': 'Perintah tidak didukung: {cmd}',
+  'debug.sessionAttached': 'Sesi {id} dilampirkan.',
+  'debug.breakpointsApplied': '{count} breakpoint diterapkan; sesi siap.',
+  'debug.stoppedAtEntry': 'Berhenti di entry — gunakan Continue untuk mencapai breakpoint.',
+  'debug.sessionTimeout': 'Sesi debug timeout — mengakhiri.',
+  'debug.runTestFailed': 'Gagal menjalankan test: {error}',
+  'debug.syncTimeout':
+    'Timeout menunggu debuggee mulai (synchronize). Periksa apakah test ada dan koneksi/skema aktif sudah benar.',
+  'ext.run.parsingResults': 'Mengurai hasil...',
+  'quickfix.thickInitFail':
+    'utPLSQL: gagal menginisialisasi Oracle Client dalam mode thick. {error}',
+  'quickfix.openClientSettings': 'Buka pengaturan Oracle Client',
+  'testTree.schemaNode': 'Skema: {schema}',
+  'testTree.packageNode': 'Paket: {package}',
 };
 
 export const ro: Record<string, string> = {
@@ -3281,6 +3545,21 @@ export const ro: Record<string, string> = {
   'debug.controlFail': 'Deschiderea sesiunii de control DBMS_DEBUG a eșuat.',
   'debug.attachFail':
     'Atașarea la DBMS_DEBUG a eșuat. Verificați granturile:\n  GRANT EXECUTE ON SYS.DBMS_DEBUG TO <schema>;\n  GRANT DEBUG CONNECT SESSION TO <schema>;',
+  'debug.pauseUnsupported': 'Pause nu este acceptat de DBMS_DEBUG.',
+  'debug.commandUnsupported': 'Comandă neacceptată: {cmd}',
+  'debug.sessionAttached': 'Sesiunea {id} a fost atașată.',
+  'debug.breakpointsApplied': '{count} punct(e) de întrerupere aplicate; sesiune pregătită.',
+  'debug.stoppedAtEntry':
+    'Oprit la entry — folosește Continue pentru a ajunge la punctul de întrerupere.',
+  'debug.sessionTimeout': 'Sesiunea de depanare a expirat — se închide.',
+  'debug.runTestFailed': 'Executarea testului a eșuat: {error}',
+  'debug.syncTimeout':
+    'Timp expirat așteptând pornirea debuggee (synchronize). Verifică dacă testul există și dacă conexiunea/schema activă sunt corecte.',
+  'ext.run.parsingResults': 'Se analizează rezultatele...',
+  'quickfix.thickInitFail': 'utPLSQL: inițializarea Oracle Client în modul thick a eșuat. {error}',
+  'quickfix.openClientSettings': 'Deschide setările clientului Oracle',
+  'testTree.schemaNode': 'Schemă: {schema}',
+  'testTree.packageNode': 'Pachet: {package}',
 };
 
 export const sr: Record<string, string> = {
@@ -3448,6 +3727,21 @@ export const sr: Record<string, string> = {
   'debug.controlFail': 'Neuspešno otvaranje kontrolne sesije DBMS_DEBUG.',
   'debug.attachFail':
     'Neuspešno kačenje na DBMS_DEBUG. Proverite grantove:\n  GRANT EXECUTE ON SYS.DBMS_DEBUG TO <schema>;\n  GRANT DEBUG CONNECT SESSION TO <schema>;',
+  'debug.pauseUnsupported': 'Pause није подржано од стране DBMS_DEBUG.',
+  'debug.commandUnsupported': 'Неподржана команда: {cmd}',
+  'debug.sessionAttached': 'Сесија {id} је прикачена.',
+  'debug.breakpointsApplied': 'Примењено {count} тачака прекида; сесија је спремна.',
+  'debug.stoppedAtEntry': 'Заустављено на entry — користите Continue да стигнете до тачке прекида.',
+  'debug.sessionTimeout': 'Сесија за отклањање грешака је истекла — прекид.',
+  'debug.runTestFailed': 'Покретање теста није успело: {error}',
+  'debug.syncTimeout':
+    'Истекло време чекања да debuggee почне (synchronize). Проверите да ли тест постоји и да ли су активна веза/шема исправни.',
+  'ext.run.parsingResults': 'Анализирање резултата...',
+  'quickfix.thickInitFail':
+    'utPLSQL: иницијализација Oracle Client у thick режиму није успела. {error}',
+  'quickfix.openClientSettings': 'Отвори подешавања Oracle Client-а',
+  'testTree.schemaNode': 'Шема: {schema}',
+  'testTree.packageNode': 'Пакет: {package}',
 };
 
 export const th: Record<string, string> = {
@@ -3607,6 +3901,20 @@ export const th: Record<string, string> = {
   'debug.controlFail': 'ไม่สามารถเปิดเซสชันการควบคุม DBMS_DEBUG ได้',
   'debug.attachFail':
     'ไม่สามารถแนบกับ DBMS_DEBUG ได้ โปรดตรวจสอบ grants:\n  GRANT EXECUTE ON SYS.DBMS_DEBUG TO <schema>;\n  GRANT DEBUG CONNECT SESSION TO <schema>;',
+  'debug.pauseUnsupported': 'DBMS_DEBUG ไม่รองรับ Pause',
+  'debug.commandUnsupported': 'คำสั่งที่ไม่รองรับ: {cmd}',
+  'debug.sessionAttached': 'แนบเซสชัน {id} แล้ว',
+  'debug.breakpointsApplied': 'ใช้เบรกพอยต์แล้ว {count} จุด; เซสชันพร้อม',
+  'debug.stoppedAtEntry': 'หยุดที่ entry — ใช้ Continue เพื่อไปยังเบรกพอยต์',
+  'debug.sessionTimeout': 'เซสชันดีบักหมดเวลา — กำลังสิ้นสุด',
+  'debug.runTestFailed': 'เรียกใช้เทสต์ไม่สำเร็จ: {error}',
+  'debug.syncTimeout':
+    'หมดเวลารอให้ debuggee เริ่ม (synchronize) ตรวจสอบว่ามีเทสต์อยู่ และการเชื่อมต่อ/สคีมาที่ใช้งานถูกต้อง',
+  'ext.run.parsingResults': 'กำลังแยกวิเคราะห์ผลลัพธ์...',
+  'quickfix.thickInitFail': 'utPLSQL: เริ่มต้น Oracle Client ในโหมด thick ไม่สำเร็จ {error}',
+  'quickfix.openClientSettings': 'เปิดการตั้งค่า Oracle Client',
+  'testTree.schemaNode': 'สคีมา: {schema}',
+  'testTree.packageNode': 'แพ็กเกจ: {package}',
 };
 
 export const uk: Record<string, string> = {
@@ -3776,6 +4084,21 @@ export const uk: Record<string, string> = {
   'debug.controlFail': 'Не вдалося відкрити керувальний сеанс DBMS_DEBUG.',
   'debug.attachFail':
     'Не вдалося приєднатися до DBMS_DEBUG. Перевірте гранти:\n  GRANT EXECUTE ON SYS.DBMS_DEBUG TO <schema>;\n  GRANT DEBUG CONNECT SESSION TO <schema>;',
+  'debug.pauseUnsupported': 'Pause не підтримується DBMS_DEBUG.',
+  'debug.commandUnsupported': 'Непідтримувана команда: {cmd}',
+  'debug.sessionAttached': 'Сесію {id} приєднано.',
+  'debug.breakpointsApplied': 'Застосовано точок зупину: {count}; сесію готово.',
+  'debug.stoppedAtEntry': 'Зупинено на entry — натисніть Continue, щоб дійти до точки зупину.',
+  'debug.sessionTimeout': 'Час сесії налагодження вичерпано — завершення.',
+  'debug.runTestFailed': 'Не вдалося виконати тест: {error}',
+  'debug.syncTimeout':
+    'Вийшов час очікування запуску debuggee (synchronize). Перевірте, чи тест існує і чи активні з’єднання/схема правильні.',
+  'ext.run.parsingResults': 'Аналіз результатів...',
+  'quickfix.thickInitFail':
+    'utPLSQL: не вдалося ініціалізувати Oracle Client у режимі thick. {error}',
+  'quickfix.openClientSettings': 'Відкрити налаштування Oracle Client',
+  'testTree.schemaNode': 'Схема: {schema}',
+  'testTree.packageNode': 'Пакет: {package}',
 };
 
 export const vi: Record<string, string> = {
@@ -3944,4 +4267,18 @@ export const vi: Record<string, string> = {
   'debug.controlFail': 'Không mở được phiên điều khiển DBMS_DEBUG.',
   'debug.attachFail':
     'Không thể đính kèm vào DBMS_DEBUG. Kiểm tra các grant:\n  GRANT EXECUTE ON SYS.DBMS_DEBUG TO <schema>;\n  GRANT DEBUG CONNECT SESSION TO <schema>;',
+  'debug.pauseUnsupported': 'Pause không được DBMS_DEBUG hỗ trợ.',
+  'debug.commandUnsupported': 'Lệnh không được hỗ trợ: {cmd}',
+  'debug.sessionAttached': 'Đã gắn phiên {id}.',
+  'debug.breakpointsApplied': 'Đã áp dụng {count} điểm dừng; phiên sẵn sàng.',
+  'debug.stoppedAtEntry': 'Dừng tại entry — dùng Continue để đến điểm dừng.',
+  'debug.sessionTimeout': 'Phiên gỡ lỗi quá thời gian — đang kết thúc.',
+  'debug.runTestFailed': 'Chạy test thất bại: {error}',
+  'debug.syncTimeout':
+    'Hết thời gian chờ debuggee khởi động (synchronize). Kiểm tra xem test có tồn tại và kết nối/schema đang hoạt động có đúng không.',
+  'ext.run.parsingResults': 'Đang phân tích kết quả...',
+  'quickfix.thickInitFail': 'utPLSQL: không khởi tạo được Oracle Client ở chế độ thick. {error}',
+  'quickfix.openClientSettings': 'Mở cài đặt Oracle Client',
+  'testTree.schemaNode': 'Schema: {schema}',
+  'testTree.packageNode': 'Package: {package}',
 };

@@ -18,13 +18,25 @@ export interface DebugConnection {
     binds?: Record<string, unknown>,
     options?: Record<string, unknown>,
   ): Promise<{ rows?: unknown[]; outBinds?: Record<string, unknown> }>;
+  break?(): Promise<void>;
   close(): Promise<void>;
 }
+
+/**
+ * Namespaces do `DBMS_DEBUG` usados em `program_info`. Subprogramas top-level
+ * (procedure/function soltos, `.fnc`/`.prc`) vivem em `pkgspec_or_toplevel`,
+ * não em `pkg_body` — usar o namespace errado faz o `SET_BREAKPOINT` falhar.
+ */
+export type DebugNamespace = 'toplevel' | 'pkg_body' | 'trigger';
 
 export interface BreakpointTarget {
   owner: string; // schema dono do objeto
   unit: string; // package ou nome do objeto
   line: number; // 1-based
+  /** Namespaces candidatos, em ordem de tentativa. Ausente → apenas `pkg_body`. */
+  namespaces?: DebugNamespace[];
+  /** Caminho do arquivo local, usado para alinhar a linha ao objeto armazenado. */
+  sourcePath?: string;
 }
 
 export interface FrameInfo {
@@ -52,11 +64,41 @@ export interface DebugBindCodes {
 // Fallback apenas para os testes com conexão fake (não validam os binds).
 const DEFAULT_CODES: DebugBindCodes = { BIND_OUT: 3003, STRING: 'STRING', NUMBER: 'NUMBER' };
 
+/**
+ * Namespaces candidatos para um breakpoint conforme a extensão do arquivo.
+ * `.pks`/`.pkb` → package body; `.fnc`/`.prc` → subprograma top-level;
+ * `.trg` → trigger; `.sql` (ambíguo) tenta todos.
+ */
+export function namespacesForExt(ext: string): DebugNamespace[] {
+  switch (ext.toLowerCase()) {
+    case '.pks':
+    case '.pkb':
+    case '.pkg':
+      return ['pkg_body'];
+    case '.fnc':
+    case '.prc':
+      return ['toplevel'];
+    case '.trg':
+      return ['trigger'];
+    default:
+      return ['toplevel', 'pkg_body', 'trigger'];
+  }
+}
+
 /** Deriva o alvo do breakpoint a partir do caminho do arquivo (.pks/.pkb/.sql). */
 export function parseBreakpointTarget(filePath: string, schema: string): BreakpointTarget {
   const base = filePath.split(/[\\/]/).pop() ?? 'anonymous';
-  const unit = base.replace(/\.(pks|pkb|sql|pkg|fnc|prc|trg)$/i, '');
-  return { owner: schema.toUpperCase(), unit, line: 0 };
+  const ext = base.match(/\.[^.]+$/)?.[0] ?? '';
+  // DBMS_DEBUG.program_info espera o nome do objeto como está no dicionário
+  // (maiúsculas para identificadores não citados).
+  const unit = base.replace(/\.(pks|pkb|sql|pkg|fnc|prc|trg)$/i, '').toUpperCase();
+  return {
+    owner: schema.toUpperCase(),
+    unit,
+    line: 0,
+    namespaces: namespacesForExt(ext),
+    sourcePath: filePath,
+  };
 }
 
 function str(v: unknown): string {
@@ -118,33 +160,51 @@ export class DbmsDebugClient {
     await this.conn.execute(`BEGIN DBMS_DEBUG.DEBUG_OFF; END;`, {});
   }
 
-  /** Define um breakpoint; retorna o id (>0) ou -1 se não foi criado. */
+  /**
+   * Define um breakpoint; retorna o id (>0) ou -1 se não foi criado.
+   * Tenta cada namespace candidato do alvo (package body, top-level, trigger),
+   * pois `SET_BREAKPOINT` com o namespace errado não encontra o programa.
+   */
   async setBreakpoint(target: BreakpointTarget): Promise<number> {
-    const result = await this.conn.execute(
-      `DECLARE
-         v_prog   DBMS_DEBUG.program_info;
-         v_brkpt  BINARY_INTEGER;
-         v_status BINARY_INTEGER;
-       BEGIN
-         v_prog.namespace := DBMS_DEBUG.namespace_pkg_body;
-         v_prog.name  := :unit;
-         v_prog.owner := :owner;
-         v_prog.line# := :line;
-         v_status := DBMS_DEBUG.SET_BREAKPOINT(v_prog, :line, v_brkpt, 1);
-         :brkpt  := v_brkpt;
-         :status := v_status;
-       END;`,
-      {
-        unit: target.unit,
-        owner: target.owner,
-        line: target.line,
-        brkpt: { dir: this.codes.BIND_OUT, type: this.codes.NUMBER },
-        status: { dir: this.codes.BIND_OUT, type: this.codes.NUMBER },
-      },
-    );
-    const out = (result.outBinds ?? {}) as Record<string, unknown>;
-    const id = num(out.brkpt);
-    return id > 0 ? id : -1;
+    const candidates =
+      target.namespaces && target.namespaces.length > 0 ? target.namespaces : ['pkg_body'];
+    for (const ns of candidates) {
+      try {
+        const result = await this.conn.execute(
+          `DECLARE
+             v_prog   DBMS_DEBUG.program_info;
+             v_brkpt  BINARY_INTEGER;
+             v_status BINARY_INTEGER;
+           BEGIN
+             v_prog.namespace := CASE :ns
+               WHEN 'toplevel' THEN DBMS_DEBUG.namespace_pkgspec_or_toplevel
+               WHEN 'pkg_body' THEN DBMS_DEBUG.namespace_pkg_body
+               WHEN 'trigger'  THEN DBMS_DEBUG.namespace_trigger
+               ELSE NULL END;
+             v_prog.name  := :unit;
+             v_prog.owner := :owner;
+             v_prog.line# := :line;
+             v_status := DBMS_DEBUG.SET_BREAKPOINT(v_prog, :line, v_brkpt, 1);
+             :brkpt  := v_brkpt;
+             :status := v_status;
+           END;`,
+          {
+            ns,
+            unit: target.unit,
+            owner: target.owner,
+            line: target.line,
+            brkpt: { dir: this.codes.BIND_OUT, type: this.codes.NUMBER },
+            status: { dir: this.codes.BIND_OUT, type: this.codes.NUMBER },
+          },
+        );
+        const out = (result.outBinds ?? {}) as Record<string, unknown>;
+        const id = num(out.brkpt);
+        if (id > 0) return id;
+      } catch (e) {
+        logger.debug('setBreakpoint: namespace falhou', { ns, error: String(e) });
+      }
+    }
+    return -1;
   }
 
   async deleteBreakpoint(breakpointId: number): Promise<number> {

@@ -41,7 +41,12 @@ function parseBreakpointTarget(filePath: string, schema: string): BreakpointTarg
 ```
 
 ```typescript
-interface BreakpointTarget { owner: string; unit: string; line: number }  // line 1-based
+interface BreakpointTarget {
+  owner: string; unit: string; line: number;   // line 1-based
+  namespaces?: DebugNamespace[];               // candidatos, em ordem
+  sourcePath?: string;                         // fonte local (alinhamento de linha)
+}
+type DebugNamespace = 'toplevel' | 'pkg_body' | 'trigger';
 interface FrameInfo { name: string; line: number; frameId: number }
 interface VariableInfo { name: string; value: string; type: string }
 type StopReason = 'break' | 'exiting' | 'no_break' | 'unknown';
@@ -50,6 +55,22 @@ type StopReason = 'break' | 'exiting' | 'no_break' | 'unknown';
 > Não existem `STEP_INTO`/`STEP_OVER`/`STEP_OUT` nem `GET_VALUES` no
 > `DBMS_DEBUG`. Stepping é `CONTINUE` com `breakflags` e variáveis são lidas uma
 > a uma com `GET_VALUE(name)`.
+
+### Namespace e alinhamento de linha dos breakpoints
+
+- `program_info.namespace` **não é sempre `pkg_body`**: subprogramas soltos
+  (`.fnc`/`.prc`, ou `.sql` que define function/procedure) vivem em
+  `namespace_pkgspec_or_toplevel`; triggers em `namespace_trigger`. O
+  `parseBreakpointTarget` deriva os namespaces da extensão e o cliente tenta um
+  a um (`.sql` ambíguo tenta os três). Usar o namespace errado faz o
+  `SET_BREAKPOINT` falhar silenciosamente.
+- `program_info.name`/`owner` são maiúsculos (nome do objeto no dicionário).
+- O Oracle descarta `CREATE OR REPLACE` e comentários antes da declaração da
+  unidade; um arquivo com header comentado fica **deslocado** em relação ao
+  objeto armazenado. O adapter compara a 1ª linha de `ALL_SOURCE` com o arquivo
+  local para achar o offset, ajusta a linha enviada ao `SET_BREAKPOINT` e
+  converte a linha do frame de volta para o arquivo (destaque correto no
+  editor).
 
 ## Fluxo da sessão
 
@@ -63,8 +84,8 @@ launch                → resolve packageName/testName/connection/stopOnExceptio
                           └─ runTestInBackground() → ut_runner.run no debuggee
 setBreakpoints        → antes do entry ficam "pendentes"; depois viram SET_BREAKPOINT
 synchronize + flush   → instala breakpoints após o entry (deferred é ignorado)
-configurationDone     → continua
-stopped(reason=entry) → sessão pronta
+configurationDone     → marca handshake concluído (NÃO continua sozinho)
+stopped(reason=entry) → sessão pronta, parada aguardando o usuário
 continue/next/stepIn/stepOut → queueStep(...) → CONTINUE com breakflags
 stackTrace            → frame atual (name, line) → sourcePathForFrame()
 variables             → readVariables() (GET_VALUE para nomes conhecidos)
@@ -88,9 +109,18 @@ async function startDebugSession(packageName: string, testName?: string): Promis
 
 - `commands/debug.ts` registra o adapter sob o tipo `utplsql` e o comando
   `utplsql.debugTest` (o módulo é carregado sob demanda via `import()`).
+- `contributes.languages` associa `.pks/.pkb/.prc/.fnc/.trg` à linguagem
+  `plsql` e `contributes.breakpoints` habilita o gutter nessas linguagens. Sem
+  esse par o VSCode bloqueia a criação de breakpoints em arquivos sem
+  *language id* (a menos que `debug.allowBreakpointsEverywhere` esteja ligado).
 - `contributes.debuggers` em `package.json` declara o tipo `utplsql` com os
   atributos de launch `packageName`, `testName`, `connection`,
   `stopOnException`.
+- `contributes.debuggers[].initialConfigurations` fornece a launch config
+  padrão (`packageName: ${fileBasenameNoExtension}`) exibida ao criar um
+  `launch.json` pelo Run and Debug.
+- `utplsql.debugTest` também aparece no menu de contexto do editor em
+  `.pks/.pkb`.
 - `UtplsqlDebugConfigurationProvider` preenche `connection` (perfil/conexão
   resolvida) e `stopOnException` (`utplsql.debugger.stopOnException`) se não
   vierem na launch config.
@@ -106,8 +136,10 @@ Além do `ALTER … COMPILE DEBUG` manual, a extensão oferece:
   `.prc` → procedure, `.trg` → trigger; `.sql` tenta package → procedure →
   function → trigger);
 - owner = schema extraído do caminho (modo schema) ou usuário da conexão;
-- executa `ALTER <TYPE> "OWNER"."NAME" COMPILE DEBUG` reusando o pool do runner
-  (`src/compileForDebug.ts`, best-effort).
+- executa `ALTER <TYPE> "OWNER"."NAME" COMPILE DEBUG PLSQL_OPTIMIZE_LEVEL = 1`
+  reusando o pool do runner (`src/compileForDebug.ts`, best-effort). O
+  `COMPILE DEBUG` sozinho só liga `PLSQL_DEBUG`, mantendo o nível de otimização
+  (default 2), que pode remover/reordenar linhas e impedir o breakpoint.
 - setting `utplsql.debugger.compileOnDebug` (default `false`): o adapter compila
   o pacote com debug info em `initSession()` antes de iniciar a sessão.
 
@@ -142,6 +174,11 @@ outros:
 - Um único frame no `stackTrace` (o frame atual do `DBMS_DEBUG`).
 - Resolução de arquivo assume `.pks` a partir do nome do frame.
 - Variáveis são lidas por nome conhecido (extraído do fonte) via `GET_VALUE`.
+- **Breakpoints no package de teste (`test_*.pkb`) podem não parar**: o utPLSQL
+  executa os testes por SQL dinâmico, e o `DBMS_DEBUG` não instrumenta esses
+  blocos. Coloque os breakpoints no **código sob teste** (function, procedure ou
+  package de produção) — esses são atingidos normalmente mesmo via
+  `ut_runner.run`.
 
 ## Testes
 
@@ -151,8 +188,9 @@ outros:
 
 ## Settings relacionadas em outros módulos
 
-A sessão de debug reutiliza o **pool** do Oracle runner (PRD-38) e, portanto,
-respeita `utplsql.oraclePool*` e o modo do cliente
-(`utplsql.oracleClientMode`, PRD-70). Veja
-[02 — Test Execution](02-test-execution.md) e
+A sessão de debug usa **conexões dedicadas** (fora do pool do runner): o
+debuggee fica bloqueado no `ut_runner.run` enquanto o usuário depura, e usar o
+pool compartilhado esgotaria as conexões do runner/cobertura (`NJS-040
+queueTimeout`). Respeita o modo do cliente (`utplsql.oracleClientMode`, PRD-70).
+Veja [02 — Test Execution](02-test-execution.md) e
 [09 — Configuration](09-configuration.md).

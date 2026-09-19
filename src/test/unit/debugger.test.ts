@@ -78,7 +78,6 @@ test('debugger: ciclo launch -> breakpoint -> stack/scopes/variables -> disconne
 
   const events = sent.filter((m) => m.type === 'event').map((m) => m.event);
   assert.ok(events.includes('initialized'));
-  assert.ok(events.includes('stopped'), 'deveria emitir stopped após anexar');
   assert.ok(conn.calls.some((s) => /DBMS_DEBUG\.DEBUG_ON/.test(s)));
   assert.ok(conn.calls.some((s) => /ATTACH_SESSION/.test(s)));
 
@@ -95,7 +94,13 @@ test('debugger: ciclo launch -> breakpoint -> stack/scopes/variables -> disconne
   assert.strictEqual(bpBody.breakpoints[0].verified, true);
 
   adapter.handleMessage({ type: 'request', seq: 4, command: 'configurationDone' });
+  // A sessão para no entry; o usuário comanda com `continue`.
+  adapter.handleMessage({ type: 'request', seq: 5, command: 'continue' });
   await flushN(4);
+  assert.ok(
+    sent.some((m) => m.type === 'event' && m.event === 'stopped'),
+    'deveria emitir stopped após configurar',
+  );
 
   adapter.handleMessage({ type: 'request', seq: 5, command: 'stackTrace' });
   const stResp = sent.find((m) => m.type === 'response' && m.command === 'stackTrace');
@@ -217,7 +222,13 @@ test('debugger: ATTACH_SESSION falha emite output com grants', async () => {
 
 test('parseBreakpointTarget: deriva owner/unit/linha do caminho', () => {
   const t = parseBreakpointTarget('/ws/install/packages/test_app.pks', 'APP');
-  assert.deepStrictEqual(t, { owner: 'APP', unit: 'test_app', line: 0 });
+  assert.deepStrictEqual(t, {
+    owner: 'APP',
+    unit: 'TEST_APP',
+    line: 0,
+    namespaces: ['pkg_body'],
+    sourcePath: '/ws/install/packages/test_app.pks',
+  });
   t.line = 12;
   assert.strictEqual(t.line, 12);
 });
@@ -373,12 +384,101 @@ test('debugger: reportStop com status break atualiza currentFrame e envia stoppe
     arguments: { packageName: 'test_app', connection: 'APP/pass@//h:1521/svc' },
   });
   await flushN(4);
-  // configurationDone dispara continue -> step -> reportStop('break')
+  // continue -> reportStop('break')
   adapter.handleMessage({ type: 'request', seq: 3, command: 'configurationDone' });
+  adapter.handleMessage({ type: 'request', seq: 4, command: 'continue' });
   await flushN(4);
   const stopped = sent.filter((m) => m.type === 'event' && m.event === 'stopped');
   assert.ok(stopped.length >= 1);
   adapter.dispose();
+});
+
+test('debugger: stackTrace aponta para o arquivo real do breakpoint (não <unit>.pks)', async () => {
+  const conn = makeFakeConn();
+  const adapter = new UtplsqlDebugAdapter(makeRuntime(conn));
+  const sent: Msg[] = [];
+  adapter.onDidSendMessage((m) => sent.push(m));
+  adapter.handleMessage({ type: 'request', seq: 1, command: 'initialize' });
+  adapter.handleMessage({
+    type: 'request',
+    seq: 2,
+    command: 'launch',
+    arguments: { packageName: 'test_app', connection: 'APP/pass@//h:1521/svc' },
+  });
+  await flushN(4);
+  adapter.handleMessage({
+    type: 'request',
+    seq: 3,
+    command: 'setBreakpoints',
+    arguments: {
+      source: { path: '/ws/functions/calcular_desconto.sql' },
+      breakpoints: [{ line: 10 }],
+    },
+  });
+  await flushN(2);
+  adapter.handleMessage({ type: 'request', seq: 4, command: 'configurationDone' });
+  adapter.handleMessage({ type: 'request', seq: 5, command: 'continue' });
+  await flushN(4);
+  adapter.handleMessage({ type: 'request', seq: 6, command: 'stackTrace' });
+  const resp = sent.find((m) => m.command === 'stackTrace') as {
+    body?: { stackFrames?: { source?: { path?: string } }[] };
+  };
+  assert.strictEqual(
+    resp.body?.stackFrames?.[0]?.source?.path,
+    '/ws/functions/calcular_desconto.sql',
+  );
+  adapter.dispose();
+});
+
+test('debugger: variables do DAP incluem variablesReference', async () => {
+  const fs = await import('node:fs');
+  const os = await import('node:os');
+  const path = await import('node:path');
+  const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'utplsql-dbg-'));
+  const file = path.join(dir, 'calc.fnc');
+  fs.writeFileSync(file, 'FUNCTION F(a IN NUMBER) RETURN NUMBER IS BEGIN RETURN a; END;');
+
+  const conn = makeFakeConn();
+  const orig = conn.execute.bind(conn);
+  conn.execute = async (sql: string) => {
+    if (/CONTINUE/.test(sql)) {
+      return { outBinds: { status: 0, stopped: 1, ended: 0, line: 1, unit: 'APP.F' } };
+    }
+    if (/GET_VALUE/.test(sql)) return { outBinds: { value: '42' } };
+    return orig(sql);
+  };
+
+  const adapter = new UtplsqlDebugAdapter(makeRuntime(conn));
+  const sent: Msg[] = [];
+  adapter.onDidSendMessage((m) => sent.push(m));
+  adapter.handleMessage({ type: 'request', seq: 1, command: 'initialize' });
+  adapter.handleMessage({
+    type: 'request',
+    seq: 2,
+    command: 'launch',
+    arguments: { packageName: 'test_app', connection: 'APP/pass@//h:1521/svc' },
+  });
+  await flushN(4);
+  adapter.handleMessage({
+    type: 'request',
+    seq: 3,
+    command: 'setBreakpoints',
+    arguments: { source: { path: file }, breakpoints: [{ line: 1 }] },
+  });
+  await flushN(2);
+  adapter.handleMessage({ type: 'request', seq: 4, command: 'configurationDone' });
+  adapter.handleMessage({ type: 'request', seq: 5, command: 'continue' });
+  await flushN(4);
+  adapter.handleMessage({ type: 'request', seq: 6, command: 'variables' });
+  await flushN(2);
+  const resp = sent.find((m) => m.command === 'variables') as {
+    body?: { variables?: { name?: string; variablesReference?: number }[] };
+  };
+  const vars = resp.body?.variables ?? [];
+  assert.ok(vars.length > 0, 'deveria ler a variável do parâmetro');
+  assert.strictEqual(vars[0].variablesReference, 0);
+  adapter.dispose();
+  fs.rmSync(dir, { recursive: true, force: true });
 });
 
 test('debugger: stackTrace sem currentFrame retorna lista vazia', async () => {
@@ -392,6 +492,49 @@ test('debugger: stackTrace sem currentFrame retorna lista vazia', async () => {
   adapter.dispose();
 });
 
+test('debugger: threads e setExceptionBreakpoints respondem ao VSCode', () => {
+  const adapter = new UtplsqlDebugAdapter(makeRuntime(makeFakeConn()));
+  const sent: Msg[] = [];
+  adapter.onDidSendMessage((m) => sent.push(m));
+  adapter.handleMessage({ type: 'request', seq: 1, command: 'threads' });
+  adapter.handleMessage({
+    type: 'request',
+    seq: 2,
+    command: 'setExceptionBreakpoints',
+    arguments: { filters: [] },
+  });
+  const threads = sent.find((m) => m.command === 'threads') as { body?: { threads?: unknown[] } };
+  assert.ok(Array.isArray(threads.body?.threads) && threads.body.threads.length === 1);
+  const ex = sent.find((m) => m.command === 'setExceptionBreakpoints') as { success?: boolean };
+  assert.strictEqual(ex.success, true);
+  adapter.dispose();
+});
+
+test('debugger: entry stop só é enviado após o configurationDone', async () => {
+  const adapter = new UtplsqlDebugAdapter(makeRuntime(makeFakeConn()));
+  const sent: Msg[] = [];
+  adapter.onDidSendMessage((m) => sent.push(m));
+  adapter.handleMessage({ type: 'request', seq: 1, command: 'initialize' });
+  adapter.handleMessage({
+    type: 'request',
+    seq: 2,
+    command: 'launch',
+    arguments: { packageName: 'test_app', connection: 'APP/pass@//h:1521/svc' },
+  });
+  await flushN(4);
+  assert.ok(
+    !sent.some((m) => m.type === 'event' && m.event === 'stopped'),
+    'não deve parar antes do configurationDone',
+  );
+  adapter.handleMessage({ type: 'request', seq: 3, command: 'configurationDone' });
+  await flushN(2);
+  assert.ok(
+    sent.some((m) => m.type === 'event' && m.event === 'stopped'),
+    'deve parar após o configurationDone',
+  );
+  adapter.dispose();
+});
+
 test('debugger: initialize expõe flags de suporte', async () => {
   const adapter = new UtplsqlDebugAdapter(makeRuntime(makeFakeConn()));
   const sent: Msg[] = [];
@@ -400,6 +543,33 @@ test('debugger: initialize expõe flags de suporte', async () => {
   const resp = sent.find((m) => m.command === 'initialize') as any;
   assert.strictEqual(resp.body.supportsConfigurationDoneRequest, true);
   assert.strictEqual(resp.body.supportsTerminateRequest, true);
+  adapter.dispose();
+});
+
+test('debugger: falha do runTest encerra com o erro no console', async () => {
+  const conn = makeFakeConn();
+  const adapter = new UtplsqlDebugAdapter({
+    acquireConnection: async () => conn as never,
+    runTest: async () => {
+      throw new Error('boom-run');
+    },
+  });
+  const sent: Msg[] = [];
+  adapter.onDidSendMessage((m) => sent.push(m));
+  adapter.handleMessage({ type: 'request', seq: 1, command: 'initialize' });
+  adapter.handleMessage({
+    type: 'request',
+    seq: 2,
+    command: 'launch',
+    arguments: { packageName: 'test_app', connection: 'APP/pass@//h:1521/svc' },
+  });
+  await flushN(6);
+  const events = sent.filter((m) => m.type === 'event').map((m) => m.event);
+  assert.ok(events.includes('terminated'));
+  const outputs = sent
+    .filter((m) => m.type === 'event' && m.event === 'output')
+    .map((m) => JSON.stringify(m.body));
+  assert.ok(outputs.some((o) => o.includes('boom-run')));
   adapter.dispose();
 });
 
@@ -530,6 +700,7 @@ test('debugger: reportStop com status exiting termina', async () => {
   });
   await flushN(4);
   adapter.handleMessage({ type: 'request', seq: 3, command: 'configurationDone' });
+  adapter.handleMessage({ type: 'request', seq: 4, command: 'continue' });
   await flushN(6);
   const events = sent.filter((m) => m.type === 'event').map((m) => m.event);
   assert.ok(events.includes('terminated'), 'status exiting deveria terminar');
@@ -555,6 +726,7 @@ test('debugger: step com erro emite stderr e terminated', async () => {
   });
   await flushN(4);
   adapter.handleMessage({ type: 'request', seq: 3, command: 'configurationDone' });
+  adapter.handleMessage({ type: 'request', seq: 4, command: 'continue' });
   await flushN(6);
   const events = sent.filter((m) => m.type === 'event').map((m) => m.event);
   assert.ok(events.includes('terminated'));
@@ -709,6 +881,7 @@ test('debugger: reportStop no_break continua até exiting', async () => {
   });
   await flushN(4);
   adapter.handleMessage({ type: 'request', seq: 3, command: 'configurationDone' });
+  adapter.handleMessage({ type: 'request', seq: 4, command: 'continue' });
   await flushN(6);
   const events = sent.filter((m) => m.type === 'event').map((m) => m.event);
   assert.ok(events.includes('terminated'), 'deveria terminar no exiting após no_break');
@@ -743,4 +916,56 @@ test('debugger: timeout da sessão encerra e loga no console', async () => {
   } finally {
     __resetConfigValues();
   }
+});
+
+test('debugger: breakpoints pendentes são aplicados no entry (flush)', async () => {
+  const conn = makeFakeConn();
+  const adapter = new UtplsqlDebugAdapter(makeRuntime(conn));
+  const sent: Msg[] = [];
+  adapter.onDidSendMessage((m) => sent.push(m));
+  adapter.handleMessage({ type: 'request', seq: 1, command: 'initialize' });
+  // Antes do launch: o client ainda não existe -> fica pendente e é aplicado no flush.
+  adapter.handleMessage({
+    type: 'request',
+    seq: 2,
+    command: 'setBreakpoints',
+    arguments: { source: { path: '/ws/test_app.pks' }, breakpoints: [{ line: 5 }] },
+  });
+  adapter.handleMessage({
+    type: 'request',
+    seq: 3,
+    command: 'launch',
+    arguments: { packageName: 'test_app', connection: 'APP/pass@//h:1521/svc' },
+  });
+  await flushN(6);
+  const changed = sent.filter((m) => m.type === 'event' && m.event === 'breakpoint');
+  assert.ok(changed.length >= 1, 'deveria emitir breakpoint(changed) no flush');
+  const outputs = sent
+    .filter((m) => m.type === 'event' && m.event === 'output')
+    .map((m) => JSON.stringify(m.body));
+  assert.ok(outputs.some((o) => /aplicado|applied/i.test(o)));
+  adapter.dispose();
+});
+
+test('debugger: teardown tolera connection.break que falha', async () => {
+  const conn = makeFakeConn();
+  (conn as unknown as { break: () => Promise<void> }).break = async () => {
+    throw new Error('break-boom');
+  };
+  const adapter = new UtplsqlDebugAdapter(makeRuntime(conn));
+  adapter.handleMessage({ type: 'request', seq: 1, command: 'initialize' });
+  adapter.handleMessage({
+    type: 'request',
+    seq: 2,
+    command: 'launch',
+    arguments: { packageName: 'test_app', connection: 'APP/pass@//h:1521/svc' },
+  });
+  await flushN(4);
+  adapter.handleMessage({ type: 'request', seq: 3, command: 'disconnect' });
+  await flushN(4);
+  assert.ok(
+    conn.calls.includes('CLOSE'),
+    'teardown deveria fechar a conexão mesmo com break falhando',
+  );
+  adapter.dispose();
 });

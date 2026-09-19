@@ -98,16 +98,20 @@ export function registerDebug(_context: vscode.ExtensionContext): void {
         vscode.window.showInformationMessage(t(locale, 'ext.debug.disabled'));
         return;
       }
-      const editor = vscode.window.activeTextEditor;
-      const file = editor?.document.fileName ?? '';
-      const base = file.split(/[\\/]/).pop() ?? '';
-      const packageName = base.replace(/\.(pks|pkb|sql)$/i, '');
-      if (!packageName) {
-        vscode.window.showWarningMessage(t(locale, 'ext.debug.openPks'));
-        return;
+      try {
+        const editor = vscode.window.activeTextEditor;
+        const file = editor?.document.fileName ?? '';
+        const base = file.split(/[\\/]/).pop() ?? '';
+        const packageName = base.replace(/\.(pks|pkb|sql)$/i, '');
+        if (!packageName) {
+          vscode.window.showWarningMessage(t(locale, 'ext.debug.openPks'));
+          return;
+        }
+        const { startDebugSession } = await loadDebugger();
+        await startDebugSession(packageName);
+      } catch (e) {
+        vscode.window.showErrorMessage(e instanceof Error ? e.message : String(e));
       }
-      const { startDebugSession } = await loadDebugger();
-      await startDebugSession(packageName);
     }),
   );
 
@@ -117,21 +121,27 @@ export function registerDebug(_context: vscode.ExtensionContext): void {
         vscode.window.showInformationMessage(t(locale, 'ext.debug.disabled'));
         return;
       }
-      const targets = await collectCompileTargets(uri);
-      if (targets.length === 0) {
-        vscode.window.showInformationMessage(t(locale, 'ext.compileForDebug.none'));
-        return;
-      }
-      const { compileForDebug } = await loadCompileHelper();
-      const result = await compileForDebug(targets);
-      if (result.failed.length > 0) {
-        const error = result.failed.map((f) => `${f.name}: ${f.error}`).join('; ');
+      try {
+        const targets = await collectCompileTargets(uri);
+        if (targets.length === 0) {
+          vscode.window.showInformationMessage(t(locale, 'ext.compileForDebug.none'));
+          return;
+        }
+        const { compileForDebug } = await loadCompileHelper();
+        const result = await compileForDebug(targets);
+        if (result.failed.length > 0) {
+          const error = result.failed.map((f) => `${f.name}: ${f.error}`).join('; ');
+          vscode.window.showErrorMessage(t(locale, 'ext.compileForDebug.failed', { error }));
+          return;
+        }
+        vscode.window.showInformationMessage(
+          t(locale, 'ext.compileForDebug.ok', { name: result.ok.join(', ') }),
+        );
+      } catch (e) {
+        // Nunca ficar mudo: qualquer erro inesperado vira mensagem.
+        const error = e instanceof Error ? e.message : String(e);
         vscode.window.showErrorMessage(t(locale, 'ext.compileForDebug.failed', { error }));
-        return;
       }
-      vscode.window.showInformationMessage(
-        t(locale, 'ext.compileForDebug.ok', { name: result.ok.join(', ') }),
-      );
     }),
   );
 }

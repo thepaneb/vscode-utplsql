@@ -1,5 +1,5 @@
 import * as vscode from 'vscode';
-import { readConfig, resolveConnectionNoPrompt } from './config';
+import { getExtensionLocale, readConfig, resolveConnectionNoPrompt } from './config';
 import { clearDbSourceCache } from './dbSourceProvider';
 import {
   discoverSchemaFromDb,
@@ -8,6 +8,7 @@ import {
   extractSchemaFromPath,
   type SuiteFile,
 } from './discovery';
+import { t } from './i18n';
 import type { TestStateManager } from './state';
 
 /**
@@ -67,6 +68,7 @@ export function buildSchemaTree(
   suites: SuiteFile[],
   schemaPattern: string,
 ): void {
+  const locale = getExtensionLocale();
   const bySchema = new Map<string, SuiteFile[]>();
 
   for (const suite of suites) {
@@ -90,7 +92,7 @@ export function buildSchemaTree(
     const firstSuite = schemaSuites[0];
     const schemaItem = controller.createTestItem(
       `schema:${schema}`,
-      `Schema: ${schema}`,
+      t(locale, 'testTree.schemaNode', { schema }),
       firstSuite.folder.uri,
     );
 
@@ -104,7 +106,7 @@ export function buildSchemaTree(
     for (const [pkg, pkgSuites] of byPackage) {
       const pkgItem = controller.createTestItem(
         `package:${schema}:${pkg}`,
-        `Package: ${pkg}`,
+        t(locale, 'testTree.packageNode', { package: pkg }),
         pkgSuites[0].uri,
       );
 

@@ -259,7 +259,7 @@ test('validateOnActivation: thick sem libDir gera diagnostic', async () => {
     assert.strictEqual(diags.length, 1);
     assert.strictEqual(diags[0].code, 'UTPLSQL_THICK_MODE');
     assert.strictEqual(diags[0].severity, 0);
-    assert.match(diags[0].message, /thick mode/);
+    assert.match(diags[0].message, /thick/);
     assert.strictEqual(diags[0].command?.command, 'workbench.action.openSettings');
   } finally {
     process.env.UTPLSQL_CONN = origEnv;

@@ -101,7 +101,7 @@ export function registerRunCommands(
               dm.update(state.getLastResults(), (id) => state.getItem(id));
             }
 
-            progress.report({ message: 'Parseando resultados...' });
+            progress.report({ message: t(locale, 'ext.run.parsingResults') });
           } finally {
             progressSub.dispose();
           }

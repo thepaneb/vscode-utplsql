@@ -11,6 +11,80 @@
   `GET_VALUE` (nomes conhecidos). Breakpoints passam a ser aplicados após o
   entry (o DBMS_DEBUG ignora "deferred"). Validado por um teste de integração
   que executa breakpoint → stop → frame → variável nas 4 versões da matriz.
+- **Debugger — breakpoints no gutter e Run and Debug**: não era possível criar
+  breakpoints em `.pks/.pkb/.prc/.fnc/.trg` (o VSCode desabilita o gutter em
+  arquivos sem *language id*, salvo com `debug.allowBreakpointsEverywhere`), e o
+  Run and Debug não mostrava nenhuma configuração. Adicionados
+  `contributes.languages` (`plsql`) + `contributes.breakpoints`, o
+  `initialConfigurations` do debugger `utplsql` (config padrão ao criar um
+  `launch.json`) e o comando `utPLSQL: Debug test (PL/SQL)` no menu de contexto
+  do editor.
+- **Debugger — namespace e linha dos breakpoints**: o `SET_BREAKPOINT` usava
+  sempre `namespace_pkg_body` e o nome da unidade em minúsculas, então
+  breakpoints em functions/procedures soltos (`.fnc`/`.prc`/`.sql`) nunca eram
+  criados (o correto é `namespace_pkgspec_or_toplevel`, e `program_info` exige o
+  nome do dicionário em maiúsculas). Agora o namespace é escolhido pela extensão
+  (`.pkb`/`.pks` → `pkg_body`, `.fnc`/`.prc` → `toplevel`, `.trg` → `trigger`,
+  `.sql` tenta os três) e a linha do arquivo é alinhada à do objeto armazenado —
+  o Oracle descarta `CREATE OR REPLACE` e comentários antes da unidade, o que
+  deslocava arquivos com header comentado. A linha do frame volta convertida
+  para o arquivo (destaque correto no editor).
+- **Debugger — falha do teste e `synchronize` não travam mais a sessão**: se o
+  `ut_runner.run` falhasse (teste/schema inexistente, conexão errada), o erro
+  era engolido e o `synchronize` ficava bloqueado — o Debug Console mostrava
+  apenas "Sessão … anexada." e nada mais. Agora a falha do teste é reportada e
+  encerra a sessão, o `synchronize` tem timeout de 30s e o número de breakpoints
+  aplicados é logado.
+- **Debugger — para no entry e espera o usuário**: o `configurationDone` dava
+  `continue` automático, então a sessão aparecia como "em execução" (toolbar com
+  Pause) e não dava para inspecionar o entry. Agora o adapter só envia
+  `stopped(reason=entry)` depois do `configurationDone` (handshake do DAP) e
+  fica parado aguardando Continue/Step. O adapter também passa a responder
+  `threads`/`setExceptionBreakpoints`, sem os quais o VSCode não habilita a
+  toolbar de Continue/Step nem o Call Stack.
+- **Debugger — conexões dedicadas e breakpoints no código sob teste**: a sessão
+  usava o pool do runner; com o debuggee bloqueado no `ut_runner.run`, o pool
+  esgotava e o **Compile for Debug** falhava com `NJS-040 queueTimeout`. Agora a
+  sessão usa conexões dedicadas (fora do pool) e encerra com `break()` + timeout.
+  Documentado que breakpoints no package de teste (`test_*.pkb`) podem não parar
+  (o utPLSQL executa os testes por SQL dinâmico); breakpoints no **código sob
+  teste** (function/procedure/package de produção) são atingidos normalmente via
+  `ut_runner.run`.
+- **Debugger — abre o arquivo certo ao parar**: o `stackTrace` montava
+  `<unit>.pks`, então ao parar numa function definida em `.sql` o VSCode tentava
+  abrir um `.pks` inexistente. Agora usa o caminho do arquivo onde o breakpoint
+  foi definido.
+- **Debugger — “Invalid variable attributes” no painel Variables**: o response
+  `variables` devolvia `{ name, value, type }` sem `variablesReference`
+  (obrigatório no DAP; `0` = folha). Agora inclui `variablesReference: 0`.
+- **i18n — cobrança de cobertura e testes**: mensagens que estavam hardcoded
+  (Debug Console/erros do debugger, título da CodeAction e diagnóstico de thick
+  mode, labels `Schema`/`Package` do Test Explorer, mensagem de progresso)
+  passaram a usar `t()`; adicionadas as chaves correspondentes nos 24 catálogos.
+  O teste de paridade agora também valida **chaves extras** e **valores vazios**
+  nos catálogos e o alinhamento dos `package.nls.*.json`.
+- **Testes — cobertura e integração real**: novos testes unitários (`runTest`
+  que falha encerrando a sessão; `getRuntimeFrame` em erro; parser de declarações
+  com aspas escapadas; `viewCoverage` com symlink quebrado e pasta aninhada;
+  `debugger` com flush de breakpoints pendentes e teardown com `break` falhando;
+  CLI de `package-target`/`publish`; caminho sem conexão do `compileForDebug`;
+  validação do `matrix.env`/smoke/grants e sintaxe bash dos scripts da matriz) e
+  um teste de integração (`debuggerStandaloneFn`) que exercita o `DBMS_DEBUG`
+  numa **function standalone** — namespace `toplevel` + nome do dicionário em
+  maiúsculas —, cenário que o `debuggerE2E` (chamada direta de package) não
+  cobria. Incluído em `npm run test:integration:smoke`.
+- **Matriz de bancos — `run.sh` rodava só a 1ª versão**: o loop
+  `echo "$VERSIONS" | while read` tinha o **stdin consumido** pelo `vscode-test`,
+  encerrando a matriz após a primeira versão. As versões agora vão para um array
+  antes do loop, e a matriz completa (18xe/19ee/21xe/23free) roda numa passada.
+- **Integração — build limpo**: `pretest:integration*` agora roda `npm run clean`
+  antes de compilar, evitando executar `.test.js` órfãos (testes removidos ou
+  renomeados) que ficam em `out/` (o `tsc` não apaga saídas órfãs).
+- **Compile for Debug — `PLSQL_OPTIMIZE_LEVEL = 1`**: o comando rodava apenas
+  `ALTER … COMPILE DEBUG`, que liga `PLSQL_DEBUG` mas mantém o nível de
+  otimização (default 2) — que pode remover/reordenar linhas e o breakpoint não
+  ser encontrado. Agora o comando fixa `PLSQL_OPTIMIZE_LEVEL = 1` no mesmo
+  `ALTER`, alinhado ao requisito documentado (`PLSQL_OPTIMIZE_LEVEL <= 1`).
 - **Script runner — `;` final em statements SQL**: o `;` (terminador do cliente)
   era enviado ao servidor. O Oracle 23ai tolera via OCI, mas 19c/21c rejeitam
   (`ORA-00933`/`ORA-00922`), então scripts SQL falhavam em bancos mais antigos.

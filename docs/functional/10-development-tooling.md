@@ -101,8 +101,8 @@ src/test/
 │   └── setup.ts
 ├── integration/                (extension host; banco via describeDB)
 │   ├── extension.test.ts
-│   ├── dbPaths / schemaRun / debuggerE2E / thickMode / oracleCapabilities
-│   ├── prd70-sqlplus / v012-features / helpers.ts
+│   ├── dbPaths / schemaRun / debuggerE2E / debuggerStandaloneFn
+│   ├── thickMode / oracleCapabilities / prd70-sqlplus / v012-features / helpers.ts
 │   └── fixtures/
 └── vscode-stub.ts              (mock da API vscode)
 ```

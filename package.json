@@ -525,6 +525,11 @@
         "command": "utplsql.compileForDebug",
         "group": "utplsql@4",
         "when": "resourceExtname == .sql || resourceExtname == .pks || resourceExtname == .pkb || resourceExtname == .fnc || resourceExtname == .prc || resourceExtname == .trg"
+      },
+      {
+        "command": "utplsql.debugTest",
+        "group": "utplsql@5",
+        "when": "resourceExtname == .pks || resourceExtname == .pkb"
       }
     ]
     },
@@ -589,6 +594,18 @@
         "when": "utplsql:hasFailures"
       }
     ],
+    "languages": [
+      {
+        "id": "plsql",
+        "aliases": ["PL/SQL", "plsql"],
+        "extensions": [".pks", ".pkb", ".prc", ".fnc", ".trg"]
+      }
+    ],
+    "breakpoints": [
+      {
+        "language": "plsql"
+      }
+    ],
     "debuggers": [
       {
         "type": "utplsql",
@@ -614,13 +631,22 @@
               }
             }
           }
-        }
+        },
+        "initialConfigurations": [
+          {
+            "type": "utplsql",
+            "request": "launch",
+            "name": "Debug utPLSQL test",
+            "packageName": "${fileBasenameNoExtension}"
+          }
+        ]
       }
     ]
   },
   "scripts": {
     "vscode:prepublish": "npm run compile && npm run bundle",
     "compile": "tsc -p ./",
+    "clean": "node -e \"require('fs').rmSync('out',{recursive:true,force:true})\"",
     "typecheck": "tsc -p ./ --noEmit",
     "watch": "tsc -watch -p ./",
     "lint": "biome check src/",
@@ -628,11 +654,11 @@
     "format": "biome format --write src/",
     "pretest:unit": "npm run compile && npm run lint",
     "test:unit": "node scripts/run-tests.cjs",
-    "pretest:integration": "npm run compile && npm run bundle",
+    "pretest:integration": "npm run clean && npm run compile && npm run bundle",
     "test:integration": "vscode-test",
-    "pretest:integration:smoke": "npm run compile && npm run bundle",
+    "pretest:integration:smoke": "npm run clean && npm run compile && npm run bundle",
     "test:integration:smoke": "vscode-test --config .vscode-test.smoke.mjs",
-    "pretest:integration:thick": "npm run compile && npm run bundle",
+    "pretest:integration:thick": "npm run clean && npm run compile && npm run bundle",
     "test:integration:thick": "vscode-test --config .vscode-test.thick.mjs",
     "db:matrix": "bash scripts/db-matrix/run.sh",
     "db:matrix:list": "bash scripts/db-matrix/run.sh --list",

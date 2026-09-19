@@ -12,5 +12,6 @@ export default {
   files: [
     'out/test/integration/oracleCapabilities.test.js',
     'out/test/integration/debuggerE2E.test.js',
+    'out/test/integration/debuggerStandaloneFn.test.js',
   ],
 };

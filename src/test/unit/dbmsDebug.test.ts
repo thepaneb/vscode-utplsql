@@ -5,17 +5,21 @@ import {
   checkDebugAccess,
   DbmsDebugClient,
   type DebugConnection,
+  namespacesForExt,
   parseBreakpointTarget,
 } from '../../dbmsDebug';
 
 function makeConn(
-  executeImpl: (sql: string) => Promise<{ rows?: unknown[]; outBinds?: Record<string, unknown> }>,
+  executeImpl: (
+    sql: string,
+    binds?: Record<string, unknown>,
+  ) => Promise<{ rows?: unknown[]; outBinds?: Record<string, unknown> }>,
 ) {
   const calls: { sql: string; binds?: Record<string, unknown> }[] = [];
   const conn: DebugConnection = {
     execute: async (sql: string, binds?: Record<string, unknown>) => {
       calls.push({ sql, binds });
-      return executeImpl(sql);
+      return executeImpl(sql, binds);
     },
     close: async () => {},
   };
@@ -45,6 +49,25 @@ test('dbmsDebugClient: setBreakpoint usa program_info e retorna o id', async () 
   assert.strictEqual(id, 42);
   assert.ok(calls[0].sql.includes('DBMS_DEBUG.program_info'));
   assert.ok(calls[0].sql.includes('DBMS_DEBUG.SET_BREAKPOINT'));
+});
+
+test('dbmsDebugClient: setBreakpoint tenta o próximo namespace quando o primeiro falha', async () => {
+  const { conn, calls } = makeConn(async (_sql, binds) => {
+    if (binds?.ns === 'toplevel') return { outBinds: { brkpt: 0 } };
+    return { outBinds: { brkpt: 7 } };
+  });
+  const client = new DbmsDebugClient(conn);
+  const id = await client.setBreakpoint({
+    owner: 'S',
+    unit: 'F',
+    line: 3,
+    namespaces: ['toplevel', 'pkg_body'],
+  });
+  assert.strictEqual(id, 7);
+  assert.deepStrictEqual(
+    calls.map((c) => c.binds?.ns),
+    ['toplevel', 'pkg_body'],
+  );
 });
 
 test('dbmsDebugClient: setBreakpoint sem id retorna -1', async () => {
@@ -87,6 +110,18 @@ test('dbmsDebugClient: run sem evento vira no_break; status de erro vira unknown
   assert.strictEqual(await new DbmsDebugClient(ok.conn).continueRun(), 'no_break');
   const err = makeConn(async () => ({ outBinds: { status: 1, stopped: 0, ended: 0 } }));
   assert.strictEqual(await new DbmsDebugClient(err.conn).continueRun(), 'unknown');
+});
+
+test('dbmsDebugClient: getRuntimeFrame cai para anonymous em erro', async () => {
+  const { conn } = makeConn(async () => {
+    throw new Error('boom');
+  });
+  const client = new DbmsDebugClient(conn);
+  assert.deepStrictEqual(await client.getRuntimeFrame(1), {
+    name: 'anonymous',
+    line: 1,
+    frameId: 1,
+  });
 });
 
 test('dbmsDebugClient: getRuntimeFrame usa o último frame do CONTINUE', async () => {
@@ -183,12 +218,28 @@ test('checkDebugAccess: reflete os grants reais', async () => {
   assert.strictEqual(denied, false);
 });
 
-test('parseBreakpointTarget: extrai owner/unit do caminho', () => {
+test('parseBreakpointTarget: extrai owner/unit (maiúsculos) do caminho', () => {
   const t = parseBreakpointTarget('/ws/install/packages/test_app.pkb', 'DEV');
-  assert.deepStrictEqual(t, { owner: 'DEV', unit: 'test_app', line: 0 });
+  assert.deepStrictEqual(t, {
+    owner: 'DEV',
+    unit: 'TEST_APP',
+    line: 0,
+    namespaces: ['pkg_body'],
+    sourcePath: '/ws/install/packages/test_app.pkb',
+  });
 });
 
 test('parseBreakpointTarget: extensão desconhecida mantém o nome', () => {
   const t = parseBreakpointTarget('/x/foo.txt', 'S');
-  assert.strictEqual(t.unit, 'foo.txt');
+  assert.strictEqual(t.unit, 'FOO.TXT');
+  assert.deepStrictEqual(t.namespaces, ['toplevel', 'pkg_body', 'trigger']);
+});
+
+test('namespacesForExt: top-level para .fnc/.prc, trigger para .trg, todos para .sql', () => {
+  assert.deepStrictEqual(namespacesForExt('.fnc'), ['toplevel']);
+  assert.deepStrictEqual(namespacesForExt('.PRC'), ['toplevel']);
+  assert.deepStrictEqual(namespacesForExt('.trg'), ['trigger']);
+  assert.deepStrictEqual(namespacesForExt('.pks'), ['pkg_body']);
+  assert.deepStrictEqual(namespacesForExt('.pkb'), ['pkg_body']);
+  assert.deepStrictEqual(namespacesForExt('.sql'), ['toplevel', 'pkg_body', 'trigger']);
 });

@@ -116,3 +116,13 @@ BEGIN NULL; END;`;
   assert.strictEqual(decls.length, 1);
   assert.strictEqual(decls[0].name, 'p');
 });
+
+test('parsePlsqlDeclarations: aspas duplicadas dentro de string não vazam declaração', () => {
+  const text = `BEGIN
+  dbms_output.put_line('it''s a PROCEDURE fake');
+  PROCEDURE real_proc IS BEGIN NULL; END;
+END;`;
+  const decls = parsePlsqlDeclarations(text);
+  assert.ok(decls.some((d) => d.name === 'real_proc'));
+  assert.ok(!decls.some((d) => d.name === 'fake'));
+});

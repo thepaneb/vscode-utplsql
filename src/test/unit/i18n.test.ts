@@ -1,5 +1,7 @@
 import './setup.js';
 import assert from 'node:assert';
+import * as fs from 'node:fs';
+import * as path from 'node:path';
 import { test } from 'node:test';
 import {
   bg,
@@ -179,6 +181,45 @@ test('t: placeholder nao fornecido permanece literal', () => {
 test('paridade: todos os catálogos têm as mesmas chaves de pt-BR', () => {
   for (const [name, cat] of ALL_CATALOGS) {
     assert.deepStrictEqual(missingCatalogKeys(cat), [], `chaves ausentes em ${name}`);
+  }
+});
+
+test('paridade: catálogos não têm chaves extras nem valores vazios', () => {
+  const baseKeys = new Set(Object.keys(ptBr));
+  for (const [name, cat] of ALL_CATALOGS) {
+    const extra = Object.keys(cat).filter((k) => !baseKeys.has(k));
+    assert.deepStrictEqual(extra, [], `chaves extras em ${name}`);
+    const empty = Object.keys(cat).filter((k) => !String(cat[k]).trim());
+    assert.deepStrictEqual(empty, [], `valores vazios em ${name}`);
+  }
+});
+
+test('package.nls.*: alinhados com package.nls.json (sem faltas/extras/vazios)', () => {
+  const root = path.resolve(__dirname, '../../..');
+  const base = JSON.parse(fs.readFileSync(path.join(root, 'package.nls.json'), 'utf8')) as Record<
+    string,
+    string
+  >;
+  const baseKeys = new Set(Object.keys(base));
+  const files = fs.readdirSync(root).filter((f) => /^package\.nls\..*\.json$/.test(f));
+  assert.ok(files.length >= 23, `esperado um package.nls por locale, achei ${files.length}`);
+  for (const f of files) {
+    const j = JSON.parse(fs.readFileSync(path.join(root, f), 'utf8')) as Record<string, string>;
+    assert.deepStrictEqual(
+      [...baseKeys].filter((k) => !(k in j)),
+      [],
+      `${f}: chaves ausentes`,
+    );
+    assert.deepStrictEqual(
+      Object.keys(j).filter((k) => !baseKeys.has(k)),
+      [],
+      `${f}: chaves extras`,
+    );
+    assert.deepStrictEqual(
+      Object.keys(j).filter((k) => !String(j[k]).trim()),
+      [],
+      `${f}: valores vazios`,
+    );
   }
 });
 

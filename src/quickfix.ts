@@ -50,10 +50,9 @@ export class SetupValidator {
           diagnostics.push({
             code: 'UTPLSQL_THICK_MODE',
             severity: vscode.DiagnosticSeverity.Error,
-            message:
-              `utPLSQL: falha ao inicializar o Oracle Client em thick mode. ${client.error ?? ''}`.trim(),
+            message: t(locale, 'quickfix.thickInitFail', { error: client.error ?? '' }).trim(),
             command: {
-              title: 'Abrir configurações do cliente Oracle',
+              title: t(locale, 'quickfix.openClientSettings'),
               command: 'workbench.action.openSettings',
               arguments: ['utplsql.oracleClientMode'],
             },
@@ -324,7 +323,7 @@ export class UtplsqlCodeActionProvider implements vscode.CodeActionProvider {
       }
 
       if (diagnostic.code === 'UTPLSQL_THICK_MODE') {
-        const title = 'Abrir configurações do cliente Oracle';
+        const title = t(locale, 'quickfix.openClientSettings');
         const action = new vscode.CodeAction(title, vscode.CodeActionKind.QuickFix);
         action.command = {
           command: 'workbench.action.openSettings',

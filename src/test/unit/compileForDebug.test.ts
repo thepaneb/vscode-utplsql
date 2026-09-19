@@ -8,6 +8,7 @@ import {
   compileTargetsForDebug,
   debuggableFromFile,
 } from '../../compileForDebug';
+import { __resetConfigValues } from '../vscode-stub';
 
 test('debuggableFromFile: mapeia extensões de objeto', () => {
   assert.deepStrictEqual(debuggableFromFile('/a/b/test_hello.pks'), {
@@ -39,7 +40,7 @@ test('debuggableFromFile: rejeita sem nome ou extensão desconhecida', () => {
 test('compileForDebugSql: upper case e aspas', () => {
   assert.strictEqual(
     compileForDebugSql('package', 'app', 'test_hello'),
-    'ALTER PACKAGE "APP"."TEST_HELLO" COMPILE DEBUG',
+    'ALTER PACKAGE "APP"."TEST_HELLO" COMPILE DEBUG PLSQL_OPTIMIZE_LEVEL = 1',
   );
 });
 
@@ -47,7 +48,7 @@ test('compileTargetsForDebug: compila com o owner default', async () => {
   const calls: string[] = [];
   const conn = { execute: async (sql: string) => void calls.push(sql) };
   const result = await compileTargetsForDebug(conn, [{ name: 'p', kinds: ['package'] }], 'app');
-  assert.deepStrictEqual(calls, ['ALTER PACKAGE "APP"."P" COMPILE DEBUG']);
+  assert.deepStrictEqual(calls, ['ALTER PACKAGE "APP"."P" COMPILE DEBUG PLSQL_OPTIMIZE_LEVEL = 1']);
   assert.deepStrictEqual(result.ok, ['package APP.P']);
   assert.deepStrictEqual(result.failed, []);
 });
@@ -56,7 +57,9 @@ test('compileTargetsForDebug: owner do alvo tem prioridade', async () => {
   const calls: string[] = [];
   const conn = { execute: async (sql: string) => void calls.push(sql) };
   await compileTargetsForDebug(conn, [{ name: 'p', kinds: ['package'], owner: 'other' }], 'app');
-  assert.deepStrictEqual(calls, ['ALTER PACKAGE "OTHER"."P" COMPILE DEBUG']);
+  assert.deepStrictEqual(calls, [
+    'ALTER PACKAGE "OTHER"."P" COMPILE DEBUG PLSQL_OPTIMIZE_LEVEL = 1',
+  ]);
 });
 
 test('compileTargetsForDebug: .sql faz fallback enquanto o objeto não existe', async () => {
@@ -107,4 +110,19 @@ test('compileTargetsForDebug: ORA-04043 em todos os tipos vira falha', async () 
 test('compileForDebug: lista vazia retorna cedo sem tocar o Oracle', async () => {
   const result = await compileForDebug([]);
   assert.deepStrictEqual(result, { ok: [], failed: [] });
+});
+
+test('compileForDebug: sem conexão retorna falha amigável', async () => {
+  const origEnv = process.env.UTPLSQL_CONN;
+  delete process.env.UTPLSQL_CONN;
+  __resetConfigValues();
+  try {
+    const result = await compileForDebug([{ name: 'x', kinds: ['package'] }]);
+    assert.deepStrictEqual(result.ok, []);
+    assert.strictEqual(result.failed.length, 1);
+    assert.strictEqual(result.failed[0].name, '*');
+  } finally {
+    process.env.UTPLSQL_CONN = origEnv;
+    __resetConfigValues();
+  }
 });

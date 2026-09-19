@@ -116,6 +116,7 @@ src/test/integration/
 ├── prd70-sqlplus.test.ts
 ├── schemaRun.test.ts
 ├── debuggerE2E.test.ts
+├── debuggerStandaloneFn.test.ts
 └── thickMode.test.ts
 ```
 
@@ -128,7 +129,8 @@ Integration tests have two modes:
 Fast subsets / modes:
 
 - `npm run test:integration:smoke` — only Oracle capabilities + the DBMS_DEBUG
-  cycle (~1 min).
+  cycle (package via direct call and standalone function/namespace `toplevel`,
+  ~1 min).
 - `npm run test:integration:thick` — thick mode (Instant Client) in an isolated
   host; needs `ORACLE_CLIENT_LIB_DIR`.
 - `npm run db:matrix` — runs the suite against multiple Oracle versions (see

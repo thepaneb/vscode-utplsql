@@ -91,7 +91,9 @@ selected() { [ -z "$ONLY" ] && return 0; case ",$ONLY," in *",$1,"*) return 0 ;;
 
 login_registry
 
-echo "$VERSIONS" | sed '/^$/d' | while IFS='|' read -r label image service; do
+mapfile -t VERSION_LINES < <(echo "$VERSIONS" | sed '/^$/d')
+for __line in "${VERSION_LINES[@]}"; do
+  IFS='|' read -r label image service <<< "$__line"
   selected "$label" || continue
   log "$label — $image (serviço $service)"
 

@@ -39,9 +39,14 @@ export function debuggableFromFile(filePath: string): DebuggableFile | undefined
   return kind ? { name, kinds: [kind] } : undefined;
 }
 
-/** `ALTER PACKAGE "OWNER"."NAME" COMPILE DEBUG` (owner/nome em maiúsculas). */
+/**
+ * `ALTER PACKAGE "OWNER"."NAME" COMPILE DEBUG PLSQL_OPTIMIZE_LEVEL = 1`.
+ * `COMPILE DEBUG` sozinho só liga `PLSQL_DEBUG` e mantém o nível de otimização
+ * (default 2); o nível 1 evita que o otimizador remova/reordene as linhas e o
+ * breakpoint não seja encontrado.
+ */
 export function compileForDebugSql(kind: DebuggableKind, owner: string, name: string): string {
-  return `ALTER ${kind.toUpperCase()} "${owner.toUpperCase()}"."${name.toUpperCase()}" COMPILE DEBUG`;
+  return `ALTER ${kind.toUpperCase()} "${owner.toUpperCase()}"."${name.toUpperCase()}" COMPILE DEBUG PLSQL_OPTIMIZE_LEVEL = 1`;
 }
 
 export interface CompileTarget {
