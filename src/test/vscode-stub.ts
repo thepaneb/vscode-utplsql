@@ -146,6 +146,12 @@ export namespace workspace {
       }
       return Promise.resolve(entries.map(([name, type]) => [name, type] as [string, number]));
     },
+    stat: (uri: any) => {
+      const path = uri.fsPath ?? uri;
+      if (_mockDirEntries[path]) return Promise.resolve({ type: 2 });
+      if (path in _mockFileContents) return Promise.resolve({ type: 1 });
+      return Promise.reject(new Error(`mock: stat nao encontrado: ${path}`));
+    },
   };
   export let workspaceFolders:
     | Array<{ uri: { fsPath: string }; name: string; index: number }>

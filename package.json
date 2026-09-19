@@ -246,7 +246,7 @@
         "utplsql.sqlCoverageEnabled": {
           "type": "boolean",
           "default": false,
-          "markdownDescription": "Habilita rastreio de views via `V$SQL` (cobertura booleana: executada = 100%, não executada = 0%). Requer `GRANT SELECT ON V$SQL` no Oracle. Views já aparecem no relatório com 0 hits via `type_mapping` mesmo desligado."
+          "markdownDescription": "Habilita rastreio de views via `V$SQL` (cobertura booleana: executada = 100%, não executada = 0%). Requer `GRANT SELECT ON V$SQL` no Oracle."
         },
         "utplsql.debugger.enabled": {
           "type": "boolean",
@@ -263,6 +263,11 @@
           "default": 300,
           "minimum": 30,
           "description": "Timeout (s) da sessão de debug para evitar conexões Oracle zumbis."
+        },
+        "utplsql.debugger.compileOnDebug": {
+          "type": "boolean",
+          "default": false,
+          "description": "Compila o objeto com informação de debug (ALTER … COMPILE DEBUG) antes de iniciar a sessão de debug."
         },
         "utplsql.scriptRunner.stopOnError": {
           "type": "boolean",
@@ -442,6 +447,11 @@
         "category": "utPLSQL"
       },
       {
+        "command": "utplsql.compileForDebug",
+        "title": "%nls.command.compileForDebug%",
+        "category": "utPLSQL"
+      },
+      {
         "command": "utplsql.runScript",
         "title": "%nls.command.runScript%",
         "category": "utPLSQL"
@@ -484,12 +494,17 @@
           "group": "utplsql@1",
           "when": "explorerResourceIsFolder"
         },
-        {
-          "command": "utplsql.runFolderCoverage",
-          "group": "utplsql@2",
-          "when": "explorerResourceIsFolder"
-        }
-      ],
+      {
+        "command": "utplsql.runFolderCoverage",
+        "group": "utplsql@2",
+        "when": "explorerResourceIsFolder"
+      },
+      {
+        "command": "utplsql.compileForDebug",
+        "group": "utplsql@4",
+        "when": "resourceExtname == .sql || resourceExtname == .pks || resourceExtname == .pkb || resourceExtname == .fnc || resourceExtname == .prc || resourceExtname == .trg || explorerResourceIsFolder"
+      }
+    ],
       "editor/context": [
         {
           "command": "utplsql.runFile",
@@ -501,12 +516,17 @@
           "group": "utplsql@2",
           "when": "resourceExtname == .pks || resourceExtname == .pkb"
         },
-        {
-          "command": "utplsql.runScript",
-          "group": "utplsql@3",
-          "when": "resourceExtname == .sql || resourceExtname == .pks || resourceExtname == .pkb || resourceExtname == .fnc || resourceExtname == .prc || resourceExtname == .trg"
-        }
-      ]
+      {
+        "command": "utplsql.runScript",
+        "group": "utplsql@3",
+        "when": "resourceExtname == .sql || resourceExtname == .pks || resourceExtname == .pkb || resourceExtname == .fnc || resourceExtname == .prc || resourceExtname == .trg"
+      },
+      {
+        "command": "utplsql.compileForDebug",
+        "group": "utplsql@4",
+        "when": "resourceExtname == .sql || resourceExtname == .pks || resourceExtname == .pkb || resourceExtname == .fnc || resourceExtname == .prc || resourceExtname == .trg"
+      }
+    ]
     },
     "keybindings": [
       {

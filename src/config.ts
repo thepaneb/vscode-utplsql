@@ -31,6 +31,7 @@ export interface UtConfig {
   debuggerEnabled: boolean;
   debuggerStopOnException: boolean;
   debuggerTimeoutSeconds: number;
+  debuggerCompileOnDebug: boolean;
   scriptRunnerStopOnError: boolean;
   scriptRunnerAutoCommit: boolean;
   scriptRunnerFilePattern: string;
@@ -97,6 +98,7 @@ export function readConfig(): UtConfig {
     debuggerEnabled: c.get<boolean>('debugger.enabled', true),
     debuggerStopOnException: c.get<boolean>('debugger.stopOnException', true),
     debuggerTimeoutSeconds: c.get<number>('debugger.timeoutSeconds', 300),
+    debuggerCompileOnDebug: c.get<boolean>('debugger.compileOnDebug', false),
     scriptRunnerStopOnError: c.get<boolean>('scriptRunner.stopOnError', true),
     scriptRunnerAutoCommit: c.get<boolean>('scriptRunner.autoCommit', true),
     scriptRunnerFilePattern: c.get<string>(

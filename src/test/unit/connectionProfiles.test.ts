@@ -62,6 +62,7 @@ function makeGlobal(over: Partial<UtConfig> = {}): UtConfig {
     debuggerEnabled: true,
     debuggerStopOnException: true,
     debuggerTimeoutSeconds: 300,
+    debuggerCompileOnDebug: false,
     scriptRunnerStopOnError: true,
     scriptRunnerAutoCommit: true,
     scriptRunnerFilePattern: '**/*.{sql,pks,pkb,fnc,prc,trg}',

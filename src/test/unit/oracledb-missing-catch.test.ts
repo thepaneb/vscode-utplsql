@@ -201,3 +201,11 @@ test('selectReporter/showInfo: oracledb ausente mostra erro sem lançar', async 
     commands.__resetRegisteredCommands();
   }
 });
+
+test('compileForDebug: driver oracledb ausente retorna falha amigável', async () => {
+  __resetConfigValues();
+  const { compileForDebug } = await import('../../compileForDebug.js');
+  const result = await compileForDebug([{ name: 'p', kinds: ['package'] }]);
+  assert.strictEqual(result.ok.length, 0);
+  assert.strictEqual(result.failed.length, 1);
+});

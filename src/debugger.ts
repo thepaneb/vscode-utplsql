@@ -310,6 +310,15 @@ export class UtplsqlDebugAdapter implements vscode.DebugAdapter {
   }
 
   private async initSession(): Promise<void> {
+    if (readConfig().debuggerCompileOnDebug && this.config?.packageName) {
+      try {
+        // RF4 (PRD-73): compila com debug info antes de iniciar a sessão.
+        const { compileForDebug } = await import('./compileForDebug.js');
+        await compileForDebug([{ name: this.config.packageName, kinds: ['package'] }]);
+      } catch {
+        /* best-effort: falha na compilação não impede o debug */
+      }
+    }
     try {
       this.debuggeeConn = await this.runtime.acquireConnection();
       if (!this.debuggeeConn) {
