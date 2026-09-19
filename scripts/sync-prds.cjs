@@ -147,11 +147,24 @@ async function sync() {
   console.log('  OK');
 
   console.log('\n📥 Carregando issues existentes...');
-  const existing = await github('/issues?state=all&per_page=100');
+  // Pagina todas as issues: /issues devolve no máximo 100 por página e, sem
+  // isso, PRDs antigos saem da primeira página e são recriados como duplicatas.
+  const existing = [];
+  for (let page = 1; ; page++) {
+    const batch = await github(`/issues?state=all&per_page=100&page=${page}`);
+    if (!Array.isArray(batch) || batch.length === 0) break;
+    existing.push(...batch);
+    if (batch.length < 100) break;
+  }
   const existingByPRD = {};
   for (const issue of existing) {
     const m = issue.title.match(/^PRD-(\d+):/);
-    if (m) existingByPRD[m[1]] = issue;
+    if (m) {
+      // Havendo duplicatas, o menor número é o canônico — mantém o mapeamento
+      // estável entre execuções.
+      const current = existingByPRD[m[1]];
+      if (!current || issue.number < current.number) existingByPRD[m[1]] = issue;
+    }
   }
 
   const mapping = loadMapping();
