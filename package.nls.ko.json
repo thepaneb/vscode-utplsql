@@ -24,5 +24,6 @@
   "nls.command.debugTest": "utPLSQL: 테스트 디버그 (PL/SQL)",
   "nls.command.runScript": "utPLSQL: Run script",
   "nls.command.runScriptFile": "utPLSQL: Run script file",
-  "nls.command.runScriptFolder": "utPLSQL: Run script folder"
+  "nls.command.runScriptFolder": "utPLSQL: Run script folder",
+  "nls.command.compileForDebug": "utPLSQL: 디버그용으로 컴파일"
 }

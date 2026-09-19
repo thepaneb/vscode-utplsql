@@ -24,5 +24,6 @@
   "nls.command.debugTest": "utPLSQL: Ladit test (PL/SQL)",
   "nls.command.runScript": "utPLSQL: Run script",
   "nls.command.runScriptFile": "utPLSQL: Run script file",
-  "nls.command.runScriptFolder": "utPLSQL: Run script folder"
+  "nls.command.runScriptFolder": "utPLSQL: Run script folder",
+  "nls.command.compileForDebug": "utPLSQL: Zkompilovat pro ladění"
 }

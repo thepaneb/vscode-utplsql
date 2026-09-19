@@ -67,6 +67,84 @@ test('selectReporter: exibe nomes sem prefixo e guarda o reporter selecionado', 
   }
 });
 
+test('clearConnection: limpa a sessão e marca context desconectado', async () => {
+  __resetConfigValues();
+  commands.__resetRegisteredCommands();
+  commands.__resetExecutedCommands();
+  const { registerConnectionCommands } = await import('../../commands/connection.js');
+  registerConnectionCommands(
+    { subscriptions: [] } as never,
+    { state: makeDeps([]).state } as never,
+  );
+  const handler = commands.__getRegisteredCommand('utplsql.clearConnection');
+  assert.ok(handler, 'comando utplsql.clearConnection deveria estar registrado');
+  handler?.();
+
+  assert.ok(
+    commands.__getExecutedCommands().includes('setContext'),
+    'clearSessionConnection deveria setar utplsql:connected=false',
+  );
+});
+
+test('configureConnection: abre as settings de conexão', async () => {
+  __resetConfigValues();
+  commands.__resetRegisteredCommands();
+  commands.__resetExecutedCommands();
+  const { registerConnectionCommands } = await import('../../commands/connection.js');
+  registerConnectionCommands(
+    { subscriptions: [] } as never,
+    { state: makeDeps([]).state } as never,
+  );
+  await commands.__getRegisteredCommand('utplsql.configureConnection')?.();
+  assert.ok(
+    commands.__getExecutedCommands().includes('workbench.action.openSettings'),
+    'deveria abrir as settings',
+  );
+});
+
+test('showInfo: sem conexão mostra erro e não lança', async () => {
+  __resetConfigValues();
+  commands.__resetRegisteredCommands();
+  const orig = process.env.UTPLSQL_CONN;
+  delete process.env.UTPLSQL_CONN;
+  const { clearSessionConnection } = await import('../../config.js');
+  clearSessionConnection();
+  try {
+    const { registerConnectionCommands } = await import('../../commands/connection.js');
+    registerConnectionCommands(
+      { subscriptions: [] } as never,
+      { state: makeDeps([]).state } as never,
+    );
+    await assert.doesNotReject(
+      () => commands.__getRegisteredCommand('utplsql.showInfo')?.() as Promise<void>,
+    );
+  } finally {
+    process.env.UTPLSQL_CONN = orig;
+    __resetConfigValues();
+  }
+});
+
+test('showInfo: consulta versões via conexão mockada sem lançar', async () => {
+  __resetConfigValues();
+  commands.__resetRegisteredCommands();
+  const orig = process.env.UTPLSQL_CONN;
+  process.env.UTPLSQL_CONN = 'u/p@//h:1521/s';
+  const { registerConnectionCommands } = await import('../../commands/connection.js');
+  const { closeOraclePool } = await import('../../oracleRunner.js');
+  try {
+    registerConnectionCommands(
+      { subscriptions: [] } as never,
+      { state: makeDeps([]).state } as never,
+    );
+    const handler = commands.__getRegisteredCommand('utplsql.showInfo');
+    assert.ok(handler, 'comando utplsql.showInfo deveria estar registrado');
+    await handler?.();
+  } finally {
+    process.env.UTPLSQL_CONN = orig;
+    await closeOraclePool();
+  }
+});
+
 test('selectReporter: lista vazia não abre QuickPick nem registra reporter', async () => {
   __resetConfigValues();
   commands.__resetRegisteredCommands();

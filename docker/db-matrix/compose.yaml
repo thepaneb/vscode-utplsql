@@ -1,0 +1,50 @@
+# Matriz de bancos Oracle para testes de integração (um banco por vez).
+#
+# O serviço é genérico: a versão é escolhida por variáveis de ambiente, que o
+# orquestrador `scripts/db-matrix/run.sh` define a partir de `matrix.env`.
+# Assim não há duplicação de definição de serviço e o "um por vez" é natural.
+#
+# Persistência: os datafiles ficam num volume NOMEADO por versão
+# (`DB_VOLUME`), montado em `/opt/oracle/oradata` (caminho comum às imagens
+# 18c/19c/21c/23ai). A primeira subida cria o banco (~15-25 min); as seguintes
+# reaproveitam o volume e sobem em ~1-2 min. `run.sh --clean` apaga o volume
+# para recomeçar do zero.
+#
+# Uso manual (equivalente ao que o run.sh faz):
+#   export DB_IMAGE=container-registry.oracle.com/database/free:23.26.3.0
+#   export DB_PORT=1531 ORACLE_PWD='Oracle#2026' DB_VOLUME=utplsql-dbmatrix-23free
+#   docker compose -f docker/db-matrix/compose.yaml up -d
+#   ... bootstrap/testes ...
+#   docker compose -f docker/db-matrix/compose.yaml down   # preserva o volume
+
+name: utplsql-dbmatrix
+
+services:
+  db:
+    image: "${DB_IMAGE:?defina DB_IMAGE, ex database/free:23.26.3.0}"
+    # Falha clara se a tag não tiver a arquitetura (ex.: enterprise:19.19.0.0 é
+    # arm64-only no registry) em vez de "exec format error" no startup.
+    platform: "${DB_PLATFORM:-linux/amd64}"
+    container_name: "${DB_CONTAINER:-utplsql-dbmatrix}"
+    shm_size: "${DB_SHM_SIZE:-2gb}"
+    ports:
+      - "${DB_PORT:-1531}:1521"
+    environment:
+      ORACLE_PWD: "${ORACLE_PWD:?defina ORACLE_PWD}"
+      ORACLE_CHARACTERSET: "${ORACLE_CHARACTERSET:-AL32UTF8}"
+    volumes:
+      - oracle-data:/opt/oracle/oradata
+    healthcheck:
+      # Checa só o processo da instância: OS auth (`/ as sysdba`) falha em
+      # algumas imagens (18c XE) e um grep por "1" casaria com "ORA-12547".
+      # O wait-ready.sh confirma o PDB via SYSDBA por rede.
+      test: ["CMD-SHELL", "ps -ef | grep -v grep | grep -q pmon"]
+      interval: 15s
+      timeout: 10s
+      retries: 60
+      start_period: 180s
+
+volumes:
+  oracle-data:
+    name: "${DB_VOLUME:-utplsql-dbmatrix-oracle-data}"
+

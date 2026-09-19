@@ -16,6 +16,7 @@ import {
   type ScriptDb,
   type SqlStatement,
   splitScript,
+  stripSqlTerminator,
   summarizeStatement,
 } from '../../scriptRunner';
 
@@ -137,6 +138,62 @@ test('splitScript: casos de borda (sem terminador, / separador, linhas)', () => 
   assert.strictEqual(stmts[0].line, 3);
 });
 
+test('splitScript: diretivas SQL*Plus (PROMPT/SHOW ERRORS) são ignoradas', () => {
+  const sql = [
+    '-- header',
+    '-- @D:\\reposit\\x.sql',
+    "PROMPT Creating Function 'ABREVIAR_NOME_USUARIO'",
+    'CREATE OR REPLACE FUNCTION abreviar_nome_usuario(p IN VARCHAR2) RETURN VARCHAR2',
+    'IS',
+    '  v_nome VARCHAR2(100);',
+    'BEGIN',
+    '  v_nome := fwutl.x(p);',
+    '  RETURN v_nome;',
+    'END;',
+    '/',
+    'SHOW ERRORS FUNCTION abreviar_nome_usuario',
+  ].join('\n');
+  const stmts = splitScript(sql);
+  assert.strictEqual(stmts.length, 1);
+  assert.ok(stmts[0].text.includes('CREATE OR REPLACE FUNCTION abreviar_nome_usuario'));
+  assert.ok(stmts[0].text.includes('v_nome := fwutl.x(p);'));
+  assert.ok(!/PROMPT|SHOW ERRORS/.test(stmts[0].text));
+  assert.strictEqual(stmts[0].line, 4);
+});
+
+test('splitScript: SET/DEFINE/SPOOL no início são ignorados', () => {
+  const stmts = splitScript('SET DEFINE OFF\nSPOOL out.log\nSELECT 1;\nSPOOL OFF');
+  assert.strictEqual(stmts.length, 1);
+  assert.strictEqual(stmts[0].text, 'SELECT 1;');
+});
+
+test('splitScript: @ e ! são ignorados', () => {
+  assert.deepStrictEqual(
+    splitScript('@@a.sql').map((s) => s.text),
+    [],
+  );
+  assert.deepStrictEqual(
+    splitScript('@a.sql\nSELECT 1;').map((s) => s.text),
+    ['SELECT 1;'],
+  );
+});
+
+test('splitScript: só diretivas retorna []', () => {
+  assert.deepStrictEqual(splitScript('PROMPT hi\nSHOW ERRORS'), []);
+});
+
+test('splitScript: SET no meio de UPDATE não é diretiva', () => {
+  const stmts = splitScript('UPDATE t\nSET x = 1;');
+  assert.strictEqual(stmts.length, 1);
+  assert.strictEqual(stmts[0].text, 'UPDATE t\nSET x = 1;');
+});
+
+test('splitScript: diretiva dentro de literal não é ignorada', () => {
+  const stmts = splitScript("INSERT INTO t VALUES ('a\nSET b');");
+  assert.strictEqual(stmts.length, 1);
+  assert.ok(stmts[0].text.includes('SET b'));
+});
+
 test('splitScript: barra solta inicial é separador, não statement', () => {
   assert.deepStrictEqual(
     splitScript('/\nSELECT 1;').map((s) => s.text),
@@ -154,6 +211,19 @@ test('splitScript: aspas escapadas dentro de string não quebram o split', () =>
   const stmts = splitScript(`SELECT 'a''b' FROM t;`);
   assert.strictEqual(stmts.length, 1);
   assert.ok(stmts[0].text.includes(`'a''b'`));
+});
+
+test('splitScript: marca plsql (bloco) vs sql (statement)', () => {
+  const stmts = splitScript('BEGIN\n  NULL;\nEND;\n/\nSELECT 1;');
+  assert.strictEqual(stmts.length, 2);
+  assert.strictEqual(stmts[0].plsql, true);
+  assert.strictEqual(stmts[1].plsql, false);
+});
+
+test('stripSqlTerminator: remove o ; final (e espaços)', () => {
+  assert.strictEqual(stripSqlTerminator('SELECT 1;'), 'SELECT 1');
+  assert.strictEqual(stripSqlTerminator('SELECT 1 ;  '), 'SELECT 1');
+  assert.strictEqual(stripSqlTerminator('SELECT 1'), 'SELECT 1');
 });
 
 test('summarizeStatement: primeira linha truncada', () => {
@@ -220,6 +290,18 @@ test('executeScript: saída por statement com header, ok e rowsAffected', async 
   assert.match(lines[1], /^\[1\] ok \d+ms — SELECT 1; \(3 linhas afetadas\)$/);
   assert.match(lines[2], /^\[2\] ok \d+ms — SELECT 2; \(3 linhas afetadas\)$/);
   assert.ok(lines[3].startsWith('Concluído'));
+});
+
+test('executeScript: remove o ; final de SQL e mantém o de PL/SQL', async () => {
+  const db = fakeDb();
+  const { output } = collector();
+  await executeScript(() => Promise.resolve(db), {
+    connection: 'u/p@//h:1521/s',
+    statements: splitScript('CREATE TABLE t (id NUMBER);\nBEGIN\n  NULL;\nEND;\n/'),
+    output,
+  });
+  assert.strictEqual(db.calls[0], 'CREATE TABLE t (id NUMBER)');
+  assert.strictEqual(db.calls[1], 'BEGIN\n  NULL;\nEND;');
 });
 
 test('executeScript: stopOnError interrompe na primeira falha', async () => {

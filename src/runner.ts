@@ -2,10 +2,108 @@ import * as vscode from 'vscode';
 import { getExtensionLocale, readConfig, resolveConnection } from './config';
 import { t } from './i18n';
 import { executeRunOracle, type OracleRunOptions } from './oracleRunner';
-import type { TestStateManager } from './state';
+import type { LastRunState, TestStateManager } from './state';
+import type { ItemMeta } from './types';
 import { applySqlCoverage } from './viewCoverage';
 
 export { countResults, lastSegment, type RunResults } from './results';
+
+export interface RunTargets {
+  /** Test items folha (kind 'test') a executar, sem duplicatas. */
+  leafTests: vscode.TestItem[];
+  /** Paths para `ut_runner.run` (`PKG` para suites, `PKG.PROC` para testes). */
+  pathArgs: Set<string>;
+  /** Número de suites alcançadas (para o progresso). */
+  suiteCount: number;
+}
+
+/**
+ * Expande os itens selecionados em alvos de execução. Nós sem meta
+ * (`schema:`/`package:` no modo schema) são percorridos recursivamente até
+ * chegar em suites/testes. Essencial para Run All e run de Schema/Package —
+ * antes esses nós eram ignorados e a execução rodava sem filtro de path.
+ */
+export function collectRunTargets(
+  roots: Iterable<vscode.TestItem>,
+  state: TestStateManager,
+): RunTargets {
+  const leafTests: vscode.TestItem[] = [];
+  const seen = new Set<string>();
+  const pathArgs = new Set<string>();
+  let suiteCount = 0;
+
+  const visit = (item: vscode.TestItem, insideSuite: boolean): void => {
+    const m = state.getMeta(item);
+    if (m?.kind === 'test') {
+      if (!seen.has(item.id)) {
+        seen.add(item.id);
+        leafTests.push(item);
+      }
+      if (!insideSuite) pathArgs.add(`${m.packageName}.${m.procName}`);
+      return;
+    }
+    if (m?.kind === 'suite') {
+      suiteCount++;
+      pathArgs.add(m.packageName);
+      item.children.forEach((c) => {
+        visit(c, true);
+      });
+      return;
+    }
+    item.children.forEach((c) => {
+      visit(c, false);
+    });
+  };
+
+  for (const root of roots) visit(root, false);
+  return { leafTests, pathArgs, suiteCount };
+}
+
+/**
+ * Deriva o `lastRun` (para o smart re-run) a partir dos itens selecionados,
+ * descendo em nós sem meta. Um container (schema/package) com uma única suite
+ * vira `suite`; com várias vira `file`; nenhum alvo vira `all`.
+ */
+export function deriveLastRun(
+  roots: Iterable<vscode.TestItem>,
+  hasInclude: boolean,
+  coverage: boolean,
+  state: TestStateManager,
+): LastRunState {
+  if (!hasInclude) return { type: 'all', coverage };
+
+  const metas: ItemMeta[] = [];
+  const visit = (item: vscode.TestItem): void => {
+    const m = state.getMeta(item);
+    if (m) {
+      metas.push(m);
+      return;
+    }
+    item.children.forEach((c) => {
+      visit(c);
+    });
+  };
+  for (const root of roots) visit(root);
+
+  const tests = metas.filter((m) => m.kind === 'test');
+  const suites = metas.filter((m) => m.kind === 'suite');
+  if (tests.length === 1 && suites.length === 0) {
+    const t = tests[0];
+    return {
+      type: 'test',
+      uri: t.uri,
+      packageName: t.packageName,
+      procName: t.procName,
+      coverage,
+    };
+  }
+  if (suites.length === 1 && tests.length === 0) {
+    return { type: 'suite', uri: suites[0].uri, packageName: suites[0].packageName, coverage };
+  }
+  if (tests.length === 0 && suites.length === 0) return { type: 'all', coverage };
+  const first = suites[0] ?? tests[0];
+  return { type: 'file', uri: first.uri, coverage };
+}
 
 export async function executeRun(
   controller: vscode.TestController,
@@ -40,33 +138,7 @@ export async function executeRun(
 
   state.clearLastResults();
 
-  if (request.include) {
-    const items = [...request.include];
-    if (items.length === 1) {
-      const m = state.getMeta(items[0]);
-      if (m?.kind === 'test') {
-        state.setLastRun({
-          type: 'test',
-          uri: m.uri,
-          packageName: m.packageName,
-          procName: m.procName,
-          coverage,
-        });
-      } else {
-        state.setLastRun({ type: 'suite', uri: m?.uri, packageName: m?.packageName, coverage });
-      }
-    } else {
-      const m = state.getMeta(items[0]);
-      state.setLastRun({ type: 'file', uri: m?.uri, coverage });
-    }
-  } else {
-    state.setLastRun({ type: 'all', coverage });
-  }
-
   void vscode.commands.executeCommand('setContext', 'utplsql:running', true);
-
-  const leafTests: vscode.TestItem[] = [];
-  const pathArgs = new Set<string>();
 
   const included: vscode.TestItem[] = [];
   if (request.include) {
@@ -79,19 +151,15 @@ export async function executeRun(
     });
   }
 
-  for (const item of included) {
-    const m = state.getMeta(item);
-    if (!m) continue;
-    if (m.kind === 'suite') {
-      onSuiteStart?.();
-      pathArgs.add(m.packageName);
-      item.children.forEach((c) => {
-        leafTests.push(c);
-      });
-    } else {
-      pathArgs.add(`${m.packageName}.${m.procName}`);
-      leafTests.push(item);
-    }
+  const { leafTests, pathArgs, suiteCount } = collectRunTargets(included, state);
+  state.setLastRun(deriveLastRun(included, !!request.include, coverage, state));
+  for (let i = 0; i < suiteCount; i++) onSuiteStart?.();
+
+  if (leafTests.length === 0) {
+    run.appendOutput(`\r\n${t(locale, 'runner.noTests')}\r\n`);
+    run.end();
+    void vscode.commands.executeCommand('setContext', 'utplsql:running', false);
+    return;
   }
 
   for (const item of leafTests) {

@@ -1,5 +1,5 @@
 import * as vscode from 'vscode';
-import { readConfig, resolveConnectionNoPrompt } from './config';
+import { getExtensionLocale, readConfig, resolveConnectionNoPrompt } from './config';
 import { clearDbSourceCache } from './dbSourceProvider';
 import {
   discoverSchemaFromDb,
@@ -8,6 +8,7 @@ import {
   extractSchemaFromPath,
   type SuiteFile,
 } from './discovery';
+import { t } from './i18n';
 import type { TestStateManager } from './state';
 
 /**
@@ -67,6 +68,7 @@ export function buildSchemaTree(
   suites: SuiteFile[],
   schemaPattern: string,
 ): void {
+  const locale = getExtensionLocale();
   const bySchema = new Map<string, SuiteFile[]>();
 
   for (const suite of suites) {
@@ -90,7 +92,7 @@ export function buildSchemaTree(
     const firstSuite = schemaSuites[0];
     const schemaItem = controller.createTestItem(
       `schema:${schema}`,
-      `Schema: ${schema}`,
+      t(locale, 'testTree.schemaNode', { schema }),
       firstSuite.folder.uri,
     );
 
@@ -104,7 +106,7 @@ export function buildSchemaTree(
     for (const [pkg, pkgSuites] of byPackage) {
       const pkgItem = controller.createTestItem(
         `package:${schema}:${pkg}`,
-        `Package: ${pkg}`,
+        t(locale, 'testTree.packageNode', { package: pkg }),
         pkgSuites[0].uri,
       );
 
@@ -170,25 +172,30 @@ export function collectAllItems(
   return state.cachedItems;
 }
 
-async function mergeDbSuites(
+export async function mergeDbSuites(
   suites: SuiteFile[],
   folders: readonly vscode.WorkspaceFolder[],
   schemaPattern: string,
+  deps: MergeDbDeps = defaultMergeDbDeps,
 ): Promise<void> {
-  const connStr = resolveConnectionNoPrompt();
+  const connStr = deps.resolveConnection();
   if (!connStr) return;
 
   const schemas = new Set<string>();
   for (const suite of suites) {
-    const schema = extractSchemaFromPath(suite.uri.fsPath, suite.folder.uri.fsPath, schemaPattern);
+    const schema = deps.extractSchemaFromPath(
+      suite.uri.fsPath,
+      suite.folder.uri.fsPath,
+      schemaPattern,
+    );
     if (schema) schemas.add(schema);
   }
-  for (const schema of await discoverSchemasFromFolders(folders, schemaPattern)) {
+  for (const schema of await deps.discoverSchemasFromFolders(folders, schemaPattern)) {
     schemas.add(schema);
   }
 
   for (const schema of schemas) {
-    const dbSuites = await discoverSchemaFromDb(connStr, schema, folders);
+    const dbSuites = await deps.discoverSchemaFromDb(connStr, schema, folders);
     for (const dbSuite of dbSuites) {
       const exists = suites.some(
         (fs) => fs.packageName.toLowerCase() === dbSuite.packageName.toLowerCase(),
@@ -199,6 +206,32 @@ async function mergeDbSuites(
     }
   }
 }
+
+/** Dependências de `mergeDbSuites` (injetáveis nos testes). */
+export interface MergeDbDeps {
+  resolveConnection(): string | undefined;
+  extractSchemaFromPath(
+    filePath: string,
+    workspaceFsPath: string,
+    schemaPattern: string,
+  ): string | undefined;
+  discoverSchemasFromFolders(
+    folders: readonly vscode.WorkspaceFolder[],
+    schemaPattern: string,
+  ): Promise<string[]>;
+  discoverSchemaFromDb(
+    connStr: string,
+    schema: string,
+    folders: readonly vscode.WorkspaceFolder[],
+  ): Promise<SuiteFile[]>;
+}
+
+const defaultMergeDbDeps: MergeDbDeps = {
+  resolveConnection: resolveConnectionNoPrompt,
+  extractSchemaFromPath,
+  discoverSchemasFromFolders,
+  discoverSchemaFromDb,
+};
 
 /**
  * Cria o refresher da árvore de testes com coalescência de chamadas

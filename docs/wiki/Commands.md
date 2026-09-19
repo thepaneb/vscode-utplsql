@@ -29,7 +29,8 @@ prefixed with `utPLSQL:`.
 | `utPLSQL: New connection profile...` | Creates a new connection profile | — |
 | `utPLSQL: Manage connection profiles` | Opens saved connection profiles | — |
 | `utPLSQL: Import connections from SQL Developer` | Imports SQL Developer connections as profiles | — |
-| `utPLSQL: Debug test (PL/SQL)` | Starts debugging a test via DBMS_DEBUG (`utplsql` Debug Adapter) | — |
+| `utPLSQL: Debug test (PL/SQL)` | Starts debugging a test via DBMS_DEBUG (`utplsql` Debug Adapter) | Editor context menu (`.pks`/`.pkb`) |
+| `utPLSQL: Compile for Debug` | Compiles the selected file/folder object with debug information (`ALTER … COMPILE DEBUG PLSQL_OPTIMIZE_LEVEL = 1`) | Editor/Explorer context menu |
 | `utPLSQL: Run script` | Runs the script open in the editor against a profile (connection QuickPick) | Right-click → `.sql`/`.pks`/`.pkb`/`.fnc`/`.prc`/`.trg` file |
 | `utPLSQL: Run script file` | Runs an Explorer script file (decoded with the profile `charset`) | Right-click → file |
 | `utPLSQL: Run script folder` | Runs the folder scripts in alphabetical order (`utplsql.scriptRunner.filePattern` filter) | Right-click → folder |
@@ -47,6 +48,10 @@ Execution commands also appear in the context menu:
 - **Right-click on a folder** → runs the suites in all `.pks` files inside it
 - **Right-click on a file** `.sql`/`.pks`/`.pkb`/`.fnc`/`.prc`/`.trg` → runs the script against a connection profile (output in the "utPLSQL Script" OutputChannel)
 - **Right-click on a folder** → runs the folder scripts in alphabetical order
+
+> SQL*Plus client directives (`PROMPT`, `SHOW ERRORS`, `SET`, `SPOOL`, `@file`, …)
+> at the start of a statement are ignored (not sent to Oracle). `SET` is skipped
+> only when it starts a statement, so `UPDATE … SET …` keeps working.
 
 ![Context menu on a folder](images/context-menu-folder.png)
 

@@ -16,10 +16,10 @@ Liste o que a mudança afeta e cruze com a tabela abaixo. Só então edite.
 
 | Mudança | Docs a atualizar |
 |---|---|
-| Feature/comportamento | `docs/functional/`, `docs/wiki/` (+ `pt/`), README |
+| Feature/comportamento | `docs/functional/`, `docs/wiki/`, README |
 | Setting / comando / keybinding | README (tabela de config, Comandos, Keybindings), `package.json` (`contributes`), `package.nls.*.json` |
 | Nova string de UI | `package.nls.json` + `package.nls.<locale>.json` (23) |
-| Arquitetura / módulo | `docs/wiki/Architecture.md` (+ `pt/`), MOCs do vault |
+| Arquitetura / módulo | `docs/wiki/Architecture.md`, MOCs do vault |
 | PRD (criar/aprovar/implementar/concluir) | usar a skill **`prd-workflow`** |
 | Feature/versão (divulgação) | posts LinkedIn `docs/linkedin/` → skill **`linkedin-posts`** |
 | Correção relevante | `CHANGELOG.md` |
@@ -36,7 +36,6 @@ status = pasta, e os 4 artefatos (arquivo, pasta, `index.md`, label) andam junto
 Ao mudar PRD, rode `npm run sync-prds` (fecha/labela issues e já chama `brain:sync`).
 
 **Wiki** — `docs/wiki/` é publicado automaticamente pelo workflow `wiki.yml`.
-Mantenha `docs/wiki/pt/` em paridade com o inglês (é manual).
 
 **README e variantes de idioma** — `README.md` é a verdade. Se ele mudar, as 23
 variantes (`README.<locale>.md`) precisam da mesma alteração. Se não der para
@@ -56,7 +55,7 @@ O `brain:sync` é idempotente e nunca deve alterar conteúdo não-gerado. O vaul
 ## Passo 3 — verificação (obrigatória)
 
 - [ ] `npm run docs:check` → consistência versionada (README↔variantes, PRD↔index,
-      wiki en/pt). **Roda no CI.**
+      wiki). **Roda no CI.**
 - [ ] `npm run brain:check` → `OK: N notas, todos os links resolvem.` (exit 0)
 - [ ] `npm run brain:sync` → `OK: 0 arquivo(s) atualizado(s).` (idempotente)
 - [ ] PRD movido/renomeado? `index.md` tabela + Estrutura conferem com as pastas

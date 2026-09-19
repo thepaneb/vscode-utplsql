@@ -4,7 +4,7 @@ import { refreshCompilationDiagnostics } from '../compilationDiagnostics';
 import { getExtensionLocale } from '../config';
 import { t } from '../i18n';
 import { filterSuitesByFolder, filterSuitesByUri } from '../matching';
-import { executeRun } from '../runner';
+import { collectRunTargets, executeRun } from '../runner';
 import { collectAllItems } from '../testTree';
 import type { ItemMeta } from '../types';
 import type { CommandDeps } from './deps';
@@ -36,74 +36,82 @@ export function registerRunCommands(
     const cts = new vscode.CancellationTokenSource();
     currentRunToken = cts;
 
-    if (externalToken) {
-      externalToken.onCancellationRequested(() => {
-        try {
-          cts.cancel();
-        } catch {
-          /* */
-        }
-      });
-    }
+    const externalSub = externalToken?.onCancellationRequested(() => {
+      try {
+        cts.cancel();
+      } catch {
+        /* */
+      }
+    });
 
-    await vscode.window.withProgress(
-      {
-        location: vscode.ProgressLocation.Notification,
-        title: 'utPLSQL',
-        cancellable: true,
-      },
-      async (progress, token) => {
-        token.onCancellationRequested(() => {
+    try {
+      await vscode.window.withProgress(
+        {
+          location: vscode.ProgressLocation.Notification,
+          title: 'utPLSQL',
+          cancellable: true,
+        },
+        async (progress, token) => {
+          const progressSub = token.onCancellationRequested(() => {
+            try {
+              cts.cancel();
+            } catch {
+              /* */
+            }
+          });
+
           try {
-            cts.cancel();
-          } catch {
-            /* */
+            const items = request.include
+              ? [...request.include]
+              : (() => {
+                  const a: vscode.TestItem[] = [];
+                  controller.items.forEach((i) => {
+                    a.push(i);
+                  });
+                  return a;
+                })();
+            const total = collectRunTargets(items, state).suiteCount;
+
+            let done = 0;
+            const onSuiteStart = () => {
+              done++;
+              progress.report({ message: `${done}/${total}` });
+              deps.getStatusBar()?.showRunning(done, total);
+            };
+
+            const sb = deps.getStatusBar();
+            await executeRun(
+              controller,
+              request,
+              cts.token,
+              coverage,
+              state,
+              onSuiteStart,
+              sb
+                ? (passed, failed, skipped, errored, durationMs) =>
+                    sb.showResults(passed, failed, skipped, errored, durationMs)
+                : undefined,
+            );
+
+            // Diagnóstico de compilação PL/SQL pós-run (PRD-68 RF1).
+            await refreshCompilationDiagnostics(state).catch(() => {});
+
+            const dm = deps.getDecorationManager();
+            if (dm) {
+              dm.update(state.getLastResults(), (id) => state.getItem(id));
+            }
+
+            progress.report({ message: t(locale, 'ext.run.parsingResults') });
+          } finally {
+            progressSub.dispose();
           }
-        });
-
-        const items = request.include
-          ? [...request.include]
-          : (() => {
-              const a: vscode.TestItem[] = [];
-              controller.items.forEach((i) => {
-                a.push(i);
-              });
-              return a;
-            })();
-        const total = items.filter((i) => state.getMeta(i)?.kind === 'suite').length;
-
-        let done = 0;
-        const onSuiteStart = () => {
-          done++;
-          progress.report({ message: `${done}/${total}` });
-          deps.getStatusBar()?.showRunning(done, total);
-        };
-
-        const sb = deps.getStatusBar();
-        await executeRun(
-          controller,
-          request,
-          cts.token,
-          coverage,
-          state,
-          onSuiteStart,
-          sb
-            ? (passed, failed, skipped, errored, durationMs) =>
-                sb.showResults(passed, failed, skipped, errored, durationMs)
-            : undefined,
-        );
-
-        // Diagnóstico de compilação PL/SQL pós-run (PRD-68 RF1).
-        await refreshCompilationDiagnostics(state).catch(() => {});
-
-        const dm = deps.getDecorationManager();
-        if (dm) {
-          dm.update(state.getLastResults(), (id) => state.getItem(id));
-        }
-
-        progress.report({ message: 'Parseando resultados...' });
-      },
-    );
+        },
+      );
+    } finally {
+      externalSub?.dispose();
+      if (currentRunToken === cts) currentRunToken = undefined;
+      cts.dispose();
+    }
   };
 
   const runForUri = async (uri: vscode.Uri, coverage: boolean): Promise<void> => {

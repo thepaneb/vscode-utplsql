@@ -9,7 +9,7 @@ without waiting for the entire batch.
 
 ![Real-time streaming diagram](images/diagram-streaming.png)
 
-1. The extension opens **two Oracle connections** via `node-oracledb` (thin driver, no Instant Client).
+1. The extension opens **two Oracle connections** via `node-oracledb` (thin driver by default; optional thick driver for NNE — see below).
 2. **conn1** executes `ut_runner.run(a_paths => ..., a_reporters => ...)` — blocking.
 3. **conn2** polls the `UT_OUTPUT_BUFFER_TMP` table every 200ms.
 4. Documentation lines (text) are displayed in real time in the Output.
@@ -28,7 +28,12 @@ without waiting for the entire batch.
 ### node-oracledb
 
 The VSIX already includes `oracledb` **thin** (pure JavaScript, no Oracle Instant
-Client — the native binaries of the thick driver are pruned during packaging).
+Client). Databases that require **NNE (Native Network Encryption)** are not
+supported by the thin driver: set `utplsql.oracleClientMode` to `thick` and
+`utplsql.oracleClientLibDir` to a local Oracle Instant Client (the OCI glue is
+bundled; the Instant Client itself is provided by you), then reload the window.
+`utplsql.oracleClientConfigDir` optionally points to the `sqlnet.ora`/`tnsnames.ora`
+(TNS_ADMIN) directory.
 
 ### Connection Pooling (v0.10.0)
 
@@ -73,4 +78,5 @@ Coverage requires **both** `GRANT EXECUTE ON SYS.DBMS_PROFILER` and
 |---|---|
 | `ORA-00942: table does not exist` | Run the grants on the buffer tables (see above) |
 | Connection refused | Check format: `user/pass@//host:port/service` |
+| `ORA-12660` / `NJS-500` — connection drops | Database requires NNE; set `utplsql.oracleClientMode` to `thick` + `utplsql.oracleClientLibDir`, then reload the window |
 | Coverage not working | `GRANT EXECUTE ON DBMS_PROFILER` + `GRANT EXECUTE ON DBMS_PLSQL_CODE_COVERAGE` on the test schema |

@@ -96,3 +96,16 @@ test('validateUtplsqlInstall: oracledb sem default degrada sem diagnósticos', a
     process.env.UTPLSQL_CONN = origEnv;
   }
 });
+
+test('compileForDebug: oracledb sem default e sem conexão retorna falha', async () => {
+  const origEnv = process.env.UTPLSQL_CONN;
+  delete process.env.UTPLSQL_CONN;
+  try {
+    const { compileForDebug } = await import('../../compileForDebug.js');
+    const result = await compileForDebug([{ name: 'p', kinds: ['package'] }]);
+    assert.strictEqual(result.ok.length, 0);
+    assert.strictEqual(result.failed.length, 1);
+  } finally {
+    process.env.UTPLSQL_CONN = origEnv;
+  }
+});

@@ -3,6 +3,7 @@ import { getExtensionLocale, readConfig, type UtConfig } from './config';
 import { t } from './i18n';
 import { parseJUnit } from './junit';
 import { logger } from './logger';
+import { ensureOracleClient } from './oracleClient';
 import { applyCoverageFromXml, applyResultsFromCases, countResults } from './results';
 import type { TestStateManager } from './state';
 
@@ -44,6 +45,19 @@ export function parseConnString(connStr: string): {
   return { user, password, connectionString };
 }
 
+/**
+ * Usuário (login) da connection string, em maiúsculas, ou `undefined` se o
+ * formato for inválido. Tolera connection sem senha (`user@host/service`) —
+ * o que `connStr.split('/')[0]` não faz.
+ */
+export function connectionUser(connection: string): string | undefined {
+  try {
+    return parseConnString(connection).user.toUpperCase() || undefined;
+  } catch {
+    return undefined;
+  }
+}
+
 let currentPool: { pool: OraclePool; key: string } | undefined;
 
 export async function ensurePool(
@@ -52,6 +66,15 @@ export async function ensurePool(
   cfg: UtConfig,
 ): Promise<OraclePool> {
   const key = `${connection}|${cfg.oraclePoolMin}|${cfg.oraclePoolMax}|${cfg.oraclePoolIncrement}|${cfg.oraclePoolPingInterval}`;
+  const client = ensureOracleClient(
+    oracledb,
+    cfg.oracleClientMode,
+    cfg.oracleClientLibDir,
+    cfg.oracleClientConfigDir,
+  );
+  if (client.error) {
+    logger.warn('ensurePool: cliente Oracle thick não inicializou', { error: client.error });
+  }
   if (currentPool?.key === key) return currentPool.pool;
   await closeOraclePool();
   const parsed = parseConnString(connection);
@@ -120,16 +143,28 @@ export async function acquireRunnerConnections(
   const pool = await ensurePool(oracledb, connection, cfg).catch(() => undefined);
   if (pool) {
     const conn1 = await pool.getConnection();
-    const conn2 = await pool.getConnection();
+    let conn2: OracleConnection;
+    try {
+      conn2 = await pool.getConnection();
+    } catch (e) {
+      // Sem a 2ª conexão, devolve a 1ª ao pool em vez de vazá-la.
+      await conn1.close().catch(() => {});
+      throw e;
+    }
     conn1.callTimeout = 0;
     conn2.callTimeout = 0;
     return { conn1, conn2 };
   }
   const parsed = parseConnString(connection);
-  return {
-    conn1: await oracledb.getConnection(parsed),
-    conn2: await oracledb.getConnection(parsed),
-  };
+  const conn1 = await oracledb.getConnection(parsed);
+  let conn2: OracleConnection;
+  try {
+    conn2 = await oracledb.getConnection(parsed);
+  } catch (e) {
+    await conn1.close().catch(() => {});
+    throw e;
+  }
+  return { conn1, conn2 };
 }
 
 export async function discoverUtplsqlSchema(conn: {
@@ -457,6 +492,10 @@ export async function executeRunOracle(
       );
     }
 
+    // Validar reporter adicional evita que um nome inexistente aborte todo o
+    // `ut_runner.run` com ORA. Lista indisponível (best-effort) → não bloqueia.
+    const knownReporters = extraReporters.length > 0 ? await listReportersOracle(conn1) : [];
+
     for (const r of extraReporters) {
       const normalized = r.toLowerCase().replace(/\(\)$/, '');
       // Só aceita identificadores PL/SQL simples: o nome vem de settings (que
@@ -472,9 +511,18 @@ export async function executeRunOracle(
       ) {
         continue;
       }
-      if (!runners.some((existing) => existing.startsWith(normalized))) {
-        runners.push(`${normalized}()`);
+      if (runners.some((existing) => existing.startsWith(normalized))) continue;
+      if (
+        knownReporters.length > 0 &&
+        !knownReporters.some((k) => k.toLowerCase() === normalized)
+      ) {
+        logger.warn('reporter adicional inexistente ignorado', { reporter: r });
+        run.appendOutput(
+          `\r\n${t(getExtensionLocale(), 'runner.reporterUnknown', { name: r })}\r\n`,
+        );
+        continue;
       }
+      runners.push(`${normalized}()`);
     }
 
     const pathsList =

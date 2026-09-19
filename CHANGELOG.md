@@ -1,5 +1,160 @@
 # Changelog
 
+## 0.12.1
+
+- **Debugger — DBMS_DEBUG real (PRD-71)**: o cliente usava assinaturas
+  inexistentes (`DEBUG_ON()` como função, `STEP_INTO/OVER/OUT`, `GET_VALUES`,
+  `ATTACH_SESSION(session_id=>,timeout=>)`), então o debug não funcionava contra
+  Oracle real. Reescrito para a API documentada: `INITIALIZE` + `DEBUG_ON`;
+  `ATTACH_SESSION(debug_session_id, diagnostics)`; `SET_BREAKPOINT` com
+  `program_info`; stepping via `CONTINUE` com `breakflags`; variáveis via
+  `GET_VALUE` (nomes conhecidos). Breakpoints passam a ser aplicados após o
+  entry (o DBMS_DEBUG ignora "deferred"). Validado por um teste de integração
+  que executa breakpoint → stop → frame → variável nas 4 versões da matriz.
+- **Debugger — breakpoints no gutter e Run and Debug**: não era possível criar
+  breakpoints em `.pks/.pkb/.prc/.fnc/.trg` (o VSCode desabilita o gutter em
+  arquivos sem *language id*, salvo com `debug.allowBreakpointsEverywhere`), e o
+  Run and Debug não mostrava nenhuma configuração. Adicionados
+  `contributes.languages` (`plsql`) + `contributes.breakpoints`, o
+  `initialConfigurations` do debugger `utplsql` (config padrão ao criar um
+  `launch.json`) e o comando `utPLSQL: Debug test (PL/SQL)` no menu de contexto
+  do editor.
+- **Debugger — namespace e linha dos breakpoints**: o `SET_BREAKPOINT` usava
+  sempre `namespace_pkg_body` e o nome da unidade em minúsculas, então
+  breakpoints em functions/procedures soltos (`.fnc`/`.prc`/`.sql`) nunca eram
+  criados (o correto é `namespace_pkgspec_or_toplevel`, e `program_info` exige o
+  nome do dicionário em maiúsculas). Agora o namespace é escolhido pela extensão
+  (`.pkb`/`.pks` → `pkg_body`, `.fnc`/`.prc` → `toplevel`, `.trg` → `trigger`,
+  `.sql` tenta os três) e a linha do arquivo é alinhada à do objeto armazenado —
+  o Oracle descarta `CREATE OR REPLACE` e comentários antes da unidade, o que
+  deslocava arquivos com header comentado. A linha do frame volta convertida
+  para o arquivo (destaque correto no editor).
+- **Debugger — falha do teste e `synchronize` não travam mais a sessão**: se o
+  `ut_runner.run` falhasse (teste/schema inexistente, conexão errada), o erro
+  era engolido e o `synchronize` ficava bloqueado — o Debug Console mostrava
+  apenas "Sessão … anexada." e nada mais. Agora a falha do teste é reportada e
+  encerra a sessão, o `synchronize` tem timeout de 30s e o número de breakpoints
+  aplicados é logado.
+- **Debugger — para no entry e espera o usuário**: o `configurationDone` dava
+  `continue` automático, então a sessão aparecia como "em execução" (toolbar com
+  Pause) e não dava para inspecionar o entry. Agora o adapter só envia
+  `stopped(reason=entry)` depois do `configurationDone` (handshake do DAP) e
+  fica parado aguardando Continue/Step. O adapter também passa a responder
+  `threads`/`setExceptionBreakpoints`, sem os quais o VSCode não habilita a
+  toolbar de Continue/Step nem o Call Stack.
+- **Debugger — conexões dedicadas e breakpoints no código sob teste**: a sessão
+  usava o pool do runner; com o debuggee bloqueado no `ut_runner.run`, o pool
+  esgotava e o **Compile for Debug** falhava com `NJS-040 queueTimeout`. Agora a
+  sessão usa conexões dedicadas (fora do pool) e encerra com `break()` + timeout.
+  Documentado que breakpoints no package de teste (`test_*.pkb`) podem não parar
+  (o utPLSQL executa os testes por SQL dinâmico); breakpoints no **código sob
+  teste** (function/procedure/package de produção) são atingidos normalmente via
+  `ut_runner.run`.
+- **Debugger — abre o arquivo certo ao parar**: o `stackTrace` montava
+  `<unit>.pks`, então ao parar numa function definida em `.sql` o VSCode tentava
+  abrir um `.pks` inexistente. Agora usa o caminho do arquivo onde o breakpoint
+  foi definido.
+- **Debugger — “Invalid variable attributes” no painel Variables**: o response
+  `variables` devolvia `{ name, value, type }` sem `variablesReference`
+  (obrigatório no DAP; `0` = folha). Agora inclui `variablesReference: 0`.
+- **i18n — cobrança de cobertura e testes**: mensagens que estavam hardcoded
+  (Debug Console/erros do debugger, título da CodeAction e diagnóstico de thick
+  mode, labels `Schema`/`Package` do Test Explorer, mensagem de progresso)
+  passaram a usar `t()`; adicionadas as chaves correspondentes nos 24 catálogos.
+  O teste de paridade agora também valida **chaves extras** e **valores vazios**
+  nos catálogos e o alinhamento dos `package.nls.*.json`.
+- **Testes — cobertura e integração real**: novos testes unitários (`runTest`
+  que falha encerrando a sessão; `getRuntimeFrame` em erro; parser de declarações
+  com aspas escapadas; `viewCoverage` com symlink quebrado e pasta aninhada;
+  `debugger` com flush de breakpoints pendentes e teardown com `break` falhando;
+  CLI de `package-target`/`publish`; caminho sem conexão do `compileForDebug`;
+  validação do `matrix.env`/smoke/grants e sintaxe bash dos scripts da matriz) e
+  um teste de integração (`debuggerStandaloneFn`) que exercita o `DBMS_DEBUG`
+  numa **function standalone** — namespace `toplevel` + nome do dicionário em
+  maiúsculas —, cenário que o `debuggerE2E` (chamada direta de package) não
+  cobria. Incluído em `npm run test:integration:smoke`.
+- **Matriz de bancos — `run.sh` rodava só a 1ª versão**: o loop
+  `echo "$VERSIONS" | while read` tinha o **stdin consumido** pelo `vscode-test`,
+  encerrando a matriz após a primeira versão. As versões agora vão para um array
+  antes do loop, e a matriz completa (18xe/19ee/21xe/23free) roda numa passada.
+- **Integração — build limpo**: `pretest:integration*` agora roda `npm run clean`
+  antes de compilar, evitando executar `.test.js` órfãos (testes removidos ou
+  renomeados) que ficam em `out/` (o `tsc` não apaga saídas órfãs).
+- **Testes — compatibilidade Node 22/24**: o mock de "oracledb ausente"
+  (`oracledb-missing-catch`) usava um `Proxy`, cujo getter o Node 22 não
+  materializava via `namedExports` (o teste passava no 24 e falhava no 22);
+  trocado por um objeto com getter. O ciclo `launch` do `debugger.test` passou a
+  aguardar `initSession` de forma robusta, eliminando a corrida entre versões.
+  Suíte roda verde em Node 22 e 24.
+- **Compile for Debug — `PLSQL_OPTIMIZE_LEVEL = 1`**: o comando rodava apenas
+  `ALTER … COMPILE DEBUG`, que liga `PLSQL_DEBUG` mas mantém o nível de
+  otimização (default 2) — que pode remover/reordenar linhas e o breakpoint não
+  ser encontrado. Agora o comando fixa `PLSQL_OPTIMIZE_LEVEL = 1` no mesmo
+  `ALTER`, alinhado ao requisito documentado (`PLSQL_OPTIMIZE_LEVEL <= 1`).
+- **Script runner — `;` final em statements SQL**: o `;` (terminador do cliente)
+  era enviado ao servidor. O Oracle 23ai tolera via OCI, mas 19c/21c rejeitam
+  (`ORA-00933`/`ORA-00922`), então scripts SQL falhavam em bancos mais antigos.
+  O `;` agora é removido dos statements SQL; blocos PL/SQL (terminados por `/`)
+  mantêm o `;` do `END;`. Descoberto pela nova matriz de bancos.
+- **Matriz de bancos para testes de integração** (infra local): compose
+  paramétrico + bootstrap (utPLSQL, grants do README/debugger, schemas e
+  fixtures) para validar o projeto contra 18c/19c/21c/23ai, uma versão por vez
+  (`npm run db:matrix`). Volume persistente por versão (re-run em ~1–2 min;
+  `--clean` recria), modo `--smoke` (rápido) e `--thick`
+  (`npm run test:integration:thick`, com Oracle Instant Client).
+- **Schema-mode — execução por Schema/Package e Run All**: os nós `Schema:` e
+  `Package:` não eram expandidos. Rodar um deles (ou Run All no modo schema)
+  executava **toda** a suíte do banco sem aplicar resultados no Test Explorer.
+  A expansão agora desce a árvore `schema → package → suite → test` antes de
+  montar os paths e não chama o Oracle quando não há testes.
+- **Robustez de conexão**: owner do schema nos diagnósticos de compilação e no
+  debug passa a usar `parseConnString().user` (tolera connection sem senha,
+  ex.: perfil `user@host/service`); a 2ª conexão do runner devolve a 1ª ao pool
+  se falhar (sem vazar); listeners de cancelamento são descartados ao fim do run.
+- **Reporters adicionais**: nomes inexistentes em
+  `utplsql.additionalReporters` são ignorados com aviso em vez de abortar o
+  `ut_runner.run` com ORA.
+- **Descoberta de suites**: arquivos `.pks/.pkb` são decodificados no charset do
+  perfil ativo (`latin1`/`win1252`) em vez de forçar UTF-8.
+- **CI**: passa a rodar `npm run typecheck` e `npm run test:coverage` (enforça
+  os thresholds de cobertura do c8).
+- **Thick mode opcional (PRD-70)**: nova setting `utplsql.oracleClientMode`
+  (`thin` default | `thick`) para bancos que exigem **NNE** (Native Network
+  Encryption), não suportado pelo driver thin. Com `thick`, um Oracle Instant
+  Client local é carregado via `oracledb.initOracleClient` antes de qualquer
+  conexão (settings `utplsql.oracleClientLibDir` e
+  `utplsql.oracleClientConfigDir` / TNS_ADMIN). A inicialização é idempotente e
+  ocorre no `ensurePool` (`src/oracleClient.ts`); falhas viram diagnóstico no
+  Problems Panel (`UTPLSQL_THICK_MODE`) com quick-fix para as settings. Default
+  inalterado: sem a setting, permanece thin.
+- **Publicação por plataforma (PRD-70 Opção B)**: o `publish.yml` passa a
+  publicar um VSIX por alvo via matriz — `win32-x64`/`linux-x64`/`linux-arm64`/
+  `darwin-arm64` com apenas a glue do alvo (thick+thin) e `win32-arm64`/
+  `darwin-x64`/`linux-armhf`/`alpine-x64`/`alpine-arm64` como **fallback
+  thin-only** (sem binário nativo, roda bancos sem NNE). A publicação usa
+  `vsce publish --packagePath`, garantindo que o VSIX anexado à release é o
+  mesmo artefato publicado. O VSIX universal (4 glues, ~2,5 MB) fica para teste
+  local (`npm run package`).
+- **Script runner — diretivas SQL*Plus**: scripts com `PROMPT`, `SHOW ERRORS`,
+  `SET`, `SPOOL`, `@arquivo`/`!comando` no início de um statement não falham mais
+  com `ORA-00900`. `splitScript` ignora essas linhas (preservando a numeração)
+  quando o buffer só tem brancos/comentários, sem afetar usos legítimos como
+  `UPDATE … SET …`.
+- **Compilar para debug (PRD-73)**: novo comando
+  `utPLSQL: Compile for Debug` (`utplsql.compileForDebug`) na paleta e nos menus
+  de contexto do editor e do Explorer (arquivo/pasta). Deriva o objeto do arquivo
+  (`.pks`/`.pkb` → package, `.fnc`/`.prc`/`.trg` → função/procedure/trigger;
+  `.sql` tenta em ordem) e executa `ALTER … COMPILE DEBUG` reusando o pool do
+  runner. Setting `utplsql.debugger.compileOnDebug` (default `false`) compila o
+  pacote antes de iniciar a sessão de debug.
+- **Debugger — contribution point**: o bloco `debuggers` estava no topo do
+  `package.json` em vez de dentro de `contributes`, então o VSCode não registrava
+  o tipo de debug `utplsql` no manifesto. Movido para `contributes.debuggers`.
+- **Documentação**: `docs/wiki` ganha páginas dedicadas para Test Explorer,
+  Debugger, Connection Profiles, SQL Scripts, i18n e Editor Integration;
+  `docs/functional` ganha a especificação do debugger (11) e é alinhado ao código
+  atual (thick mode, diagnostics, tree/profiles/scripts).
+
 ## 0.12.0
 
 - **Cobertura PL/SQL**: corrige os gutters ausentes em `package`/`package body`,

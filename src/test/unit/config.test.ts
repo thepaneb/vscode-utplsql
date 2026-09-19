@@ -24,6 +24,11 @@ test('readConfig: sqlCoverageEnabled default e false', () => {
   assert.strictEqual(cfg.sqlCoverageEnabled, false);
 });
 
+test('readConfig: debuggerCompileOnDebug default e false', () => {
+  const cfg = readConfig();
+  assert.strictEqual(cfg.debuggerCompileOnDebug, false);
+});
+
 test('readConfig: scriptRunner defaults', () => {
   const cfg = readConfig();
   assert.strictEqual(cfg.scriptRunnerStopOnError, true);

@@ -417,6 +417,52 @@ test('applySqlCoverage: createPool falha cai para getConnection raw', async () =
   }
 });
 
+test('applySqlCoverage: erro inesperado no processamento é silenciado', async () => {
+  const base = fs.mkdtempSync(path.join(os.tmpdir(), 'vsql-boom-'));
+  try {
+    const viewsDir = path.join(base, 'install', 'views');
+    fs.mkdirSync(viewsDir, { recursive: true });
+    fs.writeFileSync(path.join(viewsDir, 'vw_a.sql'), 'CREATE VIEW vw_a AS\nSELECT 1\n');
+    const conn = {
+      callTimeout: 0,
+      execute: async () => ({ rows: [['SELECT * FROM vw_a']] }),
+      close: async () => {},
+    };
+    const fakeOracledb = {
+      OUT_FORMAT_OBJECT: {},
+      createPool: async () => ({ getConnection: async () => conn, close: async () => {} }),
+      getConnection: async () => conn,
+    };
+    const run = makeRun() as never;
+    const state = {
+      setCoverage: () => {
+        throw new Error('boom');
+      },
+      clearCoverage: () => {},
+    } as never;
+    const folders = [{ uri: { fsPath: base }, name: 'r', index: 0 }];
+    try {
+      await assert.doesNotReject(() =>
+        applySqlCoverage(
+          {
+            connection: 'u/p@//h:1521/s',
+            root: base,
+            sourcePath: 'install',
+            run,
+            state,
+            folders: folders as never,
+          },
+          async () => fakeOracledb as never,
+        ),
+      );
+    } finally {
+      await closeOraclePool();
+    }
+  } finally {
+    fs.rmSync(base, { recursive: true, force: true });
+  }
+});
+
 test('applySqlCoverage: view não executada ganha hits 0', async () => {
   const base = fs.mkdtempSync(path.join(os.tmpdir(), 'vsql-hits0-'));
   try {
@@ -456,5 +502,70 @@ test('applySqlCoverage: view não executada ganha hits 0', async () => {
     assert.strictEqual(cov.length, 2);
   } finally {
     fs.rmSync(base, { recursive: true, force: true });
+  }
+});
+
+test('discoverViewFiles: ignora entrada com stat inacessível (symlink quebrado)', () => {
+  const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'vsql-bad-'));
+  try {
+    const views = path.join(dir, 'install', 'views');
+    fs.mkdirSync(views, { recursive: true });
+    fs.writeFileSync(path.join(views, 'vw_ok.sql'), 'SELECT 1\n');
+    try {
+      fs.symlinkSync(path.join(views, 'nao-existe.sql'), path.join(views, 'quebrado.sql'));
+    } catch {
+      return; // sem permissão para symlink (ex.: Windows): não falha o teste
+    }
+    const files = discoverViewFiles(dir, 'install');
+    assert.ok(files.some((f) => f.endsWith('vw_ok.sql')));
+    assert.ok(!files.some((f) => f.endsWith('quebrado.sql')));
+  } finally {
+    fs.rmSync(dir, { recursive: true, force: true });
+  }
+});
+
+test('applySqlCoverage: pasta aninhada que contém a view entra no filtro (ramo else)', async () => {
+  const outer = fs.mkdtempSync(path.join(os.tmpdir(), 'vsql-nest-'));
+  try {
+    const viewsDir = path.join(outer, 'install', 'views');
+    fs.mkdirSync(viewsDir, { recursive: true });
+    fs.writeFileSync(path.join(viewsDir, 'vw_a.sql'), 'CREATE VIEW vw_a AS\nSELECT 1\n');
+    const conn = {
+      callTimeout: 0,
+      execute: async () => ({ rows: [['SELECT * FROM vw_a']] }),
+      close: async () => {},
+    };
+    const fakeOracledb = {
+      OUT_FORMAT_OBJECT: {},
+      createPool: async () => ({
+        getConnection: async () => conn,
+        close: async () => {},
+      }),
+      getConnection: async () => conn,
+    };
+    const run = makeRun() as never;
+    const state = { setCoverage: () => {}, clearCoverage: () => {} } as never;
+    const folders = [
+      { uri: { fsPath: outer }, name: 'outer', index: 0 },
+      { uri: { fsPath: path.join(outer, 'install') }, name: 'inner', index: 1 },
+    ];
+    try {
+      await applySqlCoverage(
+        {
+          connection: 'UT3/pass@//localhost:1521/freepdb1',
+          root: outer,
+          sourcePath: 'install',
+          run,
+          state,
+          folders: folders as never,
+        },
+        async () => fakeOracledb as never,
+      );
+    } finally {
+      await closeOraclePool();
+    }
+    assert.ok((run as unknown as { coverageList: unknown[] }).coverageList.length >= 1);
+  } finally {
+    fs.rmSync(outer, { recursive: true, force: true });
   }
 });

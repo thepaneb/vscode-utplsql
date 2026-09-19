@@ -111,8 +111,23 @@ export namespace workspace {
       })),
     );
   }
-  export function registerTextDocumentContentProvider(_scheme: string, _provider: any) {
-    return { dispose: () => {} };
+  const _contentProviders: Record<string, any> = {};
+
+  export function registerTextDocumentContentProvider(scheme: string, provider: any) {
+    _contentProviders[scheme] = provider;
+    return {
+      dispose: () => {
+        delete _contentProviders[scheme];
+      },
+    };
+  }
+
+  export function __getTextDocumentContentProvider(scheme: string): any {
+    return _contentProviders[scheme];
+  }
+
+  export function __resetTextDocumentContentProviders(): void {
+    for (const key of Object.keys(_contentProviders)) delete _contentProviders[key];
   }
   export const fs = {
     readFile: (uri: any) => {
@@ -130,6 +145,12 @@ export namespace workspace {
         return Promise.reject(new Error(`mock: diretorio nao encontrado: ${path}`));
       }
       return Promise.resolve(entries.map(([name, type]) => [name, type] as [string, number]));
+    },
+    stat: (uri: any) => {
+      const path = uri.fsPath ?? uri;
+      if (_mockDirEntries[path]) return Promise.resolve({ type: 2 });
+      if (path in _mockFileContents) return Promise.resolve({ type: 1 });
+      return Promise.reject(new Error(`mock: stat nao encontrado: ${path}`));
     },
   };
   export let workspaceFolders:

@@ -30,11 +30,14 @@ For automatic diagnostics, run `utPLSQL: Validate Configuration`.
 **Symptom:** Tests fail with a compilation error, but the editor does not show
 squiggly underlines.
 
-**Cause:** Compilation diagnostics are **not active** in the current Oracle-only
-version — `utplsql.compilationDiagnostics.enabled` exists but has **no effect**.
+**Cause 1:** `utplsql.compilationDiagnostics.enabled` is `false` (default is `true`).
 
-**Solution:** Compile or run the tests and read the error in the run output.
-There is no automatic underline in the editor yet.
+**Cause 2:** Diagnostics are published **after a test run**, and only for packages
+discovered in the workspace (best-effort) — nothing appears before the first run.
+
+**Solution:** Enable `utplsql.compilationDiagnostics.enabled` and run the tests.
+Errors from `ALL_ERRORS` are then mapped to the suite files and shown as
+underlines in the editor and in the Problems Panel (source "utPLSQL Compilation").
 
 ---
 
@@ -225,6 +228,24 @@ Use `**` for any depth of subdirectories after the schema.
 > failure** works, and inline decorations work in schema mode too. They still
 > have no CodeLens — execution is from the tree. `UT_*` packages (utPLSQL
 > framework) are ignored.
+
+## Debugger doesn't stop at breakpoints
+
+The PL/SQL debugger uses `DBMS_DEBUG`, which requires:
+
+- the target package compiled **with debug information** — Oracle strips it at
+  `PLSQL_OPTIMIZE_LEVEL = 2` (the default). Compile with
+  `ALTER SESSION SET PLSQL_OPTIMIZE_LEVEL = 1` before creating the package, or
+  recompile with `ALTER PACKAGE <pkg> COMPILE DEBUG PLSQL_OPTIMIZE_LEVEL = 1`
+  (the **`utPLSQL: Compile for Debug`** command does both);
+- `GRANT DEBUG CONNECT SESSION` and `GRANT EXECUTE ON SYS.DBMS_DEBUG` — see
+  [Database requirements](Database-requirements);
+- breakpoints in the **test package** (`test_*.pkb`) may not hit — utPLSQL runs
+  tests through dynamic SQL, so set the breakpoints in the **code under test**
+  (production function/procedure/package) instead.
+
+Also make sure `utplsql.debugger.enabled` is on (default). Without debug info the
+breakpoints are **silently ignored** and the test runs to completion.
 
 ## Opt-in diagnostics (`UTPLSQL_DEBUG`)
 

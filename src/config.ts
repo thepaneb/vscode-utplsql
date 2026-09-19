@@ -16,6 +16,9 @@ export interface UtConfig {
   oraclePoolMax: number;
   oraclePoolIncrement: number;
   oraclePoolPingInterval: number;
+  oracleClientMode: 'thin' | 'thick';
+  oracleClientLibDir: string;
+  oracleClientConfigDir: string;
   codeLensEnabled: boolean;
   statusBarEnabled: boolean;
   decorationsEnabled: boolean;
@@ -28,6 +31,7 @@ export interface UtConfig {
   debuggerEnabled: boolean;
   debuggerStopOnException: boolean;
   debuggerTimeoutSeconds: number;
+  debuggerCompileOnDebug: boolean;
   scriptRunnerStopOnError: boolean;
   scriptRunnerAutoCommit: boolean;
   scriptRunnerFilePattern: string;
@@ -79,6 +83,9 @@ export function readConfig(): UtConfig {
     oraclePoolMax: c.get<number>('oraclePoolMax', 10),
     oraclePoolIncrement: c.get<number>('oraclePoolIncrement', 1),
     oraclePoolPingInterval: c.get<number>('oraclePoolPingInterval', 60),
+    oracleClientMode: c.get<'thin' | 'thick'>('oracleClientMode', 'thin'),
+    oracleClientLibDir: c.get<string>('oracleClientLibDir', ''),
+    oracleClientConfigDir: c.get<string>('oracleClientConfigDir', ''),
     codeLensEnabled: c.get<boolean>('codeLens.enabled', true),
     statusBarEnabled: c.get<boolean>('statusBar.enabled', true),
     decorationsEnabled: c.get<boolean>('decorations.enabled', true),
@@ -91,6 +98,7 @@ export function readConfig(): UtConfig {
     debuggerEnabled: c.get<boolean>('debugger.enabled', true),
     debuggerStopOnException: c.get<boolean>('debugger.stopOnException', true),
     debuggerTimeoutSeconds: c.get<number>('debugger.timeoutSeconds', 300),
+    debuggerCompileOnDebug: c.get<boolean>('debugger.compileOnDebug', false),
     scriptRunnerStopOnError: c.get<boolean>('scriptRunner.stopOnError', true),
     scriptRunnerAutoCommit: c.get<boolean>('scriptRunner.autoCommit', true),
     scriptRunnerFilePattern: c.get<string>(

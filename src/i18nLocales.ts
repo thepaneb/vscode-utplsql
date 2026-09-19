@@ -22,6 +22,10 @@ export const ptBr: Record<string, string> = {
     '{count} problema(s) de configuração encontrado(s). Veja o Problems Panel.',
   'ext.debug.disabled': 'Debug PL/SQL desabilitado (utplsql.debugger.enabled).',
   'ext.debug.openPks': 'Abra um arquivo .pks/.pkb para debugar.',
+  'ext.compileForDebug.ok': 'Compilado para debug: {name}',
+  'ext.compileForDebug.failed': 'Falha ao compilar para debug: {error}',
+  'ext.compileForDebug.none': 'Nenhum objeto PL/SQL para compilar para debug nesta seleção.',
+
   'ext.profile.none': 'Nenhum perfil de conexão salvo. Use "utPLSQL: Novo perfil de conexão...".',
   'ext.profile.active': 'Perfil ativo: {name}',
   'ext.profile.new.title': 'utPLSQL — Novo perfil',
@@ -55,7 +59,10 @@ export const ptBr: Record<string, string> = {
     '[aviso] Reporter UT_COVERAGE_COBERTURA_REPORTER não disponível no banco.\n' +
     'Cobertura desabilitada. Verifique se o pacote utPLSQL está atualizado.',
   'runner.extraReporter': '[info] Reporter adicional da sessão: {name}',
+  'runner.reporterUnknown':
+    '[aviso] Reporter adicional "{name}" não encontrado no banco; ignorado.',
   'runner.noResults': 'Sem relatório de resultados.',
+  'runner.noTests': 'Nenhum teste utPLSQL encontrado para executar.',
   'runner.noJunitResult': '[aviso] Nenhum resultado JUnit encontrado para "{id}".',
   'runner.noJunitResultPkg': ' packageName esperado: {package}',
   'runner.coverNoReport':
@@ -167,6 +174,20 @@ export const ptBr: Record<string, string> = {
   'debug.controlFail': 'Falha ao abrir a sessão de controle do DBMS_DEBUG.',
   'debug.attachFail':
     'Não foi possível anexar ao DBMS_DEBUG. Verifique os grants:\n  GRANT EXECUTE ON SYS.DBMS_DEBUG TO <schema>;\n  GRANT DEBUG CONNECT SESSION TO <schema>;',
+  'debug.pauseUnsupported': 'Pause não suportado pelo DBMS_DEBUG.',
+  'debug.commandUnsupported': 'Comando não suportado: {cmd}',
+  'debug.sessionAttached': 'Sessão {id} anexada.',
+  'debug.breakpointsApplied': '{count} breakpoint(s) aplicado(s); sessão pronta.',
+  'debug.stoppedAtEntry': 'Parado no entry — use Continue para ir ao breakpoint.',
+  'debug.sessionTimeout': 'Timeout da sessão de debug — encerrando.',
+  'debug.runTestFailed': 'Falha ao executar o teste: {error}',
+  'debug.syncTimeout':
+    'Timeout aguardando o debuggee iniciar (synchronize). Verifique se o teste existe e se a conexão/schema ativos são os corretos.',
+  'ext.run.parsingResults': 'Parseando resultados...',
+  'quickfix.thickInitFail': 'utPLSQL: falha ao inicializar o Oracle Client em modo thick. {error}',
+  'quickfix.openClientSettings': 'Abrir configurações do cliente Oracle',
+  'testTree.schemaNode': 'Schema: {schema}',
+  'testTree.packageNode': 'Package: {package}',
 };
 
 export const en: Record<string, string> = {
@@ -189,6 +210,10 @@ export const en: Record<string, string> = {
   'ext.validate.problems': '{count} setup problem(s) found. See the Problems Panel.',
   'ext.debug.disabled': 'PL/SQL debugging disabled (utplsql.debugger.enabled).',
   'ext.debug.openPks': 'Open a .pks/.pkb file to debug.',
+  'ext.compileForDebug.ok': 'Compiled for debug: {name}',
+  'ext.compileForDebug.failed': 'Failed to compile for debug: {error}',
+  'ext.compileForDebug.none': 'No PL/SQL object to compile for debug in this selection.',
+
   'ext.profile.none': 'No saved connection profile. Use "utPLSQL: New Connection Profile...".',
   'ext.profile.active': 'Active profile: {name}',
   'ext.profile.new.title': 'utPLSQL — New Profile',
@@ -222,7 +247,10 @@ export const en: Record<string, string> = {
     '[warning] UT_COVERAGE_COBERTURA_REPORTER not available in the database.\n' +
     'Coverage disabled. Check if the utPLSQL package is up to date.',
   'runner.extraReporter': '[info] Additional session reporter: {name}',
+  'runner.reporterUnknown':
+    '[warning] Additional reporter "{name}" not found in the database; ignored.',
   'runner.noResults': 'No results report.',
+  'runner.noTests': 'No utPLSQL tests found to run.',
   'runner.noJunitResult': '[warning] No JUnit result found for "{id}".',
   'runner.noJunitResultPkg': ' expected packageName: {package}',
   'runner.coverNoReport':
@@ -333,6 +361,21 @@ export const en: Record<string, string> = {
   'debug.controlFail': 'Failed to open the DBMS_DEBUG control session.',
   'debug.attachFail':
     'Could not attach to DBMS_DEBUG. Check the grants:\n  GRANT EXECUTE ON SYS.DBMS_DEBUG TO <schema>;\n  GRANT DEBUG CONNECT SESSION TO <schema>;',
+  'debug.pauseUnsupported': 'Pause is not supported by DBMS_DEBUG.',
+  'debug.commandUnsupported': 'Unsupported command: {cmd}',
+  'debug.sessionAttached': 'Session {id} attached.',
+  'debug.breakpointsApplied': '{count} breakpoint(s) applied; session ready.',
+  'debug.stoppedAtEntry': 'Stopped at entry — use Continue to reach the breakpoint.',
+  'debug.sessionTimeout': 'Debug session timed out — terminating.',
+  'debug.runTestFailed': 'Failed to run the test: {error}',
+  'debug.syncTimeout':
+    'Timed out waiting for the debuggee to start (synchronize). Check that the test exists and that the active connection/schema are correct.',
+  'ext.run.parsingResults': 'Parsing results...',
+  'quickfix.thickInitFail':
+    'utPLSQL: failed to initialize the Oracle Client in thick mode. {error}',
+  'quickfix.openClientSettings': 'Open Oracle Client settings',
+  'testTree.schemaNode': 'Schema: {schema}',
+  'testTree.packageNode': 'Package: {package}',
 };
 
 export const es: Record<string, string> = {
@@ -356,6 +399,11 @@ export const es: Record<string, string> = {
     '{count} problema(s) de configuración encontrados. Vea el panel de problemas.',
   'ext.debug.disabled': 'Debug de PL/SQL deshabilitado (utplsql.debugger.enabled).',
   'ext.debug.openPks': 'Abra un archivo .pks/.pkb para depurar.',
+  'ext.compileForDebug.ok': 'Compilado para depuración: {name}',
+  'ext.compileForDebug.failed': 'Error al compilar para depuración: {error}',
+  'ext.compileForDebug.none':
+    'Ningún objeto PL/SQL para compilar para depuración en esta selección.',
+
   'ext.profile.none':
     'No hay perfil de conexión guardado. Use "utPLSQL: Nuevo perfil de conexión...".',
   'ext.profile.active': 'Perfil activo: {name}',
@@ -390,7 +438,10 @@ export const es: Record<string, string> = {
     '[aviso] El reporter UT_COVERAGE_COBERTURA_REPORTER no está disponible en la base.\n' +
     'Cobertura deshabilitada. Verifique que el paquete utPLSQL esté actualizado.',
   'runner.extraReporter': '[info] Reporter adicional de la sesión: {name}',
+  'runner.reporterUnknown':
+    '[aviso] Reporter adicional "{name}" no encontrado en la base; ignorado.',
   'runner.noResults': 'Sin informe de resultados.',
+  'runner.noTests': 'No se encontraron pruebas utPLSQL para ejecutar.',
   'runner.noJunitResult': '[aviso] No se encontró un resultado JUnit para "{id}".',
   'runner.noJunitResultPkg': ' packageName esperado: {package}',
   'runner.coverNoReport':
@@ -502,6 +553,20 @@ export const es: Record<string, string> = {
   'debug.controlFail': 'No se pudo abrir la sesión de control de DBMS_DEBUG.',
   'debug.attachFail':
     'No se pudo adjuntar a DBMS_DEBUG. Verifique los grants:\n  GRANT EXECUTE ON SYS.DBMS_DEBUG TO <schema>;\n  GRANT DEBUG CONNECT SESSION TO <schema>;',
+  'debug.pauseUnsupported': 'Pause no soportado por DBMS_DEBUG.',
+  'debug.commandUnsupported': 'Comando no soportado: {cmd}',
+  'debug.sessionAttached': 'Sesión {id} adjuntada.',
+  'debug.breakpointsApplied': '{count} breakpoint(s) aplicado(s); sesión lista.',
+  'debug.stoppedAtEntry': 'Detenido en el entry — use Continue para llegar al breakpoint.',
+  'debug.sessionTimeout': 'Tiempo de espera de la sesión de depuración — finalizando.',
+  'debug.runTestFailed': 'Error al ejecutar el test: {error}',
+  'debug.syncTimeout':
+    'Se agotó el tiempo esperando a que el debuggee inicie (synchronize). Verifique que el test existe y que la conexión/esquema activos son correctos.',
+  'ext.run.parsingResults': 'Analizando resultados...',
+  'quickfix.thickInitFail': 'utPLSQL: error al inicializar el Oracle Client en modo thick. {error}',
+  'quickfix.openClientSettings': 'Abrir configuración del cliente Oracle',
+  'testTree.schemaNode': 'Esquema: {schema}',
+  'testTree.packageNode': 'Paquete: {package}',
 };
 
 export const zhCn: Record<string, string> = {
@@ -524,6 +589,10 @@ export const zhCn: Record<string, string> = {
   'ext.validate.problems': '发现 {count} 个配置问题。请查看问题面板。',
   'ext.debug.disabled': 'PL/SQL 调试已禁用（utplsql.debugger.enabled）。',
   'ext.debug.openPks': '请打开 .pks/.pkb 文件进行调试。',
+  'ext.compileForDebug.ok': '已为调试编译：{name}',
+  'ext.compileForDebug.failed': '编译以进行调试失败：{error}',
+  'ext.compileForDebug.none': '此选择中没有可编译以进行调试的 PL/SQL 对象。',
+
   'ext.profile.none': '没有已保存的连接配置。请使用 "utPLSQL: 新建连接配置..."。',
   'ext.profile.active': '当前配置：{name}',
   'ext.profile.new.title': 'utPLSQL — 新建配置',
@@ -554,7 +623,9 @@ export const zhCn: Record<string, string> = {
   'runner.reporterMissing':
     '[警告] 数据库中不可用 UT_COVERAGE_COBERTURA_REPORTER。\n覆盖率已禁用。请检查 utPLSQL 包是否最新。',
   'runner.extraReporter': '[信息] 会话附加 reporter：{name}',
+  'runner.reporterUnknown': '[警告] 数据库中未找到附加报告器 "{name}"；已忽略。',
   'runner.noResults': '没有结果报告。',
+  'runner.noTests': '未找到可运行的 utPLSQL 测试。',
   'runner.noJunitResult': '[警告] 未找到 "{id}" 的 JUnit 结果。',
   'runner.noJunitResultPkg': ' 期望的 packageName：{package}',
   'runner.coverNoReport':
@@ -661,6 +732,20 @@ export const zhCn: Record<string, string> = {
   'debug.controlFail': '无法打开 DBMS_DEBUG 控制会话。',
   'debug.attachFail':
     '无法附加到 DBMS_DEBUG。请检查授权：\n  GRANT EXECUTE ON SYS.DBMS_DEBUG TO <schema>;\n  GRANT DEBUG CONNECT SESSION TO <schema>;',
+  'debug.pauseUnsupported': 'DBMS_DEBUG 不支持暂停。',
+  'debug.commandUnsupported': '不支持的命令：{cmd}',
+  'debug.sessionAttached': '会话 {id} 已附加。',
+  'debug.breakpointsApplied': '已应用 {count} 个断点；会话就绪。',
+  'debug.stoppedAtEntry': '已在入口处暂停 — 使用“继续”到达断点。',
+  'debug.sessionTimeout': '调试会话超时 — 正在终止。',
+  'debug.runTestFailed': '执行测试失败：{error}',
+  'debug.syncTimeout':
+    '等待调试目标启动（synchronize）超时。请检查测试是否存在，以及活动连接/架构是否正确。',
+  'ext.run.parsingResults': '正在解析结果...',
+  'quickfix.thickInitFail': 'utPLSQL：在 thick 模式下初始化 Oracle Client 失败。{error}',
+  'quickfix.openClientSettings': '打开 Oracle Client 设置',
+  'testTree.schemaNode': '架构：{schema}',
+  'testTree.packageNode': '包：{package}',
 };
 
 export const ja: Record<string, string> = {
@@ -684,6 +769,11 @@ export const ja: Record<string, string> = {
   'ext.validate.problems': '設定の問題が {count} 件見つかりました。問題パネルを確認してください。',
   'ext.debug.disabled': 'PL/SQL デバッグは無効です（utplsql.debugger.enabled）。',
   'ext.debug.openPks': 'デバッグするには .pks/.pkb ファイルを開いてください。',
+  'ext.compileForDebug.ok': 'デバッグ用にコンパイルしました: {name}',
+  'ext.compileForDebug.failed': 'デバッグ用のコンパイルに失敗しました: {error}',
+  'ext.compileForDebug.none':
+    'この選択にデバッグ用にコンパイルする PL/SQL オブジェクトがありません。',
+
   'ext.profile.none':
     '保存された接続プロファイルがありません。「utPLSQL: 接続プロファイルを新規作成...」を使用してください。',
   'ext.profile.active': 'アクティブなプロファイル: {name}',
@@ -717,7 +807,10 @@ export const ja: Record<string, string> = {
   'runner.reporterMissing':
     '[警告] UT_COVERAGE_COBERTURA_REPORTER がデータベースで利用できません。\nカバレッジを無効にしました。utPLSQL パッケージが最新か確認してください。',
   'runner.extraReporter': '[情報] セッションの追加レポーター: {name}',
+  'runner.reporterUnknown':
+    '[警告] 追加レポーター "{name}" がデータベースに見つかりません。無視します。',
   'runner.noResults': '結果レポートがありません。',
+  'runner.noTests': '実行する utPLSQL テストが見つかりません。',
   'runner.noJunitResult': '[警告] 「{id}」の JUnit 結果が見つかりません。',
   'runner.noJunitResultPkg': ' 期待される packageName: {package}',
   'runner.coverNoReport':
@@ -831,6 +924,20 @@ export const ja: Record<string, string> = {
   'debug.controlFail': 'DBMS_DEBUG 制御セッションを開けませんでした。',
   'debug.attachFail':
     'DBMS_DEBUG にアタッチできませんでした。権限を確認してください：\n  GRANT EXECUTE ON SYS.DBMS_DEBUG TO <schema>;\n  GRANT DEBUG CONNECT SESSION TO <schema>;',
+  'debug.pauseUnsupported': 'DBMS_DEBUG は Pause をサポートしていません。',
+  'debug.commandUnsupported': 'サポートされていないコマンド: {cmd}',
+  'debug.sessionAttached': 'セッション {id} をアタッチしました。',
+  'debug.breakpointsApplied': '{count} 個のブレークポイントを適用しました。セッション準備完了。',
+  'debug.stoppedAtEntry': 'entry で停止しました — Continue でブレークポイントへ移動してください。',
+  'debug.sessionTimeout': 'デバッグセッションがタイムアウトしました — 終了します。',
+  'debug.runTestFailed': 'テストの実行に失敗しました: {error}',
+  'debug.syncTimeout':
+    'debuggee の開始 (synchronize) を待機中にタイムアウトしました。テストが存在することと、アクティブな接続/スキーマが正しいことを確認してください。',
+  'ext.run.parsingResults': '結果を解析中...',
+  'quickfix.thickInitFail': 'utPLSQL: thick モードで Oracle Client の初期化に失敗しました。{error}',
+  'quickfix.openClientSettings': 'Oracle Client 設定を開く',
+  'testTree.schemaNode': 'スキーマ: {schema}',
+  'testTree.packageNode': 'パッケージ: {package}',
 };
 
 export const de: Record<string, string> = {
@@ -854,6 +961,10 @@ export const de: Record<string, string> = {
   'ext.validate.problems': '{count} Einrichtungsproblem(e) gefunden. Siehe Problembereich.',
   'ext.debug.disabled': 'PL/SQL-Debugging deaktiviert (utplsql.debugger.enabled).',
   'ext.debug.openPks': 'Öffnen Sie eine .pks/.pkb-Datei zum Debuggen.',
+  'ext.compileForDebug.ok': 'Für Debug kompiliert: {name}',
+  'ext.compileForDebug.failed': 'Kompilierung für Debug fehlgeschlagen: {error}',
+  'ext.compileForDebug.none': 'Kein PL/SQL-Objekt zum Kompilieren für Debug in dieser Auswahl.',
+
   'ext.profile.none':
     'Kein gespeichertes Verbindungsprofil. Verwenden Sie „utPLSQL: Neues Verbindungsprofil...".',
   'ext.profile.active': 'Aktives Profil: {name}',
@@ -887,7 +998,10 @@ export const de: Record<string, string> = {
   'runner.reporterMissing':
     '[Warnung] UT_COVERAGE_COBERTURA_REPORTER ist in der Datenbank nicht verfügbar.\nCoverage deaktiviert. Prüfen Sie, ob das utPLSQL-Paket aktuell ist.',
   'runner.extraReporter': '[Info] Zusätzlicher Sitzungs-Reporter: {name}',
+  'runner.reporterUnknown':
+    '[Warnung] Zusätzlicher Reporter "{name}" nicht in der Datenbank gefunden; ignoriert.',
   'runner.noResults': 'Kein Ergebnisbericht.',
+  'runner.noTests': 'Keine utPLSQL-Tests zum Ausführen gefunden.',
   'runner.noJunitResult': '[Warnung] Kein JUnit-Ergebnis für „{id}" gefunden.',
   'runner.noJunitResultPkg': ' erwarteter packageName: {package}',
   'runner.coverNoReport':
@@ -999,6 +1113,21 @@ export const de: Record<string, string> = {
   'debug.controlFail': 'Steuersitzung von DBMS_DEBUG konnte nicht geöffnet werden.',
   'debug.attachFail':
     'An DBMS_DEBUG konnte nicht angehängt werden. Prüfen Sie die Grants:\n  GRANT EXECUTE ON SYS.DBMS_DEBUG TO <schema>;\n  GRANT DEBUG CONNECT SESSION TO <schema>;',
+  'debug.pauseUnsupported': 'Pause wird von DBMS_DEBUG nicht unterstützt.',
+  'debug.commandUnsupported': 'Nicht unterstützter Befehl: {cmd}',
+  'debug.sessionAttached': 'Sitzung {id} angehängt.',
+  'debug.breakpointsApplied': '{count} Breakpoint(s) gesetzt; Sitzung bereit.',
+  'debug.stoppedAtEntry': 'Am Entry angehalten — mit Continue zum Breakpoint.',
+  'debug.sessionTimeout': 'Debug-Sitzung hat das Zeitlimit überschritten — wird beendet.',
+  'debug.runTestFailed': 'Test konnte nicht ausgeführt werden: {error}',
+  'debug.syncTimeout':
+    'Zeitüberschreitung beim Warten auf den Start des Debuggee (synchronize). Prüfen Sie, ob der Test existiert und ob Verbindung/Schema korrekt sind.',
+  'ext.run.parsingResults': 'Ergebnisse werden analysiert...',
+  'quickfix.thickInitFail':
+    'utPLSQL: Oracle Client konnte im Thick-Modus nicht initialisiert werden. {error}',
+  'quickfix.openClientSettings': 'Oracle-Client-Einstellungen öffnen',
+  'testTree.schemaNode': 'Schema: {schema}',
+  'testTree.packageNode': 'Paket: {package}',
 };
 
 export const fr: Record<string, string> = {
@@ -1023,6 +1152,11 @@ export const fr: Record<string, string> = {
     '{count} problème(s) de configuration trouvé(s). Voir le panneau des problèmes.',
   'ext.debug.disabled': 'Débogage PL/SQL désactivé (utplsql.debugger.enabled).',
   'ext.debug.openPks': 'Ouvrez un fichier .pks/.pkb pour déboguer.',
+  'ext.compileForDebug.ok': 'Compilé pour le débogage : {name}',
+  'ext.compileForDebug.failed': 'Échec de la compilation pour le débogage : {error}',
+  'ext.compileForDebug.none':
+    'Aucun objet PL/SQL à compiler pour le débogage dans cette sélection.',
+
   'ext.profile.none':
     'Aucun profil de connexion enregistré. Utilisez « utPLSQL : Nouveau profil de connexion... ».',
   'ext.profile.active': 'Profil actif : {name}',
@@ -1056,7 +1190,10 @@ export const fr: Record<string, string> = {
   'runner.reporterMissing':
     '[avertissement] UT_COVERAGE_COBERTURA_REPORTER indisponible en base.\nCouverture désactivée. Vérifiez que le paquet utPLSQL est à jour.',
   'runner.extraReporter': '[info] Reporter supplémentaire de session : {name}',
+  'runner.reporterUnknown':
+    '[avertissement] Reporter supplémentaire "{name}" introuvable dans la base ; ignoré.',
   'runner.noResults': 'Aucun rapport de résultats.',
+  'runner.noTests': 'Aucun test utPLSQL à exécuter.',
   'runner.noJunitResult': '[avertissement] Aucun résultat JUnit trouvé pour « {id} ».',
   'runner.noJunitResultPkg': ' packageName attendu : {package}',
   'runner.coverNoReport':
@@ -1168,6 +1305,21 @@ export const fr: Record<string, string> = {
   'debug.controlFail': 'Échec d’ouverture de la session de contrôle DBMS_DEBUG.',
   'debug.attachFail':
     'Impossible de s’attacher à DBMS_DEBUG. Vérifiez les grants :\n  GRANT EXECUTE ON SYS.DBMS_DEBUG TO <schema>;\n  GRANT DEBUG CONNECT SESSION TO <schema>;',
+  'debug.pauseUnsupported': 'Pause n’est pas pris en charge par DBMS_DEBUG.',
+  'debug.commandUnsupported': 'Commande non prise en charge : {cmd}',
+  'debug.sessionAttached': 'Session {id} attachée.',
+  'debug.breakpointsApplied': '{count} point(s) d’arrêt appliqué(s) ; session prête.',
+  'debug.stoppedAtEntry': 'Arrêté à l’entry — utilisez Continue pour atteindre le point d’arrêt.',
+  'debug.sessionTimeout': 'Délai de la session de débogage dépassé — fermeture.',
+  'debug.runTestFailed': 'Échec de l’exécution du test : {error}',
+  'debug.syncTimeout':
+    'Délai dépassé en attendant le démarrage du debuggee (synchronize). Vérifiez que le test existe et que la connexion/schéma actifs sont corrects.',
+  'ext.run.parsingResults': 'Analyse des résultats...',
+  'quickfix.thickInitFail':
+    'utPLSQL : échec de l’initialisation de l’Oracle Client en mode thick. {error}',
+  'quickfix.openClientSettings': 'Ouvrir les paramètres du client Oracle',
+  'testTree.schemaNode': 'Schéma : {schema}',
+  'testTree.packageNode': 'Package : {package}',
 };
 
 export const zhTw: Record<string, string> = {
@@ -1190,6 +1342,10 @@ export const zhTw: Record<string, string> = {
   'ext.validate.problems': '發現 {count} 個設定問題。請查看問題面板。',
   'ext.debug.disabled': '已停用 PL/SQL 偵錯（utplsql.debugger.enabled）。',
   'ext.debug.openPks': '請開啟 .pks/.pkb 檔案進行偵錯。',
+  'ext.compileForDebug.ok': '已為偵錯編譯：{name}',
+  'ext.compileForDebug.failed': '編譯以供偵錯失敗：{error}',
+  'ext.compileForDebug.none': '此選取範圍中沒有可編譯以供偵錯的 PL/SQL 物件。',
+
   'ext.profile.none': '沒有已儲存的連線設定檔。請使用「utPLSQL: 新增連線設定檔...」。',
   'ext.profile.active': '使用中的設定檔：{name}',
   'ext.profile.new.title': 'utPLSQL — 新增設定檔',
@@ -1220,7 +1376,9 @@ export const zhTw: Record<string, string> = {
   'runner.reporterMissing':
     '[警告] 資料庫中沒有 UT_COVERAGE_COBERTURA_REPORTER。\n已停用涵蓋範圍。請檢查 utPLSQL 套件是否為最新版本。',
   'runner.extraReporter': '[資訊] 工作階段額外 reporter：{name}',
+  'runner.reporterUnknown': '[警告] 資料庫中未找到附加報告器 "{name}"；已忽略。',
   'runner.noResults': '沒有結果報告。',
+  'runner.noTests': '未找到可執行的 utPLSQL 測試。',
   'runner.noJunitResult': '[警告] 找不到「{id}」的 JUnit 結果。',
   'runner.noJunitResultPkg': ' 預期的 packageName：{package}',
   'runner.coverNoReport':
@@ -1327,6 +1485,20 @@ export const zhTw: Record<string, string> = {
   'debug.controlFail': '無法開啟 DBMS_DEBUG 控制工作階段。',
   'debug.attachFail':
     '無法附加至 DBMS_DEBUG。請檢查授權：\n  GRANT EXECUTE ON SYS.DBMS_DEBUG TO <schema>;\n  GRANT DEBUG CONNECT SESSION TO <schema>;',
+  'debug.pauseUnsupported': 'DBMS_DEBUG 不支援暫停。',
+  'debug.commandUnsupported': '不支援的指令：{cmd}',
+  'debug.sessionAttached': '工作階段 {id} 已附加。',
+  'debug.breakpointsApplied': '已套用 {count} 個中斷點；工作階段就緒。',
+  'debug.stoppedAtEntry': '已在入口暫停 — 使用「繼續」到達中斷點。',
+  'debug.sessionTimeout': '偵錯工作階段逾時 — 正在終止。',
+  'debug.runTestFailed': '執行測試失敗：{error}',
+  'debug.syncTimeout':
+    '等待偵錯目標啟動（synchronize）逾時。請檢查測試是否存在，以及使用中的連線/結構描述是否正確。',
+  'ext.run.parsingResults': '正在解析結果...',
+  'quickfix.thickInitFail': 'utPLSQL：在 thick 模式下初始化 Oracle Client 失敗。{error}',
+  'quickfix.openClientSettings': '開啟 Oracle Client 設定',
+  'testTree.schemaNode': '結構描述：{schema}',
+  'testTree.packageNode': '套件：{package}',
 };
 
 export const it: Record<string, string> = {
@@ -1351,6 +1523,11 @@ export const it: Record<string, string> = {
     '{count} problema/i di configurazione trovato/i. Vedere il pannello dei problemi.',
   'ext.debug.disabled': 'Debug PL/SQL disabilitato (utplsql.debugger.enabled).',
   'ext.debug.openPks': 'Aprire un file .pks/.pkb per il debug.',
+  'ext.compileForDebug.ok': 'Compilato per il debug: {name}',
+  'ext.compileForDebug.failed': 'Compilazione per il debug non riuscita: {error}',
+  'ext.compileForDebug.none':
+    'Nessun oggetto PL/SQL da compilare per il debug in questa selezione.',
+
   'ext.profile.none':
     'Nessun profilo di connessione salvato. Usare "utPLSQL: Nuovo profilo di connessione...".',
   'ext.profile.active': 'Profilo attivo: {name}',
@@ -1384,7 +1561,10 @@ export const it: Record<string, string> = {
   'runner.reporterMissing':
     '[avviso] UT_COVERAGE_COBERTURA_REPORTER non disponibile nel database.\nCopertura disabilitata. Verificare che il pacchetto utPLSQL sia aggiornato.',
   'runner.extraReporter': '[info] Reporter aggiuntivo di sessione: {name}',
+  'runner.reporterUnknown':
+    '[avviso] Reporter aggiuntivo "{name}" non trovato nel database; ignorato.',
   'runner.noResults': 'Nessun report dei risultati.',
+  'runner.noTests': 'Nessun test utPLSQL da eseguire.',
   'runner.noJunitResult': '[avviso] Nessun risultato JUnit trovato per "{id}".',
   'runner.noJunitResultPkg': ' packageName atteso: {package}',
   'runner.coverNoReport':
@@ -1496,6 +1676,21 @@ export const it: Record<string, string> = {
   'debug.controlFail': 'Apertura della sessione di controllo DBMS_DEBUG non riuscita.',
   'debug.attachFail':
     'Impossibile collegarsi a DBMS_DEBUG. Verificare i grant:\n  GRANT EXECUTE ON SYS.DBMS_DEBUG TO <schema>;\n  GRANT DEBUG CONNECT SESSION TO <schema>;',
+  'debug.pauseUnsupported': 'Pause non supportato da DBMS_DEBUG.',
+  'debug.commandUnsupported': 'Comando non supportato: {cmd}',
+  'debug.sessionAttached': 'Sessione {id} collegata.',
+  'debug.breakpointsApplied': '{count} breakpoint applicati; sessione pronta.',
+  'debug.stoppedAtEntry': 'Fermato all’entry — usa Continue per raggiungere il breakpoint.',
+  'debug.sessionTimeout': 'Timeout della sessione di debug — chiusura.',
+  'debug.runTestFailed': 'Esecuzione del test non riuscita: {error}',
+  'debug.syncTimeout':
+    'Timeout in attesa dell’avvio del debuggee (synchronize). Verifica che il test esista e che connessione/schema attivi siano corretti.',
+  'ext.run.parsingResults': 'Analisi dei risultati...',
+  'quickfix.thickInitFail':
+    'utPLSQL: inizializzazione dell’Oracle Client in modalità thick non riuscita. {error}',
+  'quickfix.openClientSettings': 'Apri impostazioni client Oracle',
+  'testTree.schemaNode': 'Schema: {schema}',
+  'testTree.packageNode': 'Package: {package}',
 };
 
 export const ko: Record<string, string> = {
@@ -1519,6 +1714,10 @@ export const ko: Record<string, string> = {
   'ext.validate.problems': '설정 문제 {count}개를 찾았습니다. 문제 패널을 확인하세요.',
   'ext.debug.disabled': 'PL/SQL 디버그가 비활성화되었습니다 (utplsql.debugger.enabled).',
   'ext.debug.openPks': '디버그하려면 .pks/.pkb 파일을 여세요.',
+  'ext.compileForDebug.ok': '디버그용으로 컴파일됨: {name}',
+  'ext.compileForDebug.failed': '디버그용 컴파일 실패: {error}',
+  'ext.compileForDebug.none': '이 선택 항목에 디버그용으로 컴파일할 PL/SQL 개체가 없습니다.',
+
   'ext.profile.none': '저장된 연결 프로필이 없습니다. "utPLSQL: 새 연결 프로필..."을 사용하세요.',
   'ext.profile.active': '활성 프로필: {name}',
   'ext.profile.new.title': 'utPLSQL — 새 프로필',
@@ -1551,7 +1750,10 @@ export const ko: Record<string, string> = {
   'runner.reporterMissing':
     '[경고] 데이터베이스에서 UT_COVERAGE_COBERTURA_REPORTER를 사용할 수 없습니다.\n커버리지가 비활성화되었습니다. utPLSQL 패키지가 최신인지 확인하세요.',
   'runner.extraReporter': '[정보] 세션 추가 reporter: {name}',
+  'runner.reporterUnknown':
+    '[경고] 데이터베이스에서 추가 리포터 "{name}"를 찾을 수 없습니다. 무시합니다.',
   'runner.noResults': '결과 보고서가 없습니다.',
+  'runner.noTests': '실행할 utPLSQL 테스트를 찾을 수 없습니다.',
   'runner.noJunitResult': '[경고] "{id}"의 JUnit 결과를 찾을 수 없습니다.',
   'runner.noJunitResultPkg': ' 예상 packageName: {package}',
   'runner.coverNoReport':
@@ -1662,6 +1864,20 @@ export const ko: Record<string, string> = {
   'debug.controlFail': 'DBMS_DEBUG 제어 세션을 열지 못했습니다.',
   'debug.attachFail':
     'DBMS_DEBUG에 연결할 수 없습니다. 권한을 확인하세요:\n  GRANT EXECUTE ON SYS.DBMS_DEBUG TO <schema>;\n  GRANT DEBUG CONNECT SESSION TO <schema>;',
+  'debug.pauseUnsupported': 'DBMS_DEBUG는 Pause를 지원하지 않습니다.',
+  'debug.commandUnsupported': '지원되지 않는 명령: {cmd}',
+  'debug.sessionAttached': '세션 {id}이(가) 연결되었습니다.',
+  'debug.breakpointsApplied': '브레이크포인트 {count}개가 적용되었습니다. 세션 준비 완료.',
+  'debug.stoppedAtEntry': 'entry에서 중지되었습니다 — Continue로 브레이크포인트로 이동하세요.',
+  'debug.sessionTimeout': '디버그 세션 시간이 초과되었습니다 — 종료합니다.',
+  'debug.runTestFailed': '테스트 실행 실패: {error}',
+  'debug.syncTimeout':
+    'debuggee 시작(synchronize)을 기다리는 동안 시간이 초과되었습니다. 테스트가 존재하는지, 활성 연결/스키마가 올바른지 확인하세요.',
+  'ext.run.parsingResults': '결과 분석 중...',
+  'quickfix.thickInitFail': 'utPLSQL: thick 모드에서 Oracle Client 초기화에 실패했습니다. {error}',
+  'quickfix.openClientSettings': 'Oracle Client 설정 열기',
+  'testTree.schemaNode': '스키마: {schema}',
+  'testTree.packageNode': '패키지: {package}',
 };
 
 export const ru: Record<string, string> = {
@@ -1685,6 +1901,10 @@ export const ru: Record<string, string> = {
   'ext.validate.problems': 'Найдено проблем настройки: {count}. См. панель проблем.',
   'ext.debug.disabled': 'Отладка PL/SQL отключена (utplsql.debugger.enabled).',
   'ext.debug.openPks': 'Откройте файл .pks/.pkb для отладки.',
+  'ext.compileForDebug.ok': 'Скомпилировано для отладки: {name}',
+  'ext.compileForDebug.failed': 'Не удалось скомпилировать для отладки: {error}',
+  'ext.compileForDebug.none': 'В этом выборе нет объектов PL/SQL для компиляции для отладки.',
+
   'ext.profile.none':
     'Сохраненных профилей подключения нет. Используйте «utPLSQL: Новый профиль подключения...».',
   'ext.profile.active': 'Активный профиль: {name}',
@@ -1717,7 +1937,10 @@ export const ru: Record<string, string> = {
   'runner.reporterMissing':
     '[предупреждение] UT_COVERAGE_COBERTURA_REPORTER недоступен в БД.\nПокрытие отключено. Проверьте актуальность пакета utPLSQL.',
   'runner.extraReporter': '[инфо] Дополнительный reporter сеанса: {name}',
+  'runner.reporterUnknown':
+    '[предупреждение] Дополнительный репортёр "{name}" не найден в базе; пропущен.',
   'runner.noResults': 'Нет отчёта о результатах.',
+  'runner.noTests': 'Не найдено тестов utPLSQL для запуска.',
   'runner.noJunitResult': '[предупреждение] Результат JUnit для «{id}» не найден.',
   'runner.noJunitResultPkg': ' ожидаемый packageName: {package}',
   'runner.coverNoReport':
@@ -1829,6 +2052,21 @@ export const ru: Record<string, string> = {
   'debug.controlFail': 'Не удалось открыть управляющий сеанс DBMS_DEBUG.',
   'debug.attachFail':
     'Не удалось подключиться к DBMS_DEBUG. Проверьте гранты:\n  GRANT EXECUTE ON SYS.DBMS_DEBUG TO <schema>;\n  GRANT DEBUG CONNECT SESSION TO <schema>;',
+  'debug.pauseUnsupported': 'Pause не поддерживается DBMS_DEBUG.',
+  'debug.commandUnsupported': 'Неподдерживаемая команда: {cmd}',
+  'debug.sessionAttached': 'Сессия {id} подключена.',
+  'debug.breakpointsApplied': 'Применено точек останова: {count}; сессия готова.',
+  'debug.stoppedAtEntry': 'Остановлено на entry — нажмите Continue, чтобы дойти до точки останова.',
+  'debug.sessionTimeout': 'Время сессии отладки истекло — завершение.',
+  'debug.runTestFailed': 'Не удалось выполнить тест: {error}',
+  'debug.syncTimeout':
+    'Истекло время ожидания запуска debuggee (synchronize). Проверьте, что тест существует и активные подключение/схема верны.',
+  'ext.run.parsingResults': 'Анализ результатов...',
+  'quickfix.thickInitFail':
+    'utPLSQL: не удалось инициализировать Oracle Client в режиме thick. {error}',
+  'quickfix.openClientSettings': 'Открыть настройки Oracle Client',
+  'testTree.schemaNode': 'Схема: {schema}',
+  'testTree.packageNode': 'Пакет: {package}',
 };
 
 export const tr: Record<string, string> = {
@@ -1852,6 +2090,10 @@ export const tr: Record<string, string> = {
   'ext.validate.problems': '{count} kurulum sorunu bulundu. Sorunlar paneline bakın.',
   'ext.debug.disabled': 'PL/SQL hata ayıklama devre dışı (utplsql.debugger.enabled).',
   'ext.debug.openPks': 'Hata ayıklamak için bir .pks/.pkb dosyası açın.',
+  'ext.compileForDebug.ok': 'Hata ayıklama için derlendi: {name}',
+  'ext.compileForDebug.failed': 'Hata ayıklama için derleme başarısız: {error}',
+  'ext.compileForDebug.none': 'Bu seçimde hata ayıklama için derlenecek PL/SQL nesnesi yok.',
+
   'ext.profile.none': 'Kayıtlı bağlantı profili yok. "utPLSQL: Yeni bağlantı profili..." kullanın.',
   'ext.profile.active': 'Etkin profil: {name}',
   'ext.profile.new.title': 'utPLSQL — Yeni profil',
@@ -1883,7 +2125,9 @@ export const tr: Record<string, string> = {
   'runner.reporterMissing':
     '[uyarı] UT_COVERAGE_COBERTURA_REPORTER veritabanında yok.\nKapsam devre dışı. utPLSQL paketinin güncel olduğunu doğrulayın.',
   'runner.extraReporter': "[bilgi] Oturum ek reporter'ı: {name}",
+  'runner.reporterUnknown': '[uyarı] Ek reporter "{name}" veritabanında bulunamadı; yok sayıldı.',
   'runner.noResults': 'Sonuç raporu yok.',
+  'runner.noTests': 'Çalıştırılacak utPLSQL testi bulunamadı.',
   'runner.noJunitResult': '[uyarı] "{id}" için JUnit sonucu bulunamadı.',
   'runner.noJunitResultPkg': ' beklenen packageName: {package}',
   'runner.coverNoReport':
@@ -1994,6 +2238,20 @@ export const tr: Record<string, string> = {
   'debug.controlFail': 'DBMS_DEBUG denetim oturumu açılamadı.',
   'debug.attachFail':
     'DBMS_DEBUG öğesine eklenemedi. Yetkileri denetleyin:\n  GRANT EXECUTE ON SYS.DBMS_DEBUG TO <schema>;\n  GRANT DEBUG CONNECT SESSION TO <schema>;',
+  'debug.pauseUnsupported': 'Pause DBMS_DEBUG tarafından desteklenmiyor.',
+  'debug.commandUnsupported': 'Desteklenmeyen komut: {cmd}',
+  'debug.sessionAttached': '{id} oturumu eklendi.',
+  'debug.breakpointsApplied': '{count} kesme noktası uygulandı; oturum hazır.',
+  'debug.stoppedAtEntry': 'entry noktasında durdu — kesme noktasına gitmek için Continue kullanın.',
+  'debug.sessionTimeout': 'Hata ayıklama oturumu zaman aşımına uğradı — sonlandırılıyor.',
+  'debug.runTestFailed': 'Test çalıştırılamadı: {error}',
+  'debug.syncTimeout':
+    'debuggee başlatılması (synchronize) beklenirken zaman aşımı. Testin var olduğunu ve etkin bağlantı/şemanın doğru olduğunu kontrol edin.',
+  'ext.run.parsingResults': 'Sonuçlar ayrıştırılıyor...',
+  'quickfix.thickInitFail': 'utPLSQL: Oracle Client thick modda başlatılamadı. {error}',
+  'quickfix.openClientSettings': 'Oracle Client ayarlarını aç',
+  'testTree.schemaNode': 'Şema: {schema}',
+  'testTree.packageNode': 'Paket: {package}',
 };
 
 export const pl: Record<string, string> = {
@@ -2017,6 +2275,10 @@ export const pl: Record<string, string> = {
   'ext.validate.problems': 'Znaleziono {count} problemów konfiguracji. Zobacz panel problemów.',
   'ext.debug.disabled': 'Debugowanie PL/SQL wyłączone (utplsql.debugger.enabled).',
   'ext.debug.openPks': 'Otwórz plik .pks/.pkb, aby debugować.',
+  'ext.compileForDebug.ok': 'Skompilowano do debugowania: {name}',
+  'ext.compileForDebug.failed': 'Nie udało się skompilować do debugowania: {error}',
+  'ext.compileForDebug.none': 'Brak obiektu PL/SQL do skompilowania do debugowania w tym wyborze.',
+
   'ext.profile.none':
     'Brak zapisanych profili połączeń. Użyj „utPLSQL: Nowy profil połączenia...”.',
   'ext.profile.active': 'Aktywny profil: {name}',
@@ -2050,7 +2312,10 @@ export const pl: Record<string, string> = {
   'runner.reporterMissing':
     '[ostrzeżenie] UT_COVERAGE_COBERTURA_REPORTER niedostępny w bazie.\nPokrycie wyłączone. Sprawdź, czy pakiet utPLSQL jest aktualny.',
   'runner.extraReporter': '[info] Dodatkowy reporter sesji: {name}',
+  'runner.reporterUnknown':
+    '[ostrzeżenie] Dodatkowy reporter "{name}" nie znaleziony w bazie; pominięto.',
   'runner.noResults': 'Brak raportu wyników.',
+  'runner.noTests': 'Nie znaleziono testów utPLSQL do uruchomienia.',
   'runner.noJunitResult': '[ostrzeżenie] Nie znaleziono wyniku JUnit dla „{id}”.',
   'runner.noJunitResultPkg': ' oczekiwany packageName: {package}',
   'runner.coverNoReport':
@@ -2162,6 +2427,21 @@ export const pl: Record<string, string> = {
   'debug.controlFail': 'Nie można otworzyć sesji kontrolnej DBMS_DEBUG.',
   'debug.attachFail':
     'Nie można dołączyć do DBMS_DEBUG. Sprawdź granty:\n  GRANT EXECUTE ON SYS.DBMS_DEBUG TO <schema>;\n  GRANT DEBUG CONNECT SESSION TO <schema>;',
+  'debug.pauseUnsupported': 'Pause nie jest obsługiwane przez DBMS_DEBUG.',
+  'debug.commandUnsupported': 'Nieobsługiwane polecenie: {cmd}',
+  'debug.sessionAttached': 'Dołączono sesję {id}.',
+  'debug.breakpointsApplied': 'Zastosowano {count} punktów przerwania; sesja gotowa.',
+  'debug.stoppedAtEntry': 'Zatrzymano na entry — użyj Continue, aby dojść do punktu przerwania.',
+  'debug.sessionTimeout': 'Przekroczono limit czasu sesji debugowania — zamykanie.',
+  'debug.runTestFailed': 'Nie udało się uruchomić testu: {error}',
+  'debug.syncTimeout':
+    'Przekroczono limit czasu oczekiwania na start debuggee (synchronize). Sprawdź, czy test istnieje i czy aktywne połączenie/schemat są poprawne.',
+  'ext.run.parsingResults': 'Analizowanie wyników...',
+  'quickfix.thickInitFail':
+    'utPLSQL: nie udało się zainicjować Oracle Client w trybie thick. {error}',
+  'quickfix.openClientSettings': 'Otwórz ustawienia klienta Oracle',
+  'testTree.schemaNode': 'Schemat: {schema}',
+  'testTree.packageNode': 'Pakiet: {package}',
 };
 
 export const cs: Record<string, string> = {
@@ -2185,6 +2465,10 @@ export const cs: Record<string, string> = {
   'ext.validate.problems': 'Nalezeno {count} problémů nastavení. Viz panel problémů.',
   'ext.debug.disabled': 'Ladění PL/SQL je zakázáno (utplsql.debugger.enabled).',
   'ext.debug.openPks': 'Pro ladění otevřete soubor .pks/.pkb.',
+  'ext.compileForDebug.ok': 'Zkompilováno pro ladění: {name}',
+  'ext.compileForDebug.failed': 'Kompilace pro ladění se nezdařila: {error}',
+  'ext.compileForDebug.none': 'V tomto výběru není žádný objekt PL/SQL ke kompilaci pro ladění.',
+
   'ext.profile.none':
     'Žádný uložený profil připojení. Použijte „utPLSQL: Nový profil připojení...“.',
   'ext.profile.active': 'Aktivní profil: {name}',
@@ -2218,7 +2502,10 @@ export const cs: Record<string, string> = {
   'runner.reporterMissing':
     '[varování] UT_COVERAGE_COBERTURA_REPORTER není v databázi k dispozici.\nPokrytí zakázáno. Ověřte aktuálnost balíčku utPLSQL.',
   'runner.extraReporter': '[info] Další reporter relace: {name}',
+  'runner.reporterUnknown':
+    '[varování] Doplňkový reporter "{name}" nebyl v databázi nalezen; přeskočeno.',
   'runner.noResults': 'Žádná zpráva o výsledcích.',
+  'runner.noTests': 'Nebyly nalezeny žádné testy utPLSQL ke spuštění.',
   'runner.noJunitResult': '[varování] Pro „{id}“ nebyl nalezen výsledek JUnit.',
   'runner.noJunitResultPkg': ' očekávaný packageName: {package}',
   'runner.coverNoReport':
@@ -2330,6 +2617,20 @@ export const cs: Record<string, string> = {
   'debug.controlFail': 'Nepodařilo se otevřít řídicí relaci DBMS_DEBUG.',
   'debug.attachFail':
     'Nepodařilo se připojit k DBMS_DEBUG. Zkontrolujte granty:\n  GRANT EXECUTE ON SYS.DBMS_DEBUG TO <schema>;\n  GRANT DEBUG CONNECT SESSION TO <schema>;',
+  'debug.pauseUnsupported': 'Pause není podporováno DBMS_DEBUG.',
+  'debug.commandUnsupported': 'Nepodporovaný příkaz: {cmd}',
+  'debug.sessionAttached': 'Relace {id} připojena.',
+  'debug.breakpointsApplied': 'Použito {count} zarážek; relace připravena.',
+  'debug.stoppedAtEntry': 'Zastaveno na entry — použijte Continue k dosažení zarážky.',
+  'debug.sessionTimeout': 'Časový limit ladicí relace vypršel — ukončuji.',
+  'debug.runTestFailed': 'Test se nepodařilo spustit: {error}',
+  'debug.syncTimeout':
+    'Vypršel časový limit čekání na spuštění debuggee (synchronize). Zkontrolujte, že test existuje a že aktivní připojení/schéma jsou správné.',
+  'ext.run.parsingResults': 'Analyzuji výsledky...',
+  'quickfix.thickInitFail': 'utPLSQL: inicializace Oracle Client v režimu thick selhala. {error}',
+  'quickfix.openClientSettings': 'Otevřít nastavení klienta Oracle',
+  'testTree.schemaNode': 'Schéma: {schema}',
+  'testTree.packageNode': 'Balíček: {package}',
 };
 
 export const hu: Record<string, string> = {
@@ -2353,6 +2654,11 @@ export const hu: Record<string, string> = {
   'ext.validate.problems': '{count} beállítási probléma található. Lásd a problémák panelt.',
   'ext.debug.disabled': 'PL/SQL hibakeresés letiltva (utplsql.debugger.enabled).',
   'ext.debug.openPks': 'Nyisson egy .pks/.pkb fájlt a hibakereséshez.',
+  'ext.compileForDebug.ok': 'Hibakereséshez lefordítva: {name}',
+  'ext.compileForDebug.failed': 'A hibakereséshez való fordítás sikertelen: {error}',
+  'ext.compileForDebug.none':
+    'Ebben a kijelölésben nincs hibakereséshez fordítható PL/SQL objektum.',
+
   'ext.profile.none':
     'Nincs mentett kapcsolati profil. Használja az „utPLSQL: Új kapcsolati profil...” parancsot.',
   'ext.profile.active': 'Aktív profil: {name}',
@@ -2386,7 +2692,10 @@ export const hu: Record<string, string> = {
   'runner.reporterMissing':
     '[figyelmeztetés] Az UT_COVERAGE_COBERTURA_REPORTER nem érhető el az adatbázisban.\nA lefedettség letiltva. Ellenőrizze, hogy az utPLSQL-csomag naprakész-e.',
   'runner.extraReporter': '[info] Munkamenet további riportere: {name}',
+  'runner.reporterUnknown':
+    '[figyelem] A(z) "{name}" kiegészítő reporter nem található az adatbázisban; kihagyva.',
   'runner.noResults': 'Nincs eredményjelentés.',
+  'runner.noTests': 'Nem található futtatható utPLSQL teszt.',
   'runner.noJunitResult': '[figyelmeztetés] Nem található JUnit-eredmény ehhez: „{id}”.',
   'runner.noJunitResultPkg': ' várt packageName: {package}',
   'runner.coverNoReport':
@@ -2499,6 +2808,21 @@ export const hu: Record<string, string> = {
   'debug.controlFail': 'Nem sikerült megnyitni a DBMS_DEBUG vezérlőmunkamenetet.',
   'debug.attachFail':
     'Nem sikerült csatlakozni a DBMS_DEBUG rendszerhez. Ellenőrizze a grantokat:\n  GRANT EXECUTE ON SYS.DBMS_DEBUG TO <schema>;\n  GRANT DEBUG CONNECT SESSION TO <schema>;',
+  'debug.pauseUnsupported': 'A Pause nem támogatott a DBMS_DEBUG-ban.',
+  'debug.commandUnsupported': 'Nem támogatott parancs: {cmd}',
+  'debug.sessionAttached': '{id} munkamenet csatolva.',
+  'debug.breakpointsApplied': '{count} töréspont alkalmazva; a munkamenet kész.',
+  'debug.stoppedAtEntry': 'Megállva az entry ponton — a Continue gombbal érsz el a töréspontig.',
+  'debug.sessionTimeout': 'A hibakeresési munkamenet túllépte az időkorlátot — leállítás.',
+  'debug.runTestFailed': 'A teszt futtatása sikertelen: {error}',
+  'debug.syncTimeout':
+    'Időtúllépés a debuggee indulására várva (synchronize). Ellenőrizd, hogy létezik-e a teszt, és hogy az aktív kapcsolat/séma megfelelő-e.',
+  'ext.run.parsingResults': 'Eredmények elemzése...',
+  'quickfix.thickInitFail':
+    'utPLSQL: az Oracle Client inicializálása thick módban sikertelen. {error}',
+  'quickfix.openClientSettings': 'Oracle Client beállítások megnyitása',
+  'testTree.schemaNode': 'Séma: {schema}',
+  'testTree.packageNode': 'Csomag: {package}',
 };
 
 export const enGb: Record<string, string> = { ...en };
@@ -2522,6 +2846,11 @@ export const bg: Record<string, string> = {
   'ext.validate.problems': 'Намерени са {count} проблема с настройката. Вижте панела с проблеми.',
   'ext.debug.disabled': 'Дебагването на PL/SQL е деактивирано (utplsql.debugger.enabled).',
   'ext.debug.openPks': 'Отворете .pks/.pkb файл за дебъгване.',
+  'ext.compileForDebug.ok': 'Компилирано за отстраняване на грешки: {name}',
+  'ext.compileForDebug.failed': 'Неуспешно компилиране за отстраняване на грешки: {error}',
+  'ext.compileForDebug.none':
+    'Няма PL/SQL обект за компилиране за отстраняване на грешки в тази селекция.',
+
   'ext.profile.none':
     'Няма запазен профил за връзка. Използвайте "utPLSQL: Нов профил за връзка...".',
   'ext.profile.active': 'Активен профил: {name}',
@@ -2554,7 +2883,10 @@ export const bg: Record<string, string> = {
   'runner.reporterMissing':
     '[предупреждение] UT_COVERAGE_COBERTURA_REPORTER не е наличен в базата.\nПокритието е деактивирано. Проверете дали utPLSQL пакетът е актуален.',
   'runner.extraReporter': '[инфо] Допълнителен reporter на сесията: {name}',
+  'runner.reporterUnknown':
+    '[предупреждение] Допълнителен reporter "{name}" не е намерен в базата; пропуснат.',
   'runner.noResults': 'Няма отчет за резултатите.',
+  'runner.noTests': 'Не са намерени utPLSQL тестове за изпълнение.',
   'runner.noJunitResult': '[предупреждение] Няма JUnit резултат за "{id}".',
   'runner.noJunitResultPkg': ' очакван packageName: {package}',
   'runner.coverNoReport':
@@ -2661,6 +2993,22 @@ export const bg: Record<string, string> = {
   'debug.controlFail': 'Неуспешно отваряне на контролната сесия на DBMS_DEBUG.',
   'debug.attachFail':
     'Неуспешно прикачване към DBMS_DEBUG. Проверете грантовете:\n  GRANT EXECUTE ON SYS.DBMS_DEBUG TO <schema>;\n  GRANT DEBUG CONNECT SESSION TO <schema>;',
+  'debug.pauseUnsupported': 'Pause не се поддържа от DBMS_DEBUG.',
+  'debug.commandUnsupported': 'Неподдържана команда: {cmd}',
+  'debug.sessionAttached': 'Сесия {id} е прикачена.',
+  'debug.breakpointsApplied': 'Приложени {count} точки на прекъсване; сесията е готова.',
+  'debug.stoppedAtEntry':
+    'Спряно на entry — използвайте Continue, за да стигнете до точката на прекъсване.',
+  'debug.sessionTimeout': 'Времето на сесията за отстраняване на грешки изтече — прекратяване.',
+  'debug.runTestFailed': 'Неуспешно изпълнение на теста: {error}',
+  'debug.syncTimeout':
+    'Изтече времето за изчакване на стартирането на debuggee (synchronize). Проверете дали тестът съществува и дали активната връзка/схема са правилни.',
+  'ext.run.parsingResults': 'Анализиране на резултатите...',
+  'quickfix.thickInitFail':
+    'utPLSQL: неуспешна инициализация на Oracle Client в thick режим. {error}',
+  'quickfix.openClientSettings': 'Отвори настройките на Oracle Client',
+  'testTree.schemaNode': 'Схема: {schema}',
+  'testTree.packageNode': 'Пакет: {package}',
 };
 
 export const el: Record<string, string> = {
@@ -2683,6 +3031,11 @@ export const el: Record<string, string> = {
   'ext.validate.problems': 'Βρέθηκαν {count} προβλήματα ρύθμισης. Δείτε τον πίνακα προβλημάτων.',
   'ext.debug.disabled': 'Η αποσφαλμάτωση PL/SQL είναι απενεργοποιημένη (utplsql.debugger.enabled).',
   'ext.debug.openPks': 'Ανοίξτε ένα .pks/.pkb αρχείο για αποσφαλμάτωση.',
+  'ext.compileForDebug.ok': 'Μεταγλωττίστηκε για αποσφαλμάτωση: {name}',
+  'ext.compileForDebug.failed': 'Αποτυχία μεταγλώττισης για αποσφαλμάτωση: {error}',
+  'ext.compileForDebug.none':
+    'Δεν υπάρχει αντικείμενο PL/SQL για μεταγλώττιση για αποσφαλμάτωση σε αυτή την επιλογή.',
+
   'ext.profile.none':
     'Δεν υπάρχει αποθηκευμένο προφίλ σύνδεσης. Χρησιμοποιήστε "utPLSQL: Νέο προφίλ σύνδεσης...".',
   'ext.profile.active': 'Ενεργό προφίλ: {name}',
@@ -2715,7 +3068,10 @@ export const el: Record<string, string> = {
   'runner.reporterMissing':
     '[προειδοποίηση] Το UT_COVERAGE_COBERTURA_REPORTER δεν είναι διαθέσιμο στη βάση.\nΗ κάλυψη απενεργοποιήθηκε. Ελέγξτε αν το πακέτο utPLSQL είναι ενημερωμένο.',
   'runner.extraReporter': '[info] Επιπλέον reporter συνεδρίας: {name}',
+  'runner.reporterUnknown':
+    '[προειδοποίηση] Ο πρόσθετος reporter "{name}" δεν βρέθηκε στη βάση· παραλείπεται.',
   'runner.noResults': 'Δεν υπάρχει αναφορά αποτελεσμάτων.',
+  'runner.noTests': 'Δεν βρέθηκαν δοκιμές utPLSQL για εκτέλεση.',
   'runner.noJunitResult': '[προειδοποίηση] Δεν βρέθηκε αποτέλεσμα JUnit για "{id}".',
   'runner.noJunitResultPkg': ' αναμενόμενο packageName: {package}',
   'runner.coverNoReport':
@@ -2822,6 +3178,22 @@ export const el: Record<string, string> = {
   'debug.controlFail': 'Αποτυχία ανοίγματος της συνεδρίας ελέγχου DBMS_DEBUG.',
   'debug.attachFail':
     'Αδυναμία προσάρτησης στο DBMS_DEBUG. Ελέγξτε τα grants:\n  GRANT EXECUTE ON SYS.DBMS_DEBUG TO <schema>;\n  GRANT DEBUG CONNECT SESSION TO <schema>;',
+  'debug.pauseUnsupported': 'Το Pause δεν υποστηρίζεται από το DBMS_DEBUG.',
+  'debug.commandUnsupported': 'Μη υποστηριζόμενη εντολή: {cmd}',
+  'debug.sessionAttached': 'Η συνεδρία {id} προσαρτήθηκε.',
+  'debug.breakpointsApplied': 'Εφαρμόστηκαν {count} σημεία διακοπής· η συνεδρία είναι έτοιμη.',
+  'debug.stoppedAtEntry':
+    'Σταμάτησε στο entry — χρησιμοποιήστε το Continue για να φτάσετε στο σημείο διακοπής.',
+  'debug.sessionTimeout': 'Το χρονικό όριο της συνεδρίας αποσφαλμάτωσης έληξε — τερματισμός.',
+  'debug.runTestFailed': 'Αποτυχία εκτέλεσης του test: {error}',
+  'debug.syncTimeout':
+    'Έληξε το χρονικό όριο αναμονής για την εκκίνηση του debuggee (synchronize). Ελέγξτε ότι το test υπάρχει και ότι η ενεργή σύνδεση/schema είναι σωστά.',
+  'ext.run.parsingResults': 'Ανάλυση αποτελεσμάτων...',
+  'quickfix.thickInitFail':
+    'utPLSQL: αποτυχία αρχικοποίησης του Oracle Client σε λειτουργία thick. {error}',
+  'quickfix.openClientSettings': 'Άνοιγμα ρυθμίσεων Oracle Client',
+  'testTree.schemaNode': 'Schema: {schema}',
+  'testTree.packageNode': 'Package: {package}',
 };
 
 export const id: Record<string, string> = {
@@ -2844,6 +3216,11 @@ export const id: Record<string, string> = {
   'ext.validate.problems': 'Ditemukan {count} masalah pengaturan. Lihat panel masalah.',
   'ext.debug.disabled': 'Debug PL/SQL dinonaktifkan (utplsql.debugger.enabled).',
   'ext.debug.openPks': 'Buka file .pks/.pkb untuk men-debug.',
+  'ext.compileForDebug.ok': 'Dikompilasi untuk debug: {name}',
+  'ext.compileForDebug.failed': 'Gagal mengompilasi untuk debug: {error}',
+  'ext.compileForDebug.none':
+    'Tidak ada objek PL/SQL untuk dikompilasi untuk debug dalam pilihan ini.',
+
   'ext.profile.none':
     'Tidak ada profil koneksi tersimpan. Gunakan "utPLSQL: Profil koneksi baru...".',
   'ext.profile.active': 'Profil aktif: {name}',
@@ -2876,7 +3253,10 @@ export const id: Record<string, string> = {
   'runner.reporterMissing':
     '[peringatan] UT_COVERAGE_COBERTURA_REPORTER tidak tersedia di database.\nCakupan dinonaktifkan. Periksa apakah paket utPLSQL sudah diperbarui.',
   'runner.extraReporter': '[info] Reporter tambahan sesi: {name}',
+  'runner.reporterUnknown':
+    '[peringatan] Reporter tambahan "{name}" tidak ditemukan di database; diabaikan.',
   'runner.noResults': 'Tidak ada laporan hasil.',
+  'runner.noTests': 'Tidak ada tes utPLSQL untuk dijalankan.',
   'runner.noJunitResult': '[peringatan] Tidak ada hasil JUnit untuk "{id}".',
   'runner.noJunitResultPkg': ' packageName yang diharapkan: {package}',
   'runner.coverNoReport':
@@ -2983,6 +3363,21 @@ export const id: Record<string, string> = {
   'debug.controlFail': 'Gagal membuka sesi kontrol DBMS_DEBUG.',
   'debug.attachFail':
     'Tidak dapat melampirkan ke DBMS_DEBUG. Periksa grants:\n  GRANT EXECUTE ON SYS.DBMS_DEBUG TO <schema>;\n  GRANT DEBUG CONNECT SESSION TO <schema>;',
+  'debug.pauseUnsupported': 'Pause tidak didukung oleh DBMS_DEBUG.',
+  'debug.commandUnsupported': 'Perintah tidak didukung: {cmd}',
+  'debug.sessionAttached': 'Sesi {id} dilampirkan.',
+  'debug.breakpointsApplied': '{count} breakpoint diterapkan; sesi siap.',
+  'debug.stoppedAtEntry': 'Berhenti di entry — gunakan Continue untuk mencapai breakpoint.',
+  'debug.sessionTimeout': 'Sesi debug timeout — mengakhiri.',
+  'debug.runTestFailed': 'Gagal menjalankan test: {error}',
+  'debug.syncTimeout':
+    'Timeout menunggu debuggee mulai (synchronize). Periksa apakah test ada dan koneksi/skema aktif sudah benar.',
+  'ext.run.parsingResults': 'Mengurai hasil...',
+  'quickfix.thickInitFail':
+    'utPLSQL: gagal menginisialisasi Oracle Client dalam mode thick. {error}',
+  'quickfix.openClientSettings': 'Buka pengaturan Oracle Client',
+  'testTree.schemaNode': 'Skema: {schema}',
+  'testTree.packageNode': 'Paket: {package}',
 };
 
 export const ro: Record<string, string> = {
@@ -3004,6 +3399,11 @@ export const ro: Record<string, string> = {
   'ext.validate.problems': 'S-au găsit {count} probleme de configurare. Vezi panoul de probleme.',
   'ext.debug.disabled': 'Debug PL/SQL dezactivat (utplsql.debugger.enabled).',
   'ext.debug.openPks': 'Deschideți un fișier .pks/.pkb pentru debug.',
+  'ext.compileForDebug.ok': 'Compilat pentru depanare: {name}',
+  'ext.compileForDebug.failed': 'Compilarea pentru depanare a eșuat: {error}',
+  'ext.compileForDebug.none':
+    'Niciun obiect PL/SQL de compilat pentru depanare în această selecție.',
+
   'ext.profile.none':
     'Nu există profil de conexiune salvat. Folosiți "utPLSQL: Profil de conexiune nou...".',
   'ext.profile.active': 'Profil activ: {name}',
@@ -3036,7 +3436,10 @@ export const ro: Record<string, string> = {
   'runner.reporterMissing':
     '[avertisment] UT_COVERAGE_COBERTURA_REPORTER indisponibil în baza de date.\nAcoperirea a fost dezactivată. Verificați dacă pachetul utPLSQL este actualizat.',
   'runner.extraReporter': '[info] Reporter suplimentar de sesiune: {name}',
+  'runner.reporterUnknown':
+    '[avertisment] Reporterul suplimentar "{name}" nu a fost găsit în baza de date; ignorat.',
   'runner.noResults': 'Fără raport de rezultate.',
+  'runner.noTests': 'Nu s-au găsit teste utPLSQL de executat.',
   'runner.noJunitResult': '[avertisment] Niciun rezultat JUnit pentru "{id}".',
   'runner.noJunitResultPkg': ' packageName așteptat: {package}',
   'runner.coverNoReport':
@@ -3142,6 +3545,21 @@ export const ro: Record<string, string> = {
   'debug.controlFail': 'Deschiderea sesiunii de control DBMS_DEBUG a eșuat.',
   'debug.attachFail':
     'Atașarea la DBMS_DEBUG a eșuat. Verificați granturile:\n  GRANT EXECUTE ON SYS.DBMS_DEBUG TO <schema>;\n  GRANT DEBUG CONNECT SESSION TO <schema>;',
+  'debug.pauseUnsupported': 'Pause nu este acceptat de DBMS_DEBUG.',
+  'debug.commandUnsupported': 'Comandă neacceptată: {cmd}',
+  'debug.sessionAttached': 'Sesiunea {id} a fost atașată.',
+  'debug.breakpointsApplied': '{count} punct(e) de întrerupere aplicate; sesiune pregătită.',
+  'debug.stoppedAtEntry':
+    'Oprit la entry — folosește Continue pentru a ajunge la punctul de întrerupere.',
+  'debug.sessionTimeout': 'Sesiunea de depanare a expirat — se închide.',
+  'debug.runTestFailed': 'Executarea testului a eșuat: {error}',
+  'debug.syncTimeout':
+    'Timp expirat așteptând pornirea debuggee (synchronize). Verifică dacă testul există și dacă conexiunea/schema activă sunt corecte.',
+  'ext.run.parsingResults': 'Se analizează rezultatele...',
+  'quickfix.thickInitFail': 'utPLSQL: inițializarea Oracle Client în modul thick a eșuat. {error}',
+  'quickfix.openClientSettings': 'Deschide setările clientului Oracle',
+  'testTree.schemaNode': 'Schemă: {schema}',
+  'testTree.packageNode': 'Pachet: {package}',
 };
 
 export const sr: Record<string, string> = {
@@ -3163,6 +3581,11 @@ export const sr: Record<string, string> = {
   'ext.validate.problems': 'Пронађено {count} проблема са подешавањем. Погледајте панел проблема.',
   'ext.debug.disabled': 'Дебаговање PL/SQL је онемогућено (utplsql.debugger.enabled).',
   'ext.debug.openPks': 'Отворите .pks/.pkb датотеку за дебаговање.',
+  'ext.compileForDebug.ok': 'Компилирано за отстрањивање грешака: {name}',
+  'ext.compileForDebug.failed': 'Компилација за отстрањивање грешака није успела: {error}',
+  'ext.compileForDebug.none':
+    'У овом избору нема PL/SQL објекта за компилацију за отстрањивање грешака.',
+
   'ext.profile.none':
     'Нема сачуваног профила за везу. Користите "utPLSQL: Нови профил за везу...".',
   'ext.profile.active': 'Активан профил: {name}',
@@ -3195,7 +3618,10 @@ export const sr: Record<string, string> = {
   'runner.reporterMissing':
     '[упозорење] UT_COVERAGE_COBERTURA_REPORTER није доступан у бази.\nПокриће је онемогућено. Проверите да ли је utPLSQL пакет ажуран.',
   'runner.extraReporter': '[инфо] Додатни reporter сесије: {name}',
+  'runner.reporterUnknown':
+    '[упозорење] Додатни reporter "{name}" није пронађен у бази; прескочено.',
   'runner.noResults': 'Нема извештаја о резултатима.',
+  'runner.noTests': 'Нема utPLSQL тестова за покретање.',
   'runner.noJunitResult': '[упозорење] Нема JUnit резултата за "{id}".',
   'runner.noJunitResultPkg': ' очекивани packageName: {package}',
   'runner.coverNoReport':
@@ -3301,6 +3727,21 @@ export const sr: Record<string, string> = {
   'debug.controlFail': 'Neuspešno otvaranje kontrolne sesije DBMS_DEBUG.',
   'debug.attachFail':
     'Neuspešno kačenje na DBMS_DEBUG. Proverite grantove:\n  GRANT EXECUTE ON SYS.DBMS_DEBUG TO <schema>;\n  GRANT DEBUG CONNECT SESSION TO <schema>;',
+  'debug.pauseUnsupported': 'Pause није подржано од стране DBMS_DEBUG.',
+  'debug.commandUnsupported': 'Неподржана команда: {cmd}',
+  'debug.sessionAttached': 'Сесија {id} је прикачена.',
+  'debug.breakpointsApplied': 'Примењено {count} тачака прекида; сесија је спремна.',
+  'debug.stoppedAtEntry': 'Заустављено на entry — користите Continue да стигнете до тачке прекида.',
+  'debug.sessionTimeout': 'Сесија за отклањање грешака је истекла — прекид.',
+  'debug.runTestFailed': 'Покретање теста није успело: {error}',
+  'debug.syncTimeout':
+    'Истекло време чекања да debuggee почне (synchronize). Проверите да ли тест постоји и да ли су активна веза/шема исправни.',
+  'ext.run.parsingResults': 'Анализирање резултата...',
+  'quickfix.thickInitFail':
+    'utPLSQL: иницијализација Oracle Client у thick режиму није успела. {error}',
+  'quickfix.openClientSettings': 'Отвори подешавања Oracle Client-а',
+  'testTree.schemaNode': 'Шема: {schema}',
+  'testTree.packageNode': 'Пакет: {package}',
 };
 
 export const th: Record<string, string> = {
@@ -3322,6 +3763,10 @@ export const th: Record<string, string> = {
   'ext.validate.problems': 'พบ {count} ปัญหาการตั้งค่า ดูแผงปัญหา',
   'ext.debug.disabled': 'ปิดการดีบัก PL/SQL แล้ว (utplsql.debugger.enabled)',
   'ext.debug.openPks': 'เปิดไฟล์ .pks/.pkb เพื่อดีบัก',
+  'ext.compileForDebug.ok': 'คอมไพล์สำหรับดีบักแล้ว: {name}',
+  'ext.compileForDebug.failed': 'คอมไพล์สำหรับดีบากล้มเหลว: {error}',
+  'ext.compileForDebug.none': 'ไม่พบออบเจ็กต์ PL/SQL ที่จะคอมไพล์สำหรับดีบักในส่วนที่เลือกนี้',
+
   'ext.profile.none': 'ไม่มีโปรไฟล์การเชื่อมต่อที่บันทึกไว้ ใช้ "utPLSQL: โปรไฟล์การเชื่อมต่อใหม่..."',
   'ext.profile.active': 'โปรไฟล์ที่ใช้งาน: {name}',
   'ext.profile.new.title': 'utPLSQL — โปรไฟล์ใหม่',
@@ -3351,7 +3796,9 @@ export const th: Record<string, string> = {
   'runner.reporterMissing':
     '[คำเตือน] ไม่มี UT_COVERAGE_COBERTURA_REPORTER ในฐานข้อมูล\nปิดความครอบคลุม ตรวจสอบว่าแพ็กเกจ utPLSQL เป็นเวอร์ชันล่าสุด',
   'runner.extraReporter': '[ข้อมูล] reporter เพิ่มเติมของเซสชัน: {name}',
+  'runner.reporterUnknown': '[คำเตือน] ไม่พบ reporter เพิ่มเติม "{name}" ในฐานข้อมูล; ข้าม',
   'runner.noResults': 'ไม่มีรายงานผลลัพธ์',
+  'runner.noTests': 'ไม่พบการทดสอบ utPLSQL ที่จะเรียกใช้',
   'runner.noJunitResult': '[คำเตือน] ไม่พบผลลัพธ์ JUnit สำหรับ "{id}"',
   'runner.noJunitResultPkg': ' packageName ที่คาดหวัง: {package}',
   'runner.coverNoReport':
@@ -3454,6 +3901,20 @@ export const th: Record<string, string> = {
   'debug.controlFail': 'ไม่สามารถเปิดเซสชันการควบคุม DBMS_DEBUG ได้',
   'debug.attachFail':
     'ไม่สามารถแนบกับ DBMS_DEBUG ได้ โปรดตรวจสอบ grants:\n  GRANT EXECUTE ON SYS.DBMS_DEBUG TO <schema>;\n  GRANT DEBUG CONNECT SESSION TO <schema>;',
+  'debug.pauseUnsupported': 'DBMS_DEBUG ไม่รองรับ Pause',
+  'debug.commandUnsupported': 'คำสั่งที่ไม่รองรับ: {cmd}',
+  'debug.sessionAttached': 'แนบเซสชัน {id} แล้ว',
+  'debug.breakpointsApplied': 'ใช้เบรกพอยต์แล้ว {count} จุด; เซสชันพร้อม',
+  'debug.stoppedAtEntry': 'หยุดที่ entry — ใช้ Continue เพื่อไปยังเบรกพอยต์',
+  'debug.sessionTimeout': 'เซสชันดีบักหมดเวลา — กำลังสิ้นสุด',
+  'debug.runTestFailed': 'เรียกใช้เทสต์ไม่สำเร็จ: {error}',
+  'debug.syncTimeout':
+    'หมดเวลารอให้ debuggee เริ่ม (synchronize) ตรวจสอบว่ามีเทสต์อยู่ และการเชื่อมต่อ/สคีมาที่ใช้งานถูกต้อง',
+  'ext.run.parsingResults': 'กำลังแยกวิเคราะห์ผลลัพธ์...',
+  'quickfix.thickInitFail': 'utPLSQL: เริ่มต้น Oracle Client ในโหมด thick ไม่สำเร็จ {error}',
+  'quickfix.openClientSettings': 'เปิดการตั้งค่า Oracle Client',
+  'testTree.schemaNode': 'สคีมา: {schema}',
+  'testTree.packageNode': 'แพ็กเกจ: {package}',
 };
 
 export const uk: Record<string, string> = {
@@ -3476,6 +3937,11 @@ export const uk: Record<string, string> = {
   'ext.validate.problems': 'Знайдено {count} проблем налаштування. Перегляньте панель проблем.',
   'ext.debug.disabled': 'Налагодження PL/SQL вимкнено (utplsql.debugger.enabled).',
   'ext.debug.openPks': 'Відкрийте файл .pks/.pkb для налагодження.',
+  'ext.compileForDebug.ok': 'Скомпільовано для налагодження: {name}',
+  'ext.compileForDebug.failed': 'Не вдалося скомпілювати для налагодження: {error}',
+  'ext.compileForDebug.none':
+    'У цьому виборі немає об’єкта PL/SQL для компіляції для налагодження.',
+
   'ext.profile.none':
     'Немає збереженого профілю з\'єднання. Використайте "utPLSQL: Новий профіль з\'єднання...".',
   'ext.profile.active': 'Активний профіль: {name}',
@@ -3508,7 +3974,10 @@ export const uk: Record<string, string> = {
   'runner.reporterMissing':
     '[попередження] UT_COVERAGE_COBERTURA_REPORTER недоступний у БД.\nПокриття вимкнено. Перевірте актуальність пакета utPLSQL.',
   'runner.extraReporter': '[інфо] Додатковий reporter сеансу: {name}',
+  'runner.reporterUnknown':
+    '[попередження] Додатковий reporter "{name}" не знайдено в базі; пропущено.',
   'runner.noResults': 'Немає звіту про результати.',
+  'runner.noTests': 'Не знайдено тестів utPLSQL для запуску.',
   'runner.noJunitResult': '[попередження] Не знайдено результату JUnit для "{id}".',
   'runner.noJunitResultPkg': ' очікуваний packageName: {package}',
   'runner.coverNoReport':
@@ -3615,6 +4084,21 @@ export const uk: Record<string, string> = {
   'debug.controlFail': 'Не вдалося відкрити керувальний сеанс DBMS_DEBUG.',
   'debug.attachFail':
     'Не вдалося приєднатися до DBMS_DEBUG. Перевірте гранти:\n  GRANT EXECUTE ON SYS.DBMS_DEBUG TO <schema>;\n  GRANT DEBUG CONNECT SESSION TO <schema>;',
+  'debug.pauseUnsupported': 'Pause не підтримується DBMS_DEBUG.',
+  'debug.commandUnsupported': 'Непідтримувана команда: {cmd}',
+  'debug.sessionAttached': 'Сесію {id} приєднано.',
+  'debug.breakpointsApplied': 'Застосовано точок зупину: {count}; сесію готово.',
+  'debug.stoppedAtEntry': 'Зупинено на entry — натисніть Continue, щоб дійти до точки зупину.',
+  'debug.sessionTimeout': 'Час сесії налагодження вичерпано — завершення.',
+  'debug.runTestFailed': 'Не вдалося виконати тест: {error}',
+  'debug.syncTimeout':
+    'Вийшов час очікування запуску debuggee (synchronize). Перевірте, чи тест існує і чи активні з’єднання/схема правильні.',
+  'ext.run.parsingResults': 'Аналіз результатів...',
+  'quickfix.thickInitFail':
+    'utPLSQL: не вдалося ініціалізувати Oracle Client у режимі thick. {error}',
+  'quickfix.openClientSettings': 'Відкрити налаштування Oracle Client',
+  'testTree.schemaNode': 'Схема: {schema}',
+  'testTree.packageNode': 'Пакет: {package}',
 };
 
 export const vi: Record<string, string> = {
@@ -3637,6 +4121,11 @@ export const vi: Record<string, string> = {
   'ext.validate.problems': 'Tìm thấy {count} vấn đề cấu hình. Xem bảng sự cố.',
   'ext.debug.disabled': 'Đã tắt gỡ lỗi PL/SQL (utplsql.debugger.enabled).',
   'ext.debug.openPks': 'Mở tệp .pks/.pkb để gỡ lỗi.',
+  'ext.compileForDebug.ok': 'Đã biên dịch để gỡ lỗi: {name}',
+  'ext.compileForDebug.failed': 'Biên dịch để gỡ lỗi thất bại: {error}',
+  'ext.compileForDebug.none':
+    'Không có đối tượng PL/SQL để biên dịch cho gỡ lỗi trong lựa chọn này.',
+
   'ext.profile.none': 'Không có hồ sơ kết nối nào được lưu. Dùng "utPLSQL: Hồ sơ kết nối mới...".',
   'ext.profile.active': 'Hồ sơ đang dùng: {name}',
   'ext.profile.new.title': 'utPLSQL — Hồ sơ mới',
@@ -3668,7 +4157,10 @@ export const vi: Record<string, string> = {
   'runner.reporterMissing':
     '[cảnh báo] UT_COVERAGE_COBERTURA_REPORTER không khả dụng trong cơ sở dữ liệu.\nĐã tắt phủ sóng. Kiểm tra gói utPLSQL đã cập nhật.',
   'runner.extraReporter': '[thông tin] Reporter bổ sung của phiên: {name}',
+  'runner.reporterUnknown':
+    '[cảnh báo] Không tìm thấy reporter bổ sung "{name}" trong cơ sở dữ liệu; bỏ qua.',
   'runner.noResults': 'Không có báo cáo kết quả.',
+  'runner.noTests': 'Không tìm thấy bài kiểm thử utPLSQL nào để chạy.',
   'runner.noJunitResult': '[cảnh báo] Không tìm thấy kết quả JUnit cho "{id}".',
   'runner.noJunitResultPkg': ' packageName dự kiến: {package}',
   'runner.coverNoReport':
@@ -3775,4 +4267,18 @@ export const vi: Record<string, string> = {
   'debug.controlFail': 'Không mở được phiên điều khiển DBMS_DEBUG.',
   'debug.attachFail':
     'Không thể đính kèm vào DBMS_DEBUG. Kiểm tra các grant:\n  GRANT EXECUTE ON SYS.DBMS_DEBUG TO <schema>;\n  GRANT DEBUG CONNECT SESSION TO <schema>;',
+  'debug.pauseUnsupported': 'Pause không được DBMS_DEBUG hỗ trợ.',
+  'debug.commandUnsupported': 'Lệnh không được hỗ trợ: {cmd}',
+  'debug.sessionAttached': 'Đã gắn phiên {id}.',
+  'debug.breakpointsApplied': 'Đã áp dụng {count} điểm dừng; phiên sẵn sàng.',
+  'debug.stoppedAtEntry': 'Dừng tại entry — dùng Continue để đến điểm dừng.',
+  'debug.sessionTimeout': 'Phiên gỡ lỗi quá thời gian — đang kết thúc.',
+  'debug.runTestFailed': 'Chạy test thất bại: {error}',
+  'debug.syncTimeout':
+    'Hết thời gian chờ debuggee khởi động (synchronize). Kiểm tra xem test có tồn tại và kết nối/schema đang hoạt động có đúng không.',
+  'ext.run.parsingResults': 'Đang phân tích kết quả...',
+  'quickfix.thickInitFail': 'utPLSQL: không khởi tạo được Oracle Client ở chế độ thick. {error}',
+  'quickfix.openClientSettings': 'Mở cài đặt Oracle Client',
+  'testTree.schemaNode': 'Schema: {schema}',
+  'testTree.packageNode': 'Package: {package}',
 };

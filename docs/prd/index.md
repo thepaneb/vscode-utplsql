@@ -132,6 +132,10 @@ CONCLUIR
 | 66 | [Robustez de conexão, logging e cache](completed/prd-66-connection-robustness-logging.md) | 0.12.0 | 2026-09-15 |
 | 68 | [Religar diagnostics e reporter de sessão perdidos na migração Oracle-only](completed/prd-68-restore-oracle-diagnostics-and-reporter.md) | 0.12.0 | 2026-09-15 |
 | 67 | [Qualidade, limpeza e performance](completed/prd-67-code-quality-cleanup.md) | 0.12.0 | 2026-09-15 |
+| 70 | [Thick mode opcional (Instant Client) para bancos com NNE](completed/prd-70-thick-mode-nne.md) | 0.12.1 | 2026-09-17 |
+| 72 | [Matriz de bancos Oracle para testes de integração](completed/prd-72-db-test-matrix.md) | 0.12.1 | 2026-09-18 |
+| 71 | [Corrigir o debugger para o DBMS_DEBUG real](completed/prd-71-debugger-dbms-debug-fix.md) | 0.12.1 | 2026-09-18 |
+| 73 | [Compilar objeto para debug (comando + menus)](completed/prd-73-compile-for-debug.md) | 0.12.1 | 2026-09-19 |
 
 ### 🟡 Em desenvolvimento
 
@@ -240,10 +244,15 @@ docs/prd/
 │   ├── prd-65-schema-mode-security-fixes.md
 │   ├── prd-66-connection-robustness-logging.md
 │   ├── prd-67-code-quality-cleanup.md
-│   └── prd-68-restore-oracle-diagnostics-and-reporter.md
+│   ├── prd-68-restore-oracle-diagnostics-and-reporter.md
+│   ├── prd-70-thick-mode-nne.md
+│   ├── prd-71-debugger-dbms-debug-fix.md
+│   ├── prd-72-db-test-matrix.md
+│   └── prd-73-compile-for-debug.md
 ├── approved/         ← aprovados, aguardando implementação
 │   └── (vazio)
-├── in-progress/      ← sendo implementados agora (vazio)
+├── in-progress/      ← sendo implementados agora
+│   └── (vazio)
 └── proposed/         ← em avaliação
     ├── prd-47-node-26-toolchain.md
     ├── prd-50-auto-run-on-save.md

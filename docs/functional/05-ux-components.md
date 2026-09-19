@@ -95,13 +95,13 @@ class DecorationManager implements vscode.Disposable
 ### Fluxo
 
 ```
-extension.ts: runWithProgress, after executeRun
+commands/run.ts (pós-run)
     │
-    └─► decorationManager.update(state.getLastResults(), controller)
+    └─► decorationManager.update(state.getLastResults(), (id) => state.getItem(id))
             │
             ├─► se !decorationsEnabled → return
             ├─► itera resultMap: para cada [id, {status, message}]
-            │       └─► findTestItem(controller, id) → item.range.start.line
+            │       └─► resolveItem(id) → item.range.start.line
             ├─► agrupa por URI → Map<uri, LineEntry[]>
             └─► applyToVisibleEditors()
                     └─► para cada editor visível:
@@ -109,15 +109,18 @@ extension.ts: runWithProgress, after executeRun
                             └─► editor.setDecorations(type, options[])
 ```
 
-### `findTestItem`
+### `resolveItem`
 
-```typescript
-function findTestItem(controller, id: string): TestItem | undefined
-```
+`update()` recebe um callback `resolveItem(id)`; o caller passa
+`(id) => state.getItem(id)` (mapa `state.itemMap`). Como o `itemMap` é populado
+com todos os itens, independente da profundidade, funciona tanto no modo `file`
+quanto no modo `schema` — não depende mais de navegar `controller.items`.
 
-Busca em **dois níveis** (não recursiva): `controller.items.get(id)` + um loop
-em `children`. Suporta suite-level e test-level no modo `file`; no modo
-`schema` os testes estão 3 níveis abaixo (limitação conhecida).
+### Outros métodos
+
+- `clear()` — limpa as decorações
+- `hasResults()` — indica se há resultados decorados
+- `dispose()` — descarta os 4 tipos de decoração
 
 ### Hover
 

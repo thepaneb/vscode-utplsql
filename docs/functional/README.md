@@ -21,18 +21,18 @@ discovery (.pks + banco)  ──►  executeRun  ──►  Oracle direto  ─�
 | **Resultados** | `junit.ts`, `results.ts`, `matching.ts` | Parse do XML JUnit, mapeamento para `vscode.TestItem` (funções canônicas compartilhadas) |
 | **Cobertura** | `cobertura.ts`, `coverage.ts`, `viewCoverage.ts`, `plsqlDeclarations.ts` | Parse do XML Cobertura, mapeamento para arquivos fonte, cobertura de views e por declaração |
 | **UX** | `codelens.ts`, `statusBar.ts`, `decorations.ts` | CodeLens, StatusBar, decorações inline |
-| **Diagnósticos** | `quickfix.ts` + `oracleRunner.checkCompilationErrors()` | Validação de setup/integridade UT3 com quick-fix; consulta a `ALL_ERRORS` (sem wiring atual) |
+| **Diagnósticos** | `compilationDiagnostics.ts`, `quickfix.ts` + `oracleRunner.checkCompilationErrors()` | Erros de compilação PL/SQL (`ALL_ERRORS` → Problems Panel, pós-run) e validação de setup/integridade UT3 com quick-fix |
 | **Configuração** | `config.ts`, `state.ts`, `types.ts`, `connectionProfiles.ts`, `i18n.ts`, `i18nLocales.ts` | Settings, conexão, perfis, i18n e estado persistente |
-| **Orquestração** | `extension.ts` | Registro de comandos, providers, ciclo de vida |
+| **Orquestração** | `extension.ts`, `commands/` | Registro de comandos, providers, ciclo de vida; handlers agrupados por área (`run`, `script`, `connection`, `profile`, `debug`, `utility`, `deps`) |
 
 ### Separação módulos puros vs vscode
 
 | Puro (testável com `node --test`) | Depende de `vscode` |
 |---|---|
-| `suiteParser.ts`, `junit.ts`, `cobertura.ts` | `extension.ts`, `runner.ts`, `results.ts` |
-| `matching.ts` | `config.ts` |
-| `codelens.ts` (parse), `i18n.ts`, `plsqlDeclarations.ts` | `discovery.ts`, `coverage.ts`, `oracleRunner.ts` |
-| `state.ts`, `types.ts` | `decorations.ts`, `statusBar.ts`, `quickfix.ts` |
+| `suiteParser.ts`, `junit.ts`, `cobertura.ts`, `i18n.ts`, `i18nLocales.ts` | `extension.ts`, `runner.ts`, `config.ts` |
+| `matching.ts`, `plsqlDeclarations.ts`, `dbmsDebug.ts` | `discovery.ts`, `coverage.ts`, `viewCoverage.ts` |
+| `codelens.ts` (parse), `state.ts`, `types.ts`, `scriptRunner.ts` | `decorations.ts`, `statusBar.ts` (classe), `oracleRunner.ts`, `results.ts` |
+| | `connectionProfiles.ts`, `debugger.ts`, `quickfix.ts`, `commands/` |
 
 ### Context keys
 
@@ -62,3 +62,4 @@ discovery (.pks + banco)  ──►  executeRun  ──►  Oracle direto  ─�
 | 08 | [Jump to Failure](08-jump-to-failure.md) | Stack trace parse, message.location, Go to Error |
 | 09 | [Configuration](09-configuration.md) | Settings, conexão, env vars, segurança |
 | 10 | [Development Tooling](10-development-tooling.md) | TS coverage, CI, PRDs, stub de testes |
+| 11 | [PL/SQL Debugger](11-debugger.md) | Debug de testes via `DBMS_DEBUG` (DAP `utplsql`) |

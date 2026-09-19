@@ -101,6 +101,13 @@ decoded by VSCode — the profile charset does not apply.
 | `utplsql.debugger.enabled` | `true` | Enables PL/SQL test debugging via DBMS_DEBUG (Debug Adapter `utplsql`). |
 | `utplsql.debugger.stopOnException` | `true` | Pauses execution when an unhandled exception is raised. |
 | `utplsql.debugger.timeoutSeconds` | `300` | Debug session timeout in seconds. |
+| `utplsql.debugger.compileOnDebug` | `false` | Compiles the object with debug information (`ALTER … COMPILE DEBUG PLSQL_OPTIMIZE_LEVEL = 1`) before starting the debug session. |
+
+> Prerequisites: the target package must be compiled with debug info
+> (`PLSQL_OPTIMIZE_LEVEL <= 1`, or `ALTER PACKAGE ... COMPILE DEBUG
+> PLSQL_OPTIMIZE_LEVEL = 1`) and the
+> user needs `GRANT DEBUG CONNECT SESSION` + `GRANT EXECUTE ON SYS.DBMS_DEBUG`.
+> See [Database requirements](Database-requirements).
 
 ## Test Discovery
 
@@ -116,6 +123,9 @@ decoded by VSCode — the profile charset does not apply.
 | `utplsql.oraclePoolMax` | `10` | Maximum connections in the pool. |
 | `utplsql.oraclePoolIncrement` | `1` | Increment when expanding the pool. |
 | `utplsql.oraclePoolPingInterval` | `60` | Seconds between health checks for idle pool connections. `0` = ping on every checkout. |
+| `utplsql.oracleClientMode` | `thin` | Driver mode: `thin` (default, pure JavaScript) or `thick` (Oracle Instant Client). Required for databases with NNE. |
+| `utplsql.oracleClientLibDir` | `""` | Oracle Instant Client directory (required in `thick` mode). |
+| `utplsql.oracleClientConfigDir` | `""` | Oracle config directory (TNS_ADMIN) with `sqlnet.ora`/`tnsnames.ora` (thick only). |
 
 The pool is created **lazily** on the first Oracle execution, recreated when the
 connection changes, and closed when the extension is deactivated. See [Direct Oracle Execution](Oracle-direct-execution).

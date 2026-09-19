@@ -47,7 +47,10 @@ async function executeRunOracle(options: OracleRunOptions, token: CancellationTo
 4. **Limpeza**: `DELETE FROM ${utSchema}UT_OUTPUT_BUFFER_TMP` + `UT_OUTPUT_BUFFER_INFO_TMP`
 5. **Execução**: `conn1.execute('BEGIN ut_runner.run(...) END;')` — bloqueante
 6. **Polling**: `conn2.execute('SELECT ... FROM UT_OUTPUT_BUFFER_TMP WHERE message_id > :last')` a cada 200ms
-7. **Separacão doc/JUnit**: linhas iniciando com `<` são XML → acumular; demais → `run.appendOutput()`
+7. **Separação doc/JUnit**: linhas iniciando com `<` são XML → acumular; demais →
+   `run.appendOutput()`. Dentro de um `<![CDATA[...]]>` (system-out do JUnit) as
+   linhas de conteúdo e o `]]>` **não** começam com `<`, então o roteamento é
+   mantido para o XML enquanto o CDATA estiver aberto (`inCdata`)
 8. **Parse final**: `parseJUnit(xmlBuffer)` → `applyResultsFromCases()` + `applyCoverageFromXml()` (src/results.ts)
 9. **Cancelamento**: `conn1.break()` / `conn2.break()` + `Promise.race` com cancellation promise
 
@@ -60,8 +63,12 @@ O pool é criado **lazy** no primeiro run e gerenciado por
 let currentPool: { pool: oracledb.Pool; key: string } | undefined;
 
 async function ensurePool(oracledb, connection, cfg): Promise<Pool> {
-  if (currentPool?.key === connection) return currentPool.pool;  // reutiliza
-  await closeOraclePool();                                        // connection mudou
+  // PRD-70: inicializa o cliente thick (no-op no thin) antes de qualquer conexão
+  const client = ensureOracleClient(oracledb, cfg.oracleClientMode,
+                                    cfg.oracleClientLibDir, cfg.oracleClientConfigDir);
+  const key = `${connection}|${cfg.oraclePoolMin}|${cfg.oraclePoolMax}|${cfg.oraclePoolIncrement}|${cfg.oraclePoolPingInterval}`;
+  if (currentPool?.key === key) return currentPool.pool;   // reutiliza
+  await closeOraclePool();                                  // connection/settings mudaram
   const parsed = parseConnString(connection);
   const pool = await oracledb.createPool({
     user, password, connectString,
@@ -71,7 +78,7 @@ async function ensurePool(oracledb, connection, cfg): Promise<Pool> {
     poolPingInterval: cfg.oraclePoolPingInterval, // 60 (ping periódico das ociosas, Thin driver)
     stmtCacheSize: 30,
   });
-  currentPool = { pool, key: connection };
+  currentPool = { pool, key };
   return pool;
 }
 
@@ -85,7 +92,10 @@ async function acquireRunnerConnections(oracledb, connection, cfg) {
 async function closeOraclePool(): Promise<void>  // chamado no deactivate() (drain 10s)
 ```
 
-- **Keyed pela connection string**: conexão alterada (setting/prompt) → pool antigo fechado, novo criado
+- **Keyed pela connection string + settings do pool**: conexão ou parâmetros do pool
+  alterados → pool antigo fechado, novo criado
+- **Modo thick (PRD-70)**: `ensurePool` chama `ensureOracleClient` (idempotente)
+  antes de `createPool`; no modo `thin` (default) é no-op
 - **`poolPingInterval`**: ping periódico (em segundos) das conexões **ociosas** (ping interno do Thin driver — sem `SELECT 1 FROM DUAL`); `0` = ping a cada checkout
 - **`outFormat = OBJECT`** global: acessos de rows por propriedade nomeada (`TABLE_OWNER`, `MESSAGE_ID`, `TEXT`)
 - **`conn.close()`** devolve ao pool; `deactivate()` fecha com drenagem de 10s
@@ -137,4 +147,4 @@ conn1 (run)                              conn2 (poll)
 | `utplsql.oraclePoolMax` | `10` | Conexões máximas do pool |
 | `utplsql.oraclePoolIncrement` | `1` | Incremento ao expandir o pool |
 | `utplsql.oraclePoolPingInterval` | `60` | Segundos entre health checks das conexões ociosas |
-| `utplsql.dbmsOutput` | `false` | Captura `DBMS_OUTPUT` via `GET_LINES` na sessão de polling |
+| `utplsql.dbmsOutput` | `false` | `DBMS_OUTPUT.ENABLE` em conn1 e drenagem via `GET_LINE` ao final (a sessão de execução, não a de polling) |

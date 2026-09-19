@@ -2,7 +2,7 @@
   "name": "vscode-utplsql",
   "displayName": "utPLSQL Test Runner",
   "description": "Roda testes utPLSQL pelo Test Explorer do VSCode, com menu de contexto e cobertura visual (estilo pytest).",
-  "version": "0.12.0",
+  "version": "0.12.1",
   "publisher": "paneb",
   "author": "Gil Cleber Barboza",
   "license": "MIT",
@@ -171,6 +171,29 @@
           "minimum": 0,
           "description": "Segundos entre health checks das conexões ociosas do pool (node-oracledb). 0 = ping a cada checkout."
         },
+        "utplsql.oracleClientMode": {
+          "type": "string",
+          "enum": [
+            "thin",
+            "thick"
+          ],
+          "enumDescriptions": [
+            "Driver thin (padrão): puro JavaScript, sem cliente nativo.",
+            "Driver thick: usa o Oracle Instant Client. Necessário para bancos com NNE (Native Network Encryption). Exige oracleClientLibDir e Reload Window."
+          ],
+          "default": "thin",
+          "description": "Modo do driver node-oracledb. Thick é opt-in, pois o NNE não está ativo em todos os bancos."
+        },
+        "utplsql.oracleClientLibDir": {
+          "type": "string",
+          "default": "",
+          "markdownDescription": "Diretório do Oracle Instant Client. Obrigatório quando `#utplsql.oracleClientMode#` é `thick`. Ex.: `C:\\oracle\\instantclient_23_5`."
+        },
+        "utplsql.oracleClientConfigDir": {
+          "type": "string",
+          "default": "",
+          "markdownDescription": "Diretório de configuração Oracle (TNS_ADMIN) com `sqlnet.ora`/`tnsnames.ora`. Opcional; só tem efeito no `thick`."
+        },
         "utplsql.organization": {
           "type": "string",
           "enum": [
@@ -223,7 +246,7 @@
         "utplsql.sqlCoverageEnabled": {
           "type": "boolean",
           "default": false,
-          "markdownDescription": "Habilita rastreio de views via `V$SQL` (cobertura booleana: executada = 100%, não executada = 0%). Requer `GRANT SELECT ON V$SQL` no Oracle. Views já aparecem no relatório com 0 hits via `type_mapping` mesmo desligado."
+          "markdownDescription": "Habilita rastreio de views via `V$SQL` (cobertura booleana: executada = 100%, não executada = 0%). Requer `GRANT SELECT ON V$SQL` no Oracle."
         },
         "utplsql.debugger.enabled": {
           "type": "boolean",
@@ -240,6 +263,11 @@
           "default": 300,
           "minimum": 30,
           "description": "Timeout (s) da sessão de debug para evitar conexões Oracle zumbis."
+        },
+        "utplsql.debugger.compileOnDebug": {
+          "type": "boolean",
+          "default": false,
+          "description": "Compila o objeto com informação de debug (ALTER … COMPILE DEBUG) antes de iniciar a sessão de debug."
         },
         "utplsql.scriptRunner.stopOnError": {
           "type": "boolean",
@@ -419,6 +447,11 @@
         "category": "utPLSQL"
       },
       {
+        "command": "utplsql.compileForDebug",
+        "title": "%nls.command.compileForDebug%",
+        "category": "utPLSQL"
+      },
+      {
         "command": "utplsql.runScript",
         "title": "%nls.command.runScript%",
         "category": "utPLSQL"
@@ -461,12 +494,17 @@
           "group": "utplsql@1",
           "when": "explorerResourceIsFolder"
         },
-        {
-          "command": "utplsql.runFolderCoverage",
-          "group": "utplsql@2",
-          "when": "explorerResourceIsFolder"
-        }
-      ],
+      {
+        "command": "utplsql.runFolderCoverage",
+        "group": "utplsql@2",
+        "when": "explorerResourceIsFolder"
+      },
+      {
+        "command": "utplsql.compileForDebug",
+        "group": "utplsql@4",
+        "when": "resourceExtname == .sql || resourceExtname == .pks || resourceExtname == .pkb || resourceExtname == .fnc || resourceExtname == .prc || resourceExtname == .trg || explorerResourceIsFolder"
+      }
+    ],
       "editor/context": [
         {
           "command": "utplsql.runFile",
@@ -478,12 +516,22 @@
           "group": "utplsql@2",
           "when": "resourceExtname == .pks || resourceExtname == .pkb"
         },
-        {
-          "command": "utplsql.runScript",
-          "group": "utplsql@3",
-          "when": "resourceExtname == .sql || resourceExtname == .pks || resourceExtname == .pkb || resourceExtname == .fnc || resourceExtname == .prc || resourceExtname == .trg"
-        }
-      ]
+      {
+        "command": "utplsql.runScript",
+        "group": "utplsql@3",
+        "when": "resourceExtname == .sql || resourceExtname == .pks || resourceExtname == .pkb || resourceExtname == .fnc || resourceExtname == .prc || resourceExtname == .trg"
+      },
+      {
+        "command": "utplsql.compileForDebug",
+        "group": "utplsql@4",
+        "when": "resourceExtname == .sql || resourceExtname == .pks || resourceExtname == .pkb || resourceExtname == .fnc || resourceExtname == .prc || resourceExtname == .trg"
+      },
+      {
+        "command": "utplsql.debugTest",
+        "group": "utplsql@5",
+        "when": "resourceExtname == .pks || resourceExtname == .pkb"
+      }
+    ]
     },
     "keybindings": [
       {
@@ -545,51 +593,84 @@
         "mac": "cmd+shift+u x",
         "when": "utplsql:hasFailures"
       }
-    ]
-  },
-  "debuggers": [
-    {
-      "type": "utplsql",
-      "label": "utPLSQL Debugger",
-      "configurationAttributes": {
-        "launch": {
-          "properties": {
-            "packageName": {
-              "type": "string",
-              "description": "Test package to debug"
-            },
-            "testName": {
-              "type": "string",
-              "description": "Specific test procedure"
-            },
-            "connection": {
-              "type": "string",
-              "description": "Oracle connection string"
-            },
-            "stopOnException": {
-              "type": "boolean",
-              "default": true
+    ],
+    "languages": [
+      {
+        "id": "plsql",
+        "aliases": ["PL/SQL", "plsql"],
+        "extensions": [".pks", ".pkb", ".prc", ".fnc", ".trg"]
+      }
+    ],
+    "breakpoints": [
+      {
+        "language": "plsql"
+      }
+    ],
+    "debuggers": [
+      {
+        "type": "utplsql",
+        "label": "utPLSQL Debugger",
+        "configurationAttributes": {
+          "launch": {
+            "properties": {
+              "packageName": {
+                "type": "string",
+                "description": "Test package to debug"
+              },
+              "testName": {
+                "type": "string",
+                "description": "Specific test procedure"
+              },
+              "connection": {
+                "type": "string",
+                "description": "Oracle connection string"
+              },
+              "stopOnException": {
+                "type": "boolean",
+                "default": true
+              }
             }
           }
-        }
+        },
+        "initialConfigurations": [
+          {
+            "type": "utplsql",
+            "request": "launch",
+            "name": "Debug utPLSQL test",
+            "packageName": "${fileBasenameNoExtension}"
+          }
+        ]
       }
-    }
-  ],
+    ]
+  },
   "scripts": {
     "vscode:prepublish": "npm run compile && npm run bundle",
     "compile": "tsc -p ./",
+    "clean": "node -e \"require('fs').rmSync('out',{recursive:true,force:true})\"",
+    "typecheck": "tsc -p ./ --noEmit",
     "watch": "tsc -watch -p ./",
     "lint": "biome check src/",
     "lint:fix": "biome check --write src/",
     "format": "biome format --write src/",
     "pretest:unit": "npm run compile && npm run lint",
     "test:unit": "node scripts/run-tests.cjs",
-    "pretest:integration": "npm run compile && npm run bundle",
+    "pretest:integration": "npm run clean && npm run compile && npm run bundle",
     "test:integration": "vscode-test",
+    "pretest:integration:smoke": "npm run clean && npm run compile && npm run bundle",
+    "test:integration:smoke": "vscode-test --config .vscode-test.smoke.mjs",
+    "pretest:integration:thick": "npm run clean && npm run compile && npm run bundle",
+    "test:integration:thick": "vscode-test --config .vscode-test.thick.mjs",
+    "db:matrix": "bash scripts/db-matrix/run.sh",
+    "db:matrix:list": "bash scripts/db-matrix/run.sh --list",
     "test": "npm run test:unit",
     "test:coverage": "npm run compile && c8 node --experimental-test-module-mocks --require ./scripts/test-setup.cjs --test out/test/unit/**/*.test.js",
     "bundle": "node esbuild.config.mjs",
     "package": "npm run compile && npm run bundle && vsce package",
+    "package:win32-x64": "npm run compile && npm run bundle && node scripts/package-target.cjs win32-x64",
+    "package:linux-x64": "npm run compile && npm run bundle && node scripts/package-target.cjs linux-x64",
+    "package:linux-arm64": "npm run compile && npm run bundle && node scripts/package-target.cjs linux-arm64",
+    "package:darwin-arm64": "npm run compile && npm run bundle && node scripts/package-target.cjs darwin-arm64",
+    "package:target": "node scripts/package-target.cjs",
     "gen-icon": "node scripts/gen-icon.cjs",
     "gen-diagram": "node scripts/gen-diagrams.cjs",
     "brain:sync": "node scripts/brain.cjs sync",

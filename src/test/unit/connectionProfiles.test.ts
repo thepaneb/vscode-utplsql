@@ -47,6 +47,9 @@ function makeGlobal(over: Partial<UtConfig> = {}): UtConfig {
     oraclePoolMax: 10,
     oraclePoolIncrement: 1,
     oraclePoolPingInterval: 60,
+    oracleClientMode: 'thin',
+    oracleClientLibDir: '',
+    oracleClientConfigDir: '',
     codeLensEnabled: true,
     statusBarEnabled: true,
     decorationsEnabled: true,
@@ -59,6 +62,7 @@ function makeGlobal(over: Partial<UtConfig> = {}): UtConfig {
     debuggerEnabled: true,
     debuggerStopOnException: true,
     debuggerTimeoutSeconds: 300,
+    debuggerCompileOnDebug: false,
     scriptRunnerStopOnError: true,
     scriptRunnerAutoCommit: true,
     scriptRunnerFilePattern: '**/*.{sql,pks,pkb,fnc,prc,trg}',
@@ -537,6 +541,26 @@ test('migrateLegacyProfiles: move senha legada e reescreve a settings', async ()
     assert.strictEqual(getAllProfiles()[0].connection, 'u@h:1521/s');
     assert.strictEqual(map.get('utplsql.profile.m1'), 'secret');
     assert.strictEqual(getProfileConnection(getAllProfiles()[0]), 'u/secret@h:1521/s');
+  } finally {
+    __resetConfigValues();
+  }
+});
+
+test('migrateLegacyProfiles: mantém perfis já sanitizados sem reescrever', async () => {
+  __resetConfigValues();
+  const { storage } = fakeSecrets();
+  initSecretStorage(storage);
+  __setConfigValue('profiles', [
+    { id: 'leg', name: 'LEG', connection: 'u/secret@h:1521/s' },
+    { id: 'ok', name: 'OK', connection: 'u@h:1521/s' },
+  ]);
+  try {
+    await migrateLegacyProfiles();
+    const profiles = getAllProfiles();
+    assert.strictEqual(profiles.length, 2);
+    assert.strictEqual(profiles[0].connection, 'u@h:1521/s');
+    assert.strictEqual(profiles[1].connection, 'u@h:1521/s');
+    assert.strictEqual(profiles[1].id, 'ok');
   } finally {
     __resetConfigValues();
   }

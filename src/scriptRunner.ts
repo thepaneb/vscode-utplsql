@@ -6,6 +6,7 @@
 // (node-oracledb via `oracleRunner.ts`).
 
 import type * as vscode from 'vscode';
+import { decodeBytes } from './charset';
 import { getExtensionLocale } from './config';
 import { maskConnection } from './connectionProfiles';
 import { t } from './i18n';
@@ -18,32 +19,35 @@ export interface SqlStatement {
   text: string;
   index: number;
   line: number;
+  /** `true` para blocos PL/SQL (terminados por `/`); `false`/ausente para SQL. */
+  plsql?: boolean;
 }
-
-const VALID_CHARSETS: ReadonlySet<string> = new Set(['utf8', 'latin1', 'win1252']);
 
 /**
  * Converte bytes em string JS no encoding do perfil. Sem `iconv-lite`:
  * `utf8`/`win1252` via `TextDecoder` nativo; `latin1` via
- * `Buffer.toString('latin1')` (ISO-8859-1 real — `TextDecoder('iso-8859-1')`
- * decodificaria como windows-1252 pelo WHATWG). Ausente/inválido → `utf8`
- * (fail-safe). Remove BOM.
+ * `Buffer.toString('latin1')`. Ausente/inválido → `utf8` (fail-safe). Remove BOM.
  */
 export function decodeScript(bytes: Uint8Array, charset?: ProfileCharset): string {
-  const normalized = charset && VALID_CHARSETS.has(charset) ? charset : 'utf8';
-  if (normalized === 'latin1') {
-    const text = Buffer.from(bytes).toString('latin1');
-    return text.startsWith('﻿') ? text.slice(1) : text;
-  }
-  const label = normalized === 'utf8' ? 'utf-8' : 'windows-1252';
-  const text = new TextDecoder(label, { fatal: false }).decode(bytes);
-  return text.startsWith('﻿') ? text.slice(1) : text;
+  return decodeBytes(bytes, charset);
 }
 
 /** Blocos PL/SQL terminam em `/` em linha própria; o resto termina em `;`. */
 const PLSQL_START_RE =
   /^(?:DECLARE|BEGIN)\b|^CREATE\s+(?:OR\s+REPLACE\s+)?(?:\w+\s+)*(?:FUNCTION|PROCEDURE|PACKAGE|TRIGGER|TYPE)\b/i;
 const SLASH_LINE_RE = /^\s*\/\s*$/;
+
+/**
+ * Comandos client do SQL*Plus que o Oracle não executa via OCI. Devem ser
+ * ignorados (não viram statement nem quebram a classificação PL/SQL).
+ */
+const SQLPLUS_DIRECTIVE_RE =
+  /^(?:PROMPT|REMARK|REM|SPOOL|WHENEVER|TTITLE|BTITLE|COLUMN|COL|DEFINE|UNDEFINE|ACCEPT|PAUSE|HOST|CONNECT|DISCONNECT|SHOW|CLEAR|BREAK|COMPUTE|STORE|SAVE|GET|RUN|EDIT|ED|TIMING|SET|START)(?:\s|$)/i;
+const SQLPLUS_SYMBOL_RE = /^(?:@@?|!)/;
+
+function isSqlplusDirectiveLine(rest: string): boolean {
+  return SQLPLUS_DIRECTIVE_RE.test(rest) || SQLPLUS_SYMBOL_RE.test(rest);
+}
 
 function stripComments(text: string): string {
   return text.replace(/\/\*[\s\S]*?\*\//g, '').replace(/--[^\n]*/g, '');
@@ -110,7 +114,7 @@ export function splitScript(text: string): SqlStatement[] {
     const text = buf.trim();
     // Ignora vazio, só-comentário e restos de separador (`;` ou `/` soltos).
     if (text && !/^[;\s/]+$/.test(text) && stripComments(text).trim()) {
-      statements.push({ text, index: statements.length, line: startLine });
+      statements.push({ text, index: statements.length, line: startLine, plsql: isPlSql === true });
     }
     buf = '';
     isPlSql = undefined;
@@ -131,6 +135,30 @@ export function splitScript(text: string): SqlStatement[] {
   while (i < text.length) {
     const c = text[i];
     const next = i + 1 < text.length ? text[i + 1] : '';
+
+    // Diretiva SQL*Plus no início de um statement (buffer só com brancos/
+    // comentários): ignora a linha inteira, preservando a contagem de linhas.
+    if (
+      !inLine &&
+      !inBlock &&
+      !inStr &&
+      !inIdent &&
+      lineBuf.trim() === '' &&
+      /\S/.test(c) &&
+      isSqlplusDirectiveLine(text.slice(i, i + 16)) &&
+      !stripComments(buf).trim()
+    ) {
+      const nl = text.indexOf('\n', i);
+      buf = buf.replace(/[ \t]+$/, '');
+      if (nl < 0) {
+        i = text.length;
+      } else {
+        i = nl + 1;
+        line++;
+        lineBuf = '';
+      }
+      continue;
+    }
 
     if (inLine) {
       buf += c;
@@ -256,7 +284,12 @@ export function splitScript(text: string): SqlStatement[] {
     while (lines.length > 1 && /^\s*(\/)?\s*$/.test(lines[lines.length - 1])) lines.pop();
     const body = lines.join('\n').trim();
     if (body && !/^[;\s/]+$/.test(body) && stripComments(body).trim()) {
-      statements.push({ text: body, index: statements.length, line: startLine });
+      statements.push({
+        text: body,
+        index: statements.length,
+        line: startLine,
+        plsql: PLSQL_START_RE.test(statementHead(body)),
+      });
     }
   }
   return statements;
@@ -266,6 +299,15 @@ export function splitScript(text: string): SqlStatement[] {
 export function summarizeStatement(text: string, max = 80): string {
   const first = text.split('\n')[0].trim();
   return first.length > max ? `${first.slice(0, max - 1)}…` : first;
+}
+
+/**
+ * Remove o `;` final (terminador do cliente SQL*Plus) de um statement SQL.
+ * O Oracle 23ai tolera o `;` via OCI, mas 19c/21c rejeitam (ORA-00933/00922).
+ * Blocos PL/SQL não passam por aqui: o `;` do `END;` é sintaxe.
+ */
+export function stripSqlTerminator(text: string): string {
+  return text.replace(/;\s*$/, '').trimEnd();
 }
 
 /** Extensões suportadas pelos comandos de script (PRD-62). */
@@ -386,8 +428,9 @@ export async function executeScript(
     for (const stmt of statements) {
       if (result.cancelled) break;
       const start = Date.now();
+      const sql = stmt.plsql ? stmt.text : stripSqlTerminator(stmt.text);
       try {
-        const execResult = await db.execute(stmt.text, { autoCommit });
+        const execResult = await db.execute(sql, { autoCommit });
         const ms = Date.now() - start;
         result.executed++;
         result.ok++;

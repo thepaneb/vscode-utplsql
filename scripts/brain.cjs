@@ -105,8 +105,7 @@ function genWikiIndex(note) {
   const wiki = path.join(REPO, 'docs', 'wiki');
   const skip = new Set(['_Sidebar.md']);
   const en = listMd(wiki, note, skip);
-  const pt = listMd(path.join(wiki, 'pt'), note, skip);
-  return ['**English**', ...(en.length ? en : ['_ausente_']), '', '**Português (`pt/`)**', ...(pt.length ? pt : ['_ausente_'])].join('\n');
+  return en.length ? en.join('\n') : '_ausente_';
 }
 
 function genLinkedinIndex(note) {

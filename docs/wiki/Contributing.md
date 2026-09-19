@@ -103,6 +103,12 @@ interactively.
 
 ![Extension Development Host with Testing view](images/dev-host-testing.png)
 
+> If the **Extension Host** output shows `TypeError: Missing dataLength in event`
+> (`node:inspector`), it comes from the JS debugger's experimental *Network
+> View*, not from this extension. `.vscode/launch.json` already sets
+> `"experimentalNetworking": "off"`; if it still appears, set
+> `"debug.javascript.enableNetworkView": false` in your User settings.
+
 ## Integration tests with a real database
 
 Create a `.env` file in the project root (gitignored):
@@ -119,6 +125,26 @@ npm run test:integration
 
 Without the env vars, database tests (`describeDB`) are automatically
 skipped.
+
+### Database test matrix (multiple Oracle versions)
+
+Spin up a real Oracle for integration tests against several versions, one at a
+time (`scripts/db-matrix/run.sh`; needs Docker, and `ORACLE_AUTH_USER`/
+`ORACLE_AUTH_TOKEN` in `.env.dbmatrix` for the Enterprise images):
+
+```bash
+npm run db:matrix:list                 # versions: 18xe, 19ee, 21xe, 23free
+npm run db:matrix                      # whole matrix (one version at a time)
+npm run db:matrix -- --only 21xe       # a single version
+npm run db:matrix -- --smoke           # fast subset (capabilities + debugger)
+npm run db:matrix -- --thick           # thick mode per version
+npm run db:matrix -- --clean           # wipe the data volume and recreate
+```
+
+Data is kept in a per-version Docker volume: the first run creates the database
+(~15–25 min for 18c/19c); later runs boot from it in ~1–2 min. Use
+`--skip-bootstrap` when the volume is already prepared. See PRD-72 and the
+root `CONTRIBUTING.md` for details.
 
 ## Code conventions
 

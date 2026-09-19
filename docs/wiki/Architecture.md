@@ -21,11 +21,16 @@ functions live in `src/results.ts` (`applyResultsFromCases`,
 ### Build (v0.11.0)
 
 `main` points to `dist/extension.js` — a single bundle via **esbuild**
-(`npm run bundle`), with `vscode` and `oracledb` **external**; native oracledb
-binaries are stripped from the VSIX (`.vscodeignore`), leaving only the thin
-driver (IAM/OCI auth `plugins/` are also stripped — the extension only uses
-user/pass connection). Pure deps (fast-xml-parser v5 + transitive)
-are bundled.
+(`npm run bundle`), with `vscode` and `oracledb` **external**. The oracledb
+native glue for **thick mode** lets the optional `utplsql.oracleClientMode =
+thick` load a user-provided Oracle Instant Client; the thin driver remains the
+default. The CI publishes **one VSIX per platform**: `win32-x64`, `linux-x64`,
+`linux-arm64`, `darwin-arm64` with only that platform's glue (`thick+thin`), and
+`win32-arm64`, `darwin-x64`, `linux-armhf`, `alpine-x64`, `alpine-arm64` as
+**thin-only** fallback (no native binary — runs no-NNE databases). The universal
+`npm run package` (all glues, ~2.5 MB) is for local testing. IAM/OCI auth `plugins/` are stripped — the extension only
+uses user/pass connection. Pure deps (fast-xml-parser v5 + transitive) are
+bundled.
 
 ## Critical separation: pure modules vs vscode-dependent
 
@@ -69,6 +74,7 @@ testable with `node --test` without any setup.
 | `utplsql.dbmsOutput` | `cfg.dbmsOutput` | captures `DBMS_OUTPUT` via `GET_LINES` on the polling session |
 | `utplsql.additionalReporters` | `cfg.additionalReporters` | extra reporters in the `a_reporters` param of `ut_runner.run` (deduplicated) |
 | `utplsql.oraclePoolMin/Max/Increment/PingInterval` | `cfg.oraclePool*` | `oracleRunner.ts` (`ensurePool`) |
+| `utplsql.oracleClientMode`/`oracleClientLibDir`/`oracleClientConfigDir` | `cfg.oracleClient*` | `oracleClient.ts` (`ensureOracleClient`, called from `ensurePool`) |
 | `utplsql.codeLens/statusBar/decorations.enabled` | `cfg.*Enabled` | UX providers |
 | `utplsql.compilationDiagnostics.enabled` | `cfg.compilationDiagnosticsEnabled` | Reserved — no effect (feature not wired in the Oracle-only version) |
 | `utplsql.setupDiagnostics.enabled` | `cfg.setupDiagnosticsEnabled` | `quickfix.ts` |

@@ -5,7 +5,9 @@ coverage/
 *.vsix
 .vscode-test/
 .env
+.env.dbmatrix
 install/
+docker/db-matrix/.cache/
 docs/prd/.prd-issues.json
 # Arquivos de instrução para agentes de IA — NUNCA persistir no repositório.
 # AGENTS.md e CLAUDE.md contêm contexto local do desenvolvedor e são
