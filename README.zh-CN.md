@@ -27,6 +27,9 @@
 - 🔌 **连接配置** — 通过状态栏或命令面板，保存并切换多个环境（DEV/TEST/PROD），支持按配置自定义设置。
 - 📜 **SQL 脚本** — 在当前连接配置上运行当前脚本、Explorer 中的文件或整个文件夹（支持 charset，`DBMS_OUTPUT` 和 `stopOnError`）。
 - 📈 **语句和视图覆盖率** — Coverage 选项卡显示每个文件的语句百分比（PROCEDURE/FUNCTION），并通过 `V$SQL` 跟踪执行的视图。
+- 🏷️ **标签与随机顺序** — 使用 `utplsql.tags`（例如 `fast & !integration`）筛选测试，并以可复现的种子随机顺序运行（`utplsql.run.randomOrder`）。
+- 🎯 **覆盖率范围** — 通过 `utplsql.coverage.*` 包含/排除对象和 schema/对象正则，去除框架噪声并纳入动态到达的对象。
+- 🗄️ **数据库优先发现** — 从 `ut_runner.get_suites_info` 构建树，并从命令面板重建注释缓存。
 - 🐛 **PL/SQL 调试** — 通过 `DBMS_DEBUG` 对 utPLSQL 测试进行断点和单步调试（原生调试适配器）。
 - 🌍 **i18n — 24 种语言** — `utplsql.language` 跟随 VSCode（24 locales：pt-br、en、en-gb、es、zh-cn、zh-tw、ja、de、fr、it、ko、ru、tr、pl、cs、hu、bg、el、id、ro、sr、th、uk、vi）。
 

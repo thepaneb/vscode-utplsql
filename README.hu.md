@@ -27,6 +27,9 @@ Integrálja a [utPLSQL](https://www.utplsql.org/) teszteket a VSCode-ba, és a P
 - 🔌 **Kapcsolati profilok** — több környezet (DEV/TEST/PROD) mentése és váltása köztük profil-specifikus beállításokkal, az állapotsorból vagy a parancspalettáról.
 - 📜 **SQL szkriptek** — az aktuális szkript, egy Explorer-fájl vagy egy teljes mappa futtatása az aktív kapcsolati profilon (charset-helyes, `DBMS_OUTPUT` és `stopOnError` támogatással).
 - 📈 **Utasítás- és nézetlefedettség** — a Coverage lap `% of statements` (PROCEDURE/FUNCTION) arányt mutat fájlonként, és a `V$SQL`-lal végrehajtott nézeteket is követi.
+- 🏷️ **Tagek és véletlen sorrend** — szűrd a teszteket `utplsql.tags`-szel (pl. `fast & !integration`), és futtasd véletlen sorrendben reprodukálható seeddel (`utplsql.run.randomOrder`).
+- 🎯 **Lefedettségi hatókör** — objektumok és séma/objektum regexek (`utplsql.coverage.*`) bevonása/kizárása a framework zajának eltávolításához és dinamikusan elért objektumok hozzáadásához.
+- 🗄️ **DB-first felfedezés** — építsd a fát a `ut_runner.get_suites_info` alapján, és építsd újra a megjegyzés-gyorsítótárat a palettáról.
 - 🐛 **PL/SQL-hibakeresés** — töréspontok és lépésenkénti hibakeresés a utPLSQL-tesztekhez `DBMS_DEBUG` segítségével (natív Debug Adapter).
 - 🌍 **i18n — 24 nyelv** — a `utplsql.language` követi a VSCode-ot (24 területi beállítás: pt-br, en, en-gb, es, zh-cn, zh-tw, ja, de, fr, it, ko, ru, tr, pl, cs, hu, bg, el, id, ro, sr, th, uk, vi).
 

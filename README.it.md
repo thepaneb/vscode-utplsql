@@ -27,6 +27,9 @@ Integra [utPLSQL](https://www.utplsql.org/) in VSCode, portando i test PL/SQL ne
 - 🔌 **Profili di connessione** — salva e passa da un ambiente all'altro (DEV/TEST/PROD) con impostazioni per profilo, tramite barra di stato o palette comandi.
 - 📜 **Script SQL** — esegui lo script corrente, un file di Explorer o un'intera cartella sul profilo di connessione attivo (charset rispettato, con `DBMS_OUTPUT` e `stopOnError`).
 - 📈 **Copertura di statement e viste** — la scheda Coverage mostra `% di statement` (PROCEDURE/FUNCTION) per file e tiene traccia delle viste eseguite tramite `V$SQL`.
+- 🏷️ **Tag e ordine casuale** — filtra i test con `utplsql.tags` (es. `fast & !integration`) ed esegui in ordine casuale con seed riproducibile (`utplsql.run.randomOrder`).
+- 🎯 **Ambito di copertura** — includi/escludi oggetti e regex di schema/oggetto (`utplsql.coverage.*`) per rimuovere il rumore del framework e aggiungere oggetti raggiunti dinamicamente.
+- 🗄️ **Scoperta DB-first** — costruisci l'albero da `ut_runner.get_suites_info` e ricostruisci la cache delle annotazioni dalla palette.
 - 🐛 **Debug PL/SQL** — breakpoint e debug passo-passo dei test utPLSQL tramite `DBMS_DEBUG` (Debug Adapter nativo).
 - 🌍 **i18n — 24 lingue** — `utplsql.language` segue VSCode (24 locale: pt-br, en, en-gb, es, zh-cn, zh-tw, ja, de, fr, it, ko, ru, tr, pl, cs, hu, bg, el, id, ro, sr, th, uk, vi).
 

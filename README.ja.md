@@ -27,6 +27,9 @@
 - 🔌 **接続プロファイル** — DEV/TEST/PROD などの複数環境をプロファイルごとの設定で保存・切替。ステータスバーまたはコマンドパレットから。
 - 📜 **SQL スクリプト** — 現在のスクリプト、Explorer のファイル、またはフォルダー全体をアクティブな接続プロファイルに対して実行します（charset 対応、`DBMS_OUTPUT`・`stopOnError` 対応）。
 - 📈 **ステートメントとビューのカバレッジ** — Coverage タブにファイルごとの `% of statements`（PROCEDURE/FUNCTION）を表示し、`V$SQL` 経由で実行されたビューを追跡。
+- 🏷️ **タグとランダム順** — `utplsql.tags`（例: `fast & !integration`）でテストを絞り込み、再現可能なシード（`utplsql.run.randomOrder`）でランダム順に実行します。
+- 🎯 **カバレッジ範囲** — オブジェクトや schema/object の正規表現（`utplsql.coverage.*`）で包含/除外し、フレームワークのノイズを除去して動的に到達するオブジェクトを追加します。
+- 🗄️ **DB ファーストの探索** — `ut_runner.get_suites_info` からツリーを構築し、パレットから注釈キャッシュを再構築します。
 - 🐛 **PL/SQL デバッグ** — `DBMS_DEBUG` による utPLSQL テストのブレークポイントとステップデバッグ（ネイティブ Debug Adapter）。
 - 🌍 **i18n — 24 言語** — `utplsql.language` は VSCode に追従（24 ロケール: pt-br, en, en-gb, es, zh-cn, zh-tw, ja, de, fr, it, ko, ru, tr, pl, cs, hu, bg, el, id, ro, sr, th, uk, vi）。
 

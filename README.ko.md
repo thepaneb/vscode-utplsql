@@ -27,6 +27,9 @@
 - 🔌 **연결 프로필** — 프로필별 설정으로 여러 환경(DEV/TEST/PROD)을 저장하고 전환(상태 표시줄 또는 명령 팔레트를 통해).
 - 📜 **SQL 스크립트** — 현재 스크립트, Explorer 파일 또는 전체 폴더를 활성 연결 프로필에 대해 실행합니다(charset 지원, `DBMS_OUTPUT` 및 `stopOnError`).
 - 📈 **문장 및 뷰 커버리지** — Coverage 탭에 파일별 `% of statements`(PROCEDURE/FUNCTION)를 표시하고 `V$SQL`을 통해 실행된 뷰를 추적.
+- 🏷️ **태그 및 무작위 순서** — `utplsql.tags`(예: `fast & !integration`)로 테스트를 필터링하고 재현 가능한 seed(`utplsql.run.randomOrder`)로 무작위 순서로 실행합니다.
+- 🎯 **커버리지 범위** — 객체와 스키마/객체 정규식(`utplsql.coverage.*`)으로 포함/제외하여 프레임워크 잡음을 제거하고 동적으로 도달하는 객체를 추가합니다.
+- 🗄️ **DB 우선 검색** — `ut_runner.get_suites_info`로 트리를 만들고 팔레트에서 주석 캐시를 다시 작성합니다.
 - 🐛 **PL/SQL 디버그** — `DBMS_DEBUG`를 통한 utPLSQL 테스트의 중단점 및 단계 디버깅(네이티브 Debug Adapter).
 - 🌍 **i18n — 24개 언어** — `utplsql.language`가 VSCode를 따릅니다(24개 로케일: pt-br, en, en-gb, es, zh-cn, zh-tw, ja, de, fr, it, ko, ru, tr, pl, cs, hu, bg, el, id, ro, sr, th, uk, vi).
 

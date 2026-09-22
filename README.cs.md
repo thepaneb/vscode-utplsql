@@ -27,6 +27,9 @@ Integruje [utPLSQL](https://www.utplsql.org/) do VSCode a přináší PL/SQL tes
 - 🔌 **Profily připojení** — ukládání a přepínání mezi více prostředími (DEV/TEST/PROD) s nastavením podle profilu, přes stavový řádek nebo paletu příkazů.
 - 📜 **SQL skripty** — spouštění aktuálního skriptu, souboru z Průzkumníku nebo celé složky na aktivním profilu připojení (s ohledem na charset, `DBMS_OUTPUT` a `stopOnError`).
 - 📈 **Pokrytí příkazů a pohledů** — karta Coverage zobrazuje `% of statements` (PROCEDURE/FUNCTION) podle souboru a sleduje pohledy spuštěné přes `V$SQL`.
+- 🏷️ **Tagy a náhodné pořadí** — filtrujte testy pomocí `utplsql.tags` (např. `fast & !integration`) a spouštějte v náhodném pořadí s reprodukovatelným seedem (`utplsql.run.randomOrder`).
+- 🎯 **Rozsah pokrytí** — zahrňte/vylučte objekty a regex schématu/objektu (`utplsql.coverage.*`) pro odstranění šumu frameworku a přidání dynamicky dosažených objektů.
+- 🗄️ **Objevování DB-first** — sestavte strom z `ut_runner.get_suites_info` a přestavte mezipaměť anotací z palety.
 - 🐛 **PL/SQL Debug** — breakpointy a krokování testů utPLSQL přes `DBMS_DEBUG` (nativní Debug Adapter).
 - 🌍 **i18n — 24 jazyků** — `utplsql.language` se řídí VSCode (24 locale: pt-br, en, en-gb, es, zh-cn, zh-tw, ja, de, fr, it, ko, ru, tr, pl, cs, hu, bg, el, id, ro, sr, th, uk, vi).
 

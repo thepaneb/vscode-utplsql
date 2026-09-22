@@ -27,6 +27,9 @@ Integrează [utPLSQL](https://www.utplsql.org/) în VSCode, aducând testele PL/
 - 🔌 **Profiluri de conexiune** — salvează și comută între mai multe medii (DEV/TEST/PROD) cu setări per profil, prin bara de stare sau paleta de comenzi.
 - 📜 **Scripturi SQL** — rulează scriptul curent, un fișier din Explorer sau un întreg folder pe profilul de conexiune activ (cu respectarea charset, cu `DBMS_OUTPUT` și `stopOnError`).
 - 📈 **Acoperire pe instrucțiuni și vizualizări** — fila Coverage arată `% din instrucțiuni` (PROCEDURE/FUNCTION) per fișier și urmărește vizualizările executate prin `V$SQL`.
+- 🏷️ **Tag-uri și ordine aleatorie** — filtrează testele cu `utplsql.tags` (ex. `fast & !integration`) și rulează în ordine aleatorie cu seed reproductibil (`utplsql.run.randomOrder`).
+- 🎯 **Domeniu de acoperire** — include/exclude obiecte și regex de schemă/obiect (`utplsql.coverage.*`) pentru a elimina zgomotul framework-ului și a adăuga obiecte atinse dinamic.
+- 🗄️ **Descoperire DB-first** — construiește arborele din `ut_runner.get_suites_info` și reconstruiește cache-ul de adnotări din paletă.
 - 🐛 **Debug PL/SQL** — breakpoint-uri și depanare pas cu pas a testelor utPLSQL prin `DBMS_DEBUG` (Debug Adapter nativ).
 - 🌍 **i18n — 24 de limbi** — `utplsql.language` urmărește VSCode (24 de localizări: pt-br, en, en-gb, es, zh-cn, zh-tw, ja, de, fr, it, ko, ru, tr, pl, cs, hu, bg, el, id, ro, sr, th, uk, vi).
 

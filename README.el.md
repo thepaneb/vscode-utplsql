@@ -27,6 +27,9 @@
 - 🔌 **Connection profiles** — αποθήκευση και εναλλαγή μεταξύ πολλών περιβαλλόντων (DEV/TEST/PROD) με ρυθμίσεις ανά profile, μέσω status bar ή command palette.
 - 📜 **Σενάρια SQL** — εκτέλεση του τρέχοντος σεναρίου, ενός αρχείου από τον Explorer ή ολόκληρου φακέλου στο ενεργό προφίλ σύνδεσης (με σεβασμό στο charset, με `DBMS_OUTPUT` και `stopOnError`).
 - 📈 **Κάλυψη εντολών και views** — η καρτέλα Coverage δείχνει το `% των εντολών` (PROCEDURE/FUNCTION) ανά αρχείο και παρακολουθεί τα views που εκτελέστηκαν μέσω `V$SQL`.
+- 🏷️ **Tags και τυχαία σειρά** — φιλτράρετε τα test με `utplsql.tags` (π.χ. `fast & !integration`) και εκτελέστε σε τυχαία σειρά με αναπαραγώγιμο seed (`utplsql.run.randomOrder`).
+- 🎯 **Εύρος κάλυψης** — συμπεριλάβετε/αποκλείστε αντικείμενα και regex schema/αντικειμένου (`utplsql.coverage.*`) για να αφαιρέσετε τον θόρυβο του framework και να προσθέσετε δυναμικά αντικείμενα.
+- 🗄️ **Ανακάλυψη DB-first** — χτίστε το δέντρο από το `ut_runner.get_suites_info` και ξαναχτίστε την προσωρινή μνήμη σχολίων από την παλέτα.
 - 🐛 **PL/SQL Debug** — breakpoints και βηματική αποσφαλμάτωση utPLSQL tests μέσω `DBMS_DEBUG` (native Debug Adapter).
 - 🌍 **i18n — 24 γλώσσες** — το `utplsql.language` ακολουθεί το VSCode (24 τοπικές ρυθμίσεις: pt-br, en, en-gb, es, zh-cn, zh-tw, ja, de, fr, it, ko, ru, tr, pl, cs, hu, bg, el, id, ro, sr, th, uk, vi).
 

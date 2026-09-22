@@ -27,6 +27,9 @@
 - 🔌 **Bağlantı profilleri** — status bar veya komut paleti aracılığıyla profil başına ayarlarla birden fazla ortam (DEV/TEST/PROD) arasında kaydedin ve geçiş yapın.
 - 📜 **SQL betikleri** — geçerli betiği, Explorer dosyasını veya tüm klasörü etkin bağlantı profilinde çalıştırın (charset'e duyarlı, `DBMS_OUTPUT` ve `stopOnError` ile).
 - 📈 **İfade ve görünüm kapsamı** — Coverage sekmesi dosya başına `% of statements` (PROCEDURE/FUNCTION) gösterir ve `V$SQL` üzerinden çalıştırılan görünümleri izler.
+- 🏷️ **Etiketler ve rastgele sıra** — testleri `utplsql.tags` ile filtreleyin (örn. `fast & !integration`) ve yeniden üretilebilir seed ile rastgele sırada çalıştırın (`utplsql.run.randomOrder`).
+- 🎯 **Kapsam aralığı** — framework gürültüsünü kaldırmak ve dinamik erişilen nesneleri eklemek için nesneleri ve şema/nesne regex'lerini (`utplsql.coverage.*`) dahil/hariç tutun.
+- 🗄️ **DB-first keşif** — ağacı `ut_runner.get_suites_info`'dan oluşturun ve açıklama önbelleğini paletten yeniden oluşturun.
 - 🐛 **PL/SQL Hata Ayıklama** — `DBMS_DEBUG` üzerinden utPLSQL testlerinde kesme noktaları ve adım adım hata ayıklama (doğal Debug Adapter).
 - 🌍 **i18n — 24 dil** — `utplsql.language` VSCode'u takip eder (24 yerel ayar: pt-br, en, en-gb, es, zh-cn, zh-tw, ja, de, fr, it, ko, ru, tr, pl, cs, hu, bg, el, id, ro, sr, th, uk, vi).
 

@@ -27,6 +27,9 @@ Mengintegrasikan [utPLSQL](https://www.utplsql.org/) ke dalam VSCode, membawa pe
 - 🔌 **Profil koneksi** — simpan dan beralih antar beberapa lingkungan (DEV/TEST/PROD) dengan pengaturan per profil, melalui bilah status atau palet perintah.
 - 📜 **Skrip SQL** — jalankan skrip saat ini, file dari Explorer, atau seluruh folder pada profil koneksi aktif (mengikuti charset, dengan `DBMS_OUTPUT` dan `stopOnError`).
 - 📈 **Cakupan pernyataan dan view** — tab Coverage menampilkan `% pernyataan` (PROCEDURE/FUNCTION) per file dan melacak view yang dieksekusi melalui `V$SQL`.
+- 🏷️ **Tag dan urutan acak** — filter pengujian dengan `utplsql.tags` (mis. `fast & !integration`) dan jalankan dalam urutan acak dengan seed yang dapat direproduksi (`utplsql.run.randomOrder`).
+- 🎯 **Lingkup cakupan** — sertakan/kecualikan objek dan regex schema/objek (`utplsql.coverage.*`) untuk menghilangkan noise framework dan menambahkan objek yang dijangkau secara dinamis.
+- 🗄️ **Penemuan DB-first** — bangun pohon dari `ut_runner.get_suites_info` dan bangun ulang cache anotasi dari palet.
 - 🐛 **Debug PL/SQL** — breakpoint dan debugging langkah demi langkah untuk pengujian utPLSQL melalui `DBMS_DEBUG` (Debug Adapter asli).
 - 🌍 **i18n — 24 bahasa** — `utplsql.language` mengikuti VSCode (24 locale: pt-br, en, en-gb, es, zh-cn, zh-tw, ja, de, fr, it, ko, ru, tr, pl, cs, hu, bg, el, id, ro, sr, th, uk, vi).
 

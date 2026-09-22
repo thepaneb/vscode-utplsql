@@ -16,8 +16,8 @@ Liste o que a mudança afeta e cruze com a tabela abaixo. Só então edite.
 
 | Mudança | Docs a atualizar |
 |---|---|
-| Feature/comportamento | `docs/functional/`, `docs/wiki/`, README |
-| Setting / comando / keybinding | README (tabela de config, Comandos, Keybindings), `package.json` (`contributes`), `package.nls.*.json` |
+| Feature/comportamento | `docs/functional/`, `docs/wiki/`, README (**bullets de features** no topo + variantes) |
+| Setting / comando / keybinding | README (tabela de config, **tabela de Comandos**, Keybindings), `package.json` (`contributes`), `package.nls.*.json` |
 | Nova string de UI | `package.nls.json` + `package.nls.<locale>.json` (23) |
 | Arquitetura / módulo | `docs/wiki/Architecture.md`, MOCs do vault |
 | PRD (criar/aprovar/implementar/concluir) | usar a skill **`prd-workflow`** |
@@ -38,9 +38,13 @@ Ao mudar PRD, rode `npm run sync-prds` (fecha/labela issues e já chama `brain:s
 **Wiki** — `docs/wiki/` é publicado automaticamente pelo workflow `wiki.yml`.
 
 **README e variantes de idioma** — `README.md` é a verdade. Se ele mudar, as 23
-variantes (`README.<locale>.md`) precisam da mesma alteração. Se não der para
-traduzir agora, **registre a pendência** — o vault marca automaticamente (⚠️) as
-variantes cujo último commit é anterior ao do `README.md`.
+variantes (`README.<locale>.md`) precisam da mesma alteração — **incluindo os
+bullets de features no topo, a tabela de settings e a tabela de Comandos**.
+Ao adicionar feature/command, confira a paridade com:
+`grep -c '^- ' README.md` vs cada variante e a presença do comando/setting.
+Se não der para traduzir agora, **registre a pendência** — o vault marca
+automaticamente (⚠️) as variantes cujo último commit é anterior ao do
+`README.md`.
 
 ## Passo 2 — vault Obsidian
 

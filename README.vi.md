@@ -27,6 +27,9 @@ Tích hợp [utPLSQL](https://www.utplsql.org/) vào VSCode, đưa các bài ki�
 - 🔌 **Hồ sơ kết nối** — lưu và chuyển đổi giữa nhiều môi trường (DEV/TEST/PROD) với cài đặt theo hồ sơ, qua thanh trạng thái hoặc command palette.
 - 📜 **Script SQL** — chạy script hiện tại, một tệp từ Explorer hoặc cả thư mục trên hồ sơ kết nối đang hoạt động (tôn trọng charset, với `DBMS_OUTPUT` và `stopOnError`).
 - 📈 **Độ phủ câu lệnh và view** — tab Coverage hiển thị `% câu lệnh` (PROCEDURE/FUNCTION) theo tệp và theo dõi các view được thực thi qua `V$SQL`.
+- 🏷️ **Tag và thứ tự ngẫu nhiên** — lọc bài kiểm thử bằng `utplsql.tags` (ví dụ `fast & !integration`) và chạy theo thứ tự ngẫu nhiên với seed tái tạo được (`utplsql.run.randomOrder`).
+- 🎯 **Phạm vi phủ** — thêm/loại đối tượng và regex schema/đối tượng (`utplsql.coverage.*`) để bỏ nhiễu framework và thêm các đối tượng chỉ truy cập động.
+- 🗄️ **Khám phá DB-first** — dựng cây từ `ut_runner.get_suites_info` và tạo lại bộ nhớ đệm chú thích từ bảng lệnh.
 - 🐛 **Gỡ lỗi PL/SQL** — breakpoint và gỡ lỗi từng bước các bài kiểm thử utPLSQL qua `DBMS_DEBUG` (Debug Adapter gốc).
 - 🌍 **i18n — 24 ngôn ngữ** — `utplsql.language` theo VSCode (24 locale: pt-br, en, en-gb, es, zh-cn, zh-tw, ja, de, fr, it, ko, ru, tr, pl, cs, hu, bg, el, id, ro, sr, th, uk, vi).
 

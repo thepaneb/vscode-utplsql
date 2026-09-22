@@ -27,6 +27,9 @@
 - 🔌 **連線設定檔** — 透過狀態列或命令面板，儲存並切換多個環境（DEV/TEST/PROD），支援依設定檔自訂設定。
 - 📜 **SQL 指令碼** — 在目前連線設定檔上執行目前指令碼、Explorer 中的檔案或整個資料夾（支援 charset、`DBMS_OUTPUT` 與 `stopOnError`）。
 - 📈 **陳述式與檢視涵蓋率** — Coverage 分頁顯示每個檔案的陳述式百分比（PROCEDURE/FUNCTION），並透過 `V$SQL` 追蹤執行的檢視。
+- 🏷️ **標籤與隨機順序** — 使用 `utplsql.tags`（例如 `fast & !integration`）篩選測試，並以可重現的種子隨機順序執行（`utplsql.run.randomOrder`）。
+- 🎯 **涵蓋範圍** — 透過 `utplsql.coverage.*` 包含/排除物件與 schema/物件正則，移除框架雜訊並納入動態到達的物件。
+- 🗄️ **資料庫優先探索** — 從 `ut_runner.get_suites_info` 建構樹狀結構，並從命令面板重建註解快取。
 - 🐛 **PL/SQL 除錯** — 透過 `DBMS_DEBUG` 對 utPLSQL 測試進行中斷點與逐步除錯（原生除錯介面卡）。
 - 🌍 **i18n — 24 種語言** — `utplsql.language` 跟隨 VSCode（24 locales：pt-br、en、en-gb、es、zh-cn、zh-tw、ja、de、fr、it、ko、ru、tr、pl、cs、hu、bg、el、id、ro、sr、th、uk、vi）。
 
