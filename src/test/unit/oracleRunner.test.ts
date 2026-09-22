@@ -19,6 +19,7 @@ import {
   listReportersOracle,
   mapDbPathsToFiles,
   parseConnString,
+  rebuildAnnotationCache,
   semverLt,
   withOracleConnection,
 } from '../../oracleRunner';
@@ -2131,4 +2132,61 @@ test('invalidatePool: força recriação no próximo ensurePool', async () => {
   } finally {
     await closeOraclePool();
   }
+});
+
+// ── rebuildAnnotationCache (PRD-77) ──────────────────────────────────
+
+test('rebuildAnnotationCache: chama ut_runner.rebuild_annotation_cache com o owner', async () => {
+  const captured: { sql?: string; binds?: unknown } = {};
+  const conn = {
+    callTimeout: 0,
+    execute: async (sql: string, binds?: unknown) => {
+      captured.sql = sql;
+      captured.binds = binds;
+      return {};
+    },
+    close: async () => {},
+  };
+  const mod = {
+    BIND_IN: 'in',
+    STRING: 'STRING',
+    createPool: async () => ({
+      getConnection: async () => conn,
+      close: async () => {},
+    }),
+    getConnection: async () => {
+      throw new Error('raw indisponivel');
+    },
+  };
+  try {
+    await rebuildAnnotationCache(mod as never, 'ut3/senha@//h:1521/s', POOL_CFG);
+  } finally {
+    await closeOraclePool();
+  }
+  assert.match(captured.sql ?? '', /ut_runner\.rebuild_annotation_cache/);
+  assert.deepStrictEqual(captured.binds, {
+    owner: { dir: 'in', type: 'STRING', val: 'UT3' },
+  });
+});
+
+test('rebuildAnnotationCache: falha de conexão lança erro', async () => {
+  const mod = {
+    BIND_IN: 'in',
+    STRING: 'STRING',
+    createPool: async () => {
+      throw new Error('db down');
+    },
+    getConnection: async () => {
+      throw new Error('raw indisponivel');
+    },
+  };
+  let err: Error | undefined;
+  try {
+    await rebuildAnnotationCache(mod as never, 'ut3/senha@//h:1521/s', POOL_CFG);
+  } catch (e) {
+    err = e as Error;
+  } finally {
+    await closeOraclePool();
+  }
+  assert.ok(err, 'deveria lançar quando não há conexão');
 });

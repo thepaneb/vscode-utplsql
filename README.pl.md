@@ -241,6 +241,7 @@ Wszystkie polecenia rozszerzenia (paleta `Ctrl+Shift+P`, prefiks `utPLSQL:`):
 | `utPLSQL: Import connections from SQL Developer` | Importuje połączenia z SQL Developera (connections.xml) | — |
 | `utPLSQL: Debug test (PL/SQL)` | Uruchamia sesję debugowania testu w aktywnym pliku | — |
 | `utPLSQL: Skompiluj do debugowania` | Kompiluje obiekt wybranego pliku/folderu z informacjami debugowania | — |
+| `utPLSQL: Przebuduj pamięć podręczną adnotacji` | Przebudowuje pamięć podręczną adnotacji utPLSQL w bazie i odświeża drzewo | — |
 | `utPLSQL: Run script` | Runs the script open in the editor against a connection profile | Right-click → script file |
 | `utPLSQL: Run script file` | Runs an Explorer script file (decoded with the profile charset) | Right-click → file |
 | `utPLSQL: Run script folder` | Runs the folder scripts in alphabetical order | Right-click → folder |

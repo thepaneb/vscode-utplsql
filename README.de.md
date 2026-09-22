@@ -239,6 +239,7 @@ Alle Befehle der Erweiterung (Palette `Ctrl+Shift+P`, Präfix `utPLSQL:`):
 | `utPLSQL: Import connections from SQL Developer` | Importiert Verbindungen aus SQL Developer (connections.xml) | — |
 | `utPLSQL: Debug test (PL/SQL)` | Startet eine Debug-Sitzung des Tests der aktiven Datei | — |
 | `utPLSQL: Für Debug kompilieren` | Kompiliert das Objekt der ausgewählten Datei/des Ordners mit Debug-Informationen | — |
+| `utPLSQL: Anmerkungs-Cache neu aufbauen` | Baut den utPLSQL-Anmerkungs-Cache in der Datenbank neu auf und aktualisiert den Baum | — |
 | `utPLSQL: Run script` | Runs the script open in the editor against a connection profile | Right-click → script file |
 | `utPLSQL: Run script file` | Runs an Explorer script file (decoded with the profile charset) | Right-click → file |
 | `utPLSQL: Run script folder` | Runs the folder scripts in alphabetical order | Right-click → folder |

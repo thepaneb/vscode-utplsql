@@ -2,7 +2,7 @@
 
 | Campo | Valor |
 |---|---|
-| Status | Aprovado |
+| Status | Concluído |
 | Autor | Gil Cleber Barboza |
 | Data | 2026-09-19 |
 | Componente | Extensão `paneb.vscode-utplsql` |
@@ -134,3 +134,20 @@ usado pelo refresh; usar `$(symbol-method)` ou manter só paleta).
 - Executar o rebuild automaticamente quando a PRD-74 detectar divergência entre
   arquivo e banco? (follow-up)
 - Expor também em `view/title` do Testing view?
+
+## 12. Notas de implementação (0.13.0)
+
+- **Rotina confirmada**: `ut_runner.rebuild_annotation_cache(a_object_owner
+  varchar2, a_object_type varchar2 := null)` (`api/ut_runner.pks`, utPLSQL
+  3.2.3). O comando usa o usuário da conexão como owner. `ut_annotation_manager`
+  /`ut_annotation_cache_manager` são internos e não foram usados.
+- **Escopo entregue**: `rebuildAnnotationCache(oracledb, connection, cfg)` em
+  `oracleRunner.ts` (via `withOracleConnection`) e o comando
+  `utplsql.rebuildAnnotations` na paleta (`utility.ts`), com refresh da árvore,
+  aviso quando não há conexão (sem prompt surpresa) e erro no Output.
+- **Gate de versão**: não foi adicionado um gate específico — a rotina existe
+  desde versões anteriores ao mínimo suportado (`UTPLSQL_MIN_VERSION` 3.1.0);
+  um banco sem a rotina falha com ORA e a mensagem aparece no Output.
+- **Menu**: apenas paleta (não foi adicionado botão em `view/title`).
+- **Testes**: unitários cobrem a montagem da chamada (SQL + bind do owner) e a
+  falha de conexão; o efeito real no cache é validado na suíte de integração.

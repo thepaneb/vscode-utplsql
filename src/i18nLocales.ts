@@ -23,6 +23,7 @@ export const ptBr: Record<string, string> = {
   'ext.debug.disabled': 'Debug PL/SQL desabilitado (utplsql.debugger.enabled).',
   'ext.debug.openPks': 'Abra um arquivo .pks/.pkb para debugar.',
   'ext.compileForDebug.ok': 'Compilado para debug: {name}',
+  'ext.rebuildCache.ok': 'Cache de anotações reconstruído.',
   'ext.compileForDebug.failed': 'Falha ao compilar para debug: {error}',
   'ext.compileForDebug.none': 'Nenhum objeto PL/SQL para compilar para debug nesta seleção.',
 
@@ -212,6 +213,7 @@ export const en: Record<string, string> = {
   'ext.debug.disabled': 'PL/SQL debugging disabled (utplsql.debugger.enabled).',
   'ext.debug.openPks': 'Open a .pks/.pkb file to debug.',
   'ext.compileForDebug.ok': 'Compiled for debug: {name}',
+  'ext.rebuildCache.ok': 'Annotation cache rebuilt.',
   'ext.compileForDebug.failed': 'Failed to compile for debug: {error}',
   'ext.compileForDebug.none': 'No PL/SQL object to compile for debug in this selection.',
 
@@ -402,6 +404,7 @@ export const es: Record<string, string> = {
   'ext.debug.disabled': 'Debug de PL/SQL deshabilitado (utplsql.debugger.enabled).',
   'ext.debug.openPks': 'Abra un archivo .pks/.pkb para depurar.',
   'ext.compileForDebug.ok': 'Compilado para depuración: {name}',
+  'ext.rebuildCache.ok': 'Caché de anotaciones reconstruida.',
   'ext.compileForDebug.failed': 'Error al compilar para depuración: {error}',
   'ext.compileForDebug.none':
     'Ningún objeto PL/SQL para compilar para depuración en esta selección.',
@@ -593,6 +596,7 @@ export const zhCn: Record<string, string> = {
   'ext.debug.disabled': 'PL/SQL 调试已禁用（utplsql.debugger.enabled）。',
   'ext.debug.openPks': '请打开 .pks/.pkb 文件进行调试。',
   'ext.compileForDebug.ok': '已为调试编译：{name}',
+  'ext.rebuildCache.ok': '注释缓存已重建。',
   'ext.compileForDebug.failed': '编译以进行调试失败：{error}',
   'ext.compileForDebug.none': '此选择中没有可编译以进行调试的 PL/SQL 对象。',
 
@@ -774,6 +778,7 @@ export const ja: Record<string, string> = {
   'ext.debug.disabled': 'PL/SQL デバッグは無効です（utplsql.debugger.enabled）。',
   'ext.debug.openPks': 'デバッグするには .pks/.pkb ファイルを開いてください。',
   'ext.compileForDebug.ok': 'デバッグ用にコンパイルしました: {name}',
+  'ext.rebuildCache.ok': 'アノテーションキャッシュを再構築しました。',
   'ext.compileForDebug.failed': 'デバッグ用のコンパイルに失敗しました: {error}',
   'ext.compileForDebug.none':
     'この選択にデバッグ用にコンパイルする PL/SQL オブジェクトがありません。',
@@ -967,6 +972,7 @@ export const de: Record<string, string> = {
   'ext.debug.disabled': 'PL/SQL-Debugging deaktiviert (utplsql.debugger.enabled).',
   'ext.debug.openPks': 'Öffnen Sie eine .pks/.pkb-Datei zum Debuggen.',
   'ext.compileForDebug.ok': 'Für Debug kompiliert: {name}',
+  'ext.rebuildCache.ok': 'Anmerkungs-Cache neu aufgebaut.',
   'ext.compileForDebug.failed': 'Kompilierung für Debug fehlgeschlagen: {error}',
   'ext.compileForDebug.none': 'Kein PL/SQL-Objekt zum Kompilieren für Debug in dieser Auswahl.',
 
@@ -1159,6 +1165,7 @@ export const fr: Record<string, string> = {
   'ext.debug.disabled': 'Débogage PL/SQL désactivé (utplsql.debugger.enabled).',
   'ext.debug.openPks': 'Ouvrez un fichier .pks/.pkb pour déboguer.',
   'ext.compileForDebug.ok': 'Compilé pour le débogage : {name}',
+  'ext.rebuildCache.ok': 'Cache des annotations reconstruit.',
   'ext.compileForDebug.failed': 'Échec de la compilation pour le débogage : {error}',
   'ext.compileForDebug.none':
     'Aucun objet PL/SQL à compiler pour le débogage dans cette sélection.',
@@ -1350,6 +1357,7 @@ export const zhTw: Record<string, string> = {
   'ext.debug.disabled': '已停用 PL/SQL 偵錯（utplsql.debugger.enabled）。',
   'ext.debug.openPks': '請開啟 .pks/.pkb 檔案進行偵錯。',
   'ext.compileForDebug.ok': '已為偵錯編譯：{name}',
+  'ext.rebuildCache.ok': '註解快取已重建。',
   'ext.compileForDebug.failed': '編譯以供偵錯失敗：{error}',
   'ext.compileForDebug.none': '此選取範圍中沒有可編譯以供偵錯的 PL/SQL 物件。',
 
@@ -1532,6 +1540,7 @@ export const it: Record<string, string> = {
   'ext.debug.disabled': 'Debug PL/SQL disabilitato (utplsql.debugger.enabled).',
   'ext.debug.openPks': 'Aprire un file .pks/.pkb per il debug.',
   'ext.compileForDebug.ok': 'Compilato per il debug: {name}',
+  'ext.rebuildCache.ok': 'Cache delle annotazioni ricostruita.',
   'ext.compileForDebug.failed': 'Compilazione per il debug non riuscita: {error}',
   'ext.compileForDebug.none':
     'Nessun oggetto PL/SQL da compilare per il debug in questa selezione.',
@@ -1724,6 +1733,7 @@ export const ko: Record<string, string> = {
   'ext.debug.disabled': 'PL/SQL 디버그가 비활성화되었습니다 (utplsql.debugger.enabled).',
   'ext.debug.openPks': '디버그하려면 .pks/.pkb 파일을 여세요.',
   'ext.compileForDebug.ok': '디버그용으로 컴파일됨: {name}',
+  'ext.rebuildCache.ok': '주석 캐시를 다시 작성했습니다.',
   'ext.compileForDebug.failed': '디버그용 컴파일 실패: {error}',
   'ext.compileForDebug.none': '이 선택 항목에 디버그용으로 컴파일할 PL/SQL 개체가 없습니다.',
 
@@ -1912,6 +1922,7 @@ export const ru: Record<string, string> = {
   'ext.debug.disabled': 'Отладка PL/SQL отключена (utplsql.debugger.enabled).',
   'ext.debug.openPks': 'Откройте файл .pks/.pkb для отладки.',
   'ext.compileForDebug.ok': 'Скомпилировано для отладки: {name}',
+  'ext.rebuildCache.ok': 'Кэш аннотаций перестроен.',
   'ext.compileForDebug.failed': 'Не удалось скомпилировать для отладки: {error}',
   'ext.compileForDebug.none': 'В этом выборе нет объектов PL/SQL для компиляции для отладки.',
 
@@ -2102,6 +2113,7 @@ export const tr: Record<string, string> = {
   'ext.debug.disabled': 'PL/SQL hata ayıklama devre dışı (utplsql.debugger.enabled).',
   'ext.debug.openPks': 'Hata ayıklamak için bir .pks/.pkb dosyası açın.',
   'ext.compileForDebug.ok': 'Hata ayıklama için derlendi: {name}',
+  'ext.rebuildCache.ok': 'Açıklama önbelleği yeniden oluşturuldu.',
   'ext.compileForDebug.failed': 'Hata ayıklama için derleme başarısız: {error}',
   'ext.compileForDebug.none': 'Bu seçimde hata ayıklama için derlenecek PL/SQL nesnesi yok.',
 
@@ -2288,6 +2300,7 @@ export const pl: Record<string, string> = {
   'ext.debug.disabled': 'Debugowanie PL/SQL wyłączone (utplsql.debugger.enabled).',
   'ext.debug.openPks': 'Otwórz plik .pks/.pkb, aby debugować.',
   'ext.compileForDebug.ok': 'Skompilowano do debugowania: {name}',
+  'ext.rebuildCache.ok': 'Przebudowano pamięć podręczną adnotacji.',
   'ext.compileForDebug.failed': 'Nie udało się skompilować do debugowania: {error}',
   'ext.compileForDebug.none': 'Brak obiektu PL/SQL do skompilowania do debugowania w tym wyborze.',
 
@@ -2479,6 +2492,7 @@ export const cs: Record<string, string> = {
   'ext.debug.disabled': 'Ladění PL/SQL je zakázáno (utplsql.debugger.enabled).',
   'ext.debug.openPks': 'Pro ladění otevřete soubor .pks/.pkb.',
   'ext.compileForDebug.ok': 'Zkompilováno pro ladění: {name}',
+  'ext.rebuildCache.ok': 'Mezipaměť anotací byla přestavěna.',
   'ext.compileForDebug.failed': 'Kompilace pro ladění se nezdařila: {error}',
   'ext.compileForDebug.none': 'V tomto výběru není žádný objekt PL/SQL ke kompilaci pro ladění.',
 
@@ -2669,6 +2683,7 @@ export const hu: Record<string, string> = {
   'ext.debug.disabled': 'PL/SQL hibakeresés letiltva (utplsql.debugger.enabled).',
   'ext.debug.openPks': 'Nyisson egy .pks/.pkb fájlt a hibakereséshez.',
   'ext.compileForDebug.ok': 'Hibakereséshez lefordítva: {name}',
+  'ext.rebuildCache.ok': 'A megjegyzés-gyorsítótár újraépítve.',
   'ext.compileForDebug.failed': 'A hibakereséshez való fordítás sikertelen: {error}',
   'ext.compileForDebug.none':
     'Ebben a kijelölésben nincs hibakereséshez fordítható PL/SQL objektum.',
@@ -2862,6 +2877,7 @@ export const bg: Record<string, string> = {
   'ext.debug.disabled': 'Дебагването на PL/SQL е деактивирано (utplsql.debugger.enabled).',
   'ext.debug.openPks': 'Отворете .pks/.pkb файл за дебъгване.',
   'ext.compileForDebug.ok': 'Компилирано за отстраняване на грешки: {name}',
+  'ext.rebuildCache.ok': 'Кешът с анотации е възстановен.',
   'ext.compileForDebug.failed': 'Неуспешно компилиране за отстраняване на грешки: {error}',
   'ext.compileForDebug.none':
     'Няма PL/SQL обект за компилиране за отстраняване на грешки в тази селекция.',
@@ -3048,6 +3064,7 @@ export const el: Record<string, string> = {
   'ext.debug.disabled': 'Η αποσφαλμάτωση PL/SQL είναι απενεργοποιημένη (utplsql.debugger.enabled).',
   'ext.debug.openPks': 'Ανοίξτε ένα .pks/.pkb αρχείο για αποσφαλμάτωση.',
   'ext.compileForDebug.ok': 'Μεταγλωττίστηκε για αποσφαλμάτωση: {name}',
+  'ext.rebuildCache.ok': 'Η προσωρινή μνήμη σχολίων ξαναχτίστηκε.',
   'ext.compileForDebug.failed': 'Αποτυχία μεταγλώττισης για αποσφαλμάτωση: {error}',
   'ext.compileForDebug.none':
     'Δεν υπάρχει αντικείμενο PL/SQL για μεταγλώττιση για αποσφαλμάτωση σε αυτή την επιλογή.',
@@ -3234,6 +3251,7 @@ export const id: Record<string, string> = {
   'ext.debug.disabled': 'Debug PL/SQL dinonaktifkan (utplsql.debugger.enabled).',
   'ext.debug.openPks': 'Buka file .pks/.pkb untuk men-debug.',
   'ext.compileForDebug.ok': 'Dikompilasi untuk debug: {name}',
+  'ext.rebuildCache.ok': 'Cache anotasi dibangun ulang.',
   'ext.compileForDebug.failed': 'Gagal mengompilasi untuk debug: {error}',
   'ext.compileForDebug.none':
     'Tidak ada objek PL/SQL untuk dikompilasi untuk debug dalam pilihan ini.',
@@ -3418,6 +3436,7 @@ export const ro: Record<string, string> = {
   'ext.debug.disabled': 'Debug PL/SQL dezactivat (utplsql.debugger.enabled).',
   'ext.debug.openPks': 'Deschideți un fișier .pks/.pkb pentru debug.',
   'ext.compileForDebug.ok': 'Compilat pentru depanare: {name}',
+  'ext.rebuildCache.ok': 'Cache-ul de adnotări a fost reconstruit.',
   'ext.compileForDebug.failed': 'Compilarea pentru depanare a eșuat: {error}',
   'ext.compileForDebug.none':
     'Niciun obiect PL/SQL de compilat pentru depanare în această selecție.',
@@ -3601,6 +3620,7 @@ export const sr: Record<string, string> = {
   'ext.debug.disabled': 'Дебаговање PL/SQL је онемогућено (utplsql.debugger.enabled).',
   'ext.debug.openPks': 'Отворите .pks/.pkb датотеку за дебаговање.',
   'ext.compileForDebug.ok': 'Компилирано за отстрањивање грешака: {name}',
+  'ext.rebuildCache.ok': 'Кеш напомена је поново изграђен.',
   'ext.compileForDebug.failed': 'Компилација за отстрањивање грешака није успела: {error}',
   'ext.compileForDebug.none':
     'У овом избору нема PL/SQL објекта за компилацију за отстрањивање грешака.',
@@ -3784,6 +3804,7 @@ export const th: Record<string, string> = {
   'ext.debug.disabled': 'ปิดการดีบัก PL/SQL แล้ว (utplsql.debugger.enabled)',
   'ext.debug.openPks': 'เปิดไฟล์ .pks/.pkb เพื่อดีบัก',
   'ext.compileForDebug.ok': 'คอมไพล์สำหรับดีบักแล้ว: {name}',
+  'ext.rebuildCache.ok': 'สร้างแคชคำอธิบายประกอบใหม่แล้ว',
   'ext.compileForDebug.failed': 'คอมไพล์สำหรับดีบากล้มเหลว: {error}',
   'ext.compileForDebug.none': 'ไม่พบออบเจ็กต์ PL/SQL ที่จะคอมไพล์สำหรับดีบักในส่วนที่เลือกนี้',
 
@@ -3959,6 +3980,7 @@ export const uk: Record<string, string> = {
   'ext.debug.disabled': 'Налагодження PL/SQL вимкнено (utplsql.debugger.enabled).',
   'ext.debug.openPks': 'Відкрийте файл .pks/.pkb для налагодження.',
   'ext.compileForDebug.ok': 'Скомпільовано для налагодження: {name}',
+  'ext.rebuildCache.ok': 'Кеш анотацій перебудовано.',
   'ext.compileForDebug.failed': 'Не вдалося скомпілювати для налагодження: {error}',
   'ext.compileForDebug.none':
     'У цьому виборі немає об’єкта PL/SQL для компіляції для налагодження.',
@@ -4144,6 +4166,7 @@ export const vi: Record<string, string> = {
   'ext.debug.disabled': 'Đã tắt gỡ lỗi PL/SQL (utplsql.debugger.enabled).',
   'ext.debug.openPks': 'Mở tệp .pks/.pkb để gỡ lỗi.',
   'ext.compileForDebug.ok': 'Đã biên dịch để gỡ lỗi: {name}',
+  'ext.rebuildCache.ok': 'Đã tạo lại bộ nhớ đệm chú thích.',
   'ext.compileForDebug.failed': 'Biên dịch để gỡ lỗi thất bại: {error}',
   'ext.compileForDebug.none':
     'Không có đối tượng PL/SQL để biên dịch cho gỡ lỗi trong lựa chọn này.',

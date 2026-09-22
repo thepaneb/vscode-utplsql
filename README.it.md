@@ -239,6 +239,7 @@ Tutti i comandi dell'estensione (palette `Ctrl+Shift+P`, prefisso `utPLSQL:`):
 | `utPLSQL: Import connections from SQL Developer` | Importa le connessioni da SQL Developer (connections.xml) | — |
 | `utPLSQL: Debug test (PL/SQL)` | Avvia una sessione di debug del test nel file attivo | — |
 | `utPLSQL: Compila per il debug` | Compila l’oggetto del file/cartella selezionato con le informazioni di debug | — |
+| `utPLSQL: Ricostruisci cache delle annotazioni` | Ricostruisce la cache delle annotazioni utPLSQL nel database e aggiorna l'albero | — |
 | `utPLSQL: Run script` | Runs the script open in the editor against a connection profile | Right-click → script file |
 | `utPLSQL: Run script file` | Runs an Explorer script file (decoded with the profile charset) | Right-click → file |
 | `utPLSQL: Run script folder` | Runs the folder scripts in alphabetical order | Right-click → folder |

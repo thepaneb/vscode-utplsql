@@ -174,3 +174,20 @@ Usados nos comandos `runFile` / `runFolder`.
 | Setting | Default | Descrição |
 |---|---|---|
 | `utplsql.includePatterns` | `["**/*.pks"]` | Globs para descobrir specs de teste |
+| `utplsql.discovery.source` | `auto` | Fonte da árvore no modo `schema`: `auto` (API `get_suites_info` + fallback `ALL_SOURCE`), `database` (exige a API) ou `file` (desliga a descoberta via banco) |
+
+## Descoberta DB-first (PRD-74)
+
+No modo `schema`, `mergeDbSuites` consulta `ut_runner.get_suites_info` (utPLSQL
+≥ 3.1.3) e funde com a descoberta por arquivo: o arquivo prevalece em URI/linha,
+o banco em descrição/tags. Quando a API não está disponível, cai para
+`ALL_SOURCE` (PRD-43). `discoverDbSuites` faz o gate de versão.
+
+## Reconstruir o cache de anotações (PRD-77)
+
+A API `get_suites_info` lê o cache de anotações mantido pela DDL trigger do
+utPLSQL. Se o cache estiver desatualizado, o comando **`utPLSQL: Rebuild
+Annotation Cache`** (`utplsql.rebuildAnnotations`) chama
+`ut_runner.rebuild_annotation_cache(<owner>)` e atualiza a árvore. Requer
+conexão resolvida (não abre prompt); sem conexão, avisa.
+

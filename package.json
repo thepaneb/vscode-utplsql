@@ -522,6 +522,11 @@
         "category": "utPLSQL"
       },
       {
+        "command": "utplsql.rebuildAnnotations",
+        "title": "%nls.command.rebuildAnnotations%",
+        "category": "utPLSQL"
+      },
+      {
         "command": "utplsql.runScript",
         "title": "%nls.command.runScript%",
         "category": "utPLSQL"

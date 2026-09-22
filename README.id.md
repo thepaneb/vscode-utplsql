@@ -241,6 +241,7 @@ Semua perintah ekstensi (palet `Ctrl+Shift+P`, prefiks `utPLSQL:`):
 | `utPLSQL: Import connections from SQL Developer` | Mengimpor koneksi dari SQL Developer (connections.xml) | — |
 | `utPLSQL: Debug test (PL/SQL)` | Memulai sesi debug untuk pengujian di bawah file aktif | — |
 | `utPLSQL: Kompilasi untuk debug` | Mengompilasi objek file/folder yang dipilih dengan informasi debug | — |
+| `utPLSQL: Bangun ulang cache anotasi` | Membangun ulang cache anotasi utPLSQL di basis data dan menyegarkan pohon | — |
 | `utPLSQL: Run script` | Runs the script open in the editor against a connection profile | Right-click → script file |
 | `utPLSQL: Run script file` | Runs an Explorer script file (decoded with the profile charset) | Right-click → file |
 | `utPLSQL: Run script folder` | Runs the folder scripts in alphabetical order | Right-click → folder |

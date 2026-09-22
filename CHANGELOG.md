@@ -34,6 +34,12 @@
   prevalece em URI/linha; banco em descrição/tags), com fallback para
   `ALL_SOURCE` quando a API não está disponível. Nova setting
   `utplsql.discovery.source` (`auto` | `file` | `database`, default `auto`).
+- **Reconstruir o cache de anotações do utPLSQL (PRD-77)**: novo comando
+  `utPLSQL: Rebuild Annotation Cache` (`utplsql.rebuildAnnotations`) que chama
+  `ut_runner.rebuild_annotation_cache(<owner>)` e atualiza o Test Explorer.
+  Útil quando a árvore vem de `get_suites_info` e o cache está desatualizado
+  (DDL trigger ausente ou recompilação manual). Sem conexão, avisa; erros
+  aparecem no Output.
 
 ## 0.12.1
 

@@ -1,6 +1,7 @@
 import * as vscode from 'vscode';
-import { getExtensionLocale } from '../config';
+import { getExtensionLocale, readConfig, resolveConnectionNoPrompt } from '../config';
 import { t } from '../i18n';
+import { logger } from '../logger';
 import { setupValidator } from '../quickfix';
 import type { CommandDeps } from './deps';
 
@@ -31,5 +32,32 @@ export function registerUtilityCommands(context: vscode.ExtensionContext, deps: 
       );
     }),
     vscode.commands.registerCommand('utplsql.recompileUt3', () => setupValidator.recompileUt3()),
+    vscode.commands.registerCommand('utplsql.rebuildAnnotations', async () => {
+      const conn = resolveConnectionNoPrompt();
+      if (!conn) {
+        vscode.window.showWarningMessage(t(locale, 'ext.noConnection'));
+        return;
+      }
+      let oracledb: typeof import('oracledb');
+      try {
+        const mod = await import('oracledb');
+        oracledb =
+          ((mod as Record<string, unknown>).default as typeof import('oracledb')) ??
+          (mod as typeof import('oracledb'));
+      } catch {
+        vscode.window.showErrorMessage(t(locale, 'common.oracledbMissing'));
+        return;
+      }
+      const { rebuildAnnotationCache } = await import('../oracleRunner.js');
+      try {
+        await rebuildAnnotationCache(oracledb, conn, readConfig());
+        await deps.refresh();
+        vscode.window.showInformationMessage(t(locale, 'ext.rebuildCache.ok'));
+      } catch (e) {
+        const msg = e instanceof Error ? e.message : String(e);
+        logger.warn('utplsql.rebuildAnnotations falhou', { error: msg });
+        vscode.window.showErrorMessage(msg);
+      }
+    }),
   );
 }

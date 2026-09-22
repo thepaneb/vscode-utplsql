@@ -327,6 +327,30 @@ export async function checkReporterExists(
   return reporters.some((r) => bare(r) === bare(reporterName));
 }
 
+/**
+ * Reconstrói o cache de anotações do utPLSQL no banco (PRD-77) chamando
+ * `ut_runner.rebuild_annotation_cache(<owner>)`, com o usuário da conexão como
+ * owner. Lança em caso de falha de conexão/execução (o comando trata).
+ */
+export async function rebuildAnnotationCache(
+  oracledb: typeof import('oracledb'),
+  connection: string,
+  cfg: UtConfig,
+): Promise<void> {
+  const owner = parseConnString(connection).user.toUpperCase();
+  const done = await withOracleConnection(oracledb, connection, cfg, async (conn) => {
+    await conn.execute(
+      `BEGIN ut_runner.rebuild_annotation_cache(:owner); END;`,
+      { owner: { dir: oracledb.BIND_IN, type: oracledb.STRING, val: owner } },
+      { autoCommit: true },
+    );
+    return true;
+  });
+  if (!done) {
+    throw new Error(t(getExtensionLocale(), 'ext.noConnection'));
+  }
+}
+
 export interface CompilationError {
   name: string;
   type: string;
@@ -334,7 +358,6 @@ export interface CompilationError {
   position: number;
   text: string;
 }
-
 export async function checkCompilationErrors(
   conn: {
     execute(
