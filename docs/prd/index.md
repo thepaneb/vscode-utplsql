@@ -157,6 +157,7 @@ _(vazio — nenhuma PRD aprovada)_
 | 77 | [Reconstruir o cache de anotações do utPLSQL](proposed/prd-77-rebuild-annotation-cache.md) | 0.13.0 | 2026-09-19 |
 | 78 | [Ordem aleatória de execução com seed](proposed/prd-78-random-test-order.md) | 0.13.0 | 2026-09-19 |
 | 79 | [Escopo avançado de cobertura (regex + exclusões)](proposed/prd-79-coverage-scope.md) | 0.13.0 | 2026-09-19 |
+| 83 | [Higiene do pacote VSIX: bloquear vazamento de arquivos de desenvolvimento](proposed/prd-83-vsix-package-hygiene.md) | 0.13.0 | 2026-09-22 |
 
 #### 0.14.0 — Árvore, relatórios, conectividade e segurança
 
@@ -290,7 +291,8 @@ docs/prd/
     ├── prd-79-coverage-scope.md
     ├── prd-80-virtual-db-source.md
     ├── prd-81-security-hardening.md
-    └── prd-82-tns-wallet.md
+    ├── prd-82-tns-wallet.md
+    └── prd-83-vsix-package-hygiene.md
 ```
 
 ---

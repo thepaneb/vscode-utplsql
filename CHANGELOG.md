@@ -1,5 +1,14 @@
 # Changelog
 
+## 0.13.0
+
+- **Pacote VSIX enxuto**: removidos do pacote arquivos e pastas de
+  desenvolvimento que escapavam do `.vscodeignore` — `.agents/`, `.kilo/`,
+  `.github/`, `docker/` (incluindo o cache da matriz de bancos, ~5 MB),
+  `.c8rc`, `.nvmrc`, `biome.json`, `skills-lock.json`, `SECURITY.md` e os
+  configs dos testes de integração (`.vscode-test.smoke.mjs`,
+  `.vscode-test.thick.mjs`).
+
 ## 0.12.1
 
 - **Debugger — DBMS_DEBUG real (PRD-71)**: o cliente usava assinaturas
