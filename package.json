@@ -127,6 +127,50 @@
           "default": "",
           "description": "Schema dono dos objetos para o mapeamento de cobertura. Se vazio, usa o usuário da conexão (parte antes de '/'), em maiúsculas."
         },
+        "utplsql.coverage.schemes": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "default": [],
+          "description": "Schemas cobertos (`a_coverage_schemes`). Vazio usa o usuário da conexão (ou `utplsql.coverageOwner`)."
+        },
+        "utplsql.coverage.includeObjects": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "default": [],
+          "description": "Objetos a incluir na cobertura, no formato `OWNER.NAME` (ex.: [\"APP.MINHA_PKG\"]). Útil para objetos alcançados apenas dinamicamente."
+        },
+        "utplsql.coverage.excludeObjects": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "default": [],
+          "description": "Objetos a excluir da cobertura, no formato `OWNER.NAME` (ex.: [\"UT3.UT_COVERAGE\"])."
+        },
+        "utplsql.coverage.includeSchemaExpr": {
+          "type": "string",
+          "default": "",
+          "description": "Expressão regular de schema a incluir na cobertura (ex.: \"^APP$\")."
+        },
+        "utplsql.coverage.includeObjectExpr": {
+          "type": "string",
+          "default": "",
+          "description": "Expressão regular de objeto a incluir na cobertura."
+        },
+        "utplsql.coverage.excludeSchemaExpr": {
+          "type": "string",
+          "default": "",
+          "description": "Expressão regular de schema a excluir da cobertura."
+        },
+        "utplsql.coverage.excludeObjectExpr": {
+          "type": "string",
+          "default": "",
+          "description": "Expressão regular de objeto a excluir da cobertura (ex.: \"^UT_\" para o framework utPLSQL)."
+        },
         "utplsql.timeoutMinutes": {
           "type": "number",
           "default": 60,

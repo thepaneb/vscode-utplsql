@@ -9,6 +9,13 @@ export interface UtConfig {
   sourcePath: string;
   includePatterns: string[];
   coverageOwner: string;
+  coverageSchemes: string[];
+  coverageIncludeObjects: string[];
+  coverageExcludeObjects: string[];
+  coverageIncludeSchemaExpr: string;
+  coverageIncludeObjectExpr: string;
+  coverageExcludeSchemaExpr: string;
+  coverageExcludeObjectExpr: string;
   tags: string;
   randomOrder: boolean;
   randomOrderSeed: number;
@@ -79,6 +86,13 @@ export function readConfig(): UtConfig {
     sourcePath: c.get<string>('sourcePath', 'install'),
     includePatterns: c.get<string[]>('includePatterns', ['**/*.pks']),
     coverageOwner: c.get<string>('coverageOwner', ''),
+    coverageSchemes: c.get<string[]>('coverage.schemes', []),
+    coverageIncludeObjects: c.get<string[]>('coverage.includeObjects', []),
+    coverageExcludeObjects: c.get<string[]>('coverage.excludeObjects', []),
+    coverageIncludeSchemaExpr: c.get<string>('coverage.includeSchemaExpr', ''),
+    coverageIncludeObjectExpr: c.get<string>('coverage.includeObjectExpr', ''),
+    coverageExcludeSchemaExpr: c.get<string>('coverage.excludeSchemaExpr', ''),
+    coverageExcludeObjectExpr: c.get<string>('coverage.excludeObjectExpr', ''),
     tags: c.get<string>('tags', ''),
     randomOrder: c.get<boolean>('run.randomOrder', false),
     randomOrderSeed: c.get<number>('run.randomOrderSeed', 0),

@@ -417,6 +417,20 @@ export interface OracleRunOptions {
   randomOrderSeed?: number;
   /** Owner do schema para coverage (override) */
   coverageOwner?: string;
+  /** Schemas de cobertura (sobrepõe o owner; vazio = automático) */
+  coverageSchemes?: string[];
+  /** Objetos a incluir na cobertura (formato OWNER.NAME) */
+  coverageIncludeObjects?: string[];
+  /** Objetos a excluir da cobertura (formato OWNER.NAME) */
+  coverageExcludeObjects?: string[];
+  /** Regex de schema a incluir na cobertura */
+  coverageIncludeSchemaExpr?: string;
+  /** Regex de objeto a incluir na cobertura */
+  coverageIncludeObjectExpr?: string;
+  /** Regex de schema a excluir da cobertura */
+  coverageExcludeSchemaExpr?: string;
+  /** Regex de objeto a excluir da cobertura */
+  coverageExcludeObjectExpr?: string;
   /** Se true, captura DBMS_OUTPUT */
   dbmsOutput?: boolean;
   /** Timeout em minutos (0 = sem timeout) */
@@ -456,6 +470,13 @@ export async function executeRunOracle(
     randomOrder,
     randomOrderSeed,
     coverageOwner,
+    coverageSchemes: coverageSchemesCfg,
+    coverageIncludeObjects,
+    coverageExcludeObjects,
+    coverageIncludeSchemaExpr,
+    coverageIncludeObjectExpr,
+    coverageExcludeSchemaExpr,
+    coverageExcludeObjectExpr,
     dbmsOutput,
     timeoutMinutes,
   } = options;
@@ -554,9 +575,66 @@ export async function executeRunOracle(
       binds.paths = { dir: oracledb.BIND_IN, type: 'UT_VARCHAR2_LIST', val: pathArgs };
     }
     let coverageSchemes = 'null';
+    let coverageScopeParams = '';
     if (coverageEnabled) {
+      const schemes = coverageSchemesCfg?.length ? coverageSchemesCfg : [owner];
       coverageSchemes = ':schemes';
-      binds.schemes = { dir: oracledb.BIND_IN, type: 'UT_VARCHAR2_LIST', val: [owner] };
+      binds.schemes = { dir: oracledb.BIND_IN, type: 'UT_VARCHAR2_LIST', val: schemes };
+
+      // Escopo fino (PRD-79): incluir/excluir objetos e regex de schema/objeto.
+      // Todos vão como parâmetros do `ut_runner.run`, que monta o
+      // `ut_coverage_options` internamente — o reporter de cobertura não recebe
+      // opções (a assinatura real do utPLSQL 3.x não as aceita).
+      const scopeParts: string[] = [];
+      if (coverageIncludeObjects?.length) {
+        binds.includeObjects = {
+          dir: oracledb.BIND_IN,
+          type: 'UT_VARCHAR2_LIST',
+          val: coverageIncludeObjects,
+        };
+        scopeParts.push('a_include_objects => :includeObjects');
+      }
+      if (coverageExcludeObjects?.length) {
+        binds.excludeObjects = {
+          dir: oracledb.BIND_IN,
+          type: 'UT_VARCHAR2_LIST',
+          val: coverageExcludeObjects,
+        };
+        scopeParts.push('a_exclude_objects => :excludeObjects');
+      }
+      if (coverageIncludeSchemaExpr) {
+        binds.includeSchemaExpr = {
+          dir: oracledb.BIND_IN,
+          type: oracledb.STRING,
+          val: coverageIncludeSchemaExpr,
+        };
+        scopeParts.push('a_include_schema_expr => :includeSchemaExpr');
+      }
+      if (coverageIncludeObjectExpr) {
+        binds.includeObjectExpr = {
+          dir: oracledb.BIND_IN,
+          type: oracledb.STRING,
+          val: coverageIncludeObjectExpr,
+        };
+        scopeParts.push('a_include_object_expr => :includeObjectExpr');
+      }
+      if (coverageExcludeSchemaExpr) {
+        binds.excludeSchemaExpr = {
+          dir: oracledb.BIND_IN,
+          type: oracledb.STRING,
+          val: coverageExcludeSchemaExpr,
+        };
+        scopeParts.push('a_exclude_schema_expr => :excludeSchemaExpr');
+      }
+      if (coverageExcludeObjectExpr) {
+        binds.excludeObjectExpr = {
+          dir: oracledb.BIND_IN,
+          type: oracledb.STRING,
+          val: coverageExcludeObjectExpr,
+        };
+        scopeParts.push('a_exclude_object_expr => :excludeObjectExpr');
+      }
+      if (scopeParts.length) coverageScopeParams = `,\n      ${scopeParts.join(',\n      ')}`;
     }
 
     // Ordem aleatória (PRD-78): os parâmetros só entram quando habilitada, para
@@ -564,7 +642,7 @@ export async function executeRunOracle(
     let randomParams = '';
     if (randomOrder) {
       const seed = randomOrderSeed && randomOrderSeed > 0 ? randomOrderSeed : null;
-      binds.randomOrder = { dir: oracledb.BIND_IN, type: oracledb.NUMBER, val: 1 };
+      binds.randomOrder = { dir: oracledb.BIND_IN, type: oracledb.DB_TYPE_BOOLEAN, val: true };
       binds.randomSeed = { dir: oracledb.BIND_IN, type: oracledb.NUMBER, val: seed };
       randomParams =
         ',\n      a_random_test_order => :randomOrder,\n      a_random_test_order_seed => :randomSeed';
@@ -576,7 +654,7 @@ export async function executeRunOracle(
     const plsql = `BEGIN ut_runner.run(
       a_paths => ${pathsArg},
       a_reporters => ut_reporters(${runners.join(',')}),
-      a_coverage_schemes => ${coverageSchemes},
+      a_coverage_schemes => ${coverageSchemes}${coverageScopeParams},
       a_tags => :tags${randomParams}
     ); END;`;
 

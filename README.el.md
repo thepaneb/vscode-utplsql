@@ -100,6 +100,13 @@ Test Explorer **καθώς ολοκληρώνεται κάθε test**.
 | `utplsql.sourcePath` | `install` | Φάκελος του κώδικα παραγωγής (για την αντιστοίχιση της κάλυψης σε αρχεία). |
 | `utplsql.includePatterns` | `["**/*.pks"]` | Globs για την εύρεση των specs με `%suite`/`%test`. Αν τα tests σας είναι σε `.sql`, χρησιμοποιήστε `["**/*.sql"]`. |
 | `utplsql.coverageOwner` | `""` | Schema-owner των καλυπτόμενων αντικειμένων. Κενό = χρησιμοποιεί τον χρήστη της σύνδεσης (κεφαλαία). |
+| `utplsql.coverage.schemes` | `[]` | Καλυπτόμενα schemas (`a_coverage_schemes`). Κενό = χρήστης σύνδεσης (ή `utplsql.coverageOwner`). |
+| `utplsql.coverage.includeObjects` | `[]` | Αντικείμενα προς συμπερίληψη στην κάλυψη, ως `OWNER.NAME` (π.χ. `["APP.MY_PKG"]`). Χρήσιμο για αντικείμενα που προσεγγίζονται μόνο δυναμικά. |
+| `utplsql.coverage.excludeObjects` | `[]` | Αντικείμενα προς αποκλεισμό από την κάλυψη, ως `OWNER.NAME` (π.χ. `["UT3.UT_COVERAGE"]`). |
+| `utplsql.coverage.includeSchemaExpr` | `""` | Regex schemas προς συμπερίληψη στην κάλυψη (π.χ. `^APP$`). |
+| `utplsql.coverage.includeObjectExpr` | `""` | Regex αντικειμένων προς συμπερίληψη στην κάλυψη. |
+| `utplsql.coverage.excludeSchemaExpr` | `""` | Regex schemas προς αποκλεισμό από την κάλυψη. |
+| `utplsql.coverage.excludeObjectExpr` | `""` | Regex αντικειμένων προς αποκλεισμό από την κάλυψη (π.χ. `^UT_` για το framework utPLSQL). |
 | `utplsql.timeoutMinutes` | `60` | Χρονικό όριο σε λεπτά για την εκτέλεση των tests. |
 | `utplsql.dbmsOutput` | `false` | Ενεργοποιεί το `DBMS_OUTPUT` στη σύνοδο του test. Χρήσιμο για debugging. |
 | `utplsql.additionalReporters` | `[]` | Επιπλέον reporters που περιλαμβάνονται σε κάθε εκτέλεση (π.χ. `["ut_coverage_html_reporter"]`). Οι προεπιλεγμένοι (documentation, junit) περιλαμβάνονται πάντα και δεν χρειάζεται να αναφέρονται. |

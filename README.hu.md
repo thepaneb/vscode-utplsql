@@ -99,6 +99,13 @@ A bővítmény közvetlenül Oracle-on keresztül csatlakozik, beolvassa a ripor
 | `utplsql.sourcePath` | `install` | Az éles kód mappája (a lefedettség fájlokhoz rendeléséhez). |
 | `utplsql.includePatterns` | `["**/*.pks"]` | A `%suite`/`%test` tartalmú specifikációk felderítésére szolgáló globok. Ha a tesztjeid `.sql` fájlokban vannak, használd a `["**/*.sql"]` értéket. |
 | `utplsql.coverageOwner` | `""` | A lefedett objektumok séma-tulajdonosa. Üres = a kapcsolati felhasználó (nagybetűvel). |
+| `utplsql.coverage.schemes` | `[]` | Lefedett sémák (`a_coverage_schemes`). Üres = a kapcsolati felhasználó (vagy `utplsql.coverageOwner`). |
+| `utplsql.coverage.includeObjects` | `[]` | A lefedésbe felveendő objektumok `OWNER.NAME` formában (pl. `["APP.MY_PKG"]`). Csak dinamikusan elért objektumokhoz hasznos. |
+| `utplsql.coverage.excludeObjects` | `[]` | A lefedésből kizárandó objektumok `OWNER.NAME` formában (pl. `["UT3.UT_COVERAGE"]`). |
+| `utplsql.coverage.includeSchemaExpr` | `""` | A lefedésbe felveendő sémák regexe (pl. `^APP$`). |
+| `utplsql.coverage.includeObjectExpr` | `""` | A lefedésbe felveendő objektumok regexe. |
+| `utplsql.coverage.excludeSchemaExpr` | `""` | A lefedésből kizárandó sémák regexe. |
+| `utplsql.coverage.excludeObjectExpr` | `""` | A lefedésből kizárandó objektumok regexe (pl. `^UT_` az utPLSQL frameworkhöz). |
 | `utplsql.timeoutMinutes` | `60` | Időtúllépés percben a tesztek futtatásához. |
 | `utplsql.dbmsOutput` | `false` | Engedélyezi a `DBMS_OUTPUT` használatát a teszt-munkamenetben. Hasznos hibakereséshez. |
 | `utplsql.additionalReporters` | `[]` | További riporterek, amelyek minden futtatáskor bekerülnek (pl. `["ut_coverage_html_reporter"]`). Az alapértelmezettek (documentation, junit) mindig szerepelnek, és nem kell felsorolni őket. |

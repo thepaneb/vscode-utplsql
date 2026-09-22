@@ -94,6 +94,13 @@ Test Explorer に表示されます。
 | `utplsql.sourcePath` | `install` | 本番コードのフォルダー（カバレッジをファイルにマッピングするため）。 |
 | `utplsql.includePatterns` | `["**/*.pks"]` | `%suite`/`%test` を含むスペックを検出するグロブ。テストが `.sql` 内にある場合は `["**/*.sql"]` を使用します。 |
 | `utplsql.coverageOwner` | `""` | カバレッジ対象オブジェクトのスキーマ所有者。空 = 接続ユーザーを使用（大文字）。 |
+| `utplsql.coverage.schemes` | `[]` | カバレッジ対象のスキーマ（`a_coverage_schemes`）。空 = 接続ユーザー（または `utplsql.coverageOwner`）。 |
+| `utplsql.coverage.includeObjects` | `[]` | カバレッジに含めるオブジェクト（`OWNER.NAME` 形式、例: `["APP.MY_PKG"]`）。動的にのみ到達するオブジェクトに有効。 |
+| `utplsql.coverage.excludeObjects` | `[]` | カバレッジから除外するオブジェクト（`OWNER.NAME` 形式、例: `["UT3.UT_COVERAGE"]`）。 |
+| `utplsql.coverage.includeSchemaExpr` | `""` | カバレッジに含めるスキーマの正規表現（例: `^APP$`）。 |
+| `utplsql.coverage.includeObjectExpr` | `""` | カバレッジに含めるオブジェクトの正規表現。 |
+| `utplsql.coverage.excludeSchemaExpr` | `""` | カバレッジから除外するスキーマの正規表現。 |
+| `utplsql.coverage.excludeObjectExpr` | `""` | カバレッジから除外するオブジェクトの正規表現（例: utPLSQL フレームワークには `^UT_`）。 |
 | `utplsql.timeoutMinutes` | `60` | テスト実行のタイムアウト（分）。 |
 | `utplsql.dbmsOutput` | `false` | テストセッションで `DBMS_OUTPUT` を有効化。デバッグに便利。 |
 | `utplsql.additionalReporters` | `[]` | 毎回の実行に含める追加レポーター（例: `["ut_coverage_html_reporter"]`）。デフォルト（documentation、junit）は常に含まれ、リスト化する必要はありません。 |

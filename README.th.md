@@ -98,6 +98,13 @@ Test Explorer **เมื่อแต่ละเทสต์เสร็จส�
 | `utplsql.sourcePath` | `install` | โฟลเดอร์ของโค้ด production (เพื่อจับคู่ความครอบคลุมกับไฟล์) |
 | `utplsql.includePatterns` | `["**/*.pks"]` | Globs สำหรับค้นหา specs ที่มี `%suite`/`%test` หากเทสต์ของคุณอยู่ในไฟล์ `.sql` ให้ใช้ `["**/*.sql"]` |
 | `utplsql.coverageOwner` | `""` | เจ้าของ schema ของอ็อบเจกต์ที่ครอบคลุม ว่าง = ใช้ผู้ใช้จากการเชื่อมต่อ (ตัวพิมพ์ใหญ่) |
+| `utplsql.coverage.schemes` | `[]` | schema ที่ครอบคลุม (`a_coverage_schemes`) ว่าง = ผู้ใช้จากการเชื่อมต่อ (หรือ `utplsql.coverageOwner`) |
+| `utplsql.coverage.includeObjects` | `[]` | อ็อบเจกต์ที่จะรวมในการครอบคลุม ในรูปแบบ `OWNER.NAME` (เช่น `["APP.MY_PKG"]`) มีประโยชน์กับอ็อบเจกต์ที่เข้าถึงแบบไดนามิกเท่านั้น |
+| `utplsql.coverage.excludeObjects` | `[]` | อ็อบเจกต์ที่จะยกเว้นจากการครอบคลุม ในรูปแบบ `OWNER.NAME` (เช่น `["UT3.UT_COVERAGE"]`) |
+| `utplsql.coverage.includeSchemaExpr` | `""` | regex ของ schema ที่จะรวมในการครอบคลุม (เช่น `^APP$`) |
+| `utplsql.coverage.includeObjectExpr` | `""` | regex ของอ็อบเจกต์ที่จะรวมในการครอบคลุม |
+| `utplsql.coverage.excludeSchemaExpr` | `""` | regex ของ schema ที่จะยกเว้นจากการครอบคลุม |
+| `utplsql.coverage.excludeObjectExpr` | `""` | regex ของอ็อบเจกต์ที่จะยกเว้นจากการครอบคลุม (เช่น `^UT_` สำหรับ framework utPLSQL) |
 | `utplsql.timeoutMinutes` | `60` | Timeout เป็นนาที |
 | `utplsql.dbmsOutput` | `false` | เปิดใช้งาน `DBMS_OUTPUT` ในเซสชันการทดสอบ |
 | `utplsql.additionalReporters` | `[]` | Reporters เพิ่มเติมที่จะรวมในทุกรัน (เช่น `["ut_coverage_html_reporter"]`) ค่าเริ่มต้น (documentation, junit) จะถูกรวมเสมอและไม่จำเป็นต้องระบุ |

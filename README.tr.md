@@ -98,6 +98,13 @@ Geçici dosya yok, toplu işin bitmesi beklenmez. Sonuçlar Test Explorer'da
 | `utplsql.sourcePath` | `install` | Üretim kodunun klasörü (kapsamı dosyalara eşlemek için). |
 | `utplsql.includePatterns` | `["**/*.pks"]` | `%suite`/`%test` içeren şemaları keşfetmek için glob'lar. Testleriniz `.sql` içindeyse `["**/*.sql"]` kullanın. |
 | `utplsql.coverageOwner` | `""` | Kapsanan nesnelerin şema sahibi. Boş = bağlantı kullanıcısını kullanır (büyük harfle). |
+| `utplsql.coverage.schemes` | `[]` | Kapsanan şemalar (`a_coverage_schemes`). Boş = bağlantı kullanıcısı (veya `utplsql.coverageOwner`). |
+| `utplsql.coverage.includeObjects` | `[]` | Kapsama dahil edilecek nesneler, `OWNER.NAME` biçiminde (örn. `["APP.MY_PKG"]`). Yalnızca dinamik olarak erişilen nesneler için kullanışlıdır. |
+| `utplsql.coverage.excludeObjects` | `[]` | Kapsamdan hariç tutulacak nesneler, `OWNER.NAME` biçiminde (örn. `["UT3.UT_COVERAGE"]`). |
+| `utplsql.coverage.includeSchemaExpr` | `""` | Kapsama dahil edilecek şemaların regex'i (örn. `^APP$`). |
+| `utplsql.coverage.includeObjectExpr` | `""` | Kapsama dahil edilecek nesnelerin regex'i. |
+| `utplsql.coverage.excludeSchemaExpr` | `""` | Kapsamdan hariç tutulacak şemaların regex'i. |
+| `utplsql.coverage.excludeObjectExpr` | `""` | Kapsamdan hariç tutulacak nesnelerin regex'i (örn. utPLSQL çatısı için `^UT_`). |
 | `utplsql.timeoutMinutes` | `60` | Çalıştırma zaman aşımı (dakika). |
 | `utplsql.dbmsOutput` | `false` | Test oturumunda `DBMS_OUTPUT`'u etkinleştirir. |
 | `utplsql.additionalReporters` | `[]` | Her çalıştırmada eklenecek ek raporlayıcılar (örn. `["ut_coverage_html_reporter"]`). Varsayılanlar (documentation, junit) her zaman dahildir ve listelenmeleri gerekmez. |

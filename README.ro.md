@@ -99,6 +99,13 @@ Extensia se conectează direct prin Oracle, citește rapoartele (JUnit + Coverag
 | `utplsql.sourcePath` | `install` | Folderul codului de producție (pentru maparea acoperirii pe fișiere). |
 | `utplsql.includePatterns` | `["**/*.pks"]` | Glob-uri pentru descoperirea spec-urilor cu `%suite`/`%test`. Dacă testele tale sunt în `.sql`, folosește `["**/*.sql"]`. |
 | `utplsql.coverageOwner` | `""` | Schema proprietară a obiectelor acoperite. Gol = folosește utilizatorul conexiunii (cu majuscule). |
+| `utplsql.coverage.schemes` | `[]` | Scheme acoperite (`a_coverage_schemes`). Gol = utilizatorul conexiunii (sau `utplsql.coverageOwner`). |
+| `utplsql.coverage.includeObjects` | `[]` | Obiecte de inclus în acoperire, ca `OWNER.NAME` (ex.: `["APP.MY_PKG"]`). Util pentru obiecte atinse doar dinamic. |
+| `utplsql.coverage.excludeObjects` | `[]` | Obiecte de exclus din acoperire, ca `OWNER.NAME` (ex.: `["UT3.UT_COVERAGE"]`). |
+| `utplsql.coverage.includeSchemaExpr` | `""` | Regex de scheme de inclus în acoperire (ex.: `^APP$`). |
+| `utplsql.coverage.includeObjectExpr` | `""` | Regex de obiecte de inclus în acoperire. |
+| `utplsql.coverage.excludeSchemaExpr` | `""` | Regex de scheme de exclus din acoperire. |
+| `utplsql.coverage.excludeObjectExpr` | `""` | Regex de obiecte de exclus din acoperire (ex.: `^UT_` pentru framework-ul utPLSQL). |
 | `utplsql.timeoutMinutes` | `60` | Timeout în minute pentru executarea testelor. |
 | `utplsql.dbmsOutput` | `false` | Activează `DBMS_OUTPUT` în sesiunea de test. Util pentru depanare. |
 | `utplsql.additionalReporters` | `[]` | Reporteri suplimentari de inclus la fiecare rulare (ex.: `["ut_coverage_html_reporter"]`). Cei implicați (documentation, junit) sunt întotdeauna incluși și nu trebuie listați. |

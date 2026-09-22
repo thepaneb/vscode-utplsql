@@ -98,6 +98,13 @@ Test Explorer **appena ogni test termina**.
 | `utplsql.sourcePath` | `install` | Cartella del codice di produzione (per mappare la copertura ai file). |
 | `utplsql.includePatterns` | `["**/*.pks"]` | Glob per scoprire le spec con `%suite`/`%test`. Se i tuoi test sono in `.sql`, usa `["**/*.sql"]`. |
 | `utplsql.coverageOwner` | `""` | Proprietario dello schema degli oggetti coperti. Vuoto = usa l'utente della connessione (maiuscolo). |
+| `utplsql.coverage.schemes` | `[]` | Schemi coperti (`a_coverage_schemes`). Vuoto = utente della connessione (o `utplsql.coverageOwner`). |
+| `utplsql.coverage.includeObjects` | `[]` | Oggetti da includere nella copertura, come `OWNER.NAME` (es. `["APP.MIO_PKG"]`). Utile per oggetti raggiunti solo dinamicamente. |
+| `utplsql.coverage.excludeObjects` | `[]` | Oggetti da escludere dalla copertura, come `OWNER.NAME` (es. `["UT3.UT_COVERAGE"]`). |
+| `utplsql.coverage.includeSchemaExpr` | `""` | Regex di schemi da includere nella copertura (es. `^APP$`). |
+| `utplsql.coverage.includeObjectExpr` | `""` | Regex di oggetti da includere nella copertura. |
+| `utplsql.coverage.excludeSchemaExpr` | `""` | Regex di schemi da escludere dalla copertura. |
+| `utplsql.coverage.excludeObjectExpr` | `""` | Regex di oggetti da escludere dalla copertura (es. `^UT_` per il framework utPLSQL). |
 | `utplsql.timeoutMinutes` | `60` | Timeout in minuti per l'esecuzione dei test. |
 | `utplsql.dbmsOutput` | `false` | Abilita `DBMS_OUTPUT` nella sessione di test. Utile per il debug. |
 | `utplsql.additionalReporters` | `[]` | Reporter aggiuntivi da includere in ogni esecuzione (es. `["ut_coverage_html_reporter"]`). I default (documentation, junit) sono sempre inclusi e non devono essere elencati. |

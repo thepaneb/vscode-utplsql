@@ -99,6 +99,13 @@ Ekstensi terhubung langsung ke Oracle, membaca laporan (JUnit + Coverage) lalu m
 | `utplsql.sourcePath` | `install` | Folder kode produksi (untuk memetakan coverage ke file). |
 | `utplsql.includePatterns` | `["**/*.pks"]` | Glob untuk menemukan spec dengan `%suite`/`%test`. Jika pengujian Anda di `.sql`, gunakan `["**/*.sql"]`. |
 | `utplsql.coverageOwner` | `""` | Pemilik schema dari objek yang dicakup. Kosong = memakai user koneksi (huruf besar). |
+| `utplsql.coverage.schemes` | `[]` | Schema yang dicakup (`a_coverage_schemes`). Kosong = user koneksi (atau `utplsql.coverageOwner`). |
+| `utplsql.coverage.includeObjects` | `[]` | Objek yang disertakan dalam cakupan, sebagai `OWNER.NAME` (mis. `["APP.MY_PKG"]`). Berguna untuk objek yang hanya dijangkau secara dinamis. |
+| `utplsql.coverage.excludeObjects` | `[]` | Objek yang dikecualikan dari cakupan, sebagai `OWNER.NAME` (mis. `["UT3.UT_COVERAGE"]`). |
+| `utplsql.coverage.includeSchemaExpr` | `""` | Regex schema yang disertakan dalam cakupan (mis. `^APP$`). |
+| `utplsql.coverage.includeObjectExpr` | `""` | Regex objek yang disertakan dalam cakupan. |
+| `utplsql.coverage.excludeSchemaExpr` | `""` | Regex schema yang dikecualikan dari cakupan. |
+| `utplsql.coverage.excludeObjectExpr` | `""` | Regex objek yang dikecualikan dari cakupan (mis. `^UT_` untuk framework utPLSQL). |
 | `utplsql.timeoutMinutes` | `60` | Batas waktu (timeout) dalam menit untuk eksekusi pengujian. |
 | `utplsql.dbmsOutput` | `false` | Mengaktifkan `DBMS_OUTPUT` di sesi pengujian. Berguna untuk debugging. |
 | `utplsql.additionalReporters` | `[]` | Reporter tambahan yang disertakan pada setiap eksekusi (mis. `["ut_coverage_html_reporter"]`). Default (documentation, junit) selalu disertakan dan tidak perlu didaftarkan. |

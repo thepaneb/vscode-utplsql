@@ -98,6 +98,13 @@ Test Explorer **ngay khi từng bài kiểm thử hoàn tất**. VSIX đã kèm 
 | `utplsql.sourcePath` | `install` | Thư mục chứa mã sản phẩm (để ánh xạ độ phủ tới các tệp). |
 | `utplsql.includePatterns` | `["**/*.pks"]` | Các glob để tìm các spec chứa `%suite`/`%test`. Nếu kiểm thử của bạn nằm trong `.sql`, dùng `["**/*.sql"]`. |
 | `utplsql.coverageOwner` | `""` | Schema sở hữu các đối tượng được phủ. Trống = dùng người dùng kết nối (in hoa). |
+| `utplsql.coverage.schemes` | `[]` | Schema được phủ (`a_coverage_schemes`). Trống = người dùng kết nối (hoặc `utplsql.coverageOwner`). |
+| `utplsql.coverage.includeObjects` | `[]` | Đối tượng đưa vào phạm vi phủ, dạng `OWNER.NAME` (ví dụ `["APP.MY_PKG"]`). Hữu ích cho các đối tượng chỉ được truy cập động. |
+| `utplsql.coverage.excludeObjects` | `[]` | Đối tượng loại khỏi phạm vi phủ, dạng `OWNER.NAME` (ví dụ `["UT3.UT_COVERAGE"]`). |
+| `utplsql.coverage.includeSchemaExpr` | `""` | Regex schema đưa vào phạm vi phủ (ví dụ `^APP$`). |
+| `utplsql.coverage.includeObjectExpr` | `""` | Regex đối tượng đưa vào phạm vi phủ. |
+| `utplsql.coverage.excludeSchemaExpr` | `""` | Regex schema loại khỏi phạm vi phủ. |
+| `utplsql.coverage.excludeObjectExpr` | `""` | Regex đối tượng loại khỏi phạm vi phủ (ví dụ `^UT_` cho framework utPLSQL). |
 | `utplsql.timeoutMinutes` | `60` | Thời gian chờ (phút). |
 | `utplsql.dbmsOutput` | `false` | Bật `DBMS_OUTPUT` trong phiên kiểm thử. |
 | `utplsql.additionalReporters` | `[]` | Các reporter bổ sung đưa vào mỗi lần chạy (ví dụ `["ut_coverage_html_reporter"]`). Các reporter mặc định (documentation, junit) luôn được bao gồm và không cần liệt kê. |

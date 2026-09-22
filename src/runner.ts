@@ -188,6 +188,13 @@ export async function executeRun(
       randomOrder: cfg.randomOrder,
       randomOrderSeed: cfg.randomOrderSeed,
       coverageOwner: cfg.coverageOwner,
+      coverageSchemes: cfg.coverageSchemes,
+      coverageIncludeObjects: cfg.coverageIncludeObjects,
+      coverageExcludeObjects: cfg.coverageExcludeObjects,
+      coverageIncludeSchemaExpr: cfg.coverageIncludeSchemaExpr,
+      coverageIncludeObjectExpr: cfg.coverageIncludeObjectExpr,
+      coverageExcludeSchemaExpr: cfg.coverageExcludeSchemaExpr,
+      coverageExcludeObjectExpr: cfg.coverageExcludeObjectExpr,
       dbmsOutput: cfg.dbmsOutput,
       timeoutMinutes: cfg.timeoutMinutes,
     };

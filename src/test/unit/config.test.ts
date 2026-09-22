@@ -40,6 +40,17 @@ test('readConfig: randomOrder defaults', () => {
   assert.strictEqual(cfg.randomOrderSeed, 0);
 });
 
+test('readConfig: coverage scope defaults', () => {
+  const cfg = readConfig();
+  assert.deepStrictEqual(cfg.coverageSchemes, []);
+  assert.deepStrictEqual(cfg.coverageIncludeObjects, []);
+  assert.deepStrictEqual(cfg.coverageExcludeObjects, []);
+  assert.strictEqual(cfg.coverageIncludeSchemaExpr, '');
+  assert.strictEqual(cfg.coverageIncludeObjectExpr, '');
+  assert.strictEqual(cfg.coverageExcludeSchemaExpr, '');
+  assert.strictEqual(cfg.coverageExcludeObjectExpr, '');
+});
+
 test('readConfig: scriptRunner defaults', () => {
   const cfg = readConfig();
   assert.strictEqual(cfg.scriptRunnerStopOnError, true);

@@ -98,6 +98,13 @@ Test Explorer 中。
 | `utplsql.sourcePath` | `install` | 生产代码的文件夹（用于将覆盖率映射到文件）。 |
 | `utplsql.includePatterns` | `["**/*.pks"]` | 用于发现包含 `%suite`/`%test` 的 spec 的 glob 模式。如果您的测试在 `.sql` 中，请使用 `["**/*.sql"]`。 |
 | `utplsql.coverageOwner` | `""` | 被覆盖对象的 schema 所有者。留空 = 使用连接用户（大写）。 |
+| `utplsql.coverage.schemes` | `[]` | 覆盖的 schema（`a_coverage_schemes`）。留空 = 连接用户（或 `utplsql.coverageOwner`）。 |
+| `utplsql.coverage.includeObjects` | `[]` | 要纳入覆盖的对象，格式为 `OWNER.NAME`（例如 `["APP.MY_PKG"]`）。适用于仅通过动态方式到达的对象。 |
+| `utplsql.coverage.excludeObjects` | `[]` | 要从覆盖中排除的对象，格式为 `OWNER.NAME`（例如 `["UT3.UT_COVERAGE"]`）。 |
+| `utplsql.coverage.includeSchemaExpr` | `""` | 要纳入覆盖的 schema 正则（例如 `^APP$`）。 |
+| `utplsql.coverage.includeObjectExpr` | `""` | 要纳入覆盖的对象正则。 |
+| `utplsql.coverage.excludeSchemaExpr` | `""` | 要从覆盖中排除的 schema 正则。 |
+| `utplsql.coverage.excludeObjectExpr` | `""` | 要从覆盖中排除的对象正则（例如 utPLSQL 框架用 `^UT_`）。 |
 | `utplsql.timeoutMinutes` | `60` | 执行超时时间（分钟）。 |
 | `utplsql.dbmsOutput` | `false` | 在测试会话中启用 `DBMS_OUTPUT`。 |
 | `utplsql.additionalReporters` | `[]` | 每次运行时要包含的额外 reporter（例如 `["ut_coverage_html_reporter"]`）。默认的（documentation、junit）始终包含，无需列出。 |

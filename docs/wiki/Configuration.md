@@ -95,6 +95,13 @@ decoded by VSCode — the profile charset does not apply.
 |---|---|---|
 | `utplsql.sourcePath` | `install` | Production code folder to map coverage. |
 | `utplsql.coverageOwner` | `""` | Schema of covered objects. Empty = connection user. |
+| `utplsql.coverage.schemes` | `[]` | Covered schemas (`a_coverage_schemes`). Empty = connection user (or `utplsql.coverageOwner`). |
+| `utplsql.coverage.includeObjects` | `[]` | Objects to include in coverage, as `OWNER.NAME` (e.g. `["APP.MY_PKG"]`). Useful for dynamically reached objects. |
+| `utplsql.coverage.excludeObjects` | `[]` | Objects to exclude from coverage, as `OWNER.NAME` (e.g. `["UT3.UT_COVERAGE"]`). |
+| `utplsql.coverage.includeSchemaExpr` | `""` | Regex of schemas to include in coverage (e.g. `^APP$`). |
+| `utplsql.coverage.includeObjectExpr` | `""` | Regex of objects to include in coverage. |
+| `utplsql.coverage.excludeSchemaExpr` | `""` | Regex of schemas to exclude from coverage. |
+| `utplsql.coverage.excludeObjectExpr` | `""` | Regex of objects to exclude from coverage (e.g. `^UT_` for the utPLSQL framework). |
 | `utplsql.sqlCoverageEnabled` | `false` | Tracks views (SQL objects) via `V$SQL` after the run, marking them as executed/not executed. Requires `GRANT SELECT ON V$SQL`. Best-effort. |
 
 ## PL/SQL Debug

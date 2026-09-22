@@ -99,6 +99,13 @@ Test Explorer에 나타납니다.
 | `utplsql.sourcePath` | `install` | 프로덕션 코드 폴더(커버리지를 파일에 매핑하기 위해). |
 | `utplsql.includePatterns` | `["**/*.pks"]` | `%suite`/`%test`가 있는 스펙을 발견하기 위한 glob. 테스트가 `.sql`에 있으면 `["**/*.sql"]`을 사용하세요. |
 | `utplsql.coverageOwner` | `""` | 커버리지 대상 객체의 스키마 소유자. 비어 있음 = 연결 사용자 사용(대문자). |
+| `utplsql.coverage.schemes` | `[]` | 커버리지 대상 스키마(`a_coverage_schemes`). 비어 있음 = 연결 사용자(또는 `utplsql.coverageOwner`). |
+| `utplsql.coverage.includeObjects` | `[]` | 커버리지에 포함할 객체(`OWNER.NAME` 형식, 예: `["APP.MY_PKG"]`). 동적으로만 도달하는 객체에 유용합니다. |
+| `utplsql.coverage.excludeObjects` | `[]` | 커버리지에서 제외할 객체(`OWNER.NAME` 형식, 예: `["UT3.UT_COVERAGE"]`). |
+| `utplsql.coverage.includeSchemaExpr` | `""` | 커버리지에 포함할 스키마 정규식(예: `^APP$`). |
+| `utplsql.coverage.includeObjectExpr` | `""` | 커버리지에 포함할 객체 정규식. |
+| `utplsql.coverage.excludeSchemaExpr` | `""` | 커버리지에서 제외할 스키마 정규식. |
+| `utplsql.coverage.excludeObjectExpr` | `""` | 커버리지에서 제외할 객체 정규식(예: utPLSQL 프레임워크의 경우 `^UT_`). |
 | `utplsql.timeoutMinutes` | `60` | 실행 시간 제한(분). |
 | `utplsql.dbmsOutput` | `false` | 테스트 세션에서 `DBMS_OUTPUT`을 활성화합니다. |
 | `utplsql.additionalReporters` | `[]` | 모든 실행에 포함할 추가 리포터(예: `["ut_coverage_html_reporter"]`). 기본값(documentation, junit)은 항상 포함되며 나열할 필요가 없습니다. |

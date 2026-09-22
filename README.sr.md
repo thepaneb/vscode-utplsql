@@ -98,6 +98,13 @@ Test Explorer-у **како се сваки тест заврши**. VSIX већ
 | `utplsql.sourcePath` | `install` | Фасцикла продукционог кода (за мапирање покривености на датотеке). |
 | `utplsql.includePatterns` | `["**/*.pks"]` | Glob узорци за проналажење спецификација са `%suite`/`%test`. Ако су ваши тестови у `.sql`, користите `["**/*.sql"]`. |
 | `utplsql.coverageOwner` | `""` | Власник шеме покривених објеката. Празно = користи корисника везе (велика слова). |
+| `utplsql.coverage.schemes` | `[]` | Покривене шеме (`a_coverage_schemes`). Празно = корисник везе (или `utplsql.coverageOwner`). |
+| `utplsql.coverage.includeObjects` | `[]` | Објекти за укључивање у покривеност, као `OWNER.NAME` (нпр. `["APP.MY_PKG"]`). Корисно за објекте достигнуте само динамички. |
+| `utplsql.coverage.excludeObjects` | `[]` | Објекти за искључивање из покривености, као `OWNER.NAME` (нпр. `["UT3.UT_COVERAGE"]`). |
+| `utplsql.coverage.includeSchemaExpr` | `""` | Regex шема за укључивање у покривеност (нпр. `^APP$`). |
+| `utplsql.coverage.includeObjectExpr` | `""` | Regex објеката за укључивање у покривеност. |
+| `utplsql.coverage.excludeSchemaExpr` | `""` | Regex шема за искључивање из покривености. |
+| `utplsql.coverage.excludeObjectExpr` | `""` | Regex објеката за искључивање из покривености (нпр. `^UT_` за utPLSQL framework). |
 | `utplsql.timeoutMinutes` | `60` | Тимеаут у минутима. |
 | `utplsql.dbmsOutput` | `false` | Омогућава `DBMS_OUTPUT` у тест сесији. |
 | `utplsql.additionalReporters` | `[]` | Додатни reporter-и за укључивање у свако извршавање (нпр. `["ut_coverage_html_reporter"]`). Подразумевани (documentation, junit) су увек укључени и не морају се наводити. |

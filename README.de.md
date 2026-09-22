@@ -98,6 +98,13 @@ Test Explorer, **sobald jeder Test fertig ist**.
 | `utplsql.sourcePath` | `install` | Ordner des Produktionscodes (um Coverage Dateien zuzuordnen). |
 | `utplsql.includePatterns` | `["**/*.pks"]` | Globs zum Ermitteln der Specs mit `%suite`/`%test`. Wenn Ihre Tests in `.sql` liegen, verwenden Sie `["**/*.sql"]`. |
 | `utplsql.coverageOwner` | `""` | Schema-Eigentümer der abgedeckten Objekte. Leer = verwendet den Verbindungsbenutzer (Großschreibung). |
+| `utplsql.coverage.schemes` | `[]` | Abgedeckte Schemas (`a_coverage_schemes`). Leer = Verbindungsbenutzer (oder `utplsql.coverageOwner`). |
+| `utplsql.coverage.includeObjects` | `[]` | Objekte, die in die Abdeckung aufgenommen werden, als `OWNER.NAME` (z. B. `["APP.MEIN_PKG"]`). Nützlich für nur dynamisch erreichte Objekte. |
+| `utplsql.coverage.excludeObjects` | `[]` | Objekte, die von der Abdeckung ausgeschlossen werden, als `OWNER.NAME` (z. B. `["UT3.UT_COVERAGE"]`). |
+| `utplsql.coverage.includeSchemaExpr` | `""` | Regex für Schemas, die in die Abdeckung aufgenommen werden (z. B. `^APP$`). |
+| `utplsql.coverage.includeObjectExpr` | `""` | Regex für Objekte, die in die Abdeckung aufgenommen werden. |
+| `utplsql.coverage.excludeSchemaExpr` | `""` | Regex für Schemas, die von der Abdeckung ausgeschlossen werden. |
+| `utplsql.coverage.excludeObjectExpr` | `""` | Regex für Objekte, die von der Abdeckung ausgeschlossen werden (z. B. `^UT_` für das utPLSQL-Framework). |
 | `utplsql.timeoutMinutes` | `60` | Timeout in Minuten für die Testausführung. |
 | `utplsql.dbmsOutput` | `false` | Aktiviert `DBMS_OUTPUT` in der Testsitzung. Nützlich zum Debuggen. |
 | `utplsql.additionalReporters` | `[]` | Zusätzliche Reporter, die bei jedem Lauf einbezogen werden (z. B. `["ut_coverage_html_reporter"]`). Die Standard-Reporter (documentation, junit) werden immer einbezogen und müssen nicht aufgelistet werden. |

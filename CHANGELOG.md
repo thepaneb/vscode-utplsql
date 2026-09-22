@@ -20,6 +20,14 @@
   (default `0`), que passam `a_random_test_order`/`a_random_test_order_seed` ao
   `ut_runner.run` para revelar dependências de ordem entre testes. Seed `0` =
   sorteada pelo banco; seed > 0 reproduz a mesma ordem e é registrada no Output.
+- **Escopo avançado de cobertura (PRD-79)**: novas settings
+  `utplsql.coverage.schemes` (sobrepõe os schemas), `utplsql.coverage.includeObjects`
+  e `utplsql.coverage.excludeObjects` (formato `OWNER.NAME`) e as regex
+  `includeSchemaExpr`, `includeObjectExpr`, `excludeSchemaExpr` e
+  `excludeObjectExpr`. Os valores vão como binds ao `ut_runner.run` (listas
+  `UT_VARCHAR2_LIST`, regex `STRING`), que monta o `ut_coverage_options`
+  internamente. Permite excluir o framework utPLSQL (ex.: `excludeObjectExpr =
+  "^UT_"`) e incluir objetos alcançados apenas dinamicamente. Default inalterado.
 
 ## 0.12.1
 

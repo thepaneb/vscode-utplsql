@@ -2,7 +2,7 @@
 
 | Campo | Valor |
 |---|---|
-| Status | Aprovado |
+| Status | Concluído |
 | Autor | Gil Cleber Barboza |
 | Data | 2026-09-19 |
 | Componente | Extensão `paneb.vscode-utplsql` |
@@ -150,3 +150,24 @@ bind `STRING` para as regex. Nenhum valor do usuário concatenado no PL/SQL.
 - Detectar automaticamente o schema do utPLSQL (`discoverUtplsqlSchema`) e
   excluí-lo por default? (hoje a PRD-74 descobre o prefixo)
 - Expor `utplsql.coverage.reporter` (sonar/cobertura) junto desta PRD?
+
+## 12. Notas de implementação (0.13.0)
+
+- **Onde o escopo é aplicado**: no utPLSQL 3.x o `ut_coverage_cobertura_reporter`
+  **não** recebe opções (o construtor só tem `self`). O escopo é passado ao
+  `ut_runner.run` (`a_include_objects`, `a_exclude_objects`,
+  `a_include_schema_expr`, `a_include_object_expr`, `a_exclude_schema_expr`,
+  `a_exclude_object_expr`), que monta o `ut_coverage_options` internamente.
+  Confirmado na fonte do utPLSQL 3.2.3 (`api/ut_runner.pks`,
+  `core/types/ut_coverage_options.tps`). A menção a
+  `ut_coverage_cobertura_reporter(<options>)` no RF3 não corresponde à API real.
+- **Exclusão automática do framework**: não implementada. `a_exclude_objects`
+  exige nomes explícitos (`OWNER.NAME`), sem wildcard; para excluir o framework
+  o caminho suportado é a regex `utplsql.coverage.excludeObjectExpr` (ex.:
+  `^UT_`).
+- **RNF2 (regex inválida não derruba o run)**: não implementado. Uma regex
+  inválida aborta o `ut_runner.run` e o erro aparece no Output (fluxo atual de
+  `runner.oracleError`); não há retry sem cobertura para não executar os testes
+  duas vezes.
+- **Testes**: unitários cobrem os binds de listas e regex e a ausência dos
+  parâmetros no default; validação em banco real fica para a suíte de integração.

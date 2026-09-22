@@ -782,6 +782,7 @@ function makeOracleRunFake(opts: {
     OUT_FORMAT_OBJECT: { id: 'object' },
     BIND_OUT: { dir: 'out' },
     BIND_IN: 'in',
+    DB_TYPE_BOOLEAN: 'BOOLEAN',
     STRING: 'STRING',
     NUMBER: 'NUMBER',
     createPool: async () => {
@@ -1087,6 +1088,151 @@ test('executeRunOracle: sem cobertura envia a_coverage_schemes => null (sem bind
   assert.strictEqual(captured.runBinds?.schemes, undefined);
 });
 
+test('executeRunOracle: coverage.schemes sobrescreve os schemas de cobertura', async () => {
+  const { mod, captured } = makeOracleRunFake({
+    buffer: [JUNIT_XML, COV_XML],
+    reporters: ['UT_DOCUMENTATION_REPORTER', 'UT_COVERAGE_COBERTURA_REPORTER'],
+  });
+  const run = makeRun() as any;
+  const { item, metaMap } = makeLeaf();
+  try {
+    await executeRunOracle(
+      {
+        connection: 'u/p@//h:1521/s',
+        pathArgs: ['pkg'],
+        coverage: true,
+        sourcePath: 'install',
+        root: '/root',
+        run,
+        leafTests: [item as any],
+        state: makeOracleRunState(metaMap),
+        coverageOwner: 'app',
+        coverageSchemes: ['APP', 'UT3'],
+      },
+      neverCancel as never,
+      async () => mod as never,
+    );
+  } finally {
+    await closeOraclePool();
+  }
+  assert.deepStrictEqual(captured.runBinds?.schemes, {
+    dir: 'in',
+    type: 'UT_VARCHAR2_LIST',
+    val: ['APP', 'UT3'],
+  });
+});
+
+test('executeRunOracle: includeObjects/excludeObjects viram binds tipados', async () => {
+  const { mod, captured } = makeOracleRunFake({
+    buffer: [JUNIT_XML, COV_XML],
+    reporters: ['UT_DOCUMENTATION_REPORTER', 'UT_COVERAGE_COBERTURA_REPORTER'],
+  });
+  const run = makeRun() as any;
+  const { item, metaMap } = makeLeaf();
+  try {
+    await executeRunOracle(
+      {
+        connection: 'u/p@//h:1521/s',
+        pathArgs: ['pkg'],
+        coverage: true,
+        sourcePath: 'install',
+        root: '/root',
+        run,
+        leafTests: [item as any],
+        state: makeOracleRunState(metaMap),
+        coverageIncludeObjects: ['APP.PKG'],
+        coverageExcludeObjects: ['UT3.UT_COVERAGE'],
+      },
+      neverCancel as never,
+      async () => mod as never,
+    );
+  } finally {
+    await closeOraclePool();
+  }
+  assert.match(captured.runSql ?? '', /a_include_objects => :includeObjects/);
+  assert.match(captured.runSql ?? '', /a_exclude_objects => :excludeObjects/);
+  assert.deepStrictEqual(captured.runBinds?.includeObjects, {
+    dir: 'in',
+    type: 'UT_VARCHAR2_LIST',
+    val: ['APP.PKG'],
+  });
+  assert.deepStrictEqual(captured.runBinds?.excludeObjects, {
+    dir: 'in',
+    type: 'UT_VARCHAR2_LIST',
+    val: ['UT3.UT_COVERAGE'],
+  });
+});
+
+test('executeRunOracle: regex de escopo viram binds STRING', async () => {
+  const { mod, captured } = makeOracleRunFake({
+    buffer: [JUNIT_XML, COV_XML],
+    reporters: ['UT_DOCUMENTATION_REPORTER', 'UT_COVERAGE_COBERTURA_REPORTER'],
+  });
+  const run = makeRun() as any;
+  const { item, metaMap } = makeLeaf();
+  try {
+    await executeRunOracle(
+      {
+        connection: 'u/p@//h:1521/s',
+        pathArgs: ['pkg'],
+        coverage: true,
+        sourcePath: 'install',
+        root: '/root',
+        run,
+        leafTests: [item as any],
+        state: makeOracleRunState(metaMap),
+        coverageExcludeObjectExpr: '^UT_',
+        coverageIncludeSchemaExpr: '^APP$',
+      },
+      neverCancel as never,
+      async () => mod as never,
+    );
+  } finally {
+    await closeOraclePool();
+  }
+  assert.match(captured.runSql ?? '', /a_exclude_object_expr => :excludeObjectExpr/);
+  assert.match(captured.runSql ?? '', /a_include_schema_expr => :includeSchemaExpr/);
+  assert.deepStrictEqual(captured.runBinds?.excludeObjectExpr, {
+    dir: 'in',
+    type: 'STRING',
+    val: '^UT_',
+  });
+  assert.deepStrictEqual(captured.runBinds?.includeSchemaExpr, {
+    dir: 'in',
+    type: 'STRING',
+    val: '^APP$',
+  });
+});
+
+test('executeRunOracle: sem cobertura não envia parâmetros de escopo', async () => {
+  const { mod, captured } = makeOracleRunFake({ buffer: [JUNIT_XML] });
+  const run = makeRun() as any;
+  const { item, metaMap } = makeLeaf();
+  try {
+    await executeRunOracle(
+      {
+        connection: 'u/p@//h:1521/s',
+        pathArgs: ['pkg'],
+        coverage: false,
+        sourcePath: 'install',
+        root: '/root',
+        run,
+        leafTests: [item as any],
+        state: makeOracleRunState(metaMap),
+        coverageIncludeObjects: ['APP.PKG'],
+        coverageExcludeObjectExpr: '^UT_',
+      },
+      neverCancel as never,
+      async () => mod as never,
+    );
+  } finally {
+    await closeOraclePool();
+  }
+  assert.ok(!(captured.runSql ?? '').includes('a_include_objects'));
+  assert.ok(!(captured.runSql ?? '').includes('a_exclude_object_expr'));
+  assert.strictEqual(captured.runBinds?.includeObjects, undefined);
+});
+
 test('executeRunOracle: randomOrder desligado não adiciona parâmetros', async () => {
   const { mod, captured } = makeOracleRunFake({ buffer: [JUNIT_XML] });
   const run = makeRun() as any;
@@ -1141,8 +1287,8 @@ test('executeRunOracle: randomOrder ligado com seed 0 usa bind NULL', async () =
   assert.match(captured.runSql ?? '', /a_random_test_order_seed => :randomSeed/);
   assert.deepStrictEqual(captured.runBinds?.randomOrder, {
     dir: 'in',
-    type: 'NUMBER',
-    val: 1,
+    type: 'BOOLEAN',
+    val: true,
   });
   assert.deepStrictEqual(captured.runBinds?.randomSeed, {
     dir: 'in',
@@ -1224,6 +1370,7 @@ test('executeRunOracle: dbmsOutput habilita e drena DBMS_OUTPUT na conn1', async
     OUT_FORMAT_OBJECT: { id: 'object' },
     BIND_OUT: { dir: 'out' },
     BIND_IN: 'in',
+    DB_TYPE_BOOLEAN: 'BOOLEAN',
     STRING: 'STRING',
     NUMBER: 'NUMBER',
     createPool: async () => {
