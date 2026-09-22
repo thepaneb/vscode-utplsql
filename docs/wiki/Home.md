@@ -17,6 +17,9 @@ into the native **Test Explorer**, with context menu and visual coverage.
 - [**Jump to failure**](Editor-integration) — navigation to the failed assertion line (native Go to Error)
 - [**Connection profiles**](Connection-profiles) — save and switch between environments (DEV/TEST/PROD) with per-profile settings
 - [**Statement and view coverage**](Coverage) — `% of statements` per file, and views tracked via `V$SQL`
+- [**Coverage scope**](Coverage) — include/exclude objects and schema/object regexes (`utplsql.coverage.*`)
+- [**Tag filter and random order**](Configuration) — filter tests with `utplsql.tags` and run in random order with a reproducible seed
+- [**Database-first discovery**](Test-explorer) — suites from `ut_runner.get_suites_info` (fallback to `ALL_SOURCE`) plus the **Rebuild Annotation Cache** command
 - [**PL/SQL Debug**](Debugger) — breakpoints and step debugging via `DBMS_DEBUG`
 - [**i18n — 24 languages**](Internationalization) — follows the VSCode display language
 - [**SQL scripts**](SQL-scripts) — run the current script, a file, or a whole folder against the active connection profile

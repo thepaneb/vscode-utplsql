@@ -238,6 +238,7 @@ Todos los comandos de la extensión (paleta `Ctrl+Shift+P`, prefijo `utPLSQL:`):
 | `utPLSQL: Manage connection profiles` | Abre la configuración en `utplsql.profiles` | — |
 | `utPLSQL: Import connections from SQL Developer` | Importa conexiones desde SQL Developer (connections.xml) | — |
 | `utPLSQL: Debug test (PL/SQL)` | Inicia una sesión de depuración del test bajo el archivo activo | — |
+| `utPLSQL: Reconstruir caché de anotaciones` | Reconstruye la caché de anotaciones de utPLSQL en la base de datos y actualiza el árbol | — |
 | `utPLSQL: Compilar para depuración` | Compila el objeto del archivo/carpeta seleccionado con información de depuración | — |
 | `utPLSQL: Run script` | Runs the script open in the editor against a connection profile | Right-click → script file |
 | `utPLSQL: Run script file` | Runs an Explorer script file (decoded with the profile charset) | Right-click → file |

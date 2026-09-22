@@ -238,6 +238,7 @@ Toutes les commandes de l'extension (palette `Ctrl+Shift+P` préfixe `utPLSQL:`)
 | `utPLSQL: Manage connection profiles` | Ouvre les paramètres sur `utplsql.profiles` | — |
 | `utPLSQL: Import connections from SQL Developer` | Importe les connexions depuis SQL Developer (connections.xml) | — |
 | `utPLSQL: Debug test (PL/SQL)` | Démarre une session de débogage du test du fichier actif | — |
+| `utPLSQL: Reconstruire le cache des annotations` | Reconstruit le cache des annotations utPLSQL dans la base et actualise l'arbre | — |
 | `utPLSQL: Compiler pour le débogage` | Compile l’objet du fichier/dossier sélectionné avec les informations de débogage | — |
 | `utPLSQL: Run script` | Runs the script open in the editor against a connection profile | Right-click → script file |
 | `utPLSQL: Run script file` | Runs an Explorer script file (decoded with the profile charset) | Right-click → file |

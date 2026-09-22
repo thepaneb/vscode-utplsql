@@ -240,6 +240,7 @@ UTPLSQL_CONN=your_user/password@//host:1521/service
 | `utPLSQL: Manage connection profiles` | Отваря настройките на `utplsql.profiles` | — |
 | `utPLSQL: Import connections from SQL Developer` | Импортира връзки от SQL Developer (connections.xml) | — |
 | `utPLSQL: Debug test (PL/SQL)` | Стартира дебъг сесия на теста под активния файл | — |
+| `utPLSQL: Възстановяване на кеша с анотации` | Възстановява кеша с анотации на utPLSQL в базата и обновява дървото | — |
 | `utPLSQL: Компилиране за отстраняване на грешки` | Компилира обекта на избрания файл/папка с информация за отстраняване на грешки | — |
 | `utPLSQL: Run script` | Runs the script open in the editor against a connection profile | Right-click → script file |
 | `utPLSQL: Run script file` | Runs an Explorer script file (decoded with the profile charset) | Right-click → file |

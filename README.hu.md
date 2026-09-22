@@ -240,6 +240,7 @@ A bővítmény összes parancsa (paletta `Ctrl+Shift+P`, előtag `utPLSQL:`):
 | `utPLSQL: Manage connection profiles` | Megnyitja a beállításokat a `utplsql.profiles` értéknél | — |
 | `utPLSQL: Import connections from SQL Developer` | Kapcsolatok importálása az SQL Developerből (connections.xml) | — |
 | `utPLSQL: Debug test (PL/SQL)` | Hibakeresési munkamenetet indít az aktív fájlban lévő tesztre | — |
+| `utPLSQL: Megjegyzés-gyorsítótár újraépítése` | Újraépíti az utPLSQL megjegyzés-gyorsítótárat az adatbázisban, és frissíti a fát | — |
 | `utPLSQL: Fordítás hibakereséshez` | A kijelölt fájl/mappa objektumát hibakeresési információkkal fordítja le | — |
 | `utPLSQL: Run script` | Runs the script open in the editor against a connection profile | Right-click → script file |
 | `utPLSQL: Run script file` | Runs an Explorer script file (decoded with the profile charset) | Right-click → file |

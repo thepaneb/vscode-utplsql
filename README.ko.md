@@ -239,6 +239,7 @@ UTPLSQL_CONN=your_user/password@//host:1521/service
 | `utPLSQL: Manage connection profiles` | `utplsql.profiles`에서 설정 열기 | — |
 | `utPLSQL: Import connections from SQL Developer` | SQL Developer에서 연결 가져오기(connections.xml) | — |
 | `utPLSQL: Debug test (PL/SQL)` | 활성 파일 아래의 테스트 디버그 세션 시작 | — |
+| `utPLSQL: 주석 캐시 다시 작성` | 데이터베이스의 utPLSQL 주석 캐시를 다시 작성하고 트리를 갱신합니다 | — |
 | `utPLSQL: 디버그용으로 컴파일` | 선택한 파일/폴더의 개체를 디버그 정보와 함께 컴파일합니다 | — |
 | `utPLSQL: Run script` | Runs the script open in the editor against a connection profile | Right-click → script file |
 | `utPLSQL: Run script file` | Runs an Explorer script file (decoded with the profile charset) | Right-click → file |

@@ -237,6 +237,7 @@ UTPLSQL_CONN=your_user/password@//host:1521/service
 | `utPLSQL: Manage connection profiles` | 打开 `utplsql.profiles` 的设置 | — |
 | `utPLSQL: Import connections from SQL Developer` | 从 SQL Developer（connections.xml）导入连接 | — |
 | `utPLSQL: Debug test (PL/SQL)` | 为活动文件下的测试启动调试会话 | — |
+| `utPLSQL: 重建注释缓存` | 重建数据库中的 utPLSQL 注释缓存并刷新树 | — |
 | `utPLSQL: 编译以进行调试` | 使用调试信息编译所选文件/文件夹的对象 | — |
 | `utPLSQL: Run script` | Runs the script open in the editor against a connection profile | Right-click → script file |
 | `utPLSQL: Run script file` | Runs an Explorer script file (decoded with the profile charset) | Right-click → file |

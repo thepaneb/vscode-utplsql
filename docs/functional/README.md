@@ -16,7 +16,7 @@ discovery (.pks + banco)  ──►  executeRun  ──►  Oracle direto  ─�
 
 | Camada | Módulos | Responsabilidade |
 |---|---|---|
-| **Descoberta** | `suiteParser.ts`, `discovery.ts` | Encontrar suites/testes nos arquivos `.pks` via regex `%suite`/`%test` + annotations estendidas; no modo schema, complementa com descoberta via banco (`ALL_OBJECTS`/`ALL_SOURCE`) |
+| **Descoberta** | `suiteParser.ts`, `discovery.ts` | Encontrar suites/testes nos arquivos `.pks` via regex `%suite`/`%test` + annotations estendidas; no modo schema, usa `ut_runner.get_suites_info` (DB-first, PRD-74) com fallback para `ALL_OBJECTS`/`ALL_SOURCE` |
 | **Execução** | `runner.ts`, `oracleRunner.ts`, `scriptRunner.ts`, `debugger.ts`, `dbmsDebug.ts` | Executar testes via Oracle direto (com connection pooling), scripts SQL/PL-SQL e depuração |
 | **Resultados** | `junit.ts`, `results.ts`, `matching.ts` | Parse do XML JUnit, mapeamento para `vscode.TestItem` (funções canônicas compartilhadas) |
 | **Cobertura** | `cobertura.ts`, `coverage.ts`, `viewCoverage.ts`, `plsqlDeclarations.ts` | Parse do XML Cobertura, mapeamento para arquivos fonte, cobertura de views e por declaração |

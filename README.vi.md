@@ -239,6 +239,7 @@ Tất cả các lệnh của extension (palette `Ctrl+Shift+P` tiền tố `utPL
 | `utPLSQL: Manage connection profiles` | Mở cài đặt tại `utplsql.profiles` | — |
 | `utPLSQL: Import connections from SQL Developer` | Nhập kết nối từ SQL Developer (connections.xml) | — |
 | `utPLSQL: Debug test (PL/SQL)` | Bắt đầu phiên gỡ lỗi của bài kiểm thử trong tệp đang mở | — |
+| `utPLSQL: Tạo lại bộ nhớ đệm chú thích` | Tạo lại bộ nhớ đệm chú thích utPLSQL trong cơ sở dữ liệu và làm mới cây | — |
 | `utPLSQL: Biên dịch để gỡ lỗi` | Biên dịch đối tượng của tệp/thư mục đã chọn với thông tin gỡ lỗi | — |
 | `utPLSQL: Run script` | Runs the script open in the editor against a connection profile | Right-click → script file |
 | `utPLSQL: Run script file` | Runs an Explorer script file (decoded with the profile charset) | Right-click → file |

@@ -19,6 +19,24 @@ identifying each covered object as `<type> <schema>.<object>`
 (e.g. `package body UT3.CALC`). The extension maps those names to local source files
 using the `utplsql.sourcePath` setting and the `utplsql.coverageOwner` schema.
 
+## Coverage Scope
+
+By default the whole connection user schema is covered. The scope can be narrowed
+with the `utplsql.coverage.*` settings, passed as binds to `ut_runner.run` (the
+database builds `ut_coverage_options` internally):
+
+| Setting | Default | Description |
+|---|---|---|
+| `utplsql.coverage.schemes` | `[]` | Covered schemas (overrides the owner). |
+| `utplsql.coverage.includeObjects` | `[]` | Objects to include, as `OWNER.NAME`. Useful for dynamically reached objects. |
+| `utplsql.coverage.excludeObjects` | `[]` | Objects to exclude, as `OWNER.NAME`. |
+| `utplsql.coverage.includeSchemaExpr` | `""` | Regex of schemas to include. |
+| `utplsql.coverage.includeObjectExpr` | `""` | Regex of objects to include. |
+| `utplsql.coverage.excludeSchemaExpr` | `""` | Regex of schemas to exclude. |
+| `utplsql.coverage.excludeObjectExpr` | `""` | Regex of objects to exclude (e.g. `^UT_` for the utPLSQL framework). |
+
+With all defaults the generated XML is identical to previous versions.
+
 ## Declaration Coverage (Function Coverage)
 
 In addition to line-by-line coverage (gutters), the **Test Coverage** tab displays

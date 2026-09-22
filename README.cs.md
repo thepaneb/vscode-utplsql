@@ -241,6 +241,7 @@ Všechny příkazy rozšíření (paleta `Ctrl+Shift+P`, předpona `utPLSQL:`):
 | `utPLSQL: Manage connection profiles` | Otevře nastavení na `utplsql.profiles` | — |
 | `utPLSQL: Import connections from SQL Developer` | Importuje připojení ze SQL Developeru (connections.xml) | — |
 | `utPLSQL: Debug test (PL/SQL)` | Spustí ladící relaci testu pod aktivním souborem | — |
+| `utPLSQL: Přestavět mezipaměť anotací` | Přestaví mezipaměť anotací utPLSQL v databázi a obnoví strom | — |
 | `utPLSQL: Zkompilovat pro ladění` | Zkompiluje objekt vybraného souboru/složky s ladicími informacemi | — |
 | `utPLSQL: Run script` | Runs the script open in the editor against a connection profile | Right-click → script file |
 | `utPLSQL: Run script file` | Runs an Explorer script file (decoded with the profile charset) | Right-click → file |

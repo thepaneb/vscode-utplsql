@@ -239,6 +239,7 @@ Annotation ไม่คำนึงถึงตัวพิมพ์เล็ก
 | `utPLSQL: Manage connection profiles` | เปิดการตั้งค่าที่ `utplsql.profiles` | — |
 | `utPLSQL: Import connections from SQL Developer` | นำเข้าการเชื่อมต่อจาก SQL Developer (connections.xml) | — |
 | `utPLSQL: Debug test (PL/SQL)` | เริ่มเซสชันการดีบักของเทสต์ภายใต้ไฟล์ที่ใช้งานอยู่ | — |
+| `utPLSQL: สร้างแคชคำอธิบายประกอบใหม่` | สร้างแคชคำอธิบายประกอบของ utPLSQL ในฐานข้อมูลใหม่และรีเฟรชทรี | — |
 | `utPLSQL: คอมไพล์สำหรับดีบัก` | คอมไพล์ออบเจ็กต์ของไฟล์/โฟลเดอร์ที่เลือกพร้อมข้อมูลดีบัก | — |
 | `utPLSQL: Run script` | Runs the script open in the editor against a connection profile | Right-click → script file |
 | `utPLSQL: Run script file` | Runs an Explorer script file (decoded with the profile charset) | Right-click → file |
