@@ -102,6 +102,7 @@ Ekstensi terhubung langsung ke Oracle, membaca laporan (JUnit + Coverage) lalu m
 | `utplsql.timeoutMinutes` | `60` | Batas waktu (timeout) dalam menit untuk eksekusi pengujian. |
 | `utplsql.dbmsOutput` | `false` | Mengaktifkan `DBMS_OUTPUT` di sesi pengujian. Berguna untuk debugging. |
 | `utplsql.additionalReporters` | `[]` | Reporter tambahan yang disertakan pada setiap eksekusi (mis. `["ut_coverage_html_reporter"]`). Default (documentation, junit) selalu disertakan dan tidak perlu didaftarkan. |
+| `utplsql.tags` | `""` | Ekspresi tag utPLSQL untuk memfilter pengujian mana yang dijalankan (mis. `fast & !integration`). Kosong menjalankan semua. |
 | `utplsql.codeLens.enabled` | `true` | Menampilkan tombol CodeLens Run/Run with Coverage di atas `%suite` dan `%test`. |
 | `utplsql.statusBar.enabled` | `true` | Menampilkan indikator status pengujian di bilah status. |
 | `utplsql.decorations.enabled` | `true` | Menampilkan dekorasi lolos/gagal pada baris `%suite` dan `%test` setelah eksekusi. |
@@ -194,7 +195,7 @@ Selain `%suite` dan `%test`, discovery juga memahami:
 |---|---|
 | `-- %disabled` | Suite atau pengujian **tidak muncul** di pohon (dilewati saat discovery) |
 | `-- %throws(-20001)` | Menandai bahwa pengujian mengharapkan exception 20001 (metadata `expectedError`) |
-| `-- %tags(fast, critical)` | Tag pengujian (metadata; pemfilteran tag ada di roadmap) |
+| `-- %tags(fast, critical)` | Tag pengujian; filter eksekusi dengan setelan `utplsql.tags` (mis. `fast & !integration`) |
 | `-- %displayname(Name)` | Nama kustom yang ditampilkan menggantikan deskripsi `%test` |
 | `-- %beforeall` / `%beforeeach` / `%aftereach` / `%afterall` | Menandai suite dengan lifecycle hooks (metadata) |
 

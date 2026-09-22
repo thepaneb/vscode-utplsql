@@ -102,6 +102,7 @@ Extensia se conectează direct prin Oracle, citește rapoartele (JUnit + Coverag
 | `utplsql.timeoutMinutes` | `60` | Timeout în minute pentru executarea testelor. |
 | `utplsql.dbmsOutput` | `false` | Activează `DBMS_OUTPUT` în sesiunea de test. Util pentru depanare. |
 | `utplsql.additionalReporters` | `[]` | Reporteri suplimentari de inclus la fiecare rulare (ex.: `["ut_coverage_html_reporter"]`). Cei implicați (documentation, junit) sunt întotdeauna incluși și nu trebuie listați. |
+| `utplsql.tags` | `""` | Expresie de tag-uri utPLSQL pentru a filtra ce teste rulează (ex.: `fast & !integration`). Gol rulează toate. |
 | `utplsql.codeLens.enabled` | `true` | Afișează butoanele CodeLens Run/Run with Coverage deasupra `%suite` și `%test`. |
 | `utplsql.statusBar.enabled` | `true` | Afișează indicatorul de stare al testelor în bara de stare. |
 | `utplsql.decorations.enabled` | `true` | Afișează decorări reușit/eșuat pe liniile `%suite` și `%test` după execuție. |
@@ -194,7 +195,7 @@ Pe lângă `%suite` și `%test`, descoperirea înțelege:
 |---|---|
 | `-- %disabled` | Suita sau testul **nu apare** în arbore (omis la descoperire) |
 | `-- %throws(-20001)` | Marchează că testul se așteaptă la excepția 20001 (metadata `expectedError`) |
-| `-- %tags(fast, critical)` | Tag-uri de test (metadata; filtrarea pe tag-uri este în roadmap) |
+| `-- %tags(fast, critical)` | Tag-uri de test; filtrează rularea cu setarea `utplsql.tags` (ex.: `fast & !integration`) |
 | `-- %displayname(Name)` | Nume personalizat afișat în locul descrierii `%test` |
 | `-- %beforeall` / `%beforeeach` / `%aftereach` / `%afterall` | Marchează suita cu hook-uri de ciclu de viață (metadata) |
 

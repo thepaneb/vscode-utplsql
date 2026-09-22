@@ -8,6 +8,13 @@
   `.c8rc`, `.nvmrc`, `biome.json`, `skills-lock.json`, `SECURITY.md` e os
   configs dos testes de integração (`.vscode-test.smoke.mjs`,
   `.vscode-test.thick.mjs`).
+- **Runner Oracle com binds tipados, filtro por tag e validação de reporters
+  (PRD-69)**: os paths (`a_paths`) e os schemas de cobertura
+  (`a_coverage_schemes`) deixam de ser concatenados no PL/SQL e passam a binds
+  tipados (`UT_VARCHAR2_LIST`) — nenhum valor de usuário é interpolado. A nova
+  setting `utplsql.tags` expõe `a_tags` do `ut_runner.run` (ex.:
+  `fast & !integration`; vazio = todos). Reporters adicionais inexistentes são
+  ignorados com aviso em vez de abortar a execução.
 
 ## 0.12.1
 

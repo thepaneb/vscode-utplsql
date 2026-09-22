@@ -147,6 +147,11 @@
           "default": [],
           "description": "Reporters adicionais para incluir em toda execução (ex.: [\"ut_coverage_html_reporter\"]). Os reporters padrão (documentation, junit e cobertura) são sempre incluídos."
         },
+        "utplsql.tags": {
+          "type": "string",
+          "default": "",
+          "description": "Expressão de tags do utPLSQL (ex.: \"fast & !integration\") para filtrar quais testes executam. Vazio executa todos."
+        },
         "utplsql.oraclePoolMin": {
           "type": "number",
           "default": 2,

@@ -102,6 +102,7 @@ Test Explorer에 나타납니다.
 | `utplsql.timeoutMinutes` | `60` | 실행 시간 제한(분). |
 | `utplsql.dbmsOutput` | `false` | 테스트 세션에서 `DBMS_OUTPUT`을 활성화합니다. |
 | `utplsql.additionalReporters` | `[]` | 모든 실행에 포함할 추가 리포터(예: `["ut_coverage_html_reporter"]`). 기본값(documentation, junit)은 항상 포함되며 나열할 필요가 없습니다. |
+| `utplsql.tags` | `""` | 실행할 테스트를 필터링하는 utPLSQL 태그 표현식(예: `fast & !integration`). 비어 있으면 모두 실행합니다. |
 | `utplsql.codeLens.enabled` | `true` | `%suite` 및 `%test` 위에 Run/Run with Coverage CodeLens 버튼을 표시합니다. |
 | `utplsql.statusBar.enabled` | `true` | 상태 표시줄에 테스트 상태 표시기를 표시합니다. |
 | `utplsql.decorations.enabled` | `true` | 실행 후 `%suite` 및 `%test` 줄에 통과/실패 데코레이션을 표시합니다. |
@@ -193,7 +194,7 @@ UTPLSQL_CONN=your_user/password@//host:1521/service
 |---|---|
 | `-- %disabled` | 스위트 또는 테스트가 트리에 **나타나지 않음**(발견에서 건너뜀) |
 | `-- %throws(-20001)` | 테스트가 예외 20001을 기대함을 표시(`expectedError` 메타데이터) |
-| `-- %tags(fast, critical)` | 테스트 태그(메타데이터; 태그 필터링은 로드맵) |
+| `-- %tags(fast, critical)` | 테스트 태그. `utplsql.tags` 설정으로 실행을 필터링합니다(예: `fast & !integration`). |
 | `-- %displayname(Name)` | `%test` 설명 대신 표시되는 사용자 지정 이름 |
 | `-- %beforeall` / `%beforeeach` / `%aftereach` / `%afterall` | 라이프사이클 훅으로 스위트 표시(메타데이터) |
 

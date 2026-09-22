@@ -101,6 +101,7 @@ Test Explorer **เมื่อแต่ละเทสต์เสร็จส�
 | `utplsql.timeoutMinutes` | `60` | Timeout เป็นนาที |
 | `utplsql.dbmsOutput` | `false` | เปิดใช้งาน `DBMS_OUTPUT` ในเซสชันการทดสอบ |
 | `utplsql.additionalReporters` | `[]` | Reporters เพิ่มเติมที่จะรวมในทุกรัน (เช่น `["ut_coverage_html_reporter"]`) ค่าเริ่มต้น (documentation, junit) จะถูกรวมเสมอและไม่จำเป็นต้องระบุ |
+| `utplsql.tags` | `""` | นิพจน์แท็กของ utPLSQL เพื่อกรองว่าจะรันเทสต์ใด (เช่น `fast & !integration`) ว่างเปล่าคือรันทั้งหมด |
 | `utplsql.codeLens.enabled` | `true` | แสดงปุ่ม CodeLens Run/Run with Coverage เหนือ `%suite` และ `%test` |
 | `utplsql.statusBar.enabled` | `true` | แสดงตัวบ่งชี้สถานะการทดสอบในแถบสถานะ |
 | `utplsql.decorations.enabled` | `true` | แสดงการตกแต่งผ่าน/ล้มเหลวบนบรรทัด `%suite` และ `%test` หลังการรัน |
@@ -193,7 +194,7 @@ UTPLSQL_CONN=your_user/password@//host:1521/service
 |---|---|
 | `-- %disabled` | Suite หรือเทสต์ **ไม่ปรากฏ** ในแผนผัง (ข้ามในการค้นพบ) |
 | `-- %throws(-20001)` | ระบุว่าเทสต์คาดหวัง exception 20001 (metadata `expectedError`) |
-| `-- %tags(fast, critical)` | แท็กเทสต์ (metadata; การกรองแท็กอยู่ใน roadmap) |
+| `-- %tags(fast, critical)` | แท็กของเทสต์ กรองการรันด้วยการตั้งค่า `utplsql.tags` (เช่น `fast & !integration`) |
 | `-- %displayname(Name)` | ชื่อที่กำหนดเองที่แสดงแทนคำอธิบายของ `%test` |
 | `-- %beforeall` / `%beforeeach` / `%aftereach` / `%afterall` | ระบุ suite ด้วย lifecycle hooks (metadata) |
 

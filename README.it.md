@@ -101,6 +101,7 @@ Test Explorer **appena ogni test termina**.
 | `utplsql.timeoutMinutes` | `60` | Timeout in minuti per l'esecuzione dei test. |
 | `utplsql.dbmsOutput` | `false` | Abilita `DBMS_OUTPUT` nella sessione di test. Utile per il debug. |
 | `utplsql.additionalReporters` | `[]` | Reporter aggiuntivi da includere in ogni esecuzione (es. `["ut_coverage_html_reporter"]`). I default (documentation, junit) sono sempre inclusi e non devono essere elencati. |
+| `utplsql.tags` | `""` | Espressione di tag utPLSQL per filtrare quali test eseguire (es. `fast & !integration`). Vuoto esegue tutti. |
 | `utplsql.codeLens.enabled` | `true` | Mostra i pulsanti CodeLens Run/Run with Coverage sopra `%suite` e `%test`. |
 | `utplsql.statusBar.enabled` | `true` | Mostra l'indicatore dello stato dei test nella barra di stato. |
 | `utplsql.decorations.enabled` | `true` | Mostra le decorazioni superato/fallito sulle righe `%suite` e `%test` dopo l'esecuzione. |
@@ -192,7 +193,7 @@ Oltre a `%suite` e `%test`, la scoperta comprende:
 |---|---|
 | `-- %disabled` | Suite o test **non appare** nell'albero (saltato nella scoperta) |
 | `-- %throws(-20001)` | Segna che il test si aspetta l'eccezione 20001 (metadati `expectedError`) |
-| `-- %tags(fast, critical)` | Tag del test (metadati; il filtraggio per tag è nella roadmap) |
+| `-- %tags(fast, critical)` | Tag del test; filtra l'esecuzione con l'impostazione `utplsql.tags` (es. `fast & !integration`) |
 | `-- %displayname(Name)` | Nome personalizzato mostrato al posto della descrizione del `%test` |
 | `-- %beforeall` / `%beforeeach` / `%aftereach` / `%afterall` | Segna la suite con hook di ciclo di vita (metadati) |
 

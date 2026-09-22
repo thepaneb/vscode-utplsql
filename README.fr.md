@@ -101,6 +101,7 @@ l'Explorateur de tests **au fur et à mesure que chaque test se termine**.
 | `utplsql.timeoutMinutes` | `60` | Délai d'expiration en minutes pour l'exécution des tests. |
 | `utplsql.dbmsOutput` | `false` | Active `DBMS_OUTPUT` dans la session de test. Utile pour le débogage. |
 | `utplsql.additionalReporters` | `[]` | Reporters supplémentaires à inclure à chaque exécution (par ex. `["ut_coverage_html_reporter"]`). Les reporters par défaut (documentation, junit) sont toujours inclus et n'ont pas besoin d'être listés. |
+| `utplsql.tags` | `""` | Expression de balises utPLSQL pour filtrer les tests exécutés (par ex. `fast & !integration`). Vide exécute tout. |
 | `utplsql.codeLens.enabled` | `true` | Affiche les boutons CodeLens Exécuter/Exécuter avec couverture au-dessus des `%suite` et `%test`. |
 | `utplsql.statusBar.enabled` | `true` | Affiche l'indicateur d'état des tests dans la barre d'état. |
 | `utplsql.decorations.enabled` | `true` | Affiche les décorations réussite/échec sur les lignes `%suite` et `%test` après l'exécution. |
@@ -192,7 +193,7 @@ En plus de `%suite` et `%test`, la découverte comprend :
 |---|---|
 | `-- %disabled` | Suite ou test **n'apparaît pas** dans l'arborescence (ignoré lors de la découverte) |
 | `-- %throws(-20001)` | Indique que le test s'attend à l'exception 20001 (métadonnée `expectedError`) |
-| `-- %tags(fast, critical)` | Balises du test (métadonnées ; le filtrage par balise est prévu) |
+| `-- %tags(fast, critical)` | Balises du test ; filtrez l'exécution avec le réglage `utplsql.tags` (par ex. `fast & !integration`) |
 | `-- %displayname(Name)` | Nom personnalisé affiché à la place de la description du `%test` |
 | `-- %beforeall` / `%beforeeach` / `%aftereach` / `%afterall` | Marque la suite avec des hooks de cycle de vie (métadonnées) |
 

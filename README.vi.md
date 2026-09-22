@@ -101,6 +101,7 @@ Test Explorer **ngay khi từng bài kiểm thử hoàn tất**. VSIX đã kèm 
 | `utplsql.timeoutMinutes` | `60` | Thời gian chờ (phút). |
 | `utplsql.dbmsOutput` | `false` | Bật `DBMS_OUTPUT` trong phiên kiểm thử. |
 | `utplsql.additionalReporters` | `[]` | Các reporter bổ sung đưa vào mỗi lần chạy (ví dụ `["ut_coverage_html_reporter"]`). Các reporter mặc định (documentation, junit) luôn được bao gồm và không cần liệt kê. |
+| `utplsql.tags` | `""` | Biểu thức tag của utPLSQL để lọc bài kiểm thử nào sẽ chạy (ví dụ `fast & !integration`). Để trống là chạy tất cả. |
 | `utplsql.codeLens.enabled` | `true` | Hiển thị các nút CodeLens Run/Run with Coverage trên `%suite` và `%test`. |
 | `utplsql.statusBar.enabled` | `true` | Hiển thị chỉ báo trạng thái kiểm thử trên thanh trạng thái. |
 | `utplsql.decorations.enabled` | `true` | Hiển thị các trang trí đạt/không đạt trên các dòng `%suite` và `%test` sau khi chạy. |
@@ -193,7 +194,7 @@ Ngoài `%suite` và `%test`, việc phát hiện còn hiểu:
 |---|---|
 | `-- %disabled` | Suite hoặc bài kiểm thử **không xuất hiện** trong cây (bị bỏ qua khi phát hiện) |
 | `-- %throws(-20001)` | Đánh dấu rằng bài kiểm thử mong đợi exception 20001 (metadata `expectedError`) |
-| `-- %tags(fast, critical)` | Tag của bài kiểm thử (metadata; lọc theo tag nằm trong roadmap) |
+| `-- %tags(fast, critical)` | Tag của bài kiểm thử; lọc lần chạy bằng cài đặt `utplsql.tags` (ví dụ `fast & !integration`) |
 | `-- %displayname(Name)` | Tên tùy chỉnh hiển thị thay cho mô tả của `%test` |
 | `-- %beforeall` / `%beforeeach` / `%aftereach` / `%afterall` | Đánh dấu suite với các lifecycle hooks (metadata) |
 

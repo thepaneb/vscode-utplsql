@@ -101,6 +101,7 @@ Geçici dosya yok, toplu işin bitmesi beklenmez. Sonuçlar Test Explorer'da
 | `utplsql.timeoutMinutes` | `60` | Çalıştırma zaman aşımı (dakika). |
 | `utplsql.dbmsOutput` | `false` | Test oturumunda `DBMS_OUTPUT`'u etkinleştirir. |
 | `utplsql.additionalReporters` | `[]` | Her çalıştırmada eklenecek ek raporlayıcılar (örn. `["ut_coverage_html_reporter"]`). Varsayılanlar (documentation, junit) her zaman dahildir ve listelenmeleri gerekmez. |
+| `utplsql.tags` | `""` | Hangi testlerin çalışacağını filtreleyen utPLSQL etiket ifadesi (örn. `fast & !integration`). Boş ise tümü çalışır. |
 | `utplsql.codeLens.enabled` | `true` | `%suite` ve `%test` üzerinde Run/Run with Coverage CodeLens düğmelerini gösterir. |
 | `utplsql.statusBar.enabled` | `true` | Durum çubuğunda test durum göstergesini gösterir. |
 | `utplsql.decorations.enabled` | `true` | Çalıştırmadan sonra `%suite` ve `%test` satırlarında geçti/kaldı süslemelerini gösterir. |
@@ -193,7 +194,7 @@ UTPLSQL_CONN=your_user/password@//host:1521/service
 |---|---|
 | `-- %disabled` | Paket veya test ağaçta **görünmez** (keşifte atlanır) |
 | `-- %throws(-20001)` | Testin 20001 istisnasını beklediğini işaretler (`expectedError` meta verisi) |
-| `-- %tags(fast, critical)` | Test etiketleri (meta veri; etiket filtreleme yol haritasında) |
+| `-- %tags(fast, critical)` | Test etiketleri; çalıştırmayı `utplsql.tags` ayarıyla filtreleyin (örn. `fast & !integration`) |
 | `-- %displayname(Name)` | `%test` açıklaması yerine gösterilen özel ad |
 | `-- %beforeall` / `%beforeeach` / `%aftereach` / `%afterall` | Paketi yaşam döngüsü kancalarıyla işaretler (meta veri) |
 

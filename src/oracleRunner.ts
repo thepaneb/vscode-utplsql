@@ -409,6 +409,8 @@ export interface OracleRunOptions {
   folders?: readonly vscode.WorkspaceFolder[];
   /** Extra reporters adicionados via config */
   additionalReporters?: string[];
+  /** Expressão de tags do utPLSQL (ex.: `fast & !integration`); vazio = todas */
+  tags?: string;
   /** Owner do schema para coverage (override) */
   coverageOwner?: string;
   /** Se true, captura DBMS_OUTPUT */
@@ -446,6 +448,7 @@ export async function executeRunOracle(
     onComplete,
     folders,
     additionalReporters,
+    tags,
     coverageOwner,
     dbmsOutput,
     timeoutMinutes,
@@ -525,25 +528,36 @@ export async function executeRunOracle(
       runners.push(`${normalized}()`);
     }
 
-    const pathsList =
-      pathArgs.length > 0 ? pathArgs.map((p) => `'${p.replace(/'/g, "''")}'`).join(',') : '';
-
     const owner = (coverageOwner ?? '').trim() || parseConnString(connection).user.toUpperCase();
 
+    // Binds tipados (PRD-69): nenhum valor de usuário é concatenado no PL/SQL.
+    // `UT_VARCHAR2_LIST` é o tipo da coleção do utPLSQL; o synonym sem prefixo
+    // resolve tanto em install próprio quanto shared. Listas vazias viram
+    // `null` (utPLSQL roda tudo) — evita bind de coleção vazia ambíguo.
+    //
     // Sem `a_source_file_mappings`: o reporter Cobertura então usa
     // `filename="<tipo> <schema>.<objeto>"`, que `mapDbPathsToFiles` converte
     // para caminhos locais (`packages/OBJ.sql`, etc.). Passar o diretório
     // `sourcePath` como `a_file_paths` (diretório, não arquivos) zerava a
     // cobertura — ver PRD-64 e testes de `mapDbPathsToFiles`.
+    const binds: Record<string, import('oracledb').BindParameter> = {
+      tags: { dir: oracledb.BIND_IN, type: oracledb.STRING, val: tags || null },
+    };
+    const pathsArg = pathArgs.length > 0 ? ':paths' : 'null';
+    if (pathArgs.length > 0) {
+      binds.paths = { dir: oracledb.BIND_IN, type: 'UT_VARCHAR2_LIST', val: pathArgs };
+    }
     let coverageSchemes = 'null';
     if (coverageEnabled) {
-      coverageSchemes = `ut_varchar2_list('${owner.replace(/'/g, "''")}')`;
+      coverageSchemes = ':schemes';
+      binds.schemes = { dir: oracledb.BIND_IN, type: 'UT_VARCHAR2_LIST', val: [owner] };
     }
 
     const plsql = `BEGIN ut_runner.run(
-      a_paths => ut_varchar2_list(${pathsList}),
+      a_paths => ${pathsArg},
       a_reporters => ut_reporters(${runners.join(',')}),
-      a_coverage_schemes => ${coverageSchemes}
+      a_coverage_schemes => ${coverageSchemes},
+      a_tags => :tags
     ); END;`;
 
     if (dbmsOutput) {
@@ -556,7 +570,7 @@ export async function executeRunOracle(
     }
 
     const runnerStart = Date.now();
-    const runnerPromise = conn1.execute(plsql, {}, { autoCommit: true });
+    const runnerPromise = conn1.execute(plsql, binds, { autoCommit: true });
 
     let lastMsgId = 0;
     let xmlBuffer = '';

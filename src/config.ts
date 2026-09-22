@@ -9,6 +9,7 @@ export interface UtConfig {
   sourcePath: string;
   includePatterns: string[];
   coverageOwner: string;
+  tags: string;
   additionalReporters: string[];
   timeoutMinutes: number;
   dbmsOutput: boolean;
@@ -76,6 +77,7 @@ export function readConfig(): UtConfig {
     sourcePath: c.get<string>('sourcePath', 'install'),
     includePatterns: c.get<string[]>('includePatterns', ['**/*.pks']),
     coverageOwner: c.get<string>('coverageOwner', ''),
+    tags: c.get<string>('tags', ''),
     additionalReporters: c.get<string[]>('additionalReporters', []),
     timeoutMinutes: c.get<number>('timeoutMinutes', 60),
     dbmsOutput: c.get<boolean>('dbmsOutput', false),

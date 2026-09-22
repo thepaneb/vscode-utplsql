@@ -103,6 +103,7 @@ nativních API VSCode.
 | `utplsql.timeoutMinutes` | `60` | Časový limit v minutách pro spuštění testů. |
 | `utplsql.dbmsOutput` | `false` | Povolí `DBMS_OUTPUT` v testovací relaci. Užitečné pro ladění. |
 | `utplsql.additionalReporters` | `[]` | Další reportéry zahrnuté do každého spuštění (např. `["ut_coverage_html_reporter"]`). Výchozí (documentation, junit) jsou vždy zahrnuty a není třeba je vypisovat. |
+| `utplsql.tags` | `""` | Výraz tagů utPLSQL pro filtrování spouštěných testů (např. `fast & !integration`). Prázdné spustí všechny. |
 | `utplsql.codeLens.enabled` | `true` | Zobrazuje tlačítka CodeLens Run/Run with Coverage nad `%suite` a `%test`. |
 | `utplsql.statusBar.enabled` | `true` | Zobrazuje indikátor stavu testů ve stavovém řádku. |
 | `utplsql.decorations.enabled` | `true` | Zobrazuje dekorace prošlo/selháno na řádcích `%suite` a `%test` po spuštění. |
@@ -195,7 +196,7 @@ Kromě `%suite` a `%test` rozpoznává discovery:
 |---|---|
 | `-- %disabled` | Sada nebo test se **nezobrazí** ve stromu (přeskočen v discovery) |
 | `-- %throws(-20001)` | Označuje, že test očekává výjimku 20001 (metadata `expectedError`) |
-| `-- %tags(fast, critical)` | Tagy testu (metadata; filtrování podle tagů je roadmapa) |
+| `-- %tags(fast, critical)` | Tagy testu; filtrujte spuštění nastavením `utplsql.tags` (např. `fast & !integration`) |
 | `-- %displayname(Name)` | Vlastní název zobrazený místo popisu `%test` |
 | `-- %beforeall` / `%beforeeach` / `%aftereach` / `%afterall` | Označuje sadu lifecycle hooky (metadata) |
 

@@ -101,6 +101,7 @@ Test Explorer 中。
 | `utplsql.timeoutMinutes` | `60` | 執行逾時（分鐘）。 |
 | `utplsql.dbmsOutput` | `false` | 在測試工作階段中啟用 `DBMS_OUTPUT`。 |
 | `utplsql.additionalReporters` | `[]` | 每次執行都要包含的額外 reporters（例如 `["ut_coverage_html_reporter"]`）。預設（documentation、junit）一律包含，無需列出。 |
+| `utplsql.tags` | `""` | 用於篩選要執行哪些測試的 utPLSQL 標籤運算式（例如 `fast & !integration`）。留空則執行全部。 |
 | `utplsql.codeLens.enabled` | `true` | 在 `%suite` 與 `%test` 上顯示 Run/Run with Coverage CodeLens 按鈕。 |
 | `utplsql.statusBar.enabled` | `true` | 在狀態列中顯示測試狀態指示器。 |
 | `utplsql.decorations.enabled` | `true` | 在執行後於 `%suite` 與 `%test` 行上顯示通過/失敗裝飾。 |
@@ -192,7 +193,7 @@ UTPLSQL_CONN=your_user/password@//host:1521/service
 |---|---|
 | `-- %disabled` | 套件或測試**不會顯示**在樹狀結構中（探索時略過） |
 | `-- %throws(-20001)` | 標記該測試預期會丟出例外 20001（`expectedError` 中繼資料） |
-| `-- %tags(fast, critical)` | 測試標籤（中繼資料；標籤篩選為 roadmap） |
+| `-- %tags(fast, critical)` | 測試標籤；使用 `utplsql.tags` 設定篩選執行（例如 `fast & !integration`） |
 | `-- %displayname(Name)` | 顯示的自訂名稱，取代 `%test` 描述 |
 | `-- %beforeall` / `%beforeeach` / `%aftereach` / `%afterall` | 以生命週期鉤子（中繼資料）標記套件 |
 

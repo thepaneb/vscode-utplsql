@@ -97,6 +97,7 @@ Test Explorer に表示されます。
 | `utplsql.timeoutMinutes` | `60` | テスト実行のタイムアウト（分）。 |
 | `utplsql.dbmsOutput` | `false` | テストセッションで `DBMS_OUTPUT` を有効化。デバッグに便利。 |
 | `utplsql.additionalReporters` | `[]` | 毎回の実行に含める追加レポーター（例: `["ut_coverage_html_reporter"]`）。デフォルト（documentation、junit）は常に含まれ、リスト化する必要はありません。 |
+| `utplsql.tags` | `""` | 実行するテストを絞り込む utPLSQL のタグ式（例: `fast & !integration`）。空の場合はすべて実行します。 |
 | `utplsql.codeLens.enabled` | `true` | `%suite` と `%test` の上に Run/Run with Coverage の CodeLens ボタンを表示。 |
 | `utplsql.statusBar.enabled` | `true` | ステータスバーにテスト状態インジケーターを表示。 |
 | `utplsql.decorations.enabled` | `true` | 実行後に `%suite` と `%test` の行へ合格/失敗のデコレーションを表示。 |
@@ -187,7 +188,7 @@ UTPLSQL_CONN=your_user/password@//host:1521/service
 |---|---|
 | `-- %disabled` | スイートまたはテストがツリーに**表示されない**（検出でスキップ） |
 | `-- %throws(-20001)` | テストが例外 20001 を期待することを示す（`expectedError` メタデータ） |
-| `-- %tags(fast, critical)` | テストのタグ（メタデータ。タグフィルタリングはロードマップ） |
+| `-- %tags(fast, critical)` | テストのタグ。`utplsql.tags` 設定で実行を絞り込みます（例: `fast & !integration`） |
 | `-- %displayname(Name)` | `%test` の説明の代わりに表示されるカスタム名 |
 | `-- %beforeall` / `%beforeeach` / `%aftereach` / `%afterall` | ライフサイクルフックでスイートをマーク（メタデータ） |
 

@@ -40,6 +40,7 @@ function makeGlobal(over: Partial<UtConfig> = {}): UtConfig {
     sourcePath: 'install',
     includePatterns: ['**/*.pks'],
     coverageOwner: '',
+    tags: '',
     additionalReporters: [],
     timeoutMinutes: 60,
     dbmsOutput: false,

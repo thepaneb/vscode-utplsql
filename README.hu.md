@@ -102,6 +102,7 @@ A bővítmény közvetlenül Oracle-on keresztül csatlakozik, beolvassa a ripor
 | `utplsql.timeoutMinutes` | `60` | Időtúllépés percben a tesztek futtatásához. |
 | `utplsql.dbmsOutput` | `false` | Engedélyezi a `DBMS_OUTPUT` használatát a teszt-munkamenetben. Hasznos hibakereséshez. |
 | `utplsql.additionalReporters` | `[]` | További riporterek, amelyek minden futtatáskor bekerülnek (pl. `["ut_coverage_html_reporter"]`). Az alapértelmezettek (documentation, junit) mindig szerepelnek, és nem kell felsorolni őket. |
+| `utplsql.tags` | `""` | utPLSQL tagkifejezés a futtatandó tesztek szűréséhez (pl. `fast & !integration`). Üres = mindet futtatja. |
 | `utplsql.codeLens.enabled` | `true` | Run/Run with Coverage CodeLens-gombokat jelenít meg a `%suite` és `%test` fölött. |
 | `utplsql.statusBar.enabled` | `true` | A tesztek állapotát jelző mutatót jelenít meg az állapotsorban. |
 | `utplsql.decorations.enabled` | `true` | Sikeres/sikertelen dekorációkat jelenít meg a `%suite` és `%test` sorokon a futtatás után. |
@@ -194,7 +195,7 @@ A felderítés a `%suite` és `%test` mellett ezeket is érti:
 |---|---|
 | `-- %disabled` | A suite vagy teszt **nem jelenik meg** a fában (kihagyva a felderítés során) |
 | `-- %throws(-20001)` | Jelzi, hogy a teszt a -20001 kivételt várja (`expectedError` metaadat) |
-| `-- %tags(fast, critical)` | Teszttagek (metaadat; a tagek szerinti szűrés a roadmap része) |
+| `-- %tags(fast, critical)` | Teszttagek; a futtatás szűrése a `utplsql.tags` beállítással (pl. `fast & !integration`) |
 | `-- %displayname(Name)` | A `%test` leírása helyett megjelenített egyedi név |
 | `-- %beforeall` / `%beforeeach` / `%aftereach` / `%afterall` | Lifecycle-horgokkal jelöli meg a suite-ot (metaadat) |
 

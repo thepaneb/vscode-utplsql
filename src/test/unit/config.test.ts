@@ -29,6 +29,11 @@ test('readConfig: debuggerCompileOnDebug default e false', () => {
   assert.strictEqual(cfg.debuggerCompileOnDebug, false);
 });
 
+test('readConfig: tags default e vazio', () => {
+  const cfg = readConfig();
+  assert.strictEqual(cfg.tags, '');
+});
+
 test('readConfig: scriptRunner defaults', () => {
   const cfg = readConfig();
   assert.strictEqual(cfg.scriptRunnerStopOnError, true);

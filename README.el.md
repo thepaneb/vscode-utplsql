@@ -103,6 +103,7 @@ Test Explorer **καθώς ολοκληρώνεται κάθε test**.
 | `utplsql.timeoutMinutes` | `60` | Χρονικό όριο σε λεπτά για την εκτέλεση των tests. |
 | `utplsql.dbmsOutput` | `false` | Ενεργοποιεί το `DBMS_OUTPUT` στη σύνοδο του test. Χρήσιμο για debugging. |
 | `utplsql.additionalReporters` | `[]` | Επιπλέον reporters που περιλαμβάνονται σε κάθε εκτέλεση (π.χ. `["ut_coverage_html_reporter"]`). Οι προεπιλεγμένοι (documentation, junit) περιλαμβάνονται πάντα και δεν χρειάζεται να αναφέρονται. |
+| `utplsql.tags` | `""` | Έκφραση tags του utPLSQL για φιλτράρισμα των test που εκτελούνται (π.χ. `fast & !integration`). Κενό εκτελεί όλα. |
 | `utplsql.codeLens.enabled` | `true` | Εμφανίζει κουμπιά CodeLens Run/Run with Coverage πάνω από τα `%suite` και `%test`. |
 | `utplsql.statusBar.enabled` | `true` | Εμφανίζει ένδειξη κατάστασης των tests στη status bar. |
 | `utplsql.decorations.enabled` | `true` | Εμφανίζει decorations επιτυχίας/αποτυχίας στις γραμμές `%suite` και `%test` μετά την εκτέλεση. |
@@ -195,7 +196,7 @@ UTPLSQL_CONN=your_user/password@//host:1521/service
 |---|---|
 | `-- %disabled` | Suite ή test **δεν εμφανίζεται** στο δέντρο (παραλείπεται στην εύρεση) |
 | `-- %throws(-20001)` | Σημαδεύει ότι το test αναμένει την εξαίρεση 20001 (metadata `expectedError`) |
-| `-- %tags(fast, critical)` | Tags του test (metadata· το φιλτράρισμα με tags είναι στο roadmap) |
+| `-- %tags(fast, critical)` | Tags του test· φιλτράρετε την εκτέλεση με τη ρύθμιση `utplsql.tags` (π.χ. `fast & !integration`) |
 | `-- %displayname(Name)` | Προσαρμοσμένο όνομα που εμφανίζεται αντί για την περιγραφή του `%test` |
 | `-- %beforeall` / `%beforeeach` / `%aftereach` / `%afterall` | Σημαδεύει το suite με lifecycle hooks (metadata) |
 

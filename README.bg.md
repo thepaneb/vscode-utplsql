@@ -102,6 +102,7 @@ Test Explorer **с приключването на всеки тест**.
 | `utplsql.timeoutMinutes` | `60` | Таймаут в минути за изпълнението на тестовете. |
 | `utplsql.dbmsOutput` | `false` | Активира `DBMS_OUTPUT` в тестовата сесия. Полезно за отстраняване на грешки. |
 | `utplsql.additionalReporters` | `[]` | Допълнителни reporters, които да се включат при всяко изпълнение (напр. `["ut_coverage_html_reporter"]`). По подразбиране (documentation, junit) винаги са включени и не е нужно да се изброяват. |
+| `utplsql.tags` | `""` | Израз за тагове на utPLSQL за филтриране кои тестове се изпълняват (напр. `fast & !integration`). Празно изпълнява всички. |
 | `utplsql.codeLens.enabled` | `true` | Показва CodeLens бутони Run/Run with Coverage над `%suite` и `%test`. |
 | `utplsql.statusBar.enabled` | `true` | Показва индикатора за статус на тестовете в status bar. |
 | `utplsql.decorations.enabled` | `true` | Показва декорации за успех/неуспех на редовете с `%suite` и `%test` след изпълнение. |
@@ -194,7 +195,7 @@ UTPLSQL_CONN=your_user/password@//host:1521/service
 |---|---|
 | `-- %disabled` | Комплектът или тестът **не се появява** в дървото (пропуска се при откриването) |
 | `-- %throws(-20001)` | Отбелязва, че тестът очаква изключение 20001 (метаданни `expectedError`) |
-| `-- %tags(fast, critical)` | Тагове на теста (метаданни; филтрирането по тагове е в пътната карта) |
+| `-- %tags(fast, critical)` | Тагове на теста; филтрирайте изпълнението с настройката `utplsql.tags` (напр. `fast & !integration`) |
 | `-- %displayname(Name)` | Персонализирано име, показано вместо описанието на `%test` |
 | `-- %beforeall` / `%beforeeach` / `%aftereach` / `%afterall` | Отбелязва комплекта с lifecycle hooks (метаданни) |
 

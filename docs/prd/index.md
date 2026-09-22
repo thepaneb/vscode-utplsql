@@ -136,6 +136,7 @@ CONCLUIR
 | 72 | [Matriz de bancos Oracle para testes de integração](completed/prd-72-db-test-matrix.md) | 0.12.1 | 2026-09-18 |
 | 71 | [Corrigir o debugger para o DBMS_DEBUG real](completed/prd-71-debugger-dbms-debug-fix.md) | 0.12.1 | 2026-09-18 |
 | 73 | [Compilar objeto para debug (comando + menus)](completed/prd-73-compile-for-debug.md) | 0.12.1 | 2026-09-19 |
+| 69 | [Runner Oracle: binds tipados, `a_tags` e validação de reporters](completed/prd-69-oracle-runner-typed-binds.md) | 0.13.0 | 2026-09-22 |
 | 83 | [Higiene do pacote VSIX: bloquear vazamento de arquivos de desenvolvimento](completed/prd-83-vsix-package-hygiene.md) | 0.13.0 | 2026-09-22 |
 
 ### 🟡 Em desenvolvimento
@@ -148,7 +149,6 @@ _(vazio — nenhuma PRD em desenvolvimento)_
 
 | # | PRD | Versão alvo | Data |
 |---|---|---|---|
-| 69 | [Runner Oracle: binds tipados, `a_tags` e validação de reporters](approved/prd-69-oracle-runner-typed-binds.md) | 0.13.0 | 2026-09-15 |
 | 74 | [Descoberta de suítes direto do banco (`get_suites_info`)](approved/prd-74-db-first-discovery.md) | 0.13.0 | 2026-09-19 |
 | 77 | [Reconstruir o cache de anotações do utPLSQL](approved/prd-77-rebuild-annotation-cache.md) | 0.13.0 | 2026-09-19 |
 | 78 | [Ordem aleatória de execução com seed](approved/prd-78-random-test-order.md) | 0.13.0 | 2026-09-19 |
@@ -267,10 +267,10 @@ docs/prd/
 │   ├── prd-71-debugger-dbms-debug-fix.md
 │   ├── prd-72-db-test-matrix.md
 │   ├── prd-73-compile-for-debug.md
+│   ├── prd-69-oracle-runner-typed-binds.md
 │   └── prd-83-vsix-package-hygiene.md
 ├── approved/         ← aprovados, aguardando implementação
 │   ├── prd-47-node-26-toolchain.md
-│   ├── prd-69-oracle-runner-typed-binds.md
 │   ├── prd-74-db-first-discovery.md
 │   ├── prd-77-rebuild-annotation-cache.md
 │   ├── prd-78-random-test-order.md

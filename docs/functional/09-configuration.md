@@ -72,6 +72,9 @@ interface UtConfig {
   // Reporters
   additionalReporters: string[];      // default: []
 
+  // Execução
+  tags: string;                       // default: "" (expressão de tags do utPLSQL)
+
   // UX
   codeLensEnabled: boolean;           // default: true
   statusBarEnabled: boolean;          // default: true
