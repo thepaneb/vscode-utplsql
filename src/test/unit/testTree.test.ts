@@ -302,3 +302,27 @@ test('mergeDbSuites: várias suites só-DB do mesmo schema entram na ordem', asy
     ['UT_B', 'UT_A'],
   );
 });
+
+test('mergeDbSuites: discovery.source=file não busca suites do banco', async () => {
+  __setConfigValue('discovery.source', 'file');
+  const suites = [suite({})];
+  let calls = 0;
+  try {
+    await mergeDbSuites(
+      suites,
+      [],
+      'db/{schema}/**',
+      mergeDeps({
+        discoverSchemasFromFolders: async () => ['APP'],
+        discoverDbSuites: async () => {
+          calls++;
+          return [];
+        },
+      }),
+    );
+  } finally {
+    __resetConfigValues();
+  }
+  assert.strictEqual(calls, 0, 'não deveria consultar o banco com source=file');
+  assert.strictEqual(suites.length, 1);
+});

@@ -267,7 +267,7 @@ export async function getSuitesInfo(
       const itemType = mapItemType(rowValue(row, 4, 'ITEM_TYPE'));
       if (!itemType) continue;
       rows.push({
-        owner: rowValue(row, 0, 'OBJECT_OWNER').toUpperCase(),
+        owner: rowValue(row, 0, 'OBJECT_OWNER').trim().toUpperCase(),
         packageName: rowValue(row, 1, 'OBJECT_NAME'),
         itemName: rowValue(row, 2, 'ITEM_NAME'),
         description: rowValue(row, 3, 'ITEM_DESCRIPTION') || null,

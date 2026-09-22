@@ -2,6 +2,7 @@ import './setup.js';
 import assert from 'node:assert';
 import { test } from 'node:test';
 import {
+  type DbSuiteRow,
   discoverDbSuites,
   discoverSchemaFromConn,
   discoverSchemaFromDb,
@@ -15,6 +16,7 @@ import {
   type SuiteFile,
 } from '../../discovery';
 import { closeOraclePool } from '../../oracleRunner';
+import { __resetConfigValues, __setConfigValue } from '../vscode-stub';
 
 test('parseSuite: retorna ParsedSuite para arquivo com %suite', () => {
   const text = `CREATE OR REPLACE PACKAGE test_app IS
@@ -888,3 +890,235 @@ test('discoverDbSuites: usa a API quando a versão permite', async () => {
     await closeOraclePool();
   }
 });
+
+test('getSuitesInfo: item_type desconhecido é ignorado', async () => {
+  const rows = await getSuitesInfo(
+    makeInfoConn([
+      ['HR', 'PKG', 'x', 'd', 'UT_SOMETHING', 1, null, 0, null, ''],
+      ['HR', 'PKG', 'pkg', 'd', 'UT_SUITE', 1, null, 0, null, ''],
+    ]),
+    'hr',
+  );
+  assert.strictEqual(rows.length, 1);
+  assert.strictEqual(rows[0].itemType, 'suite');
+});
+
+test('getSuitesInfo: owner em maiúsculas e tags normalizadas (trim/vazias)', async () => {
+  const rows = await getSuitesInfo(
+    makeInfoConn([[' hr ', 'pkg', 'pkg', 'd', 'UT_SUITE', 1, null, 0, null, ' a , ,b ']]),
+    'hr',
+  );
+  assert.strictEqual(rows[0].owner, 'HR');
+  assert.deepStrictEqual(rows[0].tags, ['a', 'b']);
+});
+
+test('getSuitesInfo: disabled_flag 0 é false; descrição vazia vira null', async () => {
+  const rows = await getSuitesInfo(
+    makeInfoConn([['HR', 'PKG', 'pkg', '', 'UT_SUITE', 1, null, 0, null, '']]),
+    'hr',
+  );
+  assert.strictEqual(rows[0].disabled, false);
+  assert.strictEqual(rows[0].description, null);
+});
+
+test('mapSuitesInfoToSuiteFiles: vários packages e contextos ignorados', () => {
+  const rows: DbSuiteRow[] = [
+    row('PKG_A', 'pkg_a', 'suite', 'A', 1),
+    row('PKG_A', 'ctx', 'context', 'c', 2),
+    row('PKG_A', 't1', 'test', 't1', 3),
+    row('PKG_B', 'pkg_b', 'suite', 'B', 1),
+    row('PKG_B', 't2', 'test', 't2', 2),
+  ];
+  const suites = mapSuitesInfoToSuiteFiles(rows, FOLDER);
+  assert.deepStrictEqual(suites.map((s) => s.packageName).sort(), ['PKG_A', 'PKG_B']);
+  assert.strictEqual(suites.find((s) => s.packageName === 'PKG_A')?.tests.length, 1);
+  assert.strictEqual(suites.find((s) => s.packageName === 'PKG_A')?.tests[0].procName, 't1');
+});
+
+test('mapSuitesInfoToSuiteFiles: suíte disabled é omitida', () => {
+  const rows: DbSuiteRow[] = [
+    { ...row('PKG', 'pkg', 'suite', 'd', 1), disabled: true },
+    row('PKG', 't', 'test', 't', 2),
+  ];
+  assert.deepStrictEqual(mapSuitesInfoToSuiteFiles(rows, FOLDER), []);
+});
+
+test('mapSuitesInfoToSuiteFiles: teste disabled é filtrado; tags propagadas', () => {
+  const rows: DbSuiteRow[] = [
+    row('PKG', 'pkg', 'suite', 'd', 1),
+    { ...row('PKG', 't1', 'test', 't1', 2), tags: ['fast'] },
+    { ...row('PKG', 't2', 'test', 't2', 3), disabled: true },
+  ];
+  const suites = mapSuitesInfoToSuiteFiles(rows, FOLDER);
+  assert.deepStrictEqual(
+    suites[0].tests.map((t) => t.procName),
+    ['t1'],
+  );
+  assert.deepStrictEqual(suites[0].tests[0].tags, ['fast']);
+  assert.strictEqual(suites[0].tests[0].line, 1); // 1-based 2 → 0-based 1
+});
+
+test('mergeSuiteLists: package case-insensitive; banco prevalece em descrição/tags', () => {
+  const fileSuite = {
+    uri: { fsPath: '/ws/ut_app.pks', scheme: 'file' },
+    packageName: 'UT_APP',
+    suiteDescription: 'File',
+    tests: [{ procName: 'test_one', description: 'file', line: 5, tags: ['old'] }],
+    folder: FOLDER,
+    suiteLine: 1,
+  } as unknown as SuiteFile;
+  const dbSuite = {
+    uri: { fsPath: '' },
+    packageName: 'ut_app',
+    suiteDescription: 'DB',
+    tests: [{ procName: 'TEST_ONE', description: 'db', line: 9, tags: ['new'] }],
+    folder: FOLDER,
+    suiteLine: 2,
+  } as unknown as SuiteFile;
+
+  const merged = mergeSuiteLists([fileSuite], [dbSuite]);
+  assert.strictEqual(merged.length, 1);
+  assert.strictEqual(merged[0].uri, fileSuite.uri);
+  assert.strictEqual(merged[0].tests[0].line, 5); // linha do arquivo
+  assert.strictEqual(merged[0].tests[0].description, 'db');
+  assert.deepStrictEqual(merged[0].tests[0].tags, ['new']);
+});
+
+test('mergeSuiteLists: tag vazia no banco não apaga a do arquivo', () => {
+  const fileSuite = {
+    uri: { fsPath: '/ws/ut_app.pks', scheme: 'file' },
+    packageName: 'UT_APP',
+    suiteDescription: 'File',
+    tests: [{ procName: 't', description: 'file', line: 5, tags: ['keep'] }],
+    folder: FOLDER,
+    suiteLine: 1,
+  } as unknown as SuiteFile;
+  const dbSuite = {
+    uri: { fsPath: '' },
+    packageName: 'UT_APP',
+    suiteDescription: '',
+    tests: [{ procName: 't', description: 'db', line: 9 }],
+    folder: FOLDER,
+    suiteLine: 2,
+  } as unknown as SuiteFile;
+
+  const merged = mergeSuiteLists([fileSuite], [dbSuite]);
+  assert.deepStrictEqual(merged[0].tests[0].tags, ['keep']);
+});
+
+// ── discoverDbSuites: gate de versão e fonte (PRD-74 RF4/RF5) ─────────
+
+function makeApiDbConn(opts: {
+  utVersion: string;
+  infoRows?: unknown[];
+  allObjects?: unknown[];
+  onApi?: () => void;
+  onAllSource?: () => void;
+}) {
+  const conn = {
+    callTimeout: 0,
+    execute: async (sql: string) => {
+      if (/ut_runner\.version/.test(sql)) return { rows: [[opts.utVersion]] };
+      if (/product_component_version/.test(sql)) return { rows: [['19.0.0']] };
+      if (/get_suites_info/.test(sql)) {
+        opts.onApi?.();
+        return { rows: opts.infoRows ?? [] };
+      }
+      if (/all_objects/i.test(sql)) {
+        opts.onAllSource?.();
+        return { rows: opts.allObjects ?? [] };
+      }
+      return { rows: [] };
+    },
+    close: async () => {},
+  };
+  const mod = {
+    OUT_FORMAT_OBJECT: {},
+    createPool: async () => ({ getConnection: async () => conn, close: async () => {} }),
+    getConnection: async () => {
+      throw new Error('raw indisponivel');
+    },
+  };
+  return mod;
+}
+
+test('discoverDbSuites: versão antiga (<3.1.3) não chama a API e cai no ALL_SOURCE', async () => {
+  let apiCalls = 0;
+  let allSourceCalls = 0;
+  const mod = makeApiDbConn({
+    utVersion: '3.0.0',
+    onApi: () => apiCalls++,
+    onAllSource: () => allSourceCalls++,
+  });
+  try {
+    const result = await discoverDbSuites(
+      'u/p@//h:1521/s',
+      'hr',
+      [FOLDER],
+      async () => mod as never,
+    );
+    assert.deepStrictEqual(result, []);
+    assert.strictEqual(apiCalls, 0, 'não deveria consultar get_suites_info em versão antiga');
+    assert.strictEqual(allSourceCalls, 1, 'deveria cair no ALL_SOURCE');
+  } finally {
+    await closeOraclePool();
+  }
+});
+
+test('discoverDbSuites: discovery.source=database não usa fallback quando a API vem vazia', async () => {
+  let allSourceCalls = 0;
+  const mod = makeApiDbConn({
+    utVersion: '3.2.3',
+    infoRows: [],
+    onAllSource: () => allSourceCalls++,
+  });
+  __setConfigValue('discovery.source', 'database');
+  try {
+    const result = await discoverDbSuites(
+      'u/p@//h:1521/s',
+      'hr',
+      [FOLDER],
+      async () => mod as never,
+    );
+    assert.deepStrictEqual(result, []);
+    assert.strictEqual(allSourceCalls, 0, 'com source=database não deveria usar ALL_SOURCE');
+  } finally {
+    __resetConfigValues();
+    await closeOraclePool();
+  }
+});
+
+test('discoverDbSuites: API vazia em auto cai no ALL_SOURCE', async () => {
+  let allSourceCalls = 0;
+  const mod = makeApiDbConn({
+    utVersion: '3.2.3',
+    infoRows: [],
+    onAllSource: () => allSourceCalls++,
+  });
+  try {
+    await discoverDbSuites('u/p@//h:1521/s', 'hr', [FOLDER], async () => mod as never);
+    assert.strictEqual(allSourceCalls, 1);
+  } finally {
+    await closeOraclePool();
+  }
+});
+
+function row(
+  packageName: string,
+  itemName: string,
+  itemType: DbSuiteRow['itemType'],
+  description: string,
+  line: number,
+): DbSuiteRow {
+  return {
+    owner: 'HR',
+    packageName,
+    suitePath: null,
+    itemName,
+    itemType,
+    description,
+    disabled: false,
+    tags: [],
+    line,
+  };
+}

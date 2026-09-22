@@ -36,6 +36,24 @@ test('smoke inclui os testes de DBMS_DEBUG (package + function standalone)', () 
   assert.match(smoke, /debuggerStandaloneFn\.test\.js/);
 });
 
+test('smoke cobre as capacidades das PRDs 0.13 (get_suites_info/rebuild)', () => {
+  const smoke = read('.vscode-test.smoke.mjs');
+  assert.match(smoke, /oracleCapabilities\.test\.js/);
+  const caps = read('src/test/integration/oracleCapabilities.test.ts');
+  assert.match(caps, /get_suites_info/);
+  assert.match(caps, /rebuildAnnotationCache/);
+  assert.match(caps, /UTPLSQL_SUITES_INFO_MIN_VERSION/);
+});
+
+test('integração 0.13 existe e é coberta pelo glob base do vscode-test', () => {
+  assert.ok(
+    fs.existsSync(path.join(ROOT, 'src/test/integration/v013-features.test.ts')),
+    'v013-features.test.ts deveria existir',
+  );
+  const base = read('.vscode-test.mjs');
+  assert.match(base, /out\/test\/integration\/\*\*\/\*\.test\.js/);
+});
+
 test('bootstrap da matriz concede os grants de debugger ao schema de teste', () => {
   const bootstrap = read('scripts/db-matrix/bootstrap.sh');
   assert.match(bootstrap, /grant debug connect session to ut3/i);

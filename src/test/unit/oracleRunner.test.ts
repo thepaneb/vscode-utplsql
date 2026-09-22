@@ -2190,3 +2190,110 @@ test('rebuildAnnotationCache: falha de conexão lança erro', async () => {
   }
   assert.ok(err, 'deveria lançar quando não há conexão');
 });
+
+test('rebuildAnnotationCache: erro na execução propaga', async () => {
+  const conn = {
+    callTimeout: 0,
+    execute: async () => {
+      throw new Error('ORA-06550: PLS-00201: identifier must be declared');
+    },
+    close: async () => {},
+  };
+  const mod = {
+    BIND_IN: 'in',
+    STRING: 'STRING',
+    createPool: async () => ({ getConnection: async () => conn, close: async () => {} }),
+    getConnection: async () => {
+      throw new Error('raw indisponivel');
+    },
+  };
+  let err: Error | undefined;
+  try {
+    await rebuildAnnotationCache(mod as never, 'ut3/senha@//h:1521/s', POOL_CFG);
+  } catch (e) {
+    err = e as Error;
+  } finally {
+    await closeOraclePool();
+  }
+  assert.match(String(err?.message), /ORA-06550/);
+});
+
+test('executeRunOracle: tags + randomOrder + cobertura combinados enviam todos os binds', async () => {
+  const { mod, captured } = makeOracleRunFake({
+    buffer: [JUNIT_XML, COV_XML],
+    reporters: ['UT_DOCUMENTATION_REPORTER', 'UT_COVERAGE_COBERTURA_REPORTER'],
+  });
+  const run = makeRun() as any;
+  const { item, metaMap } = makeLeaf();
+  try {
+    await executeRunOracle(
+      {
+        connection: 'u/p@//h:1521/s',
+        pathArgs: ['pkg'],
+        coverage: true,
+        sourcePath: 'install',
+        root: '/root',
+        run,
+        leafTests: [item as any],
+        state: makeOracleRunState(metaMap),
+        tags: 'fast',
+        randomOrder: true,
+        randomOrderSeed: 7,
+        coverageOwner: 'app',
+        coverageExcludeObjectExpr: '^UT_',
+      },
+      neverCancel as never,
+      async () => mod as never,
+    );
+  } finally {
+    await closeOraclePool();
+  }
+  const sql = captured.runSql ?? '';
+  assert.match(sql, /a_paths => :paths/);
+  assert.match(sql, /a_tags => :tags/);
+  assert.match(sql, /a_random_test_order => :randomOrder/);
+  assert.match(sql, /a_random_test_order_seed => :randomSeed/);
+  assert.match(sql, /a_coverage_schemes => :schemes/);
+  assert.match(sql, /a_exclude_object_expr => :excludeObjectExpr/);
+  assert.deepStrictEqual(Object.keys(captured.runBinds ?? {}).sort(), [
+    'excludeObjectExpr',
+    'paths',
+    'randomOrder',
+    'randomSeed',
+    'schemes',
+    'tags',
+  ]);
+});
+
+test('executeRunOracle: cobertura sem escopo configurado não adiciona parâmetros extras', async () => {
+  const { mod, captured } = makeOracleRunFake({
+    buffer: [JUNIT_XML, COV_XML],
+    reporters: ['UT_DOCUMENTATION_REPORTER', 'UT_COVERAGE_COBERTURA_REPORTER'],
+  });
+  const run = makeRun() as any;
+  const { item, metaMap } = makeLeaf();
+  try {
+    await executeRunOracle(
+      {
+        connection: 'u/p@//h:1521/s',
+        pathArgs: ['pkg'],
+        coverage: true,
+        sourcePath: 'install',
+        root: '/root',
+        run,
+        leafTests: [item as any],
+        state: makeOracleRunState(metaMap),
+      },
+      neverCancel as never,
+      async () => mod as never,
+    );
+  } finally {
+    await closeOraclePool();
+  }
+  const sql = captured.runSql ?? '';
+  assert.ok(!sql.includes('a_include_objects'));
+  assert.ok(!sql.includes('a_exclude_objects'));
+  assert.ok(!sql.includes('a_include_schema_expr'));
+  assert.ok(!sql.includes('a_exclude_object_expr'));
+  assert.strictEqual(captured.runBinds?.includeObjects, undefined);
+});
