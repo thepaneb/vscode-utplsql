@@ -15,6 +15,11 @@
   setting `utplsql.tags` expõe `a_tags` do `ut_runner.run` (ex.:
   `fast & !integration`; vazio = todos). Reporters adicionais inexistentes são
   ignorados com aviso em vez de abortar a execução.
+- **Ordem aleatória de execução com seed (PRD-78)**: novas settings
+  `utplsql.run.randomOrder` (default `false`) e `utplsql.run.randomOrderSeed`
+  (default `0`), que passam `a_random_test_order`/`a_random_test_order_seed` ao
+  `ut_runner.run` para revelar dependências de ordem entre testes. Seed `0` =
+  sorteada pelo banco; seed > 0 reproduz a mesma ordem e é registrada no Output.
 
 ## 0.12.1
 

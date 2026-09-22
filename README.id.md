@@ -103,6 +103,8 @@ Ekstensi terhubung langsung ke Oracle, membaca laporan (JUnit + Coverage) lalu m
 | `utplsql.dbmsOutput` | `false` | Mengaktifkan `DBMS_OUTPUT` di sesi pengujian. Berguna untuk debugging. |
 | `utplsql.additionalReporters` | `[]` | Reporter tambahan yang disertakan pada setiap eksekusi (mis. `["ut_coverage_html_reporter"]`). Default (documentation, junit) selalu disertakan dan tidak perlu didaftarkan. |
 | `utplsql.tags` | `""` | Ekspresi tag utPLSQL untuk memfilter pengujian mana yang dijalankan (mis. `fast & !integration`). Kosong menjalankan semua. |
+| `utplsql.run.randomOrder` | `false` | Menjalankan pengujian dalam urutan acak untuk mengungkap dependensi urutan di antara pengujian. |
+| `utplsql.run.randomOrderSeed` | `0` | Seed urutan acak. `0` = dipilih basis data (tidak dapat direproduksi); > 0 mereproduksi urutan yang sama. |
 | `utplsql.codeLens.enabled` | `true` | Menampilkan tombol CodeLens Run/Run with Coverage di atas `%suite` dan `%test`. |
 | `utplsql.statusBar.enabled` | `true` | Menampilkan indikator status pengujian di bilah status. |
 | `utplsql.decorations.enabled` | `true` | Menampilkan dekorasi lolos/gagal pada baris `%suite` dan `%test` setelah eksekusi. |

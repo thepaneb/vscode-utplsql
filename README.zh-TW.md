@@ -102,6 +102,8 @@ Test Explorer 中。
 | `utplsql.dbmsOutput` | `false` | 在測試工作階段中啟用 `DBMS_OUTPUT`。 |
 | `utplsql.additionalReporters` | `[]` | 每次執行都要包含的額外 reporters（例如 `["ut_coverage_html_reporter"]`）。預設（documentation、junit）一律包含，無需列出。 |
 | `utplsql.tags` | `""` | 用於篩選要執行哪些測試的 utPLSQL 標籤運算式（例如 `fast & !integration`）。留空則執行全部。 |
+| `utplsql.run.randomOrder` | `false` | 以隨機順序執行測試，以揭示測試之間的順序依賴。 |
+| `utplsql.run.randomOrderSeed` | `0` | 隨機順序的種子。`0` = 由資料庫選擇（不可重現）；大於 0 可重現相同順序。 |
 | `utplsql.codeLens.enabled` | `true` | 在 `%suite` 與 `%test` 上顯示 Run/Run with Coverage CodeLens 按鈕。 |
 | `utplsql.statusBar.enabled` | `true` | 在狀態列中顯示測試狀態指示器。 |
 | `utplsql.decorations.enabled` | `true` | 在執行後於 `%suite` 與 `%test` 行上顯示通過/失敗裝飾。 |

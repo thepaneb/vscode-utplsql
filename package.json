@@ -152,6 +152,17 @@
           "default": "",
           "description": "Expressão de tags do utPLSQL (ex.: \"fast & !integration\") para filtrar quais testes executam. Vazio executa todos."
         },
+        "utplsql.run.randomOrder": {
+          "type": "boolean",
+          "default": false,
+          "description": "Executa os testes em ordem aleatória, para revelar dependências de ordem entre eles."
+        },
+        "utplsql.run.randomOrderSeed": {
+          "type": "number",
+          "default": 0,
+          "minimum": 0,
+          "description": "Seed da ordem aleatória. 0 = sorteada pelo banco (não reproduzível); maior que 0 reproduz a mesma ordem."
+        },
         "utplsql.oraclePoolMin": {
           "type": "number",
           "default": 2,

@@ -98,6 +98,8 @@ Test Explorer に表示されます。
 | `utplsql.dbmsOutput` | `false` | テストセッションで `DBMS_OUTPUT` を有効化。デバッグに便利。 |
 | `utplsql.additionalReporters` | `[]` | 毎回の実行に含める追加レポーター（例: `["ut_coverage_html_reporter"]`）。デフォルト（documentation、junit）は常に含まれ、リスト化する必要はありません。 |
 | `utplsql.tags` | `""` | 実行するテストを絞り込む utPLSQL のタグ式（例: `fast & !integration`）。空の場合はすべて実行します。 |
+| `utplsql.run.randomOrder` | `false` | テスト間の順序依存を明らかにするため、ランダムな順序で実行します。 |
+| `utplsql.run.randomOrderSeed` | `0` | ランダム順のシード。`0` = データベースが選択（再現不可）。0 より大きいと同じ順序を再現します。 |
 | `utplsql.codeLens.enabled` | `true` | `%suite` と `%test` の上に Run/Run with Coverage の CodeLens ボタンを表示。 |
 | `utplsql.statusBar.enabled` | `true` | ステータスバーにテスト状態インジケーターを表示。 |
 | `utplsql.decorations.enabled` | `true` | 実行後に `%suite` と `%test` の行へ合格/失敗のデコレーションを表示。 |

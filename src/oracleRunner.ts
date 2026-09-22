@@ -411,6 +411,10 @@ export interface OracleRunOptions {
   additionalReporters?: string[];
   /** Expressão de tags do utPLSQL (ex.: `fast & !integration`); vazio = todas */
   tags?: string;
+  /** Se true, executa os testes em ordem aleatória (`a_random_test_order`) */
+  randomOrder?: boolean;
+  /** Seed da ordem aleatória (0 = sorteada pelo banco) */
+  randomOrderSeed?: number;
   /** Owner do schema para coverage (override) */
   coverageOwner?: string;
   /** Se true, captura DBMS_OUTPUT */
@@ -449,6 +453,8 @@ export async function executeRunOracle(
     folders,
     additionalReporters,
     tags,
+    randomOrder,
+    randomOrderSeed,
     coverageOwner,
     dbmsOutput,
     timeoutMinutes,
@@ -553,11 +559,25 @@ export async function executeRunOracle(
       binds.schemes = { dir: oracledb.BIND_IN, type: 'UT_VARCHAR2_LIST', val: [owner] };
     }
 
+    // Ordem aleatória (PRD-78): os parâmetros só entram quando habilitada, para
+    // manter o SQL idêntico ao atual no default (`randomOrder` false).
+    let randomParams = '';
+    if (randomOrder) {
+      const seed = randomOrderSeed && randomOrderSeed > 0 ? randomOrderSeed : null;
+      binds.randomOrder = { dir: oracledb.BIND_IN, type: oracledb.NUMBER, val: 1 };
+      binds.randomSeed = { dir: oracledb.BIND_IN, type: oracledb.NUMBER, val: seed };
+      randomParams =
+        ',\n      a_random_test_order => :randomOrder,\n      a_random_test_order_seed => :randomSeed';
+      run.appendOutput(
+        `\r\n${t(getExtensionLocale(), 'runner.randomOrderSeed', { seed: seed ?? 0 })}\r\n`,
+      );
+    }
+
     const plsql = `BEGIN ut_runner.run(
       a_paths => ${pathsArg},
       a_reporters => ut_reporters(${runners.join(',')}),
       a_coverage_schemes => ${coverageSchemes},
-      a_tags => :tags
+      a_tags => :tags${randomParams}
     ); END;`;
 
     if (dbmsOutput) {

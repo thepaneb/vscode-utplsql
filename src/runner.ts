@@ -185,6 +185,8 @@ export async function executeRun(
       folders,
       additionalReporters: cfg.additionalReporters,
       tags: cfg.tags,
+      randomOrder: cfg.randomOrder,
+      randomOrderSeed: cfg.randomOrderSeed,
       coverageOwner: cfg.coverageOwner,
       dbmsOutput: cfg.dbmsOutput,
       timeoutMinutes: cfg.timeoutMinutes,

@@ -86,6 +86,8 @@ decoded by VSCode — the profile charset does not apply.
 | `utplsql.timeoutMinutes` | `60` | Timeout for a test run, in minutes (1–1440). On expiry the run is cancelled. |
 | `utplsql.dbmsOutput` | `false` | Captures `DBMS_OUTPUT` from the test session and appends it to the run output. Best-effort; useful for debugging. |
 | `utplsql.tags` | `""` | utPLSQL tag expression to filter which tests run (e.g. `fast & !integration`). Empty runs all. |
+| `utplsql.run.randomOrder` | `false` | Runs the tests in random order to reveal order dependencies between them. |
+| `utplsql.run.randomOrderSeed` | `0` | Seed for the random order. `0` = chosen by the database (not reproducible); > 0 reproduces the same order. |
 
 ## Coverage
 

@@ -41,6 +41,8 @@ function makeGlobal(over: Partial<UtConfig> = {}): UtConfig {
     includePatterns: ['**/*.pks'],
     coverageOwner: '',
     tags: '',
+    randomOrder: false,
+    randomOrderSeed: 0,
     additionalReporters: [],
     timeoutMinutes: 60,
     dbmsOutput: false,

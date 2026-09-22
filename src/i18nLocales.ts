@@ -68,6 +68,7 @@ export const ptBr: Record<string, string> = {
   'runner.coverNoReport':
     '[cobertura] relatório não gerado.\n  esperado em: {path}\n  arquivos em {dir}: {files}\n  verifique o GRANT EXECUTE ON SYS.DBMS_PROFILER.',
   'runner.oracleInfo': '[info] Oracle runner {ms}ms | {chars} chars JUnit',
+  'runner.randomOrderSeed': '[info] Ordem aleatória habilitada (seed: {seed}).',
   'runner.stderr': '[stderr]',
 
   'oracleRunner.coverNotGenerated':
@@ -256,6 +257,7 @@ export const en: Record<string, string> = {
   'runner.coverNoReport':
     '[coverage] report not generated.\n  expected at: {path}\n  files in {dir}: {files}\n  check GRANT EXECUTE ON SYS.DBMS_PROFILER.',
   'runner.oracleInfo': '[info] Oracle runner {ms}ms | {chars} JUnit chars',
+  'runner.randomOrderSeed': '[info] Random test order enabled (seed: {seed}).',
   'runner.stderr': '[stderr]',
 
   'oracleRunner.coverNotGenerated':
@@ -447,6 +449,7 @@ export const es: Record<string, string> = {
   'runner.coverNoReport':
     '[cobertura] informe no generado.\n  esperado en: {path}\n  archivos en {dir}: {files}\n  verifique GRANT EXECUTE ON SYS.DBMS_PROFILER.',
   'runner.oracleInfo': '[info] Runner Oracle {ms}ms | {chars} chars JUnit',
+  'runner.randomOrderSeed': '[info] Orden aleatorio habilitado (seed: {seed}).',
   'runner.stderr': '[stderr]',
 
   'oracleRunner.coverNotGenerated':
@@ -631,6 +634,7 @@ export const zhCn: Record<string, string> = {
   'runner.coverNoReport':
     '[覆盖率] 未生成报告。\n  期望位置：{path}\n  {dir} 中的文件：{files}\n  请检查 GRANT EXECUTE ON SYS.DBMS_PROFILER。',
   'runner.oracleInfo': '[信息] Oracle 运行器 {ms}ms | {chars} 个 JUnit 字符',
+  'runner.randomOrderSeed': '[info] 已启用随机顺序（seed：{seed}）。',
   'runner.stderr': '[stderr]',
 
   'oracleRunner.coverNotGenerated':
@@ -816,6 +820,7 @@ export const ja: Record<string, string> = {
   'runner.coverNoReport':
     '[カバレッジ] レポートが生成されませんでした。\n  想定場所: {path}\n  {dir} 内のファイル: {files}\n  GRANT EXECUTE ON SYS.DBMS_PROFILER を確認してください。',
   'runner.oracleInfo': '[情報] Oracle ランナー {ms}ms | JUnit {chars} 文字',
+  'runner.randomOrderSeed': '[info] ランダム順を有効化しました（seed: {seed}）。',
   'runner.stderr': '[stderr]',
 
   'oracleRunner.coverNotGenerated':
@@ -1007,6 +1012,7 @@ export const de: Record<string, string> = {
   'runner.coverNoReport':
     '[Coverage] Bericht nicht generiert.\n  erwartet unter: {path}\n  Dateien in {dir}: {files}\n  Prüfen Sie GRANT EXECUTE ON SYS.DBMS_PROFILER.',
   'runner.oracleInfo': '[Info] Oracle-Runner {ms}ms | {chars} JUnit-Zeichen',
+  'runner.randomOrderSeed': '[info] Zufällige Reihenfolge aktiviert (Seed: {seed}).',
   'runner.stderr': '[stderr]',
 
   'oracleRunner.coverNotGenerated':
@@ -1199,6 +1205,7 @@ export const fr: Record<string, string> = {
   'runner.coverNoReport':
     '[couverture] rapport non généré.\n  attendu dans : {path}\n  fichiers dans {dir} : {files}\n  vérifiez GRANT EXECUTE ON SYS.DBMS_PROFILER.',
   'runner.oracleInfo': '[info] Runner Oracle {ms}ms | {chars} caractères JUnit',
+  'runner.randomOrderSeed': '[info] Ordre aléatoire activé (seed : {seed}).',
   'runner.stderr': '[stderr]',
 
   'oracleRunner.coverNotGenerated':
@@ -1384,6 +1391,7 @@ export const zhTw: Record<string, string> = {
   'runner.coverNoReport':
     '[涵蓋範圍] 未產生報告。\n  預期位置：{path}\n  {dir} 中的檔案：{files}\n  請檢查 GRANT EXECUTE ON SYS.DBMS_PROFILER。',
   'runner.oracleInfo': '[資訊] Oracle 執行器 {ms}ms | {chars} 個 JUnit 字元',
+  'runner.randomOrderSeed': '[info] 已啟用隨機順序（seed：{seed}）。',
   'runner.stderr': '[stderr]',
 
   'oracleRunner.coverNotGenerated':
@@ -1570,6 +1578,7 @@ export const it: Record<string, string> = {
   'runner.coverNoReport':
     '[copertura] report non generato.\n  atteso in: {path}\n  file in {dir}: {files}\n  verificare GRANT EXECUTE ON SYS.DBMS_PROFILER.',
   'runner.oracleInfo': '[info] Runner Oracle {ms}ms | {chars} caratteri JUnit',
+  'runner.randomOrderSeed': '[info] Ordine casuale abilitato (seed: {seed}).',
   'runner.stderr': '[stderr]',
 
   'oracleRunner.coverNotGenerated':
@@ -1759,6 +1768,7 @@ export const ko: Record<string, string> = {
   'runner.coverNoReport':
     '[커버리지] 보고서가 생성되지 않았습니다.\n  예상 위치: {path}\n  {dir}의 파일: {files}\n  GRANT EXECUTE ON SYS.DBMS_PROFILER를 확인하세요.',
   'runner.oracleInfo': '[정보] Oracle 러너 {ms}ms | JUnit {chars}자',
+  'runner.randomOrderSeed': '[info] 무작위 순서가 활성화되었습니다(seed: {seed}).',
   'runner.stderr': '[stderr]',
 
   'oracleRunner.coverNotGenerated':
@@ -1946,6 +1956,7 @@ export const ru: Record<string, string> = {
   'runner.coverNoReport':
     '[покрытие] отчёт не создан.\n  ожидается: {path}\n  файлы в {dir}: {files}\n  проверьте GRANT EXECUTE ON SYS.DBMS_PROFILER.',
   'runner.oracleInfo': '[инфо] Oracle runner {ms}мс | {chars} символов JUnit',
+  'runner.randomOrderSeed': '[инфо] Случайный порядок включён (seed: {seed}).',
   'runner.stderr': '[stderr]',
 
   'oracleRunner.coverNotGenerated':
@@ -2133,6 +2144,7 @@ export const tr: Record<string, string> = {
   'runner.coverNoReport':
     "[kapsam] rapor oluşturulmadı.\n  beklenen konum: {path}\n  {dir} içindeki dosyalar: {files}\n  GRANT EXECUTE ON SYS.DBMS_PROFILER'ı doğrulayın.",
   'runner.oracleInfo': '[bilgi] Oracle çalıştırıcısı {ms}ms | {chars} JUnit karakteri',
+  'runner.randomOrderSeed': '[bilgi] Rastgele sıra etkin (seed: {seed}).',
   'runner.stderr': '[stderr]',
 
   'oracleRunner.coverNotGenerated':
@@ -2321,6 +2333,7 @@ export const pl: Record<string, string> = {
   'runner.coverNoReport':
     '[pokrycie] raport nie został wygenerowany.\n  oczekiwany: {path}\n  pliki w {dir}: {files}\n  sprawdź GRANT EXECUTE ON SYS.DBMS_PROFILER.',
   'runner.oracleInfo': '[info] Runner Oracle {ms}ms | {chars} znaków JUnit',
+  'runner.randomOrderSeed': '[info] Włączono losową kolejność (seed: {seed}).',
   'runner.stderr': '[stderr]',
 
   'oracleRunner.coverNotGenerated':
@@ -2511,6 +2524,7 @@ export const cs: Record<string, string> = {
   'runner.coverNoReport':
     '[pokrytí] zpráva nebyla vytvořena.\n  očekáváno v: {path}\n  soubory v {dir}: {files}\n  ověřte GRANT EXECUTE ON SYS.DBMS_PROFILER.',
   'runner.oracleInfo': '[info] Oracle runner {ms}ms | {chars} znaků JUnit',
+  'runner.randomOrderSeed': '[info] Náhodné pořadí zapnuto (seed: {seed}).',
   'runner.stderr': '[stderr]',
 
   'oracleRunner.coverNotGenerated':
@@ -2701,6 +2715,7 @@ export const hu: Record<string, string> = {
   'runner.coverNoReport':
     '[lefedettség] jelentés nem készült.\n  várt hely: {path}\n  fájlok itt: {dir}: {files}\n  ellenőrizze: GRANT EXECUTE ON SYS.DBMS_PROFILER.',
   'runner.oracleInfo': '[info] Oracle-futtató {ms}ms | {chars} JUnit karakter',
+  'runner.randomOrderSeed': '[info] Véletlen sorrend bekapcsolva (seed: {seed}).',
   'runner.stderr': '[stderr]',
 
   'oracleRunner.coverNotGenerated':
@@ -2892,6 +2907,7 @@ export const bg: Record<string, string> = {
   'runner.coverNoReport':
     '[покритие] отчетът не е създаден.\n  очакван: {path}\n  файлове в {dir}: {files}\n  проверете GRANT EXECUTE ON SYS.DBMS_PROFILER.',
   'runner.oracleInfo': '[инфо] Oracle runner {ms}ms | {chars} JUnit знака',
+  'runner.randomOrderSeed': '[инфо] Случайният ред е включен (seed: {seed}).',
   'runner.stderr': '[stderr]',
   'oracleRunner.coverNotGenerated':
     '[покритие] отчетът не е създаден. Проверете GRANT EXECUTE ON SYS.DBMS_PROFILER.',
@@ -3077,6 +3093,7 @@ export const el: Record<string, string> = {
   'runner.coverNoReport':
     '[κάλυψη] δεν δημιουργήθηκε αναφορά.\n  αναμενόταν: {path}\n  αρχεία σε {dir}: {files}\n  ελέγξτε GRANT EXECUTE ON SYS.DBMS_PROFILER.',
   'runner.oracleInfo': '[info] Oracle runner {ms}ms | {chars} χαρακτήρες JUnit',
+  'runner.randomOrderSeed': '[info] Η τυχαία σειρά ενεργοποιήθηκε (seed: {seed}).',
   'runner.stderr': '[stderr]',
   'oracleRunner.coverNotGenerated':
     '[κάλυψη] δεν δημιουργήθηκε αναφορά. Ελέγξτε GRANT EXECUTE ON SYS.DBMS_PROFILER.',
@@ -3262,6 +3279,7 @@ export const id: Record<string, string> = {
   'runner.coverNoReport':
     '[cakupan] laporan tidak dibuat.\n  diharapkan di: {path}\n  file di {dir}: {files}\n  periksa GRANT EXECUTE ON SYS.DBMS_PROFILER.',
   'runner.oracleInfo': '[info] Runner Oracle {ms}ms | {chars} karakter JUnit',
+  'runner.randomOrderSeed': '[info] Urutan acak diaktifkan (seed: {seed}).',
   'runner.stderr': '[stderr]',
   'oracleRunner.coverNotGenerated':
     '[cakupan] laporan tidak dibuat. Periksa GRANT EXECUTE ON SYS.DBMS_PROFILER.',
@@ -3445,6 +3463,7 @@ export const ro: Record<string, string> = {
   'runner.coverNoReport':
     '[acoperire] raportul nu a fost generat.\n  așteptat la: {path}\n  fișiere în {dir}: {files}\n  verificați GRANT EXECUTE ON SYS.DBMS_PROFILER.',
   'runner.oracleInfo': '[info] Runner Oracle {ms}ms | {chars} caractere JUnit',
+  'runner.randomOrderSeed': '[info] Ordine aleatorie activată (seed: {seed}).',
   'runner.stderr': '[stderr]',
   'oracleRunner.coverNotGenerated':
     '[acoperire] raportul nu a fost generat. Verificați GRANT EXECUTE ON SYS.DBMS_PROFILER.',
@@ -3627,6 +3646,7 @@ export const sr: Record<string, string> = {
   'runner.coverNoReport':
     '[покриће] извештај није генерисан.\n  очекиван: {path}\n  датотеке у {dir}: {files}\n  проверите GRANT EXECUTE ON SYS.DBMS_PROFILER.',
   'runner.oracleInfo': '[инфо] Oracle runner {ms}ms | {chars} JUnit знакова',
+  'runner.randomOrderSeed': '[инфо] Насумичан ред је омогућен (seed: {seed}).',
   'runner.stderr': '[stderr]',
   'oracleRunner.coverNotGenerated':
     '[покриће] извештај није генерисан. Проверите GRANT EXECUTE ON SYS.DBMS_PROFILER.',
@@ -3804,6 +3824,7 @@ export const th: Record<string, string> = {
   'runner.coverNoReport':
     '[ความครอบคลุม] ไม่ได้สร้างรายงาน\n  คาดไว้ที่: {path}\n  ไฟล์ใน {dir}: {files}\n  ตรวจสอบ GRANT EXECUTE ON SYS.DBMS_PROFILER',
   'runner.oracleInfo': '[ข้อมูล] Oracle runner {ms}ms | {chars} ตัวอักษร JUnit',
+  'runner.randomOrderSeed': '[ข้อมูล] เปิดใช้ลำดับแบบสุ่มแล้ว (seed: {seed})',
   'runner.stderr': '[stderr]',
   'oracleRunner.coverNotGenerated':
     '[ความครอบคลุม] ไม่ได้สร้างรายงาน ตรวจสอบ GRANT EXECUTE ON SYS.DBMS_PROFILER',
@@ -3983,6 +4004,7 @@ export const uk: Record<string, string> = {
   'runner.coverNoReport':
     '[покриття] звіт не створено.\n  очікувано: {path}\n  файли в {dir}: {files}\n  перевірте GRANT EXECUTE ON SYS.DBMS_PROFILER.',
   'runner.oracleInfo': '[інфо] Oracle runner {ms}мс | {chars} символів JUnit',
+  'runner.randomOrderSeed': '[інфо] Випадковий порядок увімкнено (seed: {seed}).',
   'runner.stderr': '[stderr]',
   'oracleRunner.coverNotGenerated':
     '[покриття] звіт не створено. Перевірте GRANT EXECUTE ON SYS.DBMS_PROFILER.',
@@ -4166,6 +4188,7 @@ export const vi: Record<string, string> = {
   'runner.coverNoReport':
     '[phủ sóng] chưa tạo báo cáo.\n  dự kiến tại: {path}\n  tệp trong {dir}: {files}\n  kiểm tra GRANT EXECUTE ON SYS.DBMS_PROFILER.',
   'runner.oracleInfo': '[thông tin] Oracle runner {ms}ms | {chars} ký tự JUnit',
+  'runner.randomOrderSeed': '[thông tin] Đã bật thứ tự ngẫu nhiên (seed: {seed}).',
   'runner.stderr': '[stderr]',
   'oracleRunner.coverNotGenerated':
     '[phủ sóng] chưa tạo báo cáo. Kiểm tra GRANT EXECUTE ON SYS.DBMS_PROFILER.',

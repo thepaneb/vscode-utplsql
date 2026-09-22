@@ -103,6 +103,8 @@ Test Explorer에 나타납니다.
 | `utplsql.dbmsOutput` | `false` | 테스트 세션에서 `DBMS_OUTPUT`을 활성화합니다. |
 | `utplsql.additionalReporters` | `[]` | 모든 실행에 포함할 추가 리포터(예: `["ut_coverage_html_reporter"]`). 기본값(documentation, junit)은 항상 포함되며 나열할 필요가 없습니다. |
 | `utplsql.tags` | `""` | 실행할 테스트를 필터링하는 utPLSQL 태그 표현식(예: `fast & !integration`). 비어 있으면 모두 실행합니다. |
+| `utplsql.run.randomOrder` | `false` | 테스트 간 순서 의존성을 드러내기 위해 무작위 순서로 실행합니다. |
+| `utplsql.run.randomOrderSeed` | `0` | 무작위 순서의 seed. `0` = 데이터베이스가 선택(재현 불가), 0보다 크면 같은 순서를 재현합니다. |
 | `utplsql.codeLens.enabled` | `true` | `%suite` 및 `%test` 위에 Run/Run with Coverage CodeLens 버튼을 표시합니다. |
 | `utplsql.statusBar.enabled` | `true` | 상태 표시줄에 테스트 상태 표시기를 표시합니다. |
 | `utplsql.decorations.enabled` | `true` | 실행 후 `%suite` 및 `%test` 줄에 통과/실패 데코레이션을 표시합니다. |

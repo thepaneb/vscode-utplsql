@@ -103,6 +103,8 @@ A bővítmény közvetlenül Oracle-on keresztül csatlakozik, beolvassa a ripor
 | `utplsql.dbmsOutput` | `false` | Engedélyezi a `DBMS_OUTPUT` használatát a teszt-munkamenetben. Hasznos hibakereséshez. |
 | `utplsql.additionalReporters` | `[]` | További riporterek, amelyek minden futtatáskor bekerülnek (pl. `["ut_coverage_html_reporter"]`). Az alapértelmezettek (documentation, junit) mindig szerepelnek, és nem kell felsorolni őket. |
 | `utplsql.tags` | `""` | utPLSQL tagkifejezés a futtatandó tesztek szűréséhez (pl. `fast & !integration`). Üres = mindet futtatja. |
+| `utplsql.run.randomOrder` | `false` | Véletlen sorrendben futtatja a teszteket, hogy felfedje a köztük lévő sorrendfüggőségeket. |
+| `utplsql.run.randomOrderSeed` | `0` | A véletlen sorrend seedje. `0` = az adatbázis választja (nem reprodukálható); > 0 ugyanazt a sorrendet állítja elő. |
 | `utplsql.codeLens.enabled` | `true` | Run/Run with Coverage CodeLens-gombokat jelenít meg a `%suite` és `%test` fölött. |
 | `utplsql.statusBar.enabled` | `true` | A tesztek állapotát jelző mutatót jelenít meg az állapotsorban. |
 | `utplsql.decorations.enabled` | `true` | Sikeres/sikertelen dekorációkat jelenít meg a `%suite` és `%test` sorokon a futtatás után. |

@@ -102,6 +102,8 @@ Test Explorer **ngay khi từng bài kiểm thử hoàn tất**. VSIX đã kèm 
 | `utplsql.dbmsOutput` | `false` | Bật `DBMS_OUTPUT` trong phiên kiểm thử. |
 | `utplsql.additionalReporters` | `[]` | Các reporter bổ sung đưa vào mỗi lần chạy (ví dụ `["ut_coverage_html_reporter"]`). Các reporter mặc định (documentation, junit) luôn được bao gồm và không cần liệt kê. |
 | `utplsql.tags` | `""` | Biểu thức tag của utPLSQL để lọc bài kiểm thử nào sẽ chạy (ví dụ `fast & !integration`). Để trống là chạy tất cả. |
+| `utplsql.run.randomOrder` | `false` | Chạy các bài kiểm thử theo thứ tự ngẫu nhiên để phát hiện phụ thuộc thứ tự giữa chúng. |
+| `utplsql.run.randomOrderSeed` | `0` | Seed của thứ tự ngẫu nhiên. `0` = do cơ sở dữ liệu chọn (không thể tái tạo); > 0 tái tạo cùng thứ tự. |
 | `utplsql.codeLens.enabled` | `true` | Hiển thị các nút CodeLens Run/Run with Coverage trên `%suite` và `%test`. |
 | `utplsql.statusBar.enabled` | `true` | Hiển thị chỉ báo trạng thái kiểm thử trên thanh trạng thái. |
 | `utplsql.decorations.enabled` | `true` | Hiển thị các trang trí đạt/không đạt trên các dòng `%suite` và `%test` sau khi chạy. |

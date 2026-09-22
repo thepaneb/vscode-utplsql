@@ -137,6 +137,7 @@ CONCLUIR
 | 71 | [Corrigir o debugger para o DBMS_DEBUG real](completed/prd-71-debugger-dbms-debug-fix.md) | 0.12.1 | 2026-09-18 |
 | 73 | [Compilar objeto para debug (comando + menus)](completed/prd-73-compile-for-debug.md) | 0.12.1 | 2026-09-19 |
 | 69 | [Runner Oracle: binds tipados, `a_tags` e validação de reporters](completed/prd-69-oracle-runner-typed-binds.md) | 0.13.0 | 2026-09-22 |
+| 78 | [Ordem aleatória de execução com seed](completed/prd-78-random-test-order.md) | 0.13.0 | 2026-09-22 |
 | 83 | [Higiene do pacote VSIX: bloquear vazamento de arquivos de desenvolvimento](completed/prd-83-vsix-package-hygiene.md) | 0.13.0 | 2026-09-22 |
 
 ### 🟡 Em desenvolvimento
@@ -151,7 +152,6 @@ _(vazio — nenhuma PRD em desenvolvimento)_
 |---|---|---|---|
 | 74 | [Descoberta de suítes direto do banco (`get_suites_info`)](approved/prd-74-db-first-discovery.md) | 0.13.0 | 2026-09-19 |
 | 77 | [Reconstruir o cache de anotações do utPLSQL](approved/prd-77-rebuild-annotation-cache.md) | 0.13.0 | 2026-09-19 |
-| 78 | [Ordem aleatória de execução com seed](approved/prd-78-random-test-order.md) | 0.13.0 | 2026-09-19 |
 | 79 | [Escopo avançado de cobertura (regex + exclusões)](approved/prd-79-coverage-scope.md) | 0.13.0 | 2026-09-19 |
 
 #### 0.14.0 — Árvore, relatórios, conectividade e segurança
@@ -268,12 +268,12 @@ docs/prd/
 │   ├── prd-72-db-test-matrix.md
 │   ├── prd-73-compile-for-debug.md
 │   ├── prd-69-oracle-runner-typed-binds.md
+│   ├── prd-78-random-test-order.md
 │   └── prd-83-vsix-package-hygiene.md
 ├── approved/         ← aprovados, aguardando implementação
 │   ├── prd-47-node-26-toolchain.md
 │   ├── prd-74-db-first-discovery.md
 │   ├── prd-77-rebuild-annotation-cache.md
-│   ├── prd-78-random-test-order.md
 │   └── prd-79-coverage-scope.md
 ├── in-progress/      ← sendo implementados agora
 │   └── (vazio)

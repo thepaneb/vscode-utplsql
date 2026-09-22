@@ -102,6 +102,8 @@ Geçici dosya yok, toplu işin bitmesi beklenmez. Sonuçlar Test Explorer'da
 | `utplsql.dbmsOutput` | `false` | Test oturumunda `DBMS_OUTPUT`'u etkinleştirir. |
 | `utplsql.additionalReporters` | `[]` | Her çalıştırmada eklenecek ek raporlayıcılar (örn. `["ut_coverage_html_reporter"]`). Varsayılanlar (documentation, junit) her zaman dahildir ve listelenmeleri gerekmez. |
 | `utplsql.tags` | `""` | Hangi testlerin çalışacağını filtreleyen utPLSQL etiket ifadesi (örn. `fast & !integration`). Boş ise tümü çalışır. |
+| `utplsql.run.randomOrder` | `false` | Testleri aralarındaki sıra bağımlılıklarını ortaya çıkarmak için rastgele sırayla çalıştırır. |
+| `utplsql.run.randomOrderSeed` | `0` | Rastgele sıranın seed değeri. `0` = veritabanı seçer (yeniden üretilemez); > 0 aynı sırayı üretir. |
 | `utplsql.codeLens.enabled` | `true` | `%suite` ve `%test` üzerinde Run/Run with Coverage CodeLens düğmelerini gösterir. |
 | `utplsql.statusBar.enabled` | `true` | Durum çubuğunda test durum göstergesini gösterir. |
 | `utplsql.decorations.enabled` | `true` | Çalıştırmadan sonra `%suite` ve `%test` satırlarında geçti/kaldı süslemelerini gösterir. |

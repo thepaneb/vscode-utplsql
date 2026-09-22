@@ -103,6 +103,8 @@ Test Explorerze **w miarę kończenia każdego testu**.
 | `utplsql.dbmsOutput` | `false` | Włącza `DBMS_OUTPUT` w sesji testowej. |
 | `utplsql.additionalReporters` | `[]` | Dodatkowe reportery dołączane przy każdym uruchomieniu (np. `["ut_coverage_html_reporter"]`). Domyślne (documentation, junit) są zawsze dołączane i nie trzeba ich wymieniać. |
 | `utplsql.tags` | `""` | Wyrażenie tagów utPLSQL filtrujące, które testy są uruchamiane (np. `fast & !integration`). Puste uruchamia wszystkie. |
+| `utplsql.run.randomOrder` | `false` | Uruchamia testy w losowej kolejności, aby ujawnić zależności kolejności między nimi. |
+| `utplsql.run.randomOrderSeed` | `0` | Seed losowej kolejności. `0` = wybierany przez bazę (nieodtwarzalny); > 0 odtwarza tę samą kolejność. |
 | `utplsql.codeLens.enabled` | `true` | Pokazuje przyciski CodeLens Run/Run with Coverage nad `%suite` i `%test`. |
 | `utplsql.statusBar.enabled` | `true` | Pokazuje wskaźnik statusu testów w pasku stanu. |
 | `utplsql.decorations.enabled` | `true` | Pokazuje dekoracje pass/fail na liniach `%suite` i `%test` po wykonaniu. |

@@ -1087,6 +1087,102 @@ test('executeRunOracle: sem cobertura envia a_coverage_schemes => null (sem bind
   assert.strictEqual(captured.runBinds?.schemes, undefined);
 });
 
+test('executeRunOracle: randomOrder desligado não adiciona parâmetros', async () => {
+  const { mod, captured } = makeOracleRunFake({ buffer: [JUNIT_XML] });
+  const run = makeRun() as any;
+  const { item, metaMap } = makeLeaf();
+  try {
+    await executeRunOracle(
+      {
+        connection: 'u/p@//h:1521/s',
+        pathArgs: ['pkg'],
+        coverage: false,
+        sourcePath: 'install',
+        root: '/root',
+        run,
+        leafTests: [item as any],
+        state: makeOracleRunState(metaMap),
+      },
+      neverCancel as never,
+      async () => mod as never,
+    );
+  } finally {
+    await closeOraclePool();
+  }
+  assert.ok(!(captured.runSql ?? '').includes('a_random_test_order'));
+  assert.strictEqual(captured.runBinds?.randomOrder, undefined);
+  assert.strictEqual(captured.runBinds?.randomSeed, undefined);
+});
+
+test('executeRunOracle: randomOrder ligado com seed 0 usa bind NULL', async () => {
+  const { mod, captured } = makeOracleRunFake({ buffer: [JUNIT_XML] });
+  const run = makeRun() as any;
+  const { item, metaMap } = makeLeaf();
+  try {
+    await executeRunOracle(
+      {
+        connection: 'u/p@//h:1521/s',
+        pathArgs: ['pkg'],
+        coverage: false,
+        sourcePath: 'install',
+        root: '/root',
+        run,
+        leafTests: [item as any],
+        state: makeOracleRunState(metaMap),
+        randomOrder: true,
+      },
+      neverCancel as never,
+      async () => mod as never,
+    );
+  } finally {
+    await closeOraclePool();
+  }
+  assert.match(captured.runSql ?? '', /a_random_test_order => :randomOrder/);
+  assert.match(captured.runSql ?? '', /a_random_test_order_seed => :randomSeed/);
+  assert.deepStrictEqual(captured.runBinds?.randomOrder, {
+    dir: 'in',
+    type: 'NUMBER',
+    val: 1,
+  });
+  assert.deepStrictEqual(captured.runBinds?.randomSeed, {
+    dir: 'in',
+    type: 'NUMBER',
+    val: null,
+  });
+});
+
+test('executeRunOracle: randomOrder com seed positiva é reproduzível e logada', async () => {
+  const { mod, captured } = makeOracleRunFake({ buffer: [JUNIT_XML] });
+  const run = makeRun() as any;
+  const { item, metaMap } = makeLeaf();
+  try {
+    await executeRunOracle(
+      {
+        connection: 'u/p@//h:1521/s',
+        pathArgs: ['pkg'],
+        coverage: false,
+        sourcePath: 'install',
+        root: '/root',
+        run,
+        leafTests: [item as any],
+        state: makeOracleRunState(metaMap),
+        randomOrder: true,
+        randomOrderSeed: 42,
+      },
+      neverCancel as never,
+      async () => mod as never,
+    );
+  } finally {
+    await closeOraclePool();
+  }
+  assert.deepStrictEqual(captured.runBinds?.randomSeed, {
+    dir: 'in',
+    type: 'NUMBER',
+    val: 42,
+  });
+  assert.match(run.output.join('\n'), /seed: 42/);
+});
+
 test('executeRunOracle: dbmsOutput habilita e drena DBMS_OUTPUT na conn1', async () => {
   const lines = ['ola-62', 'linha-2'];
   let enabled = false;

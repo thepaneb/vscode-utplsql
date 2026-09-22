@@ -102,6 +102,8 @@ l'Explorateur de tests **au fur et à mesure que chaque test se termine**.
 | `utplsql.dbmsOutput` | `false` | Active `DBMS_OUTPUT` dans la session de test. Utile pour le débogage. |
 | `utplsql.additionalReporters` | `[]` | Reporters supplémentaires à inclure à chaque exécution (par ex. `["ut_coverage_html_reporter"]`). Les reporters par défaut (documentation, junit) sont toujours inclus et n'ont pas besoin d'être listés. |
 | `utplsql.tags` | `""` | Expression de balises utPLSQL pour filtrer les tests exécutés (par ex. `fast & !integration`). Vide exécute tout. |
+| `utplsql.run.randomOrder` | `false` | Exécute les tests dans un ordre aléatoire pour révéler les dépendances d'ordre entre eux. |
+| `utplsql.run.randomOrderSeed` | `0` | Graine de l'ordre aléatoire. `0` = choisie par la base (non reproductible) ; > 0 reproduit le même ordre. |
 | `utplsql.codeLens.enabled` | `true` | Affiche les boutons CodeLens Exécuter/Exécuter avec couverture au-dessus des `%suite` et `%test`. |
 | `utplsql.statusBar.enabled` | `true` | Affiche l'indicateur d'état des tests dans la barre d'état. |
 | `utplsql.decorations.enabled` | `true` | Affiche les décorations réussite/échec sur les lignes `%suite` et `%test` après l'exécution. |

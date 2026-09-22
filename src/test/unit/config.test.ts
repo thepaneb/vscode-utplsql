@@ -34,6 +34,12 @@ test('readConfig: tags default e vazio', () => {
   assert.strictEqual(cfg.tags, '');
 });
 
+test('readConfig: randomOrder defaults', () => {
+  const cfg = readConfig();
+  assert.strictEqual(cfg.randomOrder, false);
+  assert.strictEqual(cfg.randomOrderSeed, 0);
+});
+
 test('readConfig: scriptRunner defaults', () => {
   const cfg = readConfig();
   assert.strictEqual(cfg.scriptRunnerStopOnError, true);

@@ -103,6 +103,8 @@ Test Explorer **с приключването на всеки тест**.
 | `utplsql.dbmsOutput` | `false` | Активира `DBMS_OUTPUT` в тестовата сесия. Полезно за отстраняване на грешки. |
 | `utplsql.additionalReporters` | `[]` | Допълнителни reporters, които да се включат при всяко изпълнение (напр. `["ut_coverage_html_reporter"]`). По подразбиране (documentation, junit) винаги са включени и не е нужно да се изброяват. |
 | `utplsql.tags` | `""` | Израз за тагове на utPLSQL за филтриране кои тестове се изпълняват (напр. `fast & !integration`). Празно изпълнява всички. |
+| `utplsql.run.randomOrder` | `false` | Изпълнява тестовете в случаен ред, за да разкрие зависимости на реда между тях. |
+| `utplsql.run.randomOrderSeed` | `0` | Seed за случайния ред. `0` = избран от базата (невъзпроизводим); > 0 възпроизвежда същия ред. |
 | `utplsql.codeLens.enabled` | `true` | Показва CodeLens бутони Run/Run with Coverage над `%suite` и `%test`. |
 | `utplsql.statusBar.enabled` | `true` | Показва индикатора за статус на тестовете в status bar. |
 | `utplsql.decorations.enabled` | `true` | Показва декорации за успех/неуспех на редовете с `%suite` и `%test` след изпълнение. |

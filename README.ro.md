@@ -103,6 +103,8 @@ Extensia se conectează direct prin Oracle, citește rapoartele (JUnit + Coverag
 | `utplsql.dbmsOutput` | `false` | Activează `DBMS_OUTPUT` în sesiunea de test. Util pentru depanare. |
 | `utplsql.additionalReporters` | `[]` | Reporteri suplimentari de inclus la fiecare rulare (ex.: `["ut_coverage_html_reporter"]`). Cei implicați (documentation, junit) sunt întotdeauna incluși și nu trebuie listați. |
 | `utplsql.tags` | `""` | Expresie de tag-uri utPLSQL pentru a filtra ce teste rulează (ex.: `fast & !integration`). Gol rulează toate. |
+| `utplsql.run.randomOrder` | `false` | Rulează testele în ordine aleatorie pentru a dezvălui dependențele de ordine dintre ele. |
+| `utplsql.run.randomOrderSeed` | `0` | Seed-ul ordinii aleatorii. `0` = ales de bază de date (nereproductibil); > 0 reproduce aceeași ordine. |
 | `utplsql.codeLens.enabled` | `true` | Afișează butoanele CodeLens Run/Run with Coverage deasupra `%suite` și `%test`. |
 | `utplsql.statusBar.enabled` | `true` | Afișează indicatorul de stare al testelor în bara de stare. |
 | `utplsql.decorations.enabled` | `true` | Afișează decorări reușit/eșuat pe liniile `%suite` și `%test` după execuție. |

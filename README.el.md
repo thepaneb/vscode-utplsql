@@ -104,6 +104,8 @@ Test Explorer **καθώς ολοκληρώνεται κάθε test**.
 | `utplsql.dbmsOutput` | `false` | Ενεργοποιεί το `DBMS_OUTPUT` στη σύνοδο του test. Χρήσιμο για debugging. |
 | `utplsql.additionalReporters` | `[]` | Επιπλέον reporters που περιλαμβάνονται σε κάθε εκτέλεση (π.χ. `["ut_coverage_html_reporter"]`). Οι προεπιλεγμένοι (documentation, junit) περιλαμβάνονται πάντα και δεν χρειάζεται να αναφέρονται. |
 | `utplsql.tags` | `""` | Έκφραση tags του utPLSQL για φιλτράρισμα των test που εκτελούνται (π.χ. `fast & !integration`). Κενό εκτελεί όλα. |
+| `utplsql.run.randomOrder` | `false` | Εκτελεί τα test σε τυχαία σειρά για να αποκαλύψει εξαρτήσεις σειράς μεταξύ τους. |
+| `utplsql.run.randomOrderSeed` | `0` | Seed της τυχαίας σειράς. `0` = επιλέγεται από τη βάση (μη αναπαραγώγιμο)· > 0 αναπαράγει την ίδια σειρά. |
 | `utplsql.codeLens.enabled` | `true` | Εμφανίζει κουμπιά CodeLens Run/Run with Coverage πάνω από τα `%suite` και `%test`. |
 | `utplsql.statusBar.enabled` | `true` | Εμφανίζει ένδειξη κατάστασης των tests στη status bar. |
 | `utplsql.decorations.enabled` | `true` | Εμφανίζει decorations επιτυχίας/αποτυχίας στις γραμμές `%suite` και `%test` μετά την εκτέλεση. |

@@ -104,6 +104,8 @@ nativních API VSCode.
 | `utplsql.dbmsOutput` | `false` | Povolí `DBMS_OUTPUT` v testovací relaci. Užitečné pro ladění. |
 | `utplsql.additionalReporters` | `[]` | Další reportéry zahrnuté do každého spuštění (např. `["ut_coverage_html_reporter"]`). Výchozí (documentation, junit) jsou vždy zahrnuty a není třeba je vypisovat. |
 | `utplsql.tags` | `""` | Výraz tagů utPLSQL pro filtrování spouštěných testů (např. `fast & !integration`). Prázdné spustí všechny. |
+| `utplsql.run.randomOrder` | `false` | Spouští testy v náhodném pořadí, aby odhalil závislosti pořadí mezi nimi. |
+| `utplsql.run.randomOrderSeed` | `0` | Seed náhodného pořadí. `0` = zvolí databáze (nereprodukovatelné); > 0 reprodukuje stejné pořadí. |
 | `utplsql.codeLens.enabled` | `true` | Zobrazuje tlačítka CodeLens Run/Run with Coverage nad `%suite` a `%test`. |
 | `utplsql.statusBar.enabled` | `true` | Zobrazuje indikátor stavu testů ve stavovém řádku. |
 | `utplsql.decorations.enabled` | `true` | Zobrazuje dekorace prošlo/selháno na řádcích `%suite` a `%test` po spuštění. |

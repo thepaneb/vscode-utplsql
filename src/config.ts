@@ -10,6 +10,8 @@ export interface UtConfig {
   includePatterns: string[];
   coverageOwner: string;
   tags: string;
+  randomOrder: boolean;
+  randomOrderSeed: number;
   additionalReporters: string[];
   timeoutMinutes: number;
   dbmsOutput: boolean;
@@ -78,6 +80,8 @@ export function readConfig(): UtConfig {
     includePatterns: c.get<string[]>('includePatterns', ['**/*.pks']),
     coverageOwner: c.get<string>('coverageOwner', ''),
     tags: c.get<string>('tags', ''),
+    randomOrder: c.get<boolean>('run.randomOrder', false),
+    randomOrderSeed: c.get<number>('run.randomOrderSeed', 0),
     additionalReporters: c.get<string[]>('additionalReporters', []),
     timeoutMinutes: c.get<number>('timeoutMinutes', 60),
     dbmsOutput: c.get<boolean>('dbmsOutput', false),

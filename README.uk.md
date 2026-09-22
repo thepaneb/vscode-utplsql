@@ -100,6 +100,8 @@ Test Explorer **у міру завершення кожного тесту**. VS
 | `utplsql.dbmsOutput` | `false` | Увімкнення `DBMS_OUTPUT` у сесії тестування. |
 | `utplsql.additionalReporters` | `[]` | Додаткові репортери, які включаються в кожен запуск (напр. `["ut_coverage_html_reporter"]`). Стандартні (documentation, junit) завжди включаються, їх не потрібно перелічувати. |
 | `utplsql.tags` | `""` | Вираз тегів utPLSQL для фільтрації тестів, які виконуються (напр. `fast & !integration`). Порожньо — виконуються всі. |
+| `utplsql.run.randomOrder` | `false` | Виконує тести у випадковому порядку, щоб виявити залежності порядку між ними. |
+| `utplsql.run.randomOrderSeed` | `0` | Seed випадкового порядку. `0` = обирається базою (не відтворюється); > 0 відтворює той самий порядок. |
 | `utplsql.codeLens.enabled` | `true` | Показує кнопки CodeLens Run/Run with Coverage над `%suite` та `%test`. |
 | `utplsql.statusBar.enabled` | `true` | Показує індикатор статусу тестів у рядку стану. |
 | `utplsql.decorations.enabled` | `true` | Показує декорації пройдено/не пройдено на рядках `%suite` та `%test` після виконання. |

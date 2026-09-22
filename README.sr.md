@@ -102,6 +102,8 @@ Test Explorer-у **како се сваки тест заврши**. VSIX већ
 | `utplsql.dbmsOutput` | `false` | Омогућава `DBMS_OUTPUT` у тест сесији. |
 | `utplsql.additionalReporters` | `[]` | Додатни reporter-и за укључивање у свако извршавање (нпр. `["ut_coverage_html_reporter"]`). Подразумевани (documentation, junit) су увек укључени и не морају се наводити. |
 | `utplsql.tags` | `""` | Израз ознака utPLSQL за филтрирање који тестови се извршавају (нпр. `fast & !integration`). Празно извршава све. |
+| `utplsql.run.randomOrder` | `false` | Извршава тестове у насумичном реду да открије зависности реда међу њима. |
+| `utplsql.run.randomOrderSeed` | `0` | Seed насумичног реда. `0` = бира база (није поновљиво); > 0 понавља исти ред. |
 | `utplsql.codeLens.enabled` | `true` | Приказује Run/Run with Coverage CodeLens дугмад изнад `%suite` и `%test`. |
 | `utplsql.statusBar.enabled` | `true` | Приказује индикатор статуса тестова у статусној траци. |
 | `utplsql.decorations.enabled` | `true` | Приказује pass/fail декорације на `%suite` и `%test` линијама након извршавања. |

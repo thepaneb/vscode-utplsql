@@ -74,6 +74,8 @@ interface UtConfig {
 
   // Execução
   tags: string;                       // default: "" (expressão de tags do utPLSQL)
+  randomOrder: boolean;               // default: false (ordem aleatória)
+  randomOrderSeed: number;            // default: 0 (0 = sorteada pelo banco)
 
   // UX
   codeLensEnabled: boolean;           // default: true

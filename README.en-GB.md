@@ -102,6 +102,8 @@ Test Explorer **as each test finishes**. The VSIX already includes the thin `ora
 | `utplsql.dbmsOutput` | `false` | Enables `DBMS_OUTPUT` in the test session. |
 | `utplsql.additionalReporters` | `[]` | Additional reporters to include on every run (e.g. `["ut_coverage_html_reporter"]`). The defaults (documentation, junit) are always included and don't need to be listed. |
 | `utplsql.tags` | `""` | utPLSQL tag expression to filter which tests run (e.g. `fast & !integration`). Empty runs all. |
+| `utplsql.run.randomOrder` | `false` | Runs the tests in random order to reveal order dependencies between them. |
+| `utplsql.run.randomOrderSeed` | `0` | Seed for the random order. `0` = chosen by the database (not reproducible); > 0 reproduces the same order. |
 | `utplsql.codeLens.enabled` | `true` | Shows Run/Run with Coverage CodeLens buttons over `%suite` and `%test`. |
 | `utplsql.statusBar.enabled` | `true` | Shows the test status indicator in the status bar. |
 | `utplsql.decorations.enabled` | `true` | Shows pass/fail decorations on `%suite` and `%test` lines after execution. |
