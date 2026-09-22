@@ -124,6 +124,7 @@ Test Explorer **เมื่อแต่ละเทสต์เสร็จส�
 | `utplsql.oracleClientConfigDir` | `""` | ไดเรกทอรีการกำหนดค่า Oracle (TNS_ADMIN) ที่มี `sqlnet.ora`/`tnsnames.ora` ไม่บังคับ ใช้เฉพาะโหมด thick |
 | `utplsql.organization` | `file` | การจัดระเบียบแผนผัง: `file` (ตามพาธ) หรือ `schema` (Schema > Package > Suite > Test) ในโหมด `schema` suites จะถูกค้นพบจากฐานข้อมูล (`ALL_OBJECTS`/`ALL_SOURCE`) ด้วยเมื่อไม่มีไฟล์ `.pks` ในเวิร์กสเปซ — ด้วย URI เสมือน `utplsql-db:/` (ไม่มี CodeLens/การตกแต่ง/jump to failure) |
 | `utplsql.organization.schemaPattern` | `db/{schema}/**` | รูปแบบ Glob เพื่อแยก schema จากพาธ ใช้ `{schema}` เป็นตัวยึดตำแหน่ง ในโหมด `schema` ไดเรกทอรีใต้ฐานของรูปแบบ (เช่น `db/*`) กำหนด schemas ที่จะสอบถามในฐานข้อมูล |
+| `utplsql.discovery.source` | `auto` | แหล่งของทรีในโหมด `schema`: `auto` ใช้ API ของฐานข้อมูล (`ut_runner.get_suites_info`) และถอยไปใช้ `ALL_SOURCE`/ไฟล์เมื่อไม่พร้อมใช้งาน; `database` บังคับใช้ API; `file` ปิดการค้นหาผ่านฐานข้อมูล |
 | `utplsql.refreshDebounceMs` | `300` | Debounce (ms) เพื่อรวมเหตุการณ์ของตัวเฝ้าดูไฟล์ `.pks`/`.pkb` ก่อนรีเฟรช Test Explorer |
 | `utplsql.compilationDiagnostics.enabled` | `true` | แสดงข้อผิดพลาดการคอมไพล์ PL/SQL จากฐานข้อมูล (`ALL_ERRORS`) เป็นขีดเส้นใต้ในเอดิเตอร์และใน Problems Panel (source "utPLSQL Compilation") |
 | `utplsql.setupDiagnostics.enabled` | `true` | แสดงการวินิจฉัยการกำหนดค่า (การเชื่อมต่อ, grants, เวอร์ชัน) และ **ความสมบูรณ์ของการติดตั้ง utPLSQL** (อ็อบเจกต์ที่ไม่ถูกต้องใน schema UT3, พร้อม quick-fix "Recompile UT3") พร้อมการทำงาน quick-fix |

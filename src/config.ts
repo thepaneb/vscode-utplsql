@@ -35,6 +35,7 @@ export interface UtConfig {
   compilationDiagnosticsEnabled: boolean;
   organization: 'file' | 'schema';
   organizationSchemaPattern: string;
+  discoverySource: 'auto' | 'file' | 'database';
   refreshDebounceMs: number;
   setupDiagnosticsEnabled: boolean;
   sqlCoverageEnabled: boolean;
@@ -112,6 +113,7 @@ export function readConfig(): UtConfig {
     compilationDiagnosticsEnabled: c.get<boolean>('compilationDiagnostics.enabled', true),
     organization: c.get<'file' | 'schema'>('organization', 'file'),
     organizationSchemaPattern: c.get<string>('organization.schemaPattern', 'db/{schema}/**'),
+    discoverySource: c.get<'auto' | 'file' | 'database'>('discovery.source', 'auto'),
     refreshDebounceMs: c.get<number>('refreshDebounceMs', 300),
     setupDiagnosticsEnabled: c.get<boolean>('setupDiagnostics.enabled', true),
     sqlCoverageEnabled: c.get<boolean>('sqlCoverageEnabled', false),

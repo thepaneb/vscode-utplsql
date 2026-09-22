@@ -2,7 +2,7 @@
 
 | Campo | Valor |
 |---|---|
-| Status | Aprovado |
+| Status | Concluído |
 | Autor | Gil Cleber Barboza |
 | Data | 2026-09-19 |
 | Componente | Extensão `paneb.vscode-utplsql` |
@@ -199,3 +199,23 @@ comportamento atual, logando uma vez.
 - Reconciliar `line` do banco com a linha do arquivo local — usar a do banco
   para range em `utplsql-db:/` e a do arquivo quando houver arquivo?
 - Cachear `get_suites_info` entre refreshes (invalidação por DDL)?
+
+## 12. Notas de implementação (0.13.0)
+
+- **Assinatura real**: `ut_runner.get_suites_info(a_owner, a_package_name)`
+  (pipelined) — consultada como `SELECT ... FROM TABLE(get_suites_info(:owner,
+  null))`. A forma `a_owner => :owner` do RF1 não existe; o segundo parâmetro
+  nulo traz todos os packages do owner. Confirmado na fonte do utPLSQL 3.2.3
+  (`api/ut_runner.pks`, `api/ut_suite_item_info.tps`).
+- **Colunas**: `object_owner`, `object_name`, `item_name`, `item_description`,
+  `item_type` (`UT_SUITE`/`UT_SUITE_CONTEXT`/`UT_TEST`), `item_line_no`, `path`,
+  `disabled_flag`, `disabled_reason`, `tags`. Linhas `disabled` são omitidas,
+  como na descoberta por arquivo.
+- **Escopo entregue**: wrapper `getSuitesInfo`, mapeamento
+  `mapSuitesInfoToSuiteFiles`, fusão `mergeSuiteLists` (arquivo prevalece em
+  URI/linha; banco em descrição/tags) e orquestrador `discoverDbSuites` com gate
+  de versão (≥ 3.1.3) e fallback para `ALL_SOURCE`. A setting
+  `utplsql.discovery.source` controla o modo.
+- **Não implementado**: cache entre refreshes e exibição de itens desabilitados
+  (permanecem omitidos); árvore lazy é a PRD-75. A validação em banco real fica
+  para a suíte de integração (a API só existe no servidor).

@@ -233,7 +233,7 @@ function mergeDeps(over: Partial<MergeDbDeps> = {}): MergeDbDeps {
     resolveConnection: () => 'u/p@//h:1521/s',
     extractSchemaFromPath: () => undefined,
     discoverSchemasFromFolders: async () => [],
-    discoverSchemaFromDb: async () => [],
+    discoverDbSuites: async () => [],
     ...over,
   };
 }
@@ -270,7 +270,7 @@ test('mergeDbSuites: une schemas do path e das pastas e mescla sem duplicar', as
     mergeDeps({
       extractSchemaFromPath: () => 'APP',
       discoverSchemasFromFolders: async () => ['OTHER'],
-      discoverSchemaFromDb: async (_conn, schema) => {
+      discoverDbSuites: async (_conn, schema) => {
         seen.push(schema);
         return schema === 'APP' ? [duplicate, onlyDb] : [];
       },
@@ -291,7 +291,7 @@ test('mergeDbSuites: várias suites só-DB do mesmo schema entram na ordem', asy
     'db/{schema}/**',
     mergeDeps({
       discoverSchemasFromFolders: async () => ['APP'],
-      discoverSchemaFromDb: async () => [
+      discoverDbSuites: async () => [
         suite({ packageName: 'UT_B' }),
         suite({ packageName: 'UT_A' }),
       ],

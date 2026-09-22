@@ -124,6 +124,7 @@ Test Explorer 中。
 | `utplsql.oracleClientConfigDir` | `""` | 包含 `sqlnet.ora`/`tnsnames.ora` 的 Oracle 配置目录（TNS_ADMIN）。可选；仅 thick 模式使用。 |
 | `utplsql.organization` | `file` | 树组织方式：`file`（按路径）或 `schema`（Schema > Package > Suite > Test）。在 `schema` 模式时，如果工作区中没有 `.pks` 文件，还会从数据库（`ALL_OBJECTS`/`ALL_SOURCE`）发现套件 — 使用虚拟 URI `utplsql-db:/`（无 CodeLens/装饰/跳转到失败）。 |
 | `utplsql.organization.schemaPattern` | `db/{schema}/**` | 用于从路径中提取 schema 的 glob 模式。使用 `{schema}` 作为占位符。在 `schema` 模式下，模式基准目录（例如 `db/*`）下方的目录定义了在数据库中查询的 schemas。 |
+| `utplsql.discovery.source` | `auto` | `schema` 模式下测试树的来源：`auto` 使用数据库 API（`ut_runner.get_suites_info`），不可用时回退到 `ALL_SOURCE`/文件；`database` 要求使用 API；`file` 关闭数据库发现。 |
 | `utplsql.refreshDebounceMs` | `300` | 在刷新 Test Explorer 之前，合并 `.pks`/`.pkb` 文件监视器事件的防抖时间（毫秒）。 |
 | `utplsql.compilationDiagnostics.enabled` | `true` | 将数据库中的 PL/SQL 编译错误（`ALL_ERRORS`）以编辑器下划线形式显示，并显示在“问题”面板中（来源 "utPLSQL Compilation"）。 |
 | `utplsql.setupDiagnostics.enabled` | `true` | 显示配置诊断（连接、授权、版本）以及 **utPLSQL 安装完整性**（UT3 schema 中的无效对象，带有 "Recompile UT3" 快速修复），并带有快速修复操作。 |

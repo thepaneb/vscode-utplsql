@@ -66,6 +66,7 @@ function makeGlobal(over: Partial<UtConfig> = {}): UtConfig {
     compilationDiagnosticsEnabled: true,
     organization: 'file',
     organizationSchemaPattern: 'db/{schema}/**',
+    discoverySource: 'auto',
     refreshDebounceMs: 300,
     setupDiagnosticsEnabled: true,
     sqlCoverageEnabled: false,

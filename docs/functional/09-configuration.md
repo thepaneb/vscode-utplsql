@@ -68,6 +68,7 @@ interface UtConfig {
 
   // Descoberta
   includePatterns: string[];          // default: ["**/*.pks"]
+  discoverySource: 'auto' | 'file' | 'database';  // default: "auto"
 
   // Reporters
   additionalReporters: string[];      // default: []

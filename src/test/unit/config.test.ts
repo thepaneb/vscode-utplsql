@@ -51,6 +51,11 @@ test('readConfig: coverage scope defaults', () => {
   assert.strictEqual(cfg.coverageExcludeObjectExpr, '');
 });
 
+test('readConfig: discovery.source default e auto', () => {
+  const cfg = readConfig();
+  assert.strictEqual(cfg.discoverySource, 'auto');
+});
+
 test('readConfig: scriptRunner defaults', () => {
   const cfg = readConfig();
   assert.strictEqual(cfg.scriptRunnerStopOnError, true);

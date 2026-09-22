@@ -272,6 +272,16 @@
           "default": "db/{schema}/**",
           "markdownDescription": "Padrão glob para extrair o nome do schema a partir do caminho do arquivo. Use `{schema}` como placeholder. Ex: `db/{schema}/**` extrai `APP` de `db/APP/tests/ut_foo.pks`. Só usado quando `#utplsql.organization#` é `schema`."
         },
+        "utplsql.discovery.source": {
+          "type": "string",
+          "enum": [
+            "auto",
+            "file",
+            "database"
+          ],
+          "default": "auto",
+          "markdownDescription": "Fonte da árvore de testes no modo `schema`: `auto` usa a API do banco (`ut_runner.get_suites_info`) e cai para `ALL_SOURCE`/arquivos quando indisponível; `database` exige a API; `file` desliga a descoberta via banco."
+        },
         "utplsql.refreshDebounceMs": {
           "type": "number",
           "default": 300,

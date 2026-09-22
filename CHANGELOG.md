@@ -28,6 +28,12 @@
   `UT_VARCHAR2_LIST`, regex `STRING`), que monta o `ut_coverage_options`
   internamente. Permite excluir o framework utPLSQL (ex.: `excludeObjectExpr =
   "^UT_"`) e incluir objetos alcançados apenas dinamicamente. Default inalterado.
+- **Descoberta de suítes direto do banco (PRD-74)**: no modo `schema`, a árvore
+  passa a ser construída a partir de `ut_runner.get_suites_info` (utPLSQL ≥
+  3.1.3) como fonte canônica, fundida com a descoberta por arquivo (arquivo
+  prevalece em URI/linha; banco em descrição/tags), com fallback para
+  `ALL_SOURCE` quando a API não está disponível. Nova setting
+  `utplsql.discovery.source` (`auto` | `file` | `database`, default `auto`).
 
 ## 0.12.1
 

@@ -2,12 +2,17 @@ import './setup.js';
 import assert from 'node:assert';
 import { test } from 'node:test';
 import {
+  discoverDbSuites,
   discoverSchemaFromConn,
   discoverSchemaFromDb,
   discoverSchemasFromFolders,
   discoverWorkspace,
   extractSchemaFromPath,
+  getSuitesInfo,
+  mapSuitesInfoToSuiteFiles,
+  mergeSuiteLists,
   parseSuite,
+  type SuiteFile,
 } from '../../discovery';
 import { closeOraclePool } from '../../oracleRunner';
 
@@ -714,5 +719,172 @@ test('discoverWorkspace: arquivo duplicado entre padrões é deduplicado', async
     assert.strictEqual(result.length, 1);
   } finally {
     __resetMockFiles();
+  }
+});
+
+// ── getSuitesInfo / mapSuitesInfoToSuiteFiles / mergeSuiteLists (PRD-74) ──
+
+function makeInfoConn(rows: unknown[], throws = false) {
+  return {
+    execute: async (sql: string) => {
+      if (throws) throw new Error('ORA-00904: invalid identifier');
+      assert.match(sql, /get_suites_info/);
+      return { rows };
+    },
+  };
+}
+
+// colunas: owner, package, item_name, description, type, line, path, disabled, reason, tags
+const INFO_ROWS = [
+  ['HR', 'APP_ORDERS', 'app_orders', 'Orders suite', 'UT_SUITE', 3, null, 0, null, 'fast,critical'],
+  ['HR', 'APP_ORDERS', 'add_order', 'Adds order', 'UT_TEST', 5, null, 0, null, 'fast'],
+  ['HR', 'APP_ORDERS', 'cancel_order', 'Cancels', 'UT_TEST', 7, null, 0, null, ''],
+  ['HR', 'APP_ORDERS', 'disabled_one', 'x', 'UT_TEST', 9, null, 1, 'wip', ''],
+];
+
+test('getSuitesInfo: normaliza linhas e mapeia tipos', async () => {
+  const rows = await getSuitesInfo(makeInfoConn(INFO_ROWS), 'hr');
+  assert.strictEqual(rows.length, 4);
+  assert.strictEqual(rows[0].itemType, 'suite');
+  assert.strictEqual(rows[0].owner, 'HR');
+  assert.deepStrictEqual(rows[0].tags, ['fast', 'critical']);
+  assert.strictEqual(rows[1].itemType, 'test');
+  assert.strictEqual(rows[3].disabled, true);
+});
+
+test('getSuitesInfo: rows em formato objeto (OUT_FORMAT_OBJECT)', async () => {
+  const rows = await getSuitesInfo(
+    makeInfoConn([
+      {
+        OBJECT_OWNER: 'HR',
+        OBJECT_NAME: 'PKG',
+        ITEM_NAME: 'pkg',
+        ITEM_DESCRIPTION: 'd',
+        ITEM_TYPE: 'UT_SUITE',
+        ITEM_LINE_NO: 2,
+        PATH: 'p',
+        DISABLED_FLAG: 0,
+        DISABLED_REASON: null,
+        TAGS: 'a, b',
+      },
+    ]),
+    'hr',
+  );
+  assert.strictEqual(rows.length, 1);
+  assert.deepStrictEqual(rows[0].tags, ['a', 'b']);
+});
+
+test('getSuitesInfo: erro (API ausente) retorna vazio', async () => {
+  const rows = await getSuitesInfo(makeInfoConn([], true), 'hr');
+  assert.deepStrictEqual(rows, []);
+});
+
+test('mapSuitesInfoToSuiteFiles: agrupa por package e omite disabled', async () => {
+  const rows = await getSuitesInfo(makeInfoConn(INFO_ROWS), 'hr');
+  const suites = mapSuitesInfoToSuiteFiles(rows, FOLDER);
+  assert.strictEqual(suites.length, 1);
+  assert.strictEqual(suites[0].packageName, 'APP_ORDERS');
+  assert.strictEqual(suites[0].suiteDescription, 'Orders suite');
+  assert.strictEqual(suites[0].dbSchema, 'HR');
+  assert.strictEqual(suites[0].uri.toString(), 'utplsql-db:/HR/APP_ORDERS.pks');
+  assert.deepStrictEqual(
+    suites[0].tests.map((t) => t.procName),
+    ['add_order', 'cancel_order'],
+  );
+  assert.strictEqual(suites[0].tests[0].line, 4); // 1-based 5 → 0-based 4
+  assert.deepStrictEqual(suites[0].tests[0].tags, ['fast']);
+});
+
+test('mapSuitesInfoToSuiteFiles: package sem testes é omitido', async () => {
+  const rows = await getSuitesInfo(
+    makeInfoConn([['HR', 'EMPTY_PKG', 'empty', 'd', 'UT_SUITE', 1, null, 0, null, '']]),
+    'hr',
+  );
+  assert.deepStrictEqual(mapSuitesInfoToSuiteFiles(rows, FOLDER), []);
+});
+
+test('mergeSuiteLists: arquivo prevalece em uri/linha; banco em descrição/tags', () => {
+  const fileSuite = {
+    uri: { fsPath: '/ws/ut_app.pks', scheme: 'file' },
+    packageName: 'UT_APP',
+    suiteDescription: 'File desc',
+    tests: [{ procName: 'test_one', description: 'file one', line: 10 }],
+    folder: FOLDER,
+    suiteLine: 1,
+  } as unknown as SuiteFile;
+  const dbSuite = {
+    uri: { fsPath: '' },
+    packageName: 'ut_app',
+    suiteDescription: 'DB desc',
+    tests: [
+      { procName: 'test_one', description: 'db one', line: 4, tags: ['fast'] },
+      { procName: 'test_two', description: 'db two', line: 8 },
+    ],
+    folder: FOLDER,
+    suiteLine: 2,
+    dbSchema: 'APP',
+  } as unknown as SuiteFile;
+
+  const merged = mergeSuiteLists([fileSuite], [dbSuite]);
+  assert.strictEqual(merged.length, 1);
+  assert.strictEqual(merged[0].uri, fileSuite.uri);
+  assert.strictEqual(merged[0].suiteDescription, 'DB desc');
+  assert.deepStrictEqual(
+    merged[0].tests.map((t) => t.procName),
+    ['test_one', 'test_two'],
+  );
+  assert.strictEqual(merged[0].tests[0].line, 10);
+  assert.strictEqual(merged[0].tests[0].description, 'db one');
+  assert.deepStrictEqual(merged[0].tests[0].tags, ['fast']);
+  assert.strictEqual(merged[0].tests[1].line, 8);
+});
+
+test('mergeSuiteLists: suite só-DB é adicionada', () => {
+  const dbSuite = {
+    uri: { fsPath: '' },
+    packageName: 'UT_NEW',
+    suiteDescription: 'db',
+    tests: [{ procName: 't', description: 'd', line: 1 }],
+    folder: FOLDER,
+    suiteLine: 1,
+    dbSchema: 'APP',
+  } as unknown as SuiteFile;
+  const merged = mergeSuiteLists([], [dbSuite]);
+  assert.strictEqual(merged.length, 1);
+  assert.strictEqual(merged[0].packageName, 'UT_NEW');
+});
+
+test('discoverDbSuites: usa a API quando a versão permite', async () => {
+  const conn = {
+    callTimeout: 0,
+    execute: async (sql: string) => {
+      if (/ut_runner\.version/.test(sql)) return { rows: [['3.2.3']] };
+      if (/get_suites_info/.test(sql)) return { rows: INFO_ROWS };
+      if (/product_component_version/.test(sql)) return { rows: [['19.0.0']] };
+      return { rows: [] };
+    },
+    close: async () => {},
+  };
+  const mod = {
+    OUT_FORMAT_OBJECT: {},
+    createPool: async () => ({
+      getConnection: async () => conn,
+      close: async () => {},
+    }),
+    getConnection: async () => {
+      throw new Error('raw indisponivel');
+    },
+  };
+  try {
+    const result = await discoverDbSuites(
+      'u/p@//h:1521/s',
+      'hr',
+      [FOLDER],
+      async () => mod as never,
+    );
+    assert.strictEqual(result.length, 1);
+    assert.strictEqual(result[0].dbSchema, 'HR');
+  } finally {
+    await closeOraclePool();
   }
 });
