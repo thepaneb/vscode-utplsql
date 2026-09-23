@@ -1,3 +1,5 @@
+<!-- GENERATED FROM docs/brain/20-PRDs/prd-28-plsql-compilation-diagnostics.md — DO NOT EDIT -->
+
 # PRD-28 — PL/SQL Compilation Diagnostics
 
 | Campo | Valor |

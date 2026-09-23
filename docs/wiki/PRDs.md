@@ -1,3 +1,5 @@
+<!-- GENERATED FROM docs/brain/70-Wiki/PRDs.md — DO NOT EDIT -->
+
 # PRDs and roadmap
 
 The extension uses **Product Requirements Documents** (PRDs) to plan and
@@ -111,10 +113,11 @@ The file is moved between folders as it progresses.
 
 ## How to propose a PRD
 
-1. Copy `docs/prd/template.md` to `docs/prd/proposed/prd-NN-slug.md`
-2. Fill in all fields
-3. Update `docs/prd/index.md` (table + tree)
-4. Run `sync-prds` to create the GitHub issue
+1. Create a note `prd-NN-slug` in `docs/brain/20-PRDs/` from
+   `_templates/template-prd.md` and fill in the frontmatter (`status: proposed`).
+2. Run `npm run brain:sync && npm run brain:build` to regenerate
+   `docs/prd/index.md` and the files under `docs/prd/`.
+3. Run `npm run sync-prds` to create the GitHub issue.
 
 The full catalog is at `docs/prd/index.md`. Corresponding issues are on
 [GitHub Issues](https://github.com/thepaneb/vscode-utplsql/issues)

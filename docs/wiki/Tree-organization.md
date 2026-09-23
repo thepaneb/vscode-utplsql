@@ -1,3 +1,5 @@
+<!-- GENERATED FROM docs/brain/70-Wiki/Tree-organization.md — DO NOT EDIT -->
+
 # Test tree organization
 
 The extension offers two modes for organizing the tree in the Test Explorer:

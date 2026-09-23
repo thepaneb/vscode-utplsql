@@ -1,3 +1,5 @@
+<!-- GENERATED FROM docs/brain/70-Wiki/SQL-scripts.md — DO NOT EDIT -->
+
 # Running SQL Scripts
 
 Run arbitrary SQL/PL/SQL scripts (migrations, seeds, setup) against an Oracle

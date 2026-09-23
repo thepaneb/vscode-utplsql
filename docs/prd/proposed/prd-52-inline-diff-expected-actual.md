@@ -1,3 +1,5 @@
+<!-- GENERATED FROM docs/brain/20-PRDs/prd-52-inline-diff-expected-actual.md — DO NOT EDIT -->
+
 # PRD-52 — Diff inline esperado × obtido nas falhas
 
 | Campo | Valor |

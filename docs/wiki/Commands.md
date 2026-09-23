@@ -1,3 +1,5 @@
+<!-- GENERATED FROM docs/brain/70-Wiki/Commands.md — DO NOT EDIT -->
+
 # Commands
 
 All extension commands available in the command palette (`Ctrl+Shift+P`),

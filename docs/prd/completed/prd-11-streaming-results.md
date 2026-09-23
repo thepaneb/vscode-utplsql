@@ -1,3 +1,5 @@
+<!-- GENERATED FROM docs/brain/20-PRDs/prd-11-streaming-results.md — DO NOT EDIT -->
+
 # PRD-11 — Streaming de resultados em tempo real
 
 | Campo | Valor |

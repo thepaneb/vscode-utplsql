@@ -1,3 +1,5 @@
+<!-- GENERATED FROM docs/brain/70-Wiki/Contributing.md — DO NOT EDIT -->
+
 # Contributing
 
 Guide for setting up the development environment and submitting contributions.

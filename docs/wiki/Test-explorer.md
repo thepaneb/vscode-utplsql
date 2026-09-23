@@ -1,3 +1,5 @@
+<!-- GENERATED FROM docs/brain/70-Wiki/Test-explorer.md — DO NOT EDIT -->
+
 # Test Explorer
 
 The extension registers a native VSCode **Test Explorer** (`utplsql`) — suites and

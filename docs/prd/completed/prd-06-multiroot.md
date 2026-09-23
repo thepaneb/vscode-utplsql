@@ -1,3 +1,5 @@
+<!-- GENERATED FROM docs/brain/20-PRDs/prd-06-multiroot.md — DO NOT EDIT -->
+
 # PRD-06 — Suporte a múltiplos workspace folders
 
 | Campo | Valor |

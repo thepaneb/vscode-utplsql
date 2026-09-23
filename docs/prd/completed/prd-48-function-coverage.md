@@ -1,3 +1,5 @@
+<!-- GENERATED FROM docs/brain/20-PRDs/prd-48-function-coverage.md — DO NOT EDIT -->
+
 # PRD-48 — Function Coverage derivada (DeclarationCoverage no Test Coverage)
 
 | Campo | Valor |

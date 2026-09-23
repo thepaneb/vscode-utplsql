@@ -1,3 +1,5 @@
+<!-- GENERATED FROM docs/brain/70-Wiki/Connection-profiles.md — DO NOT EDIT -->
+
 # Connection Profiles
 
 Connection profiles let you save several Oracle environments (DEV/TEST/PROD) and

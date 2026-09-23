@@ -1,3 +1,5 @@
+<!-- GENERATED FROM docs/brain/20-PRDs/prd-49-internacionalizacao.md — DO NOT EDIT -->
+
 # PRD-49 — Internacionalização (i18n) dos conteúdos textuais da extensão
 
 | Campo | Valor |

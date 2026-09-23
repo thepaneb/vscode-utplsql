@@ -1,3 +1,5 @@
+<!-- GENERATED FROM docs/brain/70-Wiki/Coverage.md — DO NOT EDIT -->
+
 # Code Coverage
 
 The extension feeds the VSCode **Test Coverage API**, showing coverage

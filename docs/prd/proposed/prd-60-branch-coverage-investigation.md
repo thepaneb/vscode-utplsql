@@ -1,3 +1,5 @@
+<!-- GENERATED FROM docs/brain/20-PRDs/prd-60-branch-coverage-investigation.md — DO NOT EDIT -->
+
 # PRD-60 — Cobertura de branch (investigação de viabilidade)
 
 | Campo | Valor |

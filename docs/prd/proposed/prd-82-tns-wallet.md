@@ -1,3 +1,5 @@
+<!-- GENERATED FROM docs/brain/20-PRDs/prd-82-tns-wallet.md — DO NOT EDIT -->
+
 # PRD-82 — Resolução TNS no thin e senha de wallet no SecretStorage
 
 | Campo | Valor |

@@ -1,3 +1,5 @@
+<!-- GENERATED FROM docs/brain/20-PRDs/prd-38-connection-pooling.md — DO NOT EDIT -->
+
 # PRD-38 — Connection Pooling no Oracle Runner
 
 | Campo | Valor |

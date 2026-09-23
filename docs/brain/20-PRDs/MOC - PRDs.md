@@ -6,15 +6,17 @@ tags: [moc, prd]
 
 # MOC - PRDs
 
-Fonte da verdade: `docs/prd/`. **Não duplique** o conteúdo aqui — linke.
+Fonte da verdade: as notas `prd-*` desta pasta. O status é o campo `status:` do
+frontmatter; os arquivos `docs/prd/**` e o `index.md` são **gerados**
+(`npm run brain:build`). **Não duplique** o conteúdo aqui — linke.
 
-- Índice: [docs/prd/index.md](../../../docs/prd/index.md)
-- Template: [template.md](../../../docs/prd/template.md)
+- Índice gerado: [docs/prd/index.md](../../../docs/prd/index.md)
+- Template: [[template-prd]]
 
 ## Fluxo de PRDs
 
-1. Editar/mover arquivo em `docs/prd/`.
-2. Atualizar `index.md`.
+1. Criar/editar a nota em `20-PRDs/` (status no frontmatter).
+2. `npm run brain:sync` (roadmap/estrutura) + `npm run brain:build` (docs/prd/**).
 3. Sincronizar com GitHub:
 
 ```sh
@@ -34,9 +36,8 @@ npm run sync-prds
 Detalhe completo (fonte da verdade): [docs/prd/index.md](../../prd/index.md)
 <!-- brain:auto:end -->
 
-> Os PRDs ficam **fora** do vault (`docs/prd/`), então o Dataview não os enxerga.
-> Por isso o resumo é gerado do repo:
-> `npm run brain:sync`.
+> O status vem do frontmatter das notas desta pasta; `sync-prds.cjs` lê o mesmo
+> campo para rotular a issue no GitHub.
 
 ## Documentação no repo
 

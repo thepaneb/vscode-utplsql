@@ -1,3 +1,5 @@
+<!-- GENERATED FROM docs/brain/20-PRDs/prd-61-cli-auto-provision.md — DO NOT EDIT -->
+
 # PRD-61 — Auto-provisionamento do utPLSQL-cli
 
 | Campo | Valor |

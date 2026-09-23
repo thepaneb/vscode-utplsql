@@ -1,3 +1,5 @@
+<!-- GENERATED FROM docs/brain/70-Wiki/Editor-integration.md — DO NOT EDIT -->
+
 # Editor Integration
 
 How the extension surfaces test results inside the editor: CodeLens, inline

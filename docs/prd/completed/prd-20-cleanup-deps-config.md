@@ -1,3 +1,5 @@
+<!-- GENERATED FROM docs/brain/20-PRDs/prd-20-cleanup-deps-config.md — DO NOT EDIT -->
+
 # PRD-20 — Limpeza de dependências e configurações
 
 | Campo | Valor |

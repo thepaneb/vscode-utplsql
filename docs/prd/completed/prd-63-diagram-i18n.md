@@ -1,3 +1,5 @@
+<!-- GENERATED FROM docs/brain/20-PRDs/prd-63-diagram-i18n.md — DO NOT EDIT -->
+
 # PRD-63 — Wiki bilíngue (pt-BR/en) + correção de links + limpeza de READMEs
 
 ## Status

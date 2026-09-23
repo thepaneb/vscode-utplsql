@@ -1,3 +1,5 @@
+<!-- GENERATED FROM docs/brain/70-Wiki/Internationalization.md — DO NOT EDIT -->
+
 # Internationalization (i18n)
 
 The extension's runtime messages (prompts, output, diagnostics and quick-fixes)

@@ -21,9 +21,27 @@ ADR: `docs/brain/30-Decisoes/ADR-002 - Vault como fonte da verdade.md`.
 | `1274c7b` | camadas `SEC-*` (10) e `ERR-*` (11) |
 | `82b60a4` | camadas `PAT-*` (7), `TPL-*` (7), `GLOSS-*` (10), `NFR-*` (8), `ENT-*` (6) |
 | `929ad9a` | PRD-85 movida para `in-progress/` (label `prd:in-progress`) |
+| `c4c2cdb` | MCP do Obsidian via bridge Python (stdio<->HTTP) |
 
-Vault: **170 notas**. Validações: `brain:check`, `brain:rules` (59), `brain:build check`
-(0 drift), `docs:check`, `lint`, testes (8/8).
+### Sessão 2 (não commitada ainda) — itens 2, 3 e 4
+
+- **Wiki** → `70-Wiki/` (27 páginas + `images/`), `publicar: docs/wiki/<pág>.md`.
+  Links GitHub-wiki convertidos p/ wikilinks; `brain:build` converte de volta e
+  espelha imagens. `Home` virou `Home (wiki)` (colisão com o `Home` do vault).
+- **README + 23 variantes** → `60-README/`, `publicar: <README>`; links de idioma
+  viram wikilinks e o build reconverte p/ `README.<locale>.md`. Logo
+  `images/icon.png` copiado p/ `60-README/images/` e espelhado de volta (sem
+  apagar outros arquivos de `images/`). `README` virou `README (extensão)`.
+- **PRDs** → `20-PRDs/` (85 notas + `index.md`). **Status no frontmatter**;
+  `docs/prd/**` e `index.md` **gerados** por `brain:build` (pasta derivada do
+  status, status reinjetado no corpo, `index.md` com Roadmap/Estrutura gerados
+  por `brain:sync` via `prd-roadmap`/`prd-estrutura`). `sync-prds.cjs` lê o
+  frontmatter. Template canônico: `_templates/template-prd.md`. Skill
+  `prd-workflow` reescrita.
+
+Vault: **309 notas**. Validações OK: `brain:check`, `brain:rules` (59),
+`brain:sync` (0), `brain:build check` (0 drift; 148 publicados + 16 imagens),
+`docs:check`, `test:unit` (731/733).
 
 ## Decisões tomadas
 
@@ -52,21 +70,20 @@ npm run test:unit       # compile + lint + node --test
 
 ## Pendências (retomar)
 
-1. **Iniciar uma sessão NOVA do opencode** (não `-c`) para que as tools do MCP
-   `obsidian` sejam carregadas — continuar a sessão antiga pode não reinjetar a
-   lista de tools. Confirmar com `opencode mcp list`.
-2. **Wiki (24 páginas)** — decidir estratégia **A/B/C** para 28 refs `images/` e 1
-   link relativo: (A) copiar imagens p/ o vault; (B) manter canônico no repo;
-   (C) reescrever links no vault.
-3. **README + 23 variantes** — mesma decisão (links `README.<locale>.md`, imagens).
-4. **PRDs canônicos no vault** — status sai da pasta p/ o frontmatter; reescrever
-   `sync-prds.cjs`; `index.md`/Estrutura gerados por `brain:build`.
-5. **Fase 5/6 — CI de drift**: `brain:build && git diff --exit-code`; adaptar
-   `docs:check`/`docs:fidelity` e `wiki.yml`.
+1. ~~Iniciar sessão nova do opencode p/ carregar as tools do MCP `obsidian`.~~
+   ✅ Feito — `opencode mcp list` → `✓ obsidian connected`.
+2. ~~Wiki (24 páginas) — estratégia A/B/C para 28 refs `images/` e 1 link
+   relativo.~~ ✅ Feito — estratégia **A** (imagens no vault; build espelha).
+3. ~~README + 23 variantes — mesma decisão.~~ ✅ Feito — estratégia **A**.
+4. ~~PRDs canônicos no vault — status no frontmatter; reescrever `sync-prds.cjs`;
+   `index.md`/Estrutura gerados.~~ ✅ Feito.
+5. **Fase 5/6 — CI de drift**: `brain:sync && brain:build && git diff --exit-code`;
+   adaptar `docs:check`/`docs:fidelity` e `wiki.yml` (rodar `brain:build` antes de
+   publicar a wiki).
 6. **Docs/instruções**: reescrever `AGENTS.md` (local), skill `docs-fidelity`
    (direção invertida), `docs/brain/README.md`, `CONTRIBUTING.md`; ajustar
-   `brain.cjs` (`readme-variants`/`wiki-index`/`funcional-index`/`prd-summary`
-   deixam de fazer sentido repo→vault).
+   `brain.cjs` (`readme-variants`/`wiki-index`/`funcional-index`/`prd-summary` —
+   `prd-summary` já lê o frontmatter; os demais ainda fazem repo→vault).
 7. **Camadas** `PIPE-*` (workflows) e `LOC-*` (i18n/23 idiomas) — geradas.
 8. **ADRs retrospectivos** a partir dos 66 PRDs concluídos.
 9. **Validador**: `--check-lines`; schema de `SEC/ERR/PAT/...` (hoje só refs);
@@ -76,6 +93,23 @@ npm run test:unit       # compile + lint + node --test
 11. **Operacional WSL**: se o Windows reiniciar e a sub-rede mudar, refazer a regra
     de firewall do portproxy (`remoteip=172.21.16.0/20`).
 12. `CHANGELOG.md` quando a PRD-85 concluir.
+
+## Convenções adotadas (importante)
+
+- **Nota do vault = fonte**; `docs/wiki/**`, `README*.md`, `docs/prd/**`,
+  `docs/functional/**` são **gerados** (`brain:build`) com banner
+  `<!-- GENERATED FROM ... DO NOT EDIT -->`.
+- **Wikilinks** (`[[alvo|texto]]`) dentro do vault. O build converte:
+  - wiki → `[texto](alvo)` (GitHub wiki, sem extensão);
+  - README → `[texto](alvo.md)`;
+  - índice de PRDs → links relativos `docs/prd/...` (gerador emite
+    `../../../docs/prd/...`; build remove o prefixo).
+- **Colisões de nome** com notas do vault: `Home` → `Home (wiki)`;
+  `README` → `README (extensão)`.
+- **PRD**: `status:` no frontmatter é a verdade; pasta gerada
+  `docs/prd/<status>/`; status reinjetado no corpo (tabela ou `## Status`).
+- Imagens: `70-Wiki/images` → `docs/wiki/images` (espelho destrutivo);
+  `60-README/images` → `images/` (cópia não destrutiva).
 
 ## Estrutura do vault (novas pastas)
 

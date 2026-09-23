@@ -1,3 +1,5 @@
+<!-- GENERATED FROM docs/brain/20-PRDs/prd-54-coverage-toggle.md — DO NOT EDIT -->
+
 # PRD-54 — Toggle de cobertura na status bar
 
 | Campo | Valor |

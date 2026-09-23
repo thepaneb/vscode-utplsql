@@ -1,3 +1,5 @@
+<!-- GENERATED FROM docs/brain/20-PRDs/prd-74-db-first-discovery.md — DO NOT EDIT -->
+
 # PRD-74 — Descoberta de suítes direto do banco (`ut_runner.get_suites_info`)
 
 | Campo | Valor |

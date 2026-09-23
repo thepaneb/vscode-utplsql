@@ -1,3 +1,5 @@
+<!-- GENERATED FROM docs/brain/20-PRDs/prd-71-debugger-dbms-debug-fix.md — DO NOT EDIT -->
+
 # PRD-71 — Corrigir o debugger para o DBMS_DEBUG real
 
 | Campo | Valor |

@@ -1,3 +1,5 @@
+<!-- GENERATED FROM docs/brain/60-README/README.en-GB.md — DO NOT EDIT -->
+
 <p align="center">
   <img src="images/icon.png" alt="utPLSQL Test Runner Logo" width="128" height="128">
 </p>

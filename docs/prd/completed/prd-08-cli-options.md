@@ -1,3 +1,5 @@
+<!-- GENERATED FROM docs/brain/20-PRDs/prd-08-cli-options.md — DO NOT EDIT -->
+
 # PRD-08 — Opções CLI avançadas expostas como settings
 
 | Campo | Valor |

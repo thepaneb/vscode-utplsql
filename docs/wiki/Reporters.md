@@ -1,3 +1,5 @@
+<!-- GENERATED FROM docs/brain/70-Wiki/Reporters.md — DO NOT EDIT -->
+
 # Custom Reporters
 
 The extension registers reporters per run. Two are always present; coverage is

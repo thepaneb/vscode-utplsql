@@ -1,3 +1,5 @@
+<!-- GENERATED FROM docs/brain/20-PRDs/prd-83-vsix-package-hygiene.md — DO NOT EDIT -->
+
 # PRD-83 — Higiene do pacote VSIX: bloquear vazamento de arquivos de desenvolvimento
 
 | Campo | Valor |

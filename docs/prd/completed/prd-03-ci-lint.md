@@ -1,3 +1,5 @@
+<!-- GENERATED FROM docs/brain/20-PRDs/prd-03-ci-lint.md — DO NOT EDIT -->
+
 # PRD-03 — Pipeline CI + Linter
 
 | Campo | Valor |

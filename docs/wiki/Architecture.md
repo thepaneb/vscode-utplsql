@@ -1,3 +1,5 @@
+<!-- GENERATED FROM docs/brain/70-Wiki/Architecture.md — DO NOT EDIT -->
+
 # Architecture
 
 Overview of the extension's internal architecture for contributors.

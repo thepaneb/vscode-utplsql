@@ -1,3 +1,5 @@
+<!-- GENERATED FROM docs/brain/70-Wiki/Oracle-direct-execution.md — DO NOT EDIT -->
+
 # Oracle Direct Execution (Streaming)
 
 The extension runs tests directly on the Oracle database via

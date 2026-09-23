@@ -1,3 +1,5 @@
+<!-- GENERATED FROM docs/brain/70-Wiki/FAQ.md — DO NOT EDIT -->
+
 # FAQ
 
 ## General

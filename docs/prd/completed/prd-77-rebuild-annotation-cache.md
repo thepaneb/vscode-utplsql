@@ -1,3 +1,5 @@
+<!-- GENERATED FROM docs/brain/20-PRDs/prd-77-rebuild-annotation-cache.md — DO NOT EDIT -->
+
 # PRD-77 — Reconstruir o cache de anotações do utPLSQL
 
 | Campo | Valor |

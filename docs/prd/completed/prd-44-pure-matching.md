@@ -1,3 +1,5 @@
+<!-- GENERATED FROM docs/brain/20-PRDs/prd-44-pure-matching.md — DO NOT EDIT -->
+
 # PRD-44 — Extrair matching resultado→teste para funções puras testáveis
 
 | Campo | Valor |

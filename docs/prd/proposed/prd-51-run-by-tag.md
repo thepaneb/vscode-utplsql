@@ -1,3 +1,5 @@
+<!-- GENERATED FROM docs/brain/20-PRDs/prd-51-run-by-tag.md — DO NOT EDIT -->
+
 # PRD-51 — Execução e seleção por Tag (`%tags`)
 
 | Campo | Valor |

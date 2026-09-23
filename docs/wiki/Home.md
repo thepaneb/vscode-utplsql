@@ -1,3 +1,5 @@
+<!-- GENERATED FROM docs/brain/70-Wiki/Home (wiki).md — DO NOT EDIT -->
+
 # utPLSQL Test Runner
 
 Integrates [utPLSQL](https://www.utplsql.org/) into VSCode, bringing PL/SQL tests

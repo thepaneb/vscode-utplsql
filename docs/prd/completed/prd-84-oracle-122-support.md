@@ -1,3 +1,5 @@
+<!-- GENERATED FROM docs/brain/20-PRDs/prd-84-oracle-122-support.md — DO NOT EDIT -->
+
 # PRD-84 — Suporte a Oracle 12.2 com piso alternativo de utPLSQL e charset de conexão
 
 | Campo | Valor |

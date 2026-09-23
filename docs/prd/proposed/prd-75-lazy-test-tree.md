@@ -1,3 +1,5 @@
+<!-- GENERATED FROM docs/brain/20-PRDs/prd-75-lazy-test-tree.md — DO NOT EDIT -->
+
 # PRD-75 — Árvore de testes lazy (resolução incremental por nível)
 
 | Campo | Valor |

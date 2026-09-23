@@ -1,3 +1,5 @@
+<!-- GENERATED FROM docs/brain/20-PRDs/prd-56-duration-persistence.md — DO NOT EDIT -->
+
 # PRD-56 — Duração por teste e persistência de resultados
 
 | Campo | Valor |

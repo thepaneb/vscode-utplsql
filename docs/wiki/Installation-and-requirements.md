@@ -1,3 +1,5 @@
+<!-- GENERATED FROM docs/brain/70-Wiki/Installation-and-requirements.md — DO NOT EDIT -->
+
 # Installation and Requirements
 
 ## Installation

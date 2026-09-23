@@ -1,3 +1,5 @@
+<!-- GENERATED FROM docs/brain/70-Wiki/Troubleshooting.md — DO NOT EDIT -->
+
 # Troubleshooting
 
 Common issues and their solutions.

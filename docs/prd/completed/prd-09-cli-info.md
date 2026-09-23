@@ -1,3 +1,5 @@
+<!-- GENERATED FROM docs/brain/20-PRDs/prd-09-cli-info.md — DO NOT EDIT -->
+
 # PRD-09 — Diagnóstico e validação com `utplsql info`
 
 | Campo | Valor |

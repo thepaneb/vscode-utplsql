@@ -1,3 +1,5 @@
+<!-- GENERATED FROM docs/brain/20-PRDs/prd-50-auto-run-on-save.md — DO NOT EDIT -->
+
 # PRD-50 — Auto-run on Save (Watch Mode)
 
 | Campo | Valor |

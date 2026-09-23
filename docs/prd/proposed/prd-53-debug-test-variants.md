@@ -1,3 +1,5 @@
+<!-- GENERATED FROM docs/brain/20-PRDs/prd-53-debug-test-variants.md — DO NOT EDIT -->
+
 # PRD-53 — Debug de testes: variações (cursor, falhos, último)
 
 | Campo | Valor |

@@ -1,3 +1,5 @@
+<!-- GENERATED FROM docs/brain/20-PRDs/prd-57-multiroot-root-resolution.md — DO NOT EDIT -->
+
 # PRD-57 — Multi-root: resolução de `root`/`sourcePath` por folder
 
 | Campo | Valor |

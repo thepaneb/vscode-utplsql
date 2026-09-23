@@ -1,3 +1,5 @@
+<!-- GENERATED FROM docs/brain/20-PRDs/prd-76-reporter-export.md — DO NOT EDIT -->
+
 # PRD-76 — Execução e export com reporter arbitrário
 
 | Campo | Valor |

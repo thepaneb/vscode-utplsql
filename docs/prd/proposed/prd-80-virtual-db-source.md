@@ -1,3 +1,5 @@
+<!-- GENERATED FROM docs/brain/20-PRDs/prd-80-virtual-db-source.md — DO NOT EDIT -->
+
 # PRD-80 — Documento virtual de fonte do banco para falhas e cobertura
 
 | Campo | Valor |

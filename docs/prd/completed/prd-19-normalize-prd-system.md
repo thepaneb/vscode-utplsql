@@ -1,3 +1,5 @@
+<!-- GENERATED FROM docs/brain/20-PRDs/prd-19-normalize-prd-system.md — DO NOT EDIT -->
+
 # PRD-19 — Normalização do sistema de PRDs
 
 | Campo | Valor |

@@ -1,3 +1,5 @@
+<!-- GENERATED FROM docs/brain/70-Wiki/Database-requirements.md — DO NOT EDIT -->
+
 # Database requirements
 
 Grants and configurations required on the Oracle database to use the extension

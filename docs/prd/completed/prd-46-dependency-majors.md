@@ -1,3 +1,5 @@
+<!-- GENERATED FROM docs/brain/20-PRDs/prd-46-dependency-majors.md — DO NOT EDIT -->
+
 # PRD-46 — Atualização de dependências major (oracledb 7, fast-xml-parser 5, iconv-lite 0.7, TypeScript 7)
 
 | Campo | Valor |

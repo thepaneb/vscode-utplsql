@@ -1,3 +1,5 @@
+<!-- GENERATED FROM docs/brain/20-PRDs/prd-55-tag-organization.md — DO NOT EDIT -->
+
 # PRD-55 — Organização da árvore de testes por tag
 
 | Campo | Valor |

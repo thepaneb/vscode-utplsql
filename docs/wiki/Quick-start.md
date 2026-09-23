@@ -1,3 +1,5 @@
+<!-- GENERATED FROM docs/brain/70-Wiki/Quick-start.md — DO NOT EDIT -->
+
 # Quick start
 
 Step-by-step tutorial to run your first test with the extension.

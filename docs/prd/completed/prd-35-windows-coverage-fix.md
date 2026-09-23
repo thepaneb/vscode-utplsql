@@ -1,3 +1,5 @@
+<!-- GENERATED FROM docs/brain/20-PRDs/prd-35-windows-coverage-fix.md — DO NOT EDIT -->
+
 # PRD-35 — Correção de cobertura no Windows + blindagem de testes para argumentos CLI
 
 | Campo | Valor |

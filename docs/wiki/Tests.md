@@ -1,3 +1,5 @@
+<!-- GENERATED FROM docs/brain/70-Wiki/Tests.md — DO NOT EDIT -->
+
 # Tests
 
 Overview of the extension's tests and how to run them.

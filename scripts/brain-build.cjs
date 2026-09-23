@@ -18,6 +18,84 @@ const REPO = path.resolve(__dirname, '..');
 const VAULT = path.join(REPO, 'docs', 'brain');
 const BANNER = (rel) => `<!-- GENERATED FROM docs/brain/${rel} — DO NOT EDIT -->`;
 
+const WIKI_PREFIX = 'docs/wiki/';
+const WIKILINK_RE = /\[\[([^\]|#]+)(?:#[^\]|]+)?(?:\|([^\]]+))?\]\]/g;
+
+const README_RE = /^README(\..+)?\.md$/;
+const README_HOME = 'README (extensão)';
+
+/** Obsidian `[[alvo|texto]]` -> link markdown de wiki `[texto](alvo)`. */
+function wikiLinks(body) {
+  return body.replace(WIKILINK_RE, (_full, target, display) => {
+    const t = target.trim();
+    return `[${(display || target).trim()}](${t})`;
+  });
+}
+
+/** Obsidian `[[alvo|texto]]` -> link markdown `[texto](alvo.md)` (README). */
+function readmeLinks(body) {
+  return body.replace(WIKILINK_RE, (_full, target, display) => {
+    const page = target.trim() === README_HOME ? 'README' : target.trim();
+    return `[${(display || target).trim()}](${page}.md)`;
+  });
+}
+
+/** Espelha um diretório de imagens do vault para o repo. */
+function syncDir(src, dst, relLabel, check, mirror) {
+  if (!fs.existsSync(src)) return { changed: 0, drifted: 0, total: 0 };
+  const names = fs.readdirSync(src);
+  const known = new Set(names);
+  let changed = 0;
+  let drifted = 0;
+  for (const name of names) {
+    const desired = fs.readFileSync(path.join(src, name));
+    const target = path.join(dst, name);
+    const current = fs.existsSync(target) ? fs.readFileSync(target) : null;
+    if (current && current.equals(desired)) continue;
+    if (check) {
+      console.log(`[drift] ${relLabel}${name}`);
+      drifted++;
+      continue;
+    }
+    fs.mkdirSync(path.dirname(target), { recursive: true });
+    fs.writeFileSync(target, desired);
+    console.log(`[build] ${relLabel}${name}`);
+    changed++;
+  }
+  if (mirror && fs.existsSync(dst)) {
+    for (const name of fs.readdirSync(dst)) {
+      if (known.has(name)) continue;
+      if (check) {
+        console.log(`[drift] ${relLabel}${name} (sobra)`);
+        drifted++;
+        continue;
+      }
+      fs.rmSync(path.join(dst, name));
+      console.log(`[build] remove ${relLabel}${name}`);
+      changed++;
+    }
+  }
+  return { changed, drifted, total: names.length };
+}
+
+const imagesSync = (check) =>
+  syncDir(
+    path.join(VAULT, '70-Wiki', 'images'),
+    path.join(REPO, 'docs', 'wiki', 'images'),
+    'docs/wiki/images/',
+    check,
+    true,
+  );
+
+const readmeImagesSync = (check) =>
+  syncDir(
+    path.join(VAULT, '60-README', 'images'),
+    path.join(REPO, 'images'),
+    'images/',
+    check,
+    false,
+  );
+
 function walk(dir, out = []) {
   if (!fs.existsSync(dir)) return out;
   for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {
@@ -40,19 +118,90 @@ function parseFrontmatter(text) {
   return { fm, body: text.slice(m[0].length), hasFm: true };
 }
 
+const PRD_STATUS_LABEL = {
+  proposed: 'Proposto',
+  approved: 'Aprovado',
+  'in-progress': 'Em desenvolvimento',
+  completed: 'Concluído',
+};
+const PRD_FOLDERS = Object.keys(PRD_STATUS_LABEL);
+
 function published() {
   const items = [];
   for (const note of walk(VAULT)) {
     const text = fs.readFileSync(note, 'utf8');
     const { fm, body } = parseFrontmatter(text);
-    if (!fm.publicar) continue;
-    items.push({ note, rel: path.relative(VAULT, note).split(path.sep).join('/'), target: fm.publicar, body });
+    const rel = path.relative(VAULT, note).split(path.sep).join('/');
+    if (fm.tipo === 'prd') {
+      const status = fm.status;
+      if (!PRD_FOLDERS.includes(status)) continue;
+      items.push({
+        note,
+        rel,
+        target: `docs/prd/${status}/${path.basename(note)}`,
+        body,
+        prd: true,
+        status,
+      });
+    } else if (fm.publicar) {
+      items.push({
+        note,
+        rel,
+        target: fm.publicar,
+        body,
+        prdIndex: fm.tipo === 'prd-index',
+      });
+    }
   }
   return items;
 }
 
+/** Reinjeta o status no corpo do PRD a partir do frontmatter. */
+function withStatus(body, label) {
+  if (/^\|\s*Status\s*\|/m.test(body)) {
+    return body.replace(/^\|\s*Status\s*\|.*$/m, `| Status | ${label} |`);
+  }
+  if (/^\|\s*Campo\s*\|\s*Valor\s*\|/m.test(body)) {
+    return body.replace(/^(\|\s*-+.*)$/m, `$1\n| Status | ${label} |`);
+  }
+  if (/^##\s+Status\s*$/m.test(body)) {
+    return body.replace(/^##\s+Status\s*\n+[^\n]*/m, `## Status\n\n${label}`);
+  }
+  return body.replace(/^(#\s+.*)$/m, `$1\n\n## Status\n\n${label}`);
+}
+
 function render(item) {
-  return `${BANNER(item.rel)}\n${item.body}`.replace(/\s+$/, '') + '\n';
+  let body = item.body;
+  if (item.prd) body = withStatus(body, PRD_STATUS_LABEL[item.status]);
+  else if (item.prdIndex) body = body.replaceAll('../../../docs/prd/', '');
+  else if (item.target.startsWith(WIKI_PREFIX)) body = wikiLinks(body);
+  else if (README_RE.test(item.target)) body = readmeLinks(body);
+  return `${BANNER(item.rel)}\n${body}`.replace(/\s+$/, '') + '\n';
+}
+
+/** Remove PRDs gerados em pastas que não correspondem mais ao status. */
+function prdCleanup(items, check) {
+  const wanted = new Set(items.filter((i) => i.prd).map((i) => i.target));
+  let changed = 0;
+  let drifted = 0;
+  for (const folder of PRD_FOLDERS) {
+    const dir = path.join(REPO, 'docs', 'prd', folder);
+    if (!fs.existsSync(dir)) continue;
+    for (const f of fs.readdirSync(dir)) {
+      if (!f.endsWith('.md')) continue;
+      const rel = `docs/prd/${folder}/${f}`;
+      if (wanted.has(rel)) continue;
+      if (check) {
+        console.log(`[drift] ${rel} (PRD sem status correspondente)`);
+        drifted++;
+        continue;
+      }
+      fs.rmSync(path.join(dir, f));
+      console.log(`[build] remove ${rel}`);
+      changed++;
+    }
+  }
+  return { changed, drifted };
 }
 
 function run(check) {
@@ -74,12 +223,23 @@ function run(check) {
     console.log(`[build] ${item.target} <- ${item.rel}`);
     changed++;
   }
+  const img = imagesSync(check);
+  changed += img.changed;
+  drifted += img.drifted;
+  const rimg = readmeImagesSync(check);
+  changed += rimg.changed;
+  drifted += rimg.drifted;
+  const prd = prdCleanup(items, check);
+  changed += prd.changed;
+  drifted += prd.drifted;
   if (check) {
     if (drifted) {
       console.log(`\n${drifted} arquivo(s) com drift. Rode: npm run brain:build`);
       return 1;
     }
-    console.log(`OK: ${items.length} arquivo(s) publicados em sincronia.`);
+    console.log(
+      `OK: ${items.length} arquivo(s) publicados + ${img.total + rimg.total} imagem(ns) em sincronia.`,
+    );
     return 0;
   }
   console.log(`OK: ${changed} arquivo(s) atualizado(s) de ${items.length} publicados.`);

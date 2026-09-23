@@ -1,3 +1,5 @@
+<!-- GENERATED FROM docs/brain/20-PRDs/prd-85-brain-source-of-truth.md — DO NOT EDIT -->
+
 # PRD-85 — Second brain canônico (Obsidian) com MCP e extração de conhecimento
 
 | Campo | Valor |

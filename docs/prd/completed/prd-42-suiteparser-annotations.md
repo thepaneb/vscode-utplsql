@@ -1,3 +1,5 @@
+<!-- GENERATED FROM docs/brain/20-PRDs/prd-42-suiteparser-annotations.md — DO NOT EDIT -->
+
 # PRD-42 — SuiteParser: parse de annotations %disabled, %throws, %tags e lifecycle
 
 | Campo | Valor |

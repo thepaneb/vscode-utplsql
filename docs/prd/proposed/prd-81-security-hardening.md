@@ -1,3 +1,5 @@
+<!-- GENERATED FROM docs/brain/20-PRDs/prd-81-security-hardening.md — DO NOT EDIT -->
+
 # PRD-81 — Hardening de segurança das settings de conexão
 
 | Campo | Valor |

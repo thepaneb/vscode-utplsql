@@ -1,3 +1,5 @@
+<!-- GENERATED FROM docs/brain/70-Wiki/Debugger.md — DO NOT EDIT -->
+
 # PL/SQL Debugger
 
 Debug your utPLSQL tests directly in VSCode's native Debug Adapter, using

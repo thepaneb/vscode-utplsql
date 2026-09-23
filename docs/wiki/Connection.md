@@ -1,3 +1,5 @@
+<!-- GENERATED FROM docs/brain/70-Wiki/Connection.md — DO NOT EDIT -->
+
 # Connection Configuration
 
 The extension requires an Oracle connection string to run tests. The

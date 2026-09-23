@@ -1,3 +1,5 @@
+<!-- GENERATED FROM docs/brain/20-PRDs/prd-69-oracle-runner-typed-binds.md — DO NOT EDIT -->
+
 # PRD-69 — Runner Oracle: binds tipados, `a_tags` e validação de reporters
 
 | Campo | Valor |

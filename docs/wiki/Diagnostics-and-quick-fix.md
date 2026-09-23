@@ -1,3 +1,5 @@
+<!-- GENERATED FROM docs/brain/70-Wiki/Diagnostics-and-quick-fix.md — DO NOT EDIT -->
+
 # Diagnostics and quick-fix
 
 The extension provides automatic diagnostics to reduce setup friction and

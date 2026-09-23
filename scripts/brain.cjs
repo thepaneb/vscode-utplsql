@@ -145,19 +145,134 @@ function countDir(name) {
   return fs.existsSync(d) ? fs.readdirSync(d).filter((f) => f.endsWith('.md')).length : 0;
 }
 
+// ── PRDs (fonte: frontmatter das notas do vault) ────────────────────────
+
+function parseFm(text) {
+  const m = text.match(/^---\r?\n([\s\S]*?)\r?\n---/);
+  const fm = {};
+  if (!m) return fm;
+  for (const line of m[1].split(/\r?\n/)) {
+    const mm = line.match(/^([A-Za-z_][\w-]*):\s?(.*)$/);
+    if (mm) fm[mm[1]] = mm[2].replace(/^["']|["']$/g, '');
+  }
+  return fm;
+}
+
+/** Notas PRD do vault, ordenadas por número. */
+function prdNotes() {
+  const dir = path.join(VAULT, '20-PRDs');
+  if (!fs.existsSync(dir)) return [];
+  return fs
+    .readdirSync(dir)
+    .filter((f) => /^prd-\d+.*\.md$/.test(f))
+    .map((file) => {
+      const fm = parseFm(fs.readFileSync(path.join(dir, file), 'utf8'));
+      return { file, ...fm };
+    })
+    .sort((a, b) => Number(a.id?.replace(/\D/g, '')) - Number(b.id?.replace(/\D/g, '')));
+}
+
+const PRD_STATUS = [
+  { key: 'completed', icon: '🟢', label: 'Concluídos', grouped: false, col: 'Versão' },
+  { key: 'in-progress', icon: '🟡', label: 'Em desenvolvimento', grouped: true, col: 'Versão alvo' },
+  { key: 'approved', icon: '🔵', label: 'Aprovados', grouped: true, col: 'Versão alvo' },
+  { key: 'proposed', icon: '⚪', label: 'Propostos', grouped: true, col: 'Versão alvo' },
+];
+
+const prdNum = (id) => String(id ?? '').replace(/\D/g, '');
+const prdVersao = (p) => (p.versao && !/investiga/i.test(p.versao) ? p.versao : '—');
+const prdData = (p) => p.data || '—';
+
+function cmpVersao(a, b) {
+  const pa = prdVersao(a).split('.').map((n) => parseInt(n, 10) || 0);
+  const pb = prdVersao(b).split('.').map((n) => parseInt(n, 10) || 0);
+  for (let i = 0; i < 3; i++) {
+    if ((pa[i] || 0) !== (pb[i] || 0)) return (pa[i] || 0) - (pb[i] || 0);
+  }
+  return 0;
+}
+
+function prdRow(p) {
+  return `| ${prdNum(p.id)} | [${p.titulo}](../../../docs/prd/${p.status}/${p.file}) | ${prdVersao(p)} | ${prdData(p)} |`;
+}
+
+function genPrdRoadmap() {
+  const notes = prdNotes();
+  const out = [];
+  for (const st of PRD_STATUS) {
+    const group = notes.filter((p) => p.status === st.key);
+    if (!group.length) continue;
+    out.push(`### ${st.icon} ${st.label}`, '');
+    if (!st.grouped) {
+      out.push(`| # | PRD | ${st.col} | Data |`, '|---|---|---|---|');
+      for (const p of group.sort((a, b) => cmpVersao(a, b) || prdNum(a) - prdNum(b))) {
+        out.push(prdRow(p));
+      }
+      out.push('');
+      continue;
+    }
+    const groups = new Map();
+    for (const p of group) {
+      const g = p.versao_titulo || prdVersao(p);
+      if (!groups.has(g)) groups.set(g, []);
+      groups.get(g).push(p);
+    }
+    for (const g of [...groups.keys()].sort()) {
+      out.push(`#### ${g}`, '');
+      out.push(`| # | PRD | ${st.col} | Data |`, '|---|---|---|---|');
+      for (const p of groups.get(g).sort((a, b) => prdNum(a) - prdNum(b))) out.push(prdRow(p));
+      out.push('');
+    }
+  }
+  return out.join('\n').replace(/\s+$/, '');
+}
+
+function genPrdEstrutura() {
+  const notes = prdNotes();
+  const lines = [
+    '```',
+    'docs/prd/',
+    '├── index.md          ← este arquivo (catálogo + roadmap)',
+    '├── template.md       ← molde para novos PRDs',
+  ];
+  const folders = [
+    ['completed', 'já implementados'],
+    ['approved', 'aprovados, aguardando implementação'],
+    ['in-progress', 'sendo implementados agora'],
+    ['proposed', 'em avaliação'],
+  ].filter(([f]) => notes.some((p) => p.status === f));
+  folders.forEach(([folder, desc], fi) => {
+    const last = fi === folders.length - 1;
+    lines.push(`${last ? '└──' : '├──'} ${folder}/        ← ${desc}`);
+    const files = notes
+      .filter((p) => p.status === folder)
+      .map((p) => p.file)
+      .sort((a, b) => a.localeCompare(b));
+    files.forEach((f, i) => {
+      const lastFile = i === files.length - 1;
+      lines.push(`${last ? '    ' : '│   '}${lastFile ? '└──' : '├──'} ${f}`);
+    });
+  });
+  lines.push('```');
+  return lines.join('\n');
+}
+
 function genPrdSummary(note) {
+  const notes = prdNotes();
+  const count = (k) => notes.filter((p) => p.status === k).length;
   const index = path.join(REPO, 'docs', 'prd', 'index.md');
   const linhas = [
-    `- 📝 Propostos: **${countDir('proposed')}**`,
-    `- 🔵 Aprovados: **${countDir('approved')}**`,
-    `- 🟡 Em desenvolvimento: **${countDir('in-progress')}**`,
-    `- 🟢 Concluídos: **${countDir('completed')}**`,
+    `- 📝 Propostos: **${count('proposed')}**`,
+    `- 🔵 Aprovados: **${count('approved')}**`,
+    `- 🟡 Em desenvolvimento: **${count('in-progress')}**`,
+    `- 🟢 Concluídos: **${count('completed')}**`,
   ];
   if (fs.existsSync(index)) {
     linhas.push('', `Detalhe completo (fonte da verdade): [docs/prd/index.md](${rel(index, note)})`);
   }
   return linhas.join('\n');
 }
+
 
 function genStack() {
   const pkg = JSON.parse(fs.readFileSync(path.join(REPO, 'package.json'), 'utf8'));
@@ -211,6 +326,8 @@ const GENERATORS = {
   'linkedin-index': genLinkedinIndex,
   'funcional-index': genFuncionalIndex,
   'prd-summary': genPrdSummary,
+  'prd-roadmap': genPrdRoadmap,
+  'prd-estrutura': genPrdEstrutura,
   stack: genStack,
   deps: genDeps,
 };

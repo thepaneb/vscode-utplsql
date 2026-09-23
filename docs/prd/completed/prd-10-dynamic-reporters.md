@@ -1,3 +1,5 @@
+<!-- GENERATED FROM docs/brain/20-PRDs/prd-10-dynamic-reporters.md — DO NOT EDIT -->
+
 # PRD-10 — Reporters dinâmicos com `utplsql reporters`
 
 | Campo | Valor |

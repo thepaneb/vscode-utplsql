@@ -1,3 +1,5 @@
+<!-- GENERATED FROM docs/brain/20-PRDs/prd-04-expand-tests.md — DO NOT EDIT -->
+
 # PRD-04 — Expansão da cobertura de testes
 
 | Campo | Valor |

@@ -1,3 +1,5 @@
+<!-- GENERATED FROM docs/brain/20-PRDs/prd-37-ts-coverage.md — DO NOT EDIT -->
+
 # PRD-37 — Cobertura de código TypeScript com `c8`
 
 | Campo | Valor |

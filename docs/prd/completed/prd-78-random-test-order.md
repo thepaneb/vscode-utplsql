@@ -1,3 +1,5 @@
+<!-- GENERATED FROM docs/brain/20-PRDs/prd-78-random-test-order.md — DO NOT EDIT -->
+
 # PRD-78 — Ordem aleatória de execução com seed (`a_random_test_order`)
 
 | Campo | Valor |

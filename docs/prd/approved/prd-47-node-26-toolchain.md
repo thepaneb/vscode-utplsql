@@ -1,3 +1,5 @@
+<!-- GENERATED FROM docs/brain/20-PRDs/prd-47-node-26-toolchain.md — DO NOT EDIT -->
+
 # PRD-47 — Node 26 no toolchain de desenvolvimento
 
 | Campo | Valor |

@@ -1,3 +1,5 @@
+<!-- GENERATED FROM docs/brain/20-PRDs/prd-79-coverage-scope.md — DO NOT EDIT -->
+
 # PRD-79 — Escopo avançado de cobertura (regex include/exclude + `excludeObjects`)
 
 | Campo | Valor |

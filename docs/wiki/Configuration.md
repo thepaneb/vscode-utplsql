@@ -1,3 +1,5 @@
+<!-- GENERATED FROM docs/brain/70-Wiki/Configuration.md — DO NOT EDIT -->
+
 # Configuration (settings)
 
 All extension settings, prefixed with `utplsql.`. Configure them in the

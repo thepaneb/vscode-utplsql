@@ -1,3 +1,5 @@
+<!-- GENERATED FROM docs/brain/70-Wiki/_Sidebar.md — DO NOT EDIT -->
+
 - **Getting Started**
   - [Installation and Requirements](Installation-and-requirements)
   - [Connection Setup](Connection)
