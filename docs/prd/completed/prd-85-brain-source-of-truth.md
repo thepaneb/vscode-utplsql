@@ -4,11 +4,11 @@
 
 | Campo | Valor |
 |---|---|
-| Status | Em desenvolvimento |
+| Status | Concluído |
 | Autor | Gil Cleber Barboza |
 | Data | 2026-09-23 |
 | Componente | Ferramental de desenvolvimento / documentação (`docs/`, `scripts/`) |
-| Versão alvo | 0.17.0 |
+| Versão alvo | 0.13.0 |
 | Arquivos afetados | `.gitignore`, `opencode.json` (novo), `scripts/brain.cjs`, `scripts/brain-build.cjs` (novo), `scripts/brain-rules.cjs` (novo), `scripts/docs-check.cjs`, `scripts/docs-fidelity.cjs`, `scripts/sync-prds.cjs`, `AGENTS.md`, `docs/brain/**`, `docs/functional/**`, `docs/wiki/**`, `docs/prd/**`, `README.md` + variantes, `.github/workflows/*` |
 | Esforço estimado | 3–5 dias (multi-fase) |
 | Complexidade | Alta |
@@ -309,7 +309,7 @@ Code-first, com curadoria:
 
 ## 9. Rollout
 
-- **Versão alvo:** 0.17.0 (ferramental/documentação; acompanha a release).
+- **Versão alvo:** 0.13.0 (ferramental/documentação; acompanha a release).
 - **Fases:**
   1. ADR-002 + PRD-85 (esta).
   2. MCP funcionando (plugin + `opencode.json` + smoke test) — **portão de decisão**.
@@ -323,23 +323,25 @@ Code-first, com curadoria:
 
 ## 10. Critérios de aceite
 
-- [ ] `opencode.json` conecta ao MCP do Obsidian e o agente lista/lê/cria notas.
-- [ ] `docs/brain/` versionado; nenhum segredo no `git diff`.
-- [ ] `npm run brain:build && npm run brain:sync` idempotentes.
-- [ ] `npm run brain:build && git diff --exit-code` limpo no CI.
-- [ ] `brain-rules check` valida schema, IDs únicos e links de todas as `BR-*`.
-- [ ] Cada `BR-*` ativa possui `implementacao`; as testáveis possuem `testes`.
-- [ ] PRDs migrados para frontmatter; `sync-prds` e `index.md` consistentes.
-- [ ] `npm run docs:check` e `npm run docs:fidelity` passam sobre a saída gerada.
-- [ ] Skills/`AGENTS.md` refletem o novo princípio ("vault canônico; código é a
+- [x] `opencode.json` conecta ao MCP do Obsidian e o agente lista/lê/cria notas.
+- [x] `docs/brain/` versionado; nenhum segredo no `git diff`.
+- [x] `npm run brain:build && npm run brain:sync` idempotentes.
+- [x] `npm run brain:build && git diff --exit-code` limpo no CI.
+- [x] `brain-rules check` valida schema, IDs únicos e links de todas as `BR-*`.
+- [x] Cada `BR-*` ativa possui `implementacao`; as testáveis possuem `testes`.
+- [x] PRDs migrados para frontmatter; `sync-prds` e `index.md` consistentes.
+- [x] `npm run docs:check` e `npm run docs:fidelity` passam sobre a saída gerada.
+- [x] Skills/`AGENTS.md` refletem o novo princípio ("vault canônico; código é a
       fonte dos fatos técnicos").
 
-## 11. Questões em aberto
+## 11. Questões em aberto (resolvidas na entrega)
 
-- Versão alvo definitiva (0.17.0) e se a parte de geração de README/23 idiomas
-  entra nesta entrega ou numa fase seguinte.
-- Destino de `docs/analise.md`, `docs/analise-comparativa.md`,
-  `docs/rebranding-rascunho.md` e de `docs/linkedin/` (local) no novo fluxo.
-- Formato do fluxo de contribuição do vault versionado (PR + `CODEOWNERS`).
-- Escopo inicial da extração de regras (quais domínios primeiro).
-- Deduplicação das camadas `GLOSS-*`/`ERR-*` com a wiki existente.
+- **Versão alvo:** 0.13.0 (ferramental/documentação). A geração do README/23
+  idiomas entrou nesta entrega; as camadas `LOC-*`/`PIPE-*` são geradas.
+- **Docs fora do vault:** `docs/analise*.md`, `docs/rebranding-rascunho.md` e
+  `docs/linkedin/` permanecem locais (gitignored).
+- **Fluxo de contribuição:** PR + `.github/CODEOWNERS` (ver `docs/brain/README.md`).
+- **Escopo da extração:** regras `BR-*` por domínio (59 no total) + camadas
+  `SEC`/`ERR`/`PAT`/`TPL`/`GLOSS`/`NFR`/`ENT`.
+- **Deduplicação `GLOSS-*`/`ERR-*` × wiki:** resolvida por link (a wiki é gerada
+  do vault; o glossário/erros são as notas atômicas).

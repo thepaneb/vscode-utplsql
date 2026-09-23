@@ -2,6 +2,16 @@
 
 ## 0.13.0
 
+- **Second brain canônico (Obsidian) com MCP (PRD-85)**: `docs/brain/` passa a ser
+  **versionado** e a fonte da verdade do texto humano; `README*`, `docs/wiki/`,
+  `docs/functional/` e `docs/prd/` passam a ser **gerados** a partir dele
+  (`npm run brain:build`). O conhecimento é persistido em unidades atômicas — 59
+  regras `BR-*` e as camadas `SEC-*`/`ERR-*`/`PAT-*`/`TPL-*`/`GLOSS-*`/`NFR-*`/
+  `ENT-*`/`LOC-*`/`PIPE-*` — com rastreabilidade para código/teste/PRD. O status
+  dos PRDs passa a viver no **frontmatter** da nota (pasta e `index.md` gerados).
+  O agente lê/escreve o vault via **MCP** do Obsidian (Local REST API). O CI
+  valida o drift (`brain:ci` + `git diff --exit-code`).
+
 - **Suporte a Oracle 12.2 (utPLSQL 3.1.x)**: o utPLSQL **v3.2.x não compila** no
   12.2 (`PLS-00222` em `UT_ANNOTATION_MANAGER`, que exige recurso do 18c+). A
   matriz de bancos passou a aceitar um **piso alternativo de utPLSQL por versão**

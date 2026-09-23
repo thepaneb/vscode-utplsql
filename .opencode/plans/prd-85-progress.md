@@ -116,7 +116,18 @@ npm run test:unit       # compile + lint + node --test
 11. ~~Operacional WSL~~ 📝 Documentado — MCP/WSL (portproxy + firewall) em
     `AGENTS.md` e `docs/brain/README.md`. Ação manual (refazer a regra de firewall
     do portproxy se a sub-rede do WSL mudar) fica com o dev.
-12. `CHANGELOG.md` quando a PRD-85 concluir.
+12. ~~`CHANGELOG.md` quando a PRD-85 concluir.~~ ✅ Feito — entrada na seção
+    **0.13.0**; PRD-85 → `completed` (versão alvo 0.13.0), critérios de aceite
+    marcados, issue **#115 fechada** via `sync-prds` (label `prd:completed`).
+
+## Situação: PRD-85 CONCLUÍDA
+
+Todos os itens 1–12 estão feitos. Pendências residuais (fora do escopo desta PRD):
+- Revisar traduções das 23 variantes de README quando o conteúdo mudar (o vault
+  marca a fonte; o ⚠️ de defasagem foi removido).
+- `DEP-*` (uma nota por dependência) ainda não gerada — hoje o `MOC - Stack`
+  lista as deps via bloco gerado.
+- Camadas `PIPE-*`/`LOC-*` são geradas; revisar se quer notas curadas adicionais.
 
 ## Convenções adotadas (importante)
 

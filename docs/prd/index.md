@@ -141,14 +141,7 @@ CONCLUIR
 | 79 | [Escopo avançado de cobertura (regex include/exclude + `excludeObjects`)](completed/prd-79-coverage-scope.md) | 0.13.0 | 2026-09-19 |
 | 83 | [Higiene do pacote VSIX: bloquear vazamento de arquivos de desenvolvimento](completed/prd-83-vsix-package-hygiene.md) | 0.13.0 | 2026-09-22 |
 | 84 | [Suporte a Oracle 12.2 com piso alternativo de utPLSQL e charset de conexão](completed/prd-84-oracle-122-support.md) | 0.13.0 | 2026-09-22 |
-
-### 🟡 Em desenvolvimento
-
-#### 0.17.0 — Conhecimento e documentação (second brain)
-
-| # | PRD | Versão alvo | Data |
-|---|---|---|---|
-| 85 | [Second brain canônico (Obsidian) com MCP e extração de conhecimento](in-progress/prd-85-brain-source-of-truth.md) | 0.17.0 | 2026-09-23 |
+| 85 | [Second brain canônico (Obsidian) com MCP e extração de conhecimento](completed/prd-85-brain-source-of-truth.md) | 0.13.0 | 2026-09-23 |
 
 ### 🔵 Aprovados
 
@@ -273,11 +266,10 @@ docs/prd/
 │   ├── prd-78-random-test-order.md
 │   ├── prd-79-coverage-scope.md
 │   ├── prd-83-vsix-package-hygiene.md
-│   └── prd-84-oracle-122-support.md
+│   ├── prd-84-oracle-122-support.md
+│   └── prd-85-brain-source-of-truth.md
 ├── approved/        ← aprovados, aguardando implementação
 │   └── prd-47-node-26-toolchain.md
-├── in-progress/        ← sendo implementados agora
-│   └── prd-85-brain-source-of-truth.md
 └── proposed/        ← em avaliação
     ├── prd-50-auto-run-on-save.md
     ├── prd-51-run-by-tag.md

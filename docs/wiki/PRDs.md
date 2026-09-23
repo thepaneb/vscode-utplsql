@@ -93,8 +93,9 @@ The file is moved between folders as it progresses.
 | 79 | Advanced coverage scope (regex + exclusions) | 0.13.0 |
 | 83 | VSIX package hygiene | 0.13.0 |
 | 84 | Oracle 12.2 support (alternative utPLSQL floor) + charset | 0.13.0 |
+| 85 | Canonical second brain (Obsidian) with MCP and knowledge layers | 0.13.0 |
 
-### 🔵 Approved / 🟡 In development
+### 🔵 Approved
 
 | # | PRD | Target version |
 |---|---|---|

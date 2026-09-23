@@ -8,7 +8,7 @@ severidade: alta
 fonte: codigo
 verificado: 2026-09-23
 implementacao: ["src/compilationDiagnostics.ts:13", "src/compilationDiagnostics.ts:29", "src/compilationDiagnostics.ts:52", "src/compilationDiagnostics.ts:72", "src/runner.ts:97"]
-testes: []
+testes: ["src/test/unit/oracleRunner.test.ts", "src/test/integration/oracleCapabilities.test.ts"]
 tags: ["diagnostico"]
 ---
 ## Enunciado

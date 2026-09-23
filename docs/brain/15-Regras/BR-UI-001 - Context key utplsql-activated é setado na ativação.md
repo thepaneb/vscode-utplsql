@@ -8,7 +8,7 @@ severidade: media
 fonte: codigo
 verificado: 2026-09-23
 implementacao: ["src/extension.ts:32", "package.json:36"]
-testes: []
+testes: ["src/test/integration/extension.test.ts"]
 tags: ["ui"]
 ---
 ## Enunciado

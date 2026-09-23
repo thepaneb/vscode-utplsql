@@ -8,7 +8,7 @@ severidade: media
 fonte: codigo
 verificado: 2026-09-23
 implementacao: ["src/oracleRunner.ts:525", "src/oracleRunner.ts:735"]
-testes: []
+testes: ["src/test/integration/dbPaths.test.ts", "src/test/integration/v012-features.test.ts"]
 tags: ["execucao"]
 ---
 ## Enunciado
