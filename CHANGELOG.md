@@ -1,6 +1,6 @@
 # Changelog
 
-## 0.14.0
+## 0.13.0
 
 - **Suporte a Oracle 12.2 (utPLSQL 3.1.x)**: o utPLSQL **v3.2.x não compila** no
   12.2 (`PLS-00222` em `UT_ANNOTATION_MANAGER`, que exige recurso do 18c+). A
@@ -10,9 +10,6 @@
   caracteres fora do charset (ex.: `€` → `¿`) — o driver thin usa sempre
   `AL32UTF8` e ignora `NLS_LANG`; o teste de charset de integração agora detecta
   e faz skip nesse caso. (PRD-84)
-
-## 0.13.0
-
 - **Pacote VSIX enxuto**: removidos do pacote arquivos e pastas de
   desenvolvimento que escapavam do `.vscodeignore` — `.agents/`, `.kilo/`,
   `.github/`, `docker/` (incluindo o cache da matriz de bancos, ~5 MB),

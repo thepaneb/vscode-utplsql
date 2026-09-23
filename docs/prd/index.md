@@ -142,7 +142,7 @@ CONCLUIR
 | 74 | [Descoberta de suítes direto do banco (`get_suites_info`)](completed/prd-74-db-first-discovery.md) | 0.13.0 | 2026-09-22 |
 | 77 | [Reconstruir o cache de anotações do utPLSQL](completed/prd-77-rebuild-annotation-cache.md) | 0.13.0 | 2026-09-22 |
 | 83 | [Higiene do pacote VSIX: bloquear vazamento de arquivos de desenvolvimento](completed/prd-83-vsix-package-hygiene.md) | 0.13.0 | 2026-09-22 |
-| 84 | [Suporte a Oracle 12.2 com piso alternativo de utPLSQL e charset de conexão](completed/prd-84-oracle-122-support.md) | 0.14.0 | 2026-09-22 |
+| 84 | [Suporte a Oracle 12.2 com piso alternativo de utPLSQL e charset de conexão](completed/prd-84-oracle-122-support.md) | 0.13.0 | 2026-09-22 |
 
 ### 🟡 Em desenvolvimento
 

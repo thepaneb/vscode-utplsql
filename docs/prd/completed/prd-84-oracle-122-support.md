@@ -6,7 +6,7 @@
 | Autor | Gil Cleber Barboza |
 | Data | 2026-09-22 |
 | Componente | Extensão `paneb.vscode-utplsql` |
-| Versão alvo | 0.14.0 |
+| Versão alvo | 0.13.0 |
 | Arquivos afetados | `scripts/db-matrix/*`, `.env.dbmatrix.example`, `src/oracleRunner.ts` (+ módulos que abrem conexão), `src/config.ts`, `package.json`, `README.md`, `docs/wiki/Database-requirements.md`, `docs/prd/index.md` |
 | Esforço estimado | 1–2 dias |
 | Complexidade | Média |
