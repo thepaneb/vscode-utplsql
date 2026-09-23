@@ -1,6 +1,7 @@
 ---
 tipo: prd
 id: PRD-72
+aliases: [PRD-72]
 status: completed
 titulo: "Matriz de bancos Oracle para testes de integração"
 versao: "0.12.1"

@@ -1,5 +1,6 @@
 ---
 id: BR-CONN-009
+aliases: [BR-CONN-009]
 tipo: regra
 titulo: QuickPick de perfil mascara conexão e destaca charset/default
 dominio: conexao

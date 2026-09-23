@@ -1,6 +1,7 @@
 ---
 tipo: prd
 id: PRD-38
+aliases: [PRD-38]
 status: completed
 titulo: "Connection Pooling no Oracle Runner"
 versao: "0.10.0"

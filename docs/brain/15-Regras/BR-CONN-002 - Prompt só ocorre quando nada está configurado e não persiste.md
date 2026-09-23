@@ -1,5 +1,6 @@
 ---
 id: BR-CONN-002
+aliases: [BR-CONN-002]
 tipo: regra
 titulo: Prompt só ocorre quando nada está configurado e não persiste
 dominio: conexao

@@ -1,6 +1,7 @@
 ---
 tipo: prd
 id: PRD-78
+aliases: [PRD-78]
 status: completed
 titulo: "Ordem aleatória de execução com seed (`a_random_test_order`)"
 versao: "0.13.0"

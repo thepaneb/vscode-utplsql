@@ -1,6 +1,7 @@
 ---
 tipo: prd
 id: PRD-68
+aliases: [PRD-68]
 status: completed
 titulo: "Religar diagnostics e reporter de sessão perdidos na migração Oracle-only"
 versao: "0.12.0"

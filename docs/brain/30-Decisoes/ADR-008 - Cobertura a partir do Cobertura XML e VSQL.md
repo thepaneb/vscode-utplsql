@@ -1,5 +1,7 @@
 ---
 tipo: decisao
+id: ADR-008
+aliases: [ADR-008]
 status: aceita
 modulo: cobertura
 data: 2026-09-23

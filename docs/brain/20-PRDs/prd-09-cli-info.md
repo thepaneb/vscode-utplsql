@@ -1,6 +1,7 @@
 ---
 tipo: prd
 id: PRD-09
+aliases: [PRD-09]
 status: completed
 titulo: "Diagnóstico e validação com `utplsql info`"
 versao: "0.5.0"

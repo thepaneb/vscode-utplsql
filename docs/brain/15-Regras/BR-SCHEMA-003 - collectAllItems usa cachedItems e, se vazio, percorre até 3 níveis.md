@@ -1,5 +1,6 @@
 ---
 id: BR-SCHEMA-003
+aliases: [BR-SCHEMA-003]
 tipo: regra
 titulo: collectAllItems usa cachedItems e, se vazio, percorre até 3 níveis
 dominio: schema

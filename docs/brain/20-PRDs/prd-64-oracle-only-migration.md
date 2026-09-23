@@ -1,6 +1,7 @@
 ---
 tipo: prd
 id: PRD-64
+aliases: [PRD-64]
 status: completed
 titulo: "Migração para Oracle-Only: eliminação do utPLSQL-cli e Java"
 versao: "0.12.0"

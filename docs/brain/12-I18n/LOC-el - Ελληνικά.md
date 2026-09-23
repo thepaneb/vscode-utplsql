@@ -1,5 +1,6 @@
 ---
 id: LOC-el
+aliases: [LOC-el]
 tipo: locale
 titulo: "Ελληνικά"
 codigo: el

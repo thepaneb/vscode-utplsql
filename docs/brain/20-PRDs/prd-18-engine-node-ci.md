@@ -1,6 +1,7 @@
 ---
 tipo: prd
 id: PRD-18
+aliases: [PRD-18]
 status: completed
 titulo: "Alinhamento `engines.node` com CI"
 versao: "0.7.1"

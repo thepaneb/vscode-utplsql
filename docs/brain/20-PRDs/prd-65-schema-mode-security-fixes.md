@@ -1,6 +1,7 @@
 ---
 tipo: prd
 id: PRD-65
+aliases: [PRD-65]
 status: completed
 titulo: "Correções críticas de schema-mode e segurança"
 versao: "0.12.0"

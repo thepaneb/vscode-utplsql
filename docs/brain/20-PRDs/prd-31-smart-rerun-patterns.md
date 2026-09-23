@@ -1,6 +1,7 @@
 ---
 tipo: prd
 id: PRD-31
+aliases: [PRD-31]
 status: completed
 titulo: "Smart Re-run Patterns"
 versao: "0.8.0"

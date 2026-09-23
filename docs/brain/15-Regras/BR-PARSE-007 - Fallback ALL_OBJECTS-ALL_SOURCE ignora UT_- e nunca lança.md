@@ -1,5 +1,6 @@
 ---
 id: BR-PARSE-007
+aliases: [BR-PARSE-007]
 tipo: regra
 titulo: Fallback ALL_OBJECTS/ALL_SOURCE ignora UT_* e nunca lança
 dominio: descoberta

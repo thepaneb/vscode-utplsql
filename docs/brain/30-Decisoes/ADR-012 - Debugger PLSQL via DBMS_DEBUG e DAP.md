@@ -1,5 +1,7 @@
 ---
 tipo: decisao
+id: ADR-012
+aliases: [ADR-012]
 status: aceita
 modulo: debugger
 data: 2026-09-23

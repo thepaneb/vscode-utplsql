@@ -1,5 +1,6 @@
 ---
 id: BR-PARSE-011
+aliases: [BR-PARSE-011]
 tipo: regra
 titulo: Precedência de status JUnit failure > error > skipped > passed
 dominio: resultados

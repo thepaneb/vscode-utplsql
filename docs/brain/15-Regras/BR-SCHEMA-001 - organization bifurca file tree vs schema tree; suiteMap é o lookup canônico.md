@@ -1,5 +1,6 @@
 ---
 id: BR-SCHEMA-001
+aliases: [BR-SCHEMA-001]
 tipo: regra
 titulo: organization bifurca file tree vs schema tree; suiteMap é o lookup canônico
 dominio: schema
@@ -35,5 +36,5 @@ No modo schema as suites ficam 3 níveis abaixo da raiz; comandos como runForUri
 - 🗺️ [[MOC - Regras]]
 - 📄 PRDs: [[prd-30-schema-aware-organization|PRD-30]]
 - 🎯 Requisitos: [[prd-30-schema-aware-organization|PRD-30 RF3]] · [[prd-30-schema-aware-organization|PRD-30 RF4]]
-- ↩️ Referenciada por: [[06-tree-organization]]
+- ↩️ Referenciada por: [[06-tree-organization]] · [[GLOSS-006 - Schema-mode (organização por schema)|GLOSS-006]]
 <!-- brain:auto:end -->

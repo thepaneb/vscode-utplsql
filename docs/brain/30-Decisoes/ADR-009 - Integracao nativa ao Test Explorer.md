@@ -1,5 +1,7 @@
 ---
 tipo: decisao
+id: ADR-009
+aliases: [ADR-009]
 status: aceita
 modulo: ux
 data: 2026-09-23

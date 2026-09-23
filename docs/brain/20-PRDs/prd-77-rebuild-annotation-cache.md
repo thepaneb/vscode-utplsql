@@ -1,6 +1,7 @@
 ---
 tipo: prd
 id: PRD-77
+aliases: [PRD-77]
 status: completed
 titulo: "Reconstruir o cache de anotações do utPLSQL"
 versao: "0.13.0"

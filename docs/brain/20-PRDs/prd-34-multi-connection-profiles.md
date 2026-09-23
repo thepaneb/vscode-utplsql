@@ -1,6 +1,7 @@
 ---
 tipo: prd
 id: PRD-34
+aliases: [PRD-34]
 status: completed
 titulo: "Multi-Connection Profiles"
 versao: "0.12.0"

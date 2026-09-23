@@ -1,5 +1,6 @@
 ---
 id: BR-EXEC-012
+aliases: [BR-EXEC-012]
 tipo: regra
 titulo: Binds tipados - nenhum valor de usuário concatenado no PL/SQL
 dominio: execucao

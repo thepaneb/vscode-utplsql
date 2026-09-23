@@ -1,5 +1,6 @@
 ---
 id: BR-CONN-011
+aliases: [BR-CONN-011]
 tipo: regra
 titulo: Importação do SQL Developer é restrita e tolerante a falhas
 dominio: conexao

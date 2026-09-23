@@ -1,5 +1,6 @@
 ---
 id: PIPE-publish
+aliases: [PIPE-publish]
 tipo: pipeline
 titulo: "Publish Extension"
 arquivo: ".github/workflows/publish.yml"

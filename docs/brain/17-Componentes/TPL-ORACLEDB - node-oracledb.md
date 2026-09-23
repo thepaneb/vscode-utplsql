@@ -1,5 +1,6 @@
 ---
 id: TPL-ORACLEDB
+aliases: [TPL-ORACLEDB]
 tipo: componente-terceiro
 titulo: "node-oracledb"
 dominio: banco
@@ -15,6 +16,7 @@ verificado: 2026-09-23
 implementacao: []
 testes: []
 regras: []
+relacionado: ["[[ADR-001 - Execucao via Oracle direto]]", "[[ADR-011 - Thick mode opt-in e matriz de bancos]]", "[[MOC - Oracle]]"]
 tags: ["banco"]
 ---
 ## Papel
@@ -35,4 +37,5 @@ Acompanhar majors (PRD-46); thick é opcional. Sem alternativa prática para Ora
 
 <!-- brain:auto:start:conexoes -->
 - 🗺️ [[MOC - Componentes]]
+- 🔗 [[ADR-001 - Execucao via Oracle direto]] · [[ADR-011 - Thick mode opt-in e matriz de bancos]] · [[MOC - Oracle]]
 <!-- brain:auto:end -->

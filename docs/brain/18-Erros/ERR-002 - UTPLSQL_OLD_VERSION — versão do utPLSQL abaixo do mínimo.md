@@ -1,5 +1,6 @@
 ---
 id: ERR-002
+aliases: [ERR-002]
 tipo: erro
 titulo: UTPLSQL_OLD_VERSION — versão do utPLSQL abaixo do mínimo
 dominio: setup
@@ -10,7 +11,7 @@ verificado: 2026-09-23
 implementacao: ["src/quickfix.ts:105", "src/oracleRunner.ts:14", "src/discovery.ts:410"]
 testes: ["src/test/unit/discovery.test.ts"]
 regras: ["BR-PARSE-008"]
-tags: ["erro", "setup"]
+tags: [erros, setup]
 ---
 ## Sintoma
 

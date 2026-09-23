@@ -1,5 +1,6 @@
 ---
 id: BR-CONN-003
+aliases: [BR-CONN-003]
 tipo: regra
 titulo: Limpar conexão de sessão reseta o context key
 dominio: conexao

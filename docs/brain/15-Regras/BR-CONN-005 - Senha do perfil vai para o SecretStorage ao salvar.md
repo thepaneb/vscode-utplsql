@@ -1,5 +1,6 @@
 ---
 id: BR-CONN-005
+aliases: [BR-CONN-005]
 tipo: regra
 titulo: Senha do perfil vai para o SecretStorage ao salvar
 dominio: conexao
@@ -35,5 +36,5 @@ Impedir senha Oracle em texto plano nas settings sincronizadas (keychain nativa 
 - 🗺️ [[MOC - Regras]]
 - 📄 PRDs: [[prd-34-multi-connection-profiles|PRD-34]] · [[prd-65-schema-mode-security-fixes|PRD-65]]
 - 🎯 Requisitos: [[prd-34-multi-connection-profiles|PRD-34 RF1]] · [[prd-65-schema-mode-security-fixes|PRD-65 RF3]]
-- ↩️ Referenciada por: [[09-configuration]] · [[SEC-001 - Senha Oracle nunca é gravada em settings|SEC-001]]
+- ↩️ Referenciada por: [[09-configuration]] · [[SEC-001 - Senha Oracle nunca é gravada em settings|SEC-001]] · [[SEC-004 - Segredos locais ficam fora do controle de versão|SEC-004]]
 <!-- brain:auto:end -->

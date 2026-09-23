@@ -1,6 +1,7 @@
 ---
 tipo: prd
 id: PRD-05
+aliases: [PRD-05]
 status: completed
 titulo: "Feedback de progresso e cancelamento na UX"
 versao: "0.5.0"

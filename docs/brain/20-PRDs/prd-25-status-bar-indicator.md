@@ -1,6 +1,7 @@
 ---
 tipo: prd
 id: PRD-25
+aliases: [PRD-25]
 status: completed
 titulo: "Status Bar Indicator"
 versao: "0.8.0"

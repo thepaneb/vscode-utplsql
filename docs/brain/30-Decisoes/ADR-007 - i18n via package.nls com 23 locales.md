@@ -1,9 +1,11 @@
 ---
 tipo: decisao
+id: ADR-007
+aliases: [ADR-007]
 status: aceita
 modulo: i18n
 data: 2026-09-23
-tags: [adr, i18n, nls, locales]
+tags: [adr, i18n, nls, locale]
 ---
 
 # ADR-007 - i18n via package.nls com 23 locales

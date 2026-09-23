@@ -1,6 +1,7 @@
 ---
 tipo: prd
 id: PRD-21
+aliases: [PRD-21]
 status: completed
 titulo: "Melhorias nos workflows CI/CD"
 versao: "0.11.0"

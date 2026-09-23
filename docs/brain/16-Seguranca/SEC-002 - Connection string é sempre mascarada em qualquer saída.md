@@ -1,5 +1,6 @@
 ---
 id: SEC-002
+aliases: [SEC-002]
 tipo: seguranca
 titulo: Connection string é sempre mascarada em qualquer saída
 dominio: segredos

@@ -1,5 +1,6 @@
 ---
 id: SEC-006
+aliases: [SEC-006]
 tipo: seguranca
 titulo: Nome de reporter é sanitizado antes de ir ao PL/SQL
 dominio: injecao

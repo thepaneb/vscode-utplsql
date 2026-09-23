@@ -1,5 +1,6 @@
 ---
 id: ERR-011
+aliases: [ERR-011]
 tipo: erro
 titulo: Fonte de package truncada (>10.000 linhas)
 dominio: descoberta
@@ -10,7 +11,7 @@ verificado: 2026-09-23
 implementacao: ["src/discovery.ts:199"]
 testes: ["src/test/unit/discovery.test.ts"]
 regras: ["BR-PARSE-007", "BR-PARSE-008"]
-tags: ["erro", "descoberta"]
+tags: [erros, descoberta]
 ---
 ## Sintoma
 

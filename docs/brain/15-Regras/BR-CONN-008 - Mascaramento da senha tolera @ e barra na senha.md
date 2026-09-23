@@ -1,5 +1,6 @@
 ---
 id: BR-CONN-008
+aliases: [BR-CONN-008]
 tipo: regra
 titulo: Mascaramento da senha tolera @ e barra na senha
 dominio: conexao

@@ -1,5 +1,6 @@
 ---
 id: BR-CONN-006
+aliases: [BR-CONN-006]
 tipo: regra
 titulo: Recomposição da conexão usa cache/secret e preserva perfil legado
 dominio: conexao

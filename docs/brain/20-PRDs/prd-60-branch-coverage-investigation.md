@@ -1,6 +1,7 @@
 ---
 tipo: prd
 id: PRD-60
+aliases: [PRD-60]
 status: proposed
 titulo: "Cobertura de branch (investigação de viabilidade)"
 versao: "Investigação — sem versão alvo"

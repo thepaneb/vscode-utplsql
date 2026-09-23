@@ -1,5 +1,6 @@
 ---
 id: SEC-001
+aliases: [SEC-001]
 tipo: seguranca
 titulo: Senha Oracle nunca é gravada em settings
 dominio: segredos

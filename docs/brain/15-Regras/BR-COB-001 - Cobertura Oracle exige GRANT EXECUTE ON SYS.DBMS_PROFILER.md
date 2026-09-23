@@ -1,5 +1,6 @@
 ---
 id: BR-COB-001
+aliases: [BR-COB-001]
 tipo: regra
 titulo: Cobertura Oracle exige GRANT EXECUTE ON SYS.DBMS_PROFILER
 dominio: cobertura

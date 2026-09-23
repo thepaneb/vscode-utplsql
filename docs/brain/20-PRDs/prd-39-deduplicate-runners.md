@@ -1,6 +1,7 @@
 ---
 tipo: prd
 id: PRD-39
+aliases: [PRD-39]
 status: completed
 titulo: "Eliminar código duplicado entre runner.ts e oracleRunner.ts"
 versao: "0.10.0"

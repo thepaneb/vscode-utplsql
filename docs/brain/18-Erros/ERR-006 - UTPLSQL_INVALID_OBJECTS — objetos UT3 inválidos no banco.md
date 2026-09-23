@@ -1,5 +1,6 @@
 ---
 id: ERR-006
+aliases: [ERR-006]
 tipo: erro
 titulo: UTPLSQL_INVALID_OBJECTS — objetos UT3 inválidos no banco
 dominio: setup
@@ -10,7 +11,7 @@ verificado: 2026-09-23
 implementacao: ["src/quickfix.ts:190", "src/quickfix.ts:236"]
 testes: []
 regras: ["BR-UI-007"]
-tags: ["erro", "setup"]
+tags: [erros, setup]
 ---
 ## Sintoma
 

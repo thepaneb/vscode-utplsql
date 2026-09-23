@@ -1,5 +1,6 @@
 ---
 id: NFR-008
+aliases: [NFR-008]
 tipo: nfr
 titulo: "Multi-root workspace"
 dominio: compatibilidade

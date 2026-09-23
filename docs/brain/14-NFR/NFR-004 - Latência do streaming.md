@@ -1,5 +1,6 @@
 ---
 id: NFR-004
+aliases: [NFR-004]
 tipo: nfr
 titulo: "Latência do streaming"
 dominio: desempenho

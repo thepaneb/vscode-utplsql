@@ -1,5 +1,6 @@
 ---
 id: BR-PARSE-012
+aliases: [BR-PARSE-012]
 tipo: regra
 titulo: Stack trace - regex quoted/unquoted e filtro de frames do framework
 dominio: resultados

@@ -1,6 +1,7 @@
 ---
 tipo: moc
 status: ativo
+verificado: 2026-09-23
 tags: [moc, stack, dependencias]
 ---
 
@@ -65,3 +66,11 @@ FROM "11-Stack"
 WHERE tipo = "pipeline"
 SORT id ASC
 ```
+
+## Índice (links)
+
+<!-- brain:auto:start:moc-index -->
+- [[PIPE-ci - CI]] — `PIPE-ci`
+- [[PIPE-publish - Publish Extension]] — `PIPE-publish`
+- [[PIPE-wiki - Publish Wiki]] — `PIPE-wiki`
+<!-- brain:auto:end -->

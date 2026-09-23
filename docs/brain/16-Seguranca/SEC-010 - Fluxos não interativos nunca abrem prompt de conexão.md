@@ -1,5 +1,6 @@
 ---
 id: SEC-010
+aliases: [SEC-010]
 tipo: seguranca
 titulo: Fluxos não interativos nunca abrem prompt de conexão
 dominio: disponibilidade

@@ -1,5 +1,6 @@
 ---
 id: LOC-zh-tw
+aliases: [LOC-zh-tw]
 tipo: locale
 titulo: "中文(繁體)"
 codigo: zh-tw

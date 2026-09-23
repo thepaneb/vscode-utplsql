@@ -1,6 +1,7 @@
 ---
 tipo: prd
 id: PRD-06
+aliases: [PRD-06]
 status: completed
 titulo: "Suporte a múltiplos workspace folders"
 versao: "0.5.0"

@@ -1,5 +1,6 @@
 ---
 id: BR-UI-008
+aliases: [BR-UI-008]
 tipo: regra
 titulo: Diagnósticos de compilação mapeiam ALL_ERRORS e usam source utPLSQL Compilation
 dominio: diagnostico

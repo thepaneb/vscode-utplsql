@@ -1,5 +1,6 @@
 ---
 id: PAT-001
+aliases: [PAT-001]
 tipo: padrao
 titulo: "Módulos puros vs dependentes de vscode"
 dominio: arquitetural
@@ -9,6 +10,7 @@ verificado: 2026-09-23
 implementacao: []
 testes: []
 regras: []
+relacionado: ["[[ADR-006 - Modulos puros vs dependentes de vscode]]", "[[10-development-tooling]]"]
 tags: ["arquitetural"]
 ---
 ## Intenção
@@ -33,4 +35,5 @@ cobertos por teste de integração ou pelo stub.
 
 <!-- brain:auto:start:conexoes -->
 - 🗺️ [[MOC - Padroes]]
+- 🔗 [[ADR-006 - Modulos puros vs dependentes de vscode]] · [[10-development-tooling]]
 <!-- brain:auto:end -->

@@ -1,5 +1,6 @@
 ---
 id: PIPE-wiki
+aliases: [PIPE-wiki]
 tipo: pipeline
 titulo: "Publish Wiki"
 arquivo: ".github/workflows/wiki.yml"

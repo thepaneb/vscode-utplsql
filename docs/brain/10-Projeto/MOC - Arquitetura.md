@@ -1,6 +1,7 @@
 ---
 tipo: moc
 status: ativo
+verificado: 2026-09-23
 modulo: core
 tags: [moc, arquitetura]
 ---

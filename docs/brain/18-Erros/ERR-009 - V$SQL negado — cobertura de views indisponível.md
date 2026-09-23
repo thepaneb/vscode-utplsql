@@ -1,5 +1,6 @@
 ---
 id: ERR-009
+aliases: [ERR-009]
 tipo: erro
 titulo: V$SQL negado — cobertura de views indisponível
 dominio: cobertura
@@ -10,7 +11,7 @@ verificado: 2026-09-23
 implementacao: ["src/viewCoverage.ts:122", "src/viewCoverage.ts:93"]
 testes: ["src/test/unit/viewCoverage.test.ts"]
 regras: ["BR-COB-003"]
-tags: ["erro", "cobertura"]
+tags: [erros, cobertura]
 ---
 ## Sintoma
 

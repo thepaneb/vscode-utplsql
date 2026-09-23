@@ -1,6 +1,7 @@
 ---
 tipo: prd
 id: PRD-73
+aliases: [PRD-73]
 status: completed
 titulo: "Compilar objeto para debug (comando + menus)"
 versao: "0.12.1"

@@ -1,6 +1,7 @@
 ---
 tipo: prd
 id: PRD-47
+aliases: [PRD-47]
 status: approved
 titulo: "Node 26 no toolchain de desenvolvimento"
 versao: "0.14.0"

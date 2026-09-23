@@ -1,5 +1,6 @@
 ---
 id: BR-PARSE-010
+aliases: [BR-PARSE-010]
 tipo: regra
 titulo: Fusão arquivo+banco - arquivo prevalece em uri/linha, banco em descrição/tags
 dominio: descoberta

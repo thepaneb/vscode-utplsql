@@ -1,5 +1,6 @@
 ---
 id: SEC-009
+aliases: [SEC-009]
 tipo: seguranca
 titulo: Grants são copiados para o clipboard, nunca executados automaticamente
 dominio: privilegio

@@ -1,6 +1,7 @@
 ---
 tipo: prd
 id: PRD-03
+aliases: [PRD-03]
 status: completed
 titulo: "Pipeline CI + Linter"
 versao: "0.4.0"

@@ -1,5 +1,6 @@
 ---
 id: LOC-ru
+aliases: [LOC-ru]
 tipo: locale
 titulo: "Русский"
 codigo: ru

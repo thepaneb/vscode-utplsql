@@ -1,5 +1,7 @@
 ---
 tipo: decisao
+id: ADR-010
+aliases: [ADR-010]
 status: aceita
 modulo: conexao
 data: 2026-09-23

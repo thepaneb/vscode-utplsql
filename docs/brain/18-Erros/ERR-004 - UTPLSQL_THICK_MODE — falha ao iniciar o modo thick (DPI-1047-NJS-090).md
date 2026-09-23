@@ -1,5 +1,6 @@
 ---
 id: ERR-004
+aliases: [ERR-004]
 tipo: erro
 titulo: UTPLSQL_THICK_MODE — falha ao iniciar o modo thick (DPI-1047/NJS-090)
 dominio: conexao
@@ -10,7 +11,7 @@ verificado: 2026-09-23
 implementacao: ["src/quickfix.ts:51", "src/oracleClient.ts:34", "src/oracleClient.ts:73"]
 testes: ["src/test/unit/oracleClient.test.ts"]
 regras: ["BR-CONN-012"]
-tags: ["erro", "conexao"]
+tags: [erros, conexao]
 ---
 ## Sintoma
 

@@ -1,5 +1,6 @@
 ---
 id: BR-CONN-013
+aliases: [BR-CONN-013]
 tipo: regra
 titulo: Parsing da connection string tolera @ e barra na senha
 dominio: conexao

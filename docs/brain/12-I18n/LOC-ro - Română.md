@@ -1,5 +1,6 @@
 ---
 id: LOC-ro
+aliases: [LOC-ro]
 tipo: locale
 titulo: "Română"
 codigo: ro

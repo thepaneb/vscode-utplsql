@@ -1,6 +1,7 @@
 ---
 tipo: prd
 id: PRD-67
+aliases: [PRD-67]
 status: completed
 titulo: "Qualidade, limpeza e performance"
 versao: "0.12.0"

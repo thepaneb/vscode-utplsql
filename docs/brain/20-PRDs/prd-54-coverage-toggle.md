@@ -1,6 +1,7 @@
 ---
 tipo: prd
 id: PRD-54
+aliases: [PRD-54]
 status: proposed
 titulo: "Toggle de cobertura na status bar"
 versao: "0.15.0"

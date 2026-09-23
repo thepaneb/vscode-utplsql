@@ -1,6 +1,7 @@
 ---
 tipo: prd
 id: PRD-27
+aliases: [PRD-27]
 status: completed
 titulo: "Default Keybindings"
 versao: "0.8.0"

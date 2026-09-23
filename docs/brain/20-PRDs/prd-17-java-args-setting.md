@@ -1,6 +1,7 @@
 ---
 tipo: prd
 id: PRD-17
+aliases: [PRD-17]
 status: completed
 titulo: "Flags JVM customizáveis para o modo `java`"
 versao: "0.9.0"

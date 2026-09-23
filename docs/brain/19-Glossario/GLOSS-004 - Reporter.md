@@ -1,5 +1,6 @@
 ---
 id: GLOSS-004
+aliases: [GLOSS-004]
 tipo: glossario
 titulo: "Reporter"
 dominio: utplsql
@@ -7,7 +8,8 @@ status: ativo
 verificado: 2026-09-23
 implementacao: []
 testes: []
-regras: []
+regras: ["BR-EXEC-006"]
+relacionado: ["[[03-results-and-reporting]]"]
 tags: ["utplsql"]
 ---
 ## Definição
@@ -23,4 +25,6 @@ A extensão lê todos da mesma `UT_OUTPUT_BUFFER_TMP`.
 
 <!-- brain:auto:start:conexoes -->
 - 🗺️ [[MOC - Glossario]]
+- 📐 Regras: [[BR-EXEC-006 - Reporters gravam na mesma UT_OUTPUT_BUFFER_TMP; CLOB não é usada|BR-EXEC-006]]
+- 🔗 [[03-results-and-reporting]]
 <!-- brain:auto:end -->

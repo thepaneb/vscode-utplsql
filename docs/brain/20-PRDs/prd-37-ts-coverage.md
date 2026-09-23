@@ -1,6 +1,7 @@
 ---
 tipo: prd
 id: PRD-37
+aliases: [PRD-37]
 status: completed
 titulo: "Cobertura de código TypeScript com `c8`"
 versao: "0.9.0"

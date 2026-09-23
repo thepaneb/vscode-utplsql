@@ -1,5 +1,6 @@
 ---
 id: LOC-en
+aliases: [LOC-en]
 tipo: locale
 titulo: "English"
 codigo: en

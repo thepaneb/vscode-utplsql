@@ -1,5 +1,6 @@
 ---
 id: BR-UI-002
+aliases: [BR-UI-002]
 tipo: regra
 titulo: utplsql:running liga no início e desliga em todos os caminhos de saída
 dominio: ui

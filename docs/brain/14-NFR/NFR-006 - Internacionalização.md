@@ -1,5 +1,6 @@
 ---
 id: NFR-006
+aliases: [NFR-006]
 tipo: nfr
 titulo: "Internacionalização"
 dominio: i18n

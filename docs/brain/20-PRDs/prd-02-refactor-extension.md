@@ -1,6 +1,7 @@
 ---
 tipo: prd
 id: PRD-02
+aliases: [PRD-02]
 status: completed
 titulo: "Refatoração de `extension.ts`"
 versao: "0.4.0"

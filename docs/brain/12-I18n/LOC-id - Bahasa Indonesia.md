@@ -1,5 +1,6 @@
 ---
 id: LOC-id
+aliases: [LOC-id]
 tipo: locale
 titulo: "Bahasa Indonesia"
 codigo: id

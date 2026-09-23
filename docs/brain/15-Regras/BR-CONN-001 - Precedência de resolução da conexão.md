@@ -1,5 +1,6 @@
 ---
 id: BR-CONN-001
+aliases: [BR-CONN-001]
 tipo: regra
 titulo: Precedência de resolução da conexão
 dominio: conexao

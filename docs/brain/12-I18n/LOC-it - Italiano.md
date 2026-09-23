@@ -1,5 +1,6 @@
 ---
 id: LOC-it
+aliases: [LOC-it]
 tipo: locale
 titulo: "Italiano"
 codigo: it

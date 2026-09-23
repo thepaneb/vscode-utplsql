@@ -1,5 +1,6 @@
 ---
 id: LOC-ko
+aliases: [LOC-ko]
 tipo: locale
 titulo: "한국어"
 codigo: ko

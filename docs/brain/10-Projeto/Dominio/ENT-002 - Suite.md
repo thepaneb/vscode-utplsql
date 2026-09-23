@@ -1,5 +1,6 @@
 ---
 id: ENT-002
+aliases: [ENT-002]
 tipo: entidade
 titulo: "Suite"
 dominio: descoberta
@@ -8,6 +9,7 @@ verificado: 2026-09-23
 implementacao: []
 testes: []
 regras: []
+relacionado: ["[[GLOSS-001 - Suite]]", "[[01-test-discovery]]"]
 tags: ["descoberta"]
 ---
 ## Definição
@@ -27,4 +29,5 @@ packageName, description, tags, fileUri/range, testes.
 
 <!-- brain:auto:start:conexoes -->
 - 🗺️ [[MOC - Dominio]]
+- 🔗 [[GLOSS-001 - Suite]] · [[01-test-discovery]]
 <!-- brain:auto:end -->

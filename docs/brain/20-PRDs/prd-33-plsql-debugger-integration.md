@@ -1,6 +1,7 @@
 ---
 tipo: prd
 id: PRD-33
+aliases: [PRD-33]
 status: completed
 titulo: "PL/SQL Debugger Integration"
 versao: "0.12.0"

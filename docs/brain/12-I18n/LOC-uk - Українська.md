@@ -1,5 +1,6 @@
 ---
 id: LOC-uk
+aliases: [LOC-uk]
 tipo: locale
 titulo: "Українська"
 codigo: uk

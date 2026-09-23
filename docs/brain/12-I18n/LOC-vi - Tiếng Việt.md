@@ -1,5 +1,6 @@
 ---
 id: LOC-vi
+aliases: [LOC-vi]
 tipo: locale
 titulo: "Tiếng Việt"
 codigo: vi

@@ -1,5 +1,6 @@
 ---
 id: LOC-sr
+aliases: [LOC-sr]
 tipo: locale
 titulo: "Српски"
 codigo: sr

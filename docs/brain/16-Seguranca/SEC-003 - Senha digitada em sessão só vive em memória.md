@@ -1,5 +1,6 @@
 ---
 id: SEC-003
+aliases: [SEC-003]
 tipo: seguranca
 titulo: Senha digitada em sessão só vive em memória
 dominio: segredos

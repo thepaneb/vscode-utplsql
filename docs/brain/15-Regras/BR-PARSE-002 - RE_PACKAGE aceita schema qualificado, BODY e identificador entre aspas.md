@@ -1,5 +1,6 @@
 ---
 id: BR-PARSE-002
+aliases: [BR-PARSE-002]
 tipo: regra
 titulo: RE_PACKAGE aceita schema qualificado, BODY e identificador entre aspas
 dominio: parser

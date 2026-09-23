@@ -1,5 +1,6 @@
 ---
 id: PAT-004
+aliases: [PAT-004]
 tipo: padrao
 titulo: "Streaming por poll incremental de buffer"
 dominio: streaming
@@ -9,6 +10,7 @@ verificado: 2026-09-23
 implementacao: []
 testes: []
 regras: []
+relacionado: ["[[ADR-001 - Execucao via Oracle direto]]", "[[02-test-execution]]"]
 tags: ["streaming"]
 ---
 ## Intenção
@@ -31,4 +33,5 @@ para output de documentação ou para o buffer XML.
 
 <!-- brain:auto:start:conexoes -->
 - 🗺️ [[MOC - Padroes]]
+- 🔗 [[ADR-001 - Execucao via Oracle direto]] · [[02-test-execution]]
 <!-- brain:auto:end -->

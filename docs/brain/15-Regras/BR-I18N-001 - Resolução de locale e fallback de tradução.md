@@ -1,5 +1,6 @@
 ---
 id: BR-I18N-001
+aliases: [BR-I18N-001]
 tipo: regra
 titulo: Resolução de locale e fallback de tradução
 dominio: i18n

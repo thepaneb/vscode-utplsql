@@ -1,5 +1,6 @@
 ---
 id: LOC-pt-br
+aliases: [LOC-pt-br]
 tipo: locale
 titulo: "Português (Brasil)"
 codigo: pt-br

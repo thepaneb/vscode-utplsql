@@ -1,5 +1,6 @@
 ---
 id: BR-UI-001
+aliases: [BR-UI-001]
 tipo: regra
 titulo: Context key utplsql:activated é setado na ativação
 dominio: ui

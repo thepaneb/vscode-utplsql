@@ -1,5 +1,6 @@
 ---
 id: NFR-003
+aliases: [NFR-003]
 tipo: nfr
 titulo: "Compatibilidade com VSCode"
 dominio: compatibilidade

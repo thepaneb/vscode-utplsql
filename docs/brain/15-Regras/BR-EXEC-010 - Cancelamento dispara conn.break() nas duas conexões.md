@@ -1,5 +1,6 @@
 ---
 id: BR-EXEC-010
+aliases: [BR-EXEC-010]
 tipo: regra
 titulo: Cancelamento dispara conn.break() nas duas conexões
 dominio: execucao

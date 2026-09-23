@@ -1,5 +1,6 @@
 ---
 id: NFR-005
+aliases: [NFR-005]
 tipo: nfr
 titulo: "Cancelamento e timeout"
 dominio: confiabilidade

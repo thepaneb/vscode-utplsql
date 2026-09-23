@@ -1,6 +1,7 @@
 ---
 tipo: prd
 id: PRD-16
+aliases: [PRD-16]
 status: completed
 titulo: "Testes de integração para ambos os modos de invocação"
 versao: "0.6.0"

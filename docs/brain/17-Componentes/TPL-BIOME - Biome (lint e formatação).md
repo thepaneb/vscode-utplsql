@@ -1,5 +1,6 @@
 ---
 id: TPL-BIOME
+aliases: [TPL-BIOME]
 tipo: componente-terceiro
 titulo: "Biome (lint e formatação)"
 dominio: tooling
@@ -14,6 +15,7 @@ verificado: 2026-09-23
 implementacao: []
 testes: []
 regras: []
+relacionado: ["[[MOC - Stack]]", "[[ADR-004 - Bundling com esbuild e higiene do VSIX]]"]
 tags: ["tooling"]
 ---
 ## Papel
@@ -33,4 +35,5 @@ Config em `biome.json`; alternativas: ESLint+Prettier (mais pesadas).
 
 <!-- brain:auto:start:conexoes -->
 - 🗺️ [[MOC - Componentes]]
+- 🔗 [[MOC - Stack]] · [[ADR-004 - Bundling com esbuild e higiene do VSIX]]
 <!-- brain:auto:end -->

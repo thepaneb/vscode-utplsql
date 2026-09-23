@@ -1,5 +1,6 @@
 ---
 id: TPL-UTPLSQL
+aliases: [TPL-UTPLSQL]
 tipo: componente-terceiro
 titulo: "utPLSQL (framework no banco)"
 dominio: banco
@@ -13,6 +14,7 @@ verificado: 2026-09-23
 implementacao: []
 testes: []
 regras: []
+relacionado: ["[[ADR-001 - Execucao via Oracle direto]]", "[[MOC - Oracle]]"]
 tags: ["banco"]
 ---
 ## Papel
@@ -33,4 +35,5 @@ Sem alternativa; degradar para fallback `ALL_OBJECTS/ALL_SOURCE` em versões ant
 
 <!-- brain:auto:start:conexoes -->
 - 🗺️ [[MOC - Componentes]]
+- 🔗 [[ADR-001 - Execucao via Oracle direto]] · [[MOC - Oracle]]
 <!-- brain:auto:end -->

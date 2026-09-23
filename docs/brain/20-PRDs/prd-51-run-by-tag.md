@@ -1,6 +1,7 @@
 ---
 tipo: prd
 id: PRD-51
+aliases: [PRD-51]
 status: proposed
 titulo: "Execução e seleção por Tag (`%tags`)"
 versao: "0.15.0"

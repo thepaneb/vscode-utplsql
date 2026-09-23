@@ -1,6 +1,7 @@
 ---
 tipo: prd
 id: PRD-44
+aliases: [PRD-44]
 status: completed
 titulo: "Extrair matching resultado→teste para funções puras testáveis"
 versao: "0.11.0"

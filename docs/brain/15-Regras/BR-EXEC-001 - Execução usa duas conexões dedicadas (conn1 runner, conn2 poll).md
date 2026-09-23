@@ -1,5 +1,6 @@
 ---
 id: BR-EXEC-001
+aliases: [BR-EXEC-001]
 tipo: regra
 titulo: Execução usa duas conexões dedicadas (conn1 runner, conn2 poll)
 dominio: execucao
@@ -35,5 +36,5 @@ O ut_runner.run bloqueia a sessão até o fim dos testes; uma segunda sessão é
 - 🗺️ [[MOC - Regras]]
 - 📄 PRDs: [[prd-11-streaming-results|PRD-11]]
 - 🎯 Requisitos: [[prd-11-streaming-results|PRD-11 RF3]]
-- ↩️ Referenciada por: [[02-test-execution]]
+- ↩️ Referenciada por: [[02-test-execution]] · [[ENT-001 - Run|ENT-001]]
 <!-- brain:auto:end -->

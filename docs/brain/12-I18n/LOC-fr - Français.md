@@ -1,5 +1,6 @@
 ---
 id: LOC-fr
+aliases: [LOC-fr]
 tipo: locale
 titulo: "Français"
 codigo: fr

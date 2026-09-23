@@ -1,6 +1,7 @@
 ---
 tipo: prd
 id: PRD-71
+aliases: [PRD-71]
 status: completed
 titulo: "Corrigir o debugger para o DBMS_DEBUG real"
 versao: "0.12.1"

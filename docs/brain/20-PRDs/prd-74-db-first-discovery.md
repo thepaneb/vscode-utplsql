@@ -1,6 +1,7 @@
 ---
 tipo: prd
 id: PRD-74
+aliases: [PRD-74]
 status: completed
 titulo: "Descoberta de suítes direto do banco (`ut_runner.get_suites_info`)"
 versao: "0.13.0"

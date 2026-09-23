@@ -1,6 +1,7 @@
 ---
 tipo: prd
 id: PRD-26
+aliases: [PRD-26]
 status: completed
 titulo: "Inline Test Result Decorations"
 versao: "0.8.0"

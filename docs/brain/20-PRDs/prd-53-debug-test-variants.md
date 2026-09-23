@@ -1,6 +1,7 @@
 ---
 tipo: prd
 id: PRD-53
+aliases: [PRD-53]
 status: proposed
 titulo: "Debug de testes: variações (cursor, falhos, último)"
 versao: "0.15.0"

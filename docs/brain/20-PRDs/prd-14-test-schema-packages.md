@@ -1,6 +1,7 @@
 ---
 tipo: prd
 id: PRD-14
+aliases: [PRD-14]
 status: completed
 titulo: "Schema e objetos de teste utPLSQL"
 versao: "0.6.0"

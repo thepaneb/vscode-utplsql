@@ -1,5 +1,6 @@
 ---
 id: NFR-001
+aliases: [NFR-001]
 tipo: nfr
 titulo: "Compatibilidade com Oracle e piso do utPLSQL"
 dominio: compatibilidade

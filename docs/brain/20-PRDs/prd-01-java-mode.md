@@ -1,6 +1,7 @@
 ---
 tipo: prd
 id: PRD-01
+aliases: [PRD-01]
 status: completed
 titulo: "Modo de invocação `java` (bypass do launcher)"
 versao: "0.3.0"

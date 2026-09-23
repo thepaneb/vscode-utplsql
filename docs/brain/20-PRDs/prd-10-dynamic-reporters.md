@@ -1,6 +1,7 @@
 ---
 tipo: prd
 id: PRD-10
+aliases: [PRD-10]
 status: completed
 titulo: "Reporters dinâmicos com `utplsql reporters`"
 versao: "0.7.0"

@@ -1,5 +1,6 @@
 ---
 id: LOC-hu
+aliases: [LOC-hu]
 tipo: locale
 titulo: "Magyar"
 codigo: hu

@@ -1,6 +1,7 @@
 ---
 tipo: prd
 id: PRD-59
+aliases: [PRD-59]
 status: proposed
 titulo: "Scaffold de suíte de teste"
 versao: "0.16.0"

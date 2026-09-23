@@ -1,6 +1,7 @@
 ---
 tipo: prd
 id: PRD-20
+aliases: [PRD-20]
 status: completed
 titulo: "Limpeza de dependências e configurações"
 versao: "0.7.1"

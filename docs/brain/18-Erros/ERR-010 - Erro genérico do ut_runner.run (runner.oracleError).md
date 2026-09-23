@@ -1,5 +1,6 @@
 ---
 id: ERR-010
+aliases: [ERR-010]
 tipo: erro
 titulo: Erro genérico do ut_runner.run (runner.oracleError)
 dominio: execucao
@@ -10,7 +11,7 @@ verificado: 2026-09-23
 implementacao: ["src/runner.ts", "src/oracleRunner.ts:785"]
 testes: ["src/test/unit/runner.test.ts"]
 regras: ["BR-EXEC-009"]
-tags: ["erro", "execucao"]
+tags: [erros, execucao]
 ---
 ## Sintoma
 

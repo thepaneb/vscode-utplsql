@@ -1,5 +1,6 @@
 ---
 id: LOC-cs
+aliases: [LOC-cs]
 tipo: locale
 titulo: "Čeština"
 codigo: cs

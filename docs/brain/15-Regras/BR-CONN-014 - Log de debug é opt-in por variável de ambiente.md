@@ -1,5 +1,6 @@
 ---
 id: BR-CONN-014
+aliases: [BR-CONN-014]
 tipo: regra
 titulo: Log de debug é opt-in por variável de ambiente
 dominio: conexao

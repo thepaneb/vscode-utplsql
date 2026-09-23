@@ -1,5 +1,6 @@
 ---
 id: ERR-001
+aliases: [ERR-001]
 tipo: erro
 titulo: ORA-00942 — objeto utPLSQL inacessível (shared install sem grants)
 dominio: conexao
@@ -10,7 +11,7 @@ verificado: 2026-09-23
 implementacao: ["src/discovery.ts:189", "src/quickfix.ts:91"]
 testes: []
 regras: ["BR-PARSE-007"]
-tags: ["erro", "conexao"]
+tags: [erros, conexao]
 ---
 ## Sintoma
 

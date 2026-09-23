@@ -1,5 +1,6 @@
 ---
 id: BR-PARSE-013
+aliases: [BR-PARSE-013]
 tipo: regra
 titulo: Mapeamento resultado para teste por lastSegment+name/description com fallback
 dominio: resultados

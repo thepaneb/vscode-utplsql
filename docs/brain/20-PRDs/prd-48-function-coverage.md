@@ -1,6 +1,7 @@
 ---
 tipo: prd
 id: PRD-48
+aliases: [PRD-48]
 status: completed
 titulo: "Function Coverage derivada (DeclarationCoverage no Test Coverage)"
 versao: "0.12.0"

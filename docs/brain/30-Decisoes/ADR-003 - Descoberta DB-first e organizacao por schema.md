@@ -1,5 +1,7 @@
 ---
 tipo: decisao
+id: ADR-003
+aliases: [ADR-003]
 status: aceita
 modulo: descoberta
 data: 2026-09-23

@@ -1,6 +1,7 @@
 ---
 tipo: prd
 id: PRD-50
+aliases: [PRD-50]
 status: proposed
 titulo: "Auto-run on Save (Watch Mode)"
 versao: "0.15.0"

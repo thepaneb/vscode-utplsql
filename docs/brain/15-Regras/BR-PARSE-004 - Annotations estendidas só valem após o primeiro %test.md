@@ -1,5 +1,6 @@
 ---
 id: BR-PARSE-004
+aliases: [BR-PARSE-004]
 tipo: regra
 titulo: Annotations estendidas só valem após o primeiro %test
 dominio: parser
@@ -35,5 +36,5 @@ Retrocompatibilidade do PRD-42: a mesma annotation tem semântica posicional dif
 - 🗺️ [[MOC - Regras]]
 - 📄 PRDs: [[prd-42-suiteparser-annotations|PRD-42]]
 - 🎯 Requisitos: [[prd-42-suiteparser-annotations|PRD-42 RF1]]
-- ↩️ Referenciada por: [[01-test-discovery]]
+- ↩️ Referenciada por: [[01-test-discovery]] · [[GLOSS-003 - Annotation utPLSQL|GLOSS-003]]
 <!-- brain:auto:end -->

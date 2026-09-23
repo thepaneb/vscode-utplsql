@@ -1,6 +1,7 @@
 ---
 tipo: prd
 id: PRD-04
+aliases: [PRD-04]
 status: completed
 titulo: "Expansão da cobertura de testes"
 versao: "0.4.0"

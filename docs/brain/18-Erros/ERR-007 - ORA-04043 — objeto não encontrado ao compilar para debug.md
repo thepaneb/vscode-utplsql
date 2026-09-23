@@ -1,5 +1,6 @@
 ---
 id: ERR-007
+aliases: [ERR-007]
 tipo: erro
 titulo: ORA-04043 — objeto não encontrado ao compilar para debug
 dominio: debug
@@ -10,7 +11,8 @@ verificado: 2026-09-23
 implementacao: ["src/compileForDebug.ts:70"]
 testes: []
 regras: []
-tags: ["erro", "debug"]
+relacionado: ["[[ADR-012 - Debugger PLSQL via DBMS_DEBUG e DAP]]", "[[11-debugger]]"]
+tags: [erros, debug]
 ---
 ## Sintoma
 
@@ -28,4 +30,5 @@ Compilar/instalar o package no banco antes de depurar; a extensão detecta ORA-0
 
 <!-- brain:auto:start:conexoes -->
 - 🗺️ [[MOC - Erros]]
+- 🔗 [[ADR-012 - Debugger PLSQL via DBMS_DEBUG e DAP]] · [[11-debugger]]
 <!-- brain:auto:end -->

@@ -1,5 +1,6 @@
 ---
 id: TPL-ESBUILD
+aliases: [TPL-ESBUILD]
 tipo: componente-terceiro
 titulo: "esbuild (bundling do VSIX)"
 dominio: build
@@ -14,6 +15,7 @@ verificado: 2026-09-23
 implementacao: []
 testes: []
 regras: []
+relacionado: ["[[ADR-004 - Bundling com esbuild e higiene do VSIX]]"]
 tags: ["build"]
 ---
 ## Papel
@@ -34,4 +36,5 @@ Config em `esbuild.config.mjs`.
 
 <!-- brain:auto:start:conexoes -->
 - 🗺️ [[MOC - Componentes]]
+- 🔗 [[ADR-004 - Bundling com esbuild e higiene do VSIX]]
 <!-- brain:auto:end -->

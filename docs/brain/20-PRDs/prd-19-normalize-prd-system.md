@@ -1,6 +1,7 @@
 ---
 tipo: prd
 id: PRD-19
+aliases: [PRD-19]
 status: completed
 titulo: "Normalização do sistema de PRDs"
 versao: "0.7.1"

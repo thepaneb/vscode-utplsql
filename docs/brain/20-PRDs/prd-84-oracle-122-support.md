@@ -1,6 +1,7 @@
 ---
 tipo: prd
 id: PRD-84
+aliases: [PRD-84]
 status: completed
 titulo: "Suporte a Oracle 12.2 com piso alternativo de utPLSQL e charset de conexão"
 versao: "0.13.0"

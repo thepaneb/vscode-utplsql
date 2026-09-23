@@ -1,5 +1,6 @@
 ---
 id: BR-PARSE-015
+aliases: [BR-PARSE-015]
 tipo: regra
 titulo: CodeLens gera dois lenses por annotation, na linha da annotation
 dominio: parser

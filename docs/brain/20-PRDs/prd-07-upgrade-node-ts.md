@@ -1,6 +1,7 @@
 ---
 tipo: prd
 id: PRD-07
+aliases: [PRD-07]
 status: completed
 titulo: "Upgrade Node 24 + TypeScript 6.0"
 versao: "0.4.0"

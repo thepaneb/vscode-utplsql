@@ -1,6 +1,7 @@
 ---
 tipo: prd
 id: PRD-81
+aliases: [PRD-81]
 status: proposed
 titulo: "Hardening de segurança das settings de conexão"
 versao: "0.14.0"

@@ -1,5 +1,6 @@
 ---
 id: PIPE-ci
+aliases: [PIPE-ci]
 tipo: pipeline
 titulo: "CI"
 arquivo: ".github/workflows/ci.yml"

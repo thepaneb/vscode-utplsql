@@ -1,5 +1,6 @@
 ---
 id: BR-CONN-010
+aliases: [BR-CONN-010]
 tipo: regra
 titulo: Guia de perfis quando não há perfis salvos
 dominio: conexao

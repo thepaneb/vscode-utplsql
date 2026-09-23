@@ -1,5 +1,6 @@
 ---
 id: BR-UI-006
+aliases: [BR-UI-006]
 tipo: regra
 titulo: CodeLens registrado apenas em scheme file e padrão .pks sem language id
 dominio: ui

@@ -1,5 +1,6 @@
 ---
 id: ENT-004
+aliases: [ENT-004]
 tipo: entidade
 titulo: "Coverage"
 dominio: cobertura
@@ -8,6 +9,7 @@ verificado: 2026-09-23
 implementacao: []
 testes: []
 regras: []
+relacionado: ["[[GLOSS-005 - Coverage owner]]", "[[04-code-coverage]]"]
 tags: ["cobertura"]
 ---
 ## Definição
@@ -26,4 +28,5 @@ filename, line-rate, branch, declarations; executed (views).
 
 <!-- brain:auto:start:conexoes -->
 - 🗺️ [[MOC - Dominio]]
+- 🔗 [[GLOSS-005 - Coverage owner]] · [[04-code-coverage]]
 <!-- brain:auto:end -->

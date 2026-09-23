@@ -1,6 +1,7 @@
 ---
 tipo: prd
 id: PRD-22
+aliases: [PRD-22]
 status: completed
 titulo: "Sincronizar imagens no workflow da wiki"
 versao: "0.7.1"

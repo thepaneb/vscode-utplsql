@@ -1,5 +1,6 @@
 ---
 id: LOC-pl
+aliases: [LOC-pl]
 tipo: locale
 titulo: "Polski"
 codigo: pl

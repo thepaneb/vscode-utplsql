@@ -1,5 +1,7 @@
 ---
 tipo: decisao
+id: ADR-002
+aliases: [ADR-002]
 status: proposta
 modulo: documentacao
 data: 2026-09-23

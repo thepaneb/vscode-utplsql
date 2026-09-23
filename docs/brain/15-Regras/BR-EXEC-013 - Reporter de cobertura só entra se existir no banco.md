@@ -1,5 +1,6 @@
 ---
 id: BR-EXEC-013
+aliases: [BR-EXEC-013]
 tipo: regra
 titulo: Reporter de cobertura só entra se existir no banco
 dominio: execucao

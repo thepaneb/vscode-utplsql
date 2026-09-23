@@ -1,6 +1,7 @@
 ---
 tipo: prd
 id: PRD-08
+aliases: [PRD-08]
 status: completed
 titulo: "Opções CLI avançadas expostas como settings"
 versao: "0.5.0"

@@ -1,6 +1,7 @@
 ---
 tipo: prd
 id: PRD-32
+aliases: [PRD-32]
 status: completed
 titulo: "Quick-Fix Setup Diagnostics"
 versao: "0.9.0"

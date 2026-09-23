@@ -1,5 +1,6 @@
 ---
 id: ERR-005
+aliases: [ERR-005]
 tipo: erro
 titulo: UTPLSQL_NO_COVERAGE — cobertura não gerada por falta de grants
 dominio: cobertura
@@ -10,7 +11,7 @@ verificado: 2026-09-23
 implementacao: ["src/quickfix.ts:157", "src/commands/utility.ts:13", "src/oracleRunner.ts:528"]
 testes: ["src/test/unit/quickfix.test.ts"]
 regras: ["BR-COB-001", "BR-EXEC-013"]
-tags: ["erro", "cobertura"]
+tags: [erros, cobertura]
 ---
 ## Sintoma
 

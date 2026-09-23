@@ -1,5 +1,6 @@
 ---
 id: LOC-ja
+aliases: [LOC-ja]
 tipo: locale
 titulo: "日本語"
 codigo: ja

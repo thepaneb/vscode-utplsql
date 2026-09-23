@@ -1,5 +1,6 @@
 ---
 id: BR-PARSE-014
+aliases: [BR-PARSE-014]
 tipo: regra
 titulo: message.location só é definida para failed/error com frame de usuário resolvido
 dominio: resultados

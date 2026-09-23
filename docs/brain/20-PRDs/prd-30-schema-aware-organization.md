@@ -1,6 +1,7 @@
 ---
 tipo: prd
 id: PRD-30
+aliases: [PRD-30]
 status: completed
 titulo: "Schema-Aware Test Organization"
 versao: "0.9.0"

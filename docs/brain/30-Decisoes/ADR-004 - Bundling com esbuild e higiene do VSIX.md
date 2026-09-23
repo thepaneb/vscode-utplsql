@@ -1,5 +1,7 @@
 ---
 tipo: decisao
+id: ADR-004
+aliases: [ADR-004]
 status: aceita
 modulo: build
 data: 2026-09-23

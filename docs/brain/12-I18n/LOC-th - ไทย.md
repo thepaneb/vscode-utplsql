@@ -1,5 +1,6 @@
 ---
 id: LOC-th
+aliases: [LOC-th]
 tipo: locale
 titulo: "ไทย"
 codigo: th

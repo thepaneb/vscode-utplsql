@@ -1,5 +1,7 @@
 ---
 tipo: decisao
+id: ADR-011
+aliases: [ADR-011]
 status: aceita
 modulo: oracle
 data: 2026-09-23

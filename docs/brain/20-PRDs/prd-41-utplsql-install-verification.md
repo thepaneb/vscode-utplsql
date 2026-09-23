@@ -1,6 +1,7 @@
 ---
 tipo: prd
 id: PRD-41
+aliases: [PRD-41]
 status: completed
 titulo: "Verificação de instalação do utPLSQL na ativação"
 versao: "0.11.0"

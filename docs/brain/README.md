@@ -1,3 +1,10 @@
+---
+tipo: guia
+status: ativo
+verificado: 2026-09-23
+tags: [brain, obsidian, guia]
+---
+
 # Second Brain — vscode-utplsql
 
 Vault do Obsidian com o conhecimento do projeto. Este diretório é **versionado** no
@@ -92,6 +99,10 @@ Templater. Configure e use assim:
 - **O vault é a fonte da verdade** do texto humano. `docs/functional/`, `docs/wiki/`,
   `docs/prd/` e `README*.md` são **gerados** (`npm run brain:build`) — não os edite.
 - Frontmatter sempre com `tipo` e `status` (os Dataview filtram por isso).
+- Notas de camada têm `id` e `aliases: [<id>]` (ex.: `BR-CONN-005`, `NFR-006`),
+  então dá para linkar/buscar pelo ID.
+- As MOCs têm um bloco **Índice (links)** gerado (`moc-index`) que lista as notas
+  da pasta como wikilinks — o hub do grafo.
 - Ao **revisar** uma nota, atualize `verificado: YYYY-MM-DD` no frontmatter. O painel
   "🔁 Revisar" em [[Home]] lista o que passou de 120 dias.
 - **Links:**

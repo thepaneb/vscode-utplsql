@@ -1,6 +1,7 @@
 ---
 tipo: prd
 id: PRD-57
+aliases: [PRD-57]
 status: proposed
 titulo: "Multi-root: resolução de `root`/`sourcePath` por folder"
 versao: "0.16.0"

@@ -1,5 +1,6 @@
 ---
 id: BR-EXEC-014
+aliases: [BR-EXEC-014]
 tipo: regra
 titulo: Reporters adicionais são validados e sanitizados antes do PL/SQL
 dominio: execucao

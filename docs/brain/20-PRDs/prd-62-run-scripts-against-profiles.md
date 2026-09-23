@@ -1,6 +1,7 @@
 ---
 tipo: prd
 id: PRD-62
+aliases: [PRD-62]
 status: completed
 titulo: "Execução de scripts SQL contra perfil de conexão"
 versao: "0.12.0"

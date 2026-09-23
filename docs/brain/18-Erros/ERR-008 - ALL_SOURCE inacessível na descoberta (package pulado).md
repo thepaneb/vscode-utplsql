@@ -1,5 +1,6 @@
 ---
 id: ERR-008
+aliases: [ERR-008]
 tipo: erro
 titulo: ALL_SOURCE inacessível na descoberta (package pulado)
 dominio: descoberta
@@ -10,7 +11,7 @@ verificado: 2026-09-23
 implementacao: ["src/discovery.ts:189"]
 testes: ["src/test/unit/discovery.test.ts"]
 regras: ["BR-PARSE-007"]
-tags: ["erro", "descoberta"]
+tags: [erros, descoberta]
 ---
 ## Sintoma
 

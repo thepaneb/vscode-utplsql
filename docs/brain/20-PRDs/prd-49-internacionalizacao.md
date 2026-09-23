@@ -1,6 +1,7 @@
 ---
 tipo: prd
 id: PRD-49
+aliases: [PRD-49]
 status: completed
 titulo: "Internacionalização (i18n) dos conteúdos textuais da extensão"
 versao: "0.12.0"

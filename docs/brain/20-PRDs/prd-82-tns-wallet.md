@@ -1,6 +1,7 @@
 ---
 tipo: prd
 id: PRD-82
+aliases: [PRD-82]
 status: proposed
 titulo: "Resolução TNS no thin e senha de wallet no SecretStorage"
 versao: "0.14.0"

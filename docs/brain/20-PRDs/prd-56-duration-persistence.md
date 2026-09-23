@@ -1,6 +1,7 @@
 ---
 tipo: prd
 id: PRD-56
+aliases: [PRD-56]
 status: proposed
 titulo: "Duração por teste e persistência de resultados"
 versao: "0.16.0"

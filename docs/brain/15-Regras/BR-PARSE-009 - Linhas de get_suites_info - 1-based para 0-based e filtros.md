@@ -1,5 +1,6 @@
 ---
 id: BR-PARSE-009
+aliases: [BR-PARSE-009]
 tipo: regra
 titulo: Linhas de get_suites_info - 1-based para 0-based e filtros
 dominio: descoberta

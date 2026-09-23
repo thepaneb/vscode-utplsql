@@ -1,6 +1,7 @@
 ---
 tipo: prd
 id: PRD-70
+aliases: [PRD-70]
 status: completed
 titulo: "Thick mode opcional (Instant Client) para bancos com NNE"
 versao: "0.12.1"

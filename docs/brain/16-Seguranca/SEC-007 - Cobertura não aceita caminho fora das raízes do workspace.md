@@ -1,5 +1,6 @@
 ---
 id: SEC-007
+aliases: [SEC-007]
 tipo: seguranca
 titulo: Cobertura não aceita caminho fora das raízes do workspace
 dominio: path-traversal

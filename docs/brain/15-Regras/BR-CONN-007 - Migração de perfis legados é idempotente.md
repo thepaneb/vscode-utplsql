@@ -1,5 +1,6 @@
 ---
 id: BR-CONN-007
+aliases: [BR-CONN-007]
 tipo: regra
 titulo: Migração de perfis legados é idempotente
 dominio: conexao

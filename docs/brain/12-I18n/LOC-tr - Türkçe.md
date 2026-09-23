@@ -1,5 +1,6 @@
 ---
 id: LOC-tr
+aliases: [LOC-tr]
 tipo: locale
 titulo: "Türkçe"
 codigo: tr

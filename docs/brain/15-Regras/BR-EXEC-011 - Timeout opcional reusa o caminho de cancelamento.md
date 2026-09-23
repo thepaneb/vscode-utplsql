@@ -1,5 +1,6 @@
 ---
 id: BR-EXEC-011
+aliases: [BR-EXEC-011]
 tipo: regra
 titulo: Timeout opcional reusa o caminho de cancelamento
 dominio: execucao

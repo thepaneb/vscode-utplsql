@@ -1,5 +1,6 @@
 ---
 id: BR-PARSE-006
+aliases: [BR-PARSE-006]
 tipo: regra
 titulo: Descoberta por arquivo descarta suítes/testes disabled, vazios e ilegíveis
 dominio: descoberta

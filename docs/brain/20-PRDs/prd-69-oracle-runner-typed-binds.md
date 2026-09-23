@@ -1,6 +1,7 @@
 ---
 tipo: prd
 id: PRD-69
+aliases: [PRD-69]
 status: completed
 titulo: "Runner Oracle: binds tipados, `a_tags` e validação de reporters"
 versao: "0.13.0"

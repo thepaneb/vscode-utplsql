@@ -1,6 +1,7 @@
 ---
 tipo: prd
 id: PRD-43
+aliases: [PRD-43]
 status: completed
 titulo: "Schema-mode: descoberta de suites via ALL_OBJECTS e ALL_SOURCE"
 versao: "0.11.0"

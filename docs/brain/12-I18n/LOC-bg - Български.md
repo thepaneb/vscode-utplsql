@@ -1,5 +1,6 @@
 ---
 id: LOC-bg
+aliases: [LOC-bg]
 tipo: locale
 titulo: "Български"
 codigo: bg

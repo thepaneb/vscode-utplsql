@@ -1,6 +1,7 @@
 ---
 tipo: prd
 id: PRD-85
+aliases: [PRD-85]
 status: completed
 titulo: "Second brain canônico (Obsidian) com MCP e extração de conhecimento"
 versao: "0.13.0"

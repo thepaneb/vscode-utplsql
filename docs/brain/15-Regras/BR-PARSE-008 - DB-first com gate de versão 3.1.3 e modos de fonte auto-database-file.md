@@ -1,5 +1,6 @@
 ---
 id: BR-PARSE-008
+aliases: [BR-PARSE-008]
 tipo: regra
 titulo: DB-first com gate de versão 3.1.3 e modos de fonte auto/database/file
 dominio: descoberta

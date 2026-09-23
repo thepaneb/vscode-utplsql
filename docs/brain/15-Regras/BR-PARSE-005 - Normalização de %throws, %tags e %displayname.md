@@ -1,5 +1,6 @@
 ---
 id: BR-PARSE-005
+aliases: [BR-PARSE-005]
 tipo: regra
 titulo: Normalização de %throws, %tags e %displayname
 dominio: parser

@@ -1,5 +1,6 @@
 ---
 id: BR-UI-003
+aliases: [BR-UI-003]
 tipo: regra
 titulo: utplsql:connected reflete a resolução de conexão sem prompt
 dominio: ui

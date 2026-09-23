@@ -1,5 +1,6 @@
 ---
 id: BR-PARSE-003
+aliases: [BR-PARSE-003]
 tipo: regra
 titulo: %test só materializa teste quando seguido de PROCEDURE; órfão é sobrescrito
 dominio: parser
@@ -33,5 +34,5 @@ Evita criar itens fantasma para annotations sem procedure correspondente.
 <!-- brain:auto:start:conexoes -->
 - 🗺️ [[MOC - Regras]]
 - 📄 PRDs: [[prd-42-suiteparser-annotations|PRD-42]]
-- ↩️ Referenciada por: [[01-test-discovery]]
+- ↩️ Referenciada por: [[01-test-discovery]] · [[GLOSS-002 - Teste (procedure de teste)|GLOSS-002]]
 <!-- brain:auto:end -->

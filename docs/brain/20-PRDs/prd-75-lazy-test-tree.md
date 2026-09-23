@@ -1,6 +1,7 @@
 ---
 tipo: prd
 id: PRD-75
+aliases: [PRD-75]
 status: proposed
 titulo: "Árvore de testes lazy (resolução incremental por nível)"
 versao: "0.14.0"

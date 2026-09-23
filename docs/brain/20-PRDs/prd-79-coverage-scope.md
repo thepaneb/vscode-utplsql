@@ -1,6 +1,7 @@
 ---
 tipo: prd
 id: PRD-79
+aliases: [PRD-79]
 status: completed
 titulo: "Escopo avançado de cobertura (regex include/exclude + `excludeObjects`)"
 versao: "0.13.0"

@@ -1,5 +1,6 @@
 ---
 id: PAT-003
+aliases: [PAT-003]
 tipo: padrao
 titulo: "Funções canônicas compartilhadas de resultado"
 dominio: design
@@ -9,6 +10,7 @@ verificado: 2026-09-23
 implementacao: []
 testes: []
 regras: []
+relacionado: ["[[ADR-005 - Funcoes canonicas de resultado e matching por nome]]", "[[03-results-and-reporting]]"]
 tags: ["design"]
 ---
 ## Intenção
@@ -30,4 +32,5 @@ e `resolveStackFrameToUri`; os runners apenas chamam essas funções.
 
 <!-- brain:auto:start:conexoes -->
 - 🗺️ [[MOC - Padroes]]
+- 🔗 [[ADR-005 - Funcoes canonicas de resultado e matching por nome]] · [[03-results-and-reporting]]
 <!-- brain:auto:end -->

@@ -1,6 +1,7 @@
 ---
 tipo: prd
 id: PRD-80
+aliases: [PRD-80]
 status: proposed
 titulo: "Documento virtual de fonte do banco para falhas e cobertura"
 versao: "0.14.0"

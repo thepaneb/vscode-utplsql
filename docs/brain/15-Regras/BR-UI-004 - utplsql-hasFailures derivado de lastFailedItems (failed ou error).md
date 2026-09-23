@@ -1,5 +1,6 @@
 ---
 id: BR-UI-004
+aliases: [BR-UI-004]
 tipo: regra
 titulo: utplsql:hasFailures derivado de lastFailedItems (failed ou error)
 dominio: ui

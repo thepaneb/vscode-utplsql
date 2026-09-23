@@ -1,6 +1,7 @@
 ---
 tipo: prd
 id: PRD-46
+aliases: [PRD-46]
 status: completed
 titulo: "Atualização de dependências major (oracledb 7, fast-xml-parser 5, iconv-lite 0.7, TypeScript 7)"
 versao: "0.11.0"

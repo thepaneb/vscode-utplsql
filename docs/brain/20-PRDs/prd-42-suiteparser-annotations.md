@@ -1,6 +1,7 @@
 ---
 tipo: prd
 id: PRD-42
+aliases: [PRD-42]
 status: completed
 titulo: "SuiteParser: parse de annotations %disabled, %throws, %tags e lifecycle"
 versao: "0.10.0"

@@ -1,6 +1,7 @@
 ---
 tipo: prd
 id: PRD-15
+aliases: [PRD-15]
 status: completed
 titulo: "Testes de integração com banco real"
 versao: "0.6.0"

@@ -1,5 +1,6 @@
 ---
 id: NFR-002
+aliases: [NFR-002]
 tipo: nfr
 titulo: "Compatibilidade com Node"
 dominio: compatibilidade

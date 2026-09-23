@@ -1,5 +1,6 @@
 ---
 id: LOC-en-gb
+aliases: [LOC-en-gb]
 tipo: locale
 titulo: "English (UK)"
 codigo: en-gb

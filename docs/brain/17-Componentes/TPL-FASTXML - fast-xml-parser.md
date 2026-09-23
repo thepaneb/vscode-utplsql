@@ -1,5 +1,6 @@
 ---
 id: TPL-FASTXML
+aliases: [TPL-FASTXML]
 tipo: componente-terceiro
 titulo: "fast-xml-parser"
 dominio: parsing
@@ -14,6 +15,7 @@ verificado: 2026-09-23
 implementacao: []
 testes: []
 regras: []
+relacionado: ["[[MOC - Stack]]", "[[03-results-and-reporting]]"]
 tags: ["parsing"]
 ---
 ## Papel
@@ -33,4 +35,5 @@ Substituível por outro parser XML se necessário.
 
 <!-- brain:auto:start:conexoes -->
 - 🗺️ [[MOC - Componentes]]
+- 🔗 [[MOC - Stack]] · [[03-results-and-reporting]]
 <!-- brain:auto:end -->

@@ -1,6 +1,7 @@
 ---
 tipo: prd
 id: PRD-23
+aliases: [PRD-23]
 status: completed
 titulo: "Screenshots da wiki: checklist manual + diagramas (reconciliada)"
 versao: "0.10.0"

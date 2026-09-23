@@ -1,5 +1,6 @@
 ---
 id: BR-COB-002
+aliases: [BR-COB-002]
 tipo: regra
 titulo: resolveSourceUri tenta variantes de extensão e bloqueia path traversal
 dominio: cobertura

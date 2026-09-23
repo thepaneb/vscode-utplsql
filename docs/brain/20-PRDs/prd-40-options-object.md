@@ -1,6 +1,7 @@
 ---
 tipo: prd
 id: PRD-40
+aliases: [PRD-40]
 status: completed
 titulo: "Refatorar executeRunOracle: Long Parameter List → Options Object"
 versao: "0.10.0"

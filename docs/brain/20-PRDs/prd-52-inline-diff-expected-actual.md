@@ -1,6 +1,7 @@
 ---
 tipo: prd
 id: PRD-52
+aliases: [PRD-52]
 status: proposed
 titulo: "Diff inline esperado × obtido nas falhas"
 versao: "0.15.0"

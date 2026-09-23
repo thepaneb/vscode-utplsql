@@ -1,5 +1,6 @@
 ---
 id: LOC-es
+aliases: [LOC-es]
 tipo: locale
 titulo: "Español"
 codigo: es

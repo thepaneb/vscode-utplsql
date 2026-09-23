@@ -1,5 +1,6 @@
 ---
 id: BR-UI-005
+aliases: [BR-UI-005]
 tipo: regra
 titulo: Status bar - gating por setting, throttle de 200ms e ícone por falha/erro
 dominio: ui

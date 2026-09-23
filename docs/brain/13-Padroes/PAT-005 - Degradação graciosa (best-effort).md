@@ -1,5 +1,6 @@
 ---
 id: PAT-005
+aliases: [PAT-005]
 tipo: padrao
 titulo: "Degradação graciosa (best-effort)"
 dominio: erro
@@ -9,7 +10,8 @@ verificado: 2026-09-23
 implementacao: []
 testes: []
 regras: []
-tags: ["erro"]
+relacionado: ["[[ADR-001 - Execucao via Oracle direto]]", "[[02-test-execution]]"]
+tags: [erros]
 ---
 ## Intenção
 
@@ -30,4 +32,5 @@ grant de `DBMS_PROFILER`, o run continua "sem cobertura".
 
 <!-- brain:auto:start:conexoes -->
 - 🗺️ [[MOC - Padroes]]
+- 🔗 [[ADR-001 - Execucao via Oracle direto]] · [[02-test-execution]]
 <!-- brain:auto:end -->

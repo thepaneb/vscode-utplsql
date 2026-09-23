@@ -1,5 +1,6 @@
 ---
 id: BR-EXEC-009
+aliases: [BR-EXEC-009]
 tipo: regra
 titulo: Separação do XML de cobertura do XML JUnit no mesmo buffer
 dominio: execucao

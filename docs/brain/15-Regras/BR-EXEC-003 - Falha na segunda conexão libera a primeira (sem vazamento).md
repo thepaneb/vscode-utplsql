@@ -1,5 +1,6 @@
 ---
 id: BR-EXEC-003
+aliases: [BR-EXEC-003]
 tipo: regra
 titulo: Falha na segunda conexão libera a primeira (sem vazamento)
 dominio: execucao

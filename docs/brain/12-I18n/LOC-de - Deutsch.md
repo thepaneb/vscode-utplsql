@@ -1,5 +1,6 @@
 ---
 id: LOC-de
+aliases: [LOC-de]
 tipo: locale
 titulo: "Deutsch"
 codigo: de

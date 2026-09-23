@@ -1,6 +1,7 @@
 ---
 tipo: prd
 id: PRD-35
+aliases: [PRD-35]
 status: completed
 titulo: "Correção de cobertura no Windows + blindagem de testes para argumentos CLI"
 versao: "0.7.2"

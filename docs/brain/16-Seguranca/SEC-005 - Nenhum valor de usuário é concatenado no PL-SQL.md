@@ -1,5 +1,6 @@
 ---
 id: SEC-005
+aliases: [SEC-005]
 tipo: seguranca
 titulo: Nenhum valor de usuário é concatenado no PL/SQL
 dominio: injecao

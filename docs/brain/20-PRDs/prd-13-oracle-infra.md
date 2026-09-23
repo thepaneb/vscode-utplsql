@@ -1,6 +1,7 @@
 ---
 tipo: prd
 id: PRD-13
+aliases: [PRD-13]
 status: completed
 titulo: "Infraestrutura de testes com Oracle real"
 versao: "0.6.0"

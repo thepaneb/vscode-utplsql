@@ -1,6 +1,7 @@
 ---
 tipo: prd
 id: PRD-58
+aliases: [PRD-58]
 status: proposed
 titulo: "Run Related Tests"
 versao: "0.16.0"

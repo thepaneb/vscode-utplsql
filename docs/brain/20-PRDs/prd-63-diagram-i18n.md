@@ -1,6 +1,7 @@
 ---
 tipo: prd
 id: PRD-63
+aliases: [PRD-63]
 status: completed
 titulo: "Wiki bilíngue (pt-BR/en) + correção de links + limpeza de READMEs"
 verificado: 2026-09-23

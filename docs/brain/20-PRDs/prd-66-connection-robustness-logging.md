@@ -1,6 +1,7 @@
 ---
 tipo: prd
 id: PRD-66
+aliases: [PRD-66]
 status: completed
 titulo: "Robustez de conexão, logging e cache"
 versao: "0.12.0"

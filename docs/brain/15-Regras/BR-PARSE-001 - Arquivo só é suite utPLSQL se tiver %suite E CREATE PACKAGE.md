@@ -1,5 +1,6 @@
 ---
 id: BR-PARSE-001
+aliases: [BR-PARSE-001]
 tipo: regra
 titulo: Arquivo só é suite utPLSQL se tiver %suite E CREATE PACKAGE
 dominio: parser
@@ -33,5 +34,5 @@ Evita falsos positivos de trechos que apenas citam %suite e garante que o nome d
 <!-- brain:auto:start:conexoes -->
 - 🗺️ [[MOC - Regras]]
 - 📄 PRDs: [[prd-42-suiteparser-annotations|PRD-42]]
-- ↩️ Referenciada por: [[01-test-discovery]]
+- ↩️ Referenciada por: [[01-test-discovery]] · [[GLOSS-001 - Suite|GLOSS-001]]
 <!-- brain:auto:end -->

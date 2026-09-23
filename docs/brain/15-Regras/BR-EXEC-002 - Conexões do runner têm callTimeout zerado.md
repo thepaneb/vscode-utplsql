@@ -1,5 +1,6 @@
 ---
 id: BR-EXEC-002
+aliases: [BR-EXEC-002]
 tipo: regra
 titulo: Conexões do runner têm callTimeout zerado
 dominio: execucao

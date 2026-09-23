@@ -1,5 +1,6 @@
 ---
 id: SEC-004
+aliases: [SEC-004]
 tipo: seguranca
 titulo: Segredos locais ficam fora do controle de versão
 dominio: segredos
@@ -8,7 +9,8 @@ severidade: critica
 verificado: 2026-09-23
 implementacao: [".gitignore"]
 testes: []
-regras: []
+regras: ["BR-CONN-005"]
+relacionado: ["[[ADR-002 - Vault como fonte da verdade]]"]
 tags: ["seguranca"]
 ---
 ## Enunciado
@@ -27,4 +29,6 @@ O vault passou a ser versionado; sem as regras, o token do MCP e credenciais vaz
 
 <!-- brain:auto:start:conexoes -->
 - 🗺️ [[MOC - Seguranca]]
+- 📐 Regras: [[BR-CONN-005 - Senha do perfil vai para o SecretStorage ao salvar|BR-CONN-005]]
+- 🔗 [[ADR-002 - Vault como fonte da verdade]]
 <!-- brain:auto:end -->

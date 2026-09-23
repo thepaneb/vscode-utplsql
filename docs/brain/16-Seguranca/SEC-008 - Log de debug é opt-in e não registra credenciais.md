@@ -1,5 +1,6 @@
 ---
 id: SEC-008
+aliases: [SEC-008]
 tipo: seguranca
 titulo: Log de debug é opt-in e não registra credenciais
 dominio: segredos

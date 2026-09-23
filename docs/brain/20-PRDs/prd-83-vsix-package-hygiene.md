@@ -1,6 +1,7 @@
 ---
 tipo: prd
 id: PRD-83
+aliases: [PRD-83]
 status: completed
 titulo: "Higiene do pacote VSIX: bloquear vazamento de arquivos de desenvolvimento"
 versao: "0.13.0"

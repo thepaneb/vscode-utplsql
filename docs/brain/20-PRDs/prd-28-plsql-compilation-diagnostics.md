@@ -1,6 +1,7 @@
 ---
 tipo: prd
 id: PRD-28
+aliases: [PRD-28]
 status: completed
 titulo: "PL/SQL Compilation Diagnostics"
 versao: "0.9.0"

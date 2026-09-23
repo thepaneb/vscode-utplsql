@@ -1,6 +1,7 @@
 ---
 tipo: prd
 id: PRD-61
+aliases: [PRD-61]
 status: proposed
 titulo: "Auto-provisionamento do utPLSQL-cli"
 versao: "Suspenso — a reavaliar (PRD-64 removeu o CLI)"

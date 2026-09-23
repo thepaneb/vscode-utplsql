@@ -1,6 +1,7 @@
 ---
 tipo: prd
 id: PRD-24
+aliases: [PRD-24]
 status: completed
 titulo: "CodeLens Integration"
 versao: "0.8.0"

@@ -1,5 +1,6 @@
 ---
 id: BR-SCHEMA-002
+aliases: [BR-SCHEMA-002]
 tipo: regra
 titulo: extractSchemaFromPath - path.posix.relative e placeholder {schema}
 dominio: schema

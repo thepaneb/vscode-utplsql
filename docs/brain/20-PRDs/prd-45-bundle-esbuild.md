@@ -1,6 +1,7 @@
 ---
 tipo: prd
 id: PRD-45
+aliases: [PRD-45]
 status: completed
 titulo: "Bundling com esbuild + poda do node-oracledb no VSIX"
 versao: "0.11.0"

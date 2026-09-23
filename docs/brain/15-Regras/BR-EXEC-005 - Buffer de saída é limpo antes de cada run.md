@@ -1,5 +1,6 @@
 ---
 id: BR-EXEC-005
+aliases: [BR-EXEC-005]
 tipo: regra
 titulo: Buffer de saída é limpo antes de cada run
 dominio: execucao

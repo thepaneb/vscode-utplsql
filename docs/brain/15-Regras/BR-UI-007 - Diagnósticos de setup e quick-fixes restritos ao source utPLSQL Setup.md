@@ -1,5 +1,6 @@
 ---
 id: BR-UI-007
+aliases: [BR-UI-007]
 tipo: regra
 titulo: Diagnósticos de setup e quick-fixes restritos ao source utPLSQL Setup
 dominio: diagnostico

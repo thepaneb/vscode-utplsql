@@ -1,5 +1,7 @@
 ---
 tipo: decisao
+id: ADR-006
+aliases: [ADR-006]
 status: aceita
 modulo: testes
 data: 2026-09-23

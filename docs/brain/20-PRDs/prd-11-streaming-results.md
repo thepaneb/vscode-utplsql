@@ -1,6 +1,7 @@
 ---
 tipo: prd
 id: PRD-11
+aliases: [PRD-11]
 status: completed
 titulo: "Streaming de resultados em tempo real"
 versao: "0.9.0"

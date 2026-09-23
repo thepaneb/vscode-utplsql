@@ -503,6 +503,26 @@ function genConexoes(notePath) {
   return lines.join('\n') || '- 🗺️ _sem conexões_';
 }
 
+/** Índice de uma MOC: notas da própria pasta como wikilinks (hub do grafo). */
+function genMocIndex(notePath) {
+  const dir = path.dirname(notePath);
+  const self = path.basename(notePath, '.md');
+  const { bases } = idMaps();
+  const files = fs
+    .readdirSync(dir)
+    .filter((n) => n.endsWith('.md') && n !== `${self}.md` && !/^MOC - /.test(n) && n !== 'index.md')
+    .sort((a, b) => a.localeCompare(b));
+  return (
+    files
+      .map((n) => {
+        const b = n.replace(/\.md$/, '');
+        const id = bases.get(b);
+        return `- [[${b}]]${id ? ` — \`${id}\`` : ''}`;
+      })
+      .join('\n') || '_vazio_'
+  );
+}
+
 const GENERATORS = {
   'root-docs': genRootDocs,
   'readme-variants': genReadmeVariants,
@@ -513,6 +533,7 @@ const GENERATORS = {
   'prd-roadmap': () => genPrdRoadmap(),
   'prd-estrutura': () => genPrdEstrutura(),
   conexoes: genConexoes,
+  'moc-index': genMocIndex,
   stack: genStack,
   deps: genDeps,
 };
@@ -597,6 +618,7 @@ function pipelineNotes() {
       const fm = [
         '---',
         `id: PIPE-${slug}`,
+        `aliases: [PIPE-${slug}]`,
         'tipo: pipeline',
         `titulo: ${JSON.stringify(name)}`,
         `arquivo: ".github/workflows/${f}"`,
@@ -656,6 +678,7 @@ function localeNotes() {
     const fm = [
       '---',
       `id: LOC-${code}`,
+      `aliases: [LOC-${code}]`,
       'tipo: locale',
       `titulo: ${JSON.stringify(lang)}`,
       `codigo: ${code}`,
@@ -777,6 +800,7 @@ module.exports = {
   genPrdRoadmap,
   genPrdEstrutura,
   genConexoes,
+  genMocIndex,
   pipelineNotes,
   localeNotes,
 };

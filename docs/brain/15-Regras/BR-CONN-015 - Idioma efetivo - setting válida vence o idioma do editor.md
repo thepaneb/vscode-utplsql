@@ -1,5 +1,6 @@
 ---
 id: BR-CONN-015
+aliases: [BR-CONN-015]
 tipo: regra
 titulo: Idioma efetivo - setting válida vence o idioma do editor
 dominio: conexao

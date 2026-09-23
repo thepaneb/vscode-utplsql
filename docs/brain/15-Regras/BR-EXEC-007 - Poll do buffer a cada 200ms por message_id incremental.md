@@ -1,5 +1,6 @@
 ---
 id: BR-EXEC-007
+aliases: [BR-EXEC-007]
 tipo: regra
 titulo: Poll do buffer a cada 200ms por message_id incremental
 dominio: execucao

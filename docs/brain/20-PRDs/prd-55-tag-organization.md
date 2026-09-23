@@ -1,6 +1,7 @@
 ---
 tipo: prd
 id: PRD-55
+aliases: [PRD-55]
 status: proposed
 titulo: "Organização da árvore de testes por tag"
 versao: "0.15.0"

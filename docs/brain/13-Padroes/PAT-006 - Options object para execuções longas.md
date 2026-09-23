@@ -1,5 +1,6 @@
 ---
 id: PAT-006
+aliases: [PAT-006]
 tipo: padrao
 titulo: "Options object para execuções longas"
 dominio: design
@@ -9,6 +10,7 @@ verificado: 2026-09-23
 implementacao: []
 testes: []
 regras: []
+relacionado: ["[[ADR-005 - Funcoes canonicas de resultado e matching por nome]]", "[[02-test-execution]]"]
 tags: ["design"]
 ---
 ## Intenção
@@ -29,4 +31,5 @@ cobertura, random seed, timeout, token de cancelamento.
 
 <!-- brain:auto:start:conexoes -->
 - 🗺️ [[MOC - Padroes]]
+- 🔗 [[ADR-005 - Funcoes canonicas de resultado e matching por nome]] · [[02-test-execution]]
 <!-- brain:auto:end -->

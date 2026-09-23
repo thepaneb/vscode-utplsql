@@ -9,6 +9,7 @@ const {
   genPrdRoadmap,
   genPrdEstrutura,
   genConexoes,
+  genMocIndex,
   pipelineNotes,
   localeNotes,
 } = require('../../../scripts/brain.cjs') as {
@@ -17,6 +18,7 @@ const {
   genPrdRoadmap: (notes: Record<string, string>[]) => string;
   genPrdEstrutura: (notes: Record<string, string>[]) => string;
   genConexoes: (notePath: string) => string;
+  genMocIndex: (notePath: string) => string;
   pipelineNotes: () => { dir: string; file: string; content: string }[];
   localeNotes: () => { dir: string; file: string; content: string }[];
 };
@@ -96,4 +98,10 @@ test('brain: genConexoes liga a nota à MOC e às referências', () => {
   );
   assert.match(out, /\[\[MOC - Seguranca\]\]/);
   assert.match(out, /\[\[BR-CONN-005/);
+});
+
+test('brain: genMocIndex lista as notas da pasta como wikilinks', () => {
+  const out = genMocIndex('docs/brain/17-Componentes/MOC - Componentes.md');
+  assert.match(out, /\[\[TPL-ORACLEDB - node-oracledb\]\]/);
+  assert.ok(!out.includes('MOC - Componentes'));
 });

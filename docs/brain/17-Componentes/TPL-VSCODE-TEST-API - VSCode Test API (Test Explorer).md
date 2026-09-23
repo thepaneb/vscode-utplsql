@@ -1,5 +1,6 @@
 ---
 id: TPL-VSCODE-TEST-API
+aliases: [TPL-VSCODE-TEST-API]
 tipo: componente-terceiro
 titulo: "VSCode Test API (Test Explorer)"
 dominio: plataforma

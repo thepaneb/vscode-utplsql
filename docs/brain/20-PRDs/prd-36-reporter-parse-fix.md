@@ -1,6 +1,7 @@
 ---
 tipo: prd
 id: PRD-36
+aliases: [PRD-36]
 status: completed
 titulo: "Correção do parse de `reporters` com descrições + flag `coverageEnabled`"
 versao: "0.7.2"

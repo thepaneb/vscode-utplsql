@@ -1,5 +1,6 @@
 ---
 id: PAT-007
+aliases: [PAT-007]
 tipo: padrao
 titulo: "Stub de vscode em duas camadas"
 dominio: teste
@@ -9,7 +10,8 @@ verificado: 2026-09-23
 implementacao: []
 testes: []
 regras: []
-tags: ["teste"]
+relacionado: ["[[ADR-006 - Modulos puros vs dependentes de vscode]]", "[[10-development-tooling]]"]
+tags: [testes]
 ---
 ## Intenção
 
@@ -30,4 +32,5 @@ adicionar import de `vscode` em produção, adicionar o stub correspondente.
 
 <!-- brain:auto:start:conexoes -->
 - 🗺️ [[MOC - Padroes]]
+- 🔗 [[ADR-006 - Modulos puros vs dependentes de vscode]] · [[10-development-tooling]]
 <!-- brain:auto:end -->

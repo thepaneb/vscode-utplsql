@@ -1,5 +1,6 @@
 ---
 id: ENT-003
+aliases: [ENT-003]
 tipo: entidade
 titulo: "TestCase"
 dominio: descoberta
@@ -8,6 +9,7 @@ verificado: 2026-09-23
 implementacao: []
 testes: []
 regras: []
+relacionado: ["[[GLOSS-002 - Teste (procedure de teste)]]", "[[01-test-discovery]]"]
 tags: ["descoberta"]
 ---
 ## Definição
@@ -26,4 +28,5 @@ procName, description, line, tags, disabled, expectedError, resultado/status.
 
 <!-- brain:auto:start:conexoes -->
 - 🗺️ [[MOC - Dominio]]
+- 🔗 [[GLOSS-002 - Teste (procedure de teste)]] · [[01-test-discovery]]
 <!-- brain:auto:end -->

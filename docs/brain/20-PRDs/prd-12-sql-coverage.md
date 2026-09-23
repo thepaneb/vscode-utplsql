@@ -1,6 +1,7 @@
 ---
 tipo: prd
 id: PRD-12
+aliases: [PRD-12]
 status: completed
 titulo: "Cobertura de código para objetos SQL (views, queries)"
 versao: "0.12.0"

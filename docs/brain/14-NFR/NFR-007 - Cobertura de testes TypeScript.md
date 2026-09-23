@@ -1,5 +1,6 @@
 ---
 id: NFR-007
+aliases: [NFR-007]
 tipo: nfr
 titulo: "Cobertura de testes TypeScript"
 dominio: qualidade

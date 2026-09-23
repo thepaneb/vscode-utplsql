@@ -1,5 +1,6 @@
 ---
 id: BR-EXEC-008
+aliases: [BR-EXEC-008]
 tipo: regra
 titulo: Roteamento XML x output de documentação com detecção de CDATA
 dominio: execucao

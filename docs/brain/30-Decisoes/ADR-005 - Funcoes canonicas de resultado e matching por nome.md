@@ -1,5 +1,7 @@
 ---
 tipo: decisao
+id: ADR-005
+aliases: [ADR-005]
 status: aceita
 modulo: resultados
 data: 2026-09-23
