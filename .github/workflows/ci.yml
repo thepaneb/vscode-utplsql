@@ -14,10 +14,14 @@ jobs:
         node-version: [22, 24]
     steps:
       - uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
       - uses: actions/setup-node@v7
         with:
           node-version: ${{ matrix.node-version }}
       - run: npm ci
+      - run: npm run brain:ci
+      - run: git diff --exit-code
       - run: npm run docs:check
       - run: npm run lint
       - run: npm run typecheck

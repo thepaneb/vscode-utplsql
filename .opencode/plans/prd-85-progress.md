@@ -61,9 +61,10 @@ Vault: **309 notas**. Validações OK: `brain:check`, `brain:rules` (59),
 
 ```sh
 npm run brain:sync      # código -> vault (stack, deps, índices)
-npm run brain:build     # vault -> repo (docs/functional/*) ; "check" = drift
+npm run brain:build     # vault -> repo (docs/functional/*, wiki, README, PRDs) ; "check" = drift
 npm run brain:check     # wikilinks/links do vault
 npm run brain:rules     # schema das BR-* + referências de todas as notas
+npm run brain:ci        # sync + build + check + rules (drift no CI)
 npm run docs:check      # consistência versionada (CI)
 npm run test:unit       # compile + lint + node --test
 ```
@@ -77,9 +78,12 @@ npm run test:unit       # compile + lint + node --test
 3. ~~README + 23 variantes — mesma decisão.~~ ✅ Feito — estratégia **A**.
 4. ~~PRDs canônicos no vault — status no frontmatter; reescrever `sync-prds.cjs`;
    `index.md`/Estrutura gerados.~~ ✅ Feito.
-5. **Fase 5/6 — CI de drift**: `brain:sync && brain:build && git diff --exit-code`;
-   adaptar `docs:check`/`docs:fidelity` e `wiki.yml` (rodar `brain:build` antes de
-   publicar a wiki).
+5. ~~Fase 5/6 — CI de drift: `brain:sync && brain:build && git diff --exit-code`;
+   adaptar `docs:check`/`docs:fidelity` e `wiki.yml`.~~ ✅ Feito — novo script
+   `brain:ci` (sync+build+check+rules); `ci.yml` roda `brain:ci` + `git diff
+   --exit-code` (com `fetch-depth: 0` p/ datas estáveis) + `docs:check`;
+   `docs-check.cjs` valida o frontmatter das notas PRD; `wiki.yml` reconstrói a
+   wiki do vault antes de publicar (paths `docs/brain/70-Wiki/**`).
 6. **Docs/instruções**: reescrever `AGENTS.md` (local), skill `docs-fidelity`
    (direção invertida), `docs/brain/README.md`, `CONTRIBUTING.md`; ajustar
    `brain.cjs` (`readme-variants`/`wiki-index`/`funcional-index`/`prd-summary` —
