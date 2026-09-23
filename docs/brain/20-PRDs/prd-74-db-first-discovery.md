@@ -235,5 +235,5 @@ comportamento atual, logando uma vez.
 
 <!-- brain:auto:start:conexoes -->
 - 🗺️ [[MOC - PRDs]]
-- ↩️ Referenciada por: [[BR-PARSE-008 - DB-first com gate de versão 3.1.3 e modos de fonte auto-database-file|BR-PARSE-008]] · [[BR-PARSE-009 - Linhas de get_suites_info - 1-based para 0-based e filtros|BR-PARSE-009]] · [[BR-PARSE-010 - Fusão arquivo+banco - arquivo prevalece em uri-linha, banco em descrição-tags|BR-PARSE-010]]
+- 📐 Regras: [[BR-PARSE-008 - DB-first com gate de versão 3.1.3 e modos de fonte auto-database-file|BR-PARSE-008]] · [[BR-PARSE-009 - Linhas de get_suites_info - 1-based para 0-based e filtros|BR-PARSE-009]] · [[BR-PARSE-010 - Fusão arquivo+banco - arquivo prevalece em uri-linha, banco em descrição-tags|BR-PARSE-010]]
 <!-- brain:auto:end -->

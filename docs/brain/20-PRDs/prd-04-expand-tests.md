@@ -254,5 +254,5 @@ logs detalhados de matching no output da execução.
 
 <!-- brain:auto:start:conexoes -->
 - 🗺️ [[MOC - PRDs]]
-- ↩️ Referenciada por: [[BR-COB-002 - resolveSourceUri tenta variantes de extensão e bloqueia path traversal|BR-COB-002]]
+- 📐 Regras: [[BR-COB-002 - resolveSourceUri tenta variantes de extensão e bloqueia path traversal|BR-COB-002]]
 <!-- brain:auto:end -->

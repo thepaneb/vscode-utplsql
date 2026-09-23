@@ -181,7 +181,7 @@ function stripConexoes(body) {
 function render(item) {
   let body = item.body;
   if (item.prd) body = withStatus(stripConexoes(body), PRD_STATUS_LABEL[item.status]);
-  else if (item.prdIndex) body = body.replaceAll('../../../docs/prd/', '');
+  else if (item.prdIndex) body = stripConexoes(body).replaceAll('../../../docs/prd/', '');
   else if (item.target.startsWith(WIKI_PREFIX)) body = wikiLinks(body);
   else if (README_RE.test(item.target)) body = readmeLinks(body);
   return `${BANNER(item.rel)}\n${body}`.replace(/\s+$/, '') + '\n';

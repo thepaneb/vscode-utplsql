@@ -322,5 +322,5 @@ Nenhuma nova setting. Comandos são registrados e keybindings definidos no
 
 <!-- brain:auto:start:conexoes -->
 - 🗺️ [[MOC - PRDs]]
-- ↩️ Referenciada por: [[BR-UI-004 - utplsql-hasFailures derivado de lastFailedItems (failed ou error)|BR-UI-004]]
+- 📐 Regras: [[BR-UI-004 - utplsql-hasFailures derivado de lastFailedItems (failed ou error)|BR-UI-004]]
 <!-- brain:auto:end -->

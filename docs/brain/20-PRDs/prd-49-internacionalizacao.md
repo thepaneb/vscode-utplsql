@@ -214,5 +214,5 @@ Atualizar: README (tabela de config), wiki `Configurações.md`.
 
 <!-- brain:auto:start:conexoes -->
 - 🗺️ [[MOC - PRDs]]
-- ↩️ Referenciada por: [[BR-CONN-015 - Idioma efetivo - setting válida vence o idioma do editor|BR-CONN-015]] · [[BR-I18N-001 - Resolução de locale e fallback de tradução|BR-I18N-001]]
+- 📐 Regras: [[BR-CONN-015 - Idioma efetivo - setting válida vence o idioma do editor|BR-CONN-015]] · [[BR-I18N-001 - Resolução de locale e fallback de tradução|BR-I18N-001]]
 <!-- brain:auto:end -->

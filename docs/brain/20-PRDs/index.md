@@ -315,3 +315,9 @@ docs/prd/
 feita automaticamente pelo workflow `.github/workflows/publish.yml` quando uma
 release é publicada no GitHub. O único comando local válido para distribuição é
 `npm run package` (gera `.vsix` para testes internos).
+
+## Conexões
+
+<!-- brain:auto:start:conexoes -->
+- 🗺️ [[MOC - PRDs]]
+<!-- brain:auto:end -->

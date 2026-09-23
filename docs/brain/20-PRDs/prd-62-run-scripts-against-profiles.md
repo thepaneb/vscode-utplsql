@@ -364,5 +364,5 @@ Menus de contexto no editor e Explorer.
 
 <!-- brain:auto:start:conexoes -->
 - 🗺️ [[MOC - PRDs]]
-- ↩️ Referenciada por: [[BR-CONN-010 - Guia de perfis quando não há perfis salvos|BR-CONN-010]]
+- 📐 Regras: [[BR-CONN-010 - Guia de perfis quando não há perfis salvos|BR-CONN-010]]
 <!-- brain:auto:end -->

@@ -207,5 +207,5 @@ Nenhuma nova setting.
 
 <!-- brain:auto:start:conexoes -->
 - 🗺️ [[MOC - PRDs]]
-- ↩️ Referenciada por: [[BR-PARSE-013 - Mapeamento resultado para teste por lastSegment+name-description com fallback|BR-PARSE-013]]
+- 📐 Regras: [[BR-PARSE-013 - Mapeamento resultado para teste por lastSegment+name-description com fallback|BR-PARSE-013]]
 <!-- brain:auto:end -->

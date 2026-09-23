@@ -307,5 +307,5 @@ context.subscriptions.push(
 
 <!-- brain:auto:start:conexoes -->
 - 🗺️ [[MOC - PRDs]]
-- ↩️ Referenciada por: [[BR-PARSE-002 - RE_PACKAGE aceita schema qualificado, BODY e identificador entre aspas|BR-PARSE-002]] · [[BR-PARSE-015 - CodeLens gera dois lenses por annotation, na linha da annotation|BR-PARSE-015]] · [[BR-UI-006 - CodeLens registrado apenas em scheme file e padrão .pks sem language id|BR-UI-006]]
+- 📐 Regras: [[BR-PARSE-002 - RE_PACKAGE aceita schema qualificado, BODY e identificador entre aspas|BR-PARSE-002]] · [[BR-PARSE-015 - CodeLens gera dois lenses por annotation, na linha da annotation|BR-PARSE-015]] · [[BR-UI-006 - CodeLens registrado apenas em scheme file e padrão .pks sem language id|BR-UI-006]]
 <!-- brain:auto:end -->

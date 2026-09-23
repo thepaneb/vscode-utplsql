@@ -409,7 +409,8 @@ function genConexoes(notePath) {
         .sort()
         .map((b) => wl(b, bases.get(b) || b))
         .join(' · ');
-      lines.push(`- ↩️ Referenciada por: ${links}`);
+      const label = fm.tipo === 'prd' ? '📐 Regras' : '↩️ Referenciada por';
+      lines.push(`- ${label}: ${links}`);
     }
   }
   return lines.join('\n') || '- 🗺️ _sem conexões_';

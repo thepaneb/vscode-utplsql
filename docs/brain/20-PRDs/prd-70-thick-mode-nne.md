@@ -427,5 +427,5 @@ Alvos com glue (thick+thin, node-oracledb 7.0.1): `win32-x64`, `linux-x64`,
 
 <!-- brain:auto:start:conexoes -->
 - 🗺️ [[MOC - PRDs]]
-- ↩️ Referenciada por: [[BR-CONN-012 - Thick opt-in, fixado na primeira chamada e idempotente|BR-CONN-012]]
+- 📐 Regras: [[BR-CONN-012 - Thick opt-in, fixado na primeira chamada e idempotente|BR-CONN-012]]
 <!-- brain:auto:end -->

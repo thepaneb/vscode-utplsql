@@ -272,5 +272,5 @@ executeRun() → CLI executa → stdout/stderr contém erros de compilação
 
 <!-- brain:auto:start:conexoes -->
 - 🗺️ [[MOC - PRDs]]
-- ↩️ Referenciada por: [[BR-UI-008 - Diagnósticos de compilação mapeiam ALL_ERRORS e usam source utPLSQL Compilation|BR-UI-008]]
+- 📐 Regras: [[BR-UI-008 - Diagnósticos de compilação mapeiam ALL_ERRORS e usam source utPLSQL Compilation|BR-UI-008]]
 <!-- brain:auto:end -->

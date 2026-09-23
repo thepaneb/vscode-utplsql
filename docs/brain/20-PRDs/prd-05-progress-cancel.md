@@ -186,5 +186,5 @@ Nenhuma nova setting.
 
 <!-- brain:auto:start:conexoes -->
 - 🗺️ [[MOC - PRDs]]
-- ↩️ Referenciada por: [[BR-EXEC-010 - Cancelamento dispara conn.break() nas duas conexões|BR-EXEC-010]] · [[BR-EXEC-011 - Timeout opcional reusa o caminho de cancelamento|BR-EXEC-011]] · [[BR-UI-002 - utplsql-running liga no início e desliga em todos os caminhos de saída|BR-UI-002]]
+- 📐 Regras: [[BR-EXEC-010 - Cancelamento dispara conn.break() nas duas conexões|BR-EXEC-010]] · [[BR-EXEC-011 - Timeout opcional reusa o caminho de cancelamento|BR-EXEC-011]] · [[BR-UI-002 - utplsql-running liga no início e desliga em todos os caminhos de saída|BR-UI-002]]
 <!-- brain:auto:end -->

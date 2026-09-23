@@ -241,5 +241,5 @@ via `File > Preferences > Keyboard Shortcuts`.
 
 <!-- brain:auto:start:conexoes -->
 - 🗺️ [[MOC - PRDs]]
-- ↩️ Referenciada por: [[BR-UI-001 - Context key utplsql-activated é setado na ativação|BR-UI-001]] · [[BR-UI-003 - utplsql-connected reflete a resolução de conexão sem prompt|BR-UI-003]]
+- 📐 Regras: [[BR-UI-001 - Context key utplsql-activated é setado na ativação|BR-UI-001]] · [[BR-UI-003 - utplsql-connected reflete a resolução de conexão sem prompt|BR-UI-003]]
 <!-- brain:auto:end -->
