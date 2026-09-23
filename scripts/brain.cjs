@@ -159,6 +159,51 @@ function genPrdSummary(note) {
   return linhas.join('\n');
 }
 
+function genStack() {
+  const pkg = JSON.parse(fs.readFileSync(path.join(REPO, 'package.json'), 'utf8'));
+  const rows = [];
+  const add = (k, v) => {
+    if (v) rows.push(`- **${k}:** ${v}`);
+  };
+  add('Node (engines)', pkg.engines?.node);
+  add('VSCode (engines)', pkg.engines?.vscode);
+  const nvm = path.join(REPO, '.nvmrc');
+  if (fs.existsSync(nvm)) add('.nvmrc', fs.readFileSync(nvm, 'utf8').trim());
+  try {
+    const ts = fs.readFileSync(path.join(REPO, 'tsconfig.json'), 'utf8');
+    const target = ts.match(/"target"\s*:\s*"([^"]+)"/);
+    const module = ts.match(/"module"\s*:\s*"([^"]+)"/);
+    if (target || module) add('TypeScript', [target?.[1], module?.[1]].filter(Boolean).join(' / '));
+  } catch {}
+  try {
+    const b = fs.readFileSync(path.join(REPO, 'biome.json'), 'utf8');
+    const lw = b.match(/"lineWidth"\s*:\s*(\d+)/);
+    const q = b.match(/"quoteStyle"\s*:\s*"([^"]+)"/);
+    if (lw || q) add('Biome', [lw && `lineWidth ${lw[1]}`, q?.[1]].filter(Boolean).join(', '));
+  } catch {}
+  add('Empacotamento', pkg.main);
+  return rows.join('\n') || '_indisponível_';
+}
+
+function genDeps() {
+  const pkg = JSON.parse(fs.readFileSync(path.join(REPO, 'package.json'), 'utf8'));
+  const fmt = (obj, escopo) =>
+    Object.entries(obj || {})
+      .sort(([a], [b]) => a.localeCompare(b))
+      .map(([n, v]) => `- \`${n}\` \`${v}\` — ${escopo}`);
+  const runtime = fmt(pkg.dependencies, 'runtime');
+  const dev = fmt(pkg.devDependencies, 'dev');
+  return [
+    `**Runtime (${runtime.length})**`,
+    '',
+    ...(runtime.length ? runtime : ['_nenhuma_']),
+    '',
+    `**Desenvolvimento (${dev.length})**`,
+    '',
+    ...(dev.length ? dev : ['_nenhuma_']),
+  ].join('\n');
+}
+
 const GENERATORS = {
   'root-docs': genRootDocs,
   'readme-variants': genReadmeVariants,
@@ -166,6 +211,8 @@ const GENERATORS = {
   'linkedin-index': genLinkedinIndex,
   'funcional-index': genFuncionalIndex,
   'prd-summary': genPrdSummary,
+  stack: genStack,
+  deps: genDeps,
 };
 
 // ── commands ───────────────────────────────────────────────────────────
