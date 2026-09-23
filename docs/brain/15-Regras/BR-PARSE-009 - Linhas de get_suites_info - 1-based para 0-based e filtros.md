@@ -35,4 +35,5 @@ Alinha as posições do editor (0-based) às linhas do dicionário Oracle (1-bas
 - 🗺️ [[MOC - Regras]]
 - 📄 PRDs: [[prd-74-db-first-discovery|PRD-74]]
 - 🎯 Requisitos: [[prd-74-db-first-discovery|PRD-74 RF1]] · [[prd-74-db-first-discovery|PRD-74 RF2]]
+- ↩️ Referenciada por: [[01-test-discovery]]
 <!-- brain:auto:end -->

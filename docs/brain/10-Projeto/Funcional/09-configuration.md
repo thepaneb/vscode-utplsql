@@ -5,6 +5,8 @@ numero: 09
 titulo: "09 — Configuration"
 publicar: docs/functional/09-configuration.md
 verificado: 2026-09-23
+regras: ["BR-CONN-001", "BR-CONN-002", "BR-CONN-003", "BR-CONN-004", "BR-CONN-005", "BR-CONN-006", "BR-CONN-007", "BR-CONN-008", "BR-CONN-009", "BR-CONN-010", "BR-CONN-011", "BR-CONN-012", "BR-CONN-013", "BR-CONN-014", "BR-CONN-015", "BR-UI-003", "BR-I18N-001"]
+relacionado: ["[[NFR-001 - Compatibilidade com Oracle e piso do utPLSQL]]", "[[NFR-002 - Compatibilidade com Node]]", "[[NFR-003 - Compatibilidade com VSCode]]"]
 tags: [funcional]
 ---
 # 09 — Configuration
@@ -355,3 +357,10 @@ O VSCode aplica settings nesta ordem (última sobrescreve):
 
 Recomendação: `sourcePath` no workspace. `connection` via env var (nunca em
 settings versionadas).
+
+## Conexões
+
+<!-- brain:auto:start:conexoes -->
+- 📐 Regras: [[BR-CONN-001 - Precedência de resolução da conexão|BR-CONN-001]] · [[BR-CONN-002 - Prompt só ocorre quando nada está configurado e não persiste|BR-CONN-002]] · [[BR-CONN-003 - Limpar conexão de sessão reseta o context key|BR-CONN-003]] · [[BR-CONN-004 - Perfil sobrescreve apenas sourcePath, coverageOwner e includePatterns|BR-CONN-004]] · [[BR-CONN-005 - Senha do perfil vai para o SecretStorage ao salvar|BR-CONN-005]] · [[BR-CONN-006 - Recomposição da conexão usa cache-secret e preserva perfil legado|BR-CONN-006]] · [[BR-CONN-007 - Migração de perfis legados é idempotente|BR-CONN-007]] · [[BR-CONN-008 - Mascaramento da senha tolera @ e barra na senha|BR-CONN-008]] · [[BR-CONN-009 - QuickPick de perfil mascara conexão e destaca charset-default|BR-CONN-009]] · [[BR-CONN-010 - Guia de perfis quando não há perfis salvos|BR-CONN-010]] · [[BR-CONN-011 - Importação do SQL Developer é restrita e tolerante a falhas|BR-CONN-011]] · [[BR-CONN-012 - Thick opt-in, fixado na primeira chamada e idempotente|BR-CONN-012]] · [[BR-CONN-013 - Parsing da connection string tolera @ e barra na senha|BR-CONN-013]] · [[BR-CONN-014 - Log de debug é opt-in por variável de ambiente|BR-CONN-014]] · [[BR-CONN-015 - Idioma efetivo - setting válida vence o idioma do editor|BR-CONN-015]] · [[BR-UI-003 - utplsql-connected reflete a resolução de conexão sem prompt|BR-UI-003]] · [[BR-I18N-001 - Resolução de locale e fallback de tradução|BR-I18N-001]]
+- 🔗 [[NFR-001 - Compatibilidade com Oracle e piso do utPLSQL]] · [[NFR-002 - Compatibilidade com Node]] · [[NFR-003 - Compatibilidade com VSCode]]
+<!-- brain:auto:end -->

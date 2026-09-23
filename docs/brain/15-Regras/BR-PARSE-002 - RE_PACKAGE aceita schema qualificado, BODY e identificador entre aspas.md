@@ -33,4 +33,5 @@ O Test Explorer precisa do nome lógico do package, não do schema, e deve recon
 <!-- brain:auto:start:conexoes -->
 - 🗺️ [[MOC - Regras]]
 - 📄 PRDs: [[prd-24-codelens-integration|PRD-24]] · [[prd-42-suiteparser-annotations|PRD-42]]
+- ↩️ Referenciada por: [[01-test-discovery]]
 <!-- brain:auto:end -->

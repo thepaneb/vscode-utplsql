@@ -5,6 +5,7 @@ numero: 01
 titulo: "01 — Test Discovery"
 publicar: docs/functional/01-test-discovery.md
 verificado: 2026-09-23
+regras: ["BR-PARSE-001", "BR-PARSE-002", "BR-PARSE-003", "BR-PARSE-004", "BR-PARSE-005", "BR-PARSE-006", "BR-PARSE-007", "BR-PARSE-008", "BR-PARSE-009", "BR-PARSE-010"]
 tags: [funcional]
 ---
 # 01 — Test Discovery
@@ -200,3 +201,8 @@ Annotation Cache`** (`utplsql.rebuildAnnotations`) chama
 `ut_runner.rebuild_annotation_cache(<owner>)` e atualiza a árvore. Requer
 conexão resolvida (não abre prompt); sem conexão, avisa.
 
+## Conexões
+
+<!-- brain:auto:start:conexoes -->
+- 📐 Regras: [[BR-PARSE-001 - Arquivo só é suite utPLSQL se tiver %suite E CREATE PACKAGE|BR-PARSE-001]] · [[BR-PARSE-002 - RE_PACKAGE aceita schema qualificado, BODY e identificador entre aspas|BR-PARSE-002]] · [[BR-PARSE-003 - %test só materializa teste quando seguido de PROCEDURE; órfão é sobrescrito|BR-PARSE-003]] · [[BR-PARSE-004 - Annotations estendidas só valem após o primeiro %test|BR-PARSE-004]] · [[BR-PARSE-005 - Normalização de %throws, %tags e %displayname|BR-PARSE-005]] · [[BR-PARSE-006 - Descoberta por arquivo descarta suítes-testes disabled, vazios e ilegíveis|BR-PARSE-006]] · [[BR-PARSE-007 - Fallback ALL_OBJECTS-ALL_SOURCE ignora UT_- e nunca lança|BR-PARSE-007]] · [[BR-PARSE-008 - DB-first com gate de versão 3.1.3 e modos de fonte auto-database-file|BR-PARSE-008]] · [[BR-PARSE-009 - Linhas de get_suites_info - 1-based para 0-based e filtros|BR-PARSE-009]] · [[BR-PARSE-010 - Fusão arquivo+banco - arquivo prevalece em uri-linha, banco em descrição-tags|BR-PARSE-010]]
+<!-- brain:auto:end -->

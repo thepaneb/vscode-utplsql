@@ -35,5 +35,5 @@ Evita injeção (nenhum texto de usuário entra no SQL) e o bind ambíguo de col
 - 🗺️ [[MOC - Regras]]
 - 📄 PRDs: [[prd-69-oracle-runner-typed-binds|PRD-69]]
 - 🎯 Requisitos: [[prd-69-oracle-runner-typed-binds|PRD-69 RF1]]
-- ↩️ Referenciada por: [[SEC-005 - Nenhum valor de usuário é concatenado no PL-SQL|SEC-005]]
+- ↩️ Referenciada por: [[02-test-execution]] · [[SEC-005 - Nenhum valor de usuário é concatenado no PL-SQL|SEC-005]]
 <!-- brain:auto:end -->

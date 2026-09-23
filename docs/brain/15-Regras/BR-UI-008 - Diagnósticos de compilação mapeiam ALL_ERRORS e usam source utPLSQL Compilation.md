@@ -35,4 +35,5 @@ Permite pular direto para a linha do erro no código PL/SQL, sempre de forma bes
 - 🗺️ [[MOC - Regras]]
 - 📄 PRDs: [[prd-28-plsql-compilation-diagnostics|PRD-28]]
 - 🎯 Requisitos: [[prd-28-plsql-compilation-diagnostics|PRD-28 RF2]] · [[prd-28-plsql-compilation-diagnostics|PRD-28 RF3]]
+- ↩️ Referenciada por: [[07-diagnostics-and-validation]]
 <!-- brain:auto:end -->

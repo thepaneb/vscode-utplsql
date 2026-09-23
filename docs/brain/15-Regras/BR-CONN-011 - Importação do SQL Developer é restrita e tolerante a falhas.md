@@ -35,4 +35,5 @@ Importar perfis do SQL Developer sem varrer o disco inteiro e sem quebrar quando
 - 🗺️ [[MOC - Regras]]
 - 📄 PRDs: [[prd-34-multi-connection-profiles|PRD-34]]
 - 🎯 Requisitos: [[prd-34-multi-connection-profiles|PRD-34 RF6]]
+- ↩️ Referenciada por: [[09-configuration]]
 <!-- brain:auto:end -->

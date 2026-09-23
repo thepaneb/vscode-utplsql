@@ -35,4 +35,5 @@ O lens deve ficar sobre a annotation (não a procedure) para o usuário executar
 - 🗺️ [[MOC - Regras]]
 - 📄 PRDs: [[prd-24-codelens-integration|PRD-24]]
 - 🎯 Requisitos: [[prd-24-codelens-integration|PRD-24 RF2]] · [[prd-24-codelens-integration|PRD-24 RF3]]
+- ↩️ Referenciada por: [[05-ux-components]]
 <!-- brain:auto:end -->

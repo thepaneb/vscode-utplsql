@@ -35,5 +35,5 @@ Permitir trocar/limpar credenciais digitadas em sessão e refletir o estado na U
 - 🗺️ [[MOC - Regras]]
 - 📄 PRDs: [[prd-34-multi-connection-profiles|PRD-34]]
 - 🎯 Requisitos: [[prd-34-multi-connection-profiles|PRD-34 RF7]]
-- ↩️ Referenciada por: [[SEC-003 - Senha digitada em sessão só vive em memória|SEC-003]]
+- ↩️ Referenciada por: [[09-configuration]] · [[SEC-003 - Senha digitada em sessão só vive em memória|SEC-003]]
 <!-- brain:auto:end -->

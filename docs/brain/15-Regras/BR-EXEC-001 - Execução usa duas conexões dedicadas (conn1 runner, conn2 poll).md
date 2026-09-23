@@ -35,4 +35,5 @@ O ut_runner.run bloqueia a sessão até o fim dos testes; uma segunda sessão é
 - 🗺️ [[MOC - Regras]]
 - 📄 PRDs: [[prd-11-streaming-results|PRD-11]]
 - 🎯 Requisitos: [[prd-11-streaming-results|PRD-11 RF3]]
+- ↩️ Referenciada por: [[02-test-execution]]
 <!-- brain:auto:end -->

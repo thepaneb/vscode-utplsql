@@ -35,4 +35,5 @@ Mantém o Test Explorer alinhado ao que será realmente executado e impede que e
 - 🗺️ [[MOC - Regras]]
 - 📄 PRDs: [[prd-42-suiteparser-annotations|PRD-42]]
 - 🎯 Requisitos: [[prd-42-suiteparser-annotations|PRD-42 RF1]]
+- ↩️ Referenciada por: [[01-test-discovery]]
 <!-- brain:auto:end -->

@@ -35,4 +35,5 @@ Guiar o primeiro uso sem bloquear a extensão, reutilizando os comandos existent
 - 🗺️ [[MOC - Regras]]
 - 📄 PRDs: [[prd-34-multi-connection-profiles|PRD-34]] · [[prd-62-run-scripts-against-profiles|PRD-62]]
 - 🎯 Requisitos: [[prd-34-multi-connection-profiles|PRD-34 RF4]] · [[prd-62-run-scripts-against-profiles|PRD-62 RF1]]
+- ↩️ Referenciada por: [[09-configuration]]
 <!-- brain:auto:end -->

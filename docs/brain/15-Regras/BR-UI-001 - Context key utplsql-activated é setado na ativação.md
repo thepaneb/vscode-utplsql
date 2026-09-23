@@ -35,4 +35,5 @@ Keybindings como refresh/info/clearConnection usam when utplsql:activated e prec
 - 🗺️ [[MOC - Regras]]
 - 📄 PRDs: [[prd-27-default-keybindings|PRD-27]]
 - 🎯 Requisitos: [[prd-27-default-keybindings|PRD-27 RF4]]
+- ↩️ Referenciada por: [[05-ux-components]]
 <!-- brain:auto:end -->

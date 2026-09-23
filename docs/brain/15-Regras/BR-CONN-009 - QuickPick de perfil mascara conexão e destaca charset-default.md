@@ -35,5 +35,5 @@ Exibir contexto legível sem expor senha e sinalizar perfis não-utf8 e o perfil
 - 🗺️ [[MOC - Regras]]
 - 📄 PRDs: [[prd-34-multi-connection-profiles|PRD-34]]
 - 🎯 Requisitos: [[prd-34-multi-connection-profiles|PRD-34 RF4]]
-- ↩️ Referenciada por: [[SEC-002 - Connection string é sempre mascarada em qualquer saída|SEC-002]]
+- ↩️ Referenciada por: [[09-configuration]] · [[SEC-002 - Connection string é sempre mascarada em qualquer saída|SEC-002]]
 <!-- brain:auto:end -->

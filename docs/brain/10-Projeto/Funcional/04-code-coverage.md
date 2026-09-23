@@ -5,6 +5,7 @@ numero: 04
 titulo: "04 — Code Coverage"
 publicar: docs/functional/04-code-coverage.md
 verificado: 2026-09-23
+regras: ["BR-COB-001", "BR-COB-002", "BR-COB-003", "BR-EXEC-009", "BR-EXEC-013"]
 tags: [funcional]
 ---
 # 04 — Code Coverage
@@ -248,3 +249,9 @@ function discoverViewFiles(root: string, sourcePath: string): string[];
 -- Acesso de leitura ao V$SQL para rastrear views executadas
 GRANT SELECT ON SYS.V_$SQL TO <schema>;
 ```
+
+## Conexões
+
+<!-- brain:auto:start:conexoes -->
+- 📐 Regras: [[BR-COB-001 - Cobertura Oracle exige GRANT EXECUTE ON SYS.DBMS_PROFILER|BR-COB-001]] · [[BR-COB-002 - resolveSourceUri tenta variantes de extensão e bloqueia path traversal|BR-COB-002]] · [[BR-COB-003 - Cobertura de views via V$SQL é opt-in e best-effort|BR-COB-003]] · [[BR-EXEC-009 - Separação do XML de cobertura do XML JUnit no mesmo buffer|BR-EXEC-009]] · [[BR-EXEC-013 - Reporter de cobertura só entra se existir no banco|BR-EXEC-013]]
+<!-- brain:auto:end -->

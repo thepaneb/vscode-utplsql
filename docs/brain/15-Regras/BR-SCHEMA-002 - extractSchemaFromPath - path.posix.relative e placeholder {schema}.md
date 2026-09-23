@@ -35,4 +35,5 @@ Cross-platform (Windows/WSL) e o {schema} delimita a captura; sem placeholder n�
 - 🗺️ [[MOC - Regras]]
 - 📄 PRDs: [[prd-30-schema-aware-organization|PRD-30]] · [[prd-43-schema-db-discovery|PRD-43]]
 - 🎯 Requisitos: [[prd-30-schema-aware-organization|PRD-30 RF1]]
+- ↩️ Referenciada por: [[06-tree-organization]]
 <!-- brain:auto:end -->

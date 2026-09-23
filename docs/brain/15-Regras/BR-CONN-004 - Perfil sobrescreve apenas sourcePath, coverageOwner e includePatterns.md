@@ -35,4 +35,5 @@ Permitir cenários por ambiente (DEV/TEST/PROD) sem duplicar toda a configuraç�
 - 🗺️ [[MOC - Regras]]
 - 📄 PRDs: [[prd-34-multi-connection-profiles|PRD-34]]
 - 🎯 Requisitos: [[prd-34-multi-connection-profiles|PRD-34 RF1]]
+- ↩️ Referenciada por: [[09-configuration]]
 <!-- brain:auto:end -->

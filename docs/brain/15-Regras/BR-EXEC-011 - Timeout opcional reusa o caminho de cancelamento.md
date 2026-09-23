@@ -35,4 +35,5 @@ Evita run pendurado sem depender de cancelamento manual, reaproveitando a mesma 
 - 🗺️ [[MOC - Regras]]
 - 📄 PRDs: [[prd-05-progress-cancel|PRD-05]]
 - 🎯 Requisitos: [[prd-05-progress-cancel|PRD-05 RF3]]
+- ↩️ Referenciada por: [[02-test-execution]]
 <!-- brain:auto:end -->

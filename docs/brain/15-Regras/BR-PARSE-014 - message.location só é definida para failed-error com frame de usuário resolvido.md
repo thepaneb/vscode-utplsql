@@ -35,4 +35,5 @@ Habilita o Go to Error nativo do VSCode apenas quando há local confiável, sem 
 - 🗺️ [[MOC - Regras]]
 - 📄 PRDs: [[prd-29-jump-to-failing-assertion|PRD-29]]
 - 🎯 Requisitos: [[prd-29-jump-to-failing-assertion|PRD-29 RF1]]
+- ↩️ Referenciada por: [[03-results-and-reporting]] · [[08-jump-to-failure]]
 <!-- brain:auto:end -->

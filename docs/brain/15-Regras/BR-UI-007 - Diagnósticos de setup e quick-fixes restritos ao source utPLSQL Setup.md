@@ -35,5 +35,5 @@ Isola problemas de configuração dos problemas do código do usuário e evita q
 - 🗺️ [[MOC - Regras]]
 - 📄 PRDs: [[prd-32-quickfix-setup-diagnostics|PRD-32]]
 - 🎯 Requisitos: [[prd-32-quickfix-setup-diagnostics|PRD-32 RF1]] · [[prd-32-quickfix-setup-diagnostics|PRD-32 RF4]]
-- ↩️ Referenciada por: [[ERR-006 - UTPLSQL_INVALID_OBJECTS — objetos UT3 inválidos no banco|ERR-006]] · [[SEC-010 - Fluxos não interativos nunca abrem prompt de conexão|SEC-010]]
+- ↩️ Referenciada por: [[07-diagnostics-and-validation]] · [[ERR-006 - UTPLSQL_INVALID_OBJECTS — objetos UT3 inválidos no banco|ERR-006]] · [[SEC-010 - Fluxos não interativos nunca abrem prompt de conexão|SEC-010]]
 <!-- brain:auto:end -->

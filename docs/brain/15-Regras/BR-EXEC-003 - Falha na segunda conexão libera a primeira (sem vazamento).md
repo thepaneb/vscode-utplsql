@@ -35,4 +35,5 @@ Sem o close, a conexão do pool fica presa até expirar, esgotando o pool em exe
 - 🗺️ [[MOC - Regras]]
 - 📄 PRDs: [[prd-38-connection-pooling|PRD-38]]
 - 🎯 Requisitos: [[prd-38-connection-pooling|PRD-38 RF3]]
+- ↩️ Referenciada por: [[02-test-execution]]
 <!-- brain:auto:end -->

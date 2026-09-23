@@ -5,6 +5,8 @@ numero: 02
 titulo: "02 — Test Execution"
 publicar: docs/functional/02-test-execution.md
 verificado: 2026-09-23
+regras: ["BR-EXEC-001", "BR-EXEC-002", "BR-EXEC-003", "BR-EXEC-004", "BR-EXEC-005", "BR-EXEC-006", "BR-EXEC-007", "BR-EXEC-008", "BR-EXEC-009", "BR-EXEC-010", "BR-EXEC-011", "BR-EXEC-012", "BR-EXEC-013", "BR-EXEC-014"]
+relacionado: ["[[NFR-004 - Latência do streaming]]", "[[NFR-005 - Cancelamento e timeout]]"]
 tags: [funcional]
 ---
 # 02 — Test Execution
@@ -160,3 +162,10 @@ conn1 (run)                              conn2 (poll)
 | `utplsql.tags` | `""` | Expressão de tags do utPLSQL (`a_tags`) para filtrar quais testes executam (ex.: `fast & !integration`); vazio = todos |
 | `utplsql.run.randomOrder` | `false` | Envia `a_random_test_order` ao `ut_runner.run` (revela dependências de ordem) |
 | `utplsql.run.randomOrderSeed` | `0` | Seed da ordem aleatória (`0` = sorteada pelo banco; > 0 reproduz e é logada no Output) |
+
+## Conexões
+
+<!-- brain:auto:start:conexoes -->
+- 📐 Regras: [[BR-EXEC-001 - Execução usa duas conexões dedicadas (conn1 runner, conn2 poll)|BR-EXEC-001]] · [[BR-EXEC-002 - Conexões do runner têm callTimeout zerado|BR-EXEC-002]] · [[BR-EXEC-003 - Falha na segunda conexão libera a primeira (sem vazamento)|BR-EXEC-003]] · [[BR-EXEC-004 - Prefixo de schema utPLSQL descoberto via ALL_SYNONYMS|BR-EXEC-004]] · [[BR-EXEC-005 - Buffer de saída é limpo antes de cada run|BR-EXEC-005]] · [[BR-EXEC-006 - Reporters gravam na mesma UT_OUTPUT_BUFFER_TMP; CLOB não é usada|BR-EXEC-006]] · [[BR-EXEC-007 - Poll do buffer a cada 200ms por message_id incremental|BR-EXEC-007]] · [[BR-EXEC-008 - Roteamento XML x output de documentação com detecção de CDATA|BR-EXEC-008]] · [[BR-EXEC-009 - Separação do XML de cobertura do XML JUnit no mesmo buffer|BR-EXEC-009]] · [[BR-EXEC-010 - Cancelamento dispara conn.break() nas duas conexões|BR-EXEC-010]] · [[BR-EXEC-011 - Timeout opcional reusa o caminho de cancelamento|BR-EXEC-011]] · [[BR-EXEC-012 - Binds tipados - nenhum valor de usuário concatenado no PL-SQL|BR-EXEC-012]] · [[BR-EXEC-013 - Reporter de cobertura só entra se existir no banco|BR-EXEC-013]] · [[BR-EXEC-014 - Reporters adicionais são validados e sanitizados antes do PL-SQL|BR-EXEC-014]]
+- 🔗 [[NFR-004 - Latência do streaming]] · [[NFR-005 - Cancelamento e timeout]]
+<!-- brain:auto:end -->

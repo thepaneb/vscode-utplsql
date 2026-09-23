@@ -35,4 +35,5 @@ Localizar mensagens do domínio de conexão/configuração de forma consistente 
 - 🗺️ [[MOC - Regras]]
 - 📄 PRDs: [[prd-49-internacionalizacao|PRD-49]]
 - 🎯 Requisitos: [[prd-49-internacionalizacao|PRD-49 RF1]]
+- ↩️ Referenciada por: [[09-configuration]]
 <!-- brain:auto:end -->

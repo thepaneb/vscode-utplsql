@@ -35,4 +35,5 @@ O keybinding Escape só cancela a execução enquanto utplsql:running estiver at
 - 🗺️ [[MOC - Regras]]
 - 📄 PRDs: [[prd-05-progress-cancel|PRD-05]]
 - 🎯 Requisitos: [[prd-27-default-keybindings|PRD-27 RF4]]
+- ↩️ Referenciada por: [[05-ux-components]]
 <!-- brain:auto:end -->

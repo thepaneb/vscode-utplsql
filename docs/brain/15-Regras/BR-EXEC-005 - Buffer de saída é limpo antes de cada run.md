@@ -35,4 +35,5 @@ As tabelas temporárias persistem entre execuções; sem o DELETE, mensagens ant
 - 🗺️ [[MOC - Regras]]
 - 📄 PRDs: [[prd-11-streaming-results|PRD-11]]
 - 🎯 Requisitos: [[prd-11-streaming-results|PRD-11 RF3]]
+- ↩️ Referenciada por: [[02-test-execution]]
 <!-- brain:auto:end -->

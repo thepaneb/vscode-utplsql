@@ -35,5 +35,5 @@ O thick só é necessário para bancos com NNE e não pode ser reconfigurado em 
 - 🗺️ [[MOC - Regras]]
 - 📄 PRDs: [[prd-70-thick-mode-nne|PRD-70]]
 - 🎯 Requisitos: [[prd-70-thick-mode-nne|PRD-70 RF2]]
-- ↩️ Referenciada por: [[ERR-004 - UTPLSQL_THICK_MODE — falha ao iniciar o modo thick (DPI-1047-NJS-090)|ERR-004]]
+- ↩️ Referenciada por: [[09-configuration]] · [[11-debugger]] · [[ERR-004 - UTPLSQL_THICK_MODE — falha ao iniciar o modo thick (DPI-1047-NJS-090)|ERR-004]]
 <!-- brain:auto:end -->

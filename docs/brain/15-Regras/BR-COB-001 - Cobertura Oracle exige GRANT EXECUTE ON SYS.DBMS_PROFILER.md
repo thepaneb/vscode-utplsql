@@ -35,5 +35,5 @@ DBMS_PROFILER é recurso privilegiado; a extensão não pode conceder grants e p
 - 🗺️ [[MOC - Regras]]
 - 📄 PRDs: [[prd-12-sql-coverage|PRD-12]] · [[prd-32-quickfix-setup-diagnostics|PRD-32]]
 - 🎯 Requisitos: [[prd-32-quickfix-setup-diagnostics|PRD-32 RF3]] · [[prd-32-quickfix-setup-diagnostics|PRD-32 RF5]]
-- ↩️ Referenciada por: [[ERR-005 - UTPLSQL_NO_COVERAGE — cobertura não gerada por falta de grants|ERR-005]] · [[SEC-009 - Grants são copiados para o clipboard, nunca executados automaticamente|SEC-009]]
+- ↩️ Referenciada por: [[04-code-coverage]] · [[07-diagnostics-and-validation]] · [[ERR-005 - UTPLSQL_NO_COVERAGE — cobertura não gerada por falta de grants|ERR-005]] · [[SEC-009 - Grants são copiados para o clipboard, nunca executados automaticamente|SEC-009]]
 <!-- brain:auto:end -->

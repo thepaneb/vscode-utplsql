@@ -35,5 +35,5 @@ O nome vem de settings (potencialmente do workspace) e é concatenado no PL/SQL;
 - 🗺️ [[MOC - Regras]]
 - 📄 PRDs: [[prd-69-oracle-runner-typed-binds|PRD-69]]
 - 🎯 Requisitos: [[prd-69-oracle-runner-typed-binds|PRD-69 RF3]]
-- ↩️ Referenciada por: [[SEC-006 - Nome de reporter é sanitizado antes de ir ao PL-SQL|SEC-006]]
+- ↩️ Referenciada por: [[02-test-execution]] · [[SEC-006 - Nome de reporter é sanitizado antes de ir ao PL-SQL|SEC-006]]
 <!-- brain:auto:end -->

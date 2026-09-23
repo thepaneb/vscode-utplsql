@@ -35,4 +35,5 @@ O runner pode rodar por minutos; um callTimeout herdado derrubaria o run antes d
 - 🗺️ [[MOC - Regras]]
 - 📄 PRDs: [[prd-38-connection-pooling|PRD-38]]
 - 🎯 Requisitos: [[prd-38-connection-pooling|PRD-38 RF3]]
+- ↩️ Referenciada por: [[02-test-execution]]
 <!-- brain:auto:end -->

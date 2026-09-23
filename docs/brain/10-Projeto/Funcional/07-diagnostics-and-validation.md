@@ -5,6 +5,7 @@ numero: 07
 titulo: "07 — Diagnostics and Validation"
 publicar: docs/functional/07-diagnostics-and-validation.md
 verificado: 2026-09-23
+regras: ["BR-UI-007", "BR-UI-008", "BR-COB-001"]
 tags: [funcional]
 ---
 # 07 — Diagnostics and Validation
@@ -158,3 +159,9 @@ commands/run.ts (pós-run, PRD-68)
 |---|---|---|
 | `utplsql.compilationDiagnostics.enabled` | `true` | Publica erros de compilação PL/SQL (`ALL_ERRORS`) no Problems Panel após cada run (PRD-68) |
 | `utplsql.setupDiagnostics.enabled` | `true` | Diagnóstico de configuração |
+
+## Conexões
+
+<!-- brain:auto:start:conexoes -->
+- 📐 Regras: [[BR-UI-007 - Diagnósticos de setup e quick-fixes restritos ao source utPLSQL Setup|BR-UI-007]] · [[BR-UI-008 - Diagnósticos de compilação mapeiam ALL_ERRORS e usam source utPLSQL Compilation|BR-UI-008]] · [[BR-COB-001 - Cobertura Oracle exige GRANT EXECUTE ON SYS.DBMS_PROFILER|BR-COB-001]]
+<!-- brain:auto:end -->

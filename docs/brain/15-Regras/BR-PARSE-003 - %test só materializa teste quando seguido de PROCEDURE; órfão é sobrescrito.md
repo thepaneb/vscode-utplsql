@@ -33,4 +33,5 @@ Evita criar itens fantasma para annotations sem procedure correspondente.
 <!-- brain:auto:start:conexoes -->
 - 🗺️ [[MOC - Regras]]
 - 📄 PRDs: [[prd-42-suiteparser-annotations|PRD-42]]
+- ↩️ Referenciada por: [[01-test-discovery]]
 <!-- brain:auto:end -->

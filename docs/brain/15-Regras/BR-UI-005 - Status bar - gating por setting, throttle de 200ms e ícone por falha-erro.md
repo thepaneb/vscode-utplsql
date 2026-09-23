@@ -35,4 +35,5 @@ Evita flood de updates no showRunning chamado por suite e normaliza o resumo pas
 - 🗺️ [[MOC - Regras]]
 - 📄 PRDs: [[prd-25-status-bar-indicator|PRD-25]]
 - 🎯 Requisitos: [[prd-25-status-bar-indicator|PRD-25 RF1]] · [[prd-25-status-bar-indicator|PRD-25 RF2]] · [[prd-25-status-bar-indicator|PRD-25 RF4]]
+- ↩️ Referenciada por: [[05-ux-components]]
 <!-- brain:auto:end -->

@@ -35,5 +35,5 @@ Passar um reporter inexistente ao ut_runner.run faria o run inteiro abortar com 
 - 🗺️ [[MOC - Regras]]
 - 📄 PRDs: [[prd-12-sql-coverage|PRD-12]] · [[prd-69-oracle-runner-typed-binds|PRD-69]]
 - 🎯 Requisitos: [[prd-69-oracle-runner-typed-binds|PRD-69 RF3]]
-- ↩️ Referenciada por: [[ERR-005 - UTPLSQL_NO_COVERAGE — cobertura não gerada por falta de grants|ERR-005]]
+- ↩️ Referenciada por: [[02-test-execution]] · [[04-code-coverage]] · [[ERR-005 - UTPLSQL_NO_COVERAGE — cobertura não gerada por falta de grants|ERR-005]]
 <!-- brain:auto:end -->

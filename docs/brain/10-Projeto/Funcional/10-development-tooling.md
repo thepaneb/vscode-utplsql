@@ -5,6 +5,7 @@ numero: 10
 titulo: "10 — Development Tooling"
 publicar: docs/functional/10-development-tooling.md
 verificado: 2026-09-23
+relacionado: ["[[NFR-007 - Cobertura de testes TypeScript]]", "[[PAT-001 - Módulos puros vs dependentes de vscode]]", "[[PAT-007 - Stub de vscode em duas camadas]]", "[[ADR-006 - Modulos puros vs dependentes de vscode]]"]
 tags: [funcional]
 ---
 # 10 — Development Tooling
@@ -235,3 +236,9 @@ inclusive falha de propósito. Comando local válido: `npm run package` (gera `.
 ## Node
 
 `.nvmrc` → `24`. CI testa 22/24 (Node 20 atingiu EOL). Requer Node 22+ local.
+
+## Conexões
+
+<!-- brain:auto:start:conexoes -->
+- 🔗 [[NFR-007 - Cobertura de testes TypeScript]] · [[PAT-001 - Módulos puros vs dependentes de vscode]] · [[PAT-007 - Stub de vscode em duas camadas]] · [[ADR-006 - Modulos puros vs dependentes de vscode]]
+<!-- brain:auto:end -->

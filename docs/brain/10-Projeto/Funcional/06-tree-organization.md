@@ -5,6 +5,7 @@ numero: 06
 titulo: "06 — Tree Organization"
 publicar: docs/functional/06-tree-organization.md
 verificado: 2026-09-23
+regras: ["BR-SCHEMA-001", "BR-SCHEMA-002", "BR-SCHEMA-003"]
 tags: [funcional]
 ---
 # 06 — Tree Organization
@@ -192,3 +193,9 @@ o cache. Necessário para o caso de refresh ainda não ter populado.
 |---|---|---|
 | `utplsql.organization` | `file` | `file` ou `schema` |
 | `utplsql.organization.schemaPattern` | `db/{schema}/**` | Padrão glob para extrair schema |
+
+## Conexões
+
+<!-- brain:auto:start:conexoes -->
+- 📐 Regras: [[BR-SCHEMA-001 - organization bifurca file tree vs schema tree; suiteMap é o lookup canônico|BR-SCHEMA-001]] · [[BR-SCHEMA-002 - extractSchemaFromPath - path.posix.relative e placeholder {schema}|BR-SCHEMA-002]] · [[BR-SCHEMA-003 - collectAllItems usa cachedItems e, se vazio, percorre até 3 níveis|BR-SCHEMA-003]]
+<!-- brain:auto:end -->

@@ -35,4 +35,5 @@ A extensão consome um único stream misto (doc + JUnit + cobertura) da tabela V
 - 🗺️ [[MOC - Regras]]
 - 📄 PRDs: [[prd-11-streaming-results|PRD-11]]
 - 🎯 Requisitos: [[prd-11-streaming-results|PRD-11 RF3]]
+- ↩️ Referenciada por: [[02-test-execution]]
 <!-- brain:auto:end -->

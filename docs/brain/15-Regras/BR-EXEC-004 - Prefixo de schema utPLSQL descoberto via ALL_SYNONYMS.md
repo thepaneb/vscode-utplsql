@@ -35,4 +35,5 @@ Suporta install próprio (prefixo vazio, resolve pelo schema atual) e shared ins
 - 🗺️ [[MOC - Regras]]
 - 📄 PRDs: [[prd-43-schema-db-discovery|PRD-43]] · [[prd-64-oracle-only-migration|PRD-64]]
 - 🎯 Requisitos: [[prd-11-streaming-results|PRD-11 RF3]]
+- ↩️ Referenciada por: [[02-test-execution]]
 <!-- brain:auto:end -->

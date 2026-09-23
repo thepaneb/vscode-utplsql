@@ -5,6 +5,8 @@ numero: 11
 titulo: "11 — PL/SQL Debugger"
 publicar: docs/functional/11-debugger.md
 verificado: 2026-09-23
+regras: ["BR-CONN-012"]
+relacionado: ["[[NFR-001 - Compatibilidade com Oracle e piso do utPLSQL]]", "[[ADR-012 - Debugger PLSQL via DBMS_DEBUG e DAP]]"]
 tags: [funcional]
 ---
 # 11 — PL/SQL Debugger
@@ -204,3 +206,10 @@ pool compartilhado esgotaria as conexões do runner/cobertura (`NJS-040
 queueTimeout`). Respeita o modo do cliente (`utplsql.oracleClientMode`, PRD-70).
 Veja [02 — Test Execution](02-test-execution.md) e
 [09 — Configuration](09-configuration.md).
+
+## Conexões
+
+<!-- brain:auto:start:conexoes -->
+- 📐 Regras: [[BR-CONN-012 - Thick opt-in, fixado na primeira chamada e idempotente|BR-CONN-012]]
+- 🔗 [[NFR-001 - Compatibilidade com Oracle e piso do utPLSQL]] · [[ADR-012 - Debugger PLSQL via DBMS_DEBUG e DAP]]
+<!-- brain:auto:end -->

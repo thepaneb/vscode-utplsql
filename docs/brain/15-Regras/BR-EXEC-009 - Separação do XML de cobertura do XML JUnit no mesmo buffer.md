@@ -35,5 +35,5 @@ Ambos os reporters compartilham a mesma tabela; o marcador <coverage é o delimi
 - 🗺️ [[MOC - Regras]]
 - 📄 PRDs: [[prd-11-streaming-results|PRD-11]] · [[prd-12-sql-coverage|PRD-12]]
 - 🎯 Requisitos: [[prd-11-streaming-results|PRD-11 RF5]]
-- ↩️ Referenciada por: [[ERR-010 - Erro genérico do ut_runner.run (runner.oracleError)|ERR-010]]
+- ↩️ Referenciada por: [[02-test-execution]] · [[04-code-coverage]] · [[ERR-010 - Erro genérico do ut_runner.run (runner.oracleError)|ERR-010]]
 <!-- brain:auto:end -->

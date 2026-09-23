@@ -35,4 +35,5 @@ No modo schema as suites ficam 3 níveis abaixo da raiz; comandos como runForUri
 - 🗺️ [[MOC - Regras]]
 - 📄 PRDs: [[prd-30-schema-aware-organization|PRD-30]]
 - 🎯 Requisitos: [[prd-30-schema-aware-organization|PRD-30 RF3]] · [[prd-30-schema-aware-organization|PRD-30 RF4]]
+- ↩️ Referenciada por: [[06-tree-organization]]
 <!-- brain:auto:end -->

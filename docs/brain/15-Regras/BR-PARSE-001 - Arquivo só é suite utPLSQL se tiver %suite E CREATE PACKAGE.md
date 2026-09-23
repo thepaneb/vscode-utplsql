@@ -33,4 +33,5 @@ Evita falsos positivos de trechos que apenas citam %suite e garante que o nome d
 <!-- brain:auto:start:conexoes -->
 - 🗺️ [[MOC - Regras]]
 - 📄 PRDs: [[prd-42-suiteparser-annotations|PRD-42]]
+- ↩️ Referenciada por: [[01-test-discovery]]
 <!-- brain:auto:end -->

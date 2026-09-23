@@ -5,6 +5,7 @@ numero: 08
 titulo: "08 — Jump to Failure"
 publicar: docs/functional/08-jump-to-failure.md
 verificado: 2026-09-23
+regras: ["BR-PARSE-012", "BR-PARSE-014"]
 tags: [funcional]
 ---
 # 08 — Jump to Failure
@@ -130,3 +131,9 @@ Apenas o primeiro frame de usuário é usado para navegação.
 - Stack traces multi-frame usam o primeiro frame de usuário
 - Código externo (packages padrão Oracle) → `message.location` fica `undefined`
 - Resolução para `.pks` por padrão; `.pkb` não é verificado automaticamente
+
+## Conexões
+
+<!-- brain:auto:start:conexoes -->
+- 📐 Regras: [[BR-PARSE-012 - Stack trace - regex quoted-unquoted e filtro de frames do framework|BR-PARSE-012]] · [[BR-PARSE-014 - message.location só é definida para failed-error com frame de usuário resolvido|BR-PARSE-014]]
+<!-- brain:auto:end -->

@@ -5,6 +5,7 @@ numero: 03
 titulo: "03 — Results and Reporting"
 publicar: docs/functional/03-results-and-reporting.md
 verificado: 2026-09-23
+regras: ["BR-PARSE-011", "BR-PARSE-012", "BR-PARSE-013", "BR-PARSE-014"]
 tags: [funcional]
 ---
 # 03 — Results and Reporting
@@ -140,3 +141,9 @@ Linhas não-XML são exibidas diretamente; linhas XML são acumuladas para parse
 > Diagnósticos de compilação são publicados **após o run** por
 > `commands/run.ts` → `refreshCompilationDiagnostics()` (veja
 > [07 — Diagnostics](07-diagnostics-and-validation.md)).
+
+## Conexões
+
+<!-- brain:auto:start:conexoes -->
+- 📐 Regras: [[BR-PARSE-011 - Precedência de status JUnit failure - error - skipped - passed|BR-PARSE-011]] · [[BR-PARSE-012 - Stack trace - regex quoted-unquoted e filtro de frames do framework|BR-PARSE-012]] · [[BR-PARSE-013 - Mapeamento resultado para teste por lastSegment+name-description com fallback|BR-PARSE-013]] · [[BR-PARSE-014 - message.location só é definida para failed-error com frame de usuário resolvido|BR-PARSE-014]]
+<!-- brain:auto:end -->
