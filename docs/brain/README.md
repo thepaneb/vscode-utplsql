@@ -104,7 +104,8 @@ divergirem, o build falha.
 |---|---|
 | `00-Inbox` | captura rápida |
 | `10-Projeto` | MOCs + `Funcional/` (spec funcional canônica) |
-| `11-Stack` | stack + inventário de dependências (gerado) |
+| `11-Stack` | stack + dependências + pipelines (`PIPE-*`) |
+| `12-I18n` | locales da extensão (`LOC-*`, gerado) |
 | `13-Padroes` | padrões (`PAT-*`) |
 | `14-NFR` | requisitos não-funcionais (`NFR-*`) |
 | `15-Regras` | regras de negócio (`BR-*`) |

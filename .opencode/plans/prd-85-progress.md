@@ -90,7 +90,12 @@ npm run test:unit       # compile + lint + node --test
    `docs-fidelity` e `AGENTS.md` invertidos p/ vault-canônico; `brain.cjs`:
    `readme-variants`/`wiki-index`/`funcional-index` leem o vault; migrado o
    `docs/functional/README.md` (faltava) p/ `10-Projeto/Funcional/README.md`.
-7. **Camadas** `PIPE-*` (workflows) e `LOC-*` (i18n/23 idiomas) — geradas.
+7. ~~Camadas `PIPE-*` (workflows) e `LOC-*` (i18n/23 idiomas) — geradas.~~ ✅ Feito —
+   `brain:sync` agora gera **notas** (frontmatter `gerado: true`): `PIPE-*` em
+   `11-Stack/` (3 workflows, com gatilhos/jobs/passos) e `LOC-*` em `12-I18n/`
+   (24 locales de `package.nls.*.json`); notas geradas obsoletas são removidas;
+   `MOC - I18n` + Dataview em `MOC - Stack`; Home e `docs/brain/README.md` atualizados.
+   (Sem data dinâmica para não causar drift diário.)
 8. **ADRs retrospectivos** a partir dos 66 PRDs concluídos.
 9. **Validador**: `--check-lines`; schema de `SEC/ERR/PAT/...` (hoje só refs);
    testes do `brain-build`.

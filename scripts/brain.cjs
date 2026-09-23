@@ -326,6 +326,190 @@ const GENERATORS = {
   deps: genDeps,
 };
 
+// ── notas geradas (PIPE-*, LOC-*) ──────────────────────────────────────
+
+const LANG_NAMES = {
+  en: 'English',
+  'en-gb': 'English (UK)',
+  bg: 'Български',
+  cs: 'Čeština',
+  de: 'Deutsch',
+  el: 'Ελληνικά',
+  es: 'Español',
+  fr: 'Français',
+  hu: 'Magyar',
+  id: 'Bahasa Indonesia',
+  it: 'Italiano',
+  ja: '日本語',
+  ko: '한국어',
+  pl: 'Polski',
+  'pt-br': 'Português (Brasil)',
+  ro: 'Română',
+  ru: 'Русский',
+  sr: 'Српски',
+  th: 'ไทย',
+  tr: 'Türkçe',
+  uk: 'Українська',
+  vi: 'Tiếng Việt',
+  'zh-cn': '中文(简体)',
+  'zh-tw': '中文(繁體)',
+};
+
+/** Linhas de um bloco de primeiro nível YAML (`key:` até o próximo `^\S`). */
+function yamlBlock(text, key) {
+  const lines = text.split(/\r?\n/);
+  const out = [];
+  let inBlock = false;
+  for (const line of lines) {
+    if (new RegExp(`^${key}:`).test(line)) {
+      const inline = line.slice(key.length + 1).trim();
+      if (inline) out.push(`__inline__:${inline}`);
+      inBlock = true;
+      continue;
+    }
+    if (!inBlock) continue;
+    if (/^\S/.test(line)) break;
+    out.push(line);
+  }
+  return out;
+}
+
+function pipelineNotes() {
+  const dir = path.join(REPO, '.github', 'workflows');
+  if (!fs.existsSync(dir)) return [];
+  return fs
+    .readdirSync(dir)
+    .filter((n) => /\.ya?ml$/.test(n))
+    .sort()
+    .map((f) => {
+      const text = fs.readFileSync(path.join(dir, f), 'utf8');
+      const name = (text.match(/^name:\s*(.+)$/m) || [])[1]?.trim() || f;
+      const slug = f.replace(/\.ya?ml$/, '');
+      const onBlock = yamlBlock(text, 'on');
+      const triggers = [];
+      for (const line of onBlock) {
+        const inline = line.match(/^__inline__:(.+)$/);
+        if (inline) triggers.push(inline[1]);
+        else {
+          const m = line.match(/^  ([a-z_]+):/);
+          if (m) triggers.push(m[1]);
+        }
+      }
+      const jobs = yamlBlock(text, 'jobs')
+        .map((line) => line.match(/^  ([a-z0-9_-]+):/))
+        .filter(Boolean)
+        .map((m) => m[1]);
+      const steps = [...text.matchAll(/^\s*- (run|uses):\s*(.+)$/gm)].map(
+        (m) => `- \`${m[1]}: ${m[2].trim()}\``,
+      );
+      const fm = [
+        '---',
+        `id: PIPE-${slug}`,
+        'tipo: pipeline',
+        `titulo: ${JSON.stringify(name)}`,
+        `arquivo: ".github/workflows/${f}"`,
+        `gatilhos: [${triggers.join(', ')}]`,
+        `jobs: [${jobs.join(', ')}]`,
+        'gerado: true',
+        `tags: [pipeline, ci]`,
+        '---',
+      ];
+      const body = [
+        `# PIPE-${slug} — ${name}`,
+        '',
+        `Workflow [\`${f}\`](../../../.github/workflows/${f}) — **gerado** por \`npm run brain:sync\`.`,
+        '',
+        '## Gatilhos',
+        '',
+        ...(triggers.length ? triggers.map((t) => `- \`${t}\``) : ['_nenhum_']),
+        '',
+        '## Jobs',
+        '',
+        ...(jobs.length ? jobs.map((j) => `- \`${j}\``) : ['_nenhum_']),
+        '',
+        '## Passos',
+        '',
+        ...(steps.length ? steps : ['_nenhum_']),
+      ].join('\n');
+      return { dir: '11-Stack', file: `PIPE-${slug} - ${name}.md`, content: `${fm.join('\n')}\n\n${body}\n` };
+    });
+}
+
+/** code → nome da nota README no vault. */
+function readmeNoteByLocale() {
+  const dir = path.join(VAULT, '60-README');
+  const map = {};
+  if (!fs.existsSync(dir)) return map;
+  for (const f of fs.readdirSync(dir).filter((n) => /^README.*\.md$/.test(n))) {
+    const fm = parseFm(fs.readFileSync(path.join(dir, f), 'utf8'));
+    if (fm.locale) map[fm.locale.toLowerCase()] = f.replace(/\.md$/, '');
+  }
+  return map;
+}
+
+function localeNotes() {
+  const files = fs
+    .readdirSync(REPO)
+    .filter((n) => /^package\.nls(\..+)?\.json$/.test(n))
+    .sort();
+  const readmeNote = readmeNoteByLocale();
+  return files.map((f) => {
+    const code = f === 'package.nls.json' ? 'en' : f.slice('package.nls.'.length, -'.json'.length);
+    const strings = Object.keys(JSON.parse(fs.readFileSync(path.join(REPO, f), 'utf8'))).length;
+    const lang = LANG_NAMES[code] || code;
+    const fm = [
+      '---',
+      `id: LOC-${code}`,
+      'tipo: locale',
+      `titulo: ${JSON.stringify(lang)}`,
+      `codigo: ${code}`,
+      `nls: ${f}`,
+      `strings: ${strings}`,
+      'gerado: true',
+      `tags: [i18n, locale]`,
+      '---',
+    ];
+    const lines = [
+      `# LOC-${code} — ${lang}`,
+      '',
+      `Locale \`${code}\` da extensão. Strings de UI em [\`${f}\`](../../../${f}) (${strings} chaves).`,
+    ];
+    const note = readmeNote[code];
+    if (note) lines.push('', `README: [[${note}]]`);
+    return { dir: '12-I18n', file: `LOC-${code} - ${lang}.md`, content: `${fm.join('\n')}\n\n${lines.join('\n')}\n` };
+  });
+}
+
+/** Escreve/atualiza e remove notas geradas (frontmatter `gerado: true`). */
+function generateNotes() {
+  const specs = [...pipelineNotes(), ...localeNotes()];
+  let changed = 0;
+  const byDir = new Map();
+  for (const s of specs) {
+    if (!byDir.has(s.dir)) byDir.set(s.dir, new Set());
+    byDir.get(s.dir).add(s.file);
+    const p = path.join(VAULT, s.dir, s.file);
+    if (fs.existsSync(p) && fs.readFileSync(p, 'utf8') === s.content) continue;
+    fs.mkdirSync(path.dirname(p), { recursive: true });
+    fs.writeFileSync(p, s.content);
+    console.log(`[sync] ${s.dir}/${s.file} (gerado)`);
+    changed++;
+  }
+  for (const [dir, files] of byDir) {
+    const full = path.join(VAULT, dir);
+    for (const n of fs.readdirSync(full)) {
+      if (!n.endsWith('.md') || files.has(n)) continue;
+      const text = fs.readFileSync(path.join(full, n), 'utf8');
+      if (!/^gerado:\s*true\s*$/m.test(text)) continue;
+      fs.rmSync(path.join(full, n));
+      console.log(`[sync] remove ${dir}/${n} (gerado obsoleto)`);
+      changed++;
+    }
+  }
+  return changed;
+}
+
+
 // ── commands ───────────────────────────────────────────────────────────
 
 function sync() {
@@ -346,6 +530,7 @@ function sync() {
       changed++;
     }
   }
+  changed += generateNotes();
   console.log(`OK: ${changed} arquivo(s) atualizado(s).`);
   return 0;
 }

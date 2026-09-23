@@ -18,6 +18,7 @@ Hub central do vault. A partir daqui você navega por área.
 - [[MOC - Regras]]
 - [[MOC - NFR]]
 - [[MOC - Stack]]
+- [[MOC - I18n]]
 - [[MOC - Padroes]]
 - [[MOC - Componentes]]
 - [[MOC - Seguranca]]

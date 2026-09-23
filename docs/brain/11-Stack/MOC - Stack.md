@@ -54,3 +54,14 @@ FROM "11-Stack"
 WHERE tipo = "dependencia"
 SORT id ASC
 ```
+
+## Pipelines de CI (gerado)
+
+Notas `PIPE-*` geradas dos workflows em `.github/workflows/` (`npm run brain:sync`).
+
+```dataview
+TABLE arquivo, gatilhos, jobs
+FROM "11-Stack"
+WHERE tipo = "pipeline"
+SORT id ASC
+```
