@@ -1,0 +1,24 @@
+# CODEOWNERS — vscode-utplsql
+#
+# O vault `docs/brain/` é a fonte da verdade do texto humano; os artefatos do
+# repo (README*, docs/wiki, docs/functional, docs/prd) são GERADOS a partir dele
+# (`npm run brain:build`). Mudanças nesses caminhos exigem revisão do mantenedor.
+
+# Vault canônico
+/docs/brain/            @thepaneb
+
+# Artefatos gerados do vault
+/README.md              @thepaneb
+/README.*.md            @thepaneb
+/docs/wiki/             @thepaneb
+/docs/functional/       @thepaneb
+/docs/prd/              @thepaneb
+
+# Ferramental do vault / CI de drift
+/scripts/brain.cjs        @thepaneb
+/scripts/brain-build.cjs  @thepaneb
+/scripts/brain-rules.cjs  @thepaneb
+/scripts/docs-check.cjs   @thepaneb
+/scripts/docs-fidelity.cjs @thepaneb
+/scripts/sync-prds.cjs    @thepaneb
+/.github/workflows/       @thepaneb

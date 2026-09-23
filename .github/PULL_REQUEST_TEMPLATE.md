@@ -19,8 +19,7 @@ Closes #<!-- número da issue, se aplicável -->
 
 - **VSCode**: <!-- versão -->
 - **SO**: <!-- Windows / Linux / macOS -->
-- **Modo de invocação**: <!-- launcher / java -->
-- **Versão do utPLSQL-cli / Java**: <!-- se relevante -->
+- **Conexão**: <!-- Oracle direto (thin) / thick (Instant Client) -->
 - **Banco Oracle / UT3**: <!-- versão, se relevante para o teste -->
 
 Passos realizados:
@@ -33,10 +32,12 @@ Passos realizados:
 - [ ] `npm run compile` executa sem erros
 - [ ] `npm test` passa localmente
 - [ ] Testei manualmente no Extension Development Host (`F5`)
-- [ ] Atualizei o `README.md` (tabela de Configuração/Comandos), se necessário
+- [ ] Se mexi em documentação/PRDs: editei a **nota do vault** (`docs/brain/`) e
+      rodei `npm run brain:build` (não edite os arquivos gerados)
+- [ ] Se mexi em `docs/brain/`: `npm run brain:ci` + `git diff --exit-code` limpos
 - [ ] Atualizei o `CHANGELOG.md`
 - [ ] Se alterei settings em `package.json`, mantive as descrições em português, no padrão do projeto
-- [ ] Se alterei a montagem de argumentos de linha de comando (`launcher`/`java`), revisei possíveis impactos de escaping/injeção
+- [ ] Se alterei a montagem de SQL/PL-SQL, revisei possíveis impactos de injeção (binds)
 
 ## Screenshots (se aplicável)
 

@@ -152,6 +152,10 @@ npm run docs:check    # consistência + fidelidade código<->docs (roda no CI)
 - Wiki: notas em `70-Wiki/` (publicadas pelo workflow `wiki.yml`).
 - PRDs: notas em `20-PRDs/` (status no frontmatter) — ver a skill `prd-workflow`.
 
+> `docs/brain/` é protegido por `.github/CODEOWNERS`. PRs que mexam no vault (ou
+> nos artefatos gerados) exigem `npm run brain:ci` + `git diff --exit-code`
+> limpos — o CI reprova drift entre o vault e os gerados.
+
 ## Pull Requests
 
 1. Faça um fork e crie sua branch a partir de `main`.

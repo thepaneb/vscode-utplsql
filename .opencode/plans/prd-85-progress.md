@@ -106,8 +106,13 @@ npm run test:unit       # compile + lint + node --test
    `--check-lines` (`brain:rules:lines`); testes novos
    `brainBuild.test.ts`/`brainScripts.test.ts` + casos em `brainRules.test.ts`
    (751 testes).
-10. **Governança**: fluxo de PR + `CODEOWNERS` do vault; destino de
-    `docs/analise*.md`, `docs/rebranding-rascunho.md`, `docs/linkedin/`.
+10. ~~Governança: fluxo de PR + `CODEOWNERS` do vault; destino de
+    `docs/analise*.md`, `docs/rebranding-rascunho.md`, `docs/linkedin/`.~~ ✅ Feito —
+    `.github/CODEOWNERS` (vault + gerados + scripts); PR template atualizado
+    (sem CLI/Java, com `brain:ci`/drift); seção **Governança** em
+    `docs/brain/README.md` e nota em `CONTRIBUTING.md`/`MOC - Documentacao`;
+    docs locais (`analise*`, `rebranding-rascunho`, `linkedin/`) permanecem
+    gitignored.
 11. **Operacional WSL**: se o Windows reiniciar e a sub-rede mudar, refazer a regra
     de firewall do portproxy (`remoteip=172.21.16.0/20`).
 12. `CHANGELOG.md` quando a PRD-85 concluir.

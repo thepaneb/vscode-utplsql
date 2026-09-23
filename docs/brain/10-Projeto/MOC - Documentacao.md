@@ -93,9 +93,11 @@ e publicado pelo workflow `wiki.yml`.
 - [[Troubleshooting]]
 <!-- brain:auto:end -->
 
-### LinkedIn (local)
+### Docs locais (não versionados)
 
-Material de divulgação; `docs/linkedin/` é gitignored (não versionado).
+`docs/*` é gitignored exceto `prd/`, `wiki/`, `functional/` e `brain/`. Ficam
+locais: `docs/analise.md`, `docs/analise-comparativa.md`,
+`docs/rebranding-rascunho.md` e o material de divulgação em `docs/linkedin/`.
 
 <!-- brain:auto:start:linkedin-index -->
 - [en/features/01-test-explorer-nativo](../../linkedin/en/features/01-test-explorer-nativo.md)

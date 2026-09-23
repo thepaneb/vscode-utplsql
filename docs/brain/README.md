@@ -98,6 +98,19 @@ npm run brain:ci              # sync + build + check + rules (usado no CI)
 O CI roda `brain:ci` + `git diff --exit-code`: se o vault e os artefatos gerados
 divergirem, o build falha.
 
+## Governança
+
+- `docs/brain/` é protegido por [`.github/CODEOWNERS`](../../.github/CODEOWNERS)
+  (revisão do mantenedor).
+- Fluxo de PR: edite a **nota do vault** → `npm run brain:sync && npm run
+  brain:build` → `npm run brain:ci` (sem drift) → o commit inclui a nota **e** os
+  artefatos gerados.
+- PRs que mexam no vault ou nos gerados precisam de `brain:ci` +
+  `git diff --exit-code` limpos (o CI já cobre).
+- **Fora do vault** (locais, gitignored): `docs/analise.md`,
+  `docs/analise-comparativa.md`, `docs/rebranding-rascunho.md` e `docs/linkedin/`.
+  Não são versionados nem gerados.
+
 ## Estrutura
 
 | Pasta | Uso |
