@@ -96,7 +96,10 @@ npm run test:unit       # compile + lint + node --test
    (24 locales de `package.nls.*.json`); notas geradas obsoletas são removidas;
    `MOC - I18n` + Dataview em `MOC - Stack`; Home e `docs/brain/README.md` atualizados.
    (Sem data dinâmica para não causar drift diário.)
-8. **ADRs retrospectivos** a partir dos 66 PRDs concluídos.
+8. ~~ADRs retrospectivos a partir dos 66 PRDs concluídos.~~ ✅ Feito — ADR-003 a
+   ADR-012 (10 ADRs): descoberta DB-first, esbuild/VSIX, funções canônicas,
+   módulos puros vs vscode, i18n, cobertura, Test Explorer, perfis de conexão,
+   thick mode e debugger.
 9. **Validador**: `--check-lines`; schema de `SEC/ERR/PAT/...` (hoje só refs);
    testes do `brain-build`.
 10. **Governança**: fluxo de PR + `CODEOWNERS` do vault; destino de
