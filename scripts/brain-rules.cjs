@@ -21,6 +21,7 @@ const fs = require('fs');
 const path = require('path');
 
 const ROOT = path.resolve(__dirname, '..');
+const VAULT = path.join(ROOT, 'docs', 'brain');
 const RULES_DIR = path.join(ROOT, 'docs', 'brain', '15-Regras');
 const PRD_DIR = path.join(ROOT, 'docs', 'prd');
 
@@ -69,6 +70,47 @@ function listRuleFiles() {
     .filter((n) => /^BR-.*\.md$/.test(n))
     .sort()
     .map((n) => ({ name: n, content: fs.readFileSync(path.join(RULES_DIR, n), 'utf8') }));
+}
+
+/** Todas as notas do vault (exceto .obsidian, _templates e .trash). */
+function listAllNotes() {
+  if (!fs.existsSync(VAULT)) return [];
+  const out = [];
+  const walk = (dir) => {
+    for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {
+      if (entry.name === '.obsidian' || entry.name === '_templates' || entry.name === '.trash') continue;
+      const full = path.join(dir, entry.name);
+      if (entry.isDirectory()) walk(full);
+      else if (entry.name.endsWith('.md')) out.push({ name: path.relative(VAULT, full), content: fs.readFileSync(full, 'utf8') });
+    }
+  };
+  walk(VAULT);
+  return out;
+}
+
+/**
+ * Valida referências de TODAS as notas do vault: `implementacao`/`testes`
+ * (arquivos existem) e `regras` (apontam para BR-* existentes).
+ */
+function checkReferences(notes, exists, brIds) {
+  const problems = [];
+  for (const note of notes) {
+    const fm = parseFrontmatter(note.content);
+    if (!fm) continue;
+    const isRule = fm.tipo === 'regra';
+    if (!isRule) {
+      for (const ref of Array.isArray(fm.implementacao) ? fm.implementacao : []) {
+        if (!exists(stripLine(ref))) problems.push(`${note.name}: implementacao inexistente: ${ref}`);
+      }
+      for (const ref of Array.isArray(fm.testes) ? fm.testes : []) {
+        if (!exists(stripLine(ref))) problems.push(`${note.name}: teste inexistente: ${ref}`);
+      }
+    }
+    for (const ref of Array.isArray(fm.regras) ? fm.regras : []) {
+      if (brIds && !brIds.has(String(ref).trim())) problems.push(`${note.name}: regra referenciada inexistente: ${ref}`);
+    }
+  }
+  return problems;
 }
 
 function realPrdIds() {
@@ -129,10 +171,16 @@ function checkRules(overrides = {}) {
     }
   }
 
+  // Passada global (vault inteiro): referências de todas as notas.
+  if (!overrides.files) {
+    const brIds = new Set(files.map((f) => parseFrontmatter(f.content)?.id).filter(Boolean));
+    problems.push(...checkReferences(listAllNotes(), exists, brIds));
+  }
+
   return problems;
 }
 
-module.exports = { checkRules, parseFrontmatter, listRuleFiles, realPrdIds };
+module.exports = { checkRules, checkReferences, parseFrontmatter, listRuleFiles, listAllNotes, realPrdIds };
 
 if (require.main === module) {
   if (!fs.existsSync(RULES_DIR)) {

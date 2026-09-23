@@ -18,6 +18,8 @@ Hub central do vault. A partir daqui você navega por área.
 - [[MOC - Stack]]
 - [[MOC - Padroes]]
 - [[MOC - Componentes]]
+- [[MOC - Seguranca]]
+- [[MOC - Erros]]
 - [[MOC - Oracle]]
 - [[MOC - Testes]]
 - [[MOC - PRDs]]
