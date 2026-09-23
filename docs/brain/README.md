@@ -12,6 +12,13 @@ controle de versão — ver `.gitignore` e [[ADR-002 - Vault como fonte da verda
    No Windows: `D:\Users\gilcl\Documents\GitHub\vscode-utplsql\docs\brain`.
 2. Comece por [[Home]].
 
+## MCP (Obsidian Local REST API)
+
+O agente lê/escreve o vault via **MCP** (`opencode.json` +
+`scripts/obsidian-mcp.py`), usando o servidor embutido no plugin **Local REST API**
+(HTTP 27123). No WSL, o acesso ao Obsidian no Windows exige `portproxy` + regra de
+firewall para a sub-rede do WSL — ver `AGENTS.md` (local).
+
 ## Configuração recomendada (Settings)
 
 - **Files & Links → New link format:** `Relative path to file` (os links para `docs/`

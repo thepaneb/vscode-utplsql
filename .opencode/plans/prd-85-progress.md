@@ -113,8 +113,9 @@ npm run test:unit       # compile + lint + node --test
     `docs/brain/README.md` e nota em `CONTRIBUTING.md`/`MOC - Documentacao`;
     docs locais (`analise*`, `rebranding-rascunho`, `linkedin/`) permanecem
     gitignored.
-11. **Operacional WSL**: se o Windows reiniciar e a sub-rede mudar, refazer a regra
-    de firewall do portproxy (`remoteip=172.21.16.0/20`).
+11. ~~Operacional WSL~~ 📝 Documentado — MCP/WSL (portproxy + firewall) em
+    `AGENTS.md` e `docs/brain/README.md`. Ação manual (refazer a regra de firewall
+    do portproxy se a sub-rede do WSL mudar) fica com o dev.
 12. `CHANGELOG.md` quando a PRD-85 concluir.
 
 ## Convenções adotadas (importante)
