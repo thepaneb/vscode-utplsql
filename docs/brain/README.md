@@ -19,6 +19,28 @@ O agente lê/escreve o vault via **MCP** (`opencode.json` +
 (HTTP 27123). No WSL, o acesso ao Obsidian no Windows exige `portproxy` + regra de
 firewall para a sub-rede do WSL — ver `AGENTS.md` (local).
 
+## Graph view — grupos de cor
+
+O `.obsidian/graph.json` é **local (gitignored)**. Para colorir o grafo por camada,
+em **Graph view → ⚙️ → Groups → +** (ou copiando para `graph.json`):
+
+| Query | Camada | Cor |
+|---|---|---|
+| `path:20-PRDs` | PRDs | amarelo |
+| `path:15-Regras` | regras (`BR-*`) | azul |
+| `path:14-NFR` | NFRs | verde |
+| `path:16-Seguranca` | segurança (`SEC-*`) | vermelho |
+| `path:18-Erros` | erros (`ERR-*`) | laranja |
+| `path:13-Padroes` | padrões (`PAT-*`) | roxo |
+| `path:17-Componentes` | componentes (`TPL-*`) | ciano |
+| `path:19-Glossario` | glossário (`GLOSS-*`) | cinza |
+| `path:30-Decisoes` | ADRs | rosa |
+| `path:70-Wiki` | wiki | verde-água |
+| `path:60-README` | README | lima |
+| `path:12-I18n` | locales (`LOC-*`) | marrom |
+| `path:11-Stack` | stack/pipelines (`PIPE-*`) | areia |
+| `path:10-Projeto` | projeto/funcional/domínio | índigo |
+
 ## Configuração recomendada (Settings)
 
 - **Files & Links → New link format:** `Relative path to file` (os links para `docs/`
