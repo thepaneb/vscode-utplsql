@@ -2,11 +2,9 @@
   "$schema": "https://opencode.ai/config.json",
   "mcp": {
     "obsidian": {
-      "type": "remote",
-      "url": "http://{env:OBSIDIAN_HOST}:27123/mcp/",
-      "headers": {
-        "Authorization": "Bearer {env:OBSIDIAN_API_KEY}"
-      },
+      "type": "local",
+      "command": ["python3", "scripts/obsidian-mcp.py"],
+      "timeout": 30000,
       "enabled": true
     }
   }

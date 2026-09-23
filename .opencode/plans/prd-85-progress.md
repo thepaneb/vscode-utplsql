@@ -34,8 +34,10 @@ Vault: **170 notas**. Validações: `brain:check`, `brain:rules` (59), `brain:bu
   `90-Daily/`.
 - MCP do Obsidian via plugin **Local REST API** (servidor embutido, HTTP 27123).
   Sem mirrored: **portproxy** no Windows + firewall para a sub-rede do WSL.
-  Env no `~/.bashrc` (`OBSIDIAN_HOST` dinâmico + `OBSIDIAN_API_KEY` do `data.json`).
-  `opencode.json` usa `{env:...}`. Confirmado: `opencode mcp list` → `✓ obsidian connected`.
+  `opencode.json` usa MCP **local** com `scripts/obsidian-mcp.py` (bridge
+  stdio<->HTTP nativo do WSL) que resolve host+API key em tempo de start — não
+  depende de env do shell. `mcp-remote` foi descartado (descartava o `initialize`
+  enviado imediatamente). Confirmado: `opencode mcp list` → `✓ obsidian connected`.
 
 ## Comandos
 
@@ -50,8 +52,9 @@ npm run test:unit       # compile + lint + node --test
 
 ## Pendências (retomar)
 
-1. **Reiniciar o opencode** para ativar as tools do MCP `obsidian` (esta sessão
-   iniciou antes do `opencode.json`). Confirmar com `opencode mcp list`.
+1. **Iniciar uma sessão NOVA do opencode** (não `-c`) para que as tools do MCP
+   `obsidian` sejam carregadas — continuar a sessão antiga pode não reinjetar a
+   lista de tools. Confirmar com `opencode mcp list`.
 2. **Wiki (24 páginas)** — decidir estratégia **A/B/C** para 28 refs `images/` e 1
    link relativo: (A) copiar imagens p/ o vault; (B) manter canônico no repo;
    (C) reescrever links no vault.
