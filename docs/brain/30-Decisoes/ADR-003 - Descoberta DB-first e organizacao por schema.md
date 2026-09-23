@@ -47,9 +47,9 @@ depender de o banco estar acessível.
 
 ## Referências
 
-- PRDs: [43](../../prd/completed/prd-43-schema-db-discovery.md) ·
-  [74](../../prd/completed/prd-74-db-first-discovery.md) ·
-  [77](../../prd/completed/prd-77-rebuild-annotation-cache.md) ·
-  [30](../../prd/completed/prd-30-schema-aware-organization.md)
+- PRDs: [[prd-43-schema-db-discovery|PRD-43]] ·
+  [[prd-74-db-first-discovery|PRD-74]] ·
+  [[prd-77-rebuild-annotation-cache|PRD-77]] ·
+  [[prd-30-schema-aware-organization|PRD-30]]
 - Código: `src/discovery.ts`, `src/suiteParser.ts`, `src/testTree.ts`
 - [[MOC - Oracle]] · [[PAT-004 - Streaming por poll incremental de buffer]]

@@ -143,4 +143,6 @@ helper `createSuiteItems(controller, suite, state)` e usá-la nos três modos.
 
 <!-- brain:auto:start:conexoes -->
 - 🗺️ [[MOC - PRDs]]
+- 🔗 PRDs relacionados: [[prd-51-run-by-tag|PRD-51]]
+- 🔗 Mesma versão (0.15.0): [[prd-50-auto-run-on-save|PRD-50]] · [[prd-51-run-by-tag|PRD-51]] · [[prd-52-inline-diff-expected-actual|PRD-52]] · [[prd-53-debug-test-variants|PRD-53]] · [[prd-54-coverage-toggle|PRD-54]]
 <!-- brain:auto:end -->

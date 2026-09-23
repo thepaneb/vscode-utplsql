@@ -163,11 +163,13 @@ function parseFm(text) {
   return fm;
 }
 
-/** Notas PRD do vault, ordenadas por número. */
+/** Notas PRD do vault, ordenadas por número (cacheado por execução). */
+let PRD_NOTES = null;
 function prdNotes() {
+  if (PRD_NOTES) return PRD_NOTES;
   const dir = path.join(VAULT, '20-PRDs');
   if (!fs.existsSync(dir)) return [];
-  return fs
+  PRD_NOTES = fs
     .readdirSync(dir)
     .filter((f) => /^prd-\d+.*\.md$/.test(f))
     .map((file) => {
@@ -175,6 +177,7 @@ function prdNotes() {
       return { file, ...fm };
     })
     .sort((a, b) => Number(a.id?.replace(/\D/g, '')) - Number(b.id?.replace(/\D/g, '')));
+  return PRD_NOTES;
 }
 
 const PRD_STATUS = [
@@ -400,6 +403,42 @@ function genConexoes(notePath) {
   }
   if (Array.isArray(fm.relacionado) && fm.relacionado.length) {
     lines.push(`- 🔗 ${fm.relacionado.map((r) => String(r).trim()).join(' · ')}`);
+  }
+  // PRDs: relações derivadas do corpo (menções, pipelines) e da versão alvo.
+  if (fm.tipo === 'prd') {
+    const body = fs
+      .readFileSync(notePath, 'utf8')
+      .replace(/^---[\s\S]*?\n---/, '')
+      .replace(/<!-- brain:auto:start:conexoes -->[\s\S]*?<!-- brain:auto:end -->/, '');
+    const mentioned = new Set();
+    for (const m of body.matchAll(/\bPRD-(\d+)\b/g)) {
+      const id = `PRD-${m[1]}`;
+      if (id !== fm.id && ids.has(id)) mentioned.add(id);
+    }
+    if (mentioned.size) {
+      const links = [...mentioned]
+        .sort((a, b) => Number(a.replace(/\D/g, '')) - Number(b.replace(/\D/g, '')))
+        .map((id) => wl(ids.get(id), id))
+        .join(' · ');
+      lines.push(`- 🔗 PRDs relacionados: ${links}`);
+    }
+    const pipes = new Set();
+    for (const m of body.matchAll(/\.github\/workflows\/([a-z0-9_-]+)\.ya?ml/gi)) {
+      const id = `PIPE-${m[1]}`;
+      if (ids.has(id)) pipes.add(id);
+    }
+    if (pipes.size) {
+      lines.push(`- ⚙️ Pipelines: ${[...pipes].sort().map((id) => wl(ids.get(id), id)).join(' · ')}`);
+    }
+    if (fm.versao_titulo) {
+      const siblings = prdNotes().filter(
+        (p) => p.id !== fm.id && p.versao_titulo === fm.versao_titulo && p.status !== 'completed',
+      );
+      if (siblings.length) {
+        const links = siblings.map((p) => wl(p.file.replace(/\.md$/, ''), p.id)).join(' · ');
+        lines.push(`- 🔗 Mesma versão (${fm.versao_titulo.split(' — ')[0]}): ${links}`);
+      }
+    }
   }
   // Relação reversa explícita: notas que referenciam esta.
   if (fm.id) {

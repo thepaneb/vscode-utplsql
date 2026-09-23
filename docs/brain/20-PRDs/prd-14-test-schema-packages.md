@@ -218,4 +218,5 @@ Nenhuma setting nova. Os arquivos `.pks` serão descobertos pelo pattern `**/*.p
 
 <!-- brain:auto:start:conexoes -->
 - 🗺️ [[MOC - PRDs]]
+- 🔗 PRDs relacionados: [[prd-13-oracle-infra|PRD-13]] · [[prd-15-integration-tests-real-db|PRD-15]]
 <!-- brain:auto:end -->

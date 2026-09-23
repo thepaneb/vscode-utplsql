@@ -43,10 +43,10 @@ respeitando source mapping e sem inflar o banco de dados com requisitos.
 
 ## Referências
 
-- PRDs: [12](../../prd/completed/prd-12-sql-coverage.md) ·
-  [48](../../prd/completed/prd-48-function-coverage.md) ·
-  [79](../../prd/completed/prd-79-coverage-scope.md) ·
-  [35](../../prd/completed/prd-35-windows-coverage-fix.md)
+- PRDs: [[prd-12-sql-coverage|PRD-12]] ·
+  [[prd-48-function-coverage|PRD-48]] ·
+  [[prd-79-coverage-scope|PRD-79]] ·
+  [[prd-35-windows-coverage-fix|PRD-35]]
 - Código: `src/cobertura.ts`, `src/coverage.ts`, `src/viewCoverage.ts`,
   `src/plsqlDeclarations.ts`
 - [[MOC - Oracle]] · [[TPL-ORACLEDB - node-oracledb]]

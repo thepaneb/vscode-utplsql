@@ -181,4 +181,5 @@ Atualizar `node-version` de `20` para `24` em todos os workflows.
 
 <!-- brain:auto:start:conexoes -->
 - 🗺️ [[MOC - PRDs]]
+- 🔗 PRDs relacionados: [[prd-02-refactor-extension|PRD-02]]
 <!-- brain:auto:end -->

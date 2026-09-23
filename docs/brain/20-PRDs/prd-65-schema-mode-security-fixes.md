@@ -212,5 +212,6 @@ Trocar `resolveConnection()` por `resolveConnectionNoPrompt()` em
 
 <!-- brain:auto:start:conexoes -->
 - 🗺️ [[MOC - PRDs]]
+- 🔗 PRDs relacionados: [[prd-66-connection-robustness-logging|PRD-66]] · [[prd-67-code-quality-cleanup|PRD-67]]
 - 📐 Regras: [[BR-COB-002 - resolveSourceUri tenta variantes de extensão e bloqueia path traversal|BR-COB-002]] · [[BR-CONN-005 - Senha do perfil vai para o SecretStorage ao salvar|BR-CONN-005]] · [[BR-CONN-007 - Migração de perfis legados é idempotente|BR-CONN-007]]
 <!-- brain:auto:end -->

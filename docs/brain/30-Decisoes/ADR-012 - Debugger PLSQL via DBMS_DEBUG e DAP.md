@@ -38,8 +38,8 @@ e integração com a UI do VSCode. Alternativas: (a) implementar um debugger pr�
 
 ## Referências
 
-- PRDs: [33](../../prd/completed/prd-33-plsql-debugger-integration.md) ·
-  [71](../../prd/completed/prd-71-debugger-dbms-debug-fix.md) ·
-  [73](../../prd/completed/prd-73-compile-for-debug.md)
+- PRDs: [[prd-33-plsql-debugger-integration|PRD-33]] ·
+  [[prd-71-debugger-dbms-debug-fix|PRD-71]] ·
+  [[prd-73-compile-for-debug|PRD-73]]
 - Código: `src/debugger.ts`, `src/dbmsDebug.ts`, `src/compileForDebug.ts`
 - [[MOC - Oracle]]

@@ -133,4 +133,6 @@ pós-instalação.
 
 <!-- brain:auto:start:conexoes -->
 - 🗺️ [[MOC - PRDs]]
+- 🔗 PRDs relacionados: [[prd-64-oracle-only-migration|PRD-64]]
+- 🔗 Mesma versão (Fora de release (investigação / a reavaliar)): [[prd-60-branch-coverage-investigation|PRD-60]]
 <!-- brain:auto:end -->

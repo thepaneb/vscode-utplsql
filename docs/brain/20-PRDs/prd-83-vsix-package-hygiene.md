@@ -188,4 +188,6 @@ Nenhuma setting/comando novo. Sem `contributes` alterado.
 
 <!-- brain:auto:start:conexoes -->
 - 🗺️ [[MOC - PRDs]]
+- 🔗 PRDs relacionados: [[prd-70-thick-mode-nne|PRD-70]]
+- ⚙️ Pipelines: [[PIPE-ci - CI|PIPE-ci]]
 <!-- brain:auto:end -->

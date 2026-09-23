@@ -208,4 +208,5 @@ Nenhuma setting de extensão — é puramente ferramenta de desenvolvimento.
 
 <!-- brain:auto:start:conexoes -->
 - 🗺️ [[MOC - PRDs]]
+- ⚙️ Pipelines: [[PIPE-ci - CI|PIPE-ci]] · [[PIPE-publish - Publish Extension|PIPE-publish]]
 <!-- brain:auto:end -->

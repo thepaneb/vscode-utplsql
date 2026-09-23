@@ -223,4 +223,5 @@ devDependency `esbuild`), `.vscodeignore` e `publish.yml`.
 
 <!-- brain:auto:start:conexoes -->
 - 🗺️ [[MOC - PRDs]]
+- ⚙️ Pipelines: [[PIPE-publish - Publish Extension|PIPE-publish]]
 <!-- brain:auto:end -->

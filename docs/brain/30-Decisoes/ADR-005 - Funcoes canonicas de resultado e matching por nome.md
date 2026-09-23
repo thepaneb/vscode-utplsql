@@ -40,7 +40,7 @@ Explorer, que pode ter itens por package, suite ou teste.
 
 ## Referências
 
-- PRDs: [39](../../prd/completed/prd-39-deduplicate-runners.md) ·
-  [44](../../prd/completed/prd-44-pure-matching.md)
+- PRDs: [[prd-39-deduplicate-runners|PRD-39]] ·
+  [[prd-44-pure-matching|PRD-44]]
 - Código: `src/results.ts`, `src/matching.ts`, `src/junit.ts`
 - [[PAT-003 - Funções canônicas compartilhadas de resultado]]

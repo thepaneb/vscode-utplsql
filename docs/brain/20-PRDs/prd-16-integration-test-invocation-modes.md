@@ -311,4 +311,5 @@ ajustar os caminhos, dispensando o uso de env vars.
 
 <!-- brain:auto:start:conexoes -->
 - 🗺️ [[MOC - PRDs]]
+- 🔗 PRDs relacionados: [[prd-01-java-mode|PRD-01]]
 <!-- brain:auto:end -->

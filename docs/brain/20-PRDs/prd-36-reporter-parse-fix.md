@@ -191,4 +191,5 @@ Nenhuma.
 
 <!-- brain:auto:start:conexoes -->
 - 🗺️ [[MOC - PRDs]]
+- 🔗 PRDs relacionados: [[prd-35-windows-coverage-fix|PRD-35]]
 <!-- brain:auto:end -->

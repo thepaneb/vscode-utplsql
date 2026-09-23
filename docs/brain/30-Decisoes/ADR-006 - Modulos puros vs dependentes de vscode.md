@@ -42,9 +42,9 @@ negócio com `node --test`. Precisávamos de testes rápidos e de cobertura Type
 
 ## Referências
 
-- PRDs: [44](../../prd/completed/prd-44-pure-matching.md) ·
-  [37](../../prd/completed/prd-37-ts-coverage.md) ·
-  [04](../../prd/completed/prd-04-expand-tests.md)
+- PRDs: [[prd-44-pure-matching|PRD-44]] ·
+  [[prd-37-ts-coverage|PRD-37]] ·
+  [[prd-04-expand-tests|PRD-04]]
 - Código: `src/test/vscode-stub.ts`, `scripts/test-setup.cjs`, `.c8rc`
 - [[PAT-001 - Módulos puros vs dependentes de vscode]] ·
   [[PAT-007 - Stub de vscode em duas camadas]]

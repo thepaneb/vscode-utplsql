@@ -41,7 +41,7 @@ O `node-oracledb` traz binários nativos por plataforma (thick mode), e o
 
 ## Referências
 
-- PRDs: [45](../../prd/completed/prd-45-bundle-esbuild.md) ·
-  [83](../../prd/completed/prd-83-vsix-package-hygiene.md)
+- PRDs: [[prd-45-bundle-esbuild|PRD-45]] ·
+  [[prd-83-vsix-package-hygiene|PRD-83]]
 - Código: `esbuild.config.mjs`, `package.json` (`main`, `scripts`)
 - [[MOC - Stack]]

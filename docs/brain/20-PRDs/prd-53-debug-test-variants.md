@@ -138,4 +138,6 @@ Extrair `pickTestItem` (QuickPick quando há mais de um alvo).
 
 <!-- brain:auto:start:conexoes -->
 - 🗺️ [[MOC - PRDs]]
+- 🔗 PRDs relacionados: [[prd-31-smart-rerun-patterns|PRD-31]] · [[prd-33-plsql-debugger-integration|PRD-33]]
+- 🔗 Mesma versão (0.15.0): [[prd-50-auto-run-on-save|PRD-50]] · [[prd-51-run-by-tag|PRD-51]] · [[prd-52-inline-diff-expected-actual|PRD-52]] · [[prd-54-coverage-toggle|PRD-54]] · [[prd-55-tag-organization|PRD-55]]
 <!-- brain:auto:end -->

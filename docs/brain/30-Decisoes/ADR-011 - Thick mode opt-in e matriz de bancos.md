@@ -39,9 +39,9 @@ thick em todos quebraria a instalação sem Instant Client.
 
 ## Referências
 
-- PRDs: [70](../../prd/completed/prd-70-thick-mode-nne.md) ·
-  [72](../../prd/completed/prd-72-db-test-matrix.md) ·
-  [84](../../prd/completed/prd-84-oracle-122-support.md)
+- PRDs: [[prd-70-thick-mode-nne|PRD-70]] ·
+  [[prd-72-db-test-matrix|PRD-72]] ·
+  [[prd-84-oracle-122-support|PRD-84]]
 - Código: `src/oracleClient.ts`, `src/setupValidator.ts`
 - [[ADR-001 - Execucao via Oracle direto]] · [[MOC - Oracle]] ·
   [[NFR-001 - Compatibilidade com Oracle e piso do utPLSQL]]

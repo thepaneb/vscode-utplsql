@@ -135,4 +135,6 @@ Nenhuma.
 
 <!-- brain:auto:start:conexoes -->
 - 🗺️ [[MOC - PRDs]]
+- 🔗 PRDs relacionados: [[prd-23-auto-wiki-screenshots|PRD-23]]
+- ⚙️ Pipelines: [[PIPE-wiki - Publish Wiki|PIPE-wiki]]
 <!-- brain:auto:end -->

@@ -193,4 +193,5 @@ existente cobre chaves ausentes.
 
 <!-- brain:auto:start:conexoes -->
 - 🗺️ [[MOC - PRDs]]
+- 🔗 PRDs relacionados: [[prd-65-schema-mode-security-fixes|PRD-65]] · [[prd-66-connection-robustness-logging|PRD-66]]
 <!-- brain:auto:end -->

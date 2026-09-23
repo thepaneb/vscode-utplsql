@@ -212,4 +212,5 @@ a aparecer quando há mismatch — ganho diagnóstico, não regressão.
 
 <!-- brain:auto:start:conexoes -->
 - 🗺️ [[MOC - PRDs]]
+- 🔗 PRDs relacionados: [[prd-40-options-object|PRD-40]]
 <!-- brain:auto:end -->

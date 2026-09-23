@@ -322,5 +322,6 @@ Nenhuma nova setting. Comandos são registrados e keybindings definidos no
 
 <!-- brain:auto:start:conexoes -->
 - 🗺️ [[MOC - PRDs]]
+- 🔗 PRDs relacionados: [[prd-11-streaming-results|PRD-11]] · [[prd-24-codelens-integration|PRD-24]] · [[prd-25-status-bar-indicator|PRD-25]] · [[prd-27-default-keybindings|PRD-27]]
 - 📐 Regras: [[BR-UI-004 - utplsql-hasFailures derivado de lastFailedItems (failed ou error)|BR-UI-004]]
 <!-- brain:auto:end -->

@@ -38,7 +38,7 @@ documentos do repo gerados a partir dele; (b) regras de negócio persistidas em
 5. **CI valida por arquivo** (fallback sem Obsidian): schema/IDs/links das regras e
    ausência de drift (`brain:build && git diff --exit-code`).
 
-Detalhamento em [PRD-85](../../prd/completed/prd-85-brain-source-of-truth.md).
+Detalhamento em [[prd-85-brain-source-of-truth|PRD-85]].
 
 ## Alternativas consideradas
 
@@ -72,6 +72,6 @@ Detalhamento em [PRD-85](../../prd/completed/prd-85-brain-source-of-truth.md).
 - [[MOC - Documentacao]]
 - [[MOC - Arquitetura]]
 - [[MOC - PRDs]]
-- [PRD-85](../../prd/completed/prd-85-brain-source-of-truth.md)
+- [[prd-85-brain-source-of-truth|PRD-85]]
 - `scripts/brain.cjs`, `scripts/docs-check.cjs`, `scripts/docs-fidelity.cjs`
 - [docs/brain/README.md](../README.md)

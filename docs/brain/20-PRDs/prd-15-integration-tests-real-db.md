@@ -254,4 +254,5 @@ Adicionar documentação em `DEVELOPMENT.md` (ou `CONTRIBUTING.md`) sobre como c
 
 <!-- brain:auto:start:conexoes -->
 - 🗺️ [[MOC - PRDs]]
+- 🔗 PRDs relacionados: [[prd-13-oracle-infra|PRD-13]] · [[prd-14-test-schema-packages|PRD-14]]
 <!-- brain:auto:end -->

@@ -42,12 +42,12 @@ alternativa de uma view própria, mas o VSCode já oferece a **Testing API** com
 
 ## Referências
 
-- PRDs: [24](../../prd/completed/prd-24-codelens-integration.md) ·
-  [25](../../prd/completed/prd-25-status-bar-indicator.md) ·
-  [26](../../prd/completed/prd-26-inline-test-decorations.md) ·
-  [27](../../prd/completed/prd-27-default-keybindings.md) ·
-  [31](../../prd/completed/prd-31-smart-rerun-patterns.md) ·
-  [32](../../prd/completed/prd-32-quickfix-setup-diagnostics.md)
+- PRDs: [[prd-24-codelens-integration|PRD-24]] ·
+  [[prd-25-status-bar-indicator|PRD-25]] ·
+  [[prd-26-inline-test-decorations|PRD-26]] ·
+  [[prd-27-default-keybindings|PRD-27]] ·
+  [[prd-31-smart-rerun-patterns|PRD-31]] ·
+  [[prd-32-quickfix-setup-diagnostics|PRD-32]]
 - Código: `src/codelens.ts`, `src/statusBar.ts`, `src/decorations.ts`,
   `src/quickfix.ts`
 - [[TPL-VSCODE-TEST-API - VSCode Test API (Test Explorer)]]

@@ -299,4 +299,5 @@ informação de localização (linha da anotação).
 
 <!-- brain:auto:start:conexoes -->
 - 🗺️ [[MOC - PRDs]]
+- 🔗 PRDs relacionados: [[prd-24-codelens-integration|PRD-24]] · [[prd-29-jump-to-failing-assertion|PRD-29]]
 <!-- brain:auto:end -->

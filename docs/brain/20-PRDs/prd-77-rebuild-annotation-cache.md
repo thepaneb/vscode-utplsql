@@ -167,4 +167,5 @@ usado pelo refresh; usar `$(symbol-method)` ou manter só paleta).
 
 <!-- brain:auto:start:conexoes -->
 - 🗺️ [[MOC - PRDs]]
+- 🔗 PRDs relacionados: [[prd-74-db-first-discovery|PRD-74]]
 <!-- brain:auto:end -->

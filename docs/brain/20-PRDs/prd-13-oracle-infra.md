@@ -160,4 +160,5 @@ Nenhuma. O PRD-15 cuidará das settings da extensão.
 
 <!-- brain:auto:start:conexoes -->
 - 🗺️ [[MOC - PRDs]]
+- 🔗 PRDs relacionados: [[prd-14-test-schema-packages|PRD-14]] · [[prd-15-integration-tests-real-db|PRD-15]]
 <!-- brain:auto:end -->

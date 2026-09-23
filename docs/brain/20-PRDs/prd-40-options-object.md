@@ -191,4 +191,5 @@ entre chamadas. Consistente com a assinatura de `applyCoverageFromXml`
 
 <!-- brain:auto:start:conexoes -->
 - 🗺️ [[MOC - PRDs]]
+- 🔗 PRDs relacionados: [[prd-39-deduplicate-runners|PRD-39]]
 <!-- brain:auto:end -->

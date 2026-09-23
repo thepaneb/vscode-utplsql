@@ -215,4 +215,5 @@ Nenhuma setting nova. Sem `NLS_LANG`.
 
 <!-- brain:auto:start:conexoes -->
 - 🗺️ [[MOC - PRDs]]
+- 🔗 PRDs relacionados: [[prd-62-run-scripts-against-profiles|PRD-62]] · [[prd-70-thick-mode-nne|PRD-70]] · [[prd-72-db-test-matrix|PRD-72]] · [[prd-74-db-first-discovery|PRD-74]]
 <!-- brain:auto:end -->

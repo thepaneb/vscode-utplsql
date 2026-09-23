@@ -41,8 +41,8 @@ precisava ser determinística.
 
 ## Referências
 
-- PRDs: [34](../../prd/completed/prd-34-multi-connection-profiles.md) ·
-  [66](../../prd/completed/prd-66-connection-robustness-logging.md)
+- PRDs: [[prd-34-multi-connection-profiles|PRD-34]] ·
+  [[prd-66-connection-robustness-logging|PRD-66]]
 - Código: `src/connectionProfiles.ts`, `src/config.ts`, `src/oracleClient.ts`
 - [[SEC-001 - Senha Oracle nunca é gravada em settings]] ·
   regras `BR-CONN-001`…`BR-CONN-010`

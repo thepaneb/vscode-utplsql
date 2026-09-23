@@ -181,4 +181,5 @@ Usa a setting existente `utplsql.setupDiagnosticsEnabled` (default `true`).
 
 <!-- brain:auto:start:conexoes -->
 - 🗺️ [[MOC - PRDs]]
+- 🔗 PRDs relacionados: [[prd-38-connection-pooling|PRD-38]]
 <!-- brain:auto:end -->

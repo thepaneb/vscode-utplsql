@@ -230,4 +230,5 @@ Inserir o bloco de args após a montagem dos reporters (linha 86) e antes de `ar
 
 <!-- brain:auto:start:conexoes -->
 - 🗺️ [[MOC - PRDs]]
+- 🔗 PRDs relacionados: [[prd-05-progress-cancel|PRD-05]] · [[prd-06-multiroot|PRD-06]]
 <!-- brain:auto:end -->

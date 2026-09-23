@@ -325,4 +325,5 @@ estiver implementado, a dependência `oracledb` é adicionada como
 
 <!-- brain:auto:start:conexoes -->
 - 🗺️ [[MOC - PRDs]]
+- 🔗 PRDs relacionados: [[prd-11-streaming-results|PRD-11]] · [[prd-24-codelens-integration|PRD-24]] · [[prd-29-jump-to-failing-assertion|PRD-29]] · [[prd-32-quickfix-setup-diagnostics|PRD-32]]
 <!-- brain:auto:end -->

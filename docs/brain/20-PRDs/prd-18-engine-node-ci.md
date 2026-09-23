@@ -121,4 +121,5 @@ Nenhuma nova setting.
 
 <!-- brain:auto:start:conexoes -->
 - 🗺️ [[MOC - PRDs]]
+- ⚙️ Pipelines: [[PIPE-ci - CI|PIPE-ci]]
 <!-- brain:auto:end -->

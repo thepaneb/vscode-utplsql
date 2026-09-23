@@ -157,4 +157,5 @@ Nenhuma nova setting. `utplsql.compilationDiagnostics.enabled` volta a ter efeit
 
 <!-- brain:auto:start:conexoes -->
 - 🗺️ [[MOC - PRDs]]
+- 🔗 PRDs relacionados: [[prd-64-oracle-only-migration|PRD-64]]
 <!-- brain:auto:end -->

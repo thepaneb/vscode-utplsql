@@ -150,4 +150,5 @@ dependências de sistema.
 
 <!-- brain:auto:start:conexoes -->
 - 🗺️ [[MOC - PRDs]]
+- 🔗 PRDs relacionados: [[prd-22-wiki-image-sync|PRD-22]] · [[prd-42-suiteparser-annotations|PRD-42]]
 <!-- brain:auto:end -->

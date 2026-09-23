@@ -214,4 +214,5 @@ Nenhuma setting de extensão — ferramenta de desenvolvimento apenas.
 
 <!-- brain:auto:start:conexoes -->
 - 🗺️ [[MOC - PRDs]]
+- 🔗 PRDs relacionados: [[prd-20-cleanup-deps-config|PRD-20]]
 <!-- brain:auto:end -->

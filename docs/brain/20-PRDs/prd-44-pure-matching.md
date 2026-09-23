@@ -207,5 +207,6 @@ Nenhuma nova setting.
 
 <!-- brain:auto:start:conexoes -->
 - 🗺️ [[MOC - PRDs]]
+- 🔗 PRDs relacionados: [[prd-39-deduplicate-runners|PRD-39]]
 - 📐 Regras: [[BR-PARSE-013 - Mapeamento resultado para teste por lastSegment+name-description com fallback|BR-PARSE-013]]
 <!-- brain:auto:end -->

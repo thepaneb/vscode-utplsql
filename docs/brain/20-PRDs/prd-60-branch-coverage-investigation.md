@@ -110,4 +110,6 @@ Nenhuma.
 
 <!-- brain:auto:start:conexoes -->
 - 🗺️ [[MOC - PRDs]]
+- 🔗 PRDs relacionados: [[prd-13-oracle-infra|PRD-13]]
+- 🔗 Mesma versão (Fora de release (investigação / a reavaliar)): [[prd-61-cli-auto-provision|PRD-61]]
 <!-- brain:auto:end -->

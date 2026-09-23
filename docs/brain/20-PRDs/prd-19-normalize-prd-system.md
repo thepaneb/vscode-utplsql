@@ -145,4 +145,5 @@ Nenhuma.
 
 <!-- brain:auto:start:conexoes -->
 - 🗺️ [[MOC - PRDs]]
+- 🔗 PRDs relacionados: [[prd-01-java-mode|PRD-01]] · [[prd-02-refactor-extension|PRD-02]] · [[prd-10-dynamic-reporters|PRD-10]] · [[prd-16-integration-test-invocation-modes|PRD-16]]
 <!-- brain:auto:end -->

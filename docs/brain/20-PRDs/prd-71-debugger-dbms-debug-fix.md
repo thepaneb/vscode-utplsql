@@ -229,4 +229,5 @@ nomes a exibir.)
 
 <!-- brain:auto:start:conexoes -->
 - 🗺️ [[MOC - PRDs]]
+- 🔗 PRDs relacionados: [[prd-33-plsql-debugger-integration|PRD-33]] · [[prd-47-node-26-toolchain|PRD-47]]
 <!-- brain:auto:end -->

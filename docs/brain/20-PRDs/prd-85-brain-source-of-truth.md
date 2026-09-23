@@ -360,4 +360,5 @@ Code-first, com curadoria:
 
 <!-- brain:auto:start:conexoes -->
 - 🗺️ [[MOC - PRDs]]
+- 🔗 PRDs relacionados: [[prd-66-connection-robustness-logging|PRD-66]]
 <!-- brain:auto:end -->

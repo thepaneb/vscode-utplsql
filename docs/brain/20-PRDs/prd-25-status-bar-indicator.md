@@ -252,5 +252,6 @@ await executeRun(
 
 <!-- brain:auto:start:conexoes -->
 - 🗺️ [[MOC - PRDs]]
+- 🔗 PRDs relacionados: [[prd-31-smart-rerun-patterns|PRD-31]]
 - 📐 Regras: [[BR-UI-005 - Status bar - gating por setting, throttle de 200ms e ícone por falha-erro|BR-UI-005]]
 <!-- brain:auto:end -->
