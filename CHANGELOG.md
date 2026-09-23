@@ -25,7 +25,7 @@
   `.github/`, `docker/` (incluindo o cache da matriz de bancos, ~5 MB),
   `.c8rc`, `.nvmrc`, `biome.json`, `skills-lock.json`, `SECURITY.md` e os
   configs dos testes de integração (`.vscode-test.smoke.mjs`,
-  `.vscode-test.thick.mjs`).
+  `.vscode-test.thick.mjs`). (PRD-83)
 - **Runner Oracle com binds tipados, filtro por tag e validação de reporters
   (PRD-69)**: os paths (`a_paths`) e os schemas de cobertura
   (`a_coverage_schemes`) deixam de ser concatenados no PL/SQL e passam a binds
