@@ -114,3 +114,9 @@ Prompt de nome via `showInputBox`; escrita via `workspace.fs`.
 
 - Gerar um `%test` por procedure/function do `.pkb`? — Follow-up.
 - Gerar também o corpo `.pkb` da suíte? — Follow-up.
+
+## Conexões
+
+<!-- brain:auto:start:conexoes -->
+- 🗺️ [[MOC - PRDs]]
+<!-- brain:auto:end -->

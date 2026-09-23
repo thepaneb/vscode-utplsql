@@ -230,3 +230,10 @@ comportamento atual, logando uma vez.
 - **Não implementado**: cache entre refreshes e exibição de itens desabilitados
   (permanecem omitidos); árvore lazy é a PRD-75. A validação em banco real fica
   para a suíte de integração (a API só existe no servidor).
+
+## Conexões
+
+<!-- brain:auto:start:conexoes -->
+- 🗺️ [[MOC - PRDs]]
+- ↩️ Referenciada por: [[BR-PARSE-008 - DB-first com gate de versão 3.1.3 e modos de fonte auto-database-file|BR-PARSE-008]] · [[BR-PARSE-009 - Linhas de get_suites_info - 1-based para 0-based e filtros|BR-PARSE-009]] · [[BR-PARSE-010 - Fusão arquivo+banco - arquivo prevalece em uri-linha, banco em descrição-tags|BR-PARSE-010]]
+<!-- brain:auto:end -->

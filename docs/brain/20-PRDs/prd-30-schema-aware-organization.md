@@ -280,3 +280,10 @@ $(database) APP: $(testing-passed) 12/15
   — Versão inicial com único pattern; array se houver demanda.
 - Schema alias: permitir mapear nome de diretório → nome real do schema?
   (ex.: diretório `app` → schema `MY_APP_PROD`)
+
+## Conexões
+
+<!-- brain:auto:start:conexoes -->
+- 🗺️ [[MOC - PRDs]]
+- ↩️ Referenciada por: [[BR-SCHEMA-001 - organization bifurca file tree vs schema tree; suiteMap é o lookup canônico|BR-SCHEMA-001]] · [[BR-SCHEMA-002 - extractSchemaFromPath - path.posix.relative e placeholder {schema}|BR-SCHEMA-002]] · [[BR-SCHEMA-003 - collectAllItems usa cachedItems e, se vazio, percorre até 3 níveis|BR-SCHEMA-003]]
+<!-- brain:auto:end -->

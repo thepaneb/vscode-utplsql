@@ -316,3 +316,10 @@ falhar, o próprio módulo já reporta — o quickfix só encapsula em diagnosti
 - Suporte a i18n das mensagens de erro? — Escopo futuro; inicialmente inglês.
 - Diagnostic de "Java não encontrado" quando modo é `java` e `java` não está
   no PATH? — Sim, adicionar como parte da validação de CLI no modo java.
+
+## Conexões
+
+<!-- brain:auto:start:conexoes -->
+- 🗺️ [[MOC - PRDs]]
+- ↩️ Referenciada por: [[BR-COB-001 - Cobertura Oracle exige GRANT EXECUTE ON SYS.DBMS_PROFILER|BR-COB-001]] · [[BR-UI-007 - Diagnósticos de setup e quick-fixes restritos ao source utPLSQL Setup|BR-UI-007]]
+<!-- brain:auto:end -->

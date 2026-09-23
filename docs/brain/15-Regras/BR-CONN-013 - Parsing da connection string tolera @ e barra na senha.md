@@ -33,4 +33,5 @@ Aceitar senhas com / ou @ e formatos opacos de connectString sem tentar normaliz
 <!-- brain:auto:start:conexoes -->
 - 🗺️ [[MOC - Regras]]
 - 📄 PRDs: [[prd-34-multi-connection-profiles|PRD-34]]
+- ↩️ Referenciada por: [[ERR-003 - UTPLSQL_BAD_CONN — credenciais ou connection string inválidas|ERR-003]]
 <!-- brain:auto:end -->

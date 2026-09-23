@@ -141,3 +141,9 @@ para permitir reprodução manual.
 
 - Expor também no `Run with Coverage`? (sim, é a mesma opção de runner)
 - Persistir a última seed usada para re-run (`utplsql.rerunLast`)?
+
+## Conexões
+
+<!-- brain:auto:start:conexoes -->
+- 🗺️ [[MOC - PRDs]]
+<!-- brain:auto:end -->

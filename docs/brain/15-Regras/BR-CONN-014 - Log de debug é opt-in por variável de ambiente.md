@@ -33,4 +33,5 @@ Diagnóstico acionável sob demanda (PRD-66 RF1) sem poluir o output do usuário
 <!-- brain:auto:start:conexoes -->
 - 🗺️ [[MOC - Regras]]
 - 📄 PRDs: [[prd-66-connection-robustness-logging|PRD-66]]
+- ↩️ Referenciada por: [[SEC-008 - Log de debug é opt-in e não registra credenciais|SEC-008]]
 <!-- brain:auto:end -->

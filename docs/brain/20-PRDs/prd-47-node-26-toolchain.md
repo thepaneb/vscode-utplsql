@@ -133,3 +133,9 @@ Nenhuma setting/comando novo.
 
 - Quando o VSCode embarcará Node ≥ 24? (gatilho para RF3 — acompanhar roadmap)
 - Incluir Node 26 como "current" antes do LTS em job separado e não-bloqueante? (alternativa a descartar — sugere-se manter simples)
+
+## Conexões
+
+<!-- brain:auto:start:conexoes -->
+- 🗺️ [[MOC - PRDs]]
+<!-- brain:auto:end -->

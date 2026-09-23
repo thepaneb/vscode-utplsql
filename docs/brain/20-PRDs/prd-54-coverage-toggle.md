@@ -128,3 +128,9 @@ Adicionar o item à `UtplsqlStatusBar`, o comando em `extension.ts` e a flag em
 - Persistir em `utplsql.defaultCoverage`? — Follow-up.
 - Toggle deveria virar um perfil `TestRunProfile` nativo de "coverage default"?
   — Avaliar.
+
+## Conexões
+
+<!-- brain:auto:start:conexoes -->
+- 🗺️ [[MOC - PRDs]]
+<!-- brain:auto:end -->

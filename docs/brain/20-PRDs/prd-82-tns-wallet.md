@@ -159,3 +159,9 @@ TNS e houver diretório resolvido, passar o descriptor resolvido ao
 - Detectar automaticamente `tnsnames.ora` ao lado do Instant Client quando
   `oracleClientConfigDir` estiver preenchido?
 - Suportar `sqlnet.ora`/`IFILE` no parser ou apenas o `tnsnames.ora` principal?
+
+## Conexões
+
+<!-- brain:auto:start:conexoes -->
+- 🗺️ [[MOC - PRDs]]
+<!-- brain:auto:end -->

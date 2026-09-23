@@ -33,4 +33,5 @@ Isola problemas de configuração dos problemas do código do usuário e evita q
 <!-- brain:auto:start:conexoes -->
 - 🗺️ [[MOC - Regras]]
 - 📄 PRDs: [[prd-32-quickfix-setup-diagnostics|PRD-32]]
+- ↩️ Referenciada por: [[ERR-006 - UTPLSQL_INVALID_OBJECTS — objetos UT3 inválidos no banco|ERR-006]] · [[SEC-010 - Fluxos não interativos nunca abrem prompt de conexão|SEC-010]]
 <!-- brain:auto:end -->

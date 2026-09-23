@@ -207,3 +207,10 @@ Trocar `resolveConnection()` por `resolveConnectionNoPrompt()` em
   migrar no primeiro uso e limpar a settings.)
 - Suites só-DB devem abrir read-only mesmo sem `ALL_SOURCE` acessível? (Nesse
   caso, manter o URI virtual e exibir aviso.)
+
+## Conexões
+
+<!-- brain:auto:start:conexoes -->
+- 🗺️ [[MOC - PRDs]]
+- ↩️ Referenciada por: [[BR-COB-002 - resolveSourceUri tenta variantes de extensão e bloqueia path traversal|BR-COB-002]] · [[BR-CONN-005 - Senha do perfil vai para o SecretStorage ao salvar|BR-CONN-005]] · [[BR-CONN-007 - Migração de perfis legados é idempotente|BR-CONN-007]]
+<!-- brain:auto:end -->

@@ -115,3 +115,9 @@ Novo comando + função pura `relatedSuiteMetas`. Reusa `collectAllItems`,
 
 - Mapear por cobertura (PRD futuro) para além da convenção de nome.
 - Rodar "related" com cobertura (PRD-54)?
+
+## Conexões
+
+<!-- brain:auto:start:conexoes -->
+- 🗺️ [[MOC - PRDs]]
+<!-- brain:auto:end -->

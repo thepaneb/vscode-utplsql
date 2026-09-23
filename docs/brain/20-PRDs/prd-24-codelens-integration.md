@@ -302,3 +302,10 @@ context.subscriptions.push(
   — Depende de PRD-26 (Inline decorations)
 - Interação com PRD-29 (Jump to failure): o CodeLens poderia ter um terceiro
   botão "Go to failure" quando há testes falhando?
+
+## Conexões
+
+<!-- brain:auto:start:conexoes -->
+- 🗺️ [[MOC - PRDs]]
+- ↩️ Referenciada por: [[BR-PARSE-002 - RE_PACKAGE aceita schema qualificado, BODY e identificador entre aspas|BR-PARSE-002]] · [[BR-PARSE-015 - CodeLens gera dois lenses por annotation, na linha da annotation|BR-PARSE-015]] · [[BR-UI-006 - CodeLens registrado apenas em scheme file e padrão .pks sem language id|BR-UI-006]]
+<!-- brain:auto:end -->

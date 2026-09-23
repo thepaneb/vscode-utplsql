@@ -176,3 +176,9 @@ Usa a setting existente `utplsql.setupDiagnosticsEnabled` (default `true`).
 - A query `all_objects` não requer `SELECT ANY DICTIONARY` — `ALL_OBJECTS` é visível
   para o usuário conectado; falha de acesso é ignorada silenciosamente.
 - Versão do utPLSQL: mantida apenas no `getCliInfo` (não duplicada aqui).
+
+## Conexões
+
+<!-- brain:auto:start:conexoes -->
+- 🗺️ [[MOC - PRDs]]
+<!-- brain:auto:end -->

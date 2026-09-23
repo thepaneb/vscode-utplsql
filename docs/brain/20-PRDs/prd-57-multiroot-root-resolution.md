@@ -115,3 +115,9 @@ primeiro workspace folder para resolver sourcePath" (seção Limitações).
 
 - Permitir `sourcePath` por folder via `utplsql.profiles` ou settings por
   folder? — Follow-up (PRD-34 já tem overrides por perfil).
+
+## Conexões
+
+<!-- brain:auto:start:conexoes -->
+- 🗺️ [[MOC - PRDs]]
+<!-- brain:auto:end -->

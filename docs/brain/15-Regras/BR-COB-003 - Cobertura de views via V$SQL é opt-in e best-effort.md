@@ -33,4 +33,5 @@ V$SQL pode ser negado por grants e não deve comprometer o run de testes; o matc
 <!-- brain:auto:start:conexoes -->
 - 🗺️ [[MOC - Regras]]
 - 📄 PRDs: [[prd-12-sql-coverage|PRD-12]]
+- ↩️ Referenciada por: [[ERR-009 - V$SQL negado — cobertura de views indisponível|ERR-009]] · [[SEC-009 - Grants são copiados para o clipboard, nunca executados automaticamente|SEC-009]]
 <!-- brain:auto:end -->

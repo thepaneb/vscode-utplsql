@@ -162,3 +162,9 @@ usado pelo refresh; usar `$(symbol-method)` ou manter só paleta).
 - **Menu**: apenas paleta (não foi adicionado botão em `view/title`).
 - **Testes**: unitários cobrem a montagem da chamada (SQL + bind do owner) e a
   falha de conexão; o efeito real no cache é validado na suíte de integração.
+
+## Conexões
+
+<!-- brain:auto:start:conexoes -->
+- 🗺️ [[MOC - PRDs]]
+<!-- brain:auto:end -->

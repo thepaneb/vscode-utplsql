@@ -267,3 +267,10 @@ executeRun() → CLI executa → stdout/stderr contém erros de compilação
   pela spec (`.pks`)? — `resolveFiles` precisa conhecer a relação spec/body.
 - Interação com PRD-11 (streaming): com Oracle direto, pode-se query
   `USER_ERRORS` em tempo real — mais preciso que parse de stdout.
+
+## Conexões
+
+<!-- brain:auto:start:conexoes -->
+- 🗺️ [[MOC - PRDs]]
+- ↩️ Referenciada por: [[BR-UI-008 - Diagnósticos de compilação mapeiam ALL_ERRORS e usam source utPLSQL Compilation|BR-UI-008]]
+<!-- brain:auto:end -->

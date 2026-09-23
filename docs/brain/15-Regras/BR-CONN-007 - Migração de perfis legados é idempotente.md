@@ -33,4 +33,5 @@ Convergir instalações antigas (senha em texto plano) para o SecretStorage sem 
 <!-- brain:auto:start:conexoes -->
 - 🗺️ [[MOC - Regras]]
 - 📄 PRDs: [[prd-34-multi-connection-profiles|PRD-34]] · [[prd-65-schema-mode-security-fixes|PRD-65]]
+- ↩️ Referenciada por: [[SEC-001 - Senha Oracle nunca é gravada em settings|SEC-001]]
 <!-- brain:auto:end -->

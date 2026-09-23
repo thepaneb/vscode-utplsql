@@ -234,3 +234,9 @@ Nenhuma. Sem novas settings, comandos ou menus.
 - Confirmar se o `.bat` do utPLSQL-cli no Windows usa `%*` (forward de todos os
   argumentos). Se usar `%1`–`%9`, args de cobertura que vêm depois podem ser
   truncados — mas isso é externo à extensão.
+
+## Conexões
+
+<!-- brain:auto:start:conexoes -->
+- 🗺️ [[MOC - PRDs]]
+<!-- brain:auto:end -->

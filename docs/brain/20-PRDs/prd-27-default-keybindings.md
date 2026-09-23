@@ -236,3 +236,10 @@ via `File > Preferences > Keyboard Shortcuts`.
   — Sim, PRD-31 deve definir seus próprios keybindings.
 - O prefixo `Ctrl+Shift+U` já é usado pelo VSCode para `undo` em alguns
   contextos? `Ctrl+U` é `undo`, mas `Ctrl+Shift+U` é livre.
+
+## Conexões
+
+<!-- brain:auto:start:conexoes -->
+- 🗺️ [[MOC - PRDs]]
+- ↩️ Referenciada por: [[BR-UI-001 - Context key utplsql-activated é setado na ativação|BR-UI-001]] · [[BR-UI-003 - utplsql-connected reflete a resolução de conexão sem prompt|BR-UI-003]]
+<!-- brain:auto:end -->

@@ -33,4 +33,5 @@ Ambos os reporters compartilham a mesma tabela; o marcador <coverage é o delimi
 <!-- brain:auto:start:conexoes -->
 - 🗺️ [[MOC - Regras]]
 - 📄 PRDs: [[prd-11-streaming-results|PRD-11]] · [[prd-12-sql-coverage|PRD-12]]
+- ↩️ Referenciada por: [[ERR-010 - Erro genérico do ut_runner.run (runner.oracleError)|ERR-010]]
 <!-- brain:auto:end -->

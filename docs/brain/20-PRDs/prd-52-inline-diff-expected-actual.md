@@ -127,3 +127,9 @@ Nenhuma setting/command novo.
 - Suportar também o formato `ut.expect(a).to_equal(b)` com `a`/`b` inline?
   — Se o reporter expuser ambos, adicionar fallback.
 - Diff em `error` (exceção) — não é asserção; fora de escopo.
+
+## Conexões
+
+<!-- brain:auto:start:conexoes -->
+- 🗺️ [[MOC - PRDs]]
+<!-- brain:auto:end -->

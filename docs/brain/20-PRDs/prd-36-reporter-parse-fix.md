@@ -186,3 +186,9 @@ Nenhuma.
 ## 11. Questões em aberto
 
 - Confirmar formato exato da saída de `utplsql reporters` no 3.2.2.
+
+## Conexões
+
+<!-- brain:auto:start:conexoes -->
+- 🗺️ [[MOC - PRDs]]
+<!-- brain:auto:end -->

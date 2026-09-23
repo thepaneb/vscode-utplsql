@@ -225,3 +225,9 @@ Inserir o bloco de args após a montagem dos reporters (linha 86) e antes de `ar
 
 - Vale expor `-scc` (skip-compatibility-check) como setting? O CLI já faz a verificação automaticamente — adiar até relato de quebra.
 - `-t` aceita minutos, não segundos. O CLI usa `long` internamente — suficiente.
+
+## Conexões
+
+<!-- brain:auto:start:conexoes -->
+- 🗺️ [[MOC - PRDs]]
+<!-- brain:auto:end -->

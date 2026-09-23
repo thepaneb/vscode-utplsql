@@ -188,3 +188,9 @@ existente cobre chaves ausentes.
 - Exportar `buildFileTree`/`buildSchemaTree` ou cobrir só por integração?
   (Recomendado: extrair para módulo testável.)
 - Incremental refresh (arquivo único) além do debounce? (Recomendado: follow-up.)
+
+## Conexões
+
+<!-- brain:auto:start:conexoes -->
+- 🗺️ [[MOC - PRDs]]
+<!-- brain:auto:end -->

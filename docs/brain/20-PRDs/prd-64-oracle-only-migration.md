@@ -498,3 +498,10 @@ Reescrever seções CLI em ~40 arquivos de documentação. Movimentizar PRDs CLI
 - O PRD-61 (auto-provisionamento CLI) deve ser movido para deprecated ou deletado?
 - Docs de análise (`analise.md`, `analise-comparativa.md`) devem ser mantidos como histórico?
 - LinkedIn post #10 (diagnosticos-setup) deve ser atualizado?
+
+## Conexões
+
+<!-- brain:auto:start:conexoes -->
+- 🗺️ [[MOC - PRDs]]
+- ↩️ Referenciada por: [[BR-EXEC-004 - Prefixo de schema utPLSQL descoberto via ALL_SYNONYMS|BR-EXEC-004]]
+<!-- brain:auto:end -->

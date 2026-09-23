@@ -151,3 +151,9 @@ workspace-scoped.
 - `utplsql.sourcePath`/`coverageOwner` devem ir para machine também? (impacto em
   multi-root; provavelmente não)
 - Mensagem i18n nova para o untrusted workspace?
+
+## Conexões
+
+<!-- brain:auto:start:conexoes -->
+- 🗺️ [[MOC - PRDs]]
+<!-- brain:auto:end -->

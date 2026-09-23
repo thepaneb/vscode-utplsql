@@ -294,3 +294,9 @@ informação de localização (linha da anotação).
   — Ícone de warning (⚠) com tooltip "2/5 tests failed"
 - Interação com PRD-29 (Jump to failure): clique na decoração → navega para
   a linha da falha no `.pkb`?
+
+## Conexões
+
+<!-- brain:auto:start:conexoes -->
+- 🗺️ [[MOC - PRDs]]
+<!-- brain:auto:end -->

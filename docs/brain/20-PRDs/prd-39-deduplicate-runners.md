@@ -207,3 +207,9 @@ versão mais completa — ela vira a canônica e o CLI passa a se beneficiar do
 `Go to Error` também. O aviso de unmatched do CLI ("Nenhum resultado JUnit
 encontrado para...") é preservado na função unificada: no modo Oracle ele passa
 a aparecer quando há mismatch — ganho diagnóstico, não regressão.
+
+## Conexões
+
+<!-- brain:auto:start:conexoes -->
+- 🗺️ [[MOC - PRDs]]
+<!-- brain:auto:end -->

@@ -176,3 +176,9 @@ herdar a flag de cobertura.
 - Auto-run com cobertura por padrão? — Casado com a PRD-54 (toggle).
 - Recompilar automaticamente o package antes de rodar no modo Oracle direto?
   — Avaliar como follow-up separado (hoje o CLI recompila; o direto, não).
+
+## Conexões
+
+<!-- brain:auto:start:conexoes -->
+- 🗺️ [[MOC - PRDs]]
+<!-- brain:auto:end -->

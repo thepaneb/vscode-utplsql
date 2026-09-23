@@ -422,3 +422,10 @@ Alvos com glue (thick+thin, node-oracledb 7.0.1): `win32-x64`, `linux-x64`,
   `ldconfig`/`LD_LIBRARY_PATH`? Depende de teste real em host Linux.
 - Expor um comando "Testar conexão (thick)" na paleta para validar
   Instant Client/NNE sem precisar rodar uma suíte.
+
+## Conexões
+
+<!-- brain:auto:start:conexoes -->
+- 🗺️ [[MOC - PRDs]]
+- ↩️ Referenciada por: [[BR-CONN-012 - Thick opt-in, fixado na primeira chamada e idempotente|BR-CONN-012]]
+<!-- brain:auto:end -->

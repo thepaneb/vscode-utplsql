@@ -175,3 +175,9 @@ elemento do array de args no `buildInvocation` para o modo `java`.
 ## 10. Questões em aberto
 
 *(Nenhuma)*
+
+## Conexões
+
+<!-- brain:auto:start:conexoes -->
+- 🗺️ [[MOC - PRDs]]
+<!-- brain:auto:end -->

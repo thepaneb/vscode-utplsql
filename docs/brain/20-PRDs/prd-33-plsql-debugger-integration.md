@@ -320,3 +320,9 @@ estiver implementado, a dependência `oracledb` é adicionada como
   falha da última execução.
 - Debug adapter pode ser reusado para debug geral de PL/SQL fora de testes?
   — Sim, a infraestrutura é genérica; o escopo inicial é testes.
+
+## Conexões
+
+<!-- brain:auto:start:conexoes -->
+- 🗺️ [[MOC - PRDs]]
+<!-- brain:auto:end -->

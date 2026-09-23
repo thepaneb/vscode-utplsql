@@ -171,3 +171,9 @@ Registrar `utplsql.runByTag` e a setting `utplsql.showTagsInTree`.
 - Combinar tag + cobertura (variação `utplsql.runByTagCoverage`)?
   — Sim, alinhado à PRD-54 (toggle global de cobertura).
 - Expressões de tags (`tag1 AND tag2`)? — Follow-up.
+
+## Conexões
+
+<!-- brain:auto:start:conexoes -->
+- 🗺️ [[MOC - PRDs]]
+<!-- brain:auto:end -->

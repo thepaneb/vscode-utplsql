@@ -33,4 +33,5 @@ Exibir contexto legível sem expor senha e sinalizar perfis não-utf8 e o perfil
 <!-- brain:auto:start:conexoes -->
 - 🗺️ [[MOC - Regras]]
 - 📄 PRDs: [[prd-34-multi-connection-profiles|PRD-34]]
+- ↩️ Referenciada por: [[SEC-002 - Connection string é sempre mascarada em qualquer saída|SEC-002]]
 <!-- brain:auto:end -->

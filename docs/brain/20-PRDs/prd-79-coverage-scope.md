@@ -182,3 +182,9 @@ bind `STRING` para as regex. Nenhum valor do usuário concatenado no PL/SQL.
   duas vezes.
 - **Testes**: unitários cobrem os binds de listas e regex e a ausência dos
   parâmetros no default; validação em banco real fica para a suíte de integração.
+
+## Conexões
+
+<!-- brain:auto:start:conexoes -->
+- 🗺️ [[MOC - PRDs]]
+<!-- brain:auto:end -->

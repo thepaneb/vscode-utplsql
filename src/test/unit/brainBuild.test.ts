@@ -3,12 +3,13 @@ import assert from 'node:assert';
 import { test } from 'node:test';
 
 // Testa o script scripts/brain-build.cjs (vault → repo: transformações e banner).
-const { parseFrontmatter, wikiLinks, readmeLinks, withStatus, render } =
+const { parseFrontmatter, wikiLinks, readmeLinks, withStatus, stripConexoes, render } =
   require('../../../scripts/brain-build.cjs') as {
     parseFrontmatter: (t: string) => { fm: Record<string, string>; body: string; hasFm: boolean };
     wikiLinks: (b: string) => string;
     readmeLinks: (b: string) => string;
     withStatus: (b: string, label: string) => string;
+    stripConexoes: (b: string) => string;
     render: (i: {
       rel: string;
       target: string;
@@ -52,6 +53,15 @@ test('brain-build: withStatus injeta na tabela e na seção', () => {
   assert.match(withStatus(table, 'Concluído'), /\| Status \| Concluído \|/);
   const section = '# T\n\n## Resumo\n\nX\n';
   assert.match(withStatus(section, 'Proposto'), /## Status\n\nProposto/);
+});
+
+test('brain-build: stripConexoes remove a seção do PRD publicado', () => {
+  const body =
+    '# T\n\nx\n\n## Conexões\n\n<!-- brain:auto:start:conexoes -->\n- [[MOC - PRDs]]\n<!-- brain:auto:end -->\n';
+  const out = stripConexoes(body);
+  assert.ok(!out.includes('Conexões'));
+  assert.ok(!out.includes('[['));
+  assert.match(out, /# T/);
 });
 
 test('brain-build: render prefixa o banner e transforma o corpo', () => {

@@ -152,3 +152,9 @@ Nenhuma nova setting. `utplsql.compilationDiagnostics.enabled` volta a ter efeit
 
 - Manter `UTPLSQL_NO_COVERAGE`/`runner.applyCoverage` legado ou remover de vez?
 - Threshold final: `3.1.0` (documentado) ou `3.0.0` (implementado)? Decidir e alinhar.
+
+## Conexões
+
+<!-- brain:auto:start:conexoes -->
+- 🗺️ [[MOC - PRDs]]
+<!-- brain:auto:end -->

@@ -33,4 +33,5 @@ Suporta instalações shared e schemas sem grants sem derrubar a extensão, e ev
 <!-- brain:auto:start:conexoes -->
 - 🗺️ [[MOC - Regras]]
 - 📄 PRDs: [[prd-43-schema-db-discovery|PRD-43]]
+- ↩️ Referenciada por: [[ERR-001 - ORA-00942 — objeto utPLSQL inacessível (shared install sem grants)|ERR-001]] · [[ERR-008 - ALL_SOURCE inacessível na descoberta (package pulado)|ERR-008]] · [[ERR-011 - Fonte de package truncada (-10.000 linhas)|ERR-011]]
 <!-- brain:auto:end -->

@@ -175,3 +175,9 @@ documentar que cor só faz sentido para reporters textuais.
 - Múltiplos reporters por export (um arquivo por reporter) ou um só?
 - Exportar automaticamente também ao final do run normal (opt-in)?
 - Limite de tamanho antes de oferecer salvar em vez de Output?
+
+## Conexões
+
+<!-- brain:auto:start:conexoes -->
+- 🗺️ [[MOC - PRDs]]
+<!-- brain:auto:end -->

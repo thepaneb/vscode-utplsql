@@ -33,4 +33,5 @@ Garante compatibilidade com versões antigas do framework e dá controle explíc
 <!-- brain:auto:start:conexoes -->
 - 🗺️ [[MOC - Regras]]
 - 📄 PRDs: [[prd-74-db-first-discovery|PRD-74]]
+- ↩️ Referenciada por: [[ERR-002 - UTPLSQL_OLD_VERSION — versão do utPLSQL abaixo do mínimo|ERR-002]] · [[ERR-011 - Fonte de package truncada (-10.000 linhas)|ERR-011]]
 <!-- brain:auto:end -->

@@ -210,3 +210,9 @@ Nenhuma setting nova. Sem `NLS_LANG`.
 - **12.2 + utPLSQL v3.2.3**: bootstrap falha (`PLS-00222`), como já documentado
   no `matrix.env`.
 - Charset: `€` em WE8DEC → `¿`; em AL32UTF8 (23ai) → correto.
+
+## Conexões
+
+<!-- brain:auto:start:conexoes -->
+- 🗺️ [[MOC - PRDs]]
+<!-- brain:auto:end -->

@@ -170,9 +170,17 @@ function withStatus(body, label) {
   return body.replace(/^(#\s+.*)$/m, `$1\n\n## Status\n\n${label}`);
 }
 
+const CONEXOES_RE =
+  /\n*## Conexões\s*\n+<!-- brain:auto:start:conexoes -->[\s\S]*?<!-- brain:auto:end -->\s*/g;
+
+/** Remove a seção `## Conexões` (navegação do vault) do PRD publicado. */
+function stripConexoes(body) {
+  return body.replace(CONEXOES_RE, '\n');
+}
+
 function render(item) {
   let body = item.body;
-  if (item.prd) body = withStatus(body, PRD_STATUS_LABEL[item.status]);
+  if (item.prd) body = withStatus(stripConexoes(body), PRD_STATUS_LABEL[item.status]);
   else if (item.prdIndex) body = body.replaceAll('../../../docs/prd/', '');
   else if (item.target.startsWith(WIKI_PREFIX)) body = wikiLinks(body);
   else if (README_RE.test(item.target)) body = readmeLinks(body);
@@ -262,5 +270,6 @@ module.exports = {
   wikiLinks,
   readmeLinks,
   withStatus,
+  stripConexoes,
   syncDir,
 };

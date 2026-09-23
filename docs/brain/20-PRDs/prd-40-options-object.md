@@ -186,3 +186,9 @@ aponta que manter como parâmetro preserva a injetabilidade (testes unitários
 fornecem folders mockados) e evita acoplamento a estado global que pode mudar
 entre chamadas. Consistente com a assinatura de `applyCoverageFromXml`
 (results.ts), que também recebe `folders?`.
+
+## Conexões
+
+<!-- brain:auto:start:conexoes -->
+- 🗺️ [[MOC - PRDs]]
+<!-- brain:auto:end -->

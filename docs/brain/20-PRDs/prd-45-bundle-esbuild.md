@@ -218,3 +218,9 @@ devDependency `esbuild`), `.vscodeignore` e `publish.yml`.
   de transição) — `out/` continua gerado pelo `tsc` localmente apenas para testes.
 - **Extra**: `vscode:prepublish` e `pretest:integration` encadeiam `compile && bundle`
   (o `main` aponta para `dist/` e `vsce`/integração precisam do bundle).
+
+## Conexões
+
+<!-- brain:auto:start:conexoes -->
+- 🗺️ [[MOC - PRDs]]
+<!-- brain:auto:end -->

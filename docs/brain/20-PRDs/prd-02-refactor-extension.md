@@ -196,3 +196,9 @@ export function activate(context: vscode.ExtensionContext) {
 - `testPath` removido sem warning de config desconhecida.
 - `npm test` passa (unitários + tipagem).
 - Run e Run with Coverage funcionam no Extension Development Host.
+
+## Conexões
+
+<!-- brain:auto:start:conexoes -->
+- 🗺️ [[MOC - PRDs]]
+<!-- brain:auto:end -->

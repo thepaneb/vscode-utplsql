@@ -181,3 +181,10 @@ Nenhuma nova setting.
 - `utplsql.cancelRun` na palette cancela o run atual.
 - `utplsql.clearConnection` limpa o cache e força prompt na próxima execução.
 - README recomenda env var `UTPLSQL_CONN` como método principal.
+
+## Conexões
+
+<!-- brain:auto:start:conexoes -->
+- 🗺️ [[MOC - PRDs]]
+- ↩️ Referenciada por: [[BR-EXEC-010 - Cancelamento dispara conn.break() nas duas conexões|BR-EXEC-010]] · [[BR-EXEC-011 - Timeout opcional reusa o caminho de cancelamento|BR-EXEC-011]] · [[BR-UI-002 - utplsql-running liga no início e desliga em todos os caminhos de saída|BR-UI-002]]
+<!-- brain:auto:end -->

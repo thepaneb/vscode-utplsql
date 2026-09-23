@@ -129,3 +129,9 @@ Preencher `durationMs` em `applyResultsFromCases` (já recebido por parâmetro).
 - Persistir em `globalState` (cross-workspace) vs `workspaceState`?
   — `workspaceState` (resultados são por projeto).
 - Histórico de N runs para detecção de flaky? — Follow-up.
+
+## Conexões
+
+<!-- brain:auto:start:conexoes -->
+- 🗺️ [[MOC - PRDs]]
+<!-- brain:auto:end -->

@@ -224,3 +224,9 @@ nomes a exibir.)
   da procedure atual no fonte (`extractParamNames`); sem nomes, lista vazia.
 - Melhoria futura: enumerar variáveis locais (exigiria parse mais completo do
   corpo e o mapa de linhas do `GET_LINE_MAP`).
+
+## Conexões
+
+<!-- brain:auto:start:conexoes -->
+- 🗺️ [[MOC - PRDs]]
+<!-- brain:auto:end -->

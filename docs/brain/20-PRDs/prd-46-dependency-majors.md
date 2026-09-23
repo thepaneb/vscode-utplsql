@@ -214,3 +214,9 @@ se aplicável.
   VSIX: 153 → 151 arquivos, 952 KB → 989 KB.
 - Commits isolados por pacote: `f244980` (iconv-lite), `763b901`
   (fast-xml-parser), `7407ace` (oracledb), `960b7dc` (typescript).
+
+## Conexões
+
+<!-- brain:auto:start:conexoes -->
+- 🗺️ [[MOC - PRDs]]
+<!-- brain:auto:end -->

@@ -33,4 +33,5 @@ Evitar que a senha do usuário seja gravada em settings e limitar a exposição 
 <!-- brain:auto:start:conexoes -->
 - 🗺️ [[MOC - Regras]]
 - 📄 PRDs: [[prd-34-multi-connection-profiles|PRD-34]]
+- ↩️ Referenciada por: [[SEC-003 - Senha digitada em sessão só vive em memória|SEC-003]]
 <!-- brain:auto:end -->

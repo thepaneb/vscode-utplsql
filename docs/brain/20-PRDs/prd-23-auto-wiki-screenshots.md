@@ -145,3 +145,9 @@ dependências de sistema.
   (PRD-42, fixture `tst_annotations.pks`). Executar antes do release 0.10.0.
 - **Sincronização da wiki** (PRD-22): o workflow copia `docs/wiki/images/`
   para o repositório wiki no push/merge da branch — automático, sem ação manual.
+
+## Conexões
+
+<!-- brain:auto:start:conexoes -->
+- 🗺️ [[MOC - PRDs]]
+<!-- brain:auto:end -->

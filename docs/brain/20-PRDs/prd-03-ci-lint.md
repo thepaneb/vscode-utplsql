@@ -203,3 +203,9 @@ Nenhuma setting de extensão — é puramente ferramenta de desenvolvimento.
 - CI dispara em push para `main` e em todo PR.
 - CI falha se código não compila ou lint encontra erro.
 - `publish.yml` também roda lint.
+
+## Conexões
+
+<!-- brain:auto:start:conexoes -->
+- 🗺️ [[MOC - PRDs]]
+<!-- brain:auto:end -->

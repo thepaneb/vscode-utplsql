@@ -213,3 +213,9 @@ Nenhuma setting nova. Os arquivos `.pks` serão descobertos pelo pattern `**/*.p
 ## 11. Questões em aberto
 
 - Incluir um teste que falha de propósito para validar o reporting de falhas?
+
+## Conexões
+
+<!-- brain:auto:start:conexoes -->
+- 🗺️ [[MOC - PRDs]]
+<!-- brain:auto:end -->

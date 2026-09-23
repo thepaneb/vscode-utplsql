@@ -234,3 +234,9 @@ Novo comando: `utPLSQL: Selecionar reporter adicional...`
 - Cache da lista de reporters na sessão? Pode ser adicionado depois se a latência for perceptível.
 - E se o usuário quiser múltiplos reporters adicionais numa execução só? `additionalReporters` cobre o caso fixo; o QuickPick atual seleciona um. Suporte a multi-select pode vir em iteração futura.
 - O formato de saída do `reporters` command varia entre versões do CLI? O comando foi introduzido na v3.1.1 — validar manualmente com algumas versões.
+
+## Conexões
+
+<!-- brain:auto:start:conexoes -->
+- 🗺️ [[MOC - PRDs]]
+<!-- brain:auto:end -->

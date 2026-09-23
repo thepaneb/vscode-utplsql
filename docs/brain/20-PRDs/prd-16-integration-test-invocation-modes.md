@@ -306,3 +306,9 @@ ajustar os caminhos, dispensando o uso de env vars.
 ## 10. Questões em aberto
 
 *(Nenhuma)*
+
+## Conexões
+
+<!-- brain:auto:start:conexoes -->
+- 🗺️ [[MOC - PRDs]]
+<!-- brain:auto:end -->

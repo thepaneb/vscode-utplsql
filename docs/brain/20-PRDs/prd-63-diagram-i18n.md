@@ -106,3 +106,9 @@ Todos os diagramas e screenshots da wiki são mantidos:
 - `images/icon.png` é mantido nos READMEs (ícone da extensão)
 - Diagramas da wiki são mantidos para documentação interna
 - PRD-63 original (criar 24 variantes traduzidas de diagramas) permanece cancelado
+
+## Conexões
+
+<!-- brain:auto:start:conexoes -->
+- 🗺️ [[MOC - PRDs]]
+<!-- brain:auto:end -->

@@ -116,3 +116,9 @@ Nenhuma nova setting.
 ## 11. Questões em aberto
 
 - Deveríamos manter `.nvmrc` em 24 mesmo suportando Node 20+? Sim — `.nvmrc` é a versão recomendada para desenvolvimento, não o mínimo suportado.
+
+## Conexões
+
+<!-- brain:auto:start:conexoes -->
+- 🗺️ [[MOC - PRDs]]
+<!-- brain:auto:end -->

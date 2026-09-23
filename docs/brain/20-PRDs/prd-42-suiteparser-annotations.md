@@ -191,3 +191,10 @@ consistente com RF1 e com o sketch da seção 5.3. Criar o `TestItem` com
 divergência da semântica do utPLSQL (que simplesmente exclui da execução). Se
 houver demanda por visibilidade dos desabilitados, uma setting dedicada pode
 reexpor em follow-up.
+
+## Conexões
+
+<!-- brain:auto:start:conexoes -->
+- 🗺️ [[MOC - PRDs]]
+- ↩️ Referenciada por: [[BR-PARSE-001 - Arquivo só é suite utPLSQL se tiver %suite E CREATE PACKAGE|BR-PARSE-001]] · [[BR-PARSE-002 - RE_PACKAGE aceita schema qualificado, BODY e identificador entre aspas|BR-PARSE-002]] · [[BR-PARSE-003 - %test só materializa teste quando seguido de PROCEDURE; órfão é sobrescrito|BR-PARSE-003]] · [[BR-PARSE-004 - Annotations estendidas só valem após o primeiro %test|BR-PARSE-004]] · [[BR-PARSE-005 - Normalização de %throws, %tags e %displayname|BR-PARSE-005]] · [[BR-PARSE-006 - Descoberta por arquivo descarta suítes-testes disabled, vazios e ilegíveis|BR-PARSE-006]]
+<!-- brain:auto:end -->

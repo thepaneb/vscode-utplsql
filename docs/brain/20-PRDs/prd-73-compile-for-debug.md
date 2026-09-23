@@ -233,3 +233,9 @@ Sem keybinding novo por padrão (evitar conflito); pode ser adicionado depois.
 - Pasta: recursivo ou apenas primeiro nível? Inclinação: primeiro nível.
 - Recompilar o **body** apenas (`COMPILE DEBUG BODY`) ou pacote inteiro?
   Inclinação: pacote inteiro, para cobrir spec+body.
+
+## Conexões
+
+<!-- brain:auto:start:conexoes -->
+- 🗺️ [[MOC - PRDs]]
+<!-- brain:auto:end -->

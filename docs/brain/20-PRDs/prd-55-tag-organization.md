@@ -138,3 +138,9 @@ helper `createSuiteItems(controller, suite, state)` e usá-la nos três modos.
 - Combinação Schema > Tag > Suite? — Follow-up.
 - Como tratar o risco de IDs duplicados (estratégia de id por tag) — decidir na
   implementação com spike.
+
+## Conexões
+
+<!-- brain:auto:start:conexoes -->
+- 🗺️ [[MOC - PRDs]]
+<!-- brain:auto:end -->

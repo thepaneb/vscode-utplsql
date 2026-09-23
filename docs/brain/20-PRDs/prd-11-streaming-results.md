@@ -354,3 +354,10 @@ GRANT SELECT, DELETE ON UT3.UT_OUTPUT_BUFFER_INFO_TMP TO PUBLIC;
 | Grants em buffer tables (shared install) | ⚠️ `create_grants.sql` concede `EXECUTE` nos tipos de buffer mas **não** concede `SELECT` em `UT_OUTPUT_BUFFER_TMP` etc. Em shared install, SELECT direto falha. Precisa de grants manuais ou wrapper. |
 | Reporters com `a_output_id` | ❌ Não suportado — escrevem no buffer compartilhado |
 | Buffer usado pelos reporters padrão | ✅ Todos (JUnit, documentation, coverage cobertura) escrevem na mesma `UT_OUTPUT_BUFFER_TMP` (VARCHAR2). `UT_OUTPUT_BUFFER_INFO_TMP` armazena metadados dos buffers ativos. `UT_OUTPUT_CLOB_BUFFER_TMP` não é usado por nenhum reporter padrão. |
+
+## Conexões
+
+<!-- brain:auto:start:conexoes -->
+- 🗺️ [[MOC - PRDs]]
+- ↩️ Referenciada por: [[BR-EXEC-001 - Execução usa duas conexões dedicadas (conn1 runner, conn2 poll)|BR-EXEC-001]] · [[BR-EXEC-005 - Buffer de saída é limpo antes de cada run|BR-EXEC-005]] · [[BR-EXEC-006 - Reporters gravam na mesma UT_OUTPUT_BUFFER_TMP; CLOB não é usada|BR-EXEC-006]] · [[BR-EXEC-007 - Poll do buffer a cada 200ms por message_id incremental|BR-EXEC-007]] · [[BR-EXEC-008 - Roteamento XML x output de documentação com detecção de CDATA|BR-EXEC-008]] · [[BR-EXEC-009 - Separação do XML de cobertura do XML JUnit no mesmo buffer|BR-EXEC-009]] · [[BR-EXEC-010 - Cancelamento dispara conn.break() nas duas conexões|BR-EXEC-010]] · [[BR-PARSE-011 - Precedência de status JUnit failure - error - skipped - passed|BR-PARSE-011]]
+<!-- brain:auto:end -->

@@ -205,3 +205,10 @@ Usa settings existentes:
 - O merge no `doRefresh` usa `resolveConnectionNoPrompt` (não prompa em refresh); conexão indisponível → descoberta DB silenciosamente pulada.
 - `SuiteFile.dbSchema` marca suites descobertas via DB; `buildSchemaTree` usa esse campo em vez de `extractSchemaFromPath` (URIs `utplsql-db:/` não têm fsPath local).
 - Testes: +16 unitários em `discovery.test.ts`; +3 de integração com banco real (`describeDB`), incluindo E2E de refresh em modo schema com merge filesystem+DB.
+
+## Conexões
+
+<!-- brain:auto:start:conexoes -->
+- 🗺️ [[MOC - PRDs]]
+- ↩️ Referenciada por: [[BR-EXEC-004 - Prefixo de schema utPLSQL descoberto via ALL_SYNONYMS|BR-EXEC-004]] · [[BR-PARSE-007 - Fallback ALL_OBJECTS-ALL_SOURCE ignora UT_- e nunca lança|BR-PARSE-007]] · [[BR-SCHEMA-002 - extractSchemaFromPath - path.posix.relative e placeholder {schema}|BR-SCHEMA-002]]
+<!-- brain:auto:end -->

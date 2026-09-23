@@ -183,3 +183,9 @@ Nenhuma setting/comando novo. Sem `contributes` alterado.
   (somente release)?
 - Vale migrar de `.vscodeignore` para o campo `files` do `package.json` numa
   PRD futura (allowlist positiva em vez de denylist)?
+
+## Conexões
+
+<!-- brain:auto:start:conexoes -->
+- 🗺️ [[MOC - PRDs]]
+<!-- brain:auto:end -->

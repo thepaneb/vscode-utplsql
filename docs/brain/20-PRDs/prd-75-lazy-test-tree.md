@@ -164,3 +164,9 @@ funcionando pelos IDs.
 
 - Resolver a suíte também ao aplicar decorações/CodeLens sem expandir?
 - Persistir `resolvedNodes` entre sessões ou sempre revalidar no refresh?
+
+## Conexões
+
+<!-- brain:auto:start:conexoes -->
+- 🗺️ [[MOC - PRDs]]
+<!-- brain:auto:end -->

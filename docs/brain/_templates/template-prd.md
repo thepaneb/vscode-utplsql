@@ -79,3 +79,8 @@ tags: [prd]
 ## 11. Questões em aberto
 
 - {Dúvidas não resolvidas}
+
+## Conexões
+
+<!-- brain:auto:start:conexoes -->
+<!-- brain:auto:end -->

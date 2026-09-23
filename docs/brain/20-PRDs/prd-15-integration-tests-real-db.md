@@ -249,3 +249,9 @@ Adicionar documentação em `DEVELOPMENT.md` (ou `CONTRIBUTING.md`) sobre como c
 - Como mockar `window.showInformationMessage` no teste `showInfo` sem depender de UI real?
 - O timeout do test runner é configurável via mocha? Verificar `@vscode/test-cli` options.
 - Devemos adicionar um script `npm run test:integration:setup` que roda o `setup.sql` automaticamente?
+
+## Conexões
+
+<!-- brain:auto:start:conexoes -->
+- 🗺️ [[MOC - PRDs]]
+<!-- brain:auto:end -->

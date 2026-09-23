@@ -46,6 +46,9 @@ function vaultNotes() {
   return out.sort();
 }
 
+/** Notas em `_templates/` (não recebem blocos gerados). */
+const isTemplate = (file) => file.split(path.sep).includes('_templates');
+
 function rel(target, note) {
   return path.relative(path.dirname(note), target).split(path.sep).join('/');
 }
@@ -322,16 +325,46 @@ function genDeps() {
 // ── conexões (grafo do Obsidian) ───────────────────────────────────────
 
 let ID_MAP = null;
-/** Mapa `id` do frontmatter → basename da nota (para gerar wikilinks). */
-function vaultIdMap() {
-  if (ID_MAP) return ID_MAP;
-  const map = new Map();
+let BASE_ID = null;
+/** Mapas `id` → basename e basename → `id` (para gerar wikilinks). */
+function idMaps() {
+  if (ID_MAP) return { ids: ID_MAP, bases: BASE_ID };
+  ID_MAP = new Map();
+  BASE_ID = new Map();
   for (const file of vaultNotes()) {
+    if (isTemplate(file)) continue;
     const fm = parseFm(fs.readFileSync(file, 'utf8'));
-    if (fm.id) map.set(fm.id, path.basename(file, '.md'));
+    const base = path.basename(file, '.md');
+    if (fm.id) {
+      ID_MAP.set(fm.id, base);
+      BASE_ID.set(base, fm.id);
+    }
   }
-  ID_MAP = map;
-  return map;
+  return { ids: ID_MAP, bases: BASE_ID };
+}
+
+let REVERSE = null;
+/** Índice reverso: `id` referenciado → basenames das notas que o referenciam. */
+function reverseIndex() {
+  if (REVERSE) return REVERSE;
+  const rev = new Map();
+  for (const file of vaultNotes()) {
+    if (isTemplate(file)) continue;
+    const fm = parseFm(fs.readFileSync(file, 'utf8'));
+    const base = path.basename(file, '.md');
+    const refs = [
+      ...(Array.isArray(fm.prds) ? fm.prds : []),
+      ...(Array.isArray(fm.regras) ? fm.regras : []),
+      ...(Array.isArray(fm.depende) ? fm.depende : []),
+    ];
+    for (const r of refs) {
+      const id = String(r).trim();
+      if (!rev.has(id)) rev.set(id, new Set());
+      rev.get(id).add(base);
+    }
+  }
+  REVERSE = rev;
+  return rev;
 }
 
 function mocOf(notePath) {
@@ -344,10 +377,10 @@ function wl(target, label) {
   return label && label !== target ? `[[${target}|${label}]]` : `[[${target}]]`;
 }
 
-/** Bloco `## Conexões`: liga a nota à MOC e às referências do frontmatter. */
+/** Bloco `## Conexões`: liga a nota à MOC, às referências e às notas que a citam. */
 function genConexoes(notePath) {
   const fm = parseFm(fs.readFileSync(notePath, 'utf8'));
-  const ids = vaultIdMap();
+  const { ids, bases } = idMaps();
   const lines = [];
   const moc = mocOf(notePath);
   if (moc) lines.push(`- 🗺️ ${wl(moc)}`);
@@ -367,6 +400,17 @@ function genConexoes(notePath) {
   }
   if (Array.isArray(fm.relacionado) && fm.relacionado.length) {
     lines.push(`- 🔗 ${fm.relacionado.map((r) => String(r).trim()).join(' · ')}`);
+  }
+  // Relação reversa explícita: notas que referenciam esta.
+  if (fm.id) {
+    const refs = reverseIndex().get(fm.id);
+    if (refs && refs.size) {
+      const links = [...refs]
+        .sort()
+        .map((b) => wl(b, bases.get(b) || b))
+        .join(' · ');
+      lines.push(`- ↩️ Referenciada por: ${links}`);
+    }
   }
   return lines.join('\n') || '- 🗺️ _sem conexões_';
 }
@@ -580,6 +624,7 @@ function generateNotes() {
 function sync() {
   let changed = 0;
   for (const file of vaultNotes()) {
+    if (isTemplate(file)) continue;
     const original = fs.readFileSync(file, 'utf8');
     const updated = original.replace(MARKER_RE, (full, name) => {
       const gen = GENERATORS[name];

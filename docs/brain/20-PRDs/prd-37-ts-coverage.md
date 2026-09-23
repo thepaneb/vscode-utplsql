@@ -209,3 +209,9 @@ Nenhuma setting de extensão — ferramenta de desenvolvimento apenas.
 ## 11. Questões em aberto
 
 - Nenhuma.
+
+## Conexões
+
+<!-- brain:auto:start:conexoes -->
+- 🗺️ [[MOC - PRDs]]
+<!-- brain:auto:end -->

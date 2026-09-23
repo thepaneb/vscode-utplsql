@@ -128,3 +128,9 @@ pós-instalação.
   não; reescrever como "verificar versão do utPLSQL no banco" ou encerrar.
 - Baixar o `oracledb` binary específico por plataforma? — Já é optionalDependency.
 - Auto-update do CLI quando a versão do banco subir? — Follow-up.
+
+## Conexões
+
+<!-- brain:auto:start:conexoes -->
+- 🗺️ [[MOC - PRDs]]
+<!-- brain:auto:end -->

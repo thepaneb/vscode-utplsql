@@ -200,3 +200,9 @@ Nenhuma — a extensão detecta automaticamente se há múltiplos folders.
 - Execução usa o root do folder correto.
 - Cobertura mapeia arquivos dentro do folder de origem.
 - Projetos single-root comportam-se exatamente como antes.
+
+## Conexões
+
+<!-- brain:auto:start:conexoes -->
+- 🗺️ [[MOC - PRDs]]
+<!-- brain:auto:end -->

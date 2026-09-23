@@ -160,3 +160,9 @@ Adicionar `invocation`, `javaPath`, `cliHome` ao `UtConfig`/`readConfig`.
 
 - Vale um modo `auto` (preferir `java` quando a raiz é derivável)? — adiar.
 - Expor `JAVA_OPTS`/props extras como setting? — só se houver demanda.
+
+## Conexões
+
+<!-- brain:auto:start:conexoes -->
+- 🗺️ [[MOC - PRDs]]
+<!-- brain:auto:end -->

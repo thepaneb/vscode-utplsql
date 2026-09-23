@@ -150,3 +150,10 @@ Fase 2 requer `GRANT SELECT ON V$SQL TO <user>` no Oracle + setting `true`.
 - Conexão para V$SQL: reutilizar connection string do utPLSQL ou JDBC direto?
 - Matching: considerar FORCE VIEW? Multi-schema?
 - Timeout ideal para consulta V$SQL?
+
+## Conexões
+
+<!-- brain:auto:start:conexoes -->
+- 🗺️ [[MOC - PRDs]]
+- ↩️ Referenciada por: [[BR-COB-001 - Cobertura Oracle exige GRANT EXECUTE ON SYS.DBMS_PROFILER|BR-COB-001]] · [[BR-COB-003 - Cobertura de views via V$SQL é opt-in e best-effort|BR-COB-003]] · [[BR-EXEC-009 - Separação do XML de cobertura do XML JUnit no mesmo buffer|BR-EXEC-009]] · [[BR-EXEC-013 - Reporter de cobertura só entra se existir no banco|BR-EXEC-013]]
+<!-- brain:auto:end -->

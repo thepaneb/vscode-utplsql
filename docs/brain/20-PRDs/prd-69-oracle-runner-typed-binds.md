@@ -242,3 +242,10 @@ await conn1.execute(plsql, binds, { autoCommit: true });
 - `utplsql.tags` deve ser um override por execução (QuickPick) em vez de setting
   global? Relacionado a PRD-51.
 - Suportar `a_include_schema_expr`/`a_exclude_schema_expr` no mesmo passe?
+
+## Conexões
+
+<!-- brain:auto:start:conexoes -->
+- 🗺️ [[MOC - PRDs]]
+- ↩️ Referenciada por: [[BR-EXEC-012 - Binds tipados - nenhum valor de usuário concatenado no PL-SQL|BR-EXEC-012]] · [[BR-EXEC-013 - Reporter de cobertura só entra se existir no banco|BR-EXEC-013]] · [[BR-EXEC-014 - Reporters adicionais são validados e sanitizados antes do PL-SQL|BR-EXEC-014]]
+<!-- brain:auto:end -->

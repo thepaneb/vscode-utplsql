@@ -282,3 +282,10 @@ ao Test Explorer via `message.location`.
   no workspace)? — Não mapear; só funciona para código versionado localmente.
 - Stack trace pode referenciar código em outro workspace folder (multi-root)?
   — `resolveStackFrameToUri` deve buscar em todos os folders.
+
+## Conexões
+
+<!-- brain:auto:start:conexoes -->
+- 🗺️ [[MOC - PRDs]]
+- ↩️ Referenciada por: [[BR-PARSE-011 - Precedência de status JUnit failure - error - skipped - passed|BR-PARSE-011]] · [[BR-PARSE-012 - Stack trace - regex quoted-unquoted e filtro de frames do framework|BR-PARSE-012]] · [[BR-PARSE-014 - message.location só é definida para failed-error com frame de usuário resolvido|BR-PARSE-014]]
+<!-- brain:auto:end -->

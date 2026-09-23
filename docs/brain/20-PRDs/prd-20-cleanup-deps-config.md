@@ -131,3 +131,9 @@ Nenhuma nova setting.
 ## 11. Questões em aberto
 
 - Nenhuma.
+
+## Conexões
+
+<!-- brain:auto:start:conexoes -->
+- 🗺️ [[MOC - PRDs]]
+<!-- brain:auto:end -->

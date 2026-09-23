@@ -222,3 +222,9 @@ Nenhuma setting da extensão. Variáveis do orquestrador documentadas em
 - Reavaliar 12.2 caso o utPLSQL seja atualizado (o problema é o
   `DBMS_PREPROCESSOR.SOURCE_LINES_T` sem construtor no 12.2 base).
 - Reavaliar `19.19.0.0` se a Oracle publicar a variante amd64.
+
+## Conexões
+
+<!-- brain:auto:start:conexoes -->
+- 🗺️ [[MOC - PRDs]]
+<!-- brain:auto:end -->

@@ -166,3 +166,9 @@ Manter os nomes de pacote/schema em maiúsculas; expor o objeto no provider e um
 
 - Unificar `utplsql-db:` e o novo scheme ou manter dois?
 - Cachear o texto do provider entre runs para reduzir queries?
+
+## Conexões
+
+<!-- brain:auto:start:conexoes -->
+- 🗺️ [[MOC - PRDs]]
+<!-- brain:auto:end -->

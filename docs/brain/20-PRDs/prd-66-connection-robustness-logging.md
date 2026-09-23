@@ -208,3 +208,10 @@ Ajustes de RF6, RF7 e RF8 descritos acima.
   apenas o evento.)
 - Recriar pool de forma lazy (próximo run) ou imediata no evento? (Recomendado:
   lazy.)
+
+## Conexões
+
+<!-- brain:auto:start:conexoes -->
+- 🗺️ [[MOC - PRDs]]
+- ↩️ Referenciada por: [[BR-CONN-001 - Precedência de resolução da conexão|BR-CONN-001]] · [[BR-CONN-014 - Log de debug é opt-in por variável de ambiente|BR-CONN-014]]
+<!-- brain:auto:end -->

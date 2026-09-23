@@ -238,3 +238,10 @@ editado, `utPLSQL: Limpar conexão` + nova conexão), o pool antigo é fechado
 continuaria apontando para o banco antigo silenciosamente. Nenhum tratamento
 especial é necessário em `clearSessionConnection` — a comparação acontece no
 momento da execução.
+
+## Conexões
+
+<!-- brain:auto:start:conexoes -->
+- 🗺️ [[MOC - PRDs]]
+- ↩️ Referenciada por: [[BR-EXEC-002 - Conexões do runner têm callTimeout zerado|BR-EXEC-002]] · [[BR-EXEC-003 - Falha na segunda conexão libera a primeira (sem vazamento)|BR-EXEC-003]]
+<!-- brain:auto:end -->

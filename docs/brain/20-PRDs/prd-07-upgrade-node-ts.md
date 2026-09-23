@@ -176,3 +176,9 @@ Atualizar `node-version` de `20` para `24` em todos os workflows.
 - `npm test` passa (21/21).
 - `.nvmrc` presente e lido por `nvm use`.
 - CI roda em Node 24.
+
+## Conexões
+
+<!-- brain:auto:start:conexoes -->
+- 🗺️ [[MOC - PRDs]]
+<!-- brain:auto:end -->

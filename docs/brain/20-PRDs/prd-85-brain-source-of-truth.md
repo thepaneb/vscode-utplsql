@@ -355,3 +355,9 @@ Code-first, com curadoria:
   `SEC`/`ERR`/`PAT`/`TPL`/`GLOSS`/`NFR`/`ENT`.
 - **Deduplicação `GLOSS-*`/`ERR-*` × wiki:** resolvida por link (a wiki é gerada
   do vault; o glossário/erros são as notas atômicas).
+
+## Conexões
+
+<!-- brain:auto:start:conexoes -->
+- 🗺️ [[MOC - PRDs]]
+<!-- brain:auto:end -->

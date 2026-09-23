@@ -172,3 +172,9 @@ Nenhuma nova setting.
   GitHub Actions) que bypassa o bloqueio. `publish` passa a chamar `node scripts/publish.cjs`,
   que bloqueia localmente e roda `vsce publish` quando `CI` está definido. Sem script
   `publish:ci` separado.
+
+## Conexões
+
+<!-- brain:auto:start:conexoes -->
+- 🗺️ [[MOC - PRDs]]
+<!-- brain:auto:end -->

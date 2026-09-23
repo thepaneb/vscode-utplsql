@@ -33,4 +33,5 @@ O relatório sempre traz .sql, mas o arquivo real pode usar outra extensão PL/S
 <!-- brain:auto:start:conexoes -->
 - 🗺️ [[MOC - Regras]]
 - 📄 PRDs: [[prd-04-expand-tests|PRD-04]] · [[prd-65-schema-mode-security-fixes|PRD-65]]
+- ↩️ Referenciada por: [[SEC-007 - Cobertura não aceita caminho fora das raízes do workspace|SEC-007]]
 <!-- brain:auto:end -->

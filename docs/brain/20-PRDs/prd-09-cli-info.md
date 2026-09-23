@@ -200,3 +200,9 @@ Nenhuma nova setting. O comando `utplsql.showInfo` aparece na paleta de comandos
 - Usar `semver` library para comparação robusta de versões? Por ora comparação numérica simples (split por `.` e compara ints) — evita dependência.
 - Exibir na status bar (ex.: `utPLSQL v3.1.7`)? Pode ser um PRD futuro.
 - E se `info` demorar (conexão lenta)? O CLI tem timeout interno; a extensão não precisa adicionar um extra.
+
+## Conexões
+
+<!-- brain:auto:start:conexoes -->
+- 🗺️ [[MOC - PRDs]]
+<!-- brain:auto:end -->

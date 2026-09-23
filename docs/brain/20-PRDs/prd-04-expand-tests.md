@@ -249,3 +249,10 @@ logs detalhados de matching no output da execução.
 - `runner.test.ts` cobre `applyResults` com JUnit + `TestRun` mock.
 - `npm test` passa sem erros.
 - Testes sem match em `applyResults` geram aviso no output.
+
+## Conexões
+
+<!-- brain:auto:start:conexoes -->
+- 🗺️ [[MOC - PRDs]]
+- ↩️ Referenciada por: [[BR-COB-002 - resolveSourceUri tenta variantes de extensão e bloqueia path traversal|BR-COB-002]]
+<!-- brain:auto:end -->

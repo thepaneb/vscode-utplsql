@@ -247,3 +247,10 @@ await executeRun(
 - Mostrar status da conexão Oracle no mesmo item? (ex: ícone de DB verde/vermelho)
   — Poderia ser feature separada (Connection Health Indicator)
 - Integração com PRD-31: botão direito → "Run Failed Tests" no menu de contexto
+
+## Conexões
+
+<!-- brain:auto:start:conexoes -->
+- 🗺️ [[MOC - PRDs]]
+- ↩️ Referenciada por: [[BR-UI-005 - Status bar - gating por setting, throttle de 200ms e ícone por falha-erro|BR-UI-005]]
+<!-- brain:auto:end -->

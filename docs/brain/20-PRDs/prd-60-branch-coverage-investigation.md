@@ -105,3 +105,9 @@ Nenhuma.
 - O `ut_coverage_cobertura_reporter` emite `branch="true"`/`covered`?
   — Confirmar com a documentação upstream do utPLSQL.
 - DBMS_PLSQL_CODE_COVERAGE expõe blocos (não branches) — alinhar expectativas.
+
+## Conexões
+
+<!-- brain:auto:start:conexoes -->
+- 🗺️ [[MOC - PRDs]]
+<!-- brain:auto:end -->

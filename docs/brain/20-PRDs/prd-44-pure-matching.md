@@ -202,3 +202,10 @@ Nenhuma nova setting.
 - A interface `MatchEntry` deve ser exportada ou interna ao módulo?
 - `buildMatchIndex` deve aceitar um `Map<string, vscode.TestItem>` pré-existente para merge com outros índices (ex: suites de múltiplos folders)?
 - O fallback `findByNameOnly` usa `description.toLowerCase().trim()`. Manter `.trim()` ou normalizar na construção do índice?
+
+## Conexões
+
+<!-- brain:auto:start:conexoes -->
+- 🗺️ [[MOC - PRDs]]
+- ↩️ Referenciada por: [[BR-PARSE-013 - Mapeamento resultado para teste por lastSegment+name-description com fallback|BR-PARSE-013]]
+<!-- brain:auto:end -->

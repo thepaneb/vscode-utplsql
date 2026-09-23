@@ -204,3 +204,9 @@ Nenhuma. Comportamento sempre ativo; para desligar, reverter o PRD.
 - `executed` como `boolean` vs soma de hits do escopo (o VSCode aceita
   `number | boolean` — soma é enganosa porque o profiler conta execuções de
   bloco, não de função)?
+
+## Conexões
+
+<!-- brain:auto:start:conexoes -->
+- 🗺️ [[MOC - PRDs]]
+<!-- brain:auto:end -->

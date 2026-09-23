@@ -317,3 +317,10 @@ Nenhuma nova setting. Comandos são registrados e keybindings definidos no
 - Como `runAtCursor` interage com `%context` do utPLSQL?
   — Executar o `%context` pai + o `%test` específico? Ou só o `%test`?
   Recomendação: executar o suite pai (mais seguro, `%context` setup é necessário).
+
+## Conexões
+
+<!-- brain:auto:start:conexoes -->
+- 🗺️ [[MOC - PRDs]]
+- ↩️ Referenciada por: [[BR-UI-004 - utplsql-hasFailures derivado de lastFailedItems (failed ou error)|BR-UI-004]]
+<!-- brain:auto:end -->
