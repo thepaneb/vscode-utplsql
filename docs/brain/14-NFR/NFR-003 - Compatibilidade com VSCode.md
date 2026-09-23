@@ -8,6 +8,7 @@ verificado: 2026-09-23
 implementacao: []
 testes: []
 regras: []
+relacionado: ["[[TPL-VSCODE-TEST-API - VSCode Test API (Test Explorer)]]", "[[MOC - Arquitetura]]"]
 tags: ["compatibilidade"]
 ---
 ## Requisito
@@ -22,3 +23,10 @@ Ampliar o alcance mantendo APIs suportadas.
 ## Verificação
 
 `package.json`, registro em `extension.ts`.
+
+## Conexões
+
+<!-- brain:auto:start:conexoes -->
+- 🗺️ [[MOC - NFR]]
+- 🔗 [[TPL-VSCODE-TEST-API - VSCode Test API (Test Explorer)]] · [[MOC - Arquitetura]]
+<!-- brain:auto:end -->

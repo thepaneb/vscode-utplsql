@@ -14,3 +14,7 @@ tags: [i18n, locale]
 Locale `it` da extensão. Strings de UI em [`package.nls.it.json`](../../../package.nls.it.json) (28 chaves).
 
 README: [[README.it]]
+
+## Conexões
+
+- 🗺️ [[MOC - I18n]]

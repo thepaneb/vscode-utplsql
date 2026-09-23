@@ -27,3 +27,8 @@ Linhas processadas em ordem; o estado seenFirstTest controla a coleta de annotat
 
 Evita criar itens fantasma para annotations sem procedure correspondente.
 
+## Conexões
+
+<!-- brain:auto:start:conexoes -->
+- 🗺️ [[MOC - Regras]]
+<!-- brain:auto:end -->

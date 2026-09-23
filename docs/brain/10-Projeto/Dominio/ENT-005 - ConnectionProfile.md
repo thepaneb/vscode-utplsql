@@ -23,3 +23,9 @@ isDefault.
 ## Onde aparece
 
 `connectionProfiles.ts`, `types.ts`.
+
+## Conexões
+
+<!-- brain:auto:start:conexoes -->
+- 🗺️ [[MOC - Dominio]]
+<!-- brain:auto:end -->

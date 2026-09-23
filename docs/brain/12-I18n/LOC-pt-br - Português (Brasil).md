@@ -14,3 +14,7 @@ tags: [i18n, locale]
 Locale `pt-br` da extensão. Strings de UI em [`package.nls.pt-br.json`](../../../package.nls.pt-br.json) (28 chaves).
 
 README: [[README.pt-BR]]
+
+## Conexões
+
+- 🗺️ [[MOC - I18n]]

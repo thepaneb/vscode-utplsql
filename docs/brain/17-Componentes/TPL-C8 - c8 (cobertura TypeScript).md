@@ -29,3 +29,9 @@ Instrumentação quebra se o runner usar `spawnSync` (por isso não usa
 ## Upgrade/saída
 
 Config em `.c8rc`.
+
+## Conexões
+
+<!-- brain:auto:start:conexoes -->
+- 🗺️ [[MOC - Componentes]]
+<!-- brain:auto:end -->

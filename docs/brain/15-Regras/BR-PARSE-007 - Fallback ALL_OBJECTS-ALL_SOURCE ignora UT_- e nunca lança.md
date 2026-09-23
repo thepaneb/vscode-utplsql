@@ -27,3 +27,8 @@ Falha total de conexão/consulta retorna lista vazia sem lançar; pacotes do fra
 
 Suporta instalações shared e schemas sem grants sem derrubar a extensão, e evita truncamento silencioso de packages grandes.
 
+## Conexões
+
+<!-- brain:auto:start:conexoes -->
+- 🗺️ [[MOC - Regras]]
+<!-- brain:auto:end -->

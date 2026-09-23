@@ -18,3 +18,9 @@ A extensão lê todos da mesma `UT_OUTPUT_BUFFER_TMP`.
 ## Onde aparece
 
 `oracleRunner.ts` (montagem de `ut_reporters`), `junit.ts`, `cobertura.ts`.
+
+## Conexões
+
+<!-- brain:auto:start:conexoes -->
+- 🗺️ [[MOC - Glossario]]
+<!-- brain:auto:end -->

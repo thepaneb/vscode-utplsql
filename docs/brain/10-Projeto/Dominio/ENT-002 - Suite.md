@@ -22,3 +22,9 @@ packageName, description, tags, fileUri/range, testes.
 ## Onde aparece
 
 `types.ts`, `suiteParser.ts`, `discovery.ts`, `testTree.ts`.
+
+## Conexões
+
+<!-- brain:auto:start:conexoes -->
+- 🗺️ [[MOC - Dominio]]
+<!-- brain:auto:end -->

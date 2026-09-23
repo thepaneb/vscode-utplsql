@@ -27,3 +27,8 @@ String sem @ ou sem formato de credencial é retornada inalterada.
 
 Evitar vazamento de senha em qualquer superfície de saída, inclusive senhas com caracteres especiais.
 
+## Conexões
+
+<!-- brain:auto:start:conexoes -->
+- 🗺️ [[MOC - Regras]]
+<!-- brain:auto:end -->

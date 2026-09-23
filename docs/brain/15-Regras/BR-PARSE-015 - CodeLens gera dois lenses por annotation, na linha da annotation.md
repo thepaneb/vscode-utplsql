@@ -27,3 +27,8 @@ Arquivos .pkb/.sql não recebem CodeLens; %test órfão não gera lens; sem CREA
 
 O lens deve ficar sobre a annotation (não a procedure) para o usuário executar a partir de onde foi declarado.
 
+## Conexões
+
+<!-- brain:auto:start:conexoes -->
+- 🗺️ [[MOC - Regras]]
+<!-- brain:auto:end -->

@@ -28,3 +28,9 @@ pattern). `controller.items.get()` não alcança suites aninhadas (usar `suiteMa
 ## Upgrade/saída
 
 Plataforma-alvo; acompanhar `engines.vscode`.
+
+## Conexões
+
+<!-- brain:auto:start:conexoes -->
+- 🗺️ [[MOC - Componentes]]
+<!-- brain:auto:end -->

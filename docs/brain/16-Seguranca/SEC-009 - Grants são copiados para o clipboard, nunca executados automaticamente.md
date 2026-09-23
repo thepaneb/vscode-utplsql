@@ -23,3 +23,9 @@ quick-fix UTPLSQL_NO_COVERAGE → copyGrantsToClipboard; viewCoverage apenas avi
 
 Princípio do menor privilégio — a extensão não deve executar DDL privilegiado em nome do usuário.
 
+## Conexões
+
+<!-- brain:auto:start:conexoes -->
+- 🗺️ [[MOC - Seguranca]]
+- 📐 Regras: [[BR-COB-001 - Cobertura Oracle exige GRANT EXECUTE ON SYS.DBMS_PROFILER|BR-COB-001]] · [[BR-COB-003 - Cobertura de views via V$SQL é opt-in e best-effort|BR-COB-003]]
+<!-- brain:auto:end -->

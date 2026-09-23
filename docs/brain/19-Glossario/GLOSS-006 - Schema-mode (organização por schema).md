@@ -18,3 +18,9 @@ Modo de organização da árvore em que as suites são agrupadas por schema
 ## Onde aparece
 
 `testTree.ts` (`buildSchemaTree`/`buildFileTree`), `discovery.ts`, `state.suiteMap`.
+
+## Conexões
+
+<!-- brain:auto:start:conexoes -->
+- 🗺️ [[MOC - Glossario]]
+<!-- brain:auto:end -->

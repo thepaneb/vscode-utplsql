@@ -27,3 +27,8 @@ Exceção do SELECT em conn2 é engolida em log debug (ex.: conn1 ainda não esc
 
 Streaming em tempo real sem bloquear; falhas transitórias do buffer não abortam a execução.
 
+## Conexões
+
+<!-- brain:auto:start:conexoes -->
+- 🗺️ [[MOC - Regras]]
+<!-- brain:auto:end -->

@@ -23,3 +23,9 @@ Montagem do BEGIN ut_runner.run(...) usa binds UT_VARCHAR2_LIST/STRING/NUMBER/BO
 
 Evita injeção de SQL/PL-SQL a partir de settings do workspace.
 
+## Conexões
+
+<!-- brain:auto:start:conexoes -->
+- 🗺️ [[MOC - Seguranca]]
+- 📐 Regras: [[BR-EXEC-012 - Binds tipados - nenhum valor de usuário concatenado no PL-SQL|BR-EXEC-012]]
+<!-- brain:auto:end -->

@@ -25,3 +25,9 @@ grant de `DBMS_PROFILER`, o run continua "sem cobertura".
 
 - **Positivas:** robustez em bancos com grants parciais e falhas transitórias.
 - **Negativas:** falhas podem passar silenciosas; dependem de aviso no output.
+
+## Conexões
+
+<!-- brain:auto:start:conexoes -->
+- 🗺️ [[MOC - Padroes]]
+<!-- brain:auto:end -->

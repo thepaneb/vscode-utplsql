@@ -27,3 +27,8 @@ ALL_SYNONYMS inacessível (ex.: ORA-00942) é engolido em log debug e resulta em
 
 Suporta install próprio (prefixo vazio, resolve pelo schema atual) e shared install (synonym aponta para o owner documentado, ex.: UT3).
 
+## Conexões
+
+<!-- brain:auto:start:conexoes -->
+- 🗺️ [[MOC - Regras]]
+<!-- brain:auto:end -->

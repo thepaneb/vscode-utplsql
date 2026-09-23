@@ -14,3 +14,7 @@ tags: [i18n, locale]
 Locale `cs` da extensão. Strings de UI em [`package.nls.cs.json`](../../../package.nls.cs.json) (28 chaves).
 
 README: [[README.cs]]
+
+## Conexões
+
+- 🗺️ [[MOC - I18n]]

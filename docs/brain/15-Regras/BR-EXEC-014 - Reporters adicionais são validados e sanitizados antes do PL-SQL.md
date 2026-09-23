@@ -27,3 +27,8 @@ Se a lista de reporters do banco estiver indisponível (vazia), a validação de
 
 O nome vem de settings (potencialmente do workspace) e é concatenado no PL/SQL; sem a regex/validação haveria injeção ou run abortado por reporter inexistente.
 
+## Conexões
+
+<!-- brain:auto:start:conexoes -->
+- 🗺️ [[MOC - Regras]]
+<!-- brain:auto:end -->

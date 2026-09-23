@@ -18,3 +18,9 @@ poll por `message_id`. O buffer CLOB não é usado.
 ## Onde aparece
 
 `oracleRunner.ts` (limpeza + poll + roteamento).
+
+## Conexões
+
+<!-- brain:auto:start:conexoes -->
+- 🗺️ [[MOC - Glossario]]
+<!-- brain:auto:end -->

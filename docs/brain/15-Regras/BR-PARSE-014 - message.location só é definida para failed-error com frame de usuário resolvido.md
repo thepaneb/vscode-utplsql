@@ -27,3 +27,8 @@ passed/skipped nunca recebem location; frames internos, objectName sem match e a
 
 Habilita o Go to Error nativo do VSCode apenas quando há local confiável, sem apontar para arquivos inexistentes.
 
+## Conexões
+
+<!-- brain:auto:start:conexoes -->
+- 🗺️ [[MOC - Regras]]
+<!-- brain:auto:end -->

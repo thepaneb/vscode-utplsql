@@ -27,3 +27,8 @@ Nenhuma; a limpeza é parte do fluxo obrigatório antes do run.
 
 As tabelas temporárias persistem entre execuções; sem o DELETE, mensagens antigas reapareceriam no output/poll e corromperiam o XML.
 
+## Conexões
+
+<!-- brain:auto:start:conexoes -->
+- 🗺️ [[MOC - Regras]]
+<!-- brain:auto:end -->

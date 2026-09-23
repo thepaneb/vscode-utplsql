@@ -27,3 +27,8 @@ Drive divergente entre arquivo e workspace resulta em undefined; caminho relativ
 
 Cross-platform (Windows/WSL) e o {schema} delimita a captura; sem placeholder não há como inferir o schema.
 
+## Conexões
+
+<!-- brain:auto:start:conexoes -->
+- 🗺️ [[MOC - Regras]]
+<!-- brain:auto:end -->

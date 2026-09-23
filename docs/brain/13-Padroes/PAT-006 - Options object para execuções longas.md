@@ -24,3 +24,9 @@ cobertura, random seed, timeout, token de cancelamento.
 
 - **Positivas:** legibilidade e evolução sem quebrar chamadas.
 - **Negativas:** campos opcionais exigem defaults cuidadosos.
+
+## Conexões
+
+<!-- brain:auto:start:conexoes -->
+- 🗺️ [[MOC - Padroes]]
+<!-- brain:auto:end -->

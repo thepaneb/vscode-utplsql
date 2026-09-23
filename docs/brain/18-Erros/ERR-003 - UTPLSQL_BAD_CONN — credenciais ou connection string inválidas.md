@@ -24,3 +24,9 @@ Credenciais incorretas, serviço indisponível, formato inválido (parseConnStri
 
 Reconfigurar a conexão (utplsql.configureConnection) ou revisar o perfil ativo; a mensagem nunca expõe a senha.
 
+## Conexões
+
+<!-- brain:auto:start:conexoes -->
+- 🗺️ [[MOC - Erros]]
+- 📐 Regras: [[BR-CONN-013 - Parsing da connection string tolera @ e barra na senha|BR-CONN-013]]
+<!-- brain:auto:end -->

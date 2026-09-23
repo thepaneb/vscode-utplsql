@@ -23,3 +23,9 @@ resolveConnection usa InputBox com password=true e clearSessionConnection limpa 
 
 Minimizar a exposição do segredo ao ciclo de vida da sessão.
 
+## Conexões
+
+<!-- brain:auto:start:conexoes -->
+- 🗺️ [[MOC - Seguranca]]
+- 📐 Regras: [[BR-CONN-002 - Prompt só ocorre quando nada está configurado e não persiste|BR-CONN-002]] · [[BR-CONN-003 - Limpar conexão de sessão reseta o context key|BR-CONN-003]]
+<!-- brain:auto:end -->

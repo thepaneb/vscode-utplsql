@@ -18,3 +18,9 @@ do schema de conexão; configurável por perfil (`coverageOwner`).
 ## Onde aparece
 
 `config.ts`, `coverage.ts`, `plsqlDeclarations.ts`.
+
+## Conexões
+
+<!-- brain:auto:start:conexoes -->
+- 🗺️ [[MOC - Glossario]]
+<!-- brain:auto:end -->

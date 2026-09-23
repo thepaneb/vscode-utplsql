@@ -25,3 +25,9 @@ agrupados por área em `src/commands/`.
 
 - **Positivas:** evita o "arquivo-deus"; PRD-02 consolidou a refatoração.
 - **Negativas:** mais arquivos; requer mapear onde cada comando mora.
+
+## Conexões
+
+<!-- brain:auto:start:conexoes -->
+- 🗺️ [[MOC - Padroes]]
+<!-- brain:auto:end -->

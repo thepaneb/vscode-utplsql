@@ -27,3 +27,8 @@ Strings em branco (após trim) são ignoradas em cada nível. Se nada estiver co
 
 Permitir escolher explicitamente o ambiente via perfil sem exigir prompt e manter a conexão de sessão como último recurso; nunca expor prompt em fluxos não interativos.
 
+## Conexões
+
+<!-- brain:auto:start:conexoes -->
+- 🗺️ [[MOC - Regras]]
+<!-- brain:auto:end -->

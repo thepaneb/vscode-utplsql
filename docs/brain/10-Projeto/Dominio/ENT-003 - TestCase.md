@@ -21,3 +21,9 @@ procName, description, line, tags, disabled, expectedError, resultado/status.
 ## Onde aparece
 
 `types.ts`, `suiteParser.ts`, `matching.ts`, `results.ts`.
+
+## Conexões
+
+<!-- brain:auto:start:conexoes -->
+- 🗺️ [[MOC - Dominio]]
+<!-- brain:auto:end -->

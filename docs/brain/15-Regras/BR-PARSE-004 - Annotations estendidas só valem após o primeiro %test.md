@@ -27,3 +27,8 @@ Ordem das annotations relativa ao primeiro %test no arquivo.
 
 Retrocompatibilidade do PRD-42: a mesma annotation tem semântica posicional diferente antes/depois do primeiro teste.
 
+## Conexões
+
+<!-- brain:auto:start:conexoes -->
+- 🗺️ [[MOC - Regras]]
+<!-- brain:auto:end -->

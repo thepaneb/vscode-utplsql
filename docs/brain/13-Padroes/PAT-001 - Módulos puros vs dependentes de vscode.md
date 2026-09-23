@@ -28,3 +28,9 @@ cobertos por teste de integração ou pelo stub.
 
 - **Positivas:** maioria do domínio coberta por unitários rápidos.
 - **Negativas:** exige disciplina e o stub de vscode.
+
+## Conexões
+
+<!-- brain:auto:start:conexoes -->
+- 🗺️ [[MOC - Padroes]]
+<!-- brain:auto:end -->

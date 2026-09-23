@@ -27,3 +27,8 @@ Charset ausente ou utf8 não gera sufixo; detail vazio vira undefined.
 
 Exibir contexto legível sem expor senha e sinalizar perfis não-utf8 e o perfil padrão.
 
+## Conexões
+
+<!-- brain:auto:start:conexoes -->
+- 🗺️ [[MOC - Regras]]
+<!-- brain:auto:end -->

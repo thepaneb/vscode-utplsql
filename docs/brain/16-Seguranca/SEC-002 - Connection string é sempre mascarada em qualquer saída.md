@@ -23,3 +23,9 @@ maskConnection corta entre o primeiro / da credencial e o último @; usado no Qu
 
 Evitar vazamento de senha em superfícies de saída e telemetria.
 
+## Conexões
+
+<!-- brain:auto:start:conexoes -->
+- 🗺️ [[MOC - Seguranca]]
+- 📐 Regras: [[BR-CONN-008 - Mascaramento da senha tolera @ e barra na senha|BR-CONN-008]] · [[BR-CONN-009 - QuickPick de perfil mascara conexão e destaca charset-default|BR-CONN-009]]
+<!-- brain:auto:end -->

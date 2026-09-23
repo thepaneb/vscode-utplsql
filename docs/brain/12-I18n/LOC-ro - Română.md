@@ -14,3 +14,7 @@ tags: [i18n, locale]
 Locale `ro` da extensão. Strings de UI em [`package.nls.ro.json`](../../../package.nls.ro.json) (28 chaves).
 
 README: [[README.ro]]
+
+## Conexões
+
+- 🗺️ [[MOC - I18n]]

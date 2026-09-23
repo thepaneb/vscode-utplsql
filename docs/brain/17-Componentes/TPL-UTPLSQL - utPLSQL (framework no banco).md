@@ -28,3 +28,9 @@ shared install depende de synonyms/grants (`UT3.`).
 ## Upgrade/saída
 
 Sem alternativa; degradar para fallback `ALL_OBJECTS/ALL_SOURCE` em versões antigas.
+
+## Conexões
+
+<!-- brain:auto:start:conexoes -->
+- 🗺️ [[MOC - Componentes]]
+<!-- brain:auto:end -->

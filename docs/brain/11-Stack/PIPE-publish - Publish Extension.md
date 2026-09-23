@@ -25,3 +25,7 @@ Workflow [`publish.yml`](../../../.github/workflows/publish.yml) — **gerado** 
 ## Passos
 
 _nenhum_
+
+## Conexões
+
+- 🗺️ [[MOC - Stack]]

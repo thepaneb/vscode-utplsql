@@ -18,3 +18,9 @@ synonyms/grants. A extensão descobre o prefixo por `ALL_SYNONYMS`.
 ## Onde aparece
 
 `oracleRunner.ts` (`discoverUtplsqlSchema`), ERR-001.
+
+## Conexões
+
+<!-- brain:auto:start:conexoes -->
+- 🗺️ [[MOC - Glossario]]
+<!-- brain:auto:end -->

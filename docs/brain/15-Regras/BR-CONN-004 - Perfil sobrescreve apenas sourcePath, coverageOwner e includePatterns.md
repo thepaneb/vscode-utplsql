@@ -27,3 +27,8 @@ Sem perfil ativo o objeto global é retornado intacto; um campo do perfil vazio 
 
 Permitir cenários por ambiente (DEV/TEST/PROD) sem duplicar toda a configuração, limitando o escopo sobrescrito a campos sensíveis ao ambiente.
 
+## Conexões
+
+<!-- brain:auto:start:conexoes -->
+- 🗺️ [[MOC - Regras]]
+<!-- brain:auto:end -->

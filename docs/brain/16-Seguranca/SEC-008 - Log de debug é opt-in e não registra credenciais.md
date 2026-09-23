@@ -23,3 +23,9 @@ Gate por variável de ambiente no módulo logger (puro, sem vscode).
 
 Diagnóstico acionável sob demanda sem poluir o output nem vazar segredos em uso normal.
 
+## Conexões
+
+<!-- brain:auto:start:conexoes -->
+- 🗺️ [[MOC - Seguranca]]
+- 📐 Regras: [[BR-CONN-014 - Log de debug é opt-in por variável de ambiente|BR-CONN-014]]
+<!-- brain:auto:end -->

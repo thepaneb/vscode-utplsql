@@ -27,3 +27,8 @@ Com organization schema mas sem workspace folders, cai no buildFileTree; mergeDb
 
 No modo schema as suites ficam 3 níveis abaixo da raiz; comandos como runForUri/runAtCursor/runSingleTest dependem do suiteMap para encontrá-las.
 
+## Conexões
+
+<!-- brain:auto:start:conexoes -->
+- 🗺️ [[MOC - Regras]]
+<!-- brain:auto:end -->

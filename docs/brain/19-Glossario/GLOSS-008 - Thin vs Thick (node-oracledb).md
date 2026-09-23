@@ -18,3 +18,9 @@ Modos do driver: **thin** (puro JS, sem Instant Client, padrão) e **thick**
 ## Onde aparece
 
 `oracleClient.ts` (`ensureOracleClient`), settings de thick.
+
+## Conexões
+
+<!-- brain:auto:start:conexoes -->
+- 🗺️ [[MOC - Glossario]]
+<!-- brain:auto:end -->

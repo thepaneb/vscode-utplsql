@@ -8,6 +8,7 @@ verificado: 2026-09-23
 implementacao: []
 testes: []
 regras: []
+relacionado: ["[[ADR-010 - Perfis de conexao com senha no SecretStorage]]", "[[ADR-001 - Execucao via Oracle direto]]", "[[MOC - Oracle]]"]
 tags: ["confiabilidade"]
 ---
 ## Requisito
@@ -22,3 +23,10 @@ Evitar run pendurado e liberar conexões.
 ## Verificação
 
 `oracleRunner.ts`, `runner.ts`.
+
+## Conexões
+
+<!-- brain:auto:start:conexoes -->
+- 🗺️ [[MOC - NFR]]
+- 🔗 [[ADR-010 - Perfis de conexao com senha no SecretStorage]] · [[ADR-001 - Execucao via Oracle direto]] · [[MOC - Oracle]]
+<!-- brain:auto:end -->

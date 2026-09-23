@@ -27,3 +27,8 @@ Nenhuma no código atual; não há fallback para buffer CLOB.
 
 A extensão consome um único stream misto (doc + JUnit + cobertura) da tabela VARCHAR2 e separa os formatos por prefixo de linha.
 
+## Conexões
+
+<!-- brain:auto:start:conexoes -->
+- 🗺️ [[MOC - Regras]]
+<!-- brain:auto:end -->

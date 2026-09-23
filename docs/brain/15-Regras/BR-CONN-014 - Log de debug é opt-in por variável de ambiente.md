@@ -27,3 +27,8 @@ Qualquer valor diferente de 1 (incluindo true) mantém o debug silencioso.
 
 Diagnóstico acionável sob demanda (PRD-66 RF1) sem poluir o output do usuário em uso normal.
 
+## Conexões
+
+<!-- brain:auto:start:conexoes -->
+- 🗺️ [[MOC - Regras]]
+<!-- brain:auto:end -->

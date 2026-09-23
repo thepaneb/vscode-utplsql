@@ -8,6 +8,7 @@ verificado: 2026-09-23
 implementacao: []
 testes: []
 regras: []
+relacionado: ["[[ADR-007 - i18n via package.nls com 23 locales]]", "[[MOC - I18n]]"]
 tags: ["i18n"]
 ---
 ## Requisito
@@ -22,3 +23,10 @@ Alcance internacional da extensão.
 ## Verificação
 
 `i18n.ts`, `i18nLocales.ts`, `docs:check`.
+
+## Conexões
+
+<!-- brain:auto:start:conexoes -->
+- 🗺️ [[MOC - NFR]]
+- 🔗 [[ADR-007 - i18n via package.nls com 23 locales]] · [[MOC - I18n]]
+<!-- brain:auto:end -->

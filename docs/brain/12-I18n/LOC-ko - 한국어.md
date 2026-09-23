@@ -14,3 +14,7 @@ tags: [i18n, locale]
 Locale `ko` da extensão. Strings de UI em [`package.nls.ko.json`](../../../package.nls.ko.json) (28 chaves).
 
 README: [[README.ko]]
+
+## Conexões
+
+- 🗺️ [[MOC - I18n]]

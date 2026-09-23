@@ -27,3 +27,8 @@ Se nenhuma fonte existir, o context key permanece no estado anterior (não é ex
 
 Keybindings de run usam when utplsql:connected; conexões via perfil/env precisam habilitá-los sem prompt.
 
+## Conexões
+
+<!-- brain:auto:start:conexoes -->
+- 🗺️ [[MOC - Regras]]
+<!-- brain:auto:end -->

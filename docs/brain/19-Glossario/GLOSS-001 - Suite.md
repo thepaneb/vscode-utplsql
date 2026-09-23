@@ -18,3 +18,9 @@ Conjunto de testes utPLSQL de um package, declarado com a annotation `--%suite`.
 ## Onde aparece
 
 `suiteParser.ts`, `testTree.ts`, JUnit `testsuite`.
+
+## Conexões
+
+<!-- brain:auto:start:conexoes -->
+- 🗺️ [[MOC - Glossario]]
+<!-- brain:auto:end -->

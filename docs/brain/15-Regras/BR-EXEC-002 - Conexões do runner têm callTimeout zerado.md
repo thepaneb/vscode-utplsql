@@ -27,3 +27,8 @@ No caminho raw (oracledb.getConnection) o callTimeout não é explicitamente zer
 
 O runner pode rodar por minutos; um callTimeout herdado derrubaria o run antes do fim.
 
+## Conexões
+
+<!-- brain:auto:start:conexoes -->
+- 🗺️ [[MOC - Regras]]
+<!-- brain:auto:end -->

@@ -3,15 +3,23 @@ import assert from 'node:assert';
 import { test } from 'node:test';
 
 // Testa os helpers do script scripts/brain.cjs (geradores de índice do vault).
-const { parseFm, yamlBlock, genPrdRoadmap, genPrdEstrutura, pipelineNotes, localeNotes } =
-  require('../../../scripts/brain.cjs') as {
-    parseFm: (t: string) => Record<string, string>;
-    yamlBlock: (t: string, key: string) => string[];
-    genPrdRoadmap: (notes: Record<string, string>[]) => string;
-    genPrdEstrutura: (notes: Record<string, string>[]) => string;
-    pipelineNotes: () => { dir: string; file: string; content: string }[];
-    localeNotes: () => { dir: string; file: string; content: string }[];
-  };
+const {
+  parseFm,
+  yamlBlock,
+  genPrdRoadmap,
+  genPrdEstrutura,
+  genConexoes,
+  pipelineNotes,
+  localeNotes,
+} = require('../../../scripts/brain.cjs') as {
+  parseFm: (t: string) => Record<string, string>;
+  yamlBlock: (t: string, key: string) => string[];
+  genPrdRoadmap: (notes: Record<string, string>[]) => string;
+  genPrdEstrutura: (notes: Record<string, string>[]) => string;
+  genConexoes: (notePath: string) => string;
+  pipelineNotes: () => { dir: string; file: string; content: string }[];
+  localeNotes: () => { dir: string; file: string; content: string }[];
+};
 
 const prd = (over: Record<string, string>) => ({
   id: 'PRD-01',
@@ -80,4 +88,12 @@ test('brain: localeNotes lê os package.nls e aponta o README', () => {
   const pt = notes.find((n) => n.file.includes('LOC-pt-br'));
   assert.ok(pt);
   assert.match(pt?.content ?? '', /\[\[README\.pt-BR\]\]/);
+});
+
+test('brain: genConexoes liga a nota à MOC e às referências', () => {
+  const out = genConexoes(
+    'docs/brain/16-Seguranca/SEC-001 - Senha Oracle nunca é gravada em settings.md',
+  );
+  assert.match(out, /\[\[MOC - Seguranca\]\]/);
+  assert.match(out, /\[\[BR-CONN-005/);
 });

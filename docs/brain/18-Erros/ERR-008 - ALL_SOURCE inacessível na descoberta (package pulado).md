@@ -24,3 +24,9 @@ ALL_SOURCE inacessível ao schema (ORA-00942) durante a leitura do fonte do pack
 
 Conceder acesso/grants ao dicionário; a extensão pula o package e continua (best-effort), sem abortar a descoberta.
 
+## Conexões
+
+<!-- brain:auto:start:conexoes -->
+- 🗺️ [[MOC - Erros]]
+- 📐 Regras: [[BR-PARSE-007 - Fallback ALL_OBJECTS-ALL_SOURCE ignora UT_- e nunca lança|BR-PARSE-007]]
+<!-- brain:auto:end -->

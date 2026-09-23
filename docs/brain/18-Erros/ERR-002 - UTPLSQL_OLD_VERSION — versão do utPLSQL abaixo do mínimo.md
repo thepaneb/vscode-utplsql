@@ -24,3 +24,9 @@ Versão do utPLSQL instalada menor que UTPLSQL_MIN_VERSION (3.1.0); a API de des
 
 Atualizar o utPLSQL no banco; enquanto isso a extensão cai no fallback ALL_OBJECTS/ALL_SOURCE.
 
+## Conexões
+
+<!-- brain:auto:start:conexoes -->
+- 🗺️ [[MOC - Erros]]
+- 📐 Regras: [[BR-PARSE-008 - DB-first com gate de versão 3.1.3 e modos de fonte auto-database-file|BR-PARSE-008]]
+<!-- brain:auto:end -->

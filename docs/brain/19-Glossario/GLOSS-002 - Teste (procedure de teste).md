@@ -18,3 +18,9 @@ Procedure anotada com `--%test` (descrição + `procedure <nome>`). É a folha d
 ## Onde aparece
 
 `suiteParser.ts`, JUnit `testcase`, `matching.ts`.
+
+## Conexões
+
+<!-- brain:auto:start:conexoes -->
+- 🗺️ [[MOC - Glossario]]
+<!-- brain:auto:end -->

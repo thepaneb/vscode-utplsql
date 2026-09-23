@@ -8,6 +8,7 @@ verificado: 2026-09-23
 implementacao: []
 testes: []
 regras: []
+relacionado: ["[[MOC - Arquitetura]]", "[[PAT-001 - Módulos puros vs dependentes de vscode]]"]
 tags: ["compatibilidade"]
 ---
 ## Requisito
@@ -22,3 +23,10 @@ Monorepos e workspaces com vários projetos Oracle.
 ## Verificação
 
 `config.ts`, PRD-57, testes de multi-root.
+
+## Conexões
+
+<!-- brain:auto:start:conexoes -->
+- 🗺️ [[MOC - NFR]]
+- 🔗 [[MOC - Arquitetura]] · [[PAT-001 - Módulos puros vs dependentes de vscode]]
+<!-- brain:auto:end -->

@@ -27,3 +27,8 @@ Preferência por pool (ensurePool); se o pool não puder ser criado, cai para or
 
 O ut_runner.run bloqueia a sessão até o fim dos testes; uma segunda sessão é necessária para ler o buffer em tempo real sem esperar o término.
 
+## Conexões
+
+<!-- brain:auto:start:conexoes -->
+- 🗺️ [[MOC - Regras]]
+<!-- brain:auto:end -->

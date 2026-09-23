@@ -14,3 +14,7 @@ tags: [i18n, locale]
 Locale `ru` da extensão. Strings de UI em [`package.nls.ru.json`](../../../package.nls.ru.json) (28 chaves).
 
 README: [[README.ru]]
+
+## Conexões
+
+- 🗺️ [[MOC - I18n]]

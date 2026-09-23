@@ -28,3 +28,9 @@ embutido.
 ## Upgrade/saída
 
 Substituível por outro parser XML se necessário.
+
+## Conexões
+
+<!-- brain:auto:start:conexoes -->
+- 🗺️ [[MOC - Componentes]]
+<!-- brain:auto:end -->

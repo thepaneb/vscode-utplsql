@@ -23,3 +23,9 @@ resolveSourceUri testa folderRoot/workspaceRoot/sourcePath e descarta qualquer c
 
 O XML vem do banco (conteúdo não confiável); sem o limite, um filename malicioso poderia apontar para fora do workspace.
 
+## Conexões
+
+<!-- brain:auto:start:conexoes -->
+- 🗺️ [[MOC - Seguranca]]
+- 📐 Regras: [[BR-COB-002 - resolveSourceUri tenta variantes de extensão e bloqueia path traversal|BR-COB-002]]
+<!-- brain:auto:end -->

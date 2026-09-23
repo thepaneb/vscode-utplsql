@@ -27,3 +27,8 @@ Annotation dentro do bloco pendente de um %test.
 
 O código de erro do Oracle pode ser declarado positivo ou negativo e tags/display name precisam de normalização estável.
 
+## Conexões
+
+<!-- brain:auto:start:conexoes -->
+- 🗺️ [[MOC - Regras]]
+<!-- brain:auto:end -->

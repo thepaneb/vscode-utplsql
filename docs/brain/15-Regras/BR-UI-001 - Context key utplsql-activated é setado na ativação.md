@@ -27,3 +27,8 @@ Nenhuma; é a primeira instrução de activate.
 
 Keybindings como refresh/info/clearConnection usam when utplsql:activated e precisam existir desde o start.
 
+## Conexões
+
+<!-- brain:auto:start:conexoes -->
+- 🗺️ [[MOC - Regras]]
+<!-- brain:auto:end -->

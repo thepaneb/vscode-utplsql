@@ -21,3 +21,9 @@ message_id, text, is_finished.
 ## Onde aparece
 
 `oracleRunner.ts`, GLOSS-010.
+
+## Conexões
+
+<!-- brain:auto:start:conexoes -->
+- 🗺️ [[MOC - Dominio]]
+<!-- brain:auto:end -->

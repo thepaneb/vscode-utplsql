@@ -27,3 +27,8 @@ Itens de teste (4º nível) não são coletados na varredura; o lookup de suites
 
 Evita varrer a árvore a cada run e cobre a profundidade máxima do modo schema.
 
+## Conexões
+
+<!-- brain:auto:start:conexoes -->
+- 🗺️ [[MOC - Regras]]
+<!-- brain:auto:end -->

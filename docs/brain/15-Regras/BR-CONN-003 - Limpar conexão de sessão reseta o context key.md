@@ -27,3 +27,8 @@ Não afeta setting, variável de ambiente nem perfil ativo, que continuam resolv
 
 Permitir trocar/limpar credenciais digitadas em sessão e refletir o estado na UI (menus que dependem de utplsql:connected).
 
+## Conexões
+
+<!-- brain:auto:start:conexoes -->
+- 🗺️ [[MOC - Regras]]
+<!-- brain:auto:end -->

@@ -27,3 +27,8 @@ connectionUser usa o mesmo parser, retorna o usuário em maiúsculas e undefined
 
 Aceitar senhas com / ou @ e formatos opacos de connectString sem tentar normalizá-los.
 
+## Conexões
+
+<!-- brain:auto:start:conexoes -->
+- 🗺️ [[MOC - Regras]]
+<!-- brain:auto:end -->

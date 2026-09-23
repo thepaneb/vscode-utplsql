@@ -26,3 +26,9 @@ para output de documentação ou para o buffer XML.
 
 - **Positivas:** feedback incremental e XML final no mesmo stream.
 - **Negativas:** latência de polling; estado de CDATA e separação JUnit/cobertura.
+
+## Conexões
+
+<!-- brain:auto:start:conexoes -->
+- 🗺️ [[MOC - Padroes]]
+<!-- brain:auto:end -->

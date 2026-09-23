@@ -24,3 +24,9 @@ Falta GRANT SELECT ON V$SQL para o schema (ou timeout de 5s / oracledb ausente).
 
 Conceder SELECT ON V$SQL ou desabilitar utplsql.sqlCoverageEnabled; qualquer falha silencia e mantém o resultado atual.
 
+## Conexões
+
+<!-- brain:auto:start:conexoes -->
+- 🗺️ [[MOC - Erros]]
+- 📐 Regras: [[BR-COB-003 - Cobertura de views via V$SQL é opt-in e best-effort|BR-COB-003]]
+<!-- brain:auto:end -->

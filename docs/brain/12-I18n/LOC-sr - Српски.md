@@ -14,3 +14,7 @@ tags: [i18n, locale]
 Locale `sr` da extensão. Strings de UI em [`package.nls.sr.json`](../../../package.nls.sr.json) (28 chaves).
 
 README: [[README.sr]]
+
+## Conexões
+
+- 🗺️ [[MOC - I18n]]

@@ -27,3 +27,8 @@ Se não houver arquivos de views ou não houver oracledb, retorna imediatamente;
 
 V$SQL pode ser negado por grants e não deve comprometer o run de testes; o match é por word-boundary do nome do objeto no SQL_TEXT.
 
+## Conexões
+
+<!-- brain:auto:start:conexoes -->
+- 🗺️ [[MOC - Regras]]
+<!-- brain:auto:end -->

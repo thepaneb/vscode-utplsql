@@ -27,3 +27,8 @@ Perfis já sanitizados são mantidos sem reescrever utplsql.profiles; segunda ex
 
 Convergir instalações antigas (senha em texto plano) para o SecretStorage sem regravar settings a cada ativação.
 
+## Conexões
+
+<!-- brain:auto:start:conexoes -->
+- 🗺️ [[MOC - Regras]]
+<!-- brain:auto:end -->

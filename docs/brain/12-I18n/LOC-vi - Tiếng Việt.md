@@ -14,3 +14,7 @@ tags: [i18n, locale]
 Locale `vi` da extensão. Strings de UI em [`package.nls.vi.json`](../../../package.nls.vi.json) (28 chaves).
 
 README: [[README.vi]]
+
+## Conexões
+
+- 🗺️ [[MOC - I18n]]

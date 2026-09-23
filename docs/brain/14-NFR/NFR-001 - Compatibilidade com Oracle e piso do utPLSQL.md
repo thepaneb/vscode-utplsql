@@ -8,6 +8,7 @@ verificado: 2026-09-23
 implementacao: []
 testes: []
 regras: []
+relacionado: ["[[ADR-011 - Thick mode opt-in e matriz de bancos]]", "[[TPL-ORACLEDB - node-oracledb]]", "[[MOC - Oracle]]"]
 tags: ["compatibilidade"]
 ---
 ## Requisito
@@ -22,3 +23,10 @@ Bases legadas convivem com versões novas do framework.
 ## Verificação
 
 `semverLt`, fallback `ALL_OBJECTS/ALL_SOURCE`, PRD-84.
+
+## Conexões
+
+<!-- brain:auto:start:conexoes -->
+- 🗺️ [[MOC - NFR]]
+- 🔗 [[ADR-011 - Thick mode opt-in e matriz de bancos]] · [[TPL-ORACLEDB - node-oracledb]] · [[MOC - Oracle]]
+<!-- brain:auto:end -->

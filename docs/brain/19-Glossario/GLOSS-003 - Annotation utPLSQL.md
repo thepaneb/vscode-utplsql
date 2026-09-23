@@ -18,3 +18,9 @@ Comentário especial `--%suite`, `--%test`, `--%throws`, `--%tags`,
 ## Onde aparece
 
 `suiteParser.ts`; cache de anotações reconstruível via `ut_runner.rebuild_annotation_cache`.
+
+## Conexões
+
+<!-- brain:auto:start:conexoes -->
+- 🗺️ [[MOC - Glossario]]
+<!-- brain:auto:end -->

@@ -24,3 +24,9 @@ libDir ausente/incorreto, Instant Client não instalado, ou initOracleClient já
 
 Informar o libDir do Instant Client (ou instalar); NJS-090 é tratado como sucesso (idempotente). O quick-fix aponta para as settings.
 
+## Conexões
+
+<!-- brain:auto:start:conexoes -->
+- 🗺️ [[MOC - Erros]]
+- 📐 Regras: [[BR-CONN-012 - Thick opt-in, fixado na primeira chamada e idempotente|BR-CONN-012]]
+<!-- brain:auto:end -->

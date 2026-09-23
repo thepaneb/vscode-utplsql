@@ -14,3 +14,7 @@ tags: [i18n, locale]
 Locale `hu` da extensão. Strings de UI em [`package.nls.hu.json`](../../../package.nls.hu.json) (28 chaves).
 
 README: [[README.hu]]
+
+## Conexões
+
+- 🗺️ [[MOC - I18n]]

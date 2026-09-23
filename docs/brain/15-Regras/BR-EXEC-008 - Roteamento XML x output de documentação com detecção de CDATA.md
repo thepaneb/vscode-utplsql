@@ -27,3 +27,8 @@ Conteúdo interno do CDATA (linhas que não começam com <, inclusive o fechamen
 
 O ut_junit_reporter embute o DBMS_OUTPUT capturado em system-out CDATA; linhas de conteúdo e o fechamento não começam com < e quebrariam o parse do JUnit se fossem para o output.
 
+## Conexões
+
+<!-- brain:auto:start:conexoes -->
+- 🗺️ [[MOC - Regras]]
+<!-- brain:auto:end -->

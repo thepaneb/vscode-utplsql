@@ -14,3 +14,7 @@ tags: [i18n, locale]
 Locale `bg` da extensão. Strings de UI em [`package.nls.bg.json`](../../../package.nls.bg.json) (28 chaves).
 
 README: [[README.bg]]
+
+## Conexões
+
+- 🗺️ [[MOC - I18n]]

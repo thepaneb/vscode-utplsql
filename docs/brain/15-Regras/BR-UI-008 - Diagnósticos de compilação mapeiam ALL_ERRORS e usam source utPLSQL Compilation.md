@@ -27,3 +27,8 @@ Se o schema não puder ser extraído da conexão ou a query falhar, a função r
 
 Permite pular direto para a linha do erro no código PL/SQL, sempre de forma best-effort sem quebrar o fluxo de teste.
 
+## Conexões
+
+<!-- brain:auto:start:conexoes -->
+- 🗺️ [[MOC - Regras]]
+<!-- brain:auto:end -->

@@ -30,3 +30,9 @@ thin não cobre todos os recursos de rede (wallet/NNE).
 ## Upgrade/saída
 
 Acompanhar majors (PRD-46); thick é opcional. Sem alternativa prática para Oracle.
+
+## Conexões
+
+<!-- brain:auto:start:conexoes -->
+- 🗺️ [[MOC - Componentes]]
+<!-- brain:auto:end -->

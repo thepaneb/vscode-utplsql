@@ -29,3 +29,9 @@ bundlado.
 ## Upgrade/saída
 
 Config em `esbuild.config.mjs`.
+
+## Conexões
+
+<!-- brain:auto:start:conexoes -->
+- 🗺️ [[MOC - Componentes]]
+<!-- brain:auto:end -->

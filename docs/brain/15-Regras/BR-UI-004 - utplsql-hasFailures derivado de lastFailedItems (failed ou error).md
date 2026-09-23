@@ -27,3 +27,8 @@ Status skipped/passed não contam como falha.
 
 O comando/keybinding utplsql.runFailed só aparece quando há falhas da última execução.
 
+## Conexões
+
+<!-- brain:auto:start:conexoes -->
+- 🗺️ [[MOC - Regras]]
+<!-- brain:auto:end -->

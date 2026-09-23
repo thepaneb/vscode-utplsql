@@ -14,3 +14,7 @@ tags: [i18n, locale]
 Locale `tr` da extensão. Strings de UI em [`package.nls.tr.json`](../../../package.nls.tr.json) (28 chaves).
 
 README: [[README.tr]]
+
+## Conexões
+
+- 🗺️ [[MOC - I18n]]

@@ -14,3 +14,7 @@ tags: [i18n, locale]
 Locale `zh-cn` da extensão. Strings de UI em [`package.nls.zh-cn.json`](../../../package.nls.zh-cn.json) (28 chaves).
 
 README: [[README.zh-CN]]
+
+## Conexões
+
+- 🗺️ [[MOC - I18n]]

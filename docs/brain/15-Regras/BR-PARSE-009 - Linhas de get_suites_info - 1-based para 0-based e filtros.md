@@ -27,3 +27,8 @@ Tipos desconhecidos são descartados; URI virtual gerada como utplsql-db:/OWNER/
 
 Alinha as posições do editor (0-based) às linhas do dicionário Oracle (1-based) e replica o filtro de disabled da descoberta por arquivo.
 
+## Conexões
+
+<!-- brain:auto:start:conexoes -->
+- 🗺️ [[MOC - Regras]]
+<!-- brain:auto:end -->

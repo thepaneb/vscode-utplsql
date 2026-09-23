@@ -24,3 +24,9 @@ Instalação compartilhada do utPLSQL sem grants para o schema do usuário, ou s
 
 Conceder os grants necessários ao schema (o comando utplsql.copyGrantsToClipboard ajuda) ou instalar o utPLSQL no próprio schema; a descoberta por banco degrada para o fallback e segue sem derrubar a extensão.
 
+## Conexões
+
+<!-- brain:auto:start:conexoes -->
+- 🗺️ [[MOC - Erros]]
+- 📐 Regras: [[BR-PARSE-007 - Fallback ALL_OBJECTS-ALL_SOURCE ignora UT_- e nunca lança|BR-PARSE-007]]
+<!-- brain:auto:end -->

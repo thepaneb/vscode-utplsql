@@ -27,3 +27,8 @@ Nunca lança; qualquer erro do banco retorna vazio; versão antiga nunca chama g
 
 Garante compatibilidade com versões antigas do framework e dá controle explícito da origem da verdade, sem quebrar a descoberta em falhas transitórias.
 
+## Conexões
+
+<!-- brain:auto:start:conexoes -->
+- 🗺️ [[MOC - Regras]]
+<!-- brain:auto:end -->

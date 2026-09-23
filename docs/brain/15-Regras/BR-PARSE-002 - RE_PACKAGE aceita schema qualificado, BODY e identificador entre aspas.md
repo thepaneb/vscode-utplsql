@@ -27,3 +27,8 @@ Identificadores só com caracteres de palavra (sem $/#); se a regex não casar, 
 
 O Test Explorer precisa do nome lógico do package, não do schema, e deve reconhecer bodies e instalações qualificadas.
 
+## Conexões
+
+<!-- brain:auto:start:conexoes -->
+- 🗺️ [[MOC - Regras]]
+<!-- brain:auto:end -->

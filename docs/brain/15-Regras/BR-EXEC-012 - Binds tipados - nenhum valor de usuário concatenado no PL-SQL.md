@@ -27,3 +27,8 @@ pathArgs vazio usa a_paths => null; sem cobertura, a_coverage_schemes => null; a
 
 Evita injeção (nenhum texto de usuário entra no SQL) e o bind ambíguo de coleção vazia; o synonym UT_VARCHAR2_LIST sem prefixo funciona em install próprio e shared.
 
+## Conexões
+
+<!-- brain:auto:start:conexoes -->
+- 🗺️ [[MOC - Regras]]
+<!-- brain:auto:end -->

@@ -33,3 +33,7 @@ Workflow [`ci.yml`](../../../.github/workflows/ci.yml) — **gerado** por `npm r
 - `run: npm run lint`
 - `run: npm run typecheck`
 - `run: npm run test:coverage`
+
+## Conexões
+
+- 🗺️ [[MOC - Stack]]

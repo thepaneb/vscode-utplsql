@@ -27,3 +27,8 @@ Se faltar pasta aberta ou conexão, utplsql:running nunca é setado; retorno com
 
 O keybinding Escape só cancela a execução enquanto utplsql:running estiver ativo; deve ser sempre resetado.
 
+## Conexões
+
+<!-- brain:auto:start:conexoes -->
+- 🗺️ [[MOC - Regras]]
+<!-- brain:auto:end -->

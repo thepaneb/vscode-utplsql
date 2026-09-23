@@ -23,3 +23,8 @@ O repositório nunca versiona .env (tokens Oracle/GitHub/Obsidian) nem o data.js
 
 O vault passou a ser versionado; sem as regras, o token do MCP e credenciais vazariam no git.
 
+## Conexões
+
+<!-- brain:auto:start:conexoes -->
+- 🗺️ [[MOC - Seguranca]]
+<!-- brain:auto:end -->

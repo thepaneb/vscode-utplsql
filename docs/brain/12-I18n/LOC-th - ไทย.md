@@ -14,3 +14,7 @@ tags: [i18n, locale]
 Locale `th` da extensão. Strings de UI em [`package.nls.th.json`](../../../package.nls.th.json) (28 chaves).
 
 README: [[README.th]]
+
+## Conexões
+
+- 🗺️ [[MOC - I18n]]

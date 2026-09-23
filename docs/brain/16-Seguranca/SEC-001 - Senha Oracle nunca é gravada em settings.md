@@ -23,3 +23,9 @@ saveProfiles chama splitPassword + persistPassword; migrateLegacyProfiles conver
 
 Settings podem ser sincronizadas (Settings Sync) e versionadas; segredo em texto plano vazaria para fora da máquina.
 
+## Conexões
+
+<!-- brain:auto:start:conexoes -->
+- 🗺️ [[MOC - Seguranca]]
+- 📐 Regras: [[BR-CONN-005 - Senha do perfil vai para o SecretStorage ao salvar|BR-CONN-005]] · [[BR-CONN-007 - Migração de perfis legados é idempotente|BR-CONN-007]]
+<!-- brain:auto:end -->

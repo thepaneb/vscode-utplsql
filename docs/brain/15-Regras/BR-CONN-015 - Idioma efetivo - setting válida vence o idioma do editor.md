@@ -27,3 +27,8 @@ Setting auto cai no mapeamento do editor; en-gb só casa exato; chave ausente no
 
 Localizar mensagens do domínio de conexão/configuração de forma consistente com a preferência do usuário.
 
+## Conexões
+
+<!-- brain:auto:start:conexoes -->
+- 🗺️ [[MOC - Regras]]
+<!-- brain:auto:end -->

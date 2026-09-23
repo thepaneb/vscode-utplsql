@@ -27,3 +27,8 @@ O timer é sempre limpo no finally; o timeout encerra sem lançar erro (resultad
 
 Evita run pendurado sem depender de cancelamento manual, reaproveitando a mesma mecânica de break das duas conexões.
 
+## Conexões
+
+<!-- brain:auto:start:conexoes -->
+- 🗺️ [[MOC - Regras]]
+<!-- brain:auto:end -->

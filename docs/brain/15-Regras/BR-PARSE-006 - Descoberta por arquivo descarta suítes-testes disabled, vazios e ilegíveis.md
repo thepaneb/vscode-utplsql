@@ -27,3 +27,8 @@ Suíte cujo único teste é disabled não entra; suíte sem nenhum %test não en
 
 Mantém o Test Explorer alinhado ao que será realmente executado e impede que erros de leitura interrompam a descoberta de todo o workspace.
 
+## Conexões
+
+<!-- brain:auto:start:conexoes -->
+- 🗺️ [[MOC - Regras]]
+<!-- brain:auto:end -->

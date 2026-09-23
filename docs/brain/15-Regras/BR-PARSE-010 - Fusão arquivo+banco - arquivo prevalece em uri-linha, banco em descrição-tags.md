@@ -27,3 +27,8 @@ Descrição vazia do banco mantém a do arquivo; tags vazias no banco mantêm as
 
 O arquivo é necessário para abrir/editar (uri/range), enquanto o banco é a verdade após compilação (descrições/tags); evita perder dados quando o banco não traz tags.
 
+## Conexões
+
+<!-- brain:auto:start:conexoes -->
+- 🗺️ [[MOC - Regras]]
+<!-- brain:auto:end -->

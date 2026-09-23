@@ -24,3 +24,9 @@ Objetos UT_* ficaram inválidos (instalação incompleta, upgrade parcial ou dep
 
 Recompilar os objetos UT3 (o quick-fix oferece a ação; requer privilégio de compilação no schema do framework).
 
+## Conexões
+
+<!-- brain:auto:start:conexoes -->
+- 🗺️ [[MOC - Erros]]
+- 📐 Regras: [[BR-UI-007 - Diagnósticos de setup e quick-fixes restritos ao source utPLSQL Setup|BR-UI-007]]
+<!-- brain:auto:end -->

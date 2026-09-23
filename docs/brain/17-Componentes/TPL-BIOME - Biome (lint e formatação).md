@@ -28,3 +28,9 @@ Regras novas em majors podem exigir ajustes; roda no CI.
 ## Upgrade/saída
 
 Config em `biome.json`; alternativas: ESLint+Prettier (mais pesadas).
+
+## Conexões
+
+<!-- brain:auto:start:conexoes -->
+- 🗺️ [[MOC - Componentes]]
+<!-- brain:auto:end -->

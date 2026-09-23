@@ -27,3 +27,8 @@ Sem senha inline o perfil é salvo como está; se secretStorage não estiver ini
 
 Impedir senha Oracle em texto plano nas settings sincronizadas (keychain nativa do VSCode).
 
+## Conexões
+
+<!-- brain:auto:start:conexoes -->
+- 🗺️ [[MOC - Regras]]
+<!-- brain:auto:end -->

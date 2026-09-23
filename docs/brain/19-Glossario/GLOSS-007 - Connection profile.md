@@ -18,3 +18,9 @@ Perfil nomeado de conexão (`utplsql.profiles`) que pode sobrescrever
 ## Onde aparece
 
 `connectionProfiles.ts`, `config.ts`.
+
+## Conexões
+
+<!-- brain:auto:start:conexoes -->
+- 🗺️ [[MOC - Glossario]]
+<!-- brain:auto:end -->

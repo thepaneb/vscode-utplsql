@@ -27,3 +27,8 @@ Arquivo local com extensão .pks.
 
 Registrar por language impediria o provider de casar em ambientes cujo ID de linguagem PL/SQL não está definido.
 
+## Conexões
+
+<!-- brain:auto:start:conexoes -->
+- 🗺️ [[MOC - Regras]]
+<!-- brain:auto:end -->

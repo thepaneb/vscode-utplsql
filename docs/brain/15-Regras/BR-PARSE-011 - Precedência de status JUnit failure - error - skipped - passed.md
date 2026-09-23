@@ -27,3 +27,8 @@ failure/error com corpo alimentam stackFrames; extractMessage junta @message e o
 
 O XML pode trazer múltiplas tags; a ordem define o status correto e o fallback de classname garante casamento com o package.
 
+## Conexões
+
+<!-- brain:auto:start:conexoes -->
+- 🗺️ [[MOC - Regras]]
+<!-- brain:auto:end -->

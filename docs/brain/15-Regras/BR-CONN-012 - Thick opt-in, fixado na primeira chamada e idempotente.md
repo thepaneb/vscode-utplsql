@@ -27,3 +27,8 @@ Erro NJS-090 (já iniciado com outros argumentos) é tratado como sucesso thick;
 
 O thick só é necessário para bancos com NNE e não pode ser reconfigurado em runtime; evitar crash e dar mensagem acionável ao usuário.
 
+## Conexões
+
+<!-- brain:auto:start:conexoes -->
+- 🗺️ [[MOC - Regras]]
+<!-- brain:auto:end -->

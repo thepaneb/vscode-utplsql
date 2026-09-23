@@ -27,3 +27,8 @@ Com perfis existentes delega diretamente ao QuickPick; aviso cancelado ou criaç
 
 Guiar o primeiro uso sem bloquear a extensão, reutilizando os comandos existentes.
 
+## Conexões
+
+<!-- brain:auto:start:conexoes -->
+- 🗺️ [[MOC - Regras]]
+<!-- brain:auto:end -->

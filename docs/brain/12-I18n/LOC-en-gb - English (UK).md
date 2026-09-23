@@ -14,3 +14,7 @@ tags: [i18n, locale]
 Locale `en-gb` da extensão. Strings de UI em [`package.nls.en-gb.json`](../../../package.nls.en-gb.json) (28 chaves).
 
 README: [[README.en-GB]]
+
+## Conexões
+
+- 🗺️ [[MOC - I18n]]

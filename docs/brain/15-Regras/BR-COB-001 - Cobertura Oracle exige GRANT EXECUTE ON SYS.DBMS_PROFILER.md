@@ -27,3 +27,8 @@ Objetos do framework utPLSQL (UT3/UT_*) devem ser excluídos via coverage.exclud
 
 DBMS_PROFILER é recurso privilegiado; a extensão não pode conceder grants e precisa orientar o usuário.
 
+## Conexões
+
+<!-- brain:auto:start:conexoes -->
+- 🗺️ [[MOC - Regras]]
+<!-- brain:auto:end -->

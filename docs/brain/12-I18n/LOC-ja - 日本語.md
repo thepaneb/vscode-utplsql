@@ -14,3 +14,7 @@ tags: [i18n, locale]
 Locale `ja` da extensão. Strings de UI em [`package.nls.ja.json`](../../../package.nls.ja.json) (28 chaves).
 
 README: [[README.ja]]
+
+## Conexões
+
+- 🗺️ [[MOC - I18n]]

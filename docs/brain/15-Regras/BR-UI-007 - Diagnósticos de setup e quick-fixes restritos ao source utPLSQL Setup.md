@@ -27,3 +27,8 @@ validateOnActivation retorna vazio se setupDiagnosticsEnabled for false; valida�
 
 Isola problemas de configuração dos problemas do código do usuário e evita que outros providers misturem diagnostic sources.
 
+## Conexões
+
+<!-- brain:auto:start:conexoes -->
+- 🗺️ [[MOC - Regras]]
+<!-- brain:auto:end -->

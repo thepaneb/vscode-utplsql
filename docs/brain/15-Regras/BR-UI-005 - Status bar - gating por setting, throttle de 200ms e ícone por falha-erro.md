@@ -27,3 +27,8 @@ Com statusBarEnabled false, showIdle/showRunning/showResults retornam silenciosa
 
 Evita flood de updates no showRunning chamado por suite e normaliza o resumo passed/total + duração.
 
+## Conexões
+
+<!-- brain:auto:start:conexoes -->
+- 🗺️ [[MOC - Regras]]
+<!-- brain:auto:end -->

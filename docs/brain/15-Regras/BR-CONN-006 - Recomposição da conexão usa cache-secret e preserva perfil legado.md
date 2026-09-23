@@ -27,3 +27,8 @@ Connection sem @ retorna inalterada; senha ausente no cache retorna a conexão s
 
 Manter perfis utilizáveis após o save (senha fora das settings) e preservar compatibilidade com perfis legados.
 
+## Conexões
+
+<!-- brain:auto:start:conexoes -->
+- 🗺️ [[MOC - Regras]]
+<!-- brain:auto:end -->

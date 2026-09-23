@@ -27,3 +27,8 @@ Arquivo vazio, sem %suite ou sem CREATE PACKAGE retornam null; nesses casos a su
 
 Evita falsos positivos de trechos que apenas citam %suite e garante que o nome do package seja resolvível.
 
+## Conexões
+
+<!-- brain:auto:start:conexoes -->
+- 🗺️ [[MOC - Regras]]
+<!-- brain:auto:end -->

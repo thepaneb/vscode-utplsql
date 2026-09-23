@@ -25,3 +25,9 @@ adicionar import de `vscode` em produção, adicionar o stub correspondente.
 
 - **Positivas:** cobertura alta sem subir o VSCode.
 - **Negativas:** o stub precisa acompanhar a API usada.
+
+## Conexões
+
+<!-- brain:auto:start:conexoes -->
+- 🗺️ [[MOC - Padroes]]
+<!-- brain:auto:end -->

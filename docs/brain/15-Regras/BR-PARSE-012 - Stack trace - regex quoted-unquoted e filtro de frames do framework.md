@@ -27,3 +27,8 @@ Corpo vazio ou sem frames retorna undefined; frames internos do framework ou com
 
 O stack do Oracle muda de formato conforme quoting/schema; filtrar as camadas do utPLSQL é pré-requisito para o Go to Error apontar para o código do usuário.
 
+## Conexões
+
+<!-- brain:auto:start:conexoes -->
+- 🗺️ [[MOC - Regras]]
+<!-- brain:auto:end -->

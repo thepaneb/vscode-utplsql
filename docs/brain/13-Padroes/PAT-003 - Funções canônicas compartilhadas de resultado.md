@@ -25,3 +25,9 @@ e `resolveStackFrameToUri`; os runners apenas chamam essas funções.
 
 - **Positivas:** um só lugar para matching, cobertura e contagem (PRD-39/44).
 - **Negativas:** mudanças nesses contratos afetam todos os runners.
+
+## Conexões
+
+<!-- brain:auto:start:conexoes -->
+- 🗺️ [[MOC - Padroes]]
+<!-- brain:auto:end -->

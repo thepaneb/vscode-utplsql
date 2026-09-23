@@ -27,3 +27,8 @@ Diretório sem connections.xml retorna undefined; porta/serviço ausentes geram 
 
 Importar perfis do SQL Developer sem varrer o disco inteiro e sem quebrar quando o formato/arquivo não existir.
 
+## Conexões
+
+<!-- brain:auto:start:conexoes -->
+- 🗺️ [[MOC - Regras]]
+<!-- brain:auto:end -->

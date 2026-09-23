@@ -24,3 +24,9 @@ Qualquer falha levantada dentro de ut_runner.run (erro de configuração, objeto
 
 Ler a mensagem do Oracle e o stack; verificar setup/compilação e os demais diagnósticos. A extensão faz o parsing do XML e aplica resultados parciais.
 
+## Conexões
+
+<!-- brain:auto:start:conexoes -->
+- 🗺️ [[MOC - Erros]]
+- 📐 Regras: [[BR-EXEC-009 - Separação do XML de cobertura do XML JUnit no mesmo buffer|BR-EXEC-009]]
+<!-- brain:auto:end -->

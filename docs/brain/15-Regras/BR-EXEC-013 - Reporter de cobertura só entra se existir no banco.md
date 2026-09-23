@@ -27,3 +27,8 @@ A checagem (checkReporterExists) é case-insensitive e normaliza prefixo de sche
 
 Passar um reporter inexistente ao ut_runner.run faria o run inteiro abortar com ORA; degradar para sem cobertura preserva os resultados dos testes.
 
+## Conexões
+
+<!-- brain:auto:start:conexoes -->
+- 🗺️ [[MOC - Regras]]
+<!-- brain:auto:end -->

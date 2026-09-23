@@ -14,3 +14,7 @@ tags: [i18n, locale]
 Locale `uk` da extensão. Strings de UI em [`package.nls.uk.json`](../../../package.nls.uk.json) (28 chaves).
 
 README: [[README.uk]]
+
+## Conexões
+
+- 🗺️ [[MOC - I18n]]

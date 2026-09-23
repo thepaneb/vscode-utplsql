@@ -27,3 +27,8 @@ Cancelamento ou entrada vazia (após trim) retorna undefined e não grava nada; 
 
 Evitar que a senha do usuário seja gravada em settings e limitar a exposição do segredo ao ciclo de vida da sessão.
 
+## Conexões
+
+<!-- brain:auto:start:conexoes -->
+- 🗺️ [[MOC - Regras]]
+<!-- brain:auto:end -->

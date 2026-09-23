@@ -145,9 +145,17 @@ function parseFm(text) {
   const m = text.match(/^---\r?\n([\s\S]*?)\r?\n---/);
   const fm = {};
   if (!m) return fm;
+  const unquote = (s) => s.trim().replace(/^["']|["']$/g, '');
   for (const line of m[1].split(/\r?\n/)) {
     const mm = line.match(/^([A-Za-z_][\w-]*):\s?(.*)$/);
-    if (mm) fm[mm[1]] = mm[2].replace(/^["']|["']$/g, '');
+    if (!mm) continue;
+    const raw = mm[2].trim();
+    if (raw.startsWith('[') && raw.endsWith(']')) {
+      const inner = raw.slice(1, -1).trim();
+      fm[mm[1]] = inner ? inner.split(',').map(unquote) : [];
+    } else {
+      fm[mm[1]] = unquote(raw);
+    }
   }
   return fm;
 }
@@ -311,6 +319,58 @@ function genDeps() {
   ].join('\n');
 }
 
+// ── conexões (grafo do Obsidian) ───────────────────────────────────────
+
+let ID_MAP = null;
+/** Mapa `id` do frontmatter → basename da nota (para gerar wikilinks). */
+function vaultIdMap() {
+  if (ID_MAP) return ID_MAP;
+  const map = new Map();
+  for (const file of vaultNotes()) {
+    const fm = parseFm(fs.readFileSync(file, 'utf8'));
+    if (fm.id) map.set(fm.id, path.basename(file, '.md'));
+  }
+  ID_MAP = map;
+  return map;
+}
+
+function mocOf(notePath) {
+  const dir = path.dirname(notePath);
+  const moc = fs.readdirSync(dir).find((n) => /^MOC - .*\.md$/.test(n));
+  return moc ? moc.replace(/\.md$/, '') : null;
+}
+
+function wl(target, label) {
+  return label && label !== target ? `[[${target}|${label}]]` : `[[${target}]]`;
+}
+
+/** Bloco `## Conexões`: liga a nota à MOC e às referências do frontmatter. */
+function genConexoes(notePath) {
+  const fm = parseFm(fs.readFileSync(notePath, 'utf8'));
+  const ids = vaultIdMap();
+  const lines = [];
+  const moc = mocOf(notePath);
+  if (moc) lines.push(`- 🗺️ ${wl(moc)}`);
+  const link = (ref, map) => {
+    const id = String(ref).trim();
+    const target = map.get(id);
+    return target ? wl(target, id) : `\`${id}\``;
+  };
+  if (Array.isArray(fm.prds) && fm.prds.length) {
+    lines.push(`- 📄 PRDs: ${fm.prds.map((p) => link(p, ids)).join(' · ')}`);
+  }
+  if (Array.isArray(fm.regras) && fm.regras.length) {
+    lines.push(`- 📐 Regras: ${fm.regras.map((r) => link(r, ids)).join(' · ')}`);
+  }
+  if (Array.isArray(fm.depende) && fm.depende.length) {
+    lines.push(`- 📦 Depende de: ${fm.depende.map((d) => link(d, ids)).join(' · ')}`);
+  }
+  if (Array.isArray(fm.relacionado) && fm.relacionado.length) {
+    lines.push(`- 🔗 ${fm.relacionado.map((r) => String(r).trim()).join(' · ')}`);
+  }
+  return lines.join('\n') || '- 🗺️ _sem conexões_';
+}
+
 const GENERATORS = {
   'root-docs': genRootDocs,
   'readme-variants': genReadmeVariants,
@@ -320,6 +380,7 @@ const GENERATORS = {
   'prd-summary': genPrdSummary,
   'prd-roadmap': () => genPrdRoadmap(),
   'prd-estrutura': () => genPrdEstrutura(),
+  conexoes: genConexoes,
   stack: genStack,
   deps: genDeps,
 };
@@ -429,6 +490,10 @@ function pipelineNotes() {
         '## Passos',
         '',
         ...(steps.length ? steps : ['_nenhum_']),
+        '',
+        '## Conexões',
+        '',
+        '- 🗺️ [[MOC - Stack]]',
       ].join('\n');
       return { dir: '11-Stack', file: `PIPE-${slug} - ${name}.md`, content: `${fm.join('\n')}\n\n${body}\n` };
     });
@@ -475,6 +540,7 @@ function localeNotes() {
     ];
     const note = readmeNote[code];
     if (note) lines.push('', `README: [[${note}]]`);
+    lines.push('', '## Conexões', '', '- 🗺️ [[MOC - I18n]]');
     return { dir: '12-I18n', file: `LOC-${code} - ${lang}.md`, content: `${fm.join('\n')}\n\n${lines.join('\n')}\n` };
   });
 }
@@ -577,6 +643,7 @@ module.exports = {
   prdNotes,
   genPrdRoadmap,
   genPrdEstrutura,
+  genConexoes,
   pipelineNotes,
   localeNotes,
 };

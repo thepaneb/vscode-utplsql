@@ -27,3 +27,8 @@ Se a cobertura estava habilitada mas covXml vem vazio, emite aviso de relatório
 
 Ambos os reporters compartilham a mesma tabela; o marcador <coverage é o delimitador confiável entre os dois XMLs concatenados.
 
+## Conexões
+
+<!-- brain:auto:start:conexoes -->
+- 🗺️ [[MOC - Regras]]
+<!-- brain:auto:end -->

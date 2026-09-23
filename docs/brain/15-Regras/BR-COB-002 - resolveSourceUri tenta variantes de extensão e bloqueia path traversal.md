@@ -27,3 +27,8 @@ Retorna undefined se nada existir/ser arquivo ou se o caminho resolver para fora
 
 O relatório sempre traz .sql, mas o arquivo real pode usar outra extensão PL/SQL; e o XML é conteúdo do banco, não confiável (mitiga path traversal).
 
+## Conexões
+
+<!-- brain:auto:start:conexoes -->
+- 🗺️ [[MOC - Regras]]
+<!-- brain:auto:end -->

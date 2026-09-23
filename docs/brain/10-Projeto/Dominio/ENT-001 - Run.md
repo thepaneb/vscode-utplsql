@@ -22,3 +22,9 @@ resultMap, lastFailedItems.
 ## Onde aparece
 
 `runner.ts`, `oracleRunner.ts`, `results.ts`.
+
+## Conexões
+
+<!-- brain:auto:start:conexoes -->
+- 🗺️ [[MOC - Dominio]]
+<!-- brain:auto:end -->

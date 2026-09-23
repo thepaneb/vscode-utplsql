@@ -21,3 +21,9 @@ filename, line-rate, branch, declarations; executed (views).
 ## Onde aparece
 
 `cobertura.ts`, `coverage.ts`, `plsqlDeclarations.ts`, `viewCoverage.ts`.
+
+## Conexões
+
+<!-- brain:auto:start:conexoes -->
+- 🗺️ [[MOC - Dominio]]
+<!-- brain:auto:end -->

@@ -25,3 +25,7 @@ Workflow [`wiki.yml`](../../../.github/workflows/wiki.yml) — **gerado** por `n
 ## Passos
 
 - `uses: actions/setup-node@v7`
+
+## Conexões
+
+- 🗺️ [[MOC - Stack]]

@@ -27,3 +27,8 @@ Itens kind=suite são ignorados no índice; só o primeiro match é usado; case 
 
 O classname pode vir qualificado (schema.package) e a descrição pode ter espaços; o fallback cobre divergências e o skipped evita resultados silenciosamente perdidos.
 
+## Conexões
+
+<!-- brain:auto:start:conexoes -->
+- 🗺️ [[MOC - Regras]]
+<!-- brain:auto:end -->

@@ -24,3 +24,8 @@ O package alvo do debug ainda não foi criado no schema (ou nome difere), então
 
 Compilar/instalar o package no banco antes de depurar; a extensão detecta ORA-04043 (errorNum 4043) e reporta a falha de forma amigável.
 
+## Conexões
+
+<!-- brain:auto:start:conexoes -->
+- 🗺️ [[MOC - Erros]]
+<!-- brain:auto:end -->

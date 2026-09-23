@@ -24,3 +24,9 @@ Falta GRANT EXECUTE ON SYS.DBMS_PROFILER (e DBMS_PLSQL_CODE_COVERAGE) para o sch
 
 Executar os grants (utplsql.copyGrantsToClipboard) e rodar novamente; a extensão degrada para "sem cobertura" sem abortar os testes.
 
+## Conexões
+
+<!-- brain:auto:start:conexoes -->
+- 🗺️ [[MOC - Erros]]
+- 📐 Regras: [[BR-COB-001 - Cobertura Oracle exige GRANT EXECUTE ON SYS.DBMS_PROFILER|BR-COB-001]] · [[BR-EXEC-013 - Reporter de cobertura só entra se existir no banco|BR-EXEC-013]]
+<!-- brain:auto:end -->

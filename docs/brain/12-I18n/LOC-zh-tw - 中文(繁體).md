@@ -14,3 +14,7 @@ tags: [i18n, locale]
 Locale `zh-tw` da extensão. Strings de UI em [`package.nls.zh-tw.json`](../../../package.nls.zh-tw.json) (28 chaves).
 
 README: [[README.zh-TW]]
+
+## Conexões
+
+- 🗺️ [[MOC - I18n]]

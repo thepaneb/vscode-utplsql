@@ -27,3 +27,8 @@ Nenhuma; o erro original é sempre repropagado.
 
 Sem o close, a conexão do pool fica presa até expirar, esgotando o pool em execuções repetidas.
 
+## Conexões
+
+<!-- brain:auto:start:conexoes -->
+- 🗺️ [[MOC - Regras]]
+<!-- brain:auto:end -->

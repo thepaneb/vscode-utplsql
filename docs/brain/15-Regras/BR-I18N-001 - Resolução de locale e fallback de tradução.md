@@ -27,3 +27,8 @@ Setting inválida (ex.: xx) é ignorada e cai no auto; zh-HK mapeia para zh-tw.
 
 Permite forçar idioma independente do editor e garante que nenhuma mensagem fique vazia ou quebre.
 
+## Conexões
+
+<!-- brain:auto:start:conexoes -->
+- 🗺️ [[MOC - Regras]]
+<!-- brain:auto:end -->

@@ -27,3 +27,8 @@ Erros individuais de break() são engolidos; o listener é descartado no finally
 
 conn1 está bloqueada no ut_runner.run e conn2 no poll; interromper ambas é necessário para encerrar limpo sem esperar o run completar.
 
+## Conexões
+
+<!-- brain:auto:start:conexoes -->
+- 🗺️ [[MOC - Regras]]
+<!-- brain:auto:end -->
