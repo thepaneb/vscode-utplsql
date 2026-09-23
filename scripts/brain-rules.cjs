@@ -30,6 +30,20 @@ const SEVERIDADE = new Set(['critica', 'alta', 'media', 'baixa']);
 const FONTE = new Set(['codigo', 'prd', 'stakeholder', 'convencao']);
 const REQUIRED = ['id', 'titulo', 'dominio', 'status', 'severidade', 'fonte'];
 
+/** Schema das camadas de conhecimento (tipo do frontmatter → id + campos). */
+const LAYERS = {
+  seguranca: { id: /^SEC-\d{3}$/, required: ['id', 'titulo', 'dominio', 'status', 'severidade'] },
+  erro: { id: /^ERR-\d{3}$/, required: ['id', 'titulo', 'dominio', 'codigo', 'status', 'severidade'] },
+  padrao: { id: /^PAT-\d{3}$/, required: ['id', 'titulo', 'dominio', 'status'] },
+  nfr: { id: /^NFR-\d{3}$/, required: ['id', 'titulo', 'dominio', 'status'] },
+  entidade: { id: /^ENT-\d{3}$/, required: ['id', 'titulo', 'dominio', 'status'] },
+  glossario: { id: /^GLOSS-\d{3}$/, required: ['id', 'titulo', 'dominio', 'status'] },
+  'componente-terceiro': { id: /^TPL-[\w-]+$/, required: ['id', 'titulo', 'status'] },
+  locale: { id: /^LOC-[\w-]+$/, required: ['id', 'titulo', 'codigo'] },
+  pipeline: { id: /^PIPE-[\w-]+$/, required: ['id', 'titulo', 'arquivo'] },
+  dependencia: { id: /^DEP-[\w-]+$/, required: ['id', 'titulo'] },
+};
+
 const unquote = (s) => {
   const t = s.trim();
   if ((t.startsWith('"') && t.endsWith('"')) || (t.startsWith("'") && t.endsWith("'"))) {
@@ -89,10 +103,35 @@ function listAllNotes() {
 }
 
 /**
+ * Valida o schema das camadas de conhecimento (SEC/ERR/PAT/NFR/ENT/GLOSS/TPL/
+ * LOC/PIPE/DEP) em todas as notas do vault: campos obrigatórios, formato do id e
+ * unicidade global.
+ */
+function checkLayers(notes) {
+  const problems = [];
+  const seen = new Set();
+  for (const note of notes) {
+    const fm = parseFrontmatter(note.content);
+    if (!fm || !fm.tipo) continue;
+    const layer = LAYERS[fm.tipo];
+    if (!layer) continue;
+    for (const key of layer.required) {
+      if (!fm[key]) problems.push(`${note.name}: campo obrigatório ausente: ${key}`);
+    }
+    const id = fm.id || '';
+    if (id && !layer.id.test(id)) problems.push(`${note.name}: id inválido: ${id}`);
+    if (id && seen.has(id)) problems.push(`${note.name}: id duplicado: ${id}`);
+    if (id) seen.add(id);
+    if (fm.status && !STATUS.has(fm.status)) problems.push(`${note.name}: status inválido: ${fm.status}`);
+  }
+  return problems;
+}
+
+/**
  * Valida referências de TODAS as notas do vault: `implementacao`/`testes`
  * (arquivos existem) e `regras` (apontam para BR-* existentes).
  */
-function checkReferences(notes, exists, brIds) {
+function checkReferences(notes, exists, brIds, checkLines) {
   const problems = [];
   for (const note of notes) {
     const fm = parseFrontmatter(note.content);
@@ -100,10 +139,10 @@ function checkReferences(notes, exists, brIds) {
     const isRule = fm.tipo === 'regra';
     if (!isRule) {
       for (const ref of Array.isArray(fm.implementacao) ? fm.implementacao : []) {
-        if (!exists(stripLine(ref))) problems.push(`${note.name}: implementacao inexistente: ${ref}`);
+        if (!refExists(ref, exists, checkLines)) problems.push(`${note.name}: implementacao inexistente: ${ref}`);
       }
       for (const ref of Array.isArray(fm.testes) ? fm.testes : []) {
-        if (!exists(stripLine(ref))) problems.push(`${note.name}: teste inexistente: ${ref}`);
+        if (!refExists(ref, exists, checkLines)) problems.push(`${note.name}: teste inexistente: ${ref}`);
       }
     }
     for (const ref of Array.isArray(fm.regras) ? fm.regras : []) {
@@ -129,6 +168,23 @@ function realPrdIds() {
 const stripLine = (ref) => String(ref).replace(/:\d+$/, '');
 
 /**
+ * O arquivo referenciado existe? Com `checkLines`, se a referência tem `:linha`,
+ * confere que o arquivo tem ao menos essa linha.
+ */
+function refExists(ref, exists, checkLines) {
+  if (!exists(stripLine(ref))) return false;
+  if (!checkLines) return true;
+  const m = String(ref).match(/^(.*):(\d+)$/);
+  if (!m) return true;
+  try {
+    const lines = fs.readFileSync(path.join(ROOT, m[1]), 'utf8').split(/\r?\n/).length;
+    return Number(m[2]) <= lines;
+  } catch {
+    return false;
+  }
+}
+
+/**
  * Valida as regras e retorna a lista de problemas (vazia = OK).
  * `overrides` permite injetar conteúdo/ambiente nos testes.
  */
@@ -136,6 +192,7 @@ function checkRules(overrides = {}) {
   const files = overrides.files ?? listRuleFiles();
   const exists = overrides.exists ?? ((rel) => fs.existsSync(path.join(ROOT, rel)));
   const prdIds = overrides.prdIds ?? realPrdIds();
+  const checkLines = overrides.checkLines ?? false;
   const problems = [];
   const seen = new Set();
 
@@ -160,10 +217,10 @@ function checkRules(overrides = {}) {
     const impl = Array.isArray(fm.implementacao) ? fm.implementacao : [];
     if (fm.status === 'ativo' && impl.length === 0) at('regra ativa sem implementacao');
     for (const ref of impl) {
-      if (!exists(stripLine(ref))) at(`implementacao inexistente: ${ref}`);
+      if (!refExists(ref, exists, checkLines)) at(`implementacao inexistente: ${ref}`);
     }
     for (const ref of Array.isArray(fm.testes) ? fm.testes : []) {
-      if (!exists(stripLine(ref))) at(`teste inexistente: ${ref}`);
+      if (!refExists(ref, exists, checkLines)) at(`teste inexistente: ${ref}`);
     }
     for (const pr of Array.isArray(fm.prds) ? fm.prds : []) {
       const num = String(pr).replace(/\D/g, '');
@@ -171,27 +228,39 @@ function checkRules(overrides = {}) {
     }
   }
 
-  // Passada global (vault inteiro): referências de todas as notas.
+  // Passada global (vault inteiro): referências e schema das camadas.
   if (!overrides.files) {
     const brIds = new Set(files.map((f) => parseFrontmatter(f.content)?.id).filter(Boolean));
-    problems.push(...checkReferences(listAllNotes(), exists, brIds));
+    const notes = listAllNotes();
+    problems.push(...checkLayers(notes));
+    problems.push(...checkReferences(notes, exists, brIds, checkLines));
   }
 
   return problems;
 }
 
-module.exports = { checkRules, checkReferences, parseFrontmatter, listRuleFiles, listAllNotes, realPrdIds };
+module.exports = {
+  checkRules,
+  checkReferences,
+  checkLayers,
+  parseFrontmatter,
+  listRuleFiles,
+  listAllNotes,
+  realPrdIds,
+  LAYERS,
+};
 
 if (require.main === module) {
   if (!fs.existsSync(RULES_DIR)) {
     console.log('Sem regras (docs/brain ausente) — nada a validar.');
     process.exit(0);
   }
-  const problems = checkRules();
+  const checkLines = process.argv.includes('--check-lines');
+  const problems = checkRules({ checkLines });
   if (problems.length) {
     for (const p of problems) console.log(`[erro] ${p}`);
     console.log(`\n${problems.length} problema(s) encontrado(s).`);
     process.exit(1);
   }
-  console.log(`OK: ${listRuleFiles().length} regras válidas.`);
+  console.log(`OK: ${listRuleFiles().length} regras válidas${checkLines ? ' (linhas conferidas)' : ''}.`);
 }

@@ -3,11 +3,13 @@ import assert from 'node:assert';
 import { test } from 'node:test';
 
 // Testa o script scripts/brain-rules.cjs (validador das regras do vault).
-const { checkRules, parseFrontmatter } = require('../../../scripts/brain-rules.cjs') as {
-  checkRules: (o?: Record<string, unknown>) => string[];
-  parseFrontmatter: (t: string) => Record<string, unknown> | null;
-  listRuleFiles: () => { name: string; content: string }[];
-};
+const { checkRules, checkLayers, parseFrontmatter } =
+  require('../../../scripts/brain-rules.cjs') as {
+    checkRules: (o?: Record<string, unknown>) => string[];
+    checkLayers: (notes: { name: string; content: string }[]) => string[];
+    parseFrontmatter: (t: string) => Record<string, unknown> | null;
+    listRuleFiles: () => { name: string; content: string }[];
+  };
 
 const rule = () =>
   [
@@ -83,4 +85,68 @@ test('brain-rules: parseFrontmatter lê listas e escalares', () => {
   assert.strictEqual(fm?.id, 'BR-TEST-001');
   assert.deepStrictEqual(fm?.implementacao, ['src/a.ts']);
   assert.deepStrictEqual(fm?.testes, []);
+});
+
+// ── camadas (SEC/ERR/PAT/...) ──────────────────────────────────────────
+
+const note = (lines: string[]) => ({
+  name: 'n.md',
+  content: ['---', ...lines, '---', ''].join('\n'),
+});
+
+test('brain-rules: checkLayers aceita nota válida', () => {
+  const notes = [note(['id: PAT-001', 'tipo: padrao', 'titulo: X', 'dominio: d', 'status: ativo'])];
+  assert.deepStrictEqual(checkLayers(notes), []);
+});
+
+test('brain-rules: checkLayers detecta campo obrigatório ausente', () => {
+  const notes = [
+    note(['id: SEC-001', 'tipo: seguranca', 'titulo: X', 'dominio: d', 'status: ativo']),
+  ];
+  assert.ok(checkLayers(notes).some((p) => p.includes('severidade')));
+});
+
+test('brain-rules: checkLayers detecta id inválido e duplicado', () => {
+  const bad = note([
+    'id: SEC-1',
+    'tipo: seguranca',
+    'titulo: X',
+    'dominio: d',
+    'status: ativo',
+    'severidade: alta',
+  ]);
+  assert.ok(checkLayers([bad]).some((p) => p.includes('id inválido')));
+  const ok = note([
+    'id: SEC-001',
+    'tipo: seguranca',
+    'titulo: X',
+    'dominio: d',
+    'status: ativo',
+    'severidade: alta',
+  ]);
+  assert.ok(
+    checkLayers([ok, { name: 'm.md', content: ok.content }]).some((p) =>
+      p.includes('id duplicado'),
+    ),
+  );
+});
+
+// ── --check-lines ──────────────────────────────────────────────────────
+
+test('brain-rules: checkLines detecta linha fora do arquivo', () => {
+  const content = rule().replace(
+    'implementacao: ["src/a.ts"]',
+    'implementacao: ["package.json:999999"]',
+  );
+  assert.ok(
+    run(content, { checkLines: true }).some((p) => p.includes('implementacao inexistente')),
+  );
+});
+
+test('brain-rules: checkLines aceita linha válida', () => {
+  const content = rule().replace(
+    'implementacao: ["src/a.ts"]',
+    'implementacao: ["package.json:1"]',
+  );
+  assert.deepStrictEqual(run(content, { checkLines: true }), []);
 });

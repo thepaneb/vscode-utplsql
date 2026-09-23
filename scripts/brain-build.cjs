@@ -255,4 +255,12 @@ if (require.main === module) {
   process.exit(run(check));
 }
 
-module.exports = { published, render, parseFrontmatter };
+module.exports = {
+  published,
+  render,
+  parseFrontmatter,
+  wikiLinks,
+  readmeLinks,
+  withStatus,
+  syncDir,
+};

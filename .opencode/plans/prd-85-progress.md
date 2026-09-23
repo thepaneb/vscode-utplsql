@@ -100,8 +100,12 @@ npm run test:unit       # compile + lint + node --test
    ADR-012 (10 ADRs): descoberta DB-first, esbuild/VSIX, funções canônicas,
    módulos puros vs vscode, i18n, cobertura, Test Explorer, perfis de conexão,
    thick mode e debugger.
-9. **Validador**: `--check-lines`; schema de `SEC/ERR/PAT/...` (hoje só refs);
-   testes do `brain-build`.
+9. ~~Validador: `--check-lines`; schema de `SEC/ERR/PAT/...`; testes do
+   `brain-build`.~~ ✅ Feito — `brain-rules` valida o schema das camadas
+   (SEC/ERR/PAT/NFR/ENT/GLOSS/TPL/LOC/PIPE/DEP: campos, id, unicidade) e aceita
+   `--check-lines` (`brain:rules:lines`); testes novos
+   `brainBuild.test.ts`/`brainScripts.test.ts` + casos em `brainRules.test.ts`
+   (751 testes).
 10. **Governança**: fluxo de PR + `CODEOWNERS` do vault; destino de
     `docs/analise*.md`, `docs/rebranding-rascunho.md`, `docs/linkedin/`.
 11. **Operacional WSL**: se o Windows reiniciar e a sub-rede mudar, refazer a regra

@@ -190,8 +190,7 @@ function prdRow(p) {
   return `| ${prdNum(p.id)} | [${p.titulo}](../../../docs/prd/${p.status}/${p.file}) | ${prdVersao(p)} | ${prdData(p)} |`;
 }
 
-function genPrdRoadmap() {
-  const notes = prdNotes();
+function genPrdRoadmap(notes = prdNotes()) {
   const out = [];
   for (const st of PRD_STATUS) {
     const group = notes.filter((p) => p.status === st.key);
@@ -221,8 +220,7 @@ function genPrdRoadmap() {
   return out.join('\n').replace(/\s+$/, '');
 }
 
-function genPrdEstrutura() {
-  const notes = prdNotes();
+function genPrdEstrutura(notes = prdNotes()) {
   const lines = [
     '```',
     'docs/prd/',
@@ -320,8 +318,8 @@ const GENERATORS = {
   'linkedin-index': genLinkedinIndex,
   'funcional-index': genFuncionalIndex,
   'prd-summary': genPrdSummary,
-  'prd-roadmap': genPrdRoadmap,
-  'prd-estrutura': genPrdEstrutura,
+  'prd-roadmap': () => genPrdRoadmap(),
+  'prd-estrutura': () => genPrdEstrutura(),
   stack: genStack,
   deps: genDeps,
 };
@@ -371,6 +369,7 @@ function yamlBlock(text, key) {
     if (/^\S/.test(line)) break;
     out.push(line);
   }
+  while (out.length && out[out.length - 1].trim() === '') out.pop();
   return out;
 }
 
@@ -570,7 +569,17 @@ function check() {
   return 0;
 }
 
-module.exports = { sync, check };
+module.exports = {
+  sync,
+  check,
+  parseFm,
+  yamlBlock,
+  prdNotes,
+  genPrdRoadmap,
+  genPrdEstrutura,
+  pipelineNotes,
+  localeNotes,
+};
 
 if (require.main === module) {
   if (!fs.existsSync(VAULT)) {

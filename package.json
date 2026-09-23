@@ -752,6 +752,7 @@
     "brain:check": "node scripts/brain.cjs check",
     "brain:build": "node scripts/brain-build.cjs",
     "brain:rules": "node scripts/brain-rules.cjs",
+    "brain:rules:lines": "node scripts/brain-rules.cjs --check-lines",
     "brain:ci": "node scripts/brain.cjs sync && node scripts/brain-build.cjs && node scripts/brain.cjs check && node scripts/brain-rules.cjs",
     "docs:check": "node scripts/docs-check.cjs",
     "docs:fidelity": "node scripts/docs-fidelity.cjs",
