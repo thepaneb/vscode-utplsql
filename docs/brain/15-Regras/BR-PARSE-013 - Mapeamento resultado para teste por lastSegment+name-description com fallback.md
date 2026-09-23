@@ -9,6 +9,7 @@ fonte: codigo
 verificado: 2026-09-23
 implementacao: ["src/matching.ts:12", "src/matching.ts:16", "src/matching.ts:17", "src/matching.ts:18", "src/results.ts:46", "src/results.ts:107", "src/results.ts:109", "src/results.ts:111", "src/results.ts:145", "src/results.ts:154"]
 testes: ["src/test/unit/matching.test.ts", "src/test/unit/results.test.ts"]
+prds: ["PRD-44"]
 tags: ["resultados"]
 ---
 ## Enunciado
@@ -31,4 +32,5 @@ O classname pode vir qualificado (schema.package) e a descrição pode ter espa�
 
 <!-- brain:auto:start:conexoes -->
 - 🗺️ [[MOC - Regras]]
+- 📄 PRDs: [[prd-44-pure-matching|PRD-44]]
 <!-- brain:auto:end -->

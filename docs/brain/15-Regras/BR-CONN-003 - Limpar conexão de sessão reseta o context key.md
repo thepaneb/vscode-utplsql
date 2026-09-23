@@ -9,6 +9,7 @@ fonte: codigo
 verificado: 2026-09-23
 implementacao: ["src/config.ts:224", "src/config.ts:227"]
 testes: ["src/test/unit/config.test.ts"]
+prds: ["PRD-34"]
 tags: ["conexao"]
 ---
 ## Enunciado
@@ -31,4 +32,5 @@ Permitir trocar/limpar credenciais digitadas em sessão e refletir o estado na U
 
 <!-- brain:auto:start:conexoes -->
 - 🗺️ [[MOC - Regras]]
+- 📄 PRDs: [[prd-34-multi-connection-profiles|PRD-34]]
 <!-- brain:auto:end -->

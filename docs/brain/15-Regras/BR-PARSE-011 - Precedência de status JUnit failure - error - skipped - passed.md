@@ -9,6 +9,7 @@ fonte: codigo
 verificado: 2026-09-23
 implementacao: ["src/junit.ts:39", "src/junit.ts:41", "src/junit.ts:44", "src/junit.ts:52", "src/junit.ts:56", "src/junit.ts:60"]
 testes: ["src/test/unit/junit.test.ts"]
+prds: ["PRD-11", "PRD-29"]
 tags: ["resultados"]
 ---
 ## Enunciado
@@ -31,4 +32,5 @@ O XML pode trazer múltiplas tags; a ordem define o status correto e o fallback 
 
 <!-- brain:auto:start:conexoes -->
 - 🗺️ [[MOC - Regras]]
+- 📄 PRDs: [[prd-11-streaming-results|PRD-11]] · [[prd-29-jump-to-failing-assertion|PRD-29]]
 <!-- brain:auto:end -->

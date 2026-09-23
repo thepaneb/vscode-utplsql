@@ -9,6 +9,7 @@ fonte: codigo
 verificado: 2026-09-23
 implementacao: ["src/oracleRunner.ts:744", "src/oracleRunner.ts:746", "src/oracleRunner.ts:747", "src/oracleRunner.ts:749"]
 testes: ["src/test/unit/oracleRunner.test.ts:1561"]
+prds: ["PRD-11"]
 tags: ["execucao"]
 ---
 ## Enunciado
@@ -31,4 +32,5 @@ O ut_junit_reporter embute o DBMS_OUTPUT capturado em system-out CDATA; linhas d
 
 <!-- brain:auto:start:conexoes -->
 - 🗺️ [[MOC - Regras]]
+- 📄 PRDs: [[prd-11-streaming-results|PRD-11]]
 <!-- brain:auto:end -->

@@ -9,6 +9,7 @@ fonte: codigo
 verificado: 2026-09-23
 implementacao: ["src/discovery.ts:235", "src/discovery.ts:296", "src/discovery.ts:313", "src/discovery.ts:316", "src/discovery.ts:320", "src/discovery.ts:325", "src/discovery.ts:332"]
 testes: ["src/test/unit/discovery.test.ts"]
+prds: ["PRD-74"]
 tags: ["descoberta"]
 ---
 ## Enunciado
@@ -31,4 +32,5 @@ Alinha as posições do editor (0-based) às linhas do dicionário Oracle (1-bas
 
 <!-- brain:auto:start:conexoes -->
 - 🗺️ [[MOC - Regras]]
+- 📄 PRDs: [[prd-74-db-first-discovery|PRD-74]]
 <!-- brain:auto:end -->

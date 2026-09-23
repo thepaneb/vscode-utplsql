@@ -9,6 +9,7 @@ fonte: codigo
 verificado: 2026-09-23
 implementacao: ["src/oracleRunner.ts:518", "src/oracleRunner.ts:520", "src/oracleRunner.ts:523"]
 testes: ["src/test/integration/dbPaths.test.ts", "src/test/integration/schemaRun.test.ts"]
+prds: ["PRD-11"]
 tags: ["execucao"]
 ---
 ## Enunciado
@@ -31,4 +32,5 @@ As tabelas temporárias persistem entre execuções; sem o DELETE, mensagens ant
 
 <!-- brain:auto:start:conexoes -->
 - 🗺️ [[MOC - Regras]]
+- 📄 PRDs: [[prd-11-streaming-results|PRD-11]]
 <!-- brain:auto:end -->

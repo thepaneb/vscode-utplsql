@@ -9,6 +9,7 @@ fonte: codigo
 verificado: 2026-09-23
 implementacao: ["src/oracleClient.ts:34", "src/oracleClient.ts:81"]
 testes: ["src/test/unit/oracleClient.test.ts"]
+prds: ["PRD-70"]
 tags: ["conexao"]
 ---
 ## Enunciado
@@ -31,4 +32,5 @@ O thick só é necessário para bancos com NNE e não pode ser reconfigurado em 
 
 <!-- brain:auto:start:conexoes -->
 - 🗺️ [[MOC - Regras]]
+- 📄 PRDs: [[prd-70-thick-mode-nne|PRD-70]]
 <!-- brain:auto:end -->

@@ -9,6 +9,7 @@ fonte: codigo
 verificado: 2026-09-23
 implementacao: ["src/oracleRunner.ts:528", "src/oracleRunner.ts:529", "src/oracleRunner.ts:531", "src/oracleRunner.ts:534"]
 testes: ["src/test/unit/oracleRunner.test.ts:1989", "src/test/unit/oracleRunner.test.ts:2005"]
+prds: ["PRD-12", "PRD-69"]
 tags: ["execucao"]
 ---
 ## Enunciado
@@ -31,4 +32,5 @@ Passar um reporter inexistente ao ut_runner.run faria o run inteiro abortar com 
 
 <!-- brain:auto:start:conexoes -->
 - 🗺️ [[MOC - Regras]]
+- 📄 PRDs: [[prd-12-sql-coverage|PRD-12]] · [[prd-69-oracle-runner-typed-binds|PRD-69]]
 <!-- brain:auto:end -->

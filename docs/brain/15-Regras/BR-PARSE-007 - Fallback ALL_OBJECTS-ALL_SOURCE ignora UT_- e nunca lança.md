@@ -9,6 +9,7 @@ fonte: codigo
 verificado: 2026-09-23
 implementacao: ["src/discovery.ts:137", "src/discovery.ts:159", "src/discovery.ts:167", "src/discovery.ts:174", "src/discovery.ts:178", "src/discovery.ts:188", "src/discovery.ts:199"]
 testes: ["src/test/unit/discovery.test.ts"]
+prds: ["PRD-43"]
 tags: ["descoberta"]
 ---
 ## Enunciado
@@ -31,4 +32,5 @@ Suporta instalações shared e schemas sem grants sem derrubar a extensão, e ev
 
 <!-- brain:auto:start:conexoes -->
 - 🗺️ [[MOC - Regras]]
+- 📄 PRDs: [[prd-43-schema-db-discovery|PRD-43]]
 <!-- brain:auto:end -->

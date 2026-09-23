@@ -9,6 +9,7 @@ fonte: codigo
 verificado: 2026-09-23
 implementacao: ["src/suiteParser.ts:50", "src/suiteParser.ts:51", "src/suiteParser.ts:55", "src/suiteParser.ts:57"]
 testes: ["src/test/unit/suiteParser.test.ts", "src/test/unit/discovery.test.ts"]
+prds: ["PRD-42"]
 tags: ["parser"]
 ---
 ## Enunciado
@@ -31,4 +32,5 @@ Evita falsos positivos de trechos que apenas citam %suite e garante que o nome d
 
 <!-- brain:auto:start:conexoes -->
 - 🗺️ [[MOC - Regras]]
+- 📄 PRDs: [[prd-42-suiteparser-annotations|PRD-42]]
 <!-- brain:auto:end -->

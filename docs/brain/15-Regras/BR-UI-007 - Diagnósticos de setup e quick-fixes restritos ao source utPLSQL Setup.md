@@ -9,6 +9,7 @@ fonte: codigo
 verificado: 2026-09-23
 implementacao: ["src/quickfix.ts:28", "src/quickfix.ts:35", "src/quickfix.ts:133", "src/quickfix.ts:139", "src/quickfix.ts:150", "src/quickfix.ts:304", "src/extension.ts:109"]
 testes: ["src/test/unit/quickfix.test.ts", "src/test/unit/quickfixActivation.test.ts"]
+prds: ["PRD-32"]
 tags: ["diagnostico"]
 ---
 ## Enunciado
@@ -31,4 +32,5 @@ Isola problemas de configuração dos problemas do código do usuário e evita q
 
 <!-- brain:auto:start:conexoes -->
 - 🗺️ [[MOC - Regras]]
+- 📄 PRDs: [[prd-32-quickfix-setup-diagnostics|PRD-32]]
 <!-- brain:auto:end -->

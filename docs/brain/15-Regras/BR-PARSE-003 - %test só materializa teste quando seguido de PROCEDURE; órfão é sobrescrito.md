@@ -9,6 +9,7 @@ fonte: codigo
 verificado: 2026-09-23
 implementacao: ["src/suiteParser.ts:88", "src/suiteParser.ts:123", "src/suiteParser.ts:124", "src/suiteParser.ts:135"]
 testes: ["src/test/unit/suiteParser.test.ts"]
+prds: ["PRD-42"]
 tags: ["parser"]
 ---
 ## Enunciado
@@ -31,4 +32,5 @@ Evita criar itens fantasma para annotations sem procedure correspondente.
 
 <!-- brain:auto:start:conexoes -->
 - 🗺️ [[MOC - Regras]]
+- 📄 PRDs: [[prd-42-suiteparser-annotations|PRD-42]]
 <!-- brain:auto:end -->

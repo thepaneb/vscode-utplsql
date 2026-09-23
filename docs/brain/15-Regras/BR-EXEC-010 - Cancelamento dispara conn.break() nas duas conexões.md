@@ -9,6 +9,7 @@ fonte: codigo
 verificado: 2026-09-23
 implementacao: ["src/oracleRunner.ts:704", "src/oracleRunner.ts:705", "src/oracleRunner.ts:706", "src/oracleRunner.ts:712", "src/oracleRunner.ts:714"]
 testes: ["src/test/unit/oracleRunner.test.ts:1504"]
+prds: ["PRD-05", "PRD-11"]
 tags: ["execucao"]
 ---
 ## Enunciado
@@ -31,4 +32,5 @@ conn1 está bloqueada no ut_runner.run e conn2 no poll; interromper ambas é nec
 
 <!-- brain:auto:start:conexoes -->
 - 🗺️ [[MOC - Regras]]
+- 📄 PRDs: [[prd-05-progress-cancel|PRD-05]] · [[prd-11-streaming-results|PRD-11]]
 <!-- brain:auto:end -->

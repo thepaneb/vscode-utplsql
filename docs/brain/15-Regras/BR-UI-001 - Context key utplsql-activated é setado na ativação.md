@@ -9,6 +9,7 @@ fonte: codigo
 verificado: 2026-09-23
 implementacao: ["src/extension.ts:32", "package.json:36"]
 testes: ["src/test/integration/extension.test.ts"]
+prds: ["PRD-27"]
 tags: ["ui"]
 ---
 ## Enunciado
@@ -31,4 +32,5 @@ Keybindings como refresh/info/clearConnection usam when utplsql:activated e prec
 
 <!-- brain:auto:start:conexoes -->
 - 🗺️ [[MOC - Regras]]
+- 📄 PRDs: [[prd-27-default-keybindings|PRD-27]]
 <!-- brain:auto:end -->

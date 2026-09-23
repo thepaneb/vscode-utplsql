@@ -9,6 +9,7 @@ fonte: codigo
 verificado: 2026-09-23
 implementacao: ["src/discovery.ts:219", "src/discovery.ts:220", "src/discovery.ts:409", "src/discovery.ts:410", "src/discovery.ts:412", "src/discovery.ts:413", "src/discovery.ts:415", "src/discovery.ts:416", "src/testTree.ts:183"]
 testes: ["src/test/unit/discovery.test.ts", "src/test/unit/testTree.test.ts"]
+prds: ["PRD-74"]
 tags: ["descoberta"]
 ---
 ## Enunciado
@@ -31,4 +32,5 @@ Garante compatibilidade com versões antigas do framework e dá controle explíc
 
 <!-- brain:auto:start:conexoes -->
 - 🗺️ [[MOC - Regras]]
+- 📄 PRDs: [[prd-74-db-first-discovery|PRD-74]]
 <!-- brain:auto:end -->

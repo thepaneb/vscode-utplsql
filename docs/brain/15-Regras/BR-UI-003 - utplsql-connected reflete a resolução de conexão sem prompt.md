@@ -9,6 +9,7 @@ fonte: codigo
 verificado: 2026-09-23
 implementacao: ["src/config.ts:171", "src/config.ts:174", "src/config.ts:182", "src/config.ts:187", "src/config.ts:191", "src/config.ts:218", "src/config.ts:226"]
 testes: ["src/test/unit/config.test.ts"]
+prds: ["PRD-27", "PRD-34"]
 tags: ["ui", "conexao"]
 ---
 ## Enunciado
@@ -31,4 +32,5 @@ Keybindings de run usam when utplsql:connected; conexões via perfil/env precisa
 
 <!-- brain:auto:start:conexoes -->
 - 🗺️ [[MOC - Regras]]
+- 📄 PRDs: [[prd-27-default-keybindings|PRD-27]] · [[prd-34-multi-connection-profiles|PRD-34]]
 <!-- brain:auto:end -->

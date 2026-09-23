@@ -9,6 +9,7 @@ fonte: codigo
 verificado: 2026-09-23
 implementacao: ["src/oracleRunner.ts:785", "src/oracleRunner.ts:786", "src/oracleRunner.ts:787", "src/oracleRunner.ts:810"]
 testes: ["src/test/unit/oracleRunner.test.ts:1632", "src/test/unit/oracleRunner.test.ts:1603"]
+prds: ["PRD-11", "PRD-12"]
 tags: ["execucao"]
 ---
 ## Enunciado
@@ -31,4 +32,5 @@ Ambos os reporters compartilham a mesma tabela; o marcador <coverage é o delimi
 
 <!-- brain:auto:start:conexoes -->
 - 🗺️ [[MOC - Regras]]
+- 📄 PRDs: [[prd-11-streaming-results|PRD-11]] · [[prd-12-sql-coverage|PRD-12]]
 <!-- brain:auto:end -->

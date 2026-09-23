@@ -9,6 +9,7 @@ fonte: codigo
 verificado: 2026-09-23
 implementacao: ["src/oracleRunner.ts:137", "src/oracleRunner.ts:141", "src/oracleRunner.ts:513"]
 testes: ["src/test/unit/oracleRunner.test.ts:485", "src/test/unit/oracleRunner.test.ts:502"]
+prds: ["PRD-11"]
 tags: ["execucao"]
 ---
 ## Enunciado
@@ -31,4 +32,5 @@ O ut_runner.run bloqueia a sessão até o fim dos testes; uma segunda sessão é
 
 <!-- brain:auto:start:conexoes -->
 - 🗺️ [[MOC - Regras]]
+- 📄 PRDs: [[prd-11-streaming-results|PRD-11]]
 <!-- brain:auto:end -->

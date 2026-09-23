@@ -9,6 +9,7 @@ fonte: codigo
 verificado: 2026-09-23
 implementacao: ["src/i18n.ts:117", "src/i18n.ts:120", "src/i18n.ts:121", "src/i18n.ts:142", "src/i18n.ts:154", "src/i18n.ts:160", "src/i18n.ts:112"]
 testes: ["src/test/unit/i18n.test.ts"]
+prds: ["PRD-49"]
 tags: ["i18n"]
 ---
 ## Enunciado
@@ -31,4 +32,5 @@ Permite forçar idioma independente do editor e garante que nenhuma mensagem fiq
 
 <!-- brain:auto:start:conexoes -->
 - 🗺️ [[MOC - Regras]]
+- 📄 PRDs: [[prd-49-internacionalizacao|PRD-49]]
 <!-- brain:auto:end -->
