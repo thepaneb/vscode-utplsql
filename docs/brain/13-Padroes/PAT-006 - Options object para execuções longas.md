@@ -1,0 +1,26 @@
+---
+id: PAT-006
+tipo: padrao
+titulo: "Options object para execuções longas"
+dominio: design
+categoria: design
+status: ativo
+verificado: 2026-09-23
+implementacao: []
+testes: []
+regras: []
+tags: ["design"]
+---
+## Intenção
+
+Evitar assinaturas com muitos parâmetros posicionais em operações complexas.
+
+## Como se aplica
+
+`executeRunOracle` recebe um objeto de opções (PRD-40): conexão, paths, tags,
+cobertura, random seed, timeout, token de cancelamento.
+
+## Consequências
+
+- **Positivas:** legibilidade e evolução sem quebrar chamadas.
+- **Negativas:** campos opcionais exigem defaults cuidadosos.

@@ -31,6 +31,7 @@ docs/*
 !docs/brain/**
 # Dentro do vault: não versionar estado, binários de plugin e segredos
 docs/brain/.obsidian/workspace*.json
+docs/brain/.obsidian/graph.json
 docs/brain/.obsidian/cache/
 docs/brain/.obsidian/plugins/*/main.js
 docs/brain/.obsidian/plugins/*/styles.css
