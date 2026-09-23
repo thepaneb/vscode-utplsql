@@ -84,10 +84,12 @@ npm run test:unit       # compile + lint + node --test
    --exit-code` (com `fetch-depth: 0` p/ datas estáveis) + `docs:check`;
    `docs-check.cjs` valida o frontmatter das notas PRD; `wiki.yml` reconstrói a
    wiki do vault antes de publicar (paths `docs/brain/70-Wiki/**`).
-6. **Docs/instruções**: reescrever `AGENTS.md` (local), skill `docs-fidelity`
+6. ~~Docs/instruções: reescrever `AGENTS.md` (local), skill `docs-fidelity`
    (direção invertida), `docs/brain/README.md`, `CONTRIBUTING.md`; ajustar
-   `brain.cjs` (`readme-variants`/`wiki-index`/`funcional-index`/`prd-summary` —
-   `prd-summary` já lê o frontmatter; os demais ainda fazem repo→vault).
+   `brain.cjs`.~~ ✅ Feito — `docs/brain/README.md`, `CONTRIBUTING.md`, skill
+   `docs-fidelity` e `AGENTS.md` invertidos p/ vault-canônico; `brain.cjs`:
+   `readme-variants`/`wiki-index`/`funcional-index` leem o vault; migrado o
+   `docs/functional/README.md` (faltava) p/ `10-Projeto/Funcional/README.md`.
 7. **Camadas** `PIPE-*` (workflows) e `LOC-*` (i18n/23 idiomas) — geradas.
 8. **ADRs retrospectivos** a partir dos 66 PRDs concluídos.
 9. **Validador**: `--check-lines`; schema de `SEC/ERR/PAT/...` (hoje só refs);

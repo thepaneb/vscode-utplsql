@@ -1,4 +1,11 @@
-<!-- GENERATED FROM docs/brain/10-Projeto/Funcional/README.md — DO NOT EDIT -->
+---
+tipo: funcional
+status: ativo
+titulo: "Especificação Funcional — visão geral"
+publicar: docs/functional/README.md
+verificado: 2026-09-23
+tags: [funcional]
+---
 
 # Especificação Funcional — vscode-utplsql
 

@@ -132,15 +132,33 @@ Sem `ORACLE_CLIENT_LIB_DIR`, o `thickMode.test.ts` fica `skip`.
 - `src/` — código-fonte TypeScript da extensão
 - `scripts/` — scripts auxiliares
 - `.vscode/` — configuração de debug/launch para desenvolvimento
+- `docs/brain/` — **second brain** (vault Obsidian): fonte da verdade do texto humano
+- `docs/functional/`, `docs/wiki/`, `docs/prd/`, `README*.md` — **gerados** do vault (`npm run brain:build`); não edite à mão
 - `images/` — ícones e screenshots usados no README
 - `package.json` — manifesto da extensão (comandos, settings, ativação)
+
+## Documentação
+
+O texto humano é editado no vault (`docs/brain/`) e os artefatos do repo são
+gerados a partir dele:
+
+```sh
+npm run brain:sync    # fatos do código -> vault (stack, deps, contagens)
+npm run brain:build   # vault -> repo (README*, docs/wiki, docs/functional, docs/prd)
+npm run docs:check    # consistência + fidelidade código<->docs (roda no CI)
+```
+
+- README e variantes: nota `60-README/README (extensão)` no vault.
+- Wiki: notas em `70-Wiki/` (publicadas pelo workflow `wiki.yml`).
+- PRDs: notas em `20-PRDs/` (status no frontmatter) — ver a skill `prd-workflow`.
 
 ## Pull Requests
 
 1. Faça um fork e crie sua branch a partir de `main`.
-2. Se alterar comportamento configurável, atualize a tabela de **Configuração** no `README.md`.
+2. Se alterar comportamento configurável, atualize a nota `60-README/README (extensão)`
+   no vault e rode `npm run brain:build` (a tabela de **Configuração** do `README.md` é gerada).
 3. Se adicionar/alterar settings em `package.json`, mantenha as descrições em português, consistentes com o restante do projeto.
-4. Rode `npm run compile` e `npm test` antes de abrir o PR.
+4. Rode `npm run compile` e `npm test` antes de abrir o PR. Rode `npm run brain:ci` se mexeu em documentação.
 5. Escreva uma mensagem de commit clara e, se aplicável, referencie a issue relacionada (`Closes #42`).
 6. Abra o PR descrevendo o que mudou e por quê. Screenshots são bem-vindos para mudanças de UI (gutters, Test Explorer, Coverage).
 

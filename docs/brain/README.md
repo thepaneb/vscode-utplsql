@@ -1,9 +1,10 @@
 # Second Brain — vscode-utplsql
 
-Vault do Obsidian com o conhecimento do projeto. Este diretório é **versionado**
-no repositório (`docs/brain/`); segredos, estado do app e binários de plugin ficam
-fora do controle de versão — ver `.gitignore` e
-[[ADR-002 - Vault como fonte da verdade]].
+Vault do Obsidian com o conhecimento do projeto. Este diretório é **versionado** no
+repositório (`docs/brain/`) e é a **fonte da verdade** do texto escrito por humanos:
+os artefatos do repo (`README*`, `docs/wiki/`, `docs/functional/`, `docs/prd/`) são
+**gerados** a partir dele. Segredos, estado do app e binários de plugin ficam fora do
+controle de versão — ver `.gitignore` e [[ADR-002 - Vault como fonte da verdade]].
 
 ## Abrir no Obsidian
 
@@ -59,54 +60,65 @@ Templater. Configure e use assim:
 ## Convenções
 
 - Uma nota por assunto; MOCs só indexam e linkam.
-- **Não copie** conteúdo de `docs/prd/`, `docs/wiki/` ou código — linke/transclua.
+- **O vault é a fonte da verdade** do texto humano. `docs/functional/`, `docs/wiki/`,
+  `docs/prd/` e `README*.md` são **gerados** (`npm run brain:build`) — não os edite.
 - Frontmatter sempre com `tipo` e `status` (os Dataview filtram por isso).
 - Ao **revisar** uma nota, atualize `verificado: YYYY-MM-DD` no frontmatter. O painel
   "🔁 Revisar" em [[Home]] lista o que passou de 120 dias.
 - **Links:**
   - Nota **dentro** do vault → `[[Nome da nota]]` (dá backlinks/grafo).
-  - Arquivo **fora** do vault (ex.: `docs/`, `src/`, `README.md`) → link markdown
-    relativo `[texto](../../docs/wiki/Architecture.md)`. Obsidian **não** navega o
-    grafo para fora do vault (é esperado).
+  - Arquivo **fora** do vault (ex.: `src/`) → link markdown relativo. Obsidian
+    **não** navega o grafo para fora do vault (é esperado).
 
-## Manter atualizado (anti-drift)
+## Pipeline (fonte → gerado)
 
-O repo é a **fonte da verdade**; o vault só indexa/sintetiza. Para garantir atualização:
+```
+docs/brain/ (fonte) ──brain:build──► README*, docs/wiki, docs/functional, docs/prd
+        ▲                                              │
+        └──────── brain:sync (fatos do código) ────────┘
+```
 
-1. **Nunca copie listas manuais.** Índices derivados do repo ficam entre marcadores e
-   são regenerados (tool em `scripts/brain.cjs`):
-   ```sh
-   npm run brain:sync
-   ```
-   Blocos `<!-- brain:auto:start:<nome> --> … <!-- brain:auto:end -->`:
-   - `MOC - Funcional` — espelha `docs/functional/README.md`
-   - `MOC - PRDs` — contagens de `docs/prd/{proposed,approved,in-progress,completed}`
-   - `MOC - Documentacao` — docs da raiz, **variantes de idioma do README** (alerta ⚠️
-     de tradução defasada), páginas da wiki e material de LinkedIn
-2. **Valide os links** (pega `docs/` renomeado/movido):
-   ```sh
-   npm run brain:check
-   ```
-3. **Prefira Dataview a texto estático** para tudo que muda (prazos, status, listas).
-4. **Rode `sync` + `check`** depois de mover docs/PRDs e antes de um commit grande.
-   O `npm run sync-prds` já chama `brain:sync` automaticamente ao final.
-5. **Peça ao agente** ("atualize o brain") ao encerrar uma tarefa — ele regenera e
-   valida.
+- **`brain:sync`** injeta fatos do código (stack, deps, contagens) nos blocos
+  `<!-- brain:auto:start:<nome> --> … <!-- brain:auto:end -->` e regenera o
+  Roadmap/Estrutura dos PRDs a partir do frontmatter.
+- **`brain:build`** publica as notas com `publicar:` (ou `tipo: prd`) nos
+  artefatos do repo, com banner `<!-- GENERATED FROM ... DO NOT EDIT -->`.
 
-> Dataview **não** indexa arquivos fora do vault (`docs/`, `src/`). Por isso esses
-> índices são gerados por `sync`, não por consulta.
+### Comandos
+
+```sh
+npm run brain:sync            # fatos do código -> vault
+npm run brain:build           # vault -> repo (wiki, README, functional, PRDs)
+npm run brain:build -- check  # drift (não escreve)
+npm run brain:check           # valida wikilinks/links do vault
+npm run brain:rules           # valida as BR-*
+npm run brain:ci              # sync + build + check + rules (usado no CI)
+```
+
+O CI roda `brain:ci` + `git diff --exit-code`: se o vault e os artefatos gerados
+divergirem, o build falha.
 
 ## Estrutura
 
 | Pasta | Uso |
 |---|---|
 | `00-Inbox` | captura rápida |
-| `10-Projeto` | MOCs de visão geral, arquitetura, Oracle, testes |
-| `20-PRDs` | índice de PRDs (link para `docs/prd/`) |
+| `10-Projeto` | MOCs + `Funcional/` (spec funcional canônica) |
+| `11-Stack` | stack + inventário de dependências (gerado) |
+| `13-Padroes` | padrões (`PAT-*`) |
+| `14-NFR` | requisitos não-funcionais (`NFR-*`) |
+| `15-Regras` | regras de negócio (`BR-*`) |
+| `16-Seguranca` | invariantes de segurança (`SEC-*`) |
+| `17-Componentes` | componentes de terceiros (`TPL-*`) |
+| `18-Erros` | catálogo de erros (`ERR-*`) |
+| `19-Glossario` | linguagem ubíqua (`GLOSS-*`) |
+| `20-PRDs` | PRDs canônicos (status no frontmatter) |
 | `30-Decisoes` | ADRs |
 | `40-Bugs` | diário de diagnóstico |
 | `50-Snippets` | comandos e queries |
+| `60-README` | origem do README + variantes |
+| `70-Wiki` | páginas publicáveis (GitHub wiki) |
 | `90-Daily` | notas diárias |
 | `99-Anexos` | imagens e anexos |
 | `_templates` | templates |
-| `_tools` | reservado (o tool canônico é `scripts/brain.cjs`) |
+

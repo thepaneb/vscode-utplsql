@@ -22,76 +22,75 @@ enumerations geradas (`npm run brain:sync`).
 
 ## README e variantes de idioma
 
-> ⚠️ marca tradução cujo último commit é **anterior** ao do `README.md` (provável
-> versão defasada). A verdade é sempre o `README.md`.
+Notas canônicas em `60-README/`; os `README*.md` na raiz são **gerados**
+(`npm run brain:build`). A verdade é a nota [[README (extensão)]].
 
 <!-- brain:auto:start:readme-variants -->
-| Idioma | Arquivo | Última alteração |
-|---|---|---|
-| Principal | [README.md](../../../README.md) | 2026-09-23 |
-| `bg` | [README.bg.md](../../../README.bg.md) | 2026-09-23 |
-| `cs` | [README.cs.md](../../../README.cs.md) | 2026-09-23 |
-| `de` | [README.de.md](../../../README.de.md) | 2026-09-23 |
-| `el` | [README.el.md](../../../README.el.md) | 2026-09-23 |
-| `en-GB` | [README.en-GB.md](../../../README.en-GB.md) | 2026-09-23 |
-| `es` | [README.es.md](../../../README.es.md) | 2026-09-23 |
-| `fr` | [README.fr.md](../../../README.fr.md) | 2026-09-23 |
-| `hu` | [README.hu.md](../../../README.hu.md) | 2026-09-23 |
-| `id` | [README.id.md](../../../README.id.md) | 2026-09-23 |
-| `it` | [README.it.md](../../../README.it.md) | 2026-09-23 |
-| `ja` | [README.ja.md](../../../README.ja.md) | 2026-09-23 |
-| `ko` | [README.ko.md](../../../README.ko.md) | 2026-09-23 |
-| `pl` | [README.pl.md](../../../README.pl.md) | 2026-09-23 |
-| `pt-BR` | [README.pt-BR.md](../../../README.pt-BR.md) | 2026-09-23 |
-| `ro` | [README.ro.md](../../../README.ro.md) | 2026-09-23 |
-| `ru` | [README.ru.md](../../../README.ru.md) | 2026-09-23 |
-| `sr` | [README.sr.md](../../../README.sr.md) | 2026-09-23 |
-| `th` | [README.th.md](../../../README.th.md) | 2026-09-23 |
-| `tr` | [README.tr.md](../../../README.tr.md) | 2026-09-23 |
-| `uk` | [README.uk.md](../../../README.uk.md) | 2026-09-23 |
-| `vi` | [README.vi.md](../../../README.vi.md) | 2026-09-23 |
-| `zh-CN` | [README.zh-CN.md](../../../README.zh-CN.md) | 2026-09-23 |
-| `zh-TW` | [README.zh-TW.md](../../../README.zh-TW.md) | 2026-09-23 |
+- [[README (extensão)]] — `en` → `README.md`
+- [[README.bg]] — `bg` → `README.bg.md`
+- [[README.cs]] — `cs` → `README.cs.md`
+- [[README.de]] — `de` → `README.de.md`
+- [[README.el]] — `el` → `README.el.md`
+- [[README.en-GB]] — `en-gb` → `README.en-GB.md`
+- [[README.es]] — `es` → `README.es.md`
+- [[README.fr]] — `fr` → `README.fr.md`
+- [[README.hu]] — `hu` → `README.hu.md`
+- [[README.id]] — `id` → `README.id.md`
+- [[README.it]] — `it` → `README.it.md`
+- [[README.ja]] — `ja` → `README.ja.md`
+- [[README.ko]] — `ko` → `README.ko.md`
+- [[README.pl]] — `pl` → `README.pl.md`
+- [[README.pt-BR]] — `pt-br` → `README.pt-BR.md`
+- [[README.ro]] — `ro` → `README.ro.md`
+- [[README.ru]] — `ru` → `README.ru.md`
+- [[README.sr]] — `sr` → `README.sr.md`
+- [[README.th]] — `th` → `README.th.md`
+- [[README.tr]] — `tr` → `README.tr.md`
+- [[README.uk]] — `uk` → `README.uk.md`
+- [[README.vi]] — `vi` → `README.vi.md`
+- [[README.zh-CN]] — `zh-cn` → `README.zh-CN.md`
+- [[README.zh-TW]] — `zh-tw` → `README.zh-TW.md`
 <!-- brain:auto:end -->
 
 ## Docs em `docs/`
 
 - **PRDs** → [[MOC - PRDs]] ([index.md](../../../docs/prd/index.md))
-- **Especificação funcional** → [[MOC - Funcional]] ([README](../../../docs/functional/README.md))
+- **Especificação funcional** → [[MOC - Funcional]] ([visão geral](Funcional/README.md))
 - **Wiki** → ver abaixo
 - **LinkedIn** (pasta local, não versionada) → ver abaixo
 
 ### GitHub Wiki
 
-Publicada automaticamente pelo workflow `wiki.yml` a partir de `docs/wiki/`.
+Notas canônicas em `70-Wiki/`; `docs/wiki/` é **gerado** (`npm run brain:build`)
+e publicado pelo workflow `wiki.yml`.
 
 <!-- brain:auto:start:wiki-index -->
-- [Architecture](../../wiki/Architecture.md)
-- [Commands](../../wiki/Commands.md)
-- [Configuration-examples](../../wiki/Configuration-examples.md)
-- [Configuration](../../wiki/Configuration.md)
-- [Connection-profiles](../../wiki/Connection-profiles.md)
-- [Connection](../../wiki/Connection.md)
-- [Contributing](../../wiki/Contributing.md)
-- [Coverage](../../wiki/Coverage.md)
-- [Database-requirements](../../wiki/Database-requirements.md)
-- [Debugger](../../wiki/Debugger.md)
-- [Diagnostics-and-quick-fix](../../wiki/Diagnostics-and-quick-fix.md)
-- [Editor-integration](../../wiki/Editor-integration.md)
-- [FAQ](../../wiki/FAQ.md)
-- [Home](../../wiki/Home.md)
-- [Installation-and-requirements](../../wiki/Installation-and-requirements.md)
-- [Internationalization](../../wiki/Internationalization.md)
-- [Invocation-mode](../../wiki/Invocation-mode.md)
-- [Oracle-direct-execution](../../wiki/Oracle-direct-execution.md)
-- [PRDs](../../wiki/PRDs.md)
-- [Quick-start](../../wiki/Quick-start.md)
-- [Reporters](../../wiki/Reporters.md)
-- [SQL-scripts](../../wiki/SQL-scripts.md)
-- [Test-explorer](../../wiki/Test-explorer.md)
-- [Tests](../../wiki/Tests.md)
-- [Tree-organization](../../wiki/Tree-organization.md)
-- [Troubleshooting](../../wiki/Troubleshooting.md)
+- [[Architecture]]
+- [[Commands]]
+- [[Configuration-examples]]
+- [[Configuration]]
+- [[Connection-profiles]]
+- [[Connection]]
+- [[Contributing]]
+- [[Coverage]]
+- [[Database-requirements]]
+- [[Debugger]]
+- [[Diagnostics-and-quick-fix]]
+- [[Editor-integration]]
+- [[FAQ]]
+- [[Home (wiki)]]
+- [[Installation-and-requirements]]
+- [[Internationalization]]
+- [[Invocation-mode]]
+- [[Oracle-direct-execution]]
+- [[PRDs]]
+- [[Quick-start]]
+- [[Reporters]]
+- [[SQL-scripts]]
+- [[Test-explorer]]
+- [[Tests]]
+- [[Tree-organization]]
+- [[Troubleshooting]]
 <!-- brain:auto:end -->
 
 ### LinkedIn (local)

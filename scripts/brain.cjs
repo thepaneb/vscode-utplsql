@@ -60,15 +60,6 @@ function gitDate(relpath) {
   }
 }
 
-function listMd(dir, note, skip = new Set()) {
-  if (!fs.existsSync(dir)) return [];
-  return fs
-    .readdirSync(dir)
-    .filter((n) => n.endsWith('.md') && !skip.has(n))
-    .sort((a, b) => a.localeCompare(b))
-    .map((n) => `- [${path.basename(n, '.md')}](${rel(path.join(dir, n), note)})`);
-}
-
 // ── generators ─────────────────────────────────────────────────────────
 
 function genRootDocs(note) {
@@ -83,29 +74,31 @@ function genRootDocs(note) {
   return linhas.join('\n') || '_nenhum_';
 }
 
-function genReadmeVariants(note) {
-  const base = path.join(REPO, 'README.md');
-  if (!fs.existsSync(base)) return '_README.md ausente._';
-  const baseDate = gitDate('README.md');
-  const linhas = [`| Principal | [README.md](${rel(base, note)}) | ${baseDate || '—'} |`];
-  const variants = fs
-    .readdirSync(REPO)
-    .filter((n) => /^README\..+\.md$/.test(n))
-    .sort((a, b) => a.localeCompare(b));
-  for (const name of variants) {
-    const code = name.slice('README.'.length, -'.md'.length);
-    const d = gitDate(name);
-    const flag = baseDate && d && d < baseDate ? ' ⚠️' : '';
-    linhas.push(`| \`${code}\` | [${name}](${rel(path.join(REPO, name), note)}) | ${d || '—'}${flag} |`);
-  }
-  return ['| Idioma | Arquivo | Última alteração |', '|---|---|---|', ...linhas].join('\n');
+function genReadmeVariants() {
+  const dir = path.join(VAULT, '60-README');
+  if (!fs.existsSync(dir)) return '_60-README ausente._';
+  const main = 'README (extensão).md';
+  const files = fs
+    .readdirSync(dir)
+    .filter((n) => /^README.*\.md$/.test(n))
+    .sort((a, b) => (a === main ? -1 : b === main ? 1 : a.localeCompare(b)));
+  return files
+    .map((f) => {
+      const fm = parseFm(fs.readFileSync(path.join(dir, f), 'utf8'));
+      return `- [[${f.replace(/\.md$/, '')}]] — \`${fm.locale ?? '?'}\` → \`${fm.publicar ?? ''}\``;
+    })
+    .join('\n');
 }
 
-function genWikiIndex(note) {
-  const wiki = path.join(REPO, 'docs', 'wiki');
-  const skip = new Set(['_Sidebar.md']);
-  const en = listMd(wiki, note, skip);
-  return en.length ? en.join('\n') : '_ausente_';
+function genWikiIndex() {
+  const dir = path.join(VAULT, '70-Wiki');
+  if (!fs.existsSync(dir)) return '_70-Wiki ausente._';
+  return fs
+    .readdirSync(dir)
+    .filter((n) => n.endsWith('.md') && n !== '_Sidebar.md')
+    .sort((a, b) => a.localeCompare(b))
+    .map((n) => `- [[${n.replace(/\.md$/, '')}]]`)
+    .join('\n');
 }
 
 function genLinkedinIndex(note) {
@@ -127,14 +120,15 @@ function genLinkedinIndex(note) {
 }
 
 function genFuncionalIndex(note) {
-  const readme = path.join(REPO, 'docs', 'functional', 'README.md');
-  if (!fs.existsSync(readme)) return '_docs/functional ausente._';
+  const dir = path.join(VAULT, '10-Projeto', 'Funcional');
+  const readme = path.join(dir, 'README.md');
+  if (!fs.existsSync(readme)) return '_README funcional ausente._';
   const rows = [];
   for (const line of fs.readFileSync(readme, 'utf8').split('\n')) {
     const m = line.match(FUNC_ROW_RE);
     if (!m) continue;
     const [, num, title, link, desc] = m;
-    rows.push(`| ${num} | [${title}](${rel(path.join(path.dirname(readme), link), note)}) | ${desc} |`);
+    rows.push(`| ${num} | [${title}](${rel(path.join(dir, link), note)}) | ${desc} |`);
   }
   if (!rows.length) return '_Nenhum documento funcional encontrado._';
   return ['| # | Documento | Descrição |', '|---|---|---|', ...rows].join('\n');
