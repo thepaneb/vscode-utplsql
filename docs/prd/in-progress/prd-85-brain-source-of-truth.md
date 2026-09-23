@@ -2,7 +2,7 @@
 
 | Campo | Valor |
 |---|---|
-| Status | Proposto |
+| Status | Em desenvolvimento |
 | Autor | Gil Cleber Barboza |
 | Data | 2026-09-23 |
 | Componente | Ferramental de desenvolvimento / documentação (`docs/`, `scripts/`) |
