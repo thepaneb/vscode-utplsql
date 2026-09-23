@@ -128,6 +128,34 @@ function checkLayers(notes) {
 }
 
 /**
+ * Valida `requisitos:` (PRD-NN/RFn ou PRD-NN/RNFn): a PRD existe no vault e o
+ * RF/RNF consta no corpo dela.
+ */
+function checkRequisitos(notes) {
+  const problems = [];
+  const prdBodies = new Map();
+  for (const note of notes) {
+    const fm = parseFrontmatter(note.content);
+    if (fm?.tipo === 'prd' && fm.id) prdBodies.set(fm.id, note.content);
+  }
+  for (const note of notes) {
+    const fm = parseFrontmatter(note.content);
+    for (const r of Array.isArray(fm?.requisitos) ? fm.requisitos : []) {
+      const [pid, rid] = String(r).split('/');
+      const body = prdBodies.get(pid);
+      if (!body) {
+        problems.push(`${note.name}: requisito aponta PRD inexistente: ${r}`);
+        continue;
+      }
+      if (rid && !new RegExp(`\\b${rid}\\b`).test(body)) {
+        problems.push(`${note.name}: requisito inexistente no PRD: ${r}`);
+      }
+    }
+  }
+  return problems;
+}
+
+/**
  * Valida referências de TODAS as notas do vault: `implementacao`/`testes`
  * (arquivos existem) e `regras` (apontam para BR-* existentes).
  */
@@ -234,6 +262,7 @@ function checkRules(overrides = {}) {
     const notes = listAllNotes();
     problems.push(...checkLayers(notes));
     problems.push(...checkReferences(notes, exists, brIds, checkLines));
+    problems.push(...checkRequisitos(notes));
   }
 
   return problems;
@@ -243,6 +272,7 @@ module.exports = {
   checkRules,
   checkReferences,
   checkLayers,
+  checkRequisitos,
   parseFrontmatter,
   listRuleFiles,
   listAllNotes,

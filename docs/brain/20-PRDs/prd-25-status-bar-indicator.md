@@ -253,5 +253,8 @@ await executeRun(
 <!-- brain:auto:start:conexoes -->
 - 🗺️ [[MOC - PRDs]]
 - 🔗 PRDs relacionados: [[prd-31-smart-rerun-patterns|PRD-31]]
+- 🎯 RF1 — Status bar item visível ao carregar a extensão → [[BR-UI-005 - Status bar - gating por setting, throttle de 200ms e ícone por falha-erro|BR-UI-005]]
+- 🎯 RF2 — Atualização durante execução → [[BR-UI-005 - Status bar - gating por setting, throttle de 200ms e ícone por falha-erro|BR-UI-005]]
+- 🎯 RF4 — Setting `utplsql.statusBar.enabled` → [[BR-UI-005 - Status bar - gating por setting, throttle de 200ms e ícone por falha-erro|BR-UI-005]]
 - 📐 Regras: [[BR-UI-005 - Status bar - gating por setting, throttle de 200ms e ícone por falha-erro|BR-UI-005]]
 <!-- brain:auto:end -->

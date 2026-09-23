@@ -10,6 +10,7 @@ verificado: 2026-09-23
 implementacao: ["src/oracleRunner.ts:593", "src/oracleRunner.ts:596", "src/oracleRunner.ts:598", "src/oracleRunner.ts:604", "src/oracleRunner.ts:677"]
 testes: ["src/test/unit/oracleRunner.test.ts:922", "src/test/unit/oracleRunner.test.ts:953", "src/test/unit/oracleRunner.test.ts:979", "src/test/unit/oracleRunner.test.ts:1264"]
 prds: ["PRD-69"]
+requisitos: ["PRD-69/RF1"]
 tags: ["execucao", "seguranca"]
 ---
 ## Enunciado
@@ -33,5 +34,6 @@ Evita injeção (nenhum texto de usuário entra no SQL) e o bind ambíguo de col
 <!-- brain:auto:start:conexoes -->
 - 🗺️ [[MOC - Regras]]
 - 📄 PRDs: [[prd-69-oracle-runner-typed-binds|PRD-69]]
+- 🎯 Requisitos: [[prd-69-oracle-runner-typed-binds|PRD-69 RF1]]
 - ↩️ Referenciada por: [[SEC-005 - Nenhum valor de usuário é concatenado no PL-SQL|SEC-005]]
 <!-- brain:auto:end -->

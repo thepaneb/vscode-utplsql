@@ -429,5 +429,6 @@ Alvos com glue (thick+thin, node-oracledb 7.0.1): `win32-x64`, `linux-x64`,
 - 🗺️ [[MOC - PRDs]]
 - 🔗 PRDs relacionados: [[prd-45-bundle-esbuild|PRD-45]] · [[prd-64-oracle-only-migration|PRD-64]]
 - ⚙️ Pipelines: [[PIPE-publish - Publish Extension|PIPE-publish]]
+- 🎯 RF2 — Inicialização idempotente do cliente → [[BR-CONN-012 - Thick opt-in, fixado na primeira chamada e idempotente|BR-CONN-012]]
 - 📐 Regras: [[BR-CONN-012 - Thick opt-in, fixado na primeira chamada e idempotente|BR-CONN-012]]
 <!-- brain:auto:end -->

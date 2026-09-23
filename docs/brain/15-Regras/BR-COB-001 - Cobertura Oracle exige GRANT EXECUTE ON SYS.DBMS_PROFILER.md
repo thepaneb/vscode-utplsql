@@ -10,6 +10,7 @@ verificado: 2026-09-23
 implementacao: ["src/commands/utility.ts:13", "src/quickfix.ts:150", "src/i18nLocales.ts:98", "package.json:130"]
 testes: ["src/test/unit/quickfix.test.ts"]
 prds: ["PRD-12", "PRD-32"]
+requisitos: ["PRD-32/RF3", "PRD-32/RF5"]
 tags: ["cobertura"]
 ---
 ## Enunciado
@@ -33,5 +34,6 @@ DBMS_PROFILER é recurso privilegiado; a extensão não pode conceder grants e p
 <!-- brain:auto:start:conexoes -->
 - 🗺️ [[MOC - Regras]]
 - 📄 PRDs: [[prd-12-sql-coverage|PRD-12]] · [[prd-32-quickfix-setup-diagnostics|PRD-32]]
+- 🎯 Requisitos: [[prd-32-quickfix-setup-diagnostics|PRD-32 RF3]] · [[prd-32-quickfix-setup-diagnostics|PRD-32 RF5]]
 - ↩️ Referenciada por: [[ERR-005 - UTPLSQL_NO_COVERAGE — cobertura não gerada por falta de grants|ERR-005]] · [[SEC-009 - Grants são copiados para o clipboard, nunca executados automaticamente|SEC-009]]
 <!-- brain:auto:end -->

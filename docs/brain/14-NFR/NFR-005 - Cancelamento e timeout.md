@@ -9,6 +9,7 @@ implementacao: []
 testes: []
 regras: []
 relacionado: ["[[ADR-010 - Perfis de conexao com senha no SecretStorage]]", "[[ADR-001 - Execucao via Oracle direto]]", "[[MOC - Oracle]]"]
+requisitos: ["PRD-05/RF3"]
 tags: ["confiabilidade"]
 ---
 ## Requisito
@@ -28,5 +29,6 @@ Evitar run pendurado e liberar conexões.
 
 <!-- brain:auto:start:conexoes -->
 - 🗺️ [[MOC - NFR]]
+- 🎯 Requisitos: [[prd-05-progress-cancel|PRD-05 RF3]]
 - 🔗 [[ADR-010 - Perfis de conexao com senha no SecretStorage]] · [[ADR-001 - Execucao via Oracle direto]] · [[MOC - Oracle]]
 <!-- brain:auto:end -->

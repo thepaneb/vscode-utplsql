@@ -9,6 +9,7 @@ implementacao: []
 testes: []
 regras: []
 relacionado: ["[[ADR-004 - Bundling com esbuild e higiene do VSIX]]", "[[TPL-ESBUILD - esbuild (bundling do VSIX)]]", "[[MOC - Stack]]"]
+requisitos: ["PRD-18/RNF1"]
 tags: ["compatibilidade"]
 ---
 ## Requisito
@@ -27,5 +28,6 @@ Alinhar toolchain local e CI (PRD-18/47).
 
 <!-- brain:auto:start:conexoes -->
 - 🗺️ [[MOC - NFR]]
+- 🎯 Requisitos: [[prd-18-engine-node-ci|PRD-18 RNF1]]
 - 🔗 [[ADR-004 - Bundling com esbuild e higiene do VSIX]] · [[TPL-ESBUILD - esbuild (bundling do VSIX)]] · [[MOC - Stack]]
 <!-- brain:auto:end -->

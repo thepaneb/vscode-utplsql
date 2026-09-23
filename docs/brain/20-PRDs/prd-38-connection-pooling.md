@@ -243,5 +243,6 @@ momento da execução.
 
 <!-- brain:auto:start:conexoes -->
 - 🗺️ [[MOC - PRDs]]
+- 🎯 RF3 — Aquisição do pool → [[BR-EXEC-002 - Conexões do runner têm callTimeout zerado|BR-EXEC-002]] · [[BR-EXEC-003 - Falha na segunda conexão libera a primeira (sem vazamento)|BR-EXEC-003]]
 - 📐 Regras: [[BR-EXEC-002 - Conexões do runner têm callTimeout zerado|BR-EXEC-002]] · [[BR-EXEC-003 - Falha na segunda conexão libera a primeira (sem vazamento)|BR-EXEC-003]]
 <!-- brain:auto:end -->

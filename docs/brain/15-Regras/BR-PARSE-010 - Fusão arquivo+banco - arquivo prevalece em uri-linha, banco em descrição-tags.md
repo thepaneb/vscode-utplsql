@@ -10,6 +10,7 @@ verificado: 2026-09-23
 implementacao: ["src/discovery.ts:344", "src/discovery.ts:349", "src/discovery.ts:355", "src/discovery.ts:361", "src/discovery.ts:362", "src/discovery.ts:365"]
 testes: ["src/test/unit/discovery.test.ts"]
 prds: ["PRD-74"]
+requisitos: ["PRD-74/RF3"]
 tags: ["descoberta"]
 ---
 ## Enunciado
@@ -33,4 +34,5 @@ O arquivo é necessário para abrir/editar (uri/range), enquanto o banco é a ve
 <!-- brain:auto:start:conexoes -->
 - 🗺️ [[MOC - Regras]]
 - 📄 PRDs: [[prd-74-db-first-discovery|PRD-74]]
+- 🎯 Requisitos: [[prd-74-db-first-discovery|PRD-74 RF3]]
 <!-- brain:auto:end -->

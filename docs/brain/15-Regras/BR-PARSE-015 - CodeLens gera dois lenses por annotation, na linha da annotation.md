@@ -10,6 +10,7 @@ verificado: 2026-09-23
 implementacao: ["src/codelens.ts:80", "src/codelens.ts:81", "src/codelens.ts:18", "src/codelens.ts:44", "src/codelens.ts:93", "src/codelens.ts:107"]
 testes: ["src/test/unit/codelens.test.ts"]
 prds: ["PRD-24"]
+requisitos: ["PRD-24/RF2", "PRD-24/RF3"]
 tags: ["parser", "ui"]
 ---
 ## Enunciado
@@ -33,4 +34,5 @@ O lens deve ficar sobre a annotation (não a procedure) para o usuário executar
 <!-- brain:auto:start:conexoes -->
 - 🗺️ [[MOC - Regras]]
 - 📄 PRDs: [[prd-24-codelens-integration|PRD-24]]
+- 🎯 Requisitos: [[prd-24-codelens-integration|PRD-24 RF2]] · [[prd-24-codelens-integration|PRD-24 RF3]]
 <!-- brain:auto:end -->

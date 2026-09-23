@@ -3,10 +3,11 @@ import assert from 'node:assert';
 import { test } from 'node:test';
 
 // Testa o script scripts/brain-rules.cjs (validador das regras do vault).
-const { checkRules, checkLayers, parseFrontmatter } =
+const { checkRules, checkLayers, checkRequisitos, parseFrontmatter } =
   require('../../../scripts/brain-rules.cjs') as {
     checkRules: (o?: Record<string, unknown>) => string[];
     checkLayers: (notes: { name: string; content: string }[]) => string[];
+    checkRequisitos: (notes: { name: string; content: string }[]) => string[];
     parseFrontmatter: (t: string) => Record<string, unknown> | null;
     listRuleFiles: () => { name: string; content: string }[];
   };
@@ -129,6 +130,21 @@ test('brain-rules: checkLayers detecta id inválido e duplicado', () => {
       p.includes('id duplicado'),
     ),
   );
+});
+
+// ── requisitos (RF/RNF) ────────────────────────────────────────────────
+
+test('brain-rules: checkRequisitos valida PRD e RF/RNF', () => {
+  const prd = {
+    name: '20-PRDs/prd-74-x.md',
+    content: '---\ntipo: prd\nid: PRD-74\n---\n\n### RF1 — Wrapper\n',
+  };
+  const ok = { name: 'r.md', content: '---\nrequisitos: ["PRD-74/RF1"]\n---\n' };
+  assert.deepStrictEqual(checkRequisitos([prd, ok]), []);
+  const badPrd = { name: 'r.md', content: '---\nrequisitos: ["PRD-99/RF1"]\n---\n' };
+  assert.ok(checkRequisitos([prd, badPrd]).some((p) => p.includes('PRD inexistente')));
+  const badRf = { name: 'r.md', content: '---\nrequisitos: ["PRD-74/RF9"]\n---\n' };
+  assert.ok(checkRequisitos([prd, badRf]).some((p) => p.includes('requisito inexistente')));
 });
 
 // ── --check-lines ──────────────────────────────────────────────────────

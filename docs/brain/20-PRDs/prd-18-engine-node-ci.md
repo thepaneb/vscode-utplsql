@@ -122,4 +122,5 @@ Nenhuma nova setting.
 <!-- brain:auto:start:conexoes -->
 - 🗺️ [[MOC - PRDs]]
 - ⚙️ Pipelines: [[PIPE-ci - CI|PIPE-ci]]
+- 🎯 RNF1 — CI deve continuar passando para todas as versões na matrix após a muda → [[NFR-002 - Compatibilidade com Node|NFR-002]]
 <!-- brain:auto:end -->

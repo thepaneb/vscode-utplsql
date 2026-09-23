@@ -288,5 +288,7 @@ ao Test Explorer via `message.location`.
 <!-- brain:auto:start:conexoes -->
 - 🗺️ [[MOC - PRDs]]
 - 🔗 PRDs relacionados: [[prd-26-inline-test-decorations|PRD-26]]
+- 🎯 RF1 — Parse de stack trace no JUnit XML → [[BR-PARSE-012 - Stack trace - regex quoted-unquoted e filtro de frames do framework|BR-PARSE-012]] · [[BR-PARSE-014 - message.location só é definida para failed-error com frame de usuário resolvido|BR-PARSE-014]]
+- 🎯 RF5 — Filtro de frames internos → [[BR-PARSE-012 - Stack trace - regex quoted-unquoted e filtro de frames do framework|BR-PARSE-012]]
 - 📐 Regras: [[BR-PARSE-011 - Precedência de status JUnit failure - error - skipped - passed|BR-PARSE-011]] · [[BR-PARSE-012 - Stack trace - regex quoted-unquoted e filtro de frames do framework|BR-PARSE-012]] · [[BR-PARSE-014 - message.location só é definida para failed-error com frame de usuário resolvido|BR-PARSE-014]]
 <!-- brain:auto:end -->

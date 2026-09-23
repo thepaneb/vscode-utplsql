@@ -10,6 +10,7 @@ verificado: 2026-09-23
 implementacao: ["src/oracleRunner.ts:149", "src/oracleRunner.ts:151", "src/oracleRunner.ts:163", "src/oracleRunner.ts:165"]
 testes: ["src/test/unit/oracleRunner.test.ts:537", "src/test/unit/oracleRunner.test.ts:569"]
 prds: ["PRD-38"]
+requisitos: ["PRD-38/RF3"]
 tags: ["execucao"]
 ---
 ## Enunciado
@@ -33,4 +34,5 @@ Sem o close, a conexão do pool fica presa até expirar, esgotando o pool em exe
 <!-- brain:auto:start:conexoes -->
 - 🗺️ [[MOC - Regras]]
 - 📄 PRDs: [[prd-38-connection-pooling|PRD-38]]
+- 🎯 Requisitos: [[prd-38-connection-pooling|PRD-38 RF3]]
 <!-- brain:auto:end -->

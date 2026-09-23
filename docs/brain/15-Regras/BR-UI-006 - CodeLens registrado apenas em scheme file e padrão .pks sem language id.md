@@ -10,6 +10,7 @@ verificado: 2026-09-23
 implementacao: ["src/extension.ts:85", "package.json:672"]
 testes: ["src/test/unit/codelens.test.ts"]
 prds: ["PRD-24"]
+requisitos: ["PRD-24/RF1"]
 tags: ["ui", "codelens"]
 ---
 ## Enunciado
@@ -33,4 +34,5 @@ Registrar por language impediria o provider de casar em ambientes cujo ID de lin
 <!-- brain:auto:start:conexoes -->
 - 🗺️ [[MOC - Regras]]
 - 📄 PRDs: [[prd-24-codelens-integration|PRD-24]]
+- 🎯 Requisitos: [[prd-24-codelens-integration|PRD-24 RF1]]
 <!-- brain:auto:end -->

@@ -10,6 +10,7 @@ verificado: 2026-09-23
 implementacao: ["src/oracleRunner.ts:727", "src/oracleRunner.ts:734", "src/oracleRunner.ts:741", "src/oracleRunner.ts:753"]
 testes: ["src/test/unit/oracleRunner.test.ts:1790", "src/test/unit/oracleRunner.test.ts:1869"]
 prds: ["PRD-11"]
+requisitos: ["PRD-11/RF3"]
 tags: ["execucao"]
 ---
 ## Enunciado
@@ -33,4 +34,5 @@ Streaming em tempo real sem bloquear; falhas transitórias do buffer não aborta
 <!-- brain:auto:start:conexoes -->
 - 🗺️ [[MOC - Regras]]
 - 📄 PRDs: [[prd-11-streaming-results|PRD-11]]
+- 🎯 Requisitos: [[prd-11-streaming-results|PRD-11 RF3]]
 <!-- brain:auto:end -->

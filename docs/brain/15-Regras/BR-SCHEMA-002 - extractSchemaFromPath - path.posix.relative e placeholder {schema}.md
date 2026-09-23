@@ -10,6 +10,7 @@ verificado: 2026-09-23
 implementacao: ["src/discovery.ts:100", "src/discovery.ts:111", "src/discovery.ts:116", "src/discovery.ts:123", "src/testTree.ts:76"]
 testes: ["src/test/unit/discovery.test.ts"]
 prds: ["PRD-30", "PRD-43"]
+requisitos: ["PRD-30/RF1"]
 tags: ["schema"]
 ---
 ## Enunciado
@@ -33,4 +34,5 @@ Cross-platform (Windows/WSL) e o {schema} delimita a captura; sem placeholder n�
 <!-- brain:auto:start:conexoes -->
 - 🗺️ [[MOC - Regras]]
 - 📄 PRDs: [[prd-30-schema-aware-organization|PRD-30]] · [[prd-43-schema-db-discovery|PRD-43]]
+- 🎯 Requisitos: [[prd-30-schema-aware-organization|PRD-30 RF1]]
 <!-- brain:auto:end -->

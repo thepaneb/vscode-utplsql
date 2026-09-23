@@ -10,6 +10,7 @@ verificado: 2026-09-23
 implementacao: ["src/quickfix.ts:28", "src/quickfix.ts:35", "src/quickfix.ts:133", "src/quickfix.ts:139", "src/quickfix.ts:150", "src/quickfix.ts:304", "src/extension.ts:109"]
 testes: ["src/test/unit/quickfix.test.ts", "src/test/unit/quickfixActivation.test.ts"]
 prds: ["PRD-32"]
+requisitos: ["PRD-32/RF1", "PRD-32/RF4"]
 tags: ["diagnostico"]
 ---
 ## Enunciado
@@ -33,5 +34,6 @@ Isola problemas de configuração dos problemas do código do usuário e evita q
 <!-- brain:auto:start:conexoes -->
 - 🗺️ [[MOC - Regras]]
 - 📄 PRDs: [[prd-32-quickfix-setup-diagnostics|PRD-32]]
+- 🎯 Requisitos: [[prd-32-quickfix-setup-diagnostics|PRD-32 RF1]] · [[prd-32-quickfix-setup-diagnostics|PRD-32 RF4]]
 - ↩️ Referenciada por: [[ERR-006 - UTPLSQL_INVALID_OBJECTS — objetos UT3 inválidos no banco|ERR-006]] · [[SEC-010 - Fluxos não interativos nunca abrem prompt de conexão|SEC-010]]
 <!-- brain:auto:end -->

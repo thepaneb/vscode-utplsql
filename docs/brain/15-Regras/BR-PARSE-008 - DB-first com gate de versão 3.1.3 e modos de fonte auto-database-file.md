@@ -10,6 +10,7 @@ verificado: 2026-09-23
 implementacao: ["src/discovery.ts:219", "src/discovery.ts:220", "src/discovery.ts:409", "src/discovery.ts:410", "src/discovery.ts:412", "src/discovery.ts:413", "src/discovery.ts:415", "src/discovery.ts:416", "src/testTree.ts:183"]
 testes: ["src/test/unit/discovery.test.ts", "src/test/unit/testTree.test.ts"]
 prds: ["PRD-74"]
+requisitos: ["PRD-74/RF4", "PRD-74/RF5"]
 tags: ["descoberta"]
 ---
 ## Enunciado
@@ -33,5 +34,6 @@ Garante compatibilidade com versões antigas do framework e dá controle explíc
 <!-- brain:auto:start:conexoes -->
 - 🗺️ [[MOC - Regras]]
 - 📄 PRDs: [[prd-74-db-first-discovery|PRD-74]]
+- 🎯 Requisitos: [[prd-74-db-first-discovery|PRD-74 RF4]] · [[prd-74-db-first-discovery|PRD-74 RF5]]
 - ↩️ Referenciada por: [[ERR-002 - UTPLSQL_OLD_VERSION — versão do utPLSQL abaixo do mínimo|ERR-002]] · [[ERR-011 - Fonte de package truncada (-10.000 linhas)|ERR-011]]
 <!-- brain:auto:end -->

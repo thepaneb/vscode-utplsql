@@ -10,6 +10,7 @@ verificado: 2026-09-23
 implementacao: ["src/runner.ts:202", "src/config.ts:119", "src/viewCoverage.ts:93", "src/viewCoverage.ts:122", "src/viewCoverage.ts:31"]
 testes: ["src/test/unit/viewCoverage.test.ts", "src/test/unit/config.test.ts", "src/test/unit/runner.test.ts"]
 prds: ["PRD-12"]
+requisitos: ["PRD-12/RF2"]
 tags: ["cobertura"]
 ---
 ## Enunciado
@@ -33,5 +34,6 @@ V$SQL pode ser negado por grants e não deve comprometer o run de testes; o matc
 <!-- brain:auto:start:conexoes -->
 - 🗺️ [[MOC - Regras]]
 - 📄 PRDs: [[prd-12-sql-coverage|PRD-12]]
+- 🎯 Requisitos: [[prd-12-sql-coverage|PRD-12 RF2]]
 - ↩️ Referenciada por: [[ERR-009 - V$SQL negado — cobertura de views indisponível|ERR-009]] · [[SEC-009 - Grants são copiados para o clipboard, nunca executados automaticamente|SEC-009]]
 <!-- brain:auto:end -->

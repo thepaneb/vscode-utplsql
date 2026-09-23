@@ -10,6 +10,7 @@ verificado: 2026-09-23
 implementacao: ["src/oracleRunner.ts:716", "src/oracleRunner.ts:717", "src/oracleRunner.ts:719", "src/oracleRunner.ts:720", "src/oracleRunner.ts:723"]
 testes: ["src/test/unit/oracleRunner.test.ts:1524"]
 prds: ["PRD-05"]
+requisitos: ["PRD-05/RF3"]
 tags: ["execucao"]
 ---
 ## Enunciado
@@ -33,4 +34,5 @@ Evita run pendurado sem depender de cancelamento manual, reaproveitando a mesma 
 <!-- brain:auto:start:conexoes -->
 - 🗺️ [[MOC - Regras]]
 - 📄 PRDs: [[prd-05-progress-cancel|PRD-05]]
+- 🎯 Requisitos: [[prd-05-progress-cancel|PRD-05 RF3]]
 <!-- brain:auto:end -->

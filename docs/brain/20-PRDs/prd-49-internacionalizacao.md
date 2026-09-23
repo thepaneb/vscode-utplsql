@@ -214,5 +214,10 @@ Atualizar: README (tabela de config), wiki `Configurações.md`.
 
 <!-- brain:auto:start:conexoes -->
 - 🗺️ [[MOC - PRDs]]
+- 🎯 RF1 — Setting `utplsql.language` → [[BR-CONN-015 - Idioma efetivo - setting válida vence o idioma do editor|BR-CONN-015]]
+- 🎯 RF2 — Módulo i18n puro (`src/i18n.ts`) → [[BR-I18N-001 - Resolução de locale e fallback de tradução|BR-I18N-001]]
+- 🎯 RNF1 — Zero mudança de comportamento observável no default (`auto` em → [[NFR-006 - Internacionalização|NFR-006]]
+- 🎯 RNF2 — Módulo i18n puro (testável com `node --test`) → [[NFR-006 - Internacionalização|NFR-006]]
+- 🎯 RNF3 — Auditoria: teste/script que garante que os dois catálogos têm as → [[NFR-006 - Internacionalização|NFR-006]]
 - 📐 Regras: [[BR-CONN-015 - Idioma efetivo - setting válida vence o idioma do editor|BR-CONN-015]] · [[BR-I18N-001 - Resolução de locale e fallback de tradução|BR-I18N-001]]
 <!-- brain:auto:end -->

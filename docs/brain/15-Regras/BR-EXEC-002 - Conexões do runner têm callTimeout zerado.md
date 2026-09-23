@@ -10,6 +10,7 @@ verificado: 2026-09-23
 implementacao: ["src/oracleRunner.ts:154", "src/oracleRunner.ts:155"]
 testes: ["src/test/unit/oracleRunner.test.ts:522"]
 prds: ["PRD-38"]
+requisitos: ["PRD-38/RF3"]
 tags: ["execucao"]
 ---
 ## Enunciado
@@ -33,4 +34,5 @@ O runner pode rodar por minutos; um callTimeout herdado derrubaria o run antes d
 <!-- brain:auto:start:conexoes -->
 - 🗺️ [[MOC - Regras]]
 - 📄 PRDs: [[prd-38-connection-pooling|PRD-38]]
+- 🎯 Requisitos: [[prd-38-connection-pooling|PRD-38 RF3]]
 <!-- brain:auto:end -->

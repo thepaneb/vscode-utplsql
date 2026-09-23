@@ -10,6 +10,7 @@ verificado: 2026-09-23
 implementacao: ["src/config.ts:80", "src/i18n.ts:117", "src/i18n.ts:144"]
 testes: ["src/test/unit/i18n.test.ts"]
 prds: ["PRD-49"]
+requisitos: ["PRD-49/RF1"]
 tags: ["conexao", "i18n"]
 ---
 ## Enunciado
@@ -33,4 +34,5 @@ Localizar mensagens do domínio de conexão/configuração de forma consistente 
 <!-- brain:auto:start:conexoes -->
 - 🗺️ [[MOC - Regras]]
 - 📄 PRDs: [[prd-49-internacionalizacao|PRD-49]]
+- 🎯 Requisitos: [[prd-49-internacionalizacao|PRD-49 RF1]]
 <!-- brain:auto:end -->

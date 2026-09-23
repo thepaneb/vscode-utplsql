@@ -10,6 +10,7 @@ verificado: 2026-09-23
 implementacao: ["src/oracleRunner.ts:792", "src/oracleRunner.ts:798", "package.json:666"]
 testes: ["src/test/unit/oracleRunner.test.ts", "src/test/unit/runner.test.ts"]
 prds: ["PRD-31"]
+requisitos: ["PRD-27/RF4", "PRD-31/RF4"]
 tags: ["ui"]
 ---
 ## Enunciado
@@ -33,4 +34,5 @@ O comando/keybinding utplsql.runFailed só aparece quando há falhas da última 
 <!-- brain:auto:start:conexoes -->
 - 🗺️ [[MOC - Regras]]
 - 📄 PRDs: [[prd-31-smart-rerun-patterns|PRD-31]]
+- 🎯 Requisitos: [[prd-27-default-keybindings|PRD-27 RF4]] · [[prd-31-smart-rerun-patterns|PRD-31 RF4]]
 <!-- brain:auto:end -->

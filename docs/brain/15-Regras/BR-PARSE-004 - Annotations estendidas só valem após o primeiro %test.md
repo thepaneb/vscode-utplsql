@@ -10,6 +10,7 @@ verificado: 2026-09-23
 implementacao: ["src/suiteParser.ts:95", "src/suiteParser.ts:96", "src/suiteParser.ts:118", "src/suiteParser.ts:119"]
 testes: ["src/test/unit/suiteParser.test.ts", "src/test/unit/discovery.test.ts"]
 prds: ["PRD-42"]
+requisitos: ["PRD-42/RF1"]
 tags: ["parser"]
 ---
 ## Enunciado
@@ -33,4 +34,5 @@ Retrocompatibilidade do PRD-42: a mesma annotation tem semântica posicional dif
 <!-- brain:auto:start:conexoes -->
 - 🗺️ [[MOC - Regras]]
 - 📄 PRDs: [[prd-42-suiteparser-annotations|PRD-42]]
+- 🎯 Requisitos: [[prd-42-suiteparser-annotations|PRD-42 RF1]]
 <!-- brain:auto:end -->

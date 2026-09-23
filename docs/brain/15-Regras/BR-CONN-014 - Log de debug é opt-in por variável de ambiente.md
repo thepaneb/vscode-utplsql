@@ -10,6 +10,7 @@ verificado: 2026-09-23
 implementacao: ["src/logger.ts:6", "src/logger.ts:12"]
 testes: ["src/test/unit/logger.test.ts"]
 prds: ["PRD-66"]
+requisitos: ["PRD-66/RF1"]
 tags: ["conexao"]
 ---
 ## Enunciado
@@ -33,5 +34,6 @@ Diagnóstico acionável sob demanda (PRD-66 RF1) sem poluir o output do usuário
 <!-- brain:auto:start:conexoes -->
 - 🗺️ [[MOC - Regras]]
 - 📄 PRDs: [[prd-66-connection-robustness-logging|PRD-66]]
+- 🎯 Requisitos: [[prd-66-connection-robustness-logging|PRD-66 RF1]]
 - ↩️ Referenciada por: [[SEC-008 - Log de debug é opt-in e não registra credenciais|SEC-008]]
 <!-- brain:auto:end -->

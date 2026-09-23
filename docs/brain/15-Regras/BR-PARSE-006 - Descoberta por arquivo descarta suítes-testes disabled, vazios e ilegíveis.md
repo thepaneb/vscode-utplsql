@@ -10,6 +10,7 @@ verificado: 2026-09-23
 implementacao: ["src/discovery.ts:65", "src/discovery.ts:73", "src/discovery.ts:74", "src/discovery.ts:80", "src/discovery.ts:82"]
 testes: ["src/test/unit/discovery.test.ts"]
 prds: ["PRD-42"]
+requisitos: ["PRD-42/RF1"]
 tags: ["descoberta"]
 ---
 ## Enunciado
@@ -33,4 +34,5 @@ Mantém o Test Explorer alinhado ao que será realmente executado e impede que e
 <!-- brain:auto:start:conexoes -->
 - 🗺️ [[MOC - Regras]]
 - 📄 PRDs: [[prd-42-suiteparser-annotations|PRD-42]]
+- 🎯 Requisitos: [[prd-42-suiteparser-annotations|PRD-42 RF1]]
 <!-- brain:auto:end -->

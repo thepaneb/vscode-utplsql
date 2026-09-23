@@ -248,5 +248,7 @@ await conn1.execute(plsql, binds, { autoCommit: true });
 <!-- brain:auto:start:conexoes -->
 - 🗺️ [[MOC - PRDs]]
 - 🔗 PRDs relacionados: [[prd-51-run-by-tag|PRD-51]] · [[prd-55-tag-organization|PRD-55]]
+- 🎯 RF1 — Binds tipados para coleções → [[BR-EXEC-012 - Binds tipados - nenhum valor de usuário concatenado no PL-SQL|BR-EXEC-012]]
+- 🎯 RF3 — Validação de reporters adicionais → [[BR-EXEC-013 - Reporter de cobertura só entra se existir no banco|BR-EXEC-013]] · [[BR-EXEC-014 - Reporters adicionais são validados e sanitizados antes do PL-SQL|BR-EXEC-014]]
 - 📐 Regras: [[BR-EXEC-012 - Binds tipados - nenhum valor de usuário concatenado no PL-SQL|BR-EXEC-012]] · [[BR-EXEC-013 - Reporter de cobertura só entra se existir no banco|BR-EXEC-013]] · [[BR-EXEC-014 - Reporters adicionais são validados e sanitizados antes do PL-SQL|BR-EXEC-014]]
 <!-- brain:auto:end -->

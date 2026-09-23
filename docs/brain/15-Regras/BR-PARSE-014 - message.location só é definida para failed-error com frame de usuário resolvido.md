@@ -10,6 +10,7 @@ verificado: 2026-09-23
 implementacao: ["src/results.ts:55", "src/results.ts:58", "src/results.ts:61", "src/results.ts:64", "src/results.ts:76", "src/results.ts:78", "src/results.ts:121", "src/results.ts:124", "src/results.ts:130", "src/results.ts:133"]
 testes: ["src/test/unit/results.test.ts"]
 prds: ["PRD-29"]
+requisitos: ["PRD-29/RF1"]
 tags: ["resultados"]
 ---
 ## Enunciado
@@ -33,4 +34,5 @@ Habilita o Go to Error nativo do VSCode apenas quando há local confiável, sem 
 <!-- brain:auto:start:conexoes -->
 - 🗺️ [[MOC - Regras]]
 - 📄 PRDs: [[prd-29-jump-to-failing-assertion|PRD-29]]
+- 🎯 Requisitos: [[prd-29-jump-to-failing-assertion|PRD-29 RF1]]
 <!-- brain:auto:end -->

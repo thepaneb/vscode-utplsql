@@ -10,6 +10,7 @@ verificado: 2026-09-23
 implementacao: ["src/testTree.ts:158", "src/testTree.ts:164", "src/testTree.ts:166"]
 testes: ["src/test/unit/testTree.test.ts"]
 prds: ["PRD-30"]
+requisitos: ["PRD-30/RF4"]
 tags: ["schema"]
 ---
 ## Enunciado
@@ -33,4 +34,5 @@ Evita varrer a árvore a cada run e cobre a profundidade máxima do modo schema.
 <!-- brain:auto:start:conexoes -->
 - 🗺️ [[MOC - Regras]]
 - 📄 PRDs: [[prd-30-schema-aware-organization|PRD-30]]
+- 🎯 Requisitos: [[prd-30-schema-aware-organization|PRD-30 RF4]]
 <!-- brain:auto:end -->

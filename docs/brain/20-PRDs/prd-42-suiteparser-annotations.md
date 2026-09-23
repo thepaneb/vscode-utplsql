@@ -196,5 +196,9 @@ reexpor em follow-up.
 
 <!-- brain:auto:start:conexoes -->
 - 🗺️ [[MOC - PRDs]]
+- 🎯 RF1 — `%disabled` → [[BR-PARSE-004 - Annotations estendidas só valem após o primeiro %test|BR-PARSE-004]] · [[BR-PARSE-006 - Descoberta por arquivo descarta suítes-testes disabled, vazios e ilegíveis|BR-PARSE-006]]
+- 🎯 RF2 — `%throws` → [[BR-PARSE-005 - Normalização de %throws, %tags e %displayname|BR-PARSE-005]]
+- 🎯 RF3 — `%tags` → [[BR-PARSE-005 - Normalização de %throws, %tags e %displayname|BR-PARSE-005]]
+- 🎯 RF4 — `%displayname` → [[BR-PARSE-005 - Normalização de %throws, %tags e %displayname|BR-PARSE-005]]
 - 📐 Regras: [[BR-PARSE-001 - Arquivo só é suite utPLSQL se tiver %suite E CREATE PACKAGE|BR-PARSE-001]] · [[BR-PARSE-002 - RE_PACKAGE aceita schema qualificado, BODY e identificador entre aspas|BR-PARSE-002]] · [[BR-PARSE-003 - %test só materializa teste quando seguido de PROCEDURE; órfão é sobrescrito|BR-PARSE-003]] · [[BR-PARSE-004 - Annotations estendidas só valem após o primeiro %test|BR-PARSE-004]] · [[BR-PARSE-005 - Normalização de %throws, %tags e %displayname|BR-PARSE-005]] · [[BR-PARSE-006 - Descoberta por arquivo descarta suítes-testes disabled, vazios e ilegíveis|BR-PARSE-006]]
 <!-- brain:auto:end -->

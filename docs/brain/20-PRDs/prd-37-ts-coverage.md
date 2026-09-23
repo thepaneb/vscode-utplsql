@@ -215,4 +215,5 @@ Nenhuma setting de extensão — ferramenta de desenvolvimento apenas.
 <!-- brain:auto:start:conexoes -->
 - 🗺️ [[MOC - PRDs]]
 - 🔗 PRDs relacionados: [[prd-20-cleanup-deps-config|PRD-20]]
+- 🎯 RF1 — Script `test:coverage` → [[NFR-007 - Cobertura de testes TypeScript|NFR-007]]
 <!-- brain:auto:end -->

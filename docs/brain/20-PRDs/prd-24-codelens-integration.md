@@ -308,5 +308,8 @@ context.subscriptions.push(
 <!-- brain:auto:start:conexoes -->
 - 🗺️ [[MOC - PRDs]]
 - 🔗 PRDs relacionados: [[prd-26-inline-test-decorations|PRD-26]] · [[prd-29-jump-to-failing-assertion|PRD-29]] · [[prd-33-plsql-debugger-integration|PRD-33]]
+- 🎯 RF1 — CodeLens provider registrado → [[BR-UI-006 - CodeLens registrado apenas em scheme file e padrão .pks sem language id|BR-UI-006]]
+- 🎯 RF2 — CodeLens para `%suite` → [[BR-PARSE-015 - CodeLens gera dois lenses por annotation, na linha da annotation|BR-PARSE-015]]
+- 🎯 RF3 — CodeLens para `%test` → [[BR-PARSE-015 - CodeLens gera dois lenses por annotation, na linha da annotation|BR-PARSE-015]]
 - 📐 Regras: [[BR-PARSE-002 - RE_PACKAGE aceita schema qualificado, BODY e identificador entre aspas|BR-PARSE-002]] · [[BR-PARSE-015 - CodeLens gera dois lenses por annotation, na linha da annotation|BR-PARSE-015]] · [[BR-UI-006 - CodeLens registrado apenas em scheme file e padrão .pks sem language id|BR-UI-006]]
 <!-- brain:auto:end -->

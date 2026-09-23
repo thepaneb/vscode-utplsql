@@ -10,6 +10,7 @@ verificado: 2026-09-23
 implementacao: ["src/connectionProfiles.ts:218", "src/connectionProfiles.ts:226", "src/config.ts:160"]
 testes: ["src/test/unit/connectionProfiles.test.ts", "src/test/unit/config.test.ts"]
 prds: ["PRD-34"]
+requisitos: ["PRD-34/RF1"]
 tags: ["conexao"]
 ---
 ## Enunciado
@@ -33,4 +34,5 @@ Permitir cenários por ambiente (DEV/TEST/PROD) sem duplicar toda a configuraç�
 <!-- brain:auto:start:conexoes -->
 - 🗺️ [[MOC - Regras]]
 - 📄 PRDs: [[prd-34-multi-connection-profiles|PRD-34]]
+- 🎯 Requisitos: [[prd-34-multi-connection-profiles|PRD-34 RF1]]
 <!-- brain:auto:end -->

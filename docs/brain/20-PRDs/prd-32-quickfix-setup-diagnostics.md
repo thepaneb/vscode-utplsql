@@ -322,5 +322,9 @@ falhar, o próprio módulo já reporta — o quickfix só encapsula em diagnosti
 <!-- brain:auto:start:conexoes -->
 - 🗺️ [[MOC - PRDs]]
 - 🔗 PRDs relacionados: [[prd-09-cli-info|PRD-09]] · [[prd-28-plsql-compilation-diagnostics|PRD-28]]
+- 🎯 RF1 — Validação na ativação da extensão → [[BR-UI-007 - Diagnósticos de setup e quick-fixes restritos ao source utPLSQL Setup|BR-UI-007]]
+- 🎯 RF3 — Detecção de grants faltando → [[BR-COB-001 - Cobertura Oracle exige GRANT EXECUTE ON SYS.DBMS_PROFILER|BR-COB-001]]
+- 🎯 RF4 — Code Actions (quick-fix) → [[BR-UI-007 - Diagnósticos de setup e quick-fixes restritos ao source utPLSQL Setup|BR-UI-007]]
+- 🎯 RF5 — Comandos auxiliares → [[BR-COB-001 - Cobertura Oracle exige GRANT EXECUTE ON SYS.DBMS_PROFILER|BR-COB-001]]
 - 📐 Regras: [[BR-COB-001 - Cobertura Oracle exige GRANT EXECUTE ON SYS.DBMS_PROFILER|BR-COB-001]] · [[BR-UI-007 - Diagnósticos de setup e quick-fixes restritos ao source utPLSQL Setup|BR-UI-007]]
 <!-- brain:auto:end -->

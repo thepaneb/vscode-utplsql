@@ -10,6 +10,7 @@ verificado: 2026-09-23
 implementacao: ["src/oracleRunner.ts:170", "src/oracleRunner.ts:179", "src/oracleRunner.ts:185", "src/oracleRunner.ts:191"]
 testes: ["src/test/unit/oracleRunner.test.ts:670", "src/test/unit/oracleRunner.test.ts:678", "src/test/integration/oracleCapabilities.test.ts:56"]
 prds: ["PRD-43", "PRD-64"]
+requisitos: ["PRD-11/RF3"]
 tags: ["execucao"]
 ---
 ## Enunciado
@@ -33,4 +34,5 @@ Suporta install próprio (prefixo vazio, resolve pelo schema atual) e shared ins
 <!-- brain:auto:start:conexoes -->
 - 🗺️ [[MOC - Regras]]
 - 📄 PRDs: [[prd-43-schema-db-discovery|PRD-43]] · [[prd-64-oracle-only-migration|PRD-64]]
+- 🎯 Requisitos: [[prd-11-streaming-results|PRD-11 RF3]]
 <!-- brain:auto:end -->

@@ -9,6 +9,7 @@ implementacao: []
 testes: []
 regras: []
 relacionado: ["[[ADR-007 - i18n via package.nls com 23 locales]]", "[[MOC - I18n]]"]
+requisitos: ["PRD-49/RNF1", "PRD-49/RNF2", "PRD-49/RNF3"]
 tags: ["i18n"]
 ---
 ## Requisito
@@ -28,5 +29,6 @@ Alcance internacional da extensão.
 
 <!-- brain:auto:start:conexoes -->
 - 🗺️ [[MOC - NFR]]
+- 🎯 Requisitos: [[prd-49-internacionalizacao|PRD-49 RNF1]] · [[prd-49-internacionalizacao|PRD-49 RNF2]] · [[prd-49-internacionalizacao|PRD-49 RNF3]]
 - 🔗 [[ADR-007 - i18n via package.nls com 23 locales]] · [[MOC - I18n]]
 <!-- brain:auto:end -->

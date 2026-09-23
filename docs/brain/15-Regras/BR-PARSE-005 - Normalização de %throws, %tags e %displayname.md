@@ -10,6 +10,7 @@ verificado: 2026-09-23
 implementacao: ["src/suiteParser.ts:102", "src/suiteParser.ts:107", "src/suiteParser.ts:108", "src/suiteParser.ts:113", "src/suiteParser.ts:115"]
 testes: ["src/test/unit/suiteParser.test.ts"]
 prds: ["PRD-42"]
+requisitos: ["PRD-42/RF2", "PRD-42/RF3", "PRD-42/RF4"]
 tags: ["parser"]
 ---
 ## Enunciado
@@ -33,4 +34,5 @@ O código de erro do Oracle pode ser declarado positivo ou negativo e tags/displ
 <!-- brain:auto:start:conexoes -->
 - 🗺️ [[MOC - Regras]]
 - 📄 PRDs: [[prd-42-suiteparser-annotations|PRD-42]]
+- 🎯 Requisitos: [[prd-42-suiteparser-annotations|PRD-42 RF2]] · [[prd-42-suiteparser-annotations|PRD-42 RF3]] · [[prd-42-suiteparser-annotations|PRD-42 RF4]]
 <!-- brain:auto:end -->

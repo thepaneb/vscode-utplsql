@@ -10,6 +10,7 @@ verificado: 2026-09-23
 implementacao: ["src/oracleClient.ts:34", "src/oracleClient.ts:81"]
 testes: ["src/test/unit/oracleClient.test.ts"]
 prds: ["PRD-70"]
+requisitos: ["PRD-70/RF2"]
 tags: ["conexao"]
 ---
 ## Enunciado
@@ -33,5 +34,6 @@ O thick só é necessário para bancos com NNE e não pode ser reconfigurado em 
 <!-- brain:auto:start:conexoes -->
 - 🗺️ [[MOC - Regras]]
 - 📄 PRDs: [[prd-70-thick-mode-nne|PRD-70]]
+- 🎯 Requisitos: [[prd-70-thick-mode-nne|PRD-70 RF2]]
 - ↩️ Referenciada por: [[ERR-004 - UTPLSQL_THICK_MODE — falha ao iniciar o modo thick (DPI-1047-NJS-090)|ERR-004]]
 <!-- brain:auto:end -->

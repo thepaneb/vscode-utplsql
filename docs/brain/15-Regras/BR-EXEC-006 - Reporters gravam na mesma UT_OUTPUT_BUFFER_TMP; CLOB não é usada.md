@@ -10,6 +10,7 @@ verificado: 2026-09-23
 implementacao: ["src/oracleRunner.ts:525", "src/oracleRunner.ts:735"]
 testes: ["src/test/integration/dbPaths.test.ts", "src/test/integration/v012-features.test.ts"]
 prds: ["PRD-11"]
+requisitos: ["PRD-11/RF3"]
 tags: ["execucao"]
 ---
 ## Enunciado
@@ -33,4 +34,5 @@ A extensão consome um único stream misto (doc + JUnit + cobertura) da tabela V
 <!-- brain:auto:start:conexoes -->
 - 🗺️ [[MOC - Regras]]
 - 📄 PRDs: [[prd-11-streaming-results|PRD-11]]
+- 🎯 Requisitos: [[prd-11-streaming-results|PRD-11 RF3]]
 <!-- brain:auto:end -->

@@ -370,6 +370,25 @@ function reverseIndex() {
   return rev;
 }
 
+let REQ = null;
+/** Índice reverso: `PRD-NN/RFn` ou `PRD-NN/RNFn` → basenames que o implementam. */
+function requisitosIndex() {
+  if (REQ) return REQ;
+  const idx = new Map();
+  for (const file of vaultNotes()) {
+    if (isTemplate(file)) continue;
+    const fm = parseFm(fs.readFileSync(file, 'utf8'));
+    const base = path.basename(file, '.md');
+    for (const r of Array.isArray(fm.requisitos) ? fm.requisitos : []) {
+      const key = String(r).trim();
+      if (!idx.has(key)) idx.set(key, new Set());
+      idx.get(key).add(base);
+    }
+  }
+  REQ = idx;
+  return idx;
+}
+
 function mocOf(notePath) {
   const dir = path.dirname(notePath);
   const moc = fs.readdirSync(dir).find((n) => /^MOC - .*\.md$/.test(n));
@@ -400,6 +419,17 @@ function genConexoes(notePath) {
   }
   if (Array.isArray(fm.depende) && fm.depende.length) {
     lines.push(`- 📦 Depende de: ${fm.depende.map((d) => link(d, ids)).join(' · ')}`);
+  }
+  // Requisitos (RF/RNF da PRD) que esta nota implementa.
+  if (Array.isArray(fm.requisitos) && fm.requisitos.length) {
+    const links = fm.requisitos
+      .map((r) => {
+        const [pid, rid] = String(r).trim().split('/');
+        const target = ids.get(pid);
+        return target ? `[[${target}|${pid} ${rid || ''}]]`.trim() : `\`${r}\``;
+      })
+      .join(' · ');
+    lines.push(`- 🎯 Requisitos: ${links}`);
   }
   if (Array.isArray(fm.relacionado) && fm.relacionado.length) {
     lines.push(`- 🔗 ${fm.relacionado.map((r) => String(r).trim()).join(' · ')}`);
@@ -438,6 +468,24 @@ function genConexoes(notePath) {
         const links = siblings.map((p) => wl(p.file.replace(/\.md$/, ''), p.id)).join(' · ');
         lines.push(`- 🔗 Mesma versão (${fm.versao_titulo.split(' — ')[0]}): ${links}`);
       }
+    }
+    // Requisitos (RF/RNF) → notas que os implementam.
+    const reqIdx = requisitosIndex();
+    const reqItems = [];
+    for (const m of body.matchAll(/^#{3,4}\s+(RF\d+)\s*[—–-]\s*(.+)$/gm)) {
+      reqItems.push([m[1], m[2].trim()]);
+    }
+    for (const m of body.matchAll(/^[-*]\s+(RNF\d+)\s*[—–-]\s*(.+)$/gm)) {
+      reqItems.push([m[1], m[2].trim()]);
+    }
+    for (const [rid, title] of reqItems) {
+      const refs = reqIdx.get(`${fm.id}/${rid}`);
+      if (!refs || !refs.size) continue;
+      const links = [...refs]
+        .sort()
+        .map((b) => wl(b, bases.get(b) || b))
+        .join(' · ');
+      lines.push(`- 🎯 ${rid} — ${title.slice(0, 70)} → ${links}`);
     }
   }
   // Relação reversa explícita: notas que referenciam esta.

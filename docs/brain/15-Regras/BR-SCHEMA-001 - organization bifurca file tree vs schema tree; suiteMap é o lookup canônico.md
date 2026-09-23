@@ -10,6 +10,7 @@ verificado: 2026-09-23
 implementacao: ["src/testTree.ts:259", "src/testTree.ts:57", "src/testTree.ts:147", "src/state.ts:81", "src/commands/run.ts:122", "src/testTree.ts:183"]
 testes: ["src/test/unit/testTree.test.ts", "src/test/unit/state.test.ts"]
 prds: ["PRD-30"]
+requisitos: ["PRD-30/RF3", "PRD-30/RF4"]
 tags: ["schema"]
 ---
 ## Enunciado
@@ -33,4 +34,5 @@ No modo schema as suites ficam 3 níveis abaixo da raiz; comandos como runForUri
 <!-- brain:auto:start:conexoes -->
 - 🗺️ [[MOC - Regras]]
 - 📄 PRDs: [[prd-30-schema-aware-organization|PRD-30]]
+- 🎯 Requisitos: [[prd-30-schema-aware-organization|PRD-30 RF3]] · [[prd-30-schema-aware-organization|PRD-30 RF4]]
 <!-- brain:auto:end -->
