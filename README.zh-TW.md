@@ -46,6 +46,13 @@
 
 - [**utPLSQL**](https://github.com/utPLSQL/utPLSQL) **(UT3)** 已安裝到 Oracle 資料庫中。
 - 只需資料庫即可 — VSIX 已包含精簡版 `oracledb` 驅動程式（無需 Instant Client）。
+
+**Oracle / utPLSQL 相容性：**
+
+| Oracle | utPLSQL | 說明 |
+|---|---|---|
+| 18c+ | v3.2.x (18c+) / v3.1.x | 建議；charset 為 `AL32UTF8`。 |
+| 12.2 | 僅 v3.1.x | v3.2.x 無法編譯（`PLS-00222`）。映像的 `WE8DEC` 會遺失無法表示的字元（例如 `€`）；精簡驅動程式會忽略 `NLS_LANG`。 |
 - **VSCode 1.88+**（測試涵蓋率 API）。
 
 擴充功能只是「圖形化用戶端」— 真正執行測試的是資料庫，透過 node-oracledb 直連。

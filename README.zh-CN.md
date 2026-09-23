@@ -46,6 +46,13 @@
 
 - [**utPLSQL**](https://github.com/utPLSQL/utPLSQL) **(UT3)** 已安装到 Oracle 数据库中。
 - 只需数据库即可 — VSIX 已包含精简版 `oracledb` 驱动（无需 Instant Client）。
+
+**Oracle / utPLSQL 兼容性：**
+
+| Oracle | utPLSQL | 说明 |
+|---|---|---|
+| 18c+ | v3.2.x (18c+) / v3.1.x | 推荐；charset 为 `AL32UTF8`。 |
+| 12.2 | 仅 v3.1.x | v3.2.x 无法编译（`PLS-00222`）。镜像的 `WE8DEC` 会丢失无法表示的字符（例如 `€`）；精简驱动忽略 `NLS_LANG`。 |
 - **VSCode 1.88+**（测试覆盖率 API）。
 
 扩展只是"图形客户端" — 真正运行测试的是数据库，通过 node-oracledb 直连。

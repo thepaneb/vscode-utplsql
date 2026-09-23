@@ -46,6 +46,13 @@ A bővítmény kétféleképpen telepíthető:
 
 - [**utPLSQL**](https://github.com/utPLSQL/utPLSQL) **(UT3)** telepítve az Oracle adatbázisban.
 - Csak az adatbázis kell — a VSIX már tartalmazza a thin `oracledb` illesztőt (Instant Client nélkül).
+
+**Oracle / utPLSQL kompatibilitás:**
+
+| Oracle | utPLSQL | Megjegyzések |
+|---|---|---|
+| 18c+ | v3.2.x (18c+) / v3.1.x | Ajánlott; charset `AL32UTF8`. |
+| 12.2 | csak v3.1.x | A v3.2.x nem fordul (`PLS-00222`). A kép `WE8DEC`-je elveszíti a nem ábrázolható karaktereket (pl. `€`); a thin illesztő figyelmen kívül hagyja a `NLS_LANG`-ot. |
 - **VSCode 1.88+** (Test Coverage API).
 
 A bővítmény csupán a „grafikus kliens" — a teszteket ténylegesen az adatbázis futtatja közvetlenül a node-oracledb-n keresztül.

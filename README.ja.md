@@ -49,6 +49,13 @@
 
 この拡張機能は `node-oracledb` を使用して Oracle データベースに直接接続します（シンドライバー、Instant Client 不要）。VSIX には `oracledb` パッケージが同梱されています。
 
+**Oracle / utPLSQL の互換性:**
+
+| Oracle | utPLSQL | 備考 |
+|---|---|---|
+| 18c+ | v3.2.x (18c+) / v3.1.x | 推奨。charset は `AL32UTF8`。 |
+| 12.2 | v3.1.x のみ | v3.2.x はコンパイル不可（`PLS-00222`）。イメージの `WE8DEC` では表現できない文字（例: `€`）が失われます。thin ドライバは `NLS_LANG` を無視します。 |
+
 ## 接続
 
 テストを実行するには Oracle 接続文字列が必要です。解決は次の順序で行われます:

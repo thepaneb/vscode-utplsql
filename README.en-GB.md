@@ -93,6 +93,13 @@ keeps it only in memory during the session — use the command
 No temporary files, no waiting for the batch. Results appear in the
 Test Explorer **as each test finishes**. The VSIX already includes the thin `oracledb` driver (no Instant Client).
 
+**Oracle / utPLSQL compatibility:**
+
+| Oracle | utPLSQL | Notes |
+|---|---|---|
+| 18c+ | v3.2.x (18c+) / v3.1.x | Recommended; `AL32UTF8` character set. |
+| 12.2 | v3.1.x only | v3.2.x fails to compile (`PLS-00222`). The image's `WE8DEC` character set loses non-representable characters (e.g. `€`); the thin driver ignores `NLS_LANG`. |
+
 ## Configuration
 
 | Setting | Default | Description |

@@ -46,6 +46,13 @@ Rozszerzenie można zainstalować na dwa sposoby:
 
 - [**utPLSQL**](https://github.com/utPLSQL/utPLSQL) **(UT3)** zainstalowany w bazie Oracle.
 - Wystarczy sama baza danych — VSIX zawiera już cienki sterownik `oracledb` (bez Instant Client).
+
+**Zgodność Oracle / utPLSQL:**
+
+| Oracle | utPLSQL | Uwagi |
+|---|---|---|
+| 18c+ | v3.2.x (18c+) / v3.1.x | Zalecane; charset `AL32UTF8`. |
+| 12.2 | tylko v3.1.x | v3.2.x się nie kompiluje (`PLS-00222`). `WE8DEC` obrazu gubi znaki nieprzedstawialne (np. `€`); cienki sterownik ignoruje `NLS_LANG`. |
 - **VSCode 1.88+** (Test Coverage API).
 
 Rozszerzenie jest tylko "graficznym klientem" — testy uruchamia baza danych: bezpośrednio przez node-oracledb.

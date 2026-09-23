@@ -46,6 +46,13 @@ Rozšíření lze nainstalovat dvěma způsoby:
 
 - [**utPLSQL**](https://github.com/utPLSQL/utPLSQL) **(UT3)** nainstalovaný v databázi Oracle.
 - Pouze databáze — VSIX už obsahuje tenký ovladač `oracledb` (bez Instant Client).
+
+**Kompatibilita Oracle / utPLSQL:**
+
+| Oracle | utPLSQL | Poznámky |
+|---|---|---|
+| 18c+ | v3.2.x (18c+) / v3.1.x | Doporučeno; charset `AL32UTF8`. |
+| 12.2 | pouze v3.1.x | v3.2.x se nezkompiluje (`PLS-00222`). `WE8DEC` obrazu ztrácí nereprezentovatelné znaky (např. `€`); tenký ovladač ignoruje `NLS_LANG`. |
 - **VSCode 1.88+** (Test Coverage API).
 
 Rozšíření je pouze „grafický klient" — to, co testy spouští, je databáze přímo přes node-oracledb.

@@ -49,6 +49,13 @@ The extension can be installed in two ways:
 
 The extension connects directly to the Oracle database via `node-oracledb` (thin driver, no Instant Client required). The VSIX already includes the `oracledb` package.
 
+**Oracle / utPLSQL compatibility:**
+
+| Oracle | utPLSQL | Notes |
+|---|---|---|
+| 18c+ | v3.2.x (18c+) / v3.1.x | Recommended; `AL32UTF8` character set. |
+| 12.2 | v3.1.x only | v3.2.x fails to compile (`PLS-00222` on `UT_ANNOTATION_MANAGER`). The image's `WE8DEC` character set loses non-representable characters (e.g. `€`) — the thin driver ignores `NLS_LANG`. |
+
 ## Connection
 
 The extension needs an Oracle connection string to run tests. Resolution follows this order:

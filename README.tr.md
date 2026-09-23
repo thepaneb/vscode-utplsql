@@ -46,6 +46,13 @@ Uzantı iki şekilde kurulabilir:
 
 - [**utPLSQL**](https://github.com/utPLSQL/utPLSQL) **(UT3)** Oracle veritabanına kurulu.
 - Veritabanı dışında hiçbir şey gerekmez — VSIX ince `oracledb` sürücüsünü zaten içerir (Instant Client gerekmez).
+
+**Oracle / utPLSQL uyumluluğu:**
+
+| Oracle | utPLSQL | Notlar |
+|---|---|---|
+| 18c+ | v3.2.x (18c+) / v3.1.x | Önerilir; charset `AL32UTF8`. |
+| 12.2 | yalnızca v3.1.x | v3.2.x derlenmez (`PLS-00222`). İmajın `WE8DEC`'i gösterilemeyen karakterleri kaybeder (örn. `€`); ince sürücü `NLS_LANG`'i yok sayar. |
 - **VSCode 1.88+** (Test Coverage API).
 
 Uzantı yalnızca "grafik istemcidir" — testleri çalıştıran veritabanıdır: node-oracledb doğrudan bağlantısı üzerinden.

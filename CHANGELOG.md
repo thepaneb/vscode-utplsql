@@ -1,5 +1,16 @@
 # Changelog
 
+## 0.14.0
+
+- **Suporte a Oracle 12.2 (utPLSQL 3.1.x)**: o utPLSQL **v3.2.x não compila** no
+  12.2 (`PLS-00222` em `UT_ANNOTATION_MANAGER`, que exige recurso do 18c+). A
+  matriz de bancos passou a aceitar um **piso alternativo de utPLSQL por versão**
+  (4º campo em `scripts/db-matrix/matrix.env`); o 12.2 usa `v3.1.14`. Limitação
+  documentada: bancos com charset legado (a imagem 12.2 é `WE8DEC`) perdem
+  caracteres fora do charset (ex.: `€` → `¿`) — o driver thin usa sempre
+  `AL32UTF8` e ignora `NLS_LANG`; o teste de charset de integração agora detecta
+  e faz skip nesse caso. (PRD-84)
+
 ## 0.13.0
 
 - **Pacote VSIX enxuto**: removidos do pacote arquivos e pastas de

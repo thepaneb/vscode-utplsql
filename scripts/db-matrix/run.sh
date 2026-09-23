@@ -93,14 +93,26 @@ login_registry
 
 mapfile -t VERSION_LINES < <(echo "$VERSIONS" | sed '/^$/d')
 for __line in "${VERSION_LINES[@]}"; do
-  IFS='|' read -r label image service <<< "$__line"
+  # label|imagem|service[|utplsql_version] — o 4º campo é opcional (piso por
+  # banco). parse-version.cjs normaliza (testado em matrixConfig.test.ts).
+  local_utplsql_version="$UTPLSQL_VERSION"
+  if command -v node >/dev/null 2>&1; then
+    IFS='|' read -r label image service local_utplsql_version <<< \
+      "$(node "$SCRIPT_DIR/parse-version.cjs" "$__line" "$UTPLSQL_VERSION" | \
+        node -e 'let s="";process.stdin.on("data",d=>s+=d).on("end",()=>{const j=JSON.parse(s);process.stdout.write([j.label,j.image,j.service,j.utplsqlVersion].join("|"))})')"
+  else
+    IFS='|' read -r label image service version_field <<< "$__line"
+    local_utplsql_version="${version_field:-$UTPLSQL_VERSION}"
+  fi
+  label="$(echo "$label" | tr -d ' ')"; image="$(echo "$image" | tr -d ' ')"
+  service="$(echo "$service" | tr -d ' ')"; local_utplsql_version="$(echo "$local_utplsql_version" | tr -d ' ')"
   selected "$label" || continue
-  log "$label — $image (serviço $service)"
+  log "$label — $image (serviço $service, utPLSQL $local_utplsql_version)"
 
   # Volume de dados por versão: a 1ª subida cria o banco; as demais reaproveitam.
   export DB_VOLUME="${DB_VOLUME_PREFIX:-utplsql-dbmatrix}-${label}"
   export DB_IMAGE="$image" DB_CONTAINER="$CONTAINER" DB_PORT ORACLE_PWD
-  export UT3_PASSWORD TEST_PASSWORD UTPLSQL_VERSION
+  export UT3_PASSWORD TEST_PASSWORD UTPLSQL_VERSION="$local_utplsql_version"
 
   if [ "$CLEAN" = 1 ]; then
     log "limpando volume $DB_VOLUME (--clean)"

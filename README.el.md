@@ -46,6 +46,13 @@
 
 - [**utPLSQL**](https://github.com/utPLSQL/utPLSQL) **(UT3)** εγκατεστημένο στη βάση Oracle.
 - Τίποτα άλλο εκτός από τη βάση — το VSIX περιλαμβάνει ήδη τον thin driver `oracledb` (χωρίς Instant Client).
+
+**Συμβατότητα Oracle / utPLSQL:**
+
+| Oracle | utPLSQL | Σημειώσεις |
+|---|---|---|
+| 18c+ | v3.2.x (18c+) / v3.1.x | Συνιστάται; charset `AL32UTF8`. |
+| 12.2 | μόνο v3.1.x | Το v3.2.x δεν μεταγλωττίζεται (`PLS-00222`). Το `WE8DEC` της εικόνας χάνει μη αναπαραστάσιμους χαρακτήρες (π.χ. `€`); ο thin driver αγνοεί το `NLS_LANG`. |
 - **VSCode 1.88+** (Test Coverage API).
 
 Η επέκταση είναι μόνο ο «γραφικός πελάτης» — αυτό που εκτελεί τα tests είναι η βάση απευθείας μέσω node-oracledb.

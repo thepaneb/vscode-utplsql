@@ -93,6 +93,13 @@ chỉ giữ nó trong bộ nhớ ở phiên hiện tại — dùng lệnh
 Không có tệp tạm, không chờ batch. Kết quả xuất hiện trong
 Test Explorer **ngay khi từng bài kiểm thử hoàn tất**. VSIX đã kèm driver mỏng `oracledb` (không cần Instant Client).
 
+**Tương thích Oracle / utPLSQL:**
+
+| Oracle | utPLSQL | Ghi chú |
+|---|---|---|
+| 18c+ | v3.2.x (18c+) / v3.1.x | Khuyến nghị; charset `AL32UTF8`. |
+| 12.2 | chỉ v3.1.x | v3.2.x không biên dịch được (`PLS-00222`). `WE8DEC` của image làm mất các ký tự không biểu diễn được (ví dụ `€`); driver mỏng bỏ qua `NLS_LANG`. |
+
 ## Cấu hình
 
 | Cài đặt | Mặc định | Mô tả |

@@ -3,6 +3,17 @@
 Grants and configurations required on the Oracle database to use the extension
 with all features.
 
+## Oracle / utPLSQL compatibility
+
+| Oracle | utPLSQL | Character set | Notes |
+|---|---|---|---|
+| 18c+ | v3.2.x / v3.1.x | `AL32UTF8` | Recommended. |
+| 12.2 | **v3.1.x only** | prefer `AL32UTF8` | v3.2.x fails to compile (`PLS-00222`). Legacy `WE8DEC` loses non-representable chars. |
+
+> The thin driver uses **always `AL32UTF8`** and ignores `NLS_LANG`; the server
+> converts to the database character set. On a `WE8DEC` database, `€` becomes
+> `¿` and the extension cannot fix it client-side.
+
 ## Coverage (always)
 
 Enables the profiler for the schema that runs the tests:

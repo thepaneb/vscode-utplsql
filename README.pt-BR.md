@@ -49,6 +49,13 @@ A extensão pode ser instalada de duas formas:
 
 A extensão conecta-se diretamente ao banco Oracle via `node-oracledb` (driver thin, sem Instant Client). O VSIX já inclui o pacote `oracledb`.
 
+**Compatibilidade Oracle / utPLSQL:**
+
+| Oracle | utPLSQL | Observações |
+|---|---|---|
+| 18c+ | v3.2.x (18c+) / v3.1.x | Recomendado; charset `AL32UTF8`. |
+| 12.2 | apenas v3.1.x | O v3.2.x não compila (`PLS-00222`). O charset `WE8DEC` da imagem perde caracteres não representáveis (ex.: `€`); o driver thin ignora `NLS_LANG`. |
+
 ## Conexão
 
 A extensão precisa de uma string de conexão Oracle para rodar os testes. A

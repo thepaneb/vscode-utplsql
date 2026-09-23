@@ -49,6 +49,13 @@ Die Erweiterung kann auf zwei Arten installiert werden:
 
 Die Erweiterung verbindet sich direkt mit der Oracle-Datenbank über `node-oracledb` (Thin-Treiber, kein Instant Client nötig). Die VSIX enthält bereits das `oracledb`-Paket.
 
+**Oracle-/utPLSQL-Kompatibilität:**
+
+| Oracle | utPLSQL | Hinweise |
+|---|---|---|
+| 18c+ | v3.2.x (18c+) / v3.1.x | Empfohlen; Zeichensatz `AL32UTF8`. |
+| 12.2 | nur v3.1.x | v3.2.x kompiliert nicht (`PLS-00222`). Der `WE8DEC`-Zeichensatz des Images verliert nicht darstellbare Zeichen (z. B. `€`); der Thin-Treiber ignoriert `NLS_LANG`. |
+
 ## Verbindung
 
 Die Erweiterung benötigt einen Oracle-Verbindungsstring, um Tests auszuführen. Die Auflösung erfolgt in dieser Reihenfolge:

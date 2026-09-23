@@ -285,6 +285,15 @@ describeDB('v0.12.0 — integração com banco Oracle', () => {
       const connStr = process.env.UTPLSQL_CONN as string;
       const dbc = await openRaw();
       try {
+        // Bancos com charset legado (ex.: 12.2 com NLS_CHARACTERSET=WE8DEC) não
+        // representam o '€' e o thin (sempre AL32UTF8, ignora NLS_LANG) não
+        // consegue corrigir — PRD-84. Detecta e skipa com motivo em vez de falhar.
+        const probe = await dbc.execute(`SELECT DUMP(:v) FROM dual`, { v: '€' });
+        const { euroPreservedFromDump } = require('../../charsetSupport.js');
+        if (!euroPreservedFromDump(probe.rows?.[0])) {
+          this.skip();
+          return;
+        }
         await dropTableIfExists(dbc);
         await dbc.execute(`CREATE TABLE ${TABLE} (txt VARCHAR2(100))`, {}, { autoCommit: true });
         // 'çãõ €' em Windows-1252: E7 E3 F5 20 80
