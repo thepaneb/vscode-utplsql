@@ -188,6 +188,12 @@ _(vazio — nenhuma PRD em desenvolvimento)_
 | 58 | [Run Related Tests](proposed/prd-58-run-related-tests.md) | 0.16.0 | 2026-09-06 |
 | 59 | [Scaffold de suíte de teste](proposed/prd-59-scaffold-suite.md) | 0.16.0 | 2026-09-06 |
 
+#### 0.17.0 — Conhecimento e documentação (second brain)
+
+| # | PRD | Versão alvo | Data |
+|---|---|---|---|
+| 85 | [Second brain canônico (Obsidian) com MCP e extração de conhecimento](proposed/prd-85-brain-source-of-truth.md) | 0.17.0 | 2026-09-23 |
+
 #### Fora de release (investigação / a reavaliar)
 
 | # | PRD | Versão alvo | Data |
@@ -291,7 +297,8 @@ docs/prd/
     ├── prd-76-reporter-export.md
     ├── prd-80-virtual-db-source.md
     ├── prd-81-security-hardening.md
-    └── prd-82-tns-wallet.md
+    ├── prd-82-tns-wallet.md
+    └── prd-85-brain-source-of-truth.md
 ```
 
 ---
