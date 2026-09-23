@@ -48,6 +48,8 @@ bundled.
 | `charsetSupport.ts` — legacy-charset detection (euro preserved) | `compilationDiagnostics.ts` — ALL_ERRORS → Problems Panel |
 | `debounce.ts` — coalescing helper | `dbSourceProvider.ts` — `utplsql-db:` virtual documents |
 | `logger.ts` — logging (no `vscode`) | `connectionProfiles.ts` — connection profiles |
+| | `decorations.ts` — inline ✓/✗/⚠ decorations |
+| | `statusBar.ts` — status bar indicator |
 | | `viewCoverage.ts` — DeclarationCoverage + V$SQL view tracking |
 | | `dbmsDebug.ts`, `debugger.ts` — PL/SQL debugging via DBMS_DEBUG |
 | | `oracleClient.ts` — thin/thick mode init |

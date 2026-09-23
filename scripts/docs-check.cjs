@@ -137,6 +137,20 @@ checkReadme();
 checkPrd();
 checkWiki();
 
+// Fidelidade código↔docs (settings, comandos, módulos, versão, PRDs, obsoletos).
+console.log('Fidelidade código ↔ documentação');
+try {
+  const { checkFidelity } = require('./docs-fidelity.cjs');
+  const problems = checkFidelity();
+  if (problems.length) {
+    for (const p of problems) fail(p);
+  } else {
+    ok('documentação fiel ao código (settings/comandos/módulos/versão/PRDs)');
+  }
+} catch (e) {
+  fail(`docs-fidelity.cjs falhou: ${e.message}`);
+}
+
 if (errors) {
   console.log(`\n${errors} inconsistência(s) de documentação.`);
   process.exit(1);

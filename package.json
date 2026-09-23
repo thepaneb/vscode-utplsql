@@ -751,6 +751,7 @@
     "brain:sync": "node scripts/brain.cjs sync",
     "brain:check": "node scripts/brain.cjs check",
     "docs:check": "node scripts/docs-check.cjs",
+    "docs:fidelity": "node scripts/docs-fidelity.cjs",
     "sync-prds": "node scripts/sync-prds.cjs",
     "pr:create": "node scripts/create-pr.cjs",
     "publish": "node scripts/publish.cjs",

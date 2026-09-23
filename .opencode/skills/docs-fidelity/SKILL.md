@@ -59,13 +59,33 @@ O `brain:sync` é idempotente e nunca deve alterar conteúdo não-gerado. O vaul
 ## Passo 3 — verificação (obrigatória)
 
 - [ ] `npm run docs:check` → consistência versionada (README↔variantes, PRD↔index,
-      wiki). **Roda no CI.**
+      wiki) **+ fidelidade código↔docs**. **Roda no CI.**
+- [ ] `npm run docs:fidelity` → checagem focada de fidelidade (só os problemas
+      código↔docs; útil durante a edição)
 - [ ] `npm run brain:check` → `OK: N notas, todos os links resolvem.` (exit 0)
 - [ ] `npm run brain:sync` → `OK: 0 arquivo(s) atualizado(s).` (idempotente)
 - [ ] PRD movido/renomeado? `index.md` tabela + Estrutura conferem com as pastas
 - [ ] README mudou? variantes sinalizadas/atualizadas
 - [ ] `CHANGELOG.md` atualizado se houve correção/feature
 - [ ] `npm run lint` passa (se mexeu em `src/`)
+
+## Fidelidade código ↔ docs (o que o docs:fidelity cobre)
+
+`scripts/docs-fidelity.cjs` (testado em `src/test/unit/docsFidelity.test.ts`)
+cruza o **código** (fonte da verdade) com a doc versionada e falha em:
+
+| Checagem | Fonte da verdade | Docs conferidos |
+|---|---|---|
+| Settings sem menção | `package.json` `configuration.properties` | `README.md` |
+| Comando de paleta sem menção | `package.json` `commands` + `package.nls.json` | `docs/wiki/Commands.md` |
+| Módulo `src/*.ts` não citado | `src/` | `docs/wiki/Architecture.md` |
+| Exemplo de `.vsix` em versão antiga | `package.json` `version` | `wiki/FAQ.md`, `wiki/Installation-and-requirements.md` |
+| PRD concluído ausente | `docs/prd/completed/` | `docs/wiki/PRDs.md` |
+| Termo obsoleto como afirmação | lista (`type_mapping`, `java -jar`) | wiki |
+
+> Ao mexer em settings/comandos/módulos, rode `npm run docs:fidelity` **antes** de
+> considerar a tarefa pronta — foi exatamente a brecha que deixou a doc 0.13.0
+> desatualizada (doc validava só estrutura, não conteúdo).
 
 ## Armadilhas
 
