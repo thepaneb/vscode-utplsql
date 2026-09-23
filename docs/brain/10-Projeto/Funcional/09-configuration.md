@@ -1,4 +1,12 @@
-<!-- GENERATED FROM docs/brain/10-Projeto/Funcional/09-configuration.md — DO NOT EDIT -->
+---
+tipo: funcional
+status: ativo
+numero: 09
+titulo: "09 — Configuration"
+publicar: docs/functional/09-configuration.md
+verificado: 2026-09-23
+tags: [funcional]
+---
 # 09 — Configuration
 
 Sistema de configuração da extensão: settings, conexão, ambiente.

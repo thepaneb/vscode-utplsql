@@ -1,4 +1,12 @@
-<!-- GENERATED FROM docs/brain/10-Projeto/Funcional/04-code-coverage.md — DO NOT EDIT -->
+---
+tipo: funcional
+status: ativo
+numero: 04
+titulo: "04 — Code Coverage"
+publicar: docs/functional/04-code-coverage.md
+verificado: 2026-09-23
+tags: [funcional]
+---
 # 04 — Code Coverage
 
 Cobertura de código via `ut_coverage_cobertura_reporter` (formato Cobertura XML),

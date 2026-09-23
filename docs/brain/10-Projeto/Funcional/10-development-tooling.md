@@ -1,4 +1,12 @@
-<!-- GENERATED FROM docs/brain/10-Projeto/Funcional/10-development-tooling.md — DO NOT EDIT -->
+---
+tipo: funcional
+status: ativo
+numero: 10
+titulo: "10 — Development Tooling"
+publicar: docs/functional/10-development-tooling.md
+verificado: 2026-09-23
+tags: [funcional]
+---
 # 10 — Development Tooling
 
 Ferramentas e infraestrutura de desenvolvimento do projeto.

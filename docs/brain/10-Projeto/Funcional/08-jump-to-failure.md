@@ -1,4 +1,12 @@
-<!-- GENERATED FROM docs/brain/10-Projeto/Funcional/08-jump-to-failure.md — DO NOT EDIT -->
+---
+tipo: funcional
+status: ativo
+numero: 08
+titulo: "08 — Jump to Failure"
+publicar: docs/functional/08-jump-to-failure.md
+verificado: 2026-09-23
+tags: [funcional]
+---
 # 08 — Jump to Failure
 
 Navegação direta do resultado de um teste falho para a linha exata da asserção

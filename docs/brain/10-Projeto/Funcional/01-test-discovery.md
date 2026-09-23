@@ -1,4 +1,12 @@
-<!-- GENERATED FROM docs/brain/10-Projeto/Funcional/01-test-discovery.md — DO NOT EDIT -->
+---
+tipo: funcional
+status: ativo
+numero: 01
+titulo: "01 — Test Discovery"
+publicar: docs/functional/01-test-discovery.md
+verificado: 2026-09-23
+tags: [funcional]
+---
 # 01 — Test Discovery
 
 Descoberta de suites e testes utPLSQL nos arquivos `.pks` do workspace e,
@@ -191,3 +199,4 @@ utPLSQL. Se o cache estiver desatualizado, o comando **`utPLSQL: Rebuild
 Annotation Cache`** (`utplsql.rebuildAnnotations`) chama
 `ut_runner.rebuild_annotation_cache(<owner>)` e atualiza a árvore. Requer
 conexão resolvida (não abre prompt); sem conexão, avisa.
+

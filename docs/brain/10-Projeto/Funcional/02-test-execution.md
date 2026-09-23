@@ -1,4 +1,12 @@
-<!-- GENERATED FROM docs/brain/10-Projeto/Funcional/02-test-execution.md — DO NOT EDIT -->
+---
+tipo: funcional
+status: ativo
+numero: 02
+titulo: "02 — Test Execution"
+publicar: docs/functional/02-test-execution.md
+verificado: 2026-09-23
+tags: [funcional]
+---
 # 02 — Test Execution
 
 Execução de testes utPLSQL via conexão Oracle direta (node-oracledb).

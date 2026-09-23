@@ -750,6 +750,7 @@
     "gen-diagram": "node scripts/gen-diagrams.cjs",
     "brain:sync": "node scripts/brain.cjs sync",
     "brain:check": "node scripts/brain.cjs check",
+    "brain:build": "node scripts/brain-build.cjs",
     "brain:rules": "node scripts/brain-rules.cjs",
     "docs:check": "node scripts/docs-check.cjs",
     "docs:fidelity": "node scripts/docs-fidelity.cjs",

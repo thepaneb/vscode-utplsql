@@ -1,4 +1,12 @@
-<!-- GENERATED FROM docs/brain/10-Projeto/Funcional/11-debugger.md — DO NOT EDIT -->
+---
+tipo: funcional
+status: ativo
+numero: 11
+titulo: "11 — PL/SQL Debugger"
+publicar: docs/functional/11-debugger.md
+verificado: 2026-09-23
+tags: [funcional]
+---
 # 11 — PL/SQL Debugger
 
 Depuração de testes utPLSQL direto no Debug Adapter nativo do VSCode, via

@@ -1,4 +1,12 @@
-<!-- GENERATED FROM docs/brain/10-Projeto/Funcional/03-results-and-reporting.md — DO NOT EDIT -->
+---
+tipo: funcional
+status: ativo
+numero: 03
+titulo: "03 — Results and Reporting"
+publicar: docs/functional/03-results-and-reporting.md
+verificado: 2026-09-23
+tags: [funcional]
+---
 # 03 — Results and Reporting
 
 Parse dos resultados de teste e mapeamento para `vscode.TestItem`.

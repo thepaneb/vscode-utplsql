@@ -1,4 +1,12 @@
-<!-- GENERATED FROM docs/brain/10-Projeto/Funcional/07-diagnostics-and-validation.md — DO NOT EDIT -->
+---
+tipo: funcional
+status: ativo
+numero: 07
+titulo: "07 — Diagnostics and Validation"
+publicar: docs/functional/07-diagnostics-and-validation.md
+verificado: 2026-09-23
+tags: [funcional]
+---
 # 07 — Diagnostics and Validation
 
 Diagnósticos automáticos para erros de compilação PL/SQL e validação de

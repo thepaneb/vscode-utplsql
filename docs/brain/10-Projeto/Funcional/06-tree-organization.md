@@ -1,4 +1,12 @@
-<!-- GENERATED FROM docs/brain/10-Projeto/Funcional/06-tree-organization.md — DO NOT EDIT -->
+---
+tipo: funcional
+status: ativo
+numero: 06
+titulo: "06 — Tree Organization"
+publicar: docs/functional/06-tree-organization.md
+verificado: 2026-09-23
+tags: [funcional]
+---
 # 06 — Tree Organization
 
 Organização da árvore de testes no Test Explorer.
