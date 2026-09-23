@@ -25,12 +25,14 @@ The file is moved between folders as it progresses.
 
 | # | PRD | Version |
 |---|---|---|
+| 01 | `java` invocation mode (launcher bypass) | 0.3.0 |
 | 02 | `extension.ts` refactoring | 0.4.0 |
 | 03 | CI pipeline + Linter | 0.4.0 |
 | 04 | Test coverage expansion | 0.4.0 |
 | 05 | Progress feedback and cancellation | 0.5.0 |
 | 06 | Multiple workspace folders support | 0.5.0 |
 | 07 | Node 24 + TypeScript 6.0 upgrade | 0.4.0 |
+| 08 | Advanced CLI options exposed as settings | 0.5.0 |
 | 09 | `utplsql info` diagnostics | 0.5.0 |
 | 10 | Dynamic reporters | 0.7.0 |
 | 11 | Real-time result streaming | 0.9.0 |
@@ -38,6 +40,7 @@ The file is moved between folders as it progresses.
 | 14 | utPLSQL test schema and objects | 0.6.0 |
 | 15 | Integration tests with real database | 0.6.0 |
 | 16 | Integration tests for both invocation modes | 0.6.0 |
+| 17 | Custom JVM flags for the `java` mode | 0.9.0 |
 | 18 | `engines.node` alignment with CI | 0.7.1 |
 | 19 | PRD system normalization | 0.7.1 |
 | 20 | Dependencies and configuration cleanup | 0.7.1 |
@@ -80,18 +83,31 @@ The file is moved between folders as it progresses.
 | 70 | Optional thick mode (Instant Client) for NNE | 0.12.1 |
 | 71 | Fix the debugger for the real `DBMS_DEBUG` | 0.12.1 |
 | 72 | Oracle database test matrix | 0.12.1 |
+| 73 | Compile for Debug (command + menus) | 0.12.1 |
+| 69 | Oracle Runner: typed binds, `a_tags` and reporter validation | 0.13.0 |
+| 74 | DB-first suite discovery (`get_suites_info`) | 0.13.0 |
+| 77 | Rebuild the utPLSQL annotation cache | 0.13.0 |
+| 78 | Random test order with seed | 0.13.0 |
+| 79 | Advanced coverage scope (regex + exclusions) | 0.13.0 |
+| 83 | VSIX package hygiene | 0.13.0 |
+| 84 | Oracle 12.2 support (alternative utPLSQL floor) + charset | 0.13.0 |
 
 ### 🔵 Approved / 🟡 In development
 
-*(empty)*
+| # | PRD | Target version |
+|---|---|---|
+| 47 | Node 26 in development toolchain | 0.14.0 |
 
 ### ⚪ Proposed
 
 | # | PRD | Target version |
 |---|---|---|
-| 47 | Node 26 in development toolchain | 0.13.0 |
-| 69 | Oracle Runner: typed binds, `a_tags` and reporter validation | 0.13.0 |
-| 50–61 | Auto-run, tags, inline diff, debug variants, coverage toggle, multi-root, scaffold… | 0.14.0+ |
+| 75 | Lazy test tree (incremental resolution) | 0.14.0 |
+| 76 | Run/export with an arbitrary reporter | 0.14.0 |
+| 80 | Virtual database source document | 0.14.0 |
+| 81 | Connection settings security hardening | 0.14.0 |
+| 82 | TNS resolution in thin + wallet password in SecretStorage | 0.14.0 |
+| 50–61 | Auto-run, tags, inline diff, debug variants, coverage toggle, multi-root, scaffold… | 0.15.0+ |
 
 ## How to propose a PRD
 

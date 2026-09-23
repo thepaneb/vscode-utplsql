@@ -76,22 +76,37 @@ function buildSchemaTree(controller, state, suites: SuiteFile[], schemaPattern: 
    - `schemaItem.children.add(pkgItem)`
    - `controller.items.add(schemaItem)`
 
-## Descoberta via DB (PRD-43)
+## Descoberta via DB (PRD-43 / DB-first PRD-74)
 
 No modo `schema`, o `doRefresh()` chama
 `mergeDbSuites()` antes de `buildSchemaTree`:
 
-1. `resolveConnectionNoPrompt()` — sem conexão configurada, descoberta DB é pulada
+1. `resolveConnectionNoPrompt()` — sem conexão configurada, descoberta DB é pulada;
+   `utplsql.discovery.source = "file"` também desliga a descoberta via banco
 2. Schemas candidatos: união dos schemas das suites locais com os diretórios
    abaixo da base do `schemaPattern` (`discoverSchemasFromFolders`, ex.: `db/*`)
-3. `discoverSchemaFromDb(connStr, schema, folders)` — `ALL_OBJECTS` (packages
-   VALID, sem prefixo `UT_`) + `ALL_SOURCE` (limitado a 10000 linhas), parse com
-   `parseSuiteText` (prefixo sintético `CREATE OR REPLACE`)
-4. Merge: suites locais têm prioridade (match por `packageName`,
-   case-insensitive); suites novas são anexadas com `uri` virtual
-   `utplsql-db:/SCHEMA/PKG.pks` e `dbSchema` definido
-5. Fallback silencioso: Oracle indisponível, `ALL_SOURCE` inacessível ou erro
+3. `discoverDbSuites(connStr, schema, folders)` (**DB-first, PRD-74**):
+   consulta `ut_runner.get_suites_info` (utPLSQL ≥ 3.1.3) e normaliza em
+   `SuiteFile` com URI virtual `utplsql-db:/SCHEMA/PKG.pks`. Se a API não estiver
+   disponível (versão antiga/erro) e `discovery.source` ≠ `database`, cai para
+   `ALL_OBJECTS` (packages VALID, sem prefixo `UT_`) + `ALL_SOURCE`
+   (limitado a 10000 linhas), parse com `parseSuiteText` (PRD-43)
+4. Fusão (`mergeSuiteLists`): união por `LOWER(packageName)` — o **arquivo
+   prevalece** em `uri`/linha/`folder`; o **banco** manda em descrição/tags.
+   Suíte só-DB entra com `uri` virtual e `dbSchema` definido
+5. Fallback silencioso: Oracle indisponível, API/`ALL_SOURCE` inacessível ou erro
    de conexão → só a descoberta por arquivos
+
+> **`utplsql.discovery.source`** (`auto` | `file` | `database`, PRD-74): `auto`
+> usa a API e cai para `ALL_SOURCE`/arquivos; `database` exige a API; `file`
+> desliga a descoberta via banco.
+>
+> O cache de anotações do utPLSQL (fonte da API) pode ser reconstruído com o
+> comando **`utPLSQL: Rebuild Annotation Cache`** (`utplsql.rebuildAnnotations`,
+> PRD-77) ⇒ `ut_runner.rebuild_annotation_cache(<owner>)` + refresh da árvore.
+
+**Limitações das suites via DB:** sem CodeLens, decorações inline nem jump to
+failure (providers registram `{ scheme: 'file' }`) — apenas execução.
 
 **Limitações das suites via DB:** sem CodeLens, decorações inline nem jump to
 failure (providers registram `{ scheme: 'file' }`) — apenas execução.

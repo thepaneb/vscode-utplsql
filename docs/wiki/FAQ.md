@@ -98,9 +98,10 @@ generic message in the run output when **no** file could be mapped
 
 ### Can I map coverage for objects that are not packages?
 
-Yes. The default `type_mapping` covers `PACKAGE BODY`, `FUNCTION`,
-`PROCEDURE`, `TRIGGER`, `VIEW`, etc. Just keep the
-`sourcePath/<type>/<name>.sql` file convention
+Yes. `mapDbPathsToFiles` maps `PACKAGE BODY`, `PACKAGE`, `FUNCTION`,
+`PROCEDURE`, `TRIGGER`, `VIEW`, `TYPE`/`TYPE BODY` to folders
+(`packages/`, `functions/`, `procedures/`, `triggers/`, `views/`, `types/`).
+Just keep the `sourcePath/<type>/<name>.sql` file convention
 (e.g. `install/views/my_view.sql`). See [Coverage](Coverage) for examples.
 
 ### Does coverage work without the coverage reporter?
@@ -170,8 +171,8 @@ to the Marketplace is done **exclusively** via a GitHub release (through the
 
 ```bash
 npm run package
-# generates: vscode-utplsql-0.12.1.vsix
-code --install-extension vscode-utplsql-0.12.1.vsix
+# generates: vscode-utplsql-0.13.0.vsix
+code --install-extension vscode-utplsql-0.13.0.vsix
 ```
 
 ---

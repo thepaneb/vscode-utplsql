@@ -118,6 +118,11 @@ controls how the **file** is read before sending.
    charset on the profile
 4. Note: `latin1` (true ISO-8859-1) ≠ `win1252` for bytes `0x80`–`0x9F`
    (e.g. `€` only exists in `win1252`)
+5. **Legacy database character set:** the `node-oracledb` thin driver always
+   uses `AL32UTF8` and ignores `NLS_LANG`; the server converts. On a database
+   with a legacy charset (e.g. 12.2 `WE8DEC`), non-representable characters
+   (`€`) are lost (`¿`) and the extension cannot fix it — configure the
+   database with `AL32UTF8` (PRD-84).
 
 ---
 
