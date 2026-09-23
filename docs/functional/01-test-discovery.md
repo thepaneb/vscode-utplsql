@@ -103,7 +103,7 @@ O parser percorre o texto linha a linha:
 |---|---|---|---|
 | `-- %disabled` | suite / teste | `disabled` | Suites e testes desabilitados **não aparecem** no Test Explorer (`discoverWorkspace` filtra) |
 | `-- %throws(-20001)` | teste | `expectedError` | Código de erro esperado, **valor absoluto** (o `-` do utPLSQL é convenção de "espera lançar") |
-| `-- %tags(fast, critical)` | teste | `tags[]` | Array trimado, split por `,` (filtro por tag é PRD futura) |
+| `-- %tags(fast, critical)` | teste | `tags[]` | Array trimado, split por `,`; filtro de execução via setting `utplsql.tags` (UI por tag é PRD-51) |
 | `-- %displayname(Nome)` | teste | `displayName` | Sobrescreve a descrição exibida na árvore (`displayName ?? description`) |
 | `-- %beforeall` / `%beforeeach` / `%aftereach` / `%afterall` | suite | booleanos | Metadados de lifecycle (indicam setup/teardown) |
 

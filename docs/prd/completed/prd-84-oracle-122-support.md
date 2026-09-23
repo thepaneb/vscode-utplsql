@@ -171,7 +171,7 @@ Nenhuma setting nova. Sem `NLS_LANG`.
 
 ## 9. Rollout
 
-- Release **0.14.0**.
+- Release **0.13.0**.
 - `CHANGELOG.md`: suporte a Oracle 12.2 (utPLSQL 3.1.x) e limitação de charset.
 - Matriz: `--only 12.2` documentado no `docs/wiki/Tests.md`/Contributing.
 

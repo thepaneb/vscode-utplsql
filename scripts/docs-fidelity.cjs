@@ -187,7 +187,67 @@ function checkFidelity(overrides = {}) {
     }
   }
 
+  // 7. títulos de comando no README (comparação por tokens significativos).
+  //    O README é a doc do usuário e pode reformular/ordenar o título (ex.:
+  //    "Import connections from SQL Developer" vs nls "Import SQL Developer
+  //    Connections"), então cobramos os tokens-chave, não a frase exata.
+  //    `utplsql.runLens` é interno (CodeLens, sem entrada de paleta) → isento.
+  const readmeNorm = normalize(files.readme);
+  const INTERNAL_CMDS = new Set(['utplsql.runLens']);
+  const README_STOP = new Set(['utplsql', 'the', 'a', 'an', 'of', 'in', 'on', 'to', 'and', 'from']);
+  for (const c of commandTitles) {
+    if (INTERNAL_CMDS.has(c.id)) continue;
+    const tokens = normalize(c.title)
+      .split(' ')
+      .filter((w) => w.length > 2 && !README_STOP.has(w));
+    const missing = tokens.find((w) => !readmeNorm.includes(w));
+    if (missing) {
+      problems.push(
+        `comando "${c.title}" (${c.id}) sem correspondência no README.md (token "${missing}")`,
+      );
+    }
+  }
+
+  // 8. claims de "não implementado" em código já implementado (heurística)
+  //    pares (frase no doc → símbolo no código que prova o contrário).
+  const falseNegatives = [
+    { phrase: 'is never called', symbol: 'consumeExtraReporter', docs: ['Reporters.md'] },
+    { phrase: 'has no effect', symbol: 'compilationDiagnostics', docs: ['Configuration.md'] },
+    { phrase: 'not wired', symbol: 'compilationDiagnostics', docs: ['FAQ.md'] },
+    { phrase: 'is never emitted', symbol: 'UTPLSQL_BAD_CONN', docs: ['Diagnostics-and-quick-fix.md'] },
+  ];
+  for (const { phrase, symbol, docs } of falseNegatives) {
+    for (const rel of docs) {
+      const inline =
+        overrides[rel] ??
+        overrides[rel.replace(/\.md$/, '')] ??
+        overrides[rel.replace(/\.md$/, '').toLowerCase()];
+      const text = inline ?? read(`docs/wiki/${rel}`);
+      if (text.includes(phrase) && read(`src/${srcFileFor(symbol)}`).includes(symbol)) {
+        problems.push(`claim obsoleto "${phrase}" em docs/wiki/${rel} (${symbol} existe no código)`);
+      }
+    }
+  }
+
   return problems;
+}
+
+/** Normaliza texto para comparação de títulos: minúsculas, sem pontuação. */
+function normalize(s) {
+  return String(s)
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, ' ')
+    .trim();
+}
+
+/** Heurística: mapeia símbolo → arquivo src que o contém. */
+function srcFileFor(symbol) {
+  const dir = path.join(REPO, 'src');
+  const hits = fs.readdirSync(dir).filter((f) => {
+    if (!f.endsWith('.ts')) return false;
+    return fs.readFileSync(path.join(dir, f), 'utf8').includes(symbol);
+  });
+  return hits[0] ?? '';
 }
 
 function listCompletedPrds() {

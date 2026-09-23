@@ -109,7 +109,9 @@ the workspace.
 - **File takes priority** in the merge (match by `packageName`, case-insensitive):
   it keeps the local `uri`/line, while the database wins on description/tags
 - `UT_*` packages (utPLSQL framework) are ignored
-- Suites from the database use the virtual URI `utplsql-db:/SCHEMA/PKG.pks` and
-  **do not have** CodeLens, inline decorations, or jump to failure — only execution
+- Suites from the database use the virtual URI `utplsql-db:/SCHEMA/PKG.pks`,
+  **open read-only** (source from `ALL_SOURCE`): they support execution **and
+  jump to failure** (`dbSourceProvider` serves the virtual document for "Go to
+  Error"); they have **no CodeLens and no inline decorations**
 - Silent fallback: `ALL_SOURCE` inaccessible or Oracle unavailable
   → file-based discovery only

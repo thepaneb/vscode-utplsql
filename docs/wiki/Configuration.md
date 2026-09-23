@@ -154,7 +154,7 @@ connection changes, and closed when the extension is deactivated. See [Direct Or
 | `utplsql.codeLens.enabled` | `true` | CodeLens Run/Run with Coverage buttons above `%suite` and `%test`. |
 | `utplsql.statusBar.enabled` | `true` | Status indicator in the status bar (pass/fail + duration). |
 | `utplsql.decorations.enabled` | `true` | Inline ✓/✗/⚠ icons in the editor after execution. |
-| `utplsql.compilationDiagnostics.enabled` | `true` | Reserved for PL/SQL compilation diagnostics. **Currently has no effect** in the Oracle-only version — the feature is not wired (not yet re-enabled). |
+| `utplsql.compilationDiagnostics.enabled` | `true` | Publishes PL/SQL compilation errors (`ALL_ERRORS`) to the Problems Panel under the `utPLSQL Compilation` source, after each run. |
 | `utplsql.setupDiagnostics.enabled` | `true` | Displays setup diagnostics (connection, grants, version) and utPLSQL installation integrity diagnostics (invalid objects, "Recompile UT3" quick-fix) with quick-fix. |
 
 ## Tree Organization
@@ -166,7 +166,8 @@ connection changes, and closed when the extension is deactivated. See [Direct Or
 | `utplsql.refreshDebounceMs` | `300` | Debounce (ms) to coalesce `.pks`/`.pkb` file watcher events before refreshing the Test Explorer. |
 
 In `schema` mode with a configured connection (no prompt), the refresh also
-discovers suites directly from the database (`ALL_OBJECTS`/`ALL_SOURCE`) for schemas whose
+discovers suites directly from the database (`ut_runner.get_suites_info`,
+falling back to `ALL_OBJECTS`/`ALL_SOURCE`) for schemas whose
 files are not in the workspace — the queried schemas are the directories
 below the pattern root (e.g., `db/*`) and the schemas of local suites.
 See [Tree Organization](Tree-organization).

@@ -132,7 +132,7 @@ Geçici dosya yok, toplu işin bitmesi beklenmez. Sonuçlar Test Explorer'da
 | `utplsql.oracleClientLibDir` | `""` | Oracle Instant Client dizini. `utplsql.oracleClientMode` `thick` olduğunda zorunludur (örn. `C:\oracle\instantclient_23_5`). |
 | Hata ayıklama kesme noktasında durmuyor | Paket hata ayıklama bilgisi olmadan derlenmiş veya hata ayıklama yetkileri eksik | `PLSQL_OPTIMIZE_LEVEL <= 1` ile derleyin (veya `ALTER PACKAGE ... COMPILE DEBUG PLSQL_OPTIMIZE_LEVEL = 1`) ve `DEBUG CONNECT SESSION` + `EXECUTE ON SYS.DBMS_DEBUG` verin. `test_*.pkb` içindeki kesme noktaları isabet etmeyebilir (utPLSQL testleri dinamik SQL ile çalıştırır); bunları test edilen koda koyun. |
 | `utplsql.oracleClientConfigDir` | `""` | `sqlnet.ora`/`tnsnames.ora` içeren Oracle yapılandırma dizini (TNS_ADMIN). İsteğe bağlıdır; yalnızca thick modda kullanılır. |
-| `utplsql.organization` | `file` | Ağaç düzeni: `file` (yola göre) veya `schema` (Schema > Package > Suite > Test). `schema` modunda, `.pks` dosyaları çalışma alanında yoksa paketler de veritabanından (`ALL_OBJECTS`/`ALL_SOURCE`) keşfedilir — sanal URI `utplsql-db:/` ile (CodeLens/süsleme/hataya atlama yok). |
+| `utplsql.organization` | `file` | Ağaç düzeni: `file` (yola göre) veya `schema` (Schema > Package > Suite > Test). `schema` modunda, `.pks` dosyaları çalışma alanında yoksa paketler de veritabanından (`ut_runner.get_suites_info`, `ALL_OBJECTS`/`ALL_SOURCE` yedeğiyle) keşfedilir — sanal URI `utplsql-db:/` ile (çalıştırma ve hataya atlama çalışır; CodeLens/süsleme yok). |
 | `utplsql.organization.schemaPattern` | `db/{schema}/**` | Şemayı yoldan çıkarmak için glob deseni. Yer tutucu olarak `{schema}` kullanın. `schema` modunda desen tabanının altındaki dizinler (örn. `db/*`) veritabanında sorgulanan şemaları tanımlar. |
 | `utplsql.discovery.source` | `auto` | `schema` modunda test ağacının kaynağı: `auto` veritabanı API'sini (`ut_runner.get_suites_info`) kullanır ve kullanılamadığında `ALL_SOURCE`/dosyalara döner; `database` API'yi zorunlu kılar; `file` veritabanı keşfini kapatır. |
 | `utplsql.refreshDebounceMs` | `300` | Test Explorer'ı yenilemeden önce `.pks`/`.pkb` dosya izleyici olaylarını birleştirmek için debounce (ms). |
@@ -199,7 +199,7 @@ UTPLSQL_CONN=your_user/password@//host:1521/service
 8. **Oracle doğrudan (akış) için:** kurulacak bir şey yok — VSIX ince `oracledb` sürücüsünü zaten içerir.
 9. Tanılama için palette `utPLSQL: Show information` kullanın — kopyalama seçeneğiyle sürüm bilgilerini gösterir.
 10. **utPLSQL: Select additional reporter...** — veritabanında bulunan raporlayıcılarla QuickPick.
-11. **utPLSQL: Cancel execution** — çalışan çalıştırmayı durdurur (çalıştırma sırasında `Escape`).
+11. **utPLSQL: Cancel run** — çalışan çalıştırmayı durdurur (çalıştırma sırasında `Escape`).
 12. **utPLSQL: Refresh tests** — `.pks` dosyalarının yeniden keşfini zorlar.
 
 > 💡 **Test yazarken:** ayrıştırıcı belirteç (token) güdümlüdür — dosyada `%suite`
@@ -233,14 +233,14 @@ Tüm uzantı komutları (palet `Ctrl+Shift+P` öneki `utPLSQL:`):
 | `utPLSQL: Run tests in this folder` | Seçili klasörün paketlerini çalıştırır | Sağ tık → klasör |
 | `utPLSQL: Run tests in this folder with coverage` | Aynısı, kapsam profiliyle | Sağ tık → klasör |
 | `utPLSQL: Refresh tests` | `.pks` dosyalarının yeniden keşfini zorlar | — |
-| `utPLSQL: Cancel execution` | Çalışan çalıştırmayı durdurur | — |
-| `utPLSQL: Show utPLSQL information` | Kopyalama seçeneğiyle sürüm bilgileri | — |
+| `utPLSQL: Cancel run` | Çalışan çalıştırmayı durdurur | — |
+| `utPLSQL: Show utPLSQL info` | Kopyalama seçeneğiyle sürüm bilgileri | — |
 | `utPLSQL: Select additional reporter...` | Veritabanı raporlayıcılarıyla QuickPick | — |
 | `utPLSQL: Clear session connection` | Bağlantıyı oturum önbelleğinden kaldırır | — |
 | `utPLSQL: Rerun Last` | Son çalıştırmayı tekrarlar | `Ctrl+Shift+U L` |
 | `utPLSQL: Run Test at Cursor` | İmlecin altındaki testi çalıştırır | `Ctrl+Shift+U U` |
 | `utPLSQL: Run Failed Tests` | Yalnızca başarısız testleri yeniden çalıştırır | `Ctrl+Shift+U X` |
-| `utPLSQL: Validate configuration` | Tam kurulum doğrulaması yapar (bağlantı, UT3 kurulumu) ve sonuçları gösterir | — |
+| `utPLSQL: Validate setup` | Tam kurulum doğrulaması yapar (bağlantı, UT3 kurulumu) ve sonuçları gösterir | — |
 | `utPLSQL: Configure connection` | Ayarları `utplsql.connection` konumunda açar | — |
 | `utPLSQL: Copy coverage grants to clipboard` | Yetki SQL'ini panoya kopyalar | — |
 | `utPLSQL: Show Test Explorer` | Testing görünümüne odaklanır | — |
@@ -346,11 +346,11 @@ GRANT SELECT ON SYS.DBA_PROCEDURES TO <ut3_owner>;
 
 | Belirti | Olası neden | Çözüm |
 |---|---|---|
-| Paketler görünmüyor | Veritabanı bulunamadı | Tanılama için `utPLSQL: Validate configuration` çalıştırın |
+| Paketler görünmüyor | Veritabanı bulunamadı | Tanılama için `utPLSQL: Validate setup` çalıştırın |
 | Boş kapsam | `GRANT EXECUTE ON DBMS_PROFILER` eksik | [Veritabanı gereksinimleri](#veritabanı-gereksinimleri) içindeki yetkileri çalıştırın veya `utPLSQL: Copy coverage grants to clipboard` kullanın |
 | Boş kapsam | Oracle 19c ek yetkiler gerektirir | `GRANT EXECUTE ON DBMS_PROFILER` + `GRANT EXECUTE ON DBMS_PLSQL_CODE_COVERAGE` |
 | Neden belirtilmeyen derleme hatası | PL/SQL sözdizimi hatası olan kod | `utplsql.compilationDiagnostics.enabled` seçeneğini açık tutun (varsayılan); `ALL_ERRORS` kaynaklı hatalar bir çalıştırmadan sonra Problems Panel'inde görünür |
-| Bağlantı hatası | Hatalı biçimli dize veya erişilemeyen veritabanı | `utPLSQL: Validate configuration` kullanın |
+| Bağlantı hatası | Hatalı biçimli dize veya erişilemeyen veritabanı | `utPLSQL: Validate setup` kullanın |
 | Çalışırken zaman aşımı | Testler `timeoutMinutes` değerinden uzun sürüyor | `utplsql.timeoutMinutes` değerini artırın |
 | `%suite` tanınmıyor | Dosyada `%suite`/`create package` eksik veya `%test` `PROCEDURE` olmadan | Şemayı kontrol edin; `utPLSQL: Refresh tests` çalıştırın |
 | CodeLens görünmüyor | `editor.codeLens` devre dışı veya çakışma | `"editor.codeLens": true` ayarlayın; `utplsql.codeLens.enabled` değerini kontrol edin |

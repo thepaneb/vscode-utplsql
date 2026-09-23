@@ -131,7 +131,7 @@ Test Explorer **as each test finishes**.
 | `utplsql.oracleClientMode` | `thin` | Driver mode: `thin` (pure JavaScript, no native client) or `thick` (uses the Oracle Instant Client). Use `thick` only for databases that require NNE (Native Network Encryption); requires `utplsql.oracleClientLibDir` and a window reload. |
 | `utplsql.oracleClientLibDir` | `""` | Oracle Instant Client directory. Required when `utplsql.oracleClientMode` is `thick` (e.g. `C:\oracle\instantclient_23_5`). |
 | `utplsql.oracleClientConfigDir` | `""` | Oracle configuration directory (TNS_ADMIN) with `sqlnet.ora`/`tnsnames.ora`. Optional; used only by the thick driver. |
-| `utplsql.organization` | `file` | Tree organization: `file` (by path) or `schema` (Schema > Package > Suite > Test). In `schema` mode, suites are also discovered from the database (`ALL_OBJECTS`/`ALL_SOURCE`) when `.pks` files are not in the workspace — with virtual URI `utplsql-db:/` (no CodeLens/decorations/jump to failure). |
+| `utplsql.organization` | `file` | Tree organization: `file` (by path) or `schema` (Schema > Package > Suite > Test). In `schema` mode, suites are also discovered from the database (`ut_runner.get_suites_info`, falling back to `ALL_OBJECTS`/`ALL_SOURCE`) when `.pks` files are not in the workspace — virtual URI `utplsql-db:/` (execution and jump to failure work; no CodeLens/decorations). |
 | `utplsql.organization.schemaPattern` | `db/{schema}/**` | Glob pattern to extract the schema from the path. Use `{schema}` as the placeholder. In `schema` mode, the directories below the pattern base (e.g. `db/*`) define the schemas queried in the database. |
 | `utplsql.discovery.source` | `auto` | Source of the test tree in `schema` mode: `auto` uses the database API (`ut_runner.get_suites_info`) and falls back to `ALL_SOURCE`/files when unavailable; `database` requires the API; `file` disables database discovery. |
 | `utplsql.refreshDebounceMs` | `300` | Debounce (ms) to coalesce `.pks`/`.pkb` file watcher events before refreshing the Test Explorer. |
@@ -197,7 +197,7 @@ UTPLSQL_CONN=your_user/password@//host:1521/service
    - `Ctrl+Shift+U X` — **Run Failed Only** (runs only the tests that failed).
 8. For diagnostics, use `utPLSQL: Show information` in the palette — shows API/DB versions with a copy option.
 9. **utPLSQL: Select additional reporter...** — QuickPick with the reporters available in the database.
-10. **utPLSQL: Cancel execution** — stops the running execution (`Escape` during execution).
+10. **utPLSQL: Cancel run** — stops the running execution (`Escape` during execution).
 11. **utPLSQL: Refresh tests** — forces rediscovery of `.pks`.
 
 > 💡 **When writing tests:** the parser is token-driven — just have `%suite`
@@ -231,14 +231,14 @@ All extension commands (palette `Ctrl+Shift+P` prefix `utPLSQL:`):
 | `utPLSQL: Run tests in this folder` | Runs suites of the selected folder | Right-click → folder |
 | `utPLSQL: Run tests in this folder with coverage` | Same, with coverage profile | Right-click → folder |
 | `utPLSQL: Refresh tests` | Forces rediscovery of `.pks` | — |
-| `utPLSQL: Cancel execution` | Stops the running execution | — |
-| `utPLSQL: Show utPLSQL information` | API/DB versions with copy option | — |
+| `utPLSQL: Cancel run` | Stops the running execution | — |
+| `utPLSQL: Show utPLSQL info` | API/DB versions with copy option | — |
 | `utPLSQL: Select additional reporter...` | QuickPick with database reporters | — |
 | `utPLSQL: Clear session connection` | Removes the connection from the session cache | — |
 | `utPLSQL: Rerun Last` | Repeats the last execution | `Ctrl+Shift+U L` |
 | `utPLSQL: Run Test at Cursor` | Runs the test under the cursor | `Ctrl+Shift+U U` |
 | `utPLSQL: Run Failed Tests` | Re-runs only the failed tests | `Ctrl+Shift+U X` |
-| `utPLSQL: Validate configuration` | Runs full setup validation (connection, UT3 installation) and shows results | — |
+| `utPLSQL: Validate setup` | Runs full setup validation (connection, UT3 installation) and shows results | — |
 | `utPLSQL: Configure connection` | Opens settings at `utplsql.connection` | — |
 | `utPLSQL: Copy coverage grants to clipboard` | Copies the grants SQL to the clipboard | — |
 | `utPLSQL: Show Test Explorer` | Focuses the Testing view | — |
@@ -267,12 +267,12 @@ All shortcuts use the `Ctrl+Shift+U` prefix (`Cmd+Shift+U` on Mac):
 | `Ctrl+Shift+U T` | Run tests in file |
 | `Ctrl+Shift+U Shift+T` | Run tests in file with coverage |
 | `Ctrl+Shift+U F` | Refresh tests |
-| `Ctrl+Shift+U I` | Show utPLSQL information |
+| `Ctrl+Shift+U I` | Show utPLSQL info |
 | `Ctrl+Shift+U C` | Clear session connection |
 | `Ctrl+Shift+U L` | Rerun last |
 | `Ctrl+Shift+U U` | Run at cursor |
 | `Ctrl+Shift+U X` | Run failed only |
-| `Escape` | Cancel execution |
+| `Escape` | Cancel run |
 
 ## Coverage
 
@@ -308,8 +308,8 @@ listed here.
 
 **Volatile per-session reporter** — command **utPLSQL: Select additional
 reporter...** opens a QuickPick with the dynamic list from the database. The
-chosen reporter is stored in the session, but the selection is **not applied**
-in the current Oracle-only version.
+chosen reporter is stored in the session and **applied to the next run**
+(`consumeExtraReporter()`, logged as `[info] Reporter adicional da sessão`).
 
 ## Database requirements
 
@@ -348,11 +348,11 @@ GRANT SELECT ON SYS.DBA_PROCEDURES TO <ut3_owner>;
 
 | Symptom | Likely cause | Solution |
 |---|---|---|
-| Suites don't appear | Connection issue | Run `utPLSQL: Validate configuration` for diagnostics |
+| Suites don't appear | Connection issue | Run `utPLSQL: Validate setup` for diagnostics |
 | Empty coverage | Missing `GRANT EXECUTE ON DBMS_PROFILER` | Run the grants in [Requirements](#database-requirements) or use `utPLSQL: Copy coverage grants to clipboard` |
 | Empty coverage | Oracle 19c requires additional grants | `GRANT EXECUTE ON DBMS_PROFILER` + `GRANT EXECUTE ON DBMS_PLSQL_CODE_COVERAGE` |
 | Compilation error with no indication | Code with PL/SQL syntax error | Keep `utplsql.compilationDiagnostics.enabled` on (default); errors from `ALL_ERRORS` appear in the Problems Panel after a run |
-| Connection error | Malformed string or unreachable DB | Use `utPLSQL: Validate configuration` |
+| Connection error | Malformed string or unreachable DB | Use `utPLSQL: Validate setup` |
 | Connection error / `ORA-12660` / `NJS-500` | Database requires NNE (Native Network Encryption), unsupported by the thin driver | Set `utplsql.oracleClientMode` to `thick` and `utplsql.oracleClientLibDir` to your Oracle Instant Client, then reload the window |
 | Debug doesn't stop at the breakpoint | Package compiled without debug info, or missing debug grants | Compile with `PLSQL_OPTIMIZE_LEVEL <= 1` (or `ALTER PACKAGE ... COMPILE DEBUG PLSQL_OPTIMIZE_LEVEL = 1`) and grant `DEBUG CONNECT SESSION` + `EXECUTE ON SYS.DBMS_DEBUG`. Breakpoints in `test_*.pkb` may not hit (utPLSQL runs tests via dynamic SQL); set them in the code under test. |
 | Timeout while running | Tests take longer than `timeoutMinutes` | Increase `utplsql.timeoutMinutes` |

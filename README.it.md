@@ -132,7 +132,7 @@ Test Explorer **appena ogni test termina**.
 | `utplsql.oracleClientLibDir` | `""` | Directory dell'Oracle Instant Client. Obbligatoria quando `utplsql.oracleClientMode` è `thick` (es. `C:\oracle\instantclient_23_5`). |
 | Il debug non si ferma al breakpoint | Package compilato senza info di debug, o grant di debug mancanti | Compila con `PLSQL_OPTIMIZE_LEVEL <= 1` (o `ALTER PACKAGE ... COMPILE DEBUG PLSQL_OPTIMIZE_LEVEL = 1`) e concedi `DEBUG CONNECT SESSION` + `EXECUTE ON SYS.DBMS_DEBUG`. I breakpoint in `test_*.pkb` potrebbero non scattare (utPLSQL esegue i test via SQL dinamico); impostali nel codice sotto test. |
 | `utplsql.oracleClientConfigDir` | `""` | Directory di configurazione Oracle (TNS_ADMIN) con `sqlnet.ora`/`tnsnames.ora`. Opzionale; usata solo dal driver thick. |
-| `utplsql.organization` | `file` | Organizzazione dell'albero: `file` (per percorso) o `schema` (Schema > Package > Suite > Test). In modalità `schema`, le suite vengono scoperte anche dal database (`ALL_OBJECTS`/`ALL_SOURCE`) quando i file `.pks` non sono nel workspace — con URI virtuale `utplsql-db:/` (niente CodeLens/decorazioni/vai all'errore). |
+| `utplsql.organization` | `file` | Organizzazione dell'albero: `file` (per percorso) o `schema` (Schema > Package > Suite > Test). In modalità `schema`, le suite vengono scoperte anche dal database (`ut_runner.get_suites_info`, con fallback a `ALL_OBJECTS`/`ALL_SOURCE`) quando i file `.pks` non sono nel workspace — URI virtuale `utplsql-db:/` (esecuzione e vai all'errore funzionano; niente CodeLens/decorazioni). |
 | `utplsql.organization.schemaPattern` | `db/{schema}/**` | Pattern Glob per estrarre lo schema dal percorso. Usa `{schema}` come segnaposto. In modalità `schema`, le directory sotto la base del pattern (es. `db/*`) definiscono gli schemi interrogati nel database. |
 | `utplsql.discovery.source` | `auto` | Sorgente dell'albero in modalità `schema`: `auto` usa l'API del database (`ut_runner.get_suites_info`) e ripiega su `ALL_SOURCE`/file se non disponibile; `database` richiede l'API; `file` disattiva la scoperta via database. |
 | `utplsql.refreshDebounceMs` | `300` | Debounce (ms) per raggruppare gli eventi del watcher dei file `.pks`/`.pkb` prima di aggiornare il Test Explorer. |
@@ -198,7 +198,7 @@ UTPLSQL_CONN=your_user/password@//host:1521/service
    - `Ctrl+Shift+U X` — **Run Failed Only** (esegue solo i test falliti).
 8. Per i diagnostici, usa `utPLSQL: Show information` nella palette — mostra le versioni API/DB con opzione di copia.
 9. **utPLSQL: Select additional reporter...** — QuickPick con i reporter disponibili nel database.
-10. **utPLSQL: Cancel execution** — ferma l'esecuzione in corso (`Escape` durante l'esecuzione).
+10. **utPLSQL: Cancel run** — ferma l'esecuzione in corso (`Escape` durante l'esecuzione).
 11. **utPLSQL: Refresh tests** — forza la riscoperta dei `.pks`.
 
 > 💡 **Quando scrivi i test:** il parser è guidato dai token — basta avere `%suite`
@@ -232,14 +232,14 @@ Tutti i comandi dell'estensione (palette `Ctrl+Shift+P`, prefisso `utPLSQL:`):
 | `utPLSQL: Run tests in this folder` | Esegue le suite della cartella selezionata | Clic destro → cartella |
 | `utPLSQL: Run tests in this folder with coverage` | Come sopra, con profilo di copertura | Clic destro → cartella |
 | `utPLSQL: Refresh tests` | Forza la riscoperta dei `.pks` | — |
-| `utPLSQL: Cancel execution` | Ferma l'esecuzione in corso | — |
-| `utPLSQL: Show utPLSQL information` | Versioni API/DB con opzione di copia | — |
+| `utPLSQL: Cancel run` | Ferma l'esecuzione in corso | — |
+| `utPLSQL: Show utPLSQL info` | Versioni API/DB con opzione di copia | — |
 | `utPLSQL: Select additional reporter...` | QuickPick con i reporter del database | — |
 | `utPLSQL: Clear session connection` | Rimuove la connessione dalla cache di sessione | — |
 | `utPLSQL: Rerun Last` | Ripete l'ultima esecuzione | `Ctrl+Shift+U L` |
 | `utPLSQL: Run Test at Cursor` | Esegue il test sotto il cursore | `Ctrl+Shift+U U` |
 | `utPLSQL: Run Failed Tests` | Rieesegue solo i test falliti | `Ctrl+Shift+U X` |
-| `utPLSQL: Validate configuration` | Esegue la validazione completa del setup (connessione, installazione UT3) e mostra i risultati | — |
+| `utPLSQL: Validate setup` | Esegue la validazione completa del setup (connessione, installazione UT3) e mostra i risultati | — |
 | `utPLSQL: Configure connection` | Apre le impostazioni su `utplsql.connection` | — |
 | `utPLSQL: Copy coverage grants to clipboard` | Copia gli SQL dei grants negli appunti | — |
 | `utPLSQL: Show Test Explorer` | Dà il focus alla vista Testing | — |
@@ -350,11 +350,11 @@ GRANT SELECT ON SYS.DBA_PROCEDURES TO <ut3_owner>;
 
 | Sintomo | Causa probabile | Soluzione |
 |---|---|---|
-| Le suite non appaiono | Problema di connessione | Esegui `utPLSQL: Validate configuration` per i diagnostici |
+| Le suite non appaiono | Problema di connessione | Esegui `utPLSQL: Validate setup` per i diagnostici |
 | Copertura vuota | Manca `GRANT EXECUTE ON DBMS_PROFILER` | Esegui i grants in [Requisiti del database](#requisiti-del-database) o usa `utPLSQL: Copy coverage grants to clipboard` |
 | Copertura vuota | Oracle 19c richiede grants aggiuntivi | `GRANT EXECUTE ON DBMS_PROFILER` + `GRANT EXECUTE ON DBMS_PLSQL_CODE_COVERAGE` |
 | Errore di compilazione senza indicazione | Codice con errore di sintassi PL/SQL | Mantieni `utplsql.compilationDiagnostics.enabled` attivo (predefinito); gli errori di `ALL_ERRORS` compaiono nel Problems Panel dopo un'esecuzione |
-| Errore di connessione | Stringa malformata o DB non raggiungibile | Usa `utPLSQL: Validate configuration` |
+| Errore di connessione | Stringa malformata o DB non raggiungibile | Usa `utPLSQL: Validate setup` |
 | Timeout durante l'esecuzione | I test impiegano più di `timeoutMinutes` | Aumenta `utplsql.timeoutMinutes` |
 | `%suite` non riconosciuto | Manca `%suite`/`create package` nel file, o `%test` senza `PROCEDURE` | Controlla la spec; esegui `utPLSQL: Refresh tests` |
 | CodeLens non appare | `editor.codeLens` disabilitato o conflitto | Abilita `"editor.codeLens": true`; controlla `utplsql.codeLens.enabled` |

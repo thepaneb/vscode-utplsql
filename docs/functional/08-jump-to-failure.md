@@ -115,7 +115,9 @@ Apenas o primeiro frame de usuário é usado para navegação.
 
 ## Limitações
 
-- Funciona apenas para código versionado localmente (`.pks`/`.pkb` no workspace)
+- Funciona para código local (`.pks`/`.pkb` no workspace) **e** para suites
+  só-DB: o `dbSourceProvider` serve o documento virtual `utplsql-db:` (fonte de
+  `ALL_SOURCE`) para o "Go to Error"
 - Stack traces multi-frame usam o primeiro frame de usuário
 - Código externo (packages padrão Oracle) → `message.location` fica `undefined`
 - Resolução para `.pks` por padrão; `.pkb` não é verificado automaticamente

@@ -65,6 +65,21 @@ test('docs-fidelity: detecta termo obsoleto', () => {
   assert.ok(problems.some((p) => p.includes('type_mapping')));
 });
 
+test('docs-fidelity: detecta título de comando ausente no README', () => {
+  const problems = checkFidelity({
+    commandTitles: [{ id: 'utplsql.comandoY', title: 'Fazer coisa muito especifica' }],
+    readme: 'README sem o comando',
+  });
+  assert.ok(problems.some((p) => p.includes('utplsql.comandoY')));
+});
+
+test('docs-fidelity: detecta claim obsoleto (is never called)', () => {
+  const problems = checkFidelity({
+    'Reporters.md': 'the selection is never called aqui',
+  });
+  assert.ok(problems.some((p) => p.includes('is never called') && p.includes('Reporters.md')));
+});
+
 test('docs-fidelity: metadados do repo são coerentes', () => {
   assert.ok(realSettings().length > 20, 'deveria ler as settings do package.json');
   assert.strictEqual(realCommands().length, realCommands().length);

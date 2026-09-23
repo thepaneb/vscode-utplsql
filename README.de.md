@@ -132,7 +132,7 @@ Test Explorer, **sobald jeder Test fertig ist**.
 | `utplsql.oracleClientLibDir` | `""` | Verzeichnis des Oracle Instant Client. Erforderlich, wenn `utplsql.oracleClientMode` `thick` ist (z. B. `C:\oracle\instantclient_23_5`). |
 | Debug hält nicht am Breakpoint an | Package ohne Debug-Infos kompiliert oder fehlende Debug-Grants | Mit `PLSQL_OPTIMIZE_LEVEL <= 1` kompilieren (oder `ALTER PACKAGE ... COMPILE DEBUG PLSQL_OPTIMIZE_LEVEL = 1`) und `DEBUG CONNECT SESSION` + `EXECUTE ON SYS.DBMS_DEBUG` gewähren. Breakpoints in `test_*.pkb` greifen ggf. nicht (utPLSQL führt Tests per dynamischem SQL aus); setzen Sie sie im getesteten Code. |
 | `utplsql.oracleClientConfigDir` | `""` | Oracle-Konfigurationsverzeichnis (TNS_ADMIN) mit `sqlnet.ora`/`tnsnames.ora`. Optional; wird nur im Thick-Modus verwendet. |
-| `utplsql.organization` | `file` | Baumorganisation: `file` (nach Pfad) oder `schema` (Schema > Package > Suite > Test). Im `schema`-Modus werden Suiten auch aus der Datenbank (`ALL_OBJECTS`/`ALL_SOURCE`) ermittelt, wenn keine `.pks`-Dateien im Arbeitsbereich liegen — mit virtuellem URI `utplsql-db:/` (kein CodeLens/keine Dekorationen/kein Sprung zum Fehler). |
+| `utplsql.organization` | `file` | Baumorganisation: `file` (nach Pfad) oder `schema` (Schema > Package > Suite > Test). Im `schema`-Modus werden Suiten auch aus der Datenbank (`ut_runner.get_suites_info`, mit Rückfall auf `ALL_OBJECTS`/`ALL_SOURCE`) ermittelt, wenn keine `.pks`-Dateien im Arbeitsbereich liegen — virtuellem URI `utplsql-db:/` (Ausführung und Sprung zum Fehler funktionieren; kein CodeLens/keine Dekorationen). |
 | `utplsql.organization.schemaPattern` | `db/{schema}/**` | Glob-Muster zum Extrahieren des Schemas aus dem Pfad. Verwenden Sie `{schema}` als Platzhalter. Im `schema`-Modus definieren die Verzeichnisse unterhalb der Musterbasis (z. B. `db/*`) die in der Datenbank abgefragten Schemas. |
 | `utplsql.discovery.source` | `auto` | Quelle des Testbaums im `schema`-Modus: `auto` nutzt die Datenbank-API (`ut_runner.get_suites_info`) und fällt bei Nichtverfügbarkeit auf `ALL_SOURCE`/Dateien zurück; `database` erfordert die API; `file` deaktiviert die Datenbankerkennung. |
 | `utplsql.refreshDebounceMs` | `300` | Entprellung (ms), um Watcher-Ereignisse für `.pks`/`.pkb`-Dateien vor dem Aktualisieren des Test Explorers zusammenzufassen. |
@@ -198,7 +198,7 @@ UTPLSQL_CONN=your_user/password@//host:1521/service
    - `Ctrl+Shift+U X` — **Run Failed Only** (führt nur die fehlgeschlagenen Tests aus).
 8. Für Diagnosen verwenden Sie `utPLSQL: Show information` in der Palette — zeigt API-/DB-Versionen mit Kopieroption.
 9. **utPLSQL: Select additional reporter...** — QuickPick mit den in der Datenbank verfügbaren Reportern.
-10. **utPLSQL: Cancel execution** — stoppt die laufende Ausführung (`Escape` während der Ausführung).
+10. **utPLSQL: Cancel run** — stoppt die laufende Ausführung (`Escape` während der Ausführung).
 11. **utPLSQL: Refresh tests** — erzwingt die erneute Ermittlung der `.pks`.
 
 > 💡 **Beim Schreiben von Tests:** der Parser ist token-gesteuert — es genügen `%suite`
@@ -232,14 +232,14 @@ Alle Befehle der Erweiterung (Palette `Ctrl+Shift+P`, Präfix `utPLSQL:`):
 | `utPLSQL: Run tests in this folder` | Führt die Suiten des ausgewählten Ordners aus | Rechtsklick → Ordner |
 | `utPLSQL: Run tests in this folder with coverage` | Gleich, mit Coverage-Profil | Rechtsklick → Ordner |
 | `utPLSQL: Refresh tests` | Erzwingt die erneute Ermittlung der `.pks` | — |
-| `utPLSQL: Cancel execution` | Stoppt die laufende Ausführung | — |
-| `utPLSQL: Show utPLSQL information` | API-/DB-Versionen mit Kopieroption | — |
+| `utPLSQL: Cancel run` | Stoppt die laufende Ausführung | — |
+| `utPLSQL: Show utPLSQL info` | API-/DB-Versionen mit Kopieroption | — |
 | `utPLSQL: Select additional reporter...` | QuickPick mit Datenbank-Reportern | — |
 | `utPLSQL: Clear session connection` | Entfernt die Verbindung aus dem Sitzungscache | — |
 | `utPLSQL: Rerun Last` | Wiederholt die letzte Ausführung | `Ctrl+Shift+U L` |
 | `utPLSQL: Run Test at Cursor` | Führt den Test unter dem Cursor aus | `Ctrl+Shift+U U` |
 | `utPLSQL: Run Failed Tests` | Führt nur die fehlgeschlagenen Tests erneut aus | `Ctrl+Shift+U X` |
-| `utPLSQL: Validate configuration` | Führt die vollständige Setup-Validierung aus (Verbindung, UT3-Installation) und zeigt die Ergebnisse | — |
+| `utPLSQL: Validate setup` | Führt die vollständige Setup-Validierung aus (Verbindung, UT3-Installation) und zeigt die Ergebnisse | — |
 | `utPLSQL: Configure connection` | Öffnet die Einstellungen bei `utplsql.connection` | — |
 | `utPLSQL: Copy coverage grants to clipboard` | Kopiert die Coverage-Grants-SQL in die Zwischenablage | — |
 | `utPLSQL: Show Test Explorer` | Fokussiert die Testing-Ansicht | — |
@@ -350,11 +350,11 @@ GRANT SELECT ON SYS.DBA_PROCEDURES TO <ut3_owner>;
 
 | Symptom | Wahrscheinliche Ursache | Lösung |
 |---|---|---|
-| Suiten erscheinen nicht | Verbindungsproblem | Führen Sie `utPLSQL: Validate configuration` für Diagnosen aus |
+| Suiten erscheinen nicht | Verbindungsproblem | Führen Sie `utPLSQL: Validate setup` für Diagnosen aus |
 | Leere Coverage | Fehlendes `GRANT EXECUTE ON DBMS_PROFILER` | Führen Sie die Grants unter [Datenbank-Anforderungen](#datenbank-anforderungen) aus oder verwenden Sie `utPLSQL: Copy coverage grants to clipboard` |
 | Leere Coverage | Oracle 19c erfordert zusätzliche Grants | `GRANT EXECUTE ON DBMS_PROFILER` + `GRANT EXECUTE ON DBMS_PLSQL_CODE_COVERAGE` |
 | Kompilierungsfehler ohne Angabe | Code mit PL/SQL-Syntaxfehler | Lassen Sie `utplsql.compilationDiagnostics.enabled` aktiviert (Standard); Fehler aus `ALL_ERRORS` erscheinen nach einem Lauf im Problems-Panel |
-| Verbindungsfehler | Fehlerhafter String oder nicht erreichbare DB | Verwenden Sie `utPLSQL: Validate configuration` |
+| Verbindungsfehler | Fehlerhafter String oder nicht erreichbare DB | Verwenden Sie `utPLSQL: Validate setup` |
 | Timeout während der Ausführung | Tests dauern länger als `timeoutMinutes` | Erhöhen Sie `utplsql.timeoutMinutes` |
 | `%suite` nicht erkannt | Fehlendes `%suite`/`create package` in der Datei, oder `%test` ohne `PROCEDURE` | Prüfen Sie die Spec; führen Sie `utPLSQL: Refresh tests` aus |
 | CodeLens erscheint nicht | `editor.codeLens` deaktiviert oder Konflikt | Aktivieren Sie `"editor.codeLens": true`; prüfen Sie `utplsql.codeLens.enabled` |

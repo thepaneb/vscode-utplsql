@@ -133,7 +133,7 @@ Extensia se conectează direct prin Oracle, citește rapoartele (JUnit + Coverag
 | `utplsql.oracleClientLibDir` | `""` | Directorul Oracle Instant Client. Obligatoriu când `utplsql.oracleClientMode` este `thick` (ex. `C:\oracle\instantclient_23_5`). |
 | Debug nu se oprește la punctul de întrerupere | Pachet fără informații de depanare sau granturi de depanare lipsă | Compilați cu `PLSQL_OPTIMIZE_LEVEL <= 1` (sau `ALTER PACKAGE ... COMPILE DEBUG PLSQL_OPTIMIZE_LEVEL = 1`) și acordați `DEBUG CONNECT SESSION` + `EXECUTE ON SYS.DBMS_DEBUG`. Punctele de întrerupere din `test_*.pkb` pot să nu se declanșeze (utPLSQL rulează testele prin SQL dinamic); puneți-le în codul testat. |
 | `utplsql.oracleClientConfigDir` | `""` | Directorul de configurare Oracle (TNS_ADMIN) cu `sqlnet.ora`/`tnsnames.ora`. Opțional; folosit doar de driverul thick. |
-| `utplsql.organization` | `file` | Organizarea arborelui: `file` (după cale) sau `schema` (Schema > Package > Suite > Test). În modul `schema` suitele sunt descoperite și din baza de date (`ALL_OBJECTS`/`ALL_SOURCE`) atunci când fișierele `.pks` nu sunt în workspace — cu URI virtual `utplsql-db:/` (fără CodeLens/decorări/salt la eșec). |
+| `utplsql.organization` | `file` | Organizarea arborelui: `file` (după cale) sau `schema` (Schema > Package > Suite > Test). În modul `schema` suitele sunt descoperite și din baza de date (`ut_runner.get_suites_info`, cu revenire la `ALL_OBJECTS`/`ALL_SOURCE`) atunci când fișierele `.pks` nu sunt în workspace — cu URI virtual `utplsql-db:/` (executarea și saltul la eșec funcționează; fără CodeLens/decorări). |
 | `utplsql.organization.schemaPattern` | `db/{schema}/**` | Model glob pentru extragerea schemei din cale. Folosește `{schema}` ca substituent. În modul `schema`, directoarele de sub baza modelului (ex.: `db/*`) definesc schemele interogate în baza de date. |
 | `utplsql.discovery.source` | `auto` | Sursa arborelui în modul `schema`: `auto` folosește API-ul bazei (`ut_runner.get_suites_info`) și trece la `ALL_SOURCE`/fișiere când nu este disponibil; `database` impune API-ul; `file` dezactivează descoperirea prin bază. |
 | `utplsql.refreshDebounceMs` | `300` | Debounce (ms) pentru a unifica evenimentele watcher-ului de fișiere `.pks`/`.pkb` înainte de a reîmprospăta Test Explorer. |
@@ -200,7 +200,7 @@ UTPLSQL_CONN=your_user/password@//host:1521/service
 8. **Pentru Oracle direct (streaming):** nimic de instalat — VSIX-ul include deja driverul subțire `oracledb`.
 9. Pentru diagnostice, folosește `utPLSQL: Show information` în paletă — afișează versiunile API/DB cu opțiune de copiere.
 10. **utPLSQL: Select additional reporter...** — QuickPick cu reporterii disponibili în baza de date.
-11. **utPLSQL: Cancel execution** — oprește execuția în curs (`Escape` în timpul execuției).
+11. **utPLSQL: Cancel run** — oprește execuția în curs (`Escape` în timpul execuției).
 12. **utPLSQL: Refresh tests** — forțează redescoperirea `.pks`.
 
 > 💡 **Când scrii teste:** parser-ul este condus de tokeni — trebuie doar să ai `%suite`
@@ -234,14 +234,14 @@ Toate comenzile extensiei (paletă `Ctrl+Shift+P`, prefix `utPLSQL:`):
 | `utPLSQL: Run tests in this folder` | Rulează suitele folderului selectat | Clic dreapta → folder |
 | `utPLSQL: Run tests in this folder with coverage` | La fel, cu profil de acoperire | Clic dreapta → folder |
 | `utPLSQL: Refresh tests` | Forțează redescoperirea `.pks` | — |
-| `utPLSQL: Cancel execution` | Oprește execuția în curs | — |
-| `utPLSQL: Show utPLSQL information` | Versiunile API/DB cu opțiune de copiere | — |
+| `utPLSQL: Cancel run` | Oprește execuția în curs | — |
+| `utPLSQL: Show utPLSQL info` | Versiunile API/DB cu opțiune de copiere | — |
 | `utPLSQL: Select additional reporter...` | QuickPick cu reporterii din baza de date | — |
 | `utPLSQL: Clear session connection` | Elimină conexiunea din cache-ul de sesiune | — |
 | `utPLSQL: Rerun Last` | Repetă ultima execuție | `Ctrl+Shift+U L` |
 | `utPLSQL: Run Test at Cursor` | Rulează testul de sub cursor | `Ctrl+Shift+U U` |
 | `utPLSQL: Run Failed Tests` | Re-rulează doar testele eșuate | `Ctrl+Shift+U X` |
-| `utPLSQL: Validate configuration` | Rulează validarea completă a configurării (conexiune, instalare UT3) și afișează rezultatele | — |
+| `utPLSQL: Validate setup` | Rulează validarea completă a configurării (conexiune, instalare UT3) și afișează rezultatele | — |
 | `utPLSQL: Configure connection` | Deschide setările la `utplsql.connection` | — |
 | `utPLSQL: Copy coverage grants to clipboard` | Copiază SQL-ul granturilor în clipboard | — |
 | `utPLSQL: Show Test Explorer` | Focalizează vizualizarea Testing | — |
@@ -392,7 +392,7 @@ GRANT SELECT ON SYS.DBA_PROCEDURES TO <ut3_owner>;
 | Acoperire goală | Lipsește `GRANT EXECUTE ON DBMS_PROFILER` | Rulează granturile din [Cerințe pentru baza de date](#cerințe-pentru-baza-de-date) sau folosește `utPLSQL: Copy coverage grants to clipboard` |
 | Acoperire goală | Oracle 19c necesită granturi suplimentare | `GRANT EXECUTE ON DBMS_PROFILER` + `GRANT EXECUTE ON DBMS_PLSQL_CODE_COVERAGE` |
 | Eroare de compilare fără indicație | Cod cu eroare de sintaxă PL/SQL | Menține `utplsql.compilationDiagnostics.enabled` activat (implicit); erorile din `ALL_ERRORS` apar în Problems Panel după o rulare |
-| Eroare de conexiune | String malformat sau bază de date inaccesibilă | Folosește `utPLSQL: Validate configuration` |
+| Eroare de conexiune | String malformat sau bază de date inaccesibilă | Folosește `utPLSQL: Validate setup` |
 | `%suite` nu este recunoscut | Lipsesc `%suite`/`create package` în fișier, sau `%test` fără `PROCEDURE` | Verifică spec-ul; rulează `utPLSQL: Refresh tests` |
 | CodeLens nu apare | `editor.codeLens` dezactivat sau conflict | Activează `"editor.codeLens": true`; verifică `utplsql.codeLens.enabled` |
 | Scurtăturile nu funcționează | Conflict cu altă extensie sau scurtătură VSCode | Mergi la File → Preferences → Keyboard Shortcuts și caută `utplsql` pentru a redefini |

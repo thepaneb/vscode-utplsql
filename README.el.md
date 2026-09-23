@@ -134,7 +134,7 @@ Test Explorer **καθώς ολοκληρώνεται κάθε test**.
 | `utplsql.oracleClientLibDir` | `""` | Κατάλογος του Oracle Instant Client. Απαιτείται όταν το `utplsql.oracleClientMode` είναι `thick` (π.χ. `C:\oracle\instantclient_23_5`). |
 | Το debug δεν σταματά στο σημείο διακοπής | Πακέτο χωρίς πληροφορίες debug ή λείπουν τα δικαιώματα debug | Μεταγλωττίστε με `PLSQL_OPTIMIZE_LEVEL <= 1` (ή `ALTER PACKAGE ... COMPILE DEBUG PLSQL_OPTIMIZE_LEVEL = 1`) και δώστε `DEBUG CONNECT SESSION` + `EXECUTE ON SYS.DBMS_DEBUG`. Τα σημεία διακοπής στο `test_*.pkb` μπορεί να μην πιάνονται (το utPLSQL εκτελεί τα test μέσω δυναμικού SQL)· βάλτε τα στον κώδικα υπό δοκιμή. |
 | `utplsql.oracleClientConfigDir` | `""` | Κατάλογος διαμόρφωσης Oracle (TNS_ADMIN) με `sqlnet.ora`/`tnsnames.ora`. Προαιρετικός· χρησιμοποιείται μόνο από τη λειτουργία thick. |
-| `utplsql.organization` | `file` | Οργάνωση δέντρου: `file` (ανά διαδρομή) ή `schema` (Schema > Package > Suite > Test). Στη λειτουργία `schema` τα suites ανακαλύπτονται επίσης από τη βάση (`ALL_OBJECTS`/`ALL_SOURCE`) όταν τα αρχεία `.pks` δεν υπάρχουν στο workspace — με εικονικό URI `utplsql-db:/` (χωρίς CodeLens/decorations/jump to failure). |
+| `utplsql.organization` | `file` | Οργάνωση δέντρου: `file` (ανά διαδρομή) ή `schema` (Schema > Package > Suite > Test). Στη λειτουργία `schema` τα suites ανακαλύπτονται επίσης από τη βάση (`ut_runner.get_suites_info`, με εφεδρική χρήση `ALL_OBJECTS`/`ALL_SOURCE`) όταν τα αρχεία `.pks` δεν υπάρχουν στο workspace — με εικονικό URI `utplsql-db:/` (εκτέλεση και μετάβαση στο σφάλμα λειτουργούν· χωρίς CodeLens/decorations). |
 | `utplsql.organization.schemaPattern` | `db/{schema}/**` | Glob pattern για την εξαγωγή του schema από τη διαδρομή. Χρησιμοποιήστε το `{schema}` ως placeholder. Στη λειτουργία `schema`, οι κατάλογοι κάτω από τη βάση του pattern (π.χ. `db/*`) ορίζουν τα schemas που ερωτώνται στη βάση. |
 | `utplsql.discovery.source` | `auto` | Πηγή του δέντρου στη λειτουργία `schema`: το `auto` χρησιμοποιεί το API της βάσης (`ut_runner.get_suites_info`) και καταφεύγει σε `ALL_SOURCE`/αρχεία όταν δεν είναι διαθέσιμο· το `database` απαιτεί το API· το `file` απενεργοποιεί την ανακάλυψη μέσω βάσης. |
 | `utplsql.refreshDebounceMs` | `300` | Debounce (ms) για συγχώνευση συμβάντων του watcher αρχείων `.pks`/`.pkb` πριν από την ανανέωση του Test Explorer. |
@@ -201,7 +201,7 @@ UTPLSQL_CONN=your_user/password@//host:1521/service
 8. **Για Oracle direct (streaming):** δεν χρειάζεται τίποτα να εγκατασταθεί — το VSIX περιλαμβάνει ήδη τον thin driver `oracledb`.
 9. Για διαγνωστικά, χρησιμοποιήστε το `utPLSQL: Show information` στην palette — δείχνει εκδόσεις API/DB με επιλογή αντιγραφής.
 10. **utPLSQL: Select additional reporter...** — QuickPick με τους reporters που είναι διαθέσιμοι στη βάση.
-11. **utPLSQL: Cancel execution** — σταματά την τρέχουσα εκτέλεση (`Escape` κατά την εκτέλεση).
+11. **utPLSQL: Cancel run** — σταματά την τρέχουσα εκτέλεση (`Escape` κατά την εκτέλεση).
 12. **utPLSQL: Refresh tests** — επιβάλλει εκ νέου εύρεση των `.pks`.
 
 > 💡 **Όταν γράφετε tests:** ο parser βασίζεται σε tokens — αρκεί να υπάρχουν το `%suite`
@@ -235,14 +235,14 @@ UTPLSQL_CONN=your_user/password@//host:1521/service
 | `utPLSQL: Run tests in this folder` | Εκτελεί τα suites του επιλεγμένου φακέλου | Δεξί κλικ → φάκελος |
 | `utPLSQL: Run tests in this folder with coverage` | Ίδιο, με profile coverage | Δεξί κλικ → φάκελος |
 | `utPLSQL: Refresh tests` | Επιβάλλει εκ νέου εύρεση των `.pks` | — |
-| `utPLSQL: Cancel execution` | Σταματά την τρέχουσα εκτέλεση | — |
-| `utPLSQL: Show utPLSQL information` | Εκδόσεις API/DB με επιλογή αντιγραφής | — |
+| `utPLSQL: Cancel run` | Σταματά την τρέχουσα εκτέλεση | — |
+| `utPLSQL: Show utPLSQL info` | Εκδόσεις API/DB με επιλογή αντιγραφής | — |
 | `utPLSQL: Select additional reporter...` | QuickPick με τους reporters της βάσης | — |
 | `utPLSQL: Clear session connection` | Αφαιρεί τη σύνδεση από την cache της συνόδου | — |
 | `utPLSQL: Rerun Last` | Επαναλαμβάνει την τελευταία εκτέλεση | `Ctrl+Shift+U L` |
 | `utPLSQL: Run Test at Cursor` | Εκτελεί το test κάτω από τον κέρσορα | `Ctrl+Shift+U U` |
 | `utPLSQL: Run Failed Tests` | Εκτελεί ξανά μόνο τα tests που απέτυχαν | `Ctrl+Shift+U X` |
-| `utPLSQL: Validate configuration` | Εκτελεί πλήρη επικύρωση ρυθμίσεων (σύνδεση, εγκατάσταση UT3) και εμφανίζει τα αποτελέσματα | — |
+| `utPLSQL: Validate setup` | Εκτελεί πλήρη επικύρωση ρυθμίσεων (σύνδεση, εγκατάσταση UT3) και εμφανίζει τα αποτελέσματα | — |
 | `utPLSQL: Configure connection` | Ανοίγει τις ρυθμίσεις στο `utplsql.connection` | — |
 | `utPLSQL: Copy coverage grants to clipboard` | Αντιγράφει το SQL των grants στο πρόχειρο | — |
 | `utPLSQL: Show Test Explorer` | Εστιάζει στην προβολή Testing | — |
@@ -393,7 +393,7 @@ GRANT SELECT ON SYS.DBA_PROCEDURES TO <ut3_owner>;
 | Κενό coverage | Λείπει το `GRANT EXECUTE ON DBMS_PROFILER` | Εκτελέστε τα grants στις [Απαιτήσεις βάσης δεδομένων](#απαιτήσεις-βάσης-δεδομένων) ή χρησιμοποιήστε το `utPLSQL: Copy coverage grants to clipboard` |
 | Κενό coverage | Το Oracle 19c απαιτεί επιπλέον grants | `GRANT EXECUTE ON DBMS_PROFILER` + `GRANT EXECUTE ON DBMS_PLSQL_CODE_COVERAGE` |
 | Σφάλμα μεταγλώττισης χωρίς ένδειξη | Κώδικας με συντακτικό σφάλμα PL/SQL | Διατηρήστε ενεργοποιημένο το `utplsql.compilationDiagnostics.enabled` (προεπιλογή)· τα σφάλματα από το `ALL_ERRORS` εμφανίζονται στο Problems Panel μετά από μια εκτέλεση |
-| Σφάλμα σύνδεσης | Κακοσχηματισμένη συμβολοσειρά ή μη προσβάσιμη βάση | Χρησιμοποιήστε το `utPLSQL: Validate configuration` |
+| Σφάλμα σύνδεσης | Κακοσχηματισμένη συμβολοσειρά ή μη προσβάσιμη βάση | Χρησιμοποιήστε το `utPLSQL: Validate setup` |
 | Το `%suite` δεν αναγνωρίζεται | Λείπει το `%suite`/`create package` στο αρχείο ή `%test` χωρίς `PROCEDURE` | Ελέγξτε το spec· εκτελέστε το `utPLSQL: Refresh tests` |
 | Το CodeLens δεν εμφανίζεται | `editor.codeLens` απενεργοποιημένο ή σύγκρουση | Ενεργοποιήστε το `"editor.codeLens": true`· ελέγξτε το `utplsql.codeLens.enabled` |
 | Οι συντομεύσεις δεν λειτουργούν | Σύγκρουση με άλλη επέκταση ή συντόμευση του VSCode | Πηγαίνετε σε File → Preferences → Keyboard Shortcuts και αναζητήστε το `utplsql` για να το επαναπροσδιορίσετε |

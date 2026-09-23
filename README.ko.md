@@ -133,7 +133,7 @@ Test Explorer에 나타납니다.
 | `utplsql.oracleClientLibDir` | `""` | Oracle Instant Client 디렉터리. `utplsql.oracleClientMode`가 `thick`일 때 필수입니다(예: `C:\oracle\instantclient_23_5`). |
 | 디버그가 브레이크포인트에서 멈추지 않음 | 디버그 정보 없이 컴파일된 패키지, 또는 디버그 권한 누락 | `PLSQL_OPTIMIZE_LEVEL <= 1`로 컴파일(또는 `ALTER PACKAGE ... COMPILE DEBUG PLSQL_OPTIMIZE_LEVEL = 1`)하고 `DEBUG CONNECT SESSION` + `EXECUTE ON SYS.DBMS_DEBUG` 부여. `test_*.pkb`의 브레이크포인트가 적중하지 않을 수 있습니다(utPLSQL은 동적 SQL로 테스트를 실행). 테스트 대상 코드에 설정하세요. |
 | `utplsql.oracleClientConfigDir` | `""` | `sqlnet.ora`/`tnsnames.ora`가 있는 Oracle 구성 디렉터리(TNS_ADMIN). 선택 사항이며 thick 모드에서만 사용됩니다. |
-| `utplsql.organization` | `file` | 트리 구성: `file`(경로별) 또는 `schema`(Schema > Package > Suite > Test). `schema` 모드에서 워크스페이스에 `.pks` 파일이 없으면 스위트가 데이터베이스(`ALL_OBJECTS`/`ALL_SOURCE`)에서도 발견됩니다 — 가상 URI `utplsql-db:/`(CodeLens/데코레이션/실패 지점 이동 없음). |
+| `utplsql.organization` | `file` | 트리 구성: `file`(경로별) 또는 `schema`(Schema > Package > Suite > Test). `schema` 모드에서 워크스페이스에 `.pks` 파일이 없으면 스위트가 데이터베이스(`ut_runner.get_suites_info`, 불가 시 `ALL_OBJECTS`/`ALL_SOURCE`)에서도 발견됩니다 — 가상 URI `utplsql-db:/`(실행 및 실패 지점 이동 가능, CodeLens/데코레이션 없음). |
 | `utplsql.organization.schemaPattern` | `db/{schema}/**` | 경로에서 스키마를 추출하는 glob 패턴. `{schema}`를 자리 표시자로 사용하세요. `schema` 모드에서 패턴 기본 아래의 디렉터리(예: `db/*`)는 데이터베이스에서 조회할 스키마를 정의합니다. |
 | `utplsql.discovery.source` | `auto` | `schema` 모드에서 테스트 트리의 소스: `auto`는 데이터베이스 API(`ut_runner.get_suites_info`)를 사용하고 사용할 수 없으면 `ALL_SOURCE`/파일로 대체합니다. `database`는 API를 요구하고, `file`은 데이터베이스 검색을 비활성화합니다. |
 | `utplsql.refreshDebounceMs` | `300` | Test Explorer를 새로 고치기 전에 `.pks`/`.pkb` 파일 감시 이벤트를 병합하는 디바운스(ms). |
@@ -199,7 +199,7 @@ UTPLSQL_CONN=your_user/password@//host:1521/service
 8. **Oracle 직접 실행(스트리밍)의 경우:** 설치할 것이 없습니다 — VSIX에 thin `oracledb` 드라이버가 이미 포함되어 있습니다.
 9. 진단의 경우 팔레트에서 `utPLSQL: Show information`을 사용하세요 — 복사 옵션과 함께 버전 정보를 표시합니다.
 10. **utPLSQL: Select additional reporter...** — 데이터베이스에서 사용 가능한 리포터가 있는 QuickPick.
-11. **utPLSQL: Cancel execution** — 실행 중인 실행을 중지합니다(실행 중 `Escape`).
+11. **utPLSQL: Cancel run** — 실행 중인 실행을 중지합니다(실행 중 `Escape`).
 12. **utPLSQL: Refresh tests** — `.pks`의 재발견을 강제합니다.
 
 > 💡 **테스트 작성 시:** 파서는 토큰 기반입니다 — 파일에 `%suite`와
@@ -233,14 +233,14 @@ UTPLSQL_CONN=your_user/password@//host:1521/service
 | `utPLSQL: Run tests in this folder` | 선택한 폴더의 스위트 실행 | 마우스 오른쪽 버튼 → 폴더 |
 | `utPLSQL: Run tests in this folder with coverage` | 동일, 커버리지 프로필 사용 | 마우스 오른쪽 버튼 → 폴더 |
 | `utPLSQL: Refresh tests` | `.pks`의 재발견 강제 | — |
-| `utPLSQL: Cancel execution` | 실행 중인 실행 중지 | — |
-| `utPLSQL: Show utPLSQL information` | 복사 옵션이 있는 버전 정보 | — |
+| `utPLSQL: Cancel run` | 실행 중인 실행 중지 | — |
+| `utPLSQL: Show utPLSQL info` | 복사 옵션이 있는 버전 정보 | — |
 | `utPLSQL: Select additional reporter...` | 데이터베이스 리포터가 있는 QuickPick | — |
 | `utPLSQL: Clear session connection` | 세션 캐시에서 연결 제거 | — |
 | `utPLSQL: Rerun Last` | 마지막 실행 반복 | `Ctrl+Shift+U L` |
 | `utPLSQL: Run Test at Cursor` | 커서 아래의 테스트 실행 | `Ctrl+Shift+U U` |
 | `utPLSQL: Run Failed Tests` | 실패한 테스트만 재실행 | `Ctrl+Shift+U X` |
-| `utPLSQL: Validate configuration` | 전체 설정 검증(연결, UT3 설치) 실행 및 결과 표시 | — |
+| `utPLSQL: Validate setup` | 전체 설정 검증(연결, UT3 설치) 실행 및 결과 표시 | — |
 | `utPLSQL: Configure connection` | `utplsql.connection`에서 설정 열기 | — |
 | `utPLSQL: Copy coverage grants to clipboard` | 권한 SQL을 클립보드에 복사 | — |
 | `utPLSQL: Show Test Explorer` | Testing 뷰에 포커스 | — |
@@ -346,11 +346,11 @@ GRANT SELECT ON SYS.DBA_PROCEDURES TO <ut3_owner>;
 
 | 증상 | 가능한 원인 | 해결책 |
 |---|---|---|
-| 스위트가 나타나지 않음 | 데이터베이스를 찾을 수 없음 | 진단을 위해 `utPLSQL: Validate configuration` 실행 |
+| 스위트가 나타나지 않음 | 데이터베이스를 찾을 수 없음 | 진단을 위해 `utPLSQL: Validate setup` 실행 |
 | 빈 커버리지 | `GRANT EXECUTE ON DBMS_PROFILER` 누락 | [Requirements](#database-requirements)의 권한을 실행하거나 `utPLSQL: Copy coverage grants to clipboard` 사용 |
 | 빈 커버리지 | Oracle 19c에는 추가 권한 필요 | `GRANT EXECUTE ON DBMS_PROFILER` + `GRANT EXECUTE ON DBMS_PLSQL_CODE_COVERAGE` |
 | 표시가 없는 컴파일 오류 | PL/SQL 구문 오류가 있는 코드 | `utplsql.compilationDiagnostics.enabled`를 켜 둔 상태(기본값)로 유지하세요; 실행 후 `ALL_ERRORS`의 오류가 "문제" 패널에 표시됩니다 |
-| 연결 오류 | 잘못된 문자열 또는 접근 불가능한 DB | `utPLSQL: Validate configuration` 사용 |
+| 연결 오류 | 잘못된 문자열 또는 접근 불가능한 DB | `utPLSQL: Validate setup` 사용 |
 | 실행 중 시간 초과 | 테스트가 `timeoutMinutes`보다 오래 걸림 | `utplsql.timeoutMinutes` 증가 |
 | `%suite`가 인식되지 않음 | 파일에 `%suite`/`create package` 누락, 또는 `PROCEDURE` 없는 `%test` | 스펙 확인; `utPLSQL: Refresh tests` 실행 |
 | CodeLens가 나타나지 않음 | `editor.codeLens` 비활성화 또는 충돌 | `"editor.codeLens": true` 활성화; `utplsql.codeLens.enabled` 확인 |

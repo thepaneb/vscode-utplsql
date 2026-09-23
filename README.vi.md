@@ -132,7 +132,7 @@ Test Explorer **ngay khi từng bài kiểm thử hoàn tất**. VSIX đã kèm 
 | `utplsql.oracleClientLibDir` | `""` | Thư mục Oracle Instant Client. Bắt buộc khi `utplsql.oracleClientMode` là `thick` (ví dụ `C:\oracle\instantclient_23_5`). |
 | Gỡ lỗi không dừng tại breakpoint | Gói không có thông tin gỡ lỗi hoặc thiếu quyền gỡ lỗi | Biên dịch với `PLSQL_OPTIMIZE_LEVEL <= 1` (hoặc `ALTER PACKAGE ... COMPILE DEBUG PLSQL_OPTIMIZE_LEVEL = 1`) và cấp `DEBUG CONNECT SESSION` + `EXECUTE ON SYS.DBMS_DEBUG`. Breakpoint trong `test_*.pkb` có thể không dừng (utPLSQL chạy test bằng SQL động); hãy đặt chúng trong mã đang kiểm thử. |
 | `utplsql.oracleClientConfigDir` | `""` | Thư mục cấu hình Oracle (TNS_ADMIN) chứa `sqlnet.ora`/`tnsnames.ora`. Tùy chọn; chỉ được dùng ở chế độ thick. |
-| `utplsql.organization` | `file` | Tổ chức cây: `file` (theo đường dẫn) hoặc `schema` (Schema > Package > Suite > Test). Trong chế độ `schema`, các suite cũng được phát hiện từ cơ sở dữ liệu (`ALL_OBJECTS`/`ALL_SOURCE`) khi các tệp `.pks` không nằm trong workspace — với URI ảo `utplsql-db:/` (không có CodeLens/trang trí/nhảy tới lỗi). |
+| `utplsql.organization` | `file` | Tổ chức cây: `file` (theo đường dẫn) hoặc `schema` (Schema > Package > Suite > Test). Trong chế độ `schema`, các suite cũng được phát hiện từ cơ sở dữ liệu (`ut_runner.get_suites_info`, dự phòng về `ALL_OBJECTS`/`ALL_SOURCE`) khi các tệp `.pks` không nằm trong workspace — với URI ảo `utplsql-db:/` (thực thi và nhảy tới lỗi hoạt động; không có CodeLens/trang trí). |
 | `utplsql.organization.schemaPattern` | `db/{schema}/**` | Glob để trích xuất schema từ đường dẫn. Dùng `{schema}` làm placeholder. Trong chế độ `schema`, các thư mục bên dưới gốc của pattern (ví dụ `db/*`) định nghĩa các schema được truy vấn trong cơ sở dữ liệu. |
 | `utplsql.discovery.source` | `auto` | Nguồn của cây trong chế độ `schema`: `auto` dùng API cơ sở dữ liệu (`ut_runner.get_suites_info`) và chuyển sang `ALL_SOURCE`/tệp khi không khả dụng; `database` bắt buộc dùng API; `file` tắt khám phá qua cơ sở dữ liệu. |
 | `utplsql.refreshDebounceMs` | `300` | Debounce (ms) để gộp các sự kiện theo dõi tệp `.pks`/`.pkb` trước khi làm mới Test Explorer. |
@@ -199,7 +199,7 @@ UTPLSQL_CONN=your_user/password@//host:1521/service
 8. **Với Oracle trực tiếp (streaming):** không cần cài gì thêm — VSIX đã kèm driver mỏng `oracledb`.
 9. Để chẩn đoán, dùng `utPLSQL: Show information` trong palette — hiển thị phiên bản API/DB kèm tùy chọn sao chép.
 10. **utPLSQL: Select additional reporter...** — QuickPick với các reporter có sẵn trong cơ sở dữ liệu.
-11. **utPLSQL: Cancel execution** — dừng lần chạy đang thực hiện (`Escape` trong lúc chạy).
+11. **utPLSQL: Cancel run** — dừng lần chạy đang thực hiện (`Escape` trong lúc chạy).
 12. **utPLSQL: Refresh tests** — ép phát hiện lại các tệp `.pks`.
 
 > 💡 **Khi viết kiểm thử:** bộ phân tích được điều khiển bằng token — chỉ cần có `%suite`
@@ -233,14 +233,14 @@ Tất cả các lệnh của extension (palette `Ctrl+Shift+P` tiền tố `utPL
 | `utPLSQL: Run tests in this folder` | Chạy các suite của thư mục đã chọn | Chuột phải → thư mục |
 | `utPLSQL: Run tests in this folder with coverage` | Tương tự, với profile coverage | Chuột phải → thư mục |
 | `utPLSQL: Refresh tests` | Ép phát hiện lại các tệp `.pks` | — |
-| `utPLSQL: Cancel execution` | Dừng lần chạy đang thực hiện | — |
-| `utPLSQL: Show utPLSQL information` | Phiên bản API/DB kèm tùy chọn sao chép | — |
+| `utPLSQL: Cancel run` | Dừng lần chạy đang thực hiện | — |
+| `utPLSQL: Show utPLSQL info` | Phiên bản API/DB kèm tùy chọn sao chép | — |
 | `utPLSQL: Select additional reporter...` | QuickPick với các reporter trong cơ sở dữ liệu | — |
 | `utPLSQL: Clear session connection` | Xóa kết nối khỏi bộ nhớ đệm phiên | — |
 | `utPLSQL: Rerun Last` | Lặp lại lần chạy cuối | `Ctrl+Shift+U L` |
 | `utPLSQL: Run Test at Cursor` | Chạy bài kiểm thử dưới con trỏ | `Ctrl+Shift+U U` |
 | `utPLSQL: Run Failed Tests` | Chạy lại chỉ các bài kiểm thử bị lỗi | `Ctrl+Shift+U X` |
-| `utPLSQL: Validate configuration` | Chạy xác thực thiết lập đầy đủ (kết nối, cài đặt UT3) và hiển thị kết quả | — |
+| `utPLSQL: Validate setup` | Chạy xác thực thiết lập đầy đủ (kết nối, cài đặt UT3) và hiển thị kết quả | — |
 | `utPLSQL: Configure connection` | Mở cài đặt tại `utplsql.connection` | — |
 | `utPLSQL: Copy coverage grants to clipboard` | Sao chép SQL grants vào clipboard | — |
 | `utPLSQL: Show Test Explorer` | Đưa tiêu điểm vào khung Testing | — |
@@ -390,11 +390,11 @@ GRANT SELECT ON SYS.DBA_PROCEDURES TO <ut3_owner>;
 
 | Triệu chứng | Nguyên nhân có thể | Giải pháp |
 |---|---|---|
-| Các suite không xuất hiện | Không có tệp `.pks` được phát hiện | Chạy `utPLSQL: Validate configuration` để chẩn đoán |
+| Các suite không xuất hiện | Không có tệp `.pks` được phát hiện | Chạy `utPLSQL: Validate setup` để chẩn đoán |
 | Độ phủ trống | Thiếu `GRANT EXECUTE ON DBMS_PROFILER` | Chạy các grant trong [Yêu cầu cơ sở dữ liệu](#yêu-cầu-cơ-sở-dữ-liệu) hoặc dùng `utPLSQL: Copy coverage grants to clipboard` |
 | Độ phủ trống | Oracle 19c cần thêm grant | `GRANT EXECUTE ON DBMS_PROFILER` + `GRANT EXECUTE ON DBMS_PLSQL_CODE_COVERAGE` |
 | Lỗi biên dịch không kèm chỉ dẫn | Mã có lỗi cú pháp PL/SQL | Giữ bật `utplsql.compilationDiagnostics.enabled` (mặc định); lỗi từ `ALL_ERRORS` xuất hiện trong bảng Problems sau khi chạy |
-| Lỗi kết nối | Chuỗi sai định dạng hoặc DB không truy cập được | Dùng `utPLSQL: Validate configuration` |
+| Lỗi kết nối | Chuỗi sai định dạng hoặc DB không truy cập được | Dùng `utPLSQL: Validate setup` |
 | Hết thời gian khi chạy | Kiểm thử lâu hơn `timeoutMinutes` | Tăng `utplsql.timeoutMinutes` |
 | `%suite` không được nhận diện | Thiếu `%suite`/`create package` trong tệp, hoặc `%test` không có `PROCEDURE` | Kiểm tra spec; chạy `utPLSQL: Refresh tests` |
 | CodeLens không xuất hiện | `editor.codeLens` bị tắt hoặc xung đột | Bật `"editor.codeLens": true`; kiểm tra `utplsql.codeLens.enabled` |

@@ -130,7 +130,7 @@ Test Explorer **у міру завершення кожного тесту**. VS
 | `utplsql.oracleClientLibDir` | `""` | Каталог Oracle Instant Client. Обов'язковий, коли `utplsql.oracleClientMode` дорівнює `thick` (напр. `C:\oracle\instantclient_23_5`). |
 | Налагодження не зупиняється на точці зупину | Пакет без налагоджувальної інформації або бракує привілеїв | Скомпілюйте з `PLSQL_OPTIMIZE_LEVEL <= 1` (або `ALTER PACKAGE ... COMPILE DEBUG PLSQL_OPTIMIZE_LEVEL = 1`) і надайте `DEBUG CONNECT SESSION` + `EXECUTE ON SYS.DBMS_DEBUG`. Точки зупину в `test_*.pkb` можуть не спрацьовувати (utPLSQL виконує тести через динамічний SQL); ставте їх у коді, що тестується. |
 | `utplsql.oracleClientConfigDir` | `""` | Каталог конфігурації Oracle (TNS_ADMIN) з `sqlnet.ora`/`tnsnames.ora`. Необов'язковий; використовується лише в режимі thick. |
-| `utplsql.organization` | `file` | Організація дерева: `file` (за шляхом) або `schema` (Schema > Package > Suite > Test). У режимі `schema` набори також виявляються з бази даних (`ALL_OBJECTS`/`ALL_SOURCE`), коли у робочій області немає файлів `.pks` — з віртуальним URI `utplsql-db:/` (без CodeLens/декорацій/переходу до помилки). |
+| `utplsql.organization` | `file` | Організація дерева: `file` (за шляхом) або `schema` (Schema > Package > Suite > Test). У режимі `schema` набори також виявляються з бази даних (`ut_runner.get_suites_info`, з відкатом до `ALL_OBJECTS`/`ALL_SOURCE`), коли у робочій області немає файлів `.pks` — з віртуальним URI `utplsql-db:/` (виконання та перехід до помилки працюють; без CodeLens/декорацій). |
 | `utplsql.organization.schemaPattern` | `db/{schema}/**` | Glob-шаблон для вилучення схеми зі шляху. Використовуйте `{schema}` як заповнювач. У режимі `schema` каталоги нижче бази шаблону (напр. `db/*`) визначають схеми, які запитуються в базі даних. |
 | `utplsql.discovery.source` | `auto` | Джерело дерева в режимі `schema`: `auto` використовує API бази (`ut_runner.get_suites_info`) і переходить до `ALL_SOURCE`/файлів за недоступності; `database` вимагає API; `file` вимикає виявлення через базу. |
 | `utplsql.refreshDebounceMs` | `300` | Затримка (мс) для об'єднання подій спостерігача файлів `.pks`/`.pkb` перед оновленням Test Explorer. |
@@ -197,7 +197,7 @@ UTPLSQL_CONN=your_user/password@//host:1521/service
 8. **Для прямого режиму Oracle (streaming):** нічого встановлювати не потрібно — VSIX вже містить тонкий драйвер `oracledb`.
 9. Для діагностики використовуйте `utPLSQL: Show information` у палітрі — показує версії API/DB з опцією копіювання.
 10. **utPLSQL: Select additional reporter...** — QuickPick із репортерами, доступними в базі даних.
-11. **utPLSQL: Cancel execution** — зупиняє виконання, що триває (`Escape` під час виконання).
+11. **utPLSQL: Cancel run** — зупиняє виконання, що триває (`Escape` під час виконання).
 12. **utPLSQL: Refresh tests** — примусове повторне виявлення `.pks`.
 
 > 💡 **Під час написання тестів:** парсер керується токенами — достатньо мати `%suite`
@@ -231,14 +231,14 @@ UTPLSQL_CONN=your_user/password@//host:1521/service
 | `utPLSQL: Run tests in this folder` | Запускає набори вибраної папки | Правий клік → папка |
 | `utPLSQL: Run tests in this folder with coverage` | Те саме, з профілем покриття | Правий клік → папка |
 | `utPLSQL: Refresh tests` | Примусове повторне виявлення `.pks` | — |
-| `utPLSQL: Cancel execution` | Зупиняє запущене виконання | — |
-| `utPLSQL: Show utPLSQL information` | Версії API/DB з опцією копіювання | — |
+| `utPLSQL: Cancel run` | Зупиняє запущене виконання | — |
+| `utPLSQL: Show utPLSQL info` | Версії API/DB з опцією копіювання | — |
 | `utPLSQL: Select additional reporter...` | QuickPick із репортерами бази даних | — |
 | `utPLSQL: Clear session connection` | Видаляє підключення з кешу сесії | — |
 | `utPLSQL: Rerun Last` | Повторює останнє виконання | `Ctrl+Shift+U L` |
 | `utPLSQL: Run Test at Cursor` | Запускає тест під курсором | `Ctrl+Shift+U U` |
 | `utPLSQL: Run Failed Tests` | Повторно запускає лише невдалі тести | `Ctrl+Shift+U X` |
-| `utPLSQL: Validate configuration` | Виконує повну перевірку налаштувань (підключення, інсталяція UT3) і показує результати | — |
+| `utPLSQL: Validate setup` | Виконує повну перевірку налаштувань (підключення, інсталяція UT3) і показує результати | — |
 | `utPLSQL: Configure connection` | Відкриває налаштування на `utplsql.connection` | — |
 | `utPLSQL: Copy coverage grants to clipboard` | Копіює SQL привілеїв у буфер обміну | — |
 | `utPLSQL: Show Test Explorer` | Фокусує подання Testing | — |
@@ -388,11 +388,11 @@ GRANT SELECT ON SYS.DBA_PROCEDURES TO <ut3_owner>;
 
 | Симптом | Ймовірна причина | Рішення |
 |---|---|---|
-| Набори не з'являються | Немає покритих `.pks` файлів | Виконайте `utPLSQL: Validate configuration` для діагностики |
+| Набори не з'являються | Немає покритих `.pks` файлів | Виконайте `utPLSQL: Validate setup` для діагностики |
 | Порожнє покриття | Відсутній `GRANT EXECUTE ON DBMS_PROFILER` | Виконайте привілеї з [Вимоги до бази даних](#вимоги-до-бази-даних) або використайте `utPLSQL: Copy coverage grants to clipboard` |
 | Порожнє покриття | Oracle 19c потребує додаткові привілеї | `GRANT EXECUTE ON DBMS_PROFILER` + `GRANT EXECUTE ON DBMS_PLSQL_CODE_COVERAGE` |
 | Помилка компіляції без пояснення | Код із синтаксичною помилкою PL/SQL | Залиште `utplsql.compilationDiagnostics.enabled` увімкненим (за замовчуванням); помилки з `ALL_ERRORS` з'являються в панелі «Проблеми» після виконання |
-| Помилка підключення | Некоректний рядок або недоступна БД | Використайте `utPLSQL: Validate configuration` |
+| Помилка підключення | Некоректний рядок або недоступна БД | Використайте `utPLSQL: Validate setup` |
 | Тайм-аут під час виконання | Тести виконуються довше, ніж `timeoutMinutes` | Збільште `utplsql.timeoutMinutes` |
 | `%suite` не розпізнано | Відсутні `%suite`/`create package` у файлі, або `%test` без `PROCEDURE` | Перевірте специфікацію; виконайте `utPLSQL: Refresh tests` |
 | CodeLens не з'являється | `editor.codeLens` вимкнено або конфлікт | Увімкніть `"editor.codeLens": true`; перевірте `utplsql.codeLens.enabled` |

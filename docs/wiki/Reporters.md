@@ -37,17 +37,18 @@ to remove them from the list.
 Palette command **utPLSQL: Select Additional Reporter...**:
 
 1. Opens a QuickPick with the dynamic list of reporters available in the database
-2. The chosen reporter is stored in the session state
-3. **The selection is not applied** in the current Oracle-only version
-   (`consumeExtraReporter()` is never called)
+2. The chosen reporter is stored in the session state and **applied to the next
+   run** (consumed by `executeRunOracle` via `consumeExtraReporter()`, logged as
+   `[info] Reporter adicional da sessão`)
 
 To actually include an extra reporter, use the fixed `utplsql.additionalReporters`
 setting.
 
 ![QuickPick with available reporters list](images/quickpick-reporters.png)
 
-The QuickPick lists the reporters reported by the database; the current version
-does not apply the selection.
+The QuickPick lists the reporters reported by the database; the chosen reporter
+is stored in the session state and **applied to the next run** (consumed by
+`executeRunOracle` via `consumeExtraReporter()`).
 
 ## Creating a Custom Reporter
 

@@ -134,7 +134,7 @@ nativních API VSCode.
 | `utplsql.oracleClientLibDir` | `""` | Adresář Oracle Instant Client. Povinný, když je `utplsql.oracleClientMode` nastaveno na `thick` (např. `C:\oracle\instantclient_23_5`). |
 | Ladění se nezastaví na zarážce | Balíček bez ladicích informací nebo chybějící ladicí granty | Zkompilujte s `PLSQL_OPTIMIZE_LEVEL <= 1` (nebo `ALTER PACKAGE ... COMPILE DEBUG PLSQL_OPTIMIZE_LEVEL = 1`) a udělte `DEBUG CONNECT SESSION` + `EXECUTE ON SYS.DBMS_DEBUG`. Zarážky v `test_*.pkb` se nemusí zastavit (utPLSQL spouští testy přes dynamický SQL); nastavte je v testovaném kódu. |
 | `utplsql.oracleClientConfigDir` | `""` | Adresář konfigurace Oracle (TNS_ADMIN) s `sqlnet.ora`/`tnsnames.ora`. Volitelný; používá jej pouze thick režim. |
-| `utplsql.organization` | `file` | Uspořádání stromu: `file` (podle cesty) nebo `schema` (Schema > Package > Suite > Test). V režimu `schema` se sady také objevují z databáze (`ALL_OBJECTS`/`ALL_SOURCE`), když soubory `.pks` nejsou v pracovním prostoru — s virtuální URI `utplsql-db:/` (bez CodeLens/dekorací/skoku na selhání). |
+| `utplsql.organization` | `file` | Uspořádání stromu: `file` (podle cesty) nebo `schema` (Schema > Package > Suite > Test). V režimu `schema` se sady také objevují z databáze (`ut_runner.get_suites_info`, s návratem k `ALL_OBJECTS`/`ALL_SOURCE`), když soubory `.pks` nejsou v pracovním prostoru — s virtuální URI `utplsql-db:/` (spuštění a skok na selhání fungují; bez CodeLens/dekorací). |
 | `utplsql.organization.schemaPattern` | `db/{schema}/**` | Glob vzor pro extrakci schématu z cesty. Použijte `{schema}` jako zástupný symbol. V režimu `schema` adresáře pod základnou vzoru (např. `db/*`) definují schémata dotazovaná v databázi. |
 | `utplsql.discovery.source` | `auto` | Zdroj stromu v režimu `schema`: `auto` používá API databáze (`ut_runner.get_suites_info`) a při nedostupnosti přejde na `ALL_SOURCE`/soubory; `database` vyžaduje API; `file` vypne objevování přes databázi. |
 | `utplsql.refreshDebounceMs` | `300` | Debounce (ms) pro sloučení událostí sledování souborů `.pks`/`.pkb` před obnovením Test Exploreru. |
@@ -201,7 +201,7 @@ UTPLSQL_CONN=your_user/password@//host:1521/service
 8. **Pro Oracle direct (streaming):** není co instalovat — VSIX už obsahuje tenký ovladač `oracledb`.
 9. Pro diagnostiku použijte `utPLSQL: Show information` v paletě — zobrazí verze API/DB s možností kopírování.
 10. **utPLSQL: Select additional reporter...** — QuickPick s reportéry dostupnými v databázi.
-11. **utPLSQL: Cancel execution** — zastaví probíhající spuštění (`Escape` během spuštění).
+11. **utPLSQL: Cancel run** — zastaví probíhající spuštění (`Escape` během spuštění).
 12. **utPLSQL: Refresh tests** — vynutí znovuobjevení `.pks`.
 
 > 💡 **Při psaní testů:** parser je řízen tokeny — stačí mít `%suite`
@@ -235,14 +235,14 @@ Všechny příkazy rozšíření (paleta `Ctrl+Shift+P`, předpona `utPLSQL:`):
 | `utPLSQL: Run tests in this folder` | Spustí sady vybrané složky | Pravé kliknutí → složka |
 | `utPLSQL: Run tests in this folder with coverage` | Totéž s profilem pokrytí | Pravé kliknutí → složka |
 | `utPLSQL: Refresh tests` | Vynutí znovuobjevení `.pks` | — |
-| `utPLSQL: Cancel execution` | Zastaví běžící spuštění | — |
-| `utPLSQL: Show utPLSQL information` | Verze API/DB s možností kopírování | — |
+| `utPLSQL: Cancel run` | Zastaví běžící spuštění | — |
+| `utPLSQL: Show utPLSQL info` | Verze API/DB s možností kopírování | — |
 | `utPLSQL: Select additional reporter...` | QuickPick s reportéry databáze | — |
 | `utPLSQL: Clear session connection` | Odstraní připojení z mezipaměti relace | — |
 | `utPLSQL: Rerun Last` | Zopakuje poslední spuštění | `Ctrl+Shift+U L` |
 | `utPLSQL: Run Test at Cursor` | Spustí test pod kurzorem | `Ctrl+Shift+U U` |
 | `utPLSQL: Run Failed Tests` | Spustí znovu pouze selhané testy | `Ctrl+Shift+U X` |
-| `utPLSQL: Validate configuration` | Spustí úplné ověření nastavení (připojení, instalace UT3) a zobrazí výsledky | — |
+| `utPLSQL: Validate setup` | Spustí úplné ověření nastavení (připojení, instalace UT3) a zobrazí výsledky | — |
 | `utPLSQL: Configure connection` | Otevře nastavení na `utplsql.connection` | — |
 | `utPLSQL: Copy coverage grants to clipboard` | Zkopíruje SQL grantů do schránky | — |
 | `utPLSQL: Show Test Explorer` | Zaměří pohled Testing | — |
@@ -271,12 +271,12 @@ Všechny zkratky používají předponu `Ctrl+Shift+U` (`Cmd+Shift+U` na Macu):
 | `Ctrl+Shift+U T` | Run tests in file |
 | `Ctrl+Shift+U Shift+T` | Run tests in file with coverage |
 | `Ctrl+Shift+U F` | Refresh tests |
-| `Ctrl+Shift+U I` | Show utPLSQL information |
+| `Ctrl+Shift+U I` | Show utPLSQL info |
 | `Ctrl+Shift+U C` | Clear session connection |
 | `Ctrl+Shift+U L` | Rerun last |
 | `Ctrl+Shift+U U` | Run at cursor |
 | `Ctrl+Shift+U X` | Run failed only |
-| `Escape` | Cancel execution |
+| `Escape` | Cancel run |
 
 ## Pokrytí
 
@@ -393,7 +393,7 @@ GRANT SELECT ON SYS.DBA_PROCEDURES TO <ut3_owner>;
 | Prázdné pokrytí | Chybí `GRANT EXECUTE ON DBMS_PROFILER` | Spusťte granty v [Požadavky](#požadavky-na-databázi) nebo použijte `utPLSQL: Copy coverage grants to clipboard` |
 | Prázdné pokrytí | Oracle 19c vyžaduje další granty | `GRANT EXECUTE ON DBMS_PROFILER` + `GRANT EXECUTE ON DBMS_PLSQL_CODE_COVERAGE` |
 | Chyba kompilace bez indikace | Kód se syntaktickou chybou PL/SQL | Ponechte `utplsql.compilationDiagnostics.enabled` zapnuté (výchozí); chyby z `ALL_ERRORS` se po spuštění zobrazí v panelu „Problémy" |
-| Chyba připojení | Chybný řetězec nebo nedostupná DB | Použijte `utPLSQL: Validate configuration` |
+| Chyba připojení | Chybný řetězec nebo nedostupná DB | Použijte `utPLSQL: Validate setup` |
 | `%suite` není rozpoznán | Chybí `%suite`/`create package` v souboru, nebo `%test` bez `PROCEDURE` | Zkontrolujte specifikaci; spusťte `utPLSQL: Refresh tests` |
 | CodeLens se nezobrazuje | Vypnutý `editor.codeLens` nebo konflikt | Povolte `"editor.codeLens": true`; zkontrolujte `utplsql.codeLens.enabled` |
 | Zkratky nefungují | Konflikt s jiným rozšířením nebo zkratkou VSCode | Přejděte do Soubor → Předvolby → Klávesové zkratky a vyhledejte `utplsql` pro předefinování |

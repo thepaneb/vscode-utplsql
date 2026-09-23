@@ -105,11 +105,10 @@ No modo `schema`, o `doRefresh()` chama
 > comando **`utPLSQL: Rebuild Annotation Cache`** (`utplsql.rebuildAnnotations`,
 > PRD-77) ⇒ `ut_runner.rebuild_annotation_cache(<owner>)` + refresh da árvore.
 
-**Limitações das suites via DB:** sem CodeLens, decorações inline nem jump to
-failure (providers registram `{ scheme: 'file' }`) — apenas execução.
-
-**Limitações das suites via DB:** sem CodeLens, decorações inline nem jump to
-failure (providers registram `{ scheme: 'file' }`) — apenas execução.
+**Limitações das suites via DB:** sem CodeLens nem decorações inline (providers
+registram `{ scheme: 'file' }`). Execução **e jump to failure** funcionam — o
+`dbSourceProvider` serve o documento virtual `utplsql-db:` (fonte de `ALL_SOURCE`)
+para o "Go to Error".
 
 ### IDs na árvore
 

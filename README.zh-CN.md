@@ -132,7 +132,7 @@ Test Explorer 中。
 | `utplsql.oracleClientLibDir` | `""` | Oracle Instant Client 目录。当 `utplsql.oracleClientMode` 为 `thick` 时必填（例如 `C:\oracle\instantclient_23_5`）。 |
 | 调试不在断点处停止 | 包编译时没有调试信息，或缺少调试授权 | 使用 `PLSQL_OPTIMIZE_LEVEL <= 1` 编译（或 `ALTER PACKAGE ... COMPILE DEBUG`），并授予 `DEBUG CONNECT SESSION` + `EXECUTE ON SYS.DBMS_DEBUG`. `test_*.pkb` 中的断点可能不会命中（utPLSQL 通过动态 SQL 运行测试）；请将断点设在被测代码中。 |
 | `utplsql.oracleClientConfigDir` | `""` | 包含 `sqlnet.ora`/`tnsnames.ora` 的 Oracle 配置目录（TNS_ADMIN）。可选；仅 thick 模式使用。 |
-| `utplsql.organization` | `file` | 树组织方式：`file`（按路径）或 `schema`（Schema > Package > Suite > Test）。在 `schema` 模式时，如果工作区中没有 `.pks` 文件，还会从数据库（`ALL_OBJECTS`/`ALL_SOURCE`）发现套件 — 使用虚拟 URI `utplsql-db:/`（无 CodeLens/装饰/跳转到失败）。 |
+| `utplsql.organization` | `file` | 树组织方式：`file`（按路径）或 `schema`（Schema > Package > Suite > Test）。在 `schema` 模式时，如果工作区中没有 `.pks` 文件，还会从数据库（`ut_runner.get_suites_info`，不可用时回退到 `ALL_OBJECTS`/`ALL_SOURCE`）发现套件 — 使用虚拟 URI `utplsql-db:/`（可执行并跳转到失败；无 CodeLens/装饰）。 |
 | `utplsql.organization.schemaPattern` | `db/{schema}/**` | 用于从路径中提取 schema 的 glob 模式。使用 `{schema}` 作为占位符。在 `schema` 模式下，模式基准目录（例如 `db/*`）下方的目录定义了在数据库中查询的 schemas。 |
 | `utplsql.discovery.source` | `auto` | `schema` 模式下测试树的来源：`auto` 使用数据库 API（`ut_runner.get_suites_info`），不可用时回退到 `ALL_SOURCE`/文件；`database` 要求使用 API；`file` 关闭数据库发现。 |
 | `utplsql.refreshDebounceMs` | `300` | 在刷新 Test Explorer 之前，合并 `.pks`/`.pkb` 文件监视器事件的防抖时间（毫秒）。 |
@@ -198,7 +198,7 @@ UTPLSQL_CONN=your_user/password@//host:1521/service
 8. **Oracle 直连（流式）：** 无需安装任何东西 — VSIX 已包含精简版 `oracledb` 驱动。
 9. 对于诊断，在面板中使用 `utPLSQL: Show information` — 显示版本信息并提供复制选项。
 10. **utPLSQL: Select additional reporter...** — 使用数据库中可用的 reporter 进行 QuickPick 选择。
-11. **utPLSQL: Cancel execution** — 停止正在运行的执行（执行期间按 `Escape`）。
+11. **utPLSQL: Cancel run** — 停止正在运行的执行（执行期间按 `Escape`）。
 12. **utPLSQL: Refresh tests** — 强制重新发现 `.pks`。
 
 > 💡 **编写测试时：** 解析器是基于 token 的 — 只需在文件中包含 `%suite`
@@ -231,14 +231,14 @@ UTPLSQL_CONN=your_user/password@//host:1521/service
 | `utPLSQL: Run tests in this folder` | 运行所选文件夹的套件 | 右键单击 → 文件夹 |
 | `utPLSQL: Run tests in this folder with coverage` | 同上，带覆盖率配置 | 右键单击 → 文件夹 |
 | `utPLSQL: Refresh tests` | 强制重新发现 `.pks` | — |
-| `utPLSQL: Cancel execution` | 停止正在运行的执行 | — |
-| `utPLSQL: Show utPLSQL information` | 版本信息并提供复制选项 | — |
+| `utPLSQL: Cancel run` | 停止正在运行的执行 | — |
+| `utPLSQL: Show utPLSQL info` | 版本信息并提供复制选项 | — |
 | `utPLSQL: Select additional reporter...` | 使用数据库 reporter 进行 QuickPick 选择 | — |
 | `utPLSQL: Clear session connection` | 从会话缓存中移除连接 | — |
 | `utPLSQL: Rerun Last` | 重复上次执行 | `Ctrl+Shift+U L` |
 | `utPLSQL: Run Test at Cursor` | 运行光标下的测试 | `Ctrl+Shift+U U` |
 | `utPLSQL: Run Failed Tests` | 仅重新运行失败的测试 | `Ctrl+Shift+U X` |
-| `utPLSQL: Validate configuration` | 运行完整的配置验证（连接、UT3 安装）并显示结果 | — |
+| `utPLSQL: Validate setup` | 运行完整的配置验证（连接、UT3 安装）并显示结果 | — |
 | `utPLSQL: Configure connection` | 打开 `utplsql.connection` 的设置 | — |
 | `utPLSQL: Copy coverage grants to clipboard` | 将授权 SQL 复制到剪贴板 | — |
 | `utPLSQL: Show Test Explorer` | 聚焦 Testing 视图 | — |
@@ -344,11 +344,11 @@ GRANT SELECT ON SYS.DBA_PROCEDURES TO <ut3_owner>;
 
 | 症状 | 可能的原因 | 解决方案 |
 |---|---|---|
-| 套件不显示 | 未找到数据库 | 运行 `utPLSQL: Validate configuration` 进行诊断 |
+| 套件不显示 | 未找到数据库 | 运行 `utPLSQL: Validate setup` 进行诊断 |
 | 覆盖率空 | 缺少 `GRANT EXECUTE ON DBMS_PROFILER` | 在 [数据库要求](#数据库要求) 中运行授权，或使用 `utPLSQL: Copy coverage grants to clipboard` |
 | 覆盖率空 | Oracle 19c 需要额外授权 | `GRANT EXECUTE ON DBMS_PROFILER` + `GRANT EXECUTE ON DBMS_PLSQL_CODE_COVERAGE` |
 | 编译错误无提示 | 代码有 PL/SQL 语法错误 | 保持 `utplsql.compilationDiagnostics.enabled` 开启（默认）；运行后，来自 `ALL_ERRORS` 的错误会显示在“问题”面板中 |
-| 连接错误 | 字符串格式错误或数据库不可达 | 使用 `utPLSQL: Validate configuration` |
+| 连接错误 | 字符串格式错误或数据库不可达 | 使用 `utPLSQL: Validate setup` |
 | 运行超时 | 测试耗时超过 `timeoutMinutes` | 增加 `utplsql.timeoutMinutes` |
 | `%suite` 未识别 | 文件中缺少 `%suite`/`create package`，或 `%test` 没有 `PROCEDURE` | 检查 spec；运行 `utPLSQL: Refresh tests` |
 | CodeLens 不显示 | `editor.codeLens` 被禁用或有冲突 | 启用 `"editor.codeLens": true`；检查 `utplsql.codeLens.enabled` |

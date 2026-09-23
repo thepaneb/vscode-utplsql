@@ -45,7 +45,7 @@
         "utplsql.profiles": {
           "type": "array",
           "default": [],
-          "markdownDescription": "Perfis de conexão Oracle salvos para alternar rapidamente entre ambientes (DEV, TEST, PROD). Cada perfil pode sobrescrever `connection`, `sourcePath`, `coverageOwner`, etc. **A senha fica em texto plano nas settings** — prefira `env`/`UTPLSQL_CONN` para produção.",
+          "markdownDescription": "Perfis de conexão Oracle salvos para alternar rapidamente entre ambientes (DEV, TEST, PROD). Cada perfil pode sobrescrever `connection`, `sourcePath`, `coverageOwner`, etc. A **senha é guardada no SecretStorage** (keychain do VSCode), não em texto plano nas settings.",
           "items": {
             "type": "object",
             "properties": {

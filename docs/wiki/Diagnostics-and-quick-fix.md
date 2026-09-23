@@ -39,13 +39,14 @@ common setup issues:
 
 | Check | Diagnostic | Severity |
 |---|---|---|
-| utPLSQL older than major version 3 on the database | `UTPLSQL_OLD_VERSION` | Warning |
+| Connection failure (`resolveConnectionNoPrompt` + pool) | `UTPLSQL_BAD_CONN` | Error |
+| thick client (`oracleClientMode: "thick"`) fails to init | `UTPLSQL_THICK_MODE` | Error |
+| utPLSQL older than `UTPLSQL_MIN_VERSION` (3.1.0) | `UTPLSQL_OLD_VERSION` | Warning |
 | Invalid objects in the utPLSQL schema | `UTPLSQL_INVALID_OBJECTS` | Warning |
 
-> The codes `UTPLSQL_BAD_CONN` and `UTPLSQL_NO_COVERAGE` still have quick-fix
-> handlers in `quickfix.ts`, but **no producer** in the current code:
-> `UTPLSQL_BAD_CONN` is never emitted, and the coverage diagnostic is not added
-> in the Oracle-only execution flow.
+> `UTPLSQL_NO_COVERAGE` still has a quick-fix handler in `quickfix.ts`, but is
+> **not emitted** in the Oracle-only flow (the coverage diagnostic is not added
+> during execution).
 
 The invalid objects check (`ALL_OBJECTS` for `PACKAGE`/`TYPE`/
 `PACKAGE BODY` in the utPLSQL schema) is best-effort: asynchronous, no
@@ -60,7 +61,7 @@ Each diagnostic provides a **Code Action** (lightbulb icon or `Ctrl+.`):
 
 | Diagnostic | Quick-fix |
 |---|---|
-| Invalid connection (`UTPLSQL_BAD_CONN`) | **Reconfigure connection** → opens settings at `utplsql.connection` (handler only — this diagnostic is not emitted today) |
+| Invalid connection (`UTPLSQL_BAD_CONN`) | **Reconfigure connection** → opens settings at `utplsql.connection` |
 | Coverage grants (`UTPLSQL_NO_COVERAGE`) | **Copy coverage grants to clipboard** → copies ready-to-paste SQL (handler only — not emitted in the Oracle flow) |
 | Invalid objects in utPLSQL (`UTPLSQL_INVALID_OBJECTS`) | **Recompile UT3** → `DBMS_UTILITY.COMPILE_SCHEMA` and re-checks |
 

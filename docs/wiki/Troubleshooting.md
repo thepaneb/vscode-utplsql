@@ -223,16 +223,15 @@ See [Direct Oracle Execution](Oracle-direct-execution).
 The `{schema}` placeholder captures exactly one directory level.
 Use `**` for any depth of subdirectories after the schema.
 
-> **Database discovery (0.11.0):** In `schema` mode, when there is a
-> configured connection (without prompt), the extension also
-> discovers suites directly from the database (`ALL_OBJECTS`/`ALL_SOURCE`) for
+> **Database discovery (DB-first since 0.13.0):** In `schema` mode, when there is a
+> configured connection (without prompt), the extension discovers suites directly
+> from the database via `ut_runner.get_suites_info` (utPLSQL ≥ 3.1.3), falling
+> back to `ALL_OBJECTS`/`ALL_SOURCE` for
 > schemas whose `.pks` files are not in the workspace. The schemas queried are
 > the directories under the base of the `schemaPattern` (e.g., `db/*`) and the
 > schemas of local suites. Suites from the database appear with virtual URI
 > `utplsql-db:/`, open **read-only** (source from `ALL_SOURCE`) so **jump to
-> failure** works, and inline decorations work in schema mode too. They still
-> have no CodeLens — execution is from the tree. `UT_*` packages (utPLSQL
-> framework) are ignored.
+> failure** works. They have **no CodeLens and no inline decorations**.
 
 ## Debugger doesn't stop at breakpoints
 

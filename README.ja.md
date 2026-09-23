@@ -128,7 +128,7 @@ Test Explorer に表示されます。
 | `utplsql.oracleClientLibDir` | `""` | Oracle Instant Client のディレクトリ。`utplsql.oracleClientMode` が `thick` の場合は必須です（例: `C:\oracle\instantclient_23_5`）。 |
 | デバッグがブレークポイントで停止しない | デバッグ情報なしでコンパイルされたパッケージ、またはデバッグ権限の不足 | `PLSQL_OPTIMIZE_LEVEL <= 1` でコンパイル（または `ALTER PACKAGE ... COMPILE DEBUG PLSQL_OPTIMIZE_LEVEL = 1`）し、`DEBUG CONNECT SESSION` + `EXECUTE ON SYS.DBMS_DEBUG` を付与。`test_*.pkb` のブレークポイントはヒットしないことがあります（utPLSQL は動的 SQL でテストを実行します）。テスト対象のコードに設定してください。 |
 | `utplsql.oracleClientConfigDir` | `""` | `sqlnet.ora`/`tnsnames.ora` を含む Oracle 構成ディレクトリ（TNS_ADMIN）。任意。thick モードでのみ使用されます。 |
-| `utplsql.organization` | `file` | ツリーの構成: `file`（パス単位）または `schema`（Schema > Package > Suite > Test）。`schema` モードでは、`.pks` ファイルがワークスペースにないときはスイートもデータベース（`ALL_OBJECTS`/`ALL_SOURCE`）から検出されます — 仮想 URI は `utplsql-db:/`（CodeLens/デコレーション/失敗ジャンプなし）。 |
+| `utplsql.organization` | `file` | ツリーの構成: `file`（パス単位）または `schema`（Schema > Package > Suite > Test）。`schema` モードでは、`.pks` ファイルがワークスペースにないときはスイートもデータベース（`ut_runner.get_suites_info`、利用不可時は `ALL_OBJECTS`/`ALL_SOURCE`）から検出されます — 仮想 URI は `utplsql-db:/`（実行と失敗ジャンプは可能、CodeLens/デコレーションなし）。 |
 | `utplsql.organization.schemaPattern` | `db/{schema}/**` | パスからスキーマを抽出するためのグロブパターン。プレースホルダーには `{schema}` を使用します。`schema` モードでは、パターンベースより下のディレクトリ（例: `db/*`）がデータベースでクエリされるスキーマを定義します。 |
 | `utplsql.discovery.source` | `auto` | `schema` モードでのテストツリーの取得元: `auto` はデータベース API（`ut_runner.get_suites_info`）を使い、利用できない場合は `ALL_SOURCE`/ファイルにフォールバックします。`database` は API を必須にし、`file` はデータベース探索を無効にします。 |
 | `utplsql.refreshDebounceMs` | `300` | Test Explorer を更新する前に `.pks`/`.pkb` ファイル監視イベントをまとめるデバウンス（ミリ秒）。 |
@@ -193,7 +193,7 @@ UTPLSQL_CONN=your_user/password@//host:1521/service
    - `Ctrl+Shift+U X` — **Run Failed Only**（失敗したテストのみ実行）。
 8. 診断にはパレットで **utPLSQL: Show information** を使用します — API/DB のバージョンをコピーオプション付きで表示します。
 9. **utPLSQL: Select additional reporter...** — データベースで利用可能なレポーターを表示する QuickPick。
-10. **utPLSQL: Cancel execution** — 実行中の処理を停止（実行中の `Escape`）。
+10. **utPLSQL: Cancel run** — 実行中の処理を停止（実行中の `Escape`）。
 11. **utPLSQL: Refresh tests** — `.pks` の再検出を強制します。
 
 > 💡 **テスト作成時のヒント:** パーサーはトークン駆動です — ファイルに `%suite`
@@ -227,14 +227,14 @@ UTPLSQL_CONN=your_user/password@//host:1521/service
 | `utPLSQL: Run tests in this folder` | 選択したフォルダーのスイートを実行 | 右クリック → フォルダー |
 | `utPLSQL: Run tests in this folder with coverage` | 同上、カバレッジプロファイル付き | 右クリック → フォルダー |
 | `utPLSQL: Refresh tests` | `.pks` の再検出を強制 | — |
-| `utPLSQL: Cancel execution` | 実行中の処理を停止 | — |
-| `utPLSQL: Show utPLSQL information` | API/DB のバージョンをコピーオプション付きで表示 | — |
+| `utPLSQL: Cancel run` | 実行中の処理を停止 | — |
+| `utPLSQL: Show utPLSQL info` | API/DB のバージョンをコピーオプション付きで表示 | — |
 | `utPLSQL: Select additional reporter...` | データベースのレポーターを表示する QuickPick | — |
 | `utPLSQL: Clear session connection` | セッションキャッシュから接続を削除 | — |
 | `utPLSQL: Rerun Last` | 最後の実行を繰り返す | `Ctrl+Shift+U L` |
 | `utPLSQL: Run Test at Cursor` | カーソル位置のテストを実行 | `Ctrl+Shift+U U` |
 | `utPLSQL: Run Failed Tests` | 失敗したテストのみ再実行 | `Ctrl+Shift+U X` |
-| `utPLSQL: Validate configuration` | セットアップ全体の検証（接続、UT3 インストール）を実行し、結果を表示 | — |
+| `utPLSQL: Validate setup` | セットアップ全体の検証（接続、UT3 インストール）を実行し、結果を表示 | — |
 | `utPLSQL: Configure connection` | `utplsql.connection` で設定を開く | — |
 | `utPLSQL: Copy coverage grants to clipboard` | 権限付与 SQL をクリップボードにコピー | — |
 | `utPLSQL: Show Test Explorer` | Testing ビューにフォーカス | — |
@@ -343,11 +343,11 @@ GRANT SELECT ON SYS.DBA_PROCEDURES TO <ut3_owner>;
 
 | 症状 | 考えられる原因 | 解決策 |
 |---|---|---|
-| スイートが表示されない | 接続の問題 | 診断には `utPLSQL: Validate configuration` を実行 |
+| スイートが表示されない | 接続の問題 | 診断には `utPLSQL: Validate setup` を実行 |
 | カバレッジが空 | `GRANT EXECUTE ON DBMS_PROFILER` が不足 | [データベースの要件](#データベースの要件)の権限を実行、または `utPLSQL: Copy coverage grants to clipboard` を使用 |
 | カバレッジが空 | Oracle 19c では追加の権限が必要 | `GRANT EXECUTE ON DBMS_PROFILER` + `GRANT EXECUTE ON DBMS_PLSQL_CODE_COVERAGE` |
 | 原因不明のコンパイルエラー | PL/SQL 構文エラーを含むコード | `utplsql.compilationDiagnostics.enabled` をオン（既定）のままにします; 実行後、`ALL_ERRORS` からのエラーが「問題」パネルに表示されます |
-| 接続エラー | 文字列の形式が不正、または DB に到達できない | `utPLSQL: Validate configuration` を使用 |
+| 接続エラー | 文字列の形式が不正、または DB に到達できない | `utPLSQL: Validate setup` を使用 |
 | 実行中のタイムアウト | テストが `timeoutMinutes` より長い | `utplsql.timeoutMinutes` を増やす |
 | `%suite` が認識されない | ファイルに `%suite`/`create package` がない、または `PROCEDURE` のない `%test` | スペックを確認; `utPLSQL: Refresh tests` を実行 |
 | CodeLens が表示されない | `editor.codeLens` が無効、または競合 | `"editor.codeLens": true` を有効化; `utplsql.codeLens.enabled` を確認 |

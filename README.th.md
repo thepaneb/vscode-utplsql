@@ -132,7 +132,7 @@ Test Explorer **เมื่อแต่ละเทสต์เสร็จส�
 | `utplsql.oracleClientLibDir` | `""` | ไดเรกทอรี Oracle Instant Client จำเป็นเมื่อ `utplsql.oracleClientMode` เป็น `thick` (เช่น `C:\oracle\instantclient_23_5`) |
 | ดีบักไม่หยุดที่เบรกพอยต์ | แพ็กเกจไม่มีข้อมูลดีบัก หรือขาดสิทธิ์ดีบัก | คอมไพล์ด้วย `PLSQL_OPTIMIZE_LEVEL <= 1` (หรือ `ALTER PACKAGE ... COMPILE DEBUG PLSQL_OPTIMIZE_LEVEL = 1`) และให้สิทธิ์ `DEBUG CONNECT SESSION` + `EXECUTE ON SYS.DBMS_DEBUG`. เบรกพอยต์ใน `test_*.pkb` อาจไม่หยุด (utPLSQL รันเทสต์ผ่าน SQL แบบไดนามิก) ให้ตั้งในโค้ดที่ทดสอบ |
 | `utplsql.oracleClientConfigDir` | `""` | ไดเรกทอรีการกำหนดค่า Oracle (TNS_ADMIN) ที่มี `sqlnet.ora`/`tnsnames.ora` ไม่บังคับ ใช้เฉพาะโหมด thick |
-| `utplsql.organization` | `file` | การจัดระเบียบแผนผัง: `file` (ตามพาธ) หรือ `schema` (Schema > Package > Suite > Test) ในโหมด `schema` suites จะถูกค้นพบจากฐานข้อมูล (`ALL_OBJECTS`/`ALL_SOURCE`) ด้วยเมื่อไม่มีไฟล์ `.pks` ในเวิร์กสเปซ — ด้วย URI เสมือน `utplsql-db:/` (ไม่มี CodeLens/การตกแต่ง/jump to failure) |
+| `utplsql.organization` | `file` | การจัดระเบียบแผนผัง: `file` (ตามพาธ) หรือ `schema` (Schema > Package > Suite > Test) ในโหมด `schema` suites จะถูกค้นพบจากฐานข้อมูล (`ut_runner.get_suites_info` พร้อม fallback ไปยัง `ALL_OBJECTS`/`ALL_SOURCE`) ด้วยเมื่อไม่มีไฟล์ `.pks` ในเวิร์กสเปซ — ด้วย URI เสมือน `utplsql-db:/` (รันและกระโดดไปยังจุดล้มเหลวได้; ไม่มี CodeLens/การตกแต่ง) |
 | `utplsql.organization.schemaPattern` | `db/{schema}/**` | รูปแบบ Glob เพื่อแยก schema จากพาธ ใช้ `{schema}` เป็นตัวยึดตำแหน่ง ในโหมด `schema` ไดเรกทอรีใต้ฐานของรูปแบบ (เช่น `db/*`) กำหนด schemas ที่จะสอบถามในฐานข้อมูล |
 | `utplsql.discovery.source` | `auto` | แหล่งของทรีในโหมด `schema`: `auto` ใช้ API ของฐานข้อมูล (`ut_runner.get_suites_info`) และถอยไปใช้ `ALL_SOURCE`/ไฟล์เมื่อไม่พร้อมใช้งาน; `database` บังคับใช้ API; `file` ปิดการค้นหาผ่านฐานข้อมูล |
 | `utplsql.refreshDebounceMs` | `300` | Debounce (ms) เพื่อรวมเหตุการณ์ของตัวเฝ้าดูไฟล์ `.pks`/`.pkb` ก่อนรีเฟรช Test Explorer |
@@ -199,7 +199,7 @@ UTPLSQL_CONN=your_user/password@//host:1521/service
 8. **สำหรับ Oracle แบบตรง (สตรีมมิง):** ไม่ต้องติดตั้งอะไร — VSIX มีไดรเวอร์ `oracledb` แบบ thin ในตัวแล้ว
 9. สำหรับการวินิจฉัย ใช้ `utPLSQL: Show information` ใน palette — แสดงเวอร์ชัน API/DB พร้อมตัวเลือกคัดลอก
 10. **utPLSQL: Select additional reporter...** — QuickPick พร้อม reporters ที่มีอยู่ในฐานข้อมูล
-11. **utPLSQL: Cancel execution** — หยุดการรันที่กำลังทำงาน (`Escape` ระหว่างการรัน)
+11. **utPLSQL: Cancel run** — หยุดการรันที่กำลังทำงาน (`Escape` ระหว่างการรัน)
 12. **utPLSQL: Refresh tests** — บังคับให้ค้นพบ `.pks` อีกครั้ง
 
 > 💡 **เมื่อเขียนเทสต์:** ตัวแยกวิเคราะห์ (parser) ขับเคลื่อนด้วย token — เพียงมี `%suite`
@@ -233,14 +233,14 @@ Annotation ไม่คำนึงถึงตัวพิมพ์เล็ก
 | `utPLSQL: Run tests in this folder` | รัน suites ของโฟลเดอร์ที่เลือก | คลิกขวา → โฟลเดอร์ |
 | `utPLSQL: Run tests in this folder with coverage` | เหมือนเดิม พร้อมโปรไฟล์ความครอบคลุม | คลิกขวา → โฟลเดอร์ |
 | `utPLSQL: Refresh tests` | บังคับให้ค้นพบ `.pks` อีกครั้ง | — |
-| `utPLSQL: Cancel execution` | หยุดการรันที่กำลังทำงาน | — |
-| `utPLSQL: Show utPLSQL information` | เวอร์ชัน API/DB พร้อมตัวเลือกคัดลอก | — |
+| `utPLSQL: Cancel run` | หยุดการรันที่กำลังทำงาน | — |
+| `utPLSQL: Show utPLSQL info` | เวอร์ชัน API/DB พร้อมตัวเลือกคัดลอก | — |
 | `utPLSQL: Select additional reporter...` | QuickPick พร้อม reporters จากฐานข้อมูล | — |
 | `utPLSQL: Clear session connection` | ลบการเชื่อมต่อออกจากแคชเซสชัน | — |
 | `utPLSQL: Rerun Last` | ทำซ้ำการรันครั้งล่าสุด | `Ctrl+Shift+U L` |
 | `utPLSQL: Run Test at Cursor` | รันเทสต์ใต้เคอร์เซอร์ | `Ctrl+Shift+U U` |
 | `utPLSQL: Run Failed Tests` | รันเฉพาะเทสต์ที่ล้มเหลวซ้ำ | `Ctrl+Shift+U X` |
-| `utPLSQL: Validate configuration` | รันการตรวจสอบการตั้งค่าทั้งหมด (การเชื่อมต่อ, การติดตั้ง UT3) และแสดงผลลัพธ์ | — |
+| `utPLSQL: Validate setup` | รันการตรวจสอบการตั้งค่าทั้งหมด (การเชื่อมต่อ, การติดตั้ง UT3) และแสดงผลลัพธ์ | — |
 | `utPLSQL: Configure connection` | เปิดการตั้งค่าที่ `utplsql.connection` | — |
 | `utPLSQL: Copy coverage grants to clipboard` | คัดลอก SQL ของ grants ไปยังคลิปบอร์ด | — |
 | `utPLSQL: Show Test Explorer` | โฟกัสมุมมอง Testing | — |
@@ -390,11 +390,11 @@ GRANT SELECT ON SYS.DBA_PROCEDURES TO <ut3_owner>;
 
 | อาการ | สาเหตุที่เป็นไปได้ | วิธีแก้ |
 |---|---|---|
-| Suites ไม่ปรากฏ | ไม่มีไฟล์ `.pks` ที่ค้นพบ | รัน `utPLSQL: Validate configuration` เพื่อการวินิจฉัย |
+| Suites ไม่ปรากฏ | ไม่มีไฟล์ `.pks` ที่ค้นพบ | รัน `utPLSQL: Validate setup` เพื่อการวินิจฉัย |
 | ความครอบคลุมว่างเปล่า | ขาด `GRANT EXECUTE ON DBMS_PROFILER` | รัน grants ใน [ข้อกำหนด](#ข้อกำหนดฐานข้อมูล) หรือใช้ `utPLSQL: Copy coverage grants to clipboard` |
 | ความครอบคลุมว่างเปล่า | Oracle 19c ต้องใช้ grants เพิ่มเติม | `GRANT EXECUTE ON DBMS_PROFILER` + `GRANT EXECUTE ON DBMS_PLSQL_CODE_COVERAGE` |
 | ข้อผิดพลาดการคอมไพล์โดยไม่มีข้อบ่งชี้ | โค้ดที่มีข้อผิดพลาดไวยากรณ์ PL/SQL | เปิดใช้งาน `utplsql.compilationDiagnostics.enabled` ไว้ (ค่าเริ่มต้น); ข้อผิดพลาดจาก `ALL_ERRORS` จะปรากฏใน Problems Panel หลังจากการรัน |
-| ข้อผิดพลาดการเชื่อมต่อ | สตริงไม่ถูกต้องหรือฐานข้อมูลเข้าไม่ถึง | ใช้ `utPLSQL: Validate configuration` |
+| ข้อผิดพลาดการเชื่อมต่อ | สตริงไม่ถูกต้องหรือฐานข้อมูลเข้าไม่ถึง | ใช้ `utPLSQL: Validate setup` |
 | Timeout ระหว่างรัน | เทสต์ใช้เวลานานกว่า `timeoutMinutes` | เพิ่ม `utplsql.timeoutMinutes` |
 | `%suite` ไม่ได้รับการรู้จัก | ขาด `%suite`/`create package` ในไฟล์ หรือ `%test` ไม่มี `PROCEDURE` | ตรวจสอบ spec; รัน `utPLSQL: Refresh tests` |
 | CodeLens ไม่ปรากฏ | `editor.codeLens` ถูกปิดหรือขัดแย้ง | เปิดใช้งาน `"editor.codeLens": true`; ตรวจสอบ `utplsql.codeLens.enabled` |
