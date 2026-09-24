@@ -16,7 +16,12 @@ import {
   type SuiteFile,
 } from '../../discovery';
 import { closeOraclePool } from '../../oracleRunner';
-import { __resetConfigValues, __setConfigValue } from '../vscode-stub';
+import {
+  __resetConfigValues,
+  __resetMockFiles,
+  __setConfigValue,
+  __setMockFile,
+} from '../vscode-stub';
 
 test('parseSuite: retorna ParsedSuite para arquivo com %suite', () => {
   const text = `CREATE OR REPLACE PACKAGE test_app IS
@@ -1122,3 +1127,73 @@ function row(
     line,
   };
 }
+
+// ── discoverWorkspace / resolveFolder ────────────────────────────────
+
+test('discoverWorkspace: resolveFolder escolhe o workspace folder mais específico', async () => {
+  __resetConfigValues();
+  __resetMockFiles();
+  const content = `CREATE OR REPLACE PACKAGE t1 IS
+  --%suite(S)
+  --%test(A)
+  PROCEDURE a;
+END;`;
+  __setMockFile('**/*.pks', '/ws1/a/t1.pks', content);
+  __setMockFile('**/*.pks', '/ws2/b/t2.pks', content.replace(/t1/g, 't2'));
+  const folders = [
+    { uri: { fsPath: '/ws1', toString: () => '/ws1' }, name: 'a', index: 0 },
+    { uri: { fsPath: '/ws2', toString: () => '/ws2' }, name: 'b', index: 1 },
+  ] as never;
+  const result = await discoverWorkspace(['**/*.pks'], folders);
+  assert.strictEqual(result.length, 2);
+  assert.strictEqual(result.find((s) => s.packageName === 't2')?.folder.name, 'b');
+});
+
+// ── discoverDbSuites (caminhos de falha) ─────────────────────────────
+
+test('discoverDbSuites: oracledb ausente retorna vazio', async () => {
+  const result = await discoverDbSuites('u/p@//h:1521/s', 'APP', [FOLDER], async () => {
+    throw new Error('sem driver');
+  });
+  assert.deepStrictEqual(result, []);
+});
+
+test('discoverDbSuites: falha ao obter conexão retorna vazio', async () => {
+  const mod = {
+    createPool: async () => {
+      throw new Error('pool down');
+    },
+    getConnection: async () => {
+      throw new Error('conn down');
+    },
+  };
+  const result = await discoverDbSuites(
+    'u/p@//h:1521/s',
+    'APP',
+    [FOLDER],
+    async () => mod as never,
+  );
+  assert.deepStrictEqual(result, []);
+  await closeOraclePool();
+});
+
+test('discoverDbSuites: erro na descoberta via banco retorna vazio', async () => {
+  const conn = {
+    callTimeout: 0,
+    execute: async () => {
+      throw new Error('query falhou');
+    },
+    close: async () => {},
+  };
+  const mod = {
+    createPool: async () => ({ getConnection: async () => conn, close: async () => {} }),
+  };
+  const result = await discoverDbSuites(
+    'u/p@//h:1521/s',
+    'APP',
+    [FOLDER],
+    async () => mod as never,
+  );
+  assert.deepStrictEqual(result, []);
+  await closeOraclePool();
+});

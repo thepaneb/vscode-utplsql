@@ -142,6 +142,7 @@ CONCLUIR
 | 83 | [Higiene do pacote VSIX: bloquear vazamento de arquivos de desenvolvimento](completed/prd-83-vsix-package-hygiene.md) | 0.13.0 | 2026-09-22 |
 | 84 | [Suporte a Oracle 12.2 com piso alternativo de utPLSQL e charset de conexão](completed/prd-84-oracle-122-support.md) | 0.13.0 | 2026-09-22 |
 | 85 | [Second brain canônico (Obsidian) com MCP e extração de conhecimento](completed/prd-85-brain-source-of-truth.md) | 0.13.0 | 2026-09-23 |
+| 86 | [Debugger honra stopOnException (break_exception)](completed/prd-86-debugger-stop-on-exception.md) | 0.13.0 | 2026-09-24 |
 
 ### 🔵 Aprovados
 
@@ -267,7 +268,8 @@ docs/prd/
 │   ├── prd-79-coverage-scope.md
 │   ├── prd-83-vsix-package-hygiene.md
 │   ├── prd-84-oracle-122-support.md
-│   └── prd-85-brain-source-of-truth.md
+│   ├── prd-85-brain-source-of-truth.md
+│   └── prd-86-debugger-stop-on-exception.md
 ├── approved/        ← aprovados, aguardando implementação
 │   └── prd-47-node-26-toolchain.md
 └── proposed/        ← em avaliação

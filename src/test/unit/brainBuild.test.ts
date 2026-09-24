@@ -1,24 +1,52 @@
 import './setup.js';
 import assert from 'node:assert';
+import { spawnSync } from 'node:child_process';
+import * as fs from 'node:fs';
+import * as os from 'node:os';
+import * as path from 'node:path';
 import { test } from 'node:test';
 
+const ROOT = path.resolve(__dirname, '../../..');
+
 // Testa o script scripts/brain-build.cjs (vault → repo: transformações e banner).
-const { parseFrontmatter, wikiLinks, readmeLinks, withStatus, stripConexoes, render } =
-  require('../../../scripts/brain-build.cjs') as {
-    parseFrontmatter: (t: string) => { fm: Record<string, string>; body: string; hasFm: boolean };
-    wikiLinks: (b: string) => string;
-    readmeLinks: (b: string) => string;
-    withStatus: (b: string, label: string) => string;
-    stripConexoes: (b: string) => string;
-    render: (i: {
-      rel: string;
-      target: string;
-      body: string;
-      prd?: boolean;
-      prdIndex?: boolean;
-      status?: string;
-    }) => string;
-  };
+const {
+  parseFrontmatter,
+  wikiLinks,
+  readmeLinks,
+  withStatus,
+  stripConexoes,
+  render,
+  syncDir,
+  published,
+} = require('../../../scripts/brain-build.cjs') as {
+  syncDir: (
+    src: string,
+    dst: string,
+    relLabel: string,
+    check: boolean,
+    mirror: boolean,
+  ) => { changed: number; drifted: number; total: number };
+  published: () => Array<{
+    note: string;
+    rel: string;
+    target: string;
+    body: string;
+    prd?: boolean;
+  }>;
+  parseFrontmatter: (t: string) => { fm: Record<string, string>; body: string; hasFm: boolean };
+  wikiLinks: (b: string) => string;
+  readmeLinks: (b: string) => string;
+  withStatus: (b: string, label: string) => string;
+  stripConexoes: (b: string) => string;
+  render: (i: {
+    rel: string;
+    target: string;
+    body: string;
+    prd?: boolean;
+    prdIndex?: boolean;
+    status?: string;
+  }) => string;
+};
 
 test('brain-build: parseFrontmatter separa frontmatter e corpo', () => {
   const { fm, body, hasFm } = parseFrontmatter(
@@ -81,4 +109,77 @@ test('brain-build: render de PRD reinjeta o status do frontmatter', () => {
     status: 'completed',
   });
   assert.match(out, /\| Status \| Concluído \|/);
+});
+
+test('brain-build: syncDir copia novos, ignora iguais e remove sobras no mirror', () => {
+  const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'bb-sync-'));
+  try {
+    const src = path.join(dir, 'src');
+    const dst = path.join(dir, 'dst');
+    fs.mkdirSync(src);
+    fs.mkdirSync(dst);
+    fs.writeFileSync(path.join(src, 'a.png'), 'A');
+    fs.writeFileSync(path.join(src, 'b.png'), 'B');
+    fs.writeFileSync(path.join(dst, 'a.png'), 'A');
+    fs.writeFileSync(path.join(dst, 'sobra.png'), 'X');
+
+    const r = syncDir(src, dst, 'rel/', false, true);
+    assert.strictEqual(r.total, 2);
+    assert.strictEqual(r.changed, 2); // b.png copiado + sobra.png removida
+    assert.ok(fs.existsSync(path.join(dst, 'b.png')));
+    assert.ok(!fs.existsSync(path.join(dst, 'sobra.png')));
+
+    const r2 = syncDir(src, dst, 'rel/', false, true);
+    assert.strictEqual(r2.changed, 0);
+  } finally {
+    fs.rmSync(dir, { recursive: true, force: true });
+  }
+});
+
+test('brain-build: syncDir em check detecta drift sem escrever', () => {
+  const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'bb-drift-'));
+  try {
+    const src = path.join(dir, 'src');
+    const dst = path.join(dir, 'dst');
+    fs.mkdirSync(src);
+    fs.mkdirSync(dst);
+    fs.writeFileSync(path.join(src, 'a.png'), 'A');
+    fs.writeFileSync(path.join(dst, 'a.png'), 'B');
+    fs.writeFileSync(path.join(dst, 'sobra.png'), 'X');
+
+    const r = syncDir(src, dst, 'rel/', true, true);
+    assert.strictEqual(r.drifted, 2); // a.png diferente + sobra.png
+    assert.strictEqual(r.changed, 0);
+    assert.strictEqual(fs.readFileSync(path.join(dst, 'a.png'), 'utf8'), 'B');
+    assert.ok(fs.existsSync(path.join(dst, 'sobra.png')));
+  } finally {
+    fs.rmSync(dir, { recursive: true, force: true });
+  }
+});
+
+test('brain-build: syncDir com src ausente devolve zeros', () => {
+  const r = syncDir('/nao/existe/mesmo', '/tmp/x', 'rel/', false, false);
+  assert.deepStrictEqual(r, { changed: 0, drifted: 0, total: 0 });
+});
+
+test('brain-build: published lê o vault real e classifica os itens', () => {
+  const items = published();
+  assert.ok(Array.isArray(items));
+  for (const item of items) {
+    assert.ok(item.rel);
+    assert.ok(item.target);
+    assert.strictEqual(typeof item.body, 'string');
+  }
+  assert.ok(
+    items.some((i) => i.prd),
+    'deveria haver PRDs publicados',
+  );
+});
+
+test('brain-build.cjs: check do repo atual não reporta drift', () => {
+  const r = spawnSync(process.execPath, [path.join(ROOT, 'scripts', 'brain-build.cjs'), 'check'], {
+    encoding: 'utf8',
+  });
+  assert.strictEqual(r.status, 0, `${r.stdout}\n${r.stderr}`);
+  assert.match(r.stdout, /em sincronia|OK/);
 });

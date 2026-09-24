@@ -101,6 +101,7 @@ The file is moved between folders as it progresses.
 | 83 | VSIX package hygiene | 0.13.0 |
 | 84 | Oracle 12.2 support (alternative utPLSQL floor) + charset | 0.13.0 |
 | 85 | Canonical second brain (Obsidian) with MCP and knowledge layers | 0.13.0 |
+| 86 | Debugger honors `stopOnException` (`break_exception`) | 0.13.0 |
 
 ### 🔵 Approved
 

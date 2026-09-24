@@ -140,3 +140,42 @@ test('parse-version: run.sh usa parse-version.cjs para a versão por banco', () 
   const run = read('scripts/db-matrix/run.sh');
   assert.match(run, /parse-version\.cjs/);
 });
+
+test('parse-version.cjs: CLI --field devolve o campo pedido', () => {
+  const r = spawnSync(
+    process.execPath,
+    [
+      path.join(ROOT, 'scripts/db-matrix/parse-version.cjs'),
+      '--field',
+      '3',
+      '12.2|img|svc|v3.1.14',
+      'v.3.2.3',
+    ],
+    { encoding: 'utf8' },
+  );
+  assert.strictEqual(r.status, 0);
+  assert.strictEqual(r.stdout, 'v3.1.14');
+});
+
+test('parse-version.cjs: CLI --field fora do intervalo devolve vazio', () => {
+  const r = spawnSync(
+    process.execPath,
+    [path.join(ROOT, 'scripts/db-matrix/parse-version.cjs'), '--field', '9', 'a|b|c', 'v.3.2.3'],
+    { encoding: 'utf8' },
+  );
+  assert.strictEqual(r.status, 0);
+  assert.strictEqual(r.stdout, '');
+});
+
+test('parse-version.cjs: CLI sem --field devolve JSON', () => {
+  const r = spawnSync(
+    process.execPath,
+    [path.join(ROOT, 'scripts/db-matrix/parse-version.cjs'), '23free|img|FREEPDB1', 'v.3.2.3'],
+    { encoding: 'utf8' },
+  );
+  assert.strictEqual(r.status, 0);
+  const parsed = JSON.parse(r.stdout);
+  assert.strictEqual(parsed.label, '23free');
+  assert.strictEqual(parsed.utplsqlVersion, 'v.3.2.3');
+  assert.strictEqual(parsed.hasExplicitVersion, false);
+});

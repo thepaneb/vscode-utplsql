@@ -2,6 +2,14 @@
 
 ## 0.13.0
 
+- **Correção: debugger honra `stopOnException` (PRD-86)**: a setting
+  `utplsql.debugger.stopOnException` existia desde a PRD-33 mas não tinha
+  efeito — o adapter guardava o valor sem usá-lo e o `CONTINUE` do `DBMS_DEBUG`
+  era emitido sem o breakflag `break_exception`, então o debuggee nunca
+  suspendia em exceções. Agora o cliente propaga `DBMS_DEBUG.break_exception`
+  quando a setting é `true` (default), suspendendo em `reason_exception`
+  (`reason='exception'` no DAP); com `false` o comportamento antigo é mantido.
+
 - **Second brain canônico (Obsidian) com MCP (PRD-85)**: `docs/brain/` passa a ser
   **versionado** e a fonte da verdade do texto humano; `README*`, `docs/wiki/`,
   `docs/functional/` e `docs/prd/` passam a ser **gerados** a partir dele

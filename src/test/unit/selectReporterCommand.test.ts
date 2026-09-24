@@ -2,9 +2,11 @@ import './setup.js';
 import assert from 'node:assert';
 import { mock, test } from 'node:test';
 import {
+  __getClipboardText,
   __getLastQuickPickItems,
   __resetConfigValues,
   __resetLastQuickPickItems,
+  __setInformationResult,
   __setQuickPickResult,
   commands,
 } from '../vscode-stub';
@@ -140,6 +142,51 @@ test('showInfo: consulta versões via conexão mockada sem lançar', async () =>
     assert.ok(handler, 'comando utplsql.showInfo deveria estar registrado');
     await handler?.();
   } finally {
+    process.env.UTPLSQL_CONN = orig;
+    await closeOraclePool();
+  }
+});
+
+test('selectReporter: sem conexão retorna sem abrir QuickPick', async () => {
+  __resetConfigValues();
+  commands.__resetRegisteredCommands();
+  __resetLastQuickPickItems();
+  const orig = process.env.UTPLSQL_CONN;
+  delete process.env.UTPLSQL_CONN;
+  const { clearSessionConnection } = await import('../../config.js');
+  clearSessionConnection();
+  try {
+    const { registerConnectionCommands } = await import('../../commands/connection.js');
+    registerConnectionCommands(
+      { subscriptions: [] } as never,
+      { state: makeDeps([]).state } as never,
+    );
+    __setQuickPickResult('IGNORED');
+    await commands.__getRegisteredCommand('utplsql.selectReporter')?.();
+    assert.strictEqual(__getLastQuickPickItems(), undefined);
+  } finally {
+    if (orig !== undefined) process.env.UTPLSQL_CONN = orig;
+    __resetConfigValues();
+  }
+});
+
+test('showInfo: aceitar copiar escreve a mensagem no clipboard', async () => {
+  __resetConfigValues();
+  commands.__resetRegisteredCommands();
+  const orig = process.env.UTPLSQL_CONN;
+  process.env.UTPLSQL_CONN = 'u/p@//h:1521/s';
+  const { registerConnectionCommands } = await import('../../commands/connection.js');
+  const { closeOraclePool } = await import('../../oracleRunner.js');
+  try {
+    registerConnectionCommands(
+      { subscriptions: [] } as never,
+      { state: makeDeps([]).state } as never,
+    );
+    __setInformationResult('Copiar');
+    await commands.__getRegisteredCommand('utplsql.showInfo')?.();
+    assert.ok(__getClipboardText().includes('utPLSQL:'));
+  } finally {
+    __setInformationResult(undefined);
     process.env.UTPLSQL_CONN = orig;
     await closeOraclePool();
   }

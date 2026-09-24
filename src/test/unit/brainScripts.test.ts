@@ -105,3 +105,19 @@ test('brain: genMocIndex lista as notas da pasta como wikilinks', () => {
   assert.match(out, /\[\[TPL-ORACLEDB - node-oracledb\]\]/);
   assert.ok(!out.includes('MOC - Componentes'));
 });
+
+const { check } = require('../../../scripts/brain.cjs') as { check: () => number };
+
+test('brain: check do vault atual não reporta problemas', () => {
+  assert.strictEqual(check(), 0);
+});
+
+test('brain.cjs: CLI sem argumento roda o check', () => {
+  const { spawnSync } = require('node:child_process') as typeof import('node:child_process');
+  const path = require('node:path') as typeof import('node:path');
+  const root = path.resolve(__dirname, '../../..');
+  const r = spawnSync(process.execPath, [path.join(root, 'scripts', 'brain.cjs')], {
+    encoding: 'utf8',
+  });
+  assert.strictEqual(r.status, 0, `${r.stdout}\n${r.stderr}`);
+});

@@ -205,3 +205,15 @@ test('compileForDebug: driver oracledb ausente retorna falha amigável', async (
   assert.strictEqual(result.ok.length, 0);
   assert.strictEqual(result.failed.length, 1);
 });
+
+test('connectOracle: driver oracledb ausente lança erro amigável', async () => {
+  const { connectOracle } = await import('../../scriptRunner.js');
+  await assert.rejects(() => connectOracle('u/p@//h:1521/s'), /oracledb/);
+});
+
+test('discoverSchemaFromDb: driver oracledb ausente retorna vazio (loadOracledb default)', async () => {
+  const { discoverSchemaFromDb } = await import('../../discovery.js');
+  const folders = [{ uri: { fsPath: '/ws' }, name: 'ws', index: 0 }];
+  const result = await discoverSchemaFromDb('u/p@//h:1521/s', 'APP', folders as never);
+  assert.deepStrictEqual(result, []);
+});

@@ -737,6 +737,7 @@ function makeOracleRunFake(opts: {
   buffer: string[];
   runThrows?: boolean;
   reporters?: string[];
+  enableDbmsOutputThrows?: boolean;
 }) {
   const captured: { runSql?: string; runBinds?: Record<string, unknown> } = {};
   const conn1 = {
@@ -757,6 +758,10 @@ function makeOracleRunFake(opts: {
           'UT_COVERAGE_COBERTURA_REPORTER',
         ];
         return { rows: reporters.map((r) => [r]) };
+      }
+      if (/DBMS_OUTPUT\.ENABLE/.test(sql)) {
+        if (opts.enableDbmsOutputThrows) throw new Error('enable falhou');
+        return {};
       }
       return {};
     },
@@ -2296,4 +2301,210 @@ test('executeRunOracle: cobertura sem escopo configurado não adiciona parâmetr
   assert.ok(!sql.includes('a_include_schema_expr'));
   assert.ok(!sql.includes('a_exclude_object_expr'));
   assert.strictEqual(captured.runBinds?.includeObjects, undefined);
+});
+
+test('ensurePool: erro do cliente thick apenas loga e segue criando o pool', async () => {
+  resetOracleClientStateForTests();
+  const { mod, created } = makeFakeOracledb();
+  const cfg = {
+    ...POOL_CFG,
+    oracleClientMode: 'thick',
+    oracleClientLibDir: '',
+  } as unknown as UtConfig;
+  try {
+    await ensurePool(mod as never, 'u/p@//h:1521/s', cfg);
+    assert.strictEqual(created.length, 1);
+  } finally {
+    await closeOraclePool();
+    resetOracleClientStateForTests();
+  }
+});
+
+test('executeRunOracle: cobertura sem reporter de cobertura desliga a cobertura', async () => {
+  const { mod, captured } = makeOracleRunFake({
+    buffer: [JUNIT_XML],
+    reporters: ['UT_DOCUMENTATION_REPORTER'],
+  });
+  const run = makeRun() as any;
+  const { item, metaMap } = makeLeaf();
+  try {
+    await executeRunOracle(
+      {
+        connection: 'u/p@//h:1521/s',
+        pathArgs: ['pkg'],
+        coverage: true,
+        sourcePath: 'install',
+        root: '/root',
+        run,
+        leafTests: [item as any],
+        state: makeOracleRunState(metaMap),
+      },
+      neverCancel as never,
+      async () => mod as never,
+    );
+  } finally {
+    await closeOraclePool();
+  }
+  const sql = captured.runSql ?? '';
+  assert.ok(!sql.includes('ut_coverage_cobertura_reporter()'));
+  assert.ok(!sql.includes('a_coverage_schemes => :schemes'));
+  assert.match(run.output.join('\n'), /UT_COVERAGE_COBERTURA_REPORTER/);
+});
+
+test('executeRunOracle: reporter volátil da sessão é incluído e consumido', async () => {
+  const { mod, captured } = makeOracleRunFake({
+    buffer: [JUNIT_XML],
+    reporters: ['UT_DOCUMENTATION_REPORTER', 'UT_SESSION_REPORTER'],
+  });
+  const run = makeRun() as any;
+  const { item, metaMap } = makeLeaf();
+  const state = makeOracleRunState(metaMap);
+  let consumed = false;
+  state.consumeExtraReporter = () => {
+    if (consumed) return undefined;
+    consumed = true;
+    return 'ut_session_reporter';
+  };
+  try {
+    await executeRunOracle(
+      {
+        connection: 'u/p@//h:1521/s',
+        pathArgs: ['pkg'],
+        coverage: false,
+        sourcePath: 'install',
+        root: '/root',
+        run,
+        leafTests: [item as any],
+        state,
+      },
+      neverCancel as never,
+      async () => mod as never,
+    );
+  } finally {
+    await closeOraclePool();
+  }
+  assert.match(captured.runSql ?? '', /ut_session_reporter\(\)/);
+  assert.match(run.output.join('\n'), /ut_session_reporter/);
+});
+
+test('executeRunOracle: reporter adicional com nome inválido é ignorado', async () => {
+  const { mod, captured } = makeOracleRunFake({ buffer: [JUNIT_XML] });
+  const run = makeRun() as any;
+  const { item, metaMap } = makeLeaf();
+  try {
+    await executeRunOracle(
+      {
+        connection: 'u/p@//h:1521/s',
+        pathArgs: ['pkg'],
+        coverage: false,
+        sourcePath: 'install',
+        root: '/root',
+        run,
+        leafTests: [item as any],
+        state: makeOracleRunState(metaMap),
+        additionalReporters: ['reporter; DROP TABLE x'],
+      },
+      neverCancel as never,
+      async () => mod as never,
+    );
+  } finally {
+    await closeOraclePool();
+  }
+  assert.ok(!(captured.runSql ?? '').includes('DROP TABLE'));
+});
+
+test('executeRunOracle: reporter padrão repetido em additionalReporters não duplica', async () => {
+  const { mod, captured } = makeOracleRunFake({ buffer: [JUNIT_XML] });
+  const run = makeRun() as any;
+  const { item, metaMap } = makeLeaf();
+  try {
+    await executeRunOracle(
+      {
+        connection: 'u/p@//h:1521/s',
+        pathArgs: ['pkg'],
+        coverage: false,
+        sourcePath: 'install',
+        root: '/root',
+        run,
+        leafTests: [item as any],
+        state: makeOracleRunState(metaMap),
+        additionalReporters: ['ut_documentation_reporter()'],
+      },
+      neverCancel as never,
+      async () => mod as never,
+    );
+  } finally {
+    await closeOraclePool();
+  }
+  const matches = (captured.runSql ?? '').match(/ut_documentation_reporter\(\)/g) ?? [];
+  assert.strictEqual(matches.length, 1);
+});
+
+test('executeRunOracle: includeObjectExpr/excludeSchemaExpr viram binds STRING', async () => {
+  const { mod, captured } = makeOracleRunFake({
+    buffer: [JUNIT_XML, COV_XML],
+    reporters: ['UT_DOCUMENTATION_REPORTER', 'UT_COVERAGE_COBERTURA_REPORTER'],
+  });
+  const run = makeRun() as any;
+  const { item, metaMap } = makeLeaf();
+  try {
+    await executeRunOracle(
+      {
+        connection: 'u/p@//h:1521/s',
+        pathArgs: ['pkg'],
+        coverage: true,
+        sourcePath: 'install',
+        root: '/root',
+        run,
+        leafTests: [item as any],
+        state: makeOracleRunState(metaMap),
+        coverageIncludeObjectExpr: '^PKG$',
+        coverageExcludeSchemaExpr: '^UT3$',
+      },
+      neverCancel as never,
+      async () => mod as never,
+    );
+  } finally {
+    await closeOraclePool();
+  }
+  assert.match(captured.runSql ?? '', /a_include_object_expr => :includeObjectExpr/);
+  assert.match(captured.runSql ?? '', /a_exclude_schema_expr => :excludeSchemaExpr/);
+  assert.deepStrictEqual(captured.runBinds?.includeObjectExpr, {
+    dir: 'in',
+    type: 'STRING',
+    val: '^PKG$',
+  });
+  assert.deepStrictEqual(captured.runBinds?.excludeSchemaExpr, {
+    dir: 'in',
+    type: 'STRING',
+    val: '^UT3$',
+  });
+});
+
+test('executeRunOracle: falha ao habilitar DBMS_OUTPUT não interrompe o run', async () => {
+  const { mod } = makeOracleRunFake({
+    buffer: [JUNIT_XML],
+    enableDbmsOutputThrows: true,
+  });
+  const run = makeRun() as any;
+  const { item, metaMap } = makeLeaf();
+  await assert.doesNotReject(() =>
+    executeRunOracle(
+      {
+        connection: 'u/p@//h:1521/s',
+        pathArgs: ['pkg'],
+        coverage: false,
+        sourcePath: 'install',
+        root: '/root',
+        run,
+        leafTests: [item as any],
+        state: makeOracleRunState(metaMap),
+        dbmsOutput: true,
+      },
+      neverCancel as never,
+      async () => mod as never,
+    ),
+  );
+  await closeOraclePool();
+  assert.strictEqual(run.passedList.length, 1);
 });

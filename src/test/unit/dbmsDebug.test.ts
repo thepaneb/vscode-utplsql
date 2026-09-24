@@ -112,6 +112,17 @@ test('dbmsDebugClient: run sem evento vira no_break; status de erro vira unknown
   assert.strictEqual(await new DbmsDebugClient(err.conn).continueRun(), 'unknown');
 });
 
+test('dbmsDebugClient: reason_exception/handler vira exception; senão break', async () => {
+  const exc = makeConn(async () => ({
+    outBinds: { status: 0, stopped: 1, ended: 0, isException: 1 },
+  }));
+  assert.strictEqual(await new DbmsDebugClient(exc.conn).continueRun(), 'exception');
+  const brk = makeConn(async () => ({
+    outBinds: { status: 0, stopped: 1, ended: 0, isException: 0 },
+  }));
+  assert.strictEqual(await new DbmsDebugClient(brk.conn).continueRun(), 'break');
+});
+
 test('dbmsDebugClient: getRuntimeFrame cai para anonymous em erro', async () => {
   const { conn } = makeConn(async () => {
     throw new Error('boom');

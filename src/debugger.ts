@@ -522,19 +522,21 @@ export class UtplsqlDebugAdapter implements vscode.DebugAdapter {
   private async waitForNextStop(action: 'continue' | 'over' | 'into' | 'out'): Promise<void> {
     if (!this.debuggerClient || this.terminated) return;
     try {
+      // `stopOnException` só tem efeito se o CONTINUE pedir `break_exception`.
+      const breakOnException = this.config?.stopOnException !== false;
       let status: string;
       switch (action) {
         case 'over':
-          status = await this.debuggerClient.stepOver();
+          status = await this.debuggerClient.stepOver(breakOnException);
           break;
         case 'into':
-          status = await this.debuggerClient.stepInto();
+          status = await this.debuggerClient.stepInto(breakOnException);
           break;
         case 'out':
-          status = await this.debuggerClient.stepOut();
+          status = await this.debuggerClient.stepOut(breakOnException);
           break;
         default:
-          status = await this.debuggerClient.continueRun();
+          status = await this.debuggerClient.continueRun(breakOnException);
       }
       await this.reportStop(status);
     } catch (e) {
@@ -553,7 +555,14 @@ export class UtplsqlDebugAdapter implements vscode.DebugAdapter {
       void this.teardown();
       return;
     }
-    if (status === 'break' && this.debuggerClient) {
+    const isException = status === 'exception';
+    // `stopOnException=false` segue em frente quando o evento é uma exceção
+    // (reason_exception/reason_handler), como se fosse um no_break.
+    if (isException && this.config?.stopOnException === false) {
+      await this.waitForNextStop('continue');
+      return;
+    }
+    if ((status === 'break' || isException) && this.debuggerClient) {
       const frame = await this.debuggerClient.getRuntimeFrame(1);
       // Converte a linha do objeto armazenado de volta para a do arquivo local.
       const unit = frame.name.split('.').pop() ?? frame.name;
@@ -561,7 +570,7 @@ export class UtplsqlDebugAdapter implements vscode.DebugAdapter {
       const line = frame.line > 0 ? frame.line + offset : frame.line;
       this.currentFrame = { name: frame.name, line };
       this.sendEvent('stopped', {
-        reason: 'breakpoint',
+        reason: isException ? 'exception' : 'breakpoint',
         threadId: 1,
         allThreadsStopped: true,
       });

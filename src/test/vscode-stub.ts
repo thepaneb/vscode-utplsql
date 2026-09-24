@@ -26,6 +26,55 @@ let _mockFindFilesResult: Record<string, string[]> = {};
 let _mockFileErrors: Record<string, boolean> = {};
 const _mockVisibleEditors: TextEditor[] = [];
 
+let _inputBoxResults: Array<string | undefined> = [];
+const _informationMessages: string[] = [];
+const _warningMessages: string[] = [];
+const _errorMessages: string[] = [];
+let _clipboardText = '';
+const _outputChannels: Record<string, string[]> = {};
+
+export function __setInputBoxResults(values: Array<string | undefined>): void {
+  _inputBoxResults = [...values];
+}
+
+export function __resetInputBoxResults(): void {
+  _inputBoxResults = [];
+}
+
+export function __setActiveTextEditor(editor: TextEditor | undefined): void {
+  window.activeTextEditor = editor;
+}
+
+export function __getInformationMessages(): string[] {
+  return [..._informationMessages];
+}
+
+export function __getWarningMessages(): string[] {
+  return [..._warningMessages];
+}
+
+export function __getErrorMessages(): string[] {
+  return [..._errorMessages];
+}
+
+export function __resetMessages(): void {
+  _informationMessages.length = 0;
+  _warningMessages.length = 0;
+  _errorMessages.length = 0;
+}
+
+export function __getClipboardText(): string {
+  return _clipboardText;
+}
+
+export function __getOutputChannelLines(name: string): string[] {
+  return [...(_outputChannels[name] ?? [])];
+}
+
+export function __resetOutputChannels(): void {
+  for (const key of Object.keys(_outputChannels)) delete _outputChannels[key];
+}
+
 export function __setConfigValue(key: string, value: unknown): void {
   _configValues[key] = value;
 }
@@ -55,9 +104,14 @@ export function __resetLastQuickPickItems(): void {
 }
 
 let _warningResult: string | undefined;
+let _informationResult: string | undefined;
 
 export function __setWarningResult(value: string | undefined): void {
   _warningResult = value;
+}
+
+export function __setInformationResult(value: string | undefined): void {
+  _informationResult = value;
 }
 
 export function __setMockFile(pattern: string, path: string, content: string): void {
@@ -79,13 +133,19 @@ export function __setMockFileError(path: string, hasError: boolean): void {
 }
 
 let _mockDirEntries: Record<string, [string, number][]> = {};
+let _mockDirErrors: Record<string, boolean> = {};
 
 export function __setMockDirectoryEntries(path: string, entries: [string, number][]): void {
   _mockDirEntries[path] = entries;
 }
 
+export function __setMockDirectoryError(path: string, hasError: boolean): void {
+  _mockDirErrors[path] = hasError;
+}
+
 export function __resetMockDirectoryEntries(): void {
   _mockDirEntries = {};
+  _mockDirErrors = {};
 }
 
 export namespace workspace {
@@ -141,7 +201,7 @@ export namespace workspace {
     readDirectory: (uri: any) => {
       const path = uri.fsPath ?? uri;
       const entries = _mockDirEntries[path];
-      if (!entries) {
+      if (!entries || _mockDirErrors[path]) {
         return Promise.reject(new Error(`mock: diretorio nao encontrado: ${path}`));
       }
       return Promise.resolve(entries.map(([name, type]) => [name, type] as [string, number]));
@@ -161,6 +221,63 @@ export namespace workspace {
     folders: Array<{ uri: { fsPath: string }; name: string; index: number }> | undefined,
   ) {
     workspaceFolders = folders;
+  }
+
+  export function getWorkspaceFolder(uri: {
+    fsPath?: string;
+    path?: string;
+  }): { uri: { fsPath: string }; name: string; index: number } | undefined {
+    const fsPath = uri?.fsPath ?? uri?.path ?? '';
+    for (const f of workspaceFolders ?? []) {
+      const base = f.uri.fsPath.replace(/[/\\]$/, '');
+      if (fsPath === base || fsPath.startsWith(`${base}/`) || fsPath.startsWith(`${base}\\`)) {
+        return f;
+      }
+    }
+    return undefined;
+  }
+
+  let _watcherCreate: ((uri: unknown) => unknown) | undefined;
+  let _watcherChange: ((uri: unknown) => unknown) | undefined;
+  let _watcherDelete: ((uri: unknown) => unknown) | undefined;
+
+  export function createFileSystemWatcher(_glob: string) {
+    return {
+      onDidCreate: (h: (uri: unknown) => unknown) => {
+        _watcherCreate = h;
+        return { dispose: () => {} };
+      },
+      onDidChange: (h: (uri: unknown) => unknown) => {
+        _watcherChange = h;
+        return { dispose: () => {} };
+      },
+      onDidDelete: (h: (uri: unknown) => unknown) => {
+        _watcherDelete = h;
+        return { dispose: () => {} };
+      },
+      dispose: () => {},
+    };
+  }
+
+  export function __triggerWatcher(event: 'create' | 'change' | 'delete', uri?: unknown): void {
+    const handler =
+      event === 'create' ? _watcherCreate : event === 'change' ? _watcherChange : _watcherDelete;
+    handler?.(uri);
+  }
+
+  let _configChangeHandler:
+    | ((e: { affectsConfiguration: (s: string) => boolean }) => unknown)
+    | undefined;
+
+  export function onDidChangeConfiguration(
+    handler: (e: { affectsConfiguration: (s: string) => boolean }) => unknown,
+  ) {
+    _configChangeHandler = handler;
+    return { dispose: () => {} };
+  }
+
+  export function __triggerConfigChange(e: { affectsConfiguration: (s: string) => boolean }): void {
+    _configChangeHandler?.(e);
   }
 }
 
@@ -214,7 +331,35 @@ export namespace commands {
 
 export namespace env {
   export const language = 'pt-BR';
-  export const clipboard = { writeText: async (_s: string) => {} };
+  export const clipboard = {
+    writeText: async (s: string) => {
+      _clipboardText = s;
+    },
+  };
+}
+
+export const ProgressLocation = { SourceControl: 1, Window: 10, Notification: 15 } as const;
+
+export interface CancellationToken {
+  isCancellationRequested: boolean;
+  onCancellationRequested(listener: () => void): { dispose: () => void };
+}
+
+export class CancellationTokenSource {
+  token: CancellationToken = {
+    isCancellationRequested: false,
+    onCancellationRequested: () => ({ dispose: () => {} }),
+  };
+  cancel(): void {}
+  dispose(): void {}
+}
+
+export class TestRunRequest {
+  constructor(
+    public include?: unknown[],
+    public exclude?: unknown,
+    public profile?: unknown,
+  ) {}
 }
 
 export class EventEmitter<T> {
@@ -269,6 +414,7 @@ export namespace window {
     password?: boolean;
     ignoreFocusOut?: boolean;
   }) {
+    if (_inputBoxResults.length > 0) return Promise.resolve(_inputBoxResults.shift());
     return Promise.resolve(_inputBoxResult);
   }
   export function showQuickPick(
@@ -278,14 +424,53 @@ export namespace window {
     _lastQuickPickItems = _items;
     return Promise.resolve(_quickPickResult);
   }
-  export function showErrorMessage(_message: string) {}
-  export function showInformationMessage(_message: string) {}
-  export function showWarningMessage(_message: string, ..._items: string[]) {
+  export function showErrorMessage(message: string) {
+    _errorMessages.push(message);
+  }
+  export function showInformationMessage(message: string) {
+    _informationMessages.push(message);
+    return Promise.resolve(_informationResult);
+  }
+  export function showWarningMessage(message: string, ..._items: string[]) {
+    _warningMessages.push(message);
     return Promise.resolve(_warningResult);
+  }
+  export function withProgress<T>(
+    _options: unknown,
+    task: (
+      progress: { report: (value: unknown) => void },
+      token: CancellationToken,
+    ) => Thenable<T> | T,
+  ): Thenable<T> {
+    return Promise.resolve(
+      task({ report: () => {} }, {
+        isCancellationRequested: false,
+        onCancellationRequested: () => ({ dispose: () => {} }),
+      } as CancellationToken),
+    );
+  }
+  export function createOutputChannel(name: string) {
+    if (!_outputChannels[name]) _outputChannels[name] = [];
+    return {
+      name,
+      append: (text: string) => {
+        _outputChannels[name].push(text);
+      },
+      appendLine: (text: string) => {
+        _outputChannels[name].push(`${text}\n`);
+      },
+      show: () => {},
+      hide: () => {},
+      clear: () => {
+        _outputChannels[name] = [];
+      },
+      dispose: () => {},
+    };
   }
   export function createTextEditorDecorationType(_opts: any) {
     return { dispose: () => {} } as TextEditorDecorationType;
   }
+  export let activeTextEditor: TextEditor | undefined;
   export function createStatusBarItem(_alignment: number, _priority: number) {
     return {
       text: '',
@@ -297,10 +482,15 @@ export namespace window {
     };
   }
   export const visibleTextEditors: TextEditor[] = _mockVisibleEditors;
+  let _activeEditorHandler: ((editor: TextEditor | undefined) => unknown) | undefined;
   export function onDidChangeActiveTextEditor(
-    _handler: (editor: TextEditor | undefined) => unknown,
+    handler: (editor: TextEditor | undefined) => unknown,
   ) {
+    _activeEditorHandler = handler;
     return { dispose: () => {} };
+  }
+  export function __triggerActiveTextEditorChange(editor: TextEditor | undefined): void {
+    _activeEditorHandler?.(editor);
   }
 }
 
@@ -324,11 +514,30 @@ export namespace debug {
   export function __getStartedConfigs(): Record<string, unknown>[] {
     return started;
   }
-  export function registerDebugAdapterDescriptorFactory(_type: string, _factory: unknown) {
+
+  const _descriptorFactories: Record<string, unknown> = {};
+  const _configProviders: Record<string, unknown> = {};
+  let _registrationShouldThrow = false;
+
+  export function __setDebugRegistrationThrow(value: boolean): void {
+    _registrationShouldThrow = value;
+  }
+
+  export function registerDebugAdapterDescriptorFactory(type: string, factory: unknown) {
+    if (_registrationShouldThrow) throw new Error('registro indisponível');
+    _descriptorFactories[type] = factory;
     return { dispose: () => {} };
   }
-  export function registerDebugConfigurationProvider(_type: string, _provider: unknown) {
+  export function registerDebugConfigurationProvider(type: string, provider: unknown) {
+    if (_registrationShouldThrow) throw new Error('registro indisponível');
+    _configProviders[type] = provider;
     return { dispose: () => {} };
+  }
+  export function __getDebugAdapterFactory(type: string): unknown {
+    return _descriptorFactories[type];
+  }
+  export function __getDebugConfigProvider(type: string): unknown {
+    return _configProviders[type];
   }
 }
 
@@ -338,6 +547,73 @@ export const FileType = {
   Directory: 2,
   SymbolicLink: 64,
 } as const;
+
+export const TestRunProfileKind = { Run: 1, Coverage: 2, Debug: 3 } as const;
+
+export class TestItemCollection {
+  private map = new Map<string, TestItem>();
+  add(item: TestItem): void {
+    this.map.set(item.id, item);
+  }
+  get(id: string): TestItem | undefined {
+    return this.map.get(id);
+  }
+  forEach(cb: (item: TestItem) => void): void {
+    for (const item of this.map.values()) cb(item);
+  }
+  get size(): number {
+    return this.map.size;
+  }
+}
+
+export class TestController {
+  items = new TestItemCollection();
+  resolveHandler?: (item?: TestItem) => unknown;
+  refreshHandler?: () => unknown;
+  runProfiles: Array<Record<string, unknown>> = [];
+  constructor(
+    public id: string,
+    public label: string,
+  ) {}
+  createTestItem(id: string, label: string, uri?: unknown): TestItem {
+    const item = new TestItem(id);
+    (item as { label?: string }).label = label;
+    (item as { uri?: unknown }).uri = uri;
+    return item;
+  }
+  createRunProfile(
+    name: string,
+    kind: number,
+    runHandler: unknown,
+    isDefault?: boolean,
+  ): Record<string, unknown> {
+    const profile: Record<string, unknown> = {
+      name,
+      kind,
+      runHandler,
+      isDefault,
+      dispose: () => {},
+    };
+    this.runProfiles.push(profile);
+    return profile;
+  }
+  createTestRun(_request?: unknown): TestRun {
+    return new TestRun();
+  }
+  dispose(): void {}
+}
+
+let _lastTestController: TestController | undefined;
+
+export namespace tests {
+  export function createTestController(id: string, label: string): TestController {
+    _lastTestController = new TestController(id, label);
+    return _lastTestController;
+  }
+  export function __getLastTestController(): TestController | undefined {
+    return _lastTestController;
+  }
+}
 
 export class TestMessage {
   message: string;
@@ -531,9 +807,22 @@ export class DiagnosticCollection {
   dispose() {}
 }
 
+let _lastDiagnosticCollection: DiagnosticCollection | undefined;
+
+export function __getLastDiagnosticCollection(): DiagnosticCollection | undefined {
+  return _lastDiagnosticCollection;
+}
+
 export const languages = {
   createDiagnosticCollection(_name: string): DiagnosticCollection {
-    return new DiagnosticCollection();
+    _lastDiagnosticCollection = new DiagnosticCollection();
+    return _lastDiagnosticCollection;
+  },
+  registerCodeLensProvider(_selector: unknown, _provider: unknown) {
+    return { dispose: () => {} };
+  },
+  registerCodeActionsProvider(_selector: unknown, _provider: unknown) {
+    return { dispose: () => {} };
   },
 };
 
