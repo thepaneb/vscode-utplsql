@@ -36,5 +36,7 @@ No modo schema as suites ficam 3 níveis abaixo da raiz; comandos como runForUri
 - 🗺️ [[MOC - Regras]]
 - 📄 PRDs: [[prd-30-schema-aware-organization|PRD-30]]
 - 🎯 Requisitos: [[prd-30-schema-aware-organization|PRD-30 RF3]] · [[prd-30-schema-aware-organization|PRD-30 RF4]]
+- 🧩 Código: [[COD - testTree.ts]] · [[COD - state.ts]] · [[COD - run.ts]]
+- 🧪 Testes: [[TST - testTree.test.ts]] · [[TST - state.test.ts]]
 - ↩️ Referenciada por: [[06-tree-organization]] · [[GLOSS-006 - Schema-mode (organização por schema)|GLOSS-006]]
 <!-- brain:auto:end -->

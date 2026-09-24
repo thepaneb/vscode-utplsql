@@ -12,6 +12,8 @@ const {
   genMocIndex,
   pipelineNotes,
   localeNotes,
+  buildCodeNoteSpecs,
+  noteNames,
 } = require('../../../scripts/brain.cjs') as {
   parseFm: (t: string) => Record<string, string>;
   yamlBlock: (t: string, key: string) => string[];
@@ -21,6 +23,11 @@ const {
   genMocIndex: (notePath: string) => string;
   pipelineNotes: () => { dir: string; file: string; content: string }[];
   localeNotes: () => { dir: string; file: string; content: string }[];
+  buildCodeNoteSpecs: (refs: {
+    impl: string[];
+    tests: string[];
+  }) => { dir: string; file: string; content: string }[];
+  noteNames: (paths: string[], prefix: string) => Map<string, string>;
 };
 
 const prd = (over: Record<string, string>) => ({
@@ -120,4 +127,25 @@ test('brain.cjs: CLI sem argumento roda o check', () => {
     encoding: 'utf8',
   });
   assert.strictEqual(r.status, 0, `${r.stdout}\n${r.stderr}`);
+});
+
+test('brain: buildCodeNoteSpecs gera notas COD/TST com id e arquivo', () => {
+  const specs = buildCodeNoteSpecs({
+    impl: ['src/oracleRunner.ts'],
+    tests: ['src/test/unit/oracleRunner.test.ts'],
+  });
+  const cod = specs.find((s) => s.file.startsWith('COD'));
+  const tst = specs.find((s) => s.file.startsWith('TST'));
+  assert.ok(cod && tst);
+  assert.strictEqual(cod?.dir, '21-Codigo');
+  assert.match(cod?.content ?? '', /id: COD-oracleRunner\.ts/);
+  assert.match(cod?.content ?? '', /arquivo: "src\/oracleRunner\.ts"/);
+  assert.strictEqual(tst?.dir, '22-Testes');
+  assert.match(tst?.content ?? '', /tipo: teste/);
+});
+
+test('brain: noteNames desambigua basenames colidentes', () => {
+  const names = noteNames(['a/run.ts', 'b/run.ts'], 'COD');
+  assert.strictEqual(names.get('a/run.ts'), 'COD - a-run.ts');
+  assert.strictEqual(names.get('b/run.ts'), 'COD - b-run.ts');
 });

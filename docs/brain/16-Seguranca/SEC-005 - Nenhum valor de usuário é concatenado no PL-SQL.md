@@ -29,4 +29,6 @@ Evita injeção de SQL/PL-SQL a partir de settings do workspace.
 <!-- brain:auto:start:conexoes -->
 - 🗺️ [[MOC - Seguranca]]
 - 📐 Regras: [[BR-EXEC-012 - Binds tipados - nenhum valor de usuário concatenado no PL-SQL|BR-EXEC-012]]
+- 🧩 Código: [[COD - oracleRunner.ts]]
+- 🧪 Testes: [[TST - oracleRunner.test.ts]]
 <!-- brain:auto:end -->

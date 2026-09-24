@@ -36,5 +36,7 @@ O classname pode vir qualificado (schema.package) e a descrição pode ter espa�
 - 🗺️ [[MOC - Regras]]
 - 📄 PRDs: [[prd-44-pure-matching|PRD-44]]
 - 🎯 Requisitos: [[prd-44-pure-matching|PRD-44 RF1]] · [[prd-44-pure-matching|PRD-44 RF2]]
+- 🧩 Código: [[COD - matching.ts]] · [[COD - results.ts]]
+- 🧪 Testes: [[TST - matching.test.ts]] · [[TST - results.test.ts]]
 - ↩️ Referenciada por: [[03-results-and-reporting]]
 <!-- brain:auto:end -->

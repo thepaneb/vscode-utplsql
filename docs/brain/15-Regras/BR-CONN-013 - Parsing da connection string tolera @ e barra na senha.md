@@ -36,5 +36,7 @@ Aceitar senhas com / ou @ e formatos opacos de connectString sem tentar normaliz
 - 🗺️ [[MOC - Regras]]
 - 📄 PRDs: [[prd-34-multi-connection-profiles|PRD-34]]
 - 🎯 Requisitos: [[prd-66-connection-robustness-logging|PRD-66 RF3]]
+- 🧩 Código: [[COD - oracleRunner.ts]]
+- 🧪 Testes: [[TST - oracleRunner.test.ts]]
 - ↩️ Referenciada por: [[09-configuration]] · [[ERR-003 - UTPLSQL_BAD_CONN — credenciais ou connection string inválidas|ERR-003]]
 <!-- brain:auto:end -->

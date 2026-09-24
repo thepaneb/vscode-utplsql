@@ -30,4 +30,6 @@ Conceder SELECT ON V$SQL ou desabilitar utplsql.sqlCoverageEnabled; qualquer fal
 <!-- brain:auto:start:conexoes -->
 - 🗺️ [[MOC - Erros]]
 - 📐 Regras: [[BR-COB-003 - Cobertura de views via V$SQL é opt-in e best-effort|BR-COB-003]]
+- 🧩 Código: [[COD - viewCoverage.ts]]
+- 🧪 Testes: [[TST - viewCoverage.test.ts]]
 <!-- brain:auto:end -->

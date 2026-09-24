@@ -1,0 +1,23 @@
+---
+id: TST-connectionProfiles.test.ts
+aliases: [TST-connectionProfiles.test.ts]
+tipo: teste
+titulo: "connectionProfiles.test.ts"
+arquivo: "src/test/unit/connectionProfiles.test.ts"
+gerado: true
+tags: [teste]
+---
+
+# TST-connectionProfiles.test.ts — connectionProfiles.test.ts
+
+Valida [`src/test/unit/connectionProfiles.test.ts`](../../../src/test/unit/connectionProfiles.test.ts) — **gerado** por `npm run brain:sync`.
+
+## Onde aparece
+
+```dataview
+LIST id, tipo FROM "" WHERE contains(implementacao, this.arquivo) OR contains(testes, this.arquivo)
+```
+
+## Conexões
+
+- 🗺️ [[MOC - Testes]]

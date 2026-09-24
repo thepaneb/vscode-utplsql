@@ -1,0 +1,23 @@
+---
+id: COD-suiteParser.ts
+aliases: [COD-suiteParser.ts]
+tipo: codigo
+titulo: "suiteParser.ts"
+arquivo: "src/suiteParser.ts"
+gerado: true
+tags: [codigo]
+---
+
+# COD-suiteParser.ts — suiteParser.ts
+
+Implementa [`src/suiteParser.ts`](../../../src/suiteParser.ts) — **gerado** por `npm run brain:sync`.
+
+## Onde aparece
+
+```dataview
+LIST id, tipo FROM "" WHERE contains(implementacao, this.arquivo) OR contains(testes, this.arquivo)
+```
+
+## Conexões
+
+- 🗺️ [[MOC - Codigo]]

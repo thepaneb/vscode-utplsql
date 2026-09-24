@@ -36,5 +36,7 @@ O relatório sempre traz .sql, mas o arquivo real pode usar outra extensão PL/S
 - 🗺️ [[MOC - Regras]]
 - 📄 PRDs: [[prd-04-expand-tests|PRD-04]] · [[prd-65-schema-mode-security-fixes|PRD-65]]
 - 🎯 Requisitos: [[prd-04-expand-tests|PRD-04 RF1]]
+- 🧩 Código: [[COD - coverage.ts]]
+- 🧪 Testes: [[TST - coverage.test.ts]]
 - ↩️ Referenciada por: [[04-code-coverage]] · [[SEC-007 - Cobertura não aceita caminho fora das raízes do workspace|SEC-007]]
 <!-- brain:auto:end -->

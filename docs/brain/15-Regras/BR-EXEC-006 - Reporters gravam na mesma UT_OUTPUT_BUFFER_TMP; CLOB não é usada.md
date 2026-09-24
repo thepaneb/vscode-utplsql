@@ -36,5 +36,7 @@ A extensão consome um único stream misto (doc + JUnit + cobertura) da tabela V
 - 🗺️ [[MOC - Regras]]
 - 📄 PRDs: [[prd-11-streaming-results|PRD-11]]
 - 🎯 Requisitos: [[prd-11-streaming-results|PRD-11 RF3]]
+- 🧩 Código: [[COD - oracleRunner.ts]]
+- 🧪 Testes: [[TST - dbPaths.test.ts]] · [[TST - v012-features.test.ts]]
 - ↩️ Referenciada por: [[02-test-execution]] · [[ENT-006 - OutputBuffer|ENT-006]] · [[GLOSS-004 - Reporter|GLOSS-004]] · [[GLOSS-010 - UT_OUTPUT_BUFFER_TMP|GLOSS-010]]
 <!-- brain:auto:end -->

@@ -39,6 +39,8 @@ const LAYERS = {
   entidade: { id: /^ENT-\d{3}$/, required: ['id', 'titulo', 'dominio', 'status'] },
   glossario: { id: /^GLOSS-\d{3}$/, required: ['id', 'titulo', 'dominio', 'status'] },
   'componente-terceiro': { id: /^TPL-[\w-]+$/, required: ['id', 'titulo', 'status'] },
+  codigo: { id: /^COD-[\w.-]+$/, required: ['id', 'titulo', 'arquivo'] },
+  teste: { id: /^TST-[\w.-]+$/, required: ['id', 'titulo', 'arquivo'] },
   locale: { id: /^LOC-[\w-]+$/, required: ['id', 'titulo', 'codigo'] },
   pipeline: { id: /^PIPE-[\w-]+$/, required: ['id', 'titulo', 'arquivo'] },
   dependencia: { id: /^DEP-[\w-]+$/, required: ['id', 'titulo'] },

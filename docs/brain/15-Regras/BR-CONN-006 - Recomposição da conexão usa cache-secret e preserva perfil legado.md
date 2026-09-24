@@ -36,5 +36,7 @@ Manter perfis utilizáveis após o save (senha fora das settings) e preservar co
 - 🗺️ [[MOC - Regras]]
 - 📄 PRDs: [[prd-34-multi-connection-profiles|PRD-34]]
 - 🎯 Requisitos: [[prd-34-multi-connection-profiles|PRD-34 RF5]]
+- 🧩 Código: [[COD - connectionProfiles.ts]]
+- 🧪 Testes: [[TST - connectionProfiles.test.ts]]
 - ↩️ Referenciada por: [[09-configuration]]
 <!-- brain:auto:end -->

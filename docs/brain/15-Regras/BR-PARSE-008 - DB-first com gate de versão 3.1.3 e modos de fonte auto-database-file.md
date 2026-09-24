@@ -36,5 +36,7 @@ Garante compatibilidade com versões antigas do framework e dá controle explíc
 - 🗺️ [[MOC - Regras]]
 - 📄 PRDs: [[prd-74-db-first-discovery|PRD-74]]
 - 🎯 Requisitos: [[prd-74-db-first-discovery|PRD-74 RF4]] · [[prd-74-db-first-discovery|PRD-74 RF5]]
+- 🧩 Código: [[COD - discovery.ts]] · [[COD - testTree.ts]]
+- 🧪 Testes: [[TST - discovery.test.ts]] · [[TST - testTree.test.ts]]
 - ↩️ Referenciada por: [[01-test-discovery]] · [[ERR-002 - UTPLSQL_OLD_VERSION — versão do utPLSQL abaixo do mínimo|ERR-002]] · [[ERR-011 - Fonte de package truncada (-10.000 linhas)|ERR-011]]
 <!-- brain:auto:end -->

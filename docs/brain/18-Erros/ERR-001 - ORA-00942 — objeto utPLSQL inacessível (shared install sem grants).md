@@ -30,4 +30,5 @@ Conceder os grants necessários ao schema (o comando utplsql.copyGrantsToClipboa
 <!-- brain:auto:start:conexoes -->
 - 🗺️ [[MOC - Erros]]
 - 📐 Regras: [[BR-PARSE-007 - Fallback ALL_OBJECTS-ALL_SOURCE ignora UT_- e nunca lança|BR-PARSE-007]]
+- 🧩 Código: [[COD - discovery.ts]] · [[COD - quickfix.ts]]
 <!-- brain:auto:end -->

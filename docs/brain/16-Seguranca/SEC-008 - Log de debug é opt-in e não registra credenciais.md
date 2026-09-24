@@ -29,4 +29,6 @@ Diagnóstico acionável sob demanda sem poluir o output nem vazar segredos em us
 <!-- brain:auto:start:conexoes -->
 - 🗺️ [[MOC - Seguranca]]
 - 📐 Regras: [[BR-CONN-014 - Log de debug é opt-in por variável de ambiente|BR-CONN-014]]
+- 🧩 Código: [[COD - logger.ts]]
+- 🧪 Testes: [[TST - logger.test.ts]]
 <!-- brain:auto:end -->

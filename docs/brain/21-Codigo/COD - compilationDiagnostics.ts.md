@@ -1,0 +1,23 @@
+---
+id: COD-compilationDiagnostics.ts
+aliases: [COD-compilationDiagnostics.ts]
+tipo: codigo
+titulo: "compilationDiagnostics.ts"
+arquivo: "src/compilationDiagnostics.ts"
+gerado: true
+tags: [codigo]
+---
+
+# COD-compilationDiagnostics.ts — compilationDiagnostics.ts
+
+Implementa [`src/compilationDiagnostics.ts`](../../../src/compilationDiagnostics.ts) — **gerado** por `npm run brain:sync`.
+
+## Onde aparece
+
+```dataview
+LIST id, tipo FROM "" WHERE contains(implementacao, this.arquivo) OR contains(testes, this.arquivo)
+```
+
+## Conexões
+
+- 🗺️ [[MOC - Codigo]]

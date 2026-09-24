@@ -29,4 +29,6 @@ Settings podem ser sincronizadas (Settings Sync) e versionadas; segredo em texto
 <!-- brain:auto:start:conexoes -->
 - 🗺️ [[MOC - Seguranca]]
 - 📐 Regras: [[BR-CONN-005 - Senha do perfil vai para o SecretStorage ao salvar|BR-CONN-005]] · [[BR-CONN-007 - Migração de perfis legados é idempotente|BR-CONN-007]]
+- 🧩 Código: [[COD - connectionProfiles.ts]]
+- 🧪 Testes: [[TST - connectionProfiles.test.ts]]
 <!-- brain:auto:end -->

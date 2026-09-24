@@ -30,4 +30,6 @@ Executar os grants (utplsql.copyGrantsToClipboard) e rodar novamente; a extensã
 <!-- brain:auto:start:conexoes -->
 - 🗺️ [[MOC - Erros]]
 - 📐 Regras: [[BR-COB-001 - Cobertura Oracle exige GRANT EXECUTE ON SYS.DBMS_PROFILER|BR-COB-001]] · [[BR-EXEC-013 - Reporter de cobertura só entra se existir no banco|BR-EXEC-013]]
+- 🧩 Código: [[COD - quickfix.ts]] · [[COD - utility.ts]] · [[COD - oracleRunner.ts]]
+- 🧪 Testes: [[TST - quickfix.test.ts]]
 <!-- brain:auto:end -->

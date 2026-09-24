@@ -1,0 +1,23 @@
+---
+id: COD-compileForDebug.ts
+aliases: [COD-compileForDebug.ts]
+tipo: codigo
+titulo: "compileForDebug.ts"
+arquivo: "src/compileForDebug.ts"
+gerado: true
+tags: [codigo]
+---
+
+# COD-compileForDebug.ts — compileForDebug.ts
+
+Implementa [`src/compileForDebug.ts`](../../../src/compileForDebug.ts) — **gerado** por `npm run brain:sync`.
+
+## Onde aparece
+
+```dataview
+LIST id, tipo FROM "" WHERE contains(implementacao, this.arquivo) OR contains(testes, this.arquivo)
+```
+
+## Conexões
+
+- 🗺️ [[MOC - Codigo]]

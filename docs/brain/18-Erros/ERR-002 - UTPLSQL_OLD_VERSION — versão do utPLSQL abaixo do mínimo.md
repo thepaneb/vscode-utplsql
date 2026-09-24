@@ -30,4 +30,6 @@ Atualizar o utPLSQL no banco; enquanto isso a extensão cai no fallback ALL_OBJE
 <!-- brain:auto:start:conexoes -->
 - 🗺️ [[MOC - Erros]]
 - 📐 Regras: [[BR-PARSE-008 - DB-first com gate de versão 3.1.3 e modos de fonte auto-database-file|BR-PARSE-008]]
+- 🧩 Código: [[COD - quickfix.ts]] · [[COD - oracleRunner.ts]] · [[COD - discovery.ts]]
+- 🧪 Testes: [[TST - discovery.test.ts]]
 <!-- brain:auto:end -->

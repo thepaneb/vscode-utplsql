@@ -325,6 +325,126 @@ function genDeps() {
   ].join('\n');
 }
 
+// ── mapa de código (COD-*/TST-*) ───────────────────────────────────────
+//
+// Notas-espelho de arquivos de `src/` e `src/test/`: como o Obsidian não coloca
+// arquivos fora do vault no grafo, cada arquivo referenciado em
+// `implementacao:`/`testes:` ganha uma nota `COD-*`/`TST-*` que vira nó do grafo.
+// As camadas (regras/NFR/erros) linkam para essas notas em `## Conexões`.
+
+const CODE_DIR = '21-Codigo';
+const TEST_DIR = '22-Testes';
+
+/** Caminhos referenciados em `implementacao:`/`testes:` das notas do vault. */
+function scanCodeRefs() {
+  const impl = new Set();
+  const tests = new Set();
+  for (const file of vaultNotes()) {
+    if (isTemplate(file)) continue;
+    const fm = parseFm(fs.readFileSync(file, 'utf8'));
+    if (fm.tipo === 'codigo' || fm.tipo === 'teste') continue;
+    for (const r of Array.isArray(fm.implementacao) ? fm.implementacao : []) {
+      impl.add(String(r).replace(/:\d+$/, '').trim());
+    }
+    for (const r of Array.isArray(fm.testes) ? fm.testes : []) {
+      tests.add(String(r).replace(/:\d+$/, '').trim());
+    }
+  }
+  return { impl: [...impl].filter(Boolean).sort(), tests: [...tests].filter(Boolean).sort() };
+}
+
+/** Nome da nota por caminho; em colisão de basename, prefixa o diretório pai. */
+function noteNames(paths, prefix) {
+  const byBase = new Map();
+  for (const p of paths) {
+    const base = path.basename(p);
+    if (!byBase.has(base)) byBase.set(base, []);
+    byBase.get(base).push(p);
+  }
+  const names = new Map();
+  for (const [base, list] of byBase) {
+    for (const p of list) {
+      const name = list.length > 1 ? `${path.basename(path.dirname(p))}-${base}` : base;
+      names.set(p, `${prefix} - ${name}`);
+    }
+  }
+  return names;
+}
+
+const codeSlug = (name) =>
+  String(name)
+    .replace(/[^\w.-]+/g, '-')
+    .replace(/^-+|-+$/g, '');
+
+/**
+ * Especificações (puras) das notas de código/teste a partir das referências.
+ * `refs = { impl: string[], tests: string[] }`.
+ */
+function buildCodeNoteSpecs(refs) {
+  const specs = [];
+  const mk = (paths, dir, prefix, tipo, verbo) => {
+    const names = noteNames(paths, prefix);
+    for (const p of paths) {
+      const noteName = names.get(p);
+      const slug = codeSlug(noteName.slice(prefix.length + 3));
+      const id = `${prefix}-${slug}`;
+      const moc = dir === CODE_DIR ? 'MOC - Codigo' : 'MOC - Testes';
+      const fm = [
+        '---',
+        `id: ${id}`,
+        `aliases: [${id}]`,
+        `tipo: ${tipo}`,
+        `titulo: ${JSON.stringify(path.basename(p))}`,
+        `arquivo: "${p}"`,
+        'gerado: true',
+        `tags: [${tipo}]`,
+        '---',
+      ];
+      const body = [
+        `# ${id} — ${path.basename(p)}`,
+        '',
+        `${verbo} [\`${p}\`](../../../${p}) — **gerado** por \`npm run brain:sync\`.`,
+        '',
+        '## Onde aparece',
+        '',
+        '```dataview',
+        'LIST id, tipo FROM "" WHERE contains(implementacao, this.arquivo) OR contains(testes, this.arquivo)',
+        '```',
+        '',
+        '## Conexões',
+        '',
+        `- 🗺️ [[${moc}]]`,
+      ].join('\n');
+      specs.push({ dir, file: `${noteName}.md`, content: `${fm.join('\n')}\n\n${body}\n` });
+    }
+  };
+  mk(refs.impl, CODE_DIR, 'COD', 'codigo', 'Implementa');
+  mk(refs.tests, TEST_DIR, 'TST', 'teste', 'Valida');
+  return specs;
+}
+
+function codeNotes() {
+  return buildCodeNoteSpecs(scanCodeRefs());
+}
+
+let CODEMAP = null;
+/** `arquivo:` (caminho) → basename da nota `COD-*`/`TST-*` (para wikilinks). */
+function codeFileMap() {
+  if (CODEMAP) return CODEMAP;
+  const m = new Map();
+  for (const dir of [CODE_DIR, TEST_DIR]) {
+    const full = path.join(VAULT, dir);
+    if (!fs.existsSync(full)) continue;
+    for (const n of fs.readdirSync(full)) {
+      if (!n.endsWith('.md')) continue;
+      const fm = parseFm(fs.readFileSync(path.join(full, n), 'utf8'));
+      if (fm.arquivo) m.set(String(fm.arquivo).trim(), n.replace(/\.md$/, ''));
+    }
+  }
+  CODEMAP = m;
+  return m;
+}
+
 // ── conexões (grafo do Obsidian) ───────────────────────────────────────
 
 let ID_MAP = null;
@@ -431,6 +551,25 @@ function genConexoes(notePath) {
       .join(' · ');
     lines.push(`- 🎯 Requisitos: ${links}`);
   }
+  // Rastreabilidade: código que implementa e testes que validam (notas COD-*/TST-*).
+  const fileMap = codeFileMap();
+  const fileLinks = (refs) => {
+    const seen = new Set();
+    const out = [];
+    for (const r of Array.isArray(refs) ? refs : []) {
+      const p = String(r).replace(/:\d+$/, '').trim();
+      const base = fileMap.get(p);
+      const label = base ? `[[${base}]]` : `\`${p}\``;
+      if (seen.has(label)) continue;
+      seen.add(label);
+      out.push(label);
+    }
+    return out;
+  };
+  const codeLinks = fileLinks(fm.implementacao);
+  if (codeLinks.length) lines.push(`- 🧩 Código: ${codeLinks.join(' · ')}`);
+  const testLinks = fileLinks(fm.testes);
+  if (testLinks.length) lines.push(`- 🧪 Testes: ${testLinks.join(' · ')}`);
   if (Array.isArray(fm.relacionado) && fm.relacionado.length) {
     lines.push(`- 🔗 ${fm.relacionado.map((r) => String(r).trim()).join(' · ')}`);
   }
@@ -702,7 +841,7 @@ function localeNotes() {
 
 /** Escreve/atualiza e remove notas geradas (frontmatter `gerado: true`). */
 function generateNotes() {
-  const specs = [...pipelineNotes(), ...localeNotes()];
+  const specs = [...pipelineNotes(), ...localeNotes(), ...codeNotes()];
   let changed = 0;
   const byDir = new Map();
   for (const s of specs) {
@@ -734,6 +873,8 @@ function generateNotes() {
 
 function sync() {
   let changed = 0;
+  // Notas geradas primeiro: os wikilinks COD-*/TST-* das camadas dependem delas.
+  changed += generateNotes();
   for (const file of vaultNotes()) {
     if (isTemplate(file)) continue;
     const original = fs.readFileSync(file, 'utf8');
@@ -751,7 +892,6 @@ function sync() {
       changed++;
     }
   }
-  changed += generateNotes();
   console.log(`OK: ${changed} arquivo(s) atualizado(s).`);
   return 0;
 }
@@ -803,6 +943,8 @@ module.exports = {
   genMocIndex,
   pipelineNotes,
   localeNotes,
+  buildCodeNoteSpecs,
+  noteNames,
 };
 
 if (require.main === module) {

@@ -36,5 +36,7 @@ Retrocompatibilidade do PRD-42: a mesma annotation tem semântica posicional dif
 - 🗺️ [[MOC - Regras]]
 - 📄 PRDs: [[prd-42-suiteparser-annotations|PRD-42]]
 - 🎯 Requisitos: [[prd-42-suiteparser-annotations|PRD-42 RF1]]
+- 🧩 Código: [[COD - suiteParser.ts]]
+- 🧪 Testes: [[TST - suiteParser.test.ts]] · [[TST - discovery.test.ts]]
 - ↩️ Referenciada por: [[01-test-discovery]] · [[GLOSS-003 - Annotation utPLSQL|GLOSS-003]]
 <!-- brain:auto:end -->

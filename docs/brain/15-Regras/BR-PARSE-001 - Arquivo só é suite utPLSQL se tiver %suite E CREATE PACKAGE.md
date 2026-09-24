@@ -34,5 +34,7 @@ Evita falsos positivos de trechos que apenas citam %suite e garante que o nome d
 <!-- brain:auto:start:conexoes -->
 - 🗺️ [[MOC - Regras]]
 - 📄 PRDs: [[prd-42-suiteparser-annotations|PRD-42]]
+- 🧩 Código: [[COD - suiteParser.ts]]
+- 🧪 Testes: [[TST - suiteParser.test.ts]] · [[TST - discovery.test.ts]]
 - ↩️ Referenciada por: [[01-test-discovery]] · [[GLOSS-001 - Suite|GLOSS-001]]
 <!-- brain:auto:end -->

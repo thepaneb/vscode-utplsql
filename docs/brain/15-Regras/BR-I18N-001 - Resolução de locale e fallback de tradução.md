@@ -36,5 +36,7 @@ Permite forçar idioma independente do editor e garante que nenhuma mensagem fiq
 - 🗺️ [[MOC - Regras]]
 - 📄 PRDs: [[prd-49-internacionalizacao|PRD-49]]
 - 🎯 Requisitos: [[prd-49-internacionalizacao|PRD-49 RF2]]
+- 🧩 Código: [[COD - i18n.ts]]
+- 🧪 Testes: [[TST - i18n.test.ts]]
 - ↩️ Referenciada por: [[09-configuration]]
 <!-- brain:auto:end -->

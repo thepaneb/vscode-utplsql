@@ -30,4 +30,6 @@ Reconfigurar a conexão (utplsql.configureConnection) ou revisar o perfil ativo;
 <!-- brain:auto:start:conexoes -->
 - 🗺️ [[MOC - Erros]]
 - 📐 Regras: [[BR-CONN-013 - Parsing da connection string tolera @ e barra na senha|BR-CONN-013]]
+- 🧩 Código: [[COD - quickfix.ts]] · [[COD - oracleRunner.ts]]
+- 🧪 Testes: [[TST - oracleRunner.test.ts]]
 <!-- brain:auto:end -->

@@ -36,5 +36,7 @@ O stack do Oracle muda de formato conforme quoting/schema; filtrar as camadas do
 - 🗺️ [[MOC - Regras]]
 - 📄 PRDs: [[prd-29-jump-to-failing-assertion|PRD-29]]
 - 🎯 Requisitos: [[prd-29-jump-to-failing-assertion|PRD-29 RF1]] · [[prd-29-jump-to-failing-assertion|PRD-29 RF5]]
+- 🧩 Código: [[COD - junit.ts]]
+- 🧪 Testes: [[TST - junit.test.ts]]
 - ↩️ Referenciada por: [[03-results-and-reporting]] · [[08-jump-to-failure]]
 <!-- brain:auto:end -->

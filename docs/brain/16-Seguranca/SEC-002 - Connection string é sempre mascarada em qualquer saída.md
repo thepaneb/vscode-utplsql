@@ -29,4 +29,6 @@ Evitar vazamento de senha em superfícies de saída e telemetria.
 <!-- brain:auto:start:conexoes -->
 - 🗺️ [[MOC - Seguranca]]
 - 📐 Regras: [[BR-CONN-008 - Mascaramento da senha tolera @ e barra na senha|BR-CONN-008]] · [[BR-CONN-009 - QuickPick de perfil mascara conexão e destaca charset-default|BR-CONN-009]]
+- 🧩 Código: [[COD - connectionProfiles.ts]]
+- 🧪 Testes: [[TST - connectionProfiles.test.ts]]
 <!-- brain:auto:end -->

@@ -30,5 +30,6 @@ Compilar/instalar o package no banco antes de depurar; a extensão detecta ORA-0
 
 <!-- brain:auto:start:conexoes -->
 - 🗺️ [[MOC - Erros]]
+- 🧩 Código: [[COD - compileForDebug.ts]]
 - 🔗 [[ADR-012 - Debugger PLSQL via DBMS_DEBUG e DAP]] · [[11-debugger]]
 <!-- brain:auto:end -->

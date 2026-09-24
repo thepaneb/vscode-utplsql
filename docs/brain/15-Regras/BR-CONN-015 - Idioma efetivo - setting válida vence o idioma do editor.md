@@ -36,5 +36,7 @@ Localizar mensagens do domínio de conexão/configuração de forma consistente 
 - 🗺️ [[MOC - Regras]]
 - 📄 PRDs: [[prd-49-internacionalizacao|PRD-49]]
 - 🎯 Requisitos: [[prd-49-internacionalizacao|PRD-49 RF1]]
+- 🧩 Código: [[COD - config.ts]] · [[COD - i18n.ts]]
+- 🧪 Testes: [[TST - i18n.test.ts]]
 - ↩️ Referenciada por: [[09-configuration]]
 <!-- brain:auto:end -->

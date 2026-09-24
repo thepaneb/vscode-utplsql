@@ -29,4 +29,6 @@ Evitar que validações automáticas (inclusive em CI/headless) travem esperando
 <!-- brain:auto:start:conexoes -->
 - 🗺️ [[MOC - Seguranca]]
 - 📐 Regras: [[BR-CONN-001 - Precedência de resolução da conexão|BR-CONN-001]] · [[BR-UI-007 - Diagnósticos de setup e quick-fixes restritos ao source utPLSQL Setup|BR-UI-007]]
+- 🧩 Código: [[COD - config.ts]] · [[COD - quickfix.ts]]
+- 🧪 Testes: [[TST - quickfixActivation.test.ts]]
 <!-- brain:auto:end -->

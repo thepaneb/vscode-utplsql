@@ -36,5 +36,7 @@ O código de erro do Oracle pode ser declarado positivo ou negativo e tags/displ
 - 🗺️ [[MOC - Regras]]
 - 📄 PRDs: [[prd-42-suiteparser-annotations|PRD-42]]
 - 🎯 Requisitos: [[prd-42-suiteparser-annotations|PRD-42 RF2]] · [[prd-42-suiteparser-annotations|PRD-42 RF3]] · [[prd-42-suiteparser-annotations|PRD-42 RF4]]
+- 🧩 Código: [[COD - suiteParser.ts]]
+- 🧪 Testes: [[TST - suiteParser.test.ts]]
 - ↩️ Referenciada por: [[01-test-discovery]]
 <!-- brain:auto:end -->

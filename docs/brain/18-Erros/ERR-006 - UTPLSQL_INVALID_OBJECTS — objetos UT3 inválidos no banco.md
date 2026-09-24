@@ -30,4 +30,5 @@ Recompilar os objetos UT3 (o quick-fix oferece a ação; requer privilégio de c
 <!-- brain:auto:start:conexoes -->
 - 🗺️ [[MOC - Erros]]
 - 📐 Regras: [[BR-UI-007 - Diagnósticos de setup e quick-fixes restritos ao source utPLSQL Setup|BR-UI-007]]
+- 🧩 Código: [[COD - quickfix.ts]]
 <!-- brain:auto:end -->

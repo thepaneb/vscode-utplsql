@@ -36,5 +36,7 @@ Evitar que a senha do usuário seja gravada em settings e limitar a exposição 
 - 🗺️ [[MOC - Regras]]
 - 📄 PRDs: [[prd-34-multi-connection-profiles|PRD-34]]
 - 🎯 Requisitos: [[prd-34-multi-connection-profiles|PRD-34 RF5]] · [[prd-65-schema-mode-security-fixes|PRD-65 RF5]]
+- 🧩 Código: [[COD - config.ts]]
+- 🧪 Testes: [[TST - config.test.ts]]
 - ↩️ Referenciada por: [[09-configuration]] · [[SEC-003 - Senha digitada em sessão só vive em memória|SEC-003]]
 <!-- brain:auto:end -->

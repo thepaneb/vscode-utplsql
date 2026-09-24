@@ -36,5 +36,7 @@ Permitir escolher explicitamente o ambiente via perfil sem exigir prompt e mante
 - 🗺️ [[MOC - Regras]]
 - 📄 PRDs: [[prd-34-multi-connection-profiles|PRD-34]] · [[prd-66-connection-robustness-logging|PRD-66]]
 - 🎯 Requisitos: [[prd-34-multi-connection-profiles|PRD-34 RF5]]
+- 🧩 Código: [[COD - config.ts]]
+- 🧪 Testes: [[TST - config.test.ts]]
 - ↩️ Referenciada por: [[09-configuration]] · [[SEC-010 - Fluxos não interativos nunca abrem prompt de conexão|SEC-010]]
 <!-- brain:auto:end -->

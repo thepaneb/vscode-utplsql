@@ -36,5 +36,7 @@ Evitar vazamento de senha em qualquer superfície de saída, inclusive senhas co
 - 🗺️ [[MOC - Regras]]
 - 📄 PRDs: [[prd-34-multi-connection-profiles|PRD-34]]
 - 🎯 Requisitos: [[prd-34-multi-connection-profiles|PRD-34 RF4]]
+- 🧩 Código: [[COD - connectionProfiles.ts]]
+- 🧪 Testes: [[TST - connectionProfiles.test.ts]]
 - ↩️ Referenciada por: [[09-configuration]] · [[SEC-002 - Connection string é sempre mascarada em qualquer saída|SEC-002]]
 <!-- brain:auto:end -->

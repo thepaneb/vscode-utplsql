@@ -36,5 +36,7 @@ Diagnóstico acionável sob demanda (PRD-66 RF1) sem poluir o output do usuário
 - 🗺️ [[MOC - Regras]]
 - 📄 PRDs: [[prd-66-connection-robustness-logging|PRD-66]]
 - 🎯 Requisitos: [[prd-66-connection-robustness-logging|PRD-66 RF1]]
+- 🧩 Código: [[COD - logger.ts]]
+- 🧪 Testes: [[TST - logger.test.ts]]
 - ↩️ Referenciada por: [[09-configuration]] · [[SEC-008 - Log de debug é opt-in e não registra credenciais|SEC-008]]
 <!-- brain:auto:end -->

@@ -30,5 +30,6 @@ O vault passou a ser versionado; sem as regras, o token do MCP e credenciais vaz
 <!-- brain:auto:start:conexoes -->
 - 🗺️ [[MOC - Seguranca]]
 - 📐 Regras: [[BR-CONN-005 - Senha do perfil vai para o SecretStorage ao salvar|BR-CONN-005]]
+- 🧩 Código: [[COD - .gitignore]]
 - 🔗 [[ADR-002 - Vault como fonte da verdade]]
 <!-- brain:auto:end -->

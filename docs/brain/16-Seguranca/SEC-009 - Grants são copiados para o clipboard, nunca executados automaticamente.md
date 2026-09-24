@@ -29,4 +29,6 @@ Princípio do menor privilégio — a extensão não deve executar DDL privilegi
 <!-- brain:auto:start:conexoes -->
 - 🗺️ [[MOC - Seguranca]]
 - 📐 Regras: [[BR-COB-001 - Cobertura Oracle exige GRANT EXECUTE ON SYS.DBMS_PROFILER|BR-COB-001]] · [[BR-COB-003 - Cobertura de views via V$SQL é opt-in e best-effort|BR-COB-003]]
+- 🧩 Código: [[COD - utility.ts]] · [[COD - quickfix.ts]] · [[COD - viewCoverage.ts]]
+- 🧪 Testes: [[TST - quickfix.test.ts]]
 <!-- brain:auto:end -->

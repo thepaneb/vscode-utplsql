@@ -29,4 +29,6 @@ O nome vem de settings e seria concatenado; a regex impede injeção e reporter 
 <!-- brain:auto:start:conexoes -->
 - 🗺️ [[MOC - Seguranca]]
 - 📐 Regras: [[BR-EXEC-014 - Reporters adicionais são validados e sanitizados antes do PL-SQL|BR-EXEC-014]]
+- 🧩 Código: [[COD - oracleRunner.ts]]
+- 🧪 Testes: [[TST - oracleRunner.test.ts]]
 <!-- brain:auto:end -->

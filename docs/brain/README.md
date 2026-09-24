@@ -47,6 +47,31 @@ em **Graph view → ⚙️ → Groups → +** (ou copiando para `graph.json`):
 | `path:12-I18n` | locales (`LOC-*`) | marrom |
 | `path:11-Stack` | stack/pipelines (`PIPE-*`) | areia |
 | `path:10-Projeto` | projeto/funcional/domínio | índigo |
+| `path:21-Codigo` | código (`COD-*`) | azul-aço |
+| `path:22-Testes` | testes (`TST-*`) | oliva |
+
+> Os grupos também estão versionados em `.obsidian/graph.json` (local). Ajuste
+> pelo painel **Graph view → ⚙️ → Groups** se preferir outras cores.
+
+## Mapa de código — rastreabilidade
+
+As camadas de conhecimento ligam-se ao **código** e aos **testes** por dois
+campos de frontmatter (validados por `npm run brain:rules`):
+
+- `implementacao:` — arquivos de `src/` que implementam a nota (com linha opcional,
+  ex.: `src/oracleRunner.ts:684`);
+- `testes:` — arquivos de teste que a validam.
+
+Como o Obsidian não coloca arquivos fora do vault no grafo, o `brain:sync`
+gera **notas-espelho**:
+
+- `21-Codigo/COD - <arquivo>.md` (uma por arquivo de `src/` referenciado);
+- `22-Testes/TST - <arquivo>.md` (uma por arquivo de teste referenciado).
+
+Cada camada ganha em `## Conexões` as linhas **🧩 Código** e **🧪 Testes** com
+wikilinks para essas notas; assim o grafo mostra *regra → módulo → teste*. A nota
+do módulo tem um bloco Dataview "Onde aparece" listando quem a referencia.
+**Não edite** `COD-*`/`TST-*` (são regeneradas).
 
 ## Configuração recomendada (Settings)
 
@@ -167,6 +192,8 @@ divergirem, o build falha.
 | `18-Erros` | catálogo de erros (`ERR-*`) |
 | `19-Glossario` | linguagem ubíqua (`GLOSS-*`) |
 | `20-PRDs` | PRDs canônicos (status no frontmatter) |
+| `21-Codigo` | notas-espelho de `src/` (`COD-*`, gerado) |
+| `22-Testes` | notas-espelho de `src/test/` (`TST-*`, gerado) |
 | `30-Decisoes` | ADRs |
 | `40-Bugs` | diário de diagnóstico |
 | `50-Snippets` | comandos e queries |

@@ -36,5 +36,7 @@ O ut_junit_reporter embute o DBMS_OUTPUT capturado em system-out CDATA; linhas d
 - 🗺️ [[MOC - Regras]]
 - 📄 PRDs: [[prd-11-streaming-results|PRD-11]]
 - 🎯 Requisitos: [[prd-11-streaming-results|PRD-11 RF5]]
+- 🧩 Código: [[COD - oracleRunner.ts]]
+- 🧪 Testes: [[TST - oracleRunner.test.ts]]
 - ↩️ Referenciada por: [[02-test-execution]]
 <!-- brain:auto:end -->

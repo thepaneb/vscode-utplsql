@@ -29,4 +29,6 @@ O XML vem do banco (conteúdo não confiável); sem o limite, um filename malici
 <!-- brain:auto:start:conexoes -->
 - 🗺️ [[MOC - Seguranca]]
 - 📐 Regras: [[BR-COB-002 - resolveSourceUri tenta variantes de extensão e bloqueia path traversal|BR-COB-002]]
+- 🧩 Código: [[COD - coverage.ts]]
+- 🧪 Testes: [[TST - coverage.test.ts]]
 <!-- brain:auto:end -->

@@ -36,5 +36,7 @@ V$SQL pode ser negado por grants e não deve comprometer o run de testes; o matc
 - 🗺️ [[MOC - Regras]]
 - 📄 PRDs: [[prd-12-sql-coverage|PRD-12]]
 - 🎯 Requisitos: [[prd-12-sql-coverage|PRD-12 RF2]]
+- 🧩 Código: [[COD - runner.ts]] · [[COD - config.ts]] · [[COD - viewCoverage.ts]]
+- 🧪 Testes: [[TST - viewCoverage.test.ts]] · [[TST - config.test.ts]] · [[TST - runner.test.ts]]
 - ↩️ Referenciada por: [[04-code-coverage]] · [[ERR-009 - V$SQL negado — cobertura de views indisponível|ERR-009]] · [[GLOSS-005 - Coverage owner|GLOSS-005]] · [[SEC-009 - Grants são copiados para o clipboard, nunca executados automaticamente|SEC-009]]
 <!-- brain:auto:end -->

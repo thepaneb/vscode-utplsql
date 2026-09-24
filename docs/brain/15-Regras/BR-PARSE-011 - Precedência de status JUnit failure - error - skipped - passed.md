@@ -36,5 +36,7 @@ O XML pode trazer múltiplas tags; a ordem define o status correto e o fallback 
 - 🗺️ [[MOC - Regras]]
 - 📄 PRDs: [[prd-11-streaming-results|PRD-11]] · [[prd-29-jump-to-failing-assertion|PRD-29]]
 - 🎯 Requisitos: [[prd-11-streaming-results|PRD-11 RF5]]
+- 🧩 Código: [[COD - junit.ts]]
+- 🧪 Testes: [[TST - junit.test.ts]]
 - ↩️ Referenciada por: [[03-results-and-reporting]]
 <!-- brain:auto:end -->
