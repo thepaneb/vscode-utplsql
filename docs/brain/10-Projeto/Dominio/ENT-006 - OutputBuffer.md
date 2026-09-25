@@ -30,4 +30,5 @@ message_id, text, is_finished.
 - 🗺️ [[MOC - Dominio]]
 - 📐 Regras: [[BR-EXEC-006 - Reporters gravam na mesma UT_OUTPUT_BUFFER_TMP; CLOB não é usada|BR-EXEC-006]]
 - 🔗 [[GLOSS-010 - UT_OUTPUT_BUFFER_TMP]]
+- ↩️ Referenciada por: [[GLOSS-010 - UT_OUTPUT_BUFFER_TMP|GLOSS-010]]
 <!-- brain:auto:end -->

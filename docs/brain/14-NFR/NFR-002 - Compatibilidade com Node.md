@@ -31,4 +31,5 @@ Alinhar toolchain local e CI (PRD-18/47).
 - 🗺️ [[MOC - NFR]]
 - 🎯 Requisitos: [[prd-18-engine-node-ci|PRD-18 RNF1]]
 - 🔗 [[ADR-004 - Bundling com esbuild e higiene do VSIX]] · [[TPL-ESBUILD - esbuild (bundling do VSIX)]] · [[MOC - Stack]]
+- ↩️ Referenciada por: [[09-configuration]]
 <!-- brain:auto:end -->

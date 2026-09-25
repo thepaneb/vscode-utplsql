@@ -473,6 +473,13 @@ function idMaps() {
 }
 
 let REVERSE = null;
+/** Normaliza um alvo de `relacionado` ([[nota]], [[nota|label]], nota, ID) para o valor cru. */
+function relRef(raw) {
+  const s = String(raw).trim();
+  const wl = s.match(/^\[\[([^\]|#]+)/);
+  return (wl ? wl[1] : s).replace(/\.md$/, '').trim();
+}
+
 /** Índice reverso: `id` referenciado → basenames das notas que o referenciam. */
 function reverseIndex() {
   if (REVERSE) return REVERSE;
@@ -485,6 +492,10 @@ function reverseIndex() {
       ...(Array.isArray(fm.prds) ? fm.prds : []),
       ...(Array.isArray(fm.regras) ? fm.regras : []),
       ...(Array.isArray(fm.depende) ? fm.depende : []),
+      ...(Array.isArray(fm.decisoes) ? fm.decisoes : []),
+      ...(Array.isArray(fm.relacionado) ? fm.relacionado.map(relRef) : []),
+      ...(Array.isArray(fm.relacionados) ? fm.relacionados.map(relRef) : []),
+      ...(Array.isArray(fm.secaoRelacionada) ? fm.secaoRelacionada.map(relRef) : []),
     ];
     for (const r of refs) {
       const id = String(r).trim();
@@ -554,6 +565,9 @@ function genConexoes(notePath) {
   }
   if (Array.isArray(fm.depende) && fm.depende.length) {
     lines.push(`- 📦 Depende de: ${fm.depende.map((d) => link(d, ids)).join(' · ')}`);
+  }
+  if (Array.isArray(fm.decisoes) && fm.decisoes.length) {
+    lines.push(`- 🧭 Decisões: ${fm.decisoes.map((d) => link(d, ids)).join(' · ')}`);
   }
   // Requisitos (RF/RNF da PRD) que esta nota implementa.
   if (Array.isArray(fm.requisitos) && fm.requisitos.length) {
@@ -642,17 +656,26 @@ function genConexoes(notePath) {
       lines.push(`- 🎯 ${rid} — ${title.slice(0, 70)} → ${links}`);
     }
   }
-  // Relação reversa explícita: notas que referenciam esta.
-  if (fm.id) {
-    const refs = reverseIndex().get(fm.id);
-    if (refs && refs.size) {
-      const links = [...refs]
-        .sort()
-        .map((b) => wl(b, bases.get(b) || b))
-        .join(' · ');
-      const label = fm.tipo === 'prd' ? '📐 Regras' : '↩️ Referenciada por';
-      lines.push(`- ${label}: ${links}`);
-    }
+  // Relação reversa explícita: notas que referenciam esta (por id ou basename).
+  const reverseKeys = new Set();
+  if (fm.id) reverseKeys.add(String(fm.id));
+  reverseKeys.add(path.basename(notePath, '.md'));
+  const refs = new Set();
+  for (const key of reverseKeys) {
+    for (const b of reverseIndex().get(key) ?? []) refs.add(b);
+  }
+  if (refs.size) {
+    const links = [...refs]
+      .sort()
+      .map((b) => wl(b, bases.get(b) || b))
+      .join(' · ');
+    const label =
+      fm.tipo === 'prd'
+        ? '📐 Regras'
+        : fm.tipo === 'decisao'
+          ? '↩️ Citada por'
+          : '↩️ Referenciada por';
+    lines.push(`- ${label}: ${links}`);
   }
   return lines.join('\n') || '- 🗺️ _sem conexões_';
 }
@@ -971,6 +994,7 @@ module.exports = {
   buildCodeNoteSpecs,
   noteNames,
   generateNotes,
+  resetCaches,
   runCli,
 };
 

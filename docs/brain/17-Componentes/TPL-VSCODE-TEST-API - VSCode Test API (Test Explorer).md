@@ -34,4 +34,5 @@ Plataforma-alvo; acompanhar `engines.vscode`.
 
 <!-- brain:auto:start:conexoes -->
 - 🗺️ [[MOC - Componentes]]
+- ↩️ Referenciada por: [[NFR-003 - Compatibilidade com VSCode|NFR-003]]
 <!-- brain:auto:end -->

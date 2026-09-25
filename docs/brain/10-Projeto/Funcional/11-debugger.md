@@ -214,4 +214,5 @@ Veja [02 — Test Execution](02-test-execution.md) e
 <!-- brain:auto:start:conexoes -->
 - 📐 Regras: [[BR-CONN-012 - Thick opt-in, fixado na primeira chamada e idempotente|BR-CONN-012]]
 - 🔗 [[NFR-001 - Compatibilidade com Oracle e piso do utPLSQL]] · [[ADR-012 - Debugger PLSQL via DBMS_DEBUG e DAP]]
+- ↩️ Referenciada por: [[ERR-007 - ORA-04043 — objeto não encontrado ao compilar para debug|ERR-007]]
 <!-- brain:auto:end -->

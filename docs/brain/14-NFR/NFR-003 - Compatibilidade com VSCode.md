@@ -30,4 +30,5 @@ Ampliar o alcance mantendo APIs suportadas.
 <!-- brain:auto:start:conexoes -->
 - 🗺️ [[MOC - NFR]]
 - 🔗 [[TPL-VSCODE-TEST-API - VSCode Test API (Test Explorer)]] · [[MOC - Arquitetura]]
+- ↩️ Referenciada por: [[09-configuration]]
 <!-- brain:auto:end -->

@@ -27,4 +27,5 @@ poll por `message_id`. O buffer CLOB não é usado.
 - 🗺️ [[MOC - Glossario]]
 - 📐 Regras: [[BR-EXEC-006 - Reporters gravam na mesma UT_OUTPUT_BUFFER_TMP; CLOB não é usada|BR-EXEC-006]]
 - 🔗 [[ENT-006 - OutputBuffer]]
+- ↩️ Referenciada por: [[ENT-006 - OutputBuffer|ENT-006]]
 <!-- brain:auto:end -->

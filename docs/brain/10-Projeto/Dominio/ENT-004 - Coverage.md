@@ -29,4 +29,5 @@ filename, line-rate, branch, declarations; executed (views).
 <!-- brain:auto:start:conexoes -->
 - 🗺️ [[MOC - Dominio]]
 - 🔗 [[GLOSS-005 - Coverage owner]] · [[04-code-coverage]]
+- ↩️ Referenciada por: [[GLOSS-005 - Coverage owner|GLOSS-005]]
 <!-- brain:auto:end -->

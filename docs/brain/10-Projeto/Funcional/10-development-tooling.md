@@ -241,4 +241,5 @@ inclusive falha de propósito. Comando local válido: `npm run package` (gera `.
 
 <!-- brain:auto:start:conexoes -->
 - 🔗 [[NFR-007 - Cobertura de testes TypeScript]] · [[PAT-001 - Módulos puros vs dependentes de vscode]] · [[PAT-007 - Stub de vscode em duas camadas]] · [[ADR-006 - Modulos puros vs dependentes de vscode]]
+- ↩️ Referenciada por: [[PAT-001 - Módulos puros vs dependentes de vscode|PAT-001]] · [[PAT-007 - Stub de vscode em duas camadas|PAT-007]]
 <!-- brain:auto:end -->

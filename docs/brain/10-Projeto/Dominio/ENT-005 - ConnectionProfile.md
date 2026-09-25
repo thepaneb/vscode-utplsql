@@ -32,4 +32,5 @@ isDefault.
 - 🗺️ [[MOC - Dominio]]
 - 📐 Regras: [[BR-CONN-004 - Perfil sobrescreve apenas sourcePath, coverageOwner e includePatterns|BR-CONN-004]]
 - 🔗 [[GLOSS-007 - Connection profile]] · [[09-configuration]]
+- ↩️ Referenciada por: [[GLOSS-007 - Connection profile|GLOSS-007]]
 <!-- brain:auto:end -->

@@ -17,6 +17,7 @@ const { checkRules, checkLayers, checkRequisitos, checkReferences, parseFrontmat
       exists: (ref: string) => boolean,
       brIds?: Set<string>,
       checkLines?: boolean,
+      relCatalog?: { noteBases: Set<string>; noteIds: Set<string>; adrIds: Set<string> },
     ) => string[];
     parseFrontmatter: (t: string) => Record<string, unknown> | null;
     listRuleFiles: () => { name: string; content: string }[];
@@ -253,6 +254,93 @@ test('brain-rules: checkReferences aceita regra quando não recebe catálogo', (
     checkReferences([content], () => true),
     [],
   );
+});
+
+// ── relacionado / decisoes (evolução do grafo) ─────────────────────────
+
+/** Catálogo do vault: basenames, ids e ids de ADR (frontmatter `adr`). */
+function relCatalog(entries: { id?: string; adr?: string }[]) {
+  const noteBases = new Set(entries.map((_, i) => `n${i + 1}`));
+  const noteIds = new Set<string>();
+  const adrIds = new Set<string>();
+  for (const e of entries) {
+    if (e.id) noteIds.add(e.id);
+    if (e.adr) adrIds.add(e.adr);
+  }
+  return { noteBases, noteIds, adrIds };
+}
+
+test('brain-rules: relacionado aponta para nota por wikilink', () => {
+  const content = note(['tipo: nfr', 'relacionado: ["[[n2]]"]']);
+  const problems = checkReferences([content], () => true, undefined, false, relCatalog([{}, {}]));
+  assert.deepStrictEqual(problems, []);
+});
+
+test('brain-rules: relacionado aceita nome exato da nota e id do vault', () => {
+  const content = note(['tipo: nfr', 'relacionado: ["n2", "NFR-002"]']);
+  const problems = checkReferences(
+    [content],
+    () => true,
+    undefined,
+    false,
+    relCatalog([{}, { id: 'NFR-002' }]),
+  );
+  assert.deepStrictEqual(problems, []);
+});
+
+test('brain-rules: relacionado quebrado é reportado', () => {
+  const content = note(['tipo: nfr', 'relacionado: ["NAO-EXISTE"]']);
+  const problems = checkReferences([content], () => true, undefined, false, relCatalog([{}, {}]));
+  assert.ok(problems.some((p) => p.includes('relacionado inexistente: NAO-EXISTE')));
+});
+
+test('brain-rules: relacionado aceita id de ADR (campo adr)', () => {
+  const content = note(['tipo: nfr', 'relacionado: ["ADR-001"]']);
+  const problems = checkReferences(
+    [content],
+    () => true,
+    undefined,
+    false,
+    relCatalog([{}, {}, { adr: 'ADR-001' }]),
+  );
+  assert.deepStrictEqual(problems, []);
+});
+
+test('brain-rules: relacionados/secaoRelacionada são aliases de relacionado', () => {
+  const content = note(['tipo: nfr', 'secaoRelacionada: ["[[n2]]"]', 'relacionados: ["n1"]']);
+  const problems = checkReferences([content], () => true, undefined, false, relCatalog([{}, {}]));
+  assert.deepStrictEqual(problems, []);
+});
+
+test('brain-rules: sem catálogo a validação de relacionado é pulada', () => {
+  const content = note(['tipo: nfr', 'relacionado: ["NAO-EXISTE"]']);
+  assert.deepStrictEqual(
+    checkReferences([content], () => true),
+    [],
+  );
+});
+
+test('brain-rules: decisoes aponta para decisão por id ou wikilink', () => {
+  const content = note(['tipo: regra', 'decisoes: ["[[n3]]", "DEC-002"]']);
+  const problems = checkReferences(
+    [content],
+    () => true,
+    undefined,
+    false,
+    relCatalog([{}, {}, { id: 'DEC-002' }]),
+  );
+  assert.deepStrictEqual(problems, []);
+});
+
+test('brain-rules: decisao quebrada é reportada', () => {
+  const content = note(['tipo: regra', 'decisoes: ["DEC-999"]']);
+  const problems = checkReferences([content], () => true, undefined, false, relCatalog([{}, {}]));
+  assert.ok(problems.some((p) => p.includes('decisao referenciada inexistente: DEC-999')));
+});
+
+test('brain-rules: checkRules global valida relacionado do vault', () => {
+  // Sem overrides, o global usa o vault real (catálogo construído das notas).
+  assert.deepStrictEqual(checkRules(), []);
 });
 
 test('brain-rules: checkLayers detecta id inválido e duplicado', () => {

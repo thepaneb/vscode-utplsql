@@ -36,4 +36,5 @@ cobertos por teste de integração ou pelo stub.
 <!-- brain:auto:start:conexoes -->
 - 🗺️ [[MOC - Padroes]]
 - 🔗 [[ADR-006 - Modulos puros vs dependentes de vscode]] · [[10-development-tooling]]
+- ↩️ Referenciada por: [[10-development-tooling]] · [[NFR-008 - Multi-root workspace|NFR-008]]
 <!-- brain:auto:end -->

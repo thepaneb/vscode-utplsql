@@ -33,4 +33,5 @@ adicionar import de `vscode` em produção, adicionar o stub correspondente.
 <!-- brain:auto:start:conexoes -->
 - 🗺️ [[MOC - Padroes]]
 - 🔗 [[ADR-006 - Modulos puros vs dependentes de vscode]] · [[10-development-tooling]]
+- ↩️ Referenciada por: [[10-development-tooling]] · [[NFR-007 - Cobertura de testes TypeScript|NFR-007]]
 <!-- brain:auto:end -->

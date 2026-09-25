@@ -34,4 +34,5 @@ para output de documentação ou para o buffer XML.
 <!-- brain:auto:start:conexoes -->
 - 🗺️ [[MOC - Padroes]]
 - 🔗 [[ADR-001 - Execucao via Oracle direto]] · [[02-test-execution]]
+- ↩️ Referenciada por: [[NFR-004 - Latência do streaming|NFR-004]]
 <!-- brain:auto:end -->

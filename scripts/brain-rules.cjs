@@ -158,10 +158,48 @@ function checkRequisitos(notes) {
 }
 
 /**
- * Valida referências de TODAS as notas do vault: `implementacao`/`testes`
- * (arquivos existem) e `regras` (apontam para BR-* existentes).
+ * Referências de grafo (`relacionado`/`relacionados`/`secaoRelacionada` e
+ * `decisoes`): o alvo pode ser wikilink, nome exato da nota, id do vault
+ * (`fm.id`) ou id de ADR (campo `adr`). `catalog` ausente → validação pulada.
  */
-function checkReferences(notes, exists, brIds, checkLines) {
+function relValue(raw) {
+  const s = String(raw).trim();
+  const wl = s.match(/^\[\[([^\]|#]+)/);
+  return (wl ? wl[1] : s).replace(/\.md$/, '').trim();
+}
+
+function relTargets(fm) {
+  const relatedKeys = ['relacionado', 'relacionados', 'secaoRelacionada'];
+  const out = [];
+  for (const key of relatedKeys) {
+    for (const r of Array.isArray(fm?.[key]) ? fm[key] : []) {
+      out.push({ key, value: r, label: 'relacionado' });
+    }
+  }
+  for (const r of Array.isArray(fm?.decisoes) ? fm.decisoes : []) {
+    out.push({ key: 'decisoes', value: r, label: 'decisao referenciada' });
+  }
+  return out;
+}
+
+function checkRelacionado(fm, catalog) {
+  if (!catalog) return [];
+  const problems = [];
+  for (const { value, label } of relTargets(fm)) {
+    const v = relValue(value);
+    const ok =
+      catalog.noteBases?.has(v) || catalog.noteIds?.has(v) || catalog.adrIds?.has(v);
+    if (!ok) problems.push(`${label} inexistente: ${value}`);
+  }
+  return problems;
+}
+
+/**
+ * Valida referências de TODAS as notas do vault: `implementacao`/`testes`
+ * (arquivos existem), `regras` (apontam para BR-* existentes) e as arestas de
+ * grafo (`relacionado*`/`decisoes`) contra o catálogo de notas/ids/ADRs.
+ */
+function checkReferences(notes, exists, brIds, checkLines, relCatalog) {
   const problems = [];
   for (const note of notes) {
     const fm = parseFrontmatter(note.content);
@@ -178,8 +216,23 @@ function checkReferences(notes, exists, brIds, checkLines) {
     for (const ref of Array.isArray(fm.regras) ? fm.regras : []) {
       if (brIds && !brIds.has(String(ref).trim())) problems.push(`${note.name}: regra referenciada inexistente: ${ref}`);
     }
+    for (const p of checkRelacionado(fm, relCatalog)) problems.push(`${note.name}: ${p}`);
   }
   return problems;
+}
+
+/** Catálogo do vault para validar arestas de grafo (ids, basenames e ADRs). */
+function buildRelCatalog(notes) {
+  const noteBases = new Set();
+  const noteIds = new Set();
+  const adrIds = new Set();
+  for (const note of notes) {
+    noteBases.add(path.basename(note.name, '.md'));
+    const fm = parseFrontmatter(note.content);
+    if (fm?.id) noteIds.add(String(fm.id));
+    if (fm?.adr) adrIds.add(String(fm.adr));
+  }
+  return { noteBases, noteIds, adrIds };
 }
 
 function realPrdIds() {
@@ -262,8 +315,9 @@ function checkRules(overrides = {}) {
   if (!overrides.files) {
     const brIds = new Set(files.map((f) => parseFrontmatter(f.content)?.id).filter(Boolean));
     const notes = listAllNotes();
+    const relCatalog = overrides.relCatalog ?? buildRelCatalog(notes);
     problems.push(...checkLayers(notes));
-    problems.push(...checkReferences(notes, exists, brIds, checkLines));
+    problems.push(...checkReferences(notes, exists, brIds, checkLines, relCatalog));
     problems.push(...checkRequisitos(notes));
   }
 
@@ -273,12 +327,14 @@ function checkRules(overrides = {}) {
 module.exports = {
   checkRules,
   checkReferences,
+  checkRelacionado,
   checkLayers,
   checkRequisitos,
   parseFrontmatter,
   listRuleFiles,
   listAllNotes,
   realPrdIds,
+  buildRelCatalog,
   LAYERS,
 };
 

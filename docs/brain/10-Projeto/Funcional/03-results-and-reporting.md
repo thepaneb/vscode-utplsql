@@ -172,4 +172,5 @@ Linhas não-XML são exibidas diretamente; linhas XML são acumuladas para parse
 
 <!-- brain:auto:start:conexoes -->
 - 📐 Regras: [[BR-PARSE-011 - Precedência de status JUnit failure - error - skipped - passed|BR-PARSE-011]] · [[BR-PARSE-012 - Stack trace - regex quoted-unquoted e filtro de frames do framework|BR-PARSE-012]] · [[BR-PARSE-013 - Mapeamento resultado para teste por lastSegment+name-description com fallback|BR-PARSE-013]] · [[BR-PARSE-014 - message.location só é definida para failed-error com frame de usuário resolvido|BR-PARSE-014]]
+- ↩️ Referenciada por: [[GLOSS-004 - Reporter|GLOSS-004]] · [[PAT-003 - Funções canônicas compartilhadas de resultado|PAT-003]] · [[TPL-FASTXML - fast-xml-parser|TPL-FASTXML]]
 <!-- brain:auto:end -->

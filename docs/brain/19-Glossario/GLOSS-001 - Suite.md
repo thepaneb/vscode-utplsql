@@ -27,4 +27,5 @@ Conjunto de testes utPLSQL de um package, declarado com a annotation `--%suite`.
 - 🗺️ [[MOC - Glossario]]
 - 📐 Regras: [[BR-PARSE-001 - Arquivo só é suite utPLSQL se tiver %suite E CREATE PACKAGE|BR-PARSE-001]]
 - 🔗 [[ENT-002 - Suite]] · [[01-test-discovery]]
+- ↩️ Referenciada por: [[ENT-002 - Suite|ENT-002]]
 <!-- brain:auto:end -->

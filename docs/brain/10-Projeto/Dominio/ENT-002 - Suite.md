@@ -30,4 +30,5 @@ packageName, description, tags, fileUri/range, testes.
 <!-- brain:auto:start:conexoes -->
 - 🗺️ [[MOC - Dominio]]
 - 🔗 [[GLOSS-001 - Suite]] · [[01-test-discovery]]
+- ↩️ Referenciada por: [[GLOSS-001 - Suite|GLOSS-001]]
 <!-- brain:auto:end -->

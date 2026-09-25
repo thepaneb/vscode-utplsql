@@ -31,4 +31,5 @@ Proteger refatorações dos módulos puros e canônicos.
 - 🗺️ [[MOC - NFR]]
 - 🎯 Requisitos: [[prd-37-ts-coverage|PRD-37 RF1]]
 - 🔗 [[ADR-006 - Modulos puros vs dependentes de vscode]] · [[TPL-C8 - c8 (cobertura TypeScript)]] · [[PAT-007 - Stub de vscode em duas camadas]] · [[MOC - Testes]]
+- ↩️ Referenciada por: [[10-development-tooling]] · [[TPL-C8 - c8 (cobertura TypeScript)|TPL-C8]]
 <!-- brain:auto:end -->

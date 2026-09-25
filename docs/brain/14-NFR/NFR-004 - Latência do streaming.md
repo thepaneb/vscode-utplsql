@@ -32,4 +32,5 @@ Feedback incremental sem sobrecarregar o banco.
 - 🗺️ [[MOC - NFR]]
 - 🎯 Requisitos: [[prd-11-streaming-results|PRD-11 RNF3]]
 - 🔗 [[ADR-001 - Execucao via Oracle direto]] · [[PAT-004 - Streaming por poll incremental de buffer]] · [[MOC - Oracle]]
+- ↩️ Referenciada por: [[02-test-execution]]
 <!-- brain:auto:end -->

@@ -27,4 +27,5 @@ do schema de conexão; configurável por perfil (`coverageOwner`).
 - 🗺️ [[MOC - Glossario]]
 - 📐 Regras: [[BR-COB-003 - Cobertura de views via V$SQL é opt-in e best-effort|BR-COB-003]]
 - 🔗 [[ENT-004 - Coverage]] · [[04-code-coverage]]
+- ↩️ Referenciada por: [[ENT-004 - Coverage|ENT-004]]
 <!-- brain:auto:end -->

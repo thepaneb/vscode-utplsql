@@ -37,4 +37,5 @@ Config em `.c8rc`.
 <!-- brain:auto:start:conexoes -->
 - 🗺️ [[MOC - Componentes]]
 - 🔗 [[ADR-006 - Modulos puros vs dependentes de vscode]] · [[NFR-007 - Cobertura de testes TypeScript]]
+- ↩️ Referenciada por: [[NFR-007 - Cobertura de testes TypeScript|NFR-007]]
 <!-- brain:auto:end -->

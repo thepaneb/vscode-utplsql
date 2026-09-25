@@ -27,4 +27,5 @@ Perfil nomeado de conexão (`utplsql.profiles`) que pode sobrescrever
 - 🗺️ [[MOC - Glossario]]
 - 📐 Regras: [[BR-CONN-004 - Perfil sobrescreve apenas sourcePath, coverageOwner e includePatterns|BR-CONN-004]]
 - 🔗 [[ENT-005 - ConnectionProfile]] · [[09-configuration]]
+- ↩️ Referenciada por: [[ENT-005 - ConnectionProfile|ENT-005]]
 <!-- brain:auto:end -->

@@ -27,4 +27,5 @@ Procedure anotada com `--%test` (descrição + `procedure <nome>`). É a folha d
 - 🗺️ [[MOC - Glossario]]
 - 📐 Regras: [[BR-PARSE-003 - %test só materializa teste quando seguido de PROCEDURE; órfão é sobrescrito|BR-PARSE-003]]
 - 🔗 [[ENT-003 - TestCase]] · [[01-test-discovery]]
+- ↩️ Referenciada por: [[ENT-003 - TestCase|ENT-003]]
 <!-- brain:auto:end -->

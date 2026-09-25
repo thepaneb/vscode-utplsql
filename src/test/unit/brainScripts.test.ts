@@ -32,6 +32,7 @@ const {
   buildCodeNoteSpecs,
   noteNames,
   generateNotes,
+  resetCaches,
   runCli,
 } = require('../../../scripts/brain.cjs') as {
   configure: (options?: { repo?: string; vault?: string }) => void;
@@ -52,6 +53,7 @@ const {
   genStack: () => string;
   genDeps: () => string;
   genConexoes: (notePath: string) => string;
+  resetCaches: () => void;
   genMocIndex: (notePath: string) => string;
   pipelineNotes: () => { dir: string; file: string; content: string }[];
   localeNotes: () => { dir: string; file: string; content: string }[];
@@ -752,6 +754,35 @@ test('brain: conexões relacionam PRD, RF, RNF, BR e código', () => {
     assert.match(ruleConnections, /Testes: \[\[TST - feature\.test\.ts\]\]/);
     assert.match(ruleConnections, /🔗 PRD-10/);
     assert.match(ruleConnections, /↩️ Referenciada por:.*BR-99 - referencia/);
+
+    writeFixture(
+      path.join(vault, '30-Decisoes', 'ADR-001 - usar-streaming.md'),
+      '---\nid: ADR-001\ntipo: decisao\ntitulo: Usar streaming\n---\n# ADR-001\n',
+    );
+    const comDecisao = path.join(vault, '30-Regras', 'BR-11 - com decisao.md');
+    writeFixture(
+      comDecisao,
+      '---\nid: BR-11\ntipo: regra\ndecisoes: [ADR-001]\n---\n# Regra com decisão\n',
+    );
+    // `idMaps` é cacheado por execução: invalida antes de gerar com a nota nova.
+    resetCaches();
+    assert.match(genConexoes(comDecisao), /🧭 Decisões: \[\[ADR-001 - usar-streaming\|ADR-001\]\]/);
+    assert.match(
+      genConexoes(path.join(vault, '30-Decisoes', 'ADR-001 - usar-streaming.md')),
+      /↩️ Citada por:.*BR-11 - com decisao/,
+    );
+
+    // `relacionado` por basename também gera backlink (ADR citada por nota).
+    const cita = path.join(vault, '30-Regras', 'NFR-90 - cita adr.md');
+    writeFixture(
+      cita,
+      '---\nid: NFR-90\ntipo: nfr\nrelacionado: ["[[ADR-001 - usar-streaming]]"]\n---\n# Cita\n',
+    );
+    resetCaches();
+    assert.match(
+      genConexoes(path.join(vault, '30-Decisoes', 'ADR-001 - usar-streaming.md')),
+      /↩️ Citada por:.*(BR-11 - com decisao|NFR-90 - cita adr)/,
+    );
 
     const prdNote = path.join(vault, '20-PRDs', 'prd-10-feature.md');
     const prdConnections = genConexoes(prdNote);

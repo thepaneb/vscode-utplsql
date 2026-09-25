@@ -32,4 +32,5 @@ Evitar run pendurado e liberar conexões.
 - 🗺️ [[MOC - NFR]]
 - 🎯 Requisitos: [[prd-05-progress-cancel|PRD-05 RF3]]
 - 🔗 [[ADR-010 - Perfis de conexao com senha no SecretStorage]] · [[ADR-001 - Execucao via Oracle direto]] · [[MOC - Oracle]]
+- ↩️ Referenciada por: [[02-test-execution]]
 <!-- brain:auto:end -->

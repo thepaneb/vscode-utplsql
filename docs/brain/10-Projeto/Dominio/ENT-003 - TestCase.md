@@ -29,4 +29,5 @@ procName, description, line, tags, disabled, expectedError, resultado/status.
 <!-- brain:auto:start:conexoes -->
 - 🗺️ [[MOC - Dominio]]
 - 🔗 [[GLOSS-002 - Teste (procedure de teste)]] · [[01-test-discovery]]
+- ↩️ Referenciada por: [[GLOSS-002 - Teste (procedure de teste)|GLOSS-002]]
 <!-- brain:auto:end -->

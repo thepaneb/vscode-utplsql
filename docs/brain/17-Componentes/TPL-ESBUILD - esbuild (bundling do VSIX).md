@@ -37,4 +37,5 @@ Config em `esbuild.config.mjs`.
 <!-- brain:auto:start:conexoes -->
 - 🗺️ [[MOC - Componentes]]
 - 🔗 [[ADR-004 - Bundling com esbuild e higiene do VSIX]]
+- ↩️ Referenciada por: [[NFR-002 - Compatibilidade com Node|NFR-002]]
 <!-- brain:auto:end -->
