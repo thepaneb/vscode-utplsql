@@ -4,6 +4,7 @@ status: ativo
 locale: sr
 titulo: "README (sr)"
 publicar: README.sr.md
+origem: ["README (extensão)","MOC - I18n"]
 verificado: 2026-09-23
 tags: [readme]
 ---

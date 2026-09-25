@@ -182,6 +182,9 @@ function relTargets(fm) {
   for (const r of Array.isArray(fm?.erros) ? fm.erros : []) {
     out.push({ key: 'erros', value: r, label: 'erro referenciado' });
   }
+  for (const r of Array.isArray(fm?.origem) ? fm.origem : []) {
+    out.push({ key: 'origem', value: r, label: 'origem' });
+  }
   return out;
 }
 

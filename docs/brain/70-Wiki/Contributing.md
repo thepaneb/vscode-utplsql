@@ -3,6 +3,7 @@ tipo: wiki
 status: ativo
 titulo: "Contributing"
 publicar: docs/wiki/Contributing.md
+origem: ["MOC - Documentacao"]
 verificado: 2026-09-23
 tags: [wiki]
 ---

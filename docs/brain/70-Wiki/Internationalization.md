@@ -3,6 +3,7 @@ tipo: wiki
 status: ativo
 titulo: "Internationalization (i18n)"
 publicar: docs/wiki/Internationalization.md
+origem: ["MOC - I18n"]
 verificado: 2026-09-23
 tags: [wiki]
 ---

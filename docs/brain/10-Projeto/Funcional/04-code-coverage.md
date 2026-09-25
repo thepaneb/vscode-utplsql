@@ -256,5 +256,5 @@ GRANT SELECT ON SYS.V_$SQL TO <schema>;
 <!-- brain:auto:start:conexoes -->
 - 📐 Regras: [[BR-COB-001 - Cobertura Oracle exige GRANT EXECUTE ON SYS.DBMS_PROFILER|BR-COB-001]] · [[BR-COB-002 - resolveSourceUri tenta variantes de extensão e bloqueia path traversal|BR-COB-002]] · [[BR-COB-003 - Cobertura de views via V$SQL é opt-in e best-effort|BR-COB-003]] · [[BR-EXEC-009 - Separação do XML de cobertura do XML JUnit no mesmo buffer|BR-EXEC-009]] · [[BR-EXEC-013 - Reporter de cobertura só entra se existir no banco|BR-EXEC-013]]
 - 🔗 [[ADR-008 - Cobertura a partir do Cobertura XML e VSQL]]
-- ↩️ Referenciada por: [[ENT-004 - Coverage|ENT-004]] · [[GLOSS-005 - Coverage owner|GLOSS-005]]
+- ↩️ Referenciada por: [[Coverage]] · [[ENT-004 - Coverage|ENT-004]] · [[GLOSS-005 - Coverage owner|GLOSS-005]]
 <!-- brain:auto:end -->

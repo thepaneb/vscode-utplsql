@@ -3,6 +3,7 @@ tipo: wiki
 status: ativo
 titulo: "Quick start"
 publicar: docs/wiki/Quick-start.md
+origem: ["MOC - Documentacao"]
 verificado: 2026-09-23
 tags: [wiki]
 ---

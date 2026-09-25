@@ -4,6 +4,7 @@ status: ativo
 locale: cs
 titulo: "README (cs)"
 publicar: README.cs.md
+origem: ["README (extensão)","MOC - I18n"]
 verificado: 2026-09-23
 tags: [readme]
 ---

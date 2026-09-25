@@ -4,6 +4,7 @@ status: ativo
 locale: en
 titulo: "README (en)"
 publicar: README.md
+origem: ["MOC - Documentacao"]
 verificado: 2026-09-23
 tags: [readme]
 ---

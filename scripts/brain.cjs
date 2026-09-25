@@ -541,6 +541,7 @@ function reverseIndex() {
       ...(Array.isArray(fm.depende) ? fm.depende : []),
       ...(Array.isArray(fm.decisoes) ? fm.decisoes : []),
       ...(Array.isArray(fm.erros) ? fm.erros : []),
+      ...(Array.isArray(fm.origem) ? fm.origem.map(relRef) : []),
       ...(Array.isArray(fm.relacionado) ? fm.relacionado.map(relRef) : []),
       ...(Array.isArray(fm.relacionados) ? fm.relacionados.map(relRef) : []),
       ...(Array.isArray(fm.secaoRelacionada) ? fm.secaoRelacionada.map(relRef) : []),
@@ -601,9 +602,10 @@ function genConexoes(notePath) {
   const moc = mocOf(notePath);
   if (moc) lines.push(`- 🗺️ ${wl(moc)}`);
   const link = (ref, map) => {
-    const id = String(ref).trim();
-    const target = map.get(id);
-    return target ? wl(target, id) : `\`${id}\``;
+    const raw = relRef(ref);
+    if (map.has(raw)) return wl(map.get(raw), raw);
+    if (bases.has(raw)) return wl(raw);
+    return `\`${raw}\``;
   };
   if (Array.isArray(fm.prds) && fm.prds.length) {
     lines.push(`- 📄 PRDs: ${fm.prds.map((p) => link(p, ids)).join(' · ')}`);
@@ -619,6 +621,9 @@ function genConexoes(notePath) {
   }
   if (Array.isArray(fm.erros) && fm.erros.length) {
     lines.push(`- ⚠️ Erros: ${fm.erros.map((e) => link(e, ids)).join(' · ')}`);
+  }
+  if (Array.isArray(fm.origem) && fm.origem.length) {
+    lines.push(`- 📚 Origem: ${fm.origem.map((o) => link(o, ids)).join(' · ')}`);
   }
   // Requisitos (RF/RNF da PRD) que esta nota implementa.
   if (Array.isArray(fm.requisitos) && fm.requisitos.length) {

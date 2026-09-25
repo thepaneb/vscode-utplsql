@@ -3,6 +3,7 @@ tipo: wiki
 status: ativo
 titulo: "Architecture"
 publicar: docs/wiki/Architecture.md
+origem: ["MOC - Arquitetura"]
 verificado: 2026-09-23
 tags: [wiki]
 ---

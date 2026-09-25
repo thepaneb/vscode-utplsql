@@ -3,6 +3,7 @@ tipo: wiki
 status: ativo
 titulo: "PRDs and roadmap"
 publicar: docs/wiki/PRDs.md
+origem: ["MOC - PRDs"]
 verificado: 2026-09-23
 tags: [wiki]
 ---

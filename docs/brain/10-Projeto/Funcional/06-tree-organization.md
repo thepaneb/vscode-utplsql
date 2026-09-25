@@ -200,5 +200,5 @@ o cache. Necessário para o caso de refresh ainda não ter populado.
 <!-- brain:auto:start:conexoes -->
 - 📐 Regras: [[BR-SCHEMA-001 - organization bifurca file tree vs schema tree; suiteMap é o lookup canônico|BR-SCHEMA-001]] · [[BR-SCHEMA-002 - extractSchemaFromPath - path.posix.relative e placeholder {schema}|BR-SCHEMA-002]] · [[BR-SCHEMA-003 - collectAllItems usa cachedItems e, se vazio, percorre até 3 níveis|BR-SCHEMA-003]]
 - 🔗 [[ADR-003 - Descoberta DB-first e organizacao por schema]]
-- ↩️ Referenciada por: [[GLOSS-006 - Schema-mode (organização por schema)|GLOSS-006]]
+- ↩️ Referenciada por: [[GLOSS-006 - Schema-mode (organização por schema)|GLOSS-006]] · [[Test-explorer]] · [[Tree-organization]]
 <!-- brain:auto:end -->

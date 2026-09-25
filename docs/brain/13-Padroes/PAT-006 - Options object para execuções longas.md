@@ -32,4 +32,5 @@ cobertura, random seed, timeout, token de cancelamento.
 <!-- brain:auto:start:conexoes -->
 - 🗺️ [[MOC - Padroes]]
 - 🔗 [[ADR-005 - Funcoes canonicas de resultado e matching por nome]] · [[02-test-execution]]
+- ↩️ Referenciada por: [[Connection-profiles]]
 <!-- brain:auto:end -->

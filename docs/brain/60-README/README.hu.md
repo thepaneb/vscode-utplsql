@@ -4,6 +4,7 @@ status: ativo
 locale: hu
 titulo: "README (hu)"
 publicar: README.hu.md
+origem: ["README (extensão)","MOC - I18n"]
 verificado: 2026-09-23
 tags: [readme]
 ---

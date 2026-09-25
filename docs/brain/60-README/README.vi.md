@@ -4,6 +4,7 @@ status: ativo
 locale: vi
 titulo: "README (vi)"
 publicar: README.vi.md
+origem: ["README (extensão)","MOC - I18n"]
 verificado: 2026-09-23
 tags: [readme]
 ---

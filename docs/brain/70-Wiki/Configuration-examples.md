@@ -3,6 +3,7 @@ tipo: wiki
 status: ativo
 titulo: "Configuration Examples (recipes)"
 publicar: docs/wiki/Configuration-examples.md
+origem: ["09-configuration"]
 verificado: 2026-09-23
 tags: [wiki]
 ---

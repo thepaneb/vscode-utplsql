@@ -3,6 +3,7 @@ tipo: wiki
 status: ativo
 titulo: "Running SQL Scripts"
 publicar: docs/wiki/SQL-scripts.md
+origem: ["09-configuration"]
 verificado: 2026-09-23
 tags: [wiki]
 ---

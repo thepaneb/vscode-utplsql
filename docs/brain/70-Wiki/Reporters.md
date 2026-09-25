@@ -3,6 +3,7 @@ tipo: wiki
 status: ativo
 titulo: "Custom Reporters"
 publicar: docs/wiki/Reporters.md
+origem: ["03-results-and-reporting"]
 verificado: 2026-09-23
 tags: [wiki]
 ---

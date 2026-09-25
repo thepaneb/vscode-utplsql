@@ -3,6 +3,7 @@ tipo: wiki
 status: ativo
 titulo: "utPLSQL Test Runner"
 publicar: docs/wiki/Home.md
+origem: ["MOC - Documentacao"]
 verificado: 2026-09-23
 tags: [wiki]
 ---

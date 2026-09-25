@@ -3,6 +3,7 @@ tipo: wiki
 status: ativo
 titulo: "PL/SQL Debugger"
 publicar: docs/wiki/Debugger.md
+origem: ["11-debugger"]
 verificado: 2026-09-23
 tags: [wiki]
 ---

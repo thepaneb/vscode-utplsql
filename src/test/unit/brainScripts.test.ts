@@ -798,6 +798,20 @@ test('brain: conexões relacionam PRD, RF, RNF, BR e código', () => {
       /↩️ Referenciada por:.*BR-12 - trata erro/,
     );
 
+    // `origem:` liga a nota publicada (wiki/readme) à canônica, 1:N.
+    writeFixture(
+      path.join(vault, '10-Projeto', '09-configuration.md'),
+      '---\nid: CONF-09\ntipo: funcional\ntitulo: 09 Configuration\n---\n# 09\n',
+    );
+    const wiki = path.join(vault, '70-Wiki', 'Configuration.md');
+    writeFixture(
+      wiki,
+      '---\ntipo: wiki\npublicar: "docs/wiki/Configuration.md"\norigem: ["[[09-configuration]]", "[[BR-10 - regra]]"]\n---\n# Configuration\n',
+    );
+    resetCaches();
+    const wikiConexoes = genConexoes(wiki);
+    assert.match(wikiConexoes, /📚 Origem: \[\[09-configuration\]\] · \[\[BR-10 - regra\]\]/);
+
     const prdNote = path.join(vault, '20-PRDs', 'prd-10-feature.md');
     const prdConnections = genConexoes(prdNote);
     assert.match(prdConnections, /PRDs relacionados: \[\[prd-02-other\|PRD-02\]\]/);

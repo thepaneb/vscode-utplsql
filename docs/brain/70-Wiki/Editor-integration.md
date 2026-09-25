@@ -3,6 +3,7 @@ tipo: wiki
 status: ativo
 titulo: "Editor Integration"
 publicar: docs/wiki/Editor-integration.md
+origem: ["05-ux-components","08-jump-to-failure"]
 verificado: 2026-09-25
 tags: [wiki]
 ---

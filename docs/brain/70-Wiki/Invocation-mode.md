@@ -3,6 +3,7 @@ tipo: wiki
 status: ativo
 titulo: "Invocation Mode"
 publicar: docs/wiki/Invocation-mode.md
+origem: ["02-test-execution"]
 verificado: 2026-09-23
 tags: [wiki]
 ---

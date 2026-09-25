@@ -4,6 +4,7 @@ status: ativo
 locale: ko
 titulo: "README (ko)"
 publicar: README.ko.md
+origem: ["README (extensão)","MOC - I18n"]
 verificado: 2026-09-23
 tags: [readme]
 ---

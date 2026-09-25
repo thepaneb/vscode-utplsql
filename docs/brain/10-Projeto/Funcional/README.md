@@ -3,6 +3,7 @@ tipo: funcional
 status: ativo
 titulo: "Especificação Funcional — visão geral"
 publicar: docs/functional/README.md
+origem: ["MOC - Documentacao"]
 verificado: 2026-09-23
 tags: [funcional]
 ---

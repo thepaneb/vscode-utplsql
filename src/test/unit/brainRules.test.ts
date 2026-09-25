@@ -356,6 +356,24 @@ test('brain-rules: erro referenciado inexistente é reportado', () => {
   assert.ok(problems.some((p) => p.includes('erro referenciado inexistente: ERR-999')));
 });
 
+test('brain-rules: origem 1:N aponta para as notas canônicas (id ou wikilink)', () => {
+  const content = note(['tipo: wiki', 'origem: ["[[n2]]", "BR-001"]']);
+  const problems = checkReferences(
+    [content],
+    () => true,
+    undefined,
+    false,
+    relCatalog([{}, {}, { id: 'BR-001' }]),
+  );
+  assert.deepStrictEqual(problems, []);
+});
+
+test('brain-rules: origem inexistente é reportada', () => {
+  const content = note(['tipo: wiki', 'origem: ["NAO-EXISTE"]']);
+  const problems = checkReferences([content], () => true, undefined, false, relCatalog([{}, {}]));
+  assert.ok(problems.some((p) => p.includes('origem inexistente: NAO-EXISTE')));
+});
+
 test('brain-rules: checkRules global valida relacionado do vault', () => {
   // Sem overrides, o global usa o vault real (catálogo construído das notas).
   assert.deepStrictEqual(checkRules(), []);

@@ -3,6 +3,7 @@ tipo: wiki
 status: ativo
 titulo: "FAQ"
 publicar: docs/wiki/FAQ.md
+origem: ["MOC - Documentacao"]
 verificado: 2026-09-23
 tags: [wiki]
 ---

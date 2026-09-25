@@ -3,6 +3,7 @@ tipo: wiki
 status: ativo
 titulo: "Installation and Requirements"
 publicar: docs/wiki/Installation-and-requirements.md
+origem: ["MOC - Oracle"]
 verificado: 2026-09-23
 tags: [wiki]
 ---

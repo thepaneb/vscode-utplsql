@@ -3,6 +3,7 @@ tipo: wiki
 status: ativo
 titulo: "Oracle Direct Execution (Streaming)"
 publicar: docs/wiki/Oracle-direct-execution.md
+origem: ["02-test-execution","ADR-001"]
 verificado: 2026-09-23
 tags: [wiki]
 ---

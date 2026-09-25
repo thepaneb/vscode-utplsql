@@ -164,4 +164,5 @@ commands/run.ts (pós-run, PRD-68)
 
 <!-- brain:auto:start:conexoes -->
 - 📐 Regras: [[BR-UI-007 - Diagnósticos de setup e quick-fixes restritos ao source utPLSQL Setup|BR-UI-007]] · [[BR-UI-008 - Diagnósticos de compilação mapeiam ALL_ERRORS e usam source utPLSQL Compilation|BR-UI-008]] · [[BR-COB-001 - Cobertura Oracle exige GRANT EXECUTE ON SYS.DBMS_PROFILER|BR-COB-001]]
+- ↩️ Referenciada por: [[Diagnostics-and-quick-fix]] · [[Troubleshooting]]
 <!-- brain:auto:end -->

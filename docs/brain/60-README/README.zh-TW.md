@@ -4,6 +4,7 @@ status: ativo
 locale: zh-tw
 titulo: "README (zh-tw)"
 publicar: README.zh-TW.md
+origem: ["README (extensão)","MOC - I18n"]
 verificado: 2026-09-23
 tags: [readme]
 ---

@@ -3,6 +3,7 @@ tipo: wiki
 status: ativo
 titulo: "Database requirements"
 publicar: docs/wiki/Database-requirements.md
+origem: ["MOC - Oracle"]
 verificado: 2026-09-23
 tags: [wiki]
 ---

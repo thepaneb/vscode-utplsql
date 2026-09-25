@@ -3,6 +3,7 @@ tipo: wiki
 status: ativo
 titulo: "Code Coverage"
 publicar: docs/wiki/Coverage.md
+origem: ["04-code-coverage","MOC - Regras"]
 verificado: 2026-09-23
 tags: [wiki]
 ---

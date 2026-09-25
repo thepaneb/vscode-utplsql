@@ -3,6 +3,7 @@ tipo: wiki
 status: ativo
 titulo: "Diagnostics and quick-fix"
 publicar: docs/wiki/Diagnostics-and-quick-fix.md
+origem: ["07-diagnostics-and-validation"]
 verificado: 2026-09-23
 tags: [wiki]
 ---

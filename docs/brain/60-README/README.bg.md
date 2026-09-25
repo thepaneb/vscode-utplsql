@@ -4,6 +4,7 @@ status: ativo
 locale: bg
 titulo: "README (bg)"
 publicar: README.bg.md
+origem: ["README (extensão)","MOC - I18n"]
 verificado: 2026-09-23
 tags: [readme]
 ---

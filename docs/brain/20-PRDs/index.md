@@ -3,6 +3,7 @@ tipo: prd-index
 status: ativo
 titulo: "PRDs — vscode-utplsql"
 publicar: docs/prd/index.md
+origem: ["MOC - PRDs"]
 verificado: 2026-09-23
 tags: [prd, indice]
 ---
@@ -322,4 +323,5 @@ release é publicada no GitHub. O único comando local válido para distribuiç�
 
 <!-- brain:auto:start:conexoes -->
 - 🗺️ [[MOC - PRDs]]
+- 📚 Origem: `MOC - PRDs`
 <!-- brain:auto:end -->

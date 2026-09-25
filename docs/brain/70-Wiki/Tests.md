@@ -3,6 +3,7 @@ tipo: wiki
 status: ativo
 titulo: "Tests"
 publicar: docs/wiki/Tests.md
+origem: ["01-test-discovery","02-test-execution","03-results-and-reporting"]
 verificado: 2026-09-23
 tags: [wiki]
 ---
