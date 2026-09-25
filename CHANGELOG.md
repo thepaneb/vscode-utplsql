@@ -2,6 +2,14 @@
 
 ## 0.13.0
 
+- **Correção: resultados e jump-to-failure em suítes com `%suitepath`**: o
+  reporter JUnit do utPLSQL aninha `<testsuite>` conforme o `--%suitepath`, mas o
+  parser lia apenas um nível; as suítes afetadas eram marcadas como "No JUnit
+  result found" no Test Explorer. O parser agora percorre os níveis aninhados,
+  reconhece o stack real `SCHEMA.PACKAGE.PROCEDURE` e resolve a location para o
+  `.pks`, sem confundir o schema de instalação `UT3` com objetos internos do
+  framework. Validado por E2E contra o banco real.
+
 - **Correção: debugger honra `stopOnException` (PRD-86)**: a setting
   `utplsql.debugger.stopOnException` existia desde a PRD-33 mas não tinha
   efeito — o adapter guardava o valor sem usá-lo e o `CONTINUE` do `DBMS_DEBUG`

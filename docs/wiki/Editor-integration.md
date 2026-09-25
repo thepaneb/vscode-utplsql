@@ -39,12 +39,24 @@ clicking it switches profiles. Controlled by `utplsql.statusBar.enabled`.
 
 Failures include a native **"Go to Error"** action that jumps to the exact line
 of the failing assertion. The extension parses the utPLSQL stack trace from the
-JUnit `<failure>`/`<error>` body, filters internal frames (`UT_*`, `UT$`,
-`UT3_*`, `UT3$`, `UT3.`) and sets `TestMessage.location`.
+JUnit `<failure>`/`<error>` body, filters framework frames and sets
+`TestMessage.location`.
 
+- Accepts the three stack formats: `at "SCHEMA.PKG"."PROC", line N` (DBMS
+  backtrace), `at "SCHEMA.PKG.PROC", line N` (the one the utPLSQL reporter really
+  emits) and `at PKG.PROC, line N` (unquoted).
+- Framework frames are filtered **per object segment** (`UT_*`, `UT$*`, `UT3_*`,
+  `UT3$*`); the install schema prefix is not a reason to drop a frame, so tests
+  living in the install schema (`UT3.MY_TESTS.P`) still resolve.
+- The package is taken from the frame (1 segment = itself, 2 = last, 3+ =
+  second-to-last) and matched against the discovered suite, falling back to
+  `<package>.pks` in the workspace roots.
 - Works for code versioned locally (`.pks`/`.pkb` in the workspace).
 - Only the first user frame is used; external/Oracle-internal code resolves to no
   location.
+- Test results are read from **nested** `<testsuite>` levels too, so suites run
+  with `--%suitepath` (or with utPLSQL installed in another schema) are not
+  reported as "No JUnit result found".
 
 ## Context menu and shortcuts
 

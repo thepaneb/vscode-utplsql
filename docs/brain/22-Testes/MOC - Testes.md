@@ -31,6 +31,7 @@ SORT id ASC
 - [[TST - discovery.test.ts]] — `TST-discovery.test.ts`
 - [[TST - extension.test.ts]] — `TST-extension.test.ts`
 - [[TST - i18n.test.ts]] — `TST-i18n.test.ts`
+- [[TST - jumpToFailureE2E.test.ts]] — `TST-jumpToFailureE2E.test.ts`
 - [[TST - junit.test.ts]] — `TST-junit.test.ts`
 - [[TST - logger.test.ts]] — `TST-logger.test.ts`
 - [[TST - matching.test.ts]] — `TST-matching.test.ts`

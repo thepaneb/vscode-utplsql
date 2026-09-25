@@ -4,7 +4,7 @@ status: ativo
 numero: 03
 titulo: "03 — Results and Reporting"
 publicar: docs/functional/03-results-and-reporting.md
-verificado: 2026-09-23
+verificado: 2026-09-25
 regras: ["BR-PARSE-011", "BR-PARSE-012", "BR-PARSE-013", "BR-PARSE-014"]
 tags: [funcional]
 ---
@@ -38,6 +38,31 @@ function parseJUnit(xml: string): TestCaseResult[]
 ```
 
 Usa `fast-xml-parser` com `ignoreAttributes: false`.
+
+### `testsuite` aninhado (recursivo)
+
+O `ut_junit_reporter` **aninha `<testsuite>` por nível** (`schema` › `package` ›
+`suite`) — é o que acontece com `--%suitepath` e o padrão em instalação
+compartilhada (utPLSQL em `UT3`, suites em outro schema). Os `<testcase>` vivem
+no nível mais interno, então a visita é **recursiva**:
+
+```
+testsuites
+└── testsuite name="utplsql_test"        ← visit(suite)
+    ├── testcase ...                     ← testcases do nível atual
+    └── testsuite name="Math failures"   ← visit(nested) — recursivo
+        └── testcase ...
+```
+
+- `visit(suite)` lê os `testcase` do nível e **depois** desce nos `testsuite`
+  aninhados — a ordem dos resultados preserva o documento (testcases do nível
+  atual antes dos aninhados).
+- O ponto de entrada continua iterando `root.testsuite` (aceita `testsuites`
+  com um ou vários `testsuite`, e a raiz já sendo `testsuite`).
+- Sem essa descida o parse devolvia `[]` e todo leaf test era marcado como
+  skipped com `[aviso] Nenhum resultado JUnit encontrado para "..."` — os testes
+  rodavam, mas sem resultado. Detalhado em
+  [08 — Jump to Failure](08-jump-to-failure.md).
 
 ### `TestCaseResult`
 
@@ -97,7 +122,8 @@ Extrai último segmento separado por `.` ou `:` (ex: `"schema.pkg"` → `"pkg"`)
 | `applyResultsFromCases` | Mapeia TestCaseResult[] para TestItem por matching de classname+name |
 | `countResults` | Conta passed/failed/skipped/errored |
 | `applyCoverageFromXml` | Aplica cobertura a partir de XML Cobertura |
-| `resolveStackFrameToUri` | Resolve frames de stack trace para URIs de arquivo |
+| `packageFromFrameObject` | Extrai o package de um frame qualificado: 1 segmento = ele, 2 = último, 3+ = penúltimo |
+| `resolveStackFrameToUri` | Resolve frames de stack trace para URIs de arquivo (compara `packageName`; fallback `<packageName>.pks`) |
 
 > `resolveStackLocation` não existe mais — só `resolveStackFrameToUri`.
 
