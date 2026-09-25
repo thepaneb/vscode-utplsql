@@ -2,12 +2,12 @@
 """Bridge stdio <-> Streamable HTTP para o MCP embutido no plugin Obsidian
 Local REST API.
 
-Usado pelo opencode como MCP local (ver opencode.json). Diferente do
-`mcp-remote`, roda nativamente no WSL (Python) e faz o proxy síncrono das
-mensagens JSON-RPC, preservando o `initialize` enviado imediatamente.
+Usado pelo OpenCode como MCP local (ver opencode.json). Roda nativamente no
+Windows (Python) e faz o proxy síncrono das mensagens JSON-RPC, preservando o
+`initialize` enviado imediatamente.
 
-Host e API key são resolvidos em tempo de start (gateway do WSL + data.json),
-sem depender de variáveis de ambiente do shell que iniciou o opencode.
+Host e API key são resolvidos em tempo de start (localhost + data.json), sem
+depender de variáveis de ambiente do shell que iniciou o OpenCode.
 """
 from __future__ import annotations
 
@@ -25,10 +25,12 @@ DATA = os.path.join(
 )
 
 
-def windows_host() -> str:
+def obsidian_host() -> str:
     host = os.environ.get("OBSIDIAN_HOST")
     if host:
         return host
+    if os.name == "nt":
+        return "127.0.0.1"
     try:
         out = subprocess.check_output(["ip", "route", "show", "default"], text=True)
         return out.split()[2]
@@ -47,7 +49,7 @@ def api_key() -> str:
         return ""
 
 
-HOST = windows_host()
+HOST = obsidian_host()
 KEY = api_key()
 URL = f"http://{HOST}:27123/mcp/"
 
