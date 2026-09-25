@@ -45,6 +45,10 @@ ORACLE_PWD="${ORACLE_PWD:-Oracle#2026}"
 UT3_PASSWORD="${UT3_PASSWORD:-ut3#matrix2026}"
 TEST_PASSWORD="${TEST_PASSWORD:-utplsql_test#2026}"
 UTPLSQL_VERSION="${UTPLSQL_VERSION:-v.3.2.3}"
+# Default estável entre iterações: `UTPLSQL_VERSION` é reexportado por banco no
+# loop; sem uma base separada, a versão do 1º banco (12.2 -> 3.1.x) viraria o
+# default de todos os seguintes.
+UTPLSQL_BASE_VERSION="$UTPLSQL_VERSION"
 TESTS_CMD="npm run test:integration"
 CONTAINER="utplsql-dbmatrix"
 ONLY=""
@@ -95,14 +99,14 @@ mapfile -t VERSION_LINES < <(echo "$VERSIONS" | sed '/^$/d')
 for __line in "${VERSION_LINES[@]}"; do
   # label|imagem|service[|utplsql_version] — o 4º campo é opcional (piso por
   # banco). parse-version.cjs normaliza (testado em matrixConfig.test.ts).
-  local_utplsql_version="$UTPLSQL_VERSION"
+  local_utplsql_version="$UTPLSQL_BASE_VERSION"
   if command -v node >/dev/null 2>&1; then
     IFS='|' read -r label image service local_utplsql_version <<< \
-      "$(node "$SCRIPT_DIR/parse-version.cjs" "$__line" "$UTPLSQL_VERSION" | \
+      "$(node "$SCRIPT_DIR/parse-version.cjs" "$__line" "$UTPLSQL_BASE_VERSION" | \
         node -e 'let s="";process.stdin.on("data",d=>s+=d).on("end",()=>{const j=JSON.parse(s);process.stdout.write([j.label,j.image,j.service,j.utplsqlVersion].join("|"))})')"
   else
     IFS='|' read -r label image service version_field <<< "$__line"
-    local_utplsql_version="${version_field:-$UTPLSQL_VERSION}"
+    local_utplsql_version="${version_field:-$UTPLSQL_BASE_VERSION}"
   fi
   label="$(echo "$label" | tr -d ' ')"; image="$(echo "$image" | tr -d ' ')"
   service="$(echo "$service" | tr -d ' ')"; local_utplsql_version="$(echo "$local_utplsql_version" | tr -d ' ')"

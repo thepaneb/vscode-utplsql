@@ -141,6 +141,19 @@ test('parse-version: run.sh usa parse-version.cjs para a versão por banco', () 
   assert.match(run, /parse-version\.cjs/);
 });
 
+test('parse-version: run.sh usa default estável (o export do loop não vaza)', () => {
+  const run = read('scripts/db-matrix/run.sh');
+  // Base separada, capturada antes do loop.
+  assert.match(run, /UTPLSQL_BASE_VERSION="\$UTPLSQL_VERSION"/);
+  assert.match(run, /local_utplsql_version="\$UTPLSQL_BASE_VERSION"/);
+  // O default passado ao parser é a base, nunca o UTPLSQL_VERSION reexportado
+  // por banco (senão o 12.2/v3.1.x viraria default de todos os seguintes).
+  assert.match(run, /parse-version\.cjs"\s+"\$__line"\s+"\$UTPLSQL_BASE_VERSION"/);
+  assert.doesNotMatch(run, /parse-version\.cjs"\s+"\$__line"\s+"\$UTPLSQL_VERSION"/);
+  // O export por banco continua, pois o bootstrap o consome.
+  assert.match(run, /export[^\n]*UTPLSQL_VERSION="\$local_utplsql_version"/);
+});
+
 test('parse-version.cjs: CLI --field devolve o campo pedido', () => {
   const r = spawnSync(
     process.execPath,
