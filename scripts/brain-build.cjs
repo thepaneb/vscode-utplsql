@@ -78,19 +78,19 @@ function syncDir(src, dst, relLabel, check, mirror) {
   return { changed, drifted, total: names.length };
 }
 
-const imagesSync = (check) =>
+const imagesSync = (check, repo = REPO, vault = VAULT) =>
   syncDir(
-    path.join(VAULT, '70-Wiki', 'images'),
-    path.join(REPO, 'docs', 'wiki', 'images'),
+    path.join(vault, '70-Wiki', 'images'),
+    path.join(repo, 'docs', 'wiki', 'images'),
     'docs/wiki/images/',
     check,
     true,
   );
 
-const readmeImagesSync = (check) =>
+const readmeImagesSync = (check, repo = REPO, vault = VAULT) =>
   syncDir(
-    path.join(VAULT, '60-README', 'images'),
-    path.join(REPO, 'images'),
+    path.join(vault, '60-README', 'images'),
+    path.join(repo, 'images'),
     'images/',
     check,
     false,
@@ -126,12 +126,12 @@ const PRD_STATUS_LABEL = {
 };
 const PRD_FOLDERS = Object.keys(PRD_STATUS_LABEL);
 
-function published() {
+function published(vault = VAULT) {
   const items = [];
-  for (const note of walk(VAULT)) {
+  for (const note of walk(vault)) {
     const text = fs.readFileSync(note, 'utf8');
     const { fm, body } = parseFrontmatter(text);
-    const rel = path.relative(VAULT, note).split(path.sep).join('/');
+    const rel = path.relative(vault, note).split(path.sep).join('/');
     if (fm.tipo === 'prd') {
       const status = fm.status;
       if (!PRD_FOLDERS.includes(status)) continue;
@@ -188,12 +188,12 @@ function render(item) {
 }
 
 /** Remove PRDs gerados em pastas que não correspondem mais ao status. */
-function prdCleanup(items, check) {
+function prdCleanup(items, check, repo = REPO) {
   const wanted = new Set(items.filter((i) => i.prd).map((i) => i.target));
   let changed = 0;
   let drifted = 0;
   for (const folder of PRD_FOLDERS) {
-    const dir = path.join(REPO, 'docs', 'prd', folder);
+    const dir = path.join(repo, 'docs', 'prd', folder);
     if (!fs.existsSync(dir)) continue;
     for (const f of fs.readdirSync(dir)) {
       if (!f.endsWith('.md')) continue;
@@ -212,12 +212,12 @@ function prdCleanup(items, check) {
   return { changed, drifted };
 }
 
-function run(check) {
-  const items = published();
+function run(check, { repo = REPO, vault = VAULT } = {}) {
+  const items = published(vault);
   let changed = 0;
   let drifted = 0;
   for (const item of items) {
-    const target = path.join(REPO, item.target);
+    const target = path.join(repo, item.target);
     const desired = render(item);
     const current = fs.existsSync(target) ? fs.readFileSync(target, 'utf8') : '';
     if (current === desired) continue;
@@ -231,13 +231,13 @@ function run(check) {
     console.log(`[build] ${item.target} <- ${item.rel}`);
     changed++;
   }
-  const img = imagesSync(check);
+  const img = imagesSync(check, repo, vault);
   changed += img.changed;
   drifted += img.drifted;
-  const rimg = readmeImagesSync(check);
+  const rimg = readmeImagesSync(check, repo, vault);
   changed += rimg.changed;
   drifted += rimg.drifted;
-  const prd = prdCleanup(items, check);
+  const prd = prdCleanup(items, check, repo);
   changed += prd.changed;
   drifted += prd.drifted;
   if (check) {
@@ -272,4 +272,6 @@ module.exports = {
   withStatus,
   stripConexoes,
   syncDir,
+  prdCleanup,
+  run,
 };

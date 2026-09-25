@@ -10,6 +10,8 @@ import {
   __resetMessages,
   __setActiveTextEditor,
   commands,
+  TestItem,
+  Uri,
 } from '../vscode-stub';
 
 // Cobre os handlers de `commands/run.ts` (guardas e despacho) sem banco:
@@ -40,6 +42,13 @@ function setup() {
   const state = new TestStateManager();
   registerRunCommands({ subscriptions: [] } as never, makeDeps(state));
   return state;
+}
+
+function addSuite(state: TestStateManager, id = 'suite:pkg') {
+  const suiteItem = new TestItem(id);
+  (suiteItem as unknown as { children: unknown[] }).children = [];
+  state.setSuiteItem(id, suiteItem as never);
+  return suiteItem;
 }
 
 function editor(fileName: string, text: string, line: number) {
@@ -127,6 +136,42 @@ test('rerunLast: última execução "file" sem suites avisa', async () => {
   assert.deepStrictEqual(__getWarningMessages(), [
     'Nenhuma suite utPLSQL encontrada neste arquivo.',
   ]);
+});
+
+test('runFolder: sem suites avisa', async () => {
+  setup();
+  await commands.__getRegisteredCommand('utplsql.runFolder')?.(Uri.file('/tmp/empty'));
+  assert.deepStrictEqual(__getWarningMessages(), ['Nenhuma suite utPLSQL encontrada nesta pasta.']);
+});
+
+test('runFolderCoverage: sem suites avisa', async () => {
+  setup();
+  await commands.__getRegisteredCommand('utplsql.runFolderCoverage')?.(Uri.file('/tmp/empty'));
+  assert.deepStrictEqual(__getWarningMessages(), ['Nenhuma suite utPLSQL encontrada nesta pasta.']);
+});
+
+test('runLens: alvo de teste sem procedimento é tratado como arquivo', async () => {
+  setup();
+  await commands.__getRegisteredCommand('utplsql.runLens')?.({
+    type: 'test',
+    packageName: 'pkg',
+    uri: 'file:///tmp/pkg.pks',
+  });
+  assert.deepStrictEqual(__getWarningMessages(), [
+    'Nenhuma suite utPLSQL encontrada neste arquivo.',
+  ]);
+});
+
+test('runLens: alvo de teste sem procedimento correspondente retorna em silêncio', async () => {
+  const state = setup();
+  addSuite(state);
+  await commands.__getRegisteredCommand('utplsql.runLens')?.({
+    type: 'test',
+    packageName: 'pkg',
+    procName: 'missing',
+    uri: 'file:///tmp/pkg.pks',
+  });
+  assert.deepStrictEqual(__getWarningMessages(), []);
 });
 
 test('runLens: teste de suite inexistente retorna em silêncio', async () => {

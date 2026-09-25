@@ -18,6 +18,7 @@ import {
 const quickfixCalls: string[] = [];
 let appliedDiags: unknown[] = [];
 let activationDiags: unknown[] = [{ code: 'FAKE' }];
+let installDiags: unknown[] = [];
 
 mock.module('../../quickfix.js', {
   namedExports: {
@@ -28,7 +29,7 @@ mock.module('../../quickfix.js', {
       },
       validateUtplsqlInstall: async () => {
         quickfixCalls.push('validateUtplsqlInstall');
-        return [];
+        return installDiags;
       },
       applyDiagnostics: (diags: unknown[]) => {
         quickfixCalls.push('applyDiagnostics');
@@ -43,11 +44,12 @@ mock.module('../../quickfix.js', {
 
 let rebuildCalled = 0;
 let rebuildShouldThrow = false;
+let rebuildError: unknown = new Error('boom');
 mock.module('../../oracleRunner.js', {
   namedExports: {
     rebuildAnnotationCache: async () => {
       rebuildCalled += 1;
-      if (rebuildShouldThrow) throw new Error('boom');
+      if (rebuildShouldThrow) throw rebuildError;
     },
   },
 });
@@ -73,8 +75,10 @@ async function register() {
   quickfixCalls.length = 0;
   appliedDiags = [];
   activationDiags = [{ code: 'FAKE' }];
+  installDiags = [];
   rebuildCalled = 0;
   rebuildShouldThrow = false;
+  rebuildError = new Error('boom');
   refreshCount = 0;
   const { registerUtilityCommands } = await import('../../commands/utility.js');
   registerUtilityCommands({ subscriptions: [] } as never, makeDeps());
@@ -162,6 +166,37 @@ test('rebuildAnnotations: falha na reconstrução vira mensagem de erro', async 
     await commands.__getRegisteredCommand('utplsql.rebuildAnnotations')?.();
     assert.deepStrictEqual(__getErrorMessages(), ['boom']);
     assert.strictEqual(refreshCount, 0);
+  } finally {
+    if (orig === undefined) delete process.env.UTPLSQL_CONN;
+    else process.env.UTPLSQL_CONN = orig;
+  }
+});
+
+test('validateSetup: combina diagnósticos de ativação e instalação', async () => {
+  await register();
+  activationDiags = [{ code: 'ACTIVATION' }];
+  installDiags = [{ code: 'INSTALL' }, { code: 'INSTALL_2' }];
+  await commands.__getRegisteredCommand('utplsql.validateSetup')?.();
+  assert.strictEqual(appliedDiags.length, 3);
+  assert.deepStrictEqual(appliedDiags, [
+    { code: 'ACTIVATION' },
+    { code: 'INSTALL' },
+    { code: 'INSTALL_2' },
+  ]);
+  assert.deepStrictEqual(__getInformationMessages(), [
+    '3 problema(s) de configuração encontrado(s). Veja o Problems Panel.',
+  ]);
+});
+
+test('rebuildAnnotations: erro não-Error é serializado como texto', async () => {
+  await register();
+  rebuildShouldThrow = true;
+  rebuildError = 'erro-string';
+  const orig = process.env.UTPLSQL_CONN;
+  process.env.UTPLSQL_CONN = 'u/p@//h:1521/s';
+  try {
+    await commands.__getRegisteredCommand('utplsql.rebuildAnnotations')?.();
+    assert.deepStrictEqual(__getErrorMessages(), ['erro-string']);
   } finally {
     if (orig === undefined) delete process.env.UTPLSQL_CONN;
     else process.env.UTPLSQL_CONN = orig;

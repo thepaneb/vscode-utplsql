@@ -49,6 +49,18 @@ test('parseJUnit: status error quando tem tag error', () => {
   assert.match(cases[0].message ?? '', /erro/);
 });
 
+test('parseJUnit: failure tem precedência quando o testcase também tem error', () => {
+  const xml = `<testsuites><testsuite name="s"><testcase classname="s" name="both" time="0.1">
+    <failure message="falha">at "APP.PKG"."PROC", line 7</failure>
+    <error message="erro">at "APP.PKG"."ERR", line 9</error>
+  </testcase></testsuite></testsuites>`;
+  const cases = parseJUnit(xml);
+  assert.strictEqual(cases[0].status, 'failed');
+  assert.match(cases[0].message ?? '', /falha/);
+  assert.strictEqual(cases[0].stackFrames?.[0]?.objectName, 'APP.PKG');
+  assert.strictEqual(cases[0].stackFrames?.[0]?.line, 7);
+});
+
 test('parseJUnit: sem classname usa name do testsuite', () => {
   const xml = `<testsuites><testsuite name="fallback_pkg"><testcase name="t1" time="0.1"/></testsuite></testsuites>`;
   const cases = parseJUnit(xml);
@@ -153,10 +165,12 @@ test('parseStackFrames: error tag tambem tem stack frames', () => {
   assert.strictEqual(cases[0].stackFrames?.length, 1);
 });
 
-test('isUserFrame: filtra frames internos UT_', () => {
+test('isUserFrame: filtra frames internos UT_ e UT3_', () => {
   assert.strictEqual(isUserFrame({ objectName: 'UT_RUNNER', line: 10 }), false);
   assert.strictEqual(isUserFrame({ objectName: 'UT3.UT_SUITE_MANAGER', line: 5 }), false);
   assert.strictEqual(isUserFrame({ objectName: 'UT$HELPER', line: 1 }), false);
+  assert.strictEqual(isUserFrame({ objectName: 'UT3_RUNNER', line: 1 }), false);
+  assert.strictEqual(isUserFrame({ objectName: 'UT3$HELPER', line: 1 }), false);
 });
 
 test('isUserFrame: mantem frames de usuario', () => {
@@ -209,4 +223,9 @@ test('parseStackFrames: frame sem aspas usa grupo unquoted', () => {
   assert.ok(frames);
   assert.strictEqual(frames?.[0]?.objectName, 'APP.CALC');
   assert.strictEqual(frames?.[0]?.line, 42);
+});
+
+test('parseStackFrames: frame unquoted malformado é ignorado', () => {
+  assert.strictEqual(parseStackFrames('at APP-CALC, line 42'), undefined);
+  assert.strictEqual(parseStackFrames('at APP.CALC, line nao-numero'), undefined);
 });

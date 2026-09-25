@@ -30,6 +30,7 @@ let compileResult: { ok: string[]; failed: Array<{ name: string; error: string }
   failed: [],
 };
 let compileThrow = false;
+let compileError: unknown = new Error('compile boom');
 
 mock.module('../../compileForDebug.js', {
   namedExports: {
@@ -37,7 +38,7 @@ mock.module('../../compileForDebug.js', {
       /\.(pks|pkb|sql)$/i.test(p) ? { name: 'OBJ', kinds: ['package'] } : undefined,
     compileForDebug: async (targets: Array<Record<string, unknown>>) => {
       capturedTargets = targets;
-      if (compileThrow) throw new Error('compile boom');
+      if (compileThrow) throw compileError;
       return compileResult;
     },
   },
@@ -45,12 +46,13 @@ mock.module('../../compileForDebug.js', {
 
 const startArgs: string[] = [];
 let startThrow = false;
+let startError: unknown = new Error('debug boom');
 
 mock.module('../../debugger.js', {
   namedExports: {
     startDebugSession: async (pkg: string) => {
       startArgs.push(pkg);
-      if (startThrow) throw new Error('debug boom');
+      if (startThrow) throw startError;
     },
     UtplsqlDebugAdapterDescriptorFactory: class {
       createDebugAdapterDescriptor() {}
@@ -82,8 +84,10 @@ async function register() {
   capturedTargets = [];
   compileResult = { ok: ['OBJ'], failed: [] };
   compileThrow = false;
+  compileError = new Error('compile boom');
   startArgs.length = 0;
   startThrow = false;
+  startError = new Error('debug boom');
   const { registerDebug } = await import('../../commands/debug.js');
   registerDebug({ subscriptions: [] } as never);
 }
@@ -248,4 +252,59 @@ test('compileForDebug: modo schema sem workspace folder não define owner', asyn
     Uri.file('/tmp/proj/db/APP/ut_x.pks'),
   );
   assert.strictEqual(capturedTargets[0].owner, undefined);
+});
+
+test('compileForDebug: falha no stat da URI retorna nenhum alvo', async () => {
+  await register();
+  await commands.__getRegisteredCommand('utplsql.compileForDebug')?.(
+    Uri.file('/tmp/proj/missing.pks'),
+  );
+  assert.strictEqual(capturedTargets.length, 0);
+  assert.deepStrictEqual(__getInformationMessages(), [
+    'Nenhum objeto PL/SQL para compilar para debug nesta seleção.',
+  ]);
+});
+
+test('compileForDebug: usa o documento do editor ativo quando não há URI', async () => {
+  await register();
+  __setActiveTextEditor(editor('/tmp/ut_editor.pks'));
+  await commands.__getRegisteredCommand('utplsql.compileForDebug')?.();
+  assert.strictEqual(capturedTargets.length, 1);
+  assert.strictEqual(capturedTargets[0].name, 'OBJ');
+  assert.deepStrictEqual(__getInformationMessages(), ['Compilado para debug: OBJ']);
+});
+
+test('compileForDebug: diretório ignora symlink e arquivos sem extensão', async () => {
+  await register();
+  __setMockDirectoryEntries('/tmp/proj/mixed', [
+    ['ut_ok.pks', FileType.File],
+    ['ut_link.pks', FileType.SymbolicLink],
+    ['README', FileType.File],
+    ['.pks', FileType.File],
+  ]);
+  await commands.__getRegisteredCommand('utplsql.compileForDebug')?.(Uri.file('/tmp/proj/mixed'));
+  assert.strictEqual(capturedTargets.length, 1);
+  assert.strictEqual(capturedTargets[0].name, 'OBJ');
+});
+
+test('debugTest: erro string vira mensagem de erro', async () => {
+  await register();
+  __setActiveTextEditor(editor('/tmp/ut_math.pks'));
+  startThrow = true;
+  startError = 'erro-debug-string';
+  await commands.__getRegisteredCommand('utplsql.debugTest')?.();
+  assert.deepStrictEqual(__getErrorMessages(), ['erro-debug-string']);
+});
+
+test('compileForDebug: erro string vira mensagem de erro', async () => {
+  await register();
+  __setMockFile('**/*', '/tmp/proj/ut_x.pks', '');
+  compileThrow = true;
+  compileError = 'erro-compile-string';
+  await commands.__getRegisteredCommand('utplsql.compileForDebug')?.(
+    Uri.file('/tmp/proj/ut_x.pks'),
+  );
+  assert.deepStrictEqual(__getErrorMessages(), [
+    'Falha ao compilar para debug: erro-compile-string',
+  ]);
 });

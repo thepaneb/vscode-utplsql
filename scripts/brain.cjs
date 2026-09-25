@@ -15,8 +15,9 @@ const fs = require('fs');
 const path = require('path');
 const { execFileSync } = require('child_process');
 
-const REPO = path.resolve(__dirname, '..');
-const VAULT = path.join(REPO, 'docs', 'brain');
+const DEFAULT_REPO = path.resolve(__dirname, '..');
+let REPO = DEFAULT_REPO;
+let VAULT = path.join(REPO, 'docs', 'brain');
 
 const startMarker = (name) => `<!-- brain:auto:start:${name} -->`;
 const END_MARKER = '<!-- brain:auto:end -->';
@@ -26,6 +27,15 @@ const MDLINK_RE = /(?<!!)\[[^\]]+\]\(([^)]+)\)/g;
 const CODE_FENCE_RE = /```[\s\S]*?```/g;
 const INLINE_CODE_RE = /`[^`]*`/g;
 const FUNC_ROW_RE = /^\|\s*(\d+)\s*\|\s*\[([^\]]+)\]\(([^)]+)\)\s*\|\s*(.*?)\s*\|\s*$/;
+
+/** Redefine os caminhos usados pelos helpers; usado principalmente em fixtures de teste. */
+function configure(options = {}) {
+  REPO = options.repo ? path.resolve(options.repo) : DEFAULT_REPO;
+  VAULT = options.vault
+    ? path.resolve(options.vault)
+    : path.join(REPO, 'docs', 'brain');
+  resetCaches();
+}
 
 // ── helpers ────────────────────────────────────────────────────────────
 
@@ -57,6 +67,7 @@ function gitDate(relpath) {
   try {
     return execFileSync('git', ['-C', REPO, 'log', '-1', '--format=%cs', '--', relpath], {
       encoding: 'utf8',
+      stdio: ['ignore', 'pipe', 'ignore'],
     }).trim() || null;
   } catch {
     return null;
@@ -135,11 +146,6 @@ function genFuncionalIndex(note) {
   }
   if (!rows.length) return '_Nenhum documento funcional encontrado._';
   return ['| # | Documento | Descrição |', '|---|---|---|', ...rows].join('\n');
-}
-
-function countDir(name) {
-  const d = path.join(REPO, 'docs', 'prd', name);
-  return fs.existsSync(d) ? fs.readdirSync(d).filter((f) => f.endsWith('.md')).length : 0;
 }
 
 // ── PRDs (fonte: frontmatter das notas do vault) ────────────────────────
@@ -491,6 +497,15 @@ function reverseIndex() {
 }
 
 let REQ = null;
+function resetCaches() {
+  PRD_NOTES = null;
+  CODEMAP = null;
+  ID_MAP = null;
+  BASE_ID = null;
+  REVERSE = null;
+  REQ = null;
+}
+
 /** Índice reverso: `PRD-NN/RFn` ou `PRD-NN/RNFn` → basenames que o implementam. */
 function requisitosIndex() {
   if (REQ) return REQ;
@@ -932,29 +947,45 @@ function check() {
 }
 
 module.exports = {
+  configure,
   sync,
   check,
   parseFm,
   yamlBlock,
+  vaultNotes,
+  genRootDocs,
+  genReadmeVariants,
+  genWikiIndex,
+  genLinkedinIndex,
+  genFuncionalIndex,
   prdNotes,
   genPrdRoadmap,
   genPrdEstrutura,
+  genPrdSummary,
+  genStack,
+  genDeps,
   genConexoes,
   genMocIndex,
   pipelineNotes,
   localeNotes,
   buildCodeNoteSpecs,
   noteNames,
+  generateNotes,
+  runCli,
 };
 
-if (require.main === module) {
+function runCli(argv = process.argv.slice(2)) {
   if (!fs.existsSync(VAULT)) {
     console.log('Vault docs/brain ausente — nada a fazer.');
-    process.exit(0);
+    return 0;
   }
-  const cmd = process.argv[2] || 'check';
-  if (cmd === 'sync') process.exit(sync());
-  if (cmd === 'check') process.exit(check());
+  const cmd = argv[0] || 'check';
+  if (cmd === 'sync') return sync();
+  if (cmd === 'check') return check();
   console.log('Uso: node scripts/brain.cjs [check|sync]');
-  process.exit(2);
+  return 2;
+}
+
+if (require.main === module) {
+  process.exit(runCli());
 }

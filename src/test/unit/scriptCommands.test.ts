@@ -57,6 +57,44 @@ test('runScriptFile: sem uri nem editor avisa', async () => {
   assert.deepStrictEqual(__getWarningMessages(), ['Nenhum editor ativo para executar o script.']);
 });
 
+test('runScriptFolder: sem uri nem editor avisa', async () => {
+  setup();
+  await commands.__getRegisteredCommand('utplsql.runScriptFolder')?.();
+  assert.deepStrictEqual(__getWarningMessages(), ['Nenhum editor ativo para executar o script.']);
+});
+
+test('runScript: seleção de perfil cancelada não executa', async () => {
+  setup();
+  const profile = { id: 'p1', name: 'DEV', connection: 'u@//h:1521/s' };
+  __setConfigValue('profiles', [profile]);
+  __setConfigValue('activeProfile', 'p1');
+  __setQuickPickResult(undefined);
+  __setActiveTextEditor({
+    document: {
+      fileName: '/tmp/a.sql',
+      uri: { fsPath: '/tmp/a.sql', path: '/tmp/a.sql', scheme: 'file' },
+      getText: () => 'select 1;',
+    },
+  } as never);
+  await commands.__getRegisteredCommand('utplsql.runScript')?.();
+  assert.deepStrictEqual(__getWarningMessages(), []);
+  assert.deepStrictEqual(__getInformationMessages(), []);
+  assert.deepStrictEqual(__getOutputChannelLines('utPLSQL Script'), []);
+});
+
+test('runScriptFile/Folder: seleção de perfil cancelada não executa', async () => {
+  setup();
+  const profile = { id: 'p1', name: 'DEV', connection: 'u@//h:1521/s' };
+  __setConfigValue('profiles', [profile]);
+  __setConfigValue('activeProfile', 'p1');
+  __setQuickPickResult(undefined);
+  __setMockDirectoryEntries('/tmp/scripts', [['a.sql', FileType.File]]);
+  await commands.__getRegisteredCommand('utplsql.runScriptFile')?.(Uri.file('/tmp/a.sql'));
+  await commands.__getRegisteredCommand('utplsql.runScriptFolder')?.(Uri.file('/tmp/scripts'));
+  assert.deepStrictEqual(__getWarningMessages(), []);
+  assert.deepStrictEqual(__getInformationMessages(), []);
+});
+
 test('runScriptFolder: alvo que não é pasta avisa', async () => {
   setup();
   // O stat do stub reconhece como arquivo o path presente em _mockFileContents.

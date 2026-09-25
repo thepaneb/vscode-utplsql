@@ -3,6 +3,7 @@ import assert from 'node:assert';
 import { test } from 'node:test';
 import type * as vscode from 'vscode';
 import { t } from '../../i18n';
+import { closeOraclePool } from '../../oracleRunner';
 import {
   adaptOracleConn,
   connectOracle,
@@ -19,6 +20,14 @@ import {
   stripSqlTerminator,
   summarizeStatement,
 } from '../../scriptRunner';
+
+// `import('oracledb')` returns the CommonJS module through its interop default.
+// Keep the actual module object here so the connection tests can replace only
+// its pool/raw acquisition methods, without reaching a real database.
+const oracledb = require('oracledb') as {
+  createPool: (...args: unknown[]) => Promise<unknown>;
+  getConnection: (...args: unknown[]) => Promise<unknown>;
+};
 
 const pt = (key: string, params?: Record<string, string | number>): string =>
   t('pt-br', key, params);
@@ -245,6 +254,22 @@ test('filterScriptFiles: padrão sem chaves usa a extensão única', () => {
   assert.deepStrictEqual(filterScriptFiles(['a.sql', 'b.pks'], '**/*.sql'), ['a.sql']);
 });
 
+test('filterScriptFiles: padrões sem extensão útil usam a lista suportada', () => {
+  assert.deepStrictEqual(filterScriptFiles(['a.sql', 'b.pks', 'c.txt'], '**/*'), [
+    'a.sql',
+    'b.pks',
+  ]);
+  assert.deepStrictEqual(filterScriptFiles(['a.sql', 'b.pks'], '{,}'), ['a.sql', 'b.pks']);
+});
+
+test('filterScriptFiles: casing equivalente tem desempate determinístico', () => {
+  assert.deepStrictEqual(filterScriptFiles(['z.SQL', 'a.sql', 'A.SQL', 'b.pks'], '**/*.sql'), [
+    'A.SQL',
+    'a.sql',
+    'z.SQL',
+  ]);
+});
+
 // ─── executeScript ───────────────────────────────────────────────────────────
 
 function fakeDb(
@@ -344,6 +369,22 @@ test('executeScript: senha nunca é logada', async () => {
   assert.ok(joined.includes('user@//host:1521/svc'));
 });
 
+test('executeScript: erro textual de statement também mascara a senha', async () => {
+  const db = fakeDb();
+  db.execute = async () => {
+    throw 'ORA-01017 user/secret@//host:1521/svc';
+  };
+  const { lines, output } = collector();
+  await executeScript(() => Promise.resolve(db), {
+    connection: 'user/secret@//host:1521/svc',
+    statements: [stmt('SELECT 1;', 0)],
+    output,
+  });
+  const joined = lines.join('\n');
+  assert.ok(!joined.includes('secret'));
+  assert.ok(joined.includes('user@//host:1521/svc'));
+});
+
 test('executeScript: falha de conexão retorna zerado', async () => {
   const { lines, output } = collector();
   const result = await executeScript(() => Promise.reject(new Error('ECONNREFUSED')), {
@@ -353,6 +394,22 @@ test('executeScript: falha de conexão retorna zerado', async () => {
   });
   assert.deepStrictEqual(result, { executed: 0, ok: 0, failed: 0, cancelled: false });
   assert.ok(lines.some((l) => l.includes('ECONNREFUSED')));
+});
+
+test('executeScript: erro textual de conexão também mascara a senha', async () => {
+  const { lines, output } = collector();
+  const result = await executeScript(
+    () => Promise.reject('ORA-01017 user/secret@//host:1521/svc'),
+    {
+      connection: 'user/secret@//host:1521/svc',
+      statements: [stmt('SELECT 1;', 0)],
+      output,
+    },
+  );
+  assert.deepStrictEqual(result, { executed: 0, ok: 0, failed: 0, cancelled: false });
+  const joined = lines.join('\n');
+  assert.ok(!joined.includes('secret'));
+  assert.ok(joined.includes('user@//host:1521/svc'));
 });
 
 test('executeScript: cancelamento chama break e marca cancelled', async () => {
@@ -408,6 +465,20 @@ test('executeScript: falha no DRAIN do dbmsOutput não interrompe', async () => 
   assert.deepStrictEqual([result.ok, result.failed], [1, 0]);
 });
 
+test('executeScript: DBMS_OUTPUT ausente é tratado como opcional', async () => {
+  const db: ScriptDb = {
+    execute: async () => ({}),
+    close: async () => {},
+  };
+  const result = await executeScript(() => Promise.resolve(db), {
+    connection: 'u/p@//h:1521/s',
+    statements: [stmt('SELECT 1;', 0)],
+    output: { appendLine: () => {} },
+    dbmsOutput: true,
+  });
+  assert.deepStrictEqual(result, { executed: 1, ok: 1, failed: 0, cancelled: false });
+});
+
 test('connectOracle: string inválida rejeita sem conectar', async () => {
   await assert.rejects(() => connectOracle('formato-invalido'), /Formato de conexão inválido/);
 });
@@ -441,6 +512,68 @@ function fakeConn(dbmsLines: string[] = []): ScriptConn & { calls: unknown[][]; 
 
 const fakeCodes = { BIND_OUT: 3001, STRING: 'STRING', NUMBER: 'NUMBER' };
 
+test('connectOracle: usa pool e aplica timeout padrão', async () => {
+  await closeOraclePool();
+  const originalCreatePool = oracledb.createPool;
+  const originalGetConnection = oracledb.getConnection;
+  const conn = fakeConn();
+  let createPoolCalls = 0;
+  let getConnectionCalls = 0;
+  const pool = {
+    getConnection: async () => {
+      getConnectionCalls += 1;
+      return conn;
+    },
+    close: async () => {},
+  };
+  oracledb.createPool = async () => {
+    createPoolCalls += 1;
+    return pool;
+  };
+  oracledb.getConnection = async () => {
+    getConnectionCalls += 1;
+    return conn;
+  };
+  try {
+    const db = await connectOracle('u/p@//h:1521/s');
+    assert.strictEqual(createPoolCalls, 1);
+    assert.strictEqual(getConnectionCalls, 1);
+    assert.strictEqual(conn.callTimeout, 300_000);
+    await db.close();
+  } finally {
+    oracledb.createPool = originalCreatePool;
+    oracledb.getConnection = originalGetConnection;
+    await closeOraclePool();
+  }
+});
+
+test('connectOracle: usa raw quando o pool falha e aplica timeout explícito', async () => {
+  await closeOraclePool();
+  const originalCreatePool = oracledb.createPool;
+  const originalGetConnection = oracledb.getConnection;
+  const conn = fakeConn();
+  const rawArgs: unknown[][] = [];
+  oracledb.createPool = async () => {
+    throw new Error('pool indisponível');
+  };
+  oracledb.getConnection = async (...args: unknown[]) => {
+    rawArgs.push(args);
+    return conn;
+  };
+  try {
+    const db = await connectOracle('u/p@//h:1521/s', { timeoutSeconds: 42 });
+    assert.deepStrictEqual(rawArgs, [
+      [{ user: 'u', password: 'p', connectionString: '//h:1521/s' }],
+    ]);
+    assert.strictEqual(conn.callTimeout, 42_000);
+    await db.close();
+  } finally {
+    oracledb.createPool = originalCreatePool;
+    oracledb.getConnection = originalGetConnection;
+    await closeOraclePool();
+  }
+});
+
 test('createScriptDb: aplica callTimeout e executa com autoCommit', async () => {
   const conn = fakeConn();
   const db = createScriptDb(conn, fakeCodes, 60);
@@ -458,6 +591,17 @@ test('createScriptDb: drena DBMS_OUTPUT até status != 0', async () => {
   await db.break?.();
   assert.strictEqual(conn.broken, true);
   await db.close();
+});
+
+test('createScriptDb: GET_LINE sem outBinds encerra o dreno', async () => {
+  const conn: ScriptConn = {
+    callTimeout: 0,
+    execute: async () => ({}),
+    break: async () => {},
+    close: async () => {},
+  };
+  const db = createScriptDb(conn, fakeCodes, 300);
+  assert.deepStrictEqual(await db.drainDbmsOutput?.(), []);
 });
 
 test('adaptOracleConn: repassa chamadas e callTimeout à conexão real', async () => {

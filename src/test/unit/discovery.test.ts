@@ -1197,3 +1197,156 @@ test('discoverDbSuites: erro na descoberta via banco retorna vazio', async () =>
   assert.deepStrictEqual(result, []);
   await closeOraclePool();
 });
+
+test('discoverSchemaFromConn: aceita rows objeto com chaves minúsculas', async () => {
+  const conn = {
+    execute: async (sql: string) => {
+      if (/all_objects/i.test(sql)) return { rows: [{ object_name: 'APP_ORDERS' }] };
+      return { rows: SUITE_LINES.map((text) => ({ text })) };
+    },
+  };
+  const suites = await discoverSchemaFromConn(conn, 'hr', FOLDER);
+  assert.strictEqual(suites.length, 1);
+  assert.strictEqual(suites[0].packageName, 'app_orders');
+  assert.strictEqual(suites[0].tests.length, 2);
+});
+
+test('discovery: resultados sem rows são tratados como vazios', async () => {
+  const conn = {
+    execute: async (sql: string) => {
+      if (/all_objects/i.test(sql)) return { rows: [['APP_ORDERS']] };
+      return {};
+    },
+  };
+  assert.deepStrictEqual(await discoverSchemaFromConn(conn, 'hr', FOLDER), []);
+  assert.deepStrictEqual(
+    await discoverSchemaFromConn({ execute: async () => ({}) }, 'hr', FOLDER),
+    [],
+  );
+  assert.deepStrictEqual(await getSuitesInfo({ execute: async () => ({}) }, 'hr'), []);
+});
+
+test('getSuitesInfo: normaliza objeto lowercase, contexto, linha vazia e null', async () => {
+  const rows = await getSuitesInfo(
+    {
+      execute: async () => ({
+        rows: [
+          {
+            object_owner: 'hr',
+            object_name: 'pkg',
+            item_name: 'pkg',
+            item_description: null,
+            item_type: 'UT_SUITE',
+            item_line_no: '',
+            path: null,
+            disabled_flag: '0',
+            disabled_reason: null,
+            tags: null,
+          },
+          {
+            object_owner: 'hr',
+            object_name: 'pkg',
+            item_name: 'test_one',
+            item_description: null,
+            item_type: 'UT_TEST',
+            item_line_no: null,
+            path: null,
+            disabled_flag: '0',
+            disabled_reason: null,
+            tags: null,
+          },
+          {
+            object_owner: 'hr',
+            object_name: 'pkg',
+            item_name: 'context',
+            item_description: 'ctx',
+            item_type: 'UT_SUITE_CONTEXT',
+            item_line_no: 2,
+            path: null,
+            disabled_flag: '0',
+            disabled_reason: null,
+            tags: '',
+          },
+        ],
+      }),
+    },
+    'hr',
+  );
+  assert.strictEqual(rows.length, 3);
+  assert.strictEqual(rows[0].owner, 'HR');
+  assert.strictEqual(rows[0].description, null);
+  assert.strictEqual(rows[0].line, 0);
+  assert.strictEqual(rows[1].line, 0);
+  assert.strictEqual(rows[2].itemType, 'context');
+
+  const suites = mapSuitesInfoToSuiteFiles(rows, FOLDER);
+  assert.strictEqual(suites.length, 1);
+  assert.strictEqual(suites[0].suiteDescription, '');
+  assert.strictEqual(suites[0].suiteLine, 0);
+  assert.strictEqual(suites[0].tests[0].description, '');
+  assert.strictEqual(suites[0].tests[0].line, 0);
+});
+
+test('mapSuitesInfoToSuiteFiles: pacote só com teste usa descrição e linha fallback', () => {
+  const suites = mapSuitesInfoToSuiteFiles([row('PKG', 'test_one', 'test', 'ignored', 1)], FOLDER);
+  assert.strictEqual(suites.length, 1);
+  assert.strictEqual(suites[0].suiteDescription, '');
+  assert.strictEqual(suites[0].suiteLine, 0);
+});
+
+test('mergeSuiteLists: descrição vazia do banco preserva a do arquivo', () => {
+  const fileSuite = {
+    uri: { fsPath: '/ws/ut_app.pks', scheme: 'file' },
+    packageName: 'UT_APP',
+    suiteDescription: 'Suite do arquivo',
+    tests: [{ procName: 'test_one', description: 'Teste do arquivo', line: 5 }],
+    folder: FOLDER,
+    suiteLine: 1,
+  } as unknown as SuiteFile;
+  const dbSuite = {
+    uri: { fsPath: '' },
+    packageName: 'ut_app',
+    suiteDescription: '',
+    tests: [{ procName: 'test_one', description: '', line: 9 }],
+    folder: FOLDER,
+    suiteLine: 2,
+  } as unknown as SuiteFile;
+
+  const merged = mergeSuiteLists([fileSuite], [dbSuite]);
+  assert.strictEqual(merged[0].suiteDescription, 'Suite do arquivo');
+  assert.strictEqual(merged[0].tests[0].description, 'Teste do arquivo');
+});
+
+test('discoverDbSuites: sem folders não carrega o driver', async () => {
+  let loaded = false;
+  const result = await discoverDbSuites('u/p@//h:1521/s', 'APP', [], async () => {
+    loaded = true;
+    return {} as never;
+  });
+  assert.deepStrictEqual(result, []);
+  assert.strictEqual(loaded, false);
+});
+
+test('discoverWorkspace: usa charset do perfil ativo ao decodificar bytes', async () => {
+  const bytes = Buffer.concat([
+    Buffer.from('CREATE OR REPLACE PACKAGE legacy IS\n  --%suite(Desc ', 'ascii'),
+    Buffer.from([0xe7]),
+    Buffer.from([0xe3]),
+    Buffer.from(')\n  --%test(Teste)\n  PROCEDURE teste;\nEND;', 'ascii'),
+  ]);
+  __setMockFile('*.pks', '/root/legacy.pks', bytes as unknown as string);
+  __setConfigValue('profiles', [
+    { id: 'legacy', name: 'Legacy', connection: 'u@//h:1521/s', charset: 'win1252' },
+  ]);
+  __setConfigValue('activeProfile', 'legacy');
+  try {
+    const folder = { uri: { fsPath: '/root' }, name: 'root', index: 0 } as any;
+    const suites = await discoverWorkspace(['*.pks'], [folder]);
+    assert.strictEqual(suites.length, 1);
+    assert.strictEqual(suites[0].suiteDescription, 'Desc çã');
+    assert.strictEqual(suites[0].tests[0].description, 'Teste');
+  } finally {
+    __resetMockFiles();
+    __resetConfigValues();
+  }
+});

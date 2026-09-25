@@ -12,8 +12,13 @@ import {
 // Cobre `compilationDiagnostics.ts` com oracleRunner mockado (sem banco):
 // o mapeamento ALL_ERRORS → Uri da suite e as guardas de setting/conexão.
 
-let errors: Array<{ name: string; type: string; line: number; position: number; text: string }> =
-  [];
+let errors: Array<{
+  name: string;
+  type: string;
+  line?: number;
+  position: number;
+  text: string;
+}> = [];
 let throwInWithConnection = false;
 
 mock.module('../../oracleRunner.js', {
@@ -156,6 +161,90 @@ test('clearCompilationDiagnostics: limpa a collection', async () => {
     await refreshCompilationDiagnostics(makeState());
     assert.ok(__getLastDiagnosticCollection()?.get({ toString: () => '/tmp/test_pkg.pks' }));
     clearCompilationDiagnostics();
+    assert.strictEqual(
+      __getLastDiagnosticCollection()?.get({ toString: () => '/tmp/test_pkg.pks' }),
+      undefined,
+    );
+  });
+});
+
+test('refresh: lista vazia limpa diagnósticos anteriores', async () => {
+  await withConn(async () => {
+    const { registerCompilationDiagnostics, refreshCompilationDiagnostics } = await import(
+      '../../compilationDiagnostics.js'
+    );
+    registerCompilationDiagnostics({ subscriptions: [] } as never);
+    errors = [{ name: 'TEST_PKG', type: 'PLS-00103', line: 2, position: 0, text: 'antes' }];
+    await refreshCompilationDiagnostics(makeState());
+    assert.ok(__getLastDiagnosticCollection()?.get({ toString: () => '/tmp/test_pkg.pks' }));
+
+    errors = [];
+    await refreshCompilationDiagnostics(makeState());
+    assert.strictEqual(
+      __getLastDiagnosticCollection()?.get({ toString: () => '/tmp/test_pkg.pks' }),
+      undefined,
+    );
+  });
+});
+
+test('refresh: conexão com schema inválido não publica diagnóstico', async () => {
+  await withConn(async () => {
+    const { registerCompilationDiagnostics, refreshCompilationDiagnostics } = await import(
+      '../../compilationDiagnostics.js'
+    );
+    registerCompilationDiagnostics({ subscriptions: [] } as never);
+    process.env.UTPLSQL_CONN = 'formato-invalido';
+    errors = [{ name: 'TEST_PKG', type: 'PLS-00103', line: 1, position: 0, text: 'x' }];
+    await refreshCompilationDiagnostics(makeState());
+    assert.strictEqual(
+      __getLastDiagnosticCollection()?.get({ toString: () => '/tmp/test_pkg.pks' }),
+      undefined,
+    );
+  });
+});
+
+test('refresh: publica vários errors e normaliza line 0/ausente para zero', async () => {
+  await withConn(async () => {
+    const { registerCompilationDiagnostics, refreshCompilationDiagnostics } = await import(
+      '../../compilationDiagnostics.js'
+    );
+    registerCompilationDiagnostics({ subscriptions: [] } as never);
+    errors = [
+      { name: 'test_pkg', type: 'PLS-00103', line: 0, position: 0, text: 'zero' },
+      {
+        name: 'TEST_PKG',
+        type: 'PLS-00104',
+        line: undefined,
+        position: 0,
+        text: 'ausente',
+      },
+    ];
+    await refreshCompilationDiagnostics(makeState());
+    const diags = __getLastDiagnosticCollection()?.get({ toString: () => '/tmp/test_pkg.pks' });
+    assert.strictEqual(diags?.length, 2);
+    assert.deepStrictEqual(
+      diags?.map((d) => d.range.startLine),
+      [0, 0],
+    );
+    assert.deepStrictEqual(
+      diags?.map((d) => d.message),
+      ['PLS-00103: zero', 'PLS-00104: ausente'],
+    );
+  });
+});
+
+test('refresh: metadata de suite sem URI é ignorada', async () => {
+  await withConn(async () => {
+    const { registerCompilationDiagnostics, refreshCompilationDiagnostics } = await import(
+      '../../compilationDiagnostics.js'
+    );
+    registerCompilationDiagnostics({ subscriptions: [] } as never);
+    const state = new TestStateManager();
+    const item = { id: 'suite:no_uri', children: [] } as never;
+    state.setMeta(item, { kind: 'suite', packageName: 'NO_URI' } as never);
+    state.cachedItems.push(item);
+    errors = [{ name: 'NO_URI', type: 'PLS-00103', line: 1, position: 0, text: 'x' }];
+    await refreshCompilationDiagnostics(state);
     assert.strictEqual(
       __getLastDiagnosticCollection()?.get({ toString: () => '/tmp/test_pkg.pks' }),
       undefined,

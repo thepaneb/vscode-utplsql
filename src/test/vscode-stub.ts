@@ -345,13 +345,65 @@ export interface CancellationToken {
   onCancellationRequested(listener: () => void): { dispose: () => void };
 }
 
+const _cancellationTokenSources: CancellationTokenSource[] = [];
+
 export class CancellationTokenSource {
-  token: CancellationToken = {
-    isCancellationRequested: false,
-    onCancellationRequested: () => ({ dispose: () => {} }),
-  };
-  cancel(): void {}
-  dispose(): void {}
+  private listeners = new Set<() => void>();
+  private cancelled = false;
+  private disposed = false;
+  private cancellations = 0;
+  token: CancellationToken;
+
+  constructor() {
+    const source = this;
+    this.token = {
+      get isCancellationRequested() {
+        return source.cancelled;
+      },
+      onCancellationRequested(listener: () => void) {
+        if (source.cancelled) {
+          listener();
+          return { dispose: () => {} };
+        }
+        source.listeners.add(listener);
+        return {
+          dispose: () => {
+            source.listeners.delete(listener);
+          },
+        };
+      },
+    };
+    _cancellationTokenSources.push(this);
+  }
+
+  get isDisposed(): boolean {
+    return this.disposed;
+  }
+
+  get cancelCount(): number {
+    return this.cancellations;
+  }
+
+  cancel(): void {
+    if (this.cancelled) return;
+    this.cancelled = true;
+    this.cancellations += 1;
+    for (const listener of [...this.listeners]) listener();
+    this.listeners.clear();
+  }
+
+  dispose(): void {
+    this.disposed = true;
+    this.listeners.clear();
+  }
+}
+
+export function __getCancellationTokenSources(): CancellationTokenSource[] {
+  return [..._cancellationTokenSources];
+}
+
+export function __resetCancellationTokenSources(): void {
+  _cancellationTokenSources.length = 0;
 }
 
 export class TestRunRequest {
@@ -406,6 +458,17 @@ export class CodeAction {
   }
 }
 
+const _progressReports: unknown[] = [];
+let _progressSource: CancellationTokenSource | undefined;
+
+export function __getProgressReports(): unknown[] {
+  return [..._progressReports];
+}
+
+export function __cancelProgress(): void {
+  _progressSource?.cancel();
+}
+
 export namespace window {
   export function showInputBox(_options?: {
     title?: string;
@@ -442,11 +505,17 @@ export namespace window {
       token: CancellationToken,
     ) => Thenable<T> | T,
   ): Thenable<T> {
+    const progressSource = new CancellationTokenSource();
+    _progressSource = progressSource;
     return Promise.resolve(
-      task({ report: () => {} }, {
-        isCancellationRequested: false,
-        onCancellationRequested: () => ({ dispose: () => {} }),
-      } as CancellationToken),
+      task(
+        {
+          report: (value: unknown) => {
+            _progressReports.push(value);
+          },
+        },
+        progressSource.token,
+      ),
     );
   }
   export function createOutputChannel(name: string) {
