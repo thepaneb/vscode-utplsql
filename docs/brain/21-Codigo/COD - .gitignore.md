@@ -12,6 +12,10 @@ tags: [codigo]
 
 Implementa [`.gitignore`](../../../.gitignore) — **gerado** por `npm run brain:sync`.
 
+## Testes que cobrem
+
+_nenhum_
+
 ## Onde aparece
 
 ```dataview

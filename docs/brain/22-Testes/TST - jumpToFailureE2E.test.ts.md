@@ -12,6 +12,10 @@ tags: [teste]
 
 Valida [`src/test/integration/jumpToFailureE2E.test.ts`](../../../src/test/integration/jumpToFailureE2E.test.ts) — **gerado** por `npm run brain:sync`.
 
+## Código exercitado
+
+_nenhum_
+
 ## Onde aparece
 
 ```dataview

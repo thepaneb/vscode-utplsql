@@ -12,6 +12,10 @@ tags: [teste]
 
 Valida [`src/test/unit/runner.test.ts`](../../../src/test/unit/runner.test.ts) — **gerado** por `npm run brain:sync`.
 
+## Código exercitado
+
+- [[COD - runner.ts]]
+
 ## Onde aparece
 
 ```dataview

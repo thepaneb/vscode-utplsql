@@ -12,6 +12,10 @@ tags: [teste]
 
 Valida [`src/test/unit/quickfix.test.ts`](../../../src/test/unit/quickfix.test.ts) — **gerado** por `npm run brain:sync`.
 
+## Código exercitado
+
+- [[COD - quickfix.ts]]
+
 ## Onde aparece
 
 ```dataview

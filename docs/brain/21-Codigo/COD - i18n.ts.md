@@ -12,6 +12,10 @@ tags: [codigo]
 
 Implementa [`src/i18n.ts`](../../../src/i18n.ts) — **gerado** por `npm run brain:sync`.
 
+## Testes que cobrem
+
+- [[TST - i18n.test.ts]]
+
 ## Onde aparece
 
 ```dataview

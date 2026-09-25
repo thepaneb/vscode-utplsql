@@ -12,6 +12,10 @@ tags: [teste]
 
 Valida [`src/test/unit/oracleRunner.test.ts`](../../../src/test/unit/oracleRunner.test.ts) — **gerado** por `npm run brain:sync`.
 
+## Código exercitado
+
+- [[COD - oracleRunner.ts]]
+
 ## Onde aparece
 
 ```dataview

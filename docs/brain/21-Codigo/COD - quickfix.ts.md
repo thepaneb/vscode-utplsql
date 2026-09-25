@@ -12,6 +12,10 @@ tags: [codigo]
 
 Implementa [`src/quickfix.ts`](../../../src/quickfix.ts) — **gerado** por `npm run brain:sync`.
 
+## Testes que cobrem
+
+- [[TST - quickfix.test.ts]]
+
 ## Onde aparece
 
 ```dataview

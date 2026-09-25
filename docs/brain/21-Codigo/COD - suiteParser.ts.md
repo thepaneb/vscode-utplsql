@@ -12,6 +12,10 @@ tags: [codigo]
 
 Implementa [`src/suiteParser.ts`](../../../src/suiteParser.ts) — **gerado** por `npm run brain:sync`.
 
+## Testes que cobrem
+
+- [[TST - suiteParser.test.ts]]
+
 ## Onde aparece
 
 ```dataview

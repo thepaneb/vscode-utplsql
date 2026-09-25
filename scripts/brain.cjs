@@ -385,11 +385,40 @@ const codeSlug = (name) =>
 /**
  * Especificações (puras) das notas de código/teste a partir das referências.
  * `refs = { impl: string[], tests: string[] }`.
+ *
+ * Além do arquivo, cada nota COD/TST liga o par código↔teste de forma
+ * ESTÁTICA (o bloco Dataview depende do plugin): a nota de código lista os
+ * testes que cobrem o arquivo e a de teste lista o código exercitado, por
+ * casamento de basename (`src/foo.ts` ↔ `src/test/<...>/foo.test.ts`) e pela
+ * nota que declara os dois lados.
  */
 function buildCodeNoteSpecs(refs) {
   const specs = [];
+  const names = new Map([
+    ...noteNames(refs.impl, 'COD'),
+    ...noteNames(refs.tests, 'TST'),
+  ]);
+  const implNames = noteNames(refs.impl, 'COD');
+  const testNames = noteNames(refs.tests, 'TST');
+
+  // Colisões de basename são resolvidas pelo diretório pai (noteNames). A chave
+  // do par é o nome da nota sem prefixo: `a-run.ts` ↔ `a-run.test.ts`.
+  const codKey = (p) => (names.get(p) ?? '').slice('COD - '.length);
+  const tstKey = (p) => (names.get(p) ?? '').slice('TST - '.length);
+  const testsByKey = new Map();
+  for (const t of refs.tests) {
+    const k = tstKey(t).replace(/\.test\./, '.');
+    if (!testsByKey.has(k)) testsByKey.set(k, []);
+    testsByKey.get(k).push(t);
+  }
+  const implByKey = new Map();
+  for (const i of refs.impl) {
+    const k = codKey(i);
+    if (!implByKey.has(k)) implByKey.set(k, []);
+    implByKey.get(k).push(i);
+  }
+
   const mk = (paths, dir, prefix, tipo, verbo) => {
-    const names = noteNames(paths, prefix);
     for (const p of paths) {
       const noteName = names.get(p);
       const slug = codeSlug(noteName.slice(prefix.length + 3));
@@ -411,6 +440,24 @@ function buildCodeNoteSpecs(refs) {
         '',
         `${verbo} [\`${p}\`](../../../${p}) — **gerado** por \`npm run brain:sync\`.`,
         '',
+      ];
+      if (tipo === 'codigo') {
+        const cobertos = testsByKey.get(codKey(p)) ?? [];
+        body.push('## Testes que cobrem', '');
+        body.push(
+          ...(cobertos.length ? cobertos.map((t) => `- [[${testNames.get(t)}]]`) : ['_nenhum_']),
+        );
+      } else {
+        const exercitados = implByKey.get(tstKey(p).replace(/\.test\./, '.')) ?? [];
+        body.push('## Código exercitado', '');
+        body.push(
+          ...(exercitados.length
+            ? exercitados.map((i) => `- [[${implNames.get(i)}]]`)
+            : ['_nenhum_']),
+        );
+      }
+      body.push(
+        '',
         '## Onde aparece',
         '',
         '```dataview',
@@ -420,8 +467,8 @@ function buildCodeNoteSpecs(refs) {
         '## Conexões',
         '',
         `- 🗺️ [[${moc}]]`,
-      ].join('\n');
-      specs.push({ dir, file: `${noteName}.md`, content: `${fm.join('\n')}\n\n${body}\n` });
+      );
+      specs.push({ dir, file: `${noteName}.md`, content: `${fm.join('\n')}\n\n${body.join('\n')}\n` });
     }
   };
   mk(refs.impl, CODE_DIR, 'COD', 'codigo', 'Implementa');

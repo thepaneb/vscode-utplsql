@@ -12,6 +12,10 @@ tags: [codigo]
 
 Implementa [`src/logger.ts`](../../../src/logger.ts) — **gerado** por `npm run brain:sync`.
 
+## Testes que cobrem
+
+- [[TST - logger.test.ts]]
+
 ## Onde aparece
 
 ```dataview

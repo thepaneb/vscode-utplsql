@@ -12,6 +12,10 @@ tags: [teste]
 
 Valida [`src/test/integration/extension.test.ts`](../../../src/test/integration/extension.test.ts) — **gerado** por `npm run brain:sync`.
 
+## Código exercitado
+
+- [[COD - extension.ts]]
+
 ## Onde aparece
 
 ```dataview

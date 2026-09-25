@@ -12,6 +12,10 @@ tags: [codigo]
 
 Implementa [`src/commands/utility.ts`](../../../src/commands/utility.ts) — **gerado** por `npm run brain:sync`.
 
+## Testes que cobrem
+
+_nenhum_
+
 ## Onde aparece
 
 ```dataview

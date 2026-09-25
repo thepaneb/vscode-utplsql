@@ -938,6 +938,36 @@ test('brain: buildCodeNoteSpecs gera notas COD/TST com id e arquivo', () => {
   assert.match(cod?.content ?? '', /arquivo: "src\/oracleRunner\.ts"/);
   assert.strictEqual(tst?.dir, '22-Testes');
   assert.match(tst?.content ?? '', /tipo: teste/);
+
+  // Aresta estática código↔teste (não depende do Dataview).
+  assert.match(
+    cod?.content ?? '',
+    /## Testes que cobrem[\s\S]*- \[\[TST - oracleRunner\.test\.ts\]\]/,
+  );
+  assert.match(tst?.content ?? '', /## Código exercitado[\s\S]*- \[\[COD - oracleRunner\.ts\]\]/);
+});
+
+test('brain: buildCodeNoteSpecs sem par marca _nenhum_', () => {
+  const specs = buildCodeNoteSpecs({
+    impl: ['src/solto.ts'],
+    tests: ['src/test/unit/outro.test.ts'],
+  });
+  const cod = specs.find((s) => s.file.startsWith('COD'));
+  const tst = specs.find((s) => s.file.startsWith('TST'));
+  assert.match(cod?.content ?? '', /## Testes que cobrem\n\n_nenhum_/);
+  assert.match(tst?.content ?? '', /## Código exercitado\n\n_nenhum_/);
+});
+
+test('brain: buildCodeNoteSpecs exige o casamento de basename, não de pasta', () => {
+  const specs = buildCodeNoteSpecs({
+    impl: ['src/a/run.ts', 'src/b/run.ts'],
+    tests: ['src/test/a/run.test.ts', 'src/test/b/run.test.ts'],
+  });
+  const codA = specs.find((s) => s.file === 'COD - a-run.ts.md');
+  const codB = specs.find((s) => s.file === 'COD - b-run.ts.md');
+  assert.match(codA?.content ?? '', /- \[\[TST - a-run\.test\.ts\]\]/);
+  assert.doesNotMatch(codA?.content ?? '', /TST - b-run/);
+  assert.match(codB?.content ?? '', /- \[\[TST - b-run\.test\.ts\]\]/);
 });
 
 test('brain: noteNames desambigua basenames colidentes', () => {

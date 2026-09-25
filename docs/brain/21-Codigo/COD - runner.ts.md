@@ -12,6 +12,10 @@ tags: [codigo]
 
 Implementa [`src/runner.ts`](../../../src/runner.ts) — **gerado** por `npm run brain:sync`.
 
+## Testes que cobrem
+
+- [[TST - runner.test.ts]]
+
 ## Onde aparece
 
 ```dataview

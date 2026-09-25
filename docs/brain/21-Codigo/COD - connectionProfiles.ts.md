@@ -12,6 +12,10 @@ tags: [codigo]
 
 Implementa [`src/connectionProfiles.ts`](../../../src/connectionProfiles.ts) — **gerado** por `npm run brain:sync`.
 
+## Testes que cobrem
+
+- [[TST - connectionProfiles.test.ts]]
+
 ## Onde aparece
 
 ```dataview

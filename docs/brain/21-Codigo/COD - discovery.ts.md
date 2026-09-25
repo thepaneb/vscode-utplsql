@@ -12,6 +12,10 @@ tags: [codigo]
 
 Implementa [`src/discovery.ts`](../../../src/discovery.ts) — **gerado** por `npm run brain:sync`.
 
+## Testes que cobrem
+
+- [[TST - discovery.test.ts]]
+
 ## Onde aparece
 
 ```dataview

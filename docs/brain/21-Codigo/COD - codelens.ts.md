@@ -12,6 +12,10 @@ tags: [codigo]
 
 Implementa [`src/codelens.ts`](../../../src/codelens.ts) — **gerado** por `npm run brain:sync`.
 
+## Testes que cobrem
+
+- [[TST - codelens.test.ts]]
+
 ## Onde aparece
 
 ```dataview

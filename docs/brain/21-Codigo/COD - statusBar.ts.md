@@ -12,6 +12,10 @@ tags: [codigo]
 
 Implementa [`src/statusBar.ts`](../../../src/statusBar.ts) — **gerado** por `npm run brain:sync`.
 
+## Testes que cobrem
+
+- [[TST - statusBar.test.ts]]
+
 ## Onde aparece
 
 ```dataview

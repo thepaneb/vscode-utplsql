@@ -12,6 +12,10 @@ tags: [codigo]
 
 Implementa [`src/oracleRunner.ts`](../../../src/oracleRunner.ts) — **gerado** por `npm run brain:sync`.
 
+## Testes que cobrem
+
+- [[TST - oracleRunner.test.ts]]
+
 ## Onde aparece
 
 ```dataview

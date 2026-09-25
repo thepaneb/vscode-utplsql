@@ -12,6 +12,10 @@ tags: [teste]
 
 Valida [`src/test/unit/connectionProfiles.test.ts`](../../../src/test/unit/connectionProfiles.test.ts) — **gerado** por `npm run brain:sync`.
 
+## Código exercitado
+
+- [[COD - connectionProfiles.ts]]
+
 ## Onde aparece
 
 ```dataview

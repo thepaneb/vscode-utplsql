@@ -12,6 +12,10 @@ tags: [codigo]
 
 Implementa [`src/viewCoverage.ts`](../../../src/viewCoverage.ts) — **gerado** por `npm run brain:sync`.
 
+## Testes que cobrem
+
+- [[TST - viewCoverage.test.ts]]
+
 ## Onde aparece
 
 ```dataview

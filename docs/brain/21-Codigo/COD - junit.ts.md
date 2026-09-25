@@ -12,6 +12,10 @@ tags: [codigo]
 
 Implementa [`src/junit.ts`](../../../src/junit.ts) — **gerado** por `npm run brain:sync`.
 
+## Testes que cobrem
+
+- [[TST - junit.test.ts]]
+
 ## Onde aparece
 
 ```dataview
