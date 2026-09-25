@@ -179,6 +179,9 @@ function relTargets(fm) {
   for (const r of Array.isArray(fm?.decisoes) ? fm.decisoes : []) {
     out.push({ key: 'decisoes', value: r, label: 'decisao referenciada' });
   }
+  for (const r of Array.isArray(fm?.erros) ? fm.erros : []) {
+    out.push({ key: 'erros', value: r, label: 'erro referenciado' });
+  }
   return out;
 }
 

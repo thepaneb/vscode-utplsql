@@ -7,6 +7,7 @@ dominio: cobertura
 status: ativo
 severidade: media
 fonte: codigo
+erros: [ERR-009]
 verificado: 2026-09-23
 implementacao: ["src/runner.ts:202", "src/config.ts:119", "src/viewCoverage.ts:93", "src/viewCoverage.ts:122", "src/viewCoverage.ts:31"]
 testes: ["src/test/unit/viewCoverage.test.ts", "src/test/unit/config.test.ts", "src/test/unit/runner.test.ts"]
@@ -35,6 +36,7 @@ V$SQL pode ser negado por grants e não deve comprometer o run de testes; o matc
 <!-- brain:auto:start:conexoes -->
 - 🗺️ [[MOC - Regras]]
 - 📄 PRDs: [[prd-12-sql-coverage|PRD-12]]
+- ⚠️ Erros: [[ERR-009 - V$SQL negado — cobertura de views indisponível|ERR-009]]
 - 🎯 Requisitos: [[prd-12-sql-coverage|PRD-12 RF2]]
 - 🧩 Código: [[COD - runner.ts]] · [[COD - config.ts]] · [[COD - viewCoverage.ts]]
 - 🧪 Testes: [[TST - viewCoverage.test.ts]] · [[TST - config.test.ts]] · [[TST - runner.test.ts]]

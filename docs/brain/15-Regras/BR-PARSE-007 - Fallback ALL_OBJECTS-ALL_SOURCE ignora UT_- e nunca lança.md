@@ -7,6 +7,7 @@ dominio: descoberta
 status: ativo
 severidade: alta
 fonte: codigo
+erros: [ERR-001, ERR-008, ERR-011]
 verificado: 2026-09-23
 implementacao: ["src/discovery.ts:137", "src/discovery.ts:159", "src/discovery.ts:167", "src/discovery.ts:174", "src/discovery.ts:178", "src/discovery.ts:188", "src/discovery.ts:199"]
 testes: ["src/test/unit/discovery.test.ts"]
@@ -35,6 +36,7 @@ Suporta instalações shared e schemas sem grants sem derrubar a extensão, e ev
 <!-- brain:auto:start:conexoes -->
 - 🗺️ [[MOC - Regras]]
 - 📄 PRDs: [[prd-43-schema-db-discovery|PRD-43]]
+- ⚠️ Erros: [[ERR-001 - ORA-00942 — objeto utPLSQL inacessível (shared install sem grants)|ERR-001]] · [[ERR-008 - ALL_SOURCE inacessível na descoberta (package pulado)|ERR-008]] · [[ERR-011 - Fonte de package truncada (-10.000 linhas)|ERR-011]]
 - 🎯 Requisitos: [[prd-43-schema-db-discovery|PRD-43 RF1]] · [[prd-43-schema-db-discovery|PRD-43 RF2]]
 - 🧩 Código: [[COD - discovery.ts]]
 - 🧪 Testes: [[TST - discovery.test.ts]]

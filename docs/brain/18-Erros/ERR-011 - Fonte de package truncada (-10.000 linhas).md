@@ -32,4 +32,5 @@ Preferir a descoberta DB-first (get_suites_info, utPLSQL >= 3.1.3) ou revisar o 
 - 📐 Regras: [[BR-PARSE-007 - Fallback ALL_OBJECTS-ALL_SOURCE ignora UT_- e nunca lança|BR-PARSE-007]] · [[BR-PARSE-008 - DB-first com gate de versão 3.1.3 e modos de fonte auto-database-file|BR-PARSE-008]]
 - 🧩 Código: [[COD - discovery.ts]]
 - 🧪 Testes: [[TST - discovery.test.ts]]
+- ↩️ Referenciada por: [[BR-PARSE-007 - Fallback ALL_OBJECTS-ALL_SOURCE ignora UT_- e nunca lança|BR-PARSE-007]] · [[BR-PARSE-008 - DB-first com gate de versão 3.1.3 e modos de fonte auto-database-file|BR-PARSE-008]]
 <!-- brain:auto:end -->

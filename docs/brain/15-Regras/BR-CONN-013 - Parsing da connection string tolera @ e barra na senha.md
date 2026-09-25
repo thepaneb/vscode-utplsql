@@ -7,6 +7,7 @@ dominio: conexao
 status: ativo
 severidade: alta
 fonte: codigo
+erros: [ERR-003]
 verificado: 2026-09-23
 implementacao: ["src/oracleRunner.ts:28", "src/oracleRunner.ts:46", "src/oracleRunner.ts:53"]
 testes: ["src/test/unit/oracleRunner.test.ts"]
@@ -35,6 +36,7 @@ Aceitar senhas com / ou @ e formatos opacos de connectString sem tentar normaliz
 <!-- brain:auto:start:conexoes -->
 - 🗺️ [[MOC - Regras]]
 - 📄 PRDs: [[prd-34-multi-connection-profiles|PRD-34]]
+- ⚠️ Erros: [[ERR-003 - UTPLSQL_BAD_CONN — credenciais ou connection string inválidas|ERR-003]]
 - 🎯 Requisitos: [[prd-66-connection-robustness-logging|PRD-66 RF3]]
 - 🧩 Código: [[COD - oracleRunner.ts]]
 - 🧪 Testes: [[TST - oracleRunner.test.ts]]

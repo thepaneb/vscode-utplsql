@@ -784,6 +784,20 @@ test('brain: conexões relacionam PRD, RF, RNF, BR e código', () => {
       /↩️ Citada por:.*(BR-11 - com decisao|NFR-90 - cita adr)/,
     );
 
+    // `erros:` liga a regra ao ERR-* e dá backlink no erro.
+    writeFixture(
+      path.join(vault, '18-Erros', 'ERR-001 - erro qualquer.md'),
+      '---\nid: ERR-001\ntipo: erro\ncodigo: TESTE-1\ntitulo: Erro qualquer\n---\n# ERR-001\n',
+    );
+    const comErro = path.join(vault, '30-Regras', 'BR-12 - trata erro.md');
+    writeFixture(comErro, '---\nid: BR-12\ntipo: regra\nerros: [ERR-001]\n---\n# Trata erro\n');
+    resetCaches();
+    assert.match(genConexoes(comErro), /⚠️ Erros: \[\[ERR-001 - erro qualquer\|ERR-001\]\]/);
+    assert.match(
+      genConexoes(path.join(vault, '18-Erros', 'ERR-001 - erro qualquer.md')),
+      /↩️ Referenciada por:.*BR-12 - trata erro/,
+    );
+
     const prdNote = path.join(vault, '20-PRDs', 'prd-10-feature.md');
     const prdConnections = genConexoes(prdNote);
     assert.match(prdConnections, /PRDs relacionados: \[\[prd-02-other\|PRD-02\]\]/);

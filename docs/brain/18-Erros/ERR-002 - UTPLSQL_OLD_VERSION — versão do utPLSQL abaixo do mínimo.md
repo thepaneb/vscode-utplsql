@@ -32,4 +32,5 @@ Atualizar o utPLSQL no banco; enquanto isso a extensão cai no fallback ALL_OBJE
 - 📐 Regras: [[BR-PARSE-008 - DB-first com gate de versão 3.1.3 e modos de fonte auto-database-file|BR-PARSE-008]]
 - 🧩 Código: [[COD - quickfix.ts]] · [[COD - oracleRunner.ts]] · [[COD - discovery.ts]]
 - 🧪 Testes: [[TST - discovery.test.ts]]
+- ↩️ Referenciada por: [[BR-PARSE-008 - DB-first com gate de versão 3.1.3 e modos de fonte auto-database-file|BR-PARSE-008]]
 <!-- brain:auto:end -->

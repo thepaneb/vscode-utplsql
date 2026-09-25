@@ -32,4 +32,5 @@ Informar o libDir do Instant Client (ou instalar); NJS-090 é tratado como suces
 - 📐 Regras: [[BR-CONN-012 - Thick opt-in, fixado na primeira chamada e idempotente|BR-CONN-012]]
 - 🧩 Código: [[COD - quickfix.ts]] · [[COD - oracleClient.ts]]
 - 🧪 Testes: [[TST - oracleClient.test.ts]]
+- ↩️ Referenciada por: [[BR-CONN-012 - Thick opt-in, fixado na primeira chamada e idempotente|BR-CONN-012]]
 <!-- brain:auto:end -->

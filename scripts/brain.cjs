@@ -540,6 +540,7 @@ function reverseIndex() {
       ...(Array.isArray(fm.regras) ? fm.regras : []),
       ...(Array.isArray(fm.depende) ? fm.depende : []),
       ...(Array.isArray(fm.decisoes) ? fm.decisoes : []),
+      ...(Array.isArray(fm.erros) ? fm.erros : []),
       ...(Array.isArray(fm.relacionado) ? fm.relacionado.map(relRef) : []),
       ...(Array.isArray(fm.relacionados) ? fm.relacionados.map(relRef) : []),
       ...(Array.isArray(fm.secaoRelacionada) ? fm.secaoRelacionada.map(relRef) : []),
@@ -615,6 +616,9 @@ function genConexoes(notePath) {
   }
   if (Array.isArray(fm.decisoes) && fm.decisoes.length) {
     lines.push(`- 🧭 Decisões: ${fm.decisoes.map((d) => link(d, ids)).join(' · ')}`);
+  }
+  if (Array.isArray(fm.erros) && fm.erros.length) {
+    lines.push(`- ⚠️ Erros: ${fm.erros.map((e) => link(e, ids)).join(' · ')}`);
   }
   // Requisitos (RF/RNF da PRD) que esta nota implementa.
   if (Array.isArray(fm.requisitos) && fm.requisitos.length) {

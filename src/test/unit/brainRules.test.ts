@@ -259,8 +259,8 @@ test('brain-rules: checkReferences aceita regra quando não recebe catálogo', (
 // ── relacionado / decisoes (evolução do grafo) ─────────────────────────
 
 /** Catálogo do vault: basenames, ids e ids de ADR (frontmatter `adr`). */
-function relCatalog(entries: { id?: string; adr?: string }[]) {
-  const noteBases = new Set(entries.map((_, i) => `n${i + 1}`));
+function relCatalog(entries: { id?: string; adr?: string; base?: string }[]) {
+  const noteBases = new Set(entries.map((e, i) => e.base ?? `n${i + 1}`));
   const noteIds = new Set<string>();
   const adrIds = new Set<string>();
   for (const e of entries) {
@@ -336,6 +336,24 @@ test('brain-rules: decisao quebrada é reportada', () => {
   const content = note(['tipo: regra', 'decisoes: ["DEC-999"]']);
   const problems = checkReferences([content], () => true, undefined, false, relCatalog([{}, {}]));
   assert.ok(problems.some((p) => p.includes('decisao referenciada inexistente: DEC-999')));
+});
+
+test('brain-rules: erros aponta para ERR-* existente (id ou wikilink)', () => {
+  const content = note(['tipo: regra', 'erros: ["ERR-001", "[[ERR-002 - Conexão recusada]]"]']);
+  const problems = checkReferences(
+    [content],
+    () => true,
+    undefined,
+    false,
+    relCatalog([{}, { id: 'ERR-001' }, { id: 'ERR-002', base: 'ERR-002 - Conexão recusada' }]),
+  );
+  assert.deepStrictEqual(problems, []);
+});
+
+test('brain-rules: erro referenciado inexistente é reportado', () => {
+  const content = note(['tipo: regra', 'erros: ["ERR-999"]']);
+  const problems = checkReferences([content], () => true, undefined, false, relCatalog([{}, {}]));
+  assert.ok(problems.some((p) => p.includes('erro referenciado inexistente: ERR-999')));
 });
 
 test('brain-rules: checkRules global valida relacionado do vault', () => {

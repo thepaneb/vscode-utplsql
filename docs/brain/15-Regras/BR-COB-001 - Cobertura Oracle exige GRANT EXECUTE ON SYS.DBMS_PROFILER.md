@@ -7,6 +7,7 @@ dominio: cobertura
 status: ativo
 severidade: alta
 fonte: codigo
+erros: [ERR-005]
 verificado: 2026-09-23
 implementacao: ["src/commands/utility.ts:13", "src/quickfix.ts:150", "src/i18nLocales.ts:98", "package.json:130"]
 testes: ["src/test/unit/quickfix.test.ts"]
@@ -35,6 +36,7 @@ DBMS_PROFILER é recurso privilegiado; a extensão não pode conceder grants e p
 <!-- brain:auto:start:conexoes -->
 - 🗺️ [[MOC - Regras]]
 - 📄 PRDs: [[prd-12-sql-coverage|PRD-12]] · [[prd-32-quickfix-setup-diagnostics|PRD-32]]
+- ⚠️ Erros: [[ERR-005 - UTPLSQL_NO_COVERAGE — cobertura não gerada por falta de grants|ERR-005]]
 - 🎯 Requisitos: [[prd-32-quickfix-setup-diagnostics|PRD-32 RF3]] · [[prd-32-quickfix-setup-diagnostics|PRD-32 RF5]]
 - 🧩 Código: [[COD - utility.ts]] · [[COD - quickfix.ts]] · [[COD - i18nLocales.ts]] · [[COD - package.json]]
 - 🧪 Testes: [[TST - quickfix.test.ts]]

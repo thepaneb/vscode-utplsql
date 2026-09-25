@@ -32,4 +32,5 @@ Ler a mensagem do Oracle e o stack; verificar setup/compilação e os demais dia
 - 📐 Regras: [[BR-EXEC-009 - Separação do XML de cobertura do XML JUnit no mesmo buffer|BR-EXEC-009]]
 - 🧩 Código: [[COD - runner.ts]] · [[COD - oracleRunner.ts]]
 - 🧪 Testes: [[TST - runner.test.ts]]
+- ↩️ Referenciada por: [[BR-EXEC-009 - Separação do XML de cobertura do XML JUnit no mesmo buffer|BR-EXEC-009]]
 <!-- brain:auto:end -->
