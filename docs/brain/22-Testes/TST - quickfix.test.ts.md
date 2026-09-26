@@ -19,7 +19,7 @@ Valida [`src/test/unit/quickfix.test.ts`](../../../src/test/unit/quickfix.test.t
 ## Onde aparece
 
 ```dataview
-LIST id, tipo WHERE contains(implementacao, this.arquivo) OR contains(testes, this.arquivo)
+TABLE id, tipo WHERE contains(implementacao, this.arquivo) OR contains(testes, this.arquivo)
 ```
 
 ## Conexões

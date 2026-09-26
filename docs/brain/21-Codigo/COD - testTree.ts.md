@@ -19,7 +19,7 @@ Implementa [`src/testTree.ts`](../../../src/testTree.ts) — **gerado** por `npm
 ## Onde aparece
 
 ```dataview
-LIST id, tipo WHERE contains(implementacao, this.arquivo) OR contains(testes, this.arquivo)
+TABLE id, tipo WHERE contains(implementacao, this.arquivo) OR contains(testes, this.arquivo)
 ```
 
 ## Conexões

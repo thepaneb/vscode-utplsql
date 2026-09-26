@@ -19,7 +19,7 @@ Implementa [`src/extension.ts`](../../../src/extension.ts) — **gerado** por `n
 ## Onde aparece
 
 ```dataview
-LIST id, tipo WHERE contains(implementacao, this.arquivo) OR contains(testes, this.arquivo)
+TABLE id, tipo WHERE contains(implementacao, this.arquivo) OR contains(testes, this.arquivo)
 ```
 
 ## Conexões

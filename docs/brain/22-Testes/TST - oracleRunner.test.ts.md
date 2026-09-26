@@ -19,7 +19,7 @@ Valida [`src/test/unit/oracleRunner.test.ts`](../../../src/test/unit/oracleRunne
 ## Onde aparece
 
 ```dataview
-LIST id, tipo WHERE contains(implementacao, this.arquivo) OR contains(testes, this.arquivo)
+TABLE id, tipo WHERE contains(implementacao, this.arquivo) OR contains(testes, this.arquivo)
 ```
 
 ## Conexões

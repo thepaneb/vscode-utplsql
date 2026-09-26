@@ -19,7 +19,7 @@ Implementa [`src/config.ts`](../../../src/config.ts) — **gerado** por `npm run
 ## Onde aparece
 
 ```dataview
-LIST id, tipo WHERE contains(implementacao, this.arquivo) OR contains(testes, this.arquivo)
+TABLE id, tipo WHERE contains(implementacao, this.arquivo) OR contains(testes, this.arquivo)
 ```
 
 ## Conexões

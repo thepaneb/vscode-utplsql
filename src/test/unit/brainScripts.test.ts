@@ -990,9 +990,10 @@ test('brain: buildCodeNoteSpecs gera notas COD/TST com id e arquivo', () => {
   assert.match(tst?.content ?? '', /## Código exercitado[\s\S]*- \[\[COD - oracleRunner\.ts\]\]/);
 });
 
-test('brain: a query Dataview das notas geradas é válida (sem FROM vazio)', () => {
-  // `FROM ""` é sintaxe inválida no Dataview (erro de parsing); sem FROM o
-  // Dataview usa todas as páginas. Regressão já ocorreu uma vez.
+test('brain: a query Dataview das notas geradas é válida', () => {
+  // Regras da DQL verificadas aqui (regressões já ocorreram):
+  //  - `LIST` aceita UM valor extra; `LIST a, b` é inválido → use TABLE.
+  //  - `FROM ""` (string vazia) é inválido → omita o FROM.
   const specs = buildCodeNoteSpecs({
     impl: ['src/oracleRunner.ts'],
     tests: ['src/test/unit/oracleRunner.test.ts'],
@@ -1002,6 +1003,7 @@ test('brain: a query Dataview das notas geradas é válida (sem FROM vazio)', ()
     assert.ok(queries.length > 0, `${s.file} sem bloco dataview`);
     for (const q of queries) {
       assert.doesNotMatch(q, /FROM\s*""/, `${s.file}: query com FROM vazio`);
+      assert.doesNotMatch(q, /\bLIST\b[^|]*,[^|]*\bWHERE\b/i, `${s.file}: LIST com vários campos`);
       assert.match(q, /^(LIST|TABLE)\b/, `${s.file}: query deve começar com LIST/TABLE`);
       assert.match(q, /\bWHERE\b/, `${s.file}: query deve ter WHERE`);
     }

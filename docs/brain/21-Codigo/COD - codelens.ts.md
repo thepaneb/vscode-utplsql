@@ -19,7 +19,7 @@ Implementa [`src/codelens.ts`](../../../src/codelens.ts) — **gerado** por `npm
 ## Onde aparece
 
 ```dataview
-LIST id, tipo WHERE contains(implementacao, this.arquivo) OR contains(testes, this.arquivo)
+TABLE id, tipo WHERE contains(implementacao, this.arquivo) OR contains(testes, this.arquivo)
 ```
 
 ## Conexões
