@@ -223,6 +223,33 @@ function checkMencoesPrd(notes, prdIds) {
 }
 
 /**
+ * Integridade `SEC-*` ↔ regras: toda nota de segurança precisa citar ao menos
+ * uma regra existente, e nenhuma regra citada pode estar `obsoleto` (mitigação
+ * apoiada em regra morta). `regraStatus` = id da BR → status.
+ */
+function checkSecRegras(notes, regraStatus) {
+  const problems = [];
+  for (const note of notes) {
+    const fm = parseFrontmatter(note.content);
+    if (fm?.tipo !== 'seguranca') continue;
+    const regras = Array.isArray(fm.regras) ? fm.regras : [];
+    if (!regras.length) {
+      problems.push(`${note.name}: segurança sem regras vinculadas`);
+      continue;
+    }
+    for (const r of regras) {
+      const id = String(r).trim();
+      if (!regraStatus.has(id)) {
+        problems.push(`${note.name}: regra referenciada inexistente: ${id}`);
+      } else if (regraStatus.get(id) === 'obsoleto') {
+        problems.push(`${note.name}: regra referenciada obsoleta: ${id}`);
+      }
+    }
+  }
+  return problems;
+}
+
+/**
  * Valida referências de TODAS as notas do vault: `implementacao`/`testes`
  * (arquivos existem), `regras` (apontam para BR-* existentes) e as arestas de
  * grafo (`relacionado*`/`decisoes`) contra o catálogo de notas/ids/ADRs.
@@ -348,6 +375,12 @@ function checkRules(overrides = {}) {
     problems.push(...checkReferences(notes, exists, brIds, checkLines, relCatalog));
     problems.push(...checkRequisitos(notes));
     problems.push(...checkMencoesPrd(notes, new Set(relCatalog.noteIds)));
+    const regraStatus = new Map();
+    for (const note of notes) {
+      const fm = parseFrontmatter(note.content);
+      if (fm?.tipo === 'regra' && fm.id) regraStatus.set(String(fm.id), String(fm.status ?? ''));
+    }
+    problems.push(...checkSecRegras(notes, regraStatus));
   }
 
   return problems;
@@ -358,6 +391,7 @@ module.exports = {
   checkReferences,
   checkRelacionado,
   checkMencoesPrd,
+  checkSecRegras,
   checkLayers,
   checkRequisitos,
   parseFrontmatter,

@@ -13,6 +13,7 @@ const {
   checkRequisitos,
   checkReferences,
   checkMencoesPrd,
+  checkSecRegras,
   parseFrontmatter,
   LAYERS,
 } = require('../../../scripts/brain-rules.cjs') as {
@@ -20,6 +21,10 @@ const {
   checkLayers: (notes: { name: string; content: string }[]) => string[];
   checkRequisitos: (notes: { name: string; content: string }[]) => string[];
   checkMencoesPrd: (notes: { name: string; content: string }[], prdIds: Set<string>) => string[];
+  checkSecRegras: (
+    notes: { name: string; content: string }[],
+    regraStatus: Map<string, string>,
+  ) => string[];
   checkReferences: (
     notes: { name: string; content: string }[],
     exists: (ref: string) => boolean,
@@ -407,6 +412,39 @@ test('brain-rules: menção ao próprio PRD e PRDs no code fence são ignoradas'
       '---\ntipo: prd\nid: PRD-74\n---\n\nPRD-74 falando de si.\n\n```\nPRD-999 em fence\n```\n',
   };
   assert.deepStrictEqual(checkMencoesPrd([prd], new Set(['PRD-74'])), []);
+});
+
+// ── integridade SEC ↔ regras ───────────────────────────────────────────
+
+test('brain-rules: SEC sem regras é reportada', () => {
+  const sec = note([
+    'id: SEC-001',
+    'tipo: seguranca',
+    'titulo: X',
+    'dominio: d',
+    'status: ativo',
+    'severidade: alta',
+    'regras: []',
+  ]);
+  const problems = checkSecRegras([sec], new Map());
+  assert.ok(problems.some((p) => p.includes('n.md') && p.includes('sem regras')));
+});
+
+test('brain-rules: SEC apontando regra inexistente é reportada', () => {
+  const sec = note(['id: SEC-001', 'tipo: seguranca', 'regras: ["BR-FALTA"]', 'status: ativo']);
+  const problems = checkSecRegras([sec], new Map([['BR-OK', 'ativo']]));
+  assert.ok(problems.some((p) => p.includes('BR-FALTA') && p.includes('inexistente')));
+});
+
+test('brain-rules: SEC apontando regra obsoleta é reportada', () => {
+  const sec = note(['id: SEC-001', 'tipo: seguranca', 'regras: ["BR-VELHA"]', 'status: ativo']);
+  const problems = checkSecRegras([sec], new Map([['BR-VELHA', 'obsoleto']]));
+  assert.ok(problems.some((p) => p.includes('BR-VELHA') && p.includes('obsoleta')));
+});
+
+test('brain-rules: SEC válida com regra ativa passa', () => {
+  const sec = note(['id: SEC-001', 'tipo: seguranca', 'regras: ["BR-OK"]', 'status: ativo']);
+  assert.deepStrictEqual(checkSecRegras([sec], new Map([['BR-OK', 'ativo']])), []);
 });
 
 test('brain-rules: checkRules global valida relacionado do vault', () => {
