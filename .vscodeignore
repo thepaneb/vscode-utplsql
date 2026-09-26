@@ -33,6 +33,7 @@ tsconfig.json
 CLAUDE.md
 DEVELOPMENT.md
 AGENTS.md
+opencode.json
 node_modules/.bin/**
 .opencode/**
 .agents/**
