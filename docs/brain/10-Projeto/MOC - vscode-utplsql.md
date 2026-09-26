@@ -13,9 +13,9 @@ Extensão VSCode para testes **utPLSQL** (Oracle PL/SQL). Execução via Oracle 
 ## Contexto do repositório
 
 - [README](../../../README.md) — visão do usuário, config, comandos
-- [AGENTS.md](../../../AGENTS.md) — comandos, arquitetura, pontos de atenção (local, gitignored)
 - [CHANGELOG](../../../CHANGELOG.md) — histórico de versões
-- [CONTRIBUTING](../../../CONTRIBUTING.md) e [DEVELOPMENT](../../../DEVELOPMENT.md)
+- [CONTRIBUTING](../../../CONTRIBUTING.md)
+- `AGENTS.md` e `DEVELOPMENT.md` — guias locais de dev (gitignored, não versionados)
 
 ## Áreas
 
