@@ -1,3 +1,5 @@
+<!-- GENERATED FROM docs/brain/20-PRDs/prd-18-engine-node-ci.md — DO NOT EDIT -->
+
 # PRD-18 — Alinhamento `engines.node` com CI
 
 | Campo | Valor |

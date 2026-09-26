@@ -1,3 +1,5 @@
+<!-- GENERATED FROM docs/brain/20-PRDs/prd-17-java-args-setting.md — DO NOT EDIT -->
+
 # PRD-17 — Flags JVM customizáveis para o modo `java`
 
 | Campo | Valor |

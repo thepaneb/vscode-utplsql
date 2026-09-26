@@ -2,10 +2,11 @@ import * as vscode from 'vscode';
 import { getExtensionLocale, readConfig, resolveConnectionNoPrompt } from './config';
 import { clearDbSourceCache } from './dbSourceProvider';
 import {
-  discoverSchemaFromDb,
+  discoverDbSuites,
   discoverSchemasFromFolders,
   discoverWorkspace,
   extractSchemaFromPath,
+  mergeSuiteLists,
   type SuiteFile,
 } from './discovery';
 import { t } from './i18n';
@@ -178,6 +179,9 @@ export async function mergeDbSuites(
   schemaPattern: string,
   deps: MergeDbDeps = defaultMergeDbDeps,
 ): Promise<void> {
+  const cfg = readConfig();
+  if (cfg.discoverySource === 'file') return;
+
   const connStr = deps.resolveConnection();
   if (!connStr) return;
 
@@ -194,17 +198,15 @@ export async function mergeDbSuites(
     schemas.add(schema);
   }
 
+  const dbSuites: SuiteFile[] = [];
   for (const schema of schemas) {
-    const dbSuites = await deps.discoverSchemaFromDb(connStr, schema, folders);
-    for (const dbSuite of dbSuites) {
-      const exists = suites.some(
-        (fs) => fs.packageName.toLowerCase() === dbSuite.packageName.toLowerCase(),
-      );
-      if (!exists) {
-        suites.push(dbSuite);
-      }
-    }
+    dbSuites.push(...(await deps.discoverDbSuites(connStr, schema, folders)));
   }
+  // Fusão DB-first (PRD-74 RF3): arquivo prevalece em uri/range; banco em
+  // descrição/tags. `mergeSuiteLists` devolve a união por package.
+  const merged = mergeSuiteLists(suites, dbSuites);
+  suites.length = 0;
+  suites.push(...merged);
 }
 
 /** Dependências de `mergeDbSuites` (injetáveis nos testes). */
@@ -219,7 +221,7 @@ export interface MergeDbDeps {
     folders: readonly vscode.WorkspaceFolder[],
     schemaPattern: string,
   ): Promise<string[]>;
-  discoverSchemaFromDb(
+  discoverDbSuites(
     connStr: string,
     schema: string,
     folders: readonly vscode.WorkspaceFolder[],
@@ -230,7 +232,7 @@ const defaultMergeDbDeps: MergeDbDeps = {
   resolveConnection: resolveConnectionNoPrompt,
   extractSchemaFromPath,
   discoverSchemasFromFolders,
-  discoverSchemaFromDb,
+  discoverDbSuites,
 };
 
 /**

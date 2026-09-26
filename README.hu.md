@@ -1,3 +1,5 @@
+<!-- GENERATED FROM docs/brain/60-README/README.hu.md — DO NOT EDIT -->
+
 <p align="center">
   <img src="images/icon.png" alt="utPLSQL Test Runner Logo" width="128" height="128">
 </p>
@@ -27,6 +29,9 @@ Integrálja a [utPLSQL](https://www.utplsql.org/) teszteket a VSCode-ba, és a P
 - 🔌 **Kapcsolati profilok** — több környezet (DEV/TEST/PROD) mentése és váltása köztük profil-specifikus beállításokkal, az állapotsorból vagy a parancspalettáról.
 - 📜 **SQL szkriptek** — az aktuális szkript, egy Explorer-fájl vagy egy teljes mappa futtatása az aktív kapcsolati profilon (charset-helyes, `DBMS_OUTPUT` és `stopOnError` támogatással).
 - 📈 **Utasítás- és nézetlefedettség** — a Coverage lap `% of statements` (PROCEDURE/FUNCTION) arányt mutat fájlonként, és a `V$SQL`-lal végrehajtott nézeteket is követi.
+- 🏷️ **Tagek és véletlen sorrend** — szűrd a teszteket `utplsql.tags`-szel (pl. `fast & !integration`), és futtasd véletlen sorrendben reprodukálható seeddel (`utplsql.run.randomOrder`).
+- 🎯 **Lefedettségi hatókör** — objektumok és séma/objektum regexek (`utplsql.coverage.*`) bevonása/kizárása a framework zajának eltávolításához és dinamikusan elért objektumok hozzáadásához.
+- 🗄️ **DB-first felfedezés** — építsd a fát a `ut_runner.get_suites_info` alapján, és építsd újra a megjegyzés-gyorsítótárat a palettáról.
 - 🐛 **PL/SQL-hibakeresés** — töréspontok és lépésenkénti hibakeresés a utPLSQL-tesztekhez `DBMS_DEBUG` segítségével (natív Debug Adapter).
 - 🌍 **i18n — 24 nyelv** — a `utplsql.language` követi a VSCode-ot (24 területi beállítás: pt-br, en, en-gb, es, zh-cn, zh-tw, ja, de, fr, it, ko, ru, tr, pl, cs, hu, bg, el, id, ro, sr, th, uk, vi).
 
@@ -43,6 +48,13 @@ A bővítmény kétféleképpen telepíthető:
 
 - [**utPLSQL**](https://github.com/utPLSQL/utPLSQL) **(UT3)** telepítve az Oracle adatbázisban.
 - Csak az adatbázis kell — a VSIX már tartalmazza a thin `oracledb` illesztőt (Instant Client nélkül).
+
+**Oracle / utPLSQL kompatibilitás:**
+
+| Oracle | utPLSQL | Megjegyzések |
+|---|---|---|
+| 18c+ | v3.2.x (18c+) / v3.1.x | Ajánlott; charset `AL32UTF8`. |
+| 12.2 | csak v3.1.x | A v3.2.x nem fordul (`PLS-00222`). A kép `WE8DEC`-je elveszíti a nem ábrázolható karaktereket (pl. `€`); a thin illesztő figyelmen kívül hagyja a `NLS_LANG`-ot. |
 - **VSCode 1.88+** (Test Coverage API).
 
 A bővítmény csupán a „grafikus kliens" — a teszteket ténylegesen az adatbázis futtatja közvetlenül a node-oracledb-n keresztül.
@@ -99,9 +111,19 @@ A bővítmény közvetlenül Oracle-on keresztül csatlakozik, beolvassa a ripor
 | `utplsql.sourcePath` | `install` | Az éles kód mappája (a lefedettség fájlokhoz rendeléséhez). |
 | `utplsql.includePatterns` | `["**/*.pks"]` | A `%suite`/`%test` tartalmú specifikációk felderítésére szolgáló globok. Ha a tesztjeid `.sql` fájlokban vannak, használd a `["**/*.sql"]` értéket. |
 | `utplsql.coverageOwner` | `""` | A lefedett objektumok séma-tulajdonosa. Üres = a kapcsolati felhasználó (nagybetűvel). |
+| `utplsql.coverage.schemes` | `[]` | Lefedett sémák (`a_coverage_schemes`). Üres = a kapcsolati felhasználó (vagy `utplsql.coverageOwner`). |
+| `utplsql.coverage.includeObjects` | `[]` | A lefedésbe felveendő objektumok `OWNER.NAME` formában (pl. `["APP.MY_PKG"]`). Csak dinamikusan elért objektumokhoz hasznos. |
+| `utplsql.coverage.excludeObjects` | `[]` | A lefedésből kizárandó objektumok `OWNER.NAME` formában (pl. `["UT3.UT_COVERAGE"]`). |
+| `utplsql.coverage.includeSchemaExpr` | `""` | A lefedésbe felveendő sémák regexe (pl. `^APP$`). |
+| `utplsql.coverage.includeObjectExpr` | `""` | A lefedésbe felveendő objektumok regexe. |
+| `utplsql.coverage.excludeSchemaExpr` | `""` | A lefedésből kizárandó sémák regexe. |
+| `utplsql.coverage.excludeObjectExpr` | `""` | A lefedésből kizárandó objektumok regexe (pl. `^UT_` az utPLSQL frameworkhöz). |
 | `utplsql.timeoutMinutes` | `60` | Időtúllépés percben a tesztek futtatásához. |
 | `utplsql.dbmsOutput` | `false` | Engedélyezi a `DBMS_OUTPUT` használatát a teszt-munkamenetben. Hasznos hibakereséshez. |
 | `utplsql.additionalReporters` | `[]` | További riporterek, amelyek minden futtatáskor bekerülnek (pl. `["ut_coverage_html_reporter"]`). Az alapértelmezettek (documentation, junit) mindig szerepelnek, és nem kell felsorolni őket. |
+| `utplsql.tags` | `""` | utPLSQL tagkifejezés a futtatandó tesztek szűréséhez (pl. `fast & !integration`). Üres = mindet futtatja. |
+| `utplsql.run.randomOrder` | `false` | Véletlen sorrendben futtatja a teszteket, hogy felfedje a köztük lévő sorrendfüggőségeket. |
+| `utplsql.run.randomOrderSeed` | `0` | A véletlen sorrend seedje. `0` = az adatbázis választja (nem reprodukálható); > 0 ugyanazt a sorrendet állítja elő. |
 | `utplsql.codeLens.enabled` | `true` | Run/Run with Coverage CodeLens-gombokat jelenít meg a `%suite` és `%test` fölött. |
 | `utplsql.statusBar.enabled` | `true` | A tesztek állapotát jelző mutatót jelenít meg az állapotsorban. |
 | `utplsql.decorations.enabled` | `true` | Sikeres/sikertelen dekorációkat jelenít meg a `%suite` és `%test` sorokon a futtatás után. |
@@ -113,8 +135,9 @@ A bővítmény közvetlenül Oracle-on keresztül csatlakozik, beolvassa a ripor
 | `utplsql.oracleClientLibDir` | `""` | Az Oracle Instant Client könyvtára. Kötelező, ha az `utplsql.oracleClientMode` értéke `thick` (pl. `C:\oracle\instantclient_23_5`). |
 | A hibakeresés nem áll meg a törésponton | Csomag hibakeresési info nélkül, vagy hiányzó hibakeresési jogosultságok | Fordítsd `PLSQL_OPTIMIZE_LEVEL <= 1` értékkel (vagy `ALTER PACKAGE ... COMPILE DEBUG PLSQL_OPTIMIZE_LEVEL = 1`), és adj `DEBUG CONNECT SESSION` + `EXECUTE ON SYS.DBMS_DEBUG` jogosultságot. A `test_*.pkb` töréspontok nem biztos, hogy megállnak (az utPLSQL dinamikus SQL-lel futtatja a teszteket); a tesztelt kódba tedd őket. |
 | `utplsql.oracleClientConfigDir` | `""` | Oracle konfigurációs könyvtár (TNS_ADMIN) a `sqlnet.ora`/`tnsnames.ora` fájlokkal. Opcionális; csak a thick mód használja. |
-| `utplsql.organization` | `file` | Fa-szervezés: `file` (elérési út szerint) vagy `schema` (Séma > Package > Suite > Teszt). `schema` módban a suite-ok az adatbázisból is felderítésre kerülnek (`ALL_OBJECTS`/`ALL_SOURCE`), ha a `.pks` fájlok nincsenek a munkaterületen — virtuális URI-vel `utplsql-db:/` (CodeLens/dekorációk/ugrás a hibához nélkül). |
+| `utplsql.organization` | `file` | Fa-szervezés: `file` (elérési út szerint) vagy `schema` (Séma > Package > Suite > Teszt). `schema` módban a suite-ok az adatbázisból is felderítésre kerülnek (`ut_runner.get_suites_info`, `ALL_OBJECTS`/`ALL_SOURCE` visszaeséssel), ha a `.pks` fájlok nincsenek a munkaterületen — virtuális URI-vel `utplsql-db:/` (végrehajtás és ugrás a hibához működik; CodeLens/dekorációk nélkül). |
 | `utplsql.organization.schemaPattern` | `db/{schema}/**` | Glob-minta a séma kinyeréséhez az elérési útból. Helyőrzőként a `{schema}` használható. `schema` módban a minta alapja alatti könyvtárak (pl. `db/*`) határozzák meg az adatbázisban lekérdezett sémákat. |
+| `utplsql.discovery.source` | `auto` | A fastábla forrása `schema` módban: az `auto` az adatbázis API-t (`ut_runner.get_suites_info`) használja, és elérhetetlenség esetén `ALL_SOURCE`/fájlokra vált; a `database` megköveteli az API-t; a `file` kikapcsolja az adatbázis-felfedezést. |
 | `utplsql.refreshDebounceMs` | `300` | Debounce (ms) a `.pks`/`.pkb` fájlfigyelő eseményeinek összevonásához a Test Explorer frissítése előtt. |
 | `utplsql.compilationDiagnostics.enabled` | `true` | A PL/SQL fordítási hibákat az adatbázisból (`ALL_ERRORS`) aláhúzásként jeleníti meg a szerkesztőben és a Problems panelben (forrás: „utPLSQL Compilation"). |
 | `utplsql.setupDiagnostics.enabled` | `true` | Konfigurációs diagnosztikát (kapcsolat, jogosultságok, verzió) és **utPLSQL-telepítési integritást** (érvénytelen objektumok az UT3 sémában, „Recompile UT3" gyorsjavítással) jelenít meg gyorsjavítási műveletekkel. |
@@ -179,7 +202,7 @@ UTPLSQL_CONN=your_user/password@//host:1521/service
 8. **Közvetlen Oracle (adatfolyam) esetén:** nincs mit telepíteni — a VSIX már tartalmazza a thin `oracledb` illesztőt.
 9. Diagnosztikához használd a palettán a `utPLSQL: Show information` parancsot — API/DB-verziókat mutat másolási lehetőséggel.
 10. **utPLSQL: Select additional reporter...** — QuickPick az adatbázisban elérhető riporterekkel.
-11. **utPLSQL: Cancel execution** — leállítja a futó végrehajtást (`Escape` a futtatás alatt).
+11. **utPLSQL: Cancel run** — leállítja a futó végrehajtást (`Escape` a futtatás alatt).
 12. **utPLSQL: Refresh tests** — a `.pks` fájlok újrafelfedezését kényszeríti ki.
 
 > 💡 **Tipp tesztíráskor:** a feldolgozó (parser) token-vezérelt — elég, ha a fájlban van
@@ -194,7 +217,7 @@ A felderítés a `%suite` és `%test` mellett ezeket is érti:
 |---|---|
 | `-- %disabled` | A suite vagy teszt **nem jelenik meg** a fában (kihagyva a felderítés során) |
 | `-- %throws(-20001)` | Jelzi, hogy a teszt a -20001 kivételt várja (`expectedError` metaadat) |
-| `-- %tags(fast, critical)` | Teszttagek (metaadat; a tagek szerinti szűrés a roadmap része) |
+| `-- %tags(fast, critical)` | Teszttagek; a futtatás szűrése a `utplsql.tags` beállítással (pl. `fast & !integration`) |
 | `-- %displayname(Name)` | A `%test` leírása helyett megjelenített egyedi név |
 | `-- %beforeall` / `%beforeeach` / `%aftereach` / `%afterall` | Lifecycle-horgokkal jelöli meg a suite-ot (metaadat) |
 
@@ -213,14 +236,14 @@ A bővítmény összes parancsa (paletta `Ctrl+Shift+P`, előtag `utPLSQL:`):
 | `utPLSQL: Run tests in this folder` | A kiválasztott mappa suite-jait futtatja | Jobb gomb → mappa |
 | `utPLSQL: Run tests in this folder with coverage` | Ugyanaz, lefedettségi profillal | Jobb gomb → mappa |
 | `utPLSQL: Refresh tests` | A `.pks` fájlok újrafelfedezését kényszeríti ki | — |
-| `utPLSQL: Cancel execution` | Leállítja a futó végrehajtást | — |
-| `utPLSQL: Show utPLSQL information` | API/DB-verziók másolási lehetőséggel | — |
+| `utPLSQL: Cancel run` | Leállítja a futó végrehajtást | — |
+| `utPLSQL: Show utPLSQL info` | API/DB-verziók másolási lehetőséggel | — |
 | `utPLSQL: Select additional reporter...` | QuickPick az adatbázis riportereivel | — |
 | `utPLSQL: Clear session connection` | Eltávolítja a kapcsolatot a munkamenet-gyorsítótárból | — |
 | `utPLSQL: Rerun Last` | Megismétli az utolsó futtatást | `Ctrl+Shift+U L` |
 | `utPLSQL: Run Test at Cursor` | A kurzor alatti tesztet futtatja | `Ctrl+Shift+U U` |
 | `utPLSQL: Run Failed Tests` | Csak a sikertelen teszteket futtatja újra | `Ctrl+Shift+U X` |
-| `utPLSQL: Validate configuration` | Teljes beállítás-ellenőrzést futtat (kapcsolat, UT3-telepítés), és megmutatja az eredményt | — |
+| `utPLSQL: Validate setup` | Teljes beállítás-ellenőrzést futtat (kapcsolat, UT3-telepítés), és megmutatja az eredményt | — |
 | `utPLSQL: Configure connection` | Megnyitja a beállításokat a `utplsql.connection` értéknél | — |
 | `utPLSQL: Copy coverage grants to clipboard` | A jogosultságok SQL-jét a vágólapra másolja | — |
 | `utPLSQL: Show Test Explorer` | A Testing nézetre fókuszál | — |
@@ -229,6 +252,7 @@ A bővítmény összes parancsa (paletta `Ctrl+Shift+P`, előtag `utPLSQL:`):
 | `utPLSQL: Manage connection profiles` | Megnyitja a beállításokat a `utplsql.profiles` értéknél | — |
 | `utPLSQL: Import connections from SQL Developer` | Kapcsolatok importálása az SQL Developerből (connections.xml) | — |
 | `utPLSQL: Debug test (PL/SQL)` | Hibakeresési munkamenetet indít az aktív fájlban lévő tesztre | — |
+| `utPLSQL: Megjegyzés-gyorsítótár újraépítése` | Újraépíti az utPLSQL megjegyzés-gyorsítótárat az adatbázisban, és frissíti a fát | — |
 | `utPLSQL: Fordítás hibakereséshez` | A kijelölt fájl/mappa objektumát hibakeresési információkkal fordítja le | — |
 | `utPLSQL: Run script` | Runs the script open in the editor against a connection profile | Right-click → script file |
 | `utPLSQL: Run script file` | Runs an Explorer script file (decoded with the profile charset) | Right-click → file |
@@ -370,7 +394,7 @@ GRANT SELECT ON SYS.DBA_PROCEDURES TO <ut3_owner>;
 | Üres lefedettség | Hiányzó `GRANT EXECUTE ON DBMS_PROFILER` | Futtasd a jogosultságokat az [Adatbázis-követelmények](#adatbázis-követelmények) rész szerint, vagy használd a `utPLSQL: Copy coverage grants to clipboard` parancsot |
 | Üres lefedettség | Az Oracle 19c további jogosultságokat igényel | `GRANT EXECUTE ON DBMS_PROFILER` + `GRANT EXECUTE ON DBMS_PLSQL_CODE_COVERAGE` |
 | Fordítási hiba minden jelzés nélkül | PL/SQL szintaktikai hibát tartalmazó kód | Tartsd bekapcsolva a `utplsql.compilationDiagnostics.enabled` beállítást (alapértelmezett); az `ALL_ERRORS` hibái egy futtatás után megjelennek a Problems panelben |
-| Kapcsolati hiba | Hibás sztring vagy elérhetetlen adatbázis | Használd a `utPLSQL: Validate configuration` parancsot |
+| Kapcsolati hiba | Hibás sztring vagy elérhetetlen adatbázis | Használd a `utPLSQL: Validate setup` parancsot |
 | A `%suite` nem kerül felismerésre | Hiányzó `%suite`/`create package` a fájlban, vagy `%test` `PROCEDURE` nélkül | Ellenőrizd a specifikációt; futtasd a `utPLSQL: Refresh tests` parancsot |
 | A CodeLens nem jelenik meg | `editor.codeLens` kikapcsolva vagy ütközés | Kapcsold be a `"editor.codeLens": true` értéket; ellenőrizd a `utplsql.codeLens.enabled` beállítást |
 | A billentyűparancsok nem működnek | Ütközés másik bővítménnyel vagy VSCode-parancsikonnal | Menj a Fájl → Beállítások → Billentyűparancsok menübe, és keress rá a `utplsql` kifejezésre az újradefiniáláshoz |

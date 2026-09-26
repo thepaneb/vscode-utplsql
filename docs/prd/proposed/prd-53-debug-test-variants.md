@@ -1,3 +1,5 @@
+<!-- GENERATED FROM docs/brain/20-PRDs/prd-53-debug-test-variants.md — DO NOT EDIT -->
+
 # PRD-53 — Debug de testes: variações (cursor, falhos, último)
 
 | Campo | Valor |
@@ -6,7 +8,7 @@
 | Autor | Gil Cleber Barboza |
 | Data | 2026-09-06 |
 | Componente | Extensão `paneb.vscode-utplsql` |
-| Versão alvo | 0.14.0 |
+| Versão alvo | 0.15.0 |
 | Arquivos afetados | `src/extension.ts`, `src/state.ts`, `package.json` |
 | Esforço estimado | 0,5–1 dia |
 | Complexidade | Baixa |
@@ -105,7 +107,7 @@ Extrair `pickTestItem` (QuickPick quando há mais de um alvo).
 
 ## 9. Rollout
 
-- Release 0.14.0 (minor).
+- Release 0.15.0 (minor).
 - CHANGELOG: "Debug: no cursor, nos falhos e na última execução".
 
 ## 10. Critérios de aceite

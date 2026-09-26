@@ -1,3 +1,5 @@
+<!-- GENERATED FROM docs/brain/20-PRDs/prd-07-upgrade-node-ts.md — DO NOT EDIT -->
+
 # PRD-07 — Upgrade Node 24 + TypeScript 6.0
 
 | Campo | Valor |

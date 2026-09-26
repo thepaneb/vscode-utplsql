@@ -26,5 +26,18 @@ docs/*
 !docs/functional/
 !docs/functional/**
 
+# Second brain (vault Obsidian) — versionado; ver docs/brain/README.md
+!docs/brain/
+!docs/brain/**
+# Dentro do vault: não versionar estado, binários de plugin e segredos
+docs/brain/.obsidian/workspace*.json
+docs/brain/.obsidian/graph.json
+docs/brain/.obsidian/cache/
+docs/brain/.obsidian/plugins/*/main.js
+docs/brain/.obsidian/plugins/*/styles.css
+docs/brain/.obsidian/plugins/obsidian-local-rest-api/data.json
+docs/brain/.trash/
+docs/brain/90-Daily/
+
 # Ferramentas locais de agentes
 .kilo/

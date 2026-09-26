@@ -1,3 +1,5 @@
+<!-- GENERATED FROM docs/brain/70-Wiki/Test-explorer.md — DO NOT EDIT -->
+
 # Test Explorer
 
 The extension registers a native VSCode **Test Explorer** (`utplsql`) — suites and
@@ -75,7 +77,8 @@ utPLSQL documentation output streams to the test output in real time.
 |---|---|
 | `-- %disabled` | Suite/test is hidden from the tree |
 | `-- %displayname(Name)` | Label shown instead of the `%test` description |
-| `-- %tags(...)`, `-- %throws(...)`, `-- %before*` | Metadata only (no visual change yet) |
+| `-- %tags(...)` | Tags are attached to the test; filter execution with the `utplsql.tags` setting (e.g. `fast & !integration`) |
+| `-- %throws(...)`, `-- %before*` | Metadata only (no visual change yet) |
 
 ## Database-discovered suites
 

@@ -20,14 +20,8 @@ const { execSync } = require('child_process');
 // Config
 // ---------------------------------------------------------------------------
 const PRD_DIR = path.resolve(__dirname, '..', 'docs', 'prd');
+const VAULT_PRD_DIR = path.resolve(__dirname, '..', 'docs', 'brain', '20-PRDs');
 const MAPPING_FILE = path.join(PRD_DIR, '.prd-issues.json');
-
-const DIR_STATUS = {
-  completed: 'completed',
-  approved: 'approved',
-  proposed: 'proposed',
-  'in-progress': 'in-progress',
-};
 
 const STATUS_LABEL = {
   completed: 'prd:completed',
@@ -35,6 +29,8 @@ const STATUS_LABEL = {
   proposed: 'prd:proposed',
   'in-progress': 'prd:in-progress',
 };
+
+const STATUS = new Set(Object.keys(STATUS_LABEL));
 
 // ---------------------------------------------------------------------------
 // Helpers
@@ -54,6 +50,18 @@ function getRepo() {
 function prdNumber(name) {
   const m = name.match(/prd-(\d+)-/);
   return m ? m[1] : null;
+}
+
+/** Frontmatter simples (key: value) da nota. */
+function parseFrontmatter(text) {
+  const m = text.match(/^---\r?\n([\s\S]*?)\r?\n---/);
+  const fm = {};
+  if (!m) return { fm, body: text };
+  for (const line of m[1].split(/\r?\n/)) {
+    const mm = line.match(/^([A-Za-z_][\w-]*):\s?(.*)$/);
+    if (mm) fm[mm[1]] = mm[2].replace(/^["']|["']$/g, '');
+  }
+  return { fm, body: text.slice(m[0].length) };
 }
 
 function github(path, method = 'GET', body) {
@@ -102,21 +110,30 @@ function ensureLabels() {
 }
 
 // ---------------------------------------------------------------------------
-// Scan local PRDs
+// Scan local PRDs (fonte: frontmatter das notas do vault)
 // ---------------------------------------------------------------------------
 function scanPRDs() {
   const prds = [];
-  for (const [dir, status] of Object.entries(DIR_STATUS)) {
-    const dirPath = path.join(PRD_DIR, dir);
-    if (!fs.existsSync(dirPath)) continue;
-    for (const file of fs.readdirSync(dirPath)) {
-      if (!file.endsWith('.md') || file === 'template.md') continue;
-      const filepath = path.join(dirPath, file);
-      const content = fs.readFileSync(filepath, 'utf8');
-      const title = content.split('\n')[0].replace(/^#\s+PRD\s*[—–-]\s*/, '').trim();
-      const number = prdNumber(file);
-      prds.push({ number, title, status, file, content });
+  if (!fs.existsSync(VAULT_PRD_DIR)) {
+    console.warn(`  ⚠️  Vault ausente (${VAULT_PRD_DIR}) — nada a sincronizar.`);
+    return prds;
+  }
+  for (const file of fs.readdirSync(VAULT_PRD_DIR)) {
+    if (!/^prd-\d+.*\.md$/.test(file)) continue;
+    const raw = fs.readFileSync(path.join(VAULT_PRD_DIR, file), 'utf8');
+    const { fm, body } = parseFrontmatter(raw);
+    if (!STATUS.has(fm.status)) {
+      console.warn(`  ⚠️  ${file}: status inválido "${fm.status ?? '?'}" — ignorado.`);
+      continue;
     }
+    const title = fm.titulo || file.replace(/\.md$/, '');
+    prds.push({
+      number: prdNumber(file),
+      title,
+      status: fm.status,
+      file,
+      content: body,
+    });
   }
   return prds.sort((a, b) => Number(a.number) - Number(b.number));
 }
@@ -147,11 +164,24 @@ async function sync() {
   console.log('  OK');
 
   console.log('\n📥 Carregando issues existentes...');
-  const existing = await github('/issues?state=all&per_page=100');
+  // Pagina todas as issues: /issues devolve no máximo 100 por página e, sem
+  // isso, PRDs antigos saem da primeira página e são recriados como duplicatas.
+  const existing = [];
+  for (let page = 1; ; page++) {
+    const batch = await github(`/issues?state=all&per_page=100&page=${page}`);
+    if (!Array.isArray(batch) || batch.length === 0) break;
+    existing.push(...batch);
+    if (batch.length < 100) break;
+  }
   const existingByPRD = {};
   for (const issue of existing) {
     const m = issue.title.match(/^PRD-(\d+):/);
-    if (m) existingByPRD[m[1]] = issue;
+    if (m) {
+      // Havendo duplicatas, o menor número é o canônico — mantém o mapeamento
+      // estável entre execuções.
+      const current = existingByPRD[m[1]];
+      if (!current || issue.number < current.number) existingByPRD[m[1]] = issue;
+    }
   }
 
   const mapping = loadMapping();
@@ -171,7 +201,7 @@ async function sync() {
       mapping[prd.number] = issue.number;
     } else {
       // Extrair primeira seção como body resumido (limite de caracteres)
-      const body = `_Sincronizado automaticamente de \`docs/prd/${prd.file}\`_\n\n`
+      const body = `_Sincronizado automaticamente de \`docs/prd/${prd.status}/${prd.file}\`_\n\n`
         + prd.content.split('## ').slice(0, 2).join('\n## ').slice(0, 8000);
       console.log(`  🆕 PRD-${prd.number}: criando issue...`);
       const created = await github('/issues', 'POST', {

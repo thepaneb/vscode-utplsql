@@ -1,3 +1,4 @@
+<!-- GENERATED FROM docs/brain/10-Projeto/Funcional/04-code-coverage.md — DO NOT EDIT -->
 # 04 — Code Coverage
 
 Cobertura de código via `ut_coverage_cobertura_reporter` (formato Cobertura XML),
@@ -143,6 +144,17 @@ Se `coverage.xml` não for gerado:
 |---|---|---|
 | `utplsql.sourcePath` | `install` | Pasta do código fonte |
 | `utplsql.coverageOwner` | `""` | Schema owner (vazio = usuário conexão) |
+| `utplsql.coverage.schemes` | `[]` | Schemas cobertos (sobrepõe o owner) |
+| `utplsql.coverage.includeObjects` | `[]` | Objetos a incluir (`OWNER.NAME`) — objetos alcançados só dinamicamente |
+| `utplsql.coverage.excludeObjects` | `[]` | Objetos a excluir (`OWNER.NAME`) |
+| `utplsql.coverage.includeSchemaExpr` | `""` | Regex de schema a incluir |
+| `utplsql.coverage.includeObjectExpr` | `""` | Regex de objeto a incluir |
+| `utplsql.coverage.excludeSchemaExpr` | `""` | Regex de schema a excluir |
+| `utplsql.coverage.excludeObjectExpr` | `""` | Regex de objeto a excluir (ex.: `^UT_` para o framework) |
+
+> PRD-79: os escopos vão como binds ao `ut_runner.run` (`a_include_objects`,
+> `a_exclude_objects` e as regex), que monta o `ut_coverage_options` internamente.
+> O reporter de cobertura não recebe opções. Default preserva o XML anterior.
 
 ## Cobertura por declaração (PRD-48)
 

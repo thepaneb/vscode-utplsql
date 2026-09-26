@@ -18,6 +18,20 @@ test('debugger liveRuntime: oracledb sem default usa o namespace (?? mod)', asyn
   assert.strictEqual(conn, undefined);
 });
 
+test('debugger liveRuntime: getConnection que falha retorna undefined (catch)', async () => {
+  __resetConfigValues();
+  const orig = process.env.UTPLSQL_CONN;
+  process.env.UTPLSQL_CONN = 'u/p@//h:1521/s';
+  try {
+    const { liveRuntime } = await import('../../debugger.js');
+    const conn = await liveRuntime.acquireConnection();
+    assert.strictEqual(conn, undefined);
+  } finally {
+    if (orig === undefined) delete process.env.UTPLSQL_CONN;
+    else process.env.UTPLSQL_CONN = orig;
+  }
+});
+
 test('applySqlCoverage: oracledb sem default degrada sem cobertura', async () => {
   const base = fs.mkdtempSync(path.join(os.tmpdir(), 'vsql-nodef-'));
   try {

@@ -1,3 +1,5 @@
+<!-- GENERATED FROM docs/brain/20-PRDs/prd-66-connection-robustness-logging.md — DO NOT EDIT -->
+
 # PRD-66 — Robustez de conexão, logging e cache
 
 | Campo | Valor |

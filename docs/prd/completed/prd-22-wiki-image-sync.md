@@ -1,3 +1,5 @@
+<!-- GENERATED FROM docs/brain/20-PRDs/prd-22-wiki-image-sync.md — DO NOT EDIT -->
+
 # PRD-22 — Sincronizar imagens no workflow da wiki
 
 | Campo | Valor |

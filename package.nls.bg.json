@@ -25,5 +25,6 @@
   "nls.command.runScript": "utPLSQL: Run script",
   "nls.command.runScriptFile": "utPLSQL: Run script file",
   "nls.command.runScriptFolder": "utPLSQL: Run script folder",
-  "nls.command.compileForDebug": "utPLSQL: Компилиране за отстраняване на грешки"
+  "nls.command.compileForDebug": "utPLSQL: Компилиране за отстраняване на грешки",
+  "nls.command.rebuildAnnotations": "utPLSQL: Възстановяване на кеша с анотации"
 }

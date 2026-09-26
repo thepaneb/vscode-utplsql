@@ -54,41 +54,51 @@ function staleGlueFiles(target, files, version) {
   return nodes.filter((f) => f !== keep);
 }
 
-function readVersion(pkgPath) {
-  return JSON.parse(fs.readFileSync(pkgPath, 'utf8')).version;
+function readVersion(pkgPath, fsImpl = fs) {
+  return JSON.parse(fsImpl.readFileSync(pkgPath, 'utf8')).version;
 }
 
-function main() {
-  const target = process.argv[2];
+function main({
+  argv = process.argv.slice(2),
+  fsImpl = fs,
+  spawnSyncImpl = spawnSync,
+  platform = process.platform,
+  log = console.log,
+  error = console.error,
+} = {}) {
+  const target = argv[0];
   if (!isPackageTarget(target)) {
-    console.error(`target obrigatório e suportado: ${PACKAGE_TARGETS.join(', ')}`);
-    process.exit(1);
+    error(`target obrigatório e suportado: ${PACKAGE_TARGETS.join(', ')}`);
+    return 1;
   }
 
   const root = path.resolve(__dirname, '..');
   const releaseDir = path.join(root, 'node_modules', 'oracledb', 'build', 'Release');
-  const oracledbVersion = readVersion(path.join(root, 'node_modules', 'oracledb', 'package.json'));
-  const pkgVersion = readVersion(path.join(root, 'package.json'));
+  const oracledbVersion = readVersion(
+    path.join(root, 'node_modules', 'oracledb', 'package.json'),
+    fsImpl,
+  );
+  const pkgVersion = readVersion(path.join(root, 'package.json'), fsImpl);
 
   const mode = isGlueTarget(target) ? 'thick+thin' : 'thin-only';
-  const stale = staleGlueFiles(target, fs.readdirSync(releaseDir), oracledbVersion);
+  const stale = staleGlueFiles(target, fsImpl.readdirSync(releaseDir), oracledbVersion);
   for (const file of stale) {
-    fs.rmSync(path.join(releaseDir, file));
-    console.log(`  🗑️  glue removida (não pertence a ${target}): ${file}`);
+    fsImpl.rmSync(path.join(releaseDir, file));
+    log(`  🗑️  glue removida (não pertence a ${target}): ${file}`);
   }
 
   const out = `vscode-utplsql-${pkgVersion}@${target}.vsix`;
-  console.log(`📦 Empacotando ${target} (${mode}) → ${out}`);
-  const result = spawnSync('vsce', ['package', '--target', target, '--out', out], {
+  log(`📦 Empacotando ${target} (${mode}) → ${out}`);
+  const result = spawnSyncImpl('vsce', ['package', '--target', target, '--out', out], {
     stdio: 'inherit',
     cwd: root,
-    shell: process.platform === 'win32',
+    shell: platform === 'win32',
   });
-  process.exit(result.status ?? 0);
+  return result.status ?? 1;
 }
 
 if (require.main === module) {
-  main();
+  process.exit(main());
 }
 
 module.exports = {
@@ -98,5 +108,7 @@ module.exports = {
   glueFileName,
   isGlueTarget,
   isPackageTarget,
+  readVersion,
   staleGlueFiles,
+  main,
 };

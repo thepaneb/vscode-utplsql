@@ -33,37 +33,46 @@ function buildVsceArgs(args) {
   return ['publish'];
 }
 
-function main() {
-  if (!process.env.CI) {
-    console.warn(
+function main({
+  argv = process.argv.slice(2),
+  env = process.env,
+  fsImpl = fs,
+  spawnSyncImpl = spawnSync,
+  platform = process.platform,
+  log = console.log,
+  warn = console.warn,
+  error = console.error,
+} = {}) {
+  if (!env.CI) {
+    warn(
       '⚠️ Publicacao apenas via GitHub workflow (release). Use npm run package para .vsix local.',
     );
-    process.exit(1);
+    return 1;
   }
 
-  const args = process.argv.slice(2);
+  const args = argv;
   const vsceArgs = buildVsceArgs(args);
   const packagePath = flagValue(args, '--packagePath');
 
-  if (packagePath && !fs.existsSync(packagePath)) {
-    console.error(`❌ VSIX não encontrado: ${packagePath}`);
-    process.exit(1);
+  if (packagePath && !fsImpl.existsSync(packagePath)) {
+    error(`❌ VSIX não encontrado: ${packagePath}`);
+    return 1;
   }
   if (packagePath) {
-    console.log(`📦 Publicando artefato: ${packagePath}`);
+    log(`📦 Publicando artefato: ${packagePath}`);
   } else if (flagValue(args, '--target')) {
-    console.log(`📦 Publicando (re-empacotando) target: ${flagValue(args, '--target')}`);
+    log(`📦 Publicando (re-empacotando) target: ${flagValue(args, '--target')}`);
   }
 
-  const result = spawnSync('vsce', vsceArgs, {
+  const result = spawnSyncImpl('vsce', vsceArgs, {
     stdio: 'inherit',
-    shell: process.platform === 'win32',
+    shell: platform === 'win32',
   });
-  process.exit(result.status ?? 0);
+  return result.status ?? 1;
 }
 
 if (require.main === module) {
-  main();
+  process.exit(main());
 }
 
-module.exports = { buildVsceArgs };
+module.exports = { buildVsceArgs, main };

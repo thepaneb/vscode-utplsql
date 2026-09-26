@@ -1,3 +1,5 @@
+<!-- GENERATED FROM docs/brain/20-PRDs/prd-16-integration-test-invocation-modes.md — DO NOT EDIT -->
+
 # PRD-16 — Testes de integração para ambos os modos de invocação
 
 | Campo | Valor |

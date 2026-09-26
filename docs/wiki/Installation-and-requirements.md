@@ -1,3 +1,5 @@
+<!-- GENERATED FROM docs/brain/70-Wiki/Installation-and-requirements.md — DO NOT EDIT -->
+
 # Installation and Requirements
 
 ## Installation
@@ -18,7 +20,7 @@ and install:
 
 **Command line:**
 ```bash
-code --install-extension vscode-utplsql-0.12.1.vsix
+code --install-extension vscode-utplsql-0.13.0.vsix
 ```
 
 **UI:** Extensions Panel (`Ctrl+Shift+X`) → `...` (top-right corner)
@@ -47,8 +49,13 @@ SELECT ut_meta.version() FROM dual;
 
 | Oracle | utPLSQL | VSCode | Extension |
 |---|---|---|---|
-| 19c+ | v3.1.0+ | 1.88+ | 0.3.0+ |
-| 23ai | v3.2.0+ | 1.88+ | 0.6.0+ |
+| 18c+ | v3.1.x / v3.2.0+ | 1.88+ | 0.3.0+ |
+| 12.2 | v3.1.x only | 1.88+ | 0.13.0+ |
+
+> **Oracle 12.2:** utPLSQL **v3.2.x does not compile** on 12.2
+> (`PLS-00222` in `UT_ANNOTATION_MANAGER`; it requires an 18c+ feature). Use
+> **v3.1.x**. Also, the 12.2 image ships a `WE8DEC` database character set,
+> which loses characters outside it (e.g. `€` → `¿`); prefer `AL32UTF8`.
 
 > The extension is just the GUI client — tests are executed by the Oracle
 > database, via node-oracledb (thin driver, or thick when configured).

@@ -1,3 +1,5 @@
+<!-- GENERATED FROM docs/brain/60-README/README.tr.md — DO NOT EDIT -->
+
 <p align="center">
   <img src="images/icon.png" alt="utPLSQL Test Runner Logo" width="128" height="128">
 </p>
@@ -27,6 +29,9 @@
 - 🔌 **Bağlantı profilleri** — status bar veya komut paleti aracılığıyla profil başına ayarlarla birden fazla ortam (DEV/TEST/PROD) arasında kaydedin ve geçiş yapın.
 - 📜 **SQL betikleri** — geçerli betiği, Explorer dosyasını veya tüm klasörü etkin bağlantı profilinde çalıştırın (charset'e duyarlı, `DBMS_OUTPUT` ve `stopOnError` ile).
 - 📈 **İfade ve görünüm kapsamı** — Coverage sekmesi dosya başına `% of statements` (PROCEDURE/FUNCTION) gösterir ve `V$SQL` üzerinden çalıştırılan görünümleri izler.
+- 🏷️ **Etiketler ve rastgele sıra** — testleri `utplsql.tags` ile filtreleyin (örn. `fast & !integration`) ve yeniden üretilebilir seed ile rastgele sırada çalıştırın (`utplsql.run.randomOrder`).
+- 🎯 **Kapsam aralığı** — framework gürültüsünü kaldırmak ve dinamik erişilen nesneleri eklemek için nesneleri ve şema/nesne regex'lerini (`utplsql.coverage.*`) dahil/hariç tutun.
+- 🗄️ **DB-first keşif** — ağacı `ut_runner.get_suites_info`'dan oluşturun ve açıklama önbelleğini paletten yeniden oluşturun.
 - 🐛 **PL/SQL Hata Ayıklama** — `DBMS_DEBUG` üzerinden utPLSQL testlerinde kesme noktaları ve adım adım hata ayıklama (doğal Debug Adapter).
 - 🌍 **i18n — 24 dil** — `utplsql.language` VSCode'u takip eder (24 yerel ayar: pt-br, en, en-gb, es, zh-cn, zh-tw, ja, de, fr, it, ko, ru, tr, pl, cs, hu, bg, el, id, ro, sr, th, uk, vi).
 
@@ -43,6 +48,13 @@ Uzantı iki şekilde kurulabilir:
 
 - [**utPLSQL**](https://github.com/utPLSQL/utPLSQL) **(UT3)** Oracle veritabanına kurulu.
 - Veritabanı dışında hiçbir şey gerekmez — VSIX ince `oracledb` sürücüsünü zaten içerir (Instant Client gerekmez).
+
+**Oracle / utPLSQL uyumluluğu:**
+
+| Oracle | utPLSQL | Notlar |
+|---|---|---|
+| 18c+ | v3.2.x (18c+) / v3.1.x | Önerilir; charset `AL32UTF8`. |
+| 12.2 | yalnızca v3.1.x | v3.2.x derlenmez (`PLS-00222`). İmajın `WE8DEC`'i gösterilemeyen karakterleri kaybeder (örn. `€`); ince sürücü `NLS_LANG`'i yok sayar. |
 - **VSCode 1.88+** (Test Coverage API).
 
 Uzantı yalnızca "grafik istemcidir" — testleri çalıştıran veritabanıdır: node-oracledb doğrudan bağlantısı üzerinden.
@@ -98,9 +110,19 @@ Geçici dosya yok, toplu işin bitmesi beklenmez. Sonuçlar Test Explorer'da
 | `utplsql.sourcePath` | `install` | Üretim kodunun klasörü (kapsamı dosyalara eşlemek için). |
 | `utplsql.includePatterns` | `["**/*.pks"]` | `%suite`/`%test` içeren şemaları keşfetmek için glob'lar. Testleriniz `.sql` içindeyse `["**/*.sql"]` kullanın. |
 | `utplsql.coverageOwner` | `""` | Kapsanan nesnelerin şema sahibi. Boş = bağlantı kullanıcısını kullanır (büyük harfle). |
+| `utplsql.coverage.schemes` | `[]` | Kapsanan şemalar (`a_coverage_schemes`). Boş = bağlantı kullanıcısı (veya `utplsql.coverageOwner`). |
+| `utplsql.coverage.includeObjects` | `[]` | Kapsama dahil edilecek nesneler, `OWNER.NAME` biçiminde (örn. `["APP.MY_PKG"]`). Yalnızca dinamik olarak erişilen nesneler için kullanışlıdır. |
+| `utplsql.coverage.excludeObjects` | `[]` | Kapsamdan hariç tutulacak nesneler, `OWNER.NAME` biçiminde (örn. `["UT3.UT_COVERAGE"]`). |
+| `utplsql.coverage.includeSchemaExpr` | `""` | Kapsama dahil edilecek şemaların regex'i (örn. `^APP$`). |
+| `utplsql.coverage.includeObjectExpr` | `""` | Kapsama dahil edilecek nesnelerin regex'i. |
+| `utplsql.coverage.excludeSchemaExpr` | `""` | Kapsamdan hariç tutulacak şemaların regex'i. |
+| `utplsql.coverage.excludeObjectExpr` | `""` | Kapsamdan hariç tutulacak nesnelerin regex'i (örn. utPLSQL çatısı için `^UT_`). |
 | `utplsql.timeoutMinutes` | `60` | Çalıştırma zaman aşımı (dakika). |
 | `utplsql.dbmsOutput` | `false` | Test oturumunda `DBMS_OUTPUT`'u etkinleştirir. |
 | `utplsql.additionalReporters` | `[]` | Her çalıştırmada eklenecek ek raporlayıcılar (örn. `["ut_coverage_html_reporter"]`). Varsayılanlar (documentation, junit) her zaman dahildir ve listelenmeleri gerekmez. |
+| `utplsql.tags` | `""` | Hangi testlerin çalışacağını filtreleyen utPLSQL etiket ifadesi (örn. `fast & !integration`). Boş ise tümü çalışır. |
+| `utplsql.run.randomOrder` | `false` | Testleri aralarındaki sıra bağımlılıklarını ortaya çıkarmak için rastgele sırayla çalıştırır. |
+| `utplsql.run.randomOrderSeed` | `0` | Rastgele sıranın seed değeri. `0` = veritabanı seçer (yeniden üretilemez); > 0 aynı sırayı üretir. |
 | `utplsql.codeLens.enabled` | `true` | `%suite` ve `%test` üzerinde Run/Run with Coverage CodeLens düğmelerini gösterir. |
 | `utplsql.statusBar.enabled` | `true` | Durum çubuğunda test durum göstergesini gösterir. |
 | `utplsql.decorations.enabled` | `true` | Çalıştırmadan sonra `%suite` ve `%test` satırlarında geçti/kaldı süslemelerini gösterir. |
@@ -112,8 +134,9 @@ Geçici dosya yok, toplu işin bitmesi beklenmez. Sonuçlar Test Explorer'da
 | `utplsql.oracleClientLibDir` | `""` | Oracle Instant Client dizini. `utplsql.oracleClientMode` `thick` olduğunda zorunludur (örn. `C:\oracle\instantclient_23_5`). |
 | Hata ayıklama kesme noktasında durmuyor | Paket hata ayıklama bilgisi olmadan derlenmiş veya hata ayıklama yetkileri eksik | `PLSQL_OPTIMIZE_LEVEL <= 1` ile derleyin (veya `ALTER PACKAGE ... COMPILE DEBUG PLSQL_OPTIMIZE_LEVEL = 1`) ve `DEBUG CONNECT SESSION` + `EXECUTE ON SYS.DBMS_DEBUG` verin. `test_*.pkb` içindeki kesme noktaları isabet etmeyebilir (utPLSQL testleri dinamik SQL ile çalıştırır); bunları test edilen koda koyun. |
 | `utplsql.oracleClientConfigDir` | `""` | `sqlnet.ora`/`tnsnames.ora` içeren Oracle yapılandırma dizini (TNS_ADMIN). İsteğe bağlıdır; yalnızca thick modda kullanılır. |
-| `utplsql.organization` | `file` | Ağaç düzeni: `file` (yola göre) veya `schema` (Schema > Package > Suite > Test). `schema` modunda, `.pks` dosyaları çalışma alanında yoksa paketler de veritabanından (`ALL_OBJECTS`/`ALL_SOURCE`) keşfedilir — sanal URI `utplsql-db:/` ile (CodeLens/süsleme/hataya atlama yok). |
+| `utplsql.organization` | `file` | Ağaç düzeni: `file` (yola göre) veya `schema` (Schema > Package > Suite > Test). `schema` modunda, `.pks` dosyaları çalışma alanında yoksa paketler de veritabanından (`ut_runner.get_suites_info`, `ALL_OBJECTS`/`ALL_SOURCE` yedeğiyle) keşfedilir — sanal URI `utplsql-db:/` ile (çalıştırma ve hataya atlama çalışır; CodeLens/süsleme yok). |
 | `utplsql.organization.schemaPattern` | `db/{schema}/**` | Şemayı yoldan çıkarmak için glob deseni. Yer tutucu olarak `{schema}` kullanın. `schema` modunda desen tabanının altındaki dizinler (örn. `db/*`) veritabanında sorgulanan şemaları tanımlar. |
+| `utplsql.discovery.source` | `auto` | `schema` modunda test ağacının kaynağı: `auto` veritabanı API'sini (`ut_runner.get_suites_info`) kullanır ve kullanılamadığında `ALL_SOURCE`/dosyalara döner; `database` API'yi zorunlu kılar; `file` veritabanı keşfini kapatır. |
 | `utplsql.refreshDebounceMs` | `300` | Test Explorer'ı yenilemeden önce `.pks`/`.pkb` dosya izleyici olaylarını birleştirmek için debounce (ms). |
 | `utplsql.compilationDiagnostics.enabled` | `true` | Veritabanındaki PL/SQL derleme hatalarını (`ALL_ERRORS`) editörde ve Problems Panel'inde (source "utPLSQL Compilation") alt çizgi olarak gösterir. |
 | `utplsql.setupDiagnostics.enabled` | `true` | Yapılandırma tanılamalarını (bağlantı, yetkiler, sürüm) ve **utPLSQL kurulum bütünlüğünü** (UT3 şemasındaki geçersiz nesneler, "Recompile UT3" hızlı düzeltmesiyle) hızlı düzeltme eylemleriyle gösterir. |
@@ -178,7 +201,7 @@ UTPLSQL_CONN=your_user/password@//host:1521/service
 8. **Oracle doğrudan (akış) için:** kurulacak bir şey yok — VSIX ince `oracledb` sürücüsünü zaten içerir.
 9. Tanılama için palette `utPLSQL: Show information` kullanın — kopyalama seçeneğiyle sürüm bilgilerini gösterir.
 10. **utPLSQL: Select additional reporter...** — veritabanında bulunan raporlayıcılarla QuickPick.
-11. **utPLSQL: Cancel execution** — çalışan çalıştırmayı durdurur (çalıştırma sırasında `Escape`).
+11. **utPLSQL: Cancel run** — çalışan çalıştırmayı durdurur (çalıştırma sırasında `Escape`).
 12. **utPLSQL: Refresh tests** — `.pks` dosyalarının yeniden keşfini zorlar.
 
 > 💡 **Test yazarken:** ayrıştırıcı belirteç (token) güdümlüdür — dosyada `%suite`
@@ -193,7 +216,7 @@ UTPLSQL_CONN=your_user/password@//host:1521/service
 |---|---|
 | `-- %disabled` | Paket veya test ağaçta **görünmez** (keşifte atlanır) |
 | `-- %throws(-20001)` | Testin 20001 istisnasını beklediğini işaretler (`expectedError` meta verisi) |
-| `-- %tags(fast, critical)` | Test etiketleri (meta veri; etiket filtreleme yol haritasında) |
+| `-- %tags(fast, critical)` | Test etiketleri; çalıştırmayı `utplsql.tags` ayarıyla filtreleyin (örn. `fast & !integration`) |
 | `-- %displayname(Name)` | `%test` açıklaması yerine gösterilen özel ad |
 | `-- %beforeall` / `%beforeeach` / `%aftereach` / `%afterall` | Paketi yaşam döngüsü kancalarıyla işaretler (meta veri) |
 
@@ -212,14 +235,14 @@ Tüm uzantı komutları (palet `Ctrl+Shift+P` öneki `utPLSQL:`):
 | `utPLSQL: Run tests in this folder` | Seçili klasörün paketlerini çalıştırır | Sağ tık → klasör |
 | `utPLSQL: Run tests in this folder with coverage` | Aynısı, kapsam profiliyle | Sağ tık → klasör |
 | `utPLSQL: Refresh tests` | `.pks` dosyalarının yeniden keşfini zorlar | — |
-| `utPLSQL: Cancel execution` | Çalışan çalıştırmayı durdurur | — |
-| `utPLSQL: Show utPLSQL information` | Kopyalama seçeneğiyle sürüm bilgileri | — |
+| `utPLSQL: Cancel run` | Çalışan çalıştırmayı durdurur | — |
+| `utPLSQL: Show utPLSQL info` | Kopyalama seçeneğiyle sürüm bilgileri | — |
 | `utPLSQL: Select additional reporter...` | Veritabanı raporlayıcılarıyla QuickPick | — |
 | `utPLSQL: Clear session connection` | Bağlantıyı oturum önbelleğinden kaldırır | — |
 | `utPLSQL: Rerun Last` | Son çalıştırmayı tekrarlar | `Ctrl+Shift+U L` |
 | `utPLSQL: Run Test at Cursor` | İmlecin altındaki testi çalıştırır | `Ctrl+Shift+U U` |
 | `utPLSQL: Run Failed Tests` | Yalnızca başarısız testleri yeniden çalıştırır | `Ctrl+Shift+U X` |
-| `utPLSQL: Validate configuration` | Tam kurulum doğrulaması yapar (bağlantı, UT3 kurulumu) ve sonuçları gösterir | — |
+| `utPLSQL: Validate setup` | Tam kurulum doğrulaması yapar (bağlantı, UT3 kurulumu) ve sonuçları gösterir | — |
 | `utPLSQL: Configure connection` | Ayarları `utplsql.connection` konumunda açar | — |
 | `utPLSQL: Copy coverage grants to clipboard` | Yetki SQL'ini panoya kopyalar | — |
 | `utPLSQL: Show Test Explorer` | Testing görünümüne odaklanır | — |
@@ -228,6 +251,7 @@ Tüm uzantı komutları (palet `Ctrl+Shift+P` öneki `utPLSQL:`):
 | `utPLSQL: Manage connection profiles` | Ayarları `utplsql.profiles` konumunda açar | — |
 | `utPLSQL: Import connections from SQL Developer` | SQL Developer'dan bağlantıları içe aktarır (connections.xml) | — |
 | `utPLSQL: Debug test (PL/SQL)` | Etkin dosyanın altındaki testin hata ayıklama oturumunu başlatır | — |
+| `utPLSQL: Açıklama önbelleğini yeniden oluştur` | utPLSQL açıklama önbelleğini veritabanında yeniden oluşturur ve ağacı yeniler | — |
 | `utPLSQL: Hata ayıklama için derle` | Seçili dosya/klasör nesnesini hata ayıklama bilgileriyle derler | — |
 | `utPLSQL: Run script` | Runs the script open in the editor against a connection profile | Right-click → script file |
 | `utPLSQL: Run script file` | Runs an Explorer script file (decoded with the profile charset) | Right-click → file |
@@ -324,11 +348,11 @@ GRANT SELECT ON SYS.DBA_PROCEDURES TO <ut3_owner>;
 
 | Belirti | Olası neden | Çözüm |
 |---|---|---|
-| Paketler görünmüyor | Veritabanı bulunamadı | Tanılama için `utPLSQL: Validate configuration` çalıştırın |
+| Paketler görünmüyor | Veritabanı bulunamadı | Tanılama için `utPLSQL: Validate setup` çalıştırın |
 | Boş kapsam | `GRANT EXECUTE ON DBMS_PROFILER` eksik | [Veritabanı gereksinimleri](#veritabanı-gereksinimleri) içindeki yetkileri çalıştırın veya `utPLSQL: Copy coverage grants to clipboard` kullanın |
 | Boş kapsam | Oracle 19c ek yetkiler gerektirir | `GRANT EXECUTE ON DBMS_PROFILER` + `GRANT EXECUTE ON DBMS_PLSQL_CODE_COVERAGE` |
 | Neden belirtilmeyen derleme hatası | PL/SQL sözdizimi hatası olan kod | `utplsql.compilationDiagnostics.enabled` seçeneğini açık tutun (varsayılan); `ALL_ERRORS` kaynaklı hatalar bir çalıştırmadan sonra Problems Panel'inde görünür |
-| Bağlantı hatası | Hatalı biçimli dize veya erişilemeyen veritabanı | `utPLSQL: Validate configuration` kullanın |
+| Bağlantı hatası | Hatalı biçimli dize veya erişilemeyen veritabanı | `utPLSQL: Validate setup` kullanın |
 | Çalışırken zaman aşımı | Testler `timeoutMinutes` değerinden uzun sürüyor | `utplsql.timeoutMinutes` değerini artırın |
 | `%suite` tanınmıyor | Dosyada `%suite`/`create package` eksik veya `%test` `PROCEDURE` olmadan | Şemayı kontrol edin; `utPLSQL: Refresh tests` çalıştırın |
 | CodeLens görünmüyor | `editor.codeLens` devre dışı veya çakışma | `"editor.codeLens": true` ayarlayın; `utplsql.codeLens.enabled` değerini kontrol edin |

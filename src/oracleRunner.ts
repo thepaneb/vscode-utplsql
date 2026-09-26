@@ -327,6 +327,30 @@ export async function checkReporterExists(
   return reporters.some((r) => bare(r) === bare(reporterName));
 }
 
+/**
+ * Reconstrói o cache de anotações do utPLSQL no banco (PRD-77) chamando
+ * `ut_runner.rebuild_annotation_cache(<owner>)`, com o usuário da conexão como
+ * owner. Lança em caso de falha de conexão/execução (o comando trata).
+ */
+export async function rebuildAnnotationCache(
+  oracledb: typeof import('oracledb'),
+  connection: string,
+  cfg: UtConfig,
+): Promise<void> {
+  const owner = parseConnString(connection).user.toUpperCase();
+  const done = await withOracleConnection(oracledb, connection, cfg, async (conn) => {
+    await conn.execute(
+      `BEGIN ut_runner.rebuild_annotation_cache(:owner); END;`,
+      { owner: { dir: oracledb.BIND_IN, type: oracledb.STRING, val: owner } },
+      { autoCommit: true },
+    );
+    return true;
+  });
+  if (!done) {
+    throw new Error(t(getExtensionLocale(), 'ext.noConnection'));
+  }
+}
+
 export interface CompilationError {
   name: string;
   type: string;
@@ -334,7 +358,6 @@ export interface CompilationError {
   position: number;
   text: string;
 }
-
 export async function checkCompilationErrors(
   conn: {
     execute(
@@ -409,8 +432,28 @@ export interface OracleRunOptions {
   folders?: readonly vscode.WorkspaceFolder[];
   /** Extra reporters adicionados via config */
   additionalReporters?: string[];
+  /** Expressão de tags do utPLSQL (ex.: `fast & !integration`); vazio = todas */
+  tags?: string;
+  /** Se true, executa os testes em ordem aleatória (`a_random_test_order`) */
+  randomOrder?: boolean;
+  /** Seed da ordem aleatória (0 = sorteada pelo banco) */
+  randomOrderSeed?: number;
   /** Owner do schema para coverage (override) */
   coverageOwner?: string;
+  /** Schemas de cobertura (sobrepõe o owner; vazio = automático) */
+  coverageSchemes?: string[];
+  /** Objetos a incluir na cobertura (formato OWNER.NAME) */
+  coverageIncludeObjects?: string[];
+  /** Objetos a excluir da cobertura (formato OWNER.NAME) */
+  coverageExcludeObjects?: string[];
+  /** Regex de schema a incluir na cobertura */
+  coverageIncludeSchemaExpr?: string;
+  /** Regex de objeto a incluir na cobertura */
+  coverageIncludeObjectExpr?: string;
+  /** Regex de schema a excluir da cobertura */
+  coverageExcludeSchemaExpr?: string;
+  /** Regex de objeto a excluir da cobertura */
+  coverageExcludeObjectExpr?: string;
   /** Se true, captura DBMS_OUTPUT */
   dbmsOutput?: boolean;
   /** Timeout em minutos (0 = sem timeout) */
@@ -446,7 +489,17 @@ export async function executeRunOracle(
     onComplete,
     folders,
     additionalReporters,
+    tags,
+    randomOrder,
+    randomOrderSeed,
     coverageOwner,
+    coverageSchemes: coverageSchemesCfg,
+    coverageIncludeObjects,
+    coverageExcludeObjects,
+    coverageIncludeSchemaExpr,
+    coverageIncludeObjectExpr,
+    coverageExcludeSchemaExpr,
+    coverageExcludeObjectExpr,
     dbmsOutput,
     timeoutMinutes,
   } = options;
@@ -525,25 +578,107 @@ export async function executeRunOracle(
       runners.push(`${normalized}()`);
     }
 
-    const pathsList =
-      pathArgs.length > 0 ? pathArgs.map((p) => `'${p.replace(/'/g, "''")}'`).join(',') : '';
-
     const owner = (coverageOwner ?? '').trim() || parseConnString(connection).user.toUpperCase();
 
+    // Binds tipados (PRD-69): nenhum valor de usuário é concatenado no PL/SQL.
+    // `UT_VARCHAR2_LIST` é o tipo da coleção do utPLSQL; o synonym sem prefixo
+    // resolve tanto em install próprio quanto shared. Listas vazias viram
+    // `null` (utPLSQL roda tudo) — evita bind de coleção vazia ambíguo.
+    //
     // Sem `a_source_file_mappings`: o reporter Cobertura então usa
     // `filename="<tipo> <schema>.<objeto>"`, que `mapDbPathsToFiles` converte
     // para caminhos locais (`packages/OBJ.sql`, etc.). Passar o diretório
     // `sourcePath` como `a_file_paths` (diretório, não arquivos) zerava a
     // cobertura — ver PRD-64 e testes de `mapDbPathsToFiles`.
+    const binds: Record<string, import('oracledb').BindParameter> = {
+      tags: { dir: oracledb.BIND_IN, type: oracledb.STRING, val: tags || null },
+    };
+    const pathsArg = pathArgs.length > 0 ? ':paths' : 'null';
+    if (pathArgs.length > 0) {
+      binds.paths = { dir: oracledb.BIND_IN, type: 'UT_VARCHAR2_LIST', val: pathArgs };
+    }
     let coverageSchemes = 'null';
+    let coverageScopeParams = '';
     if (coverageEnabled) {
-      coverageSchemes = `ut_varchar2_list('${owner.replace(/'/g, "''")}')`;
+      const schemes = coverageSchemesCfg?.length ? coverageSchemesCfg : [owner];
+      coverageSchemes = ':schemes';
+      binds.schemes = { dir: oracledb.BIND_IN, type: 'UT_VARCHAR2_LIST', val: schemes };
+
+      // Escopo fino (PRD-79): incluir/excluir objetos e regex de schema/objeto.
+      // Todos vão como parâmetros do `ut_runner.run`, que monta o
+      // `ut_coverage_options` internamente — o reporter de cobertura não recebe
+      // opções (a assinatura real do utPLSQL 3.x não as aceita).
+      const scopeParts: string[] = [];
+      if (coverageIncludeObjects?.length) {
+        binds.includeObjects = {
+          dir: oracledb.BIND_IN,
+          type: 'UT_VARCHAR2_LIST',
+          val: coverageIncludeObjects,
+        };
+        scopeParts.push('a_include_objects => :includeObjects');
+      }
+      if (coverageExcludeObjects?.length) {
+        binds.excludeObjects = {
+          dir: oracledb.BIND_IN,
+          type: 'UT_VARCHAR2_LIST',
+          val: coverageExcludeObjects,
+        };
+        scopeParts.push('a_exclude_objects => :excludeObjects');
+      }
+      if (coverageIncludeSchemaExpr) {
+        binds.includeSchemaExpr = {
+          dir: oracledb.BIND_IN,
+          type: oracledb.STRING,
+          val: coverageIncludeSchemaExpr,
+        };
+        scopeParts.push('a_include_schema_expr => :includeSchemaExpr');
+      }
+      if (coverageIncludeObjectExpr) {
+        binds.includeObjectExpr = {
+          dir: oracledb.BIND_IN,
+          type: oracledb.STRING,
+          val: coverageIncludeObjectExpr,
+        };
+        scopeParts.push('a_include_object_expr => :includeObjectExpr');
+      }
+      if (coverageExcludeSchemaExpr) {
+        binds.excludeSchemaExpr = {
+          dir: oracledb.BIND_IN,
+          type: oracledb.STRING,
+          val: coverageExcludeSchemaExpr,
+        };
+        scopeParts.push('a_exclude_schema_expr => :excludeSchemaExpr');
+      }
+      if (coverageExcludeObjectExpr) {
+        binds.excludeObjectExpr = {
+          dir: oracledb.BIND_IN,
+          type: oracledb.STRING,
+          val: coverageExcludeObjectExpr,
+        };
+        scopeParts.push('a_exclude_object_expr => :excludeObjectExpr');
+      }
+      if (scopeParts.length) coverageScopeParams = `,\n      ${scopeParts.join(',\n      ')}`;
+    }
+
+    // Ordem aleatória (PRD-78): os parâmetros só entram quando habilitada, para
+    // manter o SQL idêntico ao atual no default (`randomOrder` false).
+    let randomParams = '';
+    if (randomOrder) {
+      const seed = randomOrderSeed && randomOrderSeed > 0 ? randomOrderSeed : null;
+      binds.randomOrder = { dir: oracledb.BIND_IN, type: oracledb.DB_TYPE_BOOLEAN, val: true };
+      binds.randomSeed = { dir: oracledb.BIND_IN, type: oracledb.NUMBER, val: seed };
+      randomParams =
+        ',\n      a_random_test_order => :randomOrder,\n      a_random_test_order_seed => :randomSeed';
+      run.appendOutput(
+        `\r\n${t(getExtensionLocale(), 'runner.randomOrderSeed', { seed: seed ?? 0 })}\r\n`,
+      );
     }
 
     const plsql = `BEGIN ut_runner.run(
-      a_paths => ut_varchar2_list(${pathsList}),
+      a_paths => ${pathsArg},
       a_reporters => ut_reporters(${runners.join(',')}),
-      a_coverage_schemes => ${coverageSchemes}
+      a_coverage_schemes => ${coverageSchemes}${coverageScopeParams},
+      a_tags => :tags${randomParams}
     ); END;`;
 
     if (dbmsOutput) {
@@ -556,7 +691,7 @@ export async function executeRunOracle(
     }
 
     const runnerStart = Date.now();
-    const runnerPromise = conn1.execute(plsql, {}, { autoCommit: true });
+    const runnerPromise = conn1.execute(plsql, binds, { autoCommit: true });
 
     let lastMsgId = 0;
     let xmlBuffer = '';

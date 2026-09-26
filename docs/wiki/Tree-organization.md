@@ -1,3 +1,5 @@
+<!-- GENERATED FROM docs/brain/70-Wiki/Tree-organization.md — DO NOT EDIT -->
+
 # Test tree organization
 
 The extension offers two modes for organizing the tree in the Test Explorer:
@@ -91,19 +93,27 @@ no capture group, so no schema can be extracted and every file ends up under
   group, so no schema is extracted and every file is grouped under `UNKNOWN`
   — there is no fallback to `file` mode
 
-## Database discovery (from 0.11.0)
+## Database discovery (from 0.11.0, DB-first since 0.13.0)
 
-When there is a configured connection (without prompt),
-the refresh **supplements** file-based suites with suites discovered directly from
-the database via `ALL_OBJECTS`/`ALL_SOURCE` — useful for shared installs and CI
-where the `.pks` files are not in the workspace.
+When there is a configured connection (without prompt), the refresh
+**supplements** file-based suites with suites discovered directly from the
+database — useful for shared installs and CI where the `.pks` files are not in
+the workspace.
 
+- **DB-first (0.13.0 / PRD-74)**: the canonical source is
+  `ut_runner.get_suites_info` (utPLSQL ≥ 3.1.3); when the API is unavailable the
+  extension falls back to `ALL_OBJECTS`/`ALL_SOURCE` (PRD-43). Controlled by the
+  `utplsql.discovery.source` setting (`auto` | `file` | `database`).
+- The annotation cache behind `get_suites_info` can be rebuilt with the
+  **`utPLSQL: Rebuild Annotation Cache`** command (PRD-77).
 - Schemas queried: union of schemas extracted from local suites with the
   directories immediately below the `schemaPattern` base (e.g., `db/*`)
-- **Filesystem takes priority** in the merge (match by `packageName`,
-  case-insensitive)
+- **File takes priority** in the merge (match by `packageName`, case-insensitive):
+  it keeps the local `uri`/line, while the database wins on description/tags
 - `UT_*` packages (utPLSQL framework) are ignored
-- Suites from the database use the virtual URI `utplsql-db:/SCHEMA/PKG.pks` and
-  **do not have** CodeLens, inline decorations, or jump to failure — only execution
+- Suites from the database use the virtual URI `utplsql-db:/SCHEMA/PKG.pks`,
+  **open read-only** (source from `ALL_SOURCE`): they support execution **and
+  jump to failure** (`dbSourceProvider` serves the virtual document for "Go to
+  Error"); they have **no CodeLens and no inline decorations**
 - Silent fallback: `ALL_SOURCE` inaccessible or Oracle unavailable
   → file-based discovery only

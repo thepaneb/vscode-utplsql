@@ -1,3 +1,5 @@
+<!-- GENERATED FROM docs/brain/60-README/README.id.md — DO NOT EDIT -->
+
 <p align="center">
   <img src="images/icon.png" alt="utPLSQL Test Runner Logo" width="128" height="128">
 </p>
@@ -27,6 +29,9 @@ Mengintegrasikan [utPLSQL](https://www.utplsql.org/) ke dalam VSCode, membawa pe
 - 🔌 **Profil koneksi** — simpan dan beralih antar beberapa lingkungan (DEV/TEST/PROD) dengan pengaturan per profil, melalui bilah status atau palet perintah.
 - 📜 **Skrip SQL** — jalankan skrip saat ini, file dari Explorer, atau seluruh folder pada profil koneksi aktif (mengikuti charset, dengan `DBMS_OUTPUT` dan `stopOnError`).
 - 📈 **Cakupan pernyataan dan view** — tab Coverage menampilkan `% pernyataan` (PROCEDURE/FUNCTION) per file dan melacak view yang dieksekusi melalui `V$SQL`.
+- 🏷️ **Tag dan urutan acak** — filter pengujian dengan `utplsql.tags` (mis. `fast & !integration`) dan jalankan dalam urutan acak dengan seed yang dapat direproduksi (`utplsql.run.randomOrder`).
+- 🎯 **Lingkup cakupan** — sertakan/kecualikan objek dan regex schema/objek (`utplsql.coverage.*`) untuk menghilangkan noise framework dan menambahkan objek yang dijangkau secara dinamis.
+- 🗄️ **Penemuan DB-first** — bangun pohon dari `ut_runner.get_suites_info` dan bangun ulang cache anotasi dari palet.
 - 🐛 **Debug PL/SQL** — breakpoint dan debugging langkah demi langkah untuk pengujian utPLSQL melalui `DBMS_DEBUG` (Debug Adapter asli).
 - 🌍 **i18n — 24 bahasa** — `utplsql.language` mengikuti VSCode (24 locale: pt-br, en, en-gb, es, zh-cn, zh-tw, ja, de, fr, it, ko, ru, tr, pl, cs, hu, bg, el, id, ro, sr, th, uk, vi).
 
@@ -43,6 +48,13 @@ Ekstensi dapat diinstal dengan dua cara:
 
 - [**utPLSQL**](https://github.com/utPLSQL/utPLSQL) **(UT3)** terinstal di database Oracle.
 - Hanya perlu database — VSIX sudah menyertakan driver tipis `oracledb` (tanpa Instant Client).
+
+**Kompatibilitas Oracle / utPLSQL:**
+
+| Oracle | utPLSQL | Catatan |
+|---|---|---|
+| 18c+ | v3.2.x (18c+) / v3.1.x | Disarankan; charset `AL32UTF8`. |
+| 12.2 | hanya v3.1.x | v3.2.x tidak dapat dikompilasi (`PLS-00222`). `WE8DEC` pada image kehilangan karakter yang tidak dapat direpresentasikan (mis. `€`); driver tipis mengabaikan `NLS_LANG`. |
 - **VSCode 1.88+** (Test Coverage API).
 
 Ekstensi hanyalah "klien grafis" — yang menjalankan pengujian adalah database langsung via node-oracledb.
@@ -99,9 +111,19 @@ Ekstensi terhubung langsung ke Oracle, membaca laporan (JUnit + Coverage) lalu m
 | `utplsql.sourcePath` | `install` | Folder kode produksi (untuk memetakan coverage ke file). |
 | `utplsql.includePatterns` | `["**/*.pks"]` | Glob untuk menemukan spec dengan `%suite`/`%test`. Jika pengujian Anda di `.sql`, gunakan `["**/*.sql"]`. |
 | `utplsql.coverageOwner` | `""` | Pemilik schema dari objek yang dicakup. Kosong = memakai user koneksi (huruf besar). |
+| `utplsql.coverage.schemes` | `[]` | Schema yang dicakup (`a_coverage_schemes`). Kosong = user koneksi (atau `utplsql.coverageOwner`). |
+| `utplsql.coverage.includeObjects` | `[]` | Objek yang disertakan dalam cakupan, sebagai `OWNER.NAME` (mis. `["APP.MY_PKG"]`). Berguna untuk objek yang hanya dijangkau secara dinamis. |
+| `utplsql.coverage.excludeObjects` | `[]` | Objek yang dikecualikan dari cakupan, sebagai `OWNER.NAME` (mis. `["UT3.UT_COVERAGE"]`). |
+| `utplsql.coverage.includeSchemaExpr` | `""` | Regex schema yang disertakan dalam cakupan (mis. `^APP$`). |
+| `utplsql.coverage.includeObjectExpr` | `""` | Regex objek yang disertakan dalam cakupan. |
+| `utplsql.coverage.excludeSchemaExpr` | `""` | Regex schema yang dikecualikan dari cakupan. |
+| `utplsql.coverage.excludeObjectExpr` | `""` | Regex objek yang dikecualikan dari cakupan (mis. `^UT_` untuk framework utPLSQL). |
 | `utplsql.timeoutMinutes` | `60` | Batas waktu (timeout) dalam menit untuk eksekusi pengujian. |
 | `utplsql.dbmsOutput` | `false` | Mengaktifkan `DBMS_OUTPUT` di sesi pengujian. Berguna untuk debugging. |
 | `utplsql.additionalReporters` | `[]` | Reporter tambahan yang disertakan pada setiap eksekusi (mis. `["ut_coverage_html_reporter"]`). Default (documentation, junit) selalu disertakan dan tidak perlu didaftarkan. |
+| `utplsql.tags` | `""` | Ekspresi tag utPLSQL untuk memfilter pengujian mana yang dijalankan (mis. `fast & !integration`). Kosong menjalankan semua. |
+| `utplsql.run.randomOrder` | `false` | Menjalankan pengujian dalam urutan acak untuk mengungkap dependensi urutan di antara pengujian. |
+| `utplsql.run.randomOrderSeed` | `0` | Seed urutan acak. `0` = dipilih basis data (tidak dapat direproduksi); > 0 mereproduksi urutan yang sama. |
 | `utplsql.codeLens.enabled` | `true` | Menampilkan tombol CodeLens Run/Run with Coverage di atas `%suite` dan `%test`. |
 | `utplsql.statusBar.enabled` | `true` | Menampilkan indikator status pengujian di bilah status. |
 | `utplsql.decorations.enabled` | `true` | Menampilkan dekorasi lolos/gagal pada baris `%suite` dan `%test` setelah eksekusi. |
@@ -113,8 +135,9 @@ Ekstensi terhubung langsung ke Oracle, membaca laporan (JUnit + Coverage) lalu m
 | `utplsql.oracleClientLibDir` | `""` | Direktori Oracle Instant Client. Wajib saat `utplsql.oracleClientMode` bernilai `thick` (mis. `C:\oracle\instantclient_23_5`). |
 | Debug tidak berhenti di breakpoint | Paket tanpa info debug atau grant debug tidak ada | Kompilasi dengan `PLSQL_OPTIMIZE_LEVEL <= 1` (atau `ALTER PACKAGE ... COMPILE DEBUG PLSQL_OPTIMIZE_LEVEL = 1`) dan berikan `DEBUG CONNECT SESSION` + `EXECUTE ON SYS.DBMS_DEBUG`. Breakpoint di `test_*.pkb` mungkin tidak berhenti (utPLSQL menjalankan test via SQL dinamis); pasang di kode yang diuji. |
 | `utplsql.oracleClientConfigDir` | `""` | Direktori konfigurasi Oracle (TNS_ADMIN) berisi `sqlnet.ora`/`tnsnames.ora`. Opsional; hanya dipakai oleh mode thick. |
-| `utplsql.organization` | `file` | Organisasi pohon: `file` (berdasarkan path) atau `schema` (Schema > Package > Suite > Test). Pada mode `schema`, suite juga ditemukan dari database (`ALL_OBJECTS`/`ALL_SOURCE`) ketika file `.pks` tidak ada di workspace — dengan URI virtual `utplsql-db:/` (tanpa CodeLens/dekorasi/langsung ke kegagalan). |
+| `utplsql.organization` | `file` | Organisasi pohon: `file` (berdasarkan path) atau `schema` (Schema > Package > Suite > Test). Pada mode `schema`, suite juga ditemukan dari database (`ut_runner.get_suites_info`, dengan fallback ke `ALL_OBJECTS`/`ALL_SOURCE`) ketika file `.pks` tidak ada di workspace — URI virtual `utplsql-db:/` (eksekusi dan lompat ke kegagalan berfungsi; tanpa CodeLens/dekorasi). |
 | `utplsql.organization.schemaPattern` | `db/{schema}/**` | Pola glob untuk mengekstrak schema dari path. Gunakan `{schema}` sebagai placeholder. Pada mode `schema`, direktori di bawah basis pola (mis. `db/*`) menentukan schema yang ditanyakan di database. |
+| `utplsql.discovery.source` | `auto` | Sumber pohon pengujian pada mode `schema`: `auto` memakai API basis data (`ut_runner.get_suites_info`) dan beralih ke `ALL_SOURCE`/file bila tidak tersedia; `database` mewajibkan API; `file` menonaktifkan penemuan via basis data. |
 | `utplsql.refreshDebounceMs` | `300` | Debounce (ms) untuk menggabungkan peristiwa watcher file `.pks`/`.pkb` sebelum menyegarkan Test Explorer. |
 | `utplsql.compilationDiagnostics.enabled` | `true` | Menampilkan error kompilasi PL/SQL dari database (`ALL_ERRORS`) sebagai garis bawah di editor dan di Problems Panel (sumber "utPLSQL Compilation"). |
 | `utplsql.setupDiagnostics.enabled` | `true` | Menampilkan diagnostik konfigurasi (koneksi, grant, versi) serta **integritas instalasi utPLSQL** (objek tidak valid di schema UT3, dengan quick-fix "Recompile UT3") beserta aksi quick-fix. |
@@ -179,7 +202,7 @@ UTPLSQL_CONN=your_user/password@//host:1521/service
 8. **Untuk Oracle langsung (streaming):** tidak perlu menginstal apa pun — VSIX sudah menyertakan driver tipis `oracledb`.
 9. Untuk diagnostik, gunakan `utPLSQL: Show information` di palet — menampilkan versi API/DB dengan opsi salin.
 10. **utPLSQL: Select additional reporter...** — QuickPick berisi reporter yang tersedia di database.
-11. **utPLSQL: Cancel execution** — menghentikan eksekusi yang berjalan (`Escape` selama eksekusi).
+11. **utPLSQL: Cancel run** — menghentikan eksekusi yang berjalan (`Escape` selama eksekusi).
 12. **utPLSQL: Refresh tests** — memaksa penemuan ulang `.pks`.
 
 > 💡 **Saat menulis pengujian:** parser berbasis token — cukup sediakan `%suite`
@@ -194,7 +217,7 @@ Selain `%suite` dan `%test`, discovery juga memahami:
 |---|---|
 | `-- %disabled` | Suite atau pengujian **tidak muncul** di pohon (dilewati saat discovery) |
 | `-- %throws(-20001)` | Menandai bahwa pengujian mengharapkan exception 20001 (metadata `expectedError`) |
-| `-- %tags(fast, critical)` | Tag pengujian (metadata; pemfilteran tag ada di roadmap) |
+| `-- %tags(fast, critical)` | Tag pengujian; filter eksekusi dengan setelan `utplsql.tags` (mis. `fast & !integration`) |
 | `-- %displayname(Name)` | Nama kustom yang ditampilkan menggantikan deskripsi `%test` |
 | `-- %beforeall` / `%beforeeach` / `%aftereach` / `%afterall` | Menandai suite dengan lifecycle hooks (metadata) |
 
@@ -213,14 +236,14 @@ Semua perintah ekstensi (palet `Ctrl+Shift+P`, prefiks `utPLSQL:`):
 | `utPLSQL: Run tests in this folder` | Menjalankan suite dari folder yang dipilih | Klik kanan → folder |
 | `utPLSQL: Run tests in this folder with coverage` | Sama, dengan profil coverage | Klik kanan → folder |
 | `utPLSQL: Refresh tests` | Memaksa penemuan ulang `.pks` | — |
-| `utPLSQL: Cancel execution` | Menghentikan eksekusi yang berjalan | — |
-| `utPLSQL: Show utPLSQL information` | Versi API/DB dengan opsi salin | — |
+| `utPLSQL: Cancel run` | Menghentikan eksekusi yang berjalan | — |
+| `utPLSQL: Show utPLSQL info` | Versi API/DB dengan opsi salin | — |
 | `utPLSQL: Select additional reporter...` | QuickPick berisi reporter database | — |
 | `utPLSQL: Clear session connection` | Menghapus koneksi dari cache sesi | — |
 | `utPLSQL: Rerun Last` | Mengulang eksekusi terakhir | `Ctrl+Shift+U L` |
 | `utPLSQL: Run Test at Cursor` | Menjalankan pengujian di bawah kursor | `Ctrl+Shift+U U` |
 | `utPLSQL: Run Failed Tests` | Menjalankan ulang hanya pengujian yang gagal | `Ctrl+Shift+U X` |
-| `utPLSQL: Validate configuration` | Menjalankan validasi pengaturan lengkap (koneksi, instalasi UT3) dan menampilkan hasilnya | — |
+| `utPLSQL: Validate setup` | Menjalankan validasi pengaturan lengkap (koneksi, instalasi UT3) dan menampilkan hasilnya | — |
 | `utPLSQL: Configure connection` | Membuka pengaturan di `utplsql.connection` | — |
 | `utPLSQL: Copy coverage grants to clipboard` | Menyalin SQL grant ke clipboard | — |
 | `utPLSQL: Show Test Explorer` | Memfokuskan tampilan Testing | — |
@@ -230,6 +253,7 @@ Semua perintah ekstensi (palet `Ctrl+Shift+P`, prefiks `utPLSQL:`):
 | `utPLSQL: Import connections from SQL Developer` | Mengimpor koneksi dari SQL Developer (connections.xml) | — |
 | `utPLSQL: Debug test (PL/SQL)` | Memulai sesi debug untuk pengujian di bawah file aktif | — |
 | `utPLSQL: Kompilasi untuk debug` | Mengompilasi objek file/folder yang dipilih dengan informasi debug | — |
+| `utPLSQL: Bangun ulang cache anotasi` | Membangun ulang cache anotasi utPLSQL di basis data dan menyegarkan pohon | — |
 | `utPLSQL: Run script` | Runs the script open in the editor against a connection profile | Right-click → script file |
 | `utPLSQL: Run script file` | Runs an Explorer script file (decoded with the profile charset) | Right-click → file |
 | `utPLSQL: Run script folder` | Runs the folder scripts in alphabetical order | Right-click → folder |
@@ -370,7 +394,7 @@ GRANT SELECT ON SYS.DBA_PROCEDURES TO <ut3_owner>;
 | Coverage kosong | `GRANT EXECUTE ON DBMS_PROFILER` tidak ada | Jalankan grant di [Persyaratan basis data](#persyaratan-basis-data) atau gunakan `utPLSQL: Copy coverage grants to clipboard` |
 | Coverage kosong | Oracle 19c memerlukan grant tambahan | `GRANT EXECUTE ON DBMS_PROFILER` + `GRANT EXECUTE ON DBMS_PLSQL_CODE_COVERAGE` |
 | Error kompilasi tanpa keterangan | Kode dengan error sintaks PL/SQL | Biarkan `utplsql.compilationDiagnostics.enabled` tetap aktif (default); error dari `ALL_ERRORS` muncul di Problems Panel setelah dijalankan |
-| Error koneksi | String tidak valid atau DB tidak dapat dijangkau | Gunakan `utPLSQL: Validate configuration` |
+| Error koneksi | String tidak valid atau DB tidak dapat dijangkau | Gunakan `utPLSQL: Validate setup` |
 | `%suite` tidak dikenali | Tidak ada `%suite`/`create package` di file, atau `%test` tanpa `PROCEDURE` | Periksa spec; jalankan `utPLSQL: Refresh tests` |
 | CodeLens tidak muncul | `editor.codeLens` nonaktif atau konflik | Aktifkan `"editor.codeLens": true`; periksa `utplsql.codeLens.enabled` |
 | Pintasan tidak berfungsi | Konflik dengan ekstensi lain atau pintasan VSCode | Buka File → Preferences → Keyboard Shortcuts dan cari `utplsql` untuk mendefinisikan ulang |

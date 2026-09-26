@@ -1,3 +1,5 @@
+<!-- GENERATED FROM docs/brain/20-PRDs/prd-32-quickfix-setup-diagnostics.md — DO NOT EDIT -->
+
 # PRD-32 — Quick-Fix Setup Diagnostics
 
 | Campo | Valor |

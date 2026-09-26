@@ -1,3 +1,5 @@
+<!-- GENERATED FROM docs/brain/20-PRDs/prd-68-restore-oracle-diagnostics-and-reporter.md — DO NOT EDIT -->
+
 # PRD-68 — Religar diagnostics e reporter de sessão perdidos na migração Oracle-only
 
 | Campo | Valor |

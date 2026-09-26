@@ -1,3 +1,5 @@
+<!-- GENERATED FROM docs/brain/20-PRDs/prd-25-status-bar-indicator.md — DO NOT EDIT -->
+
 # PRD-25 — Status Bar Indicator
 
 | Campo | Valor |

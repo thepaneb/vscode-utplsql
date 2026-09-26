@@ -1,3 +1,5 @@
+<!-- GENERATED FROM docs/brain/20-PRDs/prd-02-refactor-extension.md — DO NOT EDIT -->
+
 # PRD-02 — Refatoração de `extension.ts`
 
 | Campo | Valor |

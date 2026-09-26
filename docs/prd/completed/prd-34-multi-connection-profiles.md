@@ -1,3 +1,5 @@
+<!-- GENERATED FROM docs/brain/20-PRDs/prd-34-multi-connection-profiles.md — DO NOT EDIT -->
+
 # PRD-34 — Multi-Connection Profiles
 
 | Campo | Valor |

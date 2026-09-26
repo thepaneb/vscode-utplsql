@@ -1,12 +1,13 @@
 #!/usr/bin/env node
 /**
- * Valida a consistência da documentação VERSIONADA (roda no CI, sem vault).
+ * Valida a consistência da documentação VERSIONADA (roda no CI).
  *
  *   npm run docs:check
  *
  * Verifica:
  *   - README.md ↔ variantes de idioma (README.<locale>.md) em ambas as direções
- *   - docs/prd/ ↔ docs/prd/index.md (tabela + Estrutura) e status ↔ pasta
+ *   - docs/prd/ ↔ docs/prd/index.md (tabela + Estrutura) e status ↔ pasta (saída gerada)
+ *   - frontmatter das notas PRD do vault (docs/brain/20-PRDs): id/status/titulo
  *   - existência de páginas em docs/wiki/
  *
  * Exit 1 se houver qualquer inconsistência.
@@ -18,6 +19,7 @@ const path = require('path');
 
 const REPO = path.resolve(__dirname, '..');
 const PRD_DIR = path.join(REPO, 'docs', 'prd');
+const VAULT_PRD_DIR = path.join(REPO, 'docs', 'brain', '20-PRDs');
 const WIKI_DIR = path.join(REPO, 'docs', 'wiki');
 
 // pasta → valor esperado no cabeçalho
@@ -27,6 +29,8 @@ const PRD_FOLDERS = {
   'in-progress': 'Em desenvolvimento',
   completed: 'Concluído',
 };
+
+const PRD_STATUS = new Set(Object.keys(PRD_FOLDERS));
 
 let errors = 0;
 const ok = (msg) => console.log(`  ✓ ${msg}`);
@@ -119,6 +123,38 @@ function checkPrd() {
   }
 }
 
+// ── PRDs (vault — frontmatter é a fonte do status) ─────────────────────
+
+function parseFm(text) {
+  const m = text.match(/^---\r?\n([\s\S]*?)\r?\n---/);
+  const fm = {};
+  if (!m) return fm;
+  for (const line of m[1].split(/\r?\n/)) {
+    const mm = line.match(/^([A-Za-z_][\w-]*):\s?(.*)$/);
+    if (mm) fm[mm[1]] = mm[2].replace(/^["']|["']$/g, '');
+  }
+  return fm;
+}
+
+function checkPrdVault() {
+  console.log('PRDs (vault — frontmatter)');
+  if (!fs.existsSync(VAULT_PRD_DIR)) return fail('docs/brain/20-PRDs ausente');
+  const notes = readdirSafe(VAULT_PRD_DIR).filter((f) => /^prd-\d+.*\.md$/.test(f));
+  if (!notes.length) return fail('docs/brain/20-PRDs sem notas prd-*.md');
+  const ids = new Map();
+  for (const f of notes) {
+    const fm = parseFm(fs.readFileSync(path.join(VAULT_PRD_DIR, f), 'utf8'));
+    if (!fm.id) fail(`${f}: frontmatter sem id`);
+    if (!PRD_STATUS.has(fm.status)) fail(`${f}: status inválido "${fm.status ?? '?'}"`);
+    if (!fm.titulo) fail(`${f}: frontmatter sem titulo`);
+    if (fm.id) {
+      if (ids.has(fm.id)) fail(`id duplicado ${fm.id} (${ids.get(fm.id)} e ${f})`);
+      else ids.set(fm.id, f);
+    }
+  }
+  ok(`${notes.length} PRDs com frontmatter válido`);
+}
+
 // ── Wiki (en) ──────────────────────────────────────────────────────────
 
 function checkWiki() {
@@ -135,7 +171,22 @@ function checkWiki() {
 
 checkReadme();
 checkPrd();
+checkPrdVault();
 checkWiki();
+
+// Fidelidade código↔docs (settings, comandos, módulos, versão, PRDs, obsoletos).
+console.log('Fidelidade código ↔ documentação');
+try {
+  const { checkFidelity } = require('./docs-fidelity.cjs');
+  const problems = checkFidelity();
+  if (problems.length) {
+    for (const p of problems) fail(p);
+  } else {
+    ok('documentação fiel ao código (settings/comandos/módulos/versão/PRDs)');
+  }
+} catch (e) {
+  fail(`docs-fidelity.cjs falhou: ${e.message}`);
+}
 
 if (errors) {
   console.log(`\n${errors} inconsistência(s) de documentação.`);

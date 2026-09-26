@@ -1,3 +1,5 @@
+<!-- GENERATED FROM docs/brain/20-PRDs/prd-50-auto-run-on-save.md — DO NOT EDIT -->
+
 # PRD-50 — Auto-run on Save (Watch Mode)
 
 | Campo | Valor |
@@ -6,7 +8,7 @@
 | Autor | Gil Cleber Barboza |
 | Data | 2026-09-06 |
 | Componente | Extensão `paneb.vscode-utplsql` |
-| Versão alvo | 0.14.0 |
+| Versão alvo | 0.15.0 |
 | Arquivos afetados | `src/extension.ts`, `src/config.ts`, `src/state.ts`, `package.json` |
 | Esforço estimado | 1–2 dias |
 | Complexidade | Média |
@@ -144,7 +146,7 @@ herdar a flag de cobertura.
 
 ## 9. Rollout
 
-- Release 0.14.0 (minor).
+- Release 0.15.0 (minor).
 - CHANGELOG: "Auto-run on save: re-executa as suites do `.pks` salvo
   (`utplsql.autoRun`)".
 - Publicar via release no GitHub.

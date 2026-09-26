@@ -5,7 +5,7 @@ import { getExtensionLocale, readConfig } from './config';
 import { getActiveProfile } from './connectionProfiles';
 import { t } from './i18n';
 import { logger } from './logger';
-import { ensurePool, parseConnString } from './oracleRunner';
+import { ensurePool, getOracleInfo, parseConnString, semverLt } from './oracleRunner';
 import { parseSuiteText, type TestProc } from './suiteParser';
 
 export interface SuiteFile {
@@ -212,6 +212,218 @@ async function loadOracledb(): Promise<typeof import('oracledb')> {
     ((mod as Record<string, unknown>).default as typeof import('oracledb')) ??
     (mod as typeof import('oracledb'))
   );
+}
+
+// ── Descoberta via API de metadados (PRD-74) ─────────────────────────
+
+/** Versão mínima do utPLSQL que expõe `ut_runner.get_suites_info` (3.1.3). */
+export const UTPLSQL_SUITES_INFO_MIN_VERSION = '3.1.3';
+
+export interface DbSuiteRow {
+  owner: string;
+  packageName: string;
+  suitePath: string | null;
+  itemName: string;
+  itemType: 'suite' | 'context' | 'test';
+  description: string | null;
+  disabled: boolean;
+  tags: string[];
+  /** Linha 1-based informada pelo banco. */
+  line: number;
+}
+
+function mapItemType(raw: string): DbSuiteRow['itemType'] | undefined {
+  const v = raw.toUpperCase();
+  if (v === 'UT_SUITE') return 'suite';
+  if (v === 'UT_SUITE_CONTEXT') return 'context';
+  if (v === 'UT_TEST') return 'test';
+  return undefined;
+}
+
+function parseTagList(raw: string): string[] {
+  return raw
+    .split(',')
+    .map((s) => s.trim())
+    .filter(Boolean);
+}
+
+/**
+ * Consulta `ut_runner.get_suites_info(owner, null)` e normaliza as linhas.
+ * Nunca lança: API ausente/inacessível (ORA) ⇒ `[]`.
+ */
+export async function getSuitesInfo(
+  conn: DiscoveryConnection,
+  owner: string,
+): Promise<DbSuiteRow[]> {
+  try {
+    const result = await conn.execute(
+      `SELECT object_owner, object_name, item_name, item_description, item_type,
+              item_line_no, path, disabled_flag, disabled_reason, tags
+         FROM TABLE(ut_runner.get_suites_info(:owner, null))`,
+      { owner: owner.toUpperCase() },
+    );
+    const rows: DbSuiteRow[] = [];
+    for (const row of result.rows ?? []) {
+      const itemType = mapItemType(rowValue(row, 4, 'ITEM_TYPE'));
+      if (!itemType) continue;
+      rows.push({
+        owner: rowValue(row, 0, 'OBJECT_OWNER').trim().toUpperCase(),
+        packageName: rowValue(row, 1, 'OBJECT_NAME'),
+        itemName: rowValue(row, 2, 'ITEM_NAME'),
+        description: rowValue(row, 3, 'ITEM_DESCRIPTION') || null,
+        itemType,
+        line: Number(rowValue(row, 5, 'ITEM_LINE_NO')) || 0,
+        suitePath: rowValue(row, 6, 'PATH') || null,
+        disabled: Number(rowValue(row, 7, 'DISABLED_FLAG')) === 1,
+        tags: parseTagList(rowValue(row, 9, 'TAGS')),
+      });
+    }
+    return rows;
+  } catch (e) {
+    logger.debug('getSuitesInfo: ut_runner.get_suites_info indisponível', {
+      owner,
+      error: String(e),
+    });
+    return [];
+  }
+}
+
+/**
+ * Converte as linhas de `get_suites_info` em `SuiteFile` com URI virtual
+ * (`utplsql-db:/OWNER/PKG.pks`). Itens `disabled` são omitidos, como na
+ * descoberta por arquivo.
+ */
+export function mapSuitesInfoToSuiteFiles(
+  rows: DbSuiteRow[],
+  folder: vscode.WorkspaceFolder,
+): SuiteFile[] {
+  const byPackage = new Map<string, DbSuiteRow[]>();
+  for (const row of rows) {
+    const key = `${row.owner}/${row.packageName}`.toLowerCase();
+    const list = byPackage.get(key) ?? [];
+    list.push(row);
+    byPackage.set(key, list);
+  }
+
+  const results: SuiteFile[] = [];
+  for (const list of byPackage.values()) {
+    const owner = list[0].owner;
+    const packageName = list[0].packageName;
+    const suiteRow = list.find((r) => r.itemType === 'suite');
+    if (suiteRow?.disabled) continue;
+
+    const tests: TestProc[] = list
+      .filter((r) => r.itemType === 'test' && !r.disabled)
+      .map((r) => ({
+        procName: r.itemName,
+        description: r.description ?? '',
+        line: Math.max(0, r.line - 1),
+        ...(r.tags.length > 0 ? { tags: r.tags } : {}),
+      }));
+    if (tests.length === 0) continue;
+
+    const uri = vscode.Uri.parse(`utplsql-db:/${owner}/${packageName}.pks`);
+    results.push({
+      uri,
+      packageName,
+      suiteDescription: suiteRow?.description ?? '',
+      tests,
+      folder,
+      suiteLine: Math.max(0, (suiteRow?.line ?? 1) - 1),
+      dbSchema: owner,
+    });
+  }
+  return results;
+}
+
+/**
+ * Fusão DB-first (PRD-74 RF3): a lista final é a união por `LOWER(packageName)`.
+ * Quando existe suite vinda de arquivo, ela prevalece em `uri`/`range`/`folder`;
+ * o banco manda na descrição e nas tags. Suíte só-banco entra com URI virtual.
+ */
+export function mergeSuiteLists(fileSuites: SuiteFile[], dbSuites: SuiteFile[]): SuiteFile[] {
+  const result = [...fileSuites];
+  const byPackage = new Map(fileSuites.map((s) => [s.packageName.toLowerCase(), s]));
+  for (const db of dbSuites) {
+    const key = db.packageName.toLowerCase();
+    const file = byPackage.get(key);
+    if (!file) {
+      result.push(db);
+      byPackage.set(key, db);
+      continue;
+    }
+    const fileTests = new Map(file.tests.map((t) => [t.procName.toLowerCase(), t]));
+    const tests: TestProc[] = db.tests.map((dbTest) => {
+      const fileTest = fileTests.get(dbTest.procName.toLowerCase());
+      if (!fileTest) return dbTest;
+      return {
+        ...fileTest,
+        description: dbTest.description || fileTest.description,
+        ...(dbTest.tags && dbTest.tags.length > 0 ? { tags: dbTest.tags } : {}),
+      };
+    });
+    file.tests = tests;
+    if (db.suiteDescription) file.suiteDescription = db.suiteDescription;
+  }
+  return result;
+}
+
+/**
+ * Descoberta DB-first: usa `ut_runner.get_suites_info` quando a versão do
+ * utPLSQL é >= 3.1.3 e cai para `ALL_SOURCE` (PRD-43) quando a API não está
+ * disponível. Com `utplsql.discovery.source = "database"` não há fallback;
+ * com `"file"` a descoberta via banco nem é chamada (ver `mergeDbSuites`).
+ */
+export async function discoverDbSuites(
+  connStr: string,
+  schema: string,
+  folders: readonly vscode.WorkspaceFolder[],
+  loadOracledbMod: () => Promise<typeof import('oracledb')> = loadOracledb,
+): Promise<SuiteFile[]> {
+  const folder = folders[0];
+  if (!folder) return [];
+
+  let oracledb: typeof import('oracledb');
+  try {
+    oracledb = await loadOracledbMod();
+  } catch (e) {
+    logger.debug('discoverDbSuites: oracledb indisponível', { error: String(e) });
+    return [];
+  }
+
+  const cfg = readConfig();
+  const pool = await ensurePool(oracledb, connStr, cfg).catch(() => undefined);
+  let conn: import('oracledb').Connection;
+  try {
+    conn = pool
+      ? await pool.getConnection()
+      : await oracledb.getConnection(parseConnString(connStr));
+  } catch (e) {
+    logger.debug('discoverDbSuites: falha ao obter conexão', { error: String(e) });
+    return [];
+  }
+
+  const prevTimeout = conn.callTimeout;
+  try {
+    conn.callTimeout = 10_000;
+    const { utVersion } = await getOracleInfo(conn);
+    const apiAvailable = !utVersion || !semverLt(utVersion, UTPLSQL_SUITES_INFO_MIN_VERSION);
+    if (apiAvailable) {
+      const rows = await getSuitesInfo(conn, schema);
+      if (rows.length > 0) return mapSuitesInfoToSuiteFiles(rows, folder);
+    }
+    if (cfg.discoverySource === 'database') return [];
+    return await discoverSchemaFromConn(conn, schema, folder);
+  } catch (e) {
+    logger.debug('discoverDbSuites: descoberta via banco falhou', {
+      schema,
+      error: String(e),
+    });
+    return [];
+  } finally {
+    conn.callTimeout = prevTimeout;
+    await conn.close().catch(() => {});
+  }
 }
 
 /**

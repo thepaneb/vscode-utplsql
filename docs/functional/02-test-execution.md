@@ -1,3 +1,4 @@
+<!-- GENERATED FROM docs/brain/10-Projeto/Funcional/02-test-execution.md — DO NOT EDIT -->
 # 02 — Test Execution
 
 Execução de testes utPLSQL via conexão Oracle direta (node-oracledb).
@@ -148,3 +149,6 @@ conn1 (run)                              conn2 (poll)
 | `utplsql.oraclePoolIncrement` | `1` | Incremento ao expandir o pool |
 | `utplsql.oraclePoolPingInterval` | `60` | Segundos entre health checks das conexões ociosas |
 | `utplsql.dbmsOutput` | `false` | `DBMS_OUTPUT.ENABLE` em conn1 e drenagem via `GET_LINE` ao final (a sessão de execução, não a de polling) |
+| `utplsql.tags` | `""` | Expressão de tags do utPLSQL (`a_tags`) para filtrar quais testes executam (ex.: `fast & !integration`); vazio = todos |
+| `utplsql.run.randomOrder` | `false` | Envia `a_random_test_order` ao `ut_runner.run` (revela dependências de ordem) |
+| `utplsql.run.randomOrderSeed` | `0` | Seed da ordem aleatória (`0` = sorteada pelo banco; > 0 reproduz e é logada no Output) |

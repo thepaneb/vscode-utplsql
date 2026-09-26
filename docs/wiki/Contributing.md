@@ -1,3 +1,5 @@
+<!-- GENERATED FROM docs/brain/70-Wiki/Contributing.md — DO NOT EDIT -->
+
 # Contributing
 
 Guide for setting up the development environment and submitting contributions.
@@ -133,7 +135,7 @@ time (`scripts/db-matrix/run.sh`; needs Docker, and `ORACLE_AUTH_USER`/
 `ORACLE_AUTH_TOKEN` in `.env.dbmatrix` for the Enterprise images):
 
 ```bash
-npm run db:matrix:list                 # versions: 18xe, 19ee, 21xe, 23free
+npm run db:matrix:list                 # versions: 12.2, 18xe, 19ee, 21xe, 23free
 npm run db:matrix                      # whole matrix (one version at a time)
 npm run db:matrix -- --only 21xe       # a single version
 npm run db:matrix -- --smoke           # fast subset (capabilities + debugger)
@@ -145,6 +147,11 @@ Data is kept in a per-version Docker volume: the first run creates the database
 (~15–25 min for 18c/19c); later runs boot from it in ~1–2 min. Use
 `--skip-bootstrap` when the volume is already prepared. See PRD-72 and the
 root `CONTRIBUTING.md` for details.
+
+**Alternative utPLSQL floors:** each `VERSIONS` line may declare a 4th field
+with the utPLSQL version for that database. `12.2` uses **`v3.1.14`** because
+`v3.2.x` does not compile on it (`PLS-00222`); lines without the 4th field fall
+back to `UTPLSQL_VERSION` (PRD-84).
 
 ## Code conventions
 

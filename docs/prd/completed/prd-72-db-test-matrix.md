@@ -1,3 +1,5 @@
+<!-- GENERATED FROM docs/brain/20-PRDs/prd-72-db-test-matrix.md — DO NOT EDIT -->
+
 # PRD-72 — Matriz de bancos Oracle para testes de integração
 
 | Campo | Valor |

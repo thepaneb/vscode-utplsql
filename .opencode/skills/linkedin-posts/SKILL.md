@@ -17,8 +17,32 @@ docs/linkedin/
 ├── README.md        ← regras + árvore (atualizar ao adicionar post)
 ├── features/        ← posts por funcionalidade (NN-slug.md)
 ├── releases/        ← posts por versão (NN-release-vX.Y.Z.md)
+├── assets/          ← cards 1200×627 (pt/en) + gen-cards.cjs
 └── en/              ← espelho em inglês (features/ + releases/, mesmo NN)
 ```
+
+## Gráficos (cards)
+
+Todo post traz um card 16:9 no topo, referenciado por caminho relativo
+(`../assets/<id>.png`; no `en/`, `../../assets/<id>-en.png`). Gere todos de uma
+vez com `node docs/linkedin/assets/gen-cards.cjs` (SVG → PNG via `@resvg/resvg-js`,
+mesma lib dos diagramas da wiki). Ao criar um post, adicione o card dele ao
+`gen-cards.cjs` (versões pt e en) e rode o script.
+
+## Modelo do post (obrigatório)
+
+Todo post de feature segue o mesmo formato:
+
+1. **Gancho** — 1 linha, começa com um **emoji** (o mesmo do card).
+2. **Imagem** — `![título](../assets/<id>.png)` logo após o gancho.
+3. **Contexto** — 1 parágrafo do problema.
+4. **Bullets** — 3–4 itens com o destaque em `**negrito**`; emoji só quando o
+   bullet for um ponto de destaque real (não em todos).
+5. **Fecho** — 1–2 frases de benefício.
+6. **Links fixos** (repo + Marketplace) e **hashtags** na última linha.
+
+Emojis concentram-se no **gancho** e no **badge do card**; nos bullets, use com
+parcimônia (só nos pontos de maior destaque).
 
 ## Gatilhos — o que fazer quando o projeto muda
 
@@ -68,6 +92,7 @@ npm run test:unit 2>&1 | grep '^ℹ tests'
 ## Verificação (obrigatória)
 
 - [ ] pt e en existem para cada post novo, com a mesma numeração/slug
+- [ ] card gráfico em `assets/` (par pt/en) e referenciado no topo do post
 - [ ] árvore de `docs/linkedin/README.md` reflete as pastas
 - [ ] nenhum termo obsoleto: `grep -rn "build_file_mappings\|type_mapping\|utPLSQL-cli" docs/linkedin`
 - [ ] números conferem com o repo (testes/PRDs)

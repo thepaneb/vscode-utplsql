@@ -1,3 +1,5 @@
+<!-- GENERATED FROM docs/brain/20-PRDs/prd-21-workflow-improvements.md — DO NOT EDIT -->
+
 # PRD-21 — Melhorias nos workflows CI/CD
 
 | Campo | Valor |

@@ -1,3 +1,5 @@
+<!-- GENERATED FROM docs/brain/20-PRDs/prd-24-codelens-integration.md — DO NOT EDIT -->
+
 # PRD-24 — CodeLens Integration
 
 | Campo | Valor |

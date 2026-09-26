@@ -1,3 +1,5 @@
+<!-- GENERATED FROM docs/brain/60-README/README.bg.md — DO NOT EDIT -->
+
 <p align="center">
   <img src="images/icon.png" alt="utPLSQL Test Runner Logo" width="128" height="128">
 </p>
@@ -27,6 +29,9 @@
 - 🔌 **Профили за връзка** — запазвайте и превключвайте между няколко среди (DEV/TEST/PROD) с настройки по профил, чрез status bar или командната палитра.
 - 📜 **SQL скриптове** — изпълнение на текущия скрипт, файл от Explorer или цяла папка върху активния профил за връзка (съобразно charset, с `DBMS_OUTPUT` и `stopOnError`).
 - 📈 **Покритие на оператори и изгледи** — разделът Coverage показва `% of statements` (PROCEDURE/FUNCTION) по файл и проследява изгледите, изпълнени чрез `V$SQL`.
+- 🏷️ **Тагове и случаен ред** — филтрирайте тестове с `utplsql.tags` (напр. `fast & !integration`) и ги изпълнявайте в случаен ред с възпроизводим seed (`utplsql.run.randomOrder`).
+- 🎯 **Обхват на покритие** — включвайте/изключвайте обекти и regex за схема/обект (`utplsql.coverage.*`), за да махнете шума от framework-а и да добавите динамично достигнати обекти.
+- 🗄️ **DB-first откриване** — изграждайте дървото от `ut_runner.get_suites_info` и възстановявайте кеша с анотации от палитрата.
 - 🐛 **PL/SQL Debug** — точки на прекъсване и поетапно дебъгване на utPLSQL тестове чрез `DBMS_DEBUG` (роден Debug Adapter).
 - 🌍 **i18n — 24 езика** — `utplsql.language` следва VSCode (24 локали: pt-br, en, en-gb, es, zh-cn, zh-tw, ja, de, fr, it, ko, ru, tr, pl, cs, hu, bg, el, id, ro, sr, th, uk, vi).
 
@@ -43,6 +48,13 @@
 
 - [**utPLSQL**](https://github.com/utPLSQL/utPLSQL) **(UT3)** инсталиран в базата данни Oracle.
 - Нищо освен базата данни — VSIX вече включва thin драйвера `oracledb` (без Instant Client).
+
+**Съвместимост Oracle / utPLSQL:**
+
+| Oracle | utPLSQL | Бележки |
+|---|---|---|
+| 18c+ | v3.2.x (18c+) / v3.1.x | Препоръчително; charset `AL32UTF8`. |
+| 12.2 | само v3.1.x | v3.2.x не се компилира (`PLS-00222`). `WE8DEC` на образа губи непредставими символи (напр. `€`); thin драйверът игнорира `NLS_LANG`. |
 - **VSCode 1.88+** (Test Coverage API).
 
 Разширението е само „графичният клиент" — тестовете се изпълняват от базата данни директно чрез node-oracledb.
@@ -99,9 +111,19 @@ Test Explorer **с приключването на всеки тест**.
 | `utplsql.sourcePath` | `install` | Папка на производствения код (за картографиране на покритието към файлове). |
 | `utplsql.includePatterns` | `["**/*.pks"]` | Globs за откриване на спецификациите с `%suite`/`%test`. Ако тестовете ви са в `.sql`, използвайте `["**/*.sql"]`. |
 | `utplsql.coverageOwner` | `""` | Схема-собственик на покритите обекти. Празно = използва се потребителят на връзката (главни букви). |
+| `utplsql.coverage.schemes` | `[]` | Покрити схеми (`a_coverage_schemes`). Празно = потребителят на връзката (или `utplsql.coverageOwner`). |
+| `utplsql.coverage.includeObjects` | `[]` | Обекти за включване в покритието, като `OWNER.NAME` (напр. `["APP.MY_PKG"]`). Полезно за обекти, достигнати само динамично. |
+| `utplsql.coverage.excludeObjects` | `[]` | Обекти за изключване от покритието, като `OWNER.NAME` (напр. `["UT3.UT_COVERAGE"]`). |
+| `utplsql.coverage.includeSchemaExpr` | `""` | Regex на схеми за включване в покритието (напр. `^APP$`). |
+| `utplsql.coverage.includeObjectExpr` | `""` | Regex на обекти за включване в покритието. |
+| `utplsql.coverage.excludeSchemaExpr` | `""` | Regex на схеми за изключване от покритието. |
+| `utplsql.coverage.excludeObjectExpr` | `""` | Regex на обекти за изключване от покритието (напр. `^UT_` за framework-а utPLSQL). |
 | `utplsql.timeoutMinutes` | `60` | Таймаут в минути за изпълнението на тестовете. |
 | `utplsql.dbmsOutput` | `false` | Активира `DBMS_OUTPUT` в тестовата сесия. Полезно за отстраняване на грешки. |
 | `utplsql.additionalReporters` | `[]` | Допълнителни reporters, които да се включат при всяко изпълнение (напр. `["ut_coverage_html_reporter"]`). По подразбиране (documentation, junit) винаги са включени и не е нужно да се изброяват. |
+| `utplsql.tags` | `""` | Израз за тагове на utPLSQL за филтриране кои тестове се изпълняват (напр. `fast & !integration`). Празно изпълнява всички. |
+| `utplsql.run.randomOrder` | `false` | Изпълнява тестовете в случаен ред, за да разкрие зависимости на реда между тях. |
+| `utplsql.run.randomOrderSeed` | `0` | Seed за случайния ред. `0` = избран от базата (невъзпроизводим); > 0 възпроизвежда същия ред. |
 | `utplsql.codeLens.enabled` | `true` | Показва CodeLens бутони Run/Run with Coverage над `%suite` и `%test`. |
 | `utplsql.statusBar.enabled` | `true` | Показва индикатора за статус на тестовете в status bar. |
 | `utplsql.decorations.enabled` | `true` | Показва декорации за успех/неуспех на редовете с `%suite` и `%test` след изпълнение. |
@@ -113,8 +135,9 @@ Test Explorer **с приключването на всеки тест**.
 | `utplsql.oracleClientLibDir` | `""` | Директория на Oracle Instant Client. Задължителна, когато `utplsql.oracleClientMode` е `thick` (напр. `C:\oracle\instantclient_23_5`). |
 | Дебъгът не спира на точката на прекъсване | Пакет без debug информация или липсващи debug привилегии | Компилирайте с `PLSQL_OPTIMIZE_LEVEL <= 1` (или `ALTER PACKAGE ... COMPILE DEBUG PLSQL_OPTIMIZE_LEVEL = 1`) и дайте `DEBUG CONNECT SESSION` + `EXECUTE ON SYS.DBMS_DEBUG`. Точките на прекъсване в `test_*.pkb` може да не се задействат (utPLSQL изпълнява тестовете чрез динамичен SQL); поставете ги в тествания код. |
 | `utplsql.oracleClientConfigDir` | `""` | Конфигурационна директория на Oracle (TNS_ADMIN) със `sqlnet.ora`/`tnsnames.ora`. Незадължителна; използва се само от thick режима. |
-| `utplsql.organization` | `file` | Организация на дървото: `file` (по път) или `schema` (Schema > Package > Suite > Test). В режим `schema` комплектите също се откриват от базата данни (`ALL_OBJECTS`/`ALL_SOURCE`), когато `.pks` файлове не са в работната област — с виртуален URI `utplsql-db:/` (без CodeLens/декорации/преминаване към грешката). |
+| `utplsql.organization` | `file` | Организация на дървото: `file` (по път) или `schema` (Schema > Package > Suite > Test). В режим `schema` комплектите също се откриват от базата данни (`ut_runner.get_suites_info`, с връщане към `ALL_OBJECTS`/`ALL_SOURCE`), когато `.pks` файлове не са в работната област — с виртуален URI `utplsql-db:/` (изпълнение и преминаване към грешката работят; без CodeLens/декорации). |
 | `utplsql.organization.schemaPattern` | `db/{schema}/**` | Glob шаблон за извличане на схемата от пътя. Използвайте `{schema}` като плейсхолдър. В режим `schema` директориите под основата на шаблона (напр. `db/*`) определят схемите, по които се прави заявка в базата данни. |
+| `utplsql.discovery.source` | `auto` | Източник на дървото в режим `schema`: `auto` използва API на базата (`ut_runner.get_suites_info`) и преминава към `ALL_SOURCE`/файлове при недостъпност; `database` изисква API; `file` изключва откриването през базата. |
 | `utplsql.refreshDebounceMs` | `300` | Debounce (ms) за обединяване на събитията на наблюдателя на файлове `.pks`/`.pkb` преди опресняване на Test Explorer. |
 | `utplsql.compilationDiagnostics.enabled` | `true` | Показва грешки при компилация на PL/SQL от базата данни (`ALL_ERRORS`) като подчертавания в редактора и в панела „Проблеми" (източник "utPLSQL Compilation"). |
 | `utplsql.setupDiagnostics.enabled` | `true` | Показва диагностика на конфигурацията (връзка, привилегии, версия) и **целостта на инсталацията на utPLSQL** (невалидни обекти в схемата UT3, с quick-fix „Recompile UT3") с quick-fix действия. |
@@ -179,7 +202,7 @@ UTPLSQL_CONN=your_user/password@//host:1521/service
 8. **За директен Oracle (streaming):** нищо за инсталиране — VSIX вече включва thin драйвера `oracledb`.
 9. За диагностика използвайте `utPLSQL: Show information` в палитрата — показва API/DB версиите с опция за копиране.
 10. **utPLSQL: Select additional reporter...** — QuickPick с наличните в базата данни reporters.
-11. **utPLSQL: Cancel execution** — спира текущото изпълнение (`Escape` по време на изпълнение).
+11. **utPLSQL: Cancel run** — спира текущото изпълнение (`Escape` по време на изпълнение).
 12. **utPLSQL: Refresh tests** — принуждава повторно откриване на `.pks`.
 
 > 💡 **Когато пишете тестове:** парсерът се задвижва от токени — достатъчно е да имате `%suite`
@@ -194,7 +217,7 @@ UTPLSQL_CONN=your_user/password@//host:1521/service
 |---|---|
 | `-- %disabled` | Комплектът или тестът **не се появява** в дървото (пропуска се при откриването) |
 | `-- %throws(-20001)` | Отбелязва, че тестът очаква изключение 20001 (метаданни `expectedError`) |
-| `-- %tags(fast, critical)` | Тагове на теста (метаданни; филтрирането по тагове е в пътната карта) |
+| `-- %tags(fast, critical)` | Тагове на теста; филтрирайте изпълнението с настройката `utplsql.tags` (напр. `fast & !integration`) |
 | `-- %displayname(Name)` | Персонализирано име, показано вместо описанието на `%test` |
 | `-- %beforeall` / `%beforeeach` / `%aftereach` / `%afterall` | Отбелязва комплекта с lifecycle hooks (метаданни) |
 
@@ -213,14 +236,14 @@ UTPLSQL_CONN=your_user/password@//host:1521/service
 | `utPLSQL: Run tests in this folder` | Изпълнява комплектите на избраната папка | Десен бутон → папка |
 | `utPLSQL: Run tests in this folder with coverage` | Същото, с профил за покритие | Десен бутон → папка |
 | `utPLSQL: Refresh tests` | Принуждава повторно откриване на `.pks` | — |
-| `utPLSQL: Cancel execution` | Спира текущото изпълнение | — |
-| `utPLSQL: Show utPLSQL information` | API/DB версии с опция за копиране | — |
+| `utPLSQL: Cancel run` | Спира текущото изпълнение | — |
+| `utPLSQL: Show utPLSQL info` | API/DB версии с опция за копиране | — |
 | `utPLSQL: Select additional reporter...` | QuickPick с база данни на reporters | — |
 | `utPLSQL: Clear session connection` | Премахва връзката от кеша на сесията | — |
 | `utPLSQL: Rerun Last` | Повтаря последното изпълнение | `Ctrl+Shift+U L` |
 | `utPLSQL: Run Test at Cursor` | Изпълнява теста под курсора | `Ctrl+Shift+U U` |
 | `utPLSQL: Run Failed Tests` | Повторно изпълнява само пропадналите тестове | `Ctrl+Shift+U X` |
-| `utPLSQL: Validate configuration` | Изпълнява пълна валидация на настройката (връзка, UT3 инсталация) и показва резултатите | — |
+| `utPLSQL: Validate setup` | Изпълнява пълна валидация на настройката (връзка, UT3 инсталация) и показва резултатите | — |
 | `utPLSQL: Configure connection` | Отваря настройките на `utplsql.connection` | — |
 | `utPLSQL: Copy coverage grants to clipboard` | Копира SQL привилегиите в клипборда | — |
 | `utPLSQL: Show Test Explorer` | Фокусира изгледа Testing | — |
@@ -229,6 +252,7 @@ UTPLSQL_CONN=your_user/password@//host:1521/service
 | `utPLSQL: Manage connection profiles` | Отваря настройките на `utplsql.profiles` | — |
 | `utPLSQL: Import connections from SQL Developer` | Импортира връзки от SQL Developer (connections.xml) | — |
 | `utPLSQL: Debug test (PL/SQL)` | Стартира дебъг сесия на теста под активния файл | — |
+| `utPLSQL: Възстановяване на кеша с анотации` | Възстановява кеша с анотации на utPLSQL в базата и обновява дървото | — |
 | `utPLSQL: Компилиране за отстраняване на грешки` | Компилира обекта на избрания файл/папка с информация за отстраняване на грешки | — |
 | `utPLSQL: Run script` | Runs the script open in the editor against a connection profile | Right-click → script file |
 | `utPLSQL: Run script file` | Runs an Explorer script file (decoded with the profile charset) | Right-click → file |
@@ -370,7 +394,7 @@ GRANT SELECT ON SYS.DBA_PROCEDURES TO <ut3_owner>;
 | Празно покритие | Липсва `GRANT EXECUTE ON DBMS_PROFILER` | Изпълнете привилегиите от [Изисквания към базата данни](#изисквания-към-базата-данни) или използвайте `utPLSQL: Copy coverage grants to clipboard` |
 | Празно покритие | Oracle 19c изисква допълнителни привилегии | `GRANT EXECUTE ON DBMS_PROFILER` + `GRANT EXECUTE ON DBMS_PLSQL_CODE_COVERAGE` |
 | Грешка при компилация без индикация | Код с PL/SQL синтактична грешка | Оставете `utplsql.compilationDiagnostics.enabled` включен (по подразбиране); грешките от `ALL_ERRORS` се появяват в панела „Проблеми" след изпълнение |
-| Грешка при връзка | Невалиден низ или недостъпна БД | Използвайте `utPLSQL: Validate configuration` |
+| Грешка при връзка | Невалиден низ или недостъпна БД | Използвайте `utPLSQL: Validate setup` |
 | `%suite` не се разпознава | Липсва `%suite`/`create package` във файла, или `%test` без `PROCEDURE` | Проверете спецификацията; изпълнете `utPLSQL: Refresh tests` |
 | CodeLens не се появява | `editor.codeLens` е изключен или има конфликт | Активирайте `"editor.codeLens": true`; проверете `utplsql.codeLens.enabled` |
 | Комбинациите не работят | Конфликт с друго разширение или комбинация на VSCode | Отидете на File → Preferences → Keyboard Shortcuts и потърсете `utplsql`, за да предефинирате |

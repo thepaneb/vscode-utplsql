@@ -42,34 +42,58 @@ user_file() {
 # ── 1. cache do fonte do utPLSQL ──────────────────────────────────────
 
 ensure_utplsql_source() {
-  local marker="$CACHE_DIR/.src-$UTPLSQL_VERSION"
-  if [ -f "$marker" ] && [ -d "$(cat "$marker")" ]; then
-    UTPLSQL_SRC="$(cat "$marker")"
-    return
-  fi
+  # Diretório canônico por versão (nome sob nosso controle) + variantes que o
+  # archive do GitHub pode gerar: a tag `v3.1.14` extrai como `utPLSQL-3.1.14`
+  # (o GitHub remove o `v` de tags semver), enquanto `v.3.2.3` mantém o prefixo.
+  local candidates=(
+    "$CACHE_DIR/src-$UTPLSQL_VERSION"
+    "$CACHE_DIR/utPLSQL-$UTPLSQL_VERSION"
+  )
+  case "$UTPLSQL_VERSION" in
+    v[0-9]*) candidates+=("$CACHE_DIR/utPLSQL-${UTPLSQL_VERSION#v}") ;;
+  esac
 
-  local found
-  found="$(find "$CACHE_DIR" -name install_headless.sql -print -quit 2>/dev/null || true)"
-  if [ -z "$found" ]; then
-    log "baixando utPLSQL $UTPLSQL_VERSION"
-    mkdir -p "$CACHE_DIR"
-    local url="https://github.com/utPLSQL/utPLSQL/archive/refs/tags/${UTPLSQL_VERSION}.zip"
-    local zip="$CACHE_DIR/utplsql-${UTPLSQL_VERSION}.zip"
-    curl -fsSL "$url" -o "$zip"
-    rm -rf "$CACHE_DIR/utPLSQL-"* 2>/dev/null || true
-    if command -v unzip >/dev/null 2>&1; then
-      unzip -q -o "$zip" -d "$CACHE_DIR"
-    else
-      python3 -c "import zipfile,sys; zipfile.ZipFile(sys.argv[1]).extractall(sys.argv[2])" "$zip" "$CACHE_DIR"
+  local dir found=""
+  for dir in "${candidates[@]}"; do
+    found="$(find "$dir" -name install_headless.sql -print -quit 2>/dev/null || true)"
+    if [ -n "$found" ]; then
+      UTPLSQL_SRC="$(dirname "$found")"
+      return
     fi
-    found="$(find "$CACHE_DIR" -name install_headless.sql -print -quit)"
+  done
+
+  log "baixando utPLSQL $UTPLSQL_VERSION"
+  mkdir -p "$CACHE_DIR"
+  local url="https://github.com/utPLSQL/utPLSQL/archive/refs/tags/${UTPLSQL_VERSION}.zip"
+  local zip="$CACHE_DIR/utplsql-${UTPLSQL_VERSION}.zip"
+  curl -fsSL "$url" -o "$zip"
+
+  # Extrai num stage e move o topo para o diretório canônico, independente de o
+  # GitHub ter removido o `v` do nome.
+  local stage="$CACHE_DIR/.stage-$UTPLSQL_VERSION"
+  local dest="$CACHE_DIR/src-$UTPLSQL_VERSION"
+  rm -rf "$stage" "$dest"
+  mkdir -p "$stage"
+  if command -v unzip >/dev/null 2>&1; then
+    unzip -q -o "$zip" -d "$stage"
+  else
+    python3 -c "import zipfile,sys; zipfile.ZipFile(sys.argv[1]).extractall(sys.argv[2])" "$zip" "$stage"
   fi
+  local top
+  top="$(find "$stage" -mindepth 1 -maxdepth 1 -type d -print -quit 2>/dev/null || true)"
+  if [ -z "$top" ]; then
+    echo "extração do utPLSQL $UTPLSQL_VERSION falhou" >&2
+    exit 1
+  fi
+  mv "$top" "$dest"
+  rm -rf "$stage"
+
+  found="$(find "$dest" -name install_headless.sql -print -quit 2>/dev/null || true)"
   [ -n "$found" ] || {
-    echo "install_headless.sql não encontrado na fonte do utPLSQL" >&2
+    echo "install_headless.sql não encontrado na fonte do utPLSQL $UTPLSQL_VERSION" >&2
     exit 1
   }
   UTPLSQL_SRC="$(dirname "$found")"
-  printf '%s' "$UTPLSQL_SRC" > "$marker"
 }
 
 # ── 2. UT3 + instalação do utPLSQL ────────────────────────────────────

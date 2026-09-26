@@ -1,3 +1,5 @@
+<!-- GENERATED FROM docs/brain/20-PRDs/prd-73-compile-for-debug.md — DO NOT EDIT -->
+
 # PRD-73 — Compilar objeto para debug (comando + menus)
 
 | Campo | Valor |

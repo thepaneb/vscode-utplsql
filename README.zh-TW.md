@@ -1,3 +1,5 @@
+<!-- GENERATED FROM docs/brain/60-README/README.zh-TW.md — DO NOT EDIT -->
+
 <p align="center">
   <img src="images/icon.png" alt="utPLSQL Test Runner Logo" width="128" height="128">
 </p>
@@ -27,6 +29,9 @@
 - 🔌 **連線設定檔** — 透過狀態列或命令面板，儲存並切換多個環境（DEV/TEST/PROD），支援依設定檔自訂設定。
 - 📜 **SQL 指令碼** — 在目前連線設定檔上執行目前指令碼、Explorer 中的檔案或整個資料夾（支援 charset、`DBMS_OUTPUT` 與 `stopOnError`）。
 - 📈 **陳述式與檢視涵蓋率** — Coverage 分頁顯示每個檔案的陳述式百分比（PROCEDURE/FUNCTION），並透過 `V$SQL` 追蹤執行的檢視。
+- 🏷️ **標籤與隨機順序** — 使用 `utplsql.tags`（例如 `fast & !integration`）篩選測試，並以可重現的種子隨機順序執行（`utplsql.run.randomOrder`）。
+- 🎯 **涵蓋範圍** — 透過 `utplsql.coverage.*` 包含/排除物件與 schema/物件正則，移除框架雜訊並納入動態到達的物件。
+- 🗄️ **資料庫優先探索** — 從 `ut_runner.get_suites_info` 建構樹狀結構，並從命令面板重建註解快取。
 - 🐛 **PL/SQL 除錯** — 透過 `DBMS_DEBUG` 對 utPLSQL 測試進行中斷點與逐步除錯（原生除錯介面卡）。
 - 🌍 **i18n — 24 種語言** — `utplsql.language` 跟隨 VSCode（24 locales：pt-br、en、en-gb、es、zh-cn、zh-tw、ja、de、fr、it、ko、ru、tr、pl、cs、hu、bg、el、id、ro、sr、th、uk、vi）。
 
@@ -43,6 +48,13 @@
 
 - [**utPLSQL**](https://github.com/utPLSQL/utPLSQL) **(UT3)** 已安裝到 Oracle 資料庫中。
 - 只需資料庫即可 — VSIX 已包含精簡版 `oracledb` 驅動程式（無需 Instant Client）。
+
+**Oracle / utPLSQL 相容性：**
+
+| Oracle | utPLSQL | 說明 |
+|---|---|---|
+| 18c+ | v3.2.x (18c+) / v3.1.x | 建議；charset 為 `AL32UTF8`。 |
+| 12.2 | 僅 v3.1.x | v3.2.x 無法編譯（`PLS-00222`）。映像的 `WE8DEC` 會遺失無法表示的字元（例如 `€`）；精簡驅動程式會忽略 `NLS_LANG`。 |
 - **VSCode 1.88+**（測試涵蓋率 API）。
 
 擴充功能只是「圖形化用戶端」— 真正執行測試的是資料庫，透過 node-oracledb 直連。
@@ -98,9 +110,19 @@ Test Explorer 中。
 | `utplsql.sourcePath` | `install` | 正式程式碼的資料夾（用於將涵蓋率對應到檔案）。 |
 | `utplsql.includePatterns` | `["**/*.pks"]` | 用於探索含 `%suite`/`%test` 規格的 glob 模式。若測試位於 `.sql`，請使用 `["**/*.sql"]`。 |
 | `utplsql.coverageOwner` | `""` | 被涵蓋物件的 schema 擁有者。留空 = 使用連線使用者（大寫）。 |
+| `utplsql.coverage.schemes` | `[]` | 涵蓋的 schema（`a_coverage_schemes`）。留空 = 連線使用者（或 `utplsql.coverageOwner`）。 |
+| `utplsql.coverage.includeObjects` | `[]` | 要納入涵蓋的物件，格式為 `OWNER.NAME`（例如 `["APP.MY_PKG"]`）。適用於僅透過動態方式到達的物件。 |
+| `utplsql.coverage.excludeObjects` | `[]` | 要從涵蓋中排除的物件，格式為 `OWNER.NAME`（例如 `["UT3.UT_COVERAGE"]`）。 |
+| `utplsql.coverage.includeSchemaExpr` | `""` | 要納入涵蓋的 schema 正則（例如 `^APP$`）。 |
+| `utplsql.coverage.includeObjectExpr` | `""` | 要納入涵蓋的物件正則。 |
+| `utplsql.coverage.excludeSchemaExpr` | `""` | 要從涵蓋中排除的 schema 正則。 |
+| `utplsql.coverage.excludeObjectExpr` | `""` | 要從涵蓋中排除的物件正則（例如 utPLSQL 框架用 `^UT_`）。 |
 | `utplsql.timeoutMinutes` | `60` | 執行逾時（分鐘）。 |
 | `utplsql.dbmsOutput` | `false` | 在測試工作階段中啟用 `DBMS_OUTPUT`。 |
 | `utplsql.additionalReporters` | `[]` | 每次執行都要包含的額外 reporters（例如 `["ut_coverage_html_reporter"]`）。預設（documentation、junit）一律包含，無需列出。 |
+| `utplsql.tags` | `""` | 用於篩選要執行哪些測試的 utPLSQL 標籤運算式（例如 `fast & !integration`）。留空則執行全部。 |
+| `utplsql.run.randomOrder` | `false` | 以隨機順序執行測試，以揭示測試之間的順序依賴。 |
+| `utplsql.run.randomOrderSeed` | `0` | 隨機順序的種子。`0` = 由資料庫選擇（不可重現）；大於 0 可重現相同順序。 |
 | `utplsql.codeLens.enabled` | `true` | 在 `%suite` 與 `%test` 上顯示 Run/Run with Coverage CodeLens 按鈕。 |
 | `utplsql.statusBar.enabled` | `true` | 在狀態列中顯示測試狀態指示器。 |
 | `utplsql.decorations.enabled` | `true` | 在執行後於 `%suite` 與 `%test` 行上顯示通過/失敗裝飾。 |
@@ -112,8 +134,9 @@ Test Explorer 中。
 | `utplsql.oracleClientLibDir` | `""` | Oracle Instant Client 目錄。當 `utplsql.oracleClientMode` 為 `thick` 時必填（例如 `C:\oracle\instantclient_23_5`）。 |
 | 除錯不會在斷點停下 | 套件編譯時沒有除錯資訊，或缺少除錯授權 | 使用 `PLSQL_OPTIMIZE_LEVEL <= 1` 編譯（或 `ALTER PACKAGE ... COMPILE DEBUG`），並授予 `DEBUG CONNECT SESSION` + `EXECUTE ON SYS.DBMS_DEBUG`. `test_*.pkb` 中的中斷點可能不會命中（utPLSQL 透過動態 SQL 執行測試）；請將中斷點設在被測程式碼中。 |
 | `utplsql.oracleClientConfigDir` | `""` | 包含 `sqlnet.ora`/`tnsnames.ora` 的 Oracle 設定目錄（TNS_ADMIN）。選用；僅 thick 模式使用。 |
-| `utplsql.organization` | `file` | 樹狀結構組織：`file`（依路徑）或 `schema`（Schema > Package > Suite > Test）。在 `schema` 模式時，若工作區中沒有 `.pks` 檔案，也會從資料庫（`ALL_OBJECTS`/`ALL_SOURCE`）探索套件 — 使用虛擬 URI `utplsql-db:/`（無 CodeLens/裝飾/跳轉至失敗）。 |
+| `utplsql.organization` | `file` | 樹狀結構組織：`file`（依路徑）或 `schema`（Schema > Package > Suite > Test）。在 `schema` 模式時，若工作區中沒有 `.pks` 檔案，也會從資料庫（`ut_runner.get_suites_info`，無法使用時回退至 `ALL_OBJECTS`/`ALL_SOURCE`）探索套件 — 使用虛擬 URI `utplsql-db:/`（可執行並跳轉至失敗；無 CodeLens/裝飾）。 |
 | `utplsql.organization.schemaPattern` | `db/{schema}/**` | 用於從路徑擷取 schema 的 glob 模式。使用 `{schema}` 作為佔位符。在 `schema` 模式中，模式基礎目錄下方的目錄（例如 `db/*`）定義了要在資料庫中查詢的 schema。 |
+| `utplsql.discovery.source` | `auto` | `schema` 模式下測試樹的來源：`auto` 使用資料庫 API（`ut_runner.get_suites_info`），無法使用時回退到 `ALL_SOURCE`/檔案；`database` 要求使用 API；`file` 關閉資料庫探索。 |
 | `utplsql.refreshDebounceMs` | `300` | 在重新整理 Test Explorer 之前，合併 `.pks`/`.pkb` 檔案監看事件的防抖時間（毫秒）。 |
 | `utplsql.compilationDiagnostics.enabled` | `true` | 將資料庫中的 PL/SQL 編譯錯誤（`ALL_ERRORS`）以編輯器底線形式顯示，並顯示於「問題」面板中（來源 "utPLSQL Compilation"）。 |
 | `utplsql.setupDiagnostics.enabled` | `true` | 顯示設定診斷（連線、授權、版本）以及 **utPLSQL 安裝完整性**（UT3 schema 中的無效物件，帶有「Recompile UT3」快速修復）並附上快速修復動作。 |
@@ -177,7 +200,7 @@ UTPLSQL_CONN=your_user/password@//host:1521/service
 8. **Oracle 直連（串流）：** 無需安裝任何東西 — VSIX 已包含精簡版 `oracledb` 驅動程式。
 9. 若要診斷，請使用命令面板中的 `utPLSQL: Show information` — 顯示版本資訊並附複製選項。
 10. **utPLSQL: Select additional reporter...** — QuickPick 列出資料庫中可用的 reporters。
-11. **utPLSQL: Cancel execution** — 停止正在執行的執行（執行期間按 `Escape`）。
+11. **utPLSQL: Cancel run** — 停止正在執行的執行（執行期間按 `Escape`）。
 12. **utPLSQL: Refresh tests** — 強制重新探索 `.pks`。
 
 > 💡 **撰寫測試時：** 解析器是以 token 驅動 — 只要檔案中有 `%suite`
@@ -192,7 +215,7 @@ UTPLSQL_CONN=your_user/password@//host:1521/service
 |---|---|
 | `-- %disabled` | 套件或測試**不會顯示**在樹狀結構中（探索時略過） |
 | `-- %throws(-20001)` | 標記該測試預期會丟出例外 20001（`expectedError` 中繼資料） |
-| `-- %tags(fast, critical)` | 測試標籤（中繼資料；標籤篩選為 roadmap） |
+| `-- %tags(fast, critical)` | 測試標籤；使用 `utplsql.tags` 設定篩選執行（例如 `fast & !integration`） |
 | `-- %displayname(Name)` | 顯示的自訂名稱，取代 `%test` 描述 |
 | `-- %beforeall` / `%beforeeach` / `%aftereach` / `%afterall` | 以生命週期鉤子（中繼資料）標記套件 |
 
@@ -211,14 +234,14 @@ UTPLSQL_CONN=your_user/password@//host:1521/service
 | `utPLSQL: Run tests in this folder` | 執行所選資料夾的套件 | 滑鼠右鍵 → 資料夾 |
 | `utPLSQL: Run tests in this folder with coverage` | 同上，但使用涵蓋率設定檔 | 滑鼠右鍵 → 資料夾 |
 | `utPLSQL: Refresh tests` | 強制重新探索 `.pks` | — |
-| `utPLSQL: Cancel execution` | 停止正在執行的執行 | — |
-| `utPLSQL: Show utPLSQL information` | 版本資訊並附複製選項 | — |
+| `utPLSQL: Cancel run` | 停止正在執行的執行 | — |
+| `utPLSQL: Show utPLSQL info` | 版本資訊並附複製選項 | — |
 | `utPLSQL: Select additional reporter...` | 列出資料庫 reporters 的 QuickPick | — |
 | `utPLSQL: Clear session connection` | 從工作階段快取中移除連線 | — |
 | `utPLSQL: Rerun Last` | 重複上次的執行 | `Ctrl+Shift+U L` |
 | `utPLSQL: Run Test at Cursor` | 執行游標下的測試 | `Ctrl+Shift+U U` |
 | `utPLSQL: Run Failed Tests` | 僅重新執行失敗的測試 | `Ctrl+Shift+U X` |
-| `utPLSQL: Validate configuration` | 執行完整的安裝驗證（連線、UT3 安裝）並顯示結果 | — |
+| `utPLSQL: Validate setup` | 執行完整的安裝驗證（連線、UT3 安裝）並顯示結果 | — |
 | `utPLSQL: Configure connection` | 在 `utplsql.connection` 開啟設定 | — |
 | `utPLSQL: Copy coverage grants to clipboard` | 將授權 SQL 複製到剪貼簿 | — |
 | `utPLSQL: Show Test Explorer` | 聚焦 Testing 檢視 | — |
@@ -227,6 +250,7 @@ UTPLSQL_CONN=your_user/password@//host:1521/service
 | `utPLSQL: Manage connection profiles` | 在 `utplsql.profiles` 開啟設定 | — |
 | `utPLSQL: Import connections from SQL Developer` | 從 SQL Developer（connections.xml）匯入連線 | — |
 | `utPLSQL: Debug test (PL/SQL)` | 對作用中檔案下的測試啟動除錯工作階段 | — |
+| `utPLSQL: 重建註解快取` | 重建資料庫中的 utPLSQL 註解快取並重新整理樹狀結構 | — |
 | `utPLSQL: 編譯以供偵錯` | 使用偵錯資訊編譯所選檔案/資料夾的物件 | — |
 | `utPLSQL: Run script` | Runs the script open in the editor against a connection profile | Right-click → script file |
 | `utPLSQL: Run script file` | Runs an Explorer script file (decoded with the profile charset) | Right-click → file |
@@ -323,11 +347,11 @@ GRANT SELECT ON SYS.DBA_PROCEDURES TO <ut3_owner>;
 
 | 症狀 | 可能原因 | 解決方案 |
 |---|---|---|
-| 套件不出現 | 找不到資料庫 | 執行 `utPLSQL: Validate configuration` 以取得診斷 |
+| 套件不出現 | 找不到資料庫 | 執行 `utPLSQL: Validate setup` 以取得診斷 |
 | 涵蓋率為空 | 缺少 `GRANT EXECUTE ON DBMS_PROFILER` | 在 [資料庫需求](#資料庫需求) 中執行授權，或使用 `utPLSQL: Copy coverage grants to clipboard` |
 | 涵蓋率為空 | Oracle 19c 需要額外授權 | `GRANT EXECUTE ON DBMS_PROFILER` + `GRANT EXECUTE ON DBMS_PLSQL_CODE_COVERAGE` |
 | 編譯錯誤但無提示 | 含 PL/SQL 語法錯誤的程式碼 | 保持 `utplsql.compilationDiagnostics.enabled` 開啟（預設）；執行後，來自 `ALL_ERRORS` 的錯誤會顯示於「問題」面板中 |
-| 連線錯誤 | 字串格式錯誤或資料庫無法連線 | 使用 `utPLSQL: Validate configuration` |
+| 連線錯誤 | 字串格式錯誤或資料庫無法連線 | 使用 `utPLSQL: Validate setup` |
 | 執行時逾時 | 測試耗時超過 `timeoutMinutes` | 增加 `utplsql.timeoutMinutes` |
 | `%suite` 無法辨識 | 檔案中缺少 `%suite`/`create package`，或 `%test` 沒有 `PROCEDURE` | 檢查規格；執行 `utPLSQL: Refresh tests` |
 | CodeLens 不出現 | `editor.codeLens` 已停用或衝突 | 啟用 `"editor.codeLens": true`；檢查 `utplsql.codeLens.enabled` |

@@ -1,3 +1,5 @@
+<!-- GENERATED FROM docs/brain/20-PRDs/prd-23-auto-wiki-screenshots.md — DO NOT EDIT -->
+
 # PRD-23 — Screenshots da wiki: checklist manual + diagramas (reconciliada)
 
 | Campo | Valor |

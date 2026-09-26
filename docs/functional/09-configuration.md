@@ -1,3 +1,4 @@
+<!-- GENERATED FROM docs/brain/10-Projeto/Funcional/09-configuration.md — DO NOT EDIT -->
 # 09 — Configuration
 
 Sistema de configuração da extensão: settings, conexão, ambiente.
@@ -68,9 +69,24 @@ interface UtConfig {
 
   // Descoberta
   includePatterns: string[];          // default: ["**/*.pks"]
+  discoverySource: 'auto' | 'file' | 'database';  // default: "auto"
 
   // Reporters
   additionalReporters: string[];      // default: []
+
+  // Execução
+  tags: string;                       // default: "" (expressão de tags do utPLSQL)
+  randomOrder: boolean;               // default: false (ordem aleatória)
+  randomOrderSeed: number;            // default: 0 (0 = sorteada pelo banco)
+
+  // Escopo de cobertura (PRD-79)
+  coverageSchemes: string[];          // default: [] (sobrepõe o owner)
+  coverageIncludeObjects: string[];   // default: [] (OWNER.NAME)
+  coverageExcludeObjects: string[];   // default: [] (OWNER.NAME)
+  coverageIncludeSchemaExpr: string;  // default: "" (regex)
+  coverageIncludeObjectExpr: string;  // default: "" (regex)
+  coverageExcludeSchemaExpr: string;  // default: "" (regex)
+  coverageExcludeObjectExpr: string;  // default: "" (regex)
 
   // UX
   codeLensEnabled: boolean;           // default: true

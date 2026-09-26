@@ -29,11 +29,15 @@ export function parseJUnit(xml: string): TestCaseResult[] {
   const doc = parser.parse(xml);
 
   const root = doc.testsuites ?? doc;
-  // biome-ignore lint/suspicious/noExplicitAny: XML parsing — structure is dynamic
-  const suites = toArray<any>(root.testsuite);
   const results: TestCaseResult[] = [];
 
-  for (const suite of suites) {
+  // O ut_junit_reporter ANINHA <testsuite> por nível (schema > package > suite)
+  // — é o que acontece com `--%suitepath`, e o padrão em instalação
+  // compartilhada (utPLSQL em UT3, suites em outro schema). Os testcases vivem
+  // no nível mais interno, então a visita é recursiva (e a ordem preserva o
+  // documento: testcases do nível atual antes dos aninhados).
+  // biome-ignore lint/suspicious/noExplicitAny: XML parsing — structure is dynamic
+  const visit = (suite: any): void => {
     // biome-ignore lint/suspicious/noExplicitAny: XML parsing — structure is dynamic
     for (const tc of toArray<any>(suite.testcase)) {
       const classname = String(tc['@_classname'] ?? suite['@_name'] ?? '');
@@ -63,7 +67,12 @@ export function parseJUnit(xml: string): TestCaseResult[] {
 
       results.push({ classname, name, status, message, durationMs, stackFrames });
     }
-  }
+    // biome-ignore lint/suspicious/noExplicitAny: XML parsing — structure is dynamic
+    for (const nested of toArray<any>(suite.testsuite)) visit(nested);
+  };
+
+  // biome-ignore lint/suspicious/noExplicitAny: XML parsing — structure is dynamic
+  for (const suite of toArray<any>(root.testsuite)) visit(suite);
 
   return results;
 }
@@ -96,24 +105,36 @@ function extractBody(node: any): string {
 export function parseStackFrames(body: string): StackFrame[] | undefined {
   if (!body) return undefined;
   const frames: StackFrame[] = [];
-  const regex = /at\s+(?:"([^"]+)"\."([^"]+)"|([\w.$#]+)),?\s*line\s+(\d+)/g;
+  // Formatos aceitos, do mais recente para o mais antigo:
+  //   at "SCHEMA.PKG.PROC", line N  — utPLSQL (nome único qualificado)
+  //   at "PKG"."PROC", line N        — backtrace no formato DBMS_UTILITY
+  //   at PKG.PROC, line N            — sem aspas
+  const regex = /at\s+(?:"([^"]+)"\."([^"]+)"|"([^"]+)"|([\w.$#]+)),?\s*line\s+(\d+)/g;
   let match: RegExpExecArray | null;
   // biome-ignore lint/suspicious/noAssignInExpressions: idiomatic regex loop
   while ((match = regex.exec(body)) !== null) {
-    const obj = match[1] ?? match[3];
+    const obj = match[1] ?? match[3] ?? match[4];
     if (obj) {
       frames.push({
         objectName: obj,
-        line: parseInt(match[4], 10),
+        line: parseInt(match[5], 10),
       });
     }
   }
   return frames.length > 0 ? frames : undefined;
 }
 
-const INTERNAL_PREFIXES = ['UT_', 'UT$', 'UT3_', 'UT3$', 'UT3.'];
+/**
+ * Prefixos dos objetos INTERNOS do framework utPLSQL. O schema NÃO entra na
+ * lista: num install próprio o schema do usuário é o de instalação (UT3), e o
+ * frame do teste dele também vem qualificado (`UT3.TEST_MATH_FAIL.P`) — o que
+ * precisa ser descartado é o objeto de framework (`UT3.UT_SUITE_MANAGER`).
+ */
+const INTERNAL_PREFIXES = ['UT_', 'UT$', 'UT3_', 'UT3$'];
 
+/** Frame do utPLSQL: `OBJETO`, `SCHEMA.OBJETO` ou `SCHEMA.OBJETO.PROCEDURE`. */
 export function isUserFrame(frame: StackFrame): boolean {
-  const upper = frame.objectName.toUpperCase();
-  return !INTERNAL_PREFIXES.some((p) => upper.startsWith(p)) && frame.line > 0;
+  if (frame.line <= 0) return false;
+  const segments = frame.objectName.toUpperCase().split('.');
+  return !segments.some((s) => INTERNAL_PREFIXES.some((p) => s.startsWith(p)));
 }

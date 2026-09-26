@@ -1,3 +1,5 @@
+<!-- GENERATED FROM docs/brain/10-Projeto/Funcional/README.md — DO NOT EDIT -->
+
 # Especificação Funcional — vscode-utplsql
 
 Extensão VSCode para execução de testes utPLSQL (Oracle PL/SQL) integrada ao Test
@@ -16,13 +18,14 @@ discovery (.pks + banco)  ──►  executeRun  ──►  Oracle direto  ─�
 
 | Camada | Módulos | Responsabilidade |
 |---|---|---|
-| **Descoberta** | `suiteParser.ts`, `discovery.ts` | Encontrar suites/testes nos arquivos `.pks` via regex `%suite`/`%test` + annotations estendidas; no modo schema, complementa com descoberta via banco (`ALL_OBJECTS`/`ALL_SOURCE`) |
-| **Execução** | `runner.ts`, `oracleRunner.ts`, `scriptRunner.ts`, `debugger.ts`, `dbmsDebug.ts` | Executar testes via Oracle direto (com connection pooling), scripts SQL/PL-SQL e depuração |
+| **Descoberta** | `suiteParser.ts`, `discovery.ts`, `testTree.ts` | Encontrar suites/testes nos arquivos `.pks` via regex `%suite`/`%test` + annotations estendidas; no modo schema, usa `ut_runner.get_suites_info` (DB-first, PRD-74) com fallback para `ALL_OBJECTS`/`ALL_SOURCE`; monta a árvore e mescla DB/arquivo |
+| **Execução** | `runner.ts`, `oracleRunner.ts`, `scriptRunner.ts`, `debugger.ts`, `dbmsDebug.ts`, `compileForDebug.ts` | Executar testes via Oracle direto (com connection pooling), scripts SQL/PL-SQL e depuração (incl. compilar para debug) |
 | **Resultados** | `junit.ts`, `results.ts`, `matching.ts` | Parse do XML JUnit, mapeamento para `vscode.TestItem` (funções canônicas compartilhadas) |
 | **Cobertura** | `cobertura.ts`, `coverage.ts`, `viewCoverage.ts`, `plsqlDeclarations.ts` | Parse do XML Cobertura, mapeamento para arquivos fonte, cobertura de views e por declaração |
 | **UX** | `codelens.ts`, `statusBar.ts`, `decorations.ts` | CodeLens, StatusBar, decorações inline |
 | **Diagnósticos** | `compilationDiagnostics.ts`, `quickfix.ts` + `oracleRunner.checkCompilationErrors()` | Erros de compilação PL/SQL (`ALL_ERRORS` → Problems Panel, pós-run) e validação de setup/integridade UT3 com quick-fix |
-| **Configuração** | `config.ts`, `state.ts`, `types.ts`, `connectionProfiles.ts`, `i18n.ts`, `i18nLocales.ts` | Settings, conexão, perfis, i18n e estado persistente |
+| **Configuração** | `config.ts`, `state.ts`, `types.ts`, `connectionProfiles.ts`, `i18n.ts`, `i18nLocales.ts`, `oracleClient.ts` | Settings, conexão, perfis, i18n, modo thin/thick e estado persistente |
+| **Infra** | `charset.ts`, `charsetSupport.ts`, `logger.ts`, `debounce.ts`, `dbSourceProvider.ts` | Decodificação de charset, detecção de charset legado, logging, coalescência e documentos virtuais `utplsql-db:` |
 | **Orquestração** | `extension.ts`, `commands/` | Registro de comandos, providers, ciclo de vida; handlers agrupados por área (`run`, `script`, `connection`, `profile`, `debug`, `utility`, `deps`) |
 
 ### Separação módulos puros vs vscode
@@ -30,9 +33,9 @@ discovery (.pks + banco)  ──►  executeRun  ──►  Oracle direto  ─�
 | Puro (testável com `node --test`) | Depende de `vscode` |
 |---|---|
 | `suiteParser.ts`, `junit.ts`, `cobertura.ts`, `i18n.ts`, `i18nLocales.ts` | `extension.ts`, `runner.ts`, `config.ts` |
-| `matching.ts`, `plsqlDeclarations.ts`, `dbmsDebug.ts` | `discovery.ts`, `coverage.ts`, `viewCoverage.ts` |
-| `codelens.ts` (parse), `state.ts`, `types.ts`, `scriptRunner.ts` | `decorations.ts`, `statusBar.ts` (classe), `oracleRunner.ts`, `results.ts` |
-| | `connectionProfiles.ts`, `debugger.ts`, `quickfix.ts`, `commands/` |
+| `matching.ts`, `plsqlDeclarations.ts`, `charset.ts`, `charsetSupport.ts` | `discovery.ts`, `coverage.ts`, `viewCoverage.ts` |
+| `codelens.ts` (parse), `state.ts`, `types.ts`, `scriptRunner.ts`, `logger.ts`, `debounce.ts` | `decorations.ts`, `statusBar.ts` (classe), `oracleRunner.ts`, `results.ts`, `testTree.ts` |
+| | `connectionProfiles.ts`, `debugger.ts`, `quickfix.ts`, `compileForDebug.ts`, `oracleClient.ts`, `commands/` |
 
 ### Context keys
 

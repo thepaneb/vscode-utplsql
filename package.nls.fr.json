@@ -25,5 +25,6 @@
   "nls.command.runScript": "utPLSQL: Run script",
   "nls.command.runScriptFile": "utPLSQL: Run script file",
   "nls.command.runScriptFolder": "utPLSQL: Run script folder",
-  "nls.command.compileForDebug": "utPLSQL: Compiler pour le débogage"
+  "nls.command.compileForDebug": "utPLSQL: Compiler pour le débogage",
+  "nls.command.rebuildAnnotations": "utPLSQL: Reconstruire le cache des annotations"
 }

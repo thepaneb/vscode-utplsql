@@ -1,3 +1,5 @@
+<!-- GENERATED FROM docs/brain/60-README/README.el.md — DO NOT EDIT -->
+
 <p align="center">
   <img src="images/icon.png" alt="utPLSQL Test Runner Logo" width="128" height="128">
 </p>
@@ -27,6 +29,9 @@
 - 🔌 **Connection profiles** — αποθήκευση και εναλλαγή μεταξύ πολλών περιβαλλόντων (DEV/TEST/PROD) με ρυθμίσεις ανά profile, μέσω status bar ή command palette.
 - 📜 **Σενάρια SQL** — εκτέλεση του τρέχοντος σεναρίου, ενός αρχείου από τον Explorer ή ολόκληρου φακέλου στο ενεργό προφίλ σύνδεσης (με σεβασμό στο charset, με `DBMS_OUTPUT` και `stopOnError`).
 - 📈 **Κάλυψη εντολών και views** — η καρτέλα Coverage δείχνει το `% των εντολών` (PROCEDURE/FUNCTION) ανά αρχείο και παρακολουθεί τα views που εκτελέστηκαν μέσω `V$SQL`.
+- 🏷️ **Tags και τυχαία σειρά** — φιλτράρετε τα test με `utplsql.tags` (π.χ. `fast & !integration`) και εκτελέστε σε τυχαία σειρά με αναπαραγώγιμο seed (`utplsql.run.randomOrder`).
+- 🎯 **Εύρος κάλυψης** — συμπεριλάβετε/αποκλείστε αντικείμενα και regex schema/αντικειμένου (`utplsql.coverage.*`) για να αφαιρέσετε τον θόρυβο του framework και να προσθέσετε δυναμικά αντικείμενα.
+- 🗄️ **Ανακάλυψη DB-first** — χτίστε το δέντρο από το `ut_runner.get_suites_info` και ξαναχτίστε την προσωρινή μνήμη σχολίων από την παλέτα.
 - 🐛 **PL/SQL Debug** — breakpoints και βηματική αποσφαλμάτωση utPLSQL tests μέσω `DBMS_DEBUG` (native Debug Adapter).
 - 🌍 **i18n — 24 γλώσσες** — το `utplsql.language` ακολουθεί το VSCode (24 τοπικές ρυθμίσεις: pt-br, en, en-gb, es, zh-cn, zh-tw, ja, de, fr, it, ko, ru, tr, pl, cs, hu, bg, el, id, ro, sr, th, uk, vi).
 
@@ -43,6 +48,13 @@
 
 - [**utPLSQL**](https://github.com/utPLSQL/utPLSQL) **(UT3)** εγκατεστημένο στη βάση Oracle.
 - Τίποτα άλλο εκτός από τη βάση — το VSIX περιλαμβάνει ήδη τον thin driver `oracledb` (χωρίς Instant Client).
+
+**Συμβατότητα Oracle / utPLSQL:**
+
+| Oracle | utPLSQL | Σημειώσεις |
+|---|---|---|
+| 18c+ | v3.2.x (18c+) / v3.1.x | Συνιστάται; charset `AL32UTF8`. |
+| 12.2 | μόνο v3.1.x | Το v3.2.x δεν μεταγλωττίζεται (`PLS-00222`). Το `WE8DEC` της εικόνας χάνει μη αναπαραστάσιμους χαρακτήρες (π.χ. `€`); ο thin driver αγνοεί το `NLS_LANG`. |
 - **VSCode 1.88+** (Test Coverage API).
 
 Η επέκταση είναι μόνο ο «γραφικός πελάτης» — αυτό που εκτελεί τα tests είναι η βάση απευθείας μέσω node-oracledb.
@@ -100,9 +112,19 @@ Test Explorer **καθώς ολοκληρώνεται κάθε test**.
 | `utplsql.sourcePath` | `install` | Φάκελος του κώδικα παραγωγής (για την αντιστοίχιση της κάλυψης σε αρχεία). |
 | `utplsql.includePatterns` | `["**/*.pks"]` | Globs για την εύρεση των specs με `%suite`/`%test`. Αν τα tests σας είναι σε `.sql`, χρησιμοποιήστε `["**/*.sql"]`. |
 | `utplsql.coverageOwner` | `""` | Schema-owner των καλυπτόμενων αντικειμένων. Κενό = χρησιμοποιεί τον χρήστη της σύνδεσης (κεφαλαία). |
+| `utplsql.coverage.schemes` | `[]` | Καλυπτόμενα schemas (`a_coverage_schemes`). Κενό = χρήστης σύνδεσης (ή `utplsql.coverageOwner`). |
+| `utplsql.coverage.includeObjects` | `[]` | Αντικείμενα προς συμπερίληψη στην κάλυψη, ως `OWNER.NAME` (π.χ. `["APP.MY_PKG"]`). Χρήσιμο για αντικείμενα που προσεγγίζονται μόνο δυναμικά. |
+| `utplsql.coverage.excludeObjects` | `[]` | Αντικείμενα προς αποκλεισμό από την κάλυψη, ως `OWNER.NAME` (π.χ. `["UT3.UT_COVERAGE"]`). |
+| `utplsql.coverage.includeSchemaExpr` | `""` | Regex schemas προς συμπερίληψη στην κάλυψη (π.χ. `^APP$`). |
+| `utplsql.coverage.includeObjectExpr` | `""` | Regex αντικειμένων προς συμπερίληψη στην κάλυψη. |
+| `utplsql.coverage.excludeSchemaExpr` | `""` | Regex schemas προς αποκλεισμό από την κάλυψη. |
+| `utplsql.coverage.excludeObjectExpr` | `""` | Regex αντικειμένων προς αποκλεισμό από την κάλυψη (π.χ. `^UT_` για το framework utPLSQL). |
 | `utplsql.timeoutMinutes` | `60` | Χρονικό όριο σε λεπτά για την εκτέλεση των tests. |
 | `utplsql.dbmsOutput` | `false` | Ενεργοποιεί το `DBMS_OUTPUT` στη σύνοδο του test. Χρήσιμο για debugging. |
 | `utplsql.additionalReporters` | `[]` | Επιπλέον reporters που περιλαμβάνονται σε κάθε εκτέλεση (π.χ. `["ut_coverage_html_reporter"]`). Οι προεπιλεγμένοι (documentation, junit) περιλαμβάνονται πάντα και δεν χρειάζεται να αναφέρονται. |
+| `utplsql.tags` | `""` | Έκφραση tags του utPLSQL για φιλτράρισμα των test που εκτελούνται (π.χ. `fast & !integration`). Κενό εκτελεί όλα. |
+| `utplsql.run.randomOrder` | `false` | Εκτελεί τα test σε τυχαία σειρά για να αποκαλύψει εξαρτήσεις σειράς μεταξύ τους. |
+| `utplsql.run.randomOrderSeed` | `0` | Seed της τυχαίας σειράς. `0` = επιλέγεται από τη βάση (μη αναπαραγώγιμο)· > 0 αναπαράγει την ίδια σειρά. |
 | `utplsql.codeLens.enabled` | `true` | Εμφανίζει κουμπιά CodeLens Run/Run with Coverage πάνω από τα `%suite` και `%test`. |
 | `utplsql.statusBar.enabled` | `true` | Εμφανίζει ένδειξη κατάστασης των tests στη status bar. |
 | `utplsql.decorations.enabled` | `true` | Εμφανίζει decorations επιτυχίας/αποτυχίας στις γραμμές `%suite` και `%test` μετά την εκτέλεση. |
@@ -114,8 +136,9 @@ Test Explorer **καθώς ολοκληρώνεται κάθε test**.
 | `utplsql.oracleClientLibDir` | `""` | Κατάλογος του Oracle Instant Client. Απαιτείται όταν το `utplsql.oracleClientMode` είναι `thick` (π.χ. `C:\oracle\instantclient_23_5`). |
 | Το debug δεν σταματά στο σημείο διακοπής | Πακέτο χωρίς πληροφορίες debug ή λείπουν τα δικαιώματα debug | Μεταγλωττίστε με `PLSQL_OPTIMIZE_LEVEL <= 1` (ή `ALTER PACKAGE ... COMPILE DEBUG PLSQL_OPTIMIZE_LEVEL = 1`) και δώστε `DEBUG CONNECT SESSION` + `EXECUTE ON SYS.DBMS_DEBUG`. Τα σημεία διακοπής στο `test_*.pkb` μπορεί να μην πιάνονται (το utPLSQL εκτελεί τα test μέσω δυναμικού SQL)· βάλτε τα στον κώδικα υπό δοκιμή. |
 | `utplsql.oracleClientConfigDir` | `""` | Κατάλογος διαμόρφωσης Oracle (TNS_ADMIN) με `sqlnet.ora`/`tnsnames.ora`. Προαιρετικός· χρησιμοποιείται μόνο από τη λειτουργία thick. |
-| `utplsql.organization` | `file` | Οργάνωση δέντρου: `file` (ανά διαδρομή) ή `schema` (Schema > Package > Suite > Test). Στη λειτουργία `schema` τα suites ανακαλύπτονται επίσης από τη βάση (`ALL_OBJECTS`/`ALL_SOURCE`) όταν τα αρχεία `.pks` δεν υπάρχουν στο workspace — με εικονικό URI `utplsql-db:/` (χωρίς CodeLens/decorations/jump to failure). |
+| `utplsql.organization` | `file` | Οργάνωση δέντρου: `file` (ανά διαδρομή) ή `schema` (Schema > Package > Suite > Test). Στη λειτουργία `schema` τα suites ανακαλύπτονται επίσης από τη βάση (`ut_runner.get_suites_info`, με εφεδρική χρήση `ALL_OBJECTS`/`ALL_SOURCE`) όταν τα αρχεία `.pks` δεν υπάρχουν στο workspace — με εικονικό URI `utplsql-db:/` (εκτέλεση και μετάβαση στο σφάλμα λειτουργούν· χωρίς CodeLens/decorations). |
 | `utplsql.organization.schemaPattern` | `db/{schema}/**` | Glob pattern για την εξαγωγή του schema από τη διαδρομή. Χρησιμοποιήστε το `{schema}` ως placeholder. Στη λειτουργία `schema`, οι κατάλογοι κάτω από τη βάση του pattern (π.χ. `db/*`) ορίζουν τα schemas που ερωτώνται στη βάση. |
+| `utplsql.discovery.source` | `auto` | Πηγή του δέντρου στη λειτουργία `schema`: το `auto` χρησιμοποιεί το API της βάσης (`ut_runner.get_suites_info`) και καταφεύγει σε `ALL_SOURCE`/αρχεία όταν δεν είναι διαθέσιμο· το `database` απαιτεί το API· το `file` απενεργοποιεί την ανακάλυψη μέσω βάσης. |
 | `utplsql.refreshDebounceMs` | `300` | Debounce (ms) για συγχώνευση συμβάντων του watcher αρχείων `.pks`/`.pkb` πριν από την ανανέωση του Test Explorer. |
 | `utplsql.compilationDiagnostics.enabled` | `true` | Εμφανίζει τα σφάλματα μεταγλώττισης PL/SQL από τη βάση δεδομένων (`ALL_ERRORS`) ως υπογραμμίσεις στον editor και στο Problems Panel (πηγή "utPLSQL Compilation"). |
 | `utplsql.setupDiagnostics.enabled` | `true` | Εμφανίζει διαγνωστικά ρυθμίσεων (σύνδεση, grants, έκδοση) και **ακεραιότητα εγκατάστασης utPLSQL** (άκυρα αντικείμενα στο schema UT3, με quick-fix "Recompile UT3") με ενέργειες quick-fix. |
@@ -180,7 +203,7 @@ UTPLSQL_CONN=your_user/password@//host:1521/service
 8. **Για Oracle direct (streaming):** δεν χρειάζεται τίποτα να εγκατασταθεί — το VSIX περιλαμβάνει ήδη τον thin driver `oracledb`.
 9. Για διαγνωστικά, χρησιμοποιήστε το `utPLSQL: Show information` στην palette — δείχνει εκδόσεις API/DB με επιλογή αντιγραφής.
 10. **utPLSQL: Select additional reporter...** — QuickPick με τους reporters που είναι διαθέσιμοι στη βάση.
-11. **utPLSQL: Cancel execution** — σταματά την τρέχουσα εκτέλεση (`Escape` κατά την εκτέλεση).
+11. **utPLSQL: Cancel run** — σταματά την τρέχουσα εκτέλεση (`Escape` κατά την εκτέλεση).
 12. **utPLSQL: Refresh tests** — επιβάλλει εκ νέου εύρεση των `.pks`.
 
 > 💡 **Όταν γράφετε tests:** ο parser βασίζεται σε tokens — αρκεί να υπάρχουν το `%suite`
@@ -195,7 +218,7 @@ UTPLSQL_CONN=your_user/password@//host:1521/service
 |---|---|
 | `-- %disabled` | Suite ή test **δεν εμφανίζεται** στο δέντρο (παραλείπεται στην εύρεση) |
 | `-- %throws(-20001)` | Σημαδεύει ότι το test αναμένει την εξαίρεση 20001 (metadata `expectedError`) |
-| `-- %tags(fast, critical)` | Tags του test (metadata· το φιλτράρισμα με tags είναι στο roadmap) |
+| `-- %tags(fast, critical)` | Tags του test· φιλτράρετε την εκτέλεση με τη ρύθμιση `utplsql.tags` (π.χ. `fast & !integration`) |
 | `-- %displayname(Name)` | Προσαρμοσμένο όνομα που εμφανίζεται αντί για την περιγραφή του `%test` |
 | `-- %beforeall` / `%beforeeach` / `%aftereach` / `%afterall` | Σημαδεύει το suite με lifecycle hooks (metadata) |
 
@@ -214,14 +237,14 @@ UTPLSQL_CONN=your_user/password@//host:1521/service
 | `utPLSQL: Run tests in this folder` | Εκτελεί τα suites του επιλεγμένου φακέλου | Δεξί κλικ → φάκελος |
 | `utPLSQL: Run tests in this folder with coverage` | Ίδιο, με profile coverage | Δεξί κλικ → φάκελος |
 | `utPLSQL: Refresh tests` | Επιβάλλει εκ νέου εύρεση των `.pks` | — |
-| `utPLSQL: Cancel execution` | Σταματά την τρέχουσα εκτέλεση | — |
-| `utPLSQL: Show utPLSQL information` | Εκδόσεις API/DB με επιλογή αντιγραφής | — |
+| `utPLSQL: Cancel run` | Σταματά την τρέχουσα εκτέλεση | — |
+| `utPLSQL: Show utPLSQL info` | Εκδόσεις API/DB με επιλογή αντιγραφής | — |
 | `utPLSQL: Select additional reporter...` | QuickPick με τους reporters της βάσης | — |
 | `utPLSQL: Clear session connection` | Αφαιρεί τη σύνδεση από την cache της συνόδου | — |
 | `utPLSQL: Rerun Last` | Επαναλαμβάνει την τελευταία εκτέλεση | `Ctrl+Shift+U L` |
 | `utPLSQL: Run Test at Cursor` | Εκτελεί το test κάτω από τον κέρσορα | `Ctrl+Shift+U U` |
 | `utPLSQL: Run Failed Tests` | Εκτελεί ξανά μόνο τα tests που απέτυχαν | `Ctrl+Shift+U X` |
-| `utPLSQL: Validate configuration` | Εκτελεί πλήρη επικύρωση ρυθμίσεων (σύνδεση, εγκατάσταση UT3) και εμφανίζει τα αποτελέσματα | — |
+| `utPLSQL: Validate setup` | Εκτελεί πλήρη επικύρωση ρυθμίσεων (σύνδεση, εγκατάσταση UT3) και εμφανίζει τα αποτελέσματα | — |
 | `utPLSQL: Configure connection` | Ανοίγει τις ρυθμίσεις στο `utplsql.connection` | — |
 | `utPLSQL: Copy coverage grants to clipboard` | Αντιγράφει το SQL των grants στο πρόχειρο | — |
 | `utPLSQL: Show Test Explorer` | Εστιάζει στην προβολή Testing | — |
@@ -230,6 +253,7 @@ UTPLSQL_CONN=your_user/password@//host:1521/service
 | `utPLSQL: Manage connection profiles` | Ανοίγει τις ρυθμίσεις στο `utplsql.profiles` | — |
 | `utPLSQL: Import connections from SQL Developer` | Εισάγει συνδέσεις από το SQL Developer (connections.xml) | — |
 | `utPLSQL: Debug test (PL/SQL)` | Ξεκινά σύνοδο αποσφαλμάτωσης του test στο ενεργό αρχείο | — |
+| `utPLSQL: Αναδημιουργία προσωρινής μνήμης σχολίων` | Αναδημιουργεί την προσωρινή μνήμη σχολίων του utPLSQL στη βάση και ανανεώνει το δέντρο | — |
 | `utPLSQL: Μεταγλώττιση για αποσφαλμάτωση` | Μεταγλωττίζει το αντικείμενο του επιλεγμένου αρχείου/φακέλου με πληροφορίες αποσφαλμάτωσης | — |
 | `utPLSQL: Run script` | Runs the script open in the editor against a connection profile | Right-click → script file |
 | `utPLSQL: Run script file` | Runs an Explorer script file (decoded with the profile charset) | Right-click → file |
@@ -371,7 +395,7 @@ GRANT SELECT ON SYS.DBA_PROCEDURES TO <ut3_owner>;
 | Κενό coverage | Λείπει το `GRANT EXECUTE ON DBMS_PROFILER` | Εκτελέστε τα grants στις [Απαιτήσεις βάσης δεδομένων](#απαιτήσεις-βάσης-δεδομένων) ή χρησιμοποιήστε το `utPLSQL: Copy coverage grants to clipboard` |
 | Κενό coverage | Το Oracle 19c απαιτεί επιπλέον grants | `GRANT EXECUTE ON DBMS_PROFILER` + `GRANT EXECUTE ON DBMS_PLSQL_CODE_COVERAGE` |
 | Σφάλμα μεταγλώττισης χωρίς ένδειξη | Κώδικας με συντακτικό σφάλμα PL/SQL | Διατηρήστε ενεργοποιημένο το `utplsql.compilationDiagnostics.enabled` (προεπιλογή)· τα σφάλματα από το `ALL_ERRORS` εμφανίζονται στο Problems Panel μετά από μια εκτέλεση |
-| Σφάλμα σύνδεσης | Κακοσχηματισμένη συμβολοσειρά ή μη προσβάσιμη βάση | Χρησιμοποιήστε το `utPLSQL: Validate configuration` |
+| Σφάλμα σύνδεσης | Κακοσχηματισμένη συμβολοσειρά ή μη προσβάσιμη βάση | Χρησιμοποιήστε το `utPLSQL: Validate setup` |
 | Το `%suite` δεν αναγνωρίζεται | Λείπει το `%suite`/`create package` στο αρχείο ή `%test` χωρίς `PROCEDURE` | Ελέγξτε το spec· εκτελέστε το `utPLSQL: Refresh tests` |
 | Το CodeLens δεν εμφανίζεται | `editor.codeLens` απενεργοποιημένο ή σύγκρουση | Ενεργοποιήστε το `"editor.codeLens": true`· ελέγξτε το `utplsql.codeLens.enabled` |
 | Οι συντομεύσεις δεν λειτουργούν | Σύγκρουση με άλλη επέκταση ή συντόμευση του VSCode | Πηγαίνετε σε File → Preferences → Keyboard Shortcuts και αναζητήστε το `utplsql` για να το επαναπροσδιορίσετε |

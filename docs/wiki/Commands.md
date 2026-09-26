@@ -1,3 +1,5 @@
+<!-- GENERATED FROM docs/brain/70-Wiki/Commands.md — DO NOT EDIT -->
+
 # Commands
 
 All extension commands available in the command palette (`Ctrl+Shift+P`),
@@ -31,6 +33,7 @@ prefixed with `utPLSQL:`.
 | `utPLSQL: Import connections from SQL Developer` | Imports SQL Developer connections as profiles | — |
 | `utPLSQL: Debug test (PL/SQL)` | Starts debugging a test via DBMS_DEBUG (`utplsql` Debug Adapter) | Editor context menu (`.pks`/`.pkb`) |
 | `utPLSQL: Compile for Debug` | Compiles the selected file/folder object with debug information (`ALTER … COMPILE DEBUG PLSQL_OPTIMIZE_LEVEL = 1`) | Editor/Explorer context menu |
+| `utPLSQL: Rebuild Annotation Cache` | Rebuilds the utPLSQL annotation cache in the database (`ut_runner.rebuild_annotation_cache`) and refreshes the tree | — |
 | `utPLSQL: Run script` | Runs the script open in the editor against a profile (connection QuickPick) | Right-click → `.sql`/`.pks`/`.pkb`/`.fnc`/`.prc`/`.trg` file |
 | `utPLSQL: Run script file` | Runs an Explorer script file (decoded with the profile `charset`) | Right-click → file |
 | `utPLSQL: Run script folder` | Runs the folder scripts in alphabetical order (`utplsql.scriptRunner.filePattern` filter) | Right-click → folder |

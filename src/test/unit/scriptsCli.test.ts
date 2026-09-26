@@ -49,3 +49,10 @@ test('db-matrix: run.sh expõe --list sem subir banco', (t) => {
   assert.ok(labels.includes('18xe'));
   assert.ok(labels.includes('23free'));
 });
+
+test('publish.cjs: no CI com --packagePath inexistente falha com aviso', () => {
+  const env = { ...process.env, CI: 'true' };
+  const r = runScript('publish.cjs', ['--packagePath', 'nao-existe.vsix'], env);
+  assert.strictEqual(r.status, 1);
+  assert.match(r.stderr, /VSIX não encontrado/);
+});

@@ -1,3 +1,5 @@
+<!-- GENERATED FROM docs/brain/20-PRDs/prd-59-scaffold-suite.md — DO NOT EDIT -->
+
 # PRD-59 — Scaffold de suíte de teste
 
 | Campo | Valor |

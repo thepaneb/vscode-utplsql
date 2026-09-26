@@ -1,3 +1,5 @@
+<!-- GENERATED FROM docs/brain/20-PRDs/prd-57-multiroot-root-resolution.md — DO NOT EDIT -->
+
 # PRD-57 — Multi-root: resolução de `root`/`sourcePath` por folder
 
 | Campo | Valor |
@@ -6,7 +8,7 @@
 | Autor | Gil Cleber Barboza |
 | Data | 2026-09-06 |
 | Componente | Extensão `paneb.vscode-utplsql` |
-| Versão alvo | 0.15.0 |
+| Versão alvo | 0.16.0 |
 | Arquivos afetados | `src/runner.ts`, `src/oracleRunner.ts`, `src/coverage.ts`, `src/config.ts` |
 | Esforço estimado | 1–2 dias |
 | Complexidade | Média |
@@ -90,7 +92,7 @@ primeiro workspace folder para resolver sourcePath" (seção Limitações).
 
 ## 9. Rollout
 
-- Release 0.15.0 (minor).
+- Release 0.16.0 (minor).
 - CHANGELOG: "Multi-root: cobertura resolve root/sourcePath por folder".
 
 ## 10. Critérios de aceite

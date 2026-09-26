@@ -1,3 +1,5 @@
+<!-- GENERATED FROM docs/brain/70-Wiki/FAQ.md — DO NOT EDIT -->
+
 # FAQ
 
 ## General
@@ -98,9 +100,10 @@ generic message in the run output when **no** file could be mapped
 
 ### Can I map coverage for objects that are not packages?
 
-Yes. The default `type_mapping` covers `PACKAGE BODY`, `FUNCTION`,
-`PROCEDURE`, `TRIGGER`, `VIEW`, etc. Just keep the
-`sourcePath/<type>/<name>.sql` file convention
+Yes. `mapDbPathsToFiles` maps `PACKAGE BODY`, `PACKAGE`, `FUNCTION`,
+`PROCEDURE`, `TRIGGER`, `VIEW`, `TYPE`/`TYPE BODY` to folders
+(`packages/`, `functions/`, `procedures/`, `triggers/`, `views/`, `types/`).
+Just keep the `sourcePath/<type>/<name>.sql` file convention
 (e.g. `install/views/my_view.sql`). See [Coverage](Coverage) for examples.
 
 ### Does coverage work without the coverage reporter?
@@ -170,8 +173,8 @@ to the Marketplace is done **exclusively** via a GitHub release (through the
 
 ```bash
 npm run package
-# generates: vscode-utplsql-0.12.1.vsix
-code --install-extension vscode-utplsql-0.12.1.vsix
+# generates: vscode-utplsql-0.13.0.vsix
+code --install-extension vscode-utplsql-0.13.0.vsix
 ```
 
 ---
@@ -202,10 +205,13 @@ schema for utPLSQL.
 
 ### How do I see PL/SQL compilation errors in the editor?
 
-It is **not automatic** in the current version. Compilation diagnostics are not
-wired in the Oracle-only version, and `utplsql.compilationDiagnostics.enabled`
-has no effect. Compile or run the tests to surface errors such as `PLS-00201`
-or `ORA-06550` in the run output.
+Compilation diagnostics are **wired and on by default**. After each run, the
+extension queries `ALL_ERRORS` for the connection schema and publishes errors
+(`PLS-*`/`ORA-*`) to the **Problems Panel** under the source
+**`utPLSQL Compilation`**, mapped to the owning suite when possible. Controlled
+by `utplsql.compilationDiagnostics.enabled` (default `true`); the query lives in
+`checkCompilationErrors()`. See
+[Diagnostics and quick-fix](Diagnostics-and-quick-fix).
 
 ### How do I validate that my configuration is correct?
 
@@ -240,11 +246,13 @@ With a `db/APP/tests/` and `db/LOGIC/tests/` structure, the Test Explorer shows
 
 ### Do tests appear even without the `.pks` files in the workspace?
 
-Yes — with a connection configured, the refresh
-also discovers suites directly from the database (`ALL_OBJECTS`/`ALL_SOURCE`) for
-schemas in the directories under the base of the `schemaPattern` (e.g., `db/*`).
-These suites appear with a virtual URI (`utplsql-db:/`) and execute normally, but
-**do not** have CodeLens, inline decorations, or jump to failure.
+Yes — with a connection configured, the refresh also discovers suites directly
+from the database (`ut_runner.get_suites_info`, falling back to
+`ALL_OBJECTS`/`ALL_SOURCE`) for schemas in the directories under the base of the
+`schemaPattern` (e.g., `db/*`). These suites appear with a virtual URI
+(`utplsql-db:/`) and execute normally; the virtual document (read-only) also
+supports **jump to failure**. They have **no CodeLens and no inline
+decorations**.
 
 ### Does it work with multi-root workspaces?
 

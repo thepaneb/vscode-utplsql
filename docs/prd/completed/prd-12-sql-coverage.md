@@ -1,3 +1,5 @@
+<!-- GENERATED FROM docs/brain/20-PRDs/prd-12-sql-coverage.md — DO NOT EDIT -->
+
 # PRD-12 — Cobertura de código para objetos SQL (views, queries)
 
 | Campo | Valor |

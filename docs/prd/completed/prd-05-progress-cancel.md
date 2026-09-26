@@ -1,3 +1,5 @@
+<!-- GENERATED FROM docs/brain/20-PRDs/prd-05-progress-cancel.md — DO NOT EDIT -->
+
 # PRD-05 — Feedback de progresso e cancelamento na UX
 
 | Campo | Valor |

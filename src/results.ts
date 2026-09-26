@@ -48,6 +48,19 @@ export function lastSegment(classname: string): string {
   return parts.length ? parts[parts.length - 1] : classname;
 }
 
+/**
+ * Extrai o nome do PACKAGE do objeto de um frame do utPLSQL. O frame vem
+ * qualificado com o schema e pode trazer o procedimento:
+ *   `OBJ` / `SCHEMA.OBJ`            -> OBJ
+ *   `SCHEMA.PACKAGE.PROCEDURE`      -> PACKAGE
+ * (2 segmentos => último; 3+ => penúltimo). O `meta.packageName` do TestItem
+ * vem do nome do arquivo .pks, sem schema e sem procedimento.
+ */
+export function packageFromFrameObject(objectName: string): string {
+  const segments = objectName.split('.');
+  return segments[segments.length <= 2 ? segments.length - 1 : segments.length - 2];
+}
+
 export function resolveStackFrameToUri(
   stackFrames: StackFrame[],
   state: TestStateManager,
@@ -55,7 +68,8 @@ export function resolveStackFrameToUri(
   const userFrame = stackFrames.find(isUserFrame);
   if (!userFrame || userFrame.line <= 0) return undefined;
 
-  const objName = userFrame.objectName.toLowerCase();
+  const packageName = packageFromFrameObject(userFrame.objectName);
+  const objName = packageName.toLowerCase();
   const pos = new vscode.Position(Math.max(0, userFrame.line - 1), 0);
 
   for (const item of state.cachedItems) {
@@ -69,7 +83,7 @@ export function resolveStackFrameToUri(
   if (folders?.length) {
     // Tenta todas as raízes do workspace, preferindo um arquivo que exista
     // (case-insensitive); sem nenhum, mantém o primeiro candidato.
-    const names = [objName, userFrame.objectName];
+    const names = [objName, packageName];
     let fallback: vscode.Location | undefined;
     for (const folder of folders) {
       for (const name of names) {

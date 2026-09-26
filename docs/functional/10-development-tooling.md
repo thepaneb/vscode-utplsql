@@ -1,3 +1,4 @@
+<!-- GENERATED FROM docs/brain/10-Projeto/Funcional/10-development-tooling.md — DO NOT EDIT -->
 # 10 — Development Tooling
 
 Ferramentas e infraestrutura de desenvolvimento do projeto.
@@ -19,7 +20,7 @@ Ferramentas e infraestrutura de desenvolvimento do projeto.
 | `npm run test:integration` | `pretest:integration` (compile + bundle) → `vscode-test` |
 | `npm run test:integration:smoke` | idem, com `.vscode-test.smoke.mjs` (subconjunto rápido) |
 | `npm run test:integration:thick` | idem, com `.vscode-test.thick.mjs` (Instant Client/thick) |
-| `npm run db:matrix` | `bash scripts/db-matrix/run.sh` — testa contra Oracle 18c/19c/21c/23ai local (compose) |
+| `npm run db:matrix` | `bash scripts/db-matrix/run.sh` — testa contra Oracle 12.2/18c/19c/21c/23ai local (compose); o 12.2 usa utPLSQL `v3.1.14` (piso alternativo, PRD-84) |
 | `npm run db:matrix:list` | Lista as versões da matriz |
 | `npm run bundle` | `node esbuild.config.mjs` → `dist/extension.js` (**entry point real da extensão**) |
 | `npm run package` | `compile && bundle && vsce package` → `.vsix` universal |

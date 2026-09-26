@@ -1,3 +1,5 @@
+<!-- GENERATED FROM docs/brain/20-PRDs/prd-36-reporter-parse-fix.md — DO NOT EDIT -->
+
 # PRD-36 — Correção do parse de `reporters` com descrições + flag `coverageEnabled`
 
 | Campo | Valor |

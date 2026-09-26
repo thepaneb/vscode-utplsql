@@ -1,3 +1,5 @@
+<!-- GENERATED FROM docs/brain/20-PRDs/prd-65-schema-mode-security-fixes.md — DO NOT EDIT -->
+
 # PRD-65 — Correções críticas de schema-mode e segurança
 
 | Campo | Valor |

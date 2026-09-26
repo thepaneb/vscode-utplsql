@@ -1,3 +1,5 @@
+<!-- GENERATED FROM docs/brain/70-Wiki/Configuration.md — DO NOT EDIT -->
+
 # Configuration (settings)
 
 All extension settings, prefixed with `utplsql.`. Configure them in the
@@ -85,6 +87,9 @@ decoded by VSCode — the profile charset does not apply.
 |---|---|---|
 | `utplsql.timeoutMinutes` | `60` | Timeout for a test run, in minutes (1–1440). On expiry the run is cancelled. |
 | `utplsql.dbmsOutput` | `false` | Captures `DBMS_OUTPUT` from the test session and appends it to the run output. Best-effort; useful for debugging. |
+| `utplsql.tags` | `""` | utPLSQL tag expression to filter which tests run (e.g. `fast & !integration`). Empty runs all. |
+| `utplsql.run.randomOrder` | `false` | Runs the tests in random order to reveal order dependencies between them. |
+| `utplsql.run.randomOrderSeed` | `0` | Seed for the random order. `0` = chosen by the database (not reproducible); > 0 reproduces the same order. |
 
 ## Coverage
 
@@ -92,6 +97,13 @@ decoded by VSCode — the profile charset does not apply.
 |---|---|---|
 | `utplsql.sourcePath` | `install` | Production code folder to map coverage. |
 | `utplsql.coverageOwner` | `""` | Schema of covered objects. Empty = connection user. |
+| `utplsql.coverage.schemes` | `[]` | Covered schemas (`a_coverage_schemes`). Empty = connection user (or `utplsql.coverageOwner`). |
+| `utplsql.coverage.includeObjects` | `[]` | Objects to include in coverage, as `OWNER.NAME` (e.g. `["APP.MY_PKG"]`). Useful for dynamically reached objects. |
+| `utplsql.coverage.excludeObjects` | `[]` | Objects to exclude from coverage, as `OWNER.NAME` (e.g. `["UT3.UT_COVERAGE"]`). |
+| `utplsql.coverage.includeSchemaExpr` | `""` | Regex of schemas to include in coverage (e.g. `^APP$`). |
+| `utplsql.coverage.includeObjectExpr` | `""` | Regex of objects to include in coverage. |
+| `utplsql.coverage.excludeSchemaExpr` | `""` | Regex of schemas to exclude from coverage. |
+| `utplsql.coverage.excludeObjectExpr` | `""` | Regex of objects to exclude from coverage (e.g. `^UT_` for the utPLSQL framework). |
 | `utplsql.sqlCoverageEnabled` | `false` | Tracks views (SQL objects) via `V$SQL` after the run, marking them as executed/not executed. Requires `GRANT SELECT ON V$SQL`. Best-effort. |
 
 ## PL/SQL Debug
@@ -114,6 +126,7 @@ decoded by VSCode — the profile charset does not apply.
 | Setting | Default | Description |
 |---|---|---|
 | `utplsql.includePatterns` | `["**/*.pks"]` | Globs to discover specs. Use `["**/*.sql"]` if your tests are in `.sql` files. |
+| `utplsql.discovery.source` | `auto` | Source of the test tree in `schema` mode: `auto` uses `ut_runner.get_suites_info` and falls back to `ALL_SOURCE`/files when unavailable; `database` requires the API; `file` disables database discovery. |
 
 ## Oracle Runner Pool
 
@@ -143,7 +156,7 @@ connection changes, and closed when the extension is deactivated. See [Direct Or
 | `utplsql.codeLens.enabled` | `true` | CodeLens Run/Run with Coverage buttons above `%suite` and `%test`. |
 | `utplsql.statusBar.enabled` | `true` | Status indicator in the status bar (pass/fail + duration). |
 | `utplsql.decorations.enabled` | `true` | Inline ✓/✗/⚠ icons in the editor after execution. |
-| `utplsql.compilationDiagnostics.enabled` | `true` | Reserved for PL/SQL compilation diagnostics. **Currently has no effect** in the Oracle-only version — the feature is not wired (not yet re-enabled). |
+| `utplsql.compilationDiagnostics.enabled` | `true` | Publishes PL/SQL compilation errors (`ALL_ERRORS`) to the Problems Panel under the `utPLSQL Compilation` source, after each run. |
 | `utplsql.setupDiagnostics.enabled` | `true` | Displays setup diagnostics (connection, grants, version) and utPLSQL installation integrity diagnostics (invalid objects, "Recompile UT3" quick-fix) with quick-fix. |
 
 ## Tree Organization
@@ -155,7 +168,8 @@ connection changes, and closed when the extension is deactivated. See [Direct Or
 | `utplsql.refreshDebounceMs` | `300` | Debounce (ms) to coalesce `.pks`/`.pkb` file watcher events before refreshing the Test Explorer. |
 
 In `schema` mode with a configured connection (no prompt), the refresh also
-discovers suites directly from the database (`ALL_OBJECTS`/`ALL_SOURCE`) for schemas whose
+discovers suites directly from the database (`ut_runner.get_suites_info`,
+falling back to `ALL_OBJECTS`/`ALL_SOURCE`) for schemas whose
 files are not in the workspace — the queried schemas are the directories
 below the pattern root (e.g., `db/*`) and the schemas of local suites.
 See [Tree Organization](Tree-organization).

@@ -1,3 +1,4 @@
+<!-- GENERATED FROM docs/brain/10-Projeto/Funcional/05-ux-components.md — DO NOT EDIT -->
 # 05 — UX Components
 
 Componentes de interface: CodeLens, StatusBar, Decorações inline, Keybindings.

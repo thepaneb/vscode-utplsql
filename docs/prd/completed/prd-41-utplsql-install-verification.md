@@ -1,3 +1,5 @@
+<!-- GENERATED FROM docs/brain/20-PRDs/prd-41-utplsql-install-verification.md — DO NOT EDIT -->
+
 # PRD-41 — Verificação de instalação do utPLSQL na ativação
 
 | Campo | Valor |

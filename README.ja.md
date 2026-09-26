@@ -1,3 +1,5 @@
+<!-- GENERATED FROM docs/brain/60-README/README.ja.md — DO NOT EDIT -->
+
 <p align="center">
   <img src="images/icon.png" alt="utPLSQL Test Runner Logo" width="128" height="128">
 </p>
@@ -27,6 +29,9 @@
 - 🔌 **接続プロファイル** — DEV/TEST/PROD などの複数環境をプロファイルごとの設定で保存・切替。ステータスバーまたはコマンドパレットから。
 - 📜 **SQL スクリプト** — 現在のスクリプト、Explorer のファイル、またはフォルダー全体をアクティブな接続プロファイルに対して実行します（charset 対応、`DBMS_OUTPUT`・`stopOnError` 対応）。
 - 📈 **ステートメントとビューのカバレッジ** — Coverage タブにファイルごとの `% of statements`（PROCEDURE/FUNCTION）を表示し、`V$SQL` 経由で実行されたビューを追跡。
+- 🏷️ **タグとランダム順** — `utplsql.tags`（例: `fast & !integration`）でテストを絞り込み、再現可能なシード（`utplsql.run.randomOrder`）でランダム順に実行します。
+- 🎯 **カバレッジ範囲** — オブジェクトや schema/object の正規表現（`utplsql.coverage.*`）で包含/除外し、フレームワークのノイズを除去して動的に到達するオブジェクトを追加します。
+- 🗄️ **DB ファーストの探索** — `ut_runner.get_suites_info` からツリーを構築し、パレットから注釈キャッシュを再構築します。
 - 🐛 **PL/SQL デバッグ** — `DBMS_DEBUG` による utPLSQL テストのブレークポイントとステップデバッグ（ネイティブ Debug Adapter）。
 - 🌍 **i18n — 24 言語** — `utplsql.language` は VSCode に追従（24 ロケール: pt-br, en, en-gb, es, zh-cn, zh-tw, ja, de, fr, it, ko, ru, tr, pl, cs, hu, bg, el, id, ro, sr, th, uk, vi）。
 
@@ -45,6 +50,13 @@
 - **VSCode 1.88 以降**（Test Coverage API）。
 
 この拡張機能は `node-oracledb` を使用して Oracle データベースに直接接続します（シンドライバー、Instant Client 不要）。VSIX には `oracledb` パッケージが同梱されています。
+
+**Oracle / utPLSQL の互換性:**
+
+| Oracle | utPLSQL | 備考 |
+|---|---|---|
+| 18c+ | v3.2.x (18c+) / v3.1.x | 推奨。charset は `AL32UTF8`。 |
+| 12.2 | v3.1.x のみ | v3.2.x はコンパイル不可（`PLS-00222`）。イメージの `WE8DEC` では表現できない文字（例: `€`）が失われます。thin ドライバは `NLS_LANG` を無視します。 |
 
 ## 接続
 
@@ -94,9 +106,19 @@ Test Explorer に表示されます。
 | `utplsql.sourcePath` | `install` | 本番コードのフォルダー（カバレッジをファイルにマッピングするため）。 |
 | `utplsql.includePatterns` | `["**/*.pks"]` | `%suite`/`%test` を含むスペックを検出するグロブ。テストが `.sql` 内にある場合は `["**/*.sql"]` を使用します。 |
 | `utplsql.coverageOwner` | `""` | カバレッジ対象オブジェクトのスキーマ所有者。空 = 接続ユーザーを使用（大文字）。 |
+| `utplsql.coverage.schemes` | `[]` | カバレッジ対象のスキーマ（`a_coverage_schemes`）。空 = 接続ユーザー（または `utplsql.coverageOwner`）。 |
+| `utplsql.coverage.includeObjects` | `[]` | カバレッジに含めるオブジェクト（`OWNER.NAME` 形式、例: `["APP.MY_PKG"]`）。動的にのみ到達するオブジェクトに有効。 |
+| `utplsql.coverage.excludeObjects` | `[]` | カバレッジから除外するオブジェクト（`OWNER.NAME` 形式、例: `["UT3.UT_COVERAGE"]`）。 |
+| `utplsql.coverage.includeSchemaExpr` | `""` | カバレッジに含めるスキーマの正規表現（例: `^APP$`）。 |
+| `utplsql.coverage.includeObjectExpr` | `""` | カバレッジに含めるオブジェクトの正規表現。 |
+| `utplsql.coverage.excludeSchemaExpr` | `""` | カバレッジから除外するスキーマの正規表現。 |
+| `utplsql.coverage.excludeObjectExpr` | `""` | カバレッジから除外するオブジェクトの正規表現（例: utPLSQL フレームワークには `^UT_`）。 |
 | `utplsql.timeoutMinutes` | `60` | テスト実行のタイムアウト（分）。 |
 | `utplsql.dbmsOutput` | `false` | テストセッションで `DBMS_OUTPUT` を有効化。デバッグに便利。 |
 | `utplsql.additionalReporters` | `[]` | 毎回の実行に含める追加レポーター（例: `["ut_coverage_html_reporter"]`）。デフォルト（documentation、junit）は常に含まれ、リスト化する必要はありません。 |
+| `utplsql.tags` | `""` | 実行するテストを絞り込む utPLSQL のタグ式（例: `fast & !integration`）。空の場合はすべて実行します。 |
+| `utplsql.run.randomOrder` | `false` | テスト間の順序依存を明らかにするため、ランダムな順序で実行します。 |
+| `utplsql.run.randomOrderSeed` | `0` | ランダム順のシード。`0` = データベースが選択（再現不可）。0 より大きいと同じ順序を再現します。 |
 | `utplsql.codeLens.enabled` | `true` | `%suite` と `%test` の上に Run/Run with Coverage の CodeLens ボタンを表示。 |
 | `utplsql.statusBar.enabled` | `true` | ステータスバーにテスト状態インジケーターを表示。 |
 | `utplsql.decorations.enabled` | `true` | 実行後に `%suite` と `%test` の行へ合格/失敗のデコレーションを表示。 |
@@ -108,8 +130,9 @@ Test Explorer に表示されます。
 | `utplsql.oracleClientLibDir` | `""` | Oracle Instant Client のディレクトリ。`utplsql.oracleClientMode` が `thick` の場合は必須です（例: `C:\oracle\instantclient_23_5`）。 |
 | デバッグがブレークポイントで停止しない | デバッグ情報なしでコンパイルされたパッケージ、またはデバッグ権限の不足 | `PLSQL_OPTIMIZE_LEVEL <= 1` でコンパイル（または `ALTER PACKAGE ... COMPILE DEBUG PLSQL_OPTIMIZE_LEVEL = 1`）し、`DEBUG CONNECT SESSION` + `EXECUTE ON SYS.DBMS_DEBUG` を付与。`test_*.pkb` のブレークポイントはヒットしないことがあります（utPLSQL は動的 SQL でテストを実行します）。テスト対象のコードに設定してください。 |
 | `utplsql.oracleClientConfigDir` | `""` | `sqlnet.ora`/`tnsnames.ora` を含む Oracle 構成ディレクトリ（TNS_ADMIN）。任意。thick モードでのみ使用されます。 |
-| `utplsql.organization` | `file` | ツリーの構成: `file`（パス単位）または `schema`（Schema > Package > Suite > Test）。`schema` モードでは、`.pks` ファイルがワークスペースにないときはスイートもデータベース（`ALL_OBJECTS`/`ALL_SOURCE`）から検出されます — 仮想 URI は `utplsql-db:/`（CodeLens/デコレーション/失敗ジャンプなし）。 |
+| `utplsql.organization` | `file` | ツリーの構成: `file`（パス単位）または `schema`（Schema > Package > Suite > Test）。`schema` モードでは、`.pks` ファイルがワークスペースにないときはスイートもデータベース（`ut_runner.get_suites_info`、利用不可時は `ALL_OBJECTS`/`ALL_SOURCE`）から検出されます — 仮想 URI は `utplsql-db:/`（実行と失敗ジャンプは可能、CodeLens/デコレーションなし）。 |
 | `utplsql.organization.schemaPattern` | `db/{schema}/**` | パスからスキーマを抽出するためのグロブパターン。プレースホルダーには `{schema}` を使用します。`schema` モードでは、パターンベースより下のディレクトリ（例: `db/*`）がデータベースでクエリされるスキーマを定義します。 |
+| `utplsql.discovery.source` | `auto` | `schema` モードでのテストツリーの取得元: `auto` はデータベース API（`ut_runner.get_suites_info`）を使い、利用できない場合は `ALL_SOURCE`/ファイルにフォールバックします。`database` は API を必須にし、`file` はデータベース探索を無効にします。 |
 | `utplsql.refreshDebounceMs` | `300` | Test Explorer を更新する前に `.pks`/`.pkb` ファイル監視イベントをまとめるデバウンス（ミリ秒）。 |
 | `utplsql.compilationDiagnostics.enabled` | `true` | データベースからの PL/SQL コンパイルエラー（`ALL_ERRORS`）をエディターの下線および「問題」パネルに表示します（ソース "utPLSQL Compilation"）。 |
 | `utplsql.setupDiagnostics.enabled` | `true` | 設定診断（接続、権限、バージョン）と **utPLSQL インストールの整合性**（UT3 スキーマ内の無効オブジェクト。"Recompile UT3" クイックフィックスあり）をクイックフィックスアクション付きで表示。 |
@@ -172,7 +195,7 @@ UTPLSQL_CONN=your_user/password@//host:1521/service
    - `Ctrl+Shift+U X` — **Run Failed Only**（失敗したテストのみ実行）。
 8. 診断にはパレットで **utPLSQL: Show information** を使用します — API/DB のバージョンをコピーオプション付きで表示します。
 9. **utPLSQL: Select additional reporter...** — データベースで利用可能なレポーターを表示する QuickPick。
-10. **utPLSQL: Cancel execution** — 実行中の処理を停止（実行中の `Escape`）。
+10. **utPLSQL: Cancel run** — 実行中の処理を停止（実行中の `Escape`）。
 11. **utPLSQL: Refresh tests** — `.pks` の再検出を強制します。
 
 > 💡 **テスト作成時のヒント:** パーサーはトークン駆動です — ファイルに `%suite`
@@ -187,7 +210,7 @@ UTPLSQL_CONN=your_user/password@//host:1521/service
 |---|---|
 | `-- %disabled` | スイートまたはテストがツリーに**表示されない**（検出でスキップ） |
 | `-- %throws(-20001)` | テストが例外 20001 を期待することを示す（`expectedError` メタデータ） |
-| `-- %tags(fast, critical)` | テストのタグ（メタデータ。タグフィルタリングはロードマップ） |
+| `-- %tags(fast, critical)` | テストのタグ。`utplsql.tags` 設定で実行を絞り込みます（例: `fast & !integration`） |
 | `-- %displayname(Name)` | `%test` の説明の代わりに表示されるカスタム名 |
 | `-- %beforeall` / `%beforeeach` / `%aftereach` / `%afterall` | ライフサイクルフックでスイートをマーク（メタデータ） |
 
@@ -206,14 +229,14 @@ UTPLSQL_CONN=your_user/password@//host:1521/service
 | `utPLSQL: Run tests in this folder` | 選択したフォルダーのスイートを実行 | 右クリック → フォルダー |
 | `utPLSQL: Run tests in this folder with coverage` | 同上、カバレッジプロファイル付き | 右クリック → フォルダー |
 | `utPLSQL: Refresh tests` | `.pks` の再検出を強制 | — |
-| `utPLSQL: Cancel execution` | 実行中の処理を停止 | — |
-| `utPLSQL: Show utPLSQL information` | API/DB のバージョンをコピーオプション付きで表示 | — |
+| `utPLSQL: Cancel run` | 実行中の処理を停止 | — |
+| `utPLSQL: Show utPLSQL info` | API/DB のバージョンをコピーオプション付きで表示 | — |
 | `utPLSQL: Select additional reporter...` | データベースのレポーターを表示する QuickPick | — |
 | `utPLSQL: Clear session connection` | セッションキャッシュから接続を削除 | — |
 | `utPLSQL: Rerun Last` | 最後の実行を繰り返す | `Ctrl+Shift+U L` |
 | `utPLSQL: Run Test at Cursor` | カーソル位置のテストを実行 | `Ctrl+Shift+U U` |
 | `utPLSQL: Run Failed Tests` | 失敗したテストのみ再実行 | `Ctrl+Shift+U X` |
-| `utPLSQL: Validate configuration` | セットアップ全体の検証（接続、UT3 インストール）を実行し、結果を表示 | — |
+| `utPLSQL: Validate setup` | セットアップ全体の検証（接続、UT3 インストール）を実行し、結果を表示 | — |
 | `utPLSQL: Configure connection` | `utplsql.connection` で設定を開く | — |
 | `utPLSQL: Copy coverage grants to clipboard` | 権限付与 SQL をクリップボードにコピー | — |
 | `utPLSQL: Show Test Explorer` | Testing ビューにフォーカス | — |
@@ -222,6 +245,7 @@ UTPLSQL_CONN=your_user/password@//host:1521/service
 | `utPLSQL: Manage connection profiles` | `utplsql.profiles` で設定を開く | — |
 | `utPLSQL: Import connections from SQL Developer` | SQL Developer から接続をインポート（connections.xml） | — |
 | `utPLSQL: Debug test (PL/SQL)` | アクティブなファイルのテストのデバッグセッションを開始 | — |
+| `utPLSQL: アノテーションキャッシュを再構築` | データベース内の utPLSQL アノテーションキャッシュを再構築し、ツリーを更新します | — |
 | `utPLSQL: デバッグ用にコンパイル` | 選択したファイル/フォルダーのオブジェクトをデバッグ情報付きでコンパイルします | — |
 | `utPLSQL: Run script` | Runs the script open in the editor against a connection profile | Right-click → script file |
 | `utPLSQL: Run script file` | Runs an Explorer script file (decoded with the profile charset) | Right-click → file |
@@ -321,11 +345,11 @@ GRANT SELECT ON SYS.DBA_PROCEDURES TO <ut3_owner>;
 
 | 症状 | 考えられる原因 | 解決策 |
 |---|---|---|
-| スイートが表示されない | 接続の問題 | 診断には `utPLSQL: Validate configuration` を実行 |
+| スイートが表示されない | 接続の問題 | 診断には `utPLSQL: Validate setup` を実行 |
 | カバレッジが空 | `GRANT EXECUTE ON DBMS_PROFILER` が不足 | [データベースの要件](#データベースの要件)の権限を実行、または `utPLSQL: Copy coverage grants to clipboard` を使用 |
 | カバレッジが空 | Oracle 19c では追加の権限が必要 | `GRANT EXECUTE ON DBMS_PROFILER` + `GRANT EXECUTE ON DBMS_PLSQL_CODE_COVERAGE` |
 | 原因不明のコンパイルエラー | PL/SQL 構文エラーを含むコード | `utplsql.compilationDiagnostics.enabled` をオン（既定）のままにします; 実行後、`ALL_ERRORS` からのエラーが「問題」パネルに表示されます |
-| 接続エラー | 文字列の形式が不正、または DB に到達できない | `utPLSQL: Validate configuration` を使用 |
+| 接続エラー | 文字列の形式が不正、または DB に到達できない | `utPLSQL: Validate setup` を使用 |
 | 実行中のタイムアウト | テストが `timeoutMinutes` より長い | `utplsql.timeoutMinutes` を増やす |
 | `%suite` が認識されない | ファイルに `%suite`/`create package` がない、または `PROCEDURE` のない `%test` | スペックを確認; `utPLSQL: Refresh tests` を実行 |
 | CodeLens が表示されない | `editor.codeLens` が無効、または競合 | `"editor.codeLens": true` を有効化; `utplsql.codeLens.enabled` を確認 |

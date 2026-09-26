@@ -5,6 +5,8 @@ on:
     branches: [main]
     paths:
       - 'docs/wiki/**'
+      - 'docs/brain/70-Wiki/**'
+      - 'scripts/brain-build.cjs'
   workflow_dispatch:
 
 jobs:
@@ -16,6 +18,13 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v7
+
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 24
+
+      - name: Rebuild wiki from the vault (docs/brain/70-Wiki)
+        run: node scripts/brain-build.cjs
 
       - name: Clone wiki
         run: |

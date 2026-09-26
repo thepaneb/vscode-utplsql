@@ -1,3 +1,5 @@
+<!-- GENERATED FROM docs/brain/20-PRDs/prd-45-bundle-esbuild.md — DO NOT EDIT -->
+
 # PRD-45 — Bundling com esbuild + poda do node-oracledb no VSIX
 
 | Campo | Valor |

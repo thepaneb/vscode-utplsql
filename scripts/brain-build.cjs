@@ -1,0 +1,344 @@
+#!/usr/bin/env node
+/**
+ * Gera artefatos do repositório a partir do vault (`docs/brain`).
+ *
+ *   npm run brain:build          # escreve os arquivos publicados
+ *   node scripts/brain-build.cjs check   # falha (exit 1) se houver drift
+ *
+ * Uma nota publica para o repo quando tem `publicar: <caminho relativo ao repo>`
+ * no frontmatter. O arquivo gerado = banner "GENERATED" + corpo da nota (sem
+ * frontmatter). Arquivos gerados NÃO devem ser editados à mão.
+ */
+'use strict';
+
+const fs = require('fs');
+const path = require('path');
+
+const REPO = path.resolve(__dirname, '..');
+const VAULT = path.join(REPO, 'docs', 'brain');
+const BANNER = (rel) => `<!-- GENERATED FROM docs/brain/${rel} — DO NOT EDIT -->`;
+
+const WIKI_PREFIX = 'docs/wiki/';
+const WIKILINK_RE = /\[\[([^\]|#]+)(?:#[^\]|]+)?(?:\|([^\]]+))?\]\]/g;
+
+const README_RE = /^README(\..+)?\.md$/;
+const README_HOME = 'README (extensão)';
+
+/** Obsidian `[[alvo|texto]]` -> link markdown de wiki `[texto](alvo)`. */
+function wikiLinks(body) {
+  return body.replace(WIKILINK_RE, (_full, target, display) => {
+    const t = target.trim();
+    return `[${(display || target).trim()}](${t})`;
+  });
+}
+
+/** Obsidian `[[alvo|texto]]` -> link markdown `[texto](alvo.md)` (README). */
+function readmeLinks(body) {
+  return body.replace(WIKILINK_RE, (_full, target, display) => {
+    const page = target.trim() === README_HOME ? 'README' : target.trim();
+    return `[${(display || target).trim()}](${page}.md)`;
+  });
+}
+
+/** Espelha um diretório de imagens do vault para o repo. */
+function syncDir(src, dst, relLabel, check, mirror) {
+  if (!fs.existsSync(src)) return { changed: 0, drifted: 0, total: 0 };
+  const names = fs.readdirSync(src);
+  const known = new Set(names);
+  let changed = 0;
+  let drifted = 0;
+  for (const name of names) {
+    const desired = fs.readFileSync(path.join(src, name));
+    const target = path.join(dst, name);
+    const current = fs.existsSync(target) ? fs.readFileSync(target) : null;
+    if (current && current.equals(desired)) continue;
+    if (check) {
+      console.log(`[drift] ${relLabel}${name}`);
+      drifted++;
+      continue;
+    }
+    fs.mkdirSync(path.dirname(target), { recursive: true });
+    fs.writeFileSync(target, desired);
+    console.log(`[build] ${relLabel}${name}`);
+    changed++;
+  }
+  if (mirror && fs.existsSync(dst)) {
+    for (const name of fs.readdirSync(dst)) {
+      if (known.has(name)) continue;
+      if (check) {
+        console.log(`[drift] ${relLabel}${name} (sobra)`);
+        drifted++;
+        continue;
+      }
+      fs.rmSync(path.join(dst, name));
+      console.log(`[build] remove ${relLabel}${name}`);
+      changed++;
+    }
+  }
+  return { changed, drifted, total: names.length };
+}
+
+const imagesSync = (check, repo = REPO, vault = VAULT) =>
+  syncDir(
+    path.join(vault, '70-Wiki', 'images'),
+    path.join(repo, 'docs', 'wiki', 'images'),
+    'docs/wiki/images/',
+    check,
+    true,
+  );
+
+const readmeImagesSync = (check, repo = REPO, vault = VAULT) =>
+  syncDir(
+    path.join(vault, '60-README', 'images'),
+    path.join(repo, 'images'),
+    'images/',
+    check,
+    false,
+  );
+
+function walk(dir, out = []) {
+  if (!fs.existsSync(dir)) return out;
+  for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {
+    if (entry.name === '.obsidian' || entry.name === '_templates' || entry.name === '.trash') continue;
+    const full = path.join(dir, entry.name);
+    if (entry.isDirectory()) walk(full, out);
+    else if (entry.name.endsWith('.md')) out.push(full);
+  }
+  return out;
+}
+
+function parseFrontmatter(text) {
+  const m = text.match(/^---\r?\n([\s\S]*?)\r?\n---\r?\n?/);
+  if (!m) return { fm: {}, body: text, hasFm: false };
+  const fm = {};
+  for (const line of m[1].split(/\r?\n/)) {
+    const mm = line.match(/^([A-Za-z_][\w-]*):\s?(.*)$/);
+    if (mm) fm[mm[1]] = mm[2].replace(/^["']|["']$/g, '');
+  }
+  return { fm, body: text.slice(m[0].length), hasFm: true };
+}
+
+const PRD_STATUS_LABEL = {
+  proposed: 'Proposto',
+  approved: 'Aprovado',
+  'in-progress': 'Em desenvolvimento',
+  completed: 'Concluído',
+};
+const PRD_FOLDERS = Object.keys(PRD_STATUS_LABEL);
+
+function published(vault = VAULT) {
+  const items = [];
+  for (const note of walk(vault)) {
+    const text = fs.readFileSync(note, 'utf8');
+    const { fm, body } = parseFrontmatter(text);
+    const rel = path.relative(vault, note).split(path.sep).join('/');
+    if (fm.tipo === 'prd') {
+      const status = fm.status;
+      if (!PRD_FOLDERS.includes(status)) continue;
+      items.push({
+        note,
+        rel,
+        target: `docs/prd/${status}/${path.basename(note)}`,
+        body,
+        prd: true,
+        status,
+      });
+    } else if (fm.publicar) {
+      items.push({
+        note,
+        rel,
+        target: fm.publicar,
+        body,
+        prdIndex: fm.tipo === 'prd-index',
+      });
+    }
+  }
+  return items;
+}
+
+/** Reinjeta o status no corpo do PRD a partir do frontmatter. */
+function withStatus(body, label) {
+  if (/^\|\s*Status\s*\|/m.test(body)) {
+    return body.replace(/^\|\s*Status\s*\|.*$/m, `| Status | ${label} |`);
+  }
+  if (/^\|\s*Campo\s*\|\s*Valor\s*\|/m.test(body)) {
+    return body.replace(/^(\|\s*-+.*)$/m, `$1\n| Status | ${label} |`);
+  }
+  if (/^##\s+Status\s*$/m.test(body)) {
+    return body.replace(/^##\s+Status\s*\n+[^\n]*/m, `## Status\n\n${label}`);
+  }
+  return body.replace(/^(#\s+.*)$/m, `$1\n\n## Status\n\n${label}`);
+}
+
+const CONEXOES_RE =
+  /\n*## Conexões\s*\n+<!-- brain:auto:start:conexoes -->[\s\S]*?<!-- brain:auto:end -->\s*/g;
+
+/** Remove a seção `## Conexões` (navegação do vault) do PRD publicado. */
+function stripConexoes(body) {
+  return body.replace(CONEXOES_RE, '\n');
+}
+
+/** Marcadores das seções geradas no artefato `docs/prd/index.md`. */
+const PRD_ROADMAP_RE = /<!-- prd:roadmap:start -->[\s\S]*?<!-- prd:roadmap:end -->/;
+const PRD_ESTRUTURA_RE = /<!-- prd:estrutura:start -->[\s\S]*?<!-- prd:estrutura:end -->/;
+
+/**
+ * Repõe o Roadmap e a Estrutura no artefato publicado a partir das PRDs do
+ * vault. O corpo da nota `index.md` NÃO tem mais essas tabelas (elas criavam um
+ * segundo hub de PRDs no grafo do Obsidian via links relativos); aqui elas são
+ * injetadas apenas no arquivo publicado, com os caminhos relativos corretos.
+ */
+function renderPrdIndex(item, vault = VAULT) {
+  const prds = [];
+  const walkPrds = (dir) => {
+    if (!fs.existsSync(dir)) return;
+    for (const f of fs.readdirSync(dir)) {
+      if (!/^prd-\d+.*\.md$/.test(f)) continue;
+      const { fm, body } = parseFrontmatter(fs.readFileSync(path.join(dir, f), 'utf8'));
+      if (!PRD_FOLDERS.includes(fm.status)) continue;
+      prds.push({ file: f, status: fm.status, ...fm, body });
+    }
+  };
+  walkPrds(path.join(vault, '20-PRDs'));
+  const statusIcon = { completed: '🟢', approved: '🔵', 'in-progress': '🟡', proposed: '⚪' };
+  const statusLabel = {
+    completed: 'Concluídos',
+    approved: 'Aprovados',
+    'in-progress': 'Em desenvolvimento',
+    proposed: 'Propostos',
+  };
+  const num = (p) => Number(String(p.id ?? p.file).replace(/\D/g, '')) || 0;
+  const ordenadas = [...prds].sort((a, b) => num(a) - num(b));
+  const linhasRoadmap = [];
+  for (const st of ['completed', 'approved', 'in-progress', 'proposed']) {
+    const grupo = ordenadas.filter((p) => p.status === st);
+    if (!grupo.length) continue;
+    linhasRoadmap.push(`### ${statusIcon[st]} ${statusLabel[st]}`, '');
+    linhasRoadmap.push('| # | PRD | Versão | Data |', '|---|---|---|---|');
+    for (const p of grupo) {
+      linhasRoadmap.push(
+        `| ${num(p)} | [${p.titulo ?? ''}](${p.status}/${p.file}) | ${p.versao ?? '—'} | ${p.data ?? '—'} |`,
+      );
+    }
+    linhasRoadmap.push('');
+  }
+  const linhasEstrutura = ['```', 'docs/prd/', '├── index.md          ← este arquivo (catálogo + roadmap)', '├── template.md       ← molde para novos PRDs'];
+  for (const [st, desc] of [
+    ['completed', 'já implementados'],
+    ['approved', 'aprovados, aguardando implementação'],
+    ['in-progress', 'sendo implementados agora'],
+    ['proposed', 'em avaliação'],
+  ]) {
+    const files = ordenadas.filter((p) => p.status === st).map((p) => p.file);
+    if (!files.length) continue;
+    linhasEstrutura.push(`├── ${st}/        ← ${desc}`);
+    for (const f of files) linhasEstrutura.push(`│   ├── ${f}`);
+  }
+  linhasEstrutura.push('```');
+
+  let body = item.body;
+  const roadmap = `<!-- prd:roadmap:start -->\n${linhasRoadmap.join('\n').trimEnd()}\n<!-- prd:roadmap:end -->`;
+  const estrutura = `<!-- prd:estrutura:start -->\n${linhasEstrutura.join('\n')}\n<!-- prd:estrutura:end -->`;
+  if (PRD_ROADMAP_RE.test(body)) body = body.replace(PRD_ROADMAP_RE, roadmap);
+  if (PRD_ESTRUTURA_RE.test(body)) body = body.replace(PRD_ESTRUTURA_RE, estrutura);
+  return body;
+}
+
+function render(item, vault = VAULT) {
+  let body = stripConexoes(item.body);
+  if (item.prd) body = withStatus(body, PRD_STATUS_LABEL[item.status]);
+  else if (item.prdIndex) body = renderPrdIndex({ ...item, body }, vault);
+  else if (item.target.startsWith(WIKI_PREFIX)) body = wikiLinks(body);
+  else if (README_RE.test(item.target)) body = readmeLinks(body);
+  return `${BANNER(item.rel)}\n${body}`.replace(/\s+$/, '') + '\n';
+}
+
+/** Remove PRDs gerados em pastas que não correspondem mais ao status. */
+function prdCleanup(items, check, repo = REPO) {
+  const wanted = new Set(items.filter((i) => i.prd).map((i) => i.target));
+  let changed = 0;
+  let drifted = 0;
+  for (const folder of PRD_FOLDERS) {
+    const dir = path.join(repo, 'docs', 'prd', folder);
+    if (!fs.existsSync(dir)) continue;
+    for (const f of fs.readdirSync(dir)) {
+      if (!f.endsWith('.md')) continue;
+      const rel = `docs/prd/${folder}/${f}`;
+      if (wanted.has(rel)) continue;
+      if (check) {
+        console.log(`[drift] ${rel} (PRD sem status correspondente)`);
+        drifted++;
+        continue;
+      }
+      fs.rmSync(path.join(dir, f));
+      console.log(`[build] remove ${rel}`);
+      changed++;
+    }
+  }
+  return { changed, drifted };
+}
+
+function run(check, { repo = REPO, vault = VAULT } = {}) {
+  const items = published(vault);
+  let changed = 0;
+  let drifted = 0;
+  for (const item of items) {
+    const target = path.join(repo, item.target);
+    const desired = render(item, vault);
+    const current = fs.existsSync(target) ? fs.readFileSync(target, 'utf8') : '';
+    if (current === desired) continue;
+    if (check) {
+      console.log(`[drift] ${item.target} (gerado de ${item.rel})`);
+      drifted++;
+      continue;
+    }
+    fs.mkdirSync(path.dirname(target), { recursive: true });
+    fs.writeFileSync(target, desired, 'utf8');
+    console.log(`[build] ${item.target} <- ${item.rel}`);
+    changed++;
+  }
+  const img = imagesSync(check, repo, vault);
+  changed += img.changed;
+  drifted += img.drifted;
+  const rimg = readmeImagesSync(check, repo, vault);
+  changed += rimg.changed;
+  drifted += rimg.drifted;
+  const prd = prdCleanup(items, check, repo);
+  changed += prd.changed;
+  drifted += prd.drifted;
+  if (check) {
+    if (drifted) {
+      console.log(`\n${drifted} arquivo(s) com drift. Rode: npm run brain:build`);
+      return 1;
+    }
+    console.log(
+      `OK: ${items.length} arquivo(s) publicados + ${img.total + rimg.total} imagem(ns) em sincronia.`,
+    );
+    return 0;
+  }
+  console.log(`OK: ${changed} arquivo(s) atualizado(s) de ${items.length} publicados.`);
+  return 0;
+}
+
+if (require.main === module) {
+  const check = process.argv[2] === 'check';
+  if (!fs.existsSync(VAULT)) {
+    console.log('Vault docs/brain ausente — nada a gerar.');
+    process.exit(0);
+  }
+  process.exit(run(check));
+}
+
+module.exports = {
+  published,
+  render,
+  renderPrdIndex,
+  parseFrontmatter,
+  wikiLinks,
+  readmeLinks,
+  withStatus,
+  stripConexoes,
+  syncDir,
+  prdCleanup,
+  run,
+};

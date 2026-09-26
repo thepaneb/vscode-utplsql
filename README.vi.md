@@ -1,3 +1,5 @@
+<!-- GENERATED FROM docs/brain/60-README/README.vi.md — DO NOT EDIT -->
+
 <p align="center">
   <img src="images/icon.png" alt="utPLSQL Test Runner Logo" width="128" height="128">
 </p>
@@ -27,6 +29,9 @@ Tích hợp [utPLSQL](https://www.utplsql.org/) vào VSCode, đưa các bài ki�
 - 🔌 **Hồ sơ kết nối** — lưu và chuyển đổi giữa nhiều môi trường (DEV/TEST/PROD) với cài đặt theo hồ sơ, qua thanh trạng thái hoặc command palette.
 - 📜 **Script SQL** — chạy script hiện tại, một tệp từ Explorer hoặc cả thư mục trên hồ sơ kết nối đang hoạt động (tôn trọng charset, với `DBMS_OUTPUT` và `stopOnError`).
 - 📈 **Độ phủ câu lệnh và view** — tab Coverage hiển thị `% câu lệnh` (PROCEDURE/FUNCTION) theo tệp và theo dõi các view được thực thi qua `V$SQL`.
+- 🏷️ **Tag và thứ tự ngẫu nhiên** — lọc bài kiểm thử bằng `utplsql.tags` (ví dụ `fast & !integration`) và chạy theo thứ tự ngẫu nhiên với seed tái tạo được (`utplsql.run.randomOrder`).
+- 🎯 **Phạm vi phủ** — thêm/loại đối tượng và regex schema/đối tượng (`utplsql.coverage.*`) để bỏ nhiễu framework và thêm các đối tượng chỉ truy cập động.
+- 🗄️ **Khám phá DB-first** — dựng cây từ `ut_runner.get_suites_info` và tạo lại bộ nhớ đệm chú thích từ bảng lệnh.
 - 🐛 **Gỡ lỗi PL/SQL** — breakpoint và gỡ lỗi từng bước các bài kiểm thử utPLSQL qua `DBMS_DEBUG` (Debug Adapter gốc).
 - 🌍 **i18n — 24 ngôn ngữ** — `utplsql.language` theo VSCode (24 locale: pt-br, en, en-gb, es, zh-cn, zh-tw, ja, de, fr, it, ko, ru, tr, pl, cs, hu, bg, el, id, ro, sr, th, uk, vi).
 
@@ -90,6 +95,13 @@ chỉ giữ nó trong bộ nhớ ở phiên hiện tại — dùng lệnh
 Không có tệp tạm, không chờ batch. Kết quả xuất hiện trong
 Test Explorer **ngay khi từng bài kiểm thử hoàn tất**. VSIX đã kèm driver mỏng `oracledb` (không cần Instant Client).
 
+**Tương thích Oracle / utPLSQL:**
+
+| Oracle | utPLSQL | Ghi chú |
+|---|---|---|
+| 18c+ | v3.2.x (18c+) / v3.1.x | Khuyến nghị; charset `AL32UTF8`. |
+| 12.2 | chỉ v3.1.x | v3.2.x không biên dịch được (`PLS-00222`). `WE8DEC` của image làm mất các ký tự không biểu diễn được (ví dụ `€`); driver mỏng bỏ qua `NLS_LANG`. |
+
 ## Cấu hình
 
 | Cài đặt | Mặc định | Mô tả |
@@ -98,9 +110,19 @@ Test Explorer **ngay khi từng bài kiểm thử hoàn tất**. VSIX đã kèm 
 | `utplsql.sourcePath` | `install` | Thư mục chứa mã sản phẩm (để ánh xạ độ phủ tới các tệp). |
 | `utplsql.includePatterns` | `["**/*.pks"]` | Các glob để tìm các spec chứa `%suite`/`%test`. Nếu kiểm thử của bạn nằm trong `.sql`, dùng `["**/*.sql"]`. |
 | `utplsql.coverageOwner` | `""` | Schema sở hữu các đối tượng được phủ. Trống = dùng người dùng kết nối (in hoa). |
+| `utplsql.coverage.schemes` | `[]` | Schema được phủ (`a_coverage_schemes`). Trống = người dùng kết nối (hoặc `utplsql.coverageOwner`). |
+| `utplsql.coverage.includeObjects` | `[]` | Đối tượng đưa vào phạm vi phủ, dạng `OWNER.NAME` (ví dụ `["APP.MY_PKG"]`). Hữu ích cho các đối tượng chỉ được truy cập động. |
+| `utplsql.coverage.excludeObjects` | `[]` | Đối tượng loại khỏi phạm vi phủ, dạng `OWNER.NAME` (ví dụ `["UT3.UT_COVERAGE"]`). |
+| `utplsql.coverage.includeSchemaExpr` | `""` | Regex schema đưa vào phạm vi phủ (ví dụ `^APP$`). |
+| `utplsql.coverage.includeObjectExpr` | `""` | Regex đối tượng đưa vào phạm vi phủ. |
+| `utplsql.coverage.excludeSchemaExpr` | `""` | Regex schema loại khỏi phạm vi phủ. |
+| `utplsql.coverage.excludeObjectExpr` | `""` | Regex đối tượng loại khỏi phạm vi phủ (ví dụ `^UT_` cho framework utPLSQL). |
 | `utplsql.timeoutMinutes` | `60` | Thời gian chờ (phút). |
 | `utplsql.dbmsOutput` | `false` | Bật `DBMS_OUTPUT` trong phiên kiểm thử. |
 | `utplsql.additionalReporters` | `[]` | Các reporter bổ sung đưa vào mỗi lần chạy (ví dụ `["ut_coverage_html_reporter"]`). Các reporter mặc định (documentation, junit) luôn được bao gồm và không cần liệt kê. |
+| `utplsql.tags` | `""` | Biểu thức tag của utPLSQL để lọc bài kiểm thử nào sẽ chạy (ví dụ `fast & !integration`). Để trống là chạy tất cả. |
+| `utplsql.run.randomOrder` | `false` | Chạy các bài kiểm thử theo thứ tự ngẫu nhiên để phát hiện phụ thuộc thứ tự giữa chúng. |
+| `utplsql.run.randomOrderSeed` | `0` | Seed của thứ tự ngẫu nhiên. `0` = do cơ sở dữ liệu chọn (không thể tái tạo); > 0 tái tạo cùng thứ tự. |
 | `utplsql.codeLens.enabled` | `true` | Hiển thị các nút CodeLens Run/Run with Coverage trên `%suite` và `%test`. |
 | `utplsql.statusBar.enabled` | `true` | Hiển thị chỉ báo trạng thái kiểm thử trên thanh trạng thái. |
 | `utplsql.decorations.enabled` | `true` | Hiển thị các trang trí đạt/không đạt trên các dòng `%suite` và `%test` sau khi chạy. |
@@ -112,8 +134,9 @@ Test Explorer **ngay khi từng bài kiểm thử hoàn tất**. VSIX đã kèm 
 | `utplsql.oracleClientLibDir` | `""` | Thư mục Oracle Instant Client. Bắt buộc khi `utplsql.oracleClientMode` là `thick` (ví dụ `C:\oracle\instantclient_23_5`). |
 | Gỡ lỗi không dừng tại breakpoint | Gói không có thông tin gỡ lỗi hoặc thiếu quyền gỡ lỗi | Biên dịch với `PLSQL_OPTIMIZE_LEVEL <= 1` (hoặc `ALTER PACKAGE ... COMPILE DEBUG PLSQL_OPTIMIZE_LEVEL = 1`) và cấp `DEBUG CONNECT SESSION` + `EXECUTE ON SYS.DBMS_DEBUG`. Breakpoint trong `test_*.pkb` có thể không dừng (utPLSQL chạy test bằng SQL động); hãy đặt chúng trong mã đang kiểm thử. |
 | `utplsql.oracleClientConfigDir` | `""` | Thư mục cấu hình Oracle (TNS_ADMIN) chứa `sqlnet.ora`/`tnsnames.ora`. Tùy chọn; chỉ được dùng ở chế độ thick. |
-| `utplsql.organization` | `file` | Tổ chức cây: `file` (theo đường dẫn) hoặc `schema` (Schema > Package > Suite > Test). Trong chế độ `schema`, các suite cũng được phát hiện từ cơ sở dữ liệu (`ALL_OBJECTS`/`ALL_SOURCE`) khi các tệp `.pks` không nằm trong workspace — với URI ảo `utplsql-db:/` (không có CodeLens/trang trí/nhảy tới lỗi). |
+| `utplsql.organization` | `file` | Tổ chức cây: `file` (theo đường dẫn) hoặc `schema` (Schema > Package > Suite > Test). Trong chế độ `schema`, các suite cũng được phát hiện từ cơ sở dữ liệu (`ut_runner.get_suites_info`, dự phòng về `ALL_OBJECTS`/`ALL_SOURCE`) khi các tệp `.pks` không nằm trong workspace — với URI ảo `utplsql-db:/` (thực thi và nhảy tới lỗi hoạt động; không có CodeLens/trang trí). |
 | `utplsql.organization.schemaPattern` | `db/{schema}/**` | Glob để trích xuất schema từ đường dẫn. Dùng `{schema}` làm placeholder. Trong chế độ `schema`, các thư mục bên dưới gốc của pattern (ví dụ `db/*`) định nghĩa các schema được truy vấn trong cơ sở dữ liệu. |
+| `utplsql.discovery.source` | `auto` | Nguồn của cây trong chế độ `schema`: `auto` dùng API cơ sở dữ liệu (`ut_runner.get_suites_info`) và chuyển sang `ALL_SOURCE`/tệp khi không khả dụng; `database` bắt buộc dùng API; `file` tắt khám phá qua cơ sở dữ liệu. |
 | `utplsql.refreshDebounceMs` | `300` | Debounce (ms) để gộp các sự kiện theo dõi tệp `.pks`/`.pkb` trước khi làm mới Test Explorer. |
 | `utplsql.compilationDiagnostics.enabled` | `true` | Hiển thị lỗi biên dịch PL/SQL từ cơ sở dữ liệu (`ALL_ERRORS`) dưới dạng gạch chân trong trình soạn thảo và trong bảng Problems (nguồn "utPLSQL Compilation"). |
 | `utplsql.setupDiagnostics.enabled` | `true` | Hiển thị chẩn đoán cấu hình (kết nối, quyền, phiên bản) và **tính toàn vẹn của bản cài utPLSQL** (các đối tượng không hợp lệ trong schema UT3, kèm quick-fix "Recompile UT3") với các hành động quick-fix. |
@@ -178,7 +201,7 @@ UTPLSQL_CONN=your_user/password@//host:1521/service
 8. **Với Oracle trực tiếp (streaming):** không cần cài gì thêm — VSIX đã kèm driver mỏng `oracledb`.
 9. Để chẩn đoán, dùng `utPLSQL: Show information` trong palette — hiển thị phiên bản API/DB kèm tùy chọn sao chép.
 10. **utPLSQL: Select additional reporter...** — QuickPick với các reporter có sẵn trong cơ sở dữ liệu.
-11. **utPLSQL: Cancel execution** — dừng lần chạy đang thực hiện (`Escape` trong lúc chạy).
+11. **utPLSQL: Cancel run** — dừng lần chạy đang thực hiện (`Escape` trong lúc chạy).
 12. **utPLSQL: Refresh tests** — ép phát hiện lại các tệp `.pks`.
 
 > 💡 **Khi viết kiểm thử:** bộ phân tích được điều khiển bằng token — chỉ cần có `%suite`
@@ -193,7 +216,7 @@ Ngoài `%suite` và `%test`, việc phát hiện còn hiểu:
 |---|---|
 | `-- %disabled` | Suite hoặc bài kiểm thử **không xuất hiện** trong cây (bị bỏ qua khi phát hiện) |
 | `-- %throws(-20001)` | Đánh dấu rằng bài kiểm thử mong đợi exception 20001 (metadata `expectedError`) |
-| `-- %tags(fast, critical)` | Tag của bài kiểm thử (metadata; lọc theo tag nằm trong roadmap) |
+| `-- %tags(fast, critical)` | Tag của bài kiểm thử; lọc lần chạy bằng cài đặt `utplsql.tags` (ví dụ `fast & !integration`) |
 | `-- %displayname(Name)` | Tên tùy chỉnh hiển thị thay cho mô tả của `%test` |
 | `-- %beforeall` / `%beforeeach` / `%aftereach` / `%afterall` | Đánh dấu suite với các lifecycle hooks (metadata) |
 
@@ -212,14 +235,14 @@ Tất cả các lệnh của extension (palette `Ctrl+Shift+P` tiền tố `utPL
 | `utPLSQL: Run tests in this folder` | Chạy các suite của thư mục đã chọn | Chuột phải → thư mục |
 | `utPLSQL: Run tests in this folder with coverage` | Tương tự, với profile coverage | Chuột phải → thư mục |
 | `utPLSQL: Refresh tests` | Ép phát hiện lại các tệp `.pks` | — |
-| `utPLSQL: Cancel execution` | Dừng lần chạy đang thực hiện | — |
-| `utPLSQL: Show utPLSQL information` | Phiên bản API/DB kèm tùy chọn sao chép | — |
+| `utPLSQL: Cancel run` | Dừng lần chạy đang thực hiện | — |
+| `utPLSQL: Show utPLSQL info` | Phiên bản API/DB kèm tùy chọn sao chép | — |
 | `utPLSQL: Select additional reporter...` | QuickPick với các reporter trong cơ sở dữ liệu | — |
 | `utPLSQL: Clear session connection` | Xóa kết nối khỏi bộ nhớ đệm phiên | — |
 | `utPLSQL: Rerun Last` | Lặp lại lần chạy cuối | `Ctrl+Shift+U L` |
 | `utPLSQL: Run Test at Cursor` | Chạy bài kiểm thử dưới con trỏ | `Ctrl+Shift+U U` |
 | `utPLSQL: Run Failed Tests` | Chạy lại chỉ các bài kiểm thử bị lỗi | `Ctrl+Shift+U X` |
-| `utPLSQL: Validate configuration` | Chạy xác thực thiết lập đầy đủ (kết nối, cài đặt UT3) và hiển thị kết quả | — |
+| `utPLSQL: Validate setup` | Chạy xác thực thiết lập đầy đủ (kết nối, cài đặt UT3) và hiển thị kết quả | — |
 | `utPLSQL: Configure connection` | Mở cài đặt tại `utplsql.connection` | — |
 | `utPLSQL: Copy coverage grants to clipboard` | Sao chép SQL grants vào clipboard | — |
 | `utPLSQL: Show Test Explorer` | Đưa tiêu điểm vào khung Testing | — |
@@ -228,6 +251,7 @@ Tất cả các lệnh của extension (palette `Ctrl+Shift+P` tiền tố `utPL
 | `utPLSQL: Manage connection profiles` | Mở cài đặt tại `utplsql.profiles` | — |
 | `utPLSQL: Import connections from SQL Developer` | Nhập kết nối từ SQL Developer (connections.xml) | — |
 | `utPLSQL: Debug test (PL/SQL)` | Bắt đầu phiên gỡ lỗi của bài kiểm thử trong tệp đang mở | — |
+| `utPLSQL: Tạo lại bộ nhớ đệm chú thích` | Tạo lại bộ nhớ đệm chú thích utPLSQL trong cơ sở dữ liệu và làm mới cây | — |
 | `utPLSQL: Biên dịch để gỡ lỗi` | Biên dịch đối tượng của tệp/thư mục đã chọn với thông tin gỡ lỗi | — |
 | `utPLSQL: Run script` | Runs the script open in the editor against a connection profile | Right-click → script file |
 | `utPLSQL: Run script file` | Runs an Explorer script file (decoded with the profile charset) | Right-click → file |
@@ -368,11 +392,11 @@ GRANT SELECT ON SYS.DBA_PROCEDURES TO <ut3_owner>;
 
 | Triệu chứng | Nguyên nhân có thể | Giải pháp |
 |---|---|---|
-| Các suite không xuất hiện | Không có tệp `.pks` được phát hiện | Chạy `utPLSQL: Validate configuration` để chẩn đoán |
+| Các suite không xuất hiện | Không có tệp `.pks` được phát hiện | Chạy `utPLSQL: Validate setup` để chẩn đoán |
 | Độ phủ trống | Thiếu `GRANT EXECUTE ON DBMS_PROFILER` | Chạy các grant trong [Yêu cầu cơ sở dữ liệu](#yêu-cầu-cơ-sở-dữ-liệu) hoặc dùng `utPLSQL: Copy coverage grants to clipboard` |
 | Độ phủ trống | Oracle 19c cần thêm grant | `GRANT EXECUTE ON DBMS_PROFILER` + `GRANT EXECUTE ON DBMS_PLSQL_CODE_COVERAGE` |
 | Lỗi biên dịch không kèm chỉ dẫn | Mã có lỗi cú pháp PL/SQL | Giữ bật `utplsql.compilationDiagnostics.enabled` (mặc định); lỗi từ `ALL_ERRORS` xuất hiện trong bảng Problems sau khi chạy |
-| Lỗi kết nối | Chuỗi sai định dạng hoặc DB không truy cập được | Dùng `utPLSQL: Validate configuration` |
+| Lỗi kết nối | Chuỗi sai định dạng hoặc DB không truy cập được | Dùng `utPLSQL: Validate setup` |
 | Hết thời gian khi chạy | Kiểm thử lâu hơn `timeoutMinutes` | Tăng `utplsql.timeoutMinutes` |
 | `%suite` không được nhận diện | Thiếu `%suite`/`create package` trong tệp, hoặc `%test` không có `PROCEDURE` | Kiểm tra spec; chạy `utPLSQL: Refresh tests` |
 | CodeLens không xuất hiện | `editor.codeLens` bị tắt hoặc xung đột | Bật `"editor.codeLens": true`; kiểm tra `utplsql.codeLens.enabled` |

@@ -1,3 +1,5 @@
+<!-- GENERATED FROM docs/brain/60-README/README.pl.md — DO NOT EDIT -->
+
 <p align="center">
   <img src="images/icon.png" alt="utPLSQL Test Runner Logo" width="128" height="128">
 </p>
@@ -27,6 +29,9 @@ Integruje [utPLSQL](https://www.utplsql.org/) z VSCode, przenosząc testy PL/SQL
 - 🔌 **Profile połączeń** — zapisuj i przełączaj się między wieloma środowiskami (DEV/TEST/PROD) z ustawieniami dla każdego profilu, z paska stanu lub palety poleceń.
 - 📜 **Skrypty SQL** — uruchamiaj bieżący skrypt, plik z Eksploratora lub cały folder na aktywnym profilu połączenia (z obsługą charset, `DBMS_OUTPUT` i `stopOnError`).
 - 📈 **Pokrycie deklaracji i widoków** — karta Coverage pokazuje `% deklaracji` (PROCEDURE/FUNCTION) na plik i śledzi widoki wykonane przez `V$SQL`.
+- 🏷️ **Tagi i losowa kolejność** — filtruj testy przez `utplsql.tags` (np. `fast & !integration`) i uruchamiaj w losowej kolejności z powtarzalnym seedem (`utplsql.run.randomOrder`).
+- 🎯 **Zakres pokrycia** — uwzględniaj/wykluczaj obiekty i regex schematu/obiektu (`utplsql.coverage.*`), aby usunąć szum frameworka i dodać obiekty osiągane dynamicznie.
+- 🗄️ **Wykrywanie DB-first** — buduj drzewo z `ut_runner.get_suites_info` i przebuduj pamięć podręczną adnotacji z palety.
 - 🐛 **Debugowanie PL/SQL** — breakpointy i debugowanie krokowe testów utPLSQL przez `DBMS_DEBUG` (natywny Debug Adapter).
 - 🌍 **i18n — 24 języki** — `utplsql.language` podąża za VSCode (24 lokalizacje: pt-br, en, en-gb, es, zh-cn, zh-tw, ja, de, fr, it, ko, ru, tr, pl, cs, hu, bg, el, id, ro, sr, th, uk, vi).
 
@@ -43,6 +48,13 @@ Rozszerzenie można zainstalować na dwa sposoby:
 
 - [**utPLSQL**](https://github.com/utPLSQL/utPLSQL) **(UT3)** zainstalowany w bazie Oracle.
 - Wystarczy sama baza danych — VSIX zawiera już cienki sterownik `oracledb` (bez Instant Client).
+
+**Zgodność Oracle / utPLSQL:**
+
+| Oracle | utPLSQL | Uwagi |
+|---|---|---|
+| 18c+ | v3.2.x (18c+) / v3.1.x | Zalecane; charset `AL32UTF8`. |
+| 12.2 | tylko v3.1.x | v3.2.x się nie kompiluje (`PLS-00222`). `WE8DEC` obrazu gubi znaki nieprzedstawialne (np. `€`); cienki sterownik ignoruje `NLS_LANG`. |
 - **VSCode 1.88+** (Test Coverage API).
 
 Rozszerzenie jest tylko "graficznym klientem" — testy uruchamia baza danych: bezpośrednio przez node-oracledb.
@@ -99,9 +111,19 @@ Test Explorerze **w miarę kończenia każdego testu**.
 | `utplsql.sourcePath` | `install` | Folder kodu produkcyjnego (do mapowania pokrycia na pliki). |
 | `utplsql.includePatterns` | `["**/*.pks"]` | Wzorce glob do wykrywania specyfikacji z `%suite`/`%test`. Jeśli testy są w `.sql`, użyj `["**/*.sql"]`. |
 | `utplsql.coverageOwner` | `""` | Właściciel schematu pokrywanych obiektów. Puste = używa użytkownika połączenia (wielkimi literami). |
+| `utplsql.coverage.schemes` | `[]` | Pokrywane schematy (`a_coverage_schemes`). Puste = użytkownik połączenia (lub `utplsql.coverageOwner`). |
+| `utplsql.coverage.includeObjects` | `[]` | Obiekty do uwzględnienia w pokryciu, jako `OWNER.NAME` (np. `["APP.MY_PKG"]`). Przydatne dla obiektów osiąganych tylko dynamicznie. |
+| `utplsql.coverage.excludeObjects` | `[]` | Obiekty do wykluczenia z pokrycia, jako `OWNER.NAME` (np. `["UT3.UT_COVERAGE"]`). |
+| `utplsql.coverage.includeSchemaExpr` | `""` | Regex schematów do uwzględnienia w pokryciu (np. `^APP$`). |
+| `utplsql.coverage.includeObjectExpr` | `""` | Regex obiektów do uwzględnienia w pokryciu. |
+| `utplsql.coverage.excludeSchemaExpr` | `""` | Regex schematów do wykluczenia z pokrycia. |
+| `utplsql.coverage.excludeObjectExpr` | `""` | Regex obiektów do wykluczenia z pokrycia (np. `^UT_` dla frameworka utPLSQL). |
 | `utplsql.timeoutMinutes` | `60` | Limit czasu w minutach dla wykonania. |
 | `utplsql.dbmsOutput` | `false` | Włącza `DBMS_OUTPUT` w sesji testowej. |
 | `utplsql.additionalReporters` | `[]` | Dodatkowe reportery dołączane przy każdym uruchomieniu (np. `["ut_coverage_html_reporter"]`). Domyślne (documentation, junit) są zawsze dołączane i nie trzeba ich wymieniać. |
+| `utplsql.tags` | `""` | Wyrażenie tagów utPLSQL filtrujące, które testy są uruchamiane (np. `fast & !integration`). Puste uruchamia wszystkie. |
+| `utplsql.run.randomOrder` | `false` | Uruchamia testy w losowej kolejności, aby ujawnić zależności kolejności między nimi. |
+| `utplsql.run.randomOrderSeed` | `0` | Seed losowej kolejności. `0` = wybierany przez bazę (nieodtwarzalny); > 0 odtwarza tę samą kolejność. |
 | `utplsql.codeLens.enabled` | `true` | Pokazuje przyciski CodeLens Run/Run with Coverage nad `%suite` i `%test`. |
 | `utplsql.statusBar.enabled` | `true` | Pokazuje wskaźnik statusu testów w pasku stanu. |
 | `utplsql.decorations.enabled` | `true` | Pokazuje dekoracje pass/fail na liniach `%suite` i `%test` po wykonaniu. |
@@ -113,8 +135,9 @@ Test Explorerze **w miarę kończenia każdego testu**.
 | `utplsql.oracleClientLibDir` | `""` | Katalog Oracle Instant Client. Wymagany, gdy `utplsql.oracleClientMode` to `thick` (np. `C:\oracle\instantclient_23_5`). |
 | Debug nie zatrzymuje się na punkcie przerwania | Pakiet bez informacji debugowania lub brak grantów debugowania | Skompiluj z `PLSQL_OPTIMIZE_LEVEL <= 1` (lub `ALTER PACKAGE ... COMPILE DEBUG PLSQL_OPTIMIZE_LEVEL = 1`) i nadaj `DEBUG CONNECT SESSION` + `EXECUTE ON SYS.DBMS_DEBUG`. Punkty przerwania w `test_*.pkb` mogą nie działać (utPLSQL uruchamia testy przez dynamiczny SQL); ustaw je w testowanym kodzie. |
 | `utplsql.oracleClientConfigDir` | `""` | Katalog konfiguracji Oracle (TNS_ADMIN) z `sqlnet.ora`/`tnsnames.ora`. Opcjonalny; używany tylko przez tryb thick. |
-| `utplsql.organization` | `file` | Organizacja drzewa: `file` (według ścieżki) lub `schema` (Schema > Package > Suite > Test). W trybie `schema` suite'y są również wykrywane z bazy danych (`ALL_OBJECTS`/`ALL_SOURCE`), gdy plików `.pks` nie ma w workspace — z wirtualnym URI `utplsql-db:/` (bez CodeLens/dekoracji/skoku do błędu). |
+| `utplsql.organization` | `file` | Organizacja drzewa: `file` (według ścieżki) lub `schema` (Schema > Package > Suite > Test). W trybie `schema` suite'y są również wykrywane z bazy danych (`ut_runner.get_suites_info`, z fallbackiem do `ALL_OBJECTS`/`ALL_SOURCE`), gdy plików `.pks` nie ma w workspace — z wirtualnym URI `utplsql-db:/` (wykonanie i skok do błędu działają; bez CodeLens/dekoracji). |
 | `utplsql.organization.schemaPattern` | `db/{schema}/**` | Wzorzec glob do wyodrębnienia schematu ze ścieżki. Użyj `{schema}` jako symbolu zastępczego. W trybie `schema` katalogi poniżej podstawy wzorca (np. `db/*`) definiują schematy odpytywane w bazie danych. |
+| `utplsql.discovery.source` | `auto` | Źródło drzewa w trybie `schema`: `auto` używa API bazy (`ut_runner.get_suites_info`) i przechodzi do `ALL_SOURCE`/plików, gdy niedostępne; `database` wymaga API; `file` wyłącza wykrywanie przez bazę. |
 | `utplsql.refreshDebounceMs` | `300` | Debounce (ms) do scalania zdarzeń obserwatora plików `.pks`/`.pkb` przed odświeżeniem Test Explorer. |
 | `utplsql.compilationDiagnostics.enabled` | `true` | Pokazuje błędy kompilacji PL/SQL z bazy danych (`ALL_ERRORS`) jako podkreślenia w edytorze i w panelu "Problemy" (źródło "utPLSQL Compilation"). |
 | `utplsql.setupDiagnostics.enabled` | `true` | Pokazuje diagnostykę konfiguracji (połączenie, granty, wersja) oraz **integralność instalacji utPLSQL** (nieprawidłowe obiekty w schemacie UT3, z quick-fixem "Recompile UT3") z akcjami quick-fix. |
@@ -179,7 +202,7 @@ UTPLSQL_CONN=your_user/password@//host:1521/service
 8. **Dla trybu bezpośredniego Oracle (streaming):** nic nie trzeba instalować — VSIX zawiera już cienki sterownik `oracledb`.
 9. W celach diagnostycznych użyj `utPLSQL: Show information` w palecie — pokazuje informacje o wersji z opcją kopiowania.
 10. **utPLSQL: Select additional reporter...** — QuickPick z reporterami dostępnymi w bazie danych.
-11. **utPLSQL: Cancel execution** — zatrzymuje bieżące wykonanie (`Escape` podczas wykonania).
+11. **utPLSQL: Cancel run** — zatrzymuje bieżące wykonanie (`Escape` podczas wykonania).
 12. **utPLSQL: Refresh tests** — wymusza ponowne wykrycie plików `.pks`.
 
 > 💡 **Podczas pisania testów:** parser jest sterowany tokenami — wystarczy mieć `%suite`
@@ -194,7 +217,7 @@ Poza `%suite` i `%test` wykrywanie rozumie:
 |---|---|
 | `-- %disabled` | Suite lub test **nie pojawia się** w drzewie (pomijany w wykrywaniu) |
 | `-- %throws(-20001)` | Oznacza, że test oczekuje wyjątku 20001 (metadane `expectedError`) |
-| `-- %tags(fast, critical)` | Tagi testu (metadane; filtrowanie tagów jest na mapie drogowej) |
+| `-- %tags(fast, critical)` | Tagi testu; filtruj uruchomienie ustawieniem `utplsql.tags` (np. `fast & !integration`) |
 | `-- %displayname(Name)` | Niestandardowa nazwa wyświetlana zamiast opisu `%test` |
 | `-- %beforeall` / `%beforeeach` / `%aftereach` / `%afterall` | Oznacza suite hookami cyklu życia (metadane) |
 
@@ -213,14 +236,14 @@ Wszystkie polecenia rozszerzenia (paleta `Ctrl+Shift+P`, prefiks `utPLSQL:`):
 | `utPLSQL: Run tests in this folder` | Uruchamia suite'y wybranego folderu | Prawy klik → folder |
 | `utPLSQL: Run tests in this folder with coverage` | To samo, z profilem pokrycia | Prawy klik → folder |
 | `utPLSQL: Refresh tests` | Wymusza ponowne wykrycie plików `.pks` | — |
-| `utPLSQL: Cancel execution` | Zatrzymuje bieżące wykonanie | — |
-| `utPLSQL: Show utPLSQL information` | Informacje o wersji z opcją kopiowania | — |
+| `utPLSQL: Cancel run` | Zatrzymuje bieżące wykonanie | — |
+| `utPLSQL: Show utPLSQL info` | Informacje o wersji z opcją kopiowania | — |
 | `utPLSQL: Select additional reporter...` | QuickPick z reporterami bazy danych | — |
 | `utPLSQL: Clear session connection` | Usuwa połączenie z pamięci podręcznej sesji | — |
 | `utPLSQL: Rerun Last` | Powtarza ostatnie wykonanie | `Ctrl+Shift+U L` |
 | `utPLSQL: Run Test at Cursor` | Uruchamia test pod kursorem | `Ctrl+Shift+U U` |
 | `utPLSQL: Run Failed Tests` | Ponownie uruchamia tylko nieudane testy | `Ctrl+Shift+U X` |
-| `utPLSQL: Validate configuration` | Wykonuje pełną walidację konfiguracji (połączenie, instalacja UT3) i pokazuje wyniki | — |
+| `utPLSQL: Validate setup` | Wykonuje pełną walidację konfiguracji (połączenie, instalacja UT3) i pokazuje wyniki | — |
 | `utPLSQL: Configure connection` | Otwiera ustawienia przy `utplsql.connection` | — |
 | `utPLSQL: Copy coverage grants to clipboard` | Kopiuje SQL grantów do schowka | — |
 | `utPLSQL: Show Test Explorer` | Ustawia fokus na widoku Testing | — |
@@ -230,6 +253,7 @@ Wszystkie polecenia rozszerzenia (paleta `Ctrl+Shift+P`, prefiks `utPLSQL:`):
 | `utPLSQL: Import connections from SQL Developer` | Importuje połączenia z SQL Developera (connections.xml) | — |
 | `utPLSQL: Debug test (PL/SQL)` | Uruchamia sesję debugowania testu w aktywnym pliku | — |
 | `utPLSQL: Skompiluj do debugowania` | Kompiluje obiekt wybranego pliku/folderu z informacjami debugowania | — |
+| `utPLSQL: Przebuduj pamięć podręczną adnotacji` | Przebudowuje pamięć podręczną adnotacji utPLSQL w bazie i odświeża drzewo | — |
 | `utPLSQL: Run script` | Runs the script open in the editor against a connection profile | Right-click → script file |
 | `utPLSQL: Run script file` | Runs an Explorer script file (decoded with the profile charset) | Right-click → file |
 | `utPLSQL: Run script folder` | Runs the folder scripts in alphabetical order | Right-click → folder |
@@ -327,11 +351,11 @@ GRANT SELECT ON SYS.DBA_PROCEDURES TO <ut3_owner>;
 
 | Objaw | Prawdopodobna przyczyna | Rozwiązanie |
 |---|---|---|
-| Suite'y się nie pojawiają | Nie znaleziono bazy danych | Uruchom `utPLSQL: Validate configuration`, aby uzyskać diagnostykę |
+| Suite'y się nie pojawiają | Nie znaleziono bazy danych | Uruchom `utPLSQL: Validate setup`, aby uzyskać diagnostykę |
 | Puste pokrycie | Brak `GRANT EXECUTE ON DBMS_PROFILER` | Uruchom granty z [Wymagania bazy danych](#wymagania-bazy-danych) lub użyj `utPLSQL: Copy coverage grants to clipboard` |
 | Puste pokrycie | Oracle 19c wymaga dodatkowych grantów | `GRANT EXECUTE ON DBMS_PROFILER` + `GRANT EXECUTE ON DBMS_PLSQL_CODE_COVERAGE` |
 | Błąd kompilacji bez wskazówki | Kod z błędem składni PL/SQL | Pozostaw `utplsql.compilationDiagnostics.enabled` włączone (domyślnie); błędy z `ALL_ERRORS` pojawiają się w panelu "Problemy" po uruchomieniu |
-| Błąd połączenia | Nieprawidłowy ciąg lub nieosiągalna baza | Użyj `utPLSQL: Validate configuration` |
+| Błąd połączenia | Nieprawidłowy ciąg lub nieosiągalna baza | Użyj `utPLSQL: Validate setup` |
 | Limit czasu podczas wykonania | Testy trwają dłużej niż `timeoutMinutes` | Zwiększ `utplsql.timeoutMinutes` |
 | `%suite` nierozpoznany | Brak `%suite`/`create package` w pliku lub `%test` bez `PROCEDURE` | Sprawdź specyfikację; uruchom `utPLSQL: Refresh tests` |
 | CodeLens się nie pojawia | `editor.codeLens` wyłączone lub konflikt | Włącz `"editor.codeLens": true`; sprawdź `utplsql.codeLens.enabled` |

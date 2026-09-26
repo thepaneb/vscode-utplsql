@@ -1,3 +1,5 @@
+<!-- GENERATED FROM docs/brain/20-PRDs/prd-43-schema-db-discovery.md — DO NOT EDIT -->
+
 # PRD-43 — Schema-mode: descoberta de suites via ALL_OBJECTS e ALL_SOURCE
 
 | Campo | Valor |

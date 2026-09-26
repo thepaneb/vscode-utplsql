@@ -1,3 +1,5 @@
+<!-- GENERATED FROM docs/brain/70-Wiki/Tests.md — DO NOT EDIT -->
+
 # Tests
 
 Overview of the extension's tests and how to run them.
@@ -18,6 +20,7 @@ files:
 src/test/unit/  (TypeScript source; runs in out/test/unit/)
 ├── cobertura.test.ts
 ├── codelens.test.ts
+├── compileForDebug.test.ts
 ├── config.test.ts
 ├── connectionProfiles.test.ts
 ├── coverage.test.ts
@@ -30,7 +33,9 @@ src/test/unit/  (TypeScript source; runs in out/test/unit/)
 ├── i18n.test.ts
 ├── junit.test.ts
 ├── logger.test.ts
+├── manifestDebugger.test.ts
 ├── matching.test.ts
+├── matrixConfig.test.ts
 ├── oracleClient.test.ts
 ├── oracleRunner.test.ts
 ├── oracledb-default-absent.test.ts
@@ -43,6 +48,7 @@ src/test/unit/  (TypeScript source; runs in out/test/unit/)
 ├── results.test.ts
 ├── runner.test.ts
 ├── scriptRunner.test.ts
+├── scriptsCli.test.ts
 ├── selectReporterCommand.test.ts
 ├── state.test.ts
 ├── statusBar.test.ts
@@ -112,6 +118,8 @@ src/test/integration/
 ├── extension.test.ts
 ├── oracleCapabilities.test.ts
 ├── v012-features.test.ts
+├── v013-features.test.ts
+├── compileForDebug.test.ts
 ├── dbPaths.test.ts
 ├── prd70-sqlplus.test.ts
 ├── schemaRun.test.ts

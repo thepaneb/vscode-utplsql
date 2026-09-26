@@ -1,3 +1,5 @@
+<!-- GENERATED FROM docs/brain/60-README/README.it.md — DO NOT EDIT -->
+
 <p align="center">
   <img src="images/icon.png" alt="utPLSQL Test Runner Logo" width="128" height="128">
 </p>
@@ -27,6 +29,9 @@ Integra [utPLSQL](https://www.utplsql.org/) in VSCode, portando i test PL/SQL ne
 - 🔌 **Profili di connessione** — salva e passa da un ambiente all'altro (DEV/TEST/PROD) con impostazioni per profilo, tramite barra di stato o palette comandi.
 - 📜 **Script SQL** — esegui lo script corrente, un file di Explorer o un'intera cartella sul profilo di connessione attivo (charset rispettato, con `DBMS_OUTPUT` e `stopOnError`).
 - 📈 **Copertura di statement e viste** — la scheda Coverage mostra `% di statement` (PROCEDURE/FUNCTION) per file e tiene traccia delle viste eseguite tramite `V$SQL`.
+- 🏷️ **Tag e ordine casuale** — filtra i test con `utplsql.tags` (es. `fast & !integration`) ed esegui in ordine casuale con seed riproducibile (`utplsql.run.randomOrder`).
+- 🎯 **Ambito di copertura** — includi/escludi oggetti e regex di schema/oggetto (`utplsql.coverage.*`) per rimuovere il rumore del framework e aggiungere oggetti raggiunti dinamicamente.
+- 🗄️ **Scoperta DB-first** — costruisci l'albero da `ut_runner.get_suites_info` e ricostruisci la cache delle annotazioni dalla palette.
 - 🐛 **Debug PL/SQL** — breakpoint e debug passo-passo dei test utPLSQL tramite `DBMS_DEBUG` (Debug Adapter nativo).
 - 🌍 **i18n — 24 lingue** — `utplsql.language` segue VSCode (24 locale: pt-br, en, en-gb, es, zh-cn, zh-tw, ja, de, fr, it, ko, ru, tr, pl, cs, hu, bg, el, id, ro, sr, th, uk, vi).
 
@@ -45,6 +50,13 @@ L'estensione può essere installata in due modi:
 - **VSCode 1.88+** (Test Coverage API).
 
 L'estensione si connette direttamente al database Oracle tramite `node-oracledb` (driver thin, senza Instant Client). Il VSIX include già il pacchetto `oracledb`.
+
+**Compatibilità Oracle / utPLSQL:**
+
+| Oracle | utPLSQL | Note |
+|---|---|---|
+| 18c+ | v3.2.x (18c+) / v3.1.x | Consigliato; charset `AL32UTF8`. |
+| 12.2 | solo v3.1.x | Il v3.2.x non compila (`PLS-00222`). Il charset `WE8DEC` dell'immagine perde i caratteri non rappresentabili (es. `€`); il driver thin ignora `NLS_LANG`. |
 
 ## Connessione
 
@@ -98,9 +110,19 @@ Test Explorer **appena ogni test termina**.
 | `utplsql.sourcePath` | `install` | Cartella del codice di produzione (per mappare la copertura ai file). |
 | `utplsql.includePatterns` | `["**/*.pks"]` | Glob per scoprire le spec con `%suite`/`%test`. Se i tuoi test sono in `.sql`, usa `["**/*.sql"]`. |
 | `utplsql.coverageOwner` | `""` | Proprietario dello schema degli oggetti coperti. Vuoto = usa l'utente della connessione (maiuscolo). |
+| `utplsql.coverage.schemes` | `[]` | Schemi coperti (`a_coverage_schemes`). Vuoto = utente della connessione (o `utplsql.coverageOwner`). |
+| `utplsql.coverage.includeObjects` | `[]` | Oggetti da includere nella copertura, come `OWNER.NAME` (es. `["APP.MIO_PKG"]`). Utile per oggetti raggiunti solo dinamicamente. |
+| `utplsql.coverage.excludeObjects` | `[]` | Oggetti da escludere dalla copertura, come `OWNER.NAME` (es. `["UT3.UT_COVERAGE"]`). |
+| `utplsql.coverage.includeSchemaExpr` | `""` | Regex di schemi da includere nella copertura (es. `^APP$`). |
+| `utplsql.coverage.includeObjectExpr` | `""` | Regex di oggetti da includere nella copertura. |
+| `utplsql.coverage.excludeSchemaExpr` | `""` | Regex di schemi da escludere dalla copertura. |
+| `utplsql.coverage.excludeObjectExpr` | `""` | Regex di oggetti da escludere dalla copertura (es. `^UT_` per il framework utPLSQL). |
 | `utplsql.timeoutMinutes` | `60` | Timeout in minuti per l'esecuzione dei test. |
 | `utplsql.dbmsOutput` | `false` | Abilita `DBMS_OUTPUT` nella sessione di test. Utile per il debug. |
 | `utplsql.additionalReporters` | `[]` | Reporter aggiuntivi da includere in ogni esecuzione (es. `["ut_coverage_html_reporter"]`). I default (documentation, junit) sono sempre inclusi e non devono essere elencati. |
+| `utplsql.tags` | `""` | Espressione di tag utPLSQL per filtrare quali test eseguire (es. `fast & !integration`). Vuoto esegue tutti. |
+| `utplsql.run.randomOrder` | `false` | Esegue i test in ordine casuale per rivelare dipendenze d'ordine tra loro. |
+| `utplsql.run.randomOrderSeed` | `0` | Seed dell'ordine casuale. `0` = scelta dal database (non riproducibile); > 0 riproduce lo stesso ordine. |
 | `utplsql.codeLens.enabled` | `true` | Mostra i pulsanti CodeLens Run/Run with Coverage sopra `%suite` e `%test`. |
 | `utplsql.statusBar.enabled` | `true` | Mostra l'indicatore dello stato dei test nella barra di stato. |
 | `utplsql.decorations.enabled` | `true` | Mostra le decorazioni superato/fallito sulle righe `%suite` e `%test` dopo l'esecuzione. |
@@ -112,8 +134,9 @@ Test Explorer **appena ogni test termina**.
 | `utplsql.oracleClientLibDir` | `""` | Directory dell'Oracle Instant Client. Obbligatoria quando `utplsql.oracleClientMode` è `thick` (es. `C:\oracle\instantclient_23_5`). |
 | Il debug non si ferma al breakpoint | Package compilato senza info di debug, o grant di debug mancanti | Compila con `PLSQL_OPTIMIZE_LEVEL <= 1` (o `ALTER PACKAGE ... COMPILE DEBUG PLSQL_OPTIMIZE_LEVEL = 1`) e concedi `DEBUG CONNECT SESSION` + `EXECUTE ON SYS.DBMS_DEBUG`. I breakpoint in `test_*.pkb` potrebbero non scattare (utPLSQL esegue i test via SQL dinamico); impostali nel codice sotto test. |
 | `utplsql.oracleClientConfigDir` | `""` | Directory di configurazione Oracle (TNS_ADMIN) con `sqlnet.ora`/`tnsnames.ora`. Opzionale; usata solo dal driver thick. |
-| `utplsql.organization` | `file` | Organizzazione dell'albero: `file` (per percorso) o `schema` (Schema > Package > Suite > Test). In modalità `schema`, le suite vengono scoperte anche dal database (`ALL_OBJECTS`/`ALL_SOURCE`) quando i file `.pks` non sono nel workspace — con URI virtuale `utplsql-db:/` (niente CodeLens/decorazioni/vai all'errore). |
+| `utplsql.organization` | `file` | Organizzazione dell'albero: `file` (per percorso) o `schema` (Schema > Package > Suite > Test). In modalità `schema`, le suite vengono scoperte anche dal database (`ut_runner.get_suites_info`, con fallback a `ALL_OBJECTS`/`ALL_SOURCE`) quando i file `.pks` non sono nel workspace — URI virtuale `utplsql-db:/` (esecuzione e vai all'errore funzionano; niente CodeLens/decorazioni). |
 | `utplsql.organization.schemaPattern` | `db/{schema}/**` | Pattern Glob per estrarre lo schema dal percorso. Usa `{schema}` come segnaposto. In modalità `schema`, le directory sotto la base del pattern (es. `db/*`) definiscono gli schemi interrogati nel database. |
+| `utplsql.discovery.source` | `auto` | Sorgente dell'albero in modalità `schema`: `auto` usa l'API del database (`ut_runner.get_suites_info`) e ripiega su `ALL_SOURCE`/file se non disponibile; `database` richiede l'API; `file` disattiva la scoperta via database. |
 | `utplsql.refreshDebounceMs` | `300` | Debounce (ms) per raggruppare gli eventi del watcher dei file `.pks`/`.pkb` prima di aggiornare il Test Explorer. |
 | `utplsql.compilationDiagnostics.enabled` | `true` | Mostra gli errori di compilazione PL/SQL dal database (`ALL_ERRORS`) come sottolineature nell'editor e nel Problems Panel (origine "utPLSQL Compilation"). |
 | `utplsql.setupDiagnostics.enabled` | `true` | Mostra i diagnostici di configurazione (connessione, grants, versione) e **l'integrità dell'installazione di utPLSQL** (oggetti non validi nello schema UT3, con quick-fix "Recompile UT3") con azioni di quick-fix. |
@@ -177,7 +200,7 @@ UTPLSQL_CONN=your_user/password@//host:1521/service
    - `Ctrl+Shift+U X` — **Run Failed Only** (esegue solo i test falliti).
 8. Per i diagnostici, usa `utPLSQL: Show information` nella palette — mostra le versioni API/DB con opzione di copia.
 9. **utPLSQL: Select additional reporter...** — QuickPick con i reporter disponibili nel database.
-10. **utPLSQL: Cancel execution** — ferma l'esecuzione in corso (`Escape` durante l'esecuzione).
+10. **utPLSQL: Cancel run** — ferma l'esecuzione in corso (`Escape` durante l'esecuzione).
 11. **utPLSQL: Refresh tests** — forza la riscoperta dei `.pks`.
 
 > 💡 **Quando scrivi i test:** il parser è guidato dai token — basta avere `%suite`
@@ -192,7 +215,7 @@ Oltre a `%suite` e `%test`, la scoperta comprende:
 |---|---|
 | `-- %disabled` | Suite o test **non appare** nell'albero (saltato nella scoperta) |
 | `-- %throws(-20001)` | Segna che il test si aspetta l'eccezione 20001 (metadati `expectedError`) |
-| `-- %tags(fast, critical)` | Tag del test (metadati; il filtraggio per tag è nella roadmap) |
+| `-- %tags(fast, critical)` | Tag del test; filtra l'esecuzione con l'impostazione `utplsql.tags` (es. `fast & !integration`) |
 | `-- %displayname(Name)` | Nome personalizzato mostrato al posto della descrizione del `%test` |
 | `-- %beforeall` / `%beforeeach` / `%aftereach` / `%afterall` | Segna la suite con hook di ciclo di vita (metadati) |
 
@@ -211,14 +234,14 @@ Tutti i comandi dell'estensione (palette `Ctrl+Shift+P`, prefisso `utPLSQL:`):
 | `utPLSQL: Run tests in this folder` | Esegue le suite della cartella selezionata | Clic destro → cartella |
 | `utPLSQL: Run tests in this folder with coverage` | Come sopra, con profilo di copertura | Clic destro → cartella |
 | `utPLSQL: Refresh tests` | Forza la riscoperta dei `.pks` | — |
-| `utPLSQL: Cancel execution` | Ferma l'esecuzione in corso | — |
-| `utPLSQL: Show utPLSQL information` | Versioni API/DB con opzione di copia | — |
+| `utPLSQL: Cancel run` | Ferma l'esecuzione in corso | — |
+| `utPLSQL: Show utPLSQL info` | Versioni API/DB con opzione di copia | — |
 | `utPLSQL: Select additional reporter...` | QuickPick con i reporter del database | — |
 | `utPLSQL: Clear session connection` | Rimuove la connessione dalla cache di sessione | — |
 | `utPLSQL: Rerun Last` | Ripete l'ultima esecuzione | `Ctrl+Shift+U L` |
 | `utPLSQL: Run Test at Cursor` | Esegue il test sotto il cursore | `Ctrl+Shift+U U` |
 | `utPLSQL: Run Failed Tests` | Rieesegue solo i test falliti | `Ctrl+Shift+U X` |
-| `utPLSQL: Validate configuration` | Esegue la validazione completa del setup (connessione, installazione UT3) e mostra i risultati | — |
+| `utPLSQL: Validate setup` | Esegue la validazione completa del setup (connessione, installazione UT3) e mostra i risultati | — |
 | `utPLSQL: Configure connection` | Apre le impostazioni su `utplsql.connection` | — |
 | `utPLSQL: Copy coverage grants to clipboard` | Copia gli SQL dei grants negli appunti | — |
 | `utPLSQL: Show Test Explorer` | Dà il focus alla vista Testing | — |
@@ -228,6 +251,7 @@ Tutti i comandi dell'estensione (palette `Ctrl+Shift+P`, prefisso `utPLSQL:`):
 | `utPLSQL: Import connections from SQL Developer` | Importa le connessioni da SQL Developer (connections.xml) | — |
 | `utPLSQL: Debug test (PL/SQL)` | Avvia una sessione di debug del test nel file attivo | — |
 | `utPLSQL: Compila per il debug` | Compila l’oggetto del file/cartella selezionato con le informazioni di debug | — |
+| `utPLSQL: Ricostruisci cache delle annotazioni` | Ricostruisce la cache delle annotazioni utPLSQL nel database e aggiorna l'albero | — |
 | `utPLSQL: Run script` | Runs the script open in the editor against a connection profile | Right-click → script file |
 | `utPLSQL: Run script file` | Runs an Explorer script file (decoded with the profile charset) | Right-click → file |
 | `utPLSQL: Run script folder` | Runs the folder scripts in alphabetical order | Right-click → folder |
@@ -328,11 +352,11 @@ GRANT SELECT ON SYS.DBA_PROCEDURES TO <ut3_owner>;
 
 | Sintomo | Causa probabile | Soluzione |
 |---|---|---|
-| Le suite non appaiono | Problema di connessione | Esegui `utPLSQL: Validate configuration` per i diagnostici |
+| Le suite non appaiono | Problema di connessione | Esegui `utPLSQL: Validate setup` per i diagnostici |
 | Copertura vuota | Manca `GRANT EXECUTE ON DBMS_PROFILER` | Esegui i grants in [Requisiti del database](#requisiti-del-database) o usa `utPLSQL: Copy coverage grants to clipboard` |
 | Copertura vuota | Oracle 19c richiede grants aggiuntivi | `GRANT EXECUTE ON DBMS_PROFILER` + `GRANT EXECUTE ON DBMS_PLSQL_CODE_COVERAGE` |
 | Errore di compilazione senza indicazione | Codice con errore di sintassi PL/SQL | Mantieni `utplsql.compilationDiagnostics.enabled` attivo (predefinito); gli errori di `ALL_ERRORS` compaiono nel Problems Panel dopo un'esecuzione |
-| Errore di connessione | Stringa malformata o DB non raggiungibile | Usa `utPLSQL: Validate configuration` |
+| Errore di connessione | Stringa malformata o DB non raggiungibile | Usa `utPLSQL: Validate setup` |
 | Timeout durante l'esecuzione | I test impiegano più di `timeoutMinutes` | Aumenta `utplsql.timeoutMinutes` |
 | `%suite` non riconosciuto | Manca `%suite`/`create package` nel file, o `%test` senza `PROCEDURE` | Controlla la spec; esegui `utPLSQL: Refresh tests` |
 | CodeLens non appare | `editor.codeLens` disabilitato o conflitto | Abilita `"editor.codeLens": true`; controlla `utplsql.codeLens.enabled` |

@@ -1,3 +1,5 @@
+<!-- GENERATED FROM docs/brain/60-README/README.ko.md — DO NOT EDIT -->
+
 <p align="center">
   <img src="images/icon.png" alt="utPLSQL Test Runner Logo" width="128" height="128">
 </p>
@@ -27,6 +29,9 @@
 - 🔌 **연결 프로필** — 프로필별 설정으로 여러 환경(DEV/TEST/PROD)을 저장하고 전환(상태 표시줄 또는 명령 팔레트를 통해).
 - 📜 **SQL 스크립트** — 현재 스크립트, Explorer 파일 또는 전체 폴더를 활성 연결 프로필에 대해 실행합니다(charset 지원, `DBMS_OUTPUT` 및 `stopOnError`).
 - 📈 **문장 및 뷰 커버리지** — Coverage 탭에 파일별 `% of statements`(PROCEDURE/FUNCTION)를 표시하고 `V$SQL`을 통해 실행된 뷰를 추적.
+- 🏷️ **태그 및 무작위 순서** — `utplsql.tags`(예: `fast & !integration`)로 테스트를 필터링하고 재현 가능한 seed(`utplsql.run.randomOrder`)로 무작위 순서로 실행합니다.
+- 🎯 **커버리지 범위** — 객체와 스키마/객체 정규식(`utplsql.coverage.*`)으로 포함/제외하여 프레임워크 잡음을 제거하고 동적으로 도달하는 객체를 추가합니다.
+- 🗄️ **DB 우선 검색** — `ut_runner.get_suites_info`로 트리를 만들고 팔레트에서 주석 캐시를 다시 작성합니다.
 - 🐛 **PL/SQL 디버그** — `DBMS_DEBUG`를 통한 utPLSQL 테스트의 중단점 및 단계 디버깅(네이티브 Debug Adapter).
 - 🌍 **i18n — 24개 언어** — `utplsql.language`가 VSCode를 따릅니다(24개 로케일: pt-br, en, en-gb, es, zh-cn, zh-tw, ja, de, fr, it, ko, ru, tr, pl, cs, hu, bg, el, id, ro, sr, th, uk, vi).
 
@@ -43,6 +48,13 @@
 
 - [**utPLSQL**](https://github.com/utPLSQL/utPLSQL) **(UT3)** 이 Oracle 데이터베이스에 설치되어 있어야 합니다.
 - 데이터베이스 외에는 아무것도 필요하지 않습니다 — VSIX에 thin `oracledb` 드라이버가 이미 포함되어 있습니다(Instant Client 불필요).
+
+**Oracle / utPLSQL 호환성:**
+
+| Oracle | utPLSQL | 참고 |
+|---|---|---|
+| 18c+ | v3.2.x (18c+) / v3.1.x | 권장. charset `AL32UTF8`. |
+| 12.2 | v3.1.x만 | v3.2.x는 컴파일되지 않습니다(`PLS-00222`). 이미지의 `WE8DEC`은 표현할 수 없는 문자(예: `€`)를 잃습니다. thin 드라이버는 `NLS_LANG`을 무시합니다. |
 - **VSCode 1.88+** (Test Coverage API).
 
 확장 프로그램은 "그래픽 클라이언트"일 뿐입니다 — 테스트를 실행하는 것은 데이터베이스입니다: node-oracledb 직접 연결을 통해.
@@ -99,9 +111,19 @@ Test Explorer에 나타납니다.
 | `utplsql.sourcePath` | `install` | 프로덕션 코드 폴더(커버리지를 파일에 매핑하기 위해). |
 | `utplsql.includePatterns` | `["**/*.pks"]` | `%suite`/`%test`가 있는 스펙을 발견하기 위한 glob. 테스트가 `.sql`에 있으면 `["**/*.sql"]`을 사용하세요. |
 | `utplsql.coverageOwner` | `""` | 커버리지 대상 객체의 스키마 소유자. 비어 있음 = 연결 사용자 사용(대문자). |
+| `utplsql.coverage.schemes` | `[]` | 커버리지 대상 스키마(`a_coverage_schemes`). 비어 있음 = 연결 사용자(또는 `utplsql.coverageOwner`). |
+| `utplsql.coverage.includeObjects` | `[]` | 커버리지에 포함할 객체(`OWNER.NAME` 형식, 예: `["APP.MY_PKG"]`). 동적으로만 도달하는 객체에 유용합니다. |
+| `utplsql.coverage.excludeObjects` | `[]` | 커버리지에서 제외할 객체(`OWNER.NAME` 형식, 예: `["UT3.UT_COVERAGE"]`). |
+| `utplsql.coverage.includeSchemaExpr` | `""` | 커버리지에 포함할 스키마 정규식(예: `^APP$`). |
+| `utplsql.coverage.includeObjectExpr` | `""` | 커버리지에 포함할 객체 정규식. |
+| `utplsql.coverage.excludeSchemaExpr` | `""` | 커버리지에서 제외할 스키마 정규식. |
+| `utplsql.coverage.excludeObjectExpr` | `""` | 커버리지에서 제외할 객체 정규식(예: utPLSQL 프레임워크의 경우 `^UT_`). |
 | `utplsql.timeoutMinutes` | `60` | 실행 시간 제한(분). |
 | `utplsql.dbmsOutput` | `false` | 테스트 세션에서 `DBMS_OUTPUT`을 활성화합니다. |
 | `utplsql.additionalReporters` | `[]` | 모든 실행에 포함할 추가 리포터(예: `["ut_coverage_html_reporter"]`). 기본값(documentation, junit)은 항상 포함되며 나열할 필요가 없습니다. |
+| `utplsql.tags` | `""` | 실행할 테스트를 필터링하는 utPLSQL 태그 표현식(예: `fast & !integration`). 비어 있으면 모두 실행합니다. |
+| `utplsql.run.randomOrder` | `false` | 테스트 간 순서 의존성을 드러내기 위해 무작위 순서로 실행합니다. |
+| `utplsql.run.randomOrderSeed` | `0` | 무작위 순서의 seed. `0` = 데이터베이스가 선택(재현 불가), 0보다 크면 같은 순서를 재현합니다. |
 | `utplsql.codeLens.enabled` | `true` | `%suite` 및 `%test` 위에 Run/Run with Coverage CodeLens 버튼을 표시합니다. |
 | `utplsql.statusBar.enabled` | `true` | 상태 표시줄에 테스트 상태 표시기를 표시합니다. |
 | `utplsql.decorations.enabled` | `true` | 실행 후 `%suite` 및 `%test` 줄에 통과/실패 데코레이션을 표시합니다. |
@@ -113,8 +135,9 @@ Test Explorer에 나타납니다.
 | `utplsql.oracleClientLibDir` | `""` | Oracle Instant Client 디렉터리. `utplsql.oracleClientMode`가 `thick`일 때 필수입니다(예: `C:\oracle\instantclient_23_5`). |
 | 디버그가 브레이크포인트에서 멈추지 않음 | 디버그 정보 없이 컴파일된 패키지, 또는 디버그 권한 누락 | `PLSQL_OPTIMIZE_LEVEL <= 1`로 컴파일(또는 `ALTER PACKAGE ... COMPILE DEBUG PLSQL_OPTIMIZE_LEVEL = 1`)하고 `DEBUG CONNECT SESSION` + `EXECUTE ON SYS.DBMS_DEBUG` 부여. `test_*.pkb`의 브레이크포인트가 적중하지 않을 수 있습니다(utPLSQL은 동적 SQL로 테스트를 실행). 테스트 대상 코드에 설정하세요. |
 | `utplsql.oracleClientConfigDir` | `""` | `sqlnet.ora`/`tnsnames.ora`가 있는 Oracle 구성 디렉터리(TNS_ADMIN). 선택 사항이며 thick 모드에서만 사용됩니다. |
-| `utplsql.organization` | `file` | 트리 구성: `file`(경로별) 또는 `schema`(Schema > Package > Suite > Test). `schema` 모드에서 워크스페이스에 `.pks` 파일이 없으면 스위트가 데이터베이스(`ALL_OBJECTS`/`ALL_SOURCE`)에서도 발견됩니다 — 가상 URI `utplsql-db:/`(CodeLens/데코레이션/실패 지점 이동 없음). |
+| `utplsql.organization` | `file` | 트리 구성: `file`(경로별) 또는 `schema`(Schema > Package > Suite > Test). `schema` 모드에서 워크스페이스에 `.pks` 파일이 없으면 스위트가 데이터베이스(`ut_runner.get_suites_info`, 불가 시 `ALL_OBJECTS`/`ALL_SOURCE`)에서도 발견됩니다 — 가상 URI `utplsql-db:/`(실행 및 실패 지점 이동 가능, CodeLens/데코레이션 없음). |
 | `utplsql.organization.schemaPattern` | `db/{schema}/**` | 경로에서 스키마를 추출하는 glob 패턴. `{schema}`를 자리 표시자로 사용하세요. `schema` 모드에서 패턴 기본 아래의 디렉터리(예: `db/*`)는 데이터베이스에서 조회할 스키마를 정의합니다. |
+| `utplsql.discovery.source` | `auto` | `schema` 모드에서 테스트 트리의 소스: `auto`는 데이터베이스 API(`ut_runner.get_suites_info`)를 사용하고 사용할 수 없으면 `ALL_SOURCE`/파일로 대체합니다. `database`는 API를 요구하고, `file`은 데이터베이스 검색을 비활성화합니다. |
 | `utplsql.refreshDebounceMs` | `300` | Test Explorer를 새로 고치기 전에 `.pks`/`.pkb` 파일 감시 이벤트를 병합하는 디바운스(ms). |
 | `utplsql.compilationDiagnostics.enabled` | `true` | 데이터베이스의 PL/SQL 컴파일 오류(`ALL_ERRORS`)를 편집기 밑줄과 "문제" 패널에 표시합니다(출처 "utPLSQL Compilation"). |
 | `utplsql.setupDiagnostics.enabled` | `true` | 구성 진단(연결, 권한, 버전) 및 **utPLSQL 설치 무결성**(UT3 스키마의 잘못된 객체, "Recompile UT3" quick-fix 포함)을 quick-fix 작업과 함께 표시합니다. |
@@ -178,7 +201,7 @@ UTPLSQL_CONN=your_user/password@//host:1521/service
 8. **Oracle 직접 실행(스트리밍)의 경우:** 설치할 것이 없습니다 — VSIX에 thin `oracledb` 드라이버가 이미 포함되어 있습니다.
 9. 진단의 경우 팔레트에서 `utPLSQL: Show information`을 사용하세요 — 복사 옵션과 함께 버전 정보를 표시합니다.
 10. **utPLSQL: Select additional reporter...** — 데이터베이스에서 사용 가능한 리포터가 있는 QuickPick.
-11. **utPLSQL: Cancel execution** — 실행 중인 실행을 중지합니다(실행 중 `Escape`).
+11. **utPLSQL: Cancel run** — 실행 중인 실행을 중지합니다(실행 중 `Escape`).
 12. **utPLSQL: Refresh tests** — `.pks`의 재발견을 강제합니다.
 
 > 💡 **테스트 작성 시:** 파서는 토큰 기반입니다 — 파일에 `%suite`와
@@ -193,7 +216,7 @@ UTPLSQL_CONN=your_user/password@//host:1521/service
 |---|---|
 | `-- %disabled` | 스위트 또는 테스트가 트리에 **나타나지 않음**(발견에서 건너뜀) |
 | `-- %throws(-20001)` | 테스트가 예외 20001을 기대함을 표시(`expectedError` 메타데이터) |
-| `-- %tags(fast, critical)` | 테스트 태그(메타데이터; 태그 필터링은 로드맵) |
+| `-- %tags(fast, critical)` | 테스트 태그. `utplsql.tags` 설정으로 실행을 필터링합니다(예: `fast & !integration`). |
 | `-- %displayname(Name)` | `%test` 설명 대신 표시되는 사용자 지정 이름 |
 | `-- %beforeall` / `%beforeeach` / `%aftereach` / `%afterall` | 라이프사이클 훅으로 스위트 표시(메타데이터) |
 
@@ -212,14 +235,14 @@ UTPLSQL_CONN=your_user/password@//host:1521/service
 | `utPLSQL: Run tests in this folder` | 선택한 폴더의 스위트 실행 | 마우스 오른쪽 버튼 → 폴더 |
 | `utPLSQL: Run tests in this folder with coverage` | 동일, 커버리지 프로필 사용 | 마우스 오른쪽 버튼 → 폴더 |
 | `utPLSQL: Refresh tests` | `.pks`의 재발견 강제 | — |
-| `utPLSQL: Cancel execution` | 실행 중인 실행 중지 | — |
-| `utPLSQL: Show utPLSQL information` | 복사 옵션이 있는 버전 정보 | — |
+| `utPLSQL: Cancel run` | 실행 중인 실행 중지 | — |
+| `utPLSQL: Show utPLSQL info` | 복사 옵션이 있는 버전 정보 | — |
 | `utPLSQL: Select additional reporter...` | 데이터베이스 리포터가 있는 QuickPick | — |
 | `utPLSQL: Clear session connection` | 세션 캐시에서 연결 제거 | — |
 | `utPLSQL: Rerun Last` | 마지막 실행 반복 | `Ctrl+Shift+U L` |
 | `utPLSQL: Run Test at Cursor` | 커서 아래의 테스트 실행 | `Ctrl+Shift+U U` |
 | `utPLSQL: Run Failed Tests` | 실패한 테스트만 재실행 | `Ctrl+Shift+U X` |
-| `utPLSQL: Validate configuration` | 전체 설정 검증(연결, UT3 설치) 실행 및 결과 표시 | — |
+| `utPLSQL: Validate setup` | 전체 설정 검증(연결, UT3 설치) 실행 및 결과 표시 | — |
 | `utPLSQL: Configure connection` | `utplsql.connection`에서 설정 열기 | — |
 | `utPLSQL: Copy coverage grants to clipboard` | 권한 SQL을 클립보드에 복사 | — |
 | `utPLSQL: Show Test Explorer` | Testing 뷰에 포커스 | — |
@@ -228,6 +251,7 @@ UTPLSQL_CONN=your_user/password@//host:1521/service
 | `utPLSQL: Manage connection profiles` | `utplsql.profiles`에서 설정 열기 | — |
 | `utPLSQL: Import connections from SQL Developer` | SQL Developer에서 연결 가져오기(connections.xml) | — |
 | `utPLSQL: Debug test (PL/SQL)` | 활성 파일 아래의 테스트 디버그 세션 시작 | — |
+| `utPLSQL: 주석 캐시 다시 작성` | 데이터베이스의 utPLSQL 주석 캐시를 다시 작성하고 트리를 갱신합니다 | — |
 | `utPLSQL: 디버그용으로 컴파일` | 선택한 파일/폴더의 개체를 디버그 정보와 함께 컴파일합니다 | — |
 | `utPLSQL: Run script` | Runs the script open in the editor against a connection profile | Right-click → script file |
 | `utPLSQL: Run script file` | Runs an Explorer script file (decoded with the profile charset) | Right-click → file |
@@ -324,11 +348,11 @@ GRANT SELECT ON SYS.DBA_PROCEDURES TO <ut3_owner>;
 
 | 증상 | 가능한 원인 | 해결책 |
 |---|---|---|
-| 스위트가 나타나지 않음 | 데이터베이스를 찾을 수 없음 | 진단을 위해 `utPLSQL: Validate configuration` 실행 |
+| 스위트가 나타나지 않음 | 데이터베이스를 찾을 수 없음 | 진단을 위해 `utPLSQL: Validate setup` 실행 |
 | 빈 커버리지 | `GRANT EXECUTE ON DBMS_PROFILER` 누락 | [Requirements](#database-requirements)의 권한을 실행하거나 `utPLSQL: Copy coverage grants to clipboard` 사용 |
 | 빈 커버리지 | Oracle 19c에는 추가 권한 필요 | `GRANT EXECUTE ON DBMS_PROFILER` + `GRANT EXECUTE ON DBMS_PLSQL_CODE_COVERAGE` |
 | 표시가 없는 컴파일 오류 | PL/SQL 구문 오류가 있는 코드 | `utplsql.compilationDiagnostics.enabled`를 켜 둔 상태(기본값)로 유지하세요; 실행 후 `ALL_ERRORS`의 오류가 "문제" 패널에 표시됩니다 |
-| 연결 오류 | 잘못된 문자열 또는 접근 불가능한 DB | `utPLSQL: Validate configuration` 사용 |
+| 연결 오류 | 잘못된 문자열 또는 접근 불가능한 DB | `utPLSQL: Validate setup` 사용 |
 | 실행 중 시간 초과 | 테스트가 `timeoutMinutes`보다 오래 걸림 | `utplsql.timeoutMinutes` 증가 |
 | `%suite`가 인식되지 않음 | 파일에 `%suite`/`create package` 누락, 또는 `PROCEDURE` 없는 `%test` | 스펙 확인; `utPLSQL: Refresh tests` 실행 |
 | CodeLens가 나타나지 않음 | `editor.codeLens` 비활성화 또는 충돌 | `"editor.codeLens": true` 활성화; `utplsql.codeLens.enabled` 확인 |

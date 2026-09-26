@@ -1,3 +1,5 @@
+<!-- GENERATED FROM docs/brain/70-Wiki/Configuration-examples.md — DO NOT EDIT -->
+
 # Configuration Examples (recipes)
 
 Copy-paste snippets for common scenarios. Every key is prefixed `utplsql.`; for the

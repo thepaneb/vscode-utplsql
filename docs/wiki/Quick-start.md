@@ -1,3 +1,5 @@
+<!-- GENERATED FROM docs/brain/70-Wiki/Quick-start.md — DO NOT EDIT -->
+
 # Quick start
 
 Step-by-step tutorial to run your first test with the extension.
@@ -45,7 +47,7 @@ In addition to `%suite` and `%test`, the extension recognizes the following duri
 |---|---|
 | `-- %disabled` | Suite or test **does not appear** in the Test Explorer |
 | `-- %throws(-20001)` | Test that expects exception 20001 (metadata) |
-| `-- %tags(fast, critical)` | Test tags (metadata) |
+| `-- %tags(fast, critical)` | Test tags; filter execution with the `utplsql.tags` setting |
 | `-- %displayname(Name)` | Display name shown in place of the `%test` description |
 | `-- %beforeall` / `%beforeeach` / `%aftereach` / `%afterall` | Suite lifecycle hooks (metadata) |
 

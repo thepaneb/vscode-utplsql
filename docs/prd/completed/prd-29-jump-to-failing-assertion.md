@@ -1,3 +1,5 @@
+<!-- GENERATED FROM docs/brain/20-PRDs/prd-29-jump-to-failing-assertion.md — DO NOT EDIT -->
+
 # PRD-29 — Jump to Failing Assertion
 
 | Campo | Valor |

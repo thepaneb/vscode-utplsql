@@ -1,3 +1,5 @@
+<!-- GENERATED FROM docs/brain/20-PRDs/prd-30-schema-aware-organization.md — DO NOT EDIT -->
+
 # PRD-30 — Schema-Aware Test Organization
 
 | Campo | Valor |

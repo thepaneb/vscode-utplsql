@@ -1,3 +1,4 @@
+<!-- GENERATED FROM docs/brain/10-Projeto/Funcional/11-debugger.md — DO NOT EDIT -->
 # 11 — PL/SQL Debugger
 
 Depuração de testes utPLSQL direto no Debug Adapter nativo do VSCode, via
@@ -93,7 +94,9 @@ disconnect/terminate  → teardown()
 ```
 
 - `pause` **não** é suportado (`DBMS_DEBUG` não oferece interrupção assíncrona).
-- `stopOnException` controla a parada em exceções (`breakflags`).
+- `stopOnException` (default `true`) soma `DBMS_DEBUG.break_exception` aos
+  `breakflags` do `CONTINUE`; com `false` o debuggee segue sem suspender em
+  exceções (PRD-86).
 - Breakpoints só são aplicados **depois** que o alvo chega ao entry — o
   `DBMS_DEBUG` ignora silenciosamente breakpoints "deferred" (PRD-71).
 

@@ -1,3 +1,5 @@
+<!-- GENERATED FROM docs/brain/70-Wiki/Architecture.md — DO NOT EDIT -->
+
 # Architecture
 
 Overview of the extension's internal architecture for contributors.
@@ -40,16 +42,23 @@ bundled.
 | `junit.ts` — JUnit XML parsing + stack frames | `runner.ts`, `results.ts` |
 | `cobertura.ts` — Cobertura XML parsing | `config.ts` |
 | `matching.ts` — URI/folder filter + result→test matching | `discovery.ts` |
-| `codelens.ts` (parse) — `parseCodeLensItems` | |
-| `state.ts`, `types.ts` (type-only) | |
-| `plsqlDeclarations.ts` — extracts PROCEDURE/FUNCTION declarations from source | |
-| `i18n.ts`, `i18nLocales.ts` — localization (24 locales) | |
-| | `connectionProfiles.ts` — connection profiles |
-| | `viewCoverage.ts` — DeclarationCoverage in the Test Coverage tab |
+| `codelens.ts` (parse) — `parseCodeLensItems` | `coverage.ts` — Cobertura → Coverage API |
+| `state.ts`, `types.ts` (type-only) | `testTree.ts` — builds the tree (file/schema), `mergeDbSuites` |
+| `plsqlDeclarations.ts` — extracts PROCEDURE/FUNCTION declarations from source | `scriptRunner.ts` — SQL script execution |
+| `i18n.ts`, `i18nLocales.ts` — localization (24 locales) | `quickfix.ts` — setup diagnostics + quick-fix |
+| `charset.ts` — byte→string decoding (utf8/latin1/win1252) | `compileForDebug.ts` — compile object with debug info |
+| `charsetSupport.ts` — legacy-charset detection (euro preserved) | `compilationDiagnostics.ts` — ALL_ERRORS → Problems Panel |
+| `debounce.ts` — coalescing helper | `dbSourceProvider.ts` — `utplsql-db:` virtual documents |
+| `logger.ts` — logging (no `vscode`) | `connectionProfiles.ts` — connection profiles |
+| | `decorations.ts` — inline ✓/✗/⚠ decorations |
+| | `statusBar.ts` — status bar indicator |
+| | `viewCoverage.ts` — DeclarationCoverage + V$SQL view tracking |
 | | `dbmsDebug.ts`, `debugger.ts` — PL/SQL debugging via DBMS_DEBUG |
+| | `oracleClient.ts` — thin/thick mode init |
+| | `oracleRunner.ts` — pool, `executeRunOracle`, discovery helpers |
 
 Modules in the left column **do not import `vscode`** (at runtime) and are
-testable with `node --test` without any setup.
+testable with `node --test` without any setup. Full list: `src/*.ts`.
 
 ![Internationalization (i18n) diagram](images/diagram-i18n.png)
 
@@ -73,10 +82,15 @@ testable with `node --test` without any setup.
 | `utplsql.timeoutMinutes` | `cfg.timeoutMinutes` | run timeout (`Promise.race` + cancellation) |
 | `utplsql.dbmsOutput` | `cfg.dbmsOutput` | captures `DBMS_OUTPUT` via `GET_LINES` on the polling session |
 | `utplsql.additionalReporters` | `cfg.additionalReporters` | extra reporters in the `a_reporters` param of `ut_runner.run` (deduplicated) |
+| `utplsql.tags` | `cfg.tags` | `a_tags` of `ut_runner.run` (server-side tag filter) |
+| `utplsql.run.randomOrder`/`run.randomOrderSeed` | `cfg.randomOrder`/`randomOrderSeed` | `a_random_test_order`/`_seed` of `ut_runner.run` |
+| `utplsql.coverage.schemes`/`includeObjects`/`excludeObjects` | `cfg.coverage*` | `a_coverage_schemes`/`a_include_objects`/`a_exclude_objects` binds |
+| `utplsql.coverage.includeSchemaExpr`/`…ObjectExpr`/`exclude…Expr` | `cfg.coverage*Expr` | `a_include_*_expr`/`a_exclude_*_expr` binds of `ut_runner.run` |
+| `utplsql.discovery.source` | `cfg.discoverySource` | `auto` \| `file` \| `database` — DB-first discovery (`testTree.ts`/`discovery.ts`) |
 | `utplsql.oraclePoolMin/Max/Increment/PingInterval` | `cfg.oraclePool*` | `oracleRunner.ts` (`ensurePool`) |
 | `utplsql.oracleClientMode`/`oracleClientLibDir`/`oracleClientConfigDir` | `cfg.oracleClient*` | `oracleClient.ts` (`ensureOracleClient`, called from `ensurePool`) |
 | `utplsql.codeLens/statusBar/decorations.enabled` | `cfg.*Enabled` | UX providers |
-| `utplsql.compilationDiagnostics.enabled` | `cfg.compilationDiagnosticsEnabled` | Reserved — no effect (feature not wired in the Oracle-only version) |
+| `utplsql.compilationDiagnostics.enabled` | `cfg.compilationDiagnosticsEnabled` | `compilationDiagnostics.ts` — ALL_ERRORS → Problems Panel (after each run) |
 | `utplsql.setupDiagnostics.enabled` | `cfg.setupDiagnosticsEnabled` | `quickfix.ts` |
 | `utplsql.organization`/`organization.schemaPattern` | `cfg.organization`/`organizationSchemaPattern` | `extension.ts` (tree + DB discovery) |
 | `utplsql.connection` | `resolveConnection()` | Oracle connection param |

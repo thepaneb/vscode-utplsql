@@ -1,3 +1,5 @@
+<!-- GENERATED FROM docs/brain/20-PRDs/prd-15-integration-tests-real-db.md — DO NOT EDIT -->
+
 # PRD-15 — Testes de integração com banco real
 
 | Campo | Valor |

@@ -1,3 +1,5 @@
+<!-- GENERATED FROM docs/brain/20-PRDs/prd-64-oracle-only-migration.md — DO NOT EDIT -->
+
 # PRD-64 — Migração para Oracle-Only: eliminação do utPLSQL-cli e Java
 
 | Campo | Valor |

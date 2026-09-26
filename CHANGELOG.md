@@ -1,5 +1,80 @@
 # Changelog
 
+## 0.13.0
+
+- **Correção: resultados e jump-to-failure em suítes com `%suitepath` (PRD-87)**: o
+  reporter JUnit do utPLSQL aninha `<testsuite>` conforme o `--%suitepath`, mas o
+  parser lia apenas um nível; as suítes afetadas eram marcadas como "No JUnit
+  result found" no Test Explorer. O parser agora percorre os níveis aninhados,
+  reconhece o stack real `SCHEMA.PACKAGE.PROCEDURE` e resolve a location para o
+  `.pks`, sem confundir o schema de instalação `UT3` com objetos internos do
+  framework. Validado por E2E contra o banco real.
+
+- **Correção: debugger honra `stopOnException` (PRD-86)**: a setting
+  `utplsql.debugger.stopOnException` existia desde a PRD-33 mas não tinha
+  efeito — o adapter guardava o valor sem usá-lo e o `CONTINUE` do `DBMS_DEBUG`
+  era emitido sem o breakflag `break_exception`, então o debuggee nunca
+  suspendia em exceções. Agora o cliente propaga `DBMS_DEBUG.break_exception`
+  quando a setting é `true` (default), suspendendo em `reason_exception`
+  (`reason='exception'` no DAP); com `false` o comportamento antigo é mantido.
+
+- **Second brain canônico (Obsidian) com MCP (PRD-85)**: `docs/brain/` passa a ser
+  **versionado** e a fonte da verdade do texto humano; `README*`, `docs/wiki/`,
+  `docs/functional/` e `docs/prd/` passam a ser **gerados** a partir dele
+  (`npm run brain:build`). O conhecimento é persistido em unidades atômicas — 59
+  regras `BR-*` e as camadas `SEC-*`/`ERR-*`/`PAT-*`/`TPL-*`/`GLOSS-*`/`NFR-*`/
+  `ENT-*`/`LOC-*`/`PIPE-*` — com rastreabilidade para código/teste/PRD. O status
+  dos PRDs passa a viver no **frontmatter** da nota (pasta e `index.md` gerados).
+  O agente lê/escreve o vault via **MCP** do Obsidian (Local REST API). O CI
+  valida o drift (`brain:ci` + `git diff --exit-code`).
+
+- **Suporte a Oracle 12.2 (utPLSQL 3.1.x)**: o utPLSQL **v3.2.x não compila** no
+  12.2 (`PLS-00222` em `UT_ANNOTATION_MANAGER`, que exige recurso do 18c+). A
+  matriz de bancos passou a aceitar um **piso alternativo de utPLSQL por versão**
+  (4º campo em `scripts/db-matrix/matrix.env`); o 12.2 usa `v3.1.14`. Limitação
+  documentada: bancos com charset legado (a imagem 12.2 é `WE8DEC`) perdem
+  caracteres fora do charset (ex.: `€` → `¿`) — o driver thin usa sempre
+  `AL32UTF8` e ignora `NLS_LANG`; o teste de charset de integração agora detecta
+  e faz skip nesse caso. (PRD-84)
+- **Pacote VSIX enxuto**: removidos do pacote arquivos e pastas de
+  desenvolvimento que escapavam do `.vscodeignore` — `.agents/`, `.kilo/`,
+  `.github/`, `docker/` (incluindo o cache da matriz de bancos, ~5 MB),
+  `.c8rc`, `.nvmrc`, `biome.json`, `skills-lock.json`, `SECURITY.md` e os
+  configs dos testes de integração (`.vscode-test.smoke.mjs`,
+  `.vscode-test.thick.mjs`). (PRD-83)
+- **Runner Oracle com binds tipados, filtro por tag e validação de reporters
+  (PRD-69)**: os paths (`a_paths`) e os schemas de cobertura
+  (`a_coverage_schemes`) deixam de ser concatenados no PL/SQL e passam a binds
+  tipados (`UT_VARCHAR2_LIST`) — nenhum valor de usuário é interpolado. A nova
+  setting `utplsql.tags` expõe `a_tags` do `ut_runner.run` (ex.:
+  `fast & !integration`; vazio = todos). Reporters adicionais inexistentes são
+  ignorados com aviso em vez de abortar a execução.
+- **Ordem aleatória de execução com seed (PRD-78)**: novas settings
+  `utplsql.run.randomOrder` (default `false`) e `utplsql.run.randomOrderSeed`
+  (default `0`), que passam `a_random_test_order`/`a_random_test_order_seed` ao
+  `ut_runner.run` para revelar dependências de ordem entre testes. Seed `0` =
+  sorteada pelo banco; seed > 0 reproduz a mesma ordem e é registrada no Output.
+- **Escopo avançado de cobertura (PRD-79)**: novas settings
+  `utplsql.coverage.schemes` (sobrepõe os schemas), `utplsql.coverage.includeObjects`
+  e `utplsql.coverage.excludeObjects` (formato `OWNER.NAME`) e as regex
+  `includeSchemaExpr`, `includeObjectExpr`, `excludeSchemaExpr` e
+  `excludeObjectExpr`. Os valores vão como binds ao `ut_runner.run` (listas
+  `UT_VARCHAR2_LIST`, regex `STRING`), que monta o `ut_coverage_options`
+  internamente. Permite excluir o framework utPLSQL (ex.: `excludeObjectExpr =
+  "^UT_"`) e incluir objetos alcançados apenas dinamicamente. Default inalterado.
+- **Descoberta de suítes direto do banco (PRD-74)**: no modo `schema`, a árvore
+  passa a ser construída a partir de `ut_runner.get_suites_info` (utPLSQL ≥
+  3.1.3) como fonte canônica, fundida com a descoberta por arquivo (arquivo
+  prevalece em URI/linha; banco em descrição/tags), com fallback para
+  `ALL_SOURCE` quando a API não está disponível. Nova setting
+  `utplsql.discovery.source` (`auto` | `file` | `database`, default `auto`).
+- **Reconstruir o cache de anotações do utPLSQL (PRD-77)**: novo comando
+  `utPLSQL: Rebuild Annotation Cache` (`utplsql.rebuildAnnotations`) que chama
+  `ut_runner.rebuild_annotation_cache(<owner>)` e atualiza o Test Explorer.
+  Útil quando a árvore vem de `get_suites_info` e o cache está desatualizado
+  (DDL trigger ausente ou recompilação manual). Sem conexão, avisa; erros
+  aparecem no Output.
+
 ## 0.12.1
 
 - **Debugger — DBMS_DEBUG real (PRD-71)**: o cliente usava assinaturas

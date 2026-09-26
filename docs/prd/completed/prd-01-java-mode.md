@@ -1,3 +1,5 @@
+<!-- GENERATED FROM docs/brain/20-PRDs/prd-01-java-mode.md — DO NOT EDIT -->
+
 # PRD-01 — Modo de invocação `java` (bypass do launcher)
 
 | Campo | Valor |

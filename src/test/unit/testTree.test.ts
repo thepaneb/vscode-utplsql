@@ -233,7 +233,7 @@ function mergeDeps(over: Partial<MergeDbDeps> = {}): MergeDbDeps {
     resolveConnection: () => 'u/p@//h:1521/s',
     extractSchemaFromPath: () => undefined,
     discoverSchemasFromFolders: async () => [],
-    discoverSchemaFromDb: async () => [],
+    discoverDbSuites: async () => [],
     ...over,
   };
 }
@@ -270,7 +270,7 @@ test('mergeDbSuites: une schemas do path e das pastas e mescla sem duplicar', as
     mergeDeps({
       extractSchemaFromPath: () => 'APP',
       discoverSchemasFromFolders: async () => ['OTHER'],
-      discoverSchemaFromDb: async (_conn, schema) => {
+      discoverDbSuites: async (_conn, schema) => {
         seen.push(schema);
         return schema === 'APP' ? [duplicate, onlyDb] : [];
       },
@@ -291,7 +291,7 @@ test('mergeDbSuites: várias suites só-DB do mesmo schema entram na ordem', asy
     'db/{schema}/**',
     mergeDeps({
       discoverSchemasFromFolders: async () => ['APP'],
-      discoverSchemaFromDb: async () => [
+      discoverDbSuites: async () => [
         suite({ packageName: 'UT_B' }),
         suite({ packageName: 'UT_A' }),
       ],
@@ -301,4 +301,28 @@ test('mergeDbSuites: várias suites só-DB do mesmo schema entram na ordem', asy
     suites.map((s) => s.packageName),
     ['UT_B', 'UT_A'],
   );
+});
+
+test('mergeDbSuites: discovery.source=file não busca suites do banco', async () => {
+  __setConfigValue('discovery.source', 'file');
+  const suites = [suite({})];
+  let calls = 0;
+  try {
+    await mergeDbSuites(
+      suites,
+      [],
+      'db/{schema}/**',
+      mergeDeps({
+        discoverSchemasFromFolders: async () => ['APP'],
+        discoverDbSuites: async () => {
+          calls++;
+          return [];
+        },
+      }),
+    );
+  } finally {
+    __resetConfigValues();
+  }
+  assert.strictEqual(calls, 0, 'não deveria consultar o banco com source=file');
+  assert.strictEqual(suites.length, 1);
 });

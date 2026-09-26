@@ -1,3 +1,5 @@
+<!-- GENERATED FROM docs/brain/20-PRDs/prd-54-coverage-toggle.md — DO NOT EDIT -->
+
 # PRD-54 — Toggle de cobertura na status bar
 
 | Campo | Valor |
@@ -6,7 +8,7 @@
 | Autor | Gil Cleber Barboza |
 | Data | 2026-09-06 |
 | Componente | Extensão `paneb.vscode-utplsql` |
-| Versão alvo | 0.14.0 |
+| Versão alvo | 0.15.0 |
 | Arquivos afetados | `src/statusBar.ts`, `src/state.ts`, `src/extension.ts`, `package.json` |
 | Esforço estimado | 0,5–1 dia |
 | Complexidade | Baixa-Média |
@@ -101,7 +103,7 @@ Adicionar o item à `UtplsqlStatusBar`, o comando em `extension.ts` e a flag em
 
 ## 9. Rollout
 
-- Release 0.14.0 (minor).
+- Release 0.15.0 (minor).
 - CHANGELOG: "Toggle de cobertura na status bar".
 
 ## 10. Critérios de aceite

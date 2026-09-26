@@ -1,3 +1,5 @@
+<!-- GENERATED FROM docs/brain/20-PRDs/prd-62-run-scripts-against-profiles.md — DO NOT EDIT -->
+
 # PRD-62 — Execução de scripts SQL contra perfil de conexão
 
 | Campo | Valor |

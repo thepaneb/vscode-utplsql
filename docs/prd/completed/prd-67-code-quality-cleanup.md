@@ -1,3 +1,5 @@
+<!-- GENERATED FROM docs/brain/20-PRDs/prd-67-code-quality-cleanup.md — DO NOT EDIT -->
+
 # PRD-67 — Qualidade, limpeza e performance
 
 | Campo | Valor |

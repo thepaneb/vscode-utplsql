@@ -1,3 +1,5 @@
+<!-- GENERATED FROM docs/brain/20-PRDs/prd-31-smart-rerun-patterns.md — DO NOT EDIT -->
+
 # PRD-31 — Smart Re-run Patterns
 
 | Campo | Valor |

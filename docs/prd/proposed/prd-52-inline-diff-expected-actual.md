@@ -1,3 +1,5 @@
+<!-- GENERATED FROM docs/brain/20-PRDs/prd-52-inline-diff-expected-actual.md — DO NOT EDIT -->
+
 # PRD-52 — Diff inline esperado × obtido nas falhas
 
 | Campo | Valor |
@@ -6,7 +8,7 @@
 | Autor | Gil Cleber Barboza |
 | Data | 2026-09-06 |
 | Componente | Extensão `paneb.vscode-utplsql` |
-| Versão alvo | 0.14.0 |
+| Versão alvo | 0.15.0 |
 | Arquivos afetados | `src/results.ts`, `src/junit.ts`, `src/test/unit/results.test.ts` |
 | Esforço estimado | 0,5–1 dia |
 | Complexidade | Baixa |
@@ -100,7 +102,7 @@ Nenhuma setting/command novo.
 
 ## 9. Rollout
 
-- Release 0.14.0 (minor) — pode entrar junto da PRD-51.
+- Release 0.15.0 (minor) — pode entrar junto da PRD-51.
 - CHANGELOG: "Diff inline esperado × obtido nas falhas de asserção".
 
 ## 10. Critérios de aceite

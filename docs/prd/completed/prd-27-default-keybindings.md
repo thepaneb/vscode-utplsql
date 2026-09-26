@@ -1,3 +1,5 @@
+<!-- GENERATED FROM docs/brain/20-PRDs/prd-27-default-keybindings.md — DO NOT EDIT -->
+
 # PRD-27 — Default Keybindings
 
 | Campo | Valor |

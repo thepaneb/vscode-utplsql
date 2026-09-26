@@ -108,6 +108,72 @@ test('resolveStackFrameToUri: undefined quando so ha frames internos', () => {
   assert.strictEqual(loc, undefined);
 });
 
+// ── Frames qualificados com o schema (formato real do utPLSQL) ──────────────
+// O utPLSQL emite `at "SCHEMA.PACKAGE.PROCEDURE", line N`. O nome da suite vem
+// do arquivo .pks, sem schema e sem procedimento: 2 segmentos => último,
+// 3+ => penúltimo.
+
+function suiteState(packageName: string, fsPath: string) {
+  const suiteUri = { fsPath, path: fsPath, scheme: 'file' };
+  const suiteItem = { id: `suite:${packageName}` };
+  return makeState(
+    new Map([[suiteItem, makeMeta({ kind: 'suite', packageName, uri: suiteUri as any })]]),
+    [suiteItem],
+  );
+}
+
+test('resolveStackFrameToUri: frame de 3 segmentos usa o penultimo (o pacote)', () => {
+  const state = suiteState('test_math_fail', '/ws/tests/test_math_fail.pks');
+  const loc = resolveStackFrameToUri(
+    [{ objectName: 'UT3.TEST_MATH_FAIL.EXPECTS_ONE_TO_EQUAL_TWO', line: 4 }],
+    state,
+  );
+  assert.ok(loc);
+  assert.strictEqual(loc.uri.fsPath, '/ws/tests/test_math_fail.pks');
+  assert.strictEqual(loc.range.start.line, 3);
+});
+
+test('resolveStackFrameToUri: frame de 2 segmentos usa o ultimo (o pacote)', () => {
+  const state = suiteState('test_math_fail', '/ws/tests/test_math_fail.pks');
+  const loc = resolveStackFrameToUri(
+    [{ objectName: 'UTPLSQL_TEST.TEST_MATH_FAIL', line: 9 }],
+    state,
+  );
+  assert.ok(loc);
+  assert.strictEqual(loc.uri.fsPath, '/ws/tests/test_math_fail.pks');
+  assert.strictEqual(loc.range.start.line, 8);
+});
+
+test('resolveStackFrameToUri: frame qualificado sem suite no cache cai para <pacote>.pks', () => {
+  vscode.workspace.__setWorkspaceFolders([{ uri: { fsPath: '/ws' }, name: 'ws', index: 0 }]);
+  try {
+    const loc = resolveStackFrameToUri(
+      [{ objectName: 'UT3.TEST_MATH_FAIL.EXPECTS_ONE_TO_EQUAL_TWO', line: 4 }],
+      makeState(new Map(), []),
+    );
+    assert.ok(loc);
+    assert.strictEqual(loc.uri.fsPath, '/ws/test_math_fail.pks');
+    assert.strictEqual(loc.range.start.line, 3);
+  } finally {
+    vscode.workspace.__setWorkspaceFolders(undefined);
+  }
+});
+
+test('resolveStackFrameToUri: frame interno do schema de install e o do usuario', () => {
+  const state = suiteState('test_math_fail', '/ws/tests/test_math_fail.pks');
+  const loc = resolveStackFrameToUri(
+    [
+      { objectName: 'UT3.UT_ASSERT', line: 10 },
+      { objectName: 'UT3.UT_RUNNER', line: 151 },
+      { objectName: 'UT3.TEST_MATH_FAIL.EXPECTS_ONE_TO_EQUAL_TWO', line: 4 },
+    ],
+    state,
+  );
+  assert.ok(loc);
+  assert.strictEqual(loc.uri.fsPath, '/ws/tests/test_math_fail.pks');
+  assert.strictEqual(loc.range.start.line, 3);
+});
+
 // ── applyResultsFromCases ────────────────────────────────────────────
 
 test('applyResultsFromCases: failed com stackFrames ganha location', () => {

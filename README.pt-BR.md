@@ -1,3 +1,5 @@
+<!-- GENERATED FROM docs/brain/60-README/README.pt-BR.md — DO NOT EDIT -->
+
 <p align="center">
   <img src="images/icon.png" alt="utPLSQL Test Runner Logo" width="128" height="128">
 </p>
@@ -27,6 +29,9 @@ Integra o [utPLSQL](https://www.utplsql.org/) ao VSCode, trazendo os testes de P
 - 🔌 **Perfis de conexão** — salve e alterne entre múltiplos ambientes (DEV/TEST/PROD) com configurações por perfil, via status bar ou command palette.
 - 📜 **Scripts SQL** — execute o script atual, um arquivo do Explorer ou uma pasta inteira no perfil de conexão ativo (respeita o charset, com `DBMS_OUTPUT` e `stopOnError`).
 - 📈 **Cobertura por declaração e de views** — a aba Coverage mostra `% de declarações` (PROCEDURE/FUNCTION) por arquivo e rastreia views executadas via `V$SQL`.
+- 🏷️ **Tags e ordem aleatória** — filtre testes com `utplsql.tags` (ex.: `fast & !integration`) e execute em ordem aleatória com seed reproduzível (`utplsql.run.randomOrder`).
+- 🎯 **Escopo de cobertura** — inclua/exclua objetos e regex de schema/objeto (`utplsql.coverage.*`) para remover ruído do framework e incluir objetos alcançados dinamicamente.
+- 🗄️ **Descoberta DB-first** — monte a árvore a partir de `ut_runner.get_suites_info` e reconstrua o cache de anotações pela paleta.
 - 🐛 **Debug PL/SQL** — breakpoints e step debugging de testes utPLSQL via `DBMS_DEBUG` (Debug Adapter nativo).
 - 🌍 **i18n — 24 idiomas** — `utplsql.language` segue o VSCode (24 locales: pt-br, en, en-gb, es, zh-cn, zh-tw, ja, de, fr, it, ko, ru, tr, pl, cs, hu, bg, el, id, ro, sr, th, uk, vi).
 
@@ -45,6 +50,13 @@ A extensão pode ser instalada de duas formas:
 - **VSCode 1.88+** (Test Coverage API).
 
 A extensão conecta-se diretamente ao banco Oracle via `node-oracledb` (driver thin, sem Instant Client). O VSIX já inclui o pacote `oracledb`.
+
+**Compatibilidade Oracle / utPLSQL:**
+
+| Oracle | utPLSQL | Observações |
+|---|---|---|
+| 18c+ | v3.2.x (18c+) / v3.1.x | Recomendado; charset `AL32UTF8`. |
+| 12.2 | apenas v3.1.x | O v3.2.x não compila (`PLS-00222`). O charset `WE8DEC` da imagem perde caracteres não representáveis (ex.: `€`); o driver thin ignora `NLS_LANG`. |
 
 ## Conexão
 
@@ -100,9 +112,19 @@ Test Explorer **conforme cada teste termina**.
 | `utplsql.sourcePath` | `install` | Pasta do código de produção (para mapear a cobertura aos arquivos). |
 | `utplsql.includePatterns` | `["**/*.pks"]` | Globs para descobrir os specs com `%suite`/`%test`. Se seus testes estão em `.sql`, use `["**/*.sql"]`. |
 | `utplsql.coverageOwner` | `""` | Schema dono dos objetos cobertos. Vazio = usa o usuário da conexão (em maiúsculas). |
+| `utplsql.coverage.schemes` | `[]` | Schemas cobertos (`a_coverage_schemes`). Vazio = usuário da conexão (ou `utplsql.coverageOwner`). |
+| `utplsql.coverage.includeObjects` | `[]` | Objetos a incluir na cobertura, como `OWNER.NAME` (ex.: `["APP.MEU_PKG"]`). Útil para objetos alcançados só dinamicamente. |
+| `utplsql.coverage.excludeObjects` | `[]` | Objetos a excluir da cobertura, como `OWNER.NAME` (ex.: `["UT3.UT_COVERAGE"]`). |
+| `utplsql.coverage.includeSchemaExpr` | `""` | Regex de schemas a incluir na cobertura (ex.: `^APP$`). |
+| `utplsql.coverage.includeObjectExpr` | `""` | Regex de objetos a incluir na cobertura. |
+| `utplsql.coverage.excludeSchemaExpr` | `""` | Regex de schemas a excluir da cobertura. |
+| `utplsql.coverage.excludeObjectExpr` | `""` | Regex de objetos a excluir da cobertura (ex.: `^UT_` para o framework utPLSQL). |
 | `utplsql.timeoutMinutes` | `60` | Timeout em minutos para a execução dos testes. |
 | `utplsql.dbmsOutput` | `false` | Habilita `DBMS_OUTPUT` na sessão de teste. Útil para depuração. |
 | `utplsql.additionalReporters` | `[]` | Reporters adicionais para incluir em toda execução (ex.: `["ut_coverage_html_reporter"]`). Os padrões (documentation, junit) são sempre incluídos e não precisam ser listados. |
+| `utplsql.tags` | `""` | Expressão de tags do utPLSQL para filtrar quais testes executam (ex.: `fast & !integration`). Vazio executa todos. |
+| `utplsql.run.randomOrder` | `false` | Executa os testes em ordem aleatória, para revelar dependências de ordem entre eles. |
+| `utplsql.run.randomOrderSeed` | `0` | Seed da ordem aleatória. `0` = sorteada pelo banco (não reproduzível); > 0 reproduz a mesma ordem. |
 | `utplsql.codeLens.enabled` | `true` | Exibe botões CodeLens Run/Run with Coverage sobre `%suite` e `%test`. |
 | `utplsql.statusBar.enabled` | `true` | Exibe indicador de status dos testes na barra de status. |
 | `utplsql.decorations.enabled` | `true` | Exibe decorações de pass/fail nas linhas `%suite` e `%test` após execução. |
@@ -114,8 +136,9 @@ Test Explorer **conforme cada teste termina**.
 | `utplsql.oracleClientLibDir` | `""` | Diretório do Oracle Instant Client. Obrigatório quando `utplsql.oracleClientMode` é `thick` (ex.: `C:\oracle\instantclient_23_5`). |
 | O debug não para no breakpoint | Package sem debug info ou grants de debug ausentes | Compile com `PLSQL_OPTIMIZE_LEVEL <= 1` (ou `ALTER PACKAGE ... COMPILE DEBUG PLSQL_OPTIMIZE_LEVEL = 1`) e conceda `DEBUG CONNECT SESSION` + `EXECUTE ON SYS.DBMS_DEBUG`. Breakpoints em `test_*.pkb` podem não parar (o utPLSQL executa os testes via SQL dinâmico); coloque-os no código sob teste. |
 | `utplsql.oracleClientConfigDir` | `""` | Diretório de configuração Oracle (TNS_ADMIN) com `sqlnet.ora`/`tnsnames.ora`. Opcional; usado apenas pelo driver thick. |
-| `utplsql.organization` | `file` | Organização da árvore: `file` (por caminho) ou `schema` (Schema > Package > Suite > Test). No modo `schema`, suites também são descobertas do banco (`ALL_OBJECTS`/`ALL_SOURCE`) quando os arquivos `.pks` não estão no workspace — com URI virtual `utplsql-db:/` (sem CodeLens/decorations/jump to failure). |
+| `utplsql.organization` | `file` | Organização da árvore: `file` (por caminho) ou `schema` (Schema > Package > Suite > Test). No modo `schema`, suites também são descobertas do banco (`ut_runner.get_suites_info`, com fallback para `ALL_OBJECTS`/`ALL_SOURCE`) quando os arquivos `.pks` não estão no workspace — URI virtual `utplsql-db:/` (execução e jump to failure funcionam; sem CodeLens/decorations). |
 | `utplsql.organization.schemaPattern` | `db/{schema}/**` | Padrão glob para extrair schema do caminho. Use `{schema}` como placeholder. No modo `schema`, os diretórios abaixo da base do padrão (ex.: `db/*`) definem os schemas consultados no banco. |
+| `utplsql.discovery.source` | `auto` | Fonte da árvore no modo `schema`: `auto` usa a API do banco (`ut_runner.get_suites_info`) e cai para `ALL_SOURCE`/arquivos quando indisponível; `database` exige a API; `file` desliga a descoberta via banco. |
 | `utplsql.refreshDebounceMs` | `300` | Debounce (ms) para agrupar eventos do watcher de arquivos `.pks`/`.pkb` antes de atualizar o Test Explorer. |
 | `utplsql.compilationDiagnostics.enabled` | `true` | Mostra erros de compilação PL/SQL do banco de dados (`ALL_ERRORS`) como sublinhados no editor e no Problems Panel (origem "utPLSQL Compilation"). |
 | `utplsql.setupDiagnostics.enabled` | `true` | Exibe diagnósticos de configuração (conexão, grants, versão) e de **integridade da instalação utPLSQL** (objetos inválidos no schema UT3, com quick-fix "Recompilar UT3") com quick-fix actions. |
@@ -194,7 +217,7 @@ Além de `%suite` e `%test`, o discovery entende:
 |---|---|
 | `-- %disabled` | Suíte ou teste **não aparece** na árvore (pulado no discovery) |
 | `-- %throws(-20001)` | Marca que o teste espera a exceção 20001 (metadado `expectedError`) |
-| `-- %tags(fast, critical)` | Tags do teste (metadado; filtro por tag é roadmap) |
+| `-- %tags(fast, critical)` | Tags do teste; filtre a execução com a setting `utplsql.tags` (ex.: `fast & !integration`) |
 | `-- %displayname(Nome)` | Nome customizado exibido no lugar da descrição do `%test` |
 | `-- %beforeall` / `%beforeeach` / `%aftereach` / `%afterall` | Marca a suíte com lifecycle hooks (metadado) |
 
@@ -230,6 +253,7 @@ Todos os comandos da extensão (palette `Ctrl+Shift+P` prefixo `utPLSQL:`):
 | `utPLSQL: Importar conexões do SQL Developer` | Importa conexões do SQL Developer (connections.xml) | — |
 | `utPLSQL: Depurar teste (PL/SQL)` | Inicia sessão de debug do teste sob o arquivo ativo | — |
 | `utPLSQL: Compilar para debug` | Compila o objeto do arquivo/pasta selecionado com informação de debug | — |
+| `utPLSQL: Reconstruir cache de anotações` | Reconstrói o cache de anotações do utPLSQL no banco e atualiza a árvore | — |
 | `utPLSQL: Executar script` | Executa o script aberto no editor contra um perfil de conexão | Clique direito → arquivo de script |
 | `utPLSQL: Executar arquivo de script` | Executa um arquivo de script do Explorer (decodificado no charset do perfil) | Clique direito → arquivo |
 | `utPLSQL: Executar pasta de scripts` | Executa os scripts da pasta em ordem alfabética | Clique direito → pasta |

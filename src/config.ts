@@ -9,6 +9,16 @@ export interface UtConfig {
   sourcePath: string;
   includePatterns: string[];
   coverageOwner: string;
+  coverageSchemes: string[];
+  coverageIncludeObjects: string[];
+  coverageExcludeObjects: string[];
+  coverageIncludeSchemaExpr: string;
+  coverageIncludeObjectExpr: string;
+  coverageExcludeSchemaExpr: string;
+  coverageExcludeObjectExpr: string;
+  tags: string;
+  randomOrder: boolean;
+  randomOrderSeed: number;
   additionalReporters: string[];
   timeoutMinutes: number;
   dbmsOutput: boolean;
@@ -25,6 +35,7 @@ export interface UtConfig {
   compilationDiagnosticsEnabled: boolean;
   organization: 'file' | 'schema';
   organizationSchemaPattern: string;
+  discoverySource: 'auto' | 'file' | 'database';
   refreshDebounceMs: number;
   setupDiagnosticsEnabled: boolean;
   sqlCoverageEnabled: boolean;
@@ -76,6 +87,16 @@ export function readConfig(): UtConfig {
     sourcePath: c.get<string>('sourcePath', 'install'),
     includePatterns: c.get<string[]>('includePatterns', ['**/*.pks']),
     coverageOwner: c.get<string>('coverageOwner', ''),
+    coverageSchemes: c.get<string[]>('coverage.schemes', []),
+    coverageIncludeObjects: c.get<string[]>('coverage.includeObjects', []),
+    coverageExcludeObjects: c.get<string[]>('coverage.excludeObjects', []),
+    coverageIncludeSchemaExpr: c.get<string>('coverage.includeSchemaExpr', ''),
+    coverageIncludeObjectExpr: c.get<string>('coverage.includeObjectExpr', ''),
+    coverageExcludeSchemaExpr: c.get<string>('coverage.excludeSchemaExpr', ''),
+    coverageExcludeObjectExpr: c.get<string>('coverage.excludeObjectExpr', ''),
+    tags: c.get<string>('tags', ''),
+    randomOrder: c.get<boolean>('run.randomOrder', false),
+    randomOrderSeed: c.get<number>('run.randomOrderSeed', 0),
     additionalReporters: c.get<string[]>('additionalReporters', []),
     timeoutMinutes: c.get<number>('timeoutMinutes', 60),
     dbmsOutput: c.get<boolean>('dbmsOutput', false),
@@ -92,6 +113,7 @@ export function readConfig(): UtConfig {
     compilationDiagnosticsEnabled: c.get<boolean>('compilationDiagnostics.enabled', true),
     organization: c.get<'file' | 'schema'>('organization', 'file'),
     organizationSchemaPattern: c.get<string>('organization.schemaPattern', 'db/{schema}/**'),
+    discoverySource: c.get<'auto' | 'file' | 'database'>('discovery.source', 'auto'),
     refreshDebounceMs: c.get<number>('refreshDebounceMs', 300),
     setupDiagnosticsEnabled: c.get<boolean>('setupDiagnostics.enabled', true),
     sqlCoverageEnabled: c.get<boolean>('sqlCoverageEnabled', false),

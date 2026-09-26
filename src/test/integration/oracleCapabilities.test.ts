@@ -212,4 +212,52 @@ describeDB('capacidades Oracle do banco real', () => {
       await dbc.close().catch(() => {});
     }
   });
+
+  // PRD-74/PRD-77: capacidade da API de metadados por versão da matriz.
+  it('get_suites_info existe quando utPLSQL >= 3.1.3 (skip em versão antiga)', async function () {
+    this.timeout(60_000);
+    const { getSuitesInfo, UTPLSQL_SUITES_INFO_MIN_VERSION } = require('../../discovery.js');
+    const { getOracleInfo } = require('../../oracleRunner.js');
+    const dbc = await openRaw();
+    try {
+      const info = await getOracleInfo(dbc);
+      const v = String(info.utVersion ?? '').replace(/^v/, '');
+      const atLeast = (() => {
+        const a = v.split('.').map((n: string) => Number.parseInt(n, 10) || 0);
+        const b = String(UTPLSQL_SUITES_INFO_MIN_VERSION)
+          .split('.')
+          .map((n: string) => Number.parseInt(n, 10) || 0);
+        for (let i = 0; i < 3; i++) {
+          if ((a[i] ?? 0) !== (b[i] ?? 0)) return (a[i] ?? 0) > (b[i] ?? 0);
+        }
+        return true;
+      })();
+      if (!atLeast) {
+        this.skip();
+        return;
+      }
+      const rows = await getSuitesInfo(dbc, connParts().user.toUpperCase());
+      assert.ok(Array.isArray(rows));
+      // Contrato dos campos normalizados (mesmo com 0 linhas, o shape é o mesmo).
+      for (const r of rows) {
+        assert.match(r.itemType, /^(suite|context|test)$/);
+        assert.strictEqual(typeof r.packageName, 'string');
+        assert.ok(Number.isInteger(r.line));
+        assert.ok(Array.isArray(r.tags));
+      }
+    } finally {
+      await dbc.close().catch(() => {});
+    }
+  });
+
+  it('rebuildAnnotationCache executa contra o banco sem lançar (PRD-77)', async function () {
+    this.timeout(120_000);
+    const { rebuildAnnotationCache } = require('../../oracleRunner.js');
+    const { readConfig } = require('../../config.js');
+    const oracledb =
+      ((await import('oracledb')).default as typeof import('oracledb')) ??
+      ((await import('oracledb')) as typeof import('oracledb'));
+    await rebuildAnnotationCache(oracledb, process.env.UTPLSQL_CONN as string, readConfig());
+    assert.ok(true);
+  });
 });

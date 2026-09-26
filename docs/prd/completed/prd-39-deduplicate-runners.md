@@ -1,3 +1,5 @@
+<!-- GENERATED FROM docs/brain/20-PRDs/prd-39-deduplicate-runners.md — DO NOT EDIT -->
+
 # PRD-39 — Eliminar código duplicado entre runner.ts e oracleRunner.ts
 
 | Campo | Valor |

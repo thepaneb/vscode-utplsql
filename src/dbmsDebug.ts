@@ -52,7 +52,7 @@ export interface VariableInfo {
 }
 
 /** Resultado simplificado de uma parada (mapeado de `runtime_info.reason`). */
-export type StopReason = 'break' | 'exiting' | 'no_break' | 'unknown';
+export type StopReason = 'break' | 'exception' | 'exiting' | 'no_break' | 'unknown';
 
 /** Constantes de bind do driver (injetadas para manter o módulo puro/testável). */
 export interface DebugBindCodes {
@@ -218,14 +218,20 @@ export class DbmsDebugClient {
   /**
    * Continua/step via `CONTINUE` com o breakflag da ação:
    * continue=0, over=break_next_line, into=break_any_call, out=break_any_return.
+   * `breakOnException` soma `DBMS_DEBUG.break_exception` (sem ele o DBMS_DEBUG
+   * não suspende em exceções — ver PRD-86).
    */
-  private async run(action: 'continue' | 'over' | 'into' | 'out'): Promise<StopReason> {
+  private async run(
+    action: 'continue' | 'over' | 'into' | 'out',
+    breakOnException = false,
+  ): Promise<StopReason> {
     const result = await this.conn.execute(
       `DECLARE
          v_run     DBMS_DEBUG.runtime_info;
          v_flags   BINARY_INTEGER;
          v_status  BINARY_INTEGER;
          v_stopped BINARY_INTEGER;
+         v_is_exc  BINARY_INTEGER;
          v_ended   BINARY_INTEGER;
        BEGIN
          v_flags := CASE :action
@@ -233,6 +239,9 @@ export class DbmsDebugClient {
            WHEN 'into' THEN DBMS_DEBUG.break_any_call
            WHEN 'out'  THEN DBMS_DEBUG.break_any_return
            ELSE 0 END;
+         IF :breakOnException = 1 THEN
+           v_flags := v_flags + DBMS_DEBUG.break_exception;
+         END IF;
          v_status := DBMS_DEBUG.CONTINUE(v_run, v_flags, DBMS_DEBUG.info_getLineinfo);
          :status := v_status;
          :line   := v_run.line#;
@@ -241,18 +250,23 @@ export class DbmsDebugClient {
              DBMS_DEBUG.reason_breakpoint, DBMS_DEBUG.reason_line,
              DBMS_DEBUG.reason_enter, DBMS_DEBUG.reason_exception,
              DBMS_DEBUG.reason_handler) THEN 1 ELSE 0 END;
+         v_is_exc := CASE WHEN v_run.reason IN (
+             DBMS_DEBUG.reason_exception, DBMS_DEBUG.reason_handler) THEN 1 ELSE 0 END;
          v_ended := CASE WHEN v_run.terminated = 1 OR v_run.reason IN (
              DBMS_DEBUG.reason_exit, DBMS_DEBUG.reason_knl_exit,
              DBMS_DEBUG.reason_abort) THEN 1 ELSE 0 END;
          :stopped := v_stopped;
+         :isException := v_is_exc;
          :ended   := v_ended;
        END;`,
       {
         action,
+        breakOnException: breakOnException ? 1 : 0,
         status: { dir: this.codes.BIND_OUT, type: this.codes.NUMBER },
         line: { dir: this.codes.BIND_OUT, type: this.codes.NUMBER },
         unit: { dir: this.codes.BIND_OUT, type: this.codes.STRING, maxSize: 200 },
         stopped: { dir: this.codes.BIND_OUT, type: this.codes.NUMBER },
+        isException: { dir: this.codes.BIND_OUT, type: this.codes.NUMBER },
         ended: { dir: this.codes.BIND_OUT, type: this.codes.NUMBER },
       },
     );
@@ -261,7 +275,7 @@ export class DbmsDebugClient {
     const unit = str(out.unit);
     if (line > 0 && unit) this.lastFrame = { name: unit, line };
     if (num(out.ended) === 1) return 'exiting';
-    if (num(out.stopped) === 1) return 'break';
+    if (num(out.stopped) === 1) return num(out.isException) === 1 ? 'exception' : 'break';
     if (num(out.status) !== 0) return 'unknown';
     return 'no_break';
   }
@@ -296,17 +310,17 @@ export class DbmsDebugClient {
     }
   }
 
-  continueRun(): Promise<StopReason> {
-    return this.run('continue');
+  continueRun(breakOnException = false): Promise<StopReason> {
+    return this.run('continue', breakOnException);
   }
-  stepInto(): Promise<StopReason> {
-    return this.run('into');
+  stepInto(breakOnException = false): Promise<StopReason> {
+    return this.run('into', breakOnException);
   }
-  stepOver(): Promise<StopReason> {
-    return this.run('over');
+  stepOver(breakOnException = false): Promise<StopReason> {
+    return this.run('over', breakOnException);
   }
-  stepOut(): Promise<StopReason> {
-    return this.run('out');
+  stepOut(breakOnException = false): Promise<StopReason> {
+    return this.run('out', breakOnException);
   }
 
   /** Frame atual: usa o último runtime_info visto ou consulta GET_RUNTIME_INFO. */

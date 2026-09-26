@@ -2,7 +2,7 @@
   "name": "vscode-utplsql",
   "displayName": "utPLSQL Test Runner",
   "description": "Roda testes utPLSQL pelo Test Explorer do VSCode, com menu de contexto e cobertura visual (estilo pytest).",
-  "version": "0.12.1",
+  "version": "0.13.0",
   "publisher": "paneb",
   "author": "Gil Cleber Barboza",
   "license": "MIT",
@@ -45,7 +45,7 @@
         "utplsql.profiles": {
           "type": "array",
           "default": [],
-          "markdownDescription": "Perfis de conexão Oracle salvos para alternar rapidamente entre ambientes (DEV, TEST, PROD). Cada perfil pode sobrescrever `connection`, `sourcePath`, `coverageOwner`, etc. **A senha fica em texto plano nas settings** — prefira `env`/`UTPLSQL_CONN` para produção.",
+          "markdownDescription": "Perfis de conexão Oracle salvos para alternar rapidamente entre ambientes (DEV, TEST, PROD). Cada perfil pode sobrescrever `connection`, `sourcePath`, `coverageOwner`, etc. A **senha é guardada no SecretStorage** (keychain do VSCode), não em texto plano nas settings.",
           "items": {
             "type": "object",
             "properties": {
@@ -127,6 +127,50 @@
           "default": "",
           "description": "Schema dono dos objetos para o mapeamento de cobertura. Se vazio, usa o usuário da conexão (parte antes de '/'), em maiúsculas."
         },
+        "utplsql.coverage.schemes": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "default": [],
+          "description": "Schemas cobertos (`a_coverage_schemes`). Vazio usa o usuário da conexão (ou `utplsql.coverageOwner`)."
+        },
+        "utplsql.coverage.includeObjects": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "default": [],
+          "description": "Objetos a incluir na cobertura, no formato `OWNER.NAME` (ex.: [\"APP.MINHA_PKG\"]). Útil para objetos alcançados apenas dinamicamente."
+        },
+        "utplsql.coverage.excludeObjects": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "default": [],
+          "description": "Objetos a excluir da cobertura, no formato `OWNER.NAME` (ex.: [\"UT3.UT_COVERAGE\"])."
+        },
+        "utplsql.coverage.includeSchemaExpr": {
+          "type": "string",
+          "default": "",
+          "description": "Expressão regular de schema a incluir na cobertura (ex.: \"^APP$\")."
+        },
+        "utplsql.coverage.includeObjectExpr": {
+          "type": "string",
+          "default": "",
+          "description": "Expressão regular de objeto a incluir na cobertura."
+        },
+        "utplsql.coverage.excludeSchemaExpr": {
+          "type": "string",
+          "default": "",
+          "description": "Expressão regular de schema a excluir da cobertura."
+        },
+        "utplsql.coverage.excludeObjectExpr": {
+          "type": "string",
+          "default": "",
+          "description": "Expressão regular de objeto a excluir da cobertura (ex.: \"^UT_\" para o framework utPLSQL)."
+        },
         "utplsql.timeoutMinutes": {
           "type": "number",
           "default": 60,
@@ -146,6 +190,22 @@
           },
           "default": [],
           "description": "Reporters adicionais para incluir em toda execução (ex.: [\"ut_coverage_html_reporter\"]). Os reporters padrão (documentation, junit e cobertura) são sempre incluídos."
+        },
+        "utplsql.tags": {
+          "type": "string",
+          "default": "",
+          "description": "Expressão de tags do utPLSQL (ex.: \"fast & !integration\") para filtrar quais testes executam. Vazio executa todos."
+        },
+        "utplsql.run.randomOrder": {
+          "type": "boolean",
+          "default": false,
+          "description": "Executa os testes em ordem aleatória, para revelar dependências de ordem entre eles."
+        },
+        "utplsql.run.randomOrderSeed": {
+          "type": "number",
+          "default": 0,
+          "minimum": 0,
+          "description": "Seed da ordem aleatória. 0 = sorteada pelo banco (não reproduzível); maior que 0 reproduz a mesma ordem."
         },
         "utplsql.oraclePoolMin": {
           "type": "number",
@@ -211,6 +271,16 @@
           "type": "string",
           "default": "db/{schema}/**",
           "markdownDescription": "Padrão glob para extrair o nome do schema a partir do caminho do arquivo. Use `{schema}` como placeholder. Ex: `db/{schema}/**` extrai `APP` de `db/APP/tests/ut_foo.pks`. Só usado quando `#utplsql.organization#` é `schema`."
+        },
+        "utplsql.discovery.source": {
+          "type": "string",
+          "enum": [
+            "auto",
+            "file",
+            "database"
+          ],
+          "default": "auto",
+          "markdownDescription": "Fonte da árvore de testes no modo `schema`: `auto` usa a API do banco (`ut_runner.get_suites_info`) e cai para `ALL_SOURCE`/arquivos quando indisponível; `database` exige a API; `file` desliga a descoberta via banco."
         },
         "utplsql.refreshDebounceMs": {
           "type": "number",
@@ -452,6 +522,11 @@
         "category": "utPLSQL"
       },
       {
+        "command": "utplsql.rebuildAnnotations",
+        "title": "%nls.command.rebuildAnnotations%",
+        "category": "utPLSQL"
+      },
+      {
         "command": "utplsql.runScript",
         "title": "%nls.command.runScript%",
         "category": "utPLSQL"
@@ -675,7 +750,12 @@
     "gen-diagram": "node scripts/gen-diagrams.cjs",
     "brain:sync": "node scripts/brain.cjs sync",
     "brain:check": "node scripts/brain.cjs check",
+    "brain:build": "node scripts/brain-build.cjs",
+    "brain:rules": "node scripts/brain-rules.cjs",
+    "brain:rules:lines": "node scripts/brain-rules.cjs --check-lines",
+    "brain:ci": "node scripts/brain.cjs sync && node scripts/brain-build.cjs && node scripts/brain.cjs check && node scripts/brain-rules.cjs",
     "docs:check": "node scripts/docs-check.cjs",
+    "docs:fidelity": "node scripts/docs-fidelity.cjs",
     "sync-prds": "node scripts/sync-prds.cjs",
     "pr:create": "node scripts/create-pr.cjs",
     "publish": "node scripts/publish.cjs",

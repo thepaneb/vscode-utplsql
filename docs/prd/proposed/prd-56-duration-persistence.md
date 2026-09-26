@@ -1,3 +1,5 @@
+<!-- GENERATED FROM docs/brain/20-PRDs/prd-56-duration-persistence.md — DO NOT EDIT -->
+
 # PRD-56 — Duração por teste e persistência de resultados
 
 | Campo | Valor |
@@ -6,7 +8,7 @@
 | Autor | Gil Cleber Barboza |
 | Data | 2026-09-06 |
 | Componente | Extensão `paneb.vscode-utplsql` |
-| Versão alvo | 0.15.0 |
+| Versão alvo | 0.16.0 |
 | Arquivos afetados | `src/state.ts`, `src/results.ts`, `src/runner.ts`, `src/extension.ts` |
 | Esforço estimado | 1 dia |
 | Complexidade | Baixa-Média |
@@ -102,7 +104,7 @@ Preencher `durationMs` em `applyResultsFromCases` (já recebido por parâmetro).
 
 ## 9. Rollout
 
-- Release 0.15.0 (minor).
+- Release 0.16.0 (minor).
 - CHANGELOG: "Persistência do último resultado + duração por teste".
 
 ## 10. Critérios de aceite

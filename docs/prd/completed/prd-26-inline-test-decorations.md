@@ -1,3 +1,5 @@
+<!-- GENERATED FROM docs/brain/20-PRDs/prd-26-inline-test-decorations.md — DO NOT EDIT -->
+
 # PRD-26 — Inline Test Result Decorations
 
 | Campo | Valor |

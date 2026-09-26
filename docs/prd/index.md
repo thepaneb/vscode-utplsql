@@ -1,3 +1,5 @@
+<!-- GENERATED FROM docs/brain/20-PRDs/index.md — DO NOT EDIT -->
+
 # PRDs — vscode-utplsql
 
 Catálogo de Product Requirements Documents da extensão.
@@ -6,64 +8,59 @@ Catálogo de Product Requirements Documents da extensão.
 
 ## Como usar
 
-1. Para **propor** uma mudança: copie `template.md` para `proposed/<nome>.md`
-   e preencha.
-2. Quando aprovado: mova para `approved/<nome>.md`.
-3. Durante implementação: mova para `in-progress/<nome>.md`.
-4. Quando entregue: mova para `completed/<nome>.md` e registre a versão.
+1. Para **propor** uma mudança: crie uma nota `prd-<NN>-<slug>` em `20-PRDs/`
+   (a partir de `_templates/template-prd`) e preencha o frontmatter.
+2. Quando aprovado: mude `status: proposed` → `status: approved`.
+3. Durante implementação: `status: in-progress`.
+4. Quando entregue: `status: completed` e registre `versao:`.
+
+> A **fonte da verdade** do status é o campo `status:` no frontmatter da nota
+> (pasta `20-PRDs/`). Os arquivos `docs/prd/**` e este índice são **gerados**
+> por `npm run brain:build`. **Não edite os arquivos gerados.**
 
 ## Manutenção e sincronia
 
-Quatro artefatos devem estar sempre consistentes entre si:
-
 ```
-Status da PRD  ←→  Pasta do arquivo  ←→  Tabela no index.md  ←→  Label no GitHub
-(Proposto)         proposed/              ⚪ Propostos             prd:proposed
-(Aprovado)         approved/              🔵 Aprovados             prd:approved
-(Em desenvolvimento) in-progress/          🟡 Em desenvolvimento    prd:in-progress
-(Concluído)        completed/             🟢 Concluídos            prd:completed
+Frontmatter (20-PRDs/)  ──brain:build──►  docs/prd/** (gerado) + index.md (gerado)
+        │
+        └──sync-prds.cjs──►  label + issue no GitHub
 ```
 
 ### Regras
 
-1. **Status ↔ Pasta**: o status no cabeçalho da PRD (`Status: Proposto`) deve
-   corresponder **exatamente** à pasta onde o arquivo está. Ex.: se o arquivo
-   está em `proposed/`, o status é `Proposto`.
-2. **Pasta ↔ Índice**: a seção **Estrutura** em `index.md` deve listar
-   **exatamente** os arquivos presentes em cada pasta — nem mais, nem menos.
-3. **Índice ↔ Status**: cada PRD aparece na tabela da seção correspondente ao
-   seu status. Uma PRD só aparece **uma única vez** no roadmap.
-4. **Label ↔ Status**: o script `sync-prds.cjs` lê a pasta para determinar a
-   label GitHub (`prd:proposed`, `prd:approved`, `prd:completed`). Por isso a
-   pasta é a **fonte da verdade** para o status.
+1. **Status**: `status:` aceita `proposed`, `approved`, `in-progress`,
+   `completed`.
+2. **Pastas geradas**: a pasta do arquivo gerado (`docs/prd/<status>/`) deriva do
+   `status:` do frontmatter.
+3. **Índice gerado**: as tabelas do **Roadmap** e a árvore **Estrutura** são
+   geradas do frontmatter das notas (`npm run brain:sync`).
+4. **Label ↔ Status**: `sync-prds.cjs` lê o `status:` do frontmatter para
+   determinar a label GitHub (`prd:proposed`, `prd:approved`, `prd:completed`,
+   `prd:in-progress`).
 
 ### Fluxo de mudança de status
 
 ```
-CRIAR (Proposto)
-  → criar arquivo em proposed/
-  → adicionar na tabela ⚪ Propostos + na árvore Estrutura
-  → rodar sync-prds (cria issue)
+CRIAR (proposed)
+  → nova nota em 20-PRDs/ com status: proposed
+  → npm run brain:sync && npm run brain:build
+  → npm run sync-prds (cria a issue)
 
 APROVAR
-  → mover arquivo de proposed/ → approved/
-  → mover linha na tabela de ⚪ Propostos → 🔵 Aprovados
-  → atualizar a árvore Estrutura
-  → rodar sync-prds (atualiza label para prd:approved)
+  → status: proposed → approved no frontmatter
+  → npm run brain:build
+  → npm run sync-prds (label prd:approved)
 
 IMPLEMENTAR
-  → mover arquivo de approved/ → in-progress/
-  → mover linha na tabela de 🔵 Aprovados → 🟡 Em desenvolvimento
-  → atualizar a árvore Estrutura
-  → rodar sync-prds (atualiza label para prd:in-progress)
+  → status: approved → in-progress
+  → npm run brain:build
+  → npm run sync-prds (label prd:in-progress)
 
 CONCLUIR
-  → mover arquivo de in-progress/ → completed/
-  → mover linha na tabela de 🟡 Em desenvolvimento → 🟢 Concluídos
-  → preencher a coluna Versão com o número da release
-  → atualizar a árvore Estrutura
+  → status: in-progress → completed + versao: <release>
+  → npm run brain:build
   → registrar no CHANGELOG.md
-  → rodar sync-prds (fecha a issue, atualiza label para prd:completed)
+  → npm run sync-prds (fecha a issue, label prd:completed)
 ```
 
 > ⚠️ **Nunca** edite o cache `.prd-issues.json` manualmente. O `sync-prds.cjs`
@@ -73,118 +70,118 @@ CONCLUIR
 
 ## Roadmap
 
+As tabelas são geradas por `npm run brain:build` a partir do frontmatter das
+notas `prd-*`. O índice navegável do vault é a [[MOC - PRDs]].
+
+<!-- prd:roadmap:start -->
 ### 🟢 Concluídos
 
 | # | PRD | Versão | Data |
 |---|---|---|---|
-| 01 | [Modo de invocação `java` (bypass do launcher)](completed/prd-01-java-mode.md) | 0.3.0 | 2026-06-28 |
-| 02 | [Refatoração de `extension.ts`](completed/prd-02-refactor-extension.md) | 0.4.0 | 2026-07-02 |
-| 03 | [Pipeline CI + Linter](completed/prd-03-ci-lint.md) | 0.4.0 | 2026-07-02 |
-| 04 | [Expansão da cobertura de testes](completed/prd-04-expand-tests.md) | 0.4.0 | 2026-07-02 |
-| 05 | [Feedback de progresso e cancelamento na UX](completed/prd-05-progress-cancel.md) | 0.5.0 | 2026-07-07 |
-| 06 | [Suporte a múltiplos workspace folders](completed/prd-06-multiroot.md) | 0.5.0 | 2026-07-08 |
-| 07 | [Upgrade Node 24 + TypeScript 6.0](completed/prd-07-upgrade-node-ts.md) | 0.4.0 | 2026-07-02 |
-| 08 | [Opções CLI avançadas expostas como settings](completed/prd-08-cli-options.md) | 0.5.0 | 2026-07-08 |
-| 09 | [Diagnóstico e validação com `utplsql info`](completed/prd-09-cli-info.md) | 0.5.0 | 2026-07-08 |
+| 1 | [Modo de invocação `java` (bypass do launcher)](completed/prd-01-java-mode.md) | 0.3.0 | 2026-06-28 |
+| 2 | [Refatoração de `extension.ts`](completed/prd-02-refactor-extension.md) | 0.4.0 | 2026-07-02 |
+| 3 | [Pipeline CI + Linter](completed/prd-03-ci-lint.md) | 0.4.0 | 2026-07-02 |
+| 4 | [Expansão da cobertura de testes](completed/prd-04-expand-tests.md) | 0.4.0 | 2026-07-02 |
+| 5 | [Feedback de progresso e cancelamento na UX](completed/prd-05-progress-cancel.md) | 0.5.0 | 2026-07-02 |
+| 6 | [Suporte a múltiplos workspace folders](completed/prd-06-multiroot.md) | 0.5.0 | 2026-07-02 |
+| 7 | [Upgrade Node 24 + TypeScript 6.0](completed/prd-07-upgrade-node-ts.md) | 0.4.0 | 2026-07-02 |
+| 8 | [Opções CLI avançadas expostas como settings](completed/prd-08-cli-options.md) | 0.5.0 | 2026-07-03 |
+| 9 | [Diagnóstico e validação com `utplsql info`](completed/prd-09-cli-info.md) | 0.5.0 | 2026-07-03 |
 | 10 | [Reporters dinâmicos com `utplsql reporters`](completed/prd-10-dynamic-reporters.md) | 0.7.0 | 2026-07-03 |
-| 11 | [Streaming de resultados em tempo real](completed/prd-11-streaming-results.md) | 0.9.0 | 2026-08-02 |
+| 11 | [Streaming de resultados em tempo real](completed/prd-11-streaming-results.md) | 0.9.0 | 2026-07-03 |
+| 12 | [Cobertura de código para objetos SQL (views, queries)](completed/prd-12-sql-coverage.md) | 0.12.0 | 2026-07-08 |
 | 13 | [Infraestrutura de testes com Oracle real](completed/prd-13-oracle-infra.md) | 0.6.0 | 2026-07-11 |
 | 14 | [Schema e objetos de teste utPLSQL](completed/prd-14-test-schema-packages.md) | 0.6.0 | 2026-07-11 |
 | 15 | [Testes de integração com banco real](completed/prd-15-integration-tests-real-db.md) | 0.6.0 | 2026-07-11 |
 | 16 | [Testes de integração para ambos os modos de invocação](completed/prd-16-integration-test-invocation-modes.md) | 0.6.0 | 2026-07-13 |
-| 17 | [Flags JVM customizáveis para o modo `java`](completed/prd-17-java-args-setting.md) | 0.9.0 | 2026-08-02 |
+| 17 | [Flags JVM customizáveis para o modo `java`](completed/prd-17-java-args-setting.md) | 0.9.0 | 2026-07-13 |
 | 18 | [Alinhamento `engines.node` com CI](completed/prd-18-engine-node-ci.md) | 0.7.1 | 2026-07-18 |
 | 19 | [Normalização do sistema de PRDs](completed/prd-19-normalize-prd-system.md) | 0.7.1 | 2026-07-18 |
 | 20 | [Limpeza de dependências e configurações](completed/prd-20-cleanup-deps-config.md) | 0.7.1 | 2026-07-18 |
 | 21 | [Melhorias nos workflows CI/CD](completed/prd-21-workflow-improvements.md) | 0.11.0 | 2026-07-18 |
 | 22 | [Sincronizar imagens no workflow da wiki](completed/prd-22-wiki-image-sync.md) | 0.7.1 | 2026-07-21 |
-| 23 | [Screenshots da wiki: checklist manual + diagramas](completed/prd-23-auto-wiki-screenshots.md) | 0.10.0 | 2026-07-21 |
-| 24 | [CodeLens Integration](completed/prd-24-codelens-integration.md) | 0.8.0 | 2026-07-25 |
-| 25 | [Status Bar Indicator](completed/prd-25-status-bar-indicator.md) | 0.8.0 | 2026-07-25 |
-| 26 | [Inline Test Result Decorations](completed/prd-26-inline-test-decorations.md) | 0.8.0 | 2026-07-25 |
-| 27 | [Default Keybindings](completed/prd-27-default-keybindings.md) | 0.8.0 | 2026-07-25 |
-| 28 | [PL/SQL Compilation Diagnostics](completed/prd-28-plsql-compilation-diagnostics.md) | 0.9.0 | 2026-08-02 |
-| 29 | [Jump to Failing Assertion](completed/prd-29-jump-to-failing-assertion.md) | 0.9.0 | 2026-08-02 |
-| 30 | [Schema-Aware Test Organization](completed/prd-30-schema-aware-organization.md) | 0.9.0 | 2026-08-02 |
-| 31 | [Smart Re-run Patterns](completed/prd-31-smart-rerun-patterns.md) | 0.8.0 | 2026-07-25 |
-| 32 | [Quick-Fix Setup Diagnostics](completed/prd-32-quickfix-setup-diagnostics.md) | 0.9.0 | 2026-08-02 |
-| 35 | [Correção de cobertura no Windows + blindagem de testes](completed/prd-35-windows-coverage-fix.md) | 0.7.2 | 2026-07-21 |
-| 36 | [Correção do parse de reporters com descrições](completed/prd-36-reporter-parse-fix.md) | 0.7.2 | 2026-07-21 |
-| 37 | [Cobertura de código TypeScript com `c8`](completed/prd-37-ts-coverage.md) | 0.9.0 | 2026-08-02 |
+| 23 | [Screenshots da wiki: checklist manual + diagramas (reconciliada)](completed/prd-23-auto-wiki-screenshots.md) | 0.10.0 | 2026-07-21 (reconciliada 2026-08-15) |
+| 24 | [CodeLens Integration](completed/prd-24-codelens-integration.md) | 0.8.0 | 2026-07-21 |
+| 25 | [Status Bar Indicator](completed/prd-25-status-bar-indicator.md) | 0.8.0 | 2026-07-21 |
+| 26 | [Inline Test Result Decorations](completed/prd-26-inline-test-decorations.md) | 0.8.0 | 2026-07-21 |
+| 27 | [Default Keybindings](completed/prd-27-default-keybindings.md) | 0.8.0 | 2026-07-21 |
+| 28 | [PL/SQL Compilation Diagnostics](completed/prd-28-plsql-compilation-diagnostics.md) | 0.9.0 | 2026-07-21 |
+| 29 | [Jump to Failing Assertion](completed/prd-29-jump-to-failing-assertion.md) | 0.9.0 | 2026-07-21 |
+| 30 | [Schema-Aware Test Organization](completed/prd-30-schema-aware-organization.md) | 0.9.0 | 2026-07-21 |
+| 31 | [Smart Re-run Patterns](completed/prd-31-smart-rerun-patterns.md) | 0.8.0 | 2026-07-21 |
+| 32 | [Quick-Fix Setup Diagnostics](completed/prd-32-quickfix-setup-diagnostics.md) | 0.9.0 | 2026-07-21 |
+| 33 | [PL/SQL Debugger Integration](completed/prd-33-plsql-debugger-integration.md) | 0.12.0 | 2026-07-21 |
+| 34 | [Multi-Connection Profiles](completed/prd-34-multi-connection-profiles.md) | 0.12.0 | 2026-07-21 |
+| 35 | [Correção de cobertura no Windows + blindagem de testes para argumentos CLI](completed/prd-35-windows-coverage-fix.md) | 0.7.2 | 2026-07-21 |
+| 36 | [Correção do parse de `reporters` com descrições + flag `coverageEnabled`](completed/prd-36-reporter-parse-fix.md) | 0.7.2 | 2026-07-21 |
+| 37 | [Cobertura de código TypeScript com `c8`](completed/prd-37-ts-coverage.md) | 0.9.0 | 2026-07-25 |
 | 38 | [Connection Pooling no Oracle Runner](completed/prd-38-connection-pooling.md) | 0.10.0 | 2026-08-08 |
-| 39 | [Eliminar código duplicado entre runners](completed/prd-39-deduplicate-runners.md) | 0.10.0 | 2026-08-08 |
-| 40 | [Refatorar executeRunOracle: Options Object](completed/prd-40-options-object.md) | 0.10.0 | 2026-08-08 |
-| 41 | [Verificação de instalação do utPLSQL](completed/prd-41-utplsql-install-verification.md) | 0.11.0 | 2026-08-08 |
-| 42 | [SuiteParser: parse de annotations estendidas](completed/prd-42-suiteparser-annotations.md) | 0.10.0 | 2026-08-08 |
-| 43 | [Schema-mode: descoberta via ALL_OBJECTS/ALL_SOURCE](completed/prd-43-schema-db-discovery.md) | 0.11.0 | 2026-08-29 |
-| 44 | [Matching resultado→teste como função pura](completed/prd-44-pure-matching.md) | 0.11.0 | 2026-08-08 |
+| 39 | [Eliminar código duplicado entre runner.ts e oracleRunner.ts](completed/prd-39-deduplicate-runners.md) | 0.10.0 | 2026-08-08 |
+| 40 | [Refatorar executeRunOracle: Long Parameter List → Options Object](completed/prd-40-options-object.md) | 0.10.0 | 2026-08-08 |
+| 41 | [Verificação de instalação do utPLSQL na ativação](completed/prd-41-utplsql-install-verification.md) | 0.11.0 | 2026-08-08 |
+| 42 | [SuiteParser: parse de annotations %disabled, %throws, %tags e lifecycle](completed/prd-42-suiteparser-annotations.md) | 0.10.0 | 2026-08-08 |
+| 43 | [Schema-mode: descoberta de suites via ALL_OBJECTS e ALL_SOURCE](completed/prd-43-schema-db-discovery.md) | 0.11.0 | 2026-08-08 |
+| 44 | [Extrair matching resultado→teste para funções puras testáveis](completed/prd-44-pure-matching.md) | 0.11.0 | 2026-08-08 |
 | 45 | [Bundling com esbuild + poda do node-oracledb no VSIX](completed/prd-45-bundle-esbuild.md) | 0.11.0 | 2026-08-26 |
-| 46 | [Atualização de dependências major](completed/prd-46-dependency-majors.md) | 0.11.0 | 2026-08-29 |
-| 34 | [Multi-Connection Profiles](completed/prd-34-multi-connection-profiles.md) | 0.12.0 | 2026-09-04 |
-| 48 | [Function Coverage derivada (DeclarationCoverage)](completed/prd-48-function-coverage.md) | 0.12.0 | 2026-09-04 |
-| 12 | [Cobertura de código para objetos SQL (views, queries)](completed/prd-12-sql-coverage.md) | 0.12.0 | 2026-09-04 |
-| 33 | [PL/SQL Debugger Integration](completed/prd-33-plsql-debugger-integration.md) | 0.12.0 | 2026-09-04 |
-| 49 | [Internacionalização (i18n) dos conteúdos textuais](completed/prd-49-internacionalizacao.md) | 0.12.0 | 2026-09-04 |
+| 46 | [Atualização de dependências major (oracledb 7, fast-xml-parser 5, iconv-lite 0.7, TypeScript 7)](completed/prd-46-dependency-majors.md) | 0.11.0 | 2026-08-29 |
+| 48 | [Function Coverage derivada (DeclarationCoverage no Test Coverage)](completed/prd-48-function-coverage.md) | 0.12.0 | 2026-08-29 |
+| 49 | [Internacionalização (i18n) dos conteúdos textuais da extensão](completed/prd-49-internacionalizacao.md) | 0.12.0 | 2026-08-29 |
+| 62 | [Execução de scripts SQL contra perfil de conexão](completed/prd-62-run-scripts-against-profiles.md) | 0.12.0 | 2026-09-06 |
+| 63 | [Wiki bilíngue (pt-BR/en) + correção de links + limpeza de READMEs](completed/prd-63-diagram-i18n.md) | — | — |
 | 64 | [Migração para Oracle-Only: eliminação do utPLSQL-cli e Java](completed/prd-64-oracle-only-migration.md) | 0.12.0 | 2026-09-09 |
-| 63 | [Wiki bilíngue (pt-BR/en) + correção de links + limpeza de READMEs](completed/prd-63-diagram-i18n.md) | 0.12.0 | 2026-09-09 |
-| 62 | [Execução de scripts SQL contra perfil de conexão](completed/prd-62-run-scripts-against-profiles.md) | 0.12.0 | 2026-09-12 |
 | 65 | [Correções críticas de schema-mode e segurança](completed/prd-65-schema-mode-security-fixes.md) | 0.12.0 | 2026-09-15 |
 | 66 | [Robustez de conexão, logging e cache](completed/prd-66-connection-robustness-logging.md) | 0.12.0 | 2026-09-15 |
-| 68 | [Religar diagnostics e reporter de sessão perdidos na migração Oracle-only](completed/prd-68-restore-oracle-diagnostics-and-reporter.md) | 0.12.0 | 2026-09-15 |
 | 67 | [Qualidade, limpeza e performance](completed/prd-67-code-quality-cleanup.md) | 0.12.0 | 2026-09-15 |
+| 68 | [Religar diagnostics e reporter de sessão perdidos na migração Oracle-only](completed/prd-68-restore-oracle-diagnostics-and-reporter.md) | 0.12.0 | 2026-09-15 |
+| 69 | [Runner Oracle: binds tipados, `a_tags` e validação de reporters](completed/prd-69-oracle-runner-typed-binds.md) | 0.13.0 | 2026-09-15 |
 | 70 | [Thick mode opcional (Instant Client) para bancos com NNE](completed/prd-70-thick-mode-nne.md) | 0.12.1 | 2026-09-17 |
-| 72 | [Matriz de bancos Oracle para testes de integração](completed/prd-72-db-test-matrix.md) | 0.12.1 | 2026-09-18 |
 | 71 | [Corrigir o debugger para o DBMS_DEBUG real](completed/prd-71-debugger-dbms-debug-fix.md) | 0.12.1 | 2026-09-18 |
-| 73 | [Compilar objeto para debug (comando + menus)](completed/prd-73-compile-for-debug.md) | 0.12.1 | 2026-09-19 |
-
-### 🟡 Em desenvolvimento
-
-_(vazio — nenhuma PRD em desenvolvimento)_
+| 72 | [Matriz de bancos Oracle para testes de integração](completed/prd-72-db-test-matrix.md) | 0.12.1 | 2026-09-18 |
+| 73 | [Compilar objeto para debug (comando + menus)](completed/prd-73-compile-for-debug.md) | 0.12.1 | 2026-09-18 |
+| 74 | [Descoberta de suítes direto do banco (`ut_runner.get_suites_info`)](completed/prd-74-db-first-discovery.md) | 0.13.0 | 2026-09-19 |
+| 77 | [Reconstruir o cache de anotações do utPLSQL](completed/prd-77-rebuild-annotation-cache.md) | 0.13.0 | 2026-09-19 |
+| 78 | [Ordem aleatória de execução com seed (`a_random_test_order`)](completed/prd-78-random-test-order.md) | 0.13.0 | 2026-09-19 |
+| 79 | [Escopo avançado de cobertura (regex include/exclude + `excludeObjects`)](completed/prd-79-coverage-scope.md) | 0.13.0 | 2026-09-19 |
+| 83 | [Higiene do pacote VSIX: bloquear vazamento de arquivos de desenvolvimento](completed/prd-83-vsix-package-hygiene.md) | 0.13.0 | 2026-09-22 |
+| 84 | [Suporte a Oracle 12.2 com piso alternativo de utPLSQL e charset de conexão](completed/prd-84-oracle-122-support.md) | 0.13.0 | 2026-09-22 |
+| 85 | [Second brain canônico (Obsidian) com MCP e extração de conhecimento](completed/prd-85-brain-source-of-truth.md) | 0.13.0 | 2026-09-23 |
+| 86 | [Debugger honra stopOnException (break_exception)](completed/prd-86-debugger-stop-on-exception.md) | 0.13.0 | 2026-09-24 |
+| 87 | [Resultados e jump-to-failure em suítes com %suitepath](completed/prd-87-suitepath-results-jump.md) | 0.13.0 | 2026-09-25 |
 
 ### 🔵 Aprovados
 
-_(vazio — nenhuma PRD aprovada)_
+| # | PRD | Versão | Data |
+|---|---|---|---|
+| 47 | [Node 26 no toolchain de desenvolvimento](approved/prd-47-node-26-toolchain.md) | 0.14.0 | 2026-08-29 |
 
 ### ⚪ Propostos
 
-#### 0.13.0
-
-| # | PRD | Versão alvo | Data |
+| # | PRD | Versão | Data |
 |---|---|---|---|
-| 47 | [Node 26 no toolchain de desenvolvimento](proposed/prd-47-node-26-toolchain.md) | 0.13.0 | 2026-08-29 |
-| 69 | [Runner Oracle: binds tipados, `a_tags` e validação de reporters](proposed/prd-69-oracle-runner-typed-binds.md) | 0.13.0 | 2026-09-15 |
-
-#### 0.14.0
-
-| # | PRD | Versão alvo | Data |
-|---|---|---|---|
-| 50 | [Auto-run on Save (Watch Mode)](proposed/prd-50-auto-run-on-save.md) | 0.14.0 | 2026-09-06 |
-| 51 | [Execução e seleção por Tag (`%tags`)](proposed/prd-51-run-by-tag.md) | 0.14.0 | 2026-09-06 |
-| 52 | [Diff inline esperado × obtido nas falhas](proposed/prd-52-inline-diff-expected-actual.md) | 0.14.0 | 2026-09-06 |
-| 53 | [Debug de testes: variações (cursor, falhos, último)](proposed/prd-53-debug-test-variants.md) | 0.14.0 | 2026-09-06 |
-| 54 | [Toggle de cobertura na status bar](proposed/prd-54-coverage-toggle.md) | 0.14.0 | 2026-09-06 |
-
-#### 0.15.0
-
-| # | PRD | Versão alvo | Data |
-|---|---|---|---|
+| 50 | [Auto-run on Save (Watch Mode)](proposed/prd-50-auto-run-on-save.md) | 0.15.0 | 2026-09-06 |
+| 51 | [Execução e seleção por Tag (`%tags`)](proposed/prd-51-run-by-tag.md) | 0.15.0 | 2026-09-06 |
+| 52 | [Diff inline esperado × obtido nas falhas](proposed/prd-52-inline-diff-expected-actual.md) | 0.15.0 | 2026-09-06 |
+| 53 | [Debug de testes: variações (cursor, falhos, último)](proposed/prd-53-debug-test-variants.md) | 0.15.0 | 2026-09-06 |
+| 54 | [Toggle de cobertura na status bar](proposed/prd-54-coverage-toggle.md) | 0.15.0 | 2026-09-06 |
 | 55 | [Organização da árvore de testes por tag](proposed/prd-55-tag-organization.md) | 0.15.0 | 2026-09-06 |
-| 56 | [Duração por teste e persistência de resultados](proposed/prd-56-duration-persistence.md) | 0.15.0 | 2026-09-06 |
-| 57 | [Multi-root: resolução de `root`/`sourcePath` por folder](proposed/prd-57-multiroot-root-resolution.md) | 0.15.0 | 2026-09-06 |
-
-#### 0.16.0
-
-| # | PRD | Versão alvo | Data |
-|---|---|---|---|
+| 56 | [Duração por teste e persistência de resultados](proposed/prd-56-duration-persistence.md) | 0.16.0 | 2026-09-06 |
+| 57 | [Multi-root: resolução de `root`/`sourcePath` por folder](proposed/prd-57-multiroot-root-resolution.md) | 0.16.0 | 2026-09-06 |
 | 58 | [Run Related Tests](proposed/prd-58-run-related-tests.md) | 0.16.0 | 2026-09-06 |
 | 59 | [Scaffold de suíte de teste](proposed/prd-59-scaffold-suite.md) | 0.16.0 | 2026-09-06 |
-| 60 | [Cobertura de branch (investigação de viabilidade)](proposed/prd-60-branch-coverage-investigation.md) | — | 2026-09-06 |
-| 61 | [Auto-provisionamento do utPLSQL-cli](proposed/prd-61-cli-auto-provision.md) | 0.16.0 | 2026-09-06 |
+| 60 | [Cobertura de branch (investigação de viabilidade)](proposed/prd-60-branch-coverage-investigation.md) | Investigação — sem versão alvo | 2026-09-06 |
+| 61 | [Auto-provisionamento do utPLSQL-cli](proposed/prd-61-cli-auto-provision.md) | Suspenso — a reavaliar (PRD-64 removeu o CLI) | 2026-09-06 |
+| 75 | [Árvore de testes lazy (resolução incremental por nível)](proposed/prd-75-lazy-test-tree.md) | 0.14.0 | 2026-09-19 |
+| 76 | [Execução e export com reporter arbitrário](proposed/prd-76-reporter-export.md) | 0.14.0 | 2026-09-19 |
+| 80 | [Documento virtual de fonte do banco para falhas e cobertura](proposed/prd-80-virtual-db-source.md) | 0.14.0 | 2026-09-19 |
+| 81 | [Hardening de segurança das settings de conexão](proposed/prd-81-security-hardening.md) | 0.14.0 | 2026-09-19 |
+| 82 | [Resolução TNS no thin e senha de wallet no SecretStorage](proposed/prd-82-tns-wallet.md) | 0.14.0 | 2026-09-19 |
+<!-- prd:roadmap:end -->
 
 ---
 
 ## Estrutura
 
+<!-- prd:estrutura:start -->
 ```
 docs/prd/
 ├── index.md          ← este arquivo (catálogo + roadmap)
@@ -201,6 +198,7 @@ docs/prd/
 │   ├── prd-09-cli-info.md
 │   ├── prd-10-dynamic-reporters.md
 │   ├── prd-11-streaming-results.md
+│   ├── prd-12-sql-coverage.md
 │   ├── prd-13-oracle-infra.md
 │   ├── prd-14-test-schema-packages.md
 │   ├── prd-15-integration-tests-real-db.md
@@ -221,6 +219,8 @@ docs/prd/
 │   ├── prd-30-schema-aware-organization.md
 │   ├── prd-31-smart-rerun-patterns.md
 │   ├── prd-32-quickfix-setup-diagnostics.md
+│   ├── prd-33-plsql-debugger-integration.md
+│   ├── prd-34-multi-connection-profiles.md
 │   ├── prd-35-windows-coverage-fix.md
 │   ├── prd-36-reporter-parse-fix.md
 │   ├── prd-37-ts-coverage.md
@@ -233,49 +233,58 @@ docs/prd/
 │   ├── prd-44-pure-matching.md
 │   ├── prd-45-bundle-esbuild.md
 │   ├── prd-46-dependency-majors.md
-│   ├── prd-12-sql-coverage.md
-│   ├── prd-33-plsql-debugger-integration.md
-│   ├── prd-34-multi-connection-profiles.md
 │   ├── prd-48-function-coverage.md
 │   ├── prd-49-internacionalizacao.md
-│   ├── prd-64-oracle-only-migration.md
-│   ├── prd-63-diagram-i18n.md
 │   ├── prd-62-run-scripts-against-profiles.md
+│   ├── prd-63-diagram-i18n.md
+│   ├── prd-64-oracle-only-migration.md
 │   ├── prd-65-schema-mode-security-fixes.md
 │   ├── prd-66-connection-robustness-logging.md
 │   ├── prd-67-code-quality-cleanup.md
 │   ├── prd-68-restore-oracle-diagnostics-and-reporter.md
+│   ├── prd-69-oracle-runner-typed-binds.md
 │   ├── prd-70-thick-mode-nne.md
 │   ├── prd-71-debugger-dbms-debug-fix.md
 │   ├── prd-72-db-test-matrix.md
-│   └── prd-73-compile-for-debug.md
-├── approved/         ← aprovados, aguardando implementação
-│   └── (vazio)
-├── in-progress/      ← sendo implementados agora
-│   └── (vazio)
-└── proposed/         ← em avaliação
-    ├── prd-47-node-26-toolchain.md
-    ├── prd-50-auto-run-on-save.md
-    ├── prd-51-run-by-tag.md
-    ├── prd-52-inline-diff-expected-actual.md
-    ├── prd-53-debug-test-variants.md
-    ├── prd-54-coverage-toggle.md
-    ├── prd-55-tag-organization.md
-    ├── prd-56-duration-persistence.md
-    ├── prd-57-multiroot-root-resolution.md
-    ├── prd-58-run-related-tests.md
-    ├── prd-59-scaffold-suite.md
-    ├── prd-60-branch-coverage-investigation.md
-    ├── prd-61-cli-auto-provision.md
-    └── prd-69-oracle-runner-typed-binds.md
+│   ├── prd-73-compile-for-debug.md
+│   ├── prd-74-db-first-discovery.md
+│   ├── prd-77-rebuild-annotation-cache.md
+│   ├── prd-78-random-test-order.md
+│   ├── prd-79-coverage-scope.md
+│   ├── prd-83-vsix-package-hygiene.md
+│   ├── prd-84-oracle-122-support.md
+│   ├── prd-85-brain-source-of-truth.md
+│   ├── prd-86-debugger-stop-on-exception.md
+│   ├── prd-87-suitepath-results-jump.md
+├── approved/        ← aprovados, aguardando implementação
+│   ├── prd-47-node-26-toolchain.md
+├── proposed/        ← em avaliação
+│   ├── prd-50-auto-run-on-save.md
+│   ├── prd-51-run-by-tag.md
+│   ├── prd-52-inline-diff-expected-actual.md
+│   ├── prd-53-debug-test-variants.md
+│   ├── prd-54-coverage-toggle.md
+│   ├── prd-55-tag-organization.md
+│   ├── prd-56-duration-persistence.md
+│   ├── prd-57-multiroot-root-resolution.md
+│   ├── prd-58-run-related-tests.md
+│   ├── prd-59-scaffold-suite.md
+│   ├── prd-60-branch-coverage-investigation.md
+│   ├── prd-61-cli-auto-provision.md
+│   ├── prd-75-lazy-test-tree.md
+│   ├── prd-76-reporter-export.md
+│   ├── prd-80-virtual-db-source.md
+│   ├── prd-81-security-hardening.md
+│   ├── prd-82-tns-wallet.md
 ```
+<!-- prd:estrutura:end -->
 
 ---
 
 ## Convenções
 
-- **Nome do arquivo**: `prd-<NN>-<slug>.md` (NN = sequencial de 2 dígitos, slug em kebab-case).
-- **Status no cabeçalho**: deve refletir a pasta onde o arquivo está.
+- **Nome da nota**: `prd-<NN>-<slug>` (NN = sequencial de 2 dígitos, slug em kebab-case).
+- **Status**: `status:` no frontmatter é a fonte da verdade.
 - **Versão alvo**: a `minor` seguinte se for feature, `patch` se for bugfix.
 - **Rollout**: toda PRD concluída vira um entry no `CHANGELOG.md`. A publicação é
   **exclusivamente pelo workflow do GitHub** (criar release) — `npm run publish`

@@ -1,3 +1,5 @@
+<!-- GENERATED FROM docs/brain/20-PRDs/prd-40-options-object.md — DO NOT EDIT -->
+
 # PRD-40 — Refatorar executeRunOracle: Long Parameter List → Options Object
 
 | Campo | Valor |

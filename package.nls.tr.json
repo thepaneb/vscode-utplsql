@@ -25,5 +25,6 @@
   "nls.command.runScript": "utPLSQL: Run script",
   "nls.command.runScriptFile": "utPLSQL: Run script file",
   "nls.command.runScriptFolder": "utPLSQL: Run script folder",
-  "nls.command.compileForDebug": "utPLSQL: Hata ayıklama için derle"
+  "nls.command.compileForDebug": "utPLSQL: Hata ayıklama için derle",
+  "nls.command.rebuildAnnotations": "utPLSQL: Açıklama önbelleğini yeniden oluştur"
 }

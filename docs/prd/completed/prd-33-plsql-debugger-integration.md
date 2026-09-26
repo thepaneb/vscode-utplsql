@@ -1,3 +1,5 @@
+<!-- GENERATED FROM docs/brain/20-PRDs/prd-33-plsql-debugger-integration.md — DO NOT EDIT -->
+
 # PRD-33 — PL/SQL Debugger Integration
 
 | Campo | Valor |

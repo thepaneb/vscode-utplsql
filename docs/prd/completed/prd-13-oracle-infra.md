@@ -1,3 +1,5 @@
+<!-- GENERATED FROM docs/brain/20-PRDs/prd-13-oracle-infra.md — DO NOT EDIT -->
+
 # PRD-13 — Infraestrutura de testes com Oracle real
 
 | Campo | Valor |

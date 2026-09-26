@@ -1,3 +1,5 @@
+<!-- GENERATED FROM docs/brain/20-PRDs/prd-70-thick-mode-nne.md — DO NOT EDIT -->
+
 # PRD-70 — Thick mode opcional (Instant Client) para bancos com NNE
 
 | Campo | Valor |

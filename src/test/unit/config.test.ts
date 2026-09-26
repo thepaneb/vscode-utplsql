@@ -29,6 +29,63 @@ test('readConfig: debuggerCompileOnDebug default e false', () => {
   assert.strictEqual(cfg.debuggerCompileOnDebug, false);
 });
 
+test('readConfig: tags default e vazio', () => {
+  const cfg = readConfig();
+  assert.strictEqual(cfg.tags, '');
+});
+
+test('readConfig: randomOrder defaults', () => {
+  const cfg = readConfig();
+  assert.strictEqual(cfg.randomOrder, false);
+  assert.strictEqual(cfg.randomOrderSeed, 0);
+});
+
+test('readConfig: coverage scope defaults', () => {
+  const cfg = readConfig();
+  assert.deepStrictEqual(cfg.coverageSchemes, []);
+  assert.deepStrictEqual(cfg.coverageIncludeObjects, []);
+  assert.deepStrictEqual(cfg.coverageExcludeObjects, []);
+  assert.strictEqual(cfg.coverageIncludeSchemaExpr, '');
+  assert.strictEqual(cfg.coverageIncludeObjectExpr, '');
+  assert.strictEqual(cfg.coverageExcludeSchemaExpr, '');
+  assert.strictEqual(cfg.coverageExcludeObjectExpr, '');
+});
+
+test('readConfig: discovery.source default e auto', () => {
+  const cfg = readConfig();
+  assert.strictEqual(cfg.discoverySource, 'auto');
+});
+
+test('readConfig: lê valores não-default das settings 0.13.0', () => {
+  __setConfigValue('tags', 'fast');
+  __setConfigValue('run.randomOrder', true);
+  __setConfigValue('run.randomOrderSeed', 42);
+  __setConfigValue('discovery.source', 'database');
+  __setConfigValue('coverage.schemes', ['APP']);
+  __setConfigValue('coverage.includeObjects', ['APP.PKG']);
+  __setConfigValue('coverage.excludeObjects', ['UT3.UT']);
+  __setConfigValue('coverage.includeSchemaExpr', '^APP$');
+  __setConfigValue('coverage.includeObjectExpr', '^PKG');
+  __setConfigValue('coverage.excludeSchemaExpr', '^UT');
+  __setConfigValue('coverage.excludeObjectExpr', '^UT_');
+  try {
+    const cfg = readConfig();
+    assert.strictEqual(cfg.tags, 'fast');
+    assert.strictEqual(cfg.randomOrder, true);
+    assert.strictEqual(cfg.randomOrderSeed, 42);
+    assert.strictEqual(cfg.discoverySource, 'database');
+    assert.deepStrictEqual(cfg.coverageSchemes, ['APP']);
+    assert.deepStrictEqual(cfg.coverageIncludeObjects, ['APP.PKG']);
+    assert.deepStrictEqual(cfg.coverageExcludeObjects, ['UT3.UT']);
+    assert.strictEqual(cfg.coverageIncludeSchemaExpr, '^APP$');
+    assert.strictEqual(cfg.coverageIncludeObjectExpr, '^PKG');
+    assert.strictEqual(cfg.coverageExcludeSchemaExpr, '^UT');
+    assert.strictEqual(cfg.coverageExcludeObjectExpr, '^UT_');
+  } finally {
+    __resetConfigValues();
+  }
+});
+
 test('readConfig: scriptRunner defaults', () => {
   const cfg = readConfig();
   assert.strictEqual(cfg.scriptRunnerStopOnError, true);
