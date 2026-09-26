@@ -19,7 +19,7 @@ Implementa [`src/oracleClient.ts`](../../../src/oracleClient.ts) — **gerado** 
 ## Onde aparece
 
 ```dataview
-LIST id, tipo FROM "" WHERE contains(implementacao, this.arquivo) OR contains(testes, this.arquivo)
+LIST id, tipo WHERE contains(implementacao, this.arquivo) OR contains(testes, this.arquivo)
 ```
 
 ## Conexões

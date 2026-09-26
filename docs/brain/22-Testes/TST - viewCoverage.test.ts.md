@@ -19,7 +19,7 @@ Valida [`src/test/unit/viewCoverage.test.ts`](../../../src/test/unit/viewCoverag
 ## Onde aparece
 
 ```dataview
-LIST id, tipo FROM "" WHERE contains(implementacao, this.arquivo) OR contains(testes, this.arquivo)
+LIST id, tipo WHERE contains(implementacao, this.arquivo) OR contains(testes, this.arquivo)
 ```
 
 ## Conexões

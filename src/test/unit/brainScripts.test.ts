@@ -990,6 +990,24 @@ test('brain: buildCodeNoteSpecs gera notas COD/TST com id e arquivo', () => {
   assert.match(tst?.content ?? '', /## Código exercitado[\s\S]*- \[\[COD - oracleRunner\.ts\]\]/);
 });
 
+test('brain: a query Dataview das notas geradas é válida (sem FROM vazio)', () => {
+  // `FROM ""` é sintaxe inválida no Dataview (erro de parsing); sem FROM o
+  // Dataview usa todas as páginas. Regressão já ocorreu uma vez.
+  const specs = buildCodeNoteSpecs({
+    impl: ['src/oracleRunner.ts'],
+    tests: ['src/test/unit/oracleRunner.test.ts'],
+  });
+  for (const s of specs) {
+    const queries = [...s.content.matchAll(/```dataview\n([\s\S]*?)```/g)].map((m) => m[1].trim());
+    assert.ok(queries.length > 0, `${s.file} sem bloco dataview`);
+    for (const q of queries) {
+      assert.doesNotMatch(q, /FROM\s*""/, `${s.file}: query com FROM vazio`);
+      assert.match(q, /^(LIST|TABLE)\b/, `${s.file}: query deve começar com LIST/TABLE`);
+      assert.match(q, /\bWHERE\b/, `${s.file}: query deve ter WHERE`);
+    }
+  }
+});
+
 test('brain: buildCodeNoteSpecs sem par marca _nenhum_', () => {
   const specs = buildCodeNoteSpecs({
     impl: ['src/solto.ts'],

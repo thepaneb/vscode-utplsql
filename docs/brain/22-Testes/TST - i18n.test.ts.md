@@ -19,7 +19,7 @@ Valida [`src/test/unit/i18n.test.ts`](../../../src/test/unit/i18n.test.ts) — *
 ## Onde aparece
 
 ```dataview
-LIST id, tipo FROM "" WHERE contains(implementacao, this.arquivo) OR contains(testes, this.arquivo)
+LIST id, tipo WHERE contains(implementacao, this.arquivo) OR contains(testes, this.arquivo)
 ```
 
 ## Conexões
