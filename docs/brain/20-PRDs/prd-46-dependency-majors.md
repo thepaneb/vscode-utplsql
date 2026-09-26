@@ -221,4 +221,5 @@ se aplicável.
 <!-- brain:auto:start:conexoes -->
 - 🗺️ [[MOC - PRDs]]
 - 🔗 PRDs relacionados: [[prd-45-bundle-esbuild|PRD-45]] · [[prd-47-node-26-toolchain|PRD-47]]
+- 🚀 ⬅️ release anterior: [[prd-42-suiteparser-annotations|PRD-42 (0.10.0)]] · ➡️ próxima release: [[prd-12-sql-coverage|PRD-12 (0.12.0)]]
 <!-- brain:auto:end -->

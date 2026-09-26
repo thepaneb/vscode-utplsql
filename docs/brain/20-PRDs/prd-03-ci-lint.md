@@ -210,4 +210,5 @@ Nenhuma setting de extensão — é puramente ferramenta de desenvolvimento.
 <!-- brain:auto:start:conexoes -->
 - 🗺️ [[MOC - PRDs]]
 - ⚙️ Pipelines: [[PIPE-ci - CI|PIPE-ci]] · [[PIPE-publish - Publish Extension|PIPE-publish]]
+- 🚀 ⬅️ release anterior: [[prd-01-java-mode|PRD-01 (0.3.0)]] · ➡️ próxima release: [[prd-05-progress-cancel|PRD-05 (0.5.0)]]
 <!-- brain:auto:end -->

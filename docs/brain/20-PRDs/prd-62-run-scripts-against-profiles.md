@@ -366,5 +366,6 @@ Menus de contexto no editor e Explorer.
 <!-- brain:auto:start:conexoes -->
 - 🗺️ [[MOC - PRDs]]
 - 🎯 RF1 — Campos novos no perfil → [[BR-CONN-010 - Guia de perfis quando não há perfis salvos|BR-CONN-010]]
+- 🚀 ⬅️ release anterior: [[prd-46-dependency-majors|PRD-46 (0.11.0)]] · ➡️ próxima release: [[prd-70-thick-mode-nne|PRD-70 (0.12.1)]]
 - 📐 Regras: [[BR-CONN-010 - Guia de perfis quando não há perfis salvos|BR-CONN-010]]
 <!-- brain:auto:end -->

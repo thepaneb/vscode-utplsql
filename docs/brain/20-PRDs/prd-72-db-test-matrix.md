@@ -228,4 +228,5 @@ Nenhuma setting da extensão. Variáveis do orquestrador documentadas em
 
 <!-- brain:auto:start:conexoes -->
 - 🗺️ [[MOC - PRDs]]
+- 🚀 ⬅️ release anterior: [[prd-68-restore-oracle-diagnostics-and-reporter|PRD-68 (0.12.0)]] · ➡️ próxima release: [[prd-69-oracle-runner-typed-binds|PRD-69 (0.13.0)]]
 <!-- brain:auto:end -->

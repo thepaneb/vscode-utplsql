@@ -189,4 +189,5 @@ bind `STRING` para as regex. Nenhum valor do usuário concatenado no PL/SQL.
 <!-- brain:auto:start:conexoes -->
 - 🗺️ [[MOC - PRDs]]
 - 🔗 PRDs relacionados: [[prd-60-branch-coverage-investigation|PRD-60]] · [[prd-69-oracle-runner-typed-binds|PRD-69]] · [[prd-74-db-first-discovery|PRD-74]]
+- 🚀 ⬅️ release anterior: [[prd-73-compile-for-debug|PRD-73 (0.12.1)]] · ➡️ próxima release: [[prd-47-node-26-toolchain|PRD-47 (0.14.0)]]
 <!-- brain:auto:end -->

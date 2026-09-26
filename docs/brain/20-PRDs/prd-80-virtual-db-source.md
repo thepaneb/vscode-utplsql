@@ -174,4 +174,5 @@ Manter os nomes de pacote/schema em maiúsculas; expor o objeto no provider e um
 - 🗺️ [[MOC - PRDs]]
 - 🔗 PRDs relacionados: [[prd-43-schema-db-discovery|PRD-43]] · [[prd-74-db-first-discovery|PRD-74]]
 - 🔗 Mesma versão (0.14.0): [[prd-47-node-26-toolchain|PRD-47]] · [[prd-75-lazy-test-tree|PRD-75]] · [[prd-76-reporter-export|PRD-76]] · [[prd-81-security-hardening|PRD-81]] · [[prd-82-tns-wallet|PRD-82]]
+- 🚀 ⬅️ release anterior: [[prd-86-debugger-stop-on-exception|PRD-86 (0.13.0)]] · ➡️ próxima release: [[prd-50-auto-run-on-save|PRD-50 (0.15.0)]]
 <!-- brain:auto:end -->

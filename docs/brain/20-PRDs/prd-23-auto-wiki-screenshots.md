@@ -152,4 +152,5 @@ dependências de sistema.
 <!-- brain:auto:start:conexoes -->
 - 🗺️ [[MOC - PRDs]]
 - 🔗 PRDs relacionados: [[prd-22-wiki-image-sync|PRD-22]] · [[prd-42-suiteparser-annotations|PRD-42]]
+- 🚀 ⬅️ release anterior: [[prd-37-ts-coverage|PRD-37 (0.9.0)]] · ➡️ próxima release: [[prd-21-workflow-improvements|PRD-21 (0.11.0)]]
 <!-- brain:auto:end -->

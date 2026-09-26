@@ -201,6 +201,28 @@ function checkRelacionado(fm, catalog) {
 }
 
 /**
+ * Valida as menções `PRD-NN` no CORPO de cada PRD: toda menção precisa apontar
+ * para uma PRD existente (o `genConexoes` transforma em link). Ignora menção ao
+ * próprio PRD e o que está dentro de code fence.
+ */
+function checkMencoesPrd(notes, prdIds) {
+  const problems = [];
+  for (const note of notes) {
+    const fm = parseFrontmatter(note.content);
+    if (fm?.tipo !== 'prd' || !fm.id) continue;
+    const body = note.content.replace(/^---[\s\S]*?\n---/, '').replace(/```[\s\S]*?```/g, '');
+    const vistas = new Set();
+    for (const m of body.matchAll(/\bPRD-(\d+)\b/g)) {
+      const id = `PRD-${m[1]}`;
+      if (id === fm.id || vistas.has(id)) continue;
+      vistas.add(id);
+      if (!prdIds.has(id)) problems.push(`${note.name}: menção a PRD inexistente: ${id}`);
+    }
+  }
+  return problems;
+}
+
+/**
  * Valida referências de TODAS as notas do vault: `implementacao`/`testes`
  * (arquivos existem), `regras` (apontam para BR-* existentes) e as arestas de
  * grafo (`relacionado*`/`decisoes`) contra o catálogo de notas/ids/ADRs.
@@ -325,6 +347,7 @@ function checkRules(overrides = {}) {
     problems.push(...checkLayers(notes));
     problems.push(...checkReferences(notes, exists, brIds, checkLines, relCatalog));
     problems.push(...checkRequisitos(notes));
+    problems.push(...checkMencoesPrd(notes, new Set(relCatalog.noteIds)));
   }
 
   return problems;
@@ -334,6 +357,7 @@ module.exports = {
   checkRules,
   checkReferences,
   checkRelacionado,
+  checkMencoesPrd,
   checkLayers,
   checkRequisitos,
   parseFrontmatter,

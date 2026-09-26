@@ -214,4 +214,5 @@ a aparecer quando há mismatch — ganho diagnóstico, não regressão.
 <!-- brain:auto:start:conexoes -->
 - 🗺️ [[MOC - PRDs]]
 - 🔗 PRDs relacionados: [[prd-40-options-object|PRD-40]]
+- 🚀 ⬅️ release anterior: [[prd-37-ts-coverage|PRD-37 (0.9.0)]] · ➡️ próxima release: [[prd-21-workflow-improvements|PRD-21 (0.11.0)]]
 <!-- brain:auto:end -->

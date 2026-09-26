@@ -124,4 +124,5 @@ Nenhuma nova setting.
 - 🗺️ [[MOC - PRDs]]
 - ⚙️ Pipelines: [[PIPE-ci - CI|PIPE-ci]]
 - 🎯 RNF1 — CI deve continuar passando para todas as versões na matrix após a muda → [[NFR-002 - Compatibilidade com Node|NFR-002]]
+- 🚀 ⬅️ release anterior: [[prd-10-dynamic-reporters|PRD-10 (0.7.0)]] · ➡️ próxima release: [[prd-35-windows-coverage-fix|PRD-35 (0.7.2)]]
 <!-- brain:auto:end -->

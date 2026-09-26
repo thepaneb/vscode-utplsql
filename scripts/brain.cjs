@@ -711,6 +711,39 @@ function genConexoes(notePath) {
         .join(' · ');
       lines.push(`- 🎯 ${rid} — ${title.slice(0, 70)} → ${links}`);
     }
+    // Versão anterior/seguinte: factual, derivado do SemVer do próprio PRD.
+    // Não é "sucessão de PRD" — é a vizinhança de release, que é o que o dado
+    // `versao` realmente afirma.
+    const semver = (v) =>
+      String(v ?? '')
+        .split('.')
+        .map((n) => parseInt(n, 10) || 0);
+    const cmp = (a, b) => {
+      const pa = semver(a);
+      const pb = semver(b);
+      for (let i = 0; i < 3; i++) if ((pa[i] || 0) !== (pb[i] || 0)) return (pa[i] || 0) - (pb[i] || 0);
+      return 0;
+    };
+    if (fm.versao && /^\d/.test(String(fm.versao))) {
+      const outras = prdNotes().filter(
+        (p) => p.id !== fm.id && p.versao && /^\d/.test(String(p.versao)),
+      );
+      const antes = outras.filter((p) => cmp(p.versao, fm.versao) < 0);
+      const depois = outras.filter((p) => cmp(p.versao, fm.versao) > 0);
+      const pick = (lista, melhores) => {
+        if (!lista.length) return null;
+        const ext = lista
+          .map((p) => ({ p, v: semver(p.versao) }))
+          .sort((a, b) => cmp(a.p.versao, b.p.versao));
+        return melhores === 'max' ? ext[ext.length - 1].p : ext[0].p;
+      };
+      const ant = pick(antes, 'max');
+      const seg = pick(depois, 'min');
+      const elos = [];
+      if (ant) elos.push(`⬅️ release anterior: ${wl(ant.file.replace(/\.md$/, ''), `${ant.id} (${ant.versao})`)}`);
+      if (seg) elos.push(`➡️ próxima release: ${wl(seg.file.replace(/\.md$/, ''), `${seg.id} (${seg.versao})`)}`);
+      if (elos.length) lines.push(`- 🚀 ${elos.join(' · ')}`);
+    }
   }
   // Relação reversa explícita: notas que referenciam esta (por id ou basename).
   const reverseKeys = new Set();

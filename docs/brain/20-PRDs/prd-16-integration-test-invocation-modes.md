@@ -313,4 +313,5 @@ ajustar os caminhos, dispensando o uso de env vars.
 <!-- brain:auto:start:conexoes -->
 - 🗺️ [[MOC - PRDs]]
 - 🔗 PRDs relacionados: [[prd-01-java-mode|PRD-01]]
+- 🚀 ⬅️ release anterior: [[prd-09-cli-info|PRD-09 (0.5.0)]] · ➡️ próxima release: [[prd-10-dynamic-reporters|PRD-10 (0.7.0)]]
 <!-- brain:auto:end -->

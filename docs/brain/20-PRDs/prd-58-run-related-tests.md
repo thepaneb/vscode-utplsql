@@ -123,4 +123,5 @@ Novo comando + função pura `relatedSuiteMetas`. Reusa `collectAllItems`,
 - 🗺️ [[MOC - PRDs]]
 - 🔗 PRDs relacionados: [[prd-54-coverage-toggle|PRD-54]]
 - 🔗 Mesma versão (0.16.0): [[prd-56-duration-persistence|PRD-56]] · [[prd-57-multiroot-root-resolution|PRD-57]] · [[prd-59-scaffold-suite|PRD-59]]
+- 🚀 ⬅️ release anterior: [[prd-55-tag-organization|PRD-55 (0.15.0)]]
 <!-- brain:auto:end -->

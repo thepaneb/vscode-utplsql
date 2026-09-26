@@ -245,5 +245,6 @@ momento da execução.
 <!-- brain:auto:start:conexoes -->
 - 🗺️ [[MOC - PRDs]]
 - 🎯 RF3 — Aquisição do pool → [[BR-EXEC-002 - Conexões do runner têm callTimeout zerado|BR-EXEC-002]] · [[BR-EXEC-003 - Falha na segunda conexão libera a primeira (sem vazamento)|BR-EXEC-003]]
+- 🚀 ⬅️ release anterior: [[prd-37-ts-coverage|PRD-37 (0.9.0)]] · ➡️ próxima release: [[prd-21-workflow-improvements|PRD-21 (0.11.0)]]
 - 📐 Regras: [[BR-EXEC-002 - Conexões do runner têm callTimeout zerado|BR-EXEC-002]] · [[BR-EXEC-003 - Falha na segunda conexão libera a primeira (sem vazamento)|BR-EXEC-003]]
 <!-- brain:auto:end -->

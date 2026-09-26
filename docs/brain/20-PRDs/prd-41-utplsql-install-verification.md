@@ -183,4 +183,5 @@ Usa a setting existente `utplsql.setupDiagnosticsEnabled` (default `true`).
 <!-- brain:auto:start:conexoes -->
 - 🗺️ [[MOC - PRDs]]
 - 🔗 PRDs relacionados: [[prd-38-connection-pooling|PRD-38]]
+- 🚀 ⬅️ release anterior: [[prd-42-suiteparser-annotations|PRD-42 (0.10.0)]] · ➡️ próxima release: [[prd-12-sql-coverage|PRD-12 (0.12.0)]]
 <!-- brain:auto:end -->

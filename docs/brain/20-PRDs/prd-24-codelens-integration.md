@@ -312,5 +312,6 @@ context.subscriptions.push(
 - 🎯 RF1 — CodeLens provider registrado → [[BR-UI-006 - CodeLens registrado apenas em scheme file e padrão .pks sem language id|BR-UI-006]]
 - 🎯 RF2 — CodeLens para `%suite` → [[BR-PARSE-015 - CodeLens gera dois lenses por annotation, na linha da annotation|BR-PARSE-015]]
 - 🎯 RF3 — CodeLens para `%test` → [[BR-PARSE-015 - CodeLens gera dois lenses por annotation, na linha da annotation|BR-PARSE-015]]
+- 🚀 ⬅️ release anterior: [[prd-36-reporter-parse-fix|PRD-36 (0.7.2)]] · ➡️ próxima release: [[prd-11-streaming-results|PRD-11 (0.9.0)]]
 - 📐 Regras: [[BR-PARSE-002 - RE_PACKAGE aceita schema qualificado, BODY e identificador entre aspas|BR-PARSE-002]] · [[BR-PARSE-015 - CodeLens gera dois lenses por annotation, na linha da annotation|BR-PARSE-015]] · [[BR-UI-006 - CodeLens registrado apenas em scheme file e padrão .pks sem language id|BR-UI-006]]
 <!-- brain:auto:end -->

@@ -136,4 +136,5 @@ Preencher `durationMs` em `applyResultsFromCases` (já recebido por parâmetro).
 <!-- brain:auto:start:conexoes -->
 - 🗺️ [[MOC - PRDs]]
 - 🔗 Mesma versão (0.16.0): [[prd-57-multiroot-root-resolution|PRD-57]] · [[prd-58-run-related-tests|PRD-58]] · [[prd-59-scaffold-suite|PRD-59]]
+- 🚀 ⬅️ release anterior: [[prd-55-tag-organization|PRD-55 (0.15.0)]]
 <!-- brain:auto:end -->

@@ -193,4 +193,5 @@ Nenhuma.
 <!-- brain:auto:start:conexoes -->
 - 🗺️ [[MOC - PRDs]]
 - 🔗 PRDs relacionados: [[prd-35-windows-coverage-fix|PRD-35]]
+- 🚀 ⬅️ release anterior: [[prd-22-wiki-image-sync|PRD-22 (0.7.1)]] · ➡️ próxima release: [[prd-24-codelens-integration|PRD-24 (0.8.0)]]
 <!-- brain:auto:end -->

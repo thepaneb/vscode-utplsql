@@ -240,4 +240,5 @@ Sem keybinding novo por padrão (evitar conflito); pode ser adicionado depois.
 <!-- brain:auto:start:conexoes -->
 - 🗺️ [[MOC - PRDs]]
 - 🔗 PRDs relacionados: [[prd-33-plsql-debugger-integration|PRD-33]] · [[prd-68-restore-oracle-diagnostics-and-reporter|PRD-68]] · [[prd-71-debugger-dbms-debug-fix|PRD-71]]
+- 🚀 ⬅️ release anterior: [[prd-68-restore-oracle-diagnostics-and-reporter|PRD-68 (0.12.0)]] · ➡️ próxima release: [[prd-69-oracle-runner-typed-binds|PRD-69 (0.13.0)]]
 <!-- brain:auto:end -->

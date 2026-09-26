@@ -242,5 +242,6 @@ comportamento atual, logando uma vez.
 - 🎯 RF3 — Política de fusão (DB-first) → [[BR-PARSE-010 - Fusão arquivo+banco - arquivo prevalece em uri-linha, banco em descrição-tags|BR-PARSE-010]]
 - 🎯 RF4 — Gate de versão → [[BR-PARSE-008 - DB-first com gate de versão 3.1.3 e modos de fonte auto-database-file|BR-PARSE-008]]
 - 🎯 RF5 — Setting de fonte → [[BR-PARSE-008 - DB-first com gate de versão 3.1.3 e modos de fonte auto-database-file|BR-PARSE-008]]
+- 🚀 ⬅️ release anterior: [[prd-73-compile-for-debug|PRD-73 (0.12.1)]] · ➡️ próxima release: [[prd-47-node-26-toolchain|PRD-47 (0.14.0)]]
 - 📐 Regras: [[BR-PARSE-008 - DB-first com gate de versão 3.1.3 e modos de fonte auto-database-file|BR-PARSE-008]] · [[BR-PARSE-009 - Linhas de get_suites_info - 1-based para 0-based e filtros|BR-PARSE-009]] · [[BR-PARSE-010 - Fusão arquivo+banco - arquivo prevalece em uri-linha, banco em descrição-tags|BR-PARSE-010]]
 <!-- brain:auto:end -->

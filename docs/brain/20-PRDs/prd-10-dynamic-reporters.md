@@ -240,4 +240,5 @@ Novo comando: `utPLSQL: Selecionar reporter adicional...`
 
 <!-- brain:auto:start:conexoes -->
 - 🗺️ [[MOC - PRDs]]
+- 🚀 ⬅️ release anterior: [[prd-16-integration-test-invocation-modes|PRD-16 (0.6.0)]] · ➡️ próxima release: [[prd-18-engine-node-ci|PRD-18 (0.7.1)]]
 <!-- brain:auto:end -->

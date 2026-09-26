@@ -240,4 +240,5 @@ Nenhuma. Sem novas settings, comandos ou menus.
 
 <!-- brain:auto:start:conexoes -->
 - 🗺️ [[MOC - PRDs]]
+- 🚀 ⬅️ release anterior: [[prd-22-wiki-image-sync|PRD-22 (0.7.1)]] · ➡️ próxima release: [[prd-24-codelens-integration|PRD-24 (0.8.0)]]
 <!-- brain:auto:end -->

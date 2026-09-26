@@ -257,5 +257,6 @@ await executeRun(
 - 🎯 RF1 — Status bar item visível ao carregar a extensão → [[BR-UI-005 - Status bar - gating por setting, throttle de 200ms e ícone por falha-erro|BR-UI-005]]
 - 🎯 RF2 — Atualização durante execução → [[BR-UI-005 - Status bar - gating por setting, throttle de 200ms e ícone por falha-erro|BR-UI-005]]
 - 🎯 RF4 — Setting `utplsql.statusBar.enabled` → [[BR-UI-005 - Status bar - gating por setting, throttle de 200ms e ícone por falha-erro|BR-UI-005]]
+- 🚀 ⬅️ release anterior: [[prd-36-reporter-parse-fix|PRD-36 (0.7.2)]] · ➡️ próxima release: [[prd-11-streaming-results|PRD-11 (0.9.0)]]
 - 📐 Regras: [[BR-UI-005 - Status bar - gating por setting, throttle de 200ms e ícone por falha-erro|BR-UI-005]]
 <!-- brain:auto:end -->

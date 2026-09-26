@@ -179,4 +179,5 @@ Registrar `utplsql.runByTag` e a setting `utplsql.showTagsInTree`.
 - 🗺️ [[MOC - PRDs]]
 - 🔗 PRDs relacionados: [[prd-42-suiteparser-annotations|PRD-42]] · [[prd-54-coverage-toggle|PRD-54]] · [[prd-55-tag-organization|PRD-55]]
 - 🔗 Mesma versão (0.15.0): [[prd-50-auto-run-on-save|PRD-50]] · [[prd-52-inline-diff-expected-actual|PRD-52]] · [[prd-53-debug-test-variants|PRD-53]] · [[prd-54-coverage-toggle|PRD-54]] · [[prd-55-tag-organization|PRD-55]]
+- 🚀 ⬅️ release anterior: [[prd-82-tns-wallet|PRD-82 (0.14.0)]] · ➡️ próxima release: [[prd-56-duration-persistence|PRD-56 (0.16.0)]]
 <!-- brain:auto:end -->

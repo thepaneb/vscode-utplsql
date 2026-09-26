@@ -182,4 +182,5 @@ elemento do array de args no `buildInvocation` para o modo `java`.
 <!-- brain:auto:start:conexoes -->
 - 🗺️ [[MOC - PRDs]]
 - 🔗 PRDs relacionados: [[prd-01-java-mode|PRD-01]] · [[prd-16-integration-test-invocation-modes|PRD-16]]
+- 🚀 ⬅️ release anterior: [[prd-31-smart-rerun-patterns|PRD-31 (0.8.0)]] · ➡️ próxima release: [[prd-23-auto-wiki-screenshots|PRD-23 (0.10.0)]]
 <!-- brain:auto:end -->

@@ -148,4 +148,5 @@ para permitir reprodução manual.
 <!-- brain:auto:start:conexoes -->
 - 🗺️ [[MOC - PRDs]]
 - 🔗 PRDs relacionados: [[prd-51-run-by-tag|PRD-51]] · [[prd-69-oracle-runner-typed-binds|PRD-69]]
+- 🚀 ⬅️ release anterior: [[prd-73-compile-for-debug|PRD-73 (0.12.1)]] · ➡️ próxima release: [[prd-47-node-26-toolchain|PRD-47 (0.14.0)]]
 <!-- brain:auto:end -->

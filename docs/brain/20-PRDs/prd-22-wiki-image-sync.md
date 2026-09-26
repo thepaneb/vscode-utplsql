@@ -138,4 +138,5 @@ Nenhuma.
 - 🗺️ [[MOC - PRDs]]
 - 🔗 PRDs relacionados: [[prd-23-auto-wiki-screenshots|PRD-23]]
 - ⚙️ Pipelines: [[PIPE-wiki - Publish Wiki|PIPE-wiki]]
+- 🚀 ⬅️ release anterior: [[prd-10-dynamic-reporters|PRD-10 (0.7.0)]] · ➡️ próxima release: [[prd-35-windows-coverage-fix|PRD-35 (0.7.2)]]
 <!-- brain:auto:end -->

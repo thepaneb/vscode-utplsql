@@ -219,4 +219,5 @@ Nenhuma setting nova. Sem `NLS_LANG`.
 - 🔗 PRDs relacionados: [[prd-62-run-scripts-against-profiles|PRD-62]] · [[prd-70-thick-mode-nne|PRD-70]] · [[prd-72-db-test-matrix|PRD-72]] · [[prd-74-db-first-discovery|PRD-74]]
 - 🎯 RF1 — Piso alternativo de utPLSQL na matriz → [[NFR-001 - Compatibilidade com Oracle e piso do utPLSQL|NFR-001]]
 - 🎯 RF3 — Charset (limitação documentada, sem correção no cliente) → [[NFR-001 - Compatibilidade com Oracle e piso do utPLSQL|NFR-001]]
+- 🚀 ⬅️ release anterior: [[prd-73-compile-for-debug|PRD-73 (0.12.1)]] · ➡️ próxima release: [[prd-47-node-26-toolchain|PRD-47 (0.14.0)]]
 <!-- brain:auto:end -->

@@ -7,22 +7,30 @@ import * as path from 'node:path';
 import { test } from 'node:test';
 
 // Testa o script scripts/brain-rules.cjs (validador das regras do vault).
-const { checkRules, checkLayers, checkRequisitos, checkReferences, parseFrontmatter, LAYERS } =
-  require('../../../scripts/brain-rules.cjs') as {
-    checkRules: (o?: Record<string, unknown>) => string[];
-    checkLayers: (notes: { name: string; content: string }[]) => string[];
-    checkRequisitos: (notes: { name: string; content: string }[]) => string[];
-    checkReferences: (
-      notes: { name: string; content: string }[],
-      exists: (ref: string) => boolean,
-      brIds?: Set<string>,
-      checkLines?: boolean,
-      relCatalog?: { noteBases: Set<string>; noteIds: Set<string>; adrIds: Set<string> },
-    ) => string[];
-    parseFrontmatter: (t: string) => Record<string, unknown> | null;
-    listRuleFiles: () => { name: string; content: string }[];
-    LAYERS: Record<string, { id: RegExp; required: string[] }>;
-  };
+const {
+  checkRules,
+  checkLayers,
+  checkRequisitos,
+  checkReferences,
+  checkMencoesPrd,
+  parseFrontmatter,
+  LAYERS,
+} = require('../../../scripts/brain-rules.cjs') as {
+  checkRules: (o?: Record<string, unknown>) => string[];
+  checkLayers: (notes: { name: string; content: string }[]) => string[];
+  checkRequisitos: (notes: { name: string; content: string }[]) => string[];
+  checkMencoesPrd: (notes: { name: string; content: string }[], prdIds: Set<string>) => string[];
+  checkReferences: (
+    notes: { name: string; content: string }[],
+    exists: (ref: string) => boolean,
+    brIds?: Set<string>,
+    checkLines?: boolean,
+    relCatalog?: { noteBases: Set<string>; noteIds: Set<string>; adrIds: Set<string> },
+  ) => string[];
+  parseFrontmatter: (t: string) => Record<string, unknown> | null;
+  listRuleFiles: () => { name: string; content: string }[];
+  LAYERS: Record<string, { id: RegExp; required: string[] }>;
+};
 
 const rule = () =>
   [
@@ -372,6 +380,33 @@ test('brain-rules: origem inexistente é reportada', () => {
   const content = note(['tipo: wiki', 'origem: ["NAO-EXISTE"]']);
   const problems = checkReferences([content], () => true, undefined, false, relCatalog([{}, {}]));
   assert.ok(problems.some((p) => p.includes('origem inexistente: NAO-EXISTE')));
+});
+
+test('brain-rules: menção PRD-NN no corpo aponta para PRD existente', () => {
+  const prd = {
+    name: '20-PRDs/prd-74-x.md',
+    content: '---\ntipo: prd\nid: PRD-74\n---\n\nVer PRD-75 para detalhes.\n',
+  };
+  const outro = { name: '20-PRDs/prd-75-y.md', content: '---\ntipo: prd\nid: PRD-75\n---\n' };
+  assert.deepStrictEqual(checkMencoesPrd([prd, outro], new Set(['PRD-74', 'PRD-75'])), []);
+});
+
+test('brain-rules: menção PRD-NN inexistente é reportada', () => {
+  const prd = {
+    name: '20-PRDs/prd-74-x.md',
+    content: '---\ntipo: prd\nid: PRD-74\n---\n\nVer PRD-999.\n',
+  };
+  const problems = checkMencoesPrd([prd], new Set(['PRD-74']));
+  assert.ok(problems.some((p) => p.includes('PRD-999') && p.includes('inexistente')));
+});
+
+test('brain-rules: menção ao próprio PRD e PRDs no code fence são ignoradas', () => {
+  const prd = {
+    name: '20-PRDs/prd-74-x.md',
+    content:
+      '---\ntipo: prd\nid: PRD-74\n---\n\nPRD-74 falando de si.\n\n```\nPRD-999 em fence\n```\n',
+  };
+  assert.deepStrictEqual(checkMencoesPrd([prd], new Set(['PRD-74'])), []);
 });
 
 test('brain-rules: checkRules global valida relacionado do vault', () => {

@@ -203,4 +203,5 @@ export function activate(context: vscode.ExtensionContext) {
 <!-- brain:auto:start:conexoes -->
 - 🗺️ [[MOC - PRDs]]
 - ⚙️ Pipelines: [[PIPE-publish - Publish Extension|PIPE-publish]]
+- 🚀 ⬅️ release anterior: [[prd-01-java-mode|PRD-01 (0.3.0)]] · ➡️ próxima release: [[prd-05-progress-cancel|PRD-05 (0.5.0)]]
 <!-- brain:auto:end -->

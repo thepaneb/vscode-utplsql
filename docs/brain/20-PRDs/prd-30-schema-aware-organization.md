@@ -290,5 +290,6 @@ $(database) APP: $(testing-passed) 12/15
 - 🎯 RF1 — Extração do schema a partir do caminho do arquivo → [[BR-SCHEMA-002 - extractSchemaFromPath - path.posix.relative e placeholder {schema}|BR-SCHEMA-002]]
 - 🎯 RF3 — Estrutura da árvore em modo `schema` → [[BR-SCHEMA-001 - organization bifurca file tree vs schema tree; suiteMap é o lookup canônico|BR-SCHEMA-001]]
 - 🎯 RF4 — Construção da árvore → [[BR-SCHEMA-001 - organization bifurca file tree vs schema tree; suiteMap é o lookup canônico|BR-SCHEMA-001]] · [[BR-SCHEMA-003 - collectAllItems usa cachedItems e, se vazio, percorre até 3 níveis|BR-SCHEMA-003]]
+- 🚀 ⬅️ release anterior: [[prd-31-smart-rerun-patterns|PRD-31 (0.8.0)]] · ➡️ próxima release: [[prd-23-auto-wiki-screenshots|PRD-23 (0.10.0)]]
 - 📐 Regras: [[BR-SCHEMA-001 - organization bifurca file tree vs schema tree; suiteMap é o lookup canônico|BR-SCHEMA-001]] · [[BR-SCHEMA-002 - extractSchemaFromPath - path.posix.relative e placeholder {schema}|BR-SCHEMA-002]] · [[BR-SCHEMA-003 - collectAllItems usa cachedItems e, se vazio, percorre até 3 níveis|BR-SCHEMA-003]]
 <!-- brain:auto:end -->

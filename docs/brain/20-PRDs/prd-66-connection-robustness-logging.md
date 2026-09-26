@@ -217,5 +217,6 @@ Ajustes de RF6, RF7 e RF8 descritos acima.
 - 🔗 PRDs relacionados: [[prd-65-schema-mode-security-fixes|PRD-65]] · [[prd-67-code-quality-cleanup|PRD-67]]
 - 🎯 RF1 — Módulo de log `src/logger.ts` → [[BR-CONN-014 - Log de debug é opt-in por variável de ambiente|BR-CONN-014]]
 - 🎯 RF3 — Parse completo de connection string → [[BR-CONN-013 - Parsing da connection string tolera @ e barra na senha|BR-CONN-013]]
+- 🚀 ⬅️ release anterior: [[prd-46-dependency-majors|PRD-46 (0.11.0)]] · ➡️ próxima release: [[prd-70-thick-mode-nne|PRD-70 (0.12.1)]]
 - 📐 Regras: [[BR-CONN-001 - Precedência de resolução da conexão|BR-CONN-001]] · [[BR-CONN-014 - Log de debug é opt-in por variável de ambiente|BR-CONN-014]]
 <!-- brain:auto:end -->

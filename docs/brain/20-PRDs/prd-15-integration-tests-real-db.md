@@ -256,4 +256,5 @@ Adicionar documentação em `DEVELOPMENT.md` (ou `CONTRIBUTING.md`) sobre como c
 <!-- brain:auto:start:conexoes -->
 - 🗺️ [[MOC - PRDs]]
 - 🔗 PRDs relacionados: [[prd-13-oracle-infra|PRD-13]] · [[prd-14-test-schema-packages|PRD-14]]
+- 🚀 ⬅️ release anterior: [[prd-09-cli-info|PRD-09 (0.5.0)]] · ➡️ próxima release: [[prd-10-dynamic-reporters|PRD-10 (0.7.0)]]
 <!-- brain:auto:end -->

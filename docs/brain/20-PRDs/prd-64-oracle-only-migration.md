@@ -505,5 +505,6 @@ Reescrever seções CLI em ~40 arquivos de documentação. Movimentizar PRDs CLI
 <!-- brain:auto:start:conexoes -->
 - 🗺️ [[MOC - PRDs]]
 - 🔗 PRDs relacionados: [[prd-61-cli-auto-provision|PRD-61]]
+- 🚀 ⬅️ release anterior: [[prd-46-dependency-majors|PRD-46 (0.11.0)]] · ➡️ próxima release: [[prd-70-thick-mode-nne|PRD-70 (0.12.1)]]
 - 📐 Regras: [[BR-EXEC-004 - Prefixo de schema utPLSQL descoberto via ALL_SYNONYMS|BR-EXEC-004]]
 <!-- brain:auto:end -->

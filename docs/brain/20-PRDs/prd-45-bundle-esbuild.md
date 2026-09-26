@@ -225,4 +225,5 @@ devDependency `esbuild`), `.vscodeignore` e `publish.yml`.
 <!-- brain:auto:start:conexoes -->
 - 🗺️ [[MOC - PRDs]]
 - ⚙️ Pipelines: [[PIPE-publish - Publish Extension|PIPE-publish]]
+- 🚀 ⬅️ release anterior: [[prd-42-suiteparser-annotations|PRD-42 (0.10.0)]] · ➡️ próxima release: [[prd-12-sql-coverage|PRD-12 (0.12.0)]]
 <!-- brain:auto:end -->

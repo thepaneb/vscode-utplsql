@@ -167,4 +167,5 @@ Adicionar `invocation`, `javaPath`, `cliHome` ao `UtConfig`/`readConfig`.
 <!-- brain:auto:start:conexoes -->
 - 🗺️ [[MOC - PRDs]]
 - ⚙️ Pipelines: [[PIPE-publish - Publish Extension|PIPE-publish]]
+- 🚀 ➡️ próxima release: [[prd-02-refactor-extension|PRD-02 (0.4.0)]]
 <!-- brain:auto:end -->

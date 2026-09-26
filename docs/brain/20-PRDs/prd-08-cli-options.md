@@ -232,4 +232,5 @@ Inserir o bloco de args após a montagem dos reporters (linha 86) e antes de `ar
 <!-- brain:auto:start:conexoes -->
 - 🗺️ [[MOC - PRDs]]
 - 🔗 PRDs relacionados: [[prd-05-progress-cancel|PRD-05]] · [[prd-06-multiroot|PRD-06]]
+- 🚀 ⬅️ release anterior: [[prd-07-upgrade-node-ts|PRD-07 (0.4.0)]] · ➡️ próxima release: [[prd-13-oracle-infra|PRD-13 (0.6.0)]]
 <!-- brain:auto:end -->

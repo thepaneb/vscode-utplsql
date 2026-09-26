@@ -191,4 +191,5 @@ Nenhuma setting/comando novo. Sem `contributes` alterado.
 - 🗺️ [[MOC - PRDs]]
 - 🔗 PRDs relacionados: [[prd-70-thick-mode-nne|PRD-70]]
 - ⚙️ Pipelines: [[PIPE-ci - CI|PIPE-ci]]
+- 🚀 ⬅️ release anterior: [[prd-73-compile-for-debug|PRD-73 (0.12.1)]] · ➡️ próxima release: [[prd-47-node-26-toolchain|PRD-47 (0.14.0)]]
 <!-- brain:auto:end -->

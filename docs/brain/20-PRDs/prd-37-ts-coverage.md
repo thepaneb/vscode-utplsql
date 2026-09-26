@@ -217,4 +217,5 @@ Nenhuma setting de extensão — ferramenta de desenvolvimento apenas.
 - 🗺️ [[MOC - PRDs]]
 - 🔗 PRDs relacionados: [[prd-20-cleanup-deps-config|PRD-20]]
 - 🎯 RF1 — Script `test:coverage` → [[NFR-007 - Cobertura de testes TypeScript|NFR-007]]
+- 🚀 ⬅️ release anterior: [[prd-31-smart-rerun-patterns|PRD-31 (0.8.0)]] · ➡️ próxima release: [[prd-23-auto-wiki-screenshots|PRD-23 (0.10.0)]]
 <!-- brain:auto:end -->

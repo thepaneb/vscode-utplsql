@@ -206,4 +206,5 @@ Nenhuma nova setting. O comando `utplsql.showInfo` aparece na paleta de comandos
 
 <!-- brain:auto:start:conexoes -->
 - 🗺️ [[MOC - PRDs]]
+- 🚀 ⬅️ release anterior: [[prd-07-upgrade-node-ts|PRD-07 (0.4.0)]] · ➡️ próxima release: [[prd-13-oracle-infra|PRD-13 (0.6.0)]]
 <!-- brain:auto:end -->

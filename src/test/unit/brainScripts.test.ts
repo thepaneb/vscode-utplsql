@@ -812,6 +812,21 @@ test('brain: conexões relacionam PRD, RF, RNF, BR e código', () => {
     const wikiConexoes = genConexoes(wiki);
     assert.match(wikiConexoes, /📚 Origem: \[\[09-configuration\]\] · \[\[BR-10 - regra\]\]/);
 
+    // Vizinhança de release derivada do SemVer (sem campo manual).
+    writeFixture(
+      path.join(vault, '20-PRDs', 'prd-20-release.md'),
+      '---\nid: PRD-20\ntipo: prd\nstatus: completed\ntitulo: Release 1.1.0\nversao: 1.1.0\n---\n# 1.1.0\n',
+    );
+    writeFixture(
+      path.join(vault, '20-PRDs', 'prd-21-release.md'),
+      '---\nid: PRD-21\ntipo: prd\nstatus: proposed\ntitulo: Release 1.2.0\nversao: 1.2.0\n---\n# 1.2.0\n',
+    );
+    resetCaches();
+    const prdViz = genConexoes(path.join(vault, '20-PRDs', 'prd-10-feature.md'));
+    // PRD-02 é 1.0.0 (mesma versão, não é release anterior); PRD-20 é 1.1.0.
+    assert.match(prdViz, /próxima release: \[\[prd-20-release\|PRD-20 \(1\.1\.0\)\]\]/);
+    assert.doesNotMatch(prdViz, /release anterior: \[\[prd-02-other/);
+
     const prdNote = path.join(vault, '20-PRDs', 'prd-10-feature.md');
     const prdConnections = genConexoes(prdNote);
     assert.match(prdConnections, /PRDs relacionados: \[\[prd-02-other\|PRD-02\]\]/);

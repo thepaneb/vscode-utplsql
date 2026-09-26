@@ -327,5 +327,6 @@ falhar, o próprio módulo já reporta — o quickfix só encapsula em diagnosti
 - 🎯 RF3 — Detecção de grants faltando → [[BR-COB-001 - Cobertura Oracle exige GRANT EXECUTE ON SYS.DBMS_PROFILER|BR-COB-001]]
 - 🎯 RF4 — Code Actions (quick-fix) → [[BR-UI-007 - Diagnósticos de setup e quick-fixes restritos ao source utPLSQL Setup|BR-UI-007]]
 - 🎯 RF5 — Comandos auxiliares → [[BR-COB-001 - Cobertura Oracle exige GRANT EXECUTE ON SYS.DBMS_PROFILER|BR-COB-001]]
+- 🚀 ⬅️ release anterior: [[prd-31-smart-rerun-patterns|PRD-31 (0.8.0)]] · ➡️ próxima release: [[prd-23-auto-wiki-screenshots|PRD-23 (0.10.0)]]
 - 📐 Regras: [[BR-COB-001 - Cobertura Oracle exige GRANT EXECUTE ON SYS.DBMS_PROFILER|BR-COB-001]] · [[BR-UI-007 - Diagnósticos de setup e quick-fixes restritos ao source utPLSQL Setup|BR-UI-007]]
 <!-- brain:auto:end -->
