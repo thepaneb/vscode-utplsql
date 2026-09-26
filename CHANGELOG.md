@@ -2,7 +2,7 @@
 
 ## 0.13.0
 
-- **Correção: resultados e jump-to-failure em suítes com `%suitepath`**: o
+- **Correção: resultados e jump-to-failure em suítes com `%suitepath` (PRD-87)**: o
   reporter JUnit do utPLSQL aninha `<testsuite>` conforme o `--%suitepath`, mas o
   parser lia apenas um nível; as suítes afetadas eram marcadas como "No JUnit
   result found" no Test Explorer. O parser agora percorre os níveis aninhados,

@@ -6,6 +6,7 @@ titulo: "08 — Jump to Failure"
 publicar: docs/functional/08-jump-to-failure.md
 verificado: 2026-09-25
 regras: ["BR-PARSE-012", "BR-PARSE-014"]
+prds: ["PRD-87"]
 tags: [funcional]
 ---
 # 08 — Jump to Failure
@@ -259,6 +260,7 @@ era comparado com `meta.packageName` (`test_math_fail`) e com o fallback
 ## Conexões
 
 <!-- brain:auto:start:conexoes -->
+- 📄 PRDs: [[prd-87-suitepath-results-jump|PRD-87]]
 - 📐 Regras: [[BR-PARSE-012 - Stack trace - regex quoted-unquoted e filtro de frames do framework|BR-PARSE-012]] · [[BR-PARSE-014 - message.location só é definida para failed-error com frame de usuário resolvido|BR-PARSE-014]]
 - ↩️ Referenciada por: [[Editor-integration]]
 <!-- brain:auto:end -->

@@ -45,4 +45,5 @@ SORT file.mtime DESC
 - [[ADR-010 - Perfis de conexao com senha no SecretStorage]] — `ADR-010`
 - [[ADR-011 - Thick mode opt-in e matriz de bancos]] — `ADR-011`
 - [[ADR-012 - Debugger PLSQL via DBMS_DEBUG e DAP]] — `ADR-012`
+- [[ADR-013 - Consolidacao das ferramentas de desenvolvimento (0.13.0)]] — `ADR-013`
 <!-- brain:auto:end -->

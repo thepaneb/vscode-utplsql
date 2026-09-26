@@ -103,6 +103,7 @@ The file is moved between folders as it progresses.
 | 84 | Oracle 12.2 support (alternative utPLSQL floor) + charset | 0.13.0 |
 | 85 | Canonical second brain (Obsidian) with MCP and knowledge layers | 0.13.0 |
 | 86 | Debugger honors `stopOnException` (`break_exception`) | 0.13.0 |
+| 87 | Results and jump-to-failure for `%suitepath` suites | 0.13.0 |
 
 ### 🔵 Approved
 

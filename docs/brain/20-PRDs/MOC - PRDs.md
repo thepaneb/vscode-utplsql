@@ -32,7 +32,7 @@ npm run sync-prds
 - 📝 Propostos: **17**
 - 🔵 Aprovados: **1**
 - 🟡 Em desenvolvimento: **0**
-- 🟢 Concluídos: **68**
+- 🟢 Concluídos: **69**
 
 Detalhe completo (fonte da verdade): [docs/prd/index.md](../../prd/index.md)
 <!-- brain:auto:end -->
@@ -134,4 +134,5 @@ Detalhe completo (fonte da verdade): [docs/prd/index.md](../../prd/index.md)
 - [[prd-84-oracle-122-support]] — `PRD-84`
 - [[prd-85-brain-source-of-truth]] — `PRD-85`
 - [[prd-86-debugger-stop-on-exception]] — `PRD-86`
+- [[prd-87-suitepath-results-jump]] — `PRD-87`
 <!-- brain:auto:end -->
