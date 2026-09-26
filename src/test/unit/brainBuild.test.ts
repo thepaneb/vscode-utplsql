@@ -16,6 +16,7 @@ const {
   withStatus,
   stripConexoes,
   render,
+  renderPrdIndex,
   syncDir,
   published,
   prdCleanup,
@@ -56,6 +57,10 @@ const {
     prdIndex?: boolean;
     status?: string;
   }) => string;
+  renderPrdIndex: (
+    i: { rel: string; target: string; body: string; prdIndex?: boolean },
+    vault?: string,
+  ) => string;
 };
 
 function withTempDir(prefix: string, fn: (dir: string) => void): void {
@@ -190,6 +195,49 @@ test('brain-build: render de PRD reinjeta o status do frontmatter', () => {
     status: 'completed',
   });
   assert.match(out, /\| Status \| Concluído \|/);
+});
+
+test('brain-build: renderPrdIndex injeta Roadmap/Estrutura das PRDs do vault', () => {
+  withTempDir('bb-prdindex-', (dir) => {
+    const vault = path.join(dir, 'vault');
+    writeFixture(
+      path.join(vault, '20-PRDs', 'prd-07-x.md'),
+      '---\nid: PRD-07\ntipo: prd\nstatus: completed\ntitulo: Feito\nversao: 1.0.0\ndata: 2026-01-01\n---\n# 7\n',
+    );
+    writeFixture(
+      path.join(vault, '20-PRDs', 'prd-08-y.md'),
+      '---\nid: PRD-08\ntipo: prd\nstatus: proposed\ntitulo: Proposto\n---\n# 8\n',
+    );
+    const body = [
+      '# PRDs',
+      '',
+      '## Roadmap',
+      '',
+      '<!-- prd:roadmap:start -->',
+      '_gerado_',
+      '<!-- prd:roadmap:end -->',
+      '',
+      '## Estrutura',
+      '',
+      '<!-- prd:estrutura:start -->',
+      '```',
+      'old',
+      '```',
+      '<!-- prd:estrutura:end -->',
+      '',
+    ].join('\n');
+    const out = renderPrdIndex(
+      { rel: '20-PRDs/index.md', target: 'docs/prd/index.md', body },
+      vault,
+    );
+    assert.match(out, /\[Feito\]\(completed\/prd-07-x\.md\)/);
+    assert.match(out, /### 🟢 Concluídos/);
+    assert.match(out, /### ⚪ Propostos/);
+    assert.match(out, /├── completed\//);
+    assert.doesNotMatch(out, /_gerado_/);
+    // Não sobra o caminho relativo do vault (o index publicado usa o relativo do repo).
+    assert.doesNotMatch(out, /\.\.\/\.\.\/\.\.\/docs\/prd\//);
+  });
 });
 
 test('brain-build: syncDir copia novos, ignora iguais e remove sobras no mirror', () => {

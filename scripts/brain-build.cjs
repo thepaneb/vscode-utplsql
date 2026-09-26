@@ -178,10 +178,76 @@ function stripConexoes(body) {
   return body.replace(CONEXOES_RE, '\n');
 }
 
-function render(item) {
+/** Marcadores das seções geradas no artefato `docs/prd/index.md`. */
+const PRD_ROADMAP_RE = /<!-- prd:roadmap:start -->[\s\S]*?<!-- prd:roadmap:end -->/;
+const PRD_ESTRUTURA_RE = /<!-- prd:estrutura:start -->[\s\S]*?<!-- prd:estrutura:end -->/;
+
+/**
+ * Repõe o Roadmap e a Estrutura no artefato publicado a partir das PRDs do
+ * vault. O corpo da nota `index.md` NÃO tem mais essas tabelas (elas criavam um
+ * segundo hub de PRDs no grafo do Obsidian via links relativos); aqui elas são
+ * injetadas apenas no arquivo publicado, com os caminhos relativos corretos.
+ */
+function renderPrdIndex(item, vault = VAULT) {
+  const prds = [];
+  const walkPrds = (dir) => {
+    if (!fs.existsSync(dir)) return;
+    for (const f of fs.readdirSync(dir)) {
+      if (!/^prd-\d+.*\.md$/.test(f)) continue;
+      const { fm, body } = parseFrontmatter(fs.readFileSync(path.join(dir, f), 'utf8'));
+      if (!PRD_FOLDERS.includes(fm.status)) continue;
+      prds.push({ file: f, status: fm.status, ...fm, body });
+    }
+  };
+  walkPrds(path.join(vault, '20-PRDs'));
+  const statusIcon = { completed: '🟢', approved: '🔵', 'in-progress': '🟡', proposed: '⚪' };
+  const statusLabel = {
+    completed: 'Concluídos',
+    approved: 'Aprovados',
+    'in-progress': 'Em desenvolvimento',
+    proposed: 'Propostos',
+  };
+  const num = (p) => Number(String(p.id ?? p.file).replace(/\D/g, '')) || 0;
+  const ordenadas = [...prds].sort((a, b) => num(a) - num(b));
+  const linhasRoadmap = [];
+  for (const st of ['completed', 'approved', 'in-progress', 'proposed']) {
+    const grupo = ordenadas.filter((p) => p.status === st);
+    if (!grupo.length) continue;
+    linhasRoadmap.push(`### ${statusIcon[st]} ${statusLabel[st]}`, '');
+    linhasRoadmap.push('| # | PRD | Versão | Data |', '|---|---|---|---|');
+    for (const p of grupo) {
+      linhasRoadmap.push(
+        `| ${num(p)} | [${p.titulo ?? ''}](${p.status}/${p.file}) | ${p.versao ?? '—'} | ${p.data ?? '—'} |`,
+      );
+    }
+    linhasRoadmap.push('');
+  }
+  const linhasEstrutura = ['```', 'docs/prd/', '├── index.md          ← este arquivo (catálogo + roadmap)', '├── template.md       ← molde para novos PRDs'];
+  for (const [st, desc] of [
+    ['completed', 'já implementados'],
+    ['approved', 'aprovados, aguardando implementação'],
+    ['in-progress', 'sendo implementados agora'],
+    ['proposed', 'em avaliação'],
+  ]) {
+    const files = ordenadas.filter((p) => p.status === st).map((p) => p.file);
+    if (!files.length) continue;
+    linhasEstrutura.push(`├── ${st}/        ← ${desc}`);
+    for (const f of files) linhasEstrutura.push(`│   ├── ${f}`);
+  }
+  linhasEstrutura.push('```');
+
+  let body = item.body;
+  const roadmap = `<!-- prd:roadmap:start -->\n${linhasRoadmap.join('\n').trimEnd()}\n<!-- prd:roadmap:end -->`;
+  const estrutura = `<!-- prd:estrutura:start -->\n${linhasEstrutura.join('\n')}\n<!-- prd:estrutura:end -->`;
+  if (PRD_ROADMAP_RE.test(body)) body = body.replace(PRD_ROADMAP_RE, roadmap);
+  if (PRD_ESTRUTURA_RE.test(body)) body = body.replace(PRD_ESTRUTURA_RE, estrutura);
+  return body;
+}
+
+function render(item, vault = VAULT) {
   let body = stripConexoes(item.body);
   if (item.prd) body = withStatus(body, PRD_STATUS_LABEL[item.status]);
-  else if (item.prdIndex) body = body.replaceAll('../../../docs/prd/', '');
+  else if (item.prdIndex) body = renderPrdIndex({ ...item, body }, vault);
   else if (item.target.startsWith(WIKI_PREFIX)) body = wikiLinks(body);
   else if (README_RE.test(item.target)) body = readmeLinks(body);
   return `${BANNER(item.rel)}\n${body}`.replace(/\s+$/, '') + '\n';
@@ -218,7 +284,7 @@ function run(check, { repo = REPO, vault = VAULT } = {}) {
   let drifted = 0;
   for (const item of items) {
     const target = path.join(repo, item.target);
-    const desired = render(item);
+    const desired = render(item, vault);
     const current = fs.existsSync(target) ? fs.readFileSync(target, 'utf8') : '';
     if (current === desired) continue;
     if (check) {
@@ -266,6 +332,7 @@ if (require.main === module) {
 module.exports = {
   published,
   render,
+  renderPrdIndex,
   parseFrontmatter,
   wikiLinks,
   readmeLinks,
