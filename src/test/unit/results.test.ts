@@ -144,7 +144,7 @@ test('resolveStackFrameToUri: frame de 2 segmentos usa o ultimo (o pacote)', () 
   assert.strictEqual(loc.range.start.line, 8);
 });
 
-test('resolveStackFrameToUri: frame qualificado sem suite no cache cai para <pacote>.pks', () => {
+test('resolveStackFrameToUri: frame qualificado sem suite no cache usa a fonte virtual', () => {
   vscode.workspace.__setWorkspaceFolders([{ uri: { fsPath: '/ws' }, name: 'ws', index: 0 }]);
   try {
     const loc = resolveStackFrameToUri(
@@ -152,7 +152,7 @@ test('resolveStackFrameToUri: frame qualificado sem suite no cache cai para <pac
       makeState(new Map(), []),
     );
     assert.ok(loc);
-    assert.strictEqual(loc.uri.fsPath, '/ws/test_math_fail.pks');
+    assert.strictEqual(loc.uri.toString(), 'utplsql-source:/UT3/TEST_MATH_FAIL.pkb');
     assert.strictEqual(loc.range.start.line, 3);
   } finally {
     vscode.workspace.__setWorkspaceFolders(undefined);
@@ -239,18 +239,22 @@ const COV_XML = `<?xml version="1.0"?>
   </packages>
 </coverage>`;
 
-test('applyCoverageFromXml: sem folders nao mapeia e emite aviso', () => {
+test('applyCoverageFromXml: sem arquivo local usa a fonte virtual e não emite aviso', () => {
   const run = makeRun() as any;
   const state = makeState(new Map());
   let cleared = 0;
   state.clearCoverage = () => {
     cleared++;
   };
+  const setCoverageCalls: [string, unknown][] = [];
+  state.setCoverage = (k: string, v: unknown) => setCoverageCalls.push([k, v]);
 
   applyCoverageFromXml(COV_XML, 'install', '/root', run, state, []);
   assert.strictEqual(cleared, 1);
+  assert.strictEqual(run.coverageList.length, 1);
+  assert.ok(setCoverageCalls[0][0].startsWith('utplsql-source:'));
   const warnings = run.output.filter((s: string) => s.includes('nenhum arquivo mapeado'));
-  assert.strictEqual(warnings.length, 1);
+  assert.strictEqual(warnings.length, 0);
 });
 
 test('resolveStackFrameToUri: undefined sem cachedItems e sem workspace folders', () => {

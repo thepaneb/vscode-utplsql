@@ -3,6 +3,7 @@ import assert from 'node:assert';
 import { test } from 'node:test';
 import {
   clearDbSourceCache,
+  fetchDbObjectSource,
   fetchDbSource,
   parseDbSourceUri,
   registerDbSourceProvider,
@@ -149,6 +150,76 @@ test('fetchDbSource: falha ao obter conexão retorna vazio', async () =>
     assert.strictEqual(text, '');
   }));
 
+test('fetchDbObjectSource: prefere o corpo (BODY) e ordena por linha', async () =>
+  withConn(async () => {
+    const conn = {
+      execute: async () => ({
+        rows: [
+          { TYPE: 'PACKAGE', LINE: 1, TEXT: 'spec 1' },
+          { TYPE: 'PACKAGE BODY', LINE: 2, TEXT: 'body 2' },
+          { TYPE: 'PACKAGE BODY', LINE: 1, TEXT: 'body 1' },
+        ],
+      }),
+      close: async () => {},
+    };
+    const text = await fetchDbObjectSource(
+      Uri.parse('utplsql-source:/APP/UT_PKG.pkb') as never,
+      async () => fakeOracledb(conn),
+    );
+    assert.strictEqual(text, 'body 1\nbody 2');
+  }));
+
+test('fetchDbObjectSource: .pks prefere a spec', async () =>
+  withConn(async () => {
+    const conn = {
+      execute: async () => ({
+        rows: [
+          { TYPE: 'PACKAGE BODY', LINE: 1, TEXT: 'body' },
+          { TYPE: 'PACKAGE', LINE: 1, TEXT: 'spec' },
+        ],
+      }),
+      close: async () => {},
+    };
+    const text = await fetchDbObjectSource(
+      Uri.parse('utplsql-source:/APP/UT_PKG.pks') as never,
+      async () => fakeOracledb(conn),
+    );
+    assert.strictEqual(text, 'spec');
+  }));
+
+test('fetchDbObjectSource: sem schema usa o usuário da conexão', async () =>
+  withConn(async () => {
+    const captured: { binds?: unknown } = {};
+    const conn = {
+      execute: async (_sql: string, binds?: unknown) => {
+        captured.binds = binds;
+        return { rows: [{ TYPE: 'PROCEDURE', LINE: 1, TEXT: 'p' }] };
+      },
+      close: async () => {},
+    };
+    const text = await fetchDbObjectSource(
+      Uri.parse('utplsql-source:/MY_PROC.sql') as never,
+      async () => fakeOracledb(conn),
+    );
+    assert.strictEqual(text, 'p');
+    assert.deepStrictEqual(captured.binds, { owner: 'U', name: 'MY_PROC' });
+  }));
+
+test('fetchDbObjectSource: erro na query retorna vazio', async () =>
+  withConn(async () => {
+    const conn = {
+      execute: async () => {
+        throw new Error('ORA-00942');
+      },
+      close: async () => {},
+    };
+    const text = await fetchDbObjectSource(
+      Uri.parse('utplsql-source:/APP/UT_PKG.pkb') as never,
+      async () => fakeOracledb(conn),
+    );
+    assert.strictEqual(text, '');
+  }));
+
 test('registerDbSourceProvider: provider registrado serve e cacheia o conteúdo', async () => {
   __resetConfigValues();
   workspace.__resetTextDocumentContentProviders();
@@ -159,6 +230,10 @@ test('registerDbSourceProvider: provider registrado serve e cacheia o conteúdo'
     registerDbSourceProvider({ subscriptions: [] } as never);
     const provider = workspace.__getTextDocumentContentProvider('utplsql-db');
     assert.ok(provider, 'provider do scheme utplsql-db deveria estar registrado');
+    assert.ok(
+      workspace.__getTextDocumentContentProvider('utplsql-source'),
+      'provider do scheme utplsql-source deveria estar registrado',
+    );
 
     const uri = Uri.parse('utplsql-db:/APP/UT_PKG.pks');
     const first = await provider.provideTextDocumentContent(uri);

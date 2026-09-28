@@ -1,4 +1,5 @@
 import * as fs from 'node:fs';
+import * as path from 'node:path';
 import * as vscode from 'vscode';
 import { parseCobertura } from './cobertura';
 import { getExtensionLocale } from './config';
@@ -8,6 +9,7 @@ import { isUserFrame, type StackFrame, type TestCaseResult, type TestStatus } fr
 import { buildMatchIndex, findByNameOnly, type MatchEntry } from './matching';
 import { deriveDeclarationCoverage } from './plsqlDeclarations';
 import type { TestStateManager } from './state';
+import { virtualSourceUri } from './virtualSource';
 
 export interface RunResults {
   passed: number;
@@ -61,6 +63,12 @@ export function packageFromFrameObject(objectName: string): string {
   return segments[segments.length <= 2 ? segments.length - 1 : segments.length - 2];
 }
 
+/** Schema do frame quando qualificado (`SCHEMA.PACKAGE.PROCEDURE` → SCHEMA). */
+export function schemaFromFrameObject(objectName: string): string | undefined {
+  const segments = objectName.split('.');
+  return segments.length >= 3 ? segments[0] : undefined;
+}
+
 export function resolveStackFrameToUri(
   stackFrames: StackFrame[],
   state: TestStateManager,
@@ -80,6 +88,7 @@ export function resolveStackFrameToUri(
   }
 
   const folders = vscode.workspace.workspaceFolders;
+  const schema = schemaFromFrameObject(userFrame.objectName);
   if (folders?.length) {
     // Tenta todas as raízes do workspace, preferindo um arquivo que exista
     // (case-insensitive); sem nenhum, mantém o primeiro candidato.
@@ -92,7 +101,11 @@ export function resolveStackFrameToUri(
         if (fs.existsSync(candidate.fsPath)) return new vscode.Location(candidate, pos);
       }
     }
+    // Sem arquivo local: abre o documento virtual do banco (PRD-80).
+    if (schema) return new vscode.Location(virtualSourceUri(schema, packageName, 'pkb'), pos);
     if (fallback) return fallback;
+  } else if (schema) {
+    return new vscode.Location(virtualSourceUri(schema, packageName, 'pkb'), pos);
   }
 
   return undefined;
@@ -191,7 +204,16 @@ export function applyCoverageFromXml(
       uri = resolveSourceUri(f.file, folder.uri.fsPath, sourcePath, folder.uri.fsPath);
       if (uri) break;
     }
-    if (!uri) continue;
+    // Sem arquivo local: registra a cobertura sobre o documento virtual do
+    // banco (PRD-80). O owner fica implícito (usuário da conexão) porque o
+    // filename mapeado não carrega o schema.
+    if (!uri) {
+      const base = path.basename(f.file);
+      const object = base.replace(/\.[^.]+$/, '');
+      if (!object) continue;
+      const ext = path.extname(base).replace(/^\./, '') || 'sql';
+      uri = virtualSourceUri('', object, ext);
+    }
     const details: vscode.FileCoverageDetail[] = f.lines.map(
       (l) => new vscode.StatementCoverage(l.hits, new vscode.Position(Math.max(0, l.line - 1), 0)),
     );
