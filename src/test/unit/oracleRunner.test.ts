@@ -879,6 +879,102 @@ test('executeRunOracle: fluxo feliz aplica resultados e info no output', async (
   assert.ok(out.includes('Doc output'), 'deveria streamar o reporter de documentação');
 });
 
+test('executeRunOracle: export usa só o reporter escolhido e devolve a saída', async () => {
+  const { mod, captured } = makeOracleRunFake({ buffer: ['Doc export line'] });
+  const run = makeRun() as any;
+  const { item, metaMap } = makeLeaf();
+  let text: string | undefined;
+  try {
+    text = await executeRunOracle(
+      {
+        connection: 'u/p@//h:1521/s',
+        pathArgs: ['pkg'],
+        coverage: false,
+        sourcePath: 'install',
+        root: '/root',
+        run,
+        leafTests: [item as any],
+        state: makeOracleRunState(metaMap),
+        exportReporter: { name: 'ut_documentation_reporter' },
+      },
+      neverCancel as never,
+      async () => mod as never,
+    );
+  } finally {
+    await closeOraclePool();
+  }
+
+  assert.strictEqual(text, 'Doc output\nDoc export line\n');
+  assert.match(captured.runSql ?? '', /ut_documentation_reporter\(\)/);
+  assert.ok(!(captured.runSql ?? '').includes('ut_junit_reporter'), 'export não usa o JUnit');
+  // Não aplica resultados no Test Explorer (RNF1).
+  assert.strictEqual(run.passedList.length, 0);
+});
+
+test('executeRunOracle: export monta charset/color na allowlist', async () => {
+  const { mod, captured } = makeOracleRunFake({ buffer: ['x'] });
+  const run = makeRun() as any;
+  const { item, metaMap } = makeLeaf();
+  try {
+    await executeRunOracle(
+      {
+        connection: 'u/p@//h:1521/s',
+        pathArgs: ['pkg'],
+        coverage: false,
+        sourcePath: 'install',
+        root: '/root',
+        run,
+        leafTests: [item as any],
+        state: makeOracleRunState(metaMap),
+        exportReporter: {
+          name: 'ut_documentation_reporter',
+          charset: 'WE8ISO8859P1',
+          colorConsole: true,
+        },
+      },
+      neverCancel as never,
+      async () => mod as never,
+    );
+  } finally {
+    await closeOraclePool();
+  }
+
+  assert.match(captured.runSql ?? '', /a_client_character_set => :exportCharset/);
+  assert.match(captured.runSql ?? '', /a_color_console => :exportColor/);
+  assert.strictEqual(
+    (captured.runBinds?.exportCharset as { val?: unknown } | undefined)?.val,
+    'WE8ISO8859P1',
+  );
+});
+
+test('executeRunOracle: export com reporter inválido lança sem rodar', async () => {
+  const { mod, captured } = makeOracleRunFake({ buffer: [] });
+  const run = makeRun() as any;
+  const { item, metaMap } = makeLeaf();
+  try {
+    await assert.rejects(
+      executeRunOracle(
+        {
+          connection: 'u/p@//h:1521/s',
+          pathArgs: ['pkg'],
+          coverage: false,
+          sourcePath: 'install',
+          root: '/root',
+          run,
+          leafTests: [item as any],
+          state: makeOracleRunState(metaMap),
+          exportReporter: { name: 'x; drop' },
+        },
+        neverCancel as never,
+        async () => mod as never,
+      ),
+    );
+  } finally {
+    await closeOraclePool();
+  }
+  assert.strictEqual(captured.runSql, undefined, 'não deveria rodar o ut_runner.run');
+});
+
 test('executeRunOracle: reporter adicional inexistente é ignorado (não aborta o run)', async () => {
   const { mod, captured } = makeOracleRunFake({ buffer: [JUNIT_XML] });
   const run = makeRun() as any;

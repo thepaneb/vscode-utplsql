@@ -21,6 +21,8 @@ export interface UtConfig {
   randomOrder: boolean;
   randomOrderSeed: number;
   additionalReporters: string[];
+  reporterClientCharacterSet: string;
+  reporterColorConsole: boolean;
   timeoutMinutes: number;
   dbmsOutput: boolean;
   oraclePoolMin: number;
@@ -115,6 +117,8 @@ export function readConfig(): UtConfig {
     randomOrder: c.get<boolean>('run.randomOrder', false),
     randomOrderSeed: c.get<number>('run.randomOrderSeed', 0),
     additionalReporters: c.get<string[]>('additionalReporters', []),
+    reporterClientCharacterSet: c.get<string>('reporter.clientCharacterSet', ''),
+    reporterColorConsole: c.get<boolean>('reporter.colorConsole', false),
     timeoutMinutes: c.get<number>('timeoutMinutes', 60),
     dbmsOutput: c.get<boolean>('dbmsOutput', false),
     oraclePoolMin: c.get<number>('oraclePoolMin', 2),

@@ -27,5 +27,6 @@
   "nls.command.runScriptFolder": "utPLSQL: Run script folder",
   "nls.command.compileForDebug": "utPLSQL: Fordítás hibakereséshez",
   "nls.command.rebuildAnnotations": "utPLSQL: Megjegyzés-gyorsítótár újraépítése",
-  "nls.command.setWalletPassword": "utPLSQL: Tárca jelszó beállítása"
+  "nls.command.setWalletPassword": "utPLSQL: Tárca jelszó beállítása",
+  "nls.command.runWithReporter": "utPLSQL: Futtatás reporterrel (export)"
 }

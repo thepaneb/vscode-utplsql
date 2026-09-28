@@ -5,14 +5,14 @@ tipo: locale
 titulo: "中文(简体)"
 codigo: zh-cn
 nls: package.nls.zh-cn.json
-strings: 29
+strings: 30
 gerado: true
 tags: [i18n, locale]
 ---
 
 # LOC-zh-cn — 中文(简体)
 
-Locale `zh-cn` da extensão. Strings de UI em [`package.nls.zh-cn.json`](../../../package.nls.zh-cn.json) (29 chaves).
+Locale `zh-cn` da extensão. Strings de UI em [`package.nls.zh-cn.json`](../../../package.nls.zh-cn.json) (30 chaves).
 
 README: [[README.zh-CN]]
 
