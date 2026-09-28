@@ -62,7 +62,7 @@ bundled.
 | | `statusBar.ts` — status bar indicator |
 | | `viewCoverage.ts` — DeclarationCoverage + V$SQL view tracking |
 | | `dbmsDebug.ts`, `debugger.ts` — PL/SQL debugging via DBMS_DEBUG |
-| `tnsnames.ts` — `tnsnames.ora` alias resolution (thin driver) | `oracleClient.ts` — thin/thick mode init |
+| `tnsnames.ts` — `tnsnames.ora` alias resolution (thin driver); `virtualSource.ts` — URIs virtuais `utplsql-source:` | `oracleClient.ts` — thin/thick mode init |
 | | `oracleRunner.ts` — pool, `executeRunOracle`, discovery helpers |
 
 Modules in the left column **do not import `vscode`** (at runtime) and are

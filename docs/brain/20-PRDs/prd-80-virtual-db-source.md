@@ -2,13 +2,13 @@
 tipo: prd
 id: PRD-80
 aliases: [PRD-80]
-status: approved
+status: completed
 titulo: "Documento virtual de fonte do banco para falhas e cobertura"
 versao: "0.14.0"
 data: "2026-09-19"
 autor: "Gil Cleber Barboza"
 versao_titulo: "0.14.0 — Árvore, relatórios, conectividade e segurança"
-verificado: 2026-09-23
+verificado: 2026-09-28
 tags: [prd]
 ---
 

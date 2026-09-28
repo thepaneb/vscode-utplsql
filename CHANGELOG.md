@@ -28,6 +28,12 @@
   `a_client_character_set` e `a_color_console` (allowlist por reporter). O export
   **não** altera os resultados no Test Explorer.
 
+- **Fonte virtual do banco para falhas e cobertura (PRD-80)**: quando não há
+  arquivo local, o *jump to failure* e a cobertura passam a abrir um documento
+  **read-only** resolvido de `ALL_SOURCE` (`utplsql-source:/<SCHEMA>/<OBJ>`), para
+  qualquer tipo de objeto (package/body, procedure, function, trigger,
+  type/body, view). O scheme legado `utplsql-db:` continua disponível.
+
 ## 0.13.0
 
 - **Correção: resultados e jump-to-failure em suítes com `%suitepath` (PRD-87)**: o

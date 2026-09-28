@@ -171,6 +171,5 @@ funcionando pelos IDs.
 <!-- brain:auto:start:conexoes -->
 - 🗺️ [[MOC - PRDs]]
 - 🔗 PRDs relacionados: [[prd-74-db-first-discovery|PRD-74]]
-- 🔗 Mesma versão (0.14.0): [[prd-80-virtual-db-source|PRD-80]]
 - 🚀 ⬅️ release anterior: [[prd-87-suitepath-results-jump|PRD-87 (0.13.0)]] · ➡️ próxima release: [[prd-47-node-26-toolchain|PRD-47 (0.15.0)]]
 <!-- brain:auto:end -->

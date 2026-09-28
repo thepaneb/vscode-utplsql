@@ -157,6 +157,6 @@ workspace-scoped.
 
 <!-- brain:auto:start:conexoes -->
 - 🗺️ [[MOC - PRDs]]
-- 🔗 Mesma versão (0.14.0): [[prd-75-lazy-test-tree|PRD-75]] · [[prd-80-virtual-db-source|PRD-80]]
+- 🔗 Mesma versão (0.14.0): [[prd-75-lazy-test-tree|PRD-75]]
 - 🚀 ⬅️ release anterior: [[prd-87-suitepath-results-jump|PRD-87 (0.13.0)]] · ➡️ próxima release: [[prd-47-node-26-toolchain|PRD-47 (0.15.0)]]
 <!-- brain:auto:end -->
