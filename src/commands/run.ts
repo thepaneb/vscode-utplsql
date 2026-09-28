@@ -1,9 +1,10 @@
 import * as vscode from 'vscode';
 import { type CodeLensItem, parseCodeLensItems } from '../codelens';
 import { refreshCompilationDiagnostics } from '../compilationDiagnostics';
-import { getExtensionLocale } from '../config';
+import { getExtensionLocale, readConfig, resolveConnection } from '../config';
 import { t } from '../i18n';
 import { filterSuitesByFolder, filterSuitesByUri } from '../matching';
+import { listReportersForConnection } from '../oracleRunner';
 import { collectRunTargets, executeRun } from '../runner';
 import { collectAllItems } from '../testTree';
 import type { ItemMeta } from '../types';
@@ -199,7 +200,144 @@ export function registerRunCommands(
     );
   };
 
+  const findTestItem = (packageName: string, procName: string): vscode.TestItem | undefined => {
+    const suiteItem = state.getSuiteItem(`suite:${packageName.toLowerCase()}`);
+    if (!suiteItem) return undefined;
+    let found: vscode.TestItem | undefined;
+    suiteItem.children.forEach((c) => {
+      const meta = state.getMeta(c);
+      if (meta?.kind === 'test' && meta.procName.toLowerCase() === procName.toLowerCase()) {
+        found = c;
+      }
+    });
+    return found;
+  };
+
+  /** QuickPick de suítes descobertas (fallback quando não há cursor/alvo). */
+  const pickSuiteItem = async (): Promise<vscode.TestItem[] | undefined> => {
+    const suites = collectAllItems(controller, state).filter(
+      (i) => state.getMeta(i)?.kind === 'suite',
+    );
+    if (suites.length === 0) return undefined;
+    const picked = await vscode.window.showQuickPick(
+      suites.map((i) => ({
+        label: (state.getMeta(i) as { packageName: string }).packageName,
+        item: i,
+      })),
+    );
+    return picked ? [picked.item] : undefined;
+  };
+
+  let exportChannel: vscode.OutputChannel | undefined;
+
+  const deliverExport = async (
+    reporter: string,
+    text: string,
+    dest: 'output' | 'file',
+  ): Promise<void> => {
+    if (dest === 'output') {
+      exportChannel ??= vscode.window.createOutputChannel('utPLSQL reporter');
+      exportChannel.clear();
+      exportChannel.appendLine(`utPLSQL [${reporter}]`);
+      exportChannel.append(text);
+      exportChannel.show(true);
+      return;
+    }
+    const xml = /junit|sonar|cobertura/.test(reporter);
+    const stamp = new Date().toISOString().replace(/[:.]/g, '-');
+    const folder = vscode.workspace.workspaceFolders?.[0];
+    const fileName = `utplsql-${reporter}-${stamp}.${xml ? 'xml' : 'txt'}`;
+    const target = await vscode.window.showSaveDialog({
+      defaultUri: folder ? vscode.Uri.joinPath(folder.uri, fileName) : undefined,
+      filters: xml ? { XML: ['xml'] } : { Text: ['txt'] },
+    });
+    if (!target) return;
+    await vscode.workspace.fs.writeFile(target, Buffer.from(text, 'utf8'));
+    vscode.window.showInformationMessage(
+      t(locale, 'ext.export.saved', { reporter, path: target.fsPath }),
+    );
+  };
+
+  /**
+   * `utPLSQL: Run with Reporter (Export)` (PRD-76): resolve alvo → reporter →
+   * destino → roda só com o reporter escolhido e grava a saída. Não altera os
+   * resultados no Test Explorer.
+   */
+  const runExport = async (item?: vscode.TestItem): Promise<void> => {
+    let include: vscode.TestItem[] | undefined;
+    if (item) {
+      include = [item];
+    } else {
+      const editor = vscode.window.activeTextEditor;
+      if (editor?.document.fileName.endsWith('.pks')) {
+        const annotation = findAnnotationAtLine(editor.document, editor.selection.active.line);
+        if (annotation) {
+          const target =
+            annotation.type === 'test' && annotation.procName
+              ? findTestItem(annotation.packageName, annotation.procName)
+              : state.getSuiteItem(`suite:${annotation.packageName.toLowerCase()}`);
+          if (target) include = [target];
+        }
+      }
+      include ??= await pickSuiteItem();
+    }
+    if (!include?.length) {
+      vscode.window.showWarningMessage(t(locale, 'ext.export.noTargets'));
+      return;
+    }
+
+    const connection = await resolveConnection();
+    if (!connection) {
+      vscode.window.showErrorMessage(t(locale, 'ext.noConnection'));
+      return;
+    }
+    const cfg = readConfig();
+    const reporters = await listReportersForConnection(connection, cfg);
+    const reporter = await vscode.window.showQuickPick(reporters, {
+      placeHolder: t(locale, 'ext.export.reporterPlaceholder'),
+    });
+    if (!reporter) return;
+
+    const dest = await vscode.window.showQuickPick([
+      { label: t(locale, 'ext.export.toOutput'), value: 'output' as const },
+      { label: t(locale, 'ext.export.toFile'), value: 'file' as const },
+    ]);
+    if (!dest) return;
+
+    const cts = new vscode.CancellationTokenSource();
+    currentRunToken = cts;
+    try {
+      const request = new vscode.TestRunRequest(include, undefined, state.runProfile);
+      const text = await executeRun(
+        controller,
+        request,
+        cts.token,
+        false,
+        state,
+        undefined,
+        undefined,
+        {
+          name: reporter,
+          charset: cfg.reporterClientCharacterSet || undefined,
+          colorConsole: cfg.reporterColorConsole || undefined,
+        },
+      );
+      if (cts.token.isCancellationRequested || text === undefined) return;
+      await deliverExport(reporter, text, dest.value);
+    } catch (e) {
+      vscode.window.showErrorMessage(
+        t(locale, 'ext.export.failed', { error: e instanceof Error ? e.message : String(e) }),
+      );
+    } finally {
+      if (currentRunToken === cts) currentRunToken = undefined;
+      cts.dispose();
+    }
+  };
+
   context.subscriptions.push(
+    vscode.commands.registerCommand('utplsql.runWithReporter', (item?: vscode.TestItem) =>
+      runExport(item),
+    ),
     vscode.commands.registerCommand('utplsql.runAll', () =>
       runWithProgress(
         new vscode.TestRunRequest(undefined, undefined, state.runProfile),

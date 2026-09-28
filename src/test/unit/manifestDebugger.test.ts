@@ -79,6 +79,16 @@ test('comando de senha da wallet está registrado no manifest (PRD-82 RF4)', () 
   assert.ok(commands.some((c) => c.command === 'utplsql.setWalletPassword'));
 });
 
+test('comando de export com reporter está registrado (PRD-76)', () => {
+  const commands = pkg.contributes.commands ?? [];
+  assert.ok(commands.some((c) => c.command === 'utplsql.runWithReporter'));
+});
+
+test('menu testing/item/context expõe utplsql.runWithReporter (PRD-76)', () => {
+  const menu = pkg.contributes.menus?.['testing/item/context'] ?? [];
+  assert.ok(menu.some((m) => m.command === 'utplsql.runWithReporter'));
+});
+
 test('extensão fica desabilitada em workspace não confiável (PRD-81 RF2)', () => {
   assert.strictEqual(pkg.capabilities?.untrustedWorkspaces?.supported, false);
 });

@@ -204,6 +204,16 @@
           "default": [],
           "description": "Reporters adicionais para incluir em toda execução (ex.: [\"ut_coverage_html_reporter\"]). Os reporters padrão (documentation, junit e cobertura) são sempre incluídos."
         },
+        "utplsql.reporter.clientCharacterSet": {
+          "type": "string",
+          "default": "",
+          "description": "Charset do cliente para o export com reporter (argumento `a_client_character_set`). Vazio usa o default do reporter."
+        },
+        "utplsql.reporter.colorConsole": {
+          "type": "boolean",
+          "default": false,
+          "description": "Habilita cor ANSI na saída de reporters textuais de console no export (argumento `a_color_console`)."
+        },
         "utplsql.tags": {
           "type": "string",
           "default": "",
@@ -533,6 +543,11 @@
         "category": "utPLSQL"
       },
       {
+        "command": "utplsql.runWithReporter",
+        "title": "%nls.command.runWithReporter%",
+        "category": "utPLSQL"
+      },
+      {
         "command": "utplsql.importSqlDevConnections",
         "title": "%nls.command.importSqlDevConnections%",
         "category": "utPLSQL"
@@ -632,7 +647,14 @@
         "group": "utplsql@5",
         "when": "resourceExtname == .pks || resourceExtname == .pkb"
       }
-    ]
+    ],
+      "testing/item/context": [
+        {
+          "command": "utplsql.runWithReporter",
+          "group": "utplsql@1",
+          "when": "testId =~ /^(suite|test):/"
+        }
+      ]
     },
     "keybindings": [
       {

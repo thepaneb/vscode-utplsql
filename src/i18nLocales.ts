@@ -2,6 +2,12 @@
 // pt-BR é o base; os demais traduzem. Chave ausente → pt-BR → a própria chave.
 
 export const ptBr: Record<string, string> = {
+  'ext.export.reporterPlaceholder': 'Escolha um reporter do banco para o export',
+  'ext.export.toOutput': 'Mostrar no Output',
+  'ext.export.toFile': 'Salvar em arquivo…',
+  'ext.export.noTargets': 'Nenhuma suite/teste selecionado para exportar.',
+  'ext.export.saved': 'Saída do reporter "{reporter}" salva em {path}',
+  'ext.export.failed': 'Falha no export: {error}',
   'ext.wallet.title': 'utPLSQL — Senha da wallet',
   'ext.wallet.prompt': 'Senha da wallet Oracle Cloud (deixe vazio para remover).',
   'ext.wallet.saved': 'Senha da wallet salva para o perfil "{name}".',
@@ -199,6 +205,12 @@ export const ptBr: Record<string, string> = {
 };
 
 export const en: Record<string, string> = {
+  'ext.export.reporterPlaceholder': 'Choose a database reporter to export',
+  'ext.export.toOutput': 'Show in Output',
+  'ext.export.toFile': 'Save to file…',
+  'ext.export.noTargets': 'No suite/test selected to export.',
+  'ext.export.saved': 'Reporter "{reporter}" output saved to {path}',
+  'ext.export.failed': 'Export failed: {error}',
   'ext.wallet.title': 'utPLSQL — Wallet password',
   'ext.wallet.prompt': 'Oracle Cloud wallet password (leave empty to remove).',
   'ext.wallet.saved': 'Wallet password saved for profile "{name}".',
@@ -395,6 +407,12 @@ export const en: Record<string, string> = {
 };
 
 export const es: Record<string, string> = {
+  'ext.export.reporterPlaceholder': 'Elige un reporter de la base para exportar',
+  'ext.export.toOutput': 'Mostrar en Output',
+  'ext.export.toFile': 'Guardar en archivo…',
+  'ext.export.noTargets': 'No hay suite/test seleccionado para exportar.',
+  'ext.export.saved': 'Salida del reporter "{reporter}" guardada en {path}',
+  'ext.export.failed': 'Error al exportar: {error}',
   'ext.wallet.title': 'utPLSQL — Contraseña de la wallet',
   'ext.wallet.prompt': 'Contraseña de la wallet de Oracle Cloud (déjala vacía para eliminarla).',
   'ext.wallet.saved': 'Contraseña de la wallet guardada para el perfil "{name}".',
@@ -594,6 +612,12 @@ export const es: Record<string, string> = {
 };
 
 export const zhCn: Record<string, string> = {
+  'ext.export.reporterPlaceholder': '选择要导出的数据库 reporter',
+  'ext.export.toOutput': '在 Output 中显示',
+  'ext.export.toFile': '保存到文件…',
+  'ext.export.noTargets': '未选择要导出的套件/测试。',
+  'ext.export.saved': 'reporter "{reporter}" 的输出已保存到 {path}',
+  'ext.export.failed': '导出失败：{error}',
   'ext.wallet.title': 'utPLSQL — 钱包密码',
   'ext.wallet.prompt': 'Oracle Cloud 钱包密码（留空以移除）。',
   'ext.wallet.saved': '已为配置 "{name}" 保存钱包密码。',
@@ -780,6 +804,12 @@ export const zhCn: Record<string, string> = {
 };
 
 export const ja: Record<string, string> = {
+  'ext.export.reporterPlaceholder': 'エクスポートするデータベース reporter を選択',
+  'ext.export.toOutput': 'Output に表示',
+  'ext.export.toFile': 'ファイルに保存…',
+  'ext.export.noTargets': 'エクスポートするスイート/テストが選択されていません。',
+  'ext.export.saved': 'reporter「{reporter}」の出力を {path} に保存しました',
+  'ext.export.failed': 'エクスポートに失敗しました: {error}',
   'ext.wallet.title': 'utPLSQL — ウォレットのパスワード',
   'ext.wallet.prompt': 'Oracle Cloud ウォレットのパスワード（空欄で削除）。',
   'ext.wallet.saved': 'プロファイル「{name}」のウォレットパスワードを保存しました。',
@@ -980,6 +1010,12 @@ export const ja: Record<string, string> = {
 };
 
 export const de: Record<string, string> = {
+  'ext.export.reporterPlaceholder': 'Datenbank-Reporter für den Export wählen',
+  'ext.export.toOutput': 'In Output anzeigen',
+  'ext.export.toFile': 'In Datei speichern…',
+  'ext.export.noTargets': 'Keine Suite/Test für den Export ausgewählt.',
+  'ext.export.saved': 'Reporter-Ausgabe "{reporter}" gespeichert in {path}',
+  'ext.export.failed': 'Export fehlgeschlagen: {error}',
   'ext.wallet.title': 'utPLSQL — Wallet-Passwort',
   'ext.wallet.prompt': 'Passwort der Oracle-Cloud-Wallet (leer lassen zum Entfernen).',
   'ext.wallet.saved': 'Wallet-Passwort für Profil „{name}“ gespeichert.',
@@ -1178,6 +1214,12 @@ export const de: Record<string, string> = {
 };
 
 export const fr: Record<string, string> = {
+  'ext.export.reporterPlaceholder': 'Choisissez un reporter de la base à exporter',
+  'ext.export.toOutput': 'Afficher dans Output',
+  'ext.export.toFile': 'Enregistrer dans un fichier…',
+  'ext.export.noTargets': 'Aucune suite/test sélectionnée pour l’export.',
+  'ext.export.saved': 'Sortie du reporter « {reporter} » enregistrée dans {path}',
+  'ext.export.failed': 'Échec de l’export : {error}',
   'ext.wallet.title': 'utPLSQL — Mot de passe du wallet',
   'ext.wallet.prompt': 'Mot de passe du wallet Oracle Cloud (laisser vide pour supprimer).',
   'ext.wallet.saved': 'Mot de passe du wallet enregistré pour le profil « {name} ».',
@@ -1378,6 +1420,12 @@ export const fr: Record<string, string> = {
 };
 
 export const zhTw: Record<string, string> = {
+  'ext.export.reporterPlaceholder': '選擇要匯出的資料庫 reporter',
+  'ext.export.toOutput': '在 Output 中顯示',
+  'ext.export.toFile': '儲存至檔案…',
+  'ext.export.noTargets': '未選擇要匯出的套件/測試。',
+  'ext.export.saved': 'reporter "{reporter}" 的輸出已儲存至 {path}',
+  'ext.export.failed': '匯出失敗：{error}',
   'ext.wallet.title': 'utPLSQL — 錢包密碼',
   'ext.wallet.prompt': 'Oracle Cloud 錢包密碼（留空以移除）。',
   'ext.wallet.saved': '已為設定檔「{name}」儲存錢包密碼。',
@@ -1564,6 +1612,12 @@ export const zhTw: Record<string, string> = {
 };
 
 export const it: Record<string, string> = {
+  'ext.export.reporterPlaceholder': 'Scegli un reporter del database da esportare',
+  'ext.export.toOutput': 'Mostra in Output',
+  'ext.export.toFile': 'Salva su file…',
+  'ext.export.noTargets': 'Nessuna suite/test selezionata per l’export.',
+  'ext.export.saved': 'Output del reporter "{reporter}" salvato in {path}',
+  'ext.export.failed': 'Export non riuscito: {error}',
   'ext.wallet.title': 'utPLSQL — Password del wallet',
   'ext.wallet.prompt': 'Password del wallet Oracle Cloud (lascia vuoto per rimuovere).',
   'ext.wallet.saved': 'Password del wallet salvata per il profilo "{name}".',
@@ -1764,6 +1818,12 @@ export const it: Record<string, string> = {
 };
 
 export const ko: Record<string, string> = {
+  'ext.export.reporterPlaceholder': '내보낼 데이터베이스 reporter 선택',
+  'ext.export.toOutput': 'Output에 표시',
+  'ext.export.toFile': '파일로 저장…',
+  'ext.export.noTargets': '내보낼 스위트/테스트가 선택되지 않았습니다.',
+  'ext.export.saved': 'reporter "{reporter}" 출력을 {path}에 저장했습니다',
+  'ext.export.failed': '내보내기 실패: {error}',
   'ext.wallet.title': 'utPLSQL — 월렛 비밀번호',
   'ext.wallet.prompt': 'Oracle Cloud 월렛 비밀번호(비우면 제거).',
   'ext.wallet.saved': '프로필 "{name}"의 월렛 비밀번호를 저장했습니다.',
@@ -1959,6 +2019,12 @@ export const ko: Record<string, string> = {
 };
 
 export const ru: Record<string, string> = {
+  'ext.export.reporterPlaceholder': 'Выберите reporter базы данных для экспорта',
+  'ext.export.toOutput': 'Показать в Output',
+  'ext.export.toFile': 'Сохранить в файл…',
+  'ext.export.noTargets': 'Не выбрана suite/тест для экспорта.',
+  'ext.export.saved': 'Вывод reporter «{reporter}» сохранён в {path}',
+  'ext.export.failed': 'Ошибка экспорта: {error}',
   'ext.wallet.title': 'utPLSQL — Пароль кошелька',
   'ext.wallet.prompt': 'Пароль кошелька Oracle Cloud (оставьте пустым, чтобы удалить).',
   'ext.wallet.saved': 'Пароль кошелька сохранён для профиля «{name}».',
@@ -2156,6 +2222,12 @@ export const ru: Record<string, string> = {
 };
 
 export const tr: Record<string, string> = {
+  'ext.export.reporterPlaceholder': 'Dışa aktarılacak veritabanı reporter seçin',
+  'ext.export.toOutput': 'Output içinde göster',
+  'ext.export.toFile': 'Dosyaya kaydet…',
+  'ext.export.noTargets': 'Dışa aktarılacak suite/test seçilmedi.',
+  'ext.export.saved': '"{reporter}" reporter çıktısı {path} konumuna kaydedildi',
+  'ext.export.failed': 'Dışa aktarma başarısız: {error}',
   'ext.wallet.title': 'utPLSQL — Cüzdan parolası',
   'ext.wallet.prompt': 'Oracle Cloud cüzdan parolası (kaldırmak için boş bırakın).',
   'ext.wallet.saved': '"{name}" profili için cüzdan parolası kaydedildi.',
@@ -2349,6 +2421,12 @@ export const tr: Record<string, string> = {
 };
 
 export const pl: Record<string, string> = {
+  'ext.export.reporterPlaceholder': 'Wybierz reporter bazy do eksportu',
+  'ext.export.toOutput': 'Pokaż w Output',
+  'ext.export.toFile': 'Zapisz do pliku…',
+  'ext.export.noTargets': 'Nie wybrano suite/testu do eksportu.',
+  'ext.export.saved': 'Dane wyjściowe reporter „{reporter}” zapisano w {path}',
+  'ext.export.failed': 'Eksport nie powiódł się: {error}',
   'ext.wallet.title': 'utPLSQL — Hasło portfela',
   'ext.wallet.prompt': 'Hasło portfela Oracle Cloud (pozostaw puste, aby usunąć).',
   'ext.wallet.saved': 'Zapisano hasło portfela dla profilu „{name}”.',
@@ -2547,6 +2625,12 @@ export const pl: Record<string, string> = {
 };
 
 export const cs: Record<string, string> = {
+  'ext.export.reporterPlaceholder': 'Vyberte reporter databáze pro export',
+  'ext.export.toOutput': 'Zobrazit v Output',
+  'ext.export.toFile': 'Uložit do souboru…',
+  'ext.export.noTargets': 'Není vybrána žádná sada/test pro export.',
+  'ext.export.saved': 'Výstup reporter „{reporter}“ uložen do {path}',
+  'ext.export.failed': 'Export se nezdařil: {error}',
   'ext.wallet.title': 'utPLSQL — Heslo peněženky',
   'ext.wallet.prompt': 'Heslo peněženky Oracle Cloud (prázdné pole odstraní).',
   'ext.wallet.saved': 'Heslo peněženky uloženo pro profil „{name}“.',
@@ -2744,6 +2828,12 @@ export const cs: Record<string, string> = {
 };
 
 export const hu: Record<string, string> = {
+  'ext.export.reporterPlaceholder': 'Válasszon adatbázis-reportert az exporthoz',
+  'ext.export.toOutput': 'Megjelenítés az Outputban',
+  'ext.export.toFile': 'Mentés fájlba…',
+  'ext.export.noTargets': 'Nincs kijelölt suite/teszt az exporthoz.',
+  'ext.export.saved': 'A(z) „{reporter}” reporter kimenete ide mentve: {path}',
+  'ext.export.failed': 'Az export sikertelen: {error}',
   'ext.wallet.title': 'utPLSQL — Tárca jelszava',
   'ext.wallet.prompt': 'Oracle Cloud tárca jelszava (hagyja üresen az eltávolításhoz).',
   'ext.wallet.saved': 'Tárca jelszava elmentve a(z) „{name}” profilhoz.',
@@ -2944,6 +3034,12 @@ export const hu: Record<string, string> = {
 };
 
 export const enGb: Record<string, string> = {
+  'ext.export.reporterPlaceholder': 'Choose a database reporter to export',
+  'ext.export.toOutput': 'Show in Output',
+  'ext.export.toFile': 'Save to file…',
+  'ext.export.noTargets': 'No suite/test selected to export.',
+  'ext.export.saved': 'Reporter "{reporter}" output saved to {path}',
+  'ext.export.failed': 'Export failed: {error}',
   'ext.wallet.title': 'utPLSQL — Wallet password',
   'ext.wallet.prompt': 'Oracle Cloud wallet password (leave empty to remove).',
   'ext.wallet.saved': 'Wallet password saved for profile "{name}".',
@@ -2954,6 +3050,12 @@ export const enGb: Record<string, string> = {
 };
 
 export const bg: Record<string, string> = {
+  'ext.export.reporterPlaceholder': 'Изберете reporter от базата за експорт',
+  'ext.export.toOutput': 'Показване в Output',
+  'ext.export.toFile': 'Запазване във файл…',
+  'ext.export.noTargets': 'Няма избрана suite/тест за експорт.',
+  'ext.export.saved': 'Изходът на reporter „{reporter}“ е запазен в {path}',
+  'ext.export.failed': 'Експортът е неуспешен: {error}',
   'ext.wallet.title': 'utPLSQL — Парола на портфейла',
   'ext.wallet.prompt': 'Парола на портфейла Oracle Cloud (оставете празно, за да премахнете).',
   'ext.wallet.saved': 'Паролата на портфейла е запазена за профил „{name}“.',
@@ -3146,6 +3248,12 @@ export const bg: Record<string, string> = {
 };
 
 export const el: Record<string, string> = {
+  'ext.export.reporterPlaceholder': 'Επιλέξτε reporter της βάσης για εξαγωγή',
+  'ext.export.toOutput': 'Εμφάνιση στο Output',
+  'ext.export.toFile': 'Αποθήκευση σε αρχείο…',
+  'ext.export.noTargets': 'Δεν έχει επιλεγεί suite/test για εξαγωγή.',
+  'ext.export.saved': 'Η έξοδος του reporter «{reporter}» αποθηκεύτηκε στο {path}',
+  'ext.export.failed': 'Η εξαγωγή απέτυχε: {error}',
   'ext.wallet.title': 'utPLSQL — Κωδικός πορτοφολιού',
   'ext.wallet.prompt': 'Κωδικός πορτοφολιού Oracle Cloud (αφήστε κενό για αφαίρεση).',
   'ext.wallet.saved': 'Ο κωδικός πορτοφολιού αποθηκεύτηκε για το προφίλ «{name}».',
@@ -3339,6 +3447,12 @@ export const el: Record<string, string> = {
 };
 
 export const id: Record<string, string> = {
+  'ext.export.reporterPlaceholder': 'Pilih reporter basis data untuk diekspor',
+  'ext.export.toOutput': 'Tampilkan di Output',
+  'ext.export.toFile': 'Simpan ke file…',
+  'ext.export.noTargets': 'Tidak ada suite/test yang dipilih untuk diekspor.',
+  'ext.export.saved': 'Output reporter "{reporter}" disimpan ke {path}',
+  'ext.export.failed': 'Ekspor gagal: {error}',
   'ext.wallet.title': 'utPLSQL — Kata sandi wallet',
   'ext.wallet.prompt': 'Kata sandi wallet Oracle Cloud (kosongkan untuk menghapus).',
   'ext.wallet.saved': 'Kata sandi wallet disimpan untuk profil "{name}".',
@@ -3531,6 +3645,12 @@ export const id: Record<string, string> = {
 };
 
 export const ro: Record<string, string> = {
+  'ext.export.reporterPlaceholder': 'Alegeți un reporter din baza de date pentru export',
+  'ext.export.toOutput': 'Afișează în Output',
+  'ext.export.toFile': 'Salvează în fișier…',
+  'ext.export.noTargets': 'Nicio suită/test selectată pentru export.',
+  'ext.export.saved': 'Ieșirea reporterului „{reporter}” a fost salvată în {path}',
+  'ext.export.failed': 'Exportul a eșuat: {error}',
   'ext.wallet.title': 'utPLSQL — Parolă portofel',
   'ext.wallet.prompt': 'Parola portofelului Oracle Cloud (lăsați gol pentru a elimina).',
   'ext.wallet.saved': 'Parola portofelului a fost salvată pentru profilul „{name}”.',
@@ -3721,6 +3841,12 @@ export const ro: Record<string, string> = {
 };
 
 export const sr: Record<string, string> = {
+  'ext.export.reporterPlaceholder': 'Изаберите reporter базе за извоз',
+  'ext.export.toOutput': 'Прикажи у Output',
+  'ext.export.toFile': 'Сачувај у датотеку…',
+  'ext.export.noTargets': 'Није изабрана ниједна suite/тест за извоз.',
+  'ext.export.saved': 'Излаз reporter-а „{reporter}” сачуван у {path}',
+  'ext.export.failed': 'Извоз није успео: {error}',
   'ext.wallet.title': 'utPLSQL — Лозинка новчаника',
   'ext.wallet.prompt': 'Лозинка новчаника Oracle Cloud (оставите празно да уклоните).',
   'ext.wallet.saved': 'Лозинка новчаника сачувана за профил „{name}”.',
@@ -3911,6 +4037,12 @@ export const sr: Record<string, string> = {
 };
 
 export const th: Record<string, string> = {
+  'ext.export.reporterPlaceholder': 'เลือก reporter ของฐานข้อมูลเพื่อส่งออก',
+  'ext.export.toOutput': 'แสดงใน Output',
+  'ext.export.toFile': 'บันทึกเป็นไฟล์…',
+  'ext.export.noTargets': 'ยังไม่ได้เลือก suite/test ที่จะส่งออก',
+  'ext.export.saved': 'บันทึกเอาต์พุตของ reporter "{reporter}" ไปที่ {path} แล้ว',
+  'ext.export.failed': 'การส่งออกล้มเหลว: {error}',
   'ext.wallet.title': 'utPLSQL — รหัสผ่านวอลเล็ต',
   'ext.wallet.prompt': 'รหัสผ่านวอลเล็ต Oracle Cloud (เว้นว่างเพื่อลบ)',
   'ext.wallet.saved': 'บันทึกรหัสผ่านวอลเล็ตสำหรับโปรไฟล์ "{name}" แล้ว',
@@ -4091,6 +4223,12 @@ export const th: Record<string, string> = {
 };
 
 export const uk: Record<string, string> = {
+  'ext.export.reporterPlaceholder': 'Виберіть reporter бази даних для експорту',
+  'ext.export.toOutput': 'Показати в Output',
+  'ext.export.toFile': 'Зберегти у файл…',
+  'ext.export.noTargets': 'Не вибрано suite/тест для експорту.',
+  'ext.export.saved': 'Вивід reporter «{reporter}» збережено у {path}',
+  'ext.export.failed': 'Помилка експорту: {error}',
   'ext.wallet.title': 'utPLSQL — Пароль гаманця',
   'ext.wallet.prompt': 'Пароль гаманця Oracle Cloud (залиште порожнім, щоб видалити).',
   'ext.wallet.saved': 'Пароль гаманця збережено для профілю «{name}».',
@@ -4283,6 +4421,12 @@ export const uk: Record<string, string> = {
 };
 
 export const vi: Record<string, string> = {
+  'ext.export.reporterPlaceholder': 'Chọn reporter của cơ sở dữ liệu để xuất',
+  'ext.export.toOutput': 'Hiển thị trong Output',
+  'ext.export.toFile': 'Lưu vào tệp…',
+  'ext.export.noTargets': 'Chưa chọn suite/test để xuất.',
+  'ext.export.saved': 'Đã lưu đầu ra của reporter "{reporter}" vào {path}',
+  'ext.export.failed': 'Xuất thất bại: {error}',
   'ext.wallet.title': 'utPLSQL — Mật khẩu ví',
   'ext.wallet.prompt': 'Mật khẩu ví Oracle Cloud (để trống để xóa).',
   'ext.wallet.saved': 'Đã lưu mật khẩu ví cho hồ sơ "{name}".',

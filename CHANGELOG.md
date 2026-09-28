@@ -20,6 +20,14 @@
   O perfil ganhou o campo `walletLocation` e o comando
   `utPLSQL: Set wallet password` grava a senha da wallet no SecretStorage.
 
+- **Execução e export com reporter arbitrário (PRD-76)**: novo comando
+  `utPLSQL: Run with Reporter (Export)` (menu de contexto do Test Explorer) que
+  roda a seleção com qualquer reporter do banco e grava a saída no Output ou em
+  arquivo. As settings `utplsql.reporter.clientCharacterSet` e
+  `utplsql.reporter.colorConsole` controlam os argumentos
+  `a_client_character_set` e `a_color_console` (allowlist por reporter). O export
+  **não** altera os resultados no Test Explorer.
+
 ## 0.13.0
 
 - **Correção: resultados e jump-to-failure em suítes com `%suitepath` (PRD-87)**: o

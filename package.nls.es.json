@@ -27,5 +27,6 @@
   "nls.command.runScriptFolder": "utPLSQL: Run script folder",
   "nls.command.compileForDebug": "utPLSQL: Compilar para depuración",
   "nls.command.rebuildAnnotations": "utPLSQL: Reconstruir caché de anotaciones",
-  "nls.command.setWalletPassword": "utPLSQL: Establecer contraseña de la wallet"
+  "nls.command.setWalletPassword": "utPLSQL: Establecer contraseña de la wallet",
+  "nls.command.runWithReporter": "utPLSQL: Ejecutar con reporter (exportar)"
 }

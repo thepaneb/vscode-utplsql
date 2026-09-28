@@ -485,6 +485,12 @@ export interface OracleRunOptions {
   dbmsOutput?: boolean;
   /** Timeout em minutos (0 = sem timeout) */
   timeoutMinutes?: number;
+  /**
+   * Export com reporter arbitrário (PRD-76): quando presente, o run usa apenas
+   * esse reporter, captura a saída textual e a devolve (sem aplicar resultados
+   * de teste nem cobertura).
+   */
+  exportReporter?: { name: string; charset?: string; colorConsole?: boolean };
 }
 
 type LoadedOracledb = typeof import('oracledb');
@@ -499,11 +505,67 @@ async function loadOracledb(): Promise<LoadedOracledb | undefined> {
   }
 }
 
+/** Reporters do utPLSQL cujo construtor aceita `a_client_character_set`. */
+const EXPORT_CHARSET_REPORTERS = new Set([
+  'ut_documentation_reporter',
+  'ut_teamcity_reporter',
+  'ut_tap_reporter',
+  'ut_junit_reporter',
+  'ut_sonar_test_reporter',
+]);
+
+/** Reporters textuais de console cujo construtor aceita `a_color_console`. */
+const EXPORT_COLOR_REPORTERS = new Set([
+  'ut_documentation_reporter',
+  'ut_teamcity_reporter',
+  'ut_tap_reporter',
+]);
+
+/**
+ * Monta a chamada do reporter de export (PRD-76 RF5). Os parâmetros só entram
+ * quando configurados e quando o reporter está na allowlist que os aceita —
+ * evita ORA em reporters com assinatura diferente.
+ */
+function exportReporterCall(
+  name: string,
+  charset: string | undefined,
+  colorConsole: boolean | undefined,
+  binds: Record<string, import('oracledb').BindParameter>,
+  oracledb: typeof import('oracledb'),
+): string {
+  const args: string[] = [];
+  if (charset && EXPORT_CHARSET_REPORTERS.has(name)) {
+    binds.exportCharset = { dir: oracledb.BIND_IN, type: oracledb.STRING, val: charset };
+    args.push('a_client_character_set => :exportCharset');
+  }
+  if (colorConsole && EXPORT_COLOR_REPORTERS.has(name)) {
+    binds.exportColor = { dir: oracledb.BIND_IN, type: oracledb.DB_TYPE_BOOLEAN, val: true };
+    args.push('a_color_console => :exportColor');
+  }
+  return args.length > 0 ? `${name}(${args.join(', ')})` : `${name}()`;
+}
+
+/**
+ * Lista os reporters do banco numa conexão própria (best-effort). Vazio quando
+ * não há oracledb/conexão disponível.
+ */
+export async function listReportersForConnection(
+  connection: string,
+  cfg: UtConfig,
+): Promise<string[]> {
+  const oracledb = await loadOracledb();
+  if (!oracledb) return [];
+  const result = await withOracleConnection(oracledb, connection, cfg, (conn) =>
+    listReportersOracle(conn),
+  );
+  return result ?? [];
+}
+
 export async function executeRunOracle(
   options: OracleRunOptions,
   token: vscode.CancellationToken,
   loadOracledbMod: () => Promise<LoadedOracledb | undefined> = loadOracledb,
-): Promise<void> {
+): Promise<string | undefined> {
   const {
     connection,
     pathArgs,
@@ -529,7 +591,10 @@ export async function executeRunOracle(
     coverageExcludeObjectExpr,
     dbmsOutput,
     timeoutMinutes,
+    exportReporter,
   } = options;
+  const exporting = !!exportReporter;
+  let exportText = '';
 
   const oracledb = await loadOracledbMod();
   if (!oracledb) {
@@ -549,60 +614,86 @@ export async function executeRunOracle(
       { autoCommit: true },
     );
 
-    const runners = ['ut_documentation_reporter()', 'ut_junit_reporter()'];
+    const runners: string[] = [];
+    const exportBinds: Record<string, import('oracledb').BindParameter> = {};
+    let coverageEnabled = !exporting && coverage;
 
-    let coverageEnabled = coverage;
-    if (coverage) {
-      const hasReporter = await checkReporterExists(conn1, 'UT_COVERAGE_COBERTURA_REPORTER');
-      if (!hasReporter) {
-        coverageEnabled = false;
-        run.appendOutput(`\r\n${t(getExtensionLocale(), 'runner.reporterMissing')}\r\n`);
-      } else {
-        runners.push('ut_coverage_cobertura_reporter()');
-      }
-    }
-
-    // Reporter adicional volátil da sessão (PRD-68 RF2): consumo único.
-    const sessionReporter = state.consumeExtraReporter?.();
-    const extraReporters = [...(additionalReporters ?? [])];
-    if (sessionReporter) {
-      extraReporters.push(sessionReporter);
-      run.appendOutput(
-        `\r\n${t(getExtensionLocale(), 'runner.extraReporter', { name: sessionReporter })}\r\n`,
-      );
-    }
-
-    // Validar reporter adicional evita que um nome inexistente aborte todo o
-    // `ut_runner.run` com ORA. Lista indisponível (best-effort) → não bloqueia.
-    const knownReporters = extraReporters.length > 0 ? await listReportersOracle(conn1) : [];
-
-    for (const r of extraReporters) {
-      const normalized = r.toLowerCase().replace(/\(\)$/, '');
-      // Só aceita identificadores PL/SQL simples: o nome vem de settings (que
-      // podem ser definidas pelo workspace) e é concatenado no PL/SQL abaixo.
-      if (!/^[a-z0-9_]+$/.test(normalized)) {
-        logger.warn('reporter adicional ignorado (nome inválido)', { reporter: r });
-        continue;
-      }
-      if (
-        normalized === 'ut_documentation_reporter' ||
-        normalized === 'ut_junit_reporter' ||
-        (coverageEnabled && normalized === 'ut_coverage_cobertura_reporter')
-      ) {
-        continue;
-      }
-      if (runners.some((existing) => existing.startsWith(normalized))) continue;
-      if (
-        knownReporters.length > 0 &&
-        !knownReporters.some((k) => k.toLowerCase() === normalized)
-      ) {
-        logger.warn('reporter adicional inexistente ignorado', { reporter: r });
-        run.appendOutput(
-          `\r\n${t(getExtensionLocale(), 'runner.reporterUnknown', { name: r })}\r\n`,
+    if (exporting && exportReporter) {
+      // Export (PRD-76): só o reporter escolhido; sem JUnit/cobertura adicionais.
+      const normalized = exportReporter.name.toLowerCase().replace(/\(\)$/, '');
+      const known = await listReportersOracle(conn1);
+      const valid =
+        /^[a-z0-9_]+$/.test(normalized) &&
+        (known.length === 0 || known.some((k) => k.toLowerCase() === normalized));
+      if (!valid) {
+        throw new Error(
+          t(getExtensionLocale(), 'runner.reporterUnknown', { name: exportReporter.name }),
         );
-        continue;
       }
-      runners.push(`${normalized}()`);
+      runners.push(
+        exportReporterCall(
+          normalized,
+          exportReporter.charset,
+          exportReporter.colorConsole,
+          exportBinds,
+          oracledb,
+        ),
+      );
+    } else {
+      runners.push('ut_documentation_reporter()', 'ut_junit_reporter()');
+
+      if (coverageEnabled) {
+        const hasReporter = await checkReporterExists(conn1, 'UT_COVERAGE_COBERTURA_REPORTER');
+        if (!hasReporter) {
+          coverageEnabled = false;
+          run.appendOutput(`\r\n${t(getExtensionLocale(), 'runner.reporterMissing')}\r\n`);
+        } else {
+          runners.push('ut_coverage_cobertura_reporter()');
+        }
+      }
+
+      // Reporter adicional volátil da sessão (PRD-68 RF2): consumo único.
+      const sessionReporter = state.consumeExtraReporter?.();
+      const extraReporters = [...(additionalReporters ?? [])];
+      if (sessionReporter) {
+        extraReporters.push(sessionReporter);
+        run.appendOutput(
+          `\r\n${t(getExtensionLocale(), 'runner.extraReporter', { name: sessionReporter })}\r\n`,
+        );
+      }
+
+      // Validar reporter adicional evita que um nome inexistente aborte todo o
+      // `ut_runner.run` com ORA. Lista indisponível (best-effort) → não bloqueia.
+      const knownReporters = extraReporters.length > 0 ? await listReportersOracle(conn1) : [];
+
+      for (const r of extraReporters) {
+        const normalized = r.toLowerCase().replace(/\(\)$/, '');
+        // Só aceita identificadores PL/SQL simples: o nome vem de settings (que
+        // podem ser definidas pelo workspace) e é concatenado no PL/SQL abaixo.
+        if (!/^[a-z0-9_]+$/.test(normalized)) {
+          logger.warn('reporter adicional ignorado (nome inválido)', { reporter: r });
+          continue;
+        }
+        if (
+          normalized === 'ut_documentation_reporter' ||
+          normalized === 'ut_junit_reporter' ||
+          (coverageEnabled && normalized === 'ut_coverage_cobertura_reporter')
+        ) {
+          continue;
+        }
+        if (runners.some((existing) => existing.startsWith(normalized))) continue;
+        if (
+          knownReporters.length > 0 &&
+          !knownReporters.some((k) => k.toLowerCase() === normalized)
+        ) {
+          logger.warn('reporter adicional inexistente ignorado', { reporter: r });
+          run.appendOutput(
+            `\r\n${t(getExtensionLocale(), 'runner.reporterUnknown', { name: r })}\r\n`,
+          );
+          continue;
+        }
+        runners.push(`${normalized}()`);
+      }
     }
 
     const owner = (coverageOwner ?? '').trim() || parseConnString(connection).user.toUpperCase();
@@ -620,6 +711,7 @@ export async function executeRunOracle(
     const binds: Record<string, import('oracledb').BindParameter> = {
       tags: { dir: oracledb.BIND_IN, type: oracledb.STRING, val: tags || null },
     };
+    Object.assign(binds, exportBinds);
     const pathsArg = pathArgs.length > 0 ? ':paths' : 'null';
     if (pathArgs.length > 0) {
       binds.paths = { dir: oracledb.BIND_IN, type: 'UT_VARCHAR2_LIST', val: pathArgs };
@@ -768,7 +860,10 @@ export async function executeRunOracle(
             lastMsgId = r.MESSAGE_ID;
             const text = r.TEXT;
             if (text) {
-              if (inCdata || text.startsWith('<')) {
+              if (exporting) {
+                exportText += `${text}\n`;
+                run.appendOutput(`${text}\r\n`);
+              } else if (inCdata || text.startsWith('<')) {
                 xmlBuffer += `${text}\n`;
                 if (text.includes('<![CDATA[')) inCdata = true;
                 if (text.includes(']]>')) inCdata = false;
@@ -806,6 +901,9 @@ export async function executeRunOracle(
         logger.debug('executeRunOracle: DBMS_OUTPUT indisponível', { error: String(e) });
       }
     }
+
+    // Export (PRD-76): devolve a saída do reporter sem aplicar resultados/cobertura.
+    if (exporting) return exportText;
 
     const runnerMs = Date.now() - runnerStart;
 

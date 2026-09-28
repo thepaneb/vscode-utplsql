@@ -54,6 +54,8 @@ function makeGlobal(over: Partial<UtConfig> = {}): UtConfig {
     coverageExcludeSchemaExpr: '',
     coverageExcludeObjectExpr: '',
     additionalReporters: [],
+    reporterClientCharacterSet: '',
+    reporterColorConsole: false,
     timeoutMinutes: 60,
     dbmsOutput: false,
     oraclePoolMin: 2,
