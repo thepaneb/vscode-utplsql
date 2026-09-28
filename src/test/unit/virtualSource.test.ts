@@ -31,3 +31,18 @@ test('parseSourceUri: sem schema e sem extensão cai em .sql', () => {
     line: undefined,
   });
 });
+
+test('parseSourceUri: usa uri.query quando separado do path', () => {
+  const u = {
+    path: '/APP/O.sql',
+    query: 'line=7',
+    scheme: 'utplsql-source',
+    toString: () => 'utplsql-source:/APP/O.sql?line=7',
+  } as never;
+  assert.deepStrictEqual(parseSourceUri(u), {
+    schema: 'APP',
+    object: 'O',
+    ext: 'sql',
+    line: 7,
+  });
+});

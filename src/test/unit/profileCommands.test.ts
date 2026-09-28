@@ -169,3 +169,82 @@ test('newProfile: charset utf8 não é gravado', async () => {
   await commands.__getRegisteredCommand('utplsql.newProfile')?.();
   assert.strictEqual(profilesSetting()[0].charset, undefined);
 });
+
+// ── setWalletPassword (PRD-82 RF4) ───────────────────────────────────
+// `connectionProfiles` é importado dinamicamente para pegar o mock de `node:os`.
+
+async function walletModule() {
+  return import('../../connectionProfiles.js');
+}
+
+function fakeSecrets() {
+  const map = new Map<string, string>();
+  return {
+    map,
+    storage: {
+      store: async (k: string, v: string) => {
+        map.set(k, v);
+      },
+      get: async (k: string) => map.get(k),
+      delete: async (k: string) => {
+        map.delete(k);
+      },
+      onDidChange: () => ({ dispose() {} }),
+    } as never,
+  };
+}
+
+test('setWalletPassword: sem perfil ativo avisa', async () => {
+  const { initSecretStorage } = await walletModule();
+  await register();
+  initSecretStorage(fakeSecrets().storage);
+  __setConfigValue('profiles', []);
+  __setConfigValue('activeProfile', '');
+  await commands.__getRegisteredCommand('utplsql.setWalletPassword')?.();
+  assert.ok(__getWarningMessages().length >= 1);
+});
+
+test('setWalletPassword: salva a senha da wallet no perfil ativo', async () => {
+  const { getWalletPassword, initSecretStorage } = await walletModule();
+  await register();
+  const { map, storage } = fakeSecrets();
+  initSecretStorage(storage);
+  __setConfigValue('profiles', [{ id: 'w1', name: 'DEV', connection: 'u@//h:1521/s' }]);
+  __setConfigValue('activeProfile', 'w1');
+  __setInputBoxResults(['wallet-pass']);
+
+  await commands.__getRegisteredCommand('utplsql.setWalletPassword')?.();
+
+  assert.strictEqual(map.get('utplsql.wallet.w1'), 'wallet-pass');
+  assert.strictEqual(getWalletPassword('w1'), 'wallet-pass');
+  assert.ok(__getInformationMessages().some((m) => m.includes('DEV')));
+});
+
+test('setWalletPassword: senha vazia limpa a wallet', async () => {
+  const { getWalletPassword, initSecretStorage, setWalletPassword } = await walletModule();
+  await register();
+  const { map, storage } = fakeSecrets();
+  initSecretStorage(storage);
+  __setConfigValue('profiles', [{ id: 'w2', name: 'DEV', connection: 'u@//h:1521/s' }]);
+  __setConfigValue('activeProfile', 'w2');
+  await setWalletPassword('w2', 'old');
+  __setInputBoxResults(['']);
+
+  await commands.__getRegisteredCommand('utplsql.setWalletPassword')?.();
+
+  assert.strictEqual(getWalletPassword('w2'), undefined);
+  assert.ok(!map.has('utplsql.wallet.w2'));
+});
+
+test('setWalletPassword: cancelar não altera a wallet', async () => {
+  const { getWalletPassword, initSecretStorage } = await walletModule();
+  await register();
+  initSecretStorage(fakeSecrets().storage);
+  __setConfigValue('profiles', [{ id: 'w3', name: 'DEV', connection: 'u@//h:1521/s' }]);
+  __setConfigValue('activeProfile', 'w3');
+  __setInputBoxResults([undefined]);
+
+  await commands.__getRegisteredCommand('utplsql.setWalletPassword')?.();
+
+  assert.strictEqual(getWalletPassword('w3'), undefined);
+});

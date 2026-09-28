@@ -103,6 +103,38 @@ export function __resetLastQuickPickItems(): void {
   _lastQuickPickItems = undefined;
 }
 
+// Fila de resultados para múltiplos QuickPicks numa mesma execução.
+let _quickPickResults: unknown[] = [];
+
+export function __setQuickPickResults(values: unknown[]): void {
+  _quickPickResults = [...values];
+}
+
+export function __resetQuickPickResults(): void {
+  _quickPickResults = [];
+}
+
+let _saveDialogResult: unknown;
+let _lastSaveDialogOptions: unknown;
+
+export function __setSaveDialogResult(value: unknown): void {
+  _saveDialogResult = value;
+}
+
+export function __getLastSaveDialogOptions(): unknown {
+  return _lastSaveDialogOptions;
+}
+
+let _writtenFiles: Record<string, string> = {};
+
+export function __getWrittenFile(path: string): string | undefined {
+  return _writtenFiles[path];
+}
+
+export function __resetWrittenFiles(): void {
+  _writtenFiles = {};
+}
+
 let _warningResult: string | undefined;
 let _informationResult: string | undefined;
 
@@ -215,6 +247,11 @@ export namespace workspace {
       if (_mockDirEntries[path]) return Promise.resolve({ type: 2 });
       if (path in _mockFileContents) return Promise.resolve({ type: 1 });
       return Promise.reject(new Error(`mock: stat nao encontrado: ${path}`));
+    },
+    writeFile: (uri: any, content: unknown) => {
+      const path = uri.fsPath ?? uri;
+      _writtenFiles[path] = String(content);
+      return Promise.resolve();
     },
   };
   export let workspaceFolders:
@@ -489,7 +526,12 @@ export namespace window {
     _options?: { placeHolder?: string; matchOnDescription?: boolean },
   ) {
     _lastQuickPickItems = _items;
+    if (_quickPickResults.length > 0) return Promise.resolve(_quickPickResults.shift());
     return Promise.resolve(_quickPickResult);
+  }
+  export function showSaveDialog(options?: unknown) {
+    _lastSaveDialogOptions = options;
+    return Promise.resolve(_saveDialogResult);
   }
   export function showErrorMessage(message: string) {
     _errorMessages.push(message);
@@ -527,9 +569,11 @@ export namespace window {
     return {
       name,
       append: (text: string) => {
+        if (!_outputChannels[name]) _outputChannels[name] = [];
         _outputChannels[name].push(text);
       },
       appendLine: (text: string) => {
+        if (!_outputChannels[name]) _outputChannels[name] = [];
         _outputChannels[name].push(`${text}\n`);
       },
       show: () => {},

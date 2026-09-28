@@ -220,6 +220,19 @@ test('fetchDbObjectSource: erro na query retorna vazio', async () =>
     assert.strictEqual(text, '');
   }));
 
+test('fetchDbObjectSource: tipo desconhecido retorna vazio', async () =>
+  withConn(async () => {
+    const conn = {
+      execute: async () => ({ rows: [{ TYPE: 'VIEWX', LINE: 1, TEXT: 'x' }] }),
+      close: async () => {},
+    };
+    const text = await fetchDbObjectSource(
+      Uri.parse('utplsql-source:/APP/UT_PKG.pkb') as never,
+      async () => fakeOracledb(conn),
+    );
+    assert.strictEqual(text, '');
+  }));
+
 test('registerDbSourceProvider: provider registrado serve e cacheia o conteúdo', async () => {
   __resetConfigValues();
   workspace.__resetTextDocumentContentProviders();

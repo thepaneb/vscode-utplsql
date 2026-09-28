@@ -167,6 +167,20 @@ test('resolveSchemaNode: idempotente (não duplica package)', async () => {
   assert.strictEqual(schemaItem._children.length, 1);
 });
 
+test('resolveSchemaNode: funde suites do banco quando há conexão', async () => {
+  const controller = makeController();
+  const state = new TestStateManager();
+  buildSchemaTree(controller, state, [suite({ dbSchema: 'APP' })], 'db/{schema}/**');
+  const schemaItem = controller._items[0];
+  const deps = {
+    resolveConnection: () => 'u/p@//h:1521/s',
+    extractSchemaFromPath: () => 'APP',
+    discoverDbSuites: async () => [suite({ dbSchema: 'APP', packageName: 'UT_DB_ONLY' })],
+  };
+  await resolveSchemaNode(controller, state, schemaItem, deps as never);
+  assert.strictEqual(schemaItem._children.length, 2, 'deveria unir arquivo + banco');
+});
+
 test('buildSchemaTree: schema desconhecido vai para UNKNOWN por último', () => {
   const controller = makeController();
   const state = new TestStateManager();
