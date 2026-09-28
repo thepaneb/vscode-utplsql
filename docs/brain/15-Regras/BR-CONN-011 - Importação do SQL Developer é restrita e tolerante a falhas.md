@@ -8,7 +8,7 @@ status: ativo
 severidade: media
 fonte: codigo
 verificado: 2026-09-23
-implementacao: ["src/connectionProfiles.ts:45", "src/connectionProfiles.ts:98", "src/connectionProfiles.ts:280"]
+implementacao: ["src/connectionProfiles.ts:54", "src/connectionProfiles.ts:88", "src/connectionProfiles.ts:342"]
 testes: ["src/test/unit/connectionProfiles.test.ts"]
 prds: ["PRD-34"]
 requisitos: ["PRD-34/RF6"]

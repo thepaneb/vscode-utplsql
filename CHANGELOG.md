@@ -1,5 +1,17 @@
 # Changelog
 
+## 0.14.0
+
+- **Hardening de segurança das settings de conexão (PRD-81)**: as settings
+  sensíveis (`utplsql.connection`, `utplsql.profiles`, `utplsql.activeProfile`,
+  `utplsql.oracleClientLibDir`, `utplsql.oracleClientConfigDir`) passam a ser
+  **`machine`-scoped** — um `.vscode/settings.json` de terceiros não pode
+  sobrescrevê-las. A extensão fica **desabilitada em workspaces não confiáveis**
+  (`capabilities.untrustedWorkspaces`). A senha do perfil, guardada no
+  SecretStorage, passa a ser **vinculada à conexão**: se a `connection` do perfil
+  mudar, a senha é descartada em vez de ser enviada ao novo host. Perfis legados
+  são migrados automaticamente.
+
 ## 0.13.0
 
 - **Correção: resultados e jump-to-failure em suítes com `%suitepath` (PRD-87)**: o

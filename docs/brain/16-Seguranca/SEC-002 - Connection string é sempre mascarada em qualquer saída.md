@@ -7,7 +7,7 @@ dominio: segredos
 status: ativo
 severidade: alta
 verificado: 2026-09-28
-implementacao: ["src/connectionProfiles.ts:22", "src/connectionProfiles.ts:24", "src/oracleRunner.ts:46"]
+implementacao: ["src/connectionProfiles.ts:23", "src/connectionProfiles.ts:25", "src/oracleRunner.ts:46"]
 testes: ["src/test/unit/connectionProfiles.test.ts", "src/test/unit/oracleRunner.test.ts"]
 regras: ["BR-CONN-008", "BR-CONN-009"]
 tags: ["seguranca", "conexao"]

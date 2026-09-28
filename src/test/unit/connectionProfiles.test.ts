@@ -519,7 +519,10 @@ test('saveProfiles: move a senha para o SecretStorage e remove da settings', asy
   try {
     await saveProfiles([{ id: 'p1', name: 'DEV', connection: 'dev/s3cr3t@//host:1521/svc' }]);
     assert.strictEqual(getAllProfiles()[0].connection, 'dev@//host:1521/svc');
-    assert.strictEqual(map.get('utplsql.profile.p1'), 's3cr3t');
+    assert.deepStrictEqual(JSON.parse(map.get('utplsql.profile.p1') ?? '{}'), {
+      connection: 'dev@//host:1521/svc',
+      password: 's3cr3t',
+    });
     assert.strictEqual(getProfileConnection(getAllProfiles()[0]), 'dev/s3cr3t@//host:1521/svc');
   } finally {
     __resetConfigValues();
@@ -531,7 +534,10 @@ test('hydrateProfilePasswords: restaura senha do SecretStorage após reload', as
   const { storage } = fakeSecrets();
   initSecretStorage(storage);
   __setConfigValue('profiles', [{ id: 'hydrate-unico-1', name: 'DEV', connection: 'h@h:1521/s' }]);
-  await storage.store('utplsql.profile.hydrate-unico-1', 'p4ss');
+  await storage.store(
+    'utplsql.profile.hydrate-unico-1',
+    JSON.stringify({ connection: 'h@h:1521/s', password: 'p4ss' }),
+  );
   try {
     await hydrateProfilePasswords();
     assert.strictEqual(getProfileConnection(getAllProfiles()[0]), 'h/p4ss@h:1521/s');
@@ -555,7 +561,10 @@ test('migrateLegacyProfiles: move senha legada e reescreve a settings', async ()
   try {
     await migrateLegacyProfiles();
     assert.strictEqual(getAllProfiles()[0].connection, 'u@h:1521/s');
-    assert.strictEqual(map.get('utplsql.profile.m1'), 'secret');
+    assert.deepStrictEqual(JSON.parse(map.get('utplsql.profile.m1') ?? '{}'), {
+      connection: 'u@h:1521/s',
+      password: 'secret',
+    });
     assert.strictEqual(getProfileConnection(getAllProfiles()[0]), 'u/secret@h:1521/s');
   } finally {
     __resetConfigValues();
@@ -577,6 +586,67 @@ test('migrateLegacyProfiles: mantém perfis já sanitizados sem reescrever', asy
     assert.strictEqual(profiles[0].connection, 'u@h:1521/s');
     assert.strictEqual(profiles[1].connection, 'u@h:1521/s');
     assert.strictEqual(profiles[1].id, 'ok');
+  } finally {
+    __resetConfigValues();
+  }
+});
+
+// ── Vínculo senha↔conexão (PRD-81 RF3) ────────────────────────────────
+
+test('hydrateProfilePasswords: migra segredo legado e vincula à conexão atual', async () => {
+  __resetConfigValues();
+  const { map, storage } = fakeSecrets();
+  initSecretStorage(storage);
+  __setConfigValue('profiles', [{ id: 'legado-hydrate-1', name: 'LEG', connection: 'u@h:1521/s' }]);
+  // Formato antigo (PRD-65): string crua, sem vínculo.
+  await storage.store('utplsql.profile.legado-hydrate-1', 'p4ss');
+  try {
+    await hydrateProfilePasswords();
+    assert.strictEqual(getProfileConnection(getAllProfiles()[0]), 'u/p4ss@h:1521/s');
+    assert.deepStrictEqual(JSON.parse(map.get('utplsql.profile.legado-hydrate-1') ?? '{}'), {
+      connection: 'u@h:1521/s',
+      password: 'p4ss',
+    });
+  } finally {
+    __resetConfigValues();
+  }
+});
+
+test('hydrateProfilePasswords: descarta senha vinculada a outra conexão', async () => {
+  __resetConfigValues();
+  const { map, storage } = fakeSecrets();
+  initSecretStorage(storage);
+  __setConfigValue('profiles', [{ id: 'orfao-1', name: 'DEV', connection: 'u@novo-host:1521/s' }]);
+  await storage.store(
+    'utplsql.profile.orfao-1',
+    JSON.stringify({ connection: 'u@antigo-host:1521/s', password: 'p4ss' }),
+  );
+  try {
+    await hydrateProfilePasswords();
+    // Sem senha: o host da conexão mudou desde que a senha foi salva.
+    assert.strictEqual(getProfileConnection(getAllProfiles()[0]), 'u@novo-host:1521/s');
+    assert.ok(!map.has('utplsql.profile.orfao-1'), 'segredo órfão deveria ser removido');
+  } finally {
+    __resetConfigValues();
+  }
+});
+
+test('getProfileConnection: não reaproveita a senha se a conexão do perfil mudou', async () => {
+  __resetConfigValues();
+  const { storage } = fakeSecrets();
+  initSecretStorage(storage);
+  __setConfigValue('profiles', [{ id: 'muda-1', name: 'DEV', connection: 'u@h1:1521/s' }]);
+  await storage.store(
+    'utplsql.profile.muda-1',
+    JSON.stringify({ connection: 'u@h1:1521/s', password: 'p4ss' }),
+  );
+  try {
+    await hydrateProfilePasswords();
+    assert.strictEqual(getProfileConnection(getAllProfiles()[0]), 'u/p4ss@h1:1521/s');
+    assert.strictEqual(
+      getProfileConnection({ id: 'muda-1', name: 'DEV', connection: 'u@outro-host:1521/s' }),
+      'u@outro-host:1521/s',
+    );
   } finally {
     __resetConfigValues();
   }
