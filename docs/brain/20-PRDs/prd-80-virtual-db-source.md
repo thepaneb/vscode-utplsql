@@ -173,6 +173,5 @@ Manter os nomes de pacote/schema em maiúsculas; expor o objeto no provider e um
 <!-- brain:auto:start:conexoes -->
 - 🗺️ [[MOC - PRDs]]
 - 🔗 PRDs relacionados: [[prd-43-schema-db-discovery|PRD-43]] · [[prd-74-db-first-discovery|PRD-74]]
-- 🔗 Mesma versão (0.14.0): [[prd-75-lazy-test-tree|PRD-75]]
 - 🚀 ⬅️ release anterior: [[prd-87-suitepath-results-jump|PRD-87 (0.13.0)]] · ➡️ próxima release: [[prd-47-node-26-toolchain|PRD-47 (0.15.0)]]
 <!-- brain:auto:end -->
