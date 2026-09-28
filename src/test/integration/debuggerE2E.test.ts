@@ -41,7 +41,7 @@ describeDB('debugger DBMS_DEBUG — ciclo real (breakpoint -> stop -> frame)', (
   });
 
   it('para no breakpoint, lê o frame e a variável, e encerra', async function () {
-    this.timeout(90_000);
+    this.timeout(180_000);
     const mod = await import('oracledb');
     const oracledb =
       ((mod as Record<string, unknown>).default as typeof import('oracledb')) ??

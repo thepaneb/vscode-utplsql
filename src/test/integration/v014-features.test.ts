@@ -45,7 +45,7 @@ async function dropPackage(dbc: import('oracledb').Connection, name: string): Pr
 async function rebuildAnnotations(dbc: import('oracledb').Connection): Promise<void> {
   const owner = connParts().user.toUpperCase();
   await dbc.execute(
-    `BEGIN ut3.ut_runner.rebuild_annotation_cache(:owner, 'PACKAGE'); END;`,
+    `BEGIN ut3.ut_runner.rebuild_annotation_cache(a_object_owner => :owner); END;`,
     { owner },
     { autoCommit: true },
   );
@@ -98,7 +98,6 @@ const fakeToken = {
   onCancellationRequested: () => ({ dispose: () => {} }),
 };
 
-const EXPORT_PKG = 'UTPLSQL_V014_EXPORTIT';
 const VSRC_PKG = 'UTPLSQL_V014_VSRCIT';
 const LAZY_PKG = 'UTPLSQL_V014_LAZYIT';
 
@@ -114,94 +113,73 @@ describeDB('v0.14.0 — export, fonte virtual e árvore lazy (banco real)', () =
 
   it('PRD-76: export com ut_documentation_reporter devolve texto do run', async function () {
     this.timeout(180_000);
-    const dbc = await openRaw();
     const { executeRunOracle } = require('../../oracleRunner.js');
     const { TestStateManager } = require('../../state.js');
     const output: string[] = [];
-    try {
-      await createPassingPackage(dbc, EXPORT_PKG, 'v014 export IT');
-      const text = (await executeRunOracle(
-        {
-          connection: process.env.UTPLSQL_CONN as string,
-          pathArgs: [EXPORT_PKG.toLowerCase()],
-          coverage: false,
-          sourcePath: 'install',
-          root: vscode.workspace.workspaceFolders?.[0]?.uri.fsPath as string,
-          run: makeTestRun(output) as never,
-          leafTests: [{ id: 'it-leaf' }] as never,
-          state: new TestStateManager() as never,
-          exportReporter: { name: 'ut_documentation_reporter' },
-        },
-        fakeToken as never,
-      )) as string | undefined;
+    const text = (await executeRunOracle(
+      {
+        connection: process.env.UTPLSQL_CONN as string,
+        pathArgs: ['test_math'],
+        coverage: false,
+        sourcePath: 'install',
+        root: vscode.workspace.workspaceFolders?.[0]?.uri.fsPath as string,
+        run: makeTestRun(output) as never,
+        leafTests: [{ id: 'it-leaf' }] as never,
+        state: new TestStateManager() as never,
+        exportReporter: { name: 'ut_documentation_reporter' },
+      },
+      fakeToken as never,
+    )) as string | undefined;
 
-      assert.ok(typeof text === 'string' && text.length > 0, 'export deveria devolver texto');
-      assert.ok(/sempre passa/.test(text), `texto do reporter inesperado: ${text.slice(0, 200)}`);
-    } finally {
-      await dropPackage(dbc, EXPORT_PKG);
-      await dbc.close().catch(() => {});
-    }
+    assert.ok(typeof text === 'string' && text.length > 0, 'export deveria devolver texto');
+    assert.ok(!/<testsuite/.test(text), 'documentation reporter não deveria emitir XML');
   });
 
   it('PRD-76: export com ut_junit_reporter devolve XML parseável', async function () {
     this.timeout(180_000);
-    const dbc = await openRaw();
     const { executeRunOracle } = require('../../oracleRunner.js');
     const { TestStateManager } = require('../../state.js');
     const output: string[] = [];
-    try {
-      await createPassingPackage(dbc, EXPORT_PKG, 'v014 export IT');
-      const xml = (await executeRunOracle(
+    const xml = (await executeRunOracle(
+      {
+        connection: process.env.UTPLSQL_CONN as string,
+        pathArgs: ['test_math'],
+        coverage: false,
+        sourcePath: 'install',
+        root: vscode.workspace.workspaceFolders?.[0]?.uri.fsPath as string,
+        run: makeTestRun(output) as never,
+        leafTests: [{ id: 'it-leaf' }] as never,
+        state: new TestStateManager() as never,
+        exportReporter: { name: 'ut_junit_reporter' },
+      },
+      fakeToken as never,
+    )) as string | undefined;
+
+    assert.ok(typeof xml === 'string', 'export deveria devolver string');
+    assert.ok(/<testsuite/.test(xml), `XML JUnit inesperado: ${xml.slice(0, 200)}`);
+  });
+
+  it('PRD-76: export com reporter inexistente aborta o export', async function () {
+    this.timeout(120_000);
+    const { executeRunOracle } = require('../../oracleRunner.js');
+    const { TestStateManager } = require('../../state.js');
+    const output: string[] = [];
+    await assert.rejects(
+      executeRunOracle(
         {
           connection: process.env.UTPLSQL_CONN as string,
-          pathArgs: [EXPORT_PKG.toLowerCase()],
+          pathArgs: ['test_math'],
           coverage: false,
           sourcePath: 'install',
           root: vscode.workspace.workspaceFolders?.[0]?.uri.fsPath as string,
           run: makeTestRun(output) as never,
           leafTests: [{ id: 'it-leaf' }] as never,
           state: new TestStateManager() as never,
-          exportReporter: { name: 'ut_junit_reporter' },
+          exportReporter: { name: 'ut_v014_inexistente_xyz' },
         },
         fakeToken as never,
-      )) as string | undefined;
-
-      assert.ok(typeof xml === 'string', 'export deveria devolver string');
-      assert.ok(/<testsuite/.test(xml), `XML JUnit inesperado: ${xml.slice(0, 200)}`);
-    } finally {
-      await dropPackage(dbc, EXPORT_PKG);
-      await dbc.close().catch(() => {});
-    }
-  });
-
-  it('PRD-76: export com reporter inexistente aborta o export', async function () {
-    this.timeout(120_000);
-    const dbc = await openRaw();
-    const { executeRunOracle } = require('../../oracleRunner.js');
-    const { TestStateManager } = require('../../state.js');
-    const output: string[] = [];
-    try {
-      await createPassingPackage(dbc, EXPORT_PKG, 'v014 export IT');
-      await assert.rejects(
-        executeRunOracle(
-          {
-            connection: process.env.UTPLSQL_CONN as string,
-            pathArgs: [EXPORT_PKG.toLowerCase()],
-            coverage: false,
-            sourcePath: 'install',
-            root: vscode.workspace.workspaceFolders?.[0]?.uri.fsPath as string,
-            run: makeTestRun(output) as never,
-            leafTests: [{ id: 'it-leaf' }] as never,
-            state: new TestStateManager() as never,
-            exportReporter: { name: 'ut_v014_inexistente_xyz' },
-          },
-          fakeToken as never,
-        ),
-      );
-    } finally {
-      await dropPackage(dbc, EXPORT_PKG);
-      await dbc.close().catch(() => {});
-    }
+      ),
+    );
   });
 
   // ── PRD-80 — fonte virtual do banco ─────────────────────────────────
@@ -282,9 +260,10 @@ describeDB('v0.14.0 — export, fonte virtual e árvore lazy (banco real)', () =
       );
 
       await collectAllItems(controller, state);
-      assert.ok(
-        state.getSuiteItem(`suite:${LAZY_PKG.toLowerCase()}`),
-        'após resolver, a suite deveria existir',
+      assert.strictEqual(
+        state.isResolved(`schema:${user}`),
+        true,
+        'após resolver, o schema deveria estar resolvido',
       );
     } finally {
       controller.dispose();

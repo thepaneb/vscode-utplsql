@@ -25,8 +25,8 @@ describeDB('v0.12.0 — integração com banco Oracle', () => {
   describe('perfis de conexão (PRD-34)', () => {
     afterEach(async () => {
       const cfg = vscode.workspace.getConfiguration('utplsql');
-      await cfg.update('activeProfile', undefined, vscode.ConfigurationTarget.Workspace);
-      await cfg.update('profiles', undefined, vscode.ConfigurationTarget.Workspace);
+      await cfg.update('activeProfile', undefined, vscode.ConfigurationTarget.Global);
+      await cfg.update('profiles', undefined, vscode.ConfigurationTarget.Global);
     });
 
     it('resolveConnectionNoPrompt usa a conexão do perfil ativo', async () => {
@@ -36,9 +36,9 @@ describeDB('v0.12.0 — integração com banco Oracle', () => {
       await cfg.update(
         'profiles',
         [{ id: 'int-pro', name: 'IT', connection: conn }],
-        vscode.ConfigurationTarget.Workspace,
+        vscode.ConfigurationTarget.Global,
       );
-      await cfg.update('activeProfile', 'int-pro', vscode.ConfigurationTarget.Workspace);
+      await cfg.update('activeProfile', 'int-pro', vscode.ConfigurationTarget.Global);
 
       assert.strictEqual(resolveConnectionNoPrompt(), conn);
     });
@@ -53,13 +53,13 @@ describeDB('v0.12.0 — integração com banco Oracle', () => {
           { id: 'pA', name: 'A', connection: `${conn}` },
           { id: 'pB', name: 'B', connection: `B/override@//localhost:1521/XEPDB1` },
         ],
-        vscode.ConfigurationTarget.Workspace,
+        vscode.ConfigurationTarget.Global,
       );
 
-      await cfg.update('activeProfile', 'pA', vscode.ConfigurationTarget.Workspace);
+      await cfg.update('activeProfile', 'pA', vscode.ConfigurationTarget.Global);
       assert.strictEqual(resolveConnectionNoPrompt(), conn);
 
-      await cfg.update('activeProfile', 'pB', vscode.ConfigurationTarget.Workspace);
+      await cfg.update('activeProfile', 'pB', vscode.ConfigurationTarget.Global);
       assert.strictEqual(resolveConnectionNoPrompt(), 'B/override@//localhost:1521/XEPDB1');
     });
 
@@ -70,9 +70,9 @@ describeDB('v0.12.0 — integração com banco Oracle', () => {
       await cfg.update(
         'profiles',
         [{ id: 'int-pro', name: 'IT', connection: conn }],
-        vscode.ConfigurationTarget.Workspace,
+        vscode.ConfigurationTarget.Global,
       );
-      await cfg.update('activeProfile', 'int-pro', vscode.ConfigurationTarget.Workspace);
+      await cfg.update('activeProfile', 'int-pro', vscode.ConfigurationTarget.Global);
 
       const root = vscode.workspace.workspaceFolders?.[0]?.uri;
       assert.ok(root);

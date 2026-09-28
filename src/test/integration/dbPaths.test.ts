@@ -76,7 +76,7 @@ async function createDbOnlyPackage(
   );
   const owner = connParts().user.toUpperCase();
   await dbc.execute(
-    `BEGIN ut3.ut_runner.rebuild_annotation_cache(:owner, 'PACKAGE'); END;`,
+    `BEGIN ut3.ut_runner.rebuild_annotation_cache(a_object_owner => :owner); END;`,
     { owner },
     { autoCommit: true },
   );
@@ -137,11 +137,11 @@ describeDB('caminhos só-DB (provider, setup, merge de schema, DBMS_OUTPUT)', ()
     const origConn = cfg.inspect<string>('connection');
     const origActive = cfg.inspect<string>('activeProfile');
     try {
-      await cfg.update('activeProfile', '', vscode.ConfigurationTarget.Workspace);
+      await cfg.update('activeProfile', '', vscode.ConfigurationTarget.Global);
       await cfg.update(
         'connection',
         'baduser/badpass@//127.0.0.1:1/nope',
-        vscode.ConfigurationTarget.Workspace,
+        vscode.ConfigurationTarget.Global,
       );
       const diags: { code: string }[] = await setupValidator.validateOnActivation();
       assert.ok(
@@ -151,13 +151,13 @@ describeDB('caminhos só-DB (provider, setup, merge de schema, DBMS_OUTPUT)', ()
     } finally {
       await cfg.update(
         'activeProfile',
-        origActive?.workspaceValue ?? undefined,
-        vscode.ConfigurationTarget.Workspace,
+        origActive?.globalValue ?? undefined,
+        vscode.ConfigurationTarget.Global,
       );
       await cfg.update(
         'connection',
-        origConn?.workspaceValue ?? undefined,
-        vscode.ConfigurationTarget.Workspace,
+        origConn?.globalValue ?? undefined,
+        vscode.ConfigurationTarget.Global,
       );
     }
   });
