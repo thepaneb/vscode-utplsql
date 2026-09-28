@@ -34,6 +34,11 @@
   qualquer tipo de objeto (package/body, procedure, function, trigger,
   type/body, view). O scheme legado `utplsql-db:` continua disponível.
 
+- **Árvore de testes lazy (PRD-75)**: no modo `schema`, o refresh materializa
+  apenas os nós de **schema**; package/suite/teste são resolvidos sob demanda ao
+  expandir (`resolveHandler`), sem consultar o banco para níveis não abertos.
+  "Run All"/"Run Failed" e a coleta de alvos forçam a resolução necessária.
+
 ## 0.13.0
 
 - **Correção: resultados e jump-to-failure em suítes com `%suitepath` (PRD-87)**: o

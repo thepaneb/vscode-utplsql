@@ -139,6 +139,7 @@ notas `prd-*`. O índice navegável do vault é a [[MOC - PRDs]].
 | 72 | [Matriz de bancos Oracle para testes de integração](completed/prd-72-db-test-matrix.md) | 0.12.1 | 2026-09-18 |
 | 73 | [Compilar objeto para debug (comando + menus)](completed/prd-73-compile-for-debug.md) | 0.12.1 | 2026-09-18 |
 | 74 | [Descoberta de suítes direto do banco (`ut_runner.get_suites_info`)](completed/prd-74-db-first-discovery.md) | 0.13.0 | 2026-09-19 |
+| 75 | [Árvore de testes lazy (resolução incremental por nível)](completed/prd-75-lazy-test-tree.md) | 0.14.0 | 2026-09-19 |
 | 76 | [Execução e export com reporter arbitrário](completed/prd-76-reporter-export.md) | 0.14.0 | 2026-09-19 |
 | 77 | [Reconstruir o cache de anotações do utPLSQL](completed/prd-77-rebuild-annotation-cache.md) | 0.13.0 | 2026-09-19 |
 | 78 | [Ordem aleatória de execução com seed (`a_random_test_order`)](completed/prd-78-random-test-order.md) | 0.13.0 | 2026-09-19 |
@@ -157,7 +158,6 @@ notas `prd-*`. O índice navegável do vault é a [[MOC - PRDs]].
 | # | PRD | Versão | Data |
 |---|---|---|---|
 | 47 | [Node 26 no toolchain de desenvolvimento](approved/prd-47-node-26-toolchain.md) | 0.15.0 | 2026-08-29 |
-| 75 | [Árvore de testes lazy (resolução incremental por nível)](approved/prd-75-lazy-test-tree.md) | 0.14.0 | 2026-09-19 |
 
 ### ⚪ Propostos
 
@@ -248,6 +248,7 @@ docs/prd/
 │   ├── prd-72-db-test-matrix.md
 │   ├── prd-73-compile-for-debug.md
 │   ├── prd-74-db-first-discovery.md
+│   ├── prd-75-lazy-test-tree.md
 │   ├── prd-76-reporter-export.md
 │   ├── prd-77-rebuild-annotation-cache.md
 │   ├── prd-78-random-test-order.md
@@ -262,7 +263,6 @@ docs/prd/
 │   ├── prd-87-suitepath-results-jump.md
 ├── approved/        ← aprovados, aguardando implementação
 │   ├── prd-47-node-26-toolchain.md
-│   ├── prd-75-lazy-test-tree.md
 ├── proposed/        ← em avaliação
 │   ├── prd-50-auto-run-on-save.md
 │   ├── prd-51-run-by-tag.md

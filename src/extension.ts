@@ -21,7 +21,12 @@ import { closeOraclePool, invalidatePool } from './oracleRunner';
 import { setupValidator, UtplsqlCodeActionProvider } from './quickfix';
 import { TestStateManager } from './state';
 import { UtplsqlStatusBar } from './statusBar';
-import { createRefresher } from './testTree';
+import {
+  createRefresher,
+  resolvePackageNode,
+  resolveSchemaNode,
+  resolveSuiteNode,
+} from './testTree';
 
 const state = new TestStateManager();
 let statusBar: UtplsqlStatusBar | undefined;
@@ -42,7 +47,14 @@ export function activate(context: vscode.ExtensionContext) {
 
   const refresh = createRefresher(controller, state);
   controller.resolveHandler = async (item) => {
-    if (!item) await refresh();
+    if (!item) {
+      await refresh();
+      return;
+    }
+    // Resolução lazy por nível (PRD-75): schema → package → suite.
+    if (item.id.startsWith('schema:')) await resolveSchemaNode(controller, state, item);
+    else if (item.id.startsWith('package:')) resolvePackageNode(controller, state, item);
+    else if (item.id.startsWith('suite:')) resolveSuiteNode(controller, state, item);
   };
   controller.refreshHandler = async () => {
     await refresh();

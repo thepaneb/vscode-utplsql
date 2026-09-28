@@ -1,4 +1,5 @@
 import type * as vscode from 'vscode';
+import type { SuiteFile } from './discovery';
 import type { TestStatus } from './junit';
 import type { ItemMeta } from './types';
 
@@ -98,5 +99,46 @@ export class TestStateManager {
   }
   clearItemMap(): void {
     this.itemMap.clear();
+  }
+
+  // ── Resolução lazy da árvore (PRD-75) ────────────────────────────────
+
+  private resolvedNodes = new Set<string>();
+  markResolved(id: string): void {
+    this.resolvedNodes.add(id);
+  }
+  isResolved(id: string): boolean {
+    return this.resolvedNodes.has(id);
+  }
+  clearResolved(): void {
+    this.resolvedNodes.clear();
+  }
+
+  /** Suites descobertas por `discoverWorkspace` (antes da resolução lazy). */
+  discoveredFiles: SuiteFile[] = [];
+  setDiscoveredFiles(files: SuiteFile[]): void {
+    this.discoveredFiles = files;
+  }
+
+  private schemaSuites = new Map<string, SuiteFile[]>();
+  setSchemaSuites(schema: string, suites: SuiteFile[]): void {
+    this.schemaSuites.set(schema, suites);
+  }
+  getSchemaSuites(schema: string): SuiteFile[] | undefined {
+    return this.schemaSuites.get(schema);
+  }
+  clearSchemaSuites(): void {
+    this.schemaSuites.clear();
+  }
+
+  private suiteFiles = new Map<string, SuiteFile>();
+  setSuiteFile(id: string, suite: SuiteFile): void {
+    this.suiteFiles.set(id, suite);
+  }
+  getSuiteFile(id: string): SuiteFile | undefined {
+    return this.suiteFiles.get(id);
+  }
+  clearSuiteFiles(): void {
+    this.suiteFiles.clear();
   }
 }

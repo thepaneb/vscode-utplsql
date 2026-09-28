@@ -116,7 +116,7 @@ export function registerRunCommands(
   };
 
   const runForUri = async (uri: vscode.Uri, coverage: boolean): Promise<void> => {
-    const metas = collectAllItems(controller, state)
+    const metas = (await collectAllItems(controller, state))
       .map((i) => state.getMeta(i))
       .filter(Boolean) as ItemMeta[];
     const include = filterSuitesByUri(metas, uri.fsPath)
@@ -138,7 +138,7 @@ export function registerRunCommands(
   };
 
   const runForFolder = async (uri: vscode.Uri, coverage: boolean): Promise<void> => {
-    const metas = collectAllItems(controller, state)
+    const metas = (await collectAllItems(controller, state))
       .map((i) => state.getMeta(i))
       .filter(Boolean) as ItemMeta[];
     const include = filterSuitesByFolder(metas, uri.fsPath)
@@ -215,7 +215,7 @@ export function registerRunCommands(
 
   /** QuickPick de suítes descobertas (fallback quando não há cursor/alvo). */
   const pickSuiteItem = async (): Promise<vscode.TestItem[] | undefined> => {
-    const suites = collectAllItems(controller, state).filter(
+    const suites = (await collectAllItems(controller, state)).filter(
       (i) => state.getMeta(i)?.kind === 'suite',
     );
     if (suites.length === 0) return undefined;
