@@ -26,5 +26,6 @@
   "nls.command.runScriptFile": "utPLSQL: Run script file",
   "nls.command.runScriptFolder": "utPLSQL: Run script folder",
   "nls.command.compileForDebug": "utPLSQL: Скомпилировать для отладки",
-  "nls.command.rebuildAnnotations": "utPLSQL: Перестроить кэш аннотаций"
+  "nls.command.rebuildAnnotations": "utPLSQL: Перестроить кэш аннотаций",
+  "nls.command.setWalletPassword": "utPLSQL: Задать пароль кошелька"
 }

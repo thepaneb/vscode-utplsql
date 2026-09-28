@@ -153,6 +153,10 @@ export namespace workspace {
     return {
       get: <T>(_key: string, defaultValue?: T) =>
         (_key in _configValues ? _configValues[_key] : defaultValue) as T,
+      inspect: <T>(key: string) => ({
+        key,
+        globalValue: key in _configValues ? (_configValues[key] as T) : undefined,
+      }),
       update: async <T>(_key: string, value: T, _target?: unknown) => {
         _configValues[_key] = value;
       },

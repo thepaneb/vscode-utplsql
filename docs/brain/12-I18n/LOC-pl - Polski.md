@@ -5,14 +5,14 @@ tipo: locale
 titulo: "Polski"
 codigo: pl
 nls: package.nls.pl.json
-strings: 28
+strings: 29
 gerado: true
 tags: [i18n, locale]
 ---
 
 # LOC-pl — Polski
 
-Locale `pl` da extensão. Strings de UI em [`package.nls.pl.json`](../../../package.nls.pl.json) (28 chaves).
+Locale `pl` da extensão. Strings de UI em [`package.nls.pl.json`](../../../package.nls.pl.json) (29 chaves).
 
 README: [[README.pl]]
 

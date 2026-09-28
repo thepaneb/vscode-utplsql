@@ -12,6 +12,14 @@
   mudar, a senha é descartada em vez de ser enviada ao novo host. Perfis legados
   são migrados automaticamente.
 
+- **Resolução TNS no thin e senha de wallet no SecretStorage (PRD-82)**: nova
+  setting `utplsql.connections.tnsAdminPath` (machine-scoped), com fallback para
+  o valor user/machine de `sqldeveloper.connections.tnsConfiguration.path` e para
+  a variável `TNS_ADMIN`. O parser de `tnsnames.ora` (`src/tnsnames.ts`) resolve
+  aliases no driver **thin** sem depender de env; Easy Connect segue inalterado.
+  O perfil ganhou o campo `walletLocation` e o comando
+  `utPLSQL: Set wallet password` grava a senha da wallet no SecretStorage.
+
 ## 0.13.0
 
 - **Correção: resultados e jump-to-failure em suítes com `%suitepath` (PRD-87)**: o

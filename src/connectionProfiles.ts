@@ -137,6 +137,7 @@ export async function saveProfiles(profiles: ConnectionProfile[]): Promise<void>
 // ── Senhas em SecretStorage (PRD-65 RF3 · vínculo PRD-81 RF3) ───────────
 
 const SECRET_PREFIX = 'utplsql.profile.';
+const WALLET_PREFIX = 'utplsql.wallet.';
 let secretStorage: vscode.SecretStorage | undefined;
 
 /**
@@ -152,6 +153,9 @@ interface StoredPassword {
 
 /** id do perfil → senha vinculada (só entra aqui com o vínculo conferido). */
 const passwordCache = new Map<string, StoredPassword>();
+
+/** id do perfil → senha da wallet Oracle Cloud (thin) — PRD-82. */
+const walletCache = new Map<string, string>();
 
 export function initSecretStorage(secrets: vscode.SecretStorage): void {
   secretStorage = secrets;
@@ -186,6 +190,9 @@ function parseStoredPassword(raw: string | undefined): StoredPassword | undefine
 export async function hydrateProfilePasswords(): Promise<void> {
   if (!secretStorage) return;
   for (const p of getAllProfiles()) {
+    const wallet = await secretStorage.get(`${WALLET_PREFIX}${p.id}`);
+    if (wallet) walletCache.set(p.id, wallet);
+
     const key = `${SECRET_PREFIX}${p.id}`;
     const stored = parseStoredPassword(await secretStorage.get(key));
     if (!stored) continue;
@@ -263,6 +270,25 @@ export async function migrateLegacyProfiles(): Promise<void> {
   if (changed) await saveProfiles(next);
 }
 
+// ── Senha da wallet Oracle Cloud (PRD-82 RF4) ──────────────────────────
+
+/** Senha da wallet do perfil (cache em memória), ou `undefined`. */
+export function getWalletPassword(profileId: string): string | undefined {
+  return walletCache.get(profileId);
+}
+
+/** Grava a senha da wallet no cache e no SecretStorage (`utplsql.wallet.<id>`). */
+export async function setWalletPassword(profileId: string, password: string): Promise<void> {
+  walletCache.set(profileId, password);
+  if (secretStorage) await secretStorage.store(`${WALLET_PREFIX}${profileId}`, password);
+}
+
+/** Remove a senha da wallet do cache e do SecretStorage. */
+export async function clearWalletPassword(profileId: string): Promise<void> {
+  walletCache.delete(profileId);
+  if (secretStorage) await secretStorage.delete(`${WALLET_PREFIX}${profileId}`);
+}
+
 export async function setActiveProfile(id: string | undefined): Promise<void> {
   await vscode.workspace
     .getConfiguration('utplsql')
@@ -284,6 +310,8 @@ export function mergeProfileConfig(global: UtConfig, profile?: ConnectionProfile
     sourcePath: profile.sourcePath || global.sourcePath,
     coverageOwner: profile.coverageOwner || global.coverageOwner,
     includePatterns: profile.includePatterns ?? global.includePatterns,
+    walletLocation: profile.walletLocation ?? global.walletLocation,
+    walletPassword: getWalletPassword(profile.id) ?? global.walletPassword,
   };
 }
 
