@@ -143,6 +143,7 @@ notas `prd-*`. O índice navegável do vault é a [[MOC - PRDs]].
 | 78 | [Ordem aleatória de execução com seed (`a_random_test_order`)](completed/prd-78-random-test-order.md) | 0.13.0 | 2026-09-19 |
 | 79 | [Escopo avançado de cobertura (regex include/exclude + `excludeObjects`)](completed/prd-79-coverage-scope.md) | 0.13.0 | 2026-09-19 |
 | 81 | [Hardening de segurança das settings de conexão](completed/prd-81-security-hardening.md) | 0.14.0 | 2026-09-19 |
+| 82 | [Resolução TNS no thin e senha de wallet no SecretStorage](completed/prd-82-tns-wallet.md) | 0.14.0 | 2026-09-19 |
 | 83 | [Higiene do pacote VSIX: bloquear vazamento de arquivos de desenvolvimento](completed/prd-83-vsix-package-hygiene.md) | 0.13.0 | 2026-09-22 |
 | 84 | [Suporte a Oracle 12.2 com piso alternativo de utPLSQL e charset de conexão](completed/prd-84-oracle-122-support.md) | 0.13.0 | 2026-09-22 |
 | 85 | [Second brain canônico (Obsidian) com MCP e extração de conhecimento](completed/prd-85-brain-source-of-truth.md) | 0.13.0 | 2026-09-23 |
@@ -157,7 +158,6 @@ notas `prd-*`. O índice navegável do vault é a [[MOC - PRDs]].
 | 75 | [Árvore de testes lazy (resolução incremental por nível)](approved/prd-75-lazy-test-tree.md) | 0.14.0 | 2026-09-19 |
 | 76 | [Execução e export com reporter arbitrário](approved/prd-76-reporter-export.md) | 0.14.0 | 2026-09-19 |
 | 80 | [Documento virtual de fonte do banco para falhas e cobertura](approved/prd-80-virtual-db-source.md) | 0.14.0 | 2026-09-19 |
-| 82 | [Resolução TNS no thin e senha de wallet no SecretStorage](approved/prd-82-tns-wallet.md) | 0.14.0 | 2026-09-19 |
 
 ### ⚪ Propostos
 
@@ -252,6 +252,7 @@ docs/prd/
 │   ├── prd-78-random-test-order.md
 │   ├── prd-79-coverage-scope.md
 │   ├── prd-81-security-hardening.md
+│   ├── prd-82-tns-wallet.md
 │   ├── prd-83-vsix-package-hygiene.md
 │   ├── prd-84-oracle-122-support.md
 │   ├── prd-85-brain-source-of-truth.md
@@ -262,7 +263,6 @@ docs/prd/
 │   ├── prd-75-lazy-test-tree.md
 │   ├── prd-76-reporter-export.md
 │   ├── prd-80-virtual-db-source.md
-│   ├── prd-82-tns-wallet.md
 ├── proposed/        ← em avaliação
 │   ├── prd-50-auto-run-on-save.md
 │   ├── prd-51-run-by-tag.md

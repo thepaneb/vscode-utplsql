@@ -7,6 +7,7 @@ interface Manifest {
   capabilities?: { untrustedWorkspaces?: { supported?: boolean } };
   contributes: {
     configuration?: { properties?: Record<string, { scope?: string }> };
+    commands?: { command: string }[];
     languages?: { id: string; extensions?: string[] }[];
     breakpoints?: { language: string }[];
     debuggers?: {
@@ -67,9 +68,15 @@ test('settings sensíveis têm scope machine (PRD-81 RF1)', () => {
     'utplsql.activeProfile',
     'utplsql.oracleClientLibDir',
     'utplsql.oracleClientConfigDir',
+    'utplsql.connections.tnsAdminPath',
   ]) {
     assert.strictEqual(props[key]?.scope, 'machine', `${key} deveria ter scope "machine"`);
   }
+});
+
+test('comando de senha da wallet está registrado no manifest (PRD-82 RF4)', () => {
+  const commands = pkg.contributes.commands ?? [];
+  assert.ok(commands.some((c) => c.command === 'utplsql.setWalletPassword'));
 });
 
 test('extensão fica desabilitada em workspace não confiável (PRD-81 RF2)', () => {

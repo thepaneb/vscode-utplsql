@@ -91,6 +91,10 @@
                   "type": "string"
                 }
               },
+              "walletLocation": {
+                "type": "string",
+                "description": "Localização da wallet Oracle Cloud (thin), ex.: /caminho/para/wallet. A senha da wallet fica no SecretStorage — use o comando \"utPLSQL: Definir senha da wallet\"."
+              },
               "isDefault": {
                 "type": "boolean"
               },
@@ -264,6 +268,12 @@
           "default": "",
           "scope": "machine",
           "markdownDescription": "Diretório de configuração Oracle (TNS_ADMIN) com `sqlnet.ora`/`tnsnames.ora`. Opcional; só tem efeito no `thick`."
+        },
+        "utplsql.connections.tnsAdminPath": {
+          "type": "string",
+          "default": "",
+          "scope": "machine",
+          "markdownDescription": "Diretório com `tnsnames.ora` para resolver **aliases TNS no driver thin**. Resolução: esta setting → valor user/machine de `sqldeveloper.connections.tnsConfiguration.path` → variável de ambiente `TNS_ADMIN`. Easy Connect segue funcionando normalmente."
         },
         "utplsql.organization": {
           "type": "string",
@@ -515,6 +525,11 @@
       {
         "command": "utplsql.manageProfiles",
         "title": "%nls.command.manageProfiles%",
+        "category": "utPLSQL"
+      },
+      {
+        "command": "utplsql.setWalletPassword",
+        "title": "%nls.command.setWalletPassword%",
         "category": "utPLSQL"
       },
       {

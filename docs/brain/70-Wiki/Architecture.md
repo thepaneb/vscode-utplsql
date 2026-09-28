@@ -62,7 +62,7 @@ bundled.
 | | `statusBar.ts` — status bar indicator |
 | | `viewCoverage.ts` — DeclarationCoverage + V$SQL view tracking |
 | | `dbmsDebug.ts`, `debugger.ts` — PL/SQL debugging via DBMS_DEBUG |
-| | `oracleClient.ts` — thin/thick mode init |
+| `tnsnames.ts` — `tnsnames.ora` alias resolution (thin driver) | `oracleClient.ts` — thin/thick mode init |
 | | `oracleRunner.ts` — pool, `executeRunOracle`, discovery helpers |
 
 Modules in the left column **do not import `vscode`** (at runtime) and are
@@ -97,6 +97,8 @@ testable with `node --test` without any setup. Full list: `src/*.ts`.
 | `utplsql.discovery.source` | `cfg.discoverySource` | `auto` \| `file` \| `database` — DB-first discovery (`testTree.ts`/`discovery.ts`) |
 | `utplsql.oraclePoolMin/Max/Increment/PingInterval` | `cfg.oraclePool*` | `oracleRunner.ts` (`ensurePool`) |
 | `utplsql.oracleClientMode`/`oracleClientLibDir`/`oracleClientConfigDir` | `cfg.oracleClient*` | `oracleClient.ts` (`ensureOracleClient`, called from `ensurePool`) |
+| `utplsql.connections.tnsAdminPath` | `cfg.tnsAdminPath` | `oracleRunner.ts` (`resolveConnectString` → `tnsnames.ora`); fallback: SQL Developer user path, `TNS_ADMIN` |
+| `utplsql.profiles` (`walletLocation`) | `cfg.walletLocation`/`cfg.walletPassword` | `oracleRunner.ts` (`ensurePool` → `createPool`); password in SecretStorage |
 | `utplsql.codeLens/statusBar/decorations.enabled` | `cfg.*Enabled` | UX providers |
 | `utplsql.compilationDiagnostics.enabled` | `cfg.compilationDiagnosticsEnabled` | `compilationDiagnostics.ts` — ALL_ERRORS → Problems Panel (after each run) |
 | `utplsql.setupDiagnostics.enabled` | `cfg.setupDiagnosticsEnabled` | `quickfix.ts` |

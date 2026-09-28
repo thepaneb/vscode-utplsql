@@ -6,11 +6,13 @@ import * as path from 'node:path';
 import { test } from 'node:test';
 import type { UtConfig } from '../../config';
 import {
+  clearWalletPassword,
   findProfileById,
   findSqlDevConnectionsPath,
   getActiveProfile,
   getAllProfiles,
   getProfileConnection,
+  getWalletPassword,
   hydrateProfilePasswords,
   importFromSqlDeveloper,
   initSecretStorage,
@@ -22,6 +24,7 @@ import {
   saveProfiles,
   selectProfile,
   setActiveProfile,
+  setWalletPassword,
   splitPassword,
 } from '../../connectionProfiles';
 import type { ConnectionProfile } from '../../types';
@@ -60,6 +63,9 @@ function makeGlobal(over: Partial<UtConfig> = {}): UtConfig {
     oracleClientMode: 'thin',
     oracleClientLibDir: '',
     oracleClientConfigDir: '',
+    tnsAdminPath: '',
+    walletLocation: '',
+    walletPassword: '',
     codeLensEnabled: true,
     statusBarEnabled: true,
     decorationsEnabled: true,
@@ -647,6 +653,58 @@ test('getProfileConnection: não reaproveita a senha se a conexão do perfil mud
       getProfileConnection({ id: 'muda-1', name: 'DEV', connection: 'u@outro-host:1521/s' }),
       'u@outro-host:1521/s',
     );
+  } finally {
+    __resetConfigValues();
+  }
+});
+
+// ── Wallet Oracle Cloud (PRD-82 RF4) ──────────────────────────────────
+
+test('setWalletPassword/clearWalletPassword: grava no SecretStorage e limpa', async () => {
+  __resetConfigValues();
+  const { map, storage } = fakeSecrets();
+  initSecretStorage(storage);
+  try {
+    await setWalletPassword('w1', 'wpass');
+    assert.strictEqual(map.get('utplsql.wallet.w1'), 'wpass');
+    assert.strictEqual(getWalletPassword('w1'), 'wpass');
+
+    await clearWalletPassword('w1');
+    assert.strictEqual(getWalletPassword('w1'), undefined);
+    assert.ok(!map.has('utplsql.wallet.w1'));
+  } finally {
+    __resetConfigValues();
+  }
+});
+
+test('hydrateProfilePasswords: restaura a senha da wallet', async () => {
+  __resetConfigValues();
+  const { storage } = fakeSecrets();
+  initSecretStorage(storage);
+  __setConfigValue('profiles', [{ id: 'whyd-1', name: 'DEV', connection: 'u@h:1521/s' }]);
+  await storage.store('utplsql.wallet.whyd-1', 'wpass');
+  try {
+    await hydrateProfilePasswords();
+    assert.strictEqual(getWalletPassword('whyd-1'), 'wpass');
+  } finally {
+    __resetConfigValues();
+  }
+});
+
+test('mergeProfileConfig: propaga walletLocation e walletPassword do perfil', async () => {
+  __resetConfigValues();
+  const { storage } = fakeSecrets();
+  initSecretStorage(storage);
+  await setWalletPassword('mw1', 'wpass');
+  try {
+    const merged = mergeProfileConfig(makeGlobal(), {
+      id: 'mw1',
+      name: 'DEV',
+      connection: 'u@h:1521/s',
+      walletLocation: '/wallets/dev',
+    });
+    assert.strictEqual(merged.walletLocation, '/wallets/dev');
+    assert.strictEqual(merged.walletPassword, 'wpass');
   } finally {
     __resetConfigValues();
   }

@@ -31,6 +31,7 @@ prefixed with `utPLSQL:`.
 | `utPLSQL: New connection profile...` | Creates a new connection profile | — |
 | `utPLSQL: Manage connection profiles` | Opens saved connection profiles | — |
 | `utPLSQL: Import connections from SQL Developer` | Imports SQL Developer connections as profiles | — |
+| `utPLSQL: Set wallet password` | Sets or clears the active profile's Oracle Cloud wallet password (stored in SecretStorage) | — |
 | `utPLSQL: Debug test (PL/SQL)` | Starts debugging a test via DBMS_DEBUG (`utplsql` Debug Adapter) | Editor context menu (`.pks`/`.pkb`) |
 | `utPLSQL: Compile for Debug` | Compiles the selected file/folder object with debug information (`ALTER … COMPILE DEBUG PLSQL_OPTIMIZE_LEVEL = 1`) | Editor/Explorer context menu |
 | `utPLSQL: Rebuild Annotation Cache` | Rebuilds the utPLSQL annotation cache in the database (`ut_runner.rebuild_annotation_cache`) and refreshes the tree | — |

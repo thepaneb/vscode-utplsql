@@ -2,6 +2,12 @@
 // pt-BR é o base; os demais traduzem. Chave ausente → pt-BR → a própria chave.
 
 export const ptBr: Record<string, string> = {
+  'ext.wallet.title': 'utPLSQL — Senha da wallet',
+  'ext.wallet.prompt': 'Senha da wallet Oracle Cloud (deixe vazio para remover).',
+  'ext.wallet.saved': 'Senha da wallet salva para o perfil "{name}".',
+  'ext.wallet.cleared': 'Senha da wallet removida do perfil "{name}".',
+  'ext.wallet.noProfile':
+    'Nenhum perfil de conexão ativo. Ative um perfil antes de definir a senha da wallet.',
   'common.error': 'Erro',
   'common.failed': 'Falhou',
   'common.copy': 'Copiar',
@@ -193,6 +199,12 @@ export const ptBr: Record<string, string> = {
 };
 
 export const en: Record<string, string> = {
+  'ext.wallet.title': 'utPLSQL — Wallet password',
+  'ext.wallet.prompt': 'Oracle Cloud wallet password (leave empty to remove).',
+  'ext.wallet.saved': 'Wallet password saved for profile "{name}".',
+  'ext.wallet.cleared': 'Wallet password removed from profile "{name}".',
+  'ext.wallet.noProfile':
+    'No active connection profile. Activate a profile before setting the wallet password.',
   'common.error': 'Error',
   'common.failed': 'Failed',
   'common.copy': 'Copy',
@@ -383,6 +395,12 @@ export const en: Record<string, string> = {
 };
 
 export const es: Record<string, string> = {
+  'ext.wallet.title': 'utPLSQL — Contraseña de la wallet',
+  'ext.wallet.prompt': 'Contraseña de la wallet de Oracle Cloud (déjala vacía para eliminarla).',
+  'ext.wallet.saved': 'Contraseña de la wallet guardada para el perfil "{name}".',
+  'ext.wallet.cleared': 'Contraseña de la wallet eliminada del perfil "{name}".',
+  'ext.wallet.noProfile':
+    'No hay un perfil de conexión activo. Activa un perfil antes de definir la contraseña de la wallet.',
   'common.error': 'Error',
   'common.failed': 'Falló',
   'common.copy': 'Copiar',
@@ -576,6 +594,11 @@ export const es: Record<string, string> = {
 };
 
 export const zhCn: Record<string, string> = {
+  'ext.wallet.title': 'utPLSQL — 钱包密码',
+  'ext.wallet.prompt': 'Oracle Cloud 钱包密码（留空以移除）。',
+  'ext.wallet.saved': '已为配置 "{name}" 保存钱包密码。',
+  'ext.wallet.cleared': '已从配置 "{name}" 移除钱包密码。',
+  'ext.wallet.noProfile': '没有活动的连接配置。请先激活一个配置，再设置钱包密码。',
   'common.error': '错误',
   'common.failed': '失败',
   'common.copy': '复制',
@@ -757,6 +780,12 @@ export const zhCn: Record<string, string> = {
 };
 
 export const ja: Record<string, string> = {
+  'ext.wallet.title': 'utPLSQL — ウォレットのパスワード',
+  'ext.wallet.prompt': 'Oracle Cloud ウォレットのパスワード（空欄で削除）。',
+  'ext.wallet.saved': 'プロファイル「{name}」のウォレットパスワードを保存しました。',
+  'ext.wallet.cleared': 'プロファイル「{name}」のウォレットパスワードを削除しました。',
+  'ext.wallet.noProfile':
+    'アクティブな接続プロファイルがありません。ウォレットパスワードを設定する前にプロファイルを有効にしてください。',
   'common.error': 'エラー',
   'common.failed': '失敗',
   'common.copy': 'コピー',
@@ -951,6 +980,12 @@ export const ja: Record<string, string> = {
 };
 
 export const de: Record<string, string> = {
+  'ext.wallet.title': 'utPLSQL — Wallet-Passwort',
+  'ext.wallet.prompt': 'Passwort der Oracle-Cloud-Wallet (leer lassen zum Entfernen).',
+  'ext.wallet.saved': 'Wallet-Passwort für Profil „{name}“ gespeichert.',
+  'ext.wallet.cleared': 'Wallet-Passwort aus Profil „{name}“ entfernt.',
+  'ext.wallet.noProfile':
+    'Kein aktives Verbindungsprofil. Aktivieren Sie ein Profil, bevor Sie das Wallet-Passwort festlegen.',
   'common.error': 'Fehler',
   'common.failed': 'Fehlgeschlagen',
   'common.copy': 'Kopieren',
@@ -1143,6 +1178,12 @@ export const de: Record<string, string> = {
 };
 
 export const fr: Record<string, string> = {
+  'ext.wallet.title': 'utPLSQL — Mot de passe du wallet',
+  'ext.wallet.prompt': 'Mot de passe du wallet Oracle Cloud (laisser vide pour supprimer).',
+  'ext.wallet.saved': 'Mot de passe du wallet enregistré pour le profil « {name} ».',
+  'ext.wallet.cleared': 'Mot de passe du wallet supprimé du profil « {name} ».',
+  'ext.wallet.noProfile':
+    'Aucun profil de connexion actif. Activez un profil avant de définir le mot de passe du wallet.',
   'common.error': 'Erreur',
   'common.failed': 'Échec',
   'common.copy': 'Copier',
@@ -1337,6 +1378,11 @@ export const fr: Record<string, string> = {
 };
 
 export const zhTw: Record<string, string> = {
+  'ext.wallet.title': 'utPLSQL — 錢包密碼',
+  'ext.wallet.prompt': 'Oracle Cloud 錢包密碼（留空以移除）。',
+  'ext.wallet.saved': '已為設定檔「{name}」儲存錢包密碼。',
+  'ext.wallet.cleared': '已從設定檔「{name}」移除錢包密碼。',
+  'ext.wallet.noProfile': '沒有使用中的連線設定檔。請先啟用設定檔再設定錢包密碼。',
   'common.error': '錯誤',
   'common.failed': '失敗',
   'common.copy': '複製',
@@ -1518,6 +1564,12 @@ export const zhTw: Record<string, string> = {
 };
 
 export const it: Record<string, string> = {
+  'ext.wallet.title': 'utPLSQL — Password del wallet',
+  'ext.wallet.prompt': 'Password del wallet Oracle Cloud (lascia vuoto per rimuovere).',
+  'ext.wallet.saved': 'Password del wallet salvata per il profilo "{name}".',
+  'ext.wallet.cleared': 'Password del wallet rimossa dal profilo "{name}".',
+  'ext.wallet.noProfile':
+    'Nessun profilo di connessione attivo. Attiva un profilo prima di impostare la password del wallet.',
   'common.error': 'Errore',
   'common.failed': 'Fallito',
   'common.copy': 'Copia',
@@ -1712,6 +1764,12 @@ export const it: Record<string, string> = {
 };
 
 export const ko: Record<string, string> = {
+  'ext.wallet.title': 'utPLSQL — 월렛 비밀번호',
+  'ext.wallet.prompt': 'Oracle Cloud 월렛 비밀번호(비우면 제거).',
+  'ext.wallet.saved': '프로필 "{name}"의 월렛 비밀번호를 저장했습니다.',
+  'ext.wallet.cleared': '프로필 "{name}"의 월렛 비밀번호를 제거했습니다.',
+  'ext.wallet.noProfile':
+    '활성 연결 프로필이 없습니다. 월렛 비밀번호를 설정하기 전에 프로필을 활성화하세요.',
   'common.error': '오류',
   'common.failed': '실패',
   'common.copy': '복사',
@@ -1901,6 +1959,12 @@ export const ko: Record<string, string> = {
 };
 
 export const ru: Record<string, string> = {
+  'ext.wallet.title': 'utPLSQL — Пароль кошелька',
+  'ext.wallet.prompt': 'Пароль кошелька Oracle Cloud (оставьте пустым, чтобы удалить).',
+  'ext.wallet.saved': 'Пароль кошелька сохранён для профиля «{name}».',
+  'ext.wallet.cleared': 'Пароль кошелька удалён из профиля «{name}».',
+  'ext.wallet.noProfile':
+    'Нет активного профиля подключения. Активируйте профиль перед заданием пароля кошелька.',
   'common.error': 'Ошибка',
   'common.failed': 'Не пройден',
   'common.copy': 'Копировать',
@@ -2092,6 +2156,12 @@ export const ru: Record<string, string> = {
 };
 
 export const tr: Record<string, string> = {
+  'ext.wallet.title': 'utPLSQL — Cüzdan parolası',
+  'ext.wallet.prompt': 'Oracle Cloud cüzdan parolası (kaldırmak için boş bırakın).',
+  'ext.wallet.saved': '"{name}" profili için cüzdan parolası kaydedildi.',
+  'ext.wallet.cleared': '"{name}" profilinden cüzdan parolası kaldırıldı.',
+  'ext.wallet.noProfile':
+    'Etkin bağlantı profili yok. Cüzdan parolasını ayarlamadan önce bir profil etkinleştirin.',
   'common.error': 'Hata',
   'common.failed': 'Başarısız',
   'common.copy': 'Kopyala',
@@ -2279,6 +2349,12 @@ export const tr: Record<string, string> = {
 };
 
 export const pl: Record<string, string> = {
+  'ext.wallet.title': 'utPLSQL — Hasło portfela',
+  'ext.wallet.prompt': 'Hasło portfela Oracle Cloud (pozostaw puste, aby usunąć).',
+  'ext.wallet.saved': 'Zapisano hasło portfela dla profilu „{name}”.',
+  'ext.wallet.cleared': 'Usunięto hasło portfela z profilu „{name}”.',
+  'ext.wallet.noProfile':
+    'Brak aktywnego profilu połączenia. Aktywuj profil przed ustawieniem hasła portfela.',
   'common.error': 'Błąd',
   'common.failed': 'Nie powiodło się',
   'common.copy': 'Kopiuj',
@@ -2471,6 +2547,12 @@ export const pl: Record<string, string> = {
 };
 
 export const cs: Record<string, string> = {
+  'ext.wallet.title': 'utPLSQL — Heslo peněženky',
+  'ext.wallet.prompt': 'Heslo peněženky Oracle Cloud (prázdné pole odstraní).',
+  'ext.wallet.saved': 'Heslo peněženky uloženo pro profil „{name}“.',
+  'ext.wallet.cleared': 'Heslo peněženky odebráno z profilu „{name}“.',
+  'ext.wallet.noProfile':
+    'Žádný aktivní profil připojení. Před nastavením hesla peněženky aktivujte profil.',
   'common.error': 'Chyba',
   'common.failed': 'Selhalo',
   'common.copy': 'Kopírovat',
@@ -2662,6 +2744,12 @@ export const cs: Record<string, string> = {
 };
 
 export const hu: Record<string, string> = {
+  'ext.wallet.title': 'utPLSQL — Tárca jelszava',
+  'ext.wallet.prompt': 'Oracle Cloud tárca jelszava (hagyja üresen az eltávolításhoz).',
+  'ext.wallet.saved': 'Tárca jelszava elmentve a(z) „{name}” profilhoz.',
+  'ext.wallet.cleared': 'Tárca jelszava eltávolítva a(z) „{name}” profilból.',
+  'ext.wallet.noProfile':
+    'Nincs aktív kapcsolati profil. A tárca jelszavának beállítása előtt aktiváljon egy profilt.',
   'common.error': 'Hiba',
   'common.failed': 'Sikertelen',
   'common.copy': 'Másolás',
@@ -2855,9 +2943,23 @@ export const hu: Record<string, string> = {
   'testTree.packageNode': 'Csomag: {package}',
 };
 
-export const enGb: Record<string, string> = { ...en };
+export const enGb: Record<string, string> = {
+  'ext.wallet.title': 'utPLSQL — Wallet password',
+  'ext.wallet.prompt': 'Oracle Cloud wallet password (leave empty to remove).',
+  'ext.wallet.saved': 'Wallet password saved for profile "{name}".',
+  'ext.wallet.cleared': 'Wallet password removed from profile "{name}".',
+  'ext.wallet.noProfile':
+    'No active connection profile. Activate a profile before setting the wallet password.',
+  ...en,
+};
 
 export const bg: Record<string, string> = {
+  'ext.wallet.title': 'utPLSQL — Парола на портфейла',
+  'ext.wallet.prompt': 'Парола на портфейла Oracle Cloud (оставете празно, за да премахнете).',
+  'ext.wallet.saved': 'Паролата на портфейла е запазена за профил „{name}“.',
+  'ext.wallet.cleared': 'Паролата на портфейла е премахната от профил „{name}“.',
+  'ext.wallet.noProfile':
+    'Няма активен профил за връзка. Активирайте профил, преди да зададете паролата на портфейла.',
   'common.error': 'Грешка',
   'common.failed': 'Неуспешно',
   'common.copy': 'Копиране',
@@ -3044,6 +3146,12 @@ export const bg: Record<string, string> = {
 };
 
 export const el: Record<string, string> = {
+  'ext.wallet.title': 'utPLSQL — Κωδικός πορτοφολιού',
+  'ext.wallet.prompt': 'Κωδικός πορτοφολιού Oracle Cloud (αφήστε κενό για αφαίρεση).',
+  'ext.wallet.saved': 'Ο κωδικός πορτοφολιού αποθηκεύτηκε για το προφίλ «{name}».',
+  'ext.wallet.cleared': 'Ο κωδικός πορτοφολιού αφαιρέθηκε από το προφίλ «{name}».',
+  'ext.wallet.noProfile':
+    'Δεν υπάρχει ενεργό προφίλ σύνδεσης. Ενεργοποιήστε ένα προφίλ πριν ορίσετε τον κωδικό πορτοφολιού.',
   'common.error': 'Σφάλμα',
   'common.failed': 'Απέτυχε',
   'common.copy': 'Αντιγραφή',
@@ -3231,6 +3339,12 @@ export const el: Record<string, string> = {
 };
 
 export const id: Record<string, string> = {
+  'ext.wallet.title': 'utPLSQL — Kata sandi wallet',
+  'ext.wallet.prompt': 'Kata sandi wallet Oracle Cloud (kosongkan untuk menghapus).',
+  'ext.wallet.saved': 'Kata sandi wallet disimpan untuk profil "{name}".',
+  'ext.wallet.cleared': 'Kata sandi wallet dihapus dari profil "{name}".',
+  'ext.wallet.noProfile':
+    'Tidak ada profil koneksi aktif. Aktifkan profil sebelum menetapkan kata sandi wallet.',
   'common.error': 'Kesalahan',
   'common.failed': 'Gagal',
   'common.copy': 'Salin',
@@ -3417,6 +3531,12 @@ export const id: Record<string, string> = {
 };
 
 export const ro: Record<string, string> = {
+  'ext.wallet.title': 'utPLSQL — Parolă portofel',
+  'ext.wallet.prompt': 'Parola portofelului Oracle Cloud (lăsați gol pentru a elimina).',
+  'ext.wallet.saved': 'Parola portofelului a fost salvată pentru profilul „{name}”.',
+  'ext.wallet.cleared': 'Parola portofelului a fost eliminată din profilul „{name}”.',
+  'ext.wallet.noProfile':
+    'Nu există un profil de conexiune activ. Activați un profil înainte de a seta parola portofelului.',
   'common.error': 'Eroare',
   'common.failed': 'Eșuat',
   'common.copy': 'Copiază',
@@ -3601,6 +3721,12 @@ export const ro: Record<string, string> = {
 };
 
 export const sr: Record<string, string> = {
+  'ext.wallet.title': 'utPLSQL — Лозинка новчаника',
+  'ext.wallet.prompt': 'Лозинка новчаника Oracle Cloud (оставите празно да уклоните).',
+  'ext.wallet.saved': 'Лозинка новчаника сачувана за профил „{name}”.',
+  'ext.wallet.cleared': 'Лозинка новчаника уклоњена из профила „{name}”.',
+  'ext.wallet.noProfile':
+    'Нема активног профила везе. Активирајте профил пре подешавања лозинке новчаника.',
   'common.error': 'Грешка',
   'common.failed': 'Неуспешно',
   'common.copy': 'Копирај',
@@ -3785,6 +3911,11 @@ export const sr: Record<string, string> = {
 };
 
 export const th: Record<string, string> = {
+  'ext.wallet.title': 'utPLSQL — รหัสผ่านวอลเล็ต',
+  'ext.wallet.prompt': 'รหัสผ่านวอลเล็ต Oracle Cloud (เว้นว่างเพื่อลบ)',
+  'ext.wallet.saved': 'บันทึกรหัสผ่านวอลเล็ตสำหรับโปรไฟล์ "{name}" แล้ว',
+  'ext.wallet.cleared': 'ลบรหัสผ่านวอลเล็ตจากโปรไฟล์ "{name}" แล้ว',
+  'ext.wallet.noProfile': 'ไม่มีโปรไฟล์การเชื่อมต่อที่ใช้งานอยู่ โปรดเปิดใช้งานโปรไฟล์ก่อนตั้งรหัสผ่านวอลเล็ต',
   'common.error': 'ข้อผิดพลาด',
   'common.failed': 'ล้มเหลว',
   'common.copy': 'คัดลอก',
@@ -3960,6 +4091,12 @@ export const th: Record<string, string> = {
 };
 
 export const uk: Record<string, string> = {
+  'ext.wallet.title': 'utPLSQL — Пароль гаманця',
+  'ext.wallet.prompt': 'Пароль гаманця Oracle Cloud (залиште порожнім, щоб видалити).',
+  'ext.wallet.saved': 'Пароль гаманця збережено для профілю «{name}».',
+  'ext.wallet.cleared': 'Пароль гаманця видалено з профілю «{name}».',
+  'ext.wallet.noProfile':
+    'Немає активного профілю підключення. Активуйте профіль перед встановленням пароля гаманця.',
   'common.error': 'Помилка',
   'common.failed': 'Не вдалося',
   'common.copy': 'Копіювати',
@@ -4146,6 +4283,12 @@ export const uk: Record<string, string> = {
 };
 
 export const vi: Record<string, string> = {
+  'ext.wallet.title': 'utPLSQL — Mật khẩu ví',
+  'ext.wallet.prompt': 'Mật khẩu ví Oracle Cloud (để trống để xóa).',
+  'ext.wallet.saved': 'Đã lưu mật khẩu ví cho hồ sơ "{name}".',
+  'ext.wallet.cleared': 'Đã xóa mật khẩu ví khỏi hồ sơ "{name}".',
+  'ext.wallet.noProfile':
+    'Không có hồ sơ kết nối đang hoạt động. Hãy kích hoạt một hồ sơ trước khi đặt mật khẩu ví.',
   'common.error': 'Lỗi',
   'common.failed': 'Thất bại',
   'common.copy': 'Sao chép',

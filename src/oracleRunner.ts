@@ -1,3 +1,5 @@
+import * as fs from 'node:fs';
+import * as path from 'node:path';
 import * as vscode from 'vscode';
 import { getExtensionLocale, readConfig, type UtConfig } from './config';
 import { maskConnection } from './connectionProfiles';
@@ -7,6 +9,7 @@ import { logger } from './logger';
 import { ensureOracleClient } from './oracleClient';
 import { applyCoverageFromXml, applyResultsFromCases, countResults } from './results';
 import type { TestStateManager } from './state';
+import { looksLikeTnsAlias, resolveTnsAlias, TNSNAMES_FILENAME } from './tnsnames';
 
 type OraclePool = import('oracledb').Pool;
 type OracleConnection = import('oracledb').Connection;
@@ -64,12 +67,30 @@ export function connectionUser(connection: string): string | undefined {
 
 let currentPool: { pool: OraclePool; key: string } | undefined;
 
+/**
+ * Resolve o `connectString` para o driver (PRD-82 RF3): se for um alias TNS e
+ * houver `tnsAdminPath` resolvido, devolve o descriptor lido do `tnsnames.ora`;
+ * caso contrário devolve o valor original (Easy Connect/TNS opaco inalterado).
+ * Nunca lança: `tnsnames.ora` ausente/ilegível mantém o valor original.
+ */
+export function resolveConnectString(connectString: string, tnsAdminPath: string): string {
+  if (!tnsAdminPath || !looksLikeTnsAlias(connectString)) return connectString;
+  const file = path.join(tnsAdminPath, TNSNAMES_FILENAME);
+  try {
+    const content = fs.readFileSync(file, 'utf8');
+    return resolveTnsAlias(content, connectString) ?? connectString;
+  } catch (e) {
+    logger.debug('resolveConnectString: tnsnames.ora inacessível', { file, error: String(e) });
+    return connectString;
+  }
+}
+
 export async function ensurePool(
   oracledb: typeof import('oracledb'),
   connection: string,
   cfg: UtConfig,
 ): Promise<OraclePool> {
-  const key = `${connection}|${cfg.oraclePoolMin}|${cfg.oraclePoolMax}|${cfg.oraclePoolIncrement}|${cfg.oraclePoolPingInterval}`;
+  const key = `${connection}|${cfg.oraclePoolMin}|${cfg.oraclePoolMax}|${cfg.oraclePoolIncrement}|${cfg.oraclePoolPingInterval}|${cfg.tnsAdminPath}|${cfg.walletLocation}`;
   const client = ensureOracleClient(
     oracledb,
     cfg.oracleClientMode,
@@ -85,12 +106,14 @@ export async function ensurePool(
   const pool = await oracledb.createPool({
     user: parsed.user,
     password: parsed.password,
-    connectString: parsed.connectionString,
+    connectString: resolveConnectString(parsed.connectionString, cfg.tnsAdminPath),
     poolMin: cfg.oraclePoolMin,
     poolMax: cfg.oraclePoolMax,
     poolIncrement: cfg.oraclePoolIncrement,
     poolPingInterval: cfg.oraclePoolPingInterval,
     stmtCacheSize: 30,
+    ...(cfg.walletLocation ? { walletLocation: cfg.walletLocation } : {}),
+    ...(cfg.walletPassword ? { walletPassword: cfg.walletPassword } : {}),
   });
   currentPool = { pool, key };
   return pool;

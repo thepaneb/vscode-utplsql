@@ -27,6 +27,8 @@ export interface ConnectionProfile {
   sourcePath?: string;
   coverageOwner?: string;
   includePatterns?: string[];
+  /** Localização da wallet Oracle Cloud (thin) — PRD-82. */
+  walletLocation?: string;
   isDefault?: boolean;
   lastUsed?: string;
 }

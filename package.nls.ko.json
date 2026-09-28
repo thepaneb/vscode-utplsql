@@ -26,5 +26,6 @@
   "nls.command.runScriptFile": "utPLSQL: Run script file",
   "nls.command.runScriptFolder": "utPLSQL: Run script folder",
   "nls.command.compileForDebug": "utPLSQL: 디버그용으로 컴파일",
-  "nls.command.rebuildAnnotations": "utPLSQL: 주석 캐시 다시 작성"
+  "nls.command.rebuildAnnotations": "utPLSQL: 주석 캐시 다시 작성",
+  "nls.command.setWalletPassword": "utPLSQL: 월렛 비밀번호 설정"
 }
