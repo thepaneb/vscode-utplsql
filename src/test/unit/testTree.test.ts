@@ -12,6 +12,7 @@ import {
   mergeDbSuites,
   resolvePackageNode,
   resolveSchemaNode,
+  resolveSubtree,
   resolveSuiteNode,
 } from '../../testTree';
 import { __resetConfigValues, __setConfigValue, workspace } from '../vscode-stub';
@@ -251,6 +252,20 @@ test('collectAllItems: resolve a árvore lazy e devolve as suites', async () => 
   const items = await collectAllItems(controller, state, lazyDeps as never);
   assert.strictEqual(items.length, 1);
   assert.strictEqual(items[0].id, 'suite:ut_app');
+});
+
+test('resolveSubtree: resolve schema → package → suite de um nó não expandido', async () => {
+  const controller = makeController();
+  const state = new TestStateManager();
+  buildSchemaTree(controller, state, [suite({ dbSchema: 'APP' })], 'db/{schema}/**');
+  const schemaItem = controller._items[0];
+
+  await resolveSubtree(controller, state, schemaItem, lazyDeps as never);
+
+  const pkgItem = schemaItem._children[0];
+  const suiteItem = pkgItem._children[0];
+  assert.strictEqual(suiteItem.id, 'suite:ut_app');
+  assert.strictEqual(suiteItem._children.length, 2, 'testes deveriam ser materializados');
 });
 
 test('createRefresher: coalesce chamadas concorrentes e substitui a árvore', async () => {

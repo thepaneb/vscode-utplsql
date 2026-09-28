@@ -316,6 +316,8 @@ test('runWithProgress: cancela a execução ativa e limpa currentRunToken', asyn
   );
   pending.push(second);
 
+  // A resolução lazy (PRD-75) adiciona um microtask antes do executeRun.
+  await new Promise((resolve) => setTimeout(resolve, 0));
   assert.strictEqual(tokens.length, 2);
   assert.strictEqual(tokens[0].isCancellationRequested, true);
   assert.strictEqual(tokens[1].isCancellationRequested, false);
@@ -382,6 +384,8 @@ test('runWithProgress: currentRunToken aponta para a execução mais recente', a
     false,
   );
   pending.push(second);
+  // A resolução lazy (PRD-75) adiciona um microtask antes do executeRun.
+  await new Promise((resolve) => setTimeout(resolve, 0));
   assert.strictEqual(tokens.length, 2);
   assert.strictEqual(tokens[0].isCancellationRequested, false);
   assert.strictEqual(tokens[1].isCancellationRequested, false);

@@ -252,15 +252,15 @@ async function resolveAllTree(
       await resolveSchemaNode(controller, state, root, deps);
     }
     const packages: vscode.TestItem[] = [];
-    root.children.forEach((c) => {
+    for (const [, c] of root.children) {
       if (c.id.startsWith('package:')) packages.push(c);
       else if (c.id.startsWith('suite:')) suites.push(c);
-    });
+    }
     for (const pkg of packages) {
       resolvePackageNode(controller, state, pkg);
-      pkg.children.forEach((c) => {
+      for (const [, c] of pkg.children) {
         if (c.id.startsWith('suite:')) suites.push(c);
-      });
+      }
     }
   }
   for (const suite of suites) resolveSuiteNode(controller, state, suite);
@@ -277,6 +277,31 @@ export async function collectAllItems(
 ): Promise<vscode.TestItem[]> {
   await resolveAllTree(controller, state, deps);
   return state.cachedItems;
+}
+
+/**
+ * Resolve a subárvore de um item não resolvido (schema → package → suite),
+ * sob demanda. Usado antes de montar um `TestRunRequest` para um nó que ainda
+ * não foi expandido (PRD-75 RF4).
+ */
+export async function resolveSubtree(
+  controller: vscode.TestController,
+  state: TestStateManager,
+  item: vscode.TestItem,
+  deps: TreeResolveDeps = defaultResolveDeps,
+): Promise<void> {
+  if (item.id.startsWith('schema:')) {
+    await resolveSchemaNode(controller, state, item, deps);
+  } else if (item.id.startsWith('package:')) {
+    resolvePackageNode(controller, state, item);
+  } else if (item.id.startsWith('suite:')) {
+    resolveSuiteNode(controller, state, item);
+  } else {
+    return;
+  }
+  const children: vscode.TestItem[] = [];
+  for (const [, c] of item.children) children.push(c);
+  for (const child of children) await resolveSubtree(controller, state, child, deps);
 }
 
 export async function mergeDbSuites(

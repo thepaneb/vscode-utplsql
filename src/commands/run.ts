@@ -6,7 +6,7 @@ import { t } from '../i18n';
 import { filterSuitesByFolder, filterSuitesByUri } from '../matching';
 import { listReportersForConnection } from '../oracleRunner';
 import { collectRunTargets, executeRun } from '../runner';
-import { collectAllItems } from '../testTree';
+import { collectAllItems, resolveSubtree } from '../testTree';
 import type { ItemMeta } from '../types';
 import type { CommandDeps } from './deps';
 
@@ -71,6 +71,8 @@ export function registerRunCommands(
                   });
                   return a;
                 })();
+            // Resolve nós lazy antes de montar os alvos (PRD-75 RF4).
+            for (const item of items) await resolveSubtree(controller, state, item);
             const total = collectRunTargets(items, state).suiteCount;
 
             let done = 0;
@@ -285,6 +287,8 @@ export function registerRunCommands(
       vscode.window.showWarningMessage(t(locale, 'ext.export.noTargets'));
       return;
     }
+    // Resolve nós lazy antes de rodar (PRD-75 RF4).
+    for (const item of include) await resolveSubtree(controller, state, item);
 
     const connection = await resolveConnection();
     if (!connection) {

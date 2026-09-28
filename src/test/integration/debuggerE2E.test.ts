@@ -121,6 +121,14 @@ describeDB('debugger DBMS_DEBUG — ciclo real (breakpoint -> stop -> frame)', (
       assert.strictEqual(vars[0]?.name, 'x');
       assert.strictEqual(vars[0]?.value, '1');
 
+      // DELETE_BREAKPOINT: remove o breakpoint antes de seguir.
+      const deleted = await withTimeout(
+        clientDebug.deleteBreakpoint(bpId),
+        20_000,
+        'deleteBreakpoint',
+      );
+      assert.ok(deleted > 0, `DELETE_BREAKPOINT deveria retornar status > 0, veio ${deleted}`);
+
       assert.strictEqual(
         await withTimeout(clientDebug.continueRun(), 30_000, 'continue#2'),
         'exiting',

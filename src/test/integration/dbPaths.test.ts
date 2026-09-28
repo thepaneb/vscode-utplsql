@@ -173,7 +173,7 @@ describeDB('caminhos só-DB (provider, setup, merge de schema, DBMS_OUTPUT)', ()
     const cfg = vscode.workspace.getConfiguration('utplsql');
     const origOrg = cfg.inspect<string>('organization');
     const origPattern = cfg.inspect<string>('organization.schemaPattern');
-    const { createRefresher } = require('../../testTree.js');
+    const { createRefresher, collectAllItems } = require('../../testTree.js');
     const { TestStateManager } = require('../../state.js');
     const controller = vscode.tests.createTestController('utplsql-it-merge', 'IT Merge');
     const state = new TestStateManager();
@@ -188,6 +188,9 @@ describeDB('caminhos só-DB (provider, setup, merge de schema, DBMS_OUTPUT)', ()
 
       const refresh = createRefresher(controller, state);
       await refresh();
+
+      // Árvore lazy (PRD-75): a resolução dos níveis é sob demanda.
+      await collectAllItems(controller, state);
 
       assert.ok(
         state.getSuiteItem(`suite:${DB_ONLY_PKG.toLowerCase()}`),

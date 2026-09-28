@@ -41,7 +41,10 @@ mock.module('../../runner.js', {
 });
 
 mock.module('../../testTree.js', {
-  namedExports: { collectAllItems: async () => [] },
+  namedExports: {
+    collectAllItems: async () => [],
+    resolveSubtree: async () => {},
+  },
 });
 
 mock.module('../../oracleRunner.js', {
