@@ -156,8 +156,13 @@ notas `prd-*`. O índice navegável do vault é a [[MOC - PRDs]].
 | 75 | [Árvore de testes lazy (resolução incremental por nível)](approved/prd-75-lazy-test-tree.md) | 0.14.0 | 2026-09-19 |
 | 76 | [Execução e export com reporter arbitrário](approved/prd-76-reporter-export.md) | 0.14.0 | 2026-09-19 |
 | 80 | [Documento virtual de fonte do banco para falhas e cobertura](approved/prd-80-virtual-db-source.md) | 0.14.0 | 2026-09-19 |
-| 81 | [Hardening de segurança das settings de conexão](approved/prd-81-security-hardening.md) | 0.14.0 | 2026-09-19 |
 | 82 | [Resolução TNS no thin e senha de wallet no SecretStorage](approved/prd-82-tns-wallet.md) | 0.14.0 | 2026-09-19 |
+
+### 🟡 Em desenvolvimento
+
+| # | PRD | Versão | Data |
+|---|---|---|---|
+| 81 | [Hardening de segurança das settings de conexão](in-progress/prd-81-security-hardening.md) | 0.14.0 | 2026-09-19 |
 
 ### ⚪ Propostos
 
@@ -261,8 +266,9 @@ docs/prd/
 │   ├── prd-75-lazy-test-tree.md
 │   ├── prd-76-reporter-export.md
 │   ├── prd-80-virtual-db-source.md
-│   ├── prd-81-security-hardening.md
 │   ├── prd-82-tns-wallet.md
+├── in-progress/        ← sendo implementados agora
+│   ├── prd-81-security-hardening.md
 ├── proposed/        ← em avaliação
 │   ├── prd-50-auto-run-on-save.md
 │   ├── prd-51-run-by-tag.md
