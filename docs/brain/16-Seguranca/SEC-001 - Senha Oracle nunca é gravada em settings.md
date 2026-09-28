@@ -6,8 +6,8 @@ titulo: Senha Oracle nunca é gravada em settings
 dominio: segredos
 status: ativo
 severidade: critica
-verificado: 2026-09-23
-implementacao: ["src/connectionProfiles.ts:111", "src/connectionProfiles.ts:126", "src/connectionProfiles.ts:186"]
+verificado: 2026-09-28
+implementacao: ["src/connectionProfiles.ts:120", "src/connectionProfiles.ts:222", "src/connectionProfiles.ts:234"]
 testes: ["src/test/unit/connectionProfiles.test.ts"]
 regras: ["BR-CONN-005", "BR-CONN-007"]
 tags: ["seguranca", "conexao"]
@@ -18,7 +18,7 @@ A senha do perfil Oracle nunca é persistida em utplsql.profiles; ao salvar, ela
 
 ## Controle
 
-saveProfiles chama splitPassword + persistPassword; migrateLegacyProfiles converge instalações antigas; getProfileConnection recompõe a senha a partir do cache/secret.
+saveProfiles chama splitPassword + persistPassword (segredo JSON `{connection, password}`); migrateLegacyProfiles converge instalações antigas; getProfileConnection recompõe a senha só quando o vínculo de conexão bate (PRD-81 RF3). As settings de conexão são `scope: machine`, não sobrescrevíveis por workspace.
 
 ## Justificativa
 

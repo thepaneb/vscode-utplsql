@@ -7,8 +7,8 @@ dominio: conexao
 status: ativo
 severidade: critica
 fonte: codigo
-verificado: 2026-09-23
-implementacao: ["src/connectionProfiles.ts:111", "src/connectionProfiles.ts:126", "src/connectionProfiles.ts:168"]
+verificado: 2026-09-28
+implementacao: ["src/connectionProfiles.ts:120", "src/connectionProfiles.ts:186", "src/connectionProfiles.ts:222"]
 testes: ["src/test/unit/connectionProfiles.test.ts"]
 prds: ["PRD-34", "PRD-65"]
 requisitos: ["PRD-34/RF1", "PRD-65/RF3"]
@@ -16,7 +16,7 @@ tags: ["conexao", "seguranca"]
 ---
 ## Enunciado
 
-Se saveProfiles recebe um perfil com senha inline, então a senha é extraída (splitPassword), gravada no SecretStorage sob a chave utplsql.profile.<id> e o perfil persistido em utplsql.profiles fica sem a senha.
+Se saveProfiles recebe um perfil com senha inline, então a senha é extraída (splitPassword), gravada no SecretStorage sob a chave utplsql.profile.<id> no formato JSON `{ connection, password }` (PRD-81 RF3, vinculada à conexão) e o perfil persistido em utplsql.profiles fica sem a senha.
 
 ## Pré-condições
 

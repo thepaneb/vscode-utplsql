@@ -19,14 +19,22 @@ Esta política cobre vulnerabilidades na extensão **utPLSQL Test Runner** em si
 
 ## Áreas de atenção específicas deste projeto
 
-Como a extensão invoca processos externos (`java` ou o `launcher` do utPLSQL-cli) e lê configurações do usuário para montar linhas de comando, áreas particularmente sensíveis incluem:
+A extensão conecta-se diretamente ao Oracle via `node-oracledb` (sem CLI externo) e lê configurações do usuário para montar a conexão e a execução. Áreas particularmente sensíveis incluem:
 
-- Construção de argumentos de linha de comando a partir de settings (`utplsql.*`) e possível **injeção de comando** em ambientes Windows (`cmd`) ou shells Unix.
-- Armazenamento e uso de **credenciais de conexão com o Oracle** (usuário/senha) fornecidas nas configurações do workspace.
-- Leitura de arquivos de configuração de workspace (`.vscode/settings.json`) potencialmente vindos de repositórios não confiáveis, e execução automática de comandos com base neles.
-- Geração de relatórios de cobertura e escrita de arquivos no sistema.
+- Armazenamento e uso de **credenciais de conexão com o Oracle** (usuário/senha) e da senha de wallet.
+- Visibilidade de **segredos em mensagens de erro, logs e saída das execuções**.
+- Leitura de configurações de workspace (`.vscode/settings.json`) potencialmente vindas de repositórios não confiáveis.
+- Geração de relatórios de cobertura e **escrita de arquivos** somente dentro das raízes do workspace.
 
 Se você identificar um problema em qualquer uma dessas áreas, isso é considerado uma vulnerabilidade de segurança, mesmo que pareça um "bug" comum.
+
+## Proteções implementadas
+
+- **Settings de conexão `machine`-scoped** (`utplsql.connection`, `utplsql.profiles`, `utplsql.activeProfile`, `utplsql.oracleClientLibDir`, `utplsql.oracleClientConfigDir`): um `.vscode/settings.json` de terceiros **não** pode sobrescrevê-las.
+- **Extensão desabilitada em workspaces não confiáveis** (`capabilities.untrustedWorkspaces.supported: false`): só conecta após a pasta ser confiada.
+- **Senhas no `SecretStorage`** (keychain do SO), nunca em `settings.json`, e **vinculadas à conexão**: se a `connection` do perfil mudar, a senha guardada é descartada em vez de ser enviada ao novo host.
+- **Mascaramento de credenciais** em toda saída (picker, logs, mensagens de erro): a senha nunca aparece.
+- **Nenhum valor de usuário concatenado no PL/SQL** — tudo vai como bind; nomes de reporter são validados por allowlist.
 
 ## Como reportar uma vulnerabilidade
 
@@ -57,6 +65,6 @@ Enquanto usa a extensão, recomendamos:
 
 - Não abrir workspaces de origem desconhecida com configurações `utplsql.*` já definidas sem revisar o `.vscode/settings.json` antes.
 - Evitar armazenar senhas do Oracle em texto plano em arquivos de configuração versionados; prefira variáveis de ambiente ou cofres de segredo quando possível.
-- Manter o **utPLSQL-cli**, o **Java** e o **driver Oracle** atualizados, já que vulnerabilidades nessas dependências também afetam a superfície de ataque geral.
+- Manter o **driver Oracle (node-oracledb)** atualizado, já que vulnerabilidades nessa dependência também afetam a superfície de ataque geral.
 
 Obrigado por ajudar a manter o utPLSQL Test Runner seguro para todos! 🔒

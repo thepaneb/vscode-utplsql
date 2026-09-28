@@ -4,7 +4,9 @@ import { createRequire } from 'node:module';
 import { test } from 'node:test';
 
 interface Manifest {
+  capabilities?: { untrustedWorkspaces?: { supported?: boolean } };
   contributes: {
+    configuration?: { properties?: Record<string, { scope?: string }> };
     languages?: { id: string; extensions?: string[] }[];
     breakpoints?: { language: string }[];
     debuggers?: {
@@ -55,4 +57,21 @@ test('debugger utplsql: expõe os atributos de launch esperados', () => {
 test('menu do editor expõe utplsql.debugTest para test packages', () => {
   const menu = pkg.contributes.menus?.['editor/context'] ?? [];
   assert.ok(menu.some((m) => m.command === 'utplsql.debugTest'));
+});
+
+test('settings sensíveis têm scope machine (PRD-81 RF1)', () => {
+  const props = pkg.contributes.configuration?.properties ?? {};
+  for (const key of [
+    'utplsql.connection',
+    'utplsql.profiles',
+    'utplsql.activeProfile',
+    'utplsql.oracleClientLibDir',
+    'utplsql.oracleClientConfigDir',
+  ]) {
+    assert.strictEqual(props[key]?.scope, 'machine', `${key} deveria ter scope "machine"`);
+  }
+});
+
+test('extensão fica desabilitada em workspace não confiável (PRD-81 RF2)', () => {
+  assert.strictEqual(pkg.capabilities?.untrustedWorkspaces?.supported, false);
 });

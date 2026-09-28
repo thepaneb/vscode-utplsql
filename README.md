@@ -95,6 +95,13 @@ keeps it only in memory during the session — use the command
 - **TNS alias**: `user/pass@tns_alias` (requires `TNS_ADMIN` configured)
 - **Wallet (Oracle Cloud)**: `user/pass@tcps://host:1522/service?wallet_location=/path/wallet`
 
+> 🔒 **Hardened settings:** `utplsql.connection`, `utplsql.profiles`, `utplsql.activeProfile`,
+> `utplsql.oracleClientLibDir` and `utplsql.oracleClientConfigDir` are **`machine`-scoped** —
+> a project's `.vscode/settings.json` cannot override them. The extension is also **disabled in
+> untrusted workspaces** (mark the folder as trusted to enable it). A profile password is bound
+> to its `connection`: if the connection changes, the stored password is discarded instead of
+> being sent to the new host.
+
 ## How it works
 
 The extension connects directly to the Oracle database via `node-oracledb`, streams test results in real-time, and translates them into VSCode's native APIs.

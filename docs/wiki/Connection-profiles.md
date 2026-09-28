@@ -27,6 +27,14 @@ The profile's `connection` field stores only `user@//host:port/service` — **no
 password**. The password lives in the OS keychain (**VS Code SecretStorage**),
 keyed by the profile `id`, and is recombined at connection time.
 
+Since **PRD-81** the password is **bound to the connection**: if the profile's
+`connection` changes, the stored password is **discarded** instead of being sent
+to the new host. The connection settings (`utplsql.connection`, `utplsql.profiles`,
+`utplsql.activeProfile`, `utplsql.oracleClientLibDir`,
+`utplsql.oracleClientConfigDir`) are **`machine`-scoped** — a workspace
+`.vscode/settings.json` cannot override them — and the extension is **disabled in
+untrusted workspaces** (trust the folder to enable it).
+
 Profiles saved before this change (with an inline password) are **migrated
 automatically on first use**.
 

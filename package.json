@@ -37,6 +37,12 @@
     "workspaceContains:**/*.pks",
     "workspaceContains:**/*.pkb"
   ],
+  "capabilities": {
+    "untrustedWorkspaces": {
+      "supported": false,
+      "description": "Os perfis de conexão apontam para um banco e a senha fica no SecretStorage; a extensão fica desabilitada até o workspace ser confiável (Workspaces: Trust)."
+    }
+  },
   "main": "./dist/extension.js",
   "contributes": {
     "configuration": {
@@ -45,6 +51,7 @@
         "utplsql.profiles": {
           "type": "array",
           "default": [],
+          "scope": "machine",
           "markdownDescription": "Perfis de conexão Oracle salvos para alternar rapidamente entre ambientes (DEV, TEST, PROD). Cada perfil pode sobrescrever `connection`, `sourcePath`, `coverageOwner`, etc. A **senha é guardada no SecretStorage** (keychain do VSCode), não em texto plano nas settings.",
           "items": {
             "type": "object",
@@ -100,11 +107,13 @@
         "utplsql.activeProfile": {
           "type": "string",
           "default": "",
+          "scope": "machine",
           "markdownDescription": "ID do perfil de conexão ativo (`utplsql.profiles`). Quando definido, sobrescreve `utplsql.connection`."
         },
         "utplsql.connection": {
           "type": "string",
           "default": "",
+          "scope": "machine",
           "markdownDescription": "String de conexão Oracle (`usuario/senha@//host:porta/servico`). Se vazio, usa a variável de ambiente `UTPLSQL_CONN`; se ainda assim vazio, a extensão pergunta (e mantém só na sessão). **Recomendado deixar vazio e usar a variável de ambiente** para não gravar a senha nas settings."
         },
         "utplsql.sourcePath": {
@@ -247,11 +256,13 @@
         "utplsql.oracleClientLibDir": {
           "type": "string",
           "default": "",
+          "scope": "machine",
           "markdownDescription": "Diretório do Oracle Instant Client. Obrigatório quando `#utplsql.oracleClientMode#` é `thick`. Ex.: `C:\\oracle\\instantclient_23_5`."
         },
         "utplsql.oracleClientConfigDir": {
           "type": "string",
           "default": "",
+          "scope": "machine",
           "markdownDescription": "Diretório de configuração Oracle (TNS_ADMIN) com `sqlnet.ora`/`tnsnames.ora`. Opcional; só tem efeito no `thick`."
         },
         "utplsql.organization": {
