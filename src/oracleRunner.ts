@@ -1,5 +1,6 @@
 import * as vscode from 'vscode';
 import { getExtensionLocale, readConfig, type UtConfig } from './config';
+import { maskConnection } from './connectionProfiles';
 import { t } from './i18n';
 import { parseJUnit } from './junit';
 import { logger } from './logger';
@@ -40,7 +41,10 @@ export function parseConnString(connStr: string): {
   const user = slash >= 0 ? cred.slice(0, slash) : cred;
   const password = slash >= 0 ? cred.slice(slash + 1) : '';
   if (!user || !connectionString) {
-    throw new Error(t(getExtensionLocale(), 'oracleRunner.badConnFormat', { conn: connStr }));
+    // Nunca ecoar a connection crua: ela contém a senha (CWE-532).
+    throw new Error(
+      t(getExtensionLocale(), 'oracleRunner.badConnFormat', { conn: maskConnection(connStr) }),
+    );
   }
   return { user, password, connectionString };
 }

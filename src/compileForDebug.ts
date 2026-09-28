@@ -40,12 +40,25 @@ export function debuggableFromFile(filePath: string): DebuggableFile | undefined
 }
 
 /**
+ * Identificador Oracle **não-quotado**: letra inicial, depois letras/dígitos/`_`/`$`/`#`,
+ * até 128 bytes (limite do 12.2+). Bloqueia injeção em `ALTER … COMPILE DEBUG`.
+ */
+const ORACLE_NAME = /^[A-Za-z][A-Za-z0-9_$#]{0,127}$/;
+
+export function isValidOracleIdentifier(name: string): boolean {
+  return ORACLE_NAME.test(name);
+}
+
+/**
  * `ALTER PACKAGE "OWNER"."NAME" COMPILE DEBUG PLSQL_OPTIMIZE_LEVEL = 1`.
  * `COMPILE DEBUG` sozinho só liga `PLSQL_DEBUG` e mantém o nível de otimização
  * (default 2); o nível 1 evita que o otimizador remova/reordene as linhas e o
  * breakpoint não seja encontrado.
  */
 export function compileForDebugSql(kind: DebuggableKind, owner: string, name: string): string {
+  if (!isValidOracleIdentifier(owner) || !isValidOracleIdentifier(name)) {
+    throw new Error(`Invalid Oracle identifier: ${owner}.${name}`);
+  }
   return `ALTER ${kind.toUpperCase()} "${owner.toUpperCase()}"."${name.toUpperCase()}" COMPILE DEBUG PLSQL_OPTIMIZE_LEVEL = 1`;
 }
 

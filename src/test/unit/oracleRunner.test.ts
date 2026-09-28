@@ -143,6 +143,20 @@ test('parseConnString: formato invalido lanca erro', () => {
   assert.throws(() => parseConnString('/pass@host'));
 });
 
+test('parseConnString: a mensagem de erro não vaza a senha (CWE-532)', () => {
+  for (const bad of ['scott/tiger', 'user/s3cr3t@', 'scott/hunter2']) {
+    let msg = '';
+    try {
+      parseConnString(bad);
+      assert.fail('deveria lançar para uma connection inválida');
+    } catch (e) {
+      msg = e instanceof Error ? e.message : String(e);
+    }
+    assert.ok(!/tiger|s3cr3t|hunter2/.test(msg), `senha vazou na mensagem: ${msg}`);
+    assert.match(msg, /Formato de conexão inválido/);
+  }
+});
+
 test('parseConnString: hostname com subdominios', () => {
   const r = parseConnString('u/p@//ora-prod.us-east1.company.com:1521/proddb');
   assert.strictEqual(r.user, 'u');

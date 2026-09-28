@@ -7,8 +7,8 @@ dominio: conexao
 status: ativo
 severidade: alta
 fonte: codigo
-verificado: 2026-09-23
-implementacao: ["src/connectionProfiles.ts:17", "src/connectionProfiles.ts:24"]
+verificado: 2026-09-28
+implementacao: ["src/connectionProfiles.ts:22", "src/connectionProfiles.ts:24", "src/connectionProfiles.ts:31"]
 testes: ["src/test/unit/connectionProfiles.test.ts"]
 prds: ["PRD-34"]
 requisitos: ["PRD-34/RF4"]
@@ -16,15 +16,15 @@ tags: ["conexao", "seguranca"]
 ---
 ## Enunciado
 
-Se maskConnection recebe user/senha@resto, então corta tudo entre o primeiro / da credencial e o último @, retornando user@resto mesmo quando a senha contém @ ou /.
+Se maskConnection recebe uma credencial com senha, então remove a senha: com `@`, corta tudo entre o primeiro `/` da credencial e o último `@`, retornando `user@resto` mesmo quando a senha contém `@` ou `/`; sem `@` (conexão malformada, ex.: `scott/tiger`), corta após o 1º `/`, retornando `user`.
 
 ## Pré-condições
 
-Uso em exibição (picker, logs/output do script runner).
+Uso em exibição (picker, logs/output do script runner, mensagens de erro).
 
 ## Exceções
 
-String sem @ ou sem formato de credencial é retornada inalterada.
+String sem `@` e sem `/` é retornada inalterada (ex.: `sem-formato`).
 
 ## Justificativa
 

@@ -102,6 +102,11 @@ test('maskConnection: formato invalido retorna a string', () => {
   assert.strictEqual(maskConnection('sem-formato'), 'sem-formato');
 });
 
+test('maskConnection: credencial sem @ é mascarada (conexão malformada)', () => {
+  assert.strictEqual(maskConnection('scott/tiger'), 'scott');
+  assert.strictEqual(maskConnection('user/pa/ss'), 'user');
+});
+
 test('parseSqlDevConnections: XML valido gera perfis', () => {
   const xml = `<Reference name="DEV" className="oracle.jdeveloper.db.adapter.DatabaseProvider"
      userName="scott" password="tiger">
