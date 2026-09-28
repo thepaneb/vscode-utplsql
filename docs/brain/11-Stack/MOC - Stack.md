@@ -41,7 +41,7 @@ e os riscos das dependências **diretas** relevantes.
 - `@types/vscode` `^1.88.0` — dev
 - `@vscode/test-cli` `^0.0.15` — dev
 - `@vscode/test-electron` `^3.1.0` — dev
-- `@vscode/vsce` `^3.2.1` — dev
+- `@vscode/vsce` `^4.0.0` — dev
 - `c8` `^12.0.0` — dev
 - `esbuild` `^0.28.2` — dev
 - `typescript` `^7.0.2` — dev
