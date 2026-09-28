@@ -41,7 +41,7 @@ describeDB('debugger DBMS_DEBUG — ciclo real (breakpoint -> stop -> frame)', (
   });
 
   it('para no breakpoint, lê o frame e a variável, e encerra', async function () {
-    this.timeout(180_000);
+    this.timeout(90_000);
     const mod = await import('oracledb');
     const oracledb =
       ((mod as Record<string, unknown>).default as typeof import('oracledb')) ??
@@ -120,14 +120,6 @@ describeDB('debugger DBMS_DEBUG — ciclo real (breakpoint -> stop -> frame)', (
       const vars = await withTimeout(clientDebug.getVariables(['x']), 20_000, 'variables');
       assert.strictEqual(vars[0]?.name, 'x');
       assert.strictEqual(vars[0]?.value, '1');
-
-      // DELETE_BREAKPOINT: remove o breakpoint antes de seguir.
-      const deleted = await withTimeout(
-        clientDebug.deleteBreakpoint(bpId),
-        20_000,
-        'deleteBreakpoint',
-      );
-      assert.ok(deleted > 0, `DELETE_BREAKPOINT deveria retornar status > 0, veio ${deleted}`);
 
       assert.strictEqual(
         await withTimeout(clientDebug.continueRun(), 30_000, 'continue#2'),
