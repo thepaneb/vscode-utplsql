@@ -2,7 +2,7 @@
 tipo: prd
 id: PRD-76
 aliases: [PRD-76]
-status: proposed
+status: approved
 titulo: "Execução e export com reporter arbitrário"
 versao: "0.14.0"
 data: "2026-09-19"

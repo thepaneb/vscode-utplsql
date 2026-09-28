@@ -153,6 +153,11 @@ notas `prd-*`. O índice navegável do vault é a [[MOC - PRDs]].
 | # | PRD | Versão | Data |
 |---|---|---|---|
 | 47 | [Node 26 no toolchain de desenvolvimento](approved/prd-47-node-26-toolchain.md) | 0.14.0 | 2026-08-29 |
+| 75 | [Árvore de testes lazy (resolução incremental por nível)](approved/prd-75-lazy-test-tree.md) | 0.14.0 | 2026-09-19 |
+| 76 | [Execução e export com reporter arbitrário](approved/prd-76-reporter-export.md) | 0.14.0 | 2026-09-19 |
+| 80 | [Documento virtual de fonte do banco para falhas e cobertura](approved/prd-80-virtual-db-source.md) | 0.14.0 | 2026-09-19 |
+| 81 | [Hardening de segurança das settings de conexão](approved/prd-81-security-hardening.md) | 0.14.0 | 2026-09-19 |
+| 82 | [Resolução TNS no thin e senha de wallet no SecretStorage](approved/prd-82-tns-wallet.md) | 0.14.0 | 2026-09-19 |
 
 ### ⚪ Propostos
 
@@ -170,11 +175,6 @@ notas `prd-*`. O índice navegável do vault é a [[MOC - PRDs]].
 | 59 | [Scaffold de suíte de teste](proposed/prd-59-scaffold-suite.md) | 0.16.0 | 2026-09-06 |
 | 60 | [Cobertura de branch (investigação de viabilidade)](proposed/prd-60-branch-coverage-investigation.md) | Investigação — sem versão alvo | 2026-09-06 |
 | 61 | [Auto-provisionamento do utPLSQL-cli](proposed/prd-61-cli-auto-provision.md) | Suspenso — a reavaliar (PRD-64 removeu o CLI) | 2026-09-06 |
-| 75 | [Árvore de testes lazy (resolução incremental por nível)](proposed/prd-75-lazy-test-tree.md) | 0.14.0 | 2026-09-19 |
-| 76 | [Execução e export com reporter arbitrário](proposed/prd-76-reporter-export.md) | 0.14.0 | 2026-09-19 |
-| 80 | [Documento virtual de fonte do banco para falhas e cobertura](proposed/prd-80-virtual-db-source.md) | 0.14.0 | 2026-09-19 |
-| 81 | [Hardening de segurança das settings de conexão](proposed/prd-81-security-hardening.md) | 0.14.0 | 2026-09-19 |
-| 82 | [Resolução TNS no thin e senha de wallet no SecretStorage](proposed/prd-82-tns-wallet.md) | 0.14.0 | 2026-09-19 |
 <!-- prd:roadmap:end -->
 
 ---
@@ -258,6 +258,11 @@ docs/prd/
 │   ├── prd-87-suitepath-results-jump.md
 ├── approved/        ← aprovados, aguardando implementação
 │   ├── prd-47-node-26-toolchain.md
+│   ├── prd-75-lazy-test-tree.md
+│   ├── prd-76-reporter-export.md
+│   ├── prd-80-virtual-db-source.md
+│   ├── prd-81-security-hardening.md
+│   ├── prd-82-tns-wallet.md
 ├── proposed/        ← em avaliação
 │   ├── prd-50-auto-run-on-save.md
 │   ├── prd-51-run-by-tag.md
@@ -271,11 +276,6 @@ docs/prd/
 │   ├── prd-59-scaffold-suite.md
 │   ├── prd-60-branch-coverage-investigation.md
 │   ├── prd-61-cli-auto-provision.md
-│   ├── prd-75-lazy-test-tree.md
-│   ├── prd-76-reporter-export.md
-│   ├── prd-80-virtual-db-source.md
-│   ├── prd-81-security-hardening.md
-│   ├── prd-82-tns-wallet.md
 ```
 <!-- prd:estrutura:end -->
 
