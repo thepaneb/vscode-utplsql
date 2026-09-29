@@ -9,7 +9,7 @@ severidade: alta
 fonte: codigo
 verificado: 2026-09-23
 implementacao: ["src/oracleRunner.ts:716", "src/oracleRunner.ts:717", "src/oracleRunner.ts:719", "src/oracleRunner.ts:720", "src/oracleRunner.ts:723"]
-testes: ["src/test/unit/oracleRunner.test.ts:1524"]
+testes: ["src/test/unit/oracleRunner.test.ts:1524", "src/test/integration/runTimeoutE2E.test.ts"]
 prds: ["PRD-05"]
 requisitos: ["PRD-05/RF3"]
 tags: ["execucao"]
@@ -37,6 +37,6 @@ Evita run pendurado sem depender de cancelamento manual, reaproveitando a mesma 
 - 📄 PRDs: [[prd-05-progress-cancel|PRD-05]]
 - 🎯 Requisitos: [[prd-05-progress-cancel|PRD-05 RF3]]
 - 🧩 Código: [[COD - oracleRunner.ts]]
-- 🧪 Testes: [[TST - oracleRunner.test.ts]]
+- 🧪 Testes: [[TST - oracleRunner.test.ts]] · [[TST - runTimeoutE2E.test.ts]]
 - ↩️ Referenciada por: [[02-test-execution]] · [[prd-05-progress-cancel|PRD-05]]
 <!-- brain:auto:end -->

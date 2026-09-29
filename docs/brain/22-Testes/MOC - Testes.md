@@ -24,6 +24,7 @@ SORT id ASC
 
 <!-- brain:auto:start:moc-index -->
 - [[TST - codelens.test.ts]] — `TST-codelens.test.ts`
+- [[TST - compilationDiagnosticsE2E.test.ts]] — `TST-compilationDiagnosticsE2E.test.ts`
 - [[TST - config.test.ts]] — `TST-config.test.ts`
 - [[TST - connectionProfiles.test.ts]] — `TST-connectionProfiles.test.ts`
 - [[TST - coverage.test.ts]] — `TST-coverage.test.ts`
@@ -43,16 +44,19 @@ SORT id ASC
 - [[TST - oracleRunner.test.ts]] — `TST-oracleRunner.test.ts`
 - [[TST - oracleRunnerTns.test.ts]] — `TST-oracleRunnerTns.test.ts`
 - [[TST - profileCommands.test.ts]] — `TST-profileCommands.test.ts`
+- [[TST - profileSecretStorageE2E.test.ts]] — `TST-profileSecretStorageE2E.test.ts`
 - [[TST - quickfix.test.ts]] — `TST-quickfix.test.ts`
 - [[TST - quickfixActivation.test.ts]] — `TST-quickfixActivation.test.ts`
 - [[TST - results.test.ts]] — `TST-results.test.ts`
 - [[TST - runExportCommand.test.ts]] — `TST-runExportCommand.test.ts`
 - [[TST - runner.test.ts]] — `TST-runner.test.ts`
+- [[TST - runTimeoutE2E.test.ts]] — `TST-runTimeoutE2E.test.ts`
 - [[TST - schemaRun.test.ts]] — `TST-schemaRun.test.ts`
 - [[TST - scriptsCli.test.ts]] — `TST-scriptsCli.test.ts`
 - [[TST - state.test.ts]] — `TST-state.test.ts`
 - [[TST - statusBar.test.ts]] — `TST-statusBar.test.ts`
 - [[TST - suiteParser.test.ts]] — `TST-suiteParser.test.ts`
+- [[TST - tagsStreamingE2E.test.ts]] — `TST-tagsStreamingE2E.test.ts`
 - [[TST - testTree.test.ts]] — `TST-testTree.test.ts`
 - [[TST - thickMode.test.ts]] — `TST-thickMode.test.ts`
 - [[TST - tnsnames.test.ts]] — `TST-tnsnames.test.ts`
@@ -61,5 +65,7 @@ SORT id ASC
 - [[TST - v014-features.test.ts]] — `TST-v014-features.test.ts`
 - [[TST - v014-tns.test.ts]] — `TST-v014-tns.test.ts`
 - [[TST - viewCoverage.test.ts]] — `TST-viewCoverage.test.ts`
+- [[TST - viewCoverageDenied.test.ts]] — `TST-viewCoverageDenied.test.ts`
+- [[TST - viewCoverageE2E.test.ts]] — `TST-viewCoverageE2E.test.ts`
 - [[TST - virtualSource.test.ts]] — `TST-virtualSource.test.ts`
 <!-- brain:auto:end -->
