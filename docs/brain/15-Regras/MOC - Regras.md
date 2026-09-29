@@ -70,6 +70,10 @@ SORT id ASC
 - [[BR-CONN-016 - Settings de conexão machine-scoped e workspace confiável]] — `BR-CONN-016`
 - [[BR-CONN-017 - Senha da wallet vai para o SecretStorage e ao pool]] — `BR-CONN-017`
 - [[BR-CONN-018 - Alias TNS resolvido no thin por tnsAdminPath, SQL Developer e TNS_ADMIN]] — `BR-CONN-018`
+- [[BR-DEBUG-001 - Ciclo do debugger DBMS_DEBUG para no breakpoint e le o frame]] — `BR-DEBUG-001`
+- [[BR-DEBUG-002 - stopOnException controla pausa em excecao (break_exception)]] — `BR-DEBUG-002`
+- [[BR-DEBUG-003 - Function standalone depura no namespace toplevel]] — `BR-DEBUG-003`
+- [[BR-DEBUG-004 - compileForDebug recompila com debug e mantem o objeto VALID]] — `BR-DEBUG-004`
 - [[BR-EXEC-001 - Execução usa duas conexões dedicadas (conn1 runner, conn2 poll)]] — `BR-EXEC-001`
 - [[BR-EXEC-002 - Conexões do runner têm callTimeout zerado]] — `BR-EXEC-002`
 - [[BR-EXEC-003 - Falha na segunda conexão libera a primeira (sem vazamento)]] — `BR-EXEC-003`
@@ -105,6 +109,7 @@ SORT id ASC
 - [[BR-SCHEMA-002 - extractSchemaFromPath - path.posix.relative e placeholder {schema}]] — `BR-SCHEMA-002`
 - [[BR-SCHEMA-003 - collectAllItems usa cachedItems e, se vazio, percorre até 3 níveis]] — `BR-SCHEMA-003`
 - [[BR-SCHEMA-004 - Árvore de testes resolvida por nível sob demanda (lazy)]] — `BR-SCHEMA-004`
+- [[BR-SCRIPT-001 - Script run executa SQLPlus (split, PROMPT-SHOW ERRORS, thin por padrao)]] — `BR-SCRIPT-001`
 - [[BR-TEST-001 - Matriz de bancos Oracle cobre 12.2-23ai em thin e thick]] — `BR-TEST-001`
 - [[BR-TEST-002 - Testes de integração exigem banco e são skip sem UTPLSQL_CONN]] — `BR-TEST-002`
 - [[BR-UI-001 - Context key utplsql-activated é setado na ativação]] — `BR-UI-001`

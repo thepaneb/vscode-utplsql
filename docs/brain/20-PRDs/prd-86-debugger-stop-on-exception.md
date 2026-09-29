@@ -8,7 +8,7 @@ versao: "0.13.0"
 data: "2026-09-24"
 autor: "Gil Cleber Barboza"
 verificado: 2026-09-24
-regras: []
+regras: ["BR-DEBUG-002"]
 tags: [prd]
 ---
 
@@ -152,6 +152,7 @@ a funcionar como documentado.
 
 <!-- brain:auto:start:conexoes -->
 - 🗺️ [[MOC - PRDs]]
+- 📐 Regras: [[BR-DEBUG-002 - stopOnException controla pausa em excecao (break_exception)|BR-DEBUG-002]]
 - 🔗 PRDs relacionados: [[prd-33-plsql-debugger-integration|PRD-33]]
 - 🚀 ⬅️ release anterior: [[prd-73-compile-for-debug|PRD-73 (0.12.1)]] · ➡️ próxima release: [[prd-75-lazy-test-tree|PRD-75 (0.14.0)]]
 <!-- brain:auto:end -->

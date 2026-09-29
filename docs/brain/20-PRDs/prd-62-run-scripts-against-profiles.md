@@ -8,7 +8,7 @@ versao: "0.12.0"
 data: "2026-09-06"
 autor: "Gil Cleber Barboza"
 verificado: 2026-09-23
-regras: ["BR-CONN-010"]
+regras: ["BR-CONN-010", "BR-SCRIPT-001"]
 tags: [prd]
 ---
 
@@ -366,7 +366,7 @@ Menus de contexto no editor e Explorer.
 
 <!-- brain:auto:start:conexoes -->
 - 🗺️ [[MOC - PRDs]]
-- 📐 Regras: [[BR-CONN-010 - Guia de perfis quando não há perfis salvos|BR-CONN-010]]
+- 📐 Regras: [[BR-CONN-010 - Guia de perfis quando não há perfis salvos|BR-CONN-010]] · [[BR-SCRIPT-001 - Script run executa SQLPlus (split, PROMPT-SHOW ERRORS, thin por padrao)|BR-SCRIPT-001]]
 - 🎯 RF1 — Campos novos no perfil → [[BR-CONN-010 - Guia de perfis quando não há perfis salvos|BR-CONN-010]]
 - 🚀 ⬅️ release anterior: [[prd-46-dependency-majors|PRD-46 (0.11.0)]] · ➡️ próxima release: [[prd-70-thick-mode-nne|PRD-70 (0.12.1)]]
 <!-- brain:auto:end -->

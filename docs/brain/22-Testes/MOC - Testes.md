@@ -24,15 +24,21 @@ SORT id ASC
 
 <!-- brain:auto:start:moc-index -->
 - [[TST - codelens.test.ts]] — `TST-codelens.test.ts`
+- [[TST - commandsE2E.test.ts]] — `TST-commandsE2E.test.ts`
 - [[TST - compilationDiagnosticsE2E.test.ts]] — `TST-compilationDiagnosticsE2E.test.ts`
 - [[TST - config.test.ts]] — `TST-config.test.ts`
 - [[TST - connectionProfiles.test.ts]] — `TST-connectionProfiles.test.ts`
 - [[TST - coverage.test.ts]] — `TST-coverage.test.ts`
 - [[TST - dbPaths.test.ts]] — `TST-dbPaths.test.ts`
 - [[TST - dbSourceProvider.test.ts]] — `TST-dbSourceProvider.test.ts`
+- [[TST - debugger.test.ts]] — `TST-debugger.test.ts`
+- [[TST - debuggerE2E.test.ts]] — `TST-debuggerE2E.test.ts`
+- [[TST - debuggerExceptionE2E.test.ts]] — `TST-debuggerExceptionE2E.test.ts`
+- [[TST - debuggerStandaloneFn.test.ts]] — `TST-debuggerStandaloneFn.test.ts`
 - [[TST - discovery.test.ts]] — `TST-discovery.test.ts`
 - [[TST - extension.test.ts]] — `TST-extension.test.ts`
 - [[TST - i18n.test.ts]] — `TST-i18n.test.ts`
+- [[TST - integration-compileForDebug.test.ts]] — `TST-integration-compileForDebug.test.ts`
 - [[TST - jumpToFailureE2E.test.ts]] — `TST-jumpToFailureE2E.test.ts`
 - [[TST - junit.test.ts]] — `TST-junit.test.ts`
 - [[TST - logger.test.ts]] — `TST-logger.test.ts`
@@ -43,6 +49,7 @@ SORT id ASC
 - [[TST - oracleClient.test.ts]] — `TST-oracleClient.test.ts`
 - [[TST - oracleRunner.test.ts]] — `TST-oracleRunner.test.ts`
 - [[TST - oracleRunnerTns.test.ts]] — `TST-oracleRunnerTns.test.ts`
+- [[TST - prd70-sqlplus.test.ts]] — `TST-prd70-sqlplus.test.ts`
 - [[TST - profileCommands.test.ts]] — `TST-profileCommands.test.ts`
 - [[TST - profileSecretStorageE2E.test.ts]] — `TST-profileSecretStorageE2E.test.ts`
 - [[TST - quickfix.test.ts]] — `TST-quickfix.test.ts`
@@ -52,6 +59,7 @@ SORT id ASC
 - [[TST - runner.test.ts]] — `TST-runner.test.ts`
 - [[TST - runTimeoutE2E.test.ts]] — `TST-runTimeoutE2E.test.ts`
 - [[TST - schemaRun.test.ts]] — `TST-schemaRun.test.ts`
+- [[TST - scriptRunner.test.ts]] — `TST-scriptRunner.test.ts`
 - [[TST - scriptsCli.test.ts]] — `TST-scriptsCli.test.ts`
 - [[TST - state.test.ts]] — `TST-state.test.ts`
 - [[TST - statusBar.test.ts]] — `TST-statusBar.test.ts`
@@ -60,6 +68,7 @@ SORT id ASC
 - [[TST - testTree.test.ts]] — `TST-testTree.test.ts`
 - [[TST - thickMode.test.ts]] — `TST-thickMode.test.ts`
 - [[TST - tnsnames.test.ts]] — `TST-tnsnames.test.ts`
+- [[TST - unit-compileForDebug.test.ts]] — `TST-unit-compileForDebug.test.ts`
 - [[TST - v012-features.test.ts]] — `TST-v012-features.test.ts`
 - [[TST - v013-features.test.ts]] — `TST-v013-features.test.ts`
 - [[TST - v014-features.test.ts]] — `TST-v014-features.test.ts`

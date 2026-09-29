@@ -8,7 +8,7 @@ versao: "0.12.1"
 data: "2026-09-17"
 autor: "Gil Cleber Barboza"
 verificado: 2026-09-23
-regras: ["BR-CONN-012"]
+regras: ["BR-CONN-012", "BR-SCRIPT-001"]
 tags: [prd]
 ---
 
@@ -429,7 +429,7 @@ Alvos com glue (thick+thin, node-oracledb 7.0.1): `win32-x64`, `linux-x64`,
 
 <!-- brain:auto:start:conexoes -->
 - 🗺️ [[MOC - PRDs]]
-- 📐 Regras: [[BR-CONN-012 - Thick opt-in, fixado na primeira chamada e idempotente|BR-CONN-012]]
+- 📐 Regras: [[BR-CONN-012 - Thick opt-in, fixado na primeira chamada e idempotente|BR-CONN-012]] · [[BR-SCRIPT-001 - Script run executa SQLPlus (split, PROMPT-SHOW ERRORS, thin por padrao)|BR-SCRIPT-001]]
 - 🔗 PRDs relacionados: [[prd-45-bundle-esbuild|PRD-45]] · [[prd-64-oracle-only-migration|PRD-64]]
 - ⚙️ Pipelines: [[PIPE-publish - Publish Extension|PIPE-publish]]
 - 🎯 RF2 — Inicialização idempotente do cliente → [[BR-CONN-012 - Thick opt-in, fixado na primeira chamada e idempotente|BR-CONN-012]]

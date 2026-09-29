@@ -32,7 +32,9 @@ SORT id ASC
 - [[COD - config.ts]] — `COD-config.ts`
 - [[COD - connectionProfiles.ts]] — `COD-connectionProfiles.ts`
 - [[COD - coverage.ts]] — `COD-coverage.ts`
+- [[COD - dbmsDebug.ts]] — `COD-dbmsDebug.ts`
 - [[COD - dbSourceProvider.ts]] — `COD-dbSourceProvider.ts`
+- [[COD - debugger.ts]] — `COD-debugger.ts`
 - [[COD - discovery.ts]] — `COD-discovery.ts`
 - [[COD - extension.ts]] — `COD-extension.ts`
 - [[COD - helpers.ts]] — `COD-helpers.ts`
@@ -50,6 +52,7 @@ SORT id ASC
 - [[COD - run.sh]] — `COD-run.sh`
 - [[COD - run.ts]] — `COD-run.ts`
 - [[COD - runner.ts]] — `COD-runner.ts`
+- [[COD - scriptRunner.ts]] — `COD-scriptRunner.ts`
 - [[COD - state.ts]] — `COD-state.ts`
 - [[COD - statusBar.ts]] — `COD-statusBar.ts`
 - [[COD - suiteParser.ts]] — `COD-suiteParser.ts`
