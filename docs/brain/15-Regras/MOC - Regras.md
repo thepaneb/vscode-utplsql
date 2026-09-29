@@ -51,6 +51,7 @@ SORT id ASC
 - [[BR-COB-001 - Cobertura Oracle exige GRANT EXECUTE ON SYS.DBMS_PROFILER]] — `BR-COB-001`
 - [[BR-COB-002 - resolveSourceUri tenta variantes de extensão e bloqueia path traversal]] — `BR-COB-002`
 - [[BR-COB-003 - Cobertura de views via V$SQL é opt-in e best-effort]] — `BR-COB-003`
+- [[BR-COB-004 - Fonte virtual do banco (utplsql-source) é read-only]] — `BR-COB-004`
 - [[BR-CONN-001 - Precedência de resolução da conexão]] — `BR-CONN-001`
 - [[BR-CONN-002 - Prompt só ocorre quando nada está configurado e não persiste]] — `BR-CONN-002`
 - [[BR-CONN-003 - Limpar conexão de sessão reseta o context key]] — `BR-CONN-003`
@@ -66,6 +67,9 @@ SORT id ASC
 - [[BR-CONN-013 - Parsing da connection string tolera @ e barra na senha]] — `BR-CONN-013`
 - [[BR-CONN-014 - Log de debug é opt-in por variável de ambiente]] — `BR-CONN-014`
 - [[BR-CONN-015 - Idioma efetivo - setting válida vence o idioma do editor]] — `BR-CONN-015`
+- [[BR-CONN-016 - Settings de conexão machine-scoped e workspace confiável]] — `BR-CONN-016`
+- [[BR-CONN-017 - Senha da wallet vai para o SecretStorage e ao pool]] — `BR-CONN-017`
+- [[BR-CONN-018 - Alias TNS resolvido no thin por tnsAdminPath, SQL Developer e TNS_ADMIN]] — `BR-CONN-018`
 - [[BR-EXEC-001 - Execução usa duas conexões dedicadas (conn1 runner, conn2 poll)]] — `BR-EXEC-001`
 - [[BR-EXEC-002 - Conexões do runner têm callTimeout zerado]] — `BR-EXEC-002`
 - [[BR-EXEC-003 - Falha na segunda conexão libera a primeira (sem vazamento)]] — `BR-EXEC-003`
@@ -80,6 +84,7 @@ SORT id ASC
 - [[BR-EXEC-012 - Binds tipados - nenhum valor de usuário concatenado no PL-SQL]] — `BR-EXEC-012`
 - [[BR-EXEC-013 - Reporter de cobertura só entra se existir no banco]] — `BR-EXEC-013`
 - [[BR-EXEC-014 - Reporters adicionais são validados e sanitizados antes do PL-SQL]] — `BR-EXEC-014`
+- [[BR-EXEC-015 - Export com reporter não altera os resultados do Test Explorer]] — `BR-EXEC-015`
 - [[BR-I18N-001 - Resolução de locale e fallback de tradução]] — `BR-I18N-001`
 - [[BR-PARSE-001 - Arquivo só é suite utPLSQL se tiver %suite E CREATE PACKAGE]] — `BR-PARSE-001`
 - [[BR-PARSE-002 - RE_PACKAGE aceita schema qualificado, BODY e identificador entre aspas]] — `BR-PARSE-002`
@@ -99,6 +104,7 @@ SORT id ASC
 - [[BR-SCHEMA-001 - organization bifurca file tree vs schema tree; suiteMap é o lookup canônico]] — `BR-SCHEMA-001`
 - [[BR-SCHEMA-002 - extractSchemaFromPath - path.posix.relative e placeholder {schema}]] — `BR-SCHEMA-002`
 - [[BR-SCHEMA-003 - collectAllItems usa cachedItems e, se vazio, percorre até 3 níveis]] — `BR-SCHEMA-003`
+- [[BR-SCHEMA-004 - Árvore de testes resolvida por nível sob demanda (lazy)]] — `BR-SCHEMA-004`
 - [[BR-UI-001 - Context key utplsql-activated é setado na ativação]] — `BR-UI-001`
 - [[BR-UI-002 - utplsql-running liga no início e desliga em todos os caminhos de saída]] — `BR-UI-002`
 - [[BR-UI-003 - utplsql-connected reflete a resolução de conexão sem prompt]] — `BR-UI-003`

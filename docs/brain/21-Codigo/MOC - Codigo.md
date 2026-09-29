@@ -32,6 +32,7 @@ SORT id ASC
 - [[COD - config.ts]] — `COD-config.ts`
 - [[COD - connectionProfiles.ts]] — `COD-connectionProfiles.ts`
 - [[COD - coverage.ts]] — `COD-coverage.ts`
+- [[COD - dbSourceProvider.ts]] — `COD-dbSourceProvider.ts`
 - [[COD - discovery.ts]] — `COD-discovery.ts`
 - [[COD - extension.ts]] — `COD-extension.ts`
 - [[COD - i18n.ts]] — `COD-i18n.ts`
@@ -50,6 +51,9 @@ SORT id ASC
 - [[COD - statusBar.ts]] — `COD-statusBar.ts`
 - [[COD - suiteParser.ts]] — `COD-suiteParser.ts`
 - [[COD - testTree.ts]] — `COD-testTree.ts`
+- [[COD - tnsnames.ts]] — `COD-tnsnames.ts`
+- [[COD - types.ts]] — `COD-types.ts`
 - [[COD - utility.ts]] — `COD-utility.ts`
 - [[COD - viewCoverage.ts]] — `COD-viewCoverage.ts`
+- [[COD - virtualSource.ts]] — `COD-virtualSource.ts`
 <!-- brain:auto:end -->
