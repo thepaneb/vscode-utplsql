@@ -94,10 +94,10 @@ chỉ giữ nó trong bộ nhớ ở phiên hiện tại — dùng lệnh
 
 **Các định dạng được chấp nhận:**
 - **EZ Connect**: `user/pass@//host:1521/service`
-- **TNS alias**: `user/pass@tns_alias` (cần cấu hình `TNS_ADMIN`)
+- **TNS alias**: `user/pass@tns_alias`
 - **Wallet (Oracle Cloud)**: `user/pass@tcps://host:1522/service?wallet_location=/path/wallet`
 
-> 🔒 **Cài đặt được tăng cường:** các cài đặt kết nối là **`scope machine`**; tiện ích bị **vô hiệu hóa trong workspace không đáng tin cậy**; mật khẩu hồ sơ **gắn với kết nối của nó**.
+> 🔒 **Cài đặt được tăng cường:** các cài đặt kết nối là **`scope machine`**; tiện ích bị **vô hiệu hóa trong workspace không đáng tin cậy**; mật khẩu hồ sơ **gắn với kết nối của nó**. (`utplsql.connection`, `utplsql.profiles`, `utplsql.activeProfile`, `utplsql.oracleClientLibDir`, `utplsql.oracleClientConfigDir`, `utplsql.connections.tnsAdminPath`)
 
 ## Cách hoạt động
 
@@ -148,7 +148,7 @@ Test Explorer **ngay khi từng bài kiểm thử hoàn tất**. VSIX đã kèm 
 | Gỡ lỗi không dừng tại breakpoint | Gói không có thông tin gỡ lỗi hoặc thiếu quyền gỡ lỗi | Biên dịch với `PLSQL_OPTIMIZE_LEVEL <= 1` (hoặc `ALTER PACKAGE ... COMPILE DEBUG PLSQL_OPTIMIZE_LEVEL = 1`) và cấp `DEBUG CONNECT SESSION` + `EXECUTE ON SYS.DBMS_DEBUG`. Breakpoint trong `test_*.pkb` có thể không dừng (utPLSQL chạy test bằng SQL động); hãy đặt chúng trong mã đang kiểm thử. |
 | `utplsql.oracleClientConfigDir` | `""` | Thư mục cấu hình Oracle (TNS_ADMIN) chứa `sqlnet.ora`/`tnsnames.ora`. Tùy chọn; chỉ được dùng ở chế độ thick. |
 | `utplsql.connections.tnsAdminPath` | `""` | Thư mục chứa `tnsnames.ora` để **phân giải alias TNS trong driver thin**. Thứ tự: cài đặt này → giá trị user/machine của `sqldeveloper.connections.tnsConfiguration.path` → `TNS_ADMIN`. |
-| `utplsql.organization` | `file` | Tổ chức cây: `file` (theo đường dẫn) hoặc `schema` (Schema > Package > Suite > Test). Trong chế độ `schema`, các suite cũng được phát hiện từ cơ sở dữ liệu (`ut_runner.get_suites_info`, dự phòng về `ALL_OBJECTS`/`ALL_SOURCE`) khi các tệp `.pks` không nằm trong workspace — với URI ảo `utplsql-db:/` (thực thi và nhảy tới lỗi hoạt động; không có CodeLens/trang trí). |
+| `utplsql.organization` | `file` | Tổ chức cây: `file` (theo đường dẫn) hoặc `schema` (Schema > Package > Suite > Test). Trong chế độ `schema`, các suite cũng được phát hiện từ cơ sở dữ liệu (`ut_runner.get_suites_info`, dự phòng về `ALL_OBJECTS`/`ALL_SOURCE`) khi các tệp `.pks` không nằm trong workspace — với URI ảo `utplsql-db:/` (thực thi và nhảy tới lỗi hoạt động; không có CodeLens/trang trí). · `utplsql-source:/` |
 | `utplsql.organization.schemaPattern` | `db/{schema}/**` | Glob để trích xuất schema từ đường dẫn. Dùng `{schema}` làm placeholder. Trong chế độ `schema`, các thư mục bên dưới gốc của pattern (ví dụ `db/*`) định nghĩa các schema được truy vấn trong cơ sở dữ liệu. |
 | `utplsql.discovery.source` | `auto` | Nguồn của cây trong chế độ `schema`: `auto` dùng API cơ sở dữ liệu (`ut_runner.get_suites_info`) và chuyển sang `ALL_SOURCE`/tệp khi không khả dụng; `database` bắt buộc dùng API; `file` tắt khám phá qua cơ sở dữ liệu. |
 | `utplsql.refreshDebounceMs` | `300` | Debounce (ms) để gộp các sự kiện theo dõi tệp `.pks`/`.pkb` trước khi làm mới Test Explorer. |

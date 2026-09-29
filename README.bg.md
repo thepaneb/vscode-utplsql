@@ -93,10 +93,10 @@ code .
 
 **Приети формати:**
 - **EZ Connect**: `user/pass@//host:1521/service`
-- **TNS alias**: `user/pass@tns_alias` (изисква конфигуриран `TNS_ADMIN`)
+- **TNS alias**: `user/pass@tns_alias`
 - **Wallet (Oracle Cloud)**: `user/pass@tcps://host:1522/service?wallet_location=/path/wallet`
 
-> 🔒 **Затегнати настройки:** настройките за връзка са **`machine`-scoped**; разширението е **изключено в ненадеждни работни пространства**; паролата на профила е **свързана с връзката му**.
+> 🔒 **Затегнати настройки:** настройките за връзка са **`machine`-scoped**; разширението е **изключено в ненадеждни работни пространства**; паролата на профила е **свързана с връзката му**. (`utplsql.connection`, `utplsql.profiles`, `utplsql.activeProfile`, `utplsql.oracleClientLibDir`, `utplsql.oracleClientConfigDir`, `utplsql.connections.tnsAdminPath`)
 
 ## Как работи
 
@@ -140,7 +140,7 @@ Test Explorer **с приключването на всеки тест**.
 | Дебъгът не спира на точката на прекъсване | Пакет без debug информация или липсващи debug привилегии | Компилирайте с `PLSQL_OPTIMIZE_LEVEL <= 1` (или `ALTER PACKAGE ... COMPILE DEBUG PLSQL_OPTIMIZE_LEVEL = 1`) и дайте `DEBUG CONNECT SESSION` + `EXECUTE ON SYS.DBMS_DEBUG`. Точките на прекъсване в `test_*.pkb` може да не се задействат (utPLSQL изпълнява тестовете чрез динамичен SQL); поставете ги в тествания код. |
 | `utplsql.oracleClientConfigDir` | `""` | Конфигурационна директория на Oracle (TNS_ADMIN) със `sqlnet.ora`/`tnsnames.ora`. Незадължителна; използва се само от thick режима. |
 | `utplsql.connections.tnsAdminPath` | `""` | Директория с `tnsnames.ora` за **TNS псевдоними в thin драйвера**. Ред: тази настройка → user/machine стойност на `sqldeveloper.connections.tnsConfiguration.path` → `TNS_ADMIN`. |
-| `utplsql.organization` | `file` | Организация на дървото: `file` (по път) или `schema` (Schema > Package > Suite > Test). В режим `schema` комплектите също се откриват от базата данни (`ut_runner.get_suites_info`, с връщане към `ALL_OBJECTS`/`ALL_SOURCE`), когато `.pks` файлове не са в работната област — с виртуален URI `utplsql-db:/` (изпълнение и преминаване към грешката работят; без CodeLens/декорации). |
+| `utplsql.organization` | `file` | Организация на дървото: `file` (по път) или `schema` (Schema > Package > Suite > Test). В режим `schema` комплектите също се откриват от базата данни (`ut_runner.get_suites_info`, с връщане към `ALL_OBJECTS`/`ALL_SOURCE`), когато `.pks` файлове не са в работната област — с виртуален URI `utplsql-db:/` (изпълнение и преминаване към грешката работят; без CodeLens/декорации). · `utplsql-source:/` |
 | `utplsql.organization.schemaPattern` | `db/{schema}/**` | Glob шаблон за извличане на схемата от пътя. Използвайте `{schema}` като плейсхолдър. В режим `schema` директориите под основата на шаблона (напр. `db/*`) определят схемите, по които се прави заявка в базата данни. |
 | `utplsql.discovery.source` | `auto` | Източник на дървото в режим `schema`: `auto` използва API на базата (`ut_runner.get_suites_info`) и преминава към `ALL_SOURCE`/файлове при недостъпност; `database` изисква API; `file` изключва откриването през базата. |
 | `utplsql.refreshDebounceMs` | `300` | Debounce (ms) за обединяване на събитията на наблюдателя на файлове `.pks`/`.pkb` преди опресняване на Test Explorer. |

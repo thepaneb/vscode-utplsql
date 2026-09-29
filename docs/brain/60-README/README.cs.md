@@ -102,10 +102,10 @@ a ponechá je pouze v paměti během relace — použijte příkaz
 
 **Akceptované formáty:**
 - **EZ Connect**: `user/pass@//host:1521/service`
-- **TNS alias**: `user/pass@tns_alias` (vyžaduje nakonfigurovaný `TNS_ADMIN`)
+- **TNS alias**: `user/pass@tns_alias`
 - **Wallet (Oracle Cloud)**: `user/pass@tcps://host:1522/service?wallet_location=/path/wallet`
 
-> 🔒 **Zpevněná nastavení:** nastavení připojení jsou **`machine`-scoped**; rozšíření je **zakázáno v nedůvěryhodných pracovních prostorech**; heslo profilu je **vázáno na jeho připojení**.
+> 🔒 **Zpevněná nastavení:** nastavení připojení jsou **`machine`-scoped**; rozšíření je **zakázáno v nedůvěryhodných pracovních prostorech**; heslo profilu je **vázáno na jeho připojení**. (`utplsql.connection`, `utplsql.profiles`, `utplsql.activeProfile`, `utplsql.oracleClientLibDir`, `utplsql.oracleClientConfigDir`, `utplsql.connections.tnsAdminPath`)
 
 ## Jak to funguje
 
@@ -150,7 +150,7 @@ nativních API VSCode.
 | Ladění se nezastaví na zarážce | Balíček bez ladicích informací nebo chybějící ladicí granty | Zkompilujte s `PLSQL_OPTIMIZE_LEVEL <= 1` (nebo `ALTER PACKAGE ... COMPILE DEBUG PLSQL_OPTIMIZE_LEVEL = 1`) a udělte `DEBUG CONNECT SESSION` + `EXECUTE ON SYS.DBMS_DEBUG`. Zarážky v `test_*.pkb` se nemusí zastavit (utPLSQL spouští testy přes dynamický SQL); nastavte je v testovaném kódu. |
 | `utplsql.oracleClientConfigDir` | `""` | Adresář konfigurace Oracle (TNS_ADMIN) s `sqlnet.ora`/`tnsnames.ora`. Volitelný; používá jej pouze thick režim. |
 | `utplsql.connections.tnsAdminPath` | `""` | Adresář s `tnsnames.ora` pro řešení **aliasů TNS v thin ovladači**. Pořadí: toto nastavení → hodnota user/machine `sqldeveloper.connections.tnsConfiguration.path` → `TNS_ADMIN`. |
-| `utplsql.organization` | `file` | Uspořádání stromu: `file` (podle cesty) nebo `schema` (Schema > Package > Suite > Test). V režimu `schema` se sady také objevují z databáze (`ut_runner.get_suites_info`, s návratem k `ALL_OBJECTS`/`ALL_SOURCE`), když soubory `.pks` nejsou v pracovním prostoru — s virtuální URI `utplsql-db:/` (spuštění a skok na selhání fungují; bez CodeLens/dekorací). |
+| `utplsql.organization` | `file` | Uspořádání stromu: `file` (podle cesty) nebo `schema` (Schema > Package > Suite > Test). V režimu `schema` se sady také objevují z databáze (`ut_runner.get_suites_info`, s návratem k `ALL_OBJECTS`/`ALL_SOURCE`), když soubory `.pks` nejsou v pracovním prostoru — s virtuální URI `utplsql-db:/` (spuštění a skok na selhání fungují; bez CodeLens/dekorací). · `utplsql-source:/` |
 | `utplsql.organization.schemaPattern` | `db/{schema}/**` | Glob vzor pro extrakci schématu z cesty. Použijte `{schema}` jako zástupný symbol. V režimu `schema` adresáře pod základnou vzoru (např. `db/*`) definují schémata dotazovaná v databázi. |
 | `utplsql.discovery.source` | `auto` | Zdroj stromu v režimu `schema`: `auto` používá API databáze (`ut_runner.get_suites_info`) a při nedostupnosti přejde na `ALL_SOURCE`/soubory; `database` vyžaduje API; `file` vypne objevování přes databázi. |
 | `utplsql.refreshDebounceMs` | `300` | Debounce (ms) pro sloučení událostí sledování souborů `.pks`/`.pkb` před obnovením Test Exploreru. |

@@ -93,10 +93,10 @@ code .
 
 **Допустимые форматы:**
 - **EZ Connect**: `user/pass@//host:1521/service`
-- **TNS-алиас**: `user/pass@tns_alias` (требуется настроенный `TNS_ADMIN`)
+- **TNS-алиас**: `user/pass@tns_alias`
 - **Wallet (Oracle Cloud)**: `user/pass@tcps://host:1522/service?wallet_location=/path/wallet`
 
-> 🔒 **Ужесточённые настройки:** настройки подключения имеют область **`machine`**; расширение **отключено в недоверенных рабочих пространствах**; пароль профиля **привязан к его подключению**.
+> 🔒 **Ужесточённые настройки:** настройки подключения имеют область **`machine`**; расширение **отключено в недоверенных рабочих пространствах**; пароль профиля **привязан к его подключению**. (`utplsql.connection`, `utplsql.profiles`, `utplsql.activeProfile`, `utplsql.oracleClientLibDir`, `utplsql.oracleClientConfigDir`, `utplsql.connections.tnsAdminPath`)
 
 ## Как это работает
 
@@ -140,7 +140,7 @@ Test Explorer **по мере завершения каждого теста**.
 | Отладка не останавливается на точке останова | Пакет без отладочной информации или отсутствуют привилегии отладки | Скомпилируйте с `PLSQL_OPTIMIZE_LEVEL <= 1` (или `ALTER PACKAGE ... COMPILE DEBUG PLSQL_OPTIMIZE_LEVEL = 1`) и выдайте `DEBUG CONNECT SESSION` + `EXECUTE ON SYS.DBMS_DEBUG`. Точки останова в `test_*.pkb` могут не срабатывать (utPLSQL выполняет тесты через динамический SQL); ставьте их в тестируемом коде. |
 | `utplsql.oracleClientConfigDir` | `""` | Каталог конфигурации Oracle (TNS_ADMIN) с `sqlnet.ora`/`tnsnames.ora`. Необязателен; используется только в режиме thick. |
 | `utplsql.connections.tnsAdminPath` | `""` | Каталог с `tnsnames.ora` для разрешения **алиасов TNS в thin-драйвере**. Порядок: эта настройка → user/machine-значение `sqldeveloper.connections.tnsConfiguration.path` → `TNS_ADMIN`. |
-| `utplsql.organization` | `file` | Организация дерева: `file` (по пути) или `schema` (Schema > Package > Suite > Test). В режиме `schema` наборы также обнаруживаются в базе данных (`ut_runner.get_suites_info`, с откатом к `ALL_OBJECTS`/`ALL_SOURCE`), когда файлов `.pks` нет в рабочей области, — с виртуальным URI `utplsql-db:/` (работают выполнение и переход к ошибке; без CodeLens/декораций). |
+| `utplsql.organization` | `file` | Организация дерева: `file` (по пути) или `schema` (Schema > Package > Suite > Test). В режиме `schema` наборы также обнаруживаются в базе данных (`ut_runner.get_suites_info`, с откатом к `ALL_OBJECTS`/`ALL_SOURCE`), когда файлов `.pks` нет в рабочей области, — с виртуальным URI `utplsql-db:/` (работают выполнение и переход к ошибке; без CodeLens/декораций). · `utplsql-source:/` |
 | `utplsql.organization.schemaPattern` | `db/{schema}/**` | Глоб-шаблон для извлечения схемы из пути. Используйте `{schema}` в качестве плейсхолдера. В режиме `schema` каталоги ниже базового шаблона (например, `db/*`) определяют схемы, по которым выполняется запрос в базе данных. |
 | `utplsql.discovery.source` | `auto` | Источник дерева в режиме `schema`: `auto` использует API базы (`ut_runner.get_suites_info`) и переходит к `ALL_SOURCE`/файлам при недоступности; `database` требует API; `file` отключает обнаружение через базу. |
 | `utplsql.refreshDebounceMs` | `300` | Задержка (мс) для объединения событий наблюдателя файлов `.pks`/`.pkb` перед обновлением Test Explorer. |

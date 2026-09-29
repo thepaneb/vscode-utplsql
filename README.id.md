@@ -93,10 +93,10 @@ koneksi dan menyimpannya hanya di memori selama sesi — gunakan perintah
 
 **Format yang diterima:**
 - **EZ Connect**: `user/pass@//host:1521/service`
-- **TNS alias**: `user/pass@tns_alias` (memerlukan `TNS_ADMIN` terkonfigurasi)
+- **TNS alias**: `user/pass@tns_alias`
 - **Wallet (Oracle Cloud)**: `user/pass@tcps://host:1522/service?wallet_location=/path/wallet`
 
-> 🔒 **Setelan yang diperketat:** setelan koneksi bersifat **`machine`-scoped**; ekstensi **dinonaktifkan di workspace yang tidak tepercaya**; kata sandi profil **terikat pada koneksinya**.
+> 🔒 **Setelan yang diperketat:** setelan koneksi bersifat **`machine`-scoped**; ekstensi **dinonaktifkan di workspace yang tidak tepercaya**; kata sandi profil **terikat pada koneksinya**. (`utplsql.connection`, `utplsql.profiles`, `utplsql.activeProfile`, `utplsql.oracleClientLibDir`, `utplsql.oracleClientConfigDir`, `utplsql.connections.tnsAdminPath`)
 
 ## Cara kerja
 
@@ -140,7 +140,7 @@ Ekstensi terhubung langsung ke Oracle, membaca laporan (JUnit + Coverage) lalu m
 | Debug tidak berhenti di breakpoint | Paket tanpa info debug atau grant debug tidak ada | Kompilasi dengan `PLSQL_OPTIMIZE_LEVEL <= 1` (atau `ALTER PACKAGE ... COMPILE DEBUG PLSQL_OPTIMIZE_LEVEL = 1`) dan berikan `DEBUG CONNECT SESSION` + `EXECUTE ON SYS.DBMS_DEBUG`. Breakpoint di `test_*.pkb` mungkin tidak berhenti (utPLSQL menjalankan test via SQL dinamis); pasang di kode yang diuji. |
 | `utplsql.oracleClientConfigDir` | `""` | Direktori konfigurasi Oracle (TNS_ADMIN) berisi `sqlnet.ora`/`tnsnames.ora`. Opsional; hanya dipakai oleh mode thick. |
 | `utplsql.connections.tnsAdminPath` | `""` | Direktori dengan `tnsnames.ora` untuk **menyelesaikan alias TNS di driver thin**. Urutan: setelan ini → nilai user/machine `sqldeveloper.connections.tnsConfiguration.path` → `TNS_ADMIN`. |
-| `utplsql.organization` | `file` | Organisasi pohon: `file` (berdasarkan path) atau `schema` (Schema > Package > Suite > Test). Pada mode `schema`, suite juga ditemukan dari database (`ut_runner.get_suites_info`, dengan fallback ke `ALL_OBJECTS`/`ALL_SOURCE`) ketika file `.pks` tidak ada di workspace — URI virtual `utplsql-db:/` (eksekusi dan lompat ke kegagalan berfungsi; tanpa CodeLens/dekorasi). |
+| `utplsql.organization` | `file` | Organisasi pohon: `file` (berdasarkan path) atau `schema` (Schema > Package > Suite > Test). Pada mode `schema`, suite juga ditemukan dari database (`ut_runner.get_suites_info`, dengan fallback ke `ALL_OBJECTS`/`ALL_SOURCE`) ketika file `.pks` tidak ada di workspace — URI virtual `utplsql-db:/` (eksekusi dan lompat ke kegagalan berfungsi; tanpa CodeLens/dekorasi). · `utplsql-source:/` |
 | `utplsql.organization.schemaPattern` | `db/{schema}/**` | Pola glob untuk mengekstrak schema dari path. Gunakan `{schema}` sebagai placeholder. Pada mode `schema`, direktori di bawah basis pola (mis. `db/*`) menentukan schema yang ditanyakan di database. |
 | `utplsql.discovery.source` | `auto` | Sumber pohon pengujian pada mode `schema`: `auto` memakai API basis data (`ut_runner.get_suites_info`) dan beralih ke `ALL_SOURCE`/file bila tidak tersedia; `database` mewajibkan API; `file` menonaktifkan penemuan via basis data. |
 | `utplsql.refreshDebounceMs` | `300` | Debounce (ms) untuk menggabungkan peristiwa watcher file `.pks`/`.pkb` sebelum menyegarkan Test Explorer. |

@@ -92,10 +92,10 @@ conserve qu'en mémoire pendant la session — utilisez la commande
 
 **Formats acceptés :**
 - **EZ Connect** : `user/pass@//host:1521/service`
-- **Alias TNS** : `user/pass@tns_alias` (nécessite `TNS_ADMIN` configuré)
+- **Alias TNS** : `user/pass@tns_alias`
 - **Wallet (Oracle Cloud)** : `user/pass@tcps://host:1522/service?wallet_location=/path/wallet`
 
-> 🔒 **Réglages durcis :** les réglages de connexion sont **`machine`-scoped** ; l’extension est **désactivée dans les espaces de travail non approuvés** ; et le mot de passe d’un profil est **lié à sa connexion**.
+> 🔒 **Réglages durcis :** les réglages de connexion sont **`machine`-scoped** ; l’extension est **désactivée dans les espaces de travail non approuvés** ; et le mot de passe d’un profil est **lié à sa connexion**. (`utplsql.connection`, `utplsql.profiles`, `utplsql.activeProfile`, `utplsql.oracleClientLibDir`, `utplsql.oracleClientConfigDir`, `utplsql.connections.tnsAdminPath`)
 
 ## Fonctionnement
 
@@ -139,7 +139,7 @@ l'Explorateur de tests **au fur et à mesure que chaque test se termine**.
 | Le débogage ne s'arrête pas au point d'arrêt | Package compilé sans infos de débogage, ou grants de débogage manquants | Compilez avec `PLSQL_OPTIMIZE_LEVEL <= 1` (ou `ALTER PACKAGE ... COMPILE DEBUG PLSQL_OPTIMIZE_LEVEL = 1`) et accordez `DEBUG CONNECT SESSION` + `EXECUTE ON SYS.DBMS_DEBUG`. Les points d'arrêt dans `test_*.pkb` peuvent ne pas se déclencher (utPLSQL exécute les tests via SQL dynamique) ; placez-les dans le code testé. |
 | `utplsql.oracleClientConfigDir` | `""` | Répertoire de configuration Oracle (TNS_ADMIN) contenant `sqlnet.ora`/`tnsnames.ora`. Facultatif ; utilisé uniquement par le pilote thick. |
 | `utplsql.connections.tnsAdminPath` | `""` | Répertoire contenant `tnsnames.ora` pour résoudre les **alias TNS dans le pilote thin**. Ordre : ce réglage → valeur user/machine de `sqldeveloper.connections.tnsConfiguration.path` → `TNS_ADMIN`. |
-| `utplsql.organization` | `file` | Organisation de l'arborescence : `file` (par chemin) ou `schema` (Schéma > Package > Suite > Test). En mode `schema`, les suites sont également découvertes depuis la base de données (`ut_runner.get_suites_info`, avec repli sur `ALL_OBJECTS`/`ALL_SOURCE`) lorsque les fichiers `.pks` ne sont pas dans l'espace de travail — URI virtuel `utplsql-db:/` (exécution et accès à l'échec fonctionnent ; sans CodeLens/décorations). |
+| `utplsql.organization` | `file` | Organisation de l'arborescence : `file` (par chemin) ou `schema` (Schéma > Package > Suite > Test). En mode `schema`, les suites sont également découvertes depuis la base de données (`ut_runner.get_suites_info`, avec repli sur `ALL_OBJECTS`/`ALL_SOURCE`) lorsque les fichiers `.pks` ne sont pas dans l'espace de travail — URI virtuel `utplsql-db:/` (exécution et accès à l'échec fonctionnent ; sans CodeLens/décorations). · `utplsql-source:/` |
 | `utplsql.organization.schemaPattern` | `db/{schema}/**` | Glob pour extraire le schéma du chemin. Utilisez `{schema}` comme espace réservé. En mode `schema`, les dossiers sous la base du motif (par ex. `db/*`) définissent les schémas interrogés dans la base de données. |
 | `utplsql.discovery.source` | `auto` | Source de l'arbre en mode `schema` : `auto` utilise l'API de la base (`ut_runner.get_suites_info`) et bascule sur `ALL_SOURCE`/fichiers si indisponible ; `database` exige l'API ; `file` désactive la découverte via la base. |
 | `utplsql.refreshDebounceMs` | `300` | Anti-rebond (ms) pour regrouper les événements du watcher de fichiers `.pks`/`.pkb` avant de rafraîchir le Test Explorer. |

@@ -92,10 +92,10 @@ oturum sırasında bellekte tutar — temizlemek için
 
 **Kabul edilen biçimler:**
 - **EZ Connect**: `user/pass@//host:1521/service`
-- **TNS takma adı**: `user/pass@tns_alias` (`TNS_ADMIN` yapılandırılmış olmalıdır)
+- **TNS takma adı**: `user/pass@tns_alias`
 - **Wallet (Oracle Cloud)**: `user/pass@tcps://host:1522/service?wallet_location=/path/wallet`
 
-> 🔒 **Sıkılaştırılmış ayarlar:** bağlantı ayarları **`machine` kapsamlıdır**; uzantı **güvenilmeyen çalışma alanlarında devre dışıdır**; profil parolası **bağlantısına bağlıdır**.
+> 🔒 **Sıkılaştırılmış ayarlar:** bağlantı ayarları **`machine` kapsamlıdır**; uzantı **güvenilmeyen çalışma alanlarında devre dışıdır**; profil parolası **bağlantısına bağlıdır**. (`utplsql.connection`, `utplsql.profiles`, `utplsql.activeProfile`, `utplsql.oracleClientLibDir`, `utplsql.oracleClientConfigDir`, `utplsql.connections.tnsAdminPath`)
 
 ## Nasıl çalışır
 
@@ -139,7 +139,7 @@ Geçici dosya yok, toplu işin bitmesi beklenmez. Sonuçlar Test Explorer'da
 | Hata ayıklama kesme noktasında durmuyor | Paket hata ayıklama bilgisi olmadan derlenmiş veya hata ayıklama yetkileri eksik | `PLSQL_OPTIMIZE_LEVEL <= 1` ile derleyin (veya `ALTER PACKAGE ... COMPILE DEBUG PLSQL_OPTIMIZE_LEVEL = 1`) ve `DEBUG CONNECT SESSION` + `EXECUTE ON SYS.DBMS_DEBUG` verin. `test_*.pkb` içindeki kesme noktaları isabet etmeyebilir (utPLSQL testleri dinamik SQL ile çalıştırır); bunları test edilen koda koyun. |
 | `utplsql.oracleClientConfigDir` | `""` | `sqlnet.ora`/`tnsnames.ora` içeren Oracle yapılandırma dizini (TNS_ADMIN). İsteğe bağlıdır; yalnızca thick modda kullanılır. |
 | `utplsql.connections.tnsAdminPath` | `""` | **Thin sürücüde TNS takma adlarını çözmek** için `tnsnames.ora` dizini. Sıra: bu ayar → `sqldeveloper.connections.tnsConfiguration.path` user/machine değeri → `TNS_ADMIN`. |
-| `utplsql.organization` | `file` | Ağaç düzeni: `file` (yola göre) veya `schema` (Schema > Package > Suite > Test). `schema` modunda, `.pks` dosyaları çalışma alanında yoksa paketler de veritabanından (`ut_runner.get_suites_info`, `ALL_OBJECTS`/`ALL_SOURCE` yedeğiyle) keşfedilir — sanal URI `utplsql-db:/` ile (çalıştırma ve hataya atlama çalışır; CodeLens/süsleme yok). |
+| `utplsql.organization` | `file` | Ağaç düzeni: `file` (yola göre) veya `schema` (Schema > Package > Suite > Test). `schema` modunda, `.pks` dosyaları çalışma alanında yoksa paketler de veritabanından (`ut_runner.get_suites_info`, `ALL_OBJECTS`/`ALL_SOURCE` yedeğiyle) keşfedilir — sanal URI `utplsql-db:/` ile (çalıştırma ve hataya atlama çalışır; CodeLens/süsleme yok). · `utplsql-source:/` |
 | `utplsql.organization.schemaPattern` | `db/{schema}/**` | Şemayı yoldan çıkarmak için glob deseni. Yer tutucu olarak `{schema}` kullanın. `schema` modunda desen tabanının altındaki dizinler (örn. `db/*`) veritabanında sorgulanan şemaları tanımlar. |
 | `utplsql.discovery.source` | `auto` | `schema` modunda test ağacının kaynağı: `auto` veritabanı API'sini (`ut_runner.get_suites_info`) kullanır ve kullanılamadığında `ALL_SOURCE`/dosyalara döner; `database` API'yi zorunlu kılar; `file` veritabanı keşfini kapatır. |
 | `utplsql.refreshDebounceMs` | `300` | Test Explorer'ı yenilemeden önce `.pks`/`.pkb` dosya izleyici olaylarını birleştirmek için debounce (ms). |

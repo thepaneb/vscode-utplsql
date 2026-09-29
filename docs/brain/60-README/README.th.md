@@ -94,10 +94,10 @@ code .
 
 **รูปแบบที่ยอมรับ:**
 - **EZ Connect**: `user/pass@//host:1521/service`
-- **TNS alias**: `user/pass@tns_alias` (ต้องกำหนดค่า `TNS_ADMIN`)
+- **TNS alias**: `user/pass@tns_alias`
 - **Wallet (Oracle Cloud)**: `user/pass@tcps://host:1522/service?wallet_location=/path/wallet`
 
-> 🔒 **การตั้งค่าที่เสริมความปลอดภัย:** การตั้งค่าการเชื่อมต่อเป็น **`machine`-scoped**; ส่วนขยายถูก**ปิดใช้งานในเวิร์กสเปซที่ไม่น่าเชื่อถือ**; และรหัสผ่านโปรไฟล์**ผูกกับการเชื่อมต่อ**
+> 🔒 **การตั้งค่าที่เสริมความปลอดภัย:** การตั้งค่าการเชื่อมต่อเป็น **`machine`-scoped**; ส่วนขยายถูก**ปิดใช้งานในเวิร์กสเปซที่ไม่น่าเชื่อถือ**; และรหัสผ่านโปรไฟล์**ผูกกับการเชื่อมต่อ** (`utplsql.connection`, `utplsql.profiles`, `utplsql.activeProfile`, `utplsql.oracleClientLibDir`, `utplsql.oracleClientConfigDir`, `utplsql.connections.tnsAdminPath`)
 
 ## วิธีการทำงาน
 
@@ -148,7 +148,7 @@ Test Explorer **เมื่อแต่ละเทสต์เสร็จส�
 | ดีบักไม่หยุดที่เบรกพอยต์ | แพ็กเกจไม่มีข้อมูลดีบัก หรือขาดสิทธิ์ดีบัก | คอมไพล์ด้วย `PLSQL_OPTIMIZE_LEVEL <= 1` (หรือ `ALTER PACKAGE ... COMPILE DEBUG PLSQL_OPTIMIZE_LEVEL = 1`) และให้สิทธิ์ `DEBUG CONNECT SESSION` + `EXECUTE ON SYS.DBMS_DEBUG`. เบรกพอยต์ใน `test_*.pkb` อาจไม่หยุด (utPLSQL รันเทสต์ผ่าน SQL แบบไดนามิก) ให้ตั้งในโค้ดที่ทดสอบ |
 | `utplsql.oracleClientConfigDir` | `""` | ไดเรกทอรีการกำหนดค่า Oracle (TNS_ADMIN) ที่มี `sqlnet.ora`/`tnsnames.ora` ไม่บังคับ ใช้เฉพาะโหมด thick |
 | `utplsql.connections.tnsAdminPath` | `""` | ไดเรกทอรีที่มี `tnsnames.ora` เพื่อ **แปลง alias TNS ในไดรเวอร์ thin** ลำดับ: การตั้งนี้ → ค่า user/machine ของ `sqldeveloper.connections.tnsConfiguration.path` → `TNS_ADMIN` |
-| `utplsql.organization` | `file` | การจัดระเบียบแผนผัง: `file` (ตามพาธ) หรือ `schema` (Schema > Package > Suite > Test) ในโหมด `schema` suites จะถูกค้นพบจากฐานข้อมูล (`ut_runner.get_suites_info` พร้อม fallback ไปยัง `ALL_OBJECTS`/`ALL_SOURCE`) ด้วยเมื่อไม่มีไฟล์ `.pks` ในเวิร์กสเปซ — ด้วย URI เสมือน `utplsql-db:/` (รันและกระโดดไปยังจุดล้มเหลวได้; ไม่มี CodeLens/การตกแต่ง) |
+| `utplsql.organization` | `file` | การจัดระเบียบแผนผัง: `file` (ตามพาธ) หรือ `schema` (Schema > Package > Suite > Test) ในโหมด `schema` suites จะถูกค้นพบจากฐานข้อมูล (`ut_runner.get_suites_info` พร้อม fallback ไปยัง `ALL_OBJECTS`/`ALL_SOURCE`) ด้วยเมื่อไม่มีไฟล์ `.pks` ในเวิร์กสเปซ — ด้วย URI เสมือน `utplsql-db:/` (รันและกระโดดไปยังจุดล้มเหลวได้; ไม่มี CodeLens/การตกแต่ง) · `utplsql-source:/` |
 | `utplsql.organization.schemaPattern` | `db/{schema}/**` | รูปแบบ Glob เพื่อแยก schema จากพาธ ใช้ `{schema}` เป็นตัวยึดตำแหน่ง ในโหมด `schema` ไดเรกทอรีใต้ฐานของรูปแบบ (เช่น `db/*`) กำหนด schemas ที่จะสอบถามในฐานข้อมูล |
 | `utplsql.discovery.source` | `auto` | แหล่งของทรีในโหมด `schema`: `auto` ใช้ API ของฐานข้อมูล (`ut_runner.get_suites_info`) และถอยไปใช้ `ALL_SOURCE`/ไฟล์เมื่อไม่พร้อมใช้งาน; `database` บังคับใช้ API; `file` ปิดการค้นหาผ่านฐานข้อมูล |
 | `utplsql.refreshDebounceMs` | `300` | Debounce (ms) เพื่อรวมเหตุการณ์ของตัวเฝ้าดูไฟล์ `.pks`/`.pkb` ก่อนรีเฟรช Test Explorer |

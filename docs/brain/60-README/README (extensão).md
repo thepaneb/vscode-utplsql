@@ -270,6 +270,8 @@ All extension commands (palette `Ctrl+Shift+P` prefix `utPLSQL:`):
 | `utPLSQL: New connection profile...` | Wizard to create and activate a profile | — |
 | `utPLSQL: Manage connection profiles` | Opens settings at `utplsql.profiles` | — |
 | `utPLSQL: Import connections from SQL Developer` | Imports connections from SQL Developer (connections.xml) | — |
+| `utPLSQL: Set wallet password` | Sets or clears the active profile's Oracle Cloud wallet password (stored in SecretStorage) | — |
+| `utPLSQL: Run with Reporter (Export)` | Runs the selection with a chosen database reporter and writes the output to Output/file (does not change Test Explorer results) | Test Explorer item context menu |
 | `utPLSQL: Debug test (PL/SQL)` | Starts a debug session of the test under the active file | — |
 | `utPLSQL: Compile for Debug` | Compiles the selected file/folder object with debug information | — |
 | `utPLSQL: Rebuild Annotation Cache` | Rebuilds the utPLSQL annotation cache in the database and refreshes the tree | — |

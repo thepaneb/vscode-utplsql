@@ -238,6 +238,9 @@ function checkFidelity(overrides = {}) {
     if (missing.length) {
       problems.push(`README.${name}: settings ausentes: ${missing.join(', ')}`);
     }
+    if (!text.includes('utplsql-source')) {
+      problems.push(`README.${name}: sem menção a utplsql-source`);
+    }
   }
 
   return problems;

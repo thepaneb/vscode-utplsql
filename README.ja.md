@@ -88,10 +88,10 @@ code .
 
 **受け入れられる形式:**
 - **EZ Connect**: `user/pass@//host:1521/service`
-- **TNS エイリアス**: `user/pass@tns_alias`（`TNS_ADMIN` の設定が必要）
+- **TNS エイリアス**: `user/pass@tns_alias`
 - **Wallet（Oracle Cloud）**: `user/pass@tcps://host:1522/service?wallet_location=/path/wallet`
 
-> 🔒 **強化された設定:** 接続設定は **`machine` スコープ**です。拡張機能は**信頼されていないワークスペースで無効**になり、プロファイルのパスワードは**接続に紐付け**られます。
+> 🔒 **強化された設定:** 接続設定は **`machine` スコープ**です。拡張機能は**信頼されていないワークスペースで無効**になり、プロファイルのパスワードは**接続に紐付け**られます。 (`utplsql.connection`, `utplsql.profiles`, `utplsql.activeProfile`, `utplsql.oracleClientLibDir`, `utplsql.oracleClientConfigDir`, `utplsql.connections.tnsAdminPath`)
 
 ## 仕組み
 
@@ -135,7 +135,7 @@ Test Explorer に表示されます。
 | デバッグがブレークポイントで停止しない | デバッグ情報なしでコンパイルされたパッケージ、またはデバッグ権限の不足 | `PLSQL_OPTIMIZE_LEVEL <= 1` でコンパイル（または `ALTER PACKAGE ... COMPILE DEBUG PLSQL_OPTIMIZE_LEVEL = 1`）し、`DEBUG CONNECT SESSION` + `EXECUTE ON SYS.DBMS_DEBUG` を付与。`test_*.pkb` のブレークポイントはヒットしないことがあります（utPLSQL は動的 SQL でテストを実行します）。テスト対象のコードに設定してください。 |
 | `utplsql.oracleClientConfigDir` | `""` | `sqlnet.ora`/`tnsnames.ora` を含む Oracle 構成ディレクトリ（TNS_ADMIN）。任意。thick モードでのみ使用されます。 |
 | `utplsql.connections.tnsAdminPath` | `""` | `tnsnames.ora` のあるディレクトリ。**thin ドライバーで TNS 別名を解決**します。優先順位: この設定 → `sqldeveloper.connections.tnsConfiguration.path`（user/machine）→ `TNS_ADMIN`。 |
-| `utplsql.organization` | `file` | ツリーの構成: `file`（パス単位）または `schema`（Schema > Package > Suite > Test）。`schema` モードでは、`.pks` ファイルがワークスペースにないときはスイートもデータベース（`ut_runner.get_suites_info`、利用不可時は `ALL_OBJECTS`/`ALL_SOURCE`）から検出されます — 仮想 URI は `utplsql-db:/`（実行と失敗ジャンプは可能、CodeLens/デコレーションなし）。 |
+| `utplsql.organization` | `file` | ツリーの構成: `file`（パス単位）または `schema`（Schema > Package > Suite > Test）。`schema` モードでは、`.pks` ファイルがワークスペースにないときはスイートもデータベース（`ut_runner.get_suites_info`、利用不可時は `ALL_OBJECTS`/`ALL_SOURCE`）から検出されます — 仮想 URI は `utplsql-db:/`（実行と失敗ジャンプは可能、CodeLens/デコレーションなし）。 · `utplsql-source:/` |
 | `utplsql.organization.schemaPattern` | `db/{schema}/**` | パスからスキーマを抽出するためのグロブパターン。プレースホルダーには `{schema}` を使用します。`schema` モードでは、パターンベースより下のディレクトリ（例: `db/*`）がデータベースでクエリされるスキーマを定義します。 |
 | `utplsql.discovery.source` | `auto` | `schema` モードでのテストツリーの取得元: `auto` はデータベース API（`ut_runner.get_suites_info`）を使い、利用できない場合は `ALL_SOURCE`/ファイルにフォールバックします。`database` は API を必須にし、`file` はデータベース探索を無効にします。 |
 | `utplsql.refreshDebounceMs` | `300` | Test Explorer を更新する前に `.pks`/`.pkb` ファイル監視イベントをまとめるデバウンス（ミリ秒）。 |

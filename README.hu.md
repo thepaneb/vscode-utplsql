@@ -93,10 +93,10 @@ kapcsolatot, és azt csak a memóriában őrzi meg a munkamenet során — a
 
 **Elfogadott formátumok:**
 - **EZ Connect**: `user/pass@//host:1521/service`
-- **TNS-alias**: `user/pass@tns_alias` (beállított `TNS_ADMIN` szükséges)
+- **TNS-alias**: `user/pass@tns_alias`
 - **Wallet (Oracle Cloud)**: `user/pass@tcps://host:1522/service?wallet_location=/path/wallet`
 
-> 🔒 **Megerősített beállítások:** a kapcsolati beállítások **`machine`-scoped**; a bővítmény **le van tiltva nem megbízható munkaterületeken**; a profil jelszava **a kapcsolatához van kötve**.
+> 🔒 **Megerősített beállítások:** a kapcsolati beállítások **`machine`-scoped**; a bővítmény **le van tiltva nem megbízható munkaterületeken**; a profil jelszava **a kapcsolatához van kötve**. (`utplsql.connection`, `utplsql.profiles`, `utplsql.activeProfile`, `utplsql.oracleClientLibDir`, `utplsql.oracleClientConfigDir`, `utplsql.connections.tnsAdminPath`)
 
 ## Működés
 
@@ -140,7 +140,7 @@ A bővítmény közvetlenül Oracle-on keresztül csatlakozik, beolvassa a ripor
 | A hibakeresés nem áll meg a törésponton | Csomag hibakeresési info nélkül, vagy hiányzó hibakeresési jogosultságok | Fordítsd `PLSQL_OPTIMIZE_LEVEL <= 1` értékkel (vagy `ALTER PACKAGE ... COMPILE DEBUG PLSQL_OPTIMIZE_LEVEL = 1`), és adj `DEBUG CONNECT SESSION` + `EXECUTE ON SYS.DBMS_DEBUG` jogosultságot. A `test_*.pkb` töréspontok nem biztos, hogy megállnak (az utPLSQL dinamikus SQL-lel futtatja a teszteket); a tesztelt kódba tedd őket. |
 | `utplsql.oracleClientConfigDir` | `""` | Oracle konfigurációs könyvtár (TNS_ADMIN) a `sqlnet.ora`/`tnsnames.ora` fájlokkal. Opcionális; csak a thick mód használja. |
 | `utplsql.connections.tnsAdminPath` | `""` | `tnsnames.ora` könyvtár a **TNS álnevek feloldásához a thin illesztőben**. Sorrend: ez a beállítás → `sqldeveloper.connections.tnsConfiguration.path` user/machine értéke → `TNS_ADMIN`. |
-| `utplsql.organization` | `file` | Fa-szervezés: `file` (elérési út szerint) vagy `schema` (Séma > Package > Suite > Teszt). `schema` módban a suite-ok az adatbázisból is felderítésre kerülnek (`ut_runner.get_suites_info`, `ALL_OBJECTS`/`ALL_SOURCE` visszaeséssel), ha a `.pks` fájlok nincsenek a munkaterületen — virtuális URI-vel `utplsql-db:/` (végrehajtás és ugrás a hibához működik; CodeLens/dekorációk nélkül). |
+| `utplsql.organization` | `file` | Fa-szervezés: `file` (elérési út szerint) vagy `schema` (Séma > Package > Suite > Teszt). `schema` módban a suite-ok az adatbázisból is felderítésre kerülnek (`ut_runner.get_suites_info`, `ALL_OBJECTS`/`ALL_SOURCE` visszaeséssel), ha a `.pks` fájlok nincsenek a munkaterületen — virtuális URI-vel `utplsql-db:/` (végrehajtás és ugrás a hibához működik; CodeLens/dekorációk nélkül). · `utplsql-source:/` |
 | `utplsql.organization.schemaPattern` | `db/{schema}/**` | Glob-minta a séma kinyeréséhez az elérési útból. Helyőrzőként a `{schema}` használható. `schema` módban a minta alapja alatti könyvtárak (pl. `db/*`) határozzák meg az adatbázisban lekérdezett sémákat. |
 | `utplsql.discovery.source` | `auto` | A fastábla forrása `schema` módban: az `auto` az adatbázis API-t (`ut_runner.get_suites_info`) használja, és elérhetetlenség esetén `ALL_SOURCE`/fájlokra vált; a `database` megköveteli az API-t; a `file` kikapcsolja az adatbázis-felfedezést. |
 | `utplsql.refreshDebounceMs` | `300` | Debounce (ms) a `.pks`/`.pkb` fájlfigyelő eseményeinek összevonásához a Test Explorer frissítése előtt. |

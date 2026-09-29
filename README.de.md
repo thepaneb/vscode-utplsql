@@ -92,10 +92,10 @@ Verbindung und behält sie nur im Speicher während der Sitzung — verwenden Si
 
 **Akzeptierte Formate:**
 - **EZ Connect**: `user/pass@//host:1521/service`
-- **TNS-Alias**: `user/pass@tns_alias` (erfordert konfiguriertes `TNS_ADMIN`)
+- **TNS-Alias**: `user/pass@tns_alias`
 - **Wallet (Oracle Cloud)**: `user/pass@tcps://host:1522/service?wallet_location=/path/wallet`
 
-> 🔒 **Gehärtete Einstellungen:** Die Verbindungseinstellungen sind **`machine`-scoped**; die Erweiterung ist in **nicht vertrauenswürdigen Arbeitsbereichen deaktiviert**; und ein Profilpasswort ist **an seine Verbindung gebunden**.
+> 🔒 **Gehärtete Einstellungen:** Die Verbindungseinstellungen sind **`machine`-scoped**; die Erweiterung ist in **nicht vertrauenswürdigen Arbeitsbereichen deaktiviert**; und ein Profilpasswort ist **an seine Verbindung gebunden**. (`utplsql.connection`, `utplsql.profiles`, `utplsql.activeProfile`, `utplsql.oracleClientLibDir`, `utplsql.oracleClientConfigDir`, `utplsql.connections.tnsAdminPath`)
 
 ## So funktioniert es
 
@@ -139,7 +139,7 @@ Test Explorer, **sobald jeder Test fertig ist**.
 | Debug hält nicht am Breakpoint an | Package ohne Debug-Infos kompiliert oder fehlende Debug-Grants | Mit `PLSQL_OPTIMIZE_LEVEL <= 1` kompilieren (oder `ALTER PACKAGE ... COMPILE DEBUG PLSQL_OPTIMIZE_LEVEL = 1`) und `DEBUG CONNECT SESSION` + `EXECUTE ON SYS.DBMS_DEBUG` gewähren. Breakpoints in `test_*.pkb` greifen ggf. nicht (utPLSQL führt Tests per dynamischem SQL aus); setzen Sie sie im getesteten Code. |
 | `utplsql.oracleClientConfigDir` | `""` | Oracle-Konfigurationsverzeichnis (TNS_ADMIN) mit `sqlnet.ora`/`tnsnames.ora`. Optional; wird nur im Thick-Modus verwendet. |
 | `utplsql.connections.tnsAdminPath` | `""` | Verzeichnis mit `tnsnames.ora` zum Auflösen von **TNS-Aliassen im Thin-Treiber**. Reihenfolge: diese Einstellung → user/machine-Wert von `sqldeveloper.connections.tnsConfiguration.path` → `TNS_ADMIN`. |
-| `utplsql.organization` | `file` | Baumorganisation: `file` (nach Pfad) oder `schema` (Schema > Package > Suite > Test). Im `schema`-Modus werden Suiten auch aus der Datenbank (`ut_runner.get_suites_info`, mit Rückfall auf `ALL_OBJECTS`/`ALL_SOURCE`) ermittelt, wenn keine `.pks`-Dateien im Arbeitsbereich liegen — virtuellem URI `utplsql-db:/` (Ausführung und Sprung zum Fehler funktionieren; kein CodeLens/keine Dekorationen). |
+| `utplsql.organization` | `file` | Baumorganisation: `file` (nach Pfad) oder `schema` (Schema > Package > Suite > Test). Im `schema`-Modus werden Suiten auch aus der Datenbank (`ut_runner.get_suites_info`, mit Rückfall auf `ALL_OBJECTS`/`ALL_SOURCE`) ermittelt, wenn keine `.pks`-Dateien im Arbeitsbereich liegen — virtuellem URI `utplsql-db:/` (Ausführung und Sprung zum Fehler funktionieren; kein CodeLens/keine Dekorationen). · `utplsql-source:/` |
 | `utplsql.organization.schemaPattern` | `db/{schema}/**` | Glob-Muster zum Extrahieren des Schemas aus dem Pfad. Verwenden Sie `{schema}` als Platzhalter. Im `schema`-Modus definieren die Verzeichnisse unterhalb der Musterbasis (z. B. `db/*`) die in der Datenbank abgefragten Schemas. |
 | `utplsql.discovery.source` | `auto` | Quelle des Testbaums im `schema`-Modus: `auto` nutzt die Datenbank-API (`ut_runner.get_suites_info`) und fällt bei Nichtverfügbarkeit auf `ALL_SOURCE`/Dateien zurück; `database` erfordert die API; `file` deaktiviert die Datenbankerkennung. |
 | `utplsql.refreshDebounceMs` | `300` | Entprellung (ms), um Watcher-Ereignisse für `.pks`/`.pkb`-Dateien vor dem Aktualisieren des Test Explorers zusammenzufassen. |

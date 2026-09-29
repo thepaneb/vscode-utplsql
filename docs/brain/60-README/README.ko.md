@@ -102,10 +102,10 @@ code .
 
 **허용되는 형식:**
 - **EZ Connect**: `user/pass@//host:1521/service`
-- **TNS 별칭**: `user/pass@tns_alias`(`TNS_ADMIN` 구성 필요)
+- **TNS 별칭**: `user/pass@tns_alias`
 - **Wallet(Oracle Cloud)**: `user/pass@tcps://host:1522/service?wallet_location=/path/wallet`
 
-> 🔒 **강화된 설정:** 연결 설정은 **`machine` 범위**입니다. 확장은 **신뢰할 수 없는 워크스페이스에서 비활성화**되며, 프로필 비밀번호는 **연결에 바인딩**됩니다.
+> 🔒 **강화된 설정:** 연결 설정은 **`machine` 범위**입니다. 확장은 **신뢰할 수 없는 워크스페이스에서 비활성화**되며, 프로필 비밀번호는 **연결에 바인딩**됩니다. (`utplsql.connection`, `utplsql.profiles`, `utplsql.activeProfile`, `utplsql.oracleClientLibDir`, `utplsql.oracleClientConfigDir`, `utplsql.connections.tnsAdminPath`)
 
 ## 작동 방식
 
@@ -149,7 +149,7 @@ Test Explorer에 나타납니다.
 | 디버그가 브레이크포인트에서 멈추지 않음 | 디버그 정보 없이 컴파일된 패키지, 또는 디버그 권한 누락 | `PLSQL_OPTIMIZE_LEVEL <= 1`로 컴파일(또는 `ALTER PACKAGE ... COMPILE DEBUG PLSQL_OPTIMIZE_LEVEL = 1`)하고 `DEBUG CONNECT SESSION` + `EXECUTE ON SYS.DBMS_DEBUG` 부여. `test_*.pkb`의 브레이크포인트가 적중하지 않을 수 있습니다(utPLSQL은 동적 SQL로 테스트를 실행). 테스트 대상 코드에 설정하세요. |
 | `utplsql.oracleClientConfigDir` | `""` | `sqlnet.ora`/`tnsnames.ora`가 있는 Oracle 구성 디렉터리(TNS_ADMIN). 선택 사항이며 thick 모드에서만 사용됩니다. |
 | `utplsql.connections.tnsAdminPath` | `""` | `tnsnames.ora`가 있는 디렉터리로 **thin 드라이버에서 TNS 별칭을 해석**합니다. 순서: 이 설정 → `sqldeveloper.connections.tnsConfiguration.path`의 user/machine 값 → `TNS_ADMIN`. |
-| `utplsql.organization` | `file` | 트리 구성: `file`(경로별) 또는 `schema`(Schema > Package > Suite > Test). `schema` 모드에서 워크스페이스에 `.pks` 파일이 없으면 스위트가 데이터베이스(`ut_runner.get_suites_info`, 불가 시 `ALL_OBJECTS`/`ALL_SOURCE`)에서도 발견됩니다 — 가상 URI `utplsql-db:/`(실행 및 실패 지점 이동 가능, CodeLens/데코레이션 없음). |
+| `utplsql.organization` | `file` | 트리 구성: `file`(경로별) 또는 `schema`(Schema > Package > Suite > Test). `schema` 모드에서 워크스페이스에 `.pks` 파일이 없으면 스위트가 데이터베이스(`ut_runner.get_suites_info`, 불가 시 `ALL_OBJECTS`/`ALL_SOURCE`)에서도 발견됩니다 — 가상 URI `utplsql-db:/`(실행 및 실패 지점 이동 가능, CodeLens/데코레이션 없음). · `utplsql-source:/` |
 | `utplsql.organization.schemaPattern` | `db/{schema}/**` | 경로에서 스키마를 추출하는 glob 패턴. `{schema}`를 자리 표시자로 사용하세요. `schema` 모드에서 패턴 기본 아래의 디렉터리(예: `db/*`)는 데이터베이스에서 조회할 스키마를 정의합니다. |
 | `utplsql.discovery.source` | `auto` | `schema` 모드에서 테스트 트리의 소스: `auto`는 데이터베이스 API(`ut_runner.get_suites_info`)를 사용하고 사용할 수 없으면 `ALL_SOURCE`/파일로 대체합니다. `database`는 API를 요구하고, `file`은 데이터베이스 검색을 비활성화합니다. |
 | `utplsql.refreshDebounceMs` | `300` | Test Explorer를 새로 고치기 전에 `.pks`/`.pkb` 파일 감시 이벤트를 병합하는 디바운스(ms). |
