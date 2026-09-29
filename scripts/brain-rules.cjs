@@ -269,8 +269,9 @@ function semverGte(a, b) {
  *    (derivado por `brain:sync`; presente mesmo quando vazio);
  *  - cada id em `regras` existe e a nota lista a PRD (`prds:`);
  *  - toda regra/SEC com `prds: [PRD-NN]` está declarada em `regras:`;
- *  - PRD concluída (>= baseline) sem nenhuma regra precisa explicitar a seção
- *    `## Impacto no cérebro` no corpo (evita "esqueci" silencioso).
+ *  - PRD concluída (>= baseline) sem nenhuma regra precisa da seção
+ *    `## Impacto no cérebro` com a confirmação explícita `nenhuma` (evita
+ *    "esqueci" silencioso).
  */
 function checkPrdRules(notes) {
   const problems = [];
@@ -310,8 +311,19 @@ function checkPrdRules(notes) {
         problems.push(`${prd.name}: regra '${id}' lista a PRD mas não está em regras:`);
       }
     }
-    if (declared.length === 0 && !/^##\s*Impacto no c[ée]rebro/mi.test(prd.content)) {
-      problems.push(`${prd.name}: PRD concluída sem regras e sem a seção '## Impacto no cérebro'`);
+    if (declared.length === 0) {
+      const impacto = prd.content
+        .split(/\n(?=##\s)/)
+        .find((s) => /^##\s*(?:\d+[.)]\s*)?Impacto no c[ée]rebro/i.test(s));
+      if (!impacto) {
+        problems.push(
+          `${prd.name}: PRD concluída sem regras e sem a seção '## Impacto no cérebro'`,
+        );
+      } else if (!/^\s*nenhuma\s*\.?\s*$/im.test(impacto)) {
+        problems.push(
+          `${prd.name}: PRD concluída sem regras exige a confirmação 'nenhuma' em '## Impacto no cérebro'`,
+        );
+      }
     }
   }
   return problems;

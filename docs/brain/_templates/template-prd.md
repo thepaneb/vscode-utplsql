@@ -85,8 +85,8 @@ tags: [prd]
 
 {Regras/SEC criadas ou alteradas por esta PRD — ex.: `BR-CONN-016`, `SEC-011`.
 O campo `regras:` do frontmatter é derivado por `npm run brain:sync` a partir do
-`prds:` das regras. Se a PRD não exigir regra alguma, escreva explicitamente
-**nenhuma** nesta seção (o CI cobra a seção quando `regras: []`).}
+`prds:` das regras. Se a PRD não exigir regra alguma, deixe uma linha apenas
+com **nenhuma** — o CI exige essa confirmação quando `regras: []`.}
 
 ## Conexões
 

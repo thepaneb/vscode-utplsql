@@ -629,6 +629,22 @@ test('brain-rules: PRD sem regras mas com a seção de impacto passa', () => {
   assert.deepStrictEqual(checkPrdRules([prd]), []);
 });
 
+test('brain-rules: seção de impacto sem a confirmação nenhuma é reportada', () => {
+  const prd = prdNote(
+    ['tipo: prd', 'id: PRD-81', 'status: completed', 'versao: "0.14.0"', 'regras: []'],
+    '## Impacto no cérebro\n\n{preencher}\n',
+  );
+  assert.ok(checkPrdRules([prd]).some((p) => p.includes("confirmação 'nenhuma'")));
+});
+
+test('brain-rules: seção de impacto numerada (## 12. …) é aceita', () => {
+  const prd = prdNote(
+    ['tipo: prd', 'id: PRD-81', 'status: completed', 'versao: "0.14.0"', 'regras: []'],
+    '## 12. Impacto no cérebro\n\nnenhuma\n',
+  );
+  assert.deepStrictEqual(checkPrdRules([prd]), []);
+});
+
 test('brain-rules: vínculo bidirecional válido passa', () => {
   const prd = prdNote([
     'tipo: prd',
