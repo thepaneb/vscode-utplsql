@@ -9,7 +9,7 @@ severidade: media
 fonte: codigo
 verificado: 2026-09-28
 implementacao: ["src/tnsnames.ts:19", "src/tnsnames.ts:98", "src/oracleRunner.ts:76", "src/config.ts:131"]
-testes: ["src/test/unit/tnsnames.test.ts", "src/test/unit/oracleRunnerTns.test.ts"]
+testes: ["src/test/unit/tnsnames.test.ts", "src/test/unit/oracleRunnerTns.test.ts", "src/test/integration/v014-tns.test.ts"]
 prds: ["PRD-82"]
 requisitos: ["PRD-82/RF1", "PRD-82/RF3"]
 tags: ["conexao"]
@@ -37,6 +37,6 @@ Permitir aliases TNS no driver thin sem depender de `TNS_ADMIN` global — apont
 - 📄 PRDs: [[prd-82-tns-wallet|PRD-82]]
 - 🎯 Requisitos: [[prd-82-tns-wallet|PRD-82 RF1]] · [[prd-82-tns-wallet|PRD-82 RF3]]
 - 🧩 Código: [[COD - tnsnames.ts]] · [[COD - oracleRunner.ts]] · [[COD - config.ts]]
-- 🧪 Testes: [[TST - tnsnames.test.ts]] · [[TST - oracleRunnerTns.test.ts]]
+- 🧪 Testes: [[TST - tnsnames.test.ts]] · [[TST - oracleRunnerTns.test.ts]] · [[TST - v014-tns.test.ts]]
 - ↩️ Referenciada por: [[prd-82-tns-wallet|PRD-82]]
 <!-- brain:auto:end -->

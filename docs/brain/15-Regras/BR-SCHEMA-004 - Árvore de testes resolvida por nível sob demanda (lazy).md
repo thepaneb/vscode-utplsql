@@ -9,7 +9,7 @@ severidade: media
 fonte: codigo
 verificado: 2026-09-28
 implementacao: ["src/testTree.ts:165", "src/testTree.ts:287", "src/testTree.ts:273", "src/extension.ts:55"]
-testes: ["src/test/unit/testTree.test.ts"]
+testes: ["src/test/unit/testTree.test.ts", "src/test/integration/v014-features.test.ts"]
 prds: ["PRD-75"]
 requisitos: ["PRD-75/RF1", "PRD-75/RF4"]
 tags: ["schema"]
@@ -37,6 +37,6 @@ Reduzir o custo de abertura (tempo e memória) em schemas com muitos packages.
 - 📄 PRDs: [[prd-75-lazy-test-tree|PRD-75]]
 - 🎯 Requisitos: [[prd-75-lazy-test-tree|PRD-75 RF1]] · [[prd-75-lazy-test-tree|PRD-75 RF4]]
 - 🧩 Código: [[COD - testTree.ts]] · [[COD - extension.ts]]
-- 🧪 Testes: [[TST - testTree.test.ts]]
+- 🧪 Testes: [[TST - testTree.test.ts]] · [[TST - v014-features.test.ts]]
 - ↩️ Referenciada por: [[prd-75-lazy-test-tree|PRD-75]]
 <!-- brain:auto:end -->

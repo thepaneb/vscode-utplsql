@@ -9,7 +9,7 @@ severidade: media
 fonte: codigo
 verificado: 2026-09-28
 implementacao: ["src/virtualSource.ts:11", "src/dbSourceProvider.ts:173", "src/dbSourceProvider.ts:187"]
-testes: ["src/test/unit/dbSourceProvider.test.ts", "src/test/unit/virtualSource.test.ts"]
+testes: ["src/test/unit/dbSourceProvider.test.ts", "src/test/unit/virtualSource.test.ts", "src/test/integration/v014-features.test.ts", "src/test/integration/v013-features.test.ts"]
 prds: ["PRD-80"]
 requisitos: ["PRD-80/RF1"]
 tags: ["cobertura", "seguranca"]
@@ -37,6 +37,6 @@ Permitir jump-to-failure e cobertura sem fontes locais, sem introduzir superfíc
 - 📄 PRDs: [[prd-80-virtual-db-source|PRD-80]]
 - 🎯 Requisitos: [[prd-80-virtual-db-source|PRD-80 RF1]]
 - 🧩 Código: [[COD - virtualSource.ts]] · [[COD - dbSourceProvider.ts]]
-- 🧪 Testes: [[TST - dbSourceProvider.test.ts]] · [[TST - virtualSource.test.ts]]
+- 🧪 Testes: [[TST - dbSourceProvider.test.ts]] · [[TST - virtualSource.test.ts]] · [[TST - v014-features.test.ts]] · [[TST - v013-features.test.ts]]
 - ↩️ Referenciada por: [[SEC-013 - Fonte virtual do banco é read-only|SEC-013]] · [[prd-80-virtual-db-source|PRD-80]]
 <!-- brain:auto:end -->

@@ -37,6 +37,7 @@ SORT id ASC
 - [[TST - logger.test.ts]] — `TST-logger.test.ts`
 - [[TST - manifestDebugger.test.ts]] — `TST-manifestDebugger.test.ts`
 - [[TST - matching.test.ts]] — `TST-matching.test.ts`
+- [[TST - matrixConfig.test.ts]] — `TST-matrixConfig.test.ts`
 - [[TST - oracleCapabilities.test.ts]] — `TST-oracleCapabilities.test.ts`
 - [[TST - oracleClient.test.ts]] — `TST-oracleClient.test.ts`
 - [[TST - oracleRunner.test.ts]] — `TST-oracleRunner.test.ts`
@@ -48,12 +49,17 @@ SORT id ASC
 - [[TST - runExportCommand.test.ts]] — `TST-runExportCommand.test.ts`
 - [[TST - runner.test.ts]] — `TST-runner.test.ts`
 - [[TST - schemaRun.test.ts]] — `TST-schemaRun.test.ts`
+- [[TST - scriptsCli.test.ts]] — `TST-scriptsCli.test.ts`
 - [[TST - state.test.ts]] — `TST-state.test.ts`
 - [[TST - statusBar.test.ts]] — `TST-statusBar.test.ts`
 - [[TST - suiteParser.test.ts]] — `TST-suiteParser.test.ts`
 - [[TST - testTree.test.ts]] — `TST-testTree.test.ts`
+- [[TST - thickMode.test.ts]] — `TST-thickMode.test.ts`
 - [[TST - tnsnames.test.ts]] — `TST-tnsnames.test.ts`
 - [[TST - v012-features.test.ts]] — `TST-v012-features.test.ts`
+- [[TST - v013-features.test.ts]] — `TST-v013-features.test.ts`
+- [[TST - v014-features.test.ts]] — `TST-v014-features.test.ts`
+- [[TST - v014-tns.test.ts]] — `TST-v014-tns.test.ts`
 - [[TST - viewCoverage.test.ts]] — `TST-viewCoverage.test.ts`
 - [[TST - virtualSource.test.ts]] — `TST-virtualSource.test.ts`
 <!-- brain:auto:end -->
