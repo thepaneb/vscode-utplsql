@@ -229,6 +229,17 @@ function checkFidelity(overrides = {}) {
     }
   }
 
+  // 9. variantes de README devem listar as mesmas settings do README.md.
+  //    O docs:check só valida os LINKS entre variantes (não o conteúdo), então
+  //    sem isto uma variante pode ficar sem settings por várias versões.
+  const variants = overrides.readmeVariants ?? listReadmeVariants();
+  for (const { name, text } of variants) {
+    const missing = settings.filter((k) => !text.includes(k));
+    if (missing.length) {
+      problems.push(`README.${name}: settings ausentes: ${missing.join(', ')}`);
+    }
+  }
+
   return problems;
 }
 
@@ -250,6 +261,15 @@ function srcFileFor(symbol) {
   return hits[0] ?? '';
 }
 
+/** Variantes geradas na raiz do repo: { name, text } de README.<locale>.md. */
+function listReadmeVariants() {
+  return fs
+    .readdirSync(REPO)
+    .filter((f) => /^README\.[a-zA-Z-]+\.md$/.test(f))
+    .sort()
+    .map((f) => ({ name: f.slice('README.'.length, -3), text: read(f) }));
+}
+
 function listCompletedPrds() {
   const dir = path.join(REPO, 'docs', 'prd', 'completed');
   if (!fs.existsSync(dir)) return [];
@@ -268,6 +288,7 @@ module.exports = {
   srcModules,
   pkgVersion,
   listCompletedPrds,
+  listReadmeVariants,
   read,
 };
 

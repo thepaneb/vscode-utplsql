@@ -117,3 +117,14 @@ the workspace.
   Error"); they have **no CodeLens and no inline decorations**
 - Silent fallback: `ALL_SOURCE` inaccessible or Oracle unavailable
   → file-based discovery only
+- **Lazy resolution (0.14.0 / PRD-75)**: the refresh materializes only the
+  **schema** nodes; package/suite/test are resolved on demand when you expand a
+  node (`resolveHandler`). Opening a schema with many packages does not query the
+  database for the levels you don't open. `Run All`/`Run Failed` resolve the
+  needed subtrees before running.
+- **Virtual source for failures and coverage (0.14.0 / PRD-80)**: when there is
+  no local file, *jump to failure* and coverage open a **read-only** virtual
+  document resolved from `ALL_SOURCE` —
+  `utplsql-source:/<SCHEMA>/<OBJ>.<ext>?line=N` — for any object type
+  (package/body, procedure, function, trigger, type/body, view). The legacy
+  `utplsql-db:` scheme remains an alias.

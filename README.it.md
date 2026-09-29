@@ -95,6 +95,8 @@ la mantiene solo in memoria durante la sessione — usa il comando
 - **Alias TNS**: `user/pass@tns_alias` (richiede `TNS_ADMIN` configurato)
 - **Wallet (Oracle Cloud)**: `user/pass@tcps://host:1522/service?wallet_location=/path/wallet`
 
+> 🔒 **Impostazioni rafforzate:** le impostazioni di connessione sono **`machine`-scoped**; l’estensione è **disabilitata negli spazi di lavoro non attendibili**; e la password del profilo è **legata alla sua connessione**.
+
 ## Come funziona
 
 L'estensione si connette direttamente al database Oracle tramite `node-oracledb`, trasmette i risultati in tempo reale e li traduce nelle API native di VSCode.
@@ -120,6 +122,8 @@ Test Explorer **appena ogni test termina**.
 | `utplsql.timeoutMinutes` | `60` | Timeout in minuti per l'esecuzione dei test. |
 | `utplsql.dbmsOutput` | `false` | Abilita `DBMS_OUTPUT` nella sessione di test. Utile per il debug. |
 | `utplsql.additionalReporters` | `[]` | Reporter aggiuntivi da includere in ogni esecuzione (es. `["ut_coverage_html_reporter"]`). I default (documentation, junit) sono sempre inclusi e non devono essere elencati. |
+| `utplsql.reporter.clientCharacterSet` | `""` | Charset del client (`a_client_character_set`) per **Run with Reporter (Export)**. Vuoto = default del reporter. |
+| `utplsql.reporter.colorConsole` | `false` | Abilita il colore ANSI (`a_color_console`) per i reporter console testuali nell’export. |
 | `utplsql.tags` | `""` | Espressione di tag utPLSQL per filtrare quali test eseguire (es. `fast & !integration`). Vuoto esegue tutti. |
 | `utplsql.run.randomOrder` | `false` | Esegue i test in ordine casuale per rivelare dipendenze d'ordine tra loro. |
 | `utplsql.run.randomOrderSeed` | `0` | Seed dell'ordine casuale. `0` = scelta dal database (non riproducibile); > 0 riproduce lo stesso ordine. |
@@ -134,6 +138,7 @@ Test Explorer **appena ogni test termina**.
 | `utplsql.oracleClientLibDir` | `""` | Directory dell'Oracle Instant Client. Obbligatoria quando `utplsql.oracleClientMode` è `thick` (es. `C:\oracle\instantclient_23_5`). |
 | Il debug non si ferma al breakpoint | Package compilato senza info di debug, o grant di debug mancanti | Compila con `PLSQL_OPTIMIZE_LEVEL <= 1` (o `ALTER PACKAGE ... COMPILE DEBUG PLSQL_OPTIMIZE_LEVEL = 1`) e concedi `DEBUG CONNECT SESSION` + `EXECUTE ON SYS.DBMS_DEBUG`. I breakpoint in `test_*.pkb` potrebbero non scattare (utPLSQL esegue i test via SQL dinamico); impostali nel codice sotto test. |
 | `utplsql.oracleClientConfigDir` | `""` | Directory di configurazione Oracle (TNS_ADMIN) con `sqlnet.ora`/`tnsnames.ora`. Opzionale; usata solo dal driver thick. |
+| `utplsql.connections.tnsAdminPath` | `""` | Directory con `tnsnames.ora` per risolvere gli **alias TNS nel driver thin**. Ordine: questa impostazione → valore user/machine di `sqldeveloper.connections.tnsConfiguration.path` → `TNS_ADMIN`. |
 | `utplsql.organization` | `file` | Organizzazione dell'albero: `file` (per percorso) o `schema` (Schema > Package > Suite > Test). In modalità `schema`, le suite vengono scoperte anche dal database (`ut_runner.get_suites_info`, con fallback a `ALL_OBJECTS`/`ALL_SOURCE`) quando i file `.pks` non sono nel workspace — URI virtuale `utplsql-db:/` (esecuzione e vai all'errore funzionano; niente CodeLens/decorazioni). |
 | `utplsql.organization.schemaPattern` | `db/{schema}/**` | Pattern Glob per estrarre lo schema dal percorso. Usa `{schema}` come segnaposto. In modalità `schema`, le directory sotto la base del pattern (es. `db/*`) definiscono gli schemi interrogati nel database. |
 | `utplsql.discovery.source` | `auto` | Sorgente dell'albero in modalità `schema`: `auto` usa l'API del database (`ut_runner.get_suites_info`) e ripiega su `ALL_SOURCE`/file se non disponibile; `database` richiede l'API; `file` disattiva la scoperta via database. |

@@ -52,6 +52,18 @@ The QuickPick lists the reporters reported by the database; the chosen reporter
 is stored in the session state and **applied to the next run** (consumed by
 `executeRunOracle` via `consumeExtraReporter()`).
 
+## Run with Reporter (Export)
+
+Command **utPLSQL: Run with Reporter (Export)** (Test Explorer item context menu)
+runs the selection with **any** reporter available in the database and writes the
+output to a dedicated Output channel or to a file (`.xml` for junit/sonar/cobertura,
+`.txt` otherwise). It does **not** change the results in the Test Explorer.
+
+| Setting | Default | Description |
+|---|---|---|
+| `utplsql.reporter.clientCharacterSet` | `""` | Client charset (`a_client_character_set`); empty uses the reporter default. |
+| `utplsql.reporter.colorConsole` | `false` | ANSI color (`a_color_console`) for textual console reporters. |
+
 ## Creating a Custom Reporter
 
 Minimal example of a PL/SQL reporter that logs to a table:

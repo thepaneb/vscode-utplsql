@@ -104,6 +104,8 @@ conserve qu'en mémoire pendant la session — utilisez la commande
 - **Alias TNS** : `user/pass@tns_alias` (nécessite `TNS_ADMIN` configuré)
 - **Wallet (Oracle Cloud)** : `user/pass@tcps://host:1522/service?wallet_location=/path/wallet`
 
+> 🔒 **Réglages durcis :** les réglages de connexion sont **`machine`-scoped** ; l’extension est **désactivée dans les espaces de travail non approuvés** ; et le mot de passe d’un profil est **lié à sa connexion**.
+
 ## Fonctionnement
 
 L'extension se connecte directement à la base de données Oracle via `node-oracledb`, diffuse les résultats en temps réel et les traduit dans les API natives de VSCode.
@@ -129,6 +131,8 @@ l'Explorateur de tests **au fur et à mesure que chaque test se termine**.
 | `utplsql.timeoutMinutes` | `60` | Délai d'expiration en minutes pour l'exécution des tests. |
 | `utplsql.dbmsOutput` | `false` | Active `DBMS_OUTPUT` dans la session de test. Utile pour le débogage. |
 | `utplsql.additionalReporters` | `[]` | Reporters supplémentaires à inclure à chaque exécution (par ex. `["ut_coverage_html_reporter"]`). Les reporters par défaut (documentation, junit) sont toujours inclus et n'ont pas besoin d'être listés. |
+| `utplsql.reporter.clientCharacterSet` | `""` | Jeu de caractères client (`a_client_character_set`) pour **Run with Reporter (Export)**. Vide = valeur par défaut du reporter. |
+| `utplsql.reporter.colorConsole` | `false` | Active la couleur ANSI (`a_color_console`) pour les reporters console textuels à l’export. |
 | `utplsql.tags` | `""` | Expression de balises utPLSQL pour filtrer les tests exécutés (par ex. `fast & !integration`). Vide exécute tout. |
 | `utplsql.run.randomOrder` | `false` | Exécute les tests dans un ordre aléatoire pour révéler les dépendances d'ordre entre eux. |
 | `utplsql.run.randomOrderSeed` | `0` | Graine de l'ordre aléatoire. `0` = choisie par la base (non reproductible) ; > 0 reproduit le même ordre. |
@@ -143,6 +147,7 @@ l'Explorateur de tests **au fur et à mesure que chaque test se termine**.
 | `utplsql.oracleClientLibDir` | `""` | Répertoire de l'Oracle Instant Client. Obligatoire lorsque `utplsql.oracleClientMode` vaut `thick` (ex. `C:\oracle\instantclient_23_5`). |
 | Le débogage ne s'arrête pas au point d'arrêt | Package compilé sans infos de débogage, ou grants de débogage manquants | Compilez avec `PLSQL_OPTIMIZE_LEVEL <= 1` (ou `ALTER PACKAGE ... COMPILE DEBUG PLSQL_OPTIMIZE_LEVEL = 1`) et accordez `DEBUG CONNECT SESSION` + `EXECUTE ON SYS.DBMS_DEBUG`. Les points d'arrêt dans `test_*.pkb` peuvent ne pas se déclencher (utPLSQL exécute les tests via SQL dynamique) ; placez-les dans le code testé. |
 | `utplsql.oracleClientConfigDir` | `""` | Répertoire de configuration Oracle (TNS_ADMIN) contenant `sqlnet.ora`/`tnsnames.ora`. Facultatif ; utilisé uniquement par le pilote thick. |
+| `utplsql.connections.tnsAdminPath` | `""` | Répertoire contenant `tnsnames.ora` pour résoudre les **alias TNS dans le pilote thin**. Ordre : ce réglage → valeur user/machine de `sqldeveloper.connections.tnsConfiguration.path` → `TNS_ADMIN`. |
 | `utplsql.organization` | `file` | Organisation de l'arborescence : `file` (par chemin) ou `schema` (Schéma > Package > Suite > Test). En mode `schema`, les suites sont également découvertes depuis la base de données (`ut_runner.get_suites_info`, avec repli sur `ALL_OBJECTS`/`ALL_SOURCE`) lorsque les fichiers `.pks` ne sont pas dans l'espace de travail — URI virtuel `utplsql-db:/` (exécution et accès à l'échec fonctionnent ; sans CodeLens/décorations). |
 | `utplsql.organization.schemaPattern` | `db/{schema}/**` | Glob pour extraire le schéma du chemin. Utilisez `{schema}` comme espace réservé. En mode `schema`, les dossiers sous la base du motif (par ex. `db/*`) définissent les schémas interrogés dans la base de données. |
 | `utplsql.discovery.source` | `auto` | Source de l'arbre en mode `schema` : `auto` utilise l'API de la base (`ut_runner.get_suites_info`) et bascule sur `ALL_SOURCE`/fichiers si indisponible ; `database` exige l'API ; `file` désactive la découverte via la base. |

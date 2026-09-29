@@ -105,7 +105,7 @@ configured.
 1. Use `utPLSQL: Show Information` to validate the connection directly
 2. Check the format:
    - EZ Connect: `user/pass@//host:port/service` (note the **double** slash)
-   - TNS: `user/pass@tns_alias` (requires `TNS_ADMIN` and `tnsnames.ora`)
+   - TNS: `user/pass@tns_alias` (resolved from `utplsql.connections.tnsAdminPath`, the SQL Developer TNS path, or `TNS_ADMIN`)
 3. Test connectivity with `tnsping` or `sqlplus`
 
 ---

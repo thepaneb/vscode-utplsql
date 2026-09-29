@@ -40,6 +40,18 @@ test('docs-fidelity: detecta setting ausente no README', () => {
   assert.ok(problems.some((p) => p.includes('utplsql.inexistente')));
 });
 
+test('docs-fidelity: detecta setting ausente numa variante de README', () => {
+  const problems = checkFidelity({
+    settings: ['utplsql.paraTestar'],
+    readme: 'utplsql.paraTestar',
+    readmeVariants: [{ name: 'zz-ZZ', text: 'sem a setting aqui' }],
+  });
+  assert.ok(
+    problems.some((p) => p.includes('zz-ZZ') && p.includes('utplsql.paraTestar')),
+    `esperava problema na variante: ${problems.join(' | ')}`,
+  );
+});
+
 test('docs-fidelity: detecta comando de paleta ausente na wiki', () => {
   const problems = checkFidelity({
     commandTitles: [{ id: 'utplsql.comandoX', title: 'Fazer algo muito especifico' }],

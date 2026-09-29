@@ -95,6 +95,8 @@ code .
 - **TNS alias**: `user/pass@tns_alias` (потрібен налаштований `TNS_ADMIN`)
 - **Wallet (Oracle Cloud)**: `user/pass@tcps://host:1522/service?wallet_location=/path/wallet`
 
+> 🔒 **Посилені налаштування:** налаштування підключення мають область **`machine`**; розширення **вимкнено в недовірених робочих просторах**; пароль профілю **прив’язано до його підключення**.
+
 ## Як це працює
 
 ### Прямий режим Oracle (v0.9.0)
@@ -127,6 +129,8 @@ Test Explorer **у міру завершення кожного тесту**. VS
 | `utplsql.timeoutMinutes` | `60` | Час очікування у хвилинах. |
 | `utplsql.dbmsOutput` | `false` | Увімкнення `DBMS_OUTPUT` у сесії тестування. |
 | `utplsql.additionalReporters` | `[]` | Додаткові репортери, які включаються в кожен запуск (напр. `["ut_coverage_html_reporter"]`). Стандартні (documentation, junit) завжди включаються, їх не потрібно перелічувати. |
+| `utplsql.reporter.clientCharacterSet` | `""` | Клієнтське кодування (`a_client_character_set`) для **Run with Reporter (Export)**. Порожньо — типове значення reporter. |
+| `utplsql.reporter.colorConsole` | `false` | Вмикає ANSI-колір (`a_color_console`) для текстових консольних reporter під час експорту. |
 | `utplsql.tags` | `""` | Вираз тегів utPLSQL для фільтрації тестів, які виконуються (напр. `fast & !integration`). Порожньо — виконуються всі. |
 | `utplsql.run.randomOrder` | `false` | Виконує тести у випадковому порядку, щоб виявити залежності порядку між ними. |
 | `utplsql.run.randomOrderSeed` | `0` | Seed випадкового порядку. `0` = обирається базою (не відтворюється); > 0 відтворює той самий порядок. |
@@ -141,6 +145,7 @@ Test Explorer **у міру завершення кожного тесту**. VS
 | `utplsql.oracleClientLibDir` | `""` | Каталог Oracle Instant Client. Обов'язковий, коли `utplsql.oracleClientMode` дорівнює `thick` (напр. `C:\oracle\instantclient_23_5`). |
 | Налагодження не зупиняється на точці зупину | Пакет без налагоджувальної інформації або бракує привілеїв | Скомпілюйте з `PLSQL_OPTIMIZE_LEVEL <= 1` (або `ALTER PACKAGE ... COMPILE DEBUG PLSQL_OPTIMIZE_LEVEL = 1`) і надайте `DEBUG CONNECT SESSION` + `EXECUTE ON SYS.DBMS_DEBUG`. Точки зупину в `test_*.pkb` можуть не спрацьовувати (utPLSQL виконує тести через динамічний SQL); ставте їх у коді, що тестується. |
 | `utplsql.oracleClientConfigDir` | `""` | Каталог конфігурації Oracle (TNS_ADMIN) з `sqlnet.ora`/`tnsnames.ora`. Необов'язковий; використовується лише в режимі thick. |
+| `utplsql.connections.tnsAdminPath` | `""` | Каталог з `tnsnames.ora` для **TNS-аліасів у thin-драйвері**. Порядок: це налаштування → user/machine-значення `sqldeveloper.connections.tnsConfiguration.path` → `TNS_ADMIN`. |
 | `utplsql.organization` | `file` | Організація дерева: `file` (за шляхом) або `schema` (Schema > Package > Suite > Test). У режимі `schema` набори також виявляються з бази даних (`ut_runner.get_suites_info`, з відкатом до `ALL_OBJECTS`/`ALL_SOURCE`), коли у робочій області немає файлів `.pks` — з віртуальним URI `utplsql-db:/` (виконання та перехід до помилки працюють; без CodeLens/декорацій). |
 | `utplsql.organization.schemaPattern` | `db/{schema}/**` | Glob-шаблон для вилучення схеми зі шляху. Використовуйте `{schema}` як заповнювач. У режимі `schema` каталоги нижче бази шаблону (напр. `db/*`) визначають схеми, які запитуються в базі даних. |
 | `utplsql.discovery.source` | `auto` | Джерело дерева в режимі `schema`: `auto` використовує API бази (`ut_runner.get_suites_info`) і переходить до `ALL_SOURCE`/файлів за недоступності; `database` вимагає API; `file` вимикає виявлення через базу. |

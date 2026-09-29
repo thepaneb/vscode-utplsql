@@ -96,6 +96,8 @@ kapcsolatot, és azt csak a memóriában őrzi meg a munkamenet során — a
 - **TNS-alias**: `user/pass@tns_alias` (beállított `TNS_ADMIN` szükséges)
 - **Wallet (Oracle Cloud)**: `user/pass@tcps://host:1522/service?wallet_location=/path/wallet`
 
+> 🔒 **Megerősített beállítások:** a kapcsolati beállítások **`machine`-scoped**; a bővítmény **le van tiltva nem megbízható munkaterületeken**; a profil jelszava **a kapcsolatához van kötve**.
+
 ## Működés
 
 Nincsenek ideiglenes fájlok, nem kell megvárni a köteg végét. Az eredmények a
@@ -121,6 +123,8 @@ A bővítmény közvetlenül Oracle-on keresztül csatlakozik, beolvassa a ripor
 | `utplsql.timeoutMinutes` | `60` | Időtúllépés percben a tesztek futtatásához. |
 | `utplsql.dbmsOutput` | `false` | Engedélyezi a `DBMS_OUTPUT` használatát a teszt-munkamenetben. Hasznos hibakereséshez. |
 | `utplsql.additionalReporters` | `[]` | További riporterek, amelyek minden futtatáskor bekerülnek (pl. `["ut_coverage_html_reporter"]`). Az alapértelmezettek (documentation, junit) mindig szerepelnek, és nem kell felsorolni őket. |
+| `utplsql.reporter.clientCharacterSet` | `""` | Kliens karakterkészlet (`a_client_character_set`) a **Run with Reporter (Export)** művelethez. Üres = a reporter alapértéke. |
+| `utplsql.reporter.colorConsole` | `false` | ANSI színt (`a_color_console`) engedélyez a szöveges konzol reportereknél az exportban. |
 | `utplsql.tags` | `""` | utPLSQL tagkifejezés a futtatandó tesztek szűréséhez (pl. `fast & !integration`). Üres = mindet futtatja. |
 | `utplsql.run.randomOrder` | `false` | Véletlen sorrendben futtatja a teszteket, hogy felfedje a köztük lévő sorrendfüggőségeket. |
 | `utplsql.run.randomOrderSeed` | `0` | A véletlen sorrend seedje. `0` = az adatbázis választja (nem reprodukálható); > 0 ugyanazt a sorrendet állítja elő. |
@@ -135,6 +139,7 @@ A bővítmény közvetlenül Oracle-on keresztül csatlakozik, beolvassa a ripor
 | `utplsql.oracleClientLibDir` | `""` | Az Oracle Instant Client könyvtára. Kötelező, ha az `utplsql.oracleClientMode` értéke `thick` (pl. `C:\oracle\instantclient_23_5`). |
 | A hibakeresés nem áll meg a törésponton | Csomag hibakeresési info nélkül, vagy hiányzó hibakeresési jogosultságok | Fordítsd `PLSQL_OPTIMIZE_LEVEL <= 1` értékkel (vagy `ALTER PACKAGE ... COMPILE DEBUG PLSQL_OPTIMIZE_LEVEL = 1`), és adj `DEBUG CONNECT SESSION` + `EXECUTE ON SYS.DBMS_DEBUG` jogosultságot. A `test_*.pkb` töréspontok nem biztos, hogy megállnak (az utPLSQL dinamikus SQL-lel futtatja a teszteket); a tesztelt kódba tedd őket. |
 | `utplsql.oracleClientConfigDir` | `""` | Oracle konfigurációs könyvtár (TNS_ADMIN) a `sqlnet.ora`/`tnsnames.ora` fájlokkal. Opcionális; csak a thick mód használja. |
+| `utplsql.connections.tnsAdminPath` | `""` | `tnsnames.ora` könyvtár a **TNS álnevek feloldásához a thin illesztőben**. Sorrend: ez a beállítás → `sqldeveloper.connections.tnsConfiguration.path` user/machine értéke → `TNS_ADMIN`. |
 | `utplsql.organization` | `file` | Fa-szervezés: `file` (elérési út szerint) vagy `schema` (Séma > Package > Suite > Teszt). `schema` módban a suite-ok az adatbázisból is felderítésre kerülnek (`ut_runner.get_suites_info`, `ALL_OBJECTS`/`ALL_SOURCE` visszaeséssel), ha a `.pks` fájlok nincsenek a munkaterületen — virtuális URI-vel `utplsql-db:/` (végrehajtás és ugrás a hibához működik; CodeLens/dekorációk nélkül). |
 | `utplsql.organization.schemaPattern` | `db/{schema}/**` | Glob-minta a séma kinyeréséhez az elérési útból. Helyőrzőként a `{schema}` használható. `schema` módban a minta alapja alatti könyvtárak (pl. `db/*`) határozzák meg az adatbázisban lekérdezett sémákat. |
 | `utplsql.discovery.source` | `auto` | A fastábla forrása `schema` módban: az `auto` az adatbázis API-t (`ut_runner.get_suites_info`) használja, és elérhetetlenség esetén `ALL_SOURCE`/fájlokra vált; a `database` megköveteli az API-t; a `file` kikapcsolja az adatbázis-felfedezést. |

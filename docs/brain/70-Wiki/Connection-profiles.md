@@ -12,8 +12,8 @@ tags: [wiki]
 
 Connection profiles let you save several Oracle environments (DEV/TEST/PROD) and
 switch between them without reconfiguring the extension. Each profile can carry
-its own `sourcePath`, `coverageOwner`, `includePatterns`, `description` and
-`charset`, in addition to the connection string.
+its own `sourcePath`, `coverageOwner`, `includePatterns`, `walletLocation`,
+`description` and `charset`, in addition to the connection string.
 
 > Introduced in PRD-34. Since PRD-65 the password is **not** stored in settings.
 
@@ -39,7 +39,8 @@ Since **PRD-81** the password is **bound to the connection**: if the profile's
 `connection` changes, the stored password is **discarded** instead of being sent
 to the new host. The connection settings (`utplsql.connection`, `utplsql.profiles`,
 `utplsql.activeProfile`, `utplsql.oracleClientLibDir`,
-`utplsql.oracleClientConfigDir`) are **`machine`-scoped** — a workspace
+`utplsql.oracleClientConfigDir`, `utplsql.connections.tnsAdminPath`) are
+**`machine`-scoped** — a workspace
 `.vscode/settings.json` cannot override them — and the extension is **disabled in
 untrusted workspaces** (trust the folder to enable it).
 
@@ -58,8 +59,16 @@ automatically on first use**.
 | `sourcePath` | string | No | inherits global | Overrides `utplsql.sourcePath` |
 | `coverageOwner` | string | No | inherits global | Overrides `utplsql.coverageOwner` |
 | `includePatterns` | string[] | No | inherits global | Overrides `utplsql.includePatterns` |
+| `walletLocation` | string | No | — | Oracle Cloud wallet location (thin driver) |
 | `isDefault` | boolean | No | `false` | Default badge in the picker (does **not** auto-select) |
 | `lastUsed` | string | No | — | Reserved — not read/written today |
+
+## Wallet (Oracle Cloud)
+
+For databases that require an Oracle Cloud wallet, set `walletLocation` on the
+profile and store the wallet password with **`utPLSQL: Set wallet password`**
+(run it with the profile active; leave the input empty to clear). The password
+lives in the SecretStorage (`utplsql.wallet.<profileId>`), never in settings.
 
 ## Example
 

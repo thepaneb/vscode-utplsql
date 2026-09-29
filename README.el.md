@@ -97,6 +97,8 @@ code .
 - **TNS alias**: `user/pass@tns_alias` (απαιτεί ρυθμισμένο `TNS_ADMIN`)
 - **Wallet (Oracle Cloud)**: `user/pass@tcps://host:1522/service?wallet_location=/path/wallet`
 
+> 🔒 **Ενισχυμένες ρυθμίσεις:** οι ρυθμίσεις σύνδεσης είναι **`machine`-scoped**· η επέκταση είναι **απενεργοποιημένη σε μη αξιόπιστα workspaces**· ο κωδικός του profile είναι **συνδεδεμένος με τη σύνδεσή του**.
+
 ## Πώς λειτουργεί
 
 Χωρίς προσωρινά αρχεία, χωρίς αναμονή για το batch. Τα αποτελέσματα εμφανίζονται στο
@@ -122,6 +124,8 @@ Test Explorer **καθώς ολοκληρώνεται κάθε test**.
 | `utplsql.timeoutMinutes` | `60` | Χρονικό όριο σε λεπτά για την εκτέλεση των tests. |
 | `utplsql.dbmsOutput` | `false` | Ενεργοποιεί το `DBMS_OUTPUT` στη σύνοδο του test. Χρήσιμο για debugging. |
 | `utplsql.additionalReporters` | `[]` | Επιπλέον reporters που περιλαμβάνονται σε κάθε εκτέλεση (π.χ. `["ut_coverage_html_reporter"]`). Οι προεπιλεγμένοι (documentation, junit) περιλαμβάνονται πάντα και δεν χρειάζεται να αναφέρονται. |
+| `utplsql.reporter.clientCharacterSet` | `""` | Σύνολο χαρακτήρων πελάτη (`a_client_character_set`) για **Run with Reporter (Export)**. Κενό = προεπιλογή του reporter. |
+| `utplsql.reporter.colorConsole` | `false` | Ενεργοποιεί ANSI χρώμα (`a_color_console`) για textual console reporters στο export. |
 | `utplsql.tags` | `""` | Έκφραση tags του utPLSQL για φιλτράρισμα των test που εκτελούνται (π.χ. `fast & !integration`). Κενό εκτελεί όλα. |
 | `utplsql.run.randomOrder` | `false` | Εκτελεί τα test σε τυχαία σειρά για να αποκαλύψει εξαρτήσεις σειράς μεταξύ τους. |
 | `utplsql.run.randomOrderSeed` | `0` | Seed της τυχαίας σειράς. `0` = επιλέγεται από τη βάση (μη αναπαραγώγιμο)· > 0 αναπαράγει την ίδια σειρά. |
@@ -136,6 +140,7 @@ Test Explorer **καθώς ολοκληρώνεται κάθε test**.
 | `utplsql.oracleClientLibDir` | `""` | Κατάλογος του Oracle Instant Client. Απαιτείται όταν το `utplsql.oracleClientMode` είναι `thick` (π.χ. `C:\oracle\instantclient_23_5`). |
 | Το debug δεν σταματά στο σημείο διακοπής | Πακέτο χωρίς πληροφορίες debug ή λείπουν τα δικαιώματα debug | Μεταγλωττίστε με `PLSQL_OPTIMIZE_LEVEL <= 1` (ή `ALTER PACKAGE ... COMPILE DEBUG PLSQL_OPTIMIZE_LEVEL = 1`) και δώστε `DEBUG CONNECT SESSION` + `EXECUTE ON SYS.DBMS_DEBUG`. Τα σημεία διακοπής στο `test_*.pkb` μπορεί να μην πιάνονται (το utPLSQL εκτελεί τα test μέσω δυναμικού SQL)· βάλτε τα στον κώδικα υπό δοκιμή. |
 | `utplsql.oracleClientConfigDir` | `""` | Κατάλογος διαμόρφωσης Oracle (TNS_ADMIN) με `sqlnet.ora`/`tnsnames.ora`. Προαιρετικός· χρησιμοποιείται μόνο από τη λειτουργία thick. |
+| `utplsql.connections.tnsAdminPath` | `""` | Κατάλογος με `tnsnames.ora` για **ανάλυση TNS aliases στον thin driver**. Σειρά: αυτή η ρύθμιση → τιμή user/machine του `sqldeveloper.connections.tnsConfiguration.path` → `TNS_ADMIN`. |
 | `utplsql.organization` | `file` | Οργάνωση δέντρου: `file` (ανά διαδρομή) ή `schema` (Schema > Package > Suite > Test). Στη λειτουργία `schema` τα suites ανακαλύπτονται επίσης από τη βάση (`ut_runner.get_suites_info`, με εφεδρική χρήση `ALL_OBJECTS`/`ALL_SOURCE`) όταν τα αρχεία `.pks` δεν υπάρχουν στο workspace — με εικονικό URI `utplsql-db:/` (εκτέλεση και μετάβαση στο σφάλμα λειτουργούν· χωρίς CodeLens/decorations). |
 | `utplsql.organization.schemaPattern` | `db/{schema}/**` | Glob pattern για την εξαγωγή του schema από τη διαδρομή. Χρησιμοποιήστε το `{schema}` ως placeholder. Στη λειτουργία `schema`, οι κατάλογοι κάτω από τη βάση του pattern (π.χ. `db/*`) ορίζουν τα schemas που ερωτώνται στη βάση. |
 | `utplsql.discovery.source` | `auto` | Πηγή του δέντρου στη λειτουργία `schema`: το `auto` χρησιμοποιεί το API της βάσης (`ut_runner.get_suites_info`) και καταφεύγει σε `ALL_SOURCE`/αρχεία όταν δεν είναι διαθέσιμο· το `database` απαιτεί το API· το `file` απενεργοποιεί την ανακάλυψη μέσω βάσης. |

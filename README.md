@@ -92,11 +92,14 @@ keeps it only in memory during the session — use the command
 
 **Accepted formats:**
 - **EZ Connect**: `user/pass@//host:1521/service`
-- **TNS alias**: `user/pass@tns_alias` (requires `TNS_ADMIN` configured)
+- **TNS alias**: `user/pass@tns_alias` — the **thin** driver resolves the alias from
+  `utplsql.connections.tnsAdminPath`, then the user/machine value of
+  `sqldeveloper.connections.tnsConfiguration.path`, then `TNS_ADMIN` (see the setting below).
 - **Wallet (Oracle Cloud)**: `user/pass@tcps://host:1522/service?wallet_location=/path/wallet`
 
 > 🔒 **Hardened settings:** `utplsql.connection`, `utplsql.profiles`, `utplsql.activeProfile`,
-> `utplsql.oracleClientLibDir` and `utplsql.oracleClientConfigDir` are **`machine`-scoped** —
+> `utplsql.oracleClientLibDir`, `utplsql.oracleClientConfigDir` and
+> `utplsql.connections.tnsAdminPath` are **`machine`-scoped** —
 > a project's `.vscode/settings.json` cannot override them. The extension is also **disabled in
 > untrusted workspaces** (mark the folder as trusted to enable it). A profile password is bound
 > to its `connection`: if the connection changes, the stored password is discarded instead of

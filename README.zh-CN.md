@@ -95,6 +95,8 @@ code .
 - **TNS 别名**：`user/pass@tns_alias`（需要配置 `TNS_ADMIN`）
 - **Wallet（Oracle Cloud）**：`user/pass@tcps://host:1522/service?wallet_location=/path/wallet`
 
+> 🔒 **加固设置：** 连接设置是 **`machine` 作用域**；扩展在**不受信任的工作区中被禁用**；配置文件密码**绑定到其连接**。
+
 ## 工作原理
 
 扩展通过 node-oracledb 直连 Oracle 数据库运行测试。
@@ -120,6 +122,8 @@ Test Explorer 中。
 | `utplsql.timeoutMinutes` | `60` | 执行超时时间（分钟）。 |
 | `utplsql.dbmsOutput` | `false` | 在测试会话中启用 `DBMS_OUTPUT`。 |
 | `utplsql.additionalReporters` | `[]` | 每次运行时要包含的额外 reporter（例如 `["ut_coverage_html_reporter"]`）。默认的（documentation、junit）始终包含，无需列出。 |
+| `utplsql.reporter.clientCharacterSet` | `""` | **Run with Reporter (Export)** 的客户端字符集（`a_client_character_set`）。留空使用 reporter 默认值。 |
+| `utplsql.reporter.colorConsole` | `false` | 在导出中为文本控制台 reporter 启用 ANSI 颜色（`a_color_console`）。 |
 | `utplsql.tags` | `""` | 用于筛选运行哪些测试的 utPLSQL 标签表达式（例如 `fast & !integration`）。为空则运行全部。 |
 | `utplsql.run.randomOrder` | `false` | 以随机顺序运行测试，以揭示测试之间的顺序依赖。 |
 | `utplsql.run.randomOrderSeed` | `0` | 随机顺序的种子。`0` = 由数据库选择（不可复现）；大于 0 可复现相同顺序。 |
@@ -134,6 +138,7 @@ Test Explorer 中。
 | `utplsql.oracleClientLibDir` | `""` | Oracle Instant Client 目录。当 `utplsql.oracleClientMode` 为 `thick` 时必填（例如 `C:\oracle\instantclient_23_5`）。 |
 | 调试不在断点处停止 | 包编译时没有调试信息，或缺少调试授权 | 使用 `PLSQL_OPTIMIZE_LEVEL <= 1` 编译（或 `ALTER PACKAGE ... COMPILE DEBUG`），并授予 `DEBUG CONNECT SESSION` + `EXECUTE ON SYS.DBMS_DEBUG`. `test_*.pkb` 中的断点可能不会命中（utPLSQL 通过动态 SQL 运行测试）；请将断点设在被测代码中。 |
 | `utplsql.oracleClientConfigDir` | `""` | 包含 `sqlnet.ora`/`tnsnames.ora` 的 Oracle 配置目录（TNS_ADMIN）。可选；仅 thick 模式使用。 |
+| `utplsql.connections.tnsAdminPath` | `""` | 包含 `tnsnames.ora` 的目录，用于在 **thin 驱动中解析 TNS 别名**。顺序：此设置 → `sqldeveloper.connections.tnsConfiguration.path` 的用户/机器值 → `TNS_ADMIN`。 |
 | `utplsql.organization` | `file` | 树组织方式：`file`（按路径）或 `schema`（Schema > Package > Suite > Test）。在 `schema` 模式时，如果工作区中没有 `.pks` 文件，还会从数据库（`ut_runner.get_suites_info`，不可用时回退到 `ALL_OBJECTS`/`ALL_SOURCE`）发现套件 — 使用虚拟 URI `utplsql-db:/`（可执行并跳转到失败；无 CodeLens/装饰）。 |
 | `utplsql.organization.schemaPattern` | `db/{schema}/**` | 用于从路径中提取 schema 的 glob 模式。使用 `{schema}` 作为占位符。在 `schema` 模式下，模式基准目录（例如 `db/*`）下方的目录定义了在数据库中查询的 schemas。 |
 | `utplsql.discovery.source` | `auto` | `schema` 模式下测试树的来源：`auto` 使用数据库 API（`ut_runner.get_suites_info`），不可用时回退到 `ALL_SOURCE`/文件；`database` 要求使用 API；`file` 关闭数据库发现。 |

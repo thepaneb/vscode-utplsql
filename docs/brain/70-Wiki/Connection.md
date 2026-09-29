@@ -55,8 +55,9 @@ Example: `DEV/my_password@//localhost:1521/XEPDB1`
 ```
 user/pass@tns_alias
 ```
-Requires `TNS_ADMIN` to be configured (environment variable or `tnsnames.ora` in
-the default directory). Example: `DEV/my_password@ORCLPDB1`
+The **thin** driver resolves the alias from `utplsql.connections.tnsAdminPath`,
+then the user/machine value of `sqldeveloper.connections.tnsConfiguration.path`,
+then `TNS_ADMIN`. Example: `DEV/my_password@ORCLPDB1`. See [[Configuration]].
 
 ### Wallet (Oracle Cloud)
 ```

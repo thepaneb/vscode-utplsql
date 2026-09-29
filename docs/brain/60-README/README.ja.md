@@ -100,6 +100,8 @@ code .
 - **TNS エイリアス**: `user/pass@tns_alias`（`TNS_ADMIN` の設定が必要）
 - **Wallet（Oracle Cloud）**: `user/pass@tcps://host:1522/service?wallet_location=/path/wallet`
 
+> 🔒 **強化された設定:** 接続設定は **`machine` スコープ**です。拡張機能は**信頼されていないワークスペースで無効**になり、プロファイルのパスワードは**接続に紐付け**られます。
+
 ## 仕組み
 
 この拡張機能は `node-oracledb` を使用して Oracle データベースに直接接続し、テスト結果をリアルタイムでストリーミングし、VSCode のネイティブ API に変換します。
@@ -125,6 +127,8 @@ Test Explorer に表示されます。
 | `utplsql.timeoutMinutes` | `60` | テスト実行のタイムアウト（分）。 |
 | `utplsql.dbmsOutput` | `false` | テストセッションで `DBMS_OUTPUT` を有効化。デバッグに便利。 |
 | `utplsql.additionalReporters` | `[]` | 毎回の実行に含める追加レポーター（例: `["ut_coverage_html_reporter"]`）。デフォルト（documentation、junit）は常に含まれ、リスト化する必要はありません。 |
+| `utplsql.reporter.clientCharacterSet` | `""` | **Run with Reporter (Export)** のクライアント文字セット（`a_client_character_set`）。空欄は reporter の既定値。 |
+| `utplsql.reporter.colorConsole` | `false` | エクスポートでテキストコンソール reporter の ANSI カラー（`a_color_console`）を有効にします。 |
 | `utplsql.tags` | `""` | 実行するテストを絞り込む utPLSQL のタグ式（例: `fast & !integration`）。空の場合はすべて実行します。 |
 | `utplsql.run.randomOrder` | `false` | テスト間の順序依存を明らかにするため、ランダムな順序で実行します。 |
 | `utplsql.run.randomOrderSeed` | `0` | ランダム順のシード。`0` = データベースが選択（再現不可）。0 より大きいと同じ順序を再現します。 |
@@ -139,6 +143,7 @@ Test Explorer に表示されます。
 | `utplsql.oracleClientLibDir` | `""` | Oracle Instant Client のディレクトリ。`utplsql.oracleClientMode` が `thick` の場合は必須です（例: `C:\oracle\instantclient_23_5`）。 |
 | デバッグがブレークポイントで停止しない | デバッグ情報なしでコンパイルされたパッケージ、またはデバッグ権限の不足 | `PLSQL_OPTIMIZE_LEVEL <= 1` でコンパイル（または `ALTER PACKAGE ... COMPILE DEBUG PLSQL_OPTIMIZE_LEVEL = 1`）し、`DEBUG CONNECT SESSION` + `EXECUTE ON SYS.DBMS_DEBUG` を付与。`test_*.pkb` のブレークポイントはヒットしないことがあります（utPLSQL は動的 SQL でテストを実行します）。テスト対象のコードに設定してください。 |
 | `utplsql.oracleClientConfigDir` | `""` | `sqlnet.ora`/`tnsnames.ora` を含む Oracle 構成ディレクトリ（TNS_ADMIN）。任意。thick モードでのみ使用されます。 |
+| `utplsql.connections.tnsAdminPath` | `""` | `tnsnames.ora` のあるディレクトリ。**thin ドライバーで TNS 別名を解決**します。優先順位: この設定 → `sqldeveloper.connections.tnsConfiguration.path`（user/machine）→ `TNS_ADMIN`。 |
 | `utplsql.organization` | `file` | ツリーの構成: `file`（パス単位）または `schema`（Schema > Package > Suite > Test）。`schema` モードでは、`.pks` ファイルがワークスペースにないときはスイートもデータベース（`ut_runner.get_suites_info`、利用不可時は `ALL_OBJECTS`/`ALL_SOURCE`）から検出されます — 仮想 URI は `utplsql-db:/`（実行と失敗ジャンプは可能、CodeLens/デコレーションなし）。 |
 | `utplsql.organization.schemaPattern` | `db/{schema}/**` | パスからスキーマを抽出するためのグロブパターン。プレースホルダーには `{schema}` を使用します。`schema` モードでは、パターンベースより下のディレクトリ（例: `db/*`）がデータベースでクエリされるスキーマを定義します。 |
 | `utplsql.discovery.source` | `auto` | `schema` モードでのテストツリーの取得元: `auto` はデータベース API（`ut_runner.get_suites_info`）を使い、利用できない場合は `ALL_SOURCE`/ファイルにフォールバックします。`database` は API を必須にし、`file` はデータベース探索を無効にします。 |

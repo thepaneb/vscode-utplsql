@@ -105,6 +105,8 @@ a ponechá je pouze v paměti během relace — použijte příkaz
 - **TNS alias**: `user/pass@tns_alias` (vyžaduje nakonfigurovaný `TNS_ADMIN`)
 - **Wallet (Oracle Cloud)**: `user/pass@tcps://host:1522/service?wallet_location=/path/wallet`
 
+> 🔒 **Zpevněná nastavení:** nastavení připojení jsou **`machine`-scoped**; rozšíření je **zakázáno v nedůvěryhodných pracovních prostorech**; heslo profilu je **vázáno na jeho připojení**.
+
 ## Jak to funguje
 
 Žádné dočasné soubory, žádné čekání na dávku. Výsledky se objeví v
@@ -131,6 +133,8 @@ nativních API VSCode.
 | `utplsql.timeoutMinutes` | `60` | Časový limit v minutách pro spuštění testů. |
 | `utplsql.dbmsOutput` | `false` | Povolí `DBMS_OUTPUT` v testovací relaci. Užitečné pro ladění. |
 | `utplsql.additionalReporters` | `[]` | Další reportéry zahrnuté do každého spuštění (např. `["ut_coverage_html_reporter"]`). Výchozí (documentation, junit) jsou vždy zahrnuty a není třeba je vypisovat. |
+| `utplsql.reporter.clientCharacterSet` | `""` | Klientská znaková sada (`a_client_character_set`) pro **Run with Reporter (Export)**. Prázdné = výchozí reporteru. |
+| `utplsql.reporter.colorConsole` | `false` | Zapne ANSI barvy (`a_color_console`) pro textové konzolové reportery při exportu. |
 | `utplsql.tags` | `""` | Výraz tagů utPLSQL pro filtrování spouštěných testů (např. `fast & !integration`). Prázdné spustí všechny. |
 | `utplsql.run.randomOrder` | `false` | Spouští testy v náhodném pořadí, aby odhalil závislosti pořadí mezi nimi. |
 | `utplsql.run.randomOrderSeed` | `0` | Seed náhodného pořadí. `0` = zvolí databáze (nereprodukovatelné); > 0 reprodukuje stejné pořadí. |
@@ -145,6 +149,7 @@ nativních API VSCode.
 | `utplsql.oracleClientLibDir` | `""` | Adresář Oracle Instant Client. Povinný, když je `utplsql.oracleClientMode` nastaveno na `thick` (např. `C:\oracle\instantclient_23_5`). |
 | Ladění se nezastaví na zarážce | Balíček bez ladicích informací nebo chybějící ladicí granty | Zkompilujte s `PLSQL_OPTIMIZE_LEVEL <= 1` (nebo `ALTER PACKAGE ... COMPILE DEBUG PLSQL_OPTIMIZE_LEVEL = 1`) a udělte `DEBUG CONNECT SESSION` + `EXECUTE ON SYS.DBMS_DEBUG`. Zarážky v `test_*.pkb` se nemusí zastavit (utPLSQL spouští testy přes dynamický SQL); nastavte je v testovaném kódu. |
 | `utplsql.oracleClientConfigDir` | `""` | Adresář konfigurace Oracle (TNS_ADMIN) s `sqlnet.ora`/`tnsnames.ora`. Volitelný; používá jej pouze thick režim. |
+| `utplsql.connections.tnsAdminPath` | `""` | Adresář s `tnsnames.ora` pro řešení **aliasů TNS v thin ovladači**. Pořadí: toto nastavení → hodnota user/machine `sqldeveloper.connections.tnsConfiguration.path` → `TNS_ADMIN`. |
 | `utplsql.organization` | `file` | Uspořádání stromu: `file` (podle cesty) nebo `schema` (Schema > Package > Suite > Test). V režimu `schema` se sady také objevují z databáze (`ut_runner.get_suites_info`, s návratem k `ALL_OBJECTS`/`ALL_SOURCE`), když soubory `.pks` nejsou v pracovním prostoru — s virtuální URI `utplsql-db:/` (spuštění a skok na selhání fungují; bez CodeLens/dekorací). |
 | `utplsql.organization.schemaPattern` | `db/{schema}/**` | Glob vzor pro extrakci schématu z cesty. Použijte `{schema}` jako zástupný symbol. V režimu `schema` adresáře pod základnou vzoru (např. `db/*`) definují schémata dotazovaná v databázi. |
 | `utplsql.discovery.source` | `auto` | Zdroj stromu v režimu `schema`: `auto` používá API databáze (`ut_runner.get_suites_info`) a při nedostupnosti přejde na `ALL_SOURCE`/soubory; `database` vyžaduje API; `file` vypne objevování přes databázi. |

@@ -105,6 +105,8 @@ conexiune și o păstrează doar în memorie pe durata sesiunii — folosește c
 - **Alias TNS**: `user/pass@tns_alias` (necesită `TNS_ADMIN` configurat)
 - **Wallet (Oracle Cloud)**: `user/pass@tcps://host:1522/service?wallet_location=/path/wallet`
 
+> 🔒 **Setări întărite:** setările de conexiune sunt **`machine`-scoped**; extensia este **dezactivată în spații de lucru neîncrezătoare**; parola profilului este **legată de conexiunea sa**.
+
 ## Cum funcționează
 
 Fără fișiere temporare, fără a aștepta lotul. Rezultatele apar în
@@ -130,6 +132,8 @@ Extensia se conectează direct prin Oracle, citește rapoartele (JUnit + Coverag
 | `utplsql.timeoutMinutes` | `60` | Timeout în minute pentru executarea testelor. |
 | `utplsql.dbmsOutput` | `false` | Activează `DBMS_OUTPUT` în sesiunea de test. Util pentru depanare. |
 | `utplsql.additionalReporters` | `[]` | Reporteri suplimentari de inclus la fiecare rulare (ex.: `["ut_coverage_html_reporter"]`). Cei implicați (documentation, junit) sunt întotdeauna incluși și nu trebuie listați. |
+| `utplsql.reporter.clientCharacterSet` | `""` | Set de caractere client (`a_client_character_set`) pentru **Run with Reporter (Export)**. Gol = implicitul reporterului. |
+| `utplsql.reporter.colorConsole` | `false` | Activează culoarea ANSI (`a_color_console`) pentru reporterii textuali de consolă la export. |
 | `utplsql.tags` | `""` | Expresie de tag-uri utPLSQL pentru a filtra ce teste rulează (ex.: `fast & !integration`). Gol rulează toate. |
 | `utplsql.run.randomOrder` | `false` | Rulează testele în ordine aleatorie pentru a dezvălui dependențele de ordine dintre ele. |
 | `utplsql.run.randomOrderSeed` | `0` | Seed-ul ordinii aleatorii. `0` = ales de bază de date (nereproductibil); > 0 reproduce aceeași ordine. |
@@ -144,6 +148,7 @@ Extensia se conectează direct prin Oracle, citește rapoartele (JUnit + Coverag
 | `utplsql.oracleClientLibDir` | `""` | Directorul Oracle Instant Client. Obligatoriu când `utplsql.oracleClientMode` este `thick` (ex. `C:\oracle\instantclient_23_5`). |
 | Debug nu se oprește la punctul de întrerupere | Pachet fără informații de depanare sau granturi de depanare lipsă | Compilați cu `PLSQL_OPTIMIZE_LEVEL <= 1` (sau `ALTER PACKAGE ... COMPILE DEBUG PLSQL_OPTIMIZE_LEVEL = 1`) și acordați `DEBUG CONNECT SESSION` + `EXECUTE ON SYS.DBMS_DEBUG`. Punctele de întrerupere din `test_*.pkb` pot să nu se declanșeze (utPLSQL rulează testele prin SQL dinamic); puneți-le în codul testat. |
 | `utplsql.oracleClientConfigDir` | `""` | Directorul de configurare Oracle (TNS_ADMIN) cu `sqlnet.ora`/`tnsnames.ora`. Opțional; folosit doar de driverul thick. |
+| `utplsql.connections.tnsAdminPath` | `""` | Director cu `tnsnames.ora` pentru **alias-uri TNS în driverul thin**. Ordine: această setare → valoarea user/machine a `sqldeveloper.connections.tnsConfiguration.path` → `TNS_ADMIN`. |
 | `utplsql.organization` | `file` | Organizarea arborelui: `file` (după cale) sau `schema` (Schema > Package > Suite > Test). În modul `schema` suitele sunt descoperite și din baza de date (`ut_runner.get_suites_info`, cu revenire la `ALL_OBJECTS`/`ALL_SOURCE`) atunci când fișierele `.pks` nu sunt în workspace — cu URI virtual `utplsql-db:/` (executarea și saltul la eșec funcționează; fără CodeLens/decorări). |
 | `utplsql.organization.schemaPattern` | `db/{schema}/**` | Model glob pentru extragerea schemei din cale. Folosește `{schema}` ca substituent. În modul `schema`, directoarele de sub baza modelului (ex.: `db/*`) definesc schemele interogate în baza de date. |
 | `utplsql.discovery.source` | `auto` | Sursa arborelui în modul `schema`: `auto` folosește API-ul bazei (`ut_runner.get_suites_info`) și trece la `ALL_SOURCE`/fișiere când nu este disponibil; `database` impune API-ul; `file` dezactivează descoperirea prin bază. |
