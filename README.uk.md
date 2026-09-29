@@ -34,6 +34,11 @@
 - 🗄️ **Виявлення DB-first** — будуйте дерево з `ut_runner.get_suites_info` і перебудовуйте кеш анотацій з палітри.
 - 🐛 **PL/SQL Debug** — точки зупину та покрокове налагодження тестів utPLSQL через `DBMS_DEBUG` (нативний Debug Adapter).
 - 🌍 **i18n — 24 мови** — `utplsql.language` слідує за VSCode (24 локалі: pt-br, en, en-gb, es, zh-cn, zh-tw, ja, de, fr, it, ko, ru, tr, pl, cs, hu, bg, el, id, ro, sr, th, uk, vi).
+- 🌳 **Ліниве дерево тестів** — у режимі `schema` пакети/набори/тести розв’язуються в міру розгортання, тож великі схеми відкриваються миттєво.
+- 🧾 **Run with Reporter (Export)** — запускає вибірку з будь-яким репортером БД і пише вивід в Output або у файл (`utplsql.reporter.*`), не змінюючи результати в Test Explorer.
+- 🗂️ **Віртуальне джерело з БД** — без локального файлу *jump to failure* і покриття відкривають документ лише для читання з `ALL_SOURCE` (`utplsql-source:/…`).
+- 🔐 **TNS у thin + wallet** — `utplsql.connections.tnsAdminPath` розв’язує аліаси `tnsnames.ora` у thin-драйвері (fallback: SQL Developer/`TNS_ADMIN`); `walletLocation` профілю та `utPLSQL: Set wallet password` зберігають пароль wallet у SecretStorage.
+- 🔒 **Посилення безпеки з’єднань** — налаштування з’єднання тепер `machine`-scoped, розширення вимкнено в недовірених робочих просторах, а пароль профілю прив’язано до з’єднання.
 
 ## Встановлення
 

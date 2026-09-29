@@ -34,6 +34,11 @@
 - 🗄️ **DB ファーストの探索** — `ut_runner.get_suites_info` からツリーを構築し、パレットから注釈キャッシュを再構築します。
 - 🐛 **PL/SQL デバッグ** — `DBMS_DEBUG` による utPLSQL テストのブレークポイントとステップデバッグ（ネイティブ Debug Adapter）。
 - 🌍 **i18n — 24 言語** — `utplsql.language` は VSCode に追従（24 ロケール: pt-br, en, en-gb, es, zh-cn, zh-tw, ja, de, fr, it, ko, ru, tr, pl, cs, hu, bg, el, id, ro, sr, th, uk, vi）。
+- 🌳 **遅延読み込みのテストツリー** — `schema` モードでは、展開時に package/suite/test を必要に応じて解決するため、大きなスキーマでも即座に開きます。
+- 🧾 **Run with Reporter (Export)** — 選択範囲を任意のデータベース reporter で実行し、出力を Output またはファイルに書き込みます（`utplsql.reporter.*`）。Test Explorer の結果は変わりません。
+- 🗂️ **仮想データベースソース** — ローカルファイルがない場合、*jump to failure* とカバレッジは `ALL_SOURCE` から解決した読み取り専用ドキュメントを開きます（`utplsql-source:/…`）。
+- 🔐 **thin の TNS + wallet** — `utplsql.connections.tnsAdminPath` が thin ドライバで `tnsnames.ora` の別名を解決します（SQL Developer/`TNS_ADMIN` にフォールバック）。プロファイルの `walletLocation` と `utPLSQL: Set wallet password` が wallet のパスワードを SecretStorage に保存します。
+- 🔒 **接続のセキュリティ強化** — 接続設定は `machine`-scoped になり、信頼されていないワークスペースでは拡張機能が無効化され、プロファイルのパスワードは接続に紐づきます。
 
 ## インストール
 

@@ -43,6 +43,11 @@ Integriert [utPLSQL](https://www.utplsql.org/) in VSCode und bringt PL/SQL-Tests
 - 🗄️ **DB-first-Erkennung** — Baum aus `ut_runner.get_suites_info` aufbauen und den Anmerkungs-Cache über die Palette neu erstellen.
 - 🐛 **PL/SQL-Debugging** — Breakpoints und Schritt-für-Schritt-Debugging von utPLSQL-Tests über `DBMS_DEBUG` (nattiver Debug-Adapter).
 - 🌍 **i18n — 24 Sprachen** — `utplsql.language` folgt VSCode (24 Locales: pt-br, en, en-gb, es, zh-cn, zh-tw, ja, de, fr, it, ko, ru, tr, pl, cs, hu, bg, el, id, ro, sr, th, uk, vi).
+- 🌳 **Lazy-Testbaum** — im `schema`-Modus werden Packages/Suites/Tests beim Aufklappen bei Bedarf aufgelöst, sodass große Schemas sofort öffnen.
+- 🧾 **Run with Reporter (Export)** — führt die Auswahl mit einem beliebigen Datenbank-Reporter aus und schreibt die Ausgabe ins Output oder in eine Datei (`utplsql.reporter.*`), ohne die Ergebnisse im Test Explorer zu ändern.
+- 🗂️ **Virtuelle Datenbankquelle** — ohne lokale Datei öffnen *Jump to failure* und Coverage ein schreibgeschütztes Dokument aus `ALL_SOURCE` (`utplsql-source:/…`).
+- 🔐 **TNS im Thin-Treiber + Wallet** — `utplsql.connections.tnsAdminPath` löst `tnsnames.ora`-Aliase im Thin-Treiber auf (Fallback: SQL Developer/`TNS_ADMIN`); `walletLocation` im Profil und `utPLSQL: Set wallet password` halten das Wallet-Passwort im SecretStorage.
+- 🔒 **Sicherheits-Hardening der Verbindungen** — Verbindungs-Einstellungen sind `machine`-scoped, die Extension ist in nicht vertrauenswürdigen Workspaces deaktiviert und das Profilpasswort ist an die Verbindung gebunden.
 
 ## Installation
 

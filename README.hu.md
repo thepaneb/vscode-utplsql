@@ -34,6 +34,11 @@ Integrálja a [utPLSQL](https://www.utplsql.org/) teszteket a VSCode-ba, és a P
 - 🗄️ **DB-first felfedezés** — építsd a fát a `ut_runner.get_suites_info` alapján, és építsd újra a megjegyzés-gyorsítótárat a palettáról.
 - 🐛 **PL/SQL-hibakeresés** — töréspontok és lépésenkénti hibakeresés a utPLSQL-tesztekhez `DBMS_DEBUG` segítségével (natív Debug Adapter).
 - 🌍 **i18n — 24 nyelv** — a `utplsql.language` követi a VSCode-ot (24 területi beállítás: pt-br, en, en-gb, es, zh-cn, zh-tw, ja, de, fr, it, ko, ru, tr, pl, cs, hu, bg, el, id, ro, sr, th, uk, vi).
+- 🌳 **Lusta tesztek fája** — `schema` módban a package-ek/suite-ok/tesztek kibontáskor, igény szerint töltődnek, így a nagy sémák azonnal megnyílnak.
+- 🧾 **Run with Reporter (Export)** — a kijelölést bármely adatbázis-reporterrel futtatja, és a kimenetet az Outputba vagy fájlba írja (`utplsql.reporter.*`), a Test Explorer eredményeinek megváltoztatása nélkül.
+- 🗂️ **Virtuális adatbázis-forrás** — helyi fájl nélkül a *jump to failure* és a lefedettség egy csak olvasható dokumentumot nyit meg az `ALL_SOURCE`-ból (`utplsql-source:/…`).
+- 🔐 **TNS thin módban + wallet** — a `utplsql.connections.tnsAdminPath` feloldja a `tnsnames.ora` aliasokat a thin driverben (fallback: SQL Developer/`TNS_ADMIN`); a profil `walletLocation` mezője és a `utPLSQL: Set wallet password` a wallet jelszavát a SecretStorage-ban tartja.
+- 🔒 **Kapcsolatok biztonsági megerősítése** — a kapcsolati beállítások `machine`-scopedok, a bővítmény le van tiltva nem megbízható munkaterületeken, és a profil jelszava a kapcsolathoz van kötve.
 
 ## Telepítés
 

@@ -34,6 +34,11 @@ Mengintegrasikan [utPLSQL](https://www.utplsql.org/) ke dalam VSCode, membawa pe
 - 🗄️ **Penemuan DB-first** — bangun pohon dari `ut_runner.get_suites_info` dan bangun ulang cache anotasi dari palet.
 - 🐛 **Debug PL/SQL** — breakpoint dan debugging langkah demi langkah untuk pengujian utPLSQL melalui `DBMS_DEBUG` (Debug Adapter asli).
 - 🌍 **i18n — 24 bahasa** — `utplsql.language` mengikuti VSCode (24 locale: pt-br, en, en-gb, es, zh-cn, zh-tw, ja, de, fr, it, ko, ru, tr, pl, cs, hu, bg, el, id, ro, sr, th, uk, vi).
+- 🌳 **Pohon tes malas (lazy)** — dalam mode `schema`, package/suite/tes diurai saat diperluas, sehingga skema besar terbuka seketika.
+- 🧾 **Run with Reporter (Export)** — menjalankan pilihan dengan reporter basis data mana pun dan menulis keluaran ke Output atau file (`utplsql.reporter.*`), tanpa mengubah hasil di Test Explorer.
+- 🗂️ **Sumber basis data virtual** — tanpa file lokal, *jump to failure* dan cakupan membuka dokumen hanya-baca dari `ALL_SOURCE` (`utplsql-source:/…`).
+- 🔐 **TNS di thin + wallet** — `utplsql.connections.tnsAdminPath` menyelesaikan alias `tnsnames.ora` di driver thin (fallback ke SQL Developer/`TNS_ADMIN`); `walletLocation` profil dan `utPLSQL: Set wallet password` menyimpan sandi wallet di SecretStorage.
+- 🔒 **Pengerasan keamanan koneksi** — setelan koneksi kini `machine`-scoped, ekstensi dinonaktifkan di workspace yang tidak tepercaya, dan sandi profil terikat pada koneksi.
 
 ## Instalasi
 

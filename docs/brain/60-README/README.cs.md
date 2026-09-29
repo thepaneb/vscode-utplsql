@@ -43,6 +43,11 @@ Integruje [utPLSQL](https://www.utplsql.org/) do VSCode a přináší PL/SQL tes
 - 🗄️ **Objevování DB-first** — sestavte strom z `ut_runner.get_suites_info` a přestavte mezipaměť anotací z palety.
 - 🐛 **PL/SQL Debug** — breakpointy a krokování testů utPLSQL přes `DBMS_DEBUG` (nativní Debug Adapter).
 - 🌍 **i18n — 24 jazyků** — `utplsql.language` se řídí VSCode (24 locale: pt-br, en, en-gb, es, zh-cn, zh-tw, ja, de, fr, it, ko, ru, tr, pl, cs, hu, bg, el, id, ro, sr, th, uk, vi).
+- 🌳 **Líně načítaný strom testů** — v režimu `schema` se balíčky/sady/testy načítají až při rozbalení, takže velká schémata se otevřou okamžitě.
+- 🧾 **Run with Reporter (Export)** — spustí výběr s libovolným reportérem databáze a zapíše výstup do Output nebo do souboru (`utplsql.reporter.*`), aniž by změnil výsledky v Test Exploreru.
+- 🗂️ **Virtuální zdroj z databáze** — bez lokálního souboru *jump to failure* a pokrytí otevřou dokument jen pro čtení z `ALL_SOURCE` (`utplsql-source:/…`).
+- 🔐 **TNS v thin + wallet** — `utplsql.connections.tnsAdminPath` řeší aliasy `tnsnames.ora` v thin ovladači (fallback na SQL Developer/`TNS_ADMIN`); `walletLocation` v profilu a `utPLSQL: Set wallet password` uchovávají heslo k walletu v SecretStorage.
+- 🔒 **Zpevnění zabezpečení připojení** — nastavení připojení jsou `machine`-scoped, rozšíření je zakázáno v nedůvěryhodných pracovních prostorech a heslo profilu je vázáno na připojení.
 
 ## Instalace
 

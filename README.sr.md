@@ -34,6 +34,11 @@
 - 🗄️ **DB-first откривање** — изгради стабло из `ut_runner.get_suites_info` и поново изгради кеш напомена са палете.
 - 🐛 **PL/SQL Debug** — breakpoint-и и степеновано отклањање грешака utPLSQL тестова преко `DBMS_DEBUG` (нативни Debug Adapter).
 - 🌍 **i18n — 24 језика** — `utplsql.language` прати VSCode (24 локала: pt-br, en, en-gb, es, zh-cn, zh-tw, ja, de, fr, it, ko, ru, tr, pl, cs, hu, bg, el, id, ro, sr, th, uk, vi).
+- 🌳 **Lenjivo stablo testova** — u `schema` režimu paketi/suitovi/testovi se razrešavaju pri proširenju, pa se velike šeme otvaraju trenutno.
+- 🧾 **Run with Reporter (Export)** — pokreće izbor bilo kojim reporterom baze i upisuje izlaz u Output ili fajl (`utplsql.reporter.*`), bez menjanja rezultata u Test Exploreru.
+- 🗂️ **Virtuelni izvor iz baze** — bez lokalnog fajla *jump to failure* i pokrivenost otvaraju dokument samo za čitanje iz `ALL_SOURCE` (`utplsql-source:/…`).
+- 🔐 **TNS u thin + wallet** — `utplsql.connections.tnsAdminPath` razrešava alias-e iz `tnsnames.ora` u thin drajveru (fallback na SQL Developer/`TNS_ADMIN`); `walletLocation` profila i `utPLSQL: Set wallet password` čuvaju lozinku wallet-a u SecretStorage.
+- 🔒 **Jačanje bezbednosti veza** — podešavanja veze su `machine`-scoped, ekstenzija je onemogućena u nepouzdanim radnim prostorima, a lozinka profila je vezana za vezu.
 
 ## Инсталација
 

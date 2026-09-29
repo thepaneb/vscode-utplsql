@@ -34,6 +34,11 @@
 - 🗄️ **資料庫優先探索** — 從 `ut_runner.get_suites_info` 建構樹狀結構，並從命令面板重建註解快取。
 - 🐛 **PL/SQL 除錯** — 透過 `DBMS_DEBUG` 對 utPLSQL 測試進行中斷點與逐步除錯（原生除錯介面卡）。
 - 🌍 **i18n — 24 種語言** — `utplsql.language` 跟隨 VSCode（24 locales：pt-br、en、en-gb、es、zh-cn、zh-tw、ja、de、fr、it、ko、ru、tr、pl、cs、hu、bg、el、id、ro、sr、th、uk、vi）。
+- 🌳 **延遲載入的測試樹** — 在 `schema` 模式下，package/suite/test 於展開時按需解析，因此大型 schema 可即時開啟。
+- 🧾 **Run with Reporter (Export)** — 以任意資料庫 reporter 執行選取範圍，並將輸出寫入 Output 或檔案（`utplsql.reporter.*`），不改變 Test Explorer 中的結果。
+- 🗂️ **虛擬資料庫來源** — 沒有本機檔案時，*jump to failure* 與涵蓋率會開啟從 `ALL_SOURCE` 解析的唯讀文件（`utplsql-source:/…`）。
+- 🔐 **thin 模式下的 TNS + wallet** — `utplsql.connections.tnsAdminPath` 在 thin 驅動中解析 `tnsnames.ora` 別名（回退至 SQL Developer/`TNS_ADMIN`）；設定檔的 `walletLocation` 與 `utPLSQL: Set wallet password` 將 wallet 密碼保存在 SecretStorage。
+- 🔒 **連線安全強化** — 連線設定改為 `machine` 範圍，擴充功能在不受信任的工作區中停用，設定檔密碼與連線綁定。
 
 ## 安裝
 

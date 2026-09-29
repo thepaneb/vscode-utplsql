@@ -34,6 +34,11 @@
 - 🗄️ **DB-first keşif** — ağacı `ut_runner.get_suites_info`'dan oluşturun ve açıklama önbelleğini paletten yeniden oluşturun.
 - 🐛 **PL/SQL Hata Ayıklama** — `DBMS_DEBUG` üzerinden utPLSQL testlerinde kesme noktaları ve adım adım hata ayıklama (doğal Debug Adapter).
 - 🌍 **i18n — 24 dil** — `utplsql.language` VSCode'u takip eder (24 yerel ayar: pt-br, en, en-gb, es, zh-cn, zh-tw, ja, de, fr, it, ko, ru, tr, pl, cs, hu, bg, el, id, ro, sr, th, uk, vi).
+- 🌳 **Tembel test ağacı** — `schema` modunda paketler/suiteler/testler genişletildiğinde isteğe bağlı çözülür; büyük şemalar anında açılır.
+- 🧾 **Run with Reporter (Export)** — seçimi herhangi bir veritabanı reporter’ı ile çalıştırır ve çıktıyı Output’a veya dosyaya yazar (`utplsql.reporter.*`); Test Explorer sonuçlarını değiştirmez.
+- 🗂️ **Sanal veritabanı kaynağı** — yerel dosya yoksa *jump to failure* ve kapsam, `ALL_SOURCE`’dan çözülen salt okunur bir belge açar (`utplsql-source:/…`).
+- 🔐 **Thin’de TNS + wallet** — `utplsql.connections.tnsAdminPath`, thin sürücüde `tnsnames.ora` takma adlarını çözer (SQL Developer/`TNS_ADMIN`’e fallback); profildeki `walletLocation` ve `utPLSQL: Set wallet password` wallet parolasını SecretStorage’da tutar.
+- 🔒 **Bağlantı güvenliği sıkılaştırması** — bağlantı ayarları `machine`-scoped oldu, uzantı güvenilmeyen çalışma alanlarında devre dışı ve profil parolası bağlantıya bağlı.
 
 ## Kurulum
 

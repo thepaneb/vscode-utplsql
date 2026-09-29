@@ -34,6 +34,11 @@
 - 🗄️ **DB 우선 검색** — `ut_runner.get_suites_info`로 트리를 만들고 팔레트에서 주석 캐시를 다시 작성합니다.
 - 🐛 **PL/SQL 디버그** — `DBMS_DEBUG`를 통한 utPLSQL 테스트의 중단점 및 단계 디버깅(네이티브 Debug Adapter).
 - 🌍 **i18n — 24개 언어** — `utplsql.language`가 VSCode를 따릅니다(24개 로케일: pt-br, en, en-gb, es, zh-cn, zh-tw, ja, de, fr, it, ko, ru, tr, pl, cs, hu, bg, el, id, ro, sr, th, uk, vi).
+- 🌳 **지연 로딩 테스트 트리** — `schema` 모드에서 package/suite/test가 펼칠 때 필요에 따라 해석되어 큰 스키마도 즉시 열립니다.
+- 🧾 **Run with Reporter (Export)** — 선택 항목을 임의의 데이터베이스 reporter로 실행하고 출력을 Output 또는 파일에 씁니다(`utplsql.reporter.*`). Test Explorer 결과는 바뀌지 않습니다.
+- 🗂️ **가상 데이터베이스 소스** — 로컬 파일이 없으면 *jump to failure*와 커버리지가 `ALL_SOURCE`에서 해석한 읽기 전용 문서를 엽니다(`utplsql-source:/…`).
+- 🔐 **thin의 TNS + wallet** — `utplsql.connections.tnsAdminPath`가 thin 드라이버에서 `tnsnames.ora` 별칭을 해석합니다(SQL Developer/`TNS_ADMIN` 폴백). 프로필의 `walletLocation`과 `utPLSQL: Set wallet password`가 wallet 비밀번호를 SecretStorage에 보관합니다.
+- 🔒 **연결 보안 강화** — 연결 설정이 `machine`-scoped가 되고, 신뢰할 수 없는 워크스페이스에서는 확장이 비활성화되며, 프로필 비밀번호가 연결에 묶입니다.
 
 ## 설치
 

@@ -34,6 +34,11 @@ Integrează [utPLSQL](https://www.utplsql.org/) în VSCode, aducând testele PL/
 - 🗄️ **Descoperire DB-first** — construiește arborele din `ut_runner.get_suites_info` și reconstruiește cache-ul de adnotări din paletă.
 - 🐛 **Debug PL/SQL** — breakpoint-uri și depanare pas cu pas a testelor utPLSQL prin `DBMS_DEBUG` (Debug Adapter nativ).
 - 🌍 **i18n — 24 de limbi** — `utplsql.language` urmărește VSCode (24 de localizări: pt-br, en, en-gb, es, zh-cn, zh-tw, ja, de, fr, it, ko, ru, tr, pl, cs, hu, bg, el, id, ro, sr, th, uk, vi).
+- 🌳 **Arbore de teste lazy** — în modul `schema`, pachetele/suitele/testele sunt rezolvate la cerere la expandare, așa că schemele mari se deschid instant.
+- 🧾 **Run with Reporter (Export)** — rulează selecția cu orice reporter al bazei și scrie ieșirea în Output sau într-un fișier (`utplsql.reporter.*`), fără a schimba rezultatele din Test Explorer.
+- 🗂️ **Sursă virtuală din baza de date** — fără fișier local, *jump to failure* și acoperirea deschid un document doar-citire rezolvat din `ALL_SOURCE` (`utplsql-source:/…`).
+- 🔐 **TNS în thin + wallet** — `utplsql.connections.tnsAdminPath` rezolvă aliasuri `tnsnames.ora` în driverul thin (fallback la SQL Developer/`TNS_ADMIN`); `walletLocation` din profil și `utPLSQL: Set wallet password` păstrează parola wallet-ului în SecretStorage.
+- 🔒 **Hardening de securitate al conexiunilor** — setările de conexiune sunt `machine`-scoped, extensia este dezactivată în workspace-uri neîncrezute și parola profilului este legată de conexiune.
 
 ## Instalare
 

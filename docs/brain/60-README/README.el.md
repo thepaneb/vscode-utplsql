@@ -43,6 +43,11 @@ tags: [readme]
 - 🗄️ **Ανακάλυψη DB-first** — χτίστε το δέντρο από το `ut_runner.get_suites_info` και ξαναχτίστε την προσωρινή μνήμη σχολίων από την παλέτα.
 - 🐛 **PL/SQL Debug** — breakpoints και βηματική αποσφαλμάτωση utPLSQL tests μέσω `DBMS_DEBUG` (native Debug Adapter).
 - 🌍 **i18n — 24 γλώσσες** — το `utplsql.language` ακολουθεί το VSCode (24 τοπικές ρυθμίσεις: pt-br, en, en-gb, es, zh-cn, zh-tw, ja, de, fr, it, ko, ru, tr, pl, cs, hu, bg, el, id, ro, sr, th, uk, vi).
+- 🌳 **Αργό (lazy) δέντρο δοκιμών** — στη λειτουργία `schema`, τα packages/suites/tests επιλύονται κατά την ανάπτυξη, οπότε τα μεγάλα σχήματα ανοίγουν ακαριαία.
+- 🧾 **Run with Reporter (Export)** — εκτελεί την επιλογή με οποιονδήποτε reporter της βάσης και γράφει την έξοδο στο Output ή σε αρχείο (`utplsql.reporter.*`), χωρίς να αλλάζει τα αποτελέσματα στο Test Explorer.
+- 🗂️ **Εικονική πηγή από τη βάση** — χωρίς τοπικό αρχείο, το *jump to failure* και η κάλυψη ανοίγουν έγγραφο μόνο για ανάγνωση από το `ALL_SOURCE` (`utplsql-source:/…`).
+- 🔐 **TNS σε thin + wallet** — το `utplsql.connections.tnsAdminPath` επιλύει aliases του `tnsnames.ora` στον thin driver (fallback σε SQL Developer/`TNS_ADMIN`); το `walletLocation` του προφίλ και το `utPLSQL: Set wallet password` κρατούν τον κωδικό του wallet στο SecretStorage.
+- 🔒 **Ενίσχυση ασφάλειας συνδέσεων** — οι ρυθμίσεις σύνδεσης είναι `machine`-scoped, η επέκταση απενεργοποιείται σε μη αξιόπιστα workspaces και ο κωδικός του προφίλ συνδέεται με τη σύνδεση.
 
 ## Εγκατάσταση
 

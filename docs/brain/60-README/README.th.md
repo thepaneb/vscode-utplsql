@@ -43,6 +43,11 @@ tags: [readme]
 - 🗄️ **การค้นหาแบบ DB-first** — สร้างทรีจาก `ut_runner.get_suites_info` และสร้างแคชคำอธิบายประกอบใหม่จากพาเลตต์
 - 🐛 **การดีบัก PL/SQL** — breakpoints และการดีบักแบบทีละขั้นของเทสต์ utPLSQL ผ่าน `DBMS_DEBUG` (Debug Adapter เนทีฟ)
 - 🌍 **i18n — 24 ภาษา** — `utplsql.language` เป็นไปตาม VSCode (24 ภาษาท้องถิ่น: pt-br, en, en-gb, es, zh-cn, zh-tw, ja, de, fr, it, ko, ru, tr, pl, cs, hu, bg, el, id, ro, sr, th, uk, vi)
+- 🌳 **ทรีเทสต์แบบ lazy** — ในโหมด `schema` แพ็กเกจ/ชุดเทสต์/เทสต์จะถูกโหลดเมื่อขยาย จึงเปิดสคีมาขนาดใหญ่ได้ทันที
+- 🧾 **Run with Reporter (Export)** — รันส่วนที่เลือกด้วย reporter ใดก็ได้ของฐานข้อมูล และเขียนผลลัพธ์ลง Output หรือไฟล์ (`utplsql.reporter.*`) โดยไม่เปลี่ยนผลใน Test Explorer
+- 🗂️ **แหล่งข้อมูลเสมือนจากฐานข้อมูล** — เมื่อไม่มีไฟล์ในเครื่อง *jump to failure* และ coverage จะเปิดเอกสารแบบอ่านอย่างเดียวจาก `ALL_SOURCE` (`utplsql-source:/…`)
+- 🔐 **TNS ใน thin + wallet** — `utplsql.connections.tnsAdminPath` แปลง alias ของ `tnsnames.ora` ในไดรเวอร์ thin (fallback ไป SQL Developer/`TNS_ADMIN`); `walletLocation` ของโปรไฟล์และ `utPLSQL: Set wallet password` เก็บรหัส wallet ไว้ใน SecretStorage
+- 🔒 **เสริมความปลอดภัยของการเชื่อมต่อ** — การตั้งค่าการเชื่อมต่อเป็น `machine`-scoped ส่วนขยายถูกปิดในเวิร์กสเปซที่ไม่น่าเชื่อถือ และรหัสของโปรไฟล์ผูกกับการเชื่อมต่อ
 
 ## การติดตั้ง
 

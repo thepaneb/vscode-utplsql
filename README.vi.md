@@ -34,6 +34,11 @@ Tích hợp [utPLSQL](https://www.utplsql.org/) vào VSCode, đưa các bài ki�
 - 🗄️ **Khám phá DB-first** — dựng cây từ `ut_runner.get_suites_info` và tạo lại bộ nhớ đệm chú thích từ bảng lệnh.
 - 🐛 **Gỡ lỗi PL/SQL** — breakpoint và gỡ lỗi từng bước các bài kiểm thử utPLSQL qua `DBMS_DEBUG` (Debug Adapter gốc).
 - 🌍 **i18n — 24 ngôn ngữ** — `utplsql.language` theo VSCode (24 locale: pt-br, en, en-gb, es, zh-cn, zh-tw, ja, de, fr, it, ko, ru, tr, pl, cs, hu, bg, el, id, ro, sr, th, uk, vi).
+- 🌳 **Cây kiểm thử lazy** — ở chế độ `schema`, package/suite/test được giải quyết khi mở rộng, nên các schema lớn mở tức thì.
+- 🧾 **Run with Reporter (Export)** — chạy vùng chọn với bất kỳ reporter nào của CSDL và ghi kết quả ra Output hoặc tệp (`utplsql.reporter.*`), không thay đổi kết quả trong Test Explorer.
+- 🗂️ **Nguồn CSDL ảo** — khi không có tệp cục bộ, *jump to failure* và độ phủ mở tài liệu chỉ-đọc lấy từ `ALL_SOURCE` (`utplsql-source:/…`).
+- 🔐 **TNS ở thin + wallet** — `utplsql.connections.tnsAdminPath` phân giải alias `tnsnames.ora` trong driver thin (dự phòng SQL Developer/`TNS_ADMIN`); `walletLocation` của profile và `utPLSQL: Set wallet password` lưu mật khẩu wallet trong SecretStorage.
+- 🔒 **Tăng cường bảo mật kết nối** — các cài đặt kết nối nay là `machine`-scoped, tiện ích bị vô hiệu hóa trong workspace không đáng tin cậy và mật khẩu profile gắn với kết nối.
 
 ## Cài đặt
 

@@ -34,6 +34,11 @@
 - 🗄️ **DB-first откриване** — изграждайте дървото от `ut_runner.get_suites_info` и възстановявайте кеша с анотации от палитрата.
 - 🐛 **PL/SQL Debug** — точки на прекъсване и поетапно дебъгване на utPLSQL тестове чрез `DBMS_DEBUG` (роден Debug Adapter).
 - 🌍 **i18n — 24 езика** — `utplsql.language` следва VSCode (24 локали: pt-br, en, en-gb, es, zh-cn, zh-tw, ja, de, fr, it, ko, ru, tr, pl, cs, hu, bg, el, id, ro, sr, th, uk, vi).
+- 🌳 **Мързеливо дърво на тестовете** — в режим `schema` пакетите/наборите/тестовете се зареждат при разгъване, така че големите схеми се отварят мигновено.
+- 🧾 **Run with Reporter (Export)** — изпълнява селекцията с произволен reporter на базата и записва изхода в Output или във файл (`utplsql.reporter.*`), без да променя резултатите в Test Explorer.
+- 🗂️ **Виртуален източник от базата** — без локален файл *jump to failure* и покритието отварят документ само за четене от `ALL_SOURCE` (`utplsql-source:/…`).
+- 🔐 **TNS в thin + wallet** — `utplsql.connections.tnsAdminPath` разрешава псевдоними от `tnsnames.ora` в thin драйвера (fallback към SQL Developer/`TNS_ADMIN`); `walletLocation` на профила и `utPLSQL: Set wallet password` пазят паролата на wallet в SecretStorage.
+- 🔒 **Затягане на сигурността на връзките** — настройките за връзка са `machine`-scoped, разширението е изключено в ненадеждни работни пространства, а паролата на профила е обвързана с връзката.
 
 ## Инсталация
 
