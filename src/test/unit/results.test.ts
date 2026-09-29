@@ -264,6 +264,14 @@ test('resolveStackFrameToUri: undefined sem cachedItems e sem workspace folders'
   assert.strictEqual(loc, undefined);
 });
 
+test('resolveStackFrameToUri: sem workspace folders e com schema usa o fonte virtual', () => {
+  vscode.workspace.__setWorkspaceFolders(undefined);
+  const state = makeState(new Map(), []);
+  const loc = resolveStackFrameToUri([{ objectName: 'APP.ORDERS.PROC', line: 7 }], state);
+  assert.ok(loc);
+  assert.match(String(loc?.uri), /utplsql-source:\/APP\/ORDERS\.pkb/);
+});
+
 test('applyResultsFromCases: error com stackFrames ganha location', () => {
   const cases: TestCaseResult[] = [
     {

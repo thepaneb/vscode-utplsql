@@ -80,3 +80,12 @@ test('logger: sink defeituoso nunca lança', () => {
     setLogSink(undefined);
   }
 });
+
+test('logger: formatLogLine omite contexto inválido (circular) sem lançar', () => {
+  const circular: Record<string, unknown> = {};
+  circular.self = circular;
+  assert.strictEqual(formatLogLine('msg', circular), 'msg');
+  assert.strictEqual(formatLogLine('msg'), 'msg');
+  assert.strictEqual(formatLogLine('msg', {}), 'msg');
+  assert.match(formatLogLine('msg', { a: 1 }), /"a":1/);
+});

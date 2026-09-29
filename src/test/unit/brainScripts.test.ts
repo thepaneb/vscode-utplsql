@@ -1083,3 +1083,38 @@ test('brain: sync deriva regras: [] para PRD sem regras', () => {
     assert.match(text, /^regras: \[\]$/m);
   });
 });
+
+test('brain: sync preenche o inventário de APIs do VS Code (marcador vscode-api)', () => {
+  withBrainFixture(({ repo, vault }) => {
+    writeFixture(
+      path.join(repo, 'package.json'),
+      JSON.stringify({
+        engines: { vscode: '^1.101.0' },
+        devDependencies: { '@types/vscode': '1.101.0' },
+      }),
+    );
+    writeFixture(
+      path.join(repo, 'src', 'a.ts'),
+      "import * as vscode from 'vscode';\nvscode.window.showInformationMessage;\n",
+    );
+    const note = path.join(vault, 'api.md');
+    writeFixture(
+      note,
+      [
+        '---',
+        'titulo: x',
+        '---',
+        '',
+        '<!-- brain:auto:start:vscode-api -->',
+        '<!-- brain:auto:end -->',
+        '',
+      ].join('\n'),
+    );
+    resetCaches();
+    captureLogs(() => sync());
+    const text = fs.readFileSync(note, 'utf8');
+    assert.match(text, /vscode\.window\.showInformationMessage/);
+    assert.match(text, /engines\.vscode/);
+    assert.match(text, /\^1\.101\.0/);
+  });
+});

@@ -8,6 +8,7 @@ import { __setConfigValue, commands, Range, tests, window, workspace } from '../
 // tocar banco.
 
 let refreshCount = 0;
+const resolveCalls: string[] = [];
 const validateCalls: string[] = [];
 const runWithProgressCalls: unknown[][] = [];
 let cancelCalls = 0;
@@ -36,6 +37,15 @@ mock.module('../../testTree.js', {
       refreshCount += 1;
     },
     collectAllItems: () => [],
+    resolveSchemaNode: async (_c: unknown, _s: unknown, item: { id: string }) => {
+      resolveCalls.push(item.id);
+    },
+    resolvePackageNode: (_c: unknown, _s: unknown, item: { id: string }) => {
+      resolveCalls.push(item.id);
+    },
+    resolveSuiteNode: (_c: unknown, _s: unknown, item: { id: string }) => {
+      resolveCalls.push(item.id);
+    },
   },
 });
 
@@ -90,6 +100,20 @@ test('activate: cria o controller, seta o contexto e registra os comandos', asyn
   await new Promise((resolve) => setTimeout(resolve, 0));
   assert.ok(refreshCount >= 1);
   assert.deepStrictEqual(validateCalls, ['activation', 'install', 'apply']);
+});
+
+test('resolveHandler: resolve por nível (schema/package/suite)', async () => {
+  const controller = tests.__getLastTestController();
+  assert.ok(controller);
+  resolveCalls.length = 0;
+  await controller.resolveHandler?.({ id: 'schema:APP' } as never);
+  await controller.resolveHandler?.({ id: 'package:APP.UT_ORDERS' } as never);
+  await controller.resolveHandler?.({ id: 'suite:APP.UT_ORDERS.UT_ORDERS' } as never);
+  assert.deepStrictEqual(resolveCalls, [
+    'schema:APP',
+    'package:APP.UT_ORDERS',
+    'suite:APP.UT_ORDERS.UT_ORDERS',
+  ]);
 });
 
 test('handlers de ativação: refresh, configuração, editor e watcher', async () => {

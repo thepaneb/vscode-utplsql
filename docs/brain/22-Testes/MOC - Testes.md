@@ -109,5 +109,6 @@ SORT id ASC
 - [[TST - viewCoverageDenied.test.ts]] — `TST-viewCoverageDenied.test.ts`
 - [[TST - viewCoverageE2E.test.ts]] — `TST-viewCoverageE2E.test.ts`
 - [[TST - virtualSource.test.ts]] — `TST-virtualSource.test.ts`
+- [[TST - vscodeApiInventory.test.ts]] — `TST-vscodeApiInventory.test.ts`
 - [[TST - vsixIgnore.test.ts]] — `TST-vsixIgnore.test.ts`
 <!-- brain:auto:end -->

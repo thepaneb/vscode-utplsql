@@ -66,6 +66,19 @@ const {
 } = req('../../../scripts/package-target.cjs') as PackageTargetModule;
 const { buildVsceArgs, main: publishMain } = req('../../../scripts/publish.cjs') as PublishModule;
 
+test('vsce: resolveVsce devolve o script do vsce para spawn sem shell', () => {
+  const { resolveVsce } = req('../../../scripts/vsce.cjs') as {
+    resolveVsce: () => { command: string; argsPrefix: string[] };
+  };
+  const nodeFs = req('node:fs') as typeof import('node:fs');
+  const resolved = resolveVsce();
+  assert.strictEqual(resolved.command, process.execPath);
+  assert.strictEqual(resolved.argsPrefix.length, 1);
+  const binPath = resolved.argsPrefix[0].replace(/\\/g, '/');
+  assert.match(binPath, /@vscode\/vsce\/.*vsce$/);
+  assert.ok(nodeFs.existsSync(resolved.argsPrefix[0]), binPath);
+});
+
 const FILES = [
   'oracledb-7.0.1-darwin-arm64.node',
   'oracledb-7.0.1-linux-arm64.node',

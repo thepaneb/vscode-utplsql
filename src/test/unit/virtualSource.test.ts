@@ -32,6 +32,21 @@ test('parseSourceUri: sem schema e sem extensão cai em .sql', () => {
   });
 });
 
+test('parseSourceUri: path ausente/vazio não lança e cai em defaults', () => {
+  assert.deepStrictEqual(parseSourceUri({ path: undefined, query: '' } as never), {
+    schema: '',
+    object: '',
+    ext: 'sql',
+    line: undefined,
+  });
+  assert.deepStrictEqual(parseSourceUri({ path: '', query: 'line=7' } as never), {
+    schema: '',
+    object: '',
+    ext: 'sql',
+    line: 7,
+  });
+});
+
 test('parseSourceUri: usa uri.query quando separado do path', () => {
   const u = {
     path: '/APP/O.sql',

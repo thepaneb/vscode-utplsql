@@ -79,6 +79,38 @@ async function createPassingPackage(
   await rebuildAnnotations(dbc);
 }
 
+/** Cria um PROCEDURE standalone (objeto fora de package) para o provider virtual. */
+async function createStandaloneProc(
+  dbc: import('oracledb').Connection,
+  name: string,
+): Promise<void> {
+  await dbc
+    .execute(
+      `BEGIN EXECUTE IMMEDIATE 'DROP PROCEDURE ${name}'; EXCEPTION WHEN OTHERS THEN NULL; END;`,
+      {},
+      { autoCommit: true },
+    )
+    .catch(() => {});
+  await dbc.execute(
+    `CREATE OR REPLACE PROCEDURE ${name} AS
+     BEGIN
+       NULL;
+     END ${name};`,
+    {},
+    { autoCommit: true },
+  );
+}
+
+async function dropProcedure(dbc: import('oracledb').Connection, name: string): Promise<void> {
+  await dbc
+    .execute(
+      `BEGIN EXECUTE IMMEDIATE 'DROP PROCEDURE ${name}'; EXCEPTION WHEN OTHERS THEN NULL; END;`,
+      {},
+      { autoCommit: true },
+    )
+    .catch(() => {});
+}
+
 function makeTestRun(output: string[]) {
   return {
     enqueued: () => {},
@@ -216,6 +248,33 @@ describeDB('v0.14.0 — export, fonte virtual e árvore lazy (banco real)', () =
       assert.strictEqual(missing, '', 'objeto inexistente deveria devolver vazio');
     } finally {
       await dropPackage(dbc, VSRC_PKG);
+      await dbc.close().catch(() => {});
+    }
+  });
+
+  it('PRD-80: fonte virtual serve objeto standalone e o scheme legado', async function () {
+    this.timeout(180_000);
+    const dbc = await openRaw();
+    const { fetchDbObjectSource, fetchDbSource } = require('../../dbSourceProvider.js');
+    const user = connParts().user.toUpperCase();
+    const proc = 'UTPLSQL_V014_PROCIT';
+    const legacyPkg = 'UTPLSQL_V014_LEGACYIT';
+    try {
+      await createStandaloneProc(dbc, proc);
+      const src = (await fetchDbObjectSource(
+        vscode.Uri.parse(`utplsql-source:/${user}/${proc}.prc`),
+      )) as string;
+      assert.ok(/PROCEDURE/i.test(src), `esperava PROCEDURE: ${src.slice(0, 120)}`);
+
+      // Scheme legado `utplsql-db:` resolve a spec do package (PRD-74).
+      await createPassingPackage(dbc, legacyPkg, 'v014 legacy IT');
+      const legacy = (await fetchDbSource(
+        vscode.Uri.parse(`utplsql-db:/${user}/${legacyPkg}.pks`),
+      )) as string;
+      assert.ok(/PACKAGE\s/i.test(legacy), `esperava PACKAGE: ${legacy.slice(0, 120)}`);
+    } finally {
+      await dropProcedure(dbc, proc);
+      await dropPackage(dbc, legacyPkg);
       await dbc.close().catch(() => {});
     }
   });
