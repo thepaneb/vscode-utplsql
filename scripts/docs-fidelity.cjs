@@ -233,6 +233,7 @@ function checkFidelity(overrides = {}) {
   //    O docs:check só valida os LINKS entre variantes (não o conteúdo), então
   //    sem isto uma variante pode ficar sem settings por várias versões.
   const variants = overrides.readmeVariants ?? listReadmeVariants();
+  const obsoleteReadmeTerms = ['coverageSourceArgs', 'type_mapping'];
   for (const { name, text } of variants) {
     const missing = settings.filter((k) => !text.includes(k));
     if (missing.length) {
@@ -241,6 +242,12 @@ function checkFidelity(overrides = {}) {
     if (!text.includes('utplsql-source')) {
       problems.push(`README.${name}: sem menção a utplsql-source`);
     }
+    for (const term of obsoleteReadmeTerms) {
+      if (text.includes(term)) problems.push(`README.${name}: termo obsoleto "${term}"`);
+    }
+  }
+  for (const term of obsoleteReadmeTerms) {
+    if (files.readme.includes(term)) problems.push(`README.md: termo obsoleto "${term}"`);
   }
 
   return problems;

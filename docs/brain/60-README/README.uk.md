@@ -297,51 +297,6 @@ UTPLSQL_CONN=your_user/password@//host:1521/service
 
 
 
-Розширення передає `-source_path` (= `utplsql.sourcePath`) і зіставляє покриті об'єкти
-з файлами вихідного коду через `utplsql.coverageSourceArgs` (regex + `type_mapping`). `-owner`
-виводиться з підключення (або з `utplsql.coverageOwner`).
-
-### Відображення покриття на файли (`coverageSourceArgs`)
-
-`type_mapping` перетворює «тип», захоплений регулярним виразом, на тип Oracle. Три поширені домовленості:
-
-**1) За каталогом** — структура `sourcePath/<type>/<name>.sql` (папки `functions/`, `procedures/`, `packages/`, …):
-```jsonc
-"utplsql.coverageSourceArgs": [
-  "-regex_expression=.*[/\\\\](\\w+)[/\\\\](\\w+)\\.sql$",
-  "-type_subexpression=1",   // group 1 = folder (type)
-  "-name_subexpression=2",   // group 2 = file (object name)
-  "-type_mapping=packages=PACKAGE BODY/functions=FUNCTION/procedures=PROCEDURE/triggers=TRIGGER"
-]
-```
-> Працює на будь-якій глибині (`.*` поглинає модулі вище). Різні назви папок
-> (напр. `package`, `pkg`, `pacote`) можна перелічити у `type_mapping`.
-
-**2) За префіксом імені** — домовленість `pkg_*`, `prc_*`, `vw_*` (не залежить від папки):
-```jsonc
-"utplsql.coverageSourceArgs": [
-  "-regex_expression=.*[/\\\\]((pkg|prc|fnc|trg|vw)_\\w+)\\.sql$",
-  "-name_subexpression=1",   // group 1 = full name (e.g. PKG_EXAMPLE)
-  "-type_subexpression=2",   // group 2 = prefix (type)
-  "-type_mapping=pkg=PACKAGE BODY/prc=PROCEDURE/fnc=FUNCTION/trg=TRIGGER/vw=VIEW"
-]
-```
-
-**3) За типізованим розширенням** — файли `*.pkb`, `*.fnc`, `*.prc`, `*.trg` (не залежить від папки):
-```jsonc
-"utplsql.coverageSourceArgs": [
-  "-regex_expression=.*[/\\\\](\\w+)\\.(\\w+)$",
-  "-name_subexpression=1",   // group 1 = name
-  "-type_subexpression=2",   // group 2 = extension (type)
-  "-type_mapping=pkb=PACKAGE BODY/fnc=FUNCTION/prc=PROCEDURE/trg=TRIGGER"
-]
-```
-
-**Важливі зауваження:**
-- **Пакети → `PACKAGE BODY`** (не `PACKAGE`): покриття збирається в **body** пакета.
-- **Windows / метасимволи регулярних виразів:** уникайте **`^`** у регулярних виразах (його споживає `cmd` із `.bat`) — тому в прикладах
-  використовуються `\w` і `[/\\]`.
-
 ## Репортери
 
 Розширення завжди включає **два** репортери за замовчуванням:

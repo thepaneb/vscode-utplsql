@@ -292,49 +292,6 @@ UTPLSQL_CONN=your_user/password@//host:1521/service
 
 
 
-Η επέκταση περνά το `-source_path` (= `utplsql.sourcePath`) και αντιστοιχίζει τα καλυπτόμενα
-αντικείμενα σε αρχεία πηγαίου κώδικα μέσω του `utplsql.coverageSourceArgs` (regex +
-`type_mapping`). Το `-owner` προκύπτει από τη σύνδεση (ή από το `utplsql.coverageOwner`).
-
-### Χαρτογράφηση κάλυψης σε αρχεία (`coverageSourceArgs`)
-
-Το `type_mapping` μεταφράζει τον «τύπο» που συλλαμβάνει το regex στον τύπο Oracle. Τρεις κοινές συμβάσεις:
-
-**1) Ανά κατάλογο** — δομή `sourcePath/<type>/<name>.sql` (φάκελοι `functions/`, `procedures/`, `packages/`, …):
-```jsonc
-"utplsql.coverageSourceArgs": [
-  "-regex_expression=.*[/\\\\](\\w+)[/\\\\](\\w+)\\.sql$",
-  "-type_subexpression=1",   // group 1 = folder (type)
-  "-name_subexpression=2",   // group 2 = file (object name)
-  "-type_mapping=packages=PACKAGE BODY/functions=FUNCTION/procedures=PROCEDURE/triggers=TRIGGER"
-]
-```
-> Λειτουργεί σε οποιοδήποτε βάθος (το `.*` απορροφά τα modules από πάνω). Ποικίλα ονόματα
-> φακέλων (π.χ. `package`, `pkg`, `pacote`) μπορούν να απαριθμηθούν στο `type_mapping`.
-
-**2) Ανά πρόθεμα ονόματος** — σύμβαση `pkg_*`, `prc_*`, `vw_*` (ανεξάρτητα από τον φάκελο):
-```jsonc
-"utplsql.coverageSourceArgs": [
-  "-regex_expression=.*[/\\\\]((pkg|prc|fnc|trg|vw)_\\w+)\\.sql$",
-  "-name_subexpression=1",   // group 1 = full name (e.g. PKG_EXAMPLE)
-  "-type_subexpression=2",   // group 2 = prefix (type)
-  "-type_mapping=pkg=PACKAGE BODY/prc=PROCEDURE/fnc=FUNCTION/trg=TRIGGER/vw=VIEW"
-]
-```
-
-**3) Ανά επέκταση με τύπο** — αρχεία `*.pkb`, `*.fnc`, `*.prc`, `*.trg` (ανεξάρτητα από τον φάκελο):
-```jsonc
-"utplsql.coverageSourceArgs": [
-  "-regex_expression=.*[/\\\\](\\w+)\\.(\\w+)$",
-  "-name_subexpression=1",   // group 1 = name
-  "-type_subexpression=2",   // group 2 = extension (type)
-  "-type_mapping=pkb=PACKAGE BODY/fnc=FUNCTION/prc=PROCEDURE/trg=TRIGGER"
-]
-```
-
-**Σημαντικές σημειώσεις:**
-- **Packages → `PACKAGE BODY`** (όχι `PACKAGE`): η κάλυψη συλλέγεται στο **body** του package.
-
 ## Reporters
 
 Η επέκταση περιλαμβάνει πάντα **δύο** προεπιλεγμένους reporters:

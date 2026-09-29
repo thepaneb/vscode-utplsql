@@ -290,51 +290,6 @@ UTPLSQL_CONN=your_user/password@//host:1521/service
 
 
 
-Екстензија прослеђује `-source_path` (= `utplsql.sourcePath`) и мапира покривене објекте
-на изворне датотеке преко `utplsql.coverageSourceArgs`-а (regex + `type_mapping`). `-owner`
-се изводи из везе (или из `utplsql.coverageOwner`-а).
-
-### Мапирање покривености на датотеке (`coverageSourceArgs`)
-
-`type_mapping` преводи „тип" ухваћен regex-ом у Oracle тип. Три уобичајене конвенције:
-
-**1) По директоријуму** — структура `sourcePath/<type>/<name>.sql` (фасцикле `functions/`, `procedures/`, `packages/`, …):
-```jsonc
-"utplsql.coverageSourceArgs": [
-  "-regex_expression=.*[/\\\\](\\w+)[/\\\\](\\w+)\\.sql$",
-  "-type_subexpression=1",   // group 1 = folder (type)
-  "-name_subexpression=2",   // group 2 = file (object name)
-  "-type_mapping=packages=PACKAGE BODY/functions=FUNCTION/procedures=PROCEDURE/triggers=TRIGGER"
-]
-```
-> Ради на било којој дубини (`.*` апсорбује модуле изнад). Различита имена фасцикли
-> (нпр. `package`, `pkg`, `pacote`) могу се набројати у `type_mapping`-у.
-
-**2) По префиксу имена** — конвенција `pkg_*`, `prc_*`, `vw_*` (независно од фасцикле):
-```jsonc
-"utplsql.coverageSourceArgs": [
-  "-regex_expression=.*[/\\\\]((pkg|prc|fnc|trg|vw)_\\w+)\\.sql$",
-  "-name_subexpression=1",   // group 1 = full name (e.g. PKG_EXAMPLE)
-  "-type_subexpression=2",   // group 2 = prefix (type)
-  "-type_mapping=pkg=PACKAGE BODY/prc=PROCEDURE/fnc=FUNCTION/trg=TRIGGER/vw=VIEW"
-]
-```
-
-**3) По типизираној екстензији** — датотеке `*.pkb`, `*.fnc`, `*.prc`, `*.trg` (независно од фасцикле):
-```jsonc
-"utplsql.coverageSourceArgs": [
-  "-regex_expression=.*[/\\\\](\\w+)\\.(\\w+)$",
-  "-name_subexpression=1",   // group 1 = name
-  "-type_subexpression=2",   // group 2 = extension (type)
-  "-type_mapping=pkb=PACKAGE BODY/fnc=FUNCTION/prc=PROCEDURE/trg=TRIGGER"
-]
-```
-
-**Важне напомене:**
-- **Пакети → `PACKAGE BODY`** (не `PACKAGE`): покривеност се прикупља у **body**-ју пакета.
-- **Windows / regex метакарактери:** избегавајте **`^`** у regex-у (`cmd` у `.bat`-у га троши) — зато примери
-  користе `\w` и `[/\\]`.
-
 ## Репортери
 
 Екстензија увек укључује **два** подразумевана reporter-а:

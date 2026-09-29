@@ -300,49 +300,6 @@ UTPLSQL_CONN=your_user/password@//host:1521/service
 
 
 
-Разширението подава `-source_path` (= `utplsql.sourcePath`) и картографира покритите обекти
-към изходните файлове чрез `utplsql.coverageSourceArgs` (regex + `type_mapping`). `-owner`
-се извежда от връзката (или от `utplsql.coverageOwner`).
-
-### Картографиране на покритието към файлове (`coverageSourceArgs`)
-
-`type_mapping` превежда „типа", уловен от regex, в типа на Oracle. Три често срещани конвенции:
-
-**1) По директория** — структура `sourcePath/<type>/<name>.sql` (папки `functions/`, `procedures/`, `packages/`, …):
-```jsonc
-"utplsql.coverageSourceArgs": [
-  "-regex_expression=.*[/\\\\](\\w+)[/\\\\](\\w+)\\.sql$",
-  "-type_subexpression=1",   // group 1 = folder (type)
-  "-name_subexpression=2",   // group 2 = file (object name)
-  "-type_mapping=packages=PACKAGE BODY/functions=FUNCTION/procedures=PROCEDURE/triggers=TRIGGER"
-]
-```
-> Работи на всякаква дълбочина (`.*` поглъща модулите отгоре). Различните имена на папки
-> (напр. `package`, `pkg`, `pacote`) могат да бъдат изброени в `type_mapping`.
-
-**2) По префикс на името** — конвенция `pkg_*`, `prc_*`, `vw_*` (независимо от папката):
-```jsonc
-"utplsql.coverageSourceArgs": [
-  "-regex_expression=.*[/\\\\]((pkg|prc|fnc|trg|vw)_\\w+)\\.sql$",
-  "-name_subexpression=1",   // group 1 = full name (e.g. PKG_EXAMPLE)
-  "-type_subexpression=2",   // group 2 = prefix (type)
-  "-type_mapping=pkg=PACKAGE BODY/prc=PROCEDURE/fnc=FUNCTION/trg=TRIGGER/vw=VIEW"
-]
-```
-
-**3) По типизирано разширение** — файлове `*.pkb`, `*.fnc`, `*.prc`, `*.trg` (независимо от папката):
-```jsonc
-"utplsql.coverageSourceArgs": [
-  "-regex_expression=.*[/\\\\](\\w+)\\.(\\w+)$",
-  "-name_subexpression=1",   // group 1 = name
-  "-type_subexpression=2",   // group 2 = extension (type)
-  "-type_mapping=pkb=PACKAGE BODY/fnc=FUNCTION/prc=PROCEDURE/trg=TRIGGER"
-]
-```
-
-**Важни бележки:**
-- **Пакети → `PACKAGE BODY`** (не `PACKAGE`): покритието се събира в **тялото** на пакета.
-
 ## Reporters
 
 Разширението винаги включва **два** reporters по подразбиране:

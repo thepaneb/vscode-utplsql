@@ -290,51 +290,6 @@ All shortcuts use the `Ctrl+Shift+U` prefix (`Cmd+Shift+U` on Mac):
 
 
 
-The extension passes `-source_path` (= `utplsql.sourcePath`) and maps the covered objects
-to source files via `utplsql.coverageSourceArgs` (regex + `type_mapping`). The `-owner`
-is derived from the connection (or from `utplsql.coverageOwner`).
-
-### Mapping coverage to files (`coverageSourceArgs`)
-
-The `type_mapping` translates the "type" captured by the regex into the Oracle type. Three common conventions:
-
-**1) By directory** — structure `sourcePath/<type>/<name>.sql` (folders `functions/`, `procedures/`, `packages/`, …):
-```jsonc
-"utplsql.coverageSourceArgs": [
-  "-regex_expression=.*[/\\\\](\\w+)[/\\\\](\\w+)\\.sql$",
-  "-type_subexpression=1",   // group 1 = folder (type)
-  "-name_subexpression=2",   // group 2 = file (object name)
-  "-type_mapping=packages=PACKAGE BODY/functions=FUNCTION/procedures=PROCEDURE/triggers=TRIGGER"
-]
-```
-> Works at any depth (the `.*` absorbs the modules above). Varied folder names
-> (e.g. `package`, `pkg`, `pacote`) can be enumerated in the `type_mapping`.
-
-**2) By name prefix** — convention `pkg_*`, `prc_*`, `vw_*` (independent of the folder):
-```jsonc
-"utplsql.coverageSourceArgs": [
-  "-regex_expression=.*[/\\\\]((pkg|prc|fnc|trg|vw)_\\w+)\\.sql$",
-  "-name_subexpression=1",   // group 1 = full name (e.g. PKG_EXAMPLE)
-  "-type_subexpression=2",   // group 2 = prefix (type)
-  "-type_mapping=pkg=PACKAGE BODY/prc=PROCEDURE/fnc=FUNCTION/trg=TRIGGER/vw=VIEW"
-]
-```
-
-**3) By typed extension** — files `*.pkb`, `*.fnc`, `*.prc`, `*.trg` (independent of the folder):
-```jsonc
-"utplsql.coverageSourceArgs": [
-  "-regex_expression=.*[/\\\\](\\w+)\\.(\\w+)$",
-  "-name_subexpression=1",   // group 1 = name
-  "-type_subexpression=2",   // group 2 = extension (type)
-  "-type_mapping=pkb=PACKAGE BODY/fnc=FUNCTION/prc=PROCEDURE/trg=TRIGGER"
-]
-```
-
-**Important notes:**
-- **Packages → `PACKAGE BODY`** (not `PACKAGE`): coverage is collected in the package **body**.
-- **Windows / regex metacharacters:** avoid **`^`** in the regex (the `.bat`'s `cmd` consumes it) — that's why the examples
-  use `\w` and `[/\\]`.
-
 ## Reporters
 
 The extension always includes **two** default reporters:

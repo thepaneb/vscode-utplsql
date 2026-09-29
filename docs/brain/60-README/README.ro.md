@@ -300,49 +300,6 @@ Toate combinațiile folosesc prefixul `Ctrl+Shift+U` (`Cmd+Shift+U` pe Mac):
 
 
 
-Extensia trimite `-source_path` (= `utplsql.sourcePath`) și mapează obiectele acoperite
-pe fișierele sursă prin `utplsql.coverageSourceArgs` (regex + `type_mapping`). `-owner`
-este derivat din conexiune (sau din `utplsql.coverageOwner`).
-
-### Maparea acoperirii pe fișiere (`coverageSourceArgs`)
-
-`type_mapping` traduce „tipul" capturat de regex în tipul Oracle. Trei convenții comune:
-
-**1) După director** — structura `sourcePath/<type>/<name>.sql` (foldere `functions/`, `procedures/`, `packages/`, …):
-```jsonc
-"utplsql.coverageSourceArgs": [
-  "-regex_expression=.*[/\\\\](\\w+)[/\\\\](\\w+)\\.sql$",
-  "-type_subexpression=1",   // group 1 = folder (type)
-  "-name_subexpression=2",   // group 2 = file (object name)
-  "-type_mapping=packages=PACKAGE BODY/functions=FUNCTION/procedures=PROCEDURE/triggers=TRIGGER"
-]
-```
-> Funcționează la orice adâncime (`.*` absoarbe modulele de deasupra). Nume variate
-> de foldere (ex.: `package`, `pkg`, `pacote`) pot fi enumerate în `type_mapping`.
-
-**2) După prefixul numelui** — convenția `pkg_*`, `prc_*`, `vw_*` (independent de folder):
-```jsonc
-"utplsql.coverageSourceArgs": [
-  "-regex_expression=.*[/\\\\]((pkg|prc|fnc|trg|vw)_\\w+)\\.sql$",
-  "-name_subexpression=1",   // group 1 = full name (e.g. PKG_EXAMPLE)
-  "-type_subexpression=2",   // group 2 = prefix (type)
-  "-type_mapping=pkg=PACKAGE BODY/prc=PROCEDURE/fnc=FUNCTION/trg=TRIGGER/vw=VIEW"
-]
-```
-
-**3) După extensia tipată** — fișiere `*.pkb`, `*.fnc`, `*.prc`, `*.trg` (independent de folder):
-```jsonc
-"utplsql.coverageSourceArgs": [
-  "-regex_expression=.*[/\\\\](\\w+)\\.(\\w+)$",
-  "-name_subexpression=1",   // group 1 = name
-  "-type_subexpression=2",   // group 2 = extension (type)
-  "-type_mapping=pkb=PACKAGE BODY/fnc=FUNCTION/prc=PROCEDURE/trg=TRIGGER"
-]
-```
-
-**Note importante:**
-- **Pachete → `PACKAGE BODY`** (nu `PACKAGE`): acoperirea este colectată în **body**-ul pachetului.
-
 ## Reporteri
 
 Extensia include întotdeauna **doi** reporteri implicați:

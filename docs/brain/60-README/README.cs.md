@@ -301,49 +301,6 @@ Všechny zkratky používají předponu `Ctrl+Shift+U` (`Cmd+Shift+U` na Macu):
 
 
 
-Rozšíření předává `-source_path` (= `utplsql.sourcePath`) a mapuje pokryté objekty
-na zdrojové soubory přes `utplsql.coverageSourceArgs` (regex + `type_mapping`). `-owner`
-je odvozen z připojení (nebo z `utplsql.coverageOwner`).
-
-### Mapování pokrytí na soubory (`coverageSourceArgs`)
-
-`type_mapping` překládá „typ" zachycený regexem na typ Oracle. Tři běžné konvence:
-
-**1) Podle adresáře** — struktura `sourcePath/<typ>/<název>.sql` (složky `functions/`, `procedures/`, `packages/`, …):
-```jsonc
-"utplsql.coverageSourceArgs": [
-  "-regex_expression=.*[/\\\\](\\w+)[/\\\\](\\w+)\\.sql$",
-  "-type_subexpression=1",   // group 1 = folder (type)
-  "-name_subexpression=2",   // group 2 = file (object name)
-  "-type_mapping=packages=PACKAGE BODY/functions=FUNCTION/procedures=PROCEDURE/triggers=TRIGGER"
-]
-```
-> Funguje v jakékoli hloubce (`.*` absorbuje moduly nad tím). Různé názvy složek
-> (např. `package`, `pkg`, `pacote`) lze vyjmenovat v `type_mapping`.
-
-**2) Podle předpony názvu** — konvence `pkg_*`, `prc_*`, `vw_*` (nezávisle na složce):
-```jsonc
-"utplsql.coverageSourceArgs": [
-  "-regex_expression=.*[/\\\\]((pkg|prc|fnc|trg|vw)_\\w+)\\.sql$",
-  "-name_subexpression=1",   // group 1 = full name (e.g. PKG_EXAMPLE)
-  "-type_subexpression=2",   // group 2 = prefix (type)
-  "-type_mapping=pkg=PACKAGE BODY/prc=PROCEDURE/fnc=FUNCTION/trg=TRIGGER/vw=VIEW"
-]
-```
-
-**3) Podle typové přípony** — soubory `*.pkb`, `*.fnc`, `*.prc`, `*.trg` (nezávisle na složce):
-```jsonc
-"utplsql.coverageSourceArgs": [
-  "-regex_expression=.*[/\\\\](\\w+)\\.(\\w+)$",
-  "-name_subexpression=1",   // group 1 = name
-  "-type_subexpression=2",   // group 2 = extension (type)
-  "-type_mapping=pkb=PACKAGE BODY/fnc=FUNCTION/prc=PROCEDURE/trg=TRIGGER"
-]
-```
-
-**Důležité poznámky:**
-- **Balíčky → `PACKAGE BODY`** (ne `PACKAGE`): pokrytí se sbírá v **těle** balíčku.
-
 ## Reportéry
 
 Rozšíření vždy zahrnuje **dva** výchozí reportéry:

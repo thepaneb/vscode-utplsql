@@ -291,49 +291,6 @@ Minden parancsikon a `Ctrl+Shift+U` előtagot használja (`Cmd+Shift+U` Macen):
 
 
 
-A bővítmény átadja a `-source_path` értéket (= `utplsql.sourcePath`), és a lefedett objektumokat
-a `utplsql.coverageSourceArgs` segítségével rendeli a forrásfájlokhoz (regex + `type_mapping`). A `-owner`
-a kapcsolatból származik (vagy a `utplsql.coverageOwner`-ból).
-
-### A lefedettség fájlokhoz rendelése (`coverageSourceArgs`)
-
-A `type_mapping` a regex által kinyert „típust" Oracle-típussá alakítja. Három gyakori konvenció:
-
-**1) Könyvtár szerint** — `sourcePath/<type>/<name>.sql` szerkezet (`functions/`, `procedures/`, `packages/`, … mappák):
-```jsonc
-"utplsql.coverageSourceArgs": [
-  "-regex_expression=.*[/\\\\](\\w+)[/\\\\](\\w+)\\.sql$",
-  "-type_subexpression=1",   // group 1 = folder (type)
-  "-name_subexpression=2",   // group 2 = file (object name)
-  "-type_mapping=packages=PACKAGE BODY/functions=FUNCTION/procedures=PROCEDURE/triggers=TRIGGER"
-]
-```
-> Bármilyen mélységben működik (a `.*` magába szívja a fölötte lévő modulokat). A változatos
-> mappanevek (pl. `package`, `pkg`, `pacote`) felsorolhatók a `type_mapping`-ben.
-
-**2) Név-előtag szerint** — `pkg_*`, `prc_*`, `vw_*` konvenció (mappától független):
-```jsonc
-"utplsql.coverageSourceArgs": [
-  "-regex_expression=.*[/\\\\]((pkg|prc|fnc|trg|vw)_\\w+)\\.sql$",
-  "-name_subexpression=1",   // group 1 = full name (e.g. PKG_EXAMPLE)
-  "-type_subexpression=2",   // group 2 = prefix (type)
-  "-type_mapping=pkg=PACKAGE BODY/prc=PROCEDURE/fnc=FUNCTION/trg=TRIGGER/vw=VIEW"
-]
-```
-
-**3) Típusos kiterjesztés szerint** — `*.pkb`, `*.fnc`, `*.prc`, `*.trg` fájlok (mappától független):
-```jsonc
-"utplsql.coverageSourceArgs": [
-  "-regex_expression=.*[/\\\\](\\w+)\\.(\\w+)$",
-  "-name_subexpression=1",   // group 1 = name
-  "-type_subexpression=2",   // group 2 = extension (type)
-  "-type_mapping=pkb=PACKAGE BODY/fnc=FUNCTION/prc=PROCEDURE/trg=TRIGGER"
-]
-```
-
-**Fontos megjegyzések:**
-- **Csomagok → `PACKAGE BODY`** (nem `PACKAGE`): a lefedettség a csomag **törzsében** gyűlik össze.
-
 ## Riporterek
 
 A bővítmény mindig **két** alapértelmezett riportert tartalmaz:

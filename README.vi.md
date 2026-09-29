@@ -290,51 +290,6 @@ Tất cả các phím tắt dùng tiền tố `Ctrl+Shift+U` (`Cmd+Shift+U` trê
 
 
 
-Extension truyền `-source_path` (= `utplsql.sourcePath`) và ánh xạ các đối tượng được phủ
-tới các tệp nguồn qua `utplsql.coverageSourceArgs` (regex + `type_mapping`). `-owner`
-được suy ra từ kết nối (hoặc từ `utplsql.coverageOwner`).
-
-### Ánh xạ độ phủ tới các tệp (`coverageSourceArgs`)
-
-`type_mapping` dịch "loại" mà regex bắt được thành loại Oracle. Ba quy ước phổ biến:
-
-**1) Theo thư mục** — cấu trúc `sourcePath/<type>/<name>.sql` (các thư mục `functions/`, `procedures/`, `packages/`, …):
-```jsonc
-"utplsql.coverageSourceArgs": [
-  "-regex_expression=.*[/\\\\](\\w+)[/\\\\](\\w+)\\.sql$",
-  "-type_subexpression=1",   // group 1 = folder (type)
-  "-name_subexpression=2",   // group 2 = file (object name)
-  "-type_mapping=packages=PACKAGE BODY/functions=FUNCTION/procedures=PROCEDURE/triggers=TRIGGER"
-]
-```
-> Hoạt động ở mọi độ sâu (`.*` hấp thụ các module phía trên). Các tên thư mục đa dạng
-> (ví dụ `package`, `pkg`, `pacote`) có thể được liệt kê trong `type_mapping`.
-
-**2) Theo tiền tố tên** — quy ước `pkg_*`, `prc_*`, `vw_*` (không phụ thuộc vào thư mục):
-```jsonc
-"utplsql.coverageSourceArgs": [
-  "-regex_expression=.*[/\\\\]((pkg|prc|fnc|trg|vw)_\\w+)\\.sql$",
-  "-name_subexpression=1",   // group 1 = full name (e.g. PKG_EXAMPLE)
-  "-type_subexpression=2",   // group 2 = prefix (type)
-  "-type_mapping=pkg=PACKAGE BODY/prc=PROCEDURE/fnc=FUNCTION/trg=TRIGGER/vw=VIEW"
-]
-```
-
-**3) Theo phần mở rộng được đánh loại** — các tệp `*.pkb`, `*.fnc`, `*.prc`, `*.trg` (không phụ thuộc vào thư mục):
-```jsonc
-"utplsql.coverageSourceArgs": [
-  "-regex_expression=.*[/\\\\](\\w+)\\.(\\w+)$",
-  "-name_subexpression=1",   // group 1 = name
-  "-type_subexpression=2",   // group 2 = extension (type)
-  "-type_mapping=pkb=PACKAGE BODY/fnc=FUNCTION/prc=PROCEDURE/trg=TRIGGER"
-]
-```
-
-**Các lưu ý quan trọng:**
-- **Packages → `PACKAGE BODY`** (không phải `PACKAGE`): độ phủ được thu thập trong **body** của package.
-- **Windows / metacharacter của regex:** tránh **`^`** trong regex (`cmd` của `.bat` tiêu thụ nó) — đó là lý do các ví dụ
-  dùng `\w` và `[/\\]`.
-
 ## Bộ báo cáo (Reporters)
 
 Extension luôn kèm **hai** reporter mặc định:

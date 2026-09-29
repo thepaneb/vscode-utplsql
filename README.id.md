@@ -291,49 +291,6 @@ Semua pintasan memakai prefiks `Ctrl+Shift+U` (`Cmd+Shift+U` di Mac):
 
 
 
-Ekstensi mengirimkan `-source_path` (= `utplsql.sourcePath`) dan memetakan objek yang tercakup
-ke file sumber melalui `utplsql.coverageSourceArgs` (regex + `type_mapping`). Nilai `-owner`
-diturunkan dari koneksi (atau dari `utplsql.coverageOwner`).
-
-### Memetakan coverage ke file (`coverageSourceArgs`)
-
-`type_mapping` menerjemahkan "tipe" yang ditangkap oleh regex menjadi tipe Oracle. Tiga konvensi umum:
-
-**1) Berdasarkan direktori** — struktur `sourcePath/<type>/<name>.sql` (folder `functions/`, `procedures/`, `packages/`, …):
-```jsonc
-"utplsql.coverageSourceArgs": [
-  "-regex_expression=.*[/\\\\](\\w+)[/\\\\](\\w+)\\.sql$",
-  "-type_subexpression=1",   // group 1 = folder (type)
-  "-name_subexpression=2",   // group 2 = file (object name)
-  "-type_mapping=packages=PACKAGE BODY/functions=FUNCTION/procedures=PROCEDURE/triggers=TRIGGER"
-]
-```
-> Berfungsi di kedalaman berapa pun (`.*` menyerap modul di atasnya). Nama folder yang
-> bervariasi (mis. `package`, `pkg`, `pacote`) dapat didaftarkan di `type_mapping`.
-
-**2) Berdasarkan prefiks nama** — konvensi `pkg_*`, `prc_*`, `vw_*` (tidak bergantung pada folder):
-```jsonc
-"utplsql.coverageSourceArgs": [
-  "-regex_expression=.*[/\\\\]((pkg|prc|fnc|trg|vw)_\\w+)\\.sql$",
-  "-name_subexpression=1",   // group 1 = full name (e.g. PKG_EXAMPLE)
-  "-type_subexpression=2",   // group 2 = prefix (type)
-  "-type_mapping=pkg=PACKAGE BODY/prc=PROCEDURE/fnc=FUNCTION/trg=TRIGGER/vw=VIEW"
-]
-```
-
-**3) Berdasarkan ekstensi file** — file `*.pkb`, `*.fnc`, `*.prc`, `*.trg` (tidak bergantung pada folder):
-```jsonc
-"utplsql.coverageSourceArgs": [
-  "-regex_expression=.*[/\\\\](\\w+)\\.(\\w+)$",
-  "-name_subexpression=1",   // group 1 = name
-  "-type_subexpression=2",   // group 2 = extension (type)
-  "-type_mapping=pkb=PACKAGE BODY/fnc=FUNCTION/prc=PROCEDURE/trg=TRIGGER"
-]
-```
-
-**Catatan penting:**
-- **Package → `PACKAGE BODY`** (bukan `PACKAGE`): coverage dikumpulkan di **body** package.
-
 ## Reporter
 
 Ekstensi selalu menyertakan **dua** reporter default:

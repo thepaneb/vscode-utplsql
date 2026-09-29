@@ -290,51 +290,6 @@ Annotation ไม่คำนึงถึงตัวพิมพ์เล็ก
 
 
 
-ส่วนขยายส่ง `-source_path` (= `utplsql.sourcePath`) และจับคู่อ็อบเจกต์ที่ครอบคลุม
-กับไฟล์ต้นฉบับผ่าน `utplsql.coverageSourceArgs` (regex + `type_mapping`) ส่วน `-owner`
-อนุมานจากการเชื่อมต่อ (หรือจาก `utplsql.coverageOwner`)
-
-### การจับคู่ความครอบคลุมกับไฟล์ (`coverageSourceArgs`)
-
-`type_mapping` แปลง "type" ที่ regex จับได้เป็น type ของ Oracle มีสามรูปแบบทั่วไป:
-
-**1) ตามไดเรกทอรี** — โครงสร้าง `sourcePath/<type>/<name>.sql` (โฟลเดอร์ `functions/`, `procedures/`, `packages/`, …):
-```jsonc
-"utplsql.coverageSourceArgs": [
-  "-regex_expression=.*[/\\\\](\\w+)[/\\\\](\\w+)\\.sql$",
-  "-type_subexpression=1",   // group 1 = folder (type)
-  "-name_subexpression=2",   // group 2 = file (object name)
-  "-type_mapping=packages=PACKAGE BODY/functions=FUNCTION/procedures=PROCEDURE/triggers=TRIGGER"
-]
-```
-> ใช้ได้ที่ความลึกใดก็ได้ (`.*` ดูดซับโมดูลด้านบน) ชื่อโฟลเดอร์ที่หลากหลาย
-> (เช่น `package`, `pkg`, `pacote`) สามารถระบุได้ใน `type_mapping`
-
-**2) ตามคำนำหน้าชื่อ** — รูปแบบ `pkg_*`, `prc_*`, `vw_*` (ไม่ขึ้นกับโฟลเดอร์):
-```jsonc
-"utplsql.coverageSourceArgs": [
-  "-regex_expression=.*[/\\\\]((pkg|prc|fnc|trg|vw)_\\w+)\\.sql$",
-  "-name_subexpression=1",   // group 1 = full name (e.g. PKG_EXAMPLE)
-  "-type_subexpression=2",   // group 2 = prefix (type)
-  "-type_mapping=pkg=PACKAGE BODY/prc=PROCEDURE/fnc=FUNCTION/trg=TRIGGER/vw=VIEW"
-]
-```
-
-**3) ตามนามสกุลที่ระบุ type** — ไฟล์ `*.pkb`, `*.fnc`, `*.prc`, `*.trg` (ไม่ขึ้นกับโฟลเดอร์):
-```jsonc
-"utplsql.coverageSourceArgs": [
-  "-regex_expression=.*[/\\\\](\\w+)\\.(\\w+)$",
-  "-name_subexpression=1",   // group 1 = name
-  "-type_subexpression=2",   // group 2 = extension (type)
-  "-type_mapping=pkb=PACKAGE BODY/fnc=FUNCTION/prc=PROCEDURE/trg=TRIGGER"
-]
-```
-
-**หมายเหตุสำคัญ:**
-- **Packages → `PACKAGE BODY`** (ไม่ใช่ `PACKAGE`): ความครอบคลุมจะถูกเก็บใน **body** ของแพ็กเกจ
-- **Windows / อักขระพิเศษใน regex:** หลีกเลี่ยง **`^`** ใน regex (`cmd` ของ `.bat` กินมัน) — นั่นคือเหตุผลที่ตัวอย่าง
-  ใช้ `\w` และ `[/\\]`
-
 ## Reporters
 
 ส่วนขยายรวม reporters เริ่มต้น **สอง** ตัวเสมอ:

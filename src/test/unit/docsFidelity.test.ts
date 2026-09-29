@@ -52,6 +52,18 @@ test('docs-fidelity: detecta setting ausente numa variante de README', () => {
   );
 });
 
+test('docs-fidelity: detecta termo obsoleto numa variante de README', () => {
+  const problems = checkFidelity({
+    settings: [],
+    readme: 'ok',
+    readmeVariants: [{ name: 'zz-ZZ', text: 'usa utplsql-source e coverageSourceArgs aqui' }],
+  });
+  assert.ok(
+    problems.some((p) => p.includes('zz-ZZ') && p.includes('coverageSourceArgs')),
+    `esperava termo obsoleto: ${problems.join(' | ')}`,
+  );
+});
+
 test('docs-fidelity: detecta comando de paleta ausente na wiki', () => {
   const problems = checkFidelity({
     commandTitles: [{ id: 'utplsql.comandoX', title: 'Fazer algo muito especifico' }],
