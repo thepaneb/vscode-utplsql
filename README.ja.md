@@ -39,6 +39,9 @@
 - 🗂️ **仮想データベースソース** — ローカルファイルがない場合、*jump to failure* とカバレッジは `ALL_SOURCE` から解決した読み取り専用ドキュメントを開きます（`utplsql-source:/…`）。
 - 🔐 **thin の TNS + wallet** — `utplsql.connections.tnsAdminPath` が thin ドライバで `tnsnames.ora` の別名を解決します（SQL Developer/`TNS_ADMIN` にフォールバック）。プロファイルの `walletLocation` と `utPLSQL: Set wallet password` が wallet のパスワードを SecretStorage に保存します。
 - 🔒 **接続のセキュリティ強化** — 接続設定は `machine`-scoped になり、信頼されていないワークスペースでは拡張機能が無効化され、プロファイルのパスワードは接続に紐づきます。
+- 🧱 **コンパイル診断** — 実行のたびに PL/SQL のコンパイルエラー（`ALL_ERRORS`）が Problems Panel に source `utPLSQL Compilation` で表示されます（設定 `utplsql.compilationDiagnostics.enabled`）。
+- ⏳ **進捗とキャンセル** — 長時間の実行ではカウント付きの進捗通知と *Cancel* ボタンを表示します（任意で `utplsql.timeoutMinutes`）。
+- 📁 **マルチルート ワークスペース** — 各ワークスペース フォルダーが独自のスイートを持ち、検出・実行・カバレッジが独立します。
 
 ## インストール
 

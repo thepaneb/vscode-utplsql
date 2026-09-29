@@ -48,6 +48,9 @@ tags: [readme]
 - 🗂️ **虚拟数据库源** — 没有本地文件时，*jump to failure* 和覆盖率会打开从 `ALL_SOURCE` 解析的只读文档（`utplsql-source:/…`）。
 - 🔐 **thin 模式下的 TNS + wallet** — `utplsql.connections.tnsAdminPath` 在 thin 驱动中解析 `tnsnames.ora` 别名（回退到 SQL Developer/`TNS_ADMIN`）；配置文件的 `walletLocation` 与 `utPLSQL: Set wallet password` 将 wallet 密码保存在 SecretStorage。
 - 🔒 **连接安全加固** — 连接设置改为 `machine` 作用域，扩展在不受信任的工作区中被禁用，配置文件的密码与连接绑定。
+- 🧱 **编译诊断** — 每次运行后，PL/SQL 编译错误（`ALL_ERRORS`）会以 source `utPLSQL Compilation` 显示在 Problems Panel 中（设置 `utplsql.compilationDiagnostics.enabled`）。
+- ⏳ **进度与取消** — 长时间运行会显示带计数的进度通知和 *Cancel* 按钮（以及可选的 `utplsql.timeoutMinutes`）。
+- 📁 **多根工作区** — 每个工作区文件夹拥有自己的测试套件，发现、执行与覆盖率相互独立。
 
 ## 安装
 

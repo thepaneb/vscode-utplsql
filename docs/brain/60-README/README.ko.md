@@ -48,6 +48,9 @@ tags: [readme]
 - 🗂️ **가상 데이터베이스 소스** — 로컬 파일이 없으면 *jump to failure*와 커버리지가 `ALL_SOURCE`에서 해석한 읽기 전용 문서를 엽니다(`utplsql-source:/…`).
 - 🔐 **thin의 TNS + wallet** — `utplsql.connections.tnsAdminPath`가 thin 드라이버에서 `tnsnames.ora` 별칭을 해석합니다(SQL Developer/`TNS_ADMIN` 폴백). 프로필의 `walletLocation`과 `utPLSQL: Set wallet password`가 wallet 비밀번호를 SecretStorage에 보관합니다.
 - 🔒 **연결 보안 강화** — 연결 설정이 `machine`-scoped가 되고, 신뢰할 수 없는 워크스페이스에서는 확장이 비활성화되며, 프로필 비밀번호가 연결에 묶입니다.
+- 🧱 **컴파일 진단** — 실행할 때마다 PL/SQL 컴파일 오류(`ALL_ERRORS`)가 Problems Panel에 source `utPLSQL Compilation`로 표시됩니다(설정 `utplsql.compilationDiagnostics.enabled`).
+- ⏳ **진행률 및 취소** — 긴 실행은 카운트가 있는 진행 알림과 *Cancel* 버튼을 표시합니다(선택적 `utplsql.timeoutMinutes` 포함).
+- 📁 **멀티 루트 워크스페이스** — 각 워크스페이스 폴더가 자체 suite를 가지며, 검색·실행·커버리지가 독립적입니다.
 
 ## 설치
 

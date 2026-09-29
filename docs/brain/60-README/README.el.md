@@ -48,6 +48,9 @@ tags: [readme]
 - 🗂️ **Εικονική πηγή από τη βάση** — χωρίς τοπικό αρχείο, το *jump to failure* και η κάλυψη ανοίγουν έγγραφο μόνο για ανάγνωση από το `ALL_SOURCE` (`utplsql-source:/…`).
 - 🔐 **TNS σε thin + wallet** — το `utplsql.connections.tnsAdminPath` επιλύει aliases του `tnsnames.ora` στον thin driver (fallback σε SQL Developer/`TNS_ADMIN`); το `walletLocation` του προφίλ και το `utPLSQL: Set wallet password` κρατούν τον κωδικό του wallet στο SecretStorage.
 - 🔒 **Ενίσχυση ασφάλειας συνδέσεων** — οι ρυθμίσεις σύνδεσης είναι `machine`-scoped, η επέκταση απενεργοποιείται σε μη αξιόπιστα workspaces και ο κωδικός του προφίλ συνδέεται με τη σύνδεση.
+- 🧱 **Διαγνωστικά μεταγλώττισης** — μετά από κάθε εκτέλεση, τα σφάλματα μεταγλώττισης PL/SQL (`ALL_ERRORS`) εμφανίζονται στο Problems Panel με source `utPLSQL Compilation` (ρύθμιση `utplsql.compilationDiagnostics.enabled`).
+- ⏳ **Πρόοδος και ακύρωση** — οι μεγάλες εκτελέσεις εμφανίζουν ειδοποίηση προόδου με μετρητή και κουμπί *Cancel* (και προαιρετικό `utplsql.timeoutMinutes`).
+- 📁 **Χώρος εργασίας πολλαπλών ριζών** — κάθε φάκελος του workspace έχει τα δικά του suites, με ανεξάρτητη ανακάλυψη, εκτέλεση και κάλυψη.
 
 ## Εγκατάσταση
 

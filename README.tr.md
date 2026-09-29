@@ -39,6 +39,9 @@
 - 🗂️ **Sanal veritabanı kaynağı** — yerel dosya yoksa *jump to failure* ve kapsam, `ALL_SOURCE`’dan çözülen salt okunur bir belge açar (`utplsql-source:/…`).
 - 🔐 **Thin’de TNS + wallet** — `utplsql.connections.tnsAdminPath`, thin sürücüde `tnsnames.ora` takma adlarını çözer (SQL Developer/`TNS_ADMIN`’e fallback); profildeki `walletLocation` ve `utPLSQL: Set wallet password` wallet parolasını SecretStorage’da tutar.
 - 🔒 **Bağlantı güvenliği sıkılaştırması** — bağlantı ayarları `machine`-scoped oldu, uzantı güvenilmeyen çalışma alanlarında devre dışı ve profil parolası bağlantıya bağlı.
+- 🧱 **Derleme tanılamaları** — her çalıştırmadan sonra PL/SQL derleme hataları (`ALL_ERRORS`) `utPLSQL Compilation` kaynağı altında Problems Panel’de görünür (`utplsql.compilationDiagnostics.enabled` ayarı).
+- ⏳ **İlerleme ve iptal** — uzun çalıştırmalar sayaçlı bir ilerleme bildirimi ve *Cancel* düğmesi gösterir (ayrıca isteğe bağlı `utplsql.timeoutMinutes`).
+- 📁 **Çok köklü çalışma alanı** — her çalışma alanı klasörü kendi suitelerine sahiptir; keşif, çalıştırma ve kapsam bağımsızdır.
 
 ## Kurulum
 

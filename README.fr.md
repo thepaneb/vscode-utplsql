@@ -39,6 +39,9 @@ Intègre [utPLSQL](https://www.utplsql.org/) dans VSCode, apportant les tests PL
 - 🗂️ **Source virtuelle de la base** — sans fichier local, le *jump to failure* et la couverture ouvrent un document en lecture seule résolu depuis `ALL_SOURCE` (`utplsql-source:/…`).
 - 🔐 **TNS en thin + wallet** — `utplsql.connections.tnsAdminPath` résout les alias de `tnsnames.ora` dans le driver thin (repli vers SQL Developer/`TNS_ADMIN`) ; `walletLocation` du profil et `utPLSQL: Set wallet password` gardent le mot de passe du wallet dans le SecretStorage.
 - 🔒 **Durcissement de la sécurité des connexions** — les réglages de connexion sont `machine`-scoped, l’extension est désactivée dans les espaces de travail non fiables et le mot de passe du profil est lié à la connexion.
+- 🧱 **Diagnostics de compilation** — après chaque exécution, les erreurs de compilation PL/SQL (`ALL_ERRORS`) apparaissent dans le Problems Panel sous la source `utPLSQL Compilation` (réglage `utplsql.compilationDiagnostics.enabled`).
+- ⏳ **Progression et annulation** — les exécutions longues affichent une notification de progression avec compteur et bouton *Cancel* (plus `utplsql.timeoutMinutes` en option).
+- 📁 **Espace de travail multi-racines** — chaque dossier de l’espace de travail a ses propres suites, avec découverte, exécution et couverture indépendantes.
 
 ## Installation
 

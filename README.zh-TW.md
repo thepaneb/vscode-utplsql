@@ -39,6 +39,9 @@
 - 🗂️ **虛擬資料庫來源** — 沒有本機檔案時，*jump to failure* 與涵蓋率會開啟從 `ALL_SOURCE` 解析的唯讀文件（`utplsql-source:/…`）。
 - 🔐 **thin 模式下的 TNS + wallet** — `utplsql.connections.tnsAdminPath` 在 thin 驅動中解析 `tnsnames.ora` 別名（回退至 SQL Developer/`TNS_ADMIN`）；設定檔的 `walletLocation` 與 `utPLSQL: Set wallet password` 將 wallet 密碼保存在 SecretStorage。
 - 🔒 **連線安全強化** — 連線設定改為 `machine` 範圍，擴充功能在不受信任的工作區中停用，設定檔密碼與連線綁定。
+- 🧱 **編譯診斷** — 每次執行後，PL/SQL 編譯錯誤（`ALL_ERRORS`）會以 source `utPLSQL Compilation` 顯示於 Problems Panel（設定 `utplsql.compilationDiagnostics.enabled`）。
+- ⏳ **進度與取消** — 長時間執行會顯示含計數的進度通知與 *Cancel* 按鈕（以及選用的 `utplsql.timeoutMinutes`）。
+- 📁 **多根工作區** — 每個工作區資料夾擁有自己的測試套件，探索、執行與涵蓋率各自獨立。
 
 ## 安裝
 

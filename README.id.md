@@ -39,6 +39,9 @@ Mengintegrasikan [utPLSQL](https://www.utplsql.org/) ke dalam VSCode, membawa pe
 - 🗂️ **Sumber basis data virtual** — tanpa file lokal, *jump to failure* dan cakupan membuka dokumen hanya-baca dari `ALL_SOURCE` (`utplsql-source:/…`).
 - 🔐 **TNS di thin + wallet** — `utplsql.connections.tnsAdminPath` menyelesaikan alias `tnsnames.ora` di driver thin (fallback ke SQL Developer/`TNS_ADMIN`); `walletLocation` profil dan `utPLSQL: Set wallet password` menyimpan sandi wallet di SecretStorage.
 - 🔒 **Pengerasan keamanan koneksi** — setelan koneksi kini `machine`-scoped, ekstensi dinonaktifkan di workspace yang tidak tepercaya, dan sandi profil terikat pada koneksi.
+- 🧱 **Diagnostik kompilasi** — setelah setiap eksekusi, kesalahan kompilasi PL/SQL (`ALL_ERRORS`) muncul di Problems Panel dengan source `utPLSQL Compilation` (setelan `utplsql.compilationDiagnostics.enabled`).
+- ⏳ **Progres dan pembatalan** — eksekusi panjang menampilkan notifikasi progres dengan jumlah dan tombol *Cancel* (plus `utplsql.timeoutMinutes` opsional).
+- 📁 **Workspace multi-root** — setiap folder workspace memiliki suite sendiri, dengan penemuan, eksekusi, dan cakupan yang independen.
 
 ## Instalasi
 

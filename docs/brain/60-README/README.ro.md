@@ -48,6 +48,9 @@ Integrează [utPLSQL](https://www.utplsql.org/) în VSCode, aducând testele PL/
 - 🗂️ **Sursă virtuală din baza de date** — fără fișier local, *jump to failure* și acoperirea deschid un document doar-citire rezolvat din `ALL_SOURCE` (`utplsql-source:/…`).
 - 🔐 **TNS în thin + wallet** — `utplsql.connections.tnsAdminPath` rezolvă aliasuri `tnsnames.ora` în driverul thin (fallback la SQL Developer/`TNS_ADMIN`); `walletLocation` din profil și `utPLSQL: Set wallet password` păstrează parola wallet-ului în SecretStorage.
 - 🔒 **Hardening de securitate al conexiunilor** — setările de conexiune sunt `machine`-scoped, extensia este dezactivată în workspace-uri neîncrezute și parola profilului este legată de conexiune.
+- 🧱 **Diagnostice de compilare** — după fiecare rulare, erorile de compilare PL/SQL (`ALL_ERRORS`) apar în Problems Panel sub sursa `utPLSQL Compilation` (setarea `utplsql.compilationDiagnostics.enabled`).
+- ⏳ **Progres și anulare** — rulările lungi afișează o notificare de progres cu contor și buton *Cancel* (plus `utplsql.timeoutMinutes` opțional).
+- 📁 **Spațiu de lucru multi-root** — fiecare folder al spațiului de lucru are propriile suite, cu descoperire, execuție și acoperire independente.
 
 ## Instalare
 

@@ -30,6 +30,9 @@ into the native **Test Explorer**, with context menu and visual coverage.
 - [**Virtual database source**](Coverage) — with no local file, *jump to failure* and coverage open a read-only document resolved from `ALL_SOURCE` (`utplsql-source:/…`)
 - [**TNS in thin + wallet**](Connection) — `utplsql.connections.tnsAdminPath` resolves `tnsnames.ora` aliases in the thin driver; the profile `walletLocation` and `utPLSQL: Set wallet password` keep the wallet password in the SecretStorage
 - [**Connection security hardening**](Connection) — connection settings are `machine`-scoped, the extension is disabled in untrusted workspaces, and the profile password is bound to the connection
+- [**Compilation diagnostics**](Diagnostics-and-quick-fix) — after every run, PL/SQL compilation errors (`ALL_ERRORS`) appear in the Problems Panel (`utPLSQL Compilation`)
+- [**Progress and cancellation**](Test-explorer) — progress notification with counts and a *Cancel* button (plus the optional `utplsql.timeoutMinutes`)
+- [**Multi-root workspace**](Test-explorer) — every workspace folder gets its own suites, with independent discovery, execution and coverage
 
 ![Test Explorer with expanded suites](images/test-explorer-suites.png)
 

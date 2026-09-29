@@ -48,6 +48,9 @@ tags: [readme]
 - 🗂️ **แหล่งข้อมูลเสมือนจากฐานข้อมูล** — เมื่อไม่มีไฟล์ในเครื่อง *jump to failure* และ coverage จะเปิดเอกสารแบบอ่านอย่างเดียวจาก `ALL_SOURCE` (`utplsql-source:/…`)
 - 🔐 **TNS ใน thin + wallet** — `utplsql.connections.tnsAdminPath` แปลง alias ของ `tnsnames.ora` ในไดรเวอร์ thin (fallback ไป SQL Developer/`TNS_ADMIN`); `walletLocation` ของโปรไฟล์และ `utPLSQL: Set wallet password` เก็บรหัส wallet ไว้ใน SecretStorage
 - 🔒 **เสริมความปลอดภัยของการเชื่อมต่อ** — การตั้งค่าการเชื่อมต่อเป็น `machine`-scoped ส่วนขยายถูกปิดในเวิร์กสเปซที่ไม่น่าเชื่อถือ และรหัสของโปรไฟล์ผูกกับการเชื่อมต่อ
+- 🧱 **การวินิจฉัยการคอมไพล์** — หลังการรันแต่ละครั้ง ข้อผิดพลาดการคอมไพล์ PL/SQL (`ALL_ERRORS`) จะแสดงใน Problems Panel ภายใต้ source `utPLSQL Compilation` (การตั้งค่า `utplsql.compilationDiagnostics.enabled`)
+- ⏳ **ความคืบหน้าและการยกเลิก** — การรันที่ยาวนานจะแสดงการแจ้งเตือนความคืบหน้าพร้อมจำนวนและปุ่ม *Cancel* (พร้อม `utplsql.timeoutMinutes` แบบเลือกได้)
+- 📁 **เวิร์กสเปซแบบ multi-root** — แต่ละโฟลเดอร์ของเวิร์กสเปซมีชุดเทสต์ของตัวเอง โดยค้นหา รัน และ coverage แยกกัน
 
 ## การติดตั้ง
 

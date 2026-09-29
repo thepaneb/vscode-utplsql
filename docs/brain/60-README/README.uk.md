@@ -48,6 +48,9 @@ tags: [readme]
 - 🗂️ **Віртуальне джерело з БД** — без локального файлу *jump to failure* і покриття відкривають документ лише для читання з `ALL_SOURCE` (`utplsql-source:/…`).
 - 🔐 **TNS у thin + wallet** — `utplsql.connections.tnsAdminPath` розв’язує аліаси `tnsnames.ora` у thin-драйвері (fallback: SQL Developer/`TNS_ADMIN`); `walletLocation` профілю та `utPLSQL: Set wallet password` зберігають пароль wallet у SecretStorage.
 - 🔒 **Посилення безпеки з’єднань** — налаштування з’єднання тепер `machine`-scoped, розширення вимкнено в недовірених робочих просторах, а пароль профілю прив’язано до з’єднання.
+- 🧱 **Діагностика компіляції** — після кожного запуску помилки компіляції PL/SQL (`ALL_ERRORS`) з’являються в Problems Panel під джерелом `utPLSQL Compilation` (налаштування `utplsql.compilationDiagnostics.enabled`).
+- ⏳ **Прогрес і скасування** — довгі запуски показують сповіщення про прогрес із лічильником і кнопкою *Cancel* (плюс опційний `utplsql.timeoutMinutes`).
+- 📁 **Багатокореневий робочий простір** — кожна тека робочого простору має власні набори тестів, з незалежним пошуком, запуском і покриттям.
 
 ## Встановлення
 
