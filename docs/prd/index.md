@@ -175,6 +175,12 @@ notas `prd-*`. O índice navegável do vault é a [[MOC - PRDs]].
 | 59 | [Scaffold de suíte de teste](proposed/prd-59-scaffold-suite.md) | 0.16.0 | 2026-09-06 |
 | 60 | [Cobertura de branch (investigação de viabilidade)](proposed/prd-60-branch-coverage-investigation.md) | Investigação — sem versão alvo | 2026-09-06 |
 | 61 | [Auto-provisionamento do utPLSQL-cli](proposed/prd-61-cli-auto-provision.md) | Suspenso — a reavaliar (PRD-64 removeu o CLI) | 2026-09-06 |
+| 88 | [Formatação sensível a locale (números e durações)](proposed/prd-88-locale-aware-formatting.md) | 0.17.0 | 2026-09-29 |
+| 89 | [Pseudo-localização e gate de strings não traduzidas](proposed/prd-89-pseudo-localization-gate.md) | 0.17.0 | 2026-09-29 |
+| 90 | [Plurais (CLDR) e seleção no catálogo de mensagens](proposed/prd-90-message-plurals-cldr.md) | 0.17.0 | 2026-09-29 |
+| 91 | [Paridade de documentação e distribuição localizada](proposed/prd-91-doc-parity-localized-distribution.md) | 0.17.0 | 2026-09-29 |
+| 92 | [RTL e novos locales (árabe e hebraico)](proposed/prd-92-rtl-new-locales.md) | 0.18.0 | 2026-09-29 |
+| 93 | [Pipeline de localização contínua (glossário, TM e revisão)](proposed/prd-93-continuous-localization-pipeline.md) | 0.18.0 | 2026-09-29 |
 <!-- prd:roadmap:end -->
 
 ---
@@ -276,6 +282,12 @@ docs/prd/
 │   ├── prd-59-scaffold-suite.md
 │   ├── prd-60-branch-coverage-investigation.md
 │   ├── prd-61-cli-auto-provision.md
+│   ├── prd-88-locale-aware-formatting.md
+│   ├── prd-89-pseudo-localization-gate.md
+│   ├── prd-90-message-plurals-cldr.md
+│   ├── prd-91-doc-parity-localized-distribution.md
+│   ├── prd-92-rtl-new-locales.md
+│   ├── prd-93-continuous-localization-pipeline.md
 ```
 <!-- prd:estrutura:end -->
 

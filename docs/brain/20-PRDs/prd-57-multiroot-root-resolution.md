@@ -124,5 +124,5 @@ primeiro workspace folder para resolver sourcePath" (seção Limitações).
 - 🗺️ [[MOC - PRDs]]
 - 🔗 PRDs relacionados: [[prd-06-multiroot|PRD-06]] · [[prd-34-multi-connection-profiles|PRD-34]]
 - 🔗 Mesma versão (0.16.0): [[prd-56-duration-persistence|PRD-56]] · [[prd-58-run-related-tests|PRD-58]] · [[prd-59-scaffold-suite|PRD-59]]
-- 🚀 ⬅️ release anterior: [[prd-55-tag-organization|PRD-55 (0.15.0)]]
+- 🚀 ⬅️ release anterior: [[prd-55-tag-organization|PRD-55 (0.15.0)]] · ➡️ próxima release: [[prd-88-locale-aware-formatting|PRD-88 (0.17.0)]]
 <!-- brain:auto:end -->

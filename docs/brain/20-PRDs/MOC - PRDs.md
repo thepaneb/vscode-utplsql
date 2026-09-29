@@ -29,7 +29,7 @@ npm run sync-prds
 ## Status (gerado)
 
 <!-- brain:auto:start:prd-summary -->
-- 📝 Propostos: **12**
+- 📝 Propostos: **18**
 - 🔵 Aprovados: **1**
 - 🟡 Em desenvolvimento: **0**
 - 🟢 Concluídos: **74**
@@ -135,4 +135,10 @@ Detalhe completo (fonte da verdade): [docs/prd/index.md](../../prd/index.md)
 - [[prd-85-brain-source-of-truth]] — `PRD-85`
 - [[prd-86-debugger-stop-on-exception]] — `PRD-86`
 - [[prd-87-suitepath-results-jump]] — `PRD-87`
+- [[prd-88-locale-aware-formatting]] — `PRD-88`
+- [[prd-89-pseudo-localization-gate]] — `PRD-89`
+- [[prd-90-message-plurals-cldr]] — `PRD-90`
+- [[prd-91-doc-parity-localized-distribution]] — `PRD-91`
+- [[prd-92-rtl-new-locales]] — `PRD-92`
+- [[prd-93-continuous-localization-pipeline]] — `PRD-93`
 <!-- brain:auto:end -->
