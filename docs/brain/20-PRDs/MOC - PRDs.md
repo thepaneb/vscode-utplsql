@@ -29,7 +29,7 @@ npm run sync-prds
 ## Status (gerado)
 
 <!-- brain:auto:start:prd-summary -->
-- 📝 Propostos: **18**
+- 📝 Propostos: **19**
 - 🔵 Aprovados: **1**
 - 🟡 Em desenvolvimento: **0**
 - 🟢 Concluídos: **75**
@@ -142,4 +142,5 @@ Detalhe completo (fonte da verdade): [docs/prd/index.md](../../prd/index.md)
 - [[prd-92-rtl-new-locales]] — `PRD-92`
 - [[prd-93-continuous-localization-pipeline]] — `PRD-93`
 - [[prd-94-vscode-floor-1-101]] — `PRD-94`
+- [[prd-95-esm-es2023-node22]] — `PRD-95`
 <!-- brain:auto:end -->

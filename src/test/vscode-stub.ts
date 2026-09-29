@@ -564,18 +564,23 @@ export namespace window {
       ),
     );
   }
-  export function createOutputChannel(name: string) {
+  export function createOutputChannel(name: string, _options?: { log?: boolean }) {
     if (!_outputChannels[name]) _outputChannels[name] = [];
+    const push = (text: string) => {
+      if (!_outputChannels[name]) _outputChannels[name] = [];
+      _outputChannels[name].push(text);
+    };
     return {
       name,
-      append: (text: string) => {
-        if (!_outputChannels[name]) _outputChannels[name] = [];
-        _outputChannels[name].push(text);
-      },
-      appendLine: (text: string) => {
-        if (!_outputChannels[name]) _outputChannels[name] = [];
-        _outputChannels[name].push(`${text}\n`);
-      },
+      logLevel: 2, // LogLevel.Info
+      onDidChangeLogLevel: () => ({ dispose: () => {} }),
+      trace: (text: string) => push(`${text}\n`),
+      debug: (text: string) => push(`${text}\n`),
+      info: (text: string) => push(`${text}\n`),
+      warn: (text: string) => push(`${text}\n`),
+      error: (text: string) => push(`${text}\n`),
+      append: (text: string) => push(text),
+      appendLine: (text: string) => push(`${text}\n`),
       show: () => {},
       hide: () => {},
       clear: () => {

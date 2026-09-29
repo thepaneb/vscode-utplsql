@@ -182,6 +182,7 @@ notas `prd-*`. O índice navegável do vault é a [[MOC - PRDs]].
 | 91 | [Paridade de documentação e distribuição localizada](proposed/prd-91-doc-parity-localized-distribution.md) | 0.17.0 | 2026-09-29 |
 | 92 | [RTL e novos locales (árabe e hebraico)](proposed/prd-92-rtl-new-locales.md) | 0.18.0 | 2026-09-29 |
 | 93 | [Pipeline de localização contínua (glossário, TM e revisão)](proposed/prd-93-continuous-localization-pipeline.md) | 0.18.0 | 2026-09-29 |
+| 95 | [Modernização do runtime: ESM, ES2023 e stdlib Node 22](proposed/prd-95-esm-es2023-node22.md) | 0.15.0 | 2026-09-29 |
 <!-- prd:roadmap:end -->
 
 ---
@@ -290,6 +291,7 @@ docs/prd/
 │   ├── prd-91-doc-parity-localized-distribution.md
 │   ├── prd-92-rtl-new-locales.md
 │   ├── prd-93-continuous-localization-pipeline.md
+│   ├── prd-95-esm-es2023-node22.md
 ```
 <!-- prd:estrutura:end -->
 

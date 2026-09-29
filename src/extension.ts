@@ -17,6 +17,7 @@ import {
 import { registerDbSourceProvider } from './dbSourceProvider';
 import { createDebounced } from './debounce';
 import { DecorationManager } from './decorations';
+import { formatLogLine, setLogSink } from './logger';
 import { closeOraclePool, invalidatePool } from './oracleRunner';
 import { setupValidator, UtplsqlCodeActionProvider } from './quickfix';
 import { TestStateManager } from './state';
@@ -35,6 +36,11 @@ let cancelCurrentRun: (() => void) | undefined;
 
 export function activate(context: vscode.ExtensionContext) {
   void vscode.commands.executeCommand('setContext', 'utplsql:activated', true);
+
+  // Log de diagnóstico em um LogOutputChannel (nível controlado pelo usuário).
+  const log = vscode.window.createOutputChannel('utPLSQL', { log: true });
+  context.subscriptions.push(log);
+  setLogSink((level, msg, ctx) => log[level](formatLogLine(msg, ctx)));
 
   initSecretStorage(context.secrets);
   const profilesReady = (async () => {

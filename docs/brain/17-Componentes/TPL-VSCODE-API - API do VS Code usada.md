@@ -54,7 +54,7 @@ host — o `docs-fidelity` cobra essa coerência.
 ## Inventário (gerado)
 
 <!-- brain:auto:start:vscode-api -->
-**`engines.vscode`:** `^1.101.0` · **`@types/vscode`:** `1.101.0` · **96 símbolos · 471 referências**
+**`engines.vscode`:** `^1.101.0` · **`@types/vscode`:** `1.101.0` · **96 símbolos · 472 referências**
 
 | Símbolo | Refs | Arquivos |
 |---|---|---|
@@ -101,6 +101,7 @@ host — o `docs-fidelity` cobra essa coerência.
 | `vscode.OutputChannel` | 3 | `src/commands/run.ts`, `src/commands/script.ts` |
 | `vscode.TestMessage` | 3 | `src/results.ts`, `src/runner.ts` |
 | `vscode.TextDocument` | 3 | `src/codelens.ts`, `src/commands/run.ts`, `src/quickfix.ts` |
+| `vscode.window.createOutputChannel` | 3 | `src/commands/run.ts`, `src/commands/script.ts`, `src/extension.ts` |
 | `vscode.ConfigurationTarget.Global` | 2 | `src/connectionProfiles.ts` |
 | `vscode.DebugAdapterDescriptorFactory` | 2 | `src/commands/debug.ts`, `src/debugger.ts` |
 | `vscode.DebugConfigurationProvider` | 2 | `src/commands/debug.ts`, `src/debugger.ts` |
@@ -119,7 +120,6 @@ host — o `docs-fidelity` cobra essa coerência.
 | `vscode.SecretStorage` | 2 | `src/connectionProfiles.ts` |
 | `vscode.StatementCoverage` | 2 | `src/results.ts`, `src/viewCoverage.ts` |
 | `vscode.TestRunProfile` | 2 | `src/state.ts` |
-| `vscode.window.createOutputChannel` | 2 | `src/commands/run.ts`, `src/commands/script.ts` |
 | `vscode.window.withProgress` | 2 | `src/commands/run.ts`, `src/commands/script.ts` |
 | `vscode.workspace.registerTextDocumentContentProvider` | 2 | `src/dbSourceProvider.ts` |
 | `vscode.CodeActionContext` | 1 | `src/quickfix.ts` |

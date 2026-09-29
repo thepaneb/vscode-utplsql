@@ -93,5 +93,6 @@ SORT id ASC
 - [[COD - virtualSource.ts]] — `COD-virtualSource.ts`
 - [[COD - vsce.cjs]] — `COD-vsce.cjs`
 - [[COD - vscode-api-inventory.cjs]] — `COD-vscode-api-inventory.cjs`
+- [[COD - vscode-stub.ts]] — `COD-vscode-stub.ts`
 - [[COD - wait-ready.sh]] — `COD-wait-ready.sh`
 <!-- brain:auto:end -->

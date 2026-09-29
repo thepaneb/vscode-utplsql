@@ -9,6 +9,11 @@
   `engines.node`/`@types/node` (22) e o `esbuild target` passam a casar com o
   runtime, e o `docs-fidelity` cobra a coerência.
 
+- **Log estruturado no painel Output (LogOutputChannel)**: o diagnóstico da
+  extensão passa a ir para o canal **`utPLSQL`**, com nível controlado pelo
+  usuário no painel Output (Trace/Debug/Info/Warning/Error) — sem depender de
+  `UTPLSQL_DEBUG`. O módulo de log segue puro (`src/logger.ts`).
+
 - **Hardening de segurança das settings de conexão (PRD-81)**: as settings
   sensíveis (`utplsql.connection`, `utplsql.profiles`, `utplsql.activeProfile`,
   `utplsql.oracleClientLibDir`, `utplsql.oracleClientConfigDir`) passam a ser

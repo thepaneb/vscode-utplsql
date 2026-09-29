@@ -91,6 +91,7 @@ SORT id ASC
 - [[BR-EXEC-014 - Reporters adicionais são validados e sanitizados antes do PL-SQL]] — `BR-EXEC-014`
 - [[BR-EXEC-015 - Export com reporter não altera os resultados do Test Explorer]] — `BR-EXEC-015`
 - [[BR-I18N-001 - Resolução de locale e fallback de tradução]] — `BR-I18N-001`
+- [[BR-LOG-001 - Diagnostico vai para o LogOutputChannel utPLSQL]] — `BR-LOG-001`
 - [[BR-PARSE-001 - Arquivo só é suite utPLSQL se tiver %suite E CREATE PACKAGE]] — `BR-PARSE-001`
 - [[BR-PARSE-002 - RE_PACKAGE aceita schema qualificado, BODY e identificador entre aspas]] — `BR-PARSE-002`
 - [[BR-PARSE-003 - %test só materializa teste quando seguido de PROCEDURE; órfão é sobrescrito]] — `BR-PARSE-003`
