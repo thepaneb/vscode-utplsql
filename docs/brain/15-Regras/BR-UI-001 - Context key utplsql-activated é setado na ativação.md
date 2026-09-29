@@ -9,7 +9,7 @@ severidade: media
 fonte: codigo
 verificado: 2026-09-23
 implementacao: ["src/extension.ts:32", "package.json:36"]
-testes: ["src/test/integration/extension.test.ts"]
+testes: ["src/test/integration/extension.test.ts", "src/test/unit/extensionActivation.test.ts"]
 prds: ["PRD-27"]
 requisitos: ["PRD-27/RF4"]
 tags: ["ui"]
@@ -37,6 +37,6 @@ Keybindings como refresh/info/clearConnection usam when utplsql:activated e prec
 - 📄 PRDs: [[prd-27-default-keybindings|PRD-27]]
 - 🎯 Requisitos: [[prd-27-default-keybindings|PRD-27 RF4]]
 - 🧩 Código: [[COD - extension.ts]] · [[COD - package.json]]
-- 🧪 Testes: [[TST - extension.test.ts]]
+- 🧪 Testes: [[TST - extension.test.ts]] · [[TST - extensionActivation.test.ts]]
 - ↩️ Referenciada por: [[05-ux-components]] · [[prd-27-default-keybindings|PRD-27]]
 <!-- brain:auto:end -->

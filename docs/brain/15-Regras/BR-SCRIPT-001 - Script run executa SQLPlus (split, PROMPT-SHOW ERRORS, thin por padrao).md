@@ -8,7 +8,7 @@ status: ativo
 severidade: media
 fonte: codigo
 verificado: 2026-09-28
-implementacao: ["src/scriptRunner.ts:79", "src/scriptRunner.ts:397", "src/scriptRunner.ts:31"]
+implementacao: ["src/scriptRunner.ts:79", "src/scriptRunner.ts:397", "src/scriptRunner.ts:31", "src/charset.ts:11"]
 testes: ["src/test/integration/prd70-sqlplus.test.ts", "src/test/unit/scriptRunner.test.ts"]
 prds: ["PRD-62", "PRD-70"]
 tags: ["script"]
@@ -41,7 +41,7 @@ scripts escritos para SQL*Plus (PRD-70).
 <!-- brain:auto:start:conexoes -->
 - 🗺️ [[MOC - Regras]]
 - 📄 PRDs: [[prd-62-run-scripts-against-profiles|PRD-62]] · [[prd-70-thick-mode-nne|PRD-70]]
-- 🧩 Código: [[COD - scriptRunner.ts]]
+- 🧩 Código: [[COD - scriptRunner.ts]] · [[COD - charset.ts]]
 - 🧪 Testes: [[TST - prd70-sqlplus.test.ts]] · [[TST - scriptRunner.test.ts]]
 - ↩️ Referenciada por: [[prd-62-run-scripts-against-profiles|PRD-62]] · [[prd-70-thick-mode-nne|PRD-70]]
 <!-- brain:auto:end -->

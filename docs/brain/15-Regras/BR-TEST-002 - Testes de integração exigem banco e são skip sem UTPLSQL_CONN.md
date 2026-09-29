@@ -8,8 +8,8 @@ status: ativo
 severidade: media
 fonte: codigo
 verificado: 2026-09-28
-implementacao: ["src/test/integration/helpers.ts"]
-testes: ["src/test/integration/schemaRun.test.ts", "src/test/integration/v014-features.test.ts"]
+implementacao: ["src/test/integration/helpers.ts", "src/charsetSupport.ts"]
+testes: ["src/test/integration/schemaRun.test.ts", "src/test/integration/v014-features.test.ts", "src/test/unit/charsetSupport.test.ts"]
 prds: ["PRD-15"]
 tags: ["teste"]
 ---
@@ -42,7 +42,7 @@ falhas reais quando a conexão existe.
 <!-- brain:auto:start:conexoes -->
 - 🗺️ [[MOC - Regras]]
 - 📄 PRDs: [[prd-15-integration-tests-real-db|PRD-15]]
-- 🧩 Código: [[COD - helpers.ts]]
-- 🧪 Testes: [[TST - schemaRun.test.ts]] · [[TST - v014-features.test.ts]]
+- 🧩 Código: [[COD - helpers.ts]] · [[COD - charsetSupport.ts]]
+- 🧪 Testes: [[TST - schemaRun.test.ts]] · [[TST - v014-features.test.ts]] · [[TST - charsetSupport.test.ts]]
 - ↩️ Referenciada por: [[prd-15-integration-tests-real-db|PRD-15]]
 <!-- brain:auto:end -->

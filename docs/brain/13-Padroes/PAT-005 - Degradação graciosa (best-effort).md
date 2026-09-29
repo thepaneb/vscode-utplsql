@@ -8,7 +8,7 @@ categoria: erro
 status: ativo
 verificado: 2026-09-23
 implementacao: []
-testes: []
+testes: ["src/test/unit/fsErrorsCatch.test.ts", "src/test/unit/resultsUnreadable.test.ts", "src/test/unit/oracledb-default-absent.test.ts", "src/test/unit/oracledb-missing-catch.test.ts", "src/test/unit/oracledbDefaultPresent.test.ts"]
 regras: []
 relacionado: ["[[ADR-001 - Execucao via Oracle direto]]", "[[02-test-execution]]"]
 tags: [erros]
@@ -32,5 +32,6 @@ grant de `DBMS_PROFILER`, o run continua "sem cobertura".
 
 <!-- brain:auto:start:conexoes -->
 - 🗺️ [[MOC - Padroes]]
+- 🧪 Testes: [[TST - fsErrorsCatch.test.ts]] · [[TST - resultsUnreadable.test.ts]] · [[TST - oracledb-default-absent.test.ts]] · [[TST - oracledb-missing-catch.test.ts]] · [[TST - oracledbDefaultPresent.test.ts]]
 - 🔗 [[ADR-001 - Execucao via Oracle direto]] · [[02-test-execution]]
 <!-- brain:auto:end -->

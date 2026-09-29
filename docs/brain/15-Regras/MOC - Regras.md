@@ -52,6 +52,7 @@ SORT id ASC
 - [[BR-COB-002 - resolveSourceUri tenta variantes de extensão e bloqueia path traversal]] — `BR-COB-002`
 - [[BR-COB-003 - Cobertura de views via V$SQL é opt-in e best-effort]] — `BR-COB-003`
 - [[BR-COB-004 - Fonte virtual do banco (utplsql-source) é read-only]] — `BR-COB-004`
+- [[BR-COB-005 - XML Cobertura e cobertura por declaracao sao parseados de forma pura]] — `BR-COB-005`
 - [[BR-CONN-001 - Precedência de resolução da conexão]] — `BR-CONN-001`
 - [[BR-CONN-002 - Prompt só ocorre quando nada está configurado e não persiste]] — `BR-CONN-002`
 - [[BR-CONN-003 - Limpar conexão de sessão reseta o context key]] — `BR-CONN-003`
@@ -120,4 +121,6 @@ SORT id ASC
 - [[BR-UI-006 - CodeLens registrado apenas em scheme file e padrão .pks sem language id]] — `BR-UI-006`
 - [[BR-UI-007 - Diagnósticos de setup e quick-fixes restritos ao source utPLSQL Setup]] — `BR-UI-007`
 - [[BR-UI-008 - Diagnósticos de compilação mapeiam ALL_ERRORS e usam source utPLSQL Compilation]] — `BR-UI-008`
+- [[BR-UI-009 - Handlers dos comandos utplsql registrados e com aviso]] — `BR-UI-009`
+- [[BR-UI-010 - Decoracoes inline refletem o ultimo status e sao descartadas no dispose]] — `BR-UI-010`
 <!-- brain:auto:end -->

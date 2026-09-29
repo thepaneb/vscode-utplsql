@@ -9,7 +9,7 @@ severidade: media
 fonte: codigo
 verificado: 2026-09-28
 implementacao: ["src/compileForDebug.ts:58", "src/compileForDebug.ts:94", "src/compileForDebug.ts:128", "src/compileForDebug.ts:30"]
-testes: ["src/test/integration/compileForDebug.test.ts", "src/test/unit/compileForDebug.test.ts"]
+testes: ["src/test/integration/compileForDebug.test.ts", "src/test/unit/compileForDebug.test.ts", "src/test/unit/compileForDebugPool.test.ts"]
 prds: ["PRD-73"]
 tags: ["debugger"]
 ---
@@ -40,6 +40,6 @@ breakpoint não resolve (`BR-DEBUG-001`).
 - 🗺️ [[MOC - Regras]]
 - 📄 PRDs: [[prd-73-compile-for-debug|PRD-73]]
 - 🧩 Código: [[COD - compileForDebug.ts]]
-- 🧪 Testes: [[TST - integration-compileForDebug.test.ts]] · [[TST - unit-compileForDebug.test.ts]]
+- 🧪 Testes: [[TST - integration-compileForDebug.test.ts]] · [[TST - unit-compileForDebug.test.ts]] · [[TST - compileForDebugPool.test.ts]]
 - ↩️ Referenciada por: [[prd-73-compile-for-debug|PRD-73]]
 <!-- brain:auto:end -->

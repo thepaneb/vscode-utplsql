@@ -14,7 +14,7 @@ Implementa [`src/dbmsDebug.ts`](../../../src/dbmsDebug.ts) — **gerado** por `n
 
 ## Testes que cobrem
 
-_nenhum_
+- [[TST - dbmsDebug.test.ts]]
 
 ## Onde aparece
 
