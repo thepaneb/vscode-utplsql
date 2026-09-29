@@ -52,6 +52,7 @@ SORT id ASC
 - [[COD - discovery.ts]] — `COD-discovery.ts`
 - [[COD - docs-check.cjs]] — `COD-docs-check.cjs`
 - [[COD - docs-fidelity.cjs]] — `COD-docs-fidelity.cjs`
+- [[COD - esbuild.config.mjs]] — `COD-esbuild.config.mjs`
 - [[COD - extension.ts]] — `COD-extension.ts`
 - [[COD - gen-diagrams.cjs]] — `COD-gen-diagrams.cjs`
 - [[COD - gen-icon.cjs]] — `COD-gen-icon.cjs`

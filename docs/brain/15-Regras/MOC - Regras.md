@@ -106,6 +106,7 @@ SORT id ASC
 - [[BR-PARSE-013 - Mapeamento resultado para teste por lastSegment+name-description com fallback]] — `BR-PARSE-013`
 - [[BR-PARSE-014 - message.location só é definida para failed-error com frame de usuário resolvido]] — `BR-PARSE-014`
 - [[BR-PARSE-015 - CodeLens gera dois lenses por annotation, na linha da annotation]] — `BR-PARSE-015`
+- [[BR-PLAT-001 - Piso de VS Code e runtime Node do host sao coerentes]] — `BR-PLAT-001`
 - [[BR-SCHEMA-001 - organization bifurca file tree vs schema tree; suiteMap é o lookup canônico]] — `BR-SCHEMA-001`
 - [[BR-SCHEMA-002 - extractSchemaFromPath - path.posix.relative e placeholder {schema}]] — `BR-SCHEMA-002`
 - [[BR-SCHEMA-003 - collectAllItems usa cachedItems e, se vazio, percorre até 3 níveis]] — `BR-SCHEMA-003`

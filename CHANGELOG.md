@@ -2,6 +2,13 @@
 
 ## 0.14.0
 
+- **Piso de VS Code 1.101 e runtime Node 22 (PRD-94)**: `engines.vscode` passa de
+  `^1.88.0` para **`^1.101.0`** — o primeiro VS Code cujo Extension Host embute
+  **Node 22** (LTS mais antigo em suporte). **Breaking:** usuários em VS Code
+  **1.88–1.100** (Node 18/20, já EOL) deixam de receber a extensão. Com isso
+  `engines.node`/`@types/node` (22) e o `esbuild target` passam a casar com o
+  runtime, e o `docs-fidelity` cobra a coerência.
+
 - **Hardening de segurança das settings de conexão (PRD-81)**: as settings
   sensíveis (`utplsql.connection`, `utplsql.profiles`, `utplsql.activeProfile`,
   `utplsql.oracleClientLibDir`, `utplsql.oracleClientConfigDir`) passam a ser

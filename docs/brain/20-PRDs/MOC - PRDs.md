@@ -32,7 +32,7 @@ npm run sync-prds
 - 📝 Propostos: **18**
 - 🔵 Aprovados: **1**
 - 🟡 Em desenvolvimento: **0**
-- 🟢 Concluídos: **74**
+- 🟢 Concluídos: **75**
 
 Detalhe completo (fonte da verdade): [docs/prd/index.md](../../prd/index.md)
 <!-- brain:auto:end -->
@@ -141,4 +141,5 @@ Detalhe completo (fonte da verdade): [docs/prd/index.md](../../prd/index.md)
 - [[prd-91-doc-parity-localized-distribution]] — `PRD-91`
 - [[prd-92-rtl-new-locales]] — `PRD-92`
 - [[prd-93-continuous-localization-pipeline]] — `PRD-93`
+- [[prd-94-vscode-floor-1-101]] — `PRD-94`
 <!-- brain:auto:end -->

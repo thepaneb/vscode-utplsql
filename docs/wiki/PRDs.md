@@ -101,6 +101,7 @@ The file is moved between folders as it progresses.
 | 80 | Virtual database source document | 0.14.0 |
 | 81 | Connection settings security hardening | 0.14.0 |
 | 82 | TNS resolution in thin + wallet password in SecretStorage | 0.14.0 |
+| 94 | VS Code floor 1.101 (Node 22 runtime) | 0.14.0 |
 
 ### 🔵 Approved
 

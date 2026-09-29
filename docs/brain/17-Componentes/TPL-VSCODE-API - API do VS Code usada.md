@@ -184,5 +184,5 @@ Subir o piso exige atualizar `engines.vscode` **e** `@types/vscode` juntos
 - 🗺️ [[MOC - Componentes]]
 - 🧩 Código: [[COD - vscode-api-inventory.cjs]] · [[COD - package.json]]
 - 🔗 [[TPL-VSCODE-TEST-API - VSCode Test API (Test Explorer)]] · [[NFR-003 - Compatibilidade com VSCode]]
-- ↩️ Referenciada por: [[NFR-003 - Compatibilidade com VSCode|NFR-003]]
+- ↩️ Referenciada por: [[BR-PLAT-001 - Piso de VS Code e runtime Node do host sao coerentes|BR-PLAT-001]] · [[NFR-003 - Compatibilidade com VSCode|NFR-003]]
 <!-- brain:auto:end -->

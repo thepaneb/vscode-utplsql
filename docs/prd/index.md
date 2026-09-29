@@ -152,6 +152,7 @@ notas `prd-*`. O índice navegável do vault é a [[MOC - PRDs]].
 | 85 | [Second brain canônico (Obsidian) com MCP e extração de conhecimento](completed/prd-85-brain-source-of-truth.md) | 0.13.0 | 2026-09-23 |
 | 86 | [Debugger honra stopOnException (break_exception)](completed/prd-86-debugger-stop-on-exception.md) | 0.13.0 | 2026-09-24 |
 | 87 | [Resultados e jump-to-failure em suítes com %suitepath](completed/prd-87-suitepath-results-jump.md) | 0.13.0 | 2026-09-25 |
+| 94 | [Piso de VS Code 1.101 e runtime Node 22](completed/prd-94-vscode-floor-1-101.md) | 0.14.0 | 2026-09-29 |
 
 ### 🔵 Aprovados
 
@@ -267,6 +268,7 @@ docs/prd/
 │   ├── prd-85-brain-source-of-truth.md
 │   ├── prd-86-debugger-stop-on-exception.md
 │   ├── prd-87-suitepath-results-jump.md
+│   ├── prd-94-vscode-floor-1-101.md
 ├── approved/        ← aprovados, aguardando implementação
 │   ├── prd-47-node-26-toolchain.md
 ├── proposed/        ← em avaliação

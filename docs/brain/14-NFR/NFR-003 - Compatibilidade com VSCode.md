@@ -39,5 +39,5 @@ mais antigo em suporte (EOL abr/2027).
 - 🧩 Código: [[COD - package.json]]
 - 🧪 Testes: [[TST - docsFidelity.test.ts]]
 - 🔗 [[TPL-VSCODE-API - API do VS Code usada]] · [[TPL-VSCODE-TEST-API - VSCode Test API (Test Explorer)]] · [[MOC - Arquitetura]]
-- ↩️ Referenciada por: [[09-configuration]] · [[TPL-VSCODE-API - API do VS Code usada|TPL-VSCODE-API]]
+- ↩️ Referenciada por: [[09-configuration]] · [[BR-PLAT-001 - Piso de VS Code e runtime Node do host sao coerentes|BR-PLAT-001]] · [[TPL-VSCODE-API - API do VS Code usada|TPL-VSCODE-API]]
 <!-- brain:auto:end -->
