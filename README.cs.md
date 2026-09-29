@@ -316,8 +316,7 @@ zde uvedeny.
 
 **Volatilní reportér pro relaci** — příkaz **utPLSQL: Select additional
 reporter...** otevře QuickPick s dynamickým seznamem z databáze. Vybraný
-reportér se uloží do relace, ale volba se **nepoužije**
-v aktuální verzi pouze pro Oracle.
+reportér se uloží do relace a **použije se při dalším spuštění**.
 
 ## Požadavky na databázi
 
