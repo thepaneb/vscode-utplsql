@@ -38,5 +38,5 @@ Manter perfis utilizáveis após o save (senha fora das settings) e preservar co
 - 🎯 Requisitos: [[prd-34-multi-connection-profiles|PRD-34 RF5]]
 - 🧩 Código: [[COD - connectionProfiles.ts]]
 - 🧪 Testes: [[TST - connectionProfiles.test.ts]]
-- ↩️ Referenciada por: [[09-configuration]]
+- ↩️ Referenciada por: [[09-configuration]] · [[prd-34-multi-connection-profiles|PRD-34]]
 <!-- brain:auto:end -->

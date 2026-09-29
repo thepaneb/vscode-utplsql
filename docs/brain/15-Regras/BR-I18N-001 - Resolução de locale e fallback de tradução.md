@@ -38,5 +38,5 @@ Permite forçar idioma independente do editor e garante que nenhuma mensagem fiq
 - 🎯 Requisitos: [[prd-49-internacionalizacao|PRD-49 RF2]]
 - 🧩 Código: [[COD - i18n.ts]]
 - 🧪 Testes: [[TST - i18n.test.ts]]
-- ↩️ Referenciada por: [[09-configuration]]
+- ↩️ Referenciada por: [[09-configuration]] · [[prd-49-internacionalizacao|PRD-49]]
 <!-- brain:auto:end -->

@@ -8,6 +8,7 @@ versao: "0.12.0"
 data: "2026-09-15"
 autor: "Gil Cleber Barboza"
 verificado: 2026-09-23
+regras: ["BR-COB-002", "BR-CONN-005", "BR-CONN-007"]
 tags: [prd]
 ---
 
@@ -213,9 +214,9 @@ Trocar `resolveConnection()` por `resolveConnectionNoPrompt()` em
 
 <!-- brain:auto:start:conexoes -->
 - 🗺️ [[MOC - PRDs]]
+- 📐 Regras: [[BR-COB-002 - resolveSourceUri tenta variantes de extensão e bloqueia path traversal|BR-COB-002]] · [[BR-CONN-005 - Senha do perfil vai para o SecretStorage ao salvar|BR-CONN-005]] · [[BR-CONN-007 - Migração de perfis legados é idempotente|BR-CONN-007]]
 - 🔗 PRDs relacionados: [[prd-66-connection-robustness-logging|PRD-66]] · [[prd-67-code-quality-cleanup|PRD-67]]
 - 🎯 RF3 — Senhas em `SecretStorage` → [[BR-CONN-005 - Senha do perfil vai para o SecretStorage ao salvar|BR-CONN-005]]
 - 🎯 RF5 — Ativação sem prompt → [[BR-CONN-002 - Prompt só ocorre quando nada está configurado e não persiste|BR-CONN-002]]
 - 🚀 ⬅️ release anterior: [[prd-46-dependency-majors|PRD-46 (0.11.0)]] · ➡️ próxima release: [[prd-70-thick-mode-nne|PRD-70 (0.12.1)]]
-- 📐 Regras: [[BR-COB-002 - resolveSourceUri tenta variantes de extensão e bloqueia path traversal|BR-COB-002]] · [[BR-CONN-005 - Senha do perfil vai para o SecretStorage ao salvar|BR-CONN-005]] · [[BR-CONN-007 - Migração de perfis legados é idempotente|BR-CONN-007]]
 <!-- brain:auto:end -->

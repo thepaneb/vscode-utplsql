@@ -1038,3 +1038,44 @@ test('brain: noteNames desambigua basenames colidentes', () => {
   assert.strictEqual(names.get('a/run.ts'), 'COD - a-run.ts');
   assert.strictEqual(names.get('b/run.ts'), 'COD - b-run.ts');
 });
+
+test('brain: sync deriva regras: das PRDs a partir do prds: das regras/SEC', () => {
+  withBrainFixture(({ vault }) => {
+    const fm = (lines: string[]) => ['---', ...lines, '---', ''].join('\n');
+    writeFixture(
+      path.join(vault, '15-Regras', 'BR-CONN-016 - x.md'),
+      fm(['id: BR-CONN-016', 'tipo: regra', 'prds: ["PRD-81"]']),
+    );
+    writeFixture(
+      path.join(vault, '16-Seguranca', 'SEC-011 - y.md'),
+      fm(['id: SEC-011', 'tipo: seguranca', 'prds: ["PRD-81"]']),
+    );
+    writeFixture(
+      path.join(vault, '20-PRDs', 'prd-81-x.md'),
+      fm(['tipo: prd', 'id: PRD-81', 'status: completed', 'versao: "0.14.0"', 'tags: [prd]']),
+    );
+
+    resetCaches();
+    captureLogs(() => sync());
+
+    const text = fs.readFileSync(path.join(vault, '20-PRDs', 'prd-81-x.md'), 'utf8');
+    assert.match(text, /^regras: \["BR-CONN-016", "SEC-011"\]$/m);
+    assert.deepStrictEqual((parseFm(text) as unknown as { regras?: string[] }).regras, [
+      'BR-CONN-016',
+      'SEC-011',
+    ]);
+  });
+});
+
+test('brain: sync deriva regras: [] para PRD sem regras', () => {
+  withBrainFixture(({ vault }) => {
+    writeFixture(
+      path.join(vault, '20-PRDs', 'prd-90-y.md'),
+      ['---', 'tipo: prd', 'id: PRD-90', 'status: proposed', 'tags: [prd]', '---', ''].join('\n'),
+    );
+    resetCaches();
+    captureLogs(() => sync());
+    const text = fs.readFileSync(path.join(vault, '20-PRDs', 'prd-90-y.md'), 'utf8');
+    assert.match(text, /^regras: \[\]$/m);
+  });
+});

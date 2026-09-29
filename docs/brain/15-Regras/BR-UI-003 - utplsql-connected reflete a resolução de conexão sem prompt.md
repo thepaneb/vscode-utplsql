@@ -38,5 +38,5 @@ Keybindings de run usam when utplsql:connected; conexões via perfil/env precisa
 - 🎯 Requisitos: [[prd-27-default-keybindings|PRD-27 RF4]]
 - 🧩 Código: [[COD - config.ts]]
 - 🧪 Testes: [[TST - config.test.ts]]
-- ↩️ Referenciada por: [[05-ux-components]] · [[09-configuration]]
+- ↩️ Referenciada por: [[05-ux-components]] · [[09-configuration]] · [[prd-27-default-keybindings|PRD-27]] · [[prd-34-multi-connection-profiles|PRD-34]]
 <!-- brain:auto:end -->

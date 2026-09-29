@@ -7,6 +7,7 @@ versao: "{x.y.z}"
 data: "{YYYY-MM-DD}"
 autor: "{Nome}"
 verificado: "{YYYY-MM-DD}"
+regras: [] # derivado por brain:sync (BR-*/SEC-* que citam esta PRD)
 tags: [prd]
 ---
 
@@ -79,6 +80,13 @@ tags: [prd]
 ## 11. Questões em aberto
 
 - {Dúvidas não resolvidas}
+
+## 12. Impacto no cérebro
+
+{Regras/SEC criadas ou alteradas por esta PRD — ex.: `BR-CONN-016`, `SEC-011`.
+O campo `regras:` do frontmatter é derivado por `npm run brain:sync` a partir do
+`prds:` das regras. Se a PRD não exigir regra alguma, escreva explicitamente
+**nenhuma** nesta seção (o CI cobra a seção quando `regras: []`).}
 
 ## Conexões
 

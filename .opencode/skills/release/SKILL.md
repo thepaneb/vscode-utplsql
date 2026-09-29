@@ -22,8 +22,10 @@ roda compile/lint/test/package e publica no Marketplace). **Nunca** rode
 3. **`CHANGELOG.md`** — crie a seção `## X.Y.Z` no topo; se houver `## Unreleased`,
    mova os itens para ela (não deixe `Unreleased` órfã).
 4. **PRDs da versão** — conclua os PRDs entregues (mover para `completed/`,
-   preencher a coluna **Versão**) usando a skill **`prd-workflow`**; rode
-   `npm run sync-prds` no fim.
+   preencher a coluna **Versão**) usando a skill **`prd-workflow`**; ao concluir,
+   crie/altere as regras `BR-*`/`SEC-*` que a PRD materializa e rode
+   `npm run brain:rules` (o vínculo PRD ↔ regra/SEC é bidirecional e cobrado no
+   CI); rode `npm run sync-prds` no fim.
 5. **Docs** — se houve settings/comandos/features, aplique a skill
    **`docs-fidelity`** (README + 23 variantes, `docs/wiki` (en), functional).
 6. **Commit + push** da branch de release.
@@ -45,6 +47,8 @@ grep "| X.Y.Z |" docs/prd/index.md | wc -l        # PRDs concluídos na versão
 
 - [ ] `package.json` e a seção do `CHANGELOG` batem (`X.Y.Z`)
 - [ ] PRDs concluídos da versão com a coluna **Versão** preenchida
+- [ ] PRDs concluídos (>= 0.14.0) com `regras:` derivado e vínculo bidirecional
+      (`npm run brain:rules`)
 - [ ] `npm run docs:check` e `npm run brain:check` OK
 - [ ] CI verde no commit da release
 - [ ] GitHub release publicada → workflow `Publish Extension` concluído

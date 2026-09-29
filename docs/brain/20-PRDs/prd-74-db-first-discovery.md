@@ -8,6 +8,7 @@ versao: "0.13.0"
 data: "2026-09-19"
 autor: "Gil Cleber Barboza"
 verificado: 2026-09-23
+regras: ["BR-PARSE-008", "BR-PARSE-009", "BR-PARSE-010"]
 tags: [prd]
 ---
 
@@ -236,6 +237,7 @@ comportamento atual, logando uma vez.
 
 <!-- brain:auto:start:conexoes -->
 - 🗺️ [[MOC - PRDs]]
+- 📐 Regras: [[BR-PARSE-008 - DB-first com gate de versão 3.1.3 e modos de fonte auto-database-file|BR-PARSE-008]] · [[BR-PARSE-009 - Linhas de get_suites_info - 1-based para 0-based e filtros|BR-PARSE-009]] · [[BR-PARSE-010 - Fusão arquivo+banco - arquivo prevalece em uri-linha, banco em descrição-tags|BR-PARSE-010]]
 - 🔗 PRDs relacionados: [[prd-51-run-by-tag|PRD-51]] · [[prd-55-tag-organization|PRD-55]] · [[prd-69-oracle-runner-typed-binds|PRD-69]] · [[prd-75-lazy-test-tree|PRD-75]]
 - 🎯 RF1 — Wrapper da API → [[BR-PARSE-009 - Linhas de get_suites_info - 1-based para 0-based e filtros|BR-PARSE-009]]
 - 🎯 RF2 — Mapeamento para o modelo existente → [[BR-PARSE-009 - Linhas de get_suites_info - 1-based para 0-based e filtros|BR-PARSE-009]]
@@ -243,5 +245,4 @@ comportamento atual, logando uma vez.
 - 🎯 RF4 — Gate de versão → [[BR-PARSE-008 - DB-first com gate de versão 3.1.3 e modos de fonte auto-database-file|BR-PARSE-008]]
 - 🎯 RF5 — Setting de fonte → [[BR-PARSE-008 - DB-first com gate de versão 3.1.3 e modos de fonte auto-database-file|BR-PARSE-008]]
 - 🚀 ⬅️ release anterior: [[prd-73-compile-for-debug|PRD-73 (0.12.1)]] · ➡️ próxima release: [[prd-75-lazy-test-tree|PRD-75 (0.14.0)]]
-- 📐 Regras: [[BR-PARSE-008 - DB-first com gate de versão 3.1.3 e modos de fonte auto-database-file|BR-PARSE-008]] · [[BR-PARSE-009 - Linhas de get_suites_info - 1-based para 0-based e filtros|BR-PARSE-009]] · [[BR-PARSE-010 - Fusão arquivo+banco - arquivo prevalece em uri-linha, banco em descrição-tags|BR-PARSE-010]]
 <!-- brain:auto:end -->

@@ -38,5 +38,5 @@ Permitir jump-to-failure e cobertura sem fontes locais, sem introduzir superfíc
 - 🎯 Requisitos: [[prd-80-virtual-db-source|PRD-80 RF1]]
 - 🧩 Código: [[COD - virtualSource.ts]] · [[COD - dbSourceProvider.ts]]
 - 🧪 Testes: [[TST - dbSourceProvider.test.ts]] · [[TST - virtualSource.test.ts]]
-- ↩️ Referenciada por: [[SEC-013 - Fonte virtual do banco é read-only|SEC-013]]
+- ↩️ Referenciada por: [[SEC-013 - Fonte virtual do banco é read-only|SEC-013]] · [[prd-80-virtual-db-source|PRD-80]]
 <!-- brain:auto:end -->

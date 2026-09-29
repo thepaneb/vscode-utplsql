@@ -8,6 +8,7 @@ versao: "0.8.0"
 data: "2026-07-21"
 autor: "Gil Cleber Barboza"
 verificado: 2026-09-23
+regras: ["BR-PARSE-002", "BR-PARSE-015", "BR-UI-006"]
 tags: [prd]
 ---
 
@@ -308,10 +309,10 @@ context.subscriptions.push(
 
 <!-- brain:auto:start:conexoes -->
 - 🗺️ [[MOC - PRDs]]
+- 📐 Regras: [[BR-PARSE-002 - RE_PACKAGE aceita schema qualificado, BODY e identificador entre aspas|BR-PARSE-002]] · [[BR-PARSE-015 - CodeLens gera dois lenses por annotation, na linha da annotation|BR-PARSE-015]] · [[BR-UI-006 - CodeLens registrado apenas em scheme file e padrão .pks sem language id|BR-UI-006]]
 - 🔗 PRDs relacionados: [[prd-26-inline-test-decorations|PRD-26]] · [[prd-29-jump-to-failing-assertion|PRD-29]] · [[prd-33-plsql-debugger-integration|PRD-33]]
 - 🎯 RF1 — CodeLens provider registrado → [[BR-UI-006 - CodeLens registrado apenas em scheme file e padrão .pks sem language id|BR-UI-006]]
 - 🎯 RF2 — CodeLens para `%suite` → [[BR-PARSE-015 - CodeLens gera dois lenses por annotation, na linha da annotation|BR-PARSE-015]]
 - 🎯 RF3 — CodeLens para `%test` → [[BR-PARSE-015 - CodeLens gera dois lenses por annotation, na linha da annotation|BR-PARSE-015]]
 - 🚀 ⬅️ release anterior: [[prd-36-reporter-parse-fix|PRD-36 (0.7.2)]] · ➡️ próxima release: [[prd-11-streaming-results|PRD-11 (0.9.0)]]
-- 📐 Regras: [[BR-PARSE-002 - RE_PACKAGE aceita schema qualificado, BODY e identificador entre aspas|BR-PARSE-002]] · [[BR-PARSE-015 - CodeLens gera dois lenses por annotation, na linha da annotation|BR-PARSE-015]] · [[BR-UI-006 - CodeLens registrado apenas em scheme file e padrão .pks sem language id|BR-UI-006]]
 <!-- brain:auto:end -->

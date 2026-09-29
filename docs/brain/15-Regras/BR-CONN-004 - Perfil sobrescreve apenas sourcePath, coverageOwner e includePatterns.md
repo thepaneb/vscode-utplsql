@@ -38,5 +38,5 @@ Permitir cenários por ambiente (DEV/TEST/PROD) sem duplicar toda a configuraç�
 - 🎯 Requisitos: [[prd-34-multi-connection-profiles|PRD-34 RF1]]
 - 🧩 Código: [[COD - connectionProfiles.ts]] · [[COD - config.ts]]
 - 🧪 Testes: [[TST - connectionProfiles.test.ts]] · [[TST - config.test.ts]]
-- ↩️ Referenciada por: [[09-configuration]] · [[ENT-005 - ConnectionProfile|ENT-005]] · [[GLOSS-007 - Connection profile|GLOSS-007]]
+- ↩️ Referenciada por: [[09-configuration]] · [[ENT-005 - ConnectionProfile|ENT-005]] · [[GLOSS-007 - Connection profile|GLOSS-007]] · [[prd-34-multi-connection-profiles|PRD-34]]
 <!-- brain:auto:end -->

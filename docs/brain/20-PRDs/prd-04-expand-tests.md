@@ -8,6 +8,7 @@ versao: "0.4.0"
 data: "2026-07-02"
 autor: "Análise automatizada"
 verificado: 2026-09-23
+regras: ["BR-COB-002"]
 tags: [prd]
 ---
 
@@ -255,7 +256,7 @@ logs detalhados de matching no output da execução.
 
 <!-- brain:auto:start:conexoes -->
 - 🗺️ [[MOC - PRDs]]
+- 📐 Regras: [[BR-COB-002 - resolveSourceUri tenta variantes de extensão e bloqueia path traversal|BR-COB-002]]
 - 🎯 RF1 — Testes para `coverage.ts` → [[BR-COB-002 - resolveSourceUri tenta variantes de extensão e bloqueia path traversal|BR-COB-002]]
 - 🚀 ⬅️ release anterior: [[prd-01-java-mode|PRD-01 (0.3.0)]] · ➡️ próxima release: [[prd-05-progress-cancel|PRD-05 (0.5.0)]]
-- 📐 Regras: [[BR-COB-002 - resolveSourceUri tenta variantes de extensão e bloqueia path traversal|BR-COB-002]]
 <!-- brain:auto:end -->

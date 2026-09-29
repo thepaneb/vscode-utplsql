@@ -38,5 +38,5 @@ O comando/keybinding utplsql.runFailed só aparece quando há falhas da última 
 - 🎯 Requisitos: [[prd-27-default-keybindings|PRD-27 RF4]] · [[prd-31-smart-rerun-patterns|PRD-31 RF4]]
 - 🧩 Código: [[COD - oracleRunner.ts]] · [[COD - package.json]]
 - 🧪 Testes: [[TST - oracleRunner.test.ts]] · [[TST - runner.test.ts]]
-- ↩️ Referenciada por: [[05-ux-components]]
+- ↩️ Referenciada por: [[05-ux-components]] · [[prd-31-smart-rerun-patterns|PRD-31]]
 <!-- brain:auto:end -->

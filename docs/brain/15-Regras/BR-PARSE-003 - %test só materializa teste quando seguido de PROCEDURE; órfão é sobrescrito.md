@@ -36,5 +36,5 @@ Evita criar itens fantasma para annotations sem procedure correspondente.
 - 📄 PRDs: [[prd-42-suiteparser-annotations|PRD-42]]
 - 🧩 Código: [[COD - suiteParser.ts]]
 - 🧪 Testes: [[TST - suiteParser.test.ts]]
-- ↩️ Referenciada por: [[01-test-discovery]] · [[GLOSS-002 - Teste (procedure de teste)|GLOSS-002]]
+- ↩️ Referenciada por: [[01-test-discovery]] · [[GLOSS-002 - Teste (procedure de teste)|GLOSS-002]] · [[prd-42-suiteparser-annotations|PRD-42]]
 <!-- brain:auto:end -->

@@ -9,6 +9,7 @@ data: "2026-09-19"
 autor: "Gil Cleber Barboza"
 versao_titulo: "0.14.0 — Árvore, relatórios, conectividade e segurança"
 verificado: 2026-09-28
+regras: ["BR-CONN-017", "BR-CONN-018", "SEC-012"]
 tags: [prd]
 ---
 
@@ -165,10 +166,10 @@ TNS e houver diretório resolvido, passar o descriptor resolvido ao
 
 <!-- brain:auto:start:conexoes -->
 - 🗺️ [[MOC - PRDs]]
+- 📐 Regras: [[BR-CONN-017 - Senha da wallet vai para o SecretStorage e ao pool|BR-CONN-017]] · [[BR-CONN-018 - Alias TNS resolvido no thin por tnsAdminPath, SQL Developer e TNS_ADMIN|BR-CONN-018]] · [[SEC-012 - Senha da wallet nunca em settings nem em log|SEC-012]]
 - 🔗 PRDs relacionados: [[prd-81-security-hardening|PRD-81]]
 - 🎯 RF1 — Setting e fallback → [[BR-CONN-018 - Alias TNS resolvido no thin por tnsAdminPath, SQL Developer e TNS_ADMIN|BR-CONN-018]]
 - 🎯 RF3 — Aplicação no pool → [[BR-CONN-018 - Alias TNS resolvido no thin por tnsAdminPath, SQL Developer e TNS_ADMIN|BR-CONN-018]]
 - 🎯 RF4 — Wallet → [[BR-CONN-017 - Senha da wallet vai para o SecretStorage e ao pool|BR-CONN-017]]
 - 🚀 ⬅️ release anterior: [[prd-87-suitepath-results-jump|PRD-87 (0.13.0)]] · ➡️ próxima release: [[prd-47-node-26-toolchain|PRD-47 (0.15.0)]]
-- 📐 Regras: [[BR-CONN-017 - Senha da wallet vai para o SecretStorage e ao pool|BR-CONN-017]] · [[BR-CONN-018 - Alias TNS resolvido no thin por tnsAdminPath, SQL Developer e TNS_ADMIN|BR-CONN-018]]
 <!-- brain:auto:end -->

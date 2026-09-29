@@ -38,5 +38,5 @@ Alinha as posições do editor (0-based) às linhas do dicionário Oracle (1-bas
 - 🎯 Requisitos: [[prd-74-db-first-discovery|PRD-74 RF1]] · [[prd-74-db-first-discovery|PRD-74 RF2]]
 - 🧩 Código: [[COD - discovery.ts]]
 - 🧪 Testes: [[TST - discovery.test.ts]]
-- ↩️ Referenciada por: [[01-test-discovery]]
+- ↩️ Referenciada por: [[01-test-discovery]] · [[prd-74-db-first-discovery|PRD-74]]
 <!-- brain:auto:end -->

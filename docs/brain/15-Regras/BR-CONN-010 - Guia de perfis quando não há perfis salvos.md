@@ -38,5 +38,5 @@ Guiar o primeiro uso sem bloquear a extensão, reutilizando os comandos existent
 - 🎯 Requisitos: [[prd-34-multi-connection-profiles|PRD-34 RF4]] · [[prd-62-run-scripts-against-profiles|PRD-62 RF1]]
 - 🧩 Código: [[COD - connectionProfiles.ts]]
 - 🧪 Testes: [[TST - connectionProfiles.test.ts]]
-- ↩️ Referenciada por: [[09-configuration]]
+- ↩️ Referenciada por: [[09-configuration]] · [[prd-34-multi-connection-profiles|PRD-34]] · [[prd-62-run-scripts-against-profiles|PRD-62]]
 <!-- brain:auto:end -->

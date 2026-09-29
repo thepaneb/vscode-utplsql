@@ -8,6 +8,7 @@ versao: "0.7.0"
 data: "2026-07-03"
 autor: "Gil Cleber Barboza"
 verificado: 2026-09-23
+regras: []
 tags: [prd]
 ---
 

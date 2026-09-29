@@ -9,6 +9,7 @@ data: "2026-09-06"
 autor: "Gil Cleber Barboza"
 versao_titulo: "0.16.0 — Persistência, multi-root e produtividade"
 verificado: 2026-09-23
+regras: []
 tags: [prd]
 ---
 

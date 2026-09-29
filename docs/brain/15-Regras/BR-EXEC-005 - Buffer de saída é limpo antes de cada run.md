@@ -38,5 +38,5 @@ As tabelas temporárias persistem entre execuções; sem o DELETE, mensagens ant
 - 🎯 Requisitos: [[prd-11-streaming-results|PRD-11 RF3]]
 - 🧩 Código: [[COD - oracleRunner.ts]]
 - 🧪 Testes: [[TST - dbPaths.test.ts]] · [[TST - schemaRun.test.ts]]
-- ↩️ Referenciada por: [[02-test-execution]]
+- ↩️ Referenciada por: [[02-test-execution]] · [[prd-11-streaming-results|PRD-11]]
 <!-- brain:auto:end -->

@@ -38,5 +38,5 @@ Exibir contexto legível sem expor senha e sinalizar perfis não-utf8 e o perfil
 - 🎯 Requisitos: [[prd-34-multi-connection-profiles|PRD-34 RF4]]
 - 🧩 Código: [[COD - connectionProfiles.ts]]
 - 🧪 Testes: [[TST - connectionProfiles.test.ts]]
-- ↩️ Referenciada por: [[09-configuration]] · [[SEC-002 - Connection string é sempre mascarada em qualquer saída|SEC-002]]
+- ↩️ Referenciada por: [[09-configuration]] · [[SEC-002 - Connection string é sempre mascarada em qualquer saída|SEC-002]] · [[prd-34-multi-connection-profiles|PRD-34]]
 <!-- brain:auto:end -->

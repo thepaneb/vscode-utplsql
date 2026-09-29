@@ -9,6 +9,7 @@ data: "2026-08-29"
 autor: "Gil Cleber"
 versao_titulo: "0.15.0 — Tags e UX de execução"
 verificado: 2026-09-28
+regras: []
 tags: [prd]
 ---
 

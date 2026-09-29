@@ -10,6 +10,7 @@ verificado: 2026-09-28
 implementacao: ["src/virtualSource.ts:11", "src/dbSourceProvider.ts:173"]
 testes: ["src/test/unit/dbSourceProvider.test.ts"]
 regras: ["BR-COB-004"]
+prds: ["PRD-80"]
 tags: ["seguranca", "cobertura"]
 ---
 ## Enunciado
@@ -28,7 +29,9 @@ Garantir que o fallback de falhas/cobertura não abra caminho de escrita ou de p
 
 <!-- brain:auto:start:conexoes -->
 - 🗺️ [[MOC - Seguranca]]
+- 📄 PRDs: [[prd-80-virtual-db-source|PRD-80]]
 - 📐 Regras: [[BR-COB-004 - Fonte virtual do banco (utplsql-source) é read-only|BR-COB-004]]
 - 🧩 Código: [[COD - virtualSource.ts]] · [[COD - dbSourceProvider.ts]]
 - 🧪 Testes: [[TST - dbSourceProvider.test.ts]]
+- ↩️ Referenciada por: [[prd-80-virtual-db-source|PRD-80]]
 <!-- brain:auto:end -->

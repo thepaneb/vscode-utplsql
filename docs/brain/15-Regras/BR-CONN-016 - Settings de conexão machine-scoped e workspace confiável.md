@@ -38,5 +38,5 @@ Um `.vscode/settings.json` de origem não confiável poderia redirecionar a cone
 - 🎯 Requisitos: [[prd-81-security-hardening|PRD-81 RF1]] · [[prd-81-security-hardening|PRD-81 RF2]]
 - 🧩 Código: [[COD - package.json]]
 - 🧪 Testes: [[TST - manifestDebugger.test.ts]]
-- ↩️ Referenciada por: [[SEC-011 - Settings de conexão não são sobrescrevíveis por workspace|SEC-011]]
+- ↩️ Referenciada por: [[SEC-011 - Settings de conexão não são sobrescrevíveis por workspace|SEC-011]] · [[prd-81-security-hardening|PRD-81]]
 <!-- brain:auto:end -->

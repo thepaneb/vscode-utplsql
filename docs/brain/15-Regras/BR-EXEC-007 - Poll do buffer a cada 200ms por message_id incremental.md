@@ -38,5 +38,5 @@ Streaming em tempo real sem bloquear; falhas transitórias do buffer não aborta
 - 🎯 Requisitos: [[prd-11-streaming-results|PRD-11 RF3]]
 - 🧩 Código: [[COD - oracleRunner.ts]]
 - 🧪 Testes: [[TST - oracleRunner.test.ts]]
-- ↩️ Referenciada por: [[02-test-execution]]
+- ↩️ Referenciada por: [[02-test-execution]] · [[prd-11-streaming-results|PRD-11]]
 <!-- brain:auto:end -->

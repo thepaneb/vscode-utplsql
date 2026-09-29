@@ -38,4 +38,5 @@ Permitir exportar a saída de qualquer reporter sem corromper o estado de result
 - 🎯 Requisitos: [[prd-76-reporter-export|PRD-76 RF1]]
 - 🧩 Código: [[COD - runner.ts]] · [[COD - oracleRunner.ts]]
 - 🧪 Testes: [[TST - runExportCommand.test.ts]] · [[TST - oracleRunner.test.ts]]
+- ↩️ Referenciada por: [[prd-76-reporter-export|PRD-76]]
 <!-- brain:auto:end -->

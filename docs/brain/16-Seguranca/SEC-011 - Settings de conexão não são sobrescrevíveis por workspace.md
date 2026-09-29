@@ -10,6 +10,7 @@ verificado: 2026-09-28
 implementacao: ["package.json:54", "package.json:285", "package.json:41"]
 testes: ["src/test/unit/manifestDebugger.test.ts"]
 regras: ["BR-CONN-016"]
+prds: ["PRD-81"]
 tags: ["seguranca", "conexao"]
 ---
 ## Enunciado
@@ -28,7 +29,9 @@ Fechar o vetor de exfiltração de credencial via configuração de workspace.
 
 <!-- brain:auto:start:conexoes -->
 - 🗺️ [[MOC - Seguranca]]
+- 📄 PRDs: [[prd-81-security-hardening|PRD-81]]
 - 📐 Regras: [[BR-CONN-016 - Settings de conexão machine-scoped e workspace confiável|BR-CONN-016]]
 - 🧩 Código: [[COD - package.json]]
 - 🧪 Testes: [[TST - manifestDebugger.test.ts]]
+- ↩️ Referenciada por: [[prd-81-security-hardening|PRD-81]]
 <!-- brain:auto:end -->

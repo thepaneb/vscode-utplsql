@@ -38,5 +38,5 @@ conn1 está bloqueada no ut_runner.run e conn2 no poll; interromper ambas é nec
 - 🎯 Requisitos: [[prd-05-progress-cancel|PRD-05 RF3]]
 - 🧩 Código: [[COD - oracleRunner.ts]]
 - 🧪 Testes: [[TST - oracleRunner.test.ts]]
-- ↩️ Referenciada por: [[02-test-execution]]
+- ↩️ Referenciada por: [[02-test-execution]] · [[prd-05-progress-cancel|PRD-05]] · [[prd-11-streaming-results|PRD-11]]
 <!-- brain:auto:end -->

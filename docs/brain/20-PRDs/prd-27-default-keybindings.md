@@ -8,6 +8,7 @@ versao: "0.8.0"
 data: "2026-07-21"
 autor: "Gil Cleber Barboza"
 verificado: 2026-09-23
+regras: ["BR-UI-001", "BR-UI-003"]
 tags: [prd]
 ---
 
@@ -242,8 +243,8 @@ via `File > Preferences > Keyboard Shortcuts`.
 
 <!-- brain:auto:start:conexoes -->
 - 🗺️ [[MOC - PRDs]]
+- 📐 Regras: [[BR-UI-001 - Context key utplsql-activated é setado na ativação|BR-UI-001]] · [[BR-UI-003 - utplsql-connected reflete a resolução de conexão sem prompt|BR-UI-003]]
 - 🔗 PRDs relacionados: [[prd-31-smart-rerun-patterns|PRD-31]]
 - 🎯 RF4 — Context keys para `when` clauses → [[BR-UI-001 - Context key utplsql-activated é setado na ativação|BR-UI-001]] · [[BR-UI-002 - utplsql-running liga no início e desliga em todos os caminhos de saída|BR-UI-002]] · [[BR-UI-003 - utplsql-connected reflete a resolução de conexão sem prompt|BR-UI-003]] · [[BR-UI-004 - utplsql-hasFailures derivado de lastFailedItems (failed ou error)|BR-UI-004]]
 - 🚀 ⬅️ release anterior: [[prd-36-reporter-parse-fix|PRD-36 (0.7.2)]] · ➡️ próxima release: [[prd-11-streaming-results|PRD-11 (0.9.0)]]
-- 📐 Regras: [[BR-UI-001 - Context key utplsql-activated é setado na ativação|BR-UI-001]] · [[BR-UI-003 - utplsql-connected reflete a resolução de conexão sem prompt|BR-UI-003]]
 <!-- brain:auto:end -->

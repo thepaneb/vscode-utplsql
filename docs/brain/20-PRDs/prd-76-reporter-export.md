@@ -9,6 +9,7 @@ data: "2026-09-19"
 autor: "Gil Cleber Barboza"
 versao_titulo: "0.14.0 — Árvore, relatórios, conectividade e segurança"
 verificado: 2026-09-28
+regras: ["BR-EXEC-015"]
 tags: [prd]
 ---
 
@@ -181,8 +182,8 @@ documentar que cor só faz sentido para reporters textuais.
 
 <!-- brain:auto:start:conexoes -->
 - 🗺️ [[MOC - PRDs]]
+- 📐 Regras: [[BR-EXEC-015 - Export com reporter não altera os resultados do Test Explorer|BR-EXEC-015]]
 - 🔗 PRDs relacionados: [[prd-69-oracle-runner-typed-binds|PRD-69]] · [[prd-79-coverage-scope|PRD-79]]
 - 🎯 RF1 — Coleta da saída do reporter → [[BR-EXEC-015 - Export com reporter não altera os resultados do Test Explorer|BR-EXEC-015]]
 - 🚀 ⬅️ release anterior: [[prd-87-suitepath-results-jump|PRD-87 (0.13.0)]] · ➡️ próxima release: [[prd-47-node-26-toolchain|PRD-47 (0.15.0)]]
-- 📐 Regras: [[BR-EXEC-015 - Export com reporter não altera os resultados do Test Explorer|BR-EXEC-015]]
 <!-- brain:auto:end -->
