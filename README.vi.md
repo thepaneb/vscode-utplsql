@@ -55,7 +55,7 @@ Extension có thể được cài đặt theo hai cách:
 ## Yêu cầu
 
 - [**utPLSQL**](https://github.com/utPLSQL/utPLSQL) **(UT3)** được cài đặt trong cơ sở dữ liệu Oracle.
-- **VSCode 1.88+** (Test Coverage API).
+- **VSCode 1.101+** (Test Coverage API).
 
 Extension chỉ là "client đồ họa" — thứ thực sự chạy kiểm thử là cơ sở dữ liệu trực tiếp (node-oracledb).
 

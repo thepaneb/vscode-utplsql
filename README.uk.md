@@ -55,7 +55,7 @@
 ## Вимоги
 
 - [**utPLSQL**](https://github.com/utPLSQL/utPLSQL) **(UT3)** встановлений у базі даних Oracle.
-- **VSCode 1.88+** (Test Coverage API).
+- **VSCode 1.101+** (Test Coverage API).
 
 Розширення — це лише "графічний клієнт": тести виконує база даних безпосередньо (node-oracledb).
 

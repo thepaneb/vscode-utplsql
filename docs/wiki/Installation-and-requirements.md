@@ -42,15 +42,15 @@ SELECT ut_meta.version() FROM dual;
 
 ### Local machine
 
-- **VSCode 1.88+** (required by the Test Coverage API).
+- **VSCode 1.101+** (required by the Test Coverage API).
 - Nothing else — the VSIX already includes the `oracledb` thin driver (no Instant Client needed). For databases with **NNE**, opt into thick mode with a local Oracle Instant Client via `utplsql.oracleClientMode`/`utplsql.oracleClientLibDir`.
 
 ### Compatibility
 
 | Oracle | utPLSQL | VSCode | Extension |
 |---|---|---|---|
-| 18c+ | v3.1.x / v3.2.0+ | 1.88+ | 0.3.0+ |
-| 12.2 | v3.1.x only | 1.88+ | 0.13.0+ |
+| 18c+ | v3.1.x / v3.2.0+ | 1.101+ | 0.3.0+ |
+| 12.2 | v3.1.x only | 1.101+ | 0.13.0+ |
 
 > **Oracle 12.2:** utPLSQL **v3.2.x does not compile** on 12.2
 > (`PLS-00222` in `UT_ANNOTATION_MANAGER`; it requires an 18c+ feature). Use

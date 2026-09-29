@@ -55,7 +55,7 @@ The extension can be installed in two ways:
 ## Requirements
 
 - [**utPLSQL**](https://github.com/utPLSQL/utPLSQL) **(UT3)** installed in the Oracle database.
-- **VSCode 1.88+** (Test Coverage API).
+- **VSCode 1.101+** (Test Coverage API).
 
 The extension is only the "graphical client" — what runs the tests is the database directly (node-oracledb).
 

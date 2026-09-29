@@ -72,7 +72,7 @@ Extensia poate fi instalată în două moduri:
 |---|---|---|
 | 18c+ | v3.2.x (18c+) / v3.1.x | Recomandat; charset `AL32UTF8`. |
 | 12.2 | doar v3.1.x | v3.2.x nu se compilează (`PLS-00222`). `WE8DEC` al imaginii pierde caractere nereprezentabile (ex. `€`); driverul subțire ignoră `NLS_LANG`. |
-- **VSCode 1.88+** (API Test Coverage).
+- **VSCode 1.101+** (API Test Coverage).
 
 Extensia este doar „clientul grafic" — ceea ce rulează testele este baza de date direct prin node-oracledb.
 

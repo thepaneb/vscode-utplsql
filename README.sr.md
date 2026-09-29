@@ -55,7 +55,7 @@
 ## Захтеви
 
 - [**utPLSQL**](https://github.com/utPLSQL/utPLSQL) **(UT3)** инсталиран у Oracle бази података.
-- **VSCode 1.88+** (Test Coverage API).
+- **VSCode 1.101+** (Test Coverage API).
 
 Екстензија је само „графички клијент" — оно што покреће тестове јесте база података директно (node-oracledb).
 

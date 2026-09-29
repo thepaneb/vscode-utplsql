@@ -64,7 +64,7 @@ L'estensione può essere installata in due modi:
 ## Requisiti
 
 - [**utPLSQL**](https://github.com/utPLSQL/utPLSQL) **(UT3)** installato nel database Oracle.
-- **VSCode 1.88+** (Test Coverage API).
+- **VSCode 1.101+** (Test Coverage API).
 
 L'estensione si connette direttamente al database Oracle tramite `node-oracledb` (driver thin, senza Instant Client). Il VSIX include già il pacchetto `oracledb`.
 

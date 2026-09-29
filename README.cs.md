@@ -63,7 +63,7 @@ Rozšíření lze nainstalovat dvěma způsoby:
 |---|---|---|
 | 18c+ | v3.2.x (18c+) / v3.1.x | Doporučeno; charset `AL32UTF8`. |
 | 12.2 | pouze v3.1.x | v3.2.x se nezkompiluje (`PLS-00222`). `WE8DEC` obrazu ztrácí nereprezentovatelné znaky (např. `€`); tenký ovladač ignoruje `NLS_LANG`. |
-- **VSCode 1.88+** (Test Coverage API).
+- **VSCode 1.101+** (Test Coverage API).
 
 Rozšíření je pouze „grafický klient" — to, co testy spouští, je databáze přímo přes node-oracledb.
 

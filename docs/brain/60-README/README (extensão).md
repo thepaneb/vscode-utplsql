@@ -64,7 +64,7 @@ The extension can be installed in two ways:
 ## Requirements
 
 - [**utPLSQL**](https://github.com/utPLSQL/utPLSQL) **(UT3)** installed in the Oracle database.
-- **VSCode 1.88+** (Test Coverage API).
+- **VSCode 1.101+** (Test Coverage API).
 
 The extension connects directly to the Oracle database via `node-oracledb` (thin driver, no Instant Client required). The VSIX already includes the `oracledb` package.
 

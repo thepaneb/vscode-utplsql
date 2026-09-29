@@ -254,9 +254,12 @@ function checkFidelity(overrides = {}) {
     if (files.readme.includes(term)) problems.push(`README.md: termo obsoleto "${term}"`);
   }
 
-  // 10. @types/vscode pinado no piso de engines.vscode — evita o compilador
-  //     aceitar API acima do piso (que quebraria no VSCode mínimo suportado).
-  //     Só valida quando há `engines.vscode` (fixtures sem engines são ignoradas).
+  // 10. Piso de VS Code e coerência do runtime Node:
+  //     (a) @types/vscode deve ser exatamente o piso de engines.vscode;
+  //     (b) engines.node, @types/node e o target do esbuild devem casar com o
+  //         Node embutido no host daquela versão do VS Code (Execução roda no
+  //         Node do VS Code, não no Node do dev/CI — ver TPL-VSCODE-API).
+  //     Fixtures sem `engines.vscode` são ignoradas.
   let pkg = overrides.pkg;
   if (!pkg) {
     try {
@@ -274,6 +277,42 @@ function checkFidelity(overrides = {}) {
       problems.push(
         `@types/vscode deve ser exatamente "${engineFloor}" (piso de engines.vscode); está "${typesVersion || 'ausente'}"`,
       );
+    }
+
+    // Node embutido no host por versão do VS Code (fonte: .nvmrc do vscode por tag).
+    const VSCODE_HOST_NODE = {
+      '1.88': 18,
+      '1.90': 20,
+      '1.100': 20,
+      '1.101': 22,
+      '1.102': 22,
+    };
+    const majorOf = (v) => {
+      const m = String(v ?? '').match(/(\d+)/);
+      return m ? Number(m[1]) : undefined;
+    };
+    const mm = engineFloor.split('.').slice(0, 2).join('.');
+    const hostNode = VSCODE_HOST_NODE[mm];
+    if (hostNode) {
+      const nodeEngine = pkg?.engines?.node;
+      const typesNode = pkg?.devDependencies?.['@types/node'];
+      const esbuild = overrides.esbuild ?? read('esbuild.config.mjs');
+      const esbuildTarget = (esbuild.match(/target:\s*['"]node(\d+)['"]/) || [])[1];
+      if (majorOf(nodeEngine) !== hostNode) {
+        problems.push(
+          `engines.node ("${nodeEngine}") ≠ Node ${hostNode} do host do VS Code ${mm} (runtime do Extension Host)`,
+        );
+      }
+      if (majorOf(typesNode) !== hostNode) {
+        problems.push(
+          `@types/node ("${typesNode}") ≠ Node ${hostNode} do host do VS Code ${mm}`,
+        );
+      }
+      if (esbuildTarget && Number(esbuildTarget) !== hostNode) {
+        problems.push(
+          `esbuild target node${esbuildTarget} ≠ Node ${hostNode} do host do VS Code ${mm}`,
+        );
+      }
     }
   }
 

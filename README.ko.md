@@ -63,7 +63,7 @@
 |---|---|---|
 | 18c+ | v3.2.x (18c+) / v3.1.x | 권장. charset `AL32UTF8`. |
 | 12.2 | v3.1.x만 | v3.2.x는 컴파일되지 않습니다(`PLS-00222`). 이미지의 `WE8DEC`은 표현할 수 없는 문자(예: `€`)를 잃습니다. thin 드라이버는 `NLS_LANG`을 무시합니다. |
-- **VSCode 1.88+** (Test Coverage API).
+- **VSCode 1.101+** (Test Coverage API).
 
 확장 프로그램은 "그래픽 클라이언트"일 뿐입니다 — 테스트를 실행하는 것은 데이터베이스입니다: node-oracledb 직접 연결을 통해.
 

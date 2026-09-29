@@ -72,7 +72,7 @@ Ekstensi dapat diinstal dengan dua cara:
 |---|---|---|
 | 18c+ | v3.2.x (18c+) / v3.1.x | Disarankan; charset `AL32UTF8`. |
 | 12.2 | hanya v3.1.x | v3.2.x tidak dapat dikompilasi (`PLS-00222`). `WE8DEC` pada image kehilangan karakter yang tidak dapat direpresentasikan (mis. `€`); driver tipis mengabaikan `NLS_LANG`. |
-- **VSCode 1.88+** (Test Coverage API).
+- **VSCode 1.101+** (Test Coverage API).
 
 Ekstensi hanyalah "klien grafis" — yang menjalankan pengujian adalah database langsung via node-oracledb.
 

@@ -6,7 +6,7 @@ await esbuild.build({
   outfile: 'dist/extension.js',
   platform: 'node',
   format: 'cjs',
-  target: 'node20',
+  target: 'node22',
   external: ['vscode', 'oracledb'],
   sourcemap: true,
 });

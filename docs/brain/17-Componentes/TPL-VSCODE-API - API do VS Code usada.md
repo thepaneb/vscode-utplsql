@@ -8,7 +8,7 @@ fornecedor: Microsoft
 licenca: MIT
 criticidade: critica
 risco: medio
-versao: "engines.vscode ^1.88.0"
+versao: "engines.vscode ^1.101.0"
 status: ativo
 verificado: 2026-09-29
 implementacao: ["scripts/vscode-api-inventory.cjs", "package.json:11", "package.json:823"]
@@ -28,6 +28,23 @@ Escopo: uso via alias `vscode.*` (o projeto importa sempre como
 (`vscode.window`), membros (`vscode.window.showInputBox`), tipos e enums
 (`vscode.Uri`, `vscode.DiagnosticSeverity`).
 
+## Runtime (Node do host)
+
+A extensão roda no **Node embutido no VS Code** (Extension Host) — **não** no Node
+do dev/CI. Fonte: `.nvmrc` do repositório do VS Code por tag + versão do Electron.
+
+| VS Code | Electron | Node do host |
+|---|---|---|
+| 1.88 | 28 | 18.18 (EOL abr/2025) |
+| 1.90 | 29 | 20.9 |
+| 1.100 | 34 | 20.19 |
+| **1.101** | 35 | **22.15** |
+| 1.102 | 35 | 22.15 |
+
+Piso atual: **1.101** (Node 22 = LTS mais antigo em suporte; EOL abr/2027).
+`engines.node`, `@types/node` e o `esbuild target` devem casar com o Node do
+host — o `docs-fidelity` cobra essa coerência.
+
 ## Regra de compatibilidade
 
 `engines.vscode` define o **piso**; `@types/vscode` fica **pinado no piso**
@@ -37,7 +54,7 @@ Escopo: uso via alias `vscode.*` (o projeto importa sempre como
 ## Inventário (gerado)
 
 <!-- brain:auto:start:vscode-api -->
-**`engines.vscode`:** `^1.88.0` · **`@types/vscode`:** `1.88.0` · **96 símbolos · 471 referências**
+**`engines.vscode`:** `^1.101.0` · **`@types/vscode`:** `1.101.0` · **96 símbolos · 471 referências**
 
 | Símbolo | Refs | Arquivos |
 |---|---|---|
@@ -167,4 +184,5 @@ Subir o piso exige atualizar `engines.vscode` **e** `@types/vscode` juntos
 - 🗺️ [[MOC - Componentes]]
 - 🧩 Código: [[COD - vscode-api-inventory.cjs]] · [[COD - package.json]]
 - 🔗 [[TPL-VSCODE-TEST-API - VSCode Test API (Test Explorer)]] · [[NFR-003 - Compatibilidade com VSCode]]
+- ↩️ Referenciada por: [[NFR-003 - Compatibilidade com VSCode|NFR-003]]
 <!-- brain:auto:end -->

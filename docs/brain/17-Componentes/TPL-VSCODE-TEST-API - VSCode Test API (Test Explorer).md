@@ -8,7 +8,7 @@ fornecedor: Microsoft
 licenca: MIT
 criticidade: critica
 risco: medio
-versao: "engines.vscode ^1.88.0"
+versao: "engines.vscode ^1.101.0"
 status: ativo
 verificado: 2026-09-23
 implementacao: []

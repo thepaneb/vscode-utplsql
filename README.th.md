@@ -55,7 +55,7 @@
 ## ข้อกำหนด
 
 - [**utPLSQL**](https://github.com/utPLSQL/utPLSQL) **(UT3)** ติดตั้งในฐานข้อมูล Oracle
-- **VSCode 1.88+** (Test Coverage API)
+- **VSCode 1.101+** (Test Coverage API)
 
 ส่วนขยายเป็นเพียง "ไคลเอนต์กราฟิก" — สิ่งที่รันการทดสอบคือฐานข้อมูลโดยตรง (node-oracledb)
 

@@ -55,7 +55,7 @@
 ## 要件
 
 - [**utPLSQL**](https://github.com/utPLSQL/utPLSQL) **(UT3)** が Oracle データベースにインストールされていること。
-- **VSCode 1.88 以降**（Test Coverage API）。
+- **VSCode 1.101 以降**（Test Coverage API）。
 
 この拡張機能は `node-oracledb` を使用して Oracle データベースに直接接続します（シンドライバー、Instant Client 不要）。VSIX には `oracledb` パッケージが同梱されています。
 
