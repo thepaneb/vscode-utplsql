@@ -33,5 +33,6 @@ SORT id ASC
 - [[TPL-FASTXML - fast-xml-parser]] — `TPL-FASTXML`
 - [[TPL-ORACLEDB - node-oracledb]] — `TPL-ORACLEDB`
 - [[TPL-UTPLSQL - utPLSQL (framework no banco)]] — `TPL-UTPLSQL`
+- [[TPL-VSCODE-API - API do VS Code usada]] — `TPL-VSCODE-API`
 - [[TPL-VSCODE-TEST-API - VSCode Test API (Test Explorer)]] — `TPL-VSCODE-TEST-API`
 <!-- brain:auto:end -->

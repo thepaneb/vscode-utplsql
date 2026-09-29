@@ -254,6 +254,29 @@ function checkFidelity(overrides = {}) {
     if (files.readme.includes(term)) problems.push(`README.md: termo obsoleto "${term}"`);
   }
 
+  // 10. @types/vscode pinado no piso de engines.vscode — evita o compilador
+  //     aceitar API acima do piso (que quebraria no VSCode mínimo suportado).
+  //     Só valida quando há `engines.vscode` (fixtures sem engines são ignoradas).
+  let pkg = overrides.pkg;
+  if (!pkg) {
+    try {
+      pkg = JSON.parse(read('package.json'));
+    } catch {
+      pkg = null;
+    }
+  }
+  const engineFloor = String(pkg?.engines?.vscode ?? '')
+    .replace(/^[\^~>=<\s]+/, '')
+    .trim();
+  if (engineFloor) {
+    const typesVersion = String(pkg?.devDependencies?.['@types/vscode'] ?? '').trim();
+    if (typesVersion !== engineFloor) {
+      problems.push(
+        `@types/vscode deve ser exatamente "${engineFloor}" (piso de engines.vscode); está "${typesVersion || 'ausente'}"`,
+      );
+    }
+  }
+
   return problems;
 }
 

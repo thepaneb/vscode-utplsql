@@ -88,6 +88,35 @@ test('docs-fidelity: detecta .vsix em versão divergente', () => {
   assert.ok(problems.some((p) => p.includes('0.1.0') && p.includes('9.9.9')));
 });
 
+test('docs-fidelity: @types/vscode pinado no piso de engines.vscode passa', () => {
+  const problems = checkFidelity({
+    pkg: { engines: { vscode: '^1.88.0' }, devDependencies: { '@types/vscode': '1.88.0' } },
+    settings: [],
+    readme: 'ok',
+    commandTitles: [],
+    modules: [],
+    readmeVariants: [],
+    completedPrds: [],
+  });
+  assert.deepStrictEqual(
+    problems.filter((p) => p.includes('@types/vscode')),
+    [],
+  );
+});
+
+test('docs-fidelity: @types/vscode acima do piso é reportado', () => {
+  const problems = checkFidelity({
+    pkg: { engines: { vscode: '^1.88.0' }, devDependencies: { '@types/vscode': '^1.88.0' } },
+    settings: [],
+    readme: 'ok',
+    commandTitles: [],
+    modules: [],
+    readmeVariants: [],
+    completedPrds: [],
+  });
+  assert.ok(problems.some((p) => p.includes('@types/vscode')));
+});
+
 test('docs-fidelity: detecta PRD concluído ausente na wiki', () => {
   const problems = checkFidelity({ completedPrds: ['999'], wikiPrds: '| 1 | x | 0.0.1 |' });
   assert.ok(problems.some((p) => p.includes('PRD 999')));

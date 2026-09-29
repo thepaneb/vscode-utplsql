@@ -38,7 +38,7 @@ e os riscos das dependências **diretas** relevantes.
 - `@types/mocha` `^10.0.7` — dev
 - `@types/node` `^22.20.1` — dev
 - `@types/oracledb` `^7.0.2` — dev
-- `@types/vscode` `^1.88.0` — dev
+- `@types/vscode` `1.88.0` — dev
 - `@vscode/test-cli` `^0.0.15` — dev
 - `@vscode/test-electron` `^3.1.0` — dev
 - `@vscode/vsce` `^4.0.0` — dev

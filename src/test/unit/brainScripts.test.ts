@@ -939,6 +939,10 @@ test('brain.cjs: CLI ausente e uso inválido', () => {
   try {
     fs.mkdirSync(path.dirname(script), { recursive: true });
     fs.copyFileSync(require.resolve('../../../scripts/brain.cjs'), script);
+    fs.copyFileSync(
+      require.resolve('../../../scripts/vscode-api-inventory.cjs'),
+      path.join(root, 'scripts', 'vscode-api-inventory.cjs'),
+    );
 
     const absent = spawnSync(process.execPath, [script], { encoding: 'utf8', env: cliEnv });
     assert.strictEqual(absent.status, 0, `${absent.stdout}\n${absent.stderr}`);

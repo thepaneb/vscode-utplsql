@@ -14,6 +14,7 @@
 const fs = require('fs');
 const path = require('path');
 const { execFileSync } = require('child_process');
+const { scanVscodeApi } = require('./vscode-api-inventory.cjs');
 
 const DEFAULT_REPO = path.resolve(__dirname, '..');
 let REPO = DEFAULT_REPO;
@@ -800,6 +801,40 @@ function genMocIndex(notePath) {
   );
 }
 
+/** Inventário das APIs do VS Code usadas em produção (fonte: vscode-api-inventory.cjs). */
+function genVscodeApi() {
+  const refs = scanVscodeApi(REPO);
+  const rows = [...refs.entries()]
+    .map(([api, list]) => ({
+      api,
+      count: list.length,
+      files: [...new Set(list.map((r) => r.file))].sort(),
+    }))
+    .sort((a, b) => b.count - a.count || a.api.localeCompare(b.api));
+  let engine = '?';
+  let types = '?';
+  try {
+    const pkg = JSON.parse(fs.readFileSync(path.join(REPO, 'package.json'), 'utf8'));
+    engine = pkg.engines?.vscode ?? '?';
+    types = pkg.devDependencies?.['@types/vscode'] ?? '?';
+  } catch {
+    /* sem package.json (fixture) */
+  }
+  const total = rows.reduce((n, r) => n + r.count, 0);
+  const head =
+    `**\`engines.vscode\`:** \`${engine}\` · **\`@types/vscode\`:** \`${types}\` · ` +
+    `**${rows.length} símbolos · ${total} referências**\n\n` +
+    '| Símbolo | Refs | Arquivos |\n|---|---|---|';
+  const body = rows
+    .map((r) => {
+      const files = r.files.slice(0, 4).map((f) => `\`${f}\``).join(', ');
+      const extra = r.files.length > 4 ? ` +${r.files.length - 4}` : '';
+      return `| \`${r.api}\` | ${r.count} | ${files}${extra} |`;
+    })
+    .join('\n');
+  return `${head}\n${body}`;
+}
+
 const GENERATORS = {
   'root-docs': genRootDocs,
   'readme-variants': genReadmeVariants,
@@ -813,6 +848,7 @@ const GENERATORS = {
   'moc-index': genMocIndex,
   stack: genStack,
   deps: genDeps,
+  'vscode-api': genVscodeApi,
 };
 
 // ── notas geradas (PIPE-*, LOC-*) ──────────────────────────────────────
