@@ -93,6 +93,14 @@ test('docs-fidelity: detecta PRD concluído ausente na wiki', () => {
   assert.ok(problems.some((p) => p.includes('PRD 999')));
 });
 
+test('docs-fidelity: detecta PRD concluído fora da seção Completed', () => {
+  const problems = checkFidelity({
+    completedPrds: ['999'],
+    wikiPrds: '### 🟢 Completed\n\n| 1 | x | 0.0.1 |\n\n### 🔵 Approved\n\n| 999 | y | 0.9.9 |\n',
+  });
+  assert.ok(problems.some((p) => p.includes('999') && p.includes('Completed')));
+});
+
 test('docs-fidelity: detecta termo obsoleto', () => {
   const problems = checkFidelity({ faq: 'usa type_mapping internamente' });
   assert.ok(problems.some((p) => p.includes('type_mapping')));

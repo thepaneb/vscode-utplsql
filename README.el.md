@@ -263,6 +263,8 @@ UTPLSQL_CONN=your_user/password@//host:1521/service
 | `utPLSQL: Run script` | Runs the script open in the editor against a connection profile | Right-click → script file |
 | `utPLSQL: Run script file` | Runs an Explorer script file (decoded with the profile charset) | Right-click → file |
 | `utPLSQL: Run script folder` | Runs the folder scripts in alphabetical order | Right-click → folder |
+| `utPLSQL: Ορισμός κωδικού πορτοφολιού` | Ορίζει/καθαρίζει τον κωδικό wallet του ενεργού προφίλ (SecretStorage) | — |
+| `utPLSQL: Εκτέλεση με reporter (εξαγωγή)` | Εκτελεί την επιλογή με επιλεγμένο reporter και γράφει την έξοδο σε Output/αρχείο (δεν αλλάζει τα αποτελέσματα) | Test Explorer → menu do item |
 
 > **Recompile UT3** (`utplsql.recompileUt3`) **δεν** είναι εντολή palette — είναι
 > ένα εσωτερικό quick-fix του διαγνωστικού "utPLSQL Setup" (άκυρα αντικείμενα στο
@@ -312,10 +314,7 @@ utPLSQL), το coverage παραλείπεται με προειδοποίηση
 Οι προεπιλεγμένοι reporters αφαιρούνται αυτόματα ως διπλότυπα, ακόμη κι αν
 αναφέρονται εδώ.
 
-**Προσωρινός reporter ανά σύνοδο** — η εντολή **utPLSQL: Select additional
-reporter...** ανοίγει ένα QuickPick με τη δυναμική λίστα από τη βάση. Ο
-επιλεγμένος reporter αποθηκεύεται στη σύνοδο, αλλά η επιλογή **δεν εφαρμόζεται**
-στην τρέχουσα έκδοση Oracle-only.
+**Πτητικός reporter συνεδρίας** — η εντολή **Επιλογή επιπλέον reporter...** ανοίγει QuickPick με τη λίστα της βάσης· ο επιλεγμένος reporter αποθηκεύεται στη συνεδρία και **εφαρμόζεται στην επόμενη εκτέλεση**.
 
 ## Απαιτήσεις βάσης δεδομένων
 

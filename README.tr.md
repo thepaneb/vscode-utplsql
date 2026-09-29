@@ -261,6 +261,8 @@ Tüm uzantı komutları (palet `Ctrl+Shift+P` öneki `utPLSQL:`):
 | `utPLSQL: Run script` | Runs the script open in the editor against a connection profile | Right-click → script file |
 | `utPLSQL: Run script file` | Runs an Explorer script file (decoded with the profile charset) | Right-click → file |
 | `utPLSQL: Run script folder` | Runs the folder scripts in alphabetical order | Right-click → folder |
+| `utPLSQL: Cüzdan parolasını ayarla` | Etkin profilin cüzdan parolasını ayarlar/temizler (SecretStorage) | — |
+| `utPLSQL: Reporter ile çalıştır (dışa aktar)` | Seçimi seçilen reporter ile çalıştırır ve çıktıyı Output/dosyaya yazar (sonuçları değiştirmez) | Test Explorer → menu do item |
 
 > **Recompile UT3** (`utplsql.recompileUt3`) bir **palet komutu değildir** — "utPLSQL Setup"
 > tanılamasının iç bir hızlı düzeltmesidir (utPLSQL şemasındaki geçersiz nesneler).
@@ -312,9 +314,7 @@ engellenmez.
 Varsayılan raporlayıcılar, burada listelense bile otomatik olarak
 yinelenmekten (dedupe) çıkarılır.
 
-**Oturum başına geçici raporlayıcı** — **utPLSQL: Select additional
-reporter...** komutu, veritabanındaki dinamik listeyle bir QuickPick açar. Seçilen
-raporlayıcı oturumda saklanır, ancak seçim mevcut Oracle-only sürümünde **uygulanmaz**.
+**Oturuma özel reporter** — **Ek reporter seç...** komutu veritabanı listesiyle bir QuickPick açar; seçilen reporter oturumda saklanır ve **sonraki çalıştırmada uygulanır**.
 
 ## Veritabanı gereksinimleri
 

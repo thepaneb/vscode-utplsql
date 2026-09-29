@@ -262,6 +262,8 @@ UTPLSQL_CONN=your_user/password@//host:1521/service
 | `utPLSQL: Run script` | Runs the script open in the editor against a connection profile | Right-click → script file |
 | `utPLSQL: Run script file` | Runs an Explorer script file (decoded with the profile charset) | Right-click → file |
 | `utPLSQL: Run script folder` | Runs the folder scripts in alphabetical order | Right-click → folder |
+| `utPLSQL: Задаване на парола на портфейла` | Задава/изчиства паролата на портфейла на активния профил (SecretStorage) | — |
+| `utPLSQL: Изпълни с reporter (експорт)` | Изпълнява селекцията с избран reporter и записва изхода в Output/файл (без промяна на резултатите) | Test Explorer → menu do item |
 
 > **Recompile UT3** (`utplsql.recompileUt3`) **не** е команда от палитрата — това е
 > вътрешен quick-fix на диагностиката „utPLSQL Setup" (невалидни обекти в

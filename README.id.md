@@ -262,6 +262,8 @@ Semua perintah ekstensi (palet `Ctrl+Shift+P`, prefiks `utPLSQL:`):
 | `utPLSQL: Run script` | Runs the script open in the editor against a connection profile | Right-click → script file |
 | `utPLSQL: Run script file` | Runs an Explorer script file (decoded with the profile charset) | Right-click → file |
 | `utPLSQL: Run script folder` | Runs the folder scripts in alphabetical order | Right-click → folder |
+| `utPLSQL: Atur kata sandi wallet` | Mengatur/menghapus kata sandi wallet profil aktif (SecretStorage) | — |
+| `utPLSQL: Jalankan dengan reporter (ekspor)` | Menjalankan pilihan dengan reporter terpilih dan menulis output ke Output/file (tidak mengubah hasil) | Test Explorer → menu do item |
 
 > **Recompile UT3** (`utplsql.recompileUt3`) **bukan** perintah palet — ini adalah
 > quick-fix internal dari diagnostik "utPLSQL Setup" (objek tidak valid di
@@ -311,10 +313,7 @@ tidak pernah terblokir.
 Reporter default otomatis di-deduplikasi, meskipun
 didaftarkan di sini.
 
-**Reporter per-sesi yang volatile** — perintah **utPLSQL: Select additional
-reporter...** membuka QuickPick berisi daftar dinamis dari database. Reporter
-yang dipilih disimpan di sesi, tetapi seleksi **tidak diterapkan** di versi
-Oracle-only saat ini.
+**Reporter volatil per sesi** — perintah **Pilih reporter tambahan...** membuka QuickPick dengan daftar dari basis data; reporter terpilih disimpan di sesi dan **diterapkan pada run berikutnya**.
 
 ## Persyaratan basis data
 

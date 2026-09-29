@@ -262,6 +262,8 @@ A bővítmény összes parancsa (paletta `Ctrl+Shift+P`, előtag `utPLSQL:`):
 | `utPLSQL: Run script` | Runs the script open in the editor against a connection profile | Right-click → script file |
 | `utPLSQL: Run script file` | Runs an Explorer script file (decoded with the profile charset) | Right-click → file |
 | `utPLSQL: Run script folder` | Runs the folder scripts in alphabetical order | Right-click → folder |
+| `utPLSQL: Tárca jelszó beállítása` | Beállítja/törli az aktív profil tárca jelszavát (SecretStorage) | — |
+| `utPLSQL: Futtatás reporterrel (export)` | A kijelölést a választott reporterrel futtatja, és Output/fájlba írja (nem módosítja az eredményeket) | Test Explorer → menu do item |
 
 > **Recompile UT3** (`utplsql.recompileUt3`) **nem** palettaparancs — ez a
 > „utPLSQL Setup" diagnosztika belső gyorsjavítása (érvénytelen objektumok a
@@ -311,10 +313,7 @@ soha nem blokkolódik.
 Az alapértelmezett riporterek automatikusan deduplikálódnak, még akkor is, ha
 itt fel vannak sorolva.
 
-**Munkamenetenként változó riporter** — a **utPLSQL: Select additional
-reporter...** parancs QuickPicket nyit az adatbázisból származó dinamikus listával. A
-kiválasztott riporter a munkamenetben tárolódik, de a kiválasztás **nem kerül
-alkalmazásra** a jelenlegi Oracle-only verzióban.
+**Illékony munkamenet-reporter** — a **További riporter kiválasztása...** parancs QuickPicket nyit az adatbázis listájával; a választott reporter a munkamenetben marad és **a következő futásnál alkalmazódik**.
 
 ## Adatbázis-követelmények
 

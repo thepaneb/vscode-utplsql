@@ -259,6 +259,8 @@ UTPLSQL_CONN=your_user/password@//host:1521/service
 | `utPLSQL: Run script` | Runs the script open in the editor against a connection profile | Right-click → script file |
 | `utPLSQL: Run script file` | Runs an Explorer script file (decoded with the profile charset) | Right-click → file |
 | `utPLSQL: Run script folder` | Runs the folder scripts in alphabetical order | Right-click → folder |
+| `utPLSQL: 设置钱包密码` | 设置/清除活动配置的 Oracle Cloud 钱包密码（SecretStorage） | — |
+| `utPLSQL: 使用 reporter 运行（导出）` | 使用所选 reporter 运行选择并将输出写入 Output/文件（不改变结果） | Test Explorer → menu do item |
 
 > **Recompile UT3**（`utplsql.recompileUt3`）**不是**面板命令 — 它是
 > "utPLSQL Setup" 诊断（utPLSQL schema 中的无效对象）的内部快速修复。
@@ -309,10 +311,7 @@ utPLSQL），覆盖率会被跳过并在输出中显示警告。测试执行
 默认 reporter 会自动去重，即使在这里列出
 也会被去重。
 
-**按会话变化的 reporter** — 命令 **utPLSQL: Select additional
-reporter...** 会打开一个 QuickPick，显示数据库中的动态列表。所选的
-reporter 会保存在会话中，但该选择在当前的 Oracle-only 版本中
-**不会被应用**。
+**会话内临时 reporter** — 命令 **选择附加 reporter...** 会打开数据库列表的 QuickPick；所选 reporter 保存在会话中，并在**下次运行时应用**。
 
 ## 数据库要求
 

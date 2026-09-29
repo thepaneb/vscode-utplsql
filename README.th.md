@@ -261,6 +261,8 @@ Annotation ไม่คำนึงถึงตัวพิมพ์เล็ก
 | `utPLSQL: Run script` | Runs the script open in the editor against a connection profile | Right-click → script file |
 | `utPLSQL: Run script file` | Runs an Explorer script file (decoded with the profile charset) | Right-click → file |
 | `utPLSQL: Run script folder` | Runs the folder scripts in alphabetical order | Right-click → folder |
+| `utPLSQL: ตั้งรหัสผ่านวอลเล็ต` | ตั้ง/ล้างรหัสผ่านวอลเล็ตของโปรไฟล์ที่ใช้งาน (SecretStorage) | — |
+| `utPLSQL: เรียกใช้ด้วย reporter (ส่งออก)` | เรียกใช้ส่วนที่เลือกด้วย reporter ที่เลือกและเขียนเอาต์พุตไปที่ Output/ไฟล์ (ไม่เปลี่ยนผลลัพธ์) | Test Explorer → menu do item |
 
 > **Recompile UT3** (`utplsql.recompileUt3`) **ไม่ใช่**คำสั่งใน palette — เป็น
 > quick-fix ภายในของการวินิจฉัย "utPLSQL Setup" (อ็อบเจกต์ที่ไม่ถูกต้องใน
@@ -310,10 +312,7 @@ Annotation ไม่คำนึงถึงตัวพิมพ์เล็ก
 reporters เริ่มต้นจะถูกตัดรายการซ้ำโดยอัตโนมัติ แม้จะ
 ระบุไว้ที่นี่
 
-**Reporter แบบชั่วคราวต่อเซสชัน** — คำสั่ง **utPLSQL: Select additional
-reporter...** เปิด QuickPick พร้อมรายการแบบไดนามิกจากฐานข้อมูล
-reporter ที่เลือกจะถูกเก็บไว้ในเซสชัน แต่การเลือกนั้น **ไม่ถูกนำไปใช้**
-ในเวอร์ชัน Oracle-only ปัจจุบัน
+**reporter ชั่วคราวต่อเซสชัน** — คำสั่ง **เลือก reporter เพิ่มเติม...** เปิด QuickPick ด้วยรายการจากฐานข้อมูล reporter ที่เลือกจะถูกเก็บในเซสชันและ **นำไปใช้ในการรันครั้งถัดไป**
 
 ## ข้อกำหนดฐานข้อมูล
 

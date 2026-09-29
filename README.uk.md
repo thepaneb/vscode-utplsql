@@ -259,6 +259,8 @@ UTPLSQL_CONN=your_user/password@//host:1521/service
 | `utPLSQL: Run script` | Runs the script open in the editor against a connection profile | Right-click → script file |
 | `utPLSQL: Run script file` | Runs an Explorer script file (decoded with the profile charset) | Right-click → file |
 | `utPLSQL: Run script folder` | Runs the folder scripts in alphabetical order | Right-click → folder |
+| `utPLSQL: Встановити пароль гаманця` | Встановлює/очищає пароль гаманця активного профілю (SecretStorage) | — |
+| `utPLSQL: Запустити з reporter (експорт)` | Запускає вибір з обраним reporter і записує вивід у Output/файл (не змінює результати) | Test Explorer → menu do item |
 
 > **Recompile UT3** (`utplsql.recompileUt3`) — **не** команда палітри: це
 > внутрішнє швидке виправлення діагностики "utPLSQL Setup" (недійсні об'єкти у
@@ -308,10 +310,7 @@ utPLSQL), покриття пропускається з попередженн�
 Репортери за замовчуванням автоматично дедуплікуються, навіть якщо
 перелічені тут.
 
-**Тимчасовий репортер для сесії** — команда **utPLSQL: Select additional
-reporter...** відкриває QuickPick із динамічним списком із бази даних.
-Вибраний репортер зберігається в сесії, але вибір **не застосовується**
-у поточній версії Oracle-only.
+**Сession reporter** — команда **Вибрати додатковий reporter...** відкриває QuickPick зі списком із БД; обраний reporter зберігається в сесії та **застосовується під час наступного запуску**.
 
 ## Вимоги до бази даних
 

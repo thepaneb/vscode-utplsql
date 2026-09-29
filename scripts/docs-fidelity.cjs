@@ -162,10 +162,14 @@ function checkFidelity(overrides = {}) {
     }
   }
 
-  // 5. PRDs concluídos ↔ wiki/PRDs.md (por ID)
+  // 5. PRDs concluídos ↔ wiki/PRDs.md (por ID) — e DEVEM estar na seção Completed.
+  const completedSection = files.wikiPrds.split(/\n###\s+[^\n]*Approved/)[0];
   for (const id of completedPrds) {
-    if (!new RegExp(`\\|\\s*0*${Number(id)}\\s*\\|`).test(files.wikiPrds)) {
+    const marker = new RegExp(`\\|\\s*0*${Number(id)}\\s*\\|`);
+    if (!marker.test(files.wikiPrds)) {
       problems.push(`PRD ${id} (completed/) ausente em docs/wiki/PRDs.md`);
+    } else if (!marker.test(completedSection)) {
+      problems.push(`PRD ${id} (completed/) listado fora da seção Completed em docs/wiki/PRDs.md`);
     }
   }
 

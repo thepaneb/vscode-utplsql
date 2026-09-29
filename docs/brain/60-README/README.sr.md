@@ -270,6 +270,8 @@ UTPLSQL_CONN=your_user/password@//host:1521/service
 | `utPLSQL: Run script` | Runs the script open in the editor against a connection profile | Right-click → script file |
 | `utPLSQL: Run script file` | Runs an Explorer script file (decoded with the profile charset) | Right-click → file |
 | `utPLSQL: Run script folder` | Runs the folder scripts in alphabetical order | Right-click → folder |
+| `utPLSQL: Подеси лозинку новчаника` | Поставља/брише лозинку новчаника активног профила (SecretStorage) | — |
+| `utPLSQL: Покрени са reporter-ом (извоз)` | Покреће избор са изабраним reporter-ом и пише излаз у Output/датотеку (не мења резултате) | Test Explorer → menu do item |
 
 > **Recompile UT3** (`utplsql.recompileUt3`) **није** команда у палети — то је
 > интерни quick-fix дијагностике „utPLSQL Setup" (неважећи објекти у
@@ -319,10 +321,7 @@ utPLSQL), покривеност се прескаче са упозорењем
 Подразумевани reporter-и се аутоматски дедупликују, чак и ако су
 овде наведени.
 
-**Променљив reporter по сесији** — команда **utPLSQL: Select additional
-reporter...** отвара QuickPick са динамичком листом из базе података.
-Изабрани reporter се чува у сесији, али се избор **не примењује**
-у тренутној Oracle-only верзији.
+**Привремени reporter сесије** — команда **Изабери додатни reporter...** отвара QuickPick са листом из базе; изабрани reporter се чува у сесији и **примењује при следећем покретању**.
 
 ## Захтеви базе података
 

@@ -262,6 +262,8 @@ Toate comenzile extensiei (paletă `Ctrl+Shift+P`, prefix `utPLSQL:`):
 | `utPLSQL: Run script` | Runs the script open in the editor against a connection profile | Right-click → script file |
 | `utPLSQL: Run script file` | Runs an Explorer script file (decoded with the profile charset) | Right-click → file |
 | `utPLSQL: Run script folder` | Runs the folder scripts in alphabetical order | Right-click → folder |
+| `utPLSQL: Setează parola portofelului` | Setează/șterge parola portofelului profilului activ (SecretStorage) | — |
+| `utPLSQL: Rulează cu reporter (export)` | Rulează selecția cu reporterul ales și scrie ieșirea în Output/fișier (nu schimbă rezultatele) | Test Explorer → menu do item |
 
 > **Recompile UT3** (`utplsql.recompileUt3`) **nu** este o comandă din paletă — este
 > un quick-fix intern al diagnosticului „utPLSQL Setup" (obiecte invalide în
@@ -311,10 +313,7 @@ nu este niciodată blocată.
 Cei implicați reporteri sunt deduplicați automat, chiar dacă sunt
 listați aici.
 
-**Reporter volatil per sesiune** — comanda **utPLSQL: Select additional
-reporter...** deschide un QuickPick cu lista dinamică din baza de date.
-Reporterul ales este stocat în sesiune, dar selecția **nu este aplicată** în
-versiunea Oracle-only actuală.
+**Reporter volatil de sesiune** — comanda **Selectează reporter suplimentar...** deschide un QuickPick cu lista din baza de date; reporterul ales este păstrat în sesiune și **aplicat la următoarea rulare**.
 
 ## Cerințe pentru baza de date
 

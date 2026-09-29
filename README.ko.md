@@ -261,6 +261,8 @@ UTPLSQL_CONN=your_user/password@//host:1521/service
 | `utPLSQL: Run script` | Runs the script open in the editor against a connection profile | Right-click → script file |
 | `utPLSQL: Run script file` | Runs an Explorer script file (decoded with the profile charset) | Right-click → file |
 | `utPLSQL: Run script folder` | Runs the folder scripts in alphabetical order | Right-click → folder |
+| `utPLSQL: 월렛 비밀번호 설정` | 활성 프로필의 월렛 비밀번호 설정/해제(SecretStorage) | — |
+| `utPLSQL: reporter로 실행(내보내기)` | 선택 항목을 선택한 reporter로 실행하고 출력을 Output/파일에 저장합니다(결과는 변경하지 않음) | Test Explorer → menu do item |
 
 > **Recompile UT3**(`utplsql.recompileUt3`)은 팔레트 명령이 **아닙니다** —
 > "utPLSQL Setup" 진단(utPLSQL 스키마의 잘못된 객체)의 내부 quick-fix입니다.
@@ -312,9 +314,7 @@ UTPLSQL_CONN=your_user/password@//host:1521/service
 기본 리포터는 여기에 나열되어 있어도
 자동으로 중복 제거됩니다.
 
-**일시적 세션별 리포터** — **utPLSQL: Select additional reporter...** 명령은
-데이터베이스의 동적 목록이 있는 QuickPick을 엽니다. 선택한 리포터는 세션에 저장되지만,
-그 선택은 **현재 Oracle-only 버전에서는 적용되지 않습니다**.
+**세션 한정 reporter** — **추가 reporter 선택...** 명령이 데이터베이스 목록을 QuickPick으로 엽니다. 선택한 reporter는 세션에 저장되어 **다음 실행에 적용**됩니다.
 
 ## 데이터베이스 요구 사항
 

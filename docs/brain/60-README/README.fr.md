@@ -269,6 +269,8 @@ Toutes les commandes de l'extension (palette `Ctrl+Shift+P` préfixe `utPLSQL:`)
 | `utPLSQL: Run script` | Runs the script open in the editor against a connection profile | Right-click → script file |
 | `utPLSQL: Run script file` | Runs an Explorer script file (decoded with the profile charset) | Right-click → file |
 | `utPLSQL: Run script folder` | Runs the folder scripts in alphabetical order | Right-click → folder |
+| `utPLSQL : Définir le mot de passe du wallet` | Définit/efface le mot de passe du wallet du profil actif (SecretStorage) | — |
+| `utPLSQL : Exécuter avec un reporter (export)` | Exécute la sélection avec un reporter choisi et écrit la sortie dans Output/fichier (ne change pas les résultats) | Test Explorer → menu do item |
 
 > **Recompile UT3** (`utplsql.recompileUt3`) **n'est pas** une commande de palette — c'est
 > une action rapide interne du diagnostic « utPLSQL Setup » (objets invalides dans le
@@ -324,10 +326,7 @@ n'est jamais bloquée.
 Les reporters par défaut sont automatiquement dédupliqués, même s'ils sont
 listés ici.
 
-**Reporter volatil par session** — commande **utPLSQL: Select additional
-reporter...** ouvre un QuickPick avec la liste dynamique de la base de données. Le
-reporteur choisi est stocké dans la session, mais la sélection **n'est pas
-appliquée** dans la version Oracle-only actuelle.
+**Reporter volatil par session** — la commande **Sélectionner un reporter supplémentaire...** ouvre un QuickPick avec la liste dynamique ; le reporter choisi est gardé en session et **appliqué à la prochaine exécution**.
 
 ## Prérequis de la base de données
 

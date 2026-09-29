@@ -261,6 +261,8 @@ All extension commands (palette `Ctrl+Shift+P` prefix `utPLSQL:`):
 | `utPLSQL: Run script` | Runs the script open in the editor against a connection profile | Right-click → script file |
 | `utPLSQL: Run script file` | Runs an Explorer script file (decoded with the profile charset) | Right-click → file |
 | `utPLSQL: Run script folder` | Runs the folder scripts in alphabetical order | Right-click → folder |
+| `utPLSQL: Set wallet password` | Sets/clears the active profile's Oracle Cloud wallet password (SecretStorage) | — |
+| `utPLSQL: Run with Reporter (Export)` | Runs the selection with a chosen reporter and writes the output to Output/file (does not change results) | Test Explorer → menu do item |
 
 > **Recompile UT3** (`utplsql.recompileUt3`) is **not** a palette command — it is
 > an internal quick-fix of the "utPLSQL Setup" diagnostic (invalid objects in the
@@ -310,10 +312,7 @@ is never blocked.
 The default reporters are automatically deduplicated, even if
 listed here.
 
-**Volatile per-session reporter** — command **utPLSQL: Select additional
-reporter...** opens a QuickPick with the dynamic list from the database. The
-chosen reporter is stored in the session, but the selection is **not applied**
-in the current Oracle-only version.
+**Volatile per-session reporter** — the **Select additional reporter...** command opens a QuickPick with the dynamic database list; the chosen reporter is stored in the session and **applied to the next run**.
 
 ## Database requirements
 

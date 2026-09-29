@@ -264,6 +264,8 @@ UTPLSQL_CONN=your_user/password@//host:1521/service
 | `utPLSQL: Run script` | Runs the script open in the editor against a connection profile | Right-click → script file |
 | `utPLSQL: Run script file` | Runs an Explorer script file (decoded with the profile charset) | Right-click → file |
 | `utPLSQL: Run script folder` | Runs the folder scripts in alphabetical order | Right-click → folder |
+| `utPLSQL: ウォレットのパスワードを設定` | アクティブなプロファイルのウォレットパスワードを設定/クリア（SecretStorage） | — |
+| `utPLSQL: reporter で実行（エクスポート）` | 選択範囲を選択した reporter で実行し、出力を Output/ファイルに書き込みます（結果は変えません） | Test Explorer → menu do item |
 
 > **Recompile UT3**（`utplsql.recompileUt3`）はパレットコマンド**ではありません** —
 > "utPLSQL Setup" 診断（utPLSQL スキーマ内の無効オブジェクト）の内部クイックフィックスです。
@@ -318,9 +320,7 @@ UTPLSQL_CONN=your_user/password@//host:1521/service
 デフォルトレポーターは、ここにリストしても自動的に
 重複排除されます。
 
-**セッションごとの一時レポーター** — **utPLSQL: Select additional
-reporter...** コマンドは、データベースから動的リストを取得して QuickPick を開きます。
-選択したレポーターはセッションに保存されますが、その選択は**現在の Oracle-only 版では適用されません**。
+**セッション限定 reporter** — コマンド **追加レポーターを選択...** がデータベースの一覧を QuickPick で開きます。選択した reporter はセッションに保存され、**次回の実行で適用**されます。
 
 ## データベースの要件
 

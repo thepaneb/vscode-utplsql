@@ -261,6 +261,8 @@ Tất cả các lệnh của extension (palette `Ctrl+Shift+P` tiền tố `utPL
 | `utPLSQL: Run script` | Runs the script open in the editor against a connection profile | Right-click → script file |
 | `utPLSQL: Run script file` | Runs an Explorer script file (decoded with the profile charset) | Right-click → file |
 | `utPLSQL: Run script folder` | Runs the folder scripts in alphabetical order | Right-click → folder |
+| `utPLSQL: Đặt mật khẩu ví` | Đặt/xóa mật khẩu ví của hồ sơ đang hoạt động (SecretStorage) | — |
+| `utPLSQL: Chạy với reporter (xuất)` | Chạy lựa chọn với reporter đã chọn và ghi đầu ra vào Output/tệp (không đổi kết quả) | Test Explorer → menu do item |
 
 > **Recompile UT3** (`utplsql.recompileUt3`) **không phải** là lệnh palette — nó là
 > quick-fix nội bộ của diagnostic "utPLSQL Setup" (các đối tượng không hợp lệ trong
@@ -310,10 +312,7 @@ không bao giờ bị chặn.
 Các reporter mặc định tự động được loại bỏ trùng (deduplicated), kể cả khi được
 liệt kê ở đây.
 
-**Reporter thay đổi theo phiên** — lệnh **utPLSQL: Select additional
-reporter...** mở QuickPick với danh sách động từ cơ sở dữ liệu. Reporter
-được chọn được lưu trong phiên, nhưng lựa chọn **không được áp dụng** trong
-phiên bản Oracle-only hiện tại.
+**Reporter tạm theo phiên** — lệnh **Chọn reporter bổ sung...** mở QuickPick với danh sách từ cơ sở dữ liệu; reporter đã chọn được lưu trong phiên và **áp dụng cho lần chạy kế tiếp**.
 
 ## Yêu cầu cơ sở dữ liệu
 

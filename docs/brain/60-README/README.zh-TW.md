@@ -269,6 +269,8 @@ UTPLSQL_CONN=your_user/password@//host:1521/service
 | `utPLSQL: Run script` | Runs the script open in the editor against a connection profile | Right-click → script file |
 | `utPLSQL: Run script file` | Runs an Explorer script file (decoded with the profile charset) | Right-click → file |
 | `utPLSQL: Run script folder` | Runs the folder scripts in alphabetical order | Right-click → folder |
+| `utPLSQL: 設定錢包密碼` | 設定/清除使用中設定檔的 Oracle Cloud 錢包密碼（SecretStorage） | — |
+| `utPLSQL: 使用 reporter 執行（匯出）` | 使用所選 reporter 執行選取並將輸出寫入 Output/檔案（不改變結果） | Test Explorer → menu do item |
 
 > **Recompile UT3**（`utplsql.recompileUt3`）**不是**命令面板命令 — 它是
 > 「utPLSQL Setup」診斷（utPLSQL schema 中的無效物件）的內部快速修復。
@@ -319,10 +321,7 @@ UTPLSQL_CONN=your_user/password@//host:1521/service
 ```
 預設 reporters 會自動去重，即使在此處列出亦然。
 
-**每次工作階段可變的 reporter** — 命令 **utPLSQL: Select additional
-reporter...** 會開啟一個 QuickPick，列出資料庫中的動態清單。所選的
-reporter 會保存在工作階段中，但該選擇在目前的 Oracle-only 版本中
-**不會被套用**。
+**工作階段專用 reporter** — 命令 **選擇額外 reporter...** 會開啟資料庫清單的 QuickPick；所選 reporter 會保存在工作階段，並在**下次執行時套用**。
 
 ## 資料庫需求
 

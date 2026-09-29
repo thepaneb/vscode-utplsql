@@ -263,6 +263,8 @@ Všechny příkazy rozšíření (paleta `Ctrl+Shift+P`, předpona `utPLSQL:`):
 | `utPLSQL: Run script` | Runs the script open in the editor against a connection profile | Right-click → script file |
 | `utPLSQL: Run script file` | Runs an Explorer script file (decoded with the profile charset) | Right-click → file |
 | `utPLSQL: Run script folder` | Runs the folder scripts in alphabetical order | Right-click → folder |
+| `utPLSQL: Nastavit heslo peněženky` | Nastaví/vymaže heslo peněženky aktivního profilu (SecretStorage) | — |
+| `utPLSQL: Spustit s reporterem (export)` | Spustí výběr se zvoleným reporterem a zapíše výstup do Output/souboru (nemění výsledky) | Test Explorer → menu do item |
 
 > **Recompile UT3** (`utplsql.recompileUt3`) **není** příkaz palety — je to
 > interní rychlá oprava diagnostiky „utPLSQL Setup" (neplatné objekty ve
