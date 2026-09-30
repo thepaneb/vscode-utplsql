@@ -59,6 +59,18 @@ extensão normalmente.
 > é da extensão**. O `.vscode/launch.json` já usa
 > `"experimentalNetworking": "off"`; se persistir, defina
 > `"debug.javascript.enableNetworkView": false` nas User settings.
+>
+> Se aparecer **`Extension host did not start in 10 seconds … stopped on the
+> first line`** (com `debugBrk: true`) e/ou `The onCancel handler was attached
+> after the promise settled` no `ms-vscode.js-debug`, é o **depurador JS
+> embutido** falhando em anexar — **não** é a extensão. Para validar a ativação,
+> use **`Ctrl+F5` (Executar sem depuração)**; para depurar, faça **Reload
+> Window** (ou reinicie o VS Code) e, se persistir, desative o auto-attach
+> (`"debug.javascript.autoAttachFilter": "disabled"`).
+>
+> O `main` é o **bundle** (`dist/extension.js`); por isso o `outFiles` do launch
+> inclui `dist/**` **e** `out/**` (source maps) — sem isso os breakpoints podem
+> “prender” na primeira linha.
 
 ## Bundling com esbuild (PRD-45, ajustes na PRD-46)
 
