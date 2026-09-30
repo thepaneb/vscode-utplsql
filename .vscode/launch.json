@@ -19,6 +19,7 @@
       "name": "Anexar ao Extension Host (9339)",
       "type": "node",
       "request": "attach",
+      "address": "127.0.0.1",
       "port": 9339,
       "restart": true,
       "outFiles": [
