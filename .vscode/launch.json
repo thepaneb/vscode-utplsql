@@ -16,6 +16,19 @@
       "preLaunchTask": "extension: build"
     },
     {
+      "name": "Anexar ao Extension Host (9339)",
+      "type": "node",
+      "request": "attach",
+      "port": 9339,
+      "restart": true,
+      "outFiles": [
+        "${workspaceFolder}/out/**/*.js",
+        "${workspaceFolder}/dist/**/*.js"
+      ],
+      "resolveSourceMapLocations": ["${workspaceFolder}/**", "!**/node_modules/**"],
+      "skipFiles": ["<node_internals>/**"]
+    },
+    {
       "name": "Testes unitários",
       "type": "node",
       "request": "launch",
