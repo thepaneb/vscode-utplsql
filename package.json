@@ -34,8 +34,10 @@
     "theme": "dark"
   },
   "activationEvents": [
+    "onStartupFinished",
     "workspaceContains:**/*.pks",
-    "workspaceContains:**/*.pkb"
+    "workspaceContains:**/*.pkb",
+    "workspaceContains:**/*.sql"
   ],
   "capabilities": {
     "untrustedWorkspaces": {
