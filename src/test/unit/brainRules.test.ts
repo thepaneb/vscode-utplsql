@@ -14,6 +14,8 @@ const {
   checkReferences,
   checkMencoesPrd,
   checkSecRegras,
+  checkPrdRules,
+  semverGte,
   parseFrontmatter,
   LAYERS,
 } = require('../../../scripts/brain-rules.cjs') as {
@@ -25,6 +27,8 @@ const {
     notes: { name: string; content: string }[],
     regraStatus: Map<string, string>,
   ) => string[];
+  checkPrdRules: (notes: { name: string; content: string }[]) => string[];
+  semverGte: (a: string, b: string) => boolean;
   checkReferences: (
     notes: { name: string; content: string }[],
     exists: (ref: string) => boolean,
@@ -562,4 +566,139 @@ test('brain-rules.cjs: CLI valida as linhas em fixture isolado', () => {
   } finally {
     fs.rmSync(root, { recursive: true, force: true });
   }
+});
+
+// ── PRD ↔ regras (vínculo bidirecional) ────────────────────────────────
+
+const prdNote = (lines: string[], body = '') => ({
+  name: '20-PRDs/prd-81-x.md',
+  content: ['---', ...lines, '---', '', body].join('\n'),
+});
+
+const ruleNote = (id: string, prds: string[], tipo = 'regra') => ({
+  name: `${id}.md`,
+  content: [
+    '---',
+    `id: ${id}`,
+    `tipo: ${tipo}`,
+    `prds: [${prds.map((p) => `"${p}"`).join(', ')}]`,
+    '---',
+    '',
+  ].join('\n'),
+});
+
+test('brain-rules: semverGte compara versões', () => {
+  assert.strictEqual(semverGte('0.14.0', '0.14.0'), true);
+  assert.strictEqual(semverGte('0.14.1', '0.14.0'), true);
+  assert.strictEqual(semverGte('0.15.0', '0.14.0'), true);
+  assert.strictEqual(semverGte('1.0.0', '0.14.0'), true);
+  assert.strictEqual(semverGte('0.13.0', '0.14.0'), false);
+});
+
+test('brain-rules: PRD concluída (>= baseline) sem o campo regras é reportada', () => {
+  const prd = prdNote(['tipo: prd', 'id: PRD-81', 'status: completed', 'versao: "0.14.0"']);
+  assert.ok(checkPrdRules([prd]).some((p) => p.includes("sem o campo 'regras'")));
+});
+
+test('brain-rules: PRD < baseline é ignorada', () => {
+  const prd = prdNote(['tipo: prd', 'id: PRD-50', 'status: completed', 'versao: "0.13.0"']);
+  assert.deepStrictEqual(checkPrdRules([prd]), []);
+});
+
+test('brain-rules: PRD não concluída não é cobrada', () => {
+  const prd = prdNote(['tipo: prd', 'id: PRD-90', 'status: approved', 'versao: "0.15.0"']);
+  assert.deepStrictEqual(checkPrdRules([prd]), []);
+});
+
+test('brain-rules: PRD concluída sem regras e sem a seção de impacto é reportada', () => {
+  const prd = prdNote([
+    'tipo: prd',
+    'id: PRD-81',
+    'status: completed',
+    'versao: "0.14.0"',
+    'regras: []',
+  ]);
+  assert.ok(checkPrdRules([prd]).some((p) => p.includes('sem a seção')));
+});
+
+test('brain-rules: PRD sem regras mas com a seção de impacto passa', () => {
+  const prd = prdNote(
+    ['tipo: prd', 'id: PRD-81', 'status: completed', 'versao: "0.14.0"', 'regras: []'],
+    '## Impacto no cérebro\n\nnenhuma\n',
+  );
+  assert.deepStrictEqual(checkPrdRules([prd]), []);
+});
+
+test('brain-rules: seção de impacto sem a confirmação nenhuma é reportada', () => {
+  const prd = prdNote(
+    ['tipo: prd', 'id: PRD-81', 'status: completed', 'versao: "0.14.0"', 'regras: []'],
+    '## Impacto no cérebro\n\n{preencher}\n',
+  );
+  assert.ok(checkPrdRules([prd]).some((p) => p.includes("confirmação 'nenhuma'")));
+});
+
+test('brain-rules: seção de impacto numerada (## 12. …) é aceita', () => {
+  const prd = prdNote(
+    ['tipo: prd', 'id: PRD-81', 'status: completed', 'versao: "0.14.0"', 'regras: []'],
+    '## 12. Impacto no cérebro\n\nnenhuma\n',
+  );
+  assert.deepStrictEqual(checkPrdRules([prd]), []);
+});
+
+test('brain-rules: vínculo bidirecional válido passa', () => {
+  const prd = prdNote([
+    'tipo: prd',
+    'id: PRD-81',
+    'status: completed',
+    'versao: "0.14.0"',
+    'regras: ["BR-CONN-016"]',
+  ]);
+  assert.deepStrictEqual(checkPrdRules([prd, ruleNote('BR-CONN-016', ['PRD-81'])]), []);
+});
+
+test('brain-rules: SEC também participa do vínculo com a PRD', () => {
+  const prd = prdNote([
+    'tipo: prd',
+    'id: PRD-81',
+    'status: completed',
+    'versao: "0.14.0"',
+    'regras: ["SEC-011"]',
+  ]);
+  assert.deepStrictEqual(checkPrdRules([prd, ruleNote('SEC-011', ['PRD-81'], 'seguranca')]), []);
+});
+
+test('brain-rules: regra citada na PRD que não lista a PRD é reportada', () => {
+  const prd = prdNote([
+    'tipo: prd',
+    'id: PRD-81',
+    'status: completed',
+    'versao: "0.14.0"',
+    'regras: ["BR-CONN-016"]',
+  ]);
+  assert.ok(
+    checkPrdRules([prd, ruleNote('BR-CONN-016', [])]).some((p) => p.includes('não lista a PRD')),
+  );
+});
+
+test('brain-rules: regra inexistente em regras: é reportada', () => {
+  const prd = prdNote([
+    'tipo: prd',
+    'id: PRD-81',
+    'status: completed',
+    'versao: "0.14.0"',
+    'regras: ["BR-NAO-EXISTE"]',
+  ]);
+  assert.ok(checkPrdRules([prd]).some((p) => p.includes('em regras: inexistente')));
+});
+
+test('brain-rules: regra que lista a PRD fora de regras: é reportada', () => {
+  const prd = prdNote(
+    ['tipo: prd', 'id: PRD-81', 'status: completed', 'versao: "0.14.0"', 'regras: []'],
+    '## Impacto no cérebro\n\nnenhuma\n',
+  );
+  assert.ok(
+    checkPrdRules([prd, ruleNote('BR-CONN-016', ['PRD-81'])]).some((p) =>
+      p.includes('não está em regras:'),
+    ),
+  );
 });

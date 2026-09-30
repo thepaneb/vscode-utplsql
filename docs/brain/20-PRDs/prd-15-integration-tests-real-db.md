@@ -8,6 +8,7 @@ versao: "0.6.0"
 data: "2026-07-11"
 autor: "Gil Cleber Barboza"
 verificado: 2026-09-23
+regras: ["BR-TEST-002"]
 tags: [prd]
 ---
 
@@ -255,6 +256,7 @@ Adicionar documentação em `DEVELOPMENT.md` (ou `CONTRIBUTING.md`) sobre como c
 
 <!-- brain:auto:start:conexoes -->
 - 🗺️ [[MOC - PRDs]]
+- 📐 Regras: [[BR-TEST-002 - Testes de integração exigem banco e são skip sem UTPLSQL_CONN|BR-TEST-002]]
 - 🔗 PRDs relacionados: [[prd-13-oracle-infra|PRD-13]] · [[prd-14-test-schema-packages|PRD-14]]
 - 🚀 ⬅️ release anterior: [[prd-09-cli-info|PRD-09 (0.5.0)]] · ➡️ próxima release: [[prd-10-dynamic-reporters|PRD-10 (0.7.0)]]
 <!-- brain:auto:end -->

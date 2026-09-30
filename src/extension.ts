@@ -17,11 +17,17 @@ import {
 import { registerDbSourceProvider } from './dbSourceProvider';
 import { createDebounced } from './debounce';
 import { DecorationManager } from './decorations';
+import { formatLogLine, setLogSink } from './logger';
 import { closeOraclePool, invalidatePool } from './oracleRunner';
 import { setupValidator, UtplsqlCodeActionProvider } from './quickfix';
 import { TestStateManager } from './state';
 import { UtplsqlStatusBar } from './statusBar';
-import { createRefresher } from './testTree';
+import {
+  createRefresher,
+  resolvePackageNode,
+  resolveSchemaNode,
+  resolveSuiteNode,
+} from './testTree';
 
 const state = new TestStateManager();
 let statusBar: UtplsqlStatusBar | undefined;
@@ -30,6 +36,11 @@ let cancelCurrentRun: (() => void) | undefined;
 
 export function activate(context: vscode.ExtensionContext) {
   void vscode.commands.executeCommand('setContext', 'utplsql:activated', true);
+
+  // Log de diagnóstico em um LogOutputChannel (nível controlado pelo usuário).
+  const log = vscode.window.createOutputChannel('utPLSQL', { log: true });
+  context.subscriptions.push(log);
+  setLogSink((level, msg, ctx) => log[level](formatLogLine(msg, ctx)));
 
   initSecretStorage(context.secrets);
   const profilesReady = (async () => {
@@ -42,7 +53,14 @@ export function activate(context: vscode.ExtensionContext) {
 
   const refresh = createRefresher(controller, state);
   controller.resolveHandler = async (item) => {
-    if (!item) await refresh();
+    if (!item) {
+      await refresh();
+      return;
+    }
+    // Resolução lazy por nível (PRD-75): schema → package → suite.
+    if (item.id.startsWith('schema:')) await resolveSchemaNode(controller, state, item);
+    else if (item.id.startsWith('package:')) resolvePackageNode(controller, state, item);
+    else if (item.id.startsWith('suite:')) resolveSuiteNode(controller, state, item);
   };
   controller.refreshHandler = async () => {
     await refresh();

@@ -5,7 +5,7 @@ tipo: nfr
 titulo: "Compatibilidade com Oracle e piso do utPLSQL"
 dominio: compatibilidade
 status: ativo
-verificado: 2026-09-23
+verificado: 2026-09-29
 implementacao: []
 testes: []
 regras: []
@@ -25,6 +25,23 @@ Bases legadas convivem com versões novas do framework.
 ## Verificação
 
 `semverLt`, fallback `ALL_OBJECTS/ALL_SOURCE`, PRD-84.
+
+## Validação (2026-09-29)
+
+Matriz de bancos Oracle local (`scripts/db-matrix/run.sh`), suíte de integração
+**completa (thin)** + **thick**, **0 falhas** — ver
+[[BR-TEST-001 - Matriz de bancos Oracle cobre 12.2-23ai em thin e thick]].
+
+| Banco | utPLSQL | thin (suíte completa) | thick |
+|---|---|---|---|
+| 12.2 | v3.1.14 | 94 passing / 6 pending | 2 passing |
+| 18xe | v3.2.3 | 95 passing / 5 pending | 2 passing |
+| 19ee | v3.2.3 | 95 passing / 5 pending | 2 passing |
+| 21xe | v3.2.3 | 95 passing / 5 pending | 2 passing |
+| 23free | v3.2.3 | 95 passing / 5 pending | 2 passing |
+
+> O 23free exigiu recriar o volume na 2ª tentativa (`--clean`) após
+> `ORA-01578` (bloco corrompido) no bootstrap — falha de ambiente, não do projeto.
 
 ## Conexões
 

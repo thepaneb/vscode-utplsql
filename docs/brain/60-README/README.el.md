@@ -43,6 +43,14 @@ tags: [readme]
 - 🗄️ **Ανακάλυψη DB-first** — χτίστε το δέντρο από το `ut_runner.get_suites_info` και ξαναχτίστε την προσωρινή μνήμη σχολίων από την παλέτα.
 - 🐛 **PL/SQL Debug** — breakpoints και βηματική αποσφαλμάτωση utPLSQL tests μέσω `DBMS_DEBUG` (native Debug Adapter).
 - 🌍 **i18n — 24 γλώσσες** — το `utplsql.language` ακολουθεί το VSCode (24 τοπικές ρυθμίσεις: pt-br, en, en-gb, es, zh-cn, zh-tw, ja, de, fr, it, ko, ru, tr, pl, cs, hu, bg, el, id, ro, sr, th, uk, vi).
+- 🌳 **Αργό (lazy) δέντρο δοκιμών** — στη λειτουργία `schema`, τα packages/suites/tests επιλύονται κατά την ανάπτυξη, οπότε τα μεγάλα σχήματα ανοίγουν ακαριαία.
+- 🧾 **Run with Reporter (Export)** — εκτελεί την επιλογή με οποιονδήποτε reporter της βάσης και γράφει την έξοδο στο Output ή σε αρχείο (`utplsql.reporter.*`), χωρίς να αλλάζει τα αποτελέσματα στο Test Explorer.
+- 🗂️ **Εικονική πηγή από τη βάση** — χωρίς τοπικό αρχείο, το *jump to failure* και η κάλυψη ανοίγουν έγγραφο μόνο για ανάγνωση από το `ALL_SOURCE` (`utplsql-source:/…`).
+- 🔐 **TNS σε thin + wallet** — το `utplsql.connections.tnsAdminPath` επιλύει aliases του `tnsnames.ora` στον thin driver (fallback σε SQL Developer/`TNS_ADMIN`); το `walletLocation` του προφίλ και το `utPLSQL: Set wallet password` κρατούν τον κωδικό του wallet στο SecretStorage.
+- 🔒 **Ενίσχυση ασφάλειας συνδέσεων** — οι ρυθμίσεις σύνδεσης είναι `machine`-scoped, η επέκταση απενεργοποιείται σε μη αξιόπιστα workspaces και ο κωδικός του προφίλ συνδέεται με τη σύνδεση.
+- 🧱 **Διαγνωστικά μεταγλώττισης** — μετά από κάθε εκτέλεση, τα σφάλματα μεταγλώττισης PL/SQL (`ALL_ERRORS`) εμφανίζονται στο Problems Panel με source `utPLSQL Compilation` (ρύθμιση `utplsql.compilationDiagnostics.enabled`).
+- ⏳ **Πρόοδος και ακύρωση** — οι μεγάλες εκτελέσεις εμφανίζουν ειδοποίηση προόδου με μετρητή και κουμπί *Cancel* (και προαιρετικό `utplsql.timeoutMinutes`).
+- 📁 **Χώρος εργασίας πολλαπλών ριζών** — κάθε φάκελος του workspace έχει τα δικά του suites, με ανεξάρτητη ανακάλυψη, εκτέλεση και κάλυψη.
 
 ## Εγκατάσταση
 
@@ -64,7 +72,7 @@ tags: [readme]
 |---|---|---|
 | 18c+ | v3.2.x (18c+) / v3.1.x | Συνιστάται; charset `AL32UTF8`. |
 | 12.2 | μόνο v3.1.x | Το v3.2.x δεν μεταγλωττίζεται (`PLS-00222`). Το `WE8DEC` της εικόνας χάνει μη αναπαραστάσιμους χαρακτήρες (π.χ. `€`); ο thin driver αγνοεί το `NLS_LANG`. |
-- **VSCode 1.88+** (Test Coverage API).
+- **VSCode 1.101+** (Test Coverage API).
 
 Η επέκταση είναι μόνο ο «γραφικός πελάτης» — αυτό που εκτελεί τα tests είναι η βάση απευθείας μέσω node-oracledb.
 
@@ -103,8 +111,10 @@ code .
 
 **Αποδεκτές μορφές:**
 - **EZ Connect**: `user/pass@//host:1521/service`
-- **TNS alias**: `user/pass@tns_alias` (απαιτεί ρυθμισμένο `TNS_ADMIN`)
+- **TNS alias**: `user/pass@tns_alias`
 - **Wallet (Oracle Cloud)**: `user/pass@tcps://host:1522/service?wallet_location=/path/wallet`
+
+> 🔒 **Ενισχυμένες ρυθμίσεις:** οι ρυθμίσεις σύνδεσης είναι **`machine`-scoped**· η επέκταση είναι **απενεργοποιημένη σε μη αξιόπιστα workspaces**· ο κωδικός του profile είναι **συνδεδεμένος με τη σύνδεσή του**. (`utplsql.connection`, `utplsql.profiles`, `utplsql.activeProfile`, `utplsql.oracleClientLibDir`, `utplsql.oracleClientConfigDir`, `utplsql.connections.tnsAdminPath`)
 
 ## Πώς λειτουργεί
 
@@ -131,6 +141,8 @@ Test Explorer **καθώς ολοκληρώνεται κάθε test**.
 | `utplsql.timeoutMinutes` | `60` | Χρονικό όριο σε λεπτά για την εκτέλεση των tests. |
 | `utplsql.dbmsOutput` | `false` | Ενεργοποιεί το `DBMS_OUTPUT` στη σύνοδο του test. Χρήσιμο για debugging. |
 | `utplsql.additionalReporters` | `[]` | Επιπλέον reporters που περιλαμβάνονται σε κάθε εκτέλεση (π.χ. `["ut_coverage_html_reporter"]`). Οι προεπιλεγμένοι (documentation, junit) περιλαμβάνονται πάντα και δεν χρειάζεται να αναφέρονται. |
+| `utplsql.reporter.clientCharacterSet` | `""` | Σύνολο χαρακτήρων πελάτη (`a_client_character_set`) για **Run with Reporter (Export)**. Κενό = προεπιλογή του reporter. |
+| `utplsql.reporter.colorConsole` | `false` | Ενεργοποιεί ANSI χρώμα (`a_color_console`) για textual console reporters στο export. |
 | `utplsql.tags` | `""` | Έκφραση tags του utPLSQL για φιλτράρισμα των test που εκτελούνται (π.χ. `fast & !integration`). Κενό εκτελεί όλα. |
 | `utplsql.run.randomOrder` | `false` | Εκτελεί τα test σε τυχαία σειρά για να αποκαλύψει εξαρτήσεις σειράς μεταξύ τους. |
 | `utplsql.run.randomOrderSeed` | `0` | Seed της τυχαίας σειράς. `0` = επιλέγεται από τη βάση (μη αναπαραγώγιμο)· > 0 αναπαράγει την ίδια σειρά. |
@@ -145,7 +157,8 @@ Test Explorer **καθώς ολοκληρώνεται κάθε test**.
 | `utplsql.oracleClientLibDir` | `""` | Κατάλογος του Oracle Instant Client. Απαιτείται όταν το `utplsql.oracleClientMode` είναι `thick` (π.χ. `C:\oracle\instantclient_23_5`). |
 | Το debug δεν σταματά στο σημείο διακοπής | Πακέτο χωρίς πληροφορίες debug ή λείπουν τα δικαιώματα debug | Μεταγλωττίστε με `PLSQL_OPTIMIZE_LEVEL <= 1` (ή `ALTER PACKAGE ... COMPILE DEBUG PLSQL_OPTIMIZE_LEVEL = 1`) και δώστε `DEBUG CONNECT SESSION` + `EXECUTE ON SYS.DBMS_DEBUG`. Τα σημεία διακοπής στο `test_*.pkb` μπορεί να μην πιάνονται (το utPLSQL εκτελεί τα test μέσω δυναμικού SQL)· βάλτε τα στον κώδικα υπό δοκιμή. |
 | `utplsql.oracleClientConfigDir` | `""` | Κατάλογος διαμόρφωσης Oracle (TNS_ADMIN) με `sqlnet.ora`/`tnsnames.ora`. Προαιρετικός· χρησιμοποιείται μόνο από τη λειτουργία thick. |
-| `utplsql.organization` | `file` | Οργάνωση δέντρου: `file` (ανά διαδρομή) ή `schema` (Schema > Package > Suite > Test). Στη λειτουργία `schema` τα suites ανακαλύπτονται επίσης από τη βάση (`ut_runner.get_suites_info`, με εφεδρική χρήση `ALL_OBJECTS`/`ALL_SOURCE`) όταν τα αρχεία `.pks` δεν υπάρχουν στο workspace — με εικονικό URI `utplsql-db:/` (εκτέλεση και μετάβαση στο σφάλμα λειτουργούν· χωρίς CodeLens/decorations). |
+| `utplsql.connections.tnsAdminPath` | `""` | Κατάλογος με `tnsnames.ora` για **ανάλυση TNS aliases στον thin driver**. Σειρά: αυτή η ρύθμιση → τιμή user/machine του `sqldeveloper.connections.tnsConfiguration.path` → `TNS_ADMIN`. |
+| `utplsql.organization` | `file` | Οργάνωση δέντρου: `file` (ανά διαδρομή) ή `schema` (Schema > Package > Suite > Test). Στη λειτουργία `schema` τα suites ανακαλύπτονται επίσης από τη βάση (`ut_runner.get_suites_info`, με εφεδρική χρήση `ALL_OBJECTS`/`ALL_SOURCE`) όταν τα αρχεία `.pks` δεν υπάρχουν στο workspace — με εικονικό URI `utplsql-db:/` (εκτέλεση και μετάβαση στο σφάλμα λειτουργούν· χωρίς CodeLens/decorations). · `utplsql-source:/` |
 | `utplsql.organization.schemaPattern` | `db/{schema}/**` | Glob pattern για την εξαγωγή του schema από τη διαδρομή. Χρησιμοποιήστε το `{schema}` ως placeholder. Στη λειτουργία `schema`, οι κατάλογοι κάτω από τη βάση του pattern (π.χ. `db/*`) ορίζουν τα schemas που ερωτώνται στη βάση. |
 | `utplsql.discovery.source` | `auto` | Πηγή του δέντρου στη λειτουργία `schema`: το `auto` χρησιμοποιεί το API της βάσης (`ut_runner.get_suites_info`) και καταφεύγει σε `ALL_SOURCE`/αρχεία όταν δεν είναι διαθέσιμο· το `database` απαιτεί το API· το `file` απενεργοποιεί την ανακάλυψη μέσω βάσης. |
 | `utplsql.refreshDebounceMs` | `300` | Debounce (ms) για συγχώνευση συμβάντων του watcher αρχείων `.pks`/`.pkb` πριν από την ανανέωση του Test Explorer. |
@@ -267,6 +280,8 @@ UTPLSQL_CONN=your_user/password@//host:1521/service
 | `utPLSQL: Run script` | Runs the script open in the editor against a connection profile | Right-click → script file |
 | `utPLSQL: Run script file` | Runs an Explorer script file (decoded with the profile charset) | Right-click → file |
 | `utPLSQL: Run script folder` | Runs the folder scripts in alphabetical order | Right-click → folder |
+| `utPLSQL: Ορισμός κωδικού πορτοφολιού` | Ορίζει/καθαρίζει τον κωδικό wallet του ενεργού προφίλ (SecretStorage) | — |
+| `utPLSQL: Εκτέλεση με reporter (εξαγωγή)` | Εκτελεί την επιλογή με επιλεγμένο reporter και γράφει την έξοδο σε Output/αρχείο (δεν αλλάζει τα αποτελέσματα) | Test Explorer → menu do item |
 
 > **Recompile UT3** (`utplsql.recompileUt3`) **δεν** είναι εντολή palette — είναι
 > ένα εσωτερικό quick-fix του διαγνωστικού "utPLSQL Setup" (άκυρα αντικείμενα στο
@@ -296,49 +311,6 @@ UTPLSQL_CONN=your_user/password@//host:1521/service
 
 
 
-Η επέκταση περνά το `-source_path` (= `utplsql.sourcePath`) και αντιστοιχίζει τα καλυπτόμενα
-αντικείμενα σε αρχεία πηγαίου κώδικα μέσω του `utplsql.coverageSourceArgs` (regex +
-`type_mapping`). Το `-owner` προκύπτει από τη σύνδεση (ή από το `utplsql.coverageOwner`).
-
-### Χαρτογράφηση κάλυψης σε αρχεία (`coverageSourceArgs`)
-
-Το `type_mapping` μεταφράζει τον «τύπο» που συλλαμβάνει το regex στον τύπο Oracle. Τρεις κοινές συμβάσεις:
-
-**1) Ανά κατάλογο** — δομή `sourcePath/<type>/<name>.sql` (φάκελοι `functions/`, `procedures/`, `packages/`, …):
-```jsonc
-"utplsql.coverageSourceArgs": [
-  "-regex_expression=.*[/\\\\](\\w+)[/\\\\](\\w+)\\.sql$",
-  "-type_subexpression=1",   // group 1 = folder (type)
-  "-name_subexpression=2",   // group 2 = file (object name)
-  "-type_mapping=packages=PACKAGE BODY/functions=FUNCTION/procedures=PROCEDURE/triggers=TRIGGER"
-]
-```
-> Λειτουργεί σε οποιοδήποτε βάθος (το `.*` απορροφά τα modules από πάνω). Ποικίλα ονόματα
-> φακέλων (π.χ. `package`, `pkg`, `pacote`) μπορούν να απαριθμηθούν στο `type_mapping`.
-
-**2) Ανά πρόθεμα ονόματος** — σύμβαση `pkg_*`, `prc_*`, `vw_*` (ανεξάρτητα από τον φάκελο):
-```jsonc
-"utplsql.coverageSourceArgs": [
-  "-regex_expression=.*[/\\\\]((pkg|prc|fnc|trg|vw)_\\w+)\\.sql$",
-  "-name_subexpression=1",   // group 1 = full name (e.g. PKG_EXAMPLE)
-  "-type_subexpression=2",   // group 2 = prefix (type)
-  "-type_mapping=pkg=PACKAGE BODY/prc=PROCEDURE/fnc=FUNCTION/trg=TRIGGER/vw=VIEW"
-]
-```
-
-**3) Ανά επέκταση με τύπο** — αρχεία `*.pkb`, `*.fnc`, `*.prc`, `*.trg` (ανεξάρτητα από τον φάκελο):
-```jsonc
-"utplsql.coverageSourceArgs": [
-  "-regex_expression=.*[/\\\\](\\w+)\\.(\\w+)$",
-  "-name_subexpression=1",   // group 1 = name
-  "-type_subexpression=2",   // group 2 = extension (type)
-  "-type_mapping=pkb=PACKAGE BODY/fnc=FUNCTION/prc=PROCEDURE/trg=TRIGGER"
-]
-```
-
-**Σημαντικές σημειώσεις:**
-- **Packages → `PACKAGE BODY`** (όχι `PACKAGE`): η κάλυψη συλλέγεται στο **body** του package.
-
 ## Reporters
 
 Η επέκταση περιλαμβάνει πάντα **δύο** προεπιλεγμένους reporters:
@@ -359,10 +331,7 @@ utPLSQL), το coverage παραλείπεται με προειδοποίηση
 Οι προεπιλεγμένοι reporters αφαιρούνται αυτόματα ως διπλότυπα, ακόμη κι αν
 αναφέρονται εδώ.
 
-**Προσωρινός reporter ανά σύνοδο** — η εντολή **utPLSQL: Select additional
-reporter...** ανοίγει ένα QuickPick με τη δυναμική λίστα από τη βάση. Ο
-επιλεγμένος reporter αποθηκεύεται στη σύνοδο, αλλά η επιλογή **δεν εφαρμόζεται**
-στην τρέχουσα έκδοση Oracle-only.
+**Πτητικός reporter συνεδρίας** — η εντολή **Επιλογή επιπλέον reporter...** ανοίγει QuickPick με τη λίστα της βάσης· ο επιλεγμένος reporter αποθηκεύεται στη συνεδρία και **εφαρμόζεται στην επόμενη εκτέλεση**.
 
 ## Απαιτήσεις βάσης δεδομένων
 

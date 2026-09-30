@@ -43,6 +43,14 @@ tags: [readme]
 - 🗄️ **数据库优先发现** — 从 `ut_runner.get_suites_info` 构建树，并从命令面板重建注释缓存。
 - 🐛 **PL/SQL 调试** — 通过 `DBMS_DEBUG` 对 utPLSQL 测试进行断点和单步调试（原生调试适配器）。
 - 🌍 **i18n — 24 种语言** — `utplsql.language` 跟随 VSCode（24 locales：pt-br、en、en-gb、es、zh-cn、zh-tw、ja、de、fr、it、ko、ru、tr、pl、cs、hu、bg、el、id、ro、sr、th、uk、vi）。
+- 🌳 **延迟加载的测试树** — 在 `schema` 模式下，package/suite/test 在展开时按需解析，因此大型 schema 可即时打开。
+- 🧾 **Run with Reporter (Export)** — 使用任意数据库 reporter 运行所选内容，并将输出写入 Output 或文件（`utplsql.reporter.*`），不改变 Test Explorer 中的结果。
+- 🗂️ **虚拟数据库源** — 没有本地文件时，*jump to failure* 和覆盖率会打开从 `ALL_SOURCE` 解析的只读文档（`utplsql-source:/…`）。
+- 🔐 **thin 模式下的 TNS + wallet** — `utplsql.connections.tnsAdminPath` 在 thin 驱动中解析 `tnsnames.ora` 别名（回退到 SQL Developer/`TNS_ADMIN`）；配置文件的 `walletLocation` 与 `utPLSQL: Set wallet password` 将 wallet 密码保存在 SecretStorage。
+- 🔒 **连接安全加固** — 连接设置改为 `machine` 作用域，扩展在不受信任的工作区中被禁用，配置文件的密码与连接绑定。
+- 🧱 **编译诊断** — 每次运行后，PL/SQL 编译错误（`ALL_ERRORS`）会以 source `utPLSQL Compilation` 显示在 Problems Panel 中（设置 `utplsql.compilationDiagnostics.enabled`）。
+- ⏳ **进度与取消** — 长时间运行会显示带计数的进度通知和 *Cancel* 按钮（以及可选的 `utplsql.timeoutMinutes`）。
+- 📁 **多根工作区** — 每个工作区文件夹拥有自己的测试套件，发现、执行与覆盖率相互独立。
 
 ## 安装
 
@@ -64,7 +72,7 @@ tags: [readme]
 |---|---|---|
 | 18c+ | v3.2.x (18c+) / v3.1.x | 推荐；charset 为 `AL32UTF8`。 |
 | 12.2 | 仅 v3.1.x | v3.2.x 无法编译（`PLS-00222`）。镜像的 `WE8DEC` 会丢失无法表示的字符（例如 `€`）；精简驱动忽略 `NLS_LANG`。 |
-- **VSCode 1.88+**（测试覆盖率 API）。
+- **VSCode 1.101+**（测试覆盖率 API）。
 
 扩展只是"图形客户端" — 真正运行测试的是数据库，通过 node-oracledb 直连。
 
@@ -101,8 +109,10 @@ code .
 
 **支持的格式：**
 - **EZ Connect**：`user/pass@//host:1521/service`
-- **TNS 别名**：`user/pass@tns_alias`（需要配置 `TNS_ADMIN`）
+- **TNS 别名**：`user/pass@tns_alias`
 - **Wallet（Oracle Cloud）**：`user/pass@tcps://host:1522/service?wallet_location=/path/wallet`
+
+> 🔒 **加固设置：** 连接设置是 **`machine` 作用域**；扩展在**不受信任的工作区中被禁用**；配置文件密码**绑定到其连接**。 (`utplsql.connection`, `utplsql.profiles`, `utplsql.activeProfile`, `utplsql.oracleClientLibDir`, `utplsql.oracleClientConfigDir`, `utplsql.connections.tnsAdminPath`)
 
 ## 工作原理
 
@@ -129,6 +139,8 @@ Test Explorer 中。
 | `utplsql.timeoutMinutes` | `60` | 执行超时时间（分钟）。 |
 | `utplsql.dbmsOutput` | `false` | 在测试会话中启用 `DBMS_OUTPUT`。 |
 | `utplsql.additionalReporters` | `[]` | 每次运行时要包含的额外 reporter（例如 `["ut_coverage_html_reporter"]`）。默认的（documentation、junit）始终包含，无需列出。 |
+| `utplsql.reporter.clientCharacterSet` | `""` | **Run with Reporter (Export)** 的客户端字符集（`a_client_character_set`）。留空使用 reporter 默认值。 |
+| `utplsql.reporter.colorConsole` | `false` | 在导出中为文本控制台 reporter 启用 ANSI 颜色（`a_color_console`）。 |
 | `utplsql.tags` | `""` | 用于筛选运行哪些测试的 utPLSQL 标签表达式（例如 `fast & !integration`）。为空则运行全部。 |
 | `utplsql.run.randomOrder` | `false` | 以随机顺序运行测试，以揭示测试之间的顺序依赖。 |
 | `utplsql.run.randomOrderSeed` | `0` | 随机顺序的种子。`0` = 由数据库选择（不可复现）；大于 0 可复现相同顺序。 |
@@ -143,7 +155,8 @@ Test Explorer 中。
 | `utplsql.oracleClientLibDir` | `""` | Oracle Instant Client 目录。当 `utplsql.oracleClientMode` 为 `thick` 时必填（例如 `C:\oracle\instantclient_23_5`）。 |
 | 调试不在断点处停止 | 包编译时没有调试信息，或缺少调试授权 | 使用 `PLSQL_OPTIMIZE_LEVEL <= 1` 编译（或 `ALTER PACKAGE ... COMPILE DEBUG`），并授予 `DEBUG CONNECT SESSION` + `EXECUTE ON SYS.DBMS_DEBUG`. `test_*.pkb` 中的断点可能不会命中（utPLSQL 通过动态 SQL 运行测试）；请将断点设在被测代码中。 |
 | `utplsql.oracleClientConfigDir` | `""` | 包含 `sqlnet.ora`/`tnsnames.ora` 的 Oracle 配置目录（TNS_ADMIN）。可选；仅 thick 模式使用。 |
-| `utplsql.organization` | `file` | 树组织方式：`file`（按路径）或 `schema`（Schema > Package > Suite > Test）。在 `schema` 模式时，如果工作区中没有 `.pks` 文件，还会从数据库（`ut_runner.get_suites_info`，不可用时回退到 `ALL_OBJECTS`/`ALL_SOURCE`）发现套件 — 使用虚拟 URI `utplsql-db:/`（可执行并跳转到失败；无 CodeLens/装饰）。 |
+| `utplsql.connections.tnsAdminPath` | `""` | 包含 `tnsnames.ora` 的目录，用于在 **thin 驱动中解析 TNS 别名**。顺序：此设置 → `sqldeveloper.connections.tnsConfiguration.path` 的用户/机器值 → `TNS_ADMIN`。 |
+| `utplsql.organization` | `file` | 树组织方式：`file`（按路径）或 `schema`（Schema > Package > Suite > Test）。在 `schema` 模式时，如果工作区中没有 `.pks` 文件，还会从数据库（`ut_runner.get_suites_info`，不可用时回退到 `ALL_OBJECTS`/`ALL_SOURCE`）发现套件 — 使用虚拟 URI `utplsql-db:/`（可执行并跳转到失败；无 CodeLens/装饰）。 · `utplsql-source:/` |
 | `utplsql.organization.schemaPattern` | `db/{schema}/**` | 用于从路径中提取 schema 的 glob 模式。使用 `{schema}` 作为占位符。在 `schema` 模式下，模式基准目录（例如 `db/*`）下方的目录定义了在数据库中查询的 schemas。 |
 | `utplsql.discovery.source` | `auto` | `schema` 模式下测试树的来源：`auto` 使用数据库 API（`ut_runner.get_suites_info`），不可用时回退到 `ALL_SOURCE`/文件；`database` 要求使用 API；`file` 关闭数据库发现。 |
 | `utplsql.refreshDebounceMs` | `300` | 在刷新 Test Explorer 之前，合并 `.pks`/`.pkb` 文件监视器事件的防抖时间（毫秒）。 |
@@ -263,6 +276,8 @@ UTPLSQL_CONN=your_user/password@//host:1521/service
 | `utPLSQL: Run script` | Runs the script open in the editor against a connection profile | Right-click → script file |
 | `utPLSQL: Run script file` | Runs an Explorer script file (decoded with the profile charset) | Right-click → file |
 | `utPLSQL: Run script folder` | Runs the folder scripts in alphabetical order | Right-click → folder |
+| `utPLSQL: 设置钱包密码` | 设置/清除活动配置的 Oracle Cloud 钱包密码（SecretStorage） | — |
+| `utPLSQL: 使用 reporter 运行（导出）` | 使用所选 reporter 运行选择并将输出写入 Output/文件（不改变结果） | Test Explorer → menu do item |
 
 > **Recompile UT3**（`utplsql.recompileUt3`）**不是**面板命令 — 它是
 > "utPLSQL Setup" 诊断（utPLSQL schema 中的无效对象）的内部快速修复。
@@ -313,10 +328,7 @@ utPLSQL），覆盖率会被跳过并在输出中显示警告。测试执行
 默认 reporter 会自动去重，即使在这里列出
 也会被去重。
 
-**按会话变化的 reporter** — 命令 **utPLSQL: Select additional
-reporter...** 会打开一个 QuickPick，显示数据库中的动态列表。所选的
-reporter 会保存在会话中，但该选择在当前的 Oracle-only 版本中
-**不会被应用**。
+**会话内临时 reporter** — 命令 **选择附加 reporter...** 会打开数据库列表的 QuickPick；所选 reporter 保存在会话中，并在**下次运行时应用**。
 
 ## 数据库要求
 

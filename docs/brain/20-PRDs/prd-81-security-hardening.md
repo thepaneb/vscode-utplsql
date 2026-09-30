@@ -2,13 +2,14 @@
 tipo: prd
 id: PRD-81
 aliases: [PRD-81]
-status: proposed
+status: completed
 titulo: "Hardening de segurança das settings de conexão"
 versao: "0.14.0"
 data: "2026-09-19"
 autor: "Gil Cleber Barboza"
 versao_titulo: "0.14.0 — Árvore, relatórios, conectividade e segurança"
-verificado: 2026-09-23
+verificado: 2026-09-28
+regras: ["BR-CONN-016", "SEC-011"]
 tags: [prd]
 ---
 
@@ -157,6 +158,8 @@ workspace-scoped.
 
 <!-- brain:auto:start:conexoes -->
 - 🗺️ [[MOC - PRDs]]
-- 🔗 Mesma versão (0.14.0): [[prd-47-node-26-toolchain|PRD-47]] · [[prd-75-lazy-test-tree|PRD-75]] · [[prd-76-reporter-export|PRD-76]] · [[prd-80-virtual-db-source|PRD-80]] · [[prd-82-tns-wallet|PRD-82]]
-- 🚀 ⬅️ release anterior: [[prd-87-suitepath-results-jump|PRD-87 (0.13.0)]] · ➡️ próxima release: [[prd-50-auto-run-on-save|PRD-50 (0.15.0)]]
+- 📐 Regras: [[BR-CONN-016 - Settings de conexão machine-scoped e workspace confiável|BR-CONN-016]] · [[SEC-011 - Settings de conexão não são sobrescrevíveis por workspace|SEC-011]]
+- 🎯 RF1 — Escopo machine → [[BR-CONN-016 - Settings de conexão machine-scoped e workspace confiável|BR-CONN-016]]
+- 🎯 RF2 — Untrusted workspaces → [[BR-CONN-016 - Settings de conexão machine-scoped e workspace confiável|BR-CONN-016]]
+- 🚀 ⬅️ release anterior: [[prd-87-suitepath-results-jump|PRD-87 (0.13.0)]] · ➡️ próxima release: [[prd-47-node-26-toolchain|PRD-47 (0.15.0)]]
 <!-- brain:auto:end -->

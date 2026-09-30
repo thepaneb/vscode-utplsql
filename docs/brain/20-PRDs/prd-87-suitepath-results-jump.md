@@ -8,6 +8,7 @@ versao: "0.13.0"
 data: "2026-09-25"
 autor: "Gil Cleber Barboza"
 verificado: 2026-09-25
+regras: []
 tags: [prd]
 ---
 
@@ -146,6 +147,6 @@ Nenhuma.
 
 <!-- brain:auto:start:conexoes -->
 - 🗺️ [[MOC - PRDs]]
-- 🚀 ⬅️ release anterior: [[prd-73-compile-for-debug|PRD-73 (0.12.1)]] · ➡️ próxima release: [[prd-47-node-26-toolchain|PRD-47 (0.14.0)]]
+- 🚀 ⬅️ release anterior: [[prd-73-compile-for-debug|PRD-73 (0.12.1)]] · ➡️ próxima release: [[prd-75-lazy-test-tree|PRD-75 (0.14.0)]]
 - 📐 Regras: [[08-jump-to-failure]]
 <!-- brain:auto:end -->

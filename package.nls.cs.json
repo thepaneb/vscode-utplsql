@@ -26,5 +26,7 @@
   "nls.command.runScriptFile": "utPLSQL: Run script file",
   "nls.command.runScriptFolder": "utPLSQL: Run script folder",
   "nls.command.compileForDebug": "utPLSQL: Zkompilovat pro ladění",
-  "nls.command.rebuildAnnotations": "utPLSQL: Přestavět mezipaměť anotací"
+  "nls.command.rebuildAnnotations": "utPLSQL: Přestavět mezipaměť anotací",
+  "nls.command.setWalletPassword": "utPLSQL: Nastavit heslo peněženky",
+  "nls.command.runWithReporter": "utPLSQL: Spustit s reporterem (export)"
 }

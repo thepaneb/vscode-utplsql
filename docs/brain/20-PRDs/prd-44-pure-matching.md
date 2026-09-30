@@ -8,6 +8,7 @@ versao: "0.11.0"
 data: "2026-08-08"
 autor: "Gil Cleber"
 verificado: 2026-09-23
+regras: ["BR-PARSE-013"]
 tags: [prd]
 ---
 
@@ -208,9 +209,9 @@ Nenhuma nova setting.
 
 <!-- brain:auto:start:conexoes -->
 - 🗺️ [[MOC - PRDs]]
+- 📐 Regras: [[BR-PARSE-013 - Mapeamento resultado para teste por lastSegment+name-description com fallback|BR-PARSE-013]]
 - 🔗 PRDs relacionados: [[prd-39-deduplicate-runners|PRD-39]]
 - 🎯 RF1 — `buildMatchIndex` → [[BR-PARSE-013 - Mapeamento resultado para teste por lastSegment+name-description com fallback|BR-PARSE-013]]
 - 🎯 RF2 — `findByNameOnly` puro → [[BR-PARSE-013 - Mapeamento resultado para teste por lastSegment+name-description com fallback|BR-PARSE-013]]
 - 🚀 ⬅️ release anterior: [[prd-42-suiteparser-annotations|PRD-42 (0.10.0)]] · ➡️ próxima release: [[prd-12-sql-coverage|PRD-12 (0.12.0)]]
-- 📐 Regras: [[BR-PARSE-013 - Mapeamento resultado para teste por lastSegment+name-description com fallback|BR-PARSE-013]]
 <!-- brain:auto:end -->

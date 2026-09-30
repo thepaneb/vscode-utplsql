@@ -27,6 +27,7 @@ Looking for ready-to-use snippets? See [Configuration Examples](Configuration-ex
 | `sourcePath` | string | No | inherits global | Overrides `utplsql.sourcePath`. |
 | `coverageOwner` | string | No | inherits global | Overrides `utplsql.coverageOwner`. |
 | `includePatterns` | string[] | No | inherits global | Overrides `utplsql.includePatterns`. |
+| `walletLocation` | string | No | — | Oracle Cloud wallet location for the profile (thin driver). The wallet password lives in the SecretStorage (`utPLSQL: Set wallet password`). |
 | `isDefault` | boolean | No | `false` | Shows a default badge in the profile picker. It does **not** auto-select the profile on load. |
 | `lastUsed` | string | No | — | Reserved — not written or read by the extension today. |
 
@@ -139,6 +140,7 @@ decoded by VSCode — the profile charset does not apply.
 | `utplsql.oracleClientMode` | `thin` | Driver mode: `thin` (default, pure JavaScript) or `thick` (Oracle Instant Client). Required for databases with NNE. |
 | `utplsql.oracleClientLibDir` | `""` | Oracle Instant Client directory (required in `thick` mode). |
 | `utplsql.oracleClientConfigDir` | `""` | Oracle config directory (TNS_ADMIN) with `sqlnet.ora`/`tnsnames.ora` (thick only). |
+| `utplsql.connections.tnsAdminPath` | `""` | Directory with `tnsnames.ora` to resolve **TNS aliases in the thin driver**. Resolution: this setting → user/machine value of `sqldeveloper.connections.tnsConfiguration.path` → `TNS_ADMIN`. |
 
 The pool is created **lazily** on the first Oracle execution, recreated when the
 connection changes, and closed when the extension is deactivated. See [Direct Oracle Execution](Oracle-direct-execution).
@@ -148,6 +150,8 @@ connection changes, and closed when the extension is deactivated. See [Direct Or
 | Setting | Default | Description |
 |---|---|---|
 | `utplsql.additionalReporters` | `[]` | Extra reporters included in every execution. See [Reporters](Reporters). |
+| `utplsql.reporter.clientCharacterSet` | `""` | Client charset (`a_client_character_set`) for **utPLSQL: Run with Reporter (Export)**. Empty uses the reporter default. |
+| `utplsql.reporter.colorConsole` | `false` | Enables ANSI color (`a_color_console`) for textual console reporters in the export. |
 
 ## UI (CodeLens, Status Bar, Decorations)
 

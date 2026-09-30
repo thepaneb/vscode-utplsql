@@ -25,6 +25,14 @@ into the native **Test Explorer**, with context menu and visual coverage.
 - [**PL/SQL Debug**](Debugger) — breakpoints and step debugging via `DBMS_DEBUG`
 - [**i18n — 24 languages**](Internationalization) — follows the VSCode display language
 - [**SQL scripts**](SQL-scripts) — run the current script, a file, or a whole folder against the active connection profile
+- [**Lazy test tree**](Tree-organization) — in `schema` mode, packages/suites/tests are resolved on demand when expanded, so large schemas open instantly
+- [**Run with Reporter (Export)**](Reporters) — run the selection with any database reporter and write the output to the Output panel or a file (`utplsql.reporter.*`), without changing the Test Explorer results
+- [**Virtual database source**](Coverage) — with no local file, *jump to failure* and coverage open a read-only document resolved from `ALL_SOURCE` (`utplsql-source:/…`)
+- [**TNS in thin + wallet**](Connection) — `utplsql.connections.tnsAdminPath` resolves `tnsnames.ora` aliases in the thin driver; the profile `walletLocation` and `utPLSQL: Set wallet password` keep the wallet password in the SecretStorage
+- [**Connection security hardening**](Connection) — connection settings are `machine`-scoped, the extension is disabled in untrusted workspaces, and the profile password is bound to the connection
+- [**Compilation diagnostics**](Diagnostics-and-quick-fix) — after every run, PL/SQL compilation errors (`ALL_ERRORS`) appear in the Problems Panel (`utPLSQL Compilation`)
+- [**Progress and cancellation**](Test-explorer) — progress notification with counts and a *Cancel* button (plus the optional `utplsql.timeoutMinutes`)
+- [**Multi-root workspace**](Test-explorer) — every workspace folder gets its own suites, with independent discovery, execution and coverage
 
 ![Test Explorer with expanded suites](images/test-explorer-suites.png)
 

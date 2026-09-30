@@ -9,6 +9,7 @@ data: "2026-09-06"
 autor: "Gil Cleber Barboza"
 versao_titulo: "0.15.0 — Tags e UX de execução"
 verificado: 2026-09-23
+regras: []
 tags: [prd]
 ---
 
@@ -140,6 +141,6 @@ Extrair `pickTestItem` (QuickPick quando há mais de um alvo).
 <!-- brain:auto:start:conexoes -->
 - 🗺️ [[MOC - PRDs]]
 - 🔗 PRDs relacionados: [[prd-31-smart-rerun-patterns|PRD-31]] · [[prd-33-plsql-debugger-integration|PRD-33]]
-- 🔗 Mesma versão (0.15.0): [[prd-50-auto-run-on-save|PRD-50]] · [[prd-51-run-by-tag|PRD-51]] · [[prd-52-inline-diff-expected-actual|PRD-52]] · [[prd-54-coverage-toggle|PRD-54]] · [[prd-55-tag-organization|PRD-55]]
-- 🚀 ⬅️ release anterior: [[prd-82-tns-wallet|PRD-82 (0.14.0)]] · ➡️ próxima release: [[prd-56-duration-persistence|PRD-56 (0.16.0)]]
+- 🔗 Mesma versão (0.15.0): [[prd-47-node-26-toolchain|PRD-47]] · [[prd-50-auto-run-on-save|PRD-50]] · [[prd-51-run-by-tag|PRD-51]] · [[prd-52-inline-diff-expected-actual|PRD-52]] · [[prd-54-coverage-toggle|PRD-54]] · [[prd-55-tag-organization|PRD-55]]
+- 🚀 ⬅️ release anterior: [[prd-94-vscode-floor-1-101|PRD-94 (0.14.0)]] · ➡️ próxima release: [[prd-56-duration-persistence|PRD-56 (0.16.0)]]
 <!-- brain:auto:end -->

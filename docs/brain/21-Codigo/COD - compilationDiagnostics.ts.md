@@ -14,7 +14,7 @@ Implementa [`src/compilationDiagnostics.ts`](../../../src/compilationDiagnostics
 
 ## Testes que cobrem
 
-_nenhum_
+- [[TST - compilationDiagnostics.test.ts]]
 
 ## Onde aparece
 

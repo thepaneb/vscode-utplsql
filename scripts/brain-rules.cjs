@@ -30,6 +30,9 @@ const SEVERIDADE = new Set(['critica', 'alta', 'media', 'baixa']);
 const FONTE = new Set(['codigo', 'prd', 'stakeholder', 'convencao']);
 const REQUIRED = ['id', 'titulo', 'dominio', 'status', 'severidade', 'fonte'];
 
+/** PRDs concluídas a partir desta versão precisam declarar/possuir `regras:`. */
+const RULES_BASELINE = '0.14.0';
+
 /** Schema das camadas de conhecimento (tipo do frontmatter → id + campos). */
 const LAYERS = {
   seguranca: { id: /^SEC-\d{3}$/, required: ['id', 'titulo', 'dominio', 'status', 'severidade'] },
@@ -249,6 +252,83 @@ function checkSecRegras(notes, regraStatus) {
   return problems;
 }
 
+/** `a` é semver >= `b`? (compara major/minor/patch numérico). */
+function semverGte(a, b) {
+  const pa = String(a ?? '').split('.').map((n) => Number.parseInt(n, 10) || 0);
+  const pb = String(b ?? '').split('.').map((n) => Number.parseInt(n, 10) || 0);
+  for (let i = 0; i < 3; i++) {
+    if ((pa[i] || 0) !== (pb[i] || 0)) return (pa[i] || 0) > (pb[i] || 0);
+  }
+  return true;
+}
+
+/**
+ * Garante que a execução das PRDs se materialize em regras e que o vínculo
+ * PRD ↔ regra/SEC seja bidirecional:
+ *  - PRD `completed` com `versao >= RULES_BASELINE` tem o campo `regras`
+ *    (derivado por `brain:sync`; presente mesmo quando vazio);
+ *  - cada id em `regras` existe e a nota lista a PRD (`prds:`);
+ *  - toda regra/SEC com `prds: [PRD-NN]` está declarada em `regras:`;
+ *  - PRD concluída (>= baseline) sem nenhuma regra precisa da seção
+ *    `## Impacto no cérebro` com a confirmação explícita `nenhuma` (evita
+ *    "esqueci" silencioso).
+ */
+function checkPrdRules(notes) {
+  const problems = [];
+  const prds = new Map();
+  const ruleIds = new Set();
+  const rulePrds = new Map();
+  for (const note of notes) {
+    const fm = parseFrontmatter(note.content);
+    if (!fm || !fm.id) continue;
+    if (fm.tipo === 'prd') {
+      const num = String(fm.id).replace(/\D/g, '');
+      if (num) prds.set(String(Number(num)), { name: note.name, fm, content: note.content });
+    } else if (fm.tipo === 'regra' || fm.tipo === 'seguranca') {
+      ruleIds.add(String(fm.id));
+      const set = new Set();
+      for (const pr of Array.isArray(fm.prds) ? fm.prds : []) {
+        const num = String(pr).replace(/\D/g, '');
+        if (num) set.add(String(Number(num)));
+      }
+      rulePrds.set(String(fm.id), set);
+    }
+  }
+  for (const [num, prd] of prds) {
+    if (prd.fm.status !== 'completed') continue;
+    if (!semverGte(prd.fm.versao, RULES_BASELINE)) continue;
+    const declared = Array.isArray(prd.fm.regras) ? prd.fm.regras.map((r) => String(r).trim()) : null;
+    if (declared === null) {
+      problems.push(`${prd.name}: PRD concluída (>= ${RULES_BASELINE}) sem o campo 'regras'`);
+      continue;
+    }
+    for (const id of declared) {
+      if (!ruleIds.has(id)) problems.push(`${prd.name}: regra '${id}' em regras: inexistente`);
+      else if (!rulePrds.get(id)?.has(num)) problems.push(`${prd.name}: regra '${id}' não lista a PRD (prds:)`);
+    }
+    for (const [id, set] of rulePrds) {
+      if (set.has(num) && !declared.includes(id)) {
+        problems.push(`${prd.name}: regra '${id}' lista a PRD mas não está em regras:`);
+      }
+    }
+    if (declared.length === 0) {
+      const impacto = prd.content
+        .split(/\n(?=##\s)/)
+        .find((s) => /^##\s*(?:\d+[.)]\s*)?Impacto no c[ée]rebro/i.test(s));
+      if (!impacto) {
+        problems.push(
+          `${prd.name}: PRD concluída sem regras e sem a seção '## Impacto no cérebro'`,
+        );
+      } else if (!/^\s*nenhuma\s*\.?\s*$/im.test(impacto)) {
+        problems.push(
+          `${prd.name}: PRD concluída sem regras exige a confirmação 'nenhuma' em '## Impacto no cérebro'`,
+        );
+      }
+    }
+  }
+  return problems;
+}
+
 /**
  * Valida referências de TODAS as notas do vault: `implementacao`/`testes`
  * (arquivos existem), `regras` (apontam para BR-* existentes) e as arestas de
@@ -371,16 +451,19 @@ function checkRules(overrides = {}) {
     const brIds = new Set(files.map((f) => parseFrontmatter(f.content)?.id).filter(Boolean));
     const notes = listAllNotes();
     const relCatalog = overrides.relCatalog ?? buildRelCatalog(notes);
-    problems.push(...checkLayers(notes));
-    problems.push(...checkReferences(notes, exists, brIds, checkLines, relCatalog));
-    problems.push(...checkRequisitos(notes));
-    problems.push(...checkMencoesPrd(notes, new Set(relCatalog.noteIds)));
     const regraStatus = new Map();
+    const regIds = new Set(brIds);
     for (const note of notes) {
       const fm = parseFrontmatter(note.content);
       if (fm?.tipo === 'regra' && fm.id) regraStatus.set(String(fm.id), String(fm.status ?? ''));
+      if ((fm?.tipo === 'regra' || fm?.tipo === 'seguranca') && fm.id) regIds.add(String(fm.id));
     }
+    problems.push(...checkLayers(notes));
+    problems.push(...checkReferences(notes, exists, regIds, checkLines, relCatalog));
+    problems.push(...checkRequisitos(notes));
+    problems.push(...checkMencoesPrd(notes, new Set(relCatalog.noteIds)));
     problems.push(...checkSecRegras(notes, regraStatus));
+    problems.push(...checkPrdRules(notes));
   }
 
   return problems;
@@ -394,6 +477,8 @@ module.exports = {
   checkSecRegras,
   checkLayers,
   checkRequisitos,
+  checkPrdRules,
+  semverGte,
   parseFrontmatter,
   listRuleFiles,
   listAllNotes,

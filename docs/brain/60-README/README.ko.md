@@ -43,6 +43,14 @@ tags: [readme]
 - 🗄️ **DB 우선 검색** — `ut_runner.get_suites_info`로 트리를 만들고 팔레트에서 주석 캐시를 다시 작성합니다.
 - 🐛 **PL/SQL 디버그** — `DBMS_DEBUG`를 통한 utPLSQL 테스트의 중단점 및 단계 디버깅(네이티브 Debug Adapter).
 - 🌍 **i18n — 24개 언어** — `utplsql.language`가 VSCode를 따릅니다(24개 로케일: pt-br, en, en-gb, es, zh-cn, zh-tw, ja, de, fr, it, ko, ru, tr, pl, cs, hu, bg, el, id, ro, sr, th, uk, vi).
+- 🌳 **지연 로딩 테스트 트리** — `schema` 모드에서 package/suite/test가 펼칠 때 필요에 따라 해석되어 큰 스키마도 즉시 열립니다.
+- 🧾 **Run with Reporter (Export)** — 선택 항목을 임의의 데이터베이스 reporter로 실행하고 출력을 Output 또는 파일에 씁니다(`utplsql.reporter.*`). Test Explorer 결과는 바뀌지 않습니다.
+- 🗂️ **가상 데이터베이스 소스** — 로컬 파일이 없으면 *jump to failure*와 커버리지가 `ALL_SOURCE`에서 해석한 읽기 전용 문서를 엽니다(`utplsql-source:/…`).
+- 🔐 **thin의 TNS + wallet** — `utplsql.connections.tnsAdminPath`가 thin 드라이버에서 `tnsnames.ora` 별칭을 해석합니다(SQL Developer/`TNS_ADMIN` 폴백). 프로필의 `walletLocation`과 `utPLSQL: Set wallet password`가 wallet 비밀번호를 SecretStorage에 보관합니다.
+- 🔒 **연결 보안 강화** — 연결 설정이 `machine`-scoped가 되고, 신뢰할 수 없는 워크스페이스에서는 확장이 비활성화되며, 프로필 비밀번호가 연결에 묶입니다.
+- 🧱 **컴파일 진단** — 실행할 때마다 PL/SQL 컴파일 오류(`ALL_ERRORS`)가 Problems Panel에 source `utPLSQL Compilation`로 표시됩니다(설정 `utplsql.compilationDiagnostics.enabled`).
+- ⏳ **진행률 및 취소** — 긴 실행은 카운트가 있는 진행 알림과 *Cancel* 버튼을 표시합니다(선택적 `utplsql.timeoutMinutes` 포함).
+- 📁 **멀티 루트 워크스페이스** — 각 워크스페이스 폴더가 자체 suite를 가지며, 검색·실행·커버리지가 독립적입니다.
 
 ## 설치
 
@@ -64,7 +72,7 @@ tags: [readme]
 |---|---|---|
 | 18c+ | v3.2.x (18c+) / v3.1.x | 권장. charset `AL32UTF8`. |
 | 12.2 | v3.1.x만 | v3.2.x는 컴파일되지 않습니다(`PLS-00222`). 이미지의 `WE8DEC`은 표현할 수 없는 문자(예: `€`)를 잃습니다. thin 드라이버는 `NLS_LANG`을 무시합니다. |
-- **VSCode 1.88+** (Test Coverage API).
+- **VSCode 1.101+** (Test Coverage API).
 
 확장 프로그램은 "그래픽 클라이언트"일 뿐입니다 — 테스트를 실행하는 것은 데이터베이스입니다: node-oracledb 직접 연결을 통해.
 
@@ -102,8 +110,10 @@ code .
 
 **허용되는 형식:**
 - **EZ Connect**: `user/pass@//host:1521/service`
-- **TNS 별칭**: `user/pass@tns_alias`(`TNS_ADMIN` 구성 필요)
+- **TNS 별칭**: `user/pass@tns_alias`
 - **Wallet(Oracle Cloud)**: `user/pass@tcps://host:1522/service?wallet_location=/path/wallet`
+
+> 🔒 **강화된 설정:** 연결 설정은 **`machine` 범위**입니다. 확장은 **신뢰할 수 없는 워크스페이스에서 비활성화**되며, 프로필 비밀번호는 **연결에 바인딩**됩니다. (`utplsql.connection`, `utplsql.profiles`, `utplsql.activeProfile`, `utplsql.oracleClientLibDir`, `utplsql.oracleClientConfigDir`, `utplsql.connections.tnsAdminPath`)
 
 ## 작동 방식
 
@@ -130,6 +140,8 @@ Test Explorer에 나타납니다.
 | `utplsql.timeoutMinutes` | `60` | 실행 시간 제한(분). |
 | `utplsql.dbmsOutput` | `false` | 테스트 세션에서 `DBMS_OUTPUT`을 활성화합니다. |
 | `utplsql.additionalReporters` | `[]` | 모든 실행에 포함할 추가 리포터(예: `["ut_coverage_html_reporter"]`). 기본값(documentation, junit)은 항상 포함되며 나열할 필요가 없습니다. |
+| `utplsql.reporter.clientCharacterSet` | `""` | **Run with Reporter (Export)**의 클라이언트 문자셋(`a_client_character_set`). 비우면 reporter 기본값. |
+| `utplsql.reporter.colorConsole` | `false` | 내보내기에서 텍스트 콘솔 reporter의 ANSI 색상(`a_color_console`)을 사용합니다. |
 | `utplsql.tags` | `""` | 실행할 테스트를 필터링하는 utPLSQL 태그 표현식(예: `fast & !integration`). 비어 있으면 모두 실행합니다. |
 | `utplsql.run.randomOrder` | `false` | 테스트 간 순서 의존성을 드러내기 위해 무작위 순서로 실행합니다. |
 | `utplsql.run.randomOrderSeed` | `0` | 무작위 순서의 seed. `0` = 데이터베이스가 선택(재현 불가), 0보다 크면 같은 순서를 재현합니다. |
@@ -144,7 +156,8 @@ Test Explorer에 나타납니다.
 | `utplsql.oracleClientLibDir` | `""` | Oracle Instant Client 디렉터리. `utplsql.oracleClientMode`가 `thick`일 때 필수입니다(예: `C:\oracle\instantclient_23_5`). |
 | 디버그가 브레이크포인트에서 멈추지 않음 | 디버그 정보 없이 컴파일된 패키지, 또는 디버그 권한 누락 | `PLSQL_OPTIMIZE_LEVEL <= 1`로 컴파일(또는 `ALTER PACKAGE ... COMPILE DEBUG PLSQL_OPTIMIZE_LEVEL = 1`)하고 `DEBUG CONNECT SESSION` + `EXECUTE ON SYS.DBMS_DEBUG` 부여. `test_*.pkb`의 브레이크포인트가 적중하지 않을 수 있습니다(utPLSQL은 동적 SQL로 테스트를 실행). 테스트 대상 코드에 설정하세요. |
 | `utplsql.oracleClientConfigDir` | `""` | `sqlnet.ora`/`tnsnames.ora`가 있는 Oracle 구성 디렉터리(TNS_ADMIN). 선택 사항이며 thick 모드에서만 사용됩니다. |
-| `utplsql.organization` | `file` | 트리 구성: `file`(경로별) 또는 `schema`(Schema > Package > Suite > Test). `schema` 모드에서 워크스페이스에 `.pks` 파일이 없으면 스위트가 데이터베이스(`ut_runner.get_suites_info`, 불가 시 `ALL_OBJECTS`/`ALL_SOURCE`)에서도 발견됩니다 — 가상 URI `utplsql-db:/`(실행 및 실패 지점 이동 가능, CodeLens/데코레이션 없음). |
+| `utplsql.connections.tnsAdminPath` | `""` | `tnsnames.ora`가 있는 디렉터리로 **thin 드라이버에서 TNS 별칭을 해석**합니다. 순서: 이 설정 → `sqldeveloper.connections.tnsConfiguration.path`의 user/machine 값 → `TNS_ADMIN`. |
+| `utplsql.organization` | `file` | 트리 구성: `file`(경로별) 또는 `schema`(Schema > Package > Suite > Test). `schema` 모드에서 워크스페이스에 `.pks` 파일이 없으면 스위트가 데이터베이스(`ut_runner.get_suites_info`, 불가 시 `ALL_OBJECTS`/`ALL_SOURCE`)에서도 발견됩니다 — 가상 URI `utplsql-db:/`(실행 및 실패 지점 이동 가능, CodeLens/데코레이션 없음). · `utplsql-source:/` |
 | `utplsql.organization.schemaPattern` | `db/{schema}/**` | 경로에서 스키마를 추출하는 glob 패턴. `{schema}`를 자리 표시자로 사용하세요. `schema` 모드에서 패턴 기본 아래의 디렉터리(예: `db/*`)는 데이터베이스에서 조회할 스키마를 정의합니다. |
 | `utplsql.discovery.source` | `auto` | `schema` 모드에서 테스트 트리의 소스: `auto`는 데이터베이스 API(`ut_runner.get_suites_info`)를 사용하고 사용할 수 없으면 `ALL_SOURCE`/파일로 대체합니다. `database`는 API를 요구하고, `file`은 데이터베이스 검색을 비활성화합니다. |
 | `utplsql.refreshDebounceMs` | `300` | Test Explorer를 새로 고치기 전에 `.pks`/`.pkb` 파일 감시 이벤트를 병합하는 디바운스(ms). |
@@ -265,6 +278,8 @@ UTPLSQL_CONN=your_user/password@//host:1521/service
 | `utPLSQL: Run script` | Runs the script open in the editor against a connection profile | Right-click → script file |
 | `utPLSQL: Run script file` | Runs an Explorer script file (decoded with the profile charset) | Right-click → file |
 | `utPLSQL: Run script folder` | Runs the folder scripts in alphabetical order | Right-click → folder |
+| `utPLSQL: 월렛 비밀번호 설정` | 활성 프로필의 월렛 비밀번호 설정/해제(SecretStorage) | — |
+| `utPLSQL: reporter로 실행(내보내기)` | 선택 항목을 선택한 reporter로 실행하고 출력을 Output/파일에 저장합니다(결과는 변경하지 않음) | Test Explorer → menu do item |
 
 > **Recompile UT3**(`utplsql.recompileUt3`)은 팔레트 명령이 **아닙니다** —
 > "utPLSQL Setup" 진단(utPLSQL 스키마의 잘못된 객체)의 내부 quick-fix입니다.
@@ -316,9 +331,7 @@ UTPLSQL_CONN=your_user/password@//host:1521/service
 기본 리포터는 여기에 나열되어 있어도
 자동으로 중복 제거됩니다.
 
-**일시적 세션별 리포터** — **utPLSQL: Select additional reporter...** 명령은
-데이터베이스의 동적 목록이 있는 QuickPick을 엽니다. 선택한 리포터는 세션에 저장되지만,
-그 선택은 **현재 Oracle-only 버전에서는 적용되지 않습니다**.
+**세션 한정 reporter** — **추가 reporter 선택...** 명령이 데이터베이스 목록을 QuickPick으로 엽니다. 선택한 reporter는 세션에 저장되어 **다음 실행에 적용**됩니다.
 
 ## 데이터베이스 요구 사항
 

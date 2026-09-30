@@ -248,9 +248,10 @@ era comparado com `meta.packageName` (`test_math_fail`) e com o fallback
 
 ## Limitações
 
-- Funciona para código local (`.pks`/`.pkb` no workspace) **e** para suites
-  só-DB: o `dbSourceProvider` serve o documento virtual `utplsql-db:` (fonte de
-  `ALL_SOURCE`) para o "Go to Error"
+- Funciona para código local (`.pks`/`.pkb` no workspace) **e** sem fonte local:
+  o `dbSourceProvider` serve o documento virtual **`utplsql-source:`** (PRD-80,
+  qualquer tipo de objeto, de `ALL_SOURCE`) para o "Go to Error"; `utplsql-db:`
+  segue como alias (PRD-74)
 - Stack traces multi-frame usam o primeiro frame de usuário
 - Código externo (packages padrão Oracle) → `message.location` fica `undefined`
 - Resolução para `.pks` por padrão; `.pkb` não é verificado automaticamente

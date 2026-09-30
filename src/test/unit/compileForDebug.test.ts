@@ -7,6 +7,7 @@ import {
   compileForDebugSql,
   compileTargetsForDebug,
   debuggableFromFile,
+  isValidOracleIdentifier,
 } from '../../compileForDebug';
 import { __resetConfigValues } from '../vscode-stub';
 
@@ -42,6 +43,42 @@ test('compileForDebugSql: upper case e aspas', () => {
     compileForDebugSql('package', 'app', 'test_hello'),
     'ALTER PACKAGE "APP"."TEST_HELLO" COMPILE DEBUG PLSQL_OPTIMIZE_LEVEL = 1',
   );
+});
+
+test('isValidOracleIdentifier: aceita nomes válidos e rejeita perigosos', () => {
+  assert.ok(isValidOracleIdentifier('UT_FOO'));
+  assert.ok(isValidOracleIdentifier('a$b#c_1'));
+  assert.ok(!isValidOracleIdentifier('1abc'));
+  assert.ok(!isValidOracleIdentifier('a"b'));
+  assert.ok(!isValidOracleIdentifier('a b'));
+  assert.ok(!isValidOracleIdentifier('a; drop'));
+  assert.ok(!isValidOracleIdentifier(''));
+});
+
+test('compileForDebugSql: rejeita identificador inválido (sem montar o SQL)', () => {
+  assert.throws(
+    () => compileForDebugSql('package', 'app', 'x" ; drop'),
+    /Invalid Oracle identifier/,
+  );
+  assert.throws(() => compileForDebugSql('package', 'bad owner', 'p'), /Invalid Oracle identifier/);
+});
+
+test('compileTargetsForDebug: identificador inválido vira falha sem tocar o banco', async () => {
+  let called = false;
+  const conn = {
+    execute: async () => {
+      called = true;
+    },
+  };
+  const result = await compileTargetsForDebug(
+    conn,
+    [{ name: 'bad name', kinds: ['package'] }],
+    'app',
+  );
+  assert.strictEqual(called, false);
+  assert.deepStrictEqual(result.ok, []);
+  assert.strictEqual(result.failed.length, 1);
+  assert.match(result.failed[0].error, /Invalid Oracle identifier/);
 });
 
 test('compileTargetsForDebug: compila com o owner default', async () => {

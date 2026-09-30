@@ -35,6 +35,9 @@ Passos realizados:
 - [ ] Se mexi em documentação/PRDs: editei a **nota do vault** (`docs/brain/`) e
       rodei `npm run brain:build` (não edite os arquivos gerados)
 - [ ] Se mexi em `docs/brain/`: `npm run brain:ci` + `git diff --exit-code` limpos
+- [ ] Se concluí/alterei PRDs: criei/alterei as regras `BR-*`/`SEC-*` que a PRD
+      materializa (`prds:`/`implementacao:`/`testes:`) — ou confirmei `nenhuma` em
+      `## Impacto no cérebro`; `npm run brain:rules` verde
 - [ ] Atualizei o `CHANGELOG.md`
 - [ ] Se alterei settings em `package.json`, mantive as descrições em português, no padrão do projeto
 - [ ] Se alterei a montagem de SQL/PL-SQL, revisei possíveis impactos de injeção (binds)

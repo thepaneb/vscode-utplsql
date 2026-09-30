@@ -38,5 +38,5 @@ Evita varrer a árvore a cada run e cobre a profundidade máxima do modo schema.
 - 🎯 Requisitos: [[prd-30-schema-aware-organization|PRD-30 RF4]]
 - 🧩 Código: [[COD - testTree.ts]]
 - 🧪 Testes: [[TST - testTree.test.ts]]
-- ↩️ Referenciada por: [[06-tree-organization]]
+- ↩️ Referenciada por: [[06-tree-organization]] · [[prd-30-schema-aware-organization|PRD-30]]
 <!-- brain:auto:end -->

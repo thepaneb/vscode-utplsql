@@ -43,6 +43,14 @@ Integra o [utPLSQL](https://www.utplsql.org/) ao VSCode, trazendo os testes de P
 - 🗄️ **Descoberta DB-first** — monte a árvore a partir de `ut_runner.get_suites_info` e reconstrua o cache de anotações pela paleta.
 - 🐛 **Debug PL/SQL** — breakpoints e step debugging de testes utPLSQL via `DBMS_DEBUG` (Debug Adapter nativo).
 - 🌍 **i18n — 24 idiomas** — `utplsql.language` segue o VSCode (24 locales: pt-br, en, en-gb, es, zh-cn, zh-tw, ja, de, fr, it, ko, ru, tr, pl, cs, hu, bg, el, id, ro, sr, th, uk, vi).
+- 🌳 **Árvore de testes lazy** — no modo `schema`, packages/suites/testes são resolvidos sob demanda ao expandir, então schemas grandes abrem na hora.
+- 🧾 **Run with Reporter (Export)** — roda a seleção com qualquer reporter do banco e grava a saída no Output ou em arquivo (`utplsql.reporter.*`), sem alterar os resultados do Test Explorer.
+- 🗂️ **Fonte virtual do banco** — sem arquivo local, o *jump to failure* e a cobertura abrem um documento somente leitura resolvido de `ALL_SOURCE` (`utplsql-source:/…`).
+- 🔐 **TNS no thin + wallet** — `utplsql.connections.tnsAdminPath` resolve aliases de `tnsnames.ora` no driver thin (fallback para SQL Developer/`TNS_ADMIN`); o `walletLocation` do perfil e `utPLSQL: Set wallet password` guardam a senha da wallet no SecretStorage.
+- 🔒 **Hardening de segurança das conexões** — as settings de conexão são `machine`-scoped, a extensão fica desabilitada em workspaces não confiáveis e a senha do perfil é vinculada à conexão.
+- 🧱 **Diagnósticos de compilação** — após cada execução, erros de compilação PL/SQL (`ALL_ERRORS`) aparecem no Problems Panel sob o source `utPLSQL Compilation` (setting `utplsql.compilationDiagnostics.enabled`).
+- ⏳ **Progresso e cancelamento** — execuções longas mostram notificação de progresso com contagem e botão *Cancel* (além do `utplsql.timeoutMinutes` opcional).
+- 📁 **Multi-root workspace** — cada pasta do workspace tem suas próprias suítes, com descoberta, execução e cobertura independentes.
 
 ## Instalação
 
@@ -56,7 +64,7 @@ A extensão pode ser instalada de duas formas:
 ## Requisitos
 
 - [**utPLSQL**](https://github.com/utPLSQL/utPLSQL) **(UT3)** instalado no banco Oracle.
-- **VSCode 1.88+** (Test Coverage API).
+- **VSCode 1.101+** (Test Coverage API).
 
 A extensão conecta-se diretamente ao banco Oracle via `node-oracledb` (driver thin, sem Instant Client). O VSIX já inclui o pacote `oracledb`.
 
@@ -103,8 +111,10 @@ conexão e a mantém apenas em memória durante a sessão — use o comando
 
 **Formatos aceitos:**
 - **EZ Connect**: `user/pass@//host:1521/service`
-- **TNS alias**: `user/pass@tns_alias` (requer `TNS_ADMIN` configurado)
+- **TNS alias**: `user/pass@tns_alias`
 - **Wallet (Oracle Cloud)**: `user/pass@tcps://host:1522/service?wallet_location=/caminho/wallet`
+
+> 🔒 **Settings reforçadas:** as settings de conexão (`utplsql.connection`, `utplsql.profiles`, `utplsql.activeProfile`, `utplsql.oracleClientLibDir`, `utplsql.oracleClientConfigDir`, `utplsql.connections.tnsAdminPath`) são **`machine`-scoped**; a extensão fica **desabilitada em workspaces não confiáveis**; e a senha do perfil é **vinculada à conexão**.
 
 ## Como funciona
 
@@ -131,6 +141,8 @@ Test Explorer **conforme cada teste termina**.
 | `utplsql.timeoutMinutes` | `60` | Timeout em minutos para a execução dos testes. |
 | `utplsql.dbmsOutput` | `false` | Habilita `DBMS_OUTPUT` na sessão de teste. Útil para depuração. |
 | `utplsql.additionalReporters` | `[]` | Reporters adicionais para incluir em toda execução (ex.: `["ut_coverage_html_reporter"]`). Os padrões (documentation, junit) são sempre incluídos e não precisam ser listados. |
+| `utplsql.reporter.clientCharacterSet` | `""` | Charset do cliente (`a_client_character_set`) para o comando **Run with Reporter (Export)**. Vazio usa o default do reporter. |
+| `utplsql.reporter.colorConsole` | `false` | Habilita cor ANSI (`a_color_console`) em reporters textuais de console no export. |
 | `utplsql.tags` | `""` | Expressão de tags do utPLSQL para filtrar quais testes executam (ex.: `fast & !integration`). Vazio executa todos. |
 | `utplsql.run.randomOrder` | `false` | Executa os testes em ordem aleatória, para revelar dependências de ordem entre eles. |
 | `utplsql.run.randomOrderSeed` | `0` | Seed da ordem aleatória. `0` = sorteada pelo banco (não reproduzível); > 0 reproduz a mesma ordem. |
@@ -145,7 +157,8 @@ Test Explorer **conforme cada teste termina**.
 | `utplsql.oracleClientLibDir` | `""` | Diretório do Oracle Instant Client. Obrigatório quando `utplsql.oracleClientMode` é `thick` (ex.: `C:\oracle\instantclient_23_5`). |
 | O debug não para no breakpoint | Package sem debug info ou grants de debug ausentes | Compile com `PLSQL_OPTIMIZE_LEVEL <= 1` (ou `ALTER PACKAGE ... COMPILE DEBUG PLSQL_OPTIMIZE_LEVEL = 1`) e conceda `DEBUG CONNECT SESSION` + `EXECUTE ON SYS.DBMS_DEBUG`. Breakpoints em `test_*.pkb` podem não parar (o utPLSQL executa os testes via SQL dinâmico); coloque-os no código sob teste. |
 | `utplsql.oracleClientConfigDir` | `""` | Diretório de configuração Oracle (TNS_ADMIN) com `sqlnet.ora`/`tnsnames.ora`. Opcional; usado apenas pelo driver thick. |
-| `utplsql.organization` | `file` | Organização da árvore: `file` (por caminho) ou `schema` (Schema > Package > Suite > Test). No modo `schema`, suites também são descobertas do banco (`ut_runner.get_suites_info`, com fallback para `ALL_OBJECTS`/`ALL_SOURCE`) quando os arquivos `.pks` não estão no workspace — URI virtual `utplsql-db:/` (execução e jump to failure funcionam; sem CodeLens/decorations). |
+| `utplsql.connections.tnsAdminPath` | `""` | Diretório com `tnsnames.ora` para resolver **aliases TNS no driver thin**. Precedência: esta setting → valor user/machine de `sqldeveloper.connections.tnsConfiguration.path` → `TNS_ADMIN`. |
+| `utplsql.organization` | `file` | Organização da árvore: `file` (por caminho) ou `schema` (Schema > Package > Suite > Test). No modo `schema`, suites também são descobertas do banco (`ut_runner.get_suites_info`, com fallback para `ALL_OBJECTS`/`ALL_SOURCE`) quando os arquivos `.pks` não estão no workspace — URI virtual `utplsql-db:/` (execução e jump to failure funcionam; sem CodeLens/decorations). · `utplsql-source:/` |
 | `utplsql.organization.schemaPattern` | `db/{schema}/**` | Padrão glob para extrair schema do caminho. Use `{schema}` como placeholder. No modo `schema`, os diretórios abaixo da base do padrão (ex.: `db/*`) definem os schemas consultados no banco. |
 | `utplsql.discovery.source` | `auto` | Fonte da árvore no modo `schema`: `auto` usa a API do banco (`ut_runner.get_suites_info`) e cai para `ALL_SOURCE`/arquivos quando indisponível; `database` exige a API; `file` desliga a descoberta via banco. |
 | `utplsql.refreshDebounceMs` | `300` | Debounce (ms) para agrupar eventos do watcher de arquivos `.pks`/`.pkb` antes de atualizar o Test Explorer. |
@@ -266,6 +279,8 @@ Todos os comandos da extensão (palette `Ctrl+Shift+P` prefixo `utPLSQL:`):
 | `utPLSQL: Executar script` | Executa o script aberto no editor contra um perfil de conexão | Clique direito → arquivo de script |
 | `utPLSQL: Executar arquivo de script` | Executa um arquivo de script do Explorer (decodificado no charset do perfil) | Clique direito → arquivo |
 | `utPLSQL: Executar pasta de scripts` | Executa os scripts da pasta em ordem alfabética | Clique direito → pasta |
+| `utPLSQL: Definir senha da wallet` | Define/limpa a senha da wallet Oracle Cloud do perfil ativo (SecretStorage) | — |
+| `utPLSQL: Rodar com reporter (export)` | Roda a seleção com um reporter escolhido e grava a saída em Output/arquivo (não altera os resultados) | Test Explorer → menu do item |
 
 > **Recompilar UT3** (`utplsql.recompileUt3`) **não** é um comando da paleta — é
 > um quick-fix interno do diagnostic "utPLSQL Setup" (objetos inválidos no
@@ -320,10 +335,7 @@ dos testes nunca é bloqueada.
 Os reporters padrão são automaticamente deduplicados, mesmo se
 listados aqui.
 
-**Reporter volátil por sessão** — comando **utPLSQL: Selecionar reporter
-adicional...** abre um QuickPick com a lista dinâmica do banco. O reporter
-escolhido é guardado na sessão, mas a seleção **não é aplicada** na versão
-Oracle-only atual.
+**Reporter volátil por sessão** — o comando **Selecionar reporter adicional...** abre um QuickPick com a lista dinâmica do banco; o reporter escolhido é guardado na sessão e **aplicado na próxima execução**.
 
 ## Requisitos no banco
 

@@ -26,5 +26,7 @@
   "nls.command.runScriptFile": "utPLSQL: Run script file",
   "nls.command.runScriptFolder": "utPLSQL: Run script folder",
   "nls.command.compileForDebug": "utPLSQL: คอมไพล์สำหรับดีบัก",
-  "nls.command.rebuildAnnotations": "utPLSQL: สร้างแคชคำอธิบายประกอบใหม่"
+  "nls.command.rebuildAnnotations": "utPLSQL: สร้างแคชคำอธิบายประกอบใหม่",
+  "nls.command.setWalletPassword": "utPLSQL: ตั้งรหัสผ่านวอลเล็ต",
+  "nls.command.runWithReporter": "utPLSQL: เรียกใช้ด้วย reporter (ส่งออก)"
 }

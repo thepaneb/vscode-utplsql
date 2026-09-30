@@ -43,7 +43,13 @@ Mudar o status é sempre a mesma sequência:
 1. Edite `status:` no frontmatter da nota (`proposed` → `approved` →
    `in-progress` → `completed`).
 2. Ao **concluir**: preencha `versao:` e registre no `CHANGELOG.md`.
-3. Regenerar e sincronizar:
+3. **Impacto no cérebro**: crie/altere as regras `BR-*`/`SEC-*` que a PRD
+   materializa — com `prds: ["PRD-NN"]`, `implementacao:` e `testes:`. O campo
+   `regras:` da nota PRD é **derivado** pelo `brain:sync` (reverse-map do `prds:`
+   das regras); a seção `## Impacto no cérebro` declara o que foi criado (ou
+   "nenhuma"). PRDs concluídas (>= `0.14.0`) sem regra precisam da seção
+   preenchida — o `brain:rules` cobra (vínculo bidirecional PRD ↔ regra/SEC).
+4. Regenerar e sincronizar:
    ```sh
    npm run brain:sync && npm run brain:build
    npm run sync-prds   # atualiza label / fecha a issue
@@ -72,6 +78,8 @@ npm run sync-prds
 - [ ] `npm run brain:build -- check` → sem drift (roda no CI)
 - [ ] `npm run docs:check` → valida pasta ↔ `index.md` ↔ status da saída gerada
 - [ ] `npm run brain:check` → valida os links do vault
+- [ ] `npm run brain:rules` → regras válidas **e** vínculo bidirecional
+      PRD ↔ regra/SEC (`regras:` derivado, `prds:` de volta)
 - [ ] `CHANGELOG.md` atualizado ao concluir
 
 ## Armadilhas

@@ -43,6 +43,14 @@ tags: [readme]
 - 🗄️ **DB-first keşif** — ağacı `ut_runner.get_suites_info`'dan oluşturun ve açıklama önbelleğini paletten yeniden oluşturun.
 - 🐛 **PL/SQL Hata Ayıklama** — `DBMS_DEBUG` üzerinden utPLSQL testlerinde kesme noktaları ve adım adım hata ayıklama (doğal Debug Adapter).
 - 🌍 **i18n — 24 dil** — `utplsql.language` VSCode'u takip eder (24 yerel ayar: pt-br, en, en-gb, es, zh-cn, zh-tw, ja, de, fr, it, ko, ru, tr, pl, cs, hu, bg, el, id, ro, sr, th, uk, vi).
+- 🌳 **Tembel test ağacı** — `schema` modunda paketler/suiteler/testler genişletildiğinde isteğe bağlı çözülür; büyük şemalar anında açılır.
+- 🧾 **Run with Reporter (Export)** — seçimi herhangi bir veritabanı reporter’ı ile çalıştırır ve çıktıyı Output’a veya dosyaya yazar (`utplsql.reporter.*`); Test Explorer sonuçlarını değiştirmez.
+- 🗂️ **Sanal veritabanı kaynağı** — yerel dosya yoksa *jump to failure* ve kapsam, `ALL_SOURCE`’dan çözülen salt okunur bir belge açar (`utplsql-source:/…`).
+- 🔐 **Thin’de TNS + wallet** — `utplsql.connections.tnsAdminPath`, thin sürücüde `tnsnames.ora` takma adlarını çözer (SQL Developer/`TNS_ADMIN`’e fallback); profildeki `walletLocation` ve `utPLSQL: Set wallet password` wallet parolasını SecretStorage’da tutar.
+- 🔒 **Bağlantı güvenliği sıkılaştırması** — bağlantı ayarları `machine`-scoped oldu, uzantı güvenilmeyen çalışma alanlarında devre dışı ve profil parolası bağlantıya bağlı.
+- 🧱 **Derleme tanılamaları** — her çalıştırmadan sonra PL/SQL derleme hataları (`ALL_ERRORS`) `utPLSQL Compilation` kaynağı altında Problems Panel’de görünür (`utplsql.compilationDiagnostics.enabled` ayarı).
+- ⏳ **İlerleme ve iptal** — uzun çalıştırmalar sayaçlı bir ilerleme bildirimi ve *Cancel* düğmesi gösterir (ayrıca isteğe bağlı `utplsql.timeoutMinutes`).
+- 📁 **Çok köklü çalışma alanı** — her çalışma alanı klasörü kendi suitelerine sahiptir; keşif, çalıştırma ve kapsam bağımsızdır.
 
 ## Kurulum
 
@@ -64,7 +72,7 @@ Uzantı iki şekilde kurulabilir:
 |---|---|---|
 | 18c+ | v3.2.x (18c+) / v3.1.x | Önerilir; charset `AL32UTF8`. |
 | 12.2 | yalnızca v3.1.x | v3.2.x derlenmez (`PLS-00222`). İmajın `WE8DEC`'i gösterilemeyen karakterleri kaybeder (örn. `€`); ince sürücü `NLS_LANG`'i yok sayar. |
-- **VSCode 1.88+** (Test Coverage API).
+- **VSCode 1.101+** (Test Coverage API).
 
 Uzantı yalnızca "grafik istemcidir" — testleri çalıştıran veritabanıdır: node-oracledb doğrudan bağlantısı üzerinden.
 
@@ -101,8 +109,10 @@ oturum sırasında bellekte tutar — temizlemek için
 
 **Kabul edilen biçimler:**
 - **EZ Connect**: `user/pass@//host:1521/service`
-- **TNS takma adı**: `user/pass@tns_alias` (`TNS_ADMIN` yapılandırılmış olmalıdır)
+- **TNS takma adı**: `user/pass@tns_alias`
 - **Wallet (Oracle Cloud)**: `user/pass@tcps://host:1522/service?wallet_location=/path/wallet`
+
+> 🔒 **Sıkılaştırılmış ayarlar:** bağlantı ayarları **`machine` kapsamlıdır**; uzantı **güvenilmeyen çalışma alanlarında devre dışıdır**; profil parolası **bağlantısına bağlıdır**. (`utplsql.connection`, `utplsql.profiles`, `utplsql.activeProfile`, `utplsql.oracleClientLibDir`, `utplsql.oracleClientConfigDir`, `utplsql.connections.tnsAdminPath`)
 
 ## Nasıl çalışır
 
@@ -129,6 +139,8 @@ Geçici dosya yok, toplu işin bitmesi beklenmez. Sonuçlar Test Explorer'da
 | `utplsql.timeoutMinutes` | `60` | Çalıştırma zaman aşımı (dakika). |
 | `utplsql.dbmsOutput` | `false` | Test oturumunda `DBMS_OUTPUT`'u etkinleştirir. |
 | `utplsql.additionalReporters` | `[]` | Her çalıştırmada eklenecek ek raporlayıcılar (örn. `["ut_coverage_html_reporter"]`). Varsayılanlar (documentation, junit) her zaman dahildir ve listelenmeleri gerekmez. |
+| `utplsql.reporter.clientCharacterSet` | `""` | **Run with Reporter (Export)** için istemci karakter kümesi (`a_client_character_set`). Boş = reporter varsayılanı. |
+| `utplsql.reporter.colorConsole` | `false` | Dışa aktarmada metinsel konsol reporter için ANSI rengini (`a_color_console`) etkinleştirir. |
 | `utplsql.tags` | `""` | Hangi testlerin çalışacağını filtreleyen utPLSQL etiket ifadesi (örn. `fast & !integration`). Boş ise tümü çalışır. |
 | `utplsql.run.randomOrder` | `false` | Testleri aralarındaki sıra bağımlılıklarını ortaya çıkarmak için rastgele sırayla çalıştırır. |
 | `utplsql.run.randomOrderSeed` | `0` | Rastgele sıranın seed değeri. `0` = veritabanı seçer (yeniden üretilemez); > 0 aynı sırayı üretir. |
@@ -143,7 +155,8 @@ Geçici dosya yok, toplu işin bitmesi beklenmez. Sonuçlar Test Explorer'da
 | `utplsql.oracleClientLibDir` | `""` | Oracle Instant Client dizini. `utplsql.oracleClientMode` `thick` olduğunda zorunludur (örn. `C:\oracle\instantclient_23_5`). |
 | Hata ayıklama kesme noktasında durmuyor | Paket hata ayıklama bilgisi olmadan derlenmiş veya hata ayıklama yetkileri eksik | `PLSQL_OPTIMIZE_LEVEL <= 1` ile derleyin (veya `ALTER PACKAGE ... COMPILE DEBUG PLSQL_OPTIMIZE_LEVEL = 1`) ve `DEBUG CONNECT SESSION` + `EXECUTE ON SYS.DBMS_DEBUG` verin. `test_*.pkb` içindeki kesme noktaları isabet etmeyebilir (utPLSQL testleri dinamik SQL ile çalıştırır); bunları test edilen koda koyun. |
 | `utplsql.oracleClientConfigDir` | `""` | `sqlnet.ora`/`tnsnames.ora` içeren Oracle yapılandırma dizini (TNS_ADMIN). İsteğe bağlıdır; yalnızca thick modda kullanılır. |
-| `utplsql.organization` | `file` | Ağaç düzeni: `file` (yola göre) veya `schema` (Schema > Package > Suite > Test). `schema` modunda, `.pks` dosyaları çalışma alanında yoksa paketler de veritabanından (`ut_runner.get_suites_info`, `ALL_OBJECTS`/`ALL_SOURCE` yedeğiyle) keşfedilir — sanal URI `utplsql-db:/` ile (çalıştırma ve hataya atlama çalışır; CodeLens/süsleme yok). |
+| `utplsql.connections.tnsAdminPath` | `""` | **Thin sürücüde TNS takma adlarını çözmek** için `tnsnames.ora` dizini. Sıra: bu ayar → `sqldeveloper.connections.tnsConfiguration.path` user/machine değeri → `TNS_ADMIN`. |
+| `utplsql.organization` | `file` | Ağaç düzeni: `file` (yola göre) veya `schema` (Schema > Package > Suite > Test). `schema` modunda, `.pks` dosyaları çalışma alanında yoksa paketler de veritabanından (`ut_runner.get_suites_info`, `ALL_OBJECTS`/`ALL_SOURCE` yedeğiyle) keşfedilir — sanal URI `utplsql-db:/` ile (çalıştırma ve hataya atlama çalışır; CodeLens/süsleme yok). · `utplsql-source:/` |
 | `utplsql.organization.schemaPattern` | `db/{schema}/**` | Şemayı yoldan çıkarmak için glob deseni. Yer tutucu olarak `{schema}` kullanın. `schema` modunda desen tabanının altındaki dizinler (örn. `db/*`) veritabanında sorgulanan şemaları tanımlar. |
 | `utplsql.discovery.source` | `auto` | `schema` modunda test ağacının kaynağı: `auto` veritabanı API'sini (`ut_runner.get_suites_info`) kullanır ve kullanılamadığında `ALL_SOURCE`/dosyalara döner; `database` API'yi zorunlu kılar; `file` veritabanı keşfini kapatır. |
 | `utplsql.refreshDebounceMs` | `300` | Test Explorer'ı yenilemeden önce `.pks`/`.pkb` dosya izleyici olaylarını birleştirmek için debounce (ms). |
@@ -265,6 +278,8 @@ Tüm uzantı komutları (palet `Ctrl+Shift+P` öneki `utPLSQL:`):
 | `utPLSQL: Run script` | Runs the script open in the editor against a connection profile | Right-click → script file |
 | `utPLSQL: Run script file` | Runs an Explorer script file (decoded with the profile charset) | Right-click → file |
 | `utPLSQL: Run script folder` | Runs the folder scripts in alphabetical order | Right-click → folder |
+| `utPLSQL: Cüzdan parolasını ayarla` | Etkin profilin cüzdan parolasını ayarlar/temizler (SecretStorage) | — |
+| `utPLSQL: Reporter ile çalıştır (dışa aktar)` | Seçimi seçilen reporter ile çalıştırır ve çıktıyı Output/dosyaya yazar (sonuçları değiştirmez) | Test Explorer → menu do item |
 
 > **Recompile UT3** (`utplsql.recompileUt3`) bir **palet komutu değildir** — "utPLSQL Setup"
 > tanılamasının iç bir hızlı düzeltmesidir (utPLSQL şemasındaki geçersiz nesneler).
@@ -316,9 +331,7 @@ engellenmez.
 Varsayılan raporlayıcılar, burada listelense bile otomatik olarak
 yinelenmekten (dedupe) çıkarılır.
 
-**Oturum başına geçici raporlayıcı** — **utPLSQL: Select additional
-reporter...** komutu, veritabanındaki dinamik listeyle bir QuickPick açar. Seçilen
-raporlayıcı oturumda saklanır, ancak seçim mevcut Oracle-only sürümünde **uygulanmaz**.
+**Oturuma özel reporter** — **Ek reporter seç...** komutu veritabanı listesiyle bir QuickPick açar; seçilen reporter oturumda saklanır ve **sonraki çalıştırmada uygulanır**.
 
 ## Veritabanı gereksinimleri
 

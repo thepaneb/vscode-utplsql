@@ -1,7 +1,7 @@
 import './setup.js';
 import assert from 'node:assert';
 import { test } from 'node:test';
-import { logger } from '../../logger';
+import { formatLogLine, logger, setLogSink } from '../../logger';
 
 function capture(fn: () => void): string[] {
   const original = console.debug;
@@ -42,4 +42,50 @@ test('logger.debug: nunca lanca', () => {
   } finally {
     delete process.env.UTPLSQL_DEBUG;
   }
+});
+
+test('logger: sink recebe nível e contexto (LogOutputChannel)', () => {
+  const seen: Array<[string, string]> = [];
+  setLogSink((level, msg, ctx) => seen.push([level, formatLogLine(msg, ctx)]));
+  const originalWarn = console.warn;
+  const originalError = console.error;
+  console.warn = () => {};
+  console.error = () => {};
+  try {
+    logger.info('oi', { a: 1 });
+    logger.warn('cuidado');
+    logger.error('erro', { b: 2 });
+    logger.debug('dbg', { c: 3 }); // vai ao sink mesmo sem UTPLSQL_DEBUG (nível do canal filtra)
+  } finally {
+    console.warn = originalWarn;
+    console.error = originalError;
+    setLogSink(undefined);
+  }
+  assert.deepStrictEqual(
+    seen.map((s) => s[0]),
+    ['info', 'warn', 'error', 'debug'],
+  );
+  assert.match(seen[0][1], /"a":1/);
+  assert.strictEqual(seen[1][1], 'cuidado');
+  assert.match(seen[3][1], /"c":3/);
+});
+
+test('logger: sink defeituoso nunca lança', () => {
+  setLogSink(() => {
+    throw new Error('boom');
+  });
+  try {
+    assert.doesNotThrow(() => logger.info('x'));
+  } finally {
+    setLogSink(undefined);
+  }
+});
+
+test('logger: formatLogLine omite contexto inválido (circular) sem lançar', () => {
+  const circular: Record<string, unknown> = {};
+  circular.self = circular;
+  assert.strictEqual(formatLogLine('msg', circular), 'msg');
+  assert.strictEqual(formatLogLine('msg'), 'msg');
+  assert.strictEqual(formatLogLine('msg', {}), 'msg');
+  assert.match(formatLogLine('msg', { a: 1 }), /"a":1/);
 });

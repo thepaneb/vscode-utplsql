@@ -8,6 +8,7 @@ versao: "0.12.0"
 data: "2026-07-21"
 autor: "Gil Cleber Barboza"
 verificado: 2026-09-23
+regras: ["BR-DEBUG-001", "BR-DEBUG-003"]
 tags: [prd]
 ---
 
@@ -326,6 +327,7 @@ estiver implementado, a dependência `oracledb` é adicionada como
 
 <!-- brain:auto:start:conexoes -->
 - 🗺️ [[MOC - PRDs]]
+- 📐 Regras: [[BR-DEBUG-001 - Ciclo do debugger DBMS_DEBUG para no breakpoint e le o frame|BR-DEBUG-001]] · [[BR-DEBUG-003 - Function standalone depura no namespace toplevel|BR-DEBUG-003]]
 - 🔗 PRDs relacionados: [[prd-11-streaming-results|PRD-11]] · [[prd-24-codelens-integration|PRD-24]] · [[prd-29-jump-to-failing-assertion|PRD-29]] · [[prd-32-quickfix-setup-diagnostics|PRD-32]]
 - 🚀 ⬅️ release anterior: [[prd-46-dependency-majors|PRD-46 (0.11.0)]] · ➡️ próxima release: [[prd-70-thick-mode-nne|PRD-70 (0.12.1)]]
 <!-- brain:auto:end -->

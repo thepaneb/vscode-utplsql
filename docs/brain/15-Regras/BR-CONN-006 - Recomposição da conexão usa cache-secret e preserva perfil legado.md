@@ -7,8 +7,8 @@ dominio: conexao
 status: ativo
 severidade: alta
 fonte: codigo
-verificado: 2026-09-23
-implementacao: ["src/connectionProfiles.ts:173", "src/connectionProfiles.ts:180"]
+verificado: 2026-09-28
+implementacao: ["src/connectionProfiles.ts:218", "src/connectionProfiles.ts:234"]
 testes: ["src/test/unit/connectionProfiles.test.ts"]
 prds: ["PRD-34"]
 requisitos: ["PRD-34/RF5"]
@@ -16,15 +16,15 @@ tags: ["conexao"]
 ---
 ## Enunciado
 
-Se getProfileConnection é chamada, então ela reconstrói user/senha@host usando a senha do cache em memória; se a credencial já contém /, retorna a connection como está (perfil legado com senha inline).
+Se getProfileConnection é chamada, então ela reconstrói user/senha@host usando a senha do cache **apenas se o vínculo bater** (a conexão salva com a senha é a conexão atual do perfil — PRD-81 RF3); se a credencial já contém /, retorna a connection como está (perfil legado com senha inline).
 
 ## Pré-condições
 
-Perfil sem senha na settings e senha presente no cache (hidratada ou recém-salva).
+Perfil sem senha na settings e senha presente no cache (hidratada ou recém-salva) com a mesma connection.
 
 ## Exceções
 
-Connection sem @ retorna inalterada; senha ausente no cache retorna a conexão sem senha.
+Connection sem @ retorna inalterada; senha ausente no cache ou vinculada a outra conexão retorna a conexão sem senha.
 
 ## Justificativa
 
@@ -38,5 +38,5 @@ Manter perfis utilizáveis após o save (senha fora das settings) e preservar co
 - 🎯 Requisitos: [[prd-34-multi-connection-profiles|PRD-34 RF5]]
 - 🧩 Código: [[COD - connectionProfiles.ts]]
 - 🧪 Testes: [[TST - connectionProfiles.test.ts]]
-- ↩️ Referenciada por: [[09-configuration]]
+- ↩️ Referenciada por: [[09-configuration]] · [[prd-34-multi-connection-profiles|PRD-34]]
 <!-- brain:auto:end -->

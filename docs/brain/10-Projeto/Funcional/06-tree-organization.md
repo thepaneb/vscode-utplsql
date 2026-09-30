@@ -89,8 +89,9 @@ function buildSchemaTree(controller, state, suites: SuiteFile[], schemaPattern: 
 
 ## Descoberta via DB (PRD-43 / DB-first PRD-74)
 
-No modo `schema`, o `doRefresh()` chama
-`mergeDbSuites()` antes de `buildSchemaTree`:
+No modo `schema` a árvore é **lazy** (PRD-75): o `doRefresh()` materializa apenas
+os nós de **schema**; a descoberta via banco acontece **por schema**, sob
+demanda, ao expandir (`resolveSchemaNode`), que consulta:
 
 1. `resolveConnectionNoPrompt()` — sem conexão configurada, descoberta DB é pulada;
    `utplsql.discovery.source = "file"` também desliga a descoberta via banco
@@ -120,6 +121,15 @@ No modo `schema`, o `doRefresh()` chama
 registram `{ scheme: 'file' }`). Execução **e jump to failure** funcionam — o
 `dbSourceProvider` serve o documento virtual `utplsql-db:` (fonte de `ALL_SOURCE`)
 para o "Go to Error".
+
+**Resolução lazy (PRD-75):** `schema:` → `package:` → `suite:` → `test:` são
+resolvidos por nível no `resolveHandler`; níveis não expandidos não consultam o
+banco. `Run All`/`Run Failed` resolvem a subárvore necessária antes de executar
+(`collectAllItems`/`resolveSubtree`).
+
+**Fonte virtual (PRD-80):** sem arquivo local, o jump-to-failure e a cobertura
+usam `utplsql-source:/<SCHEMA>/<OBJ>.<ext>?line=N` (qualquer tipo de objeto, de
+`ALL_SOURCE`), read-only. O scheme `utplsql-db:` segue como alias.
 
 ### IDs na árvore
 

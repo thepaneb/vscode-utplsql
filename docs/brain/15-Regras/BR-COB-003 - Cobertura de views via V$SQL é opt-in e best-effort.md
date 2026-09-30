@@ -10,7 +10,7 @@ fonte: codigo
 erros: [ERR-009]
 verificado: 2026-09-23
 implementacao: ["src/runner.ts:202", "src/config.ts:119", "src/viewCoverage.ts:93", "src/viewCoverage.ts:122", "src/viewCoverage.ts:31"]
-testes: ["src/test/unit/viewCoverage.test.ts", "src/test/unit/config.test.ts", "src/test/unit/runner.test.ts"]
+testes: ["src/test/unit/viewCoverage.test.ts", "src/test/unit/config.test.ts", "src/test/unit/runner.test.ts", "src/test/integration/viewCoverageE2E.test.ts", "src/test/integration/viewCoverageDenied.test.ts"]
 prds: ["PRD-12"]
 requisitos: ["PRD-12/RF2"]
 tags: ["cobertura"]
@@ -39,6 +39,6 @@ V$SQL pode ser negado por grants e não deve comprometer o run de testes; o matc
 - ⚠️ Erros: [[ERR-009 - V$SQL negado — cobertura de views indisponível|ERR-009]]
 - 🎯 Requisitos: [[prd-12-sql-coverage|PRD-12 RF2]]
 - 🧩 Código: [[COD - runner.ts]] · [[COD - config.ts]] · [[COD - viewCoverage.ts]]
-- 🧪 Testes: [[TST - viewCoverage.test.ts]] · [[TST - config.test.ts]] · [[TST - runner.test.ts]]
-- ↩️ Referenciada por: [[04-code-coverage]] · [[ERR-009 - V$SQL negado — cobertura de views indisponível|ERR-009]] · [[GLOSS-005 - Coverage owner|GLOSS-005]] · [[SEC-009 - Grants são copiados para o clipboard, nunca executados automaticamente|SEC-009]]
+- 🧪 Testes: [[TST - viewCoverage.test.ts]] · [[TST - config.test.ts]] · [[TST - runner.test.ts]] · [[TST - viewCoverageE2E.test.ts]] · [[TST - viewCoverageDenied.test.ts]]
+- ↩️ Referenciada por: [[04-code-coverage]] · [[ERR-009 - V$SQL negado — cobertura de views indisponível|ERR-009]] · [[GLOSS-005 - Coverage owner|GLOSS-005]] · [[SEC-009 - Grants são copiados para o clipboard, nunca executados automaticamente|SEC-009]] · [[prd-12-sql-coverage|PRD-12]]
 <!-- brain:auto:end -->

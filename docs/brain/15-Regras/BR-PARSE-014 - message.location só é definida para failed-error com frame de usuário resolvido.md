@@ -38,5 +38,5 @@ Habilita o Go to Error nativo do VSCode apenas quando há local confiável, sem 
 - 🎯 Requisitos: [[prd-29-jump-to-failing-assertion|PRD-29 RF1]]
 - 🧩 Código: [[COD - results.ts]]
 - 🧪 Testes: [[TST - results.test.ts]] · [[TST - jumpToFailureE2E.test.ts]]
-- ↩️ Referenciada por: [[03-results-and-reporting]] · [[08-jump-to-failure]]
+- ↩️ Referenciada por: [[03-results-and-reporting]] · [[08-jump-to-failure]] · [[prd-29-jump-to-failing-assertion|PRD-29]]
 <!-- brain:auto:end -->

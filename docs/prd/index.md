@@ -139,20 +139,26 @@ notas `prd-*`. O índice navegável do vault é a [[MOC - PRDs]].
 | 72 | [Matriz de bancos Oracle para testes de integração](completed/prd-72-db-test-matrix.md) | 0.12.1 | 2026-09-18 |
 | 73 | [Compilar objeto para debug (comando + menus)](completed/prd-73-compile-for-debug.md) | 0.12.1 | 2026-09-18 |
 | 74 | [Descoberta de suítes direto do banco (`ut_runner.get_suites_info`)](completed/prd-74-db-first-discovery.md) | 0.13.0 | 2026-09-19 |
+| 75 | [Árvore de testes lazy (resolução incremental por nível)](completed/prd-75-lazy-test-tree.md) | 0.14.0 | 2026-09-19 |
+| 76 | [Execução e export com reporter arbitrário](completed/prd-76-reporter-export.md) | 0.14.0 | 2026-09-19 |
 | 77 | [Reconstruir o cache de anotações do utPLSQL](completed/prd-77-rebuild-annotation-cache.md) | 0.13.0 | 2026-09-19 |
 | 78 | [Ordem aleatória de execução com seed (`a_random_test_order`)](completed/prd-78-random-test-order.md) | 0.13.0 | 2026-09-19 |
 | 79 | [Escopo avançado de cobertura (regex include/exclude + `excludeObjects`)](completed/prd-79-coverage-scope.md) | 0.13.0 | 2026-09-19 |
+| 80 | [Documento virtual de fonte do banco para falhas e cobertura](completed/prd-80-virtual-db-source.md) | 0.14.0 | 2026-09-19 |
+| 81 | [Hardening de segurança das settings de conexão](completed/prd-81-security-hardening.md) | 0.14.0 | 2026-09-19 |
+| 82 | [Resolução TNS no thin e senha de wallet no SecretStorage](completed/prd-82-tns-wallet.md) | 0.14.0 | 2026-09-19 |
 | 83 | [Higiene do pacote VSIX: bloquear vazamento de arquivos de desenvolvimento](completed/prd-83-vsix-package-hygiene.md) | 0.13.0 | 2026-09-22 |
 | 84 | [Suporte a Oracle 12.2 com piso alternativo de utPLSQL e charset de conexão](completed/prd-84-oracle-122-support.md) | 0.13.0 | 2026-09-22 |
 | 85 | [Second brain canônico (Obsidian) com MCP e extração de conhecimento](completed/prd-85-brain-source-of-truth.md) | 0.13.0 | 2026-09-23 |
 | 86 | [Debugger honra stopOnException (break_exception)](completed/prd-86-debugger-stop-on-exception.md) | 0.13.0 | 2026-09-24 |
 | 87 | [Resultados e jump-to-failure em suítes com %suitepath](completed/prd-87-suitepath-results-jump.md) | 0.13.0 | 2026-09-25 |
+| 94 | [Piso de VS Code 1.101 e runtime Node 22](completed/prd-94-vscode-floor-1-101.md) | 0.14.0 | 2026-09-29 |
 
 ### 🔵 Aprovados
 
 | # | PRD | Versão | Data |
 |---|---|---|---|
-| 47 | [Node 26 no toolchain de desenvolvimento](approved/prd-47-node-26-toolchain.md) | 0.14.0 | 2026-08-29 |
+| 47 | [Node 26 no toolchain de desenvolvimento](approved/prd-47-node-26-toolchain.md) | 0.15.0 | 2026-08-29 |
 
 ### ⚪ Propostos
 
@@ -170,11 +176,13 @@ notas `prd-*`. O índice navegável do vault é a [[MOC - PRDs]].
 | 59 | [Scaffold de suíte de teste](proposed/prd-59-scaffold-suite.md) | 0.16.0 | 2026-09-06 |
 | 60 | [Cobertura de branch (investigação de viabilidade)](proposed/prd-60-branch-coverage-investigation.md) | Investigação — sem versão alvo | 2026-09-06 |
 | 61 | [Auto-provisionamento do utPLSQL-cli](proposed/prd-61-cli-auto-provision.md) | Suspenso — a reavaliar (PRD-64 removeu o CLI) | 2026-09-06 |
-| 75 | [Árvore de testes lazy (resolução incremental por nível)](proposed/prd-75-lazy-test-tree.md) | 0.14.0 | 2026-09-19 |
-| 76 | [Execução e export com reporter arbitrário](proposed/prd-76-reporter-export.md) | 0.14.0 | 2026-09-19 |
-| 80 | [Documento virtual de fonte do banco para falhas e cobertura](proposed/prd-80-virtual-db-source.md) | 0.14.0 | 2026-09-19 |
-| 81 | [Hardening de segurança das settings de conexão](proposed/prd-81-security-hardening.md) | 0.14.0 | 2026-09-19 |
-| 82 | [Resolução TNS no thin e senha de wallet no SecretStorage](proposed/prd-82-tns-wallet.md) | 0.14.0 | 2026-09-19 |
+| 88 | [Formatação sensível a locale (números e durações)](proposed/prd-88-locale-aware-formatting.md) | 0.17.0 | 2026-09-29 |
+| 89 | [Pseudo-localização e gate de strings não traduzidas](proposed/prd-89-pseudo-localization-gate.md) | 0.17.0 | 2026-09-29 |
+| 90 | [Plurais (CLDR) e seleção no catálogo de mensagens](proposed/prd-90-message-plurals-cldr.md) | 0.17.0 | 2026-09-29 |
+| 91 | [Paridade de documentação e distribuição localizada](proposed/prd-91-doc-parity-localized-distribution.md) | 0.17.0 | 2026-09-29 |
+| 92 | [RTL e novos locales (árabe e hebraico)](proposed/prd-92-rtl-new-locales.md) | 0.18.0 | 2026-09-29 |
+| 93 | [Pipeline de localização contínua (glossário, TM e revisão)](proposed/prd-93-continuous-localization-pipeline.md) | 0.18.0 | 2026-09-29 |
+| 95 | [Modernização do runtime: ESM, ES2023 e stdlib Node 22](proposed/prd-95-esm-es2023-node22.md) | 0.15.0 | 2026-09-29 |
 <!-- prd:roadmap:end -->
 
 ---
@@ -248,14 +256,20 @@ docs/prd/
 │   ├── prd-72-db-test-matrix.md
 │   ├── prd-73-compile-for-debug.md
 │   ├── prd-74-db-first-discovery.md
+│   ├── prd-75-lazy-test-tree.md
+│   ├── prd-76-reporter-export.md
 │   ├── prd-77-rebuild-annotation-cache.md
 │   ├── prd-78-random-test-order.md
 │   ├── prd-79-coverage-scope.md
+│   ├── prd-80-virtual-db-source.md
+│   ├── prd-81-security-hardening.md
+│   ├── prd-82-tns-wallet.md
 │   ├── prd-83-vsix-package-hygiene.md
 │   ├── prd-84-oracle-122-support.md
 │   ├── prd-85-brain-source-of-truth.md
 │   ├── prd-86-debugger-stop-on-exception.md
 │   ├── prd-87-suitepath-results-jump.md
+│   ├── prd-94-vscode-floor-1-101.md
 ├── approved/        ← aprovados, aguardando implementação
 │   ├── prd-47-node-26-toolchain.md
 ├── proposed/        ← em avaliação
@@ -271,11 +285,13 @@ docs/prd/
 │   ├── prd-59-scaffold-suite.md
 │   ├── prd-60-branch-coverage-investigation.md
 │   ├── prd-61-cli-auto-provision.md
-│   ├── prd-75-lazy-test-tree.md
-│   ├── prd-76-reporter-export.md
-│   ├── prd-80-virtual-db-source.md
-│   ├── prd-81-security-hardening.md
-│   ├── prd-82-tns-wallet.md
+│   ├── prd-88-locale-aware-formatting.md
+│   ├── prd-89-pseudo-localization-gate.md
+│   ├── prd-90-message-plurals-cldr.md
+│   ├── prd-91-doc-parity-localized-distribution.md
+│   ├── prd-92-rtl-new-locales.md
+│   ├── prd-93-continuous-localization-pipeline.md
+│   ├── prd-95-esm-es2023-node22.md
 ```
 <!-- prd:estrutura:end -->
 

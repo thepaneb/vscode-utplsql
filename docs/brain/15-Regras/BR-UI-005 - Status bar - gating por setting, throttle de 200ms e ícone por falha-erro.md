@@ -8,8 +8,8 @@ status: ativo
 severidade: media
 fonte: codigo
 verificado: 2026-09-23
-implementacao: ["src/statusBar.ts:21", "src/statusBar.ts:43", "src/statusBar.ts:62", "src/config.ts:111"]
-testes: ["src/test/unit/statusBar.test.ts"]
+implementacao: ["src/statusBar.ts:21", "src/statusBar.ts:43", "src/statusBar.ts:62", "src/config.ts:111", "src/debounce.ts:11"]
+testes: ["src/test/unit/statusBar.test.ts", "src/test/unit/debounce.test.ts"]
 prds: ["PRD-25"]
 requisitos: ["PRD-25/RF1", "PRD-25/RF2", "PRD-25/RF4"]
 tags: ["ui"]
@@ -36,7 +36,7 @@ Evita flood de updates no showRunning chamado por suite e normaliza o resumo pas
 - 🗺️ [[MOC - Regras]]
 - 📄 PRDs: [[prd-25-status-bar-indicator|PRD-25]]
 - 🎯 Requisitos: [[prd-25-status-bar-indicator|PRD-25 RF1]] · [[prd-25-status-bar-indicator|PRD-25 RF2]] · [[prd-25-status-bar-indicator|PRD-25 RF4]]
-- 🧩 Código: [[COD - statusBar.ts]] · [[COD - config.ts]]
-- 🧪 Testes: [[TST - statusBar.test.ts]]
-- ↩️ Referenciada por: [[05-ux-components]]
+- 🧩 Código: [[COD - statusBar.ts]] · [[COD - config.ts]] · [[COD - debounce.ts]]
+- 🧪 Testes: [[TST - statusBar.test.ts]] · [[TST - debounce.test.ts]]
+- ↩️ Referenciada por: [[05-ux-components]] · [[prd-25-status-bar-indicator|PRD-25]]
 <!-- brain:auto:end -->

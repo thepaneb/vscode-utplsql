@@ -8,6 +8,7 @@ versao: "0.12.0"
 data: "2026-09-09"
 autor: "Gil Cleber"
 verificado: 2026-09-23
+regras: ["BR-EXEC-004"]
 tags: [prd]
 ---
 
@@ -504,7 +505,7 @@ Reescrever seções CLI em ~40 arquivos de documentação. Movimentizar PRDs CLI
 
 <!-- brain:auto:start:conexoes -->
 - 🗺️ [[MOC - PRDs]]
+- 📐 Regras: [[BR-EXEC-004 - Prefixo de schema utPLSQL descoberto via ALL_SYNONYMS|BR-EXEC-004]]
 - 🔗 PRDs relacionados: [[prd-61-cli-auto-provision|PRD-61]]
 - 🚀 ⬅️ release anterior: [[prd-46-dependency-majors|PRD-46 (0.11.0)]] · ➡️ próxima release: [[prd-70-thick-mode-nne|PRD-70 (0.12.1)]]
-- 📐 Regras: [[BR-EXEC-004 - Prefixo de schema utPLSQL descoberto via ALL_SYNONYMS|BR-EXEC-004]]
 <!-- brain:auto:end -->

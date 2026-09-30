@@ -162,10 +162,14 @@ function checkFidelity(overrides = {}) {
     }
   }
 
-  // 5. PRDs concluídos ↔ wiki/PRDs.md (por ID)
+  // 5. PRDs concluídos ↔ wiki/PRDs.md (por ID) — e DEVEM estar na seção Completed.
+  const completedSection = files.wikiPrds.split(/\n###\s+[^\n]*Approved/)[0];
   for (const id of completedPrds) {
-    if (!new RegExp(`\\|\\s*0*${Number(id)}\\s*\\|`).test(files.wikiPrds)) {
+    const marker = new RegExp(`\\|\\s*0*${Number(id)}\\s*\\|`);
+    if (!marker.test(files.wikiPrds)) {
       problems.push(`PRD ${id} (completed/) ausente em docs/wiki/PRDs.md`);
+    } else if (!marker.test(completedSection)) {
+      problems.push(`PRD ${id} (completed/) listado fora da seção Completed em docs/wiki/PRDs.md`);
     }
   }
 
@@ -229,6 +233,89 @@ function checkFidelity(overrides = {}) {
     }
   }
 
+  // 9. variantes de README devem listar as mesmas settings do README.md.
+  //    O docs:check só valida os LINKS entre variantes (não o conteúdo), então
+  //    sem isto uma variante pode ficar sem settings por várias versões.
+  const variants = overrides.readmeVariants ?? listReadmeVariants();
+  const obsoleteReadmeTerms = ['coverageSourceArgs', 'type_mapping'];
+  for (const { name, text } of variants) {
+    const missing = settings.filter((k) => !text.includes(k));
+    if (missing.length) {
+      problems.push(`README.${name}: settings ausentes: ${missing.join(', ')}`);
+    }
+    if (!text.includes('utplsql-source')) {
+      problems.push(`README.${name}: sem menção a utplsql-source`);
+    }
+    for (const term of obsoleteReadmeTerms) {
+      if (text.includes(term)) problems.push(`README.${name}: termo obsoleto "${term}"`);
+    }
+  }
+  for (const term of obsoleteReadmeTerms) {
+    if (files.readme.includes(term)) problems.push(`README.md: termo obsoleto "${term}"`);
+  }
+
+  // 10. Piso de VS Code e coerência do runtime Node:
+  //     (a) @types/vscode deve ser exatamente o piso de engines.vscode;
+  //     (b) engines.node, @types/node e o target do esbuild devem casar com o
+  //         Node embutido no host daquela versão do VS Code (Execução roda no
+  //         Node do VS Code, não no Node do dev/CI — ver TPL-VSCODE-API).
+  //     Fixtures sem `engines.vscode` são ignoradas.
+  let pkg = overrides.pkg;
+  if (!pkg) {
+    try {
+      pkg = JSON.parse(read('package.json'));
+    } catch {
+      pkg = null;
+    }
+  }
+  const engineFloor = String(pkg?.engines?.vscode ?? '')
+    .replace(/^[\^~>=<\s]+/, '')
+    .trim();
+  if (engineFloor) {
+    const typesVersion = String(pkg?.devDependencies?.['@types/vscode'] ?? '').trim();
+    if (typesVersion !== engineFloor) {
+      problems.push(
+        `@types/vscode deve ser exatamente "${engineFloor}" (piso de engines.vscode); está "${typesVersion || 'ausente'}"`,
+      );
+    }
+
+    // Node embutido no host por versão do VS Code (fonte: .nvmrc do vscode por tag).
+    const VSCODE_HOST_NODE = {
+      '1.88': 18,
+      '1.90': 20,
+      '1.100': 20,
+      '1.101': 22,
+      '1.102': 22,
+    };
+    const majorOf = (v) => {
+      const m = String(v ?? '').match(/(\d+)/);
+      return m ? Number(m[1]) : undefined;
+    };
+    const mm = engineFloor.split('.').slice(0, 2).join('.');
+    const hostNode = VSCODE_HOST_NODE[mm];
+    if (hostNode) {
+      const nodeEngine = pkg?.engines?.node;
+      const typesNode = pkg?.devDependencies?.['@types/node'];
+      const esbuild = overrides.esbuild ?? read('esbuild.config.mjs');
+      const esbuildTarget = (esbuild.match(/target:\s*['"]node(\d+)['"]/) || [])[1];
+      if (majorOf(nodeEngine) !== hostNode) {
+        problems.push(
+          `engines.node ("${nodeEngine}") ≠ Node ${hostNode} do host do VS Code ${mm} (runtime do Extension Host)`,
+        );
+      }
+      if (majorOf(typesNode) !== hostNode) {
+        problems.push(
+          `@types/node ("${typesNode}") ≠ Node ${hostNode} do host do VS Code ${mm}`,
+        );
+      }
+      if (esbuildTarget && Number(esbuildTarget) !== hostNode) {
+        problems.push(
+          `esbuild target node${esbuildTarget} ≠ Node ${hostNode} do host do VS Code ${mm}`,
+        );
+      }
+    }
+  }
+
   return problems;
 }
 
@@ -250,6 +337,15 @@ function srcFileFor(symbol) {
   return hits[0] ?? '';
 }
 
+/** Variantes geradas na raiz do repo: { name, text } de README.<locale>.md. */
+function listReadmeVariants() {
+  return fs
+    .readdirSync(REPO)
+    .filter((f) => /^README\.[a-zA-Z-]+\.md$/.test(f))
+    .sort()
+    .map((f) => ({ name: f.slice('README.'.length, -3), text: read(f) }));
+}
+
 function listCompletedPrds() {
   const dir = path.join(REPO, 'docs', 'prd', 'completed');
   if (!fs.existsSync(dir)) return [];
@@ -268,6 +364,7 @@ module.exports = {
   srcModules,
   pkgVersion,
   listCompletedPrds,
+  listReadmeVariants,
   read,
 };
 

@@ -43,6 +43,14 @@ tags: [readme]
 - 🗄️ **DB-first откривање** — изгради стабло из `ut_runner.get_suites_info` и поново изгради кеш напомена са палете.
 - 🐛 **PL/SQL Debug** — breakpoint-и и степеновано отклањање грешака utPLSQL тестова преко `DBMS_DEBUG` (нативни Debug Adapter).
 - 🌍 **i18n — 24 језика** — `utplsql.language` прати VSCode (24 локала: pt-br, en, en-gb, es, zh-cn, zh-tw, ja, de, fr, it, ko, ru, tr, pl, cs, hu, bg, el, id, ro, sr, th, uk, vi).
+- 🌳 **Lenjivo stablo testova** — u `schema` režimu paketi/suitovi/testovi se razrešavaju pri proširenju, pa se velike šeme otvaraju trenutno.
+- 🧾 **Run with Reporter (Export)** — pokreće izbor bilo kojim reporterom baze i upisuje izlaz u Output ili fajl (`utplsql.reporter.*`), bez menjanja rezultata u Test Exploreru.
+- 🗂️ **Virtuelni izvor iz baze** — bez lokalnog fajla *jump to failure* i pokrivenost otvaraju dokument samo za čitanje iz `ALL_SOURCE` (`utplsql-source:/…`).
+- 🔐 **TNS u thin + wallet** — `utplsql.connections.tnsAdminPath` razrešava alias-e iz `tnsnames.ora` u thin drajveru (fallback na SQL Developer/`TNS_ADMIN`); `walletLocation` profila i `utPLSQL: Set wallet password` čuvaju lozinku wallet-a u SecretStorage.
+- 🔒 **Jačanje bezbednosti veza** — podešavanja veze su `machine`-scoped, ekstenzija je onemogućena u nepouzdanim radnim prostorima, a lozinka profila je vezana za vezu.
+- 🧱 **Diagnostika kompilacije** — posle svakog pokretanja, greške kompilacije PL/SQL (`ALL_ERRORS`) se prikazuju u Problems Panelu pod izvorom `utPLSQL Compilation` (podešavanje `utplsql.compilationDiagnostics.enabled`).
+- ⏳ **Napredak i otkazivanje** — duga pokretanja prikazuju obaveštenje o napretku sa brojačem i dugmetom *Cancel* (plus opciono `utplsql.timeoutMinutes`).
+- 📁 **Radni prostor sa više korena** — svaki folder radnog prostora ima sopstvene suite, sa nezavisnim otkrivanjem, izvršavanjem i pokrivenošću.
 
 ## Инсталација
 
@@ -56,7 +64,7 @@ tags: [readme]
 ## Захтеви
 
 - [**utPLSQL**](https://github.com/utPLSQL/utPLSQL) **(UT3)** инсталиран у Oracle бази података.
-- **VSCode 1.88+** (Test Coverage API).
+- **VSCode 1.101+** (Test Coverage API).
 
 Екстензија је само „графички клијент" — оно што покреће тестове јесте база података директно (node-oracledb).
 
@@ -94,8 +102,10 @@ code .
 
 **Прихваћени формати:**
 - **EZ Connect**: `user/pass@//host:1521/service`
-- **TNS alias**: `user/pass@tns_alias` (захтева конфигурисан `TNS_ADMIN`)
+- **TNS alias**: `user/pass@tns_alias`
 - **Wallet (Oracle Cloud)**: `user/pass@tcps://host:1522/service?wallet_location=/path/wallet`
+
+> 🔒 **Појачана подешавања:** подешавања везе су **`machine`-scoped**; екстензија је **онемогућена у неповерљивим радним просторима**; лозинка профила је **везана за његову везу**. (`utplsql.connection`, `utplsql.profiles`, `utplsql.activeProfile`, `utplsql.oracleClientLibDir`, `utplsql.oracleClientConfigDir`, `utplsql.connections.tnsAdminPath`)
 
 ## Како функционише
 
@@ -129,6 +139,8 @@ Test Explorer-у **како се сваки тест заврши**. VSIX већ
 | `utplsql.timeoutMinutes` | `60` | Тимеаут у минутима. |
 | `utplsql.dbmsOutput` | `false` | Омогућава `DBMS_OUTPUT` у тест сесији. |
 | `utplsql.additionalReporters` | `[]` | Додатни reporter-и за укључивање у свако извршавање (нпр. `["ut_coverage_html_reporter"]`). Подразумевани (documentation, junit) су увек укључени и не морају се наводити. |
+| `utplsql.reporter.clientCharacterSet` | `""` | Клиентски скуп знакова (`a_client_character_set`) за **Run with Reporter (Export)**. Празно = подразумевано за reporter. |
+| `utplsql.reporter.colorConsole` | `false` | Омогућава ANSI боју (`a_color_console`) за текстуалне конзолне reporter-е при извозу. |
 | `utplsql.tags` | `""` | Израз ознака utPLSQL за филтрирање који тестови се извршавају (нпр. `fast & !integration`). Празно извршава све. |
 | `utplsql.run.randomOrder` | `false` | Извршава тестове у насумичном реду да открије зависности реда међу њима. |
 | `utplsql.run.randomOrderSeed` | `0` | Seed насумичног реда. `0` = бира база (није поновљиво); > 0 понавља исти ред. |
@@ -143,7 +155,8 @@ Test Explorer-у **како се сваки тест заврши**. VSIX већ
 | `utplsql.oracleClientLibDir` | `""` | Директоријум Oracle Instant Client-а. Обавезан када је `utplsql.oracleClientMode` постављен на `thick` (нпр. `C:\oracle\instantclient_23_5`). |
 | Дебагер се не зауставља на тачки прекида | Пакет без debug информација или недостају debug дозволе | Компајлирајте са `PLSQL_OPTIMIZE_LEVEL <= 1` (или `ALTER PACKAGE ... COMPILE DEBUG PLSQL_OPTIMIZE_LEVEL = 1`) и доделите `DEBUG CONNECT SESSION` + `EXECUTE ON SYS.DBMS_DEBUG`. Тачке прекида у `test_*.pkb` можда неће ухватити (utPLSQL покреће тестове преко динамичког SQL-а); поставите их у тестирани код. |
 | `utplsql.oracleClientConfigDir` | `""` | Директоријум Oracle конфигурације (TNS_ADMIN) са `sqlnet.ora`/`tnsnames.ora`. Опционо; користи га само thick режим. |
-| `utplsql.organization` | `file` | Организација стабла: `file` (по путањи) или `schema` (Schema > Package > Suite > Test). У `schema` режиму, суитови се такође откривају из базе података (`ut_runner.get_suites_info`, са повратком на `ALL_OBJECTS`/`ALL_SOURCE`) када `.pks` датотеке нису у радном простору — са виртуелним URI-јем `utplsql-db:/` (извршавање и скок до грешке раде; без CodeLens-а/декорација). |
+| `utplsql.connections.tnsAdminPath` | `""` | Директоријум са `tnsnames.ora` за **TNS алијасе у thin драјверу**. Редослед: ово подешавање → user/machine вредност `sqldeveloper.connections.tnsConfiguration.path` → `TNS_ADMIN`. |
+| `utplsql.organization` | `file` | Организација стабла: `file` (по путањи) или `schema` (Schema > Package > Suite > Test). У `schema` режиму, суитови се такође откривају из базе података (`ut_runner.get_suites_info`, са повратком на `ALL_OBJECTS`/`ALL_SOURCE`) када `.pks` датотеке нису у радном простору — са виртуелним URI-јем `utplsql-db:/` (извршавање и скок до грешке раде; без CodeLens-а/декорација). · `utplsql-source:/` |
 | `utplsql.organization.schemaPattern` | `db/{schema}/**` | Glob узорак за издвајање шеме из путање. Користите `{schema}` као placeholder. У `schema` режиму, директоријуми испод основе узорка (нпр. `db/*`) дефинишу шеме упитане у бази података. |
 | `utplsql.discovery.source` | `auto` | Извор стабла у `schema` режиму: `auto` користи API базе (`ut_runner.get_suites_info`) и прелази на `ALL_SOURCE`/датотеке када није доступно; `database` захтева API; `file` искључује откривање преко базе. |
 | `utplsql.refreshDebounceMs` | `300` | Debounce (ms) за objedinjavanje događaja nadzora datoteka `.pks`/`.pkb` pre osvežavanja Test Explorer-a. |
@@ -265,6 +278,8 @@ UTPLSQL_CONN=your_user/password@//host:1521/service
 | `utPLSQL: Run script` | Runs the script open in the editor against a connection profile | Right-click → script file |
 | `utPLSQL: Run script file` | Runs an Explorer script file (decoded with the profile charset) | Right-click → file |
 | `utPLSQL: Run script folder` | Runs the folder scripts in alphabetical order | Right-click → folder |
+| `utPLSQL: Подеси лозинку новчаника` | Поставља/брише лозинку новчаника активног профила (SecretStorage) | — |
+| `utPLSQL: Покрени са reporter-ом (извоз)` | Покреће избор са изабраним reporter-ом и пише излаз у Output/датотеку (не мења резултате) | Test Explorer → menu do item |
 
 > **Recompile UT3** (`utplsql.recompileUt3`) **није** команда у палети — то је
 > интерни quick-fix дијагностике „utPLSQL Setup" (неважећи објекти у
@@ -294,51 +309,6 @@ UTPLSQL_CONN=your_user/password@//host:1521/service
 
 
 
-Екстензија прослеђује `-source_path` (= `utplsql.sourcePath`) и мапира покривене објекте
-на изворне датотеке преко `utplsql.coverageSourceArgs`-а (regex + `type_mapping`). `-owner`
-се изводи из везе (или из `utplsql.coverageOwner`-а).
-
-### Мапирање покривености на датотеке (`coverageSourceArgs`)
-
-`type_mapping` преводи „тип" ухваћен regex-ом у Oracle тип. Три уобичајене конвенције:
-
-**1) По директоријуму** — структура `sourcePath/<type>/<name>.sql` (фасцикле `functions/`, `procedures/`, `packages/`, …):
-```jsonc
-"utplsql.coverageSourceArgs": [
-  "-regex_expression=.*[/\\\\](\\w+)[/\\\\](\\w+)\\.sql$",
-  "-type_subexpression=1",   // group 1 = folder (type)
-  "-name_subexpression=2",   // group 2 = file (object name)
-  "-type_mapping=packages=PACKAGE BODY/functions=FUNCTION/procedures=PROCEDURE/triggers=TRIGGER"
-]
-```
-> Ради на било којој дубини (`.*` апсорбује модуле изнад). Различита имена фасцикли
-> (нпр. `package`, `pkg`, `pacote`) могу се набројати у `type_mapping`-у.
-
-**2) По префиксу имена** — конвенција `pkg_*`, `prc_*`, `vw_*` (независно од фасцикле):
-```jsonc
-"utplsql.coverageSourceArgs": [
-  "-regex_expression=.*[/\\\\]((pkg|prc|fnc|trg|vw)_\\w+)\\.sql$",
-  "-name_subexpression=1",   // group 1 = full name (e.g. PKG_EXAMPLE)
-  "-type_subexpression=2",   // group 2 = prefix (type)
-  "-type_mapping=pkg=PACKAGE BODY/prc=PROCEDURE/fnc=FUNCTION/trg=TRIGGER/vw=VIEW"
-]
-```
-
-**3) По типизираној екстензији** — датотеке `*.pkb`, `*.fnc`, `*.prc`, `*.trg` (независно од фасцикле):
-```jsonc
-"utplsql.coverageSourceArgs": [
-  "-regex_expression=.*[/\\\\](\\w+)\\.(\\w+)$",
-  "-name_subexpression=1",   // group 1 = name
-  "-type_subexpression=2",   // group 2 = extension (type)
-  "-type_mapping=pkb=PACKAGE BODY/fnc=FUNCTION/prc=PROCEDURE/trg=TRIGGER"
-]
-```
-
-**Важне напомене:**
-- **Пакети → `PACKAGE BODY`** (не `PACKAGE`): покривеност се прикупља у **body**-ју пакета.
-- **Windows / regex метакарактери:** избегавајте **`^`** у regex-у (`cmd` у `.bat`-у га троши) — зато примери
-  користе `\w` и `[/\\]`.
-
 ## Репортери
 
 Екстензија увек укључује **два** подразумевана reporter-а:
@@ -359,10 +329,7 @@ utPLSQL), покривеност се прескаче са упозорењем
 Подразумевани reporter-и се аутоматски дедупликују, чак и ако су
 овде наведени.
 
-**Променљив reporter по сесији** — команда **utPLSQL: Select additional
-reporter...** отвара QuickPick са динамичком листом из базе података.
-Изабрани reporter се чува у сесији, али се избор **не примењује**
-у тренутној Oracle-only верзији.
+**Привремени reporter сесије** — команда **Изабери додатни reporter...** отвара QuickPick са листом из базе; изабрани reporter се чува у сесији и **примењује при следећем покретању**.
 
 ## Захтеви базе података
 

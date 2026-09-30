@@ -10,6 +10,10 @@ import {
   createRefresher,
   type MergeDbDeps,
   mergeDbSuites,
+  resolvePackageNode,
+  resolveSchemaNode,
+  resolveSubtree,
+  resolveSuiteNode,
 } from '../../testTree';
 import { __resetConfigValues, __setConfigValue, workspace } from '../vscode-stub';
 
@@ -106,7 +110,7 @@ test('buildFileTree: displayName tem prioridade sobre description', () => {
   assert.strictEqual(meta.description, 'Bonito');
 });
 
-test('buildSchemaTree: agrupa em Schema > Package > Suite > Test', () => {
+test('buildSchemaTree: cria só os nós de schema (lazy)', () => {
   const controller = makeController();
   const state = new TestStateManager();
   buildSchemaTree(
@@ -119,12 +123,63 @@ test('buildSchemaTree: agrupa em Schema > Package > Suite > Test', () => {
   assert.strictEqual(controller._items.length, 1);
   const schemaItem = controller._items[0];
   assert.strictEqual(schemaItem.id, 'schema:APP');
-  const pkgItems = schemaItem._children;
-  assert.strictEqual(pkgItems.length, 2);
-  assert.ok(pkgItems.every((p: any) => p.id.startsWith('package:APP:')));
-  // suites aninhadas ficam acessíveis via state.suiteMap
+  assert.strictEqual(schemaItem._children.length, 0, 'não deve materializar package/suite');
+  assert.strictEqual(schemaItem.canResolveChildren, true);
+  assert.strictEqual(state.discoveredFiles.length, 2);
+});
+
+const lazyDeps = {
+  resolveConnection: () => undefined,
+  extractSchemaFromPath: () => 'APP',
+  discoverDbSuites: async () => [],
+};
+
+test('resolvedores: materializam schema → package → suite → teste por nível', async () => {
+  const controller = makeController();
+  const state = new TestStateManager();
+  buildSchemaTree(controller, state, [suite({ dbSchema: 'APP' })], 'db/{schema}/**');
+  const schemaItem = controller._items[0];
+
+  await resolveSchemaNode(controller, state, schemaItem, lazyDeps as never);
+  assert.strictEqual(schemaItem._children.length, 1);
+  const pkgItem = schemaItem._children[0];
+  assert.strictEqual(pkgItem.id, 'package:APP:UT_APP');
+  assert.strictEqual(pkgItem._children.length, 0);
+
+  resolvePackageNode(controller, state, pkgItem);
+  assert.strictEqual(pkgItem._children.length, 1);
+  const suiteItem = pkgItem._children[0];
+  assert.strictEqual(suiteItem.id, 'suite:ut_app');
+  assert.strictEqual(suiteItem._children.length, 0);
   assert.ok(state.getSuiteItem('suite:ut_app'));
-  assert.ok(state.getSuiteItem('suite:ut_other'));
+
+  resolveSuiteNode(controller, state, suiteItem);
+  assert.strictEqual(suiteItem._children.length, 2);
+  assert.ok(state.getItem('test:ut_app.test_one'));
+});
+
+test('resolveSchemaNode: idempotente (não duplica package)', async () => {
+  const controller = makeController();
+  const state = new TestStateManager();
+  buildSchemaTree(controller, state, [suite({ dbSchema: 'APP' })], 'db/{schema}/**');
+  const schemaItem = controller._items[0];
+  await resolveSchemaNode(controller, state, schemaItem, lazyDeps as never);
+  await resolveSchemaNode(controller, state, schemaItem, lazyDeps as never);
+  assert.strictEqual(schemaItem._children.length, 1);
+});
+
+test('resolveSchemaNode: funde suites do banco quando há conexão', async () => {
+  const controller = makeController();
+  const state = new TestStateManager();
+  buildSchemaTree(controller, state, [suite({ dbSchema: 'APP' })], 'db/{schema}/**');
+  const schemaItem = controller._items[0];
+  const deps = {
+    resolveConnection: () => 'u/p@//h:1521/s',
+    extractSchemaFromPath: () => 'APP',
+    discoverDbSuites: async () => [suite({ dbSchema: 'APP', packageName: 'UT_DB_ONLY' })],
+  };
+  await resolveSchemaNode(controller, state, schemaItem, deps as never);
+  assert.strictEqual(schemaItem._children.length, 2, 'deveria unir arquivo + banco');
 });
 
 test('buildSchemaTree: schema desconhecido vai para UNKNOWN por último', () => {
@@ -181,26 +236,36 @@ test('createRefresher: modo schema sem conexão monta árvore vazia (merge early
   }
 });
 
-test('collectAllItems: usa cachedItems quando já populado', () => {
+test('collectAllItems: devolve as suites após resolução', async () => {
   const controller = makeController();
   const state = new TestStateManager();
   buildFileTree(controller, state, [suite({})]);
-  const items = collectAllItems(controller, state);
+  const items = await collectAllItems(controller, state);
   assert.strictEqual(items.length, 1);
 });
 
-test('collectAllItems: percorre até 3 níveis quando cache vazio', () => {
+test('collectAllItems: resolve a árvore lazy e devolve as suites', async () => {
   const controller = makeController();
   const state = new TestStateManager();
-  const schema = makeItem('schema:APP');
-  const pkg = makeItem('package:APP:P');
-  const suiteItem = makeItem('suite:p');
-  pkg.children.add(suiteItem);
-  schema.children.add(pkg);
-  controller.items.add(schema);
+  buildSchemaTree(controller, state, [suite({ dbSchema: 'APP' })], 'db/{schema}/**');
 
-  const items = collectAllItems(controller, state);
-  assert.strictEqual(items.length, 3);
+  const items = await collectAllItems(controller, state, lazyDeps as never);
+  assert.strictEqual(items.length, 1);
+  assert.strictEqual(items[0].id, 'suite:ut_app');
+});
+
+test('resolveSubtree: resolve schema → package → suite de um nó não expandido', async () => {
+  const controller = makeController();
+  const state = new TestStateManager();
+  buildSchemaTree(controller, state, [suite({ dbSchema: 'APP' })], 'db/{schema}/**');
+  const schemaItem = controller._items[0];
+
+  await resolveSubtree(controller, state, schemaItem, lazyDeps as never);
+
+  const pkgItem = schemaItem._children[0];
+  const suiteItem = pkgItem._children[0];
+  assert.strictEqual(suiteItem.id, 'suite:ut_app');
+  assert.strictEqual(suiteItem._children.length, 2, 'testes deveriam ser materializados');
 });
 
 test('createRefresher: coalesce chamadas concorrentes e substitui a árvore', async () => {

@@ -8,6 +8,7 @@ versao: "0.12.1"
 data: "2026-09-18"
 autor: "Gil Cleber Barboza"
 verificado: 2026-09-23
+regras: ["BR-DEBUG-001"]
 tags: [prd]
 ---
 
@@ -230,6 +231,7 @@ nomes a exibir.)
 
 <!-- brain:auto:start:conexoes -->
 - 🗺️ [[MOC - PRDs]]
+- 📐 Regras: [[BR-DEBUG-001 - Ciclo do debugger DBMS_DEBUG para no breakpoint e le o frame|BR-DEBUG-001]]
 - 🔗 PRDs relacionados: [[prd-33-plsql-debugger-integration|PRD-33]] · [[prd-47-node-26-toolchain|PRD-47]]
 - 🚀 ⬅️ release anterior: [[prd-68-restore-oracle-diagnostics-and-reporter|PRD-68 (0.12.0)]] · ➡️ próxima release: [[prd-69-oracle-runner-typed-binds|PRD-69 (0.13.0)]]
 <!-- brain:auto:end -->

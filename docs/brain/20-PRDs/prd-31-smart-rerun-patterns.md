@@ -8,6 +8,7 @@ versao: "0.8.0"
 data: "2026-07-21"
 autor: "Gil Cleber Barboza"
 verificado: 2026-09-23
+regras: ["BR-UI-004"]
 tags: [prd]
 ---
 
@@ -323,8 +324,8 @@ Nenhuma nova setting. Comandos são registrados e keybindings definidos no
 
 <!-- brain:auto:start:conexoes -->
 - 🗺️ [[MOC - PRDs]]
+- 📐 Regras: [[BR-UI-004 - utplsql-hasFailures derivado de lastFailedItems (failed ou error)|BR-UI-004]]
 - 🔗 PRDs relacionados: [[prd-11-streaming-results|PRD-11]] · [[prd-24-codelens-integration|PRD-24]] · [[prd-25-status-bar-indicator|PRD-25]] · [[prd-27-default-keybindings|PRD-27]]
 - 🎯 RF4 — Armazenamento de `lastFailedTests` → [[BR-UI-004 - utplsql-hasFailures derivado de lastFailedItems (failed ou error)|BR-UI-004]]
 - 🚀 ⬅️ release anterior: [[prd-36-reporter-parse-fix|PRD-36 (0.7.2)]] · ➡️ próxima release: [[prd-11-streaming-results|PRD-11 (0.9.0)]]
-- 📐 Regras: [[BR-UI-004 - utplsql-hasFailures derivado de lastFailedItems (failed ou error)|BR-UI-004]]
 <!-- brain:auto:end -->

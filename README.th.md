@@ -34,6 +34,14 @@
 - 🗄️ **การค้นหาแบบ DB-first** — สร้างทรีจาก `ut_runner.get_suites_info` และสร้างแคชคำอธิบายประกอบใหม่จากพาเลตต์
 - 🐛 **การดีบัก PL/SQL** — breakpoints และการดีบักแบบทีละขั้นของเทสต์ utPLSQL ผ่าน `DBMS_DEBUG` (Debug Adapter เนทีฟ)
 - 🌍 **i18n — 24 ภาษา** — `utplsql.language` เป็นไปตาม VSCode (24 ภาษาท้องถิ่น: pt-br, en, en-gb, es, zh-cn, zh-tw, ja, de, fr, it, ko, ru, tr, pl, cs, hu, bg, el, id, ro, sr, th, uk, vi)
+- 🌳 **ทรีเทสต์แบบ lazy** — ในโหมด `schema` แพ็กเกจ/ชุดเทสต์/เทสต์จะถูกโหลดเมื่อขยาย จึงเปิดสคีมาขนาดใหญ่ได้ทันที
+- 🧾 **Run with Reporter (Export)** — รันส่วนที่เลือกด้วย reporter ใดก็ได้ของฐานข้อมูล และเขียนผลลัพธ์ลง Output หรือไฟล์ (`utplsql.reporter.*`) โดยไม่เปลี่ยนผลใน Test Explorer
+- 🗂️ **แหล่งข้อมูลเสมือนจากฐานข้อมูล** — เมื่อไม่มีไฟล์ในเครื่อง *jump to failure* และ coverage จะเปิดเอกสารแบบอ่านอย่างเดียวจาก `ALL_SOURCE` (`utplsql-source:/…`)
+- 🔐 **TNS ใน thin + wallet** — `utplsql.connections.tnsAdminPath` แปลง alias ของ `tnsnames.ora` ในไดรเวอร์ thin (fallback ไป SQL Developer/`TNS_ADMIN`); `walletLocation` ของโปรไฟล์และ `utPLSQL: Set wallet password` เก็บรหัส wallet ไว้ใน SecretStorage
+- 🔒 **เสริมความปลอดภัยของการเชื่อมต่อ** — การตั้งค่าการเชื่อมต่อเป็น `machine`-scoped ส่วนขยายถูกปิดในเวิร์กสเปซที่ไม่น่าเชื่อถือ และรหัสของโปรไฟล์ผูกกับการเชื่อมต่อ
+- 🧱 **การวินิจฉัยการคอมไพล์** — หลังการรันแต่ละครั้ง ข้อผิดพลาดการคอมไพล์ PL/SQL (`ALL_ERRORS`) จะแสดงใน Problems Panel ภายใต้ source `utPLSQL Compilation` (การตั้งค่า `utplsql.compilationDiagnostics.enabled`)
+- ⏳ **ความคืบหน้าและการยกเลิก** — การรันที่ยาวนานจะแสดงการแจ้งเตือนความคืบหน้าพร้อมจำนวนและปุ่ม *Cancel* (พร้อม `utplsql.timeoutMinutes` แบบเลือกได้)
+- 📁 **เวิร์กสเปซแบบ multi-root** — แต่ละโฟลเดอร์ของเวิร์กสเปซมีชุดเทสต์ของตัวเอง โดยค้นหา รัน และ coverage แยกกัน
 
 ## การติดตั้ง
 
@@ -47,7 +55,7 @@
 ## ข้อกำหนด
 
 - [**utPLSQL**](https://github.com/utPLSQL/utPLSQL) **(UT3)** ติดตั้งในฐานข้อมูล Oracle
-- **VSCode 1.88+** (Test Coverage API)
+- **VSCode 1.101+** (Test Coverage API)
 
 ส่วนขยายเป็นเพียง "ไคลเอนต์กราฟิก" — สิ่งที่รันการทดสอบคือฐานข้อมูลโดยตรง (node-oracledb)
 
@@ -85,8 +93,10 @@ code .
 
 **รูปแบบที่ยอมรับ:**
 - **EZ Connect**: `user/pass@//host:1521/service`
-- **TNS alias**: `user/pass@tns_alias` (ต้องกำหนดค่า `TNS_ADMIN`)
+- **TNS alias**: `user/pass@tns_alias`
 - **Wallet (Oracle Cloud)**: `user/pass@tcps://host:1522/service?wallet_location=/path/wallet`
+
+> 🔒 **การตั้งค่าที่เสริมความปลอดภัย:** การตั้งค่าการเชื่อมต่อเป็น **`machine`-scoped**; ส่วนขยายถูก**ปิดใช้งานในเวิร์กสเปซที่ไม่น่าเชื่อถือ**; และรหัสผ่านโปรไฟล์**ผูกกับการเชื่อมต่อ** (`utplsql.connection`, `utplsql.profiles`, `utplsql.activeProfile`, `utplsql.oracleClientLibDir`, `utplsql.oracleClientConfigDir`, `utplsql.connections.tnsAdminPath`)
 
 ## วิธีการทำงาน
 
@@ -120,6 +130,8 @@ Test Explorer **เมื่อแต่ละเทสต์เสร็จส�
 | `utplsql.timeoutMinutes` | `60` | Timeout เป็นนาที |
 | `utplsql.dbmsOutput` | `false` | เปิดใช้งาน `DBMS_OUTPUT` ในเซสชันการทดสอบ |
 | `utplsql.additionalReporters` | `[]` | Reporters เพิ่มเติมที่จะรวมในทุกรัน (เช่น `["ut_coverage_html_reporter"]`) ค่าเริ่มต้น (documentation, junit) จะถูกรวมเสมอและไม่จำเป็นต้องระบุ |
+| `utplsql.reporter.clientCharacterSet` | `""` | charset ไคลเอนต์ (`a_client_character_set`) สำหรับ **Run with Reporter (Export)** เว้นว่าง = ค่าเริ่มต้นของ reporter |
+| `utplsql.reporter.colorConsole` | `false` | เปิดใช้สี ANSI (`a_color_console`) สำหรับ reporter คอนโซลแบบข้อความตอนส่งออก |
 | `utplsql.tags` | `""` | นิพจน์แท็กของ utPLSQL เพื่อกรองว่าจะรันเทสต์ใด (เช่น `fast & !integration`) ว่างเปล่าคือรันทั้งหมด |
 | `utplsql.run.randomOrder` | `false` | รันเทสต์ในลำดับแบบสุ่มเพื่อเปิดเผยการพึ่งพาลำดับระหว่างกัน |
 | `utplsql.run.randomOrderSeed` | `0` | seed ของลำดับแบบสุ่ม `0` = ฐานข้อมูลเลือก (ทำซ้ำไม่ได้); มากกว่า 0 จะทำซ้ำลำดับเดิม |
@@ -134,7 +146,8 @@ Test Explorer **เมื่อแต่ละเทสต์เสร็จส�
 | `utplsql.oracleClientLibDir` | `""` | ไดเรกทอรี Oracle Instant Client จำเป็นเมื่อ `utplsql.oracleClientMode` เป็น `thick` (เช่น `C:\oracle\instantclient_23_5`) |
 | ดีบักไม่หยุดที่เบรกพอยต์ | แพ็กเกจไม่มีข้อมูลดีบัก หรือขาดสิทธิ์ดีบัก | คอมไพล์ด้วย `PLSQL_OPTIMIZE_LEVEL <= 1` (หรือ `ALTER PACKAGE ... COMPILE DEBUG PLSQL_OPTIMIZE_LEVEL = 1`) และให้สิทธิ์ `DEBUG CONNECT SESSION` + `EXECUTE ON SYS.DBMS_DEBUG`. เบรกพอยต์ใน `test_*.pkb` อาจไม่หยุด (utPLSQL รันเทสต์ผ่าน SQL แบบไดนามิก) ให้ตั้งในโค้ดที่ทดสอบ |
 | `utplsql.oracleClientConfigDir` | `""` | ไดเรกทอรีการกำหนดค่า Oracle (TNS_ADMIN) ที่มี `sqlnet.ora`/`tnsnames.ora` ไม่บังคับ ใช้เฉพาะโหมด thick |
-| `utplsql.organization` | `file` | การจัดระเบียบแผนผัง: `file` (ตามพาธ) หรือ `schema` (Schema > Package > Suite > Test) ในโหมด `schema` suites จะถูกค้นพบจากฐานข้อมูล (`ut_runner.get_suites_info` พร้อม fallback ไปยัง `ALL_OBJECTS`/`ALL_SOURCE`) ด้วยเมื่อไม่มีไฟล์ `.pks` ในเวิร์กสเปซ — ด้วย URI เสมือน `utplsql-db:/` (รันและกระโดดไปยังจุดล้มเหลวได้; ไม่มี CodeLens/การตกแต่ง) |
+| `utplsql.connections.tnsAdminPath` | `""` | ไดเรกทอรีที่มี `tnsnames.ora` เพื่อ **แปลง alias TNS ในไดรเวอร์ thin** ลำดับ: การตั้งนี้ → ค่า user/machine ของ `sqldeveloper.connections.tnsConfiguration.path` → `TNS_ADMIN` |
+| `utplsql.organization` | `file` | การจัดระเบียบแผนผัง: `file` (ตามพาธ) หรือ `schema` (Schema > Package > Suite > Test) ในโหมด `schema` suites จะถูกค้นพบจากฐานข้อมูล (`ut_runner.get_suites_info` พร้อม fallback ไปยัง `ALL_OBJECTS`/`ALL_SOURCE`) ด้วยเมื่อไม่มีไฟล์ `.pks` ในเวิร์กสเปซ — ด้วย URI เสมือน `utplsql-db:/` (รันและกระโดดไปยังจุดล้มเหลวได้; ไม่มี CodeLens/การตกแต่ง) · `utplsql-source:/` |
 | `utplsql.organization.schemaPattern` | `db/{schema}/**` | รูปแบบ Glob เพื่อแยก schema จากพาธ ใช้ `{schema}` เป็นตัวยึดตำแหน่ง ในโหมด `schema` ไดเรกทอรีใต้ฐานของรูปแบบ (เช่น `db/*`) กำหนด schemas ที่จะสอบถามในฐานข้อมูล |
 | `utplsql.discovery.source` | `auto` | แหล่งของทรีในโหมด `schema`: `auto` ใช้ API ของฐานข้อมูล (`ut_runner.get_suites_info`) และถอยไปใช้ `ALL_SOURCE`/ไฟล์เมื่อไม่พร้อมใช้งาน; `database` บังคับใช้ API; `file` ปิดการค้นหาผ่านฐานข้อมูล |
 | `utplsql.refreshDebounceMs` | `300` | Debounce (ms) เพื่อรวมเหตุการณ์ของตัวเฝ้าดูไฟล์ `.pks`/`.pkb` ก่อนรีเฟรช Test Explorer |
@@ -256,6 +269,8 @@ Annotation ไม่คำนึงถึงตัวพิมพ์เล็ก
 | `utPLSQL: Run script` | Runs the script open in the editor against a connection profile | Right-click → script file |
 | `utPLSQL: Run script file` | Runs an Explorer script file (decoded with the profile charset) | Right-click → file |
 | `utPLSQL: Run script folder` | Runs the folder scripts in alphabetical order | Right-click → folder |
+| `utPLSQL: ตั้งรหัสผ่านวอลเล็ต` | ตั้ง/ล้างรหัสผ่านวอลเล็ตของโปรไฟล์ที่ใช้งาน (SecretStorage) | — |
+| `utPLSQL: เรียกใช้ด้วย reporter (ส่งออก)` | เรียกใช้ส่วนที่เลือกด้วย reporter ที่เลือกและเขียนเอาต์พุตไปที่ Output/ไฟล์ (ไม่เปลี่ยนผลลัพธ์) | Test Explorer → menu do item |
 
 > **Recompile UT3** (`utplsql.recompileUt3`) **ไม่ใช่**คำสั่งใน palette — เป็น
 > quick-fix ภายในของการวินิจฉัย "utPLSQL Setup" (อ็อบเจกต์ที่ไม่ถูกต้องใน
@@ -285,51 +300,6 @@ Annotation ไม่คำนึงถึงตัวพิมพ์เล็ก
 
 
 
-ส่วนขยายส่ง `-source_path` (= `utplsql.sourcePath`) และจับคู่อ็อบเจกต์ที่ครอบคลุม
-กับไฟล์ต้นฉบับผ่าน `utplsql.coverageSourceArgs` (regex + `type_mapping`) ส่วน `-owner`
-อนุมานจากการเชื่อมต่อ (หรือจาก `utplsql.coverageOwner`)
-
-### การจับคู่ความครอบคลุมกับไฟล์ (`coverageSourceArgs`)
-
-`type_mapping` แปลง "type" ที่ regex จับได้เป็น type ของ Oracle มีสามรูปแบบทั่วไป:
-
-**1) ตามไดเรกทอรี** — โครงสร้าง `sourcePath/<type>/<name>.sql` (โฟลเดอร์ `functions/`, `procedures/`, `packages/`, …):
-```jsonc
-"utplsql.coverageSourceArgs": [
-  "-regex_expression=.*[/\\\\](\\w+)[/\\\\](\\w+)\\.sql$",
-  "-type_subexpression=1",   // group 1 = folder (type)
-  "-name_subexpression=2",   // group 2 = file (object name)
-  "-type_mapping=packages=PACKAGE BODY/functions=FUNCTION/procedures=PROCEDURE/triggers=TRIGGER"
-]
-```
-> ใช้ได้ที่ความลึกใดก็ได้ (`.*` ดูดซับโมดูลด้านบน) ชื่อโฟลเดอร์ที่หลากหลาย
-> (เช่น `package`, `pkg`, `pacote`) สามารถระบุได้ใน `type_mapping`
-
-**2) ตามคำนำหน้าชื่อ** — รูปแบบ `pkg_*`, `prc_*`, `vw_*` (ไม่ขึ้นกับโฟลเดอร์):
-```jsonc
-"utplsql.coverageSourceArgs": [
-  "-regex_expression=.*[/\\\\]((pkg|prc|fnc|trg|vw)_\\w+)\\.sql$",
-  "-name_subexpression=1",   // group 1 = full name (e.g. PKG_EXAMPLE)
-  "-type_subexpression=2",   // group 2 = prefix (type)
-  "-type_mapping=pkg=PACKAGE BODY/prc=PROCEDURE/fnc=FUNCTION/trg=TRIGGER/vw=VIEW"
-]
-```
-
-**3) ตามนามสกุลที่ระบุ type** — ไฟล์ `*.pkb`, `*.fnc`, `*.prc`, `*.trg` (ไม่ขึ้นกับโฟลเดอร์):
-```jsonc
-"utplsql.coverageSourceArgs": [
-  "-regex_expression=.*[/\\\\](\\w+)\\.(\\w+)$",
-  "-name_subexpression=1",   // group 1 = name
-  "-type_subexpression=2",   // group 2 = extension (type)
-  "-type_mapping=pkb=PACKAGE BODY/fnc=FUNCTION/prc=PROCEDURE/trg=TRIGGER"
-]
-```
-
-**หมายเหตุสำคัญ:**
-- **Packages → `PACKAGE BODY`** (ไม่ใช่ `PACKAGE`): ความครอบคลุมจะถูกเก็บใน **body** ของแพ็กเกจ
-- **Windows / อักขระพิเศษใน regex:** หลีกเลี่ยง **`^`** ใน regex (`cmd` ของ `.bat` กินมัน) — นั่นคือเหตุผลที่ตัวอย่าง
-  ใช้ `\w` และ `[/\\]`
-
 ## Reporters
 
 ส่วนขยายรวม reporters เริ่มต้น **สอง** ตัวเสมอ:
@@ -350,10 +320,7 @@ Annotation ไม่คำนึงถึงตัวพิมพ์เล็ก
 reporters เริ่มต้นจะถูกตัดรายการซ้ำโดยอัตโนมัติ แม้จะ
 ระบุไว้ที่นี่
 
-**Reporter แบบชั่วคราวต่อเซสชัน** — คำสั่ง **utPLSQL: Select additional
-reporter...** เปิด QuickPick พร้อมรายการแบบไดนามิกจากฐานข้อมูล
-reporter ที่เลือกจะถูกเก็บไว้ในเซสชัน แต่การเลือกนั้น **ไม่ถูกนำไปใช้**
-ในเวอร์ชัน Oracle-only ปัจจุบัน
+**reporter ชั่วคราวต่อเซสชัน** — คำสั่ง **เลือก reporter เพิ่มเติม...** เปิด QuickPick ด้วยรายการจากฐานข้อมูล reporter ที่เลือกจะถูกเก็บในเซสชันและ **นำไปใช้ในการรันครั้งถัดไป**
 
 ## ข้อกำหนดฐานข้อมูล
 

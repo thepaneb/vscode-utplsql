@@ -96,22 +96,23 @@ The file is moved between folders as it progresses.
 | 85 | Canonical second brain (Obsidian) with MCP and knowledge layers | 0.13.0 |
 | 86 | Debugger honors `stopOnException` (`break_exception`) | 0.13.0 |
 | 87 | Results and jump-to-failure for `%suitepath` suites | 0.13.0 |
-
-### 🔵 Approved
-
-| # | PRD | Target version |
-|---|---|---|
-| 47 | Node 26 in development toolchain | 0.14.0 |
-
-### ⚪ Proposed
-
-| # | PRD | Target version |
-|---|---|---|
 | 75 | Lazy test tree (incremental resolution) | 0.14.0 |
 | 76 | Run/export with an arbitrary reporter | 0.14.0 |
 | 80 | Virtual database source document | 0.14.0 |
 | 81 | Connection settings security hardening | 0.14.0 |
 | 82 | TNS resolution in thin + wallet password in SecretStorage | 0.14.0 |
+| 94 | VS Code floor 1.101 (Node 22 runtime) | 0.14.0 |
+
+### 🔵 Approved
+
+| # | PRD | Target version |
+|---|---|---|
+| 47 | Node 26 in development toolchain | 0.15.0 |
+
+### ⚪ Proposed
+
+| # | PRD | Target version |
+|---|---|---|
 | 50–61 | Auto-run, tags, inline diff, debug variants, coverage toggle, multi-root, scaffold… | 0.15.0+ |
 
 ## How to propose a PRD

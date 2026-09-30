@@ -43,6 +43,14 @@ Tích hợp [utPLSQL](https://www.utplsql.org/) vào VSCode, đưa các bài ki�
 - 🗄️ **Khám phá DB-first** — dựng cây từ `ut_runner.get_suites_info` và tạo lại bộ nhớ đệm chú thích từ bảng lệnh.
 - 🐛 **Gỡ lỗi PL/SQL** — breakpoint và gỡ lỗi từng bước các bài kiểm thử utPLSQL qua `DBMS_DEBUG` (Debug Adapter gốc).
 - 🌍 **i18n — 24 ngôn ngữ** — `utplsql.language` theo VSCode (24 locale: pt-br, en, en-gb, es, zh-cn, zh-tw, ja, de, fr, it, ko, ru, tr, pl, cs, hu, bg, el, id, ro, sr, th, uk, vi).
+- 🌳 **Cây kiểm thử lazy** — ở chế độ `schema`, package/suite/test được giải quyết khi mở rộng, nên các schema lớn mở tức thì.
+- 🧾 **Run with Reporter (Export)** — chạy vùng chọn với bất kỳ reporter nào của CSDL và ghi kết quả ra Output hoặc tệp (`utplsql.reporter.*`), không thay đổi kết quả trong Test Explorer.
+- 🗂️ **Nguồn CSDL ảo** — khi không có tệp cục bộ, *jump to failure* và độ phủ mở tài liệu chỉ-đọc lấy từ `ALL_SOURCE` (`utplsql-source:/…`).
+- 🔐 **TNS ở thin + wallet** — `utplsql.connections.tnsAdminPath` phân giải alias `tnsnames.ora` trong driver thin (dự phòng SQL Developer/`TNS_ADMIN`); `walletLocation` của profile và `utPLSQL: Set wallet password` lưu mật khẩu wallet trong SecretStorage.
+- 🔒 **Tăng cường bảo mật kết nối** — các cài đặt kết nối nay là `machine`-scoped, tiện ích bị vô hiệu hóa trong workspace không đáng tin cậy và mật khẩu profile gắn với kết nối.
+- 🧱 **Chẩn đoán biên dịch** — sau mỗi lần chạy, lỗi biên dịch PL/SQL (`ALL_ERRORS`) hiện trong Problems Panel dưới source `utPLSQL Compilation` (cài đặt `utplsql.compilationDiagnostics.enabled`).
+- ⏳ **Tiến trình và hủy** — các lần chạy dài hiển thị thông báo tiến trình kèm số đếm và nút *Cancel* (và `utplsql.timeoutMinutes` tùy chọn).
+- 📁 **Không gian làm việc multi-root** — mỗi thư mục workspace có bộ kiểm thử riêng, với khám phá, thực thi và độ phủ độc lập.
 
 ## Cài đặt
 
@@ -56,7 +64,7 @@ Extension có thể được cài đặt theo hai cách:
 ## Yêu cầu
 
 - [**utPLSQL**](https://github.com/utPLSQL/utPLSQL) **(UT3)** được cài đặt trong cơ sở dữ liệu Oracle.
-- **VSCode 1.88+** (Test Coverage API).
+- **VSCode 1.101+** (Test Coverage API).
 
 Extension chỉ là "client đồ họa" — thứ thực sự chạy kiểm thử là cơ sở dữ liệu trực tiếp (node-oracledb).
 
@@ -94,8 +102,10 @@ chỉ giữ nó trong bộ nhớ ở phiên hiện tại — dùng lệnh
 
 **Các định dạng được chấp nhận:**
 - **EZ Connect**: `user/pass@//host:1521/service`
-- **TNS alias**: `user/pass@tns_alias` (cần cấu hình `TNS_ADMIN`)
+- **TNS alias**: `user/pass@tns_alias`
 - **Wallet (Oracle Cloud)**: `user/pass@tcps://host:1522/service?wallet_location=/path/wallet`
+
+> 🔒 **Cài đặt được tăng cường:** các cài đặt kết nối là **`scope machine`**; tiện ích bị **vô hiệu hóa trong workspace không đáng tin cậy**; mật khẩu hồ sơ **gắn với kết nối của nó**. (`utplsql.connection`, `utplsql.profiles`, `utplsql.activeProfile`, `utplsql.oracleClientLibDir`, `utplsql.oracleClientConfigDir`, `utplsql.connections.tnsAdminPath`)
 
 ## Cách hoạt động
 
@@ -129,6 +139,8 @@ Test Explorer **ngay khi từng bài kiểm thử hoàn tất**. VSIX đã kèm 
 | `utplsql.timeoutMinutes` | `60` | Thời gian chờ (phút). |
 | `utplsql.dbmsOutput` | `false` | Bật `DBMS_OUTPUT` trong phiên kiểm thử. |
 | `utplsql.additionalReporters` | `[]` | Các reporter bổ sung đưa vào mỗi lần chạy (ví dụ `["ut_coverage_html_reporter"]`). Các reporter mặc định (documentation, junit) luôn được bao gồm và không cần liệt kê. |
+| `utplsql.reporter.clientCharacterSet` | `""` | Charset máy khách (`a_client_character_set`) cho **Run with Reporter (Export)**. Trống = mặc định của reporter. |
+| `utplsql.reporter.colorConsole` | `false` | Bật màu ANSI (`a_color_console`) cho reporter console dạng văn bản khi xuất. |
 | `utplsql.tags` | `""` | Biểu thức tag của utPLSQL để lọc bài kiểm thử nào sẽ chạy (ví dụ `fast & !integration`). Để trống là chạy tất cả. |
 | `utplsql.run.randomOrder` | `false` | Chạy các bài kiểm thử theo thứ tự ngẫu nhiên để phát hiện phụ thuộc thứ tự giữa chúng. |
 | `utplsql.run.randomOrderSeed` | `0` | Seed của thứ tự ngẫu nhiên. `0` = do cơ sở dữ liệu chọn (không thể tái tạo); > 0 tái tạo cùng thứ tự. |
@@ -143,7 +155,8 @@ Test Explorer **ngay khi từng bài kiểm thử hoàn tất**. VSIX đã kèm 
 | `utplsql.oracleClientLibDir` | `""` | Thư mục Oracle Instant Client. Bắt buộc khi `utplsql.oracleClientMode` là `thick` (ví dụ `C:\oracle\instantclient_23_5`). |
 | Gỡ lỗi không dừng tại breakpoint | Gói không có thông tin gỡ lỗi hoặc thiếu quyền gỡ lỗi | Biên dịch với `PLSQL_OPTIMIZE_LEVEL <= 1` (hoặc `ALTER PACKAGE ... COMPILE DEBUG PLSQL_OPTIMIZE_LEVEL = 1`) và cấp `DEBUG CONNECT SESSION` + `EXECUTE ON SYS.DBMS_DEBUG`. Breakpoint trong `test_*.pkb` có thể không dừng (utPLSQL chạy test bằng SQL động); hãy đặt chúng trong mã đang kiểm thử. |
 | `utplsql.oracleClientConfigDir` | `""` | Thư mục cấu hình Oracle (TNS_ADMIN) chứa `sqlnet.ora`/`tnsnames.ora`. Tùy chọn; chỉ được dùng ở chế độ thick. |
-| `utplsql.organization` | `file` | Tổ chức cây: `file` (theo đường dẫn) hoặc `schema` (Schema > Package > Suite > Test). Trong chế độ `schema`, các suite cũng được phát hiện từ cơ sở dữ liệu (`ut_runner.get_suites_info`, dự phòng về `ALL_OBJECTS`/`ALL_SOURCE`) khi các tệp `.pks` không nằm trong workspace — với URI ảo `utplsql-db:/` (thực thi và nhảy tới lỗi hoạt động; không có CodeLens/trang trí). |
+| `utplsql.connections.tnsAdminPath` | `""` | Thư mục chứa `tnsnames.ora` để **phân giải alias TNS trong driver thin**. Thứ tự: cài đặt này → giá trị user/machine của `sqldeveloper.connections.tnsConfiguration.path` → `TNS_ADMIN`. |
+| `utplsql.organization` | `file` | Tổ chức cây: `file` (theo đường dẫn) hoặc `schema` (Schema > Package > Suite > Test). Trong chế độ `schema`, các suite cũng được phát hiện từ cơ sở dữ liệu (`ut_runner.get_suites_info`, dự phòng về `ALL_OBJECTS`/`ALL_SOURCE`) khi các tệp `.pks` không nằm trong workspace — với URI ảo `utplsql-db:/` (thực thi và nhảy tới lỗi hoạt động; không có CodeLens/trang trí). · `utplsql-source:/` |
 | `utplsql.organization.schemaPattern` | `db/{schema}/**` | Glob để trích xuất schema từ đường dẫn. Dùng `{schema}` làm placeholder. Trong chế độ `schema`, các thư mục bên dưới gốc của pattern (ví dụ `db/*`) định nghĩa các schema được truy vấn trong cơ sở dữ liệu. |
 | `utplsql.discovery.source` | `auto` | Nguồn của cây trong chế độ `schema`: `auto` dùng API cơ sở dữ liệu (`ut_runner.get_suites_info`) và chuyển sang `ALL_SOURCE`/tệp khi không khả dụng; `database` bắt buộc dùng API; `file` tắt khám phá qua cơ sở dữ liệu. |
 | `utplsql.refreshDebounceMs` | `300` | Debounce (ms) để gộp các sự kiện theo dõi tệp `.pks`/`.pkb` trước khi làm mới Test Explorer. |
@@ -265,6 +278,8 @@ Tất cả các lệnh của extension (palette `Ctrl+Shift+P` tiền tố `utPL
 | `utPLSQL: Run script` | Runs the script open in the editor against a connection profile | Right-click → script file |
 | `utPLSQL: Run script file` | Runs an Explorer script file (decoded with the profile charset) | Right-click → file |
 | `utPLSQL: Run script folder` | Runs the folder scripts in alphabetical order | Right-click → folder |
+| `utPLSQL: Đặt mật khẩu ví` | Đặt/xóa mật khẩu ví của hồ sơ đang hoạt động (SecretStorage) | — |
+| `utPLSQL: Chạy với reporter (xuất)` | Chạy lựa chọn với reporter đã chọn và ghi đầu ra vào Output/tệp (không đổi kết quả) | Test Explorer → menu do item |
 
 > **Recompile UT3** (`utplsql.recompileUt3`) **không phải** là lệnh palette — nó là
 > quick-fix nội bộ của diagnostic "utPLSQL Setup" (các đối tượng không hợp lệ trong
@@ -294,51 +309,6 @@ Tất cả các phím tắt dùng tiền tố `Ctrl+Shift+U` (`Cmd+Shift+U` trê
 
 
 
-Extension truyền `-source_path` (= `utplsql.sourcePath`) và ánh xạ các đối tượng được phủ
-tới các tệp nguồn qua `utplsql.coverageSourceArgs` (regex + `type_mapping`). `-owner`
-được suy ra từ kết nối (hoặc từ `utplsql.coverageOwner`).
-
-### Ánh xạ độ phủ tới các tệp (`coverageSourceArgs`)
-
-`type_mapping` dịch "loại" mà regex bắt được thành loại Oracle. Ba quy ước phổ biến:
-
-**1) Theo thư mục** — cấu trúc `sourcePath/<type>/<name>.sql` (các thư mục `functions/`, `procedures/`, `packages/`, …):
-```jsonc
-"utplsql.coverageSourceArgs": [
-  "-regex_expression=.*[/\\\\](\\w+)[/\\\\](\\w+)\\.sql$",
-  "-type_subexpression=1",   // group 1 = folder (type)
-  "-name_subexpression=2",   // group 2 = file (object name)
-  "-type_mapping=packages=PACKAGE BODY/functions=FUNCTION/procedures=PROCEDURE/triggers=TRIGGER"
-]
-```
-> Hoạt động ở mọi độ sâu (`.*` hấp thụ các module phía trên). Các tên thư mục đa dạng
-> (ví dụ `package`, `pkg`, `pacote`) có thể được liệt kê trong `type_mapping`.
-
-**2) Theo tiền tố tên** — quy ước `pkg_*`, `prc_*`, `vw_*` (không phụ thuộc vào thư mục):
-```jsonc
-"utplsql.coverageSourceArgs": [
-  "-regex_expression=.*[/\\\\]((pkg|prc|fnc|trg|vw)_\\w+)\\.sql$",
-  "-name_subexpression=1",   // group 1 = full name (e.g. PKG_EXAMPLE)
-  "-type_subexpression=2",   // group 2 = prefix (type)
-  "-type_mapping=pkg=PACKAGE BODY/prc=PROCEDURE/fnc=FUNCTION/trg=TRIGGER/vw=VIEW"
-]
-```
-
-**3) Theo phần mở rộng được đánh loại** — các tệp `*.pkb`, `*.fnc`, `*.prc`, `*.trg` (không phụ thuộc vào thư mục):
-```jsonc
-"utplsql.coverageSourceArgs": [
-  "-regex_expression=.*[/\\\\](\\w+)\\.(\\w+)$",
-  "-name_subexpression=1",   // group 1 = name
-  "-type_subexpression=2",   // group 2 = extension (type)
-  "-type_mapping=pkb=PACKAGE BODY/fnc=FUNCTION/prc=PROCEDURE/trg=TRIGGER"
-]
-```
-
-**Các lưu ý quan trọng:**
-- **Packages → `PACKAGE BODY`** (không phải `PACKAGE`): độ phủ được thu thập trong **body** của package.
-- **Windows / metacharacter của regex:** tránh **`^`** trong regex (`cmd` của `.bat` tiêu thụ nó) — đó là lý do các ví dụ
-  dùng `\w` và `[/\\]`.
-
 ## Bộ báo cáo (Reporters)
 
 Extension luôn kèm **hai** reporter mặc định:
@@ -359,10 +329,7 @@ không bao giờ bị chặn.
 Các reporter mặc định tự động được loại bỏ trùng (deduplicated), kể cả khi được
 liệt kê ở đây.
 
-**Reporter thay đổi theo phiên** — lệnh **utPLSQL: Select additional
-reporter...** mở QuickPick với danh sách động từ cơ sở dữ liệu. Reporter
-được chọn được lưu trong phiên, nhưng lựa chọn **không được áp dụng** trong
-phiên bản Oracle-only hiện tại.
+**Reporter tạm theo phiên** — lệnh **Chọn reporter bổ sung...** mở QuickPick với danh sách từ cơ sở dữ liệu; reporter đã chọn được lưu trong phiên và **áp dụng cho lần chạy kế tiếp**.
 
 ## Yêu cầu cơ sở dữ liệu
 

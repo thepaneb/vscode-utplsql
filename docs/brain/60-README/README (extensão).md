@@ -43,6 +43,14 @@ Integrates [utPLSQL](https://www.utplsql.org/) into VSCode, bringing PL/SQL test
 - 🗄️ **Database-first discovery** — build the tree from `ut_runner.get_suites_info` and rebuild the annotation cache from the palette.
 - 🐛 **PL/SQL Debug** — breakpoints and step debugging of utPLSQL tests via `DBMS_DEBUG` (native Debug Adapter).
 - 🌍 **i18n — 24 languages** — `utplsql.language` follows VSCode (24 locales: pt-br, en, en-gb, es, zh-cn, zh-tw, ja, de, fr, it, ko, ru, tr, pl, cs, hu, bg, el, id, ro, sr, th, uk, vi).
+- 🌳 **Lazy test tree** — in `schema` mode, packages/suites/tests are resolved on demand when you expand, so large schemas open instantly.
+- 🧾 **Run with Reporter (Export)** — run the selection with any database reporter and write the output to the Output panel or a file (`utplsql.reporter.*`), without changing the Test Explorer results.
+- 🗂️ **Virtual database source** — with no local file, *jump to failure* and coverage open a read-only document resolved from `ALL_SOURCE` (`utplsql-source:/…`).
+- 🔐 **TNS in thin + wallet** — `utplsql.connections.tnsAdminPath` resolves `tnsnames.ora` aliases in the thin driver (fallback to SQL Developer/`TNS_ADMIN`); the profile `walletLocation` and `utPLSQL: Set wallet password` keep the wallet password in the SecretStorage.
+- 🔒 **Connection security hardening** — connection settings are `machine`-scoped, the extension is disabled in untrusted workspaces, and the profile password is bound to the connection.
+- 🧱 **Compilation diagnostics** — after every run, PL/SQL compilation errors (`ALL_ERRORS`) show up in the Problems Panel under the `utPLSQL Compilation` source (setting `utplsql.compilationDiagnostics.enabled`).
+- ⏳ **Progress and cancellation** — long runs show a progress notification with counts and a *Cancel* button (plus the optional `utplsql.timeoutMinutes`).
+- 📁 **Multi-root workspace** — every workspace folder gets its own suites, with independent discovery, execution and coverage.
 
 ## Installation
 
@@ -56,7 +64,7 @@ The extension can be installed in two ways:
 ## Requirements
 
 - [**utPLSQL**](https://github.com/utPLSQL/utPLSQL) **(UT3)** installed in the Oracle database.
-- **VSCode 1.88+** (Test Coverage API).
+- **VSCode 1.101+** (Test Coverage API).
 
 The extension connects directly to the Oracle database via `node-oracledb` (thin driver, no Instant Client required). The VSIX already includes the `oracledb` package.
 
@@ -101,8 +109,18 @@ keeps it only in memory during the session — use the command
 
 **Accepted formats:**
 - **EZ Connect**: `user/pass@//host:1521/service`
-- **TNS alias**: `user/pass@tns_alias` (requires `TNS_ADMIN` configured)
+- **TNS alias**: `user/pass@tns_alias` — the **thin** driver resolves the alias from
+  `utplsql.connections.tnsAdminPath`, then the user/machine value of
+  `sqldeveloper.connections.tnsConfiguration.path`, then `TNS_ADMIN` (see the setting below).
 - **Wallet (Oracle Cloud)**: `user/pass@tcps://host:1522/service?wallet_location=/path/wallet`
+
+> 🔒 **Hardened settings:** `utplsql.connection`, `utplsql.profiles`, `utplsql.activeProfile`,
+> `utplsql.oracleClientLibDir`, `utplsql.oracleClientConfigDir` and
+> `utplsql.connections.tnsAdminPath` are **`machine`-scoped** —
+> a project's `.vscode/settings.json` cannot override them. The extension is also **disabled in
+> untrusted workspaces** (mark the folder as trusted to enable it). A profile password is bound
+> to its `connection`: if the connection changes, the stored password is discarded instead of
+> being sent to the new host.
 
 ## How it works
 
@@ -129,6 +147,8 @@ Test Explorer **as each test finishes**.
 | `utplsql.timeoutMinutes` | `60` | Timeout in minutes for the test execution. |
 | `utplsql.dbmsOutput` | `false` | Enables `DBMS_OUTPUT` in the test session. Useful for debugging. |
 | `utplsql.additionalReporters` | `[]` | Additional reporters to include on every run (e.g. `["ut_coverage_html_reporter"]`). The default reporters (documentation and junit) are always included and don't need to be listed; the coverage reporter is added only when running with coverage. |
+| `utplsql.reporter.clientCharacterSet` | `""` | Client charset (`a_client_character_set`) for the **Run with Reporter (Export)** command. Empty uses the reporter default. |
+| `utplsql.reporter.colorConsole` | `false` | Enables ANSI color (`a_color_console`) for textual console reporters in the export. |
 | `utplsql.tags` | `""` | utPLSQL tag expression to filter which tests run (e.g. `fast & !integration`). Empty runs all. |
 | `utplsql.run.randomOrder` | `false` | Runs the tests in random order to reveal order dependencies between them. |
 | `utplsql.run.randomOrderSeed` | `0` | Seed for the random order. `0` = chosen by the database (not reproducible); > 0 reproduces the same order. |
@@ -142,7 +162,8 @@ Test Explorer **as each test finishes**.
 | `utplsql.oracleClientMode` | `thin` | Driver mode: `thin` (pure JavaScript, no native client) or `thick` (uses the Oracle Instant Client). Use `thick` only for databases that require NNE (Native Network Encryption); requires `utplsql.oracleClientLibDir` and a window reload. |
 | `utplsql.oracleClientLibDir` | `""` | Oracle Instant Client directory. Required when `utplsql.oracleClientMode` is `thick` (e.g. `C:\oracle\instantclient_23_5`). |
 | `utplsql.oracleClientConfigDir` | `""` | Oracle configuration directory (TNS_ADMIN) with `sqlnet.ora`/`tnsnames.ora`. Optional; used only by the thick driver. |
-| `utplsql.organization` | `file` | Tree organization: `file` (by path) or `schema` (Schema > Package > Suite > Test). In `schema` mode, suites are also discovered from the database (`ut_runner.get_suites_info`, falling back to `ALL_OBJECTS`/`ALL_SOURCE`) when `.pks` files are not in the workspace — virtual URI `utplsql-db:/` (execution and jump to failure work; no CodeLens/decorations). |
+| `utplsql.connections.tnsAdminPath` | `""` | Directory with `tnsnames.ora` to resolve **TNS aliases in the thin driver**. Resolution: this setting → user/machine value of `sqldeveloper.connections.tnsConfiguration.path` → `TNS_ADMIN` env var. Easy Connect keeps working. |
+| `utplsql.organization` | `file` | Tree organization: `file` (by path) or `schema` (Schema > Package > Suite > Test). In `schema` mode, suites are also discovered from the database (`ut_runner.get_suites_info`, falling back to `ALL_OBJECTS`/`ALL_SOURCE`) when `.pks` files are not in the workspace — virtual URI `utplsql-db:/` (execution and jump to failure work; no CodeLens/decorations). Without local sources, failures and coverage open a **read-only virtual document** (`utplsql-source:/`, resolved from `ALL_SOURCE`). |
 | `utplsql.organization.schemaPattern` | `db/{schema}/**` | Glob pattern to extract the schema from the path. Use `{schema}` as the placeholder. In `schema` mode, the directories below the pattern base (e.g. `db/*`) define the schemas queried in the database. |
 | `utplsql.discovery.source` | `auto` | Source of the test tree in `schema` mode: `auto` uses the database API (`ut_runner.get_suites_info`) and falls back to `ALL_SOURCE`/files when unavailable; `database` requires the API; `file` disables database discovery. |
 | `utplsql.refreshDebounceMs` | `300` | Debounce (ms) to coalesce `.pks`/`.pkb` file watcher events before refreshing the Test Explorer. |
@@ -257,6 +278,8 @@ All extension commands (palette `Ctrl+Shift+P` prefix `utPLSQL:`):
 | `utPLSQL: New connection profile...` | Wizard to create and activate a profile | — |
 | `utPLSQL: Manage connection profiles` | Opens settings at `utplsql.profiles` | — |
 | `utPLSQL: Import connections from SQL Developer` | Imports connections from SQL Developer (connections.xml) | — |
+| `utPLSQL: Set wallet password` | Sets or clears the active profile's Oracle Cloud wallet password (stored in SecretStorage) | — |
+| `utPLSQL: Run with Reporter (Export)` | Runs the selection with a chosen database reporter and writes the output to Output/file (does not change Test Explorer results) | Test Explorer item context menu |
 | `utPLSQL: Debug test (PL/SQL)` | Starts a debug session of the test under the active file | — |
 | `utPLSQL: Compile for Debug` | Compiles the selected file/folder object with debug information | — |
 | `utPLSQL: Rebuild Annotation Cache` | Rebuilds the utPLSQL annotation cache in the database and refreshes the tree | — |

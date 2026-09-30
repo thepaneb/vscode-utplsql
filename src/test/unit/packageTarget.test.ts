@@ -25,9 +25,9 @@ interface PackageTargetModule {
     spawnSyncImpl?: (
       command: string,
       args: string[],
-      options: { stdio: 'inherit'; cwd: string; shell: boolean },
+      options: { stdio: 'inherit'; cwd: string },
     ) => { status: number | null; error?: Error };
-    platform?: NodeJS.Platform;
+    resolveVsceImpl?: () => { command: string; argsPrefix: string[] };
     log?: (message: string) => void;
     error?: (message: string) => void;
   }) => number;
@@ -42,9 +42,9 @@ interface PublishModule {
     spawnSyncImpl?: (
       command: string,
       args: string[],
-      options: { stdio: 'inherit'; shell: boolean },
+      options: { stdio: 'inherit' },
     ) => { status: number | null; error?: Error };
-    platform?: NodeJS.Platform;
+    resolveVsceImpl?: () => { command: string; argsPrefix: string[] };
     log?: (message: string) => void;
     warn?: (message: string) => void;
     error?: (message: string) => void;
@@ -65,6 +65,19 @@ const {
   main: packageMain,
 } = req('../../../scripts/package-target.cjs') as PackageTargetModule;
 const { buildVsceArgs, main: publishMain } = req('../../../scripts/publish.cjs') as PublishModule;
+
+test('vsce: resolveVsce devolve o script do vsce para spawn sem shell', () => {
+  const { resolveVsce } = req('../../../scripts/vsce.cjs') as {
+    resolveVsce: () => { command: string; argsPrefix: string[] };
+  };
+  const nodeFs = req('node:fs') as typeof import('node:fs');
+  const resolved = resolveVsce();
+  assert.strictEqual(resolved.command, process.execPath);
+  assert.strictEqual(resolved.argsPrefix.length, 1);
+  const binPath = resolved.argsPrefix[0].replace(/\\/g, '/');
+  assert.match(binPath, /@vscode\/vsce\/.*vsce$/);
+  assert.ok(nodeFs.existsSync(resolved.argsPrefix[0]), binPath);
+});
 
 const FILES = [
   'oracledb-7.0.1-darwin-arm64.node',
@@ -151,7 +164,7 @@ test('package-target.main: lê versões, limpa glues e monta argumentos do vsce'
   const calls: Array<{
     command: string;
     args: string[];
-    options: { stdio: 'inherit'; cwd: string; shell: boolean };
+    options: { stdio: 'inherit'; cwd: string };
   }> = [];
   const fsImpl: PackageTargetFs = {
     readFileSync(filePath) {
@@ -171,7 +184,7 @@ test('package-target.main: lê versões, limpa glues e monta argumentos do vsce'
       calls.push({ command, args, options });
       return { status: 0 };
     },
-    platform: 'linux',
+    resolveVsceImpl: () => ({ command: 'node', argsPrefix: ['/vsce/bin/vsce'] }),
     log: (message) => logs.push(message),
     error: () => {},
   });
@@ -187,12 +200,18 @@ test('package-target.main: lê versões, limpa glues e monta argumentos do vsce'
   ]);
   assert.deepStrictEqual(calls, [
     {
-      command: 'vsce',
-      args: ['package', '--target', 'linux-x64', '--out', 'vscode-utplsql-0.13.0@linux-x64.vsix'],
+      command: 'node',
+      args: [
+        '/vsce/bin/vsce',
+        'package',
+        '--target',
+        'linux-x64',
+        '--out',
+        'vscode-utplsql-0.13.0@linux-x64.vsix',
+      ],
       options: {
         stdio: 'inherit',
         cwd: ROOT,
-        shell: false,
       },
     },
   ]);
@@ -213,7 +232,7 @@ test('package-target.main: alvo thin-only remove todas as glues', () => {
       rmSync: (filePath) => removed.push(filePath),
     },
     spawnSyncImpl: () => ({ status: 0 }),
-    platform: 'linux',
+    resolveVsceImpl: () => ({ command: 'node', argsPrefix: ['/vsce/bin/vsce'] }),
     log: (message) => logs.push(message),
   });
 
@@ -251,6 +270,7 @@ test('package-target.main: falha de spawn retorna status de erro', () => {
       rmSync: () => {},
     },
     spawnSyncImpl: () => ({ status: null, error: new Error('vsce não encontrado') }),
+    resolveVsceImpl: () => ({ command: 'node', argsPrefix: ['/vsce/bin/vsce'] }),
     log: () => {},
   });
 
@@ -289,7 +309,7 @@ test('publish.main: packagePath verifica o artefato e publica o caminho', () => 
   const calls: Array<{
     command: string;
     args: string[];
-    options: { stdio: 'inherit'; shell: boolean };
+    options: { stdio: 'inherit' };
   }> = [];
   const logs: string[] = [];
   const existing: string[] = [];
@@ -306,7 +326,7 @@ test('publish.main: packagePath verifica o artefato e publica o caminho', () => 
       calls.push({ command, args, options });
       return { status: 0 };
     },
-    platform: 'win32',
+    resolveVsceImpl: () => ({ command: 'node', argsPrefix: ['/vsce/bin/vsce'] }),
     log: (message) => logs.push(message),
     warn: () => {},
     error: () => {},
@@ -316,16 +336,16 @@ test('publish.main: packagePath verifica o artefato e publica o caminho', () => 
   assert.deepStrictEqual(existing, ['artifact.vsix']);
   assert.deepStrictEqual(calls, [
     {
-      command: 'vsce',
-      args: ['publish', '--packagePath', 'artifact.vsix'],
-      options: { stdio: 'inherit', shell: true },
+      command: 'node',
+      args: ['/vsce/bin/vsce', 'publish', '--packagePath', 'artifact.vsix'],
+      options: { stdio: 'inherit' },
     },
   ]);
   assert.deepStrictEqual(logs, ['📦 Publicando artefato: artifact.vsix']);
 });
 
 test('publish.main: target legado repassa o alvo ao vsce', () => {
-  const calls: Array<{ args: string[]; options: { stdio: 'inherit'; shell: boolean } }> = [];
+  const calls: Array<{ args: string[]; options: { stdio: 'inherit' } }> = [];
   const logs: string[] = [];
   const code = publishMain({
     argv: ['--target', 'linux-x64'],
@@ -334,7 +354,7 @@ test('publish.main: target legado repassa o alvo ao vsce', () => {
       calls.push({ args, options });
       return { status: 0 };
     },
-    platform: 'linux',
+    resolveVsceImpl: () => ({ command: 'node', argsPrefix: ['/vsce/bin/vsce'] }),
     log: (message) => logs.push(message),
     warn: () => {},
     error: () => {},
@@ -342,7 +362,10 @@ test('publish.main: target legado repassa o alvo ao vsce', () => {
 
   assert.strictEqual(code, 0);
   assert.deepStrictEqual(calls, [
-    { args: ['publish', '--target', 'linux-x64'], options: { stdio: 'inherit', shell: false } },
+    {
+      args: ['/vsce/bin/vsce', 'publish', '--target', 'linux-x64'],
+      options: { stdio: 'inherit' },
+    },
   ]);
   assert.deepStrictEqual(logs, ['📦 Publicando (re-empacotando) target: linux-x64']);
 });
@@ -355,14 +378,14 @@ test('publish.main: sem flags usa publicação universal', () => {
       calls.push(args);
       return { status: 0 };
     },
-    platform: 'linux',
+    resolveVsceImpl: () => ({ command: 'node', argsPrefix: ['/vsce/bin/vsce'] }),
     log: () => {},
     warn: () => {},
     error: () => {},
   });
 
   assert.strictEqual(code, 0);
-  assert.deepStrictEqual(calls, [['publish']]);
+  assert.deepStrictEqual(calls, [['/vsce/bin/vsce', 'publish']]);
 });
 
 test('publish.main: fora do CI não executa vsce', () => {
@@ -390,7 +413,7 @@ test('publish.main: falha de spawn não é reportada como sucesso', () => {
     env: { CI: 'true' },
     fsImpl: { existsSync: () => true },
     spawnSyncImpl: () => ({ status: null, error: new Error('vsce não encontrado') }),
-    platform: 'linux',
+    resolveVsceImpl: () => ({ command: 'node', argsPrefix: ['/vsce/bin/vsce'] }),
     log: () => {},
     warn: () => {},
     error: () => {},

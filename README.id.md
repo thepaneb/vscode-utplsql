@@ -34,6 +34,14 @@ Mengintegrasikan [utPLSQL](https://www.utplsql.org/) ke dalam VSCode, membawa pe
 - 🗄️ **Penemuan DB-first** — bangun pohon dari `ut_runner.get_suites_info` dan bangun ulang cache anotasi dari palet.
 - 🐛 **Debug PL/SQL** — breakpoint dan debugging langkah demi langkah untuk pengujian utPLSQL melalui `DBMS_DEBUG` (Debug Adapter asli).
 - 🌍 **i18n — 24 bahasa** — `utplsql.language` mengikuti VSCode (24 locale: pt-br, en, en-gb, es, zh-cn, zh-tw, ja, de, fr, it, ko, ru, tr, pl, cs, hu, bg, el, id, ro, sr, th, uk, vi).
+- 🌳 **Pohon tes malas (lazy)** — dalam mode `schema`, package/suite/tes diurai saat diperluas, sehingga skema besar terbuka seketika.
+- 🧾 **Run with Reporter (Export)** — menjalankan pilihan dengan reporter basis data mana pun dan menulis keluaran ke Output atau file (`utplsql.reporter.*`), tanpa mengubah hasil di Test Explorer.
+- 🗂️ **Sumber basis data virtual** — tanpa file lokal, *jump to failure* dan cakupan membuka dokumen hanya-baca dari `ALL_SOURCE` (`utplsql-source:/…`).
+- 🔐 **TNS di thin + wallet** — `utplsql.connections.tnsAdminPath` menyelesaikan alias `tnsnames.ora` di driver thin (fallback ke SQL Developer/`TNS_ADMIN`); `walletLocation` profil dan `utPLSQL: Set wallet password` menyimpan sandi wallet di SecretStorage.
+- 🔒 **Pengerasan keamanan koneksi** — setelan koneksi kini `machine`-scoped, ekstensi dinonaktifkan di workspace yang tidak tepercaya, dan sandi profil terikat pada koneksi.
+- 🧱 **Diagnostik kompilasi** — setelah setiap eksekusi, kesalahan kompilasi PL/SQL (`ALL_ERRORS`) muncul di Problems Panel dengan source `utPLSQL Compilation` (setelan `utplsql.compilationDiagnostics.enabled`).
+- ⏳ **Progres dan pembatalan** — eksekusi panjang menampilkan notifikasi progres dengan jumlah dan tombol *Cancel* (plus `utplsql.timeoutMinutes` opsional).
+- 📁 **Workspace multi-root** — setiap folder workspace memiliki suite sendiri, dengan penemuan, eksekusi, dan cakupan yang independen.
 
 ## Instalasi
 
@@ -55,7 +63,7 @@ Ekstensi dapat diinstal dengan dua cara:
 |---|---|---|
 | 18c+ | v3.2.x (18c+) / v3.1.x | Disarankan; charset `AL32UTF8`. |
 | 12.2 | hanya v3.1.x | v3.2.x tidak dapat dikompilasi (`PLS-00222`). `WE8DEC` pada image kehilangan karakter yang tidak dapat direpresentasikan (mis. `€`); driver tipis mengabaikan `NLS_LANG`. |
-- **VSCode 1.88+** (Test Coverage API).
+- **VSCode 1.101+** (Test Coverage API).
 
 Ekstensi hanyalah "klien grafis" — yang menjalankan pengujian adalah database langsung via node-oracledb.
 
@@ -93,8 +101,10 @@ koneksi dan menyimpannya hanya di memori selama sesi — gunakan perintah
 
 **Format yang diterima:**
 - **EZ Connect**: `user/pass@//host:1521/service`
-- **TNS alias**: `user/pass@tns_alias` (memerlukan `TNS_ADMIN` terkonfigurasi)
+- **TNS alias**: `user/pass@tns_alias`
 - **Wallet (Oracle Cloud)**: `user/pass@tcps://host:1522/service?wallet_location=/path/wallet`
+
+> 🔒 **Setelan yang diperketat:** setelan koneksi bersifat **`machine`-scoped**; ekstensi **dinonaktifkan di workspace yang tidak tepercaya**; kata sandi profil **terikat pada koneksinya**. (`utplsql.connection`, `utplsql.profiles`, `utplsql.activeProfile`, `utplsql.oracleClientLibDir`, `utplsql.oracleClientConfigDir`, `utplsql.connections.tnsAdminPath`)
 
 ## Cara kerja
 
@@ -121,6 +131,8 @@ Ekstensi terhubung langsung ke Oracle, membaca laporan (JUnit + Coverage) lalu m
 | `utplsql.timeoutMinutes` | `60` | Batas waktu (timeout) dalam menit untuk eksekusi pengujian. |
 | `utplsql.dbmsOutput` | `false` | Mengaktifkan `DBMS_OUTPUT` di sesi pengujian. Berguna untuk debugging. |
 | `utplsql.additionalReporters` | `[]` | Reporter tambahan yang disertakan pada setiap eksekusi (mis. `["ut_coverage_html_reporter"]`). Default (documentation, junit) selalu disertakan dan tidak perlu didaftarkan. |
+| `utplsql.reporter.clientCharacterSet` | `""` | Charset klien (`a_client_character_set`) untuk **Run with Reporter (Export)**. Kosong = default reporter. |
+| `utplsql.reporter.colorConsole` | `false` | Mengaktifkan warna ANSI (`a_color_console`) untuk reporter konsol teks saat ekspor. |
 | `utplsql.tags` | `""` | Ekspresi tag utPLSQL untuk memfilter pengujian mana yang dijalankan (mis. `fast & !integration`). Kosong menjalankan semua. |
 | `utplsql.run.randomOrder` | `false` | Menjalankan pengujian dalam urutan acak untuk mengungkap dependensi urutan di antara pengujian. |
 | `utplsql.run.randomOrderSeed` | `0` | Seed urutan acak. `0` = dipilih basis data (tidak dapat direproduksi); > 0 mereproduksi urutan yang sama. |
@@ -135,7 +147,8 @@ Ekstensi terhubung langsung ke Oracle, membaca laporan (JUnit + Coverage) lalu m
 | `utplsql.oracleClientLibDir` | `""` | Direktori Oracle Instant Client. Wajib saat `utplsql.oracleClientMode` bernilai `thick` (mis. `C:\oracle\instantclient_23_5`). |
 | Debug tidak berhenti di breakpoint | Paket tanpa info debug atau grant debug tidak ada | Kompilasi dengan `PLSQL_OPTIMIZE_LEVEL <= 1` (atau `ALTER PACKAGE ... COMPILE DEBUG PLSQL_OPTIMIZE_LEVEL = 1`) dan berikan `DEBUG CONNECT SESSION` + `EXECUTE ON SYS.DBMS_DEBUG`. Breakpoint di `test_*.pkb` mungkin tidak berhenti (utPLSQL menjalankan test via SQL dinamis); pasang di kode yang diuji. |
 | `utplsql.oracleClientConfigDir` | `""` | Direktori konfigurasi Oracle (TNS_ADMIN) berisi `sqlnet.ora`/`tnsnames.ora`. Opsional; hanya dipakai oleh mode thick. |
-| `utplsql.organization` | `file` | Organisasi pohon: `file` (berdasarkan path) atau `schema` (Schema > Package > Suite > Test). Pada mode `schema`, suite juga ditemukan dari database (`ut_runner.get_suites_info`, dengan fallback ke `ALL_OBJECTS`/`ALL_SOURCE`) ketika file `.pks` tidak ada di workspace — URI virtual `utplsql-db:/` (eksekusi dan lompat ke kegagalan berfungsi; tanpa CodeLens/dekorasi). |
+| `utplsql.connections.tnsAdminPath` | `""` | Direktori dengan `tnsnames.ora` untuk **menyelesaikan alias TNS di driver thin**. Urutan: setelan ini → nilai user/machine `sqldeveloper.connections.tnsConfiguration.path` → `TNS_ADMIN`. |
+| `utplsql.organization` | `file` | Organisasi pohon: `file` (berdasarkan path) atau `schema` (Schema > Package > Suite > Test). Pada mode `schema`, suite juga ditemukan dari database (`ut_runner.get_suites_info`, dengan fallback ke `ALL_OBJECTS`/`ALL_SOURCE`) ketika file `.pks` tidak ada di workspace — URI virtual `utplsql-db:/` (eksekusi dan lompat ke kegagalan berfungsi; tanpa CodeLens/dekorasi). · `utplsql-source:/` |
 | `utplsql.organization.schemaPattern` | `db/{schema}/**` | Pola glob untuk mengekstrak schema dari path. Gunakan `{schema}` sebagai placeholder. Pada mode `schema`, direktori di bawah basis pola (mis. `db/*`) menentukan schema yang ditanyakan di database. |
 | `utplsql.discovery.source` | `auto` | Sumber pohon pengujian pada mode `schema`: `auto` memakai API basis data (`ut_runner.get_suites_info`) dan beralih ke `ALL_SOURCE`/file bila tidak tersedia; `database` mewajibkan API; `file` menonaktifkan penemuan via basis data. |
 | `utplsql.refreshDebounceMs` | `300` | Debounce (ms) untuk menggabungkan peristiwa watcher file `.pks`/`.pkb` sebelum menyegarkan Test Explorer. |
@@ -257,6 +270,8 @@ Semua perintah ekstensi (palet `Ctrl+Shift+P`, prefiks `utPLSQL:`):
 | `utPLSQL: Run script` | Runs the script open in the editor against a connection profile | Right-click → script file |
 | `utPLSQL: Run script file` | Runs an Explorer script file (decoded with the profile charset) | Right-click → file |
 | `utPLSQL: Run script folder` | Runs the folder scripts in alphabetical order | Right-click → folder |
+| `utPLSQL: Atur kata sandi wallet` | Mengatur/menghapus kata sandi wallet profil aktif (SecretStorage) | — |
+| `utPLSQL: Jalankan dengan reporter (ekspor)` | Menjalankan pilihan dengan reporter terpilih dan menulis output ke Output/file (tidak mengubah hasil) | Test Explorer → menu do item |
 
 > **Recompile UT3** (`utplsql.recompileUt3`) **bukan** perintah palet — ini adalah
 > quick-fix internal dari diagnostik "utPLSQL Setup" (objek tidak valid di
@@ -286,49 +301,6 @@ Semua pintasan memakai prefiks `Ctrl+Shift+U` (`Cmd+Shift+U` di Mac):
 
 
 
-Ekstensi mengirimkan `-source_path` (= `utplsql.sourcePath`) dan memetakan objek yang tercakup
-ke file sumber melalui `utplsql.coverageSourceArgs` (regex + `type_mapping`). Nilai `-owner`
-diturunkan dari koneksi (atau dari `utplsql.coverageOwner`).
-
-### Memetakan coverage ke file (`coverageSourceArgs`)
-
-`type_mapping` menerjemahkan "tipe" yang ditangkap oleh regex menjadi tipe Oracle. Tiga konvensi umum:
-
-**1) Berdasarkan direktori** — struktur `sourcePath/<type>/<name>.sql` (folder `functions/`, `procedures/`, `packages/`, …):
-```jsonc
-"utplsql.coverageSourceArgs": [
-  "-regex_expression=.*[/\\\\](\\w+)[/\\\\](\\w+)\\.sql$",
-  "-type_subexpression=1",   // group 1 = folder (type)
-  "-name_subexpression=2",   // group 2 = file (object name)
-  "-type_mapping=packages=PACKAGE BODY/functions=FUNCTION/procedures=PROCEDURE/triggers=TRIGGER"
-]
-```
-> Berfungsi di kedalaman berapa pun (`.*` menyerap modul di atasnya). Nama folder yang
-> bervariasi (mis. `package`, `pkg`, `pacote`) dapat didaftarkan di `type_mapping`.
-
-**2) Berdasarkan prefiks nama** — konvensi `pkg_*`, `prc_*`, `vw_*` (tidak bergantung pada folder):
-```jsonc
-"utplsql.coverageSourceArgs": [
-  "-regex_expression=.*[/\\\\]((pkg|prc|fnc|trg|vw)_\\w+)\\.sql$",
-  "-name_subexpression=1",   // group 1 = full name (e.g. PKG_EXAMPLE)
-  "-type_subexpression=2",   // group 2 = prefix (type)
-  "-type_mapping=pkg=PACKAGE BODY/prc=PROCEDURE/fnc=FUNCTION/trg=TRIGGER/vw=VIEW"
-]
-```
-
-**3) Berdasarkan ekstensi file** — file `*.pkb`, `*.fnc`, `*.prc`, `*.trg` (tidak bergantung pada folder):
-```jsonc
-"utplsql.coverageSourceArgs": [
-  "-regex_expression=.*[/\\\\](\\w+)\\.(\\w+)$",
-  "-name_subexpression=1",   // group 1 = name
-  "-type_subexpression=2",   // group 2 = extension (type)
-  "-type_mapping=pkb=PACKAGE BODY/fnc=FUNCTION/prc=PROCEDURE/trg=TRIGGER"
-]
-```
-
-**Catatan penting:**
-- **Package → `PACKAGE BODY`** (bukan `PACKAGE`): coverage dikumpulkan di **body** package.
-
 ## Reporter
 
 Ekstensi selalu menyertakan **dua** reporter default:
@@ -349,10 +321,7 @@ tidak pernah terblokir.
 Reporter default otomatis di-deduplikasi, meskipun
 didaftarkan di sini.
 
-**Reporter per-sesi yang volatile** — perintah **utPLSQL: Select additional
-reporter...** membuka QuickPick berisi daftar dinamis dari database. Reporter
-yang dipilih disimpan di sesi, tetapi seleksi **tidak diterapkan** di versi
-Oracle-only saat ini.
+**Reporter volatil per sesi** — perintah **Pilih reporter tambahan...** membuka QuickPick dengan daftar dari basis data; reporter terpilih disimpan di sesi dan **diterapkan pada run berikutnya**.
 
 ## Persyaratan basis data
 

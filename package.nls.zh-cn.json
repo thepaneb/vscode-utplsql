@@ -26,5 +26,7 @@
   "nls.command.runScriptFile": "utPLSQL: Run script file",
   "nls.command.runScriptFolder": "utPLSQL: Run script folder",
   "nls.command.compileForDebug": "utPLSQL: 编译以进行调试",
-  "nls.command.rebuildAnnotations": "utPLSQL: 重建注释缓存"
+  "nls.command.rebuildAnnotations": "utPLSQL: 重建注释缓存",
+  "nls.command.setWalletPassword": "utPLSQL: 设置钱包密码",
+  "nls.command.runWithReporter": "utPLSQL: 使用 reporter 运行（导出）"
 }

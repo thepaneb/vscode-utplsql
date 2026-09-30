@@ -28,6 +28,11 @@ interface UtConfig {
   oracleClientLibDir: string;         // default: "" (Instant Client; obrigatório no thick)
   oracleClientConfigDir: string;      // default: "" (TNS_ADMIN; só tem efeito no thick)
 
+  // TNS no thin + wallet (PRD-82)
+  tnsAdminPath: string;               // default: "" (dir do tnsnames.ora: setting > SQL Dev user > TNS_ADMIN)
+  walletLocation: string;             // default: "" (perfil ativo)
+  walletPassword: string;             // default: "" (perfil ativo; senha no SecretStorage)
+
   // Cobertura
   sourcePath: string;                 // default: "install"
   coverageOwner: string;              // default: ""
@@ -83,6 +88,10 @@ interface UtConfig {
 
   // Reporters
   additionalReporters: string[];      // default: []
+
+  // Export com reporter arbitrário (PRD-76)
+  reporterClientCharacterSet: string; // default: "" (a_client_character_set)
+  reporterColorConsole: boolean;      // default: false (a_color_console)
 
   // Execução
   tags: string;                       // default: "" (expressão de tags do utPLSQL)
@@ -157,8 +166,9 @@ e o usuário no **primeiro** `/`, e entrega o restante (`connectionString`) ao
 `node-oracledb` sem alterar. Por isso valem os formatos do próprio driver:
 
 - **EZ Connect**: `user/pass@//host:port/service`
-- **TNS alias**: `user/pass@tns_alias` (requer `TNS_ADMIN`; no thick mode pode
-  vir de `utplsql.oracleClientConfigDir`)
+- **TNS alias**: `user/pass@tns_alias` (resolvido por `utplsql.connections.tnsAdminPath`
+  → valor user/machine de `sqldeveloper.connections.tnsConfiguration.path` →
+  `TNS_ADMIN`; no thick, também `utplsql.oracleClientConfigDir`)
 - **Wallet (Oracle Cloud)**: `user/pass@tcps://host:1522/service?wallet_location=/path/wallet`
 - Senhas com `/` ou `@` são aceitas (split no último `@` e no primeiro `/`)
 
@@ -181,6 +191,7 @@ interface ConnectionProfile {
   sourcePath?: string;
   coverageOwner?: string;
   includePatterns?: string[];
+  walletLocation?: string;       // PRD-82: wallet Oracle Cloud (thin)
   isDefault?: boolean;
   lastUsed?: string;
 }

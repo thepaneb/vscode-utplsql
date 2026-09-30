@@ -8,6 +8,7 @@ versao: "0.11.0"
 data: "2026-08-08"
 autor: "Gil Cleber"
 verificado: 2026-09-23
+regras: ["BR-EXEC-004", "BR-PARSE-007", "BR-SCHEMA-002"]
 tags: [prd]
 ---
 
@@ -211,9 +212,9 @@ Usa settings existentes:
 
 <!-- brain:auto:start:conexoes -->
 - 🗺️ [[MOC - PRDs]]
+- 📐 Regras: [[BR-EXEC-004 - Prefixo de schema utPLSQL descoberto via ALL_SYNONYMS|BR-EXEC-004]] · [[BR-PARSE-007 - Fallback ALL_OBJECTS-ALL_SOURCE ignora UT_- e nunca lança|BR-PARSE-007]] · [[BR-SCHEMA-002 - extractSchemaFromPath - path.posix.relative e placeholder {schema}|BR-SCHEMA-002]]
 - 🔗 PRDs relacionados: [[prd-38-connection-pooling|PRD-38]]
 - 🎯 RF1 — Query ALL_OBJECTS → [[BR-PARSE-007 - Fallback ALL_OBJECTS-ALL_SOURCE ignora UT_- e nunca lança|BR-PARSE-007]]
 - 🎯 RF2 — Query ALL_SOURCE → [[BR-PARSE-007 - Fallback ALL_OBJECTS-ALL_SOURCE ignora UT_- e nunca lança|BR-PARSE-007]]
 - 🚀 ⬅️ release anterior: [[prd-42-suiteparser-annotations|PRD-42 (0.10.0)]] · ➡️ próxima release: [[prd-12-sql-coverage|PRD-12 (0.12.0)]]
-- 📐 Regras: [[BR-EXEC-004 - Prefixo de schema utPLSQL descoberto via ALL_SYNONYMS|BR-EXEC-004]] · [[BR-PARSE-007 - Fallback ALL_OBJECTS-ALL_SOURCE ignora UT_- e nunca lança|BR-PARSE-007]] · [[BR-SCHEMA-002 - extractSchemaFromPath - path.posix.relative e placeholder {schema}|BR-SCHEMA-002]]
 <!-- brain:auto:end -->

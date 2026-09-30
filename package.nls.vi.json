@@ -26,5 +26,7 @@
   "nls.command.runScriptFile": "utPLSQL: Run script file",
   "nls.command.runScriptFolder": "utPLSQL: Run script folder",
   "nls.command.compileForDebug": "utPLSQL: Biên dịch để gỡ lỗi",
-  "nls.command.rebuildAnnotations": "utPLSQL: Tạo lại bộ nhớ đệm chú thích"
+  "nls.command.rebuildAnnotations": "utPLSQL: Tạo lại bộ nhớ đệm chú thích",
+  "nls.command.setWalletPassword": "utPLSQL: Đặt mật khẩu ví",
+  "nls.command.runWithReporter": "utPLSQL: Chạy với reporter (xuất)"
 }

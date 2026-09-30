@@ -38,5 +38,5 @@ Mantém o Test Explorer alinhado ao que será realmente executado e impede que e
 - 🎯 Requisitos: [[prd-42-suiteparser-annotations|PRD-42 RF1]]
 - 🧩 Código: [[COD - discovery.ts]]
 - 🧪 Testes: [[TST - discovery.test.ts]]
-- ↩️ Referenciada por: [[01-test-discovery]]
+- ↩️ Referenciada por: [[01-test-discovery]] · [[prd-42-suiteparser-annotations|PRD-42]]
 <!-- brain:auto:end -->

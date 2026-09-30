@@ -40,6 +40,30 @@ test('docs-fidelity: detecta setting ausente no README', () => {
   assert.ok(problems.some((p) => p.includes('utplsql.inexistente')));
 });
 
+test('docs-fidelity: detecta setting ausente numa variante de README', () => {
+  const problems = checkFidelity({
+    settings: ['utplsql.paraTestar'],
+    readme: 'utplsql.paraTestar',
+    readmeVariants: [{ name: 'zz-ZZ', text: 'sem a setting aqui' }],
+  });
+  assert.ok(
+    problems.some((p) => p.includes('zz-ZZ') && p.includes('utplsql.paraTestar')),
+    `esperava problema na variante: ${problems.join(' | ')}`,
+  );
+});
+
+test('docs-fidelity: detecta termo obsoleto numa variante de README', () => {
+  const problems = checkFidelity({
+    settings: [],
+    readme: 'ok',
+    readmeVariants: [{ name: 'zz-ZZ', text: 'usa utplsql-source e coverageSourceArgs aqui' }],
+  });
+  assert.ok(
+    problems.some((p) => p.includes('zz-ZZ') && p.includes('coverageSourceArgs')),
+    `esperava termo obsoleto: ${problems.join(' | ')}`,
+  );
+});
+
 test('docs-fidelity: detecta comando de paleta ausente na wiki', () => {
   const problems = checkFidelity({
     commandTitles: [{ id: 'utplsql.comandoX', title: 'Fazer algo muito especifico' }],
@@ -64,9 +88,100 @@ test('docs-fidelity: detecta .vsix em versão divergente', () => {
   assert.ok(problems.some((p) => p.includes('0.1.0') && p.includes('9.9.9')));
 });
 
+test('docs-fidelity: @types/vscode pinado no piso de engines.vscode passa', () => {
+  const problems = checkFidelity({
+    pkg: { engines: { vscode: '^1.88.0' }, devDependencies: { '@types/vscode': '1.88.0' } },
+    settings: [],
+    readme: 'ok',
+    commandTitles: [],
+    modules: [],
+    readmeVariants: [],
+    completedPrds: [],
+  });
+  assert.deepStrictEqual(
+    problems.filter((p) => p.includes('@types/vscode')),
+    [],
+  );
+});
+
+test('docs-fidelity: @types/vscode acima do piso é reportado', () => {
+  const problems = checkFidelity({
+    pkg: { engines: { vscode: '^1.88.0' }, devDependencies: { '@types/vscode': '^1.88.0' } },
+    settings: [],
+    readme: 'ok',
+    commandTitles: [],
+    modules: [],
+    readmeVariants: [],
+    completedPrds: [],
+  });
+  assert.ok(problems.some((p) => p.includes('@types/vscode')));
+});
+
+test('docs-fidelity: runtime Node coerente com o piso de VS Code passa', () => {
+  const problems = checkFidelity({
+    pkg: {
+      engines: { vscode: '^1.101.0', node: '>=22.0.0' },
+      devDependencies: { '@types/vscode': '1.101.0', '@types/node': '^22.20.1' },
+    },
+    esbuild: "target: 'node22',",
+    settings: [],
+    readme: 'ok',
+    commandTitles: [],
+    modules: [],
+    readmeVariants: [],
+    completedPrds: [],
+  });
+  assert.deepStrictEqual(
+    problems.filter((p) => /engines\.node|@types\/node|esbuild target/.test(p)),
+    [],
+  );
+});
+
+test('docs-fidelity: engines.node abaixo do Node do host é reportado', () => {
+  const problems = checkFidelity({
+    pkg: {
+      engines: { vscode: '^1.101.0', node: '>=20.0.0' },
+      devDependencies: { '@types/vscode': '1.101.0', '@types/node': '^22.20.1' },
+    },
+    esbuild: "target: 'node22',",
+    settings: [],
+    readme: 'ok',
+    commandTitles: [],
+    modules: [],
+    readmeVariants: [],
+    completedPrds: [],
+  });
+  assert.ok(problems.some((p) => p.includes('engines.node')));
+});
+
+test('docs-fidelity: esbuild target divergente do host é reportado', () => {
+  const problems = checkFidelity({
+    pkg: {
+      engines: { vscode: '^1.101.0', node: '>=22.0.0' },
+      devDependencies: { '@types/vscode': '1.101.0', '@types/node': '^22.20.1' },
+    },
+    esbuild: "target: 'node18',",
+    settings: [],
+    readme: 'ok',
+    commandTitles: [],
+    modules: [],
+    readmeVariants: [],
+    completedPrds: [],
+  });
+  assert.ok(problems.some((p) => p.includes('esbuild target')));
+});
+
 test('docs-fidelity: detecta PRD concluído ausente na wiki', () => {
   const problems = checkFidelity({ completedPrds: ['999'], wikiPrds: '| 1 | x | 0.0.1 |' });
   assert.ok(problems.some((p) => p.includes('PRD 999')));
+});
+
+test('docs-fidelity: detecta PRD concluído fora da seção Completed', () => {
+  const problems = checkFidelity({
+    completedPrds: ['999'],
+    wikiPrds: '### 🟢 Completed\n\n| 1 | x | 0.0.1 |\n\n### 🔵 Approved\n\n| 999 | y | 0.9.9 |\n',
+  });
+  assert.ok(problems.some((p) => p.includes('999') && p.includes('Completed')));
 });
 
 test('docs-fidelity: detecta termo obsoleto', () => {

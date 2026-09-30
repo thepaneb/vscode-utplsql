@@ -33,4 +33,7 @@ SORT id ASC
 - [[SEC-008 - Log de debug é opt-in e não registra credenciais]] — `SEC-008`
 - [[SEC-009 - Grants são copiados para o clipboard, nunca executados automaticamente]] — `SEC-009`
 - [[SEC-010 - Fluxos não interativos nunca abrem prompt de conexão]] — `SEC-010`
+- [[SEC-011 - Settings de conexão não são sobrescrevíveis por workspace]] — `SEC-011`
+- [[SEC-012 - Senha da wallet nunca em settings nem em log]] — `SEC-012`
+- [[SEC-013 - Fonte virtual do banco é read-only]] — `SEC-013`
 <!-- brain:auto:end -->

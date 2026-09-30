@@ -8,6 +8,7 @@ versao: "0.12.0"
 data: "2026-08-29"
 autor: "Gil Cleber"
 verificado: 2026-09-23
+regras: ["BR-COB-005"]
 tags: [prd]
 ---
 
@@ -210,5 +211,6 @@ Nenhuma. Comportamento sempre ativo; para desligar, reverter o PRD.
 
 <!-- brain:auto:start:conexoes -->
 - 🗺️ [[MOC - PRDs]]
+- 📐 Regras: [[BR-COB-005 - XML Cobertura e cobertura por declaracao sao parseados de forma pura|BR-COB-005]]
 - 🚀 ⬅️ release anterior: [[prd-46-dependency-majors|PRD-46 (0.11.0)]] · ➡️ próxima release: [[prd-70-thick-mode-nne|PRD-70 (0.12.1)]]
 <!-- brain:auto:end -->

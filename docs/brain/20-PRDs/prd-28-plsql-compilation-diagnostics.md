@@ -8,6 +8,7 @@ versao: "0.9.0"
 data: "2026-07-21"
 autor: "Gil Cleber Barboza"
 verificado: 2026-09-23
+regras: ["BR-UI-008"]
 tags: [prd]
 ---
 
@@ -273,9 +274,9 @@ executeRun() → CLI executa → stdout/stderr contém erros de compilação
 
 <!-- brain:auto:start:conexoes -->
 - 🗺️ [[MOC - PRDs]]
+- 📐 Regras: [[BR-UI-008 - Diagnósticos de compilação mapeiam ALL_ERRORS e usam source utPLSQL Compilation|BR-UI-008]]
 - 🔗 PRDs relacionados: [[prd-09-cli-info|PRD-09]] · [[prd-11-streaming-results|PRD-11]]
 - 🎯 RF2 — `src/compilationDiagnostics.ts` (novo) → [[BR-UI-008 - Diagnósticos de compilação mapeiam ALL_ERRORS e usam source utPLSQL Compilation|BR-UI-008]]
 - 🎯 RF3 — Integração com `runner.ts` → [[BR-UI-008 - Diagnósticos de compilação mapeiam ALL_ERRORS e usam source utPLSQL Compilation|BR-UI-008]]
 - 🚀 ⬅️ release anterior: [[prd-31-smart-rerun-patterns|PRD-31 (0.8.0)]] · ➡️ próxima release: [[prd-23-auto-wiki-screenshots|PRD-23 (0.10.0)]]
-- 📐 Regras: [[BR-UI-008 - Diagnósticos de compilação mapeiam ALL_ERRORS e usam source utPLSQL Compilation|BR-UI-008]]
 <!-- brain:auto:end -->

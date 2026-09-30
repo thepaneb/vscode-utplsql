@@ -44,7 +44,7 @@ async function dropPackage(dbc: import('oracledb').Connection, name: string): Pr
 async function rebuildAnnotations(dbc: import('oracledb').Connection): Promise<void> {
   const owner = connParts().user.toUpperCase();
   await dbc.execute(
-    `BEGIN ut3.ut_runner.rebuild_annotation_cache(:owner, 'PACKAGE'); END;`,
+    `BEGIN ut3.ut_runner.rebuild_annotation_cache(a_object_owner => :owner); END;`,
     { owner },
     { autoCommit: true },
   );
@@ -151,7 +151,7 @@ describeDB('executeRun schema-mode + reporters + cancelamento (banco real)', () 
     const cfg = vscode.workspace.getConfiguration('utplsql');
     const origOrg = cfg.inspect<string>('organization');
     const origPattern = cfg.inspect<string>('organization.schemaPattern');
-    const { createRefresher } = require('../../testTree.js');
+    const { createRefresher, resolveSubtree } = require('../../testTree.js');
     const { TestStateManager } = require('../../state.js');
     const { executeRun } = require('../../runner.js');
 
@@ -171,6 +171,10 @@ describeDB('executeRun schema-mode + reporters + cancelamento (banco real)', () 
 
       const schemaItem = controller.items.get(`schema:${user}`);
       assert.ok(schemaItem, `nó schema:${user} deveria existir na árvore`);
+
+      // A árvore é lazy (PRD-75): resolve a subárvore antes de rodar (o que o
+      // `runWithProgress` faz em produção).
+      await resolveSubtree(controller, state, schemaItem as never);
 
       const request = new vscode.TestRunRequest([schemaItem]);
       const cts = new vscode.CancellationTokenSource();

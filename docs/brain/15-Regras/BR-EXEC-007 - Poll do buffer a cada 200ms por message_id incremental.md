@@ -9,7 +9,7 @@ severidade: critica
 fonte: codigo
 verificado: 2026-09-23
 implementacao: ["src/oracleRunner.ts:727", "src/oracleRunner.ts:734", "src/oracleRunner.ts:741", "src/oracleRunner.ts:753"]
-testes: ["src/test/unit/oracleRunner.test.ts:1790", "src/test/unit/oracleRunner.test.ts:1869"]
+testes: ["src/test/unit/oracleRunner.test.ts:1790", "src/test/unit/oracleRunner.test.ts:1869", "src/test/integration/tagsStreamingE2E.test.ts"]
 prds: ["PRD-11"]
 requisitos: ["PRD-11/RF3"]
 tags: ["execucao"]
@@ -37,6 +37,6 @@ Streaming em tempo real sem bloquear; falhas transitórias do buffer não aborta
 - 📄 PRDs: [[prd-11-streaming-results|PRD-11]]
 - 🎯 Requisitos: [[prd-11-streaming-results|PRD-11 RF3]]
 - 🧩 Código: [[COD - oracleRunner.ts]]
-- 🧪 Testes: [[TST - oracleRunner.test.ts]]
-- ↩️ Referenciada por: [[02-test-execution]]
+- 🧪 Testes: [[TST - oracleRunner.test.ts]] · [[TST - tagsStreamingE2E.test.ts]]
+- ↩️ Referenciada por: [[02-test-execution]] · [[prd-11-streaming-results|PRD-11]]
 <!-- brain:auto:end -->

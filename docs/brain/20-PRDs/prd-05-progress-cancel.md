@@ -8,6 +8,7 @@ versao: "0.5.0"
 data: "2026-07-02"
 autor: "Análise automatizada"
 verificado: 2026-09-23
+regras: ["BR-EXEC-010", "BR-EXEC-011", "BR-UI-002"]
 tags: [prd]
 ---
 
@@ -187,7 +188,7 @@ Nenhuma nova setting.
 
 <!-- brain:auto:start:conexoes -->
 - 🗺️ [[MOC - PRDs]]
+- 📐 Regras: [[BR-EXEC-010 - Cancelamento dispara conn.break() nas duas conexões|BR-EXEC-010]] · [[BR-EXEC-011 - Timeout opcional reusa o caminho de cancelamento|BR-EXEC-011]] · [[BR-UI-002 - utplsql-running liga no início e desliga em todos os caminhos de saída|BR-UI-002]]
 - 🎯 RF3 — Cancelamento gerenciado → [[BR-EXEC-010 - Cancelamento dispara conn.break() nas duas conexões|BR-EXEC-010]] · [[BR-EXEC-011 - Timeout opcional reusa o caminho de cancelamento|BR-EXEC-011]] · [[NFR-005 - Cancelamento e timeout|NFR-005]]
 - 🚀 ⬅️ release anterior: [[prd-07-upgrade-node-ts|PRD-07 (0.4.0)]] · ➡️ próxima release: [[prd-13-oracle-infra|PRD-13 (0.6.0)]]
-- 📐 Regras: [[BR-EXEC-010 - Cancelamento dispara conn.break() nas duas conexões|BR-EXEC-010]] · [[BR-EXEC-011 - Timeout opcional reusa o caminho de cancelamento|BR-EXEC-011]] · [[BR-UI-002 - utplsql-running liga no início e desliga em todos os caminhos de saída|BR-UI-002]]
 <!-- brain:auto:end -->

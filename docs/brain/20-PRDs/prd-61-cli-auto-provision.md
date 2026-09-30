@@ -9,6 +9,7 @@ data: "2026-09-06"
 autor: "Gil Cleber Barboza"
 versao_titulo: "Fora de release (investigação / a reavaliar)"
 verificado: 2026-09-23
+regras: []
 tags: [prd]
 ---
 

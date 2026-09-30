@@ -5,6 +5,7 @@ import * as path from 'node:path';
 import * as vscode from 'vscode';
 import type { UtConfig } from './config';
 import { resolveLocale, t } from './i18n';
+import { logger } from './logger';
 import type { ConnectionProfile } from './types';
 
 /** Idioma efetivo sem importar `config.ts` (evita dependência circular). */
@@ -13,10 +14,18 @@ function profileLocale() {
   return resolveLocale(setting, vscode.env.language);
 }
 
-/** `scott/tiger@localhost:1521/XE` → `scott@localhost:1521/XE`. */
+/**
+ * `scott/tiger@localhost:1521/XE` → `scott@localhost:1521/XE`.
+ * Cobre também a credencial sem `@` (conexão malformada, ex.: `scott/tiger`,
+ * que é justamente o caso que faz `parseConnString` lançar): sem host não há
+ * como separar as partes, então corta após o 1º `/`.
+ */
 export function maskConnection(conn: string): string {
   const at = conn.lastIndexOf('@');
-  if (at < 0) return conn;
+  if (at < 0) {
+    const slash = conn.indexOf('/');
+    return slash >= 0 ? conn.slice(0, slash) : conn;
+  }
   const cred = conn.slice(0, at);
   const slash = cred.indexOf('/');
   const user = slash >= 0 ? cred.slice(0, slash) : cred;
@@ -113,8 +122,8 @@ export async function saveProfiles(profiles: ConnectionProfile[]): Promise<void>
   for (const p of profiles) {
     const { connection, password } = splitPassword(p.connection);
     if (password) {
-      rememberPassword(p.id, password);
-      await persistPassword(p.id, password);
+      rememberPassword(p.id, connection, password);
+      await persistPassword(p.id, connection, password);
       sanitized.push({ ...p, connection });
     } else {
       sanitized.push(p);
@@ -125,26 +134,78 @@ export async function saveProfiles(profiles: ConnectionProfile[]): Promise<void>
     .update('profiles', sanitized, vscode.ConfigurationTarget.Global);
 }
 
-// ── Senhas em SecretStorage (PRD-65 RF3) ────────────────────────────────
+// ── Senhas em SecretStorage (PRD-65 RF3 · vínculo PRD-81 RF3) ───────────
 
 const SECRET_PREFIX = 'utplsql.profile.';
+const WALLET_PREFIX = 'utplsql.wallet.';
 let secretStorage: vscode.SecretStorage | undefined;
-const passwordCache = new Map<string, string>();
+
+/**
+ * Senha vinculada à conexão (PRD-81 RF3): só é reaproveitada se a `connection`
+ * atual do perfil for a mesma com que foi gravada. Impede que um workspace
+ * malicioso aponte o perfil para outro host e exfiltre a senha guardada.
+ */
+interface StoredPassword {
+  /** `connection` **sem** senha (`user@//host:port/service`) usada ao gravar. */
+  connection: string;
+  password: string;
+}
+
+/** id do perfil → senha vinculada (só entra aqui com o vínculo conferido). */
+const passwordCache = new Map<string, StoredPassword>();
+
+/** id do perfil → senha da wallet Oracle Cloud (thin) — PRD-82. */
+const walletCache = new Map<string, string>();
 
 export function initSecretStorage(secrets: vscode.SecretStorage): void {
   secretStorage = secrets;
 }
 
 /**
+ * Decodifica o segredo. Formato atual: JSON `{ connection, password }`.
+ * Formato legado (PRD-65): string crua = senha sem vínculo → `connection: ''`.
+ * Nunca lança; JSON inesperado é tratado como legado.
+ */
+function parseStoredPassword(raw: string | undefined): StoredPassword | undefined {
+  if (!raw) return undefined;
+  try {
+    const parsed = JSON.parse(raw) as Partial<StoredPassword>;
+    if (typeof parsed?.connection === 'string' && typeof parsed?.password === 'string') {
+      return { connection: parsed.connection, password: parsed.password };
+    }
+  } catch {
+    /* formato legado (string crua) */
+  }
+  return { connection: '', password: raw };
+}
+
+/**
  * Carrega as senhas persistidas no SecretStorage para o cache em memória.
  * Deve rodar após `initSecretStorage` (ex.: na ativação) para que os perfis
  * continuem utilizáveis depois de recarregar a janela (PRD-65 RF3).
+ *
+ * Vínculo (PRD-81 RF3): senha de outra conexão é **descartada**; senha legada
+ * (sem vínculo) é adotada para a conexão atual e regravada no formato novo.
  */
 export async function hydrateProfilePasswords(): Promise<void> {
   if (!secretStorage) return;
   for (const p of getAllProfiles()) {
-    const pw = await secretStorage.get(`${SECRET_PREFIX}${p.id}`);
-    if (pw) rememberPassword(p.id, pw);
+    const wallet = await secretStorage.get(`${WALLET_PREFIX}${p.id}`);
+    if (wallet) walletCache.set(p.id, wallet);
+
+    const key = `${SECRET_PREFIX}${p.id}`;
+    const stored = parseStoredPassword(await secretStorage.get(key));
+    if (!stored) continue;
+    if (stored.connection === p.connection) {
+      passwordCache.set(p.id, stored);
+    } else if (!stored.connection) {
+      const bound: StoredPassword = { connection: p.connection, password: stored.password };
+      passwordCache.set(p.id, bound);
+      await secretStorage.store(key, JSON.stringify(bound));
+    } else {
+      await secretStorage.delete(key);
+      logger.warn('utplsql: senha de perfil descartada — a conexão mudou desde que foi salva');
+    }
   }
 }
 
@@ -161,22 +222,30 @@ export function splitPassword(conn: string): { connection: string; password: str
   };
 }
 
-function rememberPassword(id: string, password: string): void {
-  passwordCache.set(id, password);
+function rememberPassword(id: string, connection: string, password: string): void {
+  passwordCache.set(id, { connection, password });
 }
 
-async function persistPassword(id: string, password: string): Promise<void> {
-  if (secretStorage) await secretStorage.store(`${SECRET_PREFIX}${id}`, password);
+async function persistPassword(id: string, connection: string, password: string): Promise<void> {
+  if (secretStorage) {
+    const payload: StoredPassword = { connection, password };
+    await secretStorage.store(`${SECRET_PREFIX}${id}`, JSON.stringify(payload));
+  }
 }
 
-/** Recompõe a connection do perfil com a senha do cache (ou do secret). */
+/**
+ * Recompõe a connection do perfil com a senha do cache **quando o vínculo
+ * bate** (a conexão salva junto com a senha é a conexão atual do perfil).
+ * Perfil legado com senha inline é retornado como está.
+ */
 export function getProfileConnection(profile: ConnectionProfile): string {
   const at = profile.connection.lastIndexOf('@');
   if (at < 0) return profile.connection;
   const cred = profile.connection.slice(0, at);
   if (cred.includes('/')) return profile.connection; // legado com senha inline
-  const pw = passwordCache.get(profile.id);
-  return pw ? `${cred}/${pw}${profile.connection.slice(at)}` : profile.connection;
+  const stored = passwordCache.get(profile.id);
+  if (!stored || stored.connection !== profile.connection) return profile.connection;
+  return `${cred}/${stored.password}${profile.connection.slice(at)}`;
 }
 
 /**
@@ -190,8 +259,8 @@ export async function migrateLegacyProfiles(): Promise<void> {
   for (const p of profiles) {
     const { connection, password } = splitPassword(p.connection);
     if (password) {
-      rememberPassword(p.id, password);
-      await persistPassword(p.id, password);
+      rememberPassword(p.id, connection, password);
+      await persistPassword(p.id, connection, password);
       next.push({ ...p, connection });
       changed = true;
     } else {
@@ -199,6 +268,25 @@ export async function migrateLegacyProfiles(): Promise<void> {
     }
   }
   if (changed) await saveProfiles(next);
+}
+
+// ── Senha da wallet Oracle Cloud (PRD-82 RF4) ──────────────────────────
+
+/** Senha da wallet do perfil (cache em memória), ou `undefined`. */
+export function getWalletPassword(profileId: string): string | undefined {
+  return walletCache.get(profileId);
+}
+
+/** Grava a senha da wallet no cache e no SecretStorage (`utplsql.wallet.<id>`). */
+export async function setWalletPassword(profileId: string, password: string): Promise<void> {
+  walletCache.set(profileId, password);
+  if (secretStorage) await secretStorage.store(`${WALLET_PREFIX}${profileId}`, password);
+}
+
+/** Remove a senha da wallet do cache e do SecretStorage. */
+export async function clearWalletPassword(profileId: string): Promise<void> {
+  walletCache.delete(profileId);
+  if (secretStorage) await secretStorage.delete(`${WALLET_PREFIX}${profileId}`);
 }
 
 export async function setActiveProfile(id: string | undefined): Promise<void> {
@@ -222,6 +310,8 @@ export function mergeProfileConfig(global: UtConfig, profile?: ConnectionProfile
     sourcePath: profile.sourcePath || global.sourcePath,
     coverageOwner: profile.coverageOwner || global.coverageOwner,
     includePatterns: profile.includePatterns ?? global.includePatterns,
+    walletLocation: profile.walletLocation ?? global.walletLocation,
+    walletPassword: getWalletPassword(profile.id) ?? global.walletPassword,
   };
 }
 

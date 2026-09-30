@@ -1,6 +1,7 @@
 import * as vscode from 'vscode';
 import { getActiveProfile, getProfileConnection, mergeProfileConfig } from './connectionProfiles';
 import { type ExtensionLocale, resolveLocale, t } from './i18n';
+import { resolveTnsAdminPath } from './tnsnames';
 
 /** Conexão mantida apenas em memória durante a sessão (quando o usuário digita). */
 let sessionConnection: string | undefined;
@@ -20,6 +21,8 @@ export interface UtConfig {
   randomOrder: boolean;
   randomOrderSeed: number;
   additionalReporters: string[];
+  reporterClientCharacterSet: string;
+  reporterColorConsole: boolean;
   timeoutMinutes: number;
   dbmsOutput: boolean;
   oraclePoolMin: number;
@@ -29,6 +32,11 @@ export interface UtConfig {
   oracleClientMode: 'thin' | 'thick';
   oracleClientLibDir: string;
   oracleClientConfigDir: string;
+  /** Diretório do `tnsnames.ora` resolvido para o thin (PRD-82). */
+  tnsAdminPath: string;
+  /** Wallet do perfil ativo: localização e senha (PRD-82). */
+  walletLocation: string;
+  walletPassword: string;
   codeLensEnabled: boolean;
   statusBarEnabled: boolean;
   decorationsEnabled: boolean;
@@ -81,6 +89,17 @@ export function getExtensionLocale(): ExtensionLocale {
   return resolveLocale(readConfig().language, vscode.env.language);
 }
 
+/**
+ * Valor **user/machine** de `sqldeveloper.connections.tnsConfiguration.path`
+ * (fallback do TNS admin). Nunca considera o valor do workspace (PRD-81/PRD-82).
+ */
+function sqlDevTnsPath(): string | undefined {
+  const inspected = vscode.workspace
+    .getConfiguration('sqldeveloper')
+    .inspect<string>('connections.tnsConfiguration.path');
+  return inspected?.globalValue ?? undefined;
+}
+
 export function readConfig(): UtConfig {
   const c = vscode.workspace.getConfiguration('utplsql');
   const global: UtConfig = {
@@ -98,6 +117,8 @@ export function readConfig(): UtConfig {
     randomOrder: c.get<boolean>('run.randomOrder', false),
     randomOrderSeed: c.get<number>('run.randomOrderSeed', 0),
     additionalReporters: c.get<string[]>('additionalReporters', []),
+    reporterClientCharacterSet: c.get<string>('reporter.clientCharacterSet', ''),
+    reporterColorConsole: c.get<boolean>('reporter.colorConsole', false),
     timeoutMinutes: c.get<number>('timeoutMinutes', 60),
     dbmsOutput: c.get<boolean>('dbmsOutput', false),
     oraclePoolMin: c.get<number>('oraclePoolMin', 2),
@@ -107,6 +128,14 @@ export function readConfig(): UtConfig {
     oracleClientMode: c.get<'thin' | 'thick'>('oracleClientMode', 'thin'),
     oracleClientLibDir: c.get<string>('oracleClientLibDir', ''),
     oracleClientConfigDir: c.get<string>('oracleClientConfigDir', ''),
+    tnsAdminPath:
+      resolveTnsAdminPath(
+        c.get<string>('connections.tnsAdminPath', ''),
+        sqlDevTnsPath(),
+        process.env.TNS_ADMIN,
+      ) ?? '',
+    walletLocation: '',
+    walletPassword: '',
     codeLensEnabled: c.get<boolean>('codeLens.enabled', true),
     statusBarEnabled: c.get<boolean>('statusBar.enabled', true),
     decorationsEnabled: c.get<boolean>('decorations.enabled', true),

@@ -8,7 +8,7 @@ fornecedor: Microsoft
 licenca: MIT
 criticidade: critica
 risco: medio
-versao: "engines.vscode ^1.88.0"
+versao: "engines.vscode ^1.101.0"
 status: ativo
 verificado: 2026-09-23
 implementacao: []
@@ -34,5 +34,5 @@ Plataforma-alvo; acompanhar `engines.vscode`.
 
 <!-- brain:auto:start:conexoes -->
 - 🗺️ [[MOC - Componentes]]
-- ↩️ Referenciada por: [[NFR-003 - Compatibilidade com VSCode|NFR-003]]
+- ↩️ Referenciada por: [[NFR-003 - Compatibilidade com VSCode|NFR-003]] · [[TPL-VSCODE-API - API do VS Code usada|TPL-VSCODE-API]]
 <!-- brain:auto:end -->

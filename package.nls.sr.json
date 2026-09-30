@@ -26,5 +26,7 @@
   "nls.command.runScriptFile": "utPLSQL: Run script file",
   "nls.command.runScriptFolder": "utPLSQL: Run script folder",
   "nls.command.compileForDebug": "utPLSQL: Компилирај за отстрањивање грешака",
-  "nls.command.rebuildAnnotations": "utPLSQL: Поново изгради кеш напомена"
+  "nls.command.rebuildAnnotations": "utPLSQL: Поново изгради кеш напомена",
+  "nls.command.setWalletPassword": "utPLSQL: Подеси лозинку новчаника",
+  "nls.command.runWithReporter": "utPLSQL: Покрени са reporter-ом (извоз)"
 }

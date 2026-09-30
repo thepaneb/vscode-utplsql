@@ -8,6 +8,7 @@ versao: "0.12.0"
 data: "2026-08-29"
 autor: "Gil Cleber"
 verificado: 2026-09-23
+regras: ["BR-CONN-015", "BR-I18N-001"]
 tags: [prd]
 ---
 
@@ -215,11 +216,11 @@ Atualizar: README (tabela de config), wiki `Configurações.md`.
 
 <!-- brain:auto:start:conexoes -->
 - 🗺️ [[MOC - PRDs]]
+- 📐 Regras: [[BR-CONN-015 - Idioma efetivo - setting válida vence o idioma do editor|BR-CONN-015]] · [[BR-I18N-001 - Resolução de locale e fallback de tradução|BR-I18N-001]]
 - 🎯 RF1 — Setting `utplsql.language` → [[BR-CONN-015 - Idioma efetivo - setting válida vence o idioma do editor|BR-CONN-015]]
 - 🎯 RF2 — Módulo i18n puro (`src/i18n.ts`) → [[BR-I18N-001 - Resolução de locale e fallback de tradução|BR-I18N-001]]
 - 🎯 RNF1 — Zero mudança de comportamento observável no default (`auto` em → [[NFR-006 - Internacionalização|NFR-006]]
 - 🎯 RNF2 — Módulo i18n puro (testável com `node --test`) → [[NFR-006 - Internacionalização|NFR-006]]
 - 🎯 RNF3 — Auditoria: teste/script que garante que os dois catálogos têm as → [[NFR-006 - Internacionalização|NFR-006]]
 - 🚀 ⬅️ release anterior: [[prd-46-dependency-majors|PRD-46 (0.11.0)]] · ➡️ próxima release: [[prd-70-thick-mode-nne|PRD-70 (0.12.1)]]
-- 📐 Regras: [[BR-CONN-015 - Idioma efetivo - setting válida vence o idioma do editor|BR-CONN-015]] · [[BR-I18N-001 - Resolução de locale e fallback de tradução|BR-I18N-001]]
 <!-- brain:auto:end -->

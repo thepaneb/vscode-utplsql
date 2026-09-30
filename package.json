@@ -2,13 +2,13 @@
   "name": "vscode-utplsql",
   "displayName": "utPLSQL Test Runner",
   "description": "Roda testes utPLSQL pelo Test Explorer do VSCode, com menu de contexto e cobertura visual (estilo pytest).",
-  "version": "0.13.0",
+  "version": "0.14.0",
   "publisher": "paneb",
   "author": "Gil Cleber Barboza",
   "license": "MIT",
   "icon": "images/icon.png",
   "engines": {
-    "vscode": "^1.88.0",
+    "vscode": "^1.101.0",
     "node": ">=22.0.0"
   },
   "categories": [
@@ -37,6 +37,12 @@
     "workspaceContains:**/*.pks",
     "workspaceContains:**/*.pkb"
   ],
+  "capabilities": {
+    "untrustedWorkspaces": {
+      "supported": false,
+      "description": "Os perfis de conexão apontam para um banco e a senha fica no SecretStorage; a extensão fica desabilitada até o workspace ser confiável (Workspaces: Trust)."
+    }
+  },
   "main": "./dist/extension.js",
   "contributes": {
     "configuration": {
@@ -45,6 +51,7 @@
         "utplsql.profiles": {
           "type": "array",
           "default": [],
+          "scope": "machine",
           "markdownDescription": "Perfis de conexão Oracle salvos para alternar rapidamente entre ambientes (DEV, TEST, PROD). Cada perfil pode sobrescrever `connection`, `sourcePath`, `coverageOwner`, etc. A **senha é guardada no SecretStorage** (keychain do VSCode), não em texto plano nas settings.",
           "items": {
             "type": "object",
@@ -84,6 +91,10 @@
                   "type": "string"
                 }
               },
+              "walletLocation": {
+                "type": "string",
+                "description": "Localização da wallet Oracle Cloud (thin), ex.: /caminho/para/wallet. A senha da wallet fica no SecretStorage — use o comando \"utPLSQL: Definir senha da wallet\"."
+              },
               "isDefault": {
                 "type": "boolean"
               },
@@ -100,11 +111,13 @@
         "utplsql.activeProfile": {
           "type": "string",
           "default": "",
+          "scope": "machine",
           "markdownDescription": "ID do perfil de conexão ativo (`utplsql.profiles`). Quando definido, sobrescreve `utplsql.connection`."
         },
         "utplsql.connection": {
           "type": "string",
           "default": "",
+          "scope": "machine",
           "markdownDescription": "String de conexão Oracle (`usuario/senha@//host:porta/servico`). Se vazio, usa a variável de ambiente `UTPLSQL_CONN`; se ainda assim vazio, a extensão pergunta (e mantém só na sessão). **Recomendado deixar vazio e usar a variável de ambiente** para não gravar a senha nas settings."
         },
         "utplsql.sourcePath": {
@@ -191,6 +204,16 @@
           "default": [],
           "description": "Reporters adicionais para incluir em toda execução (ex.: [\"ut_coverage_html_reporter\"]). Os reporters padrão (documentation, junit e cobertura) são sempre incluídos."
         },
+        "utplsql.reporter.clientCharacterSet": {
+          "type": "string",
+          "default": "",
+          "description": "Charset do cliente para o export com reporter (argumento `a_client_character_set`). Vazio usa o default do reporter."
+        },
+        "utplsql.reporter.colorConsole": {
+          "type": "boolean",
+          "default": false,
+          "description": "Habilita cor ANSI na saída de reporters textuais de console no export (argumento `a_color_console`)."
+        },
         "utplsql.tags": {
           "type": "string",
           "default": "",
@@ -247,12 +270,20 @@
         "utplsql.oracleClientLibDir": {
           "type": "string",
           "default": "",
+          "scope": "machine",
           "markdownDescription": "Diretório do Oracle Instant Client. Obrigatório quando `#utplsql.oracleClientMode#` é `thick`. Ex.: `C:\\oracle\\instantclient_23_5`."
         },
         "utplsql.oracleClientConfigDir": {
           "type": "string",
           "default": "",
+          "scope": "machine",
           "markdownDescription": "Diretório de configuração Oracle (TNS_ADMIN) com `sqlnet.ora`/`tnsnames.ora`. Opcional; só tem efeito no `thick`."
+        },
+        "utplsql.connections.tnsAdminPath": {
+          "type": "string",
+          "default": "",
+          "scope": "machine",
+          "markdownDescription": "Diretório com `tnsnames.ora` para resolver **aliases TNS no driver thin**. Resolução: esta setting → valor user/machine de `sqldeveloper.connections.tnsConfiguration.path` → variável de ambiente `TNS_ADMIN`. Easy Connect segue funcionando normalmente."
         },
         "utplsql.organization": {
           "type": "string",
@@ -507,6 +538,16 @@
         "category": "utPLSQL"
       },
       {
+        "command": "utplsql.setWalletPassword",
+        "title": "%nls.command.setWalletPassword%",
+        "category": "utPLSQL"
+      },
+      {
+        "command": "utplsql.runWithReporter",
+        "title": "%nls.command.runWithReporter%",
+        "category": "utPLSQL"
+      },
+      {
         "command": "utplsql.importSqlDevConnections",
         "title": "%nls.command.importSqlDevConnections%",
         "category": "utPLSQL"
@@ -606,7 +647,14 @@
         "group": "utplsql@5",
         "when": "resourceExtname == .pks || resourceExtname == .pkb"
       }
-    ]
+    ],
+      "testing/item/context": [
+        {
+          "command": "utplsql.runWithReporter",
+          "group": "utplsql@1",
+          "when": "testId =~ /^(suite|test):/"
+        }
+      ]
     },
     "keybindings": [
       {
@@ -753,7 +801,9 @@
     "brain:build": "node scripts/brain-build.cjs",
     "brain:rules": "node scripts/brain-rules.cjs",
     "brain:rules:lines": "node scripts/brain-rules.cjs --check-lines",
-    "brain:ci": "node scripts/brain.cjs sync && node scripts/brain-build.cjs && node scripts/brain.cjs check && node scripts/brain-rules.cjs",
+    "brain:gaps": "node scripts/brain-gaps.cjs",
+    "vscode:api": "node scripts/vscode-api-inventory.cjs",
+    "brain:ci": "node scripts/brain.cjs sync && node scripts/brain-build.cjs && node scripts/brain.cjs check && node scripts/brain-rules.cjs && node scripts/brain-gaps.cjs --warn",
     "docs:check": "node scripts/docs-check.cjs",
     "docs:fidelity": "node scripts/docs-fidelity.cjs",
     "sync-prds": "node scripts/sync-prds.cjs",
@@ -771,10 +821,10 @@
     "@types/mocha": "^10.0.7",
     "@types/node": "^22.20.1",
     "@types/oracledb": "^7.0.2",
-    "@types/vscode": "^1.88.0",
+    "@types/vscode": "1.101.0",
     "@vscode/test-cli": "^0.0.15",
     "@vscode/test-electron": "^3.1.0",
-    "@vscode/vsce": "^3.2.1",
+    "@vscode/vsce": "^4.0.0",
     "c8": "^12.0.0",
     "esbuild": "^0.28.2",
     "typescript": "^7.0.2"

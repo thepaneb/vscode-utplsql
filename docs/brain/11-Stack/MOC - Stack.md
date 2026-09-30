@@ -16,7 +16,7 @@ e os riscos das dependências **diretas** relevantes.
 
 <!-- brain:auto:start:stack -->
 - **Node (engines):** >=22.0.0
-- **VSCode (engines):** ^1.88.0
+- **VSCode (engines):** ^1.101.0
 - **.nvmrc:** 24
 - **TypeScript:** ES2021 / node16
 - **Biome:** lineWidth 100, single
@@ -38,10 +38,10 @@ e os riscos das dependências **diretas** relevantes.
 - `@types/mocha` `^10.0.7` — dev
 - `@types/node` `^22.20.1` — dev
 - `@types/oracledb` `^7.0.2` — dev
-- `@types/vscode` `^1.88.0` — dev
+- `@types/vscode` `1.101.0` — dev
 - `@vscode/test-cli` `^0.0.15` — dev
 - `@vscode/test-electron` `^3.1.0` — dev
-- `@vscode/vsce` `^3.2.1` — dev
+- `@vscode/vsce` `^4.0.0` — dev
 - `c8` `^12.0.0` — dev
 - `esbuild` `^0.28.2` — dev
 - `typescript` `^7.0.2` — dev

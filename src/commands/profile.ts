@@ -1,12 +1,15 @@
 import * as vscode from 'vscode';
 import { getExtensionLocale } from '../config';
 import {
+  clearWalletPassword,
   generateId,
+  getActiveProfile,
   getAllProfiles,
   importFromSqlDeveloper,
   saveProfiles,
   selectProfile,
   setActiveProfile,
+  setWalletPassword,
 } from '../connectionProfiles';
 import { t } from '../i18n';
 import type { ConnectionProfile, ProfileCharset } from '../types';
@@ -32,6 +35,29 @@ export function registerProfileCommands(context: vscode.ExtensionContext, deps: 
     }),
     vscode.commands.registerCommand('utplsql.manageProfiles', async () => {
       await vscode.commands.executeCommand('workbench.action.openSettings', 'utplsql.profiles');
+    }),
+    vscode.commands.registerCommand('utplsql.setWalletPassword', async () => {
+      const profile = getActiveProfile();
+      if (!profile) {
+        vscode.window.showWarningMessage(t(locale, 'ext.wallet.noProfile'));
+        return;
+      }
+      const password = await vscode.window.showInputBox({
+        title: t(locale, 'ext.wallet.title'),
+        prompt: t(locale, 'ext.wallet.prompt'),
+        password: true,
+        ignoreFocusOut: true,
+      });
+      if (password === undefined) return; // cancelado
+      if (password === '') {
+        await clearWalletPassword(profile.id);
+        vscode.window.showInformationMessage(
+          t(locale, 'ext.wallet.cleared', { name: profile.name }),
+        );
+        return;
+      }
+      await setWalletPassword(profile.id, password);
+      vscode.window.showInformationMessage(t(locale, 'ext.wallet.saved', { name: profile.name }));
     }),
     vscode.commands.registerCommand('utplsql.importSqlDevConnections', async () => {
       const imported = await importFromSqlDeveloper();

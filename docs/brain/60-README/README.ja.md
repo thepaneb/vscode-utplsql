@@ -43,6 +43,14 @@ tags: [readme]
 - 🗄️ **DB ファーストの探索** — `ut_runner.get_suites_info` からツリーを構築し、パレットから注釈キャッシュを再構築します。
 - 🐛 **PL/SQL デバッグ** — `DBMS_DEBUG` による utPLSQL テストのブレークポイントとステップデバッグ（ネイティブ Debug Adapter）。
 - 🌍 **i18n — 24 言語** — `utplsql.language` は VSCode に追従（24 ロケール: pt-br, en, en-gb, es, zh-cn, zh-tw, ja, de, fr, it, ko, ru, tr, pl, cs, hu, bg, el, id, ro, sr, th, uk, vi）。
+- 🌳 **遅延読み込みのテストツリー** — `schema` モードでは、展開時に package/suite/test を必要に応じて解決するため、大きなスキーマでも即座に開きます。
+- 🧾 **Run with Reporter (Export)** — 選択範囲を任意のデータベース reporter で実行し、出力を Output またはファイルに書き込みます（`utplsql.reporter.*`）。Test Explorer の結果は変わりません。
+- 🗂️ **仮想データベースソース** — ローカルファイルがない場合、*jump to failure* とカバレッジは `ALL_SOURCE` から解決した読み取り専用ドキュメントを開きます（`utplsql-source:/…`）。
+- 🔐 **thin の TNS + wallet** — `utplsql.connections.tnsAdminPath` が thin ドライバで `tnsnames.ora` の別名を解決します（SQL Developer/`TNS_ADMIN` にフォールバック）。プロファイルの `walletLocation` と `utPLSQL: Set wallet password` が wallet のパスワードを SecretStorage に保存します。
+- 🔒 **接続のセキュリティ強化** — 接続設定は `machine`-scoped になり、信頼されていないワークスペースでは拡張機能が無効化され、プロファイルのパスワードは接続に紐づきます。
+- 🧱 **コンパイル診断** — 実行のたびに PL/SQL のコンパイルエラー（`ALL_ERRORS`）が Problems Panel に source `utPLSQL Compilation` で表示されます（設定 `utplsql.compilationDiagnostics.enabled`）。
+- ⏳ **進捗とキャンセル** — 長時間の実行ではカウント付きの進捗通知と *Cancel* ボタンを表示します（任意で `utplsql.timeoutMinutes`）。
+- 📁 **マルチルート ワークスペース** — 各ワークスペース フォルダーが独自のスイートを持ち、検出・実行・カバレッジが独立します。
 
 ## インストール
 
@@ -56,7 +64,7 @@ tags: [readme]
 ## 要件
 
 - [**utPLSQL**](https://github.com/utPLSQL/utPLSQL) **(UT3)** が Oracle データベースにインストールされていること。
-- **VSCode 1.88 以降**（Test Coverage API）。
+- **VSCode 1.101 以降**（Test Coverage API）。
 
 この拡張機能は `node-oracledb` を使用して Oracle データベースに直接接続します（シンドライバー、Instant Client 不要）。VSIX には `oracledb` パッケージが同梱されています。
 
@@ -97,8 +105,10 @@ code .
 
 **受け入れられる形式:**
 - **EZ Connect**: `user/pass@//host:1521/service`
-- **TNS エイリアス**: `user/pass@tns_alias`（`TNS_ADMIN` の設定が必要）
+- **TNS エイリアス**: `user/pass@tns_alias`
 - **Wallet（Oracle Cloud）**: `user/pass@tcps://host:1522/service?wallet_location=/path/wallet`
+
+> 🔒 **強化された設定:** 接続設定は **`machine` スコープ**です。拡張機能は**信頼されていないワークスペースで無効**になり、プロファイルのパスワードは**接続に紐付け**られます。 (`utplsql.connection`, `utplsql.profiles`, `utplsql.activeProfile`, `utplsql.oracleClientLibDir`, `utplsql.oracleClientConfigDir`, `utplsql.connections.tnsAdminPath`)
 
 ## 仕組み
 
@@ -125,6 +135,8 @@ Test Explorer に表示されます。
 | `utplsql.timeoutMinutes` | `60` | テスト実行のタイムアウト（分）。 |
 | `utplsql.dbmsOutput` | `false` | テストセッションで `DBMS_OUTPUT` を有効化。デバッグに便利。 |
 | `utplsql.additionalReporters` | `[]` | 毎回の実行に含める追加レポーター（例: `["ut_coverage_html_reporter"]`）。デフォルト（documentation、junit）は常に含まれ、リスト化する必要はありません。 |
+| `utplsql.reporter.clientCharacterSet` | `""` | **Run with Reporter (Export)** のクライアント文字セット（`a_client_character_set`）。空欄は reporter の既定値。 |
+| `utplsql.reporter.colorConsole` | `false` | エクスポートでテキストコンソール reporter の ANSI カラー（`a_color_console`）を有効にします。 |
 | `utplsql.tags` | `""` | 実行するテストを絞り込む utPLSQL のタグ式（例: `fast & !integration`）。空の場合はすべて実行します。 |
 | `utplsql.run.randomOrder` | `false` | テスト間の順序依存を明らかにするため、ランダムな順序で実行します。 |
 | `utplsql.run.randomOrderSeed` | `0` | ランダム順のシード。`0` = データベースが選択（再現不可）。0 より大きいと同じ順序を再現します。 |
@@ -139,7 +151,8 @@ Test Explorer に表示されます。
 | `utplsql.oracleClientLibDir` | `""` | Oracle Instant Client のディレクトリ。`utplsql.oracleClientMode` が `thick` の場合は必須です（例: `C:\oracle\instantclient_23_5`）。 |
 | デバッグがブレークポイントで停止しない | デバッグ情報なしでコンパイルされたパッケージ、またはデバッグ権限の不足 | `PLSQL_OPTIMIZE_LEVEL <= 1` でコンパイル（または `ALTER PACKAGE ... COMPILE DEBUG PLSQL_OPTIMIZE_LEVEL = 1`）し、`DEBUG CONNECT SESSION` + `EXECUTE ON SYS.DBMS_DEBUG` を付与。`test_*.pkb` のブレークポイントはヒットしないことがあります（utPLSQL は動的 SQL でテストを実行します）。テスト対象のコードに設定してください。 |
 | `utplsql.oracleClientConfigDir` | `""` | `sqlnet.ora`/`tnsnames.ora` を含む Oracle 構成ディレクトリ（TNS_ADMIN）。任意。thick モードでのみ使用されます。 |
-| `utplsql.organization` | `file` | ツリーの構成: `file`（パス単位）または `schema`（Schema > Package > Suite > Test）。`schema` モードでは、`.pks` ファイルがワークスペースにないときはスイートもデータベース（`ut_runner.get_suites_info`、利用不可時は `ALL_OBJECTS`/`ALL_SOURCE`）から検出されます — 仮想 URI は `utplsql-db:/`（実行と失敗ジャンプは可能、CodeLens/デコレーションなし）。 |
+| `utplsql.connections.tnsAdminPath` | `""` | `tnsnames.ora` のあるディレクトリ。**thin ドライバーで TNS 別名を解決**します。優先順位: この設定 → `sqldeveloper.connections.tnsConfiguration.path`（user/machine）→ `TNS_ADMIN`。 |
+| `utplsql.organization` | `file` | ツリーの構成: `file`（パス単位）または `schema`（Schema > Package > Suite > Test）。`schema` モードでは、`.pks` ファイルがワークスペースにないときはスイートもデータベース（`ut_runner.get_suites_info`、利用不可時は `ALL_OBJECTS`/`ALL_SOURCE`）から検出されます — 仮想 URI は `utplsql-db:/`（実行と失敗ジャンプは可能、CodeLens/デコレーションなし）。 · `utplsql-source:/` |
 | `utplsql.organization.schemaPattern` | `db/{schema}/**` | パスからスキーマを抽出するためのグロブパターン。プレースホルダーには `{schema}` を使用します。`schema` モードでは、パターンベースより下のディレクトリ（例: `db/*`）がデータベースでクエリされるスキーマを定義します。 |
 | `utplsql.discovery.source` | `auto` | `schema` モードでのテストツリーの取得元: `auto` はデータベース API（`ut_runner.get_suites_info`）を使い、利用できない場合は `ALL_SOURCE`/ファイルにフォールバックします。`database` は API を必須にし、`file` はデータベース探索を無効にします。 |
 | `utplsql.refreshDebounceMs` | `300` | Test Explorer を更新する前に `.pks`/`.pkb` ファイル監視イベントをまとめるデバウンス（ミリ秒）。 |
@@ -259,6 +272,8 @@ UTPLSQL_CONN=your_user/password@//host:1521/service
 | `utPLSQL: Run script` | Runs the script open in the editor against a connection profile | Right-click → script file |
 | `utPLSQL: Run script file` | Runs an Explorer script file (decoded with the profile charset) | Right-click → file |
 | `utPLSQL: Run script folder` | Runs the folder scripts in alphabetical order | Right-click → folder |
+| `utPLSQL: ウォレットのパスワードを設定` | アクティブなプロファイルのウォレットパスワードを設定/クリア（SecretStorage） | — |
+| `utPLSQL: reporter で実行（エクスポート）` | 選択範囲を選択した reporter で実行し、出力を Output/ファイルに書き込みます（結果は変えません） | Test Explorer → menu do item |
 
 > **Recompile UT3**（`utplsql.recompileUt3`）はパレットコマンド**ではありません** —
 > "utPLSQL Setup" 診断（utPLSQL スキーマ内の無効オブジェクト）の内部クイックフィックスです。
@@ -313,9 +328,7 @@ UTPLSQL_CONN=your_user/password@//host:1521/service
 デフォルトレポーターは、ここにリストしても自動的に
 重複排除されます。
 
-**セッションごとの一時レポーター** — **utPLSQL: Select additional
-reporter...** コマンドは、データベースから動的リストを取得して QuickPick を開きます。
-選択したレポーターはセッションに保存されますが、その選択は**現在の Oracle-only 版では適用されません**。
+**セッション限定 reporter** — コマンド **追加レポーターを選択...** がデータベースの一覧を QuickPick で開きます。選択した reporter はセッションに保存され、**次回の実行で適用**されます。
 
 ## データベースの要件
 

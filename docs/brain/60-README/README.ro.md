@@ -43,6 +43,14 @@ Integrează [utPLSQL](https://www.utplsql.org/) în VSCode, aducând testele PL/
 - 🗄️ **Descoperire DB-first** — construiește arborele din `ut_runner.get_suites_info` și reconstruiește cache-ul de adnotări din paletă.
 - 🐛 **Debug PL/SQL** — breakpoint-uri și depanare pas cu pas a testelor utPLSQL prin `DBMS_DEBUG` (Debug Adapter nativ).
 - 🌍 **i18n — 24 de limbi** — `utplsql.language` urmărește VSCode (24 de localizări: pt-br, en, en-gb, es, zh-cn, zh-tw, ja, de, fr, it, ko, ru, tr, pl, cs, hu, bg, el, id, ro, sr, th, uk, vi).
+- 🌳 **Arbore de teste lazy** — în modul `schema`, pachetele/suitele/testele sunt rezolvate la cerere la expandare, așa că schemele mari se deschid instant.
+- 🧾 **Run with Reporter (Export)** — rulează selecția cu orice reporter al bazei și scrie ieșirea în Output sau într-un fișier (`utplsql.reporter.*`), fără a schimba rezultatele din Test Explorer.
+- 🗂️ **Sursă virtuală din baza de date** — fără fișier local, *jump to failure* și acoperirea deschid un document doar-citire rezolvat din `ALL_SOURCE` (`utplsql-source:/…`).
+- 🔐 **TNS în thin + wallet** — `utplsql.connections.tnsAdminPath` rezolvă aliasuri `tnsnames.ora` în driverul thin (fallback la SQL Developer/`TNS_ADMIN`); `walletLocation` din profil și `utPLSQL: Set wallet password` păstrează parola wallet-ului în SecretStorage.
+- 🔒 **Hardening de securitate al conexiunilor** — setările de conexiune sunt `machine`-scoped, extensia este dezactivată în workspace-uri neîncrezute și parola profilului este legată de conexiune.
+- 🧱 **Diagnostice de compilare** — după fiecare rulare, erorile de compilare PL/SQL (`ALL_ERRORS`) apar în Problems Panel sub sursa `utPLSQL Compilation` (setarea `utplsql.compilationDiagnostics.enabled`).
+- ⏳ **Progres și anulare** — rulările lungi afișează o notificare de progres cu contor și buton *Cancel* (plus `utplsql.timeoutMinutes` opțional).
+- 📁 **Spațiu de lucru multi-root** — fiecare folder al spațiului de lucru are propriile suite, cu descoperire, execuție și acoperire independente.
 
 ## Instalare
 
@@ -64,7 +72,7 @@ Extensia poate fi instalată în două moduri:
 |---|---|---|
 | 18c+ | v3.2.x (18c+) / v3.1.x | Recomandat; charset `AL32UTF8`. |
 | 12.2 | doar v3.1.x | v3.2.x nu se compilează (`PLS-00222`). `WE8DEC` al imaginii pierde caractere nereprezentabile (ex. `€`); driverul subțire ignoră `NLS_LANG`. |
-- **VSCode 1.88+** (API Test Coverage).
+- **VSCode 1.101+** (API Test Coverage).
 
 Extensia este doar „clientul grafic" — ceea ce rulează testele este baza de date direct prin node-oracledb.
 
@@ -102,8 +110,10 @@ conexiune și o păstrează doar în memorie pe durata sesiunii — folosește c
 
 **Formate acceptate:**
 - **EZ Connect**: `user/pass@//host:1521/service`
-- **Alias TNS**: `user/pass@tns_alias` (necesită `TNS_ADMIN` configurat)
+- **Alias TNS**: `user/pass@tns_alias`
 - **Wallet (Oracle Cloud)**: `user/pass@tcps://host:1522/service?wallet_location=/path/wallet`
+
+> 🔒 **Setări întărite:** setările de conexiune sunt **`machine`-scoped**; extensia este **dezactivată în spații de lucru neîncrezătoare**; parola profilului este **legată de conexiunea sa**. (`utplsql.connection`, `utplsql.profiles`, `utplsql.activeProfile`, `utplsql.oracleClientLibDir`, `utplsql.oracleClientConfigDir`, `utplsql.connections.tnsAdminPath`)
 
 ## Cum funcționează
 
@@ -130,6 +140,8 @@ Extensia se conectează direct prin Oracle, citește rapoartele (JUnit + Coverag
 | `utplsql.timeoutMinutes` | `60` | Timeout în minute pentru executarea testelor. |
 | `utplsql.dbmsOutput` | `false` | Activează `DBMS_OUTPUT` în sesiunea de test. Util pentru depanare. |
 | `utplsql.additionalReporters` | `[]` | Reporteri suplimentari de inclus la fiecare rulare (ex.: `["ut_coverage_html_reporter"]`). Cei implicați (documentation, junit) sunt întotdeauna incluși și nu trebuie listați. |
+| `utplsql.reporter.clientCharacterSet` | `""` | Set de caractere client (`a_client_character_set`) pentru **Run with Reporter (Export)**. Gol = implicitul reporterului. |
+| `utplsql.reporter.colorConsole` | `false` | Activează culoarea ANSI (`a_color_console`) pentru reporterii textuali de consolă la export. |
 | `utplsql.tags` | `""` | Expresie de tag-uri utPLSQL pentru a filtra ce teste rulează (ex.: `fast & !integration`). Gol rulează toate. |
 | `utplsql.run.randomOrder` | `false` | Rulează testele în ordine aleatorie pentru a dezvălui dependențele de ordine dintre ele. |
 | `utplsql.run.randomOrderSeed` | `0` | Seed-ul ordinii aleatorii. `0` = ales de bază de date (nereproductibil); > 0 reproduce aceeași ordine. |
@@ -144,7 +156,8 @@ Extensia se conectează direct prin Oracle, citește rapoartele (JUnit + Coverag
 | `utplsql.oracleClientLibDir` | `""` | Directorul Oracle Instant Client. Obligatoriu când `utplsql.oracleClientMode` este `thick` (ex. `C:\oracle\instantclient_23_5`). |
 | Debug nu se oprește la punctul de întrerupere | Pachet fără informații de depanare sau granturi de depanare lipsă | Compilați cu `PLSQL_OPTIMIZE_LEVEL <= 1` (sau `ALTER PACKAGE ... COMPILE DEBUG PLSQL_OPTIMIZE_LEVEL = 1`) și acordați `DEBUG CONNECT SESSION` + `EXECUTE ON SYS.DBMS_DEBUG`. Punctele de întrerupere din `test_*.pkb` pot să nu se declanșeze (utPLSQL rulează testele prin SQL dinamic); puneți-le în codul testat. |
 | `utplsql.oracleClientConfigDir` | `""` | Directorul de configurare Oracle (TNS_ADMIN) cu `sqlnet.ora`/`tnsnames.ora`. Opțional; folosit doar de driverul thick. |
-| `utplsql.organization` | `file` | Organizarea arborelui: `file` (după cale) sau `schema` (Schema > Package > Suite > Test). În modul `schema` suitele sunt descoperite și din baza de date (`ut_runner.get_suites_info`, cu revenire la `ALL_OBJECTS`/`ALL_SOURCE`) atunci când fișierele `.pks` nu sunt în workspace — cu URI virtual `utplsql-db:/` (executarea și saltul la eșec funcționează; fără CodeLens/decorări). |
+| `utplsql.connections.tnsAdminPath` | `""` | Director cu `tnsnames.ora` pentru **alias-uri TNS în driverul thin**. Ordine: această setare → valoarea user/machine a `sqldeveloper.connections.tnsConfiguration.path` → `TNS_ADMIN`. |
+| `utplsql.organization` | `file` | Organizarea arborelui: `file` (după cale) sau `schema` (Schema > Package > Suite > Test). În modul `schema` suitele sunt descoperite și din baza de date (`ut_runner.get_suites_info`, cu revenire la `ALL_OBJECTS`/`ALL_SOURCE`) atunci când fișierele `.pks` nu sunt în workspace — cu URI virtual `utplsql-db:/` (executarea și saltul la eșec funcționează; fără CodeLens/decorări). · `utplsql-source:/` |
 | `utplsql.organization.schemaPattern` | `db/{schema}/**` | Model glob pentru extragerea schemei din cale. Folosește `{schema}` ca substituent. În modul `schema`, directoarele de sub baza modelului (ex.: `db/*`) definesc schemele interogate în baza de date. |
 | `utplsql.discovery.source` | `auto` | Sursa arborelui în modul `schema`: `auto` folosește API-ul bazei (`ut_runner.get_suites_info`) și trece la `ALL_SOURCE`/fișiere când nu este disponibil; `database` impune API-ul; `file` dezactivează descoperirea prin bază. |
 | `utplsql.refreshDebounceMs` | `300` | Debounce (ms) pentru a unifica evenimentele watcher-ului de fișiere `.pks`/`.pkb` înainte de a reîmprospăta Test Explorer. |
@@ -266,6 +279,8 @@ Toate comenzile extensiei (paletă `Ctrl+Shift+P`, prefix `utPLSQL:`):
 | `utPLSQL: Run script` | Runs the script open in the editor against a connection profile | Right-click → script file |
 | `utPLSQL: Run script file` | Runs an Explorer script file (decoded with the profile charset) | Right-click → file |
 | `utPLSQL: Run script folder` | Runs the folder scripts in alphabetical order | Right-click → folder |
+| `utPLSQL: Setează parola portofelului` | Setează/șterge parola portofelului profilului activ (SecretStorage) | — |
+| `utPLSQL: Rulează cu reporter (export)` | Rulează selecția cu reporterul ales și scrie ieșirea în Output/fișier (nu schimbă rezultatele) | Test Explorer → menu do item |
 
 > **Recompile UT3** (`utplsql.recompileUt3`) **nu** este o comandă din paletă — este
 > un quick-fix intern al diagnosticului „utPLSQL Setup" (obiecte invalide în
@@ -295,49 +310,6 @@ Toate combinațiile folosesc prefixul `Ctrl+Shift+U` (`Cmd+Shift+U` pe Mac):
 
 
 
-Extensia trimite `-source_path` (= `utplsql.sourcePath`) și mapează obiectele acoperite
-pe fișierele sursă prin `utplsql.coverageSourceArgs` (regex + `type_mapping`). `-owner`
-este derivat din conexiune (sau din `utplsql.coverageOwner`).
-
-### Maparea acoperirii pe fișiere (`coverageSourceArgs`)
-
-`type_mapping` traduce „tipul" capturat de regex în tipul Oracle. Trei convenții comune:
-
-**1) După director** — structura `sourcePath/<type>/<name>.sql` (foldere `functions/`, `procedures/`, `packages/`, …):
-```jsonc
-"utplsql.coverageSourceArgs": [
-  "-regex_expression=.*[/\\\\](\\w+)[/\\\\](\\w+)\\.sql$",
-  "-type_subexpression=1",   // group 1 = folder (type)
-  "-name_subexpression=2",   // group 2 = file (object name)
-  "-type_mapping=packages=PACKAGE BODY/functions=FUNCTION/procedures=PROCEDURE/triggers=TRIGGER"
-]
-```
-> Funcționează la orice adâncime (`.*` absoarbe modulele de deasupra). Nume variate
-> de foldere (ex.: `package`, `pkg`, `pacote`) pot fi enumerate în `type_mapping`.
-
-**2) După prefixul numelui** — convenția `pkg_*`, `prc_*`, `vw_*` (independent de folder):
-```jsonc
-"utplsql.coverageSourceArgs": [
-  "-regex_expression=.*[/\\\\]((pkg|prc|fnc|trg|vw)_\\w+)\\.sql$",
-  "-name_subexpression=1",   // group 1 = full name (e.g. PKG_EXAMPLE)
-  "-type_subexpression=2",   // group 2 = prefix (type)
-  "-type_mapping=pkg=PACKAGE BODY/prc=PROCEDURE/fnc=FUNCTION/trg=TRIGGER/vw=VIEW"
-]
-```
-
-**3) După extensia tipată** — fișiere `*.pkb`, `*.fnc`, `*.prc`, `*.trg` (independent de folder):
-```jsonc
-"utplsql.coverageSourceArgs": [
-  "-regex_expression=.*[/\\\\](\\w+)\\.(\\w+)$",
-  "-name_subexpression=1",   // group 1 = name
-  "-type_subexpression=2",   // group 2 = extension (type)
-  "-type_mapping=pkb=PACKAGE BODY/fnc=FUNCTION/prc=PROCEDURE/trg=TRIGGER"
-]
-```
-
-**Note importante:**
-- **Pachete → `PACKAGE BODY`** (nu `PACKAGE`): acoperirea este colectată în **body**-ul pachetului.
-
 ## Reporteri
 
 Extensia include întotdeauna **doi** reporteri implicați:
@@ -358,10 +330,7 @@ nu este niciodată blocată.
 Cei implicați reporteri sunt deduplicați automat, chiar dacă sunt
 listați aici.
 
-**Reporter volatil per sesiune** — comanda **utPLSQL: Select additional
-reporter...** deschide un QuickPick cu lista dinamică din baza de date.
-Reporterul ales este stocat în sesiune, dar selecția **nu este aplicată** în
-versiunea Oracle-only actuală.
+**Reporter volatil de sesiune** — comanda **Selectează reporter suplimentar...** deschide un QuickPick cu lista din baza de date; reporterul ales este păstrat în sesiune și **aplicat la următoarea rulare**.
 
 ## Cerințe pentru baza de date
 

@@ -36,5 +36,5 @@ O Test Explorer precisa do nome lógico do package, não do schema, e deve recon
 - 📄 PRDs: [[prd-24-codelens-integration|PRD-24]] · [[prd-42-suiteparser-annotations|PRD-42]]
 - 🧩 Código: [[COD - suiteParser.ts]] · [[COD - codelens.ts]]
 - 🧪 Testes: [[TST - suiteParser.test.ts]]
-- ↩️ Referenciada por: [[01-test-discovery]]
+- ↩️ Referenciada por: [[01-test-discovery]] · [[prd-24-codelens-integration|PRD-24]] · [[prd-42-suiteparser-annotations|PRD-42]]
 <!-- brain:auto:end -->

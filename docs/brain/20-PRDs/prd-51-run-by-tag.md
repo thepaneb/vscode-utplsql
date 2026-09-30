@@ -9,6 +9,7 @@ data: "2026-09-06"
 autor: "Gil Cleber Barboza"
 versao_titulo: "0.15.0 — Tags e UX de execução"
 verificado: 2026-09-23
+regras: []
 tags: [prd]
 ---
 
@@ -33,11 +34,11 @@ teste (`suiteParser.ts:32,107`), mas elas são descartadas — não chegam ao
 
 ## 2. Contexto e problema
 
-O README registra explicitamente "filtro por tag é roadmap". Tags como
-`fast`, `critical`, `integration` são comuns em projetos utPLSQL, mas hoje o
-usuário não pode rodar "só os testes `fast`" nem enxergar as tags no Test
-Explorer. O trabalho pesado (parse) já está feito no PRD-42; falta propagar e
-expor.
+O filtro por tag no **banco** já existe via `utplsql.tags` (setting que vira
+`a_tags` no `ut_runner.run`), mas não há UI dedicada: o usuário não consegue
+escolher tags no Test Explorer nem rodar "só os testes `fast`" a partir da
+árvore. O parse já está feito (PRD-42) e o setting já é passado ao run; falta
+propagar as tags ao `ItemMeta` e expor a UI.
 
 ## 3. Objetivos / Não-objetivos
 
@@ -178,6 +179,6 @@ Registrar `utplsql.runByTag` e a setting `utplsql.showTagsInTree`.
 <!-- brain:auto:start:conexoes -->
 - 🗺️ [[MOC - PRDs]]
 - 🔗 PRDs relacionados: [[prd-42-suiteparser-annotations|PRD-42]] · [[prd-54-coverage-toggle|PRD-54]] · [[prd-55-tag-organization|PRD-55]]
-- 🔗 Mesma versão (0.15.0): [[prd-50-auto-run-on-save|PRD-50]] · [[prd-52-inline-diff-expected-actual|PRD-52]] · [[prd-53-debug-test-variants|PRD-53]] · [[prd-54-coverage-toggle|PRD-54]] · [[prd-55-tag-organization|PRD-55]]
-- 🚀 ⬅️ release anterior: [[prd-82-tns-wallet|PRD-82 (0.14.0)]] · ➡️ próxima release: [[prd-56-duration-persistence|PRD-56 (0.16.0)]]
+- 🔗 Mesma versão (0.15.0): [[prd-47-node-26-toolchain|PRD-47]] · [[prd-50-auto-run-on-save|PRD-50]] · [[prd-52-inline-diff-expected-actual|PRD-52]] · [[prd-53-debug-test-variants|PRD-53]] · [[prd-54-coverage-toggle|PRD-54]] · [[prd-55-tag-organization|PRD-55]]
+- 🚀 ⬅️ release anterior: [[prd-94-vscode-floor-1-101|PRD-94 (0.14.0)]] · ➡️ próxima release: [[prd-56-duration-persistence|PRD-56 (0.16.0)]]
 <!-- brain:auto:end -->

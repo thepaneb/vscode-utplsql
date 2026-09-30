@@ -2,13 +2,14 @@
 tipo: prd
 id: PRD-80
 aliases: [PRD-80]
-status: proposed
+status: completed
 titulo: "Documento virtual de fonte do banco para falhas e cobertura"
 versao: "0.14.0"
 data: "2026-09-19"
 autor: "Gil Cleber Barboza"
 versao_titulo: "0.14.0 — Árvore, relatórios, conectividade e segurança"
-verificado: 2026-09-23
+verificado: 2026-09-28
+regras: ["BR-COB-004", "SEC-013"]
 tags: [prd]
 ---
 
@@ -172,7 +173,8 @@ Manter os nomes de pacote/schema em maiúsculas; expor o objeto no provider e um
 
 <!-- brain:auto:start:conexoes -->
 - 🗺️ [[MOC - PRDs]]
+- 📐 Regras: [[BR-COB-004 - Fonte virtual do banco (utplsql-source) é read-only|BR-COB-004]] · [[SEC-013 - Fonte virtual do banco é read-only|SEC-013]]
 - 🔗 PRDs relacionados: [[prd-43-schema-db-discovery|PRD-43]] · [[prd-74-db-first-discovery|PRD-74]]
-- 🔗 Mesma versão (0.14.0): [[prd-47-node-26-toolchain|PRD-47]] · [[prd-75-lazy-test-tree|PRD-75]] · [[prd-76-reporter-export|PRD-76]] · [[prd-81-security-hardening|PRD-81]] · [[prd-82-tns-wallet|PRD-82]]
-- 🚀 ⬅️ release anterior: [[prd-87-suitepath-results-jump|PRD-87 (0.13.0)]] · ➡️ próxima release: [[prd-50-auto-run-on-save|PRD-50 (0.15.0)]]
+- 🎯 RF1 — Provider por tipo → [[BR-COB-004 - Fonte virtual do banco (utplsql-source) é read-only|BR-COB-004]]
+- 🚀 ⬅️ release anterior: [[prd-87-suitepath-results-jump|PRD-87 (0.13.0)]] · ➡️ próxima release: [[prd-47-node-26-toolchain|PRD-47 (0.15.0)]]
 <!-- brain:auto:end -->

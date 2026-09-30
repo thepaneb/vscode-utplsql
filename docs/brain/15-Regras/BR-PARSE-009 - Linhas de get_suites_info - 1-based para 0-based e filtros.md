@@ -9,7 +9,7 @@ severidade: media
 fonte: codigo
 verificado: 2026-09-23
 implementacao: ["src/discovery.ts:235", "src/discovery.ts:296", "src/discovery.ts:313", "src/discovery.ts:316", "src/discovery.ts:320", "src/discovery.ts:325", "src/discovery.ts:332"]
-testes: ["src/test/unit/discovery.test.ts"]
+testes: ["src/test/unit/discovery.test.ts", "src/test/integration/v013-features.test.ts"]
 prds: ["PRD-74"]
 requisitos: ["PRD-74/RF1", "PRD-74/RF2"]
 tags: ["descoberta"]
@@ -37,6 +37,6 @@ Alinha as posições do editor (0-based) às linhas do dicionário Oracle (1-bas
 - 📄 PRDs: [[prd-74-db-first-discovery|PRD-74]]
 - 🎯 Requisitos: [[prd-74-db-first-discovery|PRD-74 RF1]] · [[prd-74-db-first-discovery|PRD-74 RF2]]
 - 🧩 Código: [[COD - discovery.ts]]
-- 🧪 Testes: [[TST - discovery.test.ts]]
-- ↩️ Referenciada por: [[01-test-discovery]]
+- 🧪 Testes: [[TST - discovery.test.ts]] · [[TST - v013-features.test.ts]]
+- ↩️ Referenciada por: [[01-test-discovery]] · [[prd-74-db-first-discovery|PRD-74]]
 <!-- brain:auto:end -->

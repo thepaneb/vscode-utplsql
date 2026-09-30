@@ -8,7 +8,7 @@ status: ativo
 severidade: alta
 fonte: codigo
 verificado: 2026-09-23
-implementacao: ["src/connectionProfiles.ts:186", "src/connectionProfiles.ts:202", "src/extension.ts:34"]
+implementacao: ["src/connectionProfiles.ts:120", "src/connectionProfiles.ts:248", "src/extension.ts:34"]
 testes: ["src/test/unit/connectionProfiles.test.ts"]
 prds: ["PRD-34", "PRD-65"]
 requisitos: ["PRD-34/RF1"]
@@ -38,5 +38,5 @@ Convergir instalações antigas (senha em texto plano) para o SecretStorage sem 
 - 🎯 Requisitos: [[prd-34-multi-connection-profiles|PRD-34 RF1]]
 - 🧩 Código: [[COD - connectionProfiles.ts]] · [[COD - extension.ts]]
 - 🧪 Testes: [[TST - connectionProfiles.test.ts]]
-- ↩️ Referenciada por: [[09-configuration]] · [[SEC-001 - Senha Oracle nunca é gravada em settings|SEC-001]]
+- ↩️ Referenciada por: [[09-configuration]] · [[SEC-001 - Senha Oracle nunca é gravada em settings|SEC-001]] · [[prd-34-multi-connection-profiles|PRD-34]] · [[prd-65-schema-mode-security-fixes|PRD-65]]
 <!-- brain:auto:end -->

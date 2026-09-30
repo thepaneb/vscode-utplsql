@@ -43,6 +43,14 @@ Integruje [utPLSQL](https://www.utplsql.org/) do VSCode a přináší PL/SQL tes
 - 🗄️ **Objevování DB-first** — sestavte strom z `ut_runner.get_suites_info` a přestavte mezipaměť anotací z palety.
 - 🐛 **PL/SQL Debug** — breakpointy a krokování testů utPLSQL přes `DBMS_DEBUG` (nativní Debug Adapter).
 - 🌍 **i18n — 24 jazyků** — `utplsql.language` se řídí VSCode (24 locale: pt-br, en, en-gb, es, zh-cn, zh-tw, ja, de, fr, it, ko, ru, tr, pl, cs, hu, bg, el, id, ro, sr, th, uk, vi).
+- 🌳 **Líně načítaný strom testů** — v režimu `schema` se balíčky/sady/testy načítají až při rozbalení, takže velká schémata se otevřou okamžitě.
+- 🧾 **Run with Reporter (Export)** — spustí výběr s libovolným reportérem databáze a zapíše výstup do Output nebo do souboru (`utplsql.reporter.*`), aniž by změnil výsledky v Test Exploreru.
+- 🗂️ **Virtuální zdroj z databáze** — bez lokálního souboru *jump to failure* a pokrytí otevřou dokument jen pro čtení z `ALL_SOURCE` (`utplsql-source:/…`).
+- 🔐 **TNS v thin + wallet** — `utplsql.connections.tnsAdminPath` řeší aliasy `tnsnames.ora` v thin ovladači (fallback na SQL Developer/`TNS_ADMIN`); `walletLocation` v profilu a `utPLSQL: Set wallet password` uchovávají heslo k walletu v SecretStorage.
+- 🔒 **Zpevnění zabezpečení připojení** — nastavení připojení jsou `machine`-scoped, rozšíření je zakázáno v nedůvěryhodných pracovních prostorech a heslo profilu je vázáno na připojení.
+- 🧱 **Diagnostika kompilace** — po každém spuštění se chyby kompilace PL/SQL (`ALL_ERRORS`) zobrazí v Problems Panelu pod zdrojem `utPLSQL Compilation` (nastavení `utplsql.compilationDiagnostics.enabled`).
+- ⏳ **Průběh a zrušení** — dlouhá spuštění zobrazují oznámení o průběhu s počtem a tlačítkem *Cancel* (plus volitelný `utplsql.timeoutMinutes`).
+- 📁 **Vícerootový pracovní prostor** — každá složka pracovního prostoru má vlastní sady testů, s nezávislým vyhledáváním, spouštěním a pokrytím.
 
 ## Instalace
 
@@ -64,7 +72,7 @@ Rozšíření lze nainstalovat dvěma způsoby:
 |---|---|---|
 | 18c+ | v3.2.x (18c+) / v3.1.x | Doporučeno; charset `AL32UTF8`. |
 | 12.2 | pouze v3.1.x | v3.2.x se nezkompiluje (`PLS-00222`). `WE8DEC` obrazu ztrácí nereprezentovatelné znaky (např. `€`); tenký ovladač ignoruje `NLS_LANG`. |
-- **VSCode 1.88+** (Test Coverage API).
+- **VSCode 1.101+** (Test Coverage API).
 
 Rozšíření je pouze „grafický klient" — to, co testy spouští, je databáze přímo přes node-oracledb.
 
@@ -102,8 +110,10 @@ a ponechá je pouze v paměti během relace — použijte příkaz
 
 **Akceptované formáty:**
 - **EZ Connect**: `user/pass@//host:1521/service`
-- **TNS alias**: `user/pass@tns_alias` (vyžaduje nakonfigurovaný `TNS_ADMIN`)
+- **TNS alias**: `user/pass@tns_alias`
 - **Wallet (Oracle Cloud)**: `user/pass@tcps://host:1522/service?wallet_location=/path/wallet`
+
+> 🔒 **Zpevněná nastavení:** nastavení připojení jsou **`machine`-scoped**; rozšíření je **zakázáno v nedůvěryhodných pracovních prostorech**; heslo profilu je **vázáno na jeho připojení**. (`utplsql.connection`, `utplsql.profiles`, `utplsql.activeProfile`, `utplsql.oracleClientLibDir`, `utplsql.oracleClientConfigDir`, `utplsql.connections.tnsAdminPath`)
 
 ## Jak to funguje
 
@@ -131,6 +141,8 @@ nativních API VSCode.
 | `utplsql.timeoutMinutes` | `60` | Časový limit v minutách pro spuštění testů. |
 | `utplsql.dbmsOutput` | `false` | Povolí `DBMS_OUTPUT` v testovací relaci. Užitečné pro ladění. |
 | `utplsql.additionalReporters` | `[]` | Další reportéry zahrnuté do každého spuštění (např. `["ut_coverage_html_reporter"]`). Výchozí (documentation, junit) jsou vždy zahrnuty a není třeba je vypisovat. |
+| `utplsql.reporter.clientCharacterSet` | `""` | Klientská znaková sada (`a_client_character_set`) pro **Run with Reporter (Export)**. Prázdné = výchozí reporteru. |
+| `utplsql.reporter.colorConsole` | `false` | Zapne ANSI barvy (`a_color_console`) pro textové konzolové reportery při exportu. |
 | `utplsql.tags` | `""` | Výraz tagů utPLSQL pro filtrování spouštěných testů (např. `fast & !integration`). Prázdné spustí všechny. |
 | `utplsql.run.randomOrder` | `false` | Spouští testy v náhodném pořadí, aby odhalil závislosti pořadí mezi nimi. |
 | `utplsql.run.randomOrderSeed` | `0` | Seed náhodného pořadí. `0` = zvolí databáze (nereprodukovatelné); > 0 reprodukuje stejné pořadí. |
@@ -145,7 +157,8 @@ nativních API VSCode.
 | `utplsql.oracleClientLibDir` | `""` | Adresář Oracle Instant Client. Povinný, když je `utplsql.oracleClientMode` nastaveno na `thick` (např. `C:\oracle\instantclient_23_5`). |
 | Ladění se nezastaví na zarážce | Balíček bez ladicích informací nebo chybějící ladicí granty | Zkompilujte s `PLSQL_OPTIMIZE_LEVEL <= 1` (nebo `ALTER PACKAGE ... COMPILE DEBUG PLSQL_OPTIMIZE_LEVEL = 1`) a udělte `DEBUG CONNECT SESSION` + `EXECUTE ON SYS.DBMS_DEBUG`. Zarážky v `test_*.pkb` se nemusí zastavit (utPLSQL spouští testy přes dynamický SQL); nastavte je v testovaném kódu. |
 | `utplsql.oracleClientConfigDir` | `""` | Adresář konfigurace Oracle (TNS_ADMIN) s `sqlnet.ora`/`tnsnames.ora`. Volitelný; používá jej pouze thick režim. |
-| `utplsql.organization` | `file` | Uspořádání stromu: `file` (podle cesty) nebo `schema` (Schema > Package > Suite > Test). V režimu `schema` se sady také objevují z databáze (`ut_runner.get_suites_info`, s návratem k `ALL_OBJECTS`/`ALL_SOURCE`), když soubory `.pks` nejsou v pracovním prostoru — s virtuální URI `utplsql-db:/` (spuštění a skok na selhání fungují; bez CodeLens/dekorací). |
+| `utplsql.connections.tnsAdminPath` | `""` | Adresář s `tnsnames.ora` pro řešení **aliasů TNS v thin ovladači**. Pořadí: toto nastavení → hodnota user/machine `sqldeveloper.connections.tnsConfiguration.path` → `TNS_ADMIN`. |
+| `utplsql.organization` | `file` | Uspořádání stromu: `file` (podle cesty) nebo `schema` (Schema > Package > Suite > Test). V režimu `schema` se sady také objevují z databáze (`ut_runner.get_suites_info`, s návratem k `ALL_OBJECTS`/`ALL_SOURCE`), když soubory `.pks` nejsou v pracovním prostoru — s virtuální URI `utplsql-db:/` (spuštění a skok na selhání fungují; bez CodeLens/dekorací). · `utplsql-source:/` |
 | `utplsql.organization.schemaPattern` | `db/{schema}/**` | Glob vzor pro extrakci schématu z cesty. Použijte `{schema}` jako zástupný symbol. V režimu `schema` adresáře pod základnou vzoru (např. `db/*`) definují schémata dotazovaná v databázi. |
 | `utplsql.discovery.source` | `auto` | Zdroj stromu v režimu `schema`: `auto` používá API databáze (`ut_runner.get_suites_info`) a při nedostupnosti přejde na `ALL_SOURCE`/soubory; `database` vyžaduje API; `file` vypne objevování přes databázi. |
 | `utplsql.refreshDebounceMs` | `300` | Debounce (ms) pro sloučení událostí sledování souborů `.pks`/`.pkb` před obnovením Test Exploreru. |
@@ -267,6 +280,8 @@ Všechny příkazy rozšíření (paleta `Ctrl+Shift+P`, předpona `utPLSQL:`):
 | `utPLSQL: Run script` | Runs the script open in the editor against a connection profile | Right-click → script file |
 | `utPLSQL: Run script file` | Runs an Explorer script file (decoded with the profile charset) | Right-click → file |
 | `utPLSQL: Run script folder` | Runs the folder scripts in alphabetical order | Right-click → folder |
+| `utPLSQL: Nastavit heslo peněženky` | Nastaví/vymaže heslo peněženky aktivního profilu (SecretStorage) | — |
+| `utPLSQL: Spustit s reporterem (export)` | Spustí výběr se zvoleným reporterem a zapíše výstup do Output/souboru (nemění výsledky) | Test Explorer → menu do item |
 
 > **Recompile UT3** (`utplsql.recompileUt3`) **není** příkaz palety — je to
 > interní rychlá oprava diagnostiky „utPLSQL Setup" (neplatné objekty ve
@@ -296,49 +311,6 @@ Všechny zkratky používají předponu `Ctrl+Shift+U` (`Cmd+Shift+U` na Macu):
 
 
 
-Rozšíření předává `-source_path` (= `utplsql.sourcePath`) a mapuje pokryté objekty
-na zdrojové soubory přes `utplsql.coverageSourceArgs` (regex + `type_mapping`). `-owner`
-je odvozen z připojení (nebo z `utplsql.coverageOwner`).
-
-### Mapování pokrytí na soubory (`coverageSourceArgs`)
-
-`type_mapping` překládá „typ" zachycený regexem na typ Oracle. Tři běžné konvence:
-
-**1) Podle adresáře** — struktura `sourcePath/<typ>/<název>.sql` (složky `functions/`, `procedures/`, `packages/`, …):
-```jsonc
-"utplsql.coverageSourceArgs": [
-  "-regex_expression=.*[/\\\\](\\w+)[/\\\\](\\w+)\\.sql$",
-  "-type_subexpression=1",   // group 1 = folder (type)
-  "-name_subexpression=2",   // group 2 = file (object name)
-  "-type_mapping=packages=PACKAGE BODY/functions=FUNCTION/procedures=PROCEDURE/triggers=TRIGGER"
-]
-```
-> Funguje v jakékoli hloubce (`.*` absorbuje moduly nad tím). Různé názvy složek
-> (např. `package`, `pkg`, `pacote`) lze vyjmenovat v `type_mapping`.
-
-**2) Podle předpony názvu** — konvence `pkg_*`, `prc_*`, `vw_*` (nezávisle na složce):
-```jsonc
-"utplsql.coverageSourceArgs": [
-  "-regex_expression=.*[/\\\\]((pkg|prc|fnc|trg|vw)_\\w+)\\.sql$",
-  "-name_subexpression=1",   // group 1 = full name (e.g. PKG_EXAMPLE)
-  "-type_subexpression=2",   // group 2 = prefix (type)
-  "-type_mapping=pkg=PACKAGE BODY/prc=PROCEDURE/fnc=FUNCTION/trg=TRIGGER/vw=VIEW"
-]
-```
-
-**3) Podle typové přípony** — soubory `*.pkb`, `*.fnc`, `*.prc`, `*.trg` (nezávisle na složce):
-```jsonc
-"utplsql.coverageSourceArgs": [
-  "-regex_expression=.*[/\\\\](\\w+)\\.(\\w+)$",
-  "-name_subexpression=1",   // group 1 = name
-  "-type_subexpression=2",   // group 2 = extension (type)
-  "-type_mapping=pkb=PACKAGE BODY/fnc=FUNCTION/prc=PROCEDURE/trg=TRIGGER"
-]
-```
-
-**Důležité poznámky:**
-- **Balíčky → `PACKAGE BODY`** (ne `PACKAGE`): pokrytí se sbírá v **těle** balíčku.
-
 ## Reportéry
 
 Rozšíření vždy zahrnuje **dva** výchozí reportéry:
@@ -361,8 +333,7 @@ zde uvedeny.
 
 **Volatilní reportér pro relaci** — příkaz **utPLSQL: Select additional
 reporter...** otevře QuickPick s dynamickým seznamem z databáze. Vybraný
-reportér se uloží do relace, ale volba se **nepoužije**
-v aktuální verzi pouze pro Oracle.
+reportér se uloží do relace a **použije se při dalším spuštění**.
 
 ## Požadavky na databázi
 

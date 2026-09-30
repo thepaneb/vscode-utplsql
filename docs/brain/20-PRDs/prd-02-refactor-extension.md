@@ -8,6 +8,7 @@ versao: "0.4.0"
 data: "2026-07-02"
 autor: "Análise automatizada"
 verificado: 2026-09-23
+regras: []
 tags: [prd]
 ---
 

@@ -12,6 +12,7 @@
 
 const fs = require('fs');
 const { spawnSync } = require('child_process');
+const { resolveVsce } = require('./vsce.cjs');
 
 function flagValue(args, name) {
   const i = args.indexOf(name);
@@ -38,7 +39,7 @@ function main({
   env = process.env,
   fsImpl = fs,
   spawnSyncImpl = spawnSync,
-  platform = process.platform,
+  resolveVsceImpl = resolveVsce,
   log = console.log,
   warn = console.warn,
   error = console.error,
@@ -64,9 +65,9 @@ function main({
     log(`📦 Publicando (re-empacotando) target: ${flagValue(args, '--target')}`);
   }
 
-  const result = spawnSyncImpl('vsce', vsceArgs, {
+  const { command, argsPrefix } = resolveVsceImpl();
+  const result = spawnSyncImpl(command, [...argsPrefix, ...vsceArgs], {
     stdio: 'inherit',
-    shell: platform === 'win32',
   });
   return result.status ?? 1;
 }

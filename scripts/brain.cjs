@@ -14,6 +14,7 @@
 const fs = require('fs');
 const path = require('path');
 const { execFileSync } = require('child_process');
+const { scanVscodeApi } = require('./vscode-api-inventory.cjs');
 
 const DEFAULT_REPO = path.resolve(__dirname, '..');
 let REPO = DEFAULT_REPO;
@@ -753,6 +754,17 @@ function genConexoes(notePath) {
   for (const key of reverseKeys) {
     for (const b of reverseIndex().get(key) ?? []) refs.add(b);
   }
+  // Para PRDs o elo direto `regras:` já expressa o que o índice reverso traria
+  // (as regras/SEC que citam a PRD) — remova os repetidos para não duplicar.
+  if (fm.tipo === 'prd' && refs.size) {
+    const forward = new Set(
+      (Array.isArray(fm.regras) ? fm.regras : []).map((r) => String(r).trim()),
+    );
+    for (const b of [...refs]) {
+      const id = bases.get(b);
+      if (forward.has(b) || (id && forward.has(id))) refs.delete(b);
+    }
+  }
   if (refs.size) {
     const links = [...refs]
       .sort()
@@ -789,6 +801,40 @@ function genMocIndex(notePath) {
   );
 }
 
+/** Inventário das APIs do VS Code usadas em produção (fonte: vscode-api-inventory.cjs). */
+function genVscodeApi() {
+  const refs = scanVscodeApi(REPO);
+  const rows = [...refs.entries()]
+    .map(([api, list]) => ({
+      api,
+      count: list.length,
+      files: [...new Set(list.map((r) => r.file))].sort(),
+    }))
+    .sort((a, b) => b.count - a.count || a.api.localeCompare(b.api));
+  let engine = '?';
+  let types = '?';
+  try {
+    const pkg = JSON.parse(fs.readFileSync(path.join(REPO, 'package.json'), 'utf8'));
+    engine = pkg.engines?.vscode ?? '?';
+    types = pkg.devDependencies?.['@types/vscode'] ?? '?';
+  } catch {
+    /* sem package.json (fixture) */
+  }
+  const total = rows.reduce((n, r) => n + r.count, 0);
+  const head =
+    `**\`engines.vscode\`:** \`${engine}\` · **\`@types/vscode\`:** \`${types}\` · ` +
+    `**${rows.length} símbolos · ${total} referências**\n\n` +
+    '| Símbolo | Refs | Arquivos |\n|---|---|---|';
+  const body = rows
+    .map((r) => {
+      const files = r.files.slice(0, 4).map((f) => `\`${f}\``).join(', ');
+      const extra = r.files.length > 4 ? ` +${r.files.length - 4}` : '';
+      return `| \`${r.api}\` | ${r.count} | ${files}${extra} |`;
+    })
+    .join('\n');
+  return `${head}\n${body}`;
+}
+
 const GENERATORS = {
   'root-docs': genRootDocs,
   'readme-variants': genReadmeVariants,
@@ -802,6 +848,7 @@ const GENERATORS = {
   'moc-index': genMocIndex,
   stack: genStack,
   deps: genDeps,
+  'vscode-api': genVscodeApi,
 };
 
 // ── notas geradas (PIPE-*, LOC-*) ──────────────────────────────────────
@@ -998,10 +1045,74 @@ function generateNotes() {
 
 // ── commands ───────────────────────────────────────────────────────────
 
+// ── PRD ↔ regras: deriva `regras:` do reverse-map dos `prds:` das regras ──
+
+/** prdNum → Set(id da regra/SEC que lista essa PRD em `prds:`). */
+function rulePrdsMap() {
+  const map = new Map();
+  const add = (dir, re) => {
+    if (!fs.existsSync(dir)) return;
+    for (const f of fs.readdirSync(dir)) {
+      if (!re.test(f)) continue;
+      const fm = parseFm(fs.readFileSync(path.join(dir, f), 'utf8'));
+      if (!fm.id) continue;
+      for (const pr of Array.isArray(fm.prds) ? fm.prds : []) {
+        const num = String(pr).replace(/\D/g, '');
+        if (!num) continue;
+        const key = String(Number(num));
+        if (!map.has(key)) map.set(key, new Set());
+        map.get(key).add(fm.id);
+      }
+    }
+  };
+  add(path.join(VAULT, '15-Regras'), /^BR-.*\.md$/);
+  add(path.join(VAULT, '16-Seguranca'), /^SEC-.*\.md$/);
+  return map;
+}
+
+/** Define/atualiza uma chave de lista no frontmatter YAML (insere antes de `tags:`). */
+function setFmList(text, key, values) {
+  const m = text.match(/^---\r?\n([\s\S]*?)\r?\n---/);
+  if (!m) return text;
+  const line = `${key}: [${values.map((v) => `"${v}"`).join(', ')}]`;
+  const block = m[1];
+  const re = new RegExp(`^${key}:.*$`, 'm');
+  const newBlock = re.test(block)
+    ? block.replace(re, line)
+    : /^tags:/m.test(block)
+      ? block.replace(/^tags:/m, `${line}\ntags:`)
+      : `${block}\n${line}`;
+  return text.replace(m[0], `---\n${newBlock}\n---`);
+}
+
+/** Injeta `regras:` em cada nota PRD a partir das regras/SEC que a citam. */
+function syncPrdRegras() {
+  const map = rulePrdsMap();
+  const dir = path.join(VAULT, '20-PRDs');
+  if (!fs.existsSync(dir)) return 0;
+  let changed = 0;
+  for (const file of fs.readdirSync(dir).filter((f) => /^prd-\d+.*\.md$/.test(f))) {
+    const p = path.join(dir, file);
+    const text = fs.readFileSync(p, 'utf8');
+    const fm = parseFm(text);
+    const num = String(Number(String(fm.id ?? file.match(/\d+/)?.[0] ?? '').replace(/\D/g, '')));
+    const ids = [...(map.get(num) ?? [])].sort();
+    const updated = setFmList(text, 'regras', ids);
+    if (updated !== text) {
+      fs.writeFileSync(p, updated);
+      console.log(`[sync] 20-PRDs/${file} (regras: ${ids.length})`);
+      changed++;
+    }
+  }
+  return changed;
+}
+
 function sync() {
   let changed = 0;
   // Notas geradas primeiro: os wikilinks COD-*/TST-* das camadas dependem delas.
   changed += generateNotes();
+  // `regras:` das PRDs derivado das regras/SEC (manteém o vínculo bidirecional).
+  changed += syncPrdRegras();
   for (const file of vaultNotes()) {
     if (isTemplate(file)) continue;
     const original = fs.readFileSync(file, 'utf8');

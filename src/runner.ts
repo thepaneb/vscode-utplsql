@@ -119,7 +119,9 @@ export async function executeRun(
     errored: number,
     durationMs: number,
   ) => void,
-): Promise<void> {
+  /** Export com reporter arbitrário (PRD-76): devolve a saída textual. */
+  exportReporter?: { name: string; charset?: string; colorConsole?: boolean },
+): Promise<string | undefined> {
   const folders = vscode.workspace.workspaceFolders;
   if (!folders?.length) {
     vscode.window.showErrorMessage(t(getExtensionLocale(), 'ext.openFolder'));
@@ -133,6 +135,7 @@ export async function executeRun(
 
   const cfg = readConfig();
   const locale = getExtensionLocale();
+  const exporting = !!exportReporter;
   const root = folders[0].uri.fsPath;
   const run = controller.createTestRun(request);
 
@@ -162,15 +165,18 @@ export async function executeRun(
     return;
   }
 
-  for (const item of leafTests) {
-    run.enqueued(item);
+  if (!exporting) {
+    for (const item of leafTests) {
+      run.enqueued(item);
+    }
+    for (const item of leafTests) run.started(item);
   }
-  for (const item of leafTests) run.started(item);
 
   run.appendOutput(
     `${t(locale, 'runner.running', { coverage: coverage ? t(locale, 'runner.withCoverage') : '' })}\r\n`,
   );
 
+  let exportText: string | undefined;
   try {
     const oracleOpts: OracleRunOptions = {
       connection,
@@ -197,9 +203,10 @@ export async function executeRun(
       coverageExcludeObjectExpr: cfg.coverageExcludeObjectExpr,
       dbmsOutput: cfg.dbmsOutput,
       timeoutMinutes: cfg.timeoutMinutes,
+      exportReporter,
     };
-    await executeRunOracle(oracleOpts, token);
-    if (cfg.sqlCoverageEnabled) {
+    exportText = await executeRunOracle(oracleOpts, token);
+    if (cfg.sqlCoverageEnabled && !exporting) {
       await applySqlCoverage({
         connection,
         root,
@@ -210,13 +217,16 @@ export async function executeRun(
       });
     }
   } catch (e) {
+    if (exporting) throw e;
     const msg = e instanceof Error ? e.message : String(e);
     run.appendOutput(`\r\n${t(locale, 'runner.oracleErrorHeader', { error: msg })}\r\n`);
     for (const item of leafTests) {
       run.errored(item, new vscode.TestMessage(t(locale, 'runner.oracleError', { error: msg })));
     }
+  } finally {
+    run.end();
+    void vscode.commands.executeCommand('setContext', 'utplsql:running', false);
   }
 
-  run.end();
-  void vscode.commands.executeCommand('setContext', 'utplsql:running', false);
+  return exportText;
 }

@@ -43,6 +43,14 @@ tags: [readme]
 - 🗄️ **Виявлення DB-first** — будуйте дерево з `ut_runner.get_suites_info` і перебудовуйте кеш анотацій з палітри.
 - 🐛 **PL/SQL Debug** — точки зупину та покрокове налагодження тестів utPLSQL через `DBMS_DEBUG` (нативний Debug Adapter).
 - 🌍 **i18n — 24 мови** — `utplsql.language` слідує за VSCode (24 локалі: pt-br, en, en-gb, es, zh-cn, zh-tw, ja, de, fr, it, ko, ru, tr, pl, cs, hu, bg, el, id, ro, sr, th, uk, vi).
+- 🌳 **Ліниве дерево тестів** — у режимі `schema` пакети/набори/тести розв’язуються в міру розгортання, тож великі схеми відкриваються миттєво.
+- 🧾 **Run with Reporter (Export)** — запускає вибірку з будь-яким репортером БД і пише вивід в Output або у файл (`utplsql.reporter.*`), не змінюючи результати в Test Explorer.
+- 🗂️ **Віртуальне джерело з БД** — без локального файлу *jump to failure* і покриття відкривають документ лише для читання з `ALL_SOURCE` (`utplsql-source:/…`).
+- 🔐 **TNS у thin + wallet** — `utplsql.connections.tnsAdminPath` розв’язує аліаси `tnsnames.ora` у thin-драйвері (fallback: SQL Developer/`TNS_ADMIN`); `walletLocation` профілю та `utPLSQL: Set wallet password` зберігають пароль wallet у SecretStorage.
+- 🔒 **Посилення безпеки з’єднань** — налаштування з’єднання тепер `machine`-scoped, розширення вимкнено в недовірених робочих просторах, а пароль профілю прив’язано до з’єднання.
+- 🧱 **Діагностика компіляції** — після кожного запуску помилки компіляції PL/SQL (`ALL_ERRORS`) з’являються в Problems Panel під джерелом `utPLSQL Compilation` (налаштування `utplsql.compilationDiagnostics.enabled`).
+- ⏳ **Прогрес і скасування** — довгі запуски показують сповіщення про прогрес із лічильником і кнопкою *Cancel* (плюс опційний `utplsql.timeoutMinutes`).
+- 📁 **Багатокореневий робочий простір** — кожна тека робочого простору має власні набори тестів, з незалежним пошуком, запуском і покриттям.
 
 ## Встановлення
 
@@ -56,7 +64,7 @@ tags: [readme]
 ## Вимоги
 
 - [**utPLSQL**](https://github.com/utPLSQL/utPLSQL) **(UT3)** встановлений у базі даних Oracle.
-- **VSCode 1.88+** (Test Coverage API).
+- **VSCode 1.101+** (Test Coverage API).
 
 Розширення — це лише "графічний клієнт": тести виконує база даних безпосередньо (node-oracledb).
 
@@ -92,8 +100,10 @@ code .
 
 **Підтримувані формати:**
 - **EZ Connect**: `user/pass@//host:1521/service`
-- **TNS alias**: `user/pass@tns_alias` (потрібен налаштований `TNS_ADMIN`)
+- **TNS alias**: `user/pass@tns_alias`
 - **Wallet (Oracle Cloud)**: `user/pass@tcps://host:1522/service?wallet_location=/path/wallet`
+
+> 🔒 **Посилені налаштування:** налаштування підключення мають область **`machine`**; розширення **вимкнено в недовірених робочих просторах**; пароль профілю **прив’язано до його підключення**. (`utplsql.connection`, `utplsql.profiles`, `utplsql.activeProfile`, `utplsql.oracleClientLibDir`, `utplsql.oracleClientConfigDir`, `utplsql.connections.tnsAdminPath`)
 
 ## Як це працює
 
@@ -127,6 +137,8 @@ Test Explorer **у міру завершення кожного тесту**. VS
 | `utplsql.timeoutMinutes` | `60` | Час очікування у хвилинах. |
 | `utplsql.dbmsOutput` | `false` | Увімкнення `DBMS_OUTPUT` у сесії тестування. |
 | `utplsql.additionalReporters` | `[]` | Додаткові репортери, які включаються в кожен запуск (напр. `["ut_coverage_html_reporter"]`). Стандартні (documentation, junit) завжди включаються, їх не потрібно перелічувати. |
+| `utplsql.reporter.clientCharacterSet` | `""` | Клієнтське кодування (`a_client_character_set`) для **Run with Reporter (Export)**. Порожньо — типове значення reporter. |
+| `utplsql.reporter.colorConsole` | `false` | Вмикає ANSI-колір (`a_color_console`) для текстових консольних reporter під час експорту. |
 | `utplsql.tags` | `""` | Вираз тегів utPLSQL для фільтрації тестів, які виконуються (напр. `fast & !integration`). Порожньо — виконуються всі. |
 | `utplsql.run.randomOrder` | `false` | Виконує тести у випадковому порядку, щоб виявити залежності порядку між ними. |
 | `utplsql.run.randomOrderSeed` | `0` | Seed випадкового порядку. `0` = обирається базою (не відтворюється); > 0 відтворює той самий порядок. |
@@ -141,7 +153,8 @@ Test Explorer **у міру завершення кожного тесту**. VS
 | `utplsql.oracleClientLibDir` | `""` | Каталог Oracle Instant Client. Обов'язковий, коли `utplsql.oracleClientMode` дорівнює `thick` (напр. `C:\oracle\instantclient_23_5`). |
 | Налагодження не зупиняється на точці зупину | Пакет без налагоджувальної інформації або бракує привілеїв | Скомпілюйте з `PLSQL_OPTIMIZE_LEVEL <= 1` (або `ALTER PACKAGE ... COMPILE DEBUG PLSQL_OPTIMIZE_LEVEL = 1`) і надайте `DEBUG CONNECT SESSION` + `EXECUTE ON SYS.DBMS_DEBUG`. Точки зупину в `test_*.pkb` можуть не спрацьовувати (utPLSQL виконує тести через динамічний SQL); ставте їх у коді, що тестується. |
 | `utplsql.oracleClientConfigDir` | `""` | Каталог конфігурації Oracle (TNS_ADMIN) з `sqlnet.ora`/`tnsnames.ora`. Необов'язковий; використовується лише в режимі thick. |
-| `utplsql.organization` | `file` | Організація дерева: `file` (за шляхом) або `schema` (Schema > Package > Suite > Test). У режимі `schema` набори також виявляються з бази даних (`ut_runner.get_suites_info`, з відкатом до `ALL_OBJECTS`/`ALL_SOURCE`), коли у робочій області немає файлів `.pks` — з віртуальним URI `utplsql-db:/` (виконання та перехід до помилки працюють; без CodeLens/декорацій). |
+| `utplsql.connections.tnsAdminPath` | `""` | Каталог з `tnsnames.ora` для **TNS-аліасів у thin-драйвері**. Порядок: це налаштування → user/machine-значення `sqldeveloper.connections.tnsConfiguration.path` → `TNS_ADMIN`. |
+| `utplsql.organization` | `file` | Організація дерева: `file` (за шляхом) або `schema` (Schema > Package > Suite > Test). У режимі `schema` набори також виявляються з бази даних (`ut_runner.get_suites_info`, з відкатом до `ALL_OBJECTS`/`ALL_SOURCE`), коли у робочій області немає файлів `.pks` — з віртуальним URI `utplsql-db:/` (виконання та перехід до помилки працюють; без CodeLens/декорацій). · `utplsql-source:/` |
 | `utplsql.organization.schemaPattern` | `db/{schema}/**` | Glob-шаблон для вилучення схеми зі шляху. Використовуйте `{schema}` як заповнювач. У режимі `schema` каталоги нижче бази шаблону (напр. `db/*`) визначають схеми, які запитуються в базі даних. |
 | `utplsql.discovery.source` | `auto` | Джерело дерева в режимі `schema`: `auto` використовує API бази (`ut_runner.get_suites_info`) і переходить до `ALL_SOURCE`/файлів за недоступності; `database` вимагає API; `file` вимикає виявлення через базу. |
 | `utplsql.refreshDebounceMs` | `300` | Затримка (мс) для об'єднання подій спостерігача файлів `.pks`/`.pkb` перед оновленням Test Explorer. |
@@ -263,6 +276,8 @@ UTPLSQL_CONN=your_user/password@//host:1521/service
 | `utPLSQL: Run script` | Runs the script open in the editor against a connection profile | Right-click → script file |
 | `utPLSQL: Run script file` | Runs an Explorer script file (decoded with the profile charset) | Right-click → file |
 | `utPLSQL: Run script folder` | Runs the folder scripts in alphabetical order | Right-click → folder |
+| `utPLSQL: Встановити пароль гаманця` | Встановлює/очищає пароль гаманця активного профілю (SecretStorage) | — |
+| `utPLSQL: Запустити з reporter (експорт)` | Запускає вибір з обраним reporter і записує вивід у Output/файл (не змінює результати) | Test Explorer → menu do item |
 
 > **Recompile UT3** (`utplsql.recompileUt3`) — **не** команда палітри: це
 > внутрішнє швидке виправлення діагностики "utPLSQL Setup" (недійсні об'єкти у
@@ -292,51 +307,6 @@ UTPLSQL_CONN=your_user/password@//host:1521/service
 
 
 
-Розширення передає `-source_path` (= `utplsql.sourcePath`) і зіставляє покриті об'єкти
-з файлами вихідного коду через `utplsql.coverageSourceArgs` (regex + `type_mapping`). `-owner`
-виводиться з підключення (або з `utplsql.coverageOwner`).
-
-### Відображення покриття на файли (`coverageSourceArgs`)
-
-`type_mapping` перетворює «тип», захоплений регулярним виразом, на тип Oracle. Три поширені домовленості:
-
-**1) За каталогом** — структура `sourcePath/<type>/<name>.sql` (папки `functions/`, `procedures/`, `packages/`, …):
-```jsonc
-"utplsql.coverageSourceArgs": [
-  "-regex_expression=.*[/\\\\](\\w+)[/\\\\](\\w+)\\.sql$",
-  "-type_subexpression=1",   // group 1 = folder (type)
-  "-name_subexpression=2",   // group 2 = file (object name)
-  "-type_mapping=packages=PACKAGE BODY/functions=FUNCTION/procedures=PROCEDURE/triggers=TRIGGER"
-]
-```
-> Працює на будь-якій глибині (`.*` поглинає модулі вище). Різні назви папок
-> (напр. `package`, `pkg`, `pacote`) можна перелічити у `type_mapping`.
-
-**2) За префіксом імені** — домовленість `pkg_*`, `prc_*`, `vw_*` (не залежить від папки):
-```jsonc
-"utplsql.coverageSourceArgs": [
-  "-regex_expression=.*[/\\\\]((pkg|prc|fnc|trg|vw)_\\w+)\\.sql$",
-  "-name_subexpression=1",   // group 1 = full name (e.g. PKG_EXAMPLE)
-  "-type_subexpression=2",   // group 2 = prefix (type)
-  "-type_mapping=pkg=PACKAGE BODY/prc=PROCEDURE/fnc=FUNCTION/trg=TRIGGER/vw=VIEW"
-]
-```
-
-**3) За типізованим розширенням** — файли `*.pkb`, `*.fnc`, `*.prc`, `*.trg` (не залежить від папки):
-```jsonc
-"utplsql.coverageSourceArgs": [
-  "-regex_expression=.*[/\\\\](\\w+)\\.(\\w+)$",
-  "-name_subexpression=1",   // group 1 = name
-  "-type_subexpression=2",   // group 2 = extension (type)
-  "-type_mapping=pkb=PACKAGE BODY/fnc=FUNCTION/prc=PROCEDURE/trg=TRIGGER"
-]
-```
-
-**Важливі зауваження:**
-- **Пакети → `PACKAGE BODY`** (не `PACKAGE`): покриття збирається в **body** пакета.
-- **Windows / метасимволи регулярних виразів:** уникайте **`^`** у регулярних виразах (його споживає `cmd` із `.bat`) — тому в прикладах
-  використовуються `\w` і `[/\\]`.
-
 ## Репортери
 
 Розширення завжди включає **два** репортери за замовчуванням:
@@ -357,10 +327,7 @@ utPLSQL), покриття пропускається з попередженн�
 Репортери за замовчуванням автоматично дедуплікуються, навіть якщо
 перелічені тут.
 
-**Тимчасовий репортер для сесії** — команда **utPLSQL: Select additional
-reporter...** відкриває QuickPick із динамічним списком із бази даних.
-Вибраний репортер зберігається в сесії, але вибір **не застосовується**
-у поточній версії Oracle-only.
+**Сession reporter** — команда **Вибрати додатковий reporter...** відкриває QuickPick зі списком із БД; обраний reporter зберігається в сесії та **застосовується під час наступного запуску**.
 
 ## Вимоги до бази даних
 

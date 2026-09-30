@@ -2,13 +2,14 @@
 tipo: prd
 id: PRD-75
 aliases: [PRD-75]
-status: proposed
+status: completed
 titulo: "Árvore de testes lazy (resolução incremental por nível)"
 versao: "0.14.0"
 data: "2026-09-19"
 autor: "Gil Cleber Barboza"
 versao_titulo: "0.14.0 — Árvore, relatórios, conectividade e segurança"
-verificado: 2026-09-23
+verificado: 2026-09-28
+regras: ["BR-SCHEMA-004"]
 tags: [prd]
 ---
 
@@ -170,7 +171,9 @@ funcionando pelos IDs.
 
 <!-- brain:auto:start:conexoes -->
 - 🗺️ [[MOC - PRDs]]
+- 📐 Regras: [[BR-SCHEMA-004 - Árvore de testes resolvida por nível sob demanda (lazy)|BR-SCHEMA-004]]
 - 🔗 PRDs relacionados: [[prd-74-db-first-discovery|PRD-74]]
-- 🔗 Mesma versão (0.14.0): [[prd-47-node-26-toolchain|PRD-47]] · [[prd-76-reporter-export|PRD-76]] · [[prd-80-virtual-db-source|PRD-80]] · [[prd-81-security-hardening|PRD-81]] · [[prd-82-tns-wallet|PRD-82]]
-- 🚀 ⬅️ release anterior: [[prd-87-suitepath-results-jump|PRD-87 (0.13.0)]] · ➡️ próxima release: [[prd-50-auto-run-on-save|PRD-50 (0.15.0)]]
+- 🎯 RF1 — Resolvedor por nó → [[BR-SCHEMA-004 - Árvore de testes resolvida por nível sob demanda (lazy)|BR-SCHEMA-004]]
+- 🎯 RF4 — Resultados e re-run → [[BR-SCHEMA-004 - Árvore de testes resolvida por nível sob demanda (lazy)|BR-SCHEMA-004]]
+- 🚀 ⬅️ release anterior: [[prd-87-suitepath-results-jump|PRD-87 (0.13.0)]] · ➡️ próxima release: [[prd-47-node-26-toolchain|PRD-47 (0.15.0)]]
 <!-- brain:auto:end -->

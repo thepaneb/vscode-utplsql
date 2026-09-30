@@ -18,6 +18,7 @@
 const fs = require('fs');
 const path = require('path');
 const { spawnSync } = require('child_process');
+const { resolveVsce } = require('./vsce.cjs');
 
 // node-oracledb 7.0.1 publica glue pré-compilada para estes alvos (thick).
 const GLUE_TARGETS = ['win32-x64', 'linux-x64', 'linux-arm64', 'darwin-arm64'];
@@ -62,7 +63,7 @@ function main({
   argv = process.argv.slice(2),
   fsImpl = fs,
   spawnSyncImpl = spawnSync,
-  platform = process.platform,
+  resolveVsceImpl = resolveVsce,
   log = console.log,
   error = console.error,
 } = {}) {
@@ -89,11 +90,12 @@ function main({
 
   const out = `vscode-utplsql-${pkgVersion}@${target}.vsix`;
   log(`📦 Empacotando ${target} (${mode}) → ${out}`);
-  const result = spawnSyncImpl('vsce', ['package', '--target', target, '--out', out], {
-    stdio: 'inherit',
-    cwd: root,
-    shell: platform === 'win32',
-  });
+  const { command, argsPrefix } = resolveVsceImpl();
+  const result = spawnSyncImpl(
+    command,
+    [...argsPrefix, 'package', '--target', target, '--out', out],
+    { stdio: 'inherit', cwd: root },
+  );
   return result.status ?? 1;
 }
 

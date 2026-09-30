@@ -34,6 +34,14 @@
 - 🗄️ **DB-first откриване** — изграждайте дървото от `ut_runner.get_suites_info` и възстановявайте кеша с анотации от палитрата.
 - 🐛 **PL/SQL Debug** — точки на прекъсване и поетапно дебъгване на utPLSQL тестове чрез `DBMS_DEBUG` (роден Debug Adapter).
 - 🌍 **i18n — 24 езика** — `utplsql.language` следва VSCode (24 локали: pt-br, en, en-gb, es, zh-cn, zh-tw, ja, de, fr, it, ko, ru, tr, pl, cs, hu, bg, el, id, ro, sr, th, uk, vi).
+- 🌳 **Мързеливо дърво на тестовете** — в режим `schema` пакетите/наборите/тестовете се зареждат при разгъване, така че големите схеми се отварят мигновено.
+- 🧾 **Run with Reporter (Export)** — изпълнява селекцията с произволен reporter на базата и записва изхода в Output или във файл (`utplsql.reporter.*`), без да променя резултатите в Test Explorer.
+- 🗂️ **Виртуален източник от базата** — без локален файл *jump to failure* и покритието отварят документ само за четене от `ALL_SOURCE` (`utplsql-source:/…`).
+- 🔐 **TNS в thin + wallet** — `utplsql.connections.tnsAdminPath` разрешава псевдоними от `tnsnames.ora` в thin драйвера (fallback към SQL Developer/`TNS_ADMIN`); `walletLocation` на профила и `utPLSQL: Set wallet password` пазят паролата на wallet в SecretStorage.
+- 🔒 **Затягане на сигурността на връзките** — настройките за връзка са `machine`-scoped, разширението е изключено в ненадеждни работни пространства, а паролата на профила е обвързана с връзката.
+- 🧱 **Диагностика на компилация** — след всяко изпълнение грешките при компилация на PL/SQL (`ALL_ERRORS`) се показват в Problems Panel под източника `utPLSQL Compilation` (настройка `utplsql.compilationDiagnostics.enabled`).
+- ⏳ **Напредък и отказ** — дългите изпълнения показват известие за напредък с брояч и бутон *Cancel* (плюс опционален `utplsql.timeoutMinutes`).
+- 📁 **Многоработно пространство (multi-root)** — всяка папка на работното пространство има своите набори, с независимо откриване, изпълнение и покритие.
 
 ## Инсталация
 
@@ -55,7 +63,7 @@
 |---|---|---|
 | 18c+ | v3.2.x (18c+) / v3.1.x | Препоръчително; charset `AL32UTF8`. |
 | 12.2 | само v3.1.x | v3.2.x не се компилира (`PLS-00222`). `WE8DEC` на образа губи непредставими символи (напр. `€`); thin драйверът игнорира `NLS_LANG`. |
-- **VSCode 1.88+** (Test Coverage API).
+- **VSCode 1.101+** (Test Coverage API).
 
 Разширението е само „графичният клиент" — тестовете се изпълняват от базата данни директно чрез node-oracledb.
 
@@ -93,8 +101,10 @@ code .
 
 **Приети формати:**
 - **EZ Connect**: `user/pass@//host:1521/service`
-- **TNS alias**: `user/pass@tns_alias` (изисква конфигуриран `TNS_ADMIN`)
+- **TNS alias**: `user/pass@tns_alias`
 - **Wallet (Oracle Cloud)**: `user/pass@tcps://host:1522/service?wallet_location=/path/wallet`
+
+> 🔒 **Затегнати настройки:** настройките за връзка са **`machine`-scoped**; разширението е **изключено в ненадеждни работни пространства**; паролата на профила е **свързана с връзката му**. (`utplsql.connection`, `utplsql.profiles`, `utplsql.activeProfile`, `utplsql.oracleClientLibDir`, `utplsql.oracleClientConfigDir`, `utplsql.connections.tnsAdminPath`)
 
 ## Как работи
 
@@ -121,6 +131,8 @@ Test Explorer **с приключването на всеки тест**.
 | `utplsql.timeoutMinutes` | `60` | Таймаут в минути за изпълнението на тестовете. |
 | `utplsql.dbmsOutput` | `false` | Активира `DBMS_OUTPUT` в тестовата сесия. Полезно за отстраняване на грешки. |
 | `utplsql.additionalReporters` | `[]` | Допълнителни reporters, които да се включат при всяко изпълнение (напр. `["ut_coverage_html_reporter"]`). По подразбиране (documentation, junit) винаги са включени и не е нужно да се изброяват. |
+| `utplsql.reporter.clientCharacterSet` | `""` | Клиентски charset (`a_client_character_set`) за **Run with Reporter (Export)**. Празно = по подразбиране на reporter. |
+| `utplsql.reporter.colorConsole` | `false` | Включва ANSI цвят (`a_color_console`) за текстови конзолни reporter при експорт. |
 | `utplsql.tags` | `""` | Израз за тагове на utPLSQL за филтриране кои тестове се изпълняват (напр. `fast & !integration`). Празно изпълнява всички. |
 | `utplsql.run.randomOrder` | `false` | Изпълнява тестовете в случаен ред, за да разкрие зависимости на реда между тях. |
 | `utplsql.run.randomOrderSeed` | `0` | Seed за случайния ред. `0` = избран от базата (невъзпроизводим); > 0 възпроизвежда същия ред. |
@@ -135,7 +147,8 @@ Test Explorer **с приключването на всеки тест**.
 | `utplsql.oracleClientLibDir` | `""` | Директория на Oracle Instant Client. Задължителна, когато `utplsql.oracleClientMode` е `thick` (напр. `C:\oracle\instantclient_23_5`). |
 | Дебъгът не спира на точката на прекъсване | Пакет без debug информация или липсващи debug привилегии | Компилирайте с `PLSQL_OPTIMIZE_LEVEL <= 1` (или `ALTER PACKAGE ... COMPILE DEBUG PLSQL_OPTIMIZE_LEVEL = 1`) и дайте `DEBUG CONNECT SESSION` + `EXECUTE ON SYS.DBMS_DEBUG`. Точките на прекъсване в `test_*.pkb` може да не се задействат (utPLSQL изпълнява тестовете чрез динамичен SQL); поставете ги в тествания код. |
 | `utplsql.oracleClientConfigDir` | `""` | Конфигурационна директория на Oracle (TNS_ADMIN) със `sqlnet.ora`/`tnsnames.ora`. Незадължителна; използва се само от thick режима. |
-| `utplsql.organization` | `file` | Организация на дървото: `file` (по път) или `schema` (Schema > Package > Suite > Test). В режим `schema` комплектите също се откриват от базата данни (`ut_runner.get_suites_info`, с връщане към `ALL_OBJECTS`/`ALL_SOURCE`), когато `.pks` файлове не са в работната област — с виртуален URI `utplsql-db:/` (изпълнение и преминаване към грешката работят; без CodeLens/декорации). |
+| `utplsql.connections.tnsAdminPath` | `""` | Директория с `tnsnames.ora` за **TNS псевдоними в thin драйвера**. Ред: тази настройка → user/machine стойност на `sqldeveloper.connections.tnsConfiguration.path` → `TNS_ADMIN`. |
+| `utplsql.organization` | `file` | Организация на дървото: `file` (по път) или `schema` (Schema > Package > Suite > Test). В режим `schema` комплектите също се откриват от базата данни (`ut_runner.get_suites_info`, с връщане към `ALL_OBJECTS`/`ALL_SOURCE`), когато `.pks` файлове не са в работната област — с виртуален URI `utplsql-db:/` (изпълнение и преминаване към грешката работят; без CodeLens/декорации). · `utplsql-source:/` |
 | `utplsql.organization.schemaPattern` | `db/{schema}/**` | Glob шаблон за извличане на схемата от пътя. Използвайте `{schema}` като плейсхолдър. В режим `schema` директориите под основата на шаблона (напр. `db/*`) определят схемите, по които се прави заявка в базата данни. |
 | `utplsql.discovery.source` | `auto` | Източник на дървото в режим `schema`: `auto` използва API на базата (`ut_runner.get_suites_info`) и преминава към `ALL_SOURCE`/файлове при недостъпност; `database` изисква API; `file` изключва откриването през базата. |
 | `utplsql.refreshDebounceMs` | `300` | Debounce (ms) за обединяване на събитията на наблюдателя на файлове `.pks`/`.pkb` преди опресняване на Test Explorer. |
@@ -257,6 +270,8 @@ UTPLSQL_CONN=your_user/password@//host:1521/service
 | `utPLSQL: Run script` | Runs the script open in the editor against a connection profile | Right-click → script file |
 | `utPLSQL: Run script file` | Runs an Explorer script file (decoded with the profile charset) | Right-click → file |
 | `utPLSQL: Run script folder` | Runs the folder scripts in alphabetical order | Right-click → folder |
+| `utPLSQL: Задаване на парола на портфейла` | Задава/изчиства паролата на портфейла на активния профил (SecretStorage) | — |
+| `utPLSQL: Изпълни с reporter (експорт)` | Изпълнява селекцията с избран reporter и записва изхода в Output/файл (без промяна на резултатите) | Test Explorer → menu do item |
 
 > **Recompile UT3** (`utplsql.recompileUt3`) **не** е команда от палитрата — това е
 > вътрешен quick-fix на диагностиката „utPLSQL Setup" (невалидни обекти в
@@ -286,49 +301,6 @@ UTPLSQL_CONN=your_user/password@//host:1521/service
 
 
 
-Разширението подава `-source_path` (= `utplsql.sourcePath`) и картографира покритите обекти
-към изходните файлове чрез `utplsql.coverageSourceArgs` (regex + `type_mapping`). `-owner`
-се извежда от връзката (или от `utplsql.coverageOwner`).
-
-### Картографиране на покритието към файлове (`coverageSourceArgs`)
-
-`type_mapping` превежда „типа", уловен от regex, в типа на Oracle. Три често срещани конвенции:
-
-**1) По директория** — структура `sourcePath/<type>/<name>.sql` (папки `functions/`, `procedures/`, `packages/`, …):
-```jsonc
-"utplsql.coverageSourceArgs": [
-  "-regex_expression=.*[/\\\\](\\w+)[/\\\\](\\w+)\\.sql$",
-  "-type_subexpression=1",   // group 1 = folder (type)
-  "-name_subexpression=2",   // group 2 = file (object name)
-  "-type_mapping=packages=PACKAGE BODY/functions=FUNCTION/procedures=PROCEDURE/triggers=TRIGGER"
-]
-```
-> Работи на всякаква дълбочина (`.*` поглъща модулите отгоре). Различните имена на папки
-> (напр. `package`, `pkg`, `pacote`) могат да бъдат изброени в `type_mapping`.
-
-**2) По префикс на името** — конвенция `pkg_*`, `prc_*`, `vw_*` (независимо от папката):
-```jsonc
-"utplsql.coverageSourceArgs": [
-  "-regex_expression=.*[/\\\\]((pkg|prc|fnc|trg|vw)_\\w+)\\.sql$",
-  "-name_subexpression=1",   // group 1 = full name (e.g. PKG_EXAMPLE)
-  "-type_subexpression=2",   // group 2 = prefix (type)
-  "-type_mapping=pkg=PACKAGE BODY/prc=PROCEDURE/fnc=FUNCTION/trg=TRIGGER/vw=VIEW"
-]
-```
-
-**3) По типизирано разширение** — файлове `*.pkb`, `*.fnc`, `*.prc`, `*.trg` (независимо от папката):
-```jsonc
-"utplsql.coverageSourceArgs": [
-  "-regex_expression=.*[/\\\\](\\w+)\\.(\\w+)$",
-  "-name_subexpression=1",   // group 1 = name
-  "-type_subexpression=2",   // group 2 = extension (type)
-  "-type_mapping=pkb=PACKAGE BODY/fnc=FUNCTION/prc=PROCEDURE/trg=TRIGGER"
-]
-```
-
-**Важни бележки:**
-- **Пакети → `PACKAGE BODY`** (не `PACKAGE`): покритието се събира в **тялото** на пакета.
-
 ## Reporters
 
 Разширението винаги включва **два** reporters по подразбиране:
@@ -351,8 +323,7 @@ Reporters по подразбиране автоматично се дедупл
 
 **Временен reporter за сесията** — команда **utPLSQL: Select additional
 reporter...** отваря QuickPick с динамичния списък от базата данни. Избраният
-reporter се запазва в сесията, но изборът **не се прилага**
-в текущата версия само с Oracle.
+reporter се запазва в сесията и се **прилага при следващото изпълнение**.
 
 ## Изисквания към базата данни
 

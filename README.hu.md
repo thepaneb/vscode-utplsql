@@ -34,6 +34,14 @@ Integrálja a [utPLSQL](https://www.utplsql.org/) teszteket a VSCode-ba, és a P
 - 🗄️ **DB-first felfedezés** — építsd a fát a `ut_runner.get_suites_info` alapján, és építsd újra a megjegyzés-gyorsítótárat a palettáról.
 - 🐛 **PL/SQL-hibakeresés** — töréspontok és lépésenkénti hibakeresés a utPLSQL-tesztekhez `DBMS_DEBUG` segítségével (natív Debug Adapter).
 - 🌍 **i18n — 24 nyelv** — a `utplsql.language` követi a VSCode-ot (24 területi beállítás: pt-br, en, en-gb, es, zh-cn, zh-tw, ja, de, fr, it, ko, ru, tr, pl, cs, hu, bg, el, id, ro, sr, th, uk, vi).
+- 🌳 **Lusta tesztek fája** — `schema` módban a package-ek/suite-ok/tesztek kibontáskor, igény szerint töltődnek, így a nagy sémák azonnal megnyílnak.
+- 🧾 **Run with Reporter (Export)** — a kijelölést bármely adatbázis-reporterrel futtatja, és a kimenetet az Outputba vagy fájlba írja (`utplsql.reporter.*`), a Test Explorer eredményeinek megváltoztatása nélkül.
+- 🗂️ **Virtuális adatbázis-forrás** — helyi fájl nélkül a *jump to failure* és a lefedettség egy csak olvasható dokumentumot nyit meg az `ALL_SOURCE`-ból (`utplsql-source:/…`).
+- 🔐 **TNS thin módban + wallet** — a `utplsql.connections.tnsAdminPath` feloldja a `tnsnames.ora` aliasokat a thin driverben (fallback: SQL Developer/`TNS_ADMIN`); a profil `walletLocation` mezője és a `utPLSQL: Set wallet password` a wallet jelszavát a SecretStorage-ban tartja.
+- 🔒 **Kapcsolatok biztonsági megerősítése** — a kapcsolati beállítások `machine`-scopedok, a bővítmény le van tiltva nem megbízható munkaterületeken, és a profil jelszava a kapcsolathoz van kötve.
+- 🧱 **Fordítási diagnosztika** — minden futtatás után a PL/SQL fordítási hibák (`ALL_ERRORS`) megjelennek a Problems Panelben a `utPLSQL Compilation` forrás alatt (`utplsql.compilationDiagnostics.enabled` beállítás).
+- ⏳ **Folyamat és megszakítás** — a hosszú futások előrehaladási értesítést mutatnak számlálóval és *Cancel* gombbal (plusz opcionális `utplsql.timeoutMinutes`).
+- 📁 **Multi-root munkaterület** — minden munkaterület-mappa saját suite-okkal rendelkezik, független felderítéssel, futtatással és lefedettséggel.
 
 ## Telepítés
 
@@ -55,7 +63,7 @@ A bővítmény kétféleképpen telepíthető:
 |---|---|---|
 | 18c+ | v3.2.x (18c+) / v3.1.x | Ajánlott; charset `AL32UTF8`. |
 | 12.2 | csak v3.1.x | A v3.2.x nem fordul (`PLS-00222`). A kép `WE8DEC`-je elveszíti a nem ábrázolható karaktereket (pl. `€`); a thin illesztő figyelmen kívül hagyja a `NLS_LANG`-ot. |
-- **VSCode 1.88+** (Test Coverage API).
+- **VSCode 1.101+** (Test Coverage API).
 
 A bővítmény csupán a „grafikus kliens" — a teszteket ténylegesen az adatbázis futtatja közvetlenül a node-oracledb-n keresztül.
 
@@ -93,8 +101,10 @@ kapcsolatot, és azt csak a memóriában őrzi meg a munkamenet során — a
 
 **Elfogadott formátumok:**
 - **EZ Connect**: `user/pass@//host:1521/service`
-- **TNS-alias**: `user/pass@tns_alias` (beállított `TNS_ADMIN` szükséges)
+- **TNS-alias**: `user/pass@tns_alias`
 - **Wallet (Oracle Cloud)**: `user/pass@tcps://host:1522/service?wallet_location=/path/wallet`
+
+> 🔒 **Megerősített beállítások:** a kapcsolati beállítások **`machine`-scoped**; a bővítmény **le van tiltva nem megbízható munkaterületeken**; a profil jelszava **a kapcsolatához van kötve**. (`utplsql.connection`, `utplsql.profiles`, `utplsql.activeProfile`, `utplsql.oracleClientLibDir`, `utplsql.oracleClientConfigDir`, `utplsql.connections.tnsAdminPath`)
 
 ## Működés
 
@@ -121,6 +131,8 @@ A bővítmény közvetlenül Oracle-on keresztül csatlakozik, beolvassa a ripor
 | `utplsql.timeoutMinutes` | `60` | Időtúllépés percben a tesztek futtatásához. |
 | `utplsql.dbmsOutput` | `false` | Engedélyezi a `DBMS_OUTPUT` használatát a teszt-munkamenetben. Hasznos hibakereséshez. |
 | `utplsql.additionalReporters` | `[]` | További riporterek, amelyek minden futtatáskor bekerülnek (pl. `["ut_coverage_html_reporter"]`). Az alapértelmezettek (documentation, junit) mindig szerepelnek, és nem kell felsorolni őket. |
+| `utplsql.reporter.clientCharacterSet` | `""` | Kliens karakterkészlet (`a_client_character_set`) a **Run with Reporter (Export)** művelethez. Üres = a reporter alapértéke. |
+| `utplsql.reporter.colorConsole` | `false` | ANSI színt (`a_color_console`) engedélyez a szöveges konzol reportereknél az exportban. |
 | `utplsql.tags` | `""` | utPLSQL tagkifejezés a futtatandó tesztek szűréséhez (pl. `fast & !integration`). Üres = mindet futtatja. |
 | `utplsql.run.randomOrder` | `false` | Véletlen sorrendben futtatja a teszteket, hogy felfedje a köztük lévő sorrendfüggőségeket. |
 | `utplsql.run.randomOrderSeed` | `0` | A véletlen sorrend seedje. `0` = az adatbázis választja (nem reprodukálható); > 0 ugyanazt a sorrendet állítja elő. |
@@ -135,7 +147,8 @@ A bővítmény közvetlenül Oracle-on keresztül csatlakozik, beolvassa a ripor
 | `utplsql.oracleClientLibDir` | `""` | Az Oracle Instant Client könyvtára. Kötelező, ha az `utplsql.oracleClientMode` értéke `thick` (pl. `C:\oracle\instantclient_23_5`). |
 | A hibakeresés nem áll meg a törésponton | Csomag hibakeresési info nélkül, vagy hiányzó hibakeresési jogosultságok | Fordítsd `PLSQL_OPTIMIZE_LEVEL <= 1` értékkel (vagy `ALTER PACKAGE ... COMPILE DEBUG PLSQL_OPTIMIZE_LEVEL = 1`), és adj `DEBUG CONNECT SESSION` + `EXECUTE ON SYS.DBMS_DEBUG` jogosultságot. A `test_*.pkb` töréspontok nem biztos, hogy megállnak (az utPLSQL dinamikus SQL-lel futtatja a teszteket); a tesztelt kódba tedd őket. |
 | `utplsql.oracleClientConfigDir` | `""` | Oracle konfigurációs könyvtár (TNS_ADMIN) a `sqlnet.ora`/`tnsnames.ora` fájlokkal. Opcionális; csak a thick mód használja. |
-| `utplsql.organization` | `file` | Fa-szervezés: `file` (elérési út szerint) vagy `schema` (Séma > Package > Suite > Teszt). `schema` módban a suite-ok az adatbázisból is felderítésre kerülnek (`ut_runner.get_suites_info`, `ALL_OBJECTS`/`ALL_SOURCE` visszaeséssel), ha a `.pks` fájlok nincsenek a munkaterületen — virtuális URI-vel `utplsql-db:/` (végrehajtás és ugrás a hibához működik; CodeLens/dekorációk nélkül). |
+| `utplsql.connections.tnsAdminPath` | `""` | `tnsnames.ora` könyvtár a **TNS álnevek feloldásához a thin illesztőben**. Sorrend: ez a beállítás → `sqldeveloper.connections.tnsConfiguration.path` user/machine értéke → `TNS_ADMIN`. |
+| `utplsql.organization` | `file` | Fa-szervezés: `file` (elérési út szerint) vagy `schema` (Séma > Package > Suite > Teszt). `schema` módban a suite-ok az adatbázisból is felderítésre kerülnek (`ut_runner.get_suites_info`, `ALL_OBJECTS`/`ALL_SOURCE` visszaeséssel), ha a `.pks` fájlok nincsenek a munkaterületen — virtuális URI-vel `utplsql-db:/` (végrehajtás és ugrás a hibához működik; CodeLens/dekorációk nélkül). · `utplsql-source:/` |
 | `utplsql.organization.schemaPattern` | `db/{schema}/**` | Glob-minta a séma kinyeréséhez az elérési útból. Helyőrzőként a `{schema}` használható. `schema` módban a minta alapja alatti könyvtárak (pl. `db/*`) határozzák meg az adatbázisban lekérdezett sémákat. |
 | `utplsql.discovery.source` | `auto` | A fastábla forrása `schema` módban: az `auto` az adatbázis API-t (`ut_runner.get_suites_info`) használja, és elérhetetlenség esetén `ALL_SOURCE`/fájlokra vált; a `database` megköveteli az API-t; a `file` kikapcsolja az adatbázis-felfedezést. |
 | `utplsql.refreshDebounceMs` | `300` | Debounce (ms) a `.pks`/`.pkb` fájlfigyelő eseményeinek összevonásához a Test Explorer frissítése előtt. |
@@ -257,6 +270,8 @@ A bővítmény összes parancsa (paletta `Ctrl+Shift+P`, előtag `utPLSQL:`):
 | `utPLSQL: Run script` | Runs the script open in the editor against a connection profile | Right-click → script file |
 | `utPLSQL: Run script file` | Runs an Explorer script file (decoded with the profile charset) | Right-click → file |
 | `utPLSQL: Run script folder` | Runs the folder scripts in alphabetical order | Right-click → folder |
+| `utPLSQL: Tárca jelszó beállítása` | Beállítja/törli az aktív profil tárca jelszavát (SecretStorage) | — |
+| `utPLSQL: Futtatás reporterrel (export)` | A kijelölést a választott reporterrel futtatja, és Output/fájlba írja (nem módosítja az eredményeket) | Test Explorer → menu do item |
 
 > **Recompile UT3** (`utplsql.recompileUt3`) **nem** palettaparancs — ez a
 > „utPLSQL Setup" diagnosztika belső gyorsjavítása (érvénytelen objektumok a
@@ -286,49 +301,6 @@ Minden parancsikon a `Ctrl+Shift+U` előtagot használja (`Cmd+Shift+U` Macen):
 
 
 
-A bővítmény átadja a `-source_path` értéket (= `utplsql.sourcePath`), és a lefedett objektumokat
-a `utplsql.coverageSourceArgs` segítségével rendeli a forrásfájlokhoz (regex + `type_mapping`). A `-owner`
-a kapcsolatból származik (vagy a `utplsql.coverageOwner`-ból).
-
-### A lefedettség fájlokhoz rendelése (`coverageSourceArgs`)
-
-A `type_mapping` a regex által kinyert „típust" Oracle-típussá alakítja. Három gyakori konvenció:
-
-**1) Könyvtár szerint** — `sourcePath/<type>/<name>.sql` szerkezet (`functions/`, `procedures/`, `packages/`, … mappák):
-```jsonc
-"utplsql.coverageSourceArgs": [
-  "-regex_expression=.*[/\\\\](\\w+)[/\\\\](\\w+)\\.sql$",
-  "-type_subexpression=1",   // group 1 = folder (type)
-  "-name_subexpression=2",   // group 2 = file (object name)
-  "-type_mapping=packages=PACKAGE BODY/functions=FUNCTION/procedures=PROCEDURE/triggers=TRIGGER"
-]
-```
-> Bármilyen mélységben működik (a `.*` magába szívja a fölötte lévő modulokat). A változatos
-> mappanevek (pl. `package`, `pkg`, `pacote`) felsorolhatók a `type_mapping`-ben.
-
-**2) Név-előtag szerint** — `pkg_*`, `prc_*`, `vw_*` konvenció (mappától független):
-```jsonc
-"utplsql.coverageSourceArgs": [
-  "-regex_expression=.*[/\\\\]((pkg|prc|fnc|trg|vw)_\\w+)\\.sql$",
-  "-name_subexpression=1",   // group 1 = full name (e.g. PKG_EXAMPLE)
-  "-type_subexpression=2",   // group 2 = prefix (type)
-  "-type_mapping=pkg=PACKAGE BODY/prc=PROCEDURE/fnc=FUNCTION/trg=TRIGGER/vw=VIEW"
-]
-```
-
-**3) Típusos kiterjesztés szerint** — `*.pkb`, `*.fnc`, `*.prc`, `*.trg` fájlok (mappától független):
-```jsonc
-"utplsql.coverageSourceArgs": [
-  "-regex_expression=.*[/\\\\](\\w+)\\.(\\w+)$",
-  "-name_subexpression=1",   // group 1 = name
-  "-type_subexpression=2",   // group 2 = extension (type)
-  "-type_mapping=pkb=PACKAGE BODY/fnc=FUNCTION/prc=PROCEDURE/trg=TRIGGER"
-]
-```
-
-**Fontos megjegyzések:**
-- **Csomagok → `PACKAGE BODY`** (nem `PACKAGE`): a lefedettség a csomag **törzsében** gyűlik össze.
-
 ## Riporterek
 
 A bővítmény mindig **két** alapértelmezett riportert tartalmaz:
@@ -349,10 +321,7 @@ soha nem blokkolódik.
 Az alapértelmezett riporterek automatikusan deduplikálódnak, még akkor is, ha
 itt fel vannak sorolva.
 
-**Munkamenetenként változó riporter** — a **utPLSQL: Select additional
-reporter...** parancs QuickPicket nyit az adatbázisból származó dinamikus listával. A
-kiválasztott riporter a munkamenetben tárolódik, de a kiválasztás **nem kerül
-alkalmazásra** a jelenlegi Oracle-only verzióban.
+**Illékony munkamenet-reporter** — a **További riporter kiválasztása...** parancs QuickPicket nyit az adatbázis listájával; a választott reporter a munkamenetben marad és **a következő futásnál alkalmazódik**.
 
 ## Adatbázis-követelmények
 

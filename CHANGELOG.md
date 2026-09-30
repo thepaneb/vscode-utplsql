@@ -1,5 +1,56 @@
 # Changelog
 
+## 0.14.0
+
+- **Piso de VS Code 1.101 e runtime Node 22 (PRD-94)**: `engines.vscode` passa de
+  `^1.88.0` para **`^1.101.0`** — o primeiro VS Code cujo Extension Host embute
+  **Node 22** (LTS mais antigo em suporte). **Breaking:** usuários em VS Code
+  **1.88–1.100** (Node 18/20, já EOL) deixam de receber a extensão. Com isso
+  `engines.node`/`@types/node` (22) e o `esbuild target` passam a casar com o
+  runtime, e o `docs-fidelity` cobra a coerência.
+
+- **Log estruturado no painel Output (LogOutputChannel)**: o diagnóstico da
+  extensão passa a ir para o canal **`utPLSQL`**, com nível controlado pelo
+  usuário no painel Output (Trace/Debug/Info/Warning/Error) — sem depender de
+  `UTPLSQL_DEBUG`. O módulo de log segue puro (`src/logger.ts`).
+
+- **Hardening de segurança das settings de conexão (PRD-81)**: as settings
+  sensíveis (`utplsql.connection`, `utplsql.profiles`, `utplsql.activeProfile`,
+  `utplsql.oracleClientLibDir`, `utplsql.oracleClientConfigDir`) passam a ser
+  **`machine`-scoped** — um `.vscode/settings.json` de terceiros não pode
+  sobrescrevê-las. A extensão fica **desabilitada em workspaces não confiáveis**
+  (`capabilities.untrustedWorkspaces`). A senha do perfil, guardada no
+  SecretStorage, passa a ser **vinculada à conexão**: se a `connection` do perfil
+  mudar, a senha é descartada em vez de ser enviada ao novo host. Perfis legados
+  são migrados automaticamente.
+
+- **Resolução TNS no thin e senha de wallet no SecretStorage (PRD-82)**: nova
+  setting `utplsql.connections.tnsAdminPath` (machine-scoped), com fallback para
+  o valor user/machine de `sqldeveloper.connections.tnsConfiguration.path` e para
+  a variável `TNS_ADMIN`. O parser de `tnsnames.ora` (`src/tnsnames.ts`) resolve
+  aliases no driver **thin** sem depender de env; Easy Connect segue inalterado.
+  O perfil ganhou o campo `walletLocation` e o comando
+  `utPLSQL: Set wallet password` grava a senha da wallet no SecretStorage.
+
+- **Execução e export com reporter arbitrário (PRD-76)**: novo comando
+  `utPLSQL: Run with Reporter (Export)` (menu de contexto do Test Explorer) que
+  roda a seleção com qualquer reporter do banco e grava a saída no Output ou em
+  arquivo. As settings `utplsql.reporter.clientCharacterSet` e
+  `utplsql.reporter.colorConsole` controlam os argumentos
+  `a_client_character_set` e `a_color_console` (allowlist por reporter). O export
+  **não** altera os resultados no Test Explorer.
+
+- **Fonte virtual do banco para falhas e cobertura (PRD-80)**: quando não há
+  arquivo local, o *jump to failure* e a cobertura passam a abrir um documento
+  **read-only** resolvido de `ALL_SOURCE` (`utplsql-source:/<SCHEMA>/<OBJ>`), para
+  qualquer tipo de objeto (package/body, procedure, function, trigger,
+  type/body, view). O scheme legado `utplsql-db:` continua disponível.
+
+- **Árvore de testes lazy (PRD-75)**: no modo `schema`, o refresh materializa
+  apenas os nós de **schema**; package/suite/teste são resolvidos sob demanda ao
+  expandir (`resolveHandler`), sem consultar o banco para níveis não abertos.
+  "Run All"/"Run Failed" e a coleta de alvos forçam a resolução necessária.
+
 ## 0.13.0
 
 - **Correção: resultados e jump-to-failure em suítes com `%suitepath` (PRD-87)**: o
