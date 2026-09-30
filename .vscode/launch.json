@@ -6,6 +6,8 @@
       "type": "extensionHost",
       "request": "launch",
       "args": ["--extensionDevelopmentPath=${workspaceFolder}"],
+      "port": 9339,
+      "timeout": 60000,
       "outFiles": [
         "${workspaceFolder}/out/**/*.js",
         "${workspaceFolder}/dist/**/*.js"
