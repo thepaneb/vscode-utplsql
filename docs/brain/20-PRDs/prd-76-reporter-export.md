@@ -185,5 +185,5 @@ documentar que cor só faz sentido para reporters textuais.
 - 📐 Regras: [[BR-EXEC-015 - Export com reporter não altera os resultados do Test Explorer|BR-EXEC-015]]
 - 🔗 PRDs relacionados: [[prd-69-oracle-runner-typed-binds|PRD-69]] · [[prd-79-coverage-scope|PRD-79]]
 - 🎯 RF1 — Coleta da saída do reporter → [[BR-EXEC-015 - Export com reporter não altera os resultados do Test Explorer|BR-EXEC-015]]
-- 🚀 ⬅️ release anterior: [[prd-87-suitepath-results-jump|PRD-87 (0.13.0)]] · ➡️ próxima release: [[prd-47-node-26-toolchain|PRD-47 (0.15.0)]]
+- 🚀 ⬅️ release anterior: [[prd-87-suitepath-results-jump|PRD-87 (0.13.0)]] · ➡️ próxima release: [[prd-50-auto-run-on-save|PRD-50 (0.15.0)]]
 <!-- brain:auto:end -->

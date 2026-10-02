@@ -4,9 +4,10 @@ id: PRD-93
 aliases: [PRD-93]
 status: proposed
 titulo: "Pipeline de localização contínua (glossário, TM e revisão)"
-versao: "0.18.0"
+versao: "0.19.0"
 data: "2026-09-29"
 autor: "Gil Cleber Barboza"
+versao_titulo: "0.19.0 — Localização (RTL, novos locales e pipeline)"
 verificado: 2026-09-29
 regras: []
 tags: [prd]
@@ -133,5 +134,6 @@ Esperado criar `BR-I18N-007` (pipeline: round-trip + glossário + gate) e notas
 - 🗺️ [[MOC - PRDs]]
 - 🔗 PRDs relacionados: [[prd-89-pseudo-localization-gate|PRD-89]] · [[prd-90-message-plurals-cldr|PRD-90]] · [[prd-91-doc-parity-localized-distribution|PRD-91]]
 - ⚙️ Pipelines: [[PIPE-ci - CI|PIPE-ci]]
-- 🚀 ⬅️ release anterior: [[prd-91-doc-parity-localized-distribution|PRD-91 (0.17.0)]]
+- 🔗 Mesma versão (0.19.0): [[prd-92-rtl-new-locales|PRD-92]]
+- 🚀 ⬅️ release anterior: [[prd-91-doc-parity-localized-distribution|PRD-91 (0.18.0)]]
 <!-- brain:auto:end -->

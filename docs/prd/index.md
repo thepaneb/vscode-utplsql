@@ -158,31 +158,31 @@ notas `prd-*`. O índice navegável do vault é a [[MOC - PRDs]].
 
 | # | PRD | Versão | Data |
 |---|---|---|---|
-| 47 | [Node 26 no toolchain de desenvolvimento](approved/prd-47-node-26-toolchain.md) | 0.15.0 | 2026-08-29 |
+| 47 | [Node 26 no toolchain de desenvolvimento](approved/prd-47-node-26-toolchain.md) | 0.15.1 | 2026-08-29 |
+| 50 | [Auto-run on Save (Watch Mode)](approved/prd-50-auto-run-on-save.md) | 0.15.0 | 2026-09-06 |
+| 51 | [Execução e seleção por Tag (`%tags`)](approved/prd-51-run-by-tag.md) | 0.15.0 | 2026-09-06 |
+| 52 | [Diff inline esperado × obtido nas falhas](approved/prd-52-inline-diff-expected-actual.md) | 0.15.0 | 2026-09-06 |
+| 53 | [Debug de testes: variações (cursor, falhos, último)](approved/prd-53-debug-test-variants.md) | 0.15.0 | 2026-09-06 |
+| 54 | [Toggle de cobertura na status bar](approved/prd-54-coverage-toggle.md) | 0.15.0 | 2026-09-06 |
+| 55 | [Organização da árvore de testes por tag](approved/prd-55-tag-organization.md) | 0.15.0 | 2026-09-06 |
 
 ### ⚪ Propostos
 
 | # | PRD | Versão | Data |
 |---|---|---|---|
-| 50 | [Auto-run on Save (Watch Mode)](proposed/prd-50-auto-run-on-save.md) | 0.15.0 | 2026-09-06 |
-| 51 | [Execução e seleção por Tag (`%tags`)](proposed/prd-51-run-by-tag.md) | 0.15.0 | 2026-09-06 |
-| 52 | [Diff inline esperado × obtido nas falhas](proposed/prd-52-inline-diff-expected-actual.md) | 0.15.0 | 2026-09-06 |
-| 53 | [Debug de testes: variações (cursor, falhos, último)](proposed/prd-53-debug-test-variants.md) | 0.15.0 | 2026-09-06 |
-| 54 | [Toggle de cobertura na status bar](proposed/prd-54-coverage-toggle.md) | 0.15.0 | 2026-09-06 |
-| 55 | [Organização da árvore de testes por tag](proposed/prd-55-tag-organization.md) | 0.15.0 | 2026-09-06 |
-| 56 | [Duração por teste e persistência de resultados](proposed/prd-56-duration-persistence.md) | 0.16.0 | 2026-09-06 |
-| 57 | [Multi-root: resolução de `root`/`sourcePath` por folder](proposed/prd-57-multiroot-root-resolution.md) | 0.16.0 | 2026-09-06 |
-| 58 | [Run Related Tests](proposed/prd-58-run-related-tests.md) | 0.16.0 | 2026-09-06 |
-| 59 | [Scaffold de suíte de teste](proposed/prd-59-scaffold-suite.md) | 0.16.0 | 2026-09-06 |
+| 56 | [Duração por teste e persistência de resultados](proposed/prd-56-duration-persistence.md) | 0.17.0 | 2026-09-06 |
+| 57 | [Multi-root: resolução de `root`/`sourcePath` por folder](proposed/prd-57-multiroot-root-resolution.md) | 0.17.0 | 2026-09-06 |
+| 58 | [Run Related Tests](proposed/prd-58-run-related-tests.md) | 0.17.0 | 2026-09-06 |
+| 59 | [Scaffold de suíte de teste](proposed/prd-59-scaffold-suite.md) | 0.17.0 | 2026-09-06 |
 | 60 | [Cobertura de branch (investigação de viabilidade)](proposed/prd-60-branch-coverage-investigation.md) | Investigação — sem versão alvo | 2026-09-06 |
 | 61 | [Auto-provisionamento do utPLSQL-cli](proposed/prd-61-cli-auto-provision.md) | Suspenso — a reavaliar (PRD-64 removeu o CLI) | 2026-09-06 |
-| 88 | [Formatação sensível a locale (números e durações)](proposed/prd-88-locale-aware-formatting.md) | 0.17.0 | 2026-09-29 |
-| 89 | [Pseudo-localização e gate de strings não traduzidas](proposed/prd-89-pseudo-localization-gate.md) | 0.17.0 | 2026-09-29 |
-| 90 | [Plurais (CLDR) e seleção no catálogo de mensagens](proposed/prd-90-message-plurals-cldr.md) | 0.17.0 | 2026-09-29 |
-| 91 | [Paridade de documentação e distribuição localizada](proposed/prd-91-doc-parity-localized-distribution.md) | 0.17.0 | 2026-09-29 |
-| 92 | [RTL e novos locales (árabe e hebraico)](proposed/prd-92-rtl-new-locales.md) | 0.18.0 | 2026-09-29 |
-| 93 | [Pipeline de localização contínua (glossário, TM e revisão)](proposed/prd-93-continuous-localization-pipeline.md) | 0.18.0 | 2026-09-29 |
-| 95 | [Modernização do runtime: ESM, ES2023 e stdlib Node 22](proposed/prd-95-esm-es2023-node22.md) | 0.15.0 | 2026-09-29 |
+| 88 | [Formatação sensível a locale (números e durações)](proposed/prd-88-locale-aware-formatting.md) | 0.18.0 | 2026-09-29 |
+| 89 | [Pseudo-localização e gate de strings não traduzidas](proposed/prd-89-pseudo-localization-gate.md) | 0.18.0 | 2026-09-29 |
+| 90 | [Plurais (CLDR) e seleção no catálogo de mensagens](proposed/prd-90-message-plurals-cldr.md) | 0.18.0 | 2026-09-29 |
+| 91 | [Paridade de documentação e distribuição localizada](proposed/prd-91-doc-parity-localized-distribution.md) | 0.18.0 | 2026-09-29 |
+| 92 | [RTL e novos locales (árabe e hebraico)](proposed/prd-92-rtl-new-locales.md) | 0.19.0 | 2026-09-29 |
+| 93 | [Pipeline de localização contínua (glossário, TM e revisão)](proposed/prd-93-continuous-localization-pipeline.md) | 0.19.0 | 2026-09-29 |
+| 95 | [Modernização do runtime: ESM, ES2023 e stdlib Node 22](proposed/prd-95-esm-es2023-node22.md) | 0.16.0 | 2026-09-29 |
 <!-- prd:roadmap:end -->
 
 ---
@@ -272,13 +272,13 @@ docs/prd/
 │   ├── prd-94-vscode-floor-1-101.md
 ├── approved/        ← aprovados, aguardando implementação
 │   ├── prd-47-node-26-toolchain.md
-├── proposed/        ← em avaliação
 │   ├── prd-50-auto-run-on-save.md
 │   ├── prd-51-run-by-tag.md
 │   ├── prd-52-inline-diff-expected-actual.md
 │   ├── prd-53-debug-test-variants.md
 │   ├── prd-54-coverage-toggle.md
 │   ├── prd-55-tag-organization.md
+├── proposed/        ← em avaliação
 │   ├── prd-56-duration-persistence.md
 │   ├── prd-57-multiroot-root-resolution.md
 │   ├── prd-58-run-related-tests.md

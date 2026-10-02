@@ -4,9 +4,10 @@ id: PRD-92
 aliases: [PRD-92]
 status: proposed
 titulo: "RTL e novos locales (árabe e hebraico)"
-versao: "0.18.0"
+versao: "0.19.0"
 data: "2026-09-29"
 autor: "Gil Cleber Barboza"
+versao_titulo: "0.19.0 — Localização (RTL, novos locales e pipeline)"
 verificado: 2026-09-29
 regras: []
 tags: [prd]
@@ -131,5 +132,6 @@ Esperado criar `BR-I18N-006` (isolamento bidi em locales RTL) com
 <!-- brain:auto:start:conexoes -->
 - 🗺️ [[MOC - PRDs]]
 - 🔗 PRDs relacionados: [[prd-89-pseudo-localization-gate|PRD-89]] · [[prd-90-message-plurals-cldr|PRD-90]] · [[prd-91-doc-parity-localized-distribution|PRD-91]] · [[prd-93-continuous-localization-pipeline|PRD-93]]
-- 🚀 ⬅️ release anterior: [[prd-91-doc-parity-localized-distribution|PRD-91 (0.17.0)]]
+- 🔗 Mesma versão (0.19.0): [[prd-93-continuous-localization-pipeline|PRD-93]]
+- 🚀 ⬅️ release anterior: [[prd-91-doc-parity-localized-distribution|PRD-91 (0.18.0)]]
 <!-- brain:auto:end -->

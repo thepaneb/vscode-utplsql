@@ -4,9 +4,10 @@ id: PRD-90
 aliases: [PRD-90]
 status: proposed
 titulo: "Plurais (CLDR) e seleção no catálogo de mensagens"
-versao: "0.17.0"
+versao: "0.18.0"
 data: "2026-09-29"
 autor: "Gil Cleber Barboza"
+versao_titulo: "0.18.0 — Localização (formatação, plurais e paridade)"
 verificado: 2026-09-29
 regras: []
 tags: [prd]
@@ -133,5 +134,6 @@ Esperado criar `BR-I18N-004` (plurais via CLDR; formas exigidas por locale) com
 <!-- brain:auto:start:conexoes -->
 - 🗺️ [[MOC - PRDs]]
 - 🔗 PRDs relacionados: [[prd-92-rtl-new-locales|PRD-92]] · [[prd-93-continuous-localization-pipeline|PRD-93]]
-- 🚀 ⬅️ release anterior: [[prd-59-scaffold-suite|PRD-59 (0.16.0)]] · ➡️ próxima release: [[prd-92-rtl-new-locales|PRD-92 (0.18.0)]]
+- 🔗 Mesma versão (0.18.0): [[prd-88-locale-aware-formatting|PRD-88]] · [[prd-89-pseudo-localization-gate|PRD-89]] · [[prd-91-doc-parity-localized-distribution|PRD-91]]
+- 🚀 ⬅️ release anterior: [[prd-59-scaffold-suite|PRD-59 (0.17.0)]] · ➡️ próxima release: [[prd-92-rtl-new-locales|PRD-92 (0.19.0)]]
 <!-- brain:auto:end -->

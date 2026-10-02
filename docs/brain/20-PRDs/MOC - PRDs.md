@@ -29,8 +29,8 @@ npm run sync-prds
 ## Status (gerado)
 
 <!-- brain:auto:start:prd-summary -->
-- 📝 Propostos: **19**
-- 🔵 Aprovados: **1**
+- 📝 Propostos: **13**
+- 🔵 Aprovados: **7**
 - 🟡 Em desenvolvimento: **0**
 - 🟢 Concluídos: **75**
 

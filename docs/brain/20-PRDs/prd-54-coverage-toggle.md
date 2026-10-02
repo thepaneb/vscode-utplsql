@@ -2,7 +2,7 @@
 tipo: prd
 id: PRD-54
 aliases: [PRD-54]
-status: proposed
+status: approved
 titulo: "Toggle de cobertura na status bar"
 versao: "0.15.0"
 data: "2026-09-06"
@@ -136,6 +136,6 @@ Adicionar o item à `UtplsqlStatusBar`, o comando em `extension.ts` e a flag em
 <!-- brain:auto:start:conexoes -->
 - 🗺️ [[MOC - PRDs]]
 - 🔗 PRDs relacionados: [[prd-50-auto-run-on-save|PRD-50]] · [[prd-51-run-by-tag|PRD-51]]
-- 🔗 Mesma versão (0.15.0): [[prd-47-node-26-toolchain|PRD-47]] · [[prd-50-auto-run-on-save|PRD-50]] · [[prd-51-run-by-tag|PRD-51]] · [[prd-52-inline-diff-expected-actual|PRD-52]] · [[prd-53-debug-test-variants|PRD-53]] · [[prd-55-tag-organization|PRD-55]]
-- 🚀 ⬅️ release anterior: [[prd-94-vscode-floor-1-101|PRD-94 (0.14.0)]] · ➡️ próxima release: [[prd-56-duration-persistence|PRD-56 (0.16.0)]]
+- 🔗 Mesma versão (0.15.0): [[prd-50-auto-run-on-save|PRD-50]] · [[prd-51-run-by-tag|PRD-51]] · [[prd-52-inline-diff-expected-actual|PRD-52]] · [[prd-53-debug-test-variants|PRD-53]] · [[prd-55-tag-organization|PRD-55]]
+- 🚀 ⬅️ release anterior: [[prd-94-vscode-floor-1-101|PRD-94 (0.14.0)]] · ➡️ próxima release: [[prd-47-node-26-toolchain|PRD-47 (0.15.1)]]
 <!-- brain:auto:end -->

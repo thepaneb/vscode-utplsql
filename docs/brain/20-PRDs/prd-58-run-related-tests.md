@@ -4,10 +4,10 @@ id: PRD-58
 aliases: [PRD-58]
 status: proposed
 titulo: "Run Related Tests"
-versao: "0.16.0"
+versao: "0.17.0"
 data: "2026-09-06"
 autor: "Gil Cleber Barboza"
-versao_titulo: "0.16.0 — Persistência, multi-root e produtividade"
+versao_titulo: "0.17.0 — Persistência, multi-root e produtividade"
 verificado: 2026-09-23
 regras: []
 tags: [prd]
@@ -123,6 +123,6 @@ Novo comando + função pura `relatedSuiteMetas`. Reusa `collectAllItems`,
 <!-- brain:auto:start:conexoes -->
 - 🗺️ [[MOC - PRDs]]
 - 🔗 PRDs relacionados: [[prd-54-coverage-toggle|PRD-54]]
-- 🔗 Mesma versão (0.16.0): [[prd-56-duration-persistence|PRD-56]] · [[prd-57-multiroot-root-resolution|PRD-57]] · [[prd-59-scaffold-suite|PRD-59]]
-- 🚀 ⬅️ release anterior: [[prd-95-esm-es2023-node22|PRD-95 (0.15.0)]] · ➡️ próxima release: [[prd-88-locale-aware-formatting|PRD-88 (0.17.0)]]
+- 🔗 Mesma versão (0.17.0): [[prd-56-duration-persistence|PRD-56]] · [[prd-57-multiroot-root-resolution|PRD-57]] · [[prd-59-scaffold-suite|PRD-59]]
+- 🚀 ⬅️ release anterior: [[prd-95-esm-es2023-node22|PRD-95 (0.16.0)]] · ➡️ próxima release: [[prd-88-locale-aware-formatting|PRD-88 (0.18.0)]]
 <!-- brain:auto:end -->

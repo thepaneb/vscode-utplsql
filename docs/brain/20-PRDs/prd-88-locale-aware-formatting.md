@@ -4,9 +4,10 @@ id: PRD-88
 aliases: [PRD-88]
 status: proposed
 titulo: "Formatação sensível a locale (números e durações)"
-versao: "0.17.0"
+versao: "0.18.0"
 data: "2026-09-29"
 autor: "Gil Cleber Barboza"
+versao_titulo: "0.18.0 — Localização (formatação, plurais e paridade)"
 verificado: 2026-09-29
 regras: []
 tags: [prd]
@@ -131,5 +132,6 @@ locale-aware) com `prds: ["PRD-88"]`, `implementacao` em `src/i18n.ts` e testes.
 <!-- brain:auto:start:conexoes -->
 - 🗺️ [[MOC - PRDs]]
 - 🔗 PRDs relacionados: [[prd-90-message-plurals-cldr|PRD-90]]
-- 🚀 ⬅️ release anterior: [[prd-59-scaffold-suite|PRD-59 (0.16.0)]] · ➡️ próxima release: [[prd-92-rtl-new-locales|PRD-92 (0.18.0)]]
+- 🔗 Mesma versão (0.18.0): [[prd-89-pseudo-localization-gate|PRD-89]] · [[prd-90-message-plurals-cldr|PRD-90]] · [[prd-91-doc-parity-localized-distribution|PRD-91]]
+- 🚀 ⬅️ release anterior: [[prd-59-scaffold-suite|PRD-59 (0.17.0)]] · ➡️ próxima release: [[prd-92-rtl-new-locales|PRD-92 (0.19.0)]]
 <!-- brain:auto:end -->
