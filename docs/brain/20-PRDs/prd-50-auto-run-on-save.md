@@ -2,7 +2,7 @@
 tipo: prd
 id: PRD-50
 aliases: [PRD-50]
-status: approved
+status: completed
 titulo: "Auto-run on Save (Watch Mode)"
 versao: "0.15.0"
 data: "2026-09-06"
@@ -182,10 +182,10 @@ herdar a flag de cobertura.
 
 ## 12. Impacto no cérebro
 
-Esperado criar **`BR-EXEC-016`** (auto-run: default off, debounce por arquivo e
-guarda de concorrência) com `prds: ["PRD-50"]` e alterar **`BR-UI-002`**
-(`utplsql:running`) e **`BR-COB-006`** (flag de cobertura compartilhada). O
-fluxo não interativo referencia **`SEC-010`**.
+Cria **`BR-EXEC-016`** (auto-run: default off, debounce por arquivo e guarda de
+concorrência) `status: ativo` com `prds: ["PRD-50"]`; referencia **`BR-UI-002`**
+(`utplsql:running`), **`BR-COB-006`** (flag de cobertura compartilhada) e
+**`SEC-010`** (fluxo não interativo). Módulo puro novo: `src/autoRun.ts`.
 
 ## Conexões
 

@@ -320,6 +320,19 @@ export namespace workspace {
   export function __triggerConfigChange(e: { affectsConfiguration: (s: string) => boolean }): void {
     _configChangeHandler?.(e);
   }
+
+  let _saveHandler: ((doc: { fileName: string; uri: unknown }) => unknown) | undefined;
+
+  export function onDidSaveTextDocument(
+    handler: (doc: { fileName: string; uri: unknown }) => unknown,
+  ) {
+    _saveHandler = handler;
+    return { dispose: () => {} };
+  }
+
+  export function __triggerSave(doc: { fileName: string; uri: unknown }): void {
+    _saveHandler?.(doc);
+  }
 }
 
 export namespace commands {

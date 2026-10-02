@@ -191,6 +191,9 @@ Test Explorer **as each test finishes**.
 | `utplsql.compilationDiagnostics.enabled` | `true` | Shows PL/SQL compilation errors from the database (`ALL_ERRORS`) as underlines in the editor and in the Problems Panel (source "utPLSQL Compilation"). |
 | `utplsql.setupDiagnostics.enabled` | `true` | Shows configuration diagnostics (connection, grants, version) and **utPLSQL installation integrity** (invalid objects in the UT3 schema, with "Recompile UT3" quick-fix) with quick-fix actions. |
 | `utplsql.showTagsInTree` | `false` | Appends the `%tags` of each suite/test as a `[tag1, tag2]` suffix on the Test Explorer label. |
+| `utplsql.autoRun` | `off` | Auto-run on save (watch mode): `off` or `onSave` (re-runs the suites of the saved `.pks`). |
+| `utplsql.autoRunDelayMs` | `500` | Debounce (ms) per file for auto-run; rapid saves of the same file trigger a single run. |
+| `utplsql.autoRunQueue` | `skip` | What to do when auto-run fires during a run: `skip` ignores it, `replace` reschedules it. |
 | `utplsql.profiles` | `[]` | Saved Oracle connection profiles (name, connection, and overrides of `sourcePath`/`coverageOwner`/etc.) to switch between environments. **Passwords are kept in the OS keychain (VS Code SecretStorage), not in settings** — the `connection` field stores only `user@//host:port/service`. Legacy profiles with an inline password are migrated automatically on first use. (Full field reference: [wiki](https://github.com/thepaneb/vscode-utplsql/wiki/Configuration)). |
 | `utplsql.activeProfile` | `""` | ID of the active profile (`utplsql.profiles`). When set, overrides `utplsql.connection`. |
 | `utplsql.sqlCoverageEnabled` | `false` | Tracks views executed via `V$SQL` (boolean coverage). Requires `GRANT SELECT ON V$SQL`. |

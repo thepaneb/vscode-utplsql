@@ -185,6 +185,9 @@ Extensia se conectează direct prin Oracle, citește rapoartele (JUnit + Coverag
 | `utplsql.compilationDiagnostics.enabled` | `true` | Afișează erorile de compilare PL/SQL din baza de date (`ALL_ERRORS`) ca subliniere în editor și în Problems Panel (sursa „utPLSQL Compilation"). |
 | `utplsql.setupDiagnostics.enabled` | `true` | Afișează diagnostice de configurare (conexiune, granturi, versiune) și **integritatea instalării utPLSQL** (obiecte invalide în schema UT3, cu quick-fix „Recompile UT3") cu acțiuni quick-fix. |
 | `utplsql.showTagsInTree` | `false` | Adaugă `%tags` fiecărei suite/test ca sufix `[tag1, tag2]` pe eticheta din Test Explorer. |
+| `utplsql.autoRun` | `off` | Rulare automată la salvare (mod watch): `off` sau `onSave` (re-rulează suitele din `.pks` salvat). |
+| `utplsql.autoRunDelayMs` | `500` | Întârziere (ms) per fișier la rularea automată; salvări rapide ale aceluiași fișier declanșează o singură rulare. |
+| `utplsql.autoRunQueue` | `skip` | Ce se face când rularea automată se declanșează în timpul unei rulări: `skip` o ignoră, `replace` o reprogramează. |
 | `utplsql.profiles` | `[]` | Profiluri de conexiune Oracle salvate (nume, conexiune și suprascrieri ale `sourcePath`/`coverageOwner`/etc.) pentru a comuta între medii. **Parolele sunt păstrate în keychain-ul sistemului de operare (VS Code SecretStorage), nu în setări** — câmpul `connection` stochează doar `user@//host:port/service`. Profilurile vechi cu parolă inline sunt migrate automat la prima utilizare. (Full field reference: [wiki](https://github.com/thepaneb/vscode-utplsql/wiki/Configuration)). |
 | `utplsql.activeProfile` | `""` | ID-ul profilului activ (`utplsql.profiles`). Când este setat, suprascrie `utplsql.connection`. |
 | `utplsql.sqlCoverageEnabled` | `false` | Urmărește vizualizările executate prin `V$SQL` (acoperire booleană). Necesită `GRANT SELECT ON V$SQL`. |

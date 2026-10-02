@@ -185,6 +185,9 @@ Test Explorer **с приключването на всеки тест**.
 | `utplsql.compilationDiagnostics.enabled` | `true` | Показва грешки при компилация на PL/SQL от базата данни (`ALL_ERRORS`) като подчертавания в редактора и в панела „Проблеми" (източник "utPLSQL Compilation"). |
 | `utplsql.setupDiagnostics.enabled` | `true` | Показва диагностика на конфигурацията (връзка, привилегии, версия) и **целостта на инсталацията на utPLSQL** (невалидни обекти в схемата UT3, с quick-fix „Recompile UT3") с quick-fix действия. |
 | `utplsql.showTagsInTree` | `false` | Добавя етикетите `%tags` de всяка suite/тест като суфикс `[tag1, tag2]` в етикета на Test Explorer. |
+| `utplsql.autoRun` | `off` | Автоматично изпълнение при запис (режим watch): `off` или `onSave` (повтаря пакетите на записания `.pks`). |
+| `utplsql.autoRunDelayMs` | `500` | Закъснение (мс) за файл при автоматично изпълнение; бързи записи на един файл задействат едно изпълнение. |
+| `utplsql.autoRunQueue` | `skip` | Какво да се прави при задействане по време на изпълнение: `skip` игнорира, `replace` препрограмира. |
 | `utplsql.profiles` | `[]` | Записани профили за връзка с Oracle (име, връзка и презаписвания на `sourcePath`/`coverageOwner`/и т.н.) за превключване между среди. **Паролите се съхраняват в ключодържателя на ОС (VS Code SecretStorage), а не в настройките** — полето `connection` съхранява само `user@//host:port/service`. Стари профили с вграден пароль се мигрират автоматично при първо използване. (Full field reference: [wiki](https://github.com/thepaneb/vscode-utplsql/wiki/Configuration)). |
 | `utplsql.activeProfile` | `""` | ID на активния профил (`utplsql.profiles`). Когато е зададен, презаписва `utplsql.connection`. |
 | `utplsql.sqlCoverageEnabled` | `false` | Проследява изгледите, изпълнени чрез `V$SQL` (булево покритие). Изисква `GRANT SELECT ON V$SQL`. |

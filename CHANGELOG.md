@@ -40,6 +40,13 @@
   (`suite:<pkg>`/`test:<pkg>.<proc>`) são preservados, mantendo `suiteMap`,
   resultados e *jump to failure*.
 
+- **Auto-run ao salvar / watch mode (PRD-50)**: a setting `utplsql.autoRun`
+  (`off` por padrão) permite re-executar automaticamente as suites do `.pks`
+  salvo. O debounce por arquivo (`utplsql.autoRunDelayMs`, default 500 ms) coalesce
+  saves rápidos sem cancelar arquivos distintos, e a guarda de concorrência
+  (`utplsql.autoRunQueue`: `skip`/`replace`) evita execuções concorrentes. A
+  lógica é pura (`src/autoRun.ts`) e respeita o modo global de cobertura.
+
 ## 0.14.0
 
 - **Piso de VS Code 1.101 e runtime Node 22 (PRD-94)**: `engines.vscode` passa de

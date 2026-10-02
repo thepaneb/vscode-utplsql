@@ -186,6 +186,9 @@ Test Explorer **καθώς ολοκληρώνεται κάθε test**.
 | `utplsql.compilationDiagnostics.enabled` | `true` | Εμφανίζει τα σφάλματα μεταγλώττισης PL/SQL από τη βάση δεδομένων (`ALL_ERRORS`) ως υπογραμμίσεις στον editor και στο Problems Panel (πηγή "utPLSQL Compilation"). |
 | `utplsql.setupDiagnostics.enabled` | `true` | Εμφανίζει διαγνωστικά ρυθμίσεων (σύνδεση, grants, έκδοση) και **ακεραιότητα εγκατάστασης utPLSQL** (άκυρα αντικείμενα στο schema UT3, με quick-fix "Recompile UT3") με ενέργειες quick-fix. |
 | `utplsql.showTagsInTree` | `false` | Προσθέτει τις `%tags` κάθε suite/test ως επίθημα `[tag1, tag2]` στην ετικέτα του Test Explorer. |
+| `utplsql.autoRun` | `off` | Αυτόματη εκτέλεση κατά την αποθήκευση (λειτουργία watch): `off` ή `onSave` (επανεκτελεί τα suites του αποθηκευμένου `.pks`). |
+| `utplsql.autoRunDelayMs` | `500` | Καθυστέρηση (ms) ανά αρχείο για την αυτόματη εκτέλεση· γρήγορες αποθηκεύσεις του ίδιου αρχείου προκαλούν μία εκτέλεση. |
+| `utplsql.autoRunQueue` | `skip` | Τι γίνεται όταν η αυτόματη εκτέλεση ενεργοποιηθεί κατά τη διάρκεια εκτέλεσης: `skip` αγνοεί, `replace` επαναπρογραμματίζει. |
 | `utplsql.profiles` | `[]` | Αποθηκευμένα profiles σύνδεσης Oracle (όνομα, σύνδεση και παρακάμψεις των `sourcePath`/`coverageOwner`/κ.λπ.) για εναλλαγή μεταξύ περιβαλλόντων. **Οι κωδικοί πρόσβασης τηρούνται στο keychain του λειτουργικού συστήματος (VS Code SecretStorage), όχι στις ρυθμίσεις** — το πεδίο `connection` αποθηκεύει μόνο `user@//host:port/service`. Τα παλαιότερα profiles με ενσωματωμένο κωδικό πρόσβασης μεταφέρονται αυτόματα κατά την πρώτη χρήση. (Full field reference: [wiki](https://github.com/thepaneb/vscode-utplsql/wiki/Configuration)). |
 | `utplsql.activeProfile` | `""` | ID του ενεργού profile (`utplsql.profiles`). Όταν ορίζεται, υπερισχύει του `utplsql.connection`. |
 | `utplsql.sqlCoverageEnabled` | `false` | Παρακολουθεί τα views που εκτελέστηκαν μέσω `V$SQL` (boolean coverage). Απαιτεί `GRANT SELECT ON V$SQL`. |

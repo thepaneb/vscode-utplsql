@@ -193,6 +193,9 @@ Test Explorer-у **како се сваки тест заврши**. VSIX већ
 | `utplsql.compilationDiagnostics.enabled` | `true` | Приказује грешке компилације PL/SQL из базе података (`ALL_ERRORS`) као подвлачења у едитору и у панелу „Проблеми" (извор "utPLSQL Compilation"). |
 | `utplsql.setupDiagnostics.enabled` | `true` | Приказује дијагностику конфигурације (веза, grant-ови, верзија) и **интегритет utPLSQL инсталације** (неважећи објекти у UT3 шеми, са „Recompile UT3" quick-fix-ом) са quick-fix радњама. |
 | `utplsql.showTagsInTree` | `false` | Додаје ознаке `%tags` сваке suite/теста као суфикс `[tag1, tag2]` на ознаку у Test Explorer-у. |
+| `utplsql.autoRun` | `off` | Аутоматско покретање при чувању (watch режим): `off` или `onSave` (поново покреће суитове сачуваног `.pks`). |
+| `utplsql.autoRunDelayMs` | `500` | Кашњење (мс) по датотеци при аутоматском покретању; брза чувања исте датотеке дају једно покретање. |
+| `utplsql.autoRunQueue` | `skip` | Шта радити када се аутоматско покретање активира током покретања: `skip` игнорише, `replace` презаказује. |
 | `utplsql.profiles` | `[]` | Сачувани Oracle профили веза (име, веза и замене `sourcePath`-а/`coverageOwner`-а/итд.) за пребацивање између окружења. **Лозинке се чувају у привеску кључева ОС-а (VS Code SecretStorage), а не у подешавањима** — поље `connection` чува само `user@//host:port/service`. Стари профили са уграђеном лозинком се аутоматски мигрирају при првој употреби. (Full field reference: [wiki](https://github.com/thepaneb/vscode-utplsql/wiki/Configuration)). |
 | `utplsql.activeProfile` | `""` | ID активног профила (`utplsql.profiles`). Када је постављен, поништава `utplsql.connection`. |
 | `utplsql.sqlCoverageEnabled` | `false` | Прати погледе извршене преко `V$SQL` (булова покривеност). Захтева `GRANT SELECT ON V$SQL`. |

@@ -185,6 +185,9 @@ Ekstensi terhubung langsung ke Oracle, membaca laporan (JUnit + Coverage) lalu m
 | `utplsql.compilationDiagnostics.enabled` | `true` | Menampilkan error kompilasi PL/SQL dari database (`ALL_ERRORS`) sebagai garis bawah di editor dan di Problems Panel (sumber "utPLSQL Compilation"). |
 | `utplsql.setupDiagnostics.enabled` | `true` | Menampilkan diagnostik konfigurasi (koneksi, grant, versi) serta **integritas instalasi utPLSQL** (objek tidak valid di schema UT3, dengan quick-fix "Recompile UT3") beserta aksi quick-fix. |
 | `utplsql.showTagsInTree` | `false` | Menambahkan `%tags` setiap suite/tes sebagai sufiks `[tag1, tag2]` pada label Test Explorer. |
+| `utplsql.autoRun` | `off` | Jalankan otomatis saat menyimpan (mode watch): `off` atau `onSave` (menjalankan ulang suite dari `.pks` yang disimpan). |
+| `utplsql.autoRunDelayMs` | `500` | Tunda (ms) per file untuk jalankan otomatis; penyimpanan cepat file yang sama memicu satu eksekusi. |
+| `utplsql.autoRunQueue` | `skip` | Apa yang dilakukan saat jalankan otomatis dipicu selama eksekusi: `skip` mengabaikan, `replace` menjadwalkan ulang. |
 | `utplsql.profiles` | `[]` | Profil koneksi Oracle yang tersimpan (nama, koneksi, dan penimpaan `sourcePath`/`coverageOwner`/dll.) untuk berpindah antar lingkungan. **Kata sandi disimpan di keychain OS (VS Code SecretStorage), bukan di pengaturan** — kolom `connection` hanya menyimpan `user@//host:port/service`. Profil lama dengan kata sandi inline dimigrasikan secara otomatis saat pertama kali digunakan. (Full field reference: [wiki](https://github.com/thepaneb/vscode-utplsql/wiki/Configuration)). |
 | `utplsql.activeProfile` | `""` | ID profil aktif (`utplsql.profiles`). Jika diatur, menimpa `utplsql.connection`. |
 | `utplsql.sqlCoverageEnabled` | `false` | Melacak view yang dieksekusi melalui `V$SQL` (coverage boolean). Memerlukan `GRANT SELECT ON V$SQL`. |

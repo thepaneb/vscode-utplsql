@@ -7,7 +7,7 @@ interface Manifest {
   activationEvents?: string[];
   capabilities?: { untrustedWorkspaces?: { supported?: boolean } };
   contributes: {
-    configuration?: { properties?: Record<string, { scope?: string }> };
+    configuration?: { properties?: Record<string, { scope?: string; default?: unknown }> };
     commands?: { command: string }[];
     languages?: { id: string; extensions?: string[] }[];
     breakpoints?: { language: string }[];
@@ -112,6 +112,14 @@ test('comando runByTag e setting showTagsInTree registrados (PRD-51)', () => {
   assert.ok(commands.some((c) => c.command === 'utplsql.runByTag'));
   const props = pkg.contributes.configuration?.properties ?? {};
   assert.ok('utplsql.showTagsInTree' in props);
+});
+
+test('settings de auto-run registradas com default off (PRD-50)', () => {
+  const props = pkg.contributes.configuration?.properties ?? {};
+  for (const key of ['utplsql.autoRun', 'utplsql.autoRunDelayMs', 'utplsql.autoRunQueue']) {
+    assert.ok(key in props, `${key} ausente`);
+  }
+  assert.strictEqual((props['utplsql.autoRun'] as { default?: string }).default, 'off');
 });
 
 test('extensão fica desabilitada em workspace não confiável (PRD-81 RF2)', () => {

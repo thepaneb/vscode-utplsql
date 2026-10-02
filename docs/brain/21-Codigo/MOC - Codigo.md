@@ -27,6 +27,7 @@ SORT id ASC
 <!-- brain:auto:start:moc-index -->
 - [[COD - .gitignore]] — `COD-.gitignore`
 - [[COD - annotation.ts]] — `COD-annotation.ts`
+- [[COD - autoRun.ts]] — `COD-autoRun.ts`
 - [[COD - bootstrap.sh]] — `COD-bootstrap.sh`
 - [[COD - brain-build.cjs]] — `COD-brain-build.cjs`
 - [[COD - brain-gaps.cjs]] — `COD-brain-gaps.cjs`

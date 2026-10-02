@@ -193,6 +193,9 @@ Test Explorer 中。
 | `utplsql.compilationDiagnostics.enabled` | `true` | 将数据库中的 PL/SQL 编译错误（`ALL_ERRORS`）以编辑器下划线形式显示，并显示在“问题”面板中（来源 "utPLSQL Compilation"）。 |
 | `utplsql.setupDiagnostics.enabled` | `true` | 显示配置诊断（连接、授权、版本）以及 **utPLSQL 安装完整性**（UT3 schema 中的无效对象，带有 "Recompile UT3" 快速修复），并带有快速修复操作。 |
 | `utplsql.showTagsInTree` | `false` | 将每个套件/测试的 `%tags` 作为 `[tag1, tag2]` 后缀添加到 Test Explorer 标签。 |
+| `utplsql.autoRun` | `off` | 保存时自动运行（watch 模式）：`off` 或 `onSave`（重新运行已保存 `.pks` 的套件）。 |
+| `utplsql.autoRunDelayMs` | `500` | 自动运行的文件级防抖（毫秒）；同一文件的快速保存只触发一次运行。 |
+| `utplsql.autoRunQueue` | `skip` | 当自动运行在运行期间触发时：`skip` 忽略，`replace` 重新安排。 |
 | `utplsql.profiles` | `[]` | 已保存的 Oracle 连接配置（名称、连接，以及 `sourcePath`/`coverageOwner` 等的覆盖项），用于在环境之间切换。**密码保存在操作系统钥匙串（VS Code SecretStorage）中，而非设置中** — `connection` 字段仅存储 `user@//host:port/service`。带有内联密码的旧配置会在首次使用时自动迁移。 (Full field reference: [wiki](https://github.com/thepaneb/vscode-utplsql/wiki/Configuration)). |
 | `utplsql.activeProfile` | `""` | 活动配置的 ID（`utplsql.profiles`）。设置后，会覆盖 `utplsql.connection`。 |
 | `utplsql.sqlCoverageEnabled` | `false` | 通过 `V$SQL` 跟踪执行的视图（布尔覆盖率）。需要 `GRANT SELECT ON V$SQL`。 |

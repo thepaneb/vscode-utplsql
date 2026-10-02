@@ -54,13 +54,13 @@ host — o `docs-fidelity` cobra essa coerência.
 ## Inventário (gerado)
 
 <!-- brain:auto:start:vscode-api -->
-**`engines.vscode`:** `^1.101.0` · **`@types/vscode`:** `1.101.0` · **97 símbolos · 497 referências**
+**`engines.vscode`:** `^1.101.0` · **`@types/vscode`:** `1.101.0` · **98 símbolos · 500 referências**
 
 | Símbolo | Refs | Arquivos |
 |---|---|---|
 | `vscode.TestItem` | 52 | `src/commands/debug.ts`, `src/commands/run.ts`, `src/decorations.ts`, `src/matching.ts` +5 |
 | `vscode.commands.registerCommand` | 36 | `src/commands/connection.ts`, `src/commands/debug.ts`, `src/commands/profile.ts`, `src/commands/run.ts` +2 |
-| `vscode.Uri` | 29 | `src/commands/debug.ts`, `src/commands/run.ts`, `src/commands/script.ts`, `src/compilationDiagnostics.ts` +8 |
+| `vscode.Uri` | 30 | `src/commands/debug.ts`, `src/commands/run.ts`, `src/commands/script.ts`, `src/compilationDiagnostics.ts` +8 |
 | `vscode.window.showInformationMessage` | 26 | `src/commands/connection.ts`, `src/commands/debug.ts`, `src/commands/profile.ts`, `src/commands/run.ts` +3 |
 | `vscode.window.showWarningMessage` | 21 | `src/commands/debug.ts`, `src/commands/profile.ts`, `src/commands/run.ts`, `src/commands/script.ts` +3 |
 | `vscode.WorkspaceFolder` | 20 | `src/debugger.ts`, `src/discovery.ts`, `src/oracleRunner.ts`, `src/results.ts` +3 |
@@ -79,11 +79,11 @@ host — o `docs-fidelity` cobra essa coerência.
 | `vscode.Location` | 7 | `src/results.ts` |
 | `vscode.CodeAction` | 6 | `src/quickfix.ts` |
 | `vscode.Diagnostic` | 6 | `src/compilationDiagnostics.ts`, `src/quickfix.ts` |
+| `vscode.Uri.file` | 6 | `src/commands/script.ts`, `src/coverage.ts`, `src/extension.ts`, `src/viewCoverage.ts` |
 | `vscode.window.showInputBox` | 6 | `src/commands/profile.ts`, `src/config.ts` |
 | `vscode.workspace.workspaceFolders` | 6 | `src/commands/run.ts`, `src/discovery.ts`, `src/results.ts`, `src/runner.ts` +1 |
 | `vscode.DecorationOptions` | 5 | `src/decorations.ts` |
 | `vscode.FileCoverageDetail` | 5 | `src/results.ts`, `src/state.ts`, `src/viewCoverage.ts` |
-| `vscode.Uri.file` | 5 | `src/commands/script.ts`, `src/coverage.ts`, `src/viewCoverage.ts` |
 | `vscode.Uri.joinPath` | 5 | `src/commands/debug.ts`, `src/commands/run.ts`, `src/commands/script.ts`, `src/discovery.ts` +1 |
 | `vscode.CodeActionKind.QuickFix` | 4 | `src/quickfix.ts` |
 | `vscode.CodeLens` | 4 | `src/codelens.ts` |
@@ -155,6 +155,7 @@ host — o `docs-fidelity` cobra essa coerência.
 | `vscode.workspace.findFiles` | 1 | `src/discovery.ts` |
 | `vscode.workspace.getWorkspaceFolder` | 1 | `src/commands/debug.ts` |
 | `vscode.workspace.onDidChangeConfiguration` | 1 | `src/extension.ts` |
+| `vscode.workspace.onDidSaveTextDocument` | 1 | `src/extension.ts` |
 <!-- brain:auto:end -->
 
 ## Relatório completo

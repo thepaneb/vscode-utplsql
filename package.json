@@ -348,6 +348,39 @@
           "default": false,
           "description": "Sufixa [tag1, tag2] no label dos itens do Test Explorer conforme as %tags declaradas na suite/teste."
         },
+        "utplsql.autoRun": {
+          "type": "string",
+          "enum": [
+            "off",
+            "onSave"
+          ],
+          "default": "off",
+          "enumDescriptions": [
+            "Desativado (padrão): salvar um .pks não executa nada.",
+            "Re-executa automaticamente as suites do arquivo .pks salvo (modo watch)."
+          ],
+          "description": "Auto-run on save: re-executa as suites do arquivo .pks ao salvar."
+        },
+        "utplsql.autoRunDelayMs": {
+          "type": "number",
+          "default": 500,
+          "minimum": 100,
+          "maximum": 5000,
+          "description": "Debounce (ms) do auto-run por arquivo; saves rápidos do mesmo arquivo disparam uma única execução."
+        },
+        "utplsql.autoRunQueue": {
+          "type": "string",
+          "enum": [
+            "skip",
+            "replace"
+          ],
+          "default": "skip",
+          "enumDescriptions": [
+            "Ignora o auto-run se já houver execução em andamento.",
+            "Reagenda o auto-run para rodar após a execução em andamento."
+          ],
+          "description": "O que fazer quando um auto-run dispara durante uma execução."
+        },
         "utplsql.setupDiagnostics.enabled": {
           "type": "boolean",
           "default": true,

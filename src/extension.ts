@@ -1,4 +1,5 @@
 import * as vscode from 'vscode';
+import { createAutoRunner } from './autoRun';
 import { UtplsqlCodeLensProvider } from './codelens';
 import { registerConnectionCommands } from './commands/connection';
 import { registerDebug } from './commands/debug';
@@ -158,6 +159,34 @@ export function activate(context: vscode.ExtensionContext) {
   watcher.onDidChange(() => scheduleRefresh.schedule());
   watcher.onDidDelete(() => scheduleRefresh.schedule());
   context.subscriptions.push(watcher, { dispose: () => scheduleRefresh.cancel() });
+
+  // Auto-run on save (watch mode, PRD-50). Default `off`.
+  const autoRunner = createAutoRunner(
+    () => {
+      const cfg = readConfig();
+      return {
+        enabled: cfg.autoRun === 'onSave',
+        delayMs: cfg.autoRunDelayMs,
+        queue: cfg.autoRunQueue,
+      };
+    },
+    {
+      run: async (uriStr) => {
+        await run.runUri(vscode.Uri.file(uriStr), state.coverageAlways);
+      },
+      isRunning: () => run.isRunning(),
+      isEligible: (uriStr) => /\.pks$/i.test(uriStr),
+      setTimeout: (fn, ms) => setTimeout(fn, ms),
+      clearTimeout: (handle) => clearTimeout(handle),
+    },
+  );
+  context.subscriptions.push(
+    vscode.workspace.onDidSaveTextDocument((doc) => {
+      if (!doc.fileName.endsWith('.pks')) return;
+      autoRunner.schedule(doc.uri.fsPath);
+    }),
+    { dispose: () => autoRunner.cancel() },
+  );
 
   void profilesReady.then(() => refresh());
 }

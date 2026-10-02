@@ -23,6 +23,7 @@ SORT id ASC
 ## Índice (links)
 
 <!-- brain:auto:start:moc-index -->
+- [[TST - autoRun.test.ts]] — `TST-autoRun.test.ts`
 - [[TST - brainBuild.test.ts]] — `TST-brainBuild.test.ts`
 - [[TST - brainRules.test.ts]] — `TST-brainRules.test.ts`
 - [[TST - brainScripts.test.ts]] — `TST-brainScripts.test.ts`

@@ -184,6 +184,9 @@ Test Explorer **เมื่อแต่ละเทสต์เสร็จส�
 | `utplsql.compilationDiagnostics.enabled` | `true` | แสดงข้อผิดพลาดการคอมไพล์ PL/SQL จากฐานข้อมูล (`ALL_ERRORS`) เป็นขีดเส้นใต้ในเอดิเตอร์และใน Problems Panel (source "utPLSQL Compilation") |
 | `utplsql.setupDiagnostics.enabled` | `true` | แสดงการวินิจฉัยการกำหนดค่า (การเชื่อมต่อ, grants, เวอร์ชัน) และ **ความสมบูรณ์ของการติดตั้ง utPLSQL** (อ็อบเจกต์ที่ไม่ถูกต้องใน schema UT3, พร้อม quick-fix "Recompile UT3") พร้อมการทำงาน quick-fix |
 | `utplsql.showTagsInTree` | `false` | ต่อท้าย `%tags` ของแต่ละ suite/เทสต์เป็น `[tag1, tag2]` บนป้ายชื่อใน Test Explorer |
+| `utplsql.autoRun` | `off` | รันอัตโนมัติเมื่อบันทึก (โหมด watch): `off` หรือ `onSave` (รัน suites ของ `.pks` ที่บันทึกอีกครั้ง) |
+| `utplsql.autoRunDelayMs` | `500` | ดีเลย์ (ms) ต่อไฟล์สำหรับการรันอัตโนมัติ การบันทึกไฟล์เดิมถี่ ๆ จะรวมเป็นการรันครั้งเดียว |
+| `utplsql.autoRunQueue` | `skip` | จะทำอย่างไรเมื่อการรันอัตโนมัติเกิดระหว่างการรัน: `skip` เพิกเฉย, `replace` ตั้งเวลาใหม่ |
 | `utplsql.profiles` | `[]` | โปรไฟล์การเชื่อมต่อ Oracle ที่บันทึกไว้ (ชื่อ, การเชื่อมต่อ, และการแทนที่ `sourcePath`/`coverageOwner`/ฯลฯ) เพื่อสลับระหว่างสภาพแวดล้อม **รหัสผ่านถูกเก็บไว้ใน keychain ของระบบปฏิบัติการ (VS Code SecretStorage) ไม่ใช่ใน settings** — ฟิลด์ `connection` เก็บเฉพาะ `user@//host:port/service` โปรไฟล์แบบเก่าที่มีรหัสผ่านฝังอยู่จะถูกย้ายโดยอัตโนมัติเมื่อใช้งานครั้งแรก (Full field reference: [wiki](https://github.com/thepaneb/vscode-utplsql/wiki/Configuration)). |
 | `utplsql.activeProfile` | `""` | ID ของโปรไฟล์ที่ใช้งานอยู่ (`utplsql.profiles`) เมื่อตั้งค่า จะแทนที่ `utplsql.connection` |
 | `utplsql.sqlCoverageEnabled` | `false` | ติดตาม views ที่ถูกเรียกใช้ผ่าน `V$SQL` (boolean coverage) ต้องใช้ `GRANT SELECT ON V$SQL` |

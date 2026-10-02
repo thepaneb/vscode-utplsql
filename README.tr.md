@@ -184,6 +184,9 @@ Geçici dosya yok, toplu işin bitmesi beklenmez. Sonuçlar Test Explorer'da
 | `utplsql.compilationDiagnostics.enabled` | `true` | Veritabanındaki PL/SQL derleme hatalarını (`ALL_ERRORS`) editörde ve Problems Panel'inde (source "utPLSQL Compilation") alt çizgi olarak gösterir. |
 | `utplsql.setupDiagnostics.enabled` | `true` | Yapılandırma tanılamalarını (bağlantı, yetkiler, sürüm) ve **utPLSQL kurulum bütünlüğünü** (UT3 şemasındaki geçersiz nesneler, "Recompile UT3" hızlı düzeltmesiyle) hızlı düzeltme eylemleriyle gösterir. |
 | `utplsql.showTagsInTree` | `false` | Her suite/testin `%tags` etiketlerini Test Explorer etiketine `[tag1, tag2]` soneki olarak ekler. |
+| `utplsql.autoRun` | `off` | Kaydetmede otomatik çalıştırma (watch modu): `off` veya `onSave` (kaydedilen `.pks` paketlerini yeniden çalıştırır). |
+| `utplsql.autoRunDelayMs` | `500` | Otomatik çalıştırmada dosya başına gecikme (ms); aynı dosyanın hızlı kayıtları tek çalıştırma tetikler. |
+| `utplsql.autoRunQueue` | `skip` | Çalıştırma sırasında otomatik çalıştırma tetiklendiğinde: `skip` yok sayar, `replace` yeniden planlar. |
 | `utplsql.profiles` | `[]` | Ortamlar arasında geçiş yapmak için kaydedilen Oracle bağlantı profilleri (ad, bağlantı ve `sourcePath`/`coverageOwner`/vb. geçersiz kılmaları). **Parolalar settings'te değil, işletim sistemi anahtarlığında (VS Code SecretStorage) saklanır** — `connection` alanı yalnızca `user@//host:port/service` değerini saklar. Satır içi parola içeren eski profiller ilk kullanımda otomatik olarak taşınır. (Full field reference: [wiki](https://github.com/thepaneb/vscode-utplsql/wiki/Configuration)). |
 | `utplsql.activeProfile` | `""` | Etkin profilin kimliği (`utplsql.profiles`). Ayarlandığında `utplsql.connection`'ı geçersiz kılar. |
 | `utplsql.sqlCoverageEnabled` | `false` | `V$SQL` üzerinden çalıştırılan görünümleri izler (boolean kapsam). `GRANT SELECT ON V$SQL` gerektirir. |

@@ -194,6 +194,9 @@ Test Explorer **по мере завершения каждого теста**.
 | `utplsql.compilationDiagnostics.enabled` | `true` | Показывает ошибки компиляции PL/SQL из базы данных (`ALL_ERRORS`) в виде подчёркиваний в редакторе и в панели «Проблемы» (источник "utPLSQL Compilation"). |
 | `utplsql.setupDiagnostics.enabled` | `true` | Показывает диагностику конфигурации (подключение, привилегии, версия) и **целостность установки utPLSQL** (недействительные объекты в схеме UT3, с быстрым исправлением «Recompile UT3») с действиями быстрого исправления. |
 | `utplsql.showTagsInTree` | `false` | Добавляет теги `%tags` каждой suite/теста как суффикс `[tag1, tag2]` к метке в Test Explorer. |
+| `utplsql.autoRun` | `off` | Автозапуск при сохранении (режим watch): `off` или `onSave` (перезапускает наборы сохранённого `.pks`). |
+| `utplsql.autoRunDelayMs` | `500` | Задержка (мс) на файл при автозапуске; быстрые сохранения одного файла дают один запуск. |
+| `utplsql.autoRunQueue` | `skip` | Что делать, если автозапуск срабатывает во время запуска: `skip` игнорирует, `replace` переносит. |
 | `utplsql.profiles` | `[]` | Сохранённые профили подключения к Oracle (имя, подключение и переопределения `sourcePath`/`coverageOwner`/и т. д.) для переключения между окружениями. **Пароли хранятся в связке ключей ОС (VS Code SecretStorage), а не в настройках** — поле `connection` хранит только `user@//host:port/service`. Старые профили со встроенным паролем автоматически переносятся при первом использовании. (Full field reference: [wiki](https://github.com/thepaneb/vscode-utplsql/wiki/Configuration)). |
 | `utplsql.activeProfile` | `""` | ID активного профиля (`utplsql.profiles`). Если задан, переопределяет `utplsql.connection`. |
 | `utplsql.sqlCoverageEnabled` | `false` | Отслеживает представления, выполненные через `V$SQL` (логическое покрытие). Требуется `GRANT SELECT ON V$SQL`. |

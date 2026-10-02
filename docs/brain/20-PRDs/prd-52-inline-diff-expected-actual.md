@@ -145,7 +145,6 @@ Criada a regra **`BR-PARSE-018`** (`TestMessage` de falha ganha `expectedOutput`
 - 📐 Regras: [[BR-PARSE-018 - TestMessage de falha ganha expectedOutput-actualOutput quando ha Expected-Actual|BR-PARSE-018]]
 - 🔗 BR-PARSE-018 · BR-PARSE-014 · BR-PARSE-013
 - 🔗 PRDs relacionados: [[prd-51-run-by-tag|PRD-51]]
-- 🔗 Mesma versão (0.15.0): [[prd-50-auto-run-on-save|PRD-50]]
 - 🎯 RF1 — Parse do par Expected/Actual → [[BR-PARSE-018 - TestMessage de falha ganha expectedOutput-actualOutput quando ha Expected-Actual|BR-PARSE-018]]
 - 🎯 RF2 — Preencher `TestMessage` → [[BR-PARSE-018 - TestMessage de falha ganha expectedOutput-actualOutput quando ha Expected-Actual|BR-PARSE-018]]
 - 🎯 RNF1 — Parse defensivo: nunca lança; mensagens sem `Expected:`/`Actual:` → [[BR-PARSE-018 - TestMessage de falha ganha expectedOutput-actualOutput quando ha Expected-Actual|BR-PARSE-018]]

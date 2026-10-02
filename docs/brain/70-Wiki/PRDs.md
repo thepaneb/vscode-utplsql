@@ -115,13 +115,13 @@ The file is moved between folders as it progresses.
 | 54 | Coverage toggle on the status bar | 0.15.0 |
 | 51 | Run and select by tag (`%tags`) | 0.15.0 |
 | 55 | Test tree organization by tag | 0.15.0 |
+| 50 | Auto-run on save (watch mode) | 0.15.0 |
 
 ### 🔵 Approved
 
 | # | PRD | Target version |
 |---|---|---|
 | 47 | Node 26 in development toolchain | 0.15.1 |
-| 50 | Auto-run on save (watch mode) | 0.15.0 |
 ### ⚪ Proposed
 
 | # | PRD | Target version |

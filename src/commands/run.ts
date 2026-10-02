@@ -18,6 +18,10 @@ export interface RunCommands {
     externalToken: vscode.CancellationToken | undefined,
     coverage: boolean,
   ): Promise<void>;
+  /** Executa as suites de um arquivo (mesma semântica de "Run Test File"). */
+  runUri(uri: vscode.Uri, coverage: boolean): Promise<void>;
+  /** Há execução em andamento? (usada pelo auto-run/watch — PRD-50). */
+  isRunning(): boolean;
   cancel(): void;
 }
 
@@ -521,6 +525,9 @@ export function registerRunCommands(
 
   return {
     runWithProgress,
+    runUri: (uri, coverage) => runForUri(uri, coverage),
+    isRunning: () =>
+      currentRunToken !== undefined && !currentRunToken.token.isCancellationRequested,
     cancel: () => currentRunToken?.cancel(),
   };
 }
