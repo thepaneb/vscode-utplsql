@@ -99,7 +99,16 @@ const readmeImagesSync = (check, repo = REPO, vault = VAULT) =>
 function walk(dir, out = []) {
   if (!fs.existsSync(dir)) return out;
   for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {
-    if (entry.name === '.obsidian' || entry.name === '_templates' || entry.name === '.trash') continue;
+    if (
+      entry.name === '.obsidian' ||
+      entry.name === '_templates' ||
+      entry.name === '.trash' ||
+      entry.name === '.copilot' ||
+      entry.name === '.smart-env' ||
+      entry.name === 'copilot' ||
+      entry.name === '.opencode'
+    )
+      continue;
     const full = path.join(dir, entry.name);
     if (entry.isDirectory()) walk(full, out);
     else if (entry.name.endsWith('.md')) out.push(full);
