@@ -15,6 +15,7 @@
   "nls.command.runAtCursor": "utPLSQL: รันเทสต์ที่เคอร์เซอร์",
   "nls.command.runFailed": "utPLSQL: รันเทสต์ที่ล้มเหลว",
   "nls.command.toggleCoverage": "utPLSQL: Toggle Coverage",
+  "nls.command.runByTag": "utPLSQL: Run Tests by Tag...",
   "nls.command.configureConnection": "ตั้งค่าการเชื่อมต่อ",
   "nls.command.copyGrantsToClipboard": "คัดลอก grant ความครอบคลุมไปยังคลิปบอร์ด",
   "nls.command.validateSetup": "ตรวจสอบการตั้งค่า",

@@ -153,7 +153,7 @@ Esperado criar **`BR-COB-006`** (resolução `explicit ?? coverageAlways`) e
 - 📐 Regras: [[BR-COB-006 - Cobertura explicita ou coverageAlways e comandos Coverage forcam true|BR-COB-006]] · [[BR-UI-012 - Item de status bar alterna o modo global de cobertura (sessao, nao persiste)|BR-UI-012]]
 - 🔗 BR-COB-006 · BR-UI-012 · BR-UI-005
 - 🔗 PRDs relacionados: [[prd-50-auto-run-on-save|PRD-50]] · [[prd-51-run-by-tag|PRD-51]]
-- 🔗 Mesma versão (0.15.0): [[prd-50-auto-run-on-save|PRD-50]] · [[prd-51-run-by-tag|PRD-51]] · [[prd-55-tag-organization|PRD-55]]
+- 🔗 Mesma versão (0.15.0): [[prd-50-auto-run-on-save|PRD-50]] · [[prd-55-tag-organization|PRD-55]]
 - 🎯 RF1 — Flag no estado → [[BR-COB-006 - Cobertura explicita ou coverageAlways e comandos Coverage forcam true|BR-COB-006]]
 - 🎯 RF2 — Toggle e ícone → [[BR-UI-012 - Item de status bar alterna o modo global de cobertura (sessao, nao persiste)|BR-UI-012]]
 - 🎯 RF3 — Entry points honram a flag → [[BR-COB-006 - Cobertura explicita ou coverageAlways e comandos Coverage forcam true|BR-COB-006]]

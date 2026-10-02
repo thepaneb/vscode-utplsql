@@ -7,6 +7,7 @@ import { t } from '../i18n';
 import { filterSuitesByFolder, filterSuitesByUri } from '../matching';
 import { listReportersForConnection } from '../oracleRunner';
 import { collectRunTargets, executeRun } from '../runner';
+import { collectTags, filterItemsByTags, parseTagSelection } from '../tagFilter';
 import { collectAllItems, resolveSubtree } from '../testTree';
 import type { ItemMeta } from '../types';
 import type { CommandDeps } from './deps';
@@ -328,6 +329,51 @@ export function registerRunCommands(
     }
   };
 
+  /**
+   * `utPLSQL: Rodar testes por tag...` (PRD-51 RF3): QuickPick multi-seleção com
+   * as tags descobertas (contagem), `!tag` exclui. Filtra a árvore e roda os
+   * itens casados.
+   */
+  const runByTag = async (): Promise<void> => {
+    const all = await collectAllItems(controller, state);
+    const entries = all.map((item) => ({ item, tags: state.getMeta(item)?.tags }));
+    const available = collectTags(entries.map((e) => ({ tags: e.tags })));
+    if (available.length === 0) {
+      vscode.window.showInformationMessage(t(locale, 'ext.tag.none'));
+      return;
+    }
+    const picked = await vscode.window.showQuickPick(
+      available.map((tag) => {
+        const count = entries.filter((e) =>
+          (e.tags ?? []).some((x) => x.toLowerCase() === tag.toLowerCase()),
+        ).length;
+        return { label: `#${tag}`, description: `(${count})` };
+      }),
+      {
+        canPickMany: true,
+        placeHolder: t(locale, 'ext.tag.placeholder'),
+      },
+    );
+    if (!picked?.length) return;
+    const { include, exclude } = parseTagSelection(picked.map((p) => p.label.replace(/^#/, '')));
+    const includeItems = filterItemsByTags(entries, include, exclude);
+    if (includeItems.length === 0) {
+      vscode.window.showWarningMessage(t(locale, 'ext.tag.noMatch'));
+      return;
+    }
+    for (const item of includeItems) await resolveSubtree(controller, state, item);
+    const coverage = effectiveCoverage(undefined, state.coverageAlways);
+    await runWithProgress(
+      new vscode.TestRunRequest(
+        includeItems,
+        undefined,
+        coverage ? state.coverageProfile : state.runProfile,
+      ),
+      undefined,
+      coverage,
+    );
+  };
+
   // PRD-54: `runAll`/`runFailed`/`rerunLast`/cursor sem coverage explícito seguem o
   // modo global `state.coverageAlways`; os comandos `*Coverage` forçam `true`.
   const effectiveRunAll = (): boolean => effectiveCoverage(undefined, state.coverageAlways);
@@ -337,6 +383,7 @@ export function registerRunCommands(
       state.setCoverageAlways(!state.coverageAlways);
       deps.getStatusBar()?.showCoverage(state.coverageAlways);
     }),
+    vscode.commands.registerCommand('utplsql.runByTag', () => runByTag()),
     vscode.commands.registerCommand('utplsql.runWithReporter', (item?: vscode.TestItem) =>
       runExport(item),
     ),

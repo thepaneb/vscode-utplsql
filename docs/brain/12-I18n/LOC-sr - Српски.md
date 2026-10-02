@@ -5,14 +5,14 @@ tipo: locale
 titulo: "Српски"
 codigo: sr
 nls: package.nls.sr.json
-strings: 34
+strings: 35
 gerado: true
 tags: [i18n, locale]
 ---
 
 # LOC-sr — Српски
 
-Locale `sr` da extensão. Strings de UI em [`package.nls.sr.json`](../../../package.nls.sr.json) (34 chaves).
+Locale `sr` da extensão. Strings de UI em [`package.nls.sr.json`](../../../package.nls.sr.json) (35 chaves).
 
 README: [[README.sr]]
 

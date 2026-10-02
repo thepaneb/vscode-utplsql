@@ -2,7 +2,7 @@
 tipo: prd
 id: PRD-51
 aliases: [PRD-51]
-status: approved
+status: completed
 titulo: "Execução e seleção por Tag (`%tags`)"
 versao: "0.15.0"
 data: "2026-09-06"
@@ -177,10 +177,10 @@ Registrar `utplsql.runByTag` e a setting `utplsql.showTagsInTree`.
 
 ## 12. Impacto no cérebro
 
-Esperado criar **`BR-PARSE-016`** (tags de suíte no header), **`BR-PARSE-017`**
-(filtro por tag com `!` e case-insensitive) e **`BR-UI-011`** (`runByTag` +
-`showTagsInTree`) com `prds: ["PRD-51"]`; alterar **`BR-PARSE-005`**,
-**`BR-PARSE-010`** e **`BR-UI-009`**.
+Cria **`BR-PARSE-016`** (tags de suíte no header), **`BR-PARSE-017`** (filtro por
+tag com `!` e case-insensitive) e **`BR-UI-011`** (`runByTag` + `showTagsInTree`),
+todas `status: ativo` com `prds: ["PRD-51"]`; referencia **`BR-PARSE-005`**,
+**`BR-PARSE-010`** e **`BR-UI-009`**. Módulo puro novo: `src/tagFilter.ts`.
 
 ## Conexões
 

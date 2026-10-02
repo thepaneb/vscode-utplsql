@@ -15,6 +15,7 @@
   "nls.command.runAtCursor": "utPLSQL: Изпълнение на тест под курсора",
   "nls.command.runFailed": "utPLSQL: Изпълнение на неуспешните тестове",
   "nls.command.toggleCoverage": "utPLSQL: Toggle Coverage",
+  "nls.command.runByTag": "utPLSQL: Run Tests by Tag...",
   "nls.command.configureConnection": "Конфигуриране на връзката",
   "nls.command.copyGrantsToClipboard": "Копиране на грантовете за покритие в клипборда",
   "nls.command.validateSetup": "Проверка на настройката",

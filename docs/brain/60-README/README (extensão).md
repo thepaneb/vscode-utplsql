@@ -199,6 +199,7 @@ Test Explorer **as each test finishes**.
 | `utplsql.refreshDebounceMs` | `300` | Debounce (ms) to coalesce `.pks`/`.pkb` file watcher events before refreshing the Test Explorer. |
 | `utplsql.compilationDiagnostics.enabled` | `true` | Shows PL/SQL compilation errors from the database (`ALL_ERRORS`) as underlines in the editor and in the Problems Panel (source "utPLSQL Compilation"). |
 | `utplsql.setupDiagnostics.enabled` | `true` | Shows configuration diagnostics (connection, grants, version) and **utPLSQL installation integrity** (invalid objects in the UT3 schema, with "Recompile UT3" quick-fix) with quick-fix actions. |
+| `utplsql.showTagsInTree` | `false` | Appends the `%tags` of each suite/test as a `[tag1, tag2]` suffix on the Test Explorer label. |
 | `utplsql.profiles` | `[]` | Saved Oracle connection profiles (name, connection, and overrides of `sourcePath`/`coverageOwner`/etc.) to switch between environments. **Passwords are kept in the OS keychain (VS Code SecretStorage), not in settings** — the `connection` field stores only `user@//host:port/service`. Legacy profiles with an inline password are migrated automatically on first use. (Full field reference: [wiki](https://github.com/thepaneb/vscode-utplsql/wiki/Configuration)). |
 | `utplsql.activeProfile` | `""` | ID of the active profile (`utplsql.profiles`). When set, overrides `utplsql.connection`. |
 | `utplsql.sqlCoverageEnabled` | `false` | Tracks views executed via `V$SQL` (boolean coverage). Requires `GRANT SELECT ON V$SQL`. |
@@ -301,6 +302,7 @@ All extension commands (palette `Ctrl+Shift+P` prefix `utPLSQL:`):
 | `utPLSQL: Run Test at Cursor` | Runs the test under the cursor | `Ctrl+Shift+U U` |
 | `utPLSQL: Run Failed Tests` | Re-runs only the failed tests | `Ctrl+Shift+U X` |
 | `utPLSQL: Toggle Coverage` | Toggles the session coverage mode applied by run commands without explicit coverage | Click on the status bar item |
+| `utPLSQL: Run Tests by Tag...` | Runs the suites/tests matching the selected `%tags` (`!tag` excludes) | — |
 | `utPLSQL: Validate setup` | Runs full setup validation (connection, UT3 installation) and shows results | — |
 | `utPLSQL: Configure connection` | Opens settings at `utplsql.connection` | — |
 | `utPLSQL: Copy coverage grants to clipboard` | Copies the grants SQL to the clipboard | — |

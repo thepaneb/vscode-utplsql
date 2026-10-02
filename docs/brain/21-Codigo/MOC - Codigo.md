@@ -88,6 +88,7 @@ SORT id ASC
 - [[COD - statusBar.ts]] — `COD-statusBar.ts`
 - [[COD - suiteParser.ts]] — `COD-suiteParser.ts`
 - [[COD - sync-prds.cjs]] — `COD-sync-prds.cjs`
+- [[COD - tagFilter.ts]] — `COD-tagFilter.ts`
 - [[COD - test-setup.cjs]] — `COD-test-setup.cjs`
 - [[COD - testTree.ts]] — `COD-testTree.ts`
 - [[COD - tnsnames.ts]] — `COD-tnsnames.ts`

@@ -183,6 +183,7 @@ Test Explorer **ngay khi từng bài kiểm thử hoàn tất**. VSIX đã kèm 
 | `utplsql.refreshDebounceMs` | `300` | Debounce (ms) để gộp các sự kiện theo dõi tệp `.pks`/`.pkb` trước khi làm mới Test Explorer. |
 | `utplsql.compilationDiagnostics.enabled` | `true` | Hiển thị lỗi biên dịch PL/SQL từ cơ sở dữ liệu (`ALL_ERRORS`) dưới dạng gạch chân trong trình soạn thảo và trong bảng Problems (nguồn "utPLSQL Compilation"). |
 | `utplsql.setupDiagnostics.enabled` | `true` | Hiển thị chẩn đoán cấu hình (kết nối, quyền, phiên bản) và **tính toàn vẹn của bản cài utPLSQL** (các đối tượng không hợp lệ trong schema UT3, kèm quick-fix "Recompile UT3") với các hành động quick-fix. |
+| `utplsql.showTagsInTree` | `false` | Thêm `%tags` của mỗi suite/bài kiểm thử làm hậu tố `[tag1, tag2]` trên nhãn Test Explorer. |
 | `utplsql.profiles` | `[]` | Các hồ sơ kết nối Oracle đã lưu (tên, kết nối và ghi đè `sourcePath`/`coverageOwner`/v.v.) để chuyển đổi giữa các môi trường. **Mật khẩu được lưu trong keychain của hệ điều hành (VS Code SecretStorage), không lưu trong cài đặt** — trường `connection` chỉ lưu `user@//host:port/service`. Các hồ sơ cũ có mật khẩu nội tuyến sẽ được tự động di trú trong lần sử dụng đầu tiên. (Full field reference: [wiki](https://github.com/thepaneb/vscode-utplsql/wiki/Configuration)). |
 | `utplsql.activeProfile` | `""` | ID của hồ sơ đang hoạt động (`utplsql.profiles`). Khi được đặt, ghi đè `utplsql.connection`. |
 | `utplsql.sqlCoverageEnabled` | `false` | Theo dõi các view được thực thi qua `V$SQL` (độ phủ boolean). Cần `GRANT SELECT ON V$SQL`. |

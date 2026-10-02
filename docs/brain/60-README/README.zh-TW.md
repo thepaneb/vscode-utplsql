@@ -192,6 +192,7 @@ Test Explorer 中。
 | `utplsql.refreshDebounceMs` | `300` | 在重新整理 Test Explorer 之前，合併 `.pks`/`.pkb` 檔案監看事件的防抖時間（毫秒）。 |
 | `utplsql.compilationDiagnostics.enabled` | `true` | 將資料庫中的 PL/SQL 編譯錯誤（`ALL_ERRORS`）以編輯器底線形式顯示，並顯示於「問題」面板中（來源 "utPLSQL Compilation"）。 |
 | `utplsql.setupDiagnostics.enabled` | `true` | 顯示設定診斷（連線、授權、版本）以及 **utPLSQL 安裝完整性**（UT3 schema 中的無效物件，帶有「Recompile UT3」快速修復）並附上快速修復動作。 |
+| `utplsql.showTagsInTree` | `false` | 將每個套件/測試的 `%tags` 作為 `[tag1, tag2]` 後綴新增至 Test Explorer 標籤。 |
 | `utplsql.profiles` | `[]` | 已儲存的 Oracle 連線設定檔（名稱、連線，以及對 `sourcePath`/`coverageOwner` 等的覆蓋），用於切換環境。**密碼保存在作業系統鑰匙圈（VS Code SecretStorage）中，而非設定中** — `connection` 欄位僅儲存 `user@//host:port/service`。帶有內嵌密碼的舊設定檔會在首次使用時自動遷移。 (Full field reference: [wiki](https://github.com/thepaneb/vscode-utplsql/wiki/Configuration)). |
 | `utplsql.activeProfile` | `""` | 作用中設定檔的 ID（`utplsql.profiles`）。設定時，會覆蓋 `utplsql.connection`。 |
 | `utplsql.sqlCoverageEnabled` | `false` | 透過 `V$SQL` 追蹤執行的檢視（布林涵蓋率）。需要 `GRANT SELECT ON V$SQL`。 |

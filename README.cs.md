@@ -185,6 +185,7 @@ nativních API VSCode.
 | `utplsql.refreshDebounceMs` | `300` | Debounce (ms) pro sloučení událostí sledování souborů `.pks`/`.pkb` před obnovením Test Exploreru. |
 | `utplsql.compilationDiagnostics.enabled` | `true` | Zobrazuje chyby kompilace PL/SQL z databáze (`ALL_ERRORS`) jako podtržení v editoru a v panelu „Problémy" (zdroj "utPLSQL Compilation"). |
 | `utplsql.setupDiagnostics.enabled` | `true` | Zobrazuje diagnostiku konfigurace (připojení, granty, verze) a **integritu instalace utPLSQL** (neplatné objekty ve schématu UT3, s rychlou opravou „Recompile UT3") s akcemi rychlé opravy. |
+| `utplsql.showTagsInTree` | `false` | Přidá značky `%tags` každé sady/testu jako příponu `[tag1, tag2]` k popisku v Test Exploreru. |
 | `utplsql.profiles` | `[]` | Uložené profily připojení k Oracle (název, připojení a přebití `sourcePath`/`coverageOwner`/atd.) pro přepínání mezi prostředími. **Hesla se ukládají do klíčenky OS (VS Code SecretStorage), nikoli do nastavení** — pole `connection` ukládá pouze `user@//host:port/service`. Starší profily s vloženým heslem se při prvním použití migrují automaticky. (Full field reference: [wiki](https://github.com/thepaneb/vscode-utplsql/wiki/Configuration)). |
 | `utplsql.activeProfile` | `""` | ID aktivního profilu (`utplsql.profiles`). Pokud je nastaveno, přebíjí `utplsql.connection`. |
 | `utplsql.sqlCoverageEnabled` | `false` | Sleduje pohledy spuštěné přes `V$SQL` (boolean pokrytí). Vyžaduje `GRANT SELECT ON V$SQL`. |

@@ -179,6 +179,7 @@ Test Explorer に表示されます。
 | `utplsql.refreshDebounceMs` | `300` | Test Explorer を更新する前に `.pks`/`.pkb` ファイル監視イベントをまとめるデバウンス（ミリ秒）。 |
 | `utplsql.compilationDiagnostics.enabled` | `true` | データベースからの PL/SQL コンパイルエラー（`ALL_ERRORS`）をエディターの下線および「問題」パネルに表示します（ソース "utPLSQL Compilation"）。 |
 | `utplsql.setupDiagnostics.enabled` | `true` | 設定診断（接続、権限、バージョン）と **utPLSQL インストールの整合性**（UT3 スキーマ内の無効オブジェクト。"Recompile UT3" クイックフィックスあり）をクイックフィックスアクション付きで表示。 |
+| `utplsql.showTagsInTree` | `false` | 各スイート/テストの `%tags` を Test Explorer のラベルに `[tag1, tag2]` として付加します。 |
 | `utplsql.profiles` | `[]` | 保存された Oracle 接続プロファイル（名前、接続、`sourcePath`/`coverageOwner` などの上書き）。環境の切り替え用。**パスワードは OS キーチェーン（VS Code SecretStorage）に保存され、設定には保存されません** — `connection` フィールドには `user@//host:port/service` のみが保存されます。インラインパスワード付きの旧プロファイルは初回使用時に自動的に移行されます。 (Full field reference: [wiki](https://github.com/thepaneb/vscode-utplsql/wiki/Configuration)). |
 | `utplsql.activeProfile` | `""` | アクティブなプロファイルの ID（`utplsql.profiles`）。設定すると `utplsql.connection` を上書きします。 |
 | `utplsql.sqlCoverageEnabled` | `false` | `V$SQL` 経由で実行されたビューを追跡（boolean カバレッジ）。`GRANT SELECT ON V$SQL` が必要。 |

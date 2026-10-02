@@ -194,7 +194,7 @@ fluxo não interativo referencia **`SEC-010`**.
 - 📐 Regras: [[BR-EXEC-016 - Auto-run on save - default off, debounce por arquivo e guarda de concorrencia|BR-EXEC-016]]
 - 🔗 BR-EXEC-016 · BR-COB-006 · SEC-010 · BR-UI-002
 - 🔗 PRDs relacionados: [[prd-54-coverage-toggle|PRD-54]]
-- 🔗 Mesma versão (0.15.0): [[prd-51-run-by-tag|PRD-51]] · [[prd-55-tag-organization|PRD-55]]
+- 🔗 Mesma versão (0.15.0): [[prd-55-tag-organization|PRD-55]]
 - 🎯 RF1 — Setting `utplsql.autoRun` → [[BR-EXEC-016 - Auto-run on save - default off, debounce por arquivo e guarda de concorrencia|BR-EXEC-016]]
 - 🎯 RF2 — Disparo no save → [[BR-EXEC-016 - Auto-run on save - default off, debounce por arquivo e guarda de concorrencia|BR-EXEC-016]]
 - 🎯 RF3 — Debounce por arquivo → [[BR-EXEC-016 - Auto-run on save - default off, debounce por arquivo e guarda de concorrencia|BR-EXEC-016]]

@@ -15,6 +15,7 @@
   "nls.command.runAtCursor": "utPLSQL: Spustit test na pozici kurzoru",
   "nls.command.runFailed": "utPLSQL: Spustit neúspěšné testy",
   "nls.command.toggleCoverage": "utPLSQL: Toggle Coverage",
+  "nls.command.runByTag": "utPLSQL: Run Tests by Tag...",
   "nls.command.configureConnection": "Nakonfigurovat připojení",
   "nls.command.copyGrantsToClipboard": "Zkopírovat granty pokrytí do schránky",
   "nls.command.validateSetup": "Ověřit nastavení",

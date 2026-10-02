@@ -25,6 +25,7 @@ prefixed with `utPLSQL:`.
 | `utPLSQL: Run Test at Cursor` | Runs the test under the cursor | `Ctrl+Shift+U U` |
 | `utPLSQL: Run Failed Tests` | Re-runs only failed tests | `Ctrl+Shift+U X` |
 | `utPLSQL: Toggle Coverage` | Toggles the session coverage mode used by run commands without explicit coverage | Click on the status bar item |
+| `utPLSQL: Run Tests by Tag...` | Multi-select QuickPick of discovered `%tags`; a `!tag` entry excludes it | — |
 | `utPLSQL: Show Test Explorer` | Focuses the Testing view | — |
 | `utPLSQL: Validate setup` | Runs full setup validation (including UT3 installation integrity) | — |
 | `utPLSQL: Configure connection` | Opens settings at `utplsql.connection` | — |

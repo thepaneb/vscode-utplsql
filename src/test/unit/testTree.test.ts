@@ -1,4 +1,5 @@
 import './setup.js';
+
 import assert from 'node:assert';
 import { test } from 'node:test';
 import type { SuiteFile } from '../../discovery';
@@ -43,8 +44,13 @@ function makeItem(id: string, uri?: unknown) {
 
 function makeController() {
   const items: any[] = [];
+  const labels = new Map<string, string>();
   return {
-    createTestItem: (id: string, _label: string, uri?: unknown) => makeItem(id, uri),
+    createTestItem: (id: string, label: string, uri?: unknown) => {
+      labels.set(id, label);
+      return makeItem(id, uri);
+    },
+    _labels: labels,
     items: {
       add(i: any) {
         items.push(i);
@@ -95,6 +101,55 @@ test('buildFileTree: cria suite + testes, meta e suiteMap', () => {
   assert.strictEqual(state.getSuiteItem('suite:ut_app'), suiteItem);
   assert.strictEqual(state.cachedItems.length, 1);
   assert.strictEqual(state.getItem('test:ut_app.test_one'), suiteItem._children[0]);
+});
+
+test('buildFileTree: suprimi tags do label por padrão (showTagsInTree=false)', () => {
+  __resetConfigValues();
+  const controller = makeController();
+  const state = new TestStateManager();
+  buildFileTree(controller, state, [
+    suite({
+      tags: ['smoke'],
+      tests: [{ procName: 'test_one', description: 'one', line: 10, tags: ['fast'] }],
+    }),
+  ]);
+  assert.strictEqual(controller._labels.get('suite:ut_app'), 'App tests  (UT_APP)');
+  assert.strictEqual(controller._labels.get('test:ut_app.test_one'), 'one');
+});
+
+test('buildFileTree: showTagsInTree sufixa o label com as tags (PRD-51 RF4)', () => {
+  __setConfigValue('showTagsInTree', true);
+  try {
+    const controller = makeController();
+    const state = new TestStateManager();
+    buildFileTree(controller, state, [
+      suite({
+        tags: ['smoke', 'fast'],
+        tests: [{ procName: 'test_one', description: 'one', line: 10, tags: ['critical'] }],
+      }),
+    ]);
+    assert.strictEqual(controller._labels.get('suite:ut_app'), 'App tests  (UT_APP) [smoke, fast]');
+    assert.strictEqual(controller._labels.get('test:ut_app.test_one'), 'one [critical]');
+  } finally {
+    __resetConfigValues();
+  }
+});
+
+test('buildFileTree: propaga para o ItemMeta as tags de suíte e teste (PRD-51 RF1)', () => {
+  const controller = makeController();
+  const state = new TestStateManager();
+  buildFileTree(controller, state, [
+    suite({
+      tags: ['smoke'],
+      tests: [{ procName: 'test_one', description: 'one', line: 10, tags: ['fast'] }],
+    }),
+  ]);
+  const suiteItem = controller._items[0];
+  assert.ok(state.getMeta(suiteItem)?.tags);
+  assert.deepStrictEqual(state.getMeta(suiteItem)?.tags, ['smoke']);
+  const testMeta = state.getMeta(suiteItem._children[0]);
+  assert.ok(testMeta);
+  assert.deepStrictEqual(testMeta.tags, ['fast']);
 });
 
 test('buildFileTree: displayName tem prioridade sobre description', () => {

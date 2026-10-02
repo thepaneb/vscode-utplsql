@@ -55,7 +55,7 @@ bundled.
 | | `viewCoverage.ts` — DeclarationCoverage + V$SQL view tracking |
 | | `dbmsDebug.ts`, `debugger.ts` — PL/SQL debugging via DBMS_DEBUG |
 | `tnsnames.ts` — `tnsnames.ora` alias resolution (thin driver); `virtualSource.ts` — URIs virtuais `utplsql-source:` | `oracleClient.ts` — thin/thick mode init |
-| `annotation.ts` — `findAnnotationAtLine` (run/debug at cursor); `debugTargets.ts` — alvo das variações de debug; `coverageDecision.ts` — cobertura efetiva (explícito ?? `coverageAlways`) | `oracleRunner.ts` — pool, `executeRunOracle`, discovery helpers |
+| `annotation.ts` — `findAnnotationAtLine` (run/debug at cursor); `debugTargets.ts` — alvo das variações de debug; `coverageDecision.ts` — cobertura efetiva (explícito ?? `coverageAlways`); `tagFilter.ts` — filtro por `%tags` (inclusão/exclusão) | `oracleRunner.ts` — pool, `executeRunOracle`, discovery helpers |
 
 Modules in the left column **do not import `vscode`** (at runtime) and are
 testable with `node --test` without any setup. Full list: `src/*.ts`.

@@ -155,7 +155,7 @@ referenciar **`BR-SCHEMA-003`**/**`BR-SCHEMA-004`**.
 - 📐 Regras: [[BR-SCHEMA-005 - organization tag monta Tag Suite Test com ids estaveis e grupo (sem tag)|BR-SCHEMA-005]]
 - 🔗 BR-SCHEMA-005 · BR-SCHEMA-001 · BR-SCHEMA-003 · BR-SCHEMA-004
 - 🔗 PRDs relacionados: [[prd-51-run-by-tag|PRD-51]]
-- 🔗 Mesma versão (0.15.0): [[prd-50-auto-run-on-save|PRD-50]] · [[prd-51-run-by-tag|PRD-51]]
+- 🔗 Mesma versão (0.15.0): [[prd-50-auto-run-on-save|PRD-50]]
 - 🎯 RF1 — Modo `tag` → [[BR-SCHEMA-005 - organization tag monta Tag Suite Test com ids estaveis e grupo (sem tag)|BR-SCHEMA-005]]
 - 🎯 RF2 — `buildTagTree` → [[BR-SCHEMA-005 - organization tag monta Tag Suite Test com ids estaveis e grupo (sem tag)|BR-SCHEMA-005]]
 - 🎯 RF3 — IDs estáveis → [[BR-SCHEMA-005 - organization tag monta Tag Suite Test com ids estaveis e grupo (sem tag)|BR-SCHEMA-005]]

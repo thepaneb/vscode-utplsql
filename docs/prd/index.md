@@ -126,6 +126,7 @@ notas `prd-*`. O índice navegável do vault é a [[MOC - PRDs]].
 | 46 | [Atualização de dependências major (oracledb 7, fast-xml-parser 5, iconv-lite 0.7, TypeScript 7)](completed/prd-46-dependency-majors.md) | 0.11.0 | 2026-08-29 |
 | 48 | [Function Coverage derivada (DeclarationCoverage no Test Coverage)](completed/prd-48-function-coverage.md) | 0.12.0 | 2026-08-29 |
 | 49 | [Internacionalização (i18n) dos conteúdos textuais da extensão](completed/prd-49-internacionalizacao.md) | 0.12.0 | 2026-08-29 |
+| 51 | [Execução e seleção por Tag (`%tags`)](completed/prd-51-run-by-tag.md) | 0.15.0 | 2026-09-06 |
 | 52 | [Diff inline esperado × obtido nas falhas](completed/prd-52-inline-diff-expected-actual.md) | 0.15.0 | 2026-09-06 |
 | 53 | [Debug de testes: variações (cursor, falhos, último)](completed/prd-53-debug-test-variants.md) | 0.15.0 | 2026-09-06 |
 | 54 | [Toggle de cobertura na status bar](completed/prd-54-coverage-toggle.md) | 0.15.0 | 2026-09-06 |
@@ -163,7 +164,6 @@ notas `prd-*`. O índice navegável do vault é a [[MOC - PRDs]].
 |---|---|---|---|
 | 47 | [Node 26 no toolchain de desenvolvimento](approved/prd-47-node-26-toolchain.md) | 0.15.1 | 2026-08-29 |
 | 50 | [Auto-run on Save (Watch Mode)](approved/prd-50-auto-run-on-save.md) | 0.15.0 | 2026-09-06 |
-| 51 | [Execução e seleção por Tag (`%tags`)](approved/prd-51-run-by-tag.md) | 0.15.0 | 2026-09-06 |
 | 55 | [Organização da árvore de testes por tag](approved/prd-55-tag-organization.md) | 0.15.0 | 2026-09-06 |
 
 ### ⚪ Propostos
@@ -243,6 +243,7 @@ docs/prd/
 │   ├── prd-46-dependency-majors.md
 │   ├── prd-48-function-coverage.md
 │   ├── prd-49-internacionalizacao.md
+│   ├── prd-51-run-by-tag.md
 │   ├── prd-52-inline-diff-expected-actual.md
 │   ├── prd-53-debug-test-variants.md
 │   ├── prd-54-coverage-toggle.md
@@ -276,7 +277,6 @@ docs/prd/
 ├── approved/        ← aprovados, aguardando implementação
 │   ├── prd-47-node-26-toolchain.md
 │   ├── prd-50-auto-run-on-save.md
-│   ├── prd-51-run-by-tag.md
 │   ├── prd-55-tag-organization.md
 ├── proposed/        ← em avaliação
 │   ├── prd-56-duration-persistence.md

@@ -160,6 +160,13 @@ test('t: chaves do toggle de cobertura (PRD-54) por locale', () => {
   assert.match(t('en', 'status.coverage.onTooltip'), /session/i);
 });
 
+test('t: chaves de tag (PRD-51) por locale', () => {
+  assert.match(t('pt-br', 'ext.tag.placeholder'), /prefixo ! exclui/);
+  assert.match(t('en', 'ext.tag.noMatch'), /No test matches/);
+  assert.match(t('es', 'ext.tag.none'), /etiqueta/i);
+  assert.strictEqual(t('ja', 'ext.tag.none'), 'スイート/テストにタグが見つかりません。');
+});
+
 test('t: interpolacao parametrizada', () => {
   assert.strictEqual(t('pt-br', 'ext.profile.active', { name: 'DEV' }), 'Perfil ativo: DEV');
   assert.strictEqual(t('en', 'runner.oracleError', { error: 'ORA-1' }), 'Oracle runner: ORA-1');

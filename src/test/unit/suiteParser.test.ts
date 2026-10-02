@@ -164,6 +164,45 @@ test('parseSuiteText: %tags com espacos extrai array trimado', () => {
   assert.deepStrictEqual(s.tests[0].tags, ['fast', 'critical', 'slow']);
 });
 
+// PRD-51 RF2: tags do header (antes do primeiro %test) pertencem à suíte.
+test('parseSuiteText: %tags no header vira suite.tags', () => {
+  const src = `CREATE OR REPLACE PACKAGE pkg IS
+    -- %suite(Suite)
+    -- %tags(smoke, fast )
+    -- %test(Faz algo)
+    PROCEDURE faz_algo;
+  END;`;
+  const s = parseSuiteText(src);
+  assert.ok(s);
+  assert.deepStrictEqual(s.tags, ['smoke', 'fast']);
+  assert.strictEqual(s.tests[0].tags, undefined);
+});
+
+test('parseSuiteText: %tags após o primeiro %test continua no teste', () => {
+  const src = `CREATE OR REPLACE PACKAGE pkg IS
+    -- %suite(Suite)
+    -- %tags(header)
+    -- %test(Faz algo)
+    -- %tags(test-only)
+    PROCEDURE faz_algo;
+  END;`;
+  const s = parseSuiteText(src);
+  assert.ok(s);
+  assert.deepStrictEqual(s.tags, ['header']);
+  assert.deepStrictEqual(s.tests[0].tags, ['test-only']);
+});
+
+test('parseSuiteText: sem %tags no header não define suite.tags', () => {
+  const src = `CREATE OR REPLACE PACKAGE pkg IS
+    -- %suite(Suite)
+    -- %test(Faz algo)
+    PROCEDURE faz_algo;
+  END;`;
+  const s = parseSuiteText(src);
+  assert.ok(s);
+  assert.strictEqual(s.tags, undefined);
+});
+
 test('parseSuiteText: %displayname sobrescreve description', () => {
   const src = `CREATE OR REPLACE PACKAGE pkg IS
     -- %suite(Suite)

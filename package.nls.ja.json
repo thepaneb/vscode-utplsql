@@ -15,6 +15,7 @@
   "nls.command.runAtCursor": "utPLSQL: カーソル位置でテストを実行",
   "nls.command.runFailed": "utPLSQL: 失敗したテストを実行",
   "nls.command.toggleCoverage": "utPLSQL: Toggle Coverage",
+  "nls.command.runByTag": "utPLSQL: Run Tests by Tag...",
   "nls.command.configureConnection": "接続を設定",
   "nls.command.copyGrantsToClipboard": "カバレッジの grants をクリップボードにコピー",
   "nls.command.validateSetup": "設定を検証",

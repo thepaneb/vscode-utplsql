@@ -107,6 +107,13 @@ test('comando de toggle de cobertura está registrado (PRD-54)', () => {
   assert.ok(commands.some((c) => c.command === 'utplsql.toggleCoverage'));
 });
 
+test('comando runByTag e setting showTagsInTree registrados (PRD-51)', () => {
+  const commands = pkg.contributes.commands ?? [];
+  assert.ok(commands.some((c) => c.command === 'utplsql.runByTag'));
+  const props = pkg.contributes.configuration?.properties ?? {};
+  assert.ok('utplsql.showTagsInTree' in props);
+});
+
 test('extensão fica desabilitada em workspace não confiável (PRD-81 RF2)', () => {
   assert.strictEqual(pkg.capabilities?.untrustedWorkspaces?.supported, false);
 });

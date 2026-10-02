@@ -15,6 +15,7 @@
   "nls.command.runAtCursor": "utPLSQL: Test am Cursor ausführen",
   "nls.command.runFailed": "utPLSQL: Fehlgeschlagene Tests ausführen",
   "nls.command.toggleCoverage": "utPLSQL: Toggle Coverage",
+  "nls.command.runByTag": "utPLSQL: Run Tests by Tag...",
   "nls.command.configureConnection": "Verbindung konfigurieren",
   "nls.command.copyGrantsToClipboard": "Coverage-Grants in die Zwischenablage kopieren",
   "nls.command.validateSetup": "Einrichtung validieren",

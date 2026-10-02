@@ -25,6 +25,14 @@
   `src/coverageDecision.ts` — enquanto os comandos `*Coverage` continuam forçando
   cobertura.
 
+- **Execução e seleção por Tag (PRD-51)**: `%tags(...)` passam a chegar ao
+  `ItemMeta` (suíte e teste) — o parser agora captura também as tags do **header**
+  da suíte — e o novo comando `utPLSQL: Rodar testes por tag...` abre um QuickPick
+  multi-seleção com as tags descobertas (`!tag` exclui, comparação
+  case-insensitive). O filtro é puro (`src/tagFilter.ts`). A setting
+  `utplsql.showTagsInTree` (default `false`) sufixa `[tag1, tag2]` no label do
+  Test Explorer.
+
 ## 0.14.0
 
 - **Piso de VS Code 1.101 e runtime Node 22 (PRD-94)**: `engines.vscode` passa de

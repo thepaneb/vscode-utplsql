@@ -4,12 +4,12 @@ aliases: [BR-PARSE-017]
 tipo: regra
 titulo: Filtro por tag - inclusão e exclusão (!) case-insensitive; sem tag só sem inclusão
 dominio: resultados
-status: proposta
+status: ativo
 severidade: media
 fonte: codigo
 verificado: 2026-10-02
-implementacao: []
-testes: []
+implementacao: ["src/tagFilter.ts:39", "src/tagFilter.ts:50", "src/tagFilter.ts:66"]
+testes: ["src/test/unit/tagFilter.test.ts"]
 prds: ["PRD-51"]
 requisitos: ["PRD-51/RF3", "PRD-51/RNF1", "PRD-51/RNF2"]
 tags: ["tags", "resultados"]
@@ -43,5 +43,7 @@ compatível com o "rodar tudo" atual.
 - 🗺️ [[MOC - Regras]]
 - 📄 PRDs: [[prd-51-run-by-tag|PRD-51]]
 - 🎯 Requisitos: [[prd-51-run-by-tag|PRD-51 RF3]] · [[prd-51-run-by-tag|PRD-51 RNF1]] · [[prd-51-run-by-tag|PRD-51 RNF2]]
+- 🧩 Código: [[COD - tagFilter.ts]]
+- 🧪 Testes: [[TST - tagFilter.test.ts]]
 - ↩️ Referenciada por: [[prd-51-run-by-tag|PRD-51]]
 <!-- brain:auto:end -->

@@ -15,6 +15,7 @@
   "nls.command.runAtCursor": "utPLSQL: Jalankan tes di kursor",
   "nls.command.runFailed": "utPLSQL: Jalankan tes yang gagal",
   "nls.command.toggleCoverage": "utPLSQL: Toggle Coverage",
+  "nls.command.runByTag": "utPLSQL: Run Tests by Tag...",
   "nls.command.configureConnection": "Konfigurasi koneksi",
   "nls.command.copyGrantsToClipboard": "Salin grant cakupan ke clipboard",
   "nls.command.validateSetup": "Validasi pengaturan",

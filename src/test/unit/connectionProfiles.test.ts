@@ -72,6 +72,7 @@ function makeGlobal(over: Partial<UtConfig> = {}): UtConfig {
     statusBarEnabled: true,
     decorationsEnabled: true,
     compilationDiagnosticsEnabled: true,
+    showTagsInTree: false,
     organization: 'file',
     organizationSchemaPattern: 'db/{schema}/**',
     discoverySource: 'auto',

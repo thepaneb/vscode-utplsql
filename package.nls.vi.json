@@ -15,6 +15,7 @@
   "nls.command.runAtCursor": "utPLSQL: Chạy kiểm thử tại con trỏ",
   "nls.command.runFailed": "utPLSQL: Chạy kiểm thử thất bại",
   "nls.command.toggleCoverage": "utPLSQL: Toggle Coverage",
+  "nls.command.runByTag": "utPLSQL: Run Tests by Tag...",
   "nls.command.configureConnection": "Cấu hình kết nối",
   "nls.command.copyGrantsToClipboard": "Sao chép grant phủ sóng vào clipboard",
   "nls.command.validateSetup": "Xác thực cấu hình",

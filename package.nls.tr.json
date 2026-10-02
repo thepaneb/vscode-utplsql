@@ -15,6 +15,7 @@
   "nls.command.runAtCursor": "utPLSQL: İmleçte testi çalıştır",
   "nls.command.runFailed": "utPLSQL: Başarısız testleri çalıştır",
   "nls.command.toggleCoverage": "utPLSQL: Toggle Coverage",
+  "nls.command.runByTag": "utPLSQL: Run Tests by Tag...",
   "nls.command.configureConnection": "Bağlantıyı yapılandır",
   "nls.command.copyGrantsToClipboard": "Kapsam grant\\",
   "nls.command.validateSetup": "Kurulumu doğrula",

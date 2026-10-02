@@ -210,6 +210,13 @@ test('cancelRun: sem execução ativa não lança', async () => {
   );
 });
 
+// PRD-51: execução por tag.
+test('runByTag: sem tags descobertas avisa e não executa', async () => {
+  setup();
+  await commands.__getRegisteredCommand('utplsql.runByTag')?.();
+  assert.deepStrictEqual(__getInformationMessages(), ['Nenhuma tag descoberta nas suítes/testes.']);
+});
+
 // PRD-54: toggle do modo global de cobertura.
 test('toggleCoverage: inverte a flag de sessão', async () => {
   const state = setup();

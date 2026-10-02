@@ -15,6 +15,7 @@
   "nls.command.runAtCursor": "utPLSQL: 在光标处运行测试",
   "nls.command.runFailed": "utPLSQL: 运行失败的测试",
   "nls.command.toggleCoverage": "utPLSQL: Toggle Coverage",
+  "nls.command.runByTag": "utPLSQL: Run Tests by Tag...",
   "nls.command.configureConnection": "配置连接",
   "nls.command.copyGrantsToClipboard": "将覆盖率授权复制到剪贴板",
   "nls.command.validateSetup": "验证配置",

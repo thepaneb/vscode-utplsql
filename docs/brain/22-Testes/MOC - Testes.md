@@ -96,6 +96,7 @@ SORT id ASC
 - [[TST - state.test.ts]] — `TST-state.test.ts`
 - [[TST - statusBar.test.ts]] — `TST-statusBar.test.ts`
 - [[TST - suiteParser.test.ts]] — `TST-suiteParser.test.ts`
+- [[TST - tagFilter.test.ts]] — `TST-tagFilter.test.ts`
 - [[TST - tagsStreamingE2E.test.ts]] — `TST-tagsStreamingE2E.test.ts`
 - [[TST - testTree.test.ts]] — `TST-testTree.test.ts`
 - [[TST - thickMode.test.ts]] — `TST-thickMode.test.ts`

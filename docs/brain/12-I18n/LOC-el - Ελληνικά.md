@@ -5,14 +5,14 @@ tipo: locale
 titulo: "Ελληνικά"
 codigo: el
 nls: package.nls.el.json
-strings: 34
+strings: 35
 gerado: true
 tags: [i18n, locale]
 ---
 
 # LOC-el — Ελληνικά
 
-Locale `el` da extensão. Strings de UI em [`package.nls.el.json`](../../../package.nls.el.json) (34 chaves).
+Locale `el` da extensão. Strings de UI em [`package.nls.el.json`](../../../package.nls.el.json) (35 chaves).
 
 README: [[README.el]]
 

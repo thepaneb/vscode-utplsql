@@ -5,14 +5,14 @@ tipo: locale
 titulo: "Čeština"
 codigo: cs
 nls: package.nls.cs.json
-strings: 34
+strings: 35
 gerado: true
 tags: [i18n, locale]
 ---
 
 # LOC-cs — Čeština
 
-Locale `cs` da extensão. Strings de UI em [`package.nls.cs.json`](../../../package.nls.cs.json) (34 chaves).
+Locale `cs` da extensão. Strings de UI em [`package.nls.cs.json`](../../../package.nls.cs.json) (35 chaves).
 
 README: [[README.cs]]
 

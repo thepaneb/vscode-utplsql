@@ -34,9 +34,9 @@ npm run sync-prds
 
 <!-- brain:auto:start:prd-summary -->
 - 📝 Propostos: **13**
-- 🔵 Aprovados: **4**
+- 🔵 Aprovados: **3**
 - 🟡 Em desenvolvimento: **0**
-- 🟢 Concluídos: **78**
+- 🟢 Concluídos: **79**
 
 Detalhe completo (fonte da verdade): [docs/prd/index.md](../../prd/index.md)
 <!-- brain:auto:end -->

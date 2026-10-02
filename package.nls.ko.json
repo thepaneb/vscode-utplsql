@@ -15,6 +15,7 @@
   "nls.command.runAtCursor": "utPLSQL: 커서에서 테스트 실행",
   "nls.command.runFailed": "utPLSQL: 실패한 테스트 실행",
   "nls.command.toggleCoverage": "utPLSQL: Toggle Coverage",
+  "nls.command.runByTag": "utPLSQL: Run Tests by Tag...",
   "nls.command.configureConnection": "연결 구성",
   "nls.command.copyGrantsToClipboard": "커버리지 grant를 클립보드에 복사",
   "nls.command.validateSetup": "설정 검증",

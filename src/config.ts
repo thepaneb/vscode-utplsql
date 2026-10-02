@@ -41,6 +41,8 @@ export interface UtConfig {
   statusBarEnabled: boolean;
   decorationsEnabled: boolean;
   compilationDiagnosticsEnabled: boolean;
+  /** Sufixa `[tag]` no label dos TestItems (PRD-51 RF4). */
+  showTagsInTree: boolean;
   organization: 'file' | 'schema';
   organizationSchemaPattern: string;
   discoverySource: 'auto' | 'file' | 'database';
@@ -140,6 +142,7 @@ export function readConfig(): UtConfig {
     statusBarEnabled: c.get<boolean>('statusBar.enabled', true),
     decorationsEnabled: c.get<boolean>('decorations.enabled', true),
     compilationDiagnosticsEnabled: c.get<boolean>('compilationDiagnostics.enabled', true),
+    showTagsInTree: c.get<boolean>('showTagsInTree', false),
     organization: c.get<'file' | 'schema'>('organization', 'file'),
     organizationSchemaPattern: c.get<string>('organization.schemaPattern', 'db/{schema}/**'),
     discoverySource: c.get<'auto' | 'file' | 'database'>('discovery.source', 'auto'),

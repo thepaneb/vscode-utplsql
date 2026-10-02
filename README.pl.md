@@ -184,6 +184,7 @@ Test Explorerze **w miarę kończenia każdego testu**.
 | `utplsql.refreshDebounceMs` | `300` | Debounce (ms) do scalania zdarzeń obserwatora plików `.pks`/`.pkb` przed odświeżeniem Test Explorer. |
 | `utplsql.compilationDiagnostics.enabled` | `true` | Pokazuje błędy kompilacji PL/SQL z bazy danych (`ALL_ERRORS`) jako podkreślenia w edytorze i w panelu "Problemy" (źródło "utPLSQL Compilation"). |
 | `utplsql.setupDiagnostics.enabled` | `true` | Pokazuje diagnostykę konfiguracji (połączenie, granty, wersja) oraz **integralność instalacji utPLSQL** (nieprawidłowe obiekty w schemacie UT3, z quick-fixem "Recompile UT3") z akcjami quick-fix. |
+| `utplsql.showTagsInTree` | `false` | Dodaje tagi `%tags` każdego zestawu/testu jako sufiks `[tag1, tag2]` do etykiety w Test Explorerze. |
 | `utplsql.profiles` | `[]` | Zapisane profile połączeń Oracle (nazwa, połączenie oraz nadpisania `sourcePath`/`coverageOwner`/itd.) do przełączania między środowiskami. **Hasła są przechowywane w pęku kluczy systemu (VS Code SecretStorage), a nie w ustawieniach** — pole `connection` przechowuje tylko `user@//host:port/service`. Starsze profile z wbudowanym hasłem są migrowane automatycznie przy pierwszym użyciu. (Full field reference: [wiki](https://github.com/thepaneb/vscode-utplsql/wiki/Configuration)). |
 | `utplsql.activeProfile` | `""` | ID aktywnego profilu (`utplsql.profiles`). Gdy ustawione, nadpisuje `utplsql.connection`. |
 | `utplsql.sqlCoverageEnabled` | `false` | Śledzi widoki wykonane przez `V$SQL` (pokrycie boolowskie). Wymaga `GRANT SELECT ON V$SQL`. |

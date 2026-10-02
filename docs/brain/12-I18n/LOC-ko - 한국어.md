@@ -5,14 +5,14 @@ tipo: locale
 titulo: "한국어"
 codigo: ko
 nls: package.nls.ko.json
-strings: 34
+strings: 35
 gerado: true
 tags: [i18n, locale]
 ---
 
 # LOC-ko — 한국어
 
-Locale `ko` da extensão. Strings de UI em [`package.nls.ko.json`](../../../package.nls.ko.json) (34 chaves).
+Locale `ko` da extensão. Strings de UI em [`package.nls.ko.json`](../../../package.nls.ko.json) (35 chaves).
 
 README: [[README.ko]]
 

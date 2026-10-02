@@ -17,16 +17,23 @@ function suiteId(packageName: string): string {
   return `suite:${packageName.toLowerCase()}`;
 }
 
+/** Sufixo `[tag1, tag2]` no label quando `utplsql.showTagsInTree` (PRD-51 RF4). */
+function taggedLabel(base: string, tags: string[] | undefined, show: boolean): string {
+  if (!show || !tags || tags.length === 0) return base;
+  return `${base} [${tags.join(', ')}]`;
+}
+
 function fillSuiteTests(
   controller: vscode.TestController,
   state: TestStateManager,
   suiteItem: vscode.TestItem,
   suite: SuiteFile,
 ): void {
+  const showTags = readConfig().showTagsInTree;
   for (const t of suite.tests) {
     const testItem = controller.createTestItem(
       `test:${suite.packageName.toLowerCase()}.${t.procName.toLowerCase()}`,
-      t.displayName ?? t.description,
+      taggedLabel(t.displayName ?? t.description, t.tags, showTags),
       suite.uri,
     );
     testItem.range = new vscode.Range(t.line, 0, t.line, 0);
@@ -37,6 +44,7 @@ function fillSuiteTests(
       description: t.displayName ?? t.description,
       uri: suite.uri,
       folder: suite.folder,
+      ...(t.tags && t.tags.length > 0 ? { tags: t.tags } : {}),
     });
     suiteItem.children.add(testItem);
     state.setItem(testItem.id, testItem);
@@ -51,9 +59,10 @@ function addSuiteItem(
   suite: SuiteFile,
 ): vscode.TestItem {
   const id = suiteId(suite.packageName);
+  const baseLabel = `${suite.suiteDescription}  (${suite.packageName})`;
   const suiteItem = controller.createTestItem(
     id,
-    `${suite.suiteDescription}  (${suite.packageName})`,
+    taggedLabel(baseLabel, suite.tags, readConfig().showTagsInTree),
     suite.uri,
   );
   state.setMeta(suiteItem, {
@@ -61,6 +70,7 @@ function addSuiteItem(
     packageName: suite.packageName,
     uri: suite.uri,
     folder: suite.folder,
+    ...(suite.tags && suite.tags.length > 0 ? { tags: suite.tags } : {}),
   });
   suiteItem.range = new vscode.Range(suite.suiteLine, 0, suite.suiteLine, 0);
   suiteItem.canResolveChildren = true;

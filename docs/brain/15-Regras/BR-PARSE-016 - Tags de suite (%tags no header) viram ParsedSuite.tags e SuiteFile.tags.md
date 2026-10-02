@@ -4,12 +4,12 @@ aliases: [BR-PARSE-016]
 tipo: regra
 titulo: Tags de suíte (%tags no header) viram ParsedSuite.tags e SuiteFile.tags
 dominio: parser
-status: proposta
+status: ativo
 severidade: media
 fonte: codigo
 verificado: 2026-10-02
-implementacao: []
-testes: []
+implementacao: ["src/suiteParser.ts:118", "src/discovery.ts:321", "src/discovery.ts:367"]
+testes: ["src/test/unit/suiteParser.test.ts", "src/test/unit/discovery.test.ts"]
 prds: ["PRD-51"]
 requisitos: ["PRD-51/RF2"]
 tags: ["parser", "tags"]
@@ -44,5 +44,7 @@ não só por teste (PRD-42 só capturava por teste).
 - 🗺️ [[MOC - Regras]]
 - 📄 PRDs: [[prd-51-run-by-tag|PRD-51]]
 - 🎯 Requisitos: [[prd-51-run-by-tag|PRD-51 RF2]]
+- 🧩 Código: [[COD - suiteParser.ts]] · [[COD - discovery.ts]]
+- 🧪 Testes: [[TST - suiteParser.test.ts]] · [[TST - discovery.test.ts]]
 - ↩️ Referenciada por: [[prd-51-run-by-tag|PRD-51]]
 <!-- brain:auto:end -->

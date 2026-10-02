@@ -341,6 +341,11 @@
           "default": true,
           "description": "Exibe erros de compilação PL/SQL como sublinhados no editor e no Problems Panel após execução dos testes."
         },
+        "utplsql.showTagsInTree": {
+          "type": "boolean",
+          "default": false,
+          "description": "Sufixa [tag1, tag2] no label dos itens do Test Explorer conforme as %tags declaradas na suite/teste."
+        },
         "utplsql.setupDiagnostics.enabled": {
           "type": "boolean",
           "default": true,
@@ -512,6 +517,11 @@
       {
         "command": "utplsql.toggleCoverage",
         "title": "%nls.command.toggleCoverage%",
+        "category": "utPLSQL"
+      },
+      {
+        "command": "utplsql.runByTag",
+        "title": "%nls.command.runByTag%",
         "category": "utPLSQL"
       },
       {
