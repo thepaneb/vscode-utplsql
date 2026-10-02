@@ -1,5 +1,5 @@
 import * as vscode from 'vscode';
-import { type CodeLensItem, parseCodeLensItems } from '../codelens';
+import { findAnnotationAtLine } from '../annotation';
 import { refreshCompilationDiagnostics } from '../compilationDiagnostics';
 import { getExtensionLocale, readConfig, resolveConnection } from '../config';
 import { t } from '../i18n';
@@ -161,20 +161,6 @@ export function registerRunCommands(
     );
   };
 
-  const findAnnotationAtLine = (
-    document: vscode.TextDocument,
-    cursorLine: number,
-  ): CodeLensItem | undefined => {
-    const items = parseCodeLensItems(document.getText());
-    let best: CodeLensItem | undefined;
-    for (const item of items) {
-      if (item.line <= cursorLine && (!best || item.line > best.line)) {
-        best = item;
-      }
-    }
-    return best;
-  };
-
   const runSingleTest = async (
     packageName: string,
     procName: string,
@@ -272,7 +258,10 @@ export function registerRunCommands(
     } else {
       const editor = vscode.window.activeTextEditor;
       if (editor?.document.fileName.endsWith('.pks')) {
-        const annotation = findAnnotationAtLine(editor.document, editor.selection.active.line);
+        const annotation = findAnnotationAtLine(
+          editor.document.getText(),
+          editor.selection.active.line,
+        );
         if (annotation) {
           const target =
             annotation.type === 'test' && annotation.procName
@@ -426,7 +415,10 @@ export function registerRunCommands(
         vscode.window.showWarningMessage(t(locale, 'ext.runAtCursor.onlyPks'));
         return;
       }
-      const annotation = findAnnotationAtLine(editor.document, editor.selection.active.line);
+      const annotation = findAnnotationAtLine(
+        editor.document.getText(),
+        editor.selection.active.line,
+      );
       if (!annotation) {
         vscode.window.showWarningMessage(t(locale, 'ext.runAtCursor.noAnnotation'));
         return;

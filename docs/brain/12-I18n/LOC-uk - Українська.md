@@ -5,14 +5,14 @@ tipo: locale
 titulo: "Українська"
 codigo: uk
 nls: package.nls.uk.json
-strings: 30
+strings: 33
 gerado: true
 tags: [i18n, locale]
 ---
 
 # LOC-uk — Українська
 
-Locale `uk` da extensão. Strings de UI em [`package.nls.uk.json`](../../../package.nls.uk.json) (30 chaves).
+Locale `uk` da extensão. Strings de UI em [`package.nls.uk.json`](../../../package.nls.uk.json) (33 chaves).
 
 README: [[README.uk]]
 

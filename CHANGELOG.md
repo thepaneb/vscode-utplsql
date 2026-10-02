@@ -9,6 +9,14 @@
   formatos `Expected:`/`Actual:` e `... was expected to equal:`); falhas sem os
   marcadores seguem com o texto normal e o *jump to failure* é preservado.
 
+- **Debug de testes: no cursor, nos falhos e na última execução (PRD-53)**: novos
+  comandos `utplsql.debugAtCursor`, `utplsql.debugFailed` e `utplsql.debugLast`
+  reaproveitam o adaptador (`startDebugSession`) para depurar o `%test`/`%suite`
+  sob o cursor, os testes que falharam na última rodada (QuickPick quando há mais
+  de um) e a última execução em modo debug. A resolução de alvo foi extraída para
+  funções puras (`src/debugTargets.ts`) e o `findAnnotationAtLine` virou módulo
+  compartilhado (`src/annotation.ts`), com aviso amigável quando não há alvo.
+
 ## 0.14.0
 
 - **Piso de VS Code 1.101 e runtime Node 22 (PRD-94)**: `engines.vscode` passa de

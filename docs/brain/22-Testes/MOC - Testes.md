@@ -47,6 +47,7 @@ SORT id ASC
 - [[TST - debuggerE2E.test.ts]] — `TST-debuggerE2E.test.ts`
 - [[TST - debuggerExceptionE2E.test.ts]] — `TST-debuggerExceptionE2E.test.ts`
 - [[TST - debuggerStandaloneFn.test.ts]] — `TST-debuggerStandaloneFn.test.ts`
+- [[TST - debugTargets.test.ts]] — `TST-debugTargets.test.ts`
 - [[TST - decorations.test.ts]] — `TST-decorations.test.ts`
 - [[TST - discovery.test.ts]] — `TST-discovery.test.ts`
 - [[TST - docsFidelity.test.ts]] — `TST-docsFidelity.test.ts`

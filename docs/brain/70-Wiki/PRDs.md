@@ -111,6 +111,7 @@ The file is moved between folders as it progresses.
 | 82 | TNS resolution in thin + wallet password in SecretStorage | 0.14.0 |
 | 94 | VS Code floor 1.101 (Node 22 runtime) | 0.14.0 |
 | 52 | Inline expected × actual diff on failures | 0.15.0 |
+| 53 | Debug variants (cursor, failed, last) | 0.15.0 |
 
 ### 🔵 Approved
 
@@ -119,7 +120,6 @@ The file is moved between folders as it progresses.
 | 47 | Node 26 in development toolchain | 0.15.1 |
 | 50 | Auto-run on save (watch mode) | 0.15.0 |
 | 51 | Run and select by tag (`%tags`) | 0.15.0 |
-| 53 | Debug variants (cursor, failed, last) | 0.15.0 |
 | 54 | Coverage toggle on the status bar | 0.15.0 |
 | 55 | Test tree organization by tag | 0.15.0 |
 

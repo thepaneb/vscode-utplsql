@@ -560,6 +560,21 @@
         "category": "utPLSQL"
       },
       {
+        "command": "utplsql.debugAtCursor",
+        "title": "%nls.command.debugAtCursor%",
+        "category": "utPLSQL"
+      },
+      {
+        "command": "utplsql.debugFailed",
+        "title": "%nls.command.debugFailed%",
+        "category": "utPLSQL"
+      },
+      {
+        "command": "utplsql.debugLast",
+        "title": "%nls.command.debugLast%",
+        "category": "utPLSQL"
+      },
+      {
         "command": "utplsql.compileForDebug",
         "title": "%nls.command.compileForDebug%",
         "category": "utPLSQL"
@@ -716,6 +731,18 @@
         "command": "utplsql.runFailed",
         "key": "ctrl+shift+u x",
         "mac": "cmd+shift+u x",
+        "when": "utplsql:hasFailures"
+      },
+      {
+        "command": "utplsql.debugAtCursor",
+        "key": "ctrl+shift+u d",
+        "mac": "cmd+shift+u d",
+        "when": "editorTextFocus && resourceExtname == .pks"
+      },
+      {
+        "command": "utplsql.debugFailed",
+        "key": "ctrl+shift+u shift+d",
+        "mac": "cmd+shift+u shift+d",
         "when": "utplsql:hasFailures"
       }
     ],

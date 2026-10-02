@@ -97,7 +97,7 @@ export function activate(context: vscode.ExtensionContext) {
   registerConnectionCommands(context, deps);
   registerProfileCommands(context, deps);
   registerScriptCommands(context);
-  registerDebug(context);
+  registerDebug(context, deps);
 
   context.subscriptions.push(
     vscode.languages.registerCodeLensProvider(

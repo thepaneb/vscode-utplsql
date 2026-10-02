@@ -5,14 +5,14 @@ tipo: locale
 titulo: "Română"
 codigo: ro
 nls: package.nls.ro.json
-strings: 30
+strings: 33
 gerado: true
 tags: [i18n, locale]
 ---
 
 # LOC-ro — Română
 
-Locale `ro` da extensão. Strings de UI em [`package.nls.ro.json`](../../../package.nls.ro.json) (30 chaves).
+Locale `ro` da extensão. Strings de UI em [`package.nls.ro.json`](../../../package.nls.ro.json) (33 chaves).
 
 README: [[README.ro]]
 

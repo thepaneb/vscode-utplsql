@@ -2,7 +2,7 @@
 tipo: prd
 id: PRD-53
 aliases: [PRD-53]
-status: approved
+status: completed
 titulo: "Debug de testes: variações (cursor, falhos, último)"
 versao: "0.15.0"
 data: "2026-09-06"
