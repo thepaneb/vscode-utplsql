@@ -10,38 +10,68 @@
 
 </div>
 
+<p align="center">
+  <a href="https://marketplace.visualstudio.com/items?itemName=paneb.vscode-utplsql"><img alt="Marketplace" src="https://vsmarketplacebadges.dev/version-short/paneb.vscode-utplsql.svg"></a>
+  <a href="https://marketplace.visualstudio.com/items?itemName=paneb.vscode-utplsql"><img alt="Installs" src="https://vsmarketplacebadges.dev/installs-short/paneb.vscode-utplsql.svg"></a>
+  <a href="https://marketplace.visualstudio.com/items?itemName=paneb.vscode-utplsql"><img alt="Downloads" src="https://vsmarketplacebadges.dev/downloads-short/paneb.vscode-utplsql.svg"></a>
+  <a href="https://github.com/thepaneb/vscode-utplsql/actions/workflows/ci.yml"><img alt="CI" src="https://github.com/thepaneb/vscode-utplsql/actions/workflows/ci.yml/badge.svg"></a>
+  <a href="https://codecov.io/gh/thepaneb/vscode-utplsql"><img alt="Coverage" src="https://codecov.io/gh/thepaneb/vscode-utplsql/branch/main/graph/badge.svg"></a>
+  <img alt="VS Code" src="https://img.shields.io/badge/VS%20Code-1.101%2B-007ACC">
+  <img alt="Node" src="https://img.shields.io/badge/node-22-339933?logo=nodedotjs&logoColor=white">
+  <img alt="Oracle" src="https://img.shields.io/badge/Oracle-12.2%2B-F80000?logo=oracle&logoColor=white">
+  <img alt="License" src="https://img.shields.io/badge/license-MIT-blue">
+</p>
+
 # utPLSQL Test Runner
 
-Интегрише [utPLSQL](https://www.utplsql.org/) у VSCode, доносећи PL/SQL тестове у нативни **Test Explorer**, са контекстним менијем и визуелном покривеношћу.
+Pokrenite i debugujte **utPLSQL** (Oracle PL/SQL) testove direktno u VS Code-u — nativni **Test Explorer**, vizuelna pokrivenost, PL/SQL debager i **direktno Oracle izvršavanje** preko `node-oracledb`. Dostupno na **24 jezika**; zahteva **VS Code 1.101+** (Node 22).
+
+### Test Explorer i izvršavanje
 
 - 🧪 **Нативни Test Explorer** — суитови и тестови се појављују у прегледу тестова; покрени по тесту, суиту, датотеци или фасцикли.
 - 🔍 **CodeLens** — дугмад Run/Run with Coverage изнад `%suite` и `%test` у едитору, без напуштања кода.
 - ⌨️ **Пречице на тастатури** — префикс `Ctrl+Shift+U` + тастер за главне команде (R = Run All, T = Run File, L = Rerun Last, итд.).
 - 🖱️ **Контекстни мени** — десни клик на **фасциклу** или на датотеку **`.pks`/`.pkb`** (у Explorer-у или у едитору) за покретање тестова.
-- 📊 **Визуелна покривеност** — обојени gutter-и по линији (покривено/непокривено) и проценат по датотеци у картици **Coverage**.
-- ✅ **Инлине декорације** — иконе ✓/✗/⚠ у едитору након извршавања, са tooltip-ом о грешци и overview ruler-ом.
-- 📌 **Status Bar** — индикатор са бројачем pass/fail, трајањем и напретком у реалном времену.
 - 🔁 **Smart Re-run** — Rerun Last, Run at Cursor, Run Failed Only са једном пречицом.
-- 🚀 **Oracle директан (преко node-oracledb)** — стримовање у реалном времену, без чекања да се серија заврши.
-- 🔧 **Дијагностика подешавања** — проактивна провера везе, grant-ова и верзије са quick-fix-ом.
 - 🧩 **Дрво свесно шеме** — организуј тестове по Schema > Package > Suite > Test у Test Explorer-у.
-- 🎯 **Скок до грешке** — директна навигација до линије тврдње (assertion) која је пала (преко нативног „Go to Error").
-- 🔌 **Профили веза** — сачувај и пребацуј се између више окружења (DEV/TEST/PROD) са подешавањима по профилу, преко статусне траке или палете команди.
-- 📜 **SQL скрипте** — покрени тренутну скрипту, датотеку из Explorer-а или целу фасциклу на активном профилу везе (уз charset, са `DBMS_OUTPUT` и `stopOnError`).
-- 📈 **Покривеност израза и погледа** — картица Coverage приказује `% израза` (PROCEDURE/FUNCTION) по датотеци и прати погледе извршене преко `V$SQL`.
 - 🏷️ **Ознаке и насумичан ред** — филтрирај тестове помоћу `utplsql.tags` (нпр. `fast & !integration`) и покрени у насумичном реду са поновљивим seed-ом (`utplsql.run.randomOrder`).
-- 🎯 **Обим покривености** — укључи/искључи објекте и regex шеме/објекта (`utplsql.coverage.*`) да уклониш шум framework-а и додаш динамички достигнуте објекте.
 - 🗄️ **DB-first откривање** — изгради стабло из `ut_runner.get_suites_info` и поново изгради кеш напомена са палете.
-- 🐛 **PL/SQL Debug** — breakpoint-и и степеновано отклањање грешака utPLSQL тестова преко `DBMS_DEBUG` (нативни Debug Adapter).
-- 🌍 **i18n — 24 језика** — `utplsql.language` прати VSCode (24 локала: pt-br, en, en-gb, es, zh-cn, zh-tw, ja, de, fr, it, ko, ru, tr, pl, cs, hu, bg, el, id, ro, sr, th, uk, vi).
 - 🌳 **Lenjivo stablo testova** — u `schema` režimu paketi/suitovi/testovi se razrešavaju pri proširenju, pa se velike šeme otvaraju trenutno.
-- 🧾 **Run with Reporter (Export)** — pokreće izbor bilo kojim reporterom baze i upisuje izlaz u Output ili fajl (`utplsql.reporter.*`), bez menjanja rezultata u Test Exploreru.
+- 📁 **Radni prostor sa više korena** — svaki folder radnog prostora ima sopstvene suite, sa nezavisnim otkrivanjem, izvršavanjem i pokrivenošću.
+- 🚀 **Oracle директан (преко node-oracledb)** — стримовање у реалном времену, без чекања да се серија заврши.
+- 📜 **SQL скрипте** — покрени тренутну скрипту, датотеку из Explorer-а или целу фасциклу на активном профилу везе (уз charset, са `DBMS_OUTPUT` и `stopOnError`).
+
+### Pokrivenost
+
+- 📊 **Визуелна покривеност** — обојени gutter-и по линији (покривено/непокривено) и проценат по датотеци у картици **Coverage**.
+- 📈 **Покривеност израза и погледа** — картица Coverage приказује `% израза` (PROCEDURE/FUNCTION) по датотеци и прати погледе извршене преко `V$SQL`.
+- 🎯 **Обим покривености** — укључи/искључи објекте и regex шеме/објекта (`utplsql.coverage.*`) да уклониш шум framework-а и додаш динамички достигнуте објекте.
 - 🗂️ **Virtuelni izvor iz baze** — bez lokalnog fajla *jump to failure* i pokrivenost otvaraju dokument samo za čitanje iz `ALL_SOURCE` (`utplsql-source:/…`).
+
+### Debager
+
+- 🐛 **PL/SQL Debug** — breakpoint-и и степеновано отклањање грешака utPLSQL тестова преко `DBMS_DEBUG` (нативни Debug Adapter).
+
+### Veze i bezbednost
+
+- 🔌 **Профили веза** — сачувај и пребацуј се између више окружења (DEV/TEST/PROD) са подешавањима по профилу, преко статусне траке или палете команди.
 - 🔐 **TNS u thin + wallet** — `utplsql.connections.tnsAdminPath` razrešava alias-e iz `tnsnames.ora` u thin drajveru (fallback na SQL Developer/`TNS_ADMIN`); `walletLocation` profila i `utPLSQL: Set wallet password` čuvaju lozinku wallet-a u SecretStorage.
 - 🔒 **Jačanje bezbednosti veza** — podešavanja veze su `machine`-scoped, ekstenzija je onemogućena u nepouzdanim radnim prostorima, a lozinka profila je vezana za vezu.
+- 🔧 **Дијагностика подешавања** — проактивна провера везе, grant-ова и верзије са quick-fix-ом.
+
+### Izveštaji
+
+- 🧾 **Run with Reporter (Export)** — pokreće izbor bilo kojim reporterom baze i upisuje izlaz u Output ili fajl (`utplsql.reporter.*`), bez menjanja rezultata u Test Exploreru.
+
+### UX i dijagnostika
+
+- ✅ **Инлине декорације** — иконе ✓/✗/⚠ у едитору након извршавања, са tooltip-ом о грешци и overview ruler-ом.
+- 📌 **Status Bar** — индикатор са бројачем pass/fail, трајањем и напретком у реалном времену.
+- 🎯 **Скок до грешке** — директна навигација до линије тврдње (assertion) која је пала (преко нативног „Go to Error").
 - 🧱 **Diagnostika kompilacije** — posle svakog pokretanja, greške kompilacije PL/SQL (`ALL_ERRORS`) se prikazuju u Problems Panelu pod izvorom `utPLSQL Compilation` (podešavanje `utplsql.compilationDiagnostics.enabled`).
 - ⏳ **Napredak i otkazivanje** — duga pokretanja prikazuju obaveštenje o napretku sa brojačem i dugmetom *Cancel* (plus opciono `utplsql.timeoutMinutes`).
-- 📁 **Radni prostor sa više korena** — svaki folder radnog prostora ima sopstvene suite, sa nezavisnim otkrivanjem, izvršavanjem i pokrivenošću.
+- 🌍 **i18n — 24 језика** — `utplsql.language` прати VSCode (24 локала: pt-br, en, en-gb, es, zh-cn, zh-tw, ja, de, fr, it, ko, ru, tr, pl, cs, hu, bg, el, id, ro, sr, th, uk, vi).
+
 
 ## Инсталација
 
@@ -55,7 +85,7 @@
 ## Захтеви
 
 - [**utPLSQL**](https://github.com/utPLSQL/utPLSQL) **(UT3)** инсталиран у Oracle бази података.
-- **VSCode 1.101+** (Test Coverage API).
+- **VSCode 1.101+** (Node 22).
 
 Екстензија је само „графички клијент" — оно што покреће тестове јесте база података директно (node-oracledb).
 

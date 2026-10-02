@@ -19,38 +19,68 @@ tags: [readme]
 
 </div>
 
+<p align="center">
+  <a href="https://marketplace.visualstudio.com/items?itemName=paneb.vscode-utplsql"><img alt="Marketplace" src="https://vsmarketplacebadges.dev/version-short/paneb.vscode-utplsql.svg"></a>
+  <a href="https://marketplace.visualstudio.com/items?itemName=paneb.vscode-utplsql"><img alt="Installs" src="https://vsmarketplacebadges.dev/installs-short/paneb.vscode-utplsql.svg"></a>
+  <a href="https://marketplace.visualstudio.com/items?itemName=paneb.vscode-utplsql"><img alt="Downloads" src="https://vsmarketplacebadges.dev/downloads-short/paneb.vscode-utplsql.svg"></a>
+  <a href="https://github.com/thepaneb/vscode-utplsql/actions/workflows/ci.yml"><img alt="CI" src="https://github.com/thepaneb/vscode-utplsql/actions/workflows/ci.yml/badge.svg"></a>
+  <a href="https://codecov.io/gh/thepaneb/vscode-utplsql"><img alt="Coverage" src="https://codecov.io/gh/thepaneb/vscode-utplsql/branch/main/graph/badge.svg"></a>
+  <img alt="VS Code" src="https://img.shields.io/badge/VS%20Code-1.101%2B-007ACC">
+  <img alt="Node" src="https://img.shields.io/badge/node-22-339933?logo=nodedotjs&logoColor=white">
+  <img alt="Oracle" src="https://img.shields.io/badge/Oracle-12.2%2B-F80000?logo=oracle&logoColor=white">
+  <img alt="License" src="https://img.shields.io/badge/license-MIT-blue">
+</p>
+
 # utPLSQL Test Runner
 
-Tích hợp [utPLSQL](https://www.utplsql.org/) vào VSCode, đưa các bài kiểm thử PL/SQL vào **Test Explorer** gốc, kèm menu ngữ cảnh và độ phủ mã trực quan.
+Chạy và gỡ lỗi kiểm thử **utPLSQL** (Oracle PL/SQL) ngay trong VS Code — **Test Explorer** gốc, độ phủ trực quan, trình gỡ lỗi PL/SQL và thực thi **Oracle trực tiếp** qua `node-oracledb`. Có **24 ngôn ngữ**; yêu cầu **VS Code 1.101+** (Node 22).
+
+### Test Explorer và thực thi
 
 - 🧪 **Test Explorer gốc** — các suite và bài kiểm thử xuất hiện trong khung testing; chạy theo bài kiểm thử, suite, tệp hoặc thư mục.
 - 🔍 **CodeLens** — nút Run/Run with Coverage trên `%suite` và `%test` ngay trong trình soạn thảo, không cần rời khỏi mã.
 - ⌨️ **Phím tắt** — tiền tố `Ctrl+Shift+U` + phím cho các lệnh chính (R = Chạy tất cả, T = Chạy tệp, L = Chạy lại lần cuối, v.v.).
 - 🖱️ **Menu ngữ cảnh** — bấm chuột phải vào một **thư mục** hoặc tệp **`.pks`/`.pkb`** (trong Explorer hoặc trong trình soạn thảo) để chạy kiểm thử.
-- 📊 **Độ phủ mã trực quan** — phần lề (gutter) tô màu theo từng dòng (đã phủ/chưa phủ) và tỷ lệ phần trăm theo tệp trong tab **Coverage**.
-- ✅ **Trang trí nội tuyến** — các biểu tượng ✓/✗/⚠ trong trình soạn thảo sau khi chạy, kèm tooltip lỗi và thanh overview ruler.
-- 📌 **Thanh trạng thái** — chỉ báo số lượng đạt/không đạt, thời lượng và tiến trình theo thời gian thực.
 - 🔁 **Chạy lại thông minh** — Chạy lại lần cuối, Chạy tại con trỏ, Chỉ chạy các bài thất bại chỉ với một phím tắt.
-- 🚀 **Oracle trực tiếp (qua node-oracledb)** — streaming theo thời gian thực, không cần chờ batch hoàn tất.
-- 🔧 **Chẩn đoán thiết lập** — xác thực chủ động kết nối, quyền (grants) và phiên bản kèm quick-fix.
 - 🧩 **Cây theo schema** — tổ chức kiểm thử theo Schema > Package > Suite > Test trong Test Explorer.
-- 🎯 **Nhảy tới lỗi** — điều hướng trực tiếp tới dòng của assertion bị lỗi (qua "Go to Error" gốc).
-- 🔌 **Hồ sơ kết nối** — lưu và chuyển đổi giữa nhiều môi trường (DEV/TEST/PROD) với cài đặt theo hồ sơ, qua thanh trạng thái hoặc command palette.
-- 📜 **Script SQL** — chạy script hiện tại, một tệp từ Explorer hoặc cả thư mục trên hồ sơ kết nối đang hoạt động (tôn trọng charset, với `DBMS_OUTPUT` và `stopOnError`).
-- 📈 **Độ phủ câu lệnh và view** — tab Coverage hiển thị `% câu lệnh` (PROCEDURE/FUNCTION) theo tệp và theo dõi các view được thực thi qua `V$SQL`.
 - 🏷️ **Tag và thứ tự ngẫu nhiên** — lọc bài kiểm thử bằng `utplsql.tags` (ví dụ `fast & !integration`) và chạy theo thứ tự ngẫu nhiên với seed tái tạo được (`utplsql.run.randomOrder`).
-- 🎯 **Phạm vi phủ** — thêm/loại đối tượng và regex schema/đối tượng (`utplsql.coverage.*`) để bỏ nhiễu framework và thêm các đối tượng chỉ truy cập động.
 - 🗄️ **Khám phá DB-first** — dựng cây từ `ut_runner.get_suites_info` và tạo lại bộ nhớ đệm chú thích từ bảng lệnh.
-- 🐛 **Gỡ lỗi PL/SQL** — breakpoint và gỡ lỗi từng bước các bài kiểm thử utPLSQL qua `DBMS_DEBUG` (Debug Adapter gốc).
-- 🌍 **i18n — 24 ngôn ngữ** — `utplsql.language` theo VSCode (24 locale: pt-br, en, en-gb, es, zh-cn, zh-tw, ja, de, fr, it, ko, ru, tr, pl, cs, hu, bg, el, id, ro, sr, th, uk, vi).
 - 🌳 **Cây kiểm thử lazy** — ở chế độ `schema`, package/suite/test được giải quyết khi mở rộng, nên các schema lớn mở tức thì.
-- 🧾 **Run with Reporter (Export)** — chạy vùng chọn với bất kỳ reporter nào của CSDL và ghi kết quả ra Output hoặc tệp (`utplsql.reporter.*`), không thay đổi kết quả trong Test Explorer.
+- 📁 **Không gian làm việc multi-root** — mỗi thư mục workspace có bộ kiểm thử riêng, với khám phá, thực thi và độ phủ độc lập.
+- 🚀 **Oracle trực tiếp (qua node-oracledb)** — streaming theo thời gian thực, không cần chờ batch hoàn tất.
+- 📜 **Script SQL** — chạy script hiện tại, một tệp từ Explorer hoặc cả thư mục trên hồ sơ kết nối đang hoạt động (tôn trọng charset, với `DBMS_OUTPUT` và `stopOnError`).
+
+### Độ phủ
+
+- 📊 **Độ phủ mã trực quan** — phần lề (gutter) tô màu theo từng dòng (đã phủ/chưa phủ) và tỷ lệ phần trăm theo tệp trong tab **Coverage**.
+- 📈 **Độ phủ câu lệnh và view** — tab Coverage hiển thị `% câu lệnh` (PROCEDURE/FUNCTION) theo tệp và theo dõi các view được thực thi qua `V$SQL`.
+- 🎯 **Phạm vi phủ** — thêm/loại đối tượng và regex schema/đối tượng (`utplsql.coverage.*`) để bỏ nhiễu framework và thêm các đối tượng chỉ truy cập động.
 - 🗂️ **Nguồn CSDL ảo** — khi không có tệp cục bộ, *jump to failure* và độ phủ mở tài liệu chỉ-đọc lấy từ `ALL_SOURCE` (`utplsql-source:/…`).
+
+### Trình gỡ lỗi
+
+- 🐛 **Gỡ lỗi PL/SQL** — breakpoint và gỡ lỗi từng bước các bài kiểm thử utPLSQL qua `DBMS_DEBUG` (Debug Adapter gốc).
+
+### Kết nối và bảo mật
+
+- 🔌 **Hồ sơ kết nối** — lưu và chuyển đổi giữa nhiều môi trường (DEV/TEST/PROD) với cài đặt theo hồ sơ, qua thanh trạng thái hoặc command palette.
 - 🔐 **TNS ở thin + wallet** — `utplsql.connections.tnsAdminPath` phân giải alias `tnsnames.ora` trong driver thin (dự phòng SQL Developer/`TNS_ADMIN`); `walletLocation` của profile và `utPLSQL: Set wallet password` lưu mật khẩu wallet trong SecretStorage.
 - 🔒 **Tăng cường bảo mật kết nối** — các cài đặt kết nối nay là `machine`-scoped, tiện ích bị vô hiệu hóa trong workspace không đáng tin cậy và mật khẩu profile gắn với kết nối.
+- 🔧 **Chẩn đoán thiết lập** — xác thực chủ động kết nối, quyền (grants) và phiên bản kèm quick-fix.
+
+### Báo cáo
+
+- 🧾 **Run with Reporter (Export)** — chạy vùng chọn với bất kỳ reporter nào của CSDL và ghi kết quả ra Output hoặc tệp (`utplsql.reporter.*`), không thay đổi kết quả trong Test Explorer.
+
+### UX và chẩn đoán
+
+- ✅ **Trang trí nội tuyến** — các biểu tượng ✓/✗/⚠ trong trình soạn thảo sau khi chạy, kèm tooltip lỗi và thanh overview ruler.
+- 📌 **Thanh trạng thái** — chỉ báo số lượng đạt/không đạt, thời lượng và tiến trình theo thời gian thực.
+- 🎯 **Nhảy tới lỗi** — điều hướng trực tiếp tới dòng của assertion bị lỗi (qua "Go to Error" gốc).
 - 🧱 **Chẩn đoán biên dịch** — sau mỗi lần chạy, lỗi biên dịch PL/SQL (`ALL_ERRORS`) hiện trong Problems Panel dưới source `utPLSQL Compilation` (cài đặt `utplsql.compilationDiagnostics.enabled`).
 - ⏳ **Tiến trình và hủy** — các lần chạy dài hiển thị thông báo tiến trình kèm số đếm và nút *Cancel* (và `utplsql.timeoutMinutes` tùy chọn).
-- 📁 **Không gian làm việc multi-root** — mỗi thư mục workspace có bộ kiểm thử riêng, với khám phá, thực thi và độ phủ độc lập.
+- 🌍 **i18n — 24 ngôn ngữ** — `utplsql.language` theo VSCode (24 locale: pt-br, en, en-gb, es, zh-cn, zh-tw, ja, de, fr, it, ko, ru, tr, pl, cs, hu, bg, el, id, ro, sr, th, uk, vi).
+
 
 ## Cài đặt
 
@@ -64,7 +94,7 @@ Extension có thể được cài đặt theo hai cách:
 ## Yêu cầu
 
 - [**utPLSQL**](https://github.com/utPLSQL/utPLSQL) **(UT3)** được cài đặt trong cơ sở dữ liệu Oracle.
-- **VSCode 1.101+** (Test Coverage API).
+- **VSCode 1.101+** (Node 22).
 
 Extension chỉ là "client đồ họa" — thứ thực sự chạy kiểm thử là cơ sở dữ liệu trực tiếp (node-oracledb).
 

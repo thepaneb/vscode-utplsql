@@ -10,38 +10,68 @@
 
 </div>
 
+<p align="center">
+  <a href="https://marketplace.visualstudio.com/items?itemName=paneb.vscode-utplsql"><img alt="Marketplace" src="https://vsmarketplacebadges.dev/version-short/paneb.vscode-utplsql.svg"></a>
+  <a href="https://marketplace.visualstudio.com/items?itemName=paneb.vscode-utplsql"><img alt="Installs" src="https://vsmarketplacebadges.dev/installs-short/paneb.vscode-utplsql.svg"></a>
+  <a href="https://marketplace.visualstudio.com/items?itemName=paneb.vscode-utplsql"><img alt="Downloads" src="https://vsmarketplacebadges.dev/downloads-short/paneb.vscode-utplsql.svg"></a>
+  <a href="https://github.com/thepaneb/vscode-utplsql/actions/workflows/ci.yml"><img alt="CI" src="https://github.com/thepaneb/vscode-utplsql/actions/workflows/ci.yml/badge.svg"></a>
+  <a href="https://codecov.io/gh/thepaneb/vscode-utplsql"><img alt="Coverage" src="https://codecov.io/gh/thepaneb/vscode-utplsql/branch/main/graph/badge.svg"></a>
+  <img alt="VS Code" src="https://img.shields.io/badge/VS%20Code-1.101%2B-007ACC">
+  <img alt="Node" src="https://img.shields.io/badge/node-22-339933?logo=nodedotjs&logoColor=white">
+  <img alt="Oracle" src="https://img.shields.io/badge/Oracle-12.2%2B-F80000?logo=oracle&logoColor=white">
+  <img alt="License" src="https://img.shields.io/badge/license-MIT-blue">
+</p>
+
 # utPLSQL Test Runner
 
-Integruje [utPLSQL](https://www.utplsql.org/) do VSCode a přináší PL/SQL testy do nativního **Test Exploreru**, s kontextovou nabídkou a vizuálním pokrytím kódu.
+Spouštějte a laďte testy **utPLSQL** (Oracle PL/SQL) přímo ve VS Code — nativní **Test Explorer**, vizuální pokrytí, ladicí program PL/SQL a **přímé spuštění Oracle** přes `node-oracledb`. K dispozici ve **24 jazycích**; vyžaduje **VS Code 1.101+** (Node 22).
+
+### Test Explorer a spouštění
 
 - 🧪 **Nativní Test Explorer** — sady a testy se zobrazují v pohledu testování; spouštění podle testu, sady, souboru nebo složky.
 - 🔍 **CodeLens** — tlačítka Run/Run with Coverage nad `%suite` a `%test` v editoru, bez opuštění kódu.
 - ⌨️ **Klávesové zkratky** — předpona `Ctrl+Shift+U` + klávesa pro hlavní příkazy (R = Run All, T = Run File, L = Rerun Last atd.).
 - 🖱️ **Kontextová nabídka** — klikněte pravým tlačítkem na **složku** nebo soubor **`.pks`/`.pkb`** (v Průzkumníku nebo v editoru) pro spuštění testů.
-- 📊 **Vizuální pokrytí** — barevné okraje (marginy) podle řádků (pokryto/nepokryto) a procenta podle souboru na kartě **Coverage**.
-- ✅ **Inline dekorace** — ikony ✓/✗/⚠ v editoru po spuštění, s tooltipem při selhání a přehledovým pravítkem.
-- 📌 **Stavový řádek** — indikátor s počtem prošlých/selhávajících, délkou trvání a průběhem v reálném čase.
 - 🔁 **Chytré opětovné spuštění** — Rerun Last, Run at Cursor, Run Failed Only jedinou zkratkou.
-- 🚀 **Oracle přímý (přes node-oracledb)** — streamování v reálném čase, bez čekání na dokončení dávky.
-- 🔧 **Diagnostika nastavení** — proaktivní ověření připojení, grantů a verze s rychlou opravou (quick-fix).
 - 🧩 **Strom podle schémat** — uspořádání testů podle Schema > Package > Suite > Test v Test Exploreru.
-- 🎯 **Skok na selhání** — přímá navigace na řádek tvrzení, které selhalo (přes nativní „Go to Error").
-- 🔌 **Profily připojení** — ukládání a přepínání mezi více prostředími (DEV/TEST/PROD) s nastavením podle profilu, přes stavový řádek nebo paletu příkazů.
-- 📜 **SQL skripty** — spouštění aktuálního skriptu, souboru z Průzkumníku nebo celé složky na aktivním profilu připojení (s ohledem na charset, `DBMS_OUTPUT` a `stopOnError`).
-- 📈 **Pokrytí příkazů a pohledů** — karta Coverage zobrazuje `% of statements` (PROCEDURE/FUNCTION) podle souboru a sleduje pohledy spuštěné přes `V$SQL`.
 - 🏷️ **Tagy a náhodné pořadí** — filtrujte testy pomocí `utplsql.tags` (např. `fast & !integration`) a spouštějte v náhodném pořadí s reprodukovatelným seedem (`utplsql.run.randomOrder`).
-- 🎯 **Rozsah pokrytí** — zahrňte/vylučte objekty a regex schématu/objektu (`utplsql.coverage.*`) pro odstranění šumu frameworku a přidání dynamicky dosažených objektů.
 - 🗄️ **Objevování DB-first** — sestavte strom z `ut_runner.get_suites_info` a přestavte mezipaměť anotací z palety.
-- 🐛 **PL/SQL Debug** — breakpointy a krokování testů utPLSQL přes `DBMS_DEBUG` (nativní Debug Adapter).
-- 🌍 **i18n — 24 jazyků** — `utplsql.language` se řídí VSCode (24 locale: pt-br, en, en-gb, es, zh-cn, zh-tw, ja, de, fr, it, ko, ru, tr, pl, cs, hu, bg, el, id, ro, sr, th, uk, vi).
 - 🌳 **Líně načítaný strom testů** — v režimu `schema` se balíčky/sady/testy načítají až při rozbalení, takže velká schémata se otevřou okamžitě.
-- 🧾 **Run with Reporter (Export)** — spustí výběr s libovolným reportérem databáze a zapíše výstup do Output nebo do souboru (`utplsql.reporter.*`), aniž by změnil výsledky v Test Exploreru.
+- 📁 **Vícerootový pracovní prostor** — každá složka pracovního prostoru má vlastní sady testů, s nezávislým vyhledáváním, spouštěním a pokrytím.
+- 🚀 **Oracle přímý (přes node-oracledb)** — streamování v reálném čase, bez čekání na dokončení dávky.
+- 📜 **SQL skripty** — spouštění aktuálního skriptu, souboru z Průzkumníku nebo celé složky na aktivním profilu připojení (s ohledem na charset, `DBMS_OUTPUT` a `stopOnError`).
+
+### Pokrytí
+
+- 📊 **Vizuální pokrytí** — barevné okraje (marginy) podle řádků (pokryto/nepokryto) a procenta podle souboru na kartě **Coverage**.
+- 📈 **Pokrytí příkazů a pohledů** — karta Coverage zobrazuje `% of statements` (PROCEDURE/FUNCTION) podle souboru a sleduje pohledy spuštěné přes `V$SQL`.
+- 🎯 **Rozsah pokrytí** — zahrňte/vylučte objekty a regex schématu/objektu (`utplsql.coverage.*`) pro odstranění šumu frameworku a přidání dynamicky dosažených objektů.
 - 🗂️ **Virtuální zdroj z databáze** — bez lokálního souboru *jump to failure* a pokrytí otevřou dokument jen pro čtení z `ALL_SOURCE` (`utplsql-source:/…`).
+
+### Ladicí program
+
+- 🐛 **PL/SQL Debug** — breakpointy a krokování testů utPLSQL přes `DBMS_DEBUG` (nativní Debug Adapter).
+
+### Připojení a zabezpečení
+
+- 🔌 **Profily připojení** — ukládání a přepínání mezi více prostředími (DEV/TEST/PROD) s nastavením podle profilu, přes stavový řádek nebo paletu příkazů.
 - 🔐 **TNS v thin + wallet** — `utplsql.connections.tnsAdminPath` řeší aliasy `tnsnames.ora` v thin ovladači (fallback na SQL Developer/`TNS_ADMIN`); `walletLocation` v profilu a `utPLSQL: Set wallet password` uchovávají heslo k walletu v SecretStorage.
 - 🔒 **Zpevnění zabezpečení připojení** — nastavení připojení jsou `machine`-scoped, rozšíření je zakázáno v nedůvěryhodných pracovních prostorech a heslo profilu je vázáno na připojení.
+- 🔧 **Diagnostika nastavení** — proaktivní ověření připojení, grantů a verze s rychlou opravou (quick-fix).
+
+### Reporty
+
+- 🧾 **Run with Reporter (Export)** — spustí výběr s libovolným reportérem databáze a zapíše výstup do Output nebo do souboru (`utplsql.reporter.*`), aniž by změnil výsledky v Test Exploreru.
+
+### UX a diagnostika
+
+- ✅ **Inline dekorace** — ikony ✓/✗/⚠ v editoru po spuštění, s tooltipem při selhání a přehledovým pravítkem.
+- 📌 **Stavový řádek** — indikátor s počtem prošlých/selhávajících, délkou trvání a průběhem v reálném čase.
+- 🎯 **Skok na selhání** — přímá navigace na řádek tvrzení, které selhalo (přes nativní „Go to Error").
 - 🧱 **Diagnostika kompilace** — po každém spuštění se chyby kompilace PL/SQL (`ALL_ERRORS`) zobrazí v Problems Panelu pod zdrojem `utPLSQL Compilation` (nastavení `utplsql.compilationDiagnostics.enabled`).
 - ⏳ **Průběh a zrušení** — dlouhá spuštění zobrazují oznámení o průběhu s počtem a tlačítkem *Cancel* (plus volitelný `utplsql.timeoutMinutes`).
-- 📁 **Vícerootový pracovní prostor** — každá složka pracovního prostoru má vlastní sady testů, s nezávislým vyhledáváním, spouštěním a pokrytím.
+- 🌍 **i18n — 24 jazyků** — `utplsql.language` se řídí VSCode (24 locale: pt-br, en, en-gb, es, zh-cn, zh-tw, ja, de, fr, it, ko, ru, tr, pl, cs, hu, bg, el, id, ro, sr, th, uk, vi).
+
 
 ## Instalace
 
@@ -63,7 +93,7 @@ Rozšíření lze nainstalovat dvěma způsoby:
 |---|---|---|
 | 18c+ | v3.2.x (18c+) / v3.1.x | Doporučeno; charset `AL32UTF8`. |
 | 12.2 | pouze v3.1.x | v3.2.x se nezkompiluje (`PLS-00222`). `WE8DEC` obrazu ztrácí nereprezentovatelné znaky (např. `€`); tenký ovladač ignoruje `NLS_LANG`. |
-- **VSCode 1.101+** (Test Coverage API).
+- **VSCode 1.101+** (Node 22).
 
 Rozšíření je pouze „grafický klient" — to, co testy spouští, je databáze přímo přes node-oracledb.
 

@@ -19,38 +19,68 @@ tags: [readme]
 
 </div>
 
+<p align="center">
+  <a href="https://marketplace.visualstudio.com/items?itemName=paneb.vscode-utplsql"><img alt="Marketplace" src="https://vsmarketplacebadges.dev/version-short/paneb.vscode-utplsql.svg"></a>
+  <a href="https://marketplace.visualstudio.com/items?itemName=paneb.vscode-utplsql"><img alt="Installs" src="https://vsmarketplacebadges.dev/installs-short/paneb.vscode-utplsql.svg"></a>
+  <a href="https://marketplace.visualstudio.com/items?itemName=paneb.vscode-utplsql"><img alt="Downloads" src="https://vsmarketplacebadges.dev/downloads-short/paneb.vscode-utplsql.svg"></a>
+  <a href="https://github.com/thepaneb/vscode-utplsql/actions/workflows/ci.yml"><img alt="CI" src="https://github.com/thepaneb/vscode-utplsql/actions/workflows/ci.yml/badge.svg"></a>
+  <a href="https://codecov.io/gh/thepaneb/vscode-utplsql"><img alt="Coverage" src="https://codecov.io/gh/thepaneb/vscode-utplsql/branch/main/graph/badge.svg"></a>
+  <img alt="VS Code" src="https://img.shields.io/badge/VS%20Code-1.101%2B-007ACC">
+  <img alt="Node" src="https://img.shields.io/badge/node-22-339933?logo=nodedotjs&logoColor=white">
+  <img alt="Oracle" src="https://img.shields.io/badge/Oracle-12.2%2B-F80000?logo=oracle&logoColor=white">
+  <img alt="License" src="https://img.shields.io/badge/license-MIT-blue">
+</p>
+
 # utPLSQL Test Runner
 
-Integra [utPLSQL](https://www.utplsql.org/) en VSCode, llevando las pruebas de PL/SQL al **Test Explorer** nativo, con menú contextual y cobertura visual.
+Ejecuta y depura pruebas **utPLSQL** (Oracle PL/SQL) directamente en VS Code — **Test Explorer** nativo, cobertura visual, depurador PL/SQL y ejecución **directa a Oracle** vía `node-oracledb`. Disponible en **24 idiomas**; requiere **VS Code 1.101+** (Node 22).
+
+### Test Explorer y ejecución
 
 - 🧪 **Test Explorer nativo** — las suites y los tests aparecen en la vista de pruebas; ejecute por test, suite, archivo o carpeta.
 - 🔍 **CodeLens** — botones Run/Run with Coverage sobre `%suite` y `%test` en el editor, sin salir del código.
 - ⌨️ **Atajos de teclado** — prefijo `Ctrl+Shift+U` + tecla para los comandos principales (R = Run All, T = Run File, L = Rerun Last, etc.).
 - 🖱️ **Menú contextual** — clic derecho en una **carpeta** o en un archivo **`.pks`/`.pkb`** (en el Explorer o en el editor) para ejecutar los tests.
-- 📊 **Cobertura visual** — gutters coloreados por línea (cubierta/no cubierta) y porcentaje por archivo en la pestaña **Coverage**.
-- ✅ **Decoraciones en línea** — iconos ✓/✗/⚠ en el editor después de la ejecución, con tooltip del fallo y overview ruler.
-- 📌 **Barra de estado** — indicador con recuento de pass/fail, duración y progreso en tiempo real.
 - 🔁 **Smart Re-run** — Rerun Last, Run at Cursor, Run Failed Only con un único atajo.
-- 🚀 **Oracle directo (vía node-oracledb)** — streaming en tiempo real, sin esperar a que termine el lote.
-- 🔧 **Diagnósticos de configuración** — validación proactiva de conexión, grants y versión con quick-fix.
 - 🧩 **Árbol consciente del esquema** — organice los tests por Schema > Package > Suite > Test en el Test Explorer.
-- 🎯 **Salto al fallo** — navegación directa a la línea de la aserción que falló (mediante el "Go to Error" nativo).
-- 🔌 **Perfiles de conexión** — guarde y alterne entre múltiples entornos (DEV/TEST/PROD) con configuración por perfil, desde la barra de estado o la paleta de comandos.
-- 📜 **Scripts SQL** — ejecuta el script actual, un archivo del Explorer o una carpeta completa contra el perfil de conexión activo (respeta el charset, con `DBMS_OUTPUT` y `stopOnError`).
-- 📈 **Cobertura por declaración y de vistas** — la pestaña Coverage muestra `% de declaraciones` (PROCEDURE/FUNCTION) por archivo y rastrea las vistas ejecutadas vía `V$SQL`.
 - 🏷️ **Etiquetas y orden aleatorio** — filtra tests con `utplsql.tags` (p. ej. `fast & !integration`) y ejecuta en orden aleatorio con semilla reproducible (`utplsql.run.randomOrder`).
-- 🎯 **Alcance de cobertura** — incluye/excluye objetos y regex de esquema/objeto (`utplsql.coverage.*`) para quitar ruido del framework y añadir objetos alcanzados dinámicamente.
 - 🗄️ **Descubrimiento DB-first** — construye el árbol desde `ut_runner.get_suites_info` y reconstruye la caché de anotaciones desde la paleta.
-- 🐛 **Depuración PL/SQL** — breakpoints y depuración paso a paso de tests utPLSQL vía `DBMS_DEBUG` (Debug Adapter nativo).
-- 🌍 **i18n — 24 idiomas** — `utplsql.language` sigue a VSCode (24 locales: pt-br, en, en-gb, es, zh-cn, zh-tw, ja, de, fr, it, ko, ru, tr, pl, cs, hu, bg, el, id, ro, sr, th, uk, vi).
 - 🌳 **Árbol de tests perezoso** — en modo `schema`, los packages/suites/tests se resuelven bajo demanda al expandir, así los esquemas grandes se abren al instante.
-- 🧾 **Run with Reporter (Export)** — ejecuta la selección con cualquier reporter de la base y guarda la salida en Output o en un archivo (`utplsql.reporter.*`), sin cambiar los resultados del Test Explorer.
+- 📁 **Espacio de trabajo multi-root** — cada carpeta del espacio de trabajo tiene sus propias suites, con descubrimiento, ejecución y cobertura independientes.
+- 🚀 **Oracle directo (vía node-oracledb)** — streaming en tiempo real, sin esperar a que termine el lote.
+- 📜 **Scripts SQL** — ejecuta el script actual, un archivo del Explorer o una carpeta completa contra el perfil de conexión activo (respeta el charset, con `DBMS_OUTPUT` y `stopOnError`).
+
+### Cobertura
+
+- 📊 **Cobertura visual** — gutters coloreados por línea (cubierta/no cubierta) y porcentaje por archivo en la pestaña **Coverage**.
+- 📈 **Cobertura por declaración y de vistas** — la pestaña Coverage muestra `% de declaraciones` (PROCEDURE/FUNCTION) por archivo y rastrea las vistas ejecutadas vía `V$SQL`.
+- 🎯 **Alcance de cobertura** — incluye/excluye objetos y regex de esquema/objeto (`utplsql.coverage.*`) para quitar ruido del framework y añadir objetos alcanzados dinámicamente.
 - 🗂️ **Fuente virtual de la base** — sin archivo local, el *jump to failure* y la cobertura abren un documento de solo lectura resuelto desde `ALL_SOURCE` (`utplsql-source:/…`).
+
+### Depurador
+
+- 🐛 **Depuración PL/SQL** — breakpoints y depuración paso a paso de tests utPLSQL vía `DBMS_DEBUG` (Debug Adapter nativo).
+
+### Conexiones y seguridad
+
+- 🔌 **Perfiles de conexión** — guarde y alterne entre múltiples entornos (DEV/TEST/PROD) con configuración por perfil, desde la barra de estado o la paleta de comandos.
 - 🔐 **TNS en thin + wallet** — `utplsql.connections.tnsAdminPath` resuelve alias de `tnsnames.ora` en el driver thin (fallback a SQL Developer/`TNS_ADMIN`); `walletLocation` del perfil y `utPLSQL: Set wallet password` guardan la contraseña de la wallet en el SecretStorage.
 - 🔒 **Endurecimiento de seguridad de las conexiones** — los ajustes de conexión son `machine`-scoped, la extensión se deshabilita en espacios de trabajo no confiables y la contraseña del perfil queda vinculada a la conexión.
+- 🔧 **Diagnósticos de configuración** — validación proactiva de conexión, grants y versión con quick-fix.
+
+### Informes
+
+- 🧾 **Run with Reporter (Export)** — ejecuta la selección con cualquier reporter de la base y guarda la salida en Output o en un archivo (`utplsql.reporter.*`), sin cambiar los resultados del Test Explorer.
+
+### UX y diagnósticos
+
+- ✅ **Decoraciones en línea** — iconos ✓/✗/⚠ en el editor después de la ejecución, con tooltip del fallo y overview ruler.
+- 📌 **Barra de estado** — indicador con recuento de pass/fail, duración y progreso en tiempo real.
+- 🎯 **Salto al fallo** — navegación directa a la línea de la aserción que falló (mediante el "Go to Error" nativo).
 - 🧱 **Diagnósticos de compilación** — tras cada ejecución, los errores de compilación PL/SQL (`ALL_ERRORS`) aparecen en el Problems Panel bajo el source `utPLSQL Compilation` (ajuste `utplsql.compilationDiagnostics.enabled`).
 - ⏳ **Progreso y cancelación** — las ejecuciones largas muestran una notificación de progreso con conteo y botón *Cancel* (más `utplsql.timeoutMinutes` opcional).
-- 📁 **Espacio de trabajo multi-root** — cada carpeta del espacio de trabajo tiene sus propias suites, con descubrimiento, ejecución y cobertura independientes.
+- 🌍 **i18n — 24 idiomas** — `utplsql.language` sigue a VSCode (24 locales: pt-br, en, en-gb, es, zh-cn, zh-tw, ja, de, fr, it, ko, ru, tr, pl, cs, hu, bg, el, id, ro, sr, th, uk, vi).
+
 
 ## Instalación
 
@@ -64,7 +94,7 @@ La extensión se puede instalar de dos maneras:
 ## Requisitos
 
 - [**utPLSQL**](https://github.com/utPLSQL/utPLSQL) **(UT3)** instalado en la base de datos Oracle.
-- **VSCode 1.101+** (Test Coverage API).
+- **VSCode 1.101+** (Node 22).
 
 La extensión se conecta directamente a la base de datos Oracle mediante `node-oracledb` (driver thin, sin Instant Client). El VSIX ya incluye el paquete `oracledb`.
 

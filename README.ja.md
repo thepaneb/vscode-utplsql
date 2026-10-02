@@ -10,38 +10,68 @@
 
 </div>
 
+<p align="center">
+  <a href="https://marketplace.visualstudio.com/items?itemName=paneb.vscode-utplsql"><img alt="Marketplace" src="https://vsmarketplacebadges.dev/version-short/paneb.vscode-utplsql.svg"></a>
+  <a href="https://marketplace.visualstudio.com/items?itemName=paneb.vscode-utplsql"><img alt="Installs" src="https://vsmarketplacebadges.dev/installs-short/paneb.vscode-utplsql.svg"></a>
+  <a href="https://marketplace.visualstudio.com/items?itemName=paneb.vscode-utplsql"><img alt="Downloads" src="https://vsmarketplacebadges.dev/downloads-short/paneb.vscode-utplsql.svg"></a>
+  <a href="https://github.com/thepaneb/vscode-utplsql/actions/workflows/ci.yml"><img alt="CI" src="https://github.com/thepaneb/vscode-utplsql/actions/workflows/ci.yml/badge.svg"></a>
+  <a href="https://codecov.io/gh/thepaneb/vscode-utplsql"><img alt="Coverage" src="https://codecov.io/gh/thepaneb/vscode-utplsql/branch/main/graph/badge.svg"></a>
+  <img alt="VS Code" src="https://img.shields.io/badge/VS%20Code-1.101%2B-007ACC">
+  <img alt="Node" src="https://img.shields.io/badge/node-22-339933?logo=nodedotjs&logoColor=white">
+  <img alt="Oracle" src="https://img.shields.io/badge/Oracle-12.2%2B-F80000?logo=oracle&logoColor=white">
+  <img alt="License" src="https://img.shields.io/badge/license-MIT-blue">
+</p>
+
 # utPLSQL Test Runner
 
-[utPLSQL](https://www.utplsql.org/) を VSCode に統合し、PL/SQL テストをネイティブの **Test Explorer** に取り込み、コンテキストメニューと視覚的なカバレッジを提供します。
+**utPLSQL**（Oracle PL/SQL）のテストを VS Code 上で実行・デバッグ — ネイティブの **Test Explorer**、視覚的なカバレッジ、PL/SQL デバッガー、`node-oracledb` による **Oracle 直接実行**。**24 言語**対応。**VS Code 1.101+** (Node 22).
+
+### Test Explorer と実行
 
 - 🧪 **ネイティブ Test Explorer** — スイートとテストがテストビューに表示されます。テスト単位・スイート単位・ファイル単位・フォルダー単位で実行できます。
 - 🔍 **CodeLens** — エディター内の `%suite` と `%test` の上に Run/Run with Coverage ボタンを表示。コードから離れることなく実行できます。
 - ⌨️ **キーボードショートカット** — `Ctrl+Shift+U` プレフィックス + キーで主要コマンドを実行（R = Run All、T = Run File、L = Rerun Last など）。
 - 🖱️ **コンテキストメニュー** — **フォルダー**または **`.pks`/`.pkb`** ファイルを右クリック（Explorer またはエディター内）してテストを実行。
-- 📊 **視覚的なカバレッジ** — 行ごとのカラーガター（実行済み/未実行）と、**Coverage** タブでのファイルごとのパーセンテージ。
-- ✅ **インラインデコレーション** — 実行後、エディターに ✓/✗/⚠ アイコンを表示。失敗のツールチップとオーバービュールーラー付き。
-- 📌 **ステータスバー** — 合格/失敗数、所要時間、リアルタイムの進行状況を示すインジケーター。
 - 🔁 **スマート再実行** — ショートカット 1 つで Rerun Last / Run at Cursor / Run Failed Only。
-- 🚀 **Oracle 直接実行（node-oracledb 経由）** — バッチの完了を待たずにリアルタイムでストリーミング。
-- 🔧 **セットアップ診断** — 接続・権限・バージョンのプロアクティブな検証とクイックフィックス。
 - 🧩 **スキーマ認識ツリー** — Test Explorer で Schema > Package > Suite > Test の順にテストを整理。
-- 🎯 **失敗箇所へのジャンプ** — 失敗したアサーションの行へ直接移動（ネイティブの "Go to Error" 経由）。
-- 🔌 **接続プロファイル** — DEV/TEST/PROD などの複数環境をプロファイルごとの設定で保存・切替。ステータスバーまたはコマンドパレットから。
-- 📜 **SQL スクリプト** — 現在のスクリプト、Explorer のファイル、またはフォルダー全体をアクティブな接続プロファイルに対して実行します（charset 対応、`DBMS_OUTPUT`・`stopOnError` 対応）。
-- 📈 **ステートメントとビューのカバレッジ** — Coverage タブにファイルごとの `% of statements`（PROCEDURE/FUNCTION）を表示し、`V$SQL` 経由で実行されたビューを追跡。
 - 🏷️ **タグとランダム順** — `utplsql.tags`（例: `fast & !integration`）でテストを絞り込み、再現可能なシード（`utplsql.run.randomOrder`）でランダム順に実行します。
-- 🎯 **カバレッジ範囲** — オブジェクトや schema/object の正規表現（`utplsql.coverage.*`）で包含/除外し、フレームワークのノイズを除去して動的に到達するオブジェクトを追加します。
 - 🗄️ **DB ファーストの探索** — `ut_runner.get_suites_info` からツリーを構築し、パレットから注釈キャッシュを再構築します。
-- 🐛 **PL/SQL デバッグ** — `DBMS_DEBUG` による utPLSQL テストのブレークポイントとステップデバッグ（ネイティブ Debug Adapter）。
-- 🌍 **i18n — 24 言語** — `utplsql.language` は VSCode に追従（24 ロケール: pt-br, en, en-gb, es, zh-cn, zh-tw, ja, de, fr, it, ko, ru, tr, pl, cs, hu, bg, el, id, ro, sr, th, uk, vi）。
 - 🌳 **遅延読み込みのテストツリー** — `schema` モードでは、展開時に package/suite/test を必要に応じて解決するため、大きなスキーマでも即座に開きます。
-- 🧾 **Run with Reporter (Export)** — 選択範囲を任意のデータベース reporter で実行し、出力を Output またはファイルに書き込みます（`utplsql.reporter.*`）。Test Explorer の結果は変わりません。
+- 📁 **マルチルート ワークスペース** — 各ワークスペース フォルダーが独自のスイートを持ち、検出・実行・カバレッジが独立します。
+- 🚀 **Oracle 直接実行（node-oracledb 経由）** — バッチの完了を待たずにリアルタイムでストリーミング。
+- 📜 **SQL スクリプト** — 現在のスクリプト、Explorer のファイル、またはフォルダー全体をアクティブな接続プロファイルに対して実行します（charset 対応、`DBMS_OUTPUT`・`stopOnError` 対応）。
+
+### カバレッジ
+
+- 📊 **視覚的なカバレッジ** — 行ごとのカラーガター（実行済み/未実行）と、**Coverage** タブでのファイルごとのパーセンテージ。
+- 📈 **ステートメントとビューのカバレッジ** — Coverage タブにファイルごとの `% of statements`（PROCEDURE/FUNCTION）を表示し、`V$SQL` 経由で実行されたビューを追跡。
+- 🎯 **カバレッジ範囲** — オブジェクトや schema/object の正規表現（`utplsql.coverage.*`）で包含/除外し、フレームワークのノイズを除去して動的に到達するオブジェクトを追加します。
 - 🗂️ **仮想データベースソース** — ローカルファイルがない場合、*jump to failure* とカバレッジは `ALL_SOURCE` から解決した読み取り専用ドキュメントを開きます（`utplsql-source:/…`）。
+
+### デバッガー
+
+- 🐛 **PL/SQL デバッグ** — `DBMS_DEBUG` による utPLSQL テストのブレークポイントとステップデバッグ（ネイティブ Debug Adapter）。
+
+### 接続とセキュリティ
+
+- 🔌 **接続プロファイル** — DEV/TEST/PROD などの複数環境をプロファイルごとの設定で保存・切替。ステータスバーまたはコマンドパレットから。
 - 🔐 **thin の TNS + wallet** — `utplsql.connections.tnsAdminPath` が thin ドライバで `tnsnames.ora` の別名を解決します（SQL Developer/`TNS_ADMIN` にフォールバック）。プロファイルの `walletLocation` と `utPLSQL: Set wallet password` が wallet のパスワードを SecretStorage に保存します。
 - 🔒 **接続のセキュリティ強化** — 接続設定は `machine`-scoped になり、信頼されていないワークスペースでは拡張機能が無効化され、プロファイルのパスワードは接続に紐づきます。
+- 🔧 **セットアップ診断** — 接続・権限・バージョンのプロアクティブな検証とクイックフィックス。
+
+### レポート
+
+- 🧾 **Run with Reporter (Export)** — 選択範囲を任意のデータベース reporter で実行し、出力を Output またはファイルに書き込みます（`utplsql.reporter.*`）。Test Explorer の結果は変わりません。
+
+### UX と診断
+
+- ✅ **インラインデコレーション** — 実行後、エディターに ✓/✗/⚠ アイコンを表示。失敗のツールチップとオーバービュールーラー付き。
+- 📌 **ステータスバー** — 合格/失敗数、所要時間、リアルタイムの進行状況を示すインジケーター。
+- 🎯 **失敗箇所へのジャンプ** — 失敗したアサーションの行へ直接移動（ネイティブの "Go to Error" 経由）。
 - 🧱 **コンパイル診断** — 実行のたびに PL/SQL のコンパイルエラー（`ALL_ERRORS`）が Problems Panel に source `utPLSQL Compilation` で表示されます（設定 `utplsql.compilationDiagnostics.enabled`）。
 - ⏳ **進捗とキャンセル** — 長時間の実行ではカウント付きの進捗通知と *Cancel* ボタンを表示します（任意で `utplsql.timeoutMinutes`）。
-- 📁 **マルチルート ワークスペース** — 各ワークスペース フォルダーが独自のスイートを持ち、検出・実行・カバレッジが独立します。
+- 🌍 **i18n — 24 言語** — `utplsql.language` は VSCode に追従（24 ロケール: pt-br, en, en-gb, es, zh-cn, zh-tw, ja, de, fr, it, ko, ru, tr, pl, cs, hu, bg, el, id, ro, sr, th, uk, vi）。
+
 
 ## インストール
 
@@ -55,7 +85,7 @@
 ## 要件
 
 - [**utPLSQL**](https://github.com/utPLSQL/utPLSQL) **(UT3)** が Oracle データベースにインストールされていること。
-- **VSCode 1.101 以降**（Test Coverage API）。
+- **VSCode 1.101 以降**（Node 22）。
 
 この拡張機能は `node-oracledb` を使用して Oracle データベースに直接接続します（シンドライバー、Instant Client 不要）。VSIX には `oracledb` パッケージが同梱されています。
 

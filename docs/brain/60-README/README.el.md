@@ -19,38 +19,68 @@ tags: [readme]
 
 </div>
 
+<p align="center">
+  <a href="https://marketplace.visualstudio.com/items?itemName=paneb.vscode-utplsql"><img alt="Marketplace" src="https://vsmarketplacebadges.dev/version-short/paneb.vscode-utplsql.svg"></a>
+  <a href="https://marketplace.visualstudio.com/items?itemName=paneb.vscode-utplsql"><img alt="Installs" src="https://vsmarketplacebadges.dev/installs-short/paneb.vscode-utplsql.svg"></a>
+  <a href="https://marketplace.visualstudio.com/items?itemName=paneb.vscode-utplsql"><img alt="Downloads" src="https://vsmarketplacebadges.dev/downloads-short/paneb.vscode-utplsql.svg"></a>
+  <a href="https://github.com/thepaneb/vscode-utplsql/actions/workflows/ci.yml"><img alt="CI" src="https://github.com/thepaneb/vscode-utplsql/actions/workflows/ci.yml/badge.svg"></a>
+  <a href="https://codecov.io/gh/thepaneb/vscode-utplsql"><img alt="Coverage" src="https://codecov.io/gh/thepaneb/vscode-utplsql/branch/main/graph/badge.svg"></a>
+  <img alt="VS Code" src="https://img.shields.io/badge/VS%20Code-1.101%2B-007ACC">
+  <img alt="Node" src="https://img.shields.io/badge/node-22-339933?logo=nodedotjs&logoColor=white">
+  <img alt="Oracle" src="https://img.shields.io/badge/Oracle-12.2%2B-F80000?logo=oracle&logoColor=white">
+  <img alt="License" src="https://img.shields.io/badge/license-MIT-blue">
+</p>
+
 # utPLSQL Test Runner
 
-Ενσωματώνει το [utPLSQL](https://www.utplsql.org/) στο VSCode, φέρνοντας τα PL/SQL tests στο εγγενές **Test Explorer**, με μενού περιβάλλοντος και οπτική κάλυψη.
+Εκτελέστε και αποσφαλματώστε δοκιμές **utPLSQL** (Oracle PL/SQL) απευθείας στο VS Code — εγγενές **Test Explorer**, οπτική κάλυψη, αποσφαλματωτής PL/SQL και **απευθείας εκτέλεση Oracle** μέσω `node-oracledb`. Διαθέσιμο σε **24 γλώσσες**· απαιτεί **VS Code 1.101+** (Node 22).
+
+### Test Explorer και εκτέλεση
 
 - 🧪 **Εγγενές Test Explorer** — τα suites και τα tests εμφανίζονται στην προβολή testing· εκτέλεση ανά test, suite, αρχείο ή φάκελο.
 - 🔍 **CodeLens** — κουμπιά Run/Run with Coverage πάνω από τα `%suite` και `%test` στον editor, χωρίς να φύγετε από τον κώδικά σας.
 - ⌨️ **Συντομεύσεις πληκτρολογίου** — πρόθεμα `Ctrl+Shift+U` + πλήκτρο για τις κύριες εντολές (R = Run All, T = Run File, L = Rerun Last, κ.λπ.).
 - 🖱️ **Μενού περιβάλλοντος** — δεξί κλικ σε έναν **φάκελο** ή σε ένα αρχείο **`.pks`/`.pkb`** (στο Explorer ή στον editor) για να εκτελέσετε tests.
-- 📊 **Οπτική κάλυψη** — χρωματισμένα gutters ανά γραμμή (καλυμμένο/μη καλυμμένο) και ποσοστό ανά αρχείο στην καρτέλα **Coverage**.
-- ✅ **Inline decorations** — εικονίδια ✓/✗/⚠ στον editor μετά την εκτέλεση, με tooltip αποτυχίας και overview ruler.
-- 📌 **Status Bar** — ένδειξη με πλήθος επιτυχιών/αποτυχιών, διάρκεια και πρόοδο σε πραγματικό χρόνο.
 - 🔁 **Smart Re-run** — Rerun Last, Run at Cursor, Run Failed Only με μία μόνο συντόμευση.
-- 🚀 **Oracle direct (μέσω node-oracledb)** — streaming σε πραγματικό χρόνο, χωρίς να περιμένετε το τέλος του batch.
-- 🔧 **Διαγνωστικά ρυθμίσεων** — προληπτική επικύρωση σύνδεσης, grants και έκδοσης με quick-fix.
 - 🧩 **Schema-aware tree** — οργάνωση tests ανά Schema > Package > Suite > Test στο Test Explorer.
-- 🎯 **Jump to failure** — άμεση μετάβαση στη γραμμή του assertion που απέτυχε (μέσω του εγγενούς "Go to Error").
-- 🔌 **Connection profiles** — αποθήκευση και εναλλαγή μεταξύ πολλών περιβαλλόντων (DEV/TEST/PROD) με ρυθμίσεις ανά profile, μέσω status bar ή command palette.
-- 📜 **Σενάρια SQL** — εκτέλεση του τρέχοντος σεναρίου, ενός αρχείου από τον Explorer ή ολόκληρου φακέλου στο ενεργό προφίλ σύνδεσης (με σεβασμό στο charset, με `DBMS_OUTPUT` και `stopOnError`).
-- 📈 **Κάλυψη εντολών και views** — η καρτέλα Coverage δείχνει το `% των εντολών` (PROCEDURE/FUNCTION) ανά αρχείο και παρακολουθεί τα views που εκτελέστηκαν μέσω `V$SQL`.
 - 🏷️ **Tags και τυχαία σειρά** — φιλτράρετε τα test με `utplsql.tags` (π.χ. `fast & !integration`) και εκτελέστε σε τυχαία σειρά με αναπαραγώγιμο seed (`utplsql.run.randomOrder`).
-- 🎯 **Εύρος κάλυψης** — συμπεριλάβετε/αποκλείστε αντικείμενα και regex schema/αντικειμένου (`utplsql.coverage.*`) για να αφαιρέσετε τον θόρυβο του framework και να προσθέσετε δυναμικά αντικείμενα.
 - 🗄️ **Ανακάλυψη DB-first** — χτίστε το δέντρο από το `ut_runner.get_suites_info` και ξαναχτίστε την προσωρινή μνήμη σχολίων από την παλέτα.
-- 🐛 **PL/SQL Debug** — breakpoints και βηματική αποσφαλμάτωση utPLSQL tests μέσω `DBMS_DEBUG` (native Debug Adapter).
-- 🌍 **i18n — 24 γλώσσες** — το `utplsql.language` ακολουθεί το VSCode (24 τοπικές ρυθμίσεις: pt-br, en, en-gb, es, zh-cn, zh-tw, ja, de, fr, it, ko, ru, tr, pl, cs, hu, bg, el, id, ro, sr, th, uk, vi).
 - 🌳 **Αργό (lazy) δέντρο δοκιμών** — στη λειτουργία `schema`, τα packages/suites/tests επιλύονται κατά την ανάπτυξη, οπότε τα μεγάλα σχήματα ανοίγουν ακαριαία.
-- 🧾 **Run with Reporter (Export)** — εκτελεί την επιλογή με οποιονδήποτε reporter της βάσης και γράφει την έξοδο στο Output ή σε αρχείο (`utplsql.reporter.*`), χωρίς να αλλάζει τα αποτελέσματα στο Test Explorer.
+- 📁 **Χώρος εργασίας πολλαπλών ριζών** — κάθε φάκελος του workspace έχει τα δικά του suites, με ανεξάρτητη ανακάλυψη, εκτέλεση και κάλυψη.
+- 🚀 **Oracle direct (μέσω node-oracledb)** — streaming σε πραγματικό χρόνο, χωρίς να περιμένετε το τέλος του batch.
+- 📜 **Σενάρια SQL** — εκτέλεση του τρέχοντος σεναρίου, ενός αρχείου από τον Explorer ή ολόκληρου φακέλου στο ενεργό προφίλ σύνδεσης (με σεβασμό στο charset, με `DBMS_OUTPUT` και `stopOnError`).
+
+### Κάλυψη
+
+- 📊 **Οπτική κάλυψη** — χρωματισμένα gutters ανά γραμμή (καλυμμένο/μη καλυμμένο) και ποσοστό ανά αρχείο στην καρτέλα **Coverage**.
+- 📈 **Κάλυψη εντολών και views** — η καρτέλα Coverage δείχνει το `% των εντολών` (PROCEDURE/FUNCTION) ανά αρχείο και παρακολουθεί τα views που εκτελέστηκαν μέσω `V$SQL`.
+- 🎯 **Εύρος κάλυψης** — συμπεριλάβετε/αποκλείστε αντικείμενα και regex schema/αντικειμένου (`utplsql.coverage.*`) για να αφαιρέσετε τον θόρυβο του framework και να προσθέσετε δυναμικά αντικείμενα.
 - 🗂️ **Εικονική πηγή από τη βάση** — χωρίς τοπικό αρχείο, το *jump to failure* και η κάλυψη ανοίγουν έγγραφο μόνο για ανάγνωση από το `ALL_SOURCE` (`utplsql-source:/…`).
+
+### Αποσφαλματωτής
+
+- 🐛 **PL/SQL Debug** — breakpoints και βηματική αποσφαλμάτωση utPLSQL tests μέσω `DBMS_DEBUG` (native Debug Adapter).
+
+### Συνδέσεις και ασφάλεια
+
+- 🔌 **Connection profiles** — αποθήκευση και εναλλαγή μεταξύ πολλών περιβαλλόντων (DEV/TEST/PROD) με ρυθμίσεις ανά profile, μέσω status bar ή command palette.
 - 🔐 **TNS σε thin + wallet** — το `utplsql.connections.tnsAdminPath` επιλύει aliases του `tnsnames.ora` στον thin driver (fallback σε SQL Developer/`TNS_ADMIN`); το `walletLocation` του προφίλ και το `utPLSQL: Set wallet password` κρατούν τον κωδικό του wallet στο SecretStorage.
 - 🔒 **Ενίσχυση ασφάλειας συνδέσεων** — οι ρυθμίσεις σύνδεσης είναι `machine`-scoped, η επέκταση απενεργοποιείται σε μη αξιόπιστα workspaces και ο κωδικός του προφίλ συνδέεται με τη σύνδεση.
+- 🔧 **Διαγνωστικά ρυθμίσεων** — προληπτική επικύρωση σύνδεσης, grants και έκδοσης με quick-fix.
+
+### Αναφορές
+
+- 🧾 **Run with Reporter (Export)** — εκτελεί την επιλογή με οποιονδήποτε reporter της βάσης και γράφει την έξοδο στο Output ή σε αρχείο (`utplsql.reporter.*`), χωρίς να αλλάζει τα αποτελέσματα στο Test Explorer.
+
+### UX και διαγνωστικά
+
+- ✅ **Inline decorations** — εικονίδια ✓/✗/⚠ στον editor μετά την εκτέλεση, με tooltip αποτυχίας και overview ruler.
+- 📌 **Status Bar** — ένδειξη με πλήθος επιτυχιών/αποτυχιών, διάρκεια και πρόοδο σε πραγματικό χρόνο.
+- 🎯 **Jump to failure** — άμεση μετάβαση στη γραμμή του assertion που απέτυχε (μέσω του εγγενούς "Go to Error").
 - 🧱 **Διαγνωστικά μεταγλώττισης** — μετά από κάθε εκτέλεση, τα σφάλματα μεταγλώττισης PL/SQL (`ALL_ERRORS`) εμφανίζονται στο Problems Panel με source `utPLSQL Compilation` (ρύθμιση `utplsql.compilationDiagnostics.enabled`).
 - ⏳ **Πρόοδος και ακύρωση** — οι μεγάλες εκτελέσεις εμφανίζουν ειδοποίηση προόδου με μετρητή και κουμπί *Cancel* (και προαιρετικό `utplsql.timeoutMinutes`).
-- 📁 **Χώρος εργασίας πολλαπλών ριζών** — κάθε φάκελος του workspace έχει τα δικά του suites, με ανεξάρτητη ανακάλυψη, εκτέλεση και κάλυψη.
+- 🌍 **i18n — 24 γλώσσες** — το `utplsql.language` ακολουθεί το VSCode (24 τοπικές ρυθμίσεις: pt-br, en, en-gb, es, zh-cn, zh-tw, ja, de, fr, it, ko, ru, tr, pl, cs, hu, bg, el, id, ro, sr, th, uk, vi).
+
 
 ## Εγκατάσταση
 
@@ -72,7 +102,7 @@ tags: [readme]
 |---|---|---|
 | 18c+ | v3.2.x (18c+) / v3.1.x | Συνιστάται; charset `AL32UTF8`. |
 | 12.2 | μόνο v3.1.x | Το v3.2.x δεν μεταγλωττίζεται (`PLS-00222`). Το `WE8DEC` της εικόνας χάνει μη αναπαραστάσιμους χαρακτήρες (π.χ. `€`); ο thin driver αγνοεί το `NLS_LANG`. |
-- **VSCode 1.101+** (Test Coverage API).
+- **VSCode 1.101+** (Node 22).
 
 Η επέκταση είναι μόνο ο «γραφικός πελάτης» — αυτό που εκτελεί τα tests είναι η βάση απευθείας μέσω node-oracledb.
 

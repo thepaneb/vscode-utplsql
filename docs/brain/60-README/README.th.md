@@ -19,38 +19,68 @@ tags: [readme]
 
 </div>
 
+<p align="center">
+  <a href="https://marketplace.visualstudio.com/items?itemName=paneb.vscode-utplsql"><img alt="Marketplace" src="https://vsmarketplacebadges.dev/version-short/paneb.vscode-utplsql.svg"></a>
+  <a href="https://marketplace.visualstudio.com/items?itemName=paneb.vscode-utplsql"><img alt="Installs" src="https://vsmarketplacebadges.dev/installs-short/paneb.vscode-utplsql.svg"></a>
+  <a href="https://marketplace.visualstudio.com/items?itemName=paneb.vscode-utplsql"><img alt="Downloads" src="https://vsmarketplacebadges.dev/downloads-short/paneb.vscode-utplsql.svg"></a>
+  <a href="https://github.com/thepaneb/vscode-utplsql/actions/workflows/ci.yml"><img alt="CI" src="https://github.com/thepaneb/vscode-utplsql/actions/workflows/ci.yml/badge.svg"></a>
+  <a href="https://codecov.io/gh/thepaneb/vscode-utplsql"><img alt="Coverage" src="https://codecov.io/gh/thepaneb/vscode-utplsql/branch/main/graph/badge.svg"></a>
+  <img alt="VS Code" src="https://img.shields.io/badge/VS%20Code-1.101%2B-007ACC">
+  <img alt="Node" src="https://img.shields.io/badge/node-22-339933?logo=nodedotjs&logoColor=white">
+  <img alt="Oracle" src="https://img.shields.io/badge/Oracle-12.2%2B-F80000?logo=oracle&logoColor=white">
+  <img alt="License" src="https://img.shields.io/badge/license-MIT-blue">
+</p>
+
 # utPLSQL Test Runner
 
-รวม [utPLSQL](https://www.utplsql.org/) เข้ากับ VSCode นำการทดสอบ PL/SQL มาสู่ **Test Explorer** เนทีฟ พร้อมเมนูบริบทและความครอบคลุม (coverage) แบบภาพ
+รันและดีบักเทสต์ **utPLSQL** (Oracle PL/SQL) ได้ใน VS Code — **Test Explorer** แบบเนทีฟ, coverage แบบเห็นภาพ, ดีบักเกอร์ PL/SQL และการรัน **Oracle โดยตรง** ผ่าน `node-oracledb` รองรับ **24 ภาษา** ต้องใช้ **VS Code 1.101+** (Node 22).
+
+### Test Explorer และการรัน
 
 - 🧪 **Test Explorer เนทีฟ** — suites และ tests จะปรากฏในมุมมองการทดสอบ; เรียกใช้ตาม test, suite, ไฟล์ หรือโฟลเดอร์
 - 🔍 **CodeLens** — ปุ่ม Run/Run with Coverage เหนือ `%suite` และ `%test` ในตัวแก้ไข โดยไม่ต้องออกจากโค้ด
 - ⌨️ **ปุ่มลัดคีย์บอร์ด** — คำนำหน้า `Ctrl+Shift+U` + คีย์สำหรับคำสั่งหลัก (R = Run All, T = Run File, L = Rerun Last, ฯลฯ)
 - 🖱️ **เมนูบริบท** — คลิกขวาที่ **โฟลเดอร์** หรือไฟล์ **`.pks`/`.pkb`** (ใน Explorer หรือในตัวแก้ไข) เพื่อรันการทดสอบ
-- 📊 **ความครอบคลุมแบบภาพ** — gutter สีตามบรรทัด (ครอบคลุม/ไม่ครอบคลุม) และเปอร์เซ็นต์ต่อไฟล์ในแท็บ **Coverage**
-- ✅ **การตกแต่งแบบอินไลน์** — ไอคอน ✓/✗/⚠ ในตัวแก้ไขหลังการรัน พร้อม tooltip ของความล้มเหลวและ overview ruler
-- 📌 **แถบสถานะ (Status Bar)** — ตัวบ่งชี้พร้อมจำนวนผ่าน/ล้มเหลว ระยะเวลา และความคืบหน้าแบบเรียลไทม์
 - 🔁 **Smart Re-run** — Rerun Last, Run at Cursor, Run Failed Only ด้วยปุ่มลัดเพียงปุ่มเดียว
-- 🚀 **Oracle แบบตรง (ผ่าน node-oracledb)** — สตรีมมิงแบบเรียลไทม์ โดยไม่ต้องรอให้ batch เสร็จสิ้น
-- 🔧 **การวินิจฉัยการตั้งค่า (Setup diagnostics)** — ตรวจสอบการเชื่อมต่อ, grants และเวอร์ชันเชิงรุกพร้อม quick-fix
 - 🧩 **แผนผังที่รับรู้ schema** — จัดระเบียบการทดสอบตาม Schema > Package > Suite > Test ใน Test Explorer
-- 🎯 **Jump to failure** — นำทางตรงไปยังบรรทัดของ assertion ที่ล้มเหลว (ผ่าน "Go to Error" เนทีฟ)
-- 🔌 **โปรไฟล์การเชื่อมต่อ** — บันทึกและสลับระหว่างหลายสภาพแวดล้อม (DEV/TEST/PROD) พร้อมการตั้งค่าต่อโปรไฟล์ ผ่านแถบสถานะหรือ command palette
-- 📜 **สคริปต์ SQL** — รันสคริปต์ปัจจุบัน ไฟล์จาก Explorer หรือทั้งโฟลเดอร์บนโปรไฟล์การเชื่อมต่อที่ใช้งานอยู่ (รองรับ charset พร้อม `DBMS_OUTPUT` และ `stopOnError`).
-- 📈 **ความครอบคลุมของ statement และ view** — แท็บ Coverage แสดง `% ของ statements` (PROCEDURE/FUNCTION) ต่อไฟล์และติดตาม views ที่ถูกเรียกใช้ผ่าน `V$SQL`
 - 🏷️ **แท็กและลำดับแบบสุ่ม** — กรองเทสต์ด้วย `utplsql.tags` (เช่น `fast & !integration`) และรันแบบสุ่มด้วย seed ที่ทำซ้ำได้ (`utplsql.run.randomOrder`)
-- 🎯 **ขอบเขตความครอบคลุม** — รวม/ยกเว้นอ็อบเจกต์และ regex ของ schema/อ็อบเจกต์ (`utplsql.coverage.*`) เพื่อตัดสัญญาณรบกวนของ framework และเพิ่มอ็อบเจกต์ที่เข้าถึงแบบไดนามิก
 - 🗄️ **การค้นหาแบบ DB-first** — สร้างทรีจาก `ut_runner.get_suites_info` และสร้างแคชคำอธิบายประกอบใหม่จากพาเลตต์
-- 🐛 **การดีบัก PL/SQL** — breakpoints และการดีบักแบบทีละขั้นของเทสต์ utPLSQL ผ่าน `DBMS_DEBUG` (Debug Adapter เนทีฟ)
-- 🌍 **i18n — 24 ภาษา** — `utplsql.language` เป็นไปตาม VSCode (24 ภาษาท้องถิ่น: pt-br, en, en-gb, es, zh-cn, zh-tw, ja, de, fr, it, ko, ru, tr, pl, cs, hu, bg, el, id, ro, sr, th, uk, vi)
 - 🌳 **ทรีเทสต์แบบ lazy** — ในโหมด `schema` แพ็กเกจ/ชุดเทสต์/เทสต์จะถูกโหลดเมื่อขยาย จึงเปิดสคีมาขนาดใหญ่ได้ทันที
-- 🧾 **Run with Reporter (Export)** — รันส่วนที่เลือกด้วย reporter ใดก็ได้ของฐานข้อมูล และเขียนผลลัพธ์ลง Output หรือไฟล์ (`utplsql.reporter.*`) โดยไม่เปลี่ยนผลใน Test Explorer
+- 📁 **เวิร์กสเปซแบบ multi-root** — แต่ละโฟลเดอร์ของเวิร์กสเปซมีชุดเทสต์ของตัวเอง โดยค้นหา รัน และ coverage แยกกัน
+- 🚀 **Oracle แบบตรง (ผ่าน node-oracledb)** — สตรีมมิงแบบเรียลไทม์ โดยไม่ต้องรอให้ batch เสร็จสิ้น
+- 📜 **สคริปต์ SQL** — รันสคริปต์ปัจจุบัน ไฟล์จาก Explorer หรือทั้งโฟลเดอร์บนโปรไฟล์การเชื่อมต่อที่ใช้งานอยู่ (รองรับ charset พร้อม `DBMS_OUTPUT` และ `stopOnError`).
+
+### ความครอบคลุม
+
+- 📊 **ความครอบคลุมแบบภาพ** — gutter สีตามบรรทัด (ครอบคลุม/ไม่ครอบคลุม) และเปอร์เซ็นต์ต่อไฟล์ในแท็บ **Coverage**
+- 📈 **ความครอบคลุมของ statement และ view** — แท็บ Coverage แสดง `% ของ statements` (PROCEDURE/FUNCTION) ต่อไฟล์และติดตาม views ที่ถูกเรียกใช้ผ่าน `V$SQL`
+- 🎯 **ขอบเขตความครอบคลุม** — รวม/ยกเว้นอ็อบเจกต์และ regex ของ schema/อ็อบเจกต์ (`utplsql.coverage.*`) เพื่อตัดสัญญาณรบกวนของ framework และเพิ่มอ็อบเจกต์ที่เข้าถึงแบบไดนามิก
 - 🗂️ **แหล่งข้อมูลเสมือนจากฐานข้อมูล** — เมื่อไม่มีไฟล์ในเครื่อง *jump to failure* และ coverage จะเปิดเอกสารแบบอ่านอย่างเดียวจาก `ALL_SOURCE` (`utplsql-source:/…`)
+
+### ดีบักเกอร์
+
+- 🐛 **การดีบัก PL/SQL** — breakpoints และการดีบักแบบทีละขั้นของเทสต์ utPLSQL ผ่าน `DBMS_DEBUG` (Debug Adapter เนทีฟ)
+
+### การเชื่อมต่อและความปลอดภัย
+
+- 🔌 **โปรไฟล์การเชื่อมต่อ** — บันทึกและสลับระหว่างหลายสภาพแวดล้อม (DEV/TEST/PROD) พร้อมการตั้งค่าต่อโปรไฟล์ ผ่านแถบสถานะหรือ command palette
 - 🔐 **TNS ใน thin + wallet** — `utplsql.connections.tnsAdminPath` แปลง alias ของ `tnsnames.ora` ในไดรเวอร์ thin (fallback ไป SQL Developer/`TNS_ADMIN`); `walletLocation` ของโปรไฟล์และ `utPLSQL: Set wallet password` เก็บรหัส wallet ไว้ใน SecretStorage
 - 🔒 **เสริมความปลอดภัยของการเชื่อมต่อ** — การตั้งค่าการเชื่อมต่อเป็น `machine`-scoped ส่วนขยายถูกปิดในเวิร์กสเปซที่ไม่น่าเชื่อถือ และรหัสของโปรไฟล์ผูกกับการเชื่อมต่อ
+- 🔧 **การวินิจฉัยการตั้งค่า (Setup diagnostics)** — ตรวจสอบการเชื่อมต่อ, grants และเวอร์ชันเชิงรุกพร้อม quick-fix
+
+### รายงาน
+
+- 🧾 **Run with Reporter (Export)** — รันส่วนที่เลือกด้วย reporter ใดก็ได้ของฐานข้อมูล และเขียนผลลัพธ์ลง Output หรือไฟล์ (`utplsql.reporter.*`) โดยไม่เปลี่ยนผลใน Test Explorer
+
+### UX และการวินิจฉัย
+
+- ✅ **การตกแต่งแบบอินไลน์** — ไอคอน ✓/✗/⚠ ในตัวแก้ไขหลังการรัน พร้อม tooltip ของความล้มเหลวและ overview ruler
+- 📌 **แถบสถานะ (Status Bar)** — ตัวบ่งชี้พร้อมจำนวนผ่าน/ล้มเหลว ระยะเวลา และความคืบหน้าแบบเรียลไทม์
+- 🎯 **Jump to failure** — นำทางตรงไปยังบรรทัดของ assertion ที่ล้มเหลว (ผ่าน "Go to Error" เนทีฟ)
 - 🧱 **การวินิจฉัยการคอมไพล์** — หลังการรันแต่ละครั้ง ข้อผิดพลาดการคอมไพล์ PL/SQL (`ALL_ERRORS`) จะแสดงใน Problems Panel ภายใต้ source `utPLSQL Compilation` (การตั้งค่า `utplsql.compilationDiagnostics.enabled`)
 - ⏳ **ความคืบหน้าและการยกเลิก** — การรันที่ยาวนานจะแสดงการแจ้งเตือนความคืบหน้าพร้อมจำนวนและปุ่ม *Cancel* (พร้อม `utplsql.timeoutMinutes` แบบเลือกได้)
-- 📁 **เวิร์กสเปซแบบ multi-root** — แต่ละโฟลเดอร์ของเวิร์กสเปซมีชุดเทสต์ของตัวเอง โดยค้นหา รัน และ coverage แยกกัน
+- 🌍 **i18n — 24 ภาษา** — `utplsql.language` เป็นไปตาม VSCode (24 ภาษาท้องถิ่น: pt-br, en, en-gb, es, zh-cn, zh-tw, ja, de, fr, it, ko, ru, tr, pl, cs, hu, bg, el, id, ro, sr, th, uk, vi)
+
 
 ## การติดตั้ง
 
@@ -64,7 +94,7 @@ tags: [readme]
 ## ข้อกำหนด
 
 - [**utPLSQL**](https://github.com/utPLSQL/utPLSQL) **(UT3)** ติดตั้งในฐานข้อมูล Oracle
-- **VSCode 1.101+** (Test Coverage API)
+- **VSCode 1.101+** (Node 22).
 
 ส่วนขยายเป็นเพียง "ไคลเอนต์กราฟิก" — สิ่งที่รันการทดสอบคือฐานข้อมูลโดยตรง (node-oracledb)
 

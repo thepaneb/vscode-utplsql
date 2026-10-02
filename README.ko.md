@@ -10,38 +10,68 @@
 
 </div>
 
+<p align="center">
+  <a href="https://marketplace.visualstudio.com/items?itemName=paneb.vscode-utplsql"><img alt="Marketplace" src="https://vsmarketplacebadges.dev/version-short/paneb.vscode-utplsql.svg"></a>
+  <a href="https://marketplace.visualstudio.com/items?itemName=paneb.vscode-utplsql"><img alt="Installs" src="https://vsmarketplacebadges.dev/installs-short/paneb.vscode-utplsql.svg"></a>
+  <a href="https://marketplace.visualstudio.com/items?itemName=paneb.vscode-utplsql"><img alt="Downloads" src="https://vsmarketplacebadges.dev/downloads-short/paneb.vscode-utplsql.svg"></a>
+  <a href="https://github.com/thepaneb/vscode-utplsql/actions/workflows/ci.yml"><img alt="CI" src="https://github.com/thepaneb/vscode-utplsql/actions/workflows/ci.yml/badge.svg"></a>
+  <a href="https://codecov.io/gh/thepaneb/vscode-utplsql"><img alt="Coverage" src="https://codecov.io/gh/thepaneb/vscode-utplsql/branch/main/graph/badge.svg"></a>
+  <img alt="VS Code" src="https://img.shields.io/badge/VS%20Code-1.101%2B-007ACC">
+  <img alt="Node" src="https://img.shields.io/badge/node-22-339933?logo=nodedotjs&logoColor=white">
+  <img alt="Oracle" src="https://img.shields.io/badge/Oracle-12.2%2B-F80000?logo=oracle&logoColor=white">
+  <img alt="License" src="https://img.shields.io/badge/license-MIT-blue">
+</p>
+
 # utPLSQL Test Runner
 
-[utPLSQL](https://www.utplsql.org/)을 VSCode에 통합하여 PL/SQL 테스트를 네이티브 **Test Explorer**, 컨텍스트 메뉴, 시각적 커버리지와 함께 제공합니다.
+**utPLSQL**(Oracle PL/SQL) 테스트를 VS Code에서 바로 실행하고 디버그하세요 — 네이티브 **Test Explorer**, 시각적 커버리지, PL/SQL 디버거, `node-oracledb` 기반 **Oracle 직접 실행**. **24개 언어** 지원, **VS Code 1.101+** (Node 22).
+
+### Test Explorer 및 실행
 
 - 🧪 **네이티브 Test Explorer** — 테스트 뷰에 스위트와 테스트가 표시됩니다. 테스트, 스위트, 파일 또는 폴더 단위로 실행할 수 있습니다.
 - 🔍 **CodeLens** — 코드를 떠나지 않고 편집기의 `%suite` 및 `%test` 위에 Run/Run with Coverage 버튼을 표시합니다.
 - ⌨️ **키보드 단축키** — `Ctrl+Shift+U` 접두사 + 주요 명령 키(R = Run All, T = Run File, L = Rerun Last 등).
 - 🖱️ **컨텍스트 메뉴** — **폴더** 또는 **`.pks`/`.pkb`** 파일(Explorer 또는 편집기에서)을 마우스 오른쪽 버튼으로 클릭하여 테스트를 실행합니다.
-- 📊 **시각적 커버리지** — 줄별 색상 구터(실행됨/실행 안 됨)와 **Coverage** 탭의 파일별 백분율.
-- ✅ **인라인 데코레이션** — 실행 후 편집기에 ✓/✗/⚠ 아이콘, 실패 툴팁 및 overview ruler 표시.
-- 📌 **상태 표시줄** — 통과/실패 개수, 소요 시간, 실시간 진행률 표시기.
 - 🔁 **스마트 재실행** — 단일 단축키로 Rerun Last, Run at Cursor, Run Failed Only.
-- 🚀 **Oracle 직접 실행(node-oracledb 사용)** — 배치 완료를 기다리지 않고 실시간 스트리밍.
-- 🔧 **설정 진단** — 연결, 권한 및 버전에 대한 선제적 검증 및 quick-fix.
 - 🧩 **스키마 인식 트리** — Test Explorer에서 Schema > Package > Suite > Test로 테스트를 구성.
-- 🎯 **실패 지점으로 이동** — 실패한 단언의 줄로 직접 이동(네이티브 "Go to Error" 사용).
-- 🔌 **연결 프로필** — 프로필별 설정으로 여러 환경(DEV/TEST/PROD)을 저장하고 전환(상태 표시줄 또는 명령 팔레트를 통해).
-- 📜 **SQL 스크립트** — 현재 스크립트, Explorer 파일 또는 전체 폴더를 활성 연결 프로필에 대해 실행합니다(charset 지원, `DBMS_OUTPUT` 및 `stopOnError`).
-- 📈 **문장 및 뷰 커버리지** — Coverage 탭에 파일별 `% of statements`(PROCEDURE/FUNCTION)를 표시하고 `V$SQL`을 통해 실행된 뷰를 추적.
 - 🏷️ **태그 및 무작위 순서** — `utplsql.tags`(예: `fast & !integration`)로 테스트를 필터링하고 재현 가능한 seed(`utplsql.run.randomOrder`)로 무작위 순서로 실행합니다.
-- 🎯 **커버리지 범위** — 객체와 스키마/객체 정규식(`utplsql.coverage.*`)으로 포함/제외하여 프레임워크 잡음을 제거하고 동적으로 도달하는 객체를 추가합니다.
 - 🗄️ **DB 우선 검색** — `ut_runner.get_suites_info`로 트리를 만들고 팔레트에서 주석 캐시를 다시 작성합니다.
-- 🐛 **PL/SQL 디버그** — `DBMS_DEBUG`를 통한 utPLSQL 테스트의 중단점 및 단계 디버깅(네이티브 Debug Adapter).
-- 🌍 **i18n — 24개 언어** — `utplsql.language`가 VSCode를 따릅니다(24개 로케일: pt-br, en, en-gb, es, zh-cn, zh-tw, ja, de, fr, it, ko, ru, tr, pl, cs, hu, bg, el, id, ro, sr, th, uk, vi).
 - 🌳 **지연 로딩 테스트 트리** — `schema` 모드에서 package/suite/test가 펼칠 때 필요에 따라 해석되어 큰 스키마도 즉시 열립니다.
-- 🧾 **Run with Reporter (Export)** — 선택 항목을 임의의 데이터베이스 reporter로 실행하고 출력을 Output 또는 파일에 씁니다(`utplsql.reporter.*`). Test Explorer 결과는 바뀌지 않습니다.
+- 📁 **멀티 루트 워크스페이스** — 각 워크스페이스 폴더가 자체 suite를 가지며, 검색·실행·커버리지가 독립적입니다.
+- 🚀 **Oracle 직접 실행(node-oracledb 사용)** — 배치 완료를 기다리지 않고 실시간 스트리밍.
+- 📜 **SQL 스크립트** — 현재 스크립트, Explorer 파일 또는 전체 폴더를 활성 연결 프로필에 대해 실행합니다(charset 지원, `DBMS_OUTPUT` 및 `stopOnError`).
+
+### 커버리지
+
+- 📊 **시각적 커버리지** — 줄별 색상 구터(실행됨/실행 안 됨)와 **Coverage** 탭의 파일별 백분율.
+- 📈 **문장 및 뷰 커버리지** — Coverage 탭에 파일별 `% of statements`(PROCEDURE/FUNCTION)를 표시하고 `V$SQL`을 통해 실행된 뷰를 추적.
+- 🎯 **커버리지 범위** — 객체와 스키마/객체 정규식(`utplsql.coverage.*`)으로 포함/제외하여 프레임워크 잡음을 제거하고 동적으로 도달하는 객체를 추가합니다.
 - 🗂️ **가상 데이터베이스 소스** — 로컬 파일이 없으면 *jump to failure*와 커버리지가 `ALL_SOURCE`에서 해석한 읽기 전용 문서를 엽니다(`utplsql-source:/…`).
+
+### 디버거
+
+- 🐛 **PL/SQL 디버그** — `DBMS_DEBUG`를 통한 utPLSQL 테스트의 중단점 및 단계 디버깅(네이티브 Debug Adapter).
+
+### 연결 및 보안
+
+- 🔌 **연결 프로필** — 프로필별 설정으로 여러 환경(DEV/TEST/PROD)을 저장하고 전환(상태 표시줄 또는 명령 팔레트를 통해).
 - 🔐 **thin의 TNS + wallet** — `utplsql.connections.tnsAdminPath`가 thin 드라이버에서 `tnsnames.ora` 별칭을 해석합니다(SQL Developer/`TNS_ADMIN` 폴백). 프로필의 `walletLocation`과 `utPLSQL: Set wallet password`가 wallet 비밀번호를 SecretStorage에 보관합니다.
 - 🔒 **연결 보안 강화** — 연결 설정이 `machine`-scoped가 되고, 신뢰할 수 없는 워크스페이스에서는 확장이 비활성화되며, 프로필 비밀번호가 연결에 묶입니다.
+- 🔧 **설정 진단** — 연결, 권한 및 버전에 대한 선제적 검증 및 quick-fix.
+
+### 보고서
+
+- 🧾 **Run with Reporter (Export)** — 선택 항목을 임의의 데이터베이스 reporter로 실행하고 출력을 Output 또는 파일에 씁니다(`utplsql.reporter.*`). Test Explorer 결과는 바뀌지 않습니다.
+
+### UX 및 진단
+
+- ✅ **인라인 데코레이션** — 실행 후 편집기에 ✓/✗/⚠ 아이콘, 실패 툴팁 및 overview ruler 표시.
+- 📌 **상태 표시줄** — 통과/실패 개수, 소요 시간, 실시간 진행률 표시기.
+- 🎯 **실패 지점으로 이동** — 실패한 단언의 줄로 직접 이동(네이티브 "Go to Error" 사용).
 - 🧱 **컴파일 진단** — 실행할 때마다 PL/SQL 컴파일 오류(`ALL_ERRORS`)가 Problems Panel에 source `utPLSQL Compilation`로 표시됩니다(설정 `utplsql.compilationDiagnostics.enabled`).
 - ⏳ **진행률 및 취소** — 긴 실행은 카운트가 있는 진행 알림과 *Cancel* 버튼을 표시합니다(선택적 `utplsql.timeoutMinutes` 포함).
-- 📁 **멀티 루트 워크스페이스** — 각 워크스페이스 폴더가 자체 suite를 가지며, 검색·실행·커버리지가 독립적입니다.
+- 🌍 **i18n — 24개 언어** — `utplsql.language`가 VSCode를 따릅니다(24개 로케일: pt-br, en, en-gb, es, zh-cn, zh-tw, ja, de, fr, it, ko, ru, tr, pl, cs, hu, bg, el, id, ro, sr, th, uk, vi).
+
 
 ## 설치
 
@@ -63,7 +93,7 @@
 |---|---|---|
 | 18c+ | v3.2.x (18c+) / v3.1.x | 권장. charset `AL32UTF8`. |
 | 12.2 | v3.1.x만 | v3.2.x는 컴파일되지 않습니다(`PLS-00222`). 이미지의 `WE8DEC`은 표현할 수 없는 문자(예: `€`)를 잃습니다. thin 드라이버는 `NLS_LANG`을 무시합니다. |
-- **VSCode 1.101+** (Test Coverage API).
+- **VSCode 1.101+** (Node 22).
 
 확장 프로그램은 "그래픽 클라이언트"일 뿐입니다 — 테스트를 실행하는 것은 데이터베이스입니다: node-oracledb 직접 연결을 통해.
 

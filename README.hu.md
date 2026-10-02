@@ -10,38 +10,68 @@
 
 </div>
 
+<p align="center">
+  <a href="https://marketplace.visualstudio.com/items?itemName=paneb.vscode-utplsql"><img alt="Marketplace" src="https://vsmarketplacebadges.dev/version-short/paneb.vscode-utplsql.svg"></a>
+  <a href="https://marketplace.visualstudio.com/items?itemName=paneb.vscode-utplsql"><img alt="Installs" src="https://vsmarketplacebadges.dev/installs-short/paneb.vscode-utplsql.svg"></a>
+  <a href="https://marketplace.visualstudio.com/items?itemName=paneb.vscode-utplsql"><img alt="Downloads" src="https://vsmarketplacebadges.dev/downloads-short/paneb.vscode-utplsql.svg"></a>
+  <a href="https://github.com/thepaneb/vscode-utplsql/actions/workflows/ci.yml"><img alt="CI" src="https://github.com/thepaneb/vscode-utplsql/actions/workflows/ci.yml/badge.svg"></a>
+  <a href="https://codecov.io/gh/thepaneb/vscode-utplsql"><img alt="Coverage" src="https://codecov.io/gh/thepaneb/vscode-utplsql/branch/main/graph/badge.svg"></a>
+  <img alt="VS Code" src="https://img.shields.io/badge/VS%20Code-1.101%2B-007ACC">
+  <img alt="Node" src="https://img.shields.io/badge/node-22-339933?logo=nodedotjs&logoColor=white">
+  <img alt="Oracle" src="https://img.shields.io/badge/Oracle-12.2%2B-F80000?logo=oracle&logoColor=white">
+  <img alt="License" src="https://img.shields.io/badge/license-MIT-blue">
+</p>
+
 # utPLSQL Test Runner
 
-Integrálja a [utPLSQL](https://www.utplsql.org/) teszteket a VSCode-ba, és a PL/SQL-teszteket a natív **Test Explorer**be hozza, helyi menüvel és vizuális kódfedettséggel.
+Futtasd és debugold az **utPLSQL** (Oracle PL/SQL) teszteket közvetlenül a VS Code-ban — natív **Test Explorer**, vizuális lefedettség, PL/SQL hibakereső és **közvetlen Oracle-végrehajtás** `node-oracledb`-vel. **24 nyelven** érhető el; **VS Code 1.101+** (Node 22).
+
+### Test Explorer és futtatás
 
 - 🧪 **Natív Test Explorer** — a suite-ok és tesztek megjelennek a tesztnézetben; futtathatók teszt, suite, fájl vagy mappa szinten.
 - 🔍 **CodeLens** — Run/Run with Coverage gombok a `%suite` és `%test` fölött a szerkesztőben, anélkül hogy elhagynád a kódod.
 - ⌨️ **Billentyűparancsok** — `Ctrl+Shift+U` előtag + billentyű a fő parancsokhoz (R = Run All, T = Run File, L = Rerun Last stb.).
 - 🖱️ **Helyi menü** — kattints jobb gombbal egy **mappára** vagy egy **`.pks`/`.pkb`** fájlra (az Explorerben vagy a szerkesztőben) a tesztek futtatásához.
-- 📊 **Vizuális lefedettség** — színes jelölések a sorok mellett (lefedett/nem lefedett) és fájlonkénti százalék a **Coverage** lapon.
-- ✅ **Beágyazott dekorációk** — ✓/✗/⚠ ikonok a szerkesztőben a futtatás után, hibaleírással ellátott tooltippel és áttekintő csúszkával (overview ruler).
-- 📌 **Állapotsor** — mutató a sikeres/sikertelen tesztek számával, időtartammal és valós idejű előrehaladással.
 - 🔁 **Okos újrafuttatás** — Rerun Last, Run at Cursor, Run Failed Only egyetlen billentyűparanccsal.
-- 🚀 **Közvetlen Oracle (node-oracledb segítségével)** — valós idejű adatfolyam, nem kell megvárni a köteg végét.
-- 🔧 **Beállítás-diagnosztika** — proaktív ellenőrzés: kapcsolat, jogosultságok és verzió, gyorsjavítással.
 - 🧩 **Séma-tudatos fa** — a tesztek szervezése Séma > Package > Suite > Teszt szerint a Test Explorerben.
-- 🎯 **Ugrás a hibához** — közvetlen navigáció a hibát kiváltó állítás sorához (a natív „Go to Error" segítségével).
-- 🔌 **Kapcsolati profilok** — több környezet (DEV/TEST/PROD) mentése és váltása köztük profil-specifikus beállításokkal, az állapotsorból vagy a parancspalettáról.
-- 📜 **SQL szkriptek** — az aktuális szkript, egy Explorer-fájl vagy egy teljes mappa futtatása az aktív kapcsolati profilon (charset-helyes, `DBMS_OUTPUT` és `stopOnError` támogatással).
-- 📈 **Utasítás- és nézetlefedettség** — a Coverage lap `% of statements` (PROCEDURE/FUNCTION) arányt mutat fájlonként, és a `V$SQL`-lal végrehajtott nézeteket is követi.
 - 🏷️ **Tagek és véletlen sorrend** — szűrd a teszteket `utplsql.tags`-szel (pl. `fast & !integration`), és futtasd véletlen sorrendben reprodukálható seeddel (`utplsql.run.randomOrder`).
-- 🎯 **Lefedettségi hatókör** — objektumok és séma/objektum regexek (`utplsql.coverage.*`) bevonása/kizárása a framework zajának eltávolításához és dinamikusan elért objektumok hozzáadásához.
 - 🗄️ **DB-first felfedezés** — építsd a fát a `ut_runner.get_suites_info` alapján, és építsd újra a megjegyzés-gyorsítótárat a palettáról.
-- 🐛 **PL/SQL-hibakeresés** — töréspontok és lépésenkénti hibakeresés a utPLSQL-tesztekhez `DBMS_DEBUG` segítségével (natív Debug Adapter).
-- 🌍 **i18n — 24 nyelv** — a `utplsql.language` követi a VSCode-ot (24 területi beállítás: pt-br, en, en-gb, es, zh-cn, zh-tw, ja, de, fr, it, ko, ru, tr, pl, cs, hu, bg, el, id, ro, sr, th, uk, vi).
 - 🌳 **Lusta tesztek fája** — `schema` módban a package-ek/suite-ok/tesztek kibontáskor, igény szerint töltődnek, így a nagy sémák azonnal megnyílnak.
-- 🧾 **Run with Reporter (Export)** — a kijelölést bármely adatbázis-reporterrel futtatja, és a kimenetet az Outputba vagy fájlba írja (`utplsql.reporter.*`), a Test Explorer eredményeinek megváltoztatása nélkül.
+- 📁 **Multi-root munkaterület** — minden munkaterület-mappa saját suite-okkal rendelkezik, független felderítéssel, futtatással és lefedettséggel.
+- 🚀 **Közvetlen Oracle (node-oracledb segítségével)** — valós idejű adatfolyam, nem kell megvárni a köteg végét.
+- 📜 **SQL szkriptek** — az aktuális szkript, egy Explorer-fájl vagy egy teljes mappa futtatása az aktív kapcsolati profilon (charset-helyes, `DBMS_OUTPUT` és `stopOnError` támogatással).
+
+### Lefedettség
+
+- 📊 **Vizuális lefedettség** — színes jelölések a sorok mellett (lefedett/nem lefedett) és fájlonkénti százalék a **Coverage** lapon.
+- 📈 **Utasítás- és nézetlefedettség** — a Coverage lap `% of statements` (PROCEDURE/FUNCTION) arányt mutat fájlonként, és a `V$SQL`-lal végrehajtott nézeteket is követi.
+- 🎯 **Lefedettségi hatókör** — objektumok és séma/objektum regexek (`utplsql.coverage.*`) bevonása/kizárása a framework zajának eltávolításához és dinamikusan elért objektumok hozzáadásához.
 - 🗂️ **Virtuális adatbázis-forrás** — helyi fájl nélkül a *jump to failure* és a lefedettség egy csak olvasható dokumentumot nyit meg az `ALL_SOURCE`-ból (`utplsql-source:/…`).
+
+### Hibakereső
+
+- 🐛 **PL/SQL-hibakeresés** — töréspontok és lépésenkénti hibakeresés a utPLSQL-tesztekhez `DBMS_DEBUG` segítségével (natív Debug Adapter).
+
+### Kapcsolatok és biztonság
+
+- 🔌 **Kapcsolati profilok** — több környezet (DEV/TEST/PROD) mentése és váltása köztük profil-specifikus beállításokkal, az állapotsorból vagy a parancspalettáról.
 - 🔐 **TNS thin módban + wallet** — a `utplsql.connections.tnsAdminPath` feloldja a `tnsnames.ora` aliasokat a thin driverben (fallback: SQL Developer/`TNS_ADMIN`); a profil `walletLocation` mezője és a `utPLSQL: Set wallet password` a wallet jelszavát a SecretStorage-ban tartja.
 - 🔒 **Kapcsolatok biztonsági megerősítése** — a kapcsolati beállítások `machine`-scopedok, a bővítmény le van tiltva nem megbízható munkaterületeken, és a profil jelszava a kapcsolathoz van kötve.
+- 🔧 **Beállítás-diagnosztika** — proaktív ellenőrzés: kapcsolat, jogosultságok és verzió, gyorsjavítással.
+
+### Riportok
+
+- 🧾 **Run with Reporter (Export)** — a kijelölést bármely adatbázis-reporterrel futtatja, és a kimenetet az Outputba vagy fájlba írja (`utplsql.reporter.*`), a Test Explorer eredményeinek megváltoztatása nélkül.
+
+### UX és diagnosztika
+
+- ✅ **Beágyazott dekorációk** — ✓/✗/⚠ ikonok a szerkesztőben a futtatás után, hibaleírással ellátott tooltippel és áttekintő csúszkával (overview ruler).
+- 📌 **Állapotsor** — mutató a sikeres/sikertelen tesztek számával, időtartammal és valós idejű előrehaladással.
+- 🎯 **Ugrás a hibához** — közvetlen navigáció a hibát kiváltó állítás sorához (a natív „Go to Error" segítségével).
 - 🧱 **Fordítási diagnosztika** — minden futtatás után a PL/SQL fordítási hibák (`ALL_ERRORS`) megjelennek a Problems Panelben a `utPLSQL Compilation` forrás alatt (`utplsql.compilationDiagnostics.enabled` beállítás).
 - ⏳ **Folyamat és megszakítás** — a hosszú futások előrehaladási értesítést mutatnak számlálóval és *Cancel* gombbal (plusz opcionális `utplsql.timeoutMinutes`).
-- 📁 **Multi-root munkaterület** — minden munkaterület-mappa saját suite-okkal rendelkezik, független felderítéssel, futtatással és lefedettséggel.
+- 🌍 **i18n — 24 nyelv** — a `utplsql.language` követi a VSCode-ot (24 területi beállítás: pt-br, en, en-gb, es, zh-cn, zh-tw, ja, de, fr, it, ko, ru, tr, pl, cs, hu, bg, el, id, ro, sr, th, uk, vi).
+
 
 ## Telepítés
 
@@ -63,7 +93,7 @@ A bővítmény kétféleképpen telepíthető:
 |---|---|---|
 | 18c+ | v3.2.x (18c+) / v3.1.x | Ajánlott; charset `AL32UTF8`. |
 | 12.2 | csak v3.1.x | A v3.2.x nem fordul (`PLS-00222`). A kép `WE8DEC`-je elveszíti a nem ábrázolható karaktereket (pl. `€`); a thin illesztő figyelmen kívül hagyja a `NLS_LANG`-ot. |
-- **VSCode 1.101+** (Test Coverage API).
+- **VSCode 1.101+** (Node 22).
 
 A bővítmény csupán a „grafikus kliens" — a teszteket ténylegesen az adatbázis futtatja közvetlenül a node-oracledb-n keresztül.
 

@@ -10,38 +10,68 @@
 
 </div>
 
+<p align="center">
+  <a href="https://marketplace.visualstudio.com/items?itemName=paneb.vscode-utplsql"><img alt="Marketplace" src="https://vsmarketplacebadges.dev/version-short/paneb.vscode-utplsql.svg"></a>
+  <a href="https://marketplace.visualstudio.com/items?itemName=paneb.vscode-utplsql"><img alt="Installs" src="https://vsmarketplacebadges.dev/installs-short/paneb.vscode-utplsql.svg"></a>
+  <a href="https://marketplace.visualstudio.com/items?itemName=paneb.vscode-utplsql"><img alt="Downloads" src="https://vsmarketplacebadges.dev/downloads-short/paneb.vscode-utplsql.svg"></a>
+  <a href="https://github.com/thepaneb/vscode-utplsql/actions/workflows/ci.yml"><img alt="CI" src="https://github.com/thepaneb/vscode-utplsql/actions/workflows/ci.yml/badge.svg"></a>
+  <a href="https://codecov.io/gh/thepaneb/vscode-utplsql"><img alt="Coverage" src="https://codecov.io/gh/thepaneb/vscode-utplsql/branch/main/graph/badge.svg"></a>
+  <img alt="VS Code" src="https://img.shields.io/badge/VS%20Code-1.101%2B-007ACC">
+  <img alt="Node" src="https://img.shields.io/badge/node-22-339933?logo=nodedotjs&logoColor=white">
+  <img alt="Oracle" src="https://img.shields.io/badge/Oracle-12.2%2B-F80000?logo=oracle&logoColor=white">
+  <img alt="License" src="https://img.shields.io/badge/license-MIT-blue">
+</p>
+
 # utPLSQL Test Runner
 
-将 [utPLSQL](https://www.utplsql.org/) 集成到 VSCode，将 PL/SQL 测试带到原生的 **Test Explorer** 中，并支持上下文菜单和可视化覆盖率。
+在 VS Code 中直接运行和调试 **utPLSQL**（Oracle PL/SQL）测试 — 原生 **Test Explorer**、可视化覆盖率、PL/SQL 调试器，以及通过 `node-oracledb` 的 **Oracle 直连执行**。支持 **24 种语言**；需要 **VS Code 1.101+** (Node 22).
+
+### Test Explorer 与执行
 
 - 🧪 **原生 Test Explorer** — 套件和测试出现在测试视图中；可按测试、套件、文件或文件夹运行。
 - 🔍 **CodeLens** — 在编辑器中的 `%suite` 和 `%test` 上提供 Run/Run with Coverage 按钮，无需离开代码。
 - ⌨️ **键盘快捷键** — `Ctrl+Shift+U` 前缀 + 按键用于主要命令（R = Run All，T = Run File，L = Rerun Last 等）。
 - 🖱️ **上下文菜单** — 右键单击**文件夹**或 **`.pks`/`.pkb`** 文件（在资源管理器中或编辑器中）即可运行测试。
-- 📊 **可视化覆盖率** — 每一行带有彩色边线（已覆盖/未覆盖），并在 **Coverage** 选项卡中显示每个文件的百分比。
-- ✅ **内联装饰** — 执行后在编辑器中显示 ✓/✗/⚠ 图标，并带有失败提示和概览标尺。
-- 📌 **状态栏** — 显示通过/失败数量、持续时间和实时进度的指示器。
 - 🔁 **智能重新运行** — Rerun Last、Run at Cursor、Run Failed Only 只需一个快捷键。
-- 🚀 **Oracle 直连（通过 node-oracledb）** — 实时流式传输，无需等待批处理完成。
-- 🔧 **配置诊断** — 主动验证连接、授权和版本，并提供快速修复。
 - 🧩 **Schema 感知的树** — 在 Test Explorer 中按 Schema > Package > Suite > Test 组织测试。
-- 🎯 **跳转到失败** — 直接导航到失败的断言所在行（通过原生的 "Go to Error"）。
-- 🔌 **连接配置** — 通过状态栏或命令面板，保存并切换多个环境（DEV/TEST/PROD），支持按配置自定义设置。
-- 📜 **SQL 脚本** — 在当前连接配置上运行当前脚本、Explorer 中的文件或整个文件夹（支持 charset，`DBMS_OUTPUT` 和 `stopOnError`）。
-- 📈 **语句和视图覆盖率** — Coverage 选项卡显示每个文件的语句百分比（PROCEDURE/FUNCTION），并通过 `V$SQL` 跟踪执行的视图。
 - 🏷️ **标签与随机顺序** — 使用 `utplsql.tags`（例如 `fast & !integration`）筛选测试，并以可复现的种子随机顺序运行（`utplsql.run.randomOrder`）。
-- 🎯 **覆盖率范围** — 通过 `utplsql.coverage.*` 包含/排除对象和 schema/对象正则，去除框架噪声并纳入动态到达的对象。
 - 🗄️ **数据库优先发现** — 从 `ut_runner.get_suites_info` 构建树，并从命令面板重建注释缓存。
-- 🐛 **PL/SQL 调试** — 通过 `DBMS_DEBUG` 对 utPLSQL 测试进行断点和单步调试（原生调试适配器）。
-- 🌍 **i18n — 24 种语言** — `utplsql.language` 跟随 VSCode（24 locales：pt-br、en、en-gb、es、zh-cn、zh-tw、ja、de、fr、it、ko、ru、tr、pl、cs、hu、bg、el、id、ro、sr、th、uk、vi）。
 - 🌳 **延迟加载的测试树** — 在 `schema` 模式下，package/suite/test 在展开时按需解析，因此大型 schema 可即时打开。
-- 🧾 **Run with Reporter (Export)** — 使用任意数据库 reporter 运行所选内容，并将输出写入 Output 或文件（`utplsql.reporter.*`），不改变 Test Explorer 中的结果。
+- 📁 **多根工作区** — 每个工作区文件夹拥有自己的测试套件，发现、执行与覆盖率相互独立。
+- 🚀 **Oracle 直连（通过 node-oracledb）** — 实时流式传输，无需等待批处理完成。
+- 📜 **SQL 脚本** — 在当前连接配置上运行当前脚本、Explorer 中的文件或整个文件夹（支持 charset，`DBMS_OUTPUT` 和 `stopOnError`）。
+
+### 覆盖率
+
+- 📊 **可视化覆盖率** — 每一行带有彩色边线（已覆盖/未覆盖），并在 **Coverage** 选项卡中显示每个文件的百分比。
+- 📈 **语句和视图覆盖率** — Coverage 选项卡显示每个文件的语句百分比（PROCEDURE/FUNCTION），并通过 `V$SQL` 跟踪执行的视图。
+- 🎯 **覆盖率范围** — 通过 `utplsql.coverage.*` 包含/排除对象和 schema/对象正则，去除框架噪声并纳入动态到达的对象。
 - 🗂️ **虚拟数据库源** — 没有本地文件时，*jump to failure* 和覆盖率会打开从 `ALL_SOURCE` 解析的只读文档（`utplsql-source:/…`）。
+
+### 调试器
+
+- 🐛 **PL/SQL 调试** — 通过 `DBMS_DEBUG` 对 utPLSQL 测试进行断点和单步调试（原生调试适配器）。
+
+### 连接与安全
+
+- 🔌 **连接配置** — 通过状态栏或命令面板，保存并切换多个环境（DEV/TEST/PROD），支持按配置自定义设置。
 - 🔐 **thin 模式下的 TNS + wallet** — `utplsql.connections.tnsAdminPath` 在 thin 驱动中解析 `tnsnames.ora` 别名（回退到 SQL Developer/`TNS_ADMIN`）；配置文件的 `walletLocation` 与 `utPLSQL: Set wallet password` 将 wallet 密码保存在 SecretStorage。
 - 🔒 **连接安全加固** — 连接设置改为 `machine` 作用域，扩展在不受信任的工作区中被禁用，配置文件的密码与连接绑定。
+- 🔧 **配置诊断** — 主动验证连接、授权和版本，并提供快速修复。
+
+### 报告
+
+- 🧾 **Run with Reporter (Export)** — 使用任意数据库 reporter 运行所选内容，并将输出写入 Output 或文件（`utplsql.reporter.*`），不改变 Test Explorer 中的结果。
+
+### UX 与诊断
+
+- ✅ **内联装饰** — 执行后在编辑器中显示 ✓/✗/⚠ 图标，并带有失败提示和概览标尺。
+- 📌 **状态栏** — 显示通过/失败数量、持续时间和实时进度的指示器。
+- 🎯 **跳转到失败** — 直接导航到失败的断言所在行（通过原生的 "Go to Error"）。
 - 🧱 **编译诊断** — 每次运行后，PL/SQL 编译错误（`ALL_ERRORS`）会以 source `utPLSQL Compilation` 显示在 Problems Panel 中（设置 `utplsql.compilationDiagnostics.enabled`）。
 - ⏳ **进度与取消** — 长时间运行会显示带计数的进度通知和 *Cancel* 按钮（以及可选的 `utplsql.timeoutMinutes`）。
-- 📁 **多根工作区** — 每个工作区文件夹拥有自己的测试套件，发现、执行与覆盖率相互独立。
+- 🌍 **i18n — 24 种语言** — `utplsql.language` 跟随 VSCode（24 locales：pt-br、en、en-gb、es、zh-cn、zh-tw、ja、de、fr、it、ko、ru、tr、pl、cs、hu、bg、el、id、ro、sr、th、uk、vi）。
+
 
 ## 安装
 
@@ -63,7 +93,7 @@
 |---|---|---|
 | 18c+ | v3.2.x (18c+) / v3.1.x | 推荐；charset 为 `AL32UTF8`。 |
 | 12.2 | 仅 v3.1.x | v3.2.x 无法编译（`PLS-00222`）。镜像的 `WE8DEC` 会丢失无法表示的字符（例如 `€`）；精简驱动忽略 `NLS_LANG`。 |
-- **VSCode 1.101+**（测试覆盖率 API）。
+- **VSCode 1.101+** (Node 22).
 
 扩展只是"图形客户端" — 真正运行测试的是数据库，通过 node-oracledb 直连。
 

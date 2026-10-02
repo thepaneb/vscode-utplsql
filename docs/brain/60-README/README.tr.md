@@ -19,38 +19,68 @@ tags: [readme]
 
 </div>
 
+<p align="center">
+  <a href="https://marketplace.visualstudio.com/items?itemName=paneb.vscode-utplsql"><img alt="Marketplace" src="https://vsmarketplacebadges.dev/version-short/paneb.vscode-utplsql.svg"></a>
+  <a href="https://marketplace.visualstudio.com/items?itemName=paneb.vscode-utplsql"><img alt="Installs" src="https://vsmarketplacebadges.dev/installs-short/paneb.vscode-utplsql.svg"></a>
+  <a href="https://marketplace.visualstudio.com/items?itemName=paneb.vscode-utplsql"><img alt="Downloads" src="https://vsmarketplacebadges.dev/downloads-short/paneb.vscode-utplsql.svg"></a>
+  <a href="https://github.com/thepaneb/vscode-utplsql/actions/workflows/ci.yml"><img alt="CI" src="https://github.com/thepaneb/vscode-utplsql/actions/workflows/ci.yml/badge.svg"></a>
+  <a href="https://codecov.io/gh/thepaneb/vscode-utplsql"><img alt="Coverage" src="https://codecov.io/gh/thepaneb/vscode-utplsql/branch/main/graph/badge.svg"></a>
+  <img alt="VS Code" src="https://img.shields.io/badge/VS%20Code-1.101%2B-007ACC">
+  <img alt="Node" src="https://img.shields.io/badge/node-22-339933?logo=nodedotjs&logoColor=white">
+  <img alt="Oracle" src="https://img.shields.io/badge/Oracle-12.2%2B-F80000?logo=oracle&logoColor=white">
+  <img alt="License" src="https://img.shields.io/badge/license-MIT-blue">
+</p>
+
 # utPLSQL Test Runner
 
-[utPLSQL](https://www.utplsql.org/)'i VSCode'a entegre ederek PL/SQL testlerini doğal **Test Explorer**'a taşır; bağlam menüsü ve görsel kapsam (coverage) ile birlikte.
+**utPLSQL** (Oracle PL/SQL) testlerini doğrudan VS Code'da çalıştırın ve hata ayıklayın — yerel **Test Explorer**, görsel kapsam, PL/SQL hata ayıklayıcı ve `node-oracledb` ile **doğrudan Oracle yürütme**. **24 dilde**; **VS Code 1.101+** (Node 22).
+
+### Test Explorer ve çalıştırma
 
 - 🧪 **Doğal Test Explorer** — paketler ve testler test görünümünde görünür; teste, pakete, dosyaya veya klasöre göre çalıştırın.
 - 🔍 **CodeLens** — editörde `%suite` ve `%test` üzerinde Run/Run with Coverage düğmeleri; kodunuzdan ayrılmadan.
 - ⌨️ **Klavye kısayolları** — ana komutlar için `Ctrl+Shift+U` öneki + tuş (R = Tümünü Çalıştır, T = Dosyayı Çalıştır, L = Sonuncuyu Yeniden Çalıştır, vb.).
 - 🖱️ **Bağlam menüsü** — bir **klasöre** veya **`.pks`/`.pkb`** dosyasına (Explorer'da ya da editörde) sağ tıklayarak testleri çalıştırın.
-- 📊 **Görsel kapsam (coverage)** — satır başına renkli kenar çubuğu (kapsanan/kapsanmayan) ve **Coverage** sekmesinde dosya başına yüzde.
-- ✅ **Satır içi süslemeler** — çalıştırmadan sonra editörde ✓/✗/⚠ simgeleri; hata ipucu ve genel bakış cetveli ile.
-- 📌 **Durum çubuğu** — geçti/kaldı sayısı, süre ve gerçek zamanlı ilerleme gösteren gösterge.
 - 🔁 **Akıllı Yeniden Çalıştır** — tek bir kısayolla Sonuncuyu Yeniden Çalıştır, İmleçte Çalıştır, Yalnızca Başarısızları Çalıştır.
-- 🚀 **Oracle doğrudan (node-oracledb üzerinden)** — toplu işin bitmesini beklemeden gerçek zamanlı akış.
-- 🔧 **Kurulum tanılama** — bağlantı, yetkiler ve sürümün hızlı düzeltmeyle (quick-fix) proaktif doğrulaması.
 - 🧩 **Şema farkındalıklı ağaç** — testleri Test Explorer'da Schema > Package > Suite > Test olarak düzenleyin.
-- 🎯 **Hataya atlama** — başarısız olan iddianın satırına doğrudan gezinme (doğal "Go to Error" ile).
-- 🔌 **Bağlantı profilleri** — status bar veya komut paleti aracılığıyla profil başına ayarlarla birden fazla ortam (DEV/TEST/PROD) arasında kaydedin ve geçiş yapın.
-- 📜 **SQL betikleri** — geçerli betiği, Explorer dosyasını veya tüm klasörü etkin bağlantı profilinde çalıştırın (charset'e duyarlı, `DBMS_OUTPUT` ve `stopOnError` ile).
-- 📈 **İfade ve görünüm kapsamı** — Coverage sekmesi dosya başına `% of statements` (PROCEDURE/FUNCTION) gösterir ve `V$SQL` üzerinden çalıştırılan görünümleri izler.
 - 🏷️ **Etiketler ve rastgele sıra** — testleri `utplsql.tags` ile filtreleyin (örn. `fast & !integration`) ve yeniden üretilebilir seed ile rastgele sırada çalıştırın (`utplsql.run.randomOrder`).
-- 🎯 **Kapsam aralığı** — framework gürültüsünü kaldırmak ve dinamik erişilen nesneleri eklemek için nesneleri ve şema/nesne regex'lerini (`utplsql.coverage.*`) dahil/hariç tutun.
 - 🗄️ **DB-first keşif** — ağacı `ut_runner.get_suites_info`'dan oluşturun ve açıklama önbelleğini paletten yeniden oluşturun.
-- 🐛 **PL/SQL Hata Ayıklama** — `DBMS_DEBUG` üzerinden utPLSQL testlerinde kesme noktaları ve adım adım hata ayıklama (doğal Debug Adapter).
-- 🌍 **i18n — 24 dil** — `utplsql.language` VSCode'u takip eder (24 yerel ayar: pt-br, en, en-gb, es, zh-cn, zh-tw, ja, de, fr, it, ko, ru, tr, pl, cs, hu, bg, el, id, ro, sr, th, uk, vi).
 - 🌳 **Tembel test ağacı** — `schema` modunda paketler/suiteler/testler genişletildiğinde isteğe bağlı çözülür; büyük şemalar anında açılır.
-- 🧾 **Run with Reporter (Export)** — seçimi herhangi bir veritabanı reporter’ı ile çalıştırır ve çıktıyı Output’a veya dosyaya yazar (`utplsql.reporter.*`); Test Explorer sonuçlarını değiştirmez.
+- 📁 **Çok köklü çalışma alanı** — her çalışma alanı klasörü kendi suitelerine sahiptir; keşif, çalıştırma ve kapsam bağımsızdır.
+- 🚀 **Oracle doğrudan (node-oracledb üzerinden)** — toplu işin bitmesini beklemeden gerçek zamanlı akış.
+- 📜 **SQL betikleri** — geçerli betiği, Explorer dosyasını veya tüm klasörü etkin bağlantı profilinde çalıştırın (charset'e duyarlı, `DBMS_OUTPUT` ve `stopOnError` ile).
+
+### Kapsam
+
+- 📊 **Görsel kapsam (coverage)** — satır başına renkli kenar çubuğu (kapsanan/kapsanmayan) ve **Coverage** sekmesinde dosya başına yüzde.
+- 📈 **İfade ve görünüm kapsamı** — Coverage sekmesi dosya başına `% of statements` (PROCEDURE/FUNCTION) gösterir ve `V$SQL` üzerinden çalıştırılan görünümleri izler.
+- 🎯 **Kapsam aralığı** — framework gürültüsünü kaldırmak ve dinamik erişilen nesneleri eklemek için nesneleri ve şema/nesne regex'lerini (`utplsql.coverage.*`) dahil/hariç tutun.
 - 🗂️ **Sanal veritabanı kaynağı** — yerel dosya yoksa *jump to failure* ve kapsam, `ALL_SOURCE`’dan çözülen salt okunur bir belge açar (`utplsql-source:/…`).
+
+### Hata ayıklayıcı
+
+- 🐛 **PL/SQL Hata Ayıklama** — `DBMS_DEBUG` üzerinden utPLSQL testlerinde kesme noktaları ve adım adım hata ayıklama (doğal Debug Adapter).
+
+### Bağlantılar ve güvenlik
+
+- 🔌 **Bağlantı profilleri** — status bar veya komut paleti aracılığıyla profil başına ayarlarla birden fazla ortam (DEV/TEST/PROD) arasında kaydedin ve geçiş yapın.
 - 🔐 **Thin’de TNS + wallet** — `utplsql.connections.tnsAdminPath`, thin sürücüde `tnsnames.ora` takma adlarını çözer (SQL Developer/`TNS_ADMIN`’e fallback); profildeki `walletLocation` ve `utPLSQL: Set wallet password` wallet parolasını SecretStorage’da tutar.
 - 🔒 **Bağlantı güvenliği sıkılaştırması** — bağlantı ayarları `machine`-scoped oldu, uzantı güvenilmeyen çalışma alanlarında devre dışı ve profil parolası bağlantıya bağlı.
+- 🔧 **Kurulum tanılama** — bağlantı, yetkiler ve sürümün hızlı düzeltmeyle (quick-fix) proaktif doğrulaması.
+
+### Raporlar
+
+- 🧾 **Run with Reporter (Export)** — seçimi herhangi bir veritabanı reporter’ı ile çalıştırır ve çıktıyı Output’a veya dosyaya yazar (`utplsql.reporter.*`); Test Explorer sonuçlarını değiştirmez.
+
+### UX ve tanılama
+
+- ✅ **Satır içi süslemeler** — çalıştırmadan sonra editörde ✓/✗/⚠ simgeleri; hata ipucu ve genel bakış cetveli ile.
+- 📌 **Durum çubuğu** — geçti/kaldı sayısı, süre ve gerçek zamanlı ilerleme gösteren gösterge.
+- 🎯 **Hataya atlama** — başarısız olan iddianın satırına doğrudan gezinme (doğal "Go to Error" ile).
 - 🧱 **Derleme tanılamaları** — her çalıştırmadan sonra PL/SQL derleme hataları (`ALL_ERRORS`) `utPLSQL Compilation` kaynağı altında Problems Panel’de görünür (`utplsql.compilationDiagnostics.enabled` ayarı).
 - ⏳ **İlerleme ve iptal** — uzun çalıştırmalar sayaçlı bir ilerleme bildirimi ve *Cancel* düğmesi gösterir (ayrıca isteğe bağlı `utplsql.timeoutMinutes`).
-- 📁 **Çok köklü çalışma alanı** — her çalışma alanı klasörü kendi suitelerine sahiptir; keşif, çalıştırma ve kapsam bağımsızdır.
+- 🌍 **i18n — 24 dil** — `utplsql.language` VSCode'u takip eder (24 yerel ayar: pt-br, en, en-gb, es, zh-cn, zh-tw, ja, de, fr, it, ko, ru, tr, pl, cs, hu, bg, el, id, ro, sr, th, uk, vi).
+
 
 ## Kurulum
 
@@ -72,7 +102,7 @@ Uzantı iki şekilde kurulabilir:
 |---|---|---|
 | 18c+ | v3.2.x (18c+) / v3.1.x | Önerilir; charset `AL32UTF8`. |
 | 12.2 | yalnızca v3.1.x | v3.2.x derlenmez (`PLS-00222`). İmajın `WE8DEC`'i gösterilemeyen karakterleri kaybeder (örn. `€`); ince sürücü `NLS_LANG`'i yok sayar. |
-- **VSCode 1.101+** (Test Coverage API).
+- **VSCode 1.101+** (Node 22).
 
 Uzantı yalnızca "grafik istemcidir" — testleri çalıştıran veritabanıdır: node-oracledb doğrudan bağlantısı üzerinden.
 
