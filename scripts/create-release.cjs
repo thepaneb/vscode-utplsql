@@ -6,12 +6,12 @@
  *
  * Uso:
  *   npm run release:create -- --tag v0.14.0
- *   npm run release:create -- --tag v0.14.0 --name "utPLSQL Test Runner v0.14.0"
+ *   npm run release:create -- --tag v0.14.0 --name "Release 0.14.0"
  *   npm run release:create -- --tag v0.14.0 --notes-file notas.md --target main
  *
  * Opções:
  *   --tag <vX.Y.Z>      Obrigatório. Deve casar com a `version` do package.json.
- *   --name <texto>      Título da release (default: "utPLSQL Test Runner <tag>").
+ *   --name <texto>      Título da release (default: a própria tag, ex.: "v0.14.0").
  *   --notes <texto>     Corpo inline (tem prioridade sobre --notes-file).
  *   --notes-file <path> Arquivo markdown (default: extrai a seção do CHANGELOG).
  *   --target <branch>   Commit/branch alvo da tag (default: main).
@@ -177,7 +177,7 @@ async function main() {
   const payload = {
     tag_name: tag,
     target_commitish: args.target || 'main',
-    name: args.name || `utPLSQL Test Runner ${tag}`,
+    name: args.name || tag,
     body,
     draft: !!args.draft,
     prerelease: !!args.prerelease,
