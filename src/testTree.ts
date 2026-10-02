@@ -28,11 +28,12 @@ function fillSuiteTests(
   state: TestStateManager,
   suiteItem: vscode.TestItem,
   suite: SuiteFile,
+  idSuffix = '',
 ): void {
   const showTags = readConfig().showTagsInTree;
   for (const t of suite.tests) {
     const testItem = controller.createTestItem(
-      `test:${suite.packageName.toLowerCase()}.${t.procName.toLowerCase()}`,
+      `test:${suite.packageName.toLowerCase()}.${t.procName.toLowerCase()}${idSuffix}`,
       taggedLabel(t.displayName ?? t.description, t.tags, showTags),
       suite.uri,
     );
@@ -51,14 +52,21 @@ function fillSuiteTests(
   }
 }
 
-/** Cria o nó `suite:` (sem testes — lazy) e registra meta/mapa. */
+/**
+ * Cria o nó `suite:` (sem testes — lazy) e registra meta/mapa. `idSuffix` entra
+ * nos ids (`suite:<pkg><#tag>`) para permitir a mesma suite em vários grupos da
+ * árvore por tag (PRD-55) sem reutilizar o id canônico. Registra sempre
+ * `suiteMap`/`suiteFiles` pelo id canônico (primeira ocorrência vence).
+ */
 function addSuiteItem(
   controller: vscode.TestController,
   state: TestStateManager,
   parent: vscode.TestItem | undefined,
   suite: SuiteFile,
+  idSuffix = '',
 ): vscode.TestItem {
-  const id = suiteId(suite.packageName);
+  const canonicalId = suiteId(suite.packageName);
+  const id = `${canonicalId}${idSuffix}`;
   const baseLabel = `${suite.suiteDescription}  (${suite.packageName})`;
   const suiteItem = controller.createTestItem(
     id,
@@ -77,9 +85,10 @@ function addSuiteItem(
   if (parent) parent.children.add(suiteItem);
   else controller.items.add(suiteItem);
   state.cachedItems.push(suiteItem);
-  state.setSuiteItem(id, suiteItem);
+  // O id canônico é o lookup dos comandos; só a primeira ocorrência o registra.
+  if (!state.getSuiteItem(canonicalId)) state.setSuiteItem(canonicalId, suiteItem);
+  if (!state.getSuiteFile(canonicalId)) state.setSuiteFile(canonicalId, suite);
   state.setItem(id, suiteItem);
-  state.setSuiteFile(id, suite);
   return suiteItem;
 }
 
@@ -97,6 +106,55 @@ export function buildFileTree(
     const suiteItem = addSuiteItem(controller, state, undefined, suite);
     suiteItem.canResolveChildren = false;
     fillSuiteTests(controller, state, suiteItem, suite);
+  }
+}
+
+/** Grupo das suites sem tag na árvore por tag (PRD-55 RNF2). */
+export const NO_TAG_GROUP = '(sem tag)';
+
+/**
+ * Constrói a árvore por tag (`utplsql.organization` = `tag`, PRD-55):
+ * Tag > Suite > Test. Suite com múltiplas tags aparece sob cada tag, com id
+ * próprio por tag (`suite:<pkg>#<tag>`) para não colidir na API do VSCode; o
+ * id canônico `suite:<pkg>` segue apontando para a primeira ocorrência
+ * (BR-SCHEMA-005). Suites sem tag vão para `(sem tag)`.
+ */
+export function buildTagTree(
+  controller: vscode.TestController,
+  state: TestStateManager,
+  suites: SuiteFile[],
+): void {
+  const byTag = new Map<string, SuiteFile[]>();
+  for (const suite of suites) {
+    const tags = suite.tags && suite.tags.length > 0 ? suite.tags : [NO_TAG_GROUP];
+    for (const tag of tags) {
+      const list = byTag.get(tag) ?? [];
+      list.push(suite);
+      byTag.set(tag, list);
+    }
+  }
+
+  const ordered = [...byTag.keys()].sort((a, b) => {
+    if (a === NO_TAG_GROUP) return 1;
+    if (b === NO_TAG_GROUP) return -1;
+    return a.localeCompare(b);
+  });
+
+  const showTags = readConfig().showTagsInTree;
+  for (const tag of ordered) {
+    const tagItem = controller.createTestItem(
+      `tag:${tag}`,
+      taggedLabel(`#${tag}`, undefined, showTags),
+      undefined,
+    );
+    controller.items.add(tagItem);
+    state.setItem(tagItem.id, tagItem);
+    for (const suite of byTag.get(tag) ?? []) {
+      const suffix = `#${tag}`;
+      const suiteItem = addSuiteItem(controller, state, tagItem, suite, suffix);
+      suiteItem.canResolveChildren = false;
+      fillSuiteTests(controller, state, suiteItem, suite, suffix);
+    }
   }
 }
 
@@ -405,6 +463,8 @@ export function createRefresher(
     if (cfg.organization === 'schema' && folders?.length) {
       const extra = await discoverSchemasFromFolders(folders, cfg.organizationSchemaPattern);
       buildSchemaTree(controller, state, suites, cfg.organizationSchemaPattern, extra);
+    } else if (cfg.organization === 'tag') {
+      buildTagTree(controller, state, suites);
     } else {
       buildFileTree(controller, state, suites);
     }

@@ -54,7 +54,7 @@ host — o `docs-fidelity` cobra essa coerência.
 ## Inventário (gerado)
 
 <!-- brain:auto:start:vscode-api -->
-**`engines.vscode`:** `^1.101.0` · **`@types/vscode`:** `1.101.0` · **97 símbolos · 496 referências**
+**`engines.vscode`:** `^1.101.0` · **`@types/vscode`:** `1.101.0` · **97 símbolos · 497 referências**
 
 | Símbolo | Refs | Arquivos |
 |---|---|---|
@@ -66,7 +66,7 @@ host — o `docs-fidelity` cobra essa coerência.
 | `vscode.WorkspaceFolder` | 20 | `src/debugger.ts`, `src/discovery.ts`, `src/oracleRunner.ts`, `src/results.ts` +3 |
 | `vscode.window.showErrorMessage` | 19 | `src/commands/connection.ts`, `src/commands/debug.ts`, `src/commands/run.ts`, `src/commands/utility.ts` +2 |
 | `vscode.commands.executeCommand` | 17 | `src/commands/connection.ts`, `src/commands/profile.ts`, `src/commands/run.ts`, `src/config.ts` +4 |
-| `vscode.TestController` | 13 | `src/commands/deps.ts`, `src/runner.ts`, `src/testTree.ts` |
+| `vscode.TestController` | 14 | `src/commands/deps.ts`, `src/runner.ts`, `src/testTree.ts` |
 | `vscode.TestRunRequest` | 11 | `src/commands/run.ts`, `src/runner.ts` |
 | `vscode.Uri.parse` | 11 | `src/commands/run.ts`, `src/compilationDiagnostics.ts`, `src/discovery.ts`, `src/quickfix.ts` +1 |
 | `vscode.ExtensionContext` | 9 | `src/commands/connection.ts`, `src/commands/debug.ts`, `src/commands/profile.ts`, `src/commands/run.ts` +5 |

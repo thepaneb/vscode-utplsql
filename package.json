@@ -291,12 +291,14 @@
           "type": "string",
           "enum": [
             "file",
-            "schema"
+            "schema",
+            "tag"
           ],
           "default": "file",
           "enumDescriptions": [
             "Organiza os testes por caminho de arquivo (padrão).",
-            "Organiza os testes por schema Oracle (Schema > Package > Suite > Test). Use organization.schemaPattern para definir como extrair o schema do caminho."
+            "Organiza os testes por schema Oracle (Schema > Package > Suite > Test). Use organization.schemaPattern para definir como extrair o schema do caminho.",
+            "Organiza os testes por tag %tags (Tag > Suite > Test). Suites com múltiplas tags aparecem sob cada tag; sem tag vão para \"(sem tag)\"."
           ],
           "description": "Modo de organização da árvore de testes no Test Explorer."
         },

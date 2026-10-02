@@ -4,12 +4,12 @@ aliases: [BR-SCHEMA-005]
 tipo: regra
 titulo: organization=tag monta Tag > Suite > Test com ids estáveis e grupo (sem tag)
 dominio: schema
-status: proposta
+status: ativo
 severidade: media
 fonte: codigo
 verificado: 2026-10-02
-implementacao: []
-testes: []
+implementacao: ["src/testTree.ts:117", "src/testTree.ts:171"]
+testes: ["src/test/unit/testTree.test.ts"]
 prds: ["PRD-55"]
 requisitos: ["PRD-55/RF1", "PRD-55/RF2", "PRD-55/RF3", "PRD-55/RNF1", "PRD-55/RNF2"]
 tags: ["schema", "tags"]
@@ -44,5 +44,7 @@ Dar visão por tag sem quebrar `suiteMap`, `collectAllItems` e o jump to failure
 - 🗺️ [[MOC - Regras]]
 - 📄 PRDs: [[prd-55-tag-organization|PRD-55]]
 - 🎯 Requisitos: [[prd-55-tag-organization|PRD-55 RF1]] · [[prd-55-tag-organization|PRD-55 RF2]] · [[prd-55-tag-organization|PRD-55 RF3]] · [[prd-55-tag-organization|PRD-55 RNF1]] · [[prd-55-tag-organization|PRD-55 RNF2]]
+- 🧩 Código: [[COD - testTree.ts]]
+- 🧪 Testes: [[TST - testTree.test.ts]]
 - ↩️ Referenciada por: [[prd-55-tag-organization|PRD-55]]
 <!-- brain:auto:end -->

@@ -150,7 +150,7 @@ Esperado criar **`BR-DEBUG-005`** (resolução de alvo das variações de debug)
 - 📐 Regras: [[BR-DEBUG-005 - debugAtCursor-debugFailed-debugLast resolvem o alvo e chamam startDebugSession|BR-DEBUG-005]]
 - 🔗 BR-DEBUG-005 · BR-DEBUG-004 · BR-UI-009
 - 🔗 PRDs relacionados: [[prd-31-smart-rerun-patterns|PRD-31]] · [[prd-33-plsql-debugger-integration|PRD-33]]
-- 🔗 Mesma versão (0.15.0): [[prd-50-auto-run-on-save|PRD-50]] · [[prd-55-tag-organization|PRD-55]]
+- 🔗 Mesma versão (0.15.0): [[prd-50-auto-run-on-save|PRD-50]]
 - 🎯 RF1 — Debug at cursor → [[BR-DEBUG-005 - debugAtCursor-debugFailed-debugLast resolvem o alvo e chamam startDebugSession|BR-DEBUG-005]]
 - 🎯 RF2 — Debug failed → [[BR-DEBUG-005 - debugAtCursor-debugFailed-debugLast resolvem o alvo e chamam startDebugSession|BR-DEBUG-005]]
 - 🎯 RF3 — Debug last → [[BR-DEBUG-005 - debugAtCursor-debugFailed-debugLast resolvem o alvo e chamam startDebugSession|BR-DEBUG-005]]

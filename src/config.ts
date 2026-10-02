@@ -43,7 +43,7 @@ export interface UtConfig {
   compilationDiagnosticsEnabled: boolean;
   /** Sufixa `[tag]` no label dos TestItems (PRD-51 RF4). */
   showTagsInTree: boolean;
-  organization: 'file' | 'schema';
+  organization: 'file' | 'schema' | 'tag';
   organizationSchemaPattern: string;
   discoverySource: 'auto' | 'file' | 'database';
   refreshDebounceMs: number;
@@ -143,7 +143,7 @@ export function readConfig(): UtConfig {
     decorationsEnabled: c.get<boolean>('decorations.enabled', true),
     compilationDiagnosticsEnabled: c.get<boolean>('compilationDiagnostics.enabled', true),
     showTagsInTree: c.get<boolean>('showTagsInTree', false),
-    organization: c.get<'file' | 'schema'>('organization', 'file'),
+    organization: c.get<'file' | 'schema' | 'tag'>('organization', 'file'),
     organizationSchemaPattern: c.get<string>('organization.schemaPattern', 'db/{schema}/**'),
     discoverySource: c.get<'auto' | 'file' | 'database'>('discovery.source', 'auto'),
     refreshDebounceMs: c.get<number>('refreshDebounceMs', 300),

@@ -177,7 +177,7 @@ Test Explorer 中。
 | 除錯不會在斷點停下 | 套件編譯時沒有除錯資訊，或缺少除錯授權 | 使用 `PLSQL_OPTIMIZE_LEVEL <= 1` 編譯（或 `ALTER PACKAGE ... COMPILE DEBUG`），並授予 `DEBUG CONNECT SESSION` + `EXECUTE ON SYS.DBMS_DEBUG`. `test_*.pkb` 中的中斷點可能不會命中（utPLSQL 透過動態 SQL 執行測試）；請將中斷點設在被測程式碼中。 |
 | `utplsql.oracleClientConfigDir` | `""` | 包含 `sqlnet.ora`/`tnsnames.ora` 的 Oracle 設定目錄（TNS_ADMIN）。選用；僅 thick 模式使用。 |
 | `utplsql.connections.tnsAdminPath` | `""` | 包含 `tnsnames.ora` 的目錄，用於在 **thin 驅動中解析 TNS 別名**。順序：此設定 → `sqldeveloper.connections.tnsConfiguration.path` 的使用者/機器值 → `TNS_ADMIN`。 |
-| `utplsql.organization` | `file` | 樹狀結構組織：`file`（依路徑）或 `schema`（Schema > Package > Suite > Test）。在 `schema` 模式時，若工作區中沒有 `.pks` 檔案，也會從資料庫（`ut_runner.get_suites_info`，無法使用時回退至 `ALL_OBJECTS`/`ALL_SOURCE`）探索套件 — 使用虛擬 URI `utplsql-db:/`（可執行並跳轉至失敗；無 CodeLens/裝飾）。 · `utplsql-source:/` |
+| `utplsql.organization` | `file` | 樹狀結構組織：`file`（依路徑）、`schema`（Schema > Package > Suite > Test）或 `tag`（Tag > Suite > Test）。在 `schema` 模式時，若工作區中沒有 `.pks` 檔案，也會從資料庫（`ut_runner.get_suites_info`，無法使用時回退至 `ALL_OBJECTS`/`ALL_SOURCE`）探索套件 — 使用虛擬 URI `utplsql-db:/`（可執行並跳轉至失敗；無 CodeLens/裝飾）。 · `utplsql-source:/` |
 | `utplsql.organization.schemaPattern` | `db/{schema}/**` | 用於從路徑擷取 schema 的 glob 模式。使用 `{schema}` 作為佔位符。在 `schema` 模式中，模式基礎目錄下方的目錄（例如 `db/*`）定義了要在資料庫中查詢的 schema。 |
 | `utplsql.discovery.source` | `auto` | `schema` 模式下測試樹的來源：`auto` 使用資料庫 API（`ut_runner.get_suites_info`），無法使用時回退到 `ALL_SOURCE`/檔案；`database` 要求使用 API；`file` 關閉資料庫探索。 |
 | `utplsql.refreshDebounceMs` | `300` | 在重新整理 Test Explorer 之前，合併 `.pks`/`.pkb` 檔案監看事件的防抖時間（毫秒）。 |

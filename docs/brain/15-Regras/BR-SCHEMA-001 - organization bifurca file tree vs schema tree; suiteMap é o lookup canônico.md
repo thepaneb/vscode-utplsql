@@ -2,7 +2,7 @@
 id: BR-SCHEMA-001
 aliases: [BR-SCHEMA-001]
 tipo: regra
-titulo: organization bifurca file tree vs schema tree; suiteMap é o lookup canônico
+titulo: organization escolhe file/schema/tag tree; suiteMap é o lookup canônico
 dominio: schema
 status: ativo
 severidade: critica
@@ -16,7 +16,7 @@ tags: ["schema"]
 ---
 ## Enunciado
 
-utplsql.organization decide a árvore: file gera buildFileTree (Schema=arquivo); schema (havendo workspace folders) gera mergeDbSuites + buildSchemaTree (Schema > Package > Suite > Test); em ambos os modos cada suite é registrada em state.suiteMap por suite:<package minúsculo>, e o lookup deve usar state.getSuiteItem() — controller.items.get() não alcança suites aninhadas no modo schema.
+utplsql.organization decide a árvore: file gera buildFileTree (Schema=arquivo); schema (havendo workspace folders) gera mergeDbSuites + buildSchemaTree (Schema > Package > Suite > Test); tag gera buildTagTree (Tag > Suite > Test, ver BR-SCHEMA-005); em todos os modos cada suite é registrada em state.suiteMap por suite:<package minúsculo>, e o lookup deve usar state.getSuiteItem() — controller.items.get() não alcança suites aninhadas no modo schema.
 
 ## Pré-condições
 

@@ -7,10 +7,12 @@ import { TestStateManager } from '../../state';
 import {
   buildFileTree,
   buildSchemaTree,
+  buildTagTree,
   collectAllItems,
   createRefresher,
   type MergeDbDeps,
   mergeDbSuites,
+  NO_TAG_GROUP,
   resolvePackageNode,
   resolveSchemaNode,
   resolveSubtree,
@@ -163,6 +165,74 @@ test('buildFileTree: displayName tem prioridade sobre description', () => {
   const meta = state.getMeta(controller._items[0]._children[0]);
   assert.ok(meta && meta.kind === 'test');
   assert.strictEqual(meta.description, 'Bonito');
+});
+
+// ── PRD-55: árvore por tag ──────────────────────────────────────────────────
+test('buildTagTree: agrupa por tag, ordena e cria Tag > Suite > Test', () => {
+  const controller = makeController();
+  const state = new TestStateManager();
+  buildTagTree(controller, state, [
+    suite({ packageName: 'UT_B', tags: ['slow'] }),
+    suite({ packageName: 'UT_A', tags: ['fast'] }),
+  ]);
+
+  const labels = controller._items.map((i: any) => i.id);
+  assert.deepStrictEqual(labels, ['tag:fast', 'tag:slow']);
+  const fast = controller._items[0];
+  assert.strictEqual(fast._children.length, 1);
+  const suiteItem = fast._children[0];
+  assert.strictEqual(suiteItem.id, 'suite:ut_a#fast');
+  assert.strictEqual(suiteItem._children.length, 2);
+  assert.strictEqual(state.getMeta(suiteItem)?.kind, 'suite');
+  assert.strictEqual(state.getMeta(suiteItem._children[0])?.kind, 'test');
+});
+
+test('buildTagTree: suites sem tag vão para "(sem tag)" por último', () => {
+  const controller = makeController();
+  const state = new TestStateManager();
+  buildTagTree(controller, state, [
+    suite({ packageName: 'UT_X' }),
+    suite({ packageName: 'UT_A', tags: ['fast'] }),
+  ]);
+  assert.deepStrictEqual(
+    controller._items.map((i: any) => i.id),
+    ['tag:fast', `tag:${NO_TAG_GROUP}`],
+  );
+  assert.strictEqual(controller._items[1]._children[0].id, `suite:ut_x#${NO_TAG_GROUP}`);
+});
+
+test('buildTagTree: suite com múltiplas tags aparece sob cada tag com id próprio', () => {
+  const controller = makeController();
+  const state = new TestStateManager();
+  buildTagTree(controller, state, [suite({ packageName: 'UT_A', tags: ['fast', 'smoke'] })]);
+  assert.deepStrictEqual(
+    controller._items.map((i: any) => i.id),
+    ['tag:fast', 'tag:smoke'],
+  );
+  const fastSuite = controller._items[0]._children[0];
+  const smokeSuite = controller._items[1]._children[0];
+  assert.strictEqual(fastSuite.id, 'suite:ut_a#fast');
+  assert.strictEqual(smokeSuite.id, 'suite:ut_a#smoke');
+  assert.notStrictEqual(fastSuite.id, smokeSuite.id);
+  assert.notStrictEqual(fastSuite._children[0].id, smokeSuite._children[0].id);
+});
+
+test('buildTagTree: id canônico aponta para a primeira ocorrência (BR-SCHEMA-005)', () => {
+  const controller = makeController();
+  const state = new TestStateManager();
+  buildTagTree(controller, state, [suite({ packageName: 'UT_A', tags: ['fast', 'smoke'] })]);
+  assert.strictEqual(state.getSuiteItem('suite:ut_a'), controller._items[0]._children[0]);
+  assert.ok(state.getSuiteFile('suite:ut_a'));
+});
+
+test('buildTagTree: itens de teste ficam registrados no itemMap', () => {
+  const controller = makeController();
+  const state = new TestStateManager();
+  buildTagTree(controller, state, [suite({ packageName: 'UT_X' })]);
+  const suiteItem = controller._items[0]._children[0];
+  const testItem = suiteItem._children[0];
+  assert.strictEqual(state.getItem(testItem.id), testItem);
+  assert.strictEqual(state.getMeta(testItem)?.kind, 'test');
 });
 
 test('buildSchemaTree: cria só os nós de schema (lazy)', () => {

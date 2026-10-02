@@ -33,6 +33,13 @@
   `utplsql.showTagsInTree` (default `false`) sufixa `[tag1, tag2]` no label do
   Test Explorer.
 
+- **Organização da árvore por tag (PRD-55)**: `utplsql.organization` ganha o valor
+  `tag`, montando **Tag > Suite > Test** a partir das `%tags`. Suíte/teste com
+  várias tags aparece sob cada tag (com id por tag, sem colidir na API do VS Code)
+  e as sem tag vão para um grupo "(sem tag)". Os ids canônicos
+  (`suite:<pkg>`/`test:<pkg>.<proc>`) são preservados, mantendo `suiteMap`,
+  resultados e *jump to failure*.
+
 ## 0.14.0
 
 - **Piso de VS Code 1.101 e runtime Node 22 (PRD-94)**: `engines.vscode` passa de
