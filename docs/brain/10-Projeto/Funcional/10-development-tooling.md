@@ -4,8 +4,8 @@ status: ativo
 numero: 10
 titulo: "10 — Development Tooling"
 publicar: docs/functional/10-development-tooling.md
-verificado: 2026-09-23
-implementacao: ["scripts/brain.cjs", "scripts/brain-build.cjs", "scripts/brain-rules.cjs", "scripts/brain-gaps.cjs", "scripts/docs-check.cjs", "scripts/docs-fidelity.cjs", "scripts/run-tests.cjs", "scripts/test-setup.cjs", "scripts/sync-prds.cjs", "scripts/create-pr.cjs", "scripts/publish.cjs", "scripts/vsce.cjs", "scripts/package-target.cjs", "scripts/gen-icon.cjs", "scripts/gen-diagrams.cjs", "scripts/obsidian-mcp.py", "scripts/db-matrix/bootstrap.sh", "scripts/db-matrix/wait-ready.sh", "scripts/db-matrix/parse-version.cjs"]
+verificado: 2026-10-01
+implementacao: ["scripts/brain.cjs", "scripts/brain-build.cjs", "scripts/brain-rules.cjs", "scripts/brain-gaps.cjs", "scripts/docs-check.cjs", "scripts/docs-fidelity.cjs", "scripts/run-tests.cjs", "scripts/test-setup.cjs", "scripts/sync-prds.cjs", "scripts/create-pr.cjs", "scripts/create-release.cjs", "scripts/publish.cjs", "scripts/vsce.cjs", "scripts/package-target.cjs", "scripts/gen-icon.cjs", "scripts/gen-diagrams.cjs", "scripts/obsidian-mcp.py", "scripts/db-matrix/bootstrap.sh", "scripts/db-matrix/wait-ready.sh", "scripts/db-matrix/parse-version.cjs"]
 testes: ["src/test/unit/brainBuild.test.ts", "src/test/unit/brainRules.test.ts", "src/test/unit/brainScripts.test.ts", "src/test/unit/docsFidelity.test.ts", "src/test/unit/docsFidelityNls.test.ts", "src/test/unit/packageTarget.test.ts", "src/test/unit/vsixIgnore.test.ts"]
 relacionado: ["[[NFR-007 - Cobertura de testes TypeScript]]", "[[PAT-001 - Módulos puros vs dependentes de vscode]]", "[[PAT-007 - Stub de vscode em duas camadas]]", "[[ADR-006 - Modulos puros vs dependentes de vscode]]"]
 tags: [funcional]
@@ -45,6 +45,7 @@ Ferramentas e infraestrutura de desenvolvimento do projeto.
 | `npm run docs:check` | Consistência da documentação versionada (roda no CI) |
 | `npm run sync-prds` | Atualiza labels/issues no GitHub |
 | `npm run pr:create` | Cria pull request (`scripts/create-pr.cjs`) |
+| `npm run release:create` | Cria a **GitHub release** (dispara o `publish.yml`); notas do CHANGELOG (`scripts/create-release.cjs`) |
 | `npm run publish` | Publicação é **exclusiva via GitHub release**; o script é o helper do workflow |
 
 ## Depurar a extensão (F5)
@@ -59,6 +60,18 @@ extensão normalmente.
 > é da extensão**. O `.vscode/launch.json` já usa
 > `"experimentalNetworking": "off"`; se persistir, defina
 > `"debug.javascript.enableNetworkView": false` nas User settings.
+>
+> Se aparecer **`Extension host did not start in 10 seconds … stopped on the
+> first line`** (com `debugBrk: true`) e/ou `ECONNREFUSED ::1` /
+> `The onCancel handler was attached after the promise settled` no
+> `ms-vscode.js-debug`, era um **bug do js-debug** (discava `::1` enquanto o host
+> escutava `127.0.0.1`), **corrigido no VS Code 1.140** (js-debug 1.140, #2417).
+> Em versões antigas, as alternativas eram **`Ctrl+F5`** (sem depuração) ou o
+> config **“Anexar ao Extension Host”** (com `address: 127.0.0.1`).
+>
+> O `main` é o **bundle** (`dist/extension.js`); por isso o `outFiles` do launch
+> inclui `dist/**` **e** `out/**` (source maps) — sem isso os breakpoints podem
+> “prender” na primeira linha.
 
 ## Bundling com esbuild (PRD-45, ajustes na PRD-46)
 
@@ -244,7 +257,7 @@ inclusive falha de propósito. Comando local válido: `npm run package` (gera `.
 ## Conexões
 
 <!-- brain:auto:start:conexoes -->
-- 🧩 Código: [[COD - brain.cjs]] · [[COD - brain-build.cjs]] · [[COD - brain-rules.cjs]] · [[COD - brain-gaps.cjs]] · [[COD - docs-check.cjs]] · [[COD - docs-fidelity.cjs]] · [[COD - run-tests.cjs]] · [[COD - test-setup.cjs]] · [[COD - sync-prds.cjs]] · [[COD - create-pr.cjs]] · [[COD - publish.cjs]] · [[COD - vsce.cjs]] · [[COD - package-target.cjs]] · [[COD - gen-icon.cjs]] · [[COD - gen-diagrams.cjs]] · [[COD - obsidian-mcp.py]] · [[COD - bootstrap.sh]] · [[COD - wait-ready.sh]] · [[COD - parse-version.cjs]]
+- 🧩 Código: [[COD - brain.cjs]] · [[COD - brain-build.cjs]] · [[COD - brain-rules.cjs]] · [[COD - brain-gaps.cjs]] · [[COD - docs-check.cjs]] · [[COD - docs-fidelity.cjs]] · [[COD - run-tests.cjs]] · [[COD - test-setup.cjs]] · [[COD - sync-prds.cjs]] · [[COD - create-pr.cjs]] · [[COD - create-release.cjs]] · [[COD - publish.cjs]] · [[COD - vsce.cjs]] · [[COD - package-target.cjs]] · [[COD - gen-icon.cjs]] · [[COD - gen-diagrams.cjs]] · [[COD - obsidian-mcp.py]] · [[COD - bootstrap.sh]] · [[COD - wait-ready.sh]] · [[COD - parse-version.cjs]]
 - 🧪 Testes: [[TST - brainBuild.test.ts]] · [[TST - brainRules.test.ts]] · [[TST - brainScripts.test.ts]] · [[TST - docsFidelity.test.ts]] · [[TST - docsFidelityNls.test.ts]] · [[TST - packageTarget.test.ts]] · [[TST - vsixIgnore.test.ts]]
 - 🔗 [[NFR-007 - Cobertura de testes TypeScript]] · [[PAT-001 - Módulos puros vs dependentes de vscode]] · [[PAT-007 - Stub de vscode em duas camadas]] · [[ADR-006 - Modulos puros vs dependentes de vscode]]
 - ↩️ Referenciada por: [[PAT-001 - Módulos puros vs dependentes de vscode|PAT-001]] · [[PAT-007 - Stub de vscode em duas camadas|PAT-007]]

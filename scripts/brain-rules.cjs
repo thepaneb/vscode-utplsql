@@ -97,7 +97,16 @@ function listAllNotes() {
   const out = [];
   const walk = (dir) => {
     for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {
-      if (entry.name === '.obsidian' || entry.name === '_templates' || entry.name === '.trash') continue;
+      if (
+        entry.name === '.obsidian' ||
+        entry.name === '_templates' ||
+        entry.name === '.trash' ||
+        entry.name === '.copilot' ||
+        entry.name === '.smart-env' ||
+        entry.name === 'copilot' ||
+        entry.name === '.opencode'
+      )
+        continue;
       const full = path.join(dir, entry.name);
       if (entry.isDirectory()) walk(full);
       else if (entry.name.endsWith('.md')) out.push({ name: path.relative(VAULT, full), content: fs.readFileSync(full, 'utf8') });

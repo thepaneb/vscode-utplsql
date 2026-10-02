@@ -38,7 +38,12 @@ function referencedFiles() {
   const refs = new Set();
   const visit = (dir) => {
     for (const e of fs.readdirSync(dir, { withFileTypes: true })) {
-      if (['.obsidian', '_templates', '.trash'].includes(e.name)) continue;
+      if (
+      ['.obsidian', '_templates', '.trash', '.copilot', '.smart-env', 'copilot', '.opencode'].includes(
+        e.name,
+      )
+    )
+      continue;
       const full = path.join(dir, e.name);
       if (e.isDirectory()) {
         visit(full);

@@ -14,6 +14,11 @@
   usuário no painel Output (Trace/Debug/Info/Warning/Error) — sem depender de
   `UTPLSQL_DEBUG`. O módulo de log segue puro (`src/logger.ts`).
 
+- **Ativação no modo schema/DB-first**: `activationEvents` passa a incluir
+  `onStartupFinished` e `workspaceContains:**/*.sql`, além de `.pks`/`.pkb` — a
+  extensão ativa mesmo quando o workspace **não tem `.pks` local** (suítes vindas
+  do banco).
+
 - **Hardening de segurança das settings de conexão (PRD-81)**: as settings
   sensíveis (`utplsql.connection`, `utplsql.profiles`, `utplsql.activeProfile`,
   `utplsql.oracleClientLibDir`, `utplsql.oracleClientConfigDir`) passam a ser

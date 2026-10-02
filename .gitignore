@@ -38,6 +38,14 @@ docs/brain/.obsidian/plugins/*/styles.css
 docs/brain/.obsidian/plugins/obsidian-local-rest-api/data.json
 docs/brain/.trash/
 docs/brain/90-Daily/
+# Plugins de IA do Obsidian e caches (não versionar: binários, embeddings, chats)
+docs/brain/.smart-env/
+docs/brain/.copilot/
+docs/brain/copilot/
+docs/brain/.opencode/
+docs/brain/.obsidian/plugins/copilot/
+docs/brain/.obsidian/plugins/smart-connections/
+docs/brain/.obsidian/plugins/smart-lookup/
 
 # Ferramentas locais de agentes
 .kilo/

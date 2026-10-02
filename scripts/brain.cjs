@@ -46,7 +46,16 @@ function vaultNotes() {
   const walk = (dir) => {
     for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {
       if (entry.isDirectory()) {
-        if (entry.name === '.obsidian' || entry.name === '_tools') continue;
+        if (
+          entry.name === '.obsidian' ||
+          entry.name === '_tools' ||
+          entry.name === '.trash' ||
+          entry.name === '.copilot' ||
+          entry.name === '.smart-env' ||
+          entry.name === 'copilot' ||
+          entry.name === '.opencode'
+        )
+          continue;
         walk(path.join(dir, entry.name));
       } else if (entry.name.endsWith('.md')) {
         out.push(path.join(dir, entry.name));

@@ -34,6 +34,7 @@ Ferramentas e infraestrutura de desenvolvimento do projeto.
 | `npm run docs:check` | Consistência da documentação versionada (roda no CI) |
 | `npm run sync-prds` | Atualiza labels/issues no GitHub |
 | `npm run pr:create` | Cria pull request (`scripts/create-pr.cjs`) |
+| `npm run release:create` | Cria a **GitHub release** (dispara o `publish.yml`); notas do CHANGELOG (`scripts/create-release.cjs`) |
 | `npm run publish` | Publicação é **exclusiva via GitHub release**; o script é o helper do workflow |
 
 ## Depurar a extensão (F5)
@@ -48,6 +49,18 @@ extensão normalmente.
 > é da extensão**. O `.vscode/launch.json` já usa
 > `"experimentalNetworking": "off"`; se persistir, defina
 > `"debug.javascript.enableNetworkView": false` nas User settings.
+>
+> Se aparecer **`Extension host did not start in 10 seconds … stopped on the
+> first line`** (com `debugBrk: true`) e/ou `ECONNREFUSED ::1` /
+> `The onCancel handler was attached after the promise settled` no
+> `ms-vscode.js-debug`, era um **bug do js-debug** (discava `::1` enquanto o host
+> escutava `127.0.0.1`), **corrigido no VS Code 1.140** (js-debug 1.140, #2417).
+> Em versões antigas, as alternativas eram **`Ctrl+F5`** (sem depuração) ou o
+> config **“Anexar ao Extension Host”** (com `address: 127.0.0.1`).
+>
+> O `main` é o **bundle** (`dist/extension.js`); por isso o `outFiles` do launch
+> inclui `dist/**` **e** `out/**` (source maps) — sem isso os breakpoints podem
+> “prender” na primeira linha.
 
 ## Bundling com esbuild (PRD-45, ajustes na PRD-46)
 

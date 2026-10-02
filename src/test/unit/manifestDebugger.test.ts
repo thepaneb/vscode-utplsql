@@ -4,6 +4,7 @@ import { createRequire } from 'node:module';
 import { test } from 'node:test';
 
 interface Manifest {
+  activationEvents?: string[];
   capabilities?: { untrustedWorkspaces?: { supported?: boolean } };
   contributes: {
     configuration?: { properties?: Record<string, { scope?: string }> };
@@ -21,6 +22,18 @@ interface Manifest {
 
 const req = createRequire(__filename);
 const pkg = req('../../../package.json') as Manifest;
+
+test('activationEvents: ativa no startup e com .pks/.pkb/.sql (schema/DB-first)', () => {
+  const events = pkg.activationEvents ?? [];
+  assert.ok(events.includes('onStartupFinished'), 'faltando onStartupFinished');
+  for (const glob of [
+    'workspaceContains:**/*.pks',
+    'workspaceContains:**/*.pkb',
+    'workspaceContains:**/*.sql',
+  ]) {
+    assert.ok(events.includes(glob), `faltando ${glob}`);
+  }
+});
 
 test('contributes.languages: .pks/.pkb/.prc/.fnc/.trg mapeiam para plsql', () => {
   const plsql = pkg.contributes.languages?.find((l) => l.id === 'plsql');
