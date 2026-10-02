@@ -10,38 +10,64 @@
 
 </div>
 
+<p align="center">
+  <a href="https://marketplace.visualstudio.com/items?itemName=paneb.vscode-utplsql"><img alt="Marketplace" src="https://img.shields.io/visual-studio-marketplace/v/paneb.vscode-utplsql?color=e8542d"></a>
+  <a href="https://marketplace.visualstudio.com/items?itemName=paneb.vscode-utplsql"><img alt="Installs" src="https://img.shields.io/visual-studio-marketplace/i/paneb.vscode-utplsql"></a>
+  <a href="https://github.com/thepaneb/vscode-utplsql/actions/workflows/ci.yml"><img alt="CI" src="https://github.com/thepaneb/vscode-utplsql/actions/workflows/ci.yml/badge.svg"></a>
+  <img alt="VS Code" src="https://img.shields.io/badge/VS%20Code-1.101%2B-007ACC">
+  <img alt="License" src="https://img.shields.io/badge/license-MIT-blue">
+</p>
+
 # utPLSQL Test Runner
 
-Integruje [utPLSQL](https://www.utplsql.org/) z VSCode, przenosząc testy PL/SQL do natywnego **Test Explorera**, z menu kontekstowym i wizualnym pokryciem kodu.
+Uruchamiaj i debuguj testy **utPLSQL** (Oracle PL/SQL) bezpośrednio w VS Code — natywny **Test Explorer**, wizualne pokrycie, debugger PL/SQL i **bezpośrednie wykonanie Oracle** przez `node-oracledb`. Dostępne w **24 językach**; wymaga **VS Code 1.101+** (Node 22).
+
+### Test Explorer i uruchamianie
 
 - 🧪 **Natywny Test Explorer** — suite'y i testy pojawiają się w widoku testów; uruchamiaj według testu, suite'a, pliku lub folderu.
 - 🔍 **CodeLens** — przyciski Run/Run with Coverage nad `%suite` i `%test` w edytorze, bez opuszczania kodu.
 - ⌨️ **Skróty klawiszowe** — prefiks `Ctrl+Shift+U` + klawisz dla głównych poleceń (R = Run All, T = Run File, L = Rerun Last, itd.).
 - 🖱️ **Menu kontekstowe** — kliknij prawym przyciskiem **folder** lub plik **`.pks`/`.pkb`** (w Explorerze lub edytorze), aby uruchomić testy.
-- 📊 **Wizualne pokrycie kodu** — kolorowe guttery dla każdej linii (pokryta/niepokryta) oraz procent na plik w karcie **Coverage**.
-- ✅ **Dekoracje inline** — ikony ✓/✗/⚠ w edytorze po wykonaniu, z tooltipem błędu i overview ruler.
-- 📌 **Pasek stanu** — wskaźnik z liczbą pass/fail, czasem trwania i postępem w czasie rzeczywistym.
 - 🔁 **Smart Re-run** — Rerun Last, Run at Cursor, Run Failed Only za pomocą jednego skrótu.
-- 🚀 **Tryb bezpośredni Oracle (przez node-oracledb)** — streaming w czasie rzeczywistym, bez czekania na zakończenie partii.
-- 🔧 **Diagnostyka konfiguracji** — proaktywna walidacja połączenia, grantów i wersji z quick-fix.
 - 🧩 **Drzewo świadome schematu** — organizuj testy według Schema > Package > Suite > Test w Test Explorerze.
-- 🎯 **Skok do błędu** — bezpośrednia nawigacja do linii asercji, która się nie powiodła (poprzez natywne "Go to Error").
-- 🔌 **Profile połączeń** — zapisuj i przełączaj się między wieloma środowiskami (DEV/TEST/PROD) z ustawieniami dla każdego profilu, z paska stanu lub palety poleceń.
-- 📜 **Skrypty SQL** — uruchamiaj bieżący skrypt, plik z Eksploratora lub cały folder na aktywnym profilu połączenia (z obsługą charset, `DBMS_OUTPUT` i `stopOnError`).
-- 📈 **Pokrycie deklaracji i widoków** — karta Coverage pokazuje `% deklaracji` (PROCEDURE/FUNCTION) na plik i śledzi widoki wykonane przez `V$SQL`.
 - 🏷️ **Tagi i losowa kolejność** — filtruj testy przez `utplsql.tags` (np. `fast & !integration`) i uruchamiaj w losowej kolejności z powtarzalnym seedem (`utplsql.run.randomOrder`).
-- 🎯 **Zakres pokrycia** — uwzględniaj/wykluczaj obiekty i regex schematu/obiektu (`utplsql.coverage.*`), aby usunąć szum frameworka i dodać obiekty osiągane dynamicznie.
 - 🗄️ **Wykrywanie DB-first** — buduj drzewo z `ut_runner.get_suites_info` i przebuduj pamięć podręczną adnotacji z palety.
-- 🐛 **Debugowanie PL/SQL** — breakpointy i debugowanie krokowe testów utPLSQL przez `DBMS_DEBUG` (natywny Debug Adapter).
-- 🌍 **i18n — 24 języki** — `utplsql.language` podąża za VSCode (24 lokalizacje: pt-br, en, en-gb, es, zh-cn, zh-tw, ja, de, fr, it, ko, ru, tr, pl, cs, hu, bg, el, id, ro, sr, th, uk, vi).
 - 🌳 **Leniwe drzewo testów** — w trybie `schema` pakiety/suity/testy są rozwiązywane na żądanie przy rozwinięciu, więc duże schematy otwierają się natychmiast.
-- 🧾 **Run with Reporter (Export)** — uruchamia zaznaczenie z dowolnym reporterem bazy i zapisuje wyjście w Output lub w pliku (`utplsql.reporter.*`), nie zmieniając wyników w Test Explorer.
+- 📁 **Obszar roboczy multi-root** — każdy folder obszaru roboczego ma własne suity, z niezależnym wykrywaniem, uruchamianiem i pokryciem.
+- 🚀 **Tryb bezpośredni Oracle (przez node-oracledb)** — streaming w czasie rzeczywistym, bez czekania na zakończenie partii.
+- 📜 **Skrypty SQL** — uruchamiaj bieżący skrypt, plik z Eksploratora lub cały folder na aktywnym profilu połączenia (z obsługą charset, `DBMS_OUTPUT` i `stopOnError`).
+
+### Pokrycie
+
+- 📊 **Wizualne pokrycie kodu** — kolorowe guttery dla każdej linii (pokryta/niepokryta) oraz procent na plik w karcie **Coverage**.
+- 📈 **Pokrycie deklaracji i widoków** — karta Coverage pokazuje `% deklaracji` (PROCEDURE/FUNCTION) na plik i śledzi widoki wykonane przez `V$SQL`.
+- 🎯 **Zakres pokrycia** — uwzględniaj/wykluczaj obiekty i regex schematu/obiektu (`utplsql.coverage.*`), aby usunąć szum frameworka i dodać obiekty osiągane dynamicznie.
 - 🗂️ **Wirtualne źródło z bazy** — bez pliku lokalnego *jump to failure* i pokrycie otwierają dokument tylko do odczytu z `ALL_SOURCE` (`utplsql-source:/…`).
+
+### Debugger
+
+- 🐛 **Debugowanie PL/SQL** — breakpointy i debugowanie krokowe testów utPLSQL przez `DBMS_DEBUG` (natywny Debug Adapter).
+
+### Połączenia i bezpieczeństwo
+
+- 🔌 **Profile połączeń** — zapisuj i przełączaj się między wieloma środowiskami (DEV/TEST/PROD) z ustawieniami dla każdego profilu, z paska stanu lub palety poleceń.
 - 🔐 **TNS w thin + wallet** — `utplsql.connections.tnsAdminPath` rozwiązuje aliasy `tnsnames.ora` w sterowniku thin (fallback: SQL Developer/`TNS_ADMIN`); `walletLocation` profilu i `utPLSQL: Set wallet password` przechowują hasło wallet w SecretStorage.
 - 🔒 **Wzmocnienie bezpieczeństwa połączeń** — ustawienia połączenia są `machine`-scoped, rozszerzenie jest wyłączone w niezaufanych obszarach roboczych, a hasło profilu jest powiązane z połączeniem.
+- 🔧 **Diagnostyka konfiguracji** — proaktywna walidacja połączenia, grantów i wersji z quick-fix.
+
+### Raporty
+
+- 🧾 **Run with Reporter (Export)** — uruchamia zaznaczenie z dowolnym reporterem bazy i zapisuje wyjście w Output lub w pliku (`utplsql.reporter.*`), nie zmieniając wyników w Test Explorer.
+
+### UX i diagnostyka
+
+- ✅ **Dekoracje inline** — ikony ✓/✗/⚠ w edytorze po wykonaniu, z tooltipem błędu i overview ruler.
+- 📌 **Pasek stanu** — wskaźnik z liczbą pass/fail, czasem trwania i postępem w czasie rzeczywistym.
+- 🎯 **Skok do błędu** — bezpośrednia nawigacja do linii asercji, która się nie powiodła (poprzez natywne "Go to Error").
 - 🧱 **Diagnostyka kompilacji** — po każdym uruchomieniu błędy kompilacji PL/SQL (`ALL_ERRORS`) pojawiają się w Problems Panel pod źródłem `utPLSQL Compilation` (ustawienie `utplsql.compilationDiagnostics.enabled`).
 - ⏳ **Postęp i anulowanie** — długie uruchomienia pokazują powiadomienie o postępie z licznikiem i przyciskiem *Cancel* (plus opcjonalny `utplsql.timeoutMinutes`).
-- 📁 **Obszar roboczy multi-root** — każdy folder obszaru roboczego ma własne suity, z niezależnym wykrywaniem, uruchamianiem i pokryciem.
+- 🌍 **i18n — 24 języki** — `utplsql.language` podąża za VSCode (24 lokalizacje: pt-br, en, en-gb, es, zh-cn, zh-tw, ja, de, fr, it, ko, ru, tr, pl, cs, hu, bg, el, id, ro, sr, th, uk, vi).
+
 
 ## Instalacja
 
@@ -63,7 +89,7 @@ Rozszerzenie można zainstalować na dwa sposoby:
 |---|---|---|
 | 18c+ | v3.2.x (18c+) / v3.1.x | Zalecane; charset `AL32UTF8`. |
 | 12.2 | tylko v3.1.x | v3.2.x się nie kompiluje (`PLS-00222`). `WE8DEC` obrazu gubi znaki nieprzedstawialne (np. `€`); cienki sterownik ignoruje `NLS_LANG`. |
-- **VSCode 1.101+** (Test Coverage API).
+- **VSCode 1.101+** (Node 22).
 
 Rozszerzenie jest tylko "graficznym klientem" — testy uruchamia baza danych: bezpośrednio przez node-oracledb.
 

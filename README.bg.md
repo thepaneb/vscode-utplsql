@@ -10,38 +10,64 @@
 
 </div>
 
+<p align="center">
+  <a href="https://marketplace.visualstudio.com/items?itemName=paneb.vscode-utplsql"><img alt="Marketplace" src="https://img.shields.io/visual-studio-marketplace/v/paneb.vscode-utplsql?color=e8542d"></a>
+  <a href="https://marketplace.visualstudio.com/items?itemName=paneb.vscode-utplsql"><img alt="Installs" src="https://img.shields.io/visual-studio-marketplace/i/paneb.vscode-utplsql"></a>
+  <a href="https://github.com/thepaneb/vscode-utplsql/actions/workflows/ci.yml"><img alt="CI" src="https://github.com/thepaneb/vscode-utplsql/actions/workflows/ci.yml/badge.svg"></a>
+  <img alt="VS Code" src="https://img.shields.io/badge/VS%20Code-1.101%2B-007ACC">
+  <img alt="License" src="https://img.shields.io/badge/license-MIT-blue">
+</p>
+
 # utPLSQL Test Runner
 
-Интегрира [utPLSQL](https://www.utplsql.org/) в VSCode, като добавя PL/SQL тестове към родния **Test Explorer**, с контекстно меню и визуално покритие.
+Изпълнявайте и дебъгвайте **utPLSQL** (Oracle PL/SQL) тестове директно във VS Code — нативен **Test Explorer**, визуално покритие, дебъгер за PL/SQL и **директно изпълнение на Oracle** чрез `node-oracledb`. Достъпно на **24 езика**; изисква **VS Code 1.101+** (Node 22).
+
+### Test Explorer и изпълнение
 
 - 🧪 **Роден Test Explorer** — комплектите и тестовете се появяват в изгледа за тестове; стартиране по тест, комплект, файл или папка.
 - 🔍 **CodeLens** — бутони Run/Run with Coverage над `%suite` и `%test` в редактора, без да напускате кода.
 - ⌨️ **Клавишни комбинации** — префикс `Ctrl+Shift+U` + клавиш за основните команди (R = Run All, T = Run File, L = Rerun Last и т.н.).
 - 🖱️ **Контекстно меню** — щракнете с десния бутон върху **папка** или файл **`.pks`/`.pkb`** (в Explorer или в редактора), за да стартирате тестове.
-- 📊 **Визуално покритие** — цветни полета по редове (покрито/непокрито) и процент по файл в раздела **Coverage**.
-- ✅ **Inline декорации** — икони ✓/✗/⚠ в редактора след изпълнението, с подсказка за грешката и индикатор в overview ruler.
-- 📌 **Status Bar** — индикатор с брой успешни/неуспешни, продължителност и прогрес в реално време.
 - 🔁 **Интелигентно повторно стартиране** — Rerun Last, Run at Cursor, Run Failed Only с една клавишна комбинация.
-- 🚀 **Директен Oracle (чрез node-oracledb)** — стрийминг в реално време, без да чакате края на пакетното изпълнение.
-- 🔧 **Диагностика на настройката** — проактивна проверка на връзката, привилегиите и версията с quick-fix.
 - 🧩 **Дърво, съобразено със схемата** — организирайте тестовете по Schema > Package > Suite > Test в Test Explorer.
-- 🎯 **Преминаване към грешката** — директна навигация до реда на твърдението, което е пропаднало (чрез родния „Go to Error").
-- 🔌 **Профили за връзка** — запазвайте и превключвайте между няколко среди (DEV/TEST/PROD) с настройки по профил, чрез status bar или командната палитра.
-- 📜 **SQL скриптове** — изпълнение на текущия скрипт, файл от Explorer или цяла папка върху активния профил за връзка (съобразно charset, с `DBMS_OUTPUT` и `stopOnError`).
-- 📈 **Покритие на оператори и изгледи** — разделът Coverage показва `% of statements` (PROCEDURE/FUNCTION) по файл и проследява изгледите, изпълнени чрез `V$SQL`.
 - 🏷️ **Тагове и случаен ред** — филтрирайте тестове с `utplsql.tags` (напр. `fast & !integration`) и ги изпълнявайте в случаен ред с възпроизводим seed (`utplsql.run.randomOrder`).
-- 🎯 **Обхват на покритие** — включвайте/изключвайте обекти и regex за схема/обект (`utplsql.coverage.*`), за да махнете шума от framework-а и да добавите динамично достигнати обекти.
 - 🗄️ **DB-first откриване** — изграждайте дървото от `ut_runner.get_suites_info` и възстановявайте кеша с анотации от палитрата.
-- 🐛 **PL/SQL Debug** — точки на прекъсване и поетапно дебъгване на utPLSQL тестове чрез `DBMS_DEBUG` (роден Debug Adapter).
-- 🌍 **i18n — 24 езика** — `utplsql.language` следва VSCode (24 локали: pt-br, en, en-gb, es, zh-cn, zh-tw, ja, de, fr, it, ko, ru, tr, pl, cs, hu, bg, el, id, ro, sr, th, uk, vi).
 - 🌳 **Мързеливо дърво на тестовете** — в режим `schema` пакетите/наборите/тестовете се зареждат при разгъване, така че големите схеми се отварят мигновено.
-- 🧾 **Run with Reporter (Export)** — изпълнява селекцията с произволен reporter на базата и записва изхода в Output или във файл (`utplsql.reporter.*`), без да променя резултатите в Test Explorer.
+- 📁 **Многоработно пространство (multi-root)** — всяка папка на работното пространство има своите набори, с независимо откриване, изпълнение и покритие.
+- 🚀 **Директен Oracle (чрез node-oracledb)** — стрийминг в реално време, без да чакате края на пакетното изпълнение.
+- 📜 **SQL скриптове** — изпълнение на текущия скрипт, файл от Explorer или цяла папка върху активния профил за връзка (съобразно charset, с `DBMS_OUTPUT` и `stopOnError`).
+
+### Покритие
+
+- 📊 **Визуално покритие** — цветни полета по редове (покрито/непокрито) и процент по файл в раздела **Coverage**.
+- 📈 **Покритие на оператори и изгледи** — разделът Coverage показва `% of statements` (PROCEDURE/FUNCTION) по файл и проследява изгледите, изпълнени чрез `V$SQL`.
+- 🎯 **Обхват на покритие** — включвайте/изключвайте обекти и regex за схема/обект (`utplsql.coverage.*`), за да махнете шума от framework-а и да добавите динамично достигнати обекти.
 - 🗂️ **Виртуален източник от базата** — без локален файл *jump to failure* и покритието отварят документ само за четене от `ALL_SOURCE` (`utplsql-source:/…`).
+
+### Дебъгер
+
+- 🐛 **PL/SQL Debug** — точки на прекъсване и поетапно дебъгване на utPLSQL тестове чрез `DBMS_DEBUG` (роден Debug Adapter).
+
+### Връзки и сигурност
+
+- 🔌 **Профили за връзка** — запазвайте и превключвайте между няколко среди (DEV/TEST/PROD) с настройки по профил, чрез status bar или командната палитра.
 - 🔐 **TNS в thin + wallet** — `utplsql.connections.tnsAdminPath` разрешава псевдоними от `tnsnames.ora` в thin драйвера (fallback към SQL Developer/`TNS_ADMIN`); `walletLocation` на профила и `utPLSQL: Set wallet password` пазят паролата на wallet в SecretStorage.
 - 🔒 **Затягане на сигурността на връзките** — настройките за връзка са `machine`-scoped, разширението е изключено в ненадеждни работни пространства, а паролата на профила е обвързана с връзката.
+- 🔧 **Диагностика на настройката** — проактивна проверка на връзката, привилегиите и версията с quick-fix.
+
+### Отчети
+
+- 🧾 **Run with Reporter (Export)** — изпълнява селекцията с произволен reporter на базата и записва изхода в Output или във файл (`utplsql.reporter.*`), без да променя резултатите в Test Explorer.
+
+### UX и диагностика
+
+- ✅ **Inline декорации** — икони ✓/✗/⚠ в редактора след изпълнението, с подсказка за грешката и индикатор в overview ruler.
+- 📌 **Status Bar** — индикатор с брой успешни/неуспешни, продължителност и прогрес в реално време.
+- 🎯 **Преминаване към грешката** — директна навигация до реда на твърдението, което е пропаднало (чрез родния „Go to Error").
 - 🧱 **Диагностика на компилация** — след всяко изпълнение грешките при компилация на PL/SQL (`ALL_ERRORS`) се показват в Problems Panel под източника `utPLSQL Compilation` (настройка `utplsql.compilationDiagnostics.enabled`).
 - ⏳ **Напредък и отказ** — дългите изпълнения показват известие за напредък с брояч и бутон *Cancel* (плюс опционален `utplsql.timeoutMinutes`).
-- 📁 **Многоработно пространство (multi-root)** — всяка папка на работното пространство има своите набори, с независимо откриване, изпълнение и покритие.
+- 🌍 **i18n — 24 езика** — `utplsql.language` следва VSCode (24 локали: pt-br, en, en-gb, es, zh-cn, zh-tw, ja, de, fr, it, ko, ru, tr, pl, cs, hu, bg, el, id, ro, sr, th, uk, vi).
+
 
 ## Инсталация
 
@@ -63,7 +89,7 @@
 |---|---|---|
 | 18c+ | v3.2.x (18c+) / v3.1.x | Препоръчително; charset `AL32UTF8`. |
 | 12.2 | само v3.1.x | v3.2.x не се компилира (`PLS-00222`). `WE8DEC` на образа губи непредставими символи (напр. `€`); thin драйверът игнорира `NLS_LANG`. |
-- **VSCode 1.101+** (Test Coverage API).
+- **VSCode 1.101+** (Node 22).
 
 Разширението е само „графичният клиент" — тестовете се изпълняват от базата данни директно чрез node-oracledb.
 

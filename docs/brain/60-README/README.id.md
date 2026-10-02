@@ -19,38 +19,64 @@ tags: [readme]
 
 </div>
 
+<p align="center">
+  <a href="https://marketplace.visualstudio.com/items?itemName=paneb.vscode-utplsql"><img alt="Marketplace" src="https://img.shields.io/visual-studio-marketplace/v/paneb.vscode-utplsql?color=e8542d"></a>
+  <a href="https://marketplace.visualstudio.com/items?itemName=paneb.vscode-utplsql"><img alt="Installs" src="https://img.shields.io/visual-studio-marketplace/i/paneb.vscode-utplsql"></a>
+  <a href="https://github.com/thepaneb/vscode-utplsql/actions/workflows/ci.yml"><img alt="CI" src="https://github.com/thepaneb/vscode-utplsql/actions/workflows/ci.yml/badge.svg"></a>
+  <img alt="VS Code" src="https://img.shields.io/badge/VS%20Code-1.101%2B-007ACC">
+  <img alt="License" src="https://img.shields.io/badge/license-MIT-blue">
+</p>
+
 # utPLSQL Test Runner
 
-Mengintegrasikan [utPLSQL](https://www.utplsql.org/) ke dalam VSCode, membawa pengujian PL/SQL ke **Test Explorer** asli, dengan menu konteks dan cakupan visual.
+Jalankan dan debug pengujian **utPLSQL** (Oracle PL/SQL) langsung di VS Code — **Test Explorer** native, cakupan visual, debugger PL/SQL, dan eksekusi **langsung Oracle** via `node-oracledb`. Tersedia dalam **24 bahasa**; memerlukan **VS Code 1.101+** (Node 22).
+
+### Test Explorer dan eksekusi
 
 - 🧪 **Test Explorer asli** — suite dan pengujian muncul di tampilan testing; jalankan per pengujian, suite, file, atau folder.
 - 🔍 **CodeLens** — tombol Run/Run with Coverage di atas `%suite` dan `%test` di editor, tanpa meninggalkan kode Anda.
 - ⌨️ **Pintasan keyboard** — prefiks `Ctrl+Shift+U` + tombol untuk perintah utama (R = Run All, T = Run File, L = Rerun Last, dll.).
 - 🖱️ **Menu konteks** — klik kanan pada **folder** atau file **`.pks`/`.pkb`** (di Explorer atau di editor) untuk menjalankan pengujian.
-- 📊 **Cakupan visual** — gutter berwarna per baris (tercakup/tidak tercakup) dan persentase per file di tab **Coverage**.
-- ✅ **Dekorasi inline** — ikon ✓/✗/⚠ di editor setelah eksekusi, dengan tooltip kegagalan dan overview ruler.
-- 📌 **Status Bar** — indikator dengan jumlah lolos/gagal, durasi, dan progres waktu nyata.
 - 🔁 **Smart Re-run** — Rerun Last, Run at Cursor, Run Failed Only dengan satu pintasan.
-- 🚀 **Oracle langsung (via node-oracledb)** — streaming waktu nyata, tanpa menunggu batch selesai.
-- 🔧 **Diagnostik pengaturan** — validasi proaktif terhadap koneksi, grant, dan versi dengan quick-fix.
 - 🧩 **Pohon sadar-schema** — atur pengujian berdasarkan Schema > Package > Suite > Test di Test Explorer.
-- 🎯 **Langsung ke kegagalan** — navigasi langsung ke baris asersi yang gagal (melalui "Go to Error" asli).
-- 🔌 **Profil koneksi** — simpan dan beralih antar beberapa lingkungan (DEV/TEST/PROD) dengan pengaturan per profil, melalui bilah status atau palet perintah.
-- 📜 **Skrip SQL** — jalankan skrip saat ini, file dari Explorer, atau seluruh folder pada profil koneksi aktif (mengikuti charset, dengan `DBMS_OUTPUT` dan `stopOnError`).
-- 📈 **Cakupan pernyataan dan view** — tab Coverage menampilkan `% pernyataan` (PROCEDURE/FUNCTION) per file dan melacak view yang dieksekusi melalui `V$SQL`.
 - 🏷️ **Tag dan urutan acak** — filter pengujian dengan `utplsql.tags` (mis. `fast & !integration`) dan jalankan dalam urutan acak dengan seed yang dapat direproduksi (`utplsql.run.randomOrder`).
-- 🎯 **Lingkup cakupan** — sertakan/kecualikan objek dan regex schema/objek (`utplsql.coverage.*`) untuk menghilangkan noise framework dan menambahkan objek yang dijangkau secara dinamis.
 - 🗄️ **Penemuan DB-first** — bangun pohon dari `ut_runner.get_suites_info` dan bangun ulang cache anotasi dari palet.
-- 🐛 **Debug PL/SQL** — breakpoint dan debugging langkah demi langkah untuk pengujian utPLSQL melalui `DBMS_DEBUG` (Debug Adapter asli).
-- 🌍 **i18n — 24 bahasa** — `utplsql.language` mengikuti VSCode (24 locale: pt-br, en, en-gb, es, zh-cn, zh-tw, ja, de, fr, it, ko, ru, tr, pl, cs, hu, bg, el, id, ro, sr, th, uk, vi).
 - 🌳 **Pohon tes malas (lazy)** — dalam mode `schema`, package/suite/tes diurai saat diperluas, sehingga skema besar terbuka seketika.
-- 🧾 **Run with Reporter (Export)** — menjalankan pilihan dengan reporter basis data mana pun dan menulis keluaran ke Output atau file (`utplsql.reporter.*`), tanpa mengubah hasil di Test Explorer.
+- 📁 **Workspace multi-root** — setiap folder workspace memiliki suite sendiri, dengan penemuan, eksekusi, dan cakupan yang independen.
+- 🚀 **Oracle langsung (via node-oracledb)** — streaming waktu nyata, tanpa menunggu batch selesai.
+- 📜 **Skrip SQL** — jalankan skrip saat ini, file dari Explorer, atau seluruh folder pada profil koneksi aktif (mengikuti charset, dengan `DBMS_OUTPUT` dan `stopOnError`).
+
+### Cakupan
+
+- 📊 **Cakupan visual** — gutter berwarna per baris (tercakup/tidak tercakup) dan persentase per file di tab **Coverage**.
+- 📈 **Cakupan pernyataan dan view** — tab Coverage menampilkan `% pernyataan` (PROCEDURE/FUNCTION) per file dan melacak view yang dieksekusi melalui `V$SQL`.
+- 🎯 **Lingkup cakupan** — sertakan/kecualikan objek dan regex schema/objek (`utplsql.coverage.*`) untuk menghilangkan noise framework dan menambahkan objek yang dijangkau secara dinamis.
 - 🗂️ **Sumber basis data virtual** — tanpa file lokal, *jump to failure* dan cakupan membuka dokumen hanya-baca dari `ALL_SOURCE` (`utplsql-source:/…`).
+
+### Debugger
+
+- 🐛 **Debug PL/SQL** — breakpoint dan debugging langkah demi langkah untuk pengujian utPLSQL melalui `DBMS_DEBUG` (Debug Adapter asli).
+
+### Koneksi dan keamanan
+
+- 🔌 **Profil koneksi** — simpan dan beralih antar beberapa lingkungan (DEV/TEST/PROD) dengan pengaturan per profil, melalui bilah status atau palet perintah.
 - 🔐 **TNS di thin + wallet** — `utplsql.connections.tnsAdminPath` menyelesaikan alias `tnsnames.ora` di driver thin (fallback ke SQL Developer/`TNS_ADMIN`); `walletLocation` profil dan `utPLSQL: Set wallet password` menyimpan sandi wallet di SecretStorage.
 - 🔒 **Pengerasan keamanan koneksi** — setelan koneksi kini `machine`-scoped, ekstensi dinonaktifkan di workspace yang tidak tepercaya, dan sandi profil terikat pada koneksi.
+- 🔧 **Diagnostik pengaturan** — validasi proaktif terhadap koneksi, grant, dan versi dengan quick-fix.
+
+### Laporan
+
+- 🧾 **Run with Reporter (Export)** — menjalankan pilihan dengan reporter basis data mana pun dan menulis keluaran ke Output atau file (`utplsql.reporter.*`), tanpa mengubah hasil di Test Explorer.
+
+### UX dan diagnostik
+
+- ✅ **Dekorasi inline** — ikon ✓/✗/⚠ di editor setelah eksekusi, dengan tooltip kegagalan dan overview ruler.
+- 📌 **Status Bar** — indikator dengan jumlah lolos/gagal, durasi, dan progres waktu nyata.
+- 🎯 **Langsung ke kegagalan** — navigasi langsung ke baris asersi yang gagal (melalui "Go to Error" asli).
 - 🧱 **Diagnostik kompilasi** — setelah setiap eksekusi, kesalahan kompilasi PL/SQL (`ALL_ERRORS`) muncul di Problems Panel dengan source `utPLSQL Compilation` (setelan `utplsql.compilationDiagnostics.enabled`).
 - ⏳ **Progres dan pembatalan** — eksekusi panjang menampilkan notifikasi progres dengan jumlah dan tombol *Cancel* (plus `utplsql.timeoutMinutes` opsional).
-- 📁 **Workspace multi-root** — setiap folder workspace memiliki suite sendiri, dengan penemuan, eksekusi, dan cakupan yang independen.
+- 🌍 **i18n — 24 bahasa** — `utplsql.language` mengikuti VSCode (24 locale: pt-br, en, en-gb, es, zh-cn, zh-tw, ja, de, fr, it, ko, ru, tr, pl, cs, hu, bg, el, id, ro, sr, th, uk, vi).
+
 
 ## Instalasi
 
@@ -72,7 +98,7 @@ Ekstensi dapat diinstal dengan dua cara:
 |---|---|---|
 | 18c+ | v3.2.x (18c+) / v3.1.x | Disarankan; charset `AL32UTF8`. |
 | 12.2 | hanya v3.1.x | v3.2.x tidak dapat dikompilasi (`PLS-00222`). `WE8DEC` pada image kehilangan karakter yang tidak dapat direpresentasikan (mis. `€`); driver tipis mengabaikan `NLS_LANG`. |
-- **VSCode 1.101+** (Test Coverage API).
+- **VSCode 1.101+** (Node 22).
 
 Ekstensi hanyalah "klien grafis" — yang menjalankan pengujian adalah database langsung via node-oracledb.
 

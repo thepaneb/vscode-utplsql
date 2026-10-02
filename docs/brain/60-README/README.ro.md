@@ -19,38 +19,64 @@ tags: [readme]
 
 </div>
 
+<p align="center">
+  <a href="https://marketplace.visualstudio.com/items?itemName=paneb.vscode-utplsql"><img alt="Marketplace" src="https://img.shields.io/visual-studio-marketplace/v/paneb.vscode-utplsql?color=e8542d"></a>
+  <a href="https://marketplace.visualstudio.com/items?itemName=paneb.vscode-utplsql"><img alt="Installs" src="https://img.shields.io/visual-studio-marketplace/i/paneb.vscode-utplsql"></a>
+  <a href="https://github.com/thepaneb/vscode-utplsql/actions/workflows/ci.yml"><img alt="CI" src="https://github.com/thepaneb/vscode-utplsql/actions/workflows/ci.yml/badge.svg"></a>
+  <img alt="VS Code" src="https://img.shields.io/badge/VS%20Code-1.101%2B-007ACC">
+  <img alt="License" src="https://img.shields.io/badge/license-MIT-blue">
+</p>
+
 # utPLSQL Test Runner
 
-Integrează [utPLSQL](https://www.utplsql.org/) în VSCode, aducând testele PL/SQL în **Test Explorer-ul** nativ, cu meniu contextual și acoperire vizuală.
+Rulează și depanează teste **utPLSQL** (Oracle PL/SQL) direct în VS Code — **Test Explorer** nativ, acoperire vizuală, depanator PL/SQL și execuție **directă Oracle** via `node-oracledb`. Disponibil în **24 de limbi**; necesită **VS Code 1.101+** (Node 22).
+
+### Test Explorer și execuție
 
 - 🧪 **Test Explorer nativ** — suitele și testele apar în vizualizarea de testare; rulează după test, suită, fișier sau folder.
 - 🔍 **CodeLens** — butoanele Run/Run with Coverage deasupra `%suite` și `%test` în editor, fără să părăsești codul.
 - ⌨️ **Scurtături de tastatură** — prefixul `Ctrl+Shift+U` + tastă pentru comenzile principale (R = Rulează tot, T = Rulează fișierul, L = Re-rulează ultimul etc.).
 - 🖱️ **Meniu contextual** — clic dreapta pe un **folder** sau pe un fișier **`.pks`/`.pkb`** (în Explorer sau în editor) pentru a rula testele.
-- 📊 **Acoperire vizuală** — jgheab (gutter) colorat pe fiecare linie (acoperită/neacoperită) și procent pe fișier în fila **Coverage**.
-- ✅ **Decorări inline** — pictograme ✓/✗/⚠ în editor după execuție, cu tooltip pentru eșec și riglă de prezentare generală.
-- 📌 **Bară de stare** — indicator cu numărul de reușite/eșecuri, durată și progres în timp real.
 - 🔁 **Re-rulare inteligentă** — Re-rulează ultimul, Rulează la cursor, Rulează doar eșuatele cu o singură scurtătură.
-- 🚀 **Oracle direct (via node-oracledb)** — streaming în timp real, fără a aștepta terminarea lotului.
-- 🔧 **Diagnosticare de configurare** — validare proactivă a conexiunii, granturilor și versiunii, cu acțiuni quick-fix.
 - 🧩 **Arbore conștient de schemă** — organizează testele după Schema > Package > Suite > Test în Test Explorer.
-- 🎯 **Salt la eșec** — navigare directă la linia aserțiunii care a eșuat (prin „Go to Error" nativ).
-- 🔌 **Profiluri de conexiune** — salvează și comută între mai multe medii (DEV/TEST/PROD) cu setări per profil, prin bara de stare sau paleta de comenzi.
-- 📜 **Scripturi SQL** — rulează scriptul curent, un fișier din Explorer sau un întreg folder pe profilul de conexiune activ (cu respectarea charset, cu `DBMS_OUTPUT` și `stopOnError`).
-- 📈 **Acoperire pe instrucțiuni și vizualizări** — fila Coverage arată `% din instrucțiuni` (PROCEDURE/FUNCTION) per fișier și urmărește vizualizările executate prin `V$SQL`.
 - 🏷️ **Tag-uri și ordine aleatorie** — filtrează testele cu `utplsql.tags` (ex. `fast & !integration`) și rulează în ordine aleatorie cu seed reproductibil (`utplsql.run.randomOrder`).
-- 🎯 **Domeniu de acoperire** — include/exclude obiecte și regex de schemă/obiect (`utplsql.coverage.*`) pentru a elimina zgomotul framework-ului și a adăuga obiecte atinse dinamic.
 - 🗄️ **Descoperire DB-first** — construiește arborele din `ut_runner.get_suites_info` și reconstruiește cache-ul de adnotări din paletă.
-- 🐛 **Debug PL/SQL** — breakpoint-uri și depanare pas cu pas a testelor utPLSQL prin `DBMS_DEBUG` (Debug Adapter nativ).
-- 🌍 **i18n — 24 de limbi** — `utplsql.language` urmărește VSCode (24 de localizări: pt-br, en, en-gb, es, zh-cn, zh-tw, ja, de, fr, it, ko, ru, tr, pl, cs, hu, bg, el, id, ro, sr, th, uk, vi).
 - 🌳 **Arbore de teste lazy** — în modul `schema`, pachetele/suitele/testele sunt rezolvate la cerere la expandare, așa că schemele mari se deschid instant.
-- 🧾 **Run with Reporter (Export)** — rulează selecția cu orice reporter al bazei și scrie ieșirea în Output sau într-un fișier (`utplsql.reporter.*`), fără a schimba rezultatele din Test Explorer.
+- 📁 **Spațiu de lucru multi-root** — fiecare folder al spațiului de lucru are propriile suite, cu descoperire, execuție și acoperire independente.
+- 🚀 **Oracle direct (via node-oracledb)** — streaming în timp real, fără a aștepta terminarea lotului.
+- 📜 **Scripturi SQL** — rulează scriptul curent, un fișier din Explorer sau un întreg folder pe profilul de conexiune activ (cu respectarea charset, cu `DBMS_OUTPUT` și `stopOnError`).
+
+### Acoperire
+
+- 📊 **Acoperire vizuală** — jgheab (gutter) colorat pe fiecare linie (acoperită/neacoperită) și procent pe fișier în fila **Coverage**.
+- 📈 **Acoperire pe instrucțiuni și vizualizări** — fila Coverage arată `% din instrucțiuni` (PROCEDURE/FUNCTION) per fișier și urmărește vizualizările executate prin `V$SQL`.
+- 🎯 **Domeniu de acoperire** — include/exclude obiecte și regex de schemă/obiect (`utplsql.coverage.*`) pentru a elimina zgomotul framework-ului și a adăuga obiecte atinse dinamic.
 - 🗂️ **Sursă virtuală din baza de date** — fără fișier local, *jump to failure* și acoperirea deschid un document doar-citire rezolvat din `ALL_SOURCE` (`utplsql-source:/…`).
+
+### Depanator
+
+- 🐛 **Debug PL/SQL** — breakpoint-uri și depanare pas cu pas a testelor utPLSQL prin `DBMS_DEBUG` (Debug Adapter nativ).
+
+### Conexiuni și securitate
+
+- 🔌 **Profiluri de conexiune** — salvează și comută între mai multe medii (DEV/TEST/PROD) cu setări per profil, prin bara de stare sau paleta de comenzi.
 - 🔐 **TNS în thin + wallet** — `utplsql.connections.tnsAdminPath` rezolvă aliasuri `tnsnames.ora` în driverul thin (fallback la SQL Developer/`TNS_ADMIN`); `walletLocation` din profil și `utPLSQL: Set wallet password` păstrează parola wallet-ului în SecretStorage.
 - 🔒 **Hardening de securitate al conexiunilor** — setările de conexiune sunt `machine`-scoped, extensia este dezactivată în workspace-uri neîncrezute și parola profilului este legată de conexiune.
+- 🔧 **Diagnosticare de configurare** — validare proactivă a conexiunii, granturilor și versiunii, cu acțiuni quick-fix.
+
+### Rapoarte
+
+- 🧾 **Run with Reporter (Export)** — rulează selecția cu orice reporter al bazei și scrie ieșirea în Output sau într-un fișier (`utplsql.reporter.*`), fără a schimba rezultatele din Test Explorer.
+
+### UX și diagnosticare
+
+- ✅ **Decorări inline** — pictograme ✓/✗/⚠ în editor după execuție, cu tooltip pentru eșec și riglă de prezentare generală.
+- 📌 **Bară de stare** — indicator cu numărul de reușite/eșecuri, durată și progres în timp real.
+- 🎯 **Salt la eșec** — navigare directă la linia aserțiunii care a eșuat (prin „Go to Error" nativ).
 - 🧱 **Diagnostice de compilare** — după fiecare rulare, erorile de compilare PL/SQL (`ALL_ERRORS`) apar în Problems Panel sub sursa `utPLSQL Compilation` (setarea `utplsql.compilationDiagnostics.enabled`).
 - ⏳ **Progres și anulare** — rulările lungi afișează o notificare de progres cu contor și buton *Cancel* (plus `utplsql.timeoutMinutes` opțional).
-- 📁 **Spațiu de lucru multi-root** — fiecare folder al spațiului de lucru are propriile suite, cu descoperire, execuție și acoperire independente.
+- 🌍 **i18n — 24 de limbi** — `utplsql.language` urmărește VSCode (24 de localizări: pt-br, en, en-gb, es, zh-cn, zh-tw, ja, de, fr, it, ko, ru, tr, pl, cs, hu, bg, el, id, ro, sr, th, uk, vi).
+
 
 ## Instalare
 
@@ -72,7 +98,7 @@ Extensia poate fi instalată în două moduri:
 |---|---|---|
 | 18c+ | v3.2.x (18c+) / v3.1.x | Recomandat; charset `AL32UTF8`. |
 | 12.2 | doar v3.1.x | v3.2.x nu se compilează (`PLS-00222`). `WE8DEC` al imaginii pierde caractere nereprezentabile (ex. `€`); driverul subțire ignoră `NLS_LANG`. |
-- **VSCode 1.101+** (API Test Coverage).
+- **VSCode 1.101+** (Node 22).
 
 Extensia este doar „clientul grafic" — ceea ce rulează testele este baza de date direct prin node-oracledb.
 
