@@ -26,11 +26,15 @@ export WSLENV="GITHUB_TOKEN${WSLENV:+:$WSLENV}"
 npm run sync-prds
 ```
 
+## Planejamento por versão
+
+- **0.15.0 — “Tags e UX de execução”**: [[Roadmap - 0.15.0 (execução)]]
+
 ## Status (gerado)
 
 <!-- brain:auto:start:prd-summary -->
-- 📝 Propostos: **19**
-- 🔵 Aprovados: **1**
+- 📝 Propostos: **13**
+- 🔵 Aprovados: **7**
 - 🟡 Em desenvolvimento: **0**
 - 🟢 Concluídos: **75**
 
@@ -143,4 +147,5 @@ Detalhe completo (fonte da verdade): [docs/prd/index.md](../../prd/index.md)
 - [[prd-93-continuous-localization-pipeline]] — `PRD-93`
 - [[prd-94-vscode-floor-1-101]] — `PRD-94`
 - [[prd-95-esm-es2023-node22]] — `PRD-95`
+- [[Roadmap - 0.15.0 (execução)]]
 <!-- brain:auto:end -->

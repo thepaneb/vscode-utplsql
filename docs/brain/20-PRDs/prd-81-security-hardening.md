@@ -161,5 +161,5 @@ workspace-scoped.
 - 📐 Regras: [[BR-CONN-016 - Settings de conexão machine-scoped e workspace confiável|BR-CONN-016]] · [[SEC-011 - Settings de conexão não são sobrescrevíveis por workspace|SEC-011]]
 - 🎯 RF1 — Escopo machine → [[BR-CONN-016 - Settings de conexão machine-scoped e workspace confiável|BR-CONN-016]]
 - 🎯 RF2 — Untrusted workspaces → [[BR-CONN-016 - Settings de conexão machine-scoped e workspace confiável|BR-CONN-016]]
-- 🚀 ⬅️ release anterior: [[prd-87-suitepath-results-jump|PRD-87 (0.13.0)]] · ➡️ próxima release: [[prd-47-node-26-toolchain|PRD-47 (0.15.0)]]
+- 🚀 ⬅️ release anterior: [[prd-87-suitepath-results-jump|PRD-87 (0.13.0)]] · ➡️ próxima release: [[prd-50-auto-run-on-save|PRD-50 (0.15.0)]]
 <!-- brain:auto:end -->

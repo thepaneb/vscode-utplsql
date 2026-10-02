@@ -4,10 +4,10 @@ id: PRD-47
 aliases: [PRD-47]
 status: approved
 titulo: "Node 26 no toolchain de desenvolvimento"
-versao: "0.15.0"
+versao: "0.15.1"
 data: "2026-08-29"
 autor: "Gil Cleber"
-versao_titulo: "0.15.0 — Tags e UX de execução"
+versao_titulo: "0.15.1 — Toolchain (Node 26)"
 verificado: 2026-09-28
 regras: []
 tags: [prd]
@@ -141,6 +141,5 @@ Nenhuma setting/comando novo.
 <!-- brain:auto:start:conexoes -->
 - 🗺️ [[MOC - PRDs]]
 - ⚙️ Pipelines: [[PIPE-ci - CI|PIPE-ci]]
-- 🔗 Mesma versão (0.15.0): [[prd-50-auto-run-on-save|PRD-50]] · [[prd-51-run-by-tag|PRD-51]] · [[prd-52-inline-diff-expected-actual|PRD-52]] · [[prd-53-debug-test-variants|PRD-53]] · [[prd-54-coverage-toggle|PRD-54]] · [[prd-55-tag-organization|PRD-55]]
-- 🚀 ⬅️ release anterior: [[prd-94-vscode-floor-1-101|PRD-94 (0.14.0)]] · ➡️ próxima release: [[prd-56-duration-persistence|PRD-56 (0.16.0)]]
+- 🚀 ⬅️ release anterior: [[prd-55-tag-organization|PRD-55 (0.15.0)]] · ➡️ próxima release: [[prd-95-esm-es2023-node22|PRD-95 (0.16.0)]]
 <!-- brain:auto:end -->

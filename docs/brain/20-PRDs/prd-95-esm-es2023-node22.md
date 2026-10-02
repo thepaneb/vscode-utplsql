@@ -4,9 +4,10 @@ id: PRD-95
 aliases: [PRD-95]
 status: proposed
 titulo: "Modernização do runtime: ESM, ES2023 e stdlib Node 22"
-versao: "0.15.0"
+versao: "0.16.0"
 data: "2026-09-29"
 autor: "Gil Cleber Barboza"
+versao_titulo: "0.16.0 — Modernização do runtime (ESM/ES2023)"
 verificado: 2026-09-29
 regras: []
 tags: [prd]
@@ -140,5 +141,5 @@ topologia mudar.
 <!-- brain:auto:start:conexoes -->
 - 🗺️ [[MOC - PRDs]]
 - 🔗 PRDs relacionados: [[prd-94-vscode-floor-1-101|PRD-94]]
-- 🚀 ⬅️ release anterior: [[prd-94-vscode-floor-1-101|PRD-94 (0.14.0)]] · ➡️ próxima release: [[prd-56-duration-persistence|PRD-56 (0.16.0)]]
+- 🚀 ⬅️ release anterior: [[prd-47-node-26-toolchain|PRD-47 (0.15.1)]] · ➡️ próxima release: [[prd-56-duration-persistence|PRD-56 (0.17.0)]]
 <!-- brain:auto:end -->

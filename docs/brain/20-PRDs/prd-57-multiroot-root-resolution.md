@@ -4,10 +4,10 @@ id: PRD-57
 aliases: [PRD-57]
 status: proposed
 titulo: "Multi-root: resolução de `root`/`sourcePath` por folder"
-versao: "0.16.0"
+versao: "0.17.0"
 data: "2026-09-06"
 autor: "Gil Cleber Barboza"
-versao_titulo: "0.16.0 — Persistência, multi-root e produtividade"
+versao_titulo: "0.17.0 — Persistência, multi-root e produtividade"
 verificado: 2026-09-23
 regras: []
 tags: [prd]
@@ -123,6 +123,6 @@ primeiro workspace folder para resolver sourcePath" (seção Limitações).
 <!-- brain:auto:start:conexoes -->
 - 🗺️ [[MOC - PRDs]]
 - 🔗 PRDs relacionados: [[prd-06-multiroot|PRD-06]] · [[prd-34-multi-connection-profiles|PRD-34]]
-- 🔗 Mesma versão (0.16.0): [[prd-56-duration-persistence|PRD-56]] · [[prd-58-run-related-tests|PRD-58]] · [[prd-59-scaffold-suite|PRD-59]]
-- 🚀 ⬅️ release anterior: [[prd-95-esm-es2023-node22|PRD-95 (0.15.0)]] · ➡️ próxima release: [[prd-88-locale-aware-formatting|PRD-88 (0.17.0)]]
+- 🔗 Mesma versão (0.17.0): [[prd-56-duration-persistence|PRD-56]] · [[prd-58-run-related-tests|PRD-58]] · [[prd-59-scaffold-suite|PRD-59]]
+- 🚀 ⬅️ release anterior: [[prd-95-esm-es2023-node22|PRD-95 (0.16.0)]] · ➡️ próxima release: [[prd-88-locale-aware-formatting|PRD-88 (0.18.0)]]
 <!-- brain:auto:end -->
