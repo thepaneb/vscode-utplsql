@@ -189,7 +189,7 @@ Esperado criar **`BR-PARSE-016`** (tags de suíte no header), **`BR-PARSE-017`**
 - 📐 Regras: [[BR-PARSE-016 - Tags de suite (%tags no header) viram ParsedSuite.tags e SuiteFile.tags|BR-PARSE-016]] · [[BR-PARSE-017 - Filtro por tag - inclusao e exclusao (!) case-insensitive; sem tag so sem inclusao|BR-PARSE-017]] · [[BR-UI-011 - utplsql.runByTag oferece QuickPick multi-selecao das tags; showTagsInTree sufixa o label|BR-UI-011]]
 - 🔗 BR-PARSE-016 · BR-PARSE-017 · BR-UI-011 · BR-PARSE-005 · BR-PARSE-010 · BR-UI-009
 - 🔗 PRDs relacionados: [[prd-42-suiteparser-annotations|PRD-42]] · [[prd-54-coverage-toggle|PRD-54]] · [[prd-55-tag-organization|PRD-55]]
-- 🔗 Mesma versão (0.15.0): [[prd-50-auto-run-on-save|PRD-50]] · [[prd-54-coverage-toggle|PRD-54]] · [[prd-55-tag-organization|PRD-55]]
+- 🔗 Mesma versão (0.15.0): [[prd-50-auto-run-on-save|PRD-50]] · [[prd-55-tag-organization|PRD-55]]
 - 🎯 RF2 — Tags de suíte no parser → [[BR-PARSE-016 - Tags de suite (%tags no header) viram ParsedSuite.tags e SuiteFile.tags|BR-PARSE-016]]
 - 🎯 RF3 — Comando `utplsql.runByTag` → [[BR-PARSE-017 - Filtro por tag - inclusao e exclusao (!) case-insensitive; sem tag so sem inclusao|BR-PARSE-017]] · [[BR-UI-011 - utplsql.runByTag oferece QuickPick multi-selecao das tags; showTagsInTree sufixa o label|BR-UI-011]]
 - 🎯 RF4 — Tooltip com tags → [[BR-UI-011 - utplsql.runByTag oferece QuickPick multi-selecao das tags; showTagsInTree sufixa o label|BR-UI-011]]

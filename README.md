@@ -291,6 +291,7 @@ All extension commands (palette `Ctrl+Shift+P` prefix `utPLSQL:`):
 | `utPLSQL: Rerun Last` | Repeats the last execution | `Ctrl+Shift+U L` |
 | `utPLSQL: Run Test at Cursor` | Runs the test under the cursor | `Ctrl+Shift+U U` |
 | `utPLSQL: Run Failed Tests` | Re-runs only the failed tests | `Ctrl+Shift+U X` |
+| `utPLSQL: Toggle Coverage` | Toggles the session coverage mode applied by run commands without explicit coverage | Click on the status bar item |
 | `utPLSQL: Validate setup` | Runs full setup validation (connection, UT3 installation) and shows results | — |
 | `utPLSQL: Configure connection` | Opens settings at `utplsql.connection` | — |
 | `utPLSQL: Copy coverage grants to clipboard` | Copies the grants SQL to the clipboard | — |
@@ -327,6 +328,7 @@ All shortcuts use the `Ctrl+Shift+U` prefix (`Cmd+Shift+U` on Mac):
 | `Ctrl+Shift+U L` | Rerun last |
 | `Ctrl+Shift+U U` | Run at cursor |
 | `Ctrl+Shift+U X` | Run failed only |
+| `Ctrl+Shift+U Shift+C` | Toggle coverage |
 | `Escape` | Cancel run |
 
 ## Coverage

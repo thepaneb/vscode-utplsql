@@ -24,6 +24,7 @@ prefixed with `utPLSQL:`.
 | `utPLSQL: Rerun Last` | Repeats the last run | `Ctrl+Shift+U L` |
 | `utPLSQL: Run Test at Cursor` | Runs the test under the cursor | `Ctrl+Shift+U U` |
 | `utPLSQL: Run Failed Tests` | Re-runs only failed tests | `Ctrl+Shift+U X` |
+| `utPLSQL: Toggle Coverage` | Toggles the session coverage mode used by run commands without explicit coverage | Click on the status bar item |
 | `utPLSQL: Show Test Explorer` | Focuses the Testing view | — |
 | `utPLSQL: Validate setup` | Runs full setup validation (including UT3 installation integrity) | — |
 | `utPLSQL: Configure connection` | Opens settings at `utplsql.connection` | — |
@@ -75,6 +76,7 @@ All shortcuts use the prefix `Ctrl+Shift+U` (`Cmd+Shift+U` on Mac):
 | `Ctrl+Shift+U L` | Rerun last |
 | `Ctrl+Shift+U U` | Run at cursor |
 | `Ctrl+Shift+U X` | Run failed only |
+| `Ctrl+Shift+U Shift+C` | Toggle coverage |
 | `Escape` | Cancel run |
 
 To customize, go to File → Preferences → Keyboard Shortcuts and search for `utplsql`.

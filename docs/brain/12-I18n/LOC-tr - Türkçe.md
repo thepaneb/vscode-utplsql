@@ -5,14 +5,14 @@ tipo: locale
 titulo: "Türkçe"
 codigo: tr
 nls: package.nls.tr.json
-strings: 33
+strings: 34
 gerado: true
 tags: [i18n, locale]
 ---
 
 # LOC-tr — Türkçe
 
-Locale `tr` da extensão. Strings de UI em [`package.nls.tr.json`](../../../package.nls.tr.json) (33 chaves).
+Locale `tr` da extensão. Strings de UI em [`package.nls.tr.json`](../../../package.nls.tr.json) (34 chaves).
 
 README: [[README.tr]]
 

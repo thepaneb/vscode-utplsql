@@ -14,6 +14,7 @@
   "nls.command.rerunLast": "utPLSQL: Επανάληψη τελευταίας εκτέλεσης",
   "nls.command.runAtCursor": "utPLSQL: Εκτέλεση τεστ στον κέρσορα",
   "nls.command.runFailed": "utPLSQL: Εκτέλεση αποτυχημένων τεστ",
+  "nls.command.toggleCoverage": "utPLSQL: Toggle Coverage",
   "nls.command.configureConnection": "Ρύθμιση σύνδεσης",
   "nls.command.copyGrantsToClipboard": "Αντιγραφή grants κάλυψης στο πρόχειρο",
   "nls.command.validateSetup": "Επικύρωση ρύθμισης",

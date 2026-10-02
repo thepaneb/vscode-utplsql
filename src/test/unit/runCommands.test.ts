@@ -209,3 +209,13 @@ test('cancelRun: sem execução ativa não lança', async () => {
     async () => await commands.__getRegisteredCommand('utplsql.cancelRun')?.(),
   );
 });
+
+// PRD-54: toggle do modo global de cobertura.
+test('toggleCoverage: inverte a flag de sessão', async () => {
+  const state = setup();
+  assert.strictEqual(state.coverageAlways, false);
+  await commands.__getRegisteredCommand('utplsql.toggleCoverage')?.();
+  assert.strictEqual(state.coverageAlways, true);
+  await commands.__getRegisteredCommand('utplsql.toggleCoverage')?.();
+  assert.strictEqual(state.coverageAlways, false);
+});

@@ -5,14 +5,14 @@ tipo: locale
 titulo: "Italiano"
 codigo: it
 nls: package.nls.it.json
-strings: 33
+strings: 34
 gerado: true
 tags: [i18n, locale]
 ---
 
 # LOC-it — Italiano
 
-Locale `it` da extensão. Strings de UI em [`package.nls.it.json`](../../../package.nls.it.json) (33 chaves).
+Locale `it` da extensão. Strings de UI em [`package.nls.it.json`](../../../package.nls.it.json) (34 chaves).
 
 README: [[README.it]]
 

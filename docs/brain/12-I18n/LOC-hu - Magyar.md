@@ -5,14 +5,14 @@ tipo: locale
 titulo: "Magyar"
 codigo: hu
 nls: package.nls.hu.json
-strings: 33
+strings: 34
 gerado: true
 tags: [i18n, locale]
 ---
 
 # LOC-hu — Magyar
 
-Locale `hu` da extensão. Strings de UI em [`package.nls.hu.json`](../../../package.nls.hu.json) (33 chaves).
+Locale `hu` da extensão. Strings de UI em [`package.nls.hu.json`](../../../package.nls.hu.json) (34 chaves).
 
 README: [[README.hu]]
 

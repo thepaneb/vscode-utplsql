@@ -510,6 +510,11 @@
         "category": "utPLSQL"
       },
       {
+        "command": "utplsql.toggleCoverage",
+        "title": "%nls.command.toggleCoverage%",
+        "category": "utPLSQL"
+      },
+      {
         "command": "utplsql.configureConnection",
         "title": "%nls.command.configureConnection%",
         "category": "utPLSQL"
@@ -732,6 +737,12 @@
         "key": "ctrl+shift+u x",
         "mac": "cmd+shift+u x",
         "when": "utplsql:hasFailures"
+      },
+      {
+        "command": "utplsql.toggleCoverage",
+        "key": "ctrl+shift+u shift+c",
+        "mac": "cmd+shift+u shift+c",
+        "when": "utplsql:activated"
       },
       {
         "command": "utplsql.debugAtCursor",

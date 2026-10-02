@@ -63,7 +63,7 @@ bundled.
 | | `viewCoverage.ts` — DeclarationCoverage + V$SQL view tracking |
 | | `dbmsDebug.ts`, `debugger.ts` — PL/SQL debugging via DBMS_DEBUG |
 | `tnsnames.ts` — `tnsnames.ora` alias resolution (thin driver); `virtualSource.ts` — URIs virtuais `utplsql-source:` | `oracleClient.ts` — thin/thick mode init |
-| `annotation.ts` — `findAnnotationAtLine` (run/debug at cursor); `debugTargets.ts` — alvo das variações de debug | `oracleRunner.ts` — pool, `executeRunOracle`, discovery helpers |
+| `annotation.ts` — `findAnnotationAtLine` (run/debug at cursor); `debugTargets.ts` — alvo das variações de debug; `coverageDecision.ts` — cobertura efetiva (explícito ?? `coverageAlways`) | `oracleRunner.ts` — pool, `executeRunOracle`, discovery helpers |
 
 Modules in the left column **do not import `vscode`** (at runtime) and are
 testable with `node --test` without any setup. Full list: `src/*.ts`.
@@ -99,7 +99,7 @@ testable with `node --test` without any setup. Full list: `src/*.ts`.
 | `utplsql.oracleClientMode`/`oracleClientLibDir`/`oracleClientConfigDir` | `cfg.oracleClient*` | `oracleClient.ts` (`ensureOracleClient`, called from `ensurePool`) |
 | `utplsql.connections.tnsAdminPath` | `cfg.tnsAdminPath` | `oracleRunner.ts` (`resolveConnectString` → `tnsnames.ora`); fallback: SQL Developer user path, `TNS_ADMIN` |
 | `utplsql.profiles` (`walletLocation`) | `cfg.walletLocation`/`cfg.walletPassword` | `oracleRunner.ts` (`ensurePool` → `createPool`); password in SecretStorage |
-| `utplsql.codeLens/statusBar/decorations.enabled` | `cfg.*Enabled` | UX providers |
+| `utplsql.codeLens/statusBar/decorations.enabled` | `cfg.*Enabled` | UX providers (inclui o item de toggle de cobertura, PRD-54) |
 | `utplsql.compilationDiagnostics.enabled` | `cfg.compilationDiagnosticsEnabled` | `compilationDiagnostics.ts` — ALL_ERRORS → Problems Panel (after each run) |
 | `utplsql.setupDiagnostics.enabled` | `cfg.setupDiagnosticsEnabled` | `quickfix.ts` |
 | `utplsql.organization`/`organization.schemaPattern` | `cfg.organization`/`organizationSchemaPattern` | `extension.ts` (tree + DB discovery) |

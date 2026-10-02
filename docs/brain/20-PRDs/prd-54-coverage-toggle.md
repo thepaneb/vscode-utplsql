@@ -2,7 +2,7 @@
 tipo: prd
 id: PRD-54
 aliases: [PRD-54]
-status: approved
+status: completed
 titulo: "Toggle de cobertura na status bar"
 versao: "0.15.0"
 data: "2026-09-06"
@@ -131,6 +131,14 @@ Adicionar o item à `UtplsqlStatusBar`, o comando em `extension.ts` e a flag em
 - Persistir em `utplsql.defaultCoverage`? — Follow-up.
 - Toggle deveria virar um perfil `TestRunProfile` nativo de "coverage default"?
   — Avaliar.
+
+## Impacto no cérebro
+
+Cria **`BR-COB-006`** (resolução `explicit ?? coverageAlways`) e **`BR-UI-012`**
+(item de status bar do toggle), ambas `status: ativo` com `prds: ["PRD-54"]`;
+referencia **`BR-UI-005`** (família da status bar) e **`BR-EXEC-013`**
+(degradação quando falta o reporter de cobertura). Auto-run (PRD-50) consome a
+mesma flag.
 
 ## 12. Impacto no cérebro
 

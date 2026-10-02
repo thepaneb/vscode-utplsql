@@ -14,6 +14,7 @@
   "nls.command.rerunLast": "utPLSQL: Powtórz ostatnie uruchomienie",
   "nls.command.runAtCursor": "utPLSQL: Uruchom test pod kursorem",
   "nls.command.runFailed": "utPLSQL: Uruchom nieudane testy",
+  "nls.command.toggleCoverage": "utPLSQL: Toggle Coverage",
   "nls.command.configureConnection": "Skonfiguruj połączenie",
   "nls.command.copyGrantsToClipboard": "Skopiuj granty pokrycia do schowka",
   "nls.command.validateSetup": "Zweryfikuj konfigurację",

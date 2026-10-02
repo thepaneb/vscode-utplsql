@@ -54,12 +54,12 @@ host — o `docs-fidelity` cobra essa coerência.
 ## Inventário (gerado)
 
 <!-- brain:auto:start:vscode-api -->
-**`engines.vscode`:** `^1.101.0` · **`@types/vscode`:** `1.101.0` · **96 símbolos · 487 referências**
+**`engines.vscode`:** `^1.101.0` · **`@types/vscode`:** `1.101.0` · **97 símbolos · 491 referências**
 
 | Símbolo | Refs | Arquivos |
 |---|---|---|
 | `vscode.TestItem` | 52 | `src/commands/debug.ts`, `src/commands/run.ts`, `src/decorations.ts`, `src/matching.ts` +5 |
-| `vscode.commands.registerCommand` | 34 | `src/commands/connection.ts`, `src/commands/debug.ts`, `src/commands/profile.ts`, `src/commands/run.ts` +2 |
+| `vscode.commands.registerCommand` | 35 | `src/commands/connection.ts`, `src/commands/debug.ts`, `src/commands/profile.ts`, `src/commands/run.ts` +2 |
 | `vscode.Uri` | 29 | `src/commands/debug.ts`, `src/commands/run.ts`, `src/commands/script.ts`, `src/compilationDiagnostics.ts` +8 |
 | `vscode.window.showInformationMessage` | 25 | `src/commands/connection.ts`, `src/commands/debug.ts`, `src/commands/profile.ts`, `src/commands/run.ts` +3 |
 | `vscode.window.showWarningMessage` | 20 | `src/commands/debug.ts`, `src/commands/profile.ts`, `src/commands/run.ts`, `src/commands/script.ts` +3 |
@@ -118,8 +118,10 @@ host — o `docs-fidelity` cobra essa coerência.
 | `vscode.ProviderResult` | 2 | `src/debugger.ts` |
 | `vscode.SecretStorage` | 2 | `src/connectionProfiles.ts` |
 | `vscode.StatementCoverage` | 2 | `src/results.ts`, `src/viewCoverage.ts` |
+| `vscode.StatusBarItem` | 2 | `src/statusBar.ts` |
 | `vscode.TestRunProfile` | 2 | `src/state.ts` |
 | `vscode.TextDocument` | 2 | `src/codelens.ts`, `src/quickfix.ts` |
+| `vscode.window.createStatusBarItem` | 2 | `src/statusBar.ts` |
 | `vscode.window.withProgress` | 2 | `src/commands/run.ts`, `src/commands/script.ts` |
 | `vscode.workspace.registerTextDocumentContentProvider` | 2 | `src/dbSourceProvider.ts` |
 | `vscode.CodeActionContext` | 1 | `src/quickfix.ts` |
@@ -140,13 +142,12 @@ host — o `docs-fidelity` cobra essa coerência.
 | `vscode.MarkdownString` | 1 | `src/decorations.ts` |
 | `vscode.open` | 1 | `src/quickfix.ts` |
 | `vscode.StatusBarAlignment.Left` | 1 | `src/statusBar.ts` |
-| `vscode.StatusBarItem` | 1 | `src/statusBar.ts` |
+| `vscode.StatusBarAlignment.Right` | 1 | `src/statusBar.ts` |
 | `vscode.TestRunProfileKind.Coverage` | 1 | `src/extension.ts` |
 | `vscode.TestRunProfileKind.Run` | 1 | `src/extension.ts` |
 | `vscode.tests.createTestController` | 1 | `src/extension.ts` |
 | `vscode.TextDocumentContentProvider` | 1 | `src/dbSourceProvider.ts` |
 | `vscode.TextEditor` | 1 | `src/decorations.ts` |
-| `vscode.window.createStatusBarItem` | 1 | `src/statusBar.ts` |
 | `vscode.window.onDidChangeActiveTextEditor` | 1 | `src/extension.ts` |
 | `vscode.window.showSaveDialog` | 1 | `src/commands/run.ts` |
 | `vscode.window.visibleTextEditors` | 1 | `src/decorations.ts` |

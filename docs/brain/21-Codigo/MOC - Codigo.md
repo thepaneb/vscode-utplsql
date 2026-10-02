@@ -42,6 +42,7 @@ SORT id ASC
 - [[COD - connection.ts]] — `COD-connection.ts`
 - [[COD - connectionProfiles.ts]] — `COD-connectionProfiles.ts`
 - [[COD - coverage.ts]] — `COD-coverage.ts`
+- [[COD - coverageDecision.ts]] — `COD-coverageDecision.ts`
 - [[COD - create-pr.cjs]] — `COD-create-pr.cjs`
 - [[COD - create-release.cjs]] — `COD-create-release.cjs`
 - [[COD - dbmsDebug.ts]] — `COD-dbmsDebug.ts`

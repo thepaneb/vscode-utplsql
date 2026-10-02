@@ -14,6 +14,7 @@
   "nls.command.rerunLast": "utPLSQL: Zopakovat poslední spuštění",
   "nls.command.runAtCursor": "utPLSQL: Spustit test na pozici kurzoru",
   "nls.command.runFailed": "utPLSQL: Spustit neúspěšné testy",
+  "nls.command.toggleCoverage": "utPLSQL: Toggle Coverage",
   "nls.command.configureConnection": "Nakonfigurovat připojení",
   "nls.command.copyGrantsToClipboard": "Zkopírovat granty pokrytí do schránky",
   "nls.command.validateSetup": "Ověřit nastavení",

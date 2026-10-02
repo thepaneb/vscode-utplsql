@@ -128,6 +128,7 @@ notas `prd-*`. O índice navegável do vault é a [[MOC - PRDs]].
 | 49 | [Internacionalização (i18n) dos conteúdos textuais da extensão](completed/prd-49-internacionalizacao.md) | 0.12.0 | 2026-08-29 |
 | 52 | [Diff inline esperado × obtido nas falhas](completed/prd-52-inline-diff-expected-actual.md) | 0.15.0 | 2026-09-06 |
 | 53 | [Debug de testes: variações (cursor, falhos, último)](completed/prd-53-debug-test-variants.md) | 0.15.0 | 2026-09-06 |
+| 54 | [Toggle de cobertura na status bar](completed/prd-54-coverage-toggle.md) | 0.15.0 | 2026-09-06 |
 | 62 | [Execução de scripts SQL contra perfil de conexão](completed/prd-62-run-scripts-against-profiles.md) | 0.12.0 | 2026-09-06 |
 | 63 | [Wiki bilíngue (pt-BR/en) + correção de links + limpeza de READMEs](completed/prd-63-diagram-i18n.md) | — | — |
 | 64 | [Migração para Oracle-Only: eliminação do utPLSQL-cli e Java](completed/prd-64-oracle-only-migration.md) | 0.12.0 | 2026-09-09 |
@@ -163,7 +164,6 @@ notas `prd-*`. O índice navegável do vault é a [[MOC - PRDs]].
 | 47 | [Node 26 no toolchain de desenvolvimento](approved/prd-47-node-26-toolchain.md) | 0.15.1 | 2026-08-29 |
 | 50 | [Auto-run on Save (Watch Mode)](approved/prd-50-auto-run-on-save.md) | 0.15.0 | 2026-09-06 |
 | 51 | [Execução e seleção por Tag (`%tags`)](approved/prd-51-run-by-tag.md) | 0.15.0 | 2026-09-06 |
-| 54 | [Toggle de cobertura na status bar](approved/prd-54-coverage-toggle.md) | 0.15.0 | 2026-09-06 |
 | 55 | [Organização da árvore de testes por tag](approved/prd-55-tag-organization.md) | 0.15.0 | 2026-09-06 |
 
 ### ⚪ Propostos
@@ -245,6 +245,7 @@ docs/prd/
 │   ├── prd-49-internacionalizacao.md
 │   ├── prd-52-inline-diff-expected-actual.md
 │   ├── prd-53-debug-test-variants.md
+│   ├── prd-54-coverage-toggle.md
 │   ├── prd-62-run-scripts-against-profiles.md
 │   ├── prd-63-diagram-i18n.md
 │   ├── prd-64-oracle-only-migration.md
@@ -276,7 +277,6 @@ docs/prd/
 │   ├── prd-47-node-26-toolchain.md
 │   ├── prd-50-auto-run-on-save.md
 │   ├── prd-51-run-by-tag.md
-│   ├── prd-54-coverage-toggle.md
 │   ├── prd-55-tag-organization.md
 ├── proposed/        ← em avaliação
 │   ├── prd-56-duration-persistence.md

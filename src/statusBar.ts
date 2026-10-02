@@ -1,6 +1,7 @@
 import * as vscode from 'vscode';
 import { getExtensionLocale, readConfig } from './config';
 import { activeProfileName } from './connectionProfiles';
+import { coverageToggleText } from './coverageDecision';
 import { t } from './i18n';
 
 export interface StatusBarFormat {
@@ -35,13 +36,32 @@ export function formatResults(
 
 export class UtplsqlStatusBar implements vscode.Disposable {
   private item: vscode.StatusBarItem;
+  private coverageItem: vscode.StatusBarItem;
   private lastUpdate = 0;
 
   constructor() {
     this.item = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Left, 100);
     this.item.command = 'utplsql.switchProfile';
+    this.coverageItem = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Right, 90);
+    this.coverageItem.command = 'utplsql.toggleCoverage';
     if (!readConfig().statusBarEnabled) return;
     this.showIdle();
+    this.showCoverage(false);
+  }
+
+  /** Item à direita que alterna o modo global de cobertura (PRD-54). */
+  showCoverage(on: boolean): void {
+    if (!readConfig().statusBarEnabled) return;
+    const locale = getExtensionLocale();
+    const fmt = coverageToggleText(on, {
+      on: t(locale, 'status.coverage.on'),
+      off: t(locale, 'status.coverage.off'),
+      onTooltip: t(locale, 'status.coverage.onTooltip'),
+      offTooltip: t(locale, 'status.coverage.offTooltip'),
+    });
+    this.coverageItem.text = fmt.text;
+    this.coverageItem.tooltip = fmt.tooltip;
+    this.coverageItem.show();
   }
 
   showIdle(): void {
@@ -83,5 +103,6 @@ export class UtplsqlStatusBar implements vscode.Disposable {
 
   dispose(): void {
     this.item.dispose();
+    this.coverageItem.dispose();
   }
 }

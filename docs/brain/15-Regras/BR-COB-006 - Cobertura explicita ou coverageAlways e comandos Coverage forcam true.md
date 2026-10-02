@@ -4,12 +4,12 @@ aliases: [BR-COB-006]
 tipo: regra
 titulo: Cobertura = explicit ?? coverageAlways; comandos *Coverage forçam true
 dominio: cobertura
-status: proposta
+status: ativo
 severidade: media
 fonte: codigo
 verificado: 2026-10-02
-implementacao: []
-testes: []
+implementacao: ["src/coverageDecision.ts:12", "src/state.ts:32", "src/commands/run.ts:341"]
+testes: ["src/test/unit/coverageDecision.test.ts"]
 prds: ["PRD-54"]
 requisitos: ["PRD-54/RF1", "PRD-54/RF3", "PRD-54/RF4", "PRD-54/RNF1"]
 tags: ["cobertura"]
@@ -43,5 +43,7 @@ auto-run.
 - 🗺️ [[MOC - Regras]]
 - 📄 PRDs: [[prd-54-coverage-toggle|PRD-54]]
 - 🎯 Requisitos: [[prd-54-coverage-toggle|PRD-54 RF1]] · [[prd-54-coverage-toggle|PRD-54 RF3]] · [[prd-54-coverage-toggle|PRD-54 RF4]] · [[prd-54-coverage-toggle|PRD-54 RNF1]]
+- 🧩 Código: [[COD - coverageDecision.ts]] · [[COD - state.ts]] · [[COD - run.ts]]
+- 🧪 Testes: [[TST - coverageDecision.test.ts]]
 - ↩️ Referenciada por: [[prd-50-auto-run-on-save|PRD-50]] · [[prd-54-coverage-toggle|PRD-54]]
 <!-- brain:auto:end -->

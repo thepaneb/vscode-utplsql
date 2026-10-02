@@ -17,6 +17,14 @@
   funções puras (`src/debugTargets.ts`) e o `findAnnotationAtLine` virou módulo
   compartilhado (`src/annotation.ts`), com aviso amigável quando não há alvo.
 
+- **Toggle de cobertura na status bar (PRD-54)**: novo item à direita da status
+  bar alterna o **modo global de cobertura** da sessão (`state.coverageAlways`,
+  não persistido) via `utplSQL: Toggle Coverage`. Os entry points sem cobertura
+  explícita (`runAll`, `runFile`, `runAtCursor`, `rerunLast`, `runFailed`) passam
+  a usar a flag — centralizada na função pura `effectiveCoverage` em
+  `src/coverageDecision.ts` — enquanto os comandos `*Coverage` continuam forçando
+  cobertura.
+
 ## 0.14.0
 
 - **Piso de VS Code 1.101 e runtime Node 22 (PRD-94)**: `engines.vscode` passa de

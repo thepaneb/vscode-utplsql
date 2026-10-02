@@ -4,12 +4,12 @@ aliases: [BR-UI-012]
 tipo: regra
 titulo: Item de status bar alterna o modo global de cobertura (sessão, não persiste)
 dominio: ui
-status: proposta
+status: ativo
 severidade: baixa
 fonte: codigo
 verificado: 2026-10-02
-implementacao: []
-testes: []
+implementacao: ["src/statusBar.ts:50", "src/coverageDecision.ts:26", "src/commands/run.ts:340"]
+testes: ["src/test/unit/statusBar.test.ts", "src/test/unit/coverageDecision.test.ts"]
 prds: ["PRD-54"]
 requisitos: ["PRD-54/RF2"]
 tags: ["ui", "cobertura"]
@@ -42,5 +42,7 @@ Dar feedback visível do modo que aumenta o custo no banco (DBMS_PROFILER).
 - 🗺️ [[MOC - Regras]]
 - 📄 PRDs: [[prd-54-coverage-toggle|PRD-54]]
 - 🎯 Requisitos: [[prd-54-coverage-toggle|PRD-54 RF2]]
+- 🧩 Código: [[COD - statusBar.ts]] · [[COD - coverageDecision.ts]] · [[COD - run.ts]]
+- 🧪 Testes: [[TST - statusBar.test.ts]] · [[TST - coverageDecision.test.ts]]
 - ↩️ Referenciada por: [[prd-54-coverage-toggle|PRD-54]]
 <!-- brain:auto:end -->

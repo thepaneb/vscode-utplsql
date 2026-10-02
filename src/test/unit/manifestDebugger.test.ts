@@ -102,6 +102,11 @@ test('menu testing/item/context expõe utplsql.runWithReporter (PRD-76)', () => 
   assert.ok(menu.some((m) => m.command === 'utplsql.runWithReporter'));
 });
 
+test('comando de toggle de cobertura está registrado (PRD-54)', () => {
+  const commands = pkg.contributes.commands ?? [];
+  assert.ok(commands.some((c) => c.command === 'utplsql.toggleCoverage'));
+});
+
 test('extensão fica desabilitada em workspace não confiável (PRD-81 RF2)', () => {
   assert.strictEqual(pkg.capabilities?.untrustedWorkspaces?.supported, false);
 });
