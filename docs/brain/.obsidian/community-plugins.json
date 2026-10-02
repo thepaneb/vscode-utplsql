@@ -3,5 +3,8 @@
   "templater-obsidian",
   "obsidian-excalidraw-plugin",
   "relations",
-  "obsidian-local-rest-api"
+  "obsidian-local-rest-api",
+  "copilot",
+  "smart-connections",
+  "smart-lookup"
 ]
