@@ -810,6 +810,7 @@
     "docs:fidelity": "node scripts/docs-fidelity.cjs",
     "sync-prds": "node scripts/sync-prds.cjs",
     "pr:create": "node scripts/create-pr.cjs",
+    "release:create": "node scripts/create-release.cjs",
     "publish": "node scripts/publish.cjs",
     "publish:patch": "echo '⚠️ Publicacao apenas via GitHub workflow (release). Use npm run package para .vsix local.' && exit 1"
   },

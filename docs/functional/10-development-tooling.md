@@ -34,6 +34,7 @@ Ferramentas e infraestrutura de desenvolvimento do projeto.
 | `npm run docs:check` | Consistência da documentação versionada (roda no CI) |
 | `npm run sync-prds` | Atualiza labels/issues no GitHub |
 | `npm run pr:create` | Cria pull request (`scripts/create-pr.cjs`) |
+| `npm run release:create` | Cria a **GitHub release** (dispara o `publish.yml`); notas do CHANGELOG (`scripts/create-release.cjs`) |
 | `npm run publish` | Publicação é **exclusiva via GitHub release**; o script é o helper do workflow |
 
 ## Depurar a extensão (F5)
