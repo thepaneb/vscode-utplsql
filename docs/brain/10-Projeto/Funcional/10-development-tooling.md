@@ -61,12 +61,12 @@ extensão normalmente.
 > `"debug.javascript.enableNetworkView": false` nas User settings.
 >
 > Se aparecer **`Extension host did not start in 10 seconds … stopped on the
-> first line`** (com `debugBrk: true`) e/ou `The onCancel handler was attached
-> after the promise settled` no `ms-vscode.js-debug`, é o **depurador JS
-> embutido** falhando em anexar — **não** é a extensão. Para validar a ativação,
-> use **`Ctrl+F5` (Executar sem depuração)**; para depurar, faça **Reload
-> Window** (ou reinicie o VS Code) e, se persistir, desative o auto-attach
-> (`"debug.javascript.autoAttachFilter": "disabled"`).
+> first line`** (com `debugBrk: true`) e/ou `ECONNREFUSED ::1` /
+> `The onCancel handler was attached after the promise settled` no
+> `ms-vscode.js-debug`, era um **bug do js-debug** (discava `::1` enquanto o host
+> escutava `127.0.0.1`), **corrigido no VS Code 1.140** (js-debug 1.140, #2417).
+> Em versões antigas, as alternativas eram **`Ctrl+F5`** (sem depuração) ou o
+> config **“Anexar ao Extension Host”** (com `address: 127.0.0.1`).
 >
 > O `main` é o **bundle** (`dist/extension.js`); por isso o `outFiles` do launch
 > inclui `dist/**` **e** `out/**` (source maps) — sem isso os breakpoints podem
