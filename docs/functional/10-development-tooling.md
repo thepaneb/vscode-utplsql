@@ -101,6 +101,8 @@ extensão normalmente.
 
 - Terminal: tabela de cobertura (`text`)
 - `coverage/lcov.info`: compatível com ferramentas CI
+- **Codecov**: o CI envia o `lcov.info` (`codecov/codecov-action`) → badge de
+  cobertura no README; status/gate em `codecov.yml`
 - `coverage/index.html`: relatório navegável
 - `coverage/` no `.gitignore` e `.vscodeignore`
 
@@ -205,7 +207,8 @@ Sem `.env`, `describeDB` é pulado (`describe.skip`).
 Workflow `.github/workflows/ci.yml` (push/PR para `main`):
 - Node 22/24 matrix
 - `npm ci` → `npm run docs:check` → `npm run lint` → `npm run typecheck` →
-  `npm run test:coverage` (enforça os thresholds do c8)
+  `npm run test:coverage` (enforça os thresholds do c8) → **upload ao Codecov**
+  (`codecov/codecov-action`, só no Node 24; config em `codecov.yml`)
 
 `.github/workflows/publish.yml` (release publicada no GitHub):
 - Job **verify** (1×): `compile`, `lint`, `test:unit`
