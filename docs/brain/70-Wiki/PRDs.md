@@ -110,18 +110,27 @@ The file is moved between folders as it progresses.
 | 81 | Connection settings security hardening | 0.14.0 |
 | 82 | TNS resolution in thin + wallet password in SecretStorage | 0.14.0 |
 | 94 | VS Code floor 1.101 (Node 22 runtime) | 0.14.0 |
+| 52 | Inline expected × actual diff on failures | 0.15.0 |
 
 ### 🔵 Approved
 
 | # | PRD | Target version |
 |---|---|---|
-| 47 | Node 26 in development toolchain | 0.15.0 |
+| 47 | Node 26 in development toolchain | 0.15.1 |
+| 50 | Auto-run on save (watch mode) | 0.15.0 |
+| 51 | Run and select by tag (`%tags`) | 0.15.0 |
+| 53 | Debug variants (cursor, failed, last) | 0.15.0 |
+| 54 | Coverage toggle on the status bar | 0.15.0 |
+| 55 | Test tree organization by tag | 0.15.0 |
 
 ### ⚪ Proposed
 
 | # | PRD | Target version |
 |---|---|---|
-| 50–61 | Auto-run, tags, inline diff, debug variants, coverage toggle, multi-root, scaffold… | 0.15.0+ |
+| 95 | Runtime modernization (ESM/ES2023, Node 22) | 0.16.0 |
+| 56–59 | Duration persistence, multi-root, related tests, scaffold… | 0.17.0 |
+| 88–91 | Locale-aware formatting, plurals, parity, pseudo-locale | 0.18.0 |
+| 92–93 | RTL, new locales, continuous localization pipeline | 0.19.0 |
 
 ## How to propose a PRD
 

@@ -5,7 +5,13 @@ import { parseCobertura } from './cobertura';
 import { getExtensionLocale } from './config';
 import { resolveSourceUri } from './coverage';
 import { t } from './i18n';
-import { isUserFrame, type StackFrame, type TestCaseResult, type TestStatus } from './junit';
+import {
+  isUserFrame,
+  parseExpectedActual,
+  type StackFrame,
+  type TestCaseResult,
+  type TestStatus,
+} from './junit';
 import { buildMatchIndex, findByNameOnly, type MatchEntry } from './matching';
 import { deriveDeclarationCoverage } from './plsqlDeclarations';
 import type { TestStateManager } from './state';
@@ -147,6 +153,11 @@ export function applyResultsFromCases(
         break;
       case 'failed': {
         const msg = new vscode.TestMessage(c.message ?? t(locale, 'results.failedFallback'));
+        const ea = parseExpectedActual(c.message ?? '');
+        if (ea.expected !== undefined && ea.actual !== undefined) {
+          msg.expectedOutput = ea.expected;
+          msg.actualOutput = ea.actual;
+        }
         if (c.stackFrames) {
           const loc = resolveStackFrameToUri(c.stackFrames, state);
           if (loc) msg.location = loc;

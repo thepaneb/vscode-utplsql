@@ -128,3 +128,9 @@ helper `createSuiteItems(controller, suite, state)` e usá-la nos três modos.
 - Combinação Schema > Tag > Suite? — Follow-up.
 - Como tratar o risco de IDs duplicados (estratégia de id por tag) — decidir na
   implementação com spike.
+
+## 12. Impacto no cérebro
+
+Esperado criar **`BR-SCHEMA-005`** (`organization=tag` → Tag > Suite > Test, ids
+estáveis) com `prds: ["PRD-55"]`; alterar **`BR-SCHEMA-001`** (três modos) e
+referenciar **`BR-SCHEMA-003`**/**`BR-SCHEMA-004`**.

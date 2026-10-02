@@ -8,8 +8,9 @@ versao: "0.15.0"
 data: "2026-09-06"
 autor: "Gil Cleber Barboza"
 versao_titulo: "0.15.0 — Tags e UX de execução"
-verificado: 2026-09-23
-regras: []
+verificado: 2026-10-02
+relacionado: ["BR-DEBUG-005", "BR-DEBUG-004", "BR-UI-009"]
+regras: ["BR-DEBUG-005"]
 tags: [prd]
 ---
 
@@ -136,11 +137,22 @@ Extrair `pickTestItem` (QuickPick quando há mais de um alvo).
 - Integrar debug aos perfis de run do Test Explorer (debug profile)?
   — O VSCode exige um `TestRunProfile` com `Kind.Debug`; avaliar como follow-up.
 
+## 12. Impacto no cérebro
+
+Esperado criar **`BR-DEBUG-005`** (resolução de alvo das variações de debug) com
+`prds: ["PRD-53"]` e alterar **`BR-UI-009`** (novos handlers); referência a
+**`BR-DEBUG-004`** (gate `debugger.enabled`).
+
 ## Conexões
 
 <!-- brain:auto:start:conexoes -->
 - 🗺️ [[MOC - PRDs]]
+- 📐 Regras: [[BR-DEBUG-005 - debugAtCursor-debugFailed-debugLast resolvem o alvo e chamam startDebugSession|BR-DEBUG-005]]
+- 🔗 BR-DEBUG-005 · BR-DEBUG-004 · BR-UI-009
 - 🔗 PRDs relacionados: [[prd-31-smart-rerun-patterns|PRD-31]] · [[prd-33-plsql-debugger-integration|PRD-33]]
-- 🔗 Mesma versão (0.15.0): [[prd-50-auto-run-on-save|PRD-50]] · [[prd-51-run-by-tag|PRD-51]] · [[prd-52-inline-diff-expected-actual|PRD-52]] · [[prd-54-coverage-toggle|PRD-54]] · [[prd-55-tag-organization|PRD-55]]
+- 🔗 Mesma versão (0.15.0): [[prd-50-auto-run-on-save|PRD-50]] · [[prd-51-run-by-tag|PRD-51]] · [[prd-54-coverage-toggle|PRD-54]] · [[prd-55-tag-organization|PRD-55]]
+- 🎯 RF1 — Debug at cursor → [[BR-DEBUG-005 - debugAtCursor-debugFailed-debugLast resolvem o alvo e chamam startDebugSession|BR-DEBUG-005]]
+- 🎯 RF2 — Debug failed → [[BR-DEBUG-005 - debugAtCursor-debugFailed-debugLast resolvem o alvo e chamam startDebugSession|BR-DEBUG-005]]
+- 🎯 RF3 — Debug last → [[BR-DEBUG-005 - debugAtCursor-debugFailed-debugLast resolvem o alvo e chamam startDebugSession|BR-DEBUG-005]]
 - 🚀 ⬅️ release anterior: [[prd-94-vscode-floor-1-101|PRD-94 (0.14.0)]] · ➡️ próxima release: [[prd-47-node-26-toolchain|PRD-47 (0.15.1)]]
 <!-- brain:auto:end -->

@@ -53,6 +53,7 @@ SORT id ASC
 - [[BR-COB-003 - Cobertura de views via V$SQL é opt-in e best-effort]] — `BR-COB-003`
 - [[BR-COB-004 - Fonte virtual do banco (utplsql-source) é read-only]] — `BR-COB-004`
 - [[BR-COB-005 - XML Cobertura e cobertura por declaracao sao parseados de forma pura]] — `BR-COB-005`
+- [[BR-COB-006 - Cobertura explicita ou coverageAlways e comandos Coverage forcam true]] — `BR-COB-006`
 - [[BR-CONN-001 - Precedência de resolução da conexão]] — `BR-CONN-001`
 - [[BR-CONN-002 - Prompt só ocorre quando nada está configurado e não persiste]] — `BR-CONN-002`
 - [[BR-CONN-003 - Limpar conexão de sessão reseta o context key]] — `BR-CONN-003`
@@ -75,6 +76,7 @@ SORT id ASC
 - [[BR-DEBUG-002 - stopOnException controla pausa em excecao (break_exception)]] — `BR-DEBUG-002`
 - [[BR-DEBUG-003 - Function standalone depura no namespace toplevel]] — `BR-DEBUG-003`
 - [[BR-DEBUG-004 - compileForDebug recompila com debug e mantem o objeto VALID]] — `BR-DEBUG-004`
+- [[BR-DEBUG-005 - debugAtCursor-debugFailed-debugLast resolvem o alvo e chamam startDebugSession]] — `BR-DEBUG-005`
 - [[BR-EXEC-001 - Execução usa duas conexões dedicadas (conn1 runner, conn2 poll)]] — `BR-EXEC-001`
 - [[BR-EXEC-002 - Conexões do runner têm callTimeout zerado]] — `BR-EXEC-002`
 - [[BR-EXEC-003 - Falha na segunda conexão libera a primeira (sem vazamento)]] — `BR-EXEC-003`
@@ -90,6 +92,7 @@ SORT id ASC
 - [[BR-EXEC-013 - Reporter de cobertura só entra se existir no banco]] — `BR-EXEC-013`
 - [[BR-EXEC-014 - Reporters adicionais são validados e sanitizados antes do PL-SQL]] — `BR-EXEC-014`
 - [[BR-EXEC-015 - Export com reporter não altera os resultados do Test Explorer]] — `BR-EXEC-015`
+- [[BR-EXEC-016 - Auto-run on save - default off, debounce por arquivo e guarda de concorrencia]] — `BR-EXEC-016`
 - [[BR-I18N-001 - Resolução de locale e fallback de tradução]] — `BR-I18N-001`
 - [[BR-LOG-001 - Diagnostico vai para o LogOutputChannel utPLSQL]] — `BR-LOG-001`
 - [[BR-PARSE-001 - Arquivo só é suite utPLSQL se tiver %suite E CREATE PACKAGE]] — `BR-PARSE-001`
@@ -107,11 +110,15 @@ SORT id ASC
 - [[BR-PARSE-013 - Mapeamento resultado para teste por lastSegment+name-description com fallback]] — `BR-PARSE-013`
 - [[BR-PARSE-014 - message.location só é definida para failed-error com frame de usuário resolvido]] — `BR-PARSE-014`
 - [[BR-PARSE-015 - CodeLens gera dois lenses por annotation, na linha da annotation]] — `BR-PARSE-015`
+- [[BR-PARSE-016 - Tags de suite (%tags no header) viram ParsedSuite.tags e SuiteFile.tags]] — `BR-PARSE-016`
+- [[BR-PARSE-017 - Filtro por tag - inclusao e exclusao (!) case-insensitive; sem tag so sem inclusao]] — `BR-PARSE-017`
+- [[BR-PARSE-018 - TestMessage de falha ganha expectedOutput-actualOutput quando ha Expected-Actual]] — `BR-PARSE-018`
 - [[BR-PLAT-001 - Piso de VS Code e runtime Node do host sao coerentes]] — `BR-PLAT-001`
 - [[BR-SCHEMA-001 - organization bifurca file tree vs schema tree; suiteMap é o lookup canônico]] — `BR-SCHEMA-001`
 - [[BR-SCHEMA-002 - extractSchemaFromPath - path.posix.relative e placeholder {schema}]] — `BR-SCHEMA-002`
 - [[BR-SCHEMA-003 - collectAllItems usa cachedItems e, se vazio, percorre até 3 níveis]] — `BR-SCHEMA-003`
 - [[BR-SCHEMA-004 - Árvore de testes resolvida por nível sob demanda (lazy)]] — `BR-SCHEMA-004`
+- [[BR-SCHEMA-005 - organization tag monta Tag Suite Test com ids estaveis e grupo (sem tag)]] — `BR-SCHEMA-005`
 - [[BR-SCRIPT-001 - Script run executa SQLPlus (split, PROMPT-SHOW ERRORS, thin por padrao)]] — `BR-SCRIPT-001`
 - [[BR-TEST-001 - Matriz de bancos Oracle cobre 12.2-23ai em thin e thick]] — `BR-TEST-001`
 - [[BR-TEST-002 - Testes de integração exigem banco e são skip sem UTPLSQL_CONN]] — `BR-TEST-002`
@@ -125,4 +132,6 @@ SORT id ASC
 - [[BR-UI-008 - Diagnósticos de compilação mapeiam ALL_ERRORS e usam source utPLSQL Compilation]] — `BR-UI-008`
 - [[BR-UI-009 - Handlers dos comandos utplsql registrados e com aviso]] — `BR-UI-009`
 - [[BR-UI-010 - Decoracoes inline refletem o ultimo status e sao descartadas no dispose]] — `BR-UI-010`
+- [[BR-UI-011 - utplsql.runByTag oferece QuickPick multi-selecao das tags; showTagsInTree sufixa o label]] — `BR-UI-011`
+- [[BR-UI-012 - Item de status bar alterna o modo global de cobertura (sessao, nao persiste)]] — `BR-UI-012`
 <!-- brain:auto:end -->

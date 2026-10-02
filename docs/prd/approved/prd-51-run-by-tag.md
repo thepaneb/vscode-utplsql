@@ -161,3 +161,10 @@ Registrar `utplsql.runByTag` e a setting `utplsql.showTagsInTree`.
 - Combinar tag + cobertura (variação `utplsql.runByTagCoverage`)?
   — Sim, alinhado à PRD-54 (toggle global de cobertura).
 - Expressões de tags (`tag1 AND tag2`)? — Follow-up.
+
+## 12. Impacto no cérebro
+
+Esperado criar **`BR-PARSE-016`** (tags de suíte no header), **`BR-PARSE-017`**
+(filtro por tag com `!` e case-insensitive) e **`BR-UI-011`** (`runByTag` +
+`showTagsInTree`) com `prds: ["PRD-51"]`; alterar **`BR-PARSE-005`**,
+**`BR-PARSE-010`** e **`BR-UI-009`**.

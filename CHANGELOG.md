@@ -1,5 +1,14 @@
 # Changelog
 
+## 0.15.0
+
+- **Diff inline esperado × obtido nas falhas (PRD-52)**: nas falhas de asserção
+  (`ut.expect(x).to_equal(y)`), o painel de testes passa a exibir o **diff nativo**
+  do VS Code com os valores "Expected"/"Actual" extraídos da mensagem do reporter.
+  O parser `parseExpectedActual` é puro e tolerante (case-insensitive, multilinha,
+  formatos `Expected:`/`Actual:` e `... was expected to equal:`); falhas sem os
+  marcadores seguem com o texto normal e o *jump to failure* é preservado.
+
 ## 0.14.0
 
 - **Piso de VS Code 1.101 e runtime Node 22 (PRD-94)**: `engines.vscode` passa de

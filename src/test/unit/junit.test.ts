@@ -1,6 +1,6 @@
 import assert from 'node:assert';
 import { test } from 'node:test';
-import { isUserFrame, parseJUnit, parseStackFrames } from '../../junit';
+import { isUserFrame, parseExpectedActual, parseJUnit, parseStackFrames } from '../../junit';
 
 const XML = `<?xml version="1.0" encoding="UTF-8"?>
 <testsuites tests="3" failures="1" errors="0">
@@ -352,4 +352,48 @@ test('isUserFrame: frame do framework é rejeitado mesmo qualificado com o schem
   assert.strictEqual(isUserFrame({ objectName: 'UT3.UT_RUNNER', line: 151 }), false);
   assert.strictEqual(isUserFrame({ objectName: 'UT3.UT$HELPER', line: 2 }), false);
   assert.strictEqual(isUserFrame({ objectName: 'UT3.UT_ASSERT.ANY_PROC', line: 3 }), false);
+});
+
+// ── parseExpectedActual (PRD-52) ─────────────────────────────────────────────
+// O utPLSQL emite os valores das asserções como "Expected:"/"Actual:" na
+// mensagem de falha; o VSCode renderiza o diff nativo com esses valores.
+
+test('parseExpectedActual: extrai Expected e Actual de blocos rotulados', () => {
+  const message = 'Expected: 2 (number)\nActual: 1 (number)';
+  assert.deepStrictEqual(parseExpectedActual(message), {
+    expected: '2 (number)',
+    actual: '1 (number)',
+  });
+});
+
+test('parseExpectedActual: aceita o formato "was expected to equal"', () => {
+  const message = 'Actual: 1 (number) was expected to equal: 2 (number)';
+  const { expected, actual } = parseExpectedActual(message);
+  assert.strictEqual(expected, '2 (number)');
+  assert.strictEqual(actual, '1 (number)');
+});
+
+test('parseExpectedActual: é case-insensitive', () => {
+  const { expected, actual } = parseExpectedActual('EXPECTED: 5\nactual: 4');
+  assert.strictEqual(expected, '5');
+  assert.strictEqual(actual, '4');
+});
+
+test('parseExpectedActual: captura multilinha até o próximo rótulo', () => {
+  const message = 'Expected: linha1\nlinha2\nActual: outra1\noutra2';
+  const { expected, actual } = parseExpectedActual(message);
+  assert.strictEqual(expected, 'linha1\nlinha2');
+  assert.strictEqual(actual, 'outra1\noutra2');
+});
+
+test('parseExpectedActual: mensagem sem marcadores retorna vazio', () => {
+  assert.deepStrictEqual(parseExpectedActual('falhou sem detalhes'), {});
+});
+
+test('parseExpectedActual: só um marcador presente não preenche o par', () => {
+  assert.deepStrictEqual(parseExpectedActual('Actual: 1 (number)'), {});
+});
+
+test('parseExpectedActual: não lança com string vazia', () => {
+  assert.deepStrictEqual(parseExpectedActual(''), {});
 });

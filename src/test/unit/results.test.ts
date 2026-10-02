@@ -500,3 +500,61 @@ test('applyResultsFromCases: error sem message usa "Erro"', () => {
   assert.strictEqual(run.erroredList.length, 1);
   assert.strictEqual(run.erroredList[0].m.message, 'Erro');
 });
+
+// ── Diff inline (PRD-52) ─────────────────────────────────────────────────────
+
+test('applyResultsFromCases: failed com Expected/Actual preenche the diff', () => {
+  const cases: TestCaseResult[] = [
+    {
+      classname: 'pkg',
+      name: 't1',
+      status: 'failed',
+      message: 'Actual: 1 (number) was expected to equal: 2 (number)',
+    },
+  ];
+  const item = { id: 't1', children: [] };
+  const metaMap = new Map<any, ItemMeta>();
+  metaMap.set(item, makeMeta({ packageName: 'pkg', procName: 't1' }));
+  const run = makeRun() as any;
+  const state = makeState(metaMap);
+  applyResultsFromCases(cases, [item as any], run, state);
+  const msg = run.failedList[0].m as any;
+  assert.strictEqual(msg.expectedOutput, '2 (number)');
+  assert.strictEqual(msg.actualOutput, '1 (number)');
+  assert.match(msg.message, /was expected to equal/);
+});
+
+test('applyResultsFromCases: failed sem marcadores não define o diff', () => {
+  const cases: TestCaseResult[] = [
+    { classname: 'pkg', name: 't1', status: 'failed', message: 'falhou sem detalhes' },
+  ];
+  const item = { id: 't1', children: [] };
+  const metaMap = new Map<any, ItemMeta>();
+  metaMap.set(item, makeMeta({ packageName: 'pkg', procName: 't1' }));
+  const run = makeRun() as any;
+  const state = makeState(metaMap);
+  applyResultsFromCases(cases, [item as any], run, state);
+  const msg = run.failedList[0].m as any;
+  assert.strictEqual(msg.expectedOutput, undefined);
+  assert.strictEqual(msg.actualOutput, undefined);
+});
+
+test('applyResultsFromCases: error não recebe diff', () => {
+  const cases: TestCaseResult[] = [
+    {
+      classname: 'pkg',
+      name: 't1',
+      status: 'error',
+      message: 'Expected: 2\nActual: 1',
+    },
+  ];
+  const item = { id: 't1', children: [] };
+  const metaMap = new Map<any, ItemMeta>();
+  metaMap.set(item, makeMeta({ packageName: 'pkg', procName: 't1' }));
+  const run = makeRun() as any;
+  const state = makeState(metaMap);
+  applyResultsFromCases(cases, [item as any], run, state);
+  const msg = run.erroredList[0].m as any;
+  assert.strictEqual(msg.expectedOutput, undefined);
+  assert.strictEqual(msg.actualOutput, undefined);
+});

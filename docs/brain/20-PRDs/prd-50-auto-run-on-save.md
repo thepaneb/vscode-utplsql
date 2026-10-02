@@ -8,8 +8,9 @@ versao: "0.15.0"
 data: "2026-09-06"
 autor: "Gil Cleber Barboza"
 versao_titulo: "0.15.0 — Tags e UX de execução"
-verificado: 2026-09-23
-regras: []
+verificado: 2026-10-02
+relacionado: ["BR-EXEC-016", "BR-COB-006", "SEC-010", "BR-UI-002"]
+regras: ["BR-EXEC-016"]
 tags: [prd]
 ---
 
@@ -179,11 +180,26 @@ herdar a flag de cobertura.
 - Recompilar automaticamente o package antes de rodar no modo Oracle direto?
   — Avaliar como follow-up separado (hoje o CLI recompila; o direto, não).
 
+## 12. Impacto no cérebro
+
+Esperado criar **`BR-EXEC-016`** (auto-run: default off, debounce por arquivo e
+guarda de concorrência) com `prds: ["PRD-50"]` e alterar **`BR-UI-002`**
+(`utplsql:running`) e **`BR-COB-006`** (flag de cobertura compartilhada). O
+fluxo não interativo referencia **`SEC-010`**.
+
 ## Conexões
 
 <!-- brain:auto:start:conexoes -->
 - 🗺️ [[MOC - PRDs]]
+- 📐 Regras: [[BR-EXEC-016 - Auto-run on save - default off, debounce por arquivo e guarda de concorrencia|BR-EXEC-016]]
+- 🔗 BR-EXEC-016 · BR-COB-006 · SEC-010 · BR-UI-002
 - 🔗 PRDs relacionados: [[prd-54-coverage-toggle|PRD-54]]
-- 🔗 Mesma versão (0.15.0): [[prd-51-run-by-tag|PRD-51]] · [[prd-52-inline-diff-expected-actual|PRD-52]] · [[prd-53-debug-test-variants|PRD-53]] · [[prd-54-coverage-toggle|PRD-54]] · [[prd-55-tag-organization|PRD-55]]
+- 🔗 Mesma versão (0.15.0): [[prd-51-run-by-tag|PRD-51]] · [[prd-53-debug-test-variants|PRD-53]] · [[prd-54-coverage-toggle|PRD-54]] · [[prd-55-tag-organization|PRD-55]]
+- 🎯 RF1 — Setting `utplsql.autoRun` → [[BR-EXEC-016 - Auto-run on save - default off, debounce por arquivo e guarda de concorrencia|BR-EXEC-016]]
+- 🎯 RF2 — Disparo no save → [[BR-EXEC-016 - Auto-run on save - default off, debounce por arquivo e guarda de concorrencia|BR-EXEC-016]]
+- 🎯 RF3 — Debounce por arquivo → [[BR-EXEC-016 - Auto-run on save - default off, debounce por arquivo e guarda de concorrencia|BR-EXEC-016]]
+- 🎯 RF4 — Guarda contra execução concorrente → [[BR-EXEC-016 - Auto-run on save - default off, debounce por arquivo e guarda de concorrencia|BR-EXEC-016]]
+- 🎯 RNF1 — Nunca disparar em loop: execução não altera arquivos, então o evento → [[BR-EXEC-016 - Auto-run on save - default off, debounce por arquivo e guarda de concorrencia|BR-EXEC-016]]
+- 🎯 RNF2 — Auto-run respeita `utplsql.runnerMode` (Oracle direto ou CLI) sem → [[BR-EXEC-016 - Auto-run on save - default off, debounce por arquivo e guarda de concorrencia|BR-EXEC-016]]
 - 🚀 ⬅️ release anterior: [[prd-94-vscode-floor-1-101|PRD-94 (0.14.0)]] · ➡️ próxima release: [[prd-47-node-26-toolchain|PRD-47 (0.15.1)]]
 <!-- brain:auto:end -->

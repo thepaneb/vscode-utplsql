@@ -2,14 +2,15 @@
 tipo: prd
 id: PRD-52
 aliases: [PRD-52]
-status: approved
+status: completed
 titulo: "Diff inline esperado × obtido nas falhas"
 versao: "0.15.0"
 data: "2026-09-06"
 autor: "Gil Cleber Barboza"
 versao_titulo: "0.15.0 — Tags e UX de execução"
-verificado: 2026-09-23
-regras: []
+verificado: 2026-10-02
+relacionado: ["BR-PARSE-018", "BR-PARSE-014", "BR-PARSE-013"]
+regras: ["BR-PARSE-018"]
 tags: [prd]
 ---
 
@@ -130,11 +131,24 @@ Nenhuma setting/command novo.
   — Se o reporter expuser ambos, adicionar fallback.
 - Diff em `error` (exceção) — não é asserção; fora de escopo.
 
+## 12. Impacto no cérebro
+
+Criada a regra **`BR-PARSE-018`** (`TestMessage` de falha ganha `expectedOutput`/
+`actualOutput`) com `prds: ["PRD-52"]`; **`BR-PARSE-014`** (location) permanece e
+**`BR-PARSE-013`** é contexto. `parseExpectedActual` é puro (testável sem
+`vscode`) e o stub de `TestMessage` ganhou `expectedOutput`/`actualOutput`.
+
 ## Conexões
 
 <!-- brain:auto:start:conexoes -->
 - 🗺️ [[MOC - PRDs]]
+- 📐 Regras: [[BR-PARSE-018 - TestMessage de falha ganha expectedOutput-actualOutput quando ha Expected-Actual|BR-PARSE-018]]
+- 🔗 BR-PARSE-018 · BR-PARSE-014 · BR-PARSE-013
 - 🔗 PRDs relacionados: [[prd-51-run-by-tag|PRD-51]]
 - 🔗 Mesma versão (0.15.0): [[prd-50-auto-run-on-save|PRD-50]] · [[prd-51-run-by-tag|PRD-51]] · [[prd-53-debug-test-variants|PRD-53]] · [[prd-54-coverage-toggle|PRD-54]] · [[prd-55-tag-organization|PRD-55]]
+- 🎯 RF1 — Parse do par Expected/Actual → [[BR-PARSE-018 - TestMessage de falha ganha expectedOutput-actualOutput quando ha Expected-Actual|BR-PARSE-018]]
+- 🎯 RF2 — Preencher `TestMessage` → [[BR-PARSE-018 - TestMessage de falha ganha expectedOutput-actualOutput quando ha Expected-Actual|BR-PARSE-018]]
+- 🎯 RNF1 — Parse defensivo: nunca lança; mensagens sem `Expected:`/`Actual:` → [[BR-PARSE-018 - TestMessage de falha ganha expectedOutput-actualOutput quando ha Expected-Actual|BR-PARSE-018]]
+- 🎯 RNF2 — Multilinha: `Actual:`/`Expected:` podem ocupar várias linhas. → [[BR-PARSE-018 - TestMessage de falha ganha expectedOutput-actualOutput quando ha Expected-Actual|BR-PARSE-018]]
 - 🚀 ⬅️ release anterior: [[prd-94-vscode-floor-1-101|PRD-94 (0.14.0)]] · ➡️ próxima release: [[prd-47-node-26-toolchain|PRD-47 (0.15.1)]]
 <!-- brain:auto:end -->

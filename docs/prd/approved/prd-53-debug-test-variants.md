@@ -123,3 +123,9 @@ Extrair `pickTestItem` (QuickPick quando há mais de um alvo).
 - Debug de todos os falhos em sequência (sessões encadeadas)? — Follow-up.
 - Integrar debug aos perfis de run do Test Explorer (debug profile)?
   — O VSCode exige um `TestRunProfile` com `Kind.Debug`; avaliar como follow-up.
+
+## 12. Impacto no cérebro
+
+Esperado criar **`BR-DEBUG-005`** (resolução de alvo das variações de debug) com
+`prds: ["PRD-53"]` e alterar **`BR-UI-009`** (novos handlers); referência a
+**`BR-DEBUG-004`** (gate `debugger.enabled`).

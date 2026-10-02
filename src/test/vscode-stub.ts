@@ -739,6 +739,9 @@ export namespace tests {
 
 export class TestMessage {
   message: string;
+  expectedOutput?: string;
+  actualOutput?: string;
+  location?: Location;
   constructor(message: string) {
     this.message = message;
   }

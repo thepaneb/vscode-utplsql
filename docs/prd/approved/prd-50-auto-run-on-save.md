@@ -166,3 +166,10 @@ herdar a flag de cobertura.
 - Auto-run com cobertura por padrão? — Casado com a PRD-54 (toggle).
 - Recompilar automaticamente o package antes de rodar no modo Oracle direto?
   — Avaliar como follow-up separado (hoje o CLI recompila; o direto, não).
+
+## 12. Impacto no cérebro
+
+Esperado criar **`BR-EXEC-016`** (auto-run: default off, debounce por arquivo e
+guarda de concorrência) com `prds: ["PRD-50"]` e alterar **`BR-UI-002`**
+(`utplsql:running`) e **`BR-COB-006`** (flag de cobertura compartilhada). O
+fluxo não interativo referencia **`SEC-010`**.

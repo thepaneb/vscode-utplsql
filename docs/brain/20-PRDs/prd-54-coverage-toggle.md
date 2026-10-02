@@ -8,8 +8,9 @@ versao: "0.15.0"
 data: "2026-09-06"
 autor: "Gil Cleber Barboza"
 versao_titulo: "0.15.0 — Tags e UX de execução"
-verificado: 2026-09-23
-regras: []
+verificado: 2026-10-02
+relacionado: ["BR-COB-006", "BR-UI-012", "BR-UI-005"]
+regras: ["BR-COB-006", "BR-UI-012"]
 tags: [prd]
 ---
 
@@ -131,11 +132,24 @@ Adicionar o item à `UtplsqlStatusBar`, o comando em `extension.ts` e a flag em
 - Toggle deveria virar um perfil `TestRunProfile` nativo de "coverage default"?
   — Avaliar.
 
+## 12. Impacto no cérebro
+
+Esperado criar **`BR-COB-006`** (resolução `explicit ?? coverageAlways`) e
+**`BR-UI-012`** (item de status bar do toggle) com `prds: ["PRD-54"]`; alterar
+**`BR-UI-005`** (família da status bar) e referenciar **`BR-EXEC-013`**.
+
 ## Conexões
 
 <!-- brain:auto:start:conexoes -->
 - 🗺️ [[MOC - PRDs]]
+- 📐 Regras: [[BR-COB-006 - Cobertura explicita ou coverageAlways e comandos Coverage forcam true|BR-COB-006]] · [[BR-UI-012 - Item de status bar alterna o modo global de cobertura (sessao, nao persiste)|BR-UI-012]]
+- 🔗 BR-COB-006 · BR-UI-012 · BR-UI-005
 - 🔗 PRDs relacionados: [[prd-50-auto-run-on-save|PRD-50]] · [[prd-51-run-by-tag|PRD-51]]
-- 🔗 Mesma versão (0.15.0): [[prd-50-auto-run-on-save|PRD-50]] · [[prd-51-run-by-tag|PRD-51]] · [[prd-52-inline-diff-expected-actual|PRD-52]] · [[prd-53-debug-test-variants|PRD-53]] · [[prd-55-tag-organization|PRD-55]]
+- 🔗 Mesma versão (0.15.0): [[prd-50-auto-run-on-save|PRD-50]] · [[prd-51-run-by-tag|PRD-51]] · [[prd-53-debug-test-variants|PRD-53]] · [[prd-55-tag-organization|PRD-55]]
+- 🎯 RF1 — Flag no estado → [[BR-COB-006 - Cobertura explicita ou coverageAlways e comandos Coverage forcam true|BR-COB-006]]
+- 🎯 RF2 — Toggle e ícone → [[BR-UI-012 - Item de status bar alterna o modo global de cobertura (sessao, nao persiste)|BR-UI-012]]
+- 🎯 RF3 — Entry points honram a flag → [[BR-COB-006 - Cobertura explicita ou coverageAlways e comandos Coverage forcam true|BR-COB-006]]
+- 🎯 RF4 — Sincronia com auto-run → [[BR-COB-006 - Cobertura explicita ou coverageAlways e comandos Coverage forcam true|BR-COB-006]]
+- 🎯 RNF1 — Toggle não persiste (sessão); avisar via tooltip. → [[BR-COB-006 - Cobertura explicita ou coverageAlways e comandos Coverage forcam true|BR-COB-006]]
 - 🚀 ⬅️ release anterior: [[prd-94-vscode-floor-1-101|PRD-94 (0.14.0)]] · ➡️ próxima release: [[prd-47-node-26-toolchain|PRD-47 (0.15.1)]]
 <!-- brain:auto:end -->

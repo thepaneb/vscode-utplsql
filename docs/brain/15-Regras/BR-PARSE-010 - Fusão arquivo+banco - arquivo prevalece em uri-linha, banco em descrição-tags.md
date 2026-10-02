@@ -38,5 +38,5 @@ O arquivo é necessário para abrir/editar (uri/range), enquanto o banco é a ve
 - 🎯 Requisitos: [[prd-74-db-first-discovery|PRD-74 RF3]]
 - 🧩 Código: [[COD - discovery.ts]]
 - 🧪 Testes: [[TST - discovery.test.ts]]
-- ↩️ Referenciada por: [[01-test-discovery]] · [[prd-74-db-first-discovery|PRD-74]]
+- ↩️ Referenciada por: [[01-test-discovery]] · [[prd-51-run-by-tag|PRD-51]] · [[prd-74-db-first-discovery|PRD-74]]
 <!-- brain:auto:end -->

@@ -118,3 +118,9 @@ Adicionar o item à `UtplsqlStatusBar`, o comando em `extension.ts` e a flag em
 - Persistir em `utplsql.defaultCoverage`? — Follow-up.
 - Toggle deveria virar um perfil `TestRunProfile` nativo de "coverage default"?
   — Avaliar.
+
+## 12. Impacto no cérebro
+
+Esperado criar **`BR-COB-006`** (resolução `explicit ?? coverageAlways`) e
+**`BR-UI-012`** (item de status bar do toggle) com `prds: ["PRD-54"]`; alterar
+**`BR-UI-005`** (família da status bar) e referenciar **`BR-EXEC-013`**.
