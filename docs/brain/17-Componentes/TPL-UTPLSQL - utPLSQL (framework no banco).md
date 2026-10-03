@@ -11,7 +11,7 @@ risco: medio
 url: https://github.com/utPLSQL/utPLSQL
 status: ativo
 verificado: 2026-09-23
-implementacao: []
+implementacao: ["src/oracleRunner.ts", "src/discovery.ts"]
 testes: []
 regras: []
 relacionado: ["[[ADR-001 - Execucao via Oracle direto]]", "[[MOC - Oracle]]"]
@@ -35,5 +35,6 @@ Sem alternativa; degradar para fallback `ALL_OBJECTS/ALL_SOURCE` em versões ant
 
 <!-- brain:auto:start:conexoes -->
 - 🗺️ [[MOC - Componentes]]
+- 🧩 Código: [[COD - oracleRunner.ts]] · [[COD - discovery.ts]]
 - 🔗 [[ADR-001 - Execucao via Oracle direto]] · [[MOC - Oracle]]
 <!-- brain:auto:end -->

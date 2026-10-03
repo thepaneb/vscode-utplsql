@@ -5,6 +5,7 @@ aliases: [ADR-001]
 status: aceita
 modulo: oracle
 data: 2026-09-15
+regras: ["BR-EXEC-001", "BR-EXEC-006"]
 tags: [adr, oracle, oracledb]
 ---
 

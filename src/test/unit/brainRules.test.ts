@@ -17,6 +17,8 @@ const {
   checkPrdRules,
   checkPrdRnfVinculo,
   declaredRnfExceptions,
+  checkLayerConnections,
+  hasSemVinculo,
   semverGte,
   parseFrontmatter,
   LAYERS,
@@ -32,6 +34,8 @@ const {
   checkPrdRules: (notes: { name: string; content: string }[]) => string[];
   checkPrdRnfVinculo: (notes: { name: string; content: string }[]) => string[];
   declaredRnfExceptions: (content: string) => Set<string>;
+  checkLayerConnections: (notes: { name: string; content: string }[]) => string[];
+  hasSemVinculo: (content: string) => boolean;
   semverGte: (a: string, b: string) => boolean;
   checkReferences: (
     notes: { name: string; content: string }[],
@@ -787,4 +791,94 @@ test('brain-rules: PRD sem RNFs declarados passa', () => {
     '### Não-funcionais\n- Nada aqui.\n',
   );
   assert.deepStrictEqual(checkPrdRnfVinculo([prd]), []);
+});
+
+// ── vínculo concreto por camada (NFR/TPL/ADR) ──────────────────────────
+
+test('brain-rules: hasSemVinculo reconhece o marcador', () => {
+  assert.strictEqual(hasSemVinculo('# X\n\nSem vínculo: motivo\n'), true);
+  assert.strictEqual(hasSemVinculo('# X\n\nSem vinculo: motivo\n'), true);
+  assert.strictEqual(hasSemVinculo('# X\n\ntexto\n'), false);
+});
+
+test('brain-rules: NFR ativo sem regras/requisitos é reportado', () => {
+  const nfr = note(['id: NFR-001', 'tipo: nfr', 'titulo: X', 'dominio: d', 'status: ativo']);
+  assert.ok(
+    checkLayerConnections([nfr]).some((p) => p.includes('nfr ativo sem regras ou requisitos')),
+  );
+});
+
+test('brain-rules: NFR ativo com regras ou requisitos passa', () => {
+  const withRules = note([
+    'id: NFR-001',
+    'tipo: nfr',
+    'titulo: X',
+    'dominio: d',
+    'status: ativo',
+    'regras: ["BR-X-001"]',
+  ]);
+  const withReq = note([
+    'id: NFR-002',
+    'tipo: nfr',
+    'titulo: Y',
+    'dominio: d',
+    'status: ativo',
+    'requisitos: ["PRD-1/RF1"]',
+  ]);
+  assert.deepStrictEqual(checkLayerConnections([withRules, withReq]), []);
+});
+
+test('brain-rules: NFR não-ativo é ignorado', () => {
+  const nfr = note(['id: NFR-001', 'tipo: nfr', 'titulo: X', 'dominio: d', 'status: proposta']);
+  assert.deepStrictEqual(checkLayerConnections([nfr]), []);
+});
+
+test('brain-rules: TPL ativo sem implementacao é reportado', () => {
+  const tpl = note([
+    'id: TPL-X',
+    'tipo: componente-terceiro',
+    'titulo: X',
+    'status: ativo',
+    'implementacao: []',
+  ]);
+  assert.ok(checkLayerConnections([tpl]).some((p) => p.includes('componente-terceiro ativo sem')));
+});
+
+test('brain-rules: TPL ativo com implementacao passa', () => {
+  const tpl = note([
+    'id: TPL-X',
+    'tipo: componente-terceiro',
+    'titulo: X',
+    'status: ativo',
+    'implementacao: ["biome.json"]',
+  ]);
+  assert.deepStrictEqual(checkLayerConnections([tpl]), []);
+});
+
+test('brain-rules: ADR aceita sem regras é reportada; proposta é ignorada', () => {
+  const aceita = note(['id: ADR-001', 'tipo: decisao', 'status: aceita']);
+  const proposta = note(['id: ADR-002', 'tipo: decisao', 'status: proposta']);
+  const problems = checkLayerConnections([aceita, proposta]);
+  assert.strictEqual(problems.length, 1);
+  assert.ok(problems[0].includes('ADR-001') || problems[0].includes('n.md'));
+});
+
+test('brain-rules: ADR aceita com regras passa', () => {
+  const adr = note(['id: ADR-001', 'tipo: decisao', 'status: aceita', 'regras: ["BR-X-001"]']);
+  assert.deepStrictEqual(checkLayerConnections([adr]), []);
+});
+
+test('brain-rules: marcador Sem vínculo dispensa o vínculo', () => {
+  const tpl = note([
+    'id: TPL-X',
+    'tipo: componente-terceiro',
+    'titulo: X',
+    'status: ativo',
+    'implementacao: []',
+  ]);
+  const withMarker = {
+    name: 'm.md',
+    content: `${tpl.content}\nSem vínculo: decisão de empacotamento.\n`,
+  };
+  assert.deepStrictEqual(checkLayerConnections([withMarker]), []);
 });

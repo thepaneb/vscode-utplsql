@@ -8,7 +8,7 @@ status: ativo
 verificado: 2026-09-29
 implementacao: []
 testes: []
-regras: []
+regras: ["BR-EXEC-004", "BR-PARSE-008", "BR-TEST-001"]
 relacionado: ["[[ADR-011 - Thick mode opt-in e matriz de bancos]]", "[[TPL-ORACLEDB - node-oracledb]]", "[[MOC - Oracle]]"]
 requisitos: ["PRD-84/RF1", "PRD-84/RF3"]
 tags: ["compatibilidade"]
@@ -47,6 +47,7 @@ Matriz de bancos Oracle local (`scripts/db-matrix/run.sh`), suíte de integraç�
 
 <!-- brain:auto:start:conexoes -->
 - 🗺️ [[MOC - NFR]]
+- 📐 Regras: [[BR-EXEC-004 - Prefixo de schema utPLSQL descoberto via ALL_SYNONYMS|BR-EXEC-004]] · [[BR-PARSE-008 - DB-first com gate de versão 3.1.3 e modos de fonte auto-database-file|BR-PARSE-008]] · [[BR-TEST-001 - Matriz de bancos Oracle cobre 12.2-23ai em thin e thick|BR-TEST-001]]
 - 🎯 Requisitos: [[prd-84-oracle-122-support|PRD-84 RF1]] · [[prd-84-oracle-122-support|PRD-84 RF3]]
 - 🔗 [[ADR-011 - Thick mode opt-in e matriz de bancos]] · [[TPL-ORACLEDB - node-oracledb]] · [[MOC - Oracle]]
 - ↩️ Referenciada por: [[09-configuration]] · [[11-debugger]]

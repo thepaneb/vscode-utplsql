@@ -12,7 +12,7 @@ versao: "^5.11.1"
 url: https://github.com/NaturalIntelligence/fast-xml-parser
 status: ativo
 verificado: 2026-09-23
-implementacao: []
+implementacao: ["src/junit.ts", "src/cobertura.ts"]
 testes: []
 regras: []
 relacionado: ["[[MOC - Stack]]", "[[03-results-and-reporting]]"]
@@ -35,5 +35,6 @@ Substituível por outro parser XML se necessário.
 
 <!-- brain:auto:start:conexoes -->
 - 🗺️ [[MOC - Componentes]]
+- 🧩 Código: [[COD - junit.ts]] · [[COD - cobertura.ts]]
 - 🔗 [[MOC - Stack]] · [[03-results-and-reporting]]
 <!-- brain:auto:end -->

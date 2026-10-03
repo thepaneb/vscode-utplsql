@@ -40,5 +40,5 @@ handler, e entrada inválida produz aviso (não erro não tratado).
 - 🗺️ [[MOC - Regras]]
 - 🧩 Código: [[COD - connection.ts]] · [[COD - debug.ts]] · [[COD - deps.ts]] · [[COD - profile.ts]] · [[COD - script.ts]]
 - 🧪 Testes: [[TST - runCommands.test.ts]] · [[TST - runCommandsExec.test.ts]] · [[TST - scriptCommands.test.ts]] · [[TST - scriptCommandsExec.test.ts]] · [[TST - utilityCommands.test.ts]] · [[TST - utilityCommandsDriverMissing.test.ts]] · [[TST - debugCommands.test.ts]] · [[TST - selectReporterCommand.test.ts]] · [[TST - commandsE2E.test.ts]]
-- ↩️ Referenciada por: [[prd-51-run-by-tag|PRD-51]] · [[prd-53-debug-test-variants|PRD-53]]
+- ↩️ Referenciada por: [[ADR-009 - Integracao nativa ao Test Explorer|ADR-009]] · [[prd-51-run-by-tag|PRD-51]] · [[prd-53-debug-test-variants|PRD-53]]
 <!-- brain:auto:end -->

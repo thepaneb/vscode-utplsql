@@ -8,7 +8,7 @@ status: ativo
 verificado: 2026-09-23
 implementacao: []
 testes: []
-regras: []
+regras: ["BR-PLAT-001"]
 relacionado: ["[[ADR-004 - Bundling com esbuild e higiene do VSIX]]", "[[TPL-ESBUILD - esbuild (bundling do VSIX)]]", "[[MOC - Stack]]"]
 requisitos: ["PRD-18/RNF1"]
 tags: ["compatibilidade"]
@@ -29,6 +29,7 @@ Alinhar toolchain local e CI (PRD-18/47).
 
 <!-- brain:auto:start:conexoes -->
 - 🗺️ [[MOC - NFR]]
+- 📐 Regras: [[BR-PLAT-001 - Piso de VS Code e runtime Node do host sao coerentes|BR-PLAT-001]]
 - 🎯 Requisitos: [[prd-18-engine-node-ci|PRD-18 RNF1]]
 - 🔗 [[ADR-004 - Bundling com esbuild e higiene do VSIX]] · [[TPL-ESBUILD - esbuild (bundling do VSIX)]] · [[MOC - Stack]]
 - ↩️ Referenciada por: [[09-configuration]]

@@ -5,6 +5,7 @@ aliases: [ADR-009]
 status: aceita
 modulo: ux
 data: 2026-09-23
+regras: ["BR-SCHEMA-001", "BR-UI-009"]
 tags: [adr, ux, test-explorer, codelens]
 ---
 

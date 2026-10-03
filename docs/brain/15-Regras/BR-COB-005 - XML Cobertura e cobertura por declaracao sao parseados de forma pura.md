@@ -42,5 +42,5 @@ declarações exibida no editor.
 - 📄 PRDs: [[prd-12-sql-coverage|PRD-12]] · [[prd-48-function-coverage|PRD-48]]
 - 🧩 Código: [[COD - cobertura.ts]] · [[COD - plsqlDeclarations.ts]]
 - 🧪 Testes: [[TST - cobertura.test.ts]] · [[TST - plsqlDeclarations.test.ts]]
-- ↩️ Referenciada por: [[prd-12-sql-coverage|PRD-12]] · [[prd-48-function-coverage|PRD-48]]
+- ↩️ Referenciada por: [[ADR-008 - Cobertura a partir do Cobertura XML e VSQL|ADR-008]] · [[prd-12-sql-coverage|PRD-12]] · [[prd-48-function-coverage|PRD-48]]
 <!-- brain:auto:end -->

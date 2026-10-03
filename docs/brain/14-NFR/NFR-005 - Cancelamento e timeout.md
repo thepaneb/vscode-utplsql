@@ -8,7 +8,7 @@ status: ativo
 verificado: 2026-09-23
 implementacao: []
 testes: []
-regras: []
+regras: ["BR-EXEC-010", "BR-EXEC-011", "BR-UI-002"]
 relacionado: ["[[ADR-010 - Perfis de conexao com senha no SecretStorage]]", "[[ADR-001 - Execucao via Oracle direto]]", "[[MOC - Oracle]]"]
 requisitos: ["PRD-05/RF3"]
 tags: ["confiabilidade"]
@@ -30,6 +30,7 @@ Evitar run pendurado e liberar conexões.
 
 <!-- brain:auto:start:conexoes -->
 - 🗺️ [[MOC - NFR]]
+- 📐 Regras: [[BR-EXEC-010 - Cancelamento dispara conn.break() nas duas conexões|BR-EXEC-010]] · [[BR-EXEC-011 - Timeout opcional reusa o caminho de cancelamento|BR-EXEC-011]] · [[BR-UI-002 - utplsql-running liga no início e desliga em todos os caminhos de saída|BR-UI-002]]
 - 🎯 Requisitos: [[prd-05-progress-cancel|PRD-05 RF3]]
 - 🔗 [[ADR-010 - Perfis de conexao com senha no SecretStorage]] · [[ADR-001 - Execucao via Oracle direto]] · [[MOC - Oracle]]
 - ↩️ Referenciada por: [[02-test-execution]]

@@ -25,9 +25,11 @@ SORT id ASC
 ## Índice (links)
 
 <!-- brain:auto:start:moc-index -->
+- [[COD - .c8rc]] — `COD-.c8rc`
 - [[COD - .gitignore]] — `COD-.gitignore`
 - [[COD - annotation.ts]] — `COD-annotation.ts`
 - [[COD - autoRun.ts]] — `COD-autoRun.ts`
+- [[COD - biome.json]] — `COD-biome.json`
 - [[COD - bootstrap.sh]] — `COD-bootstrap.sh`
 - [[COD - brain-build.cjs]] — `COD-brain-build.cjs`
 - [[COD - brain-gaps.cjs]] — `COD-brain-gaps.cjs`

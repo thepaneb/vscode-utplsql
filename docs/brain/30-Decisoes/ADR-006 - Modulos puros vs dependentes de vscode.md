@@ -10,6 +10,8 @@ tags: [adr, testes, arquitetura, c8]
 
 # ADR-006 - Módulos puros vs dependentes de vscode
 
+Sem vínculo: decisão arquitetural materializada no padrão `PAT-001` e nos módulos puros; sem regra de runtime.
+
 ## Contexto
 
 A API do VSCode só existe no Extension Host, o que torna difícil testar lógica de

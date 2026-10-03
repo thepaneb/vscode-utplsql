@@ -401,6 +401,43 @@ function checkPrdRnfVinculo(notes) {
   return problems;
 }
 
+/** Camadas que exigem vínculo concreto (e qual campo satisfaz cada uma). */
+const LAYER_CONNECTIONS = {
+  nfr: { any: ['regras', 'requisitos'], label: 'regras ou requisitos' },
+  'componente-terceiro': { any: ['implementacao'], label: 'implementacao' },
+  decisao: { any: ['regras'], label: 'regras' },
+};
+
+/** A nota declara explicitamente que não tem vínculo? (`Sem vínculo: motivo`). */
+function hasSemVinculo(content) {
+  return /^\s*Sem\s+v[íi]nculo\s*:/im.test(content);
+}
+
+/**
+ * Toda nota `ativo` de uma camada conectável (NFR/TPL/ADR) precisa de um vínculo
+ * concreto no frontmatter — NFR: `regras`/`requisitos`; TPL: `implementacao`;
+ * ADR: `regras`. Exceção documentada no corpo: `Sem vínculo: <motivo>`.
+ */
+function checkLayerConnections(notes) {
+  const problems = [];
+  for (const note of notes) {
+    const fm = parseFrontmatter(note.content);
+    if (!fm) continue;
+    const active = fm.tipo === 'decisao' ? fm.status === 'aceita' : fm.status === 'ativo';
+    if (!active) continue;
+    const req = LAYER_CONNECTIONS[fm.tipo];
+    if (!req) continue;
+    if (hasSemVinculo(note.content)) continue;
+    const ok = req.any.some((k) => Array.isArray(fm[k]) && fm[k].length > 0);
+    if (!ok) {
+      problems.push(
+        `${note.name}: ${fm.tipo} ativo sem ${req.label} (ou declare 'Sem vínculo: <motivo>')`,
+      );
+    }
+  }
+  return problems;
+}
+
 /**
  * Valida referências de TODAS as notas do vault: `implementacao`/`testes`
  * (arquivos existem), `regras` (apontam para BR-* existentes) e as arestas de
@@ -537,6 +574,7 @@ function checkRules(overrides = {}) {
     problems.push(...checkSecRegras(notes, regraStatus));
     problems.push(...checkPrdRules(notes));
     problems.push(...checkPrdRnfVinculo(notes));
+    problems.push(...checkLayerConnections(notes));
   }
 
   return problems;
@@ -553,6 +591,8 @@ module.exports = {
   checkPrdRules,
   checkPrdRnfVinculo,
   declaredRnfExceptions,
+  checkLayerConnections,
+  hasSemVinculo,
   semverGte,
   parseFrontmatter,
   listRuleFiles,

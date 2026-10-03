@@ -5,6 +5,7 @@ aliases: [ADR-010]
 status: aceita
 modulo: conexao
 data: 2026-09-23
+regras: ["BR-CONN-005", "BR-CONN-006", "BR-CONN-007"]
 tags: [adr, conexao, seguranca, secretstorage]
 ---
 

@@ -5,6 +5,7 @@ aliases: [ADR-008]
 status: aceita
 modulo: cobertura
 data: 2026-09-23
+regras: ["BR-COB-001", "BR-COB-003", "BR-COB-005"]
 tags: [adr, cobertura, cobertura-xml, dbms_profiler, vsql]
 ---
 

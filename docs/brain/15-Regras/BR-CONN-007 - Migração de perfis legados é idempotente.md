@@ -38,5 +38,5 @@ Convergir instalações antigas (senha em texto plano) para o SecretStorage sem 
 - 🎯 Requisitos: [[prd-34-multi-connection-profiles|PRD-34 RF1]] · [[prd-81-security-hardening|PRD-81 RNF1]]
 - 🧩 Código: [[COD - connectionProfiles.ts]] · [[COD - extension.ts]]
 - 🧪 Testes: [[TST - connectionProfiles.test.ts]]
-- ↩️ Referenciada por: [[09-configuration]] · [[SEC-001 - Senha Oracle nunca é gravada em settings|SEC-001]] · [[prd-34-multi-connection-profiles|PRD-34]] · [[prd-65-schema-mode-security-fixes|PRD-65]]
+- ↩️ Referenciada por: [[09-configuration]] · [[ADR-010 - Perfis de conexao com senha no SecretStorage|ADR-010]] · [[SEC-001 - Senha Oracle nunca é gravada em settings|SEC-001]] · [[prd-34-multi-connection-profiles|PRD-34]] · [[prd-65-schema-mode-security-fixes|PRD-65]]
 <!-- brain:auto:end -->

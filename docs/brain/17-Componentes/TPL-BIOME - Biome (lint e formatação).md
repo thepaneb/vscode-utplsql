@@ -12,7 +12,7 @@ versao: "^2.5.2"
 url: https://biomejs.dev
 status: ativo
 verificado: 2026-09-23
-implementacao: []
+implementacao: ["biome.json"]
 testes: []
 regras: []
 relacionado: ["[[MOC - Stack]]", "[[ADR-004 - Bundling com esbuild e higiene do VSIX]]"]
@@ -35,5 +35,6 @@ Config em `biome.json`; alternativas: ESLint+Prettier (mais pesadas).
 
 <!-- brain:auto:start:conexoes -->
 - 🗺️ [[MOC - Componentes]]
+- 🧩 Código: [[COD - biome.json]]
 - 🔗 [[MOC - Stack]] · [[ADR-004 - Bundling com esbuild e higiene do VSIX]]
 <!-- brain:auto:end -->

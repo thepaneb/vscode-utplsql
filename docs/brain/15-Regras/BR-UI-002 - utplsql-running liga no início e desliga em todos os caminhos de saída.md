@@ -38,5 +38,5 @@ O keybinding Escape só cancela a execução enquanto utplsql:running estiver at
 - 🎯 Requisitos: [[prd-27-default-keybindings|PRD-27 RF4]]
 - 🧩 Código: [[COD - runner.ts]] · [[COD - package.json]]
 - 🧪 Testes: [[TST - runner.test.ts]]
-- ↩️ Referenciada por: [[05-ux-components]] · [[prd-05-progress-cancel|PRD-05]] · [[prd-50-auto-run-on-save|PRD-50]]
+- ↩️ Referenciada por: [[05-ux-components]] · [[NFR-005 - Cancelamento e timeout|NFR-005]] · [[prd-05-progress-cancel|PRD-05]] · [[prd-50-auto-run-on-save|PRD-50]]
 <!-- brain:auto:end -->

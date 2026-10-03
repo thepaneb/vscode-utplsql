@@ -13,7 +13,7 @@ url: https://github.com/oracle/node-oracledb
 adr: ADR-001
 status: ativo
 verificado: 2026-09-23
-implementacao: []
+implementacao: ["src/oracleClient.ts", "src/oracleRunner.ts"]
 testes: []
 regras: []
 relacionado: ["[[ADR-001 - Execucao via Oracle direto]]", "[[ADR-011 - Thick mode opt-in e matriz de bancos]]", "[[MOC - Oracle]]"]
@@ -37,6 +37,7 @@ Acompanhar majors (PRD-46); thick é opcional. Sem alternativa prática para Ora
 
 <!-- brain:auto:start:conexoes -->
 - 🗺️ [[MOC - Componentes]]
+- 🧩 Código: [[COD - oracleClient.ts]] · [[COD - oracleRunner.ts]]
 - 🔗 [[ADR-001 - Execucao via Oracle direto]] · [[ADR-011 - Thick mode opt-in e matriz de bancos]] · [[MOC - Oracle]]
 - ↩️ Referenciada por: [[GLOSS-008 - Thin vs Thick (node-oracledb)|GLOSS-008]] · [[NFR-001 - Compatibilidade com Oracle e piso do utPLSQL|NFR-001]]
 <!-- brain:auto:end -->
