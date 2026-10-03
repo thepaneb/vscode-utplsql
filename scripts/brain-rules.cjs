@@ -406,6 +406,10 @@ const LAYER_CONNECTIONS = {
   nfr: { any: ['regras', 'requisitos'], label: 'regras ou requisitos' },
   'componente-terceiro': { any: ['implementacao'], label: 'implementacao' },
   decisao: { any: ['regras'], label: 'regras' },
+  padrao: { any: ['implementacao'], label: 'implementacao' },
+  entidade: { any: ['regras'], label: 'regras' },
+  erro: { any: ['regras'], label: 'regras' },
+  glossario: { any: ['regras'], label: 'regras' },
 };
 
 /** A nota declara explicitamente que não tem vínculo? (`Sem vínculo: motivo`). */

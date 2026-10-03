@@ -7,7 +7,7 @@ dominio: design
 categoria: design
 status: ativo
 verificado: 2026-09-23
-implementacao: []
+implementacao: ["src/results.ts"]
 testes: []
 regras: []
 relacionado: ["[[ADR-005 - Funcoes canonicas de resultado e matching por nome]]", "[[03-results-and-reporting]]"]
@@ -32,5 +32,6 @@ e `resolveStackFrameToUri`; os runners apenas chamam essas funções.
 
 <!-- brain:auto:start:conexoes -->
 - 🗺️ [[MOC - Padroes]]
+- 🧩 Código: [[COD - results.ts]]
 - 🔗 [[ADR-005 - Funcoes canonicas de resultado e matching por nome]] · [[03-results-and-reporting]]
 <!-- brain:auto:end -->

@@ -36,5 +36,5 @@ Evita falsos positivos de trechos que apenas citam %suite e garante que o nome d
 - 📄 PRDs: [[prd-42-suiteparser-annotations|PRD-42]]
 - 🧩 Código: [[COD - suiteParser.ts]]
 - 🧪 Testes: [[TST - suiteParser.test.ts]] · [[TST - discovery.test.ts]]
-- ↩️ Referenciada por: [[01-test-discovery]] · [[GLOSS-001 - Suite|GLOSS-001]] · [[prd-42-suiteparser-annotations|PRD-42]]
+- ↩️ Referenciada por: [[01-test-discovery]] · [[ENT-002 - Suite|ENT-002]] · [[GLOSS-001 - Suite|GLOSS-001]] · [[prd-42-suiteparser-annotations|PRD-42]]
 <!-- brain:auto:end -->

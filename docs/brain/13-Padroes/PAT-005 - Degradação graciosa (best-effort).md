@@ -13,6 +13,8 @@ regras: []
 relacionado: ["[[ADR-001 - Execucao via Oracle direto]]", "[[02-test-execution]]"]
 tags: [erros]
 ---
+Sem vínculo: padrão transversal (try/catch best-effort em vários módulos); coberto pelos testes em `testes:`.
+
 ## Intenção
 
 Falhas em recursos auxiliares não podem derrubar nem travar a execução de testes.

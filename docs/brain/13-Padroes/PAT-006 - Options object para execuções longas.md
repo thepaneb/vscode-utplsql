@@ -7,7 +7,7 @@ dominio: design
 categoria: design
 status: ativo
 verificado: 2026-09-23
-implementacao: []
+implementacao: ["src/runner.ts"]
 testes: []
 regras: []
 relacionado: ["[[ADR-005 - Funcoes canonicas de resultado e matching por nome]]", "[[02-test-execution]]"]
@@ -31,6 +31,7 @@ cobertura, random seed, timeout, token de cancelamento.
 
 <!-- brain:auto:start:conexoes -->
 - 🗺️ [[MOC - Padroes]]
+- 🧩 Código: [[COD - runner.ts]]
 - 🔗 [[ADR-005 - Funcoes canonicas de resultado e matching por nome]] · [[02-test-execution]]
 - ↩️ Referenciada por: [[Connection-profiles]]
 <!-- brain:auto:end -->

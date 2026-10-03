@@ -882,3 +882,63 @@ test('brain-rules: marcador Sem vínculo dispensa o vínculo', () => {
   };
   assert.deepStrictEqual(checkLayerConnections([withMarker]), []);
 });
+
+test('brain-rules: PAT ativo sem implementacao é reportado; com implementacao passa', () => {
+  const bad = note(['id: PAT-001', 'tipo: padrao', 'titulo: X', 'dominio: d', 'status: ativo']);
+  const ok = note([
+    'id: PAT-002',
+    'tipo: padrao',
+    'titulo: X',
+    'dominio: d',
+    'status: ativo',
+    'implementacao: ["src/extension.ts"]',
+  ]);
+  assert.ok(checkLayerConnections([bad]).some((p) => p.includes('padrao ativo sem implementacao')));
+  assert.deepStrictEqual(checkLayerConnections([ok]), []);
+});
+
+test('brain-rules: ERR/ENT/GLOSS ativos sem regras são reportados; com regras passam', () => {
+  const bad = [
+    note([
+      'id: ERR-001',
+      'tipo: erro',
+      'titulo: X',
+      'dominio: d',
+      'codigo: E',
+      'status: ativo',
+      'severidade: alta',
+    ]),
+    note(['id: ENT-001', 'tipo: entidade', 'titulo: X', 'dominio: d', 'status: ativo']),
+    note(['id: GLOSS-001', 'tipo: glossario', 'titulo: X', 'dominio: d', 'status: ativo']),
+  ];
+  assert.strictEqual(checkLayerConnections(bad).length, 3);
+  const ok = [
+    note([
+      'id: ERR-001',
+      'tipo: erro',
+      'titulo: X',
+      'dominio: d',
+      'codigo: E',
+      'status: ativo',
+      'severidade: alta',
+      'regras: ["BR-X-001"]',
+    ]),
+    note([
+      'id: ENT-001',
+      'tipo: entidade',
+      'titulo: X',
+      'dominio: d',
+      'status: ativo',
+      'regras: ["BR-X-001"]',
+    ]),
+    note([
+      'id: GLOSS-001',
+      'tipo: glossario',
+      'titulo: X',
+      'dominio: d',
+      'status: ativo',
+      'regras: ["BR-X-001"]',
+    ]),
+  ];
+  assert.deepStrictEqual(checkLayerConnections(ok), []);
+});

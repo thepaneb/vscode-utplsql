@@ -8,7 +8,7 @@ status: ativo
 verificado: 2026-09-23
 implementacao: []
 testes: []
-regras: []
+regras: ["BR-PARSE-003"]
 relacionado: ["[[GLOSS-002 - Teste (procedure de teste)]]", "[[01-test-discovery]]"]
 tags: ["descoberta"]
 ---
@@ -28,6 +28,7 @@ procName, description, line, tags, disabled, expectedError, resultado/status.
 
 <!-- brain:auto:start:conexoes -->
 - 🗺️ [[MOC - Dominio]]
+- 📐 Regras: [[BR-PARSE-003 - %test só materializa teste quando seguido de PROCEDURE; órfão é sobrescrito|BR-PARSE-003]]
 - 🔗 [[GLOSS-002 - Teste (procedure de teste)]] · [[01-test-discovery]]
 - ↩️ Referenciada por: [[GLOSS-002 - Teste (procedure de teste)|GLOSS-002]]
 <!-- brain:auto:end -->

@@ -7,7 +7,7 @@ dominio: streaming
 categoria: dados
 status: ativo
 verificado: 2026-09-23
-implementacao: []
+implementacao: ["src/oracleRunner.ts"]
 testes: []
 regras: []
 relacionado: ["[[ADR-001 - Execucao via Oracle direto]]", "[[02-test-execution]]"]
@@ -33,6 +33,7 @@ para output de documentação ou para o buffer XML.
 
 <!-- brain:auto:start:conexoes -->
 - 🗺️ [[MOC - Padroes]]
+- 🧩 Código: [[COD - oracleRunner.ts]]
 - 🔗 [[ADR-001 - Execucao via Oracle direto]] · [[02-test-execution]]
 - ↩️ Referenciada por: [[NFR-004 - Latência do streaming|NFR-004]]
 <!-- brain:auto:end -->

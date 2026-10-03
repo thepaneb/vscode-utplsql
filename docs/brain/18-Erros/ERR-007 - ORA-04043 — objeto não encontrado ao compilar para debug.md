@@ -10,7 +10,7 @@ severidade: media
 verificado: 2026-09-23
 implementacao: ["src/compileForDebug.ts:70"]
 testes: []
-regras: []
+regras: ["BR-DEBUG-004"]
 relacionado: ["[[ADR-012 - Debugger PLSQL via DBMS_DEBUG e DAP]]", "[[11-debugger]]"]
 tags: [erros, debug]
 ---
@@ -30,6 +30,7 @@ Compilar/instalar o package no banco antes de depurar; a extensão detecta ORA-0
 
 <!-- brain:auto:start:conexoes -->
 - 🗺️ [[MOC - Erros]]
+- 📐 Regras: [[BR-DEBUG-004 - compileForDebug recompila com debug e mantem o objeto VALID|BR-DEBUG-004]]
 - 🧩 Código: [[COD - compileForDebug.ts]]
 - 🔗 [[ADR-012 - Debugger PLSQL via DBMS_DEBUG e DAP]] · [[11-debugger]]
 <!-- brain:auto:end -->

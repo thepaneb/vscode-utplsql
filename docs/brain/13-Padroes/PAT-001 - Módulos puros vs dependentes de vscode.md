@@ -13,6 +13,8 @@ regras: []
 relacionado: ["[[ADR-006 - Modulos puros vs dependentes de vscode]]", "[[10-development-tooling]]"]
 tags: ["arquitetural"]
 ---
+Sem vínculo: padrão arquitetural (classificação de módulos), sem arquivo único; ver `[[ADR-006 - Modulos puros vs dependentes de vscode]]` e a lista de módulos na Architecture.
+
 ## Intenção
 
 Separar a lógica testável (parse, matching, tipos, i18n) da camada que depende da

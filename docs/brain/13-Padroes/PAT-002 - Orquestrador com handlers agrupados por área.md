@@ -7,7 +7,7 @@ dominio: arquitetural
 categoria: arquitetural
 status: ativo
 verificado: 2026-09-23
-implementacao: []
+implementacao: ["src/extension.ts", "src/commands/deps.ts"]
 testes: []
 regras: []
 relacionado: ["[[ADR-009 - Integracao nativa ao Test Explorer]]", "[[02-test-execution]]"]
@@ -32,5 +32,6 @@ agrupados por área em `src/commands/`.
 
 <!-- brain:auto:start:conexoes -->
 - 🗺️ [[MOC - Padroes]]
+- 🧩 Código: [[COD - extension.ts]] · [[COD - deps.ts]]
 - 🔗 [[ADR-009 - Integracao nativa ao Test Explorer]] · [[02-test-execution]]
 <!-- brain:auto:end -->

@@ -8,7 +8,7 @@ status: ativo
 verificado: 2026-09-23
 implementacao: []
 testes: []
-regras: []
+regras: ["BR-PARSE-001", "BR-SCHEMA-001"]
 relacionado: ["[[GLOSS-001 - Suite]]", "[[01-test-discovery]]"]
 tags: ["descoberta"]
 ---
@@ -29,6 +29,7 @@ packageName, description, tags, fileUri/range, testes.
 
 <!-- brain:auto:start:conexoes -->
 - 🗺️ [[MOC - Dominio]]
+- 📐 Regras: [[BR-PARSE-001 - Arquivo só é suite utPLSQL se tiver %suite E CREATE PACKAGE|BR-PARSE-001]] · [[BR-SCHEMA-001 - organization bifurca file tree vs schema tree; suiteMap é o lookup canônico|BR-SCHEMA-001]]
 - 🔗 [[GLOSS-001 - Suite]] · [[01-test-discovery]]
 - ↩️ Referenciada por: [[GLOSS-001 - Suite|GLOSS-001]]
 <!-- brain:auto:end -->

@@ -7,7 +7,7 @@ dominio: teste
 categoria: teste
 status: ativo
 verificado: 2026-09-23
-implementacao: []
+implementacao: ["src/test/vscode-stub.ts", "scripts/test-setup.cjs"]
 testes: []
 regras: []
 relacionado: ["[[ADR-006 - Modulos puros vs dependentes de vscode]]", "[[10-development-tooling]]"]
@@ -32,6 +32,7 @@ adicionar import de `vscode` em produção, adicionar o stub correspondente.
 
 <!-- brain:auto:start:conexoes -->
 - 🗺️ [[MOC - Padroes]]
+- 🧩 Código: [[COD - vscode-stub.ts]] · [[COD - test-setup.cjs]]
 - 🔗 [[ADR-006 - Modulos puros vs dependentes de vscode]] · [[10-development-tooling]]
 - ↩️ Referenciada por: [[10-development-tooling]] · [[NFR-007 - Cobertura de testes TypeScript|NFR-007]]
 <!-- brain:auto:end -->
