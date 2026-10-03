@@ -9,7 +9,7 @@ severidade: media
 fonte: codigo
 verificado: 2026-10-02
 implementacao: ["src/commands/run.ts:337", "src/testTree.ts:21", "src/testTree.ts:60"]
-testes: ["src/test/unit/runCommands.test.ts", "src/test/unit/testTree.test.ts"]
+testes: ["src/test/unit/runByTagCommand.test.ts", "src/test/unit/runCommands.test.ts", "src/test/unit/testTree.test.ts"]
 prds: ["PRD-51"]
 requisitos: ["PRD-51/RF3", "PRD-51/RF4"]
 tags: ["ui", "tags"]
@@ -44,6 +44,6 @@ Expor na paleta/tooltip o que já existe no runner (`a_tags`), reaproveitando
 - 📄 PRDs: [[prd-51-run-by-tag|PRD-51]]
 - 🎯 Requisitos: [[prd-51-run-by-tag|PRD-51 RF3]] · [[prd-51-run-by-tag|PRD-51 RF4]]
 - 🧩 Código: [[COD - run.ts]] · [[COD - testTree.ts]]
-- 🧪 Testes: [[TST - runCommands.test.ts]] · [[TST - testTree.test.ts]]
+- 🧪 Testes: [[TST - runByTagCommand.test.ts]] · [[TST - runCommands.test.ts]] · [[TST - testTree.test.ts]]
 - ↩️ Referenciada por: [[prd-51-run-by-tag|PRD-51]]
 <!-- brain:auto:end -->

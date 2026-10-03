@@ -83,6 +83,7 @@ SORT id ASC
 - [[TST - rerun.test.ts]] — `TST-rerun.test.ts`
 - [[TST - results.test.ts]] — `TST-results.test.ts`
 - [[TST - resultsUnreadable.test.ts]] — `TST-resultsUnreadable.test.ts`
+- [[TST - runByTagCommand.test.ts]] — `TST-runByTagCommand.test.ts`
 - [[TST - runCommands.test.ts]] — `TST-runCommands.test.ts`
 - [[TST - runCommandsExec.test.ts]] — `TST-runCommandsExec.test.ts`
 - [[TST - runExportCommand.test.ts]] — `TST-runExportCommand.test.ts`

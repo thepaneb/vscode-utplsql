@@ -15,7 +15,8 @@ tags: ["qualidade"]
 ---
 ## Requisito
 
-Thresholds de cobertura (c8): 90% lines/statements, 85% branches, 90% functions.
+Thresholds de cobertura (c8, global): 97% lines/statements, 92% branches, 97%
+functions; alvo de projeto do Codecov em 97%.
 
 ## Justificativa
 

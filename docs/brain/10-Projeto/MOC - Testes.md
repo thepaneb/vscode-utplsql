@@ -42,7 +42,8 @@ node --test --test-name-pattern "duração" out/test/unit/**/*.test.js
 ## Cobertura TS (c8)
 
 - `.c8rc` exclui `out/test/**`. Source maps mapeiam `out/*.js` → `src/*.ts`.
-- Thresholds: 90% lines/statements, 85% branches, 90% functions.
+- Thresholds (global, sem `per-file`): 97% lines/statements, 92% branches, 97%
+  functions. O Codecov (`codecov.yml`) acompanha o alvo de projeto (97%).
 
 ## Documentação no repo
 

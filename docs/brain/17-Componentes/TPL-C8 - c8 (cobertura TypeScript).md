@@ -21,7 +21,8 @@ tags: ["tooling"]
 ## Papel
 
 Cobertura dos testes TypeScript via source maps (`test:coverage`), com thresholds
-90% lines/statements, 85% branches, 90% functions (`.c8rc`).
+97% lines/statements, 92% branches, 97% functions (`.c8rc`); o Codecov usa o
+mesmo alvo no status de projeto.
 
 ## Riscos
 
