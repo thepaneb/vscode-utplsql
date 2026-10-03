@@ -5,6 +5,7 @@ titulo: "Connection Configuration"
 publicar: docs/wiki/Connection.md
 origem: ["09-configuration","BR-CONN-001"]
 verificado: 2026-09-23
+regras: ["BR-CONN-001", "BR-CONN-002", "BR-CONN-003", "BR-CONN-016", "BR-CONN-017", "BR-CONN-018"]
 tags: [wiki]
 ---
 

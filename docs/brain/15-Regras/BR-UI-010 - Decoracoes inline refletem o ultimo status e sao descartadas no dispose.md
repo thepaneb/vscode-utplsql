@@ -40,5 +40,5 @@ Feedback visual imediato do teste na linha, sem estado residual entre execuçõe
 - 📄 PRDs: [[prd-26-inline-test-decorations|PRD-26]]
 - 🧩 Código: [[COD - decorations.ts]]
 - 🧪 Testes: [[TST - decorations.test.ts]]
-- ↩️ Referenciada por: [[prd-26-inline-test-decorations|PRD-26]]
+- ↩️ Referenciada por: [[Editor-integration]] · [[prd-26-inline-test-decorations|PRD-26]]
 <!-- brain:auto:end -->

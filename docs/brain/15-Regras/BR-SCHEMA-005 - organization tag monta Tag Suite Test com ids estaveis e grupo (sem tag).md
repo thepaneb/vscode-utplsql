@@ -46,5 +46,5 @@ Dar visão por tag sem quebrar `suiteMap`, `collectAllItems` e o jump to failure
 - 🎯 Requisitos: [[prd-55-tag-organization|PRD-55 RF1]] · [[prd-55-tag-organization|PRD-55 RF2]] · [[prd-55-tag-organization|PRD-55 RF3]] · [[prd-55-tag-organization|PRD-55 RNF1]] · [[prd-55-tag-organization|PRD-55 RNF2]]
 - 🧩 Código: [[COD - testTree.ts]]
 - 🧪 Testes: [[TST - testTree.test.ts]]
-- ↩️ Referenciada por: [[prd-55-tag-organization|PRD-55]]
+- ↩️ Referenciada por: [[Tree-organization]] · [[prd-55-tag-organization|PRD-55]]
 <!-- brain:auto:end -->

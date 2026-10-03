@@ -5,6 +5,7 @@ titulo: "Database requirements"
 publicar: docs/wiki/Database-requirements.md
 origem: ["MOC - Oracle"]
 verificado: 2026-09-23
+regras: ["BR-TEST-001"]
 tags: [wiki]
 ---
 

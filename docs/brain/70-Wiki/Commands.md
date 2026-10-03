@@ -5,6 +5,7 @@ titulo: "Commands"
 publicar: docs/wiki/Commands.md
 origem: ["09-configuration","MOC - Documentacao"]
 verificado: 2026-09-23
+regras: ["BR-UI-009", "BR-UI-011"]
 tags: [wiki]
 ---
 

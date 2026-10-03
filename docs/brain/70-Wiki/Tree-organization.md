@@ -5,6 +5,7 @@ titulo: "Test tree organization"
 publicar: docs/wiki/Tree-organization.md
 origem: ["06-tree-organization"]
 verificado: 2026-09-23
+regras: ["BR-SCHEMA-001", "BR-SCHEMA-002", "BR-SCHEMA-003", "BR-SCHEMA-004", "BR-SCHEMA-005", "BR-PARSE-016"]
 tags: [wiki]
 ---
 

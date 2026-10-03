@@ -38,5 +38,5 @@ Reduzir o custo de abertura (tempo e memória) em schemas com muitos packages.
 - 🎯 Requisitos: [[prd-75-lazy-test-tree|PRD-75 RF1]] · [[prd-75-lazy-test-tree|PRD-75 RF4]] · [[prd-75-lazy-test-tree|PRD-75 RNF1]] · [[prd-75-lazy-test-tree|PRD-75 RNF2]]
 - 🧩 Código: [[COD - testTree.ts]] · [[COD - extension.ts]]
 - 🧪 Testes: [[TST - testTree.test.ts]] · [[TST - v014-features.test.ts]]
-- ↩️ Referenciada por: [[prd-55-tag-organization|PRD-55]] · [[prd-75-lazy-test-tree|PRD-75]]
+- ↩️ Referenciada por: [[Tree-organization]] · [[prd-55-tag-organization|PRD-55]] · [[prd-75-lazy-test-tree|PRD-75]]
 <!-- brain:auto:end -->

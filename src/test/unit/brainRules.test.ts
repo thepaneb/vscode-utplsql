@@ -19,6 +19,7 @@ const {
   declaredRnfExceptions,
   checkLayerConnections,
   hasSemVinculo,
+  checkRulesDocumented,
   semverGte,
   parseFrontmatter,
   LAYERS,
@@ -36,6 +37,7 @@ const {
   declaredRnfExceptions: (content: string) => Set<string>;
   checkLayerConnections: (notes: { name: string; content: string }[]) => string[];
   hasSemVinculo: (content: string) => boolean;
+  checkRulesDocumented: (notes: { name: string; content: string }[]) => string[];
   semverGte: (a: string, b: string) => boolean;
   checkReferences: (
     notes: { name: string; content: string }[],
@@ -563,6 +565,8 @@ test('brain-rules.cjs: CLI valida as linhas em fixture isolado', () => {
         'testes: []',
         '---',
         '',
+        'Sem documentação: fixture de teste.',
+        '',
       ].join('\n'),
     );
     writeFixture(path.join(root, 'src', 'a.ts'), 'export const fixture = true;\n');
@@ -941,4 +945,71 @@ test('brain-rules: ERR/ENT/GLOSS ativos sem regras são reportados; com regras p
     ]),
   ];
   assert.deepStrictEqual(checkLayerConnections(ok), []);
+});
+
+// ── documentação das regras (regra ↔ doc) ─────────────────────────────
+
+test('brain-rules: regra ativo sem documentação é reportada', () => {
+  const regra = note([
+    'id: BR-X-001',
+    'tipo: regra',
+    'titulo: X',
+    'dominio: d',
+    'status: ativo',
+    'severidade: alta',
+    'fonte: codigo',
+  ]);
+  assert.ok(checkRulesDocumented([regra]).some((p) => p.includes('regra ativo sem documentação')));
+});
+
+test('brain-rules: regra documentada em wiki/funcional passa', () => {
+  const regra = note([
+    'id: BR-X-001',
+    'tipo: regra',
+    'titulo: X',
+    'dominio: d',
+    'status: ativo',
+    'severidade: alta',
+    'fonte: codigo',
+  ]);
+  const wiki = note(['tipo: wiki', 'titulo: W', 'regras: ["BR-X-001"]']);
+  const funcional = note(['tipo: funcional', 'titulo: F', 'regras: ["BR-X-001"]']);
+  assert.deepStrictEqual(checkRulesDocumented([regra, wiki]), []);
+  assert.deepStrictEqual(checkRulesDocumented([regra, funcional]), []);
+});
+
+test('brain-rules: regra com Sem documentação passa', () => {
+  const regra = note([
+    'id: BR-X-001',
+    'tipo: regra',
+    'titulo: X',
+    'dominio: d',
+    'status: ativo',
+    'severidade: alta',
+    'fonte: codigo',
+  ]);
+  const withMarker = {
+    name: 'BR-X-001.md',
+    content: `${regra.content}\nSem documentação: detalhe interno.\n`,
+  };
+  assert.deepStrictEqual(checkRulesDocumented([withMarker]), []);
+});
+
+test('brain-rules: referência em PRD/regra não conta como documentação', () => {
+  const regra = note([
+    'id: BR-X-001',
+    'tipo: regra',
+    'titulo: X',
+    'dominio: d',
+    'status: ativo',
+    'severidade: alta',
+    'fonte: codigo',
+  ]);
+  const prd = note(['tipo: prd', 'id: PRD-1', 'regras: ["BR-X-001"]']);
+  assert.ok(checkRulesDocumented([regra, prd]).some((p) => p.includes('sem documentação')));
+});
+
+test('brain-rules: regra não-ativa é ignorada', () => {
+  const regra = note(['id: BR-X-001', 'tipo: regra', 'status: proposta']);
+  assert.deepStrictEqual(checkRulesDocumented([regra]), []);
 });

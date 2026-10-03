@@ -5,6 +5,7 @@ titulo: "Connection Profiles"
 publicar: docs/wiki/Connection-profiles.md
 origem: ["09-configuration","PAT-006"]
 verificado: 2026-09-28
+regras: ["BR-CONN-004", "BR-CONN-005", "BR-CONN-006", "BR-CONN-007", "BR-CONN-008", "BR-CONN-009", "BR-CONN-010", "BR-CONN-011"]
 tags: [wiki]
 ---
 

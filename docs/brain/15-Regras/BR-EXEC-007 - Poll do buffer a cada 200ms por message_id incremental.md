@@ -38,5 +38,5 @@ Streaming em tempo real sem bloquear; falhas transitórias do buffer não aborta
 - 🎯 Requisitos: [[prd-11-streaming-results|PRD-11 RF3]] · [[prd-76-reporter-export|PRD-76 RNF2]]
 - 🧩 Código: [[COD - oracleRunner.ts]]
 - 🧪 Testes: [[TST - oracleRunner.test.ts]] · [[TST - tagsStreamingE2E.test.ts]]
-- ↩️ Referenciada por: [[02-test-execution]] · [[NFR-004 - Latência do streaming|NFR-004]] · [[prd-11-streaming-results|PRD-11]]
+- ↩️ Referenciada por: [[02-test-execution]] · [[NFR-004 - Latência do streaming|NFR-004]] · [[Oracle-direct-execution]] · [[prd-11-streaming-results|PRD-11]]
 <!-- brain:auto:end -->

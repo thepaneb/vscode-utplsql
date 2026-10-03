@@ -38,5 +38,5 @@ No modo schema as suites ficam 3 níveis abaixo da raiz; comandos como runForUri
 - 🎯 Requisitos: [[prd-30-schema-aware-organization|PRD-30 RF3]] · [[prd-30-schema-aware-organization|PRD-30 RF4]]
 - 🧩 Código: [[COD - testTree.ts]] · [[COD - state.ts]] · [[COD - run.ts]]
 - 🧪 Testes: [[TST - testTree.test.ts]] · [[TST - state.test.ts]]
-- ↩️ Referenciada por: [[06-tree-organization]] · [[ADR-003 - Descoberta DB-first e organizacao por schema|ADR-003]] · [[ADR-009 - Integracao nativa ao Test Explorer|ADR-009]] · [[ENT-002 - Suite|ENT-002]] · [[GLOSS-006 - Schema-mode (organização por schema)|GLOSS-006]] · [[prd-30-schema-aware-organization|PRD-30]] · [[prd-55-tag-organization|PRD-55]]
+- ↩️ Referenciada por: [[06-tree-organization]] · [[ADR-003 - Descoberta DB-first e organizacao por schema|ADR-003]] · [[ADR-009 - Integracao nativa ao Test Explorer|ADR-009]] · [[ENT-002 - Suite|ENT-002]] · [[GLOSS-006 - Schema-mode (organização por schema)|GLOSS-006]] · [[Test-explorer]] · [[Tree-organization]] · [[prd-30-schema-aware-organization|PRD-30]] · [[prd-55-tag-organization|PRD-55]]
 <!-- brain:auto:end -->

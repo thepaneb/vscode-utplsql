@@ -38,5 +38,5 @@ Manter perfis utilizáveis após o save (senha fora das settings) e preservar co
 - 🎯 Requisitos: [[prd-34-multi-connection-profiles|PRD-34 RF5]] · [[prd-81-security-hardening|PRD-81 RNF2]]
 - 🧩 Código: [[COD - connectionProfiles.ts]]
 - 🧪 Testes: [[TST - connectionProfiles.test.ts]]
-- ↩️ Referenciada por: [[09-configuration]] · [[ADR-010 - Perfis de conexao com senha no SecretStorage|ADR-010]] · [[prd-34-multi-connection-profiles|PRD-34]]
+- ↩️ Referenciada por: [[09-configuration]] · [[ADR-010 - Perfis de conexao com senha no SecretStorage|ADR-010]] · [[Connection-profiles]] · [[prd-34-multi-connection-profiles|PRD-34]]
 <!-- brain:auto:end -->

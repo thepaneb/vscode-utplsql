@@ -5,6 +5,7 @@ titulo: "Tests"
 publicar: docs/wiki/Tests.md
 origem: ["01-test-discovery","02-test-execution","03-results-and-reporting"]
 verificado: 2026-09-23
+regras: ["BR-TEST-001", "BR-TEST-002"]
 tags: [wiki]
 ---
 

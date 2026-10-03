@@ -45,5 +45,5 @@ auto-run.
 - 🎯 Requisitos: [[prd-54-coverage-toggle|PRD-54 RF1]] · [[prd-54-coverage-toggle|PRD-54 RF3]] · [[prd-54-coverage-toggle|PRD-54 RF4]] · [[prd-54-coverage-toggle|PRD-54 RNF1]] · [[prd-54-coverage-toggle|PRD-54 RNF2]]
 - 🧩 Código: [[COD - coverageDecision.ts]] · [[COD - state.ts]] · [[COD - run.ts]]
 - 🧪 Testes: [[TST - coverageDecision.test.ts]]
-- ↩️ Referenciada por: [[prd-50-auto-run-on-save|PRD-50]] · [[prd-54-coverage-toggle|PRD-54]]
+- ↩️ Referenciada por: [[Coverage]] · [[prd-50-auto-run-on-save|PRD-50]] · [[prd-54-coverage-toggle|PRD-54]]
 <!-- brain:auto:end -->

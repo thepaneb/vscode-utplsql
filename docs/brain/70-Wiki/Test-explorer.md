@@ -5,6 +5,7 @@ titulo: "Test Explorer"
 publicar: docs/wiki/Test-explorer.md
 origem: ["06-tree-organization"]
 verificado: 2026-09-23
+regras: ["BR-SCHEMA-001", "BR-SCHEMA-003", "BR-EXEC-016"]
 tags: [wiki]
 ---
 

@@ -5,6 +5,7 @@ titulo: "Diagnostics and quick-fix"
 publicar: docs/wiki/Diagnostics-and-quick-fix.md
 origem: ["07-diagnostics-and-validation"]
 verificado: 2026-09-23
+regras: ["BR-UI-007", "BR-UI-008"]
 tags: [wiki]
 ---
 

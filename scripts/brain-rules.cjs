@@ -443,6 +443,32 @@ function checkLayerConnections(notes) {
 }
 
 /**
+ * Toda regra `ativo` deve estar documentada: referenciada pelo `regras:` de um
+ * documento funcional/wiki (rastreio regra ↔ documentação). Sem isso, declare
+ * `Sem documentação: <motivo>` no corpo da regra. Garante que "a regra mudou,
+ * onde atualizo?" tenha resposta.
+ */
+function checkRulesDocumented(notes) {
+  const problems = [];
+  const documented = new Set();
+  for (const note of notes) {
+    const fm = parseFrontmatter(note.content);
+    if (!fm || (fm.tipo !== 'funcional' && fm.tipo !== 'wiki')) continue;
+    for (const r of Array.isArray(fm.regras) ? fm.regras : []) documented.add(String(r).trim());
+  }
+  for (const note of notes) {
+    const fm = parseFrontmatter(note.content);
+    if (fm?.tipo !== 'regra' || fm.status !== 'ativo' || !fm.id) continue;
+    if (documented.has(String(fm.id))) continue;
+    if (/^\s*Sem\s+documenta[çc][ãa]o\s*:/im.test(note.content)) continue;
+    problems.push(
+      `${note.name}: regra ativo sem documentação (referencie em 'regras:' de um doc funcional/wiki ou declare 'Sem documentação: <motivo>')`,
+    );
+  }
+  return problems;
+}
+
+/**
  * Valida referências de TODAS as notas do vault: `implementacao`/`testes`
  * (arquivos existem), `regras` (apontam para BR-* existentes) e as arestas de
  * grafo (`relacionado*`/`decisoes`) contra o catálogo de notas/ids/ADRs.
@@ -579,6 +605,7 @@ function checkRules(overrides = {}) {
     problems.push(...checkPrdRules(notes));
     problems.push(...checkPrdRnfVinculo(notes));
     problems.push(...checkLayerConnections(notes));
+    problems.push(...checkRulesDocumented(notes));
   }
 
   return problems;
@@ -597,6 +624,7 @@ module.exports = {
   declaredRnfExceptions,
   checkLayerConnections,
   hasSemVinculo,
+  checkRulesDocumented,
   semverGte,
   parseFrontmatter,
   listRuleFiles,

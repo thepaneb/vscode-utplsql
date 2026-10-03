@@ -46,5 +46,5 @@ não só por teste (PRD-42 só capturava por teste).
 - 🎯 Requisitos: [[prd-51-run-by-tag|PRD-51 RF2]]
 - 🧩 Código: [[COD - suiteParser.ts]] · [[COD - discovery.ts]]
 - 🧪 Testes: [[TST - suiteParser.test.ts]] · [[TST - discovery.test.ts]]
-- ↩️ Referenciada por: [[prd-51-run-by-tag|PRD-51]]
+- ↩️ Referenciada por: [[Tree-organization]] · [[prd-51-run-by-tag|PRD-51]]
 <!-- brain:auto:end -->

@@ -45,5 +45,5 @@ Ativa o diff nativo do painel de testes sem UI própria nem custo de BD.
 - 🎯 Requisitos: [[prd-52-inline-diff-expected-actual|PRD-52 RF1]] · [[prd-52-inline-diff-expected-actual|PRD-52 RF2]] · [[prd-52-inline-diff-expected-actual|PRD-52 RNF1]] · [[prd-52-inline-diff-expected-actual|PRD-52 RNF2]]
 - 🧩 Código: [[COD - junit.ts]] · [[COD - results.ts]]
 - 🧪 Testes: [[TST - junit.test.ts]] · [[TST - results.test.ts]]
-- ↩️ Referenciada por: [[prd-52-inline-diff-expected-actual|PRD-52]]
+- ↩️ Referenciada por: [[Editor-integration]] · [[prd-52-inline-diff-expected-actual|PRD-52]]
 <!-- brain:auto:end -->

@@ -5,6 +5,7 @@ titulo: "Code Coverage"
 publicar: docs/wiki/Coverage.md
 origem: ["04-code-coverage","MOC - Regras"]
 verificado: 2026-09-23
+regras: ["BR-COB-001", "BR-COB-002", "BR-COB-003", "BR-COB-004", "BR-COB-006"]
 tags: [wiki]
 ---
 

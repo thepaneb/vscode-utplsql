@@ -44,5 +44,5 @@ Dar feedback visível do modo que aumenta o custo no banco (DBMS_PROFILER).
 - 🎯 Requisitos: [[prd-54-coverage-toggle|PRD-54 RF2]] · [[prd-54-coverage-toggle|PRD-54 RNF1]]
 - 🧩 Código: [[COD - statusBar.ts]] · [[COD - coverageDecision.ts]] · [[COD - run.ts]]
 - 🧪 Testes: [[TST - statusBar.test.ts]] · [[TST - coverageDecision.test.ts]]
-- ↩️ Referenciada por: [[prd-54-coverage-toggle|PRD-54]]
+- ↩️ Referenciada por: [[Editor-integration]] · [[prd-54-coverage-toggle|PRD-54]]
 <!-- brain:auto:end -->

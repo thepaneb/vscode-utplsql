@@ -45,5 +45,5 @@ compatível com o "rodar tudo" atual.
 - 🎯 Requisitos: [[prd-51-run-by-tag|PRD-51 RF3]] · [[prd-51-run-by-tag|PRD-51 RNF1]] · [[prd-51-run-by-tag|PRD-51 RNF2]]
 - 🧩 Código: [[COD - tagFilter.ts]]
 - 🧪 Testes: [[TST - tagFilter.test.ts]]
-- ↩️ Referenciada por: [[prd-51-run-by-tag|PRD-51]]
+- ↩️ Referenciada por: [[Configuration]] · [[prd-51-run-by-tag|PRD-51]]
 <!-- brain:auto:end -->

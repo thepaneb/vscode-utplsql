@@ -38,5 +38,5 @@ Permite forçar idioma independente do editor e garante que nenhuma mensagem fiq
 - 🎯 Requisitos: [[prd-49-internacionalizacao|PRD-49 RF2]]
 - 🧩 Código: [[COD - i18n.ts]]
 - 🧪 Testes: [[TST - i18n.test.ts]]
-- ↩️ Referenciada por: [[09-configuration]] · [[ADR-007 - i18n via package.nls com 23 locales|ADR-007]] · [[NFR-006 - Internacionalização|NFR-006]] · [[prd-49-internacionalizacao|PRD-49]]
+- ↩️ Referenciada por: [[09-configuration]] · [[ADR-007 - i18n via package.nls com 23 locales|ADR-007]] · [[Configuration]] · [[Internationalization]] · [[NFR-006 - Internacionalização|NFR-006]] · [[prd-49-internacionalizacao|PRD-49]]
 <!-- brain:auto:end -->

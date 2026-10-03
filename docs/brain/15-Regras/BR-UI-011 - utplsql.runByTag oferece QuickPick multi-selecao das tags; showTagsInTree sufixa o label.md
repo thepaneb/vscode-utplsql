@@ -45,5 +45,5 @@ Expor na paleta/tooltip o que já existe no runner (`a_tags`), reaproveitando
 - 🎯 Requisitos: [[prd-51-run-by-tag|PRD-51 RF3]] · [[prd-51-run-by-tag|PRD-51 RF4]]
 - 🧩 Código: [[COD - run.ts]] · [[COD - testTree.ts]]
 - 🧪 Testes: [[TST - runByTagCommand.test.ts]] · [[TST - runCommands.test.ts]] · [[TST - testTree.test.ts]]
-- ↩️ Referenciada por: [[prd-51-run-by-tag|PRD-51]]
+- ↩️ Referenciada por: [[Commands]] · [[Editor-integration]] · [[prd-51-run-by-tag|PRD-51]]
 <!-- brain:auto:end -->

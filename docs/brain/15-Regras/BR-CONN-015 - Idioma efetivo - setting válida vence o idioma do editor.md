@@ -38,5 +38,5 @@ Localizar mensagens do domínio de conexão/configuração de forma consistente 
 - 🎯 Requisitos: [[prd-49-internacionalizacao|PRD-49 RF1]]
 - 🧩 Código: [[COD - config.ts]] · [[COD - i18n.ts]]
 - 🧪 Testes: [[TST - i18n.test.ts]]
-- ↩️ Referenciada por: [[09-configuration]] · [[ADR-007 - i18n via package.nls com 23 locales|ADR-007]] · [[prd-49-internacionalizacao|PRD-49]]
+- ↩️ Referenciada por: [[09-configuration]] · [[ADR-007 - i18n via package.nls com 23 locales|ADR-007]] · [[Configuration]] · [[prd-49-internacionalizacao|PRD-49]]
 <!-- brain:auto:end -->

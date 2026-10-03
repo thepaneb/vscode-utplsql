@@ -5,6 +5,7 @@ titulo: "PL/SQL Debugger"
 publicar: docs/wiki/Debugger.md
 origem: ["11-debugger"]
 verificado: 2026-09-23
+regras: ["BR-DEBUG-001", "BR-DEBUG-002", "BR-DEBUG-003", "BR-DEBUG-004", "BR-DEBUG-005"]
 tags: [wiki]
 ---
 

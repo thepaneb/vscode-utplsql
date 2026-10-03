@@ -38,5 +38,5 @@ Registrar por language impediria o provider de casar em ambientes cujo ID de lin
 - 🎯 Requisitos: [[prd-24-codelens-integration|PRD-24 RF1]]
 - 🧩 Código: [[COD - extension.ts]] · [[COD - package.json]]
 - 🧪 Testes: [[TST - codelens.test.ts]]
-- ↩️ Referenciada por: [[05-ux-components]] · [[prd-24-codelens-integration|PRD-24]]
+- ↩️ Referenciada por: [[05-ux-components]] · [[Editor-integration]] · [[prd-24-codelens-integration|PRD-24]]
 <!-- brain:auto:end -->

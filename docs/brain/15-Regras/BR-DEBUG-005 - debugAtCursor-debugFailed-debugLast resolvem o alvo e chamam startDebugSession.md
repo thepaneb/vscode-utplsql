@@ -47,5 +47,5 @@ atrito de depurar um teste específico.
 - 🎯 Requisitos: [[prd-53-debug-test-variants|PRD-53 RF1]] · [[prd-53-debug-test-variants|PRD-53 RF2]] · [[prd-53-debug-test-variants|PRD-53 RF3]] · [[prd-53-debug-test-variants|PRD-53 RNF1]] · [[prd-53-debug-test-variants|PRD-53 RNF2]]
 - 🧩 Código: [[COD - debugTargets.ts]] · [[COD - annotation.ts]] · [[COD - debug.ts]]
 - 🧪 Testes: [[TST - debugTargets.test.ts]] · [[TST - debugCommands.test.ts]]
-- ↩️ Referenciada por: [[prd-53-debug-test-variants|PRD-53]]
+- ↩️ Referenciada por: [[Debugger]] · [[prd-53-debug-test-variants|PRD-53]]
 <!-- brain:auto:end -->

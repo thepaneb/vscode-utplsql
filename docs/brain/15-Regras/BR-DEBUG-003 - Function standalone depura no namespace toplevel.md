@@ -40,5 +40,5 @@ método de package.
 - 📄 PRDs: [[prd-33-plsql-debugger-integration|PRD-33]]
 - 🧩 Código: [[COD - dbmsDebug.ts]]
 - 🧪 Testes: [[TST - debuggerStandaloneFn.test.ts]]
-- ↩️ Referenciada por: [[prd-33-plsql-debugger-integration|PRD-33]]
+- ↩️ Referenciada por: [[Debugger]] · [[prd-33-plsql-debugger-integration|PRD-33]]
 <!-- brain:auto:end -->

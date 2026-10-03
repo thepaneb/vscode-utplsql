@@ -48,5 +48,5 @@ default `off` e guarda de concorrência.
 - 🎯 Requisitos: [[prd-50-auto-run-on-save|PRD-50 RF1]] · [[prd-50-auto-run-on-save|PRD-50 RF2]] · [[prd-50-auto-run-on-save|PRD-50 RF3]] · [[prd-50-auto-run-on-save|PRD-50 RF4]] · [[prd-50-auto-run-on-save|PRD-50 RNF1]] · [[prd-50-auto-run-on-save|PRD-50 RNF2]]
 - 🧩 Código: [[COD - autoRun.ts]] · [[COD - config.ts]] · [[COD - extension.ts]] · [[COD - run.ts]]
 - 🧪 Testes: [[TST - autoRun.test.ts]]
-- ↩️ Referenciada por: [[prd-50-auto-run-on-save|PRD-50]]
+- ↩️ Referenciada por: [[Configuration]] · [[Test-explorer]] · [[prd-50-auto-run-on-save|PRD-50]]
 <!-- brain:auto:end -->
