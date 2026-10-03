@@ -11,7 +11,7 @@ verificado: 2026-09-29
 implementacao: ["package.json:11", "package.json:12", "package.json:822", "package.json:824", "esbuild.config.mjs:9", "scripts/docs-fidelity.cjs:283"]
 testes: ["src/test/unit/docsFidelity.test.ts"]
 prds: ["PRD-94"]
-requisitos: ["PRD-94/RF1", "PRD-94/RF2"]
+requisitos: ["PRD-94/RF1", "PRD-94/RF2", "PRD-94/RNF1", "PRD-94/RNF2"]
 relacionado: ["[[NFR-003 - Compatibilidade com VSCode]]", "[[TPL-VSCODE-API - API do VS Code usada]]"]
 tags: ["plataforma"]
 ---
@@ -46,7 +46,7 @@ quebrar no host mínimo; (b) manter o piso num VS Code cujo Node já está **EOL
 <!-- brain:auto:start:conexoes -->
 - 🗺️ [[MOC - Regras]]
 - 📄 PRDs: [[prd-94-vscode-floor-1-101|PRD-94]]
-- 🎯 Requisitos: [[prd-94-vscode-floor-1-101|PRD-94 RF1]] · [[prd-94-vscode-floor-1-101|PRD-94 RF2]]
+- 🎯 Requisitos: [[prd-94-vscode-floor-1-101|PRD-94 RF1]] · [[prd-94-vscode-floor-1-101|PRD-94 RF2]] · [[prd-94-vscode-floor-1-101|PRD-94 RNF1]] · [[prd-94-vscode-floor-1-101|PRD-94 RNF2]]
 - 🧩 Código: [[COD - package.json]] · [[COD - esbuild.config.mjs]] · [[COD - docs-fidelity.cjs]]
 - 🧪 Testes: [[TST - docsFidelity.test.ts]]
 - 🔗 [[NFR-003 - Compatibilidade com VSCode]] · [[TPL-VSCODE-API - API do VS Code usada]]

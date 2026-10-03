@@ -132,5 +132,7 @@ Criada a regra **`BR-PLAT-001`** (piso de VS Code e runtime Node coerentes), com
 - 📐 Regras: [[BR-PLAT-001 - Piso de VS Code e runtime Node do host sao coerentes|BR-PLAT-001]]
 - 🎯 RF1 — Piso de VS Code → [[BR-PLAT-001 - Piso de VS Code e runtime Node do host sao coerentes|BR-PLAT-001]]
 - 🎯 RF2 — Coerência de runtime → [[BR-PLAT-001 - Piso de VS Code e runtime Node do host sao coerentes|BR-PLAT-001]]
+- 🎯 RNF1 — Usuários deixam de rodar em Node EOL. → [[BR-PLAT-001 - Piso de VS Code e runtime Node do host sao coerentes|BR-PLAT-001]]
+- 🎯 RNF2 — Nenhuma API acima do piso é aceita pelo compilador. → [[BR-PLAT-001 - Piso de VS Code e runtime Node do host sao coerentes|BR-PLAT-001]]
 - 🚀 ⬅️ release anterior: [[prd-87-suitepath-results-jump|PRD-87 (0.13.0)]] · ➡️ próxima release: [[prd-50-auto-run-on-save|PRD-50 (0.15.0)]]
 <!-- brain:auto:end -->

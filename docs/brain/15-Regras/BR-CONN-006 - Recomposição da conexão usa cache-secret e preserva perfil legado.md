@@ -11,7 +11,7 @@ verificado: 2026-09-28
 implementacao: ["src/connectionProfiles.ts:218", "src/connectionProfiles.ts:234"]
 testes: ["src/test/unit/connectionProfiles.test.ts"]
 prds: ["PRD-34"]
-requisitos: ["PRD-34/RF5"]
+requisitos: ["PRD-34/RF5", "PRD-81/RNF2"]
 tags: ["conexao"]
 ---
 ## Enunciado
@@ -35,7 +35,7 @@ Manter perfis utilizáveis após o save (senha fora das settings) e preservar co
 <!-- brain:auto:start:conexoes -->
 - 🗺️ [[MOC - Regras]]
 - 📄 PRDs: [[prd-34-multi-connection-profiles|PRD-34]]
-- 🎯 Requisitos: [[prd-34-multi-connection-profiles|PRD-34 RF5]]
+- 🎯 Requisitos: [[prd-34-multi-connection-profiles|PRD-34 RF5]] · [[prd-81-security-hardening|PRD-81 RNF2]]
 - 🧩 Código: [[COD - connectionProfiles.ts]]
 - 🧪 Testes: [[TST - connectionProfiles.test.ts]]
 - ↩️ Referenciada por: [[09-configuration]] · [[prd-34-multi-connection-profiles|PRD-34]]

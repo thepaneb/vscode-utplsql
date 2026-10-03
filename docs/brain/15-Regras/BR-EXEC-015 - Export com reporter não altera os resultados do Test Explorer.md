@@ -11,7 +11,7 @@ verificado: 2026-09-28
 implementacao: ["src/runner.ts:138", "src/runner.ts:209", "src/oracleRunner.ts:906"]
 testes: ["src/test/unit/runExportCommand.test.ts", "src/test/unit/oracleRunner.test.ts", "src/test/integration/v014-features.test.ts"]
 prds: ["PRD-76"]
-requisitos: ["PRD-76/RF1"]
+requisitos: ["PRD-76/RF1", "PRD-76/RNF1"]
 tags: ["execucao"]
 ---
 ## Enunciado
@@ -35,7 +35,7 @@ Permitir exportar a saída de qualquer reporter sem corromper o estado de result
 <!-- brain:auto:start:conexoes -->
 - 🗺️ [[MOC - Regras]]
 - 📄 PRDs: [[prd-76-reporter-export|PRD-76]]
-- 🎯 Requisitos: [[prd-76-reporter-export|PRD-76 RF1]]
+- 🎯 Requisitos: [[prd-76-reporter-export|PRD-76 RF1]] · [[prd-76-reporter-export|PRD-76 RNF1]]
 - 🧩 Código: [[COD - runner.ts]] · [[COD - oracleRunner.ts]]
 - 🧪 Testes: [[TST - runExportCommand.test.ts]] · [[TST - oracleRunner.test.ts]] · [[TST - v014-features.test.ts]]
 - ↩️ Referenciada por: [[prd-76-reporter-export|PRD-76]]

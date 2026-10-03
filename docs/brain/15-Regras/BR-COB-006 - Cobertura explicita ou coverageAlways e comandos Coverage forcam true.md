@@ -11,7 +11,7 @@ verificado: 2026-10-02
 implementacao: ["src/coverageDecision.ts:12", "src/state.ts:32", "src/commands/run.ts:341"]
 testes: ["src/test/unit/coverageDecision.test.ts"]
 prds: ["PRD-54"]
-requisitos: ["PRD-54/RF1", "PRD-54/RF3", "PRD-54/RF4", "PRD-54/RNF1"]
+requisitos: ["PRD-54/RF1", "PRD-54/RF3", "PRD-54/RF4", "PRD-54/RNF1", "PRD-54/RNF2"]
 tags: ["cobertura"]
 ---
 
@@ -42,7 +42,7 @@ auto-run.
 <!-- brain:auto:start:conexoes -->
 - 🗺️ [[MOC - Regras]]
 - 📄 PRDs: [[prd-54-coverage-toggle|PRD-54]]
-- 🎯 Requisitos: [[prd-54-coverage-toggle|PRD-54 RF1]] · [[prd-54-coverage-toggle|PRD-54 RF3]] · [[prd-54-coverage-toggle|PRD-54 RF4]] · [[prd-54-coverage-toggle|PRD-54 RNF1]]
+- 🎯 Requisitos: [[prd-54-coverage-toggle|PRD-54 RF1]] · [[prd-54-coverage-toggle|PRD-54 RF3]] · [[prd-54-coverage-toggle|PRD-54 RF4]] · [[prd-54-coverage-toggle|PRD-54 RNF1]] · [[prd-54-coverage-toggle|PRD-54 RNF2]]
 - 🧩 Código: [[COD - coverageDecision.ts]] · [[COD - state.ts]] · [[COD - run.ts]]
 - 🧪 Testes: [[TST - coverageDecision.test.ts]]
 - ↩️ Referenciada por: [[prd-50-auto-run-on-save|PRD-50]] · [[prd-54-coverage-toggle|PRD-54]]

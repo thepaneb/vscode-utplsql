@@ -175,5 +175,7 @@ funcionando pelos IDs.
 - 🔗 PRDs relacionados: [[prd-74-db-first-discovery|PRD-74]]
 - 🎯 RF1 — Resolvedor por nó → [[BR-SCHEMA-004 - Árvore de testes resolvida por nível sob demanda (lazy)|BR-SCHEMA-004]]
 - 🎯 RF4 — Resultados e re-run → [[BR-SCHEMA-004 - Árvore de testes resolvida por nível sob demanda (lazy)|BR-SCHEMA-004]]
+- 🎯 RNF1 — Abrir um workspace com N packages não deve consultar o banco para os → [[BR-SCHEMA-004 - Árvore de testes resolvida por nível sob demanda (lazy)|BR-SCHEMA-004]]
+- 🎯 RNF2 — Nenhuma chamada de rede durante a renderização do nó já cacheado. → [[BR-SCHEMA-004 - Árvore de testes resolvida por nível sob demanda (lazy)|BR-SCHEMA-004]]
 - 🚀 ⬅️ release anterior: [[prd-87-suitepath-results-jump|PRD-87 (0.13.0)]] · ➡️ próxima release: [[prd-50-auto-run-on-save|PRD-50 (0.15.0)]]
 <!-- brain:auto:end -->

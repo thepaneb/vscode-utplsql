@@ -161,5 +161,7 @@ workspace-scoped.
 - 📐 Regras: [[BR-CONN-016 - Settings de conexão machine-scoped e workspace confiável|BR-CONN-016]] · [[SEC-011 - Settings de conexão não são sobrescrevíveis por workspace|SEC-011]]
 - 🎯 RF1 — Escopo machine → [[BR-CONN-016 - Settings de conexão machine-scoped e workspace confiável|BR-CONN-016]]
 - 🎯 RF2 — Untrusted workspaces → [[BR-CONN-016 - Settings de conexão machine-scoped e workspace confiável|BR-CONN-016]]
+- 🎯 RNF1 — Migração transparente de perfis existentes (re-salvar com o novo → [[BR-CONN-007 - Migração de perfis legados é idempotente|BR-CONN-007]]
+- 🎯 RNF2 — Sem quebra para quem usa `UTPLSQL_CONN`/`utplsql.connection`. → [[BR-CONN-006 - Recomposição da conexão usa cache-secret e preserva perfil legado|BR-CONN-006]]
 - 🚀 ⬅️ release anterior: [[prd-87-suitepath-results-jump|PRD-87 (0.13.0)]] · ➡️ próxima release: [[prd-50-auto-run-on-save|PRD-50 (0.15.0)]]
 <!-- brain:auto:end -->

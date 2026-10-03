@@ -171,5 +171,6 @@ TNS e houver diretório resolvido, passar o descriptor resolvido ao
 - 🎯 RF1 — Setting e fallback → [[BR-CONN-018 - Alias TNS resolvido no thin por tnsAdminPath, SQL Developer e TNS_ADMIN|BR-CONN-018]]
 - 🎯 RF3 — Aplicação no pool → [[BR-CONN-018 - Alias TNS resolvido no thin por tnsAdminPath, SQL Developer e TNS_ADMIN|BR-CONN-018]]
 - 🎯 RF4 — Wallet → [[BR-CONN-017 - Senha da wallet vai para o SecretStorage e ao pool|BR-CONN-017]]
+- 🎯 RNF2 — Nunca logar a senha de wallet nem o descriptor completo. → [[SEC-012 - Senha da wallet nunca em settings nem em log|SEC-012]]
 - 🚀 ⬅️ release anterior: [[prd-87-suitepath-results-jump|PRD-87 (0.13.0)]] · ➡️ próxima release: [[prd-50-auto-run-on-save|PRD-50 (0.15.0)]]
 <!-- brain:auto:end -->

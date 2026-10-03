@@ -157,6 +157,7 @@ Esperado criar **`BR-COB-006`** (resolução `explicit ?? coverageAlways`) e
 - 🎯 RF2 — Toggle e ícone → [[BR-UI-012 - Item de status bar alterna o modo global de cobertura (sessao, nao persiste)|BR-UI-012]]
 - 🎯 RF3 — Entry points honram a flag → [[BR-COB-006 - Cobertura explicita ou coverageAlways e comandos Coverage forcam true|BR-COB-006]]
 - 🎯 RF4 — Sincronia com auto-run → [[BR-COB-006 - Cobertura explicita ou coverageAlways e comandos Coverage forcam true|BR-COB-006]]
-- 🎯 RNF1 — Toggle não persiste (sessão); avisar via tooltip. → [[BR-COB-006 - Cobertura explicita ou coverageAlways e comandos Coverage forcam true|BR-COB-006]]
+- 🎯 RNF1 — Toggle não persiste (sessão); avisar via tooltip. → [[BR-COB-006 - Cobertura explicita ou coverageAlways e comandos Coverage forcam true|BR-COB-006]] · [[BR-UI-012 - Item de status bar alterna o modo global de cobertura (sessao, nao persiste)|BR-UI-012]]
+- 🎯 RNF2 — Toggle deve refletir também quando a cobertura for pulada por falta → [[BR-COB-006 - Cobertura explicita ou coverageAlways e comandos Coverage forcam true|BR-COB-006]] · [[BR-EXEC-013 - Reporter de cobertura só entra se existir no banco|BR-EXEC-013]]
 - 🚀 ⬅️ release anterior: [[prd-94-vscode-floor-1-101|PRD-94 (0.14.0)]] · ➡️ próxima release: [[prd-47-node-26-toolchain|PRD-47 (0.15.1)]]
 <!-- brain:auto:end -->

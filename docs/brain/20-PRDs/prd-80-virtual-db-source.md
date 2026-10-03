@@ -176,5 +176,8 @@ Manter os nomes de pacote/schema em maiúsculas; expor o objeto no provider e um
 - 📐 Regras: [[BR-COB-004 - Fonte virtual do banco (utplsql-source) é read-only|BR-COB-004]] · [[SEC-013 - Fonte virtual do banco é read-only|SEC-013]]
 - 🔗 PRDs relacionados: [[prd-43-schema-db-discovery|PRD-43]] · [[prd-74-db-first-discovery|PRD-74]]
 - 🎯 RF1 — Provider por tipo → [[BR-COB-004 - Fonte virtual do banco (utplsql-source) é read-only|BR-COB-004]]
+- 🎯 RNF1 — Fallback silencioso quando o usuário não tem `SELECT` em → [[BR-COB-004 - Fonte virtual do banco (utplsql-source) é read-only|BR-COB-004]]
+- 🎯 RNF2 — Cache em memória por sessão, limpo em `clearDbSourceCache`. → [[BR-COB-004 - Fonte virtual do banco (utplsql-source) é read-only|BR-COB-004]]
+- 🎯 RNF3 — Nunca sair do workspace para gravação (read-only). → [[BR-COB-004 - Fonte virtual do banco (utplsql-source) é read-only|BR-COB-004]] · [[SEC-013 - Fonte virtual do banco é read-only|SEC-013]]
 - 🚀 ⬅️ release anterior: [[prd-87-suitepath-results-jump|PRD-87 (0.13.0)]] · ➡️ próxima release: [[prd-50-auto-run-on-save|PRD-50 (0.15.0)]]
 <!-- brain:auto:end -->
