@@ -12,6 +12,7 @@ implementacao: ["src/oracleRunner.ts:792", "src/oracleRunner.ts:798", "package.j
 testes: ["src/test/unit/oracleRunner.test.ts", "src/test/unit/runner.test.ts"]
 prds: ["PRD-31"]
 requisitos: ["PRD-27/RF4", "PRD-31/RF4"]
+interno: true
 tags: ["ui"]
 ---
 ## Enunciado

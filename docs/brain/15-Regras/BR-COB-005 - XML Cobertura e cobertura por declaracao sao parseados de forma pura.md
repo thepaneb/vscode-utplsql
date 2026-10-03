@@ -11,6 +11,7 @@ verificado: 2026-09-29
 implementacao: ["src/cobertura.ts:18", "src/plsqlDeclarations.ts:86", "src/plsqlDeclarations.ts:101"]
 testes: ["src/test/unit/cobertura.test.ts", "src/test/unit/plsqlDeclarations.test.ts"]
 prds: ["PRD-12", "PRD-48"]
+interno: true
 tags: ["cobertura"]
 ---
 ## Enunciado

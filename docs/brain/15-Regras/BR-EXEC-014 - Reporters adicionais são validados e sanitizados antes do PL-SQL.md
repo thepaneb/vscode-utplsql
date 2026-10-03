@@ -38,5 +38,5 @@ O nome vem de settings (potencialmente do workspace) e é concatenado no PL/SQL;
 - 🎯 Requisitos: [[prd-69-oracle-runner-typed-binds|PRD-69 RF3]]
 - 🧩 Código: [[COD - oracleRunner.ts]]
 - 🧪 Testes: [[TST - oracleRunner.test.ts]]
-- ↩️ Referenciada por: [[02-test-execution]] · [[SEC-006 - Nome de reporter é sanitizado antes de ir ao PL-SQL|SEC-006]] · [[prd-69-oracle-runner-typed-binds|PRD-69]]
+- ↩️ Referenciada por: [[02-test-execution]] · [[Reporters]] · [[SEC-006 - Nome de reporter é sanitizado antes de ir ao PL-SQL|SEC-006]] · [[prd-69-oracle-runner-typed-binds|PRD-69]]
 <!-- brain:auto:end -->

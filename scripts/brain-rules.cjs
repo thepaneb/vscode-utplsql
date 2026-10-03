@@ -469,6 +469,31 @@ function checkRulesDocumented(notes) {
 }
 
 /**
+ * Regra de usuário (sem `interno: true`) precisa aparecer no `regras:` de alguma
+ * página da wiki — rastreio da documentação de usuário. Regras internas
+ * (implementação) declaram `interno: true` e ficam cobertas pelo doc funcional.
+ */
+function checkRulesWiki(notes) {
+  const problems = [];
+  const inWiki = new Set();
+  for (const note of notes) {
+    const fm = parseFrontmatter(note.content);
+    if (fm?.tipo !== 'wiki') continue;
+    for (const r of Array.isArray(fm.regras) ? fm.regras : []) inWiki.add(String(r).trim());
+  }
+  for (const note of notes) {
+    const fm = parseFrontmatter(note.content);
+    if (fm?.tipo !== 'regra' || fm.status !== 'ativo' || !fm.id) continue;
+    if (String(fm.interno) === 'true') continue;
+    if (inWiki.has(String(fm.id))) continue;
+    problems.push(
+      `${note.name}: regra de usuário sem menção na wiki (adicione a 'regras:' de uma página ou marque 'interno: true')`,
+    );
+  }
+  return problems;
+}
+
+/**
  * Valida referências de TODAS as notas do vault: `implementacao`/`testes`
  * (arquivos existem), `regras` (apontam para BR-* existentes) e as arestas de
  * grafo (`relacionado*`/`decisoes`) contra o catálogo de notas/ids/ADRs.
@@ -606,6 +631,7 @@ function checkRules(overrides = {}) {
     problems.push(...checkPrdRnfVinculo(notes));
     problems.push(...checkLayerConnections(notes));
     problems.push(...checkRulesDocumented(notes));
+    problems.push(...checkRulesWiki(notes));
   }
 
   return problems;
@@ -625,6 +651,7 @@ module.exports = {
   checkLayerConnections,
   hasSemVinculo,
   checkRulesDocumented,
+  checkRulesWiki,
   semverGte,
   parseFrontmatter,
   listRuleFiles,

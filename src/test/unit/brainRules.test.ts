@@ -20,6 +20,7 @@ const {
   checkLayerConnections,
   hasSemVinculo,
   checkRulesDocumented,
+  checkRulesWiki,
   semverGte,
   parseFrontmatter,
   LAYERS,
@@ -38,6 +39,7 @@ const {
   checkLayerConnections: (notes: { name: string; content: string }[]) => string[];
   hasSemVinculo: (content: string) => boolean;
   checkRulesDocumented: (notes: { name: string; content: string }[]) => string[];
+  checkRulesWiki: (notes: { name: string; content: string }[]) => string[];
   semverGte: (a: string, b: string) => boolean;
   checkReferences: (
     notes: { name: string; content: string }[],
@@ -563,6 +565,7 @@ test('brain-rules.cjs: CLI valida as linhas em fixture isolado', () => {
         'fonte: codigo',
         'implementacao: ["src/a.ts:1"]',
         'testes: []',
+        'interno: true',
         '---',
         '',
         'Sem documentação: fixture de teste.',
@@ -1012,4 +1015,28 @@ test('brain-rules: referência em PRD/regra não conta como documentação', () 
 test('brain-rules: regra não-ativa é ignorada', () => {
   const regra = note(['id: BR-X-001', 'tipo: regra', 'status: proposta']);
   assert.deepStrictEqual(checkRulesDocumented([regra]), []);
+});
+
+// ── regra de usuário na wiki ──────────────────────────────────────────
+
+test('brain-rules: regra de usuário sem menção na wiki é reportada', () => {
+  const regra = note(['id: BR-X-001', 'tipo: regra', 'status: ativo']);
+  assert.ok(checkRulesWiki([regra]).some((p) => p.includes('sem menção na wiki')));
+});
+
+test('brain-rules: regra de usuário citada em página da wiki passa', () => {
+  const regra = note(['id: BR-X-001', 'tipo: regra', 'status: ativo']);
+  const wiki = note(['tipo: wiki', 'titulo: W', 'regras: ["BR-X-001"]']);
+  assert.deepStrictEqual(checkRulesWiki([regra, wiki]), []);
+});
+
+test('brain-rules: regra interna (interno: true) é isenta da wiki', () => {
+  const regra = note(['id: BR-X-001', 'tipo: regra', 'status: ativo', 'interno: true']);
+  assert.deepStrictEqual(checkRulesWiki([regra]), []);
+});
+
+test('brain-rules: funcional não substitui a wiki na checagem de usuário', () => {
+  const regra = note(['id: BR-X-001', 'tipo: regra', 'status: ativo']);
+  const funcional = note(['tipo: funcional', 'titulo: F', 'regras: ["BR-X-001"]']);
+  assert.ok(checkRulesWiki([regra, funcional]).some((p) => p.includes('sem menção na wiki')));
 });

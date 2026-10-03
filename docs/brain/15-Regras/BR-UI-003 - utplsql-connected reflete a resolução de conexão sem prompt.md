@@ -12,6 +12,7 @@ implementacao: ["src/config.ts:171", "src/config.ts:174", "src/config.ts:182", "
 testes: ["src/test/unit/config.test.ts"]
 prds: ["PRD-27", "PRD-34"]
 requisitos: ["PRD-27/RF4"]
+interno: true
 tags: ["ui", "conexao"]
 ---
 ## Enunciado

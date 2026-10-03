@@ -12,6 +12,7 @@ implementacao: ["src/junit.ts:34", "src/junit.ts:40", "src/junit.ts:42", "src/ju
 testes: ["src/test/unit/junit.test.ts", "src/test/integration/jumpToFailureE2E.test.ts"]
 prds: ["PRD-11", "PRD-29"]
 requisitos: ["PRD-11/RF5"]
+interno: true
 tags: ["resultados"]
 ---
 ## Enunciado

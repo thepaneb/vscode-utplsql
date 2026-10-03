@@ -12,6 +12,7 @@ implementacao: ["src/runner.ts:141", "src/runner.ts:161", "src/runner.ts:221", "
 testes: ["src/test/unit/runner.test.ts"]
 prds: ["PRD-05"]
 requisitos: ["PRD-27/RF4"]
+interno: true
 tags: ["ui"]
 ---
 ## Enunciado

@@ -12,6 +12,7 @@ implementacao: ["src/discovery.ts:344", "src/discovery.ts:349", "src/discovery.t
 testes: ["src/test/unit/discovery.test.ts"]
 prds: ["PRD-74"]
 requisitos: ["PRD-74/RF3"]
+interno: true
 tags: ["descoberta"]
 ---
 ## Enunciado

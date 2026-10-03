@@ -12,6 +12,7 @@ implementacao: ["src/extension.ts:38", "package.json:37", "package.json:38", "pa
 testes: ["src/test/integration/extension.test.ts", "src/test/unit/extensionActivation.test.ts", "src/test/unit/manifestDebugger.test.ts"]
 prds: ["PRD-27"]
 requisitos: ["PRD-27/RF4"]
+interno: true
 tags: ["ui"]
 ---
 ## Enunciado

@@ -38,5 +38,5 @@ Evita run pendurado sem depender de cancelamento manual, reaproveitando a mesma 
 - 🎯 Requisitos: [[prd-05-progress-cancel|PRD-05 RF3]]
 - 🧩 Código: [[COD - oracleRunner.ts]]
 - 🧪 Testes: [[TST - oracleRunner.test.ts]] · [[TST - runTimeoutE2E.test.ts]]
-- ↩️ Referenciada por: [[02-test-execution]] · [[NFR-005 - Cancelamento e timeout|NFR-005]] · [[prd-05-progress-cancel|PRD-05]]
+- ↩️ Referenciada por: [[02-test-execution]] · [[Configuration]] · [[NFR-005 - Cancelamento e timeout|NFR-005]] · [[prd-05-progress-cancel|PRD-05]]
 <!-- brain:auto:end -->

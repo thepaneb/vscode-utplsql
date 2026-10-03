@@ -5,7 +5,7 @@ titulo: "Editor Integration"
 publicar: docs/wiki/Editor-integration.md
 origem: ["05-ux-components","08-jump-to-failure"]
 verificado: 2026-09-25
-regras: ["BR-UI-006", "BR-UI-010", "BR-UI-011", "BR-UI-012", "BR-PARSE-015", "BR-PARSE-018"]
+regras: ["BR-UI-006", "BR-UI-010", "BR-UI-011", "BR-UI-012", "BR-PARSE-015", "BR-PARSE-018", "BR-UI-005"]
 tags: [wiki]
 ---
 

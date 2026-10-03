@@ -12,6 +12,7 @@ implementacao: ["src/oracleRunner.ts:518", "src/oracleRunner.ts:520", "src/oracl
 testes: ["src/test/integration/dbPaths.test.ts", "src/test/integration/schemaRun.test.ts"]
 prds: ["PRD-11"]
 requisitos: ["PRD-11/RF3"]
+interno: true
 tags: ["execucao"]
 ---
 ## Enunciado

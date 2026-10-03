@@ -12,6 +12,7 @@ implementacao: ["src/matching.ts:12", "src/matching.ts:16", "src/matching.ts:17"
 testes: ["src/test/unit/matching.test.ts", "src/test/unit/results.test.ts"]
 prds: ["PRD-44"]
 requisitos: ["PRD-44/RF1", "PRD-44/RF2"]
+interno: true
 tags: ["resultados"]
 ---
 ## Enunciado
