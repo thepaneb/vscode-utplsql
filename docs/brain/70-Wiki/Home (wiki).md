@@ -98,3 +98,11 @@ Use the sidebar on the left (or the ≡ menu on mobile) to navigate between sect
 - [Repository](https://github.com/thepaneb/vscode-utplsql)
 - [Marketplace](https://marketplace.visualstudio.com/items?itemName=paneb.vscode-utplsql)
 - [utPLSQL Framework](https://github.com/utPLSQL/utPLSQL)
+
+## Disclaimer
+
+> [!WARNING]
+> **This is an independent community project.** It is **not affiliated with,
+> endorsed by, or sponsored by** the utPLSQL framework team or Oracle
+> Corporation. **utPLSQL** and **Oracle** are trademarks of their respective
+> owners.
