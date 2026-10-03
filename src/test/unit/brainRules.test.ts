@@ -15,6 +15,8 @@ const {
   checkMencoesPrd,
   checkSecRegras,
   checkPrdRules,
+  checkPrdRnfVinculo,
+  declaredRnfExceptions,
   semverGte,
   parseFrontmatter,
   LAYERS,
@@ -28,6 +30,8 @@ const {
     regraStatus: Map<string, string>,
   ) => string[];
   checkPrdRules: (notes: { name: string; content: string }[]) => string[];
+  checkPrdRnfVinculo: (notes: { name: string; content: string }[]) => string[];
+  declaredRnfExceptions: (content: string) => Set<string>;
   semverGte: (a: string, b: string) => boolean;
   checkReferences: (
     notes: { name: string; content: string }[],
@@ -701,4 +705,86 @@ test('brain-rules: regra que lista a PRD fora de regras: é reportada', () => {
       p.includes('não está em regras:'),
     ),
   );
+});
+
+// ── RNF ↔ regra (rastreabilidade) ──────────────────────────────────────
+
+const ruleWithReq = (id: string, requisitos: string[], tipo = 'regra') => ({
+  name: `${id}.md`,
+  content: [
+    '---',
+    `id: ${id}`,
+    `tipo: ${tipo}`,
+    `requisitos: [${requisitos.map((r) => `"${r}"`).join(', ')}]`,
+    '---',
+    '',
+  ].join('\n'),
+});
+
+test('brain-rules: declaredRnfExceptions lê a linha "RNFs sem regra"', () => {
+  const content = '## Impacto no cérebro\n\nRNFs sem regra: RNF3, RNF5 (processo)\n';
+  assert.deepStrictEqual([...declaredRnfExceptions(content)].sort(), ['3', '5']);
+});
+
+test('brain-rules: declaredRnfExceptions sem a seção devolve vazio', () => {
+  assert.deepStrictEqual([...declaredRnfExceptions('## Outra\n\ntexto\n')], []);
+});
+
+test('brain-rules: RNF vinculado a regra passa', () => {
+  const prd = prdNote(
+    ['tipo: prd', 'id: PRD-81', 'status: completed', 'versao: "0.14.0"', 'regras: ["BR-X-001"]'],
+    '### Não-funcionais\n- RNF1 — Requisito coberto.\n',
+  );
+  assert.deepStrictEqual(checkPrdRnfVinculo([prd, ruleWithReq('BR-X-001', ['PRD-81/RNF1'])]), []);
+});
+
+test('brain-rules: RNF sem vínculo é reportado', () => {
+  const prd = prdNote(
+    ['tipo: prd', 'id: PRD-81', 'status: completed', 'versao: "0.14.0"', 'regras: ["BR-X-001"]'],
+    '### Não-funcionais\n- RNF1 — Órfão.\n',
+  );
+  assert.ok(
+    checkPrdRnfVinculo([prd, ruleWithReq('BR-X-001', [])]).some((p) =>
+      p.includes('RNF1 sem vínculo em regra'),
+    ),
+  );
+});
+
+test('brain-rules: RNF declarado como exceção passa', () => {
+  const prd = prdNote(
+    ['tipo: prd', 'id: PRD-81', 'status: completed', 'versao: "0.14.0"', 'regras: []'],
+    '### Não-funcionais\n- RNF3 — Processo.\n\n## Impacto no cérebro\n\nRNFs sem regra: RNF3\n',
+  );
+  assert.deepStrictEqual(checkPrdRnfVinculo([prd]), []);
+});
+
+test('brain-rules: RNF vinculado por SEC também conta', () => {
+  const prd = prdNote(
+    ['tipo: prd', 'id: PRD-81', 'status: completed', 'versao: "0.14.0"', 'regras: ["SEC-X-001"]'],
+    '### Não-funcionais\n- RNF2 — Segredo.\n',
+  );
+  assert.deepStrictEqual(
+    checkPrdRnfVinculo([prd, ruleWithReq('SEC-X-001', ['PRD-81/RNF2'], 'seguranca')]),
+    [],
+  );
+});
+
+test('brain-rules: PRD < baseline ou não concluída é ignorada na checagem de RNF', () => {
+  const old = prdNote(
+    ['tipo: prd', 'id: PRD-10', 'status: completed', 'versao: "0.13.0"'],
+    '- RNF1 — Órfão.\n',
+  );
+  const approved = prdNote(
+    ['tipo: prd', 'id: PRD-90', 'status: approved', 'versao: "0.15.0"'],
+    '- RNF1 — Órfão.\n',
+  );
+  assert.deepStrictEqual(checkPrdRnfVinculo([old, approved]), []);
+});
+
+test('brain-rules: PRD sem RNFs declarados passa', () => {
+  const prd = prdNote(
+    ['tipo: prd', 'id: PRD-81', 'status: completed', 'versao: "0.14.0"', 'regras: []'],
+    '### Não-funcionais\n- Nada aqui.\n',
+  );
+  assert.deepStrictEqual(checkPrdRnfVinculo([prd]), []);
 });

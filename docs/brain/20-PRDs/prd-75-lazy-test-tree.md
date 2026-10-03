@@ -167,6 +167,11 @@ funcionando pelos IDs.
 - Resolver a suíte também ao aplicar decorações/CodeLens sem expandir?
 - Persistir `resolvedNodes` entre sessões ou sempre revalidar no refresh?
 
+## Impacto no cérebro
+
+RNF1 e RNF2 (lazy: sem consulta/rede para nós cacheados) materializados em
+**`BR-SCHEMA-004`**. RNFs sem regra: RNF3 (processo — `npm test`/thresholds c8).
+
 ## Conexões
 
 <!-- brain:auto:start:conexoes -->

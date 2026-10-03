@@ -339,6 +339,69 @@ function checkPrdRules(notes) {
 }
 
 /**
+ * Declara que a PRD tem RNFs intencionalmente sem regra? Reconhece, na seção
+ * `## Impacto no cérebro`, uma linha `RNFs sem regra: RNF3, RNF5 (motivo)`.
+ * Devolve o conjunto de números declarados.
+ */
+function declaredRnfExceptions(content) {
+  const section = content
+    .split(/\n(?=##\s)/)
+    .find((s) => /^##\s*(?:\d+[.)]\s*)?Impacto no c[ée]rebro/i.test(s));
+  if (!section) return new Set();
+  const nums = new Set();
+  for (const m of section.matchAll(/RNFs?\s+sem\s+regra\s*:\s*([^\n]+)/gi)) {
+    for (const n of m[1].matchAll(/RNF(\d+)/gi)) nums.add(n[1]);
+  }
+  return nums;
+}
+
+/**
+ * Toda RNF declarada no corpo de uma PRD `completed` recente (>= baseline) deve
+ * estar vinculada a alguma regra/SEC (via `requisitos: ["PRD-NN/RNFn"]`) **ou**
+ * declarada como exceção em `## Impacto no cérebro` (`RNFs sem regra: ...`).
+ * Evita que RNFs "sumam" sem rastreabilidade (como aconteceu na PRD-53).
+ */
+function checkPrdRnfVinculo(notes) {
+  const problems = [];
+  const prds = new Map();
+  const linked = new Map(); // PRD-NN -> Set(RNFn)
+  for (const note of notes) {
+    const fm = parseFrontmatter(note.content);
+    if (!fm || !fm.id) continue;
+    if (fm.tipo === 'prd') {
+      const num = String(fm.id).replace(/\D/g, '');
+      if (num) prds.set(String(Number(num)), { name: note.name, fm, content: note.content });
+    } else if (fm.tipo === 'regra' || fm.tipo === 'seguranca') {
+      for (const r of Array.isArray(fm.requisitos) ? fm.requisitos : []) {
+        const m = String(r).match(/^(PRD-\d+)\/RNF(\d+)/i);
+        if (m) {
+          const num = String(Number(m[1].replace(/\D/g, '')));
+          if (!linked.has(num)) linked.set(num, new Set());
+          linked.get(num).add(m[2]);
+        }
+      }
+    }
+  }
+  for (const [num, prd] of prds) {
+    if (prd.fm.status !== 'completed') continue;
+    if (!semverGte(prd.fm.versao, RULES_BASELINE)) continue;
+    const body = prd.content.split('<!-- brain:auto:start:conexoes -->')[0];
+    const declared = new Set();
+    for (const m of body.matchAll(/^\s*[-*]\s*RNF(\d+)\b/gm)) declared.add(m[1]);
+    if (declared.size === 0) continue;
+    const exceptions = declaredRnfExceptions(prd.content);
+    const have = linked.get(num) ?? new Set();
+    for (const n of declared) {
+      if (have.has(n) || exceptions.has(n)) continue;
+      problems.push(
+        `${prd.name}: RNF${n} sem vínculo em regra (use requisitos: "PRD-${Number(num)}/RNF${n}" numa regra/SEC ou declare "RNFs sem regra: RNF${n}" em '## Impacto no cérebro')`,
+      );
+    }
+  }
+  return problems;
+}
+
+/**
  * Valida referências de TODAS as notas do vault: `implementacao`/`testes`
  * (arquivos existem), `regras` (apontam para BR-* existentes) e as arestas de
  * grafo (`relacionado*`/`decisoes`) contra o catálogo de notas/ids/ADRs.
@@ -473,6 +536,7 @@ function checkRules(overrides = {}) {
     problems.push(...checkMencoesPrd(notes, new Set(relCatalog.noteIds)));
     problems.push(...checkSecRegras(notes, regraStatus));
     problems.push(...checkPrdRules(notes));
+    problems.push(...checkPrdRnfVinculo(notes));
   }
 
   return problems;
@@ -487,6 +551,8 @@ module.exports = {
   checkLayers,
   checkRequisitos,
   checkPrdRules,
+  checkPrdRnfVinculo,
+  declaredRnfExceptions,
   semverGte,
   parseFrontmatter,
   listRuleFiles,

@@ -40,6 +40,7 @@ Ferramentas e infraestrutura de desenvolvimento do projeto.
 | `npm run gen-icon` | `scripts/gen-icon.cjs` — gera o ícone |
 | `npm run gen-diagram` | `scripts/gen-diagrams.cjs` — renderiza todos os SVGs de `docs/wiki/images/` para PNG de 1200px via `@resvg/resvg-js` (cross-platform) |
 | `npm run brain:sync` / `brain:check` | Sincroniza/valida o vault Obsidian (`docs/brain`) |
+| `npm run brain:rules` | Valida as `BR-*`, o schema das camadas (SEC/ERR/PAT/…), o vínculo bidirecional PRD ↔ regra/SEC e a rastreabilidade **RNF → regra** |
 | `npm run brain:ci` | `brain:sync` + `brain:build` + `brain:check` + `brain:rules` + `brain:gaps` (roda no CI) |
 | `npm run brain:gaps` | Reporta arquivos do repo sem referência no cérebro (`scripts/brain-gaps.cjs`; estrito, `--warn` não falha) |
 | `npm run docs:check` | Consistência da documentação versionada (roda no CI) |

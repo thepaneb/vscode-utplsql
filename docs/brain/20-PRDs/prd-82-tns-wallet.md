@@ -162,6 +162,11 @@ TNS e houver diretório resolvido, passar o descriptor resolvido ao
   `oracleClientConfigDir` estiver preenchido?
 - Suportar `sqlnet.ora`/`IFILE` no parser ou apenas o `tnsnames.ora` principal?
 
+## Impacto no cérebro
+
+RNF2 (senha de wallet nunca em settings/log) → **`SEC-012`**. RNFs sem regra:
+RNF1 (não-regressão do caminho default) e RNF3 (processo — paridade i18n).
+
 ## Conexões
 
 <!-- brain:auto:start:conexoes -->
