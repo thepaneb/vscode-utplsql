@@ -1,0 +1,98 @@
+name: Bing Index Check
+
+on:
+  schedule:
+    - cron: '0 12 * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  bing-index:
+    name: Check Bing index status
+    runs-on: ubuntu-latest
+    env:
+      SITE_URL: https://thepaneb.github.io/vscode-utplsql/
+      HOME_URL: https://thepaneb.github.io/vscode-utplsql/
+      # Data em que o site entrou no ar; base do prazo de indexação.
+      SITE_LIVE_DATE: '2026-10-07'
+      GRACE_DAYS: '14'
+    steps:
+      - name: Check Bing index status
+        env:
+          BWT_API_KEY: ${{ secrets.BWT_API_KEY }}
+        run: |
+          python3 - <<'PY'
+          import datetime
+          import json
+          import os
+          import sys
+          import urllib.parse
+          import urllib.request
+
+          BASE = "https://ssl.bing.com/webmaster/api.svc/json"
+          key = os.environ.get("BWT_API_KEY", "")
+          site = os.environ["SITE_URL"]
+          home = os.environ["HOME_URL"]
+          live = datetime.date.fromisoformat(os.environ["SITE_LIVE_DATE"])
+          grace = int(os.environ["GRACE_DAYS"])
+
+          def get(method, params):
+              url = f"{BASE}/{method}?" + urllib.parse.urlencode(params)
+              with urllib.request.urlopen(url, timeout=30) as resp:
+                  return json.load(resp)
+
+          def fail(message):
+              print(f"::error::{message}")
+              sys.exit(1)
+
+          if not key:
+              fail("secret BWT_API_KEY ausente no repositório.")
+
+          sites = get("GetUserSites", {"apikey": key})
+          verified = any(
+              isinstance(s, dict) and s.get("Url") == site and s.get("IsVerified")
+              for s in (sites.get("d") or [])
+          )
+          if not verified:
+              fail("chave inválida ou site não verificado no Bing Webmaster Tools.")
+
+          info = get("GetUrlInfo", {"apikey": key, "siteUrl": site, "url": home})
+          d = info.get("d")
+          first = d[0] if isinstance(d, list) else (d or {})
+
+          epoch = 0
+          raw = str(first.get("LastCrawledDate") or "")
+          if raw.startswith("/Date(") and raw.endswith(")/"):
+              try:
+                  epoch = int(raw[6:-2])
+              except ValueError:
+                  epoch = 0
+          http_status = first.get("HttpStatus", 0)
+          indexed = epoch > 0
+
+          days = (datetime.datetime.now(datetime.timezone.utc).date() - live).days
+
+          table = (
+              f"## Bing index — {site}\n\n"
+              "| Item | Valor |\n"
+              "|---|---|\n"
+              f"| Indexada | {str(indexed).lower()} |\n"
+              f"| LastCrawledDate | {epoch or '—'} |\n"
+              f"| HttpStatus | {http_status} |\n"
+              f"| Dias desde o go-live | {days} (limite: {grace}) |\n"
+          )
+          summary_path = os.environ.get("GITHUB_STEP_SUMMARY")
+          if summary_path:
+              with open(summary_path, "a", encoding="utf-8") as handle:
+                  handle.write(table)
+          print(table)
+
+          if indexed:
+              print("OK: home indexada no Bing.")
+              sys.exit(0)
+          if days > grace:
+              fail(f"home ainda não indexada no Bing após {days} dias (limite {grace}).")
+          print(f"Pendente: home ainda não indexada (dia {days} de {grace}).")
+          PY
