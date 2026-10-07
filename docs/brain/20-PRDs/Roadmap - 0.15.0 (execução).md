@@ -42,7 +42,7 @@ alvo são a **fonte da verdade** no frontmatter das notas `prd-*`: ver
 | Release | Tema | PRDs |
 |---|---|---|
 | **0.15.0** | Tags e UX de execução | 50, 51, 52, 53, 54, 55 |
-| 0.15.1 | Toolchain (Node 26, **pós-LTS ~out/2026**) | 47 |
+| **A definir** | Toolchain (Node 26, **pós-LTS ~out/2026**; liberação prevista 2026-10-28) | 47 |
 | 0.16.0 | Modernização do runtime (ESM/ES2023) | 95 |
 | 0.17.0 | Persistência, multi-root e produtividade | 56–59 |
 | 0.18.0 | Localização (formatação, plurais e paridade) | 88–91 |
@@ -67,4 +67,4 @@ alvo são a **fonte da verdade** no frontmatter das notas `prd-*`: ver
 ## Relacionado
 
 - [[MOC - PRDs]]
-- [[prd-47-node-26-toolchain|PRD-47]] (0.15.1) · [[prd-95-esm-es2023-node22|PRD-95]] (0.16.0)
+- [[prd-47-node-26-toolchain|PRD-47]] (A definir) · [[prd-95-esm-es2023-node22|PRD-95]] (0.16.0)

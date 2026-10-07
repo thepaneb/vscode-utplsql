@@ -155,5 +155,5 @@ Esperado criar **`BR-DEBUG-005`** (resolução de alvo das variações de debug)
 - 🎯 RF3 — Debug last → [[BR-DEBUG-005 - debugAtCursor-debugFailed-debugLast resolvem o alvo e chamam startDebugSession|BR-DEBUG-005]]
 - 🎯 RNF1 — Respeitar `utplsql.debugger.enabled`; avisar se desabilitado. → [[BR-DEBUG-005 - debugAtCursor-debugFailed-debugLast resolvem o alvo e chamam startDebugSession|BR-DEBUG-005]]
 - 🎯 RNF2 — Sem oracledb → mensagem amigável (não quebrar). → [[BR-DEBUG-005 - debugAtCursor-debugFailed-debugLast resolvem o alvo e chamam startDebugSession|BR-DEBUG-005]]
-- 🚀 ⬅️ release anterior: [[prd-94-vscode-floor-1-101|PRD-94 (0.14.0)]] · ➡️ próxima release: [[prd-47-node-26-toolchain|PRD-47 (0.15.1)]]
+- 🚀 ⬅️ release anterior: [[prd-94-vscode-floor-1-101|PRD-94 (0.14.0)]] · ➡️ próxima release: [[prd-95-esm-es2023-node22|PRD-95 (0.16.0)]]
 <!-- brain:auto:end -->

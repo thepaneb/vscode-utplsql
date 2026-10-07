@@ -141,5 +141,5 @@ topologia mudar.
 <!-- brain:auto:start:conexoes -->
 - 🗺️ [[MOC - PRDs]]
 - 🔗 PRDs relacionados: [[prd-94-vscode-floor-1-101|PRD-94]]
-- 🚀 ⬅️ release anterior: [[prd-47-node-26-toolchain|PRD-47 (0.15.1)]] · ➡️ próxima release: [[prd-56-duration-persistence|PRD-56 (0.17.0)]]
+- 🚀 ⬅️ release anterior: [[prd-96-public-landing-page-github-pages|PRD-96 (0.15.0)]] · ➡️ próxima release: [[prd-56-duration-persistence|PRD-56 (0.17.0)]]
 <!-- brain:auto:end -->

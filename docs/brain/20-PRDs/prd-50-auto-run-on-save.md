@@ -200,5 +200,5 @@ concorrência) `status: ativo` com `prds: ["PRD-50"]`; referencia **`BR-UI-002`*
 - 🎯 RF4 — Guarda contra execução concorrente → [[BR-EXEC-016 - Auto-run on save - default off, debounce por arquivo e guarda de concorrencia|BR-EXEC-016]]
 - 🎯 RNF1 — Nunca disparar em loop: execução não altera arquivos, então o evento → [[BR-EXEC-016 - Auto-run on save - default off, debounce por arquivo e guarda de concorrencia|BR-EXEC-016]]
 - 🎯 RNF2 — Auto-run respeita `utplsql.runnerMode` (Oracle direto ou CLI) sem → [[BR-EXEC-016 - Auto-run on save - default off, debounce por arquivo e guarda de concorrencia|BR-EXEC-016]]
-- 🚀 ⬅️ release anterior: [[prd-94-vscode-floor-1-101|PRD-94 (0.14.0)]] · ➡️ próxima release: [[prd-47-node-26-toolchain|PRD-47 (0.15.1)]]
+- 🚀 ⬅️ release anterior: [[prd-94-vscode-floor-1-101|PRD-94 (0.14.0)]] · ➡️ próxima release: [[prd-95-esm-es2023-node22|PRD-95 (0.16.0)]]
 <!-- brain:auto:end -->

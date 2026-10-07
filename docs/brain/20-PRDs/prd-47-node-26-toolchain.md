@@ -2,13 +2,11 @@
 tipo: prd
 id: PRD-47
 aliases: [PRD-47]
-status: approved
+status: proposed
 titulo: "Node 26 no toolchain de desenvolvimento"
-versao: "0.15.1"
 data: "2026-08-29"
 autor: "Gil Cleber"
-versao_titulo: "0.15.1 — Toolchain (Node 26)"
-verificado: 2026-09-28
+verificado: 2026-10-07
 regras: []
 tags: [prd]
 ---
@@ -20,7 +18,7 @@ tags: [prd]
 | Autor | Gil Cleber |
 | Data | 2026-08-29 |
 | Componente | Extensão `paneb.vscode-utplsql` |
-| Versão alvo | 0.15.0 |
+| Versão alvo | A definir (sem versão atribuída) |
 | Arquivos afetados | `.nvmrc`, `.github/workflows/ci.yml`, `docs/functional/10-development-tooling.md`, `docs/wiki/Como-contribuir.md`, `CHANGELOG.md` |
 | Esforço estimado | 0,5 dia |
 | Complexidade | Baixa |
@@ -118,7 +116,9 @@ Nenhuma setting/comando novo.
 
 ## 9. Rollout
 
-- Versão alvo: 0.15.0 (minor) — mudança de toolchain, zero impacto no usuário
+- **Data prevista de liberação:** 2026-10-28 (pós-LTS do Node 26)
+- Versão alvo: a definir — sem versão atribuída por enquanto; mudança de
+  toolchain, zero impacto no usuário
 - Entry no CHANGELOG.md
 - Adiada da 0.12.0, depois da 0.13.0 e da 0.14.0: o LTS do Node 26 chega em
   out/2026, próximo demais dos ciclos; executar como current geraria CI flaky
@@ -141,5 +141,4 @@ Nenhuma setting/comando novo.
 <!-- brain:auto:start:conexoes -->
 - 🗺️ [[MOC - PRDs]]
 - ⚙️ Pipelines: [[PIPE-ci - CI|PIPE-ci]]
-- 🚀 ⬅️ release anterior: [[prd-55-tag-organization|PRD-55 (0.15.0)]] · ➡️ próxima release: [[prd-95-esm-es2023-node22|PRD-95 (0.16.0)]]
 <!-- brain:auto:end -->
