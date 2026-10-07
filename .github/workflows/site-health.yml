@@ -1,0 +1,62 @@
+name: Site Health Check
+
+on:
+  schedule:
+    - cron: '0 12 * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  health:
+    name: Verify published site
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check published site
+        run: |
+          set -uo pipefail
+          HOME_URL="https://thepaneb.github.io/vscode-utplsql/"
+          SITEMAP="${HOME_URL}sitemap.xml"
+          HOST_ROBOTS="https://thepaneb.github.io/robots.txt"
+          GOOGLE_FILE="${HOME_URL}google408e9fc32b68946a.html"
+          INDEXNOW_KEY="ba3b4edc519041308f1dc227c70163f1"
+          INDEXNOW_FILE="https://thepaneb.github.io/${INDEXNOW_KEY}.txt"
+          CURL=(curl -sS --retry 3 --retry-delay 5 --retry-all-errors --max-time 20)
+
+          fails=0
+          ok() { echo "  ok:   $1"; }
+          bad() { echo "  FAIL: $1"; fails=$((fails + 1)); }
+          code() { "${CURL[@]}" -o /dev/null -w '%{http_code}' "$1"; }
+
+          echo "== Home =="
+          h=$(code "$HOME_URL"); [ "$h" = "200" ] && ok "home 200" || bad "home status=$h"
+          if "${CURL[@]}" -I "$HOME_URL" | grep -qi '^x-robots-tag'; then
+            bad "home responde com x-robots-tag"
+          else
+            ok "home sem x-robots-tag (indexável)"
+          fi
+
+          echo "== Sitemap =="
+          s=$(code "$SITEMAP"); [ "$s" = "200" ] && ok "sitemap 200" || bad "sitemap status=$s"
+          body=$("${CURL[@]}" "$SITEMAP")
+          printf '%s' "$body" | grep -q '</urlset>' && ok "sitemap é XML (urlset)" || bad "sitemap não é um urlset válido"
+          printf '%s' "$body" | grep -q "<loc>${HOME_URL}</loc>" && ok "sitemap inclui a home" || bad "sitemap não inclui a home"
+
+          echo "== robots.txt da raiz do host =="
+          r=$(code "$HOST_ROBOTS"); [ "$r" = "200" ] && ok "host robots 200" || bad "host robots status=$r"
+          rb=$("${CURL[@]}" "$HOST_ROBOTS")
+          printf '%s' "$rb" | grep -q "Sitemap: ${SITEMAP}" && ok "host robots aponta o sitemap" || bad "host robots sem o Sitemap do projeto"
+          printf '%s' "$rb" | grep -qiE '^Disallow:[[:space:]]*/[[:space:]]*$' && bad "host robots bloqueia (Disallow: /)" || ok "host robots não bloqueia"
+
+          echo "== Verificação do Google Search Console =="
+          g=$(code "$GOOGLE_FILE"); [ "$g" = "200" ] && ok "google verification 200" || bad "google verification status=$g"
+
+          echo "== Chave do IndexNow (raiz do host) =="
+          k=$(code "$INDEXNOW_FILE"); [ "$k" = "200" ] && ok "indexnow key 200" || bad "indexnow key status=$k"
+          kc=$("${CURL[@]}" "$INDEXNOW_FILE" | tr -d '[:space:]')
+          [ "$kc" = "$INDEXNOW_KEY" ] && ok "indexnow key conteúdo ok" || bad "indexnow key conteúdo inválido"
+
+          echo
+          echo "Falhas: ${fails}"
+          [ "$fails" -eq 0 ]
