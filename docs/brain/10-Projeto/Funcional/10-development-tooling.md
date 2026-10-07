@@ -263,7 +263,9 @@ O `.github/workflows/pages.yml` publica `site/` no **GitHub Pages** (Source =
 GitHub Actions) via environment `github-pages`.
 
 - `https://thepaneb.github.io/vscode-utplsql/` — indexável (sem `x-robots-tag: none`)
-- `site/robots.txt`, `site/sitemap.xml`, `site/404.html`, `site/google*.html` (verificação do Search Console)
+- `site/robots.txt`, `site/sitemap.xml`, `site/404.html`, `site/google*.html` (verificação do Search Console) e `site/<chave>.txt` (chave do **IndexNow**)
+- `pages.yml` avisa o **IndexNow** (Bing) após o deploy
+- `robots.txt` na raiz do host (`thepaneb.github.io`) declara o sitemap
 - `docs:check` valida o site (seção “Site (GitHub Pages)”); `brain:gaps` cobre `site/**`
 - `site/**` fica fora do VSIX (`.vscodeignore`)
 - Deploy só da branch **`main`** (regra de *deployment branch* do environment)
