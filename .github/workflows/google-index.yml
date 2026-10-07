@@ -65,9 +65,28 @@ jobs:
           except Exception as err:  # noqa: BLE001 - qualquer falha de auth vira erro do run
               fail(f"falha ao autenticar no Google: {err}")
 
+          auth_header = {"Authorization": f"Bearer {credentials.token}"}
+          sites = requests.get(
+              "https://www.googleapis.com/webmasters/v3/sites",
+              headers=auth_header,
+              timeout=30,
+          )
+          if sites.status_code != 200:
+              fail(f"Sites API falhou (HTTP {sites.status_code}): {sites.text[:300]}")
+          entries = sites.json().get("siteEntry", []) or []
+          accessible = [f"{e.get('siteUrl')} ({e.get('permissionLevel')})" for e in entries]
+          print("Propriedades acessíveis pela service account:")
+          for item in accessible:
+              print(f"  - {item}")
+          if site not in [e.get("siteUrl") for e in entries]:
+              fail(
+                  f"a propriedade {site} não está acessível pela service account. "
+                  f"Acessíveis: {accessible or 'nenhuma'}"
+              )
+
           response = requests.post(
               "https://searchconsole.googleapis.com/v1/urlInspection/index:inspect",
-              headers={"Authorization": f"Bearer {credentials.token}"},
+              headers=auth_header,
               json={"inspectionUrl": home, "siteUrl": site},
               timeout=30,
           )
