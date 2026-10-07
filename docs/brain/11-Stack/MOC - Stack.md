@@ -70,6 +70,7 @@ SORT id ASC
 ## Índice (links)
 
 <!-- brain:auto:start:moc-index -->
+- [[PIPE-bing-index - Bing Index Check]] — `PIPE-bing-index`
 - [[PIPE-ci - CI]] — `PIPE-ci`
 - [[PIPE-pages - Deploy Pages]] — `PIPE-pages`
 - [[PIPE-publish - Publish Extension]] — `PIPE-publish`

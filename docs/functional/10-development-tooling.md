@@ -253,6 +253,7 @@ GitHub Actions) via environment `github-pages`.
 - `https://thepaneb.github.io/vscode-utplsql/` — indexável (sem `x-robots-tag: none`)
 - `site/robots.txt`, `site/sitemap.xml`, `site/404.html`, `site/google*.html` (verificação do Search Console)
 - `pages.yml` avisa o **IndexNow** (Bing) após o deploy; a chave do IndexNow fica na **raiz do host** (`thepaneb.github.io/<chave>.txt`)
+- `bing-index.yml` consulta a **API do Bing Webmaster** (secret `BWT_API_KEY`) diariamente e reporta a indexação da home — falha se a chave expirar ou se a home não indexar no prazo (14 dias)
 - `robots.txt` na raiz do host (`thepaneb.github.io`) declara o sitemap
 - `docs:check` valida o site (seção “Site (GitHub Pages)”); `brain:gaps` cobre `site/**`
 - `site/**` fica fora do VSIX (`.vscodeignore`)
