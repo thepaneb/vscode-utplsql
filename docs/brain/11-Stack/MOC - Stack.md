@@ -73,5 +73,6 @@ SORT id ASC
 - [[PIPE-ci - CI]] — `PIPE-ci`
 - [[PIPE-pages - Deploy Pages]] — `PIPE-pages`
 - [[PIPE-publish - Publish Extension]] — `PIPE-publish`
+- [[PIPE-site-health - Site Health Check]] — `PIPE-site-health`
 - [[PIPE-wiki - Publish Wiki]] — `PIPE-wiki`
 <!-- brain:auto:end -->

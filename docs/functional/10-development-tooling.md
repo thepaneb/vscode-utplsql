@@ -253,6 +253,7 @@ GitHub Actions) via environment `github-pages`.
 - `https://thepaneb.github.io/vscode-utplsql/` — indexável (sem `x-robots-tag: none`)
 - `site/robots.txt`, `site/sitemap.xml`, `site/404.html`, `site/google*.html` (verificação do Search Console)
 - `pages.yml` avisa o **IndexNow** (Bing) após o deploy; a chave do IndexNow fica na **raiz do host** (`thepaneb.github.io/<chave>.txt`)
+- `site-health.yml` verifica a saúde do site **diariamente** (200, sem `x-robots-tag`, sitemap, robots de host, verificação do Google, chave do IndexNow) e **falha** se algo quebrar
 - `robots.txt` na raiz do host (`thepaneb.github.io`) declara o sitemap
 - `docs:check` valida o site (seção “Site (GitHub Pages)”); `brain:gaps` cobre `site/**`
 - `site/**` fica fora do VSIX (`.vscodeignore`)
