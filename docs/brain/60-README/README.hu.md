@@ -29,6 +29,7 @@ tags: [readme]
   <img alt="Node" src="https://img.shields.io/badge/node-22-339933?logo=nodedotjs&logoColor=white">
   <img alt="Oracle" src="https://img.shields.io/badge/Oracle-12.2%2B-F80000?logo=oracle&logoColor=white">
   <img alt="License" src="https://img.shields.io/badge/license-MIT-blue">
+  <a href="https://thepaneb.github.io/vscode-utplsql/"><img alt="Website" src="https://img.shields.io/badge/Website-vscode--utplsql-007ACC"></a>
 </p>
 
 # utPLSQL Test Runner

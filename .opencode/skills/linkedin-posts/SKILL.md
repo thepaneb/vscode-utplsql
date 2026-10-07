@@ -39,7 +39,7 @@ Todo post de feature segue o mesmo formato:
 4. **Bullets** — 3–4 itens com o destaque em `**negrito**`; emoji só quando o
    bullet for um ponto de destaque real (não em todos).
 5. **Fecho** — 1–2 frases de benefício.
-6. **Links fixos** (repo + Marketplace) e **hashtags** na última linha.
+6. **Link fixo** (landing page no GitHub Pages) e **hashtags** na última linha.
 
 Emojis concentram-se no **gancho** e no **badge do card**; nos bullets, use com
 parcimônia (só nos pontos de maior destaque).
@@ -79,7 +79,8 @@ parcimônia (só nos pontos de maior destaque).
 - **Sem números/locais inventados**: derive do repo.
 - Toda afirmação de implementação deve refletir o estado atual (ex.: não citar
   `type_mapping`/`ut_file_mapper`/CLI/Java — removidos; cobertura de views é via `V$SQL`).
-- Links fixos ao final: repositório + Marketplace; hashtags na última linha.
+- Link fixo ao final: a **landing page** (`https://thepaneb.github.io/vscode-utplsql/`);
+  hashtags na última linha.
 
 ## Obter números
 
