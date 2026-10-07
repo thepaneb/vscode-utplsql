@@ -73,12 +73,35 @@ function rel(target, note) {
   return path.relative(path.dirname(note), target).split(path.sep).join('/');
 }
 
+/** Data local de hoje em `YYYY-MM-DD`. */
+function todayIso(now = new Date()) {
+  return [
+    now.getFullYear(),
+    String(now.getMonth() + 1).padStart(2, '0'),
+    String(now.getDate()).padStart(2, '0'),
+  ].join('-');
+}
+
+/**
+ * Data do último commit que tocou `relpath` (`git log --format=%cs`). Se o
+ * arquivo tem mudanças **não commitadas**, devolve a data de hoje: o commit em
+ * preparo é quem vai definir a data, e registrá-la já evita o drift de um commit
+ * (o MOC não consegue registrar a data do próprio commit que o contém).
+ */
 function gitDate(relpath) {
   try {
-    return execFileSync('git', ['-C', REPO, 'log', '-1', '--format=%cs', '--', relpath], {
-      encoding: 'utf8',
-      stdio: ['ignore', 'pipe', 'ignore'],
-    }).trim() || null;
+    const dirty =
+      execFileSync('git', ['-C', REPO, 'status', '--porcelain', '--', relpath], {
+        encoding: 'utf8',
+        stdio: ['ignore', 'pipe', 'ignore'],
+      }).trim().length > 0;
+    if (dirty) return todayIso();
+    return (
+      execFileSync('git', ['-C', REPO, 'log', '-1', '--format=%cs', '--', relpath], {
+        encoding: 'utf8',
+        stdio: ['ignore', 'pipe', 'ignore'],
+      }).trim() || null
+    );
   } catch {
     return null;
   }
@@ -1186,6 +1209,7 @@ module.exports = {
   yamlBlock,
   vaultNotes,
   genRootDocs,
+  todayIso,
   genReadmeVariants,
   genWikiIndex,
   genLinkedinIndex,
