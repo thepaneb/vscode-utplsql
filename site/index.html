@@ -8,7 +8,7 @@
     <title>utPLSQL Test Runner — Run and debug Oracle PL/SQL tests in VS Code</title>
     <meta
       name="description"
-      content="VS Code extension to run and debug utPLSQL (Oracle PL/SQL) tests: native Test Explorer, visual coverage, a PL/SQL debugger and Oracle-direct execution via node-oracledb. 24 UI languages."
+      content="VS Code extension to run, debug and cover utPLSQL (Oracle PL/SQL) unit tests against any Oracle database: native Test Explorer, visual test coverage, a PL/SQL debugger and Oracle-direct execution via node-oracledb. 24 UI languages."
     />
     <link rel="canonical" href="https://thepaneb.github.io/vscode-utplsql/" />
     <meta name="robots" content="index, follow, max-image-preview:large" />
@@ -56,6 +56,55 @@
         "isBasedOn": "https://github.com/utPLSQL/utPLSQL"
       }
     </script>
+
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "FAQPage",
+        "mainEntity": [
+          {
+            "@type": "Question",
+            "name": "What is utPLSQL Test Runner?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "A VS Code extension that runs, debugs and covers utPLSQL (Oracle PL/SQL) unit tests against an Oracle database. Suites and tests appear in the native Test Explorer, with visual test coverage and a PL/SQL debugger."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "Which VS Code and Oracle versions are supported?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "VS Code 1.101 or newer and Oracle Database 12.2 or newer. The thin driver (node-oracledb) works out of the box; optional thick mode (Oracle Instant Client) covers environments that require Native Network Encryption."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "Do I need the utPLSQL framework installed in the database?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Yes. Install the utPLSQL framework (UT3) in the Oracle database — per-schema or shared install — and grant the privileges the extension validates during setup."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "Does it provide test coverage?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Yes. Statement and view coverage with colored gutters per line and per-file percentages in the Coverage tab. Coverage requires GRANT EXECUTE ON DBMS_PROFILER."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "Can I debug PL/SQL tests?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Yes. Set breakpoints and step through utPLSQL tests with the native PL/SQL debugger (DBMS_DEBUG). Requires DEBUG CONNECT SESSION and EXECUTE ON SYS.DBMS_DEBUG."
+            }
+          }
+        ]
+      }
+    </script>
   </head>
   <body>
     <header class="hero">
@@ -68,9 +117,10 @@
       />
       <h1>utPLSQL Test Runner</h1>
       <p class="tagline">
-        Run and debug <strong>utPLSQL</strong> (Oracle PL/SQL) tests right in VS Code — native
-        <strong>Test Explorer</strong>, visual coverage, a PL/SQL debugger and
-        <strong>Oracle-direct</strong> execution via <code>node-oracledb</code>.
+        Run and debug <strong>utPLSQL</strong> (Oracle PL/SQL) <strong>unit tests</strong> against any
+        <strong>Oracle database</strong>, right in VS Code — native <strong>Test Explorer</strong>,
+        visual <strong>test coverage</strong>, a PL/SQL debugger and <strong>Oracle-direct</strong>
+        execution via <code>node-oracledb</code>.
       </p>
       <p class="meta">24 UI languages · VS Code 1.101+ · Oracle 12.2+ · MIT</p>
 
@@ -129,6 +179,39 @@
           alt="Architecture diagram: VS Code extension, Oracle-direct runner and Test Explorer"
           loading="lazy"
         />
+      </section>
+
+      <section aria-labelledby="faq">
+        <h2 id="faq">FAQ</h2>
+        <h3>What is utPLSQL Test Runner?</h3>
+        <p>
+          A VS Code extension that runs, debugs and covers <strong>utPLSQL</strong> (Oracle PL/SQL)
+          <strong>unit tests</strong> against an <strong>Oracle database</strong>. Suites and tests
+          appear in the native Test Explorer, with visual test coverage and a PL/SQL debugger.
+        </p>
+        <h3>Which VS Code and Oracle versions are supported?</h3>
+        <p>
+          VS Code <strong>1.101+</strong> and Oracle Database <strong>12.2+</strong>. The thin driver
+          (<code>node-oracledb</code>) works out of the box; optional thick mode (Oracle Instant
+          Client) covers environments that require Native Network Encryption.
+        </p>
+        <h3>Do I need the utPLSQL framework installed in the database?</h3>
+        <p>
+          Yes. Install the <a href="https://github.com/utPLSQL/utPLSQL">utPLSQL</a> framework
+          (<code>UT3</code>) in the Oracle database — per-schema or shared install — and grant the
+          privileges the extension validates during setup.
+        </p>
+        <h3>Does it provide test coverage?</h3>
+        <p>
+          Yes. Statement and view coverage with colored gutters per line and per-file percentages in
+          the Coverage tab. Coverage requires <code>GRANT EXECUTE ON DBMS_PROFILER</code>.
+        </p>
+        <h3>Can I debug PL/SQL tests?</h3>
+        <p>
+          Yes. Set breakpoints and step through utPLSQL tests with the native PL/SQL debugger
+          (<code>DBMS_DEBUG</code>). Requires <code>DEBUG CONNECT SESSION</code> and
+          <code>EXECUTE ON SYS.DBMS_DEBUG</code>.
+        </p>
       </section>
     </main>
 

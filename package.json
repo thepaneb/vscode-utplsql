@@ -28,7 +28,7 @@
   "bugs": {
     "url": "https://github.com/thepaneb/vscode-utplsql/issues"
   },
-  "homepage": "https://github.com/thepaneb/vscode-utplsql#readme",
+  "homepage": "https://thepaneb.github.io/vscode-utplsql/",
   "galleryBanner": {
     "color": "#1e1e1e",
     "theme": "dark"
