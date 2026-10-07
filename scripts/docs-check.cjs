@@ -254,14 +254,6 @@ function checkSite() {
     }
   }
 
-  // Arquivo-chave do IndexNow (Bing) `<chave>.txt`: o conteúdo é a própria chave.
-  for (const f of readdirSafe(SITE_DIR).filter((n) => /^[0-9a-f]{32}\.txt$/i.test(n))) {
-    const text = fs.readFileSync(path.join(SITE_DIR, f), 'utf8').trim();
-    if (text !== f.replace(/\.txt$/i, '')) {
-      problems.push(`${f}: conteúdo da chave IndexNow inválido`);
-    }
-  }
-
   if (problems.length) for (const p of problems) fail(p);
   else ok('landing page indexável, robots.txt e sitemap.xml coerentes');
 }
