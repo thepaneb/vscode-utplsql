@@ -15,6 +15,7 @@ const {
   parseFm,
   yamlBlock,
   genRootDocs,
+  todayIso,
   genReadmeVariants,
   genWikiIndex,
   genLinkedinIndex,
@@ -42,6 +43,7 @@ const {
   parseFm: (t: string) => Record<string, string>;
   yamlBlock: (t: string, key: string) => string[];
   genRootDocs: (note: string) => string;
+  todayIso: (now?: Date) => string;
   genReadmeVariants: () => string;
   genWikiIndex: () => string;
   genLinkedinIndex: (note: string) => string;
@@ -408,6 +410,20 @@ test('brain: gitDate usa commit datado do fixture Git', () => {
     commitFixtureFiles(repo, ['README.md']);
     const output = genRootDocs(path.join(vault, '00-Index.md'));
     assert.match(output, /README\.md.*— _2024-02-03_/);
+  });
+});
+
+test('brain: gitDate usa a data de hoje quando o arquivo está sujo', () => {
+  withBrainFixture(({ repo, vault }) => {
+    writeFixture(path.join(repo, 'README.md'), '# Fixture\n');
+    commitFixtureFiles(repo, ['README.md']);
+    assert.match(genRootDocs(path.join(vault, '00-Index.md')), /README\.md.*— _2024-02-03_/);
+
+    // Sem commit: a data ainda é a do commit em preparo (hoje), não a antiga.
+    writeFixture(path.join(repo, 'README.md'), '# Fixture alterada\n');
+    const dirty = genRootDocs(path.join(vault, '00-Index.md'));
+    assert.match(dirty, new RegExp(`README\\.md.*— _${todayIso()}_`));
+    assert.doesNotMatch(dirty, /2024-02-03/);
   });
 });
 
