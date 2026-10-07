@@ -137,9 +137,10 @@ O conteúdo do site nasce sob os controles do repo (nada de protótipo solto):
   `.vscodeignore`).
 - RNF2 — `npm run brain:ci` e `npm run docs:check` seguem verdes; o workflow novo
   é referenciado por uma nota `PIPE-pages` (gerada por `brain:sync`).
-- RNF3 — PageSpeed mobile ≥ 90 (HTML único, CSS inline/curto, sem JS de terceiros
-  bloqueante).
-- RNF4 — Publicação só após os jobs de validação (o deploy não substitui o CI).
+- RNF3 — PageSpeed mobile ≥ 90 (HTML estático único, CSS curto em arquivo
+  externo, sem JS de terceiros bloqueante).
+- RNF4 — O deploy **não substitui o CI**: a validação (`brain:ci` +
+  `docs:check` + testes) roda no PR antes do merge.
 
 ## 5. Solução proposta
 
@@ -150,10 +151,10 @@ site/
 ├── index.html          # landing page (SEO completo)
 ├── 404.html
 ├── robots.txt
-├── sitemap.xml         # gerado/estático (fase 1: 1 URL)
+├── sitemap.xml         # 1 URL (home)
+├── google*.html        # verificação do Search Console
 └── assets/
-    ├── styles.css
-    └── icon.png        # copiado de images/icon.png
+    └── styles.css
 .github/workflows/pages.yml
 ```
 
@@ -265,7 +266,7 @@ referenciada no funcional `10-development-tooling`. Notas geradas:
 - ⚙️ Pipelines: [[PIPE-pages - Deploy Pages|PIPE-pages]]
 - 🎯 RNF1 — Nenhum arquivo do site entra no `.vsix` (adicionar `site/**` ao → [[BR-SITE-001 - Landing page gerada de site e publicada no GitHub Pages, sem noindex|BR-SITE-001]]
 - 🎯 RNF2 — `npm run brain:ci` e `npm run docs:check` seguem verdes; o workflow no → [[BR-SITE-001 - Landing page gerada de site e publicada no GitHub Pages, sem noindex|BR-SITE-001]]
-- 🎯 RNF3 — PageSpeed mobile ≥ 90 (HTML único, CSS inline/curto, sem JS de terceir → [[BR-SITE-001 - Landing page gerada de site e publicada no GitHub Pages, sem noindex|BR-SITE-001]]
-- 🎯 RNF4 — Publicação só após os jobs de validação (o deploy não substitui o CI). → [[BR-SITE-001 - Landing page gerada de site e publicada no GitHub Pages, sem noindex|BR-SITE-001]]
+- 🎯 RNF3 — PageSpeed mobile ≥ 90 (HTML estático único, CSS curto em arquivo → [[BR-SITE-001 - Landing page gerada de site e publicada no GitHub Pages, sem noindex|BR-SITE-001]]
+- 🎯 RNF4 — O deploy **não substitui o CI**: a validação (`brain:ci` + → [[BR-SITE-001 - Landing page gerada de site e publicada no GitHub Pages, sem noindex|BR-SITE-001]]
 - 🚀 ⬅️ release anterior: [[prd-94-vscode-floor-1-101|PRD-94 (0.14.0)]] · ➡️ próxima release: [[prd-95-esm-es2023-node22|PRD-95 (0.16.0)]]
 <!-- brain:auto:end -->

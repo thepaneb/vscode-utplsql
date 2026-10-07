@@ -28,9 +28,7 @@ function bannerFor(rel, target) {
   return `<!-- ${label} -->`;
 }
 
-const BANNER = (rel) => bannerFor(rel, 'x.md');
-
-/** Tokens disponíveis nos artefatos publicados: `{{VERSION}}`, `{{SITE_URL}}`, `{{YEAR}}`. */
+/** Tokens disponíveis nos artefatos do site: `{{VERSION}}` e `{{SITE_URL}}`. */
 function siteTokens(repo = REPO) {
   let version = '';
   try {
@@ -38,7 +36,7 @@ function siteTokens(repo = REPO) {
   } catch {
     version = '';
   }
-  return { VERSION: version, SITE_URL, YEAR: String(new Date().getFullYear()) };
+  return { VERSION: version, SITE_URL };
 }
 
 /** Substitui `{{TOKEN}}` conhecidos; deixa tokens desconhecidos intactos (o check acusa). */
@@ -57,12 +55,12 @@ const HTML_RE = /\.html?$/i;
  * do doctype jogaria a página em quirks mode).
  */
 function renderHtml(item, body, repo = REPO) {
-  const doc = renderTokens(body, repo);
+  const doc = renderTokens(body, repo).replace(/^\s+/, '');
   const banner = bannerFor(item.rel, item.target);
-  const withBanner = /^\s*<!doctype/i.test(doc)
-    ? doc.replace(/^(\s*<!doctype[^>]*>)/i, `$1\n${banner}`)
+  const withBanner = /^<!doctype/i.test(doc)
+    ? doc.replace(/^(<!doctype[^>]*>)/i, `$1\n${banner}`)
     : `${banner}\n${doc}`;
-  return `${withBanner}`.replace(/\s+$/, '') + '\n';
+  return withBanner.replace(/\s+$/, '') + '\n';
 }
 
 const WIKI_PREFIX = 'docs/wiki/';
@@ -308,7 +306,6 @@ function render(item, vault = VAULT) {
   else if (README_RE.test(item.target)) body = readmeLinks(body);
 
   if (HTML_RE.test(item.target)) return renderHtml(item, body);
-  body = renderTokens(body);
   return `${bannerFor(item.rel, item.target)}\n${body}`.replace(/\s+$/, '') + '\n';
 }
 

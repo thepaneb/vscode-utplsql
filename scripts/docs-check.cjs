@@ -190,7 +190,6 @@ function localLinks(html) {
 function checkSite() {
   console.log('Site (GitHub Pages)');
   const { SITE_URL } = require('./brain-build.cjs');
-  const esc = SITE_URL.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
   const index = path.join(SITE_DIR, 'index.html');
   if (!fs.existsSync(index)) return fail('site/index.html ausente');
   const html = fs.readFileSync(index, 'utf8');
@@ -199,7 +198,6 @@ function checkSite() {
   const required = [
     [/<title>[^<]{15,}<\/title>/i, 'title'],
     [/<meta\s+name="description"\s+content="[^"]{40,}"/i, 'meta description'],
-    [new RegExp(`<link rel="canonical" href="${esc}"`, 'i'), 'canonical'],
     [/property="og:title"/i, 'og:title'],
     [/property="og:description"/i, 'og:description'],
     [/property="og:url"/i, 'og:url'],
@@ -209,13 +207,17 @@ function checkSite() {
     [/<html lang="[a-z-]+"/i, 'html lang'],
   ];
   for (const [re, label] of required) if (!re.test(html)) problems.push(`index.html sem ${label}`);
+  if (!html.includes(`<link rel="canonical" href="${SITE_URL}"`)) {
+    problems.push('index.html sem canonical para a URL do site');
+  }
   if (/\{\{\s*[A-Z0-9_]+\s*\}\}/.test(html)) {
     problems.push('index.html com token {{...}} não resolvido');
   }
 
   const version = JSON.parse(fs.readFileSync(path.join(REPO, 'package.json'), 'utf8')).version;
-  const vre = new RegExp(`"softwareVersion"\\s*:\\s*"${version.replace(/\./g, '\\.')}"`);
-  if (!vre.test(html)) problems.push(`softwareVersion de index.html ≠ package.json (${version})`);
+  if (!html.includes(`"softwareVersion": "${version}"`)) {
+    problems.push(`softwareVersion de index.html ≠ package.json (${version})`);
+  }
 
   const htmls = [index];
   const fourOhFour = path.join(SITE_DIR, '404.html');

@@ -113,8 +113,8 @@ observada em migrações tardias (ver §8).
 
 O conteúdo do site nasce sob os controles do repo (nada de protótipo solto):
 
-- `brain:build` **gera** `site/index.html` do vault, resolvendo `0.15.0`
-  (de `package.json`) e `https://thepaneb.github.io/vscode-utplsql/` — versão e URL sem drift manual;
+- `brain:build` **gera** `site/index.html` do vault, resolvendo `{{VERSION}}`
+  (de `package.json`) e `{{SITE_URL}}` — versão e URL sem drift manual;
 - `docs:check` ganha a seção **“Site (GitHub Pages)”**: valida SEO técnico,
   `canonical`, `robots.txt`, `sitemap.xml` e links locais;
 - `brain:gaps` cobre `site/**`, com os arquivos referenciados por notas `COD-*`
@@ -126,9 +126,10 @@ O conteúdo do site nasce sob os controles do repo (nada de protótipo solto):
   `.vscodeignore`).
 - RNF2 — `npm run brain:ci` e `npm run docs:check` seguem verdes; o workflow novo
   é referenciado por uma nota `PIPE-pages` (gerada por `brain:sync`).
-- RNF3 — PageSpeed mobile ≥ 90 (HTML único, CSS inline/curto, sem JS de terceiros
-  bloqueante).
-- RNF4 — Publicação só após os jobs de validação (o deploy não substitui o CI).
+- RNF3 — PageSpeed mobile ≥ 90 (HTML estático único, CSS curto em arquivo
+  externo, sem JS de terceiros bloqueante).
+- RNF4 — O deploy **não substitui o CI**: a validação (`brain:ci` +
+  `docs:check` + testes) roda no PR antes do merge.
 
 ## 5. Solução proposta
 
@@ -139,10 +140,10 @@ site/
 ├── index.html          # landing page (SEO completo)
 ├── 404.html
 ├── robots.txt
-├── sitemap.xml         # gerado/estático (fase 1: 1 URL)
+├── sitemap.xml         # 1 URL (home)
+├── google*.html        # verificação do Search Console
 └── assets/
-    ├── styles.css
-    └── icon.png        # copiado de images/icon.png
+    └── styles.css
 .github/workflows/pages.yml
 ```
 
@@ -150,7 +151,7 @@ site/
 
 - **Fase 1 (implementada)**: `site/index.html` é **gerado** pelo `brain:build` a
   partir da nota `80-Site/Landing page (site)` (`publicar: site/index.html`), com
-  os tokens `0.15.0` (de `package.json`) e `https://thepaneb.github.io/vscode-utplsql/`. O banner
+  os tokens `{{VERSION}}` (de `package.json`) e `{{SITE_URL}}`. O banner
   “GENERATED” entra logo após o `<!doctype>` (antes dele a página cairia em
   quirks mode). É mais um artefato gerado, como `docs/wiki` e `docs/functional`.
 - **Fase 2**: demais artefatos (`robots.txt`/`sitemap.xml`/`404`/CSS) também

@@ -37,7 +37,7 @@ tags: [site, docs]
     <meta property="og:image" content="https://raw.githubusercontent.com/thepaneb/vscode-utplsql/main/images/icon.png" />
 
     <!-- Twitter -->
-    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:card" content="summary" />
     <meta name="twitter:title" content="utPLSQL Test Runner — Oracle PL/SQL tests in VS Code" />
     <meta
       name="twitter:description"

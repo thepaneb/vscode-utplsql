@@ -74,7 +74,7 @@ const {
     body: string,
     repo?: string,
   ) => string;
-  siteTokens: (repo?: string) => { VERSION: string; SITE_URL: string; YEAR: string };
+  siteTokens: (repo?: string) => { VERSION: string; SITE_URL: string };
 };
 
 function withTempDir(prefix: string, fn: (dir: string) => void): void {
@@ -222,7 +222,6 @@ test('brain-build: siteTokens lê a versão do package.json e a URL canônica', 
   const tokens = siteTokens();
   assert.match(tokens.VERSION, /^\d+\.\d+\.\d+$/);
   assert.strictEqual(tokens.SITE_URL, SITE_URL);
-  assert.match(tokens.YEAR, /^\d{4}$/);
 });
 
 test('brain-build: renderTokens substitui os tokens e preserva os desconhecidos', () => {

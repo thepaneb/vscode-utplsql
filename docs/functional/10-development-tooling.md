@@ -246,7 +246,7 @@ inclusive falha de propósito. Comando local válido: `npm run package` (gera `.
 ## Site público (GitHub Pages)
 
 A landing page pública vive em `site/` e é **gerada** por `npm run brain:build`
-da nota `80-Site/Landing page (site)` (tokens `0.15.0`/`https://thepaneb.github.io/vscode-utplsql/`).
+da nota `80-Site/Landing page (site)` (tokens `{{VERSION}}`/`{{SITE_URL}}`).
 O `.github/workflows/pages.yml` publica `site/` no **GitHub Pages** (Source =
 GitHub Actions) via environment `github-pages`.
 

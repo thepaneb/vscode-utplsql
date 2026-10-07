@@ -934,7 +934,7 @@ function pipelineNotes() {
         .map((line) => line.match(/^  ([a-z0-9_-]+):/))
         .filter(Boolean)
         .map((m) => m[1]);
-      const steps = [...text.matchAll(/^\s*- (run|uses):\s*(.+)$/gm)].map(
+      const steps = [...text.matchAll(/^\s+(?:- )?(run|uses):\s*(.+)$/gm)].map(
         (m) => `- \`${m[1]}: ${m[2].trim()}\``,
       );
       const fm = [
