@@ -19,53 +19,61 @@ jobs:
       SITE_LIVE_DATE: '2026-10-07'
       GRACE_DAYS: '14'
     steps:
-      - name: Authenticate to Google
-        id: auth
-        uses: google-github-actions/auth@v2
+      - name: Set up Python
+        uses: actions/setup-python@v5
         with:
-          credentials_json: ${{ secrets.GSC_SERVICE_ACCOUNT_JSON }}
-          token_format: access_token
-          scopes: https://www.googleapis.com/auth/webmasters.readonly
+          python-version: '3.x'
 
       - name: Inspect the home URL
         env:
-          ACCESS_TOKEN: ${{ steps.auth.outputs.access_token }}
+          GSC_SERVICE_ACCOUNT_JSON: ${{ secrets.GSC_SERVICE_ACCOUNT_JSON }}
         run: |
-          python3 - <<'PY'
+          python -m pip install --quiet --disable-pip-version-check google-auth requests
+          python - <<'PY'
           import datetime
           import json
           import os
           import sys
-          import urllib.error
-          import urllib.request
 
-          token = os.environ.get("ACCESS_TOKEN", "")
+          import requests
+          from google.auth.transport.requests import Request
+          from google.oauth2 import service_account
+
+          raw = os.environ.get("GSC_SERVICE_ACCOUNT_JSON", "")
           site = os.environ["SITE_URL"]
           home = os.environ["HOME_URL"]
           live = datetime.date.fromisoformat(os.environ["SITE_LIVE_DATE"])
           grace = int(os.environ["GRACE_DAYS"])
 
-          if not token:
-              print("::error::falha ao autenticar no Google (secret GSC_SERVICE_ACCOUNT_JSON?).")
+          def fail(message):
+              print(f"::error::{message}")
               sys.exit(1)
 
-          payload = json.dumps({"inspectionUrl": home, "siteUrl": site}).encode()
-          request = urllib.request.Request(
-              "https://searchconsole.googleapis.com/v1/urlInspection/index:inspect",
-              data=payload,
-              method="POST",
-              headers={
-                  "Authorization": f"Bearer {token}",
-                  "Content-Type": "application/json",
-              },
-          )
+          if not raw:
+              fail("secret GSC_SERVICE_ACCOUNT_JSON ausente no repositório.")
           try:
-              with urllib.request.urlopen(request, timeout=30) as response:
-                  data = json.load(response)
-          except urllib.error.HTTPError as err:
-              detail = err.read().decode("utf-8", "replace")[:300]
-              print(f"::error::URL Inspection API falhou (HTTP {err.code}): {detail}")
-              sys.exit(1)
+              info = json.loads(raw)
+          except ValueError as err:
+              fail(f"GSC_SERVICE_ACCOUNT_JSON inválido: {err}")
+
+          try:
+              credentials = service_account.Credentials.from_service_account_info(
+                  info,
+                  scopes=["https://www.googleapis.com/auth/webmasters.readonly"],
+              )
+              credentials.refresh(Request())
+          except Exception as err:  # noqa: BLE001 - qualquer falha de auth vira erro do run
+              fail(f"falha ao autenticar no Google: {err}")
+
+          response = requests.post(
+              "https://searchconsole.googleapis.com/v1/urlInspection/index:inspect",
+              headers={"Authorization": f"Bearer {credentials.token}"},
+              json={"inspectionUrl": home, "siteUrl": site},
+              timeout=30,
+          )
+          if response.status_code != 200:
+              fail(f"URL Inspection API falhou (HTTP {response.status_code}): {response.text[:300]}")
+          data = response.json()
 
           status = data.get("inspectionResult", {}).get("indexStatusResult", {})
           verdict = status.get("verdict", "")
@@ -97,7 +105,6 @@ jobs:
               print("OK: home indexada no Google.")
               sys.exit(0)
           if days > grace:
-              print(f"::error::home ainda não indexada no Google após {days} dias (limite {grace}).")
-              sys.exit(1)
+              fail(f"home ainda não indexada no Google após {days} dias (limite {grace}).")
           print(f"Pendente: home ainda não indexada (dia {days} de {grace}).")
           PY
