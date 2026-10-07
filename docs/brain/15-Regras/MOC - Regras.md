@@ -120,6 +120,7 @@ SORT id ASC
 - [[BR-SCHEMA-004 - Árvore de testes resolvida por nível sob demanda (lazy)]] — `BR-SCHEMA-004`
 - [[BR-SCHEMA-005 - organization tag monta Tag Suite Test com ids estaveis e grupo (sem tag)]] — `BR-SCHEMA-005`
 - [[BR-SCRIPT-001 - Script run executa SQLPlus (split, PROMPT-SHOW ERRORS, thin por padrao)]] — `BR-SCRIPT-001`
+- [[BR-SITE-001 - Landing page gerada de site e publicada no GitHub Pages, sem noindex]] — `BR-SITE-001`
 - [[BR-TEST-001 - Matriz de bancos Oracle cobre 12.2-23ai em thin e thick]] — `BR-TEST-001`
 - [[BR-TEST-002 - Testes de integração exigem banco e são skip sem UTPLSQL_CONN]] — `BR-TEST-002`
 - [[BR-UI-001 - Context key utplsql-activated é setado na ativação]] — `BR-UI-001`

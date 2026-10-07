@@ -56,6 +56,7 @@ test('vscodeignore: não vaza arquivos de agente/desenvolvimento no VSIX', () =>
     'out',
     'scripts',
     'docs',
+    'site',
     'coverage',
   ];
   for (const p of proibidos) {

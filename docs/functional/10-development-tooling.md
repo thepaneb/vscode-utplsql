@@ -243,6 +243,22 @@ GITHUB_TOKEN="$(echo "$GITHUB_TOKEN" | tr -d '\r')" npm run sync-prds
 Não rode `npm run publish`/`vsce publish` localmente — `npm run publish:patch`
 inclusive falha de propósito. Comando local válido: `npm run package` (gera `.vsix`).
 
+## Site público (GitHub Pages)
+
+A landing page pública vive em `site/` e é **gerada** por `npm run brain:build`
+da nota `80-Site/Landing page (site)` (tokens `0.15.0`/`https://thepaneb.github.io/vscode-utplsql/`).
+O `.github/workflows/pages.yml` publica `site/` no **GitHub Pages** (Source =
+GitHub Actions) via environment `github-pages`.
+
+- `https://thepaneb.github.io/vscode-utplsql/` — indexável (sem `x-robots-tag: none`)
+- `site/robots.txt`, `site/sitemap.xml`, `site/404.html`, `site/google*.html` (verificação do Search Console)
+- `docs:check` valida o site (seção “Site (GitHub Pages)”); `brain:gaps` cobre `site/**`
+- `site/**` fica fora do VSIX (`.vscodeignore`)
+- Deploy só da branch **`main`** (regra de *deployment branch* do environment)
+
+> Regra: **BR-SITE-001**. A documentação completa dentro do site (portar
+> `docs/wiki/`) é a fase 2 (PRD-97).
+
 ## Node
 
 `.nvmrc` → `24`. CI testa 22/24 (Node 20 atingiu EOL). Requer Node 22+ local.

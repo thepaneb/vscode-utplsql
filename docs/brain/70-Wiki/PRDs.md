@@ -4,7 +4,7 @@ status: ativo
 titulo: "PRDs and roadmap"
 publicar: docs/wiki/PRDs.md
 origem: ["MOC - PRDs"]
-verificado: 2026-09-23
+verificado: 2026-10-07
 tags: [wiki]
 ---
 
@@ -116,17 +116,15 @@ The file is moved between folders as it progresses.
 | 51 | Run and select by tag (`%tags`) | 0.15.0 |
 | 55 | Test tree organization by tag | 0.15.0 |
 | 50 | Auto-run on save (watch mode) | 0.15.0 |
+| 96 | Public site and landing page (GitHub Pages) | 0.15.0 |
 
-### 🔵 Approved
-
-| # | PRD | Target version |
-|---|---|---|
-| 47 | Node 26 in development toolchain | 0.15.1 |
 ### ⚪ Proposed
 
 | # | PRD | Target version |
 |---|---|---|
+| 47 | Node 26 in development toolchain | — |
 | 95 | Runtime modernization (ESM/ES2023, Node 22) | 0.16.0 |
+| 97 | Project docs on the site (phase 2 of PRD-96) | 0.16.0 |
 | 56–59 | Duration persistence, multi-root, related tests, scaffold… | 0.17.0 |
 | 88–91 | Locale-aware formatting, plurals, parity, pseudo-locale | 0.18.0 |
 | 92–93 | RTL, new locales, continuous localization pipeline | 0.19.0 |

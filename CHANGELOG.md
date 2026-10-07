@@ -2,6 +2,15 @@
 
 ## 0.15.0
 
+- **Site público e landing page (GitHub Pages) (PRD-96)**: nova landing page
+  pública indexável em `https://thepaneb.github.io/vscode-utplsql/`, **gerada** do
+  vault (`brain:build` → `site/index.html`) e publicada por
+  `.github/workflows/pages.yml` (GitHub Actions). Traz SEO técnico (title/meta,
+  `canonical`, Open Graph, JSON-LD `SoftwareApplication`, `robots.txt`,
+  `sitemap.xml`) e entra nos controles do repo: `docs:check` valida o site
+  (seção “Site (GitHub Pages)”), `brain:gaps` cobre `site/**` e `site/**` fica
+  fora do VSIX. A documentação completa dentro do site fica para a PRD-97.
+
 - **Diff inline esperado × obtido nas falhas (PRD-52)**: nas falhas de asserção
   (`ut.expect(x).to_equal(y)`), o painel de testes passa a exibir o **diff nativo**
   do VS Code com os valores "Expected"/"Actual" extraídos da mensagem do reporter.

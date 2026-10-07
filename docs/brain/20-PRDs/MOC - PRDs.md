@@ -33,10 +33,10 @@ npm run sync-prds
 ## Status (gerado)
 
 <!-- brain:auto:start:prd-summary -->
-- 📝 Propostos: **13**
-- 🔵 Aprovados: **1**
+- 📝 Propostos: **15**
+- 🔵 Aprovados: **0**
 - 🟡 Em desenvolvimento: **0**
-- 🟢 Concluídos: **81**
+- 🟢 Concluídos: **82**
 
 Detalhe completo (fonte da verdade): [docs/prd/index.md](../../prd/index.md)
 <!-- brain:auto:end -->
@@ -147,5 +147,7 @@ Detalhe completo (fonte da verdade): [docs/prd/index.md](../../prd/index.md)
 - [[prd-93-continuous-localization-pipeline]] — `PRD-93`
 - [[prd-94-vscode-floor-1-101]] — `PRD-94`
 - [[prd-95-esm-es2023-node22]] — `PRD-95`
+- [[prd-96-public-landing-page-github-pages]] — `PRD-96`
+- [[prd-97-doc-no-site]] — `PRD-97`
 - [[Roadmap - 0.15.0 (execução)]]
 <!-- brain:auto:end -->

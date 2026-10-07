@@ -3,6 +3,7 @@
 .vscode-test.mjs
 esbuild.config.mjs
 docs/**
+site/**
 src/**
 out/**
 scripts/**

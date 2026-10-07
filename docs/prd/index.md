@@ -159,17 +159,13 @@ notas `prd-*`. O índice navegável do vault é a [[MOC - PRDs]].
 | 86 | [Debugger honra stopOnException (break_exception)](completed/prd-86-debugger-stop-on-exception.md) | 0.13.0 | 2026-09-24 |
 | 87 | [Resultados e jump-to-failure em suítes com %suitepath](completed/prd-87-suitepath-results-jump.md) | 0.13.0 | 2026-09-25 |
 | 94 | [Piso de VS Code 1.101 e runtime Node 22](completed/prd-94-vscode-floor-1-101.md) | 0.14.0 | 2026-09-29 |
-
-### 🔵 Aprovados
-
-| # | PRD | Versão | Data |
-|---|---|---|---|
-| 47 | [Node 26 no toolchain de desenvolvimento](approved/prd-47-node-26-toolchain.md) | 0.15.1 | 2026-08-29 |
+| 96 | [Site público e landing page via GitHub Pages](completed/prd-96-public-landing-page-github-pages.md) | 0.15.0 | 2026-10-07 |
 
 ### ⚪ Propostos
 
 | # | PRD | Versão | Data |
 |---|---|---|---|
+| 47 | [Node 26 no toolchain de desenvolvimento](proposed/prd-47-node-26-toolchain.md) | — | 2026-08-29 |
 | 56 | [Duração por teste e persistência de resultados](proposed/prd-56-duration-persistence.md) | 0.17.0 | 2026-09-06 |
 | 57 | [Multi-root: resolução de `root`/`sourcePath` por folder](proposed/prd-57-multiroot-root-resolution.md) | 0.17.0 | 2026-09-06 |
 | 58 | [Run Related Tests](proposed/prd-58-run-related-tests.md) | 0.17.0 | 2026-09-06 |
@@ -183,6 +179,7 @@ notas `prd-*`. O índice navegável do vault é a [[MOC - PRDs]].
 | 92 | [RTL e novos locales (árabe e hebraico)](proposed/prd-92-rtl-new-locales.md) | 0.19.0 | 2026-09-29 |
 | 93 | [Pipeline de localização contínua (glossário, TM e revisão)](proposed/prd-93-continuous-localization-pipeline.md) | 0.19.0 | 2026-09-29 |
 | 95 | [Modernização do runtime: ESM, ES2023 e stdlib Node 22](proposed/prd-95-esm-es2023-node22.md) | 0.16.0 | 2026-09-29 |
+| 97 | [Documentação no site (Fase 2 da PRD-96)](proposed/prd-97-doc-no-site.md) | 0.16.0 | 2026-10-07 |
 <!-- prd:roadmap:end -->
 
 ---
@@ -276,9 +273,9 @@ docs/prd/
 │   ├── prd-86-debugger-stop-on-exception.md
 │   ├── prd-87-suitepath-results-jump.md
 │   ├── prd-94-vscode-floor-1-101.md
-├── approved/        ← aprovados, aguardando implementação
-│   ├── prd-47-node-26-toolchain.md
+│   ├── prd-96-public-landing-page-github-pages.md
 ├── proposed/        ← em avaliação
+│   ├── prd-47-node-26-toolchain.md
 │   ├── prd-56-duration-persistence.md
 │   ├── prd-57-multiroot-root-resolution.md
 │   ├── prd-58-run-related-tests.md
@@ -292,6 +289,7 @@ docs/prd/
 │   ├── prd-92-rtl-new-locales.md
 │   ├── prd-93-continuous-localization-pipeline.md
 │   ├── prd-95-esm-es2023-node22.md
+│   ├── prd-97-doc-no-site.md
 ```
 <!-- prd:estrutura:end -->
 

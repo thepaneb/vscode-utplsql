@@ -83,6 +83,7 @@ function main() {
     'testes': walk(path.join(ROOT, 'src', 'test'), (f) => f.endsWith('.test.ts')),
     'scripts': walk(path.join(ROOT, 'scripts'), (f) => /\.(cjs|sh|py)$/.test(f)),
     'workflows': walk(path.join(ROOT, '.github', 'workflows'), () => true),
+    'site (Pages)': walk(path.join(ROOT, 'site'), (f) => /\.(html|css|txt|xml)$/.test(f)),
   };
 
   const gaps = [];
