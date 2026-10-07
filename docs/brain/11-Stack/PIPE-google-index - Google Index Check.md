@@ -25,7 +25,7 @@ Workflow [`google-index.yml`](../../../.github/workflows/google-index.yml) — *
 
 ## Passos
 
-- `uses: google-github-actions/auth@v2`
+- `uses: actions/setup-python@v5`
 - `run: |`
 
 ## Conexões
