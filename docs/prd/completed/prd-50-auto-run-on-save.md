@@ -4,7 +4,7 @@
 
 | Campo | Valor |
 |---|---|
-| Status | Aprovado |
+| Status | Concluído |
 | Autor | Gil Cleber Barboza |
 | Data | 2026-09-06 |
 | Componente | Extensão `paneb.vscode-utplsql` |
@@ -166,3 +166,10 @@ herdar a flag de cobertura.
 - Auto-run com cobertura por padrão? — Casado com a PRD-54 (toggle).
 - Recompilar automaticamente o package antes de rodar no modo Oracle direto?
   — Avaliar como follow-up separado (hoje o CLI recompila; o direto, não).
+
+## 12. Impacto no cérebro
+
+Cria **`BR-EXEC-016`** (auto-run: default off, debounce por arquivo e guarda de
+concorrência) `status: ativo` com `prds: ["PRD-50"]`; referencia **`BR-UI-002`**
+(`utplsql:running`), **`BR-COB-006`** (flag de cobertura compartilhada) e
+**`SEC-010`** (fluxo não interativo). Módulo puro novo: `src/autoRun.ts`.

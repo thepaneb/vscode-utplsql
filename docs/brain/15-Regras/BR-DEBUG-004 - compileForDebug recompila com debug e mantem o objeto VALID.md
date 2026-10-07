@@ -41,5 +41,5 @@ breakpoint não resolve (`BR-DEBUG-001`).
 - 📄 PRDs: [[prd-73-compile-for-debug|PRD-73]]
 - 🧩 Código: [[COD - compileForDebug.ts]]
 - 🧪 Testes: [[TST - integration-compileForDebug.test.ts]] · [[TST - unit-compileForDebug.test.ts]] · [[TST - compileForDebugPool.test.ts]]
-- ↩️ Referenciada por: [[prd-73-compile-for-debug|PRD-73]]
+- ↩️ Referenciada por: [[Debugger]] · [[ERR-007 - ORA-04043 — objeto não encontrado ao compilar para debug|ERR-007]] · [[prd-53-debug-test-variants|PRD-53]] · [[prd-73-compile-for-debug|PRD-73]]
 <!-- brain:auto:end -->

@@ -2,14 +2,15 @@
 tipo: prd
 id: PRD-55
 aliases: [PRD-55]
-status: approved
+status: completed
 titulo: "Organização da árvore de testes por tag"
 versao: "0.15.0"
 data: "2026-09-06"
 autor: "Gil Cleber Barboza"
 versao_titulo: "0.15.0 — Tags e UX de execução"
-verificado: 2026-09-23
-regras: []
+verificado: 2026-10-02
+relacionado: ["BR-SCHEMA-005", "BR-SCHEMA-001", "BR-SCHEMA-003", "BR-SCHEMA-004"]
+regras: ["BR-SCHEMA-005"]
 tags: [prd]
 ---
 
@@ -141,11 +142,25 @@ helper `createSuiteItems(controller, suite, state)` e usá-la nos três modos.
 - Como tratar o risco de IDs duplicados (estratégia de id por tag) — decidir na
   implementação com spike.
 
+## 12. Impacto no cérebro
+
+Cria **`BR-SCHEMA-005`** (`organization=tag` → Tag > Suite > Test, ids estáveis,
+grupo "(sem tag)") `status: ativo` com `prds: ["PRD-55"]`; altera
+**`BR-SCHEMA-001`** (três modos) e referencia **`BR-SCHEMA-003`**/
+**`BR-SCHEMA-004`**. Id por tag evita colisão na API do VSCode sem quebrar o
+`suiteMap` canônico.
+
 ## Conexões
 
 <!-- brain:auto:start:conexoes -->
 - 🗺️ [[MOC - PRDs]]
+- 📐 Regras: [[BR-SCHEMA-005 - organization tag monta Tag Suite Test com ids estaveis e grupo (sem tag)|BR-SCHEMA-005]]
+- 🔗 BR-SCHEMA-005 · BR-SCHEMA-001 · BR-SCHEMA-003 · BR-SCHEMA-004
 - 🔗 PRDs relacionados: [[prd-51-run-by-tag|PRD-51]]
-- 🔗 Mesma versão (0.15.0): [[prd-50-auto-run-on-save|PRD-50]] · [[prd-51-run-by-tag|PRD-51]] · [[prd-52-inline-diff-expected-actual|PRD-52]] · [[prd-53-debug-test-variants|PRD-53]] · [[prd-54-coverage-toggle|PRD-54]]
-- 🚀 ⬅️ release anterior: [[prd-94-vscode-floor-1-101|PRD-94 (0.14.0)]] · ➡️ próxima release: [[prd-47-node-26-toolchain|PRD-47 (0.15.1)]]
+- 🎯 RF1 — Modo `tag` → [[BR-SCHEMA-005 - organization tag monta Tag Suite Test com ids estaveis e grupo (sem tag)|BR-SCHEMA-005]]
+- 🎯 RF2 — `buildTagTree` → [[BR-SCHEMA-005 - organization tag monta Tag Suite Test com ids estaveis e grupo (sem tag)|BR-SCHEMA-005]]
+- 🎯 RF3 — IDs estáveis → [[BR-SCHEMA-005 - organization tag monta Tag Suite Test com ids estaveis e grupo (sem tag)|BR-SCHEMA-005]]
+- 🎯 RNF1 — Suite com várias tags duplica o subárvore (mesmo `TestItem` id não → [[BR-SCHEMA-005 - organization tag monta Tag Suite Test com ids estaveis e grupo (sem tag)|BR-SCHEMA-005]]
+- 🎯 RNF2 — Suites sem tags continuam acessíveis no grupo "(sem tag)". → [[BR-SCHEMA-005 - organization tag monta Tag Suite Test com ids estaveis e grupo (sem tag)|BR-SCHEMA-005]]
+- 🚀 ⬅️ release anterior: [[prd-94-vscode-floor-1-101|PRD-94 (0.14.0)]] · ➡️ próxima release: [[prd-95-esm-es2023-node22|PRD-95 (0.16.0)]]
 <!-- brain:auto:end -->

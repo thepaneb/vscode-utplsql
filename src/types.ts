@@ -1,7 +1,13 @@
 import type * as vscode from 'vscode';
 
 export type ItemMeta =
-  | { kind: 'suite'; packageName: string; uri: vscode.Uri; folder: vscode.WorkspaceFolder }
+  | {
+      kind: 'suite';
+      packageName: string;
+      uri: vscode.Uri;
+      folder: vscode.WorkspaceFolder;
+      tags?: string[];
+    }
   | {
       kind: 'test';
       packageName: string;
@@ -9,6 +15,7 @@ export type ItemMeta =
       description: string;
       uri: vscode.Uri;
       folder: vscode.WorkspaceFolder;
+      tags?: string[];
     };
 
 /** Encoding para ler/decodificar arquivos de script (PRD-62). */

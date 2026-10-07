@@ -21,6 +21,11 @@ const {
   published,
   prdCleanup,
   run,
+  SITE_URL,
+  bannerFor,
+  renderTokens,
+  renderHtml,
+  siteTokens,
 } = require('../../../scripts/brain-build.cjs') as {
   syncDir: (
     src: string,
@@ -61,6 +66,15 @@ const {
     i: { rel: string; target: string; body: string; prdIndex?: boolean },
     vault?: string,
   ) => string;
+  SITE_URL: string;
+  bannerFor: (rel: string, target: string) => string;
+  renderTokens: (body: string, repo?: string) => string;
+  renderHtml: (
+    i: { rel: string; target: string; body: string },
+    body: string,
+    repo?: string,
+  ) => string;
+  siteTokens: (repo?: string) => { VERSION: string; SITE_URL: string };
 };
 
 function withTempDir(prefix: string, fn: (dir: string) => void): void {
@@ -195,6 +209,60 @@ test('brain-build: render de PRD reinjeta o status do frontmatter', () => {
     status: 'completed',
   });
   assert.match(out, /\| Status \| Concluído \|/);
+});
+
+test('brain-build: bannerFor usa o comentário do dialeto do destino', () => {
+  assert.match(bannerFor('a/x.md', 'docs/wiki/x.md'), /^<!-- GENERATED FROM docs\/brain\/a\/x\.md/);
+  assert.match(bannerFor('80-Site/x.md', 'site/assets/styles.css'), /^\/\* GENERATED FROM/);
+  assert.match(bannerFor('80-Site/x.md', 'site/robots.txt'), /^# GENERATED FROM/);
+  assert.match(bannerFor('80-Site/x.md', 'site/sitemap.xml'), /^<!-- GENERATED FROM/);
+});
+
+test('brain-build: siteTokens lê a versão do package.json e a URL canônica', () => {
+  const tokens = siteTokens();
+  assert.match(tokens.VERSION, /^\d+\.\d+\.\d+$/);
+  assert.strictEqual(tokens.SITE_URL, SITE_URL);
+});
+
+test('brain-build: renderTokens substitui os tokens e preserva os desconhecidos', () => {
+  withTempDir('bb-tokens-', (dir) => {
+    writeFixture(path.join(dir, 'package.json'), JSON.stringify({ version: '9.9.9' }));
+    const out = renderTokens('v={{VERSION}} url={{SITE_URL}} x={{NAO_EXISTE}}', dir);
+    assert.strictEqual(out, `v=9.9.9 url=${SITE_URL} x={{NAO_EXISTE}}`);
+  });
+});
+
+test('brain-build: renderTokens sem tokens é identidade', () => {
+  assert.strictEqual(renderTokens('sem tokens aqui'), 'sem tokens aqui');
+});
+
+test('brain-build: renderHtml coloca o banner após o doctype e resolve tokens', () => {
+  const out = renderHtml(
+    { rel: '80-Site/x.md', target: 'site/x.html', body: '' },
+    '<!doctype html>\n<p>{{SITE_URL}}</p>\n',
+  );
+  assert.match(out, /^<!doctype html>\n<!-- GENERATED FROM docs\/brain\/80-Site\/x\.md/);
+  assert.ok(out.includes(`<p>${SITE_URL}</p>`));
+});
+
+test('brain-build: render de HTML põe o banner após o doctype e resolve tokens', () => {
+  const out = render({
+    rel: '80-Site/Landing page (site).md',
+    target: 'site/index.html',
+    body: '<!doctype html>\n<html lang="en"><title>{{VERSION}}</title></html>\n',
+  });
+  assert.match(
+    out,
+    /^<!doctype html>\n<!-- GENERATED FROM docs\/brain\/80-Site\/Landing page \(site\)\.md/,
+  );
+  assert.ok(!out.includes('{{VERSION}}'));
+  assert.ok(out.includes(`<title>${siteTokens().VERSION}</title>`));
+  assert.ok(out.endsWith('</html>\n'));
+});
+
+test('brain-build: render de HTML sem doctype prefixa o banner', () => {
+  const out = render({ rel: 'a/x.md', target: 'site/y.html', body: '<p>oi</p>\n' });
+  assert.match(out, /^<!-- GENERATED FROM[\s\S]*<p>oi<\/p>/);
 });
 
 test('brain-build: renderPrdIndex injeta Roadmap/Estrutura das PRDs do vault', () => {

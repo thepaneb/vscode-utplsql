@@ -40,5 +40,5 @@ Isola problemas de configuração dos problemas do código do usuário e evita q
 - 🎯 Requisitos: [[prd-32-quickfix-setup-diagnostics|PRD-32 RF1]] · [[prd-32-quickfix-setup-diagnostics|PRD-32 RF4]]
 - 🧩 Código: [[COD - quickfix.ts]] · [[COD - extension.ts]]
 - 🧪 Testes: [[TST - quickfix.test.ts]] · [[TST - quickfixActivation.test.ts]] · [[TST - commandsE2E.test.ts]]
-- ↩️ Referenciada por: [[07-diagnostics-and-validation]] · [[ERR-006 - UTPLSQL_INVALID_OBJECTS — objetos UT3 inválidos no banco|ERR-006]] · [[SEC-010 - Fluxos não interativos nunca abrem prompt de conexão|SEC-010]] · [[prd-32-quickfix-setup-diagnostics|PRD-32]]
+- ↩️ Referenciada por: [[07-diagnostics-and-validation]] · [[Diagnostics-and-quick-fix]] · [[ERR-006 - UTPLSQL_INVALID_OBJECTS — objetos UT3 inválidos no banco|ERR-006]] · [[SEC-010 - Fluxos não interativos nunca abrem prompt de conexão|SEC-010]] · [[prd-32-quickfix-setup-diagnostics|PRD-32]]
 <!-- brain:auto:end -->

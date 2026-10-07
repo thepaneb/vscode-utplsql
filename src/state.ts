@@ -28,6 +28,12 @@ export class TestStateManager {
   runProfile?: vscode.TestRunProfile;
   coverageProfile?: vscode.TestRunProfile;
 
+  /** Modo global de cobertura da sessão (PRD-54). Não persiste. */
+  coverageAlways = false;
+  setCoverageAlways(value: boolean): void {
+    this.coverageAlways = value;
+  }
+
   setMeta(item: vscode.TestItem, m: ItemMeta): void {
     this.meta.set(item, m);
   }

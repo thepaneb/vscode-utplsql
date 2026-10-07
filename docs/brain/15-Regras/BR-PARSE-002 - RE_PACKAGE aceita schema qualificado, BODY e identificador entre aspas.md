@@ -11,6 +11,7 @@ verificado: 2026-09-23
 implementacao: ["src/suiteParser.ts:26", "src/suiteParser.ts:55", "src/suiteParser.ts:59", "src/codelens.ts:5"]
 testes: ["src/test/unit/suiteParser.test.ts"]
 prds: ["PRD-24", "PRD-42"]
+interno: true
 tags: ["parser"]
 ---
 ## Enunciado

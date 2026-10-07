@@ -810,6 +810,47 @@ test('mapSuitesInfoToSuiteFiles: package sem testes é omitido', async () => {
   assert.deepStrictEqual(mapSuitesInfoToSuiteFiles(rows, FOLDER), []);
 });
 
+test('mergeSuiteLists: banco prevalece nas tags de suíte (PRD-51)', () => {
+  const fileSuite = {
+    uri: { fsPath: '/ws/ut_app.pks', scheme: 'file' },
+    packageName: 'UT_APP',
+    suiteDescription: 'file suite',
+    tests: [{ procName: 'test_one', description: 't', line: 3 }],
+    folder: FOLDER,
+    suiteLine: 1,
+    tags: ['old'],
+  } as unknown as SuiteFile;
+  const dbSuite = {
+    uri: { fsPath: '' },
+    packageName: 'UT_APP',
+    suiteDescription: 'db suite',
+    tests: [{ procName: 'TEST_ONE', description: 'db t', line: 5, tags: ['fast'] }],
+    folder: FOLDER,
+    suiteLine: 4,
+    dbSchema: 'APP',
+    tags: ['new'],
+  } as unknown as SuiteFile;
+  const merged = mergeSuiteLists([fileSuite], [dbSuite]);
+  assert.deepStrictEqual(merged[0].tags, ['new']);
+});
+
+test('mapSuitesInfoToSuiteFiles: tags de suíte do banco propagadas (PRD-51)', () => {
+  const base = {
+    owner: 'APP',
+    packageName: 'UT_APP',
+    suitePath: null,
+    description: 'db',
+    disabled: false,
+    line: 1,
+  };
+  const rows = [
+    { ...base, itemName: 'UT_APP', itemType: 'suite' as const, tags: ['smoke'] },
+    { ...base, itemName: 'T1', itemType: 'test' as const, tags: ['fast'], line: 2 },
+  ] as unknown as Parameters<typeof mapSuitesInfoToSuiteFiles>[0];
+  const suites = mapSuitesInfoToSuiteFiles(rows, FOLDER);
+  assert.deepStrictEqual(suites[0].tags, ['smoke']);
+});
+
 test('mergeSuiteLists: arquivo prevalece em uri/linha; banco em descrição/tags', () => {
   const fileSuite = {
     uri: { fsPath: '/ws/ut_app.pks', scheme: 'file' },

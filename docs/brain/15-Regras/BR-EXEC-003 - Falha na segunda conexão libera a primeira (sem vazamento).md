@@ -12,6 +12,7 @@ implementacao: ["src/oracleRunner.ts:149", "src/oracleRunner.ts:151", "src/oracl
 testes: ["src/test/unit/oracleRunner.test.ts:537", "src/test/unit/oracleRunner.test.ts:569"]
 prds: ["PRD-38"]
 requisitos: ["PRD-38/RF3"]
+interno: true
 tags: ["execucao"]
 ---
 ## Enunciado

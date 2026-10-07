@@ -178,6 +178,11 @@ documentar que cor só faz sentido para reporters textuais.
 - Exportar automaticamente também ao final do run normal (opt-in)?
 - Limite de tamanho antes de oferecer salvar em vez de Output?
 
+## Impacto no cérebro
+
+RNF1 (export não altera o Test Explorer) → **`BR-EXEC-015`**; RNF2 (streaming sem
+travar a UI) → **`BR-EXEC-007`**. RNFs sem regra: RNF3 (processo — paridade i18n).
+
 ## Conexões
 
 <!-- brain:auto:start:conexoes -->
@@ -185,5 +190,7 @@ documentar que cor só faz sentido para reporters textuais.
 - 📐 Regras: [[BR-EXEC-015 - Export com reporter não altera os resultados do Test Explorer|BR-EXEC-015]]
 - 🔗 PRDs relacionados: [[prd-69-oracle-runner-typed-binds|PRD-69]] · [[prd-79-coverage-scope|PRD-79]]
 - 🎯 RF1 — Coleta da saída do reporter → [[BR-EXEC-015 - Export com reporter não altera os resultados do Test Explorer|BR-EXEC-015]]
+- 🎯 RNF1 — Export não altera os resultados no Test Explorer. → [[BR-EXEC-015 - Export com reporter não altera os resultados do Test Explorer|BR-EXEC-015]]
+- 🎯 RNF2 — Saída grande não deve bloquear a UI (usar o mesmo streaming/polling). → [[BR-EXEC-007 - Poll do buffer a cada 200ms por message_id incremental|BR-EXEC-007]]
 - 🚀 ⬅️ release anterior: [[prd-87-suitepath-results-jump|PRD-87 (0.13.0)]] · ➡️ próxima release: [[prd-50-auto-run-on-save|PRD-50 (0.15.0)]]
 <!-- brain:auto:end -->

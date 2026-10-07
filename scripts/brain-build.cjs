@@ -16,7 +16,52 @@ const path = require('path');
 
 const REPO = path.resolve(__dirname, '..');
 const VAULT = path.join(REPO, 'docs', 'brain');
-const BANNER = (rel) => `<!-- GENERATED FROM docs/brain/${rel} — DO NOT EDIT -->`;
+
+/** URL canônica do site público — fonte única para o `brain:build` e o `docs:check`. */
+const SITE_URL = 'https://thepaneb.github.io/vscode-utplsql/';
+
+/** Comentário de "gerado" no dialeto do arquivo de destino (md/html/xml/css/txt). */
+function bannerFor(rel, target) {
+  const label = `GENERATED FROM docs/brain/${rel} — DO NOT EDIT`;
+  if (/\.css$/i.test(target)) return `/* ${label} */`;
+  if (/\.txt$/i.test(target)) return `# ${label}`;
+  return `<!-- ${label} -->`;
+}
+
+/** Tokens disponíveis nos artefatos do site: `{{VERSION}}` e `{{SITE_URL}}`. */
+function siteTokens(repo = REPO) {
+  let version = '';
+  try {
+    version = JSON.parse(fs.readFileSync(path.join(repo, 'package.json'), 'utf8')).version || '';
+  } catch {
+    version = '';
+  }
+  return { VERSION: version, SITE_URL };
+}
+
+/** Substitui `{{TOKEN}}` conhecidos; deixa tokens desconhecidos intactos (o check acusa). */
+function renderTokens(body, repo = REPO) {
+  if (!body.includes('{{')) return body;
+  const tokens = siteTokens(repo);
+  return body.replace(/\{\{\s*([A-Z0-9_]+)\s*\}\}/g, (full, key) =>
+    Object.prototype.hasOwnProperty.call(tokens, key) ? tokens[key] : full,
+  );
+}
+
+const HTML_RE = /\.html?$/i;
+
+/**
+ * Documento HTML: o banner entra logo após o `<!doctype>` (um comentário antes
+ * do doctype jogaria a página em quirks mode).
+ */
+function renderHtml(item, body, repo = REPO) {
+  const doc = renderTokens(body, repo).replace(/^\s+/, '');
+  const banner = bannerFor(item.rel, item.target);
+  const withBanner = /^<!doctype/i.test(doc)
+    ? doc.replace(/^(<!doctype[^>]*>)/i, `$1\n${banner}`)
+    : `${banner}\n${doc}`;
+  return withBanner.replace(/\s+$/, '') + '\n';
+}
 
 const WIKI_PREFIX = 'docs/wiki/';
 const WIKILINK_RE = /\[\[([^\]|#]+)(?:#[^\]|]+)?(?:\|([^\]]+))?\]\]/g;
@@ -259,7 +304,9 @@ function render(item, vault = VAULT) {
   else if (item.prdIndex) body = renderPrdIndex({ ...item, body }, vault);
   else if (item.target.startsWith(WIKI_PREFIX)) body = wikiLinks(body);
   else if (README_RE.test(item.target)) body = readmeLinks(body);
-  return `${BANNER(item.rel)}\n${body}`.replace(/\s+$/, '') + '\n';
+
+  if (HTML_RE.test(item.target)) return renderHtml(item, body);
+  return `${bannerFor(item.rel, item.target)}\n${body}`.replace(/\s+$/, '') + '\n';
 }
 
 /** Remove PRDs gerados em pastas que não correspondem mais ao status. */
@@ -350,4 +397,9 @@ module.exports = {
   syncDir,
   prdCleanup,
   run,
+  SITE_URL,
+  bannerFor,
+  renderTokens,
+  renderHtml,
+  siteTokens,
 };

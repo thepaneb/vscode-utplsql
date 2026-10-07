@@ -167,12 +167,104 @@ function checkWiki() {
   ok(`${en.length} páginas`);
 }
 
+// ── Site (GitHub Pages) ────────────────────────────────────────────────
+
+const SITE_DIR = path.join(REPO, 'site');
+
+/** Links locais (`href`/`src` relativos) de um HTML. */
+function localLinks(html) {
+  const out = [];
+  for (const m of html.matchAll(/(?:href|src)\s*=\s*"([^"]+)"/g)) {
+    const url = m[1].trim();
+    if (/^(https?:|mailto:|tel:|#|data:|\/\/|\/)/.test(url)) continue;
+    out.push(url.split('#')[0].split('?')[0]);
+  }
+  return out;
+}
+
+/**
+ * Valida a landing page publicada no GitHub Pages: SEO técnico mínimo, links
+ * locais, `robots.txt` permissivo e `sitemap.xml` coerentes com a URL canônica
+ * (`SITE_URL`, fonte única em `brain-build.cjs`) e a versão do `package.json`.
+ */
+function checkSite() {
+  console.log('Site (GitHub Pages)');
+  const { SITE_URL } = require('./brain-build.cjs');
+  const index = path.join(SITE_DIR, 'index.html');
+  if (!fs.existsSync(index)) return fail('site/index.html ausente');
+  const html = fs.readFileSync(index, 'utf8');
+  const problems = [];
+
+  const required = [
+    [/<title>[^<]{15,}<\/title>/i, 'title'],
+    [/<meta\s+name="description"\s+content="[^"]{40,}"/i, 'meta description'],
+    [/property="og:title"/i, 'og:title'],
+    [/property="og:description"/i, 'og:description'],
+    [/property="og:url"/i, 'og:url'],
+    [/property="og:image"/i, 'og:image'],
+    [/name="twitter:card"/i, 'twitter:card'],
+    [/application\/ld\+json/i, 'JSON-LD'],
+    [/<html lang="[a-z-]+"/i, 'html lang'],
+  ];
+  for (const [re, label] of required) if (!re.test(html)) problems.push(`index.html sem ${label}`);
+  if (!html.includes(`<link rel="canonical" href="${SITE_URL}"`)) {
+    problems.push('index.html sem canonical para a URL do site');
+  }
+  if (/\{\{\s*[A-Z0-9_]+\s*\}\}/.test(html)) {
+    problems.push('index.html com token {{...}} não resolvido');
+  }
+
+  const version = JSON.parse(fs.readFileSync(path.join(REPO, 'package.json'), 'utf8')).version;
+  if (!html.includes(`"softwareVersion": "${version}"`)) {
+    problems.push(`softwareVersion de index.html ≠ package.json (${version})`);
+  }
+
+  const htmls = [index];
+  const fourOhFour = path.join(SITE_DIR, '404.html');
+  if (fs.existsSync(fourOhFour)) htmls.push(fourOhFour);
+  for (const file of htmls) {
+    for (const rel of localLinks(fs.readFileSync(file, 'utf8'))) {
+      if (!fs.existsSync(path.join(SITE_DIR, rel))) {
+        problems.push(`${path.basename(file)}: link local quebrado "${rel}"`);
+      }
+    }
+  }
+
+  const robots = path.join(SITE_DIR, 'robots.txt');
+  if (!fs.existsSync(robots)) problems.push('site/robots.txt ausente');
+  else {
+    const text = fs.readFileSync(robots, 'utf8');
+    if (/^\s*Disallow:\s*\/\s*$/im.test(text)) problems.push('robots.txt bloqueia o site');
+    if (!text.includes(`${SITE_URL}sitemap.xml`)) {
+      problems.push('robots.txt não aponta para o sitemap canônico');
+    }
+  }
+
+  const sitemap = path.join(SITE_DIR, 'sitemap.xml');
+  if (!fs.existsSync(sitemap)) problems.push('site/sitemap.xml ausente');
+  else if (!fs.readFileSync(sitemap, 'utf8').includes(`<loc>${SITE_URL}</loc>`)) {
+    problems.push('sitemap.xml não lista a URL canônica');
+  }
+
+  // Arquivos de verificação do Google Search Console (`google<token>.html`).
+  for (const f of readdirSafe(SITE_DIR).filter((n) => /^google[0-9a-f]+\.html$/i.test(n))) {
+    const text = fs.readFileSync(path.join(SITE_DIR, f), 'utf8').trim();
+    if (text !== `google-site-verification: ${f}`) {
+      problems.push(`${f}: conteúdo de verificação do Google inválido`);
+    }
+  }
+
+  if (problems.length) for (const p of problems) fail(p);
+  else ok('landing page indexável, robots.txt e sitemap.xml coerentes');
+}
+
 // ── main ───────────────────────────────────────────────────────────────
 
 checkReadme();
 checkPrd();
 checkPrdVault();
 checkWiki();
+checkSite();
 
 // Fidelidade código↔docs (settings, comandos, módulos, versão, PRDs, obsoletos).
 console.log('Fidelidade código ↔ documentação');

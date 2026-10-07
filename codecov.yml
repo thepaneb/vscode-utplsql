@@ -1,12 +1,12 @@
 # Codecov — cobertura dos testes unitários (c8/lcov) enviada pelo CI (ci.yml).
-# Alinhado aos thresholds do .c8rc: 90% lines/statements/functions, 85% branches.
+# Alinhado aos thresholds do .c8rc: 97% lines/statements/functions, 92% branches.
 coverage:
   precision: 1
   round: down
   status:
     project:
       default:
-        target: 90%
+        target: 97%
         threshold: 1%
     patch:
       default:

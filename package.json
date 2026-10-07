@@ -2,7 +2,7 @@
   "name": "vscode-utplsql",
   "displayName": "utPLSQL Test Runner",
   "description": "Roda testes utPLSQL pelo Test Explorer do VSCode, com menu de contexto e cobertura visual (estilo pytest).",
-  "version": "0.14.0",
+  "version": "0.15.0",
   "publisher": "paneb",
   "author": "Gil Cleber Barboza",
   "license": "MIT",
@@ -291,12 +291,14 @@
           "type": "string",
           "enum": [
             "file",
-            "schema"
+            "schema",
+            "tag"
           ],
           "default": "file",
           "enumDescriptions": [
             "Organiza os testes por caminho de arquivo (padrão).",
-            "Organiza os testes por schema Oracle (Schema > Package > Suite > Test). Use organization.schemaPattern para definir como extrair o schema do caminho."
+            "Organiza os testes por schema Oracle (Schema > Package > Suite > Test). Use organization.schemaPattern para definir como extrair o schema do caminho.",
+            "Organiza os testes por tag %tags (Tag > Suite > Test). Suites com múltiplas tags aparecem sob cada tag; sem tag vão para \"(sem tag)\"."
           ],
           "description": "Modo de organização da árvore de testes no Test Explorer."
         },
@@ -340,6 +342,44 @@
           "type": "boolean",
           "default": true,
           "description": "Exibe erros de compilação PL/SQL como sublinhados no editor e no Problems Panel após execução dos testes."
+        },
+        "utplsql.showTagsInTree": {
+          "type": "boolean",
+          "default": false,
+          "description": "Sufixa [tag1, tag2] no label dos itens do Test Explorer conforme as %tags declaradas na suite/teste."
+        },
+        "utplsql.autoRun": {
+          "type": "string",
+          "enum": [
+            "off",
+            "onSave"
+          ],
+          "default": "off",
+          "enumDescriptions": [
+            "Desativado (padrão): salvar um .pks não executa nada.",
+            "Re-executa automaticamente as suites do arquivo .pks salvo (modo watch)."
+          ],
+          "description": "Auto-run on save: re-executa as suites do arquivo .pks ao salvar."
+        },
+        "utplsql.autoRunDelayMs": {
+          "type": "number",
+          "default": 500,
+          "minimum": 100,
+          "maximum": 5000,
+          "description": "Debounce (ms) do auto-run por arquivo; saves rápidos do mesmo arquivo disparam uma única execução."
+        },
+        "utplsql.autoRunQueue": {
+          "type": "string",
+          "enum": [
+            "skip",
+            "replace"
+          ],
+          "default": "skip",
+          "enumDescriptions": [
+            "Ignora o auto-run se já houver execução em andamento.",
+            "Reagenda o auto-run para rodar após a execução em andamento."
+          ],
+          "description": "O que fazer quando um auto-run dispara durante uma execução."
         },
         "utplsql.setupDiagnostics.enabled": {
           "type": "boolean",
@@ -510,6 +550,16 @@
         "category": "utPLSQL"
       },
       {
+        "command": "utplsql.toggleCoverage",
+        "title": "%nls.command.toggleCoverage%",
+        "category": "utPLSQL"
+      },
+      {
+        "command": "utplsql.runByTag",
+        "title": "%nls.command.runByTag%",
+        "category": "utPLSQL"
+      },
+      {
         "command": "utplsql.configureConnection",
         "title": "%nls.command.configureConnection%",
         "category": "utPLSQL"
@@ -557,6 +607,21 @@
       {
         "command": "utplsql.debugTest",
         "title": "%nls.command.debugTest%",
+        "category": "utPLSQL"
+      },
+      {
+        "command": "utplsql.debugAtCursor",
+        "title": "%nls.command.debugAtCursor%",
+        "category": "utPLSQL"
+      },
+      {
+        "command": "utplsql.debugFailed",
+        "title": "%nls.command.debugFailed%",
+        "category": "utPLSQL"
+      },
+      {
+        "command": "utplsql.debugLast",
+        "title": "%nls.command.debugLast%",
         "category": "utPLSQL"
       },
       {
@@ -716,6 +781,24 @@
         "command": "utplsql.runFailed",
         "key": "ctrl+shift+u x",
         "mac": "cmd+shift+u x",
+        "when": "utplsql:hasFailures"
+      },
+      {
+        "command": "utplsql.toggleCoverage",
+        "key": "ctrl+shift+u shift+c",
+        "mac": "cmd+shift+u shift+c",
+        "when": "utplsql:activated"
+      },
+      {
+        "command": "utplsql.debugAtCursor",
+        "key": "ctrl+shift+u d",
+        "mac": "cmd+shift+u d",
+        "when": "editorTextFocus && resourceExtname == .pks"
+      },
+      {
+        "command": "utplsql.debugFailed",
+        "key": "ctrl+shift+u shift+d",
+        "mac": "cmd+shift+u shift+d",
         "when": "utplsql:hasFailures"
       }
     ],

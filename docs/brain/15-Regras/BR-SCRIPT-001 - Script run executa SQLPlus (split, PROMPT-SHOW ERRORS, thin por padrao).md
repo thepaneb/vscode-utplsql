@@ -43,5 +43,5 @@ scripts escritos para SQL*Plus (PRD-70).
 - 📄 PRDs: [[prd-62-run-scripts-against-profiles|PRD-62]] · [[prd-70-thick-mode-nne|PRD-70]]
 - 🧩 Código: [[COD - scriptRunner.ts]] · [[COD - charset.ts]]
 - 🧪 Testes: [[TST - prd70-sqlplus.test.ts]] · [[TST - scriptRunner.test.ts]]
-- ↩️ Referenciada por: [[prd-62-run-scripts-against-profiles|PRD-62]] · [[prd-70-thick-mode-nne|PRD-70]]
+- ↩️ Referenciada por: [[SQL-scripts]] · [[prd-62-run-scripts-against-profiles|PRD-62]] · [[prd-70-thick-mode-nne|PRD-70]]
 <!-- brain:auto:end -->

@@ -38,5 +38,5 @@ Evita flood de updates no showRunning chamado por suite e normaliza o resumo pas
 - 🎯 Requisitos: [[prd-25-status-bar-indicator|PRD-25 RF1]] · [[prd-25-status-bar-indicator|PRD-25 RF2]] · [[prd-25-status-bar-indicator|PRD-25 RF4]]
 - 🧩 Código: [[COD - statusBar.ts]] · [[COD - config.ts]] · [[COD - debounce.ts]]
 - 🧪 Testes: [[TST - statusBar.test.ts]] · [[TST - debounce.test.ts]]
-- ↩️ Referenciada por: [[05-ux-components]] · [[prd-25-status-bar-indicator|PRD-25]]
+- ↩️ Referenciada por: [[05-ux-components]] · [[Editor-integration]] · [[NFR-004 - Latência do streaming|NFR-004]] · [[prd-25-status-bar-indicator|PRD-25]] · [[prd-54-coverage-toggle|PRD-54]]
 <!-- brain:auto:end -->

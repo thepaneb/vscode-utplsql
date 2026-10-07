@@ -2,8 +2,8 @@
 
 # Test tree organization
 
-The extension offers two modes for organizing the tree in the Test Explorer:
-by **file** (default) or by **Oracle schema**.
+The extension offers three modes for organizing the tree in the Test Explorer:
+by **file** (default), by **Oracle schema** or by **`%tags`**.
 
 ## `file` mode (default)
 
@@ -39,6 +39,31 @@ TestController
 ```
 
 ![Schema-mode tree](images/schema-mode-tree.png)
+
+## `tag` mode
+
+Groups tests by the `%tags` declared in each suite/test:
+
+```
+TestController
+  ├── #fast
+  │   └── Suite: My Feature Tests  (UT_MY_TESTS)
+  │       ├── test_case_1
+  │       └── test_case_2
+  ├── #smoke
+  │   └── Suite: My Feature Tests  (UT_MY_TESTS)
+  │       └── test_case_2
+  └── #(sem tag)
+      └── Suite: Untagged  (UT_OTHER)
+```
+
+- A suite/test with **several tags appears under each tag** (intentional
+  duplication, like the C# Dev Kit "Tests by Category" view).
+- Untagged suites go to the **`(sem tag)`** group, which appears last.
+- Suite/test **ids stay canonical** (`suite:<pkg>` / `test:<pkg>.<proc>`) for the
+  first occurrence, so results, `suiteMap` and *jump to failure* keep working;
+  duplicated occurrences get a tag-scoped id (`suite:<pkg>#<tag>`).
+- Set `utplsql.showTagsInTree` to `true` to also show `[tag1, tag2]` on labels.
 
 ## Configuration
 
@@ -80,7 +105,7 @@ no capture group, so no schema can be extracted and every file ends up under
 - Use a consistent directory structure: `db/{schema}/tests/packages/`
 - `schemaPattern` supports `**` (any depth) and `*` (single level)
 - Schema names are converted to **uppercase** (case-insensitive like Oracle)
-- Switching between `file` and `schema` automatically rebuilds the tree
+- Switching between `file`, `schema` and `tag` automatically rebuilds the tree
 - Works with **multi-root**: each workspace folder maintains its own schemas
 
 ## Behavior

@@ -1,5 +1,61 @@
 # Changelog
 
+## 0.15.0
+
+- **Site público e landing page (GitHub Pages) (PRD-96)**: nova landing page
+  pública indexável em `https://thepaneb.github.io/vscode-utplsql/`, **gerada** do
+  vault (`brain:build` → `site/index.html`) e publicada por
+  `.github/workflows/pages.yml` (GitHub Actions). Traz SEO técnico (title/meta,
+  `canonical`, Open Graph, JSON-LD `SoftwareApplication`, `robots.txt`,
+  `sitemap.xml`) e entra nos controles do repo: `docs:check` valida o site
+  (seção “Site (GitHub Pages)”), `brain:gaps` cobre `site/**` e `site/**` fica
+  fora do VSIX. A documentação completa dentro do site fica para a PRD-97.
+
+- **Diff inline esperado × obtido nas falhas (PRD-52)**: nas falhas de asserção
+  (`ut.expect(x).to_equal(y)`), o painel de testes passa a exibir o **diff nativo**
+  do VS Code com os valores "Expected"/"Actual" extraídos da mensagem do reporter.
+  O parser `parseExpectedActual` é puro e tolerante (case-insensitive, multilinha,
+  formatos `Expected:`/`Actual:` e `... was expected to equal:`); falhas sem os
+  marcadores seguem com o texto normal e o *jump to failure* é preservado.
+
+- **Debug de testes: no cursor, nos falhos e na última execução (PRD-53)**: novos
+  comandos `utplsql.debugAtCursor`, `utplsql.debugFailed` e `utplsql.debugLast`
+  reaproveitam o adaptador (`startDebugSession`) para depurar o `%test`/`%suite`
+  sob o cursor, os testes que falharam na última rodada (QuickPick quando há mais
+  de um) e a última execução em modo debug. A resolução de alvo foi extraída para
+  funções puras (`src/debugTargets.ts`) e o `findAnnotationAtLine` virou módulo
+  compartilhado (`src/annotation.ts`), com aviso amigável quando não há alvo.
+
+- **Toggle de cobertura na status bar (PRD-54)**: novo item à direita da status
+  bar alterna o **modo global de cobertura** da sessão (`state.coverageAlways`,
+  não persistido) via `utplSQL: Toggle Coverage`. Os entry points sem cobertura
+  explícita (`runAll`, `runFile`, `runAtCursor`, `rerunLast`, `runFailed`) passam
+  a usar a flag — centralizada na função pura `effectiveCoverage` em
+  `src/coverageDecision.ts` — enquanto os comandos `*Coverage` continuam forçando
+  cobertura.
+
+- **Execução e seleção por Tag (PRD-51)**: `%tags(...)` passam a chegar ao
+  `ItemMeta` (suíte e teste) — o parser agora captura também as tags do **header**
+  da suíte — e o novo comando `utPLSQL: Rodar testes por tag...` abre um QuickPick
+  multi-seleção com as tags descobertas (`!tag` exclui, comparação
+  case-insensitive). O filtro é puro (`src/tagFilter.ts`). A setting
+  `utplsql.showTagsInTree` (default `false`) sufixa `[tag1, tag2]` no label do
+  Test Explorer.
+
+- **Organização da árvore por tag (PRD-55)**: `utplsql.organization` ganha o valor
+  `tag`, montando **Tag > Suite > Test** a partir das `%tags`. Suíte/teste com
+  várias tags aparece sob cada tag (com id por tag, sem colidir na API do VS Code)
+  e as sem tag vão para um grupo "(sem tag)". Os ids canônicos
+  (`suite:<pkg>`/`test:<pkg>.<proc>`) são preservados, mantendo `suiteMap`,
+  resultados e *jump to failure*.
+
+- **Auto-run ao salvar / watch mode (PRD-50)**: a setting `utplsql.autoRun`
+  (`off` por padrão) permite re-executar automaticamente as suites do `.pks`
+  salvo. O debounce por arquivo (`utplsql.autoRunDelayMs`, default 500 ms) coalesce
+  saves rápidos sem cancelar arquivos distintos, e a guarda de concorrência
+  (`utplsql.autoRunQueue`: `skip`/`replace`) evita execuções concorrentes. A
+  lógica é pura (`src/autoRun.ts`) e respeita o modo global de cobertura.
+
 ## 0.14.0
 
 - **Piso de VS Code 1.101 e runtime Node 22 (PRD-94)**: `engines.vscode` passa de

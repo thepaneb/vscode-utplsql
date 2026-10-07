@@ -16,6 +16,8 @@ export interface SuiteFile {
   folder: vscode.WorkspaceFolder;
   suiteLine: number;
   disabled?: boolean;
+  /** Tags do header da suíte (`%tags` antes do primeiro `%test`) — PRD-51. */
+  tags?: string[];
   hasBeforeAll?: boolean;
   hasAfterAll?: boolean;
   hasBeforeEach?: boolean;
@@ -331,6 +333,7 @@ export function mapSuitesInfoToSuiteFiles(
       folder,
       suiteLine: Math.max(0, (suiteRow?.line ?? 1) - 1),
       dbSchema: owner,
+      ...(suiteRow && suiteRow.tags.length > 0 ? { tags: suiteRow.tags } : {}),
     });
   }
   return results;
@@ -364,6 +367,8 @@ export function mergeSuiteLists(fileSuites: SuiteFile[], dbSuites: SuiteFile[]):
     });
     file.tests = tests;
     if (db.suiteDescription) file.suiteDescription = db.suiteDescription;
+    // Banco prevalece nas tags de suíte, como nas de teste (PRD-74 RF3/PRD-51).
+    if (db.tags && db.tags.length > 0) file.tags = db.tags;
   }
   return result;
 }

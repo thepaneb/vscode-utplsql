@@ -339,6 +339,161 @@ function checkPrdRules(notes) {
 }
 
 /**
+ * Declara que a PRD tem RNFs intencionalmente sem regra? Reconhece, na seção
+ * `## Impacto no cérebro`, uma linha `RNFs sem regra: RNF3, RNF5 (motivo)`.
+ * Devolve o conjunto de números declarados.
+ */
+function declaredRnfExceptions(content) {
+  const section = content
+    .split(/\n(?=##\s)/)
+    .find((s) => /^##\s*(?:\d+[.)]\s*)?Impacto no c[ée]rebro/i.test(s));
+  if (!section) return new Set();
+  const nums = new Set();
+  for (const m of section.matchAll(/RNFs?\s+sem\s+regra\s*:\s*([^\n]+)/gi)) {
+    for (const n of m[1].matchAll(/RNF(\d+)/gi)) nums.add(n[1]);
+  }
+  return nums;
+}
+
+/**
+ * Toda RNF declarada no corpo de uma PRD `completed` recente (>= baseline) deve
+ * estar vinculada a alguma regra/SEC (via `requisitos: ["PRD-NN/RNFn"]`) **ou**
+ * declarada como exceção em `## Impacto no cérebro` (`RNFs sem regra: ...`).
+ * Evita que RNFs "sumam" sem rastreabilidade (como aconteceu na PRD-53).
+ */
+function checkPrdRnfVinculo(notes) {
+  const problems = [];
+  const prds = new Map();
+  const linked = new Map(); // PRD-NN -> Set(RNFn)
+  for (const note of notes) {
+    const fm = parseFrontmatter(note.content);
+    if (!fm || !fm.id) continue;
+    if (fm.tipo === 'prd') {
+      const num = String(fm.id).replace(/\D/g, '');
+      if (num) prds.set(String(Number(num)), { name: note.name, fm, content: note.content });
+    } else if (fm.tipo === 'regra' || fm.tipo === 'seguranca') {
+      for (const r of Array.isArray(fm.requisitos) ? fm.requisitos : []) {
+        const m = String(r).match(/^(PRD-\d+)\/RNF(\d+)/i);
+        if (m) {
+          const num = String(Number(m[1].replace(/\D/g, '')));
+          if (!linked.has(num)) linked.set(num, new Set());
+          linked.get(num).add(m[2]);
+        }
+      }
+    }
+  }
+  for (const [num, prd] of prds) {
+    if (prd.fm.status !== 'completed') continue;
+    if (!semverGte(prd.fm.versao, RULES_BASELINE)) continue;
+    const body = prd.content.split('<!-- brain:auto:start:conexoes -->')[0];
+    const declared = new Set();
+    for (const m of body.matchAll(/^\s*[-*]\s*RNF(\d+)\b/gm)) declared.add(m[1]);
+    if (declared.size === 0) continue;
+    const exceptions = declaredRnfExceptions(prd.content);
+    const have = linked.get(num) ?? new Set();
+    for (const n of declared) {
+      if (have.has(n) || exceptions.has(n)) continue;
+      problems.push(
+        `${prd.name}: RNF${n} sem vínculo em regra (use requisitos: "PRD-${Number(num)}/RNF${n}" numa regra/SEC ou declare "RNFs sem regra: RNF${n}" em '## Impacto no cérebro')`,
+      );
+    }
+  }
+  return problems;
+}
+
+/** Camadas que exigem vínculo concreto (e qual campo satisfaz cada uma). */
+const LAYER_CONNECTIONS = {
+  nfr: { any: ['regras', 'requisitos'], label: 'regras ou requisitos' },
+  'componente-terceiro': { any: ['implementacao'], label: 'implementacao' },
+  decisao: { any: ['regras'], label: 'regras' },
+  padrao: { any: ['implementacao'], label: 'implementacao' },
+  entidade: { any: ['regras'], label: 'regras' },
+  erro: { any: ['regras'], label: 'regras' },
+  glossario: { any: ['regras'], label: 'regras' },
+};
+
+/** A nota declara explicitamente que não tem vínculo? (`Sem vínculo: motivo`). */
+function hasSemVinculo(content) {
+  return /^\s*Sem\s+v[íi]nculo\s*:/im.test(content);
+}
+
+/**
+ * Toda nota `ativo` de uma camada conectável (NFR/TPL/ADR) precisa de um vínculo
+ * concreto no frontmatter — NFR: `regras`/`requisitos`; TPL: `implementacao`;
+ * ADR: `regras`. Exceção documentada no corpo: `Sem vínculo: <motivo>`.
+ */
+function checkLayerConnections(notes) {
+  const problems = [];
+  for (const note of notes) {
+    const fm = parseFrontmatter(note.content);
+    if (!fm) continue;
+    const active = fm.tipo === 'decisao' ? fm.status === 'aceita' : fm.status === 'ativo';
+    if (!active) continue;
+    const req = LAYER_CONNECTIONS[fm.tipo];
+    if (!req) continue;
+    if (hasSemVinculo(note.content)) continue;
+    const ok = req.any.some((k) => Array.isArray(fm[k]) && fm[k].length > 0);
+    if (!ok) {
+      problems.push(
+        `${note.name}: ${fm.tipo} ativo sem ${req.label} (ou declare 'Sem vínculo: <motivo>')`,
+      );
+    }
+  }
+  return problems;
+}
+
+/**
+ * Toda regra `ativo` deve estar documentada: referenciada pelo `regras:` de um
+ * documento funcional/wiki (rastreio regra ↔ documentação). Sem isso, declare
+ * `Sem documentação: <motivo>` no corpo da regra. Garante que "a regra mudou,
+ * onde atualizo?" tenha resposta.
+ */
+function checkRulesDocumented(notes) {
+  const problems = [];
+  const documented = new Set();
+  for (const note of notes) {
+    const fm = parseFrontmatter(note.content);
+    if (!fm || (fm.tipo !== 'funcional' && fm.tipo !== 'wiki')) continue;
+    for (const r of Array.isArray(fm.regras) ? fm.regras : []) documented.add(String(r).trim());
+  }
+  for (const note of notes) {
+    const fm = parseFrontmatter(note.content);
+    if (fm?.tipo !== 'regra' || fm.status !== 'ativo' || !fm.id) continue;
+    if (documented.has(String(fm.id))) continue;
+    if (/^\s*Sem\s+documenta[çc][ãa]o\s*:/im.test(note.content)) continue;
+    problems.push(
+      `${note.name}: regra ativo sem documentação (referencie em 'regras:' de um doc funcional/wiki ou declare 'Sem documentação: <motivo>')`,
+    );
+  }
+  return problems;
+}
+
+/**
+ * Regra de usuário (sem `interno: true`) precisa aparecer no `regras:` de alguma
+ * página da wiki — rastreio da documentação de usuário. Regras internas
+ * (implementação) declaram `interno: true` e ficam cobertas pelo doc funcional.
+ */
+function checkRulesWiki(notes) {
+  const problems = [];
+  const inWiki = new Set();
+  for (const note of notes) {
+    const fm = parseFrontmatter(note.content);
+    if (fm?.tipo !== 'wiki') continue;
+    for (const r of Array.isArray(fm.regras) ? fm.regras : []) inWiki.add(String(r).trim());
+  }
+  for (const note of notes) {
+    const fm = parseFrontmatter(note.content);
+    if (fm?.tipo !== 'regra' || fm.status !== 'ativo' || !fm.id) continue;
+    if (String(fm.interno) === 'true') continue;
+    if (inWiki.has(String(fm.id))) continue;
+    problems.push(
+      `${note.name}: regra de usuário sem menção na wiki (adicione a 'regras:' de uma página ou marque 'interno: true')`,
+    );
+  }
+  return problems;
+}
+
+/**
  * Valida referências de TODAS as notas do vault: `implementacao`/`testes`
  * (arquivos existem), `regras` (apontam para BR-* existentes) e as arestas de
  * grafo (`relacionado*`/`decisoes`) contra o catálogo de notas/ids/ADRs.
@@ -473,6 +628,10 @@ function checkRules(overrides = {}) {
     problems.push(...checkMencoesPrd(notes, new Set(relCatalog.noteIds)));
     problems.push(...checkSecRegras(notes, regraStatus));
     problems.push(...checkPrdRules(notes));
+    problems.push(...checkPrdRnfVinculo(notes));
+    problems.push(...checkLayerConnections(notes));
+    problems.push(...checkRulesDocumented(notes));
+    problems.push(...checkRulesWiki(notes));
   }
 
   return problems;
@@ -487,6 +646,12 @@ module.exports = {
   checkLayers,
   checkRequisitos,
   checkPrdRules,
+  checkPrdRnfVinculo,
+  declaredRnfExceptions,
+  checkLayerConnections,
+  hasSemVinculo,
+  checkRulesDocumented,
+  checkRulesWiki,
   semverGte,
   parseFrontmatter,
   listRuleFiles,

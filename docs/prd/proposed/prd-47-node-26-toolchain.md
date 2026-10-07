@@ -4,11 +4,11 @@
 
 | Campo | Valor |
 |---|---|
-| Status | Aprovado |
+| Status | Proposto |
 | Autor | Gil Cleber |
 | Data | 2026-08-29 |
 | Componente | Extensão `paneb.vscode-utplsql` |
-| Versão alvo | 0.15.0 |
+| Versão alvo | A definir (sem versão atribuída) |
 | Arquivos afetados | `.nvmrc`, `.github/workflows/ci.yml`, `docs/functional/10-development-tooling.md`, `docs/wiki/Como-contribuir.md`, `CHANGELOG.md` |
 | Esforço estimado | 0,5 dia |
 | Complexidade | Baixa |
@@ -106,7 +106,9 @@ Nenhuma setting/comando novo.
 
 ## 9. Rollout
 
-- Versão alvo: 0.15.0 (minor) — mudança de toolchain, zero impacto no usuário
+- **Data prevista de liberação:** 2026-10-28 (pós-LTS do Node 26)
+- Versão alvo: a definir — sem versão atribuída por enquanto; mudança de
+  toolchain, zero impacto no usuário
 - Entry no CHANGELOG.md
 - Adiada da 0.12.0, depois da 0.13.0 e da 0.14.0: o LTS do Node 26 chega em
   out/2026, próximo demais dos ciclos; executar como current geraria CI flaky

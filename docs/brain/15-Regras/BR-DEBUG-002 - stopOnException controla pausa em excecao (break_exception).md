@@ -40,5 +40,5 @@ comportamento clássico de parar na exceção quando pedido.
 - 📄 PRDs: [[prd-86-debugger-stop-on-exception|PRD-86]]
 - 🧩 Código: [[COD - debugger.ts]]
 - 🧪 Testes: [[TST - debuggerExceptionE2E.test.ts]]
-- ↩️ Referenciada por: [[prd-86-debugger-stop-on-exception|PRD-86]]
+- ↩️ Referenciada por: [[ADR-012 - Debugger PLSQL via DBMS_DEBUG e DAP|ADR-012]] · [[Debugger]] · [[prd-86-debugger-stop-on-exception|PRD-86]]
 <!-- brain:auto:end -->

@@ -38,5 +38,5 @@ Importar perfis do SQL Developer sem varrer o disco inteiro e sem quebrar quando
 - 🎯 Requisitos: [[prd-34-multi-connection-profiles|PRD-34 RF6]]
 - 🧩 Código: [[COD - connectionProfiles.ts]]
 - 🧪 Testes: [[TST - connectionProfiles.test.ts]]
-- ↩️ Referenciada por: [[09-configuration]] · [[prd-34-multi-connection-profiles|PRD-34]]
+- ↩️ Referenciada por: [[09-configuration]] · [[Connection-profiles]] · [[prd-34-multi-connection-profiles|PRD-34]]
 <!-- brain:auto:end -->

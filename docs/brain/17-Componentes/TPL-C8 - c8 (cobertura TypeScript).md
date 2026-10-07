@@ -12,7 +12,7 @@ versao: "^12.0.0"
 url: https://github.com/bcoe/c8
 status: ativo
 verificado: 2026-09-23
-implementacao: []
+implementacao: ["package.json", ".c8rc"]
 testes: []
 regras: []
 relacionado: ["[[ADR-006 - Modulos puros vs dependentes de vscode]]", "[[NFR-007 - Cobertura de testes TypeScript]]"]
@@ -21,7 +21,8 @@ tags: ["tooling"]
 ## Papel
 
 Cobertura dos testes TypeScript via source maps (`test:coverage`), com thresholds
-90% lines/statements, 85% branches, 90% functions (`.c8rc`).
+97% lines/statements, 92% branches, 97% functions (`.c8rc`); o Codecov usa o
+mesmo alvo no status de projeto.
 
 ## Riscos
 
@@ -36,6 +37,7 @@ Config em `.c8rc`.
 
 <!-- brain:auto:start:conexoes -->
 - 🗺️ [[MOC - Componentes]]
+- 🧩 Código: [[COD - package.json]] · [[COD - .c8rc]]
 - 🔗 [[ADR-006 - Modulos puros vs dependentes de vscode]] · [[NFR-007 - Cobertura de testes TypeScript]]
 - ↩️ Referenciada por: [[NFR-007 - Cobertura de testes TypeScript|NFR-007]]
 <!-- brain:auto:end -->

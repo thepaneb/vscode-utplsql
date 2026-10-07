@@ -5,6 +5,7 @@ aliases: [ADR-012]
 status: aceita
 modulo: debugger
 data: 2026-09-23
+regras: ["BR-DEBUG-001", "BR-DEBUG-002"]
 tags: [adr, debugger, dbms_debug, dap]
 ---
 

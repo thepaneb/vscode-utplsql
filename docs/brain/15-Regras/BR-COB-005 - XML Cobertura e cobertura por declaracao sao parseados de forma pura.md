@@ -11,6 +11,7 @@ verificado: 2026-09-29
 implementacao: ["src/cobertura.ts:18", "src/plsqlDeclarations.ts:86", "src/plsqlDeclarations.ts:101"]
 testes: ["src/test/unit/cobertura.test.ts", "src/test/unit/plsqlDeclarations.test.ts"]
 prds: ["PRD-12", "PRD-48"]
+interno: true
 tags: ["cobertura"]
 ---
 ## Enunciado
@@ -42,5 +43,5 @@ declarações exibida no editor.
 - 📄 PRDs: [[prd-12-sql-coverage|PRD-12]] · [[prd-48-function-coverage|PRD-48]]
 - 🧩 Código: [[COD - cobertura.ts]] · [[COD - plsqlDeclarations.ts]]
 - 🧪 Testes: [[TST - cobertura.test.ts]] · [[TST - plsqlDeclarations.test.ts]]
-- ↩️ Referenciada por: [[prd-12-sql-coverage|PRD-12]] · [[prd-48-function-coverage|PRD-48]]
+- ↩️ Referenciada por: [[04-code-coverage]] · [[ADR-008 - Cobertura a partir do Cobertura XML e VSQL|ADR-008]] · [[ENT-004 - Coverage|ENT-004]] · [[prd-12-sql-coverage|PRD-12]] · [[prd-48-function-coverage|PRD-48]]
 <!-- brain:auto:end -->

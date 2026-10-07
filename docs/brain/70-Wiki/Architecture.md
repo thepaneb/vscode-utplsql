@@ -51,7 +51,7 @@ bundled.
 | `cobertura.ts` — Cobertura XML parsing | `config.ts` |
 | `matching.ts` — URI/folder filter + result→test matching | `discovery.ts` |
 | `codelens.ts` (parse) — `parseCodeLensItems` | `coverage.ts` — Cobertura → Coverage API |
-| `state.ts`, `types.ts` (type-only) | `testTree.ts` — builds the tree (file/schema), `mergeDbSuites` |
+| `state.ts`, `types.ts` (type-only) | `testTree.ts` — builds the tree (file/schema/tag), `mergeDbSuites` |
 | `plsqlDeclarations.ts` — extracts PROCEDURE/FUNCTION declarations from source | `scriptRunner.ts` — SQL script execution |
 | `i18n.ts`, `i18nLocales.ts` — localization (24 locales) | `quickfix.ts` — setup diagnostics + quick-fix |
 | `charset.ts` — byte→string decoding (utf8/latin1/win1252) | `compileForDebug.ts` — compile object with debug info |
@@ -63,7 +63,7 @@ bundled.
 | | `viewCoverage.ts` — DeclarationCoverage + V$SQL view tracking |
 | | `dbmsDebug.ts`, `debugger.ts` — PL/SQL debugging via DBMS_DEBUG |
 | `tnsnames.ts` — `tnsnames.ora` alias resolution (thin driver); `virtualSource.ts` — URIs virtuais `utplsql-source:` | `oracleClient.ts` — thin/thick mode init |
-| | `oracleRunner.ts` — pool, `executeRunOracle`, discovery helpers |
+| `annotation.ts` — `findAnnotationAtLine` (run/debug at cursor); `debugTargets.ts` — alvo das variações de debug; `coverageDecision.ts` — cobertura efetiva (explícito ?? `coverageAlways`); `tagFilter.ts` — filtro por `%tags` (inclusão/exclusão); `autoRun.ts` — debounce por arquivo + guarda de concorrência do auto-run (watch) | `oracleRunner.ts` — pool, `executeRunOracle`, discovery helpers |
 
 Modules in the left column **do not import `vscode`** (at runtime) and are
 testable with `node --test` without any setup. Full list: `src/*.ts`.
@@ -99,7 +99,7 @@ testable with `node --test` without any setup. Full list: `src/*.ts`.
 | `utplsql.oracleClientMode`/`oracleClientLibDir`/`oracleClientConfigDir` | `cfg.oracleClient*` | `oracleClient.ts` (`ensureOracleClient`, called from `ensurePool`) |
 | `utplsql.connections.tnsAdminPath` | `cfg.tnsAdminPath` | `oracleRunner.ts` (`resolveConnectString` → `tnsnames.ora`); fallback: SQL Developer user path, `TNS_ADMIN` |
 | `utplsql.profiles` (`walletLocation`) | `cfg.walletLocation`/`cfg.walletPassword` | `oracleRunner.ts` (`ensurePool` → `createPool`); password in SecretStorage |
-| `utplsql.codeLens/statusBar/decorations.enabled` | `cfg.*Enabled` | UX providers |
+| `utplsql.codeLens/statusBar/decorations.enabled` | `cfg.*Enabled` | UX providers (inclui o item de toggle de cobertura, PRD-54) |
 | `utplsql.compilationDiagnostics.enabled` | `cfg.compilationDiagnosticsEnabled` | `compilationDiagnostics.ts` — ALL_ERRORS → Problems Panel (after each run) |
 | `utplsql.setupDiagnostics.enabled` | `cfg.setupDiagnosticsEnabled` | `quickfix.ts` |
 | `utplsql.organization`/`organization.schemaPattern` | `cfg.organization`/`organizationSchemaPattern` | `extension.ts` (tree + DB discovery) |

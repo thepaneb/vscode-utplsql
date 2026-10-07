@@ -173,12 +173,16 @@ Test Explorer に表示されます。
 | デバッグがブレークポイントで停止しない | デバッグ情報なしでコンパイルされたパッケージ、またはデバッグ権限の不足 | `PLSQL_OPTIMIZE_LEVEL <= 1` でコンパイル（または `ALTER PACKAGE ... COMPILE DEBUG PLSQL_OPTIMIZE_LEVEL = 1`）し、`DEBUG CONNECT SESSION` + `EXECUTE ON SYS.DBMS_DEBUG` を付与。`test_*.pkb` のブレークポイントはヒットしないことがあります（utPLSQL は動的 SQL でテストを実行します）。テスト対象のコードに設定してください。 |
 | `utplsql.oracleClientConfigDir` | `""` | `sqlnet.ora`/`tnsnames.ora` を含む Oracle 構成ディレクトリ（TNS_ADMIN）。任意。thick モードでのみ使用されます。 |
 | `utplsql.connections.tnsAdminPath` | `""` | `tnsnames.ora` のあるディレクトリ。**thin ドライバーで TNS 別名を解決**します。優先順位: この設定 → `sqldeveloper.connections.tnsConfiguration.path`（user/machine）→ `TNS_ADMIN`。 |
-| `utplsql.organization` | `file` | ツリーの構成: `file`（パス単位）または `schema`（Schema > Package > Suite > Test）。`schema` モードでは、`.pks` ファイルがワークスペースにないときはスイートもデータベース（`ut_runner.get_suites_info`、利用不可時は `ALL_OBJECTS`/`ALL_SOURCE`）から検出されます — 仮想 URI は `utplsql-db:/`（実行と失敗ジャンプは可能、CodeLens/デコレーションなし）。 · `utplsql-source:/` |
+| `utplsql.organization` | `file` | ツリーの構成: `file`（パス単位）、`schema`（Schema > Package > Suite > Test）または `tag`（Tag > Suite > Test）。`schema` モードでは、`.pks` ファイルがワークスペースにないときはスイートもデータベース（`ut_runner.get_suites_info`、利用不可時は `ALL_OBJECTS`/`ALL_SOURCE`）から検出されます — 仮想 URI は `utplsql-db:/`（実行と失敗ジャンプは可能、CodeLens/デコレーションなし）。 · `utplsql-source:/` |
 | `utplsql.organization.schemaPattern` | `db/{schema}/**` | パスからスキーマを抽出するためのグロブパターン。プレースホルダーには `{schema}` を使用します。`schema` モードでは、パターンベースより下のディレクトリ（例: `db/*`）がデータベースでクエリされるスキーマを定義します。 |
 | `utplsql.discovery.source` | `auto` | `schema` モードでのテストツリーの取得元: `auto` はデータベース API（`ut_runner.get_suites_info`）を使い、利用できない場合は `ALL_SOURCE`/ファイルにフォールバックします。`database` は API を必須にし、`file` はデータベース探索を無効にします。 |
 | `utplsql.refreshDebounceMs` | `300` | Test Explorer を更新する前に `.pks`/`.pkb` ファイル監視イベントをまとめるデバウンス（ミリ秒）。 |
 | `utplsql.compilationDiagnostics.enabled` | `true` | データベースからの PL/SQL コンパイルエラー（`ALL_ERRORS`）をエディターの下線および「問題」パネルに表示します（ソース "utPLSQL Compilation"）。 |
 | `utplsql.setupDiagnostics.enabled` | `true` | 設定診断（接続、権限、バージョン）と **utPLSQL インストールの整合性**（UT3 スキーマ内の無効オブジェクト。"Recompile UT3" クイックフィックスあり）をクイックフィックスアクション付きで表示。 |
+| `utplsql.showTagsInTree` | `false` | 各スイート/テストの `%tags` を Test Explorer のラベルに `[tag1, tag2]` として付加します。 |
+| `utplsql.autoRun` | `off` | 保存時の自動実行（watch モード）: `off` または `onSave`（保存した `.pks` のスイートを再実行）。 |
+| `utplsql.autoRunDelayMs` | `500` | 自動実行のファイル単位の遅延（ms）。同じファイルの連続保存は 1 回の実行にまとめられます。 |
+| `utplsql.autoRunQueue` | `skip` | 実行中に自動実行が発生した場合の動作: `skip` は無視、`replace` は再スケジュール。 |
 | `utplsql.profiles` | `[]` | 保存された Oracle 接続プロファイル（名前、接続、`sourcePath`/`coverageOwner` などの上書き）。環境の切り替え用。**パスワードは OS キーチェーン（VS Code SecretStorage）に保存され、設定には保存されません** — `connection` フィールドには `user@//host:port/service` のみが保存されます。インラインパスワード付きの旧プロファイルは初回使用時に自動的に移行されます。 (Full field reference: [wiki](https://github.com/thepaneb/vscode-utplsql/wiki/Configuration)). |
 | `utplsql.activeProfile` | `""` | アクティブなプロファイルの ID（`utplsql.profiles`）。設定すると `utplsql.connection` を上書きします。 |
 | `utplsql.sqlCoverageEnabled` | `false` | `V$SQL` 経由で実行されたビューを追跡（boolean カバレッジ）。`GRANT SELECT ON V$SQL` が必要。 |

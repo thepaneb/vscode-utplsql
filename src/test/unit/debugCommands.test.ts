@@ -4,8 +4,10 @@ import { mock, test } from 'node:test';
 import {
   __getErrorMessages,
   __getInformationMessages,
+  __getLastQuickPickItems,
   __getWarningMessages,
   __resetConfigValues,
+  __resetLastQuickPickItems,
   __resetMessages,
   __resetMockDirectoryEntries,
   __resetMockFiles,
@@ -14,6 +16,7 @@ import {
   __setMockDirectoryEntries,
   __setMockDirectoryError,
   __setMockFile,
+  __setQuickPickResult,
   commands,
   debug,
   FileType,
@@ -63,16 +66,32 @@ mock.module('../../debugger.js', {
   },
 });
 
-function editor(fileName: string) {
+function editor(fileName: string, text = '') {
   return {
     document: {
       fileName,
       uri: { fsPath: fileName, path: fileName, scheme: 'file', toString: () => fileName },
-      getText: () => '',
+      getText: () => text,
     },
     selection: { active: { line: 0 } },
   } as never;
 }
+
+// Estado falso para as variações de debug (PRD-53).
+const fakeState = {
+  lastFailedItems: [] as Array<Record<string, unknown>>,
+  meta: new Map<Record<string, unknown>, unknown>(),
+  lastRun: undefined as unknown,
+  getLastFailedItems() {
+    return this.lastFailedItems;
+  },
+  getMeta(item: unknown) {
+    return this.meta.get(item as Record<string, unknown>);
+  },
+  getLastRun() {
+    return this.lastRun;
+  },
+};
 
 async function register() {
   commands.__resetRegisteredCommands();
@@ -88,8 +107,13 @@ async function register() {
   startArgs.length = 0;
   startThrow = false;
   startError = new Error('debug boom');
+  fakeState.lastFailedItems = [];
+  fakeState.meta = new Map();
+  fakeState.lastRun = undefined;
+  __setQuickPickResult(undefined);
+  __resetLastQuickPickItems();
   const { registerDebug } = await import('../../commands/debug.js');
-  registerDebug({ subscriptions: [] } as never);
+  registerDebug({ subscriptions: [] } as never, { state: fakeState } as never);
 }
 
 test('debugTest: desabilitado informa', async () => {
@@ -307,4 +331,116 @@ test('compileForDebug: erro string vira mensagem de erro', async () => {
   assert.deepStrictEqual(__getErrorMessages(), [
     'Falha ao compilar para debug: erro-compile-string',
   ]);
+});
+
+// ── PRD-53: variações de debug ───────────────────────────────────────────────
+
+const PKS = [
+  'create or replace package ut_math is',
+  '--%suite(Math)',
+  '--%test(soma)',
+  'procedure t_sum;',
+  '--%test(subtracao)',
+  'procedure t_sub;',
+  'end;',
+].join('\n');
+
+test('debugAtCursor: desabilitado informa', async () => {
+  await register();
+  __setConfigValue('debugger.enabled', false);
+  await commands.__getRegisteredCommand('utplsql.debugAtCursor')?.();
+  assert.deepStrictEqual(__getInformationMessages(), [
+    'Debug PL/SQL desabilitado (utplsql.debugger.enabled).',
+  ]);
+  assert.deepStrictEqual(startArgs, []);
+});
+
+test('debugAtCursor: sem .pks avisa', async () => {
+  await register();
+  __setActiveTextEditor(editor('/tmp/notes.txt', PKS));
+  await commands.__getRegisteredCommand('utplsql.debugAtCursor')?.();
+  assert.deepStrictEqual(__getWarningMessages(), [
+    'Executar no cursor disponível apenas em arquivos .pks.',
+  ]);
+});
+
+test('debugAtCursor: sem anotação avisa', async () => {
+  await register();
+  __setActiveTextEditor(editor('/tmp/ut_math.pks', 'nothing here\n'));
+  await commands.__getRegisteredCommand('utplsql.debugAtCursor')?.();
+  assert.deepStrictEqual(__getWarningMessages(), [
+    'Nenhuma anotação %suite/%test encontrada na posição.',
+  ]);
+});
+
+test('debugAtCursor: cursor no %test depura a procedure', async () => {
+  await register();
+  const ed = editor('/tmp/ut_math.pks', PKS) as { selection: { active: { line: number } } };
+  ed.selection.active.line = 2; // linha do --%test(soma)
+  __setActiveTextEditor(ed as never);
+  await commands.__getRegisteredCommand('utplsql.debugAtCursor')?.();
+  assert.deepStrictEqual(startArgs, ['ut_math']);
+});
+
+test('debugFailed: sem falhas avisa', async () => {
+  await register();
+  await commands.__getRegisteredCommand('utplsql.debugFailed')?.();
+  assert.deepStrictEqual(__getWarningMessages(), ['Nenhum teste falhou na última execução.']);
+  assert.deepStrictEqual(startArgs, []);
+});
+
+test('debugFailed: um único falho depura direto', async () => {
+  await register();
+  const item = { id: 'test:ut_math.t_sub' };
+  fakeState.lastFailedItems = [item];
+  fakeState.meta.set(item, { kind: 'test', packageName: 'ut_math', procName: 't_sub' });
+  await commands.__getRegisteredCommand('utplsql.debugFailed')?.();
+  assert.deepStrictEqual(startArgs, ['ut_math']);
+});
+
+test('debugFailed: vários falhos abre picker', async () => {
+  await register();
+  const a = { id: 'test:ut_math.t_a' };
+  const b = { id: 'test:ut_math.t_b' };
+  fakeState.lastFailedItems = [a, b];
+  fakeState.meta.set(a, { kind: 'test', packageName: 'ut_math', procName: 't_a' });
+  fakeState.meta.set(b, { kind: 'test', packageName: 'ut_math', procName: 't_b' });
+  __setQuickPickResult({ label: 't_b', item: b });
+  await commands.__getRegisteredCommand('utplsql.debugFailed')?.();
+  assert.deepStrictEqual(startArgs, ['ut_math']);
+  assert.ok(__getLastQuickPickItems());
+});
+
+test('debugFailed: picker cancelado não depura', async () => {
+  await register();
+  const a = { id: 'test:ut_math.t_a' };
+  const b = { id: 'test:ut_math.t_b' };
+  fakeState.lastFailedItems = [a, b];
+  fakeState.meta.set(a, { kind: 'test', packageName: 'ut_math', procName: 't_a' });
+  fakeState.meta.set(b, { kind: 'test', packageName: 'ut_math', procName: 't_b' });
+  __setQuickPickResult(undefined);
+  await commands.__getRegisteredCommand('utplsql.debugFailed')?.();
+  assert.deepStrictEqual(startArgs, []);
+});
+
+test('debugLast: sem execução anterior informa', async () => {
+  await register();
+  await commands.__getRegisteredCommand('utplsql.debugLast')?.();
+  assert.deepStrictEqual(__getInformationMessages(), ['Nenhuma execução anterior para repetir.']);
+  assert.deepStrictEqual(startArgs, []);
+});
+
+test('debugLast: tipo test depura package + procedure', async () => {
+  await register();
+  fakeState.lastRun = { type: 'test', packageName: 'ut_math', procName: 't_sum', coverage: false };
+  await commands.__getRegisteredCommand('utplsql.debugLast')?.();
+  assert.deepStrictEqual(startArgs, ['ut_math']);
+});
+
+test('debugLast: tipo all cai no caminho dos falhos', async () => {
+  await register();
+  fakeState.lastRun = { type: 'all', coverage: false };
+  await commands.__getRegisteredCommand('utplsql.debugLast')?.();
+  // sem falhas registradas, o fallback avisa
+  assert.deepStrictEqual(__getWarningMessages(), ['Nenhum teste falhou na última execução.']);
 });

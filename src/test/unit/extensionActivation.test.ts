@@ -11,6 +11,8 @@ let refreshCount = 0;
 const resolveCalls: string[] = [];
 const validateCalls: string[] = [];
 const runWithProgressCalls: unknown[][] = [];
+const runUriCalls: unknown[][] = [];
+let runIsRunning = false;
 let cancelCalls = 0;
 let capturedContext: { subscriptions: Array<{ dispose?: () => void }> } | undefined;
 let capturedDeps: { getStatusBar: () => unknown; getDecorationManager: () => unknown } | undefined;
@@ -23,6 +25,10 @@ mock.module('../../commands/run.js', {
         runWithProgress: async (...args: unknown[]) => {
           runWithProgressCalls.push(args);
         },
+        runUri: async (...args: unknown[]) => {
+          runUriCalls.push(args);
+        },
+        isRunning: () => runIsRunning,
         cancel: () => {
           cancelCalls += 1;
         },
@@ -183,6 +189,78 @@ test('deps: acessores de status bar e decorations são funcionais', () => {
   window.__triggerActiveTextEditorChange({
     document: { uri: { toString: () => 'file:///x.pks' } },
   } as never);
+});
+
+// PRD-50: wiring do auto-run ao salvar.
+test('autoRun off (default): salvar .pks não executa', async () => {
+  runUriCalls.length = 0;
+  __setConfigValue('autoRun', 'off');
+  workspace.__triggerSave({
+    fileName: '/ws/ut_pkg.pks',
+    uri: { fsPath: '/ws/ut_pkg.pks', toString: () => '/ws/ut_pkg.pks' },
+  });
+  await new Promise((resolve) => setTimeout(resolve, 20));
+  assert.strictEqual(runUriCalls.length, 0);
+});
+
+test('autoRun onSave: salvar .pks agenda e executa após o delay', async () => {
+  runUriCalls.length = 0;
+  runIsRunning = false;
+  __setConfigValue('autoRun', 'onSave');
+  __setConfigValue('autoRunDelayMs', 0);
+  workspace.__triggerSave({
+    fileName: '/ws/ut_pkg.pks',
+    uri: { fsPath: '/ws/ut_pkg.pks', toString: () => '/ws/ut_pkg.pks' },
+  });
+  await new Promise((resolve) => setTimeout(resolve, 20));
+  assert.strictEqual(runUriCalls.length, 1);
+  assert.strictEqual((runUriCalls[0][0] as { fsPath: string }).fsPath, '/ws/ut_pkg.pks');
+});
+
+test('autoRun onSave: arquivo não-.pks é ignorado', async () => {
+  runUriCalls.length = 0;
+  __setConfigValue('autoRun', 'onSave');
+  __setConfigValue('autoRunDelayMs', 0);
+  workspace.__triggerSave({
+    fileName: '/ws/notas.txt',
+    uri: { fsPath: '/ws/notas.txt', toString: () => '/ws/notas.txt' },
+  });
+  workspace.__triggerSave({
+    fileName: '/ws/ut_pkg.pkb',
+    uri: { fsPath: '/ws/ut_pkg.pkb', toString: () => '/ws/ut_pkg.pkb' },
+  });
+  await new Promise((resolve) => setTimeout(resolve, 20));
+  assert.strictEqual(runUriCalls.length, 0);
+});
+
+test('autoRun onSave: execução em andamento com queue=skip descarta', async () => {
+  runUriCalls.length = 0;
+  runIsRunning = true;
+  __setConfigValue('autoRun', 'onSave');
+  __setConfigValue('autoRunDelayMs', 0);
+  __setConfigValue('autoRunQueue', 'skip');
+  workspace.__triggerSave({
+    fileName: '/ws/ut_pkg.pks',
+    uri: { fsPath: '/ws/ut_pkg.pks', toString: () => '/ws/ut_pkg.pks' },
+  });
+  await new Promise((resolve) => setTimeout(resolve, 20));
+  assert.strictEqual(runUriCalls.length, 0);
+  runIsRunning = false;
+});
+
+test('autoRun onSave: cobertura segue o modo global (coverageAlways)', async () => {
+  runUriCalls.length = 0;
+  runIsRunning = false;
+  __setConfigValue('autoRun', 'onSave');
+  __setConfigValue('autoRunDelayMs', 0);
+  workspace.__triggerSave({
+    fileName: '/ws/ut_pkg.pks',
+    uri: { fsPath: '/ws/ut_pkg.pks', toString: () => '/ws/ut_pkg.pks' },
+  });
+  await new Promise((resolve) => setTimeout(resolve, 20));
+  assert.strictEqual(runUriCalls.length, 1);
+  // Segundo argumento é a flag de cobertura (default false).
+  assert.strictEqual(runUriCalls[0][1], false);
 });
 
 test('dispose: as subscriptions encerram o debouncer do watcher', () => {

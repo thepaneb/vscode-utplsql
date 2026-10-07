@@ -10,6 +10,8 @@ tags: [adr, build, vsix, esbuild]
 
 # ADR-004 - Bundling com esbuild e higiene do pacote VSIX
 
+Sem vínculo: decisão de empacotamento (esbuild/VSIX); materializada em `TPL-ESBUILD` e na PRD-45, sem regra de runtime.
+
 ## Contexto
 
 O VSIX publicável precisa ser pequeno e não vazar arquivos de desenvolvimento.

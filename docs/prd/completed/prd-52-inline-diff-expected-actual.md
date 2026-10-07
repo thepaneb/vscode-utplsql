@@ -4,7 +4,7 @@
 
 | Campo | Valor |
 |---|---|
-| Status | Aprovado |
+| Status | Concluído |
 | Autor | Gil Cleber Barboza |
 | Data | 2026-09-06 |
 | Componente | Extensão `paneb.vscode-utplsql` |
@@ -117,3 +117,10 @@ Nenhuma setting/command novo.
 - Suportar também o formato `ut.expect(a).to_equal(b)` com `a`/`b` inline?
   — Se o reporter expuser ambos, adicionar fallback.
 - Diff em `error` (exceção) — não é asserção; fora de escopo.
+
+## 12. Impacto no cérebro
+
+Criada a regra **`BR-PARSE-018`** (`TestMessage` de falha ganha `expectedOutput`/
+`actualOutput`) com `prds: ["PRD-52"]`; **`BR-PARSE-014`** (location) permanece e
+**`BR-PARSE-013`** é contexto. `parseExpectedActual` é puro (testável sem
+`vscode`) e o stub de `TestMessage` ganhou `expectedOutput`/`actualOutput`.

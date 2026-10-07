@@ -126,6 +126,12 @@ notas `prd-*`. O índice navegável do vault é a [[MOC - PRDs]].
 | 46 | [Atualização de dependências major (oracledb 7, fast-xml-parser 5, iconv-lite 0.7, TypeScript 7)](completed/prd-46-dependency-majors.md) | 0.11.0 | 2026-08-29 |
 | 48 | [Function Coverage derivada (DeclarationCoverage no Test Coverage)](completed/prd-48-function-coverage.md) | 0.12.0 | 2026-08-29 |
 | 49 | [Internacionalização (i18n) dos conteúdos textuais da extensão](completed/prd-49-internacionalizacao.md) | 0.12.0 | 2026-08-29 |
+| 50 | [Auto-run on Save (Watch Mode)](completed/prd-50-auto-run-on-save.md) | 0.15.0 | 2026-09-06 |
+| 51 | [Execução e seleção por Tag (`%tags`)](completed/prd-51-run-by-tag.md) | 0.15.0 | 2026-09-06 |
+| 52 | [Diff inline esperado × obtido nas falhas](completed/prd-52-inline-diff-expected-actual.md) | 0.15.0 | 2026-09-06 |
+| 53 | [Debug de testes: variações (cursor, falhos, último)](completed/prd-53-debug-test-variants.md) | 0.15.0 | 2026-09-06 |
+| 54 | [Toggle de cobertura na status bar](completed/prd-54-coverage-toggle.md) | 0.15.0 | 2026-09-06 |
+| 55 | [Organização da árvore de testes por tag](completed/prd-55-tag-organization.md) | 0.15.0 | 2026-09-06 |
 | 62 | [Execução de scripts SQL contra perfil de conexão](completed/prd-62-run-scripts-against-profiles.md) | 0.12.0 | 2026-09-06 |
 | 63 | [Wiki bilíngue (pt-BR/en) + correção de links + limpeza de READMEs](completed/prd-63-diagram-i18n.md) | — | — |
 | 64 | [Migração para Oracle-Only: eliminação do utPLSQL-cli e Java](completed/prd-64-oracle-only-migration.md) | 0.12.0 | 2026-09-09 |
@@ -153,23 +159,13 @@ notas `prd-*`. O índice navegável do vault é a [[MOC - PRDs]].
 | 86 | [Debugger honra stopOnException (break_exception)](completed/prd-86-debugger-stop-on-exception.md) | 0.13.0 | 2026-09-24 |
 | 87 | [Resultados e jump-to-failure em suítes com %suitepath](completed/prd-87-suitepath-results-jump.md) | 0.13.0 | 2026-09-25 |
 | 94 | [Piso de VS Code 1.101 e runtime Node 22](completed/prd-94-vscode-floor-1-101.md) | 0.14.0 | 2026-09-29 |
-
-### 🔵 Aprovados
-
-| # | PRD | Versão | Data |
-|---|---|---|---|
-| 47 | [Node 26 no toolchain de desenvolvimento](approved/prd-47-node-26-toolchain.md) | 0.15.1 | 2026-08-29 |
-| 50 | [Auto-run on Save (Watch Mode)](approved/prd-50-auto-run-on-save.md) | 0.15.0 | 2026-09-06 |
-| 51 | [Execução e seleção por Tag (`%tags`)](approved/prd-51-run-by-tag.md) | 0.15.0 | 2026-09-06 |
-| 52 | [Diff inline esperado × obtido nas falhas](approved/prd-52-inline-diff-expected-actual.md) | 0.15.0 | 2026-09-06 |
-| 53 | [Debug de testes: variações (cursor, falhos, último)](approved/prd-53-debug-test-variants.md) | 0.15.0 | 2026-09-06 |
-| 54 | [Toggle de cobertura na status bar](approved/prd-54-coverage-toggle.md) | 0.15.0 | 2026-09-06 |
-| 55 | [Organização da árvore de testes por tag](approved/prd-55-tag-organization.md) | 0.15.0 | 2026-09-06 |
+| 96 | [Site público e landing page via GitHub Pages](completed/prd-96-public-landing-page-github-pages.md) | 0.15.0 | 2026-10-07 |
 
 ### ⚪ Propostos
 
 | # | PRD | Versão | Data |
 |---|---|---|---|
+| 47 | [Node 26 no toolchain de desenvolvimento](proposed/prd-47-node-26-toolchain.md) | — | 2026-08-29 |
 | 56 | [Duração por teste e persistência de resultados](proposed/prd-56-duration-persistence.md) | 0.17.0 | 2026-09-06 |
 | 57 | [Multi-root: resolução de `root`/`sourcePath` por folder](proposed/prd-57-multiroot-root-resolution.md) | 0.17.0 | 2026-09-06 |
 | 58 | [Run Related Tests](proposed/prd-58-run-related-tests.md) | 0.17.0 | 2026-09-06 |
@@ -183,6 +179,7 @@ notas `prd-*`. O índice navegável do vault é a [[MOC - PRDs]].
 | 92 | [RTL e novos locales (árabe e hebraico)](proposed/prd-92-rtl-new-locales.md) | 0.19.0 | 2026-09-29 |
 | 93 | [Pipeline de localização contínua (glossário, TM e revisão)](proposed/prd-93-continuous-localization-pipeline.md) | 0.19.0 | 2026-09-29 |
 | 95 | [Modernização do runtime: ESM, ES2023 e stdlib Node 22](proposed/prd-95-esm-es2023-node22.md) | 0.16.0 | 2026-09-29 |
+| 97 | [Documentação no site (Fase 2 da PRD-96)](proposed/prd-97-doc-no-site.md) | 0.16.0 | 2026-10-07 |
 <!-- prd:roadmap:end -->
 
 ---
@@ -243,6 +240,12 @@ docs/prd/
 │   ├── prd-46-dependency-majors.md
 │   ├── prd-48-function-coverage.md
 │   ├── prd-49-internacionalizacao.md
+│   ├── prd-50-auto-run-on-save.md
+│   ├── prd-51-run-by-tag.md
+│   ├── prd-52-inline-diff-expected-actual.md
+│   ├── prd-53-debug-test-variants.md
+│   ├── prd-54-coverage-toggle.md
+│   ├── prd-55-tag-organization.md
 │   ├── prd-62-run-scripts-against-profiles.md
 │   ├── prd-63-diagram-i18n.md
 │   ├── prd-64-oracle-only-migration.md
@@ -270,15 +273,9 @@ docs/prd/
 │   ├── prd-86-debugger-stop-on-exception.md
 │   ├── prd-87-suitepath-results-jump.md
 │   ├── prd-94-vscode-floor-1-101.md
-├── approved/        ← aprovados, aguardando implementação
-│   ├── prd-47-node-26-toolchain.md
-│   ├── prd-50-auto-run-on-save.md
-│   ├── prd-51-run-by-tag.md
-│   ├── prd-52-inline-diff-expected-actual.md
-│   ├── prd-53-debug-test-variants.md
-│   ├── prd-54-coverage-toggle.md
-│   ├── prd-55-tag-organization.md
+│   ├── prd-96-public-landing-page-github-pages.md
 ├── proposed/        ← em avaliação
+│   ├── prd-47-node-26-toolchain.md
 │   ├── prd-56-duration-persistence.md
 │   ├── prd-57-multiroot-root-resolution.md
 │   ├── prd-58-run-related-tests.md
@@ -292,6 +289,7 @@ docs/prd/
 │   ├── prd-92-rtl-new-locales.md
 │   ├── prd-93-continuous-localization-pipeline.md
 │   ├── prd-95-esm-es2023-node22.md
+│   ├── prd-97-doc-no-site.md
 ```
 <!-- prd:estrutura:end -->
 

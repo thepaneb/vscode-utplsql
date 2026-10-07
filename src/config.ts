@@ -41,7 +41,15 @@ export interface UtConfig {
   statusBarEnabled: boolean;
   decorationsEnabled: boolean;
   compilationDiagnosticsEnabled: boolean;
-  organization: 'file' | 'schema';
+  /** Sufixa `[tag]` no label dos TestItems (PRD-51 RF4). */
+  showTagsInTree: boolean;
+  /** Auto-run on save (PRD-50): `off` | `onSave`. */
+  autoRun: 'off' | 'onSave';
+  /** Debounce do auto-run por arquivo (ms). */
+  autoRunDelayMs: number;
+  /** Política quando há execução em andamento: `skip` | `replace`. */
+  autoRunQueue: 'skip' | 'replace';
+  organization: 'file' | 'schema' | 'tag';
   organizationSchemaPattern: string;
   discoverySource: 'auto' | 'file' | 'database';
   refreshDebounceMs: number;
@@ -140,7 +148,11 @@ export function readConfig(): UtConfig {
     statusBarEnabled: c.get<boolean>('statusBar.enabled', true),
     decorationsEnabled: c.get<boolean>('decorations.enabled', true),
     compilationDiagnosticsEnabled: c.get<boolean>('compilationDiagnostics.enabled', true),
-    organization: c.get<'file' | 'schema'>('organization', 'file'),
+    showTagsInTree: c.get<boolean>('showTagsInTree', false),
+    autoRun: c.get<'off' | 'onSave'>('autoRun', 'off'),
+    autoRunDelayMs: c.get<number>('autoRunDelayMs', 500),
+    autoRunQueue: c.get<'skip' | 'replace'>('autoRunQueue', 'skip'),
+    organization: c.get<'file' | 'schema' | 'tag'>('organization', 'file'),
     organizationSchemaPattern: c.get<string>('organization.schemaPattern', 'db/{schema}/**'),
     discoverySource: c.get<'auto' | 'file' | 'database'>('discovery.source', 'auto'),
     refreshDebounceMs: c.get<number>('refreshDebounceMs', 300),

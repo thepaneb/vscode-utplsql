@@ -1,11 +1,13 @@
 import * as vscode from 'vscode';
-import { type CodeLensItem, parseCodeLensItems } from '../codelens';
+import { findAnnotationAtLine } from '../annotation';
 import { refreshCompilationDiagnostics } from '../compilationDiagnostics';
 import { getExtensionLocale, readConfig, resolveConnection } from '../config';
+import { effectiveCoverage } from '../coverageDecision';
 import { t } from '../i18n';
 import { filterSuitesByFolder, filterSuitesByUri } from '../matching';
 import { listReportersForConnection } from '../oracleRunner';
 import { collectRunTargets, executeRun } from '../runner';
+import { collectTags, filterItemsByTags, parseTagSelection } from '../tagFilter';
 import { collectAllItems, resolveSubtree } from '../testTree';
 import type { ItemMeta } from '../types';
 import type { CommandDeps } from './deps';
@@ -16,6 +18,10 @@ export interface RunCommands {
     externalToken: vscode.CancellationToken | undefined,
     coverage: boolean,
   ): Promise<void>;
+  /** Executa as suites de um arquivo (mesma semântica de "Run Test File"). */
+  runUri(uri: vscode.Uri, coverage: boolean): Promise<void>;
+  /** Há execução em andamento? (usada pelo auto-run/watch — PRD-50). */
+  isRunning(): boolean;
   cancel(): void;
 }
 
@@ -161,20 +167,6 @@ export function registerRunCommands(
     );
   };
 
-  const findAnnotationAtLine = (
-    document: vscode.TextDocument,
-    cursorLine: number,
-  ): CodeLensItem | undefined => {
-    const items = parseCodeLensItems(document.getText());
-    let best: CodeLensItem | undefined;
-    for (const item of items) {
-      if (item.line <= cursorLine && (!best || item.line > best.line)) {
-        best = item;
-      }
-    }
-    return best;
-  };
-
   const runSingleTest = async (
     packageName: string,
     procName: string,
@@ -272,7 +264,10 @@ export function registerRunCommands(
     } else {
       const editor = vscode.window.activeTextEditor;
       if (editor?.document.fileName.endsWith('.pks')) {
-        const annotation = findAnnotationAtLine(editor.document, editor.selection.active.line);
+        const annotation = findAnnotationAtLine(
+          editor.document.getText(),
+          editor.selection.active.line,
+        );
         if (annotation) {
           const target =
             annotation.type === 'test' && annotation.procName
@@ -338,26 +333,86 @@ export function registerRunCommands(
     }
   };
 
+  /**
+   * `utPLSQL: Rodar testes por tag...` (PRD-51 RF3): QuickPick multi-seleção com
+   * as tags descobertas (contagem), `!tag` exclui. Filtra a árvore e roda os
+   * itens casados.
+   */
+  const runByTag = async (): Promise<void> => {
+    const all = await collectAllItems(controller, state);
+    const entries = all.map((item) => ({ item, tags: state.getMeta(item)?.tags }));
+    const available = collectTags(entries.map((e) => ({ tags: e.tags })));
+    if (available.length === 0) {
+      vscode.window.showInformationMessage(t(locale, 'ext.tag.none'));
+      return;
+    }
+    const picked = await vscode.window.showQuickPick(
+      available.map((tag) => {
+        const count = entries.filter((e) =>
+          (e.tags ?? []).some((x) => x.toLowerCase() === tag.toLowerCase()),
+        ).length;
+        return { label: `#${tag}`, description: `(${count})` };
+      }),
+      {
+        canPickMany: true,
+        placeHolder: t(locale, 'ext.tag.placeholder'),
+      },
+    );
+    if (!picked?.length) return;
+    const { include, exclude } = parseTagSelection(picked.map((p) => p.label.replace(/^#/, '')));
+    const includeItems = filterItemsByTags(entries, include, exclude);
+    if (includeItems.length === 0) {
+      vscode.window.showWarningMessage(t(locale, 'ext.tag.noMatch'));
+      return;
+    }
+    for (const item of includeItems) await resolveSubtree(controller, state, item);
+    const coverage = effectiveCoverage(undefined, state.coverageAlways);
+    await runWithProgress(
+      new vscode.TestRunRequest(
+        includeItems,
+        undefined,
+        coverage ? state.coverageProfile : state.runProfile,
+      ),
+      undefined,
+      coverage,
+    );
+  };
+
+  // PRD-54: `runAll`/`runFailed`/`rerunLast`/cursor sem coverage explícito seguem o
+  // modo global `state.coverageAlways`; os comandos `*Coverage` forçam `true`.
+  const effectiveRunAll = (): boolean => effectiveCoverage(undefined, state.coverageAlways);
+
   context.subscriptions.push(
+    vscode.commands.registerCommand('utplsql.toggleCoverage', () => {
+      state.setCoverageAlways(!state.coverageAlways);
+      deps.getStatusBar()?.showCoverage(state.coverageAlways);
+    }),
+    vscode.commands.registerCommand('utplsql.runByTag', () => runByTag()),
     vscode.commands.registerCommand('utplsql.runWithReporter', (item?: vscode.TestItem) =>
       runExport(item),
     ),
     vscode.commands.registerCommand('utplsql.runAll', () =>
       runWithProgress(
-        new vscode.TestRunRequest(undefined, undefined, state.runProfile),
+        new vscode.TestRunRequest(
+          undefined,
+          undefined,
+          effectiveRunAll() ? state.coverageProfile : state.runProfile,
+        ),
         undefined,
-        false,
+        effectiveRunAll(),
       ),
     ),
-    vscode.commands.registerCommand('utplsql.runFile', (uri: vscode.Uri) => runForUri(uri, false)),
+    vscode.commands.registerCommand('utplsql.runFile', (uri: vscode.Uri) =>
+      runForUri(uri, effectiveCoverage(undefined, state.coverageAlways)),
+    ),
     vscode.commands.registerCommand('utplsql.runFileCoverage', (uri: vscode.Uri) =>
-      runForUri(uri, true),
+      runForUri(uri, effectiveCoverage(true, state.coverageAlways)),
     ),
     vscode.commands.registerCommand('utplsql.runFolder', (uri: vscode.Uri) =>
-      runForFolder(uri, false),
+      runForFolder(uri, effectiveCoverage(undefined, state.coverageAlways)),
     ),
     vscode.commands.registerCommand('utplsql.runFolderCoverage', (uri: vscode.Uri) =>
-      runForFolder(uri, true),
+      runForFolder(uri, effectiveCoverage(true, state.coverageAlways)),
     ),
     vscode.commands.registerCommand('utplsql.cancelRun', () => {
       currentRunToken?.cancel();
@@ -385,17 +440,18 @@ export function registerRunCommands(
             return meta?.kind === 'test' && meta.procName.toLowerCase() === procName.toLowerCase();
           });
           if (!testItem) return;
+          const lensCoverage = effectiveCoverage(args.coverage, state.coverageAlways);
           await runWithProgress(
             new vscode.TestRunRequest(
               [testItem],
               undefined,
-              args.coverage ? state.coverageProfile : state.runProfile,
+              lensCoverage ? state.coverageProfile : state.runProfile,
             ),
             undefined,
-            !!args.coverage,
+            lensCoverage,
           );
         } else {
-          await runForUri(docUri, !!args.coverage);
+          await runForUri(docUri, effectiveCoverage(args.coverage, state.coverageAlways));
         }
       },
     ),
@@ -411,11 +467,15 @@ export function registerRunCommands(
           break;
         case 'file':
         case 'suite':
-          if (lr.uri) await runForUri(lr.uri, lr.coverage);
+          if (lr.uri) await runForUri(lr.uri, effectiveCoverage(lr.coverage, state.coverageAlways));
           break;
         case 'test':
           if (lr.procName && lr.packageName) {
-            await runSingleTest(lr.packageName, lr.procName, lr.coverage);
+            await runSingleTest(
+              lr.packageName,
+              lr.procName,
+              effectiveCoverage(lr.coverage, state.coverageAlways),
+            );
           }
           break;
       }
@@ -426,15 +486,19 @@ export function registerRunCommands(
         vscode.window.showWarningMessage(t(locale, 'ext.runAtCursor.onlyPks'));
         return;
       }
-      const annotation = findAnnotationAtLine(editor.document, editor.selection.active.line);
+      const annotation = findAnnotationAtLine(
+        editor.document.getText(),
+        editor.selection.active.line,
+      );
       if (!annotation) {
         vscode.window.showWarningMessage(t(locale, 'ext.runAtCursor.noAnnotation'));
         return;
       }
+      const cursorCoverage = effectiveCoverage(undefined, state.coverageAlways);
       if (annotation.type === 'test' && annotation.procName) {
-        await runSingleTest(annotation.packageName, annotation.procName, false);
+        await runSingleTest(annotation.packageName, annotation.procName, cursorCoverage);
       } else {
-        await runForUri(editor.document.uri, false);
+        await runForUri(editor.document.uri, cursorCoverage);
       }
     }),
     vscode.commands.registerCommand('utplsql.runFailed', async () => {
@@ -443,10 +507,15 @@ export function registerRunCommands(
         vscode.window.showInformationMessage(t(locale, 'ext.runFailed.none'));
         return;
       }
+      const failedCoverage = effectiveCoverage(undefined, state.coverageAlways);
       await runWithProgress(
-        new vscode.TestRunRequest(failed, undefined, state.runProfile),
+        new vscode.TestRunRequest(
+          failed,
+          undefined,
+          failedCoverage ? state.coverageProfile : state.runProfile,
+        ),
         undefined,
-        false,
+        failedCoverage,
       );
     }),
     vscode.commands.registerCommand('utplsql.showTestExplorer', () => {
@@ -456,6 +525,9 @@ export function registerRunCommands(
 
   return {
     runWithProgress,
+    runUri: (uri, coverage) => runForUri(uri, coverage),
+    isRunning: () =>
+      currentRunToken !== undefined && !currentRunToken.token.isCancellationRequested,
     cancel: () => currentRunToken?.cancel(),
   };
 }

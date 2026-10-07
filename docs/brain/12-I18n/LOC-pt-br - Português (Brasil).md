@@ -5,14 +5,14 @@ tipo: locale
 titulo: "Português (Brasil)"
 codigo: pt-br
 nls: package.nls.pt-br.json
-strings: 30
+strings: 35
 gerado: true
 tags: [i18n, locale]
 ---
 
 # LOC-pt-br — Português (Brasil)
 
-Locale `pt-br` da extensão. Strings de UI em [`package.nls.pt-br.json`](../../../package.nls.pt-br.json) (30 chaves).
+Locale `pt-br` da extensão. Strings de UI em [`package.nls.pt-br.json`](../../../package.nls.pt-br.json) (35 chaves).
 
 README: [[README.pt-BR]]
 

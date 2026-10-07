@@ -5,6 +5,7 @@ aliases: [ADR-011]
 status: aceita
 modulo: oracle
 data: 2026-09-23
+regras: ["BR-CONN-012", "BR-TEST-001"]
 tags: [adr, oracle, thick, instant-client, compatibilidade]
 ---
 

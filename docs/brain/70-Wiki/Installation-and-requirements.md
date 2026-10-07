@@ -5,6 +5,7 @@ titulo: "Installation and Requirements"
 publicar: docs/wiki/Installation-and-requirements.md
 origem: ["MOC - Oracle"]
 verificado: 2026-09-23
+regras: ["BR-PLAT-001"]
 tags: [wiki]
 ---
 
@@ -28,7 +29,7 @@ and install:
 
 **Command line:**
 ```bash
-code --install-extension vscode-utplsql-0.14.0.vsix
+code --install-extension vscode-utplsql-0.15.0.vsix
 ```
 
 **UI:** Extensions Panel (`Ctrl+Shift+X`) → `...` (top-right corner)

@@ -15,6 +15,12 @@ const {
   checkMencoesPrd,
   checkSecRegras,
   checkPrdRules,
+  checkPrdRnfVinculo,
+  declaredRnfExceptions,
+  checkLayerConnections,
+  hasSemVinculo,
+  checkRulesDocumented,
+  checkRulesWiki,
   semverGte,
   parseFrontmatter,
   LAYERS,
@@ -28,6 +34,12 @@ const {
     regraStatus: Map<string, string>,
   ) => string[];
   checkPrdRules: (notes: { name: string; content: string }[]) => string[];
+  checkPrdRnfVinculo: (notes: { name: string; content: string }[]) => string[];
+  declaredRnfExceptions: (content: string) => Set<string>;
+  checkLayerConnections: (notes: { name: string; content: string }[]) => string[];
+  hasSemVinculo: (content: string) => boolean;
+  checkRulesDocumented: (notes: { name: string; content: string }[]) => string[];
+  checkRulesWiki: (notes: { name: string; content: string }[]) => string[];
   semverGte: (a: string, b: string) => boolean;
   checkReferences: (
     notes: { name: string; content: string }[],
@@ -553,7 +565,10 @@ test('brain-rules.cjs: CLI valida as linhas em fixture isolado', () => {
         'fonte: codigo',
         'implementacao: ["src/a.ts:1"]',
         'testes: []',
+        'interno: true',
         '---',
+        '',
+        'Sem documentação: fixture de teste.',
         '',
       ].join('\n'),
     );
@@ -701,4 +716,327 @@ test('brain-rules: regra que lista a PRD fora de regras: é reportada', () => {
       p.includes('não está em regras:'),
     ),
   );
+});
+
+// ── RNF ↔ regra (rastreabilidade) ──────────────────────────────────────
+
+const ruleWithReq = (id: string, requisitos: string[], tipo = 'regra') => ({
+  name: `${id}.md`,
+  content: [
+    '---',
+    `id: ${id}`,
+    `tipo: ${tipo}`,
+    `requisitos: [${requisitos.map((r) => `"${r}"`).join(', ')}]`,
+    '---',
+    '',
+  ].join('\n'),
+});
+
+test('brain-rules: declaredRnfExceptions lê a linha "RNFs sem regra"', () => {
+  const content = '## Impacto no cérebro\n\nRNFs sem regra: RNF3, RNF5 (processo)\n';
+  assert.deepStrictEqual([...declaredRnfExceptions(content)].sort(), ['3', '5']);
+});
+
+test('brain-rules: declaredRnfExceptions sem a seção devolve vazio', () => {
+  assert.deepStrictEqual([...declaredRnfExceptions('## Outra\n\ntexto\n')], []);
+});
+
+test('brain-rules: RNF vinculado a regra passa', () => {
+  const prd = prdNote(
+    ['tipo: prd', 'id: PRD-81', 'status: completed', 'versao: "0.14.0"', 'regras: ["BR-X-001"]'],
+    '### Não-funcionais\n- RNF1 — Requisito coberto.\n',
+  );
+  assert.deepStrictEqual(checkPrdRnfVinculo([prd, ruleWithReq('BR-X-001', ['PRD-81/RNF1'])]), []);
+});
+
+test('brain-rules: RNF sem vínculo é reportado', () => {
+  const prd = prdNote(
+    ['tipo: prd', 'id: PRD-81', 'status: completed', 'versao: "0.14.0"', 'regras: ["BR-X-001"]'],
+    '### Não-funcionais\n- RNF1 — Órfão.\n',
+  );
+  assert.ok(
+    checkPrdRnfVinculo([prd, ruleWithReq('BR-X-001', [])]).some((p) =>
+      p.includes('RNF1 sem vínculo em regra'),
+    ),
+  );
+});
+
+test('brain-rules: RNF declarado como exceção passa', () => {
+  const prd = prdNote(
+    ['tipo: prd', 'id: PRD-81', 'status: completed', 'versao: "0.14.0"', 'regras: []'],
+    '### Não-funcionais\n- RNF3 — Processo.\n\n## Impacto no cérebro\n\nRNFs sem regra: RNF3\n',
+  );
+  assert.deepStrictEqual(checkPrdRnfVinculo([prd]), []);
+});
+
+test('brain-rules: RNF vinculado por SEC também conta', () => {
+  const prd = prdNote(
+    ['tipo: prd', 'id: PRD-81', 'status: completed', 'versao: "0.14.0"', 'regras: ["SEC-X-001"]'],
+    '### Não-funcionais\n- RNF2 — Segredo.\n',
+  );
+  assert.deepStrictEqual(
+    checkPrdRnfVinculo([prd, ruleWithReq('SEC-X-001', ['PRD-81/RNF2'], 'seguranca')]),
+    [],
+  );
+});
+
+test('brain-rules: PRD < baseline ou não concluída é ignorada na checagem de RNF', () => {
+  const old = prdNote(
+    ['tipo: prd', 'id: PRD-10', 'status: completed', 'versao: "0.13.0"'],
+    '- RNF1 — Órfão.\n',
+  );
+  const approved = prdNote(
+    ['tipo: prd', 'id: PRD-90', 'status: approved', 'versao: "0.15.0"'],
+    '- RNF1 — Órfão.\n',
+  );
+  assert.deepStrictEqual(checkPrdRnfVinculo([old, approved]), []);
+});
+
+test('brain-rules: PRD sem RNFs declarados passa', () => {
+  const prd = prdNote(
+    ['tipo: prd', 'id: PRD-81', 'status: completed', 'versao: "0.14.0"', 'regras: []'],
+    '### Não-funcionais\n- Nada aqui.\n',
+  );
+  assert.deepStrictEqual(checkPrdRnfVinculo([prd]), []);
+});
+
+// ── vínculo concreto por camada (NFR/TPL/ADR) ──────────────────────────
+
+test('brain-rules: hasSemVinculo reconhece o marcador', () => {
+  assert.strictEqual(hasSemVinculo('# X\n\nSem vínculo: motivo\n'), true);
+  assert.strictEqual(hasSemVinculo('# X\n\nSem vinculo: motivo\n'), true);
+  assert.strictEqual(hasSemVinculo('# X\n\ntexto\n'), false);
+});
+
+test('brain-rules: NFR ativo sem regras/requisitos é reportado', () => {
+  const nfr = note(['id: NFR-001', 'tipo: nfr', 'titulo: X', 'dominio: d', 'status: ativo']);
+  assert.ok(
+    checkLayerConnections([nfr]).some((p) => p.includes('nfr ativo sem regras ou requisitos')),
+  );
+});
+
+test('brain-rules: NFR ativo com regras ou requisitos passa', () => {
+  const withRules = note([
+    'id: NFR-001',
+    'tipo: nfr',
+    'titulo: X',
+    'dominio: d',
+    'status: ativo',
+    'regras: ["BR-X-001"]',
+  ]);
+  const withReq = note([
+    'id: NFR-002',
+    'tipo: nfr',
+    'titulo: Y',
+    'dominio: d',
+    'status: ativo',
+    'requisitos: ["PRD-1/RF1"]',
+  ]);
+  assert.deepStrictEqual(checkLayerConnections([withRules, withReq]), []);
+});
+
+test('brain-rules: NFR não-ativo é ignorado', () => {
+  const nfr = note(['id: NFR-001', 'tipo: nfr', 'titulo: X', 'dominio: d', 'status: proposta']);
+  assert.deepStrictEqual(checkLayerConnections([nfr]), []);
+});
+
+test('brain-rules: TPL ativo sem implementacao é reportado', () => {
+  const tpl = note([
+    'id: TPL-X',
+    'tipo: componente-terceiro',
+    'titulo: X',
+    'status: ativo',
+    'implementacao: []',
+  ]);
+  assert.ok(checkLayerConnections([tpl]).some((p) => p.includes('componente-terceiro ativo sem')));
+});
+
+test('brain-rules: TPL ativo com implementacao passa', () => {
+  const tpl = note([
+    'id: TPL-X',
+    'tipo: componente-terceiro',
+    'titulo: X',
+    'status: ativo',
+    'implementacao: ["biome.json"]',
+  ]);
+  assert.deepStrictEqual(checkLayerConnections([tpl]), []);
+});
+
+test('brain-rules: ADR aceita sem regras é reportada; proposta é ignorada', () => {
+  const aceita = note(['id: ADR-001', 'tipo: decisao', 'status: aceita']);
+  const proposta = note(['id: ADR-002', 'tipo: decisao', 'status: proposta']);
+  const problems = checkLayerConnections([aceita, proposta]);
+  assert.strictEqual(problems.length, 1);
+  assert.ok(problems[0].includes('ADR-001') || problems[0].includes('n.md'));
+});
+
+test('brain-rules: ADR aceita com regras passa', () => {
+  const adr = note(['id: ADR-001', 'tipo: decisao', 'status: aceita', 'regras: ["BR-X-001"]']);
+  assert.deepStrictEqual(checkLayerConnections([adr]), []);
+});
+
+test('brain-rules: marcador Sem vínculo dispensa o vínculo', () => {
+  const tpl = note([
+    'id: TPL-X',
+    'tipo: componente-terceiro',
+    'titulo: X',
+    'status: ativo',
+    'implementacao: []',
+  ]);
+  const withMarker = {
+    name: 'm.md',
+    content: `${tpl.content}\nSem vínculo: decisão de empacotamento.\n`,
+  };
+  assert.deepStrictEqual(checkLayerConnections([withMarker]), []);
+});
+
+test('brain-rules: PAT ativo sem implementacao é reportado; com implementacao passa', () => {
+  const bad = note(['id: PAT-001', 'tipo: padrao', 'titulo: X', 'dominio: d', 'status: ativo']);
+  const ok = note([
+    'id: PAT-002',
+    'tipo: padrao',
+    'titulo: X',
+    'dominio: d',
+    'status: ativo',
+    'implementacao: ["src/extension.ts"]',
+  ]);
+  assert.ok(checkLayerConnections([bad]).some((p) => p.includes('padrao ativo sem implementacao')));
+  assert.deepStrictEqual(checkLayerConnections([ok]), []);
+});
+
+test('brain-rules: ERR/ENT/GLOSS ativos sem regras são reportados; com regras passam', () => {
+  const bad = [
+    note([
+      'id: ERR-001',
+      'tipo: erro',
+      'titulo: X',
+      'dominio: d',
+      'codigo: E',
+      'status: ativo',
+      'severidade: alta',
+    ]),
+    note(['id: ENT-001', 'tipo: entidade', 'titulo: X', 'dominio: d', 'status: ativo']),
+    note(['id: GLOSS-001', 'tipo: glossario', 'titulo: X', 'dominio: d', 'status: ativo']),
+  ];
+  assert.strictEqual(checkLayerConnections(bad).length, 3);
+  const ok = [
+    note([
+      'id: ERR-001',
+      'tipo: erro',
+      'titulo: X',
+      'dominio: d',
+      'codigo: E',
+      'status: ativo',
+      'severidade: alta',
+      'regras: ["BR-X-001"]',
+    ]),
+    note([
+      'id: ENT-001',
+      'tipo: entidade',
+      'titulo: X',
+      'dominio: d',
+      'status: ativo',
+      'regras: ["BR-X-001"]',
+    ]),
+    note([
+      'id: GLOSS-001',
+      'tipo: glossario',
+      'titulo: X',
+      'dominio: d',
+      'status: ativo',
+      'regras: ["BR-X-001"]',
+    ]),
+  ];
+  assert.deepStrictEqual(checkLayerConnections(ok), []);
+});
+
+// ── documentação das regras (regra ↔ doc) ─────────────────────────────
+
+test('brain-rules: regra ativo sem documentação é reportada', () => {
+  const regra = note([
+    'id: BR-X-001',
+    'tipo: regra',
+    'titulo: X',
+    'dominio: d',
+    'status: ativo',
+    'severidade: alta',
+    'fonte: codigo',
+  ]);
+  assert.ok(checkRulesDocumented([regra]).some((p) => p.includes('regra ativo sem documentação')));
+});
+
+test('brain-rules: regra documentada em wiki/funcional passa', () => {
+  const regra = note([
+    'id: BR-X-001',
+    'tipo: regra',
+    'titulo: X',
+    'dominio: d',
+    'status: ativo',
+    'severidade: alta',
+    'fonte: codigo',
+  ]);
+  const wiki = note(['tipo: wiki', 'titulo: W', 'regras: ["BR-X-001"]']);
+  const funcional = note(['tipo: funcional', 'titulo: F', 'regras: ["BR-X-001"]']);
+  assert.deepStrictEqual(checkRulesDocumented([regra, wiki]), []);
+  assert.deepStrictEqual(checkRulesDocumented([regra, funcional]), []);
+});
+
+test('brain-rules: regra com Sem documentação passa', () => {
+  const regra = note([
+    'id: BR-X-001',
+    'tipo: regra',
+    'titulo: X',
+    'dominio: d',
+    'status: ativo',
+    'severidade: alta',
+    'fonte: codigo',
+  ]);
+  const withMarker = {
+    name: 'BR-X-001.md',
+    content: `${regra.content}\nSem documentação: detalhe interno.\n`,
+  };
+  assert.deepStrictEqual(checkRulesDocumented([withMarker]), []);
+});
+
+test('brain-rules: referência em PRD/regra não conta como documentação', () => {
+  const regra = note([
+    'id: BR-X-001',
+    'tipo: regra',
+    'titulo: X',
+    'dominio: d',
+    'status: ativo',
+    'severidade: alta',
+    'fonte: codigo',
+  ]);
+  const prd = note(['tipo: prd', 'id: PRD-1', 'regras: ["BR-X-001"]']);
+  assert.ok(checkRulesDocumented([regra, prd]).some((p) => p.includes('sem documentação')));
+});
+
+test('brain-rules: regra não-ativa é ignorada', () => {
+  const regra = note(['id: BR-X-001', 'tipo: regra', 'status: proposta']);
+  assert.deepStrictEqual(checkRulesDocumented([regra]), []);
+});
+
+// ── regra de usuário na wiki ──────────────────────────────────────────
+
+test('brain-rules: regra de usuário sem menção na wiki é reportada', () => {
+  const regra = note(['id: BR-X-001', 'tipo: regra', 'status: ativo']);
+  assert.ok(checkRulesWiki([regra]).some((p) => p.includes('sem menção na wiki')));
+});
+
+test('brain-rules: regra de usuário citada em página da wiki passa', () => {
+  const regra = note(['id: BR-X-001', 'tipo: regra', 'status: ativo']);
+  const wiki = note(['tipo: wiki', 'titulo: W', 'regras: ["BR-X-001"]']);
+  assert.deepStrictEqual(checkRulesWiki([regra, wiki]), []);
+});
+
+test('brain-rules: regra interna (interno: true) é isenta da wiki', () => {
+  const regra = note(['id: BR-X-001', 'tipo: regra', 'status: ativo', 'interno: true']);
+  assert.deepStrictEqual(checkRulesWiki([regra]), []);
+});
+
+test('brain-rules: funcional não substitui a wiki na checagem de usuário', () => {
+  const regra = note(['id: BR-X-001', 'tipo: regra', 'status: ativo']);
+  const funcional = note(['tipo: funcional', 'titulo: F', 'regras: ["BR-X-001"]']);
+  assert.ok(checkRulesWiki([regra, funcional]).some((p) => p.includes('sem menção na wiki')));
 });

@@ -5,14 +5,14 @@ tipo: locale
 titulo: "Bahasa Indonesia"
 codigo: id
 nls: package.nls.id.json
-strings: 30
+strings: 35
 gerado: true
 tags: [i18n, locale]
 ---
 
 # LOC-id — Bahasa Indonesia
 
-Locale `id` da extensão. Strings de UI em [`package.nls.id.json`](../../../package.nls.id.json) (30 chaves).
+Locale `id` da extensão. Strings de UI em [`package.nls.id.json`](../../../package.nls.id.json) (35 chaves).
 
 README: [[README.id]]
 

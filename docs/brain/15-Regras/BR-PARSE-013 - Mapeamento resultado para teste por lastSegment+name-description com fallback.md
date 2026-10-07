@@ -12,6 +12,7 @@ implementacao: ["src/matching.ts:12", "src/matching.ts:16", "src/matching.ts:17"
 testes: ["src/test/unit/matching.test.ts", "src/test/unit/results.test.ts"]
 prds: ["PRD-44"]
 requisitos: ["PRD-44/RF1", "PRD-44/RF2"]
+interno: true
 tags: ["resultados"]
 ---
 ## Enunciado
@@ -38,5 +39,5 @@ O classname pode vir qualificado (schema.package) e a descrição pode ter espa�
 - 🎯 Requisitos: [[prd-44-pure-matching|PRD-44 RF1]] · [[prd-44-pure-matching|PRD-44 RF2]]
 - 🧩 Código: [[COD - matching.ts]] · [[COD - results.ts]]
 - 🧪 Testes: [[TST - matching.test.ts]] · [[TST - results.test.ts]]
-- ↩️ Referenciada por: [[03-results-and-reporting]] · [[prd-44-pure-matching|PRD-44]]
+- ↩️ Referenciada por: [[03-results-and-reporting]] · [[ADR-005 - Funcoes canonicas de resultado e matching por nome|ADR-005]] · [[prd-44-pure-matching|PRD-44]] · [[prd-52-inline-diff-expected-actual|PRD-52]]
 <!-- brain:auto:end -->

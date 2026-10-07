@@ -4,7 +4,7 @@
 
 | Campo | Valor |
 |---|---|
-| Status | Aprovado |
+| Status | Concluído |
 | Autor | Gil Cleber Barboza |
 | Data | 2026-09-06 |
 | Componente | Extensão `paneb.vscode-utplsql` |
@@ -128,3 +128,11 @@ helper `createSuiteItems(controller, suite, state)` e usá-la nos três modos.
 - Combinação Schema > Tag > Suite? — Follow-up.
 - Como tratar o risco de IDs duplicados (estratégia de id por tag) — decidir na
   implementação com spike.
+
+## 12. Impacto no cérebro
+
+Cria **`BR-SCHEMA-005`** (`organization=tag` → Tag > Suite > Test, ids estáveis,
+grupo "(sem tag)") `status: ativo` com `prds: ["PRD-55"]`; altera
+**`BR-SCHEMA-001`** (três modos) e referencia **`BR-SCHEMA-003`**/
+**`BR-SCHEMA-004`**. Id por tag evita colisão na API do VSCode sem quebrar o
+`suiteMap` canônico.

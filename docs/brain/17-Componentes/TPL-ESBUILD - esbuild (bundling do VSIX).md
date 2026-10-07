@@ -12,7 +12,7 @@ versao: "^0.28.2"
 url: https://esbuild.github.io
 status: ativo
 verificado: 2026-09-23
-implementacao: []
+implementacao: ["esbuild.config.mjs", "package.json"]
 testes: []
 regras: []
 relacionado: ["[[ADR-004 - Bundling com esbuild e higiene do VSIX]]"]
@@ -36,6 +36,7 @@ Config em `esbuild.config.mjs`.
 
 <!-- brain:auto:start:conexoes -->
 - 🗺️ [[MOC - Componentes]]
+- 🧩 Código: [[COD - esbuild.config.mjs]] · [[COD - package.json]]
 - 🔗 [[ADR-004 - Bundling com esbuild e higiene do VSIX]]
 - ↩️ Referenciada por: [[NFR-002 - Compatibilidade com Node|NFR-002]]
 <!-- brain:auto:end -->

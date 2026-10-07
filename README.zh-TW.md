@@ -177,12 +177,16 @@ Test Explorer 中。
 | 除錯不會在斷點停下 | 套件編譯時沒有除錯資訊，或缺少除錯授權 | 使用 `PLSQL_OPTIMIZE_LEVEL <= 1` 編譯（或 `ALTER PACKAGE ... COMPILE DEBUG`），並授予 `DEBUG CONNECT SESSION` + `EXECUTE ON SYS.DBMS_DEBUG`. `test_*.pkb` 中的中斷點可能不會命中（utPLSQL 透過動態 SQL 執行測試）；請將中斷點設在被測程式碼中。 |
 | `utplsql.oracleClientConfigDir` | `""` | 包含 `sqlnet.ora`/`tnsnames.ora` 的 Oracle 設定目錄（TNS_ADMIN）。選用；僅 thick 模式使用。 |
 | `utplsql.connections.tnsAdminPath` | `""` | 包含 `tnsnames.ora` 的目錄，用於在 **thin 驅動中解析 TNS 別名**。順序：此設定 → `sqldeveloper.connections.tnsConfiguration.path` 的使用者/機器值 → `TNS_ADMIN`。 |
-| `utplsql.organization` | `file` | 樹狀結構組織：`file`（依路徑）或 `schema`（Schema > Package > Suite > Test）。在 `schema` 模式時，若工作區中沒有 `.pks` 檔案，也會從資料庫（`ut_runner.get_suites_info`，無法使用時回退至 `ALL_OBJECTS`/`ALL_SOURCE`）探索套件 — 使用虛擬 URI `utplsql-db:/`（可執行並跳轉至失敗；無 CodeLens/裝飾）。 · `utplsql-source:/` |
+| `utplsql.organization` | `file` | 樹狀結構組織：`file`（依路徑）、`schema`（Schema > Package > Suite > Test）或 `tag`（Tag > Suite > Test）。在 `schema` 模式時，若工作區中沒有 `.pks` 檔案，也會從資料庫（`ut_runner.get_suites_info`，無法使用時回退至 `ALL_OBJECTS`/`ALL_SOURCE`）探索套件 — 使用虛擬 URI `utplsql-db:/`（可執行並跳轉至失敗；無 CodeLens/裝飾）。 · `utplsql-source:/` |
 | `utplsql.organization.schemaPattern` | `db/{schema}/**` | 用於從路徑擷取 schema 的 glob 模式。使用 `{schema}` 作為佔位符。在 `schema` 模式中，模式基礎目錄下方的目錄（例如 `db/*`）定義了要在資料庫中查詢的 schema。 |
 | `utplsql.discovery.source` | `auto` | `schema` 模式下測試樹的來源：`auto` 使用資料庫 API（`ut_runner.get_suites_info`），無法使用時回退到 `ALL_SOURCE`/檔案；`database` 要求使用 API；`file` 關閉資料庫探索。 |
 | `utplsql.refreshDebounceMs` | `300` | 在重新整理 Test Explorer 之前，合併 `.pks`/`.pkb` 檔案監看事件的防抖時間（毫秒）。 |
 | `utplsql.compilationDiagnostics.enabled` | `true` | 將資料庫中的 PL/SQL 編譯錯誤（`ALL_ERRORS`）以編輯器底線形式顯示，並顯示於「問題」面板中（來源 "utPLSQL Compilation"）。 |
 | `utplsql.setupDiagnostics.enabled` | `true` | 顯示設定診斷（連線、授權、版本）以及 **utPLSQL 安裝完整性**（UT3 schema 中的無效物件，帶有「Recompile UT3」快速修復）並附上快速修復動作。 |
+| `utplsql.showTagsInTree` | `false` | 將每個套件/測試的 `%tags` 作為 `[tag1, tag2]` 後綴新增至 Test Explorer 標籤。 |
+| `utplsql.autoRun` | `off` | 儲存時自動執行（watch 模式）：`off` 或 `onSave`（重新執行已儲存 `.pks` 的套件）。 |
+| `utplsql.autoRunDelayMs` | `500` | 自動執行的檔案層級防抖（毫秒）；同一檔案的快速儲存只觸發一次執行。 |
+| `utplsql.autoRunQueue` | `skip` | 當自動執行在執行期間觸發時：`skip` 忽略，`replace` 重新排程。 |
 | `utplsql.profiles` | `[]` | 已儲存的 Oracle 連線設定檔（名稱、連線，以及對 `sourcePath`/`coverageOwner` 等的覆蓋），用於切換環境。**密碼保存在作業系統鑰匙圈（VS Code SecretStorage）中，而非設定中** — `connection` 欄位僅儲存 `user@//host:port/service`。帶有內嵌密碼的舊設定檔會在首次使用時自動遷移。 (Full field reference: [wiki](https://github.com/thepaneb/vscode-utplsql/wiki/Configuration)). |
 | `utplsql.activeProfile` | `""` | 作用中設定檔的 ID（`utplsql.profiles`）。設定時，會覆蓋 `utplsql.connection`。 |
 | `utplsql.sqlCoverageEnabled` | `false` | 透過 `V$SQL` 追蹤執行的檢視（布林涵蓋率）。需要 `GRANT SELECT ON V$SQL`。 |

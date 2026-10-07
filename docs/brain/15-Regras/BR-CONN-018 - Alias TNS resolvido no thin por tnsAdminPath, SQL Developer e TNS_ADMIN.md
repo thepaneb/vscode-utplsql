@@ -38,5 +38,5 @@ Permitir aliases TNS no driver thin sem depender de `TNS_ADMIN` global — apont
 - 🎯 Requisitos: [[prd-82-tns-wallet|PRD-82 RF1]] · [[prd-82-tns-wallet|PRD-82 RF3]]
 - 🧩 Código: [[COD - tnsnames.ts]] · [[COD - oracleRunner.ts]] · [[COD - config.ts]]
 - 🧪 Testes: [[TST - tnsnames.test.ts]] · [[TST - oracleRunnerTns.test.ts]] · [[TST - v014-tns.test.ts]]
-- ↩️ Referenciada por: [[prd-82-tns-wallet|PRD-82]]
+- ↩️ Referenciada por: [[Connection]] · [[prd-82-tns-wallet|PRD-82]]
 <!-- brain:auto:end -->

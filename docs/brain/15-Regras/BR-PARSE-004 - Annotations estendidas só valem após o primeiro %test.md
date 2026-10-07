@@ -12,6 +12,7 @@ implementacao: ["src/suiteParser.ts:95", "src/suiteParser.ts:96", "src/suitePars
 testes: ["src/test/unit/suiteParser.test.ts", "src/test/unit/discovery.test.ts"]
 prds: ["PRD-42"]
 requisitos: ["PRD-42/RF1"]
+interno: true
 tags: ["parser"]
 ---
 ## Enunciado

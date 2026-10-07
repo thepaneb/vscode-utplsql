@@ -6,6 +6,7 @@ import { TestStateManager } from '../../state';
 import {
   __getErrorMessages,
   __getInformationMessages,
+  __getLastQuickPickItems,
   __getLastSaveDialogOptions,
   __getOutputChannelLines,
   __getWarningMessages,
@@ -14,6 +15,7 @@ import {
   __resetOutputChannels,
   __resetQuickPickResults,
   __resetWrittenFiles,
+  __setActiveTextEditor,
   __setQuickPickResults,
   __setSaveDialogResult,
   commands,
@@ -42,7 +44,7 @@ mock.module('../../runner.js', {
 
 mock.module('../../testTree.js', {
   namedExports: {
-    collectAllItems: async () => [],
+    collectAllItems: async (_controller: unknown, state: TestStateManager) => state.cachedItems,
     resolveSubtree: async () => {},
   },
 });
@@ -59,21 +61,87 @@ mock.module('../../compilationDiagnostics.js', {
 
 function makeState() {
   const state = new TestStateManager();
-  const suiteItem = new TestItem('suite:pkg');
+  const suiteItem = new TestItem('suite:ut_pkg');
   const folder = { uri: { fsPath: '/ws' }, name: 'ws', index: 0 };
   state.setMeta(
     suiteItem as never,
     {
       kind: 'suite',
-      packageName: 'PKG',
+      packageName: 'UT_PKG',
       uri: Uri.file('/ws/ut_pkg.pks') as never,
       folder: folder as never,
     } as never,
   );
-  state.setSuiteItem('suite:pkg', suiteItem as never);
+  state.setSuiteItem('suite:ut_pkg', suiteItem as never);
   state.setItem(suiteItem.id, suiteItem as never);
+  state.cachedItems.push(suiteItem as never);
   state.runProfile = { name: 'run' } as never;
   return { state, suiteItem };
+}
+
+/**
+ * Coleção fake que imita `vscode.TestItemCollection`: `forEach` entrega o item
+ * (como `findTestItem` espera) e a iteração entrega pares `[id, item]` (como
+ * `for (const [, c] of children)` espera).
+ */
+function childCollection(items: TestItem[]) {
+  return {
+    forEach(cb: (item: TestItem) => void) {
+      items.forEach(cb);
+    },
+    get size() {
+      return items.length;
+    },
+    [Symbol.iterator]() {
+      return items.map((i) => [i.id, i] as [string, TestItem])[Symbol.iterator]();
+    },
+    _items: items,
+  };
+}
+
+/** Adiciona um teste à suíte (para o ramo de `findTestItem`). */
+function addTest(state: TestStateManager, suiteItem: TestItem, procName: string) {
+  const testItem = new TestItem(`test:ut_pkg.${procName.toLowerCase()}`);
+  const children = (suiteItem as unknown as { children: ReturnType<typeof childCollection> })
+    .children;
+  if (!children._items) {
+    (suiteItem as unknown as { children: unknown }).children = childCollection([]);
+  }
+  (suiteItem as unknown as { children: ReturnType<typeof childCollection> }).children._items.push(
+    testItem,
+  );
+  state.setMeta(
+    testItem as never,
+    {
+      kind: 'test',
+      packageName: 'UT_PKG',
+      procName,
+      description: procName,
+      uri: Uri.file('/ws/ut_pkg.pks') as never,
+      folder: { uri: { fsPath: '/ws' } } as never,
+    } as never,
+  );
+  state.setItem(testItem.id, testItem as never);
+  return testItem;
+}
+
+const EXPORT_PKS = [
+  'create or replace package ut_pkg is',
+  '--%suite(S)',
+  '--%test(one)',
+  'procedure t_one;',
+  'end;',
+].join('\n');
+
+function exportEditor(line: number) {
+  return {
+    document: {
+      fileName: '/ws/ut_pkg.pks',
+      uri: Uri.file('/ws/ut_pkg.pks'),
+      getText: () => EXPORT_PKS,
+    },
+    selection: { active: { line } },
+  } as never;
 }
 
 function makeDeps(state: TestStateManager): CommandDeps {
@@ -92,6 +160,7 @@ async function register(state: TestStateManager) {
   __resetOutputChannels();
   __resetQuickPickResults();
   __resetWrittenFiles();
+  __setActiveTextEditor(undefined);
   __setSaveDialogResult(undefined);
   executeCalls.length = 0;
   exportText = 'REPORTER OUTPUT';
@@ -206,4 +275,77 @@ test('runWithReporter: saída indefinida (cancelado) não grava', async () =>
     await call('utplsql.runWithReporter', suiteItem);
 
     assert.strictEqual(__getOutputChannelLines('utPLSQL reporter').length, 0);
+  }));
+
+// PRD-76: resolução de alvo sem item (editor ativo .pks).
+test('runWithReporter: sem item usa o %test sob o cursor', async () =>
+  withConn(async () => {
+    const { state, suiteItem } = makeState();
+    const testItem = addTest(state, suiteItem, 't_one');
+    const call = await register(state);
+    __setActiveTextEditor(exportEditor(3)); // linha do --%test(one)
+    __setQuickPickResults(['ut_x', { label: 'Output', value: 'output' }]);
+
+    await call('utplsql.runWithReporter');
+
+    assert.strictEqual(executeCalls.length, 1);
+    const request = executeCalls[0][1] as { include?: unknown[] };
+    assert.deepStrictEqual(request?.include, [testItem]);
+  }));
+
+test('runWithReporter: cursor no %suite usa a suíte do arquivo', async () =>
+  withConn(async () => {
+    const { state, suiteItem } = makeState();
+    const call = await register(state);
+    __setActiveTextEditor(exportEditor(1)); // linha do --%suite(S)
+    __setQuickPickResults(['ut_x', { label: 'Output', value: 'output' }]);
+
+    await call('utplsql.runWithReporter');
+
+    assert.strictEqual(executeCalls.length, 1);
+    const request = executeCalls[0][1] as { include?: unknown[] };
+    assert.deepStrictEqual(request?.include, [suiteItem]);
+  }));
+
+test('runWithReporter: sem cursor cai no QuickPick de suítes', async () =>
+  withConn(async () => {
+    const { state, suiteItem } = makeState();
+    const call = await register(state);
+    // Editor não-.pks: não acha anotação → pickSuiteItem.
+    __setActiveTextEditor({
+      document: {
+        fileName: '/ws/notas.txt',
+        uri: Uri.file('/ws/notas.txt'),
+        getText: () => 'nada',
+      },
+      selection: { active: { line: 0 } },
+    } as never);
+    // 1º QuickPick: suíte; 2º: reporter; 3º: destino.
+    __setQuickPickResults([
+      { label: 'PKG', item: suiteItem },
+      'ut_x',
+      { label: 'Output', value: 'output' },
+    ]);
+
+    await call('utplsql.runWithReporter');
+
+    const items = __getLastQuickPickItems();
+    assert.ok(items, 'picker de suítes deveria abrir');
+    assert.strictEqual(executeCalls.length, 1);
+  }));
+
+test('runWithReporter: .pks sem anotação/editor cai no QuickPick de suítes', async () =>
+  withConn(async () => {
+    const { state, suiteItem } = makeState();
+    const call = await register(state);
+    __setActiveTextEditor(exportEditor(0)); // linha 0: antes de qualquer annotation
+    __setQuickPickResults([
+      { label: 'PKG', item: suiteItem },
+      'ut_x',
+      { label: 'Output', value: 'output' },
+    ]);
+
+    await call('utplsql.runWithReporter');
+
+    assert.strictEqual(executeCalls.length, 1);
   }));

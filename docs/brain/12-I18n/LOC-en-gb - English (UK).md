@@ -5,14 +5,14 @@ tipo: locale
 titulo: "English (UK)"
 codigo: en-gb
 nls: package.nls.en-gb.json
-strings: 30
+strings: 35
 gerado: true
 tags: [i18n, locale]
 ---
 
 # LOC-en-gb — English (UK)
 
-Locale `en-gb` da extensão. Strings de UI em [`package.nls.en-gb.json`](../../../package.nls.en-gb.json) (30 chaves).
+Locale `en-gb` da extensão. Strings de UI em [`package.nls.en-gb.json`](../../../package.nls.en-gb.json) (35 chaves).
 
 README: [[README.en-GB]]
 

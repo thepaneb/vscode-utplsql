@@ -23,6 +23,7 @@ SORT id ASC
 ## Índice (links)
 
 <!-- brain:auto:start:moc-index -->
+- [[TST - autoRun.test.ts]] — `TST-autoRun.test.ts`
 - [[TST - brainBuild.test.ts]] — `TST-brainBuild.test.ts`
 - [[TST - brainRules.test.ts]] — `TST-brainRules.test.ts`
 - [[TST - brainScripts.test.ts]] — `TST-brainScripts.test.ts`
@@ -37,6 +38,7 @@ SORT id ASC
 - [[TST - config.test.ts]] — `TST-config.test.ts`
 - [[TST - connectionProfiles.test.ts]] — `TST-connectionProfiles.test.ts`
 - [[TST - coverage.test.ts]] — `TST-coverage.test.ts`
+- [[TST - coverageDecision.test.ts]] — `TST-coverageDecision.test.ts`
 - [[TST - dbmsDebug.test.ts]] — `TST-dbmsDebug.test.ts`
 - [[TST - dbPaths.test.ts]] — `TST-dbPaths.test.ts`
 - [[TST - dbSourceProvider.test.ts]] — `TST-dbSourceProvider.test.ts`
@@ -47,6 +49,7 @@ SORT id ASC
 - [[TST - debuggerE2E.test.ts]] — `TST-debuggerE2E.test.ts`
 - [[TST - debuggerExceptionE2E.test.ts]] — `TST-debuggerExceptionE2E.test.ts`
 - [[TST - debuggerStandaloneFn.test.ts]] — `TST-debuggerStandaloneFn.test.ts`
+- [[TST - debugTargets.test.ts]] — `TST-debugTargets.test.ts`
 - [[TST - decorations.test.ts]] — `TST-decorations.test.ts`
 - [[TST - discovery.test.ts]] — `TST-discovery.test.ts`
 - [[TST - docsFidelity.test.ts]] — `TST-docsFidelity.test.ts`
@@ -80,6 +83,7 @@ SORT id ASC
 - [[TST - rerun.test.ts]] — `TST-rerun.test.ts`
 - [[TST - results.test.ts]] — `TST-results.test.ts`
 - [[TST - resultsUnreadable.test.ts]] — `TST-resultsUnreadable.test.ts`
+- [[TST - runByTagCommand.test.ts]] — `TST-runByTagCommand.test.ts`
 - [[TST - runCommands.test.ts]] — `TST-runCommands.test.ts`
 - [[TST - runCommandsExec.test.ts]] — `TST-runCommandsExec.test.ts`
 - [[TST - runExportCommand.test.ts]] — `TST-runExportCommand.test.ts`
@@ -94,6 +98,7 @@ SORT id ASC
 - [[TST - state.test.ts]] — `TST-state.test.ts`
 - [[TST - statusBar.test.ts]] — `TST-statusBar.test.ts`
 - [[TST - suiteParser.test.ts]] — `TST-suiteParser.test.ts`
+- [[TST - tagFilter.test.ts]] — `TST-tagFilter.test.ts`
 - [[TST - tagsStreamingE2E.test.ts]] — `TST-tagsStreamingE2E.test.ts`
 - [[TST - testTree.test.ts]] — `TST-testTree.test.ts`
 - [[TST - thickMode.test.ts]] — `TST-thickMode.test.ts`

@@ -29,6 +29,7 @@ Ferramentas e infraestrutura de desenvolvimento do projeto.
 | `npm run gen-icon` | `scripts/gen-icon.cjs` — gera o ícone |
 | `npm run gen-diagram` | `scripts/gen-diagrams.cjs` — renderiza todos os SVGs de `docs/wiki/images/` para PNG de 1200px via `@resvg/resvg-js` (cross-platform) |
 | `npm run brain:sync` / `brain:check` | Sincroniza/valida o vault Obsidian (`docs/brain`) |
+| `npm run brain:rules` | Valida as `BR-*`, o schema das camadas (SEC/ERR/PAT/…), o vínculo bidirecional PRD ↔ regra/SEC, a rastreabilidade **RNF → regra**, o vínculo concreto de NFR/TPL/PAT/ENT/ERR/GLOSS/ADR, a **documentação das regras** (funcional/wiki) e a presença das regras de usuário na **wiki** (`interno: true` isenta) |
 | `npm run brain:ci` | `brain:sync` + `brain:build` + `brain:check` + `brain:rules` + `brain:gaps` (roda no CI) |
 | `npm run brain:gaps` | Reporta arquivos do repo sem referência no cérebro (`scripts/brain-gaps.cjs`; estrito, `--warn` não falha) |
 | `npm run docs:check` | Consistência da documentação versionada (roda no CI) |
@@ -241,6 +242,22 @@ GITHUB_TOKEN="$(echo "$GITHUB_TOKEN" | tr -d '\r')" npm run sync-prds
 **Exclusivamente via GitHub workflow** (`publish.yml`, disparado na release).
 Não rode `npm run publish`/`vsce publish` localmente — `npm run publish:patch`
 inclusive falha de propósito. Comando local válido: `npm run package` (gera `.vsix`).
+
+## Site público (GitHub Pages)
+
+A landing page pública vive em `site/` e é **gerada** por `npm run brain:build`
+da nota `80-Site/Landing page (site)` (tokens `{{VERSION}}`/`{{SITE_URL}}`).
+O `.github/workflows/pages.yml` publica `site/` no **GitHub Pages** (Source =
+GitHub Actions) via environment `github-pages`.
+
+- `https://thepaneb.github.io/vscode-utplsql/` — indexável (sem `x-robots-tag: none`)
+- `site/robots.txt`, `site/sitemap.xml`, `site/404.html`, `site/google*.html` (verificação do Search Console)
+- `docs:check` valida o site (seção “Site (GitHub Pages)”); `brain:gaps` cobre `site/**`
+- `site/**` fica fora do VSIX (`.vscodeignore`)
+- Deploy só da branch **`main`** (regra de *deployment branch* do environment)
+
+> Regra: **BR-SITE-001**. A documentação completa dentro do site (portar
+> `docs/wiki/`) é a fase 2 (PRD-97).
 
 ## Node
 

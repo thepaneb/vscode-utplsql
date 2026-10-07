@@ -25,7 +25,12 @@ Workflow [`wiki.yml`](../../../.github/workflows/wiki.yml) — **gerado** por `n
 
 ## Passos
 
+- `uses: actions/checkout@v7`
 - `uses: actions/setup-node@v7`
+- `run: node scripts/brain-build.cjs`
+- `run: |`
+- `run: |`
+- `run: |`
 
 ## Conexões
 

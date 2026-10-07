@@ -1,5 +1,6 @@
 {
   "userIgnoreFilters": [
-    "_templates/"
+    "_templates/",
+    "copilot/"
   ]
 }

@@ -2,14 +2,15 @@
 tipo: prd
 id: PRD-51
 aliases: [PRD-51]
-status: approved
+status: completed
 titulo: "Execução e seleção por Tag (`%tags`)"
 versao: "0.15.0"
 data: "2026-09-06"
 autor: "Gil Cleber Barboza"
 versao_titulo: "0.15.0 — Tags e UX de execução"
-verificado: 2026-09-23
-regras: []
+verificado: 2026-10-02
+relacionado: ["BR-PARSE-016", "BR-PARSE-017", "BR-UI-011", "BR-PARSE-005", "BR-PARSE-010", "BR-UI-009"]
+regras: ["BR-PARSE-016", "BR-PARSE-017", "BR-UI-011"]
 tags: [prd]
 ---
 
@@ -174,11 +175,24 @@ Registrar `utplsql.runByTag` e a setting `utplsql.showTagsInTree`.
   — Sim, alinhado à PRD-54 (toggle global de cobertura).
 - Expressões de tags (`tag1 AND tag2`)? — Follow-up.
 
+## 12. Impacto no cérebro
+
+Cria **`BR-PARSE-016`** (tags de suíte no header), **`BR-PARSE-017`** (filtro por
+tag com `!` e case-insensitive) e **`BR-UI-011`** (`runByTag` + `showTagsInTree`),
+todas `status: ativo` com `prds: ["PRD-51"]`; referencia **`BR-PARSE-005`**,
+**`BR-PARSE-010`** e **`BR-UI-009`**. Módulo puro novo: `src/tagFilter.ts`.
+
 ## Conexões
 
 <!-- brain:auto:start:conexoes -->
 - 🗺️ [[MOC - PRDs]]
+- 📐 Regras: [[BR-PARSE-016 - Tags de suite (%tags no header) viram ParsedSuite.tags e SuiteFile.tags|BR-PARSE-016]] · [[BR-PARSE-017 - Filtro por tag - inclusao e exclusao (!) case-insensitive; sem tag so sem inclusao|BR-PARSE-017]] · [[BR-UI-011 - utplsql.runByTag oferece QuickPick multi-selecao das tags; showTagsInTree sufixa o label|BR-UI-011]]
+- 🔗 BR-PARSE-016 · BR-PARSE-017 · BR-UI-011 · BR-PARSE-005 · BR-PARSE-010 · BR-UI-009
 - 🔗 PRDs relacionados: [[prd-42-suiteparser-annotations|PRD-42]] · [[prd-54-coverage-toggle|PRD-54]] · [[prd-55-tag-organization|PRD-55]]
-- 🔗 Mesma versão (0.15.0): [[prd-50-auto-run-on-save|PRD-50]] · [[prd-52-inline-diff-expected-actual|PRD-52]] · [[prd-53-debug-test-variants|PRD-53]] · [[prd-54-coverage-toggle|PRD-54]] · [[prd-55-tag-organization|PRD-55]]
-- 🚀 ⬅️ release anterior: [[prd-94-vscode-floor-1-101|PRD-94 (0.14.0)]] · ➡️ próxima release: [[prd-47-node-26-toolchain|PRD-47 (0.15.1)]]
+- 🎯 RF2 — Tags de suíte no parser → [[BR-PARSE-016 - Tags de suite (%tags no header) viram ParsedSuite.tags e SuiteFile.tags|BR-PARSE-016]]
+- 🎯 RF3 — Comando `utplsql.runByTag` → [[BR-PARSE-017 - Filtro por tag - inclusao e exclusao (!) case-insensitive; sem tag so sem inclusao|BR-PARSE-017]] · [[BR-UI-011 - utplsql.runByTag oferece QuickPick multi-selecao das tags; showTagsInTree sufixa o label|BR-UI-011]]
+- 🎯 RF4 — Tooltip com tags → [[BR-UI-011 - utplsql.runByTag oferece QuickPick multi-selecao das tags; showTagsInTree sufixa o label|BR-UI-011]]
+- 🎯 RNF1 — Case-insensitive na comparação de tags. → [[BR-PARSE-017 - Filtro por tag - inclusao e exclusao (!) case-insensitive; sem tag so sem inclusao|BR-PARSE-017]]
+- 🎯 RNF2 — Sem tags em um `TestItem` ⇒ ele é incluído apenas quando nenhum → [[BR-PARSE-017 - Filtro por tag - inclusao e exclusao (!) case-insensitive; sem tag so sem inclusao|BR-PARSE-017]]
+- 🚀 ⬅️ release anterior: [[prd-94-vscode-floor-1-101|PRD-94 (0.14.0)]] · ➡️ próxima release: [[prd-95-esm-es2023-node22|PRD-95 (0.16.0)]]
 <!-- brain:auto:end -->

@@ -102,6 +102,56 @@ function extractBody(node: any): string {
   return typeof text === 'string' ? text : '';
 }
 
+export interface ExpectedActual {
+  expected?: string;
+  actual?: string;
+}
+
+/**
+ * Extrai os valores "Expected"/"Actual" da mensagem de falha do utPLSQL, em
+ * qualquer ordem de rótulo (o reporter emite ora `Expected:`/`Actual:`, ora
+ * `Actual: ... was expected to equal: ...`). Case-insensitive e multilinha:
+ * cada valor vai até o próximo rótulo. Só devolve o par quando AMBOS existem —
+ * mensagem sem os dois marcadores segue exibida como texto (PRD-52).
+ */
+export function parseExpectedActual(message: string): ExpectedActual {
+  if (!message) return {};
+  // Rótulos aceitos: `Expected:`/`Actual:` (documentation reporter) e o
+  // `... was expected to equal:`/`... was expected to ...` (assertion do ut).
+  const label = /(?:(?:^|\n)[ \t]*(expected|actual)[ \t]*:|was expected to equal)[ \t]*:?[ \t]*/gi;
+  const matches: { key: 'expected' | 'actual'; valueStart: number; labelStart: number }[] = [];
+  let m: RegExpExecArray | null;
+  // biome-ignore lint/suspicious/noAssignInExpressions: idiomatic regex loop
+  while ((m = label.exec(message)) !== null) {
+    matches.push({
+      key: m[1] ? (m[1].toLowerCase() as 'expected' | 'actual') : 'expected',
+      valueStart: m.index + m[0].length,
+      labelStart: m.index,
+    });
+  }
+  if (matches.length < 2) return {};
+
+  const values: ExpectedActual = {};
+  for (let i = 0; i < matches.length; i++) {
+    const from = matches[i].valueStart;
+    const to = i + 1 < matches.length ? matches[i + 1].labelStart : message.length;
+    const value = trimValue(message.slice(from, to));
+    if (values[matches[i].key] === undefined) values[matches[i].key] = value;
+  }
+
+  if (values.expected === undefined || values.actual === undefined) return {};
+  return values;
+}
+
+/** Descarta texto após uma linha de stack trace e faz trim final. */
+function trimValue(raw: string): string {
+  return raw
+    .split('\n')
+    .filter((line) => !/^\s*at\s+/.test(line))
+    .join('\n')
+    .trim();
+}
+
 export function parseStackFrames(body: string): StackFrame[] | undefined {
   if (!body) return undefined;
   const frames: StackFrame[] = [];

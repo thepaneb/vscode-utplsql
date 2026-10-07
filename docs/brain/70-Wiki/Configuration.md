@@ -5,6 +5,7 @@ titulo: "Configuration (settings)"
 publicar: docs/wiki/Configuration.md
 origem: ["09-configuration"]
 verificado: 2026-09-23
+regras: ["BR-EXEC-016", "BR-PARSE-017", "BR-CONN-015", "BR-I18N-001", "BR-EXEC-011"]
 tags: [wiki]
 ---
 

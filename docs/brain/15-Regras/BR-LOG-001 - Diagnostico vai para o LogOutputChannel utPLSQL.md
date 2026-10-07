@@ -48,4 +48,5 @@ Permitir diagnóstico em produção (nível ajustável pela UI) sem depender de
 - 🧩 Código: [[COD - logger.ts]] · [[COD - extension.ts]] · [[COD - vscode-stub.ts]]
 - 🧪 Testes: [[TST - logger.test.ts]]
 - 🔗 BR-CONN-014 · PAT-001
+- ↩️ Referenciada por: [[Troubleshooting]]
 <!-- brain:auto:end -->

@@ -2,7 +2,7 @@
 id: BR-SCHEMA-001
 aliases: [BR-SCHEMA-001]
 tipo: regra
-titulo: organization bifurca file tree vs schema tree; suiteMap é o lookup canônico
+titulo: organization escolhe file/schema/tag tree; suiteMap é o lookup canônico
 dominio: schema
 status: ativo
 severidade: critica
@@ -16,7 +16,7 @@ tags: ["schema"]
 ---
 ## Enunciado
 
-utplsql.organization decide a árvore: file gera buildFileTree (Schema=arquivo); schema (havendo workspace folders) gera mergeDbSuites + buildSchemaTree (Schema > Package > Suite > Test); em ambos os modos cada suite é registrada em state.suiteMap por suite:<package minúsculo>, e o lookup deve usar state.getSuiteItem() — controller.items.get() não alcança suites aninhadas no modo schema.
+utplsql.organization decide a árvore: file gera buildFileTree (Schema=arquivo); schema (havendo workspace folders) gera mergeDbSuites + buildSchemaTree (Schema > Package > Suite > Test); tag gera buildTagTree (Tag > Suite > Test, ver BR-SCHEMA-005); em todos os modos cada suite é registrada em state.suiteMap por suite:<package minúsculo>, e o lookup deve usar state.getSuiteItem() — controller.items.get() não alcança suites aninhadas no modo schema.
 
 ## Pré-condições
 
@@ -38,5 +38,5 @@ No modo schema as suites ficam 3 níveis abaixo da raiz; comandos como runForUri
 - 🎯 Requisitos: [[prd-30-schema-aware-organization|PRD-30 RF3]] · [[prd-30-schema-aware-organization|PRD-30 RF4]]
 - 🧩 Código: [[COD - testTree.ts]] · [[COD - state.ts]] · [[COD - run.ts]]
 - 🧪 Testes: [[TST - testTree.test.ts]] · [[TST - state.test.ts]]
-- ↩️ Referenciada por: [[06-tree-organization]] · [[GLOSS-006 - Schema-mode (organização por schema)|GLOSS-006]] · [[prd-30-schema-aware-organization|PRD-30]]
+- ↩️ Referenciada por: [[06-tree-organization]] · [[ADR-003 - Descoberta DB-first e organizacao por schema|ADR-003]] · [[ADR-009 - Integracao nativa ao Test Explorer|ADR-009]] · [[ENT-002 - Suite|ENT-002]] · [[GLOSS-006 - Schema-mode (organização por schema)|GLOSS-006]] · [[Test-explorer]] · [[Tree-organization]] · [[prd-30-schema-aware-organization|PRD-30]] · [[prd-55-tag-organization|PRD-55]]
 <!-- brain:auto:end -->

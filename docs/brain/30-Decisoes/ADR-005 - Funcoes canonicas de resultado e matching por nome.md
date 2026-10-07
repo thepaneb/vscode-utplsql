@@ -5,6 +5,7 @@ aliases: [ADR-005]
 status: aceita
 modulo: resultados
 data: 2026-09-23
+regras: ["BR-PARSE-013"]
 tags: [adr, resultados, junit, matching]
 ---
 

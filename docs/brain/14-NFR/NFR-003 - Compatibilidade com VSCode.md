@@ -8,7 +8,7 @@ status: ativo
 verificado: 2026-09-29
 implementacao: ["package.json:11", "package.json:12", "package.json:822", "package.json:824"]
 testes: ["src/test/unit/docsFidelity.test.ts"]
-regras: []
+regras: ["BR-PLAT-001"]
 relacionado: ["[[TPL-VSCODE-API - API do VS Code usada]]", "[[TPL-VSCODE-TEST-API - VSCode Test API (Test Explorer)]]", "[[MOC - Arquitetura]]"]
 tags: ["compatibilidade"]
 ---
@@ -36,6 +36,7 @@ mais antigo em suporte (EOL abr/2027).
 
 <!-- brain:auto:start:conexoes -->
 - 🗺️ [[MOC - NFR]]
+- 📐 Regras: [[BR-PLAT-001 - Piso de VS Code e runtime Node do host sao coerentes|BR-PLAT-001]]
 - 🧩 Código: [[COD - package.json]]
 - 🧪 Testes: [[TST - docsFidelity.test.ts]]
 - 🔗 [[TPL-VSCODE-API - API do VS Code usada]] · [[TPL-VSCODE-TEST-API - VSCode Test API (Test Explorer)]] · [[MOC - Arquitetura]]

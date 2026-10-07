@@ -187,12 +187,16 @@ Test Explorer에 나타납니다.
 | 디버그가 브레이크포인트에서 멈추지 않음 | 디버그 정보 없이 컴파일된 패키지, 또는 디버그 권한 누락 | `PLSQL_OPTIMIZE_LEVEL <= 1`로 컴파일(또는 `ALTER PACKAGE ... COMPILE DEBUG PLSQL_OPTIMIZE_LEVEL = 1`)하고 `DEBUG CONNECT SESSION` + `EXECUTE ON SYS.DBMS_DEBUG` 부여. `test_*.pkb`의 브레이크포인트가 적중하지 않을 수 있습니다(utPLSQL은 동적 SQL로 테스트를 실행). 테스트 대상 코드에 설정하세요. |
 | `utplsql.oracleClientConfigDir` | `""` | `sqlnet.ora`/`tnsnames.ora`가 있는 Oracle 구성 디렉터리(TNS_ADMIN). 선택 사항이며 thick 모드에서만 사용됩니다. |
 | `utplsql.connections.tnsAdminPath` | `""` | `tnsnames.ora`가 있는 디렉터리로 **thin 드라이버에서 TNS 별칭을 해석**합니다. 순서: 이 설정 → `sqldeveloper.connections.tnsConfiguration.path`의 user/machine 값 → `TNS_ADMIN`. |
-| `utplsql.organization` | `file` | 트리 구성: `file`(경로별) 또는 `schema`(Schema > Package > Suite > Test). `schema` 모드에서 워크스페이스에 `.pks` 파일이 없으면 스위트가 데이터베이스(`ut_runner.get_suites_info`, 불가 시 `ALL_OBJECTS`/`ALL_SOURCE`)에서도 발견됩니다 — 가상 URI `utplsql-db:/`(실행 및 실패 지점 이동 가능, CodeLens/데코레이션 없음). · `utplsql-source:/` |
+| `utplsql.organization` | `file` | 트리 구성: `file`(경로별), `schema`(Schema > Package > Suite > Test) 또는 `tag`(Tag > Suite > Test). `schema` 모드에서 워크스페이스에 `.pks` 파일이 없으면 스위트가 데이터베이스(`ut_runner.get_suites_info`, 불가 시 `ALL_OBJECTS`/`ALL_SOURCE`)에서도 발견됩니다 — 가상 URI `utplsql-db:/`(실행 및 실패 지점 이동 가능, CodeLens/데코레이션 없음). · `utplsql-source:/` |
 | `utplsql.organization.schemaPattern` | `db/{schema}/**` | 경로에서 스키마를 추출하는 glob 패턴. `{schema}`를 자리 표시자로 사용하세요. `schema` 모드에서 패턴 기본 아래의 디렉터리(예: `db/*`)는 데이터베이스에서 조회할 스키마를 정의합니다. |
 | `utplsql.discovery.source` | `auto` | `schema` 모드에서 테스트 트리의 소스: `auto`는 데이터베이스 API(`ut_runner.get_suites_info`)를 사용하고 사용할 수 없으면 `ALL_SOURCE`/파일로 대체합니다. `database`는 API를 요구하고, `file`은 데이터베이스 검색을 비활성화합니다. |
 | `utplsql.refreshDebounceMs` | `300` | Test Explorer를 새로 고치기 전에 `.pks`/`.pkb` 파일 감시 이벤트를 병합하는 디바운스(ms). |
 | `utplsql.compilationDiagnostics.enabled` | `true` | 데이터베이스의 PL/SQL 컴파일 오류(`ALL_ERRORS`)를 편집기 밑줄과 "문제" 패널에 표시합니다(출처 "utPLSQL Compilation"). |
 | `utplsql.setupDiagnostics.enabled` | `true` | 구성 진단(연결, 권한, 버전) 및 **utPLSQL 설치 무결성**(UT3 스키마의 잘못된 객체, "Recompile UT3" quick-fix 포함)을 quick-fix 작업과 함께 표시합니다. |
+| `utplsql.showTagsInTree` | `false` | 각 스위트/테스트의 `%tags`를 Test Explorer 라벨에 `[tag1, tag2]` 접미사로 추가합니다. |
+| `utplsql.autoRun` | `off` | 저장 시 자동 실행(watch 모드): `off` 또는 `onSave`(저장된 `.pks`의 스위트를 다시 실행). |
+| `utplsql.autoRunDelayMs` | `500` | 자동 실행의 파일별 지연(ms). 같은 파일을 빠르게 저장하면 한 번만 실행됩니다. |
+| `utplsql.autoRunQueue` | `skip` | 실행 중 자동 실행이 발생할 때: `skip`은 무시, `replace`는 다시 예약. |
 | `utplsql.profiles` | `[]` | 저장된 Oracle 연결 프로필(이름, 연결, 그리고 `sourcePath`/`coverageOwner` 등의 재정의) — 환경 간 전환용. **비밀번호는 OS 키체인(VS Code SecretStorage)에 보관되며 설정에는 저장되지 않습니다** — `connection` 필드에는 `user@//host:port/service`만 저장됩니다. 인라인 비밀번호가 포함된 기존 프로필은 처음 사용할 때 자동으로 마이그레이션됩니다. (Full field reference: [wiki](https://github.com/thepaneb/vscode-utplsql/wiki/Configuration)). |
 | `utplsql.activeProfile` | `""` | 활성 프로필(`utplsql.profiles`)의 ID. 설정 시 `utplsql.connection`을 재정의합니다. |
 | `utplsql.sqlCoverageEnabled` | `false` | `V$SQL`을 통해 실행된 뷰를 추적합니다(불리언 커버리지). `GRANT SELECT ON V$SQL` 필요. |

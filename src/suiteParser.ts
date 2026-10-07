@@ -17,6 +17,8 @@ export interface ParsedSuite {
   tests: TestProc[];
   suiteLine: number;
   disabled?: boolean;
+  /** Tags do header (`%tags` antes do primeiro `%test`) — PRD-51 RF2. */
+  tags?: string[];
   hasBeforeAll?: boolean;
   hasAfterAll?: boolean;
   hasBeforeEach?: boolean;
@@ -68,6 +70,7 @@ export function parseSuiteText(text: string): ParsedSuite | null {
   let suiteLine = -1;
   let seenFirstTest = false;
   let suiteDisabled = false;
+  let suiteTags: string[] | undefined;
   let hasBeforeAll = false;
   let hasAfterAll = false;
   let hasBeforeEach = false;
@@ -115,9 +118,19 @@ export function parseSuiteText(text: string): ParsedSuite | null {
         pending.displayName = displayMatch[1].trim() || undefined;
         continue;
       }
-    } else if (suiteLine >= 0 && RE_DISABLED.test(line)) {
-      suiteDisabled = true;
-      continue;
+    } else if (suiteLine >= 0) {
+      if (RE_DISABLED.test(line)) {
+        suiteDisabled = true;
+        continue;
+      }
+      const suiteTagsMatch = RE_TAGS.exec(line);
+      if (suiteTagsMatch) {
+        suiteTags = suiteTagsMatch[1]
+          .split(',')
+          .map((t) => t.trim())
+          .filter(Boolean);
+        continue;
+      }
     }
 
     if (pendingDescription !== null) {
@@ -144,6 +157,7 @@ export function parseSuiteText(text: string): ParsedSuite | null {
     tests,
     suiteLine,
     ...(suiteDisabled ? { disabled: true } : {}),
+    ...(suiteTags && suiteTags.length > 0 ? { tags: suiteTags } : {}),
     ...(hasBeforeAll ? { hasBeforeAll: true } : {}),
     ...(hasAfterAll ? { hasAfterAll: true } : {}),
     ...(hasBeforeEach ? { hasBeforeEach: true } : {}),

@@ -38,5 +38,5 @@ Permite pular direto para a linha do erro no código PL/SQL, sempre de forma bes
 - 🎯 Requisitos: [[prd-28-plsql-compilation-diagnostics|PRD-28 RF2]] · [[prd-28-plsql-compilation-diagnostics|PRD-28 RF3]]
 - 🧩 Código: [[COD - compilationDiagnostics.ts]] · [[COD - runner.ts]]
 - 🧪 Testes: [[TST - oracleRunner.test.ts]] · [[TST - oracleCapabilities.test.ts]] · [[TST - compilationDiagnosticsE2E.test.ts]] · [[TST - compilationDiagnostics.test.ts]] · [[TST - compilationDiagnosticsDriverMissing.test.ts]]
-- ↩️ Referenciada por: [[07-diagnostics-and-validation]] · [[prd-28-plsql-compilation-diagnostics|PRD-28]]
+- ↩️ Referenciada por: [[07-diagnostics-and-validation]] · [[Diagnostics-and-quick-fix]] · [[prd-28-plsql-compilation-diagnostics|PRD-28]]
 <!-- brain:auto:end -->

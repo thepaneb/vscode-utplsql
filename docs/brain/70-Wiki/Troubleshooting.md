@@ -5,6 +5,7 @@ titulo: "Troubleshooting"
 publicar: docs/wiki/Troubleshooting.md
 origem: ["MOC - Erros","07-diagnostics-and-validation"]
 verificado: 2026-09-23
+regras: ["BR-LOG-001", "BR-CONN-014"]
 tags: [wiki]
 ---
 

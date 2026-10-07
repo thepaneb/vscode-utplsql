@@ -44,5 +44,5 @@ falhas reais quando a conexão existe.
 - 📄 PRDs: [[prd-15-integration-tests-real-db|PRD-15]]
 - 🧩 Código: [[COD - helpers.ts]] · [[COD - charsetSupport.ts]]
 - 🧪 Testes: [[TST - schemaRun.test.ts]] · [[TST - v014-features.test.ts]] · [[TST - charsetSupport.test.ts]]
-- ↩️ Referenciada por: [[prd-15-integration-tests-real-db|PRD-15]]
+- ↩️ Referenciada por: [[Tests]] · [[prd-15-integration-tests-real-db|PRD-15]]
 <!-- brain:auto:end -->

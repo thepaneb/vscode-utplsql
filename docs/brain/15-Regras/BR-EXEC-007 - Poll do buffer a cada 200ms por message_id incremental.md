@@ -11,7 +11,7 @@ verificado: 2026-09-23
 implementacao: ["src/oracleRunner.ts:727", "src/oracleRunner.ts:734", "src/oracleRunner.ts:741", "src/oracleRunner.ts:753"]
 testes: ["src/test/unit/oracleRunner.test.ts:1790", "src/test/unit/oracleRunner.test.ts:1869", "src/test/integration/tagsStreamingE2E.test.ts"]
 prds: ["PRD-11"]
-requisitos: ["PRD-11/RF3"]
+requisitos: ["PRD-11/RF3", "PRD-76/RNF2"]
 tags: ["execucao"]
 ---
 ## Enunciado
@@ -35,8 +35,8 @@ Streaming em tempo real sem bloquear; falhas transitórias do buffer não aborta
 <!-- brain:auto:start:conexoes -->
 - 🗺️ [[MOC - Regras]]
 - 📄 PRDs: [[prd-11-streaming-results|PRD-11]]
-- 🎯 Requisitos: [[prd-11-streaming-results|PRD-11 RF3]]
+- 🎯 Requisitos: [[prd-11-streaming-results|PRD-11 RF3]] · [[prd-76-reporter-export|PRD-76 RNF2]]
 - 🧩 Código: [[COD - oracleRunner.ts]]
 - 🧪 Testes: [[TST - oracleRunner.test.ts]] · [[TST - tagsStreamingE2E.test.ts]]
-- ↩️ Referenciada por: [[02-test-execution]] · [[prd-11-streaming-results|PRD-11]]
+- ↩️ Referenciada por: [[02-test-execution]] · [[NFR-004 - Latência do streaming|NFR-004]] · [[Oracle-direct-execution]] · [[prd-11-streaming-results|PRD-11]]
 <!-- brain:auto:end -->

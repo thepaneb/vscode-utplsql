@@ -42,5 +42,5 @@ Garantir o fluxo completo breakpoint→stop→frame contra banco real (DBMS_DEBU
 - 📄 PRDs: [[prd-33-plsql-debugger-integration|PRD-33]] · [[prd-71-debugger-dbms-debug-fix|PRD-71]]
 - 🧩 Código: [[COD - debugger.ts]] · [[COD - dbmsDebug.ts]]
 - 🧪 Testes: [[TST - debuggerE2E.test.ts]] · [[TST - debugger.test.ts]] · [[TST - dbmsDebug.test.ts]] · [[TST - debugger-liveRuntime.test.ts]]
-- ↩️ Referenciada por: [[prd-33-plsql-debugger-integration|PRD-33]] · [[prd-71-debugger-dbms-debug-fix|PRD-71]]
+- ↩️ Referenciada por: [[ADR-012 - Debugger PLSQL via DBMS_DEBUG e DAP|ADR-012]] · [[Debugger]] · [[prd-33-plsql-debugger-integration|PRD-33]] · [[prd-71-debugger-dbms-debug-fix|PRD-71]]
 <!-- brain:auto:end -->

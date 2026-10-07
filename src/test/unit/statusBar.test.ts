@@ -87,6 +87,12 @@ test('UtplsqlStatusBar: dispose nao lanca erro', () => {
   assert.doesNotThrow(() => sb.dispose());
 });
 
+test('UtplsqlStatusBar: dispose sem status bar habilitada tambem nao lanca', () => {
+  __setConfigValue('statusBar.enabled', false);
+  const sb = new UtplsqlStatusBar();
+  assert.doesNotThrow(() => sb.dispose());
+});
+
 test('showIdle/showResults: com perfil ativo mostra o perfil (branch)', () => {
   __setConfigValue('statusBar.enabled', true);
   __setConfigValue('profiles', [{ id: 'p1', name: 'DEV', connection: 'c' }]);
@@ -102,5 +108,21 @@ test('showRunning: chamadas dentro de 200ms retornam cedo (branch)', () => {
   const sb = new UtplsqlStatusBar();
   sb.showRunning(1, 2);
   sb.showRunning(2, 2);
+  sb.dispose();
+});
+
+// PRD-54: item de cobertura na status bar.
+test('showCoverage: ligado e desligado não lançam (status bar habilitada)', () => {
+  __setConfigValue('statusBar.enabled', true);
+  const sb = new UtplsqlStatusBar();
+  assert.doesNotThrow(() => sb.showCoverage(true));
+  assert.doesNotThrow(() => sb.showCoverage(false));
+  sb.dispose();
+});
+
+test('showCoverage: desabilitado via config não mostra', () => {
+  __setConfigValue('statusBar.enabled', false);
+  const sb = new UtplsqlStatusBar();
+  assert.doesNotThrow(() => sb.showCoverage(true));
   sb.dispose();
 });

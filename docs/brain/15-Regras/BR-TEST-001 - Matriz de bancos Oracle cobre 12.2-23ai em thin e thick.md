@@ -43,5 +43,5 @@ Garantir que extensão e driver funcionem em todas as versões suportadas (piso 
 - 📄 PRDs: [[prd-72-db-test-matrix|PRD-72]] · [[prd-84-oracle-122-support|PRD-84]]
 - 🧩 Código: [[COD - run.sh]] · [[COD - matrix.env]]
 - 🧪 Testes: [[TST - matrixConfig.test.ts]] · [[TST - scriptsCli.test.ts]]
-- ↩️ Referenciada por: [[prd-72-db-test-matrix|PRD-72]] · [[prd-84-oracle-122-support|PRD-84]]
+- ↩️ Referenciada por: [[ADR-011 - Thick mode opt-in e matriz de bancos|ADR-011]] · [[Database-requirements]] · [[NFR-001 - Compatibilidade com Oracle e piso do utPLSQL|NFR-001]] · [[Tests]] · [[prd-72-db-test-matrix|PRD-72]] · [[prd-84-oracle-122-support|PRD-84]]
 <!-- brain:auto:end -->

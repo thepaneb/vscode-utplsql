@@ -5,6 +5,7 @@ aliases: [ADR-007]
 status: aceita
 modulo: i18n
 data: 2026-09-23
+regras: ["BR-I18N-001", "BR-CONN-015"]
 tags: [adr, i18n, nls, locale]
 ---
 

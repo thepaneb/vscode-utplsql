@@ -11,6 +11,7 @@ implementacao: ["src/connectionProfiles.ts:281", "src/connectionProfiles.ts:287"
 testes: ["src/test/unit/connectionProfiles.test.ts", "src/test/unit/profileCommands.test.ts"]
 regras: ["BR-CONN-017"]
 prds: ["PRD-82"]
+requisitos: ["PRD-82/RNF2"]
 tags: ["seguranca", "conexao"]
 ---
 ## Enunciado
@@ -31,6 +32,7 @@ Mesma razão da SEC-001, aplicada à credencial de wallet.
 - 🗺️ [[MOC - Seguranca]]
 - 📄 PRDs: [[prd-82-tns-wallet|PRD-82]]
 - 📐 Regras: [[BR-CONN-017 - Senha da wallet vai para o SecretStorage e ao pool|BR-CONN-017]]
+- 🎯 Requisitos: [[prd-82-tns-wallet|PRD-82 RNF2]]
 - 🧩 Código: [[COD - connectionProfiles.ts]] · [[COD - oracleRunner.ts]]
 - 🧪 Testes: [[TST - connectionProfiles.test.ts]] · [[TST - profileCommands.test.ts]]
 - ↩️ Referenciada por: [[prd-82-tns-wallet|PRD-82]]

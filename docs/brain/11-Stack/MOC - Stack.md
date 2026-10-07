@@ -71,6 +71,7 @@ SORT id ASC
 
 <!-- brain:auto:start:moc-index -->
 - [[PIPE-ci - CI]] — `PIPE-ci`
+- [[PIPE-pages - Deploy Pages]] — `PIPE-pages`
 - [[PIPE-publish - Publish Extension]] — `PIPE-publish`
 - [[PIPE-wiki - Publish Wiki]] — `PIPE-wiki`
 <!-- brain:auto:end -->

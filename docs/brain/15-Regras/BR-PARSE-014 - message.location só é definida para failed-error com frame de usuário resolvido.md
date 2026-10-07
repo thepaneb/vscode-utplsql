@@ -12,6 +12,7 @@ implementacao: ["src/results.ts:59", "src/results.ts:61", "src/results.ts:68", "
 testes: ["src/test/unit/results.test.ts", "src/test/integration/jumpToFailureE2E.test.ts"]
 prds: ["PRD-29"]
 requisitos: ["PRD-29/RF1"]
+interno: true
 tags: ["resultados"]
 ---
 ## Enunciado
@@ -38,5 +39,5 @@ Habilita o Go to Error nativo do VSCode apenas quando há local confiável, sem 
 - 🎯 Requisitos: [[prd-29-jump-to-failing-assertion|PRD-29 RF1]]
 - 🧩 Código: [[COD - results.ts]]
 - 🧪 Testes: [[TST - results.test.ts]] · [[TST - jumpToFailureE2E.test.ts]]
-- ↩️ Referenciada por: [[03-results-and-reporting]] · [[08-jump-to-failure]] · [[prd-29-jump-to-failing-assertion|PRD-29]]
+- ↩️ Referenciada por: [[03-results-and-reporting]] · [[08-jump-to-failure]] · [[prd-29-jump-to-failing-assertion|PRD-29]] · [[prd-52-inline-diff-expected-actual|PRD-52]]
 <!-- brain:auto:end -->

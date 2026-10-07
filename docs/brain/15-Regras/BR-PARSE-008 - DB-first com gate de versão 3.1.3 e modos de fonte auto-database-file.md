@@ -13,6 +13,7 @@ implementacao: ["src/discovery.ts:219", "src/discovery.ts:220", "src/discovery.t
 testes: ["src/test/unit/discovery.test.ts", "src/test/unit/testTree.test.ts"]
 prds: ["PRD-74"]
 requisitos: ["PRD-74/RF4", "PRD-74/RF5"]
+interno: true
 tags: ["descoberta"]
 ---
 ## Enunciado
@@ -40,5 +41,5 @@ Garante compatibilidade com versões antigas do framework e dá controle explíc
 - 🎯 Requisitos: [[prd-74-db-first-discovery|PRD-74 RF4]] · [[prd-74-db-first-discovery|PRD-74 RF5]]
 - 🧩 Código: [[COD - discovery.ts]] · [[COD - testTree.ts]]
 - 🧪 Testes: [[TST - discovery.test.ts]] · [[TST - testTree.test.ts]]
-- ↩️ Referenciada por: [[01-test-discovery]] · [[ERR-002 - UTPLSQL_OLD_VERSION — versão do utPLSQL abaixo do mínimo|ERR-002]] · [[ERR-011 - Fonte de package truncada (-10.000 linhas)|ERR-011]] · [[prd-74-db-first-discovery|PRD-74]]
+- ↩️ Referenciada por: [[01-test-discovery]] · [[ADR-003 - Descoberta DB-first e organizacao por schema|ADR-003]] · [[ERR-002 - UTPLSQL_OLD_VERSION — versão do utPLSQL abaixo do mínimo|ERR-002]] · [[ERR-011 - Fonte de package truncada (-10.000 linhas)|ERR-011]] · [[NFR-001 - Compatibilidade com Oracle e piso do utPLSQL|NFR-001]] · [[prd-74-db-first-discovery|PRD-74]]
 <!-- brain:auto:end -->

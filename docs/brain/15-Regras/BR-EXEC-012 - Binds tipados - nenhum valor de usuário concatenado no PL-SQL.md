@@ -12,6 +12,7 @@ implementacao: ["src/oracleRunner.ts:593", "src/oracleRunner.ts:596", "src/oracl
 testes: ["src/test/unit/oracleRunner.test.ts:922", "src/test/unit/oracleRunner.test.ts:953", "src/test/unit/oracleRunner.test.ts:979", "src/test/unit/oracleRunner.test.ts:1264"]
 prds: ["PRD-69"]
 requisitos: ["PRD-69/RF1"]
+interno: true
 tags: ["execucao", "seguranca"]
 ---
 ## Enunciado

@@ -12,7 +12,8 @@ verificado: 2026-09-23
 implementacao: ["src/oracleRunner.ts:528", "src/oracleRunner.ts:529", "src/oracleRunner.ts:531", "src/oracleRunner.ts:534"]
 testes: ["src/test/unit/oracleRunner.test.ts:1989", "src/test/unit/oracleRunner.test.ts:2005", "src/test/unit/oracleRunnerReporters.test.ts"]
 prds: ["PRD-12", "PRD-69"]
-requisitos: ["PRD-69/RF3"]
+requisitos: ["PRD-69/RF3", "PRD-54/RNF2"]
+interno: true
 tags: ["execucao"]
 ---
 ## Enunciado
@@ -37,7 +38,7 @@ Passar um reporter inexistente ao ut_runner.run faria o run inteiro abortar com 
 - 🗺️ [[MOC - Regras]]
 - 📄 PRDs: [[prd-12-sql-coverage|PRD-12]] · [[prd-69-oracle-runner-typed-binds|PRD-69]]
 - ⚠️ Erros: [[ERR-005 - UTPLSQL_NO_COVERAGE — cobertura não gerada por falta de grants|ERR-005]]
-- 🎯 Requisitos: [[prd-69-oracle-runner-typed-binds|PRD-69 RF3]]
+- 🎯 Requisitos: [[prd-69-oracle-runner-typed-binds|PRD-69 RF3]] · [[prd-54-coverage-toggle|PRD-54 RNF2]]
 - 🧩 Código: [[COD - oracleRunner.ts]]
 - 🧪 Testes: [[TST - oracleRunner.test.ts]] · [[TST - oracleRunnerReporters.test.ts]]
 - ↩️ Referenciada por: [[02-test-execution]] · [[04-code-coverage]] · [[ERR-005 - UTPLSQL_NO_COVERAGE — cobertura não gerada por falta de grants|ERR-005]] · [[prd-12-sql-coverage|PRD-12]] · [[prd-69-oracle-runner-typed-binds|PRD-69]]

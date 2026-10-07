@@ -5,6 +5,7 @@ titulo: "Internationalization (i18n)"
 publicar: docs/wiki/Internationalization.md
 origem: ["MOC - I18n"]
 verificado: 2026-09-23
+regras: ["BR-I18N-001"]
 tags: [wiki]
 ---
 

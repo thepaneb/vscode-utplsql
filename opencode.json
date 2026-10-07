@@ -4,10 +4,7 @@
     "servers": {
       "obsidian": {
         "type": "local",
-        "command": ["py", "-3", "scripts/obsidian-mcp.py"],
-        "environment": {
-          "OBSIDIAN_HOST": "127.0.0.1"
-        }
+        "command": ["python3", "scripts/obsidian-mcp.py"]
       }
     }
   }

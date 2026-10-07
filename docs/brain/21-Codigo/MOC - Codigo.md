@@ -25,7 +25,12 @@ SORT id ASC
 ## Índice (links)
 
 <!-- brain:auto:start:moc-index -->
+- [[COD - .c8rc]] — `COD-.c8rc`
 - [[COD - .gitignore]] — `COD-.gitignore`
+- [[COD - 404.html]] — `COD-404.html`
+- [[COD - annotation.ts]] — `COD-annotation.ts`
+- [[COD - autoRun.ts]] — `COD-autoRun.ts`
+- [[COD - biome.json]] — `COD-biome.json`
 - [[COD - bootstrap.sh]] — `COD-bootstrap.sh`
 - [[COD - brain-build.cjs]] — `COD-brain-build.cjs`
 - [[COD - brain-gaps.cjs]] — `COD-brain-gaps.cjs`
@@ -41,6 +46,7 @@ SORT id ASC
 - [[COD - connection.ts]] — `COD-connection.ts`
 - [[COD - connectionProfiles.ts]] — `COD-connectionProfiles.ts`
 - [[COD - coverage.ts]] — `COD-coverage.ts`
+- [[COD - coverageDecision.ts]] — `COD-coverageDecision.ts`
 - [[COD - create-pr.cjs]] — `COD-create-pr.cjs`
 - [[COD - create-release.cjs]] — `COD-create-release.cjs`
 - [[COD - dbmsDebug.ts]] — `COD-dbmsDebug.ts`
@@ -48,6 +54,7 @@ SORT id ASC
 - [[COD - debounce.ts]] — `COD-debounce.ts`
 - [[COD - debug.ts]] — `COD-debug.ts`
 - [[COD - debugger.ts]] — `COD-debugger.ts`
+- [[COD - debugTargets.ts]] — `COD-debugTargets.ts`
 - [[COD - decorations.ts]] — `COD-decorations.ts`
 - [[COD - deps.ts]] — `COD-deps.ts`
 - [[COD - discovery.ts]] — `COD-discovery.ts`
@@ -57,9 +64,11 @@ SORT id ASC
 - [[COD - extension.ts]] — `COD-extension.ts`
 - [[COD - gen-diagrams.cjs]] — `COD-gen-diagrams.cjs`
 - [[COD - gen-icon.cjs]] — `COD-gen-icon.cjs`
+- [[COD - google408e9fc32b68946a.html]] — `COD-google408e9fc32b68946a.html`
 - [[COD - helpers.ts]] — `COD-helpers.ts`
 - [[COD - i18n.ts]] — `COD-i18n.ts`
 - [[COD - i18nLocales.ts]] — `COD-i18nLocales.ts`
+- [[COD - index.html]] — `COD-index.html`
 - [[COD - junit.ts]] — `COD-junit.ts`
 - [[COD - logger.ts]] — `COD-logger.ts`
 - [[COD - matching.ts]] — `COD-matching.ts`
@@ -69,22 +78,27 @@ SORT id ASC
 - [[COD - oracleRunner.ts]] — `COD-oracleRunner.ts`
 - [[COD - package-target.cjs]] — `COD-package-target.cjs`
 - [[COD - package.json]] — `COD-package.json`
+- [[COD - pages.yml]] — `COD-pages.yml`
 - [[COD - parse-version.cjs]] — `COD-parse-version.cjs`
 - [[COD - plsqlDeclarations.ts]] — `COD-plsqlDeclarations.ts`
 - [[COD - profile.ts]] — `COD-profile.ts`
 - [[COD - publish.cjs]] — `COD-publish.cjs`
 - [[COD - quickfix.ts]] — `COD-quickfix.ts`
 - [[COD - results.ts]] — `COD-results.ts`
+- [[COD - robots.txt]] — `COD-robots.txt`
 - [[COD - run-tests.cjs]] — `COD-run-tests.cjs`
 - [[COD - run.sh]] — `COD-run.sh`
 - [[COD - run.ts]] — `COD-run.ts`
 - [[COD - runner.ts]] — `COD-runner.ts`
 - [[COD - script.ts]] — `COD-script.ts`
 - [[COD - scriptRunner.ts]] — `COD-scriptRunner.ts`
+- [[COD - sitemap.xml]] — `COD-sitemap.xml`
 - [[COD - state.ts]] — `COD-state.ts`
 - [[COD - statusBar.ts]] — `COD-statusBar.ts`
+- [[COD - styles.css]] — `COD-styles.css`
 - [[COD - suiteParser.ts]] — `COD-suiteParser.ts`
 - [[COD - sync-prds.cjs]] — `COD-sync-prds.cjs`
+- [[COD - tagFilter.ts]] — `COD-tagFilter.ts`
 - [[COD - test-setup.cjs]] — `COD-test-setup.cjs`
 - [[COD - testTree.ts]] — `COD-testTree.ts`
 - [[COD - tnsnames.ts]] — `COD-tnsnames.ts`

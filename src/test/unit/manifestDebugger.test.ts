@@ -7,7 +7,7 @@ interface Manifest {
   activationEvents?: string[];
   capabilities?: { untrustedWorkspaces?: { supported?: boolean } };
   contributes: {
-    configuration?: { properties?: Record<string, { scope?: string }> };
+    configuration?: { properties?: Record<string, { scope?: string; default?: unknown }> };
     commands?: { command: string }[];
     languages?: { id: string; extensions?: string[] }[];
     breakpoints?: { language: string }[];
@@ -100,6 +100,26 @@ test('comando de export com reporter está registrado (PRD-76)', () => {
 test('menu testing/item/context expõe utplsql.runWithReporter (PRD-76)', () => {
   const menu = pkg.contributes.menus?.['testing/item/context'] ?? [];
   assert.ok(menu.some((m) => m.command === 'utplsql.runWithReporter'));
+});
+
+test('comando de toggle de cobertura está registrado (PRD-54)', () => {
+  const commands = pkg.contributes.commands ?? [];
+  assert.ok(commands.some((c) => c.command === 'utplsql.toggleCoverage'));
+});
+
+test('comando runByTag e setting showTagsInTree registrados (PRD-51)', () => {
+  const commands = pkg.contributes.commands ?? [];
+  assert.ok(commands.some((c) => c.command === 'utplsql.runByTag'));
+  const props = pkg.contributes.configuration?.properties ?? {};
+  assert.ok('utplsql.showTagsInTree' in props);
+});
+
+test('settings de auto-run registradas com default off (PRD-50)', () => {
+  const props = pkg.contributes.configuration?.properties ?? {};
+  for (const key of ['utplsql.autoRun', 'utplsql.autoRunDelayMs', 'utplsql.autoRunQueue']) {
+    assert.ok(key in props, `${key} ausente`);
+  }
+  assert.strictEqual((props['utplsql.autoRun'] as { default?: string }).default, 'off');
 });
 
 test('extensão fica desabilitada em workspace não confiável (PRD-81 RF2)', () => {

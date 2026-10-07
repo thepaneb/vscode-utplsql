@@ -5,14 +5,14 @@ tipo: locale
 titulo: "中文(繁體)"
 codigo: zh-tw
 nls: package.nls.zh-tw.json
-strings: 30
+strings: 35
 gerado: true
 tags: [i18n, locale]
 ---
 
 # LOC-zh-tw — 中文(繁體)
 
-Locale `zh-tw` da extensão. Strings de UI em [`package.nls.zh-tw.json`](../../../package.nls.zh-tw.json) (30 chaves).
+Locale `zh-tw` da extensão. Strings de UI em [`package.nls.zh-tw.json`](../../../package.nls.zh-tw.json) (35 chaves).
 
 README: [[README.zh-TW]]
 
