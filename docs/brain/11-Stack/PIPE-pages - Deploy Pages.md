@@ -29,6 +29,7 @@ Workflow [`pages.yml`](../../../.github/workflows/pages.yml) — **gerado** por 
 - `uses: actions/configure-pages@v5`
 - `uses: actions/upload-pages-artifact@v3`
 - `uses: actions/deploy-pages@v4`
+- `run: |`
 
 ## Conexões
 

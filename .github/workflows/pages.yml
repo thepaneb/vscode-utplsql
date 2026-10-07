@@ -39,3 +39,9 @@ jobs:
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
+
+      - name: Notify IndexNow (Bing)
+        continue-on-error: true
+        run: |
+          curl -sS "https://api.indexnow.org/indexnow?url=https://thepaneb.github.io/vscode-utplsql/&key=ba3b4edc519041308f1dc227c70163f1" \
+            -o /dev/null -w 'IndexNow: %{http_code}\n'
