@@ -1,193 +1,180 @@
-# Contribuindo com o utPLSQL Test Runner
+# Contributing to utPLSQL Test Runner
 
-Obrigado por considerar contribuir com o **utPLSQL Test Runner**! Este documento explica como propor mudanças, reportar bugs e enviar pull requests.
+Thank you for considering contributing to **utPLSQL Test Runner**! This document explains how to propose changes, report bugs and send pull requests.
 
-Este projeto segue o [Código de Conduta](CODE_OF_CONDUCT.md). Ao participar, espera-se que você o respeite.
+This project follows the [Code of Conduct](CODE_OF_CONDUCT.md). By participating, you are expected to uphold it.
 
-## Como posso contribuir?
+## How can I contribute?
 
-### Reportando bugs
+### Reporting bugs
 
-Antes de abrir uma issue, verifique se ela já não existe na lista de [issues](https://github.com/thepaneb/vscode-utplsql/issues). Ao reportar um bug, inclua:
+Before opening an issue, check whether it already exists in the [issues](https://github.com/thepaneb/vscode-utplsql/issues) list. When reporting a bug, include:
 
-- **Título claro e descritivo**
-- **Passos para reproduzir** o problema
-- **Comportamento esperado** vs. **comportamento observado**
-- **Configuração relevante** (`utplsql.*` no `settings.json`)
-- **Ambiente**: versão do VSCode, SO, versão do Oracle e do utPLSQL (UT3)
-- **Logs** do terminal de testes, se possível
+- **Clear, descriptive title**
+- **Steps to reproduce** the problem
+- **Expected behavior** vs. **observed behavior**
+- **Relevant configuration** (`utplsql.*` in `settings.json`)
+- **Environment**: VS Code version, OS, Oracle and utPLSQL (UT3) versions
+- **Logs** from the test terminal, if possible
 
-### Sugerindo melhorias
+### Suggesting improvements
 
-Abra uma issue descrevendo:
+Open an issue describing:
 
-- O problema que a melhoria resolve
-- Como ela funcionaria na prática (ex.: nova setting, novo comando de menu, novo reporter)
-- Se afeta a descoberta de testes, execução ou cobertura
+- The problem the improvement solves
+- How it would work in practice (e.g. a new setting, a new context-menu command, a new reporter)
+- Whether it affects test discovery, execution or coverage
 
-### Primeira contribuição de código
+### First code contribution
 
-Bons pontos de partida:
+Good starting points:
 
-- Issues marcadas `good first issue` ou `help wanted`
-- Melhorias na documentação (README, wiki, exemplos)
-- Cobertura de casos extras nas convenções de mapeamento (por diretório, prefixo, extensão)
+- Issues labeled `good first issue` or `help wanted`
+- Documentation improvements (README, wiki, examples)
+- Extra case coverage in the mapping conventions (by directory, prefix, extension)
 
-## Configurando o ambiente de desenvolvimento
+## Setting up the development environment
 
-### Pré-requisitos
+### Prerequisites
 
-- **Node.js** e npm
-- **VSCode 1.88+**
-- Um banco **Oracle** com o framework **utPLSQL (UT3)** instalado, para testar a extensão de ponta a ponta
-- **Docker** (opcional) para a matriz de versões (`npm run db:matrix`)
+- **Node.js** and npm
+- **VS Code 1.101+**
+- An **Oracle** database with the **utPLSQL (UT3)** framework installed, to test the extension end to end
+- **Docker** (optional) for the version matrix (`npm run db:matrix`)
 
-### Passos
+### Steps
 
 ```bash
-# Clone seu fork
-git clone https://github.com/seu-usuario/vscode-utplsql.git
+# Clone your fork
+git clone https://github.com/your-user/vscode-utplsql.git
 cd vscode-utplsql
 
-# Instale as dependências
+# Install dependencies
 npm install
 
-# Compile o TypeScript
+# Compile the TypeScript
 npm run compile
 ```
 
-Para testar a extensão em modo desenvolvimento, abra o projeto no VSCode e pressione `F5` para iniciar uma janela de Extension Development Host.
+To test the extension in development mode, open the project in VS Code and press `F5` to start an Extension Development Host window.
 
-### Rodando os testes
+### Running the tests
 
 ```bash
-npm test              # unitários + lint (rápido, sem banco)
-npm run test:coverage # unitários com thresholds de cobertura
+npm test              # unit tests + lint (fast, no database)
+npm run test:coverage # unit tests with coverage thresholds
 ```
 
-Os unitários usam `node --test`; os de integração usam `@vscode/test-cli`
+The unit tests use `node --test`; the integration tests use `@vscode/test-cli`
 (`.vscode-test.mjs`).
 
-### Testes de integração
+### Integration tests
 
-Rodam contra um Oracle real e são habilitados pela env `UTPLSQL_CONN` (sem ela,
-viram `describe.skip`):
-
-```bash
-export UTPLSQL_CONN='UT3/senha@//localhost:1521/freepdb1'
-npm run test:integration        # suíte completa
-npm run test:integration:smoke  # subconjunto rápido (capacidades + DBMS_DEBUG)
-```
-
-> No WSL, como o `node` é o binário do Windows, a variável precisa atravessar
-> via `WSLENV`: `export WSLENV="UTPLSQL_CONN${WSLENV:+:$WSLENV}"`. O
-> `npm run db:matrix` já faz isso.
-
-### Matriz de bancos (local, várias versões)
-
-Para validar contra várias versões do Oracle sem depender de um banco fixo:
+They run against a real Oracle and are enabled by the `UTPLSQL_CONN` env var (without it, they become `describe.skip`):
 
 ```bash
-npm run db:matrix:list                 # lista as versões da matriz
-npm run db:matrix                      # roda a matriz inteira (uma versão por vez)
-npm run db:matrix -- --only 21xe       # só uma versão
-npm run db:matrix -- --smoke           # subconjunto rápido por versão
-npm run db:matrix -- --thick           # thick mode (Instant Client) por versão
-npm run db:matrix -- --skip-bootstrap  # volume já preparado: pula o utPLSQL/fixtures
-npm run db:matrix -- --clean           # apaga o volume e recria o banco do zero
-npm run db:matrix -- --keep-db --only 23free  # não derruba o container no fim
+export UTPLSQL_CONN='UT3/password@//localhost:1521/freepdb1'
+npm run test:integration        # full suite
+npm run test:integration:smoke  # fast subset (capabilities + DBMS_DEBUG)
 ```
 
-O orquestrador (`scripts/db-matrix/run.sh`) baixa a imagem, sobe o container,
-espera o PDB abrir, instala o utPLSQL + grants + schemas/fixtures e roda os
-testes; no fim derruba o container, **preservando o volume de dados**.
+> On WSL, because `node` is the Windows binary, the variable has to cross over
+> via `WSLENV`: `export WSLENV="UTPLSQL_CONN${WSLENV:+:$WSLENV}"`. The
+> `npm run db:matrix` already does this.
 
-**Persistência:** cada versão tem seu volume nomeado
-(`utplsql-dbmatrix-<label>`, montado em `/opt/oracle/oradata`). A **1ª** run cria
-o banco (~15–25 min para 18c/19c); as seguintes sobem do volume em ~1–2 min. Use
-`--skip-bootstrap` quando o volume já estiver preparado (pula o reinstall do
-utPLSQL) e `--clean` para apagar o volume e recomeçar do zero. Requisitos:
-Docker e, para as imagens `database/enterprise`,
-`ORACLE_AUTH_USER`/`ORACLE_AUTH_TOKEN` em `.env.dbmatrix` (veja
-`.env.dbmatrix.example`). O CI **não** roda a matriz — ela é local e manual.
-A versão alvo e os detalhes estão na PRD-72.
+### Database matrix (local, multiple versions)
+
+To validate against several Oracle versions without depending on a fixed database:
+
+```bash
+npm run db:matrix:list                 # list the matrix versions
+npm run db:matrix                      # run the whole matrix (one version at a time)
+npm run db:matrix -- --only 21xe       # a single version
+npm run db:matrix -- --smoke           # fast subset per version
+npm run db:matrix -- --thick           # thick mode (Instant Client) per version
+npm run db:matrix -- --skip-bootstrap  # volume already prepared: skip utPLSQL/fixtures
+npm run db:matrix -- --clean           # delete the volume and recreate the database from scratch
+npm run db:matrix -- --keep-db --only 23free  # do not tear down the container at the end
+```
+
+The orchestrator (`scripts/db-matrix/run.sh`) pulls the image, brings up the container, waits for the PDB to open, installs utPLSQL + grants + schemas/fixtures and runs the tests; at the end it tears down the container, **preserving the data volume**.
+
+**Persistence:** each version has its own named volume
+(`utplsql-dbmatrix-<label>`, mounted at `/opt/oracle/oradata`). The **first** run creates the database (~15–25 min for 18c/19c); the following ones come up from the volume in ~1–2 min. Use `--skip-bootstrap` when the volume is already prepared (skips the utPLSQL reinstall) and `--clean` to delete the volume and start over. Requirements: Docker and, for the `database/enterprise` images, `ORACLE_AUTH_USER`/`ORACLE_AUTH_TOKEN` in `.env.dbmatrix` (see `.env.dbmatrix.example`). CI does **not** run the matrix — it is local and manual. The target version and details are in PRD-72.
 
 ### Thick mode (Instant Client)
 
-Opcional e local. A inicialização do thick é **global e irreversível** no
-processo do extension host, então roda em host isolado (workspace sem `.pks`,
-para a extensão não auto-ativar e criar uma conexão thin antes — NJS-118):
+Optional and local. Thick initialization is **global and irreversible** in the extension host process, so it runs in an isolated host (a workspace with no `.pks`, and the host gets **no** `UTPLSQL_CONN`, so the extension — which activates on `onStartupFinished` — does not open a thin connection first; the test connection comes via `UTPLSQL_THICK_CONN`):
 
 ```bash
-# aponte para um Oracle Instant Client (Basic/Basic Light) da sua máquina
+# point to an Oracle Instant Client (Basic/Basic Light) on your machine
 export ORACLE_CLIENT_LIB_DIR='C:\oracle\instantclient_23_0'
 npm run test:integration:thick
 ```
 
-Na matriz: `npm run db:matrix -- --thick` (ou `--only <versão> --thick`).
-Sem `ORACLE_CLIENT_LIB_DIR`, o `thickMode.test.ts` fica `skip`.
+In the matrix: `npm run db:matrix -- --thick` (or `--only <version> --thick`).
+Without `ORACLE_CLIENT_LIB_DIR`, `thickMode.test.ts` is `skip`.
 
-## Estrutura do projeto
+## Project structure
 
-- `src/` — código-fonte TypeScript da extensão
-- `scripts/` — scripts auxiliares
-- `.vscode/` — configuração de debug/launch para desenvolvimento
-- `docs/brain/` — **second brain** (vault Obsidian): fonte da verdade do texto humano
-- `docs/functional/`, `docs/wiki/`, `docs/prd/`, `README*.md` — **gerados** do vault (`npm run brain:build`); não edite à mão
-- `images/` — ícones e screenshots usados no README
-- `package.json` — manifesto da extensão (comandos, settings, ativação)
+- `src/` — extension TypeScript source
+- `scripts/` — helper scripts
+- `.vscode/` — debug/launch configuration for development
+- `docs/brain/` — **second brain** (Obsidian vault): source of truth for human text
+- `docs/functional/`, `docs/wiki/`, `docs/prd/`, `README*.md` — **generated** from the vault (`npm run brain:build`); do not edit by hand
+- `images/` — icons and screenshots used in the README
+- `package.json` — extension manifest (commands, settings, activation)
 
-## Documentação
+## Documentation
 
-O texto humano é editado no vault (`docs/brain/`) e os artefatos do repo são
-gerados a partir dele:
+Human text is edited in the vault (`docs/brain/`) and the repo artifacts are generated from it:
 
 ```sh
-npm run brain:sync    # fatos do código -> vault (stack, deps, contagens)
+npm run brain:sync    # code facts -> vault (stack, deps, counts)
 npm run brain:build   # vault -> repo (README*, docs/wiki, docs/functional, docs/prd)
-npm run docs:check    # consistência + fidelidade código<->docs (roda no CI)
+npm run docs:check    # consistency + code<->docs fidelity (runs in CI)
 ```
 
-- README e variantes: nota `60-README/README (extensão)` no vault.
-- Wiki: notas em `70-Wiki/` (publicadas pelo workflow `wiki.yml`).
-- PRDs: notas em `20-PRDs/` (status no frontmatter) — ver a skill `prd-workflow`.
+- README and variants: note `60-README/README (extensão)` in the vault.
+- Wiki: notes in `70-Wiki/` (published by the `wiki.yml` workflow).
+- PRDs: notes in `20-PRDs/` (status in the frontmatter) — see the `prd-workflow` skill.
 
-> `docs/brain/` é protegido por `.github/CODEOWNERS`. PRs que mexam no vault (ou
-> nos artefatos gerados) exigem `npm run brain:ci` + `git diff --exit-code`
-> limpos — o CI reprova drift entre o vault e os gerados.
+> `docs/brain/` is protected by `.github/CODEOWNERS`. PRs that touch the vault (or
+> the generated artifacts) require a clean `npm run brain:ci` + `git diff --exit-code`
+> — CI rejects drift between the vault and the generated files.
 
 ## Pull Requests
 
-1. Faça um fork e crie sua branch a partir de `main`.
-2. Se alterar comportamento configurável, atualize a nota `60-README/README (extensão)`
-   no vault e rode `npm run brain:build` (a tabela de **Configuração** do `README.md` é gerada).
-3. Se adicionar/alterar settings em `package.json`, mantenha as descrições em português, consistentes com o restante do projeto.
-4. Rode `npm run compile` e `npm test` antes de abrir o PR. Rode `npm run brain:ci` se mexeu em documentação.
-5. Escreva uma mensagem de commit clara e, se aplicável, referencie a issue relacionada (`Closes #42`).
-6. Abra o PR descrevendo o que mudou e por quê. Screenshots são bem-vindos para mudanças de UI (gutters, Test Explorer, Coverage).
+1. Fork and create your branch from `main`.
+2. If you change configurable behavior, update the `60-README/README (extensão)` note
+   in the vault and run `npm run brain:build` (the **Configuration** table of `README.md` is generated).
+3. If you add/change settings in `package.json`, keep the descriptions in **English**, consistent with the rest of the project.
+4. Run `npm run compile` and `npm test` before opening the PR. Run `npm run brain:ci` if you touched documentation.
+5. Write a clear commit message and, if applicable, reference the related issue (`Closes #42`).
+6. Open the PR describing what changed and why. Screenshots are welcome for UI changes (gutters, Test Explorer, Coverage).
 
-### Convenções de commit
+### Commit conventions
 
-- Use o imperativo: "Adiciona suporte a..." em vez de "Adicionado suporte a..."
-- Primeira linha com até ~72 caracteres
-- Referencie issues/PRs relacionados quando existirem
+- Use the imperative: "Add support for..." instead of "Added support for..."
+- First line with up to ~72 characters
+- Reference related issues/PRs when they exist
 
-## Estilo de código
+## Code style
 
-- TypeScript, seguindo o estilo já usado em `src/`
-- Evite introduzir dependências novas sem discutir antes em uma issue
-- A execução é **Oracle direto** (node-oracledb, thin por padrão; thick é opt-in)
-  — mudanças em `oracleRunner.ts`/`discovery.ts` devem considerar as duas versões
-  do driver e o shared install (`ALL_SYNONYMS`)
+- TypeScript, following the style already used in `src/`
+- Avoid introducing new dependencies without discussing them first in an issue
+- Execution is **Oracle-direct** (node-oracledb, thin by default; thick is opt-in)
+  — changes in `oracleRunner.ts`/`discovery.ts` must consider both driver modes
+  and the shared install (`ALL_SYNONYMS`)
 
-## Processo de revisão
+## Review process
 
-1. Um mantenedor revisará seu PR e pode solicitar ajustes.
-2. Após aprovação, o PR é mesclado e entra no próximo `CHANGELOG.md`.
-3. Versionamento segue [SemVer](https://semver.org/).
+1. A maintainer will review your PR and may request adjustments.
+2. After approval, the PR is merged and goes into the next `CHANGELOG.md`.
+3. Versioning follows [SemVer](https://semver.org/).
 
-## Dúvidas?
+## Questions?
 
-Abra uma issue com a tag `question` ou comente diretamente no PR relacionado.
+Open an issue labeled `question` or comment directly on the related PR.
 
-Obrigado por ajudar a melhorar o utPLSQL Test Runner! 🧪
+Thank you for helping improve utPLSQL Test Runner! 🧪
