@@ -4,7 +4,7 @@ status: ativo
 titulo: "Landing page (site público)"
 publicar: site/index.html
 url: "https://thepaneb.github.io/vscode-utplsql/"
-implementacao: ["site/index.html", "site/404.html", "site/robots.txt", "site/sitemap.xml", "site/assets/styles.css", "site/google408e9fc32b68946a.html"]
+implementacao: ["site/index.html", "site/404.html", "site/robots.txt", "site/sitemap.xml", "site/google408e9fc32b68946a.html"]
 verificado: 2026-10-07
 tags: [site, docs]
 ---
@@ -45,7 +45,81 @@ tags: [site, docs]
     />
     <meta name="twitter:image" content="https://raw.githubusercontent.com/thepaneb/vscode-utplsql/main/images/icon.png" />
 
-    <link rel="stylesheet" href="assets/styles.css" />
+    <style>
+      :root {
+        --bg: #ffffff;
+        --fg: #1f2328;
+        --muted: #59636e;
+        --card: #f6f8fa;
+        --border: #d1d9e0;
+        --accent: #007acc;
+        --accent-fg: #ffffff;
+      }
+      @media (prefers-color-scheme: dark) {
+        :root {
+          --bg: #0d1117;
+          --fg: #e6edf3;
+          --muted: #9198a1;
+          --card: #161b22;
+          --border: #30363d;
+          --accent: #4aa3e0;
+          --accent-fg: #0d1117;
+        }
+      }
+      * { box-sizing: border-box; }
+      body {
+        margin: 0;
+        background: var(--bg);
+        color: var(--fg);
+        font: 16px/1.6 system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      }
+      a { color: var(--accent); }
+      code {
+        background: var(--card);
+        border: 1px solid var(--border);
+        border-radius: 6px;
+        padding: 0.1em 0.35em;
+        font-size: 0.9em;
+      }
+      .hero { max-width: 860px; margin: 0 auto; padding: 4rem 1.5rem 2rem; text-align: center; }
+      .logo { width: 112px; height: 112px; }
+      h1 { font-size: clamp(2rem, 6vw, 3rem); margin: 1rem 0 0.5rem; }
+      .tagline { font-size: 1.15rem; color: var(--muted); max-width: 46rem; margin: 0 auto; }
+      .meta { color: var(--muted); font-size: 0.95rem; }
+      .badges img { height: 20px; margin: 0 0.2rem; vertical-align: middle; }
+      .cta { margin-top: 1.5rem; display: flex; gap: 0.75rem; justify-content: center; flex-wrap: wrap; }
+      .btn {
+        display: inline-block;
+        padding: 0.65rem 1.2rem;
+        border-radius: 8px;
+        border: 1px solid var(--border);
+        text-decoration: none;
+        font-weight: 600;
+      }
+      .btn.primary { background: var(--accent); color: var(--accent-fg); border-color: var(--accent); }
+      main { max-width: 1000px; margin: 0 auto; padding: 1rem 1.5rem 3rem; }
+      section { padding: 1.5rem 0; }
+      h2 { border-bottom: 1px solid var(--border); padding-bottom: 0.4rem; }
+      .grid {
+        list-style: none;
+        padding: 0;
+        display: grid;
+        gap: 1rem;
+        grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      }
+      .grid li { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 1rem 1.15rem; }
+      .grid h3 { margin: 0 0 0.35rem; font-size: 1.05rem; }
+      .grid p { margin: 0; color: var(--muted); font-size: 0.95rem; }
+      section img { max-width: 100%; border: 1px solid var(--border); border-radius: 12px; margin-top: 0.75rem; }
+      footer {
+        max-width: 1000px;
+        margin: 0 auto;
+        padding: 2rem 1.5rem 3rem;
+        border-top: 1px solid var(--border);
+        color: var(--muted);
+        font-size: 0.9rem;
+      }
+    </style>
 
     <script type="application/ld+json">
       {
@@ -136,13 +210,25 @@ tags: [site, docs]
 
       <p class="badges">
         <a href="https://marketplace.visualstudio.com/items?itemName=paneb.vscode-utplsql"
-          ><img alt="Marketplace version" src="https://vsmarketplacebadges.dev/version-short/paneb.vscode-utplsql.svg"
+          ><img
+            alt="Marketplace version"
+            src="https://vsmarketplacebadges.dev/version-short/paneb.vscode-utplsql.svg"
+            width="148"
+            height="20"
         /></a>
         <a href="https://marketplace.visualstudio.com/items?itemName=paneb.vscode-utplsql"
-          ><img alt="Installs" src="https://vsmarketplacebadges.dev/installs-short/paneb.vscode-utplsql.svg"
+          ><img
+            alt="Installs"
+            src="https://vsmarketplacebadges.dev/installs-short/paneb.vscode-utplsql.svg"
+            width="72"
+            height="20"
         /></a>
         <a href="https://github.com/thepaneb/vscode-utplsql/actions/workflows/ci.yml"
-          ><img alt="CI status" src="https://github.com/thepaneb/vscode-utplsql/actions/workflows/ci.yml/badge.svg"
+          ><img
+            alt="CI status"
+            src="https://github.com/thepaneb/vscode-utplsql/actions/workflows/ci.yml/badge.svg"
+            width="90"
+            height="20"
         /></a>
       </p>
 
@@ -155,6 +241,7 @@ tags: [site, docs]
           ><img
             src="https://img.buymeacoffee.com/button-api/?text=Buy%20me%20a%20coffee&amp;emoji=%E2%98%95&amp;slug=gilclebera&amp;button_colour=FFDD00&amp;font_colour=000000&amp;font_family=Poppins&amp;outline_colour=000000&amp;coffee_colour=ffffff"
             alt="Buy Me a Coffee"
+            width="226"
             height="48"
         /></a>
       </p>
@@ -191,8 +278,10 @@ tags: [site, docs]
           installation, connection, quick start, coverage, debugger, settings and troubleshooting.
         </p>
         <img
-          src="https://raw.githubusercontent.com/thepaneb/vscode-utplsql/main/docs/wiki/images/diagram-arquitetura.png"
+          src="https://raw.githubusercontent.com/thepaneb/vscode-utplsql/main/docs/wiki/images/diagram-arquitetura.svg"
           alt="Architecture diagram: VS Code extension, Oracle-direct runner and Test Explorer"
+          width="1200"
+          height="560"
           loading="lazy"
         />
       </section>
@@ -250,5 +339,5 @@ tags: [site, docs]
 ## Conexões
 
 <!-- brain:auto:start:conexoes -->
-- 🧩 Código: [[COD - index.html]] · [[COD - 404.html]] · [[COD - robots.txt]] · [[COD - sitemap.xml]] · [[COD - styles.css]] · [[COD - google408e9fc32b68946a.html]]
+- 🧩 Código: [[COD - index.html]] · [[COD - 404.html]] · [[COD - robots.txt]] · [[COD - sitemap.xml]] · [[COD - google408e9fc32b68946a.html]]
 <!-- brain:auto:end -->

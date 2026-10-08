@@ -268,6 +268,7 @@ GitHub Actions) via environment `github-pages`.
 - `site-health.yml` verifica a saúde do site **diariamente** (200, sem `x-robots-tag`, sitemap, robots de host, verificação do Google, chave do IndexNow) e **falha** se algo quebrar
 - `bing-index.yml` consulta a **API do Bing Webmaster** (secret `BWT_API_KEY`) diariamente e reporta a indexação da home — falha se a chave expirar ou se a home não indexar no prazo (14 dias)
 - `google-index.yml` consulta a **URL Inspection API** do Search Console (secret `GSC_SERVICE_ACCOUNT_JSON`) diariamente e reporta a indexação da home no Google — falha se as credenciais falharem ou se a home não indexar no prazo (14 dias)
+- `pagespeed.yml` consulta o **PageSpeed Insights** (secret `PAGESPEED_API_KEY`) diariamente e **falha** se as notas caírem (Performance < 90; SEO/Acessibilidade/Best Practices < 100)
 - `robots.txt` na raiz do host (`thepaneb.github.io`) declara o sitemap
 - `docs:check` valida o site (seção “Site (GitHub Pages)”); `brain:gaps` cobre `site/**`
 - `site/**` fica fora do VSIX (`.vscodeignore`)
