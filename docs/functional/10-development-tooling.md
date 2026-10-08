@@ -215,8 +215,8 @@ Integração com **Oracle real** (`.github/workflows/integration.yml`):
 - **nightly** (`schedule`) e **dispatch `full`**: `scripts/db-matrix/run.sh --only 23free`
   roda a suíte de integração completa em Oracle **23ai Free**
 - **dispatch `matrix`**: `--only 18xe,21xe,23free`
-- **PR**: só com o label **`run-integration`** (modo *smoke*: capacidades + debugger),
-  pois o runner do GitHub é uma VM nova a cada job (o banco é criado do zero)
+- **PR**: roda **sempre**, em modo *smoke* (capacidades + debugger); com o label
+  **`run-integration`**, roda a suíte completa
 - O extension host roda sob `xvfb-run`; o Oracle sobe via `docker compose`
   (`docker/db-matrix/compose.yaml`) e é preparado pelo `bootstrap.sh` (UT3 + grants + fixtures)
 
