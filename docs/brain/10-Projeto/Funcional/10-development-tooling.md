@@ -223,6 +223,15 @@ Workflow `.github/workflows/ci.yml` (push/PR para `main`):
   `npm run test:coverage` (enforça os thresholds do c8) → **upload ao Codecov**
   (`codecov/codecov-action`, só no Node 24; config em `codecov.yml`)
 
+Integração com **Oracle real** (`.github/workflows/integration.yml`):
+- **nightly** (`schedule`) e **dispatch `full`**: `scripts/db-matrix/run.sh --only 23free`
+  roda a suíte de integração completa em Oracle **23ai Free**
+- **dispatch `matrix`**: `--only 18xe,21xe,23free`
+- **PR**: só com o label **`run-integration`** (modo *smoke*: capacidades + debugger),
+  pois o runner do GitHub é uma VM nova a cada job (o banco é criado do zero)
+- O extension host roda sob `xvfb-run`; o Oracle sobe via `docker compose`
+  (`docker/db-matrix/compose.yaml`) e é preparado pelo `bootstrap.sh` (UT3 + grants + fixtures)
+
 `.github/workflows/publish.yml` (release publicada no GitHub):
 - Job **verify** (1×): `compile`, `lint`, `test:unit`
 - Job **publish** em **matriz** sobre 9 targets (4 com glue thick:
