@@ -44,7 +44,9 @@ Spouštějte a laďte testy **utPLSQL** (Oracle PL/SQL) přímo ve VS Code — n
 - 🖱️ **Kontextová nabídka** — klikněte pravým tlačítkem na **složku** nebo soubor **`.pks`/`.pkb`** (v Průzkumníku nebo v editoru) pro spuštění testů.
 - 🔁 **Chytré opětovné spuštění** — Rerun Last, Run at Cursor, Run Failed Only jedinou zkratkou.
 - 🧩 **Strom podle schémat** — uspořádání testů podle Schema > Package > Suite > Test v Test Exploreru.
-- 🏷️ **Tagy a náhodné pořadí** — filtrujte testy pomocí `utplsql.tags` (např. `fast & !integration`) a spouštějte v náhodném pořadí s reprodukovatelným seedem (`utplsql.run.randomOrder`).
+- 🏷️ **Tagy a náhodné pořadí** — filtrujte testy pomocí `utplsql.tags` (např. `fast & !integration`) nebo příkazu `utPLSQL: Run Tests by Tag...` (QuickPick s vícenásobným výběrem; `!tag` vylučuje) a spouštějte v náhodném pořadí s reprodukovatelným seedem (`utplsql.run.randomOrder`).
+- 🧭 **Strom podle tagů** — uspořádejte Test Explorer jako **Tag > Suite > Test** pomocí `utplsql.organization = tag` (sada s více tagy se objeví pod každým tagem) a zobrazte `[tag1, tag2]` na popiscích pomocí `utplsql.showTagsInTree`.
+- ♻️ **Automatické spuštění při uložení** — znovu spusťte sady uloženého `.pks` pomocí `utplsql.autoRun = onSave`, s debounce na soubor (`utplsql.autoRunDelayMs`) a zásadou fronty, když už běží spuštění (`utplsql.autoRunQueue`: `skip`/`replace`).
 - 🗄️ **Objevování DB-first** — sestavte strom z `ut_runner.get_suites_info` a přestavte mezipaměť anotací z palety.
 - 🌳 **Líně načítaný strom testů** — v režimu `schema` se balíčky/sady/testy načítají až při rozbalení, takže velká schémata se otevřou okamžitě.
 - 📁 **Vícerootový pracovní prostor** — každá složka pracovního prostoru má vlastní sady testů, s nezávislým vyhledáváním, spouštěním a pokrytím.
@@ -60,7 +62,7 @@ Spouštějte a laďte testy **utPLSQL** (Oracle PL/SQL) přímo ve VS Code — n
 
 ### Ladicí program
 
-- 🐛 **PL/SQL Debug** — breakpointy a krokování testů utPLSQL přes `DBMS_DEBUG` (nativní Debug Adapter).
+- 🐛 **PL/SQL Debug** — breakpointy a krokování testů utPLSQL přes `DBMS_DEBUG` (nativní Debug Adapter); laděte **na pozici kurzoru**, **neúspěšné** testy nebo **poslední spuštění** z palety (`utPLSQL: Debug Test at Cursor`, `Debug Failed Tests`, `Debug Last Run`).
 
 ### Připojení a zabezpečení
 
@@ -76,7 +78,8 @@ Spouštějte a laďte testy **utPLSQL** (Oracle PL/SQL) přímo ve VS Code — n
 ### UX a diagnostika
 
 - ✅ **Inline dekorace** — ikony ✓/✗/⚠ v editoru po spuštění, s tooltipem při selhání a přehledovým pravítkem.
-- 📌 **Stavový řádek** — indikátor s počtem prošlých/selhávajících, délkou trvání a průběhem v reálném čase.
+- 🔬 **Inline diff očekávané × skutečné** — při selhání tvrzení zobrazí Test Explorer **nativní diff** VS Code s hodnotami *Expected*/*Actual* vytaženými ze zprávy reporteru.
+- 📌 **Stavový řádek** — indikátor s počtem prošlých/selhávajících, délkou trvání a průběhem v reálném čase; klikněte na **přepínač pokrytí** pro změnu režimu pokrytí relace (`utPLSQL: Toggle Coverage`).
 - 🎯 **Skok na selhání** — přímá navigace na řádek tvrzení, které selhalo (přes nativní „Go to Error").
 - 🧱 **Diagnostika kompilace** — po každém spuštění se chyby kompilace PL/SQL (`ALL_ERRORS`) zobrazí v Problems Panelu pod zdrojem `utPLSQL Compilation` (nastavení `utplsql.compilationDiagnostics.enabled`).
 - ⏳ **Průběh a zrušení** — dlouhá spuštění zobrazují oznámení o průběhu s počtem a tlačítkem *Cancel* (plus volitelný `utplsql.timeoutMinutes`).

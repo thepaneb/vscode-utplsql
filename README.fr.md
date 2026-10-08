@@ -35,7 +35,9 @@ Exécutez et déboguez vos tests **utPLSQL** (Oracle PL/SQL) directement dans VS
 - 🖱️ **Menu contextuel** — clic droit sur un **dossier** ou un fichier **`.pks`/`.pkb`** (dans l'Explorateur ou dans l'éditeur) pour exécuter les tests.
 - 🔁 **Ré-exécution intelligente** — Réexécuter le dernier, Exécuter sous le curseur, Exécuter uniquement les échecs avec un seul raccourci.
 - 🧩 **Arborescence tenant compte du schéma** — organisez les tests par Schéma > Package > Suite > Test dans l'Explorateur de tests.
-- 🏷️ **Balises et ordre aléatoire** — filtrez les tests avec `utplsql.tags` (par ex. `fast & !integration`) et exécutez dans un ordre aléatoire avec une graine reproductible (`utplsql.run.randomOrder`).
+- 🏷️ **Balises et ordre aléatoire** — filtrez les tests avec `utplsql.tags` (par ex. `fast & !integration`) ou la commande `utPLSQL: Run Tests by Tag...` (QuickPick à sélection multiple ; `!tag` exclut), et exécutez dans un ordre aléatoire avec une graine reproductible (`utplsql.run.randomOrder`).
+- 🧭 **Arborescence par balise** — organisez l'Explorateur de tests en **Tag > Suite > Test** avec `utplsql.organization = tag` (une suite avec plusieurs balises apparaît sous chaque balise) et affichez `[tag1, tag2]` sur les libellés avec `utplsql.showTagsInTree`.
+- ♻️ **Exécution automatique à l'enregistrement** — réexécutez les suites du `.pks` enregistré avec `utplsql.autoRun = onSave`, avec un debounce par fichier (`utplsql.autoRunDelayMs`) et une politique de file d'attente lorsqu'une exécution est en cours (`utplsql.autoRunQueue` : `skip`/`replace`).
 - 🗄️ **Découverte DB-first** — construisez l'arbre depuis `ut_runner.get_suites_info` et reconstruisez le cache des annotations depuis la palette.
 - 🌳 **Arbre de tests paresseux** — en mode `schema`, les packages/suites/tests sont résolus à la demande à l’expansion, donc les gros schémas s’ouvrent instantanément.
 - 📁 **Espace de travail multi-racines** — chaque dossier de l’espace de travail a ses propres suites, avec découverte, exécution et couverture indépendantes.
@@ -51,7 +53,7 @@ Exécutez et déboguez vos tests **utPLSQL** (Oracle PL/SQL) directement dans VS
 
 ### Débogueur
 
-- 🐛 **Débogage PL/SQL** — points d'arrêt et débogage pas à pas des tests utPLSQL via `DBMS_DEBUG` (adaptateur de débogage natif).
+- 🐛 **Débogage PL/SQL** — points d'arrêt et débogage pas à pas des tests utPLSQL via `DBMS_DEBUG` (adaptateur de débogage natif) ; déboguez **sous le curseur**, les tests **en échec** ou la **dernière exécution** depuis la palette (`utPLSQL: Debug Test at Cursor`, `Debug Failed Tests`, `Debug Last Run`).
 
 ### Connexions et sécurité
 
@@ -67,7 +69,8 @@ Exécutez et déboguez vos tests **utPLSQL** (Oracle PL/SQL) directement dans VS
 ### UX et diagnostics
 
 - ✅ **Décorations en ligne** — icônes ✓/✗/⚠ dans l'éditeur après l'exécution, avec infobulle d'échec et règle d'aperçu.
-- 📌 **Barre d'état** — indicateur avec nombre de réussites/échecs, durée et progression en temps réel.
+- 🔬 **Diff inline attendu × réel** — en cas d'échec d'assertion, l'Explorateur de tests affiche le **diff natif** de VS Code avec les valeurs *Expected*/*Actual* extraites du message du reporter.
+- 📌 **Barre d'état** — indicateur avec nombre de réussites/échecs, durée et progression en temps réel ; cliquez sur le **bouton de couverture** pour changer le mode de couverture de la session (`utPLSQL: Toggle Coverage`).
 - 🎯 **Accès direct à l'échec** — navigation directe vers la ligne de l'assertion ayant échoué (via « Go to Error » natif).
 - 🧱 **Diagnostics de compilation** — après chaque exécution, les erreurs de compilation PL/SQL (`ALL_ERRORS`) apparaissent dans le Problems Panel sous la source `utPLSQL Compilation` (réglage `utplsql.compilationDiagnostics.enabled`).
 - ⏳ **Progression et annulation** — les exécutions longues affichent une notification de progression avec compteur et bouton *Cancel* (plus `utplsql.timeoutMinutes` en option).

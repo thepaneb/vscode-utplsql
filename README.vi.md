@@ -35,7 +35,9 @@ Chạy và gỡ lỗi kiểm thử **utPLSQL** (Oracle PL/SQL) ngay trong VS Cod
 - 🖱️ **Menu ngữ cảnh** — bấm chuột phải vào một **thư mục** hoặc tệp **`.pks`/`.pkb`** (trong Explorer hoặc trong trình soạn thảo) để chạy kiểm thử.
 - 🔁 **Chạy lại thông minh** — Chạy lại lần cuối, Chạy tại con trỏ, Chỉ chạy các bài thất bại chỉ với một phím tắt.
 - 🧩 **Cây theo schema** — tổ chức kiểm thử theo Schema > Package > Suite > Test trong Test Explorer.
-- 🏷️ **Tag và thứ tự ngẫu nhiên** — lọc bài kiểm thử bằng `utplsql.tags` (ví dụ `fast & !integration`) và chạy theo thứ tự ngẫu nhiên với seed tái tạo được (`utplsql.run.randomOrder`).
+- 🏷️ **Tag và thứ tự ngẫu nhiên** — lọc bài kiểm thử bằng `utplsql.tags` (ví dụ `fast & !integration`) hoặc lệnh `utPLSQL: Run Tests by Tag...` (QuickPick chọn nhiều; `!tag` loại trừ), và chạy theo thứ tự ngẫu nhiên với seed tái tạo được (`utplsql.run.randomOrder`).
+- 🧭 **Cây theo tag** — tổ chức Test Explorer thành **Tag > Suite > Test** với `utplsql.organization = tag` (suite có nhiều tag xuất hiện dưới mỗi tag) và hiển thị `[tag1, tag2]` trên nhãn bằng `utplsql.showTagsInTree`.
+- ♻️ **Tự động chạy khi lưu** — chạy lại các suite của tệp `.pks` đã lưu với `utplsql.autoRun = onSave`, với debounce theo từng tệp (`utplsql.autoRunDelayMs`) và chính sách hàng đợi khi đang có lượt chạy (`utplsql.autoRunQueue`: `skip`/`replace`).
 - 🗄️ **Khám phá DB-first** — dựng cây từ `ut_runner.get_suites_info` và tạo lại bộ nhớ đệm chú thích từ bảng lệnh.
 - 🌳 **Cây kiểm thử lazy** — ở chế độ `schema`, package/suite/test được giải quyết khi mở rộng, nên các schema lớn mở tức thì.
 - 📁 **Không gian làm việc multi-root** — mỗi thư mục workspace có bộ kiểm thử riêng, với khám phá, thực thi và độ phủ độc lập.
@@ -51,7 +53,7 @@ Chạy và gỡ lỗi kiểm thử **utPLSQL** (Oracle PL/SQL) ngay trong VS Cod
 
 ### Trình gỡ lỗi
 
-- 🐛 **Gỡ lỗi PL/SQL** — breakpoint và gỡ lỗi từng bước các bài kiểm thử utPLSQL qua `DBMS_DEBUG` (Debug Adapter gốc).
+- 🐛 **Gỡ lỗi PL/SQL** — breakpoint và gỡ lỗi từng bước các bài kiểm thử utPLSQL qua `DBMS_DEBUG` (Debug Adapter gốc); gỡ lỗi **tại con trỏ**, các bài **thất bại** hoặc **lần chạy cuối** từ bảng lệnh (`utPLSQL: Debug Test at Cursor`, `Debug Failed Tests`, `Debug Last Run`).
 
 ### Kết nối và bảo mật
 
@@ -67,7 +69,8 @@ Chạy và gỡ lỗi kiểm thử **utPLSQL** (Oracle PL/SQL) ngay trong VS Cod
 ### UX và chẩn đoán
 
 - ✅ **Trang trí nội tuyến** — các biểu tượng ✓/✗/⚠ trong trình soạn thảo sau khi chạy, kèm tooltip lỗi và thanh overview ruler.
-- 📌 **Thanh trạng thái** — chỉ báo số lượng đạt/không đạt, thời lượng và tiến trình theo thời gian thực.
+- 🔬 **Diff nội tuyến mong đợi × thực tế** — khi assertion thất bại, Test Explorer hiển thị **diff gốc** của VS Code với các giá trị *Expected*/*Actual* trích từ thông báo của reporter.
+- 📌 **Thanh trạng thái** — chỉ báo số lượng đạt/không đạt, thời lượng và tiến trình theo thời gian thực; bấm vào **nút bật/tắt độ phủ** để chuyển chế độ phủ của phiên (`utPLSQL: Toggle Coverage`).
 - 🎯 **Nhảy tới lỗi** — điều hướng trực tiếp tới dòng của assertion bị lỗi (qua "Go to Error" gốc).
 - 🧱 **Chẩn đoán biên dịch** — sau mỗi lần chạy, lỗi biên dịch PL/SQL (`ALL_ERRORS`) hiện trong Problems Panel dưới source `utPLSQL Compilation` (cài đặt `utplsql.compilationDiagnostics.enabled`).
 - ⏳ **Tiến trình và hủy** — các lần chạy dài hiển thị thông báo tiến trình kèm số đếm và nút *Cancel* (và `utplsql.timeoutMinutes` tùy chọn).

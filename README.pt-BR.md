@@ -35,7 +35,9 @@ Execute e depure testes **utPLSQL** (Oracle PL/SQL) direto no VS Code — **Test
 - 🖱️ **Menu de contexto** — clique direito em uma **pasta** ou em um arquivo **`.pks`/`.pkb`** (no Explorer ou no editor) para rodar os testes.
 - 🔁 **Smart Re-run** — Rerun Last, Run at Cursor, Run Failed Only com um atalho.
 - 🧩 **Schema-aware tree** — organize testes por Schema > Package > Suite > Test no Test Explorer.
-- 🏷️ **Tags e ordem aleatória** — filtre testes com `utplsql.tags` (ex.: `fast & !integration`) e execute em ordem aleatória com seed reproduzível (`utplsql.run.randomOrder`).
+- 🏷️ **Tags e ordem aleatória** — filtre testes com `utplsql.tags` (ex.: `fast & !integration`) ou o comando `utPLSQL: Run Tests by Tag...` (QuickPick de seleção múltipla; `!tag` exclui), e execute em ordem aleatória com seed reproduzível (`utplsql.run.randomOrder`).
+- 🧭 **Árvore por tag** — organize o Test Explorer como **Tag > Suite > Test** com `utplsql.organization = tag` (uma suite com várias tags aparece sob cada tag) e exiba `[tag1, tag2]` nos rótulos com `utplsql.showTagsInTree`.
+- ♻️ **Auto-run ao salvar** — reexecute as suites do `.pks` salvo com `utplsql.autoRun = onSave`, com debounce por arquivo (`utplsql.autoRunDelayMs`) e política de fila quando já há execução em andamento (`utplsql.autoRunQueue`: `skip`/`replace`).
 - 🗄️ **Descoberta DB-first** — monte a árvore a partir de `ut_runner.get_suites_info` e reconstrua o cache de anotações pela paleta.
 - 🌳 **Árvore de testes lazy** — no modo `schema`, packages/suites/testes são resolvidos sob demanda ao expandir, então schemas grandes abrem na hora.
 - 📁 **Multi-root workspace** — cada pasta do workspace tem suas próprias suítes, com descoberta, execução e cobertura independentes.
@@ -51,7 +53,7 @@ Execute e depure testes **utPLSQL** (Oracle PL/SQL) direto no VS Code — **Test
 
 ### Depurador
 
-- 🐛 **Debug PL/SQL** — breakpoints e step debugging de testes utPLSQL via `DBMS_DEBUG` (Debug Adapter nativo).
+- 🐛 **Debug PL/SQL** — breakpoints e step debugging de testes utPLSQL via `DBMS_DEBUG` (Debug Adapter nativo); depure **no cursor**, os testes **com falha** ou a **última execução** pela paleta (`utPLSQL: Debug Test at Cursor`, `Debug Failed Tests`, `Debug Last Run`).
 
 ### Conexões e segurança
 
@@ -67,7 +69,8 @@ Execute e depure testes **utPLSQL** (Oracle PL/SQL) direto no VS Code — **Test
 ### UX e diagnósticos
 
 - ✅ **Decorações inline** — ícones ✓/✗/⚠ no editor após execução, com tooltip da falha e overview ruler.
-- 📌 **Status Bar** — indicador com contagem pass/fail, duração e progresso em tempo real.
+- 🔬 **Diff inline esperado × obtido** — em falhas de asserção, o Test Explorer mostra o **diff nativo** do VS Code com os valores *Expected*/*Actual* extraídos da mensagem do reporter.
+- 📌 **Status Bar** — indicador com contagem pass/fail, duração e progresso em tempo real; clique no **toggle de cobertura** para alternar o modo de cobertura da sessão (`utPLSQL: Toggle Coverage`).
 - 🎯 **Jump to failure** — navegação direta para a linha da asserção que falhou (via "Go to Error" nativo).
 - 🧱 **Diagnósticos de compilação** — após cada execução, erros de compilação PL/SQL (`ALL_ERRORS`) aparecem no Problems Panel sob o source `utPLSQL Compilation` (setting `utplsql.compilationDiagnostics.enabled`).
 - ⏳ **Progresso e cancelamento** — execuções longas mostram notificação de progresso com contagem e botão *Cancel* (além do `utplsql.timeoutMinutes` opcional).

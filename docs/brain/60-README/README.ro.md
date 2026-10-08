@@ -44,7 +44,9 @@ Rulează și depanează teste **utPLSQL** (Oracle PL/SQL) direct în VS Code —
 - 🖱️ **Meniu contextual** — clic dreapta pe un **folder** sau pe un fișier **`.pks`/`.pkb`** (în Explorer sau în editor) pentru a rula testele.
 - 🔁 **Re-rulare inteligentă** — Re-rulează ultimul, Rulează la cursor, Rulează doar eșuatele cu o singură scurtătură.
 - 🧩 **Arbore conștient de schemă** — organizează testele după Schema > Package > Suite > Test în Test Explorer.
-- 🏷️ **Tag-uri și ordine aleatorie** — filtrează testele cu `utplsql.tags` (ex. `fast & !integration`) și rulează în ordine aleatorie cu seed reproductibil (`utplsql.run.randomOrder`).
+- 🏷️ **Tag-uri și ordine aleatorie** — filtrează testele cu `utplsql.tags` (ex. `fast & !integration`) sau cu comanda `utPLSQL: Run Tests by Tag...` (QuickPick cu selecție multiplă; `!tag` exclude), și rulează în ordine aleatorie cu seed reproductibil (`utplsql.run.randomOrder`).
+- 🧭 **Arbore după tag** — organizează Test Explorer ca **Tag > Suite > Test** cu `utplsql.organization = tag` (o suită cu mai multe tag-uri apare sub fiecare tag) și afișează `[tag1, tag2]` pe etichete cu `utplsql.showTagsInTree`.
+- ♻️ **Rulare automată la salvare** — re-rulează suitele fișierului `.pks` salvat cu `utplsql.autoRun = onSave`, cu un debounce per fișier (`utplsql.autoRunDelayMs`) și o politică de coadă când o rulare este deja în curs (`utplsql.autoRunQueue`: `skip`/`replace`).
 - 🗄️ **Descoperire DB-first** — construiește arborele din `ut_runner.get_suites_info` și reconstruiește cache-ul de adnotări din paletă.
 - 🌳 **Arbore de teste lazy** — în modul `schema`, pachetele/suitele/testele sunt rezolvate la cerere la expandare, așa că schemele mari se deschid instant.
 - 📁 **Spațiu de lucru multi-root** — fiecare folder al spațiului de lucru are propriile suite, cu descoperire, execuție și acoperire independente.
@@ -60,7 +62,7 @@ Rulează și depanează teste **utPLSQL** (Oracle PL/SQL) direct în VS Code —
 
 ### Depanator
 
-- 🐛 **Debug PL/SQL** — breakpoint-uri și depanare pas cu pas a testelor utPLSQL prin `DBMS_DEBUG` (Debug Adapter nativ).
+- 🐛 **Debug PL/SQL** — breakpoint-uri și depanare pas cu pas a testelor utPLSQL prin `DBMS_DEBUG` (Debug Adapter nativ); depanează **la cursor**, testele **eșuate** sau **ultima rulare** din paletă (`utPLSQL: Debug Test at Cursor`, `Debug Failed Tests`, `Debug Last Run`).
 
 ### Conexiuni și securitate
 
@@ -76,7 +78,8 @@ Rulează și depanează teste **utPLSQL** (Oracle PL/SQL) direct în VS Code —
 ### UX și diagnosticare
 
 - ✅ **Decorări inline** — pictograme ✓/✗/⚠ în editor după execuție, cu tooltip pentru eșec și riglă de prezentare generală.
-- 📌 **Bară de stare** — indicator cu numărul de reușite/eșecuri, durată și progres în timp real.
+- 🔬 **Diff inline așteptat × real** — la eșecuri de aserțiune, Test Explorer afișează **diff-ul nativ** al VS Code cu valorile *Expected*/*Actual* extrase din mesajul reporterului.
+- 📌 **Bară de stare** — indicator cu numărul de reușite/eșecuri, durată și progres în timp real; apasă pe **comutatorul de acoperire** pentru a schimba modul de acoperire al sesiunii (`utPLSQL: Toggle Coverage`).
 - 🎯 **Salt la eșec** — navigare directă la linia aserțiunii care a eșuat (prin „Go to Error" nativ).
 - 🧱 **Diagnostice de compilare** — după fiecare rulare, erorile de compilare PL/SQL (`ALL_ERRORS`) apar în Problems Panel sub sursa `utPLSQL Compilation` (setarea `utplsql.compilationDiagnostics.enabled`).
 - ⏳ **Progres și anulare** — rulările lungi afișează o notificare de progres cu contor și buton *Cancel* (plus `utplsql.timeoutMinutes` opțional).

@@ -35,7 +35,9 @@
 - 🖱️ **Bağlam menüsü** — bir **klasöre** veya **`.pks`/`.pkb`** dosyasına (Explorer'da ya da editörde) sağ tıklayarak testleri çalıştırın.
 - 🔁 **Akıllı Yeniden Çalıştır** — tek bir kısayolla Sonuncuyu Yeniden Çalıştır, İmleçte Çalıştır, Yalnızca Başarısızları Çalıştır.
 - 🧩 **Şema farkındalıklı ağaç** — testleri Test Explorer'da Schema > Package > Suite > Test olarak düzenleyin.
-- 🏷️ **Etiketler ve rastgele sıra** — testleri `utplsql.tags` ile filtreleyin (örn. `fast & !integration`) ve yeniden üretilebilir seed ile rastgele sırada çalıştırın (`utplsql.run.randomOrder`).
+- 🏷️ **Etiketler ve rastgele sıra** — testleri `utplsql.tags` (örn. `fast & !integration`) veya `utPLSQL: Run Tests by Tag...` komutuyla filtreleyin (çoklu seçimli QuickPick; `!tag` hariç tutar) ve yeniden üretilebilir seed ile rastgele sırada çalıştırın (`utplsql.run.randomOrder`).
+- 🧭 **Etikete göre ağaç** — Test Explorer'ı `utplsql.organization = tag` ile **Tag > Suite > Test** olarak düzenleyin (birden çok etiketi olan bir suite her etiket altında görünür) ve `utplsql.showTagsInTree` ile etiketlerde `[tag1, tag2]` gösterin.
+- ♻️ **Kaydetmede otomatik çalıştırma** — kaydedilen `.pks` dosyasının suitelerini `utplsql.autoRun = onSave` ile yeniden çalıştırın; dosya başına debounce (`utplsql.autoRunDelayMs`) ve çalışma sürerken kuyruk politikası (`utplsql.autoRunQueue`: `skip`/`replace`) ile.
 - 🗄️ **DB-first keşif** — ağacı `ut_runner.get_suites_info`'dan oluşturun ve açıklama önbelleğini paletten yeniden oluşturun.
 - 🌳 **Tembel test ağacı** — `schema` modunda paketler/suiteler/testler genişletildiğinde isteğe bağlı çözülür; büyük şemalar anında açılır.
 - 📁 **Çok köklü çalışma alanı** — her çalışma alanı klasörü kendi suitelerine sahiptir; keşif, çalıştırma ve kapsam bağımsızdır.
@@ -51,7 +53,7 @@
 
 ### Hata ayıklayıcı
 
-- 🐛 **PL/SQL Hata Ayıklama** — `DBMS_DEBUG` üzerinden utPLSQL testlerinde kesme noktaları ve adım adım hata ayıklama (doğal Debug Adapter).
+- 🐛 **PL/SQL Hata Ayıklama** — `DBMS_DEBUG` üzerinden utPLSQL testlerinde kesme noktaları ve adım adım hata ayıklama (doğal Debug Adapter); paletten **imleçte**, **başarısız** testleri veya **son çalıştırmayı** hata ayıklayın (`utPLSQL: Debug Test at Cursor`, `Debug Failed Tests`, `Debug Last Run`).
 
 ### Bağlantılar ve güvenlik
 
@@ -67,7 +69,8 @@
 ### UX ve tanılama
 
 - ✅ **Satır içi süslemeler** — çalıştırmadan sonra editörde ✓/✗/⚠ simgeleri; hata ipucu ve genel bakış cetveli ile.
-- 📌 **Durum çubuğu** — geçti/kaldı sayısı, süre ve gerçek zamanlı ilerleme gösteren gösterge.
+- 🔬 **Satır içi beklenen × gerçek diff** — iddia hatalarında Test Explorer, reporter mesajından çıkarılan *Expected*/*Actual* değerleriyle VS Code'un **doğal diff** görünümünü gösterir.
+- 📌 **Durum çubuğu** — geçti/kaldı sayısı, süre ve gerçek zamanlı ilerleme gösteren gösterge; oturum kapsam modunu değiştirmek için **kapsam anahtarına** tıklayın (`utPLSQL: Toggle Coverage`).
 - 🎯 **Hataya atlama** — başarısız olan iddianın satırına doğrudan gezinme (doğal "Go to Error" ile).
 - 🧱 **Derleme tanılamaları** — her çalıştırmadan sonra PL/SQL derleme hataları (`ALL_ERRORS`) `utPLSQL Compilation` kaynağı altında Problems Panel’de görünür (`utplsql.compilationDiagnostics.enabled` ayarı).
 - ⏳ **İlerleme ve iptal** — uzun çalıştırmalar sayaçlı bir ilerleme bildirimi ve *Cancel* düğmesi gösterir (ayrıca isteğe bağlı `utplsql.timeoutMinutes`).

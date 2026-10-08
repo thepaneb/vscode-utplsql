@@ -44,7 +44,9 @@ tags: [readme]
 - 🖱️ **컨텍스트 메뉴** — **폴더** 또는 **`.pks`/`.pkb`** 파일(Explorer 또는 편집기에서)을 마우스 오른쪽 버튼으로 클릭하여 테스트를 실행합니다.
 - 🔁 **스마트 재실행** — 단일 단축키로 Rerun Last, Run at Cursor, Run Failed Only.
 - 🧩 **스키마 인식 트리** — Test Explorer에서 Schema > Package > Suite > Test로 테스트를 구성.
-- 🏷️ **태그 및 무작위 순서** — `utplsql.tags`(예: `fast & !integration`)로 테스트를 필터링하고 재현 가능한 seed(`utplsql.run.randomOrder`)로 무작위 순서로 실행합니다.
+- 🏷️ **태그 및 무작위 순서** — `utplsql.tags`(예: `fast & !integration`) 또는 `utPLSQL: Run Tests by Tag...` 명령(다중 선택 QuickPick, `!tag`는 제외)으로 테스트를 필터링하고 재현 가능한 seed(`utplsql.run.randomOrder`)로 무작위 순서로 실행합니다.
+- 🧭 **태그 기반 트리** — `utplsql.organization = tag`로 Test Explorer를 **Tag > Suite > Test**로 구성하고(여러 태그가 있는 suite는 각 태그 아래에 표시됨) `utplsql.showTagsInTree`로 레이블에 `[tag1, tag2]`를 표시합니다.
+- ♻️ **저장 시 자동 실행** — 저장된 `.pks`의 suite를 `utplsql.autoRun = onSave`로 다시 실행하며, 파일별 debounce(`utplsql.autoRunDelayMs`)와 실행 중일 때의 대기열 정책(`utplsql.autoRunQueue`: `skip`/`replace`)을 제공합니다.
 - 🗄️ **DB 우선 검색** — `ut_runner.get_suites_info`로 트리를 만들고 팔레트에서 주석 캐시를 다시 작성합니다.
 - 🌳 **지연 로딩 테스트 트리** — `schema` 모드에서 package/suite/test가 펼칠 때 필요에 따라 해석되어 큰 스키마도 즉시 열립니다.
 - 📁 **멀티 루트 워크스페이스** — 각 워크스페이스 폴더가 자체 suite를 가지며, 검색·실행·커버리지가 독립적입니다.
@@ -60,7 +62,7 @@ tags: [readme]
 
 ### 디버거
 
-- 🐛 **PL/SQL 디버그** — `DBMS_DEBUG`를 통한 utPLSQL 테스트의 중단점 및 단계 디버깅(네이티브 Debug Adapter).
+- 🐛 **PL/SQL 디버그** — `DBMS_DEBUG`를 통한 utPLSQL 테스트의 중단점 및 단계 디버깅(네이티브 Debug Adapter). 팔레트에서 **커서 위치**, **실패한** 테스트 또는 **마지막 실행**을 디버그합니다(`utPLSQL: Debug Test at Cursor`, `Debug Failed Tests`, `Debug Last Run`).
 
 ### 연결 및 보안
 
@@ -76,7 +78,8 @@ tags: [readme]
 ### UX 및 진단
 
 - ✅ **인라인 데코레이션** — 실행 후 편집기에 ✓/✗/⚠ 아이콘, 실패 툴팁 및 overview ruler 표시.
-- 📌 **상태 표시줄** — 통과/실패 개수, 소요 시간, 실시간 진행률 표시기.
+- 🔬 **인라인 기대값 × 실제값 diff** — 어설션 실패 시 Test Explorer가 reporter 메시지에서 추출한 *Expected*/*Actual* 값과 함께 VS Code의 **네이티브 diff**를 표시합니다.
+- 📌 **상태 표시줄** — 통과/실패 개수, 소요 시간, 실시간 진행률 표시기. **커버리지 토글**을 클릭하면 세션 커버리지 모드를 전환합니다(`utPLSQL: Toggle Coverage`).
 - 🎯 **실패 지점으로 이동** — 실패한 단언의 줄로 직접 이동(네이티브 "Go to Error" 사용).
 - 🧱 **컴파일 진단** — 실행할 때마다 PL/SQL 컴파일 오류(`ALL_ERRORS`)가 Problems Panel에 source `utPLSQL Compilation`로 표시됩니다(설정 `utplsql.compilationDiagnostics.enabled`).
 - ⏳ **진행률 및 취소** — 긴 실행은 카운트가 있는 진행 알림과 *Cancel* 버튼을 표시합니다(선택적 `utplsql.timeoutMinutes` 포함).

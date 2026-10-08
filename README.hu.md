@@ -35,7 +35,9 @@ Futtasd és debugold az **utPLSQL** (Oracle PL/SQL) teszteket közvetlenül a VS
 - 🖱️ **Helyi menü** — kattints jobb gombbal egy **mappára** vagy egy **`.pks`/`.pkb`** fájlra (az Explorerben vagy a szerkesztőben) a tesztek futtatásához.
 - 🔁 **Okos újrafuttatás** — Rerun Last, Run at Cursor, Run Failed Only egyetlen billentyűparanccsal.
 - 🧩 **Séma-tudatos fa** — a tesztek szervezése Séma > Package > Suite > Teszt szerint a Test Explorerben.
-- 🏷️ **Tagek és véletlen sorrend** — szűrd a teszteket `utplsql.tags`-szel (pl. `fast & !integration`), és futtasd véletlen sorrendben reprodukálható seeddel (`utplsql.run.randomOrder`).
+- 🏷️ **Tagek és véletlen sorrend** — szűrd a teszteket `utplsql.tags`-szel (pl. `fast & !integration`) vagy a `utPLSQL: Run Tests by Tag...` paranccsal (többszörös kijelölésű QuickPick; a `!tag` kizár), és futtasd véletlen sorrendben reprodukálható seeddel (`utplsql.run.randomOrder`).
+- 🧭 **Tag-alapú fa** — rendezd a Test Explorert **Tag > Suite > Test** szerkezetbe a `utplsql.organization = tag` beállítással (a több taggel rendelkező suite minden tag alatt megjelenik), és jelenítsd meg a `[tag1, tag2]` címkéket a `utplsql.showTagsInTree` beállítással.
+- ♻️ **Automatikus futtatás mentéskor** — futtasd újra a mentett `.pks` suite-jait a `utplsql.autoRun = onSave` beállítással, fájlonkénti debounce-szal (`utplsql.autoRunDelayMs`) és várólista-szabályzattal, ha épp fut egy futtatás (`utplsql.autoRunQueue`: `skip`/`replace`).
 - 🗄️ **DB-first felfedezés** — építsd a fát a `ut_runner.get_suites_info` alapján, és építsd újra a megjegyzés-gyorsítótárat a palettáról.
 - 🌳 **Lusta tesztek fája** — `schema` módban a package-ek/suite-ok/tesztek kibontáskor, igény szerint töltődnek, így a nagy sémák azonnal megnyílnak.
 - 📁 **Multi-root munkaterület** — minden munkaterület-mappa saját suite-okkal rendelkezik, független felderítéssel, futtatással és lefedettséggel.
@@ -51,7 +53,7 @@ Futtasd és debugold az **utPLSQL** (Oracle PL/SQL) teszteket közvetlenül a VS
 
 ### Hibakereső
 
-- 🐛 **PL/SQL-hibakeresés** — töréspontok és lépésenkénti hibakeresés a utPLSQL-tesztekhez `DBMS_DEBUG` segítségével (natív Debug Adapter).
+- 🐛 **PL/SQL-hibakeresés** — töréspontok és lépésenkénti hibakeresés a utPLSQL-tesztekhez `DBMS_DEBUG` segítségével (natív Debug Adapter); keress hibát **a kurzornál**, a **sikertelen** teszteknél vagy a **legutóbbi futtatásnál** a palettáról (`utPLSQL: Debug Test at Cursor`, `Debug Failed Tests`, `Debug Last Run`).
 
 ### Kapcsolatok és biztonság
 
@@ -67,7 +69,8 @@ Futtasd és debugold az **utPLSQL** (Oracle PL/SQL) teszteket közvetlenül a VS
 ### UX és diagnosztika
 
 - ✅ **Beágyazott dekorációk** — ✓/✗/⚠ ikonok a szerkesztőben a futtatás után, hibaleírással ellátott tooltippel és áttekintő csúszkával (overview ruler).
-- 📌 **Állapotsor** — mutató a sikeres/sikertelen tesztek számával, időtartammal és valós idejű előrehaladással.
+- 🔬 **Inline elvárt × tényleges diff** — állítási hibáknál a Test Explorer a VS Code **natív diff** nézetét mutatja a reporter üzenetéből kinyert *Expected*/*Actual* értékekkel.
+- 📌 **Állapotsor** — mutató a sikeres/sikertelen tesztek számával, időtartammal és valós idejű előrehaladással; kattints a **lefedettség-kapcsolóra** a munkamenet lefedettségi módjának váltásához (`utPLSQL: Toggle Coverage`).
 - 🎯 **Ugrás a hibához** — közvetlen navigáció a hibát kiváltó állítás sorához (a natív „Go to Error" segítségével).
 - 🧱 **Fordítási diagnosztika** — minden futtatás után a PL/SQL fordítási hibák (`ALL_ERRORS`) megjelennek a Problems Panelben a `utPLSQL Compilation` forrás alatt (`utplsql.compilationDiagnostics.enabled` beállítás).
 - ⏳ **Folyamat és megszakítás** — a hosszú futások előrehaladási értesítést mutatnak számlálóval és *Cancel* gombbal (plusz opcionális `utplsql.timeoutMinutes`).
