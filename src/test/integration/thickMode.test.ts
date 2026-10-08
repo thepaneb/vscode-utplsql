@@ -7,16 +7,17 @@ import * as assert from 'node:assert';
 // ORACLE_CLIENT_LIB_DIR do .env) rode o thick por engano — o thick é global e
 // irreversível, e quebraria o teste que garante o thin default.
 //
-// Roda com `npm run test:integration:thick`, num workspace vazio
-// (`.vscode-test.thick.mjs`) e SEM ativar a extensão: se a extensão ativasse
-// antes, criaria uma conexão thin e o thick falharia com NJS-118.
+// Roda com `npm run test:integration:thick`, num workspace vazio e SEM
+// `UTPLSQL_CONN` no host (`.vscode-test.thick.mjs`): assim a extensão (que ativa
+// em `onStartupFinished`) não abre conexão thin, que impediria o thick (NJS-118).
+// A conexão do teste vem por `UTPLSQL_THICK_CONN`.
 
 const libDir = process.env.ORACLE_CLIENT_LIB_DIR;
 const thickEnabled = process.env.UTPLSQL_THICK_TEST === '1' && !!libDir;
 const describeThick = thickEnabled ? describe : describe.skip;
 
 function hasConnection(): boolean {
-  return !!process.env.UTPLSQL_CONN;
+  return !!process.env.UTPLSQL_THICK_CONN;
 }
 
 async function loadOracledb(): Promise<typeof import('oracledb')> {
@@ -55,9 +56,9 @@ describeThick('thick mode (Instant Client) — opt-in', () => {
       return;
     }
     const oracledb = await loadOracledb();
-    const connStr = process.env.UTPLSQL_CONN as string;
+    const connStr = process.env.UTPLSQL_THICK_CONN as string;
     const m = connStr.match(/^([^/]+)\/([^@]+)@\/\/(.+)$/);
-    assert.ok(m, 'UTPLSQL_CONN deve ser user/pass@//host:port/svc');
+    assert.ok(m, 'UTPLSQL_THICK_CONN deve ser user/pass@//host:port/svc');
     const conn = await oracledb.getConnection({
       user: m[1],
       password: m[2],

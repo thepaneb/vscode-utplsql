@@ -14,11 +14,15 @@ import base from './.vscode-test.mjs';
 export default {
   ...base,
   files: ['out/test/integration/thickMode.test.js'],
-  // Workspace SEM .pks/.pkb: impede a auto-ativação da extensão (que criaria
-  // uma conexão thin antes de inicializarmos o thick — NJS-118).
+  // Workspace SEM .pks/.pkb e SEM `UTPLSQL_CONN`: a extensão ativa em
+  // `onStartupFinished` e `validateOnActivation` abriria uma conexão THIN,
+  // impedindo o thick depois (NJS-118). Sem `UTPLSQL_CONN`, o host chega limpo
+  // ao `ensureOracleClient`. A conexão do teste vai por `UTPLSQL_THICK_CONN`.
   workspaceFolder: 'src/test/integration/fixtures/thick-workspace',
   env: {
     ...base.env,
+    UTPLSQL_CONN: '',
+    UTPLSQL_THICK_CONN: process.env.UTPLSQL_CONN ?? '',
     UTPLSQL_THICK_TEST: '1',
     ORACLE_CLIENT_LIB_DIR: process.env.ORACLE_CLIENT_LIB_DIR ?? '',
     TNS_ADMIN: process.env.TNS_ADMIN ?? '',

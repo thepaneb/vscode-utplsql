@@ -19,7 +19,7 @@ Ferramentas e infraestrutura de desenvolvimento do projeto.
 | `npm run test:coverage` | `compile` → `c8 node --experimental-test-module-mocks --require ./scripts/test-setup.cjs --test out/test/unit/**/*.test.js` |
 | `npm run test:integration` | `pretest:integration` (compile + bundle) → `vscode-test` |
 | `npm run test:integration:smoke` | idem, com `.vscode-test.smoke.mjs` (subconjunto rápido) |
-| `npm run test:integration:thick` | idem, com `.vscode-test.thick.mjs` (Instant Client/thick) |
+| `npm run test:integration:thick` | idem, com `.vscode-test.thick.mjs` (Instant Client/thick; host sem `UTPLSQL_CONN` → conexão via `UTPLSQL_THICK_CONN`) |
 | `npm run test:integration:multiroot` | idem, com `.vscode-test.multiroot.mjs` (workspace multi-root via `.code-workspace`) |
 | `npm run db:matrix` | `bash scripts/db-matrix/run.sh` — testa contra Oracle 12.2/18c/19c/21c/23ai local (compose); o 12.2 usa utPLSQL `v3.1.14` (piso alternativo, PRD-84) |
 | `npm run db:matrix:list` | Lista as versões da matriz |
