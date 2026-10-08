@@ -44,7 +44,9 @@ tags: [readme]
 - 🖱️ **เมนูบริบท** — คลิกขวาที่ **โฟลเดอร์** หรือไฟล์ **`.pks`/`.pkb`** (ใน Explorer หรือในตัวแก้ไข) เพื่อรันการทดสอบ
 - 🔁 **Smart Re-run** — Rerun Last, Run at Cursor, Run Failed Only ด้วยปุ่มลัดเพียงปุ่มเดียว
 - 🧩 **แผนผังที่รับรู้ schema** — จัดระเบียบการทดสอบตาม Schema > Package > Suite > Test ใน Test Explorer
-- 🏷️ **แท็กและลำดับแบบสุ่ม** — กรองเทสต์ด้วย `utplsql.tags` (เช่น `fast & !integration`) และรันแบบสุ่มด้วย seed ที่ทำซ้ำได้ (`utplsql.run.randomOrder`)
+- 🏷️ **แท็กและลำดับแบบสุ่ม** — กรองเทสต์ด้วย `utplsql.tags` (เช่น `fast & !integration`) หรือคำสั่ง `utPLSQL: Run Tests by Tag...` (QuickPick แบบเลือกหลายรายการ; `!tag` เพื่อยกเว้น) และรันแบบสุ่มด้วย seed ที่ทำซ้ำได้ (`utplsql.run.randomOrder`)
+- 🧭 **ทรีตามแท็ก** — จัดระเบียบ Test Explorer เป็น **Tag > Suite > Test** ด้วย `utplsql.organization = tag` (suite ที่มีหลายแท็กจะปรากฏใต้แต่ละแท็ก) และแสดง `[tag1, tag2]` บนป้ายด้วย `utplsql.showTagsInTree`
+- ♻️ **รันอัตโนมัติเมื่อบันทึก** — รัน suite ของ `.pks` ที่บันทึกอีกครั้งด้วย `utplsql.autoRun = onSave` พร้อม debounce ต่อไฟล์ (`utplsql.autoRunDelayMs`) และนโยบายคิวเมื่อมีการรันอยู่แล้ว (`utplsql.autoRunQueue`: `skip`/`replace`)
 - 🗄️ **การค้นหาแบบ DB-first** — สร้างทรีจาก `ut_runner.get_suites_info` และสร้างแคชคำอธิบายประกอบใหม่จากพาเลตต์
 - 🌳 **ทรีเทสต์แบบ lazy** — ในโหมด `schema` แพ็กเกจ/ชุดเทสต์/เทสต์จะถูกโหลดเมื่อขยาย จึงเปิดสคีมาขนาดใหญ่ได้ทันที
 - 📁 **เวิร์กสเปซแบบ multi-root** — แต่ละโฟลเดอร์ของเวิร์กสเปซมีชุดเทสต์ของตัวเอง โดยค้นหา รัน และ coverage แยกกัน
@@ -60,7 +62,7 @@ tags: [readme]
 
 ### ดีบักเกอร์
 
-- 🐛 **การดีบัก PL/SQL** — breakpoints และการดีบักแบบทีละขั้นของเทสต์ utPLSQL ผ่าน `DBMS_DEBUG` (Debug Adapter เนทีฟ)
+- 🐛 **การดีบัก PL/SQL** — breakpoints และการดีบักแบบทีละขั้นของเทสต์ utPLSQL ผ่าน `DBMS_DEBUG` (Debug Adapter เนทีฟ); ดีบัก **ที่เคอร์เซอร์** เทสต์ที่ **ล้มเหลว** หรือ **การรันครั้งล่าสุด** จากพาเลตต์ (`utPLSQL: Debug Test at Cursor`, `Debug Failed Tests`, `Debug Last Run`)
 
 ### การเชื่อมต่อและความปลอดภัย
 
@@ -76,7 +78,8 @@ tags: [readme]
 ### UX และการวินิจฉัย
 
 - ✅ **การตกแต่งแบบอินไลน์** — ไอคอน ✓/✗/⚠ ในตัวแก้ไขหลังการรัน พร้อม tooltip ของความล้มเหลวและ overview ruler
-- 📌 **แถบสถานะ (Status Bar)** — ตัวบ่งชี้พร้อมจำนวนผ่าน/ล้มเหลว ระยะเวลา และความคืบหน้าแบบเรียลไทม์
+- 🔬 **diff แบบอินไลน์ ค่าคาดหวัง × ค่าจริง** — เมื่อ assertion ล้มเหลว Test Explorer จะแสดง **diff เนทีฟ** ของ VS Code พร้อมค่า *Expected*/*Actual* ที่ดึงจากข้อความของ reporter
+- 📌 **แถบสถานะ (Status Bar)** — ตัวบ่งชี้พร้อมจำนวนผ่าน/ล้มเหลว ระยะเวลา และความคืบหน้าแบบเรียลไทม์; คลิก **ปุ่มสลับ coverage** เพื่อสลับโหมด coverage ของเซสชัน (`utPLSQL: Toggle Coverage`)
 - 🎯 **Jump to failure** — นำทางตรงไปยังบรรทัดของ assertion ที่ล้มเหลว (ผ่าน "Go to Error" เนทีฟ)
 - 🧱 **การวินิจฉัยการคอมไพล์** — หลังการรันแต่ละครั้ง ข้อผิดพลาดการคอมไพล์ PL/SQL (`ALL_ERRORS`) จะแสดงใน Problems Panel ภายใต้ source `utPLSQL Compilation` (การตั้งค่า `utplsql.compilationDiagnostics.enabled`)
 - ⏳ **ความคืบหน้าและการยกเลิก** — การรันที่ยาวนานจะแสดงการแจ้งเตือนความคืบหน้าพร้อมจำนวนและปุ่ม *Cancel* (พร้อม `utplsql.timeoutMinutes` แบบเลือกได้)

@@ -44,7 +44,9 @@ Run and debug **utPLSQL** (Oracle PL/SQL) tests right in VS Code — native **Te
 - 🖱️ **Context menu** — right-click a **folder** or a **`.pks`/`.pkb`** file (in the Explorer or in the editor) to run tests.
 - 🔁 **Smart Re-run** — Rerun Last, Run at Cursor, Run Failed Only with a single shortcut.
 - 🧩 **Schema-aware tree** — organize tests by Schema > Package > Suite > Test in the Test Explorer.
-- 🏷️ **Tags and random order** — filter tests with `utplsql.tags` (e.g. `fast & !integration`) and run in random order with a reproducible seed (`utplsql.run.randomOrder`).
+- 🏷️ **Tags and random order** — filter tests with `utplsql.tags` (e.g. `fast & !integration`) or the `utPLSQL: Run Tests by Tag...` command (multi-select QuickPick; `!tag` excludes), and run in random order with a reproducible seed (`utplsql.run.randomOrder`).
+- 🧭 **Tag-based tree** — organize the Test Explorer as **Tag > Suite > Test** with `utplsql.organization = tag` (a suite with several tags appears under each tag) and show `[tag1, tag2]` on the labels with `utplsql.showTagsInTree`.
+- ♻️ **Auto-run on save** — re-run the suites of the saved `.pks` with `utplsql.autoRun = onSave`, with a per-file debounce (`utplsql.autoRunDelayMs`) and a queue policy when a run is in progress (`utplsql.autoRunQueue`: `skip`/`replace`).
 - 🗄️ **Database-first discovery** — build the tree from `ut_runner.get_suites_info` and rebuild the annotation cache from the palette.
 - 🌳 **Lazy test tree** — in `schema` mode, packages/suites/tests are resolved on demand when you expand, so large schemas open instantly.
 - 📁 **Multi-root workspace** — every workspace folder gets its own suites, with independent discovery, execution and coverage.
@@ -60,7 +62,7 @@ Run and debug **utPLSQL** (Oracle PL/SQL) tests right in VS Code — native **Te
 
 ### Debugger
 
-- 🐛 **PL/SQL Debug** — breakpoints and step debugging of utPLSQL tests via `DBMS_DEBUG` (native Debug Adapter).
+- 🐛 **PL/SQL Debug** — breakpoints and step debugging of utPLSQL tests via `DBMS_DEBUG` (native Debug Adapter); debug **at cursor**, the **failed** tests or the **last run** from the palette (`utPLSQL: Debug Test at Cursor`, `Debug Failed Tests`, `Debug Last Run`).
 
 ### Connections & security
 
@@ -76,7 +78,8 @@ Run and debug **utPLSQL** (Oracle PL/SQL) tests right in VS Code — native **Te
 ### UX & diagnostics
 
 - ✅ **Inline decorations** — ✓/✗/⚠ icons in the editor after execution, with failure tooltip and overview ruler.
-- 📌 **Status Bar** — indicator with pass/fail count, duration, and real-time progress.
+- 🔬 **Inline expected × actual diff** — on assertion failures, the Test Explorer shows VS Code's **native diff** with the *Expected*/*Actual* values extracted from the reporter message.
+- 📌 **Status Bar** — indicator with pass/fail count, duration and real-time progress; click the **coverage toggle** to switch the session coverage mode (`utPLSQL: Toggle Coverage`).
 - 🎯 **Jump to failure** — direct navigation to the line of the assertion that failed (via native "Go to Error").
 - 🧱 **Compilation diagnostics** — after every run, PL/SQL compilation errors (`ALL_ERRORS`) show up in the Problems Panel under the `utPLSQL Compilation` source (setting `utplsql.compilationDiagnostics.enabled`).
 - ⏳ **Progress and cancellation** — long runs show a progress notification with counts and a *Cancel* button (plus the optional `utplsql.timeoutMinutes`).
@@ -318,6 +321,9 @@ All extension commands (palette `Ctrl+Shift+P` prefix `utPLSQL:`):
 | `utPLSQL: Set wallet password` | Sets or clears the active profile's Oracle Cloud wallet password (stored in SecretStorage) | — |
 | `utPLSQL: Run with Reporter (Export)` | Runs the selection with a chosen database reporter and writes the output to Output/file (does not change Test Explorer results) | Test Explorer item context menu |
 | `utPLSQL: Debug test (PL/SQL)` | Starts a debug session of the test under the active file | — |
+| `utPLSQL: Debug Test at Cursor` | Starts a debug session of the `%test`/`%suite` under the cursor | — |
+| `utPLSQL: Debug Failed Tests` | Starts a debug session of the tests that failed in the last run (QuickPick when several) | — |
+| `utPLSQL: Debug Last Run` | Starts a debug session of the last run | — |
 | `utPLSQL: Compile for Debug` | Compiles the selected file/folder object with debug information | — |
 | `utPLSQL: Rebuild Annotation Cache` | Rebuilds the utPLSQL annotation cache in the database and refreshes the tree | — |
 | `utPLSQL: Run script` | Runs the script open in the editor against a connection profile | Right-click → script file |

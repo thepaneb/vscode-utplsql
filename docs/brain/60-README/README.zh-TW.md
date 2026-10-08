@@ -44,7 +44,9 @@ tags: [readme]
 - 🖱️ **上下文選單** — 在資源管理器或編輯器中，對**資料夾**或 **`.pks`/`.pkb`** 檔案按一下滑鼠右鍵即可執行測試。
 - 🔁 **智慧重新執行** — Rerun Last、Run at Cursor、Run Failed Only 只需一個快捷鍵。
 - 🧩 **Schema 感知的樹狀結構** — 在 Test Explorer 中依 Schema > Package > Suite > Test 組織測試。
-- 🏷️ **標籤與隨機順序** — 使用 `utplsql.tags`（例如 `fast & !integration`）篩選測試，並以可重現的種子隨機順序執行（`utplsql.run.randomOrder`）。
+- 🏷️ **標籤與隨機順序** — 使用 `utplsql.tags`（例如 `fast & !integration`）或 `utPLSQL: Run Tests by Tag...` 命令（多選 QuickPick；`!tag` 表示排除）篩選測試，並以可重現的種子隨機順序執行（`utplsql.run.randomOrder`）。
+- 🧭 **依標籤的樹狀結構** — 使用 `utplsql.organization = tag` 將 Test Explorer 組織為 **Tag > Suite > Test**（含多個標籤的套件會出現在每個標籤下），並以 `utplsql.showTagsInTree` 在標籤上顯示 `[tag1, tag2]`。
+- ♻️ **儲存時自動執行** — 使用 `utplsql.autoRun = onSave` 重新執行已儲存 `.pks` 的套件，支援每個檔案的防抖（`utplsql.autoRunDelayMs`）以及執行中時的佇列原則（`utplsql.autoRunQueue`：`skip`/`replace`）。
 - 🗄️ **資料庫優先探索** — 從 `ut_runner.get_suites_info` 建構樹狀結構，並從命令面板重建註解快取。
 - 🌳 **延遲載入的測試樹** — 在 `schema` 模式下，package/suite/test 於展開時按需解析，因此大型 schema 可即時開啟。
 - 📁 **多根工作區** — 每個工作區資料夾擁有自己的測試套件，探索、執行與涵蓋率各自獨立。
@@ -60,7 +62,7 @@ tags: [readme]
 
 ### 偵錯工具
 
-- 🐛 **PL/SQL 除錯** — 透過 `DBMS_DEBUG` 對 utPLSQL 測試進行中斷點與逐步除錯（原生除錯介面卡）。
+- 🐛 **PL/SQL 除錯** — 透過 `DBMS_DEBUG` 對 utPLSQL 測試進行中斷點與逐步除錯（原生除錯介面卡）；可從命令面板除錯**游標處**、**失敗的**測試或**上次執行**（`utPLSQL: Debug Test at Cursor`、`Debug Failed Tests`、`Debug Last Run`）。
 
 ### 連線與安全性
 
@@ -76,7 +78,8 @@ tags: [readme]
 ### UX 與診斷
 
 - ✅ **內嵌裝飾** — 執行後在編輯器中顯示 ✓/✗/⚠ 圖示，並帶有失敗提示與概覽標尺。
-- 📌 **狀態列** — 顯示通過/失敗數量、持續時間與即時進度的指示器。
+- 🔬 **內嵌期望 × 實際差異** — 斷言失敗時，Test Explorer 會顯示 VS Code 的**原生 diff**，其中包含從 reporter 訊息擷取的 *Expected*/*Actual* 值。
+- 📌 **狀態列** — 顯示通過/失敗數量、持續時間與即時進度的指示器；點擊**涵蓋率切換**可切換工作階段的涵蓋率模式（`utPLSQL: Toggle Coverage`）。
 - 🎯 **跳轉至失敗** — 直接導覽到失敗的斷言所在行（透過原生的 "Go to Error"）。
 - 🧱 **編譯診斷** — 每次執行後，PL/SQL 編譯錯誤（`ALL_ERRORS`）會以 source `utPLSQL Compilation` 顯示於 Problems Panel（設定 `utplsql.compilationDiagnostics.enabled`）。
 - ⏳ **進度與取消** — 長時間執行會顯示含計數的進度通知與 *Cancel* 按鈕（以及選用的 `utplsql.timeoutMinutes`）。

@@ -35,7 +35,9 @@ Jalankan dan debug pengujian **utPLSQL** (Oracle PL/SQL) langsung di VS Code —
 - 🖱️ **Menu konteks** — klik kanan pada **folder** atau file **`.pks`/`.pkb`** (di Explorer atau di editor) untuk menjalankan pengujian.
 - 🔁 **Smart Re-run** — Rerun Last, Run at Cursor, Run Failed Only dengan satu pintasan.
 - 🧩 **Pohon sadar-schema** — atur pengujian berdasarkan Schema > Package > Suite > Test di Test Explorer.
-- 🏷️ **Tag dan urutan acak** — filter pengujian dengan `utplsql.tags` (mis. `fast & !integration`) dan jalankan dalam urutan acak dengan seed yang dapat direproduksi (`utplsql.run.randomOrder`).
+- 🏷️ **Tag dan urutan acak** — filter pengujian dengan `utplsql.tags` (mis. `fast & !integration`) atau perintah `utPLSQL: Run Tests by Tag...` (QuickPick pilih-banyak; `!tag` mengecualikan) dan jalankan dalam urutan acak dengan seed yang dapat direproduksi (`utplsql.run.randomOrder`).
+- 🧭 **Pohon berbasis tag** — atur Test Explorer sebagai **Tag > Suite > Test** dengan `utplsql.organization = tag` (suite dengan beberapa tag muncul di bawah setiap tag) dan tampilkan `[tag1, tag2]` pada label dengan `utplsql.showTagsInTree`.
+- ♻️ **Jalankan otomatis saat menyimpan** — jalankan ulang suite dari `.pks` yang disimpan dengan `utplsql.autoRun = onSave`, dengan debounce per file (`utplsql.autoRunDelayMs`) dan kebijakan antrean saat ada eksekusi berjalan (`utplsql.autoRunQueue`: `skip`/`replace`).
 - 🗄️ **Penemuan DB-first** — bangun pohon dari `ut_runner.get_suites_info` dan bangun ulang cache anotasi dari palet.
 - 🌳 **Pohon tes malas (lazy)** — dalam mode `schema`, package/suite/tes diurai saat diperluas, sehingga skema besar terbuka seketika.
 - 📁 **Workspace multi-root** — setiap folder workspace memiliki suite sendiri, dengan penemuan, eksekusi, dan cakupan yang independen.
@@ -51,7 +53,7 @@ Jalankan dan debug pengujian **utPLSQL** (Oracle PL/SQL) langsung di VS Code —
 
 ### Debugger
 
-- 🐛 **Debug PL/SQL** — breakpoint dan debugging langkah demi langkah untuk pengujian utPLSQL melalui `DBMS_DEBUG` (Debug Adapter asli).
+- 🐛 **Debug PL/SQL** — breakpoint dan debugging langkah demi langkah untuk pengujian utPLSQL melalui `DBMS_DEBUG` (Debug Adapter asli); debug **di kursor**, pengujian yang **gagal**, atau **eksekusi terakhir** dari palet (`utPLSQL: Debug Test at Cursor`, `Debug Failed Tests`, `Debug Last Run`).
 
 ### Koneksi dan keamanan
 
@@ -67,7 +69,8 @@ Jalankan dan debug pengujian **utPLSQL** (Oracle PL/SQL) langsung di VS Code —
 ### UX dan diagnostik
 
 - ✅ **Dekorasi inline** — ikon ✓/✗/⚠ di editor setelah eksekusi, dengan tooltip kegagalan dan overview ruler.
-- 📌 **Status Bar** — indikator dengan jumlah lolos/gagal, durasi, dan progres waktu nyata.
+- 🔬 **Diff inline ekspektasi × aktual** — saat assertion gagal, Test Explorer menampilkan **diff asli** VS Code dengan nilai *Expected*/*Actual* yang diekstrak dari pesan reporter.
+- 📌 **Status Bar** — indikator dengan jumlah lolos/gagal, durasi, dan progres waktu nyata; klik **toggle cakupan** untuk beralih mode cakupan sesi (`utPLSQL: Toggle Coverage`).
 - 🎯 **Langsung ke kegagalan** — navigasi langsung ke baris asersi yang gagal (melalui "Go to Error" asli).
 - 🧱 **Diagnostik kompilasi** — setelah setiap eksekusi, kesalahan kompilasi PL/SQL (`ALL_ERRORS`) muncul di Problems Panel dengan source `utPLSQL Compilation` (setelan `utplsql.compilationDiagnostics.enabled`).
 - ⏳ **Progres dan pembatalan** — eksekusi panjang menampilkan notifikasi progres dengan jumlah dan tombol *Cancel* (plus `utplsql.timeoutMinutes` opsional).

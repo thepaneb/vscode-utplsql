@@ -44,7 +44,9 @@ tags: [readme]
 - 🖱️ **コンテキストメニュー** — **フォルダー**または **`.pks`/`.pkb`** ファイルを右クリック（Explorer またはエディター内）してテストを実行。
 - 🔁 **スマート再実行** — ショートカット 1 つで Rerun Last / Run at Cursor / Run Failed Only。
 - 🧩 **スキーマ認識ツリー** — Test Explorer で Schema > Package > Suite > Test の順にテストを整理。
-- 🏷️ **タグとランダム順** — `utplsql.tags`（例: `fast & !integration`）でテストを絞り込み、再現可能なシード（`utplsql.run.randomOrder`）でランダム順に実行します。
+- 🏷️ **タグとランダム順** — `utplsql.tags`（例: `fast & !integration`）または `utPLSQL: Run Tests by Tag...` コマンド（複数選択 QuickPick、`!tag` で除外）でテストを絞り込み、再現可能なシード（`utplsql.run.randomOrder`）でランダム順に実行します。
+- 🧭 **タグベースのツリー** — `utplsql.organization = tag` で Test Explorer を **Tag > Suite > Test** として整理し（複数タグを持つスイートは各タグの下に表示されます）、`utplsql.showTagsInTree` でラベルに `[tag1, tag2]` を表示します。
+- ♻️ **保存時の自動実行** — 保存された `.pks` のスイートを `utplsql.autoRun = onSave` で再実行します。ファイル単位の debounce（`utplsql.autoRunDelayMs`）と、実行中の場合のキューポリシー（`utplsql.autoRunQueue`: `skip`/`replace`）を備えます。
 - 🗄️ **DB ファーストの探索** — `ut_runner.get_suites_info` からツリーを構築し、パレットから注釈キャッシュを再構築します。
 - 🌳 **遅延読み込みのテストツリー** — `schema` モードでは、展開時に package/suite/test を必要に応じて解決するため、大きなスキーマでも即座に開きます。
 - 📁 **マルチルート ワークスペース** — 各ワークスペース フォルダーが独自のスイートを持ち、検出・実行・カバレッジが独立します。
@@ -60,7 +62,7 @@ tags: [readme]
 
 ### デバッガー
 
-- 🐛 **PL/SQL デバッグ** — `DBMS_DEBUG` による utPLSQL テストのブレークポイントとステップデバッグ（ネイティブ Debug Adapter）。
+- 🐛 **PL/SQL デバッグ** — `DBMS_DEBUG` による utPLSQL テストのブレークポイントとステップデバッグ（ネイティブ Debug Adapter）。パレットから**カーソル位置**、**失敗した**テスト、または**最後の実行**をデバッグできます（`utPLSQL: Debug Test at Cursor`、`Debug Failed Tests`、`Debug Last Run`）。
 
 ### 接続とセキュリティ
 
@@ -76,7 +78,8 @@ tags: [readme]
 ### UX と診断
 
 - ✅ **インラインデコレーション** — 実行後、エディターに ✓/✗/⚠ アイコンを表示。失敗のツールチップとオーバービュールーラー付き。
-- 📌 **ステータスバー** — 合格/失敗数、所要時間、リアルタイムの進行状況を示すインジケーター。
+- 🔬 **インラインの期待値 × 実際値の差分** — アサーション失敗時に、Test Explorer が reporter メッセージから抽出した *Expected*/*Actual* 値とともに VS Code の**ネイティブ diff**を表示します。
+- 📌 **ステータスバー** — 合格/失敗数、所要時間、リアルタイムの進行状況を示すインジケーター。**カバレッジ切り替え**をクリックするとセッションのカバレッジモードを切り替えます（`utPLSQL: Toggle Coverage`）。
 - 🎯 **失敗箇所へのジャンプ** — 失敗したアサーションの行へ直接移動（ネイティブの "Go to Error" 経由）。
 - 🧱 **コンパイル診断** — 実行のたびに PL/SQL のコンパイルエラー（`ALL_ERRORS`）が Problems Panel に source `utPLSQL Compilation` で表示されます（設定 `utplsql.compilationDiagnostics.enabled`）。
 - ⏳ **進捗とキャンセル** — 長時間の実行ではカウント付きの進捗通知と *Cancel* ボタンを表示します（任意で `utplsql.timeoutMinutes`）。

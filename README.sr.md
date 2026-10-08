@@ -35,7 +35,9 @@ Pokrenite i debugujte **utPLSQL** (Oracle PL/SQL) testove direktno u VS Code-u �
 - 🖱️ **Контекстни мени** — десни клик на **фасциклу** или на датотеку **`.pks`/`.pkb`** (у Explorer-у или у едитору) за покретање тестова.
 - 🔁 **Smart Re-run** — Rerun Last, Run at Cursor, Run Failed Only са једном пречицом.
 - 🧩 **Дрво свесно шеме** — организуј тестове по Schema > Package > Suite > Test у Test Explorer-у.
-- 🏷️ **Ознаке и насумичан ред** — филтрирај тестове помоћу `utplsql.tags` (нпр. `fast & !integration`) и покрени у насумичном реду са поновљивим seed-ом (`utplsql.run.randomOrder`).
+- 🏷️ **Ознаке и насумичан ред** — филтрирај тестове помоћу `utplsql.tags` (нпр. `fast & !integration`) или командом `utPLSQL: Run Tests by Tag...` (QuickPick са вишеструким избором; `!tag` искључује) и покрени у насумичном реду са поновљивим seed-ом (`utplsql.run.randomOrder`).
+- 🧭 **Дрво по ознакама** — организуј Test Explorer као **Tag > Suite > Test** помоћу `utplsql.organization = tag` (суит са више ознака појављује се под сваком ознаком) и прикажи `[tag1, tag2]` на лабелама помоћу `utplsql.showTagsInTree`.
+- ♻️ **Аутоматско покретање при чувању** — поново покрени суитове сачуваног `.pks` помоћу `utplsql.autoRun = onSave`, са debounce-ом по датотеци (`utplsql.autoRunDelayMs`) и политиком реда када покретање већ траје (`utplsql.autoRunQueue`: `skip`/`replace`).
 - 🗄️ **DB-first откривање** — изгради стабло из `ut_runner.get_suites_info` и поново изгради кеш напомена са палете.
 - 🌳 **Lenjivo stablo testova** — u `schema` režimu paketi/suitovi/testovi se razrešavaju pri proširenju, pa se velike šeme otvaraju trenutno.
 - 📁 **Radni prostor sa više korena** — svaki folder radnog prostora ima sopstvene suite, sa nezavisnim otkrivanjem, izvršavanjem i pokrivenošću.
@@ -51,7 +53,7 @@ Pokrenite i debugujte **utPLSQL** (Oracle PL/SQL) testove direktno u VS Code-u �
 
 ### Debager
 
-- 🐛 **PL/SQL Debug** — breakpoint-и и степеновано отклањање грешака utPLSQL тестова преко `DBMS_DEBUG` (нативни Debug Adapter).
+- 🐛 **PL/SQL Debug** — breakpoint-и и степеновано отклањање грешака utPLSQL тестова преко `DBMS_DEBUG` (нативни Debug Adapter); отклањај грешке **на курсору**, **неуспеле** тестове или **последње покретање** из палете (`utPLSQL: Debug Test at Cursor`, `Debug Failed Tests`, `Debug Last Run`).
 
 ### Veze i bezbednost
 
@@ -67,7 +69,8 @@ Pokrenite i debugujte **utPLSQL** (Oracle PL/SQL) testove direktno u VS Code-u �
 ### UX i dijagnostika
 
 - ✅ **Инлине декорације** — иконе ✓/✗/⚠ у едитору након извршавања, са tooltip-ом о грешци и overview ruler-ом.
-- 📌 **Status Bar** — индикатор са бројачем pass/fail, трајањем и напретком у реалном времену.
+- 🔬 **Inline diff очекиваног × стварног** — при неуспелим тврдњама, Test Explorer приказује **нативни diff** VS Code-а са вредностима *Expected*/*Actual* извученим из поруке reporter-а.
+- 📌 **Status Bar** — индикатор са бројачем pass/fail, трајањем и напретком у реалном времену; кликни на **прекидач покривености** да промениш режим покривености сесије (`utPLSQL: Toggle Coverage`).
 - 🎯 **Скок до грешке** — директна навигација до линије тврдње (assertion) која је пала (преко нативног „Go to Error").
 - 🧱 **Diagnostika kompilacije** — posle svakog pokretanja, greške kompilacije PL/SQL (`ALL_ERRORS`) se prikazuju u Problems Panelu pod izvorom `utPLSQL Compilation` (podešavanje `utplsql.compilationDiagnostics.enabled`).
 - ⏳ **Napredak i otkazivanje** — duga pokretanja prikazuju obaveštenje o napretku sa brojačem i dugmetom *Cancel* (plus opciono `utplsql.timeoutMinutes`).

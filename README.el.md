@@ -35,7 +35,9 @@
 - 🖱️ **Μενού περιβάλλοντος** — δεξί κλικ σε έναν **φάκελο** ή σε ένα αρχείο **`.pks`/`.pkb`** (στο Explorer ή στον editor) για να εκτελέσετε tests.
 - 🔁 **Smart Re-run** — Rerun Last, Run at Cursor, Run Failed Only με μία μόνο συντόμευση.
 - 🧩 **Schema-aware tree** — οργάνωση tests ανά Schema > Package > Suite > Test στο Test Explorer.
-- 🏷️ **Tags και τυχαία σειρά** — φιλτράρετε τα test με `utplsql.tags` (π.χ. `fast & !integration`) και εκτελέστε σε τυχαία σειρά με αναπαραγώγιμο seed (`utplsql.run.randomOrder`).
+- 🏷️ **Tags και τυχαία σειρά** — φιλτράρετε τα test με `utplsql.tags` (π.χ. `fast & !integration`) ή την εντολή `utPLSQL: Run Tests by Tag...` (QuickPick πολλαπλής επιλογής· το `!tag` εξαιρεί), και εκτελέστε σε τυχαία σειρά με αναπαραγώγιμο seed (`utplsql.run.randomOrder`).
+- 🧭 **Δέντρο ανά tag** — οργανώστε το Test Explorer ως **Tag > Suite > Test** με `utplsql.organization = tag` (ένα suite με πολλά tags εμφανίζεται κάτω από κάθε tag) και εμφανίστε `[tag1, tag2]` στις ετικέτες με `utplsql.showTagsInTree`.
+- ♻️ **Αυτόματη εκτέλεση στην αποθήκευση** — επανεκτελέστε τα suites του αποθηκευμένου `.pks` με `utplsql.autoRun = onSave`, με debounce ανά αρχείο (`utplsql.autoRunDelayMs`) και πολιτική ουράς όταν εκτελείται ήδη κάτι (`utplsql.autoRunQueue`: `skip`/`replace`).
 - 🗄️ **Ανακάλυψη DB-first** — χτίστε το δέντρο από το `ut_runner.get_suites_info` και ξαναχτίστε την προσωρινή μνήμη σχολίων από την παλέτα.
 - 🌳 **Αργό (lazy) δέντρο δοκιμών** — στη λειτουργία `schema`, τα packages/suites/tests επιλύονται κατά την ανάπτυξη, οπότε τα μεγάλα σχήματα ανοίγουν ακαριαία.
 - 📁 **Χώρος εργασίας πολλαπλών ριζών** — κάθε φάκελος του workspace έχει τα δικά του suites, με ανεξάρτητη ανακάλυψη, εκτέλεση και κάλυψη.
@@ -51,7 +53,7 @@
 
 ### Αποσφαλματωτής
 
-- 🐛 **PL/SQL Debug** — breakpoints και βηματική αποσφαλμάτωση utPLSQL tests μέσω `DBMS_DEBUG` (native Debug Adapter).
+- 🐛 **PL/SQL Debug** — breakpoints και βηματική αποσφαλμάτωση utPLSQL tests μέσω `DBMS_DEBUG` (native Debug Adapter)· αποσφαλματώστε **στον κέρσορα**, τα **αποτυχημένα** tests ή την **τελευταία εκτέλεση** από την παλέτα (`utPLSQL: Debug Test at Cursor`, `Debug Failed Tests`, `Debug Last Run`).
 
 ### Συνδέσεις και ασφάλεια
 
@@ -67,7 +69,8 @@
 ### UX και διαγνωστικά
 
 - ✅ **Inline decorations** — εικονίδια ✓/✗/⚠ στον editor μετά την εκτέλεση, με tooltip αποτυχίας και overview ruler.
-- 📌 **Status Bar** — ένδειξη με πλήθος επιτυχιών/αποτυχιών, διάρκεια και πρόοδο σε πραγματικό χρόνο.
+- 🔬 **Inline diff αναμενόμενου × πραγματικού** — σε αποτυχίες assertion, το Test Explorer δείχνει το **native diff** του VS Code με τις τιμές *Expected*/*Actual* που εξάγονται από το μήνυμα του reporter.
+- 📌 **Status Bar** — ένδειξη με πλήθος επιτυχιών/αποτυχιών, διάρκεια και πρόοδο σε πραγματικό χρόνο· κάντε κλικ στον **διακόπτη κάλυψης** για να αλλάξετε τη λειτουργία κάλυψης της συνεδρίας (`utPLSQL: Toggle Coverage`).
 - 🎯 **Jump to failure** — άμεση μετάβαση στη γραμμή του assertion που απέτυχε (μέσω του εγγενούς "Go to Error").
 - 🧱 **Διαγνωστικά μεταγλώττισης** — μετά από κάθε εκτέλεση, τα σφάλματα μεταγλώττισης PL/SQL (`ALL_ERRORS`) εμφανίζονται στο Problems Panel με source `utPLSQL Compilation` (ρύθμιση `utplsql.compilationDiagnostics.enabled`).
 - ⏳ **Πρόοδος και ακύρωση** — οι μεγάλες εκτελέσεις εμφανίζουν ειδοποίηση προόδου με μετρητή και κουμπί *Cancel* (και προαιρετικό `utplsql.timeoutMinutes`).
