@@ -39,7 +39,7 @@ Passos realizados:
       materializa (`prds:`/`implementacao:`/`testes:`) — ou confirmei `nenhuma` em
       `## Impacto no cérebro`; `npm run brain:rules` verde
 - [ ] Atualizei o `CHANGELOG.md`
-- [ ] Se alterei settings em `package.json`, mantive as descrições em português, no padrão do projeto
+- [ ] Se alterei settings em `package.json`, mantive as descrições em inglês (padrão do Marketplace)
 - [ ] Se alterei a montagem de SQL/PL-SQL, revisei possíveis impactos de injeção (binds)
 
 ## Screenshots (se aplicável)

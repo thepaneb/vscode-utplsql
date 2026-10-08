@@ -1,7 +1,7 @@
 {
   "name": "vscode-utplsql",
   "displayName": "utPLSQL Test Runner",
-  "description": "Roda testes utPLSQL pelo Test Explorer do VSCode, com menu de contexto e cobertura visual (estilo pytest).",
+  "description": "Run utPLSQL (Oracle PL/SQL) tests from the VS Code Test Explorer, with context menus and visual coverage (pytest-style).",
   "version": "0.15.0",
   "publisher": "paneb",
   "author": "Gil Cleber Barboza",
@@ -42,7 +42,7 @@
   "capabilities": {
     "untrustedWorkspaces": {
       "supported": false,
-      "description": "Os perfis de conexão apontam para um banco e a senha fica no SecretStorage; a extensão fica desabilitada até o workspace ser confiável (Workspaces: Trust)."
+      "description": "Connection profiles point to a database and the password is kept in SecretStorage; the extension stays disabled until the workspace is trusted (Workspaces: Trust)."
     }
   },
   "main": "./dist/extension.js",
@@ -54,7 +54,7 @@
           "type": "array",
           "default": [],
           "scope": "machine",
-          "markdownDescription": "Perfis de conexão Oracle salvos para alternar rapidamente entre ambientes (DEV, TEST, PROD). Cada perfil pode sobrescrever `connection`, `sourcePath`, `coverageOwner`, etc. A **senha é guardada no SecretStorage** (keychain do VSCode), não em texto plano nas settings.",
+          "markdownDescription": "Saved Oracle connection profiles to switch quickly between environments (DEV, TEST, PROD). Each profile can override `connection`, `sourcePath`, `coverageOwner`, etc. The **password is stored in SecretStorage** (VS Code keychain), not in plain text in the settings.",
           "items": {
             "type": "object",
             "properties": {
@@ -69,7 +69,7 @@
               },
               "description": {
                 "type": "string",
-                "description": "Descrição amigável exibida no picker de conexão."
+                "description": "Friendly description shown in the connection picker."
               },
               "charset": {
                 "type": "string",
@@ -79,7 +79,7 @@
                   "win1252"
                 ],
                 "default": "utf8",
-                "description": "Encoding para ler arquivos de script (runScriptFile/runScriptFolder). Omitido = utf8."
+                "description": "Encoding used to read script files (runScriptFile/runScriptFolder). Omitted = utf8."
               },
               "sourcePath": {
                 "type": "string"
@@ -95,7 +95,7 @@
               },
               "walletLocation": {
                 "type": "string",
-                "description": "Localização da wallet Oracle Cloud (thin), ex.: /caminho/para/wallet. A senha da wallet fica no SecretStorage — use o comando \"utPLSQL: Definir senha da wallet\"."
+                "description": "Oracle Cloud wallet location (thin), e.g. /path/to/wallet. The wallet password is kept in SecretStorage — use the command \"utPLSQL: Set wallet password\"."
               },
               "isDefault": {
                 "type": "boolean"
@@ -114,18 +114,18 @@
           "type": "string",
           "default": "",
           "scope": "machine",
-          "markdownDescription": "ID do perfil de conexão ativo (`utplsql.profiles`). Quando definido, sobrescreve `utplsql.connection`."
+          "markdownDescription": "ID of the active connection profile (`utplsql.profiles`). When set, it overrides `utplsql.connection`."
         },
         "utplsql.connection": {
           "type": "string",
           "default": "",
           "scope": "machine",
-          "markdownDescription": "String de conexão Oracle (`usuario/senha@//host:porta/servico`). Se vazio, usa a variável de ambiente `UTPLSQL_CONN`; se ainda assim vazio, a extensão pergunta (e mantém só na sessão). **Recomendado deixar vazio e usar a variável de ambiente** para não gravar a senha nas settings."
+          "markdownDescription": "Oracle connection string (`user/password@//host:port/service`). If empty, it uses the `UTPLSQL_CONN` environment variable; if still empty, the extension asks for it (and keeps it only for the session). **Recommended to leave it empty and use the environment variable** so the password is not written to the settings."
         },
         "utplsql.sourcePath": {
           "type": "string",
           "default": "install",
-          "description": "Pasta (relativa à raiz do workspace) com o código de produção. Usada no parâmetro -source_path para mapear a cobertura aos arquivos locais."
+          "description": "Folder (relative to the workspace root) with the production code. Used in the -source_path argument to map coverage to local files."
         },
         "utplsql.includePatterns": {
           "type": "array",
@@ -135,12 +135,12 @@
           "default": [
             "**/*.pks"
           ],
-          "description": "Globs para descobrir os specs de teste que contêm as annotations %suite/%test."
+          "description": "Globs used to discover the test specs that contain the `%suite`/`%test` annotations."
         },
         "utplsql.coverageOwner": {
           "type": "string",
           "default": "",
-          "description": "Schema dono dos objetos para o mapeamento de cobertura. Se vazio, usa o usuário da conexão (parte antes de '/'), em maiúsculas."
+          "description": "Schema that owns the objects for coverage mapping. If empty, it uses the connection user (the part before '/'), uppercased."
         },
         "utplsql.coverage.schemes": {
           "type": "array",
@@ -148,7 +148,7 @@
             "type": "string"
           },
           "default": [],
-          "description": "Schemas cobertos (`a_coverage_schemes`). Vazio usa o usuário da conexão (ou `utplsql.coverageOwner`)."
+          "description": "Covered schemas (`a_coverage_schemes`). Empty uses the connection user (or `utplsql.coverageOwner`)."
         },
         "utplsql.coverage.includeObjects": {
           "type": "array",
@@ -156,7 +156,7 @@
             "type": "string"
           },
           "default": [],
-          "description": "Objetos a incluir na cobertura, no formato `OWNER.NAME` (ex.: [\"APP.MINHA_PKG\"]). Útil para objetos alcançados apenas dinamicamente."
+          "description": "Objects to include in coverage, in the `OWNER.NAME` format (e.g. [\"APP.MY_PKG\"]). Useful for objects reached only dynamically."
         },
         "utplsql.coverage.excludeObjects": {
           "type": "array",
@@ -164,39 +164,39 @@
             "type": "string"
           },
           "default": [],
-          "description": "Objetos a excluir da cobertura, no formato `OWNER.NAME` (ex.: [\"UT3.UT_COVERAGE\"])."
+          "description": "Objects to exclude from coverage, in the `OWNER.NAME` format (e.g. [\"UT3.UT_COVERAGE\"])."
         },
         "utplsql.coverage.includeSchemaExpr": {
           "type": "string",
           "default": "",
-          "description": "Expressão regular de schema a incluir na cobertura (ex.: \"^APP$\")."
+          "description": "Regular expression of schemas to include in coverage (e.g. \"^APP$\")."
         },
         "utplsql.coverage.includeObjectExpr": {
           "type": "string",
           "default": "",
-          "description": "Expressão regular de objeto a incluir na cobertura."
+          "description": "Regular expression of objects to include in coverage."
         },
         "utplsql.coverage.excludeSchemaExpr": {
           "type": "string",
           "default": "",
-          "description": "Expressão regular de schema a excluir da cobertura."
+          "description": "Regular expression of schemas to exclude from coverage."
         },
         "utplsql.coverage.excludeObjectExpr": {
           "type": "string",
           "default": "",
-          "description": "Expressão regular de objeto a excluir da cobertura (ex.: \"^UT_\" para o framework utPLSQL)."
+          "description": "Regular expression of objects to exclude from coverage (e.g. \"^UT_\" for the utPLSQL framework)."
         },
         "utplsql.timeoutMinutes": {
           "type": "number",
           "default": 60,
           "minimum": 1,
           "maximum": 1440,
-          "description": "Timeout de uma execução de testes, em minutos. Ao expirar, a execução é cancelada."
+          "description": "Timeout of a test run, in minutes. When it expires, the run is cancelled."
         },
         "utplsql.dbmsOutput": {
           "type": "boolean",
           "default": false,
-          "description": "Captura o DBMS_OUTPUT da sessão de teste e anexa à saída da execução. Útil para depurar."
+          "description": "Captures the DBMS_OUTPUT of the test session and appends it to the run output. Useful for debugging."
         },
         "utplsql.additionalReporters": {
           "type": "array",
@@ -204,57 +204,57 @@
             "type": "string"
           },
           "default": [],
-          "description": "Reporters adicionais para incluir em toda execução (ex.: [\"ut_coverage_html_reporter\"]). Os reporters padrão (documentation, junit e cobertura) são sempre incluídos."
+          "description": "Additional reporters to include on every run (e.g. [\"ut_coverage_html_reporter\"]). The default reporters (documentation, junit and coverage) are always included."
         },
         "utplsql.reporter.clientCharacterSet": {
           "type": "string",
           "default": "",
-          "description": "Charset do cliente para o export com reporter (argumento `a_client_character_set`). Vazio usa o default do reporter."
+          "description": "Client charset for the reporter export (`a_client_character_set` argument). Empty uses the reporter default."
         },
         "utplsql.reporter.colorConsole": {
           "type": "boolean",
           "default": false,
-          "description": "Habilita cor ANSI na saída de reporters textuais de console no export (argumento `a_color_console`)."
+          "description": "Enables ANSI color in the output of textual console reporters in the export (`a_color_console` argument)."
         },
         "utplsql.tags": {
           "type": "string",
           "default": "",
-          "description": "Expressão de tags do utPLSQL (ex.: \"fast & !integration\") para filtrar quais testes executam. Vazio executa todos."
+          "description": "utPLSQL tag expression (e.g. \"fast & !integration\") to filter which tests run. Empty runs all."
         },
         "utplsql.run.randomOrder": {
           "type": "boolean",
           "default": false,
-          "description": "Executa os testes em ordem aleatória, para revelar dependências de ordem entre eles."
+          "description": "Runs the tests in random order, to reveal order dependencies between them."
         },
         "utplsql.run.randomOrderSeed": {
           "type": "number",
           "default": 0,
           "minimum": 0,
-          "description": "Seed da ordem aleatória. 0 = sorteada pelo banco (não reproduzível); maior que 0 reproduz a mesma ordem."
+          "description": "Seed for the random order. 0 = chosen by the database (not reproducible); greater than 0 reproduces the same order."
         },
         "utplsql.oraclePoolMin": {
           "type": "number",
           "default": 2,
           "minimum": 0,
-          "description": "Conexões mínimas mantidas no pool do Oracle runner (node-oracledb)."
+          "description": "Minimum connections kept in the Oracle runner pool (node-oracledb)."
         },
         "utplsql.oraclePoolMax": {
           "type": "number",
           "default": 10,
           "minimum": 1,
-          "description": "Conexões máximas no pool do Oracle runner (node-oracledb)."
+          "description": "Maximum connections in the Oracle runner pool (node-oracledb)."
         },
         "utplsql.oraclePoolIncrement": {
           "type": "number",
           "default": 1,
           "minimum": 1,
-          "description": "Incremento ao expandir o pool do Oracle runner (node-oracledb)."
+          "description": "Increment when expanding the Oracle runner pool (node-oracledb)."
         },
         "utplsql.oraclePoolPingInterval": {
           "type": "number",
           "default": 60,
           "minimum": 0,
-          "description": "Segundos entre health checks das conexões ociosas do pool (node-oracledb). 0 = ping a cada checkout."
+          "description": "Seconds between health checks of idle pool connections (node-oracledb). 0 = ping on every checkout."
         },
         "utplsql.oracleClientMode": {
           "type": "string",
@@ -263,29 +263,29 @@
             "thick"
           ],
           "enumDescriptions": [
-            "Driver thin (padrão): puro JavaScript, sem cliente nativo.",
-            "Driver thick: usa o Oracle Instant Client. Necessário para bancos com NNE (Native Network Encryption). Exige oracleClientLibDir e Reload Window."
+            "Thin driver (default): pure JavaScript, no native client.",
+            "Thick driver: uses the Oracle Instant Client. Required for databases with NNE (Native Network Encryption). Requires oracleClientLibDir and a window reload."
           ],
           "default": "thin",
-          "description": "Modo do driver node-oracledb. Thick é opt-in, pois o NNE não está ativo em todos os bancos."
+          "description": "Mode of the node-oracledb driver. Thick is opt-in, because NNE is not active on every database."
         },
         "utplsql.oracleClientLibDir": {
           "type": "string",
           "default": "",
           "scope": "machine",
-          "markdownDescription": "Diretório do Oracle Instant Client. Obrigatório quando `#utplsql.oracleClientMode#` é `thick`. Ex.: `C:\\oracle\\instantclient_23_5`."
+          "markdownDescription": "Oracle Instant Client directory. Required when `#utplsql.oracleClientMode#` is `thick`. E.g. `C:\\oracle\\instantclient_23_5`."
         },
         "utplsql.oracleClientConfigDir": {
           "type": "string",
           "default": "",
           "scope": "machine",
-          "markdownDescription": "Diretório de configuração Oracle (TNS_ADMIN) com `sqlnet.ora`/`tnsnames.ora`. Opcional; só tem efeito no `thick`."
+          "markdownDescription": "Oracle configuration directory (TNS_ADMIN) with `sqlnet.ora`/`tnsnames.ora`. Optional; only takes effect in `thick`."
         },
         "utplsql.connections.tnsAdminPath": {
           "type": "string",
           "default": "",
           "scope": "machine",
-          "markdownDescription": "Diretório com `tnsnames.ora` para resolver **aliases TNS no driver thin**. Resolução: esta setting → valor user/machine de `sqldeveloper.connections.tnsConfiguration.path` → variável de ambiente `TNS_ADMIN`. Easy Connect segue funcionando normalmente."
+          "markdownDescription": "Directory with `tnsnames.ora` to resolve **TNS aliases in the thin driver**. Resolution: this setting → user/machine value of `sqldeveloper.connections.tnsConfiguration.path` → `TNS_ADMIN` environment variable. Easy Connect keeps working normally."
         },
         "utplsql.organization": {
           "type": "string",
@@ -296,16 +296,16 @@
           ],
           "default": "file",
           "enumDescriptions": [
-            "Organiza os testes por caminho de arquivo (padrão).",
-            "Organiza os testes por schema Oracle (Schema > Package > Suite > Test). Use organization.schemaPattern para definir como extrair o schema do caminho.",
-            "Organiza os testes por tag %tags (Tag > Suite > Test). Suites com múltiplas tags aparecem sob cada tag; sem tag vão para \"(sem tag)\"."
+            "Organizes the tests by file path (default).",
+            "Organizes the tests by Oracle schema (Schema > Package > Suite > Test). Use organization.schemaPattern to define how the schema is extracted from the path.",
+            "Organizes the tests by `%tags` (Tag > Suite > Test). Suites with multiple tags appear under each tag; those without a tag go to \"(no tag)\"."
           ],
-          "description": "Modo de organização da árvore de testes no Test Explorer."
+          "description": "How the test tree is organized in the Test Explorer."
         },
         "utplsql.organization.schemaPattern": {
           "type": "string",
           "default": "db/{schema}/**",
-          "markdownDescription": "Padrão glob para extrair o nome do schema a partir do caminho do arquivo. Use `{schema}` como placeholder. Ex: `db/{schema}/**` extrai `APP` de `db/APP/tests/ut_foo.pks`. Só usado quando `#utplsql.organization#` é `schema`."
+          "markdownDescription": "Glob pattern to extract the schema name from the file path. Use `{schema}` as the placeholder. E.g. `db/{schema}/**` extracts `APP` from `db/APP/tests/ut_foo.pks`. Only used when `#utplsql.organization#` is `schema`."
         },
         "utplsql.discovery.source": {
           "type": "string",
@@ -315,38 +315,38 @@
             "database"
           ],
           "default": "auto",
-          "markdownDescription": "Fonte da árvore de testes no modo `schema`: `auto` usa a API do banco (`ut_runner.get_suites_info`) e cai para `ALL_SOURCE`/arquivos quando indisponível; `database` exige a API; `file` desliga a descoberta via banco."
+          "markdownDescription": "Source of the test tree in `schema` mode: `auto` uses the database API (`ut_runner.get_suites_info`) and falls back to `ALL_SOURCE`/files when unavailable; `database` requires the API; `file` disables database discovery."
         },
         "utplsql.refreshDebounceMs": {
           "type": "number",
           "default": 300,
           "minimum": 0,
-          "description": "Debounce (ms) para coalescer eventos do watcher de arquivos .pks/.pkb antes de atualizar o Test Explorer."
+          "description": "Debounce (ms) to coalesce .pks/.pkb file watcher events before refreshing the Test Explorer."
         },
         "utplsql.codeLens.enabled": {
           "type": "boolean",
           "default": true,
-          "description": "Exibe botões CodeLens Run/Run with Coverage sobre %suite e %test."
+          "description": "Shows Run/Run with Coverage CodeLens buttons over `%suite` and `%test`."
         },
         "utplsql.statusBar.enabled": {
           "type": "boolean",
           "default": true,
-          "description": "Exibe indicador de status dos testes na barra de status."
+          "description": "Shows the test status indicator in the status bar."
         },
         "utplsql.decorations.enabled": {
           "type": "boolean",
           "default": true,
-          "description": "Exibe decorações de pass/fail nas linhas %suite e %test após execução."
+          "description": "Shows pass/fail decorations on the `%suite` and `%test` lines after a run."
         },
         "utplsql.compilationDiagnostics.enabled": {
           "type": "boolean",
           "default": true,
-          "description": "Exibe erros de compilação PL/SQL como sublinhados no editor e no Problems Panel após execução dos testes."
+          "description": "Shows PL/SQL compilation errors as underlines in the editor and in the Problems Panel after the tests run."
         },
         "utplsql.showTagsInTree": {
           "type": "boolean",
           "default": false,
-          "description": "Sufixa [tag1, tag2] no label dos itens do Test Explorer conforme as %tags declaradas na suite/teste."
+          "description": "Suffixes `[tag1, tag2]` to the Test Explorer item labels, according to the `%tags` declared in the suite/test."
         },
         "utplsql.autoRun": {
           "type": "string",
@@ -356,17 +356,17 @@
           ],
           "default": "off",
           "enumDescriptions": [
-            "Desativado (padrão): salvar um .pks não executa nada.",
-            "Re-executa automaticamente as suites do arquivo .pks salvo (modo watch)."
+            "Disabled (default): saving a .pks runs nothing.",
+            "Automatically re-runs the suites of the saved .pks file (watch mode)."
           ],
-          "description": "Auto-run on save: re-executa as suites do arquivo .pks ao salvar."
+          "description": "Auto-run on save: re-runs the suites of the .pks file when it is saved."
         },
         "utplsql.autoRunDelayMs": {
           "type": "number",
           "default": 500,
           "minimum": 100,
           "maximum": 5000,
-          "description": "Debounce (ms) do auto-run por arquivo; saves rápidos do mesmo arquivo disparam uma única execução."
+          "description": "Debounce (ms) of the auto-run per file; fast saves of the same file trigger a single run."
         },
         "utplsql.autoRunQueue": {
           "type": "string",
@@ -376,67 +376,67 @@
           ],
           "default": "skip",
           "enumDescriptions": [
-            "Ignora o auto-run se já houver execução em andamento.",
-            "Reagenda o auto-run para rodar após a execução em andamento."
+            "Skips the auto-run if a run is already in progress.",
+            "Reschedules the auto-run to run after the current run."
           ],
-          "description": "O que fazer quando um auto-run dispara durante uma execução."
+          "description": "What to do when an auto-run is triggered during a run."
         },
         "utplsql.setupDiagnostics.enabled": {
           "type": "boolean",
           "default": true,
-          "description": "Exibe diagnósticos de configuração (conexão, grants, versão) no Problems Panel e oferece quick-fix actions."
+          "description": "Shows configuration diagnostics (connection, grants, version) in the Problems Panel and offers quick-fix actions."
         },
         "utplsql.sqlCoverageEnabled": {
           "type": "boolean",
           "default": false,
-          "markdownDescription": "Habilita rastreio de views via `V$SQL` (cobertura booleana: executada = 100%, não executada = 0%). Requer `GRANT SELECT ON V$SQL` no Oracle."
+          "markdownDescription": "Enables view tracking via `V$SQL` (boolean coverage: executed = 100%, not executed = 0%). Requires `GRANT SELECT ON V$SQL` on Oracle."
         },
         "utplsql.debugger.enabled": {
           "type": "boolean",
           "default": true,
-          "description": "Habilita o suporte a debug de testes PL/SQL (DBMS_DEBUG). Requer node-oracledb e grants."
+          "description": "Enables PL/SQL test debugging support (DBMS_DEBUG). Requires node-oracledb and grants."
         },
         "utplsql.debugger.stopOnException": {
           "type": "boolean",
           "default": true,
-          "description": "Pausa automaticamente em exceções PL/SQL durante o debug."
+          "description": "Automatically pauses on PL/SQL exceptions during debugging."
         },
         "utplsql.debugger.timeoutSeconds": {
           "type": "number",
           "default": 300,
           "minimum": 30,
-          "description": "Timeout (s) da sessão de debug para evitar conexões Oracle zumbis."
+          "description": "Timeout (s) of the debug session to avoid zombie Oracle connections."
         },
         "utplsql.debugger.compileOnDebug": {
           "type": "boolean",
           "default": false,
-          "description": "Compila o objeto com informação de debug (ALTER … COMPILE DEBUG) antes de iniciar a sessão de debug."
+          "description": "Compiles the object with debug information (ALTER … COMPILE DEBUG) before starting the debug session."
         },
         "utplsql.scriptRunner.stopOnError": {
           "type": "boolean",
           "default": true,
-          "description": "Para a execução do script na primeira falha (false = continua registrando as demais)."
+          "description": "Stops script execution on the first failure (false = keeps logging the rest)."
         },
         "utplsql.scriptRunner.autoCommit": {
           "type": "boolean",
           "default": true,
-          "description": "autoCommit em cada statement do script."
+          "description": "autoCommit on each script statement."
         },
         "utplsql.scriptRunner.filePattern": {
           "type": "string",
           "default": "**/*.{sql,pks,pkb,fnc,prc,trg}",
-          "description": "Globs para listar arquivos na execução de pasta de scripts."
+          "description": "Globs to list files when running a script folder."
         },
         "utplsql.scriptRunner.dbmsOutput": {
           "type": "boolean",
           "default": false,
-          "description": "Captura e exibe DBMS_OUTPUT durante a execução do script."
+          "description": "Captures and displays DBMS_OUTPUT during script execution."
         },
         "utplsql.scriptRunner.timeoutSeconds": {
           "type": "number",
           "default": 300,
           "minimum": 30,
-          "description": "Timeout (s) por statement do script (callTimeout)."
+          "description": "Timeout (s) per script statement (callTimeout)."
         },
         "utplsql.language": {
           "type": "string",
@@ -468,7 +468,7 @@
             "vi"
           ],
           "default": "auto",
-          "markdownDescription": "Idioma dos conteúdos textuais da extensão. `auto` segue o idioma do VSCode (15 nativos + bg, el, en-gb, id, ro, sr, th, uk, vi; senão en)."
+          "markdownDescription": "Language of the extension's textual content. `auto` follows the VS Code language (15 native + bg, el, en-gb, id, ro, sr, th, uk, vi; otherwise en)."
         }
       }
     },

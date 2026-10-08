@@ -2,705 +2,705 @@
 
 ## 0.15.0
 
-- **Site público e landing page (GitHub Pages) (PRD-96)**: nova landing page
-  pública indexável em `https://thepaneb.github.io/vscode-utplsql/`, **gerada** do
-  vault (`brain:build` → `site/index.html`) e publicada por
-  `.github/workflows/pages.yml` (GitHub Actions). Traz SEO técnico (title/meta,
+- **Public site and landing page (GitHub Pages) (PRD-96)**: new public,
+  indexable landing page at `https://thepaneb.github.io/vscode-utplsql/`, **generated**
+  from the vault (`brain:build` → `site/index.html`) and published by
+  `.github/workflows/pages.yml` (GitHub Actions). It brings technical SEO (title/meta,
   `canonical`, Open Graph, JSON-LD `SoftwareApplication`, `robots.txt`,
-  `sitemap.xml`) e entra nos controles do repo: `docs:check` valida o site
-  (seção “Site (GitHub Pages)”), `brain:gaps` cobre `site/**` e `site/**` fica
-  fora do VSIX. A documentação completa dentro do site fica para a PRD-97.
+  `sitemap.xml`) and joins the repo's checks: `docs:check` validates the site
+  ("Site (GitHub Pages)" section), `brain:gaps` covers `site/**`, and `site/**` is
+  kept out of the VSIX. The full documentation within the site is left to PRD-97.
 
-- **Diff inline esperado × obtido nas falhas (PRD-52)**: nas falhas de asserção
-  (`ut.expect(x).to_equal(y)`), o painel de testes passa a exibir o **diff nativo**
-  do VS Code com os valores "Expected"/"Actual" extraídos da mensagem do reporter.
-  O parser `parseExpectedActual` é puro e tolerante (case-insensitive, multilinha,
-  formatos `Expected:`/`Actual:` e `... was expected to equal:`); falhas sem os
-  marcadores seguem com o texto normal e o *jump to failure* é preservado.
+- **Inline expected × actual diff on failures (PRD-52)**: on assertion failures
+  (`ut.expect(x).to_equal(y)`), the test panel now shows VS Code's **native diff**
+  with the "Expected"/"Actual" values extracted from the reporter message.
+  The `parseExpectedActual` parser is pure and tolerant (case-insensitive, multiline,
+  `Expected:`/`Actual:` and `... was expected to equal:` formats); failures without the
+  markers keep the normal text and *jump to failure* is preserved.
 
-- **Debug de testes: no cursor, nos falhos e na última execução (PRD-53)**: novos
-  comandos `utplsql.debugAtCursor`, `utplsql.debugFailed` e `utplsql.debugLast`
-  reaproveitam o adaptador (`startDebugSession`) para depurar o `%test`/`%suite`
-  sob o cursor, os testes que falharam na última rodada (QuickPick quando há mais
-  de um) e a última execução em modo debug. A resolução de alvo foi extraída para
-  funções puras (`src/debugTargets.ts`) e o `findAnnotationAtLine` virou módulo
-  compartilhado (`src/annotation.ts`), com aviso amigável quando não há alvo.
+- **Test debugging: at cursor, failed, and last run (PRD-53)**: new
+  commands `utplsql.debugAtCursor`, `utplsql.debugFailed`, and `utplsql.debugLast`
+  reuse the adapter (`startDebugSession`) to debug the `%test`/`%suite`
+  under the cursor, the tests that failed in the last run (QuickPick when there is more
+  than one), and the last run in debug mode. Target resolution was extracted into
+  pure functions (`src/debugTargets.ts`) and `findAnnotationAtLine` became a shared
+  module (`src/annotation.ts`), with a friendly warning when there is no target.
 
-- **Toggle de cobertura na status bar (PRD-54)**: novo item à direita da status
-  bar alterna o **modo global de cobertura** da sessão (`state.coverageAlways`,
-  não persistido) via `utplSQL: Toggle Coverage`. Os entry points sem cobertura
-  explícita (`runAll`, `runFile`, `runAtCursor`, `rerunLast`, `runFailed`) passam
-  a usar a flag — centralizada na função pura `effectiveCoverage` em
-  `src/coverageDecision.ts` — enquanto os comandos `*Coverage` continuam forçando
-  cobertura.
+- **Coverage toggle in the status bar (PRD-54)**: a new item on the right of the status
+  bar toggles the session's **global coverage mode** (`state.coverageAlways`,
+  not persisted) via `utPLSQL: Toggle Coverage`. Entry points without explicit
+  coverage (`runAll`, `runFile`, `runAtCursor`, `rerunLast`, `runFailed`) now
+  use the flag — centralized in the pure function `effectiveCoverage` in
+  `src/coverageDecision.ts` — while the `*Coverage` commands keep forcing
+  coverage.
 
-- **Execução e seleção por Tag (PRD-51)**: `%tags(...)` passam a chegar ao
-  `ItemMeta` (suíte e teste) — o parser agora captura também as tags do **header**
-  da suíte — e o novo comando `utPLSQL: Rodar testes por tag...` abre um QuickPick
-  multi-seleção com as tags descobertas (`!tag` exclui, comparação
-  case-insensitive). O filtro é puro (`src/tagFilter.ts`). A setting
-  `utplsql.showTagsInTree` (default `false`) sufixa `[tag1, tag2]` no label do
-  Test Explorer.
+- **Run and selection by Tag (PRD-51)**: `%tags(...)` now reach
+  `ItemMeta` (suite and test) — the parser now also captures the **suite header**
+  tags — and the new command `utPLSQL: Run Tests by Tag...` opens a multi-select
+  QuickPick with the discovered tags (`!tag` excludes, case-insensitive
+  comparison). The filter is pure (`src/tagFilter.ts`). The setting
+  `utplsql.showTagsInTree` (default `false`) appends `[tag1, tag2]` to the Test Explorer
+  label.
 
-- **Organização da árvore por tag (PRD-55)**: `utplsql.organization` ganha o valor
-  `tag`, montando **Tag > Suite > Test** a partir das `%tags`. Suíte/teste com
-  várias tags aparece sob cada tag (com id por tag, sem colidir na API do VS Code)
-  e as sem tag vão para um grupo "(sem tag)". Os ids canônicos
-  (`suite:<pkg>`/`test:<pkg>.<proc>`) são preservados, mantendo `suiteMap`,
-  resultados e *jump to failure*.
+- **Tag-based tree organization (PRD-55)**: `utplsql.organization` gains the value
+  `tag`, building **Tag > Suite > Test** from the `%tags`. A suite/test with several
+  tags appears under each tag (with a per-tag id, without colliding in the VS Code API)
+  and those without a tag go into a "(no tag)" group. The canonical ids
+  (`suite:<pkg>`/`test:<pkg>.<proc>`) are preserved, keeping `suiteMap`,
+  results, and *jump to failure*.
 
-- **Auto-run ao salvar / watch mode (PRD-50)**: a setting `utplsql.autoRun`
-  (`off` por padrão) permite re-executar automaticamente as suites do `.pks`
-  salvo. O debounce por arquivo (`utplsql.autoRunDelayMs`, default 500 ms) coalesce
-  saves rápidos sem cancelar arquivos distintos, e a guarda de concorrência
-  (`utplsql.autoRunQueue`: `skip`/`replace`) evita execuções concorrentes. A
-  lógica é pura (`src/autoRun.ts`) e respeita o modo global de cobertura.
+- **Auto-run on save / watch mode (PRD-50)**: the setting `utplsql.autoRun`
+  (`off` by default) allows automatically re-running the suites of the saved `.pks`.
+  The per-file debounce (`utplsql.autoRunDelayMs`, default 500 ms) coalesces
+  fast saves without cancelling distinct files, and the concurrency guard
+  (`utplsql.autoRunQueue`: `skip`/`replace`) prevents concurrent runs. The
+  logic is pure (`src/autoRun.ts`) and respects the global coverage mode.
 
 ## 0.14.0
 
-- **Piso de VS Code 1.101 e runtime Node 22 (PRD-94)**: `engines.vscode` passa de
-  `^1.88.0` para **`^1.101.0`** — o primeiro VS Code cujo Extension Host embute
-  **Node 22** (LTS mais antigo em suporte). **Breaking:** usuários em VS Code
-  **1.88–1.100** (Node 18/20, já EOL) deixam de receber a extensão. Com isso
-  `engines.node`/`@types/node` (22) e o `esbuild target` passam a casar com o
-  runtime, e o `docs-fidelity` cobra a coerência.
+- **VS Code 1.101 floor and Node 22 runtime (PRD-94)**: `engines.vscode` goes from
+  `^1.88.0` to **`^1.101.0`** — the first VS Code whose Extension Host bundles
+  **Node 22** (oldest LTS still supported). **Breaking:** users on VS Code
+  **1.88–1.100** (Node 18/20, already EOL) no longer receive the extension. With this,
+  `engines.node`/`@types/node` (22) and the `esbuild target` now match the
+  runtime, and `docs-fidelity` enforces the consistency.
 
-- **Log estruturado no painel Output (LogOutputChannel)**: o diagnóstico da
-  extensão passa a ir para o canal **`utPLSQL`**, com nível controlado pelo
-  usuário no painel Output (Trace/Debug/Info/Warning/Error) — sem depender de
-  `UTPLSQL_DEBUG`. O módulo de log segue puro (`src/logger.ts`).
+- **Structured logging in the Output panel (LogOutputChannel)**: the extension's
+  diagnostics now go to the **`utPLSQL`** channel, with a level controlled by the
+  user in the Output panel (Trace/Debug/Info/Warning/Error) — without depending on
+  `UTPLSQL_DEBUG`. The log module stays pure (`src/logger.ts`).
 
-- **Ativação no modo schema/DB-first**: `activationEvents` passa a incluir
-  `onStartupFinished` e `workspaceContains:**/*.sql`, além de `.pks`/`.pkb` — a
-  extensão ativa mesmo quando o workspace **não tem `.pks` local** (suítes vindas
-  do banco).
+- **Activation in schema/DB-first mode**: `activationEvents` now includes
+  `onStartupFinished` and `workspaceContains:**/*.sql`, in addition to `.pks`/`.pkb` — the
+  extension activates even when the workspace **has no local `.pks`** (suites coming
+  from the database).
 
-- **Hardening de segurança das settings de conexão (PRD-81)**: as settings
-  sensíveis (`utplsql.connection`, `utplsql.profiles`, `utplsql.activeProfile`,
-  `utplsql.oracleClientLibDir`, `utplsql.oracleClientConfigDir`) passam a ser
-  **`machine`-scoped** — um `.vscode/settings.json` de terceiros não pode
-  sobrescrevê-las. A extensão fica **desabilitada em workspaces não confiáveis**
-  (`capabilities.untrustedWorkspaces`). A senha do perfil, guardada no
-  SecretStorage, passa a ser **vinculada à conexão**: se a `connection` do perfil
-  mudar, a senha é descartada em vez de ser enviada ao novo host. Perfis legados
-  são migrados automaticamente.
+- **Security hardening of connection settings (PRD-81)**: the sensitive
+  settings (`utplsql.connection`, `utplsql.profiles`, `utplsql.activeProfile`,
+  `utplsql.oracleClientLibDir`, `utplsql.oracleClientConfigDir`) become
+  **`machine`-scoped** — a third party's `.vscode/settings.json` cannot
+  override them. The extension is **disabled in untrusted workspaces**
+  (`capabilities.untrustedWorkspaces`). The profile password, stored in
+  SecretStorage, is now **tied to the connection**: if the profile's `connection`
+  changes, the password is discarded instead of being sent to the new host. Legacy profiles
+  are migrated automatically.
 
-- **Resolução TNS no thin e senha de wallet no SecretStorage (PRD-82)**: nova
-  setting `utplsql.connections.tnsAdminPath` (machine-scoped), com fallback para
-  o valor user/machine de `sqldeveloper.connections.tnsConfiguration.path` e para
-  a variável `TNS_ADMIN`. O parser de `tnsnames.ora` (`src/tnsnames.ts`) resolve
-  aliases no driver **thin** sem depender de env; Easy Connect segue inalterado.
-  O perfil ganhou o campo `walletLocation` e o comando
-  `utPLSQL: Set wallet password` grava a senha da wallet no SecretStorage.
+- **TNS resolution in thin mode and wallet password in SecretStorage (PRD-82)**: new
+  setting `utplsql.connections.tnsAdminPath` (machine-scoped), with fallback to
+  the user/machine value of `sqldeveloper.connections.tnsConfiguration.path` and to
+  the `TNS_ADMIN` variable. The `tnsnames.ora` parser (`src/tnsnames.ts`) resolves
+  aliases on the **thin** driver without depending on env; Easy Connect remains unchanged.
+  The profile gained the `walletLocation` field and the command
+  `utPLSQL: Set wallet password` stores the wallet password in SecretStorage.
 
-- **Execução e export com reporter arbitrário (PRD-76)**: novo comando
-  `utPLSQL: Run with Reporter (Export)` (menu de contexto do Test Explorer) que
-  roda a seleção com qualquer reporter do banco e grava a saída no Output ou em
-  arquivo. As settings `utplsql.reporter.clientCharacterSet` e
-  `utplsql.reporter.colorConsole` controlam os argumentos
-  `a_client_character_set` e `a_color_console` (allowlist por reporter). O export
-  **não** altera os resultados no Test Explorer.
+- **Run and export with an arbitrary reporter (PRD-76)**: new command
+  `utPLSQL: Run with Reporter (Export)` (Test Explorer context menu) that
+  runs the selection with any reporter from the database and writes the output to Output or
+  to a file. The settings `utplsql.reporter.clientCharacterSet` and
+  `utplsql.reporter.colorConsole` control the arguments
+  `a_client_character_set` and `a_color_console` (allowlist per reporter). The export
+  does **not** change the results in the Test Explorer.
 
-- **Fonte virtual do banco para falhas e cobertura (PRD-80)**: quando não há
-  arquivo local, o *jump to failure* e a cobertura passam a abrir um documento
-  **read-only** resolvido de `ALL_SOURCE` (`utplsql-source:/<SCHEMA>/<OBJ>`), para
-  qualquer tipo de objeto (package/body, procedure, function, trigger,
-  type/body, view). O scheme legado `utplsql-db:` continua disponível.
+- **Virtual database source for failures and coverage (PRD-80)**: when there is no
+  local file, *jump to failure* and coverage now open a **read-only** document
+  resolved from `ALL_SOURCE` (`utplsql-source:/<SCHEMA>/<OBJ>`), for
+  any object type (package/body, procedure, function, trigger,
+  type/body, view). The legacy scheme `utplsql-db:` remains available.
 
-- **Árvore de testes lazy (PRD-75)**: no modo `schema`, o refresh materializa
-  apenas os nós de **schema**; package/suite/teste são resolvidos sob demanda ao
-  expandir (`resolveHandler`), sem consultar o banco para níveis não abertos.
-  "Run All"/"Run Failed" e a coleta de alvos forçam a resolução necessária.
+- **Lazy test tree (PRD-75)**: in `schema` mode, the refresh materializes
+  only the **schema** nodes; package/suite/test are resolved on demand when
+  expanding (`resolveHandler`), without querying the database for unopened levels.
+  "Run All"/"Run Failed" and target collection force the necessary resolution.
 
 ## 0.13.0
 
-- **Correção: resultados e jump-to-failure em suítes com `%suitepath` (PRD-87)**: o
-  reporter JUnit do utPLSQL aninha `<testsuite>` conforme o `--%suitepath`, mas o
-  parser lia apenas um nível; as suítes afetadas eram marcadas como "No JUnit
-  result found" no Test Explorer. O parser agora percorre os níveis aninhados,
-  reconhece o stack real `SCHEMA.PACKAGE.PROCEDURE` e resolve a location para o
-  `.pks`, sem confundir o schema de instalação `UT3` com objetos internos do
-  framework. Validado por E2E contra o banco real.
+- **Fix: results and jump-to-failure in suites with `%suitepath` (PRD-87)**: utPLSQL's
+  JUnit reporter nests `<testsuite>` according to `--%suitepath`, but the
+  parser read only one level; the affected suites were marked as "No JUnit
+  result found" in the Test Explorer. The parser now traverses the nested levels,
+  recognizes the real stack `SCHEMA.PACKAGE.PROCEDURE`, and resolves the location to the
+  `.pks`, without confusing the installation schema `UT3` with internal framework
+  objects. Validated by E2E against the real database.
 
-- **Correção: debugger honra `stopOnException` (PRD-86)**: a setting
-  `utplsql.debugger.stopOnException` existia desde a PRD-33 mas não tinha
-  efeito — o adapter guardava o valor sem usá-lo e o `CONTINUE` do `DBMS_DEBUG`
-  era emitido sem o breakflag `break_exception`, então o debuggee nunca
-  suspendia em exceções. Agora o cliente propaga `DBMS_DEBUG.break_exception`
-  quando a setting é `true` (default), suspendendo em `reason_exception`
-  (`reason='exception'` no DAP); com `false` o comportamento antigo é mantido.
+- **Fix: debugger honors `stopOnException` (PRD-86)**: the setting
+  `utplsql.debugger.stopOnException` had existed since PRD-33 but had no
+  effect — the adapter stored the value without using it and `DBMS_DEBUG`'s `CONTINUE`
+  was emitted without the `break_exception` breakflag, so the debuggee never
+  suspended on exceptions. Now the client propagates `DBMS_DEBUG.break_exception`
+  when the setting is `true` (default), suspending on `reason_exception`
+  (`reason='exception'` in DAP); with `false` the old behavior is kept.
 
-- **Second brain canônico (Obsidian) com MCP (PRD-85)**: `docs/brain/` passa a ser
-  **versionado** e a fonte da verdade do texto humano; `README*`, `docs/wiki/`,
-  `docs/functional/` e `docs/prd/` passam a ser **gerados** a partir dele
-  (`npm run brain:build`). O conhecimento é persistido em unidades atômicas — 59
-  regras `BR-*` e as camadas `SEC-*`/`ERR-*`/`PAT-*`/`TPL-*`/`GLOSS-*`/`NFR-*`/
-  `ENT-*`/`LOC-*`/`PIPE-*` — com rastreabilidade para código/teste/PRD. O status
-  dos PRDs passa a viver no **frontmatter** da nota (pasta e `index.md` gerados).
-  O agente lê/escreve o vault via **MCP** do Obsidian (Local REST API). O CI
-  valida o drift (`brain:ci` + `git diff --exit-code`).
+- **Canonical second brain (Obsidian) with MCP (PRD-85)**: `docs/brain/` becomes
+  **versioned** and the source of truth for human text; `README*`, `docs/wiki/`,
+  `docs/functional/`, and `docs/prd/` become **generated** from it
+  (`npm run brain:build`). Knowledge is persisted as atomic units — 59
+  `BR-*` rules and the `SEC-*`/`ERR-*`/`PAT-*`/`TPL-*`/`GLOSS-*`/`NFR-*`/
+  `ENT-*`/`LOC-*`/`PIPE-*` layers — with traceability to code/test/PRD. PRD status
+  now lives in the note's **frontmatter** (folder and `index.md` generated).
+  The agent reads/writes the vault via Obsidian's **MCP** (Local REST API). CI
+  validates drift (`brain:ci` + `git diff --exit-code`).
 
-- **Suporte a Oracle 12.2 (utPLSQL 3.1.x)**: o utPLSQL **v3.2.x não compila** no
-  12.2 (`PLS-00222` em `UT_ANNOTATION_MANAGER`, que exige recurso do 18c+). A
-  matriz de bancos passou a aceitar um **piso alternativo de utPLSQL por versão**
-  (4º campo em `scripts/db-matrix/matrix.env`); o 12.2 usa `v3.1.14`. Limitação
-  documentada: bancos com charset legado (a imagem 12.2 é `WE8DEC`) perdem
-  caracteres fora do charset (ex.: `€` → `¿`) — o driver thin usa sempre
-  `AL32UTF8` e ignora `NLS_LANG`; o teste de charset de integração agora detecta
-  e faz skip nesse caso. (PRD-84)
-- **Pacote VSIX enxuto**: removidos do pacote arquivos e pastas de
-  desenvolvimento que escapavam do `.vscodeignore` — `.agents/`, `.kilo/`,
-  `.github/`, `docker/` (incluindo o cache da matriz de bancos, ~5 MB),
-  `.c8rc`, `.nvmrc`, `biome.json`, `skills-lock.json`, `SECURITY.md` e os
-  configs dos testes de integração (`.vscode-test.smoke.mjs`,
+- **Oracle 12.2 support (utPLSQL 3.1.x)**: utPLSQL **v3.2.x does not compile** on
+  12.2 (`PLS-00222` in `UT_ANNOTATION_MANAGER`, which requires an 18c+ feature). The
+  database matrix now accepts an **alternative utPLSQL floor per version**
+  (4th field in `scripts/db-matrix/matrix.env`); 12.2 uses `v3.1.14`. Documented
+  limitation: databases with legacy charset (the 12.2 image is `WE8DEC`) lose
+  characters outside the charset (e.g. `€` → `¿`) — the thin driver always uses
+  `AL32UTF8` and ignores `NLS_LANG`; the integration charset test now detects
+  and skips in that case. (PRD-84)
+- **Lean VSIX package**: development files and folders that escaped
+  `.vscodeignore` were removed from the package — `.agents/`, `.kilo/`,
+  `.github/`, `docker/` (including the database matrix cache, ~5 MB),
+  `.c8rc`, `.nvmrc`, `biome.json`, `skills-lock.json`, `SECURITY.md`, and the
+  integration test configs (`.vscode-test.smoke.mjs`,
   `.vscode-test.thick.mjs`). (PRD-83)
-- **Runner Oracle com binds tipados, filtro por tag e validação de reporters
-  (PRD-69)**: os paths (`a_paths`) e os schemas de cobertura
-  (`a_coverage_schemes`) deixam de ser concatenados no PL/SQL e passam a binds
-  tipados (`UT_VARCHAR2_LIST`) — nenhum valor de usuário é interpolado. A nova
-  setting `utplsql.tags` expõe `a_tags` do `ut_runner.run` (ex.:
-  `fast & !integration`; vazio = todos). Reporters adicionais inexistentes são
-  ignorados com aviso em vez de abortar a execução.
-- **Ordem aleatória de execução com seed (PRD-78)**: novas settings
-  `utplsql.run.randomOrder` (default `false`) e `utplsql.run.randomOrderSeed`
-  (default `0`), que passam `a_random_test_order`/`a_random_test_order_seed` ao
-  `ut_runner.run` para revelar dependências de ordem entre testes. Seed `0` =
-  sorteada pelo banco; seed > 0 reproduz a mesma ordem e é registrada no Output.
-- **Escopo avançado de cobertura (PRD-79)**: novas settings
-  `utplsql.coverage.schemes` (sobrepõe os schemas), `utplsql.coverage.includeObjects`
-  e `utplsql.coverage.excludeObjects` (formato `OWNER.NAME`) e as regex
-  `includeSchemaExpr`, `includeObjectExpr`, `excludeSchemaExpr` e
-  `excludeObjectExpr`. Os valores vão como binds ao `ut_runner.run` (listas
-  `UT_VARCHAR2_LIST`, regex `STRING`), que monta o `ut_coverage_options`
-  internamente. Permite excluir o framework utPLSQL (ex.: `excludeObjectExpr =
-  "^UT_"`) e incluir objetos alcançados apenas dinamicamente. Default inalterado.
-- **Descoberta de suítes direto do banco (PRD-74)**: no modo `schema`, a árvore
-  passa a ser construída a partir de `ut_runner.get_suites_info` (utPLSQL ≥
-  3.1.3) como fonte canônica, fundida com a descoberta por arquivo (arquivo
-  prevalece em URI/linha; banco em descrição/tags), com fallback para
-  `ALL_SOURCE` quando a API não está disponível. Nova setting
+- **Oracle runner with typed binds, tag filter, and reporter validation
+  (PRD-69)**: the paths (`a_paths`) and the coverage schemas
+  (`a_coverage_schemes`) are no longer concatenated into PL/SQL and become typed
+  binds (`UT_VARCHAR2_LIST`) — no user value is interpolated. The new
+  setting `utplsql.tags` exposes `a_tags` of `ut_runner.run` (e.g.
+  `fast & !integration`; empty = all). Additional reporters that do not exist are
+  ignored with a warning instead of aborting the run.
+- **Randomized execution order with seed (PRD-78)**: new settings
+  `utplsql.run.randomOrder` (default `false`) and `utplsql.run.randomOrderSeed`
+  (default `0`), which pass `a_random_test_order`/`a_random_test_order_seed` to
+  `ut_runner.run` to reveal order dependencies between tests. Seed `0` =
+  chosen by the database; seed > 0 reproduces the same order and is logged in Output.
+- **Advanced coverage scope (PRD-79)**: new settings
+  `utplsql.coverage.schemes` (overrides the schemas), `utplsql.coverage.includeObjects`
+  and `utplsql.coverage.excludeObjects` (`OWNER.NAME` format) and the regexes
+  `includeSchemaExpr`, `includeObjectExpr`, `excludeSchemaExpr`, and
+  `excludeObjectExpr`. The values go as binds to `ut_runner.run` (lists
+  `UT_VARCHAR2_LIST`, regex `STRING`), which builds the `ut_coverage_options`
+  internally. Allows excluding the utPLSQL framework (e.g. `excludeObjectExpr =
+  "^UT_"`) and including objects reached only dynamically. Default unchanged.
+- **Suite discovery directly from the database (PRD-74)**: in `schema` mode, the tree
+  is now built from `ut_runner.get_suites_info` (utPLSQL ≥
+  3.1.3) as the canonical source, merged with file-based discovery (file
+  wins for URI/line; database for description/tags), with fallback to
+  `ALL_SOURCE` when the API is not available. New setting
   `utplsql.discovery.source` (`auto` | `file` | `database`, default `auto`).
-- **Reconstruir o cache de anotações do utPLSQL (PRD-77)**: novo comando
-  `utPLSQL: Rebuild Annotation Cache` (`utplsql.rebuildAnnotations`) que chama
-  `ut_runner.rebuild_annotation_cache(<owner>)` e atualiza o Test Explorer.
-  Útil quando a árvore vem de `get_suites_info` e o cache está desatualizado
-  (DDL trigger ausente ou recompilação manual). Sem conexão, avisa; erros
-  aparecem no Output.
+- **Rebuild the utPLSQL annotation cache (PRD-77)**: new command
+  `utPLSQL: Rebuild Annotation Cache` (`utplsql.rebuildAnnotations`) that calls
+  `ut_runner.rebuild_annotation_cache(<owner>)` and refreshes the Test Explorer.
+  Useful when the tree comes from `get_suites_info` and the cache is stale
+  (missing DDL trigger or manual recompilation). Without a connection, warns; errors
+  appear in Output.
 
 ## 0.12.1
 
-- **Debugger — DBMS_DEBUG real (PRD-71)**: o cliente usava assinaturas
-  inexistentes (`DEBUG_ON()` como função, `STEP_INTO/OVER/OUT`, `GET_VALUES`,
-  `ATTACH_SESSION(session_id=>,timeout=>)`), então o debug não funcionava contra
-  Oracle real. Reescrito para a API documentada: `INITIALIZE` + `DEBUG_ON`;
-  `ATTACH_SESSION(debug_session_id, diagnostics)`; `SET_BREAKPOINT` com
-  `program_info`; stepping via `CONTINUE` com `breakflags`; variáveis via
-  `GET_VALUE` (nomes conhecidos). Breakpoints passam a ser aplicados após o
-  entry (o DBMS_DEBUG ignora "deferred"). Validado por um teste de integração
-  que executa breakpoint → stop → frame → variável nas 4 versões da matriz.
-- **Debugger — breakpoints no gutter e Run and Debug**: não era possível criar
-  breakpoints em `.pks/.pkb/.prc/.fnc/.trg` (o VSCode desabilita o gutter em
-  arquivos sem *language id*, salvo com `debug.allowBreakpointsEverywhere`), e o
-  Run and Debug não mostrava nenhuma configuração. Adicionados
-  `contributes.languages` (`plsql`) + `contributes.breakpoints`, o
-  `initialConfigurations` do debugger `utplsql` (config padrão ao criar um
-  `launch.json`) e o comando `utPLSQL: Debug test (PL/SQL)` no menu de contexto
-  do editor.
-- **Debugger — namespace e linha dos breakpoints**: o `SET_BREAKPOINT` usava
-  sempre `namespace_pkg_body` e o nome da unidade em minúsculas, então
-  breakpoints em functions/procedures soltos (`.fnc`/`.prc`/`.sql`) nunca eram
-  criados (o correto é `namespace_pkgspec_or_toplevel`, e `program_info` exige o
-  nome do dicionário em maiúsculas). Agora o namespace é escolhido pela extensão
+- **Debugger — real DBMS_DEBUG (PRD-71)**: the client used
+  nonexistent signatures (`DEBUG_ON()` as a function, `STEP_INTO/OVER/OUT`, `GET_VALUES`,
+  `ATTACH_SESSION(session_id=>,timeout=>)`), so debugging did not work against
+  real Oracle. Rewritten to the documented API: `INITIALIZE` + `DEBUG_ON`;
+  `ATTACH_SESSION(debug_session_id, diagnostics)`; `SET_BREAKPOINT` with
+  `program_info`; stepping via `CONTINUE` with `breakflags`; variables via
+  `GET_VALUE` (known names). Breakpoints are now applied after the
+  entry (DBMS_DEBUG ignores "deferred"). Validated by an integration test
+  that runs breakpoint → stop → frame → variable on all 4 matrix versions.
+- **Debugger — gutter breakpoints and Run and Debug**: it was not possible to create
+  breakpoints in `.pks/.pkb/.prc/.fnc/.trg` (VS Code disables the gutter in
+  files without a *language id*, unless `debug.allowBreakpointsEverywhere` is set), and
+  Run and Debug showed no configuration. Added
+  `contributes.languages` (`plsql`) + `contributes.breakpoints`, the
+  `initialConfigurations` of the `utplsql` debugger (default config when creating a
+  `launch.json`), and the command `utPLSQL: Debug Test (PL/SQL)` in the editor
+  context menu.
+- **Debugger — breakpoint namespace and line**: `SET_BREAKPOINT` always used
+  `namespace_pkg_body` and the unit name in lowercase, so
+  breakpoints in standalone functions/procedures (`.fnc`/`.prc`/`.sql`) were never
+  created (the correct one is `namespace_pkgspec_or_toplevel`, and `program_info` requires the
+  dictionary name in uppercase). Now the namespace is chosen by the extension
   (`.pkb`/`.pks` → `pkg_body`, `.fnc`/`.prc` → `toplevel`, `.trg` → `trigger`,
-  `.sql` tenta os três) e a linha do arquivo é alinhada à do objeto armazenado —
-  o Oracle descarta `CREATE OR REPLACE` e comentários antes da unidade, o que
-  deslocava arquivos com header comentado. A linha do frame volta convertida
-  para o arquivo (destaque correto no editor).
-- **Debugger — falha do teste e `synchronize` não travam mais a sessão**: se o
-  `ut_runner.run` falhasse (teste/schema inexistente, conexão errada), o erro
-  era engolido e o `synchronize` ficava bloqueado — o Debug Console mostrava
-  apenas "Sessão … anexada." e nada mais. Agora a falha do teste é reportada e
-  encerra a sessão, o `synchronize` tem timeout de 30s e o número de breakpoints
-  aplicados é logado.
-- **Debugger — para no entry e espera o usuário**: o `configurationDone` dava
-  `continue` automático, então a sessão aparecia como "em execução" (toolbar com
-  Pause) e não dava para inspecionar o entry. Agora o adapter só envia
-  `stopped(reason=entry)` depois do `configurationDone` (handshake do DAP) e
-  fica parado aguardando Continue/Step. O adapter também passa a responder
-  `threads`/`setExceptionBreakpoints`, sem os quais o VSCode não habilita a
-  toolbar de Continue/Step nem o Call Stack.
-- **Debugger — conexões dedicadas e breakpoints no código sob teste**: a sessão
-  usava o pool do runner; com o debuggee bloqueado no `ut_runner.run`, o pool
-  esgotava e o **Compile for Debug** falhava com `NJS-040 queueTimeout`. Agora a
-  sessão usa conexões dedicadas (fora do pool) e encerra com `break()` + timeout.
-  Documentado que breakpoints no package de teste (`test_*.pkb`) podem não parar
-  (o utPLSQL executa os testes por SQL dinâmico); breakpoints no **código sob
-  teste** (function/procedure/package de produção) são atingidos normalmente via
+  `.sql` tries all three) and the file line is aligned to the stored object's —
+  Oracle strips `CREATE OR REPLACE` and comments before the unit, which
+  shifted files with a commented header. The frame line comes back converted
+  to the file (correct highlight in the editor).
+- **Debugger — test failure and `synchronize` no longer hang the session**: if
+  `ut_runner.run` failed (nonexistent test/schema, wrong connection), the error
+  was swallowed and `synchronize` got stuck — the Debug Console showed
+  only "Session … attached." and nothing else. Now the test failure is reported and
+  ends the session, `synchronize` has a 30s timeout, and the number of applied
+  breakpoints is logged.
+- **Debugger — stops at the entry and waits for the user**: `configurationDone` gave
+  automatic `continue`, so the session appeared as "running" (toolbar with
+  Pause) and the entry could not be inspected. Now the adapter only sends
+  `stopped(reason=entry)` after `configurationDone` (the DAP handshake) and
+  stays paused awaiting Continue/Step. The adapter also now responds to
+  `threads`/`setExceptionBreakpoints`, without which VS Code does not enable the
+  Continue/Step toolbar nor the Call Stack.
+- **Debugger — dedicated connections and breakpoints in the code under test**: the
+  session used the runner's pool; with the debuggee blocked in `ut_runner.run`, the pool
+  was exhausted and **Compile for Debug** failed with `NJS-040 queueTimeout`. Now the
+  session uses dedicated connections (outside the pool) and ends with `break()` + timeout.
+  Documented that breakpoints in the test package (`test_*.pkb`) may not stop
+  (utPLSQL runs tests via dynamic SQL); breakpoints in the **code under
+  test** (production function/procedure/package) are hit normally via
   `ut_runner.run`.
-- **Debugger — abre o arquivo certo ao parar**: o `stackTrace` montava
-  `<unit>.pks`, então ao parar numa function definida em `.sql` o VSCode tentava
-  abrir um `.pks` inexistente. Agora usa o caminho do arquivo onde o breakpoint
-  foi definido.
-- **Debugger — “Invalid variable attributes” no painel Variables**: o response
-  `variables` devolvia `{ name, value, type }` sem `variablesReference`
-  (obrigatório no DAP; `0` = folha). Agora inclui `variablesReference: 0`.
-- **i18n — cobrança de cobertura e testes**: mensagens que estavam hardcoded
-  (Debug Console/erros do debugger, título da CodeAction e diagnóstico de thick
-  mode, labels `Schema`/`Package` do Test Explorer, mensagem de progresso)
-  passaram a usar `t()`; adicionadas as chaves correspondentes nos 24 catálogos.
-  O teste de paridade agora também valida **chaves extras** e **valores vazios**
-  nos catálogos e o alinhamento dos `package.nls.*.json`.
-- **Testes — cobertura e integração real**: novos testes unitários (`runTest`
-  que falha encerrando a sessão; `getRuntimeFrame` em erro; parser de declarações
-  com aspas escapadas; `viewCoverage` com symlink quebrado e pasta aninhada;
-  `debugger` com flush de breakpoints pendentes e teardown com `break` falhando;
-  CLI de `package-target`/`publish`; caminho sem conexão do `compileForDebug`;
-  validação do `matrix.env`/smoke/grants e sintaxe bash dos scripts da matriz) e
-  um teste de integração (`debuggerStandaloneFn`) que exercita o `DBMS_DEBUG`
-  numa **function standalone** — namespace `toplevel` + nome do dicionário em
-  maiúsculas —, cenário que o `debuggerE2E` (chamada direta de package) não
-  cobria. Incluído em `npm run test:integration:smoke`.
-- **Matriz de bancos — `run.sh` rodava só a 1ª versão**: o loop
-  `echo "$VERSIONS" | while read` tinha o **stdin consumido** pelo `vscode-test`,
-  encerrando a matriz após a primeira versão. As versões agora vão para um array
-  antes do loop, e a matriz completa (18xe/19ee/21xe/23free) roda numa passada.
-- **Integração — build limpo**: `pretest:integration*` agora roda `npm run clean`
-  antes de compilar, evitando executar `.test.js` órfãos (testes removidos ou
-  renomeados) que ficam em `out/` (o `tsc` não apaga saídas órfãs).
-- **Testes — compatibilidade Node 22/24**: o mock de "oracledb ausente"
-  (`oracledb-missing-catch`) usava um `Proxy`, cujo getter o Node 22 não
-  materializava via `namedExports` (o teste passava no 24 e falhava no 22);
-  trocado por um objeto com getter. O ciclo `launch` do `debugger.test` passou a
-  aguardar `initSession` de forma robusta, eliminando a corrida entre versões.
-  Suíte roda verde em Node 22 e 24.
-- **Compile for Debug — `PLSQL_OPTIMIZE_LEVEL = 1`**: o comando rodava apenas
-  `ALTER … COMPILE DEBUG`, que liga `PLSQL_DEBUG` mas mantém o nível de
-  otimização (default 2) — que pode remover/reordenar linhas e o breakpoint não
-  ser encontrado. Agora o comando fixa `PLSQL_OPTIMIZE_LEVEL = 1` no mesmo
-  `ALTER`, alinhado ao requisito documentado (`PLSQL_OPTIMIZE_LEVEL <= 1`).
-- **Script runner — `;` final em statements SQL**: o `;` (terminador do cliente)
-  era enviado ao servidor. O Oracle 23ai tolera via OCI, mas 19c/21c rejeitam
-  (`ORA-00933`/`ORA-00922`), então scripts SQL falhavam em bancos mais antigos.
-  O `;` agora é removido dos statements SQL; blocos PL/SQL (terminados por `/`)
-  mantêm o `;` do `END;`. Descoberto pela nova matriz de bancos.
-- **Matriz de bancos para testes de integração** (infra local): compose
-  paramétrico + bootstrap (utPLSQL, grants do README/debugger, schemas e
-  fixtures) para validar o projeto contra 18c/19c/21c/23ai, uma versão por vez
-  (`npm run db:matrix`). Volume persistente por versão (re-run em ~1–2 min;
-  `--clean` recria), modo `--smoke` (rápido) e `--thick`
-  (`npm run test:integration:thick`, com Oracle Instant Client).
-- **Schema-mode — execução por Schema/Package e Run All**: os nós `Schema:` e
-  `Package:` não eram expandidos. Rodar um deles (ou Run All no modo schema)
-  executava **toda** a suíte do banco sem aplicar resultados no Test Explorer.
-  A expansão agora desce a árvore `schema → package → suite → test` antes de
-  montar os paths e não chama o Oracle quando não há testes.
-- **Robustez de conexão**: owner do schema nos diagnósticos de compilação e no
-  debug passa a usar `parseConnString().user` (tolera connection sem senha,
-  ex.: perfil `user@host/service`); a 2ª conexão do runner devolve a 1ª ao pool
-  se falhar (sem vazar); listeners de cancelamento são descartados ao fim do run.
-- **Reporters adicionais**: nomes inexistentes em
-  `utplsql.additionalReporters` são ignorados com aviso em vez de abortar o
-  `ut_runner.run` com ORA.
-- **Descoberta de suites**: arquivos `.pks/.pkb` são decodificados no charset do
-  perfil ativo (`latin1`/`win1252`) em vez de forçar UTF-8.
-- **CI**: passa a rodar `npm run typecheck` e `npm run test:coverage` (enforça
-  os thresholds de cobertura do c8).
-- **Thick mode opcional (PRD-70)**: nova setting `utplsql.oracleClientMode`
-  (`thin` default | `thick`) para bancos que exigem **NNE** (Native Network
-  Encryption), não suportado pelo driver thin. Com `thick`, um Oracle Instant
-  Client local é carregado via `oracledb.initOracleClient` antes de qualquer
-  conexão (settings `utplsql.oracleClientLibDir` e
-  `utplsql.oracleClientConfigDir` / TNS_ADMIN). A inicialização é idempotente e
-  ocorre no `ensurePool` (`src/oracleClient.ts`); falhas viram diagnóstico no
-  Problems Panel (`UTPLSQL_THICK_MODE`) com quick-fix para as settings. Default
-  inalterado: sem a setting, permanece thin.
-- **Publicação por plataforma (PRD-70 Opção B)**: o `publish.yml` passa a
-  publicar um VSIX por alvo via matriz — `win32-x64`/`linux-x64`/`linux-arm64`/
-  `darwin-arm64` com apenas a glue do alvo (thick+thin) e `win32-arm64`/
-  `darwin-x64`/`linux-armhf`/`alpine-x64`/`alpine-arm64` como **fallback
-  thin-only** (sem binário nativo, roda bancos sem NNE). A publicação usa
-  `vsce publish --packagePath`, garantindo que o VSIX anexado à release é o
-  mesmo artefato publicado. O VSIX universal (4 glues, ~2,5 MB) fica para teste
-  local (`npm run package`).
-- **Script runner — diretivas SQL*Plus**: scripts com `PROMPT`, `SHOW ERRORS`,
-  `SET`, `SPOOL`, `@arquivo`/`!comando` no início de um statement não falham mais
-  com `ORA-00900`. `splitScript` ignora essas linhas (preservando a numeração)
-  quando o buffer só tem brancos/comentários, sem afetar usos legítimos como
+- **Debugger — opens the right file when stopping**: `stackTrace` built
+  `<unit>.pks`, so when stopping in a function defined in `.sql`, VS Code tried to
+  open a nonexistent `.pks`. Now it uses the path of the file where the breakpoint
+  was defined.
+- **Debugger — "Invalid variable attributes" in the Variables panel**: the `variables`
+  response returned `{ name, value, type }` without `variablesReference`
+  (mandatory in DAP; `0` = leaf). Now it includes `variablesReference: 0`.
+- **i18n — coverage enforcement and tests**: messages that were hardcoded
+  (Debug Console/debugger errors, CodeAction title and thick
+  mode diagnostic, `Schema`/`Package` Test Explorer labels, progress message)
+  now use `t()`; the corresponding keys were added to the 24 catalogs.
+  The parity test now also validates **extra keys** and **empty values**
+  in the catalogs and the alignment of the `package.nls.*.json`.
+- **Tests — coverage and real integration**: new unit tests (`runTest`
+  that fails ending the session; `getRuntimeFrame` on error; declarations parser
+  with escaped quotes; `viewCoverage` with a broken symlink and nested folder;
+  `debugger` with pending breakpoint flush and teardown with a failing `break`;
+  `package-target`/`publish` CLI; the no-connection path of `compileForDebug`;
+  validation of `matrix.env`/smoke/grants and bash syntax of the matrix scripts) and
+  an integration test (`debuggerStandaloneFn`) that exercises `DBMS_DEBUG`
+  on a **standalone function** — namespace `toplevel` + dictionary name in
+  uppercase —, a scenario the `debuggerE2E` (direct package call) did not
+  cover. Included in `npm run test:integration:smoke`.
+- **Database matrix — `run.sh` ran only the 1st version**: the loop
+  `echo "$VERSIONS" | while read` had its **stdin consumed** by `vscode-test`,
+  ending the matrix after the first version. The versions now go into an array
+  before the loop, and the full matrix (18xe/19ee/21xe/23free) runs in one pass.
+- **Integration — clean build**: `pretest:integration*` now runs `npm run clean`
+  before compiling, avoiding running orphan `.test.js` files (removed or
+  renamed tests) left in `out/` (`tsc` does not delete orphan outputs).
+- **Tests — Node 22/24 compatibility**: the "oracledb missing" mock
+  (`oracledb-missing-catch`) used a `Proxy`, whose getter Node 22 did not
+  materialize via `namedExports` (the test passed on 24 and failed on 22);
+  replaced with an object with a getter. The `launch` cycle of `debugger.test` now
+  awaits `initSession` robustly, eliminating the race between versions.
+  The suite runs green on Node 22 and 24.
+- **Compile for Debug — `PLSQL_OPTIMIZE_LEVEL = 1`**: the command ran only
+  `ALTER … COMPILE DEBUG`, which turns on `PLSQL_DEBUG` but keeps the optimization
+  level (default 2) — which can remove/reorder lines and the breakpoint is not
+  found. Now the command sets `PLSQL_OPTIMIZE_LEVEL = 1` in the same
+  `ALTER`, aligned with the documented requirement (`PLSQL_OPTIMIZE_LEVEL <= 1`).
+- **Script runner — trailing `;` in SQL statements**: the `;` (client terminator)
+  was sent to the server. Oracle 23ai tolerates it via OCI, but 19c/21c reject it
+  (`ORA-00933`/`ORA-00922`), so SQL scripts failed on older databases.
+  The `;` is now removed from SQL statements; PL/SQL blocks (terminated by `/`)
+  keep the `;` of `END;`. Discovered by the new database matrix.
+- **Database matrix for integration tests** (local infra): parametric
+  compose + bootstrap (utPLSQL, README/debugger grants, schemas, and
+  fixtures) to validate the project against 18c/19c/21c/23ai, one version at a time
+  (`npm run db:matrix`). Persistent volume per version (re-run in ~1–2 min;
+  `--clean` recreates), `--smoke` mode (fast), and `--thick`
+  (`npm run test:integration:thick`, with Oracle Instant Client).
+- **Schema-mode — run by Schema/Package and Run All**: the `Schema:` and
+  `Package:` nodes were not expanded. Running one of them (or Run All in schema mode)
+  ran the **entire** database suite without applying results to the Test Explorer.
+  Expansion now descends the tree `schema → package → suite → test` before
+  building the paths and does not call Oracle when there are no tests.
+- **Connection robustness**: schema owner in compilation diagnostics and in
+  debug now uses `parseConnString().user` (tolerates a connection without a password,
+  e.g. profile `user@host/service`); the runner's 2nd connection returns the 1st to the pool
+  on failure (without leaking); cancellation listeners are discarded at the end of the run.
+- **Additional reporters**: nonexistent names in
+  `utplsql.additionalReporters` are ignored with a warning instead of aborting
+  `ut_runner.run` with ORA.
+- **Suite discovery**: `.pks/.pkb` files are decoded in the charset of the
+  active profile (`latin1`/`win1252`) instead of forcing UTF-8.
+- **CI**: now runs `npm run typecheck` and `npm run test:coverage` (enforces
+  the c8 coverage thresholds).
+- **Optional thick mode (PRD-70)**: new setting `utplsql.oracleClientMode`
+  (`thin` default | `thick`) for databases that require **NNE** (Native Network
+  Encryption), not supported by the thin driver. With `thick`, a local Oracle Instant
+  Client is loaded via `oracledb.initOracleClient` before any
+  connection (settings `utplsql.oracleClientLibDir` and
+  `utplsql.oracleClientConfigDir` / TNS_ADMIN). Initialization is idempotent and
+  occurs in `ensurePool` (`src/oracleClient.ts`); failures become diagnostics in the
+  Problems Panel (`UTPLSQL_THICK_MODE`) with a quick-fix for the settings. Default
+  unchanged: without the setting, it stays thin.
+- **Per-platform publication (PRD-70 Option B)**: `publish.yml` now
+  publishes one VSIX per target via a matrix — `win32-x64`/`linux-x64`/`linux-arm64`/
+  `darwin-arm64` with only the target's glue (thick+thin) and `win32-arm64`/
+  `darwin-x64`/`linux-armhf`/`alpine-x64`/`alpine-arm64` as **thin-only
+  fallback** (no native binary, runs databases without NNE). Publication uses
+  `vsce publish --packagePath`, ensuring the VSIX attached to the release is the
+  same published artifact. The universal VSIX (4 glues, ~2.5 MB) is for local
+  testing (`npm run package`).
+- **Script runner — SQL*Plus directives**: scripts with `PROMPT`, `SHOW ERRORS`,
+  `SET`, `SPOOL`, `@file`/`!command` at the start of a statement no longer fail
+  with `ORA-00900`. `splitScript` ignores these lines (preserving numbering)
+  when the buffer has only blanks/comments, without affecting legitimate uses like
   `UPDATE … SET …`.
-- **Compilar para debug (PRD-73)**: novo comando
-  `utPLSQL: Compile for Debug` (`utplsql.compileForDebug`) na paleta e nos menus
-  de contexto do editor e do Explorer (arquivo/pasta). Deriva o objeto do arquivo
-  (`.pks`/`.pkb` → package, `.fnc`/`.prc`/`.trg` → função/procedure/trigger;
-  `.sql` tenta em ordem) e executa `ALTER … COMPILE DEBUG` reusando o pool do
-  runner. Setting `utplsql.debugger.compileOnDebug` (default `false`) compila o
-  pacote antes de iniciar a sessão de debug.
-- **Debugger — contribution point**: o bloco `debuggers` estava no topo do
-  `package.json` em vez de dentro de `contributes`, então o VSCode não registrava
-  o tipo de debug `utplsql` no manifesto. Movido para `contributes.debuggers`.
-- **Documentação**: `docs/wiki` ganha páginas dedicadas para Test Explorer,
-  Debugger, Connection Profiles, SQL Scripts, i18n e Editor Integration;
-  `docs/functional` ganha a especificação do debugger (11) e é alinhado ao código
-  atual (thick mode, diagnostics, tree/profiles/scripts).
+- **Compile for debug (PRD-73)**: new command
+  `utPLSQL: Compile for Debug` (`utplsql.compileForDebug`) in the palette and in the
+  editor and Explorer context menus (file/folder). It derives the object from the file
+  (`.pks`/`.pkb` → package, `.fnc`/`.prc`/`.trg` → function/procedure/trigger;
+  `.sql` tries in order) and runs `ALTER … COMPILE DEBUG` reusing the runner's
+  pool. Setting `utplsql.debugger.compileOnDebug` (default `false`) compiles the
+  package before starting the debug session.
+- **Debugger — contribution point**: the `debuggers` block was at the top of
+  `package.json` instead of inside `contributes`, so VS Code did not register
+  the `utplsql` debug type in the manifest. Moved to `contributes.debuggers`.
+- **Documentation**: `docs/wiki` gains dedicated pages for Test Explorer,
+  Debugger, Connection Profiles, SQL Scripts, i18n, and Editor Integration;
+  `docs/functional` gains the debugger specification (11) and is aligned with the current
+  code (thick mode, diagnostics, tree/profiles/scripts).
 
 ## 0.12.0
 
-- **Cobertura PL/SQL**: corrige os gutters ausentes em `package`/`package body`,
-  `function`, `procedure`, `type body` e `trigger` (só views apareciam, via
-  `V$SQL`). A execução passava o diretório `utplsql.sourcePath` como
-  `a_file_paths` de `ut_file_mapper.build_file_mappings()`, que espera uma lista
-  de **arquivos** — o relatório Cobertura saía vazio (0 classes). O mapeamento
-  agora é feito no cliente (`mapDbPathsToFiles` + `resolveSourceUri`), com
-  fallback de extensão (`.sql`, `.pks`, `.pkb`, `.prc`, `.fnc`, `.trg`, `.tpb`,
-  `.bdy`) na resolução do arquivo-fonte.
-- **Validação de reporter**: `ut_runner.get_reporters_list()` devolve o nome
-  qualificado pelo schema (`UT3.UT_COVERAGE_COBERTURA_REPORTER`). A extensão
-  agora remove esse prefixo antes de comparar — sem isso a cobertura era
-  desabilitada com o aviso "UT_COVERAGE_COBERTURA_REPORTER not available" mesmo
-  com o reporter instalado, e o QuickPick de reporter adicional recebia nomes
-  qualificados e os descartava.
+- **PL/SQL coverage**: fixes the missing gutters in `package`/`package body`,
+  `function`, `procedure`, `type body`, and `trigger` (only views appeared, via
+  `V$SQL`). The run passed the `utplsql.sourcePath` directory as
+  `a_file_paths` of `ut_file_mapper.build_file_mappings()`, which expects a list
+  of **files** — the Cobertura report came out empty (0 classes). The mapping
+  is now done in the client (`mapDbPathsToFiles` + `resolveSourceUri`), with
+  extension fallback (`.sql`, `.pks`, `.pkb`, `.prc`, `.fnc`, `.trg`, `.tpb`,
+  `.bdy`) when resolving the source file.
+- **Reporter validation**: `ut_runner.get_reporters_list()` returns the name
+  qualified by the schema (`UT3.UT_COVERAGE_COBERTURA_REPORTER`). The extension
+  now strips that prefix before comparing — without it, coverage was
+  disabled with the warning "UT_COVERAGE_COBERTURA_REPORTER not available" even
+  with the reporter installed, and the additional-reporter QuickPick received
+  qualified names and discarded them.
 
-- **Correções de execução e cobertura**: `DBMS_OUTPUT` dos testes agora é
-  habilitado e drenado na **mesma sessão** que executa o `ut_runner.run` (antes
-  a drenagem ocorria numa segunda conexão, sem saída); o XML do JUnit com
-  `<system-out><![CDATA[...]]>` fragmentado não corrompe mais o parse — as
-  linhas de conteúdo e o fechamento `]]>`, que não começam com `<`, passam a ser
-  roteadas para o XML enquanto o CDATA está aberto; reporter adicional com nome
-  inválido é ignorado (guard anti-injeção); schema owner resolvido via
-  `parseConnString` (TNS/SID/IPv6) em vez de `split('/')`; "Go to Error" testa
-  todas as raízes do workspace e prefere um arquivo existente; senhas de perfis
-  são reidratadas do SecretStorage ao recarregar a janela
-  (`hydrateProfilePasswords`); listener de cancelamento e timer de timeout são
-  liberados ao fim do run. Thresholds de cobertura do TypeScript sobem para 90%
-  linhas/statements, 85% branches e 90% funções (atual 97/91/97/97), com novos
-  testes unitários e de integração dos caminhos só-DB.
+- **Run and coverage fixes**: test `DBMS_OUTPUT` is now enabled and drained in
+  the **same session** that runs `ut_runner.run` (before, draining occurred on a
+  second connection, with no output); the JUnit XML with fragmented
+  `<system-out><![CDATA[...]]>` no longer corrupts the parse — the content
+  lines and the closing `]]>`, which do not start with `<`, are now
+  routed to the XML while the CDATA is open; an additional reporter with an invalid name
+  is ignored (anti-injection guard); the schema owner is resolved via
+  `parseConnString` (TNS/SID/IPv6) instead of `split('/')`; "Go to Error" tests
+  all workspace roots and prefers an existing file; profile passwords
+  are rehydrated from SecretStorage when the window is reloaded
+  (`hydrateProfilePasswords`); the cancellation listener and timeout timer are
+  released at the end of the run. TypeScript coverage thresholds rise to 90%
+  lines/statements, 85% branches, and 90% functions (currently 97/91/97/97), with new
+  unit and integration tests of the DB-only paths.
 
-- **Qualidade, limpeza e performance (PRD-67)**: `extension.ts` reduzido a
-  orquestrador (143 linhas) com os comandos extraídos para `src/commands/`
-  (`run`, `debug`, `script`, `profile`, `connection`, `utility`) e a árvore de
-  testes em `src/testTree.ts` (testável). Novo debounce do watcher
-  (`utplsql.refreshDebounceMs`, default 300 ms) coalesce saves rápidos;
-  debugger e script runner carregados sob demanda; paths cross-platform com
-  casing de drive e drives distintos; strings de runtime de `junit`/
-  `oracleRunner`/`discovery` roteadas pelo i18n; remoção de código morto da
-  era CLI (`checkCli`, `applyResults`/`applyCoverage`).
-- **Diagnostics e reporter de sessão (PRD-68)**: diagnóstico de compilação
-  PL/SQL religado — erros de `ALL_ERRORS` aparecem no Problems Panel (source
-  "utPLSQL Compilation") após um run, controlado por
-  `utplsql.compilationDiagnostics.enabled`. Reporter adicional volátil da
-  sessão passa a valer para a próxima execução; `UTPLSQL_BAD_CONN` é emitido em
-  falha de conexão; threshold de versão centralizado (3.1.0) e guard em
-  `extractSchemaFromPath` para padrões sem `{schema}`.
+- **Quality, cleanup, and performance (PRD-67)**: `extension.ts` reduced to an
+  orchestrator (143 lines) with the commands extracted to `src/commands/`
+  (`run`, `debug`, `script`, `profile`, `connection`, `utility`) and the test
+  tree in `src/testTree.ts` (testable). New watcher debounce
+  (`utplsql.refreshDebounceMs`, default 300 ms) coalesces fast saves;
+  debugger and script runner loaded on demand; cross-platform paths with
+  drive casing and distinct drives; runtime strings of `junit`/
+  `oracleRunner`/`discovery` routed through i18n; removal of dead code from the
+  CLI era (`checkCli`, `applyResults`/`applyCoverage`).
+- **Diagnostics and session reporter (PRD-68)**: PL/SQL compilation
+  diagnostics re-enabled — `ALL_ERRORS` errors appear in the Problems Panel (source
+  "utPLSQL Compilation") after a run, controlled by
+  `utplsql.compilationDiagnostics.enabled`. The session's volatile additional
+  reporter now applies to the next run; `UTPLSQL_BAD_CONN` is emitted on
+  connection failure; version threshold centralized (3.1.0) and a guard in
+  `extractSchemaFromPath` for patterns without `{schema}`.
 
-- **Robustez de conexão, logging e cache (PRD-66)**: connection string aceita
-  TNS/SID/IPv6; logs de diagnóstico opt-in com `UTPLSQL_DEBUG=1`; pool recriado
-  ao mudar `utplsql.oraclePool*` (chave composta + `onDidChangeConfiguration`);
-  helper de conexão compartilhado; verificação real de grants de `DBMS_DEBUG`,
-  bind no debugger e `v$sql` restrito ao schema.
+- **Connection robustness, logging, and cache (PRD-66)**: connection string accepts
+  TNS/SID/IPv6; opt-in diagnostic logs with `UTPLSQL_DEBUG=1`; pool recreated
+  when `utplsql.oraclePool*` changes (composite key + `onDidChangeConfiguration`);
+  shared connection helper; real verification of `DBMS_DEBUG` grants,
+  bind in the debugger, and `v$sql` restricted to the schema.
 
-- **Segurança de perfis e schema-mode (PRD-65)**: senhas de perfis passam a
-  ficar no cofre do SO (VS Code SecretStorage) — `utplsql.profiles` não guarda
-  mais a senha e perfis legados são migrados no primeiro uso. Credenciais com
-  `/` ou `@` na senha são aceitas. "Go to Error" abre suites descobertas apenas
-  no banco (provider de conteúdo `utplsql-db`), as decorações inline passam a
-  funcionar no modo `schema` e a ativação não pede mais conexão.
+- **Profile and schema-mode security (PRD-65)**: profile passwords now
+  live in the OS vault (VS Code SecretStorage) — `utplsql.profiles` no longer stores
+  the password and legacy profiles are migrated on first use. Credentials with
+  `/` or `@` in the password are accepted. "Go to Error" opens suites discovered only
+  in the database (content provider `utplsql-db`), inline decorations now
+  work in `schema` mode, and activation no longer asks for a connection.
 
-- **Execução de scripts SQL contra perfis (PRD-62)**: rode scripts
-  SQL/PL/SQL (migrações, seeds, setup) contra um perfil de conexão via
-  `utPLSQL: Executar script` (editor), `utPLSQL: Executar arquivo de script`
-  e `utPLSQL: Executar pasta de scripts` (Explorer) — QuickPick de conexão
-  após a invocação, saída por statement no OutputChannel "utPLSQL Script".
-  Perfis ganham `description` (exibida no picker) e `charset`
-  (`utf8`/`latin1`/`win1252`, para ler arquivos no encoding correto).
+- **Running SQL scripts against profiles (PRD-62)**: run SQL/PL/SQL
+  scripts (migrations, seeds, setup) against a connection profile via
+  `utPLSQL: Run script` (editor), `utPLSQL: Run script file`,
+  and `utPLSQL: Run script folder` (Explorer) — connection QuickPick
+  after invocation, output per statement in the "utPLSQL Script" OutputChannel.
+  Profiles gain `description` (shown in the picker) and `charset`
+  (`utf8`/`latin1`/`win1252`, to read files in the correct encoding).
   Settings `utplsql.scriptRunner.*` (`stopOnError`, `autoCommit`,
   `filePattern`, `dbmsOutput`, `timeoutSeconds`).
 
-- **Perfis de conexão (PRD-34)**: salve e alterne entre múltiplas conexões
-  Oracle (`utplsql.profiles` + `utplsql.activeProfile`) com configurações por
-  perfil (`sourcePath`, `coverageOwner`, `includePatterns`, além de
-  `description` e `charset`).
-  Comandos: Switch/New/Manage Connection Profile e Import do SQL Developer.
-  Status bar mostra o perfil ativo; sem perfil, comportamento inalterado.
-- **Function Coverage derivada (PRD-48)**: a view Test Coverage agora mostra
-  `% de declarações` por arquivo — declarações `PROCEDURE`/`FUNCTION` são
-  derivadas do fonte (hits por escopo) e emitidas como `DeclarationCoverage`
-  junto dos gutters por linha. Sem regressão nos percentuais existentes.
-- **Cobertura de views (PRD-12)**: `type_mapping` default inclui `views=VIEW`
-  (views aparecem no relatório com 0 hits); novo setting
-  `utplsql.sqlCoverageEnabled` rastreia views executadas via `V$SQL`
-  (cobertura booleana, off por default). Guia em `docs/wiki/Cobertura.md`.
-- **PL/SQL Debugger (PRD-33)**: debug de testes utPLSQL via `DBMS_DEBUG` —
-  breakpoints em `.pks`/`.pkb`, Step Into/Over/Out, Continue/Stop e inspeção
-  de variáveis locais (Debug Adapter `type: "utplsql"` + comando
-  `utplsql.debugTest`). Requer `node-oracledb` + grants `DBMS_DEBUG`/
-  `DEBUG CONNECT SESSION`. Settings `utplsql.debugger.*`. Integração com
-  banco real pendente de validação (suíte `describeDB`).
-- **Internacionalização (PRD-49)**: setting `utplsql.language`
-  (`auto` | 24 locais — 15 nativos do VSCode + 9 da comunidade) para as
-  mensagens de runtime: pt-br, en, en-gb, es, zh-cn, zh-tw, ja, de, fr,
-  it, ko, ru, tr, pl, cs, hu, bg, el, id, ro, sr, th, uk, vi; títulos de
-  comandos via `package.nls` (seguem o idioma do editor). `auto` em editor
-  `pt*` reproduz as mensagens atuais.
+- **Connection profiles (PRD-34)**: save and switch between multiple Oracle
+  connections (`utplsql.profiles` + `utplsql.activeProfile`) with per-profile
+  settings (`sourcePath`, `coverageOwner`, `includePatterns`, plus
+  `description` and `charset`).
+  Commands: Switch/New/Manage Connection Profile and Import from SQL Developer.
+  The status bar shows the active profile; without a profile, behavior unchanged.
+- **Derived Function Coverage (PRD-48)**: the Test Coverage view now shows
+  `% of declarations` per file — `PROCEDURE`/`FUNCTION` declarations are
+  derived from the source (hits per scope) and emitted as `DeclarationCoverage`
+  alongside the per-line gutters. No regression in the existing percentages.
+- **View coverage (PRD-12)**: default `type_mapping` includes `views=VIEW`
+  (views appear in the report with 0 hits); new setting
+  `utplsql.sqlCoverageEnabled` tracks views executed via `V$SQL`
+  (boolean coverage, off by default). Guide in `docs/wiki/Cobertura.md`.
+- **PL/SQL Debugger (PRD-33)**: debug utPLSQL tests via `DBMS_DEBUG` —
+  breakpoints in `.pks`/`.pkb`, Step Into/Over/Out, Continue/Stop, and inspection
+  of local variables (Debug Adapter `type: "utplsql"` + command
+  `utplsql.debugTest`). Requires `node-oracledb` + `DBMS_DEBUG`/
+  `DEBUG CONNECT SESSION` grants. Settings `utplsql.debugger.*`. Integration with
+  a real database pending validation (`describeDB` suite).
+- **Internationalization (PRD-49)**: setting `utplsql.language`
+  (`auto` | 24 locales — 15 native to VS Code + 9 community) for the
+  runtime messages: pt-br, en, en-gb, es, zh-cn, zh-tw, ja, de, fr,
+  it, ko, ru, tr, pl, cs, hu, bg, el, id, ro, sr, th, uk, vi; command
+  titles via `package.nls` (follow the editor's language). `auto` in a `pt*`
+  editor reproduces the current messages.
 
 ## 0.11.0
 
-- **Correções de primeira execução de cobertura no Windows (launcher CLI)**:
-  - *Escaping de args no cmd.exe*: o branch Windows de `runCli` passava os args
-    crus para `cmd.exe /d /c`, e metacaracteres (`|`, `(`, `)`, `&` — comuns em
-    `-regex_expression` e em `-type_mapping` com espaço) eram interpretados pelo
-    shell (ex.: `'view' não é reconhecido como um comando`), quebrando o run com
-    cobertura no modo CLI. Agora, quando algum arg precisa, a invocação usa um
-    `.cmd` intermediário com escaping de batch (`%` → `%%`, aspas ao redor de
-    args fora do conjunto seguro) — validado E2E no cmd.exe real com os args de
-    cobertura.
-  - *`callTimeout` vazado em conexões do pool*: `findInvalidUt3Objects` (5s) e
-    `discoverSchemaFromDb` (10s) setavam `conn.callTimeout` e devolviam a
-    conexão ao pool com o timeout ativo (o node-oracledb não reseta). A
-    primeira execução após ativar a extensão herdava os 5s → `NJS-123: call
-    timeout of 5000 ms exceeded` no meio do run → fallback para CLI. Ambos
-    restauram o timeout anterior no `finally`, e `acquireRunnerConnections`
-    zera `callTimeout` ao check-out.
-- **Atualização de dependências major** (PRD-46): `oracledb` 6.10.0 → **7.0.1**
+- **Fixes for the first coverage run on Windows (CLI launcher)**:
+  - *Arg escaping in cmd.exe*: the Windows branch of `runCli` passed the args
+    raw to `cmd.exe /d /c`, and metacharacters (`|`, `(`, `)`, `&` — common in
+    `-regex_expression` and in `-type_mapping` with a space) were interpreted by the
+    shell (e.g. `'view' is not recognized as a command`), breaking the run with
+    coverage in CLI mode. Now, when any arg needs it, the invocation uses an
+    intermediate `.cmd` with batch escaping (`%` → `%%`, quotes around
+    args outside the safe set) — validated E2E on the real cmd.exe with the coverage
+    args.
+  - *`callTimeout` leaked on pool connections*: `findInvalidUt3Objects` (5s) and
+    `discoverSchemaFromDb` (10s) set `conn.callTimeout` and returned the
+    connection to the pool with the timeout still active (node-oracledb does not reset).
+    The first run after activating the extension inherited the 5s → `NJS-123: call
+    timeout of 5000 ms exceeded` in the middle of the run → fallback to CLI. Both
+    restore the previous timeout in the `finally`, and `acquireRunnerConnections`
+    zeroes `callTimeout` on checkout.
+- **Major dependency update** (PRD-46): `oracledb` 6.10.0 → **7.0.1**
   (+ `@types/oracledb` 7.0.2), `fast-xml-parser` 4.5.7 → **5.11.1**, `iconv-lite`
-  → **0.7.3** e `typescript` → **7.0.2** (compilador nativo) — sem mudanças de
-  código além do `.vscodeignore`. A v5 do fast-xml-parser trouxe transitivas
+  → **0.7.3**, and `typescript` → **7.0.2** (native compiler) — no code
+  changes beyond `.vscodeignore`. fast-xml-parser v5 brought in transitives
   (`@nodable/entities`, `anynum`, `fast-xml-builder`, `is-unsafe`,
-  `path-expression-matcher`, `xml-naming`) que já vão embutidas no bundle
-  esbuild — podadas do VSIX. `oracledb/plugins` (auth IAM/OCI/Azure) e docs
-  não-licença também podados (extensão usa só conexão user/pass). VSIX: 153 →
-  151 arquivos, 952 → 989 KB (+3.9%), thin-only. `engines.node` segue `>= 22`
-  (piso do host do VSCode) e `@types/node` foi alinhado ao piso (`^22`) — o
-  bundle executa no Node 22 do host. Node 26 no toolchain fica para a PRD-47
-  (pós-LTS, out/2026). Validado: 350 unit, coverage 89.65%, 26 integração com
-  banco real (pool/streaming/cobertura/PRD-43), `vsce ls` sem `.node`.
-- **Descoberta de suites via banco no modo schema** (PRD-43): com `organization: schema`
-  e `runnerMode` Oracle (`auto`/`oracle`), o refresh agora complementa a descoberta de
-  arquivos consultando `ALL_OBJECTS`/`ALL_SOURCE` (`discoverSchemaFromDb` em
-  `discovery.ts`) — útil para shared installs, CI e ambientes sem o código `.pks`
-  local. Schemas candidatos vêm da união dos schemas das suites locais com os
-  diretórios abaixo da base do `organization.schemaPattern` (`discoverSchemasFromFolders`,
-  ex.: `db/*`). Prioridade filesystem no merge (match por `packageName`, case-insensitive).
-  Packages `UT_*` (framework) são ignorados; `FETCH FIRST 10000 ROWS` + `console.warn`
-  de truncamento; `callTimeout` de 10s; fallback silencioso quando `ALL_SOURCE` é
-  inacessível ou o Oracle está indisponível (`import('oracledb')` falha → `[]`). Pool do
-  PRD-38 reutilizado; `resolveConnectionNoPrompt` (refresh não pergunta conexão).
-  Suites descobertas via DB usam URI virtual `utplsql-db:/SCHEMA/PKG.pks`
-  (`SuiteFile.dbSchema`); limitação documentada: essas suites não têm CodeLens,
-  Decorations nem jump to failure (só execução). +16 testes unitários; +3 testes de
-  integração com banco real, incluindo refresh E2E em modo schema.
-- **Verificação de instalação do utPLSQL na ativação** (PRD-41): o `SetupValidator`
-  agora valida a integridade do schema UT3 (objetos inválidos em `ALL_OBJECTS` para
-  `PACKAGE`/`TYPE`/`PACKAGE BODY`) na ativação e no comando `Validar configuração`.
-  Best-effort: async, sem prompt de conexão (`resolveConnectionNoPrompt`), timeout de
-  5s (`callTimeout`), `try/catch` silencioso, pool do PRD-38 reutilizado
-  (`findInvalidUt3Objects` em `oracleRunner.ts`). Diagnostic `UTPLSQL_INVALID_OBJECTS`
-  (source "utPLSQL Setup", Warning) com quick-fix **"Recompilar UT3"**
-  (`utplsql.recompileUt3` → `DBMS_UTILITY.COMPILE_SCHEMA`), que re-verifica e limpa o
-  diagnostic se resolvido. Gates: `setupDiagnosticsEnabled: false` e `runnerMode: cli`
-  suprimem a verificação. +14 testes unitários; provider de Code Actions também
-  registrado para o scheme `utplsql-setup`.
-- **Bundling com esbuild + poda do node-oracledb no VSIX** (PRD-45): `main` agora
-  aponta para `dist/extension.js` (bundle único, `fast-xml-parser`/`iconv-lite`
-  embutidos; `vscode` e `oracledb` externos — `await import('oracledb')` preservado).
-  Novo script `npm run bundle` (`esbuild.config.mjs`); `package` e `vscode:prepublish`
-  encadeiam `compile && bundle`; `pretest:integration` também. `.vscodeignore` exclui
-  `out/**`, os binários nativos (`oracledb/build/**`), `examples/`/`package/` do
-  oracledb e as deps puras já embutidas. VSIX: 281 → 153 arquivos, ~2.1 MB → 949 KB,
-  **warning de performance do vsce eliminado**. Validado: integração com banco real
-  (thin mode **sem** binários nativos), fallback CLI com oracledb removido, `vsce ls`
-  sem `.node` e sem `out/`.
-- **Melhorias nos workflows CI/CD** (PRD-21): `ci.yml` e `publish.yml` unificados em
-  `actions/checkout@v7` + `actions/setup-node@v7`. Passos redundantes de compile/lint
-  removidos do CI (`npm test` já dispara `pretest:unit`). Publish usa `npm run package`
-  e `npm run publish` em vez de `npx @vscode/vsce`; novo `scripts/publish.cjs` mantém o
-  bloqueio local (publicação continua exclusiva via release) e bypassa quando
-  `CI=true` (setado pelo GitHub Actions). `.vscodeignore` passa a excluir `install/**`
-  (pasta local gitignored, impedia o `vsce package` quando continha `.env`).
-- **Matching resultado→teste como função pura** (PRD-44): `buildMatchIndex` e
-  `findByNameOnly` extraídos para `matching.ts` como funções puras (`MatchEntry[]`
-  → `Map`/item), sem dependência de `TestStateManager`/`WeakMap`. `applyResultsFromCases`
-  em `results.ts` constrói `entries` antes do loop de matching (nenhum acesso a
-  `state.getMeta()` dentro do loop). Sem mudança de comportamento. +10 testes unitários
-  em `matching.test.ts`; cobertura de `matching.ts` em 100%.
+  `path-expression-matcher`, `xml-naming`) that are already bundled in the
+  esbuild bundle — pruned from the VSIX. `oracledb/plugins` (IAM/OCI/Azure auth) and
+  non-license docs were also pruned (the extension only uses user/pass connection). VSIX: 153 →
+  151 files, 952 → 989 KB (+3.9%), thin-only. `engines.node` stays `>= 22`
+  (VS Code host floor) and `@types/node` was aligned to the floor (`^22`) — the
+  bundle runs on the host's Node 22. Node 26 in the toolchain is left to PRD-47
+  (post-LTS, Oct/2026). Validated: 350 unit, coverage 89.65%, 26 integration with a
+  real database (pool/streaming/coverage/PRD-43), `vsce ls` without `.node`.
+- **Database-based suite discovery in schema mode** (PRD-43): with `organization: schema`
+  and `runnerMode` Oracle (`auto`/`oracle`), the refresh now complements file
+  discovery by querying `ALL_OBJECTS`/`ALL_SOURCE` (`discoverSchemaFromDb` in
+  `discovery.ts`) — useful for shared installs, CI, and environments without the local
+  `.pks` code. Candidate schemas come from the union of the local suites' schemas with the
+  directories below the base of `organization.schemaPattern` (`discoverSchemasFromFolders`,
+  e.g. `db/*`). Filesystem priority in the merge (match by `packageName`, case-insensitive).
+  `UT_*` packages (framework) are ignored; `FETCH FIRST 10000 ROWS` + `console.warn`
+  of truncation; `callTimeout` of 10s; silent fallback when `ALL_SOURCE` is
+  inaccessible or Oracle is unavailable (`import('oracledb')` fails → `[]`). PRD-38 pool
+  reused; `resolveConnectionNoPrompt` (refresh does not ask for a connection).
+  Suites discovered via DB use the virtual URI `utplsql-db:/SCHEMA/PKG.pks`
+  (`SuiteFile.dbSchema`); documented limitation: these suites have no CodeLens,
+  Decorations, nor jump to failure (run only). +16 unit tests; +3 integration
+  tests with a real database, including an E2E refresh in schema mode.
+- **utPLSQL installation check on activation** (PRD-41): `SetupValidator`
+  now validates the integrity of the UT3 schema (invalid objects in `ALL_OBJECTS` for
+  `PACKAGE`/`TYPE`/`PACKAGE BODY`) on activation and in the `Validate setup` command.
+  Best-effort: async, no connection prompt (`resolveConnectionNoPrompt`), 5s timeout
+  (`callTimeout`), silent `try/catch`, PRD-38 pool reused
+  (`findInvalidUt3Objects` in `oracleRunner.ts`). Diagnostic `UTPLSQL_INVALID_OBJECTS`
+  (source "utPLSQL Setup", Warning) with the quick-fix **"Recompile UT3"**
+  (`utplsql.recompileUt3` → `DBMS_UTILITY.COMPILE_SCHEMA`), which re-checks and clears the
+  diagnostic if resolved. Gates: `setupDiagnosticsEnabled: false` and `runnerMode: cli`
+  suppress the check. +14 unit tests; the Code Actions provider is also
+  registered for the `utplsql-setup` scheme.
+- **Bundling with esbuild + pruning node-oracledb from the VSIX** (PRD-45): `main` now
+  points to `dist/extension.js` (single bundle, `fast-xml-parser`/`iconv-lite`
+  embedded; `vscode` and `oracledb` external — `await import('oracledb')` preserved).
+  New script `npm run bundle` (`esbuild.config.mjs`); `package` and `vscode:prepublish`
+  chain `compile && bundle`; `pretest:integration` too. `.vscodeignore` excludes
+  `out/**`, the native binaries (`oracledb/build/**`), `examples/`/`package/` of
+  oracledb, and the pure deps already embedded. VSIX: 281 → 153 files, ~2.1 MB → 949 KB,
+  **vsce performance warning eliminated**. Validated: integration with a real database
+  (thin mode **without** native binaries), CLI fallback with oracledb removed, `vsce ls`
+  without `.node` and without `out/`.
+- **CI/CD workflow improvements** (PRD-21): `ci.yml` and `publish.yml` unified on
+  `actions/checkout@v7` + `actions/setup-node@v7`. Redundant compile/lint steps
+  removed from CI (`npm test` already triggers `pretest:unit`). Publish uses `npm run package`
+  and `npm run publish` instead of `npx @vscode/vsce`; the new `scripts/publish.cjs` keeps the
+  local block (publication remains exclusive via release) and bypasses when
+  `CI=true` (set by GitHub Actions). `.vscodeignore` now excludes `install/**`
+  (local gitignored folder, blocked `vsce package` when it contained `.env`).
+- **Result-to-test matching as a pure function** (PRD-44): `buildMatchIndex` and
+  `findByNameOnly` extracted to `matching.ts` as pure functions (`MatchEntry[]`
+  → `Map`/item), without depending on `TestStateManager`/`WeakMap`. `applyResultsFromCases`
+  in `results.ts` builds `entries` before the matching loop (no access to
+  `state.getMeta()` inside the loop). No behavior change. +10 unit tests
+  in `matching.test.ts`; `matching.ts` coverage at 100%.
 
 ## 0.10.0
 
-- **Connection pooling no Oracle runner** (PRD-38): pool lazy gerenciado por `ensurePool`
-  (keyed pela connection string — recriado quando a conexão muda), fechado no
-  `deactivate()` com drenagem de 10s. `acquireRunnerConnections` usa `pool.getConnection()`
-  com fallback para conexão raw quando o pool não está disponível. `oracledb.outFormat =
-  OUT_FORMAT_OBJECT` global, com acessos de rows por propriedade nomeada (`TABLE_OWNER`,
-  `MESSAGE_ID`, `TEXT`). `poolPingInterval` valida conexões ociosas no checkout (ping interno
-  do Thin driver — sem `SELECT 1 FROM DUAL` explícito). Novas settings:
+- **Connection pooling in the Oracle runner** (PRD-38): lazy pool managed by `ensurePool`
+  (keyed by the connection string — recreated when the connection changes), closed on
+  `deactivate()` with 10s draining. `acquireRunnerConnections` uses `pool.getConnection()`
+  with fallback to a raw connection when the pool is not available. `oracledb.outFormat =
+  OUT_FORMAT_OBJECT` global, with row accesses by named property (`TABLE_OWNER`,
+  `MESSAGE_ID`, `TEXT`). `poolPingInterval` validates idle connections on checkout (internal
+  Thin driver ping — no explicit `SELECT 1 FROM DUAL`). New settings:
   `utplsql.oraclePoolMin` (2), `utplsql.oraclePoolMax` (10), `utplsql.oraclePoolIncrement` (1),
-  `utplsql.oraclePoolPingInterval` (60). Testes unitários do pool + teste de integração com
-  banco real (reuso do pool entre execuções).
-- **Refatoração: código compartilhado entre runners** (PRD-39): novo módulo `src/results.ts`
-  com as funções canônicas `applyResultsFromCases`, `applyCoverageFromXml`, `countResults` e
-  `resolveStackFrameToUri` (antes duplicadas entre `runner.ts` e `oracleRunner.ts`).
-  `runner.ts` mantém wrappers CLI (leitura de arquivo + setup diagnostics); `oracleRunner.ts`
-  importa de `results.ts`. `matching.ts` permanece puro. Comportamento unificado: o modo CLI
-  ganha "Go to Error" (stackFrames → `message.location`) e o modo Oracle ganha o aviso de
-  testes sem match no JUnit. −380/+439 linhas, 7 testes unitários novos, cobertura 72.6%.
-- **Refatoração: Options Object no Oracle runner** (PRD-40): `executeRunOracle` passa a receber
-  `OracleRunOptions` (interface tipada com JSDoc) + `token` — os 11 parâmetros posicionais
-  viram um objeto com desestruturação preservando os nomes locais. Call site em `runner.ts`
-  constrói o objeto. Sem mudança de comportamento.
-- **SuiteParser: annotations estendidas** (PRD-42): `parseSuiteText` passa a extrair
-  `%disabled` (suite/teste), `%throws(-NNNNN)` (`expectedError`, valor absoluto),
-  `%tags(a,b)` (`tags[]`), `%displayname(name)` (sobrescreve a descrição na árvore) e os
-  lifecycle hooks `%beforeall`/`%beforeeach`/`%aftereach`/`%afterall` (booleanos na suíte).
-  `discoverWorkspace` pula suites e testes desabilitados. Annotations case-insensitive;
-  bloco no header da suíte aplica à suíte, bloco entre `%test` e procedure aplica ao teste.
-- **Wiki: checklist manual de screenshots + diagramas** (PRD-23, reconciliada): automação de
-  captura descartada (qualidade insatisfatória) em favor de checklist manual de 23 itens em
-  `docs/wiki/images/README.md` + fixtures preservadas. Quatro diagramas vetoriais novos
+  `utplsql.oraclePoolPingInterval` (60). Unit tests of the pool + integration test with a
+  real database (pool reuse across runs).
+- **Refactor: shared code between runners** (PRD-39): new module `src/results.ts`
+  with the canonical functions `applyResultsFromCases`, `applyCoverageFromXml`, `countResults`, and
+  `resolveStackFrameToUri` (previously duplicated between `runner.ts` and `oracleRunner.ts`).
+  `runner.ts` keeps CLI wrappers (file reading + setup diagnostics); `oracleRunner.ts`
+  imports from `results.ts`. `matching.ts` stays pure. Unified behavior: the CLI
+  mode gains "Go to Error" (stackFrames → `message.location`) and the Oracle mode gains the warning of
+  tests without a match in JUnit. −380/+439 lines, 7 new unit tests, coverage 72.6%.
+- **Refactor: Options Object in the Oracle runner** (PRD-40): `executeRunOracle` now receives
+  `OracleRunOptions` (typed interface with JSDoc) + `token` — the 11 positional parameters
+  become an object with destructuring preserving the local names. The call site in `runner.ts`
+  builds the object. No behavior change.
+- **SuiteParser: extended annotations** (PRD-42): `parseSuiteText` now extracts
+  `%disabled` (suite/test), `%throws(-NNNNN)` (`expectedError`, absolute value),
+  `%tags(a,b)` (`tags[]`), `%displayname(name)` (overrides the description in the tree), and the
+  lifecycle hooks `%beforeall`/`%beforeeach`/`%aftereach`/`%afterall` (booleans on the suite).
+  `discoverWorkspace` skips disabled suites and tests. Annotations case-insensitive;
+  a block in the suite header applies to the suite, a block between `%test` and procedure applies to the test.
+- **Wiki: manual screenshot checklist + diagrams** (PRD-23, reconciled): capture
+  automation discarded (unsatisfactory quality) in favor of a manual checklist of 23 items in
+  `docs/wiki/images/README.md` + preserved fixtures. Four new vector diagrams
   (`diagram-arquitetura`, `diagram-conexao`, `diagram-streaming`, `diagram-diagnosticos`)
-  referenciados no README e na wiki. Script `npm run gen-diagram` reescrito em
-  `scripts/gen-diagrams.cjs` (`@resvg/resvg-js`, cross-platform) — renderiza todos os SVGs
-  para PNG de 1200px sem dependências de sistema.
+  referenced in the README and the wiki. Script `npm run gen-diagram` rewritten in
+  `scripts/gen-diagrams.cjs` (`@resvg/resvg-js`, cross-platform) — renders all SVGs
+  to 1200px PNG without system dependencies.
 
 ## 0.9.0
 
-- **Execução Oracle direta com streaming** (PRD-11): novo `runnerMode` (`auto`, `cli`, `oracle`). Modo `auto` conecta via `node-oracledb` (thin driver, opcional) e faz polling incremental de `UT_OUTPUT_BUFFER_TMP` — cada teste aparece no Test Explorer em tempo real. Fallback automático para CLI se `oracledb` não estiver disponível. Suporte a shared install via `discoverUtplsqlSchema` (schema prefixado nas queries). Reporters (doc, JUnit, coverage) escrevem na mesma tabela VARCHAR2 — sem dependência de `UT_OUTPUT_CLOB_BUFFER_TMP`.
-- **Flags JVM customizáveis** (PRD-17): nova setting `utplsql.javaArgs` (array, default `["-Xmx256m"]`). Flags inseridas antes de `-cp` no modo `java`. Permite `-Xmx`, `-Xms`, `-Dprop=value` sem editar código.
-- **Compilation diagnostics** (PRD-28): `CompilationDiagnostics` captura erros `PLS-*`/`ORA-06550` do stdout do CLI e os exibe como sublinhados no editor e `vscode.Diagnostic` no Problems Panel (source: "utPLSQL Compilation"). Mapeia para arquivos `.pks`/`.pkb` via `resolveFiles`. Setting `utplsql.compilationDiagnostics.enabled` (default `true`).
-- **Jump to failing assertion** (PRD-29): `parseStackFrames` extrai stack traces do JUnit XML (`at "SCHEMA.PKG"."PROC", line 42`), `resolveStackFrameToUri` mapeia para arquivo fonte. `message.location` populado nos `TestMessage`s de falha/erro — VSCode habilita botão "Go to Error" nativo. Frames internos (`UT_*`) filtrados automaticamente.
-- **Schema-aware test organization** (PRD-30): nova setting `utplsql.organization` (`file` | `schema`, default `file`). Modo `schema` agrupa testes em hierarquia **Schema > Package > Suite > Test** no Test Explorer. `extractSchemaFromPath` extrai schema via regex glob configurável em `utplsql.organization.schemaPattern` (placeholder `{schema}`, default `db/{schema}/**`). Suporte a `UNKNOWN` para arquivos fora do padrão.
-- **Quick-fix setup diagnostics** (PRD-32): `SetupValidator` valida CLI, Java, conexão e versão utPLSQL na ativação da extensão. `UtplsqlCodeActionProvider` oferece Code Actions (quick-fix) no Problems Panel: "Configurar utplsql.cliPath", "Reconfigurar conexão", "Copiar grants". Novos comandos: `utplsql.validateSetup`, `utplsql.configureConnection`, `utplsql.copyGrantsToClipboard`. Setting `utplsql.setupDiagnostics.enabled` (default `true`).
-- **Cobertura TypeScript com c8** (PRD-37): script `test:coverage` com `c8`, `.c8rc` com thresholds 65/80/70 (lines/branches/functions), reporters `text` + `lcov` + `html`. Exclusão de `src/test/**` e `out/test/**`. Coverage atual: **69.4% lines** (241 testes).
-- **Testes de cobertura expandidos**: `decorations.test.ts` +5 testes, `statusBar.test.ts` +5 testes, `discovery.test.ts` +3 testes, `compilationDiagnostics.test.ts` +1 teste. Infra de mock expandida em `vscode-stub.ts` (`StatusBarItem`, `__setMockFileError`, `__setVisibleEditors`, `Uri.joinPath`).
-- **Documentação completa**: novas páginas wiki (Execução Oracle direta, Diagnósticos e quick-fix, Organização da árvore). FAQ +9 perguntas, Troubleshooting +4 entradas, README com diagrama dual CLI/Oracle, sidebar reorganizada.
+- **Direct Oracle execution with streaming** (PRD-11): new `runnerMode` (`auto`, `cli`, `oracle`). `auto` mode connects via `node-oracledb` (thin driver, optional) and does incremental polling of `UT_OUTPUT_BUFFER_TMP` — each test appears in the Test Explorer in real time. Automatic fallback to CLI if `oracledb` is not available. Support for shared install via `discoverUtplsqlSchema` (schema prefixed in queries). Reporters (doc, JUnit, coverage) write to the same VARCHAR2 table — no dependency on `UT_OUTPUT_CLOB_BUFFER_TMP`.
+- **Customizable JVM flags** (PRD-17): new setting `utplsql.javaArgs` (array, default `["-Xmx256m"]`). Flags inserted before `-cp` in `java` mode. Allows `-Xmx`, `-Xms`, `-Dprop=value` without editing code.
+- **Compilation diagnostics** (PRD-28): `CompilationDiagnostics` captures `PLS-*`/`ORA-06550` errors from the CLI stdout and displays them as underlines in the editor and `vscode.Diagnostic` in the Problems Panel (source: "utPLSQL Compilation"). Maps to `.pks`/`.pkb` files via `resolveFiles`. Setting `utplsql.compilationDiagnostics.enabled` (default `true`).
+- **Jump to failing assertion** (PRD-29): `parseStackFrames` extracts stack traces from the JUnit XML (`at "SCHEMA.PKG"."PROC", line 42`), `resolveStackFrameToUri` maps to the source file. `message.location` populated in the failure/error `TestMessage`s — VS Code enables the native "Go to Error" button. Internal frames (`UT_*`) filtered automatically.
+- **Schema-aware test organization** (PRD-30): new setting `utplsql.organization` (`file` | `schema`, default `file`). `schema` mode groups tests in a **Schema > Package > Suite > Test** hierarchy in the Test Explorer. `extractSchemaFromPath` extracts the schema via a configurable glob regex in `utplsql.organization.schemaPattern` (placeholder `{schema}`, default `db/{schema}/**`). Support for `UNKNOWN` for files outside the pattern.
+- **Quick-fix setup diagnostics** (PRD-32): `SetupValidator` validates the CLI, Java, connection, and utPLSQL version on extension activation. `UtplsqlCodeActionProvider` offers Code Actions (quick-fix) in the Problems Panel: "Configure utplsql.cliPath", "Reconfigure connection", "Copy grants". New commands: `utplsql.validateSetup`, `utplsql.configureConnection`, `utplsql.copyGrantsToClipboard`. Setting `utplsql.setupDiagnostics.enabled` (default `true`).
+- **TypeScript coverage with c8** (PRD-37): `test:coverage` script with `c8`, `.c8rc` with thresholds 65/80/70 (lines/branches/functions), reporters `text` + `lcov` + `html`. Exclusion of `src/test/**` and `out/test/**`. Current coverage: **69.4% lines** (241 tests).
+- **Expanded coverage tests**: `decorations.test.ts` +5 tests, `statusBar.test.ts` +5 tests, `discovery.test.ts` +3 tests, `compilationDiagnostics.test.ts` +1 test. Mock infra expanded in `vscode-stub.ts` (`StatusBarItem`, `__setMockFileError`, `__setVisibleEditors`, `Uri.joinPath`).
+- **Complete documentation**: new wiki pages (Direct Oracle execution, Diagnostics and quick-fix, Tree organization). FAQ +9 questions, Troubleshooting +4 entries, README with a dual CLI/Oracle diagram, reorganized sidebar.
 
 ## 0.8.0
 
-- CodeLens Integration (PRD-24): botões Run/Run with Coverage sobre `%suite` e `%test` no editor.
-- Status Bar Indicator (PRD-25): indicador com contagem pass/fail, duração, tooltip e barra de progresso.
-- Inline Test Result Decorations (PRD-26): ícones ✓/✗/⚠ no editor após execução, overview ruler, tooltip com falha.
-- Default Keybindings (PRD-27): 9 atalhos `Ctrl+Shift+U` + tecla para comandos frequentes.
+- CodeLens Integration (PRD-24): Run/Run with Coverage buttons over `%suite` and `%test` in the editor.
+- Status Bar Indicator (PRD-25): indicator with pass/fail count, duration, tooltip, and progress bar.
+- Inline Test Result Decorations (PRD-26): ✓/✗/⚠ icons in the editor after a run, overview ruler, tooltip with the failure.
+- Default Keybindings (PRD-27): 9 `Ctrl+Shift+U` + key shortcuts for frequent commands.
 - Smart Re-run Patterns (PRD-31): Rerun Last (`Ctrl+Shift+U L`), Run at Cursor (`Ctrl+Shift+U U`), Run Failed Only (`Ctrl+Shift+U X`).
 
 ## 0.7.2
 
-- Correção: parse de reporters com formato utPLSQL 3.2.x — nomes com sufixo `:` e
-  descrições indentadas não eram reconhecidos, desabilitando cobertura silenciosamente (PRD-36).
-- Flag `coverageEnabled` impede diagnóstico falso de "GRANT EXECUTE" quando o reporter
-  de cobertura não está disponível.
-- Correção: relatório de cobertura não gerado no Windows com modo `launcher` (PRD-35):
-  bypass do wrap duplo de quoting entre `quoteArg` e o Node.js no `cmd.exe`.
-- Blindagem de testes para `quoteArg` com caminhos Windows, padrões regex e strings com `=`.
-- Diagnóstico aprimorado em `applyCoverage` quando o arquivo de cobertura não existe.
-- Log de argumentos CLI (sem connection) para facilitar debugging.
+- Fix: reporter parsing with the utPLSQL 3.2.x format — names with a `:` suffix and
+  indented descriptions were not recognized, silently disabling coverage (PRD-36).
+- `coverageEnabled` flag prevents a false "GRANT EXECUTE" diagnostic when the coverage
+  reporter is not available.
+- Fix: coverage report not generated on Windows in `launcher` mode (PRD-35):
+  bypass of the double quoting wrap between `quoteArg` and Node.js in `cmd.exe`.
+- Test hardening for `quoteArg` with Windows paths, regex patterns, and strings with `=`.
+- Improved diagnostic in `applyCoverage` when the coverage file does not exist.
+- CLI argument log (without connection) to ease debugging.
 
 ## 0.7.1
 
-- Alinhamento `engines.node` com CI (PRD-18): requisito relaxado de `^24.0.0` para `>=20.0.0`.
-- Normalização do sistema de PRDs (PRD-19): H1s padronizados (`# PRD-NN —`), tabela Concluídos
-  ordenada numericamente, títulos alinhados com os arquivos fonte.
-- Limpeza de dependências e configurações (PRD-20): `c8` removido (não utilizado), padrões
-  de exclusão do Biome corrigidos (`/**` para diretórios), tipos `mocha` isolados no escopo
-  de integração.
-- Workflow da wiki sincroniza imagens (PRD-22): diretório `docs/wiki/images/` copiado
-  automaticamente para o repositório wiki.
+- `engines.node` alignment with CI (PRD-18): requirement relaxed from `^24.0.0` to `>=20.0.0`.
+- PRD system normalization (PRD-19): standardized H1s (`# PRD-NN —`), Completed table
+  ordered numerically, titles aligned with the source files.
+- Dependency and configuration cleanup (PRD-20): `c8` removed (unused), Biome exclusion
+  patterns fixed (`/**` for directories), `mocha` types isolated in the integration
+  scope.
+- Wiki workflow syncs images (PRD-22): `docs/wiki/images/` directory copied
+  automatically to the wiki repository.
 
 ## 0.7.0
 
-- Reporters dinâmicos (PRD-10):
-  - Novo módulo puro `cliReporters.ts` com `parseReportersOutput` e `listReporters`.
-  - Validação dinâmica antes da cobertura: se `UT_COVERAGE_COBERTURA_REPORTER`
-    não existir no banco, cobertura é pulada com aviso (nunca bloqueia execução).
-  - Nova setting `utplsql.additionalReporters` para reporters extras fixos.
-  - Novo comando `utplsql.selectReporter` com QuickPick dos reporters disponíveis
-    no banco; o selecionado é usado na execução seguinte e descartado após.
-- README atualizado: seção Reporters, comandos e settings faltantes documentados.
+- Dynamic reporters (PRD-10):
+  - New pure module `cliReporters.ts` with `parseReportersOutput` and `listReporters`.
+  - Dynamic validation before coverage: if `UT_COVERAGE_COBERTURA_REPORTER`
+    does not exist in the database, coverage is skipped with a warning (never blocks a run).
+  - New setting `utplsql.additionalReporters` for fixed extra reporters.
+  - New command `utplsql.selectReporter` with a QuickPick of the reporters available
+    in the database; the selected one is used in the next run and discarded afterward.
+- README updated: Reporters section, missing commands and settings documented.
 
 ## 0.6.0
 
-- Infraestrutura de testes com Oracle real (PRD-13, PRD-14, PRD-15):
-  - Container Oracle 23ai Free com utPLSQL v3.2.3 instalado no schema UT3.
-  - Schema utplsql_test com 3 packages de teste (test_betwnvarchar, test_math, test_employees).
-  - Script `src/test/integration/fixtures/setup.sh` para configurar todo o ambiente.
-  - Testes de integração expandidos em `extension.test.ts` com dependência condicional
-    ao banco real via `UTPLSQL_CONN`.
-- Testes de integração para ambos os modos de invocação (PRD-16): cobertura de `launcher`
-  e `java` nos testes com banco real, validação dos argumentos de linha de comando.
+- Test infrastructure with a real Oracle (PRD-13, PRD-14, PRD-15):
+  - Oracle 23ai Free container with utPLSQL v3.2.3 installed in the UT3 schema.
+  - `utplsql_test` schema with 3 test packages (test_betwnvarchar, test_math, test_employees).
+  - `src/test/integration/fixtures/setup.sh` script to set up the whole environment.
+  - Integration tests expanded in `extension.test.ts` with conditional dependency
+    on the real database via `UTPLSQL_CONN`.
+- Integration tests for both invocation modes (PRD-16): coverage of `launcher`
+  and `java` in the tests with a real database, validation of the command-line arguments.
 
 ## 0.5.3
 
-- Correção no discovery: `RelativePattern` removido, `findFiles` agora usa glob simples
-  `**/*.pks` compatível com Windows.
+- Discovery fix: `RelativePattern` removed, `findFiles` now uses a simple glob
+  `**/*.pks` compatible with Windows.
 
 ## 0.5.2
 
-- Correção no discovery: padrão glob `**/*.pks` agora busca recursivamente em subpastas.
-- runForFolder/runForUri aguardam refresh concluir antes de filtrar.
+- Discovery fix: the `**/*.pks` glob pattern now searches recursively in subfolders.
+- runForFolder/runForUri wait for refresh to complete before filtering.
 
 ## 0.5.1
 
-- Correção no filtro de pastas para Windows (trailing separator + race condition em refresh).
+- Folder filter fix for Windows (trailing separator + race condition on refresh).
 
 ## 0.5.0
 
-- Progresso notificável + cancelamento (PRD-05): barra de progresso com contagem,
-  `utplsql.cancelRun` para abortar execução.
-- Suporte a multi-root workspace (PRD-06): descoberta de suites escopo por pasta,
-  cobertura resolve arquivos na pasta correta, `ItemMeta` com campo `folder`.
-- Settings avançados do CLI (PRD-08): `timeoutMinutes`, `dbmsOutput`, `quiet`,
+- Notifiable progress + cancellation (PRD-05): progress bar with count,
+  `utplsql.cancelRun` to abort a run.
+- Multi-root workspace support (PRD-06): suite discovery scoped per folder,
+  coverage resolves files in the correct folder, `ItemMeta` with a `folder` field.
+- Advanced CLI settings (PRD-08): `timeoutMinutes`, `dbmsOutput`, `quiet`,
   `failureExitCode`.
-- Diagnóstico `utplsql info` (PRD-09): exibe versões CLI/API/DB com `semverLt`.
-- Filtragem URI→suites extraída para `matching.ts` com 12 testes unitários.
-- Cobertura de `src/` em 76% (+110 testes, 0 falhas).
-- Testes funcionam no Test Explorer do VSCode (setup independente de `--require`).
+- `utplsql info` diagnostic (PRD-09): shows CLI/API/DB versions with `semverLt`.
+- URI→suites filtering extracted to `matching.ts` with 12 unit tests.
+- `src/` coverage at 76% (+110 tests, 0 failures).
+- Tests work in the VS Code Test Explorer (setup independent of `--require`).
 
 ## 0.4.0
 
-- Refatoração de `extension.ts` (PRD-02): módulos puros (`suiteParser`, `junit`, `cobertura`) sem dependência de `vscode`.
-- Pipeline CI + Linter com Biome (PRD-03): workflow `ci.yml`, scripts `lint`/`format`, auto-formatação de todo `src/`.
-- Expansão da cobertura de testes (PRD-04): 5 novos arquivos de teste unitário, `applyResults` com fallback via `appendOutput`, infra de mock para `vscode`.
-- Upgrade Node 24 + TypeScript 6.0 (PRD-07): `.nvmrc`, `@types/node ^24`, `typescript ^6.0.3`, `engines.node ^24`.
+- Refactor of `extension.ts` (PRD-02): pure modules (`suiteParser`, `junit`, `cobertura`) without a `vscode` dependency.
+- CI pipeline + Linter with Biome (PRD-03): `ci.yml` workflow, `lint`/`format` scripts, auto-formatting of all of `src/`.
+- Test coverage expansion (PRD-04): 5 new unit test files, `applyResults` with `appendOutput` fallback, mock infra for `vscode`.
+- Node 24 + TypeScript 6.0 upgrade (PRD-07): `.nvmrc`, `@types/node ^24`, `typescript ^6.0.3`, `engines.node ^24`.
 
 ## 0.3.0
 
-- Novo modo de invocação **`java`** (PRD-01): chama a JVM direto
-  (`java -cp <home>/etc;<home>/lib/* org.utplsql.cli.Cli`) **sem shell**, em vez do
-  launcher `utplsql.bat`. Evita o `cmd` do Windows e o tratamento de metacaracteres
-  (`^`, `|`) — argumentos de regex em `coverageSourceArgs` passam literais.
-- Settings novas: `utplsql.javaPath` (executável do Java) e `utplsql.cliHome`
-  (raiz do utPLSQL-cli; vazio = derivado do `cliPath`). O modo `launcher` segue padrão.
+- New **`java`** invocation mode (PRD-01): calls the JVM directly
+  (`java -cp <home>/etc;<home>/lib/* org.utplsql.cli.Cli`) **without a shell**, instead of the
+  `utplsql.bat` launcher. Avoids Windows `cmd` and metacharacter handling
+  (`^`, `|`) — regex arguments in `coverageSourceArgs` pass through literally.
+- New settings: `utplsql.javaPath` (Java executable) and `utplsql.cliHome`
+  (utPLSQL-cli root; empty = derived from `cliPath`). `launcher` mode remains the default.
 
 ## 0.2.5
 
-- Refinamento das instruções.
+- Refinement of the instructions.
 
 ## 0.2.4
 
-- Inclusão de instruções para funcionamento da Cobertura com o `utPLSQL-cli`.
-- Inclusão dos GRANTS necessários para funcionamento do `utPLSQL` em modo DBA.
+- Added instructions for coverage to work with `utPLSQL-cli`.
+- Added the GRANTS needed for `utPLSQL` to work in DBA mode.
 
 ## 0.2.3
 
-- Inclusão do logotipo
+- Added the logo.
 
 ## 0.2.2
 
-- Cobertura mapeada aos arquivos-fonte (gutters / Sonar): a extensão passa `-owner`
-  (derivado da conexão, ou `utplsql.coverageOwner`) + regex/type_mapping configuráveis
-  (`utplsql.coverageSourceArgs`) para a estrutura `sourcePath/<tipo>/<nome>.sql`.
-- Removido o `-test_path` da cobertura (com a estrutura tipada ele zerava o relatório).
+- Coverage mapped to source files (gutters / Sonar): the extension passes `-owner`
+  (derived from the connection, or `utplsql.coverageOwner`) + configurable regex/type_mapping
+  (`utplsql.coverageSourceArgs`) for the `sourcePath/<type>/<name>.sql` structure.
+- Removed `-test_path` from coverage (with the typed structure it zeroed the report).
 
 ## 0.2.1
 
-- Publicada no Marketplace.
+- Published on the Marketplace.
 
 ## 0.2.0
 
-- Lógica de parsing isolada em módulos puros (`suiteParser`, `junit`, `cobertura`) sem dependência de `vscode`.
-- Testes unitários com `node --test` (parsers) e testes de integração com `@vscode/test-cli`.
+- Parsing logic isolated in pure modules (`suiteParser`, `junit`, `cobertura`) without a `vscode` dependency.
+- Unit tests with `node --test` (parsers) and integration tests with `@vscode/test-cli`.
 
 ## 0.1.0
 
-- Descoberta de suites/tests via annotations `%suite` / `%test`.
-- Integração com o Test Explorer (Test Results view).
-- Menu de contexto no Explorer (pasta e arquivos `.pks`/`.pkb`) e no editor.
-- Execução via `utPLSQL-cli` com parse do relatório JUnit.
-- Cobertura visual (gutters + percentual por arquivo) via Test Coverage API,
-  alimentada pelo reporter Cobertura do utPLSQL.
+- Suite/test discovery via `%suite` / `%test` annotations.
+- Integration with the Test Explorer (Test Results view).
+- Context menu in the Explorer (folder and `.pks`/`.pkb` files) and in the editor.
+- Execution via `utPLSQL-cli` with JUnit report parsing.
+- Visual coverage (gutters + percentage per file) via the Test Coverage API,
+  fed by the utPLSQL Cobertura reporter.
