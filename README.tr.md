@@ -411,6 +411,12 @@ GRANT SELECT ON SYS.DBA_PROCEDURES TO <ut3_owner>;
 
 Bu bağımsız bir topluluk projesidir. utPLSQL çerçeve ekibi veya Oracle Corporation ile bağlantılı değildir; onlar tarafından onaylanmaz veya desteklenmez. utPLSQL ve Oracle, ilgili sahiplerinin ticari markalarıdır.
 
+## Destek
+
+Bu uzantı işinize yarıyorsa, bakımını bir kahveyle destekleyebilirsiniz — tamamen isteğe bağlı. ☕
+
+[☕ Bana bir kahve ısmarla](https://buymeacoffee.com/gilclebera)
+
 ## Lisans
 
 MIT © Gil Cleber Barboza

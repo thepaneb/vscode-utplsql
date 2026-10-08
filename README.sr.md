@@ -409,6 +409,12 @@ GRANT SELECT ON SYS.DBA_PROCEDURES TO <ut3_owner>;
 
 Ово је независан пројекат заједнице. Није повезан, одобрен нити спонзорисан од стране тима utPLSQL радног оквира нити Oracle Corporation. utPLSQL и Oracle су заштитни знаци њихових власника.
 
+## Подршка
+
+Ако вам ово проширење помаже, можете подржати његово одржавање кафом — потпуно опционо. ☕
+
+[☕ Части ме кафом](https://buymeacoffee.com/gilclebera)
+
 ## Лиценца
 
 MIT © Gil Cleber Barboza

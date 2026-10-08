@@ -420,6 +420,12 @@ GRANT SELECT ON SYS.DBA_PROCEDURES TO <ut3_owner>;
 
 이 프로젝트는 독립적인 커뮤니티 프로젝트입니다. utPLSQL 프레임워크 팀 또는 Oracle Corporation과 제휴, 보증 또는 후원 관계에 있지 않습니다. utPLSQL 및 Oracle은 각 소유자의 상표입니다.
 
+## 후원
+
+이 확장이 도움이 되었다면, 커피로 유지보수를 후원할 수 있습니다(선택 사항). ☕
+
+[☕ 커피 한 잔 사주기](https://buymeacoffee.com/gilclebera)
+
 ## 라이선스
 
 MIT © Gil Cleber Barboza

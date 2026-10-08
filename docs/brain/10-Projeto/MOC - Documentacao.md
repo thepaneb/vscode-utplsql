@@ -14,7 +14,7 @@ enumerations geradas (`npm run brain:sync`).
 ## Arquivos da raiz do repo
 
 <!-- brain:auto:start:root-docs -->
-- [README.md](../../../README.md) — _2026-10-07_
+- [README.md](../../../README.md) — _2026-10-08_
 - [CHANGELOG.md](../../../CHANGELOG.md) — _2026-10-08_
 - [CONTRIBUTING.md](../../../CONTRIBUTING.md) — _2026-10-08_
 - [SECURITY.md](../../../SECURITY.md) — _2026-10-08_

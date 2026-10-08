@@ -409,6 +409,12 @@ GRANT SELECT ON SYS.DBA_PROCEDURES TO <ut3_owner>;
 
 Đây là một dự án cộng đồng độc lập. Dự án này không liên kết, không được xác nhận hay tài trợ bởi nhóm phát triển framework utPLSQL hay Oracle Corporation. utPLSQL và Oracle là nhãn hiệu của chủ sở hữu tương ứng.
 
+## Ủng hộ
+
+Nếu tiện ích này hữu ích với bạn, bạn có thể ủng hộ việc bảo trì bằng một ly cà phê — hoàn toàn tùy chọn. ☕
+
+[☕ Mời tôi một ly cà phê](https://buymeacoffee.com/gilclebera)
+
 ## Giấy phép
 
 MIT © Gil Cleber Barboza
