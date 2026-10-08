@@ -73,6 +73,7 @@ SORT id ASC
 - [[PIPE-bing-index - Bing Index Check]] — `PIPE-bing-index`
 - [[PIPE-ci - CI]] — `PIPE-ci`
 - [[PIPE-google-index - Google Index Check]] — `PIPE-google-index`
+- [[PIPE-integration - Integration (Oracle)]] — `PIPE-integration`
 - [[PIPE-pages - Deploy Pages]] — `PIPE-pages`
 - [[PIPE-pagespeed - PageSpeed Check]] — `PIPE-pagespeed`
 - [[PIPE-publish - Publish Extension]] — `PIPE-publish`

@@ -1,0 +1,98 @@
+name: Integration (Oracle)
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened, labeled]
+    paths:
+      - 'src/**'
+      - 'scripts/db-matrix/**'
+      - 'docker/db-matrix/**'
+      - '.vscode-test*.mjs'
+      - '.github/workflows/integration.yml'
+  schedule:
+    # Nightly: integração completa em um Oracle (23ai Free).
+    - cron: '0 3 * * *'
+  workflow_dispatch:
+    inputs:
+      mode:
+        description: 'Escopo: smoke (rápido), full (23ai Free completo) ou matrix (18c/21c/23ai)'
+        type: choice
+        options: [smoke, full, matrix]
+        default: smoke
+
+permissions:
+  contents: read
+
+concurrency:
+  group: integration-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  integration:
+    name: Integration (Oracle Free)
+    # PR: só com o label `run-integration` (o runner é uma VM nova a cada job — o
+    # banco é criado do zero, então não pesa todo PR). Nightly e dispatch: sempre.
+    if: >-
+      (github.event_name == 'pull_request' &&
+       contains(github.event.pull_request.labels.*.name, 'run-integration')) ||
+      github.event_name == 'schedule' ||
+      (github.event_name == 'workflow_dispatch' && inputs.mode != 'matrix')
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    env:
+      ORACLE_PWD: Oracle#2026
+      UT3_PASSWORD: ut3#matrix2026
+      TEST_PASSWORD: utplsql_test#2026
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v7
+
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 24
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Ensure xvfb (extension host)
+        run: |
+          command -v xvfb-run >/dev/null 2>&1 || { sudo apt-get update && sudo apt-get install -y xvfb; }
+
+      - name: Decide scope
+        id: scope
+        run: |
+          if [ "${{ github.event_name }}" = "pull_request" ] || [ "${{ inputs.mode }}" = "smoke" ]; then
+            echo "cmd=npm run test:integration:smoke" >> "$GITHUB_OUTPUT"
+          else
+            echo "cmd=npm run test:integration" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Run integration on Oracle 23ai Free
+        run: scripts/db-matrix/run.sh --only 23free --tests "xvfb-run -a ${{ steps.scope.outputs.cmd }}"
+
+  matrix:
+    name: Integration matrix (Oracle 18c/21c/23ai)
+    if: ${{ github.event_name == 'workflow_dispatch' && inputs.mode == 'matrix' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 240
+    env:
+      ORACLE_PWD: Oracle#2026
+      UT3_PASSWORD: ut3#matrix2026
+      TEST_PASSWORD: utplsql_test#2026
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v7
+
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 24
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Ensure xvfb (extension host)
+        run: |
+          command -v xvfb-run >/dev/null 2>&1 || { sudo apt-get update && sudo apt-get install -y xvfb; }
+
+      - name: Run integration matrix (18c, 21c, 23ai)
+        run: scripts/db-matrix/run.sh --only 18xe,21xe,23free --tests "xvfb-run -a npm run test:integration"
