@@ -408,6 +408,12 @@ GRANT SELECT ON SYS.DBA_PROCEDURES TO <ut3_owner>;
 
 これは独立したコミュニティプロジェクトです。utPLSQLフレームワークチームおよびOracle Corporationとは提携・承認・スポンサー関係にありません。utPLSQLおよびOracleは、それぞれの所有者の商標です。
 
+## サポート
+
+この拡張機能が役に立ったら、コーヒーでメンテナンスを支援できます（任意です）。☕
+
+[☕ コーヒーをごちそうする](https://buymeacoffee.com/gilclebera)
+
 ## ライセンス
 
 MIT © Gil Cleber Barboza

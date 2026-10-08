@@ -414,6 +414,12 @@ GRANT SELECT ON SYS.DBA_PROCEDURES TO <ut3_owner>;
 
 Il s'agit d'un projet communautaire indépendant. Il n'est ni affilié à l'équipe du framework utPLSQL ni à Oracle Corporation, ni approuvé ou sponsorisé par eux. utPLSQL et Oracle sont des marques déposées de leurs propriétaires respectifs.
 
+## Soutenir le projet
+
+Si cette extension vous aide, vous pouvez soutenir sa maintenance avec un café — entièrement facultatif. ☕
+
+[☕ Offrez-moi un café](https://buymeacoffee.com/gilclebera)
+
 ## Licence
 
 MIT © Gil Cleber Barboza

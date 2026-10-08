@@ -408,6 +408,12 @@ GRANT SELECT ON SYS.DBA_PROCEDURES TO <ut3_owner>;
 
 Ini adalah proyek komunitas yang independen. Proyek ini tidak berafiliasi, didukung, atau disponsori oleh tim framework utPLSQL maupun Oracle Corporation. utPLSQL dan Oracle adalah merek dagang dari pemiliknya masing-masing.
 
+## Dukungan
+
+Jika ekstensi ini membantu Anda, Anda dapat mendukung pemeliharaannya dengan secangkir kopi — sepenuhnya opsional. ☕
+
+[☕ Traktir saya kopi](https://buymeacoffee.com/gilclebera)
+
 ## Lisensi
 
 MIT © Gil Cleber Barboza
