@@ -1,70 +1,70 @@
-# Política de Segurança
+# Security Policy
 
-## Versões suportadas
+## Supported versions
 
-Como extensão do VSCode, apenas a **versão mais recente publicada no Marketplace** recebe correções de segurança. Recomendamos sempre manter a extensão atualizada.
+As a VS Code extension, only the **latest version published on the Marketplace** receives security fixes. We recommend always keeping the extension up to date.
 
-| Versão              | Suportada          |
-| ------------------- | ------------------ |
-| Última (Marketplace)| :white_check_mark: |
-| Versões anteriores  | :x:                |
+| Version              | Supported          |
+| -------------------- | ------------------ |
+| Latest (Marketplace) | :white_check_mark: |
+| Previous versions    | :x:                |
 
-## Escopo
+## Scope
 
-Esta política cobre vulnerabilidades na extensão **utPLSQL Test Runner** em si (código TypeScript, manifesto `package.json`, scripts empacotados). Não cobre:
+This policy covers vulnerabilities in the **utPLSQL Test Runner** extension itself (TypeScript code, the `package.json` manifest, bundled scripts). It does not cover:
 
-- Vulnerabilidades no **utPLSQL-cli** ou no framework **utPLSQL (UT3)** — reporte-as diretamente no [repositório oficial do utPLSQL](https://github.com/utPLSQL/utPLSQL-cli).
-- Vulnerabilidades no **VSCode** em si — reporte à Microsoft.
-- Configurações inseguras do banco Oracle do próprio usuário (credenciais, permissões de rede, etc.), que estão fora do controle da extensão.
+- Vulnerabilities in **utPLSQL-cli** or the **utPLSQL (UT3)** framework — report them directly to the [official utPLSQL repository](https://github.com/utPLSQL/utPLSQL-cli).
+- Vulnerabilities in **VS Code** itself — report them to Microsoft.
+- Insecure configurations of the user's own Oracle database (credentials, network permissions, etc.), which are outside the extension's control.
 
-## Áreas de atenção específicas deste projeto
+## Areas of specific concern for this project
 
-A extensão conecta-se diretamente ao Oracle via `node-oracledb` (sem CLI externo) e lê configurações do usuário para montar a conexão e a execução. Áreas particularmente sensíveis incluem:
+The extension connects directly to Oracle via `node-oracledb` (no external CLI) and reads user settings to build the connection and the run. Particularly sensitive areas include:
 
-- Armazenamento e uso de **credenciais de conexão com o Oracle** (usuário/senha) e da senha de wallet.
-- Visibilidade de **segredos em mensagens de erro, logs e saída das execuções**.
-- Leitura de configurações de workspace (`.vscode/settings.json`) potencialmente vindas de repositórios não confiáveis.
-- Geração de relatórios de cobertura e **escrita de arquivos** somente dentro das raízes do workspace.
+- Storage and use of **Oracle connection credentials** (user/password) and the wallet password.
+- Visibility of **secrets in error messages, logs and run output**.
+- Reading workspace settings (`.vscode/settings.json`) that may come from untrusted repositories.
+- Generating coverage reports and **writing files** only inside the workspace roots.
 
-Se você identificar um problema em qualquer uma dessas áreas, isso é considerado uma vulnerabilidade de segurança, mesmo que pareça um "bug" comum.
+If you identify a problem in any of these areas, it is considered a security vulnerability, even if it looks like an ordinary "bug".
 
-## Proteções implementadas
+## Implemented protections
 
-- **Settings de conexão `machine`-scoped** (`utplsql.connection`, `utplsql.profiles`, `utplsql.activeProfile`, `utplsql.oracleClientLibDir`, `utplsql.oracleClientConfigDir`): um `.vscode/settings.json` de terceiros **não** pode sobrescrevê-las.
-- **Extensão desabilitada em workspaces não confiáveis** (`capabilities.untrustedWorkspaces.supported: false`): só conecta após a pasta ser confiada.
-- **Senhas no `SecretStorage`** (keychain do SO), nunca em `settings.json`, e **vinculadas à conexão**: se a `connection` do perfil mudar, a senha guardada é descartada em vez de ser enviada ao novo host.
-- **Mascaramento de credenciais** em toda saída (picker, logs, mensagens de erro): a senha nunca aparece.
-- **Nenhum valor de usuário concatenado no PL/SQL** — tudo vai como bind; nomes de reporter são validados por allowlist.
+- **`machine`-scoped connection settings** (`utplsql.connection`, `utplsql.profiles`, `utplsql.activeProfile`, `utplsql.oracleClientLibDir`, `utplsql.oracleClientConfigDir`): a third-party `.vscode/settings.json` **cannot** override them.
+- **Extension disabled in untrusted workspaces** (`capabilities.untrustedWorkspaces.supported: false`): it only connects after the folder is trusted.
+- **Passwords in `SecretStorage`** (the OS keychain), never in `settings.json`, and **bound to the connection**: if the profile's `connection` changes, the stored password is discarded instead of being sent to the new host.
+- **Credential masking** in all output (picker, logs, error messages): the password never appears.
+- **No user value concatenated into PL/SQL** — everything goes as a bind; reporter names are validated against an allowlist.
 
-## Como reportar uma vulnerabilidade
+## How to report a vulnerability
 
-**Não abra uma issue pública** para vulnerabilidades de segurança.
+**Do not open a public issue** for security vulnerabilities.
 
-Em vez disso, reporte de forma privada:
+Instead, report privately:
 
-- Preferencialmente, use a aba **[Security] Report a vulnerability** deste repositório no GitHub (Security Advisories), se disponível; ou
-- Envie um e-mail para o mantenedor com os detalhes (veja o perfil [@thepaneb](https://github.com/thepaneb) para contato).
+- Preferably, use this repository's **[Security] Report a vulnerability** tab on GitHub (Security Advisories), if available; or
+- Send an email to the maintainer with the details (see the [@thepaneb](https://github.com/thepaneb) profile for contact).
 
-Ao reportar, inclua sempre que possível:
+When reporting, include whenever possible:
 
-- Descrição da vulnerabilidade e impacto potencial
-- Passos para reproduzir (configuração usada, sistema operacional, versão da extensão e do VSCode)
-- Prova de conceito, se aplicável
-- Se souber, uma sugestão de correção ou mitigação
+- Description of the vulnerability and potential impact
+- Steps to reproduce (configuration used, operating system, extension and VS Code versions)
+- Proof of concept, if applicable
+- If you know one, a suggested fix or mitigation
 
-## O que esperar
+## What to expect
 
-- **Confirmação de recebimento**: em até 5 dias úteis.
-- **Avaliação inicial**: informaremos se o relato foi aceito como vulnerabilidade em até 10 dias úteis.
-- **Correção**: para vulnerabilidades confirmadas, o objetivo é lançar uma correção no Marketplace o mais rápido possível, dependendo da severidade e complexidade.
-- **Divulgação**: pedimos que você não divulgue publicamente o problema até que uma correção esteja disponível. Após o lançamento, podemos publicar um aviso de segurança (GitHub Security Advisory) com os créditos ao pesquisador, caso deseje.
+- **Acknowledgement of receipt**: within 5 business days.
+- **Initial assessment**: we will let you know whether the report was accepted as a vulnerability within 10 business days.
+- **Fix**: for confirmed vulnerabilities, the goal is to ship a fix to the Marketplace as soon as possible, depending on severity and complexity.
+- **Disclosure**: we ask that you do not disclose the issue publicly until a fix is available. After the release, we may publish a security advisory (GitHub Security Advisory) crediting the researcher, if desired.
 
-## Boas práticas para usuários
+## Best practices for users
 
-Enquanto usa a extensão, recomendamos:
+While using the extension, we recommend:
 
-- Não abrir workspaces de origem desconhecida com configurações `utplsql.*` já definidas sem revisar o `.vscode/settings.json` antes.
-- Evitar armazenar senhas do Oracle em texto plano em arquivos de configuração versionados; prefira variáveis de ambiente ou cofres de segredo quando possível.
-- Manter o **driver Oracle (node-oracledb)** atualizado, já que vulnerabilidades nessa dependência também afetam a superfície de ataque geral.
+- Not opening workspaces of unknown origin with `utplsql.*` settings already defined without reviewing `.vscode/settings.json` first.
+- Avoiding storing Oracle passwords in plain text in versioned configuration files; prefer environment variables or secret vaults when possible.
+- Keeping the **Oracle driver (node-oracledb)** up to date, since vulnerabilities in that dependency also affect the overall attack surface.
 
-Obrigado por ajudar a manter o utPLSQL Test Runner seguro para todos! 🔒
+Thank you for helping keep utPLSQL Test Runner safe for everyone! 🔒
