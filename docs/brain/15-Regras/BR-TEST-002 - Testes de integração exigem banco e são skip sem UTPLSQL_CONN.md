@@ -23,14 +23,16 @@ em `helpers.ts`.
 
 ## Pré-condições
 
-`UTPLSQL_CONN` definido (`.env`). Para thick, também `ORACLE_CLIENT_LIB_DIR` e
-`UTPLSQL_THICK_TEST=1`.
+`UTPLSQL_CONN` definido (`.env`). Para thick, também `ORACLE_CLIENT_LIB_DIR`,
+`UTPLSQL_THICK_TEST=1` e `UTPLSQL_THICK_CONN` (o host do thick **não** recebe
+`UTPLSQL_CONN`, para a extensão — que ativa em `onStartupFinished` — não abrir
+conexão thin na ativação, o que impediria o thick com `NJS-118`).
 
 ## Exceções
 
 Arquivos opt-in por variável própria: `v014-tns.test.ts` (`UTPLSQL_TNS_ALIAS` +
 `UTPLSQL_TNS_ADMIN`/`TNS_ADMIN`) e `thickMode.test.ts` (`UTPLSQL_THICK_TEST=1` +
-`ORACLE_CLIENT_LIB_DIR`).
+`ORACLE_CLIENT_LIB_DIR`; a conexão vem em `UTPLSQL_THICK_CONN`).
 
 ## Justificativa
 

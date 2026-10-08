@@ -157,10 +157,12 @@ scripts/db-matrix/run.sh
   `/opt/oracle/oradata`.
 - **Thick mode (Instant Client)**: não pode rodar junto com a suíte normal — a
   inicialização é global e irreversível no processo, e `prd70-sqlplus` exige o
-  thin default (além de a auto-ativação da extensão criar conexão thin antes,
-  gerando `NJS-118`). Solução: `npm run test:integration:thick`
-  (`.vscode-test.thick.mjs`) num workspace vazio, sem ativar a extensão; o gate
-  é `UTPLSQL_THICK_TEST=1` (evita rodar thick na suíte normal via `.env`).
+  thin default. Além disso, a extensão ativa em `onStartupFinished` e
+  `validateOnActivation` abriria uma conexão **thin**, impedindo o thick depois
+  (`NJS-118`). Solução: `npm run test:integration:thick`
+  (`.vscode-test.thick.mjs`) num workspace vazio e com `UTPLSQL_CONN` **vazio**
+  no host (a conexão do teste vai por `UTPLSQL_THICK_CONN`); o gate continua
+  sendo `UTPLSQL_THICK_TEST=1` (evita rodar thick na suíte normal via `.env`).
 
 > Resultado: **18xe, 19ee, 21xe e 23free** passam com 52 passing / 2 pending na
 > suíte normal; o eixo **thick** (`--thick`) passa com 2 passing em cada uma.
