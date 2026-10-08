@@ -32,12 +32,12 @@ Workflow [`integration.yml`](../../../.github/workflows/integration.yml) — **g
 - `run: npm ci`
 - `run: |`
 - `run: |`
-- `run: scripts/db-matrix/run.sh --only 23free --tests "xvfb-run -a ${{ steps.scope.outputs.cmd }}"`
+- `run: bash scripts/db-matrix/run.sh --only 23free --tests "xvfb-run -a ${{ steps.scope.outputs.cmd }}"`
 - `uses: actions/checkout@v7`
 - `uses: actions/setup-node@v7`
 - `run: npm ci`
 - `run: |`
-- `run: scripts/db-matrix/run.sh --only 18xe,21xe,23free --tests "xvfb-run -a npm run test:integration"`
+- `run: bash scripts/db-matrix/run.sh --only 18xe,21xe,23free --tests "xvfb-run -a npm run test:integration"`
 
 ## Conexões
 
