@@ -194,6 +194,16 @@ test('dbmsDebugClient: getVariables ignora nome com erro (sem debug info)', asyn
   ]);
 });
 
+test('dbmsDebugClient: getVariables ignora nome vazio e tolera ausência de outBinds', async () => {
+  const { conn, calls } = makeConn(async () => ({}));
+  const client = new DbmsDebugClient(conn);
+  assert.deepStrictEqual(await client.getVariables(['', 'x']), [
+    { name: 'x', value: '', type: '' },
+  ]);
+  // nome vazio não consulta o banco
+  assert.strictEqual(calls.length, 1);
+});
+
 test('dbmsDebugClient: attachSession ok retorna true; erro retorna false', async () => {
   let fail = false;
   const { conn, calls } = makeConn(async () => {
@@ -229,6 +239,27 @@ test('checkDebugAccess: reflete os grants reais', async () => {
   assert.strictEqual(denied, false);
 });
 
+test('checkDebugAccess: suporta linhas em array (OUT_FORMAT_ARRAY)', async () => {
+  let call = 0;
+  const granted = await checkDebugAccess({
+    execute: async () => {
+      call++;
+      // 1ª consulta (grants) = 0 e 2ª (roles DBA/PDB_DBA) = 1, ambas como array
+      return call === 1 ? { rows: [[0]] } : { rows: [[1]] };
+    },
+    close: async () => {},
+  });
+  assert.strictEqual(granted, true);
+});
+
+test('checkDebugAccess: sem rows (undefined) tratado como zero', async () => {
+  const denied = await checkDebugAccess({
+    execute: async () => ({}),
+    close: async () => {},
+  });
+  assert.strictEqual(denied, false);
+});
+
 test('parseBreakpointTarget: extrai owner/unit (maiúsculos) do caminho', () => {
   const t = parseBreakpointTarget('/ws/install/packages/test_app.pkb', 'DEV');
   assert.deepStrictEqual(t, {
@@ -253,4 +284,29 @@ test('namespacesForExt: top-level para .fnc/.prc, trigger para .trg, todos para 
   assert.deepStrictEqual(namespacesForExt('.pks'), ['pkg_body']);
   assert.deepStrictEqual(namespacesForExt('.pkb'), ['pkg_body']);
   assert.deepStrictEqual(namespacesForExt('.sql'), ['toplevel', 'pkg_body', 'trigger']);
+});
+
+test('dbmsDebugClient: deleteBreakpoint tolera ausência de outBinds', async () => {
+  const { conn } = makeConn(async () => ({}));
+  const client = new DbmsDebugClient(conn);
+  assert.strictEqual(await client.deleteBreakpoint(7), 0);
+});
+
+test('dbmsDebugClient: run tolera ausência de outBinds (no_break)', async () => {
+  const { conn } = makeConn(async () => ({}));
+  const client = new DbmsDebugClient(conn);
+  assert.strictEqual(await client.continueRun(), 'no_break');
+});
+
+test('dbmsDebugClient: synchronize trata outBinds ausente e status de erro', async () => {
+  const none = makeConn(async () => ({}));
+  assert.strictEqual(await new DbmsDebugClient(none.conn).synchronize(), 'no_break');
+  const err = makeConn(async () => ({ outBinds: { status: 1 } }));
+  assert.strictEqual(await new DbmsDebugClient(err.conn).synchronize(), 'unknown');
+});
+
+test('parseBreakpointTarget: caminho sem extensão usa o nome completo', () => {
+  const t = parseBreakpointTarget('/x/foo', 'S');
+  assert.strictEqual(t.unit, 'FOO');
+  assert.deepStrictEqual(t.namespaces, ['toplevel', 'pkg_body', 'trigger']);
 });

@@ -99,10 +99,10 @@ extensão normalmente.
   "exclude": ["out/test/**", "src/test/**"],
   "reporter": ["text", "lcov", "html"],
   "check-coverage": true,
-  "lines": 90,
-  "branches": 85,
-  "functions": 90,
-  "statements": 90
+  "lines": 97,
+  "branches": 93,
+  "functions": 97,
+  "statements": 97
 }
 ```
 
@@ -121,12 +121,12 @@ extensão normalmente.
 
 ### Coverage atual (aprox. — pode variar por PRD)
 
-| Métrica | Threshold | Atual (v0.12.1) |
+| Métrica | Threshold | Atual |
 |---|---|---|
-| Lines | 90% | 98.6% |
-| Branches | 85% | 91.2% |
-| Functions | 90% | 98.3% |
-| Statements | 90% | 98.6% |
+| Lines | 97% | 99.6% |
+| Branches | 93% | 94.7% |
+| Functions | 97% | 99.1% |
+| Statements | 97% | 99.6% |
 
 ## Testes unitários
 
