@@ -167,8 +167,9 @@ connection changes, and closed when the extension is deactivated. See [Direct Or
 
 | Setting | Default | Description |
 |---|---|---|
-| `utplsql.organization` | `file` | `file` (by path) or `schema` (Schema > Package > Suite > Test). |
+| `utplsql.organization` | `file` | `file` (by path), `schema` (Schema > Package > Suite > Test) or `tag` (Tag > Suite > Test, from `%tags`; a suite with several tags appears under each tag). |
 | `utplsql.organization.schemaPattern` | `db/{schema}/**` | Glob pattern to extract schema from the path. Use `{schema}` as a placeholder. |
+| `utplsql.showTagsInTree` | `false` | Appends the `%tags` of each suite/test as a `[tag1, tag2]` suffix on the Test Explorer label. |
 | `utplsql.refreshDebounceMs` | `300` | Debounce (ms) to coalesce `.pks`/`.pkb` file watcher events before refreshing the Test Explorer. |
 
 In `schema` mode with a configured connection (no prompt), the refresh also
@@ -177,6 +178,14 @@ falling back to `ALL_OBJECTS`/`ALL_SOURCE`) for schemas whose
 files are not in the workspace — the queried schemas are the directories
 below the pattern root (e.g., `db/*`) and the schemas of local suites.
 See [Tree Organization](Tree-organization).
+
+## Auto-run on save (watch mode)
+
+| Setting | Default | Description |
+|---|---|---|
+| `utplsql.autoRun` | `off` | `off` or `onSave` — re-runs the suites of the saved `.pks`. |
+| `utplsql.autoRunDelayMs` | `500` | Debounce (ms) per file; rapid saves of the same file trigger a single run. |
+| `utplsql.autoRunQueue` | `skip` | When an auto-run fires during a run: `skip` ignores it, `replace` reschedules it. |
 
 ## Language (i18n)
 

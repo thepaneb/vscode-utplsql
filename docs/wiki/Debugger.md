@@ -43,6 +43,12 @@ header before the `CREATE` statement.
   `.pks`/`.pkb` file.
 - **Run and Debug:** choose **utPLSQL Debugger** when creating a `launch.json`;
   the generated configuration uses `packageName: "${fileBasenameNoExtension}"`.
+- **Variants (PRD-53):** `utPLSQL: Debug Test at Cursor` (`utplsql.debugAtCursor`)
+  debugs the `%test`/`%suite` under the cursor; `utPLSQL: Debug Failed Tests`
+  (`utplsql.debugFailed`) debugs the tests that failed in the last run (QuickPick
+  when there is more than one); `utPLSQL: Debug Last Run` (`utplsql.debugLast`)
+  repeats the last run in debug mode. Target resolution is shared via
+  `src/debugTargets.ts`.
 
 Breakpoints can be placed in `.pks`/`.pkb`/`.prc`/`.fnc`/`.trg` because the
 extension contributes a `plsql` language and the matching `breakpoints`
