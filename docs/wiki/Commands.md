@@ -36,6 +36,9 @@ prefixed with `utPLSQL:`.
 | `utPLSQL: Set wallet password` | Sets or clears the active profile's Oracle Cloud wallet password (stored in SecretStorage) | — |
 | `utPLSQL: Run with Reporter (Export)` | Runs the selection with a chosen database reporter and writes the output to a dedicated Output channel or a file (`utplsql.reporter.*` settings) | Test Explorer item context menu |
 | `utPLSQL: Debug test (PL/SQL)` | Starts debugging a test via DBMS_DEBUG (`utplsql` Debug Adapter) | Editor context menu (`.pks`/`.pkb`) |
+| `utPLSQL: Debug Test at Cursor` | Starts a debug session of the `%test`/`%suite` under the cursor | — |
+| `utPLSQL: Debug Failed Tests` | Starts a debug session of the tests that failed in the last run (QuickPick when several) | — |
+| `utPLSQL: Debug Last Run` | Starts a debug session of the last run | — |
 | `utPLSQL: Compile for Debug` | Compiles the selected file/folder object with debug information (`ALTER … COMPILE DEBUG PLSQL_OPTIMIZE_LEVEL = 1`) | Editor/Explorer context menu |
 | `utPLSQL: Rebuild Annotation Cache` | Rebuilds the utPLSQL annotation cache in the database (`ut_runner.rebuild_annotation_cache`) and refreshes the tree | — |
 | `utPLSQL: Run script` | Runs the script open in the editor against a profile (connection QuickPick) | Right-click → `.sql`/`.pks`/`.pkb`/`.fnc`/`.prc`/`.trg` file |

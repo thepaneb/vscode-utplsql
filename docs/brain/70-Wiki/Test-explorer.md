@@ -28,6 +28,10 @@ const controller = vscode.tests.createTestController('utplsql', 'utPLSQL');
 - File watcher on `.pks`/`.pkb` with a debounce
   (`utplsql.refreshDebounceMs`) triggers automatic rediscovery
 - `utPLSQL: Refresh tests` (`utplsql.refresh`) forces a rediscovery
+- **Auto-run on save** (watch mode, PRD-50) — with `utplsql.autoRun = onSave`,
+  saving a `.pks` re-runs its suites automatically (per-file debounce
+  `utplsql.autoRunDelayMs`; `utplsql.autoRunQueue` = `skip`/`replace` when a run
+  is already in progress)
 
 Discovery reads `%suite`/`%test` from `.pks` files and, in `schema` mode, also
 from the database. See [[Tree-organization|Tree Organization]].
@@ -38,6 +42,7 @@ from the database. See [[Tree-organization|Tree Organization]].
 |---|---|
 | `file` (default) | Workspace Folder > `.pks` file > Suite > Test |
 | `schema` | Schema > Package > Suite > Test |
+| `tag` | Tag > Suite > Test (from `%tags`; a suite with several tags appears under each tag) |
 
 Suites and tests have stable ids (`suite:<pkg>`, `test:<pkg>.<proc>`), which keeps
 results consistent across both modes. Set `utplsql.organization` to switch.
@@ -76,6 +81,10 @@ Each item is marked as **passed**, **failed**, **errored** or **skipped**, and t
 utPLSQL documentation output streams to the test output in real time.
 
 - Failure/error messages include the utPLSQL assertion message.
+- **Inline expected × actual diff** (PRD-52) — on assertion failures
+  (`ut.expect(x).to_equal(y)`), the test panel shows VSCode's **native diff**
+  with the *Expected*/*Actual* values parsed from the reporter message
+  (`parseExpectedActual`); failures without those markers keep the normal text.
 - Failures carry a `TestMessage.location`, enabling the native **Go to Error**
   action (jump to the failing assertion). See [[Editor-integration|Editor Integration]].
 - The status bar summarises pass/fail count and total duration.
