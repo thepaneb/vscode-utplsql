@@ -1,0 +1,6 @@
+{
+  "folders": [
+    { "path": "../../../../install/tests/packages" },
+    { "path": "../../fixtures/workspace-gen-screenshots" }
+  ]
+}

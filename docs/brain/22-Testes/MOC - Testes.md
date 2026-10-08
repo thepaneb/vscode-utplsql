@@ -65,6 +65,7 @@ SORT id ASC
 - [[TST - manifestDebugger.test.ts]] — `TST-manifestDebugger.test.ts`
 - [[TST - matching.test.ts]] — `TST-matching.test.ts`
 - [[TST - matrixConfig.test.ts]] — `TST-matrixConfig.test.ts`
+- [[TST - multiRootE2E.test.ts]] — `TST-multiRootE2E.test.ts`
 - [[TST - oracleCapabilities.test.ts]] — `TST-oracleCapabilities.test.ts`
 - [[TST - oracleClient.test.ts]] — `TST-oracleClient.test.ts`
 - [[TST - oracledb-default-absent.test.ts]] — `TST-oracledb-default-absent.test.ts`
@@ -75,6 +76,7 @@ SORT id ASC
 - [[TST - oracleRunnerTns.test.ts]] — `TST-oracleRunnerTns.test.ts`
 - [[TST - packageTarget.test.ts]] — `TST-packageTarget.test.ts`
 - [[TST - plsqlDeclarations.test.ts]] — `TST-plsqlDeclarations.test.ts`
+- [[TST - prd015ExtraE2E.test.ts]] — `TST-prd015ExtraE2E.test.ts`
 - [[TST - prd70-sqlplus.test.ts]] — `TST-prd70-sqlplus.test.ts`
 - [[TST - profileCommands.test.ts]] — `TST-profileCommands.test.ts`
 - [[TST - profileSecretStorageE2E.test.ts]] — `TST-profileSecretStorageE2E.test.ts`
