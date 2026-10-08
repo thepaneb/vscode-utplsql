@@ -56,6 +56,28 @@
   (`utplsql.autoRunQueue`: `skip`/`replace`) prevents concurrent runs. The
   logic is pure (`src/autoRun.ts`) and respects the global coverage mode.
 
+- **English-first Marketplace and docs**: everything users see is now in
+  English — the extension `description`, the **53 settings descriptions** (plus
+  `enumDescriptions` and the untrusted-workspaces note) and the whole
+  `CHANGELOG.md` (also reused as the GitHub release notes). `CONTRIBUTING.md`
+  and `SECURITY.md` were translated too. The `README` already had an English
+  base with **23 language variants**.
+
+- **Support the project — Buy Me a Coffee**: a native **Sponsor** button via
+  `.github/FUNDING.yml` (`buy_me_a_coffee`), plus a short, optional "Support"
+  section at the end of the `README` in all **24 languages**.
+
+- **Broader integration test suite**: new end-to-end coverage for watch mode
+  (auto-run on save), the debug commands (cursor/failed/last), the coverage
+  toggle, the tag tree, the wallet/SecretStorage round-trip and run
+  cancellation, plus a **multi-root** scenario wired into the full CI scope.
+
+- **Fixed: thick-mode test host (`NJS-118`)**: the extension activates on
+  `onStartupFinished` and opened a thin connection from `UTPLSQL_CONN`, so
+  `ensureOracleClient` always failed with `NJS-118`. The thick host now runs
+  without `UTPLSQL_CONN` and connects via `UTPLSQL_THICK_CONN`; the full thick
+  matrix (12.2/18xe/19ee/21xe/23free) passes.
+
 ## 0.14.0
 
 - **VS Code 1.101 floor and Node 22 runtime (PRD-94)**: `engines.vscode` goes from
