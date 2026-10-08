@@ -180,6 +180,7 @@ notas `prd-*`. O índice navegável do vault é a [[MOC - PRDs]].
 | 93 | [Pipeline de localização contínua (glossário, TM e revisão)](proposed/prd-93-continuous-localization-pipeline.md) | 0.19.0 | 2026-09-29 |
 | 95 | [Modernização do runtime: ESM, ES2023 e stdlib Node 22](proposed/prd-95-esm-es2023-node22.md) | 0.16.0 | 2026-09-29 |
 | 97 | [Documentação no site (Fase 2 da PRD-96)](proposed/prd-97-doc-no-site.md) | 0.16.0 | 2026-10-07 |
+| 98 | [Anti-drift de documentação: tabelas geradas e vínculo PRD→docs](proposed/prd-98-docs-anti-drift.md) | 0.16.0 | 2026-10-08 |
 <!-- prd:roadmap:end -->
 
 ---
@@ -290,6 +291,7 @@ docs/prd/
 │   ├── prd-93-continuous-localization-pipeline.md
 │   ├── prd-95-esm-es2023-node22.md
 │   ├── prd-97-doc-no-site.md
+│   ├── prd-98-docs-anti-drift.md
 ```
 <!-- prd:estrutura:end -->
 
