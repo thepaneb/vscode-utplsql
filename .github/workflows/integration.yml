@@ -68,7 +68,7 @@ jobs:
           fi
 
       - name: Run integration on Oracle 23ai Free
-        run: scripts/db-matrix/run.sh --only 23free --tests "xvfb-run -a ${{ steps.scope.outputs.cmd }}"
+        run: bash scripts/db-matrix/run.sh --only 23free --tests "xvfb-run -a ${{ steps.scope.outputs.cmd }}"
 
   matrix:
     name: Integration matrix (Oracle 18c/21c/23ai)
@@ -95,4 +95,4 @@ jobs:
           command -v xvfb-run >/dev/null 2>&1 || { sudo apt-get update && sudo apt-get install -y xvfb; }
 
       - name: Run integration matrix (18c, 21c, 23ai)
-        run: scripts/db-matrix/run.sh --only 18xe,21xe,23free --tests "xvfb-run -a npm run test:integration"
+        run: bash scripts/db-matrix/run.sh --only 18xe,21xe,23free --tests "xvfb-run -a npm run test:integration"

@@ -128,10 +128,10 @@ for __line in "${VERSION_LINES[@]}"; do
   compose up -d db
   # 1ª subida de uma imagem que cria o banco do zero (ex.: 18c/19c) leva ~15-25
   # min; com o volume já populado o boot é ~1-2 min.
-  "$SCRIPT_DIR/wait-ready.sh" "$CONTAINER" "$service" "${WAIT_TIMEOUT:-1800}"
+  bash "$SCRIPT_DIR/wait-ready.sh" "$CONTAINER" "$service" "${WAIT_TIMEOUT:-1800}"
 
   if [ "$SKIP_BOOTSTRAP" = 0 ]; then
-    "$SCRIPT_DIR/bootstrap.sh" "$CONTAINER" "$service"
+    bash "$SCRIPT_DIR/bootstrap.sh" "$CONTAINER" "$service"
   else
     log "pulando bootstrap (--skip-bootstrap): usando UT3/UTPLSQL_TEST já no volume"
   fi
