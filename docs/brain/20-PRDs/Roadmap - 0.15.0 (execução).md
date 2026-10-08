@@ -1,9 +1,10 @@
 ---
 tipo: nota
-status: ativo
+status: concluida
 modulo: prds
 data: 2026-10-02
-verificado: 2026-10-02
+verificado: 2026-10-08
+concluida: 2026-10-08
 tags: [prd, roadmap, planejamento]
 ---
 
@@ -59,10 +60,20 @@ alvo são a **fonte da verdade** no frontmatter das notas `prd-*`: ver
 
 ## Definição de pronto (release)
 
-- 6 PRDs concluídos com `versao: "0.15.0"` e vínculo bidirecional PRD ↔ regra.
+- 7 PRDs concluídos com `versao: "0.15.0"` (50, 51, 52, 53, 54, 55 e 96) e
+  vínculo bidirecional PRD ↔ regra.
 - `package.json` = `0.15.0` + seção `## 0.15.0` no `CHANGELOG.md`.
 - Integração + matriz Oracle (thin/thick) verdes; cobertura publicada no Codecov.
 - Publicação via **GitHub release** → `publish.yml` (skill `release`) → post do LinkedIn.
+
+## Status — concluída (0.15.0)
+
+Release **0.15.0 “Tags e UX de execução”** publicada. Os **7 PRDs** do escopo
+(50, 51, 52, 53, 54, 55 e 96) estão `completed` com `versao: "0.15.0"`;
+`package.json` = `0.15.0` e `CHANGELOG.md` com a seção `## 0.15.0`.
+Integração + matriz Oracle (thin/thick) verdes; publicação via **GitHub
+release** (`publish.yml`) e post de release. Roadmap **encerrado** — o próximo
+tema é **0.16.0** (PRD-95/PRD-97).
 
 ## Relacionado
 
