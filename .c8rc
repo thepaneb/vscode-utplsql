@@ -3,7 +3,7 @@
   "reporter": ["text", "lcov", "html"],
   "check-coverage": true,
   "lines": 97,
-  "branches": 92,
+  "branches": 93,
   "functions": 97,
   "statements": 97
 }

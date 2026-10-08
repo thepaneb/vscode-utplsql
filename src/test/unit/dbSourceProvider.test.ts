@@ -233,6 +233,21 @@ test('fetchDbObjectSource: tipo desconhecido retorna vazio', async () =>
     assert.strictEqual(text, '');
   }));
 
+test('fetchDbObjectSource: rows primitivos/null são ignorados', async () =>
+  withConn(async () => {
+    const conn = {
+      execute: async () => ({
+        rows: [null, 42, { TYPE: 'PROCEDURE', LINE: 1, TEXT: 'p' }],
+      }),
+      close: async () => {},
+    };
+    const text = await fetchDbObjectSource(
+      Uri.parse('utplsql-source:/APP/UT_PKG.pkb') as never,
+      async () => fakeOracledb(conn),
+    );
+    assert.strictEqual(text, 'p');
+  }));
+
 test('registerDbSourceProvider: provider registrado serve e cacheia o conteúdo', async () => {
   __resetConfigValues();
   workspace.__resetTextDocumentContentProviders();
@@ -253,6 +268,83 @@ test('registerDbSourceProvider: provider registrado serve e cacheia o conteúdo'
     const second = await provider.provideTextDocumentContent(uri);
     assert.strictEqual(first, '');
     assert.strictEqual(second, '');
+  } finally {
+    process.env.UTPLSQL_CONN = original;
+    workspace.__resetTextDocumentContentProviders();
+  }
+});
+
+test('fetchDbSource: linha em array sem coluna vira string vazia', async () =>
+  withConn(async () => {
+    const conn = { execute: async () => ({ rows: [[]] }), close: async () => {} };
+    const text = await fetchDbSource(Uri.parse('utplsql-db:/app/ut_pkg.pks') as never, async () =>
+      fakeOracledb(conn),
+    );
+    assert.strictEqual(text, '');
+  }));
+
+test('fetchDbSource: sem rows retorna vazio', async () =>
+  withConn(async () => {
+    const conn = { execute: async () => ({}), close: async () => {} };
+    const text = await fetchDbSource(Uri.parse('utplsql-db:/app/ut_pkg.pks') as never, async () =>
+      fakeOracledb(conn),
+    );
+    assert.strictEqual(text, '');
+  }));
+
+test('fetchDbObjectSource: linhas array/objeto sem as colunas são ignoradas', async () =>
+  withConn(async () => {
+    const conn = {
+      execute: async () => ({ rows: [[], {}, { TYPE: 'PROCEDURE', LINE: 1, TEXT: 'p' }] }),
+      close: async () => {},
+    };
+    const text = await fetchDbObjectSource(
+      Uri.parse('utplsql-source:/APP/UT_PKG.pkb') as never,
+      async () => fakeOracledb(conn),
+    );
+    assert.strictEqual(text, 'p');
+  }));
+
+test('fetchDbObjectSource: sem rows retorna vazio', async () =>
+  withConn(async () => {
+    const conn = { execute: async () => ({}), close: async () => {} };
+    const text = await fetchDbObjectSource(
+      Uri.parse('utplsql-source:/APP/UT_PKG.pkb') as never,
+      async () => fakeOracledb(conn),
+    );
+    assert.strictEqual(text, '');
+  }));
+
+test('fetchDbObjectSource: uri sem objeto retorna vazio', async () => {
+  const text = await fetchDbObjectSource(Uri.parse('utplsql-source:/') as never);
+  assert.strictEqual(text, '');
+});
+
+test('fetchDbObjectSource: sem conexão retorna vazio', async () => {
+  const original = process.env.UTPLSQL_CONN;
+  delete process.env.UTPLSQL_CONN;
+  try {
+    const text = await fetchDbObjectSource(Uri.parse('utplsql-source:/APP/UT_PKG.pkb') as never);
+    assert.strictEqual(text, '');
+  } finally {
+    process.env.UTPLSQL_CONN = original;
+  }
+});
+
+test('registerDbSourceProvider: scheme utplsql-source é servido', async () => {
+  __resetConfigValues();
+  workspace.__resetTextDocumentContentProviders();
+  clearDbSourceCache();
+  const original = process.env.UTPLSQL_CONN;
+  delete process.env.UTPLSQL_CONN;
+  try {
+    registerDbSourceProvider({ subscriptions: [] } as never);
+    const provider = workspace.__getTextDocumentContentProvider('utplsql-source');
+    assert.ok(provider, 'provider do scheme utplsql-source deveria estar registrado');
+    const text = await provider.provideTextDocumentContent(
+      Uri.parse('utplsql-source:/APP/UT_PKG.pkb') as never,
+    );
+    assert.strictEqual(text, '');
   } finally {
     process.env.UTPLSQL_CONN = original;
     workspace.__resetTextDocumentContentProviders();
