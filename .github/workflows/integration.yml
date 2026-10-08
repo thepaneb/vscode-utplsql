@@ -30,11 +30,10 @@ concurrency:
 jobs:
   integration:
     name: Integration (Oracle Free)
-    # PR: só com o label `run-integration` (o runner é uma VM nova a cada job — o
-    # banco é criado do zero, então não pesa todo PR). Nightly e dispatch: sempre.
+    # Roda no PR (sempre, em modo smoke), no nightly e no dispatch. O label
+    # `run-integration` num PR troca o smoke pela suíte completa.
     if: >-
-      (github.event_name == 'pull_request' &&
-       contains(github.event.pull_request.labels.*.name, 'run-integration')) ||
+      github.event_name == 'pull_request' ||
       github.event_name == 'schedule' ||
       (github.event_name == 'workflow_dispatch' && inputs.mode != 'matrix')
     runs-on: ubuntu-latest
@@ -61,7 +60,13 @@ jobs:
       - name: Decide scope
         id: scope
         run: |
-          if [ "${{ github.event_name }}" = "pull_request" ] || [ "${{ inputs.mode }}" = "smoke" ]; then
+          if [ "${{ github.event_name }}" = "pull_request" ]; then
+            if ${{ contains(github.event.pull_request.labels.*.name, 'run-integration') }}; then
+              echo "cmd=npm run test:integration" >> "$GITHUB_OUTPUT"
+            else
+              echo "cmd=npm run test:integration:smoke" >> "$GITHUB_OUTPUT"
+            fi
+          elif [ "${{ inputs.mode }}" = "smoke" ]; then
             echo "cmd=npm run test:integration:smoke" >> "$GITHUB_OUTPUT"
           else
             echo "cmd=npm run test:integration" >> "$GITHUB_OUTPUT"
