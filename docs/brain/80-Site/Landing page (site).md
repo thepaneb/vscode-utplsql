@@ -151,6 +151,12 @@ tags: [site, docs]
           >Install from the Marketplace</a
         >
         <a class="btn" href="https://github.com/thepaneb/vscode-utplsql">View on GitHub</a>
+        <a href="https://buymeacoffee.com/gilclebera" rel="noopener"
+          ><img
+            src="https://img.buymeacoffee.com/button-api/?text=Buy%20me%20a%20coffee&amp;emoji=%E2%98%95&amp;slug=gilclebera&amp;button_colour=FFDD00&amp;font_colour=000000&amp;font_family=Poppins&amp;outline_colour=000000&amp;coffee_colour=ffffff"
+            alt="Buy Me a Coffee"
+            height="48"
+        /></a>
       </p>
     </header>
 
@@ -234,7 +240,8 @@ tags: [site, docs]
         <a href="https://github.com/thepaneb/vscode-utplsql">GitHub</a> ·
         <a href="https://github.com/thepaneb/vscode-utplsql/wiki">Wiki</a> ·
         <a href="https://marketplace.visualstudio.com/items?itemName=paneb.vscode-utplsql">Marketplace</a> ·
-        <a href="https://github.com/thepaneb/vscode-utplsql/blob/main/CHANGELOG.md">Changelog</a>
+        <a href="https://github.com/thepaneb/vscode-utplsql/blob/main/CHANGELOG.md">Changelog</a> ·
+        <a href="https://buymeacoffee.com/gilclebera" rel="noopener">☕ Buy me a coffee</a>
       </p>
     </footer>
   </body>
