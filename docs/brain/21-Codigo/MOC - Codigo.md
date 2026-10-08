@@ -95,7 +95,6 @@ SORT id ASC
 - [[COD - sitemap.xml]] — `COD-sitemap.xml`
 - [[COD - state.ts]] — `COD-state.ts`
 - [[COD - statusBar.ts]] — `COD-statusBar.ts`
-- [[COD - styles.css]] — `COD-styles.css`
 - [[COD - suiteParser.ts]] — `COD-suiteParser.ts`
 - [[COD - sync-prds.cjs]] — `COD-sync-prds.cjs`
 - [[COD - tagFilter.ts]] — `COD-tagFilter.ts`

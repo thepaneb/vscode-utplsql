@@ -1,0 +1,88 @@
+name: PageSpeed Check
+
+on:
+  schedule:
+    - cron: '0 12 * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  pagespeed:
+    name: Check Lighthouse scores
+    runs-on: ubuntu-latest
+    env:
+      SITE_URL: https://thepaneb.github.io/vscode-utplsql/
+      MIN_PERFORMANCE: '90'
+      MIN_ACCESSIBILITY: '100'
+      MIN_BEST_PRACTICES: '100'
+      MIN_SEO: '100'
+    steps:
+      - name: Query PageSpeed Insights
+        env:
+          PAGESPEED_API_KEY: ${{ secrets.PAGESPEED_API_KEY }}
+        run: |
+          python3 - <<'PY'
+          import json
+          import os
+          import sys
+          import urllib.error
+          import urllib.parse
+          import urllib.request
+
+          key = os.environ.get("PAGESPEED_API_KEY", "")
+          url = os.environ["SITE_URL"]
+          mins = {
+              "performance": int(os.environ["MIN_PERFORMANCE"]),
+              "accessibility": int(os.environ["MIN_ACCESSIBILITY"]),
+              "best-practices": int(os.environ["MIN_BEST_PRACTICES"]),
+              "seo": int(os.environ["MIN_SEO"]),
+          }
+          cats = list(mins)
+
+          if not key:
+              print("::error::secret PAGESPEED_API_KEY ausente no repositório.")
+              sys.exit(1)
+
+          failures = []
+          rows = []
+          for strategy in ("mobile", "desktop"):
+              params = [("url", url), ("strategy", strategy), ("key", key)]
+              params += [("category", c) for c in cats]
+              request = urllib.request.Request(
+                  "https://www.googleapis.com/pagespeedonline/v5/runPagespeed?"
+                  + urllib.parse.urlencode(params)
+              )
+              try:
+                  with urllib.request.urlopen(request, timeout=120) as response:
+                      data = json.load(response)
+              except urllib.error.HTTPError as err:
+                  detail = err.read().decode("utf-8", "replace")[:200]
+                  print(f"::error::PageSpeed falhou ({strategy}, HTTP {err.code}): {detail}")
+                  sys.exit(1)
+              categories = data["lighthouseResult"]["categories"]
+              for cat in cats:
+                  score = round((categories.get(cat, {}).get("score") or 0) * 100)
+                  ok = score >= mins[cat]
+                  rows.append(f"| {strategy} | {cat} | {score} | {mins[cat]} | {'ok' if ok else 'FAIL'} |")
+                  if not ok:
+                      failures.append((strategy, cat, score, mins[cat]))
+
+          table = (
+              "## PageSpeed Insights — Lighthouse\n\n"
+              "| Estratégia | Categoria | Nota | Mínimo | |\n"
+              "|---|---|---|---|---|\n" + "\n".join(rows) + "\n"
+          )
+          summary_path = os.environ.get("GITHUB_STEP_SUMMARY")
+          if summary_path:
+              with open(summary_path, "a", encoding="utf-8") as handle:
+                  handle.write(table)
+          print(table)
+
+          if failures:
+              for strategy, cat, score, minimum in failures:
+                  print(f"::error::{strategy}: {cat} = {score} (< mínimo {minimum})")
+              sys.exit(1)
+          print("OK: todas as notas dentro dos limites.")
+          PY

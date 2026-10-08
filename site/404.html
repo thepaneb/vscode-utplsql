@@ -5,7 +5,54 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Page not found — utPLSQL Test Runner</title>
     <meta name="robots" content="noindex" />
-    <link rel="stylesheet" href="/vscode-utplsql/assets/styles.css" />
+    <style>
+      :root {
+        --bg: #ffffff;
+        --fg: #1f2328;
+        --muted: #59636e;
+        --accent: #007acc;
+        --accent-fg: #ffffff;
+      }
+      @media (prefers-color-scheme: dark) {
+        :root {
+          --bg: #0d1117;
+          --fg: #e6edf3;
+          --muted: #9198a1;
+          --accent: #4aa3e0;
+          --accent-fg: #0d1117;
+        }
+      }
+      * {
+        box-sizing: border-box;
+      }
+      body {
+        margin: 0;
+        background: var(--bg);
+        color: var(--fg);
+        font: 16px/1.6 system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      }
+      .hero {
+        max-width: 860px;
+        margin: 0 auto;
+        padding: 4rem 1.5rem 2rem;
+        text-align: center;
+      }
+      h1 {
+        font-size: clamp(2rem, 6vw, 3rem);
+      }
+      .tagline {
+        color: var(--muted);
+      }
+      .btn {
+        display: inline-block;
+        padding: 0.65rem 1.2rem;
+        border-radius: 8px;
+        text-decoration: none;
+        font-weight: 600;
+        background: var(--accent);
+        color: var(--accent-fg);
+      }
+    </style>
   </head>
   <body>
     <header class="hero">
