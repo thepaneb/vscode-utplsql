@@ -31,7 +31,8 @@ jobs:
   integration:
     name: Integration (Oracle Free)
     # Roda no PR (sempre, em modo smoke), no nightly e no dispatch. O label
-    # `run-integration` num PR troca o smoke pela suíte completa.
+    # `run-integration` num PR troca o smoke pela suíte completa (que inclui o
+    # cenário multi-root, via `test:integration:multiroot`).
     if: >-
       github.event_name == 'pull_request' ||
       github.event_name == 'schedule' ||
@@ -62,18 +63,18 @@ jobs:
         run: |
           if [ "${{ github.event_name }}" = "pull_request" ]; then
             if ${{ contains(github.event.pull_request.labels.*.name, 'run-integration') }}; then
-              echo "cmd=npm run test:integration" >> "$GITHUB_OUTPUT"
+              echo "cmd=npm run test:integration && npm run test:integration:multiroot" >> "$GITHUB_OUTPUT"
             else
               echo "cmd=npm run test:integration:smoke" >> "$GITHUB_OUTPUT"
             fi
           elif [ "${{ inputs.mode }}" = "smoke" ]; then
             echo "cmd=npm run test:integration:smoke" >> "$GITHUB_OUTPUT"
           else
-            echo "cmd=npm run test:integration" >> "$GITHUB_OUTPUT"
+            echo "cmd=npm run test:integration && npm run test:integration:multiroot" >> "$GITHUB_OUTPUT"
           fi
 
       - name: Run integration on Oracle 23ai Free
-        run: bash scripts/db-matrix/run.sh --only 23free --tests "xvfb-run -a ${{ steps.scope.outputs.cmd }}"
+        run: bash scripts/db-matrix/run.sh --only 23free --tests "xvfb-run -a bash -c '${{ steps.scope.outputs.cmd }}'"
 
   matrix:
     name: Integration matrix (Oracle 18c/21c/23ai)

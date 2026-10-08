@@ -868,6 +868,8 @@
     "test:integration:smoke": "vscode-test --config .vscode-test.smoke.mjs",
     "pretest:integration:thick": "npm run clean && npm run compile && npm run bundle",
     "test:integration:thick": "vscode-test --config .vscode-test.thick.mjs",
+    "pretest:integration:multiroot": "npm run clean && npm run compile && npm run bundle",
+    "test:integration:multiroot": "vscode-test --config .vscode-test.multiroot.mjs",
     "db:matrix": "bash scripts/db-matrix/run.sh",
     "db:matrix:list": "bash scripts/db-matrix/run.sh --list",
     "test": "npm run test:unit",
