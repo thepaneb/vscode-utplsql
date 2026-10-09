@@ -54,7 +54,7 @@ Subagentes do projeto (carregados a partir do restart do serviço):
 
 | Agente | Papel |
 |---|---|
-| `oracle-analyst` | diagnostica setup Oracle/utPLSQL (grants, objetos inválidos, schema) — read-only |
+| `oracle-analyst` | diagnostica setup Oracle/utPLSQL (grants, objetos inválidos, schema) via `docker exec`+`sqlplus` no container local — read-only |
 | `i18n-reviewer` | paridade das 24 locales (README, `package.nls.*`, `i18nLocales.ts`) — read-only |
 | `security-auditor` | auditoria de segurança do código e do CI — read-only |
 | `release-manager` | checklist de publicação ponta a ponta |
