@@ -21,6 +21,11 @@ e os riscos das dependências **diretas** relevantes.
 - **TypeScript:** ES2021 / node16
 - **Biome:** lineWidth 100, single
 - **Empacotamento:** ./dist/extension.js
+- **Agente (MCPs):** 4 (obsidian, context7, github, playwright)
+- **Agente (plugins):** ./.opencode/plugins/log-sanitizer
+- **Agente (skills externas):** 24
+- **Agente (subagentes):** 6
+- **Agente (skills do projeto):** 12
 <!-- brain:auto:end -->
 
 ## Dependências diretas (gerado)
@@ -70,6 +75,15 @@ SORT id ASC
 ## Índice (links)
 
 <!-- brain:auto:start:moc-index -->
+- [[DEP-biome]] — `DEP-biome`
+- [[DEP-c8]] — `DEP-c8`
+- [[DEP-esbuild]] — `DEP-esbuild`
+- [[DEP-fast-xml-parser]] — `DEP-fast-xml-parser`
+- [[DEP-oracledb - node-oracledb]] — `DEP-oracledb`
+- [[DEP-resvg]] — `DEP-resvg`
+- [[DEP-typescript]] — `DEP-typescript`
+- [[DEP-vsce]] — `DEP-vsce`
+- [[DEP-vscode-test]] — `DEP-vscode-test`
 - [[Guia - ferramentas de agente (MCPs, skills e plugins)]]
 - [[PIPE-bing-index - Bing Index Check]] — `PIPE-bing-index`
 - [[PIPE-ci - CI]] — `PIPE-ci`

@@ -342,6 +342,37 @@ function genStack() {
     if (lw || q) add('Biome', [lw && `lineWidth ${lw[1]}`, q?.[1]].filter(Boolean).join(', '));
   } catch {}
   add('Empacotamento', pkg.main);
+  // Agent tooling (OpenCode) — fatos do opencode.json / skills-lock.json / .opencode
+  try {
+    const oc = JSON.parse(fs.readFileSync(path.join(REPO, 'opencode.json'), 'utf8'));
+    const mcps = Object.keys(oc.mcp?.servers ?? {});
+    if (mcps.length) add('Agente (MCPs)', `${mcps.length} (${mcps.join(', ')})`);
+    const plugins = (oc.plugins ?? [])
+      .map((p) => (typeof p === 'string' ? p : p?.package))
+      .filter(Boolean);
+    if (plugins.length) add('Agente (plugins)', plugins.join(', '));
+  } catch {}
+  try {
+    const lock = JSON.parse(fs.readFileSync(path.join(REPO, 'skills-lock.json'), 'utf8'));
+    const n = Object.keys(lock.skills ?? {}).length;
+    if (n) add('Agente (skills externas)', String(n));
+  } catch {}
+  try {
+    const agentsDir = path.join(REPO, '.opencode', 'agent');
+    if (fs.existsSync(agentsDir)) {
+      const n = fs.readdirSync(agentsDir).filter((f) => f.endsWith('.md')).length;
+      if (n) add('Agente (subagentes)', String(n));
+    }
+  } catch {}
+  try {
+    const projSkills = path.join(REPO, '.opencode', 'skills');
+    if (fs.existsSync(projSkills)) {
+      const n = fs
+        .readdirSync(projSkills, { withFileTypes: true })
+        .filter((e) => e.isDirectory()).length;
+      if (n) add('Agente (skills do projeto)', String(n));
+    }
+  } catch {}
   return rows.join('\n') || '_indisponível_';
 }
 

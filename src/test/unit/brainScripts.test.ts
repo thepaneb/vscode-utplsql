@@ -395,6 +395,33 @@ test('brain: geradores cobrem diretórios ausentes e conteúdo representativo', 
     assert.match(deps, /Runtime \(2\)/);
     assert.match(deps, /`alpha` `1`[\s\S]*`zeta` `2`/);
 
+    // Agent tooling no stack (opencode.json / skills-lock.json / .opencode)
+    writeFixture(
+      path.join(repo, 'opencode.json'),
+      JSON.stringify({
+        mcp: { servers: { obsidian: {}, context7: {} } },
+        plugins: ['envsitter-guard'],
+      }),
+    );
+    writeFixture(path.join(repo, 'skills-lock.json'), JSON.stringify({ skills: { a: {}, b: {} } }));
+    writeFixture(path.join(repo, '.opencode', 'agent', 'x.md'), '# x\n');
+    writeFixture(path.join(repo, '.opencode', 'skills', 'foo', 'SKILL.md'), '# foo\n');
+    const stackAgent = genStack();
+    assert.match(stackAgent, /Agente \(MCPs\):\*\* 2 \(obsidian, context7\)/);
+    assert.match(stackAgent, /Agente \(plugins\):\*\* envsitter-guard/);
+    assert.match(stackAgent, /Agente \(skills externas\):\*\* 2/);
+    assert.match(stackAgent, /Agente \(subagentes\):\*\* 1/);
+    assert.match(stackAgent, /Agente \(skills do projeto\):\*\* 1/);
+    // vazio → sem linhas de agente (cobre os ramos falsos)
+    fs.rmSync(path.join(repo, '.opencode', 'agent', 'x.md'), { force: true });
+    fs.rmSync(path.join(repo, '.opencode', 'skills', 'foo'), { recursive: true, force: true });
+    writeFixture(
+      path.join(repo, 'opencode.json'),
+      JSON.stringify({ mcp: { servers: {} }, plugins: [] }),
+    );
+    writeFixture(path.join(repo, 'skills-lock.json'), JSON.stringify({ skills: {} }));
+    assert.doesNotMatch(genStack(), /Agente \(/);
+
     writeFixture(
       path.join(vault, '20-PRDs', 'prd-01-a.md'),
       '---\nid: PRD-01\nstatus: proposed\ntitulo: A\nversao: 1.0.0\n---\n# A\n',
