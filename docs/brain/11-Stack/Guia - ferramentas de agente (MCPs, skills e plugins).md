@@ -48,10 +48,25 @@ API **V1** e não carregam no OpenCode V2; `opencode-worktree` está aposentado
   [`log-sanitizer`](../../../.opencode/plugins/log-sanitizer/index.ts), que
   redige JWT/bcrypt/base64/strings longas dos prompts.
 
+## Agentes (`.opencode/agent/`)
+
+Subagentes do projeto (carregados a partir do restart do serviço):
+
+| Agente | Papel |
+|---|---|
+| `oracle-analyst` | diagnostica setup Oracle/utPLSQL (grants, objetos inválidos, schema) — read-only |
+| `i18n-reviewer` | paridade das 24 locales (README, `package.nls.*`, `i18nLocales.ts`) — read-only |
+| `security-auditor` | auditoria de segurança do código e do CI — read-only |
+| `release-manager` | checklist de publicação ponta a ponta |
+| `li-post-writer` | posts do LinkedIn (usa a skill `linkedin-posts`) |
+| `docs-auditor` | auditoria semântica da documentação (já existente) |
+
 ## Skills externas
 
 - `cartographer` — mapeia o código em `docs/CODEBASE_MAP.md` (commitável).
-- `brainstorming`, `writing-plans`, `using-git-worktrees`, `requesting-code-review`.
+- `brainstorming`, `writing-plans`, `using-git-worktrees`, `requesting-code-review`,
+  `receiving-code-review`, `finishing-a-development-branch` (de `obra/superpowers`).
+- `research`, `domain-modeling`, `writing-for-agents` (de `mattpocock/skills`).
 
 ## Verificação
 
