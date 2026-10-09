@@ -12,6 +12,8 @@ criticidade: media
 risco: "Thresholds (97/93/97/97) quebram o CI se a cobertura cair"
 alternativas: [nyc]
 tags: [dependencia, dev, cobertura]
+decisoes: [ADR-013]
+relacionado: ["[[NFR-007 - Cobertura de testes TypeScript]]"]
 ---
 
 # DEP-c8 — c8
@@ -34,3 +36,11 @@ Cobertura dos testes unitários (`npm run test:coverage`), instrumentando
 ## Referências
 
 - `package.json` · `.c8rc`
+
+## Conexões
+
+<!-- brain:auto:start:conexoes -->
+- 🗺️ [[MOC - Stack]]
+- 🧭 Decisões: [[ADR-013 - Consolidacao das ferramentas de desenvolvimento (0.13.0)|ADR-013]]
+- 🔗 [[NFR-007 - Cobertura de testes TypeScript]]
+<!-- brain:auto:end -->

@@ -8,6 +8,7 @@ gatilhos: [push, workflow_dispatch]
 jobs: [deploy]
 gerado: true
 tags: [pipeline, ci]
+regras: [BR-SITE-001]
 ---
 
 # PIPE-pages — Deploy Pages
@@ -33,4 +34,7 @@ Workflow [`pages.yml`](../../../.github/workflows/pages.yml) — **gerado** por 
 
 ## Conexões
 
+<!-- brain:auto:start:conexoes -->
 - 🗺️ [[MOC - Stack]]
+- 📐 Regras: [[BR-SITE-001 - Landing page gerada de site e publicada no GitHub Pages, sem noindex|BR-SITE-001]]
+<!-- brain:auto:end -->

@@ -12,6 +12,7 @@ criticidade: media
 risco: "Empacotamento depende do `.vscodeignore`; publicação só via GitHub release"
 alternativas: []
 tags: [dependencia, dev, empacotamento]
+decisoes: [ADR-004]
 ---
 
 # DEP-vsce — @vscode/vsce
@@ -34,3 +35,10 @@ publish` local é bloqueado.
 ## Referências
 
 - `package.json` · `.vscodeignore` · `scripts/package-target.cjs`
+
+## Conexões
+
+<!-- brain:auto:start:conexoes -->
+- 🗺️ [[MOC - Stack]]
+- 🧭 Decisões: [[ADR-004 - Bundling com esbuild e higiene do VSIX|ADR-004]]
+<!-- brain:auto:end -->

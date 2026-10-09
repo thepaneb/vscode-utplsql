@@ -8,6 +8,7 @@ gatilhos: [push, pull_request]
 jobs: [build]
 gerado: true
 tags: [pipeline, ci]
+regras: [BR-PLAT-001]
 ---
 
 # PIPE-ci — CI
@@ -38,4 +39,7 @@ Workflow [`ci.yml`](../../../.github/workflows/ci.yml) — **gerado** por `npm r
 
 ## Conexões
 
+<!-- brain:auto:start:conexoes -->
 - 🗺️ [[MOC - Stack]]
+- 📐 Regras: [[BR-PLAT-001 - Piso de VS Code e runtime Node do host sao coerentes|BR-PLAT-001]]
+<!-- brain:auto:end -->

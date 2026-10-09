@@ -50,5 +50,5 @@ quebrar no host mínimo; (b) manter o piso num VS Code cujo Node já está **EOL
 - 🧩 Código: [[COD - package.json]] · [[COD - esbuild.config.mjs]] · [[COD - docs-fidelity.cjs]]
 - 🧪 Testes: [[TST - docsFidelity.test.ts]]
 - 🔗 [[NFR-003 - Compatibilidade com VSCode]] · [[TPL-VSCODE-API - API do VS Code usada]]
-- ↩️ Referenciada por: [[Installation-and-requirements]] · [[NFR-002 - Compatibilidade com Node|NFR-002]] · [[NFR-003 - Compatibilidade com VSCode|NFR-003]] · [[prd-94-vscode-floor-1-101|PRD-94]]
+- ↩️ Referenciada por: [[DEP-typescript]] · [[Installation-and-requirements]] · [[NFR-002 - Compatibilidade com Node|NFR-002]] · [[NFR-003 - Compatibilidade com VSCode|NFR-003]] · [[PIPE-ci - CI|PIPE-ci]] · [[prd-94-vscode-floor-1-101|PRD-94]]
 <!-- brain:auto:end -->

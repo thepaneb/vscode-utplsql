@@ -12,6 +12,7 @@ criticidade: media
 risco: "Regras `recommended` evoluem entre minors; config versionada"
 alternativas: [eslint-prettier]
 tags: [dependencia, dev, qualidade]
+decisoes: [ADR-013]
 ---
 
 # DEP-biome — @biomejs/biome
@@ -33,3 +34,10 @@ Lint + formatação (`npm run lint`), parte do `pretest:unit`. Config versionada
 ## Referências
 
 - `package.json` · `biome.json`
+
+## Conexões
+
+<!-- brain:auto:start:conexoes -->
+- 🗺️ [[MOC - Stack]]
+- 🧭 Decisões: [[ADR-013 - Consolidacao das ferramentas de desenvolvimento (0.13.0)|ADR-013]]
+<!-- brain:auto:end -->

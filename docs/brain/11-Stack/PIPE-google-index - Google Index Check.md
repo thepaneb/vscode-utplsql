@@ -8,6 +8,7 @@ gatilhos: [schedule, workflow_dispatch]
 jobs: [google-index]
 gerado: true
 tags: [pipeline, ci]
+regras: [BR-SITE-001]
 ---
 
 # PIPE-google-index — Google Index Check
@@ -30,4 +31,7 @@ Workflow [`google-index.yml`](../../../.github/workflows/google-index.yml) — *
 
 ## Conexões
 
+<!-- brain:auto:start:conexoes -->
 - 🗺️ [[MOC - Stack]]
+- 📐 Regras: [[BR-SITE-001 - Landing page gerada de site e publicada no GitHub Pages, sem noindex|BR-SITE-001]]
+<!-- brain:auto:end -->

@@ -8,6 +8,8 @@ gatilhos: [pull_request, schedule, workflow_dispatch]
 jobs: [integration, matrix]
 gerado: true
 tags: [pipeline, ci]
+regras: [BR-TEST-001, BR-TEST-002]
+decisoes: [ADR-011]
 ---
 
 # PIPE-integration — Integration (Oracle)
@@ -41,4 +43,8 @@ Workflow [`integration.yml`](../../../.github/workflows/integration.yml) — **g
 
 ## Conexões
 
+<!-- brain:auto:start:conexoes -->
 - 🗺️ [[MOC - Stack]]
+- 📐 Regras: [[BR-TEST-001 - Matriz de bancos Oracle cobre 12.2-23ai em thin e thick|BR-TEST-001]] · [[BR-TEST-002 - Testes de integração exigem banco e são skip sem UTPLSQL_CONN|BR-TEST-002]]
+- 🧭 Decisões: [[ADR-011 - Thick mode opt-in e matriz de bancos|ADR-011]]
+<!-- brain:auto:end -->

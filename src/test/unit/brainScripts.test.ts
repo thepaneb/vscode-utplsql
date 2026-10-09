@@ -681,6 +681,19 @@ test('brain: pipelineNotes lê um workflow em fixture', () => {
   });
 });
 
+test('brain: pipelineNotes liga pipelines a regras/ADRs', () => {
+  withBrainFixture(({ repo }) => {
+    writeFixture(
+      path.join(repo, '.github', 'workflows', 'integration.yml'),
+      'name: Integration\non:\n  pull_request:\njobs:\n  integration:\n    steps:\n      - run: npm test\n',
+    );
+    const content = pipelineNotes()[0]?.content ?? '';
+    assert.match(content, /regras: \[BR-TEST-001, BR-TEST-002\]/);
+    assert.match(content, /decisoes: \[ADR-011\]/);
+    assert.match(content, /brain:auto:start:conexoes/);
+  });
+});
+
 test('brain: localeNotes lê um package.nls e aponta o README', () => {
   withBrainFixture(({ repo, vault }) => {
     writeFixture(path.join(repo, 'package.nls.json'), '{"run":"Run"}\n');

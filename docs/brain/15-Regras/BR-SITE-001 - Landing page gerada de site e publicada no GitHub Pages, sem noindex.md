@@ -56,5 +56,5 @@ Pages dá ao projeto uma superfície pública **indexável** e sob controle
 - 🎯 Requisitos: [[prd-96-public-landing-page-github-pages|PRD-96 RNF1]] · [[prd-96-public-landing-page-github-pages|PRD-96 RNF2]] · [[prd-96-public-landing-page-github-pages|PRD-96 RNF3]] · [[prd-96-public-landing-page-github-pages|PRD-96 RNF4]]
 - 🧩 Código: [[COD - brain-build.cjs]] · [[COD - docs-check.cjs]] · [[COD - brain-gaps.cjs]] · [[COD - pages.yml]] · [[COD - index.html]] · [[COD - robots.txt]] · [[COD - sitemap.xml]]
 - 🧪 Testes: [[TST - brainBuild.test.ts]] · [[TST - vsixIgnore.test.ts]]
-- ↩️ Referenciada por: [[10-development-tooling]] · [[prd-96-public-landing-page-github-pages|PRD-96]]
+- ↩️ Referenciada por: [[10-development-tooling]] · [[PIPE-bing-index - Bing Index Check|PIPE-bing-index]] · [[PIPE-google-index - Google Index Check|PIPE-google-index]] · [[PIPE-pages - Deploy Pages|PIPE-pages]] · [[PIPE-pagespeed - PageSpeed Check|PIPE-pagespeed]] · [[PIPE-site-health - Site Health Check|PIPE-site-health]] · [[prd-96-public-landing-page-github-pages|PRD-96]]
 <!-- brain:auto:end -->

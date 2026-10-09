@@ -12,6 +12,8 @@ criticidade: alta
 risco: "Driver nativo (glue por plataforma no VSIX); thick exige Instant Client; thin não cobre NNE"
 alternativas: [utplsql-cli, SQLcl]
 tags: [dependencia, runtime, oracle]
+decisoes: [ADR-001, ADR-011]
+regras: [BR-CONN-012, BR-EXEC-001]
 ---
 
 # DEP-oracledb — oracledb (node-oracledb)
@@ -36,3 +38,11 @@ buffer) e os binds de `ut_runner.run`. Substituiu o utPLSQL-cli.
 ## Referências
 
 - `package.json` · `src/oracleRunner.ts` · `src/oracleClient.ts`
+
+## Conexões
+
+<!-- brain:auto:start:conexoes -->
+- 🗺️ [[MOC - Stack]]
+- 📐 Regras: [[BR-CONN-012 - Thick opt-in, fixado na primeira chamada e idempotente|BR-CONN-012]] · [[BR-EXEC-001 - Execução usa duas conexões dedicadas (conn1 runner, conn2 poll)|BR-EXEC-001]]
+- 🧭 Decisões: [[ADR-001 - Execucao via Oracle direto|ADR-001]] · [[ADR-011 - Thick mode opt-in e matriz de bancos|ADR-011]]
+<!-- brain:auto:end -->

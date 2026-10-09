@@ -8,6 +8,7 @@ gatilhos: [release]
 jobs: [verify, publish]
 gerado: true
 tags: [pipeline, ci]
+decisoes: [ADR-004]
 ---
 
 # PIPE-publish — Publish Extension
@@ -40,4 +41,7 @@ Workflow [`publish.yml`](../../../.github/workflows/publish.yml) — **gerado** 
 
 ## Conexões
 
+<!-- brain:auto:start:conexoes -->
 - 🗺️ [[MOC - Stack]]
+- 🧭 Decisões: [[ADR-004 - Bundling com esbuild e higiene do VSIX|ADR-004]]
+<!-- brain:auto:end -->

@@ -12,6 +12,7 @@ criticidade: baixa
 risco: "Binário nativo por plataforma (só dev/geração de assets)"
 alternativas: [sharp]
 tags: [dependencia, dev, assets]
+decisoes: [ADR-013]
 ---
 
 # DEP-resvg — @resvg/resvg-js
@@ -32,3 +33,10 @@ Renderiza SVG → PNG para **ícone e diagramas** (`scripts/gen-icon.cjs`,
 ## Referências
 
 - `package.json` · `scripts/gen-icon.cjs` · `scripts/gen-diagrams.cjs`
+
+## Conexões
+
+<!-- brain:auto:start:conexoes -->
+- 🗺️ [[MOC - Stack]]
+- 🧭 Decisões: [[ADR-013 - Consolidacao das ferramentas de desenvolvimento (0.13.0)|ADR-013]]
+<!-- brain:auto:end -->

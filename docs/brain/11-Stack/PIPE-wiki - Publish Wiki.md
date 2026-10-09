@@ -8,6 +8,7 @@ gatilhos: [push, workflow_dispatch]
 jobs: [publish]
 gerado: true
 tags: [pipeline, ci]
+decisoes: [ADR-002]
 ---
 
 # PIPE-wiki — Publish Wiki
@@ -34,4 +35,7 @@ Workflow [`wiki.yml`](../../../.github/workflows/wiki.yml) — **gerado** por `n
 
 ## Conexões
 
+<!-- brain:auto:start:conexoes -->
 - 🗺️ [[MOC - Stack]]
+- 🧭 Decisões: [[ADR-002 - Vault como fonte da verdade|ADR-002]]
+<!-- brain:auto:end -->

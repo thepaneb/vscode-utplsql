@@ -963,6 +963,19 @@ function yamlBlock(text, key) {
   return out;
 }
 
+/** Links curados de cada pipeline para regras/ADRs (ids resolvidos pelo genConexoes). */
+const PIPE_LINKS = {
+  ci: { regras: ['BR-PLAT-001'] },
+  integration: { regras: ['BR-TEST-001', 'BR-TEST-002'], decisoes: ['ADR-011'] },
+  publish: { decisoes: ['ADR-004'] },
+  pages: { regras: ['BR-SITE-001'] },
+  wiki: { decisoes: ['ADR-002'] },
+  'site-health': { regras: ['BR-SITE-001'] },
+  pagespeed: { regras: ['BR-SITE-001'] },
+  'bing-index': { regras: ['BR-SITE-001'] },
+  'google-index': { regras: ['BR-SITE-001'] },
+};
+
 function pipelineNotes() {
   const dir = path.join(REPO, '.github', 'workflows');
   if (!fs.existsSync(dir)) return [];
@@ -1002,6 +1015,12 @@ function pipelineNotes() {
         `jobs: [${jobs.join(', ')}]`,
         'gerado: true',
         `tags: [pipeline, ci]`,
+        ...((PIPE_LINKS[slug]?.regras ?? []).length
+          ? [`regras: [${PIPE_LINKS[slug].regras.join(', ')}]`]
+          : []),
+        ...((PIPE_LINKS[slug]?.decisoes ?? []).length
+          ? [`decisoes: [${PIPE_LINKS[slug].decisoes.join(', ')}]`]
+          : []),
         '---',
       ];
       const body = [
@@ -1023,7 +1042,8 @@ function pipelineNotes() {
         '',
         '## Conexões',
         '',
-        '- 🗺️ [[MOC - Stack]]',
+        '<!-- brain:auto:start:conexoes -->',
+        '<!-- brain:auto:end -->',
       ].join('\n');
       return { dir: '11-Stack', file: `PIPE-${slug} - ${name}.md`, content: `${fm.join('\n')}\n\n${body}\n` };
     });

@@ -12,6 +12,8 @@ criticidade: media
 risco: "Exige Extension Host (display/xvfb) e um Oracle acessível; config por .mjs"
 alternativas: []
 tags: [dependencia, dev, testes]
+decisoes: [ADR-011]
+regras: [BR-TEST-001, BR-TEST-002]
 ---
 
 # DEP-vscode-test — @vscode/test-cli + test-electron
@@ -35,3 +37,11 @@ Testes de **integração** (`npm run test:integration`): sobem o Extension Host
 ## Referências
 
 - `package.json` · `.vscode-test.mjs` · `src/test/integration/`
+
+## Conexões
+
+<!-- brain:auto:start:conexoes -->
+- 🗺️ [[MOC - Stack]]
+- 📐 Regras: [[BR-TEST-001 - Matriz de bancos Oracle cobre 12.2-23ai em thin e thick|BR-TEST-001]] · [[BR-TEST-002 - Testes de integração exigem banco e são skip sem UTPLSQL_CONN|BR-TEST-002]]
+- 🧭 Decisões: [[ADR-011 - Thick mode opt-in e matriz de bancos|ADR-011]]
+<!-- brain:auto:end -->

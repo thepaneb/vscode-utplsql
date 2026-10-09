@@ -12,6 +12,7 @@ criticidade: alta
 risco: "Bundle single-file; `vscode` e `oracledb` precisam ficar externos"
 alternativas: []
 tags: [dependencia, dev, build]
+decisoes: [ADR-004]
 ---
 
 # DEP-esbuild — esbuild
@@ -34,3 +35,10 @@ com `vscode` e `oracledb` **externos** (o driver nativo não pode ser embutido).
 ## Referências
 
 - `package.json` · `esbuild.config.mjs`
+
+## Conexões
+
+<!-- brain:auto:start:conexoes -->
+- 🗺️ [[MOC - Stack]]
+- 🧭 Decisões: [[ADR-004 - Bundling com esbuild e higiene do VSIX|ADR-004]]
+<!-- brain:auto:end -->
