@@ -63,10 +63,17 @@ Subagentes do projeto (carregados a partir do restart do serviço):
 
 ## Skills externas
 
-- `cartographer` — mapeia o código em `docs/CODEBASE_MAP.md` (commitável).
-- `brainstorming`, `writing-plans`, `using-git-worktrees`, `requesting-code-review`,
-  `receiving-code-review`, `finishing-a-development-branch` (de `obra/superpowers`).
-- `research`, `domain-modeling`, `writing-for-agents` (de `mattpocock/skills`).
+Todas em `.agents/skills/` e registradas em `skills-lock.json` (24 no total).
+
+- **`cartographer`** — mapeia o código em `docs/CODEBASE_MAP.md` (commitável).
+- **`obra/superpowers`** — `brainstorming`, `writing-plans`, `executing-plans`,
+  `subagent-driven-development`, `using-git-worktrees`, `requesting-code-review`,
+  `receiving-code-review`, `finishing-a-development-branch`,
+  `verification-before-completion`, `systematic-debugging`, `writing-skills`.
+- **`mattpocock/skills`** — `code-review`, `diagnosing-bugs`, `implement`,
+  `research`, `domain-modeling`, `codebase-design`, `grilling`,
+  `improve-codebase-architecture`, `prototype`, `retro`, `handoff`,
+  `writing-for-agents`.
 
 ## Verificação
 
