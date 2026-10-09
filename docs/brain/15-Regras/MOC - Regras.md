@@ -117,6 +117,7 @@ SORT id ASC
 - [[BR-PKG-001 - VSIX nao inclui fontes, scripts nem segredos]] — `BR-PKG-001`
 - [[BR-PLAT-001 - Piso de VS Code e runtime Node do host sao coerentes]] — `BR-PLAT-001`
 - [[BR-QUAL-001 - Thresholds de cobertura (c8) sao globais e bloqueiam o CI]] — `BR-QUAL-001`
+- [[BR-QUAL-002 - Formatacao e lint do codigo sao do Biome]] — `BR-QUAL-002`
 - [[BR-SCHEMA-001 - organization bifurca file tree vs schema tree; suiteMap é o lookup canônico]] — `BR-SCHEMA-001`
 - [[BR-SCHEMA-002 - extractSchemaFromPath - path.posix.relative e placeholder {schema}]] — `BR-SCHEMA-002`
 - [[BR-SCHEMA-003 - collectAllItems usa cachedItems e, se vazio, percorre até 3 níveis]] — `BR-SCHEMA-003`
@@ -138,4 +139,5 @@ SORT id ASC
 - [[BR-UI-010 - Decoracoes inline refletem o ultimo status e sao descartadas no dispose]] — `BR-UI-010`
 - [[BR-UI-011 - utplsql.runByTag oferece QuickPick multi-selecao das tags; showTagsInTree sufixa o label]] — `BR-UI-011`
 - [[BR-UI-012 - Item de status bar alterna o modo global de cobertura (sessao, nao persiste)]] — `BR-UI-012`
+- [[BR-UI-013 - Integracao nativa ao Test Explorer via a API de testes do VS Code]] — `BR-UI-013`
 <!-- brain:auto:end -->

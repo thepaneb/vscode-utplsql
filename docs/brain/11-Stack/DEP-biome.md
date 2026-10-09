@@ -40,4 +40,5 @@ Lint + formatação (`npm run lint`), parte do `pretest:unit`. Config versionada
 <!-- brain:auto:start:conexoes -->
 - 🗺️ [[MOC - Stack]]
 - 🧭 Decisões: [[ADR-013 - Consolidacao das ferramentas de desenvolvimento (0.13.0)|ADR-013]]
+- ↩️ Referenciada por: [[BR-QUAL-002 - Formatacao e lint do codigo sao do Biome|BR-QUAL-002]]
 <!-- brain:auto:end -->

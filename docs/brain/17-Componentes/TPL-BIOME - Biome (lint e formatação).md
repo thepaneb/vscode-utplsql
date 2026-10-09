@@ -14,7 +14,7 @@ status: ativo
 verificado: 2026-09-23
 implementacao: ["biome.json"]
 testes: []
-regras: []
+regras: [BR-QUAL-002]
 relacionado: ["[[MOC - Stack]]", "[[ADR-013 - Consolidacao das ferramentas de desenvolvimento (0.13.0)]]"]
 tags: ["tooling"]
 ---
@@ -35,6 +35,8 @@ Config em `biome.json`; alternativas: ESLint+Prettier (mais pesadas).
 
 <!-- brain:auto:start:conexoes -->
 - 🗺️ [[MOC - Componentes]]
+- 📐 Regras: [[BR-QUAL-002 - Formatacao e lint do codigo sao do Biome|BR-QUAL-002]]
 - 🧩 Código: [[COD - biome.json]]
 - 🔗 [[MOC - Stack]] · [[ADR-013 - Consolidacao das ferramentas de desenvolvimento (0.13.0)]]
+- ↩️ Referenciada por: [[BR-QUAL-002 - Formatacao e lint do codigo sao do Biome|BR-QUAL-002]]
 <!-- brain:auto:end -->
