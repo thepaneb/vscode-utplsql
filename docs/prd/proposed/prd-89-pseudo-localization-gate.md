@@ -8,7 +8,7 @@
 | Autor | Gil Cleber Barboza |
 | Data | 2026-09-29 |
 | Componente | Extensão `paneb.vscode-utplsql` |
-| Versão alvo | 0.17.0 |
+| Versão alvo | 0.21.0 |
 | Arquivos afetados | `src/i18n.ts`, `src/i18nLocales.ts`, `src/test/unit/i18nPseudo.test.ts`, `scripts/scrape-strings.cjs` (novo), `scripts/docs-fidelity.cjs`, `docs/brain/12-I18n/` |
 | Esforço estimado | 1 dia |
 | Complexidade | Baixa-Média |
@@ -101,7 +101,7 @@ Nenhuma setting pública; apenas env de desenvolvimento.
 
 ## 9. Rollout
 
-- Release alvo: 0.17.0.
+- Release alvo: 0.21.0.
 - Bullet no `CHANGELOG.md`; nota `12-I18n`; referencia a skill `vscode-ext-localization`.
 
 ## 10. Critérios de aceite
@@ -112,7 +112,7 @@ Nenhuma setting pública; apenas env de desenvolvimento.
 
 ## 11. Questões em aberto
 
-- Scanner bloqueia ou só avisa? (proposta: aviso no 0.17.0, gate no 0.18.0.)
+- Scanner bloqueia ou só avisa? (proposta: só aviso agora; o bloqueio fica para depois.)
 
 ## 12. Impacto no cérebro
 

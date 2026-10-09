@@ -4,10 +4,10 @@ id: PRD-88
 aliases: [PRD-88]
 status: proposed
 titulo: "Formatação sensível a locale (números e durações)"
-versao: "0.18.0"
+versao: "0.21.0"
 data: "2026-09-29"
 autor: "Gil Cleber Barboza"
-versao_titulo: "0.18.0 — Localização (formatação, plurais e paridade)"
+versao_titulo: "0.21.0 — Localização (formatação, plurais e paridade)"
 verificado: 2026-09-29
 regras: []
 tags: [prd]
@@ -20,7 +20,7 @@ tags: [prd]
 | Autor | Gil Cleber Barboza |
 | Data | 2026-09-29 |
 | Componente | Extensão `paneb.vscode-utplsql` |
-| Versão alvo | 0.17.0 |
+| Versão alvo | 0.21.0 |
 | Arquivos afetados | `src/i18n.ts`, `src/statusBar.ts`, `src/test/unit/i18n.test.ts`, `src/test/unit/statusBar.test.ts`, `CHANGELOG.md` |
 | Esforço estimado | 0,5–1 dia |
 | Complexidade | Baixa |
@@ -109,7 +109,7 @@ Nenhuma nova (`utplsql.language` já define o locale).
 
 ## 9. Rollout
 
-- Release alvo: 0.17.0.
+- Release alvo: 0.21.0.
 - Bullet no `CHANGELOG.md`; nota de vault `12-I18n` e wiki `Internationalization`.
 
 ## 10. Critérios de aceite
@@ -132,6 +132,6 @@ locale-aware) com `prds: ["PRD-88"]`, `implementacao` em `src/i18n.ts` e testes.
 <!-- brain:auto:start:conexoes -->
 - 🗺️ [[MOC - PRDs]]
 - 🔗 PRDs relacionados: [[prd-90-message-plurals-cldr|PRD-90]]
-- 🔗 Mesma versão (0.18.0): [[prd-89-pseudo-localization-gate|PRD-89]] · [[prd-90-message-plurals-cldr|PRD-90]] · [[prd-91-doc-parity-localized-distribution|PRD-91]]
-- 🚀 ⬅️ release anterior: [[prd-59-scaffold-suite|PRD-59 (0.17.0)]] · ➡️ próxima release: [[prd-92-rtl-new-locales|PRD-92 (0.19.0)]]
+- 🔗 Mesma versão (0.21.0): [[prd-89-pseudo-localization-gate|PRD-89]] · [[prd-90-message-plurals-cldr|PRD-90]] · [[prd-91-doc-parity-localized-distribution|PRD-91]]
+- 🚀 ⬅️ release anterior: [[prd-104-ci-supply-chain|PRD-104 (0.20.0)]] · ➡️ próxima release: [[prd-92-rtl-new-locales|PRD-92 (0.22.0)]]
 <!-- brain:auto:end -->

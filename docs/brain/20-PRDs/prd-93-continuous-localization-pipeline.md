@@ -4,10 +4,10 @@ id: PRD-93
 aliases: [PRD-93]
 status: proposed
 titulo: "Pipeline de localização contínua (glossário, TM e revisão)"
-versao: "0.19.0"
+versao: "0.22.0"
 data: "2026-09-29"
 autor: "Gil Cleber Barboza"
-versao_titulo: "0.19.0 — Localização (RTL, novos locales e pipeline)"
+versao_titulo: "0.22.0 — Localização (RTL, novos locales e pipeline)"
 verificado: 2026-09-29
 regras: []
 tags: [prd]
@@ -20,14 +20,14 @@ tags: [prd]
 | Autor | Gil Cleber Barboza |
 | Data | 2026-09-29 |
 | Componente | Extensão `paneb.vscode-utplsql` |
-| Versão alvo | 0.18.0 |
+| Versão alvo | 0.22.0 |
 | Arquivos afetados | `scripts/i18n-export.cjs`, `scripts/i18n-apply.cjs` (novos), `docs/brain/12-I18n/` (glossário + donos), `.opencode/skills/` (workflow), `.github/workflows/ci.yml` |
 | Esforço estimado | 2–3 dias |
 | Complexidade | Média |
 
 ## 1. Resumo
 
-Com 24 locales (e `ar`/`he` no 0.18.0), a manutenção manual não escala. Esta PRD
+Com 24 locales (e `ar`/`he` na 0.22.0), a manutenção manual não escala. Esta PRD
 define um **pipeline de localização contínua**: exportar/importar catálogos com
 **translation memory** e **glossário**, dono/revisor por locale, e gates de
 qualidade no CI — via scripts próprios e, opcionalmente, um TMS.
@@ -110,7 +110,7 @@ Nenhuma setting de extensão; env/CI para TMS quando adotado.
 
 ## 9. Rollout
 
-- Release alvo: 0.18.0.
+- Release alvo: 0.22.0.
 - Bullet no `CHANGELOG.md`; skill/workflow documentado; wiki `Contributing`.
 
 ## 10. Critérios de aceite
@@ -134,6 +134,6 @@ Esperado criar `BR-I18N-007` (pipeline: round-trip + glossário + gate) e notas
 - 🗺️ [[MOC - PRDs]]
 - 🔗 PRDs relacionados: [[prd-89-pseudo-localization-gate|PRD-89]] · [[prd-90-message-plurals-cldr|PRD-90]] · [[prd-91-doc-parity-localized-distribution|PRD-91]]
 - ⚙️ Pipelines: [[PIPE-ci - CI|PIPE-ci]]
-- 🔗 Mesma versão (0.19.0): [[prd-92-rtl-new-locales|PRD-92]]
-- 🚀 ⬅️ release anterior: [[prd-91-doc-parity-localized-distribution|PRD-91 (0.18.0)]]
+- 🔗 Mesma versão (0.22.0): [[prd-92-rtl-new-locales|PRD-92]]
+- 🚀 ⬅️ release anterior: [[prd-91-doc-parity-localized-distribution|PRD-91 (0.21.0)]]
 <!-- brain:auto:end -->

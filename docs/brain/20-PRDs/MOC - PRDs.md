@@ -29,11 +29,18 @@ npm run sync-prds
 ## Planejamento por versão
 
 - **0.15.0 — “Tags e UX de execução”**: [[Roadmap - 0.15.0 (execução)]]
+- **0.16.0 — “Modernização do runtime (ESM/ES2023)”**: [[Roadmap - 0.16.0 (planejamento)]]
+- **0.17.0 — “Persistência, multi-root e produtividade”**: [[Roadmap - 0.17.0 (planejamento)]]
+- **0.18.0 — “UX de editor e cobertura”**: [[Roadmap - 0.18.0 (planejamento)]]
+- **0.19.0 — “Observabilidade e desempenho”**: [[Roadmap - 0.19.0 (planejamento)]]
+- **0.20.0 — “Qualidade e CI”**: [[Roadmap - 0.20.0 (planejamento)]]
+- **0.21.0 — “Localização (formatação, plurais e paridade)”**: [[Roadmap - 0.21.0 (planejamento)]]
+- **0.22.0 — “Localização (RTL, novos locales e pipeline)”**: [[Roadmap - 0.22.0 (planejamento)]]
 
 ## Status (gerado)
 
 <!-- brain:auto:start:prd-summary -->
-- 📝 Propostos: **17**
+- 📝 Propostos: **27**
 - 🔵 Aprovados: **0**
 - 🟡 Em desenvolvimento: **0**
 - 🟢 Concluídos: **82**
@@ -62,6 +69,16 @@ Detalhe completo (fonte da verdade): [docs/prd/index.md](../../prd/index.md)
 - [[prd-08-cli-options]] — `PRD-08`
 - [[prd-09-cli-info]] — `PRD-09`
 - [[prd-10-dynamic-reporters]] — `PRD-10`
+- [[prd-100-generate-test-suite]] — `PRD-100`
+- [[prd-101-connection-pool-lifecycle]] — `PRD-101`
+- [[prd-102-trace-and-perf-instrumentation]] — `PRD-102`
+- [[prd-103-incremental-source-reindex]] — `PRD-103`
+- [[prd-104-ci-supply-chain]] — `PRD-104`
+- [[prd-105-snippets]] — `PRD-105`
+- [[prd-106-perf-harness]] — `PRD-106`
+- [[prd-107-unprivileged-fixture]] — `PRD-107`
+- [[prd-108-coverage-html-report]] — `PRD-108`
+- [[prd-109-language-identity]] — `PRD-109`
 - [[prd-11-streaming-results]] — `PRD-11`
 - [[prd-12-sql-coverage]] — `PRD-12`
 - [[prd-13-oracle-infra]] — `PRD-13`
@@ -152,4 +169,11 @@ Detalhe completo (fonte da verdade): [docs/prd/index.md](../../prd/index.md)
 - [[prd-98-docs-anti-drift]] — `PRD-98`
 - [[prd-99-brain-reuse]] — `PRD-99`
 - [[Roadmap - 0.15.0 (execução)]]
+- [[Roadmap - 0.16.0 (planejamento)]]
+- [[Roadmap - 0.17.0 (planejamento)]]
+- [[Roadmap - 0.18.0 (planejamento)]]
+- [[Roadmap - 0.19.0 (planejamento)]]
+- [[Roadmap - 0.20.0 (planejamento)]]
+- [[Roadmap - 0.21.0 (planejamento)]]
+- [[Roadmap - 0.22.0 (planejamento)]]
 <!-- brain:auto:end -->

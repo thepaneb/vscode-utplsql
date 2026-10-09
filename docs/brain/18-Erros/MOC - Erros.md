@@ -34,4 +34,5 @@ SORT codigo ASC
 - [[ERR-009 - V$SQL negado — cobertura de views indisponível]] — `ERR-009`
 - [[ERR-010 - Erro genérico do ut_runner.run (runner.oracleError)]] — `ERR-010`
 - [[ERR-011 - Fonte de package truncada (-10.000 linhas)]] — `ERR-011`
+- [[ERR-012 - ORA-01861 — comparação de DATE em sys_refcursor com NLS resetado cedo]] — `ERR-012`
 <!-- brain:auto:end -->

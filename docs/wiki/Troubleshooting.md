@@ -135,7 +135,7 @@ controls how the **file** is read before sending.
 **Likely causes:** The file does not have `%suite` **and** the `create [or replace] package`
 declaration (both are required by the parser); or no `%test` is associated with a procedure.
 
-The parser is token-driven — there is **no** blank-line requirement:
+The **file** parser is token-driven — there is **no** blank-line requirement:
 
 ```sql
 create or replace package test_foo as
@@ -147,6 +147,93 @@ end;
 
 Also verify that the file is covered by `utplsql.includePatterns` and run
 `utPLSQL: Refresh Tests`.
+
+> ⚠️ **Two parsers, two rules.** The **file** parser above has no blank-line
+> requirement, but when suites are read **from the database**
+> (`ut_runner.get_suites_info`, DB-first since 0.13.0) it is utPLSQL's own
+> annotation parser that decides — and *that* one **does** require a blank line
+> before the first `%test`/`%context`. A package can pass one and fail the other.
+> See [utPLSQL gotchas](#utplsql-gotchas-verified) below.
+
+---
+
+## utPLSQL gotchas (verified)
+
+Verified against **utPLSQL `v3.2.3.4508-develop`** on 2026-10-09 (real Oracle
+container). These are utPLSQL behaviours, not extension bugs, but they explain
+most "my suite is missing" reports.
+
+### Blank line before the first `%test`
+
+**Symptom:** the package compiles cleanly but never appears in the Test Explorer
+when suites are read from the database.
+
+**Cause:** utPLSQL's annotation parser requires a **blank line between
+`--%suite` (and `--%suitepath`) and the first `--%test`/`--%context`**. Without
+it the package is **silently invisible** — no error, zero rows.
+
+**Reproduction:**
+```sql
+-- (a) sem linha em branco -> invisível
+create or replace package ut_a is
+  --%suite(A)
+  --%test(t)
+  procedure t;
+end;
+/
+-- compile também o body (ut_a)
+
+-- (b) com linha em branco -> visível
+create or replace package ut_b is
+  --%suite(B)
+
+  --%test(t)
+  procedure t;
+end;
+/
+-- compile também o body (ut_b)
+
+-- reconstrua o cache de annotations e consulte:
+begin ut_runner.rebuild_annotation_cache(user, 'PACKAGE'); end;
+/
+select item_type, item_name, path
+  from table(ut_runner.get_suites_info(user));
+-- RESULTADO: ut_b aparece como UT_SUITE; ut_a NÃO aparece.
+```
+
+**Fix:** add the blank line before the first `%test`. The same rule applies to
+`--%context(...)`: without a blank line **after** it (and before `--%endcontext`)
+the tests still run, but appear **flat** under the suite instead of nested under
+a `UT_SUITE_CONTEXT`.
+
+### Suitepath groups are `UT_LOGICAL_SUITE`
+
+`--%suitepath(a.b)` makes `get_suites_info` emit **`UT_LOGICAL_SUITE`** rows for
+the groups (`a`, `a.b`) — and for the schema itself — in addition to
+`UT_SUITE`/`UT_SUITE_CONTEXT`/`UT_TEST`. The extension builds its own grouping and
+ignores these rows; this is informational for anyone reading the rows directly.
+
+### `DATE` in `sys_refcursor` comparisons → `ORA-01861`
+
+With `ut.set_nls`, calling `ut.reset_nls` **before** the `to_equal` raises
+`ORA-01861` (the comparison re-derives the DATE format from the session's current
+NLS, not from the `OPEN` time). Keep `set_nls` active through the comparison.
+
+**Reproduction:** compile `ut_nls_demo` comparing two cursors over a `DATE`
+column with `ut.reset_nls` before `ut.expect(...).to_equal(...)`; the test errors
+in `UT_DATA_VALUE_REFCURSOR`. Full repro and fix: see
+[ERR-012](ERR-012 - ORA-01861 — comparação de DATE em sys_refcursor com NLS resetado cedo).
+Without `set_nls` at all the comparison passes — the trap is specifically
+`set_nls` followed by an early `reset_nls`.
+
+### Suite-path collisions across schemas
+
+A suite's `path` is `<suitepath>.<package>` and does **not** carry the owning
+schema, so two schemas can produce the **same path** (verified: identical
+`glt.alpha.ut_glt_path` in two schemas, differing only by `object_owner`). The
+extension's live-event matching uses the path, so suites sharing a path across
+schemas in a single run can be misattributed — the same known limitation Oracle
+SQL Developer's utPLSQL integration has.
 
 ---
 

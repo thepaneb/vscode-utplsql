@@ -4,10 +4,10 @@ id: PRD-91
 aliases: [PRD-91]
 status: proposed
 titulo: "Paridade de documentação e distribuição localizada"
-versao: "0.18.0"
+versao: "0.21.0"
 data: "2026-09-29"
 autor: "Gil Cleber Barboza"
-versao_titulo: "0.18.0 — Localização (formatação, plurais e paridade)"
+versao_titulo: "0.21.0 — Localização (formatação, plurais e paridade)"
 verificado: 2026-09-29
 regras: []
 tags: [prd]
@@ -20,7 +20,7 @@ tags: [prd]
 | Autor | Gil Cleber Barboza |
 | Data | 2026-09-29 |
 | Componente | Extensão `paneb.vscode-utplsql` |
-| Versão alvo | 0.17.0 |
+| Versão alvo | 0.21.0 |
 | Arquivos afetados | `scripts/docs-fidelity.cjs`, `src/test/unit/docsFidelity.test.ts`, `docs/brain/12-I18n/` (registro), `docs/brain/60-README/*`, `README*`, `docs/wiki/`, `.opencode/skills/docs-fidelity` |
 | Esforço estimado | 1–2 dias |
 | Complexidade | Média |
@@ -115,7 +115,7 @@ Nenhuma.
 
 ## 9. Rollout
 
-- Release alvo: 0.17.0.
+- Release alvo: 0.21.0.
 - Bullet no `CHANGELOG.md`; skill `docs-fidelity` atualizada.
 
 ## 10. Critérios de aceite
@@ -138,6 +138,6 @@ registro de locales (NFR/ENT a definir), com `prds: ["PRD-91"]`.
 <!-- brain:auto:start:conexoes -->
 - 🗺️ [[MOC - PRDs]]
 - 🔗 PRDs relacionados: [[prd-93-continuous-localization-pipeline|PRD-93]]
-- 🔗 Mesma versão (0.18.0): [[prd-88-locale-aware-formatting|PRD-88]] · [[prd-89-pseudo-localization-gate|PRD-89]] · [[prd-90-message-plurals-cldr|PRD-90]]
-- 🚀 ⬅️ release anterior: [[prd-59-scaffold-suite|PRD-59 (0.17.0)]] · ➡️ próxima release: [[prd-92-rtl-new-locales|PRD-92 (0.19.0)]]
+- 🔗 Mesma versão (0.21.0): [[prd-88-locale-aware-formatting|PRD-88]] · [[prd-89-pseudo-localization-gate|PRD-89]] · [[prd-90-message-plurals-cldr|PRD-90]]
+- 🚀 ⬅️ release anterior: [[prd-104-ci-supply-chain|PRD-104 (0.20.0)]] · ➡️ próxima release: [[prd-92-rtl-new-locales|PRD-92 (0.22.0)]]
 <!-- brain:auto:end -->

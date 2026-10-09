@@ -8,7 +8,7 @@
 | Autor | Gil Cleber Barboza |
 | Data | 2026-09-29 |
 | Componente | Extensão `paneb.vscode-utplsql` |
-| Versão alvo | 0.17.0 |
+| Versão alvo | 0.21.0 |
 | Arquivos afetados | `src/i18n.ts`, `src/statusBar.ts`, `src/test/unit/i18n.test.ts`, `src/test/unit/statusBar.test.ts`, `CHANGELOG.md` |
 | Esforço estimado | 0,5–1 dia |
 | Complexidade | Baixa |
@@ -97,7 +97,7 @@ Nenhuma nova (`utplsql.language` já define o locale).
 
 ## 9. Rollout
 
-- Release alvo: 0.17.0.
+- Release alvo: 0.21.0.
 - Bullet no `CHANGELOG.md`; nota de vault `12-I18n` e wiki `Internationalization`.
 
 ## 10. Critérios de aceite
