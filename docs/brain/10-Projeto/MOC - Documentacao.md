@@ -107,6 +107,11 @@ locais: `docs/analise.md`, `docs/analise-comparativa.md`,
 Strings da UI ficam em `package.nls.<locale>.json` na raiz (23 locales) e são
 referenciadas como `%nls.*%` no `package.json`.
 
+## Dependências
+
+- [[DEP-resvg]] — render de SVGs (diagramas/ícone)
+- [[DEP-vsce]] — empacotamento do VSIX (exclui docs)
+
 ## Relacionado
 
 - [[MOC - vscode-utplsql]]

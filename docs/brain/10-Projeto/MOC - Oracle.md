@@ -29,6 +29,10 @@ tags: [moc, oracle, oracledb]
 - **Setup**: `SetupValidator.validateOnActivation()` na ativação (conexão via `getOracleInfo`, versão via `semverLt`).
 - **Quick-fix**: `UtplsqlCodeActionProvider` em `**/*.pks`. Source `"utPLSQL Setup"`.
 
+## Dependências
+
+- [[DEP-oracledb - node-oracledb]] — driver Oracle direto (thin/thick)
+
 ## Documentação no repo
 
 - [Oracle-direct-execution](../../../docs/wiki/Oracle-direct-execution.md)

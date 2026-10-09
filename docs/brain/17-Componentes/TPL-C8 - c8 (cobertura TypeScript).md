@@ -21,7 +21,7 @@ tags: ["tooling"]
 ## Papel
 
 Cobertura dos testes TypeScript via source maps (`test:coverage`), com thresholds
-97% lines/statements, 92% branches, 97% functions (`.c8rc`); o Codecov usa o
+97% lines/statements, 93% branches, 97% functions (`.c8rc`); o Codecov usa o
 mesmo alvo no status de projeto.
 
 ## Riscos
@@ -39,5 +39,5 @@ Config em `.c8rc`.
 - 🗺️ [[MOC - Componentes]]
 - 🧩 Código: [[COD - package.json]] · [[COD - .c8rc]]
 - 🔗 [[ADR-006 - Modulos puros vs dependentes de vscode]] · [[NFR-007 - Cobertura de testes TypeScript]]
-- ↩️ Referenciada por: [[NFR-007 - Cobertura de testes TypeScript|NFR-007]]
+- ↩️ Referenciada por: [[BR-QUAL-001 - Thresholds de cobertura (c8) sao globais e bloqueiam o CI|BR-QUAL-001]] · [[NFR-007 - Cobertura de testes TypeScript|NFR-007]]
 <!-- brain:auto:end -->

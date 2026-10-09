@@ -15,7 +15,7 @@ tags: ["qualidade"]
 ---
 ## Requisito
 
-Thresholds de cobertura (c8, global): 97% lines/statements, 92% branches, 97%
+Thresholds de cobertura (c8, global): 97% lines/statements, 93% branches, 97%
 functions; alvo de projeto do Codecov em 97%.
 
 ## Justificativa
@@ -32,5 +32,5 @@ Proteger refatorações dos módulos puros e canônicos.
 - 🗺️ [[MOC - NFR]]
 - 🎯 Requisitos: [[prd-37-ts-coverage|PRD-37 RF1]]
 - 🔗 [[ADR-006 - Modulos puros vs dependentes de vscode]] · [[TPL-C8 - c8 (cobertura TypeScript)]] · [[PAT-007 - Stub de vscode em duas camadas]] · [[MOC - Testes]]
-- ↩️ Referenciada por: [[10-development-tooling]] · [[DEP-c8]] · [[TPL-C8 - c8 (cobertura TypeScript)|TPL-C8]]
+- ↩️ Referenciada por: [[10-development-tooling]] · [[BR-QUAL-001 - Thresholds de cobertura (c8) sao globais e bloqueiam o CI|BR-QUAL-001]] · [[DEP-c8]] · [[TPL-C8 - c8 (cobertura TypeScript)|TPL-C8]]
 <!-- brain:auto:end -->

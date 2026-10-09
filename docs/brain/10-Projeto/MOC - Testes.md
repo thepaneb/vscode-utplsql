@@ -42,8 +42,13 @@ node --test --test-name-pattern "duração" out/test/unit/**/*.test.js
 ## Cobertura TS (c8)
 
 - `.c8rc` exclui `out/test/**`. Source maps mapeiam `out/*.js` → `src/*.ts`.
-- Thresholds (global, sem `per-file`): 97% lines/statements, 92% branches, 97%
+- Thresholds (global, sem `per-file`): 97% lines/statements, 93% branches, 97%
   functions. O Codecov (`codecov.yml`) acompanha o alvo de projeto (97%).
+
+## Dependências
+
+- [[DEP-c8]] — cobertura TypeScript
+- [[DEP-vscode-test]] — Extension Host (integração)
 
 ## Documentação no repo
 

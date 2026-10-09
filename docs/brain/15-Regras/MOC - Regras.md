@@ -77,6 +77,7 @@ SORT id ASC
 - [[BR-DEBUG-003 - Function standalone depura no namespace toplevel]] — `BR-DEBUG-003`
 - [[BR-DEBUG-004 - compileForDebug recompila com debug e mantem o objeto VALID]] — `BR-DEBUG-004`
 - [[BR-DEBUG-005 - debugAtCursor-debugFailed-debugLast resolvem o alvo e chamam startDebugSession]] — `BR-DEBUG-005`
+- [[BR-DEP-001 - Runtime deps em dependencies e nota DEP- para cada dep direta]] — `BR-DEP-001`
 - [[BR-EXEC-001 - Execução usa duas conexões dedicadas (conn1 runner, conn2 poll)]] — `BR-EXEC-001`
 - [[BR-EXEC-002 - Conexões do runner têm callTimeout zerado]] — `BR-EXEC-002`
 - [[BR-EXEC-003 - Falha na segunda conexão libera a primeira (sem vazamento)]] — `BR-EXEC-003`
@@ -114,6 +115,7 @@ SORT id ASC
 - [[BR-PARSE-017 - Filtro por tag - inclusao e exclusao (!) case-insensitive; sem tag so sem inclusao]] — `BR-PARSE-017`
 - [[BR-PARSE-018 - TestMessage de falha ganha expectedOutput-actualOutput quando ha Expected-Actual]] — `BR-PARSE-018`
 - [[BR-PLAT-001 - Piso de VS Code e runtime Node do host sao coerentes]] — `BR-PLAT-001`
+- [[BR-QUAL-001 - Thresholds de cobertura (c8) sao globais e bloqueiam o CI]] — `BR-QUAL-001`
 - [[BR-SCHEMA-001 - organization bifurca file tree vs schema tree; suiteMap é o lookup canônico]] — `BR-SCHEMA-001`
 - [[BR-SCHEMA-002 - extractSchemaFromPath - path.posix.relative e placeholder {schema}]] — `BR-SCHEMA-002`
 - [[BR-SCHEMA-003 - collectAllItems usa cachedItems e, se vazio, percorre até 3 níveis]] — `BR-SCHEMA-003`

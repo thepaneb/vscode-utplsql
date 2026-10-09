@@ -13,7 +13,7 @@ risco: "CVE-2026-25896 (entity encoding) — corrigido em >=5.3.5; XML vem do re
 alternativas: []
 tags: [dependencia, runtime, xml]
 decisoes: [ADR-008]
-regras: [BR-COB-005, BR-PARSE-011]
+regras: [BR-COB-005, BR-PARSE-011, BR-DEP-001]
 ---
 
 # DEP-fast-xml-parser — fast-xml-parser
@@ -42,6 +42,7 @@ Cobertura (`src/cobertura.ts`). Puro (sem `vscode`), testável por unidade.
 
 <!-- brain:auto:start:conexoes -->
 - 🗺️ [[MOC - Stack]]
-- 📐 Regras: [[BR-COB-005 - XML Cobertura e cobertura por declaracao sao parseados de forma pura|BR-COB-005]] · [[BR-PARSE-011 - Precedência de status JUnit failure - error - skipped - passed|BR-PARSE-011]]
+- 📐 Regras: [[BR-COB-005 - XML Cobertura e cobertura por declaracao sao parseados de forma pura|BR-COB-005]] · [[BR-PARSE-011 - Precedência de status JUnit failure - error - skipped - passed|BR-PARSE-011]] · [[BR-DEP-001 - Runtime deps em dependencies e nota DEP- para cada dep direta|BR-DEP-001]]
 - 🧭 Decisões: [[ADR-008 - Cobertura a partir do Cobertura XML e VSQL|ADR-008]]
+- ↩️ Referenciada por: [[BR-DEP-001 - Runtime deps em dependencies e nota DEP- para cada dep direta|BR-DEP-001]]
 <!-- brain:auto:end -->

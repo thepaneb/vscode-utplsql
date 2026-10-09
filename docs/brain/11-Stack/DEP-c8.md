@@ -13,6 +13,7 @@ risco: "Thresholds (97/93/97/97) quebram o CI se a cobertura cair"
 alternativas: [nyc]
 tags: [dependencia, dev, cobertura]
 decisoes: [ADR-013]
+regras: [BR-QUAL-001]
 relacionado: ["[[NFR-007 - Cobertura de testes TypeScript]]"]
 ---
 
@@ -41,6 +42,8 @@ Cobertura dos testes unitários (`npm run test:coverage`), instrumentando
 
 <!-- brain:auto:start:conexoes -->
 - 🗺️ [[MOC - Stack]]
+- 📐 Regras: [[BR-QUAL-001 - Thresholds de cobertura (c8) sao globais e bloqueiam o CI|BR-QUAL-001]]
 - 🧭 Decisões: [[ADR-013 - Consolidacao das ferramentas de desenvolvimento (0.13.0)|ADR-013]]
 - 🔗 [[NFR-007 - Cobertura de testes TypeScript]]
+- ↩️ Referenciada por: [[BR-QUAL-001 - Thresholds de cobertura (c8) sao globais e bloqueiam o CI|BR-QUAL-001]]
 <!-- brain:auto:end -->

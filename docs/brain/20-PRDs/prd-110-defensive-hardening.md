@@ -109,7 +109,7 @@ todos quebram invariantes já declarados em `SECURITY.md`.
 - RNF1 — Nenhuma mudança de comportamento observável com connection/banco
   válidos.
 - RNF2 — Novos helpers puros cobertos por teste unitário; thresholds do c8
-  (97% lines/statements, 97% functions, 92% branches) mantidos.
+  (97% lines/statements, 97% functions, 93% branches) mantidos.
 - RNF3 — `SECURITY.md` atualizado para refletir os invariantes (identificador
   validado; credencial nunca em log).
 
