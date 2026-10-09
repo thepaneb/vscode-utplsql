@@ -33,7 +33,7 @@ npm run sync-prds
 ## Status (gerado)
 
 <!-- brain:auto:start:prd-summary -->
-- 📝 Propostos: **16**
+- 📝 Propostos: **17**
 - 🔵 Aprovados: **0**
 - 🟡 Em desenvolvimento: **0**
 - 🟢 Concluídos: **82**
@@ -150,5 +150,6 @@ Detalhe completo (fonte da verdade): [docs/prd/index.md](../../prd/index.md)
 - [[prd-96-public-landing-page-github-pages]] — `PRD-96`
 - [[prd-97-doc-no-site]] — `PRD-97`
 - [[prd-98-docs-anti-drift]] — `PRD-98`
+- [[prd-99-brain-reuse]] — `PRD-99`
 - [[Roadmap - 0.15.0 (execução)]]
 <!-- brain:auto:end -->

@@ -122,5 +122,5 @@ Prompt de nome via `showInputBox`; escrita via `workspace.fs`.
 <!-- brain:auto:start:conexoes -->
 - 🗺️ [[MOC - PRDs]]
 - 🔗 Mesma versão (0.17.0): [[prd-56-duration-persistence|PRD-56]] · [[prd-57-multiroot-root-resolution|PRD-57]] · [[prd-58-run-related-tests|PRD-58]]
-- 🚀 ⬅️ release anterior: [[prd-98-docs-anti-drift|PRD-98 (0.16.0)]] · ➡️ próxima release: [[prd-88-locale-aware-formatting|PRD-88 (0.18.0)]]
+- 🚀 ⬅️ release anterior: [[prd-99-brain-reuse|PRD-99 (0.16.0)]] · ➡️ próxima release: [[prd-88-locale-aware-formatting|PRD-88 (0.18.0)]]
 <!-- brain:auto:end -->
