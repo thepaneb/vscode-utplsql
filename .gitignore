@@ -25,6 +25,8 @@ docs/*
 !docs/wiki/**
 !docs/functional/
 !docs/functional/**
+# Mapa de código gerado pela skill cartographer — commitável
+!docs/CODEBASE_MAP.md
 
 # Second brain (vault Obsidian) — versionado; ver docs/brain/README.md
 !docs/brain/
@@ -49,3 +51,7 @@ docs/brain/.obsidian/plugins/smart-lookup/
 
 # Ferramentas locais de agentes
 .kilo/
+
+# Caches Python (ex.: py_compile de scripts de skills)
+__pycache__/
+*.pyc
