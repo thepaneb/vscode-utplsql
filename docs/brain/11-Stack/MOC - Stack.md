@@ -70,6 +70,7 @@ SORT id ASC
 ## Índice (links)
 
 <!-- brain:auto:start:moc-index -->
+- [[Guia - ferramentas de agente (MCPs, skills e plugins)]]
 - [[PIPE-bing-index - Bing Index Check]] — `PIPE-bing-index`
 - [[PIPE-ci - CI]] — `PIPE-ci`
 - [[PIPE-google-index - Google Index Check]] — `PIPE-google-index`
