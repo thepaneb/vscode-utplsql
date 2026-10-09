@@ -186,7 +186,7 @@ notas `prd-*`. O índice navegável do vault é a [[MOC - PRDs]].
 | 101 | [Ciclo de vida de conexões: fechar pools ociosos após a execução](proposed/prd-101-connection-pool-lifecycle.md) | 0.19.0 | 2026-10-09 |
 | 102 | [Observabilidade: tracing e instrumentação de desempenho](proposed/prd-102-trace-and-perf-instrumentation.md) | 0.19.0 | 2026-10-09 |
 | 103 | [Reindexação incremental de fontes (watcher por-URI)](proposed/prd-103-incremental-source-reindex.md) | 0.19.0 | 2026-10-09 |
-| 104 | [Cadeia de suprimentos do CI: CodeQL, Dependabot e pin de actions](proposed/prd-104-ci-supply-chain.md) | 0.20.0 | 2026-10-09 |
+| 104 | [Cadeia de suprimentos do CI: Dependabot, pin de actions e auditoria de dependências](proposed/prd-104-ci-supply-chain.md) | 0.20.0 | 2026-10-09 |
 | 105 | [Snippets utPLSQL: biblioteca de annotations e matchers](proposed/prd-105-snippets.md) | 0.18.0 | 2026-10-09 |
 | 106 | [Harness de performance: fixture em escala e medição por fases](proposed/prd-106-perf-harness.md) | 0.19.0 | 2026-10-09 |
 | 107 | [Fixture de integração endurecido: usuário sem privilégios e fallbacks](proposed/prd-107-unprivileged-fixture.md) | 0.19.0 | 2026-10-09 |

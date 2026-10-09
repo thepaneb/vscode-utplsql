@@ -17,7 +17,7 @@ verdade** no frontmatter das notas `prd-*`: ver [[MOC - PRDs]] e
 
 | Ordem | PRD | Título | Esforço | Complexidade |
 |---|---|---|---|---|
-| 1 | PRD-104 | Cadeia de suprimentos do CI: CodeQL, Dependabot e pin de actions | 0,5–1 d | Baixa |
+| 1 | PRD-104 | Cadeia de suprimentos do CI: Dependabot, pin de actions e auditoria de dependências | 0,5–1 d | Baixa |
 
 **PRD:** [[prd-104-ci-supply-chain|PRD-104]]
 
