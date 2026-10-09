@@ -8,7 +8,7 @@
 | Autor | Gil Cleber Barboza |
 | Data | 2026-09-29 |
 | Componente | Extensão `paneb.vscode-utplsql` |
-| Versão alvo | 0.15.0 |
+| Versão alvo | 0.16.0 |
 | Arquivos afetados | `package.json`, `esbuild.config.mjs`, `tsconfig.json`, `src/**` (pontual), `.vscode-test.mjs`, `scripts/*` |
 | Esforço estimado | 2–3 dias |
 | Complexidade | Média |

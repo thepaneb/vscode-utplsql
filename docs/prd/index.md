@@ -172,16 +172,26 @@ notas `prd-*`. O índice navegável do vault é a [[MOC - PRDs]].
 | 59 | [Scaffold de suíte de teste](proposed/prd-59-scaffold-suite.md) | 0.17.0 | 2026-09-06 |
 | 60 | [Cobertura de branch (investigação de viabilidade)](proposed/prd-60-branch-coverage-investigation.md) | Investigação — sem versão alvo | 2026-09-06 |
 | 61 | [Auto-provisionamento do utPLSQL-cli](proposed/prd-61-cli-auto-provision.md) | Suspenso — a reavaliar (PRD-64 removeu o CLI) | 2026-09-06 |
-| 88 | [Formatação sensível a locale (números e durações)](proposed/prd-88-locale-aware-formatting.md) | 0.18.0 | 2026-09-29 |
-| 89 | [Pseudo-localização e gate de strings não traduzidas](proposed/prd-89-pseudo-localization-gate.md) | 0.18.0 | 2026-09-29 |
-| 90 | [Plurais (CLDR) e seleção no catálogo de mensagens](proposed/prd-90-message-plurals-cldr.md) | 0.18.0 | 2026-09-29 |
-| 91 | [Paridade de documentação e distribuição localizada](proposed/prd-91-doc-parity-localized-distribution.md) | 0.18.0 | 2026-09-29 |
-| 92 | [RTL e novos locales (árabe e hebraico)](proposed/prd-92-rtl-new-locales.md) | 0.19.0 | 2026-09-29 |
-| 93 | [Pipeline de localização contínua (glossário, TM e revisão)](proposed/prd-93-continuous-localization-pipeline.md) | 0.19.0 | 2026-09-29 |
+| 88 | [Formatação sensível a locale (números e durações)](proposed/prd-88-locale-aware-formatting.md) | 0.21.0 | 2026-09-29 |
+| 89 | [Pseudo-localização e gate de strings não traduzidas](proposed/prd-89-pseudo-localization-gate.md) | 0.21.0 | 2026-09-29 |
+| 90 | [Plurais (CLDR) e seleção no catálogo de mensagens](proposed/prd-90-message-plurals-cldr.md) | 0.21.0 | 2026-09-29 |
+| 91 | [Paridade de documentação e distribuição localizada](proposed/prd-91-doc-parity-localized-distribution.md) | 0.21.0 | 2026-09-29 |
+| 92 | [RTL e novos locales (árabe e hebraico)](proposed/prd-92-rtl-new-locales.md) | 0.22.0 | 2026-09-29 |
+| 93 | [Pipeline de localização contínua (glossário, TM e revisão)](proposed/prd-93-continuous-localization-pipeline.md) | 0.22.0 | 2026-09-29 |
 | 95 | [Modernização do runtime: ESM, ES2023 e stdlib Node 22](proposed/prd-95-esm-es2023-node22.md) | 0.16.0 | 2026-09-29 |
 | 97 | [Documentação no site (Fase 2 da PRD-96)](proposed/prd-97-doc-no-site.md) | 0.16.0 | 2026-10-07 |
 | 98 | [Anti-drift de documentação: tabelas geradas e vínculo PRD→docs](proposed/prd-98-docs-anti-drift.md) | 0.16.0 | 2026-10-08 |
 | 99 | [Cérebro reutilizável: guia de uso e reuso do knowledge base](proposed/prd-99-brain-reuse.md) | 0.16.0 | 2026-10-09 |
+| 100 | [Geração de suíte a partir do package (scaffold avançado)](proposed/prd-100-generate-test-suite.md) | 0.17.0 | 2026-10-09 |
+| 101 | [Ciclo de vida de conexões: fechar pools ociosos após a execução](proposed/prd-101-connection-pool-lifecycle.md) | 0.19.0 | 2026-10-09 |
+| 102 | [Observabilidade: tracing e instrumentação de desempenho](proposed/prd-102-trace-and-perf-instrumentation.md) | 0.19.0 | 2026-10-09 |
+| 103 | [Reindexação incremental de fontes (watcher por-URI)](proposed/prd-103-incremental-source-reindex.md) | 0.19.0 | 2026-10-09 |
+| 104 | [Cadeia de suprimentos do CI: CodeQL, Dependabot e pin de actions](proposed/prd-104-ci-supply-chain.md) | 0.20.0 | 2026-10-09 |
+| 105 | [Snippets utPLSQL: biblioteca de annotations e matchers](proposed/prd-105-snippets.md) | 0.18.0 | 2026-10-09 |
+| 106 | [Harness de performance: fixture em escala e medição por fases](proposed/prd-106-perf-harness.md) | 0.19.0 | 2026-10-09 |
+| 107 | [Fixture de integração endurecido: usuário sem privilégios e fallbacks](proposed/prd-107-unprivileged-fixture.md) | 0.19.0 | 2026-10-09 |
+| 108 | [Relatório HTML de cobertura aberto no navegador](proposed/prd-108-coverage-html-report.md) | 0.18.0 | 2026-10-09 |
+| 109 | [Identidade de linguagem PL/SQL ampliada e languageIds configuráveis](proposed/prd-109-language-identity.md) | 0.18.0 | 2026-10-09 |
 <!-- prd:roadmap:end -->
 
 ---
@@ -294,6 +304,16 @@ docs/prd/
 │   ├── prd-97-doc-no-site.md
 │   ├── prd-98-docs-anti-drift.md
 │   ├── prd-99-brain-reuse.md
+│   ├── prd-100-generate-test-suite.md
+│   ├── prd-101-connection-pool-lifecycle.md
+│   ├── prd-102-trace-and-perf-instrumentation.md
+│   ├── prd-103-incremental-source-reindex.md
+│   ├── prd-104-ci-supply-chain.md
+│   ├── prd-105-snippets.md
+│   ├── prd-106-perf-harness.md
+│   ├── prd-107-unprivileged-fixture.md
+│   ├── prd-108-coverage-html-report.md
+│   ├── prd-109-language-identity.md
 ```
 <!-- prd:estrutura:end -->
 

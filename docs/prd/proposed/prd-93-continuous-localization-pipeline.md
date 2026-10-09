@@ -8,14 +8,14 @@
 | Autor | Gil Cleber Barboza |
 | Data | 2026-09-29 |
 | Componente | Extensão `paneb.vscode-utplsql` |
-| Versão alvo | 0.18.0 |
+| Versão alvo | 0.22.0 |
 | Arquivos afetados | `scripts/i18n-export.cjs`, `scripts/i18n-apply.cjs` (novos), `docs/brain/12-I18n/` (glossário + donos), `.opencode/skills/` (workflow), `.github/workflows/ci.yml` |
 | Esforço estimado | 2–3 dias |
 | Complexidade | Média |
 
 ## 1. Resumo
 
-Com 24 locales (e `ar`/`he` no 0.18.0), a manutenção manual não escala. Esta PRD
+Com 24 locales (e `ar`/`he` na 0.22.0), a manutenção manual não escala. Esta PRD
 define um **pipeline de localização contínua**: exportar/importar catálogos com
 **translation memory** e **glossário**, dono/revisor por locale, e gates de
 qualidade no CI — via scripts próprios e, opcionalmente, um TMS.
@@ -98,7 +98,7 @@ Nenhuma setting de extensão; env/CI para TMS quando adotado.
 
 ## 9. Rollout
 
-- Release alvo: 0.18.0.
+- Release alvo: 0.22.0.
 - Bullet no `CHANGELOG.md`; skill/workflow documentado; wiki `Contributing`.
 
 ## 10. Critérios de aceite

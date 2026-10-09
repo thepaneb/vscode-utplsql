@@ -4,10 +4,10 @@ id: PRD-89
 aliases: [PRD-89]
 status: proposed
 titulo: "Pseudo-localização e gate de strings não traduzidas"
-versao: "0.18.0"
+versao: "0.21.0"
 data: "2026-09-29"
 autor: "Gil Cleber Barboza"
-versao_titulo: "0.18.0 — Localização (formatação, plurais e paridade)"
+versao_titulo: "0.21.0 — Localização (formatação, plurais e paridade)"
 verificado: 2026-09-29
 regras: []
 tags: [prd]
@@ -20,7 +20,7 @@ tags: [prd]
 | Autor | Gil Cleber Barboza |
 | Data | 2026-09-29 |
 | Componente | Extensão `paneb.vscode-utplsql` |
-| Versão alvo | 0.17.0 |
+| Versão alvo | 0.21.0 |
 | Arquivos afetados | `src/i18n.ts`, `src/i18nLocales.ts`, `src/test/unit/i18nPseudo.test.ts`, `scripts/scrape-strings.cjs` (novo), `scripts/docs-fidelity.cjs`, `docs/brain/12-I18n/` |
 | Esforço estimado | 1 dia |
 | Complexidade | Baixa-Média |
@@ -113,7 +113,7 @@ Nenhuma setting pública; apenas env de desenvolvimento.
 
 ## 9. Rollout
 
-- Release alvo: 0.17.0.
+- Release alvo: 0.21.0.
 - Bullet no `CHANGELOG.md`; nota `12-I18n`; referencia a skill `vscode-ext-localization`.
 
 ## 10. Critérios de aceite
@@ -124,7 +124,7 @@ Nenhuma setting pública; apenas env de desenvolvimento.
 
 ## 11. Questões em aberto
 
-- Scanner bloqueia ou só avisa? (proposta: aviso no 0.17.0, gate no 0.18.0.)
+- Scanner bloqueia ou só avisa? (proposta: só aviso agora; o bloqueio fica para depois.)
 
 ## 12. Impacto no cérebro
 
@@ -135,6 +135,6 @@ varredura cobrem) com `prds: ["PRD-89"]`.
 
 <!-- brain:auto:start:conexoes -->
 - 🗺️ [[MOC - PRDs]]
-- 🔗 Mesma versão (0.18.0): [[prd-88-locale-aware-formatting|PRD-88]] · [[prd-90-message-plurals-cldr|PRD-90]] · [[prd-91-doc-parity-localized-distribution|PRD-91]]
-- 🚀 ⬅️ release anterior: [[prd-59-scaffold-suite|PRD-59 (0.17.0)]] · ➡️ próxima release: [[prd-92-rtl-new-locales|PRD-92 (0.19.0)]]
+- 🔗 Mesma versão (0.21.0): [[prd-88-locale-aware-formatting|PRD-88]] · [[prd-90-message-plurals-cldr|PRD-90]] · [[prd-91-doc-parity-localized-distribution|PRD-91]]
+- 🚀 ⬅️ release anterior: [[prd-104-ci-supply-chain|PRD-104 (0.20.0)]] · ➡️ próxima release: [[prd-92-rtl-new-locales|PRD-92 (0.22.0)]]
 <!-- brain:auto:end -->

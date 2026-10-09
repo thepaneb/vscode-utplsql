@@ -8,7 +8,7 @@
 | Autor | Gil Cleber Barboza |
 | Data | 2026-09-29 |
 | Componente | Extensão `paneb.vscode-utplsql` |
-| Versão alvo | 0.17.0 |
+| Versão alvo | 0.21.0 |
 | Arquivos afetados | `scripts/docs-fidelity.cjs`, `src/test/unit/docsFidelity.test.ts`, `docs/brain/12-I18n/` (registro), `docs/brain/60-README/*`, `README*`, `docs/wiki/`, `.opencode/skills/docs-fidelity` |
 | Esforço estimado | 1–2 dias |
 | Complexidade | Média |
@@ -103,7 +103,7 @@ Nenhuma.
 
 ## 9. Rollout
 
-- Release alvo: 0.17.0.
+- Release alvo: 0.21.0.
 - Bullet no `CHANGELOG.md`; skill `docs-fidelity` atualizada.
 
 ## 10. Critérios de aceite

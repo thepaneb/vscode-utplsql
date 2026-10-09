@@ -8,7 +8,7 @@
 | Autor | Gil Cleber Barboza |
 | Data | 2026-09-06 |
 | Componente | Extensão `paneb.vscode-utplsql` |
-| Versão alvo | 0.16.0 |
+| Versão alvo | 0.17.0 |
 | Arquivos afetados | `src/state.ts`, `src/results.ts`, `src/runner.ts`, `src/extension.ts` |
 | Esforço estimado | 1 dia |
 | Complexidade | Baixa-Média |

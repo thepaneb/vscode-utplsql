@@ -8,7 +8,7 @@
 | Autor | Gil Cleber Barboza |
 | Data | 2026-09-29 |
 | Componente | Extensão `paneb.vscode-utplsql` |
-| Versão alvo | 0.17.0 |
+| Versão alvo | 0.21.0 |
 | Arquivos afetados | `src/i18n.ts`, `src/i18nLocales.ts`, `src/statusBar.ts`, `src/quickfix.ts`, `src/commands/*.ts`, `src/test/unit/i18n.test.ts`, `docs/brain/12-I18n/`, `docs/brain/30-Decisoes/` (ADR) |
 | Esforço estimado | 2–3 dias |
 | Complexidade | Média-Alta |
@@ -99,7 +99,7 @@ Nenhuma nova.
 
 ## 9. Rollout
 
-- Release alvo: 0.17.0.
+- Release alvo: 0.21.0.
 - Bullet no `CHANGELOG.md`; nota `12-I18n`; ADR de localização.
 
 ## 10. Critérios de aceite

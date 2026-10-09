@@ -4,10 +4,10 @@ id: PRD-92
 aliases: [PRD-92]
 status: proposed
 titulo: "RTL e novos locales (árabe e hebraico)"
-versao: "0.19.0"
+versao: "0.22.0"
 data: "2026-09-29"
 autor: "Gil Cleber Barboza"
-versao_titulo: "0.19.0 — Localização (RTL, novos locales e pipeline)"
+versao_titulo: "0.22.0 — Localização (RTL, novos locales e pipeline)"
 verificado: 2026-09-29
 regras: []
 tags: [prd]
@@ -20,7 +20,7 @@ tags: [prd]
 | Autor | Gil Cleber Barboza |
 | Data | 2026-09-29 |
 | Componente | Extensão `paneb.vscode-utplsql` |
-| Versão alvo | 0.18.0 |
+| Versão alvo | 0.22.0 |
 | Arquivos afetados | `src/i18n.ts`, `src/i18nLocales.ts`, `package.nls.ar.json`, `package.nls.he.json`, `src/statusBar.ts`, `src/decorations.ts`, `README.ar.md`, `README.he.md`, `docs/brain/12-I18n/` |
 | Esforço estimado | 2–3 dias |
 | Complexidade | Média |
@@ -109,7 +109,7 @@ Development Host com `utplsql.language = ar`.
 
 ## 9. Rollout
 
-- Release alvo: 0.18.0.
+- Release alvo: 0.22.0.
 - Bullet no `CHANGELOG.md`; `12-I18n` e wiki `Internationalization`.
 
 ## 10. Critérios de aceite
@@ -132,6 +132,6 @@ Esperado criar `BR-I18N-006` (isolamento bidi em locales RTL) com
 <!-- brain:auto:start:conexoes -->
 - 🗺️ [[MOC - PRDs]]
 - 🔗 PRDs relacionados: [[prd-89-pseudo-localization-gate|PRD-89]] · [[prd-90-message-plurals-cldr|PRD-90]] · [[prd-91-doc-parity-localized-distribution|PRD-91]] · [[prd-93-continuous-localization-pipeline|PRD-93]]
-- 🔗 Mesma versão (0.19.0): [[prd-93-continuous-localization-pipeline|PRD-93]]
-- 🚀 ⬅️ release anterior: [[prd-91-doc-parity-localized-distribution|PRD-91 (0.18.0)]]
+- 🔗 Mesma versão (0.22.0): [[prd-93-continuous-localization-pipeline|PRD-93]]
+- 🚀 ⬅️ release anterior: [[prd-91-doc-parity-localized-distribution|PRD-91 (0.21.0)]]
 <!-- brain:auto:end -->

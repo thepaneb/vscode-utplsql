@@ -8,7 +8,7 @@
 | Autor | Gil Cleber Barboza |
 | Data | 2026-09-06 |
 | Componente | Extensão `paneb.vscode-utplsql` |
-| Versão alvo | 0.16.0 |
+| Versão alvo | 0.17.0 |
 | Arquivos afetados | `src/extension.ts`, `src/scaffold.ts` (novo), `package.json` |
 | Esforço estimado | 1–2 dias |
 | Complexidade | Média |
@@ -19,6 +19,11 @@ Gerar o esqueleto de um spec de teste utPLSQL (`ut_<pkg>.pks`) a partir de um
 package de produção selecionado. Java ("Generate Tests"), Go (`gotests`) e C#
 (templates de projeto) fazem o equivalente. Reduz o atrito de iniciar uma nova
 suíte.
+
+> **Base da PRD-100.** Esta PRD entrega o **esqueleto** (`%suite` + um `%test`).
+> A [[prd-100-generate-test-suite|PRD-100]] a estende com **um `%test` por
+> rotina** e as opções `utplsql.generate.*` — implementadas juntas na **0.17.0**;
+> o que aqui está listado como follow-up é o escopo da PRD-100.
 
 ## 2. Contexto e problema
 
@@ -102,5 +107,6 @@ Prompt de nome via `showInputBox`; escrita via `workspace.fs`.
 
 ## 11. Questões em aberto
 
-- Gerar um `%test` por procedure/function do `.pkb`? — Follow-up.
-- Gerar também o corpo `.pkb` da suíte? — Follow-up.
+- Gerar um `%test` por procedure/function do `.pkb`? — Movido para a
+  [[prd-100-generate-test-suite|PRD-100]] (0.17.0).
+- Gerar também o corpo `.pkb` da suíte? — Em aberto na PRD-100.
