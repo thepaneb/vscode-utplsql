@@ -13,6 +13,7 @@ risco: "Empacotamento depende do `.vscodeignore`; publicação só via GitHub re
 alternativas: []
 tags: [dependencia, dev, empacotamento]
 decisoes: [ADR-004]
+regras: [BR-PKG-001]
 ---
 
 # DEP-vsce — @vscode/vsce
@@ -40,5 +41,7 @@ publish` local é bloqueado.
 
 <!-- brain:auto:start:conexoes -->
 - 🗺️ [[MOC - Stack]]
+- 📐 Regras: [[BR-PKG-001 - VSIX nao inclui fontes, scripts nem segredos|BR-PKG-001]]
 - 🧭 Decisões: [[ADR-004 - Bundling com esbuild e higiene do VSIX|ADR-004]]
+- ↩️ Referenciada por: [[BR-PKG-001 - VSIX nao inclui fontes, scripts nem segredos|BR-PKG-001]]
 <!-- brain:auto:end -->

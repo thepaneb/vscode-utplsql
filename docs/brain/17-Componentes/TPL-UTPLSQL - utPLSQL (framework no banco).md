@@ -13,7 +13,7 @@ status: ativo
 verificado: 2026-09-23
 implementacao: ["src/oracleRunner.ts", "src/discovery.ts"]
 testes: []
-regras: []
+regras: [BR-EXEC-004, BR-COB-001]
 relacionado: ["[[ADR-001 - Execucao via Oracle direto]]", "[[MOC - Oracle]]"]
 tags: ["banco"]
 ---
@@ -35,6 +35,7 @@ Sem alternativa; degradar para fallback `ALL_OBJECTS/ALL_SOURCE` em versões ant
 
 <!-- brain:auto:start:conexoes -->
 - 🗺️ [[MOC - Componentes]]
+- 📐 Regras: [[BR-EXEC-004 - Prefixo de schema utPLSQL descoberto via ALL_SYNONYMS|BR-EXEC-004]] · [[BR-COB-001 - Cobertura Oracle exige GRANT EXECUTE ON SYS.DBMS_PROFILER|BR-COB-001]]
 - 🧩 Código: [[COD - oracleRunner.ts]] · [[COD - discovery.ts]]
 - 🔗 [[ADR-001 - Execucao via Oracle direto]] · [[MOC - Oracle]]
 <!-- brain:auto:end -->

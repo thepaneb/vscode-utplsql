@@ -41,5 +41,5 @@ acompanha o alvo de projeto (97%).
 - 🗺️ [[MOC - Regras]]
 - 🧩 Código: [[COD - .c8rc]]
 - 🔗 [[NFR-007 - Cobertura de testes TypeScript]] · [[TPL-C8 - c8 (cobertura TypeScript)]] · [[DEP-c8]]
-- ↩️ Referenciada por: [[10-development-tooling]] · [[DEP-c8]]
+- ↩️ Referenciada por: [[10-development-tooling]] · [[DEP-c8]] · [[TPL-C8 - c8 (cobertura TypeScript)|TPL-C8]]
 <!-- brain:auto:end -->

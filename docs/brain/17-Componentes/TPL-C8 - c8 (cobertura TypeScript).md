@@ -14,7 +14,7 @@ status: ativo
 verificado: 2026-09-23
 implementacao: ["package.json", ".c8rc"]
 testes: []
-regras: []
+regras: [BR-QUAL-001]
 relacionado: ["[[ADR-006 - Modulos puros vs dependentes de vscode]]", "[[NFR-007 - Cobertura de testes TypeScript]]"]
 tags: ["tooling"]
 ---
@@ -37,6 +37,7 @@ Config em `.c8rc`.
 
 <!-- brain:auto:start:conexoes -->
 - 🗺️ [[MOC - Componentes]]
+- 📐 Regras: [[BR-QUAL-001 - Thresholds de cobertura (c8) sao globais e bloqueiam o CI|BR-QUAL-001]]
 - 🧩 Código: [[COD - package.json]] · [[COD - .c8rc]]
 - 🔗 [[ADR-006 - Modulos puros vs dependentes de vscode]] · [[NFR-007 - Cobertura de testes TypeScript]]
 - ↩️ Referenciada por: [[BR-QUAL-001 - Thresholds de cobertura (c8) sao globais e bloqueiam o CI|BR-QUAL-001]] · [[NFR-007 - Cobertura de testes TypeScript|NFR-007]]

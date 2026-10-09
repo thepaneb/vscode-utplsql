@@ -14,7 +14,7 @@ status: ativo
 verificado: 2026-09-23
 implementacao: ["src/junit.ts", "src/cobertura.ts"]
 testes: []
-regras: []
+regras: [BR-COB-005, BR-PARSE-011, BR-DEP-001]
 relacionado: ["[[MOC - Stack]]", "[[03-results-and-reporting]]"]
 tags: ["parsing"]
 ---
@@ -35,6 +35,7 @@ Substituível por outro parser XML se necessário.
 
 <!-- brain:auto:start:conexoes -->
 - 🗺️ [[MOC - Componentes]]
+- 📐 Regras: [[BR-COB-005 - XML Cobertura e cobertura por declaracao sao parseados de forma pura|BR-COB-005]] · [[BR-PARSE-011 - Precedência de status JUnit failure - error - skipped - passed|BR-PARSE-011]] · [[BR-DEP-001 - Runtime deps em dependencies e nota DEP- para cada dep direta|BR-DEP-001]]
 - 🧩 Código: [[COD - junit.ts]] · [[COD - cobertura.ts]]
 - 🔗 [[MOC - Stack]] · [[03-results-and-reporting]]
 <!-- brain:auto:end -->

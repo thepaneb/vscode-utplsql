@@ -14,6 +14,7 @@ verificado: 2026-09-23
 implementacao: ["src/extension.ts", "src/testTree.ts"]
 testes: []
 regras: []
+relacionado: ["[[ADR-009 - Integracao nativa ao Test Explorer]]", "[[MOC - Testes]]", "[[TPL-VSCODE-API - API do VS Code usada]]"]
 tags: ["plataforma"]
 ---
 ## Papel
@@ -35,5 +36,6 @@ Plataforma-alvo; acompanhar `engines.vscode`.
 <!-- brain:auto:start:conexoes -->
 - 🗺️ [[MOC - Componentes]]
 - 🧩 Código: [[COD - extension.ts]] · [[COD - testTree.ts]]
+- 🔗 [[ADR-009 - Integracao nativa ao Test Explorer]] · [[MOC - Testes]] · [[TPL-VSCODE-API - API do VS Code usada]]
 - ↩️ Referenciada por: [[NFR-003 - Compatibilidade com VSCode|NFR-003]] · [[TPL-VSCODE-API - API do VS Code usada|TPL-VSCODE-API]]
 <!-- brain:auto:end -->

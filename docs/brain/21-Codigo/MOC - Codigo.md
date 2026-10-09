@@ -27,6 +27,7 @@ SORT id ASC
 <!-- brain:auto:start:moc-index -->
 - [[COD - .c8rc]] — `COD-.c8rc`
 - [[COD - .gitignore]] — `COD-.gitignore`
+- [[COD - .vscodeignore]] — `COD-.vscodeignore`
 - [[COD - 404.html]] — `COD-404.html`
 - [[COD - annotation.ts]] — `COD-annotation.ts`
 - [[COD - autoRun.ts]] — `COD-autoRun.ts`

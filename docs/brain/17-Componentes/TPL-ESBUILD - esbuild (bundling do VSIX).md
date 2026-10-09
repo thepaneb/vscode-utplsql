@@ -14,7 +14,7 @@ status: ativo
 verificado: 2026-09-23
 implementacao: ["esbuild.config.mjs", "package.json"]
 testes: []
-regras: []
+regras: [BR-PKG-001]
 relacionado: ["[[ADR-004 - Bundling com esbuild e higiene do VSIX]]"]
 tags: ["build"]
 ---
@@ -36,7 +36,8 @@ Config em `esbuild.config.mjs`.
 
 <!-- brain:auto:start:conexoes -->
 - 🗺️ [[MOC - Componentes]]
+- 📐 Regras: [[BR-PKG-001 - VSIX nao inclui fontes, scripts nem segredos|BR-PKG-001]]
 - 🧩 Código: [[COD - esbuild.config.mjs]] · [[COD - package.json]]
 - 🔗 [[ADR-004 - Bundling com esbuild e higiene do VSIX]]
-- ↩️ Referenciada por: [[NFR-002 - Compatibilidade com Node|NFR-002]]
+- ↩️ Referenciada por: [[BR-PKG-001 - VSIX nao inclui fontes, scripts nem segredos|BR-PKG-001]] · [[NFR-002 - Compatibilidade com Node|NFR-002]]
 <!-- brain:auto:end -->

@@ -114,6 +114,7 @@ SORT id ASC
 - [[BR-PARSE-016 - Tags de suite (%tags no header) viram ParsedSuite.tags e SuiteFile.tags]] — `BR-PARSE-016`
 - [[BR-PARSE-017 - Filtro por tag - inclusao e exclusao (!) case-insensitive; sem tag so sem inclusao]] — `BR-PARSE-017`
 - [[BR-PARSE-018 - TestMessage de falha ganha expectedOutput-actualOutput quando ha Expected-Actual]] — `BR-PARSE-018`
+- [[BR-PKG-001 - VSIX nao inclui fontes, scripts nem segredos]] — `BR-PKG-001`
 - [[BR-PLAT-001 - Piso de VS Code e runtime Node do host sao coerentes]] — `BR-PLAT-001`
 - [[BR-QUAL-001 - Thresholds de cobertura (c8) sao globais e bloqueiam o CI]] — `BR-QUAL-001`
 - [[BR-SCHEMA-001 - organization bifurca file tree vs schema tree; suiteMap é o lookup canônico]] — `BR-SCHEMA-001`

@@ -13,7 +13,7 @@ status: ativo
 verificado: 2026-09-29
 implementacao: ["scripts/vscode-api-inventory.cjs", "package.json:11", "package.json:824"]
 testes: ["src/test/unit/vscodeApiInventory.test.ts"]
-regras: []
+regras: [BR-PLAT-001]
 relacionado: ["[[TPL-VSCODE-TEST-API - VSCode Test API (Test Explorer)]]", "[[NFR-003 - Compatibilidade com VSCode]]"]
 tags: ["plataforma"]
 ---
@@ -184,8 +184,9 @@ Subir o piso exige atualizar `engines.vscode` **e** `@types/vscode` juntos
 
 <!-- brain:auto:start:conexoes -->
 - 🗺️ [[MOC - Componentes]]
+- 📐 Regras: [[BR-PLAT-001 - Piso de VS Code e runtime Node do host sao coerentes|BR-PLAT-001]]
 - 🧩 Código: [[COD - vscode-api-inventory.cjs]] · [[COD - package.json]]
 - 🧪 Testes: [[TST - vscodeApiInventory.test.ts]]
 - 🔗 [[TPL-VSCODE-TEST-API - VSCode Test API (Test Explorer)]] · [[NFR-003 - Compatibilidade com VSCode]]
-- ↩️ Referenciada por: [[BR-PLAT-001 - Piso de VS Code e runtime Node do host sao coerentes|BR-PLAT-001]] · [[NFR-003 - Compatibilidade com VSCode|NFR-003]]
+- ↩️ Referenciada por: [[BR-PLAT-001 - Piso de VS Code e runtime Node do host sao coerentes|BR-PLAT-001]] · [[NFR-003 - Compatibilidade com VSCode|NFR-003]] · [[TPL-VSCODE-TEST-API - VSCode Test API (Test Explorer)|TPL-VSCODE-TEST-API]]
 <!-- brain:auto:end -->

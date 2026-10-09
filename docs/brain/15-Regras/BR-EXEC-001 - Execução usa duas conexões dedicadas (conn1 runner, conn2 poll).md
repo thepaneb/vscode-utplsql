@@ -38,5 +38,5 @@ O ut_runner.run bloqueia a sessão até o fim dos testes; uma segunda sessão é
 - 🎯 Requisitos: [[prd-11-streaming-results|PRD-11 RF3]]
 - 🧩 Código: [[COD - oracleRunner.ts]]
 - 🧪 Testes: [[TST - oracleRunner.test.ts]]
-- ↩️ Referenciada por: [[02-test-execution]] · [[ADR-001 - Execucao via Oracle direto|ADR-001]] · [[DEP-oracledb - node-oracledb|DEP-oracledb]] · [[ENT-001 - Run|ENT-001]] · [[Oracle-direct-execution]] · [[prd-11-streaming-results|PRD-11]]
+- ↩️ Referenciada por: [[02-test-execution]] · [[ADR-001 - Execucao via Oracle direto|ADR-001]] · [[DEP-oracledb - node-oracledb|DEP-oracledb]] · [[ENT-001 - Run|ENT-001]] · [[Oracle-direct-execution]] · [[TPL-ORACLEDB - node-oracledb|TPL-ORACLEDB]] · [[prd-11-streaming-results|PRD-11]]
 <!-- brain:auto:end -->

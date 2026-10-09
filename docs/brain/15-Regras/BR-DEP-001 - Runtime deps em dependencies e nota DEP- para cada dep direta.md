@@ -36,5 +36,5 @@ inventário/risco das dependências rastreável no grafo do cérebro.
 - 🗺️ [[MOC - Regras]]
 - 🧩 Código: [[COD - package.json]]
 - 🔗 [[DEP-oracledb - node-oracledb]] · [[DEP-fast-xml-parser]] · [[ADR-004 - Bundling com esbuild e higiene do VSIX]]
-- ↩️ Referenciada por: [[10-development-tooling]] · [[DEP-fast-xml-parser]] · [[DEP-oracledb - node-oracledb|DEP-oracledb]]
+- ↩️ Referenciada por: [[10-development-tooling]] · [[DEP-fast-xml-parser]] · [[DEP-oracledb - node-oracledb|DEP-oracledb]] · [[TPL-FASTXML - fast-xml-parser|TPL-FASTXML]] · [[TPL-ORACLEDB - node-oracledb|TPL-ORACLEDB]]
 <!-- brain:auto:end -->

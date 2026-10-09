@@ -15,7 +15,7 @@ verificado: 2026-09-23
 implementacao: ["biome.json"]
 testes: []
 regras: []
-relacionado: ["[[MOC - Stack]]", "[[ADR-004 - Bundling com esbuild e higiene do VSIX]]"]
+relacionado: ["[[MOC - Stack]]", "[[ADR-013 - Consolidacao das ferramentas de desenvolvimento (0.13.0)]]"]
 tags: ["tooling"]
 ---
 ## Papel
@@ -36,5 +36,5 @@ Config em `biome.json`; alternativas: ESLint+Prettier (mais pesadas).
 <!-- brain:auto:start:conexoes -->
 - 🗺️ [[MOC - Componentes]]
 - 🧩 Código: [[COD - biome.json]]
-- 🔗 [[MOC - Stack]] · [[ADR-004 - Bundling com esbuild e higiene do VSIX]]
+- 🔗 [[MOC - Stack]] · [[ADR-013 - Consolidacao das ferramentas de desenvolvimento (0.13.0)]]
 <!-- brain:auto:end -->
