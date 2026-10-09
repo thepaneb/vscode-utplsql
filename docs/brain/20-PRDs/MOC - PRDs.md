@@ -40,7 +40,7 @@ npm run sync-prds
 ## Status (gerado)
 
 <!-- brain:auto:start:prd-summary -->
-- 📝 Propostos: **27**
+- 📝 Propostos: **28**
 - 🔵 Aprovados: **0**
 - 🟡 Em desenvolvimento: **0**
 - 🟢 Concluídos: **82**
@@ -80,6 +80,7 @@ Detalhe completo (fonte da verdade): [docs/prd/index.md](../../prd/index.md)
 - [[prd-108-coverage-html-report]] — `PRD-108`
 - [[prd-109-language-identity]] — `PRD-109`
 - [[prd-11-streaming-results]] — `PRD-11`
+- [[prd-110-defensive-hardening]] — `PRD-110`
 - [[prd-12-sql-coverage]] — `PRD-12`
 - [[prd-13-oracle-infra]] — `PRD-13`
 - [[prd-14-test-schema-packages]] — `PRD-14`

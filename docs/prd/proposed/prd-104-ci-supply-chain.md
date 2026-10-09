@@ -12,7 +12,7 @@
 | Arquivos afetados | `.github/workflows/*.yml`, `.github/dependabot.yml` (novo), `.github/workflows/codeql.yml` (opcional — só se migrar para *advanced*), `docs/brain/**` |
 | Esforço estimado | 0,5–1 dia |
 | Complexidade | Baixa |
-| Relaciona-se a | PRD-81 (segurança), publicação (skill `release`) |
+| Relaciona-se a | PRD-81 (segurança), PRD-110 (hardening defensivo), publicação (skill `release`) |
 
 ## 1. Resumo
 
@@ -26,6 +26,13 @@ não o cria do zero.
 
 - O repositório é **público** e as workflows usam actions por tag de major.
 - **Não há** `.github/dependabot.yml` (confirmado por `grep`).
+- **Cobertura incompleta de workflows**: a primeira versão desta PRD listava só
+  `ci`, `integration`, `pages` e `wiki`. Ficam de fora `publish.yml` (sem
+  `permissions:` no topo — o job `verify` roda com o token padrão) e os
+  workflows auxiliares `bing-index.yml`, `google-index.yml`, `pagespeed.yml` e
+  `site-health.yml` (actions por tag, ex.: `actions/setup-python@v5`). Além
+  disso, `wiki.yml` embute `${{ secrets.GITHUB_TOKEN }}` na URL do `git clone`,
+  expondo o token em `argv`/log.
 - **O CodeQL já roda** via *default setup* do GitHub — os checks do PR #179
   mostram `Analyze (javascript-typescript)`, `Analyze (actions)`,
   `Analyze (python)` — e **não** há `.github/workflows/codeql.yml`. Ou seja, a
@@ -43,7 +50,9 @@ não o cria do zero.
 
 **Objetivos**
 - Dependabot semanal para `npm` e `github-actions`, agrupando minor/patch.
-- Pinar as actions em SHA de commit e escopar `permissions`.
+- Pinar as actions em SHA de commit e escopar `permissions` em **todos** os
+  workflows — `ci`, `integration`, `pages`, `wiki`, `publish` e os auxiliares
+  (`bing-index`, `google-index`, `pagespeed`, `site-health`).
 - Gate de `npm audit` (produção em `high`, dev informativo).
 - **Decidir o CodeQL**: manter o *default setup* (recomendado) **ou** migrar para
   um workflow *advanced* — nunca os dois ao mesmo tempo.
@@ -72,8 +81,16 @@ não o cria do zero.
 
 ### RF3 — Pin e permissões
 
-- Toda action referenciada por **SHA** (com comentário da versão).
-- `permissions: contents: read` no topo de cada workflow (mínimo privilégio).
+- Toda action referenciada por **SHA** (com comentário da versão), em **todos**
+  os workflows — incluindo `publish.yml` e os auxiliares (`bing-index`,
+  `google-index`, `pagespeed`, `site-health`).
+- `permissions: contents: read` no topo de **cada** workflow (mínimo privilégio).
+  Escopos elevados só onde necessário: `publish.yml` → `contents: write` apenas
+  no job `publish` (o `verify` fica `contents: read`); `pages.yml` → `pages` +
+  `id-token`; `wiki.yml` → `contents: write`.
+- `wiki.yml`: **não** colocar o `GITHUB_TOKEN` na URL do `git clone`. Usar um
+  `http.extraheader` (ou credential helper) efêmero, para que o token não fique
+  exposto em `argv`/log.
 
 ### RF4 — Auditoria de dependências
 
@@ -87,8 +104,12 @@ não o cria do zero.
 ## 5. Solução proposta
 
 - Novo arquivo `.github/dependabot.yml`.
-- Ajuste dos workflows existentes (`ci.yml`, `integration.yml`, `pages.yml`,
-  `wiki.yml`) para SHA + `permissions`.
+- Ajuste de **todos** os workflows (`.github/workflows/*.yml` — `ci`,
+  `integration`, `pages`, `wiki`, `publish` e os auxiliares de índice/saúde)
+  para SHA + `permissions:` no topo; no `publish.yml`, `contents: write` só no
+  job `publish`.
+- `wiki.yml`: trocar o token embutido na URL do clone por um `http.extraheader`
+  efêmero.
 - CodeQL: **nenhuma ação por padrão** (manter o default setup). Se a decisão for
   *advanced*, desabilitar o default setup no GitHub e só então adicionar
   `codeql.yml`.
@@ -102,6 +123,10 @@ Nenhuma setting da extensão.
 - **Validação manual**: abrir um PR de dependência gerado pelo Dependabot;
   confirmar que o CodeQL (já ativo) segue reportando no Security tab; `npm audit`
   falha com advisory `high` de produção (teste controlado em fork).
+- **Validação manual (workflows)**: `grep` confirma que não resta action por tag
+  (`uses:` terminando em `@vN`) e que todo `.github/workflows/*.yml` tem
+  `permissions:` no topo; *dispatch* de `wiki.yml`/`pages.yml` verde; release de
+  preview do `publish.yml`.
 - **CI**: `brain:ci`/`docs:check` seguem verdes.
 
 ## 8. Riscos e mitigação
@@ -112,6 +137,8 @@ Nenhuma setting da extensão.
 | CodeQL duplicado (default + workflow) | GitHub recusa; migrar implica **desabilitar** o default antes |
 | Excesso de PRs do Dependabot | Agrupamento minor/patch semanal |
 | Pin por SHA “congela” sem atualização | Dependabot bumpa os pins automaticamente |
+| Pinar/escopar `publish.yml` quebrar a publicação | Validar num release de preview; `contents: write` mantido só no job `publish` |
+| `http.extraheader` do `wiki.yml` falhar conforme versão do git | Fallback documentado: credential helper efêmero; testar com *dispatch* |
 
 ## 9. Rollout
 
@@ -120,7 +147,10 @@ Nenhuma setting da extensão.
 
 ## 10. Critérios de aceite
 
-- `.github/dependabot.yml` presente; actions pinadas por SHA; `permissions` escopadas.
+- `.github/dependabot.yml` presente; **todas** as actions pinadas por SHA e
+  `permissions:` escopadas no topo de cada workflow (incluindo `publish.yml` e os
+  auxiliares).
+- `wiki.yml` sem o `GITHUB_TOKEN` embutido na URL do clone.
 - Gate de `npm audit` operante.
 - **Decisão do CodeQL documentada** (default mantido **ou** advanced) e a análise verde.
 

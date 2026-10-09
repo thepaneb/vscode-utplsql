@@ -192,6 +192,7 @@ notas `prd-*`. O índice navegável do vault é a [[MOC - PRDs]].
 | 107 | [Fixture de integração endurecido: usuário sem privilégios e fallbacks](proposed/prd-107-unprivileged-fixture.md) | 0.19.0 | 2026-10-09 |
 | 108 | [Relatório HTML de cobertura aberto no navegador](proposed/prd-108-coverage-html-report.md) | 0.18.0 | 2026-10-09 |
 | 109 | [Identidade de linguagem PL/SQL ampliada e languageIds configuráveis](proposed/prd-109-language-identity.md) | 0.18.0 | 2026-10-09 |
+| 110 | [Hardening defensivo: identificador SQL, redaction de logs e scripts de desenvolvimento](proposed/prd-110-defensive-hardening.md) | 0.20.0 | 2026-10-09 |
 <!-- prd:roadmap:end -->
 
 ---
@@ -314,6 +315,7 @@ docs/prd/
 │   ├── prd-107-unprivileged-fixture.md
 │   ├── prd-108-coverage-html-report.md
 │   ├── prd-109-language-identity.md
+│   ├── prd-110-defensive-hardening.md
 ```
 <!-- prd:estrutura:end -->
 
