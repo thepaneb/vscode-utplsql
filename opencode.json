@@ -1,5 +1,13 @@
 {
   "$schema": "https://opencode.ai/config.json",
+  "permissions": [
+    { "action": "read", "resource": "*.env", "effect": "deny" },
+    { "action": "read", "resource": "*.env.*", "effect": "deny" },
+    { "action": "read", "resource": "*.example", "effect": "allow" },
+    { "action": "edit", "resource": "*.env", "effect": "deny" },
+    { "action": "edit", "resource": "*.env.*", "effect": "deny" },
+    { "action": "edit", "resource": "*.example", "effect": "allow" }
+  ],
   "mcp": {
     "servers": {
       "obsidian": {
@@ -17,6 +25,18 @@
         "headers": {
           "Authorization": "Bearer {env:GITHUB_TOKEN}"
         }
+      },
+      "playwright": {
+        "type": "local",
+        "command": [
+          "docker",
+          "run",
+          "-i",
+          "--rm",
+          "--init",
+          "--pull=never",
+          "mcr.microsoft.com/playwright/mcp:latest"
+        ]
       }
     }
   }
