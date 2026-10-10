@@ -4,10 +4,10 @@ id: PRD-107
 aliases: [PRD-107]
 status: proposed
 titulo: "Fixture de integração endurecido: usuário sem privilégios e fallbacks"
-versao: "0.19.0"
+versao: "0.20.0"
 data: "2026-10-09"
 autor: "Gil Cleber Barboza"
-versao_titulo: "0.19.0 — Observabilidade e desempenho"
+versao_titulo: "0.20.0 — Observabilidade e desempenho"
 verificado: 2026-10-09
 regras: []
 tags: [prd]
@@ -20,7 +20,7 @@ tags: [prd]
 | Autor | Gil Cleber Barboza |
 | Data | 2026-10-09 |
 | Componente | Testes de integração (banco real) |
-| Versão alvo | 0.19.0 |
+| Versão alvo | 0.20.0 |
 | Arquivos afetados | `src/test/integration/fixtures/setup.sh`, `src/test/integration/support/**`, `src/test/integration/*.test.ts`, `docs/brain/**` |
 | Esforço estimado | 1–2 dias |
 | Complexidade | Média |
@@ -111,7 +111,7 @@ Env de teste (não são settings da extensão): `UTPLSQL_IT_UNPRIV_USER`,
 
 ## 9. Rollout
 
-- **0.19.0** (Observabilidade e desempenho); habilita os testes da PRD-101.
+- **0.20.0** (Observabilidade e desempenho); habilita os testes da PRD-101.
 - Registrar no `CHANGELOG.md`.
 
 ## 10. Critérios de aceite
@@ -136,6 +136,6 @@ usuário restrito e fazem skip quando ausente"), com `prds: ["PRD-107"]`,
 <!-- brain:auto:start:conexoes -->
 - 🗺️ [[MOC - PRDs]]
 - 🔗 PRDs relacionados: [[prd-72-db-test-matrix|PRD-72]] · [[prd-101-connection-pool-lifecycle|PRD-101]]
-- 🔗 Mesma versão (0.19.0): [[prd-101-connection-pool-lifecycle|PRD-101]] · [[prd-102-trace-and-perf-instrumentation|PRD-102]] · [[prd-103-incremental-source-reindex|PRD-103]] · [[prd-106-perf-harness|PRD-106]]
-- 🚀 ⬅️ release anterior: [[prd-109-language-identity|PRD-109 (0.18.0)]] · ➡️ próxima release: [[prd-104-ci-supply-chain|PRD-104 (0.20.0)]]
+- 🔗 Mesma versão (0.20.0): [[prd-101-connection-pool-lifecycle|PRD-101]] · [[prd-102-trace-and-perf-instrumentation|PRD-102]] · [[prd-103-incremental-source-reindex|PRD-103]] · [[prd-106-perf-harness|PRD-106]]
+- 🚀 ⬅️ release anterior: [[prd-115-split-i18n-locales|PRD-115 (0.19.0)]] · ➡️ próxima release: [[prd-88-locale-aware-formatting|PRD-88 (0.21.0)]]
 <!-- brain:auto:end -->

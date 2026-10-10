@@ -4,10 +4,10 @@ id: PRD-114
 aliases: [PRD-114]
 status: proposed
 titulo: "Modernizar o stub de `vscode` e reduzir `any` nos testes"
-versao: "0.23.0"
+versao: "0.18.0"
 data: "2026-10-10"
 autor: "Gil Cleber Barboza"
-versao_titulo: "0.23.0 — Qualidade interna"
+versao_titulo: "0.18.0 — Fundação: segurança, testes e anti-drift"
 verificado: 2026-10-10
 regras: []
 tags: [prd]
@@ -20,7 +20,7 @@ tags: [prd]
 | Autor | Gil Cleber Barboza |
 | Data | 2026-10-10 |
 | Componente | Extensão `paneb.vscode-utplsql` (testes) |
-| Versão alvo | 0.23.0 |
+| Versão alvo | 0.18.0 |
 | Arquivos afetados | `src/test/vscode-stub.ts`, `src/test/unit/*.test.ts`, `src/test/unit/vscodeApiInventory.test.ts` |
 | Esforço estimado | 2–3 dias |
 | Complexidade | Média |
@@ -121,7 +121,7 @@ Nenhuma setting/comando. Possível ajuste do override do Biome para `src/test/**
 
 ## 9. Rollout
 
-- **0.23.0** ("Qualidade interna"); sem impacto no runtime.
+- **0.18.0** ("Fundação: segurança, testes e anti-drift"); sem impacto no runtime.
 - Registrar no `CHANGELOG.md`.
 
 ## 10. Critérios de aceite
@@ -148,6 +148,6 @@ coberto pelo inventário de APIs") com `prds: ["PRD-114"]`, `implementacao:` e
 <!-- brain:auto:start:conexoes -->
 - 🗺️ [[MOC - PRDs]]
 - 🔗 PRDs relacionados: [[prd-04-expand-tests|PRD-04]] · [[prd-37-ts-coverage|PRD-37]] · [[prd-110-defensive-hardening|PRD-110]]
-- 🔗 Mesma versão (0.23.0): [[prd-111-decompose-oracle-runner|PRD-111]] · [[prd-112-error-handling-audit|PRD-112]] · [[prd-113-lint-scope|PRD-113]] · [[prd-115-split-i18n-locales|PRD-115]] · [[prd-116-direct-module-tests|PRD-116]] · [[prd-117-split-script-property-tests|PRD-117]]
-- 🚀 ⬅️ release anterior: [[prd-93-continuous-localization-pipeline|PRD-93 (0.22.0)]]
+- 🔗 Mesma versão (0.18.0): [[prd-98-docs-anti-drift|PRD-98]] · [[prd-104-ci-supply-chain|PRD-104]] · [[prd-110-defensive-hardening|PRD-110]] · [[prd-113-lint-scope|PRD-113]]
+- 🚀 ⬅️ release anterior: [[prd-109-language-identity|PRD-109 (0.17.0)]] · ➡️ próxima release: [[prd-111-decompose-oracle-runner|PRD-111 (0.19.0)]]
 <!-- brain:auto:end -->

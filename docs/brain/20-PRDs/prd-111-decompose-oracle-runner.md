@@ -4,10 +4,10 @@ id: PRD-111
 aliases: [PRD-111]
 status: proposed
 titulo: "Decompor `executeRunOracle` e agrupar `OracleRunOptions`"
-versao: "0.23.0"
+versao: "0.19.0"
 data: "2026-10-10"
 autor: "Gil Cleber Barboza"
-versao_titulo: "0.23.0 — Qualidade interna"
+versao_titulo: "0.19.0 — Refatoração de fundo"
 verificado: 2026-10-10
 regras: []
 tags: [prd]
@@ -20,7 +20,7 @@ tags: [prd]
 | Autor | Gil Cleber Barboza |
 | Data | 2026-10-10 |
 | Componente | Extensão `paneb.vscode-utplsql` |
-| Versão alvo | 0.23.0 |
+| Versão alvo | 0.19.0 |
 | Arquivos afetados | `src/oracleRunner.ts`, `src/runner.ts`, `src/results.ts`, `src/test/unit/oracleRunner*.test.ts` |
 | Esforço estimado | 2–3 dias |
 | Complexidade | Média-Alta |
@@ -130,7 +130,7 @@ Nenhuma setting, comando ou menu novo.
 
 ## 9. Rollout
 
-- **0.23.0** ("Qualidade interna"); sem mudança visível ao usuário.
+- **0.19.0** ("Refatoração de fundo"); sem mudança visível ao usuário.
 - Registrar no `CHANGELOG.md` (seção interna/refactor).
 
 ## 10. Critérios de aceite
@@ -157,6 +157,6 @@ etapas de montagem são funções testáveis"), com `prds: ["PRD-111"]`,
 <!-- brain:auto:start:conexoes -->
 - 🗺️ [[MOC - PRDs]]
 - 🔗 PRDs relacionados: [[prd-40-options-object|PRD-40]] · [[prd-69-oracle-runner-typed-binds|PRD-69]] · [[prd-76-reporter-export|PRD-76]] · [[prd-78-random-test-order|PRD-78]]
-- 🔗 Mesma versão (0.23.0): [[prd-112-error-handling-audit|PRD-112]] · [[prd-113-lint-scope|PRD-113]] · [[prd-114-vscode-stub-modernization|PRD-114]] · [[prd-115-split-i18n-locales|PRD-115]] · [[prd-116-direct-module-tests|PRD-116]] · [[prd-117-split-script-property-tests|PRD-117]]
-- 🚀 ⬅️ release anterior: [[prd-93-continuous-localization-pipeline|PRD-93 (0.22.0)]]
+- 🔗 Mesma versão (0.19.0): [[prd-115-split-i18n-locales|PRD-115]]
+- 🚀 ⬅️ release anterior: [[prd-114-vscode-stub-modernization|PRD-114 (0.18.0)]] · ➡️ próxima release: [[prd-101-connection-pool-lifecycle|PRD-101 (0.20.0)]]
 <!-- brain:auto:end -->

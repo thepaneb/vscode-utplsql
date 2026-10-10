@@ -8,7 +8,7 @@
 | Autor | Gil Cleber Barboza |
 | Data | 2026-10-09 |
 | Componente | Testes (infra de performance) |
-| Versão alvo | 0.19.0 |
+| Versão alvo | 0.20.0 |
 | Arquivos afetados | `test/perf/**` (novo), `scripts/**`, `.github/workflows/performance.yml` (novo), `package.json`, `docs/brain/**` |
 | Esforço estimado | 2–3 dias |
 | Complexidade | Média-Alta |
@@ -98,7 +98,7 @@ Nenhuma setting da extensão (usa `describeDB`/`UTPLSQL_CONN`).
 
 ## 9. Rollout
 
-- **0.19.0** (Observabilidade e desempenho), junto da PRD-102.
+- **0.20.0** (Observabilidade e desempenho), junto da PRD-102.
 - Registrar no `CHANGELOG.md`.
 
 ## 10. Critérios de aceite

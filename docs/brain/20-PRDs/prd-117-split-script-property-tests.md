@@ -7,7 +7,7 @@ titulo: "Testes de propriedade do parser de scripts (`splitScript`)"
 versao: "0.23.0"
 data: "2026-10-10"
 autor: "Gil Cleber Barboza"
-versao_titulo: "0.23.0 — Qualidade interna"
+versao_titulo: "0.23.0 — Runtime, docs e qualidade residual"
 verificado: 2026-10-10
 regras: []
 tags: [prd]
@@ -125,7 +125,7 @@ Nenhuma setting. Opcional: `UTPLSQL_FUZZ_ITERS` para controlar iterações em CI
 
 ## 9. Rollout
 
-- **0.23.0** ("Qualidade interna"); sem mudança de comportamento esperada (salvo
+- **0.23.0** ("Runtime, docs e qualidade residual"); sem mudança de comportamento esperada (salvo
   correção de bug real encontrado, registrada no `CHANGELOG.md`).
 
 ## 10. Critérios de aceite
@@ -150,6 +150,6 @@ testes de propriedade"). Se não houver regra nova, declarar **nenhuma** em
 <!-- brain:auto:start:conexoes -->
 - 🗺️ [[MOC - PRDs]]
 - 🔗 PRDs relacionados: [[prd-04-expand-tests|PRD-04]] · [[prd-62-run-scripts-against-profiles|PRD-62]]
-- 🔗 Mesma versão (0.23.0): [[prd-111-decompose-oracle-runner|PRD-111]] · [[prd-112-error-handling-audit|PRD-112]] · [[prd-113-lint-scope|PRD-113]] · [[prd-114-vscode-stub-modernization|PRD-114]] · [[prd-115-split-i18n-locales|PRD-115]] · [[prd-116-direct-module-tests|PRD-116]]
+- 🔗 Mesma versão (0.23.0): [[prd-95-esm-es2023-node22|PRD-95]] · [[prd-97-doc-no-site|PRD-97]] · [[prd-99-brain-reuse|PRD-99]] · [[prd-112-error-handling-audit|PRD-112]] · [[prd-116-direct-module-tests|PRD-116]]
 - 🚀 ⬅️ release anterior: [[prd-93-continuous-localization-pipeline|PRD-93 (0.22.0)]]
 <!-- brain:auto:end -->

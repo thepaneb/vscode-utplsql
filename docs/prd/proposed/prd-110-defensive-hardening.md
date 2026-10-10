@@ -8,7 +8,7 @@
 | Autor | Gil Cleber Barboza |
 | Data | 2026-10-09 |
 | Componente | Extensão `paneb.vscode-utplsql` + ferramentas de desenvolvimento (`scripts/`) |
-| Versão alvo | 0.20.0 |
+| Versão alvo | 0.18.0 |
 | Arquivos afetados | `src/oracleRunner.ts`, `src/connectionProfiles.ts`, `src/scriptRunner.ts`, `scripts/db-matrix/run.sh`, `scripts/create-pr.cjs`, `SECURITY.md`, `docs/brain/**` |
 | Esforço estimado | 0,5–1 dia |
 | Complexidade | Baixa |
@@ -137,7 +137,7 @@ Nenhuma setting nova; sem comandos/menus novos.
 
 ## 9. Rollout
 
-- **0.20.0** (infra/segurança; sem mudança de runtime perceptível).
+- **0.18.0** (infra/segurança; sem mudança de runtime perceptível).
 - Registrar em `CHANGELOG.md` e atualizar `SECURITY.md` (seção "Implemented
   protections").
 

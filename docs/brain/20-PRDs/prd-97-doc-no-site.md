@@ -4,9 +4,10 @@ id: PRD-97
 aliases: [PRD-97]
 status: proposed
 titulo: "Documentação no site (Fase 2 da PRD-96)"
-versao: "0.16.0"
+versao: "0.23.0"
 data: "2026-10-07"
 autor: "Gil Cleber"
+versao_titulo: "0.23.0 — Runtime, docs e qualidade residual"
 verificado: 2026-10-07
 regras: []
 tags: [prd]
@@ -19,7 +20,7 @@ tags: [prd]
 | Autor | Gil Cleber |
 | Data | 2026-10-07 |
 | Componente | Site público (`site/`) |
-| Versão alvo | 0.16.0 |
+| Versão alvo | 0.23.0 |
 | Arquivos afetados | `scripts/brain-build.cjs`, `site/**`, `docs/brain/70-Wiki/**`, `.github/workflows/pages.yml` |
 | Esforço estimado | 2–3 dias |
 | Complexidade | Média |
@@ -123,7 +124,7 @@ Nenhuma setting/comando novo. `pages.yml` passa a publicar também `site/docs/**
 
 ## 9. Rollout
 
-- 0.16.0: portar `docs/wiki/**` + sitemap completo; decidir `hreflang`/Wiki.
+- 0.23.0: portar `docs/wiki/**` + sitemap completo; decidir `hreflang`/Wiki.
 - Entry no `CHANGELOG.md`; regra nova (proposta: `BR-SITE-002`) na conclusão.
 
 ## 10. Critérios de aceite
@@ -153,5 +154,6 @@ sitemap completo) e atualizar a `BR-SITE-001`. `regras:` é derivado pelo
 - 🗺️ [[MOC - PRDs]]
 - 🔗 PRDs relacionados: [[prd-96-public-landing-page-github-pages|PRD-96]]
 - ⚙️ Pipelines: [[PIPE-pages - Deploy Pages|PIPE-pages]]
-- 🚀 ⬅️ release anterior: [[prd-96-public-landing-page-github-pages|PRD-96 (0.15.0)]] · ➡️ próxima release: [[prd-56-duration-persistence|PRD-56 (0.17.0)]]
+- 🔗 Mesma versão (0.23.0): [[prd-95-esm-es2023-node22|PRD-95]] · [[prd-99-brain-reuse|PRD-99]] · [[prd-112-error-handling-audit|PRD-112]] · [[prd-116-direct-module-tests|PRD-116]] · [[prd-117-split-script-property-tests|PRD-117]]
+- 🚀 ⬅️ release anterior: [[prd-93-continuous-localization-pipeline|PRD-93 (0.22.0)]]
 <!-- brain:auto:end -->

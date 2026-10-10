@@ -100,7 +100,7 @@ Nenhuma.
 
 ## 9. Rollout
 
-- **0.23.0** ("Qualidade interna"); sem impacto no runtime.
+- **0.23.0** ("Runtime, docs e qualidade residual"); sem impacto no runtime.
 
 ## 10. Critérios de aceite
 

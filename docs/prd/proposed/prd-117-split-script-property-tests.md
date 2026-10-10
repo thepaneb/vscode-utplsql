@@ -113,7 +113,7 @@ Nenhuma setting. Opcional: `UTPLSQL_FUZZ_ITERS` para controlar iterações em CI
 
 ## 9. Rollout
 
-- **0.23.0** ("Qualidade interna"); sem mudança de comportamento esperada (salvo
+- **0.23.0** ("Runtime, docs e qualidade residual"); sem mudança de comportamento esperada (salvo
   correção de bug real encontrado, registrada no `CHANGELOG.md`).
 
 ## 10. Critérios de aceite

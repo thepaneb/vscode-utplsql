@@ -135,5 +135,5 @@ Esperado criar `BR-I18N-004` (plurais via CLDR; formas exigidas por locale) com
 - 🗺️ [[MOC - PRDs]]
 - 🔗 PRDs relacionados: [[prd-92-rtl-new-locales|PRD-92]] · [[prd-93-continuous-localization-pipeline|PRD-93]]
 - 🔗 Mesma versão (0.21.0): [[prd-88-locale-aware-formatting|PRD-88]] · [[prd-89-pseudo-localization-gate|PRD-89]] · [[prd-91-doc-parity-localized-distribution|PRD-91]]
-- 🚀 ⬅️ release anterior: [[prd-110-defensive-hardening|PRD-110 (0.20.0)]] · ➡️ próxima release: [[prd-92-rtl-new-locales|PRD-92 (0.22.0)]]
+- 🚀 ⬅️ release anterior: [[prd-107-unprivileged-fixture|PRD-107 (0.20.0)]] · ➡️ próxima release: [[prd-92-rtl-new-locales|PRD-92 (0.22.0)]]
 <!-- brain:auto:end -->

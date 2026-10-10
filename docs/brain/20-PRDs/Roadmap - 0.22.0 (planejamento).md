@@ -37,4 +37,4 @@ versão alvo são a **fonte da verdade** no frontmatter das notas `prd-*`: ver
 ## Relacionado
 
 - [[MOC - PRDs]]
-- [[Roadmap - 0.21.0 (planejamento)]]
+- [[Roadmap - 0.21.0 (planejamento)]] · [[Roadmap - 0.23.0 (planejamento)]]

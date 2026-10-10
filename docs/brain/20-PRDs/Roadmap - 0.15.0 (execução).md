@@ -38,16 +38,23 @@ alvo são a **fonte da verdade** no frontmatter das notas `prd-*`: ver
 2. **Tags** (tema central): **PRD-51** → **PRD-55**.
 3. **Watch mode**: **PRD-50** por último (depende de hooks de save/workspace).
 
-## Reorganização do roadmap (decidida)
+## Reorganização do roadmap (decidida 2026-10-10)
+
+Value-first + dependências: features visíveis primeiro, enablers antes do código
+que eles habilitam, runtime/docs por último. Detalhe em cada nota `Roadmap - *`.
 
 | Release | Tema | PRDs |
 |---|---|---|
 | **0.15.0** | Tags e UX de execução | 50, 51, 52, 53, 54, 55 |
+| 0.16.0 | Produtividade e resultados | 56–59, 100 |
+| 0.17.0 | UX de editor e cobertura | 105, 108, 109 |
+| 0.18.0 | Fundação: segurança, testes e anti-drift | 98, 104, 110, 113, 114 |
+| 0.19.0 | Refatoração de fundo | 111, 115 |
+| 0.20.0 | Observabilidade e desempenho | 101–103, 106, 107 |
+| 0.21.0 | Localização (formatação, plurais e paridade) | 88–91 |
+| 0.22.0 | Localização (RTL, novos locales e pipeline) | 92–93 |
+| 0.23.0 | Runtime, docs e qualidade residual | 95, 97, 99, 112, 116, 117 |
 | **A definir** | Toolchain (Node 26, **pós-LTS ~out/2026**; liberação prevista 2026-10-28) | 47 |
-| 0.16.0 | Modernização do runtime (ESM/ES2023) | 95 |
-| 0.17.0 | Persistência, multi-root e produtividade | 56–59 |
-| 0.18.0 | Localização (formatação, plurais e paridade) | 88–91 |
-| 0.19.0 | Localização (RTL, novos locales e pipeline) | 92–93 |
 
 ## Fluxo de execução (por PRD)
 

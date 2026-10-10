@@ -8,7 +8,7 @@
 | Autor | Gil Cleber Barboza |
 | Data | 2026-10-09 |
 | Componente | CI/CD do repositório (`.github/`) |
-| Versão alvo | 0.20.0 |
+| Versão alvo | 0.18.0 |
 | Arquivos afetados | `.github/workflows/*.yml`, `.github/dependabot.yml` (novo), `.github/workflows/codeql.yml` (opcional — só se migrar para *advanced*), `docs/brain/**` |
 | Esforço estimado | 0,5–1 dia |
 | Complexidade | Baixa |
@@ -142,7 +142,7 @@ Nenhuma setting da extensão.
 
 ## 9. Rollout
 
-- **0.20.0** (patch de infraestrutura; sem mudança de runtime).
+- **0.18.0** (patch de infraestrutura; sem mudança de runtime).
 - Registrar no `CHANGELOG.md`.
 
 ## 10. Critérios de aceite

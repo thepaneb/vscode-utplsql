@@ -4,10 +4,10 @@ id: PRD-105
 aliases: [PRD-105]
 status: proposed
 titulo: "Snippets utPLSQL: biblioteca de annotations e matchers"
-versao: "0.18.0"
+versao: "0.17.0"
 data: "2026-10-09"
 autor: "Gil Cleber Barboza"
-versao_titulo: "0.18.0 — UX de editor e cobertura"
+versao_titulo: "0.17.0 — UX de editor e cobertura"
 verificado: 2026-10-09
 regras: []
 tags: [prd]
@@ -20,7 +20,7 @@ tags: [prd]
 | Autor | Gil Cleber Barboza |
 | Data | 2026-10-09 |
 | Componente | Extensão `paneb.vscode-utplsql` |
-| Versão alvo | 0.18.0 |
+| Versão alvo | 0.17.0 |
 | Arquivos afetados | `snippets/utplsql.code-snippets` (novo), `package.json`, `docs/brain/**` |
 | Esforço estimado | 1 dia |
 | Complexidade | Baixa |
@@ -105,7 +105,7 @@ inexistente).
 
 ## 9. Rollout
 
-- **0.18.0** (UX de editor e cobertura).
+- **0.17.0** (UX de editor e cobertura).
 - Registrar no `CHANGELOG.md`.
 
 ## 10. Critérios de aceite
@@ -130,6 +130,6 @@ parser interpreta; o JSON é validado no CI"), com `prds: ["PRD-105"]`,
 <!-- brain:auto:start:conexoes -->
 - 🗺️ [[MOC - PRDs]]
 - 🔗 PRDs relacionados: [[prd-42-suiteparser-annotations|PRD-42]] · [[prd-55-tag-organization|PRD-55]] · [[prd-100-generate-test-suite|PRD-100]] · [[prd-109-language-identity|PRD-109]]
-- 🔗 Mesma versão (0.18.0): [[prd-108-coverage-html-report|PRD-108]] · [[prd-109-language-identity|PRD-109]]
-- 🚀 ⬅️ release anterior: [[prd-100-generate-test-suite|PRD-100 (0.17.0)]] · ➡️ próxima release: [[prd-101-connection-pool-lifecycle|PRD-101 (0.19.0)]]
+- 🔗 Mesma versão (0.17.0): [[prd-108-coverage-html-report|PRD-108]] · [[prd-109-language-identity|PRD-109]]
+- 🚀 ⬅️ release anterior: [[prd-100-generate-test-suite|PRD-100 (0.16.0)]] · ➡️ próxima release: [[prd-98-docs-anti-drift|PRD-98 (0.18.0)]]
 <!-- brain:auto:end -->

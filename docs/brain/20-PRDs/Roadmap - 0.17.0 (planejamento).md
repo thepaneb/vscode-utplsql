@@ -2,48 +2,46 @@
 tipo: nota
 status: ativo
 modulo: prds
-data: 2026-10-09
-verificado: 2026-10-09
+data: 2026-10-10
+verificado: 2026-10-10
 tags: [prd, roadmap, planejamento]
 ---
 
 # Roadmap — 0.17.0 (planejamento)
 
-Plano da **0.17.0 — “Persistência, multi-root e produtividade”**. O status e a
-versão alvo são a **fonte da verdade** no frontmatter das notas `prd-*`: ver
-[[MOC - PRDs]] e [docs/prd/index.md](../../../docs/prd/index.md).
+Plano da **0.17.0 — “UX de editor e cobertura”**. O status e a versão alvo são a
+**fonte da verdade** no frontmatter das notas `prd-*`: ver [[MOC - PRDs]] e
+[docs/prd/index.md](../../../docs/prd/index.md).
 
 ## Escopo
 
 | Ordem | PRD | Título | Esforço | Complexidade |
 |---|---|---|---|---|
-| 1 | PRD-56 | Duração por teste e persistência de resultados | 2–3 d | Média |
-| 2 | PRD-57 | Multi-root / resolução de raiz | 1–2 d | Média |
-| 3 | PRD-58 | Run Related Tests | 1–2 d | Média |
-| 4 | PRD-59 | Scaffold de suíte de teste (esqueleto) | 1–2 d | Média |
-| 5 | **PRD-100** | **Geração de suíte a partir do package (scaffold avançado)** | **2–3 d** | **Média-Alta** |
+| 1 | PRD-109 | Identidade de linguagem PL/SQL ampliada e `languageIds` configuráveis | 1 dia | Baixa |
+| 2 | PRD-105 | Snippets utPLSQL: biblioteca de annotations e matchers | 1 dia | Baixa |
+| 3 | PRD-108 | Relatório HTML de cobertura aberto no navegador | 1 dia | Baixa |
 
-**PRDs:** [[prd-56-duration-persistence|PRD-56]] ·
-[[prd-57-multiroot-root-resolution|PRD-57]] · [[prd-58-run-related-tests|PRD-58]] ·
-[[prd-59-scaffold-suite|PRD-59]] · [[prd-100-generate-test-suite|PRD-100]]
+**PRDs:** [[prd-109-language-identity|PRD-109]] ·
+[[prd-105-snippets|PRD-105]] · [[prd-108-coverage-html-report|PRD-108]]
 
-**Novidade desta versão (do estudo com `paddi35/utplsql-for-vscode`):**
-a **PRD-100** (porta do `generateTest`/`utplsql.generate.*`) estende o scaffold
-da PRD-59. Ordem sugerida: **PRD-59 → PRD-100**. Os itens de UX (PRD-105
-snippets, PRD-108 coverage HTML, PRD-109 linguagem) foram movidos para a
-**0.22.0** para não sobrecarregar esta versão.
+**Tema:** features visíveis de editor e cobertura, de baixo custo. Ordem sugerida:
+**109 → 105 → 108**. A PRD-105 pressupõe a PRD-100 (geração de suíte), entregue na
+[[Roadmap - 0.16.0 (planejamento)|0.16.0]].
+
+**Reorganização (2026-10-10):** era a antiga 0.18.0; mantém o foco de UX e passa a
+vir logo após a versão de produtividade.
+
+**Total estimado:** ≈ 3 dias.
 
 ## Fluxo de execução (por PRD)
 
 1. `status: approved → in-progress` no frontmatter → `npm run brain:sync && npm run brain:build` + `npm run sync-prds`.
 2. Implementar com TDD; manter cobertura ≥ thresholds do `.c8rc`.
 3. Ao concluir: `status: completed` + `versao: "0.17.0"`; criar as regras
-   `BR-*`/`SEC-*` (`prds:`/`implementacao:`/`testes:`) e rodar `npm run brain:rules`;
-   entry no `CHANGELOG.md`.
+   `BR-*`/`SEC-*` e rodar `npm run brain:rules`; entry no `CHANGELOG.md`.
 4. `npm run brain:ci` + `npm run docs:check` antes de cada PR.
 
 ## Relacionado
 
 - [[MOC - PRDs]]
-- [[Roadmap - 0.16.0 (planejamento)]]
-- [[Roadmap - 0.18.0 (planejamento)]]
+- [[Roadmap - 0.16.0 (planejamento)]] · [[Roadmap - 0.18.0 (planejamento)]]

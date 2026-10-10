@@ -2,44 +2,42 @@
 tipo: nota
 status: ativo
 modulo: prds
-data: 2026-10-09
-verificado: 2026-10-09
+data: 2026-10-10
+verificado: 2026-10-10
 tags: [prd, roadmap, planejamento]
 ---
 
 # Roadmap — 0.19.0 (planejamento)
 
-Plano da **0.19.0 — “Observabilidade e desempenho”**. O status e a versão alvo são
-a **fonte da verdade** no frontmatter das notas `prd-*`: ver [[MOC - PRDs]] e
+Plano da **0.19.0 — “Refatoração de fundo”**. O status e a versão alvo são a
+**fonte da verdade** no frontmatter das notas `prd-*`: ver [[MOC - PRDs]] e
 [docs/prd/index.md](../../../docs/prd/index.md).
 
 ## Escopo
 
 | Ordem | PRD | Título | Esforço | Complexidade |
 |---|---|---|---|---|
-| 1 | PRD-107 | Fixture de integração endurecido: usuário sem privilégios e fallbacks | 1–2 dias | Média |
-| 2 | PRD-101 | Ciclo de vida de conexões: fechar pools ociosos após a execução | 1–2 d | Média |
-| 3 | PRD-102 | Observabilidade: tracing e instrumentação de desempenho | 2–3 d | Média |
-| 4 | PRD-103 | Reindexação incremental de fontes (watcher por-URI) | 2–3 d | Média |
-| 5 | PRD-106 | Harness de performance: fixture em escala e medição por fases | 2–3 dias | Média-Alta |
+| 1 | PRD-111 | Decompor `executeRunOracle` e agrupar `OracleRunOptions` | 2–3 dias | Média-Alta |
+| 2 | PRD-115 | Fatiar `i18nLocales.ts` por locale | 1–2 dias | Média |
 
-**PRDs:** [[prd-107-unprivileged-fixture|PRD-107]] ·
-[[prd-101-connection-pool-lifecycle|PRD-101]] ·
-[[prd-102-trace-and-perf-instrumentation|PRD-102]] ·
-[[prd-103-incremental-source-reindex|PRD-103]] ·
-[[prd-106-perf-harness|PRD-106]]
+**PRDs:** [[prd-111-decompose-oracle-runner|PRD-111]] ·
+[[prd-115-split-i18n-locales|PRD-115]]
 
-**Dependências internas (decidem a ordem):**
-- **PRD-107 → PRD-101**: a fixture com usuário sem privilégios habilita as
-  asserções de ciclo de sessão do pool — por isso 107 vem **antes** de 101.
-- **PRD-102 → PRD-106**: o harness de perf reusa a instrumentação da 102.
+**Tema:** refatorações que **reduzem o retrabalho** das features seguintes. A
+PRD-111 decompõe `executeRunOracle` **antes** da instrumentação da PRD-102
+(observabilidade), e a PRD-115 fatia os catálogos i18n **antes** das features de
+localização (0.21/0.22).
 
-Ordem sugerida: **107 → 101 → 102 → 103 → 106**.
+**Reorganização (2026-10-10):** nova versão de churn-reduction. A ordem
+`111 → 102` e `115 → i18n` corrige duas inversões do plano anterior.
+
+**Total estimado:** ≈ 3–5 dias.
 
 ## Fluxo de execução (por PRD)
 
 1. `status: approved → in-progress` no frontmatter → `npm run brain:sync && npm run brain:build` + `npm run sync-prds`.
-2. Implementar com TDD; manter cobertura ≥ thresholds do `.c8rc`.
+2. Implementar com TDD; manter cobertura ≥ thresholds do `.c8rc`; **nenhuma
+   mudança de comportamento observável**.
 3. Ao concluir: `status: completed` + `versao: "0.19.0"`; criar as regras
    `BR-*`/`SEC-*` e rodar `npm run brain:rules`; entry no `CHANGELOG.md`.
 4. `npm run brain:ci` + `npm run docs:check` antes de cada PR.
@@ -48,4 +46,3 @@ Ordem sugerida: **107 → 101 → 102 → 103 → 106**.
 
 - [[MOC - PRDs]]
 - [[Roadmap - 0.18.0 (planejamento)]] · [[Roadmap - 0.20.0 (planejamento)]]
-- Upstream de referência (não oficial): `paddi35/utplsql-for-vscode`

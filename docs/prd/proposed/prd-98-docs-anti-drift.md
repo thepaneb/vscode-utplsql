@@ -8,7 +8,7 @@
 | Autor | Gil Cleber |
 | Data | 2026-10-08 |
 | Componente | Tooling do repo (`scripts/**`), vault (`docs/brain/**`), skills e CI |
-| Versão alvo | 0.16.0 |
+| Versão alvo | 0.18.0 |
 | Arquivos afetados | `scripts/brain.cjs`, `scripts/brain-build.cjs`, `scripts/docs-fidelity.cjs`, `scripts/docs-check.cjs`, `scripts/brain-rules.cjs`, `scripts/brain-gaps.cjs`, `package.json`, `.github/workflows/ci.yml`, `.opencode/skills/prd-workflow`, `.opencode/skills/release`, `docs/brain/**` |
 | Esforço estimado | 3–5 dias |
 | Complexidade | Média-Alta |
@@ -180,9 +180,9 @@ Nenhuma setting/comando novo na extensão. Novos **scripts npm** de tooling:
 
 ## 9. Rollout
 
-- **0.16.0** (próxima versão prevista; junta-se às PRD-95 e PRD-97).
+- **0.18.0** (fundação; segurança, testes e anti-drift).
 - Registrar no `CHANGELOG.md` e, se aplicável, num post de feature
-  (`docs/linkedin/features/37-…`) + post de release `08-release-v0.16.0`.
+  (`docs/linkedin/features/37-…`) + post de release `08-release-v0.18.0`.
 - Publicação via **GitHub release** (`publish.yml`), como sempre.
 
 ## 10. Critérios de aceite

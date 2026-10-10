@@ -135,5 +135,5 @@ Esperado criar `BR-I18N-007` (pipeline: round-trip + glossário + gate) e notas
 - 🔗 PRDs relacionados: [[prd-89-pseudo-localization-gate|PRD-89]] · [[prd-90-message-plurals-cldr|PRD-90]] · [[prd-91-doc-parity-localized-distribution|PRD-91]]
 - ⚙️ Pipelines: [[PIPE-ci - CI|PIPE-ci]]
 - 🔗 Mesma versão (0.22.0): [[prd-92-rtl-new-locales|PRD-92]]
-- 🚀 ⬅️ release anterior: [[prd-91-doc-parity-localized-distribution|PRD-91 (0.21.0)]] · ➡️ próxima release: [[prd-111-decompose-oracle-runner|PRD-111 (0.23.0)]]
+- 🚀 ⬅️ release anterior: [[prd-91-doc-parity-localized-distribution|PRD-91 (0.21.0)]] · ➡️ próxima release: [[prd-95-esm-es2023-node22|PRD-95 (0.23.0)]]
 <!-- brain:auto:end -->

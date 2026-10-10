@@ -8,7 +8,7 @@
 | Autor | Gil Cleber Barboza |
 | Data | 2026-10-09 |
 | Componente | Extensão `paneb.vscode-utplsql` |
-| Versão alvo | 0.17.0 |
+| Versão alvo | 0.16.0 |
 | Arquivos afetados | `src/scaffold.ts` (novo, puro), `src/extension.ts`, `src/plsqlDeclarations.ts` (reuso), `package.json`, `docs/brain/**` |
 | Esforço estimado | 2–3 dias |
 | Complexidade | Média-Alta |
@@ -127,7 +127,7 @@ segundos o atrito de iniciar uma suíte.
 
 ## 9. Rollout
 
-- **0.17.0** (produtividade), junto da PRD-59.
+- **0.16.0** (produtividade), junto da PRD-59.
 - Registrar no `CHANGELOG.md`; publicação via GitHub release (`publish.yml`).
 
 ## 10. Critérios de aceite

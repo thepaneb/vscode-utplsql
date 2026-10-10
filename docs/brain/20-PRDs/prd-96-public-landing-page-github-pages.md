@@ -268,5 +268,5 @@ referenciada no funcional `10-development-tooling`. Notas geradas:
 - 🎯 RNF2 — `npm run brain:ci` e `npm run docs:check` seguem verdes; o workflow no → [[BR-SITE-001 - Landing page gerada de site e publicada no GitHub Pages, sem noindex|BR-SITE-001]]
 - 🎯 RNF3 — PageSpeed mobile ≥ 90 (HTML estático único, CSS curto em arquivo → [[BR-SITE-001 - Landing page gerada de site e publicada no GitHub Pages, sem noindex|BR-SITE-001]]
 - 🎯 RNF4 — O deploy **não substitui o CI**: a validação (`brain:ci` + → [[BR-SITE-001 - Landing page gerada de site e publicada no GitHub Pages, sem noindex|BR-SITE-001]]
-- 🚀 ⬅️ release anterior: [[prd-94-vscode-floor-1-101|PRD-94 (0.14.0)]] · ➡️ próxima release: [[prd-95-esm-es2023-node22|PRD-95 (0.16.0)]]
+- 🚀 ⬅️ release anterior: [[prd-94-vscode-floor-1-101|PRD-94 (0.14.0)]] · ➡️ próxima release: [[prd-56-duration-persistence|PRD-56 (0.16.0)]]
 <!-- brain:auto:end -->

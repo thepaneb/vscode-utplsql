@@ -108,7 +108,7 @@ Nenhuma setting nova. O log segue gateado por `UTPLSQL_DEBUG=1` (PRD-66/102).
 
 ## 9. Rollout
 
-- **0.23.0** ("Qualidade interna"); sem mudança de comportamento pretendida.
+- **0.23.0** ("Runtime, docs e qualidade residual"); sem mudança de comportamento pretendida.
 - Registrar no `CHANGELOG.md`.
 
 ## 10. Critérios de aceite

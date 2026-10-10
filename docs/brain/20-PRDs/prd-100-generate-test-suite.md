@@ -4,10 +4,10 @@ id: PRD-100
 aliases: [PRD-100]
 status: proposed
 titulo: "Geração de suíte a partir do package (scaffold avançado)"
-versao: "0.17.0"
+versao: "0.16.0"
 data: "2026-10-09"
 autor: "Gil Cleber Barboza"
-versao_titulo: "0.17.0 — Persistência, multi-root e produtividade"
+versao_titulo: "0.16.0 — Produtividade e resultados"
 verificado: 2026-10-09
 regras: []
 tags: [prd]
@@ -20,7 +20,7 @@ tags: [prd]
 | Autor | Gil Cleber Barboza |
 | Data | 2026-10-09 |
 | Componente | Extensão `paneb.vscode-utplsql` |
-| Versão alvo | 0.17.0 |
+| Versão alvo | 0.16.0 |
 | Arquivos afetados | `src/scaffold.ts` (novo, puro), `src/extension.ts`, `src/plsqlDeclarations.ts` (reuso), `package.json`, `docs/brain/**` |
 | Esforço estimado | 2–3 dias |
 | Complexidade | Média-Alta |
@@ -139,7 +139,7 @@ segundos o atrito de iniciar uma suíte.
 
 ## 9. Rollout
 
-- **0.17.0** (produtividade), junto da PRD-59.
+- **0.16.0** (produtividade), junto da PRD-59.
 - Registrar no `CHANGELOG.md`; publicação via GitHub release (`publish.yml`).
 
 ## 10. Critérios de aceite
@@ -167,6 +167,6 @@ bidirecional (`npm run brain:rules`). Enquanto `proposed`, `regras: []`.
 <!-- brain:auto:start:conexoes -->
 - 🗺️ [[MOC - PRDs]]
 - 🔗 PRDs relacionados: [[prd-30-schema-aware-organization|PRD-30]] · [[prd-42-suiteparser-annotations|PRD-42]] · [[prd-59-scaffold-suite|PRD-59]] · [[prd-79-coverage-scope|PRD-79]]
-- 🔗 Mesma versão (0.17.0): [[prd-56-duration-persistence|PRD-56]] · [[prd-57-multiroot-root-resolution|PRD-57]] · [[prd-58-run-related-tests|PRD-58]] · [[prd-59-scaffold-suite|PRD-59]]
-- 🚀 ⬅️ release anterior: [[prd-99-brain-reuse|PRD-99 (0.16.0)]] · ➡️ próxima release: [[prd-105-snippets|PRD-105 (0.18.0)]]
+- 🔗 Mesma versão (0.16.0): [[prd-56-duration-persistence|PRD-56]] · [[prd-57-multiroot-root-resolution|PRD-57]] · [[prd-58-run-related-tests|PRD-58]] · [[prd-59-scaffold-suite|PRD-59]]
+- 🚀 ⬅️ release anterior: [[prd-96-public-landing-page-github-pages|PRD-96 (0.15.0)]] · ➡️ próxima release: [[prd-105-snippets|PRD-105 (0.17.0)]]
 <!-- brain:auto:end -->

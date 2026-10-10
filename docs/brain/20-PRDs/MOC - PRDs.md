@@ -29,13 +29,14 @@ npm run sync-prds
 ## Planejamento por versão
 
 - **0.15.0 — “Tags e UX de execução”**: [[Roadmap - 0.15.0 (execução)]]
-- **0.16.0 — “Modernização do runtime (ESM/ES2023)”**: [[Roadmap - 0.16.0 (planejamento)]]
-- **0.17.0 — “Persistência, multi-root e produtividade”**: [[Roadmap - 0.17.0 (planejamento)]]
-- **0.18.0 — “UX de editor e cobertura”**: [[Roadmap - 0.18.0 (planejamento)]]
-- **0.19.0 — “Observabilidade e desempenho”**: [[Roadmap - 0.19.0 (planejamento)]]
-- **0.20.0 — “Qualidade e CI”**: [[Roadmap - 0.20.0 (planejamento)]]
+- **0.16.0 — “Produtividade e resultados”**: [[Roadmap - 0.16.0 (planejamento)]]
+- **0.17.0 — “UX de editor e cobertura”**: [[Roadmap - 0.17.0 (planejamento)]]
+- **0.18.0 — “Fundação: segurança, testes e anti-drift”**: [[Roadmap - 0.18.0 (planejamento)]]
+- **0.19.0 — “Refatoração de fundo”**: [[Roadmap - 0.19.0 (planejamento)]]
+- **0.20.0 — “Observabilidade e desempenho”**: [[Roadmap - 0.20.0 (planejamento)]]
 - **0.21.0 — “Localização (formatação, plurais e paridade)”**: [[Roadmap - 0.21.0 (planejamento)]]
 - **0.22.0 — “Localização (RTL, novos locales e pipeline)”**: [[Roadmap - 0.22.0 (planejamento)]]
+- **0.23.0 — “Runtime, docs e qualidade residual”**: [[Roadmap - 0.23.0 (planejamento)]]
 
 ## Status (gerado)
 

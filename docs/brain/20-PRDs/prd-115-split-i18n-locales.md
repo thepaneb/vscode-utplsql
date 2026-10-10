@@ -4,10 +4,10 @@ id: PRD-115
 aliases: [PRD-115]
 status: proposed
 titulo: "Fatiar `i18nLocales.ts` por locale"
-versao: "0.23.0"
+versao: "0.19.0"
 data: "2026-10-10"
 autor: "Gil Cleber Barboza"
-versao_titulo: "0.23.0 — Qualidade interna"
+versao_titulo: "0.19.0 — Refatoração de fundo"
 verificado: 2026-10-10
 regras: []
 tags: [prd]
@@ -20,7 +20,7 @@ tags: [prd]
 | Autor | Gil Cleber Barboza |
 | Data | 2026-10-10 |
 | Componente | Extensão `paneb.vscode-utplsql` |
-| Versão alvo | 0.23.0 |
+| Versão alvo | 0.19.0 |
 | Arquivos afetados | `src/i18nLocales.ts` → `src/i18n/locales/*.ts`, `src/i18n.ts`, `src/test/unit/i18n.test.ts` |
 | Esforço estimado | 1–2 dias |
 | Complexidade | Média |
@@ -113,7 +113,7 @@ Nenhuma setting/comando. Sem impacto para o usuário.
 
 ## 9. Rollout
 
-- **0.23.0** ("Qualidade interna"); refactor puro.
+- **0.19.0** ("Refatoração de fundo"); refactor puro.
 
 ## 10. Critérios de aceite
 
@@ -138,6 +138,6 @@ arquivo por locale, exportados por barrel") com `prds: ["PRD-115"]`,
 <!-- brain:auto:start:conexoes -->
 - 🗺️ [[MOC - PRDs]]
 - 🔗 PRDs relacionados: [[prd-49-internacionalizacao|PRD-49]] · [[prd-91-doc-parity-localized-distribution|PRD-91]] · [[prd-95-esm-es2023-node22|PRD-95]]
-- 🔗 Mesma versão (0.23.0): [[prd-111-decompose-oracle-runner|PRD-111]] · [[prd-112-error-handling-audit|PRD-112]] · [[prd-113-lint-scope|PRD-113]] · [[prd-114-vscode-stub-modernization|PRD-114]] · [[prd-116-direct-module-tests|PRD-116]] · [[prd-117-split-script-property-tests|PRD-117]]
-- 🚀 ⬅️ release anterior: [[prd-93-continuous-localization-pipeline|PRD-93 (0.22.0)]]
+- 🔗 Mesma versão (0.19.0): [[prd-111-decompose-oracle-runner|PRD-111]]
+- 🚀 ⬅️ release anterior: [[prd-114-vscode-stub-modernization|PRD-114 (0.18.0)]] · ➡️ próxima release: [[prd-101-connection-pool-lifecycle|PRD-101 (0.20.0)]]
 <!-- brain:auto:end -->

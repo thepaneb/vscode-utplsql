@@ -4,10 +4,10 @@ id: PRD-110
 aliases: [PRD-110]
 status: proposed
 titulo: "Hardening defensivo: identificador SQL, redaction de logs e scripts de desenvolvimento"
-versao: "0.20.0"
+versao: "0.18.0"
 data: "2026-10-09"
 autor: "Gil Cleber Barboza"
-versao_titulo: "0.20.0 — Qualidade e CI"
+versao_titulo: "0.18.0 — Fundação: segurança, testes e anti-drift"
 verificado: 2026-10-09
 regras: []
 tags: [prd]
@@ -20,7 +20,7 @@ tags: [prd]
 | Autor | Gil Cleber Barboza |
 | Data | 2026-10-09 |
 | Componente | Extensão `paneb.vscode-utplsql` + ferramentas de desenvolvimento (`scripts/`) |
-| Versão alvo | 0.20.0 |
+| Versão alvo | 0.18.0 |
 | Arquivos afetados | `src/oracleRunner.ts`, `src/connectionProfiles.ts`, `src/scriptRunner.ts`, `scripts/db-matrix/run.sh`, `scripts/create-pr.cjs`, `SECURITY.md`, `docs/brain/**` |
 | Esforço estimado | 0,5–1 dia |
 | Complexidade | Baixa |
@@ -149,7 +149,7 @@ Nenhuma setting nova; sem comandos/menus novos.
 
 ## 9. Rollout
 
-- **0.20.0** (infra/segurança; sem mudança de runtime perceptível).
+- **0.18.0** (infra/segurança; sem mudança de runtime perceptível).
 - Registrar em `CHANGELOG.md` e atualizar `SECURITY.md` (seção "Implemented
   protections").
 
@@ -181,6 +181,6 @@ com `prds: ["PRD-110"]`, `implementacao:` (arquivo/linha) e `testes:`. Enquanto
 <!-- brain:auto:start:conexoes -->
 - 🗺️ [[MOC - PRDs]]
 - 🔗 PRDs relacionados: [[prd-66-connection-robustness-logging|PRD-66]] · [[prd-81-security-hardening|PRD-81]] · [[prd-104-ci-supply-chain|PRD-104]]
-- 🔗 Mesma versão (0.20.0): [[prd-104-ci-supply-chain|PRD-104]]
-- 🚀 ⬅️ release anterior: [[prd-107-unprivileged-fixture|PRD-107 (0.19.0)]] · ➡️ próxima release: [[prd-88-locale-aware-formatting|PRD-88 (0.21.0)]]
+- 🔗 Mesma versão (0.18.0): [[prd-98-docs-anti-drift|PRD-98]] · [[prd-104-ci-supply-chain|PRD-104]] · [[prd-113-lint-scope|PRD-113]] · [[prd-114-vscode-stub-modernization|PRD-114]]
+- 🚀 ⬅️ release anterior: [[prd-109-language-identity|PRD-109 (0.17.0)]] · ➡️ próxima release: [[prd-111-decompose-oracle-runner|PRD-111 (0.19.0)]]
 <!-- brain:auto:end -->
