@@ -4,10 +4,10 @@ id: PRD-108
 aliases: [PRD-108]
 status: proposed
 titulo: "Relatório HTML de cobertura aberto no navegador"
-versao: "0.18.0"
+versao: "0.17.0"
 data: "2026-10-09"
 autor: "Gil Cleber Barboza"
-versao_titulo: "0.18.0 — UX de editor e cobertura"
+versao_titulo: "0.17.0 — UX de editor e cobertura"
 verificado: 2026-10-09
 regras: []
 tags: [prd]
@@ -20,7 +20,7 @@ tags: [prd]
 | Autor | Gil Cleber Barboza |
 | Data | 2026-10-09 |
 | Componente | Extensão `paneb.vscode-utplsql` |
-| Versão alvo | 0.18.0 |
+| Versão alvo | 0.17.0 |
 | Arquivos afetados | `src/oracleRunner.ts`, `src/coverage.ts`, `src/extension.ts`, `src/config.ts`, `package.json`, `docs/brain/**` |
 | Esforço estimado | 1 dia |
 | Complexidade | Baixa |
@@ -109,7 +109,7 @@ Hoje só temos o painel nativo + Cobertura.
 
 ## 9. Rollout
 
-- **0.18.0** (UX de editor e cobertura).
+- **0.17.0** (UX de editor e cobertura).
 - Registrar no `CHANGELOG.md`.
 
 ## 10. Critérios de aceite
@@ -134,6 +134,6 @@ navegador e não segura o TestRun"), com `prds: ["PRD-108"]`, `implementacao:` e
 <!-- brain:auto:start:conexoes -->
 - 🗺️ [[MOC - PRDs]]
 - 🔗 PRDs relacionados: [[prd-12-sql-coverage|PRD-12]] · [[prd-35-windows-coverage-fix|PRD-35]] · [[prd-79-coverage-scope|PRD-79]]
-- 🔗 Mesma versão (0.18.0): [[prd-105-snippets|PRD-105]] · [[prd-109-language-identity|PRD-109]]
-- 🚀 ⬅️ release anterior: [[prd-100-generate-test-suite|PRD-100 (0.17.0)]] · ➡️ próxima release: [[prd-101-connection-pool-lifecycle|PRD-101 (0.19.0)]]
+- 🔗 Mesma versão (0.17.0): [[prd-105-snippets|PRD-105]] · [[prd-109-language-identity|PRD-109]]
+- 🚀 ⬅️ release anterior: [[prd-100-generate-test-suite|PRD-100 (0.16.0)]] · ➡️ próxima release: [[prd-98-docs-anti-drift|PRD-98 (0.18.0)]]
 <!-- brain:auto:end -->

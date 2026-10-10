@@ -4,10 +4,10 @@ id: PRD-59
 aliases: [PRD-59]
 status: proposed
 titulo: "Scaffold de suíte de teste"
-versao: "0.17.0"
+versao: "0.16.0"
 data: "2026-09-06"
 autor: "Gil Cleber Barboza"
-versao_titulo: "0.17.0 — Persistência, multi-root e produtividade"
+versao_titulo: "0.16.0 — Produtividade e resultados"
 verificado: 2026-09-23
 regras: []
 tags: [prd]
@@ -20,7 +20,7 @@ tags: [prd]
 | Autor | Gil Cleber Barboza |
 | Data | 2026-09-06 |
 | Componente | Extensão `paneb.vscode-utplsql` |
-| Versão alvo | 0.17.0 |
+| Versão alvo | 0.16.0 |
 | Arquivos afetados | `src/extension.ts`, `src/scaffold.ts` (novo), `package.json` |
 | Esforço estimado | 1–2 dias |
 | Complexidade | Média |
@@ -34,7 +34,7 @@ suíte.
 
 > **Base da PRD-100.** Esta PRD entrega o **esqueleto** (`%suite` + um `%test`).
 > A [[prd-100-generate-test-suite|PRD-100]] a estende com **um `%test` por
-> rotina** e as opções `utplsql.generate.*` — implementadas juntas na **0.17.0**;
+> rotina** e as opções `utplsql.generate.*` — implementadas juntas na **0.16.0**;
 > o que aqui está listado como follow-up é o escopo da PRD-100.
 
 ## 2. Contexto e problema
@@ -120,7 +120,7 @@ Prompt de nome via `showInputBox`; escrita via `workspace.fs`.
 ## 11. Questões em aberto
 
 - Gerar um `%test` por procedure/function do `.pkb`? — Movido para a
-  [[prd-100-generate-test-suite|PRD-100]] (0.17.0).
+  [[prd-100-generate-test-suite|PRD-100]] (0.16.0).
 - Gerar também o corpo `.pkb` da suíte? — Em aberto na PRD-100.
 
 ## Conexões
@@ -128,6 +128,6 @@ Prompt de nome via `showInputBox`; escrita via `workspace.fs`.
 <!-- brain:auto:start:conexoes -->
 - 🗺️ [[MOC - PRDs]]
 - 🔗 PRDs relacionados: [[prd-100-generate-test-suite|PRD-100]]
-- 🔗 Mesma versão (0.17.0): [[prd-56-duration-persistence|PRD-56]] · [[prd-57-multiroot-root-resolution|PRD-57]] · [[prd-58-run-related-tests|PRD-58]] · [[prd-100-generate-test-suite|PRD-100]]
-- 🚀 ⬅️ release anterior: [[prd-99-brain-reuse|PRD-99 (0.16.0)]] · ➡️ próxima release: [[prd-105-snippets|PRD-105 (0.18.0)]]
+- 🔗 Mesma versão (0.16.0): [[prd-56-duration-persistence|PRD-56]] · [[prd-57-multiroot-root-resolution|PRD-57]] · [[prd-58-run-related-tests|PRD-58]] · [[prd-100-generate-test-suite|PRD-100]]
+- 🚀 ⬅️ release anterior: [[prd-96-public-landing-page-github-pages|PRD-96 (0.15.0)]] · ➡️ próxima release: [[prd-105-snippets|PRD-105 (0.17.0)]]
 <!-- brain:auto:end -->

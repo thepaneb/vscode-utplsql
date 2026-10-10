@@ -8,7 +8,7 @@
 | Autor | Gil Cleber Barboza |
 | Data | 2026-10-09 |
 | Componente | Extensão `paneb.vscode-utplsql` |
-| Versão alvo | 0.18.0 |
+| Versão alvo | 0.17.0 |
 | Arquivos afetados | `src/oracleRunner.ts`, `src/coverage.ts`, `src/extension.ts`, `src/config.ts`, `package.json`, `docs/brain/**` |
 | Esforço estimado | 1 dia |
 | Complexidade | Baixa |
@@ -97,7 +97,7 @@ Hoje só temos o painel nativo + Cobertura.
 
 ## 9. Rollout
 
-- **0.18.0** (UX de editor e cobertura).
+- **0.17.0** (UX de editor e cobertura).
 - Registrar no `CHANGELOG.md`.
 
 ## 10. Critérios de aceite

@@ -4,9 +4,10 @@ id: PRD-98
 aliases: [PRD-98]
 status: proposed
 titulo: "Anti-drift de documentação: tabelas geradas e vínculo PRD→docs"
-versao: "0.16.0"
+versao: "0.18.0"
 data: "2026-10-08"
 autor: "Gil Cleber"
+versao_titulo: "0.18.0 — Fundação: segurança, testes e anti-drift"
 verificado: 2026-10-08
 regras: []
 tags: [prd]
@@ -19,7 +20,7 @@ tags: [prd]
 | Autor | Gil Cleber |
 | Data | 2026-10-08 |
 | Componente | Tooling do repo (`scripts/**`), vault (`docs/brain/**`), skills e CI |
-| Versão alvo | 0.16.0 |
+| Versão alvo | 0.18.0 |
 | Arquivos afetados | `scripts/brain.cjs`, `scripts/brain-build.cjs`, `scripts/docs-fidelity.cjs`, `scripts/docs-check.cjs`, `scripts/brain-rules.cjs`, `scripts/brain-gaps.cjs`, `package.json`, `.github/workflows/ci.yml`, `.opencode/skills/prd-workflow`, `.opencode/skills/release`, `docs/brain/**` |
 | Esforço estimado | 3–5 dias |
 | Complexidade | Média-Alta |
@@ -191,9 +192,9 @@ Nenhuma setting/comando novo na extensão. Novos **scripts npm** de tooling:
 
 ## 9. Rollout
 
-- **0.16.0** (próxima versão prevista; junta-se às PRD-95 e PRD-97).
+- **0.18.0** (fundação; segurança, testes e anti-drift).
 - Registrar no `CHANGELOG.md` e, se aplicável, num post de feature
-  (`docs/linkedin/features/37-…`) + post de release `08-release-v0.16.0`.
+  (`docs/linkedin/features/37-…`) + post de release `08-release-v0.18.0`.
 - Publicação via **GitHub release** (`publish.yml`), como sempre.
 
 ## 10. Critérios de aceite
@@ -228,7 +229,7 @@ bidirecional com `npm run brain:rules`.
 
 <!-- brain:auto:start:conexoes -->
 - 🗺️ [[MOC - PRDs]]
-- 🔗 PRDs relacionados: [[prd-95-esm-es2023-node22|PRD-95]] · [[prd-97-doc-no-site|PRD-97]]
 - ⚙️ Pipelines: [[PIPE-ci - CI|PIPE-ci]]
-- 🚀 ⬅️ release anterior: [[prd-96-public-landing-page-github-pages|PRD-96 (0.15.0)]] · ➡️ próxima release: [[prd-56-duration-persistence|PRD-56 (0.17.0)]]
+- 🔗 Mesma versão (0.18.0): [[prd-104-ci-supply-chain|PRD-104]] · [[prd-110-defensive-hardening|PRD-110]] · [[prd-113-lint-scope|PRD-113]] · [[prd-114-vscode-stub-modernization|PRD-114]]
+- 🚀 ⬅️ release anterior: [[prd-109-language-identity|PRD-109 (0.17.0)]] · ➡️ próxima release: [[prd-111-decompose-oracle-runner|PRD-111 (0.19.0)]]
 <!-- brain:auto:end -->

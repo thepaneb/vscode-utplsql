@@ -139,5 +139,5 @@ registro de locales (NFR/ENT a definir), com `prds: ["PRD-91"]`.
 - 🗺️ [[MOC - PRDs]]
 - 🔗 PRDs relacionados: [[prd-93-continuous-localization-pipeline|PRD-93]]
 - 🔗 Mesma versão (0.21.0): [[prd-88-locale-aware-formatting|PRD-88]] · [[prd-89-pseudo-localization-gate|PRD-89]] · [[prd-90-message-plurals-cldr|PRD-90]]
-- 🚀 ⬅️ release anterior: [[prd-110-defensive-hardening|PRD-110 (0.20.0)]] · ➡️ próxima release: [[prd-92-rtl-new-locales|PRD-92 (0.22.0)]]
+- 🚀 ⬅️ release anterior: [[prd-107-unprivileged-fixture|PRD-107 (0.20.0)]] · ➡️ próxima release: [[prd-92-rtl-new-locales|PRD-92 (0.22.0)]]
 <!-- brain:auto:end -->

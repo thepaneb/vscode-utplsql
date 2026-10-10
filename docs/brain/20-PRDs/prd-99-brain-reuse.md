@@ -4,9 +4,10 @@ id: PRD-99
 aliases: [PRD-99]
 status: proposed
 titulo: "Cérebro reutilizável: guia de uso e reuso do knowledge base"
-versao: "0.16.0"
+versao: "0.23.0"
 data: "2026-10-09"
 autor: "Gil Cleber"
+versao_titulo: "0.23.0 — Runtime, docs e qualidade residual"
 verificado: 2026-10-09
 regras: []
 tags: [prd]
@@ -19,7 +20,7 @@ tags: [prd]
 | Autor | Gil Cleber |
 | Data | 2026-10-09 |
 | Componente | Documentação pública (vault + README + wiki/site) |
-| Versão alvo | 0.16.0 |
+| Versão alvo | 0.23.0 |
 | Arquivos afetados | `docs/brain/README.md`, `docs/brain/60-README/README (extensão).md` (+ 23 variantes), `docs/brain/70-Wiki/Contributing.md` (ou nova página), `LICENSE`/`NOTICE`, `scripts/brain*.cjs` (documentação), `site/**` (fase 2) |
 | Esforço estimado | 1–2 dias |
 | Complexidade | Baixa-Média |
@@ -146,7 +147,7 @@ Nenhuma setting/comando da extensão. Eventual script de doc (nenhum obrigatóri
 
 ## 9. Rollout
 
-- **0.16.0** (versão de runtime + docs; junto de PRD-95/97/98).
+- **0.23.0** (runtime, docs e qualidade residual; junto de PRD-95 e PRD-97).
 - Registrar no `CHANGELOG.md`; opcional post de feature no LinkedIn.
 - Publicação via **GitHub release** (`publish.yml`), como sempre.
 
@@ -167,7 +168,7 @@ Nenhuma setting/comando da extensão. Eventual script de doc (nenhum obrigatóri
   MIT para o código? (preferência: MIT, para simplicidade).
 - Nível de detalhe do "kit" (só documentar × incluir um exemplo/`_templates`
   mínimo copiável).
-- Publicar o guia no **site** já na 0.16.0 ou só na fase 2 (PRD-97).
+- Publicar o guia no **site** já na 0.23.0 ou só na fase 2 (PRD-97).
 - Mencionar o cérebro **também** na página do Marketplace? (README já resolve.)
 
 ## 12. Impacto no cérebro
@@ -182,5 +183,6 @@ documentado para reuso por terceiros") — com `prds: ["PRD-99"]`, `implementaca
 <!-- brain:auto:start:conexoes -->
 - 🗺️ [[MOC - PRDs]]
 - 🔗 PRDs relacionados: [[prd-95-esm-es2023-node22|PRD-95]] · [[prd-97-doc-no-site|PRD-97]]
-- 🚀 ⬅️ release anterior: [[prd-96-public-landing-page-github-pages|PRD-96 (0.15.0)]] · ➡️ próxima release: [[prd-56-duration-persistence|PRD-56 (0.17.0)]]
+- 🔗 Mesma versão (0.23.0): [[prd-95-esm-es2023-node22|PRD-95]] · [[prd-97-doc-no-site|PRD-97]] · [[prd-112-error-handling-audit|PRD-112]] · [[prd-116-direct-module-tests|PRD-116]] · [[prd-117-split-script-property-tests|PRD-117]]
+- 🚀 ⬅️ release anterior: [[prd-93-continuous-localization-pipeline|PRD-93 (0.22.0)]]
 <!-- brain:auto:end -->

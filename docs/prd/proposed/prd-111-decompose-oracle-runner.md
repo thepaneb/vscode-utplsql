@@ -8,7 +8,7 @@
 | Autor | Gil Cleber Barboza |
 | Data | 2026-10-10 |
 | Componente | Extensão `paneb.vscode-utplsql` |
-| Versão alvo | 0.23.0 |
+| Versão alvo | 0.19.0 |
 | Arquivos afetados | `src/oracleRunner.ts`, `src/runner.ts`, `src/results.ts`, `src/test/unit/oracleRunner*.test.ts` |
 | Esforço estimado | 2–3 dias |
 | Complexidade | Média-Alta |
@@ -118,7 +118,7 @@ Nenhuma setting, comando ou menu novo.
 
 ## 9. Rollout
 
-- **0.23.0** ("Qualidade interna"); sem mudança visível ao usuário.
+- **0.19.0** ("Refatoração de fundo"); sem mudança visível ao usuário.
 - Registrar no `CHANGELOG.md` (seção interna/refactor).
 
 ## 10. Critérios de aceite

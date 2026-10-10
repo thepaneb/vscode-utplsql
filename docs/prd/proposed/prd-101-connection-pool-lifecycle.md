@@ -8,7 +8,7 @@
 | Autor | Gil Cleber Barboza |
 | Data | 2026-10-09 |
 | Componente | Extensão `paneb.vscode-utplsql` |
-| Versão alvo | 0.19.0 |
+| Versão alvo | 0.20.0 |
 | Arquivos afetados | `src/oracleRunner.ts`, `src/runner.ts`, `src/extension.ts`, `src/config.ts`, `package.json`, `docs/brain/**` |
 | Esforço estimado | 1–2 dias |
 | Complexidade | Média |
@@ -108,7 +108,7 @@ impede `DROP USER` do usuário de teste sem recarregar o VS Code.
 
 ## 9. Rollout
 
-- **0.19.0** ("Observabilidade e desempenho").
+- **0.20.0** ("Observabilidade e desempenho").
 - Registrar no `CHANGELOG.md`; publicação via GitHub release.
 
 ## 10. Critérios de aceite

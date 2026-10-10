@@ -8,7 +8,7 @@
 | Autor | Gil Cleber Barboza |
 | Data | 2026-10-09 |
 | Componente | Testes de integração (banco real) |
-| Versão alvo | 0.19.0 |
+| Versão alvo | 0.20.0 |
 | Arquivos afetados | `src/test/integration/fixtures/setup.sh`, `src/test/integration/support/**`, `src/test/integration/*.test.ts`, `docs/brain/**` |
 | Esforço estimado | 1–2 dias |
 | Complexidade | Média |
@@ -99,7 +99,7 @@ Env de teste (não são settings da extensão): `UTPLSQL_IT_UNPRIV_USER`,
 
 ## 9. Rollout
 
-- **0.19.0** (Observabilidade e desempenho); habilita os testes da PRD-101.
+- **0.20.0** (Observabilidade e desempenho); habilita os testes da PRD-101.
 - Registrar no `CHANGELOG.md`.
 
 ## 10. Critérios de aceite

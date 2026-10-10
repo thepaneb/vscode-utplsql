@@ -8,7 +8,7 @@
 | Autor | Gil Cleber Barboza |
 | Data | 2026-10-10 |
 | Componente | Extensão `paneb.vscode-utplsql` |
-| Versão alvo | 0.23.0 |
+| Versão alvo | 0.19.0 |
 | Arquivos afetados | `src/i18nLocales.ts` → `src/i18n/locales/*.ts`, `src/i18n.ts`, `src/test/unit/i18n.test.ts` |
 | Esforço estimado | 1–2 dias |
 | Complexidade | Média |
@@ -101,7 +101,7 @@ Nenhuma setting/comando. Sem impacto para o usuário.
 
 ## 9. Rollout
 
-- **0.23.0** ("Qualidade interna"); refactor puro.
+- **0.19.0** ("Refatoração de fundo"); refactor puro.
 
 ## 10. Critérios de aceite
 

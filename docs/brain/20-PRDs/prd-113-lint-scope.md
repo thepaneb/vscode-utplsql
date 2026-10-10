@@ -4,10 +4,10 @@ id: PRD-113
 aliases: [PRD-113]
 status: proposed
 titulo: "Ampliar o escopo do lint (Biome) para além de `src/`"
-versao: "0.23.0"
+versao: "0.18.0"
 data: "2026-10-10"
 autor: "Gil Cleber Barboza"
-versao_titulo: "0.23.0 — Qualidade interna"
+versao_titulo: "0.18.0 — Fundação: segurança, testes e anti-drift"
 verificado: 2026-10-10
 regras: []
 tags: [prd]
@@ -20,7 +20,7 @@ tags: [prd]
 | Autor | Gil Cleber Barboza |
 | Data | 2026-10-10 |
 | Componente | Extensão `paneb.vscode-utplsql` + ferramentas (`scripts/`, manifestos) |
-| Versão alvo | 0.23.0 |
+| Versão alvo | 0.18.0 |
 | Arquivos afetados | `package.json`, `biome.json`, `scripts/*.cjs`, `*.mjs`, `.github/workflows/ci.yml` |
 | Esforço estimado | 0,5–1 dia |
 | Complexidade | Baixa |
@@ -116,7 +116,7 @@ Nenhuma setting/comando de usuário. Muda o script `lint` e a config do Biome.
 
 ## 9. Rollout
 
-- **0.23.0** ("Qualidade interna").
+- **0.18.0** ("Fundação: segurança, testes e anti-drift").
 - Registrar no `CHANGELOG.md`; sem impacto no runtime da extensão.
 
 ## 10. Critérios de aceite
@@ -143,6 +143,6 @@ não só `src/`) com `prds: ["PRD-113"]`, `implementacao:` e `testes:`. Enquanto
 - 🗺️ [[MOC - PRDs]]
 - 🔗 PRDs relacionados: [[prd-03-ci-lint|PRD-03]] · [[prd-20-cleanup-deps-config|PRD-20]]
 - ⚙️ Pipelines: [[PIPE-ci - CI|PIPE-ci]]
-- 🔗 Mesma versão (0.23.0): [[prd-111-decompose-oracle-runner|PRD-111]] · [[prd-112-error-handling-audit|PRD-112]] · [[prd-114-vscode-stub-modernization|PRD-114]] · [[prd-115-split-i18n-locales|PRD-115]] · [[prd-116-direct-module-tests|PRD-116]] · [[prd-117-split-script-property-tests|PRD-117]]
-- 🚀 ⬅️ release anterior: [[prd-93-continuous-localization-pipeline|PRD-93 (0.22.0)]]
+- 🔗 Mesma versão (0.18.0): [[prd-98-docs-anti-drift|PRD-98]] · [[prd-104-ci-supply-chain|PRD-104]] · [[prd-110-defensive-hardening|PRD-110]] · [[prd-114-vscode-stub-modernization|PRD-114]]
+- 🚀 ⬅️ release anterior: [[prd-109-language-identity|PRD-109 (0.17.0)]] · ➡️ próxima release: [[prd-111-decompose-oracle-runner|PRD-111 (0.19.0)]]
 <!-- brain:auto:end -->

@@ -8,7 +8,7 @@
 | Autor | Gil Cleber Barboza |
 | Data | 2026-10-09 |
 | Componente | Extensão `paneb.vscode-utplsql` |
-| Versão alvo | 0.19.0 |
+| Versão alvo | 0.20.0 |
 | Arquivos afetados | `src/logger.ts`, `src/perf.ts` (novo), `src/oracleRunner.ts`, `src/discovery.ts`, `src/extension.ts`, `src/config.ts`, `package.json`, `docs/brain/**` |
 | Esforço estimado | 2–3 dias |
 | Complexidade | Média |
@@ -105,7 +105,7 @@ ids/SQL no canal de saída a cada run.
 
 ## 9. Rollout
 
-- **0.19.0** ("Observabilidade e desempenho").
+- **0.20.0** ("Observabilidade e desempenho").
 - Registrar no `CHANGELOG.md`; publicação via GitHub release.
 
 ## 10. Critérios de aceite

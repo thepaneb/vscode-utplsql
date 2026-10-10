@@ -8,7 +8,7 @@
 | Autor | Gil Cleber |
 | Data | 2026-10-07 |
 | Componente | Site público (`site/`) |
-| Versão alvo | 0.16.0 |
+| Versão alvo | 0.23.0 |
 | Arquivos afetados | `scripts/brain-build.cjs`, `site/**`, `docs/brain/70-Wiki/**`, `.github/workflows/pages.yml` |
 | Esforço estimado | 2–3 dias |
 | Complexidade | Média |
@@ -112,7 +112,7 @@ Nenhuma setting/comando novo. `pages.yml` passa a publicar também `site/docs/**
 
 ## 9. Rollout
 
-- 0.16.0: portar `docs/wiki/**` + sitemap completo; decidir `hreflang`/Wiki.
+- 0.23.0: portar `docs/wiki/**` + sitemap completo; decidir `hreflang`/Wiki.
 - Entry no `CHANGELOG.md`; regra nova (proposta: `BR-SITE-002`) na conclusão.
 
 ## 10. Critérios de aceite

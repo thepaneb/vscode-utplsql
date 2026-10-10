@@ -162,5 +162,5 @@ grupo "(sem tag)") `status: ativo` com `prds: ["PRD-55"]`; altera
 - 🎯 RF3 — IDs estáveis → [[BR-SCHEMA-005 - organization tag monta Tag Suite Test com ids estaveis e grupo (sem tag)|BR-SCHEMA-005]]
 - 🎯 RNF1 — Suite com várias tags duplica o subárvore (mesmo `TestItem` id não → [[BR-SCHEMA-005 - organization tag monta Tag Suite Test com ids estaveis e grupo (sem tag)|BR-SCHEMA-005]]
 - 🎯 RNF2 — Suites sem tags continuam acessíveis no grupo "(sem tag)". → [[BR-SCHEMA-005 - organization tag monta Tag Suite Test com ids estaveis e grupo (sem tag)|BR-SCHEMA-005]]
-- 🚀 ⬅️ release anterior: [[prd-94-vscode-floor-1-101|PRD-94 (0.14.0)]] · ➡️ próxima release: [[prd-95-esm-es2023-node22|PRD-95 (0.16.0)]]
+- 🚀 ⬅️ release anterior: [[prd-94-vscode-floor-1-101|PRD-94 (0.14.0)]] · ➡️ próxima release: [[prd-56-duration-persistence|PRD-56 (0.16.0)]]
 <!-- brain:auto:end -->

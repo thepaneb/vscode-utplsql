@@ -4,10 +4,10 @@ id: PRD-101
 aliases: [PRD-101]
 status: proposed
 titulo: "Ciclo de vida de conexões: fechar pools ociosos após a execução"
-versao: "0.19.0"
+versao: "0.20.0"
 data: "2026-10-09"
 autor: "Gil Cleber Barboza"
-versao_titulo: "0.19.0 — Observabilidade e desempenho"
+versao_titulo: "0.20.0 — Observabilidade e desempenho"
 verificado: 2026-10-09
 regras: []
 tags: [prd]
@@ -20,7 +20,7 @@ tags: [prd]
 | Autor | Gil Cleber Barboza |
 | Data | 2026-10-09 |
 | Componente | Extensão `paneb.vscode-utplsql` |
-| Versão alvo | 0.19.0 |
+| Versão alvo | 0.20.0 |
 | Arquivos afetados | `src/oracleRunner.ts`, `src/runner.ts`, `src/extension.ts`, `src/config.ts`, `package.json`, `docs/brain/**` |
 | Esforço estimado | 1–2 dias |
 | Complexidade | Média |
@@ -120,7 +120,7 @@ impede `DROP USER` do usuário de teste sem recarregar o VS Code.
 
 ## 9. Rollout
 
-- **0.19.0** ("Observabilidade e desempenho").
+- **0.20.0** ("Observabilidade e desempenho").
 - Registrar no `CHANGELOG.md`; publicação via GitHub release.
 
 ## 10. Critérios de aceite
@@ -147,6 +147,6 @@ execução; nunca conexão em uso"), com `prds: ["PRD-101"]`, `implementacao:` e
 <!-- brain:auto:start:conexoes -->
 - 🗺️ [[MOC - PRDs]]
 - 🔗 PRDs relacionados: [[prd-34-multi-connection-profiles|PRD-34]] · [[prd-38-connection-pooling|PRD-38]] · [[prd-66-connection-robustness-logging|PRD-66]] · [[prd-82-tns-wallet|PRD-82]] · [[prd-95-esm-es2023-node22|PRD-95]]
-- 🔗 Mesma versão (0.19.0): [[prd-102-trace-and-perf-instrumentation|PRD-102]] · [[prd-103-incremental-source-reindex|PRD-103]] · [[prd-106-perf-harness|PRD-106]] · [[prd-107-unprivileged-fixture|PRD-107]]
-- 🚀 ⬅️ release anterior: [[prd-109-language-identity|PRD-109 (0.18.0)]] · ➡️ próxima release: [[prd-104-ci-supply-chain|PRD-104 (0.20.0)]]
+- 🔗 Mesma versão (0.20.0): [[prd-102-trace-and-perf-instrumentation|PRD-102]] · [[prd-103-incremental-source-reindex|PRD-103]] · [[prd-106-perf-harness|PRD-106]] · [[prd-107-unprivileged-fixture|PRD-107]]
+- 🚀 ⬅️ release anterior: [[prd-115-split-i18n-locales|PRD-115 (0.19.0)]] · ➡️ próxima release: [[prd-88-locale-aware-formatting|PRD-88 (0.21.0)]]
 <!-- brain:auto:end -->

@@ -194,5 +194,5 @@ todas `status: ativo` com `prds: ["PRD-51"]`; referencia **`BR-PARSE-005`**,
 - 🎯 RF4 — Tooltip com tags → [[BR-UI-011 - utplsql.runByTag oferece QuickPick multi-selecao das tags; showTagsInTree sufixa o label|BR-UI-011]]
 - 🎯 RNF1 — Case-insensitive na comparação de tags. → [[BR-PARSE-017 - Filtro por tag - inclusao e exclusao (!) case-insensitive; sem tag so sem inclusao|BR-PARSE-017]]
 - 🎯 RNF2 — Sem tags em um `TestItem` ⇒ ele é incluído apenas quando nenhum → [[BR-PARSE-017 - Filtro por tag - inclusao e exclusao (!) case-insensitive; sem tag so sem inclusao|BR-PARSE-017]]
-- 🚀 ⬅️ release anterior: [[prd-94-vscode-floor-1-101|PRD-94 (0.14.0)]] · ➡️ próxima release: [[prd-95-esm-es2023-node22|PRD-95 (0.16.0)]]
+- 🚀 ⬅️ release anterior: [[prd-94-vscode-floor-1-101|PRD-94 (0.14.0)]] · ➡️ próxima release: [[prd-56-duration-persistence|PRD-56 (0.16.0)]]
 <!-- brain:auto:end -->

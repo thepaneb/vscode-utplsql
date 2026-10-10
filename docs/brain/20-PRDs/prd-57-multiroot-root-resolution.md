@@ -4,10 +4,10 @@ id: PRD-57
 aliases: [PRD-57]
 status: proposed
 titulo: "Multi-root: resolução de `root`/`sourcePath` por folder"
-versao: "0.17.0"
+versao: "0.16.0"
 data: "2026-09-06"
 autor: "Gil Cleber Barboza"
-versao_titulo: "0.17.0 — Persistência, multi-root e produtividade"
+versao_titulo: "0.16.0 — Produtividade e resultados"
 verificado: 2026-09-23
 regras: []
 tags: [prd]
@@ -20,7 +20,7 @@ tags: [prd]
 | Autor | Gil Cleber Barboza |
 | Data | 2026-09-06 |
 | Componente | Extensão `paneb.vscode-utplsql` |
-| Versão alvo | 0.17.0 |
+| Versão alvo | 0.16.0 |
 | Arquivos afetados | `src/runner.ts`, `src/oracleRunner.ts`, `src/coverage.ts`, `src/config.ts` |
 | Esforço estimado | 1–2 dias |
 | Complexidade | Média |
@@ -123,6 +123,6 @@ primeiro workspace folder para resolver sourcePath" (seção Limitações).
 <!-- brain:auto:start:conexoes -->
 - 🗺️ [[MOC - PRDs]]
 - 🔗 PRDs relacionados: [[prd-06-multiroot|PRD-06]] · [[prd-34-multi-connection-profiles|PRD-34]]
-- 🔗 Mesma versão (0.17.0): [[prd-56-duration-persistence|PRD-56]] · [[prd-58-run-related-tests|PRD-58]] · [[prd-59-scaffold-suite|PRD-59]] · [[prd-100-generate-test-suite|PRD-100]]
-- 🚀 ⬅️ release anterior: [[prd-99-brain-reuse|PRD-99 (0.16.0)]] · ➡️ próxima release: [[prd-105-snippets|PRD-105 (0.18.0)]]
+- 🔗 Mesma versão (0.16.0): [[prd-56-duration-persistence|PRD-56]] · [[prd-58-run-related-tests|PRD-58]] · [[prd-59-scaffold-suite|PRD-59]] · [[prd-100-generate-test-suite|PRD-100]]
+- 🚀 ⬅️ release anterior: [[prd-96-public-landing-page-github-pages|PRD-96 (0.15.0)]] · ➡️ próxima release: [[prd-105-snippets|PRD-105 (0.17.0)]]
 <!-- brain:auto:end -->

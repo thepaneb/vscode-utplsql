@@ -8,7 +8,7 @@
 | Autor | Gil Cleber Barboza |
 | Data | 2026-10-10 |
 | Componente | Extensão `paneb.vscode-utplsql` + ferramentas (`scripts/`, manifestos) |
-| Versão alvo | 0.23.0 |
+| Versão alvo | 0.18.0 |
 | Arquivos afetados | `package.json`, `biome.json`, `scripts/*.cjs`, `*.mjs`, `.github/workflows/ci.yml` |
 | Esforço estimado | 0,5–1 dia |
 | Complexidade | Baixa |
@@ -104,7 +104,7 @@ Nenhuma setting/comando de usuário. Muda o script `lint` e a config do Biome.
 
 ## 9. Rollout
 
-- **0.23.0** ("Qualidade interna").
+- **0.18.0** ("Fundação: segurança, testes e anti-drift").
 - Registrar no `CHANGELOG.md`; sem impacto no runtime da extensão.
 
 ## 10. Critérios de aceite

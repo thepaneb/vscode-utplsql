@@ -4,10 +4,10 @@ id: PRD-104
 aliases: [PRD-104]
 status: proposed
 titulo: "Cadeia de suprimentos do CI: Dependabot, pin de actions e auditoria de dependências"
-versao: "0.20.0"
+versao: "0.18.0"
 data: "2026-10-09"
 autor: "Gil Cleber Barboza"
-versao_titulo: "0.20.0 — Qualidade e CI"
+versao_titulo: "0.18.0 — Fundação: segurança, testes e anti-drift"
 verificado: 2026-10-09
 regras: []
 tags: [prd]
@@ -20,7 +20,7 @@ tags: [prd]
 | Autor | Gil Cleber Barboza |
 | Data | 2026-10-09 |
 | Componente | CI/CD do repositório (`.github/`) |
-| Versão alvo | 0.20.0 |
+| Versão alvo | 0.18.0 |
 | Arquivos afetados | `.github/workflows/*.yml`, `.github/dependabot.yml` (novo), `.github/workflows/codeql.yml` (opcional — só se migrar para *advanced*), `docs/brain/**` |
 | Esforço estimado | 0,5–1 dia |
 | Complexidade | Baixa |
@@ -154,7 +154,7 @@ Nenhuma setting da extensão.
 
 ## 9. Rollout
 
-- **0.20.0** (patch de infraestrutura; sem mudança de runtime).
+- **0.18.0** (patch de infraestrutura; sem mudança de runtime).
 - Registrar no `CHANGELOG.md`.
 
 ## 10. Critérios de aceite
@@ -183,6 +183,6 @@ escopadas; dependências auditadas no CI"), com `prds: ["PRD-104"]`,
 <!-- brain:auto:start:conexoes -->
 - 🗺️ [[MOC - PRDs]]
 - 🔗 PRDs relacionados: [[prd-81-security-hardening|PRD-81]] · [[prd-110-defensive-hardening|PRD-110]]
-- 🔗 Mesma versão (0.20.0): [[prd-110-defensive-hardening|PRD-110]]
-- 🚀 ⬅️ release anterior: [[prd-107-unprivileged-fixture|PRD-107 (0.19.0)]] · ➡️ próxima release: [[prd-88-locale-aware-formatting|PRD-88 (0.21.0)]]
+- 🔗 Mesma versão (0.18.0): [[prd-98-docs-anti-drift|PRD-98]] · [[prd-110-defensive-hardening|PRD-110]] · [[prd-113-lint-scope|PRD-113]] · [[prd-114-vscode-stub-modernization|PRD-114]]
+- 🚀 ⬅️ release anterior: [[prd-109-language-identity|PRD-109 (0.17.0)]] · ➡️ próxima release: [[prd-111-decompose-oracle-runner|PRD-111 (0.19.0)]]
 <!-- brain:auto:end -->

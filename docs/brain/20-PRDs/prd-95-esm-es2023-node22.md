@@ -4,10 +4,10 @@ id: PRD-95
 aliases: [PRD-95]
 status: proposed
 titulo: "Modernização do runtime: ESM, ES2023 e stdlib Node 22"
-versao: "0.16.0"
+versao: "0.23.0"
 data: "2026-09-29"
 autor: "Gil Cleber Barboza"
-versao_titulo: "0.16.0 — Modernização do runtime (ESM/ES2023)"
+versao_titulo: "0.23.0 — Runtime, docs e qualidade residual"
 verificado: 2026-09-29
 regras: []
 tags: [prd]
@@ -20,7 +20,7 @@ tags: [prd]
 | Autor | Gil Cleber Barboza |
 | Data | 2026-09-29 |
 | Componente | Extensão `paneb.vscode-utplsql` |
-| Versão alvo | 0.16.0 |
+| Versão alvo | 0.23.0 |
 | Arquivos afetados | `package.json`, `esbuild.config.mjs`, `tsconfig.json`, `src/**` (pontual), `.vscode-test.mjs`, `scripts/*` |
 | Esforço estimado | 2–3 dias |
 | Complexidade | Média |
@@ -114,7 +114,7 @@ Nenhuma setting de usuário nova.
 
 ## 9. Rollout
 
-- Release alvo: **0.15.0**.
+- Release alvo: **0.23.0**.
 - Sem impacto de compatibilidade (o piso já é 1.101); bullet no `CHANGELOG`.
 
 ## 10. Critérios de aceite
@@ -141,5 +141,6 @@ topologia mudar.
 <!-- brain:auto:start:conexoes -->
 - 🗺️ [[MOC - PRDs]]
 - 🔗 PRDs relacionados: [[prd-94-vscode-floor-1-101|PRD-94]]
-- 🚀 ⬅️ release anterior: [[prd-96-public-landing-page-github-pages|PRD-96 (0.15.0)]] · ➡️ próxima release: [[prd-56-duration-persistence|PRD-56 (0.17.0)]]
+- 🔗 Mesma versão (0.23.0): [[prd-97-doc-no-site|PRD-97]] · [[prd-99-brain-reuse|PRD-99]] · [[prd-112-error-handling-audit|PRD-112]] · [[prd-116-direct-module-tests|PRD-116]] · [[prd-117-split-script-property-tests|PRD-117]]
+- 🚀 ⬅️ release anterior: [[prd-93-continuous-localization-pipeline|PRD-93 (0.22.0)]]
 <!-- brain:auto:end -->

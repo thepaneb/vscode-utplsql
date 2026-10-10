@@ -4,10 +4,10 @@ id: PRD-109
 aliases: [PRD-109]
 status: proposed
 titulo: "Identidade de linguagem PL/SQL ampliada e languageIds configuráveis"
-versao: "0.18.0"
+versao: "0.17.0"
 data: "2026-10-09"
 autor: "Gil Cleber Barboza"
-versao_titulo: "0.18.0 — UX de editor e cobertura"
+versao_titulo: "0.17.0 — UX de editor e cobertura"
 verificado: 2026-10-09
 regras: []
 tags: [prd]
@@ -20,7 +20,7 @@ tags: [prd]
 | Autor | Gil Cleber Barboza |
 | Data | 2026-10-09 |
 | Componente | Extensão `paneb.vscode-utplsql` |
-| Versão alvo | 0.18.0 |
+| Versão alvo | 0.17.0 |
 | Arquivos afetados | `package.json`, `src/config.ts`, `src/discovery.ts`, `src/codelens.ts`, `src/decorations.ts`, `docs/brain/**` |
 | Esforço estimado | 1 dia |
 | Complexidade | Baixa |
@@ -108,7 +108,7 @@ participem de descoberta, CodeLens e decorações.
 
 ## 9. Rollout
 
-- **0.18.0** (UX de editor e cobertura).
+- **0.17.0** (UX de editor e cobertura).
 - Registrar no `CHANGELOG.md`.
 
 ## 10. Critérios de aceite
@@ -134,6 +134,6 @@ Na conclusão, criar a regra `BR-PARSE-*` ("descoberta/CodeLens respeitam
 <!-- brain:auto:start:conexoes -->
 - 🗺️ [[MOC - PRDs]]
 - 🔗 PRDs relacionados: [[prd-24-codelens-integration|PRD-24]] · [[prd-42-suiteparser-annotations|PRD-42]] · [[prd-43-schema-db-discovery|PRD-43]] · [[prd-57-multiroot-root-resolution|PRD-57]] · [[prd-74-db-first-discovery|PRD-74]]
-- 🔗 Mesma versão (0.18.0): [[prd-105-snippets|PRD-105]] · [[prd-108-coverage-html-report|PRD-108]]
-- 🚀 ⬅️ release anterior: [[prd-100-generate-test-suite|PRD-100 (0.17.0)]] · ➡️ próxima release: [[prd-101-connection-pool-lifecycle|PRD-101 (0.19.0)]]
+- 🔗 Mesma versão (0.17.0): [[prd-105-snippets|PRD-105]] · [[prd-108-coverage-html-report|PRD-108]]
+- 🚀 ⬅️ release anterior: [[prd-100-generate-test-suite|PRD-100 (0.16.0)]] · ➡️ próxima release: [[prd-98-docs-anti-drift|PRD-98 (0.18.0)]]
 <!-- brain:auto:end -->

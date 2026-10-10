@@ -4,10 +4,10 @@ id: PRD-106
 aliases: [PRD-106]
 status: proposed
 titulo: "Harness de performance: fixture em escala e medição por fases"
-versao: "0.19.0"
+versao: "0.20.0"
 data: "2026-10-09"
 autor: "Gil Cleber Barboza"
-versao_titulo: "0.19.0 — Observabilidade e desempenho"
+versao_titulo: "0.20.0 — Observabilidade e desempenho"
 verificado: 2026-10-09
 regras: []
 tags: [prd]
@@ -20,7 +20,7 @@ tags: [prd]
 | Autor | Gil Cleber Barboza |
 | Data | 2026-10-09 |
 | Componente | Testes (infra de performance) |
-| Versão alvo | 0.19.0 |
+| Versão alvo | 0.20.0 |
 | Arquivos afetados | `test/perf/**` (novo), `scripts/**`, `.github/workflows/performance.yml` (novo), `package.json`, `docs/brain/**` |
 | Esforço estimado | 2–3 dias |
 | Complexidade | Média-Alta |
@@ -110,7 +110,7 @@ Nenhuma setting da extensão (usa `describeDB`/`UTPLSQL_CONN`).
 
 ## 9. Rollout
 
-- **0.19.0** (Observabilidade e desempenho), junto da PRD-102.
+- **0.20.0** (Observabilidade e desempenho), junto da PRD-102.
 - Registrar no `CHANGELOG.md`.
 
 ## 10. Critérios de aceite
@@ -135,6 +135,6 @@ por seed e não roda no caminho crítico do PR"), com `prds: ["PRD-106"]`,
 <!-- brain:auto:start:conexoes -->
 - 🗺️ [[MOC - PRDs]]
 - 🔗 PRDs relacionados: [[prd-75-lazy-test-tree|PRD-75]] · [[prd-102-trace-and-perf-instrumentation|PRD-102]]
-- 🔗 Mesma versão (0.19.0): [[prd-101-connection-pool-lifecycle|PRD-101]] · [[prd-102-trace-and-perf-instrumentation|PRD-102]] · [[prd-103-incremental-source-reindex|PRD-103]] · [[prd-107-unprivileged-fixture|PRD-107]]
-- 🚀 ⬅️ release anterior: [[prd-109-language-identity|PRD-109 (0.18.0)]] · ➡️ próxima release: [[prd-104-ci-supply-chain|PRD-104 (0.20.0)]]
+- 🔗 Mesma versão (0.20.0): [[prd-101-connection-pool-lifecycle|PRD-101]] · [[prd-102-trace-and-perf-instrumentation|PRD-102]] · [[prd-103-incremental-source-reindex|PRD-103]] · [[prd-107-unprivileged-fixture|PRD-107]]
+- 🚀 ⬅️ release anterior: [[prd-115-split-i18n-locales|PRD-115 (0.19.0)]] · ➡️ próxima release: [[prd-88-locale-aware-formatting|PRD-88 (0.21.0)]]
 <!-- brain:auto:end -->

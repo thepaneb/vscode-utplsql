@@ -8,7 +8,7 @@
 | Autor | Gil Cleber Barboza |
 | Data | 2026-10-10 |
 | Componente | Extensão `paneb.vscode-utplsql` (testes) |
-| Versão alvo | 0.23.0 |
+| Versão alvo | 0.18.0 |
 | Arquivos afetados | `src/test/vscode-stub.ts`, `src/test/unit/*.test.ts`, `src/test/unit/vscodeApiInventory.test.ts` |
 | Esforço estimado | 2–3 dias |
 | Complexidade | Média |
@@ -109,7 +109,7 @@ Nenhuma setting/comando. Possível ajuste do override do Biome para `src/test/**
 
 ## 9. Rollout
 
-- **0.23.0** ("Qualidade interna"); sem impacto no runtime.
+- **0.18.0** ("Fundação: segurança, testes e anti-drift"); sem impacto no runtime.
 - Registrar no `CHANGELOG.md`.
 
 ## 10. Critérios de aceite

@@ -149,5 +149,5 @@ Criada a regra **`BR-PARSE-018`** (`TestMessage` de falha ganha `expectedOutput`
 - 🎯 RF2 — Preencher `TestMessage` → [[BR-PARSE-018 - TestMessage de falha ganha expectedOutput-actualOutput quando ha Expected-Actual|BR-PARSE-018]]
 - 🎯 RNF1 — Parse defensivo: nunca lança; mensagens sem `Expected:`/`Actual:` → [[BR-PARSE-018 - TestMessage de falha ganha expectedOutput-actualOutput quando ha Expected-Actual|BR-PARSE-018]]
 - 🎯 RNF2 — Multilinha: `Actual:`/`Expected:` podem ocupar várias linhas. → [[BR-PARSE-018 - TestMessage de falha ganha expectedOutput-actualOutput quando ha Expected-Actual|BR-PARSE-018]]
-- 🚀 ⬅️ release anterior: [[prd-94-vscode-floor-1-101|PRD-94 (0.14.0)]] · ➡️ próxima release: [[prd-95-esm-es2023-node22|PRD-95 (0.16.0)]]
+- 🚀 ⬅️ release anterior: [[prd-94-vscode-floor-1-101|PRD-94 (0.14.0)]] · ➡️ próxima release: [[prd-56-duration-persistence|PRD-56 (0.16.0)]]
 <!-- brain:auto:end -->
