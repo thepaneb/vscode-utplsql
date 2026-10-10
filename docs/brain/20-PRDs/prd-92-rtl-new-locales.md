@@ -133,5 +133,5 @@ Esperado criar `BR-I18N-006` (isolamento bidi em locales RTL) com
 - 🗺️ [[MOC - PRDs]]
 - 🔗 PRDs relacionados: [[prd-89-pseudo-localization-gate|PRD-89]] · [[prd-90-message-plurals-cldr|PRD-90]] · [[prd-91-doc-parity-localized-distribution|PRD-91]] · [[prd-93-continuous-localization-pipeline|PRD-93]]
 - 🔗 Mesma versão (0.22.0): [[prd-93-continuous-localization-pipeline|PRD-93]]
-- 🚀 ⬅️ release anterior: [[prd-91-doc-parity-localized-distribution|PRD-91 (0.21.0)]]
+- 🚀 ⬅️ release anterior: [[prd-91-doc-parity-localized-distribution|PRD-91 (0.21.0)]] · ➡️ próxima release: [[prd-111-decompose-oracle-runner|PRD-111 (0.23.0)]]
 <!-- brain:auto:end -->

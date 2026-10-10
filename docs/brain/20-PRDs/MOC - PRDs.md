@@ -40,7 +40,7 @@ npm run sync-prds
 ## Status (gerado)
 
 <!-- brain:auto:start:prd-summary -->
-- 📝 Propostos: **28**
+- 📝 Propostos: **35**
 - 🔵 Aprovados: **0**
 - 🟡 Em desenvolvimento: **0**
 - 🟢 Concluídos: **82**
@@ -81,6 +81,13 @@ Detalhe completo (fonte da verdade): [docs/prd/index.md](../../prd/index.md)
 - [[prd-109-language-identity]] — `PRD-109`
 - [[prd-11-streaming-results]] — `PRD-11`
 - [[prd-110-defensive-hardening]] — `PRD-110`
+- [[prd-111-decompose-oracle-runner]] — `PRD-111`
+- [[prd-112-error-handling-audit]] — `PRD-112`
+- [[prd-113-lint-scope]] — `PRD-113`
+- [[prd-114-vscode-stub-modernization]] — `PRD-114`
+- [[prd-115-split-i18n-locales]] — `PRD-115`
+- [[prd-116-direct-module-tests]] — `PRD-116`
+- [[prd-117-split-script-property-tests]] — `PRD-117`
 - [[prd-12-sql-coverage]] — `PRD-12`
 - [[prd-13-oracle-infra]] — `PRD-13`
 - [[prd-14-test-schema-packages]] — `PRD-14`
@@ -177,4 +184,5 @@ Detalhe completo (fonte da verdade): [docs/prd/index.md](../../prd/index.md)
 - [[Roadmap - 0.20.0 (planejamento)]]
 - [[Roadmap - 0.21.0 (planejamento)]]
 - [[Roadmap - 0.22.0 (planejamento)]]
+- [[Roadmap - 0.23.0 (planejamento)]]
 <!-- brain:auto:end -->
