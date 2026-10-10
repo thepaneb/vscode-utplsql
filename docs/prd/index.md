@@ -193,6 +193,13 @@ notas `prd-*`. O índice navegável do vault é a [[MOC - PRDs]].
 | 108 | [Relatório HTML de cobertura aberto no navegador](proposed/prd-108-coverage-html-report.md) | 0.18.0 | 2026-10-09 |
 | 109 | [Identidade de linguagem PL/SQL ampliada e languageIds configuráveis](proposed/prd-109-language-identity.md) | 0.18.0 | 2026-10-09 |
 | 110 | [Hardening defensivo: identificador SQL, redaction de logs e scripts de desenvolvimento](proposed/prd-110-defensive-hardening.md) | 0.20.0 | 2026-10-09 |
+| 111 | [Decompor `executeRunOracle` e agrupar `OracleRunOptions`](proposed/prd-111-decompose-oracle-runner.md) | 0.23.0 | 2026-10-10 |
+| 112 | [Auditoria de tratamento de erros: `catch` silenciosos e robustez](proposed/prd-112-error-handling-audit.md) | 0.23.0 | 2026-10-10 |
+| 113 | [Ampliar o escopo do lint (Biome) para além de `src/`](proposed/prd-113-lint-scope.md) | 0.23.0 | 2026-10-10 |
+| 114 | [Modernizar o stub de `vscode` e reduzir `any` nos testes](proposed/prd-114-vscode-stub-modernization.md) | 0.23.0 | 2026-10-10 |
+| 115 | [Fatiar `i18nLocales.ts` por locale](proposed/prd-115-split-i18n-locales.md) | 0.23.0 | 2026-10-10 |
+| 116 | [Testes diretos dos módulos sem cobertura dedicada](proposed/prd-116-direct-module-tests.md) | 0.23.0 | 2026-10-10 |
+| 117 | [Testes de propriedade do parser de scripts (`splitScript`)](proposed/prd-117-split-script-property-tests.md) | 0.23.0 | 2026-10-10 |
 <!-- prd:roadmap:end -->
 
 ---
@@ -316,6 +323,13 @@ docs/prd/
 │   ├── prd-108-coverage-html-report.md
 │   ├── prd-109-language-identity.md
 │   ├── prd-110-defensive-hardening.md
+│   ├── prd-111-decompose-oracle-runner.md
+│   ├── prd-112-error-handling-audit.md
+│   ├── prd-113-lint-scope.md
+│   ├── prd-114-vscode-stub-modernization.md
+│   ├── prd-115-split-i18n-locales.md
+│   ├── prd-116-direct-module-tests.md
+│   ├── prd-117-split-script-property-tests.md
 ```
 <!-- prd:estrutura:end -->
 
