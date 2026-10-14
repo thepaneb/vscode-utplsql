@@ -85,6 +85,7 @@ function makeGlobal(over: Partial<UtConfig> = {}): UtConfig {
     generateTestPackageSuffix: '',
     generateTestsPerUnit: 1,
     generateComments: true,
+    showTestDuration: false,
     sqlCoverageEnabled: false,
     debuggerEnabled: true,
     debuggerStopOnException: true,

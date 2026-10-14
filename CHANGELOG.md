@@ -2,6 +2,15 @@
 
 ## 0.16.0
 
+- **Duration and result persistence (PRD-56)**: the last run result is now persisted in the
+  workspace state (`id → status, message, per-test duration and timestamp`, versioned snapshot with
+  truncated messages) and **restored when the workspace is reopened** — the pass/fail decorations,
+  the **"Run Failed"** set and the `utplsql:hasFailures` context key come back without re-running
+  the suites. A new setting **`utplsql.showTestDuration`** (default `false`) suffixes the duration
+  of the last run to the test labels in the Test Explorer (e.g. `(1.2s)`); re-applying it never
+  accumulates suffixes and a snapshot written by another workspace is never seen (it lives in the
+  per-workspace state).
+
 - **Test suite scaffold (PRD-59 + PRD-100)**: new **`utPLSQL: Generate test suite`** command
   (palette, editor/Explorer context menu and a **Code Action** over `.pks`/`.pkb`) that writes
   `ut_<package>.pks` next to the production file — or beside the first workspace folder when the

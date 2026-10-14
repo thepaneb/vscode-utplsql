@@ -62,6 +62,8 @@ export interface UtConfig {
   generateTestsPerUnit: number;
   /** Emite `-- TODO` em cada `%test` gerado. */
   generateComments: boolean;
+  /** Sufixa `(1.2s)` no label dos testes com duração conhecida (PRD-56). */
+  showTestDuration: boolean;
   sqlCoverageEnabled: boolean;
   debuggerEnabled: boolean;
   debuggerStopOnException: boolean;
@@ -169,6 +171,7 @@ export function readConfig(): UtConfig {
     generateTestPackageSuffix: c.get<string>('generate.testPackageSuffix', ''),
     generateTestsPerUnit: c.get<number>('generate.numberOfTestsPerUnit', 1),
     generateComments: c.get<boolean>('generate.generateComments', true),
+    showTestDuration: c.get<boolean>('showTestDuration', false),
     sqlCoverageEnabled: c.get<boolean>('sqlCoverageEnabled', false),
     debuggerEnabled: c.get<boolean>('debugger.enabled', true),
     debuggerStopOnException: c.get<boolean>('debugger.stopOnException', true),

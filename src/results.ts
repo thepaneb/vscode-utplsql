@@ -2,19 +2,13 @@ import * as fs from 'node:fs';
 import * as path from 'node:path';
 import * as vscode from 'vscode';
 import { parseCobertura } from './cobertura';
-import { getExtensionLocale } from './config';
+import { getExtensionLocale, readConfig } from './config';
 import { resolveSourceUri } from './coverage';
 import { t } from './i18n';
-import {
-  isUserFrame,
-  parseExpectedActual,
-  type StackFrame,
-  type TestCaseResult,
-  type TestStatus,
-} from './junit';
+import { isUserFrame, parseExpectedActual, type StackFrame, type TestCaseResult } from './junit';
 import { buildMatchIndex, findByNameOnly, type MatchEntry } from './matching';
 import { deriveDeclarationCoverage } from './plsqlDeclarations';
-import type { TestStateManager } from './state';
+import { type TestLineResult, type TestStateManager, withDurationSuffix } from './state';
 import { virtualSourceUri } from './virtualSource';
 
 export interface RunResults {
@@ -122,9 +116,10 @@ export function applyResultsFromCases(
   leafTests: vscode.TestItem[],
   run: vscode.TestRun,
   state: TestStateManager,
-): Map<string, { status: TestStatus; message?: string }> {
+): Map<string, TestLineResult> {
   const locale = getExtensionLocale();
-  const resultMap = new Map<string, { status: TestStatus; message?: string }>();
+  const showDuration = readConfig().showTestDuration;
+  const resultMap = new Map<string, TestLineResult>();
 
   const entries: MatchEntry[] = [];
   for (const t of leafTests) {
@@ -145,7 +140,16 @@ export function applyResultsFromCases(
     }
     if (!item) continue;
     matched.add(item);
-    resultMap.set(item.id, { status: c.status, message: c.message });
+    resultMap.set(item.id, {
+      status: c.status,
+      ...(c.message !== undefined ? { message: c.message } : {}),
+      ...(c.durationMs !== undefined ? { durationMs: c.durationMs } : {}),
+      ts: Date.now(),
+    });
+    // Duração no label (PRD-56 RF4): reflete na hora, sem esperar um refresh.
+    if (showDuration && typeof item.label === 'string') {
+      item.label = withDurationSuffix(item.label, c.durationMs, true);
+    }
 
     switch (c.status) {
       case 'passed':
