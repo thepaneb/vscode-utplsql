@@ -6,6 +6,7 @@ import { registerDebug } from './commands/debug';
 import type { CommandDeps } from './commands/deps';
 import { registerProfileCommands } from './commands/profile';
 import { registerRunCommands } from './commands/run';
+import { registerScaffoldCommands } from './commands/scaffold';
 import { registerScriptCommands } from './commands/script';
 import { registerUtilityCommands } from './commands/utility';
 import { registerCompilationDiagnostics } from './compilationDiagnostics';
@@ -98,6 +99,7 @@ export function activate(context: vscode.ExtensionContext) {
   registerConnectionCommands(context, deps);
   registerProfileCommands(context, deps);
   registerScriptCommands(context);
+  registerScaffoldCommands(context);
   registerDebug(context, deps);
 
   context.subscriptions.push(

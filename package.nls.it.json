@@ -33,5 +33,6 @@
   "nls.command.compileForDebug": "utPLSQL: Compila per il debug",
   "nls.command.rebuildAnnotations": "utPLSQL: Ricostruisci cache delle annotazioni",
   "nls.command.setWalletPassword": "utPLSQL: Imposta password del wallet",
-  "nls.command.runWithReporter": "utPLSQL: Esegui con reporter (export)"
+  "nls.command.runWithReporter": "utPLSQL: Esegui con reporter (export)",
+  "nls.command.generateTestSuite": "utPLSQL: Genera suite di test…"
 }

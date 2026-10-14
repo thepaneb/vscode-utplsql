@@ -33,5 +33,6 @@
   "nls.command.compileForDebug": "utPLSQL: Скомпілювати для налагодження",
   "nls.command.rebuildAnnotations": "utPLSQL: Перебудувати кеш анотацій",
   "nls.command.setWalletPassword": "utPLSQL: Встановити пароль гаманця",
-  "nls.command.runWithReporter": "utPLSQL: Запустити з reporter (експорт)"
+  "nls.command.runWithReporter": "utPLSQL: Запустити з reporter (експорт)",
+  "nls.command.generateTestSuite": "utPLSQL: Створити набір тестів…"
 }

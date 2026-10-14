@@ -278,6 +278,28 @@ export namespace workspace {
     return undefined;
   }
 
+  /** Caminho relativo ao primeiro workspace folder (ou o próprio caminho). */
+  export function asRelativePath(
+    uri: { fsPath?: string } | string,
+    _includeWorkspaceFolder?: boolean,
+  ) {
+    const p = typeof uri === 'string' ? uri : (uri.fsPath ?? '');
+    for (const f of workspaceFolders ?? []) {
+      const base = f.uri.fsPath.replace(/[/\\]$/, '');
+      if (p === base) return '';
+      if (p.startsWith(`${base}/`) || p.startsWith(`${base}\\`)) return p.slice(base.length + 1);
+    }
+    return p;
+  }
+
+  export function openTextDocument(arg: { fsPath?: string; path?: string } | string) {
+    const p = typeof arg === 'string' ? arg : (arg.fsPath ?? arg.path ?? '');
+    return Promise.resolve({
+      uri: { fsPath: p, path: p, scheme: 'file', toString: () => p },
+      getText: () => _mockFileContents[p] ?? '',
+    });
+  }
+
   let _watcherCreate: ((uri: unknown) => unknown) | undefined;
   let _watcherChange: ((uri: unknown) => unknown) | undefined;
   let _watcherDelete: ((uri: unknown) => unknown) | undefined;
@@ -556,6 +578,9 @@ export namespace window {
   export function showWarningMessage(message: string, ..._items: string[]) {
     _warningMessages.push(message);
     return Promise.resolve(_warningResult);
+  }
+  export function showTextDocument(document: unknown) {
+    return Promise.resolve({ document });
   }
   export function withProgress<T>(
     _options: unknown,
@@ -951,6 +976,8 @@ export function __getLastDiagnosticCollection(): DiagnosticCollection | undefine
   return _lastDiagnosticCollection;
 }
 
+let _lastCodeActionsProvider: unknown;
+
 export const languages = {
   createDiagnosticCollection(_name: string): DiagnosticCollection {
     _lastDiagnosticCollection = new DiagnosticCollection();
@@ -959,8 +986,19 @@ export const languages = {
   registerCodeLensProvider(_selector: unknown, _provider: unknown) {
     return { dispose: () => {} };
   },
-  registerCodeActionsProvider(_selector: unknown, _provider: unknown) {
+  registerCodeActionsProvider(_selector: unknown, provider: unknown) {
+    _lastCodeActionsProvider = provider;
     return { dispose: () => {} };
+  },
+  __getLastCodeActionsProvider(): {
+    provideCodeActions: (document: unknown) => Array<{ title: string }>;
+  } {
+    return _lastCodeActionsProvider as {
+      provideCodeActions: (document: unknown) => Array<{ title: string }>;
+    };
+  },
+  __resetCodeActionsProvider(): void {
+    _lastCodeActionsProvider = undefined;
   },
 };
 

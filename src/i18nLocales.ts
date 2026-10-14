@@ -210,6 +210,14 @@ export const ptBr: Record<string, string> = {
   'quickfix.openClientSettings': 'Abrir configurações do cliente Oracle',
   'testTree.schemaNode': 'Schema: {schema}',
   'testTree.packageNode': 'Package: {package}',
+  'nls.command.generateTestSuite': 'utPLSQL: Gerar suíte de teste…',
+  'ext.scaffold.noSource':
+    'Nenhuma fonte encontrada. Abra um arquivo .pks/.pkb ou informe um objeto do banco.',
+  'ext.scaffold.objectPrompt': 'Objeto do banco de produção (ex.: APP.APP_PKG)',
+  'ext.scaffold.overwrite': 'O arquivo {file} já existe. Sobrescrever?',
+  'ext.scaffold.overwriteButton': 'Sobrescrever',
+  'ext.scaffold.created': 'Suíte criada em {path}',
+  'ext.scaffold.failed': 'Falha ao gerar a suíte: {error}',
 };
 
 export const en: Record<string, string> = {
@@ -420,6 +428,13 @@ export const en: Record<string, string> = {
   'quickfix.openClientSettings': 'Open Oracle Client settings',
   'testTree.schemaNode': 'Schema: {schema}',
   'testTree.packageNode': 'Package: {package}',
+  'nls.command.generateTestSuite': 'utPLSQL: Generate test suite…',
+  'ext.scaffold.noSource': 'No source found. Open a .pks/.pkb file or provide a database object.',
+  'ext.scaffold.objectPrompt': 'Production database object (e.g. APP.APP_PKG)',
+  'ext.scaffold.overwrite': 'The file {file} already exists. Overwrite?',
+  'ext.scaffold.overwriteButton': 'Overwrite',
+  'ext.scaffold.created': 'Suite created at {path}',
+  'ext.scaffold.failed': 'Failed to generate the suite: {error}',
 };
 
 export const es: Record<string, string> = {
@@ -634,6 +649,14 @@ export const es: Record<string, string> = {
   'quickfix.openClientSettings': 'Abrir configuración del cliente Oracle',
   'testTree.schemaNode': 'Esquema: {schema}',
   'testTree.packageNode': 'Paquete: {package}',
+  'nls.command.generateTestSuite': 'utPLSQL: Generar suite de pruebas…',
+  'ext.scaffold.noSource':
+    'No se encontró ninguna fuente. Abra un archivo .pks/.pkb o indique un objeto de la base de datos.',
+  'ext.scaffold.objectPrompt': 'Objeto de la base de datos de producción (p. ej. APP.APP_PKG)',
+  'ext.scaffold.overwrite': 'El archivo {file} ya existe. ¿Sobrescribir?',
+  'ext.scaffold.overwriteButton': 'Sobrescribir',
+  'ext.scaffold.created': 'Suite creada en {path}',
+  'ext.scaffold.failed': 'No se pudo generar la suite: {error}',
 };
 
 export const zhCn: Record<string, string> = {
@@ -834,6 +857,13 @@ export const zhCn: Record<string, string> = {
   'quickfix.openClientSettings': '打开 Oracle Client 设置',
   'testTree.schemaNode': '架构：{schema}',
   'testTree.packageNode': '包：{package}',
+  'nls.command.generateTestSuite': 'utPLSQL: 生成测试套件…',
+  'ext.scaffold.noSource': '未找到来源。请打开 .pks/.pkb 文件或指定数据库对象。',
+  'ext.scaffold.objectPrompt': '生产数据库对象（例如 APP.APP_PKG）',
+  'ext.scaffold.overwrite': '文件 {file} 已存在。是否覆盖？',
+  'ext.scaffold.overwriteButton': '覆盖',
+  'ext.scaffold.created': '套件已创建于 {path}',
+  'ext.scaffold.failed': '生成套件失败：{error}',
 };
 
 export const ja: Record<string, string> = {
@@ -1048,6 +1078,14 @@ export const ja: Record<string, string> = {
   'quickfix.openClientSettings': 'Oracle Client 設定を開く',
   'testTree.schemaNode': 'スキーマ: {schema}',
   'testTree.packageNode': 'パッケージ: {package}',
+  'nls.command.generateTestSuite': 'utPLSQL: テストスイートを生成…',
+  'ext.scaffold.noSource':
+    'ソースが見つかりません。.pks/.pkb ファイルを開くか、データベースオブジェクトを指定してください。',
+  'ext.scaffold.objectPrompt': '本番データベースのオブジェクト（例: APP.APP_PKG）',
+  'ext.scaffold.overwrite': 'ファイル {file} は既に存在します。上書きしますか？',
+  'ext.scaffold.overwriteButton': '上書き',
+  'ext.scaffold.created': 'スイートを作成しました: {path}',
+  'ext.scaffold.failed': 'スイートの生成に失敗しました: {error}',
 };
 
 export const de: Record<string, string> = {
@@ -1261,6 +1299,14 @@ export const de: Record<string, string> = {
   'quickfix.openClientSettings': 'Oracle-Client-Einstellungen öffnen',
   'testTree.schemaNode': 'Schema: {schema}',
   'testTree.packageNode': 'Paket: {package}',
+  'nls.command.generateTestSuite': 'utPLSQL: Testsuite generieren…',
+  'ext.scaffold.noSource':
+    'Keine Quelle gefunden. Öffnen Sie eine .pks/.pkb-Datei oder geben Sie ein Datenbankobjekt an.',
+  'ext.scaffold.objectPrompt': 'Produktions-Datenbankobjekt (z. B. APP.APP_PKG)',
+  'ext.scaffold.overwrite': 'Die Datei {file} existiert bereits. Überschreiben?',
+  'ext.scaffold.overwriteButton': 'Überschreiben',
+  'ext.scaffold.created': 'Suite erstellt in {path}',
+  'ext.scaffold.failed': 'Suite konnte nicht erstellt werden: {error}',
 };
 
 export const fr: Record<string, string> = {
@@ -1476,6 +1522,14 @@ export const fr: Record<string, string> = {
   'quickfix.openClientSettings': 'Ouvrir les paramètres du client Oracle',
   'testTree.schemaNode': 'Schéma : {schema}',
   'testTree.packageNode': 'Package : {package}',
+  'nls.command.generateTestSuite': 'utPLSQL: Générer la suite de tests…',
+  'ext.scaffold.noSource':
+    'Aucune source trouvée. Ouvrez un fichier .pks/.pkb ou indiquez un objet de base de données.',
+  'ext.scaffold.objectPrompt': 'Objet de base de données de production (ex. : APP.APP_PKG)',
+  'ext.scaffold.overwrite': 'Le fichier {file} existe déjà. Écraser ?',
+  'ext.scaffold.overwriteButton': 'Écraser',
+  'ext.scaffold.created': 'Suite créée dans {path}',
+  'ext.scaffold.failed': 'Échec de la génération de la suite : {error}',
 };
 
 export const zhTw: Record<string, string> = {
@@ -1676,6 +1730,13 @@ export const zhTw: Record<string, string> = {
   'quickfix.openClientSettings': '開啟 Oracle Client 設定',
   'testTree.schemaNode': '結構描述：{schema}',
   'testTree.packageNode': '套件：{package}',
+  'nls.command.generateTestSuite': 'utPLSQL: 產生測試套件…',
+  'ext.scaffold.noSource': '找不到來源。請開啟 .pks/.pkb 檔案或指定資料庫物件。',
+  'ext.scaffold.objectPrompt': '生產資料庫物件（例如 APP.APP_PKG）',
+  'ext.scaffold.overwrite': '檔案 {file} 已存在。要覆寫嗎？',
+  'ext.scaffold.overwriteButton': '覆寫',
+  'ext.scaffold.created': '套件已建立於 {path}',
+  'ext.scaffold.failed': '產生套件失敗：{error}',
 };
 
 export const it: Record<string, string> = {
@@ -1891,6 +1952,14 @@ export const it: Record<string, string> = {
   'quickfix.openClientSettings': 'Apri impostazioni client Oracle',
   'testTree.schemaNode': 'Schema: {schema}',
   'testTree.packageNode': 'Package: {package}',
+  'nls.command.generateTestSuite': 'utPLSQL: Genera suite di test…',
+  'ext.scaffold.noSource':
+    'Nessuna origine trovata. Apri un file .pks/.pkb o indica un oggetto del database.',
+  'ext.scaffold.objectPrompt': 'Oggetto del database di produzione (es. APP.APP_PKG)',
+  'ext.scaffold.overwrite': 'Il file {file} esiste già. Sovrascrivere?',
+  'ext.scaffold.overwriteButton': 'Sovrascrivi',
+  'ext.scaffold.created': 'Suite creata in {path}',
+  'ext.scaffold.failed': 'Impossibile generare la suite: {error}',
 };
 
 export const ko: Record<string, string> = {
@@ -2100,6 +2169,14 @@ export const ko: Record<string, string> = {
   'quickfix.openClientSettings': 'Oracle Client 설정 열기',
   'testTree.schemaNode': '스키마: {schema}',
   'testTree.packageNode': '패키지: {package}',
+  'nls.command.generateTestSuite': 'utPLSQL: 테스트 스위트 생성…',
+  'ext.scaffold.noSource':
+    '소스를 찾을 수 없습니다. .pks/.pkb 파일을 열거나 데이터베이스 객체를 지정하세요.',
+  'ext.scaffold.objectPrompt': '운영 데이터베이스 객체(예: APP.APP_PKG)',
+  'ext.scaffold.overwrite': '{file} 파일이 이미 있습니다. 덮어쓸까요?',
+  'ext.scaffold.overwriteButton': '덮어쓰기',
+  'ext.scaffold.created': '스위트를 생성했습니다: {path}',
+  'ext.scaffold.failed': '스위트 생성 실패: {error}',
 };
 
 export const ru: Record<string, string> = {
@@ -2311,6 +2388,14 @@ export const ru: Record<string, string> = {
   'quickfix.openClientSettings': 'Открыть настройки Oracle Client',
   'testTree.schemaNode': 'Схема: {schema}',
   'testTree.packageNode': 'Пакет: {package}',
+  'nls.command.generateTestSuite': 'utPLSQL: Создать набор тестов…',
+  'ext.scaffold.noSource':
+    'Источник не найден. Откройте файл .pks/.pkb или укажите объект базы данных.',
+  'ext.scaffold.objectPrompt': 'Объект рабочей базы данных (например, APP.APP_PKG)',
+  'ext.scaffold.overwrite': 'Файл {file} уже существует. Перезаписать?',
+  'ext.scaffold.overwriteButton': 'Перезаписать',
+  'ext.scaffold.created': 'Набор создан: {path}',
+  'ext.scaffold.failed': 'Не удалось создать набор: {error}',
 };
 
 export const tr: Record<string, string> = {
@@ -2518,6 +2603,14 @@ export const tr: Record<string, string> = {
   'quickfix.openClientSettings': 'Oracle Client ayarlarını aç',
   'testTree.schemaNode': 'Şema: {schema}',
   'testTree.packageNode': 'Paket: {package}',
+  'nls.command.generateTestSuite': 'utPLSQL: Test paketi oluştur…',
+  'ext.scaffold.noSource':
+    'Kaynak bulunamadı. Bir .pks/.pkb dosyası açın veya bir veritabanı nesnesi belirtin.',
+  'ext.scaffold.objectPrompt': 'Üretim veritabanı nesnesi (örn. APP.APP_PKG)',
+  'ext.scaffold.overwrite': '{file} dosyası zaten var. Üzerine yazılsın mı?',
+  'ext.scaffold.overwriteButton': 'Üzerine yaz',
+  'ext.scaffold.created': 'Paket oluşturuldu: {path}',
+  'ext.scaffold.failed': 'Paket oluşturulamadı: {error}',
 };
 
 export const pl: Record<string, string> = {
@@ -2731,6 +2824,14 @@ export const pl: Record<string, string> = {
   'quickfix.openClientSettings': 'Otwórz ustawienia klienta Oracle',
   'testTree.schemaNode': 'Schemat: {schema}',
   'testTree.packageNode': 'Pakiet: {package}',
+  'nls.command.generateTestSuite': 'utPLSQL: Generuj pakiet testów…',
+  'ext.scaffold.noSource':
+    'Nie znaleziono źródła. Otwórz plik .pks/.pkb lub podaj obiekt bazy danych.',
+  'ext.scaffold.objectPrompt': 'Obiekt bazy danych produkcji (np. APP.APP_PKG)',
+  'ext.scaffold.overwrite': 'Plik {file} już istnieje. Nadpisać?',
+  'ext.scaffold.overwriteButton': 'Nadpisz',
+  'ext.scaffold.created': 'Pakiet utworzony w {path}',
+  'ext.scaffold.failed': 'Nie udało się wygenerować pakietu: {error}',
 };
 
 export const cs: Record<string, string> = {
@@ -2942,6 +3043,14 @@ export const cs: Record<string, string> = {
   'quickfix.openClientSettings': 'Otevřít nastavení klienta Oracle',
   'testTree.schemaNode': 'Schéma: {schema}',
   'testTree.packageNode': 'Balíček: {package}',
+  'nls.command.generateTestSuite': 'utPLSQL: Vygenerovat testovací sadu…',
+  'ext.scaffold.noSource':
+    'Nebyl nalezen žádný zdroj. Otevřete soubor .pks/.pkb nebo zadejte databázový objekt.',
+  'ext.scaffold.objectPrompt': 'Databázový objekt produkce (např. APP.APP_PKG)',
+  'ext.scaffold.overwrite': 'Soubor {file} již existuje. Přepsat?',
+  'ext.scaffold.overwriteButton': 'Přepsat',
+  'ext.scaffold.created': 'Sada vytvořena v {path}',
+  'ext.scaffold.failed': 'Sadu se nepodařilo vytvořit: {error}',
 };
 
 export const hu: Record<string, string> = {
@@ -3157,6 +3266,14 @@ export const hu: Record<string, string> = {
   'quickfix.openClientSettings': 'Oracle Client beállítások megnyitása',
   'testTree.schemaNode': 'Séma: {schema}',
   'testTree.packageNode': 'Csomag: {package}',
+  'nls.command.generateTestSuite': 'utPLSQL: Tesztcsomag létrehozása…',
+  'ext.scaffold.noSource':
+    'Nem található forrás. Nyisson meg egy .pks/.pkb fájlt, vagy adjon meg egy adatbázis-objektumot.',
+  'ext.scaffold.objectPrompt': 'Éles adatbázis-objektum (pl. APP.APP_PKG)',
+  'ext.scaffold.overwrite': 'A(z) {file} fájl már létezik. Felülírja?',
+  'ext.scaffold.overwriteButton': 'Felülírás',
+  'ext.scaffold.created': 'Csomag létrehozva: {path}',
+  'ext.scaffold.failed': 'Nem sikerült létrehozni a csomagot: {error}',
 };
 
 export const enGb: Record<string, string> = {
@@ -3173,6 +3290,13 @@ export const enGb: Record<string, string> = {
   'ext.wallet.noProfile':
     'No active connection profile. Activate a profile before setting the wallet password.',
   ...en,
+  'nls.command.generateTestSuite': 'utPLSQL: Generate test suite…',
+  'ext.scaffold.noSource': 'No source found. Open a .pks/.pkb file or provide a database object.',
+  'ext.scaffold.objectPrompt': 'Production database object (e.g. APP.APP_PKG)',
+  'ext.scaffold.overwrite': 'The file {file} already exists. Overwrite?',
+  'ext.scaffold.overwriteButton': 'Overwrite',
+  'ext.scaffold.created': 'Suite created at {path}',
+  'ext.scaffold.failed': 'Failed to generate the suite: {error}',
 };
 
 export const bg: Record<string, string> = {
@@ -3380,6 +3504,14 @@ export const bg: Record<string, string> = {
   'quickfix.openClientSettings': 'Отвори настройките на Oracle Client',
   'testTree.schemaNode': 'Схема: {schema}',
   'testTree.packageNode': 'Пакет: {package}',
+  'nls.command.generateTestSuite': 'utPLSQL: Генериране на тестов пакет…',
+  'ext.scaffold.noSource':
+    'Няма намерен източник. Отворете файл .pks/.pkb или посочете обект от базата данни.',
+  'ext.scaffold.objectPrompt': 'Обект от продукционната база данни (напр. APP.APP_PKG)',
+  'ext.scaffold.overwrite': 'Файлът {file} вече съществува. Да се презапише ли?',
+  'ext.scaffold.overwriteButton': 'Презапиши',
+  'ext.scaffold.created': 'Пакетът е създаден в {path}',
+  'ext.scaffold.failed': 'Неуспешно генериране на пакета: {error}',
 };
 
 export const el: Record<string, string> = {
@@ -3589,6 +3721,14 @@ export const el: Record<string, string> = {
   'quickfix.openClientSettings': 'Άνοιγμα ρυθμίσεων Oracle Client',
   'testTree.schemaNode': 'Schema: {schema}',
   'testTree.packageNode': 'Package: {package}',
+  'nls.command.generateTestSuite': 'utPLSQL: Δημιουργία σουίτας δοκιμών…',
+  'ext.scaffold.noSource':
+    'Δεν βρέθηκε πηγή. Ανοίξτε ένα αρχείο .pks/.pkb ή δώστε ένα αντικείμενο βάσης δεδομένων.',
+  'ext.scaffold.objectPrompt': 'Αντικείμενο βάσης δεδομένων παραγωγής (π.χ. APP.APP_PKG)',
+  'ext.scaffold.overwrite': 'Το αρχείο {file} υπάρχει ήδη. Αντικατάσταση;',
+  'ext.scaffold.overwriteButton': 'Αντικατάσταση',
+  'ext.scaffold.created': 'Η σουίτα δημιουργήθηκε στο {path}',
+  'ext.scaffold.failed': 'Αποτυχία δημιουργίας της σουίτας: {error}',
 };
 
 export const id: Record<string, string> = {
@@ -3795,6 +3935,14 @@ export const id: Record<string, string> = {
   'quickfix.openClientSettings': 'Buka pengaturan Oracle Client',
   'testTree.schemaNode': 'Skema: {schema}',
   'testTree.packageNode': 'Paket: {package}',
+  'nls.command.generateTestSuite': 'utPLSQL: Buat rangkaian pengujian…',
+  'ext.scaffold.noSource':
+    'Sumber tidak ditemukan. Buka file .pks/.pkb atau berikan objek basis data.',
+  'ext.scaffold.objectPrompt': 'Objek basis data produksi (mis. APP.APP_PKG)',
+  'ext.scaffold.overwrite': 'File {file} sudah ada. Timpa?',
+  'ext.scaffold.overwriteButton': 'Timpa',
+  'ext.scaffold.created': 'Rangkaian dibuat di {path}',
+  'ext.scaffold.failed': 'Gagal membuat rangkaian: {error}',
 };
 
 export const ro: Record<string, string> = {
@@ -4000,6 +4148,14 @@ export const ro: Record<string, string> = {
   'quickfix.openClientSettings': 'Deschide setările clientului Oracle',
   'testTree.schemaNode': 'Schemă: {schema}',
   'testTree.packageNode': 'Pachet: {package}',
+  'nls.command.generateTestSuite': 'utPLSQL: Generează suita de teste…',
+  'ext.scaffold.noSource':
+    'Nu s-a găsit nicio sursă. Deschideți un fișier .pks/.pkb sau indicați un obiect de bază de date.',
+  'ext.scaffold.objectPrompt': 'Obiect de bază de date de producție (ex. APP.APP_PKG)',
+  'ext.scaffold.overwrite': 'Fișierul {file} există deja. Suprascrieți?',
+  'ext.scaffold.overwriteButton': 'Suprascrie',
+  'ext.scaffold.created': 'Suită creată în {path}',
+  'ext.scaffold.failed': 'Generarea suitei a eșuat: {error}',
 };
 
 export const sr: Record<string, string> = {
@@ -4205,6 +4361,14 @@ export const sr: Record<string, string> = {
   'quickfix.openClientSettings': 'Отвори подешавања Oracle Client-а',
   'testTree.schemaNode': 'Шема: {schema}',
   'testTree.packageNode': 'Пакет: {package}',
+  'nls.command.generateTestSuite': 'utPLSQL: Направи тест пакет…',
+  'ext.scaffold.noSource':
+    'Извор није пронађен. Отворите .pks/.pkb датотеку или наведите објекат базе података.',
+  'ext.scaffold.objectPrompt': 'Објекат продукционе базе података (нпр. APP.APP_PKG)',
+  'ext.scaffold.overwrite': 'Датотека {file} већ постоји. Преписати?',
+  'ext.scaffold.overwriteButton': 'Препиши',
+  'ext.scaffold.created': 'Пакет је направљен у {path}',
+  'ext.scaffold.failed': 'Прављење пакета није успело: {error}',
 };
 
 export const th: Record<string, string> = {
@@ -4399,6 +4563,13 @@ export const th: Record<string, string> = {
   'quickfix.openClientSettings': 'เปิดการตั้งค่า Oracle Client',
   'testTree.schemaNode': 'สคีมา: {schema}',
   'testTree.packageNode': 'แพ็กเกจ: {package}',
+  'nls.command.generateTestSuite': 'utPLSQL: สร้างชุดทดสอบ…',
+  'ext.scaffold.noSource': 'ไม่พบต้นทาง เปิดไฟล์ .pks/.pkb หรือระบุออบเจ็กต์ฐานข้อมูล',
+  'ext.scaffold.objectPrompt': 'ออบเจ็กต์ฐานข้อมูลโปรดักชัน (เช่น APP.APP_PKG)',
+  'ext.scaffold.overwrite': 'ไฟล์ {file} มีอยู่แล้ว ต้องการเขียนทับหรือไม่?',
+  'ext.scaffold.overwriteButton': 'เขียนทับ',
+  'ext.scaffold.created': 'สร้างชุดทดสอบที่ {path}',
+  'ext.scaffold.failed': 'สร้างชุดทดสอบไม่สำเร็จ: {error}',
 };
 
 export const uk: Record<string, string> = {
@@ -4605,6 +4776,14 @@ export const uk: Record<string, string> = {
   'quickfix.openClientSettings': 'Відкрити налаштування Oracle Client',
   'testTree.schemaNode': 'Схема: {schema}',
   'testTree.packageNode': 'Пакет: {package}',
+  'nls.command.generateTestSuite': 'utPLSQL: Створити набір тестів…',
+  'ext.scaffold.noSource':
+    'Джерело не знайдено. Відкрийте файл .pks/.pkb або вкажіть об’єкт бази даних.',
+  'ext.scaffold.objectPrompt': 'Об’єкт робочої бази даних (напр. APP.APP_PKG)',
+  'ext.scaffold.overwrite': 'Файл {file} уже існує. Перезаписати?',
+  'ext.scaffold.overwriteButton': 'Перезаписати',
+  'ext.scaffold.created': 'Набір створено: {path}',
+  'ext.scaffold.failed': 'Не вдалося створити набір: {error}',
 };
 
 export const vi: Record<string, string> = {
@@ -4809,4 +4988,12 @@ export const vi: Record<string, string> = {
   'quickfix.openClientSettings': 'Mở cài đặt Oracle Client',
   'testTree.schemaNode': 'Schema: {schema}',
   'testTree.packageNode': 'Package: {package}',
+  'nls.command.generateTestSuite': 'utPLSQL: Tạo bộ kiểm thử…',
+  'ext.scaffold.noSource':
+    'Không tìm thấy nguồn. Hãy mở tệp .pks/.pkb hoặc chỉ định một đối tượng cơ sở dữ liệu.',
+  'ext.scaffold.objectPrompt': 'Đối tượng cơ sở dữ liệu production (ví dụ APP.APP_PKG)',
+  'ext.scaffold.overwrite': 'Tệp {file} đã tồn tại. Ghi đè?',
+  'ext.scaffold.overwriteButton': 'Ghi đè',
+  'ext.scaffold.created': 'Đã tạo bộ kiểm thử tại {path}',
+  'ext.scaffold.failed': 'Tạo bộ kiểm thử thất bại: {error}',
 };

@@ -37,7 +37,8 @@
     "onStartupFinished",
     "workspaceContains:**/*.pks",
     "workspaceContains:**/*.pkb",
-    "workspaceContains:**/*.sql"
+    "workspaceContains:**/*.sql",
+    "onLanguage:plsql"
   ],
   "capabilities": {
     "untrustedWorkspaces": {
@@ -136,6 +137,28 @@
             "**/*.pks"
           ],
           "description": "Globs used to discover the test specs that contain the `%suite`/`%test` annotations."
+        },
+        "utplsql.generate.testPackagePrefix": {
+          "type": "string",
+          "default": "ut_",
+          "description": "Prefix of the generated test package/file name (e.g. `ut_app_pkg` for `app_pkg`). Used by the `utplsql.generateTestSuite` command."
+        },
+        "utplsql.generate.testPackageSuffix": {
+          "type": "string",
+          "default": "",
+          "description": "Suffix of the generated test package/file name (appended after the object name)."
+        },
+        "utplsql.generate.numberOfTestsPerUnit": {
+          "type": "number",
+          "default": 1,
+          "minimum": 1,
+          "maximum": 50,
+          "description": "How many `%test` blocks to generate per procedure/function of the production package."
+        },
+        "utplsql.generate.generateComments": {
+          "type": "boolean",
+          "default": true,
+          "description": "Add a `-- TODO` comment to each generated `%test`."
         },
         "utplsql.coverageOwner": {
           "type": "string",
@@ -648,6 +671,11 @@
         "command": "utplsql.runScriptFolder",
         "title": "%nls.command.runScriptFolder%",
         "category": "utPLSQL"
+      },
+      {
+        "command": "utplsql.generateTestSuite",
+        "title": "%nls.command.generateTestSuite%",
+        "category": "utPLSQL"
       }
     ],
     "menus": {
@@ -686,6 +714,11 @@
         "command": "utplsql.compileForDebug",
         "group": "utplsql@4",
         "when": "resourceExtname == .sql || resourceExtname == .pks || resourceExtname == .pkb || resourceExtname == .fnc || resourceExtname == .prc || resourceExtname == .trg || explorerResourceIsFolder"
+      },
+      {
+        "command": "utplsql.generateTestSuite",
+        "group": "utplsql@6",
+        "when": "resourceExtname == .pks || resourceExtname == .pkb"
       }
     ],
       "editor/context": [
@@ -712,6 +745,11 @@
       {
         "command": "utplsql.debugTest",
         "group": "utplsql@5",
+        "when": "resourceExtname == .pks || resourceExtname == .pkb"
+      },
+      {
+        "command": "utplsql.generateTestSuite",
+        "group": "utplsql@6",
         "when": "resourceExtname == .pks || resourceExtname == .pkb"
       }
     ],

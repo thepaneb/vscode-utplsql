@@ -33,5 +33,6 @@
   "nls.command.compileForDebug": "utPLSQL: Compilare pentru depanare",
   "nls.command.rebuildAnnotations": "utPLSQL: Reconstruiește cache-ul de adnotări",
   "nls.command.setWalletPassword": "utPLSQL: Setează parola portofelului",
-  "nls.command.runWithReporter": "utPLSQL: Rulează cu reporter (export)"
+  "nls.command.runWithReporter": "utPLSQL: Rulează cu reporter (export)",
+  "nls.command.generateTestSuite": "utPLSQL: Generează suita de teste…"
 }

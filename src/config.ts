@@ -54,6 +54,14 @@ export interface UtConfig {
   discoverySource: 'auto' | 'file' | 'database';
   refreshDebounceMs: number;
   setupDiagnosticsEnabled: boolean;
+  /** Geração de suíte de teste (PRD-100): prefixo do nome do pacote de teste. */
+  generateTestPackagePrefix: string;
+  /** Sufixo do nome do pacote de teste gerado. */
+  generateTestPackageSuffix: string;
+  /** `%test` gerados por rotina do package de produção (default 1). */
+  generateTestsPerUnit: number;
+  /** Emite `-- TODO` em cada `%test` gerado. */
+  generateComments: boolean;
   sqlCoverageEnabled: boolean;
   debuggerEnabled: boolean;
   debuggerStopOnException: boolean;
@@ -157,6 +165,10 @@ export function readConfig(): UtConfig {
     discoverySource: c.get<'auto' | 'file' | 'database'>('discovery.source', 'auto'),
     refreshDebounceMs: c.get<number>('refreshDebounceMs', 300),
     setupDiagnosticsEnabled: c.get<boolean>('setupDiagnostics.enabled', true),
+    generateTestPackagePrefix: c.get<string>('generate.testPackagePrefix', 'ut_'),
+    generateTestPackageSuffix: c.get<string>('generate.testPackageSuffix', ''),
+    generateTestsPerUnit: c.get<number>('generate.numberOfTestsPerUnit', 1),
+    generateComments: c.get<boolean>('generate.generateComments', true),
     sqlCoverageEnabled: c.get<boolean>('sqlCoverageEnabled', false),
     debuggerEnabled: c.get<boolean>('debugger.enabled', true),
     debuggerStopOnException: c.get<boolean>('debugger.stopOnException', true),
