@@ -1,6 +1,6 @@
 .vscode/**
 .vscode-test/**
-.vscode-test.mjs
+.vscode-test*
 esbuild.config.mjs
 docs/**
 site/**
@@ -44,8 +44,6 @@ docker/**
 coverage/**
 .env
 .env.*
-.vscode-test.smoke.mjs
-.vscode-test.thick.mjs
 .c8rc
 .nvmrc
 biome.json
