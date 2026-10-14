@@ -9,7 +9,7 @@ severidade: baixa
 fonte: codigo
 verificado: 2026-10-14
 implementacao: ["src/matching.ts", "src/commands/run.ts"]
-testes: ["src/test/unit/matching.test.ts"]
+testes: ["src/test/unit/matching.test.ts", "src/test/unit/runRelated.test.ts", "src/test/integration/v016-features.test.ts"]
 prds: ["PRD-58"]
 requisitos: ["PRD-58/RF1", "PRD-58/RF2", "PRD-58/RF3", "PRD-58/RNF1"]
 tags: ["ui", "comandos"]
@@ -53,6 +53,6 @@ exato, e o aviso no caso zero evita a sensação de "nada aconteceu".
 - 📄 PRDs: [[prd-58-run-related-tests|PRD-58]]
 - 🎯 Requisitos: [[prd-58-run-related-tests|PRD-58 RF1]] · [[prd-58-run-related-tests|PRD-58 RF2]] · [[prd-58-run-related-tests|PRD-58 RF3]] · [[prd-58-run-related-tests|PRD-58 RNF1]]
 - 🧩 Código: [[COD - matching.ts]] · [[COD - run.ts]]
-- 🧪 Testes: [[TST - matching.test.ts]]
+- 🧪 Testes: [[TST - matching.test.ts]] · [[TST - runRelated.test.ts]] · [[TST - v016-features.test.ts]]
 - ↩️ Referenciada por: [[Editor-integration]] · [[prd-58-run-related-tests|PRD-58]]
 <!-- brain:auto:end -->

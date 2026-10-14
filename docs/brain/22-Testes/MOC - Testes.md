@@ -90,6 +90,7 @@ SORT id ASC
 - [[TST - runCommandsExec.test.ts]] — `TST-runCommandsExec.test.ts`
 - [[TST - runExportCommand.test.ts]] — `TST-runExportCommand.test.ts`
 - [[TST - runner.test.ts]] — `TST-runner.test.ts`
+- [[TST - runRelated.test.ts]] — `TST-runRelated.test.ts`
 - [[TST - runTimeoutE2E.test.ts]] — `TST-runTimeoutE2E.test.ts`
 - [[TST - scaffold.test.ts]] — `TST-scaffold.test.ts`
 - [[TST - scaffoldCommands.test.ts]] — `TST-scaffoldCommands.test.ts`
@@ -114,6 +115,7 @@ SORT id ASC
 - [[TST - v013-features.test.ts]] — `TST-v013-features.test.ts`
 - [[TST - v014-features.test.ts]] — `TST-v014-features.test.ts`
 - [[TST - v014-tns.test.ts]] — `TST-v014-tns.test.ts`
+- [[TST - v016-features.test.ts]] — `TST-v016-features.test.ts`
 - [[TST - viewCoverage.test.ts]] — `TST-viewCoverage.test.ts`
 - [[TST - viewCoverageDenied.test.ts]] — `TST-viewCoverageDenied.test.ts`
 - [[TST - viewCoverageE2E.test.ts]] — `TST-viewCoverageE2E.test.ts`
