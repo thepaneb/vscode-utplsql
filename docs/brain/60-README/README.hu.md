@@ -407,7 +407,6 @@ GRANT SELECT ON SYS.DBA_PROCEDURES TO <ut3_owner>;
 - Az eredmény→teszt hozzárendelés csomagnév + tesztnév/leírás alapján történik;
   az azonos leírások különböző csomagokban kétértelműséget okozhatnak (az index
   csomagonként hatóköri, hogy ezt minimalizálja).
-- A `sourcePath` feloldásához az **első** munkaterület-mappát veszi figyelembe.
 - A felderítés a `.pks` fájlokat (specifikációkat) olvassa; tartsd a `%suite`/`%test` annotációkat a specifikációban.
 
 ## Hibaelhárítás

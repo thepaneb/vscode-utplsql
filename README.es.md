@@ -402,7 +402,6 @@ GRANT SELECT ON SYS.DBA_PROCEDURES TO <ut3_owner>;
 - El mapeo resultado→test se hace por nombre de package + nombre/descripción del test;
   descripciones idénticas en packages distintos pueden crear ambigüedad (el índice se
   limita por package para minimizarla).
-- Considera la **primera** carpeta del workspace para resolver `sourcePath`.
 - El discovery lee los `.pks` (specs); mantenga las anotaciones `%suite`/`%test` en el spec.
 
 ## Solución de problemas

@@ -397,7 +397,6 @@ GRANT SELECT ON SYS.DBA_PROCEDURES TO <ut3_owner>;
 - Việc ánh xạ kết quả→bài kiểm thử được thực hiện theo tên package + tên/mô tả bài kiểm thử;
   các mô tả giống hệt nhau trong các package khác nhau có thể tạo ra sự mơ hồ (chỉ mục được
   giới hạn theo package để giảm thiểu điều này).
-- Chỉ xét **thư mục workspace đầu tiên** để phân giải `sourcePath`.
 - Việc phát hiện đọc các tệp `.pks` (specs); hãy giữ các annotation `%suite`/`%test` trong spec.
 
 ## Xử lý sự cố

@@ -396,7 +396,6 @@ GRANT SELECT ON SYS.DBA_PROCEDURES TO <ut3_owner>;
 - 结果→测试的映射是通过包名 + 测试名/描述完成的；
   不同包中的相同描述可能会造成歧义（索引按包
   限定范围以尽量减少这种情况）。
-- 只考虑**第一个**工作区文件夹来解析 `sourcePath`。
 - 发现功能读取 `.pks`（specs）；请将 `%suite`/`%test` 注解保留在 spec 中。
 
 ## 故障排除
