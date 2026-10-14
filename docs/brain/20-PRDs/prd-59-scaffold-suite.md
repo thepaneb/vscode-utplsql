@@ -181,7 +181,7 @@ Entregue junto da [[prd-100-generate-test-suite|PRD-100]] na branch
 - 🗺️ [[MOC - PRDs]]
 - 📐 Regras: [[BR-UI-015 - Gerar suite nao sobrescreve spec existente e produz template parseavel|BR-UI-015]]
 - 🔗 PRDs relacionados: [[prd-100-generate-test-suite|PRD-100]]
-- 🔗 Mesma versão (0.16.0): [[prd-56-duration-persistence|PRD-56]] · [[prd-57-multiroot-root-resolution|PRD-57]] · [[prd-58-run-related-tests|PRD-58]]
+- 🔗 Mesma versão (0.16.0): [[prd-57-multiroot-root-resolution|PRD-57]] · [[prd-58-run-related-tests|PRD-58]]
 - 🎯 RF1 — Geração de template → [[BR-UI-015 - Gerar suite nao sobrescreve spec existente e produz template parseavel|BR-UI-015]]
 - 🎯 RF2 — Nome e local → [[BR-UI-015 - Gerar suite nao sobrescreve spec existente e produz template parseavel|BR-UI-015]]
 - 🎯 RNF1 — Não sobrescrever arquivo existente sem confirmação. → [[BR-UI-015 - Gerar suite nao sobrescreve spec existente e produz template parseavel|BR-UI-015]]

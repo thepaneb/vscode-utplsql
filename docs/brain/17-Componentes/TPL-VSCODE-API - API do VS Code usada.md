@@ -54,18 +54,18 @@ host — o `docs-fidelity` cobra essa coerência.
 ## Inventário (gerado)
 
 <!-- brain:auto:start:vscode-api -->
-**`engines.vscode`:** `^1.101.0` · **`@types/vscode`:** `1.101.0` · **103 símbolos · 528 referências**
+**`engines.vscode`:** `^1.101.0` · **`@types/vscode`:** `1.101.0` · **104 símbolos · 533 referências**
 
 | Símbolo | Refs | Arquivos |
 |---|---|---|
-| `vscode.TestItem` | 52 | `src/commands/debug.ts`, `src/commands/run.ts`, `src/decorations.ts`, `src/matching.ts` +5 |
+| `vscode.TestItem` | 54 | `src/commands/debug.ts`, `src/commands/run.ts`, `src/decorations.ts`, `src/matching.ts` +5 |
 | `vscode.commands.registerCommand` | 37 | `src/commands/connection.ts`, `src/commands/debug.ts`, `src/commands/profile.ts`, `src/commands/run.ts` +3 |
 | `vscode.Uri` | 33 | `src/commands/debug.ts`, `src/commands/run.ts`, `src/commands/scaffold.ts`, `src/commands/script.ts` +9 |
 | `vscode.window.showInformationMessage` | 27 | `src/commands/connection.ts`, `src/commands/debug.ts`, `src/commands/profile.ts`, `src/commands/run.ts` +4 |
 | `vscode.window.showWarningMessage` | 23 | `src/commands/debug.ts`, `src/commands/profile.ts`, `src/commands/run.ts`, `src/commands/scaffold.ts` +4 |
 | `vscode.window.showErrorMessage` | 20 | `src/commands/connection.ts`, `src/commands/debug.ts`, `src/commands/run.ts`, `src/commands/scaffold.ts` +3 |
 | `vscode.WorkspaceFolder` | 20 | `src/debugger.ts`, `src/discovery.ts`, `src/oracleRunner.ts`, `src/results.ts` +3 |
-| `vscode.commands.executeCommand` | 17 | `src/commands/connection.ts`, `src/commands/profile.ts`, `src/commands/run.ts`, `src/config.ts` +4 |
+| `vscode.commands.executeCommand` | 18 | `src/commands/connection.ts`, `src/commands/profile.ts`, `src/commands/run.ts`, `src/config.ts` +4 |
 | `vscode.TestController` | 14 | `src/commands/deps.ts`, `src/runner.ts`, `src/testTree.ts` |
 | `vscode.TestRunRequest` | 11 | `src/commands/run.ts`, `src/runner.ts` |
 | `vscode.Uri.parse` | 11 | `src/commands/run.ts`, `src/compilationDiagnostics.ts`, `src/discovery.ts`, `src/quickfix.ts` +1 |
@@ -117,6 +117,7 @@ host — o `docs-fidelity` cobra essa coerência.
 | `vscode.FileType` | 2 | `src/commands/debug.ts`, `src/discovery.ts` |
 | `vscode.FileType.File` | 2 | `src/commands/debug.ts`, `src/commands/script.ts` |
 | `vscode.languages.createDiagnosticCollection` | 2 | `src/compilationDiagnostics.ts`, `src/quickfix.ts` |
+| `vscode.Memento` | 2 | `src/state.ts` |
 | `vscode.ProgressLocation.Notification` | 2 | `src/commands/run.ts`, `src/commands/script.ts` |
 | `vscode.ProviderResult` | 2 | `src/debugger.ts` |
 | `vscode.SecretStorage` | 2 | `src/connectionProfiles.ts` |
