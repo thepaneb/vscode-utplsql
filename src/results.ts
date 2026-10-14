@@ -203,7 +203,6 @@ export function applyResultsFromCases(
 export function applyCoverageFromXml(
   covXml: string,
   sourcePath: string,
-  _root: string,
   run: vscode.TestRun,
   state: TestStateManager,
   folders?: readonly vscode.WorkspaceFolder[],

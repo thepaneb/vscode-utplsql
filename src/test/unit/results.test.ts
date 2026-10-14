@@ -249,7 +249,7 @@ test('applyCoverageFromXml: sem arquivo local usa a fonte virtual e não emite a
   const setCoverageCalls: [string, unknown][] = [];
   state.setCoverage = (k: string, v: unknown) => setCoverageCalls.push([k, v]);
 
-  applyCoverageFromXml(COV_XML, 'install', '/root', run, state, []);
+  applyCoverageFromXml(COV_XML, 'install', run, state, []);
   assert.strictEqual(cleared, 1);
   assert.strictEqual(run.coverageList.length, 1);
   assert.ok(setCoverageCalls[0][0].startsWith('utplsql-source:'));
@@ -317,7 +317,7 @@ test('applyCoverageFromXml: mapeia arquivo quando folders resolve', async () => 
     state.setCoverage = (k: string, v: unknown) => setCoverageCalls.push([k, v]);
 
     const folders = [{ uri: { fsPath: tmpDir }, name: 'tmp', index: 0 }];
-    applyCoverageFromXml(COV_XML, 'install', tmpDir, run, state, folders as any);
+    applyCoverageFromXml(COV_XML, 'install', run, state, folders as any);
 
     assert.strictEqual(run.coverageList.length, 1);
     assert.strictEqual(setCoverageCalls.length, 1);
@@ -372,7 +372,7 @@ END;`,
     state.setCoverage = (k: string, v: unknown) => setCoverageCalls.push([k, v]);
 
     const folders = [{ uri: { fsPath: tmpDir }, name: 'tmp', index: 0 }];
-    applyCoverageFromXml(xml, 'install', tmpDir, run, state, folders as any);
+    applyCoverageFromXml(xml, 'install', run, state, folders as any);
 
     assert.strictEqual(run.coverageList.length, 1);
     const details = setCoverageCalls[0][1] as unknown[];
@@ -405,7 +405,7 @@ test('applyCoverageFromXml: classe sem linhas emite aviso de nao mapeado', () =>
 </coverage>`;
   const run = makeRun() as any;
   const state = makeState(new Map());
-  applyCoverageFromXml(xml, 'install', '/root', run, state, []);
+  applyCoverageFromXml(xml, 'install', run, state, []);
   const warnings = run.output.filter((s: string) => s.includes('nenhum arquivo mapeado'));
   assert.strictEqual(warnings.length, 1);
 });

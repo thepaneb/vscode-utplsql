@@ -47,7 +47,7 @@ test('applySqlCoverage: oracledb ausente retorna cedo sem cobertura', async () =
     const folders = [{ uri: { fsPath: base }, name: 'r', index: 0 }];
     await applySqlCoverage({
       connection: 'u/p@//h:1521/s',
-      root: base,
+      roots: [base],
       sourcePath: 'install',
       run,
       state,
@@ -92,7 +92,6 @@ test('executeRunOracle: oracledb ausente lança oracledbMissing', async () => {
           pathArgs: ['pkg'],
           coverage: false,
           sourcePath: 'install',
-          root: '/r',
           run: run as never,
           leafTests: [item as never],
           state: state as never,

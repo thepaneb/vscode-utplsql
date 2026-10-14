@@ -114,7 +114,7 @@ test('applySqlCoverage: V$SQL negado emite aviso com grant (não quebra)', async
       await applySqlCoverage(
         {
           connection: 'UT3/pass@//localhost:1521/freepdb1',
-          root: base,
+          roots: [base],
           sourcePath: 'install',
           run,
           state,
@@ -169,7 +169,7 @@ test('applySqlCoverage: com V$SQL ok emite cobertura por linha', async () => {
       await applySqlCoverage(
         {
           connection: 'UT3/pass@//localhost:1521/freepdb1',
-          root: base,
+          roots: [base],
           sourcePath: 'install',
           run,
           state,
@@ -227,7 +227,7 @@ test('applySqlCoverage: multi-root filtra views fora da raiz analisada', async (
       await applySqlCoverage(
         {
           connection: 'UT3/pass@//localhost:1521/freepdb1',
-          root: base,
+          roots: [base],
           sourcePath: 'install',
           run,
           state,
@@ -259,7 +259,7 @@ test('applySqlCoverage: loader padrão (oracledb real) com conexão inválida n�
     // Sem o 3º parâmetro -> usa o loadOracledb real (import) e falha no parseConnString antes de conectar
     await applySqlCoverage({
       connection: 'formato-invalido',
-      root: base,
+      roots: [base],
       sourcePath: 'install',
       run,
       state,
@@ -282,7 +282,7 @@ test('applySqlCoverage: loader retorna undefined -> retorna cedo', async () => {
     await applySqlCoverage(
       {
         connection: 'u/p@//h:1521/s',
-        root: base,
+        roots: [base],
         sourcePath: 'install',
         run,
         state,
@@ -319,7 +319,7 @@ test('applySqlCoverage: V$SQL com rows em objeto (SQL_TEXT)', async () => {
       await applySqlCoverage(
         {
           connection: 'u/p@//h:1521/s',
-          root: base,
+          roots: [base],
           sourcePath: 'install',
           run,
           state,
@@ -358,7 +358,7 @@ test('applySqlCoverage: sem folders usa fallback (viewFiles vazio)', async () =>
       await applySqlCoverage(
         {
           connection: 'u/p@//h:1521/s',
-          root: base,
+          roots: [base],
           sourcePath: 'install',
           run,
           state,
@@ -400,7 +400,7 @@ test('applySqlCoverage: createPool falha cai para getConnection raw', async () =
       await applySqlCoverage(
         {
           connection: 'u/p@//h:1521/s',
-          root: base,
+          roots: [base],
           sourcePath: 'install',
           run,
           state,
@@ -446,7 +446,7 @@ test('applySqlCoverage: erro inesperado no processamento é silenciado', async (
         applySqlCoverage(
           {
             connection: 'u/p@//h:1521/s',
-            root: base,
+            roots: [base],
             sourcePath: 'install',
             run,
             state,
@@ -487,7 +487,7 @@ test('applySqlCoverage: view não executada ganha hits 0', async () => {
       await applySqlCoverage(
         {
           connection: 'u/p@//h:1521/s',
-          root: base,
+          roots: [base],
           sourcePath: 'install',
           run,
           state,
@@ -553,7 +553,7 @@ test('applySqlCoverage: pasta aninhada que contém a view entra no filtro (ramo 
       await applySqlCoverage(
         {
           connection: 'UT3/pass@//localhost:1521/freepdb1',
-          root: outer,
+          roots: [outer],
           sourcePath: 'install',
           run,
           state,

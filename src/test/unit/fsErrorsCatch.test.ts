@@ -46,7 +46,7 @@ test('applySqlCoverage: readLines que falha é ignorado (sem cobertura)', async 
     applySqlCoverage(
       {
         connection: 'u/p@//h:1521/s',
-        root: '/root',
+        roots: ['/root'],
         sourcePath: 'install',
         run: run as never,
         state: state as never,

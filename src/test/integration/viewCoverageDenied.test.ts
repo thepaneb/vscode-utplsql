@@ -75,7 +75,7 @@ describeDB('viewCoverage: V$SQL negado (sem grant) emite aviso', () => {
       try {
         await applySqlCoverage({
           connection: process.env.UTPLSQL_CONN as string,
-          root,
+          roots: [root],
           sourcePath: 'install',
           run: run as never,
           state,

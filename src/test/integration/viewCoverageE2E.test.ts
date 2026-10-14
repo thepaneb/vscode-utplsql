@@ -184,7 +184,7 @@ describeDB('viewCoverage E2E — V$SQL real -> cobertura por view (executada 100
 
       await applySqlCoverage({
         connection,
-        root,
+        roots: [root],
         sourcePath: 'install',
         run: makeRun(cap),
         state,
