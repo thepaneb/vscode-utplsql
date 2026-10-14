@@ -558,3 +558,48 @@ test('applyResultsFromCases: error não recebe diff', () => {
   assert.strictEqual(msg.expectedOutput, undefined);
   assert.strictEqual(msg.actualOutput, undefined);
 });
+
+// ── Duração no label + resultado no mapa (PRD-56) ──────────────────────
+
+function durationCase(): TestCaseResult[] {
+  return [{ classname: 'app', name: 'add', status: 'passed', durationMs: 1200 } as TestCaseResult];
+}
+
+test('applyResultsFromCases: showTestDuration sufixa o label e guarda duração/ts', () => {
+  const item = { id: 't1', label: 'app.add', children: [] };
+  const metaMap = new Map<any, ItemMeta>();
+  metaMap.set(item, makeMeta({ packageName: 'app', procName: 'add' }));
+  const run = makeRun() as any;
+  const state = makeState(metaMap);
+
+  vscode.__setConfigValue('showTestDuration', true);
+  const map = applyResultsFromCases(durationCase(), [item as any], run, state);
+
+  assert.strictEqual(item.label, 'app.add (1.2s)');
+  assert.strictEqual(map.get('t1')?.durationMs, 1200);
+  assert.strictEqual(typeof map.get('t1')?.ts, 'number');
+
+  // reaplicar substitui o sufixo (não acumula)
+  applyResultsFromCases(durationCase(), [item as any], run, state);
+  assert.strictEqual(item.label, 'app.add (1.2s)');
+
+  // desligar limpa o sufixo anterior
+  vscode.__setConfigValue('showTestDuration', false);
+  applyResultsFromCases(durationCase(), [item as any], run, state);
+  assert.strictEqual(item.label, 'app.add');
+  vscode.__resetConfigValues();
+});
+
+test('applyResultsFromCases: label não-string é preservado (TreeItemLabel)', () => {
+  const item = { id: 't1', label: { label: 'app.add' }, children: [] };
+  const metaMap = new Map<any, ItemMeta>();
+  metaMap.set(item, makeMeta({ packageName: 'app', procName: 'add' }));
+  const run = makeRun() as any;
+  const state = makeState(metaMap);
+
+  vscode.__setConfigValue('showTestDuration', true);
+  applyResultsFromCases(durationCase(), [item as any], run, state);
+
+  assert.deepStrictEqual(item.label, { label: 'app.add' });
+  vscode.__resetConfigValues();
+});

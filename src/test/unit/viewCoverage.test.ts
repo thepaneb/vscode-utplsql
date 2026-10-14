@@ -569,3 +569,113 @@ test('applySqlCoverage: pasta aninhada que contém a view entra no filtro (ramo 
     fs.rmSync(outer, { recursive: true, force: true });
   }
 });
+
+// ── Multi-root (PRD-57) ────────────────────────────────────────────────
+
+function makeViewDir(label: string, view: string): string {
+  const base = fs.mkdtempSync(path.join(os.tmpdir(), `vsql-${label}-`));
+  const dir = path.join(base, 'install', 'views');
+  fs.mkdirSync(dir, { recursive: true });
+  fs.writeFileSync(path.join(dir, `${view}.sql`), `CREATE VIEW ${view} AS\nSELECT 1 FROM dual\n`);
+  return base;
+}
+
+function fakeOracledbWith(rows: string[][]) {
+  const conn = {
+    callTimeout: 0,
+    execute: async () => ({ rows }),
+    close: async () => {},
+  };
+  return {
+    OUT_FORMAT_OBJECT: {},
+    createPool: async () => ({ getConnection: async () => conn, close: async () => {} }),
+    getConnection: async () => conn,
+  };
+}
+
+test('applySqlCoverage: multi-root emite cobertura das views das DUAS raizes', async () => {
+  const a = makeViewDir('a', 'vw_alpha');
+  const b = makeViewDir('b', 'vw_beta');
+  try {
+    const run = makeRun() as never;
+    const state = { setCoverage: () => {}, clearCoverage: () => {} } as never;
+    await applySqlCoverage(
+      {
+        connection: 'UT3/pass@//localhost:1521/freepdb1',
+        roots: [a, b],
+        sourcePath: 'install',
+        run,
+        state,
+        folders: [
+          { uri: { fsPath: a }, name: 'a', index: 0 },
+          { uri: { fsPath: b }, name: 'b', index: 1 },
+        ] as never,
+      },
+      async () =>
+        fakeOracledbWith([['SELECT * FROM vw_alpha'], ['SELECT * FROM vw_beta']]) as never,
+    );
+
+    const coverage = (run as unknown as { coverageList: unknown[] }).coverageList;
+    assert.strictEqual(coverage.length, 2, 'deveria cobrir uma view de cada pasta');
+  } finally {
+    fs.rmSync(a, { recursive: true, force: true });
+    fs.rmSync(b, { recursive: true, force: true });
+  }
+});
+
+test('applySqlCoverage: pasta fora das raizes nao entra (filtro por prefixo)', async () => {
+  const a = makeViewDir('only-a', 'vw_only_a');
+  const b = makeViewDir('skip-b', 'vw_skip_b');
+  try {
+    const run = makeRun() as never;
+    const state = { setCoverage: () => {}, clearCoverage: () => {} } as never;
+    await applySqlCoverage(
+      {
+        connection: 'UT3/pass@//localhost:1521/freepdb1',
+        roots: [a], // só a pasta A está em execução
+        sourcePath: 'install',
+        run,
+        state,
+        folders: [
+          { uri: { fsPath: a }, name: 'a', index: 0 },
+          { uri: { fsPath: b }, name: 'b', index: 1 },
+        ] as never,
+      },
+      async () => fakeOracledbWith([['SELECT * FROM vw_only_a']]) as never,
+    );
+
+    const coverage = (run as unknown as { coverageList: unknown[] }).coverageList;
+    assert.strictEqual(coverage.length, 1);
+  } finally {
+    fs.rmSync(a, { recursive: true, force: true });
+    fs.rmSync(b, { recursive: true, force: true });
+  }
+});
+
+test('applySqlCoverage: sem views em nenhuma raiz sai sem tocar o banco', async () => {
+  const empty = fs.mkdtempSync(path.join(os.tmpdir(), 'vsql-empty-'));
+  try {
+    let loaderCalled = false;
+    const run = makeRun() as never;
+    const state = { setCoverage: () => {}, clearCoverage: () => {} } as never;
+    await applySqlCoverage(
+      {
+        connection: 'UT3/pass@//localhost:1521/freepdb1',
+        roots: [empty, path.join(empty, 'nem-existe')],
+        sourcePath: 'install',
+        run,
+        state,
+        folders: [{ uri: { fsPath: empty }, name: 'e', index: 0 }] as never,
+      },
+      async () => {
+        loaderCalled = true;
+        return fakeOracledbWith([]) as never;
+      },
+    );
+
+    assert.strictEqual(loaderCalled, false, 'sem views não deveria carregar o driver');
+    assert.strictEqual((run as unknown as { coverageList: unknown[] }).coverageList.length, 0);
+  } finally {
+    fs.rmSync(empty, { recursive: true, force: true });
+  }
+});

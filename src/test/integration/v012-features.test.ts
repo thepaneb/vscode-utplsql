@@ -550,6 +550,7 @@ describeDB('v0.12.0 — integração com banco Oracle', () => {
         setLastResults: () => {},
         setLastFailedItems: () => {},
         getLastFailedItems: () => [],
+        persist: () => {},
         setCoverage: () => {},
         getCoverage: () => [],
         clearCoverage: () => {},
