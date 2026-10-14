@@ -48,6 +48,7 @@ Chạy và gỡ lỗi kiểm thử **utPLSQL** (Oracle PL/SQL) ngay trong VS Cod
 - 🧭 **Cây theo tag** — tổ chức Test Explorer thành **Tag > Suite > Test** với `utplsql.organization = tag` (suite có nhiều tag xuất hiện dưới mỗi tag) và hiển thị `[tag1, tag2]` trên nhãn bằng `utplsql.showTagsInTree`.
 - 🏗️ **Bộ khung kiểm thử** — tạo `ut_<gói>.pks` với một `%test` cho mỗi thủ tục/hàm từ `.pks`/`.pkb` hoặc đối tượng cơ sở dữ liệu, dùng các tùy chọn `utplsql.generate.*`.
 - ⏱️ **Thời lượng và lưu trữ** — kết quả lần chạy gần nhất (trạng thái, thông báo và thời lượng từng bài) vẫn còn sau khi mở lại workspace; tùy chọn hiển thị `(1.2s)` trên nhãn bài kiểm thử (`utplsql.showTestDuration`).
+- 🔗 **Bài kiểm thử liên quan** — trong `.pks`/`.pkb`/`.sql` production, chạy các bộ kiểm thử theo quy ước `ut_<đối tượng>` (`Ctrl+Shift+U Shift+R`).
 - ♻️ **Tự động chạy khi lưu** — chạy lại các suite của tệp `.pks` đã lưu với `utplsql.autoRun = onSave`, với debounce theo từng tệp (`utplsql.autoRunDelayMs`) và chính sách hàng đợi khi đang có lượt chạy (`utplsql.autoRunQueue`: `skip`/`replace`).
 - 🗄️ **Khám phá DB-first** — dựng cây từ `ut_runner.get_suites_info` và tạo lại bộ nhớ đệm chú thích từ bảng lệnh.
 - 🌳 **Cây kiểm thử lazy** — ở chế độ `schema`, package/suite/test được giải quyết khi mở rộng, nên các schema lớn mở tức thì.

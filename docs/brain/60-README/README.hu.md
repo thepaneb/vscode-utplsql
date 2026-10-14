@@ -48,6 +48,7 @@ Futtasd és debugold az **utPLSQL** (Oracle PL/SQL) teszteket közvetlenül a VS
 - 🧭 **Tag-alapú fa** — rendezd a Test Explorert **Tag > Suite > Test** szerkezetbe a `utplsql.organization = tag` beállítással (a több taggel rendelkező suite minden tag alatt megjelenik), és jelenítsd meg a `[tag1, tag2]` címkéket a `utplsql.showTagsInTree` beállítással.
 - 🏗️ **Tesztcsomag-váz** — `ut_<csomag>.pks` fájlt hoz létre rutinonként egy `%test`-tel `.pks`/`.pkb` fájlból vagy adatbázis-objektumból, a `utplsql.generate.*` beállításokkal.
 - ⏱️ **Időtartam és megőrzés** — az utolsó futás eredménye (állapot, üzenet és tesztenkénti idő) megmarad a munkaterület újramegnyitása után is; opcionálisan `(1.2s)`-et ír a tesztek címkéjére (`utplsql.showTestDuration`).
+- 🔗 **Kapcsolódó tesztek** — éles `.pks`/`.pkb`/`.sql` fájlban a `ut_<objektum>` konvenció szerinti csomagokat futtatja (`Ctrl+Shift+U Shift+R`).
 - ♻️ **Automatikus futtatás mentéskor** — futtasd újra a mentett `.pks` suite-jait a `utplsql.autoRun = onSave` beállítással, fájlonkénti debounce-szal (`utplsql.autoRunDelayMs`) és várólista-szabályzattal, ha épp fut egy futtatás (`utplsql.autoRunQueue`: `skip`/`replace`).
 - 🗄️ **DB-first felfedezés** — építsd a fát a `ut_runner.get_suites_info` alapján, és építsd újra a megjegyzés-gyorsítótárat a palettáról.
 - 🌳 **Lusta tesztek fája** — `schema` módban a package-ek/suite-ok/tesztek kibontáskor, igény szerint töltődnek, így a nagy sémák azonnal megnyílnak.

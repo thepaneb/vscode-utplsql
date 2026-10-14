@@ -34,5 +34,6 @@
   "nls.command.rebuildAnnotations": "utPLSQL: Reconstruire le cache des annotations",
   "nls.command.setWalletPassword": "utPLSQL : Définir le mot de passe du wallet",
   "nls.command.runWithReporter": "utPLSQL : Exécuter avec un reporter (export)",
-  "nls.command.generateTestSuite": "utPLSQL: Générer la suite de tests…"
+  "nls.command.generateTestSuite": "utPLSQL: Générer la suite de tests…",
+  "nls.command.runRelated": "utPLSQL: Exécuter les tests liés"
 }

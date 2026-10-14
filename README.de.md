@@ -39,6 +39,7 @@ Führe **utPLSQL**-Tests (Oracle PL/SQL) direkt in VS Code aus und debugge sie �
 - 🧭 **Tag-basierter Baum** — organisiere den Test Explorer als **Tag > Suite > Test** mit `utplsql.organization = tag` (eine Suite mit mehreren Tags erscheint unter jedem Tag) und zeige `[tag1, tag2]` an den Labels mit `utplsql.showTagsInTree`.
 - 🏗️ **Test-Suite-Gerüst** — erzeugt `ut_<Paket>.pks` mit einem `%test` pro Routine aus einer `.pks`/`.pkb` oder einem Datenbankobjekt, mit den `utplsql.generate.*`-Optionen.
 - ⏱️ **Dauer und Persistenz** — das Ergebnis des letzten Laufs (Status, Meldung und Dauer je Test) überlebt einen Workspace-Reload; optional zeigt `(1.2s)` an den Test-Labels (`utplsql.showTestDuration`).
+- 🔗 **Zugehörige Tests** — führt in einer Produktions-`.pks`/`.pkb`/`.sql` die Suites nach der `ut_<Objekt>`-Konvention aus (`Ctrl+Shift+U Shift+R`).
 - ♻️ **Auto-Ausführung beim Speichern** — führe die Suiten der gespeicherten `.pks` mit `utplsql.autoRun = onSave` erneut aus, mit einem Debounce pro Datei (`utplsql.autoRunDelayMs`) und einer Warteschlangenrichtlinie, wenn bereits eine Ausführung läuft (`utplsql.autoRunQueue`: `skip`/`replace`).
 - 🗄️ **DB-first-Erkennung** — Baum aus `ut_runner.get_suites_info` aufbauen und den Anmerkungs-Cache über die Palette neu erstellen.
 - 🌳 **Lazy-Testbaum** — im `schema`-Modus werden Packages/Suites/Tests beim Aufklappen bei Bedarf aufgelöst, sodass große Schemas sofort öffnen.

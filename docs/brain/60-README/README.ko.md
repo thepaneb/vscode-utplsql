@@ -48,6 +48,7 @@ tags: [readme]
 - 🧭 **태그 기반 트리** — `utplsql.organization = tag`로 Test Explorer를 **Tag > Suite > Test**로 구성하고(여러 태그가 있는 suite는 각 태그 아래에 표시됨) `utplsql.showTagsInTree`로 레이블에 `[tag1, tag2]`를 표시합니다.
 - 🏗️ **테스트 스위트 스캐폴드** — `.pks`/`.pkb` 또는 데이터베이스 객체에서 루틴마다 `%test` 하나를 가진 `ut_<패키지>.pks`를 생성합니다(`utplsql.generate.*` 옵션).
 - ⏱️ **소요 시간과 지속성** — 마지막 실행 결과(상태, 메시지, 테스트별 소요 시간)가 워크스페이스를 다시 열어도 유지됩니다. 선택적으로 테스트 레이블에 `(1.2s)`를 표시합니다(`utplsql.showTestDuration`).
+- 🔗 **관련 테스트** — 운영 `.pks`/`.pkb`/`.sql`에서 `ut_<객체>` 규칙에 따라 스위트를 실행합니다(`Ctrl+Shift+U Shift+R`).
 - ♻️ **저장 시 자동 실행** — 저장된 `.pks`의 suite를 `utplsql.autoRun = onSave`로 다시 실행하며, 파일별 debounce(`utplsql.autoRunDelayMs`)와 실행 중일 때의 대기열 정책(`utplsql.autoRunQueue`: `skip`/`replace`)을 제공합니다.
 - 🗄️ **DB 우선 검색** — `ut_runner.get_suites_info`로 트리를 만들고 팔레트에서 주석 캐시를 다시 작성합니다.
 - 🌳 **지연 로딩 테스트 트리** — `schema` 모드에서 package/suite/test가 펼칠 때 필요에 따라 해석되어 큰 스키마도 즉시 열립니다.

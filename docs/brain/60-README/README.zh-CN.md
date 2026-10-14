@@ -48,6 +48,7 @@ tags: [readme]
 - 🧭 **基于标签的树** — 使用 `utplsql.organization = tag` 将 Test Explorer 组织为 **Tag > Suite > Test**（带有多个标签的套件会出现在每个标签下），并用 `utplsql.showTagsInTree` 在标签上显示 `[tag1, tag2]`。
 - 🏗️ **测试套件脚手架** — 从 `.pks`/`.pkb` 或数据库对象生成 `ut_<包名>.pks`，每个例程一个 `%test`，使用 `utplsql.generate.*` 选项。
 - ⏱️ **耗时与持久化** — 上次运行结果（状态、消息和每个测试的耗时）在重新打开工作区后仍然保留；可选地在测试标签上显示 `(1.2s)`（`utplsql.showTestDuration`）。
+- 🔗 **相关测试** — 在生产 `.pks`/`.pkb`/`.sql` 中，按 `ut_<对象>` 约定运行套件（`Ctrl+Shift+U Shift+R`）。
 - ♻️ **保存时自动运行** — 使用 `utplsql.autoRun = onSave` 重新运行已保存 `.pks` 的套件，支持按文件防抖（`utplsql.autoRunDelayMs`）以及运行进行中的队列策略（`utplsql.autoRunQueue`：`skip`/`replace`）。
 - 🗄️ **数据库优先发现** — 从 `ut_runner.get_suites_info` 构建树，并从命令面板重建注释缓存。
 - 🌳 **延迟加载的测试树** — 在 `schema` 模式下，package/suite/test 在展开时按需解析，因此大型 schema 可即时打开。

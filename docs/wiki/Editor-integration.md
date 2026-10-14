@@ -34,6 +34,7 @@ clicking it switches profiles. Controlled by `utplsql.statusBar.enabled`.
 | `Ctrl+Shift+U L` | Rerun Last | Repeats the last execution (with/without coverage) |
 | `Ctrl+Shift+U U` | Run at Cursor | Runs the `%test`/`%suite` under the cursor |
 | `Ctrl+Shift+U X` | Run Failed Only | Re-runs only the tests that failed |
+| `Ctrl+Shift+U Shift+R` | Run Related Tests | Runs the suites related to the active production file, by the `ut_<object>` convention (PRD-58) |
 
 ## Jump to failure
 

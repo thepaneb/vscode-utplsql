@@ -229,7 +229,6 @@ Entregue com a [[prd-59-scaffold-suite|PRD-59]] na branch
 - 🗺️ [[MOC - PRDs]]
 - 📐 Regras: [[BR-UI-015 - Gerar suite nao sobrescreve spec existente e produz template parseavel|BR-UI-015]]
 - 🔗 PRDs relacionados: [[prd-30-schema-aware-organization|PRD-30]] · [[prd-42-suiteparser-annotations|PRD-42]] · [[prd-59-scaffold-suite|PRD-59]] · [[prd-79-coverage-scope|PRD-79]] · [[prd-80-virtual-db-source|PRD-80]]
-- 🔗 Mesma versão (0.16.0): [[prd-58-run-related-tests|PRD-58]]
 - 🎯 RF1 — Comando + Code Action → [[BR-UI-015 - Gerar suite nao sobrescreve spec existente e produz template parseavel|BR-UI-015]]
 - 🎯 RF3 — Um `%test` por rotina → [[BR-UI-015 - Gerar suite nao sobrescreve spec existente e produz template parseavel|BR-UI-015]]
 - 🎯 RF4 — Opções de geração (`utplsql.generate.*`): núcleo de 4 → [[BR-UI-015 - Gerar suite nao sobrescreve spec existente e produz template parseavel|BR-UI-015]]

@@ -681,6 +681,11 @@
         "command": "utplsql.generateTestSuite",
         "title": "%nls.command.generateTestSuite%",
         "category": "utPLSQL"
+      },
+      {
+        "command": "utplsql.runRelated",
+        "title": "%nls.command.runRelated%",
+        "category": "utPLSQL"
       }
     ],
     "menus": {
@@ -724,6 +729,11 @@
         "command": "utplsql.generateTestSuite",
         "group": "utplsql@6",
         "when": "resourceExtname == .pks || resourceExtname == .pkb"
+      },
+      {
+        "command": "utplsql.runRelated",
+        "group": "utplsql@7",
+        "when": "resourceExtname == .pks || resourceExtname == .pkb || resourceExtname == .sql || resourceExtname == .fnc || resourceExtname == .prc || resourceExtname == .trg"
       }
     ],
       "editor/context": [
@@ -756,6 +766,11 @@
         "command": "utplsql.generateTestSuite",
         "group": "utplsql@6",
         "when": "resourceExtname == .pks || resourceExtname == .pkb"
+      },
+      {
+        "command": "utplsql.runRelated",
+        "group": "utplsql@7",
+        "when": "resourceExtname == .pks || resourceExtname == .pkb || resourceExtname == .sql || resourceExtname == .fnc || resourceExtname == .prc || resourceExtname == .trg"
       }
     ],
       "testing/item/context": [
@@ -843,6 +858,12 @@
         "key": "ctrl+shift+u shift+d",
         "mac": "cmd+shift+u shift+d",
         "when": "utplsql:hasFailures"
+      },
+      {
+        "command": "utplsql.runRelated",
+        "key": "ctrl+shift+u shift+r",
+        "mac": "cmd+shift+u shift+r",
+        "when": "editorTextFocus && utplsql:connected"
       }
     ],
     "languages": [

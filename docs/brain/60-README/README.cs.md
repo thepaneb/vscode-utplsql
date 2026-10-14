@@ -48,6 +48,7 @@ Spouštějte a laďte testy **utPLSQL** (Oracle PL/SQL) přímo ve VS Code — n
 - 🧭 **Strom podle tagů** — uspořádejte Test Explorer jako **Tag > Suite > Test** pomocí `utplsql.organization = tag` (sada s více tagy se objeví pod každým tagem) a zobrazte `[tag1, tag2]` na popiscích pomocí `utplsql.showTagsInTree`.
 - 🏗️ **Kostra testovací sady** — vygeneruje `ut_<balíček>.pks` s jedním `%test` na rutinu ze souboru `.pks`/`.pkb` nebo databázového objektu, s možnostmi `utplsql.generate.*`.
 - ⏱️ **Doba běhu a perzistence** — výsledek posledního běhu (stav, zpráva a doba u každého testu) přežije znovuotevření pracovního prostoru; volitelně zobrazuje `(1.2s)` u popisků testů (`utplsql.showTestDuration`).
+- 🔗 **Související testy** — v produkčním `.pks`/`.pkb`/`.sql` spustí sady podle konvence `ut_<objekt>` (`Ctrl+Shift+U Shift+R`).
 - ♻️ **Automatické spuštění při uložení** — znovu spusťte sady uloženého `.pks` pomocí `utplsql.autoRun = onSave`, s debounce na soubor (`utplsql.autoRunDelayMs`) a zásadou fronty, když už běží spuštění (`utplsql.autoRunQueue`: `skip`/`replace`).
 - 🗄️ **Objevování DB-first** — sestavte strom z `ut_runner.get_suites_info` a přestavte mezipaměť anotací z palety.
 - 🌳 **Líně načítaný strom testů** — v režimu `schema` se balíčky/sady/testy načítají až při rozbalení, takže velká schémata se otevřou okamžitě.

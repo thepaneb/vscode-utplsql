@@ -5,14 +5,14 @@ tipo: locale
 titulo: "Deutsch"
 codigo: de
 nls: package.nls.de.json
-strings: 36
+strings: 37
 gerado: true
 tags: [i18n, locale]
 ---
 
 # LOC-de — Deutsch
 
-Locale `de` da extensão. Strings de UI em [`package.nls.de.json`](../../../package.nls.de.json) (36 chaves).
+Locale `de` da extensão. Strings de UI em [`package.nls.de.json`](../../../package.nls.de.json) (37 chaves).
 
 README: [[README.de]]
 

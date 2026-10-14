@@ -2,6 +2,13 @@
 
 ## 0.16.0
 
+- **Run Related Tests (PRD-58)**: new **`utPLSQL: Run Related Tests`** command (palette, editor/
+  Explorer context menu and `Ctrl+Shift+U Shift+R`) that runs the suites related to the active
+  production file by the utPLSQL naming convention — `ut_<object>` (and the bare `<object>`),
+  case-insensitive, matching by equality or by suffix (so a project prefix like `ut_sales_app_pkg`
+  still matches `app_pkg.pkb`). It reuses the current coverage mode and warns when no related suite
+  is found (or when there is no active editor).
+
 - **Multi-root: coverage resolves `root`/`sourcePath` per folder (PRD-57)**: the run no longer
   assumes the **first** workspace folder. The execution derives its roots from the
   suites/tests actually running (`resolveRunRoots`, from the `TestItem` metadata) and the SQL

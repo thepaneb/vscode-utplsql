@@ -218,6 +218,9 @@ export const ptBr: Record<string, string> = {
   'ext.scaffold.overwriteButton': 'Sobrescrever',
   'ext.scaffold.created': 'Suíte criada em {path}',
   'ext.scaffold.failed': 'Falha ao gerar a suíte: {error}',
+  'nls.command.runRelated': 'utPLSQL: Rodar testes relacionados',
+  'ext.runRelated.noEditor': 'Abra um arquivo de produção para rodar os testes relacionados.',
+  'ext.runRelated.none': 'Nenhuma suite relacionada a {file} foi encontrada.',
 };
 
 export const en: Record<string, string> = {
@@ -435,6 +438,9 @@ export const en: Record<string, string> = {
   'ext.scaffold.overwriteButton': 'Overwrite',
   'ext.scaffold.created': 'Suite created at {path}',
   'ext.scaffold.failed': 'Failed to generate the suite: {error}',
+  'nls.command.runRelated': 'utPLSQL: Run Related Tests',
+  'ext.runRelated.noEditor': 'Open a production file to run the related tests.',
+  'ext.runRelated.none': 'No suite related to {file} was found.',
 };
 
 export const es: Record<string, string> = {
@@ -657,6 +663,9 @@ export const es: Record<string, string> = {
   'ext.scaffold.overwriteButton': 'Sobrescribir',
   'ext.scaffold.created': 'Suite creada en {path}',
   'ext.scaffold.failed': 'No se pudo generar la suite: {error}',
+  'nls.command.runRelated': 'utPLSQL: Ejecutar tests relacionados',
+  'ext.runRelated.noEditor': 'Abra un archivo de producción para ejecutar los tests relacionados.',
+  'ext.runRelated.none': 'No se encontró ninguna suite relacionada con {file}.',
 };
 
 export const zhCn: Record<string, string> = {
@@ -864,6 +873,9 @@ export const zhCn: Record<string, string> = {
   'ext.scaffold.overwriteButton': '覆盖',
   'ext.scaffold.created': '套件已创建于 {path}',
   'ext.scaffold.failed': '生成套件失败：{error}',
+  'nls.command.runRelated': 'utPLSQL: 运行相关测试',
+  'ext.runRelated.noEditor': '请打开生产文件以运行相关测试。',
+  'ext.runRelated.none': '未找到与 {file} 相关的套件。',
 };
 
 export const ja: Record<string, string> = {
@@ -1086,6 +1098,9 @@ export const ja: Record<string, string> = {
   'ext.scaffold.overwriteButton': '上書き',
   'ext.scaffold.created': 'スイートを作成しました: {path}',
   'ext.scaffold.failed': 'スイートの生成に失敗しました: {error}',
+  'nls.command.runRelated': 'utPLSQL: 関連テストを実行',
+  'ext.runRelated.noEditor': '関連テストを実行するには本番ファイルを開いてください。',
+  'ext.runRelated.none': '{file} に関連するスイートが見つかりませんでした。',
 };
 
 export const de: Record<string, string> = {
@@ -1307,6 +1322,10 @@ export const de: Record<string, string> = {
   'ext.scaffold.overwriteButton': 'Überschreiben',
   'ext.scaffold.created': 'Suite erstellt in {path}',
   'ext.scaffold.failed': 'Suite konnte nicht erstellt werden: {error}',
+  'nls.command.runRelated': 'utPLSQL: Zugehörige Tests ausführen',
+  'ext.runRelated.noEditor':
+    'Öffnen Sie eine Produktionsdatei, um die zugehörigen Tests auszuführen.',
+  'ext.runRelated.none': 'Keine Suite zu {file} gefunden.',
 };
 
 export const fr: Record<string, string> = {
@@ -1530,6 +1549,9 @@ export const fr: Record<string, string> = {
   'ext.scaffold.overwriteButton': 'Écraser',
   'ext.scaffold.created': 'Suite créée dans {path}',
   'ext.scaffold.failed': 'Échec de la génération de la suite : {error}',
+  'nls.command.runRelated': 'utPLSQL: Exécuter les tests liés',
+  'ext.runRelated.noEditor': 'Ouvrez un fichier de production pour exécuter les tests liés.',
+  'ext.runRelated.none': 'Aucune suite liée à {file} n’a été trouvée.',
 };
 
 export const zhTw: Record<string, string> = {
@@ -1737,6 +1759,9 @@ export const zhTw: Record<string, string> = {
   'ext.scaffold.overwriteButton': '覆寫',
   'ext.scaffold.created': '套件已建立於 {path}',
   'ext.scaffold.failed': '產生套件失敗：{error}',
+  'nls.command.runRelated': 'utPLSQL: 執行相關測試',
+  'ext.runRelated.noEditor': '請開啟生產檔案以執行相關測試。',
+  'ext.runRelated.none': '找不到與 {file} 相關的套件。',
 };
 
 export const it: Record<string, string> = {
@@ -1960,6 +1985,9 @@ export const it: Record<string, string> = {
   'ext.scaffold.overwriteButton': 'Sovrascrivi',
   'ext.scaffold.created': 'Suite creata in {path}',
   'ext.scaffold.failed': 'Impossibile generare la suite: {error}',
+  'nls.command.runRelated': 'utPLSQL: Esegui test correlati',
+  'ext.runRelated.noEditor': 'Apri un file di produzione per eseguire i test correlati.',
+  'ext.runRelated.none': 'Nessuna suite correlata a {file} trovata.',
 };
 
 export const ko: Record<string, string> = {
@@ -2177,6 +2205,9 @@ export const ko: Record<string, string> = {
   'ext.scaffold.overwriteButton': '덮어쓰기',
   'ext.scaffold.created': '스위트를 생성했습니다: {path}',
   'ext.scaffold.failed': '스위트 생성 실패: {error}',
+  'nls.command.runRelated': 'utPLSQL: 관련 테스트 실행',
+  'ext.runRelated.noEditor': '관련 테스트를 실행하려면 운영 파일을 여세요.',
+  'ext.runRelated.none': '{file}과(와) 관련된 스위트를 찾을 수 없습니다.',
 };
 
 export const ru: Record<string, string> = {
@@ -2396,6 +2427,9 @@ export const ru: Record<string, string> = {
   'ext.scaffold.overwriteButton': 'Перезаписать',
   'ext.scaffold.created': 'Набор создан: {path}',
   'ext.scaffold.failed': 'Не удалось создать набор: {error}',
+  'nls.command.runRelated': 'utPLSQL: Запустить связанные тесты',
+  'ext.runRelated.noEditor': 'Откройте рабочий файл, чтобы запустить связанные тесты.',
+  'ext.runRelated.none': 'Связанный с {file} набор не найден.',
 };
 
 export const tr: Record<string, string> = {
@@ -2611,6 +2645,9 @@ export const tr: Record<string, string> = {
   'ext.scaffold.overwriteButton': 'Üzerine yaz',
   'ext.scaffold.created': 'Paket oluşturuldu: {path}',
   'ext.scaffold.failed': 'Paket oluşturulamadı: {error}',
+  'nls.command.runRelated': 'utPLSQL: İlgili testleri çalıştır',
+  'ext.runRelated.noEditor': 'İlgili testleri çalıştırmak için bir üretim dosyası açın.',
+  'ext.runRelated.none': '{file} ile ilgili paket bulunamadı.',
 };
 
 export const pl: Record<string, string> = {
@@ -2832,6 +2869,9 @@ export const pl: Record<string, string> = {
   'ext.scaffold.overwriteButton': 'Nadpisz',
   'ext.scaffold.created': 'Pakiet utworzony w {path}',
   'ext.scaffold.failed': 'Nie udało się wygenerować pakietu: {error}',
+  'nls.command.runRelated': 'utPLSQL: Uruchom powiązane testy',
+  'ext.runRelated.noEditor': 'Otwórz plik produkcyjny, aby uruchomić powiązane testy.',
+  'ext.runRelated.none': 'Nie znaleziono pakietu powiązanego z {file}.',
 };
 
 export const cs: Record<string, string> = {
@@ -3051,6 +3091,9 @@ export const cs: Record<string, string> = {
   'ext.scaffold.overwriteButton': 'Přepsat',
   'ext.scaffold.created': 'Sada vytvořena v {path}',
   'ext.scaffold.failed': 'Sadu se nepodařilo vytvořit: {error}',
+  'nls.command.runRelated': 'utPLSQL: Spustit související testy',
+  'ext.runRelated.noEditor': 'Otevřete produkční soubor pro spuštění souvisejících testů.',
+  'ext.runRelated.none': 'Nebyla nalezena sada související s {file}.',
 };
 
 export const hu: Record<string, string> = {
@@ -3274,6 +3317,9 @@ export const hu: Record<string, string> = {
   'ext.scaffold.overwriteButton': 'Felülírás',
   'ext.scaffold.created': 'Csomag létrehozva: {path}',
   'ext.scaffold.failed': 'Nem sikerült létrehozni a csomagot: {error}',
+  'nls.command.runRelated': 'utPLSQL: Kapcsolódó tesztek futtatása',
+  'ext.runRelated.noEditor': 'Nyisson meg egy éles fájlt a kapcsolódó tesztek futtatásához.',
+  'ext.runRelated.none': 'Nem található a(z) {file} fájlhoz kapcsolódó csomag.',
 };
 
 export const enGb: Record<string, string> = {
@@ -3297,6 +3343,9 @@ export const enGb: Record<string, string> = {
   'ext.scaffold.overwriteButton': 'Overwrite',
   'ext.scaffold.created': 'Suite created at {path}',
   'ext.scaffold.failed': 'Failed to generate the suite: {error}',
+  'nls.command.runRelated': 'utPLSQL: Run Related Tests',
+  'ext.runRelated.noEditor': 'Open a production file to run the related tests.',
+  'ext.runRelated.none': 'No suite related to {file} was found.',
 };
 
 export const bg: Record<string, string> = {
@@ -3512,6 +3561,9 @@ export const bg: Record<string, string> = {
   'ext.scaffold.overwriteButton': 'Презапиши',
   'ext.scaffold.created': 'Пакетът е създаден в {path}',
   'ext.scaffold.failed': 'Неуспешно генериране на пакета: {error}',
+  'nls.command.runRelated': 'utPLSQL: Изпълни свързаните тестове',
+  'ext.runRelated.noEditor': 'Отворете продукционен файл, за да изпълните свързаните тестове.',
+  'ext.runRelated.none': 'Не е намерен пакет, свързан с {file}.',
 };
 
 export const el: Record<string, string> = {
@@ -3729,6 +3781,9 @@ export const el: Record<string, string> = {
   'ext.scaffold.overwriteButton': 'Αντικατάσταση',
   'ext.scaffold.created': 'Η σουίτα δημιουργήθηκε στο {path}',
   'ext.scaffold.failed': 'Αποτυχία δημιουργίας της σουίτας: {error}',
+  'nls.command.runRelated': 'utPLSQL: Εκτέλεση σχετικών δοκιμών',
+  'ext.runRelated.noEditor': 'Ανοίξτε ένα αρχείο παραγωγής για να εκτελέσετε τις σχετικές δοκιμές.',
+  'ext.runRelated.none': 'Δεν βρέθηκε σουίτα σχετική με το {file}.',
 };
 
 export const id: Record<string, string> = {
@@ -3943,6 +3998,9 @@ export const id: Record<string, string> = {
   'ext.scaffold.overwriteButton': 'Timpa',
   'ext.scaffold.created': 'Rangkaian dibuat di {path}',
   'ext.scaffold.failed': 'Gagal membuat rangkaian: {error}',
+  'nls.command.runRelated': 'utPLSQL: Jalankan pengujian terkait',
+  'ext.runRelated.noEditor': 'Buka file produksi untuk menjalankan pengujian terkait.',
+  'ext.runRelated.none': 'Tidak ada rangkaian yang terkait dengan {file}.',
 };
 
 export const ro: Record<string, string> = {
@@ -4156,6 +4214,9 @@ export const ro: Record<string, string> = {
   'ext.scaffold.overwriteButton': 'Suprascrie',
   'ext.scaffold.created': 'Suită creată în {path}',
   'ext.scaffold.failed': 'Generarea suitei a eșuat: {error}',
+  'nls.command.runRelated': 'utPLSQL: Rulează testele asociate',
+  'ext.runRelated.noEditor': 'Deschideți un fișier de producție pentru a rula testele asociate.',
+  'ext.runRelated.none': 'Nu s-a găsit nicio suită asociată cu {file}.',
 };
 
 export const sr: Record<string, string> = {
@@ -4369,6 +4430,9 @@ export const sr: Record<string, string> = {
   'ext.scaffold.overwriteButton': 'Препиши',
   'ext.scaffold.created': 'Пакет је направљен у {path}',
   'ext.scaffold.failed': 'Прављење пакета није успело: {error}',
+  'nls.command.runRelated': 'utPLSQL: Покрени повезане тестове',
+  'ext.runRelated.noEditor': 'Отворите продукциону датотеку да покренете повезане тестове.',
+  'ext.runRelated.none': 'Није пронађен пакет повезан са {file}.',
 };
 
 export const th: Record<string, string> = {
@@ -4570,6 +4634,9 @@ export const th: Record<string, string> = {
   'ext.scaffold.overwriteButton': 'เขียนทับ',
   'ext.scaffold.created': 'สร้างชุดทดสอบที่ {path}',
   'ext.scaffold.failed': 'สร้างชุดทดสอบไม่สำเร็จ: {error}',
+  'nls.command.runRelated': 'utPLSQL: รันการทดสอบที่เกี่ยวข้อง',
+  'ext.runRelated.noEditor': 'เปิดไฟล์โปรดักชันเพื่อรันการทดสอบที่เกี่ยวข้อง',
+  'ext.runRelated.none': 'ไม่พบชุดทดสอบที่เกี่ยวข้องกับ {file}',
 };
 
 export const uk: Record<string, string> = {
@@ -4784,6 +4851,9 @@ export const uk: Record<string, string> = {
   'ext.scaffold.overwriteButton': 'Перезаписати',
   'ext.scaffold.created': 'Набір створено: {path}',
   'ext.scaffold.failed': 'Не вдалося створити набір: {error}',
+  'nls.command.runRelated': 'utPLSQL: Запустити пов’язані тести',
+  'ext.runRelated.noEditor': 'Відкрийте робочий файл, щоб запустити пов’язані тести.',
+  'ext.runRelated.none': 'Не знайдено набору, пов’язаного з {file}.',
 };
 
 export const vi: Record<string, string> = {
@@ -4996,4 +5066,7 @@ export const vi: Record<string, string> = {
   'ext.scaffold.overwriteButton': 'Ghi đè',
   'ext.scaffold.created': 'Đã tạo bộ kiểm thử tại {path}',
   'ext.scaffold.failed': 'Tạo bộ kiểm thử thất bại: {error}',
+  'nls.command.runRelated': 'utPLSQL: Chạy các bài kiểm thử liên quan',
+  'ext.runRelated.noEditor': 'Mở tệp production để chạy các bài kiểm thử liên quan.',
+  'ext.runRelated.none': 'Không tìm thấy bộ kiểm thử nào liên quan đến {file}.',
 };

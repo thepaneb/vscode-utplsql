@@ -39,6 +39,7 @@ Jalankan dan debug pengujian **utPLSQL** (Oracle PL/SQL) langsung di VS Code —
 - 🧭 **Pohon berbasis tag** — atur Test Explorer sebagai **Tag > Suite > Test** dengan `utplsql.organization = tag` (suite dengan beberapa tag muncul di bawah setiap tag) dan tampilkan `[tag1, tag2]` pada label dengan `utplsql.showTagsInTree`.
 - 🏗️ **Kerangka rangkaian pengujian** — menghasilkan `ut_<paket>.pks` dengan satu `%test` per rutin dari `.pks`/`.pkb` atau objek basis data, dengan opsi `utplsql.generate.*`.
 - ⏱️ **Durasi dan persistensi** — hasil eksekusi terakhir (status, pesan, dan durasi per pengujian) bertahan setelah workspace dibuka ulang; secara opsional menampilkan `(1.2s)` pada label pengujian (`utplsql.showTestDuration`).
+- 🔗 **Pengujian terkait** — pada `.pks`/`.pkb`/`.sql` produksi, menjalankan rangkaian sesuai konvensi `ut_<objek>` (`Ctrl+Shift+U Shift+R`).
 - ♻️ **Jalankan otomatis saat menyimpan** — jalankan ulang suite dari `.pks` yang disimpan dengan `utplsql.autoRun = onSave`, dengan debounce per file (`utplsql.autoRunDelayMs`) dan kebijakan antrean saat ada eksekusi berjalan (`utplsql.autoRunQueue`: `skip`/`replace`).
 - 🗄️ **Penemuan DB-first** — bangun pohon dari `ut_runner.get_suites_info` dan bangun ulang cache anotasi dari palet.
 - 🌳 **Pohon tes malas (lazy)** — dalam mode `schema`, package/suite/tes diurai saat diperluas, sehingga skema besar terbuka seketika.

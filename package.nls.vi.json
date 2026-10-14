@@ -34,5 +34,6 @@
   "nls.command.rebuildAnnotations": "utPLSQL: Tạo lại bộ nhớ đệm chú thích",
   "nls.command.setWalletPassword": "utPLSQL: Đặt mật khẩu ví",
   "nls.command.runWithReporter": "utPLSQL: Chạy với reporter (xuất)",
-  "nls.command.generateTestSuite": "utPLSQL: Tạo bộ kiểm thử…"
+  "nls.command.generateTestSuite": "utPLSQL: Tạo bộ kiểm thử…",
+  "nls.command.runRelated": "utPLSQL: Chạy các bài kiểm thử liên quan"
 }

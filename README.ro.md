@@ -39,6 +39,7 @@ Rulează și depanează teste **utPLSQL** (Oracle PL/SQL) direct în VS Code —
 - 🧭 **Arbore după tag** — organizează Test Explorer ca **Tag > Suite > Test** cu `utplsql.organization = tag` (o suită cu mai multe tag-uri apare sub fiecare tag) și afișează `[tag1, tag2]` pe etichete cu `utplsql.showTagsInTree`.
 - 🏗️ **Schelet de suită de teste** — generează `ut_<pachet>.pks` cu un `%test` per rutină dintr-un `.pks`/`.pkb` sau obiect de bază de date, cu opțiunile `utplsql.generate.*`.
 - ⏱️ **Durată și persistență** — rezultatul ultimei rulări (stare, mesaj și durata fiecărui test) supraviețuiește reîncărcării spațiului de lucru; opțional afișează `(1.2s)` pe etichetele testelor (`utplsql.showTestDuration`).
+- 🔗 **Teste asociate** — într-un `.pks`/`.pkb`/`.sql` de producție, rulează suitele după convenția `ut_<obiect>` (`Ctrl+Shift+U Shift+R`).
 - ♻️ **Rulare automată la salvare** — re-rulează suitele fișierului `.pks` salvat cu `utplsql.autoRun = onSave`, cu un debounce per fișier (`utplsql.autoRunDelayMs`) și o politică de coadă când o rulare este deja în curs (`utplsql.autoRunQueue`: `skip`/`replace`).
 - 🗄️ **Descoperire DB-first** — construiește arborele din `ut_runner.get_suites_info` și reconstruiește cache-ul de adnotări din paletă.
 - 🌳 **Arbore de teste lazy** — în modul `schema`, pachetele/suitele/testele sunt rezolvate la cerere la expandare, așa că schemele mari se deschid instant.

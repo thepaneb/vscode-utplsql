@@ -4,7 +4,7 @@ import { refreshCompilationDiagnostics } from '../compilationDiagnostics';
 import { getExtensionLocale, readConfig, resolveConnection } from '../config';
 import { effectiveCoverage } from '../coverageDecision';
 import { t } from '../i18n';
-import { filterSuitesByFolder, filterSuitesByUri } from '../matching';
+import { filterSuitesByFolder, filterSuitesByUri, relatedSuiteMetas } from '../matching';
 import { listReportersForConnection } from '../oracleRunner';
 import { collectRunTargets, executeRun } from '../runner';
 import { collectTags, filterItemsByTags, parseTagSelection } from '../tagFilter';
@@ -142,6 +142,39 @@ export function registerRunCommands(
       ),
       undefined,
       coverage,
+    );
+  };
+
+  /**
+   * Run Related Tests (PRD-58): executa as suites relacionadas ao arquivo de
+   * produção ativo, pela convenção `ut_<objeto>` (ver `relatedSuiteMetas`).
+   */
+  const runRelated = async (): Promise<void> => {
+    const editor = vscode.window.activeTextEditor;
+    if (!editor) {
+      vscode.window.showWarningMessage(t(locale, 'ext.runRelated.noEditor'));
+      return;
+    }
+    const metas = (await collectAllItems(controller, state))
+      .map((i) => state.getMeta(i))
+      .filter(Boolean) as ItemMeta[];
+    const include = relatedSuiteMetas(metas, editor.document.fileName)
+      .map((m) => state.getSuiteItem(`suite:${m.packageName.toLowerCase()}`))
+      .filter(Boolean) as vscode.TestItem[];
+    if (!include.length) {
+      const file = editor.document.fileName.replace(/\\/g, '/').split('/').pop() ?? '';
+      vscode.window.showWarningMessage(t(locale, 'ext.runRelated.none', { file }));
+      return;
+    }
+    const relatedCoverage = effectiveCoverage(undefined, state.coverageAlways);
+    await runWithProgress(
+      new vscode.TestRunRequest(
+        include,
+        undefined,
+        relatedCoverage ? state.coverageProfile : state.runProfile,
+      ),
+      undefined,
+      relatedCoverage,
     );
   };
 
@@ -501,6 +534,7 @@ export function registerRunCommands(
         await runForUri(editor.document.uri, cursorCoverage);
       }
     }),
+    vscode.commands.registerCommand('utplsql.runRelated', () => runRelated()),
     vscode.commands.registerCommand('utplsql.runFailed', async () => {
       const failed = state.getLastFailedItems();
       if (failed.length === 0) {

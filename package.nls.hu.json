@@ -34,5 +34,6 @@
   "nls.command.rebuildAnnotations": "utPLSQL: Megjegyzés-gyorsítótár újraépítése",
   "nls.command.setWalletPassword": "utPLSQL: Tárca jelszó beállítása",
   "nls.command.runWithReporter": "utPLSQL: Futtatás reporterrel (export)",
-  "nls.command.generateTestSuite": "utPLSQL: Tesztcsomag létrehozása…"
+  "nls.command.generateTestSuite": "utPLSQL: Tesztcsomag létrehozása…",
+  "nls.command.runRelated": "utPLSQL: Kapcsolódó tesztek futtatása"
 }

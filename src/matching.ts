@@ -55,6 +55,27 @@ export function filterSuitesByFolder(items: ItemMeta[], uriFsPath: string): Item
   );
 }
 
+/**
+ * Suites relacionadas a um arquivo de produção (PRD-58) — convenção utPLSQL
+ * `ut_<objeto>` (e o próprio `<objeto>`), case-insensitive: casa por igualdade
+ * ou por sufixo (`projeto_app_pkg` casa `app_pkg`). A extensão do arquivo é
+ * ignorada (`.pks`/`.pkb`/`.sql`/`.prc`/`.fnc`/`.trg`). Sem correspondência,
+ * devolve lista vazia.
+ */
+export function relatedSuiteMetas(items: ItemMeta[], fileName: string): ItemMeta[] {
+  const base = path
+    .basename(fileName.replace(/\\/g, '/'))
+    .replace(/\.(pks|pkb|sql|prc|fnc|trg)$/i, '')
+    .toLowerCase();
+  if (!base) return [];
+  const candidates = [`ut_${base}`, base];
+  return items.filter((m) => {
+    if (m.kind !== 'suite') return false;
+    const pkg = m.packageName.toLowerCase();
+    return candidates.some((c) => pkg === c || pkg.endsWith(c));
+  });
+}
+
 /** Mínimo de um workspace folder para os helpers puros (PRD-57). */
 export interface FolderLike {
   uri: { fsPath: string };

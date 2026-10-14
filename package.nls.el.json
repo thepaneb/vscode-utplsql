@@ -34,5 +34,6 @@
   "nls.command.rebuildAnnotations": "utPLSQL: Αναδημιουργία προσωρινής μνήμης σχολίων",
   "nls.command.setWalletPassword": "utPLSQL: Ορισμός κωδικού πορτοφολιού",
   "nls.command.runWithReporter": "utPLSQL: Εκτέλεση με reporter (εξαγωγή)",
-  "nls.command.generateTestSuite": "utPLSQL: Δημιουργία σουίτας δοκιμών…"
+  "nls.command.generateTestSuite": "utPLSQL: Δημιουργία σουίτας δοκιμών…",
+  "nls.command.runRelated": "utPLSQL: Εκτέλεση σχετικών δοκιμών"
 }

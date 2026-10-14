@@ -46,6 +46,7 @@ prefixed with `utPLSQL:`.
 | `utPLSQL: Run script folder` | Runs the folder scripts in alphabetical order (`utplsql.scriptRunner.filePattern` filter) | Right-click → folder |
 | `utPLSQL: Copy coverage grants to clipboard` | Copies SQL grants to clipboard | — |
 | `utPLSQL: Generate test suite` | Generates `ut_<package>.pks` from a `.pks`/`.pkb` or a database object — one `%test` per routine, with the `utplsql.generate.*` options | Right-click → file / Code Action |
+| `utPLSQL: Run Related Tests` | Runs the suites related to the active production file, by the `ut_<object>` naming convention | Right-click → file |
 | `Run test (CodeLens)` | Internal — triggered by CodeLens buttons | ▶ button over `%suite`/`%test` |
 
 > **Recompile UT3** does not appear in the palette — it is an internal quick-fix of
