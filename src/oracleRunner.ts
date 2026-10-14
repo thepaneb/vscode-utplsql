@@ -439,8 +439,6 @@ export interface OracleRunOptions {
   coverage: boolean;
   /** Caminho base do código-fonte para mapeamento de cobertura */
   sourcePath: string;
-  /** fsPath do workspace folder raiz */
-  root: string;
   /** TestRun atual do VSCode */
   run: vscode.TestRun;
   /** TestItems leaf (suites ou tests individuais) a executar */
@@ -571,7 +569,6 @@ export async function executeRunOracle(
     pathArgs,
     coverage,
     sourcePath,
-    root,
     run,
     leafTests,
     state,
@@ -936,7 +933,7 @@ export async function executeRunOracle(
     if (coverageEnabled) {
       if (covXml.trim()) {
         const mappedXml = mapDbPathsToFiles(covXml);
-        applyCoverageFromXml(mappedXml, sourcePath, root, run, state, folders);
+        applyCoverageFromXml(mappedXml, sourcePath, run, state, folders);
       } else {
         run.appendOutput(`\r\n${t(getExtensionLocale(), 'oracleRunner.coverNotGenerated')}\r\n`);
       }

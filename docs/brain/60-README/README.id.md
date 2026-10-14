@@ -407,7 +407,6 @@ GRANT SELECT ON SYS.DBA_PROCEDURES TO <ut3_owner>;
 - Pemetaan hasil→pengujian dilakukan berdasarkan nama package + nama/deskripsi pengujian;
   deskripsi yang identik di package berbeda dapat menimbulkan ambiguitas (indeks
   dibatasi per package untuk meminimalkan hal ini).
-- Menganggap folder workspace **pertama** untuk menyelesaikan `sourcePath`.
 - Discovery membaca `.pks` (spec); simpan anotasi `%suite`/`%test` di spec.
 
 ## Pemecahan masalah

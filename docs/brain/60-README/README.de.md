@@ -411,7 +411,6 @@ GRANT SELECT ON SYS.DBA_PROCEDURES TO <ut3_owner>;
 - Die Zuordnung Ergebnis→Test erfolgt über Paketname + Testname/-beschreibung;
   identische Beschreibungen in verschiedenen Paketen können zu Mehrdeutigkeiten führen (der Index ist
   auf das Paket begrenzt, um dies zu minimieren).
-- Berücksichtigt den **ersten** Arbeitsbereichsordner zur Auflösung von `sourcePath`.
 - Die Ermittlung liest die `.pks` (Specs); bewahren Sie die `%suite`/`%test`-Annotationen in der Spec auf.
 
 ## Fehlerbehebung

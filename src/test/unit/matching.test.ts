@@ -6,6 +6,7 @@ import {
   filterSuitesByUri,
   findByNameOnly,
   type MatchEntry,
+  resolveRunRoots,
 } from '../../matching';
 import type { ItemMeta } from '../../types';
 
@@ -201,4 +202,47 @@ test('findByNameOnly: ignora entries que nao sao test', () => {
 test('findByNameOnly: lista vazia retorna undefined', () => {
   const found = findByNameOnly([], 'proc_x');
   assert.strictEqual(found, undefined);
+});
+
+// ── Roots por folder (PRD-57) ──────────────────────────────────────────
+
+const FOLDERS = [{ uri: { fsPath: '/root/a' } }, { uri: { fsPath: '/root/b' } }];
+
+test('resolveRunRoots: itens de um folder devolvem só esse root', () => {
+  const metas = [
+    testMeta({ folder: { uri: { fsPath: '/root/a' }, name: 'a', index: 0 } as any }),
+    testMeta({ folder: { uri: { fsPath: '/root/a' }, name: 'a', index: 0 } as any }),
+  ];
+  assert.deepStrictEqual(resolveRunRoots(metas, FOLDERS), ['/root/a']);
+});
+
+test('resolveRunRoots: itens de folders distintos devolvem os dois (sem repetir)', () => {
+  const metas = [
+    testMeta({ folder: { uri: { fsPath: '/root/a' }, name: 'a', index: 0 } as any }),
+    testMeta({ folder: { uri: { fsPath: '/root/b' }, name: 'b', index: 1 } as any }),
+    testMeta({ folder: { uri: { fsPath: '/root/a' }, name: 'a', index: 0 } as any }),
+  ];
+  assert.deepStrictEqual(resolveRunRoots(metas, FOLDERS), ['/root/a', '/root/b']);
+});
+
+test('resolveRunRoots: sem meta/ folder desconhecido cai em todos os folders', () => {
+  assert.deepStrictEqual(resolveRunRoots([undefined], FOLDERS), ['/root/a', '/root/b']);
+  assert.deepStrictEqual(
+    resolveRunRoots([testMeta({ folder: { uri: { fsPath: '/outro' } } as any })], FOLDERS),
+    ['/root/a', '/root/b'],
+  );
+  assert.deepStrictEqual(resolveRunRoots([], FOLDERS), ['/root/a', '/root/b']);
+});
+
+test('resolveRunRoots: single-root devolve exatamente uma raiz (regressão zero)', () => {
+  const folders = [{ uri: { fsPath: '/root/unico' } }];
+  assert.deepStrictEqual(
+    resolveRunRoots([testMeta({ folder: { uri: { fsPath: '/root/unico' } } as any })], folders),
+    ['/root/unico'],
+  );
+  assert.deepStrictEqual(resolveRunRoots([undefined], folders), ['/root/unico']);
+});
+
+test('resolveRunRoots: sem folders devolve lista vazia', () => {
+  assert.deepStrictEqual(resolveRunRoots([testMeta({})], []), []);
 });

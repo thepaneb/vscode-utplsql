@@ -399,7 +399,6 @@ GRANT SELECT ON SYS.DBA_PROCEDURES TO <ut3_owner>;
 - Sonuç→test eşlemesi paket adı + test adı/açıklamasıyla yapılır;
   farklı paketlerdeki aynı açıklamalar belirsizlik yaratabilir (dizin
   pakete göre kapsamlanarak bu en aza indirilir).
-- `sourcePath`'i çözmek için **ilk** çalışma alanı klasörünü dikkate alır.
 - Keşif `.pks` (şema) dosyalarını okur; `%suite`/`%test` ek açıklamalarını şemada tutun.
 
 ## Sorun giderme

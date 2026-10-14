@@ -402,7 +402,6 @@ GRANT SELECT ON SYS.DBA_PROCEDURES TO <ut3_owner>;
 - La mappatura risultato→test è fatta per nome package + nome/descrizione test;
   descrizioni identiche in package diversi possono creare ambiguità (l'indice è
   limitato per package per minimizzare questo).
-- Considera la **prima** cartella del workspace per risolvere `sourcePath`.
 - La scoperta legge i `.pks` (spec); mantieni le annotazioni `%suite`/`%test` nella spec.
 
 ## Risoluzione dei problemi

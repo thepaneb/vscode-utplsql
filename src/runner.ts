@@ -1,6 +1,7 @@
 import * as vscode from 'vscode';
 import { getExtensionLocale, readConfig, resolveConnection } from './config';
 import { t } from './i18n';
+import { resolveRunRoots } from './matching';
 import { executeRunOracle, type OracleRunOptions } from './oracleRunner';
 import type { LastRunState, TestStateManager } from './state';
 import type { ItemMeta } from './types';
@@ -136,7 +137,6 @@ export async function executeRun(
   const cfg = readConfig();
   const locale = getExtensionLocale();
   const exporting = !!exportReporter;
-  const root = folders[0].uri.fsPath;
   const run = controller.createTestRun(request);
 
   state.clearLastResults();
@@ -155,6 +155,12 @@ export async function executeRun(
   }
 
   const { leafTests, pathArgs, suiteCount } = collectRunTargets(included, state);
+  // Root por folder (PRD-57): os folders das suites/testes realmente em execução,
+  // em vez de sempre o primeiro do workspace.
+  const roots = resolveRunRoots(
+    leafTests.map((t) => state.getMeta(t)),
+    folders,
+  );
   state.setLastRun(deriveLastRun(included, !!request.include, coverage, state));
   for (let i = 0; i < suiteCount; i++) onSuiteStart?.();
 
@@ -183,7 +189,6 @@ export async function executeRun(
       pathArgs: [...pathArgs],
       coverage,
       sourcePath: cfg.sourcePath,
-      root,
       run,
       leafTests,
       state,
@@ -209,7 +214,7 @@ export async function executeRun(
     if (cfg.sqlCoverageEnabled && !exporting) {
       await applySqlCoverage({
         connection,
-        root,
+        roots,
         sourcePath: cfg.sourcePath,
         run,
         state,

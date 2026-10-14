@@ -112,12 +112,12 @@ The file is moved between folders as it progresses.
 | 59 | Test suite scaffold (skeleton) | 0.16.0 |
 | 100 | Test suite generation from a package (advanced scaffold) | 0.16.0 |
 | 56 | Duration per test and result persistence | 0.16.0 |
+| 57 | Multi-root: `root`/`sourcePath` per folder | 0.16.0 |
 
 ### 🔵 Approved
 
 | # | PRD | Target version |
 |---|---|---|
-| 57 | Multi-root: `root`/`sourcePath` per folder | 0.16.0 |
 | 58 | Run Related Tests | 0.16.0 |
 
 ### ⚪ Proposed

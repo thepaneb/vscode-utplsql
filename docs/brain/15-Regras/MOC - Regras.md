@@ -54,6 +54,7 @@ SORT id ASC
 - [[BR-COB-004 - Fonte virtual do banco (utplsql-source) é read-only]] — `BR-COB-004`
 - [[BR-COB-005 - XML Cobertura e cobertura por declaracao sao parseados de forma pura]] — `BR-COB-005`
 - [[BR-COB-006 - Cobertura explicita ou coverageAlways e comandos Coverage forcam true]] — `BR-COB-006`
+- [[BR-COB-007 - Cobertura resolve root e sourcePath pelo folder do pacote em execucao]] — `BR-COB-007`
 - [[BR-CONN-001 - Precedência de resolução da conexão]] — `BR-CONN-001`
 - [[BR-CONN-002 - Prompt só ocorre quando nada está configurado e não persiste]] — `BR-CONN-002`
 - [[BR-CONN-003 - Limpar conexão de sessão reseta o context key]] — `BR-CONN-003`

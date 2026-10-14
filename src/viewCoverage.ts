@@ -77,7 +77,8 @@ async function loadOracledb(): Promise<LoadedOracledb | undefined> {
 
 export interface SqlCoverageOptions {
   connection: string;
-  root: string;
+  /** fsPath das raízes analisadas (PRD-57: uma por folder em execução). */
+  roots: string[];
   sourcePath: string;
   run: vscode.TestRun;
   state: TestStateManager;
@@ -94,8 +95,9 @@ export async function applySqlCoverage(
   options: SqlCoverageOptions,
   loadOracledbMod: () => Promise<LoadedOracledb | undefined> = loadOracledb,
 ): Promise<void> {
-  const { connection, root, sourcePath, run, state, folders } = options;
-  const files = discoverViewFiles(root, sourcePath);
+  const { connection, roots, sourcePath, run, state, folders } = options;
+  // Multi-root (PRD-57): descobre as views de cada raiz em execução, sem repetir.
+  const files = [...new Set(roots.flatMap((r) => discoverViewFiles(r, sourcePath)))];
   if (files.length === 0) return;
 
   const oracledb = await loadOracledbMod();
@@ -137,17 +139,16 @@ export async function applySqlCoverage(
       .filter(Boolean);
 
     const viewFiles: ViewFile[] = [];
+    const analyzed = new Set(roots.map((r) => r.replace(/\\/g, '/').replace(/\/+$/, '')));
     for (const f of folders ?? []) {
-      if (f.uri.fsPath === root) {
-        for (const file of files) viewFiles.push({ uri: vscode.Uri.file(file) });
-      } else {
-        // multi-root: só as views sob a raiz analisada (limite de path, não prefixo)
-        const base = f.uri.fsPath.replace(/\\/g, '/').replace(/\/+$/, '');
-        for (const file of files) {
-          const norm = file.replace(/\\/g, '/');
-          if (norm === base || norm.startsWith(`${base}/`)) {
-            viewFiles.push({ uri: vscode.Uri.file(file) });
-          }
+      const base = f.uri.fsPath.replace(/\\/g, '/').replace(/\/+$/, '');
+      const isAnalyzed = analyzed.has(base);
+      for (const file of files) {
+        const norm = file.replace(/\\/g, '/');
+        // Raiz analisada: o arquivo veio de `discoverViewFiles` dessa raiz.
+        // Demais pastas: só as views sob a raiz (limite de path, não prefixo).
+        if (isAnalyzed || norm === base || norm.startsWith(`${base}/`)) {
+          viewFiles.push({ uri: vscode.Uri.file(file) });
         }
       }
     }

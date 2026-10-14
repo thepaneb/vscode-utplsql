@@ -48,14 +48,7 @@ test('applyCoverageFromXml: fonte ilegível não lança e mantém a cobertura po
     const state = { setCoverage: () => {}, clearCoverage: () => {} };
     const folders = [{ uri: { fsPath: tmpDir }, name: 'tmp', index: 0 }];
     assert.doesNotThrow(() =>
-      applyCoverageFromXml(
-        COV_XML,
-        'install',
-        tmpDir,
-        run as never,
-        state as never,
-        folders as never,
-      ),
+      applyCoverageFromXml(COV_XML, 'install', run as never, state as never, folders as never),
     );
     assert.strictEqual(added, 1);
   } finally {

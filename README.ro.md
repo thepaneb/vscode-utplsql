@@ -398,7 +398,6 @@ GRANT SELECT ON SYS.DBA_PROCEDURES TO <ut3_owner>;
 - Maparea rezultat→test se face după numele pachetului + numele/descrierea testului;
   descrieri identice în pachete diferite pot crea ambiguitate (indexul este
   limitat la pachet pentru a minimiza acest lucru).
-- Ia în considerare **primul** folder din workspace pentru a rezolva `sourcePath`.
 - Descoperirea citește `.pks` (spec-urile); păstrează adnotările `%suite`/`%test` în spec.
 
 ## Depanare

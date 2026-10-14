@@ -4,7 +4,7 @@
 
 | Campo | Valor |
 |---|---|
-| Status | Aprovado |
+| Status | Concluído |
 | Autor | Gil Cleber Barboza |
 | Data | 2026-09-06 |
 | Componente | Extensão `paneb.vscode-utplsql` |
@@ -126,9 +126,34 @@ limitations*) é removida nas 24 notas — ver RF4.
 
 ## 12. Impacto no cérebro
 
-Na conclusão, criar a regra candidata **`BR-COB-007`** — “a cobertura resolve
+Regra criada em 2026-10-14: **`BR-COB-007`** — “a cobertura resolve
 `root`/`sourcePath` pelo folder do pacote em execução; single-root permanece
-inalterado” — com `prds: ["PRD-57"]`, `implementacao:` (`src/runner.ts`,
-`src/oracleRunner.ts`, `src/coverage.ts`) e `testes:`
-(`src/test/unit/matching.test.ts` + a integração multi-root). Enquanto
-`approved`, `regras: []`.
+inalterado” — com `prds: ["PRD-57"]`, `implementacao:` (`src/matching.ts`,
+`src/runner.ts`, `src/viewCoverage.ts`, `src/results.ts`), `testes:`
+(`src/test/unit/matching.test.ts` + `src/test/integration/multiRootE2E.test.ts`) e
+`requisitos:` RF1–RF3 + RNF1/RNF2. O `regras:` deste frontmatter é derivado pelo
+`brain:sync`.
+
+## 13. Implementado (2026-10-14)
+
+Entregue na branch `feat/prd-57-multiroot-root` (regra BR-COB-007):
+
+- **`resolveRunRoots(metas, folders)`** em `src/matching.ts` (puro): as raízes do
+  run saem do `folder` de cada `TestItem` (RF1); sem informação de folder cai em
+  todos os folders (e single-root resulta numa raiz só — RF3).
+- **`OracleRunOptions.root` removido** (RF1/RNF1): o valor era repassado a
+  `applyCoverageFromXml` num parâmetro que já era **ignorado** (`_root`), que
+  também saiu. Nenhuma assinatura pública ganhou obrigatoriedade.
+- **RF2 já era parcialmente verdadeiro**: `applyCoverageFromXml` iterava os
+  folders e resolvia `sourcePath` relativo a cada um — o que estava errado era o
+  `root` da **cobertura de views**. Agora `applySqlCoverage` recebe `roots:
+  string[]`, descobre as views em cada raiz (união sem repetição) e mantém apenas
+  as views sob a pasta analisada.
+- **Testes**: 5 casos unitários para `resolveRunRoots` (um folder, dois folders,
+  sem meta/folder desconhecido, single-root, sem folders) e um caso no
+  `multiRootE2E` (as 2 pastas entram na resolução). Os testes que montavam
+  `OracleRunOptions`/`SqlCoverageOptions` foram ajustados (`root` → `roots`, ou
+  remoção da opção onde ela deixou de existir).
+- **Follow-up registrado** (§11): `discoverDbSuites`/`discoverSchemaFromDb`
+  (descoberta **no banco**, modo schema) ainda atribuem as suites ao primeiro
+  folder — é escopo da PRD-06 e não-objetivo declarado aqui.

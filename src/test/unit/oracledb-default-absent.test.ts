@@ -50,7 +50,7 @@ test('applySqlCoverage: oracledb sem default degrada sem cobertura', async () =>
     const folders = [{ uri: { fsPath: base }, name: 'r', index: 0 }];
     await applySqlCoverage({
       connection: 'u/p@//h:1521/s',
-      root: base,
+      roots: [base],
       sourcePath: 'install',
       run,
       state,
@@ -87,7 +87,6 @@ test('executeRunOracle: oracledb sem default rejeita (pool indisponível)', asyn
         pathArgs: ['pkg'],
         coverage: false,
         sourcePath: 'install',
-        root: '/r',
         run: run as never,
         leafTests: [item as never],
         state: state as never,

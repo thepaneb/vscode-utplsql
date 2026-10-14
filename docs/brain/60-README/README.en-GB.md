@@ -406,7 +406,6 @@ GRANT SELECT ON SYS.DBA_PROCEDURES TO <ut3_owner>;
 - The result→test mapping is done by package name + test name/description;
   identical descriptions in different packages can create ambiguity (the index is
   scoped by package to minimise this).
-- Considers the **first** workspace folder to resolve `sourcePath`.
 - Discovery reads the `.pks` (specs); keep the `%suite`/`%test` annotations in the spec.
 
 ## Troubleshooting

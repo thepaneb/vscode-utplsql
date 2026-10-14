@@ -2,6 +2,14 @@
 
 ## 0.16.0
 
+- **Multi-root: coverage resolves `root`/`sourcePath` per folder (PRD-57)**: the run no longer
+  assumes the **first** workspace folder. The execution derives its roots from the
+  suites/tests actually running (`resolveRunRoots`, from the `TestItem` metadata) and the SQL
+  view coverage (`applySqlCoverage`) discovers views in **each** folder taking part in the run;
+  the Cobertura mapping already resolved `sourcePath` against the folder of each package. A
+  single-folder workspace behaves exactly as before, and the "first workspace folder"
+  limitation is gone from the README and the wiki.
+
 - **Duration and result persistence (PRD-56)**: the last run result is now persisted in the
   workspace state (`id → status, message, per-test duration and timestamp`, versioned snapshot with
   truncated messages) and **restored when the workspace is reopened** — the pass/fail decorations,

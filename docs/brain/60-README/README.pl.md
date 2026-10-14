@@ -410,7 +410,6 @@ GRANT SELECT ON SYS.DBA_PROCEDURES TO <ut3_owner>;
 - Mapowanie wynik→test odbywa się według nazwy pakietu + nazwy/opisu testu;
   identyczne opisy w różnych pakietach mogą powodować niejednoznaczność (indeks jest
   ograniczony do pakietu, aby to zminimalizować).
-- Uwzględnia **pierwszy** folder workspace do rozwiązania `sourcePath`.
 - Wykrywanie czyta pliki `.pks` (specyfikacje); trzymaj adnotacje `%suite`/`%test` w specyfikacji.
 
 ## Rozwiązywanie problemów

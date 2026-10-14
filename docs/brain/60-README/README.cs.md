@@ -410,7 +410,6 @@ GRANT SELECT ON SYS.DBA_PROCEDURES TO <ut3_owner>;
 - Mapování výsledek→test se provádí podle názvu balíčku + názvu/popisu testu;
   identické popisy v různých balíčcích mohou vytvořit nejednoznačnost (index je
   ohraničen podle balíčku, aby se to minimalizovalo).
-- Zohledňuje **první** složku pracovního prostoru pro rozlišení `sourcePath`.
 - Discovery čte `.pks` (specifikace); uchovávejte anotace `%suite`/`%test` ve specifikaci.
 
 ## Řešení problémů
