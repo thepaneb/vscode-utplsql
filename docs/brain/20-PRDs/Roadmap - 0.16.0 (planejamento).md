@@ -59,6 +59,31 @@ fechadas (as datas de `verificado` passaram a 2026-10-14):
 > Commands/Keybindings (24 notas) + wiki. O `CHANGELOG.md` ganha a seção
 > `## 0.16.0` na primeira entrega; o bump de versão fica para o release.
 
+## Estratégia de branches da versão (2026-10-14)
+
+A versão usa uma **branch de integração** — todas as entregas entram nela e um
+**PR único** dela vai para o `main`:
+
+```
+main
+ └── release/v0.16.0            ← integração (concentra a versão) + PR (draft) → main
+      ├── feat/prd-59-100-scaffold      → PR para release/v0.16.0
+      ├── feat/prd-56-duration-persistence
+      ├── feat/prd-57-multiroot-root
+      └── feat/prd-58-run-related
+```
+
+- Cada entrega tem a **sua** branch, criada a partir de `release/v0.16.0`, com PR
+  próprio **contra a branch de integração** (não contra o `main`).
+- O `ci.yml` passou a rodar também em PRs para `release/**` (antes só `main`), para
+  que os PRs das entregas continuem verificados por compile/lint/test + `brain:ci`
+  + `docs:check`.
+- O `CHANGELOG.md` recebe a seção `## 0.16.0` na primeira entrega e é alimentado a
+  cada PRD concluída dentro da branch de integração.
+- Ao fim da versão: `Closes` preenchido a partir de `npm run pr:create -- --closes`
+  (PRDs em `completed`), bump de versão + release pela skill `release`, e o PR de
+  `release/v0.16.0` → `main` sai de *draft*.
+
 **Total estimado:** ≈ 6–9 dias.
 
 ## Fluxo de execução (por PRD)
