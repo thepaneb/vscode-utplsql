@@ -39,6 +39,7 @@ Pokrenite i debugujte **utPLSQL** (Oracle PL/SQL) testove direktno u VS Code-u �
 - 🧭 **Дрво по ознакама** — организуј Test Explorer као **Tag > Suite > Test** помоћу `utplsql.organization = tag` (суит са више ознака појављује се под сваком ознаком) и прикажи `[tag1, tag2]` на лабелама помоћу `utplsql.showTagsInTree`.
 - 🏗️ **Скелет тест пакета** — прави `ut_<пакет>.pks` са једним `%test` по рутини из `.pks`/`.pkb` или објекта базе података, уз опције `utplsql.generate.*`.
 - ⏱️ **Трајање и трајност** — резултат последњег покретања (статус, порука и трајање по тесту) остаје после поновног отварања радног простора; опционо приказује `(1.2s)` на ознакама тестова (`utplsql.showTestDuration`).
+- 🔗 **Повезани тестови** — у продукционом `.pks`/`.pkb`/`.sql` покреће пакете по конвенцији `ut_<објекат>` (`Ctrl+Shift+U Shift+R`).
 - ♻️ **Аутоматско покретање при чувању** — поново покрени суитове сачуваног `.pks` помоћу `utplsql.autoRun = onSave`, са debounce-ом по датотеци (`utplsql.autoRunDelayMs`) и политиком реда када покретање већ траје (`utplsql.autoRunQueue`: `skip`/`replace`).
 - 🗄️ **DB-first откривање** — изгради стабло из `ut_runner.get_suites_info` и поново изгради кеш напомена са палете.
 - 🌳 **Lenjivo stablo testova** — u `schema` režimu paketi/suitovi/testovi se razrešavaju pri proširenju, pa se velike šeme otvaraju trenutno.

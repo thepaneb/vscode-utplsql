@@ -48,6 +48,7 @@ Exécutez et déboguez vos tests **utPLSQL** (Oracle PL/SQL) directement dans VS
 - 🧭 **Arborescence par balise** — organisez l'Explorateur de tests en **Tag > Suite > Test** avec `utplsql.organization = tag` (une suite avec plusieurs balises apparaît sous chaque balise) et affichez `[tag1, tag2]` sur les libellés avec `utplsql.showTagsInTree`.
 - 🏗️ **Génération de suite** — génère `ut_<paquet>.pks` avec un `%test` par routine depuis un `.pks`/`.pkb` ou un objet de base de données, avec les options `utplsql.generate.*`.
 - ⏱️ **Durée et persistance** — le résultat de la dernière exécution (statut, message et durée par test) survit au rechargement du workspace ; affiche en option `(1.2s)` sur les libellés (`utplsql.showTestDuration`).
+- 🔗 **Tests liés** — sur un `.pks`/`.pkb`/`.sql` de production, exécute les suites selon la convention `ut_<objet>` (`Ctrl+Shift+U Shift+R`).
 - ♻️ **Exécution automatique à l'enregistrement** — réexécutez les suites du `.pks` enregistré avec `utplsql.autoRun = onSave`, avec un debounce par fichier (`utplsql.autoRunDelayMs`) et une politique de file d'attente lorsqu'une exécution est en cours (`utplsql.autoRunQueue` : `skip`/`replace`).
 - 🗄️ **Découverte DB-first** — construisez l'arbre depuis `ut_runner.get_suites_info` et reconstruisez le cache des annotations depuis la palette.
 - 🌳 **Arbre de tests paresseux** — en mode `schema`, les packages/suites/tests sont résolus à la demande à l’expansion, donc les gros schémas s’ouvrent instantanément.

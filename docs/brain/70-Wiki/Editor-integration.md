@@ -5,7 +5,7 @@ titulo: "Editor Integration"
 publicar: docs/wiki/Editor-integration.md
 origem: ["05-ux-components","08-jump-to-failure"]
 verificado: 2026-09-25
-regras: ["BR-UI-006", "BR-UI-010", "BR-UI-011", "BR-UI-012", "BR-PARSE-015", "BR-PARSE-018", "BR-UI-005", "BR-UI-015"]
+regras: ["BR-UI-006", "BR-UI-010", "BR-UI-011", "BR-UI-012", "BR-PARSE-015", "BR-PARSE-018", "BR-UI-005", "BR-UI-014", "BR-UI-015"]
 tags: [wiki]
 ---
 
@@ -43,6 +43,7 @@ clicking it switches profiles. Controlled by `utplsql.statusBar.enabled`.
 | `Ctrl+Shift+U L` | Rerun Last | Repeats the last execution (with/without coverage) |
 | `Ctrl+Shift+U U` | Run at Cursor | Runs the `%test`/`%suite` under the cursor |
 | `Ctrl+Shift+U X` | Run Failed Only | Re-runs only the tests that failed |
+| `Ctrl+Shift+U Shift+R` | Run Related Tests | Runs the suites related to the active production file, by the `ut_<object>` convention (PRD-58) |
 
 ## Jump to failure
 

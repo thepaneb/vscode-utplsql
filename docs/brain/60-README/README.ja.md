@@ -48,6 +48,7 @@ tags: [readme]
 - 🧭 **タグベースのツリー** — `utplsql.organization = tag` で Test Explorer を **Tag > Suite > Test** として整理し（複数タグを持つスイートは各タグの下に表示されます）、`utplsql.showTagsInTree` でラベルに `[tag1, tag2]` を表示します。
 - 🏗️ **テストスイートの雛形** — `.pks`/`.pkb` またはデータベースオブジェクトから、ルーチンごとに `%test` を 1 つ持つ `ut_<パッケージ>.pks` を生成します（`utplsql.generate.*` オプション）。
 - ⏱️ **所要時間と永続化** — 前回の実行結果（状態・メッセージ・テストごとの所要時間）はワークスペースを開き直しても保持されます。任意でテストのラベルに `(1.2s)` を表示します（`utplsql.showTestDuration`）。
+- 🔗 **関連テスト** — 本番の `.pks`/`.pkb`/`.sql` で `ut_<オブジェクト>` 規約に従うスイートを実行します（`Ctrl+Shift+U Shift+R`）。
 - ♻️ **保存時の自動実行** — 保存された `.pks` のスイートを `utplsql.autoRun = onSave` で再実行します。ファイル単位の debounce（`utplsql.autoRunDelayMs`）と、実行中の場合のキューポリシー（`utplsql.autoRunQueue`: `skip`/`replace`）を備えます。
 - 🗄️ **DB ファーストの探索** — `ut_runner.get_suites_info` からツリーを構築し、パレットから注釈キャッシュを再構築します。
 - 🌳 **遅延読み込みのテストツリー** — `schema` モードでは、展開時に package/suite/test を必要に応じて解決するため、大きなスキーマでも即座に開きます。
