@@ -4,12 +4,12 @@
 
 | Campo | Valor |
 |---|---|
-| Status | Proposto |
+| Status | Aprovado |
 | Autor | Gil Cleber Barboza |
 | Data | 2026-09-06 |
 | Componente | Extensão `paneb.vscode-utplsql` |
 | Versão alvo | 0.16.0 |
-| Arquivos afetados | `src/state.ts`, `src/results.ts`, `src/runner.ts`, `src/extension.ts` |
+| Arquivos afetados | `src/state.ts`, `src/results.ts`, `src/runner.ts`, `src/oracleRunner.ts`, `src/testTree.ts` (label com duração), `src/extension.ts`, `src/config.ts`, `package.json` (setting), 24 notas `docs/brain/60-README/` |
 | Esforço estimado | 1 dia |
 | Complexidade | Baixa-Média |
 
@@ -17,9 +17,9 @@
 
 Persistir o resultado da última execução (status, mensagem, duração por teste,
 timestamp) no `workspaceState` e restaurá-lo ao reabrir o workspace. Hoje
-`lastResults` é volátil (`state.ts:21-22`) e a duração, embora parseada
-(`junit.ts:42`), não é armazenada no estado. PHPUnit Workbench e Go mantêm
-histórico/results entre sessões.
+`lastResults` é volátil (`state.ts:22`) e a duração, embora parseada
+(`junit.ts:45`) e já repassada ao `TestRun` (`results.ts:152`), não é armazenada
+no estado. PHPUnit Workbench e Go mantêm histórico/results entre sessões.
 
 ## 2. Contexto e problema
 
@@ -53,25 +53,35 @@ interface PersistedResult { status: TestStatus; message?: string; durationMs?: n
 type PersistedRun = Record<string, PersistedResult>; // key = test item id
 ```
 
-`TestLineResult` (`state.ts:5`) ganha `durationMs?: number` e `ts?: number`.
+`TestLineResult` (`state.ts:6`) ganha `durationMs?: number` e `ts?: number`.
 
 ### RF2 — Escrita no fim do run
 
 Em `runner.ts` (após `applyResults`) e em `oracleRunner.ts` (após
-`applyResultsFromCases`), gravar via `state.persist(memento)` usando
-`context.workspaceState`. O `TestStateManager` passa a receber o
-`Memento` na ativação (`extension.ts`).
+`applyResultsFromCases`), gravar via `state.persist()` usando
+`context.workspaceState`. O `Memento` é entregue por **setter** na ativação
+(`state.attachMemento(memento)` em `extension.ts`) — evita mudar o construtor do
+`TestStateManager` e o churn em toda a suíte de testes que o instancia.
 
 ### RF3 — Restauração na ativação
 
-`extension.ts` chama `state.restore(memento)` antes do primeiro refresh, e
-reconstrói `lastFailedItems` a partir do snapshot (mapeando ids para
-`TestItem` via `suiteMap` após o discovery).
+`extension.ts` chama `state.restore()` antes do primeiro refresh, e reconstrói
+`lastFailedItems` a partir do snapshot (mapeando ids para `TestItem` via
+`suiteMap` após o discovery).
 
 ### RF4 — Duração no tooltip
 
 Setting `utplsql.showTestDuration` (default `false`): sufixa `(1.2s)` no label
 do `TestItem` de teste após a execução.
+
+### RF5 — Documentação e i18n (gate de CI)
+
+- A setting `utplsql.showTestDuration` precisa constar no `README.md` **e nas 23
+  variantes** (o `docs-fidelity` falha o CI caso contrário) + na tabela de
+  Configuration da wiki;
+- nenhum comando novo → sem nls/i18n de paleta; as mensagens de runtime, se
+  houver, seguem `src/i18nLocales.ts`;
+- validação local na PR: `npm run docs:check` (§7).
 
 **Não-funcionais**
 - RNF1 — Snapshot leve (sem mensagens gigantes: truncar em N caracteres).
@@ -90,9 +100,11 @@ Preencher `durationMs` em `applyResultsFromCases` (já recebido por parâmetro).
 ## 7. Plano de testes
 
 - **Unitários**: persist/restore round-trip; truncamento de mensagem; restauro
-  de `lastFailedItems` a partir do snapshot.
+  de `lastFailedItems` a partir do snapshot; snapshot com `v` incompatível é
+  descartado sem lançar.
 - **Integração**: rodar → reload → decorações e "Run Failed" restaurados.
 - **Manual**: duração exibida no label quando a setting está ligada.
+- **CI**: `npm run docs:check` (setting nas 24 notas de README) + `brain:ci`.
 
 ## 8. Riscos e mitigação
 
@@ -113,9 +125,22 @@ Preencher `durationMs` em `applyResultsFromCases` (já recebido por parâmetro).
 - Último resultado sobrevive a reload (decorações + "Run Failed").
 - `showTestDuration` exibe duração no label.
 - Snapshot obsoleto não quebra a ativação.
+- `npm run docs:check` verde (setting presente nas 24 notas de README).
 
 ## 11. Questões em aberto
 
 - Persistir em `globalState` (cross-workspace) vs `workspaceState`?
-  — `workspaceState` (resultados são por projeto).
+  — **Fechado:** `workspaceState` (resultados são por projeto).
 - Histórico de N runs para detecção de flaky? — Follow-up.
+- Injeção do `Memento` por construtor ou setter? — **Fechado em 2026-10-14:
+  setter** (`state.attachMemento`), para não mexer no construtor e evitar churn
+  na suíte de testes.
+
+## 12. Impacto no cérebro
+
+Na conclusão, criar a regra candidata **`BR-QUAL-003`** — “o último resultado é
+persistido no `workspaceState` e restaurado de forma tolerante: snapshot
+versionado, mensagens truncadas e ids ausentes ignorados” — com
+`prds: ["PRD-56"]`, `implementacao:` (`src/state.ts`, `src/runner.ts`,
+`src/oracleRunner.ts`, `src/extension.ts`) e `testes:` (`src/test/unit/state*.ts`
++ o round-trip de persist/restore). Enquanto `approved`, `regras: []`.
