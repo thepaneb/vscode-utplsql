@@ -47,6 +47,7 @@ tags: [readme]
 - 🏷️ **태그 및 무작위 순서** — `utplsql.tags`(예: `fast & !integration`) 또는 `utPLSQL: Run Tests by Tag...` 명령(다중 선택 QuickPick, `!tag`는 제외)으로 테스트를 필터링하고 재현 가능한 seed(`utplsql.run.randomOrder`)로 무작위 순서로 실행합니다.
 - 🧭 **태그 기반 트리** — `utplsql.organization = tag`로 Test Explorer를 **Tag > Suite > Test**로 구성하고(여러 태그가 있는 suite는 각 태그 아래에 표시됨) `utplsql.showTagsInTree`로 레이블에 `[tag1, tag2]`를 표시합니다.
 - 🏗️ **테스트 스위트 스캐폴드** — `.pks`/`.pkb` 또는 데이터베이스 객체에서 루틴마다 `%test` 하나를 가진 `ut_<패키지>.pks`를 생성합니다(`utplsql.generate.*` 옵션).
+- ⏱️ **소요 시간과 지속성** — 마지막 실행 결과(상태, 메시지, 테스트별 소요 시간)가 워크스페이스를 다시 열어도 유지됩니다. 선택적으로 테스트 레이블에 `(1.2s)`를 표시합니다(`utplsql.showTestDuration`).
 - ♻️ **저장 시 자동 실행** — 저장된 `.pks`의 suite를 `utplsql.autoRun = onSave`로 다시 실행하며, 파일별 debounce(`utplsql.autoRunDelayMs`)와 실행 중일 때의 대기열 정책(`utplsql.autoRunQueue`: `skip`/`replace`)을 제공합니다.
 - 🗄️ **DB 우선 검색** — `ut_runner.get_suites_info`로 트리를 만들고 팔레트에서 주석 캐시를 다시 작성합니다.
 - 🌳 **지연 로딩 테스트 트리** — `schema` 모드에서 package/suite/test가 펼칠 때 필요에 따라 해석되어 큰 스키마도 즉시 열립니다.
@@ -168,6 +169,7 @@ Test Explorer에 나타납니다.
 | `utplsql.generate.testPackageSuffix` | `""` | 생성되는 테스트 패키지 이름의 접미사입니다. |
 | `utplsql.generate.numberOfTestsPerUnit` | `1` | 운영 패키지의 루틴마다 생성되는 `%test` 수입니다. |
 | `utplsql.generate.generateComments` | `true` | 생성되는 각 `%test`에 `-- TODO`를 추가합니다. |
+| `utplsql.showTestDuration` | `false` | 마지막 실행의 소요 시간을 테스트 레이블에 붙입니다(예: `(1.2s)`). |
 | `utplsql.coverageOwner` | `""` | 커버리지 대상 객체의 스키마 소유자. 비어 있음 = 연결 사용자 사용(대문자). |
 | `utplsql.coverage.schemes` | `[]` | 커버리지 대상 스키마(`a_coverage_schemes`). 비어 있음 = 연결 사용자(또는 `utplsql.coverageOwner`). |
 | `utplsql.coverage.includeObjects` | `[]` | 커버리지에 포함할 객체(`OWNER.NAME` 형식, 예: `["APP.MY_PKG"]`). 동적으로만 도달하는 객체에 유용합니다. |

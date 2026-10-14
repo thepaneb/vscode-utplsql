@@ -38,6 +38,7 @@
 - 🏷️ **标签与随机顺序** — 使用 `utplsql.tags`（例如 `fast & !integration`）或 `utPLSQL: Run Tests by Tag...` 命令（多选 QuickPick；`!tag` 表示排除）筛选测试，并以可复现的种子随机顺序运行（`utplsql.run.randomOrder`）。
 - 🧭 **基于标签的树** — 使用 `utplsql.organization = tag` 将 Test Explorer 组织为 **Tag > Suite > Test**（带有多个标签的套件会出现在每个标签下），并用 `utplsql.showTagsInTree` 在标签上显示 `[tag1, tag2]`。
 - 🏗️ **测试套件脚手架** — 从 `.pks`/`.pkb` 或数据库对象生成 `ut_<包名>.pks`，每个例程一个 `%test`，使用 `utplsql.generate.*` 选项。
+- ⏱️ **耗时与持久化** — 上次运行结果（状态、消息和每个测试的耗时）在重新打开工作区后仍然保留；可选地在测试标签上显示 `(1.2s)`（`utplsql.showTestDuration`）。
 - ♻️ **保存时自动运行** — 使用 `utplsql.autoRun = onSave` 重新运行已保存 `.pks` 的套件，支持按文件防抖（`utplsql.autoRunDelayMs`）以及运行进行中的队列策略（`utplsql.autoRunQueue`：`skip`/`replace`）。
 - 🗄️ **数据库优先发现** — 从 `ut_runner.get_suites_info` 构建树，并从命令面板重建注释缓存。
 - 🌳 **延迟加载的测试树** — 在 `schema` 模式下，package/suite/test 在展开时按需解析，因此大型 schema 可即时打开。
@@ -158,6 +159,7 @@ Test Explorer 中。
 | `utplsql.generate.testPackageSuffix` | `""` | 生成的测试包名称后缀。 |
 | `utplsql.generate.numberOfTestsPerUnit` | `1` | 生产包的每个例程生成的 `%test` 数量。 |
 | `utplsql.generate.generateComments` | `true` | 为每个生成的 `%test` 添加 `-- TODO`。 |
+| `utplsql.showTestDuration` | `false` | 在测试标签后附加上次运行的耗时（例如 `(1.2s)`）。 |
 | `utplsql.coverageOwner` | `""` | 被覆盖对象的 schema 所有者。留空 = 使用连接用户（大写）。 |
 | `utplsql.coverage.schemes` | `[]` | 覆盖的 schema（`a_coverage_schemes`）。留空 = 连接用户（或 `utplsql.coverageOwner`）。 |
 | `utplsql.coverage.includeObjects` | `[]` | 要纳入覆盖的对象，格式为 `OWNER.NAME`（例如 `["APP.MY_PKG"]`）。适用于仅通过动态方式到达的对象。 |

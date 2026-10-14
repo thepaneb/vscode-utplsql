@@ -38,6 +38,7 @@ Pokrenite i debugujte **utPLSQL** (Oracle PL/SQL) testove direktno u VS Code-u �
 - 🏷️ **Ознаке и насумичан ред** — филтрирај тестове помоћу `utplsql.tags` (нпр. `fast & !integration`) или командом `utPLSQL: Run Tests by Tag...` (QuickPick са вишеструким избором; `!tag` искључује) и покрени у насумичном реду са поновљивим seed-ом (`utplsql.run.randomOrder`).
 - 🧭 **Дрво по ознакама** — организуј Test Explorer као **Tag > Suite > Test** помоћу `utplsql.organization = tag` (суит са више ознака појављује се под сваком ознаком) и прикажи `[tag1, tag2]` на лабелама помоћу `utplsql.showTagsInTree`.
 - 🏗️ **Скелет тест пакета** — прави `ut_<пакет>.pks` са једним `%test` по рутини из `.pks`/`.pkb` или објекта базе података, уз опције `utplsql.generate.*`.
+- ⏱️ **Трајање и трајност** — резултат последњег покретања (статус, порука и трајање по тесту) остаје после поновног отварања радног простора; опционо приказује `(1.2s)` на ознакама тестова (`utplsql.showTestDuration`).
 - ♻️ **Аутоматско покретање при чувању** — поново покрени суитове сачуваног `.pks` помоћу `utplsql.autoRun = onSave`, са debounce-ом по датотеци (`utplsql.autoRunDelayMs`) и политиком реда када покретање већ траје (`utplsql.autoRunQueue`: `skip`/`replace`).
 - 🗄️ **DB-first откривање** — изгради стабло из `ut_runner.get_suites_info` и поново изгради кеш напомена са палете.
 - 🌳 **Lenjivo stablo testova** — u `schema` režimu paketi/suitovi/testovi se razrešavaju pri proširenju, pa se velike šeme otvaraju trenutno.
@@ -158,6 +159,7 @@ Test Explorer-у **како се сваки тест заврши**. VSIX већ
 | `utplsql.generate.testPackageSuffix` | `""` | Суфикс назива направљеног тест пакета. |
 | `utplsql.generate.numberOfTestsPerUnit` | `1` | `%test` по рутини продукционог пакета. |
 | `utplsql.generate.generateComments` | `true` | Додаје `-- TODO` у сваки направљени `%test`. |
+| `utplsql.showTestDuration` | `false` | Додаје трајање последњег покретања на ознаке тестова (нпр. `(1.2s)`). |
 | `utplsql.coverageOwner` | `""` | Власник шеме покривених објеката. Празно = користи корисника везе (велика слова). |
 | `utplsql.coverage.schemes` | `[]` | Покривене шеме (`a_coverage_schemes`). Празно = корисник везе (или `utplsql.coverageOwner`). |
 | `utplsql.coverage.includeObjects` | `[]` | Објекти за укључивање у покривеност, као `OWNER.NAME` (нпр. `["APP.MY_PKG"]`). Корисно за објекте достигнуте само динамички. |

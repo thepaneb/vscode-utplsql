@@ -38,6 +38,7 @@ Rulează și depanează teste **utPLSQL** (Oracle PL/SQL) direct în VS Code —
 - 🏷️ **Tag-uri și ordine aleatorie** — filtrează testele cu `utplsql.tags` (ex. `fast & !integration`) sau cu comanda `utPLSQL: Run Tests by Tag...` (QuickPick cu selecție multiplă; `!tag` exclude), și rulează în ordine aleatorie cu seed reproductibil (`utplsql.run.randomOrder`).
 - 🧭 **Arbore după tag** — organizează Test Explorer ca **Tag > Suite > Test** cu `utplsql.organization = tag` (o suită cu mai multe tag-uri apare sub fiecare tag) și afișează `[tag1, tag2]` pe etichete cu `utplsql.showTagsInTree`.
 - 🏗️ **Schelet de suită de teste** — generează `ut_<pachet>.pks` cu un `%test` per rutină dintr-un `.pks`/`.pkb` sau obiect de bază de date, cu opțiunile `utplsql.generate.*`.
+- ⏱️ **Durată și persistență** — rezultatul ultimei rulări (stare, mesaj și durata fiecărui test) supraviețuiește reîncărcării spațiului de lucru; opțional afișează `(1.2s)` pe etichetele testelor (`utplsql.showTestDuration`).
 - ♻️ **Rulare automată la salvare** — re-rulează suitele fișierului `.pks` salvat cu `utplsql.autoRun = onSave`, cu un debounce per fișier (`utplsql.autoRunDelayMs`) și o politică de coadă când o rulare este deja în curs (`utplsql.autoRunQueue`: `skip`/`replace`).
 - 🗄️ **Descoperire DB-first** — construiește arborele din `ut_runner.get_suites_info` și reconstruiește cache-ul de adnotări din paletă.
 - 🌳 **Arbore de teste lazy** — în modul `schema`, pachetele/suitele/testele sunt rezolvate la cerere la expandare, așa că schemele mari se deschid instant.
@@ -159,6 +160,7 @@ Extensia se conectează direct prin Oracle, citește rapoartele (JUnit + Coverag
 | `utplsql.generate.testPackageSuffix` | `""` | Sufixul numelui pachetului de teste generat. |
 | `utplsql.generate.numberOfTestsPerUnit` | `1` | `%test` generate pentru fiecare rutină a pachetului de producție. |
 | `utplsql.generate.generateComments` | `true` | Adaugă `-- TODO` la fiecare `%test` generat. |
+| `utplsql.showTestDuration` | `false` | Adaugă durata ultimei rulări la etichetele testelor (de ex. `(1.2s)`). |
 | `utplsql.coverageOwner` | `""` | Schema proprietară a obiectelor acoperite. Gol = folosește utilizatorul conexiunii (cu majuscule). |
 | `utplsql.coverage.schemes` | `[]` | Scheme acoperite (`a_coverage_schemes`). Gol = utilizatorul conexiunii (sau `utplsql.coverageOwner`). |
 | `utplsql.coverage.includeObjects` | `[]` | Obiecte de inclus în acoperire, ca `OWNER.NAME` (ex.: `["APP.MY_PKG"]`). Util pentru obiecte atinse doar dinamic. |

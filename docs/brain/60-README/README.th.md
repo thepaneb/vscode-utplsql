@@ -47,6 +47,7 @@ tags: [readme]
 - 🏷️ **แท็กและลำดับแบบสุ่ม** — กรองเทสต์ด้วย `utplsql.tags` (เช่น `fast & !integration`) หรือคำสั่ง `utPLSQL: Run Tests by Tag...` (QuickPick แบบเลือกหลายรายการ; `!tag` เพื่อยกเว้น) และรันแบบสุ่มด้วย seed ที่ทำซ้ำได้ (`utplsql.run.randomOrder`)
 - 🧭 **ทรีตามแท็ก** — จัดระเบียบ Test Explorer เป็น **Tag > Suite > Test** ด้วย `utplsql.organization = tag` (suite ที่มีหลายแท็กจะปรากฏใต้แต่ละแท็ก) และแสดง `[tag1, tag2]` บนป้ายด้วย `utplsql.showTagsInTree`
 - 🏗️ **โครงชุดทดสอบ** — สร้าง `ut_<แพ็กเกจ>.pks` โดยมี `%test` หนึ่งรายการต่อรูทีน จาก `.pks`/`.pkb` หรือออบเจ็กต์ฐานข้อมูล พร้อมตัวเลือก `utplsql.generate.*`
+- ⏱️ **ระยะเวลาและความคงอยู่** — ผลการรันล่าสุด (สถานะ ข้อความ และระยะเวลาต่อการทดสอบ) ยังอยู่หลังเปิดเวิร์กสเปซใหม่ และเลือกแสดง `(1.2s)` บนป้ายชื่อการทดสอบได้ (`utplsql.showTestDuration`)
 - ♻️ **รันอัตโนมัติเมื่อบันทึก** — รัน suite ของ `.pks` ที่บันทึกอีกครั้งด้วย `utplsql.autoRun = onSave` พร้อม debounce ต่อไฟล์ (`utplsql.autoRunDelayMs`) และนโยบายคิวเมื่อมีการรันอยู่แล้ว (`utplsql.autoRunQueue`: `skip`/`replace`)
 - 🗄️ **การค้นหาแบบ DB-first** — สร้างทรีจาก `ut_runner.get_suites_info` และสร้างแคชคำอธิบายประกอบใหม่จากพาเลตต์
 - 🌳 **ทรีเทสต์แบบ lazy** — ในโหมด `schema` แพ็กเกจ/ชุดเทสต์/เทสต์จะถูกโหลดเมื่อขยาย จึงเปิดสคีมาขนาดใหญ่ได้ทันที
@@ -167,6 +168,7 @@ Test Explorer **เมื่อแต่ละเทสต์เสร็จส�
 | `utplsql.generate.testPackageSuffix` | `""` | คำต่อท้ายของชื่อแพ็กเกจทดสอบที่สร้างขึ้น |
 | `utplsql.generate.numberOfTestsPerUnit` | `1` | จำนวน `%test` ที่สร้างต่อรูทีนของแพ็กเกจโปรดักชัน |
 | `utplsql.generate.generateComments` | `true` | เพิ่ม `-- TODO` ในทุก `%test` ที่สร้างขึ้น |
+| `utplsql.showTestDuration` | `false` | ต่อท้ายระยะเวลาของการรันล่าสุดบนป้ายชื่อการทดสอบ (เช่น `(1.2s)`) |
 | `utplsql.coverageOwner` | `""` | เจ้าของ schema ของอ็อบเจกต์ที่ครอบคลุม ว่าง = ใช้ผู้ใช้จากการเชื่อมต่อ (ตัวพิมพ์ใหญ่) |
 | `utplsql.coverage.schemes` | `[]` | schema ที่ครอบคลุม (`a_coverage_schemes`) ว่าง = ผู้ใช้จากการเชื่อมต่อ (หรือ `utplsql.coverageOwner`) |
 | `utplsql.coverage.includeObjects` | `[]` | อ็อบเจกต์ที่จะรวมในการครอบคลุม ในรูปแบบ `OWNER.NAME` (เช่น `["APP.MY_PKG"]`) มีประโยชน์กับอ็อบเจกต์ที่เข้าถึงแบบไดนามิกเท่านั้น |

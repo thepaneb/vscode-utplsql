@@ -38,6 +38,7 @@ Run and debug **utPLSQL** (Oracle PL/SQL) tests right in VS Code — native **Te
 - 🏷️ **Tags and random order** — filter tests with `utplsql.tags` (e.g. `fast & !integration`) or the `utPLSQL: Run Tests by Tag...` command (multi-select QuickPick; `!tag` excludes), and run in random order with a reproducible seed (`utplsql.run.randomOrder`).
 - 🧭 **Tag-based tree** — organise the Test Explorer as **Tag > Suite > Test** with `utplsql.organization = tag` (a suite with several tags appears under each tag) and show `[tag1, tag2]` on the labels with `utplsql.showTagsInTree`.
 - 🏗️ **Test suite scaffold** — generates `ut_<package>.pks` with one `%test` per routine from a `.pks`/`.pkb` or a database object, using the `utplsql.generate.*` options.
+- ⏱️ **Duration and persistence** — the last run result (status, message and per-test duration) survives a workspace reload; optionally shows `(1.2s)` on the test labels (`utplsql.showTestDuration`).
 - ♻️ **Auto-run on save** — re-run the suites of the saved `.pks` with `utplsql.autoRun = onSave`, with a per-file debounce (`utplsql.autoRunDelayMs`) and a queue policy when a run is in progress (`utplsql.autoRunQueue`: `skip`/`replace`).
 - 🗄️ **Database-first discovery** — build the tree from `ut_runner.get_suites_info` and rebuild the annotation cache from the palette.
 - 🌳 **Lazy test tree** — in `schema` mode, packages/suites/tests are resolved on demand when you expand, so large schemas open instantly.
@@ -158,6 +159,7 @@ Test Explorer **as each test finishes**. The VSIX already includes the thin `ora
 | `utplsql.generate.testPackageSuffix` | `""` | Suffix of the generated test package name. |
 | `utplsql.generate.numberOfTestsPerUnit` | `1` | `%test` generated per routine of the production package. |
 | `utplsql.generate.generateComments` | `true` | Adds `-- TODO` to each generated `%test`. |
+| `utplsql.showTestDuration` | `false` | Suffixes the duration of the last run to the test item labels (e.g. `(1.2s)`). |
 | `utplsql.coverageOwner` | `""` | Schema owner of the covered objects. Empty = uses the connection user (uppercase). |
 | `utplsql.coverage.schemes` | `[]` | Covered schemas (`a_coverage_schemes`). Empty = the connection user (or `utplsql.coverageOwner`). |
 | `utplsql.coverage.includeObjects` | `[]` | Objects to include in coverage, as `OWNER.NAME` (e.g. `["APP.MY_PKG"]`). Useful for dynamically reached objects. |

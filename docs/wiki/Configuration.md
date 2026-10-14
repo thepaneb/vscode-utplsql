@@ -131,6 +131,7 @@ decoded by VSCode — the profile charset does not apply.
 | `utplsql.generate.testPackageSuffix` | `""` | Suffix of the generated test package name. |
 | `utplsql.generate.numberOfTestsPerUnit` | `1` | `%test` generated per routine of the production package (1–50). |
 | `utplsql.generate.generateComments` | `true` | Adds a `-- TODO` comment to each generated `%test`. |
+| `utplsql.showTestDuration` | `false` | Suffixes the duration of the last run to the test item labels (`(1.2s)`); the value is restored when the workspace is reopened. |
 | `utplsql.discovery.source` | `auto` | Source of the test tree in `schema` mode: `auto` uses `ut_runner.get_suites_info` and falls back to `ALL_SOURCE`/files when unavailable; `database` requires the API; `file` disables database discovery. |
 
 ## Oracle Runner Pool
