@@ -22,11 +22,13 @@ a **fonte da verdade** no frontmatter das notas `prd-*`: ver [[MOC - PRDs]] e
 | 3 | PRD-102 | Observabilidade: tracing e instrumentação de desempenho | 2–3 dias | Média |
 | 4 | PRD-103 | Reindexação incremental de fontes (watcher por-URI) | 2–3 dias | Média |
 | 5 | PRD-106 | Harness de performance: fixture em escala e medição por fases | 2–3 dias | Média-Alta |
+| 6 | PRD-120 | Ativação enxuta e validação de setup preguiçosa | 1–2 dias | Média |
 
 **PRDs:** [[prd-107-unprivileged-fixture|PRD-107]] ·
 [[prd-101-connection-pool-lifecycle|PRD-101]] ·
 [[prd-102-trace-and-perf-instrumentation|PRD-102]] ·
-[[prd-103-incremental-source-reindex|PRD-103]] · [[prd-106-perf-harness|PRD-106]]
+[[prd-103-incremental-source-reindex|PRD-103]] · [[prd-106-perf-harness|PRD-106]] ·
+[[prd-120-lean-activation-lazy-setup|PRD-120]]
 
 **Tema:** confiabilidade e desempenho (ciclo de conexões, reindexação, tracing e
 medição de fases). Ordem sugerida: **107 → 101 → 102 → 103 → 106** (a 107 habilita
@@ -36,7 +38,11 @@ os testes da 101; a 106 mede as fases instrumentadas pela 102).
 (0.19.0) para que a instrumentação da 102 incida sobre o `oracleRunner` já
 decomposto.
 
-**Total estimado:** ≈ 8–13 dias.
+**Complemento (2026-10-13):** a **PRD-120** (ativação enxuta + validação de setup
+preguiçosa) entra aqui por tocar o ciclo de vida de conexão da PRD-101 e se
+beneficiar do harness de desempenho da PRD-106 para medir a ativação.
+
+**Total estimado:** ≈ 9–15 dias.
 
 ## Fluxo de execução (por PRD)
 

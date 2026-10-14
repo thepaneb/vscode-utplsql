@@ -201,6 +201,10 @@ notas `prd-*`. O índice navegável do vault é a [[MOC - PRDs]].
 | 116 | [Testes diretos dos módulos sem cobertura dedicada](proposed/prd-116-direct-module-tests.md) | 0.23.0 | 2026-10-10 |
 | 117 | [Testes de propriedade do parser de scripts (`splitScript`)](proposed/prd-117-split-script-property-tests.md) | 0.23.0 | 2026-10-10 |
 | 118 | [Assinatura de commits e verificação de origem no main](proposed/prd-118-commit-signing.md) | 0.18.0 | 2026-10-13 |
+| 119 | [Postura de segurança verificável: OSSF Scorecard e proteção de main](proposed/prd-119-security-posture-scorecard.md) | 0.18.0 | 2026-10-13 |
+| 120 | [Ativação enxuta e validação de setup preguiçosa](proposed/prd-120-lean-activation-lazy-setup.md) | 0.20.0 | 2026-10-13 |
+| 121 | [Pacote auditável: source map do bundle no VSIX](proposed/prd-121-auditable-package-sourcemap.md) | 0.23.0 | 2026-10-13 |
+| 122 | [Confiança na distribuição: publisher verificado e política de privacidade](proposed/prd-122-marketplace-trust-metadata.md) | 0.23.0 | 2026-10-13 |
 <!-- prd:roadmap:end -->
 
 ---
@@ -332,6 +336,10 @@ docs/prd/
 │   ├── prd-116-direct-module-tests.md
 │   ├── prd-117-split-script-property-tests.md
 │   ├── prd-118-commit-signing.md
+│   ├── prd-119-security-posture-scorecard.md
+│   ├── prd-120-lean-activation-lazy-setup.md
+│   ├── prd-121-auditable-package-sourcemap.md
+│   ├── prd-122-marketplace-trust-metadata.md
 ```
 <!-- prd:estrutura:end -->
 

@@ -158,5 +158,5 @@ etapas de montagem são funções testáveis"), com `prds: ["PRD-111"]`,
 - 🗺️ [[MOC - PRDs]]
 - 🔗 PRDs relacionados: [[prd-40-options-object|PRD-40]] · [[prd-69-oracle-runner-typed-binds|PRD-69]] · [[prd-76-reporter-export|PRD-76]] · [[prd-78-random-test-order|PRD-78]]
 - 🔗 Mesma versão (0.19.0): [[prd-115-split-i18n-locales|PRD-115]]
-- 🚀 ⬅️ release anterior: [[prd-118-commit-signing|PRD-118 (0.18.0)]] · ➡️ próxima release: [[prd-101-connection-pool-lifecycle|PRD-101 (0.20.0)]]
+- 🚀 ⬅️ release anterior: [[prd-119-security-posture-scorecard|PRD-119 (0.18.0)]] · ➡️ próxima release: [[prd-101-connection-pool-lifecycle|PRD-101 (0.20.0)]]
 <!-- brain:auto:end -->

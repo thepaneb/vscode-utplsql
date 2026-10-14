@@ -147,6 +147,6 @@ execução; nunca conexão em uso"), com `prds: ["PRD-101"]`, `implementacao:` e
 <!-- brain:auto:start:conexoes -->
 - 🗺️ [[MOC - PRDs]]
 - 🔗 PRDs relacionados: [[prd-34-multi-connection-profiles|PRD-34]] · [[prd-38-connection-pooling|PRD-38]] · [[prd-66-connection-robustness-logging|PRD-66]] · [[prd-82-tns-wallet|PRD-82]] · [[prd-95-esm-es2023-node22|PRD-95]]
-- 🔗 Mesma versão (0.20.0): [[prd-102-trace-and-perf-instrumentation|PRD-102]] · [[prd-103-incremental-source-reindex|PRD-103]] · [[prd-106-perf-harness|PRD-106]] · [[prd-107-unprivileged-fixture|PRD-107]]
+- 🔗 Mesma versão (0.20.0): [[prd-102-trace-and-perf-instrumentation|PRD-102]] · [[prd-103-incremental-source-reindex|PRD-103]] · [[prd-106-perf-harness|PRD-106]] · [[prd-107-unprivileged-fixture|PRD-107]] · [[prd-120-lean-activation-lazy-setup|PRD-120]]
 - 🚀 ⬅️ release anterior: [[prd-115-split-i18n-locales|PRD-115 (0.19.0)]] · ➡️ próxima release: [[prd-88-locale-aware-formatting|PRD-88 (0.21.0)]]
 <!-- brain:auto:end -->

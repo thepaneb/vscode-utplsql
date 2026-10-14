@@ -36,6 +36,9 @@ function isIgnored(rel: string, lines: string[]): boolean {
     }
     if (r.startsWith('*.')) return posix.endsWith(r.slice(1));
     if (r.endsWith('.*')) return posix.startsWith(`${r.slice(0, -1)}`);
+    // Glob de prefixo (ex.: `.vscode-test*`) — cobre a família inteira e evita
+    // voltar a enumerar arquivo por arquivo (foi assim que o `.multiroot` vazou).
+    if (r.endsWith('*')) return posix.startsWith(r.slice(0, -1));
     return posix === r || posix.startsWith(`${r}/`);
   });
 }
@@ -52,6 +55,10 @@ test('vscodeignore: não vaza arquivos de agente/desenvolvimento no VSIX', () =>
     'biome.json',
     'tsconfig.json',
     'esbuild.config.mjs',
+    '.vscode-test.mjs',
+    '.vscode-test.multiroot.mjs',
+    '.vscode-test.smoke.mjs',
+    '.vscode-test.thick.mjs',
     'src',
     'out',
     'scripts',
