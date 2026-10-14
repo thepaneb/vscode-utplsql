@@ -830,6 +830,7 @@ function makeOracleRunState(metaMap: Map<any, ItemMeta>) {
     setLastResults: () => {},
     setLastFailedItems: () => {},
     getLastFailedItems: () => [] as any[],
+    persist: () => {},
   } as any;
 }
 

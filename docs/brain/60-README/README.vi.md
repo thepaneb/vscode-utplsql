@@ -47,6 +47,7 @@ Chạy và gỡ lỗi kiểm thử **utPLSQL** (Oracle PL/SQL) ngay trong VS Cod
 - 🏷️ **Tag và thứ tự ngẫu nhiên** — lọc bài kiểm thử bằng `utplsql.tags` (ví dụ `fast & !integration`) hoặc lệnh `utPLSQL: Run Tests by Tag...` (QuickPick chọn nhiều; `!tag` loại trừ), và chạy theo thứ tự ngẫu nhiên với seed tái tạo được (`utplsql.run.randomOrder`).
 - 🧭 **Cây theo tag** — tổ chức Test Explorer thành **Tag > Suite > Test** với `utplsql.organization = tag` (suite có nhiều tag xuất hiện dưới mỗi tag) và hiển thị `[tag1, tag2]` trên nhãn bằng `utplsql.showTagsInTree`.
 - 🏗️ **Bộ khung kiểm thử** — tạo `ut_<gói>.pks` với một `%test` cho mỗi thủ tục/hàm từ `.pks`/`.pkb` hoặc đối tượng cơ sở dữ liệu, dùng các tùy chọn `utplsql.generate.*`.
+- ⏱️ **Thời lượng và lưu trữ** — kết quả lần chạy gần nhất (trạng thái, thông báo và thời lượng từng bài) vẫn còn sau khi mở lại workspace; tùy chọn hiển thị `(1.2s)` trên nhãn bài kiểm thử (`utplsql.showTestDuration`).
 - ♻️ **Tự động chạy khi lưu** — chạy lại các suite của tệp `.pks` đã lưu với `utplsql.autoRun = onSave`, với debounce theo từng tệp (`utplsql.autoRunDelayMs`) và chính sách hàng đợi khi đang có lượt chạy (`utplsql.autoRunQueue`: `skip`/`replace`).
 - 🗄️ **Khám phá DB-first** — dựng cây từ `ut_runner.get_suites_info` và tạo lại bộ nhớ đệm chú thích từ bảng lệnh.
 - 🌳 **Cây kiểm thử lazy** — ở chế độ `schema`, package/suite/test được giải quyết khi mở rộng, nên các schema lớn mở tức thì.
@@ -167,6 +168,7 @@ Test Explorer **ngay khi từng bài kiểm thử hoàn tất**. VSIX đã kèm 
 | `utplsql.generate.testPackageSuffix` | `""` | Hậu tố của tên gói kiểm thử được tạo. |
 | `utplsql.generate.numberOfTestsPerUnit` | `1` | Số `%test` được tạo cho mỗi thủ tục/hàm của gói production. |
 | `utplsql.generate.generateComments` | `true` | Thêm `-- TODO` vào mỗi `%test` được tạo. |
+| `utplsql.showTestDuration` | `false` | Thêm thời lượng của lần chạy gần nhất vào nhãn của các bài kiểm thử (ví dụ `(1.2s)`). |
 | `utplsql.coverageOwner` | `""` | Schema sở hữu các đối tượng được phủ. Trống = dùng người dùng kết nối (in hoa). |
 | `utplsql.coverage.schemes` | `[]` | Schema được phủ (`a_coverage_schemes`). Trống = người dùng kết nối (hoặc `utplsql.coverageOwner`). |
 | `utplsql.coverage.includeObjects` | `[]` | Đối tượng đưa vào phạm vi phủ, dạng `OWNER.NAME` (ví dụ `["APP.MY_PKG"]`). Hữu ích cho các đối tượng chỉ được truy cập động. |

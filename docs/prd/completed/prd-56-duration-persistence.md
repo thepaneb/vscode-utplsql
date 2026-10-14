@@ -4,7 +4,7 @@
 
 | Campo | Valor |
 |---|---|
-| Status | Aprovado |
+| Status | Concluído |
 | Autor | Gil Cleber Barboza |
 | Data | 2026-09-06 |
 | Componente | Extensão `paneb.vscode-utplsql` |
@@ -138,9 +138,30 @@ Preencher `durationMs` em `applyResultsFromCases` (já recebido por parâmetro).
 
 ## 12. Impacto no cérebro
 
-Na conclusão, criar a regra candidata **`BR-QUAL-003`** — “o último resultado é
-persistido no `workspaceState` e restaurado de forma tolerante: snapshot
-versionado, mensagens truncadas e ids ausentes ignorados” — com
-`prds: ["PRD-56"]`, `implementacao:` (`src/state.ts`, `src/runner.ts`,
-`src/oracleRunner.ts`, `src/extension.ts`) e `testes:` (`src/test/unit/state*.ts`
-+ o round-trip de persist/restore). Enquanto `approved`, `regras: []`.
+Regra criada em 2026-10-14: **`BR-QUAL-003`** — “último resultado persistido e
+restaurado com snapshot versionado” — com `prds: ["PRD-56"]`, `implementacao:`
+(`src/state.ts`, `src/oracleRunner.ts`, `src/results.ts`, `src/extension.ts`,
+`src/testTree.ts`), `testes:` (`src/test/unit/state.test.ts`) e `requisitos:`
+RF1–RF4 + RNF1/RNF2. O `regras:` deste frontmatter é derivado pelo `brain:sync`.
+
+## 13. Implementado (2026-10-14)
+
+Entregue na branch `feat/prd-56-duration-persistence` (regra BR-QUAL-003):
+
+- **Snapshot versionado** (`v: 1`) em `utplsql.lastRunSnapshot` no
+  `workspaceState`, com `durationMs`/`ts` por teste e mensagens truncadas em 500
+  caracteres (RNF1). Formato desconhecido ou entrada inválida é descartado sem
+  lançar — a ativação nunca quebra (RNF2 garantido pelo escopo do
+  `workspaceState`).
+- **`Memento` por setter** (`state.attachMemento`) e `restore()` **antes** do
+  primeiro refresh, para o label com duração sair certo já na árvore; a
+  reconstrução de `lastFailedItems` (e as decorações/context key) roda **depois**
+  do primeiro refresh, quando os ids já têm itens (§12 da nota — decisão da §11).
+- **Duração no label em dois pontos**: no fim do run (`applyResultsFromCases`,
+  feedback imediato) e na construção do item (`testTree.ts`, cobre refresh,
+  reload e resolução lazy). `withDurationSuffix` remove o sufixo anterior, então
+  reaplicar não acumula.
+- **Formato da duração**: `< 1s` → `850ms`; `≥ 1s` → `1.2s` (uma casa). Sem
+  formatação sensível a locale — isso é o escopo da PRD-88 (0.21.0).
+- **Não persistido**: `lastRun`/"Rerun Last" continua sendo apenas de sessão
+  (decisão registrada; a §2 pedia decorações e "Run Failed", que são cobertos).

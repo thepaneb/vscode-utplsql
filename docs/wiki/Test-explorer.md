@@ -79,6 +79,11 @@ utPLSQL documentation output streams to the test output in real time.
 - Failures carry a `TestMessage.location`, enabling the native **Go to Error**
   action (jump to the failing assertion). See [Editor Integration](Editor-integration).
 - The status bar summarises pass/fail count and total duration.
+- **Persistence and duration (PRD-56)** — the last result (status, message and
+  per-test duration) is stored in the workspace state and restored when the
+  workspace is reopened, so the decorations and the **Run Failed** set survive a
+  reload. With `utplsql.showTestDuration` the duration of the last run is
+  suffixed to the test labels (e.g. `(1.2s)`) — see [Editor Integration](Editor-integration).
 
 ## Annotations that affect the tree
 

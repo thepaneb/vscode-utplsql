@@ -38,6 +38,7 @@
 - 🏷️ **Tags και τυχαία σειρά** — φιλτράρετε τα test με `utplsql.tags` (π.χ. `fast & !integration`) ή την εντολή `utPLSQL: Run Tests by Tag...` (QuickPick πολλαπλής επιλογής· το `!tag` εξαιρεί), και εκτελέστε σε τυχαία σειρά με αναπαραγώγιμο seed (`utplsql.run.randomOrder`).
 - 🧭 **Δέντρο ανά tag** — οργανώστε το Test Explorer ως **Tag > Suite > Test** με `utplsql.organization = tag` (ένα suite με πολλά tags εμφανίζεται κάτω από κάθε tag) και εμφανίστε `[tag1, tag2]` στις ετικέτες με `utplsql.showTagsInTree`.
 - 🏗️ **Σκελετός σουίτας δοκιμών** — δημιουργεί `ut_<πακέτο>.pks` με ένα `%test` ανά ρουτίνα από `.pks`/`.pkb` ή αντικείμενο βάσης δεδομένων, με τις επιλογές `utplsql.generate.*`.
+- ⏱️ **Διάρκεια και διατήρηση** — το αποτέλεσμα της τελευταίας εκτέλεσης (κατάσταση, μήνυμα και διάρκεια ανά δοκιμή) διατηρείται μετά την επαναφόρτωση του χώρου εργασίας· προαιρετικά εμφανίζει `(1.2s)` στις ετικέτες (`utplsql.showTestDuration`).
 - ♻️ **Αυτόματη εκτέλεση στην αποθήκευση** — επανεκτελέστε τα suites του αποθηκευμένου `.pks` με `utplsql.autoRun = onSave`, με debounce ανά αρχείο (`utplsql.autoRunDelayMs`) και πολιτική ουράς όταν εκτελείται ήδη κάτι (`utplsql.autoRunQueue`: `skip`/`replace`).
 - 🗄️ **Ανακάλυψη DB-first** — χτίστε το δέντρο από το `ut_runner.get_suites_info` και ξαναχτίστε την προσωρινή μνήμη σχολίων από την παλέτα.
 - 🌳 **Αργό (lazy) δέντρο δοκιμών** — στη λειτουργία `schema`, τα packages/suites/tests επιλύονται κατά την ανάπτυξη, οπότε τα μεγάλα σχήματα ανοίγουν ακαριαία.
@@ -160,6 +161,7 @@ Test Explorer **καθώς ολοκληρώνεται κάθε test**.
 | `utplsql.generate.testPackageSuffix` | `""` | Επίθεμα του ονόματος του παραγόμενου πακέτου δοκιμών. |
 | `utplsql.generate.numberOfTestsPerUnit` | `1` | `%test` ανά ρουτίνα του πακέτου παραγωγής. |
 | `utplsql.generate.generateComments` | `true` | Προσθέτει `-- TODO` σε κάθε παραγόμενο `%test`. |
+| `utplsql.showTestDuration` | `false` | Προσθέτει τη διάρκεια της τελευταίας εκτέλεσης στις ετικέτες των δοκιμών (π.χ. `(1.2s)`). |
 | `utplsql.coverageOwner` | `""` | Schema-owner των καλυπτόμενων αντικειμένων. Κενό = χρησιμοποιεί τον χρήστη της σύνδεσης (κεφαλαία). |
 | `utplsql.coverage.schemes` | `[]` | Καλυπτόμενα schemas (`a_coverage_schemes`). Κενό = χρήστης σύνδεσης (ή `utplsql.coverageOwner`). |
 | `utplsql.coverage.includeObjects` | `[]` | Αντικείμενα προς συμπερίληψη στην κάλυψη, ως `OWNER.NAME` (π.χ. `["APP.MY_PKG"]`). Χρήσιμο για αντικείμενα που προσεγγίζονται μόνο δυναμικά. |

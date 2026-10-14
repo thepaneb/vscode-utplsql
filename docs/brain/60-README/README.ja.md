@@ -47,6 +47,7 @@ tags: [readme]
 - 🏷️ **タグとランダム順** — `utplsql.tags`（例: `fast & !integration`）または `utPLSQL: Run Tests by Tag...` コマンド（複数選択 QuickPick、`!tag` で除外）でテストを絞り込み、再現可能なシード（`utplsql.run.randomOrder`）でランダム順に実行します。
 - 🧭 **タグベースのツリー** — `utplsql.organization = tag` で Test Explorer を **Tag > Suite > Test** として整理し（複数タグを持つスイートは各タグの下に表示されます）、`utplsql.showTagsInTree` でラベルに `[tag1, tag2]` を表示します。
 - 🏗️ **テストスイートの雛形** — `.pks`/`.pkb` またはデータベースオブジェクトから、ルーチンごとに `%test` を 1 つ持つ `ut_<パッケージ>.pks` を生成します（`utplsql.generate.*` オプション）。
+- ⏱️ **所要時間と永続化** — 前回の実行結果（状態・メッセージ・テストごとの所要時間）はワークスペースを開き直しても保持されます。任意でテストのラベルに `(1.2s)` を表示します（`utplsql.showTestDuration`）。
 - ♻️ **保存時の自動実行** — 保存された `.pks` のスイートを `utplsql.autoRun = onSave` で再実行します。ファイル単位の debounce（`utplsql.autoRunDelayMs`）と、実行中の場合のキューポリシー（`utplsql.autoRunQueue`: `skip`/`replace`）を備えます。
 - 🗄️ **DB ファーストの探索** — `ut_runner.get_suites_info` からツリーを構築し、パレットから注釈キャッシュを再構築します。
 - 🌳 **遅延読み込みのテストツリー** — `schema` モードでは、展開時に package/suite/test を必要に応じて解決するため、大きなスキーマでも即座に開きます。
@@ -163,6 +164,7 @@ Test Explorer に表示されます。
 | `utplsql.generate.testPackageSuffix` | `""` | 生成されるテストパッケージ名の接尾辞。 |
 | `utplsql.generate.numberOfTestsPerUnit` | `1` | 本番パッケージのルーチンごとに生成する `%test` の数。 |
 | `utplsql.generate.generateComments` | `true` | 生成される各 `%test` に `-- TODO` を付けます。 |
+| `utplsql.showTestDuration` | `false` | 前回実行の所要時間をテストのラベルに付加します（例: `(1.2s)`）。 |
 | `utplsql.coverageOwner` | `""` | カバレッジ対象オブジェクトのスキーマ所有者。空 = 接続ユーザーを使用（大文字）。 |
 | `utplsql.coverage.schemes` | `[]` | カバレッジ対象のスキーマ（`a_coverage_schemes`）。空 = 接続ユーザー（または `utplsql.coverageOwner`）。 |
 | `utplsql.coverage.includeObjects` | `[]` | カバレッジに含めるオブジェクト（`OWNER.NAME` 形式、例: `["APP.MY_PKG"]`）。動的にのみ到達するオブジェクトに有効。 |

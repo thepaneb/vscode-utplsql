@@ -371,6 +371,11 @@
           "default": false,
           "description": "Suffixes `[tag1, tag2]` to the Test Explorer item labels, according to the `%tags` declared in the suite/test."
         },
+        "utplsql.showTestDuration": {
+          "type": "boolean",
+          "default": false,
+          "description": "Suffixes the duration of the last run to the test item labels in the Test Explorer (e.g. `(1.2s)`). The value is restored when the workspace is reopened."
+        },
         "utplsql.autoRun": {
           "type": "string",
           "enum": [

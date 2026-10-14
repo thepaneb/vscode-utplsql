@@ -38,6 +38,7 @@ Esegui e debugga i test **utPLSQL** (Oracle PL/SQL) direttamente in VS Code — 
 - 🏷️ **Tag e ordine casuale** — filtra i test con `utplsql.tags` (es. `fast & !integration`) o con il comando `utPLSQL: Run Tests by Tag...` (QuickPick a selezione multipla; `!tag` esclude), ed esegui in ordine casuale con seed riproducibile (`utplsql.run.randomOrder`).
 - 🧭 **Albero per tag** — organizza il Test Explorer come **Tag > Suite > Test** con `utplsql.organization = tag` (una suite con più tag compare sotto ciascun tag) e mostra `[tag1, tag2]` sulle etichette con `utplsql.showTagsInTree`.
 - 🏗️ **Generazione della suite** — genera `ut_<package>.pks` con un `%test` per routine da un `.pks`/`.pkb` o da un oggetto del database, con le opzioni `utplsql.generate.*`.
+- ⏱️ **Durata e persistenza** — il risultato dell’ultima esecuzione (stato, messaggio e durata per test) sopravvive al reload del workspace; opzionalmente mostra `(1.2s)` sulle etichette (`utplsql.showTestDuration`).
 - ♻️ **Esecuzione automatica al salvataggio** — riesegui le suite del `.pks` salvato con `utplsql.autoRun = onSave`, con un debounce per file (`utplsql.autoRunDelayMs`) e una politica di coda quando è già in corso un'esecuzione (`utplsql.autoRunQueue`: `skip`/`replace`).
 - 🗄️ **Scoperta DB-first** — costruisci l'albero da `ut_runner.get_suites_info` e ricostruisci la cache delle annotazioni dalla palette.
 - 🌳 **Albero dei test lazy** — in modalità `schema`, package/suite/test vengono risolti su richiesta all’espansione, quindi gli schemi grandi si aprono all’istante.
@@ -158,6 +159,7 @@ Test Explorer **appena ogni test termina**.
 | `utplsql.generate.testPackageSuffix` | `""` | Suffisso del nome del package di test generato. |
 | `utplsql.generate.numberOfTestsPerUnit` | `1` | `%test` generati per routine del package di produzione. |
 | `utplsql.generate.generateComments` | `true` | Aggiunge `-- TODO` a ogni `%test` generato. |
+| `utplsql.showTestDuration` | `false` | Aggiunge la durata dell’ultima esecuzione alle etichette dei test (es. `(1.2s)`). |
 | `utplsql.coverageOwner` | `""` | Proprietario dello schema degli oggetti coperti. Vuoto = usa l'utente della connessione (maiuscolo). |
 | `utplsql.coverage.schemes` | `[]` | Schemi coperti (`a_coverage_schemes`). Vuoto = utente della connessione (o `utplsql.coverageOwner`). |
 | `utplsql.coverage.includeObjects` | `[]` | Oggetti da includere nella copertura, come `OWNER.NAME` (es. `["APP.MIO_PKG"]`). Utile per oggetti raggiunti solo dinamicamente. |

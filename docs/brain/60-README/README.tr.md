@@ -47,6 +47,7 @@ tags: [readme]
 - 🏷️ **Etiketler ve rastgele sıra** — testleri `utplsql.tags` (örn. `fast & !integration`) veya `utPLSQL: Run Tests by Tag...` komutuyla filtreleyin (çoklu seçimli QuickPick; `!tag` hariç tutar) ve yeniden üretilebilir seed ile rastgele sırada çalıştırın (`utplsql.run.randomOrder`).
 - 🧭 **Etikete göre ağaç** — Test Explorer'ı `utplsql.organization = tag` ile **Tag > Suite > Test** olarak düzenleyin (birden çok etiketi olan bir suite her etiket altında görünür) ve `utplsql.showTagsInTree` ile etiketlerde `[tag1, tag2]` gösterin.
 - 🏗️ **Test paketi iskeleti** — bir `.pks`/`.pkb` veya veritabanı nesnesinden, her rutin için bir `%test` içeren `ut_<paket>.pks` üretir (`utplsql.generate.*` seçenekleri).
+- ⏱️ **Süre ve kalıcılık** — son çalıştırmanın sonucu (durum, mesaj ve test başına süre) çalışma alanı yeniden açıldığında korunur; isteğe bağlı olarak test etiketlerinde `(1.2s)` gösterir (`utplsql.showTestDuration`).
 - ♻️ **Kaydetmede otomatik çalıştırma** — kaydedilen `.pks` dosyasının suitelerini `utplsql.autoRun = onSave` ile yeniden çalıştırın; dosya başına debounce (`utplsql.autoRunDelayMs`) ve çalışma sürerken kuyruk politikası (`utplsql.autoRunQueue`: `skip`/`replace`) ile.
 - 🗄️ **DB-first keşif** — ağacı `ut_runner.get_suites_info`'dan oluşturun ve açıklama önbelleğini paletten yeniden oluşturun.
 - 🌳 **Tembel test ağacı** — `schema` modunda paketler/suiteler/testler genişletildiğinde isteğe bağlı çözülür; büyük şemalar anında açılır.
@@ -167,6 +168,7 @@ Geçici dosya yok, toplu işin bitmesi beklenmez. Sonuçlar Test Explorer'da
 | `utplsql.generate.testPackageSuffix` | `""` | Oluşturulan test paketi adının soneki. |
 | `utplsql.generate.numberOfTestsPerUnit` | `1` | Üretim paketindeki her rutin için oluşturulan `%test` sayısı. |
 | `utplsql.generate.generateComments` | `true` | Oluşturulan her `%test` için `-- TODO` ekler. |
+| `utplsql.showTestDuration` | `false` | Son çalıştırmanın süresini test etiketlerine ekler (örn. `(1.2s)`). |
 | `utplsql.coverageOwner` | `""` | Kapsanan nesnelerin şema sahibi. Boş = bağlantı kullanıcısını kullanır (büyük harfle). |
 | `utplsql.coverage.schemes` | `[]` | Kapsanan şemalar (`a_coverage_schemes`). Boş = bağlantı kullanıcısı (veya `utplsql.coverageOwner`). |
 | `utplsql.coverage.includeObjects` | `[]` | Kapsama dahil edilecek nesneler, `OWNER.NAME` biçiminde (örn. `["APP.MY_PKG"]`). Yalnızca dinamik olarak erişilen nesneler için kullanışlıdır. |

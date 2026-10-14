@@ -38,6 +38,7 @@ Futtasd és debugold az **utPLSQL** (Oracle PL/SQL) teszteket közvetlenül a VS
 - 🏷️ **Tagek és véletlen sorrend** — szűrd a teszteket `utplsql.tags`-szel (pl. `fast & !integration`) vagy a `utPLSQL: Run Tests by Tag...` paranccsal (többszörös kijelölésű QuickPick; a `!tag` kizár), és futtasd véletlen sorrendben reprodukálható seeddel (`utplsql.run.randomOrder`).
 - 🧭 **Tag-alapú fa** — rendezd a Test Explorert **Tag > Suite > Test** szerkezetbe a `utplsql.organization = tag` beállítással (a több taggel rendelkező suite minden tag alatt megjelenik), és jelenítsd meg a `[tag1, tag2]` címkéket a `utplsql.showTagsInTree` beállítással.
 - 🏗️ **Tesztcsomag-váz** — `ut_<csomag>.pks` fájlt hoz létre rutinonként egy `%test`-tel `.pks`/`.pkb` fájlból vagy adatbázis-objektumból, a `utplsql.generate.*` beállításokkal.
+- ⏱️ **Időtartam és megőrzés** — az utolsó futás eredménye (állapot, üzenet és tesztenkénti idő) megmarad a munkaterület újramegnyitása után is; opcionálisan `(1.2s)`-et ír a tesztek címkéjére (`utplsql.showTestDuration`).
 - ♻️ **Automatikus futtatás mentéskor** — futtasd újra a mentett `.pks` suite-jait a `utplsql.autoRun = onSave` beállítással, fájlonkénti debounce-szal (`utplsql.autoRunDelayMs`) és várólista-szabályzattal, ha épp fut egy futtatás (`utplsql.autoRunQueue`: `skip`/`replace`).
 - 🗄️ **DB-first felfedezés** — építsd a fát a `ut_runner.get_suites_info` alapján, és építsd újra a megjegyzés-gyorsítótárat a palettáról.
 - 🌳 **Lusta tesztek fája** — `schema` módban a package-ek/suite-ok/tesztek kibontáskor, igény szerint töltődnek, így a nagy sémák azonnal megnyílnak.
@@ -159,6 +160,7 @@ A bővítmény közvetlenül Oracle-on keresztül csatlakozik, beolvassa a ripor
 | `utplsql.generate.testPackageSuffix` | `""` | A létrehozott tesztcsomag nevének utótagja. |
 | `utplsql.generate.numberOfTestsPerUnit` | `1` | Az éles csomag rutinonként létrehozott `%test` száma. |
 | `utplsql.generate.generateComments` | `true` | `-- TODO` megjegyzést fűz minden létrehozott `%test`-hez. |
+| `utplsql.showTestDuration` | `false` | A legutóbbi futás idejét fűzi a tesztek címkéjéhez (pl. `(1.2s)`). |
 | `utplsql.coverageOwner` | `""` | A lefedett objektumok séma-tulajdonosa. Üres = a kapcsolati felhasználó (nagybetűvel). |
 | `utplsql.coverage.schemes` | `[]` | Lefedett sémák (`a_coverage_schemes`). Üres = a kapcsolati felhasználó (vagy `utplsql.coverageOwner`). |
 | `utplsql.coverage.includeObjects` | `[]` | A lefedésbe felveendő objektumok `OWNER.NAME` formában (pl. `["APP.MY_PKG"]`). Csak dinamikusan elért objektumokhoz hasznos. |

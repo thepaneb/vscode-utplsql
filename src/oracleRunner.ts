@@ -920,6 +920,8 @@ export async function executeRunOracle(
         return r?.status === 'failed' || r?.status === 'error';
       }),
     );
+    // Snapshot do último resultado no workspaceState (PRD-56 RF2).
+    state.persist();
     void vscode.commands.executeCommand(
       'setContext',
       'utplsql:hasFailures',
