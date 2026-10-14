@@ -34,5 +34,6 @@
   "nls.command.rebuildAnnotations": "utPLSQL: 重建註解快取",
   "nls.command.setWalletPassword": "utPLSQL: 設定錢包密碼",
   "nls.command.runWithReporter": "utPLSQL: 使用 reporter 執行（匯出）",
-  "nls.command.generateTestSuite": "utPLSQL: 產生測試套件…"
+  "nls.command.generateTestSuite": "utPLSQL: 產生測試套件…",
+  "nls.command.runRelated": "utPLSQL: 執行相關測試"
 }

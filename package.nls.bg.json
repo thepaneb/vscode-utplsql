@@ -34,5 +34,6 @@
   "nls.command.rebuildAnnotations": "utPLSQL: Възстановяване на кеша с анотации",
   "nls.command.setWalletPassword": "utPLSQL: Задаване на парола на портфейла",
   "nls.command.runWithReporter": "utPLSQL: Изпълни с reporter (експорт)",
-  "nls.command.generateTestSuite": "utPLSQL: Генериране на тестов пакет…"
+  "nls.command.generateTestSuite": "utPLSQL: Генериране на тестов пакет…",
+  "nls.command.runRelated": "utPLSQL: Изпълни свързаните тестове"
 }

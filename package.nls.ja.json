@@ -34,5 +34,6 @@
   "nls.command.rebuildAnnotations": "utPLSQL: アノテーションキャッシュを再構築",
   "nls.command.setWalletPassword": "utPLSQL: ウォレットのパスワードを設定",
   "nls.command.runWithReporter": "utPLSQL: reporter で実行（エクスポート）",
-  "nls.command.generateTestSuite": "utPLSQL: テストスイートを生成…"
+  "nls.command.generateTestSuite": "utPLSQL: テストスイートを生成…",
+  "nls.command.runRelated": "utPLSQL: 関連テストを実行"
 }

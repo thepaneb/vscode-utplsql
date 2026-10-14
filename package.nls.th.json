@@ -34,5 +34,6 @@
   "nls.command.rebuildAnnotations": "utPLSQL: สร้างแคชคำอธิบายประกอบใหม่",
   "nls.command.setWalletPassword": "utPLSQL: ตั้งรหัสผ่านวอลเล็ต",
   "nls.command.runWithReporter": "utPLSQL: เรียกใช้ด้วย reporter (ส่งออก)",
-  "nls.command.generateTestSuite": "utPLSQL: สร้างชุดทดสอบ…"
+  "nls.command.generateTestSuite": "utPLSQL: สร้างชุดทดสอบ…",
+  "nls.command.runRelated": "utPLSQL: รันการทดสอบที่เกี่ยวข้อง"
 }
