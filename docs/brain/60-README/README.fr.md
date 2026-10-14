@@ -46,6 +46,7 @@ Exécutez et déboguez vos tests **utPLSQL** (Oracle PL/SQL) directement dans VS
 - 🧩 **Arborescence tenant compte du schéma** — organisez les tests par Schéma > Package > Suite > Test dans l'Explorateur de tests.
 - 🏷️ **Balises et ordre aléatoire** — filtrez les tests avec `utplsql.tags` (par ex. `fast & !integration`) ou la commande `utPLSQL: Run Tests by Tag...` (QuickPick à sélection multiple ; `!tag` exclut), et exécutez dans un ordre aléatoire avec une graine reproductible (`utplsql.run.randomOrder`).
 - 🧭 **Arborescence par balise** — organisez l'Explorateur de tests en **Tag > Suite > Test** avec `utplsql.organization = tag` (une suite avec plusieurs balises apparaît sous chaque balise) et affichez `[tag1, tag2]` sur les libellés avec `utplsql.showTagsInTree`.
+- 🏗️ **Génération de suite** — génère `ut_<paquet>.pks` avec un `%test` par routine depuis un `.pks`/`.pkb` ou un objet de base de données, avec les options `utplsql.generate.*`.
 - ♻️ **Exécution automatique à l'enregistrement** — réexécutez les suites du `.pks` enregistré avec `utplsql.autoRun = onSave`, avec un debounce par fichier (`utplsql.autoRunDelayMs`) et une politique de file d'attente lorsqu'une exécution est en cours (`utplsql.autoRunQueue` : `skip`/`replace`).
 - 🗄️ **Découverte DB-first** — construisez l'arbre depuis `ut_runner.get_suites_info` et reconstruisez le cache des annotations depuis la palette.
 - 🌳 **Arbre de tests paresseux** — en mode `schema`, les packages/suites/tests sont résolus à la demande à l’expansion, donc les gros schémas s’ouvrent instantanément.
@@ -162,6 +163,10 @@ l'Explorateur de tests **au fur et à mesure que chaque test se termine**.
 | `utplsql.connection` | `""` | Connexion Oracle. **Laissez vide** et utilisez la variable d'environnement `UTPLSQL_CONN` pour éviter de stocker le mot de passe. Si les deux sont vides, l'extension demande la connexion (conservée uniquement pour la session). |
 | `utplsql.sourcePath` | `install` | Dossier du code de production (pour mapper la couverture vers les fichiers). |
 | `utplsql.includePatterns` | `["**/*.pks"]` | Globs pour découvrir les specs contenant `%suite`/`%test`. Si vos tests sont dans des `.sql`, utilisez `["**/*.sql"]`. |
+| `utplsql.generate.testPackagePrefix` | `ut_` | Préfixe du nom du paquet de tests généré. |
+| `utplsql.generate.testPackageSuffix` | `""` | Suffixe du nom du paquet de tests généré. |
+| `utplsql.generate.numberOfTestsPerUnit` | `1` | `%test` générés par routine du paquet de production. |
+| `utplsql.generate.generateComments` | `true` | Ajoute `-- TODO` à chaque `%test` généré. |
 | `utplsql.coverageOwner` | `""` | Schéma propriétaire des objets couverts. Vide = utilise l'utilisateur de la connexion (en majuscules). |
 | `utplsql.coverage.schemes` | `[]` | Schémas couverts (`a_coverage_schemes`). Vide = utilisateur de la connexion (ou `utplsql.coverageOwner`). |
 | `utplsql.coverage.includeObjects` | `[]` | Objets à inclure dans la couverture, au format `OWNER.NAME` (par ex. `["APP.MON_PKG"]`). Utile pour les objets atteints uniquement dynamiquement. |

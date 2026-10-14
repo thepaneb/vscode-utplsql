@@ -37,6 +37,7 @@ Spouštějte a laďte testy **utPLSQL** (Oracle PL/SQL) přímo ve VS Code — n
 - 🧩 **Strom podle schémat** — uspořádání testů podle Schema > Package > Suite > Test v Test Exploreru.
 - 🏷️ **Tagy a náhodné pořadí** — filtrujte testy pomocí `utplsql.tags` (např. `fast & !integration`) nebo příkazu `utPLSQL: Run Tests by Tag...` (QuickPick s vícenásobným výběrem; `!tag` vylučuje) a spouštějte v náhodném pořadí s reprodukovatelným seedem (`utplsql.run.randomOrder`).
 - 🧭 **Strom podle tagů** — uspořádejte Test Explorer jako **Tag > Suite > Test** pomocí `utplsql.organization = tag` (sada s více tagy se objeví pod každým tagem) a zobrazte `[tag1, tag2]` na popiscích pomocí `utplsql.showTagsInTree`.
+- 🏗️ **Kostra testovací sady** — vygeneruje `ut_<balíček>.pks` s jedním `%test` na rutinu ze souboru `.pks`/`.pkb` nebo databázového objektu, s možnostmi `utplsql.generate.*`.
 - ♻️ **Automatické spuštění při uložení** — znovu spusťte sady uloženého `.pks` pomocí `utplsql.autoRun = onSave`, s debounce na soubor (`utplsql.autoRunDelayMs`) a zásadou fronty, když už běží spuštění (`utplsql.autoRunQueue`: `skip`/`replace`).
 - 🗄️ **Objevování DB-first** — sestavte strom z `ut_runner.get_suites_info` a přestavte mezipaměť anotací z palety.
 - 🌳 **Líně načítaný strom testů** — v režimu `schema` se balíčky/sady/testy načítají až při rozbalení, takže velká schémata se otevřou okamžitě.
@@ -155,6 +156,10 @@ nativních API VSCode.
 | `utplsql.connection` | `""` | Připojení k Oracle. **Nechte prázdné** a použijte proměnnou prostředí `UTPLSQL_CONN`, abyste neukládali heslo. Pokud jsou obě prázdné, rozšíření se zeptá (uchová pouze v relaci). |
 | `utplsql.sourcePath` | `install` | Složka produkčního kódu (pro mapování pokrytí na soubory). |
 | `utplsql.includePatterns` | `["**/*.pks"]` | Globy pro objevení specifikací s `%suite`/`%test`. Pokud jsou vaše testy v `.sql`, použijte `["**/*.sql"]`. |
+| `utplsql.generate.testPackagePrefix` | `ut_` | Předpona názvu generovaného testovacího balíčku. |
+| `utplsql.generate.testPackageSuffix` | `""` | Přípona názvu generovaného testovacího balíčku. |
+| `utplsql.generate.numberOfTestsPerUnit` | `1` | `%test` vygenerovaných pro každou rutinu produkčního balíčku. |
+| `utplsql.generate.generateComments` | `true` | Přidá `-- TODO` ke každému vygenerovanému `%test`. |
 | `utplsql.coverageOwner` | `""` | Vlastník schématu pokrytých objektů. Prázdné = použije uživatele připojení (velkými písmeny). |
 | `utplsql.coverage.schemes` | `[]` | Pokrytá schémata (`a_coverage_schemes`). Prázdné = uživatel připojení (nebo `utplsql.coverageOwner`). |
 | `utplsql.coverage.includeObjects` | `[]` | Objekty k zahrnutí do pokrytí, jako `OWNER.NAME` (např. `["APP.MY_PKG"]`). Užitečné pro objekty dosažené jen dynamicky. |

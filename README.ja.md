@@ -37,6 +37,7 @@
 - 🧩 **スキーマ認識ツリー** — Test Explorer で Schema > Package > Suite > Test の順にテストを整理。
 - 🏷️ **タグとランダム順** — `utplsql.tags`（例: `fast & !integration`）または `utPLSQL: Run Tests by Tag...` コマンド（複数選択 QuickPick、`!tag` で除外）でテストを絞り込み、再現可能なシード（`utplsql.run.randomOrder`）でランダム順に実行します。
 - 🧭 **タグベースのツリー** — `utplsql.organization = tag` で Test Explorer を **Tag > Suite > Test** として整理し（複数タグを持つスイートは各タグの下に表示されます）、`utplsql.showTagsInTree` でラベルに `[tag1, tag2]` を表示します。
+- 🏗️ **テストスイートの雛形** — `.pks`/`.pkb` またはデータベースオブジェクトから、ルーチンごとに `%test` を 1 つ持つ `ut_<パッケージ>.pks` を生成します（`utplsql.generate.*` オプション）。
 - ♻️ **保存時の自動実行** — 保存された `.pks` のスイートを `utplsql.autoRun = onSave` で再実行します。ファイル単位の debounce（`utplsql.autoRunDelayMs`）と、実行中の場合のキューポリシー（`utplsql.autoRunQueue`: `skip`/`replace`）を備えます。
 - 🗄️ **DB ファーストの探索** — `ut_runner.get_suites_info` からツリーを構築し、パレットから注釈キャッシュを再構築します。
 - 🌳 **遅延読み込みのテストツリー** — `schema` モードでは、展開時に package/suite/test を必要に応じて解決するため、大きなスキーマでも即座に開きます。
@@ -149,6 +150,10 @@ Test Explorer に表示されます。
 | `utplsql.connection` | `""` | Oracle 接続。**空のまま**にして `UTPLSQL_CONN` 環境変数を使うとパスワードを保存せずに済みます。両方とも空の場合は拡張機能が尋ねます（セッション中のみ保持）。 |
 | `utplsql.sourcePath` | `install` | 本番コードのフォルダー（カバレッジをファイルにマッピングするため）。 |
 | `utplsql.includePatterns` | `["**/*.pks"]` | `%suite`/`%test` を含むスペックを検出するグロブ。テストが `.sql` 内にある場合は `["**/*.sql"]` を使用します。 |
+| `utplsql.generate.testPackagePrefix` | `ut_` | 生成されるテストパッケージ名の接頭辞。 |
+| `utplsql.generate.testPackageSuffix` | `""` | 生成されるテストパッケージ名の接尾辞。 |
+| `utplsql.generate.numberOfTestsPerUnit` | `1` | 本番パッケージのルーチンごとに生成する `%test` の数。 |
+| `utplsql.generate.generateComments` | `true` | 生成される各 `%test` に `-- TODO` を付けます。 |
 | `utplsql.coverageOwner` | `""` | カバレッジ対象オブジェクトのスキーマ所有者。空 = 接続ユーザーを使用（大文字）。 |
 | `utplsql.coverage.schemes` | `[]` | カバレッジ対象のスキーマ（`a_coverage_schemes`）。空 = 接続ユーザー（または `utplsql.coverageOwner`）。 |
 | `utplsql.coverage.includeObjects` | `[]` | カバレッジに含めるオブジェクト（`OWNER.NAME` 形式、例: `["APP.MY_PKG"]`）。動的にのみ到達するオブジェクトに有効。 |

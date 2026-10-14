@@ -4,7 +4,7 @@
 
 | Campo | Valor |
 |---|---|
-| Status | Aprovado |
+| Status | Concluído |
 | Autor | Gil Cleber Barboza |
 | Data | 2026-09-06 |
 | Componente | Extensão `paneb.vscode-utplsql` |
@@ -140,8 +140,25 @@ Prompt de nome via `showInputBox`; escrita via `workspace.fs`.
 
 ## 12. Impacto no cérebro
 
-Regra **compartilhada** com a PRD-100 (entrega única): candidata **`BR-UI-015`**
-— “gerar suíte de teste não sobrescreve spec existente e produz template
-parseável pelo `suiteParser`” — com `prds: ["PRD-59", "PRD-100"]`,
+Regra **compartilhada** com a PRD-100 (entrega única): **`BR-UI-015`** — “gerar
+suíte de teste não sobrescreve spec existente e produz template parseável pelo
+`suiteParser`” — criada em 2026-10-14 com `prds: ["PRD-59", "PRD-100"]`,
 `implementacao:` (`src/scaffold.ts`, `src/commands/scaffold.ts`) e `testes:`
-(`src/test/unit/scaffold.test.ts`). Enquanto `approved`, `regras: []`.
+(`src/test/unit/scaffold.test.ts`). O `regras:` deste frontmatter é derivado pelo
+`brain:sync`.
+
+## 13. Implementado (2026-10-14)
+
+Entregue junto da [[prd-100-generate-test-suite|PRD-100]] na branch
+`feat/prd-59-100-scaffold` (regra BR-UI-015):
+
+- **Comando único** `utplsql.generateTestSuite` (§11): a PRD-59 é a fase “sem
+  rotinas” do mesmo comando — não existe `utplsql.scaffoldSuite` separado.
+- **Sem header em prosa** no template: o `%suite` usa o **nome do objeto** como
+  descrição (neutro e editável), evitando gravar prosa não traduzida no pacote do
+  usuário. A função pura é `buildSuiteTemplate` (`src/scaffold.ts`), que gera o
+  esqueleto quando a lista de rotinas é vazia.
+- **Code Action** em produção (`.pks`/`.pkb`/`.sql`/`.fnc`/`.prc`/`.trg`), omitida
+  em specs `ut_*`; o comando também aparece nos menus de contexto do editor e do
+  Explorer e na paleta.
+- RNF1 (não sobrescrever sem confirmação) está em `requisitos` da BR-UI-015.

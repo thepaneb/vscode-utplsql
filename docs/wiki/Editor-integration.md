@@ -58,6 +58,17 @@ JUnit `<failure>`/`<error>` body, filters framework frames and sets
   with `--%suitepath` (or with utPLSQL installed in another schema) are not
   reported as "No JUnit result found".
 
+## Generate test suite (Code Action)
+
+On a production `.pks`/`.pkb` (never on a `ut_*` suite) the editor offers a
+**Code Action** — and the palette the command **`utPLSQL: Generate test suite`** —
+that writes `ut_<package>.pks` next to the file (or in the first workspace folder
+when the source is a database object, prompted as `SCHEMA.OBJECT`). With no
+routines to extract it writes the skeleton (`%suite` + one example `%test`);
+otherwise it writes one `%test` per procedure/function. An existing file is never
+overwritten without confirmation. Options: `utplsql.generate.testPackagePrefix`,
+`…testPackageSuffix`, `…numberOfTestsPerUnit` and `…generateComments`.
+
 ## Context menu and shortcuts
 
 Execution commands are also available from the right-click context menu on files

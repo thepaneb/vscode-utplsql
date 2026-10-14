@@ -5,7 +5,7 @@ titulo: "Editor Integration"
 publicar: docs/wiki/Editor-integration.md
 origem: ["05-ux-components","08-jump-to-failure"]
 verificado: 2026-09-25
-regras: ["BR-UI-006", "BR-UI-010", "BR-UI-011", "BR-UI-012", "BR-PARSE-015", "BR-PARSE-018", "BR-UI-005"]
+regras: ["BR-UI-006", "BR-UI-010", "BR-UI-011", "BR-UI-012", "BR-PARSE-015", "BR-PARSE-018", "BR-UI-005", "BR-UI-015"]
 tags: [wiki]
 ---
 
@@ -66,6 +66,17 @@ JUnit `<failure>`/`<error>` body, filters framework frames and sets
 - Test results are read from **nested** `<testsuite>` levels too, so suites run
   with `--%suitepath` (or with utPLSQL installed in another schema) are not
   reported as "No JUnit result found".
+
+## Generate test suite (Code Action)
+
+On a production `.pks`/`.pkb` (never on a `ut_*` suite) the editor offers a
+**Code Action** — and the palette the command **`utPLSQL: Generate test suite`** —
+that writes `ut_<package>.pks` next to the file (or in the first workspace folder
+when the source is a database object, prompted as `SCHEMA.OBJECT`). With no
+routines to extract it writes the skeleton (`%suite` + one example `%test`);
+otherwise it writes one `%test` per procedure/function. An existing file is never
+overwritten without confirmation. Options: `utplsql.generate.testPackagePrefix`,
+`…testPackageSuffix`, `…numberOfTestsPerUnit` and `…generateComments`.
 
 ## Context menu and shortcuts
 

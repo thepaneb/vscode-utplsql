@@ -46,6 +46,7 @@ Jalankan dan debug pengujian **utPLSQL** (Oracle PL/SQL) langsung di VS Code —
 - 🧩 **Pohon sadar-schema** — atur pengujian berdasarkan Schema > Package > Suite > Test di Test Explorer.
 - 🏷️ **Tag dan urutan acak** — filter pengujian dengan `utplsql.tags` (mis. `fast & !integration`) atau perintah `utPLSQL: Run Tests by Tag...` (QuickPick pilih-banyak; `!tag` mengecualikan) dan jalankan dalam urutan acak dengan seed yang dapat direproduksi (`utplsql.run.randomOrder`).
 - 🧭 **Pohon berbasis tag** — atur Test Explorer sebagai **Tag > Suite > Test** dengan `utplsql.organization = tag` (suite dengan beberapa tag muncul di bawah setiap tag) dan tampilkan `[tag1, tag2]` pada label dengan `utplsql.showTagsInTree`.
+- 🏗️ **Kerangka rangkaian pengujian** — menghasilkan `ut_<paket>.pks` dengan satu `%test` per rutin dari `.pks`/`.pkb` atau objek basis data, dengan opsi `utplsql.generate.*`.
 - ♻️ **Jalankan otomatis saat menyimpan** — jalankan ulang suite dari `.pks` yang disimpan dengan `utplsql.autoRun = onSave`, dengan debounce per file (`utplsql.autoRunDelayMs`) dan kebijakan antrean saat ada eksekusi berjalan (`utplsql.autoRunQueue`: `skip`/`replace`).
 - 🗄️ **Penemuan DB-first** — bangun pohon dari `ut_runner.get_suites_info` dan bangun ulang cache anotasi dari palet.
 - 🌳 **Pohon tes malas (lazy)** — dalam mode `schema`, package/suite/tes diurai saat diperluas, sehingga skema besar terbuka seketika.
@@ -163,6 +164,10 @@ Ekstensi terhubung langsung ke Oracle, membaca laporan (JUnit + Coverage) lalu m
 | `utplsql.connection` | `""` | Koneksi Oracle. **Biarkan kosong** dan gunakan variabel lingkungan `UTPLSQL_CONN` untuk menghindari penyimpanan kata sandi. Jika keduanya kosong, ekstensi akan bertanya (hanya menyimpannya di sesi). |
 | `utplsql.sourcePath` | `install` | Folder kode produksi (untuk memetakan coverage ke file). |
 | `utplsql.includePatterns` | `["**/*.pks"]` | Glob untuk menemukan spec dengan `%suite`/`%test`. Jika pengujian Anda di `.sql`, gunakan `["**/*.sql"]`. |
+| `utplsql.generate.testPackagePrefix` | `ut_` | Prefiks nama paket pengujian yang dihasilkan. |
+| `utplsql.generate.testPackageSuffix` | `""` | Sufiks nama paket pengujian yang dihasilkan. |
+| `utplsql.generate.numberOfTestsPerUnit` | `1` | `%test` yang dihasilkan per rutin paket produksi. |
+| `utplsql.generate.generateComments` | `true` | Menambahkan `-- TODO` pada setiap `%test` yang dihasilkan. |
 | `utplsql.coverageOwner` | `""` | Pemilik schema dari objek yang dicakup. Kosong = memakai user koneksi (huruf besar). |
 | `utplsql.coverage.schemes` | `[]` | Schema yang dicakup (`a_coverage_schemes`). Kosong = user koneksi (atau `utplsql.coverageOwner`). |
 | `utplsql.coverage.includeObjects` | `[]` | Objek yang disertakan dalam cakupan, sebagai `OWNER.NAME` (mis. `["APP.MY_PKG"]`). Berguna untuk objek yang hanya dijangkau secara dinamis. |

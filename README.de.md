@@ -37,6 +37,7 @@ Führe **utPLSQL**-Tests (Oracle PL/SQL) direkt in VS Code aus und debugge sie �
 - 🧩 **Schema-bewusster Baum** — Tests nach Schema > Package > Suite > Test im Test Explorer organisieren.
 - 🏷️ **Tags und zufällige Reihenfolge** — filtere Tests mit `utplsql.tags` (z. B. `fast & !integration`) oder dem Befehl `utPLSQL: Run Tests by Tag...` (Multi-Select-QuickPick; `!tag` schließt aus) und führe sie in zufälliger Reihenfolge mit reproduzierbarem Seed aus (`utplsql.run.randomOrder`).
 - 🧭 **Tag-basierter Baum** — organisiere den Test Explorer als **Tag > Suite > Test** mit `utplsql.organization = tag` (eine Suite mit mehreren Tags erscheint unter jedem Tag) und zeige `[tag1, tag2]` an den Labels mit `utplsql.showTagsInTree`.
+- 🏗️ **Test-Suite-Gerüst** — erzeugt `ut_<Paket>.pks` mit einem `%test` pro Routine aus einer `.pks`/`.pkb` oder einem Datenbankobjekt, mit den `utplsql.generate.*`-Optionen.
 - ♻️ **Auto-Ausführung beim Speichern** — führe die Suiten der gespeicherten `.pks` mit `utplsql.autoRun = onSave` erneut aus, mit einem Debounce pro Datei (`utplsql.autoRunDelayMs`) und einer Warteschlangenrichtlinie, wenn bereits eine Ausführung läuft (`utplsql.autoRunQueue`: `skip`/`replace`).
 - 🗄️ **DB-first-Erkennung** — Baum aus `ut_runner.get_suites_info` aufbauen und den Anmerkungs-Cache über die Palette neu erstellen.
 - 🌳 **Lazy-Testbaum** — im `schema`-Modus werden Packages/Suites/Tests beim Aufklappen bei Bedarf aufgelöst, sodass große Schemas sofort öffnen.
@@ -153,6 +154,10 @@ Test Explorer, **sobald jeder Test fertig ist**.
 | `utplsql.connection` | `""` | Oracle-Verbindung. **Leer lassen** und die Umgebungsvariable `UTPLSQL_CONN` verwenden, um das Speichern des Passworts zu vermeiden. Wenn beide leer sind, fragt die Erweiterung (behält sie nur in der Sitzung). |
 | `utplsql.sourcePath` | `install` | Ordner des Produktionscodes (um Coverage Dateien zuzuordnen). |
 | `utplsql.includePatterns` | `["**/*.pks"]` | Globs zum Ermitteln der Specs mit `%suite`/`%test`. Wenn Ihre Tests in `.sql` liegen, verwenden Sie `["**/*.sql"]`. |
+| `utplsql.generate.testPackagePrefix` | `ut_` | Präfix des generierten Testpaketnamens. |
+| `utplsql.generate.testPackageSuffix` | `""` | Suffix des generierten Testpaketnamens. |
+| `utplsql.generate.numberOfTestsPerUnit` | `1` | `%test` pro Routine des Produktionspakets. |
+| `utplsql.generate.generateComments` | `true` | Fügt jedem generierten `%test` ein `-- TODO` hinzu. |
 | `utplsql.coverageOwner` | `""` | Schema-Eigentümer der abgedeckten Objekte. Leer = verwendet den Verbindungsbenutzer (Großschreibung). |
 | `utplsql.coverage.schemes` | `[]` | Abgedeckte Schemas (`a_coverage_schemes`). Leer = Verbindungsbenutzer (oder `utplsql.coverageOwner`). |
 | `utplsql.coverage.includeObjects` | `[]` | Objekte, die in die Abdeckung aufgenommen werden, als `OWNER.NAME` (z. B. `["APP.MEIN_PKG"]`). Nützlich für nur dynamisch erreichte Objekte. |

@@ -117,17 +117,26 @@ The file is moved between folders as it progresses.
 | 55 | Test tree organization by tag | 0.15.0 |
 | 50 | Auto-run on save (watch mode) | 0.15.0 |
 | 96 | Public site and landing page (GitHub Pages) | 0.15.0 |
+| 59 | Test suite scaffold (skeleton) | 0.16.0 |
+| 100 | Test suite generation from a package (advanced scaffold) | 0.16.0 |
+
+### 🔵 Approved
+
+| # | PRD | Target version |
+|---|---|---|
+| 56 | Duration per test and result persistence | 0.16.0 |
+| 57 | Multi-root: `root`/`sourcePath` per folder | 0.16.0 |
+| 58 | Run Related Tests | 0.16.0 |
 
 ### ⚪ Proposed
 
 | # | PRD | Target version |
 |---|---|---|
 | 47 | Node 26 in development toolchain | — |
-| 95 | Runtime modernization (ESM/ES2023, Node 22) | 0.16.0 |
-| 97 | Project docs on the site (phase 2 of PRD-96) | 0.16.0 |
-| 56–59 | Duration persistence, multi-root, related tests, scaffold… | 0.17.0 |
-| 88–91 | Locale-aware formatting, plurals, parity, pseudo-locale | 0.18.0 |
-| 92–93 | RTL, new locales, continuous localization pipeline | 0.19.0 |
+| 95 | Runtime modernization (ESM/ES2023, Node 22) | 0.23.0 |
+| 97 | Project docs on the site (phase 2 of PRD-96) | 0.23.0 |
+| 88–91 | Locale-aware formatting, plurals, parity, pseudo-locale | 0.21.0 |
+| 92–93 | RTL, new locales, continuous localization pipeline | 0.22.0 |
 
 ## How to propose a PRD
 

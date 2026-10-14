@@ -46,6 +46,7 @@ tags: [readme]
 - 🧩 **스키마 인식 트리** — Test Explorer에서 Schema > Package > Suite > Test로 테스트를 구성.
 - 🏷️ **태그 및 무작위 순서** — `utplsql.tags`(예: `fast & !integration`) 또는 `utPLSQL: Run Tests by Tag...` 명령(다중 선택 QuickPick, `!tag`는 제외)으로 테스트를 필터링하고 재현 가능한 seed(`utplsql.run.randomOrder`)로 무작위 순서로 실행합니다.
 - 🧭 **태그 기반 트리** — `utplsql.organization = tag`로 Test Explorer를 **Tag > Suite > Test**로 구성하고(여러 태그가 있는 suite는 각 태그 아래에 표시됨) `utplsql.showTagsInTree`로 레이블에 `[tag1, tag2]`를 표시합니다.
+- 🏗️ **테스트 스위트 스캐폴드** — `.pks`/`.pkb` 또는 데이터베이스 객체에서 루틴마다 `%test` 하나를 가진 `ut_<패키지>.pks`를 생성합니다(`utplsql.generate.*` 옵션).
 - ♻️ **저장 시 자동 실행** — 저장된 `.pks`의 suite를 `utplsql.autoRun = onSave`로 다시 실행하며, 파일별 debounce(`utplsql.autoRunDelayMs`)와 실행 중일 때의 대기열 정책(`utplsql.autoRunQueue`: `skip`/`replace`)을 제공합니다.
 - 🗄️ **DB 우선 검색** — `ut_runner.get_suites_info`로 트리를 만들고 팔레트에서 주석 캐시를 다시 작성합니다.
 - 🌳 **지연 로딩 테스트 트리** — `schema` 모드에서 package/suite/test가 펼칠 때 필요에 따라 해석되어 큰 스키마도 즉시 열립니다.
@@ -163,6 +164,10 @@ Test Explorer에 나타납니다.
 | `utplsql.connection` | `""` | Oracle 연결. **비워 두고** 비밀번호 저장을 피하려면 `UTPLSQL_CONN` 환경 변수를 사용하세요. 둘 다 비어 있으면 확장 프로그램이 묻습니다(세션에만 유지). |
 | `utplsql.sourcePath` | `install` | 프로덕션 코드 폴더(커버리지를 파일에 매핑하기 위해). |
 | `utplsql.includePatterns` | `["**/*.pks"]` | `%suite`/`%test`가 있는 스펙을 발견하기 위한 glob. 테스트가 `.sql`에 있으면 `["**/*.sql"]`을 사용하세요. |
+| `utplsql.generate.testPackagePrefix` | `ut_` | 생성되는 테스트 패키지 이름의 접두사입니다. |
+| `utplsql.generate.testPackageSuffix` | `""` | 생성되는 테스트 패키지 이름의 접미사입니다. |
+| `utplsql.generate.numberOfTestsPerUnit` | `1` | 운영 패키지의 루틴마다 생성되는 `%test` 수입니다. |
+| `utplsql.generate.generateComments` | `true` | 생성되는 각 `%test`에 `-- TODO`를 추가합니다. |
 | `utplsql.coverageOwner` | `""` | 커버리지 대상 객체의 스키마 소유자. 비어 있음 = 연결 사용자 사용(대문자). |
 | `utplsql.coverage.schemes` | `[]` | 커버리지 대상 스키마(`a_coverage_schemes`). 비어 있음 = 연결 사용자(또는 `utplsql.coverageOwner`). |
 | `utplsql.coverage.includeObjects` | `[]` | 커버리지에 포함할 객체(`OWNER.NAME` 형식, 예: `["APP.MY_PKG"]`). 동적으로만 도달하는 객체에 유용합니다. |

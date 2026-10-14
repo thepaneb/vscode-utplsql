@@ -2,14 +2,14 @@
 tipo: prd
 id: PRD-100
 aliases: [PRD-100]
-status: approved
+status: completed
 titulo: "Geração de suíte a partir do package (scaffold avançado)"
 versao: "0.16.0"
 data: "2026-10-09"
 autor: "Gil Cleber Barboza"
 versao_titulo: "0.16.0 — Produtividade e resultados"
 verificado: 2026-10-14
-regras: []
+regras: ["BR-UI-015"]
 tags: [prd]
 ---
 
@@ -196,17 +196,43 @@ RF6.
 
 ## 12. Impacto no cérebro
 
-Regra **compartilhada** com a PRD-59 (entrega única): candidata **`BR-UI-015`** —
-“gerar suíte de teste não sobrescreve spec existente e produz template parseável
-pelo `suiteParser`” — com `prds: ["PRD-59", "PRD-100"]`, `implementacao:`
-(`src/scaffold.ts`, `src/commands/scaffold.ts`) e `testes:`
-(`src/test/unit/scaffold.test.ts`). Enquanto `approved`, `regras: []`.
+Regra **compartilhada** com a PRD-59 (entrega única): **`BR-UI-015`** — “gerar
+suíte de teste não sobrescreve spec existente e produz template parseável pelo
+`suiteParser`” — criada em 2026-10-14 com `prds: ["PRD-59", "PRD-100"]`,
+`implementacao:` (`src/scaffold.ts`, `src/commands/scaffold.ts`) e `testes:`
+(`src/test/unit/scaffold.test.ts`). O `regras:` deste frontmatter é derivado pelo
+`brain:sync`.
+
+RNFs sem regra: RNF2, RNF3 — “sem novas dependências” é convenção do repo
+(nenhum pacote novo entrou) e “não vazar caminho absoluto” é atendido com
+`workspace.asRelativePath` na mensagem (intenção da SEC-002, sem regra própria).
+RNF1 (módulo puro) está em `requisitos` da BR-UI-015.
+
+## 13. Implementado (2026-10-14)
+
+Entregue com a [[prd-59-scaffold-suite|PRD-59]] na branch
+`feat/prd-59-100-scaffold` (regra BR-UI-015):
+
+- **RF4 = núcleo de 4 settings** (tabela do RF4). As demais ficam com default fixo
+  (`testUnitPrefix`/`Suffix`, `disableTests`, `suitePath`, `indentSpaces`).
+- **RF2 nos dois modos**: arquivo ativo, ou objeto do banco quando não há editor
+  (`SCHEMA.OBJETO` → URI `utplsql-source:` → `ALL_SOURCE`, reusando a PRD-80, sem
+  SQL novo).
+- **Sem corpo `.pkb`**, **sem `%beforetest`/`%aftertest`** e **um único comando**
+  (§11).
+- Com `numberOfTestsPerUnit > 1`, do 2º teste em diante o nome recebe sufixo
+  numérico — sem isso o pacote gerado declararia a mesma `PROCEDURE` duas vezes.
 
 ## Conexões
 
 <!-- brain:auto:start:conexoes -->
 - 🗺️ [[MOC - PRDs]]
-- 🔗 PRDs relacionados: [[prd-30-schema-aware-organization|PRD-30]] · [[prd-42-suiteparser-annotations|PRD-42]] · [[prd-59-scaffold-suite|PRD-59]] · [[prd-79-coverage-scope|PRD-79]]
-- 🔗 Mesma versão (0.16.0): [[prd-56-duration-persistence|PRD-56]] · [[prd-57-multiroot-root-resolution|PRD-57]] · [[prd-58-run-related-tests|PRD-58]] · [[prd-59-scaffold-suite|PRD-59]]
+- 📐 Regras: [[BR-UI-015 - Gerar suite nao sobrescreve spec existente e produz template parseavel|BR-UI-015]]
+- 🔗 PRDs relacionados: [[prd-30-schema-aware-organization|PRD-30]] · [[prd-42-suiteparser-annotations|PRD-42]] · [[prd-59-scaffold-suite|PRD-59]] · [[prd-79-coverage-scope|PRD-79]] · [[prd-80-virtual-db-source|PRD-80]]
+- 🔗 Mesma versão (0.16.0): [[prd-56-duration-persistence|PRD-56]] · [[prd-57-multiroot-root-resolution|PRD-57]] · [[prd-58-run-related-tests|PRD-58]]
+- 🎯 RF1 — Comando + Code Action → [[BR-UI-015 - Gerar suite nao sobrescreve spec existente e produz template parseavel|BR-UI-015]]
+- 🎯 RF3 — Um `%test` por rotina → [[BR-UI-015 - Gerar suite nao sobrescreve spec existente e produz template parseavel|BR-UI-015]]
+- 🎯 RF4 — Opções de geração (`utplsql.generate.*`): núcleo de 4 → [[BR-UI-015 - Gerar suite nao sobrescreve spec existente e produz template parseavel|BR-UI-015]]
+- 🎯 RNF1 — `scaffold.ts` **puro** (sem `vscode`), testável com `node --test`. → [[BR-UI-015 - Gerar suite nao sobrescreve spec existente e produz template parseavel|BR-UI-015]]
 - 🚀 ⬅️ release anterior: [[prd-96-public-landing-page-github-pages|PRD-96 (0.15.0)]] · ➡️ próxima release: [[prd-105-snippets|PRD-105 (0.17.0)]]
 <!-- brain:auto:end -->

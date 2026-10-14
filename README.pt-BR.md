@@ -37,6 +37,7 @@ Execute e depure testes **utPLSQL** (Oracle PL/SQL) direto no VS Code — **Test
 - 🧩 **Schema-aware tree** — organize testes por Schema > Package > Suite > Test no Test Explorer.
 - 🏷️ **Tags e ordem aleatória** — filtre testes com `utplsql.tags` (ex.: `fast & !integration`) ou o comando `utPLSQL: Run Tests by Tag...` (QuickPick de seleção múltipla; `!tag` exclui), e execute em ordem aleatória com seed reproduzível (`utplsql.run.randomOrder`).
 - 🧭 **Árvore por tag** — organize o Test Explorer como **Tag > Suite > Test** com `utplsql.organization = tag` (uma suite com várias tags aparece sob cada tag) e exiba `[tag1, tag2]` nos rótulos com `utplsql.showTagsInTree`.
+- 🏗️ **Geração de suíte** — gera `ut_<pacote>.pks` com um `%test` por rotina a partir de um `.pks`/`.pkb` ou de um objeto do banco, com as opções `utplsql.generate.*`.
 - ♻️ **Auto-run ao salvar** — reexecute as suites do `.pks` salvo com `utplsql.autoRun = onSave`, com debounce por arquivo (`utplsql.autoRunDelayMs`) e política de fila quando já há execução em andamento (`utplsql.autoRunQueue`: `skip`/`replace`).
 - 🗄️ **Descoberta DB-first** — monte a árvore a partir de `ut_runner.get_suites_info` e reconstrua o cache de anotações pela paleta.
 - 🌳 **Árvore de testes lazy** — no modo `schema`, packages/suites/testes são resolvidos sob demanda ao expandir, então schemas grandes abrem na hora.
@@ -155,6 +156,10 @@ Test Explorer **conforme cada teste termina**.
 | `utplsql.connection` | `""` | Conexão Oracle. **Deixe vazio** e use a variável de ambiente `UTPLSQL_CONN` para não gravar a senha. Se ambos vazios, a extensão pergunta (guarda só na sessão). |
 | `utplsql.sourcePath` | `install` | Pasta do código de produção (para mapear a cobertura aos arquivos). |
 | `utplsql.includePatterns` | `["**/*.pks"]` | Globs para descobrir os specs com `%suite`/`%test`. Se seus testes estão em `.sql`, use `["**/*.sql"]`. |
+| `utplsql.generate.testPackagePrefix` | `ut_` | Prefixo do nome do pacote de teste gerado. |
+| `utplsql.generate.testPackageSuffix` | `""` | Sufixo do nome do pacote de teste gerado. |
+| `utplsql.generate.numberOfTestsPerUnit` | `1` | `%test` gerados por rotina do package de produção. |
+| `utplsql.generate.generateComments` | `true` | Adiciona `-- TODO` em cada `%test` gerado. |
 | `utplsql.coverageOwner` | `""` | Schema dono dos objetos cobertos. Vazio = usa o usuário da conexão (em maiúsculas). |
 | `utplsql.coverage.schemes` | `[]` | Schemas cobertos (`a_coverage_schemes`). Vazio = usuário da conexão (ou `utplsql.coverageOwner`). |
 | `utplsql.coverage.includeObjects` | `[]` | Objetos a incluir na cobertura, como `OWNER.NAME` (ex.: `["APP.MEU_PKG"]`). Útil para objetos alcançados só dinamicamente. |

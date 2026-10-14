@@ -161,6 +161,6 @@ versionado, mensagens truncadas e ids ausentes ignorados” — com
 
 <!-- brain:auto:start:conexoes -->
 - 🗺️ [[MOC - PRDs]]
-- 🔗 Mesma versão (0.16.0): [[prd-57-multiroot-root-resolution|PRD-57]] · [[prd-58-run-related-tests|PRD-58]] · [[prd-59-scaffold-suite|PRD-59]] · [[prd-100-generate-test-suite|PRD-100]]
+- 🔗 Mesma versão (0.16.0): [[prd-57-multiroot-root-resolution|PRD-57]] · [[prd-58-run-related-tests|PRD-58]]
 - 🚀 ⬅️ release anterior: [[prd-96-public-landing-page-github-pages|PRD-96 (0.15.0)]] · ➡️ próxima release: [[prd-105-snippets|PRD-105 (0.17.0)]]
 <!-- brain:auto:end -->

@@ -160,6 +160,6 @@ nome) e avisa quando não há correspondência” — com `prds: ["PRD-58"]`,
 <!-- brain:auto:start:conexoes -->
 - 🗺️ [[MOC - PRDs]]
 - 🔗 PRDs relacionados: [[prd-54-coverage-toggle|PRD-54]]
-- 🔗 Mesma versão (0.16.0): [[prd-56-duration-persistence|PRD-56]] · [[prd-57-multiroot-root-resolution|PRD-57]] · [[prd-59-scaffold-suite|PRD-59]] · [[prd-100-generate-test-suite|PRD-100]]
+- 🔗 Mesma versão (0.16.0): [[prd-56-duration-persistence|PRD-56]] · [[prd-57-multiroot-root-resolution|PRD-57]]
 - 🚀 ⬅️ release anterior: [[prd-96-public-landing-page-github-pages|PRD-96 (0.15.0)]] · ➡️ próxima release: [[prd-105-snippets|PRD-105 (0.17.0)]]
 <!-- brain:auto:end -->

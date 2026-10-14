@@ -1,5 +1,19 @@
 # Changelog
 
+## 0.16.0
+
+- **Test suite scaffold (PRD-59 + PRD-100)**: new **`utPLSQL: Generate test suite`** command
+  (palette, editor/Explorer context menu and a **Code Action** over `.pks`/`.pkb`) that writes
+  `ut_<package>.pks` next to the production file — or beside the first workspace folder when the
+  source is a **database object** resolved from `ALL_SOURCE`. With no routines to extract, it emits
+  the PRD-59 skeleton (`%suite` + one example `%test`); otherwise it generates **one `%test` per
+  procedure/function** of the package. The output is parseable by the annotation parser, so
+  CodeLens/Test Explorer pick the new suite up immediately. New settings:
+  `utplsql.generate.testPackagePrefix` (default `ut_`), `utplsql.generate.testPackageSuffix`
+  (default `""`), `utplsql.generate.numberOfTestsPerUnit` (default `1`) and
+  `utplsql.generate.generateComments` (default `true`). It never overwrites an existing file
+  without confirmation and the Code Action is hidden for suites (`ut_*`).
+
 ## 0.15.0
 
 - **Public site and landing page (GitHub Pages) (PRD-96)**: new public,
