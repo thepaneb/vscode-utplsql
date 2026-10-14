@@ -49,7 +49,8 @@ não o cria do zero.
   mostram `Analyze (javascript-typescript)`, `Analyze (actions)`,
   `Analyze (python)` — e **não** há `.github/workflows/codeql.yml`. Ou seja, a
   parte de análise estática já está coberta; recriá-la como workflow colidiria
-  com o *default setup*.
+  com o *default setup*. Na auditoria de 2026-10-13 o *default setup* reportava
+  **5 alertas abertos** (2 `error`) sem triagem — ver **RF5**.
 - `oracledb` e `fast-xml-parser` são `dependencies` empacotadas no `.vsix`
   (esbuild inline) — um advisory nelas é de produção, não só de dev.
 - Referência de porte: `.github/dependabot.yml`, `.github/workflows/codeql.yml`
@@ -108,6 +109,29 @@ não o cria do zero.
 
 - `npm audit --omit=dev --audit-level=high` como gate; o de dev é informativo.
 
+### RF5 — Triagem dos alertas abertos do CodeQL
+
+O *default setup* já analisa `javascript-typescript`, `actions` e `python`. Na
+auditoria externa de 2026-10-13 havia **5 alertas abertos** (2 `error`, 3
+`warning`) que nenhum PRD enumerava. Estar "coberto por classe" não basta: cada um
+precisa ser **fechado ou dispensado com justificativa** rastreável.
+
+| Regra | Local | Severidade | Dono |
+|---|---|---|---|
+| `actions/missing-workflow-permissions` | `.github/workflows/ci.yml` | warning | PRD-104 (RF3) |
+| `actions/missing-workflow-permissions` | `.github/workflows/publish.yml` | warning | PRD-104 (RF3) |
+| `js/clear-text-logging` | `src/logger.ts` | error | PRD-110 (RF2) |
+| `js/regex-injection` | `scripts/create-release.cjs` | error | PRD-110 (RF3) |
+| `js/incomplete-sanitization` | `scripts/create-release.cjs` | warning | PRD-110 (RF3) |
+
+- Os dois alertas de `permissions:` devem fechar sozinhos ao concluir RF3 —
+  confirmar no Security tab (o alerta some quando o workflow declara
+  `permissions:` no topo).
+- Os três restantes são fechados pela **PRD-110**. Se algum for falso positivo,
+  **dispensar no Security tab** com justificativa rastreável (ex.: remeter à
+  `SEC-008` no caso do `logger`).
+- Ao fim da 0.18.0, nenhum alerta aberto sem triagem.
+
 **Não-funcionais**
 - RNF1 — Sem aumento perceptível do tempo do CI no caminho crítico.
 - RNF2 — O CodeQL (default ou advanced) não deve falhar por ruído de código
@@ -165,6 +189,8 @@ Nenhuma setting da extensão.
 - `wiki.yml` sem o `GITHUB_TOKEN` embutido na URL do clone.
 - Gate de `npm audit` operante.
 - **Decisão do CodeQL documentada** (default mantido **ou** advanced) e a análise verde.
+- **Nenhum alerta do CodeQL aberto sem triagem** (fechado ou dispensado com
+  justificativa registrada no Security tab) — ver RF5.
 
 ## 11. Questões em aberto
 
@@ -183,6 +209,7 @@ escopadas; dependências auditadas no CI"), com `prds: ["PRD-104"]`,
 <!-- brain:auto:start:conexoes -->
 - 🗺️ [[MOC - PRDs]]
 - 🔗 PRDs relacionados: [[prd-81-security-hardening|PRD-81]] · [[prd-110-defensive-hardening|PRD-110]]
-- 🔗 Mesma versão (0.18.0): [[prd-98-docs-anti-drift|PRD-98]] · [[prd-110-defensive-hardening|PRD-110]] · [[prd-113-lint-scope|PRD-113]] · [[prd-114-vscode-stub-modernization|PRD-114]]
+- ⚙️ Pipelines: [[PIPE-ci - CI|PIPE-ci]] · [[PIPE-publish - Publish Extension|PIPE-publish]]
+- 🔗 Mesma versão (0.18.0): [[prd-98-docs-anti-drift|PRD-98]] · [[prd-110-defensive-hardening|PRD-110]] · [[prd-113-lint-scope|PRD-113]] · [[prd-114-vscode-stub-modernization|PRD-114]] · [[prd-118-commit-signing|PRD-118]]
 - 🚀 ⬅️ release anterior: [[prd-109-language-identity|PRD-109 (0.17.0)]] · ➡️ próxima release: [[prd-111-decompose-oracle-runner|PRD-111 (0.19.0)]]
 <!-- brain:auto:end -->

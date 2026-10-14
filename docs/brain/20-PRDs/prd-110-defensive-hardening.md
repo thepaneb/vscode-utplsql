@@ -21,7 +21,7 @@ tags: [prd]
 | Data | 2026-10-09 |
 | Componente | Extensão `paneb.vscode-utplsql` + ferramentas de desenvolvimento (`scripts/`) |
 | Versão alvo | 0.18.0 |
-| Arquivos afetados | `src/oracleRunner.ts`, `src/connectionProfiles.ts`, `src/scriptRunner.ts`, `scripts/db-matrix/run.sh`, `scripts/create-pr.cjs`, `SECURITY.md`, `docs/brain/**` |
+| Arquivos afetados | `src/oracleRunner.ts`, `src/connectionProfiles.ts`, `src/scriptRunner.ts`, `src/logger.ts`, `scripts/db-matrix/run.sh`, `scripts/create-pr.cjs`, `scripts/create-release.cjs`, `SECURITY.md`, `docs/brain/**` |
 | Esforço estimado | 0,5–1 dia |
 | Complexidade | Baixa |
 | Relaciona-se a | PRD-81 (hardening de conexão), PRD-104 (cadeia de suprimentos do CI) |
@@ -55,7 +55,14 @@ todos quebram invariantes já declarados em `SECURITY.md`.
   (o comando vem do argumento `--tests`) e imprime `UTPLSQL_CONN` **com a senha**;
   `scripts/create-pr.cjs` interpola `origin/${base}` em `execSync`. São scripts
   de mantenedor (excluídos do `.vsix` pelo `.vscodeignore`), mas são execução de
-  shell com entrada de CLI e log de segredo.
+  shell com entrada de CLI e log de segredo. Ainda em `scripts/`,
+  `create-release.cjs` monta um `RegExp` a partir do `version` do CHANGELOG sem
+  escapar os metacaracteres — leva dois alertas do CodeQL (`js/regex-injection`,
+  `js/incomplete-sanitization`).
+- **Alerta do CodeQL no `logger`.** O `console.debug`/`ctx` genérico de
+  `src/logger.ts` é marcado por `js/clear-text-logging` — o CodeQL não enxerga a
+  `SEC-008` ("log de debug opt-in e sem credenciais"); a triagem deste alerta
+  (fechar ou dispensar) é decisão desta PRD (ver §11).
 
 ## 3. Objetivos / Não-objetivos
 
@@ -64,6 +71,8 @@ todos quebram invariantes já declarados em `SECURITY.md`.
 - Redigir credenciais em **todo** `error`/contexto logado no ciclo de conexão.
 - Remover `eval` do `run.sh`, validar `--base`/`--head` no `create-pr.cjs` e
   mascarar `UTPLSQL_CONN` no log do `run.sh`.
+- Escapar o `version` no `create-release.cjs` e **triar os 3 alertas do CodeQL**
+  atribuídos a esta PRD (`src/logger.ts`, `scripts/create-release.cjs`).
 
 **Não-objetivos**
 - Refatorar mapeamento de resultados/cobertura ou o protocolo Oracle.
@@ -95,6 +104,9 @@ todos quebram invariantes já declarados em `SECURITY.md`.
   garantindo que nenhuma mensagem logada contenha `user/pass@host`.
 - Manter o comportamento atual: só substitui a ocorrência exata da connection
   conhecida (sem heurística que corrompa a mensagem).
+- **Triagem do alerta `js/clear-text-logging`** (`src/logger.ts`): fechar
+  redigindo no próprio `logger` (varrer `ctx`) **ou** dispensar o alerta com
+  justificativa que remeta à `SEC-008`. A decisão fica na §11 e no Security tab.
 
 ### RF3 — Scripts de desenvolvimento sem injeção/log de segredo
 
@@ -104,6 +116,9 @@ todos quebram invariantes já declarados em `SECURITY.md`.
 - `scripts/create-pr.cjs`: validar `--base` e `--head` (ex.:
   `/^[A-Za-z0-9._/-]+$/`) antes de interpolar; preferir
   `execFileSync('git', [...args])` a `execSync` com string.
+- `scripts/create-release.cjs`: escapar o `version` (`escapeRegExp`) antes de
+  montar o `RegExp` do CHANGELOG — fecha `js/regex-injection` e
+  `js/incomplete-sanitization`.
 
 **Não-funcionais**
 - RNF1 — Nenhuma mudança de comportamento observável com connection/banco
@@ -161,12 +176,19 @@ Nenhuma setting nova; sem comandos/menus novos.
 - `run.sh` sem `eval` e `create-pr.cjs` com `base`/`head` validados.
 - `npm run test:coverage` verde e thresholds mantidos.
 - `SECURITY.md` reflete os dois invariantes.
+- **Os 3 alertas do CodeQL** desta PRD (`src/logger.ts`, `create-release.cjs` ×2)
+  fechados ou dispensados com justificativa.
 
 ## 11. Questões em aberto
 
 - Centralizar a redaction no próprio `logger` (varrer todo `ctx`) em vez de só nos
   call sites de conexão? Preferência inicial: call sites agora; `logger` como
   follow-up, para não mascarar mensagens legítimas.
+- **Decisão obrigatória — alerta `js/clear-text-logging` do CodeQL.** O alerta
+  incide no próprio `logger`, então "call sites só" o deixa aberto. Fechar
+  centralizando a redaction no `logger` **ou** dispensar com justificativa
+  apoiada na `SEC-008` + redaction nos call sites. Não deixar aberto (a PRD-104,
+  RF5, cobra a triagem).
 
 ## 12. Impacto no cérebro
 
@@ -181,6 +203,6 @@ com `prds: ["PRD-110"]`, `implementacao:` (arquivo/linha) e `testes:`. Enquanto
 <!-- brain:auto:start:conexoes -->
 - 🗺️ [[MOC - PRDs]]
 - 🔗 PRDs relacionados: [[prd-66-connection-robustness-logging|PRD-66]] · [[prd-81-security-hardening|PRD-81]] · [[prd-104-ci-supply-chain|PRD-104]]
-- 🔗 Mesma versão (0.18.0): [[prd-98-docs-anti-drift|PRD-98]] · [[prd-104-ci-supply-chain|PRD-104]] · [[prd-113-lint-scope|PRD-113]] · [[prd-114-vscode-stub-modernization|PRD-114]]
+- 🔗 Mesma versão (0.18.0): [[prd-98-docs-anti-drift|PRD-98]] · [[prd-104-ci-supply-chain|PRD-104]] · [[prd-113-lint-scope|PRD-113]] · [[prd-114-vscode-stub-modernization|PRD-114]] · [[prd-118-commit-signing|PRD-118]]
 - 🚀 ⬅️ release anterior: [[prd-109-language-identity|PRD-109 (0.17.0)]] · ➡️ próxima release: [[prd-111-decompose-oracle-runner|PRD-111 (0.19.0)]]
 <!-- brain:auto:end -->
