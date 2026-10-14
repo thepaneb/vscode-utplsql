@@ -5,14 +5,14 @@ tipo: locale
 titulo: "Français"
 codigo: fr
 nls: package.nls.fr.json
-strings: 36
+strings: 37
 gerado: true
 tags: [i18n, locale]
 ---
 
 # LOC-fr — Français
 
-Locale `fr` da extensão. Strings de UI em [`package.nls.fr.json`](../../../package.nls.fr.json) (36 chaves).
+Locale `fr` da extensão. Strings de UI em [`package.nls.fr.json`](../../../package.nls.fr.json) (37 chaves).
 
 README: [[README.fr]]
 

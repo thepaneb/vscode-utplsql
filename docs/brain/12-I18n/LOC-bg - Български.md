@@ -5,14 +5,14 @@ tipo: locale
 titulo: "Български"
 codigo: bg
 nls: package.nls.bg.json
-strings: 36
+strings: 37
 gerado: true
 tags: [i18n, locale]
 ---
 
 # LOC-bg — Български
 
-Locale `bg` da extensão. Strings de UI em [`package.nls.bg.json`](../../../package.nls.bg.json) (36 chaves).
+Locale `bg` da extensão. Strings de UI em [`package.nls.bg.json`](../../../package.nls.bg.json) (37 chaves).
 
 README: [[README.bg]]
 

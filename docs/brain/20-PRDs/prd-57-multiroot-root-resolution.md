@@ -176,7 +176,6 @@ Entregue na branch `feat/prd-57-multiroot-root` (regra BR-COB-007):
 - 🗺️ [[MOC - PRDs]]
 - 📐 Regras: [[BR-COB-007 - Cobertura resolve root e sourcePath pelo folder do pacote em execucao|BR-COB-007]]
 - 🔗 PRDs relacionados: [[prd-06-multiroot|PRD-06]] · [[prd-34-multi-connection-profiles|PRD-34]]
-- 🔗 Mesma versão (0.16.0): [[prd-58-run-related-tests|PRD-58]]
 - 🎯 RF1 — `root` por folder → [[BR-COB-007 - Cobertura resolve root e sourcePath pelo folder do pacote em execucao|BR-COB-007]]
 - 🎯 RF2 — `sourcePath` resolvido contra o folder do item → [[BR-COB-007 - Cobertura resolve root e sourcePath pelo folder do pacote em execucao|BR-COB-007]]
 - 🎯 RF3 — Sem quebra em single-root → [[BR-COB-007 - Cobertura resolve root e sourcePath pelo folder do pacote em execucao|BR-COB-007]]

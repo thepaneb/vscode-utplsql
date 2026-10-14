@@ -184,7 +184,6 @@ Entregue na branch `feat/prd-56-duration-persistence` (regra BR-QUAL-003):
 - 🗺️ [[MOC - PRDs]]
 - 📐 Regras: [[BR-QUAL-003 - Ultimo resultado persistido e restaurado com snapshot versionado|BR-QUAL-003]]
 - 🔗 PRDs relacionados: [[prd-88-locale-aware-formatting|PRD-88]]
-- 🔗 Mesma versão (0.16.0): [[prd-58-run-related-tests|PRD-58]]
 - 🎯 RF1 — Snapshot serializável → [[BR-QUAL-003 - Ultimo resultado persistido e restaurado com snapshot versionado|BR-QUAL-003]]
 - 🎯 RF2 — Escrita no fim do run → [[BR-QUAL-003 - Ultimo resultado persistido e restaurado com snapshot versionado|BR-QUAL-003]]
 - 🎯 RF3 — Restauração na ativação → [[BR-QUAL-003 - Ultimo resultado persistido e restaurado com snapshot versionado|BR-QUAL-003]]

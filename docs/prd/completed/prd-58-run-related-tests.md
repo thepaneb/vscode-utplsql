@@ -4,7 +4,7 @@
 
 | Campo | Valor |
 |---|---|
-| Status | Aprovado |
+| Status | Concluído |
 | Autor | Gil Cleber Barboza |
 | Data | 2026-09-06 |
 | Componente | Extensão `paneb.vscode-utplsql` |
@@ -137,8 +137,28 @@ Novo comando em `createRunCommands` (`src/commands/run.ts`) + função pura
 
 ## 12. Impacto no cérebro
 
-Na conclusão, criar a regra candidata **`BR-UI-014`** — “`utplsql.runRelated`
-casa as suites pela convenção `ut_<objeto>` (case-insensitive, com fallback por
-nome) e avisa quando não há correspondência” — com `prds: ["PRD-58"]`,
-`implementacao:` (`src/commands/run.ts`, `src/matching.ts`) e `testes:`
-(`src/test/unit/matching.test.ts`). Enquanto `approved`, `regras: []`.
+Regra criada em 2026-10-14: **`BR-UI-014`** — “Run Related Tests casa suites pela
+convenção `ut_<objeto>` e avisa sem match” — com `prds: ["PRD-58"]`,
+`implementacao:` (`src/matching.ts`, `src/commands/run.ts`), `testes:`
+(`src/test/unit/matching.test.ts`) e `requisitos:` RF1–RF3 + RNF1. O `regras:`
+deste frontmatter é derivado pelo `brain:sync`.
+
+## 13. Implementado (2026-10-14)
+
+Entregue na branch `feat/prd-58-run-related` (regra BR-UI-014):
+
+- **`relatedSuiteMetas(items, fileName)`** em `src/matching.ts` (puro): candidatos
+  `ut_<base>` / `<base>`, case-insensitive, igualdade **ou** sufixo; ignora metas
+  que não são suites e arquivo sem base (§12 da nota). Normaliza barras do
+  Windows antes do `basename`.
+- **Comando** `utplsql.runRelated` registrado em `createRunCommands`
+  (`src/commands/run.ts`), usando a API real: `collectAllItems(controller, state)`
+  + `state.getSuiteItem('suite:<pkg>')` + a closure `runWithProgress(request,
+  undefined, coverage)`; a cobertura segue o modo global (`effectiveCoverage`).
+- **Avisos**: `ext.runRelated.noEditor` (sem editor) e `ext.runRelated.none`
+  (com o **nome do arquivo**, sem vazar caminho absoluto — PRD-100/RNF3).
+- **Keybinding** `ctrl+shift+u shift+r` / mac `cmd+shift+u shift+r`, quando
+  `editorTextFocus && utplsql:connected` (o `ctrl+shift+u r` já era do Run All),
+  como decidido no preparo; também no menu de contexto do editor e do Explorer.
+- **Sem** variante `*Coverage` e **sem** mapeamento por cobertura — decisões da
+  §11 e não-objetivos da §3.

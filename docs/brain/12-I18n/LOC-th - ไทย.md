@@ -5,14 +5,14 @@ tipo: locale
 titulo: "ไทย"
 codigo: th
 nls: package.nls.th.json
-strings: 36
+strings: 37
 gerado: true
 tags: [i18n, locale]
 ---
 
 # LOC-th — ไทย
 
-Locale `th` da extensão. Strings de UI em [`package.nls.th.json`](../../../package.nls.th.json) (36 chaves).
+Locale `th` da extensão. Strings de UI em [`package.nls.th.json`](../../../package.nls.th.json) (37 chaves).
 
 README: [[README.th]]
 

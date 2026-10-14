@@ -142,5 +142,6 @@ SORT id ASC
 - [[BR-UI-011 - utplsql.runByTag oferece QuickPick multi-selecao das tags; showTagsInTree sufixa o label]] — `BR-UI-011`
 - [[BR-UI-012 - Item de status bar alterna o modo global de cobertura (sessao, nao persiste)]] — `BR-UI-012`
 - [[BR-UI-013 - Integracao nativa ao Test Explorer via a API de testes do VS Code]] — `BR-UI-013`
+- [[BR-UI-014 - Run Related Tests casa suites pela convencao ut_objeto e avisa sem match]] — `BR-UI-014`
 - [[BR-UI-015 - Gerar suite nao sobrescreve spec existente e produz template parseavel]] — `BR-UI-015`
 <!-- brain:auto:end -->

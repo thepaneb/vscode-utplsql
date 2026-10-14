@@ -5,14 +5,14 @@ tipo: locale
 titulo: "Español"
 codigo: es
 nls: package.nls.es.json
-strings: 36
+strings: 37
 gerado: true
 tags: [i18n, locale]
 ---
 
 # LOC-es — Español
 
-Locale `es` da extensão. Strings de UI em [`package.nls.es.json`](../../../package.nls.es.json) (36 chaves).
+Locale `es` da extensão. Strings de UI em [`package.nls.es.json`](../../../package.nls.es.json) (37 chaves).
 
 README: [[README.es]]
 
