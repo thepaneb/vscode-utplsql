@@ -46,6 +46,7 @@ tags: [readme]
 - 🧩 **แผนผังที่รับรู้ schema** — จัดระเบียบการทดสอบตาม Schema > Package > Suite > Test ใน Test Explorer
 - 🏷️ **แท็กและลำดับแบบสุ่ม** — กรองเทสต์ด้วย `utplsql.tags` (เช่น `fast & !integration`) หรือคำสั่ง `utPLSQL: Run Tests by Tag...` (QuickPick แบบเลือกหลายรายการ; `!tag` เพื่อยกเว้น) และรันแบบสุ่มด้วย seed ที่ทำซ้ำได้ (`utplsql.run.randomOrder`)
 - 🧭 **ทรีตามแท็ก** — จัดระเบียบ Test Explorer เป็น **Tag > Suite > Test** ด้วย `utplsql.organization = tag` (suite ที่มีหลายแท็กจะปรากฏใต้แต่ละแท็ก) และแสดง `[tag1, tag2]` บนป้ายด้วย `utplsql.showTagsInTree`
+- 🏗️ **โครงชุดทดสอบ** — สร้าง `ut_<แพ็กเกจ>.pks` โดยมี `%test` หนึ่งรายการต่อรูทีน จาก `.pks`/`.pkb` หรือออบเจ็กต์ฐานข้อมูล พร้อมตัวเลือก `utplsql.generate.*`
 - ♻️ **รันอัตโนมัติเมื่อบันทึก** — รัน suite ของ `.pks` ที่บันทึกอีกครั้งด้วย `utplsql.autoRun = onSave` พร้อม debounce ต่อไฟล์ (`utplsql.autoRunDelayMs`) และนโยบายคิวเมื่อมีการรันอยู่แล้ว (`utplsql.autoRunQueue`: `skip`/`replace`)
 - 🗄️ **การค้นหาแบบ DB-first** — สร้างทรีจาก `ut_runner.get_suites_info` และสร้างแคชคำอธิบายประกอบใหม่จากพาเลตต์
 - 🌳 **ทรีเทสต์แบบ lazy** — ในโหมด `schema` แพ็กเกจ/ชุดเทสต์/เทสต์จะถูกโหลดเมื่อขยาย จึงเปิดสคีมาขนาดใหญ่ได้ทันที
@@ -162,6 +163,10 @@ Test Explorer **เมื่อแต่ละเทสต์เสร็จส�
 | `utplsql.connection` | `""` | การเชื่อมต่อ Oracle **ปล่อยว่างไว้**และใช้ตัวแปรสภาพแวดล้อม `UTPLSQL_CONN` เพื่อหลีกเลี่ยงการเก็บรหัสผ่าน หากทั้งคู่ว่าง ส่วนขยายจะถาม (เก็บไว้เฉพาะในเซสชัน) |
 | `utplsql.sourcePath` | `install` | โฟลเดอร์ของโค้ด production (เพื่อจับคู่ความครอบคลุมกับไฟล์) |
 | `utplsql.includePatterns` | `["**/*.pks"]` | Globs สำหรับค้นหา specs ที่มี `%suite`/`%test` หากเทสต์ของคุณอยู่ในไฟล์ `.sql` ให้ใช้ `["**/*.sql"]` |
+| `utplsql.generate.testPackagePrefix` | `ut_` | คำนำหน้าของชื่อแพ็กเกจทดสอบที่สร้างขึ้น |
+| `utplsql.generate.testPackageSuffix` | `""` | คำต่อท้ายของชื่อแพ็กเกจทดสอบที่สร้างขึ้น |
+| `utplsql.generate.numberOfTestsPerUnit` | `1` | จำนวน `%test` ที่สร้างต่อรูทีนของแพ็กเกจโปรดักชัน |
+| `utplsql.generate.generateComments` | `true` | เพิ่ม `-- TODO` ในทุก `%test` ที่สร้างขึ้น |
 | `utplsql.coverageOwner` | `""` | เจ้าของ schema ของอ็อบเจกต์ที่ครอบคลุม ว่าง = ใช้ผู้ใช้จากการเชื่อมต่อ (ตัวพิมพ์ใหญ่) |
 | `utplsql.coverage.schemes` | `[]` | schema ที่ครอบคลุม (`a_coverage_schemes`) ว่าง = ผู้ใช้จากการเชื่อมต่อ (หรือ `utplsql.coverageOwner`) |
 | `utplsql.coverage.includeObjects` | `[]` | อ็อบเจกต์ที่จะรวมในการครอบคลุม ในรูปแบบ `OWNER.NAME` (เช่น `["APP.MY_PKG"]`) มีประโยชน์กับอ็อบเจกต์ที่เข้าถึงแบบไดนามิกเท่านั้น |

@@ -46,6 +46,7 @@ tags: [readme]
 - 🧩 **Дерево з урахуванням схем** — організація тестів у Test Explorer за схемою Schema > Package > Suite > Test.
 - 🏷️ **Теги та випадковий порядок** — фільтруйте тести через `utplsql.tags` (напр. `fast & !integration`) або командою `utPLSQL: Run Tests by Tag...` (QuickPick з множинним вибором; `!tag` виключає) і запускайте у випадковому порядку з відтворюваним seed (`utplsql.run.randomOrder`).
 - 🧭 **Дерево за тегами** — організуйте Test Explorer як **Tag > Suite > Test** з `utplsql.organization = tag` (набір із кількома тегами з'являється під кожним тегом) і показуйте `[tag1, tag2]` на мітках із `utplsql.showTagsInTree`.
+- 🏗️ **Каркас набору тестів** — створює `ut_<пакет>.pks` з одним `%test` на підпрограму з `.pks`/`.pkb` або об’єкта бази даних, з параметрами `utplsql.generate.*`.
 - ♻️ **Автозапуск при збереженні** — перезапускайте набори збереженого `.pks` за допомогою `utplsql.autoRun = onSave`, з debounce для кожного файлу (`utplsql.autoRunDelayMs`) та політикою черги, коли запуск уже триває (`utplsql.autoRunQueue`: `skip`/`replace`).
 - 🗄️ **Виявлення DB-first** — будуйте дерево з `ut_runner.get_suites_info` і перебудовуйте кеш анотацій з палітри.
 - 🌳 **Ліниве дерево тестів** — у режимі `schema` пакети/набори/тести розв’язуються в міру розгортання, тож великі схеми відкриваються миттєво.
@@ -160,6 +161,10 @@ Test Explorer **у міру завершення кожного тесту**. VS
 | `utplsql.connection` | `""` | Підключення до Oracle. **Залиште порожнім** і використовуйте змінну середовища `UTPLSQL_CONN`, щоб не зберігати пароль. Якщо обидва значення порожні, розширення запитає підключення (зберігає його лише в сесії). |
 | `utplsql.sourcePath` | `install` | Папка виробничого коду (для зіставлення покриття з файлами). |
 | `utplsql.includePatterns` | `["**/*.pks"]` | Globs для пошуку специфікацій із `%suite`/`%test`. Якщо ваші тести у `.sql`, використовуйте `["**/*.sql"]`. |
+| `utplsql.generate.testPackagePrefix` | `ut_` | Префікс назви створюваного пакета тестів. |
+| `utplsql.generate.testPackageSuffix` | `""` | Суфікс назви створюваного пакета тестів. |
+| `utplsql.generate.numberOfTestsPerUnit` | `1` | `%test` на кожну підпрограму робочого пакета. |
+| `utplsql.generate.generateComments` | `true` | Додає `-- TODO` до кожного створеного `%test`. |
 | `utplsql.coverageOwner` | `""` | Схема-власник покритих об'єктів. Порожньо = використовується користувач підключення (великими літерами). |
 | `utplsql.coverage.schemes` | `[]` | Покриті схеми (`a_coverage_schemes`). Порожньо = користувач підключення (або `utplsql.coverageOwner`). |
 | `utplsql.coverage.includeObjects` | `[]` | Об'єкти для включення в покриття, як `OWNER.NAME` (напр. `["APP.MY_PKG"]`). Корисно для об'єктів, доступних лише динамічно. |

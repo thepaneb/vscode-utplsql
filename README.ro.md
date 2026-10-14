@@ -37,6 +37,7 @@ Rulează și depanează teste **utPLSQL** (Oracle PL/SQL) direct în VS Code —
 - 🧩 **Arbore conștient de schemă** — organizează testele după Schema > Package > Suite > Test în Test Explorer.
 - 🏷️ **Tag-uri și ordine aleatorie** — filtrează testele cu `utplsql.tags` (ex. `fast & !integration`) sau cu comanda `utPLSQL: Run Tests by Tag...` (QuickPick cu selecție multiplă; `!tag` exclude), și rulează în ordine aleatorie cu seed reproductibil (`utplsql.run.randomOrder`).
 - 🧭 **Arbore după tag** — organizează Test Explorer ca **Tag > Suite > Test** cu `utplsql.organization = tag` (o suită cu mai multe tag-uri apare sub fiecare tag) și afișează `[tag1, tag2]` pe etichete cu `utplsql.showTagsInTree`.
+- 🏗️ **Schelet de suită de teste** — generează `ut_<pachet>.pks` cu un `%test` per rutină dintr-un `.pks`/`.pkb` sau obiect de bază de date, cu opțiunile `utplsql.generate.*`.
 - ♻️ **Rulare automată la salvare** — re-rulează suitele fișierului `.pks` salvat cu `utplsql.autoRun = onSave`, cu un debounce per fișier (`utplsql.autoRunDelayMs`) și o politică de coadă când o rulare este deja în curs (`utplsql.autoRunQueue`: `skip`/`replace`).
 - 🗄️ **Descoperire DB-first** — construiește arborele din `ut_runner.get_suites_info` și reconstruiește cache-ul de adnotări din paletă.
 - 🌳 **Arbore de teste lazy** — în modul `schema`, pachetele/suitele/testele sunt rezolvate la cerere la expandare, așa că schemele mari se deschid instant.
@@ -154,6 +155,10 @@ Extensia se conectează direct prin Oracle, citește rapoartele (JUnit + Coverag
 | `utplsql.connection` | `""` | Conexiunea Oracle. **Lasă gol** și folosește variabila de mediu `UTPLSQL_CONN` pentru a evita stocarea parolei. Dacă ambele sunt goale, extensia întreabă (o păstrează doar în sesiune). |
 | `utplsql.sourcePath` | `install` | Folderul codului de producție (pentru maparea acoperirii pe fișiere). |
 | `utplsql.includePatterns` | `["**/*.pks"]` | Glob-uri pentru descoperirea spec-urilor cu `%suite`/`%test`. Dacă testele tale sunt în `.sql`, folosește `["**/*.sql"]`. |
+| `utplsql.generate.testPackagePrefix` | `ut_` | Prefixul numelui pachetului de teste generat. |
+| `utplsql.generate.testPackageSuffix` | `""` | Sufixul numelui pachetului de teste generat. |
+| `utplsql.generate.numberOfTestsPerUnit` | `1` | `%test` generate pentru fiecare rutină a pachetului de producție. |
+| `utplsql.generate.generateComments` | `true` | Adaugă `-- TODO` la fiecare `%test` generat. |
 | `utplsql.coverageOwner` | `""` | Schema proprietară a obiectelor acoperite. Gol = folosește utilizatorul conexiunii (cu majuscule). |
 | `utplsql.coverage.schemes` | `[]` | Scheme acoperite (`a_coverage_schemes`). Gol = utilizatorul conexiunii (sau `utplsql.coverageOwner`). |
 | `utplsql.coverage.includeObjects` | `[]` | Obiecte de inclus în acoperire, ca `OWNER.NAME` (ex.: `["APP.MY_PKG"]`). Util pentru obiecte atinse doar dinamic. |

@@ -46,6 +46,7 @@ tags: [readme]
 - 🧩 **Schema-aware tree** — οργάνωση tests ανά Schema > Package > Suite > Test στο Test Explorer.
 - 🏷️ **Tags και τυχαία σειρά** — φιλτράρετε τα test με `utplsql.tags` (π.χ. `fast & !integration`) ή την εντολή `utPLSQL: Run Tests by Tag...` (QuickPick πολλαπλής επιλογής· το `!tag` εξαιρεί), και εκτελέστε σε τυχαία σειρά με αναπαραγώγιμο seed (`utplsql.run.randomOrder`).
 - 🧭 **Δέντρο ανά tag** — οργανώστε το Test Explorer ως **Tag > Suite > Test** με `utplsql.organization = tag` (ένα suite με πολλά tags εμφανίζεται κάτω από κάθε tag) και εμφανίστε `[tag1, tag2]` στις ετικέτες με `utplsql.showTagsInTree`.
+- 🏗️ **Σκελετός σουίτας δοκιμών** — δημιουργεί `ut_<πακέτο>.pks` με ένα `%test` ανά ρουτίνα από `.pks`/`.pkb` ή αντικείμενο βάσης δεδομένων, με τις επιλογές `utplsql.generate.*`.
 - ♻️ **Αυτόματη εκτέλεση στην αποθήκευση** — επανεκτελέστε τα suites του αποθηκευμένου `.pks` με `utplsql.autoRun = onSave`, με debounce ανά αρχείο (`utplsql.autoRunDelayMs`) και πολιτική ουράς όταν εκτελείται ήδη κάτι (`utplsql.autoRunQueue`: `skip`/`replace`).
 - 🗄️ **Ανακάλυψη DB-first** — χτίστε το δέντρο από το `ut_runner.get_suites_info` και ξαναχτίστε την προσωρινή μνήμη σχολίων από την παλέτα.
 - 🌳 **Αργό (lazy) δέντρο δοκιμών** — στη λειτουργία `schema`, τα packages/suites/tests επιλύονται κατά την ανάπτυξη, οπότε τα μεγάλα σχήματα ανοίγουν ακαριαία.
@@ -164,6 +165,10 @@ Test Explorer **καθώς ολοκληρώνεται κάθε test**.
 | `utplsql.connection` | `""` | Σύνδεση Oracle. **Αφήστε το κενό** και χρησιμοποιήστε τη μεταβλητή περιβάλλοντος `UTPLSQL_CONN` για να αποφύγετε την αποθήκευση του κωδικού. Αν και τα δύο είναι κενά, η επέκταση ρωτά (το διατηρεί μόνο στη σύνοδο). |
 | `utplsql.sourcePath` | `install` | Φάκελος του κώδικα παραγωγής (για την αντιστοίχιση της κάλυψης σε αρχεία). |
 | `utplsql.includePatterns` | `["**/*.pks"]` | Globs για την εύρεση των specs με `%suite`/`%test`. Αν τα tests σας είναι σε `.sql`, χρησιμοποιήστε `["**/*.sql"]`. |
+| `utplsql.generate.testPackagePrefix` | `ut_` | Πρόθεμα του ονόματος του παραγόμενου πακέτου δοκιμών. |
+| `utplsql.generate.testPackageSuffix` | `""` | Επίθεμα του ονόματος του παραγόμενου πακέτου δοκιμών. |
+| `utplsql.generate.numberOfTestsPerUnit` | `1` | `%test` ανά ρουτίνα του πακέτου παραγωγής. |
+| `utplsql.generate.generateComments` | `true` | Προσθέτει `-- TODO` σε κάθε παραγόμενο `%test`. |
 | `utplsql.coverageOwner` | `""` | Schema-owner των καλυπτόμενων αντικειμένων. Κενό = χρησιμοποιεί τον χρήστη της σύνδεσης (κεφαλαία). |
 | `utplsql.coverage.schemes` | `[]` | Καλυπτόμενα schemas (`a_coverage_schemes`). Κενό = χρήστης σύνδεσης (ή `utplsql.coverageOwner`). |
 | `utplsql.coverage.includeObjects` | `[]` | Αντικείμενα προς συμπερίληψη στην κάλυψη, ως `OWNER.NAME` (π.χ. `["APP.MY_PKG"]`). Χρήσιμο για αντικείμενα που προσεγγίζονται μόνο δυναμικά. |
