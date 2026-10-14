@@ -200,6 +200,7 @@ notas `prd-*`. O índice navegável do vault é a [[MOC - PRDs]].
 | 115 | [Fatiar `i18nLocales.ts` por locale](proposed/prd-115-split-i18n-locales.md) | 0.19.0 | 2026-10-10 |
 | 116 | [Testes diretos dos módulos sem cobertura dedicada](proposed/prd-116-direct-module-tests.md) | 0.23.0 | 2026-10-10 |
 | 117 | [Testes de propriedade do parser de scripts (`splitScript`)](proposed/prd-117-split-script-property-tests.md) | 0.23.0 | 2026-10-10 |
+| 118 | [Assinatura de commits e verificação de origem no main](proposed/prd-118-commit-signing.md) | 0.18.0 | 2026-10-13 |
 <!-- prd:roadmap:end -->
 
 ---
@@ -330,6 +331,7 @@ docs/prd/
 │   ├── prd-115-split-i18n-locales.md
 │   ├── prd-116-direct-module-tests.md
 │   ├── prd-117-split-script-property-tests.md
+│   ├── prd-118-commit-signing.md
 ```
 <!-- prd:estrutura:end -->
 

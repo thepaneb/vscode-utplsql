@@ -41,7 +41,7 @@ npm run sync-prds
 ## Status (gerado)
 
 <!-- brain:auto:start:prd-summary -->
-- 📝 Propostos: **35**
+- 📝 Propostos: **36**
 - 🔵 Aprovados: **0**
 - 🟡 Em desenvolvimento: **0**
 - 🟢 Concluídos: **82**
@@ -89,6 +89,7 @@ Detalhe completo (fonte da verdade): [docs/prd/index.md](../../prd/index.md)
 - [[prd-115-split-i18n-locales]] — `PRD-115`
 - [[prd-116-direct-module-tests]] — `PRD-116`
 - [[prd-117-split-script-property-tests]] — `PRD-117`
+- [[prd-118-commit-signing]] — `PRD-118`
 - [[prd-12-sql-coverage]] — `PRD-12`
 - [[prd-13-oracle-infra]] — `PRD-13`
 - [[prd-14-test-schema-packages]] — `PRD-14`

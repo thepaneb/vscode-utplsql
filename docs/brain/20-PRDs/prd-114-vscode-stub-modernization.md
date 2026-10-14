@@ -148,6 +148,6 @@ coberto pelo inventário de APIs") com `prds: ["PRD-114"]`, `implementacao:` e
 <!-- brain:auto:start:conexoes -->
 - 🗺️ [[MOC - PRDs]]
 - 🔗 PRDs relacionados: [[prd-04-expand-tests|PRD-04]] · [[prd-37-ts-coverage|PRD-37]] · [[prd-110-defensive-hardening|PRD-110]]
-- 🔗 Mesma versão (0.18.0): [[prd-98-docs-anti-drift|PRD-98]] · [[prd-104-ci-supply-chain|PRD-104]] · [[prd-110-defensive-hardening|PRD-110]] · [[prd-113-lint-scope|PRD-113]]
+- 🔗 Mesma versão (0.18.0): [[prd-98-docs-anti-drift|PRD-98]] · [[prd-104-ci-supply-chain|PRD-104]] · [[prd-110-defensive-hardening|PRD-110]] · [[prd-113-lint-scope|PRD-113]] · [[prd-118-commit-signing|PRD-118]]
 - 🚀 ⬅️ release anterior: [[prd-109-language-identity|PRD-109 (0.17.0)]] · ➡️ próxima release: [[prd-111-decompose-oracle-runner|PRD-111 (0.19.0)]]
 <!-- brain:auto:end -->
