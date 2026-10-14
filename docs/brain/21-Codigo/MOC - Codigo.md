@@ -41,6 +41,7 @@ SORT id ASC
 - [[COD - charsetSupport.ts]] — `COD-charsetSupport.ts`
 - [[COD - cobertura.ts]] — `COD-cobertura.ts`
 - [[COD - codelens.ts]] — `COD-codelens.ts`
+- [[COD - commands-scaffold.ts]] — `COD-commands-scaffold.ts`
 - [[COD - compilationDiagnostics.ts]] — `COD-compilationDiagnostics.ts`
 - [[COD - compileForDebug.ts]] — `COD-compileForDebug.ts`
 - [[COD - config.ts]] — `COD-config.ts`
@@ -94,6 +95,7 @@ SORT id ASC
 - [[COD - script.ts]] — `COD-script.ts`
 - [[COD - scriptRunner.ts]] — `COD-scriptRunner.ts`
 - [[COD - sitemap.xml]] — `COD-sitemap.xml`
+- [[COD - src-scaffold.ts]] — `COD-src-scaffold.ts`
 - [[COD - state.ts]] — `COD-state.ts`
 - [[COD - statusBar.ts]] — `COD-statusBar.ts`
 - [[COD - suiteParser.ts]] — `COD-suiteParser.ts`

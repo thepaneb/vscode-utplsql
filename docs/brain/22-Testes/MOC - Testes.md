@@ -91,6 +91,8 @@ SORT id ASC
 - [[TST - runExportCommand.test.ts]] — `TST-runExportCommand.test.ts`
 - [[TST - runner.test.ts]] — `TST-runner.test.ts`
 - [[TST - runTimeoutE2E.test.ts]] — `TST-runTimeoutE2E.test.ts`
+- [[TST - scaffold.test.ts]] — `TST-scaffold.test.ts`
+- [[TST - scaffoldCommands.test.ts]] — `TST-scaffoldCommands.test.ts`
 - [[TST - schemaRun.test.ts]] — `TST-schemaRun.test.ts`
 - [[TST - scriptCommands.test.ts]] — `TST-scriptCommands.test.ts`
 - [[TST - scriptCommandsExec.test.ts]] — `TST-scriptCommandsExec.test.ts`
