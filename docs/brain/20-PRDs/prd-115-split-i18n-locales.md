@@ -139,5 +139,5 @@ arquivo por locale, exportados por barrel") com `prds: ["PRD-115"]`,
 - 🗺️ [[MOC - PRDs]]
 - 🔗 PRDs relacionados: [[prd-49-internacionalizacao|PRD-49]] · [[prd-91-doc-parity-localized-distribution|PRD-91]] · [[prd-95-esm-es2023-node22|PRD-95]]
 - 🔗 Mesma versão (0.19.0): [[prd-111-decompose-oracle-runner|PRD-111]]
-- 🚀 ⬅️ release anterior: [[prd-118-commit-signing|PRD-118 (0.18.0)]] · ➡️ próxima release: [[prd-101-connection-pool-lifecycle|PRD-101 (0.20.0)]]
+- 🚀 ⬅️ release anterior: [[prd-119-security-posture-scorecard|PRD-119 (0.18.0)]] · ➡️ próxima release: [[prd-101-connection-pool-lifecycle|PRD-101 (0.20.0)]]
 <!-- brain:auto:end -->

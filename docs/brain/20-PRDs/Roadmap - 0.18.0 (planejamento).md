@@ -23,11 +23,12 @@ versão alvo são a **fonte da verdade** no frontmatter das notas `prd-*`: ver
 | 4 | PRD-114 | Modernizar o stub de `vscode` e reduzir `any` nos testes | 2–3 dias | Média |
 | 5 | PRD-98 | Anti-drift de documentação: tabelas geradas e vínculo PRD→docs | 3–5 dias | Média-Alta |
 | 6 | PRD-118 | Assinatura de commits e verificação de origem no `main` | 0,5 dia | Baixa |
+| 7 | PRD-119 | Postura de segurança verificável: OSSF Scorecard e proteção de `main` | 0,5–1 dia | Baixa |
 
 **PRDs:** [[prd-110-defensive-hardening|PRD-110]] ·
 [[prd-104-ci-supply-chain|PRD-104]] · [[prd-113-lint-scope|PRD-113]] ·
 [[prd-114-vscode-stub-modernization|PRD-114]] · [[prd-98-docs-anti-drift|PRD-98]] ·
-[[prd-118-commit-signing|PRD-118]]
+[[prd-118-commit-signing|PRD-118]] · [[prd-119-security-posture-scorecard|PRD-119]]
 
 **Tema:** **enablers** que destravam e protegem as features seguintes — segurança,
 lint mais amplo, testes (stub tipado) e anti-drift de documentação. A PRD-98 evita
@@ -37,7 +38,12 @@ repetir o que aconteceu na 0.15.0 (features entregues sem atualizar README/wiki)
 estavam espalhados em 0.16.0 (PRD-98), 0.20.0 (PRD-104/110) e 0.23.0 (PRD-113/114),
 posicionados **antes** das features que tocam os mesmos arquivos.
 
-**Total estimado:** ≈ 7–11,5 dias.
+**Complemento (2026-10-13):** a **PRD-119** fecha o sinal externo de postura de
+segurança (OSSF Scorecard + proteção do `main`), penalizado na auditoria do VSCan
+do VSIX 0.15.0. É complementar à PRD-104 (*pin*/audit/CodeQL) e à PRD-118
+(assinatura de commits) — mesma família de enablers de segurança.
+
+**Total estimado:** ≈ 7,5–12,5 dias.
 
 ## Fluxo de execução (por PRD)
 
