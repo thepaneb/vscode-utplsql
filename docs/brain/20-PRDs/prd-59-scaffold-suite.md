@@ -2,13 +2,13 @@
 tipo: prd
 id: PRD-59
 aliases: [PRD-59]
-status: proposed
+status: approved
 titulo: "Scaffold de suíte de teste"
 versao: "0.16.0"
 data: "2026-09-06"
 autor: "Gil Cleber Barboza"
 versao_titulo: "0.16.0 — Produtividade e resultados"
-verificado: 2026-09-23
+verificado: 2026-10-14
 regras: []
 tags: [prd]
 ---
@@ -21,7 +21,7 @@ tags: [prd]
 | Data | 2026-09-06 |
 | Componente | Extensão `paneb.vscode-utplsql` |
 | Versão alvo | 0.16.0 |
-| Arquivos afetados | `src/extension.ts`, `src/scaffold.ts` (novo), `package.json` |
+| Arquivos afetados | `src/scaffold.ts` (novo, puro), `src/commands/scaffold.ts` (novo), `src/commands/deps.ts`, `src/extension.ts` (registro), `package.json` (comando + nls), `package.nls.json` + 23 `package.nls.*.json`, `src/i18nLocales.ts`, 24 notas `docs/brain/60-README/`, `docs/brain/70-Wiki/Commands.md` |
 | Esforço estimado | 1–2 dias |
 | Complexidade | Média |
 
@@ -36,6 +36,12 @@ suíte.
 > A [[prd-100-generate-test-suite|PRD-100]] a estende com **um `%test` por
 > rotina** e as opções `utplsql.generate.*` — implementadas juntas na **0.16.0**;
 > o que aqui está listado como follow-up é o escopo da PRD-100.
+>
+> **Entrega única (decidido em 2026-10-14).** As PRD-59 e PRD-100 vão na **mesma
+> branch/PR** (`feat/prd-59-100-scaffold`) e compartilham **um único comando**
+> `utplsql.generateTestSuite`: sem rotinas parseáveis ele cai no esqueleto (esta
+> PRD); com rotinas, gera um `%test` por rotina (PRD-100). Evita dois comandos,
+> duas entradas de nls e dois fluxos de Code Action.
 
 ## 2. Contexto e problema
 
@@ -45,8 +51,9 @@ manualmente. O parser já conhece a estrutura de um spec; falta gerar.
 ## 3. Objetivos / Não-objetivos
 
 **Objetivos**
-- Comando `utplsql.scaffoldSuite` que pede o objeto de produção e gera
-  `ut_<pkg>.pks` com `%suite`, header e um `%test` de exemplo.
+- Comando `utplsql.generateTestSuite` (nome único, compartilhado com a PRD-100)
+  que pede o objeto de produção e gera `ut_<pkg>.pks` com `%suite`, header e um
+  `%test` de exemplo quando não há rotinas a extrair.
 - Code Action no Explorer/editor para `.pks`/`.pkb` de produção.
 
 **Não-objetivos**
@@ -79,18 +86,35 @@ perguntando o destino via `showSaveDialog`). Evitar sobrescrever existente.
 `buildSuiteTemplate(packageName, suiteDescription)` em `scaffold.ts`, testável
 sem `vscode`.
 
+### RF4 — Documentação e i18n da entrega (gate de CI)
+
+Comando novo exige, **na mesma PR**:
+
+- `package.nls.json` + **23** `package.nls.*.json` (título de paleta);
+- catálogo de mensagens em `src/i18nLocales.ts` (prompts/avisos) — pt-BR base +
+  23 locales;
+- `docs/brain/70-Wiki/Commands.md` e a tabela de Commands do README (vault →
+  `brain:build`);
+- nenhuma setting nova **nesta PRD** (as 4 de núcleo são da PRD-100).
+
+O `docs:check` (`docs-fidelity`) falha o CI se o comando não aparecer no README e
+na wiki.
+
 **Não-funcionais**
 - RNF1 — Não sobrescrever arquivo existente sem confirmação.
 
 ## 5. Solução proposta
 
-Novo módulo `scaffold.ts` (puro) + comando/code action em `extension.ts`.
+Novo módulo `scaffold.ts` (puro) + registro do comando/code action em
+`src/commands/scaffold.ts`, exportado via `CommandDeps` (o registro real vive em
+`src/commands/**`; `extension.ts` apenas delega em `registerXxxCommands(deps)`).
 Prompt de nome via `showInputBox`; escrita via `workspace.fs`.
 
 ## 6. Configuração
 
-- Comando `utPLSQL: Gerar suíte de teste...`.
+- Comando `utplsql.generateTestSuite` (`utPLSQL: Gerar suíte de teste…`).
 - Code action em `**/*.pks`/`.pkb` (a produção, não specs).
+- Nenhuma setting nova nesta PRD.
 
 ## 7. Plano de testes
 
@@ -119,9 +143,20 @@ Prompt de nome via `showInputBox`; escrita via `workspace.fs`.
 
 ## 11. Questões em aberto
 
-- Gerar um `%test` por procedure/function do `.pkb`? — Movido para a
-  [[prd-100-generate-test-suite|PRD-100]] (0.16.0).
-- Gerar também o corpo `.pkb` da suíte? — Em aberto na PRD-100.
+- Gerar um `%test` por procedure/function do `.pkb`? — **Fechado:** é o escopo da
+  [[prd-100-generate-test-suite|PRD-100]], na mesma entrega.
+- Gerar também o corpo `.pkb` da suíte? — **Fechado em 2026-10-14: não** (gera-se
+  só a spec `.pks`; o corpo fica com o usuário). Ver §4 da PRD-100.
+- Nome do comando (`scaffoldSuite` × `generateTestSuite`)? — **Fechado:
+  `utplsql.generateTestSuite`**, único, compartilhado com a PRD-100.
+
+## 12. Impacto no cérebro
+
+Regra **compartilhada** com a PRD-100 (entrega única): candidata **`BR-UI-015`**
+— “gerar suíte de teste não sobrescreve spec existente e produz template
+parseável pelo `suiteParser`” — com `prds: ["PRD-59", "PRD-100"]`,
+`implementacao:` (`src/scaffold.ts`, `src/commands/scaffold.ts`) e `testes:`
+(`src/test/unit/scaffold.test.ts`). Enquanto `approved`, `regras: []`.
 
 ## Conexões
 

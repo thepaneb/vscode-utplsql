@@ -161,15 +161,21 @@ notas `prd-*`. O índice navegável do vault é a [[MOC - PRDs]].
 | 94 | [Piso de VS Code 1.101 e runtime Node 22](completed/prd-94-vscode-floor-1-101.md) | 0.14.0 | 2026-09-29 |
 | 96 | [Site público e landing page via GitHub Pages](completed/prd-96-public-landing-page-github-pages.md) | 0.15.0 | 2026-10-07 |
 
+### 🔵 Aprovados
+
+| # | PRD | Versão | Data |
+|---|---|---|---|
+| 56 | [Duração por teste e persistência de resultados](approved/prd-56-duration-persistence.md) | 0.16.0 | 2026-09-06 |
+| 57 | [Multi-root: resolução de `root`/`sourcePath` por folder](approved/prd-57-multiroot-root-resolution.md) | 0.16.0 | 2026-09-06 |
+| 58 | [Run Related Tests](approved/prd-58-run-related-tests.md) | 0.16.0 | 2026-09-06 |
+| 59 | [Scaffold de suíte de teste](approved/prd-59-scaffold-suite.md) | 0.16.0 | 2026-09-06 |
+| 100 | [Geração de suíte a partir do package (scaffold avançado)](approved/prd-100-generate-test-suite.md) | 0.16.0 | 2026-10-09 |
+
 ### ⚪ Propostos
 
 | # | PRD | Versão | Data |
 |---|---|---|---|
 | 47 | [Node 26 no toolchain de desenvolvimento](proposed/prd-47-node-26-toolchain.md) | — | 2026-08-29 |
-| 56 | [Duração por teste e persistência de resultados](proposed/prd-56-duration-persistence.md) | 0.16.0 | 2026-09-06 |
-| 57 | [Multi-root: resolução de `root`/`sourcePath` por folder](proposed/prd-57-multiroot-root-resolution.md) | 0.16.0 | 2026-09-06 |
-| 58 | [Run Related Tests](proposed/prd-58-run-related-tests.md) | 0.16.0 | 2026-09-06 |
-| 59 | [Scaffold de suíte de teste](proposed/prd-59-scaffold-suite.md) | 0.16.0 | 2026-09-06 |
 | 60 | [Cobertura de branch (investigação de viabilidade)](proposed/prd-60-branch-coverage-investigation.md) | Investigação — sem versão alvo | 2026-09-06 |
 | 61 | [Auto-provisionamento do utPLSQL-cli](proposed/prd-61-cli-auto-provision.md) | Suspenso — a reavaliar (PRD-64 removeu o CLI) | 2026-09-06 |
 | 88 | [Formatação sensível a locale (números e durações)](proposed/prd-88-locale-aware-formatting.md) | 0.21.0 | 2026-09-29 |
@@ -182,7 +188,6 @@ notas `prd-*`. O índice navegável do vault é a [[MOC - PRDs]].
 | 97 | [Documentação no site (Fase 2 da PRD-96)](proposed/prd-97-doc-no-site.md) | 0.23.0 | 2026-10-07 |
 | 98 | [Anti-drift de documentação: tabelas geradas e vínculo PRD→docs](proposed/prd-98-docs-anti-drift.md) | 0.18.0 | 2026-10-08 |
 | 99 | [Cérebro reutilizável: guia de uso e reuso do knowledge base](proposed/prd-99-brain-reuse.md) | 0.23.0 | 2026-10-09 |
-| 100 | [Geração de suíte a partir do package (scaffold avançado)](proposed/prd-100-generate-test-suite.md) | 0.16.0 | 2026-10-09 |
 | 101 | [Ciclo de vida de conexões: fechar pools ociosos após a execução](proposed/prd-101-connection-pool-lifecycle.md) | 0.20.0 | 2026-10-09 |
 | 102 | [Observabilidade: tracing e instrumentação de desempenho](proposed/prd-102-trace-and-perf-instrumentation.md) | 0.20.0 | 2026-10-09 |
 | 103 | [Reindexação incremental de fontes (watcher por-URI)](proposed/prd-103-incremental-source-reindex.md) | 0.20.0 | 2026-10-09 |
@@ -299,12 +304,14 @@ docs/prd/
 │   ├── prd-87-suitepath-results-jump.md
 │   ├── prd-94-vscode-floor-1-101.md
 │   ├── prd-96-public-landing-page-github-pages.md
-├── proposed/        ← em avaliação
-│   ├── prd-47-node-26-toolchain.md
+├── approved/        ← aprovados, aguardando implementação
 │   ├── prd-56-duration-persistence.md
 │   ├── prd-57-multiroot-root-resolution.md
 │   ├── prd-58-run-related-tests.md
 │   ├── prd-59-scaffold-suite.md
+│   ├── prd-100-generate-test-suite.md
+├── proposed/        ← em avaliação
+│   ├── prd-47-node-26-toolchain.md
 │   ├── prd-60-branch-coverage-investigation.md
 │   ├── prd-61-cli-auto-provision.md
 │   ├── prd-88-locale-aware-formatting.md
@@ -317,7 +324,6 @@ docs/prd/
 │   ├── prd-97-doc-no-site.md
 │   ├── prd-98-docs-anti-drift.md
 │   ├── prd-99-brain-reuse.md
-│   ├── prd-100-generate-test-suite.md
 │   ├── prd-101-connection-pool-lifecycle.md
 │   ├── prd-102-trace-and-perf-instrumentation.md
 │   ├── prd-103-incremental-source-reindex.md

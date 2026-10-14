@@ -2,13 +2,13 @@
 tipo: prd
 id: PRD-58
 aliases: [PRD-58]
-status: proposed
+status: approved
 titulo: "Run Related Tests"
 versao: "0.16.0"
 data: "2026-09-06"
 autor: "Gil Cleber Barboza"
 versao_titulo: "0.16.0 — Produtividade e resultados"
-verificado: 2026-09-23
+verificado: 2026-10-14
 regras: []
 tags: [prd]
 ---
@@ -21,16 +21,16 @@ tags: [prd]
 | Data | 2026-09-06 |
 | Componente | Extensão `paneb.vscode-utplsql` |
 | Versão alvo | 0.16.0 |
-| Arquivos afetados | `src/extension.ts`, `src/matching.ts`, `package.json` |
+| Arquivos afetados | `src/commands/run.ts` (registro em `createRunCommands`), `src/matching.ts` (função pura), `package.json` (comando + keybinding), `package.nls.json` + 23 `package.nls.*.json`, `src/i18nLocales.ts`, 24 notas `docs/brain/60-README/`, `docs/brain/70-Wiki/Commands.md` |
 | Esforço estimado | 1 dia |
 | Complexidade | Média |
 
 ## 1. Resumo
 
 Executar as suites de teste relacionadas ao arquivo de produção ativo, via
-convenção de nomenclatura `ut_<objeto>` (e fallback por cobertura). Jest tem
-"Run Related Tests". Permite, num `.pkb`/`.sql` de produção, rodar os testes
-que o cobrem sem navegar até eles.
+convenção de nomenclatura `ut_<objeto>`. Jest tem "Run Related Tests". Permite,
+num `.pkb`/`.sql` de produção, rodar os testes que o cobrem sem navegar até eles.
+O mapeamento por cobertura fica como follow-up (§11).
 
 ## 2. Contexto e problema
 
@@ -53,47 +53,71 @@ Não há mapeamento objeto→teste além da convenção de nome utPLSQL (`ut_<pk
 
 ### RF1 — Comando e heurística
 
+O registro real dos comandos vive em `src/commands/**` (o `extension.ts` só
+delega em `registerRunCommands(deps)`), e `runWithProgress` é a closure local de
+`createRunCommands` — o snippet usa a API atual:
+
 ```typescript
-vscode.commands.registerCommand('utplsql.runRelated', async () => {
+// src/commands/run.ts — dentro de createRunCommands(deps)
+const runRelated = async (): Promise<void> => {
   const editor = vscode.window.activeTextEditor;
   if (!editor) return;
-  const base = path.basename(editor.document.fileName).replace(/\.(pks|pkb|sql|fnc|prc)$/i, '');
-  const candidates = [`ut_${base}`, base];
-  const metas = collectAllItems(controller).map(i => state.getMeta(i)).filter(Boolean) as ItemMeta[];
-  const suites = metas.filter(m =>
-    m.kind === 'suite' &&
-    candidates.some(c => m.packageName.toLowerCase() === c.toLowerCase() ||
-      m.packageName.toLowerCase().endsWith(c.toLowerCase())),
-  );
-  const include = suites.map(m => state.getSuiteItem(`suite:${m.packageName.toLowerCase()}`)).filter(Boolean) as vscode.TestItem[];
-  if (!include.length) { /* aviso */ return; }
-  await runWithProgress(controller, new vscode.TestRunRequest(include, undefined, state.runProfile), undefined, false, state);
-});
+  const items = await collectAllItems(controller, state); // (controller, state, deps?)
+  const suites = relatedSuiteMetas(items, editor.document.fileName); // pura
+  const include = suites
+    .map((m) => state.getSuiteItem(`suite:${m.packageName.toLowerCase()}`))
+    .filter((i): i is vscode.TestItem => Boolean(i));
+  if (!include.length) {
+    vscode.window.showWarningMessage(t(locale, 'ext.runRelated.none'));
+    return;
+  }
+  await runWithProgress(new vscode.TestRunRequest(include), undefined, false);
+};
+// registro: vscode.commands.registerCommand('utplsql.runRelated', () => runRelated())
 ```
 
 ### RF2 — Função pura de matching
 
-Extrair `relatedSuiteMetas(items, fileName)` para um módulo testável
-(`matching.ts` ou novo `relatedTests.ts`).
+`relatedSuiteMetas(items, fileName)` em `src/matching.ts` (já reúne os helpers por
+folder, como `filterSuitesByFolder`), testável sem `vscode`:
+
+- normaliza a extensão (`.pks|.pkb|.sql|.fnc|.prc`) e deriva `base`;
+- candidatos `[`ut_${base}`, `${base}`]`, case-insensitive;
+- casa por igualdade e por `endsWith` no `packageName` de `kind === 'suite'`.
+
+### RF3 — Documentação e i18n (gate de CI)
+
+- Comando novo → `package.nls.json` + **23** locales, catálogo em
+  `src/i18nLocales.ts` (o aviso `ext.runRelated.none`), tabela de Commands do
+  README (24 notas) e `docs/brain/70-Wiki/Commands.md`;
+- keybinding novo → tabela de Keybindings do README (24 notas);
+- validação local na PR: `npm run docs:check` (§7).
 
 **Não-funcionais**
 - RNF1 — Case-insensitive; sem correspondência → aviso amigável.
 
 ## 5. Solução proposta
 
-Novo comando + função pura `relatedSuiteMetas`. Reusa `collectAllItems`,
-`state.getSuiteItem` e `runWithProgress`.
+Novo comando em `createRunCommands` (`src/commands/run.ts`) + função pura
+`relatedSuiteMetas` em `src/matching.ts`. Reusa `collectAllItems`
+(`src/testTree.ts`), `state.getSuiteItem` e a closure `runWithProgress`.
 
 ## 6. Configuração
 
-- Comando `utPLSQL: Rodar testes relacionados`.
-- Keybinding opcional `Ctrl+Shift+U R` já usado (Run All); usar `Ctrl+Shift+U Shift+R` se desejado.
+- Comando `utplsql.runRelated` (`utPLSQL: Rodar testes relacionados`).
+- Keybinding **decidido em 2026-10-14**: `ctrl+shift+u shift+r` (mac
+  `cmd+shift+u shift+r`), `when: editorTextFocus && utplsql:connected` — o
+  `ctrl+shift+u r` já é do Run All e o padrão `shift+<tecla>` já é usado
+  (`runFileCoverage`).
 
 ## 7. Plano de testes
 
-- **Unitários**: `relatedSuiteMetas` com `ut_` prefixo, igualdade exata, sem
-  match, extensão variada.
+- **Unitários**: `relatedSuiteMetas` (em `matching.test.ts`) — prefixo `ut_`,
+  igualdade exata, `endsWith`, case-insensitive, extensões `.pks/.pkb/.sql/.fnc/.prc`,
+  sem match.
 - **Integração**: editar `app_pkg.pkb` → `runRelated` executa `ut_app_pkg`.
+- **CI**: `npm run docs:check` (comando + keybinding nas 24 notas e na wiki) +
+  `brain:ci`.
 
 ## 8. Riscos e mitigação
 
@@ -112,11 +136,24 @@ Novo comando + função pura `relatedSuiteMetas`. Reusa `collectAllItems`,
 - `npm test` passa.
 - `runRelated` acha e executa `ut_<nome>` do arquivo ativo.
 - Sem match → aviso.
+- `npm run docs:check` verde (comando + keybinding nas 24 notas de README e na
+  wiki).
 
 ## 11. Questões em aberto
 
-- Mapear por cobertura (PRD futuro) para além da convenção de nome.
-- Rodar "related" com cobertura (PRD-54)?
+- Mapear por cobertura (PRD futuro) para além da convenção de nome. — Follow-up
+  declarado nos não-objetivos.
+- Rodar "related" com cobertura (PRD-54)? — **Fechado em 2026-10-14: não** — o
+  comando usa o perfil de run padrão; cobertura continua sendo decisão do usuário
+  pelo toggle (`BR-UI-012`).
+
+## 12. Impacto no cérebro
+
+Na conclusão, criar a regra candidata **`BR-UI-014`** — “`utplsql.runRelated`
+casa as suites pela convenção `ut_<objeto>` (case-insensitive, com fallback por
+nome) e avisa quando não há correspondência” — com `prds: ["PRD-58"]`,
+`implementacao:` (`src/commands/run.ts`, `src/matching.ts`) e `testes:`
+(`src/test/unit/matching.test.ts`). Enquanto `approved`, `regras: []`.
 
 ## Conexões
 

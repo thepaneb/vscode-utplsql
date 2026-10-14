@@ -17,23 +17,47 @@ Plano da **0.16.0 — “Produtividade e resultados”**. O status e a versão a
 
 | Ordem | PRD | Título | Esforço | Complexidade |
 |---|---|---|---|---|
-| 1 | PRD-59 | Scaffold de suíte de teste (esqueleto) | 1–2 dias | Média |
-| 2 | PRD-100 | Geração de suíte a partir do package (scaffold avançado) | 2–3 dias | Média-Alta |
-| 3 | PRD-56 | Duração por teste e persistência de resultados | 1 dia | Baixa-Média |
-| 4 | PRD-57 | Multi-root: resolução de `root`/`sourcePath` por folder | 1–2 dias | Média |
-| 5 | PRD-58 | Run Related Tests | 1 dia | Média |
+| 1 | PRD-59 + PRD-100 | Scaffold de suíte (esqueleto + avançado) — **entrega única** | 3–5 dias | Média-Alta |
+| 2 | PRD-56 | Duração por teste e persistência de resultados | 1 dia | Baixa-Média |
+| 3 | PRD-57 | Multi-root: resolução de `root`/`sourcePath` por folder | 1–2 dias | Média |
+| 4 | PRD-58 | Run Related Tests | 1 dia | Média |
 
 **PRDs:** [[prd-59-scaffold-suite|PRD-59]] ·
 [[prd-100-generate-test-suite|PRD-100]] · [[prd-56-duration-persistence|PRD-56]] ·
 [[prd-57-multiroot-root-resolution|PRD-57]] · [[prd-58-run-related-tests|PRD-58]]
 
 **Tema:** produtividade do dia a dia — geração de suíte, resultados persistentes e
-execução relacionada. Ordem sugerida: **PRD-59 → PRD-100** (a 100 estende a 59);
-depois **56 → 57 → 58**.
+execução relacionada. Ordem sugerida: **PRD-59 + PRD-100** (entrega única, ver
+abaixo); depois **56 → 57 → 58**.
 
 **Reorganização (2026-10-10):** esta versão passa a abrir o roadmap de features
 por ser a de **maior ganho visível ao usuário**; era a antiga 0.17.0. Todo o
 bloco de runtime/docs foi movido para o fim (ver [[Roadmap - 0.23.0 (planejamento)]]).
+
+## Prontidão para execução (2026-10-14)
+
+As quatro notas **propostas saíram para `approved`** e as ambiguidades foram
+fechadas (as datas de `verificado` passaram a 2026-10-14):
+
+- **PRD-59 + PRD-100 são uma entrega única** (`feat/prd-59-100-scaffold`) e
+  compartilham **um** comando, `utplsql.generateTestSuite`: sem rotinas
+  parseáveis cai no esqueleto (59); com rotinas, gera um `%test` por rotina (100).
+- **PRD-100 expõe só 4 settings de núcleo** (`testPackagePrefix`,
+  `testPackageSuffix`, `numberOfTestsPerUnit`, `generateComments`); as outras
+  cinco previstas ficam com default fixo e viram follow-up.
+- **PRD-58**: keybinding `ctrl+shift+u shift+r` (o `ctrl+shift+u r` já é do Run
+  All); comando `utplsql.runRelated`, função pura em `matching.ts`.
+- **PRD-56**: persistência no `workspaceState`, `Memento` injetado por **setter**;
+  setting `utplsql.showTestDuration`.
+- **PRD-57**: `runner.ts:139` (não `:49`); a fixture multi-root
+  (`e2e-multiroot.code-workspace` + `.vscode-test.multiroot.mjs`) já existe.
+
+> **Custo de docs/i18n é gate de CI** — o `docs:check` (`docs-fidelity`) falha se
+> uma setting não constar no `README.md` **e nas 23 variantes**:
+> 5 settings × 24 notas de README, *Known limitations* remoção × 24 (PRD-57),
+> 2 comandos × (nls en + 23 locales + `i18nLocales.ts`) e as tabelas de
+> Commands/Keybindings (24 notas) + wiki. O `CHANGELOG.md` ganha a seção
+> `## 0.16.0` na primeira entrega; o bump de versão fica para o release.
 
 **Total estimado:** ≈ 6–9 dias.
 

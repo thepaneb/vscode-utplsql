@@ -2,13 +2,13 @@
 tipo: prd
 id: PRD-100
 aliases: [PRD-100]
-status: proposed
+status: approved
 titulo: "Geração de suíte a partir do package (scaffold avançado)"
 versao: "0.16.0"
 data: "2026-10-09"
 autor: "Gil Cleber Barboza"
 versao_titulo: "0.16.0 — Produtividade e resultados"
-verificado: 2026-10-09
+verificado: 2026-10-14
 regras: []
 tags: [prd]
 ---
@@ -21,7 +21,7 @@ tags: [prd]
 | Data | 2026-10-09 |
 | Componente | Extensão `paneb.vscode-utplsql` |
 | Versão alvo | 0.16.0 |
-| Arquivos afetados | `src/scaffold.ts` (novo, puro), `src/extension.ts`, `src/plsqlDeclarations.ts` (reuso), `package.json`, `docs/brain/**` |
+| Arquivos afetados | `src/scaffold.ts` (novo, puro), `src/commands/scaffold.ts` (novo), `src/commands/deps.ts`, `src/plsqlDeclarations.ts` (reuso), `src/config.ts`, `package.json` (comando + 4 settings + nls), `package.nls.json` + 23 `package.nls.*.json`, `src/i18nLocales.ts`, 24 notas `docs/brain/60-README/`, `docs/brain/70-Wiki/Commands.md`, `docs/brain/70-Wiki/Configuration.md` |
 | Esforço estimado | 2–3 dias |
 | Complexidade | Média-Alta |
 | Relaciona-se a | PRD-59 (base), PRD-30 (organização), PRD-42 (`suiteParser`) |
@@ -49,15 +49,20 @@ segundos o atrito de iniciar uma suíte.
 ## 3. Objetivos / Não-objetivos
 
 **Objetivos**
-- Um comando e uma Code Action que geram um spec `ut_<pkg>.pks` com `%suite` e
-  **um `%test` por rotina**.
-- Suportar as **opções** de geração via settings (`utplsql.generate.*`).
+- O comando e a Code Action (compartilhados com a PRD-59, numa entrega única) que
+  geram um spec `ut_<pkg>.pks` com `%suite` e **um `%test` por rotina**.
+- Suportar as **4 settings de núcleo** de geração (`utplsql.generate.*`) — ver RF4.
 - Aceitar como fonte o arquivo local **ou** o objeto compilado no banco.
 
 **Não-objetivos**
 - **Não** executar/compilar o pacote gerado nem escrever no banco.
 - **Não** inferir asserções a partir do corpo (só nome de rotina + placeholder).
 - **Não** substituir a PRD-59: o esqueleto simples continua funcionando.
+- **Não** gerar o **corpo** `.pkb` da suíte (decidido em 2026-10-14: só a spec
+  `.pks`; `NULL;`/asserções ficam com o usuário).
+- **Não** expor as settings adiadas de 2026-10-14 (ver RF4): `testUnitPrefix`,
+  `testUnitSuffix`, `disableTests`, `suitePath`, `indentSpaces` — ficam com
+  default fixo e podem virar PRD futura.
 
 ## 4. Requisitos
 
@@ -80,25 +85,45 @@ segundos o atrito de iniciar uma suíte.
   --%test(<nome> ...)
   PROCEDURE <nome>; -- TODO
   ```
-- `%beforetest`/`%aftertest`, `%suitepath` e `%disabled` conforme opções.
+- `%beforetest`/`%aftertest` **não** são emitidos por padrão (só o `%suite` + os
+  `%test`); `%suitepath` e `%disabled` ficam de fora nesta versão (ver RF4).
 - O resultado deve reabrir como spec válido no `suiteParser`.
 
-### RF4 — Opções de geração (`utplsql.generate.*`)
+### RF4 — Opções de geração (`utplsql.generate.*`): núcleo de 4
 
-| Setting | Efeito |
-|---|---|
-| `testPackagePrefix`/`testPackageSuffix` | prefixo/sufixo do nome da suíte |
-| `testUnitPrefix`/`testUnitSuffix` | prefixo/sufixo do nome do `%test` |
-| `numberOfTestsPerUnit` | testes por rotina (default 1) |
-| `generateComments` | `-- TODO` por teste |
-| `disableTests` | marca `--%disabled` |
-| `suitePath` | valor de `--%suitepath` |
-| `indentSpaces` | indentação do template |
+| Setting | Default | Efeito |
+|---|---|---|
+| `utplsql.generate.testPackagePrefix` | `ut_` | prefixo do nome da suíte/arquivo |
+| `utplsql.generate.testPackageSuffix` | `""` | sufixo do nome da suíte/arquivo |
+| `utplsql.generate.numberOfTestsPerUnit` | `1` | `%test` gerados por rotina |
+| `utplsql.generate.generateComments` | `true` | emite `-- TODO` em cada teste |
+
+**Adiadas (decidido em 2026-10-14)** — não entram como setting; default fixo:
+
+| Prevista | Default fixo agora | Por quê |
+|---|---|---|
+| `testUnitPrefix` / `testUnitSuffix` | nome do `%test` = nome da rotina | cosmético |
+| `disableTests` | testes habilitados | cosmético |
+| `suitePath` | sem `--%suitepath` | depende da organização da suíte |
+| `indentSpaces` | 2 espaços (padrão do repo) | cosmético |
+
+Cada setting exposta custa **uma linha traduzida em 24 arquivos** de README
+(cobrado pelo `docs-fidelity`); por isso o núcleo é deliberadamente pequeno — ver
+RF6.
 
 ### RF5 — Escrita segura
 
 - Nunca sobrescrever arquivo existente sem confirmação; respeitar
   `sourcePath`/include patterns para o destino.
+
+### RF6 — Documentação e i18n (gate de CI)
+
+- **4 settings** → cada chave precisa constar no `README.md` **e nas 23
+  variantes** (o `docs-fidelity` falha o CI caso contrário) + a tabela de
+  Configuration da wiki;
+- comando + Code Action → mesma obrigação do RF4 da
+  [[prd-59-scaffold-suite|PRD-59]] (nls ×24, `i18nLocales.ts`, `Commands.md`);
+- validação local na PR: `npm run docs:check` (§7).
 
 **Não-funcionais**
 - RNF1 — `scaffold.ts` **puro** (sem `vscode`), testável com `node --test`.
@@ -109,24 +134,30 @@ segundos o atrito de iniciar uma suíte.
 
 - `src/scaffold.ts` (novo): funções puras `buildSuiteTemplate(packageName, routines, options)` e
   `deriveRoutines(source, language)`; reusa `parsePlsqlDeclarations`.
-- `src/extension.ts`: registra o comando e a Code Action; coleta opções via `readConfig()`.
-- `src/config.ts` + `package.json`: os 9 settings `utplsql.generate.*`.
+- `src/commands/scaffold.ts` (novo): registra o comando e a Code Action a partir
+  de `CommandDeps`; coleta opções via `readConfig()`.
+- `src/config.ts` + `package.json`: as **4** settings de núcleo `utplsql.generate.*`.
 - Fallback de banco reaproveita `discovery.ts`/`oracleRunner.ts` (sem SQL novo).
 
 ## 6. Configuração
 
-- Comando `utplsql.generateTestSuite`.
+- Comando `utplsql.generateTestSuite` (único, compartilhado com a PRD-59).
 - Code Action em `**/*.pks`/`**/*.pkb`.
-- Settings `utplsql.generate.testPackagePrefix` … `utplsql.generate.indentSpaces`.
+- Settings: `utplsql.generate.testPackagePrefix`,
+  `utplsql.generate.testPackageSuffix`, `utplsql.generate.numberOfTestsPerUnit`,
+  `utplsql.generate.generateComments`.
 
 ## 7. Plano de testes
 
-- **Unitários**: `out/test/unit/scaffold.test.js` — template com N rotinas,
-  prefixos/sufixos, `numberOfTestsPerUnit`, `disableTests`; nome sem `ut_` vira
-  `ut_<nome>`; saída parseável por `suiteParser`.
+- **Unitários**: `src/test/unit/scaffold.test.ts` — template com N rotinas,
+  prefixo/sufixo do pacote, `numberOfTestsPerUnit`, `generateComments`; nome sem
+  `ut_` vira `ut_<nome>`; saída parseável por `suiteParser`; **sem rotinas →
+  esqueleto** (fallback da PRD-59).
 - **Integração**: gerar a partir de um objeto do banco (fixture) e validar o
   conteúdo; Code Action disponível só em produção.
 - **Manual**: gerar para um `.pkb` → arquivo criado; gerar de novo → confirmação.
+- **CI**: `npm run docs:check` (as 4 settings nas 24 notas de README + comando na
+  wiki/README) e `npm run brain:ci`.
 
 ## 8. Riscos e mitigação
 
@@ -135,7 +166,9 @@ segundos o atrito de iniciar uma suíte.
 | Sobrescrever spec existente | Confirmação explícita antes de gravar |
 | Overloads/rotinas privadas | Só rotais da spec pública; seguir `parsePlsqlDeclarations` |
 | Pacote muito grande gera arquivo enorme | `numberOfTestsPerUnit` + opção de omitir comentários |
-| Divergência da PRD-59 | PRD-59 vira a base documentada; PRD-100 a estende |
+| Divergência da PRD-59 | Entrega única (`feat/prd-59-100-scaffold`) e **um** comando; a PRD-59 documenta a fase esqueleto |
+| Custo de tradução das settings (24 notas de README × N) | Núcleo de **4** settings (RF4); as demais viram default fixo/follow-up |
+| Code Action aparecer em spec existente | Filtro `ut_*`/spec + teste de integração |
 
 ## 9. Rollout
 
@@ -144,23 +177,30 @@ segundos o atrito de iniciar uma suíte.
 
 ## 10. Critérios de aceite
 
-- Gerar de um package com 5 rotinas produz 5 `%test` válidos.
-- Todas as 9 settings alteram a saída de forma previsível.
+- Gerar de um package com 5 rotinas produz 5 `%test` válidos; sem rotinas
+  parseáveis, cai no esqueleto da PRD-59.
+- As 4 settings de núcleo alteram a saída de forma previsível.
 - Não sobrescreve sem confirmação; `npm test` e `lint` verdes.
 - Coverage ≥ thresholds do `.c8rc`.
+- `npm run docs:check` verde (4 settings nas 24 notas de README; comando na wiki e
+  no README).
 
 ## 11. Questões em aberto
 
-- Gerar também o **corpo** `.pkb` com `NULL;` em cada teste?
-- Usar `%beforetest`/`%aftertest` por padrão ou só sob demanda?
-- Nome do comando: `generateTestSuite` × `scaffoldSuite` (PRD-59)?
+- Gerar também o **corpo** `.pkb` com `NULL;` em cada teste? — **Fechado em
+  2026-10-14: não** (só a spec `.pks`).
+- Usar `%beforetest`/`%aftertest` por padrão ou só sob demanda? — **Fechado:
+  não** por padrão nesta versão.
+- Nome do comando: `generateTestSuite` × `scaffoldSuite` (PRD-59)? — **Fechado:
+  um único `utplsql.generateTestSuite`** (PRD-59 + PRD-100).
 
 ## 12. Impacto no cérebro
 
-Na conclusão, criar a regra `BR-UI-*` que materializa "gerar suíte de teste não
-sobrescreve spec existente e produz template parseável", com
-`prds: ["PRD-100"]`, `implementacao:` e `testes:`, confirmando o vínculo
-bidirecional (`npm run brain:rules`). Enquanto `proposed`, `regras: []`.
+Regra **compartilhada** com a PRD-59 (entrega única): candidata **`BR-UI-015`** —
+“gerar suíte de teste não sobrescreve spec existente e produz template parseável
+pelo `suiteParser`” — com `prds: ["PRD-59", "PRD-100"]`, `implementacao:`
+(`src/scaffold.ts`, `src/commands/scaffold.ts`) e `testes:`
+(`src/test/unit/scaffold.test.ts`). Enquanto `approved`, `regras: []`.
 
 ## Conexões
 
