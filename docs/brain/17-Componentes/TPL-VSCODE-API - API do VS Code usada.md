@@ -54,7 +54,7 @@ host — o `docs-fidelity` cobra essa coerência.
 ## Inventário (gerado)
 
 <!-- brain:auto:start:vscode-api -->
-**`engines.vscode`:** `^1.101.0` · **`@types/vscode`:** `1.101.0` · **104 símbolos · 533 referências**
+**`engines.vscode`:** `^1.101.0` · **`@types/vscode`:** `1.101.0` · **104 símbolos · 532 referências**
 
 | Símbolo | Refs | Arquivos |
 |---|---|---|
@@ -78,10 +78,10 @@ host — o `docs-fidelity` cobra essa coerência.
 | `vscode.window.showQuickPick` | 8 | `src/commands/connection.ts`, `src/commands/debug.ts`, `src/commands/profile.ts`, `src/commands/run.ts` +1 |
 | `vscode.CancellationToken` | 7 | `src/codelens.ts`, `src/commands/run.ts`, `src/oracleRunner.ts`, `src/quickfix.ts` +2 |
 | `vscode.Location` | 7 | `src/results.ts` |
-| `vscode.Uri.file` | 7 | `src/commands/scaffold.ts`, `src/commands/script.ts`, `src/coverage.ts`, `src/extension.ts` +1 |
 | `vscode.window.showInputBox` | 7 | `src/commands/profile.ts`, `src/commands/scaffold.ts`, `src/config.ts` |
 | `vscode.workspace.workspaceFolders` | 7 | `src/commands/run.ts`, `src/commands/scaffold.ts`, `src/discovery.ts`, `src/results.ts` +2 |
 | `vscode.Diagnostic` | 6 | `src/compilationDiagnostics.ts`, `src/quickfix.ts` |
+| `vscode.Uri.file` | 6 | `src/commands/scaffold.ts`, `src/commands/script.ts`, `src/coverage.ts`, `src/extension.ts` +1 |
 | `vscode.Uri.joinPath` | 6 | `src/commands/debug.ts`, `src/commands/run.ts`, `src/commands/scaffold.ts`, `src/commands/script.ts` +2 |
 | `vscode.DecorationOptions` | 5 | `src/decorations.ts` |
 | `vscode.FileCoverageDetail` | 5 | `src/results.ts`, `src/state.ts`, `src/viewCoverage.ts` |

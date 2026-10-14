@@ -133,6 +133,7 @@ notas `prd-*`. O índice navegável do vault é a [[MOC - PRDs]].
 | 54 | [Toggle de cobertura na status bar](completed/prd-54-coverage-toggle.md) | 0.15.0 | 2026-09-06 |
 | 55 | [Organização da árvore de testes por tag](completed/prd-55-tag-organization.md) | 0.15.0 | 2026-09-06 |
 | 56 | [Duração por teste e persistência de resultados](completed/prd-56-duration-persistence.md) | 0.16.0 | 2026-09-06 |
+| 57 | [Multi-root: resolução de `root`/`sourcePath` por folder](completed/prd-57-multiroot-root-resolution.md) | 0.16.0 | 2026-09-06 |
 | 59 | [Scaffold de suíte de teste](completed/prd-59-scaffold-suite.md) | 0.16.0 | 2026-09-06 |
 | 62 | [Execução de scripts SQL contra perfil de conexão](completed/prd-62-run-scripts-against-profiles.md) | 0.12.0 | 2026-09-06 |
 | 63 | [Wiki bilíngue (pt-BR/en) + correção de links + limpeza de READMEs](completed/prd-63-diagram-i18n.md) | — | — |
@@ -168,7 +169,6 @@ notas `prd-*`. O índice navegável do vault é a [[MOC - PRDs]].
 
 | # | PRD | Versão | Data |
 |---|---|---|---|
-| 57 | [Multi-root: resolução de `root`/`sourcePath` por folder](approved/prd-57-multiroot-root-resolution.md) | 0.16.0 | 2026-09-06 |
 | 58 | [Run Related Tests](approved/prd-58-run-related-tests.md) | 0.16.0 | 2026-09-06 |
 
 ### ⚪ Propostos
@@ -277,6 +277,7 @@ docs/prd/
 │   ├── prd-54-coverage-toggle.md
 │   ├── prd-55-tag-organization.md
 │   ├── prd-56-duration-persistence.md
+│   ├── prd-57-multiroot-root-resolution.md
 │   ├── prd-59-scaffold-suite.md
 │   ├── prd-62-run-scripts-against-profiles.md
 │   ├── prd-63-diagram-i18n.md
@@ -308,7 +309,6 @@ docs/prd/
 │   ├── prd-96-public-landing-page-github-pages.md
 │   ├── prd-100-generate-test-suite.md
 ├── approved/        ← aprovados, aguardando implementação
-│   ├── prd-57-multiroot-root-resolution.md
 │   ├── prd-58-run-related-tests.md
 ├── proposed/        ← em avaliação
 │   ├── prd-47-node-26-toolchain.md
