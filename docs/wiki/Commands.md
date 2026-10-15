@@ -83,6 +83,9 @@ All shortcuts use the prefix `Ctrl+Shift+U` (`Cmd+Shift+U` on Mac):
 | `Ctrl+Shift+U U` | Run at cursor |
 | `Ctrl+Shift+U X` | Run failed only |
 | `Ctrl+Shift+U Shift+C` | Toggle coverage |
+| `Ctrl+Shift+U Shift+R` | Run related tests |
+| `Ctrl+Shift+U D` | Debug at cursor |
+| `Ctrl+Shift+U Shift+D` | Debug failed tests |
 | `Escape` | Cancel run |
 
 To customize, go to File → Preferences → Keyboard Shortcuts and search for `utplsql`.

@@ -31,7 +31,6 @@ interface OracleRunOptions {
   pathArgs: string[];                       // ex.: ['package', 'package.proc']
   coverage: boolean;
   sourcePath: string;
-  root: string;                             // fsPath do workspace folder
   run: vscode.TestRun;
   leafTests: vscode.TestItem[];
   state: TestStateManager;
