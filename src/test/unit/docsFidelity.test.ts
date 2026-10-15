@@ -10,6 +10,7 @@ import { test } from 'node:test';
 // Requer o módulo via require (CJS) para injetar conteúdo nos cenários.
 const {
   checkFidelity,
+  checkStaleReferences,
   realSettings,
   realCommands,
   commandTitleFragments,
@@ -18,6 +19,7 @@ const {
   listCompletedPrds,
 } = require('../../../scripts/docs-fidelity.cjs') as {
   checkFidelity: (o?: Record<string, unknown>) => string[];
+  checkStaleReferences: (o?: Record<string, unknown>) => string[];
   realSettings: () => string[];
   realCommands: () => string[];
   commandTitleFragments: () => { id: string; title: string }[];
@@ -271,4 +273,109 @@ test('docs-fidelity: metadados do repo são coerentes', () => {
   assert.ok(srcModules().includes('extension.ts'));
   assert.match(pkgVersion(), /^\d+\.\d+\.\d+$/);
   assert.ok(listCompletedPrds().length > 50);
+});
+
+// ── Símbolos/módulos descontinuados citados nas docs (checagens 11/12) ──
+//
+// Motivação: o diagrama de arquitetura anunciava "CLI mode — removido na v0.12"
+// e continuava desenhando o modo CLI inteiro (PRD-207).
+
+const scan = (rel: string, text: string) => [{ path: rel, text }];
+
+test('docs-fidelity: módulo removido do src/ citado nas docs é detectado', () => {
+  const problems = checkStaleReferences({
+    removedModules: new Set(['cli.ts']),
+    staleSymbols: new Set(),
+    docsScanTargets: scan('docs/wiki/images/diagram-arquitetura.svg', '<text>cli.ts</text>'),
+  });
+  assert.ok(
+    problems.some((p) => p.includes('cli.ts')),
+    `esperava problema com cli.ts: ${problems.join(' | ')}`,
+  );
+});
+
+test('docs-fidelity: módulo vivo não é problema', () => {
+  assert.deepStrictEqual(
+    checkStaleReferences({
+      removedModules: new Set(['cli.ts']),
+      staleSymbols: new Set(),
+      docsScanTargets: scan('docs/wiki/Architecture.md', 'veja `runner.ts` e `.vscode-test.mjs`'),
+    }),
+    [],
+  );
+});
+
+test('docs-fidelity: nome de exemplo (nunca existiu) não é cobrado', () => {
+  assert.deepStrictEqual(
+    checkStaleReferences({
+      removedModules: new Set(['cli.ts']),
+      staleSymbols: new Set(),
+      docsScanTargets: scan('docs/wiki/Tests.md', 'crie `my_module.test.ts` com os casos'),
+    }),
+    [],
+  );
+});
+
+test('docs-fidelity: símbolo descontinuado em crase é detectado', () => {
+  const problems = checkStaleReferences({
+    removedModules: null,
+    staleSymbols: new Set(['parseFromOutput', 'applyResults']),
+    docsScanTargets: scan(
+      'docs/functional/06-tree-organization.md',
+      'compatível com `applyResults`',
+    ),
+  });
+  assert.ok(problems.some((p) => p.includes('applyResults')));
+});
+
+test('docs-fidelity: símbolo descontinuado em prosa pura não conta', () => {
+  assert.deepStrictEqual(
+    checkStaleReferences({
+      removedModules: null,
+      staleSymbols: new Set(['parseFromOutput']),
+      docsScanTargets: scan('docs/wiki/FAQ.md', 'o parseFromOutput roda antes de tudo'),
+    }),
+    [],
+  );
+});
+
+test('docs-fidelity: SVG é lido sem crases (texto do diagrama conta)', () => {
+  const problems = checkStaleReferences({
+    removedModules: null,
+    staleSymbols: new Set(['parseFromOutput']),
+    docsScanTargets: scan(
+      'docs/wiki/images/diagram-diagnosticos.svg',
+      '<text x="1" y="2">parseFromOutput</text>',
+    ),
+  });
+  assert.ok(problems.some((p) => p.includes('parseFromOutput')));
+});
+
+test('docs-fidelity: exceção documentada (ALLOW_STALE) não vira problema', () => {
+  assert.deepStrictEqual(
+    checkStaleReferences({
+      removedModules: null,
+      staleSymbols: new Set(['applyCoverage', 'resolveStackLocation']),
+      docsScanTargets: scan(
+        'docs/functional/07-diagnostics-and-validation.md',
+        'chamado por `applyCoverage`',
+      ),
+    }),
+    [],
+  );
+});
+
+test('docs-fidelity: sem git/tags a checagem é pulada (clone raso)', () => {
+  assert.deepStrictEqual(
+    checkStaleReferences({
+      removedModules: null,
+      staleSymbols: null,
+      docsScanTargets: scan('docs/wiki/Architecture.md', 'com `applyResults`'),
+    }),
+    [],
+  );
+});
+
+test('docs-fidelity: o repositório atual não cita símbolo/módulo descontinuado', () => {
+  assert.deepStrictEqual(checkStaleReferences(), []);
 });
