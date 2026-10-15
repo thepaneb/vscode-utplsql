@@ -109,12 +109,18 @@ function fixtureGitEnv(repo: string): NodeJS.ProcessEnv {
   return env;
 }
 
-function sanitizeProcessGitEnv(repo: string): () => void {
+function sanitizeProcessGitEnv(repo: string, root: string): () => void {
   const keys = gitEnvKeys(process.env);
   const previous = new Map(keys.map((key) => [key, process.env[key]]));
   for (const key of keys) delete process.env[key];
   process.env.GIT_CONFIG_NOSYSTEM = '1';
   process.env.GIT_CONFIG_GLOBAL = path.join(repo, '.git', 'global-config');
+  // Teto de descoberta: o git não pode subir além do fixture. Sem isto, o teste
+  // "repo sem Git" depende de NÃO existir repositório acima do tmpdir — se
+  // existir (máquina do dev, runner, tmpdir dentro de um repo), o `git status`
+  // do fixture acha o repo de cima e devolve a data de hoje, quebrando o teste
+  // de forma intermitente.
+  process.env.GIT_CEILING_DIRECTORIES = root;
   return () => {
     for (const [key, value] of previous) {
       if (value === undefined) delete process.env[key];
@@ -159,7 +165,7 @@ function withBrainFixture<T>(fn: (paths: { root: string; repo: string; vault: st
   const vault = path.join(repo, 'docs', 'brain');
   fs.mkdirSync(vault, { recursive: true });
   initFixtureGit(repo);
-  const restoreGitEnv = sanitizeProcessGitEnv(repo);
+  const restoreGitEnv = sanitizeProcessGitEnv(repo, root);
   try {
     configure({ repo, vault });
     return fn({ root, repo, vault });
