@@ -325,6 +325,8 @@ UTPLSQL_CONN=your_user/password@//host:1521/service
 | `utPLSQL: Run script folder` | Runs the folder scripts in alphabetical order | Right-click → folder |
 | `utPLSQL: Встановити пароль гаманця` | Встановлює/очищає пароль гаманця активного профілю (SecretStorage) | — |
 | `utPLSQL: Запустити з reporter (експорт)` | Запускає вибір з обраним reporter і записує вивід у Output/файл (не змінює результати) | Test Explorer → menu do item |
+| `utPLSQL: Створити набір тестів…` | створює `ut_<пакет>.pks` з одним `%test` на підпрограму з `.pks`/`.pkb` або об’єкта бази даних, з параметрами `utplsql.generate.*` | v3.2.x не компілюється (`PLS-00222`). `WE8DEC` образу втрачає невідтворювані символи (напр. `€`); тонкий драйвер ігнорує `NLS_LANG`. |
+| `utPLSQL: Запустити пов’язані тести` | у робочому `.pks`/`.pkb`/`.sql` запускає набори за конвенцією `ut_<об’єкт>` | v3.2.x не компілюється (`PLS-00222`). `WE8DEC` образу втрачає невідтворювані символи (напр. `€`); тонкий драйвер ігнорує `NLS_LANG`. |
 
 > **Recompile UT3** (`utplsql.recompileUt3`) — **не** команда палітри: це
 > внутрішнє швидке виправлення діагностики "utPLSQL Setup" (недійсні об'єкти у
@@ -345,6 +347,8 @@ UTPLSQL_CONN=your_user/password@//host:1521/service
 | `Ctrl+Shift+U L` | Повторити останній запуск |
 | `Ctrl+Shift+U U` | Запустити під курсором |
 | `Ctrl+Shift+U X` | Запустити лише невдалі |
+| `Ctrl+Shift+U Shift+C` | Toggle Coverage |
+| `Ctrl+Shift+U Shift+R` | Запустити пов’язані тести |
 | `Escape` | Скасувати виконання |
 
 ## Покриття

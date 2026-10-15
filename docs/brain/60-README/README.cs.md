@@ -329,6 +329,8 @@ Všechny příkazy rozšíření (paleta `Ctrl+Shift+P`, předpona `utPLSQL:`):
 | `utPLSQL: Run script folder` | Runs the folder scripts in alphabetical order | Right-click → folder |
 | `utPLSQL: Nastavit heslo peněženky` | Nastaví/vymaže heslo peněženky aktivního profilu (SecretStorage) | — |
 | `utPLSQL: Spustit s reporterem (export)` | Spustí výběr se zvoleným reporterem a zapíše výstup do Output/souboru (nemění výsledky) | Test Explorer → menu do item |
+| `utPLSQL: Vygenerovat testovací sadu…` | vygeneruje `ut_<balíček>.pks` s jedním `%test` na rutinu ze souboru `.pks`/`.pkb` nebo databázového objektu, s možnostmi `utplsql.generate.*` | v3.2.x se nezkompiluje (`PLS-00222`). `WE8DEC` obrazu ztrácí nereprezentovatelné znaky (např. `€`); tenký ovladač ignoruje `NLS_LANG`. |
+| `utPLSQL: Spustit související testy` | v produkčním `.pks`/`.pkb`/`.sql` spustí sady podle konvence `ut_<objekt>` | v3.2.x se nezkompiluje (`PLS-00222`). `WE8DEC` obrazu ztrácí nereprezentovatelné znaky (např. `€`); tenký ovladač ignoruje `NLS_LANG`. |
 
 > **Recompile UT3** (`utplsql.recompileUt3`) **není** příkaz palety — je to
 > interní rychlá oprava diagnostiky „utPLSQL Setup" (neplatné objekty ve
@@ -349,6 +351,8 @@ Všechny zkratky používají předponu `Ctrl+Shift+U` (`Cmd+Shift+U` na Macu):
 | `Ctrl+Shift+U L` | Rerun last |
 | `Ctrl+Shift+U U` | Run at cursor |
 | `Ctrl+Shift+U X` | Run failed only |
+| `Ctrl+Shift+U Shift+C` | Toggle Coverage |
+| `Ctrl+Shift+U Shift+R` | Spustit související testy |
 | `Escape` | Cancel run |
 
 ## Pokrytí

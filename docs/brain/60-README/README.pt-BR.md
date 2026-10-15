@@ -328,6 +328,8 @@ Todos os comandos da extensão (palette `Ctrl+Shift+P` prefixo `utPLSQL:`):
 | `utPLSQL: Executar pasta de scripts` | Executa os scripts da pasta em ordem alfabética | Clique direito → pasta |
 | `utPLSQL: Definir senha da wallet` | Define/limpa a senha da wallet Oracle Cloud do perfil ativo (SecretStorage) | — |
 | `utPLSQL: Rodar com reporter (export)` | Roda a seleção com um reporter escolhido e grava a saída em Output/arquivo (não altera os resultados) | Test Explorer → menu do item |
+| `utPLSQL: Gerar suíte de teste…` | gera `ut_<pacote>.pks` com um `%test` por rotina a partir de um `.pks`/`.pkb` ou de um objeto do banco, com as opções `utplsql.generate.*` | Clique direito → arquivo |
+| `utPLSQL: Rodar testes relacionados` | num `.pks`/`.pkb`/`.sql` de produção, roda as suítes pela convenção `ut_<objeto>` | Clique direito → arquivo |
 
 > **Recompilar UT3** (`utplsql.recompileUt3`) **não** é um comando da paleta — é
 > um quick-fix interno do diagnostic "utPLSQL Setup" (objetos inválidos no
@@ -348,6 +350,8 @@ Todos os atalhos usam o prefixo `Ctrl+Shift+U` (`Cmd+Shift+U` no Mac):
 | `Ctrl+Shift+U L` | Rerun last (último teste) |
 | `Ctrl+Shift+U U` | Run at cursor (teste sob cursor) |
 | `Ctrl+Shift+U X` | Run failed only (apenas falhas) |
+| `Ctrl+Shift+U Shift+C` | Toggle Coverage |
+| `Ctrl+Shift+U Shift+R` | Rodar testes relacionados |
 | `Escape` | Cancelar execução |
 
 ## Cobertura

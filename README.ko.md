@@ -318,6 +318,8 @@ UTPLSQL_CONN=your_user/password@//host:1521/service
 | `utPLSQL: Run script folder` | Runs the folder scripts in alphabetical order | Right-click → folder |
 | `utPLSQL: 월렛 비밀번호 설정` | 활성 프로필의 월렛 비밀번호 설정/해제(SecretStorage) | — |
 | `utPLSQL: reporter로 실행(내보내기)` | 선택 항목을 선택한 reporter로 실행하고 출력을 Output/파일에 저장합니다(결과는 변경하지 않음) | Test Explorer → menu do item |
+| `utPLSQL: 테스트 스위트 생성…` | `.pks`/`.pkb` 또는 데이터베이스 객체에서 루틴마다 `%test` 하나를 가진 `ut_<패키지>.pks`를 생성합니다(`utplsql.generate.*` 옵션) | v3.2.x는 컴파일되지 않습니다(`PLS-00222`). 이미지의 `WE8DEC`은 표현할 수 없는 문자(예: `€`)를 잃습니다. thin 드라이버는 `NLS_LANG`을 무시합니다. |
+| `utPLSQL: 관련 테스트 실행` | 운영 `.pks`/`.pkb`/`.sql`에서 `ut_<객체>` 규칙에 따라 스위트를 실행합니다 | v3.2.x는 컴파일되지 않습니다(`PLS-00222`). 이미지의 `WE8DEC`은 표현할 수 없는 문자(예: `€`)를 잃습니다. thin 드라이버는 `NLS_LANG`을 무시합니다. |
 
 > **Recompile UT3**(`utplsql.recompileUt3`)은 팔레트 명령이 **아닙니다** —
 > "utPLSQL Setup" 진단(utPLSQL 스키마의 잘못된 객체)의 내부 quick-fix입니다.
@@ -337,6 +339,8 @@ UTPLSQL_CONN=your_user/password@//host:1521/service
 | `Ctrl+Shift+U L` | 마지막 실행 반복 |
 | `Ctrl+Shift+U U` | 커서에서 실행 |
 | `Ctrl+Shift+U X` | 실패한 것만 실행 |
+| `Ctrl+Shift+U Shift+C` | Toggle Coverage |
+| `Ctrl+Shift+U Shift+R` | 관련 테스트 실행 |
 | `Escape` | 실행 취소 |
 
 ## 커버리지

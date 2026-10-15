@@ -328,6 +328,8 @@ Wszystkie polecenia rozszerzenia (paleta `Ctrl+Shift+P`, prefiks `utPLSQL:`):
 | `utPLSQL: Run script folder` | Runs the folder scripts in alphabetical order | Right-click → folder |
 | `utPLSQL: Ustaw hasło portfela` | Ustawia/usuwa hasło portfela aktywnego profilu (SecretStorage) | — |
 | `utPLSQL: Uruchom z reporterem (eksport)` | Uruchamia wybór z wybranym reporterem i zapisuje wyjście do Output/pliku (nie zmienia wyników) | Test Explorer → menu do item |
+| `utPLSQL: Generuj pakiet testów…` | generuje `ut_<pakiet>.pks` z jednym `%test` na rutynę z pliku `.pks`/`.pkb` lub obiektu bazy danych, z opcjami `utplsql.generate.*` | v3.2.x się nie kompiluje (`PLS-00222`). `WE8DEC` obrazu gubi znaki nieprzedstawialne (np. `€`); cienki sterownik ignoruje `NLS_LANG`. |
+| `utPLSQL: Uruchom powiązane testy` | w produkcyjnym `.pks`/`.pkb`/`.sql` uruchamia pakiety zgodnie z konwencją `ut_<obiekt>` | v3.2.x się nie kompiluje (`PLS-00222`). `WE8DEC` obrazu gubi znaki nieprzedstawialne (np. `€`); cienki sterownik ignoruje `NLS_LANG`. |
 
 > **Recompile UT3** (`utplsql.recompileUt3`) **nie jest** poleceniem palety — to
 > wewnętrzny quick-fix diagnostyki "utPLSQL Setup" (nieprawidłowe obiekty w
@@ -348,6 +350,8 @@ Wszystkie skróty używają prefiksu `Ctrl+Shift+U` (`Cmd+Shift+U` na Macu):
 | `Ctrl+Shift+U L` | Ponów ostatnie |
 | `Ctrl+Shift+U U` | Uruchom pod kursorem |
 | `Ctrl+Shift+U X` | Uruchom tylko nieudane |
+| `Ctrl+Shift+U Shift+C` | Toggle Coverage |
+| `Ctrl+Shift+U Shift+R` | Uruchom powiązane testy |
 | `Escape` | Anuluj wykonanie |
 
 ## Pokrycie kodu

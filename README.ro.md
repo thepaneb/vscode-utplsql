@@ -319,6 +319,8 @@ Toate comenzile extensiei (paletă `Ctrl+Shift+P`, prefix `utPLSQL:`):
 | `utPLSQL: Run script folder` | Runs the folder scripts in alphabetical order | Right-click → folder |
 | `utPLSQL: Setează parola portofelului` | Setează/șterge parola portofelului profilului activ (SecretStorage) | — |
 | `utPLSQL: Rulează cu reporter (export)` | Rulează selecția cu reporterul ales și scrie ieșirea în Output/fișier (nu schimbă rezultatele) | Test Explorer → menu do item |
+| `utPLSQL: Generează suita de teste…` | generează `ut_<pachet>.pks` cu un `%test` per rutină dintr-un `.pks`/`.pkb` sau obiect de bază de date, cu opțiunile `utplsql.generate.*` | v3.2.x nu se compilează (`PLS-00222`). `WE8DEC` al imaginii pierde caractere nereprezentabile (ex. `€`); driverul subțire ignoră `NLS_LANG`. |
+| `utPLSQL: Rulează testele asociate` | într-un `.pks`/`.pkb`/`.sql` de producție, rulează suitele după convenția `ut_<obiect>` | v3.2.x nu se compilează (`PLS-00222`). `WE8DEC` al imaginii pierde caractere nereprezentabile (ex. `€`); driverul subțire ignoră `NLS_LANG`. |
 
 > **Recompile UT3** (`utplsql.recompileUt3`) **nu** este o comandă din paletă — este
 > un quick-fix intern al diagnosticului „utPLSQL Setup" (obiecte invalide în
@@ -339,6 +341,8 @@ Toate combinațiile folosesc prefixul `Ctrl+Shift+U` (`Cmd+Shift+U` pe Mac):
 | `Ctrl+Shift+U L` | Re-rulează ultimul |
 | `Ctrl+Shift+U U` | Rulează la cursor |
 | `Ctrl+Shift+U X` | Rulează doar eșuatele |
+| `Ctrl+Shift+U Shift+C` | Toggle Coverage |
+| `Ctrl+Shift+U Shift+R` | Rulează testele asociate |
 | `Escape` | Anulează execuția |
 
 ## Acoperire

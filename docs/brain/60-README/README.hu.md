@@ -328,6 +328,8 @@ A bővítmény összes parancsa (paletta `Ctrl+Shift+P`, előtag `utPLSQL:`):
 | `utPLSQL: Run script folder` | Runs the folder scripts in alphabetical order | Right-click → folder |
 | `utPLSQL: Tárca jelszó beállítása` | Beállítja/törli az aktív profil tárca jelszavát (SecretStorage) | — |
 | `utPLSQL: Futtatás reporterrel (export)` | A kijelölést a választott reporterrel futtatja, és Output/fájlba írja (nem módosítja az eredményeket) | Test Explorer → menu do item |
+| `utPLSQL: Tesztcsomag létrehozása…` | `ut_<csomag>.pks` fájlt hoz létre rutinonként egy `%test`-tel `.pks`/`.pkb` fájlból vagy adatbázis-objektumból, a `utplsql.generate.*` beállításokkal | A v3.2.x nem fordul (`PLS-00222`). A kép `WE8DEC`-je elveszíti a nem ábrázolható karaktereket (pl. `€`); a thin illesztő figyelmen kívül hagyja a `NLS_LANG`-ot. |
+| `utPLSQL: Kapcsolódó tesztek futtatása` | éles `.pks`/`.pkb`/`.sql` fájlban a `ut_<objektum>` konvenció szerinti csomagokat futtatja | A v3.2.x nem fordul (`PLS-00222`). A kép `WE8DEC`-je elveszíti a nem ábrázolható karaktereket (pl. `€`); a thin illesztő figyelmen kívül hagyja a `NLS_LANG`-ot. |
 
 > **Recompile UT3** (`utplsql.recompileUt3`) **nem** palettaparancs — ez a
 > „utPLSQL Setup" diagnosztika belső gyorsjavítása (érvénytelen objektumok a
@@ -348,6 +350,8 @@ Minden parancsikon a `Ctrl+Shift+U` előtagot használja (`Cmd+Shift+U` Macen):
 | `Ctrl+Shift+U L` | Az utolsó futtatás megismétlése |
 | `Ctrl+Shift+U U` | Futtatás a kurzornál |
 | `Ctrl+Shift+U X` | Csak a sikertelenek futtatása |
+| `Ctrl+Shift+U Shift+C` | Toggle Coverage |
+| `Ctrl+Shift+U Shift+R` | Kapcsolódó tesztek futtatása |
 | `Escape` | Végrehajtás megszakítása |
 
 ## Lefedettség

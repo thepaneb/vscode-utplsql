@@ -327,6 +327,8 @@ UTPLSQL_CONN=your_user/password@//host:1521/service
 | `utPLSQL: Run script folder` | Runs the folder scripts in alphabetical order | Right-click → folder |
 | `utPLSQL: Подеси лозинку новчаника` | Поставља/брише лозинку новчаника активног профила (SecretStorage) | — |
 | `utPLSQL: Покрени са reporter-ом (извоз)` | Покреће избор са изабраним reporter-ом и пише излаз у Output/датотеку (не мења резултате) | Test Explorer → menu do item |
+| `utPLSQL: Направи тест пакет…` | прави `ut_<пакет>.pks` са једним `%test` по рутини из `.pks`/`.pkb` или објекта базе података, уз опције `utplsql.generate.*` | v3.2.x се не компајлира (`PLS-00222`). `WE8DEC` слике губи непредстављиве знакове (нпр. `€`); танки драјвер игнорише `NLS_LANG`. |
+| `utPLSQL: Покрени повезане тестове` | у продукционом `.pks`/`.pkb`/`.sql` покреће пакете по конвенцији `ut_<објекат>` | v3.2.x се не компајлира (`PLS-00222`). `WE8DEC` слике губи непредстављиве знакове (нпр. `€`); танки драјвер игнорише `NLS_LANG`. |
 
 > **Recompile UT3** (`utplsql.recompileUt3`) **није** команда у палети — то је
 > интерни quick-fix дијагностике „utPLSQL Setup" (неважећи објекти у
@@ -347,6 +349,8 @@ UTPLSQL_CONN=your_user/password@//host:1521/service
 | `Ctrl+Shift+U L` | Понови последње |
 | `Ctrl+Shift+U U` | Покрени на курсору |
 | `Ctrl+Shift+U X` | Покрени само пале |
+| `Ctrl+Shift+U Shift+C` | Toggle Coverage |
+| `Ctrl+Shift+U Shift+R` | Покрени повезане тестове |
 | `Escape` | Откажи извршавање |
 
 ## Покривеност

@@ -324,6 +324,8 @@ Toutes les commandes de l'extension (palette `Ctrl+Shift+P` préfixe `utPLSQL:`)
 | `utPLSQL: Run script` | Runs the script open in the editor against a connection profile | Right-click → script file |
 | `utPLSQL: Run script file` | Runs an Explorer script file (decoded with the profile charset) | Right-click → file |
 | `utPLSQL: Run script folder` | Runs the folder scripts in alphabetical order | Right-click → folder |
+| `utPLSQL: Générer la suite de tests…` | génère `ut_<paquet>.pks` avec un `%test` par routine depuis un `.pks`/`.pkb` ou un objet de base de données, avec les options `utplsql.generate.*` | Le v3.2.x ne compile pas (`PLS-00222`). Le charset `WE8DEC` de l'image perd les caractères non représentables (par ex. `€`) ; le pilote thin ignore `NLS_LANG`. |
+| `utPLSQL: Exécuter les tests liés` | sur un `.pks`/`.pkb`/`.sql` de production, exécute les suites selon la convention `ut_<objet>` | Le v3.2.x ne compile pas (`PLS-00222`). Le charset `WE8DEC` de l'image perd les caractères non représentables (par ex. `€`) ; le pilote thin ignore `NLS_LANG`. |
 | `utPLSQL : Définir le mot de passe du wallet` | Définit/efface le mot de passe du wallet du profil actif (SecretStorage) | — |
 | `utPLSQL : Exécuter avec un reporter (export)` | Exécute la sélection avec un reporter choisi et écrit la sortie dans Output/fichier (ne change pas les résultats) | Test Explorer → menu do item |
 
@@ -346,6 +348,8 @@ Tous les raccourcis utilisent le préfixe `Ctrl+Shift+U` (`Cmd+Shift+U` sur Mac)
 | `Ctrl+Shift+U L` | Réexécuter le dernier |
 | `Ctrl+Shift+U U` | Exécuter sous le curseur |
 | `Ctrl+Shift+U X` | Exécuter uniquement les échecs |
+| `Ctrl+Shift+U Shift+C` | Toggle Coverage |
+| `Ctrl+Shift+U Shift+R` | Exécuter les tests liés |
 | `Escape` | Annuler l'exécution |
 
 ## Couverture

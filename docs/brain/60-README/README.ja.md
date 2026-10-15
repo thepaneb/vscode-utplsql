@@ -321,6 +321,8 @@ UTPLSQL_CONN=your_user/password@//host:1521/service
 | `utPLSQL: Run script folder` | Runs the folder scripts in alphabetical order | Right-click → folder |
 | `utPLSQL: ウォレットのパスワードを設定` | アクティブなプロファイルのウォレットパスワードを設定/クリア（SecretStorage） | — |
 | `utPLSQL: reporter で実行（エクスポート）` | 選択範囲を選択した reporter で実行し、出力を Output/ファイルに書き込みます（結果は変えません） | Test Explorer → menu do item |
+| `utPLSQL: テストスイートを生成…` | `.pks`/`.pkb` またはデータベースオブジェクトから、ルーチンごとに `%test` を 1 つ持つ `ut_<パッケージ>.pks` を生成します（`utplsql.generate.*` オプション）。 | v3.2.x はコンパイル不可（`PLS-00222`）。イメージの `WE8DEC` では表現できない文字（例: `€`）が失われます。thin ドライバは `NLS_LANG` を無視します。 |
+| `utPLSQL: 関連テストを実行` | 本番の `.pks`/`.pkb`/`.sql` で `ut_<オブジェクト>` 規約に従うスイートを実行します（`Ctrl+Shift+U Shift+R`）。 | v3.2.x はコンパイル不可（`PLS-00222`）。イメージの `WE8DEC` では表現できない文字（例: `€`）が失われます。thin ドライバは `NLS_LANG` を無視します。 |
 
 > **Recompile UT3**（`utplsql.recompileUt3`）はパレットコマンド**ではありません** —
 > "utPLSQL Setup" 診断（utPLSQL スキーマ内の無効オブジェクト）の内部クイックフィックスです。
@@ -340,6 +342,8 @@ UTPLSQL_CONN=your_user/password@//host:1521/service
 | `Ctrl+Shift+U L` | 最後の実行を繰り返す |
 | `Ctrl+Shift+U U` | カーソル位置で実行 |
 | `Ctrl+Shift+U X` | 失敗したテストのみ実行 |
+| `Ctrl+Shift+U Shift+C` | Toggle Coverage |
+| `Ctrl+Shift+U Shift+R` | 関連テストを実行 |
 | `Escape` | 実行をキャンセル |
 
 ## カバレッジ
