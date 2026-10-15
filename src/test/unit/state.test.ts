@@ -265,3 +265,17 @@ test('restoreLastFailed: mapeia ids para itens da árvore e ignora removidos', (
   assert.deepStrictEqual(failed, [a, b]);
   assert.deepStrictEqual(mgr.getLastFailedItems(), [a, b]);
 });
+
+test('persist: resultado sem ts ganha timestamp do persist (não fica undefined)', () => {
+  const mgr = new TestStateManager();
+  const memento = fakeMemento();
+  mgr.attachMemento(memento);
+  mgr.setLastResults(new Map([['test:a', { status: 'passed' as const }]]));
+
+  mgr.persist();
+
+  const snapshot = (memento as { store: Record<string, unknown> }).store[PERSIST_KEY] as {
+    items: Record<string, { ts?: number }>;
+  };
+  assert.strictEqual(typeof snapshot.items['test:a']?.ts, 'number');
+});

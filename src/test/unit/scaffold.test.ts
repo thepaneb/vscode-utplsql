@@ -135,3 +135,22 @@ test('scaffold: opções inválidas caem em valores seguros', () => {
   // 0 (ou negativo) → 1 teste por rotina
   assert.strictEqual(parsed?.tests.length, 1);
 });
+
+test('scaffold: deriveObjectName lida com schema entre aspas e nome inválido', () => {
+  assert.strictEqual(deriveObjectName('"APP"."APP_PKG"'), 'APP_PKG');
+  assert.strictEqual(deriveObjectName('APP.APP_PKG'), 'APP_PKG');
+  // caracteres fora de [A-Za-z0-9_$#] viram '_' (nome de pacote válido)
+  assert.strictEqual(deriveObjectName('app-pkg.pkb'), 'app_pkg');
+});
+
+test('scaffold: numberOfTestsPerUnit não-finito cai em 1 e respeita o teto', () => {
+  const nan = parseSuiteText(
+    buildSuiteTemplate('app_pkg', ['add'], opts({ numberOfTestsPerUnit: Number.NaN })),
+  );
+  assert.strictEqual(nan?.tests.length, 1);
+
+  const capped = parseSuiteText(
+    buildSuiteTemplate('app_pkg', ['add'], opts({ numberOfTestsPerUnit: 999 })),
+  );
+  assert.strictEqual(capped?.tests.length, 50, 'o teto de testes por rotina é 50');
+});

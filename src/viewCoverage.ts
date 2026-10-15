@@ -139,17 +139,17 @@ export async function applySqlCoverage(
       .filter(Boolean);
 
     const viewFiles: ViewFile[] = [];
-    const analyzed = new Set(roots.map((r) => r.replace(/\\/g, '/').replace(/\/+$/, '')));
+    const seenFiles = new Set<string>();
     for (const f of folders ?? []) {
       const base = f.uri.fsPath.replace(/\\/g, '/').replace(/\/+$/, '');
-      const isAnalyzed = analyzed.has(base);
       for (const file of files) {
         const norm = file.replace(/\\/g, '/');
-        // Raiz analisada: o arquivo veio de `discoverViewFiles` dessa raiz.
-        // Demais pastas: só as views sob a raiz (limite de path, não prefixo).
-        if (isAnalyzed || norm === base || norm.startsWith(`${base}/`)) {
-          viewFiles.push({ uri: vscode.Uri.file(file) });
-        }
+        // Só as views sob a pasta analisada (limite de path, não prefixo) e sem
+        // duplicar quando há mais de uma raiz em execução (PRD-57).
+        if (norm !== base && !norm.startsWith(`${base}/`)) continue;
+        if (seenFiles.has(norm)) continue;
+        seenFiles.add(norm);
+        viewFiles.push({ uri: vscode.Uri.file(file) });
       }
     }
     if (viewFiles.length === 0) {

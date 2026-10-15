@@ -147,8 +147,11 @@ export function applyResultsFromCases(
       ts: Date.now(),
     });
     // Duração no label (PRD-56 RF4): reflete na hora, sem esperar um refresh.
-    if (showDuration && typeof item.label === 'string') {
-      item.label = withDurationSuffix(item.label, c.durationMs, true);
+    // Fora do "ligado" a chamada também *remove* um sufixo antigo, mantendo o
+    // label coerente com a setting logo após o run.
+    if (typeof item.label === 'string') {
+      const next = withDurationSuffix(item.label, c.durationMs, showDuration);
+      if (next !== item.label) item.label = next;
     }
 
     switch (c.status) {
