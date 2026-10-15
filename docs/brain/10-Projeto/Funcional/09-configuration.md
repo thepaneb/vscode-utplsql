@@ -112,6 +112,12 @@ interface UtConfig {
   statusBarEnabled: boolean;          // default: true
   decorationsEnabled: boolean;        // default: true
   showTestDuration: boolean;          // default: false (sufixa a duração no label; PRD-56)
+  showTagsInTree: boolean;            // default: false (sufixa [tag1, tag2] no label; PRD-51)
+
+  // Auto-run on save (PRD-50)
+  autoRun: 'off' | 'onSave';          // default: "off"
+  autoRunDelayMs: number;             // default: 500 (100–5000; debounce por arquivo)
+  autoRunQueue: 'skip' | 'replace';   // default: "skip" (o que fazer se já houver run)
 
   // Geração de suíte de teste (PRD-100)
   generateTestPackagePrefix: string;  // default: "ut_" (nome do pacote gerado)
@@ -124,7 +130,7 @@ interface UtConfig {
   setupDiagnosticsEnabled: boolean;        // default: true
 
   // Organização
-  organization: 'file' | 'schema';    // default: "file"
+  organization: 'file' | 'schema' | 'tag';  // default: "file"
   organizationSchemaPattern: string;  // default: "db/{schema}/**"
   refreshDebounceMs: number;          // default: 300
 }

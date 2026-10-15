@@ -310,9 +310,12 @@ Tüm uzantı komutları (palet `Ctrl+Shift+P` öneki `utPLSQL:`):
 | `utPLSQL: New connection profile...` | Bir profil oluşturmak ve etkinleştirmek için sihirbaz | — |
 | `utPLSQL: Manage connection profiles` | Ayarları `utplsql.profiles` konumunda açar | — |
 | `utPLSQL: Import connections from SQL Developer` | SQL Developer'dan bağlantıları içe aktarır (connections.xml) | — |
-| `utPLSQL: Debug test (PL/SQL)` | Etkin dosyanın altındaki testin hata ayıklama oturumunu başlatır | — |
+| `utPLSQL: Debug test (PL/SQL)` | Etkin dosyanın altındaki testin hata ayıklama oturumunu başlatır | v3.2.x derlenmez (`PLS-00222`). İmajın `WE8DEC`'i gösterilemeyen karakterleri kaybeder (örn. `€`); ince sürücü `NLS_LANG`'i yok sayar. |
 | `utPLSQL: Açıklama önbelleğini yeniden oluştur` | utPLSQL açıklama önbelleğini veritabanında yeniden oluşturur ve ağacı yeniler | — |
-| `utPLSQL: Hata ayıklama için derle` | Seçili dosya/klasör nesnesini hata ayıklama bilgileriyle derler | — |
+| `utPLSQL: İmleçteki testi hata ayıkla` | İmleç altındaki `%test`/`%suite` için hata ayıklama oturumu başlatır | — |
+| `utPLSQL: Başarısız testleri hata ayıkla` | Son çalıştırmada başarısız olan testler için hata ayıklama oturumu başlatır (birden fazlaysa QuickPick) | — |
+| `utPLSQL: Son çalıştırmayı hata ayıkla` | Son çalıştırmanın hata ayıklama oturumunu başlatır | — |
+| `utPLSQL: Hata ayıklama için derle` | Seçili dosya/klasör nesnesini hata ayıklama bilgileriyle derler | v3.2.x derlenmez (`PLS-00222`). İmajın `WE8DEC`'i gösterilemeyen karakterleri kaybeder (örn. `€`); ince sürücü `NLS_LANG`'i yok sayar. |
 | `utPLSQL: Run script` | Runs the script open in the editor against a connection profile | Right-click → script file |
 | `utPLSQL: Run script file` | Runs an Explorer script file (decoded with the profile charset) | Right-click → file |
 | `utPLSQL: Run script folder` | Runs the folder scripts in alphabetical order | Right-click → folder |
@@ -341,6 +344,8 @@ Tüm kısayollar `Ctrl+Shift+U` önekini kullanır (Mac'te `Cmd+Shift+U`):
 | `Ctrl+Shift+U X` | Yalnızca başarısızları çalıştır |
 | `Ctrl+Shift+U Shift+C` | Toggle Coverage |
 | `Ctrl+Shift+U Shift+R` | İlgili testleri çalıştır |
+| `Ctrl+Shift+U D` | İmleçteki testi hata ayıkla |
+| `Ctrl+Shift+U Shift+D` | Başarısız testleri hata ayıkla |
 | `Escape` | Çalıştırmayı iptal et |
 
 ## Kapsam (Coverage)

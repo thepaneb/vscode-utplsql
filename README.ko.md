@@ -310,9 +310,12 @@ UTPLSQL_CONN=your_user/password@//host:1521/service
 | `utPLSQL: New connection profile...` | 프로필 생성 및 활성화 마법사 | — |
 | `utPLSQL: Manage connection profiles` | `utplsql.profiles`에서 설정 열기 | — |
 | `utPLSQL: Import connections from SQL Developer` | SQL Developer에서 연결 가져오기(connections.xml) | — |
-| `utPLSQL: Debug test (PL/SQL)` | 활성 파일 아래의 테스트 디버그 세션 시작 | — |
+| `utPLSQL: Debug test (PL/SQL)` | 활성 파일 아래의 테스트 디버그 세션 시작 | v3.2.x는 컴파일되지 않습니다(`PLS-00222`). 이미지의 `WE8DEC`은 표현할 수 없는 문자(예: `€`)를 잃습니다. thin 드라이버는 `NLS_LANG`을 무시합니다. |
 | `utPLSQL: 주석 캐시 다시 작성` | 데이터베이스의 utPLSQL 주석 캐시를 다시 작성하고 트리를 갱신합니다 | — |
-| `utPLSQL: 디버그용으로 컴파일` | 선택한 파일/폴더의 개체를 디버그 정보와 함께 컴파일합니다 | — |
+| `utPLSQL: 커서 위치의 테스트 디버그` | 커서 위치의 `%test`/`%suite`에 대한 디버그 세션을 시작합니다 | — |
+| `utPLSQL: 실패한 테스트 디버그` | 마지막 실행에서 실패한 테스트의 디버그 세션을 시작합니다(여러 개면 QuickPick) | — |
+| `utPLSQL: 마지막 실행 디버그` | 마지막 실행의 디버그 세션을 시작합니다 | — |
+| `utPLSQL: 디버그용으로 컴파일` | 선택한 파일/폴더의 개체를 디버그 정보와 함께 컴파일합니다 | v3.2.x는 컴파일되지 않습니다(`PLS-00222`). 이미지의 `WE8DEC`은 표현할 수 없는 문자(예: `€`)를 잃습니다. thin 드라이버는 `NLS_LANG`을 무시합니다. |
 | `utPLSQL: Run script` | Runs the script open in the editor against a connection profile | Right-click → script file |
 | `utPLSQL: Run script file` | Runs an Explorer script file (decoded with the profile charset) | Right-click → file |
 | `utPLSQL: Run script folder` | Runs the folder scripts in alphabetical order | Right-click → folder |
@@ -341,6 +344,8 @@ UTPLSQL_CONN=your_user/password@//host:1521/service
 | `Ctrl+Shift+U X` | 실패한 것만 실행 |
 | `Ctrl+Shift+U Shift+C` | Toggle Coverage |
 | `Ctrl+Shift+U Shift+R` | 관련 테스트 실행 |
+| `Ctrl+Shift+U D` | 커서 위치의 테스트 디버그 |
+| `Ctrl+Shift+U Shift+D` | 실패한 테스트 디버그 |
 | `Escape` | 실행 취소 |
 
 ## 커버리지

@@ -318,9 +318,12 @@ UTPLSQL_CONN=your_user/password@//host:1521/service
 | `utPLSQL: New connection profile...` | 建立並啟用設定檔的精靈 | — |
 | `utPLSQL: Manage connection profiles` | 在 `utplsql.profiles` 開啟設定 | — |
 | `utPLSQL: Import connections from SQL Developer` | 從 SQL Developer（connections.xml）匯入連線 | — |
-| `utPLSQL: Debug test (PL/SQL)` | 對作用中檔案下的測試啟動除錯工作階段 | — |
+| `utPLSQL: Debug test (PL/SQL)` | 對作用中檔案下的測試啟動除錯工作階段 | v3.2.x 無法編譯（`PLS-00222`）。映像的 `WE8DEC` 會遺失無法表示的字元（例如 `€`）；精簡驅動程式會忽略 `NLS_LANG`。 |
 | `utPLSQL: 重建註解快取` | 重建資料庫中的 utPLSQL 註解快取並重新整理樹狀結構 | — |
-| `utPLSQL: 編譯以供偵錯` | 使用偵錯資訊編譯所選檔案/資料夾的物件 | — |
+| `utPLSQL: 在游標處偵錯測試` | 啟動對游標處 `%test`/`%suite` 的偵錯工作階段 | — |
+| `utPLSQL: 偵錯失敗的測試` | 啟動對上次執行中失敗測試的偵錯工作階段（多個時顯示 QuickPick） | — |
+| `utPLSQL: 偵錯上次執行` | 啟動對上次執行的偵錯工作階段 | — |
+| `utPLSQL: 編譯以供偵錯` | 使用偵錯資訊編譯所選檔案/資料夾的物件 | v3.2.x 無法編譯（`PLS-00222`）。映像的 `WE8DEC` 會遺失無法表示的字元（例如 `€`）；精簡驅動程式會忽略 `NLS_LANG`。 |
 | `utPLSQL: Run script` | Runs the script open in the editor against a connection profile | Right-click → script file |
 | `utPLSQL: Run script file` | Runs an Explorer script file (decoded with the profile charset) | Right-click → file |
 | `utPLSQL: Run script folder` | Runs the folder scripts in alphabetical order | Right-click → folder |
@@ -349,6 +352,8 @@ UTPLSQL_CONN=your_user/password@//host:1521/service
 | `Ctrl+Shift+U X` | 僅執行失敗 |
 | `Ctrl+Shift+U Shift+C` | Toggle Coverage |
 | `Ctrl+Shift+U Shift+R` | 執行相關測試 |
+| `Ctrl+Shift+U D` | 在游標處偵錯測試 |
+| `Ctrl+Shift+U Shift+D` | 偵錯失敗的測試 |
 | `Escape` | 取消執行 |
 
 ## 涵蓋率

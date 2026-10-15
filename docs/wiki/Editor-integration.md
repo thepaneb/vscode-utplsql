@@ -21,11 +21,16 @@ After a run, ✓/✗/⚠ markers appear on the `%suite`/`%test` lines, with the 
 message as a hover and a matching overview-ruler mark. Controlled by
 `utplsql.decorations.enabled`. Works in both `file` and `schema` tree modes.
 
+On assertion failures, the Test Explorer item shows VS Code's **native diff** with
+the *Expected* and *Actual* values extracted from the reporter message.
+
 ## Status bar
 
 The status bar shows an idle indicator, live progress (`Running N/M suites`) and
 the final pass/fail count with duration. With an active connection profile,
-clicking it switches profiles. Controlled by `utplsql.statusBar.enabled`.
+clicking it switches profiles; the item also carries the **coverage toggle**
+(`utPLSQL: Toggle Coverage`, `Ctrl+Shift+U Shift+C`) that switches the session
+coverage mode. Controlled by `utplsql.statusBar.enabled`.
 
 ## Smart re-run
 

@@ -310,9 +310,12 @@ Annotation ไม่คำนึงถึงตัวพิมพ์เล็ก
 | `utPLSQL: New connection profile...` | วิซาร์ดสำหรับสร้างและเปิดใช้งานโปรไฟล์ | — |
 | `utPLSQL: Manage connection profiles` | เปิดการตั้งค่าที่ `utplsql.profiles` | — |
 | `utPLSQL: Import connections from SQL Developer` | นำเข้าการเชื่อมต่อจาก SQL Developer (connections.xml) | — |
-| `utPLSQL: Debug test (PL/SQL)` | เริ่มเซสชันการดีบักของเทสต์ภายใต้ไฟล์ที่ใช้งานอยู่ | — |
+| `utPLSQL: Debug test (PL/SQL)` | เริ่มเซสชันการดีบักของเทสต์ภายใต้ไฟล์ที่ใช้งานอยู่ | v3.2.x คอมไพล์ไม่ได้ (`PLS-00222`) `WE8DEC` ของอิมเมจจะสูญเสียอักขระที่ไม่สามารถแทนได้ (เช่น `€`); ไดรเวอร์ thin ไม่สนใจ `NLS_LANG` |
 | `utPLSQL: สร้างแคชคำอธิบายประกอบใหม่` | สร้างแคชคำอธิบายประกอบของ utPLSQL ในฐานข้อมูลใหม่และรีเฟรชทรี | — |
-| `utPLSQL: คอมไพล์สำหรับดีบัก` | คอมไพล์ออบเจ็กต์ของไฟล์/โฟลเดอร์ที่เลือกพร้อมข้อมูลดีบัก | — |
+| `utPLSQL: ดีบักการทดสอบที่เคอร์เซอร์` | เริ่มเซสชันดีบักของ `%test`/`%suite` ณ ตำแหน่งเคอร์เซอร์ | — |
+| `utPLSQL: ดีบักการทดสอบที่ล้มเหลว` | เริ่มเซสชันดีบักของการทดสอบที่ล้มเหลวในการรันล่าสุด (QuickPick เมื่อมีหลายรายการ) | — |
+| `utPLSQL: ดีบักการรันครั้งล่าสุด` | เริ่มเซสชันดีบักของการรันล่าสุด | — |
+| `utPLSQL: คอมไพล์สำหรับดีบัก` | คอมไพล์ออบเจ็กต์ของไฟล์/โฟลเดอร์ที่เลือกพร้อมข้อมูลดีบัก | v3.2.x คอมไพล์ไม่ได้ (`PLS-00222`) `WE8DEC` ของอิมเมจจะสูญเสียอักขระที่ไม่สามารถแทนได้ (เช่น `€`); ไดรเวอร์ thin ไม่สนใจ `NLS_LANG` |
 | `utPLSQL: Run script` | Runs the script open in the editor against a connection profile | Right-click → script file |
 | `utPLSQL: Run script file` | Runs an Explorer script file (decoded with the profile charset) | Right-click → file |
 | `utPLSQL: Run script folder` | Runs the folder scripts in alphabetical order | Right-click → folder |
@@ -342,6 +345,8 @@ Annotation ไม่คำนึงถึงตัวพิมพ์เล็ก
 | `Ctrl+Shift+U X` | รันเฉพาะที่ล้มเหลว |
 | `Ctrl+Shift+U Shift+C` | Toggle Coverage |
 | `Ctrl+Shift+U Shift+R` | รันการทดสอบที่เกี่ยวข้อง |
+| `Ctrl+Shift+U D` | ดีบักการทดสอบที่เคอร์เซอร์ |
+| `Ctrl+Shift+U Shift+D` | ดีบักการทดสอบที่ล้มเหลว |
 | `Escape` | ยกเลิกการรัน |
 
 ## ความครอบคลุม

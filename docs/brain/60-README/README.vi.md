@@ -319,9 +319,12 @@ Tất cả các lệnh của extension (palette `Ctrl+Shift+P` tiền tố `utPL
 | `utPLSQL: New connection profile...` | Wizard tạo và kích hoạt một hồ sơ | — |
 | `utPLSQL: Manage connection profiles` | Mở cài đặt tại `utplsql.profiles` | — |
 | `utPLSQL: Import connections from SQL Developer` | Nhập kết nối từ SQL Developer (connections.xml) | — |
-| `utPLSQL: Debug test (PL/SQL)` | Bắt đầu phiên gỡ lỗi của bài kiểm thử trong tệp đang mở | — |
+| `utPLSQL: Debug test (PL/SQL)` | Bắt đầu phiên gỡ lỗi của bài kiểm thử trong tệp đang mở | v3.2.x không biên dịch được (`PLS-00222`). `WE8DEC` của image làm mất các ký tự không biểu diễn được (ví dụ `€`); driver mỏng bỏ qua `NLS_LANG`. |
 | `utPLSQL: Tạo lại bộ nhớ đệm chú thích` | Tạo lại bộ nhớ đệm chú thích utPLSQL trong cơ sở dữ liệu và làm mới cây | — |
-| `utPLSQL: Biên dịch để gỡ lỗi` | Biên dịch đối tượng của tệp/thư mục đã chọn với thông tin gỡ lỗi | — |
+| `utPLSQL: Gỡ lỗi bài kiểm thử tại con trỏ` | Bắt đầu phiên gỡ lỗi cho `%test`/`%suite` tại vị trí con trỏ | — |
+| `utPLSQL: Gỡ lỗi các bài kiểm thử thất bại` | Bắt đầu phiên gỡ lỗi cho các bài kiểm thử đã thất bại trong lần chạy gần nhất (QuickPick nếu có nhiều) | — |
+| `utPLSQL: Gỡ lỗi lần chạy cuối` | Bắt đầu phiên gỡ lỗi của lần chạy gần nhất | — |
+| `utPLSQL: Biên dịch để gỡ lỗi` | Biên dịch đối tượng của tệp/thư mục đã chọn với thông tin gỡ lỗi | v3.2.x không biên dịch được (`PLS-00222`). `WE8DEC` của image làm mất các ký tự không biểu diễn được (ví dụ `€`); driver mỏng bỏ qua `NLS_LANG`. |
 | `utPLSQL: Run script` | Runs the script open in the editor against a connection profile | Right-click → script file |
 | `utPLSQL: Run script file` | Runs an Explorer script file (decoded with the profile charset) | Right-click → file |
 | `utPLSQL: Run script folder` | Runs the folder scripts in alphabetical order | Right-click → folder |
@@ -351,6 +354,8 @@ Tất cả các phím tắt dùng tiền tố `Ctrl+Shift+U` (`Cmd+Shift+U` trê
 | `Ctrl+Shift+U X` | Chỉ chạy các bài bị lỗi |
 | `Ctrl+Shift+U Shift+C` | Toggle Coverage |
 | `Ctrl+Shift+U Shift+R` | Chạy các bài kiểm thử liên quan |
+| `Ctrl+Shift+U D` | Gỡ lỗi bài kiểm thử tại con trỏ |
+| `Ctrl+Shift+U Shift+D` | Gỡ lỗi các bài kiểm thử thất bại |
 | `Escape` | Hủy lần chạy |
 
 ## Độ phủ

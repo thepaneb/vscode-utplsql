@@ -310,8 +310,11 @@ All extension commands (palette `Ctrl+Shift+P` prefix `utPLSQL:`):
 | `utPLSQL: New connection profile...` | Wizard to create and activate a profile | — |
 | `utPLSQL: Manage connection profiles` | Opens settings at `utplsql.profiles` | — |
 | `utPLSQL: Import connections from SQL Developer` | Imports connections from SQL Developer (connections.xml) | — |
-| `utPLSQL: Debug test (PL/SQL)` | Starts a debug session of the test under the active file | — |
-| `utPLSQL: Compile for Debug` | Compiles the selected file/folder object with debug information | — |
+| `utPLSQL: Debug test (PL/SQL)` | Starts a debug session of the test under the active file | v3.2.x fails to compile (`PLS-00222`). The image's `WE8DEC` character set loses non-representable characters (e.g. `€`); the thin driver ignores `NLS_LANG`. |
+| `utPLSQL: Debug Test at Cursor` | Starts a debug session of the `%test`/`%suite` under the cursor | — |
+| `utPLSQL: Debug Failed Tests` | Starts a debug session of the tests that failed in the last run (QuickPick when several) | — |
+| `utPLSQL: Debug Last Run` | Starts a debug session of the last run | — |
+| `utPLSQL: Compile for Debug` | Compiles the selected file/folder object with debug information | v3.2.x fails to compile (`PLS-00222`). The image's `WE8DEC` character set loses non-representable characters (e.g. `€`); the thin driver ignores `NLS_LANG`. |
 | `utPLSQL: Rebuild Annotation Cache` | Rebuilds the utPLSQL annotation cache in the database and refreshes the tree | — |
 | `utPLSQL: Run script` | Runs the script open in the editor against a connection profile | Right-click → script file |
 | `utPLSQL: Run script file` | Runs an Explorer script file (decoded with the profile charset) | Right-click → file |
@@ -342,6 +345,8 @@ All shortcuts use the `Ctrl+Shift+U` prefix (`Cmd+Shift+U` on Mac):
 | `Ctrl+Shift+U X` | Run failed only |
 | `Ctrl+Shift+U Shift+C` | Toggle Coverage |
 | `Ctrl+Shift+U Shift+R` | Run Related Tests |
+| `Ctrl+Shift+U D` | Debug Test at Cursor |
+| `Ctrl+Shift+U Shift+D` | Debug Failed Tests |
 | `Escape` | Cancel run |
 
 ## Coverage

@@ -320,9 +320,12 @@ Toate comenzile extensiei (paletă `Ctrl+Shift+P`, prefix `utPLSQL:`):
 | `utPLSQL: New connection profile...` | Asistent pentru crearea și activarea unui profil | — |
 | `utPLSQL: Manage connection profiles` | Deschide setările la `utplsql.profiles` | — |
 | `utPLSQL: Import connections from SQL Developer` | Importă conexiuni din SQL Developer (connections.xml) | — |
-| `utPLSQL: Debug test (PL/SQL)` | Pornește o sesiune de depanare a testului din fișierul activ | — |
+| `utPLSQL: Debug test (PL/SQL)` | Pornește o sesiune de depanare a testului din fișierul activ | v3.2.x nu se compilează (`PLS-00222`). `WE8DEC` al imaginii pierde caractere nereprezentabile (ex. `€`); driverul subțire ignoră `NLS_LANG`. |
 | `utPLSQL: Reconstruiește cache-ul de adnotări` | Reconstruiește cache-ul de adnotări utPLSQL în baza de date și reîmprospătează arborele | — |
-| `utPLSQL: Compilare pentru depanare` | Compilează obiectul fișierului/dosarului selectat cu informații de depanare | — |
+| `utPLSQL: Depanează testul de la cursor` | Pornește o sesiune de depanare pentru `%test`/`%suite` de sub cursor | — |
+| `utPLSQL: Depanează testele eșuate` | Pornește o sesiune de depanare pentru testele care au eșuat la ultima rulare (QuickPick dacă sunt mai multe) | — |
+| `utPLSQL: Depanează ultima execuție` | Pornește o sesiune de depanare a ultimei rulări | — |
+| `utPLSQL: Compilare pentru depanare` | Compilează obiectul fișierului/dosarului selectat cu informații de depanare | v3.2.x nu se compilează (`PLS-00222`). `WE8DEC` al imaginii pierde caractere nereprezentabile (ex. `€`); driverul subțire ignoră `NLS_LANG`. |
 | `utPLSQL: Run script` | Runs the script open in the editor against a connection profile | Right-click → script file |
 | `utPLSQL: Run script file` | Runs an Explorer script file (decoded with the profile charset) | Right-click → file |
 | `utPLSQL: Run script folder` | Runs the folder scripts in alphabetical order | Right-click → folder |
@@ -352,6 +355,8 @@ Toate combinațiile folosesc prefixul `Ctrl+Shift+U` (`Cmd+Shift+U` pe Mac):
 | `Ctrl+Shift+U X` | Rulează doar eșuatele |
 | `Ctrl+Shift+U Shift+C` | Toggle Coverage |
 | `Ctrl+Shift+U Shift+R` | Rulează testele asociate |
+| `Ctrl+Shift+U D` | Depanează testul de la cursor |
+| `Ctrl+Shift+U Shift+D` | Depanează testele eșuate |
 | `Escape` | Anulează execuția |
 
 ## Acoperire

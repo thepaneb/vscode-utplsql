@@ -134,6 +134,34 @@ conn1 (run)                              conn2 (poll)
                                              └─► done → sair do loop
 ```
 
+## Auto-run on save (PRD-50)
+
+Com `utplsql.autoRun = onSave`, salvar um `.pks` re-executa automaticamente as
+suites daquele arquivo (watch mode). A decisão é pura (`src/autoRun.ts`):
+
+- **debounce por arquivo** (`utplsql.autoRunDelayMs`, default 500 ms) — saves
+  rápidos do mesmo arquivo geram um único run;
+- **política de fila** (`utplsql.autoRunQueue`): `skip` (default) ignora o
+  auto-run se já houver execução em andamento; `replace` reagenda para depois da
+  atual;
+- respeita o **modo de cobertura** da sessão (`effectiveCoverage`).
+
+## Execução por tag (PRD-51)
+
+Além do filtro `utplsql.tags` (aplicado no `ut_runner.run`), o comando
+**`utPLSQL: Run Tests by Tag...`** abre um QuickPick multi-seleção com as tags
+descobertas — `!tag` exclui e a comparação é case-insensitive. O filtro é puro
+(`src/tagFilter.ts`). Com `utplsql.showTagsInTree`, os labels ganham
+`[tag1, tag2]`.
+
+## Testes relacionados (PRD-58)
+
+Sobre um `.pks`/`.pkb`/`.sql` de **produção**, o comando
+**`utPLSQL: Run Related Tests`** (`Ctrl+Shift+U Shift+R`) resolve as suites que
+seguem a convenção `ut_<objeto>` e as executa. A resolução vive em
+`src/matching.ts` (`relatedSuiteMetas`/`resolveRunRoots`, puros) e cai num
+`executeRun` normal com os itens encontrados.
+
 ## Cancelamento
 
 `token.onCancellationRequested` → `conn.break()` → `ut_runner.run` interrompido → `run.end()`.
@@ -151,3 +179,6 @@ conn1 (run)                              conn2 (poll)
 | `utplsql.tags` | `""` | Expressão de tags do utPLSQL (`a_tags`) para filtrar quais testes executam (ex.: `fast & !integration`); vazio = todos |
 | `utplsql.run.randomOrder` | `false` | Envia `a_random_test_order` ao `ut_runner.run` (revela dependências de ordem) |
 | `utplsql.run.randomOrderSeed` | `0` | Seed da ordem aleatória (`0` = sorteada pelo banco; > 0 reproduz e é logada no Output) |
+| `utplsql.autoRun` | `off` | `off` \| `onSave`: re-executa as suites do `.pks` salvo (watch mode) |
+| `utplsql.autoRunDelayMs` | `500` | Debounce (ms) do auto-run por arquivo (100–5000) |
+| `utplsql.autoRunQueue` | `skip` | `skip` \| `replace`: o que fazer se o auto-run disparar durante uma execução |

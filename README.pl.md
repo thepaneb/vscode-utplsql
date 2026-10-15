@@ -311,8 +311,11 @@ Wszystkie polecenia rozszerzenia (paleta `Ctrl+Shift+P`, prefiks `utPLSQL:`):
 | `utPLSQL: New connection profile...` | Kreator tworzenia i aktywowania profilu | — |
 | `utPLSQL: Manage connection profiles` | Otwiera ustawienia przy `utplsql.profiles` | — |
 | `utPLSQL: Import connections from SQL Developer` | Importuje połączenia z SQL Developera (connections.xml) | — |
-| `utPLSQL: Debug test (PL/SQL)` | Uruchamia sesję debugowania testu w aktywnym pliku | — |
-| `utPLSQL: Skompiluj do debugowania` | Kompiluje obiekt wybranego pliku/folderu z informacjami debugowania | — |
+| `utPLSQL: Debug test (PL/SQL)` | Uruchamia sesję debugowania testu w aktywnym pliku | v3.2.x się nie kompiluje (`PLS-00222`). `WE8DEC` obrazu gubi znaki nieprzedstawialne (np. `€`); cienki sterownik ignoruje `NLS_LANG`. |
+| `utPLSQL: Debuguj test pod kursorem` | Uruchamia sesję debugowania `%test`/`%suite` pod kursorem | — |
+| `utPLSQL: Debuguj nieudane testy` | Uruchamia sesję debugowania testów, które nie powiodły się w ostatnim uruchomieniu (QuickPick, gdy jest ich kilka) | — |
+| `utPLSQL: Debuguj ostatnie uruchomienie` | Uruchamia sesję debugowania ostatniego uruchomienia | — |
+| `utPLSQL: Skompiluj do debugowania` | Kompiluje obiekt wybranego pliku/folderu z informacjami debugowania | v3.2.x się nie kompiluje (`PLS-00222`). `WE8DEC` obrazu gubi znaki nieprzedstawialne (np. `€`); cienki sterownik ignoruje `NLS_LANG`. |
 | `utPLSQL: Przebuduj pamięć podręczną adnotacji` | Przebudowuje pamięć podręczną adnotacji utPLSQL w bazie i odświeża drzewo | — |
 | `utPLSQL: Run script` | Runs the script open in the editor against a connection profile | Right-click → script file |
 | `utPLSQL: Run script file` | Runs an Explorer script file (decoded with the profile charset) | Right-click → file |
@@ -343,6 +346,8 @@ Wszystkie skróty używają prefiksu `Ctrl+Shift+U` (`Cmd+Shift+U` na Macu):
 | `Ctrl+Shift+U X` | Uruchom tylko nieudane |
 | `Ctrl+Shift+U Shift+C` | Toggle Coverage |
 | `Ctrl+Shift+U Shift+R` | Uruchom powiązane testy |
+| `Ctrl+Shift+U D` | Debuguj test pod kursorem |
+| `Ctrl+Shift+U Shift+D` | Debuguj nieudane testy |
 | `Escape` | Anuluj wykonanie |
 
 ## Pokrycie kodu

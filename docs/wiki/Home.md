@@ -27,7 +27,12 @@ execution via `node-oracledb`. Available in **24 UI languages**; requires
 - 🖱️ **Context menu** — right-click a **folder** or a **`.pks`/`.pkb`** file (in the Explorer or in the editor) to run tests ([Commands](Commands)).
 - 🔁 **Smart Re-run** — Rerun Last, Run at Cursor, Run Failed Only with a single shortcut ([Editor-integration](Editor-integration)).
 - 🧩 **Schema-aware tree** — organize tests by Schema > Package > Suite > Test in the Test Explorer ([Tree-organization](Tree-organization)).
-- 🏷️ **Tags and random order** — filter tests with `utplsql.tags` (e.g. `fast & !integration`), run/select by tag, and run in random order with a reproducible seed ([Configuration](Configuration)).
+- 🏷️ **Tags and random order** — filter tests with `utplsql.tags` (e.g. `fast & !integration`) or the `utPLSQL: Run Tests by Tag...` command (multi-select QuickPick; `!tag` excludes), and run in random order with a reproducible seed (`utplsql.run.randomOrder`) ([Configuration](Configuration)).
+- 🧭 **Tag-based tree** — organize the Test Explorer as **Tag > Suite > Test** with `utplsql.organization = tag` (a suite with several tags appears under each tag) and show `[tag1, tag2]` on the labels with `utplsql.showTagsInTree` ([Tree-organization](Tree-organization)).
+- 🏗️ **Test suite scaffold** — generates `ut_<package>.pks` with one `%test` per routine from a `.pks`/`.pkb` or a database object, using the `utplsql.generate.*` options ([Commands](Commands)).
+- ⏱️ **Duration and persistence** — the last run result (status, message and per-test duration) survives a workspace reload; optionally shows `(1.2s)` on the test labels (`utplsql.showTestDuration`) ([Test-explorer](Test-explorer)).
+- 🔗 **Run Related Tests** — on a production `.pks`/`.pkb`/`.sql`, runs the suites that follow the `ut_<object>` convention (`Ctrl+Shift+U Shift+R`) ([Commands](Commands)).
+- ♻️ **Auto-run on save** — re-run the suites of the saved `.pks` with `utplsql.autoRun = onSave`, with a per-file debounce (`utplsql.autoRunDelayMs`) and a queue policy when a run is in progress (`utplsql.autoRunQueue`: `skip`/`replace`) ([Configuration](Configuration)).
 - 🗄️ **Database-first discovery** — build the tree from `ut_runner.get_suites_info` and rebuild the annotation cache from the palette ([Test-explorer](Test-explorer)).
 - 🌳 **Lazy test tree** — in `schema` mode, packages/suites/tests are resolved on demand when you expand, so large schemas open instantly ([Tree-organization](Tree-organization)).
 - 📁 **Multi-root workspace** — every workspace folder gets its own suites, with independent discovery, execution and coverage ([Test-explorer](Test-explorer)).
@@ -43,7 +48,7 @@ execution via `node-oracledb`. Available in **24 UI languages**; requires
 
 ### Debugger
 
-- 🐛 **PL/SQL Debug** — breakpoints and step debugging of utPLSQL tests via `DBMS_DEBUG` (native Debug Adapter) ([Debugger](Debugger)).
+- 🐛 **PL/SQL Debug** — breakpoints and step debugging of utPLSQL tests via `DBMS_DEBUG` (native Debug Adapter); debug **at cursor**, the **failed** tests or the **last run** from the palette (`utPLSQL: Debug Test at Cursor`, `Debug Failed Tests`, `Debug Last Run`), plus **Debug test** / **Compile for Debug** in the editor context menu ([Debugger](Debugger)).
 
 ### Connections & security
 
@@ -59,7 +64,8 @@ execution via `node-oracledb`. Available in **24 UI languages**; requires
 ### UX & diagnostics
 
 - ✅ **Inline decorations** — ✓/✗/⚠ icons in the editor after execution, with failure tooltip and overview ruler ([Editor-integration](Editor-integration)).
-- 📌 **Status Bar** — indicator with pass/fail count, duration, and real-time progress ([Editor-integration](Editor-integration)).
+- 🔬 **Inline expected × actual diff** — on assertion failures, the Test Explorer shows VS Code's **native diff** with the *Expected*/*Actual* values extracted from the reporter message ([Editor-integration](Editor-integration)).
+- 📌 **Status Bar** — indicator with pass/fail count, duration and real-time progress; click the **coverage toggle** to switch the session coverage mode (`utPLSQL: Toggle Coverage`) ([Editor-integration](Editor-integration)).
 - 🎯 **Jump to failure** — direct navigation to the line of the assertion that failed (via native "Go to Error") ([Editor-integration](Editor-integration)).
 - 🧱 **Compilation diagnostics** — after every run, PL/SQL compilation errors (`ALL_ERRORS`) show up in the Problems Panel under the `utPLSQL Compilation` source ([Diagnostics-and-quick-fix](Diagnostics-and-quick-fix)).
 - ⏳ **Progress and cancellation** — long runs show a progress notification with counts and a *Cancel* button (plus the optional `utplsql.timeoutMinutes`) ([Test-explorer](Test-explorer)).

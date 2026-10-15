@@ -75,7 +75,11 @@ Respeita `utplsql.statusBar.enabled` (se `false`, métodos são no-op).
 - `extension.ts`: instanciado no `activate()`, registrado em `context.subscriptions`
 - `extension.ts` `runWithProgress`: `onSuiteStart` → `showRunning`, `onComplete` →
   `showResults` (callbacks repassados a `executeRun`)
-- Clique no item → comando `utplsql.switchProfile`
+- Clique no item → comando `utplsql.switchProfile`; o item também carrega o
+  **toggle de cobertura** (`utPLSQL: Toggle Coverage`, `Ctrl+Shift+U Shift+C`),
+  que alterna o modo de cobertura da sessão (PRD-54)
+- A **duração** do último run é persistida (`TestStateManager`) e reaproveitada no
+  reload; `utplsql.showTestDuration` ecoa `(1.2s)` no label dos itens (PRD-56)
 
 ## Decorações inline (`src/decorations.ts`)
 
@@ -126,6 +130,13 @@ quanto no modo `schema` — não depende mais de navegar `controller.items`.
 ### Hover
 
 `DecorationOptions.hoverMessage` com `MarkdownString` da mensagem de falha.
+
+### Diff esperado × obtido (PRD-52)
+
+Em falha de asserção, o item do teste no Test Explorer abre o **diff nativo** do
+VSCode com os valores *Expected* / *Actual* extraídos da mensagem do reporter
+(`expected`/`actual` / `Expected:`/`Actual:`), com fallback para a mensagem crua
+quando o par não é reconhecido.
 
 ## Keybindings
 
