@@ -27,6 +27,7 @@ tags: [readme]
   <a href="https://codecov.io/gh/thepaneb/vscode-utplsql"><img alt="Coverage" src="https://codecov.io/gh/thepaneb/vscode-utplsql/branch/main/graph/badge.svg"></a>
   <img alt="VS Code" src="https://img.shields.io/badge/VS%20Code-1.101%2B-007ACC">
   <img alt="Node" src="https://img.shields.io/badge/node-22-339933?logo=nodedotjs&logoColor=white">
+  <img alt="TypeScript" src="https://img.shields.io/badge/TypeScript-7-3178C6?logo=typescript&logoColor=white">
   <img alt="Oracle" src="https://img.shields.io/badge/Oracle-12.2%2B-F80000?logo=oracle&logoColor=white">
   <img alt="License" src="https://img.shields.io/badge/license-MIT-blue">
   <a href="https://thepaneb.github.io/vscode-utplsql/"><img alt="Website" src="https://img.shields.io/badge/Website-vscode--utplsql-007ACC"></a>

@@ -230,6 +230,12 @@ tags: [site, docs]
             width="90"
             height="20"
         /></a>
+        <img
+          alt="TypeScript"
+          src="https://img.shields.io/badge/TypeScript-7-3178C6?logo=typescript&amp;logoColor=white"
+          width="103"
+          height="20"
+        />
       </p>
 
       <p class="cta">
