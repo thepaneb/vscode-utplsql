@@ -128,8 +128,9 @@ Requires a real Oracle database + `UTPLSQL_CONN` defined in `.env`.
 heuristics: match by `package` (last segment of JUnit `classname`) +
 test name/description, with name-based fallback. The match index is built
 in `matching.ts` (pure functions `buildMatchIndex`/`findByNameOnly`), scoped
-by package to minimize ambiguity. `applyResults` in `runner.ts` is just a
-wrapper (errors when JUnit doesn't exist).
+by package to minimize ambiguity. `applyResultsFromCases` in `results.ts` is
+the canonical mapping step; `runner.ts` only orchestrates (`executeRun` →
+`executeRunOracle`).
 
 ## Coverage file resolution
 

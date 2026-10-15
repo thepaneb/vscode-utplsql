@@ -162,7 +162,7 @@ Ao resolver com sucesso, seta `utplsql:connected` context key.
 
 ### Segurança
 
-- A string de conexão **nunca é logada** — `safeArgs` substitui por `***`
+- A string de conexão **nunca é logada** — `maskConnection` (`connectionProfiles.ts`) substitui por `***`
 - Recomendação: usar env var `UTPLSQL_CONN`, não settings.json
 - Prompt da sessão usa `password: true` (mascarado)
 

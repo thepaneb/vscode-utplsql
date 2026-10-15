@@ -131,7 +131,7 @@ usam `utplsql-source:/<SCHEMA>/<OBJ>.<ext>?line=N` (qualquer tipo de objeto, de
 | Test | `test:ut_my_tests.test_case_1` |
 
 Suite e test IDs são idênticos em ambos os modos — compatibilidade com
-`applyResults`, `filterSuitesByUri`, etc.
+`applyResultsFromCases`, `filterSuitesByUri`, etc.
 
 ## `extractSchemaFromPath` (src/discovery.ts)
 
