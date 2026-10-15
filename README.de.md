@@ -317,6 +317,8 @@ Alle Befehle der Erweiterung (Palette `Ctrl+Shift+P`, Präfix `utPLSQL:`):
 | `utPLSQL: Run script folder` | Runs the folder scripts in alphabetical order | Right-click → folder |
 | `utPLSQL: Wallet-Passwort festlegen` | Setzt/löscht das Wallet-Passwort des aktiven Profils (SecretStorage) | — |
 | `utPLSQL: Mit Reporter ausführen (Export)` | Führt die Auswahl mit einem gewählten Reporter aus und schreibt die Ausgabe in Output/Datei (ändert die Ergebnisse nicht) | Test Explorer → menu do item |
+| `utPLSQL: Testsuite generieren…` | erzeugt `ut_<Paket>.pks` mit einem `%test` pro Routine aus einer `.pks`/`.pkb` oder einem Datenbankobjekt, mit den `utplsql.generate.*`-Optionen | v3.2.x kompiliert nicht (`PLS-00222`). Der `WE8DEC`-Zeichensatz des Images verliert nicht darstellbare Zeichen (z. B. `€`); der Thin-Treiber ignoriert `NLS_LANG`. |
+| `utPLSQL: Zugehörige Tests ausführen` | führt in einer Produktions-`.pks`/`.pkb`/`.sql` die Suites nach der `ut_<Objekt>`-Konvention aus | v3.2.x kompiliert nicht (`PLS-00222`). Der `WE8DEC`-Zeichensatz des Images verliert nicht darstellbare Zeichen (z. B. `€`); der Thin-Treiber ignoriert `NLS_LANG`. |
 
 > **Recompile UT3** (`utplsql.recompileUt3`) ist **kein** Palettenbefehl — es ist
 > ein interner Quick-Fix der „utPLSQL Setup"-Diagnose (ungültige Objekte im
@@ -337,6 +339,8 @@ Alle Kürzel verwenden das Präfix `Ctrl+Shift+U` (`Cmd+Shift+U` unter Mac):
 | `Ctrl+Shift+U L` | Letzte Ausführung wiederholen |
 | `Ctrl+Shift+U U` | Unter dem Cursor ausführen |
 | `Ctrl+Shift+U X` | Nur fehlgeschlagene ausführen |
+| `Ctrl+Shift+U Shift+C` | Toggle Coverage |
+| `Ctrl+Shift+U Shift+R` | Zugehörige Tests ausführen |
 | `Escape` | Ausführung abbrechen |
 
 ## Testabdeckung (Coverage)

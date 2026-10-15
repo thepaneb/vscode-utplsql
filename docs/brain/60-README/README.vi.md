@@ -327,6 +327,8 @@ Tất cả các lệnh của extension (palette `Ctrl+Shift+P` tiền tố `utPL
 | `utPLSQL: Run script folder` | Runs the folder scripts in alphabetical order | Right-click → folder |
 | `utPLSQL: Đặt mật khẩu ví` | Đặt/xóa mật khẩu ví của hồ sơ đang hoạt động (SecretStorage) | — |
 | `utPLSQL: Chạy với reporter (xuất)` | Chạy lựa chọn với reporter đã chọn và ghi đầu ra vào Output/tệp (không đổi kết quả) | Test Explorer → menu do item |
+| `utPLSQL: Tạo bộ kiểm thử…` | tạo `ut_<gói>.pks` với một `%test` cho mỗi thủ tục/hàm từ `.pks`/`.pkb` hoặc đối tượng cơ sở dữ liệu, dùng các tùy chọn `utplsql.generate.*` | v3.2.x không biên dịch được (`PLS-00222`). `WE8DEC` của image làm mất các ký tự không biểu diễn được (ví dụ `€`); driver mỏng bỏ qua `NLS_LANG`. |
+| `utPLSQL: Chạy các bài kiểm thử liên quan` | trong `.pks`/`.pkb`/`.sql` production, chạy các bộ kiểm thử theo quy ước `ut_<đối tượng>` | v3.2.x không biên dịch được (`PLS-00222`). `WE8DEC` của image làm mất các ký tự không biểu diễn được (ví dụ `€`); driver mỏng bỏ qua `NLS_LANG`. |
 
 > **Recompile UT3** (`utplsql.recompileUt3`) **không phải** là lệnh palette — nó là
 > quick-fix nội bộ của diagnostic "utPLSQL Setup" (các đối tượng không hợp lệ trong
@@ -347,6 +349,8 @@ Tất cả các phím tắt dùng tiền tố `Ctrl+Shift+U` (`Cmd+Shift+U` trê
 | `Ctrl+Shift+U L` | Chạy lại lần cuối |
 | `Ctrl+Shift+U U` | Chạy tại con trỏ |
 | `Ctrl+Shift+U X` | Chỉ chạy các bài bị lỗi |
+| `Ctrl+Shift+U Shift+C` | Toggle Coverage |
+| `Ctrl+Shift+U Shift+R` | Chạy các bài kiểm thử liên quan |
 | `Escape` | Hủy lần chạy |
 
 ## Độ phủ

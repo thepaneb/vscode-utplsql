@@ -327,6 +327,8 @@ Annotation ไม่คำนึงถึงตัวพิมพ์เล็ก
 | `utPLSQL: Run script folder` | Runs the folder scripts in alphabetical order | Right-click → folder |
 | `utPLSQL: ตั้งรหัสผ่านวอลเล็ต` | ตั้ง/ล้างรหัสผ่านวอลเล็ตของโปรไฟล์ที่ใช้งาน (SecretStorage) | — |
 | `utPLSQL: เรียกใช้ด้วย reporter (ส่งออก)` | เรียกใช้ส่วนที่เลือกด้วย reporter ที่เลือกและเขียนเอาต์พุตไปที่ Output/ไฟล์ (ไม่เปลี่ยนผลลัพธ์) | Test Explorer → menu do item |
+| `utPLSQL: สร้างชุดทดสอบ…` | สร้าง `ut_<แพ็กเกจ>.pks` โดยมี `%test` หนึ่งรายการต่อรูทีน จาก `.pks`/`.pkb` หรือออบเจ็กต์ฐานข้อมูล พร้อมตัวเลือก `utplsql.generate.*` | v3.2.x คอมไพล์ไม่ได้ (`PLS-00222`) `WE8DEC` ของอิมเมจจะสูญเสียอักขระที่ไม่สามารถแทนได้ (เช่น `€`); ไดรเวอร์ thin ไม่สนใจ `NLS_LANG` |
+| `utPLSQL: รันการทดสอบที่เกี่ยวข้อง` | ใน `.pks`/`.pkb`/`.sql` โปรดักชัน รันชุดทดสอบตามธรรมเนียม `ut_<ออบเจ็กต์>` | v3.2.x คอมไพล์ไม่ได้ (`PLS-00222`) `WE8DEC` ของอิมเมจจะสูญเสียอักขระที่ไม่สามารถแทนได้ (เช่น `€`); ไดรเวอร์ thin ไม่สนใจ `NLS_LANG` |
 
 > **Recompile UT3** (`utplsql.recompileUt3`) **ไม่ใช่**คำสั่งใน palette — เป็น
 > quick-fix ภายในของการวินิจฉัย "utPLSQL Setup" (อ็อบเจกต์ที่ไม่ถูกต้องใน
@@ -347,6 +349,8 @@ Annotation ไม่คำนึงถึงตัวพิมพ์เล็ก
 | `Ctrl+Shift+U L` | รันครั้งล่าสุดอีกครั้ง |
 | `Ctrl+Shift+U U` | รันที่เคอร์เซอร์ |
 | `Ctrl+Shift+U X` | รันเฉพาะที่ล้มเหลว |
+| `Ctrl+Shift+U Shift+C` | Toggle Coverage |
+| `Ctrl+Shift+U Shift+R` | รันการทดสอบที่เกี่ยวข้อง |
 | `Escape` | ยกเลิกการรัน |
 
 ## ความครอบคลุม

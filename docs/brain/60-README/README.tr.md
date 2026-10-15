@@ -327,6 +327,8 @@ Tüm uzantı komutları (palet `Ctrl+Shift+P` öneki `utPLSQL:`):
 | `utPLSQL: Run script folder` | Runs the folder scripts in alphabetical order | Right-click → folder |
 | `utPLSQL: Cüzdan parolasını ayarla` | Etkin profilin cüzdan parolasını ayarlar/temizler (SecretStorage) | — |
 | `utPLSQL: Reporter ile çalıştır (dışa aktar)` | Seçimi seçilen reporter ile çalıştırır ve çıktıyı Output/dosyaya yazar (sonuçları değiştirmez) | Test Explorer → menu do item |
+| `utPLSQL: Test paketi oluştur…` | bir `.pks`/`.pkb` veya veritabanı nesnesinden, her rutin için bir `%test` içeren `ut_<paket>.pks` üretir (`utplsql.generate.*` seçenekleri) | v3.2.x derlenmez (`PLS-00222`). İmajın `WE8DEC`'i gösterilemeyen karakterleri kaybeder (örn. `€`); ince sürücü `NLS_LANG`'i yok sayar. |
+| `utPLSQL: İlgili testleri çalıştır` | üretim `.pks`/`.pkb`/`.sql` dosyasında `ut_<nesne>` kuralına göre paketleri çalıştırır | v3.2.x derlenmez (`PLS-00222`). İmajın `WE8DEC`'i gösterilemeyen karakterleri kaybeder (örn. `€`); ince sürücü `NLS_LANG`'i yok sayar. |
 
 > **Recompile UT3** (`utplsql.recompileUt3`) bir **palet komutu değildir** — "utPLSQL Setup"
 > tanılamasının iç bir hızlı düzeltmesidir (utPLSQL şemasındaki geçersiz nesneler).
@@ -346,6 +348,8 @@ Tüm kısayollar `Ctrl+Shift+U` önekini kullanır (Mac'te `Cmd+Shift+U`):
 | `Ctrl+Shift+U L` | Sonuncuyu yeniden çalıştır |
 | `Ctrl+Shift+U U` | İmleçte çalıştır |
 | `Ctrl+Shift+U X` | Yalnızca başarısızları çalıştır |
+| `Ctrl+Shift+U Shift+C` | Toggle Coverage |
+| `Ctrl+Shift+U Shift+R` | İlgili testleri çalıştır |
 | `Escape` | Çalıştırmayı iptal et |
 
 ## Kapsam (Coverage)

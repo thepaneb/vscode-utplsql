@@ -327,6 +327,8 @@ All extension commands (palette `Ctrl+Shift+P` prefix `utPLSQL:`):
 | `utPLSQL: Run script folder` | Runs the folder scripts in alphabetical order | Right-click → folder |
 | `utPLSQL: Set wallet password` | Sets/clears the active profile's Oracle Cloud wallet password (SecretStorage) | — |
 | `utPLSQL: Run with Reporter (Export)` | Runs the selection with a chosen reporter and writes the output to Output/file (does not change results) | Test Explorer → menu do item |
+| `utPLSQL: Generate test suite…` | generates `ut_<package>.pks` with one `%test` per routine from a `.pks`/`.pkb` or a database object, using the `utplsql.generate.*` options | Right-click → file |
+| `utPLSQL: Run Related Tests` | on a production `.pks`/`.pkb`/`.sql`, runs the suites that follow the `ut_<object>` convention | Right-click → file |
 
 > **Recompile UT3** (`utplsql.recompileUt3`) is **not** a palette command — it is
 > an internal quick-fix of the "utPLSQL Setup" diagnostic (invalid objects in the
@@ -347,6 +349,8 @@ All shortcuts use the `Ctrl+Shift+U` prefix (`Cmd+Shift+U` on Mac):
 | `Ctrl+Shift+U L` | Rerun last |
 | `Ctrl+Shift+U U` | Run at cursor |
 | `Ctrl+Shift+U X` | Run failed only |
+| `Ctrl+Shift+U Shift+C` | Toggle Coverage |
+| `Ctrl+Shift+U Shift+R` | Run Related Tests |
 | `Escape` | Cancel run |
 
 ## Coverage

@@ -326,6 +326,8 @@ UTPLSQL_CONN=your_user/password@//host:1521/service
 | `utPLSQL: Run script folder` | Runs the folder scripts in alphabetical order | Right-click → folder |
 | `utPLSQL: 設定錢包密碼` | 設定/清除使用中設定檔的 Oracle Cloud 錢包密碼（SecretStorage） | — |
 | `utPLSQL: 使用 reporter 執行（匯出）` | 使用所選 reporter 執行選取並將輸出寫入 Output/檔案（不改變結果） | Test Explorer → menu do item |
+| `utPLSQL: 產生測試套件…` | 從 `.pks`/`.pkb` 或資料庫物件產生 `ut_<套件>.pks`，每個例行程式一個 `%test`，並使用 `utplsql.generate.*` 選項。 | v3.2.x 無法編譯（`PLS-00222`）。映像的 `WE8DEC` 會遺失無法表示的字元（例如 `€`）；精簡驅動程式會忽略 `NLS_LANG`。 |
+| `utPLSQL: 執行相關測試` | 在生產 `.pks`/`.pkb`/`.sql` 中，依 `ut_<物件>` 慣例執行套件（`Ctrl+Shift+U Shift+R`）。 | v3.2.x 無法編譯（`PLS-00222`）。映像的 `WE8DEC` 會遺失無法表示的字元（例如 `€`）；精簡驅動程式會忽略 `NLS_LANG`。 |
 
 > **Recompile UT3**（`utplsql.recompileUt3`）**不是**命令面板命令 — 它是
 > 「utPLSQL Setup」診斷（utPLSQL schema 中的無效物件）的內部快速修復。
@@ -345,6 +347,8 @@ UTPLSQL_CONN=your_user/password@//host:1521/service
 | `Ctrl+Shift+U L` | 重新執行上次 |
 | `Ctrl+Shift+U U` | 在游標處執行 |
 | `Ctrl+Shift+U X` | 僅執行失敗 |
+| `Ctrl+Shift+U Shift+C` | Toggle Coverage |
+| `Ctrl+Shift+U Shift+R` | 執行相關測試 |
 | `Escape` | 取消執行 |
 
 ## 涵蓋率

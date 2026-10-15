@@ -101,6 +101,13 @@ interface UtConfig {
   codeLensEnabled: boolean;           // default: true
   statusBarEnabled: boolean;          // default: true
   decorationsEnabled: boolean;        // default: true
+  showTestDuration: boolean;          // default: false (sufixa a duração no label; PRD-56)
+
+  // Geração de suíte de teste (PRD-100)
+  generateTestPackagePrefix: string;  // default: "ut_" (nome do pacote gerado)
+  generateTestPackageSuffix: string;  // default: ""
+  generateTestsPerUnit: number;       // default: 1 (%test por rotina; teto 50)
+  generateComments: boolean;          // default: true (emite "-- TODO")
 
   // Diagnósticos
   compilationDiagnosticsEnabled: boolean;  // default: true

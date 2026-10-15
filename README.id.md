@@ -319,6 +319,8 @@ Semua perintah ekstensi (palet `Ctrl+Shift+P`, prefiks `utPLSQL:`):
 | `utPLSQL: Run script folder` | Runs the folder scripts in alphabetical order | Right-click → folder |
 | `utPLSQL: Atur kata sandi wallet` | Mengatur/menghapus kata sandi wallet profil aktif (SecretStorage) | — |
 | `utPLSQL: Jalankan dengan reporter (ekspor)` | Menjalankan pilihan dengan reporter terpilih dan menulis output ke Output/file (tidak mengubah hasil) | Test Explorer → menu do item |
+| `utPLSQL: Buat rangkaian pengujian…` | menghasilkan `ut_<paket>.pks` dengan satu `%test` per rutin dari `.pks`/`.pkb` atau objek basis data, dengan opsi `utplsql.generate.*` | v3.2.x tidak dapat dikompilasi (`PLS-00222`). `WE8DEC` pada image kehilangan karakter yang tidak dapat direpresentasikan (mis. `€`); driver tipis mengabaikan `NLS_LANG`. |
+| `utPLSQL: Jalankan pengujian terkait` | pada `.pks`/`.pkb`/`.sql` produksi, menjalankan rangkaian sesuai konvensi `ut_<objek>` | v3.2.x tidak dapat dikompilasi (`PLS-00222`). `WE8DEC` pada image kehilangan karakter yang tidak dapat direpresentasikan (mis. `€`); driver tipis mengabaikan `NLS_LANG`. |
 
 > **Recompile UT3** (`utplsql.recompileUt3`) **bukan** perintah palet — ini adalah
 > quick-fix internal dari diagnostik "utPLSQL Setup" (objek tidak valid di
@@ -339,6 +341,8 @@ Semua pintasan memakai prefiks `Ctrl+Shift+U` (`Cmd+Shift+U` di Mac):
 | `Ctrl+Shift+U L` | Rerun last |
 | `Ctrl+Shift+U U` | Run at cursor |
 | `Ctrl+Shift+U X` | Run failed only |
+| `Ctrl+Shift+U Shift+C` | Toggle Coverage |
+| `Ctrl+Shift+U Shift+R` | Jalankan pengujian terkait |
 | `Escape` | Membatalkan eksekusi |
 
 ## Cakupan

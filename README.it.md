@@ -317,6 +317,8 @@ Tutti i comandi dell'estensione (palette `Ctrl+Shift+P`, prefisso `utPLSQL:`):
 | `utPLSQL: Run script folder` | Runs the folder scripts in alphabetical order | Right-click → folder |
 | `utPLSQL: Imposta password del wallet` | Imposta/cancella la password del wallet del profilo attivo (SecretStorage) | — |
 | `utPLSQL: Esegui con reporter (export)` | Esegue la selezione con un reporter scelto e scrive l'output in Output/file (non cambia i risultati) | Test Explorer → menu do item |
+| `utPLSQL: Genera suite di test…` | genera `ut_<package>.pks` con un `%test` per routine da un `.pks`/`.pkb` o da un oggetto del database, con le opzioni `utplsql.generate.*` | Il v3.2.x non compila (`PLS-00222`). Il charset `WE8DEC` dell'immagine perde i caratteri non rappresentabili (es. `€`); il driver thin ignora `NLS_LANG`. |
+| `utPLSQL: Esegui test correlati` | su un `.pks`/`.pkb`/`.sql` di produzione, esegue le suite secondo la convenzione `ut_<oggetto>` | Il v3.2.x non compila (`PLS-00222`). Il charset `WE8DEC` dell'immagine perde i caratteri non rappresentabili (es. `€`); il driver thin ignora `NLS_LANG`. |
 
 > **Recompile UT3** (`utplsql.recompileUt3`) **non** è un comando della palette — è
 > un quick-fix interno del diagnostico "utPLSQL Setup" (oggetti non validi nello
@@ -337,6 +339,8 @@ Tutte le scorciatoie usano il prefisso `Ctrl+Shift+U` (`Cmd+Shift+U` su Mac):
 | `Ctrl+Shift+U L` | Rieesegui l'ultimo |
 | `Ctrl+Shift+U U` | Esegui al cursore |
 | `Ctrl+Shift+U X` | Esegui solo i falliti |
+| `Ctrl+Shift+U Shift+C` | Toggle Coverage |
+| `Ctrl+Shift+U Shift+R` | Esegui test correlati |
 | `Escape` | Annulla l'esecuzione |
 
 ## Copertura
