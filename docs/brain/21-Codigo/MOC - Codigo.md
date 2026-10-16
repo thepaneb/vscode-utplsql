@@ -26,6 +26,7 @@ SORT id ASC
 
 <!-- brain:auto:start:moc-index -->
 - [[COD - .c8rc]] — `COD-.c8rc`
+- [[COD - .gitattributes]] — `COD-.gitattributes`
 - [[COD - .gitignore]] — `COD-.gitignore`
 - [[COD - .vscodeignore]] — `COD-.vscodeignore`
 - [[COD - 404.html]] — `COD-404.html`
@@ -76,6 +77,7 @@ SORT id ASC
 - [[COD - matching.ts]] — `COD-matching.ts`
 - [[COD - matrix.env]] — `COD-matrix.env`
 - [[COD - obsidian-mcp.py]] — `COD-obsidian-mcp.py`
+- [[COD - obsidian-portproxy.cmd]] — `COD-obsidian-portproxy.cmd`
 - [[COD - oracleClient.ts]] — `COD-oracleClient.ts`
 - [[COD - oracleRunner.ts]] — `COD-oracleRunner.ts`
 - [[COD - package-target.cjs]] — `COD-package-target.cjs`
