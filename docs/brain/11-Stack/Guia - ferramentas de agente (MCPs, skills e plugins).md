@@ -1,7 +1,7 @@
 ---
 tipo: guia
 status: ativo
-verificado: 2026-10-09
+verificado: 2026-10-16
 tags: [brain, opencode, agentes, mcp, skills, seguranca]
 ---
 
@@ -30,6 +30,41 @@ status dos plugins. A configuração versionada fica em
 - **MCPs locais via `npx`** não sobem no serviço em background do WSL (o `npx`
   do Windows não é spawnável ali) — por isso o `playwright` usa **Docker**
   (`mcr.microsoft.com/playwright/mcp`).
+- **Obsidian (WSL → Windows)** — o bridge `scripts/obsidian-mcp.py` roda no WSL e
+  fala com o plugin **Local REST API** do Windows em `http://<gateway>:27123`
+  (gateway = `ip route show default | awk '{print $3}'`). Como o plugin só escuta
+  em `127.0.0.1`, o caminho depende de `netsh interface portproxy`
+  (`<gateway>:27123 → 127.0.0.1:27123`) + regra de firewall para a sub-rede do
+  WSL (ex.: `remoteip=172.21.16.0/20`).
+  - **Armadilha:** o portproxy **não** é resiliente. Quando o adaptador do WSL é
+    recriado (reinício do Windows, atualização) a regra permanece no registro e o
+    `iphlpsvc` segue rodando, mas **não vincula** o listener — e a porta passa a
+    ser **recusada**, inclusive com a sub-rede **igual** à original (não é só
+    “quando a sub-rede muda”).
+  - **Sintoma:** `opencode mcp list` → `✗ obsidian failed: Request timed out`.
+  - **Diagnóstico:** do WSL o TCP/HTTP morre (`curl -m5 http://<gateway>:27123/`
+    → sem resposta), enquanto no Windows o plugin escuta normalmente
+    (`netstat -ano | findstr 27123` → só `127.0.0.1:27123`) e
+    `Test-NetConnection <gateway> -Port 27123` → `False` (para `127.0.0.1`, `True`).
+  - **Correção (PowerShell como administrador)** — o delete+add força o re-bind:
+    ```powershell
+    netsh interface portproxy delete v4tov4 listenaddress=<gateway> listenport=27123
+    netsh interface portproxy add v4tov4 listenaddress=<gateway> listenport=27123 connectaddress=127.0.0.1 connectport=27123
+    ```
+    Conferir: `netstat -ano | findstr 27123` passa a listar
+    `<gateway>:27123 LISTENING` (dono: `iphlpsvc`).
+  - **Sem reiniciar o serviço** (a falha fica em cache e só um novo serviço a
+    limpa): reconecte pela API interna —
+    `POST http://127.0.0.1:<porta>/api/experimental/mcp/obsidian/connect?location[directory]=<projeto>`
+    com **Basic auth** (`opencode:<password>`, de `~/.config/opencode/service.json`;
+    a porta sai de `opencode service status`). Descubra as rotas em
+    `GET /openapi.json` (a lista usa `GET /api/mcp?location[directory]=<projeto>`).
+  - **Alternativa definitiva:** `networkingMode=mirrored` no `.wslconfig` — com
+    rede espelhada o `127.0.0.1` do WSL alcança o Windows e o portproxy deixa de
+    ser necessário (`OBSIDIAN_HOST=127.0.0.1` para o bridge).
+  - **Segurança:** `opencode service get` imprime o `env` do serviço em claro
+    (inclui o `GITHUB_TOKEN`) — inspecione com
+    `opencode service get | jq '.env | keys'` e rotacione o PAT se ele vazar.
 
 ## Permissões (guard de `.env`)
 
