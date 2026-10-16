@@ -31,5 +31,8 @@ jobs:
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
           files: ./coverage/lcov.info
+          # Só o lcov do c8: sem isso o uploader varre coverage/tmp/*.json
+          # (raw do c8) e o upload salta de ~264 KB para ~8,4 MB.
+          disable_search: true
           flags: unit
           fail_ci_if_error: false
