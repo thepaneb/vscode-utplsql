@@ -1,0 +1,2 @@
+# Arquivos .cmd são scripts do Windows: ficam com CRLF de ponta a ponta.
+*.cmd text eol=crlf

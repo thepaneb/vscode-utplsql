@@ -2,6 +2,7 @@
 tipo: guia
 status: ativo
 verificado: 2026-10-16
+implementacao: ["scripts/obsidian-mcp.py", "scripts/obsidian-portproxy.cmd", ".gitattributes"]
 tags: [brain, opencode, agentes, mcp, skills, seguranca]
 ---
 
@@ -46,7 +47,12 @@ status dos plugins. A configuração versionada fica em
     → sem resposta), enquanto no Windows o plugin escuta normalmente
     (`netstat -ano | findstr 27123` → só `127.0.0.1:27123`) e
     `Test-NetConnection <gateway> -Port 27123` → `False` (para `127.0.0.1`, `True`).
-  - **Correção (PowerShell como administrador)** — o delete+add força o re-bind:
+  - **Correção em um clique:** `scripts\obsidian-portproxy.cmd` (duplo-clique; pede
+    UAC). O script descobre o IPv4/prefixo do adaptador do WSL, reaplica o
+    portproxy com `delete` + `add` (força o re-bind) e recria a regra de firewall
+    para a sub-rede atual. O `.cmd` é garantido em CRLF pelo `.gitattributes`
+    (`*.cmd text eol=crlf`), para o `cmd.exe` não se perder nos blocos `for`.
+  - **Na mão (PowerShell como administrador)** — equivalente ao script:
     ```powershell
     netsh interface portproxy delete v4tov4 listenaddress=<gateway> listenport=27123
     netsh interface portproxy add v4tov4 listenaddress=<gateway> listenport=27123 connectaddress=127.0.0.1 connectport=27123
