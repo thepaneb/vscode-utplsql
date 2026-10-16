@@ -117,6 +117,13 @@ extensão normalmente.
 - `coverage/lcov.info`: compatível com ferramentas CI
 - **Codecov**: o CI envia o `lcov.info` (`codecov/codecov-action`) → badge de
   cobertura no README; status/gate em `codecov.yml`
+  - **`disable_search: true` é obrigatório**: sem ele o uploader varre o
+    workspace e inclui o raw do c8 (`coverage/tmp/*.json`, 42 MB em disco) e o
+    fixture `sample-output/coverage-mapping.txt` — o upload salta de **~160 KB**
+    (só o lcov) para **~8,4 MB / 95 arquivos**. Nesse tamanho o Codecov **aceita**
+    o upload mas o deixa preso em `state=started` (nunca chega a `merged`), o
+    relatório do commit fica nulo e o **badge vira `unknown`** (aconteceu na
+    0.16.0: `cb15c9d` com 7,86 MB processou, `8e156e7`/`3f14c6d` com 8,44 MB não).
 - `coverage/index.html`: relatório navegável
 - `coverage/` no `.gitignore` e `.vscodeignore`
 
@@ -218,11 +225,13 @@ Sem `.env`, `describeDB` é pulado (`describe.skip`).
 
 ## CI
 
-Workflow `.github/workflows/ci.yml` (push/PR para `main`):
+Workflow `.github/workflows/ci.yml` (push/PR para `main` e `release/**`):
 - Node 22/24 matrix
-- `npm ci` → `npm run docs:check` → `npm run lint` → `npm run typecheck` →
-  `npm run test:coverage` (enforça os thresholds do c8) → **upload ao Codecov**
-  (`codecov/codecov-action`, só no Node 24; config em `codecov.yml`)
+- `npm ci` → `npm run brain:ci` → `git diff --exit-code` → `npm run docs:check` →
+  `npm run lint` → `npm run typecheck` → `npm run test:coverage` (enforça os
+  thresholds do c8) → **upload ao Codecov**
+  (`codecov/codecov-action`, só no Node 24; `disable_search: true` + config em
+  `codecov.yml` — ver a armadilha do payload em *Coverage (c8) → Output*)
 
 Integração com **Oracle real** (`.github/workflows/integration.yml`):
 - **nightly** (`schedule`) e **dispatch `full`**: `scripts/db-matrix/run.sh --only 23free`
