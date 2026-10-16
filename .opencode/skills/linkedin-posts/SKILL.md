@@ -44,14 +44,38 @@ Todo post de feature segue o mesmo formato:
 Emojis concentram-se no **gancho** e no **badge do card**; nos bullets, use com
 parcimônia (só nos pontos de maior destaque).
 
+### Post de release — bloco da matriz de bancos (obrigatório)
+
+Todo post de **release** fecha os destaques com um bullet da **matriz de bancos**
+(como os posts `05`/`06`/`07`/`08`), com:
+
+- as **5 versões** validadas: `12c R2`, `18c XE`, `19c EE`, `21c XE`, `23ai Free`
+  (a lista canônica é `scripts/db-matrix/matrix.env`);
+- os **modos**: **thin** (suíte de integração completa) e **thick** (`--thick`),
+  dizendo o que cada um cobre quando os números diferem;
+- o **resultado real** da última execução (X testes por banco, 0 falhas) — nunca
+  estimado. Se a matriz não foi rodada para a versão, registre o que foi validado
+  (ex.: thin+thick verdes) e rode a matriz antes de publicar.
+
+O **card** do release deve refletir a matriz no subtítulo (ex.:
+`matriz thin+thick 5/5`) ou em um bullet.
+
+### Onde registrar os números
+
+A execução da matriz não fica num arquivo do repo: registre os números no
+`docs/linkedin/README.md` (nota do release) e, se houver, na nota do vault que
+descreve a versão (ex.: `Roadmap - <versão> (execução)`), para o post ser
+rastreável.
+
 ## Gatilhos — o que fazer quando o projeto muda
 
 | Mudança no projeto | Ação |
 |---|---|
 | Feature nova/alterada (bullet do README) | criar/atualizar post de feature pt+en |
-| Versão publicada (release) | criar post de release pt+en |
+| Versão publicada (release) | criar post de release pt+en, com o **bloco da matriz de bancos** |
+| Nova versão do Oracle na matriz / utPLSQL por banco | atualizar a matriz no post da versão e nos cards de release |
 | Feature removida/renomeada ou comportamento alterado | corrigir os posts que a citam |
-| Números mudam (testes, PRDs) | atualizar o post da versão |
+| Números mudam (testes, PRDs, matriz) | atualizar o post da versão |
 | README/settings/comandos mudam | revisar posts afetados (claims de implementação) |
 
 ## Workflow — post de feature
@@ -68,9 +92,12 @@ parcimônia (só nos pontos de maior destaque).
 2. Entregas: PRDs concluídos na versão (tabela de `docs/prd/index.md`) + `CHANGELOG.md`.
 3. **Números reais** (nunca inventar):
    - testes unitários: `npm run test:unit` → linha `ℹ tests N`;
-   - PRDs da versão: `grep "| X.Y.Z |" docs/prd/index.md | wc -l`.
+   - PRDs da versão: `grep "| X.Y.Z |" docs/prd/index.md | wc -l`;
+   - **matriz de bancos**: `scripts/db-matrix/run.sh` (thin) e `--thick` → X testes
+     por banco, 0 falhas (versões em `scripts/db-matrix/matrix.env`).
 4. Destaque 5–7 itens de peso + correções relevantes.
-5. pt + en; atualize a árvore.
+5. **Bullet final obrigatório:** matriz de bancos (5 versões + thin/thick + números).
+6. pt + en; card do release com a matriz no subtítulo; atualize a árvore.
 
 ## Regras
 
@@ -88,15 +115,20 @@ parcimônia (só nos pontos de maior destaque).
 grep -m1 '"version"' package.json
 grep "| 0.12.0 |" docs/prd/index.md | wc -l    # troque 0.12.0 pela versão
 npm run test:unit 2>&1 | grep '^ℹ tests'
+
+# matriz de bancos (versões canônicas em scripts/db-matrix/matrix.env)
+scripts/db-matrix/run.sh            # thin: suíte de integração completa por banco
+scripts/db-matrix/run.sh --thick    # thick: Instant Client (thickMode) por banco
 ```
 
 ## Verificação (obrigatória)
 
 - [ ] pt e en existem para cada post novo, com a mesma numeração/slug
 - [ ] card gráfico em `assets/` (par pt/en) e referenciado no topo do post
+- [ ] **post de release**: bullet da matriz de bancos (5 versões + thin/thick) e card com a matriz
 - [ ] árvore de `docs/linkedin/README.md` reflete as pastas
 - [ ] nenhum termo obsoleto: `grep -rn "build_file_mappings\|type_mapping\|utPLSQL-cli" docs/linkedin`
-- [ ] números conferem com o repo (testes/PRDs)
+- [ ] números conferem com o repo (testes/PRDs/matriz)
 - [ ] `npm run brain:sync && npm run brain:check` (índice do vault)
 - [ ] `git status` limpo (a pasta é gitignored)
 

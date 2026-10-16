@@ -119,8 +119,10 @@ Release **0.16.0 “Produtividade e resultados”** publicada. Os **5 PRDs** do 
 - **Testes:** 1311 unitários + E2E (`v016-features`); 2 bugs reais encontrados e
   corrigidos na ampliação (cobertura duplicada em multi-root e sufixo de duração
   acumulado).
-- **Matriz Oracle:** thin e thick **verdes** (12.2, 18xe, 19ee, 21xe, 23free) +
-  smoke local e integração completa.
+- **Matriz Oracle:** thin e thick **verdes** nos cinco bancos (12c R2, 18c XE,
+  19c EE, 21c XE e 23ai Free) — suíte de integração com **108 testes por banco**
+  (107 no 12c R2) em **thin** e `thickMode` verde nos cinco (Instant Client);
+  0 falhas. Mesmos números usados no post de release (skill `linkedin-posts`).
 - **Docs:** `docs:check`/`brain:ci` verdes; controle novo de **conteúdo
   descontinuado** (checks de stale no `docs-fidelity`) e auditoria de
   consistência de **features** (README × wiki × funcional).
