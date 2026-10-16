@@ -329,11 +329,11 @@ All extension commands (palette `Ctrl+Shift+P` prefix `utPLSQL:`):
 | `utPLSQL: Import connections from SQL Developer` | Imports connections from SQL Developer (connections.xml) | — |
 | `utPLSQL: Set wallet password` | Sets or clears the active profile's Oracle Cloud wallet password (stored in SecretStorage) | — |
 | `utPLSQL: Run with Reporter (Export)` | Runs the selection with a chosen database reporter and writes the output to Output/file (does not change Test Explorer results) | Test Explorer item context menu |
-| `utPLSQL: Debug test (PL/SQL)` | Starts a debug session of the test under the active file | — |
+| `utPLSQL: Debug test (PL/SQL)` | Starts a debug session of the test under the active file | Editor context menu |
 | `utPLSQL: Debug Test at Cursor` | Starts a debug session of the `%test`/`%suite` under the cursor | — |
 | `utPLSQL: Debug Failed Tests` | Starts a debug session of the tests that failed in the last run (QuickPick when several) | — |
 | `utPLSQL: Debug Last Run` | Starts a debug session of the last run | — |
-| `utPLSQL: Compile for Debug` | Compiles the selected file/folder object with debug information | — |
+| `utPLSQL: Compile for Debug` | Compiles the selected file/folder object with debug information | Editor/Explorer context menu |
 | `utPLSQL: Rebuild Annotation Cache` | Rebuilds the utPLSQL annotation cache in the database and refreshes the tree | — |
 | `utPLSQL: Run script` | Runs the script open in the editor against a connection profile | Right-click → script file |
 | `utPLSQL: Run script file` | Runs an Explorer script file (decoded with the profile charset) | Right-click → file |
@@ -362,6 +362,8 @@ All shortcuts use the `Ctrl+Shift+U` prefix (`Cmd+Shift+U` on Mac):
 | `Ctrl+Shift+U X` | Run failed only |
 | `Ctrl+Shift+U Shift+R` | Run related tests |
 | `Ctrl+Shift+U Shift+C` | Toggle coverage |
+| `Ctrl+Shift+U D` | Debug test at cursor |
+| `Ctrl+Shift+U Shift+D` | Debug failed tests |
 | `Escape` | Cancel run |
 
 ## Coverage

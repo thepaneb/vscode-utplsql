@@ -321,9 +321,12 @@ UTPLSQL_CONN=your_user/password@//host:1521/service
 | `utPLSQL: New connection profile...` | Οδηγός για δημιουργία και ενεργοποίηση profile | — |
 | `utPLSQL: Manage connection profiles` | Ανοίγει τις ρυθμίσεις στο `utplsql.profiles` | — |
 | `utPLSQL: Import connections from SQL Developer` | Εισάγει συνδέσεις από το SQL Developer (connections.xml) | — |
-| `utPLSQL: Debug test (PL/SQL)` | Ξεκινά σύνοδο αποσφαλμάτωσης του test στο ενεργό αρχείο | — |
+| `utPLSQL: Debug test (PL/SQL)` | Ξεκινά σύνοδο αποσφαλμάτωσης του test στο ενεργό αρχείο | Το v3.2.x δεν μεταγλωττίζεται (`PLS-00222`). Το `WE8DEC` της εικόνας χάνει μη αναπαραστάσιμους χαρακτήρες (π.χ. `€`); ο thin driver αγνοεί το `NLS_LANG`. |
 | `utPLSQL: Αναδημιουργία προσωρινής μνήμης σχολίων` | Αναδημιουργεί την προσωρινή μνήμη σχολίων του utPLSQL στη βάση και ανανεώνει το δέντρο | — |
-| `utPLSQL: Μεταγλώττιση για αποσφαλμάτωση` | Μεταγλωττίζει το αντικείμενο του επιλεγμένου αρχείου/φακέλου με πληροφορίες αποσφαλμάτωσης | — |
+| `utPLSQL: Αποσφαλμάτωση τεστ στον κέρσορα` | Ξεκινά συνεδρία αποσφαλμάτωσης του `%test`/`%suite` κάτω από τον δρομέα | — |
+| `utPLSQL: Αποσφαλμάτωση αποτυχημένων τεστ` | Ξεκινά συνεδρία αποσφαλμάτωσης των δοκιμών που απέτυχαν στην τελευταία εκτέλεση (QuickPick αν είναι πολλές) | — |
+| `utPLSQL: Αποσφαλμάτωση τελευταίας εκτέλεσης` | Ξεκινά συνεδρία αποσφαλμάτωσης της τελευταίας εκτέλεσης | — |
+| `utPLSQL: Μεταγλώττιση για αποσφαλμάτωση` | Μεταγλωττίζει το αντικείμενο του επιλεγμένου αρχείου/φακέλου με πληροφορίες αποσφαλμάτωσης | Το v3.2.x δεν μεταγλωττίζεται (`PLS-00222`). Το `WE8DEC` της εικόνας χάνει μη αναπαραστάσιμους χαρακτήρες (π.χ. `€`); ο thin driver αγνοεί το `NLS_LANG`. |
 | `utPLSQL: Run script` | Runs the script open in the editor against a connection profile | Right-click → script file |
 | `utPLSQL: Run script file` | Runs an Explorer script file (decoded with the profile charset) | Right-click → file |
 | `utPLSQL: Run script folder` | Runs the folder scripts in alphabetical order | Right-click → folder |
@@ -353,6 +356,8 @@ UTPLSQL_CONN=your_user/password@//host:1521/service
 | `Ctrl+Shift+U X` | Εκτέλεση μόνο αποτυχημένων |
 | `Ctrl+Shift+U Shift+C` | Toggle Coverage |
 | `Ctrl+Shift+U Shift+R` | Εκτέλεση σχετικών δοκιμών |
+| `Ctrl+Shift+U D` | Αποσφαλμάτωση τεστ στον κέρσορα |
+| `Ctrl+Shift+U Shift+D` | Αποσφαλμάτωση αποτυχημένων τεστ |
 | `Escape` | Ακύρωση εκτέλεσης |
 
 ## Κάλυψη

@@ -311,9 +311,12 @@ A bővítmény összes parancsa (paletta `Ctrl+Shift+P`, előtag `utPLSQL:`):
 | `utPLSQL: New connection profile...` | Varázsló profil létrehozásához és aktiválásához | — |
 | `utPLSQL: Manage connection profiles` | Megnyitja a beállításokat a `utplsql.profiles` értéknél | — |
 | `utPLSQL: Import connections from SQL Developer` | Kapcsolatok importálása az SQL Developerből (connections.xml) | — |
-| `utPLSQL: Debug test (PL/SQL)` | Hibakeresési munkamenetet indít az aktív fájlban lévő tesztre | — |
+| `utPLSQL: Debug test (PL/SQL)` | Hibakeresési munkamenetet indít az aktív fájlban lévő tesztre | A v3.2.x nem fordul (`PLS-00222`). A kép `WE8DEC`-je elveszíti a nem ábrázolható karaktereket (pl. `€`); a thin illesztő figyelmen kívül hagyja a `NLS_LANG`-ot. |
 | `utPLSQL: Megjegyzés-gyorsítótár újraépítése` | Újraépíti az utPLSQL megjegyzés-gyorsítótárat az adatbázisban, és frissíti a fát | — |
-| `utPLSQL: Fordítás hibakereséshez` | A kijelölt fájl/mappa objektumát hibakeresési információkkal fordítja le | — |
+| `utPLSQL: Teszt hibakeresése a kurzornál` | Debug-munkamenetet indít a kurzor alatti `%test`/`%suite` számára | — |
+| `utPLSQL: Sikertelen tesztek hibakeresése` | Debug-munkamenetet indít a legutóbbi futásban megbukott tesztekhez (több esetén QuickPick) | — |
+| `utPLSQL: Utolsó futtatás hibakeresése` | Debug-munkamenetet indít a legutóbbi futáshoz | — |
+| `utPLSQL: Fordítás hibakereséshez` | A kijelölt fájl/mappa objektumát hibakeresési információkkal fordítja le | A v3.2.x nem fordul (`PLS-00222`). A kép `WE8DEC`-je elveszíti a nem ábrázolható karaktereket (pl. `€`); a thin illesztő figyelmen kívül hagyja a `NLS_LANG`-ot. |
 | `utPLSQL: Run script` | Runs the script open in the editor against a connection profile | Right-click → script file |
 | `utPLSQL: Run script file` | Runs an Explorer script file (decoded with the profile charset) | Right-click → file |
 | `utPLSQL: Run script folder` | Runs the folder scripts in alphabetical order | Right-click → folder |
@@ -343,6 +346,8 @@ Minden parancsikon a `Ctrl+Shift+U` előtagot használja (`Cmd+Shift+U` Macen):
 | `Ctrl+Shift+U X` | Csak a sikertelenek futtatása |
 | `Ctrl+Shift+U Shift+C` | Toggle Coverage |
 | `Ctrl+Shift+U Shift+R` | Kapcsolódó tesztek futtatása |
+| `Ctrl+Shift+U D` | Teszt hibakeresése a kurzornál |
+| `Ctrl+Shift+U Shift+D` | Sikertelen tesztek hibakeresése |
 | `Escape` | Végrehajtás megszakítása |
 
 ## Lefedettség

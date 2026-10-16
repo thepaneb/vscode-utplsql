@@ -309,9 +309,12 @@ Toutes les commandes de l'extension (palette `Ctrl+Shift+P` préfixe `utPLSQL:`)
 | `utPLSQL: New connection profile...` | Assistant pour créer et activer un profil | — |
 | `utPLSQL: Manage connection profiles` | Ouvre les paramètres sur `utplsql.profiles` | — |
 | `utPLSQL: Import connections from SQL Developer` | Importe les connexions depuis SQL Developer (connections.xml) | — |
-| `utPLSQL: Debug test (PL/SQL)` | Démarre une session de débogage du test du fichier actif | — |
+| `utPLSQL: Debug test (PL/SQL)` | Démarre une session de débogage du test du fichier actif | Le v3.2.x ne compile pas (`PLS-00222`). Le charset `WE8DEC` de l'image perd les caractères non représentables (par ex. `€`) ; le pilote thin ignore `NLS_LANG`. |
 | `utPLSQL: Reconstruire le cache des annotations` | Reconstruit le cache des annotations utPLSQL dans la base et actualise l'arbre | — |
-| `utPLSQL: Compiler pour le débogage` | Compile l’objet du fichier/dossier sélectionné avec les informations de débogage | — |
+| `utPLSQL: Déboguer le test au curseur` | Démarre une session de débogage du `%test`/`%suite` sous le curseur | — |
+| `utPLSQL: Déboguer les tests en échec` | Démarre une session de débogage des tests échoués lors de la dernière exécution (QuickPick si plusieurs) | — |
+| `utPLSQL: Déboguer la dernière exécution` | Démarre une session de débogage de la dernière exécution | — |
+| `utPLSQL: Compiler pour le débogage` | Compile l’objet du fichier/dossier sélectionné avec les informations de débogage | Le v3.2.x ne compile pas (`PLS-00222`). Le charset `WE8DEC` de l'image perd les caractères non représentables (par ex. `€`) ; le pilote thin ignore `NLS_LANG`. |
 | `utPLSQL: Run script` | Runs the script open in the editor against a connection profile | Right-click → script file |
 | `utPLSQL: Run script file` | Runs an Explorer script file (decoded with the profile charset) | Right-click → file |
 | `utPLSQL: Run script folder` | Runs the folder scripts in alphabetical order | Right-click → folder |
@@ -341,6 +344,8 @@ Tous les raccourcis utilisent le préfixe `Ctrl+Shift+U` (`Cmd+Shift+U` sur Mac)
 | `Ctrl+Shift+U X` | Exécuter uniquement les échecs |
 | `Ctrl+Shift+U Shift+C` | Toggle Coverage |
 | `Ctrl+Shift+U Shift+R` | Exécuter les tests liés |
+| `Ctrl+Shift+U D` | Déboguer le test au curseur |
+| `Ctrl+Shift+U Shift+D` | Déboguer les tests en échec |
 | `Escape` | Annuler l'exécution |
 
 ## Couverture

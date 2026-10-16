@@ -72,6 +72,12 @@ Any of these produce a `TestRunRequest` against the controller:
 - **Right-click** on a file or folder → *utPLSQL: Run tests…*
 - **Palette / shortcuts** — `utPLSQL: Run all tests`, Rerun Last, Run at Cursor,
   Run Failed Only
+- **By tag** — `utPLSQL: Run Tests by Tag…` opens a multi-select QuickPick of the
+  discovered `%tags` (`!tag` excludes); `utplsql.tags` filters every run
+- **Related** — on a production `.pks`/`.pkb`/`.sql`, `utPLSQL: Run Related Tests`
+  runs the suites that follow the `ut_<object>` convention
+- **On save** — with `utplsql.autoRun = onSave` the suites of the saved `.pks`
+  are re-run automatically (debounced; see [[Configuration]])
 
 See [[Quick-start|Quick start]] and [[Commands]] for the full list.
 

@@ -320,9 +320,12 @@ UTPLSQL_CONN=your_user/password@//host:1521/service
 | `utPLSQL: New connection profile...` | Съветник за създаване и активиране на профил | — |
 | `utPLSQL: Manage connection profiles` | Отваря настройките на `utplsql.profiles` | — |
 | `utPLSQL: Import connections from SQL Developer` | Импортира връзки от SQL Developer (connections.xml) | — |
-| `utPLSQL: Debug test (PL/SQL)` | Стартира дебъг сесия на теста под активния файл | — |
+| `utPLSQL: Debug test (PL/SQL)` | Стартира дебъг сесия на теста под активния файл | v3.2.x не се компилира (`PLS-00222`). `WE8DEC` на образа губи непредставими символи (напр. `€`); thin драйверът игнорира `NLS_LANG`. |
 | `utPLSQL: Възстановяване на кеша с анотации` | Възстановява кеша с анотации на utPLSQL в базата и обновява дървото | — |
-| `utPLSQL: Компилиране за отстраняване на грешки` | Компилира обекта на избрания файл/папка с информация за отстраняване на грешки | — |
+| `utPLSQL: Дебъгване на теста под курсора` | Стартира сесия за отстраняване на грешки на `%test`/`%suite` под курсора | — |
+| `utPLSQL: Дебъгване на неуспешните тестове` | Стартира сесия за отстраняване на грешки на тестовете, които се провалиха в последното изпълнение (QuickPick при няколко) | — |
+| `utPLSQL: Дебъгване на последното изпълнение` | Стартира сесия за отстраняване на грешки на последното изпълнение | — |
+| `utPLSQL: Компилиране за отстраняване на грешки` | Компилира обекта на избрания файл/папка с информация за отстраняване на грешки | v3.2.x не се компилира (`PLS-00222`). `WE8DEC` на образа губи непредставими символи (напр. `€`); thin драйверът игнорира `NLS_LANG`. |
 | `utPLSQL: Run script` | Runs the script open in the editor against a connection profile | Right-click → script file |
 | `utPLSQL: Run script file` | Runs an Explorer script file (decoded with the profile charset) | Right-click → file |
 | `utPLSQL: Run script folder` | Runs the folder scripts in alphabetical order | Right-click → folder |
@@ -352,6 +355,8 @@ UTPLSQL_CONN=your_user/password@//host:1521/service
 | `Ctrl+Shift+U X` | Само пропадналите |
 | `Ctrl+Shift+U Shift+C` | Toggle Coverage |
 | `Ctrl+Shift+U Shift+R` | Изпълни свързаните тестове |
+| `Ctrl+Shift+U D` | Дебъгване на теста под курсора |
+| `Ctrl+Shift+U Shift+D` | Дебъгване на неуспешните тестове |
 | `Escape` | Спира изпълнението |
 
 ## Покритие

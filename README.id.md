@@ -311,8 +311,11 @@ Semua perintah ekstensi (palet `Ctrl+Shift+P`, prefiks `utPLSQL:`):
 | `utPLSQL: New connection profile...` | Wizard untuk membuat dan mengaktifkan profil | — |
 | `utPLSQL: Manage connection profiles` | Membuka pengaturan di `utplsql.profiles` | — |
 | `utPLSQL: Import connections from SQL Developer` | Mengimpor koneksi dari SQL Developer (connections.xml) | — |
-| `utPLSQL: Debug test (PL/SQL)` | Memulai sesi debug untuk pengujian di bawah file aktif | — |
-| `utPLSQL: Kompilasi untuk debug` | Mengompilasi objek file/folder yang dipilih dengan informasi debug | — |
+| `utPLSQL: Debug test (PL/SQL)` | Memulai sesi debug untuk pengujian di bawah file aktif | v3.2.x tidak dapat dikompilasi (`PLS-00222`). `WE8DEC` pada image kehilangan karakter yang tidak dapat direpresentasikan (mis. `€`); driver tipis mengabaikan `NLS_LANG`. |
+| `utPLSQL: Debug tes di kursor` | Memulai sesi debug `%test`/`%suite` di bawah kursor | — |
+| `utPLSQL: Debug tes yang gagal` | Memulai sesi debug pengujian yang gagal pada eksekusi terakhir (QuickPick jika banyak) | — |
+| `utPLSQL: Debug eksekusi terakhir` | Memulai sesi debug eksekusi terakhir | — |
+| `utPLSQL: Kompilasi untuk debug` | Mengompilasi objek file/folder yang dipilih dengan informasi debug | v3.2.x tidak dapat dikompilasi (`PLS-00222`). `WE8DEC` pada image kehilangan karakter yang tidak dapat direpresentasikan (mis. `€`); driver tipis mengabaikan `NLS_LANG`. |
 | `utPLSQL: Bangun ulang cache anotasi` | Membangun ulang cache anotasi utPLSQL di basis data dan menyegarkan pohon | — |
 | `utPLSQL: Run script` | Runs the script open in the editor against a connection profile | Right-click → script file |
 | `utPLSQL: Run script file` | Runs an Explorer script file (decoded with the profile charset) | Right-click → file |
@@ -343,6 +346,8 @@ Semua pintasan memakai prefiks `Ctrl+Shift+U` (`Cmd+Shift+U` di Mac):
 | `Ctrl+Shift+U X` | Run failed only |
 | `Ctrl+Shift+U Shift+C` | Toggle Coverage |
 | `Ctrl+Shift+U Shift+R` | Jalankan pengujian terkait |
+| `Ctrl+Shift+U D` | Debug tes di kursor |
+| `Ctrl+Shift+U Shift+D` | Debug tes yang gagal |
 | `Escape` | Membatalkan eksekusi |
 
 ## Cakupan

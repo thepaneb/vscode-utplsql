@@ -201,6 +201,22 @@ Annotation Cache`** (`utplsql.rebuildAnnotations`) chama
 `ut_runner.rebuild_annotation_cache(<owner>)` e atualiza a árvore. Requer
 conexão resolvida (não abre prompt); sem conexão, avisa.
 
+## Geração de suíte de teste (PRD-59 + PRD-100)
+
+O comando **`utPLSQL: Generate test suite`** (`utplsql.generateTestSuite`) e a
+**Code Action** equivalente (em `.pks`/`.pkb` de produção, nunca em `ut_*`)
+geram `ut_<pacote>.pks` ao lado do arquivo — ou na primeira pasta do workspace
+quando a origem é um objeto do banco (prompt `SCHEMA.OBJECT`).
+
+- Uma rotina por `%test`, extraída por `parsePlsqlDeclarations`
+  (`src/plsqlDeclarations.ts`, puro); sem rotinas, escreve o esqueleto
+  (`%suite` + um `%test` de exemplo).
+- Opções: `utplsql.generate.testPackagePrefix` (default `ut_`),
+  `…testPackageSuffix`, `…numberOfTestsPerUnit` (teto 50) e
+  `…generateComments` (emite `-- TODO`).
+- **Nunca sobrescreve** um arquivo existente sem confirmação.
+- Implementação em `src/scaffold.ts` + `src/commands/scaffold.ts`.
+
 ## Conexões
 
 <!-- brain:auto:start:conexoes -->

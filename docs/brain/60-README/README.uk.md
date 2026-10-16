@@ -317,9 +317,12 @@ UTPLSQL_CONN=your_user/password@//host:1521/service
 | `utPLSQL: New connection profile...` | Майстер створення та активації профілю | — |
 | `utPLSQL: Manage connection profiles` | Відкриває налаштування на `utplsql.profiles` | — |
 | `utPLSQL: Import connections from SQL Developer` | Імпортує підключення з SQL Developer (connections.xml) | — |
-| `utPLSQL: Debug test (PL/SQL)` | Запускає сеанс налагодження тесту в активному файлі | — |
+| `utPLSQL: Debug test (PL/SQL)` | Запускає сеанс налагодження тесту в активному файлі | v3.2.x не компілюється (`PLS-00222`). `WE8DEC` образу втрачає невідтворювані символи (напр. `€`); тонкий драйвер ігнорує `NLS_LANG`. |
 | `utPLSQL: Перебудувати кеш анотацій` | Перебудовує кеш анотацій utPLSQL у базі та оновлює дерево | — |
-| `utPLSQL: Скомпілювати для налагодження` | Компілює об’єкт вибраного файлу/папки з налагоджувальною інформацією | — |
+| `utPLSQL: Налагодити тест під курсором` | Запускає сеанс налагодження `%test`/`%suite` під курсором | — |
+| `utPLSQL: Налагодити невдалі тести` | Запускає сеанс налагодження тестів, що впали в останньому запуску (QuickPick, якщо їх кілька) | — |
+| `utPLSQL: Налагодити останній запуск` | Запускає сеанс налагодження останнього запуску | — |
+| `utPLSQL: Скомпілювати для налагодження` | Компілює об’єкт вибраного файлу/папки з налагоджувальною інформацією | v3.2.x не компілюється (`PLS-00222`). `WE8DEC` образу втрачає невідтворювані символи (напр. `€`); тонкий драйвер ігнорує `NLS_LANG`. |
 | `utPLSQL: Run script` | Runs the script open in the editor against a connection profile | Right-click → script file |
 | `utPLSQL: Run script file` | Runs an Explorer script file (decoded with the profile charset) | Right-click → file |
 | `utPLSQL: Run script folder` | Runs the folder scripts in alphabetical order | Right-click → folder |
@@ -349,6 +352,8 @@ UTPLSQL_CONN=your_user/password@//host:1521/service
 | `Ctrl+Shift+U X` | Запустити лише невдалі |
 | `Ctrl+Shift+U Shift+C` | Toggle Coverage |
 | `Ctrl+Shift+U Shift+R` | Запустити пов’язані тести |
+| `Ctrl+Shift+U D` | Налагодити тест під курсором |
+| `Ctrl+Shift+U Shift+D` | Налагодити невдалі тести |
 | `Escape` | Скасувати виконання |
 
 ## Покриття

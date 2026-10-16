@@ -318,8 +318,11 @@ Alle Befehle der Erweiterung (Palette `Ctrl+Shift+P`, Präfix `utPLSQL:`):
 | `utPLSQL: New connection profile...` | Assistent zum Erstellen und Aktivieren eines Profils | — |
 | `utPLSQL: Manage connection profiles` | Öffnet die Einstellungen bei `utplsql.profiles` | — |
 | `utPLSQL: Import connections from SQL Developer` | Importiert Verbindungen aus SQL Developer (connections.xml) | — |
-| `utPLSQL: Debug test (PL/SQL)` | Startet eine Debug-Sitzung des Tests der aktiven Datei | — |
-| `utPLSQL: Für Debug kompilieren` | Kompiliert das Objekt der ausgewählten Datei/des Ordners mit Debug-Informationen | — |
+| `utPLSQL: Debug test (PL/SQL)` | Startet eine Debug-Sitzung des Tests der aktiven Datei | v3.2.x kompiliert nicht (`PLS-00222`). Der `WE8DEC`-Zeichensatz des Images verliert nicht darstellbare Zeichen (z. B. `€`); der Thin-Treiber ignoriert `NLS_LANG`. |
+| `utPLSQL: Test am Cursor debuggen` | Startet eine Debug-Sitzung für das `%test`/`%suite` unter dem Cursor | — |
+| `utPLSQL: Fehlgeschlagene Tests debuggen` | Startet eine Debug-Sitzung für die im letzten Lauf fehlgeschlagenen Tests (QuickPick bei mehreren) | — |
+| `utPLSQL: Letzten Lauf debuggen` | Startet eine Debug-Sitzung des letzten Laufs | — |
+| `utPLSQL: Für Debug kompilieren` | Kompiliert das Objekt der ausgewählten Datei/des Ordners mit Debug-Informationen | v3.2.x kompiliert nicht (`PLS-00222`). Der `WE8DEC`-Zeichensatz des Images verliert nicht darstellbare Zeichen (z. B. `€`); der Thin-Treiber ignoriert `NLS_LANG`. |
 | `utPLSQL: Anmerkungs-Cache neu aufbauen` | Baut den utPLSQL-Anmerkungs-Cache in der Datenbank neu auf und aktualisiert den Baum | — |
 | `utPLSQL: Run script` | Runs the script open in the editor against a connection profile | Right-click → script file |
 | `utPLSQL: Run script file` | Runs an Explorer script file (decoded with the profile charset) | Right-click → file |
@@ -350,6 +353,8 @@ Alle Kürzel verwenden das Präfix `Ctrl+Shift+U` (`Cmd+Shift+U` unter Mac):
 | `Ctrl+Shift+U X` | Nur fehlgeschlagene ausführen |
 | `Ctrl+Shift+U Shift+C` | Toggle Coverage |
 | `Ctrl+Shift+U Shift+R` | Zugehörige Tests ausführen |
+| `Ctrl+Shift+U D` | Test am Cursor debuggen |
+| `Ctrl+Shift+U Shift+D` | Fehlgeschlagene Tests debuggen |
 | `Escape` | Ausführung abbrechen |
 
 ## Testabdeckung (Coverage)

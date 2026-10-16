@@ -318,8 +318,11 @@ Tutti i comandi dell'estensione (palette `Ctrl+Shift+P`, prefisso `utPLSQL:`):
 | `utPLSQL: New connection profile...` | Procedura guidata per creare e attivare un profilo | — |
 | `utPLSQL: Manage connection profiles` | Apre le impostazioni su `utplsql.profiles` | — |
 | `utPLSQL: Import connections from SQL Developer` | Importa le connessioni da SQL Developer (connections.xml) | — |
-| `utPLSQL: Debug test (PL/SQL)` | Avvia una sessione di debug del test nel file attivo | — |
-| `utPLSQL: Compila per il debug` | Compila l’oggetto del file/cartella selezionato con le informazioni di debug | — |
+| `utPLSQL: Debug test (PL/SQL)` | Avvia una sessione di debug del test nel file attivo | Il v3.2.x non compila (`PLS-00222`). Il charset `WE8DEC` dell'immagine perde i caratteri non rappresentabili (es. `€`); il driver thin ignora `NLS_LANG`. |
+| `utPLSQL: Debug del test al cursore` | Avvia una sessione di debug del `%test`/`%suite` sotto il cursore | — |
+| `utPLSQL: Debug dei test falliti` | Avvia una sessione di debug dei test falliti nell’ultima esecuzione (QuickPick se più di uno) | — |
+| `utPLSQL: Debug dell’ultima esecuzione` | Avvia una sessione di debug dell’ultima esecuzione | — |
+| `utPLSQL: Compila per il debug` | Compila l’oggetto del file/cartella selezionato con le informazioni di debug | Il v3.2.x non compila (`PLS-00222`). Il charset `WE8DEC` dell'immagine perde i caratteri non rappresentabili (es. `€`); il driver thin ignora `NLS_LANG`. |
 | `utPLSQL: Ricostruisci cache delle annotazioni` | Ricostruisce la cache delle annotazioni utPLSQL nel database e aggiorna l'albero | — |
 | `utPLSQL: Run script` | Runs the script open in the editor against a connection profile | Right-click → script file |
 | `utPLSQL: Run script file` | Runs an Explorer script file (decoded with the profile charset) | Right-click → file |
@@ -350,6 +353,8 @@ Tutte le scorciatoie usano il prefisso `Ctrl+Shift+U` (`Cmd+Shift+U` su Mac):
 | `Ctrl+Shift+U X` | Esegui solo i falliti |
 | `Ctrl+Shift+U Shift+C` | Toggle Coverage |
 | `Ctrl+Shift+U Shift+R` | Esegui test correlati |
+| `Ctrl+Shift+U D` | Debug del test al cursore |
+| `Ctrl+Shift+U Shift+D` | Debug dei test falliti |
 | `Escape` | Annulla l'esecuzione |
 
 ## Copertura

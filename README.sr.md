@@ -310,9 +310,12 @@ UTPLSQL_CONN=your_user/password@//host:1521/service
 | `utPLSQL: New connection profile...` | Чаробњак за креирање и активацију профила | — |
 | `utPLSQL: Manage connection profiles` | Отвара подешавања на `utplsql.profiles` | — |
 | `utPLSQL: Import connections from SQL Developer` | Увози везе из SQL Developer-а (connections.xml) | — |
-| `utPLSQL: Debug test (PL/SQL)` | Покреће сесију отклањања грешака теста у активној датотеци | — |
+| `utPLSQL: Debug test (PL/SQL)` | Покреће сесију отклањања грешака теста у активној датотеци | v3.2.x се не компајлира (`PLS-00222`). `WE8DEC` слике губи непредстављиве знакове (нпр. `€`); танки драјвер игнорише `NLS_LANG`. |
 | `utPLSQL: Поново изгради кеш напомена` | Поново изграђује кеш напомена utPLSQL у бази и освежава стабло | — |
-| `utPLSQL: Компилирај за отстрањивање грешака` | Компилира објекат изабране датотеке/фасцикле са информацијама за отстрањивање грешака | — |
+| `utPLSQL: Отклањање грешака теста под курсором` | Покреће сесију за отклањање грешака за `%test`/`%suite` испод курсора | — |
+| `utPLSQL: Отклањање грешака неуспелих тестова` | Покреће сесију за отклањање грешака за тестове који нису прошли у последњем покретању (QuickPick ако их је више) | — |
+| `utPLSQL: Отклањање грешака последњег покретања` | Покреће сесију за отклањање грешака последњег покретања | — |
+| `utPLSQL: Компилирај за отстрањивање грешака` | Компилира објекат изабране датотеке/фасцикле са информацијама за отстрањивање грешака | v3.2.x се не компајлира (`PLS-00222`). `WE8DEC` слике губи непредстављиве знакове (нпр. `€`); танки драјвер игнорише `NLS_LANG`. |
 | `utPLSQL: Run script` | Runs the script open in the editor against a connection profile | Right-click → script file |
 | `utPLSQL: Run script file` | Runs an Explorer script file (decoded with the profile charset) | Right-click → file |
 | `utPLSQL: Run script folder` | Runs the folder scripts in alphabetical order | Right-click → folder |
@@ -342,6 +345,8 @@ UTPLSQL_CONN=your_user/password@//host:1521/service
 | `Ctrl+Shift+U X` | Покрени само пале |
 | `Ctrl+Shift+U Shift+C` | Toggle Coverage |
 | `Ctrl+Shift+U Shift+R` | Покрени повезане тестове |
+| `Ctrl+Shift+U D` | Отклањање грешака теста под курсором |
+| `Ctrl+Shift+U Shift+D` | Отклањање грешака неуспелих тестова |
 | `Escape` | Откажи извршавање |
 
 ## Покривеност

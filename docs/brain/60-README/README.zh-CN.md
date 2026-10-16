@@ -317,9 +317,12 @@ UTPLSQL_CONN=your_user/password@//host:1521/service
 | `utPLSQL: New connection profile...` | 创建并激活配置的向导 | — |
 | `utPLSQL: Manage connection profiles` | 打开 `utplsql.profiles` 的设置 | — |
 | `utPLSQL: Import connections from SQL Developer` | 从 SQL Developer（connections.xml）导入连接 | — |
-| `utPLSQL: Debug test (PL/SQL)` | 为活动文件下的测试启动调试会话 | — |
+| `utPLSQL: Debug test (PL/SQL)` | 为活动文件下的测试启动调试会话 | v3.2.x 无法编译（`PLS-00222`）。镜像的 `WE8DEC` 会丢失无法表示的字符（例如 `€`）；精简驱动忽略 `NLS_LANG`。 |
 | `utPLSQL: 重建注释缓存` | 重建数据库中的 utPLSQL 注释缓存并刷新树 | — |
-| `utPLSQL: 编译以进行调试` | 使用调试信息编译所选文件/文件夹的对象 | — |
+| `utPLSQL: 在光标处调试测试` | 启动对光标处 `%test`/`%suite` 的调试会话 | — |
+| `utPLSQL: 调试失败的测试` | 启动对上次运行中失败测试的调试会话（多个时弹出 QuickPick） | — |
+| `utPLSQL: 调试上次运行` | 启动对上次运行的调试会话 | — |
+| `utPLSQL: 编译以进行调试` | 使用调试信息编译所选文件/文件夹的对象 | v3.2.x 无法编译（`PLS-00222`）。镜像的 `WE8DEC` 会丢失无法表示的字符（例如 `€`）；精简驱动忽略 `NLS_LANG`。 |
 | `utPLSQL: Run script` | Runs the script open in the editor against a connection profile | Right-click → script file |
 | `utPLSQL: Run script file` | Runs an Explorer script file (decoded with the profile charset) | Right-click → file |
 | `utPLSQL: Run script folder` | Runs the folder scripts in alphabetical order | Right-click → folder |
@@ -348,6 +351,8 @@ UTPLSQL_CONN=your_user/password@//host:1521/service
 | `Ctrl+Shift+U X` | 仅运行失败的测试 |
 | `Ctrl+Shift+U Shift+C` | Toggle Coverage |
 | `Ctrl+Shift+U Shift+R` | 运行相关测试 |
+| `Ctrl+Shift+U D` | 在光标处调试测试 |
+| `Ctrl+Shift+U Shift+D` | 调试失败的测试 |
 | `Escape` | 取消执行 |
 
 ## 覆盖率

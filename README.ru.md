@@ -311,9 +311,12 @@ UTPLSQL_CONN=your_user/password@//host:1521/service
 | `utPLSQL: New connection profile...` | Мастер создания и активации профиля | — |
 | `utPLSQL: Manage connection profiles` | Открывает настройки в `utplsql.profiles` | — |
 | `utPLSQL: Import connections from SQL Developer` | Импортирует подключения из SQL Developer (connections.xml) | — |
-| `utPLSQL: Debug test (PL/SQL)` | Запускает сеанс отладки теста в активном файле | — |
+| `utPLSQL: Debug test (PL/SQL)` | Запускает сеанс отладки теста в активном файле | v3.2.x не компилируется (`PLS-00222`). `WE8DEC` образа теряет непредставимые символы (например, `€`); тонкий драйвер игнорирует `NLS_LANG`. |
 | `utPLSQL: Перестроить кэш аннотаций` | Перестраивает кэш аннотаций utPLSQL в базе и обновляет дерево | — |
-| `utPLSQL: Скомпилировать для отладки` | Компилирует объект выбранного файла/папки с отладочной информацией | — |
+| `utPLSQL: Отладка теста под курсором` | Запускает сеанс отладки `%test`/`%suite` под курсором | — |
+| `utPLSQL: Отладка неудачных тестов` | Запускает сеанс отладки тестов, упавших в последнем запуске (QuickPick, если их несколько) | — |
+| `utPLSQL: Отладка последнего запуска` | Запускает сеанс отладки последнего запуска | — |
+| `utPLSQL: Скомпилировать для отладки` | Компилирует объект выбранного файла/папки с отладочной информацией | v3.2.x не компилируется (`PLS-00222`). `WE8DEC` образа теряет непредставимые символы (например, `€`); тонкий драйвер игнорирует `NLS_LANG`. |
 | `utPLSQL: Run script` | Runs the script open in the editor against a connection profile | Right-click → script file |
 | `utPLSQL: Run script file` | Runs an Explorer script file (decoded with the profile charset) | Right-click → file |
 | `utPLSQL: Run script folder` | Runs the folder scripts in alphabetical order | Right-click → folder |
@@ -343,6 +346,8 @@ UTPLSQL_CONN=your_user/password@//host:1521/service
 | `Ctrl+Shift+U X` | Запустить только проваленные |
 | `Ctrl+Shift+U Shift+C` | Toggle Coverage |
 | `Ctrl+Shift+U Shift+R` | Запустить связанные тесты |
+| `Ctrl+Shift+U D` | Отладка теста под курсором |
+| `Ctrl+Shift+U Shift+D` | Отладка неудачных тестов |
 | `Escape` | Отменить выполнение |
 
 ## Покрытие

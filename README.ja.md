@@ -304,9 +304,12 @@ UTPLSQL_CONN=your_user/password@//host:1521/service
 | `utPLSQL: New connection profile...` | プロファイルを作成・有効化するウィザード | — |
 | `utPLSQL: Manage connection profiles` | `utplsql.profiles` で設定を開く | — |
 | `utPLSQL: Import connections from SQL Developer` | SQL Developer から接続をインポート（connections.xml） | — |
-| `utPLSQL: Debug test (PL/SQL)` | アクティブなファイルのテストのデバッグセッションを開始 | — |
+| `utPLSQL: Debug test (PL/SQL)` | アクティブなファイルのテストのデバッグセッションを開始 | v3.2.x はコンパイル不可（`PLS-00222`）。イメージの `WE8DEC` では表現できない文字（例: `€`）が失われます。thin ドライバは `NLS_LANG` を無視します。 |
 | `utPLSQL: アノテーションキャッシュを再構築` | データベース内の utPLSQL アノテーションキャッシュを再構築し、ツリーを更新します | — |
-| `utPLSQL: デバッグ用にコンパイル` | 選択したファイル/フォルダーのオブジェクトをデバッグ情報付きでコンパイルします | — |
+| `utPLSQL: カーソル位置のテストをデバッグ` | カーソル位置の `%test`/`%suite` のデバッグセッションを開始します | — |
+| `utPLSQL: 失敗したテストをデバッグ` | 前回の実行で失敗したテストのデバッグセッションを開始します（複数ある場合は QuickPick） | — |
+| `utPLSQL: 前回の実行をデバッグ` | 前回の実行のデバッグセッションを開始します | — |
+| `utPLSQL: デバッグ用にコンパイル` | 選択したファイル/フォルダーのオブジェクトをデバッグ情報付きでコンパイルします | v3.2.x はコンパイル不可（`PLS-00222`）。イメージの `WE8DEC` では表現できない文字（例: `€`）が失われます。thin ドライバは `NLS_LANG` を無視します。 |
 | `utPLSQL: Run script` | Runs the script open in the editor against a connection profile | Right-click → script file |
 | `utPLSQL: Run script file` | Runs an Explorer script file (decoded with the profile charset) | Right-click → file |
 | `utPLSQL: Run script folder` | Runs the folder scripts in alphabetical order | Right-click → folder |
@@ -335,6 +338,8 @@ UTPLSQL_CONN=your_user/password@//host:1521/service
 | `Ctrl+Shift+U X` | 失敗したテストのみ実行 |
 | `Ctrl+Shift+U Shift+C` | Toggle Coverage |
 | `Ctrl+Shift+U Shift+R` | 関連テストを実行 |
+| `Ctrl+Shift+U D` | カーソル位置のテストをデバッグ |
+| `Ctrl+Shift+U Shift+D` | 失敗したテストをデバッグ |
 | `Escape` | 実行をキャンセル |
 
 ## カバレッジ
