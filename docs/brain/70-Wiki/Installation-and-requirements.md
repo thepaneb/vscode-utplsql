@@ -29,7 +29,7 @@ and install:
 
 **Command line:**
 ```bash
-code --install-extension vscode-utplsql-0.15.0.vsix
+code --install-extension vscode-utplsql-0.16.0.vsix
 ```
 
 **UI:** Extensions Panel (`Ctrl+Shift+X`) → `...` (top-right corner)

@@ -29,7 +29,7 @@ npm run sync-prds
 ## Planejamento por versão
 
 - **0.15.0 — “Tags e UX de execução”**: [[Roadmap - 0.15.0 (execução)]]
-- **0.16.0 — “Produtividade e resultados”**: [[Roadmap - 0.16.0 (planejamento)]]
+- **0.16.0 — “Produtividade e resultados”**: [[Roadmap - 0.16.0 (execução)]]
 - **0.17.0 — “UX de editor e cobertura”**: [[Roadmap - 0.17.0 (planejamento)]]
 - **0.18.0 — “Fundação: segurança, testes e anti-drift”**: [[Roadmap - 0.18.0 (planejamento)]]
 - **0.19.0 — “Refatoração de fundo”**: [[Roadmap - 0.19.0 (planejamento)]]
@@ -183,7 +183,7 @@ Detalhe completo (fonte da verdade): [docs/prd/index.md](../../prd/index.md)
 - [[prd-98-docs-anti-drift]] — `PRD-98`
 - [[prd-99-brain-reuse]] — `PRD-99`
 - [[Roadmap - 0.15.0 (execução)]]
-- [[Roadmap - 0.16.0 (planejamento)]]
+- [[Roadmap - 0.16.0 (execução)]]
 - [[Roadmap - 0.17.0 (planejamento)]]
 - [[Roadmap - 0.18.0 (planejamento)]]
 - [[Roadmap - 0.19.0 (planejamento)]]

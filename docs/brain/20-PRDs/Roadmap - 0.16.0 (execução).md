@@ -1,19 +1,20 @@
 ---
 tipo: nota
-status: ativo
+status: concluida
 modulo: prds
 data: 2026-10-10
-verificado: 2026-10-10
+verificado: 2026-10-15
+concluida: 2026-10-15
 tags: [prd, roadmap, planejamento]
 ---
 
-# Roadmap — 0.16.0 (planejamento)
+# Roadmap — 0.16.0 (execução)
 
-Plano da **0.16.0 — “Produtividade e resultados”**. O status e a versão alvo são a
-**fonte da verdade** no frontmatter das notas `prd-*`: ver [[MOC - PRDs]] e
-[docs/prd/index.md](../../../docs/prd/index.md).
+Plano de execução da **0.16.0 — “Produtividade e resultados”**. O status e a versão
+alvo são a **fonte da verdade** no frontmatter das notas `prd-*`: ver
+[[MOC - PRDs]] e [docs/prd/index.md](../../../docs/prd/index.md).
 
-## Escopo
+## Escopo aprovado
 
 | Ordem | PRD | Título | Esforço | Complexidade |
 |---|---|---|---|---|
@@ -95,6 +96,37 @@ main
    `BR-*`/`SEC-*` (`prds:`/`implementacao:`/`testes:`) e rodar `npm run brain:rules`;
    entry no `CHANGELOG.md`.
 4. `npm run brain:ci` + `npm run docs:check` antes de cada PR.
+
+## Definição de pronto (release)
+
+- 5 PRDs concluídos com `versao: "0.16.0"` (56, 57, 58, 59 e 100) e vínculo
+  bidirecional PRD ↔ regra (`BR-QUAL-003`, `BR-COB-007`, `BR-UI-014`,
+  `BR-UI-015`).
+- `package.json` = `0.16.0` + seção `## 0.16.0` no `CHANGELOG.md`.
+- Integração + matriz Oracle (thin/thick) verdes; cobertura publicada no Codecov.
+- Publicação via **GitHub release** → `publish.yml` (skill `release`) → post do
+  LinkedIn.
+
+## Status — concluída (0.16.0)
+
+Release **0.16.0 “Produtividade e resultados”** publicada. Os **5 PRDs** do escopo
+(56, 57, 58, 59 e 100) estão `completed` com `versao: "0.16.0"`; `package.json` =
+`0.16.0` e `CHANGELOG.md` com a seção `## 0.16.0`.
+
+- **Entregas:** scaffold de suíte (`utplsql.generateTestSuite`, PRD-59 + PRD-100,
+  entrega única), duração/persistência (PRD-56), multi-root `root`/`sourcePath`
+  por folder (PRD-57) e Run Related Tests (PRD-58).
+- **Testes:** 1311 unitários + E2E (`v016-features`); 2 bugs reais encontrados e
+  corrigidos na ampliação (cobertura duplicada em multi-root e sufixo de duração
+  acumulado).
+- **Matriz Oracle:** thin e thick **verdes** (12.2, 18xe, 19ee, 21xe, 23free) +
+  smoke local e integração completa.
+- **Docs:** `docs:check`/`brain:ci` verdes; controle novo de **conteúdo
+  descontinuado** (checks de stale no `docs-fidelity`) e auditoria de
+  consistência de **features** (README × wiki × funcional).
+- **Publicação:** GitHub release (`publish.yml`) e post de release.
+
+Roadmap **encerrado** — o próximo tema é **0.17.0** (PRD-105/108/109).
 
 ## Relacionado
 
