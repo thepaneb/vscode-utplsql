@@ -27,6 +27,7 @@ tags: [readme]
   <a href="https://codecov.io/gh/thepaneb/vscode-utplsql"><img alt="Coverage" src="https://codecov.io/gh/thepaneb/vscode-utplsql/branch/main/graph/badge.svg"></a>
   <img alt="VS Code" src="https://img.shields.io/badge/VS%20Code-1.101%2B-007ACC">
   <img alt="Node" src="https://img.shields.io/badge/node-22-339933?logo=nodedotjs&logoColor=white">
+  <img alt="TypeScript" src="https://img.shields.io/badge/TypeScript-7-3178C6?logo=typescript&logoColor=white">
   <img alt="Oracle" src="https://img.shields.io/badge/Oracle-12.2%2B-F80000?logo=oracle&logoColor=white">
   <img alt="License" src="https://img.shields.io/badge/license-MIT-blue">
   <a href="https://thepaneb.github.io/vscode-utplsql/"><img alt="Website" src="https://img.shields.io/badge/Website-vscode--utplsql-007ACC"></a>
@@ -46,6 +47,9 @@ Pokrenite i debugujte **utPLSQL** (Oracle PL/SQL) testove direktno u VS Code-u �
 - 🧩 **Дрво свесно шеме** — организуј тестове по Schema > Package > Suite > Test у Test Explorer-у.
 - 🏷️ **Ознаке и насумичан ред** — филтрирај тестове помоћу `utplsql.tags` (нпр. `fast & !integration`) или командом `utPLSQL: Run Tests by Tag...` (QuickPick са вишеструким избором; `!tag` искључује) и покрени у насумичном реду са поновљивим seed-ом (`utplsql.run.randomOrder`).
 - 🧭 **Дрво по ознакама** — организуј Test Explorer као **Tag > Suite > Test** помоћу `utplsql.organization = tag` (суит са више ознака појављује се под сваком ознаком) и прикажи `[tag1, tag2]` на лабелама помоћу `utplsql.showTagsInTree`.
+- 🏗️ **Скелет тест пакета** — прави `ut_<пакет>.pks` са једним `%test` по рутини из `.pks`/`.pkb` или објекта базе података, уз опције `utplsql.generate.*`.
+- ⏱️ **Трајање и трајност** — резултат последњег покретања (статус, порука и трајање по тесту) остаје после поновног отварања радног простора; опционо приказује `(1.2s)` на ознакама тестова (`utplsql.showTestDuration`).
+- 🔗 **Повезани тестови** — у продукционом `.pks`/`.pkb`/`.sql` покреће пакете по конвенцији `ut_<објекат>` (`Ctrl+Shift+U Shift+R`).
 - ♻️ **Аутоматско покретање при чувању** — поново покрени суитове сачуваног `.pks` помоћу `utplsql.autoRun = onSave`, са debounce-ом по датотеци (`utplsql.autoRunDelayMs`) и политиком реда када покретање већ траје (`utplsql.autoRunQueue`: `skip`/`replace`).
 - 🗄️ **DB-first откривање** — изгради стабло из `ut_runner.get_suites_info` и поново изгради кеш напомена са палете.
 - 🌳 **Lenjivo stablo testova** — u `schema` režimu paketi/suitovi/testovi se razrešavaju pri proširenju, pa se velike šeme otvaraju trenutno.
@@ -162,6 +166,11 @@ Test Explorer-у **како се сваки тест заврши**. VSIX већ
 | `utplsql.connection` | `""` | Oracle веза. **Оставите празно** и користите веријаблу окруžeња `UTPLSQL_CONN` да бисте избегли чување лозинке. Ако су обе празне, екстензија пита (чува само у сесији). |
 | `utplsql.sourcePath` | `install` | Фасцикла продукционог кода (за мапирање покривености на датотеке). |
 | `utplsql.includePatterns` | `["**/*.pks"]` | Glob узорци за проналажење спецификација са `%suite`/`%test`. Ако су ваши тестови у `.sql`, користите `["**/*.sql"]`. |
+| `utplsql.generate.testPackagePrefix` | `ut_` | Префикс назива направљеног тест пакета. |
+| `utplsql.generate.testPackageSuffix` | `""` | Суфикс назива направљеног тест пакета. |
+| `utplsql.generate.numberOfTestsPerUnit` | `1` | `%test` по рутини продукционог пакета. |
+| `utplsql.generate.generateComments` | `true` | Додаје `-- TODO` у сваки направљени `%test`. |
+| `utplsql.showTestDuration` | `false` | Додаје трајање последњег покретања на ознаке тестова (нпр. `(1.2s)`). |
 | `utplsql.coverageOwner` | `""` | Власник шеме покривених објеката. Празно = користи корисника везе (велика слова). |
 | `utplsql.coverage.schemes` | `[]` | Покривене шеме (`a_coverage_schemes`). Празно = корисник везе (или `utplsql.coverageOwner`). |
 | `utplsql.coverage.includeObjects` | `[]` | Објекти за укључивање у покривеност, као `OWNER.NAME` (нпр. `["APP.MY_PKG"]`). Корисно за објекте достигнуте само динамички. |
@@ -310,14 +319,19 @@ UTPLSQL_CONN=your_user/password@//host:1521/service
 | `utPLSQL: New connection profile...` | Чаробњак за креирање и активацију профила | — |
 | `utPLSQL: Manage connection profiles` | Отвара подешавања на `utplsql.profiles` | — |
 | `utPLSQL: Import connections from SQL Developer` | Увози везе из SQL Developer-а (connections.xml) | — |
-| `utPLSQL: Debug test (PL/SQL)` | Покреће сесију отклањања грешака теста у активној датотеци | — |
+| `utPLSQL: Debug test (PL/SQL)` | Покреће сесију отклањања грешака теста у активној датотеци | v3.2.x се не компајлира (`PLS-00222`). `WE8DEC` слике губи непредстављиве знакове (нпр. `€`); танки драјвер игнорише `NLS_LANG`. |
 | `utPLSQL: Поново изгради кеш напомена` | Поново изграђује кеш напомена utPLSQL у бази и освежава стабло | — |
-| `utPLSQL: Компилирај за отстрањивање грешака` | Компилира објекат изабране датотеке/фасцикле са информацијама за отстрањивање грешака | — |
+| `utPLSQL: Отклањање грешака теста под курсором` | Покреће сесију за отклањање грешака за `%test`/`%suite` испод курсора | — |
+| `utPLSQL: Отклањање грешака неуспелих тестова` | Покреће сесију за отклањање грешака за тестове који нису прошли у последњем покретању (QuickPick ако их је више) | — |
+| `utPLSQL: Отклањање грешака последњег покретања` | Покреће сесију за отклањање грешака последњег покретања | — |
+| `utPLSQL: Компилирај за отстрањивање грешака` | Компилира објекат изабране датотеке/фасцикле са информацијама за отстрањивање грешака | v3.2.x се не компајлира (`PLS-00222`). `WE8DEC` слике губи непредстављиве знакове (нпр. `€`); танки драјвер игнорише `NLS_LANG`. |
 | `utPLSQL: Run script` | Runs the script open in the editor against a connection profile | Right-click → script file |
 | `utPLSQL: Run script file` | Runs an Explorer script file (decoded with the profile charset) | Right-click → file |
 | `utPLSQL: Run script folder` | Runs the folder scripts in alphabetical order | Right-click → folder |
 | `utPLSQL: Подеси лозинку новчаника` | Поставља/брише лозинку новчаника активног профила (SecretStorage) | — |
 | `utPLSQL: Покрени са reporter-ом (извоз)` | Покреће избор са изабраним reporter-ом и пише излаз у Output/датотеку (не мења резултате) | Test Explorer → menu do item |
+| `utPLSQL: Направи тест пакет…` | прави `ut_<пакет>.pks` са једним `%test` по рутини из `.pks`/`.pkb` или објекта базе података, уз опције `utplsql.generate.*` | v3.2.x се не компајлира (`PLS-00222`). `WE8DEC` слике губи непредстављиве знакове (нпр. `€`); танки драјвер игнорише `NLS_LANG`. |
+| `utPLSQL: Покрени повезане тестове` | у продукционом `.pks`/`.pkb`/`.sql` покреће пакете по конвенцији `ut_<објекат>` | v3.2.x се не компајлира (`PLS-00222`). `WE8DEC` слике губи непредстављиве знакове (нпр. `€`); танки драјвер игнорише `NLS_LANG`. |
 
 > **Recompile UT3** (`utplsql.recompileUt3`) **није** команда у палети — то је
 > интерни quick-fix дијагностике „utPLSQL Setup" (неважећи објекти у
@@ -338,6 +352,10 @@ UTPLSQL_CONN=your_user/password@//host:1521/service
 | `Ctrl+Shift+U L` | Понови последње |
 | `Ctrl+Shift+U U` | Покрени на курсору |
 | `Ctrl+Shift+U X` | Покрени само пале |
+| `Ctrl+Shift+U Shift+C` | Toggle Coverage |
+| `Ctrl+Shift+U Shift+R` | Покрени повезане тестове |
+| `Ctrl+Shift+U D` | Отклањање грешака теста под курсором |
+| `Ctrl+Shift+U Shift+D` | Отклањање грешака неуспелих тестова |
 | `Escape` | Откажи извршавање |
 
 ## Покривеност
@@ -399,7 +417,6 @@ GRANT SELECT ON SYS.DBA_PROCEDURES TO <ut3_owner>;
 - Мапирање резултат→тест ради се по имену пакета + имену/опису теста;
   идентични описи у различитим пакетима могу створити двосмисленост (индекс је
   ограничен по пакету да би се то минимизирало).
-- Узима у обзир **прву** фасциклу радног простора за резолуцију `sourcePath`-а.
 - Откривање чита `.pks` (спецификације); држите `%suite`/`%test` анотације у спецификацији.
 
 ## Решавање проблема

@@ -27,6 +27,7 @@ tags: [readme]
   <a href="https://codecov.io/gh/thepaneb/vscode-utplsql"><img alt="Coverage" src="https://codecov.io/gh/thepaneb/vscode-utplsql/branch/main/graph/badge.svg"></a>
   <img alt="VS Code" src="https://img.shields.io/badge/VS%20Code-1.101%2B-007ACC">
   <img alt="Node" src="https://img.shields.io/badge/node-22-339933?logo=nodedotjs&logoColor=white">
+  <img alt="TypeScript" src="https://img.shields.io/badge/TypeScript-7-3178C6?logo=typescript&logoColor=white">
   <img alt="Oracle" src="https://img.shields.io/badge/Oracle-12.2%2B-F80000?logo=oracle&logoColor=white">
   <img alt="License" src="https://img.shields.io/badge/license-MIT-blue">
   <a href="https://thepaneb.github.io/vscode-utplsql/"><img alt="Website" src="https://img.shields.io/badge/Website-vscode--utplsql-007ACC"></a>
@@ -46,6 +47,9 @@ Rulează și depanează teste **utPLSQL** (Oracle PL/SQL) direct în VS Code —
 - 🧩 **Arbore conștient de schemă** — organizează testele după Schema > Package > Suite > Test în Test Explorer.
 - 🏷️ **Tag-uri și ordine aleatorie** — filtrează testele cu `utplsql.tags` (ex. `fast & !integration`) sau cu comanda `utPLSQL: Run Tests by Tag...` (QuickPick cu selecție multiplă; `!tag` exclude), și rulează în ordine aleatorie cu seed reproductibil (`utplsql.run.randomOrder`).
 - 🧭 **Arbore după tag** — organizează Test Explorer ca **Tag > Suite > Test** cu `utplsql.organization = tag` (o suită cu mai multe tag-uri apare sub fiecare tag) și afișează `[tag1, tag2]` pe etichete cu `utplsql.showTagsInTree`.
+- 🏗️ **Schelet de suită de teste** — generează `ut_<pachet>.pks` cu un `%test` per rutină dintr-un `.pks`/`.pkb` sau obiect de bază de date, cu opțiunile `utplsql.generate.*`.
+- ⏱️ **Durată și persistență** — rezultatul ultimei rulări (stare, mesaj și durata fiecărui test) supraviețuiește reîncărcării spațiului de lucru; opțional afișează `(1.2s)` pe etichetele testelor (`utplsql.showTestDuration`).
+- 🔗 **Teste asociate** — într-un `.pks`/`.pkb`/`.sql` de producție, rulează suitele după convenția `ut_<obiect>` (`Ctrl+Shift+U Shift+R`).
 - ♻️ **Rulare automată la salvare** — re-rulează suitele fișierului `.pks` salvat cu `utplsql.autoRun = onSave`, cu un debounce per fișier (`utplsql.autoRunDelayMs`) și o politică de coadă când o rulare este deja în curs (`utplsql.autoRunQueue`: `skip`/`replace`).
 - 🗄️ **Descoperire DB-first** — construiește arborele din `ut_runner.get_suites_info` și reconstruiește cache-ul de adnotări din paletă.
 - 🌳 **Arbore de teste lazy** — în modul `schema`, pachetele/suitele/testele sunt rezolvate la cerere la expandare, așa că schemele mari se deschid instant.
@@ -163,6 +167,11 @@ Extensia se conectează direct prin Oracle, citește rapoartele (JUnit + Coverag
 | `utplsql.connection` | `""` | Conexiunea Oracle. **Lasă gol** și folosește variabila de mediu `UTPLSQL_CONN` pentru a evita stocarea parolei. Dacă ambele sunt goale, extensia întreabă (o păstrează doar în sesiune). |
 | `utplsql.sourcePath` | `install` | Folderul codului de producție (pentru maparea acoperirii pe fișiere). |
 | `utplsql.includePatterns` | `["**/*.pks"]` | Glob-uri pentru descoperirea spec-urilor cu `%suite`/`%test`. Dacă testele tale sunt în `.sql`, folosește `["**/*.sql"]`. |
+| `utplsql.generate.testPackagePrefix` | `ut_` | Prefixul numelui pachetului de teste generat. |
+| `utplsql.generate.testPackageSuffix` | `""` | Sufixul numelui pachetului de teste generat. |
+| `utplsql.generate.numberOfTestsPerUnit` | `1` | `%test` generate pentru fiecare rutină a pachetului de producție. |
+| `utplsql.generate.generateComments` | `true` | Adaugă `-- TODO` la fiecare `%test` generat. |
+| `utplsql.showTestDuration` | `false` | Adaugă durata ultimei rulări la etichetele testelor (de ex. `(1.2s)`). |
 | `utplsql.coverageOwner` | `""` | Schema proprietară a obiectelor acoperite. Gol = folosește utilizatorul conexiunii (cu majuscule). |
 | `utplsql.coverage.schemes` | `[]` | Scheme acoperite (`a_coverage_schemes`). Gol = utilizatorul conexiunii (sau `utplsql.coverageOwner`). |
 | `utplsql.coverage.includeObjects` | `[]` | Obiecte de inclus în acoperire, ca `OWNER.NAME` (ex.: `["APP.MY_PKG"]`). Util pentru obiecte atinse doar dinamic. |
@@ -311,14 +320,19 @@ Toate comenzile extensiei (paletă `Ctrl+Shift+P`, prefix `utPLSQL:`):
 | `utPLSQL: New connection profile...` | Asistent pentru crearea și activarea unui profil | — |
 | `utPLSQL: Manage connection profiles` | Deschide setările la `utplsql.profiles` | — |
 | `utPLSQL: Import connections from SQL Developer` | Importă conexiuni din SQL Developer (connections.xml) | — |
-| `utPLSQL: Debug test (PL/SQL)` | Pornește o sesiune de depanare a testului din fișierul activ | — |
+| `utPLSQL: Debug test (PL/SQL)` | Pornește o sesiune de depanare a testului din fișierul activ | v3.2.x nu se compilează (`PLS-00222`). `WE8DEC` al imaginii pierde caractere nereprezentabile (ex. `€`); driverul subțire ignoră `NLS_LANG`. |
 | `utPLSQL: Reconstruiește cache-ul de adnotări` | Reconstruiește cache-ul de adnotări utPLSQL în baza de date și reîmprospătează arborele | — |
-| `utPLSQL: Compilare pentru depanare` | Compilează obiectul fișierului/dosarului selectat cu informații de depanare | — |
+| `utPLSQL: Depanează testul de la cursor` | Pornește o sesiune de depanare pentru `%test`/`%suite` de sub cursor | — |
+| `utPLSQL: Depanează testele eșuate` | Pornește o sesiune de depanare pentru testele care au eșuat la ultima rulare (QuickPick dacă sunt mai multe) | — |
+| `utPLSQL: Depanează ultima execuție` | Pornește o sesiune de depanare a ultimei rulări | — |
+| `utPLSQL: Compilare pentru depanare` | Compilează obiectul fișierului/dosarului selectat cu informații de depanare | v3.2.x nu se compilează (`PLS-00222`). `WE8DEC` al imaginii pierde caractere nereprezentabile (ex. `€`); driverul subțire ignoră `NLS_LANG`. |
 | `utPLSQL: Run script` | Runs the script open in the editor against a connection profile | Right-click → script file |
 | `utPLSQL: Run script file` | Runs an Explorer script file (decoded with the profile charset) | Right-click → file |
 | `utPLSQL: Run script folder` | Runs the folder scripts in alphabetical order | Right-click → folder |
 | `utPLSQL: Setează parola portofelului` | Setează/șterge parola portofelului profilului activ (SecretStorage) | — |
 | `utPLSQL: Rulează cu reporter (export)` | Rulează selecția cu reporterul ales și scrie ieșirea în Output/fișier (nu schimbă rezultatele) | Test Explorer → menu do item |
+| `utPLSQL: Generează suita de teste…` | generează `ut_<pachet>.pks` cu un `%test` per rutină dintr-un `.pks`/`.pkb` sau obiect de bază de date, cu opțiunile `utplsql.generate.*` | v3.2.x nu se compilează (`PLS-00222`). `WE8DEC` al imaginii pierde caractere nereprezentabile (ex. `€`); driverul subțire ignoră `NLS_LANG`. |
+| `utPLSQL: Rulează testele asociate` | într-un `.pks`/`.pkb`/`.sql` de producție, rulează suitele după convenția `ut_<obiect>` | v3.2.x nu se compilează (`PLS-00222`). `WE8DEC` al imaginii pierde caractere nereprezentabile (ex. `€`); driverul subțire ignoră `NLS_LANG`. |
 
 > **Recompile UT3** (`utplsql.recompileUt3`) **nu** este o comandă din paletă — este
 > un quick-fix intern al diagnosticului „utPLSQL Setup" (obiecte invalide în
@@ -339,6 +353,10 @@ Toate combinațiile folosesc prefixul `Ctrl+Shift+U` (`Cmd+Shift+U` pe Mac):
 | `Ctrl+Shift+U L` | Re-rulează ultimul |
 | `Ctrl+Shift+U U` | Rulează la cursor |
 | `Ctrl+Shift+U X` | Rulează doar eșuatele |
+| `Ctrl+Shift+U Shift+C` | Toggle Coverage |
+| `Ctrl+Shift+U Shift+R` | Rulează testele asociate |
+| `Ctrl+Shift+U D` | Depanează testul de la cursor |
+| `Ctrl+Shift+U Shift+D` | Depanează testele eșuate |
 | `Escape` | Anulează execuția |
 
 ## Acoperire
@@ -400,7 +418,6 @@ GRANT SELECT ON SYS.DBA_PROCEDURES TO <ut3_owner>;
 - Maparea rezultat→test se face după numele pachetului + numele/descrierea testului;
   descrieri identice în pachete diferite pot crea ambiguitate (indexul este
   limitat la pachet pentru a minimiza acest lucru).
-- Ia în considerare **primul** folder din workspace pentru a rezolva `sourcePath`.
 - Descoperirea citește `.pks` (spec-urile); păstrează adnotările `%suite`/`%test` în spec.
 
 ## Depanare

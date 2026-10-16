@@ -18,6 +18,7 @@
   <a href="https://codecov.io/gh/thepaneb/vscode-utplsql"><img alt="Coverage" src="https://codecov.io/gh/thepaneb/vscode-utplsql/branch/main/graph/badge.svg"></a>
   <img alt="VS Code" src="https://img.shields.io/badge/VS%20Code-1.101%2B-007ACC">
   <img alt="Node" src="https://img.shields.io/badge/node-22-339933?logo=nodedotjs&logoColor=white">
+  <img alt="TypeScript" src="https://img.shields.io/badge/TypeScript-7-3178C6?logo=typescript&logoColor=white">
   <img alt="Oracle" src="https://img.shields.io/badge/Oracle-12.2%2B-F80000?logo=oracle&logoColor=white">
   <img alt="License" src="https://img.shields.io/badge/license-MIT-blue">
   <a href="https://thepaneb.github.io/vscode-utplsql/"><img alt="Website" src="https://img.shields.io/badge/Website-vscode--utplsql-007ACC"></a>
@@ -37,6 +38,9 @@
 - 🧩 **스키마 인식 트리** — Test Explorer에서 Schema > Package > Suite > Test로 테스트를 구성.
 - 🏷️ **태그 및 무작위 순서** — `utplsql.tags`(예: `fast & !integration`) 또는 `utPLSQL: Run Tests by Tag...` 명령(다중 선택 QuickPick, `!tag`는 제외)으로 테스트를 필터링하고 재현 가능한 seed(`utplsql.run.randomOrder`)로 무작위 순서로 실행합니다.
 - 🧭 **태그 기반 트리** — `utplsql.organization = tag`로 Test Explorer를 **Tag > Suite > Test**로 구성하고(여러 태그가 있는 suite는 각 태그 아래에 표시됨) `utplsql.showTagsInTree`로 레이블에 `[tag1, tag2]`를 표시합니다.
+- 🏗️ **테스트 스위트 스캐폴드** — `.pks`/`.pkb` 또는 데이터베이스 객체에서 루틴마다 `%test` 하나를 가진 `ut_<패키지>.pks`를 생성합니다(`utplsql.generate.*` 옵션).
+- ⏱️ **소요 시간과 지속성** — 마지막 실행 결과(상태, 메시지, 테스트별 소요 시간)가 워크스페이스를 다시 열어도 유지됩니다. 선택적으로 테스트 레이블에 `(1.2s)`를 표시합니다(`utplsql.showTestDuration`).
+- 🔗 **관련 테스트** — 운영 `.pks`/`.pkb`/`.sql`에서 `ut_<객체>` 규칙에 따라 스위트를 실행합니다(`Ctrl+Shift+U Shift+R`).
 - ♻️ **저장 시 자동 실행** — 저장된 `.pks`의 suite를 `utplsql.autoRun = onSave`로 다시 실행하며, 파일별 debounce(`utplsql.autoRunDelayMs`)와 실행 중일 때의 대기열 정책(`utplsql.autoRunQueue`: `skip`/`replace`)을 제공합니다.
 - 🗄️ **DB 우선 검색** — `ut_runner.get_suites_info`로 트리를 만들고 팔레트에서 주석 캐시를 다시 작성합니다.
 - 🌳 **지연 로딩 테스트 트리** — `schema` 모드에서 package/suite/test가 펼칠 때 필요에 따라 해석되어 큰 스키마도 즉시 열립니다.
@@ -154,6 +158,11 @@ Test Explorer에 나타납니다.
 | `utplsql.connection` | `""` | Oracle 연결. **비워 두고** 비밀번호 저장을 피하려면 `UTPLSQL_CONN` 환경 변수를 사용하세요. 둘 다 비어 있으면 확장 프로그램이 묻습니다(세션에만 유지). |
 | `utplsql.sourcePath` | `install` | 프로덕션 코드 폴더(커버리지를 파일에 매핑하기 위해). |
 | `utplsql.includePatterns` | `["**/*.pks"]` | `%suite`/`%test`가 있는 스펙을 발견하기 위한 glob. 테스트가 `.sql`에 있으면 `["**/*.sql"]`을 사용하세요. |
+| `utplsql.generate.testPackagePrefix` | `ut_` | 생성되는 테스트 패키지 이름의 접두사입니다. |
+| `utplsql.generate.testPackageSuffix` | `""` | 생성되는 테스트 패키지 이름의 접미사입니다. |
+| `utplsql.generate.numberOfTestsPerUnit` | `1` | 운영 패키지의 루틴마다 생성되는 `%test` 수입니다. |
+| `utplsql.generate.generateComments` | `true` | 생성되는 각 `%test`에 `-- TODO`를 추가합니다. |
+| `utplsql.showTestDuration` | `false` | 마지막 실행의 소요 시간을 테스트 레이블에 붙입니다(예: `(1.2s)`). |
 | `utplsql.coverageOwner` | `""` | 커버리지 대상 객체의 스키마 소유자. 비어 있음 = 연결 사용자 사용(대문자). |
 | `utplsql.coverage.schemes` | `[]` | 커버리지 대상 스키마(`a_coverage_schemes`). 비어 있음 = 연결 사용자(또는 `utplsql.coverageOwner`). |
 | `utplsql.coverage.includeObjects` | `[]` | 커버리지에 포함할 객체(`OWNER.NAME` 형식, 예: `["APP.MY_PKG"]`). 동적으로만 도달하는 객체에 유용합니다. |
@@ -301,14 +310,19 @@ UTPLSQL_CONN=your_user/password@//host:1521/service
 | `utPLSQL: New connection profile...` | 프로필 생성 및 활성화 마법사 | — |
 | `utPLSQL: Manage connection profiles` | `utplsql.profiles`에서 설정 열기 | — |
 | `utPLSQL: Import connections from SQL Developer` | SQL Developer에서 연결 가져오기(connections.xml) | — |
-| `utPLSQL: Debug test (PL/SQL)` | 활성 파일 아래의 테스트 디버그 세션 시작 | — |
+| `utPLSQL: Debug test (PL/SQL)` | 활성 파일 아래의 테스트 디버그 세션 시작 | v3.2.x는 컴파일되지 않습니다(`PLS-00222`). 이미지의 `WE8DEC`은 표현할 수 없는 문자(예: `€`)를 잃습니다. thin 드라이버는 `NLS_LANG`을 무시합니다. |
 | `utPLSQL: 주석 캐시 다시 작성` | 데이터베이스의 utPLSQL 주석 캐시를 다시 작성하고 트리를 갱신합니다 | — |
-| `utPLSQL: 디버그용으로 컴파일` | 선택한 파일/폴더의 개체를 디버그 정보와 함께 컴파일합니다 | — |
+| `utPLSQL: 커서 위치의 테스트 디버그` | 커서 위치의 `%test`/`%suite`에 대한 디버그 세션을 시작합니다 | — |
+| `utPLSQL: 실패한 테스트 디버그` | 마지막 실행에서 실패한 테스트의 디버그 세션을 시작합니다(여러 개면 QuickPick) | — |
+| `utPLSQL: 마지막 실행 디버그` | 마지막 실행의 디버그 세션을 시작합니다 | — |
+| `utPLSQL: 디버그용으로 컴파일` | 선택한 파일/폴더의 개체를 디버그 정보와 함께 컴파일합니다 | v3.2.x는 컴파일되지 않습니다(`PLS-00222`). 이미지의 `WE8DEC`은 표현할 수 없는 문자(예: `€`)를 잃습니다. thin 드라이버는 `NLS_LANG`을 무시합니다. |
 | `utPLSQL: Run script` | Runs the script open in the editor against a connection profile | Right-click → script file |
 | `utPLSQL: Run script file` | Runs an Explorer script file (decoded with the profile charset) | Right-click → file |
 | `utPLSQL: Run script folder` | Runs the folder scripts in alphabetical order | Right-click → folder |
 | `utPLSQL: 월렛 비밀번호 설정` | 활성 프로필의 월렛 비밀번호 설정/해제(SecretStorage) | — |
 | `utPLSQL: reporter로 실행(내보내기)` | 선택 항목을 선택한 reporter로 실행하고 출력을 Output/파일에 저장합니다(결과는 변경하지 않음) | Test Explorer → menu do item |
+| `utPLSQL: 테스트 스위트 생성…` | `.pks`/`.pkb` 또는 데이터베이스 객체에서 루틴마다 `%test` 하나를 가진 `ut_<패키지>.pks`를 생성합니다(`utplsql.generate.*` 옵션) | v3.2.x는 컴파일되지 않습니다(`PLS-00222`). 이미지의 `WE8DEC`은 표현할 수 없는 문자(예: `€`)를 잃습니다. thin 드라이버는 `NLS_LANG`을 무시합니다. |
+| `utPLSQL: 관련 테스트 실행` | 운영 `.pks`/`.pkb`/`.sql`에서 `ut_<객체>` 규칙에 따라 스위트를 실행합니다 | v3.2.x는 컴파일되지 않습니다(`PLS-00222`). 이미지의 `WE8DEC`은 표현할 수 없는 문자(예: `€`)를 잃습니다. thin 드라이버는 `NLS_LANG`을 무시합니다. |
 
 > **Recompile UT3**(`utplsql.recompileUt3`)은 팔레트 명령이 **아닙니다** —
 > "utPLSQL Setup" 진단(utPLSQL 스키마의 잘못된 객체)의 내부 quick-fix입니다.
@@ -328,6 +342,10 @@ UTPLSQL_CONN=your_user/password@//host:1521/service
 | `Ctrl+Shift+U L` | 마지막 실행 반복 |
 | `Ctrl+Shift+U U` | 커서에서 실행 |
 | `Ctrl+Shift+U X` | 실패한 것만 실행 |
+| `Ctrl+Shift+U Shift+C` | Toggle Coverage |
+| `Ctrl+Shift+U Shift+R` | 관련 테스트 실행 |
+| `Ctrl+Shift+U D` | 커서 위치의 테스트 디버그 |
+| `Ctrl+Shift+U Shift+D` | 실패한 테스트 디버그 |
 | `Escape` | 실행 취소 |
 
 ## 커버리지
@@ -392,7 +410,6 @@ GRANT SELECT ON SYS.DBA_PROCEDURES TO <ut3_owner>;
 - 결과→테스트 매핑은 패키지 이름 + 테스트 이름/설명으로 수행됩니다;
   다른 패키지의 동일한 설명은 모호성을 만들 수 있습니다(인덱스는
   패키지로 범위가 지정되어 이를 최소화).
-- `sourcePath`를 확인하기 위해 **첫 번째** 워크스페이스 폴더를 고려합니다.
 - 발견은 `.pks`(스펙)를 읽습니다; `%suite`/`%test` 주석을 스펙에 유지하세요.
 
 ## 문제 해결

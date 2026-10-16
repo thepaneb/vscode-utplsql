@@ -27,6 +27,7 @@ tags: [readme]
   <a href="https://codecov.io/gh/thepaneb/vscode-utplsql"><img alt="Coverage" src="https://codecov.io/gh/thepaneb/vscode-utplsql/branch/main/graph/badge.svg"></a>
   <img alt="VS Code" src="https://img.shields.io/badge/VS%20Code-1.101%2B-007ACC">
   <img alt="Node" src="https://img.shields.io/badge/node-22-339933?logo=nodedotjs&logoColor=white">
+  <img alt="TypeScript" src="https://img.shields.io/badge/TypeScript-7-3178C6?logo=typescript&logoColor=white">
   <img alt="Oracle" src="https://img.shields.io/badge/Oracle-12.2%2B-F80000?logo=oracle&logoColor=white">
   <img alt="License" src="https://img.shields.io/badge/license-MIT-blue">
   <a href="https://thepaneb.github.io/vscode-utplsql/"><img alt="Website" src="https://img.shields.io/badge/Website-vscode--utplsql-007ACC"></a>
@@ -46,6 +47,9 @@ Spouštějte a laďte testy **utPLSQL** (Oracle PL/SQL) přímo ve VS Code — n
 - 🧩 **Strom podle schémat** — uspořádání testů podle Schema > Package > Suite > Test v Test Exploreru.
 - 🏷️ **Tagy a náhodné pořadí** — filtrujte testy pomocí `utplsql.tags` (např. `fast & !integration`) nebo příkazu `utPLSQL: Run Tests by Tag...` (QuickPick s vícenásobným výběrem; `!tag` vylučuje) a spouštějte v náhodném pořadí s reprodukovatelným seedem (`utplsql.run.randomOrder`).
 - 🧭 **Strom podle tagů** — uspořádejte Test Explorer jako **Tag > Suite > Test** pomocí `utplsql.organization = tag` (sada s více tagy se objeví pod každým tagem) a zobrazte `[tag1, tag2]` na popiscích pomocí `utplsql.showTagsInTree`.
+- 🏗️ **Kostra testovací sady** — vygeneruje `ut_<balíček>.pks` s jedním `%test` na rutinu ze souboru `.pks`/`.pkb` nebo databázového objektu, s možnostmi `utplsql.generate.*`.
+- ⏱️ **Doba běhu a perzistence** — výsledek posledního běhu (stav, zpráva a doba u každého testu) přežije znovuotevření pracovního prostoru; volitelně zobrazuje `(1.2s)` u popisků testů (`utplsql.showTestDuration`).
+- 🔗 **Související testy** — v produkčním `.pks`/`.pkb`/`.sql` spustí sady podle konvence `ut_<objekt>` (`Ctrl+Shift+U Shift+R`).
 - ♻️ **Automatické spuštění při uložení** — znovu spusťte sady uloženého `.pks` pomocí `utplsql.autoRun = onSave`, s debounce na soubor (`utplsql.autoRunDelayMs`) a zásadou fronty, když už běží spuštění (`utplsql.autoRunQueue`: `skip`/`replace`).
 - 🗄️ **Objevování DB-first** — sestavte strom z `ut_runner.get_suites_info` a přestavte mezipaměť anotací z palety.
 - 🌳 **Líně načítaný strom testů** — v režimu `schema` se balíčky/sady/testy načítají až při rozbalení, takže velká schémata se otevřou okamžitě.
@@ -164,6 +168,11 @@ nativních API VSCode.
 | `utplsql.connection` | `""` | Připojení k Oracle. **Nechte prázdné** a použijte proměnnou prostředí `UTPLSQL_CONN`, abyste neukládali heslo. Pokud jsou obě prázdné, rozšíření se zeptá (uchová pouze v relaci). |
 | `utplsql.sourcePath` | `install` | Složka produkčního kódu (pro mapování pokrytí na soubory). |
 | `utplsql.includePatterns` | `["**/*.pks"]` | Globy pro objevení specifikací s `%suite`/`%test`. Pokud jsou vaše testy v `.sql`, použijte `["**/*.sql"]`. |
+| `utplsql.generate.testPackagePrefix` | `ut_` | Předpona názvu generovaného testovacího balíčku. |
+| `utplsql.generate.testPackageSuffix` | `""` | Přípona názvu generovaného testovacího balíčku. |
+| `utplsql.generate.numberOfTestsPerUnit` | `1` | `%test` vygenerovaných pro každou rutinu produkčního balíčku. |
+| `utplsql.generate.generateComments` | `true` | Přidá `-- TODO` ke každému vygenerovanému `%test`. |
+| `utplsql.showTestDuration` | `false` | Přidá dobu posledního běhu k popiskům testů (např. `(1.2s)`). |
 | `utplsql.coverageOwner` | `""` | Vlastník schématu pokrytých objektů. Prázdné = použije uživatele připojení (velkými písmeny). |
 | `utplsql.coverage.schemes` | `[]` | Pokrytá schémata (`a_coverage_schemes`). Prázdné = uživatel připojení (nebo `utplsql.coverageOwner`). |
 | `utplsql.coverage.includeObjects` | `[]` | Objekty k zahrnutí do pokrytí, jako `OWNER.NAME` (např. `["APP.MY_PKG"]`). Užitečné pro objekty dosažené jen dynamicky. |
@@ -312,14 +321,19 @@ Všechny příkazy rozšíření (paleta `Ctrl+Shift+P`, předpona `utPLSQL:`):
 | `utPLSQL: New connection profile...` | Průvodce vytvořením a aktivací profilu | — |
 | `utPLSQL: Manage connection profiles` | Otevře nastavení na `utplsql.profiles` | — |
 | `utPLSQL: Import connections from SQL Developer` | Importuje připojení ze SQL Developeru (connections.xml) | — |
-| `utPLSQL: Debug test (PL/SQL)` | Spustí ladící relaci testu pod aktivním souborem | — |
+| `utPLSQL: Debug test (PL/SQL)` | Spustí ladící relaci testu pod aktivním souborem | v3.2.x se nezkompiluje (`PLS-00222`). `WE8DEC` obrazu ztrácí nereprezentovatelné znaky (např. `€`); tenký ovladač ignoruje `NLS_LANG`. |
 | `utPLSQL: Přestavět mezipaměť anotací` | Přestaví mezipaměť anotací utPLSQL v databázi a obnoví strom | — |
-| `utPLSQL: Zkompilovat pro ladění` | Zkompiluje objekt vybraného souboru/složky s ladicími informacemi | — |
+| `utPLSQL: Ladit test na pozici kurzoru` | Spustí ladicí relaci pro `%test`/`%suite` pod kurzorem | — |
+| `utPLSQL: Ladit neúspěšné testy` | Spustí ladicí relaci pro testy, které selhaly při posledním běhu (QuickPick při více) | — |
+| `utPLSQL: Ladit poslední spuštění` | Spustí ladicí relaci posledního běhu | — |
+| `utPLSQL: Zkompilovat pro ladění` | Zkompiluje objekt vybraného souboru/složky s ladicími informacemi | v3.2.x se nezkompiluje (`PLS-00222`). `WE8DEC` obrazu ztrácí nereprezentovatelné znaky (např. `€`); tenký ovladač ignoruje `NLS_LANG`. |
 | `utPLSQL: Run script` | Runs the script open in the editor against a connection profile | Right-click → script file |
 | `utPLSQL: Run script file` | Runs an Explorer script file (decoded with the profile charset) | Right-click → file |
 | `utPLSQL: Run script folder` | Runs the folder scripts in alphabetical order | Right-click → folder |
 | `utPLSQL: Nastavit heslo peněženky` | Nastaví/vymaže heslo peněženky aktivního profilu (SecretStorage) | — |
 | `utPLSQL: Spustit s reporterem (export)` | Spustí výběr se zvoleným reporterem a zapíše výstup do Output/souboru (nemění výsledky) | Test Explorer → menu do item |
+| `utPLSQL: Vygenerovat testovací sadu…` | vygeneruje `ut_<balíček>.pks` s jedním `%test` na rutinu ze souboru `.pks`/`.pkb` nebo databázového objektu, s možnostmi `utplsql.generate.*` | v3.2.x se nezkompiluje (`PLS-00222`). `WE8DEC` obrazu ztrácí nereprezentovatelné znaky (např. `€`); tenký ovladač ignoruje `NLS_LANG`. |
+| `utPLSQL: Spustit související testy` | v produkčním `.pks`/`.pkb`/`.sql` spustí sady podle konvence `ut_<objekt>` | v3.2.x se nezkompiluje (`PLS-00222`). `WE8DEC` obrazu ztrácí nereprezentovatelné znaky (např. `€`); tenký ovladač ignoruje `NLS_LANG`. |
 
 > **Recompile UT3** (`utplsql.recompileUt3`) **není** příkaz palety — je to
 > interní rychlá oprava diagnostiky „utPLSQL Setup" (neplatné objekty ve
@@ -340,6 +354,10 @@ Všechny zkratky používají předponu `Ctrl+Shift+U` (`Cmd+Shift+U` na Macu):
 | `Ctrl+Shift+U L` | Rerun last |
 | `Ctrl+Shift+U U` | Run at cursor |
 | `Ctrl+Shift+U X` | Run failed only |
+| `Ctrl+Shift+U Shift+C` | Toggle Coverage |
+| `Ctrl+Shift+U Shift+R` | Spustit související testy |
+| `Ctrl+Shift+U D` | Ladit test na pozici kurzoru |
+| `Ctrl+Shift+U Shift+D` | Ladit neúspěšné testy |
 | `Escape` | Cancel run |
 
 ## Pokrytí
@@ -403,7 +421,6 @@ GRANT SELECT ON SYS.DBA_PROCEDURES TO <ut3_owner>;
 - Mapování výsledek→test se provádí podle názvu balíčku + názvu/popisu testu;
   identické popisy v různých balíčcích mohou vytvořit nejednoznačnost (index je
   ohraničen podle balíčku, aby se to minimalizovalo).
-- Zohledňuje **první** složku pracovního prostoru pro rozlišení `sourcePath`.
 - Discovery čte `.pks` (specifikace); uchovávejte anotace `%suite`/`%test` ve specifikaci.
 
 ## Řešení problémů

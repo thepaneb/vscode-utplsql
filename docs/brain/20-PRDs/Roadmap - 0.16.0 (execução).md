@@ -1,19 +1,20 @@
 ---
 tipo: nota
-status: ativo
+status: concluida
 modulo: prds
 data: 2026-10-10
-verificado: 2026-10-10
+verificado: 2026-10-15
+concluida: 2026-10-15
 tags: [prd, roadmap, planejamento]
 ---
 
-# Roadmap — 0.16.0 (planejamento)
+# Roadmap — 0.16.0 (execução)
 
-Plano da **0.16.0 — “Produtividade e resultados”**. O status e a versão alvo são a
-**fonte da verdade** no frontmatter das notas `prd-*`: ver [[MOC - PRDs]] e
-[docs/prd/index.md](../../../docs/prd/index.md).
+Plano de execução da **0.16.0 — “Produtividade e resultados”**. O status e a versão
+alvo são a **fonte da verdade** no frontmatter das notas `prd-*`: ver
+[[MOC - PRDs]] e [docs/prd/index.md](../../../docs/prd/index.md).
 
-## Escopo
+## Escopo aprovado
 
 | Ordem | PRD | Título | Esforço | Complexidade |
 |---|---|---|---|---|
@@ -59,6 +60,31 @@ fechadas (as datas de `verificado` passaram a 2026-10-14):
 > Commands/Keybindings (24 notas) + wiki. O `CHANGELOG.md` ganha a seção
 > `## 0.16.0` na primeira entrega; o bump de versão fica para o release.
 
+## Estratégia de branches da versão (2026-10-14)
+
+A versão usa uma **branch de integração** — todas as entregas entram nela e um
+**PR único** dela vai para o `main`:
+
+```
+main
+ └── release/v0.16.0            ← integração (concentra a versão) + PR (draft) → main
+      ├── feat/prd-59-100-scaffold      → PR para release/v0.16.0
+      ├── feat/prd-56-duration-persistence
+      ├── feat/prd-57-multiroot-root
+      └── feat/prd-58-run-related
+```
+
+- Cada entrega tem a **sua** branch, criada a partir de `release/v0.16.0`, com PR
+  próprio **contra a branch de integração** (não contra o `main`).
+- O `ci.yml` passou a rodar também em PRs para `release/**` (antes só `main`), para
+  que os PRs das entregas continuem verificados por compile/lint/test + `brain:ci`
+  + `docs:check`.
+- O `CHANGELOG.md` recebe a seção `## 0.16.0` na primeira entrega e é alimentado a
+  cada PRD concluída dentro da branch de integração.
+- Ao fim da versão: `Closes` preenchido a partir de `npm run pr:create -- --closes`
+  (PRDs em `completed`), bump de versão + release pela skill `release`, e o PR de
+  `release/v0.16.0` → `main` sai de *draft*.
+
 **Total estimado:** ≈ 6–9 dias.
 
 ## Fluxo de execução (por PRD)
@@ -70,6 +96,37 @@ fechadas (as datas de `verificado` passaram a 2026-10-14):
    `BR-*`/`SEC-*` (`prds:`/`implementacao:`/`testes:`) e rodar `npm run brain:rules`;
    entry no `CHANGELOG.md`.
 4. `npm run brain:ci` + `npm run docs:check` antes de cada PR.
+
+## Definição de pronto (release)
+
+- 5 PRDs concluídos com `versao: "0.16.0"` (56, 57, 58, 59 e 100) e vínculo
+  bidirecional PRD ↔ regra (`BR-QUAL-003`, `BR-COB-007`, `BR-UI-014`,
+  `BR-UI-015`).
+- `package.json` = `0.16.0` + seção `## 0.16.0` no `CHANGELOG.md`.
+- Integração + matriz Oracle (thin/thick) verdes; cobertura publicada no Codecov.
+- Publicação via **GitHub release** → `publish.yml` (skill `release`) → post do
+  LinkedIn.
+
+## Status — concluída (0.16.0)
+
+Release **0.16.0 “Produtividade e resultados”** publicada. Os **5 PRDs** do escopo
+(56, 57, 58, 59 e 100) estão `completed` com `versao: "0.16.0"`; `package.json` =
+`0.16.0` e `CHANGELOG.md` com a seção `## 0.16.0`.
+
+- **Entregas:** scaffold de suíte (`utplsql.generateTestSuite`, PRD-59 + PRD-100,
+  entrega única), duração/persistência (PRD-56), multi-root `root`/`sourcePath`
+  por folder (PRD-57) e Run Related Tests (PRD-58).
+- **Testes:** 1311 unitários + E2E (`v016-features`); 2 bugs reais encontrados e
+  corrigidos na ampliação (cobertura duplicada em multi-root e sufixo de duração
+  acumulado).
+- **Matriz Oracle:** thin e thick **verdes** (12.2, 18xe, 19ee, 21xe, 23free) +
+  smoke local e integração completa.
+- **Docs:** `docs:check`/`brain:ci` verdes; controle novo de **conteúdo
+  descontinuado** (checks de stale no `docs-fidelity`) e auditoria de
+  consistência de **features** (README × wiki × funcional).
+- **Publicação:** GitHub release (`publish.yml`) e post de release.
+
+Roadmap **encerrado** — o próximo tema é **0.17.0** (PRD-105/108/109).
 
 ## Relacionado
 

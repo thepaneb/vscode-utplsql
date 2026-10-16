@@ -27,6 +27,7 @@ tags: [readme]
   <a href="https://codecov.io/gh/thepaneb/vscode-utplsql"><img alt="Coverage" src="https://codecov.io/gh/thepaneb/vscode-utplsql/branch/main/graph/badge.svg"></a>
   <img alt="VS Code" src="https://img.shields.io/badge/VS%20Code-1.101%2B-007ACC">
   <img alt="Node" src="https://img.shields.io/badge/node-22-339933?logo=nodedotjs&logoColor=white">
+  <img alt="TypeScript" src="https://img.shields.io/badge/TypeScript-7-3178C6?logo=typescript&logoColor=white">
   <img alt="Oracle" src="https://img.shields.io/badge/Oracle-12.2%2B-F80000?logo=oracle&logoColor=white">
   <img alt="License" src="https://img.shields.io/badge/license-MIT-blue">
   <a href="https://thepaneb.github.io/vscode-utplsql/"><img alt="Website" src="https://img.shields.io/badge/Website-vscode--utplsql-007ACC"></a>
@@ -46,6 +47,9 @@ tags: [readme]
 - 🧩 **Дерево с учётом схем** — организация тестов по схеме Schema > Package > Suite > Test в Test Explorer.
 - 🏷️ **Теги и случайный порядок** — фильтруйте тесты через `utplsql.tags` (например, `fast & !integration`) или командой `utPLSQL: Run Tests by Tag...` (QuickPick с множественным выбором; `!tag` исключает) и запускайте в случайном порядке с воспроизводимым seed (`utplsql.run.randomOrder`).
 - 🧭 **Дерево по тегам** — организуйте Test Explorer как **Tag > Suite > Test** с `utplsql.organization = tag` (набор с несколькими тегами появляется под каждым тегом) и показывайте `[tag1, tag2]` в метках с `utplsql.showTagsInTree`.
+- 🏗️ **Создание набора тестов** — создаёт `ut_<пакет>.pks` с одним `%test` на подпрограмму из `.pks`/`.pkb` или объекта базы данных, с параметрами `utplsql.generate.*`.
+- ⏱️ **Длительность и сохранение** — результат последнего запуска (статус, сообщение и длительность по тестам) сохраняется после перезагрузки рабочей области; опционально показывает `(1.2s)` на метках тестов (`utplsql.showTestDuration`).
+- 🔗 **Связанные тесты** — в рабочем `.pks`/`.pkb`/`.sql` запускает наборы по соглашению `ut_<объект>` (`Ctrl+Shift+U Shift+R`).
 - ♻️ **Автозапуск при сохранении** — перезапускайте наборы сохранённого `.pks` с `utplsql.autoRun = onSave`, с debounce для каждого файла (`utplsql.autoRunDelayMs`) и политикой очереди, когда запуск уже идёт (`utplsql.autoRunQueue`: `skip`/`replace`).
 - 🗄️ **Обнаружение DB-first** — стройте дерево из `ut_runner.get_suites_info` и перестраивайте кэш аннотаций из палитры.
 - 🌳 **Ленивое дерево тестов** — в режиме `schema` пакеты/наборы/тесты разрешаются по мере раскрытия, поэтому большие схемы открываются мгновенно.
@@ -163,6 +167,11 @@ Test Explorer **по мере завершения каждого теста**.
 | `utplsql.connection` | `""` | Подключение к Oracle. **Оставьте пустым** и используйте переменную окружения `UTPLSQL_CONN`, чтобы не хранить пароль. Если оба значения пусты, расширение запросит подключение (сохраняет его только в сессии). |
 | `utplsql.sourcePath` | `install` | Папка с производственным кодом (для сопоставления покрытия с файлами). |
 | `utplsql.includePatterns` | `["**/*.pks"]` | Глобы для поиска спецификаций с `%suite`/`%test`. Если ваши тесты в `.sql`, используйте `["**/*.sql"]`. |
+| `utplsql.generate.testPackagePrefix` | `ut_` | Префикс имени создаваемого пакета тестов. |
+| `utplsql.generate.testPackageSuffix` | `""` | Суффикс имени создаваемого пакета тестов. |
+| `utplsql.generate.numberOfTestsPerUnit` | `1` | `%test` на каждую подпрограмму рабочего пакета. |
+| `utplsql.generate.generateComments` | `true` | Добавляет `-- TODO` в каждый созданный `%test`. |
+| `utplsql.showTestDuration` | `false` | Добавляет длительность последнего запуска к меткам тестов (например, `(1.2s)`). |
 | `utplsql.coverageOwner` | `""` | Схема-владелец покрываемых объектов. Пусто = используется пользователь подключения (в верхнем регистре). |
 | `utplsql.coverage.schemes` | `[]` | Покрываемые схемы (`a_coverage_schemes`). Пусто = пользователь подключения (или `utplsql.coverageOwner`). |
 | `utplsql.coverage.includeObjects` | `[]` | Объекты для включения в покрытие, в формате `OWNER.NAME` (например, `["APP.MY_PKG"]`). Полезно для объектов, достигаемых только динамически. |
@@ -311,14 +320,19 @@ UTPLSQL_CONN=your_user/password@//host:1521/service
 | `utPLSQL: New connection profile...` | Мастер создания и активации профиля | — |
 | `utPLSQL: Manage connection profiles` | Открывает настройки в `utplsql.profiles` | — |
 | `utPLSQL: Import connections from SQL Developer` | Импортирует подключения из SQL Developer (connections.xml) | — |
-| `utPLSQL: Debug test (PL/SQL)` | Запускает сеанс отладки теста в активном файле | — |
+| `utPLSQL: Debug test (PL/SQL)` | Запускает сеанс отладки теста в активном файле | v3.2.x не компилируется (`PLS-00222`). `WE8DEC` образа теряет непредставимые символы (например, `€`); тонкий драйвер игнорирует `NLS_LANG`. |
 | `utPLSQL: Перестроить кэш аннотаций` | Перестраивает кэш аннотаций utPLSQL в базе и обновляет дерево | — |
-| `utPLSQL: Скомпилировать для отладки` | Компилирует объект выбранного файла/папки с отладочной информацией | — |
+| `utPLSQL: Отладка теста под курсором` | Запускает сеанс отладки `%test`/`%suite` под курсором | — |
+| `utPLSQL: Отладка неудачных тестов` | Запускает сеанс отладки тестов, упавших в последнем запуске (QuickPick, если их несколько) | — |
+| `utPLSQL: Отладка последнего запуска` | Запускает сеанс отладки последнего запуска | — |
+| `utPLSQL: Скомпилировать для отладки` | Компилирует объект выбранного файла/папки с отладочной информацией | v3.2.x не компилируется (`PLS-00222`). `WE8DEC` образа теряет непредставимые символы (например, `€`); тонкий драйвер игнорирует `NLS_LANG`. |
 | `utPLSQL: Run script` | Runs the script open in the editor against a connection profile | Right-click → script file |
 | `utPLSQL: Run script file` | Runs an Explorer script file (decoded with the profile charset) | Right-click → file |
 | `utPLSQL: Run script folder` | Runs the folder scripts in alphabetical order | Right-click → folder |
 | `utPLSQL: Задать пароль кошелька` | Задаёт/очищает пароль кошелька активного профиля (SecretStorage) | — |
 | `utPLSQL: Запустить с reporter (экспорт)` | Запускает выбор с выбранным reporter и пишет вывод в Output/файл (не меняет результаты) | Test Explorer → menu do item |
+| `utPLSQL: Создать набор тестов…` | создаёт `ut_<пакет>.pks` с одним `%test` на подпрограмму из `.pks`/`.pkb` или объекта базы данных, с параметрами `utplsql.generate.*` | v3.2.x не компилируется (`PLS-00222`). `WE8DEC` образа теряет непредставимые символы (например, `€`); тонкий драйвер игнорирует `NLS_LANG`. |
+| `utPLSQL: Запустить связанные тесты` | в рабочем `.pks`/`.pkb`/`.sql` запускает наборы по соглашению `ut_<объект>` | v3.2.x не компилируется (`PLS-00222`). `WE8DEC` образа теряет непредставимые символы (например, `€`); тонкий драйвер игнорирует `NLS_LANG`. |
 
 > **Recompile UT3** (`utplsql.recompileUt3`) **не является** командой палитры — это
 > внутреннее быстрое исправление диагностики «utPLSQL Setup» (недействительные объекты в
@@ -339,6 +353,10 @@ UTPLSQL_CONN=your_user/password@//host:1521/service
 | `Ctrl+Shift+U L` | Повторить последний запуск |
 | `Ctrl+Shift+U U` | Запустить под курсором |
 | `Ctrl+Shift+U X` | Запустить только проваленные |
+| `Ctrl+Shift+U Shift+C` | Toggle Coverage |
+| `Ctrl+Shift+U Shift+R` | Запустить связанные тесты |
+| `Ctrl+Shift+U D` | Отладка теста под курсором |
+| `Ctrl+Shift+U Shift+D` | Отладка неудачных тестов |
 | `Escape` | Отменить выполнение |
 
 ## Покрытие
@@ -403,7 +421,6 @@ GRANT SELECT ON SYS.DBA_PROCEDURES TO <ut3_owner>;
 - Сопоставление результат→тест выполняется по имени пакета + имени/описанию теста;
   одинаковые описания в разных пакетах могут создавать неоднозначность (индекс
   ограничен пакетом, чтобы свести её к минимуму).
-- Для определения `sourcePath` учитывается **первая** папка рабочей области.
 - Поиск читает `.pks` (спецификации); держите аннотации `%suite`/`%test` в спецификации.
 
 ## Устранение неполадок

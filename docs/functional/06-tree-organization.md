@@ -9,6 +9,7 @@ Organização da árvore de testes no Test Explorer.
 |---|---|---|
 | **file** | `organization: "file"` (default) | WorkspaceFolder > arquivo > Suite > Test |
 | **schema** | `organization: "schema"` | Schema > Package > Suite > Test |
+| **tag** | `organization: "tag"` | Tag > Suite > Test |
 
 ## Modo `file` — comportamento padrão
 
@@ -77,6 +78,29 @@ function buildSchemaTree(controller, state, suites: SuiteFile[], schemaPattern: 
    - `schemaItem.children.add(pkgItem)`
    - `controller.items.add(schemaItem)`
 
+## Modo `tag` (PRD-55)
+
+Agrupa as suites pelas anotações `%tags` declaradas (`organization: "tag"`), em
+`buildTagTree` (`src/testTree.ts`):
+
+```
+Test Explorer
+  ├── Tag: fast
+  │   └── Suite: My Tests (ut_my_tests)
+  │       └── test_case_1
+  ├── Tag: integration
+  │   └── Suite: Rules (ut_business)
+  └── (sem tag)
+      └── Suite: No Tags (ut_other)
+```
+
+- Uma suite com **várias tags** aparece sob **cada** tag, com id próprio por tag
+  (`suite:<pkg>#<tag>`) para não colidir na API do `TestController`
+  ([[BR-SCHEMA-005 - organization tag monta Tag Suite Test com ids estaveis e grupo (sem tag)|BR-SCHEMA-005]]).
+- Suites sem `%tags` vão para o grupo **`(sem tag)`**.
+- `utplsql.showTagsInTree` acrescenta o sufixo `[tag1, tag2]` aos labels
+  (`taggedLabel`), independente do modo.
+
 ## Descoberta via DB (PRD-43 / DB-first PRD-74)
 
 No modo `schema` a árvore é **lazy** (PRD-75): o `doRefresh()` materializa apenas
@@ -131,7 +155,7 @@ usam `utplsql-source:/<SCHEMA>/<OBJ>.<ext>?line=N` (qualquer tipo de objeto, de
 | Test | `test:ut_my_tests.test_case_1` |
 
 Suite e test IDs são idênticos em ambos os modos — compatibilidade com
-`applyResults`, `filterSuitesByUri`, etc.
+`applyResultsFromCases`, `filterSuitesByUri`, etc.
 
 ## `extractSchemaFromPath` (src/discovery.ts)
 
@@ -192,5 +216,5 @@ o cache. Necessário para o caso de refresh ainda não ter populado.
 
 | Setting | Default | Descrição |
 |---|---|---|
-| `utplsql.organization` | `file` | `file` ou `schema` |
+| `utplsql.organization` | `file` | `file`, `schema` ou `tag` |
 | `utplsql.organization.schemaPattern` | `db/{schema}/**` | Padrão glob para extrair schema |

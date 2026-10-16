@@ -63,6 +63,12 @@ Any of these produce a `TestRunRequest` against the controller:
 - **Right-click** on a file or folder → *utPLSQL: Run tests…*
 - **Palette / shortcuts** — `utPLSQL: Run all tests`, Rerun Last, Run at Cursor,
   Run Failed Only
+- **By tag** — `utPLSQL: Run Tests by Tag…` opens a multi-select QuickPick of the
+  discovered `%tags` (`!tag` excludes); `utplsql.tags` filters every run
+- **Related** — on a production `.pks`/`.pkb`/`.sql`, `utPLSQL: Run Related Tests`
+  runs the suites that follow the `ut_<object>` convention
+- **On save** — with `utplsql.autoRun = onSave` the suites of the saved `.pks`
+  are re-run automatically (debounced; see [Configuration](Configuration))
 
 See [Quick start](Quick-start) and [Commands](Commands) for the full list.
 
@@ -79,6 +85,11 @@ utPLSQL documentation output streams to the test output in real time.
 - Failures carry a `TestMessage.location`, enabling the native **Go to Error**
   action (jump to the failing assertion). See [Editor Integration](Editor-integration).
 - The status bar summarises pass/fail count and total duration.
+- **Persistence and duration (PRD-56)** — the last result (status, message and
+  per-test duration) is stored in the workspace state and restored when the
+  workspace is reopened, so the decorations and the **Run Failed** set survive a
+  reload. With `utplsql.showTestDuration` the duration of the last run is
+  suffixed to the test labels (e.g. `(1.2s)`) — see [Editor Integration](Editor-integration).
 
 ## Annotations that affect the tree
 

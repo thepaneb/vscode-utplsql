@@ -18,6 +18,7 @@
   <a href="https://codecov.io/gh/thepaneb/vscode-utplsql"><img alt="Coverage" src="https://codecov.io/gh/thepaneb/vscode-utplsql/branch/main/graph/badge.svg"></a>
   <img alt="VS Code" src="https://img.shields.io/badge/VS%20Code-1.101%2B-007ACC">
   <img alt="Node" src="https://img.shields.io/badge/node-22-339933?logo=nodedotjs&logoColor=white">
+  <img alt="TypeScript" src="https://img.shields.io/badge/TypeScript-7-3178C6?logo=typescript&logoColor=white">
   <img alt="Oracle" src="https://img.shields.io/badge/Oracle-12.2%2B-F80000?logo=oracle&logoColor=white">
   <img alt="License" src="https://img.shields.io/badge/license-MIT-blue">
   <a href="https://thepaneb.github.io/vscode-utplsql/"><img alt="Website" src="https://img.shields.io/badge/Website-vscode--utplsql-007ACC"></a>
@@ -37,6 +38,9 @@ Chạy và gỡ lỗi kiểm thử **utPLSQL** (Oracle PL/SQL) ngay trong VS Cod
 - 🧩 **Cây theo schema** — tổ chức kiểm thử theo Schema > Package > Suite > Test trong Test Explorer.
 - 🏷️ **Tag và thứ tự ngẫu nhiên** — lọc bài kiểm thử bằng `utplsql.tags` (ví dụ `fast & !integration`) hoặc lệnh `utPLSQL: Run Tests by Tag...` (QuickPick chọn nhiều; `!tag` loại trừ), và chạy theo thứ tự ngẫu nhiên với seed tái tạo được (`utplsql.run.randomOrder`).
 - 🧭 **Cây theo tag** — tổ chức Test Explorer thành **Tag > Suite > Test** với `utplsql.organization = tag` (suite có nhiều tag xuất hiện dưới mỗi tag) và hiển thị `[tag1, tag2]` trên nhãn bằng `utplsql.showTagsInTree`.
+- 🏗️ **Bộ khung kiểm thử** — tạo `ut_<gói>.pks` với một `%test` cho mỗi thủ tục/hàm từ `.pks`/`.pkb` hoặc đối tượng cơ sở dữ liệu, dùng các tùy chọn `utplsql.generate.*`.
+- ⏱️ **Thời lượng và lưu trữ** — kết quả lần chạy gần nhất (trạng thái, thông báo và thời lượng từng bài) vẫn còn sau khi mở lại workspace; tùy chọn hiển thị `(1.2s)` trên nhãn bài kiểm thử (`utplsql.showTestDuration`).
+- 🔗 **Bài kiểm thử liên quan** — trong `.pks`/`.pkb`/`.sql` production, chạy các bộ kiểm thử theo quy ước `ut_<đối tượng>` (`Ctrl+Shift+U Shift+R`).
 - ♻️ **Tự động chạy khi lưu** — chạy lại các suite của tệp `.pks` đã lưu với `utplsql.autoRun = onSave`, với debounce theo từng tệp (`utplsql.autoRunDelayMs`) và chính sách hàng đợi khi đang có lượt chạy (`utplsql.autoRunQueue`: `skip`/`replace`).
 - 🗄️ **Khám phá DB-first** — dựng cây từ `ut_runner.get_suites_info` và tạo lại bộ nhớ đệm chú thích từ bảng lệnh.
 - 🌳 **Cây kiểm thử lazy** — ở chế độ `schema`, package/suite/test được giải quyết khi mở rộng, nên các schema lớn mở tức thì.
@@ -153,6 +157,11 @@ Test Explorer **ngay khi từng bài kiểm thử hoàn tất**. VSIX đã kèm 
 | `utplsql.connection` | `""` | Chuỗi kết nối Oracle. **Để trống** và dùng biến môi trường `UTPLSQL_CONN` để tránh lưu mật khẩu. Nếu cả hai đều trống, extension sẽ hỏi (chỉ giữ trong phiên). |
 | `utplsql.sourcePath` | `install` | Thư mục chứa mã sản phẩm (để ánh xạ độ phủ tới các tệp). |
 | `utplsql.includePatterns` | `["**/*.pks"]` | Các glob để tìm các spec chứa `%suite`/`%test`. Nếu kiểm thử của bạn nằm trong `.sql`, dùng `["**/*.sql"]`. |
+| `utplsql.generate.testPackagePrefix` | `ut_` | Tiền tố của tên gói kiểm thử được tạo. |
+| `utplsql.generate.testPackageSuffix` | `""` | Hậu tố của tên gói kiểm thử được tạo. |
+| `utplsql.generate.numberOfTestsPerUnit` | `1` | Số `%test` được tạo cho mỗi thủ tục/hàm của gói production. |
+| `utplsql.generate.generateComments` | `true` | Thêm `-- TODO` vào mỗi `%test` được tạo. |
+| `utplsql.showTestDuration` | `false` | Thêm thời lượng của lần chạy gần nhất vào nhãn của các bài kiểm thử (ví dụ `(1.2s)`). |
 | `utplsql.coverageOwner` | `""` | Schema sở hữu các đối tượng được phủ. Trống = dùng người dùng kết nối (in hoa). |
 | `utplsql.coverage.schemes` | `[]` | Schema được phủ (`a_coverage_schemes`). Trống = người dùng kết nối (hoặc `utplsql.coverageOwner`). |
 | `utplsql.coverage.includeObjects` | `[]` | Đối tượng đưa vào phạm vi phủ, dạng `OWNER.NAME` (ví dụ `["APP.MY_PKG"]`). Hữu ích cho các đối tượng chỉ được truy cập động. |
@@ -301,14 +310,19 @@ Tất cả các lệnh của extension (palette `Ctrl+Shift+P` tiền tố `utPL
 | `utPLSQL: New connection profile...` | Wizard tạo và kích hoạt một hồ sơ | — |
 | `utPLSQL: Manage connection profiles` | Mở cài đặt tại `utplsql.profiles` | — |
 | `utPLSQL: Import connections from SQL Developer` | Nhập kết nối từ SQL Developer (connections.xml) | — |
-| `utPLSQL: Debug test (PL/SQL)` | Bắt đầu phiên gỡ lỗi của bài kiểm thử trong tệp đang mở | — |
+| `utPLSQL: Debug test (PL/SQL)` | Bắt đầu phiên gỡ lỗi của bài kiểm thử trong tệp đang mở | v3.2.x không biên dịch được (`PLS-00222`). `WE8DEC` của image làm mất các ký tự không biểu diễn được (ví dụ `€`); driver mỏng bỏ qua `NLS_LANG`. |
 | `utPLSQL: Tạo lại bộ nhớ đệm chú thích` | Tạo lại bộ nhớ đệm chú thích utPLSQL trong cơ sở dữ liệu và làm mới cây | — |
-| `utPLSQL: Biên dịch để gỡ lỗi` | Biên dịch đối tượng của tệp/thư mục đã chọn với thông tin gỡ lỗi | — |
+| `utPLSQL: Gỡ lỗi bài kiểm thử tại con trỏ` | Bắt đầu phiên gỡ lỗi cho `%test`/`%suite` tại vị trí con trỏ | — |
+| `utPLSQL: Gỡ lỗi các bài kiểm thử thất bại` | Bắt đầu phiên gỡ lỗi cho các bài kiểm thử đã thất bại trong lần chạy gần nhất (QuickPick nếu có nhiều) | — |
+| `utPLSQL: Gỡ lỗi lần chạy cuối` | Bắt đầu phiên gỡ lỗi của lần chạy gần nhất | — |
+| `utPLSQL: Biên dịch để gỡ lỗi` | Biên dịch đối tượng của tệp/thư mục đã chọn với thông tin gỡ lỗi | v3.2.x không biên dịch được (`PLS-00222`). `WE8DEC` của image làm mất các ký tự không biểu diễn được (ví dụ `€`); driver mỏng bỏ qua `NLS_LANG`. |
 | `utPLSQL: Run script` | Runs the script open in the editor against a connection profile | Right-click → script file |
 | `utPLSQL: Run script file` | Runs an Explorer script file (decoded with the profile charset) | Right-click → file |
 | `utPLSQL: Run script folder` | Runs the folder scripts in alphabetical order | Right-click → folder |
 | `utPLSQL: Đặt mật khẩu ví` | Đặt/xóa mật khẩu ví của hồ sơ đang hoạt động (SecretStorage) | — |
 | `utPLSQL: Chạy với reporter (xuất)` | Chạy lựa chọn với reporter đã chọn và ghi đầu ra vào Output/tệp (không đổi kết quả) | Test Explorer → menu do item |
+| `utPLSQL: Tạo bộ kiểm thử…` | tạo `ut_<gói>.pks` với một `%test` cho mỗi thủ tục/hàm từ `.pks`/`.pkb` hoặc đối tượng cơ sở dữ liệu, dùng các tùy chọn `utplsql.generate.*` | v3.2.x không biên dịch được (`PLS-00222`). `WE8DEC` của image làm mất các ký tự không biểu diễn được (ví dụ `€`); driver mỏng bỏ qua `NLS_LANG`. |
+| `utPLSQL: Chạy các bài kiểm thử liên quan` | trong `.pks`/`.pkb`/`.sql` production, chạy các bộ kiểm thử theo quy ước `ut_<đối tượng>` | v3.2.x không biên dịch được (`PLS-00222`). `WE8DEC` của image làm mất các ký tự không biểu diễn được (ví dụ `€`); driver mỏng bỏ qua `NLS_LANG`. |
 
 > **Recompile UT3** (`utplsql.recompileUt3`) **không phải** là lệnh palette — nó là
 > quick-fix nội bộ của diagnostic "utPLSQL Setup" (các đối tượng không hợp lệ trong
@@ -329,6 +343,10 @@ Tất cả các phím tắt dùng tiền tố `Ctrl+Shift+U` (`Cmd+Shift+U` trê
 | `Ctrl+Shift+U L` | Chạy lại lần cuối |
 | `Ctrl+Shift+U U` | Chạy tại con trỏ |
 | `Ctrl+Shift+U X` | Chỉ chạy các bài bị lỗi |
+| `Ctrl+Shift+U Shift+C` | Toggle Coverage |
+| `Ctrl+Shift+U Shift+R` | Chạy các bài kiểm thử liên quan |
+| `Ctrl+Shift+U D` | Gỡ lỗi bài kiểm thử tại con trỏ |
+| `Ctrl+Shift+U Shift+D` | Gỡ lỗi các bài kiểm thử thất bại |
 | `Escape` | Hủy lần chạy |
 
 ## Độ phủ
@@ -390,7 +408,6 @@ GRANT SELECT ON SYS.DBA_PROCEDURES TO <ut3_owner>;
 - Việc ánh xạ kết quả→bài kiểm thử được thực hiện theo tên package + tên/mô tả bài kiểm thử;
   các mô tả giống hệt nhau trong các package khác nhau có thể tạo ra sự mơ hồ (chỉ mục được
   giới hạn theo package để giảm thiểu điều này).
-- Chỉ xét **thư mục workspace đầu tiên** để phân giải `sourcePath`.
 - Việc phát hiện đọc các tệp `.pks` (specs); hãy giữ các annotation `%suite`/`%test` trong spec.
 
 ## Xử lý sự cố

@@ -335,7 +335,6 @@ describeDB('jump to failure E2E — utPLSQL real -> failed() + TestMessage.locat
           pathArgs: [PKG_LOWER],
           coverage: false,
           sourcePath: 'install',
-          root: root.uri.fsPath,
           run: makeTestRun(cap, cts.token),
           leafTests: [item],
           state: st,

@@ -54,3 +54,51 @@ export function filterSuitesByFolder(items: ItemMeta[], uriFsPath: string): Item
     (m) => m.kind === 'suite' && m.uri.fsPath.toLowerCase().replace(sepRe, '/').startsWith(prefix),
   );
 }
+
+/**
+ * Suites relacionadas a um arquivo de produção (PRD-58) — convenção utPLSQL
+ * `ut_<objeto>` (e o próprio `<objeto>`), case-insensitive: casa por igualdade
+ * ou por sufixo (`projeto_app_pkg` casa `app_pkg`). A extensão do arquivo é
+ * ignorada (`.pks`/`.pkb`/`.sql`/`.prc`/`.fnc`/`.trg`). Sem correspondência,
+ * devolve lista vazia.
+ */
+export function relatedSuiteMetas(items: ItemMeta[], fileName: string): ItemMeta[] {
+  const base = path
+    .basename(fileName.replace(/\\/g, '/'))
+    .replace(/\.(pks|pkb|sql|prc|fnc|trg)$/i, '')
+    .toLowerCase();
+  if (!base) return [];
+  const candidates = [`ut_${base}`, base];
+  return items.filter((m) => {
+    if (m.kind !== 'suite') return false;
+    const pkg = m.packageName.toLowerCase();
+    return candidates.some((c) => pkg === c || pkg.endsWith(c));
+  });
+}
+
+/** Mínimo de um workspace folder para os helpers puros (PRD-57). */
+export interface FolderLike {
+  uri: { fsPath: string };
+}
+
+/**
+ * Raízes (fsPath) que uma execução precisa cobrir, derivadas dos itens em
+ * execução (PRD-57 RF1): o folder de `meta.folder` de cada item, sem repetição e
+ * na ordem em que aparecem. Sem nenhuma informação de folder — item sem meta,
+ * árvore organizada por arquivo, ou folder desconhecido — devolve **todos** os
+ * folders, preservando o comportamento anterior (e o single-root, que resulta
+ * numa lista de um elemento só).
+ */
+export function resolveRunRoots(
+  metas: (ItemMeta | undefined)[],
+  folders: readonly FolderLike[],
+): string[] {
+  const known = folders.map((f) => f.uri.fsPath);
+  const roots: string[] = [];
+  for (const m of metas) {
+    const fsPath = m?.folder?.uri.fsPath;
+    if (!fsPath || !known.includes(fsPath) || roots.includes(fsPath)) continue;
+    roots.push(fsPath);
+  }
+  return roots.length > 0 ? roots : known;
+}

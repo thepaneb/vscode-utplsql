@@ -5,14 +5,14 @@ tipo: locale
 titulo: "Tiếng Việt"
 codigo: vi
 nls: package.nls.vi.json
-strings: 35
+strings: 37
 gerado: true
 tags: [i18n, locale]
 ---
 
 # LOC-vi — Tiếng Việt
 
-Locale `vi` da extensão. Strings de UI em [`package.nls.vi.json`](../../../package.nls.vi.json) (35 chaves).
+Locale `vi` da extensão. Strings de UI em [`package.nls.vi.json`](../../../package.nls.vi.json) (37 chaves).
 
 README: [[README.vi]]
 

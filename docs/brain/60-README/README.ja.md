@@ -27,6 +27,7 @@ tags: [readme]
   <a href="https://codecov.io/gh/thepaneb/vscode-utplsql"><img alt="Coverage" src="https://codecov.io/gh/thepaneb/vscode-utplsql/branch/main/graph/badge.svg"></a>
   <img alt="VS Code" src="https://img.shields.io/badge/VS%20Code-1.101%2B-007ACC">
   <img alt="Node" src="https://img.shields.io/badge/node-22-339933?logo=nodedotjs&logoColor=white">
+  <img alt="TypeScript" src="https://img.shields.io/badge/TypeScript-7-3178C6?logo=typescript&logoColor=white">
   <img alt="Oracle" src="https://img.shields.io/badge/Oracle-12.2%2B-F80000?logo=oracle&logoColor=white">
   <img alt="License" src="https://img.shields.io/badge/license-MIT-blue">
   <a href="https://thepaneb.github.io/vscode-utplsql/"><img alt="Website" src="https://img.shields.io/badge/Website-vscode--utplsql-007ACC"></a>
@@ -46,6 +47,9 @@ tags: [readme]
 - 🧩 **スキーマ認識ツリー** — Test Explorer で Schema > Package > Suite > Test の順にテストを整理。
 - 🏷️ **タグとランダム順** — `utplsql.tags`（例: `fast & !integration`）または `utPLSQL: Run Tests by Tag...` コマンド（複数選択 QuickPick、`!tag` で除外）でテストを絞り込み、再現可能なシード（`utplsql.run.randomOrder`）でランダム順に実行します。
 - 🧭 **タグベースのツリー** — `utplsql.organization = tag` で Test Explorer を **Tag > Suite > Test** として整理し（複数タグを持つスイートは各タグの下に表示されます）、`utplsql.showTagsInTree` でラベルに `[tag1, tag2]` を表示します。
+- 🏗️ **テストスイートの雛形** — `.pks`/`.pkb` またはデータベースオブジェクトから、ルーチンごとに `%test` を 1 つ持つ `ut_<パッケージ>.pks` を生成します（`utplsql.generate.*` オプション）。
+- ⏱️ **所要時間と永続化** — 前回の実行結果（状態・メッセージ・テストごとの所要時間）はワークスペースを開き直しても保持されます。任意でテストのラベルに `(1.2s)` を表示します（`utplsql.showTestDuration`）。
+- 🔗 **関連テスト** — 本番の `.pks`/`.pkb`/`.sql` で `ut_<オブジェクト>` 規約に従うスイートを実行します（`Ctrl+Shift+U Shift+R`）。
 - ♻️ **保存時の自動実行** — 保存された `.pks` のスイートを `utplsql.autoRun = onSave` で再実行します。ファイル単位の debounce（`utplsql.autoRunDelayMs`）と、実行中の場合のキューポリシー（`utplsql.autoRunQueue`: `skip`/`replace`）を備えます。
 - 🗄️ **DB ファーストの探索** — `ut_runner.get_suites_info` からツリーを構築し、パレットから注釈キャッシュを再構築します。
 - 🌳 **遅延読み込みのテストツリー** — `schema` モードでは、展開時に package/suite/test を必要に応じて解決するため、大きなスキーマでも即座に開きます。
@@ -158,6 +162,11 @@ Test Explorer に表示されます。
 | `utplsql.connection` | `""` | Oracle 接続。**空のまま**にして `UTPLSQL_CONN` 環境変数を使うとパスワードを保存せずに済みます。両方とも空の場合は拡張機能が尋ねます（セッション中のみ保持）。 |
 | `utplsql.sourcePath` | `install` | 本番コードのフォルダー（カバレッジをファイルにマッピングするため）。 |
 | `utplsql.includePatterns` | `["**/*.pks"]` | `%suite`/`%test` を含むスペックを検出するグロブ。テストが `.sql` 内にある場合は `["**/*.sql"]` を使用します。 |
+| `utplsql.generate.testPackagePrefix` | `ut_` | 生成されるテストパッケージ名の接頭辞。 |
+| `utplsql.generate.testPackageSuffix` | `""` | 生成されるテストパッケージ名の接尾辞。 |
+| `utplsql.generate.numberOfTestsPerUnit` | `1` | 本番パッケージのルーチンごとに生成する `%test` の数。 |
+| `utplsql.generate.generateComments` | `true` | 生成される各 `%test` に `-- TODO` を付けます。 |
+| `utplsql.showTestDuration` | `false` | 前回実行の所要時間をテストのラベルに付加します（例: `(1.2s)`）。 |
 | `utplsql.coverageOwner` | `""` | カバレッジ対象オブジェクトのスキーマ所有者。空 = 接続ユーザーを使用（大文字）。 |
 | `utplsql.coverage.schemes` | `[]` | カバレッジ対象のスキーマ（`a_coverage_schemes`）。空 = 接続ユーザー（または `utplsql.coverageOwner`）。 |
 | `utplsql.coverage.includeObjects` | `[]` | カバレッジに含めるオブジェクト（`OWNER.NAME` 形式、例: `["APP.MY_PKG"]`）。動的にのみ到達するオブジェクトに有効。 |
@@ -304,14 +313,19 @@ UTPLSQL_CONN=your_user/password@//host:1521/service
 | `utPLSQL: New connection profile...` | プロファイルを作成・有効化するウィザード | — |
 | `utPLSQL: Manage connection profiles` | `utplsql.profiles` で設定を開く | — |
 | `utPLSQL: Import connections from SQL Developer` | SQL Developer から接続をインポート（connections.xml） | — |
-| `utPLSQL: Debug test (PL/SQL)` | アクティブなファイルのテストのデバッグセッションを開始 | — |
+| `utPLSQL: Debug test (PL/SQL)` | アクティブなファイルのテストのデバッグセッションを開始 | v3.2.x はコンパイル不可（`PLS-00222`）。イメージの `WE8DEC` では表現できない文字（例: `€`）が失われます。thin ドライバは `NLS_LANG` を無視します。 |
 | `utPLSQL: アノテーションキャッシュを再構築` | データベース内の utPLSQL アノテーションキャッシュを再構築し、ツリーを更新します | — |
-| `utPLSQL: デバッグ用にコンパイル` | 選択したファイル/フォルダーのオブジェクトをデバッグ情報付きでコンパイルします | — |
+| `utPLSQL: カーソル位置のテストをデバッグ` | カーソル位置の `%test`/`%suite` のデバッグセッションを開始します | — |
+| `utPLSQL: 失敗したテストをデバッグ` | 前回の実行で失敗したテストのデバッグセッションを開始します（複数ある場合は QuickPick） | — |
+| `utPLSQL: 前回の実行をデバッグ` | 前回の実行のデバッグセッションを開始します | — |
+| `utPLSQL: デバッグ用にコンパイル` | 選択したファイル/フォルダーのオブジェクトをデバッグ情報付きでコンパイルします | v3.2.x はコンパイル不可（`PLS-00222`）。イメージの `WE8DEC` では表現できない文字（例: `€`）が失われます。thin ドライバは `NLS_LANG` を無視します。 |
 | `utPLSQL: Run script` | Runs the script open in the editor against a connection profile | Right-click → script file |
 | `utPLSQL: Run script file` | Runs an Explorer script file (decoded with the profile charset) | Right-click → file |
 | `utPLSQL: Run script folder` | Runs the folder scripts in alphabetical order | Right-click → folder |
 | `utPLSQL: ウォレットのパスワードを設定` | アクティブなプロファイルのウォレットパスワードを設定/クリア（SecretStorage） | — |
 | `utPLSQL: reporter で実行（エクスポート）` | 選択範囲を選択した reporter で実行し、出力を Output/ファイルに書き込みます（結果は変えません） | Test Explorer → menu do item |
+| `utPLSQL: テストスイートを生成…` | `.pks`/`.pkb` またはデータベースオブジェクトから、ルーチンごとに `%test` を 1 つ持つ `ut_<パッケージ>.pks` を生成します（`utplsql.generate.*` オプション）。 | v3.2.x はコンパイル不可（`PLS-00222`）。イメージの `WE8DEC` では表現できない文字（例: `€`）が失われます。thin ドライバは `NLS_LANG` を無視します。 |
+| `utPLSQL: 関連テストを実行` | 本番の `.pks`/`.pkb`/`.sql` で `ut_<オブジェクト>` 規約に従うスイートを実行します（`Ctrl+Shift+U Shift+R`）。 | v3.2.x はコンパイル不可（`PLS-00222`）。イメージの `WE8DEC` では表現できない文字（例: `€`）が失われます。thin ドライバは `NLS_LANG` を無視します。 |
 
 > **Recompile UT3**（`utplsql.recompileUt3`）はパレットコマンド**ではありません** —
 > "utPLSQL Setup" 診断（utPLSQL スキーマ内の無効オブジェクト）の内部クイックフィックスです。
@@ -331,6 +345,10 @@ UTPLSQL_CONN=your_user/password@//host:1521/service
 | `Ctrl+Shift+U L` | 最後の実行を繰り返す |
 | `Ctrl+Shift+U U` | カーソル位置で実行 |
 | `Ctrl+Shift+U X` | 失敗したテストのみ実行 |
+| `Ctrl+Shift+U Shift+C` | Toggle Coverage |
+| `Ctrl+Shift+U Shift+R` | 関連テストを実行 |
+| `Ctrl+Shift+U D` | カーソル位置のテストをデバッグ |
+| `Ctrl+Shift+U Shift+D` | 失敗したテストをデバッグ |
 | `Escape` | 実行をキャンセル |
 
 ## カバレッジ
@@ -398,7 +416,6 @@ GRANT SELECT ON SYS.DBA_PROCEDURES TO <ut3_owner>;
 - 結果→テストのマッピングはパッケージ名 + テスト名/説明で行われます。
   異なるパッケージで同じ説明があると曖昧さが生じる可能性があります（インデックスは
   パッケージ単位でスコープされ、これを最小化します）。
-- `sourcePath` の解決には**最初の**ワークスペースフォルダーを使用します。
 - 検出は `.pks`（スペック）を読み取ります。`%suite`/`%test` アノテーションはスペック内に保持してください。
 
 ## トラブルシューティング

@@ -1,5 +1,43 @@
 # Changelog
 
+## 0.16.0
+
+- **Run Related Tests (PRD-58)**: new **`utPLSQL: Run Related Tests`** command (palette, editor/
+  Explorer context menu and `Ctrl+Shift+U Shift+R`) that runs the suites related to the active
+  production file by the utPLSQL naming convention — `ut_<object>` (and the bare `<object>`),
+  case-insensitive, matching by equality or by suffix (so a project prefix like `ut_sales_app_pkg`
+  still matches `app_pkg.pkb`). It reuses the current coverage mode and warns when no related suite
+  is found (or when there is no active editor).
+
+- **Multi-root: coverage resolves `root`/`sourcePath` per folder (PRD-57)**: the run no longer
+  assumes the **first** workspace folder. The execution derives its roots from the
+  suites/tests actually running (`resolveRunRoots`, from the `TestItem` metadata) and the SQL
+  view coverage (`applySqlCoverage`) discovers views in **each** folder taking part in the run;
+  the Cobertura mapping already resolved `sourcePath` against the folder of each package. A
+  single-folder workspace behaves exactly as before, and the "first workspace folder"
+  limitation is gone from the README and the wiki.
+
+- **Duration and result persistence (PRD-56)**: the last run result is now persisted in the
+  workspace state (`id → status, message, per-test duration and timestamp`, versioned snapshot with
+  truncated messages) and **restored when the workspace is reopened** — the pass/fail decorations,
+  the **"Run Failed"** set and the `utplsql:hasFailures` context key come back without re-running
+  the suites. A new setting **`utplsql.showTestDuration`** (default `false`) suffixes the duration
+  of the last run to the test labels in the Test Explorer (e.g. `(1.2s)`); re-applying it never
+  accumulates suffixes and a snapshot written by another workspace is never seen (it lives in the
+  per-workspace state).
+
+- **Test suite scaffold (PRD-59 + PRD-100)**: new **`utPLSQL: Generate test suite`** command
+  (palette, editor/Explorer context menu and a **Code Action** over `.pks`/`.pkb`) that writes
+  `ut_<package>.pks` next to the production file — or beside the first workspace folder when the
+  source is a **database object** resolved from `ALL_SOURCE`. With no routines to extract, it emits
+  the PRD-59 skeleton (`%suite` + one example `%test`); otherwise it generates **one `%test` per
+  procedure/function** of the package. The output is parseable by the annotation parser, so
+  CodeLens/Test Explorer pick the new suite up immediately. New settings:
+  `utplsql.generate.testPackagePrefix` (default `ut_`), `utplsql.generate.testPackageSuffix`
+  (default `""`), `utplsql.generate.numberOfTestsPerUnit` (default `1`) and
+  `utplsql.generate.generateComments` (default `true`). It never overwrites an existing file
+  without confirmation and the Code Action is hidden for suites (`ut_*`).
+
 ## 0.15.0
 
 - **Public site and landing page (GitHub Pages) (PRD-96)**: new public,

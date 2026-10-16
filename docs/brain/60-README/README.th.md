@@ -27,6 +27,7 @@ tags: [readme]
   <a href="https://codecov.io/gh/thepaneb/vscode-utplsql"><img alt="Coverage" src="https://codecov.io/gh/thepaneb/vscode-utplsql/branch/main/graph/badge.svg"></a>
   <img alt="VS Code" src="https://img.shields.io/badge/VS%20Code-1.101%2B-007ACC">
   <img alt="Node" src="https://img.shields.io/badge/node-22-339933?logo=nodedotjs&logoColor=white">
+  <img alt="TypeScript" src="https://img.shields.io/badge/TypeScript-7-3178C6?logo=typescript&logoColor=white">
   <img alt="Oracle" src="https://img.shields.io/badge/Oracle-12.2%2B-F80000?logo=oracle&logoColor=white">
   <img alt="License" src="https://img.shields.io/badge/license-MIT-blue">
   <a href="https://thepaneb.github.io/vscode-utplsql/"><img alt="Website" src="https://img.shields.io/badge/Website-vscode--utplsql-007ACC"></a>
@@ -46,6 +47,9 @@ tags: [readme]
 - 🧩 **แผนผังที่รับรู้ schema** — จัดระเบียบการทดสอบตาม Schema > Package > Suite > Test ใน Test Explorer
 - 🏷️ **แท็กและลำดับแบบสุ่ม** — กรองเทสต์ด้วย `utplsql.tags` (เช่น `fast & !integration`) หรือคำสั่ง `utPLSQL: Run Tests by Tag...` (QuickPick แบบเลือกหลายรายการ; `!tag` เพื่อยกเว้น) และรันแบบสุ่มด้วย seed ที่ทำซ้ำได้ (`utplsql.run.randomOrder`)
 - 🧭 **ทรีตามแท็ก** — จัดระเบียบ Test Explorer เป็น **Tag > Suite > Test** ด้วย `utplsql.organization = tag` (suite ที่มีหลายแท็กจะปรากฏใต้แต่ละแท็ก) และแสดง `[tag1, tag2]` บนป้ายด้วย `utplsql.showTagsInTree`
+- 🏗️ **โครงชุดทดสอบ** — สร้าง `ut_<แพ็กเกจ>.pks` โดยมี `%test` หนึ่งรายการต่อรูทีน จาก `.pks`/`.pkb` หรือออบเจ็กต์ฐานข้อมูล พร้อมตัวเลือก `utplsql.generate.*`
+- ⏱️ **ระยะเวลาและความคงอยู่** — ผลการรันล่าสุด (สถานะ ข้อความ และระยะเวลาต่อการทดสอบ) ยังอยู่หลังเปิดเวิร์กสเปซใหม่ และเลือกแสดง `(1.2s)` บนป้ายชื่อการทดสอบได้ (`utplsql.showTestDuration`)
+- 🔗 **การทดสอบที่เกี่ยวข้อง** — ใน `.pks`/`.pkb`/`.sql` โปรดักชัน รันชุดทดสอบตามธรรมเนียม `ut_<ออบเจ็กต์>` (`Ctrl+Shift+U Shift+R`)
 - ♻️ **รันอัตโนมัติเมื่อบันทึก** — รัน suite ของ `.pks` ที่บันทึกอีกครั้งด้วย `utplsql.autoRun = onSave` พร้อม debounce ต่อไฟล์ (`utplsql.autoRunDelayMs`) และนโยบายคิวเมื่อมีการรันอยู่แล้ว (`utplsql.autoRunQueue`: `skip`/`replace`)
 - 🗄️ **การค้นหาแบบ DB-first** — สร้างทรีจาก `ut_runner.get_suites_info` และสร้างแคชคำอธิบายประกอบใหม่จากพาเลตต์
 - 🌳 **ทรีเทสต์แบบ lazy** — ในโหมด `schema` แพ็กเกจ/ชุดเทสต์/เทสต์จะถูกโหลดเมื่อขยาย จึงเปิดสคีมาขนาดใหญ่ได้ทันที
@@ -162,6 +166,11 @@ Test Explorer **เมื่อแต่ละเทสต์เสร็จส�
 | `utplsql.connection` | `""` | การเชื่อมต่อ Oracle **ปล่อยว่างไว้**และใช้ตัวแปรสภาพแวดล้อม `UTPLSQL_CONN` เพื่อหลีกเลี่ยงการเก็บรหัสผ่าน หากทั้งคู่ว่าง ส่วนขยายจะถาม (เก็บไว้เฉพาะในเซสชัน) |
 | `utplsql.sourcePath` | `install` | โฟลเดอร์ของโค้ด production (เพื่อจับคู่ความครอบคลุมกับไฟล์) |
 | `utplsql.includePatterns` | `["**/*.pks"]` | Globs สำหรับค้นหา specs ที่มี `%suite`/`%test` หากเทสต์ของคุณอยู่ในไฟล์ `.sql` ให้ใช้ `["**/*.sql"]` |
+| `utplsql.generate.testPackagePrefix` | `ut_` | คำนำหน้าของชื่อแพ็กเกจทดสอบที่สร้างขึ้น |
+| `utplsql.generate.testPackageSuffix` | `""` | คำต่อท้ายของชื่อแพ็กเกจทดสอบที่สร้างขึ้น |
+| `utplsql.generate.numberOfTestsPerUnit` | `1` | จำนวน `%test` ที่สร้างต่อรูทีนของแพ็กเกจโปรดักชัน |
+| `utplsql.generate.generateComments` | `true` | เพิ่ม `-- TODO` ในทุก `%test` ที่สร้างขึ้น |
+| `utplsql.showTestDuration` | `false` | ต่อท้ายระยะเวลาของการรันล่าสุดบนป้ายชื่อการทดสอบ (เช่น `(1.2s)`) |
 | `utplsql.coverageOwner` | `""` | เจ้าของ schema ของอ็อบเจกต์ที่ครอบคลุม ว่าง = ใช้ผู้ใช้จากการเชื่อมต่อ (ตัวพิมพ์ใหญ่) |
 | `utplsql.coverage.schemes` | `[]` | schema ที่ครอบคลุม (`a_coverage_schemes`) ว่าง = ผู้ใช้จากการเชื่อมต่อ (หรือ `utplsql.coverageOwner`) |
 | `utplsql.coverage.includeObjects` | `[]` | อ็อบเจกต์ที่จะรวมในการครอบคลุม ในรูปแบบ `OWNER.NAME` (เช่น `["APP.MY_PKG"]`) มีประโยชน์กับอ็อบเจกต์ที่เข้าถึงแบบไดนามิกเท่านั้น |
@@ -310,14 +319,19 @@ Annotation ไม่คำนึงถึงตัวพิมพ์เล็ก
 | `utPLSQL: New connection profile...` | วิซาร์ดสำหรับสร้างและเปิดใช้งานโปรไฟล์ | — |
 | `utPLSQL: Manage connection profiles` | เปิดการตั้งค่าที่ `utplsql.profiles` | — |
 | `utPLSQL: Import connections from SQL Developer` | นำเข้าการเชื่อมต่อจาก SQL Developer (connections.xml) | — |
-| `utPLSQL: Debug test (PL/SQL)` | เริ่มเซสชันการดีบักของเทสต์ภายใต้ไฟล์ที่ใช้งานอยู่ | — |
+| `utPLSQL: Debug test (PL/SQL)` | เริ่มเซสชันการดีบักของเทสต์ภายใต้ไฟล์ที่ใช้งานอยู่ | v3.2.x คอมไพล์ไม่ได้ (`PLS-00222`) `WE8DEC` ของอิมเมจจะสูญเสียอักขระที่ไม่สามารถแทนได้ (เช่น `€`); ไดรเวอร์ thin ไม่สนใจ `NLS_LANG` |
 | `utPLSQL: สร้างแคชคำอธิบายประกอบใหม่` | สร้างแคชคำอธิบายประกอบของ utPLSQL ในฐานข้อมูลใหม่และรีเฟรชทรี | — |
-| `utPLSQL: คอมไพล์สำหรับดีบัก` | คอมไพล์ออบเจ็กต์ของไฟล์/โฟลเดอร์ที่เลือกพร้อมข้อมูลดีบัก | — |
+| `utPLSQL: ดีบักการทดสอบที่เคอร์เซอร์` | เริ่มเซสชันดีบักของ `%test`/`%suite` ณ ตำแหน่งเคอร์เซอร์ | — |
+| `utPLSQL: ดีบักการทดสอบที่ล้มเหลว` | เริ่มเซสชันดีบักของการทดสอบที่ล้มเหลวในการรันล่าสุด (QuickPick เมื่อมีหลายรายการ) | — |
+| `utPLSQL: ดีบักการรันครั้งล่าสุด` | เริ่มเซสชันดีบักของการรันล่าสุด | — |
+| `utPLSQL: คอมไพล์สำหรับดีบัก` | คอมไพล์ออบเจ็กต์ของไฟล์/โฟลเดอร์ที่เลือกพร้อมข้อมูลดีบัก | v3.2.x คอมไพล์ไม่ได้ (`PLS-00222`) `WE8DEC` ของอิมเมจจะสูญเสียอักขระที่ไม่สามารถแทนได้ (เช่น `€`); ไดรเวอร์ thin ไม่สนใจ `NLS_LANG` |
 | `utPLSQL: Run script` | Runs the script open in the editor against a connection profile | Right-click → script file |
 | `utPLSQL: Run script file` | Runs an Explorer script file (decoded with the profile charset) | Right-click → file |
 | `utPLSQL: Run script folder` | Runs the folder scripts in alphabetical order | Right-click → folder |
 | `utPLSQL: ตั้งรหัสผ่านวอลเล็ต` | ตั้ง/ล้างรหัสผ่านวอลเล็ตของโปรไฟล์ที่ใช้งาน (SecretStorage) | — |
 | `utPLSQL: เรียกใช้ด้วย reporter (ส่งออก)` | เรียกใช้ส่วนที่เลือกด้วย reporter ที่เลือกและเขียนเอาต์พุตไปที่ Output/ไฟล์ (ไม่เปลี่ยนผลลัพธ์) | Test Explorer → menu do item |
+| `utPLSQL: สร้างชุดทดสอบ…` | สร้าง `ut_<แพ็กเกจ>.pks` โดยมี `%test` หนึ่งรายการต่อรูทีน จาก `.pks`/`.pkb` หรือออบเจ็กต์ฐานข้อมูล พร้อมตัวเลือก `utplsql.generate.*` | v3.2.x คอมไพล์ไม่ได้ (`PLS-00222`) `WE8DEC` ของอิมเมจจะสูญเสียอักขระที่ไม่สามารถแทนได้ (เช่น `€`); ไดรเวอร์ thin ไม่สนใจ `NLS_LANG` |
+| `utPLSQL: รันการทดสอบที่เกี่ยวข้อง` | ใน `.pks`/`.pkb`/`.sql` โปรดักชัน รันชุดทดสอบตามธรรมเนียม `ut_<ออบเจ็กต์>` | v3.2.x คอมไพล์ไม่ได้ (`PLS-00222`) `WE8DEC` ของอิมเมจจะสูญเสียอักขระที่ไม่สามารถแทนได้ (เช่น `€`); ไดรเวอร์ thin ไม่สนใจ `NLS_LANG` |
 
 > **Recompile UT3** (`utplsql.recompileUt3`) **ไม่ใช่**คำสั่งใน palette — เป็น
 > quick-fix ภายในของการวินิจฉัย "utPLSQL Setup" (อ็อบเจกต์ที่ไม่ถูกต้องใน
@@ -338,6 +352,10 @@ Annotation ไม่คำนึงถึงตัวพิมพ์เล็ก
 | `Ctrl+Shift+U L` | รันครั้งล่าสุดอีกครั้ง |
 | `Ctrl+Shift+U U` | รันที่เคอร์เซอร์ |
 | `Ctrl+Shift+U X` | รันเฉพาะที่ล้มเหลว |
+| `Ctrl+Shift+U Shift+C` | Toggle Coverage |
+| `Ctrl+Shift+U Shift+R` | รันการทดสอบที่เกี่ยวข้อง |
+| `Ctrl+Shift+U D` | ดีบักการทดสอบที่เคอร์เซอร์ |
+| `Ctrl+Shift+U Shift+D` | ดีบักการทดสอบที่ล้มเหลว |
 | `Escape` | ยกเลิกการรัน |
 
 ## ความครอบคลุม
@@ -399,7 +417,6 @@ GRANT SELECT ON SYS.DBA_PROCEDURES TO <ut3_owner>;
 - การจับคู่ผลลัพธ์→เทสต์ทำโดยชื่อแพ็กเกจ + ชื่อ/คำอธิบายเทสต์;
   คำอธิบายที่เหมือนกันในแพ็กเกจที่ต่างกันอาจทำให้เกิดความคลุมเครือได้ (ดัชนี
   จำกัดขอบเขตตามแพ็กเกจเพื่อลดปัญหานี้)
-- พิจารณาโฟลเดอร์เวิร์กสเปซ **แรก** เพื่อแก้ไข `sourcePath`
 - การค้นพบอ่าน `.pks` (specs); เก็บ annotation `%suite`/`%test` ไว้ใน spec
 
 ## การแก้ไขปัญหา

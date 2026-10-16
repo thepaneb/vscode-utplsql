@@ -27,6 +27,7 @@ tags: [readme]
   <a href="https://codecov.io/gh/thepaneb/vscode-utplsql"><img alt="Coverage" src="https://codecov.io/gh/thepaneb/vscode-utplsql/branch/main/graph/badge.svg"></a>
   <img alt="VS Code" src="https://img.shields.io/badge/VS%20Code-1.101%2B-007ACC">
   <img alt="Node" src="https://img.shields.io/badge/node-22-339933?logo=nodedotjs&logoColor=white">
+  <img alt="TypeScript" src="https://img.shields.io/badge/TypeScript-7-3178C6?logo=typescript&logoColor=white">
   <img alt="Oracle" src="https://img.shields.io/badge/Oracle-12.2%2B-F80000?logo=oracle&logoColor=white">
   <img alt="License" src="https://img.shields.io/badge/license-MIT-blue">
   <a href="https://thepaneb.github.io/vscode-utplsql/"><img alt="Website" src="https://img.shields.io/badge/Website-vscode--utplsql-007ACC"></a>
@@ -46,6 +47,9 @@ Esegui e debugga i test **utPLSQL** (Oracle PL/SQL) direttamente in VS Code — 
 - 🧩 **Albero basato su schema** — organizza i test per Schema > Package > Suite > Test nel Test Explorer.
 - 🏷️ **Tag e ordine casuale** — filtra i test con `utplsql.tags` (es. `fast & !integration`) o con il comando `utPLSQL: Run Tests by Tag...` (QuickPick a selezione multipla; `!tag` esclude), ed esegui in ordine casuale con seed riproducibile (`utplsql.run.randomOrder`).
 - 🧭 **Albero per tag** — organizza il Test Explorer come **Tag > Suite > Test** con `utplsql.organization = tag` (una suite con più tag compare sotto ciascun tag) e mostra `[tag1, tag2]` sulle etichette con `utplsql.showTagsInTree`.
+- 🏗️ **Generazione della suite** — genera `ut_<package>.pks` con un `%test` per routine da un `.pks`/`.pkb` o da un oggetto del database, con le opzioni `utplsql.generate.*`.
+- ⏱️ **Durata e persistenza** — il risultato dell’ultima esecuzione (stato, messaggio e durata per test) sopravvive al reload del workspace; opzionalmente mostra `(1.2s)` sulle etichette (`utplsql.showTestDuration`).
+- 🔗 **Test correlati** — su un `.pks`/`.pkb`/`.sql` di produzione, esegue le suite secondo la convenzione `ut_<oggetto>` (`Ctrl+Shift+U Shift+R`).
 - ♻️ **Esecuzione automatica al salvataggio** — riesegui le suite del `.pks` salvato con `utplsql.autoRun = onSave`, con un debounce per file (`utplsql.autoRunDelayMs`) e una politica di coda quando è già in corso un'esecuzione (`utplsql.autoRunQueue`: `skip`/`replace`).
 - 🗄️ **Scoperta DB-first** — costruisci l'albero da `ut_runner.get_suites_info` e ricostruisci la cache delle annotazioni dalla palette.
 - 🌳 **Albero dei test lazy** — in modalità `schema`, package/suite/test vengono risolti su richiesta all’espansione, quindi gli schemi grandi si aprono all’istante.
@@ -162,6 +166,11 @@ Test Explorer **appena ogni test termina**.
 | `utplsql.connection` | `""` | Connessione Oracle. **Lascia vuota** e usa la variabile d'ambiente `UTPLSQL_CONN` per evitare di memorizzare la password. Se entrambe sono vuote, l'estensione chiede (la mantiene solo nella sessione). |
 | `utplsql.sourcePath` | `install` | Cartella del codice di produzione (per mappare la copertura ai file). |
 | `utplsql.includePatterns` | `["**/*.pks"]` | Glob per scoprire le spec con `%suite`/`%test`. Se i tuoi test sono in `.sql`, usa `["**/*.sql"]`. |
+| `utplsql.generate.testPackagePrefix` | `ut_` | Prefisso del nome del package di test generato. |
+| `utplsql.generate.testPackageSuffix` | `""` | Suffisso del nome del package di test generato. |
+| `utplsql.generate.numberOfTestsPerUnit` | `1` | `%test` generati per routine del package di produzione. |
+| `utplsql.generate.generateComments` | `true` | Aggiunge `-- TODO` a ogni `%test` generato. |
+| `utplsql.showTestDuration` | `false` | Aggiunge la durata dell’ultima esecuzione alle etichette dei test (es. `(1.2s)`). |
 | `utplsql.coverageOwner` | `""` | Proprietario dello schema degli oggetti coperti. Vuoto = usa l'utente della connessione (maiuscolo). |
 | `utplsql.coverage.schemes` | `[]` | Schemi coperti (`a_coverage_schemes`). Vuoto = utente della connessione (o `utplsql.coverageOwner`). |
 | `utplsql.coverage.includeObjects` | `[]` | Oggetti da includere nella copertura, come `OWNER.NAME` (es. `["APP.MIO_PKG"]`). Utile per oggetti raggiunti solo dinamicamente. |
@@ -309,14 +318,19 @@ Tutti i comandi dell'estensione (palette `Ctrl+Shift+P`, prefisso `utPLSQL:`):
 | `utPLSQL: New connection profile...` | Procedura guidata per creare e attivare un profilo | — |
 | `utPLSQL: Manage connection profiles` | Apre le impostazioni su `utplsql.profiles` | — |
 | `utPLSQL: Import connections from SQL Developer` | Importa le connessioni da SQL Developer (connections.xml) | — |
-| `utPLSQL: Debug test (PL/SQL)` | Avvia una sessione di debug del test nel file attivo | — |
-| `utPLSQL: Compila per il debug` | Compila l’oggetto del file/cartella selezionato con le informazioni di debug | — |
+| `utPLSQL: Debug test (PL/SQL)` | Avvia una sessione di debug del test nel file attivo | Il v3.2.x non compila (`PLS-00222`). Il charset `WE8DEC` dell'immagine perde i caratteri non rappresentabili (es. `€`); il driver thin ignora `NLS_LANG`. |
+| `utPLSQL: Debug del test al cursore` | Avvia una sessione di debug del `%test`/`%suite` sotto il cursore | — |
+| `utPLSQL: Debug dei test falliti` | Avvia una sessione di debug dei test falliti nell’ultima esecuzione (QuickPick se più di uno) | — |
+| `utPLSQL: Debug dell’ultima esecuzione` | Avvia una sessione di debug dell’ultima esecuzione | — |
+| `utPLSQL: Compila per il debug` | Compila l’oggetto del file/cartella selezionato con le informazioni di debug | Il v3.2.x non compila (`PLS-00222`). Il charset `WE8DEC` dell'immagine perde i caratteri non rappresentabili (es. `€`); il driver thin ignora `NLS_LANG`. |
 | `utPLSQL: Ricostruisci cache delle annotazioni` | Ricostruisce la cache delle annotazioni utPLSQL nel database e aggiorna l'albero | — |
 | `utPLSQL: Run script` | Runs the script open in the editor against a connection profile | Right-click → script file |
 | `utPLSQL: Run script file` | Runs an Explorer script file (decoded with the profile charset) | Right-click → file |
 | `utPLSQL: Run script folder` | Runs the folder scripts in alphabetical order | Right-click → folder |
 | `utPLSQL: Imposta password del wallet` | Imposta/cancella la password del wallet del profilo attivo (SecretStorage) | — |
 | `utPLSQL: Esegui con reporter (export)` | Esegue la selezione con un reporter scelto e scrive l'output in Output/file (non cambia i risultati) | Test Explorer → menu do item |
+| `utPLSQL: Genera suite di test…` | genera `ut_<package>.pks` con un `%test` per routine da un `.pks`/`.pkb` o da un oggetto del database, con le opzioni `utplsql.generate.*` | Il v3.2.x non compila (`PLS-00222`). Il charset `WE8DEC` dell'immagine perde i caratteri non rappresentabili (es. `€`); il driver thin ignora `NLS_LANG`. |
+| `utPLSQL: Esegui test correlati` | su un `.pks`/`.pkb`/`.sql` di produzione, esegue le suite secondo la convenzione `ut_<oggetto>` | Il v3.2.x non compila (`PLS-00222`). Il charset `WE8DEC` dell'immagine perde i caratteri non rappresentabili (es. `€`); il driver thin ignora `NLS_LANG`. |
 
 > **Recompile UT3** (`utplsql.recompileUt3`) **non** è un comando della palette — è
 > un quick-fix interno del diagnostico "utPLSQL Setup" (oggetti non validi nello
@@ -337,6 +351,10 @@ Tutte le scorciatoie usano il prefisso `Ctrl+Shift+U` (`Cmd+Shift+U` su Mac):
 | `Ctrl+Shift+U L` | Rieesegui l'ultimo |
 | `Ctrl+Shift+U U` | Esegui al cursore |
 | `Ctrl+Shift+U X` | Esegui solo i falliti |
+| `Ctrl+Shift+U Shift+C` | Toggle Coverage |
+| `Ctrl+Shift+U Shift+R` | Esegui test correlati |
+| `Ctrl+Shift+U D` | Debug del test al cursore |
+| `Ctrl+Shift+U Shift+D` | Debug dei test falliti |
 | `Escape` | Annulla l'esecuzione |
 
 ## Copertura
@@ -404,7 +422,6 @@ GRANT SELECT ON SYS.DBA_PROCEDURES TO <ut3_owner>;
 - La mappatura risultato→test è fatta per nome package + nome/descrizione test;
   descrizioni identiche in package diversi possono creare ambiguità (l'indice è
   limitato per package per minimizzare questo).
-- Considera la **prima** cartella del workspace per risolvere `sourcePath`.
 - La scoperta legge i `.pks` (spec); mantieni le annotazioni `%suite`/`%test` nella spec.
 
 ## Risoluzione dei problemi

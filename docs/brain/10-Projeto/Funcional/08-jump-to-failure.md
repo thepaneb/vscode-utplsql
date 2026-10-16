@@ -107,7 +107,7 @@ if (failure !== undefined) {
 // idem para error
 ```
 
-`stackFrames` é adicionado ao `TestCaseResult` e propagado para `applyResults`.
+`stackFrames` é adicionado ao `TestCaseResult` e propagado para `applyResultsFromCases`.
 
 ## `packageFromFrameObject` (src/results.ts)
 

@@ -4,7 +4,7 @@
 
 | Campo | Valor |
 |---|---|
-| Status | Aprovado |
+| Status | Concluído |
 | Autor | Gil Cleber Barboza |
 | Data | 2026-10-09 |
 | Componente | Extensão `paneb.vscode-utplsql` |
@@ -184,8 +184,29 @@ RF6.
 
 ## 12. Impacto no cérebro
 
-Regra **compartilhada** com a PRD-59 (entrega única): candidata **`BR-UI-015`** —
-“gerar suíte de teste não sobrescreve spec existente e produz template parseável
-pelo `suiteParser`” — com `prds: ["PRD-59", "PRD-100"]`, `implementacao:`
-(`src/scaffold.ts`, `src/commands/scaffold.ts`) e `testes:`
-(`src/test/unit/scaffold.test.ts`). Enquanto `approved`, `regras: []`.
+Regra **compartilhada** com a PRD-59 (entrega única): **`BR-UI-015`** — “gerar
+suíte de teste não sobrescreve spec existente e produz template parseável pelo
+`suiteParser`” — criada em 2026-10-14 com `prds: ["PRD-59", "PRD-100"]`,
+`implementacao:` (`src/scaffold.ts`, `src/commands/scaffold.ts`) e `testes:`
+(`src/test/unit/scaffold.test.ts`). O `regras:` deste frontmatter é derivado pelo
+`brain:sync`.
+
+RNFs sem regra: RNF2, RNF3 — “sem novas dependências” é convenção do repo
+(nenhum pacote novo entrou) e “não vazar caminho absoluto” é atendido com
+`workspace.asRelativePath` na mensagem (intenção da SEC-002, sem regra própria).
+RNF1 (módulo puro) está em `requisitos` da BR-UI-015.
+
+## 13. Implementado (2026-10-14)
+
+Entregue com a [[prd-59-scaffold-suite|PRD-59]] na branch
+`feat/prd-59-100-scaffold` (regra BR-UI-015):
+
+- **RF4 = núcleo de 4 settings** (tabela do RF4). As demais ficam com default fixo
+  (`testUnitPrefix`/`Suffix`, `disableTests`, `suitePath`, `indentSpaces`).
+- **RF2 nos dois modos**: arquivo ativo, ou objeto do banco quando não há editor
+  (`SCHEMA.OBJETO` → URI `utplsql-source:` → `ALL_SOURCE`, reusando a PRD-80, sem
+  SQL novo).
+- **Sem corpo `.pkb`**, **sem `%beforetest`/`%aftertest`** e **um único comando**
+  (§11).
+- Com `numberOfTestsPerUnit > 1`, do 2º teste em diante o nome recebe sufixo
+  numérico — sem isso o pacote gerado declararia a mesma `PROCEDURE` duas vezes.

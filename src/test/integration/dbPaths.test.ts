@@ -247,7 +247,6 @@ describeDB('caminhos só-DB (provider, setup, merge de schema, DBMS_OUTPUT)', ()
           pathArgs: [OUT_PKG.toLowerCase()],
           coverage: false,
           sourcePath: 'install',
-          root: vscode.workspace.workspaceFolders?.[0]?.uri.fsPath as string,
           run: run as never,
           leafTests: [{ id: 'it-leaf' }] as never,
           state: state as never,

@@ -27,6 +27,7 @@ tags: [readme]
   <a href="https://codecov.io/gh/thepaneb/vscode-utplsql"><img alt="Coverage" src="https://codecov.io/gh/thepaneb/vscode-utplsql/branch/main/graph/badge.svg"></a>
   <img alt="VS Code" src="https://img.shields.io/badge/VS%20Code-1.101%2B-007ACC">
   <img alt="Node" src="https://img.shields.io/badge/node-22-339933?logo=nodedotjs&logoColor=white">
+  <img alt="TypeScript" src="https://img.shields.io/badge/TypeScript-7-3178C6?logo=typescript&logoColor=white">
   <img alt="Oracle" src="https://img.shields.io/badge/Oracle-12.2%2B-F80000?logo=oracle&logoColor=white">
   <img alt="License" src="https://img.shields.io/badge/license-MIT-blue">
   <a href="https://thepaneb.github.io/vscode-utplsql/"><img alt="Website" src="https://img.shields.io/badge/Website-vscode--utplsql-007ACC"></a>
@@ -46,6 +47,9 @@ Jalankan dan debug pengujian **utPLSQL** (Oracle PL/SQL) langsung di VS Code —
 - 🧩 **Pohon sadar-schema** — atur pengujian berdasarkan Schema > Package > Suite > Test di Test Explorer.
 - 🏷️ **Tag dan urutan acak** — filter pengujian dengan `utplsql.tags` (mis. `fast & !integration`) atau perintah `utPLSQL: Run Tests by Tag...` (QuickPick pilih-banyak; `!tag` mengecualikan) dan jalankan dalam urutan acak dengan seed yang dapat direproduksi (`utplsql.run.randomOrder`).
 - 🧭 **Pohon berbasis tag** — atur Test Explorer sebagai **Tag > Suite > Test** dengan `utplsql.organization = tag` (suite dengan beberapa tag muncul di bawah setiap tag) dan tampilkan `[tag1, tag2]` pada label dengan `utplsql.showTagsInTree`.
+- 🏗️ **Kerangka rangkaian pengujian** — menghasilkan `ut_<paket>.pks` dengan satu `%test` per rutin dari `.pks`/`.pkb` atau objek basis data, dengan opsi `utplsql.generate.*`.
+- ⏱️ **Durasi dan persistensi** — hasil eksekusi terakhir (status, pesan, dan durasi per pengujian) bertahan setelah workspace dibuka ulang; secara opsional menampilkan `(1.2s)` pada label pengujian (`utplsql.showTestDuration`).
+- 🔗 **Pengujian terkait** — pada `.pks`/`.pkb`/`.sql` produksi, menjalankan rangkaian sesuai konvensi `ut_<objek>` (`Ctrl+Shift+U Shift+R`).
 - ♻️ **Jalankan otomatis saat menyimpan** — jalankan ulang suite dari `.pks` yang disimpan dengan `utplsql.autoRun = onSave`, dengan debounce per file (`utplsql.autoRunDelayMs`) dan kebijakan antrean saat ada eksekusi berjalan (`utplsql.autoRunQueue`: `skip`/`replace`).
 - 🗄️ **Penemuan DB-first** — bangun pohon dari `ut_runner.get_suites_info` dan bangun ulang cache anotasi dari palet.
 - 🌳 **Pohon tes malas (lazy)** — dalam mode `schema`, package/suite/tes diurai saat diperluas, sehingga skema besar terbuka seketika.
@@ -163,6 +167,11 @@ Ekstensi terhubung langsung ke Oracle, membaca laporan (JUnit + Coverage) lalu m
 | `utplsql.connection` | `""` | Koneksi Oracle. **Biarkan kosong** dan gunakan variabel lingkungan `UTPLSQL_CONN` untuk menghindari penyimpanan kata sandi. Jika keduanya kosong, ekstensi akan bertanya (hanya menyimpannya di sesi). |
 | `utplsql.sourcePath` | `install` | Folder kode produksi (untuk memetakan coverage ke file). |
 | `utplsql.includePatterns` | `["**/*.pks"]` | Glob untuk menemukan spec dengan `%suite`/`%test`. Jika pengujian Anda di `.sql`, gunakan `["**/*.sql"]`. |
+| `utplsql.generate.testPackagePrefix` | `ut_` | Prefiks nama paket pengujian yang dihasilkan. |
+| `utplsql.generate.testPackageSuffix` | `""` | Sufiks nama paket pengujian yang dihasilkan. |
+| `utplsql.generate.numberOfTestsPerUnit` | `1` | `%test` yang dihasilkan per rutin paket produksi. |
+| `utplsql.generate.generateComments` | `true` | Menambahkan `-- TODO` pada setiap `%test` yang dihasilkan. |
+| `utplsql.showTestDuration` | `false` | Menambahkan durasi eksekusi terakhir ke label pengujian (mis. `(1.2s)`). |
 | `utplsql.coverageOwner` | `""` | Pemilik schema dari objek yang dicakup. Kosong = memakai user koneksi (huruf besar). |
 | `utplsql.coverage.schemes` | `[]` | Schema yang dicakup (`a_coverage_schemes`). Kosong = user koneksi (atau `utplsql.coverageOwner`). |
 | `utplsql.coverage.includeObjects` | `[]` | Objek yang disertakan dalam cakupan, sebagai `OWNER.NAME` (mis. `["APP.MY_PKG"]`). Berguna untuk objek yang hanya dijangkau secara dinamis. |
@@ -311,14 +320,19 @@ Semua perintah ekstensi (palet `Ctrl+Shift+P`, prefiks `utPLSQL:`):
 | `utPLSQL: New connection profile...` | Wizard untuk membuat dan mengaktifkan profil | — |
 | `utPLSQL: Manage connection profiles` | Membuka pengaturan di `utplsql.profiles` | — |
 | `utPLSQL: Import connections from SQL Developer` | Mengimpor koneksi dari SQL Developer (connections.xml) | — |
-| `utPLSQL: Debug test (PL/SQL)` | Memulai sesi debug untuk pengujian di bawah file aktif | — |
-| `utPLSQL: Kompilasi untuk debug` | Mengompilasi objek file/folder yang dipilih dengan informasi debug | — |
+| `utPLSQL: Debug test (PL/SQL)` | Memulai sesi debug untuk pengujian di bawah file aktif | v3.2.x tidak dapat dikompilasi (`PLS-00222`). `WE8DEC` pada image kehilangan karakter yang tidak dapat direpresentasikan (mis. `€`); driver tipis mengabaikan `NLS_LANG`. |
+| `utPLSQL: Debug tes di kursor` | Memulai sesi debug `%test`/`%suite` di bawah kursor | — |
+| `utPLSQL: Debug tes yang gagal` | Memulai sesi debug pengujian yang gagal pada eksekusi terakhir (QuickPick jika banyak) | — |
+| `utPLSQL: Debug eksekusi terakhir` | Memulai sesi debug eksekusi terakhir | — |
+| `utPLSQL: Kompilasi untuk debug` | Mengompilasi objek file/folder yang dipilih dengan informasi debug | v3.2.x tidak dapat dikompilasi (`PLS-00222`). `WE8DEC` pada image kehilangan karakter yang tidak dapat direpresentasikan (mis. `€`); driver tipis mengabaikan `NLS_LANG`. |
 | `utPLSQL: Bangun ulang cache anotasi` | Membangun ulang cache anotasi utPLSQL di basis data dan menyegarkan pohon | — |
 | `utPLSQL: Run script` | Runs the script open in the editor against a connection profile | Right-click → script file |
 | `utPLSQL: Run script file` | Runs an Explorer script file (decoded with the profile charset) | Right-click → file |
 | `utPLSQL: Run script folder` | Runs the folder scripts in alphabetical order | Right-click → folder |
 | `utPLSQL: Atur kata sandi wallet` | Mengatur/menghapus kata sandi wallet profil aktif (SecretStorage) | — |
 | `utPLSQL: Jalankan dengan reporter (ekspor)` | Menjalankan pilihan dengan reporter terpilih dan menulis output ke Output/file (tidak mengubah hasil) | Test Explorer → menu do item |
+| `utPLSQL: Buat rangkaian pengujian…` | menghasilkan `ut_<paket>.pks` dengan satu `%test` per rutin dari `.pks`/`.pkb` atau objek basis data, dengan opsi `utplsql.generate.*` | v3.2.x tidak dapat dikompilasi (`PLS-00222`). `WE8DEC` pada image kehilangan karakter yang tidak dapat direpresentasikan (mis. `€`); driver tipis mengabaikan `NLS_LANG`. |
+| `utPLSQL: Jalankan pengujian terkait` | pada `.pks`/`.pkb`/`.sql` produksi, menjalankan rangkaian sesuai konvensi `ut_<objek>` | v3.2.x tidak dapat dikompilasi (`PLS-00222`). `WE8DEC` pada image kehilangan karakter yang tidak dapat direpresentasikan (mis. `€`); driver tipis mengabaikan `NLS_LANG`. |
 
 > **Recompile UT3** (`utplsql.recompileUt3`) **bukan** perintah palet — ini adalah
 > quick-fix internal dari diagnostik "utPLSQL Setup" (objek tidak valid di
@@ -339,6 +353,10 @@ Semua pintasan memakai prefiks `Ctrl+Shift+U` (`Cmd+Shift+U` di Mac):
 | `Ctrl+Shift+U L` | Rerun last |
 | `Ctrl+Shift+U U` | Run at cursor |
 | `Ctrl+Shift+U X` | Run failed only |
+| `Ctrl+Shift+U Shift+C` | Toggle Coverage |
+| `Ctrl+Shift+U Shift+R` | Jalankan pengujian terkait |
+| `Ctrl+Shift+U D` | Debug tes di kursor |
+| `Ctrl+Shift+U Shift+D` | Debug tes yang gagal |
 | `Escape` | Membatalkan eksekusi |
 
 ## Cakupan
@@ -400,7 +418,6 @@ GRANT SELECT ON SYS.DBA_PROCEDURES TO <ut3_owner>;
 - Pemetaan hasil→pengujian dilakukan berdasarkan nama package + nama/deskripsi pengujian;
   deskripsi yang identik di package berbeda dapat menimbulkan ambiguitas (indeks
   dibatasi per package untuk meminimalkan hal ini).
-- Menganggap folder workspace **pertama** untuk menyelesaikan `sourcePath`.
 - Discovery membaca `.pks` (spec); simpan anotasi `%suite`/`%test` di spec.
 
 ## Pemecahan masalah

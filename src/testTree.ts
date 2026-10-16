@@ -10,7 +10,7 @@ import {
   type SuiteFile,
 } from './discovery';
 import { t } from './i18n';
-import type { TestStateManager } from './state';
+import { type TestStateManager, withDurationSuffix } from './state';
 
 /** Id de suite normalizado (`suite:<pkg lower>`). */
 function suiteId(packageName: string): string {
@@ -30,11 +30,18 @@ function fillSuiteTests(
   suite: SuiteFile,
   idSuffix = '',
 ): void {
-  const showTags = readConfig().showTagsInTree;
+  const cfg = readConfig();
   for (const t of suite.tests) {
+    const id = `test:${suite.packageName.toLowerCase()}.${t.procName.toLowerCase()}${idSuffix}`;
+    // Duração do último run restaurado/persistido (PRD-56 RF4).
+    const durationMs = state.getLastResults().get(id)?.durationMs;
     const testItem = controller.createTestItem(
-      `test:${suite.packageName.toLowerCase()}.${t.procName.toLowerCase()}${idSuffix}`,
-      taggedLabel(t.displayName ?? t.description, t.tags, showTags),
+      id,
+      withDurationSuffix(
+        taggedLabel(t.displayName ?? t.description, t.tags, cfg.showTagsInTree),
+        durationMs,
+        cfg.showTestDuration,
+      ),
       suite.uri,
     );
     testItem.range = new vscode.Range(t.line, 0, t.line, 0);

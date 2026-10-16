@@ -18,6 +18,7 @@
   <a href="https://codecov.io/gh/thepaneb/vscode-utplsql"><img alt="Coverage" src="https://codecov.io/gh/thepaneb/vscode-utplsql/branch/main/graph/badge.svg"></a>
   <img alt="VS Code" src="https://img.shields.io/badge/VS%20Code-1.101%2B-007ACC">
   <img alt="Node" src="https://img.shields.io/badge/node-22-339933?logo=nodedotjs&logoColor=white">
+  <img alt="TypeScript" src="https://img.shields.io/badge/TypeScript-7-3178C6?logo=typescript&logoColor=white">
   <img alt="Oracle" src="https://img.shields.io/badge/Oracle-12.2%2B-F80000?logo=oracle&logoColor=white">
   <img alt="License" src="https://img.shields.io/badge/license-MIT-blue">
   <a href="https://thepaneb.github.io/vscode-utplsql/"><img alt="Website" src="https://img.shields.io/badge/Website-vscode--utplsql-007ACC"></a>
@@ -37,6 +38,9 @@
 - 🧩 **Şema farkındalıklı ağaç** — testleri Test Explorer'da Schema > Package > Suite > Test olarak düzenleyin.
 - 🏷️ **Etiketler ve rastgele sıra** — testleri `utplsql.tags` (örn. `fast & !integration`) veya `utPLSQL: Run Tests by Tag...` komutuyla filtreleyin (çoklu seçimli QuickPick; `!tag` hariç tutar) ve yeniden üretilebilir seed ile rastgele sırada çalıştırın (`utplsql.run.randomOrder`).
 - 🧭 **Etikete göre ağaç** — Test Explorer'ı `utplsql.organization = tag` ile **Tag > Suite > Test** olarak düzenleyin (birden çok etiketi olan bir suite her etiket altında görünür) ve `utplsql.showTagsInTree` ile etiketlerde `[tag1, tag2]` gösterin.
+- 🏗️ **Test paketi iskeleti** — bir `.pks`/`.pkb` veya veritabanı nesnesinden, her rutin için bir `%test` içeren `ut_<paket>.pks` üretir (`utplsql.generate.*` seçenekleri).
+- ⏱️ **Süre ve kalıcılık** — son çalıştırmanın sonucu (durum, mesaj ve test başına süre) çalışma alanı yeniden açıldığında korunur; isteğe bağlı olarak test etiketlerinde `(1.2s)` gösterir (`utplsql.showTestDuration`).
+- 🔗 **İlgili testler** — üretim `.pks`/`.pkb`/`.sql` dosyasında `ut_<nesne>` kuralına göre paketleri çalıştırır (`Ctrl+Shift+U Shift+R`).
 - ♻️ **Kaydetmede otomatik çalıştırma** — kaydedilen `.pks` dosyasının suitelerini `utplsql.autoRun = onSave` ile yeniden çalıştırın; dosya başına debounce (`utplsql.autoRunDelayMs`) ve çalışma sürerken kuyruk politikası (`utplsql.autoRunQueue`: `skip`/`replace`) ile.
 - 🗄️ **DB-first keşif** — ağacı `ut_runner.get_suites_info`'dan oluşturun ve açıklama önbelleğini paletten yeniden oluşturun.
 - 🌳 **Tembel test ağacı** — `schema` modunda paketler/suiteler/testler genişletildiğinde isteğe bağlı çözülür; büyük şemalar anında açılır.
@@ -153,6 +157,11 @@ Geçici dosya yok, toplu işin bitmesi beklenmez. Sonuçlar Test Explorer'da
 | `utplsql.connection` | `""` | Oracle bağlantısı. **Boş bırakın** ve parolayı saklamamak için `UTPLSQL_CONN` ortam değişkenini kullanın. İkisi de boşsa, uzantı sorar (yalnızca oturumda tutar). |
 | `utplsql.sourcePath` | `install` | Üretim kodunun klasörü (kapsamı dosyalara eşlemek için). |
 | `utplsql.includePatterns` | `["**/*.pks"]` | `%suite`/`%test` içeren şemaları keşfetmek için glob'lar. Testleriniz `.sql` içindeyse `["**/*.sql"]` kullanın. |
+| `utplsql.generate.testPackagePrefix` | `ut_` | Oluşturulan test paketi adının öneki. |
+| `utplsql.generate.testPackageSuffix` | `""` | Oluşturulan test paketi adının soneki. |
+| `utplsql.generate.numberOfTestsPerUnit` | `1` | Üretim paketindeki her rutin için oluşturulan `%test` sayısı. |
+| `utplsql.generate.generateComments` | `true` | Oluşturulan her `%test` için `-- TODO` ekler. |
+| `utplsql.showTestDuration` | `false` | Son çalıştırmanın süresini test etiketlerine ekler (örn. `(1.2s)`). |
 | `utplsql.coverageOwner` | `""` | Kapsanan nesnelerin şema sahibi. Boş = bağlantı kullanıcısını kullanır (büyük harfle). |
 | `utplsql.coverage.schemes` | `[]` | Kapsanan şemalar (`a_coverage_schemes`). Boş = bağlantı kullanıcısı (veya `utplsql.coverageOwner`). |
 | `utplsql.coverage.includeObjects` | `[]` | Kapsama dahil edilecek nesneler, `OWNER.NAME` biçiminde (örn. `["APP.MY_PKG"]`). Yalnızca dinamik olarak erişilen nesneler için kullanışlıdır. |
@@ -301,14 +310,19 @@ Tüm uzantı komutları (palet `Ctrl+Shift+P` öneki `utPLSQL:`):
 | `utPLSQL: New connection profile...` | Bir profil oluşturmak ve etkinleştirmek için sihirbaz | — |
 | `utPLSQL: Manage connection profiles` | Ayarları `utplsql.profiles` konumunda açar | — |
 | `utPLSQL: Import connections from SQL Developer` | SQL Developer'dan bağlantıları içe aktarır (connections.xml) | — |
-| `utPLSQL: Debug test (PL/SQL)` | Etkin dosyanın altındaki testin hata ayıklama oturumunu başlatır | — |
+| `utPLSQL: Debug test (PL/SQL)` | Etkin dosyanın altındaki testin hata ayıklama oturumunu başlatır | v3.2.x derlenmez (`PLS-00222`). İmajın `WE8DEC`'i gösterilemeyen karakterleri kaybeder (örn. `€`); ince sürücü `NLS_LANG`'i yok sayar. |
 | `utPLSQL: Açıklama önbelleğini yeniden oluştur` | utPLSQL açıklama önbelleğini veritabanında yeniden oluşturur ve ağacı yeniler | — |
-| `utPLSQL: Hata ayıklama için derle` | Seçili dosya/klasör nesnesini hata ayıklama bilgileriyle derler | — |
+| `utPLSQL: İmleçteki testi hata ayıkla` | İmleç altındaki `%test`/`%suite` için hata ayıklama oturumu başlatır | — |
+| `utPLSQL: Başarısız testleri hata ayıkla` | Son çalıştırmada başarısız olan testler için hata ayıklama oturumu başlatır (birden fazlaysa QuickPick) | — |
+| `utPLSQL: Son çalıştırmayı hata ayıkla` | Son çalıştırmanın hata ayıklama oturumunu başlatır | — |
+| `utPLSQL: Hata ayıklama için derle` | Seçili dosya/klasör nesnesini hata ayıklama bilgileriyle derler | v3.2.x derlenmez (`PLS-00222`). İmajın `WE8DEC`'i gösterilemeyen karakterleri kaybeder (örn. `€`); ince sürücü `NLS_LANG`'i yok sayar. |
 | `utPLSQL: Run script` | Runs the script open in the editor against a connection profile | Right-click → script file |
 | `utPLSQL: Run script file` | Runs an Explorer script file (decoded with the profile charset) | Right-click → file |
 | `utPLSQL: Run script folder` | Runs the folder scripts in alphabetical order | Right-click → folder |
 | `utPLSQL: Cüzdan parolasını ayarla` | Etkin profilin cüzdan parolasını ayarlar/temizler (SecretStorage) | — |
 | `utPLSQL: Reporter ile çalıştır (dışa aktar)` | Seçimi seçilen reporter ile çalıştırır ve çıktıyı Output/dosyaya yazar (sonuçları değiştirmez) | Test Explorer → menu do item |
+| `utPLSQL: Test paketi oluştur…` | bir `.pks`/`.pkb` veya veritabanı nesnesinden, her rutin için bir `%test` içeren `ut_<paket>.pks` üretir (`utplsql.generate.*` seçenekleri) | v3.2.x derlenmez (`PLS-00222`). İmajın `WE8DEC`'i gösterilemeyen karakterleri kaybeder (örn. `€`); ince sürücü `NLS_LANG`'i yok sayar. |
+| `utPLSQL: İlgili testleri çalıştır` | üretim `.pks`/`.pkb`/`.sql` dosyasında `ut_<nesne>` kuralına göre paketleri çalıştırır | v3.2.x derlenmez (`PLS-00222`). İmajın `WE8DEC`'i gösterilemeyen karakterleri kaybeder (örn. `€`); ince sürücü `NLS_LANG`'i yok sayar. |
 
 > **Recompile UT3** (`utplsql.recompileUt3`) bir **palet komutu değildir** — "utPLSQL Setup"
 > tanılamasının iç bir hızlı düzeltmesidir (utPLSQL şemasındaki geçersiz nesneler).
@@ -328,6 +342,10 @@ Tüm kısayollar `Ctrl+Shift+U` önekini kullanır (Mac'te `Cmd+Shift+U`):
 | `Ctrl+Shift+U L` | Sonuncuyu yeniden çalıştır |
 | `Ctrl+Shift+U U` | İmleçte çalıştır |
 | `Ctrl+Shift+U X` | Yalnızca başarısızları çalıştır |
+| `Ctrl+Shift+U Shift+C` | Toggle Coverage |
+| `Ctrl+Shift+U Shift+R` | İlgili testleri çalıştır |
+| `Ctrl+Shift+U D` | İmleçteki testi hata ayıkla |
+| `Ctrl+Shift+U Shift+D` | Başarısız testleri hata ayıkla |
 | `Escape` | Çalıştırmayı iptal et |
 
 ## Kapsam (Coverage)
@@ -392,7 +410,6 @@ GRANT SELECT ON SYS.DBA_PROCEDURES TO <ut3_owner>;
 - Sonuç→test eşlemesi paket adı + test adı/açıklamasıyla yapılır;
   farklı paketlerdeki aynı açıklamalar belirsizlik yaratabilir (dizin
   pakete göre kapsamlanarak bu en aza indirilir).
-- `sourcePath`'i çözmek için **ilk** çalışma alanı klasörünü dikkate alır.
 - Keşif `.pks` (şema) dosyalarını okur; `%suite`/`%test` ek açıklamalarını şemada tutun.
 
 ## Sorun giderme

@@ -128,6 +128,18 @@ async function startDebugSession(packageName: string, testName?: string): Promis
   resolvida) e `stopOnException` (`utplsql.debugger.stopOnException`) se não
   vierem na launch config.
 
+## Pontos de entrada do debug (PRD-53)
+
+| Comando | Id | Onde | O que depura |
+|---|---|---|---|
+| **Debug test (PL/SQL)** | `utplsql.debugTest` | Menu de contexto do editor (`.pks`/`.pkb`) e Debug panel | O teste sob o arquivo ativo |
+| **Debug Test at Cursor** | `utplsql.debugAtCursor` | Paleta / `Ctrl+Shift+U D` | O `%test`/`%suite` sob o cursor |
+| **Debug Failed Tests** | `utplsql.debugFailed` | Paleta / `Ctrl+Shift+U Shift+D` | Os testes que falharam na última execução (QuickPick quando há vários) |
+| **Debug Last Run** | `utplsql.debugLast` | Paleta | A última execução |
+
+Os três últimos derivam o alvo do **estado da última execução** (`state`) ou da
+posição do cursor, e caem no mesmo `startDebugSession(packageName, testName)`.
+
 ## Compilação para debug (PRD-73)
 
 Para que o breakpoint pare, o objeto precisa ter sido compilado com debug info.

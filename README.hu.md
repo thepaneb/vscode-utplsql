@@ -18,6 +18,7 @@
   <a href="https://codecov.io/gh/thepaneb/vscode-utplsql"><img alt="Coverage" src="https://codecov.io/gh/thepaneb/vscode-utplsql/branch/main/graph/badge.svg"></a>
   <img alt="VS Code" src="https://img.shields.io/badge/VS%20Code-1.101%2B-007ACC">
   <img alt="Node" src="https://img.shields.io/badge/node-22-339933?logo=nodedotjs&logoColor=white">
+  <img alt="TypeScript" src="https://img.shields.io/badge/TypeScript-7-3178C6?logo=typescript&logoColor=white">
   <img alt="Oracle" src="https://img.shields.io/badge/Oracle-12.2%2B-F80000?logo=oracle&logoColor=white">
   <img alt="License" src="https://img.shields.io/badge/license-MIT-blue">
   <a href="https://thepaneb.github.io/vscode-utplsql/"><img alt="Website" src="https://img.shields.io/badge/Website-vscode--utplsql-007ACC"></a>
@@ -37,6 +38,9 @@ Futtasd és debugold az **utPLSQL** (Oracle PL/SQL) teszteket közvetlenül a VS
 - 🧩 **Séma-tudatos fa** — a tesztek szervezése Séma > Package > Suite > Teszt szerint a Test Explorerben.
 - 🏷️ **Tagek és véletlen sorrend** — szűrd a teszteket `utplsql.tags`-szel (pl. `fast & !integration`) vagy a `utPLSQL: Run Tests by Tag...` paranccsal (többszörös kijelölésű QuickPick; a `!tag` kizár), és futtasd véletlen sorrendben reprodukálható seeddel (`utplsql.run.randomOrder`).
 - 🧭 **Tag-alapú fa** — rendezd a Test Explorert **Tag > Suite > Test** szerkezetbe a `utplsql.organization = tag` beállítással (a több taggel rendelkező suite minden tag alatt megjelenik), és jelenítsd meg a `[tag1, tag2]` címkéket a `utplsql.showTagsInTree` beállítással.
+- 🏗️ **Tesztcsomag-váz** — `ut_<csomag>.pks` fájlt hoz létre rutinonként egy `%test`-tel `.pks`/`.pkb` fájlból vagy adatbázis-objektumból, a `utplsql.generate.*` beállításokkal.
+- ⏱️ **Időtartam és megőrzés** — az utolsó futás eredménye (állapot, üzenet és tesztenkénti idő) megmarad a munkaterület újramegnyitása után is; opcionálisan `(1.2s)`-et ír a tesztek címkéjére (`utplsql.showTestDuration`).
+- 🔗 **Kapcsolódó tesztek** — éles `.pks`/`.pkb`/`.sql` fájlban a `ut_<objektum>` konvenció szerinti csomagokat futtatja (`Ctrl+Shift+U Shift+R`).
 - ♻️ **Automatikus futtatás mentéskor** — futtasd újra a mentett `.pks` suite-jait a `utplsql.autoRun = onSave` beállítással, fájlonkénti debounce-szal (`utplsql.autoRunDelayMs`) és várólista-szabályzattal, ha épp fut egy futtatás (`utplsql.autoRunQueue`: `skip`/`replace`).
 - 🗄️ **DB-first felfedezés** — építsd a fát a `ut_runner.get_suites_info` alapján, és építsd újra a megjegyzés-gyorsítótárat a palettáról.
 - 🌳 **Lusta tesztek fája** — `schema` módban a package-ek/suite-ok/tesztek kibontáskor, igény szerint töltődnek, így a nagy sémák azonnal megnyílnak.
@@ -154,6 +158,11 @@ A bővítmény közvetlenül Oracle-on keresztül csatlakozik, beolvassa a ripor
 | `utplsql.connection` | `""` | Oracle-kapcsolat. **Hagyd üresen**, és használd a `UTPLSQL_CONN` környezeti változót, hogy ne tárold a jelszót. Ha mindkettő üres, a bővítmény megkérdezi (csak a munkamenetben őrzi meg). |
 | `utplsql.sourcePath` | `install` | Az éles kód mappája (a lefedettség fájlokhoz rendeléséhez). |
 | `utplsql.includePatterns` | `["**/*.pks"]` | A `%suite`/`%test` tartalmú specifikációk felderítésére szolgáló globok. Ha a tesztjeid `.sql` fájlokban vannak, használd a `["**/*.sql"]` értéket. |
+| `utplsql.generate.testPackagePrefix` | `ut_` | A létrehozott tesztcsomag nevének előtagja. |
+| `utplsql.generate.testPackageSuffix` | `""` | A létrehozott tesztcsomag nevének utótagja. |
+| `utplsql.generate.numberOfTestsPerUnit` | `1` | Az éles csomag rutinonként létrehozott `%test` száma. |
+| `utplsql.generate.generateComments` | `true` | `-- TODO` megjegyzést fűz minden létrehozott `%test`-hez. |
+| `utplsql.showTestDuration` | `false` | A legutóbbi futás idejét fűzi a tesztek címkéjéhez (pl. `(1.2s)`). |
 | `utplsql.coverageOwner` | `""` | A lefedett objektumok séma-tulajdonosa. Üres = a kapcsolati felhasználó (nagybetűvel). |
 | `utplsql.coverage.schemes` | `[]` | Lefedett sémák (`a_coverage_schemes`). Üres = a kapcsolati felhasználó (vagy `utplsql.coverageOwner`). |
 | `utplsql.coverage.includeObjects` | `[]` | A lefedésbe felveendő objektumok `OWNER.NAME` formában (pl. `["APP.MY_PKG"]`). Csak dinamikusan elért objektumokhoz hasznos. |
@@ -302,14 +311,19 @@ A bővítmény összes parancsa (paletta `Ctrl+Shift+P`, előtag `utPLSQL:`):
 | `utPLSQL: New connection profile...` | Varázsló profil létrehozásához és aktiválásához | — |
 | `utPLSQL: Manage connection profiles` | Megnyitja a beállításokat a `utplsql.profiles` értéknél | — |
 | `utPLSQL: Import connections from SQL Developer` | Kapcsolatok importálása az SQL Developerből (connections.xml) | — |
-| `utPLSQL: Debug test (PL/SQL)` | Hibakeresési munkamenetet indít az aktív fájlban lévő tesztre | — |
+| `utPLSQL: Debug test (PL/SQL)` | Hibakeresési munkamenetet indít az aktív fájlban lévő tesztre | A v3.2.x nem fordul (`PLS-00222`). A kép `WE8DEC`-je elveszíti a nem ábrázolható karaktereket (pl. `€`); a thin illesztő figyelmen kívül hagyja a `NLS_LANG`-ot. |
 | `utPLSQL: Megjegyzés-gyorsítótár újraépítése` | Újraépíti az utPLSQL megjegyzés-gyorsítótárat az adatbázisban, és frissíti a fát | — |
-| `utPLSQL: Fordítás hibakereséshez` | A kijelölt fájl/mappa objektumát hibakeresési információkkal fordítja le | — |
+| `utPLSQL: Teszt hibakeresése a kurzornál` | Debug-munkamenetet indít a kurzor alatti `%test`/`%suite` számára | — |
+| `utPLSQL: Sikertelen tesztek hibakeresése` | Debug-munkamenetet indít a legutóbbi futásban megbukott tesztekhez (több esetén QuickPick) | — |
+| `utPLSQL: Utolsó futtatás hibakeresése` | Debug-munkamenetet indít a legutóbbi futáshoz | — |
+| `utPLSQL: Fordítás hibakereséshez` | A kijelölt fájl/mappa objektumát hibakeresési információkkal fordítja le | A v3.2.x nem fordul (`PLS-00222`). A kép `WE8DEC`-je elveszíti a nem ábrázolható karaktereket (pl. `€`); a thin illesztő figyelmen kívül hagyja a `NLS_LANG`-ot. |
 | `utPLSQL: Run script` | Runs the script open in the editor against a connection profile | Right-click → script file |
 | `utPLSQL: Run script file` | Runs an Explorer script file (decoded with the profile charset) | Right-click → file |
 | `utPLSQL: Run script folder` | Runs the folder scripts in alphabetical order | Right-click → folder |
 | `utPLSQL: Tárca jelszó beállítása` | Beállítja/törli az aktív profil tárca jelszavát (SecretStorage) | — |
 | `utPLSQL: Futtatás reporterrel (export)` | A kijelölést a választott reporterrel futtatja, és Output/fájlba írja (nem módosítja az eredményeket) | Test Explorer → menu do item |
+| `utPLSQL: Tesztcsomag létrehozása…` | `ut_<csomag>.pks` fájlt hoz létre rutinonként egy `%test`-tel `.pks`/`.pkb` fájlból vagy adatbázis-objektumból, a `utplsql.generate.*` beállításokkal | A v3.2.x nem fordul (`PLS-00222`). A kép `WE8DEC`-je elveszíti a nem ábrázolható karaktereket (pl. `€`); a thin illesztő figyelmen kívül hagyja a `NLS_LANG`-ot. |
+| `utPLSQL: Kapcsolódó tesztek futtatása` | éles `.pks`/`.pkb`/`.sql` fájlban a `ut_<objektum>` konvenció szerinti csomagokat futtatja | A v3.2.x nem fordul (`PLS-00222`). A kép `WE8DEC`-je elveszíti a nem ábrázolható karaktereket (pl. `€`); a thin illesztő figyelmen kívül hagyja a `NLS_LANG`-ot. |
 
 > **Recompile UT3** (`utplsql.recompileUt3`) **nem** palettaparancs — ez a
 > „utPLSQL Setup" diagnosztika belső gyorsjavítása (érvénytelen objektumok a
@@ -330,6 +344,10 @@ Minden parancsikon a `Ctrl+Shift+U` előtagot használja (`Cmd+Shift+U` Macen):
 | `Ctrl+Shift+U L` | Az utolsó futtatás megismétlése |
 | `Ctrl+Shift+U U` | Futtatás a kurzornál |
 | `Ctrl+Shift+U X` | Csak a sikertelenek futtatása |
+| `Ctrl+Shift+U Shift+C` | Toggle Coverage |
+| `Ctrl+Shift+U Shift+R` | Kapcsolódó tesztek futtatása |
+| `Ctrl+Shift+U D` | Teszt hibakeresése a kurzornál |
+| `Ctrl+Shift+U Shift+D` | Sikertelen tesztek hibakeresése |
 | `Escape` | Végrehajtás megszakítása |
 
 ## Lefedettség
@@ -391,7 +409,6 @@ GRANT SELECT ON SYS.DBA_PROCEDURES TO <ut3_owner>;
 - Az eredmény→teszt hozzárendelés csomagnév + tesztnév/leírás alapján történik;
   az azonos leírások különböző csomagokban kétértelműséget okozhatnak (az index
   csomagonként hatóköri, hogy ezt minimalizálja).
-- A `sourcePath` feloldásához az **első** munkaterület-mappát veszi figyelembe.
 - A felderítés a `.pks` fájlokat (specifikációkat) olvassa; tartsd a `%suite`/`%test` annotációkat a specifikációban.
 
 ## Hibaelhárítás

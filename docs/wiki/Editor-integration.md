@@ -21,11 +21,16 @@ After a run, ✓/✗/⚠ markers appear on the `%suite`/`%test` lines, with the 
 message as a hover and a matching overview-ruler mark. Controlled by
 `utplsql.decorations.enabled`. Works in both `file` and `schema` tree modes.
 
+On assertion failures, the Test Explorer item shows VS Code's **native diff** with
+the *Expected* and *Actual* values extracted from the reporter message.
+
 ## Status bar
 
 The status bar shows an idle indicator, live progress (`Running N/M suites`) and
 the final pass/fail count with duration. With an active connection profile,
-clicking it switches profiles. Controlled by `utplsql.statusBar.enabled`.
+clicking it switches profiles; the item also carries the **coverage toggle**
+(`utPLSQL: Toggle Coverage`, `Ctrl+Shift+U Shift+C`) that switches the session
+coverage mode. Controlled by `utplsql.statusBar.enabled`.
 
 ## Smart re-run
 
@@ -34,6 +39,7 @@ clicking it switches profiles. Controlled by `utplsql.statusBar.enabled`.
 | `Ctrl+Shift+U L` | Rerun Last | Repeats the last execution (with/without coverage) |
 | `Ctrl+Shift+U U` | Run at Cursor | Runs the `%test`/`%suite` under the cursor |
 | `Ctrl+Shift+U X` | Run Failed Only | Re-runs only the tests that failed |
+| `Ctrl+Shift+U Shift+R` | Run Related Tests | Runs the suites related to the active production file, by the `ut_<object>` convention (PRD-58) |
 
 ## Jump to failure
 
@@ -57,6 +63,17 @@ JUnit `<failure>`/`<error>` body, filters framework frames and sets
 - Test results are read from **nested** `<testsuite>` levels too, so suites run
   with `--%suitepath` (or with utPLSQL installed in another schema) are not
   reported as "No JUnit result found".
+
+## Generate test suite (Code Action)
+
+On a production `.pks`/`.pkb` (never on a `ut_*` suite) the editor offers a
+**Code Action** — and the palette the command **`utPLSQL: Generate test suite`** —
+that writes `ut_<package>.pks` next to the file (or in the first workspace folder
+when the source is a database object, prompted as `SCHEMA.OBJECT`). With no
+routines to extract it writes the skeleton (`%suite` + one example `%test`);
+otherwise it writes one `%test` per procedure/function. An existing file is never
+overwritten without confirmation. Options: `utplsql.generate.testPackagePrefix`,
+`…testPackageSuffix`, `…numberOfTestsPerUnit` and `…generateComments`.
 
 ## Context menu and shortcuts
 

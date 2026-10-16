@@ -33,5 +33,7 @@
   "nls.command.compileForDebug": "utPLSQL: Hata ayıklama için derle",
   "nls.command.rebuildAnnotations": "utPLSQL: Açıklama önbelleğini yeniden oluştur",
   "nls.command.setWalletPassword": "utPLSQL: Cüzdan parolasını ayarla",
-  "nls.command.runWithReporter": "utPLSQL: Reporter ile çalıştır (dışa aktar)"
+  "nls.command.runWithReporter": "utPLSQL: Reporter ile çalıştır (dışa aktar)",
+  "nls.command.generateTestSuite": "utPLSQL: Test paketi oluştur…",
+  "nls.command.runRelated": "utPLSQL: İlgili testleri çalıştır"
 }

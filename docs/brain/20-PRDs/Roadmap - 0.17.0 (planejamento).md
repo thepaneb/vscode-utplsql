@@ -26,7 +26,7 @@ Plano da **0.17.0 — “UX de editor e cobertura”**. O status e a versão alv
 
 **Tema:** features visíveis de editor e cobertura, de baixo custo. Ordem sugerida:
 **109 → 105 → 108**. A PRD-105 pressupõe a PRD-100 (geração de suíte), entregue na
-[[Roadmap - 0.16.0 (planejamento)|0.16.0]].
+[[Roadmap - 0.16.0 (execução)|0.16.0]].
 
 **Reorganização (2026-10-10):** era a antiga 0.18.0; mantém o foco de UX e passa a
 vir logo após a versão de produtividade.
@@ -44,4 +44,4 @@ vir logo após a versão de produtividade.
 ## Relacionado
 
 - [[MOC - PRDs]]
-- [[Roadmap - 0.16.0 (planejamento)]] · [[Roadmap - 0.18.0 (planejamento)]]
+- [[Roadmap - 0.16.0 (execução)]] · [[Roadmap - 0.18.0 (planejamento)]]

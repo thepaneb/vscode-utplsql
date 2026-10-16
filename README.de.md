@@ -18,6 +18,7 @@
   <a href="https://codecov.io/gh/thepaneb/vscode-utplsql"><img alt="Coverage" src="https://codecov.io/gh/thepaneb/vscode-utplsql/branch/main/graph/badge.svg"></a>
   <img alt="VS Code" src="https://img.shields.io/badge/VS%20Code-1.101%2B-007ACC">
   <img alt="Node" src="https://img.shields.io/badge/node-22-339933?logo=nodedotjs&logoColor=white">
+  <img alt="TypeScript" src="https://img.shields.io/badge/TypeScript-7-3178C6?logo=typescript&logoColor=white">
   <img alt="Oracle" src="https://img.shields.io/badge/Oracle-12.2%2B-F80000?logo=oracle&logoColor=white">
   <img alt="License" src="https://img.shields.io/badge/license-MIT-blue">
   <a href="https://thepaneb.github.io/vscode-utplsql/"><img alt="Website" src="https://img.shields.io/badge/Website-vscode--utplsql-007ACC"></a>
@@ -37,6 +38,9 @@ Führe **utPLSQL**-Tests (Oracle PL/SQL) direkt in VS Code aus und debugge sie �
 - 🧩 **Schema-bewusster Baum** — Tests nach Schema > Package > Suite > Test im Test Explorer organisieren.
 - 🏷️ **Tags und zufällige Reihenfolge** — filtere Tests mit `utplsql.tags` (z. B. `fast & !integration`) oder dem Befehl `utPLSQL: Run Tests by Tag...` (Multi-Select-QuickPick; `!tag` schließt aus) und führe sie in zufälliger Reihenfolge mit reproduzierbarem Seed aus (`utplsql.run.randomOrder`).
 - 🧭 **Tag-basierter Baum** — organisiere den Test Explorer als **Tag > Suite > Test** mit `utplsql.organization = tag` (eine Suite mit mehreren Tags erscheint unter jedem Tag) und zeige `[tag1, tag2]` an den Labels mit `utplsql.showTagsInTree`.
+- 🏗️ **Test-Suite-Gerüst** — erzeugt `ut_<Paket>.pks` mit einem `%test` pro Routine aus einer `.pks`/`.pkb` oder einem Datenbankobjekt, mit den `utplsql.generate.*`-Optionen.
+- ⏱️ **Dauer und Persistenz** — das Ergebnis des letzten Laufs (Status, Meldung und Dauer je Test) überlebt einen Workspace-Reload; optional zeigt `(1.2s)` an den Test-Labels (`utplsql.showTestDuration`).
+- 🔗 **Zugehörige Tests** — führt in einer Produktions-`.pks`/`.pkb`/`.sql` die Suites nach der `ut_<Objekt>`-Konvention aus (`Ctrl+Shift+U Shift+R`).
 - ♻️ **Auto-Ausführung beim Speichern** — führe die Suiten der gespeicherten `.pks` mit `utplsql.autoRun = onSave` erneut aus, mit einem Debounce pro Datei (`utplsql.autoRunDelayMs`) und einer Warteschlangenrichtlinie, wenn bereits eine Ausführung läuft (`utplsql.autoRunQueue`: `skip`/`replace`).
 - 🗄️ **DB-first-Erkennung** — Baum aus `ut_runner.get_suites_info` aufbauen und den Anmerkungs-Cache über die Palette neu erstellen.
 - 🌳 **Lazy-Testbaum** — im `schema`-Modus werden Packages/Suites/Tests beim Aufklappen bei Bedarf aufgelöst, sodass große Schemas sofort öffnen.
@@ -153,6 +157,11 @@ Test Explorer, **sobald jeder Test fertig ist**.
 | `utplsql.connection` | `""` | Oracle-Verbindung. **Leer lassen** und die Umgebungsvariable `UTPLSQL_CONN` verwenden, um das Speichern des Passworts zu vermeiden. Wenn beide leer sind, fragt die Erweiterung (behält sie nur in der Sitzung). |
 | `utplsql.sourcePath` | `install` | Ordner des Produktionscodes (um Coverage Dateien zuzuordnen). |
 | `utplsql.includePatterns` | `["**/*.pks"]` | Globs zum Ermitteln der Specs mit `%suite`/`%test`. Wenn Ihre Tests in `.sql` liegen, verwenden Sie `["**/*.sql"]`. |
+| `utplsql.generate.testPackagePrefix` | `ut_` | Präfix des generierten Testpaketnamens. |
+| `utplsql.generate.testPackageSuffix` | `""` | Suffix des generierten Testpaketnamens. |
+| `utplsql.generate.numberOfTestsPerUnit` | `1` | `%test` pro Routine des Produktionspakets. |
+| `utplsql.generate.generateComments` | `true` | Fügt jedem generierten `%test` ein `-- TODO` hinzu. |
+| `utplsql.showTestDuration` | `false` | Hängt die Dauer des letzten Laufs an die Test-Labels an (z. B. `(1.2s)`). |
 | `utplsql.coverageOwner` | `""` | Schema-Eigentümer der abgedeckten Objekte. Leer = verwendet den Verbindungsbenutzer (Großschreibung). |
 | `utplsql.coverage.schemes` | `[]` | Abgedeckte Schemas (`a_coverage_schemes`). Leer = Verbindungsbenutzer (oder `utplsql.coverageOwner`). |
 | `utplsql.coverage.includeObjects` | `[]` | Objekte, die in die Abdeckung aufgenommen werden, als `OWNER.NAME` (z. B. `["APP.MEIN_PKG"]`). Nützlich für nur dynamisch erreichte Objekte. |
@@ -300,14 +309,19 @@ Alle Befehle der Erweiterung (Palette `Ctrl+Shift+P`, Präfix `utPLSQL:`):
 | `utPLSQL: New connection profile...` | Assistent zum Erstellen und Aktivieren eines Profils | — |
 | `utPLSQL: Manage connection profiles` | Öffnet die Einstellungen bei `utplsql.profiles` | — |
 | `utPLSQL: Import connections from SQL Developer` | Importiert Verbindungen aus SQL Developer (connections.xml) | — |
-| `utPLSQL: Debug test (PL/SQL)` | Startet eine Debug-Sitzung des Tests der aktiven Datei | — |
-| `utPLSQL: Für Debug kompilieren` | Kompiliert das Objekt der ausgewählten Datei/des Ordners mit Debug-Informationen | — |
+| `utPLSQL: Debug test (PL/SQL)` | Startet eine Debug-Sitzung des Tests der aktiven Datei | v3.2.x kompiliert nicht (`PLS-00222`). Der `WE8DEC`-Zeichensatz des Images verliert nicht darstellbare Zeichen (z. B. `€`); der Thin-Treiber ignoriert `NLS_LANG`. |
+| `utPLSQL: Test am Cursor debuggen` | Startet eine Debug-Sitzung für das `%test`/`%suite` unter dem Cursor | — |
+| `utPLSQL: Fehlgeschlagene Tests debuggen` | Startet eine Debug-Sitzung für die im letzten Lauf fehlgeschlagenen Tests (QuickPick bei mehreren) | — |
+| `utPLSQL: Letzten Lauf debuggen` | Startet eine Debug-Sitzung des letzten Laufs | — |
+| `utPLSQL: Für Debug kompilieren` | Kompiliert das Objekt der ausgewählten Datei/des Ordners mit Debug-Informationen | v3.2.x kompiliert nicht (`PLS-00222`). Der `WE8DEC`-Zeichensatz des Images verliert nicht darstellbare Zeichen (z. B. `€`); der Thin-Treiber ignoriert `NLS_LANG`. |
 | `utPLSQL: Anmerkungs-Cache neu aufbauen` | Baut den utPLSQL-Anmerkungs-Cache in der Datenbank neu auf und aktualisiert den Baum | — |
 | `utPLSQL: Run script` | Runs the script open in the editor against a connection profile | Right-click → script file |
 | `utPLSQL: Run script file` | Runs an Explorer script file (decoded with the profile charset) | Right-click → file |
 | `utPLSQL: Run script folder` | Runs the folder scripts in alphabetical order | Right-click → folder |
 | `utPLSQL: Wallet-Passwort festlegen` | Setzt/löscht das Wallet-Passwort des aktiven Profils (SecretStorage) | — |
 | `utPLSQL: Mit Reporter ausführen (Export)` | Führt die Auswahl mit einem gewählten Reporter aus und schreibt die Ausgabe in Output/Datei (ändert die Ergebnisse nicht) | Test Explorer → menu do item |
+| `utPLSQL: Testsuite generieren…` | erzeugt `ut_<Paket>.pks` mit einem `%test` pro Routine aus einer `.pks`/`.pkb` oder einem Datenbankobjekt, mit den `utplsql.generate.*`-Optionen | v3.2.x kompiliert nicht (`PLS-00222`). Der `WE8DEC`-Zeichensatz des Images verliert nicht darstellbare Zeichen (z. B. `€`); der Thin-Treiber ignoriert `NLS_LANG`. |
+| `utPLSQL: Zugehörige Tests ausführen` | führt in einer Produktions-`.pks`/`.pkb`/`.sql` die Suites nach der `ut_<Objekt>`-Konvention aus | v3.2.x kompiliert nicht (`PLS-00222`). Der `WE8DEC`-Zeichensatz des Images verliert nicht darstellbare Zeichen (z. B. `€`); der Thin-Treiber ignoriert `NLS_LANG`. |
 
 > **Recompile UT3** (`utplsql.recompileUt3`) ist **kein** Palettenbefehl — es ist
 > ein interner Quick-Fix der „utPLSQL Setup"-Diagnose (ungültige Objekte im
@@ -328,6 +342,10 @@ Alle Kürzel verwenden das Präfix `Ctrl+Shift+U` (`Cmd+Shift+U` unter Mac):
 | `Ctrl+Shift+U L` | Letzte Ausführung wiederholen |
 | `Ctrl+Shift+U U` | Unter dem Cursor ausführen |
 | `Ctrl+Shift+U X` | Nur fehlgeschlagene ausführen |
+| `Ctrl+Shift+U Shift+C` | Toggle Coverage |
+| `Ctrl+Shift+U Shift+R` | Zugehörige Tests ausführen |
+| `Ctrl+Shift+U D` | Test am Cursor debuggen |
+| `Ctrl+Shift+U Shift+D` | Fehlgeschlagene Tests debuggen |
 | `Escape` | Ausführung abbrechen |
 
 ## Testabdeckung (Coverage)
@@ -395,7 +413,6 @@ GRANT SELECT ON SYS.DBA_PROCEDURES TO <ut3_owner>;
 - Die Zuordnung Ergebnis→Test erfolgt über Paketname + Testname/-beschreibung;
   identische Beschreibungen in verschiedenen Paketen können zu Mehrdeutigkeiten führen (der Index ist
   auf das Paket begrenzt, um dies zu minimieren).
-- Berücksichtigt den **ersten** Arbeitsbereichsordner zur Auflösung von `sourcePath`.
 - Die Ermittlung liest die `.pks` (Specs); bewahren Sie die `%suite`/`%test`-Annotationen in der Spec auf.
 
 ## Fehlerbehebung

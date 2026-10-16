@@ -27,6 +27,7 @@ tags: [readme]
   <a href="https://codecov.io/gh/thepaneb/vscode-utplsql"><img alt="Coverage" src="https://codecov.io/gh/thepaneb/vscode-utplsql/branch/main/graph/badge.svg"></a>
   <img alt="VS Code" src="https://img.shields.io/badge/VS%20Code-1.101%2B-007ACC">
   <img alt="Node" src="https://img.shields.io/badge/node-22-339933?logo=nodedotjs&logoColor=white">
+  <img alt="TypeScript" src="https://img.shields.io/badge/TypeScript-7-3178C6?logo=typescript&logoColor=white">
   <img alt="Oracle" src="https://img.shields.io/badge/Oracle-12.2%2B-F80000?logo=oracle&logoColor=white">
   <img alt="License" src="https://img.shields.io/badge/license-MIT-blue">
   <a href="https://thepaneb.github.io/vscode-utplsql/"><img alt="Website" src="https://img.shields.io/badge/Website-vscode--utplsql-007ACC"></a>
@@ -46,6 +47,9 @@ tags: [readme]
 - 🧩 **Schema 感知的樹狀結構** — 在 Test Explorer 中依 Schema > Package > Suite > Test 組織測試。
 - 🏷️ **標籤與隨機順序** — 使用 `utplsql.tags`（例如 `fast & !integration`）或 `utPLSQL: Run Tests by Tag...` 命令（多選 QuickPick；`!tag` 表示排除）篩選測試，並以可重現的種子隨機順序執行（`utplsql.run.randomOrder`）。
 - 🧭 **依標籤的樹狀結構** — 使用 `utplsql.organization = tag` 將 Test Explorer 組織為 **Tag > Suite > Test**（含多個標籤的套件會出現在每個標籤下），並以 `utplsql.showTagsInTree` 在標籤上顯示 `[tag1, tag2]`。
+- 🏗️ **測試套件鷹架** — 從 `.pks`/`.pkb` 或資料庫物件產生 `ut_<套件>.pks`，每個例行程式一個 `%test`，並使用 `utplsql.generate.*` 選項。
+- ⏱️ **耗時與持久化** — 上次執行結果（狀態、訊息與每個測試的耗時）在重新開啟工作區後仍會保留；可選擇在測試標籤顯示 `(1.2s)`（`utplsql.showTestDuration`）。
+- 🔗 **相關測試** — 在生產 `.pks`/`.pkb`/`.sql` 中，依 `ut_<物件>` 慣例執行套件（`Ctrl+Shift+U Shift+R`）。
 - ♻️ **儲存時自動執行** — 使用 `utplsql.autoRun = onSave` 重新執行已儲存 `.pks` 的套件，支援每個檔案的防抖（`utplsql.autoRunDelayMs`）以及執行中時的佇列原則（`utplsql.autoRunQueue`：`skip`/`replace`）。
 - 🗄️ **資料庫優先探索** — 從 `ut_runner.get_suites_info` 建構樹狀結構，並從命令面板重建註解快取。
 - 🌳 **延遲載入的測試樹** — 在 `schema` 模式下，package/suite/test 於展開時按需解析，因此大型 schema 可即時開啟。
@@ -162,6 +166,11 @@ Test Explorer 中。
 | `utplsql.connection` | `""` | Oracle 連線。**留空**並使用 `UTPLSQL_CONN` 環境變數，以避免儲存密碼。若兩者皆為空，擴充功能會詢問（僅在工作階段中保留）。 |
 | `utplsql.sourcePath` | `install` | 正式程式碼的資料夾（用於將涵蓋率對應到檔案）。 |
 | `utplsql.includePatterns` | `["**/*.pks"]` | 用於探索含 `%suite`/`%test` 規格的 glob 模式。若測試位於 `.sql`，請使用 `["**/*.sql"]`。 |
+| `utplsql.generate.testPackagePrefix` | `ut_` | 產生的測試套件名稱前置字串。 |
+| `utplsql.generate.testPackageSuffix` | `""` | 產生的測試套件名稱後置字串。 |
+| `utplsql.generate.numberOfTestsPerUnit` | `1` | 生產套件每個例行程式產生的 `%test` 數量。 |
+| `utplsql.generate.generateComments` | `true` | 在每個產生的 `%test` 加入 `-- TODO`。 |
+| `utplsql.showTestDuration` | `false` | 在測試標籤後附加上次執行的耗時（例如 `(1.2s)`）。 |
 | `utplsql.coverageOwner` | `""` | 被涵蓋物件的 schema 擁有者。留空 = 使用連線使用者（大寫）。 |
 | `utplsql.coverage.schemes` | `[]` | 涵蓋的 schema（`a_coverage_schemes`）。留空 = 連線使用者（或 `utplsql.coverageOwner`）。 |
 | `utplsql.coverage.includeObjects` | `[]` | 要納入涵蓋的物件，格式為 `OWNER.NAME`（例如 `["APP.MY_PKG"]`）。適用於僅透過動態方式到達的物件。 |
@@ -309,14 +318,19 @@ UTPLSQL_CONN=your_user/password@//host:1521/service
 | `utPLSQL: New connection profile...` | 建立並啟用設定檔的精靈 | — |
 | `utPLSQL: Manage connection profiles` | 在 `utplsql.profiles` 開啟設定 | — |
 | `utPLSQL: Import connections from SQL Developer` | 從 SQL Developer（connections.xml）匯入連線 | — |
-| `utPLSQL: Debug test (PL/SQL)` | 對作用中檔案下的測試啟動除錯工作階段 | — |
+| `utPLSQL: Debug test (PL/SQL)` | 對作用中檔案下的測試啟動除錯工作階段 | v3.2.x 無法編譯（`PLS-00222`）。映像的 `WE8DEC` 會遺失無法表示的字元（例如 `€`）；精簡驅動程式會忽略 `NLS_LANG`。 |
 | `utPLSQL: 重建註解快取` | 重建資料庫中的 utPLSQL 註解快取並重新整理樹狀結構 | — |
-| `utPLSQL: 編譯以供偵錯` | 使用偵錯資訊編譯所選檔案/資料夾的物件 | — |
+| `utPLSQL: 在游標處偵錯測試` | 啟動對游標處 `%test`/`%suite` 的偵錯工作階段 | — |
+| `utPLSQL: 偵錯失敗的測試` | 啟動對上次執行中失敗測試的偵錯工作階段（多個時顯示 QuickPick） | — |
+| `utPLSQL: 偵錯上次執行` | 啟動對上次執行的偵錯工作階段 | — |
+| `utPLSQL: 編譯以供偵錯` | 使用偵錯資訊編譯所選檔案/資料夾的物件 | v3.2.x 無法編譯（`PLS-00222`）。映像的 `WE8DEC` 會遺失無法表示的字元（例如 `€`）；精簡驅動程式會忽略 `NLS_LANG`。 |
 | `utPLSQL: Run script` | Runs the script open in the editor against a connection profile | Right-click → script file |
 | `utPLSQL: Run script file` | Runs an Explorer script file (decoded with the profile charset) | Right-click → file |
 | `utPLSQL: Run script folder` | Runs the folder scripts in alphabetical order | Right-click → folder |
 | `utPLSQL: 設定錢包密碼` | 設定/清除使用中設定檔的 Oracle Cloud 錢包密碼（SecretStorage） | — |
 | `utPLSQL: 使用 reporter 執行（匯出）` | 使用所選 reporter 執行選取並將輸出寫入 Output/檔案（不改變結果） | Test Explorer → menu do item |
+| `utPLSQL: 產生測試套件…` | 從 `.pks`/`.pkb` 或資料庫物件產生 `ut_<套件>.pks`，每個例行程式一個 `%test`，並使用 `utplsql.generate.*` 選項。 | v3.2.x 無法編譯（`PLS-00222`）。映像的 `WE8DEC` 會遺失無法表示的字元（例如 `€`）；精簡驅動程式會忽略 `NLS_LANG`。 |
+| `utPLSQL: 執行相關測試` | 在生產 `.pks`/`.pkb`/`.sql` 中，依 `ut_<物件>` 慣例執行套件（`Ctrl+Shift+U Shift+R`）。 | v3.2.x 無法編譯（`PLS-00222`）。映像的 `WE8DEC` 會遺失無法表示的字元（例如 `€`）；精簡驅動程式會忽略 `NLS_LANG`。 |
 
 > **Recompile UT3**（`utplsql.recompileUt3`）**不是**命令面板命令 — 它是
 > 「utPLSQL Setup」診斷（utPLSQL schema 中的無效物件）的內部快速修復。
@@ -336,6 +350,10 @@ UTPLSQL_CONN=your_user/password@//host:1521/service
 | `Ctrl+Shift+U L` | 重新執行上次 |
 | `Ctrl+Shift+U U` | 在游標處執行 |
 | `Ctrl+Shift+U X` | 僅執行失敗 |
+| `Ctrl+Shift+U Shift+C` | Toggle Coverage |
+| `Ctrl+Shift+U Shift+R` | 執行相關測試 |
+| `Ctrl+Shift+U D` | 在游標處偵錯測試 |
+| `Ctrl+Shift+U Shift+D` | 偵錯失敗的測試 |
 | `Escape` | 取消執行 |
 
 ## 涵蓋率
@@ -399,7 +417,6 @@ GRANT SELECT ON SYS.DBA_PROCEDURES TO <ut3_owner>;
 - 結果→測試的對應是依套件名稱 + 測試名稱/描述進行；
   不同套件中相同的描述可能造成歧義（索引
   以套件為範圍以盡量減少此情況）。
-- 僅考慮**第一個**工作區資料夾來解析 `sourcePath`。
 - 探索會讀取 `.pks`（規格）；請將 `%suite`/`%test` 註解保留在規格中。
 
 ## 疑難排解

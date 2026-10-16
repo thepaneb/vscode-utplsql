@@ -29,7 +29,8 @@ Oracle direto
             ├─► resolveSourceUri(file, workspaceRoot, sourcePath, folderRoot?)
             │       └─► mapeia nome de objeto Oracle → arquivo .sql local
             │
-            └─► applyCoverageFromXml(covXml, sourcePath, _root, run, state, folders)
+            └─► applyCoverageFromXml(covXml, sourcePath, run, state, folders)
+                    │   (cada workspace folder é tentado como base — PRD-57)
                     │
                     ├─► FileCoverage.fromDetails(uri, details)
                     ├─► run.addCoverage(fc)
@@ -217,7 +218,7 @@ run via `V$SQL` e emite cobertura booleana. Controlado pelo setting
 ```typescript
 interface SqlCoverageOptions {
   connection: string;
-  root: string;
+  roots: string[];                          // fsPath das raízes em execução (PRD-57)
   sourcePath: string;
   run: vscode.TestRun;
   state: TestStateManager;
@@ -235,7 +236,8 @@ function viewNameFromPath(filePath: string): string; // "views/foo.sql" → "FOO
 function discoverViewFiles(root: string, sourcePath: string): string[];
 ```
 
-- Descobre arquivos `views/*.sql` sob `<root>/<sourcePath>/views/` (recursivo)
+- Descobre arquivos `views/*.sql` sob `<root>/<sourcePath>/views/` (recursivo) —
+  chamado uma vez por raiz em execução no multi-root (PRD-57)
 - Consulta `V$SQL` (`command_type = 3 AND executions > 0 AND parsing_schema_name =
   :owner`, restrito ao usuário da conexão) e faz match
   word-boundary do nome da view em qualquer `SQL_TEXT`

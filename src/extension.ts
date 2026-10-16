@@ -6,6 +6,7 @@ import { registerDebug } from './commands/debug';
 import type { CommandDeps } from './commands/deps';
 import { registerProfileCommands } from './commands/profile';
 import { registerRunCommands } from './commands/run';
+import { registerScaffoldCommands } from './commands/scaffold';
 import { registerScriptCommands } from './commands/script';
 import { registerUtilityCommands } from './commands/utility';
 import { registerCompilationDiagnostics } from './compilationDiagnostics';
@@ -37,6 +38,11 @@ let cancelCurrentRun: (() => void) | undefined;
 
 export function activate(context: vscode.ExtensionContext) {
   void vscode.commands.executeCommand('setContext', 'utplsql:activated', true);
+
+  // Snapshot do último resultado (PRD-56): `Memento` por setter e restore já
+  // antes do primeiro refresh, para o label/duração sair certo na árvore.
+  state.attachMemento(context.workspaceState);
+  state.restore();
 
   // Log de diagnóstico em um LogOutputChannel (nível controlado pelo usuário).
   const log = vscode.window.createOutputChannel('utPLSQL', { log: true });
@@ -98,6 +104,7 @@ export function activate(context: vscode.ExtensionContext) {
   registerConnectionCommands(context, deps);
   registerProfileCommands(context, deps);
   registerScriptCommands(context);
+  registerScaffoldCommands(context);
   registerDebug(context, deps);
 
   context.subscriptions.push(
@@ -188,7 +195,19 @@ export function activate(context: vscode.ExtensionContext) {
     { dispose: () => autoRunner.cancel() },
   );
 
-  void profilesReady.then(() => refresh());
+  void profilesReady
+    .then(() => refresh())
+    .then(() => {
+      // Restaura o último resultado (PRD-56 RF3): decorações inline, "Run Failed"
+      // e o context key. Depende da árvore já montada (ids → itens).
+      state.restoreLastFailed();
+      void vscode.commands.executeCommand(
+        'setContext',
+        'utplsql:hasFailures',
+        state.getLastFailedItems().length > 0,
+      );
+      decorationManager?.update(state.getLastResults(), (id) => state.getItem(id));
+    });
 }
 
 export async function deactivate() {

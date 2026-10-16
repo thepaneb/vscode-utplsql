@@ -550,6 +550,7 @@ describeDB('v0.12.0 — integração com banco Oracle', () => {
         setLastResults: () => {},
         setLastFailedItems: () => {},
         getLastFailedItems: () => [],
+        persist: () => {},
         setCoverage: () => {},
         getCoverage: () => [],
         clearCoverage: () => {},
@@ -594,7 +595,6 @@ describeDB('v0.12.0 — integração com banco Oracle', () => {
             pathArgs: ['test_calculator'],
             coverage: true,
             sourcePath: 'install',
-            root: tmpRoot,
             run: run as never,
             leafTests: [],
             state: state as never,
@@ -647,7 +647,7 @@ describeDB('v0.12.0 — integração com banco Oracle', () => {
       // Sem o 3º parâmetro (loader injetável) -> usa o oracledb real (V$SQL negado -> aviso, não lança)
       await applySqlCoverage({
         connection: conn,
-        root,
+        roots: [root],
         sourcePath: 'install',
         run,
         state,

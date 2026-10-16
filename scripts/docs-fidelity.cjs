@@ -16,9 +16,16 @@
  *   4. versão de package.json ↔ exemplos de .vsix nos docs
  *   5. PRDs concluídos ↔ docs/wiki/PRDs.md (IDs)
  *   6. termos obsoletos proibidos ("type_mapping" como afirmação, "java -jar")
+ *   7. títulos de comando no README (por tokens significativos)
+ *   8. claims de "não implementado" em código já implementado (heurística)
+ *   9. variantes de README listam as mesmas settings do README.md
+ *  10. piso de VS Code × runtime Node do host
+ *  11. todo `*.ts|*.mjs|*.cjs` citado nas docs existe no repositório
+ *  12. símbolo declarado em release anterior e ausente hoje não é citado nas docs
  */
 'use strict';
 
+const { spawnSync } = require('child_process');
 const fs = require('fs');
 const path = require('path');
 
@@ -316,6 +323,9 @@ function checkFidelity(overrides = {}) {
     }
   }
 
+  // 11/12. módulos e símbolos descontinuados citados na documentação
+  problems.push(...checkStaleReferences(overrides));
+
   return problems;
 }
 
@@ -356,10 +366,264 @@ function listCompletedPrds() {
     .sort((a, b) => Number(a) - Number(b));
 }
 
+// ── Símbolos descontinuados (checagem 11/12) ─────────────────────────────
+//
+// Motivação: um diagrama/texto pode continuar documentando algo que foi
+// REMOVIDO (ex.: o modo CLI, eliminado na 0.12 pela PRD-64) — o `docs:check`
+// não olhava o conteúdo. Aqui:
+//   11. todo `*.ts|*.mjs|*.cjs` citado nas docs tem de existir no repo;
+//   12. identificador declarado em `src/` em qualquer tag de release e ausente
+//       hoje (símbolo descontinuado) não pode ser citado nas docs.
+
+/** Arquivos .ts de `src/` (recursivo, inclui `src/commands/`). */
+function srcTsFiles(dir = path.join(REPO, 'src'), acc = []) {
+  for (const e of fs.readdirSync(dir, { withFileTypes: true })) {
+    const full = path.join(dir, e.name);
+    if (e.isDirectory()) srcTsFiles(full, acc);
+    else if (e.name.endsWith('.ts')) acc.push(full);
+  }
+  return acc;
+}
+
+/** Identificadores declarados num texto TS (`function`/`class`/`const`/…). */
+function declaredSymbols(text) {
+  const out = new Set();
+  const re =
+    /(?:export\s+)?(?:declare\s+)?(?:async\s+)?(?:function|class|const|let|var|interface|type|enum)\s+([A-Za-z_$][\w$]*)/g;
+  for (const m of text.matchAll(re)) out.add(m[1]);
+  return out;
+}
+
+/** Executa git e devolve as linhas (ou null se git/ref indisponível). */
+function gitLines(args) {
+  if (gitLines.cache.has(args.join(' '))) return gitLines.cache.get(args.join(' '));
+  let result = null;
+  try {
+    const r = spawnSync('git', args, { cwd: REPO, encoding: 'utf8', maxBuffer: 32 * 1024 * 1024 });
+    result = r.status === 0 ? String(r.stdout ?? '').split('\n').filter(Boolean) : null;
+  } catch {
+    result = null;
+  }
+  gitLines.cache.set(args.join(' '), result);
+  return result;
+}
+gitLines.cache = new Map();
+
+/** Nomes "vivos": declarações, nomes de módulo e qualquer token presente no src/. */
+function aliveNames() {
+  const out = new Set();
+  for (const file of srcTsFiles()) {
+    // O nome do módulo conta como vivo (ex.: `compilationDiagnostics` aparece nas
+    // docs como módulo E como sub-chave de setting).
+    out.add(path.basename(file, '.ts'));
+    const text = fs.readFileSync(file, 'utf8');
+    for (const s of declaredSymbols(text)) out.add(s);
+    // Campos, parâmetros e menções em comentário também contam (ex.: `cachedItems`).
+    for (const m of text.matchAll(/[A-Za-z_$][\w$]*/g)) out.add(m[0]);
+  }
+  return out;
+}
+
+/**
+ * Nomes removidos **antes** desta checagem existir (era CLI, ≤ 0.12 — PRD-64),
+ * consolidados a partir do histórico completo de tags. Ficam aqui porque o
+ * baseline automático é a última release e a era CLI é anterior a ela.
+ */
+const LEGACY_REMOVED = {
+  modules: [
+    'cli.ts',
+    'cliEncoding.ts',
+    'cliInfo.ts',
+    'cliReporters.ts',
+    'invocation.ts',
+    'cli.test.ts',
+    'cliEncoding.test.ts',
+    'cliInfo.test.ts',
+    'cliReporters.test.ts',
+    'invocation.test.ts',
+  ],
+  symbols: ['parseFromOutput', 'applyResults', 'safeArgs', 'resolveStackLocation', 'oracleCli'],
+};
+
+/**
+ * Símbolos que existiram em **alguma** tag de release e não existem hoje.
+ * `null` quando não há git/tags (clone raso) — a checagem então é pulada.
+ *
+ * Baseline: a **última tag de release** (comparar a release anterior com a
+ * árvore atual é o que "a doc descreve o que saiu" significa; e cada tag custa
+ * ~0,5 s de `git grep` aqui). O histórico anterior à checagem (era CLI, ≤ 0.12)
+ * entra pela lista consolidada `LEGACY_REMOVED`.
+ */
+function staleSymbols() {
+  if (staleSymbols.cache !== undefined) return staleSymbols.cache;
+  const tag = latestTag();
+  if (!tag) return (staleSymbols.cache = null);
+  const historical = new Set(LEGACY_REMOVED.symbols);
+  const lines = gitLines([
+    'grep',
+    '-h',
+    '-o',
+    '-E',
+    '(export )?(declare )?(async )?(function|class|const|let|var|interface|type|enum) [A-Za-z_$][A-Za-z0-9_$]*',
+    tag,
+    '--',
+    'src',
+  ]);
+  if (lines) {
+    for (const line of lines) for (const s of declaredSymbols(line)) historical.add(s);
+  }
+  const today = aliveNames();
+  return (staleSymbols.cache = new Set([...historical].filter((s) => !today.has(s))));
+}
+staleSymbols.cache = undefined;
+
+/** Última tag de release (vX.Y.Z) alcançável, ou null em clone raso. */
+function latestTag() {
+  if (latestTag.cache !== undefined) return latestTag.cache;
+  const tags = gitLines(['tag', '--list', 'v*']);
+  if (!tags || tags.length === 0) return (latestTag.cache = null);
+  const cmp = (a, b) =>
+    String(a)
+      .slice(1)
+      .split('.')
+      .map(Number)
+      .reduce((acc, n, i) => acc * 1000 + (n || 0), 0) -
+    String(b)
+      .slice(1)
+      .split('.')
+      .map(Number)
+      .reduce((acc, n, i) => acc * 1000 + (n || 0), 0);
+  return (latestTag.cache = [...tags].sort(cmp).pop() ?? null);
+}
+latestTag.cache = undefined;
+
+/** Módulos de `src/` que existiram em alguma release e não existem hoje. */
+function removedModules() {
+  if (removedModules.cache !== undefined) return removedModules.cache;
+  const tag = latestTag();
+  if (!tag) return (removedModules.cache = null);
+  const historical = new Set(LEGACY_REMOVED.modules);
+  const files = gitLines(['ls-tree', '-r', '--name-only', tag, '--', 'src']);
+  if (files) for (const f of files) if (f.endsWith('.ts')) historical.add(path.posix.basename(f));
+  const today = new Set(srcTsFiles().map((f) => path.basename(f)));
+  return (removedModules.cache = new Set([...historical].filter((f) => !today.has(f))));
+}
+removedModules.cache = undefined;
+
+/**
+ * Menções **deliberadas** a símbolos removidos: o próprio texto explica que não
+ * existem mais. Sem justificativa aqui, a menção é tratada como drift.
+ */
+const ALLOW_STALE = new Map([
+  ['resolveStackLocation', 'functional/03 afirma que não existe mais (só resolveStackFrameToUri)'],
+  ['applyCoverage', 'functional/07 documenta o wrapper CLI removido e o diagnostic morto'],
+]);
+
+/** Superfícies de documentação versionada (usuário) — sem PRDs/CHANGELOG. */
+function docsScanTargets() {
+  const targets = [];
+  const push = (rel) => {
+    const abs = path.join(REPO, rel);
+    if (fs.existsSync(abs)) targets.push({ path: rel, text: fs.readFileSync(abs, 'utf8') });
+  };
+  push('README.md');
+  for (const f of fs.readdirSync(REPO).filter((f) => /^README\..+\.md$/.test(f))) push(f);
+  push('site/index.html');
+  for (const dir of ['docs/wiki', 'docs/functional']) {
+    const abs = path.join(REPO, dir);
+    if (!fs.existsSync(abs)) continue;
+    const walk = (d) => {
+      for (const e of fs.readdirSync(d, { withFileTypes: true })) {
+        const full = path.join(d, e.name);
+        if (e.isDirectory()) walk(full);
+        else if (/\.(md|svg)$/.test(e.name)) {
+          targets.push({
+            path: path.relative(REPO, full).split(path.sep).join('/'),
+            text: fs.readFileSync(full, 'utf8'),
+          });
+        }
+      }
+    };
+    walk(abs);
+  }
+  return targets;
+}
+
+/** Identificadores compostos (camelCase) citados como código num texto. */
+function citedCodeIdentifiers(text, kind) {
+  const out = new Set();
+  const compound = /^[a-z][A-Za-z0-9_$]*[A-Z][A-Za-z0-9_$]*$/;
+  const add = (raw) => {
+    const id = String(raw).replace(/[()\s]/g, '');
+    if (compound.test(id)) out.add(id);
+  };
+  let scan = text;
+  if (kind === 'svg') {
+    scan = [...text.matchAll(/<text[^>]*>([^<]*)<\/text>/g)].map((m) => m[1]).join('\n');
+  } else {
+    // Em markdown só o que está entre crases ou seguido de `(` é "código".
+    // Blocos cercados (```) são exemplos/copiar-e-colar — fora.
+    const prose = text.replace(/^(```|~~~)[\s\S]*?^\1[^\n]*$/gm, '');
+    scan = [
+      ...[...prose.matchAll(/`([^`\n]+)`/g)].map((m) => m[1]),
+      ...[...prose.matchAll(/([A-Za-z_$][\w$]*)\(/g)].map((m) => m[1]),
+    ].join(' ');
+  }
+  for (const m of scan.matchAll(/[A-Za-z_$][\w$]*/g)) add(m[0]);
+  return out;
+}
+
+/** Checagens 11 e 12 — devolve lista de problemas. */
+function checkStaleReferences(overrides = {}) {
+  const problems = [];
+  const targets = overrides.docsScanTargets ?? docsScanTargets();
+  /** Em markdown, blocos cercados são exemplos (placeholders) — fora do scan. */
+  const stripFences = (rel, text) =>
+    rel.endsWith('.md') ? text.replace(/^(?:```|~~~)[\s\S]*?^(?:```|~~~)[^\n]*$/gm, '') : text;
+
+  // 11. módulo removido do src/ não pode ser citado (nomes de exemplo/inexistentes
+  //     de propósito não são cobrados: o alvo é conteúdo descontinuado).
+  const removed = overrides.removedModules ?? removedModules();
+  if (removed && removed.size > 0) {
+    for (const { path: rel, text } of targets) {
+      const prose = stripFences(rel, text);
+      for (const m of prose.matchAll(/\.?[A-Za-z0-9_.-]+\.(?:ts|mjs|cjs)\b/g)) {
+        const full = m[0];
+        const base = path.posix.basename(full);
+        if (!removed.has(base) && !removed.has(full)) continue;
+        problems.push(`${rel}: cita o módulo "${full}", removido do código`);
+      }
+    }
+  }
+
+  // 12. símbolo descontinuado não pode ser citado (salvo justificativa documentada)
+  const stale = overrides.staleSymbols ?? staleSymbols();
+  if (stale && stale.size > 0) {
+    for (const { path: rel, text } of targets) {
+      const kind = rel.endsWith('.svg') ? 'svg' : 'md';
+      for (const id of citedCodeIdentifiers(text, kind)) {
+        if (!stale.has(id) || ALLOW_STALE.has(id)) continue;
+        problems.push(
+          `${rel}: cita "${id}", removido do código (existe só em releases anteriores)`,
+        );
+      }
+    }
+  }
+  return problems;
+}
+
 module.exports = {
   checkFidelity,
+  checkStaleReferences,
+  citedCodeIdentifiers,
+  declaredSymbols,
+  docsScanTargets,
+  removedModules,
   realSettings,
   realCommands,
+  srcTsFiles,
+  staleSymbols,
+  ALLOW_STALE,
   commandTitleFragments,
   srcModules,
   pkgVersion,

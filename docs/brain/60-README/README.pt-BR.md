@@ -27,6 +27,7 @@ tags: [readme]
   <a href="https://codecov.io/gh/thepaneb/vscode-utplsql"><img alt="Coverage" src="https://codecov.io/gh/thepaneb/vscode-utplsql/branch/main/graph/badge.svg"></a>
   <img alt="VS Code" src="https://img.shields.io/badge/VS%20Code-1.101%2B-007ACC">
   <img alt="Node" src="https://img.shields.io/badge/node-22-339933?logo=nodedotjs&logoColor=white">
+  <img alt="TypeScript" src="https://img.shields.io/badge/TypeScript-7-3178C6?logo=typescript&logoColor=white">
   <img alt="Oracle" src="https://img.shields.io/badge/Oracle-12.2%2B-F80000?logo=oracle&logoColor=white">
   <img alt="License" src="https://img.shields.io/badge/license-MIT-blue">
   <a href="https://thepaneb.github.io/vscode-utplsql/"><img alt="Website" src="https://img.shields.io/badge/Website-vscode--utplsql-007ACC"></a>
@@ -46,6 +47,9 @@ Execute e depure testes **utPLSQL** (Oracle PL/SQL) direto no VS Code — **Test
 - 🧩 **Schema-aware tree** — organize testes por Schema > Package > Suite > Test no Test Explorer.
 - 🏷️ **Tags e ordem aleatória** — filtre testes com `utplsql.tags` (ex.: `fast & !integration`) ou o comando `utPLSQL: Run Tests by Tag...` (QuickPick de seleção múltipla; `!tag` exclui), e execute em ordem aleatória com seed reproduzível (`utplsql.run.randomOrder`).
 - 🧭 **Árvore por tag** — organize o Test Explorer como **Tag > Suite > Test** com `utplsql.organization = tag` (uma suite com várias tags aparece sob cada tag) e exiba `[tag1, tag2]` nos rótulos com `utplsql.showTagsInTree`.
+- 🏗️ **Geração de suíte** — gera `ut_<pacote>.pks` com um `%test` por rotina a partir de um `.pks`/`.pkb` ou de um objeto do banco, com as opções `utplsql.generate.*`.
+- ⏱️ **Duração e persistência** — o resultado do último run (status, mensagem e duração por teste) sobrevive ao reload do workspace; opcionalmente mostra `(1.2s)` no label dos testes (`utplsql.showTestDuration`).
+- 🔗 **Testes relacionados** — num `.pks`/`.pkb`/`.sql` de produção, roda as suítes pela convenção `ut_<objeto>` (`Ctrl+Shift+U Shift+R`).
 - ♻️ **Auto-run ao salvar** — reexecute as suites do `.pks` salvo com `utplsql.autoRun = onSave`, com debounce por arquivo (`utplsql.autoRunDelayMs`) e política de fila quando já há execução em andamento (`utplsql.autoRunQueue`: `skip`/`replace`).
 - 🗄️ **Descoberta DB-first** — monte a árvore a partir de `ut_runner.get_suites_info` e reconstrua o cache de anotações pela paleta.
 - 🌳 **Árvore de testes lazy** — no modo `schema`, packages/suites/testes são resolvidos sob demanda ao expandir, então schemas grandes abrem na hora.
@@ -164,6 +168,11 @@ Test Explorer **conforme cada teste termina**.
 | `utplsql.connection` | `""` | Conexão Oracle. **Deixe vazio** e use a variável de ambiente `UTPLSQL_CONN` para não gravar a senha. Se ambos vazios, a extensão pergunta (guarda só na sessão). |
 | `utplsql.sourcePath` | `install` | Pasta do código de produção (para mapear a cobertura aos arquivos). |
 | `utplsql.includePatterns` | `["**/*.pks"]` | Globs para descobrir os specs com `%suite`/`%test`. Se seus testes estão em `.sql`, use `["**/*.sql"]`. |
+| `utplsql.generate.testPackagePrefix` | `ut_` | Prefixo do nome do pacote de teste gerado. |
+| `utplsql.generate.testPackageSuffix` | `""` | Sufixo do nome do pacote de teste gerado. |
+| `utplsql.generate.numberOfTestsPerUnit` | `1` | `%test` gerados por rotina do package de produção. |
+| `utplsql.generate.generateComments` | `true` | Adiciona `-- TODO` em cada `%test` gerado. |
+| `utplsql.showTestDuration` | `false` | Sufixa a duração do último run no label dos testes (ex.: `(1.2s)`). |
 | `utplsql.coverageOwner` | `""` | Schema dono dos objetos cobertos. Vazio = usa o usuário da conexão (em maiúsculas). |
 | `utplsql.coverage.schemes` | `[]` | Schemas cobertos (`a_coverage_schemes`). Vazio = usuário da conexão (ou `utplsql.coverageOwner`). |
 | `utplsql.coverage.includeObjects` | `[]` | Objetos a incluir na cobertura, como `OWNER.NAME` (ex.: `["APP.MEU_PKG"]`). Útil para objetos alcançados só dinamicamente. |
@@ -311,14 +320,19 @@ Todos os comandos da extensão (palette `Ctrl+Shift+P` prefixo `utPLSQL:`):
 | `utPLSQL: Novo perfil de conexão...` | Wizard para criar e ativar um perfil | — |
 | `utPLSQL: Gerenciar perfis de conexão` | Abre settings em `utplsql.profiles` | — |
 | `utPLSQL: Importar conexões do SQL Developer` | Importa conexões do SQL Developer (connections.xml) | — |
-| `utPLSQL: Depurar teste (PL/SQL)` | Inicia sessão de debug do teste sob o arquivo ativo | — |
-| `utPLSQL: Compilar para debug` | Compila o objeto do arquivo/pasta selecionado com informação de debug | — |
+| `utPLSQL: Depurar teste (PL/SQL)` | Inicia sessão de debug do teste sob o arquivo ativo | O v3.2.x não compila (`PLS-00222`). O charset `WE8DEC` da imagem perde caracteres não representáveis (ex.: `€`); o driver thin ignora `NLS_LANG`. |
+| `utPLSQL: Depurar teste no cursor` | Inicia uma sessão de depuração do `%test`/`%suite` sob o cursor | — |
+| `utPLSQL: Depurar testes falhos` | Inicia uma sessão de depuração dos testes que falharam na última execução (QuickPick quando houver vários) | — |
+| `utPLSQL: Depurar última execução` | Inicia uma sessão de depuração da última execução | — |
+| `utPLSQL: Compilar para debug` | Compila o objeto do arquivo/pasta selecionado com informação de debug | O v3.2.x não compila (`PLS-00222`). O charset `WE8DEC` da imagem perde caracteres não representáveis (ex.: `€`); o driver thin ignora `NLS_LANG`. |
 | `utPLSQL: Reconstruir cache de anotações` | Reconstrói o cache de anotações do utPLSQL no banco e atualiza a árvore | — |
 | `utPLSQL: Executar script` | Executa o script aberto no editor contra um perfil de conexão | Clique direito → arquivo de script |
 | `utPLSQL: Executar arquivo de script` | Executa um arquivo de script do Explorer (decodificado no charset do perfil) | Clique direito → arquivo |
 | `utPLSQL: Executar pasta de scripts` | Executa os scripts da pasta em ordem alfabética | Clique direito → pasta |
 | `utPLSQL: Definir senha da wallet` | Define/limpa a senha da wallet Oracle Cloud do perfil ativo (SecretStorage) | — |
 | `utPLSQL: Rodar com reporter (export)` | Roda a seleção com um reporter escolhido e grava a saída em Output/arquivo (não altera os resultados) | Test Explorer → menu do item |
+| `utPLSQL: Gerar suíte de teste…` | gera `ut_<pacote>.pks` com um `%test` por rotina a partir de um `.pks`/`.pkb` ou de um objeto do banco, com as opções `utplsql.generate.*` | Clique direito → arquivo |
+| `utPLSQL: Rodar testes relacionados` | num `.pks`/`.pkb`/`.sql` de produção, roda as suítes pela convenção `ut_<objeto>` | Clique direito → arquivo |
 
 > **Recompilar UT3** (`utplsql.recompileUt3`) **não** é um comando da paleta — é
 > um quick-fix interno do diagnostic "utPLSQL Setup" (objetos inválidos no
@@ -339,6 +353,10 @@ Todos os atalhos usam o prefixo `Ctrl+Shift+U` (`Cmd+Shift+U` no Mac):
 | `Ctrl+Shift+U L` | Rerun last (último teste) |
 | `Ctrl+Shift+U U` | Run at cursor (teste sob cursor) |
 | `Ctrl+Shift+U X` | Run failed only (apenas falhas) |
+| `Ctrl+Shift+U Shift+C` | Toggle Coverage |
+| `Ctrl+Shift+U Shift+R` | Rodar testes relacionados |
+| `Ctrl+Shift+U D` | Depurar teste no cursor |
+| `Ctrl+Shift+U Shift+D` | Depurar testes falhos |
 | `Escape` | Cancelar execução |
 
 ## Cobertura
@@ -405,7 +423,6 @@ GRANT SELECT ON SYS.DBA_PROCEDURES TO <ut3_owner>;
 - O mapeamento resultado→teste é feito por nome de package + nome/descrição do teste;
   descrições idênticas em packages diferentes podem gerar ambiguidade (o índice é
   escopado por package para minimizar isso).
-- Considera o **primeiro** workspace folder para resolver `sourcePath`.
 - A descoberta lê os `.pks` (specs); mantenha as annotations `%suite`/`%test` no spec.
 
 ## Troubleshooting

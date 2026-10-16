@@ -2,7 +2,7 @@
   "name": "vscode-utplsql",
   "displayName": "utPLSQL Test Runner",
   "description": "Run utPLSQL (Oracle PL/SQL) tests from the VS Code Test Explorer, with context menus and visual coverage (pytest-style).",
-  "version": "0.15.0",
+  "version": "0.16.0",
   "publisher": "paneb",
   "author": "Gil Cleber Barboza",
   "license": "MIT",
@@ -37,7 +37,8 @@
     "onStartupFinished",
     "workspaceContains:**/*.pks",
     "workspaceContains:**/*.pkb",
-    "workspaceContains:**/*.sql"
+    "workspaceContains:**/*.sql",
+    "onLanguage:plsql"
   ],
   "capabilities": {
     "untrustedWorkspaces": {
@@ -136,6 +137,28 @@
             "**/*.pks"
           ],
           "description": "Globs used to discover the test specs that contain the `%suite`/`%test` annotations."
+        },
+        "utplsql.generate.testPackagePrefix": {
+          "type": "string",
+          "default": "ut_",
+          "description": "Prefix of the generated test package/file name (e.g. `ut_app_pkg` for `app_pkg`). Used by the `utplsql.generateTestSuite` command."
+        },
+        "utplsql.generate.testPackageSuffix": {
+          "type": "string",
+          "default": "",
+          "description": "Suffix of the generated test package/file name (appended after the object name)."
+        },
+        "utplsql.generate.numberOfTestsPerUnit": {
+          "type": "number",
+          "default": 1,
+          "minimum": 1,
+          "maximum": 50,
+          "description": "How many `%test` blocks to generate per procedure/function of the production package."
+        },
+        "utplsql.generate.generateComments": {
+          "type": "boolean",
+          "default": true,
+          "description": "Add a `-- TODO` comment to each generated `%test`."
         },
         "utplsql.coverageOwner": {
           "type": "string",
@@ -347,6 +370,11 @@
           "type": "boolean",
           "default": false,
           "description": "Suffixes `[tag1, tag2]` to the Test Explorer item labels, according to the `%tags` declared in the suite/test."
+        },
+        "utplsql.showTestDuration": {
+          "type": "boolean",
+          "default": false,
+          "description": "Suffixes the duration of the last run to the test item labels in the Test Explorer (e.g. `(1.2s)`). The value is restored when the workspace is reopened."
         },
         "utplsql.autoRun": {
           "type": "string",
@@ -648,6 +676,16 @@
         "command": "utplsql.runScriptFolder",
         "title": "%nls.command.runScriptFolder%",
         "category": "utPLSQL"
+      },
+      {
+        "command": "utplsql.generateTestSuite",
+        "title": "%nls.command.generateTestSuite%",
+        "category": "utPLSQL"
+      },
+      {
+        "command": "utplsql.runRelated",
+        "title": "%nls.command.runRelated%",
+        "category": "utPLSQL"
       }
     ],
     "menus": {
@@ -686,6 +724,16 @@
         "command": "utplsql.compileForDebug",
         "group": "utplsql@4",
         "when": "resourceExtname == .sql || resourceExtname == .pks || resourceExtname == .pkb || resourceExtname == .fnc || resourceExtname == .prc || resourceExtname == .trg || explorerResourceIsFolder"
+      },
+      {
+        "command": "utplsql.generateTestSuite",
+        "group": "utplsql@6",
+        "when": "resourceExtname == .pks || resourceExtname == .pkb"
+      },
+      {
+        "command": "utplsql.runRelated",
+        "group": "utplsql@7",
+        "when": "resourceExtname == .pks || resourceExtname == .pkb || resourceExtname == .sql || resourceExtname == .fnc || resourceExtname == .prc || resourceExtname == .trg"
       }
     ],
       "editor/context": [
@@ -713,6 +761,16 @@
         "command": "utplsql.debugTest",
         "group": "utplsql@5",
         "when": "resourceExtname == .pks || resourceExtname == .pkb"
+      },
+      {
+        "command": "utplsql.generateTestSuite",
+        "group": "utplsql@6",
+        "when": "resourceExtname == .pks || resourceExtname == .pkb"
+      },
+      {
+        "command": "utplsql.runRelated",
+        "group": "utplsql@7",
+        "when": "resourceExtname == .pks || resourceExtname == .pkb || resourceExtname == .sql || resourceExtname == .fnc || resourceExtname == .prc || resourceExtname == .trg"
       }
     ],
       "testing/item/context": [
@@ -800,6 +858,12 @@
         "key": "ctrl+shift+u shift+d",
         "mac": "cmd+shift+u shift+d",
         "when": "utplsql:hasFailures"
+      },
+      {
+        "command": "utplsql.runRelated",
+        "key": "ctrl+shift+u shift+r",
+        "mac": "cmd+shift+u shift+r",
+        "when": "editorTextFocus && utplsql:connected"
       }
     ],
     "languages": [

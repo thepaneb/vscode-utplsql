@@ -54,6 +54,7 @@ SORT id ASC
 - [[BR-COB-004 - Fonte virtual do banco (utplsql-source) é read-only]] — `BR-COB-004`
 - [[BR-COB-005 - XML Cobertura e cobertura por declaracao sao parseados de forma pura]] — `BR-COB-005`
 - [[BR-COB-006 - Cobertura explicita ou coverageAlways e comandos Coverage forcam true]] — `BR-COB-006`
+- [[BR-COB-007 - Cobertura resolve root e sourcePath pelo folder do pacote em execucao]] — `BR-COB-007`
 - [[BR-CONN-001 - Precedência de resolução da conexão]] — `BR-CONN-001`
 - [[BR-CONN-002 - Prompt só ocorre quando nada está configurado e não persiste]] — `BR-CONN-002`
 - [[BR-CONN-003 - Limpar conexão de sessão reseta o context key]] — `BR-CONN-003`
@@ -118,6 +119,7 @@ SORT id ASC
 - [[BR-PLAT-001 - Piso de VS Code e runtime Node do host sao coerentes]] — `BR-PLAT-001`
 - [[BR-QUAL-001 - Thresholds de cobertura (c8) sao globais e bloqueiam o CI]] — `BR-QUAL-001`
 - [[BR-QUAL-002 - Formatacao e lint do codigo sao do Biome]] — `BR-QUAL-002`
+- [[BR-QUAL-003 - Ultimo resultado persistido e restaurado com snapshot versionado]] — `BR-QUAL-003`
 - [[BR-SCHEMA-001 - organization bifurca file tree vs schema tree; suiteMap é o lookup canônico]] — `BR-SCHEMA-001`
 - [[BR-SCHEMA-002 - extractSchemaFromPath - path.posix.relative e placeholder {schema}]] — `BR-SCHEMA-002`
 - [[BR-SCHEMA-003 - collectAllItems usa cachedItems e, se vazio, percorre até 3 níveis]] — `BR-SCHEMA-003`
@@ -140,4 +142,6 @@ SORT id ASC
 - [[BR-UI-011 - utplsql.runByTag oferece QuickPick multi-selecao das tags; showTagsInTree sufixa o label]] — `BR-UI-011`
 - [[BR-UI-012 - Item de status bar alterna o modo global de cobertura (sessao, nao persiste)]] — `BR-UI-012`
 - [[BR-UI-013 - Integracao nativa ao Test Explorer via a API de testes do VS Code]] — `BR-UI-013`
+- [[BR-UI-014 - Run Related Tests casa suites pela convencao ut_objeto e avisa sem match]] — `BR-UI-014`
+- [[BR-UI-015 - Gerar suite nao sobrescreve spec existente e produz template parseavel]] — `BR-UI-015`
 <!-- brain:auto:end -->

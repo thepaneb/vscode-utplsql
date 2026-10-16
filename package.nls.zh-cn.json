@@ -33,5 +33,7 @@
   "nls.command.compileForDebug": "utPLSQL: 编译以进行调试",
   "nls.command.rebuildAnnotations": "utPLSQL: 重建注释缓存",
   "nls.command.setWalletPassword": "utPLSQL: 设置钱包密码",
-  "nls.command.runWithReporter": "utPLSQL: 使用 reporter 运行（导出）"
+  "nls.command.runWithReporter": "utPLSQL: 使用 reporter 运行（导出）",
+  "nls.command.generateTestSuite": "utPLSQL: 生成测试套件…",
+  "nls.command.runRelated": "utPLSQL: 运行相关测试"
 }

@@ -44,7 +44,7 @@ bundled.
 | `matching.ts` — URI/folder filter + result→test matching | `discovery.ts` |
 | `codelens.ts` (parse) — `parseCodeLensItems` | `coverage.ts` — Cobertura → Coverage API |
 | `state.ts`, `types.ts` (type-only) | `testTree.ts` — builds the tree (file/schema/tag), `mergeDbSuites` |
-| `plsqlDeclarations.ts` — extracts PROCEDURE/FUNCTION declarations from source | `scriptRunner.ts` — SQL script execution |
+| `plsqlDeclarations.ts` — extracts PROCEDURE/FUNCTION declarations from source; `scaffold.ts` — generates the `ut_<pkg>.pks` test-suite template (skeleton or one `%test` per routine, PRD-59/100) | `scriptRunner.ts` — SQL script execution |
 | `i18n.ts`, `i18nLocales.ts` — localization (24 locales) | `quickfix.ts` — setup diagnostics + quick-fix |
 | `charset.ts` — byte→string decoding (utf8/latin1/win1252) | `compileForDebug.ts` — compile object with debug info |
 | `charsetSupport.ts` — legacy-charset detection (euro preserved) | `compilationDiagnostics.ts` — ALL_ERRORS → Problems Panel |
@@ -120,8 +120,9 @@ Requires a real Oracle database + `UTPLSQL_CONN` defined in `.env`.
 heuristics: match by `package` (last segment of JUnit `classname`) +
 test name/description, with name-based fallback. The match index is built
 in `matching.ts` (pure functions `buildMatchIndex`/`findByNameOnly`), scoped
-by package to minimize ambiguity. `applyResults` in `runner.ts` is just a
-wrapper (errors when JUnit doesn't exist).
+by package to minimize ambiguity. `applyResultsFromCases` in `results.ts` is
+the canonical mapping step; `runner.ts` only orchestrates (`executeRun` →
+`executeRunOracle`).
 
 ## Coverage file resolution
 

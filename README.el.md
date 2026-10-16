@@ -18,6 +18,7 @@
   <a href="https://codecov.io/gh/thepaneb/vscode-utplsql"><img alt="Coverage" src="https://codecov.io/gh/thepaneb/vscode-utplsql/branch/main/graph/badge.svg"></a>
   <img alt="VS Code" src="https://img.shields.io/badge/VS%20Code-1.101%2B-007ACC">
   <img alt="Node" src="https://img.shields.io/badge/node-22-339933?logo=nodedotjs&logoColor=white">
+  <img alt="TypeScript" src="https://img.shields.io/badge/TypeScript-7-3178C6?logo=typescript&logoColor=white">
   <img alt="Oracle" src="https://img.shields.io/badge/Oracle-12.2%2B-F80000?logo=oracle&logoColor=white">
   <img alt="License" src="https://img.shields.io/badge/license-MIT-blue">
   <a href="https://thepaneb.github.io/vscode-utplsql/"><img alt="Website" src="https://img.shields.io/badge/Website-vscode--utplsql-007ACC"></a>
@@ -37,6 +38,9 @@
 - 🧩 **Schema-aware tree** — οργάνωση tests ανά Schema > Package > Suite > Test στο Test Explorer.
 - 🏷️ **Tags και τυχαία σειρά** — φιλτράρετε τα test με `utplsql.tags` (π.χ. `fast & !integration`) ή την εντολή `utPLSQL: Run Tests by Tag...` (QuickPick πολλαπλής επιλογής· το `!tag` εξαιρεί), και εκτελέστε σε τυχαία σειρά με αναπαραγώγιμο seed (`utplsql.run.randomOrder`).
 - 🧭 **Δέντρο ανά tag** — οργανώστε το Test Explorer ως **Tag > Suite > Test** με `utplsql.organization = tag` (ένα suite με πολλά tags εμφανίζεται κάτω από κάθε tag) και εμφανίστε `[tag1, tag2]` στις ετικέτες με `utplsql.showTagsInTree`.
+- 🏗️ **Σκελετός σουίτας δοκιμών** — δημιουργεί `ut_<πακέτο>.pks` με ένα `%test` ανά ρουτίνα από `.pks`/`.pkb` ή αντικείμενο βάσης δεδομένων, με τις επιλογές `utplsql.generate.*`.
+- ⏱️ **Διάρκεια και διατήρηση** — το αποτέλεσμα της τελευταίας εκτέλεσης (κατάσταση, μήνυμα και διάρκεια ανά δοκιμή) διατηρείται μετά την επαναφόρτωση του χώρου εργασίας· προαιρετικά εμφανίζει `(1.2s)` στις ετικέτες (`utplsql.showTestDuration`).
+- 🔗 **Σχετικές δοκιμές** — σε ένα αρχείο παραγωγής `.pks`/`.pkb`/`.sql` εκτελεί τις σουίτες κατά τη σύμβαση `ut_<αντικείμενο>` (`Ctrl+Shift+U Shift+R`).
 - ♻️ **Αυτόματη εκτέλεση στην αποθήκευση** — επανεκτελέστε τα suites του αποθηκευμένου `.pks` με `utplsql.autoRun = onSave`, με debounce ανά αρχείο (`utplsql.autoRunDelayMs`) και πολιτική ουράς όταν εκτελείται ήδη κάτι (`utplsql.autoRunQueue`: `skip`/`replace`).
 - 🗄️ **Ανακάλυψη DB-first** — χτίστε το δέντρο από το `ut_runner.get_suites_info` και ξαναχτίστε την προσωρινή μνήμη σχολίων από την παλέτα.
 - 🌳 **Αργό (lazy) δέντρο δοκιμών** — στη λειτουργία `schema`, τα packages/suites/tests επιλύονται κατά την ανάπτυξη, οπότε τα μεγάλα σχήματα ανοίγουν ακαριαία.
@@ -155,6 +159,11 @@ Test Explorer **καθώς ολοκληρώνεται κάθε test**.
 | `utplsql.connection` | `""` | Σύνδεση Oracle. **Αφήστε το κενό** και χρησιμοποιήστε τη μεταβλητή περιβάλλοντος `UTPLSQL_CONN` για να αποφύγετε την αποθήκευση του κωδικού. Αν και τα δύο είναι κενά, η επέκταση ρωτά (το διατηρεί μόνο στη σύνοδο). |
 | `utplsql.sourcePath` | `install` | Φάκελος του κώδικα παραγωγής (για την αντιστοίχιση της κάλυψης σε αρχεία). |
 | `utplsql.includePatterns` | `["**/*.pks"]` | Globs για την εύρεση των specs με `%suite`/`%test`. Αν τα tests σας είναι σε `.sql`, χρησιμοποιήστε `["**/*.sql"]`. |
+| `utplsql.generate.testPackagePrefix` | `ut_` | Πρόθεμα του ονόματος του παραγόμενου πακέτου δοκιμών. |
+| `utplsql.generate.testPackageSuffix` | `""` | Επίθεμα του ονόματος του παραγόμενου πακέτου δοκιμών. |
+| `utplsql.generate.numberOfTestsPerUnit` | `1` | `%test` ανά ρουτίνα του πακέτου παραγωγής. |
+| `utplsql.generate.generateComments` | `true` | Προσθέτει `-- TODO` σε κάθε παραγόμενο `%test`. |
+| `utplsql.showTestDuration` | `false` | Προσθέτει τη διάρκεια της τελευταίας εκτέλεσης στις ετικέτες των δοκιμών (π.χ. `(1.2s)`). |
 | `utplsql.coverageOwner` | `""` | Schema-owner των καλυπτόμενων αντικειμένων. Κενό = χρησιμοποιεί τον χρήστη της σύνδεσης (κεφαλαία). |
 | `utplsql.coverage.schemes` | `[]` | Καλυπτόμενα schemas (`a_coverage_schemes`). Κενό = χρήστης σύνδεσης (ή `utplsql.coverageOwner`). |
 | `utplsql.coverage.includeObjects` | `[]` | Αντικείμενα προς συμπερίληψη στην κάλυψη, ως `OWNER.NAME` (π.χ. `["APP.MY_PKG"]`). Χρήσιμο για αντικείμενα που προσεγγίζονται μόνο δυναμικά. |
@@ -303,14 +312,19 @@ UTPLSQL_CONN=your_user/password@//host:1521/service
 | `utPLSQL: New connection profile...` | Οδηγός για δημιουργία και ενεργοποίηση profile | — |
 | `utPLSQL: Manage connection profiles` | Ανοίγει τις ρυθμίσεις στο `utplsql.profiles` | — |
 | `utPLSQL: Import connections from SQL Developer` | Εισάγει συνδέσεις από το SQL Developer (connections.xml) | — |
-| `utPLSQL: Debug test (PL/SQL)` | Ξεκινά σύνοδο αποσφαλμάτωσης του test στο ενεργό αρχείο | — |
+| `utPLSQL: Debug test (PL/SQL)` | Ξεκινά σύνοδο αποσφαλμάτωσης του test στο ενεργό αρχείο | Το v3.2.x δεν μεταγλωττίζεται (`PLS-00222`). Το `WE8DEC` της εικόνας χάνει μη αναπαραστάσιμους χαρακτήρες (π.χ. `€`); ο thin driver αγνοεί το `NLS_LANG`. |
 | `utPLSQL: Αναδημιουργία προσωρινής μνήμης σχολίων` | Αναδημιουργεί την προσωρινή μνήμη σχολίων του utPLSQL στη βάση και ανανεώνει το δέντρο | — |
-| `utPLSQL: Μεταγλώττιση για αποσφαλμάτωση` | Μεταγλωττίζει το αντικείμενο του επιλεγμένου αρχείου/φακέλου με πληροφορίες αποσφαλμάτωσης | — |
+| `utPLSQL: Αποσφαλμάτωση τεστ στον κέρσορα` | Ξεκινά συνεδρία αποσφαλμάτωσης του `%test`/`%suite` κάτω από τον δρομέα | — |
+| `utPLSQL: Αποσφαλμάτωση αποτυχημένων τεστ` | Ξεκινά συνεδρία αποσφαλμάτωσης των δοκιμών που απέτυχαν στην τελευταία εκτέλεση (QuickPick αν είναι πολλές) | — |
+| `utPLSQL: Αποσφαλμάτωση τελευταίας εκτέλεσης` | Ξεκινά συνεδρία αποσφαλμάτωσης της τελευταίας εκτέλεσης | — |
+| `utPLSQL: Μεταγλώττιση για αποσφαλμάτωση` | Μεταγλωττίζει το αντικείμενο του επιλεγμένου αρχείου/φακέλου με πληροφορίες αποσφαλμάτωσης | Το v3.2.x δεν μεταγλωττίζεται (`PLS-00222`). Το `WE8DEC` της εικόνας χάνει μη αναπαραστάσιμους χαρακτήρες (π.χ. `€`); ο thin driver αγνοεί το `NLS_LANG`. |
 | `utPLSQL: Run script` | Runs the script open in the editor against a connection profile | Right-click → script file |
 | `utPLSQL: Run script file` | Runs an Explorer script file (decoded with the profile charset) | Right-click → file |
 | `utPLSQL: Run script folder` | Runs the folder scripts in alphabetical order | Right-click → folder |
 | `utPLSQL: Ορισμός κωδικού πορτοφολιού` | Ορίζει/καθαρίζει τον κωδικό wallet του ενεργού προφίλ (SecretStorage) | — |
 | `utPLSQL: Εκτέλεση με reporter (εξαγωγή)` | Εκτελεί την επιλογή με επιλεγμένο reporter και γράφει την έξοδο σε Output/αρχείο (δεν αλλάζει τα αποτελέσματα) | Test Explorer → menu do item |
+| `utPLSQL: Δημιουργία σουίτας δοκιμών…` | δημιουργεί `ut_<πακέτο>.pks` με ένα `%test` ανά ρουτίνα από `.pks`/`.pkb` ή αντικείμενο βάσης δεδομένων, με τις επιλογές `utplsql.generate.*` | Το v3.2.x δεν μεταγλωττίζεται (`PLS-00222`). Το `WE8DEC` της εικόνας χάνει μη αναπαραστάσιμους χαρακτήρες (π.χ. `€`); ο thin driver αγνοεί το `NLS_LANG`. |
+| `utPLSQL: Εκτέλεση σχετικών δοκιμών` | σε ένα αρχείο παραγωγής `.pks`/`.pkb`/`.sql` εκτελεί τις σουίτες κατά τη σύμβαση `ut_<αντικείμενο>` | Το v3.2.x δεν μεταγλωττίζεται (`PLS-00222`). Το `WE8DEC` της εικόνας χάνει μη αναπαραστάσιμους χαρακτήρες (π.χ. `€`); ο thin driver αγνοεί το `NLS_LANG`. |
 
 > **Recompile UT3** (`utplsql.recompileUt3`) **δεν** είναι εντολή palette — είναι
 > ένα εσωτερικό quick-fix του διαγνωστικού "utPLSQL Setup" (άκυρα αντικείμενα στο
@@ -331,6 +345,10 @@ UTPLSQL_CONN=your_user/password@//host:1521/service
 | `Ctrl+Shift+U L` | Επανάληψη τελευταίας εκτέλεσης |
 | `Ctrl+Shift+U U` | Εκτέλεση στον κέρσορα |
 | `Ctrl+Shift+U X` | Εκτέλεση μόνο αποτυχημένων |
+| `Ctrl+Shift+U Shift+C` | Toggle Coverage |
+| `Ctrl+Shift+U Shift+R` | Εκτέλεση σχετικών δοκιμών |
+| `Ctrl+Shift+U D` | Αποσφαλμάτωση τεστ στον κέρσορα |
+| `Ctrl+Shift+U Shift+D` | Αποσφαλμάτωση αποτυχημένων τεστ |
 | `Escape` | Ακύρωση εκτέλεσης |
 
 ## Κάλυψη
@@ -392,7 +410,6 @@ GRANT SELECT ON SYS.DBA_PROCEDURES TO <ut3_owner>;
 - Η αντιστοίχιση αποτέλεσμα→test γίνεται με όνομα package + όνομα/περιγραφή test·
   οι ίδιες περιγραφές σε διαφορετικά packages μπορούν να δημιουργήσουν αμφισημία (το ευρετήριο
   περιορίζεται ανά package για να την ελαχιστοποιεί).
-- Λαμβάνει υπόψη τον **πρώτο** φάκελο του workspace για την επίλυση του `sourcePath`.
 - Η εύρεση διαβάζει τα `.pks` (specs)· κρατήστε τις σημάνσεις `%suite`/`%test` στο spec.
 
 ## Αντιμετώπιση προβλημάτων

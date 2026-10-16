@@ -50,4 +50,21 @@ describeMulti('multi-root — 2 pastas de workspace (integração)', () => {
     this.timeout(120_000);
     await vscode.commands.executeCommand('utplsql.runAll');
   });
+
+  it('resolveRunRoots cobre as 2 pastas em execução (PRD-57)', async () => {
+    const { resolveRunRoots } = await import('../../matching.js');
+    const folders = vscode.workspace.workspaceFolders ?? [];
+    const metas = folders.map((f) => ({
+      kind: 'suite' as const,
+      packageName: 'pkg',
+      uri: f.uri,
+      folder: f,
+    }));
+    const roots = resolveRunRoots(metas as never, folders).sort();
+    assert.deepStrictEqual(
+      roots,
+      folders.map((f) => f.uri.fsPath).sort(),
+      'as duas pastas deveriam entrar na resolução de root da execução',
+    );
+  });
 });

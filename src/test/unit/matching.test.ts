@@ -6,6 +6,8 @@ import {
   filterSuitesByUri,
   findByNameOnly,
   type MatchEntry,
+  relatedSuiteMetas,
+  resolveRunRoots,
 } from '../../matching';
 import type { ItemMeta } from '../../types';
 
@@ -201,4 +203,90 @@ test('findByNameOnly: ignora entries que nao sao test', () => {
 test('findByNameOnly: lista vazia retorna undefined', () => {
   const found = findByNameOnly([], 'proc_x');
   assert.strictEqual(found, undefined);
+});
+
+// ── Roots por folder (PRD-57) ──────────────────────────────────────────
+
+const FOLDERS = [{ uri: { fsPath: '/root/a' } }, { uri: { fsPath: '/root/b' } }];
+
+test('resolveRunRoots: itens de um folder devolvem só esse root', () => {
+  const metas = [
+    testMeta({ folder: { uri: { fsPath: '/root/a' }, name: 'a', index: 0 } as any }),
+    testMeta({ folder: { uri: { fsPath: '/root/a' }, name: 'a', index: 0 } as any }),
+  ];
+  assert.deepStrictEqual(resolveRunRoots(metas, FOLDERS), ['/root/a']);
+});
+
+test('resolveRunRoots: itens de folders distintos devolvem os dois (sem repetir)', () => {
+  const metas = [
+    testMeta({ folder: { uri: { fsPath: '/root/a' }, name: 'a', index: 0 } as any }),
+    testMeta({ folder: { uri: { fsPath: '/root/b' }, name: 'b', index: 1 } as any }),
+    testMeta({ folder: { uri: { fsPath: '/root/a' }, name: 'a', index: 0 } as any }),
+  ];
+  assert.deepStrictEqual(resolveRunRoots(metas, FOLDERS), ['/root/a', '/root/b']);
+});
+
+test('resolveRunRoots: sem meta/ folder desconhecido cai em todos os folders', () => {
+  assert.deepStrictEqual(resolveRunRoots([undefined], FOLDERS), ['/root/a', '/root/b']);
+  assert.deepStrictEqual(
+    resolveRunRoots([testMeta({ folder: { uri: { fsPath: '/outro' } } as any })], FOLDERS),
+    ['/root/a', '/root/b'],
+  );
+  assert.deepStrictEqual(resolveRunRoots([], FOLDERS), ['/root/a', '/root/b']);
+});
+
+test('resolveRunRoots: single-root devolve exatamente uma raiz (regressão zero)', () => {
+  const folders = [{ uri: { fsPath: '/root/unico' } }];
+  assert.deepStrictEqual(
+    resolveRunRoots([testMeta({ folder: { uri: { fsPath: '/root/unico' } } as any })], folders),
+    ['/root/unico'],
+  );
+  assert.deepStrictEqual(resolveRunRoots([undefined], folders), ['/root/unico']);
+});
+
+test('resolveRunRoots: sem folders devolve lista vazia', () => {
+  assert.deepStrictEqual(resolveRunRoots([testMeta({})], []), []);
+});
+
+// ── Run Related Tests (PRD-58) ─────────────────────────────────────────
+
+test('relatedSuiteMetas: casa ut_<arquivo> e é case-insensitive', () => {
+  const items = [suiteMeta('ut_app_pkg', '/root/ut_app_pkg.pks')];
+  assert.strictEqual(relatedSuiteMetas(items, '/root/app_pkg.pkb').length, 1);
+  assert.strictEqual(relatedSuiteMetas(items, '/root/APP_PKG.PKB').length, 1);
+  assert.strictEqual(relatedSuiteMetas(items, 'C:\\proj\\src\\app_pkg.pkb').length, 1);
+});
+
+test('relatedSuiteMetas: fallback por igualdade (suite sem prefixo ut_)', () => {
+  const items = [suiteMeta('app_pkg', '/root/app_pkg.pks')];
+  assert.strictEqual(relatedSuiteMetas(items, '/root/app_pkg.pkb').length, 1);
+});
+
+test('relatedSuiteMetas: casa por sufixo (prefixo de projeto)', () => {
+  const items = [suiteMeta('projeto_app_pkg', '/root/projeto_app_pkg.pks')];
+  assert.strictEqual(relatedSuiteMetas(items, '/root/app_pkg.pkb').length, 1);
+});
+
+test('relatedSuiteMetas: extensões variadas são aceitas', () => {
+  const items = [suiteMeta('ut_calc', '/root/ut_calc.pks')];
+  for (const ext of ['pks', 'pkb', 'sql', 'prc', 'fnc', 'trg']) {
+    assert.strictEqual(
+      relatedSuiteMetas(items, `/root/calc.${ext}`).length,
+      1,
+      `extensão ${ext} deveria casar`,
+    );
+  }
+});
+
+test('relatedSuiteMetas: sem correspondência devolve vazio; ignora não-suites', () => {
+  const items = [suiteMeta('ut_outra', '/root/ut_outra.pks')];
+  assert.deepStrictEqual(relatedSuiteMetas(items, '/root/app_pkg.pkb'), []);
+  // um teste (kind 'test') com o nome certo não entra
+  const testOnly = [testMeta({ packageName: 'ut_app_pkg' })];
+  assert.deepStrictEqual(relatedSuiteMetas(testOnly, '/root/app_pkg.pkb'), []);
+});
+
+test('relatedSuiteMetas: arquivo sem nome base não casa nada', () => {
+  const items = [suiteMeta('ut_app', '/root/ut_app.pks')];
+  assert.deepStrictEqual(relatedSuiteMetas(items, '/root/.pkb'), []);
 });

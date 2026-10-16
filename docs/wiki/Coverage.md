@@ -55,10 +55,11 @@ to the Test Coverage API:
 The extension maps the Cobertura `filename` (e.g. `package body UT3.CALC`) to the
 local layout (`packages/CALC.sql`, `functions/FN.sql`, `procedures/PR.sql`,
 `types/TY.sql`, `triggers/TR.sql`, `views/VW.sql`) and resolves it with
-`resolveSourceUri` (absolute → workspace → `sourcePath`), trying the `.sql`, `.pks`,
-`.pkb`, `.prc`, `.fnc`, `.trg`, `.tpb` and `.bdy` extensions. It does **not** rely on
-`ut_file_mapper.build_file_mappings()` (which expects a list of **files**, not the
-`sourcePath` folder).
+`resolveSourceUri`, trying **each workspace folder** in turn (multi-root, PRD-57:
+`sourcePath` is relative to the folder of the package) and then the variants
+`.sql`, `.pks`, `.pkb`, `.prc`, `.fnc`, `.trg`, `.tpb` and `.bdy`. It does **not**
+rely on `ut_file_mapper.build_file_mappings()` (which expects a list of **files**,
+not the `sourcePath` folder).
 
 ## Important Notes
 

@@ -2,14 +2,14 @@
 tipo: prd
 id: PRD-56
 aliases: [PRD-56]
-status: approved
+status: completed
 titulo: "Duração por teste e persistência de resultados"
 versao: "0.16.0"
 data: "2026-09-06"
 autor: "Gil Cleber Barboza"
 versao_titulo: "0.16.0 — Produtividade e resultados"
 verificado: 2026-10-14
-regras: []
+regras: ["BR-QUAL-003"]
 tags: [prd]
 ---
 
@@ -150,17 +150,45 @@ Preencher `durationMs` em `applyResultsFromCases` (já recebido por parâmetro).
 
 ## 12. Impacto no cérebro
 
-Na conclusão, criar a regra candidata **`BR-QUAL-003`** — “o último resultado é
-persistido no `workspaceState` e restaurado de forma tolerante: snapshot
-versionado, mensagens truncadas e ids ausentes ignorados” — com
-`prds: ["PRD-56"]`, `implementacao:` (`src/state.ts`, `src/runner.ts`,
-`src/oracleRunner.ts`, `src/extension.ts`) e `testes:` (`src/test/unit/state*.ts`
-+ o round-trip de persist/restore). Enquanto `approved`, `regras: []`.
+Regra criada em 2026-10-14: **`BR-QUAL-003`** — “último resultado persistido e
+restaurado com snapshot versionado” — com `prds: ["PRD-56"]`, `implementacao:`
+(`src/state.ts`, `src/oracleRunner.ts`, `src/results.ts`, `src/extension.ts`,
+`src/testTree.ts`), `testes:` (`src/test/unit/state.test.ts`) e `requisitos:`
+RF1–RF4 + RNF1/RNF2. O `regras:` deste frontmatter é derivado pelo `brain:sync`.
+
+## 13. Implementado (2026-10-14)
+
+Entregue na branch `feat/prd-56-duration-persistence` (regra BR-QUAL-003):
+
+- **Snapshot versionado** (`v: 1`) em `utplsql.lastRunSnapshot` no
+  `workspaceState`, com `durationMs`/`ts` por teste e mensagens truncadas em 500
+  caracteres (RNF1). Formato desconhecido ou entrada inválida é descartado sem
+  lançar — a ativação nunca quebra (RNF2 garantido pelo escopo do
+  `workspaceState`).
+- **`Memento` por setter** (`state.attachMemento`) e `restore()` **antes** do
+  primeiro refresh, para o label com duração sair certo já na árvore; a
+  reconstrução de `lastFailedItems` (e as decorações/context key) roda **depois**
+  do primeiro refresh, quando os ids já têm itens (§12 da nota — decisão da §11).
+- **Duração no label em dois pontos**: no fim do run (`applyResultsFromCases`,
+  feedback imediato) e na construção do item (`testTree.ts`, cobre refresh,
+  reload e resolução lazy). `withDurationSuffix` remove o sufixo anterior, então
+  reaplicar não acumula.
+- **Formato da duração**: `< 1s` → `850ms`; `≥ 1s` → `1.2s` (uma casa). Sem
+  formatação sensível a locale — isso é o escopo da PRD-88 (0.21.0).
+- **Não persistido**: `lastRun`/"Rerun Last" continua sendo apenas de sessão
+  (decisão registrada; a §2 pedia decorações e "Run Failed", que são cobertos).
 
 ## Conexões
 
 <!-- brain:auto:start:conexoes -->
 - 🗺️ [[MOC - PRDs]]
-- 🔗 Mesma versão (0.16.0): [[prd-57-multiroot-root-resolution|PRD-57]] · [[prd-58-run-related-tests|PRD-58]] · [[prd-59-scaffold-suite|PRD-59]] · [[prd-100-generate-test-suite|PRD-100]]
+- 📐 Regras: [[BR-QUAL-003 - Ultimo resultado persistido e restaurado com snapshot versionado|BR-QUAL-003]]
+- 🔗 PRDs relacionados: [[prd-88-locale-aware-formatting|PRD-88]]
+- 🎯 RF1 — Snapshot serializável → [[BR-QUAL-003 - Ultimo resultado persistido e restaurado com snapshot versionado|BR-QUAL-003]]
+- 🎯 RF2 — Escrita no fim do run → [[BR-QUAL-003 - Ultimo resultado persistido e restaurado com snapshot versionado|BR-QUAL-003]]
+- 🎯 RF3 — Restauração na ativação → [[BR-QUAL-003 - Ultimo resultado persistido e restaurado com snapshot versionado|BR-QUAL-003]]
+- 🎯 RF4 — Duração no tooltip → [[BR-QUAL-003 - Ultimo resultado persistido e restaurado com snapshot versionado|BR-QUAL-003]]
+- 🎯 RNF1 — Snapshot leve (sem mensagens gigantes: truncar em N caracteres). → [[BR-QUAL-003 - Ultimo resultado persistido e restaurado com snapshot versionado|BR-QUAL-003]]
+- 🎯 RNF2 — Ignorar snapshots de um workspace diferente (key por workspace). → [[BR-QUAL-003 - Ultimo resultado persistido e restaurado com snapshot versionado|BR-QUAL-003]]
 - 🚀 ⬅️ release anterior: [[prd-96-public-landing-page-github-pages|PRD-96 (0.15.0)]] · ➡️ próxima release: [[prd-105-snippets|PRD-105 (0.17.0)]]
 <!-- brain:auto:end -->
