@@ -205,6 +205,7 @@ notas `prd-*`. O índice navegável do vault é a [[MOC - PRDs]].
 | 120 | [Ativação enxuta e validação de setup preguiçosa](proposed/prd-120-lean-activation-lazy-setup.md) | 0.20.0 | 2026-10-13 |
 | 121 | [Pacote auditável: source map do bundle no VSIX](proposed/prd-121-auditable-package-sourcemap.md) | 0.23.0 | 2026-10-13 |
 | 122 | [Confiança na distribuição: publisher verificado e política de privacidade](proposed/prd-122-marketplace-trust-metadata.md) | 0.23.0 | 2026-10-13 |
+| 123 | [Suporte oficial ao Oracle 11g (11.2) em thick mode](proposed/prd-123-oracle-11g-support.md) | 0.18.0 | 2026-10-17 |
 <!-- prd:roadmap:end -->
 
 ---
@@ -340,6 +341,7 @@ docs/prd/
 │   ├── prd-120-lean-activation-lazy-setup.md
 │   ├── prd-121-auditable-package-sourcemap.md
 │   ├── prd-122-marketplace-trust-metadata.md
+│   ├── prd-123-oracle-11g-support.md
 ```
 <!-- prd:estrutura:end -->
 
