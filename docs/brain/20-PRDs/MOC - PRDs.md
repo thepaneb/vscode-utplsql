@@ -41,7 +41,7 @@ npm run sync-prds
 ## Status (gerado)
 
 <!-- brain:auto:start:prd-summary -->
-- 📝 Propostos: **35**
+- 📝 Propostos: **36**
 - 🔵 Aprovados: **0**
 - 🟡 Em desenvolvimento: **0**
 - 🟢 Concluídos: **87**
@@ -95,6 +95,7 @@ Detalhe completo (fonte da verdade): [docs/prd/index.md](../../prd/index.md)
 - [[prd-120-lean-activation-lazy-setup]] — `PRD-120`
 - [[prd-121-auditable-package-sourcemap]] — `PRD-121`
 - [[prd-122-marketplace-trust-metadata]] — `PRD-122`
+- [[prd-123-oracle-11g-support]] — `PRD-123`
 - [[prd-13-oracle-infra]] — `PRD-13`
 - [[prd-14-test-schema-packages]] — `PRD-14`
 - [[prd-15-integration-tests-real-db]] — `PRD-15`
