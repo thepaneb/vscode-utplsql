@@ -182,6 +182,7 @@ nativních API VSCode.
 | `utplsql.coverage.includeObjectExpr` | `""` | Regex objektů k zahrnutí do pokrytí. |
 | `utplsql.coverage.excludeSchemaExpr` | `""` | Regex schémat k vyloučení z pokrytí. |
 | `utplsql.coverage.excludeObjectExpr` | `""` | Regex objektů k vyloučení z pokrytí (např. `^UT_` pro framework utPLSQL). |
+| `utplsql.coverage.htmlReport` | `false` | Zapíše HTML report pokrytí do `test-results/coverage.html` a po běhu nabídne **Otevřít v prohlížeči** / **Uložit jako…** (fire-and-forget). |
 | `utplsql.timeoutMinutes` | `60` | Časový limit v minutách pro spuštění testů. |
 | `utplsql.dbmsOutput` | `false` | Povolí `DBMS_OUTPUT` v testovací relaci. Užitečné pro ladění. |
 | `utplsql.additionalReporters` | `[]` | Další reportéry zahrnuté do každého spuštění (např. `["ut_coverage_html_reporter"]`). Výchozí (documentation, junit) jsou vždy zahrnuty a není třeba je vypisovat. |

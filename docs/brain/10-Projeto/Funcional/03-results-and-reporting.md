@@ -5,7 +5,7 @@ numero: 03
 titulo: "03 — Results and Reporting"
 publicar: docs/functional/03-results-and-reporting.md
 verificado: 2026-09-25
-regras: ["BR-PARSE-011", "BR-PARSE-012", "BR-PARSE-013", "BR-PARSE-014"]
+regras: ["BR-PARSE-011", "BR-PARSE-012", "BR-PARSE-013", "BR-PARSE-014", "BR-EXEC-008", "BR-COB-008"]
 tags: [funcional]
 ---
 # 03 — Results and Reporting
@@ -138,12 +138,13 @@ Sempre incluídos:
 - `ut_documentation_reporter` — streaming (linhas não-XML exibidas em tempo real)
 - `ut_junit_reporter` — XML para resultados (buffer Oracle)
 - `ut_coverage_cobertura_reporter` — XML para cobertura (buffer Oracle, se coverage=true)
+- `ut_coverage_html_reporter` — HTML de cobertura (se `coverage.htmlReport=true`; PRD-108)
 
 ### Reporters adicionais
 
 ```typescript
 // Config fixa (settings.json)
-"utplsql.additionalReporters": ["UT_COVERAGE_HTML_REPORTER"]
+"utplsql.additionalReporters": ["UT_SONAR_TEST_REPORTER"]
 
 // Volátil (comando, uma execução)
 state.setExtraReporter(name) → state.consumeExtraReporter()
@@ -162,7 +163,10 @@ function listReportersOracle(conn): Promise<string[]>
 ## Output
 
 O output do documentation reporter é exibido em tempo real via `run.appendOutput()`.
-Linhas não-XML são exibidas diretamente; linhas XML são acumuladas para parse.
+Cada reporter escreve em um `output_id` próprio: o primeiro texto do grupo
+classifica o grupo em console/XML/HTML. Console vai direto para o output; XML
+(JUnit + Cobertura) é acumulado e separado por `<coverage`; HTML é acumulado à
+parte e gravado em `test-results/coverage.html` no fim (PRD-108).
 
 > Diagnósticos de compilação são publicados **após o run** por
 > `commands/run.ts` → `refreshCompilationDiagnostics()` (veja
@@ -171,6 +175,6 @@ Linhas não-XML são exibidas diretamente; linhas XML são acumuladas para parse
 ## Conexões
 
 <!-- brain:auto:start:conexoes -->
-- 📐 Regras: [[BR-PARSE-011 - Precedência de status JUnit failure - error - skipped - passed|BR-PARSE-011]] · [[BR-PARSE-012 - Stack trace - regex quoted-unquoted e filtro de frames do framework|BR-PARSE-012]] · [[BR-PARSE-013 - Mapeamento resultado para teste por lastSegment+name-description com fallback|BR-PARSE-013]] · [[BR-PARSE-014 - message.location só é definida para failed-error com frame de usuário resolvido|BR-PARSE-014]]
+- 📐 Regras: [[BR-PARSE-011 - Precedência de status JUnit failure - error - skipped - passed|BR-PARSE-011]] · [[BR-PARSE-012 - Stack trace - regex quoted-unquoted e filtro de frames do framework|BR-PARSE-012]] · [[BR-PARSE-013 - Mapeamento resultado para teste por lastSegment+name-description com fallback|BR-PARSE-013]] · [[BR-PARSE-014 - message.location só é definida para failed-error com frame de usuário resolvido|BR-PARSE-014]] · [[BR-EXEC-008 - Roteamento por output_id separa console XML e HTML|BR-EXEC-008]] · [[BR-COB-008 - Relatorio HTML de cobertura abre no navegador sem segurar o TestRun|BR-COB-008]]
 - ↩️ Referenciada por: [[GLOSS-004 - Reporter|GLOSS-004]] · [[PAT-003 - Funções canônicas compartilhadas de resultado|PAT-003]] · [[Reporters]] · [[TPL-FASTXML - fast-xml-parser|TPL-FASTXML]] · [[Tests]]
 <!-- brain:auto:end -->

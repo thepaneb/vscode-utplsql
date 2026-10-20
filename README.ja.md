@@ -167,6 +167,7 @@ Test Explorer に表示されます。
 | `utplsql.coverage.includeObjectExpr` | `""` | カバレッジに含めるオブジェクトの正規表現。 |
 | `utplsql.coverage.excludeSchemaExpr` | `""` | カバレッジから除外するスキーマの正規表現。 |
 | `utplsql.coverage.excludeObjectExpr` | `""` | カバレッジから除外するオブジェクトの正規表現（例: utPLSQL フレームワークには `^UT_`）。 |
+| `utplsql.coverage.htmlReport` | `false` | カバレッジの HTML レポートを `test-results/coverage.html` に書き込み、実行後に **ブラウザーで開く** / **名前を付けて保存…** を提供します（fire-and-forget）。 |
 | `utplsql.timeoutMinutes` | `60` | テスト実行のタイムアウト（分）。 |
 | `utplsql.dbmsOutput` | `false` | テストセッションで `DBMS_OUTPUT` を有効化。デバッグに便利。 |
 | `utplsql.additionalReporters` | `[]` | 毎回の実行に含める追加レポーター（例: `["ut_coverage_html_reporter"]`）。デフォルト（documentation、junit）は常に含まれ、リスト化する必要はありません。 |

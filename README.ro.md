@@ -172,6 +172,7 @@ Extensia se conectează direct prin Oracle, citește rapoartele (JUnit + Coverag
 | `utplsql.coverage.includeObjectExpr` | `""` | Regex de obiecte de inclus în acoperire. |
 | `utplsql.coverage.excludeSchemaExpr` | `""` | Regex de scheme de exclus din acoperire. |
 | `utplsql.coverage.excludeObjectExpr` | `""` | Regex de obiecte de exclus din acoperire (ex.: `^UT_` pentru framework-ul utPLSQL). |
+| `utplsql.coverage.htmlReport` | `false` | Scrie raportul HTML de acoperire în `test-results/coverage.html` și oferă **Deschide în browser** / **Salvează ca…** după rulare (fire-and-forget). |
 | `utplsql.timeoutMinutes` | `60` | Timeout în minute pentru executarea testelor. |
 | `utplsql.dbmsOutput` | `false` | Activează `DBMS_OUTPUT` în sesiunea de test. Util pentru depanare. |
 | `utplsql.additionalReporters` | `[]` | Reporteri suplimentari de inclus la fiecare rulare (ex.: `["ut_coverage_html_reporter"]`). Cei implicați (documentation, junit) sunt întotdeauna incluși și nu trebuie listați. |

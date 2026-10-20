@@ -178,6 +178,7 @@ Test Explorer **у міру завершення кожного тесту**. VS
 | `utplsql.coverage.includeObjectExpr` | `""` | Regex об'єктів для включення в покриття. |
 | `utplsql.coverage.excludeSchemaExpr` | `""` | Regex схем для виключення з покриття. |
 | `utplsql.coverage.excludeObjectExpr` | `""` | Regex об'єктів для виключення з покриття (напр. `^UT_` для фреймворку utPLSQL). |
+| `utplsql.coverage.htmlReport` | `false` | Записує HTML-звіт покриття у `test-results/coverage.html` і після запуску пропонує **Відкрити в браузері** / **Зберегти як…** (fire-and-forget). |
 | `utplsql.timeoutMinutes` | `60` | Час очікування у хвилинах. |
 | `utplsql.dbmsOutput` | `false` | Увімкнення `DBMS_OUTPUT` у сесії тестування. |
 | `utplsql.additionalReporters` | `[]` | Додаткові репортери, які включаються в кожен запуск (напр. `["ut_coverage_html_reporter"]`). Стандартні (documentation, junit) завжди включаються, їх не потрібно перелічувати. |

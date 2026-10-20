@@ -171,6 +171,7 @@ Geçici dosya yok, toplu işin bitmesi beklenmez. Sonuçlar Test Explorer'da
 | `utplsql.coverage.includeObjectExpr` | `""` | Kapsama dahil edilecek nesnelerin regex'i. |
 | `utplsql.coverage.excludeSchemaExpr` | `""` | Kapsamdan hariç tutulacak şemaların regex'i. |
 | `utplsql.coverage.excludeObjectExpr` | `""` | Kapsamdan hariç tutulacak nesnelerin regex'i (örn. utPLSQL çatısı için `^UT_`). |
+| `utplsql.coverage.htmlReport` | `false` | Kapsam HTML raporunu `test-results/coverage.html` dosyasına yazar ve çalıştırmadan sonra **Tarayıcıda aç** / **Farklı kaydet…** seçeneklerini sunar (fire-and-forget). |
 | `utplsql.timeoutMinutes` | `60` | Çalıştırma zaman aşımı (dakika). |
 | `utplsql.dbmsOutput` | `false` | Test oturumunda `DBMS_OUTPUT`'u etkinleştirir. |
 | `utplsql.additionalReporters` | `[]` | Her çalıştırmada eklenecek ek raporlayıcılar (örn. `["ut_coverage_html_reporter"]`). Varsayılanlar (documentation, junit) her zaman dahildir ve listelenmeleri gerekmez. |

@@ -139,6 +139,18 @@ Se `coverage.xml` não for gerado:
 - `UTPLSQL_NO_COVERAGE` só era emitido no fluxo legado (CLI) — **não** é emitido no fluxo Oracle-direto atual
 - Comando `utplsql.copyGrantsToClipboard` copia grants para clipboard
 
+## Relatório HTML (PRD-108)
+
+Com `utplsql.coverage.htmlReport = true` e cobertura ligada, o run também inclui
+`ut_coverage_html_reporter`. O `oracleRunner.ts` agrupa as linhas do buffer por
+`output_id` — o HTML nunca entra no XML de JUnit/Cobertura — e grava
+atomicamente em **`test-results/coverage.html`** no root da suíte executada
+(fallback para temp do SO sem workspace). O `runner.ts` só dispara a notificação
+**depois do `run.end()`** (fire-and-forget): **Abrir no navegador** ou
+**Salvar em arquivo…**. Nunca há webview; cancelamento não grava HTML parcial e
+o alvo anterior é removido no início do run. `test-results/` está no
+`.gitignore`/`.vscodeignore`.
+
 ## Settings
 
 | Setting | Default | Descrição |
@@ -152,6 +164,7 @@ Se `coverage.xml` não for gerado:
 | `utplsql.coverage.includeObjectExpr` | `""` | Regex de objeto a incluir |
 | `utplsql.coverage.excludeSchemaExpr` | `""` | Regex de schema a excluir |
 | `utplsql.coverage.excludeObjectExpr` | `""` | Regex de objeto a excluir (ex.: `^UT_` para o framework) |
+| `utplsql.coverage.htmlReport` | `false` | Grava `test-results/coverage.html` e oferece abrir/salvar após o run (PRD-108) |
 
 > PRD-79: os escopos vão como binds ao `ut_runner.run` (`a_include_objects`,
 > `a_exclude_objects` e as regex), que monta o `ut_coverage_options` internamente.

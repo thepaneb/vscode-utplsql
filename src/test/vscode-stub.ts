@@ -421,6 +421,16 @@ export namespace commands {
   }
 }
 
+const _openedExternal: string[] = [];
+
+export function __getOpenedExternal(): string[] {
+  return [..._openedExternal];
+}
+
+export function __resetOpenedExternal(): void {
+  _openedExternal.length = 0;
+}
+
 export namespace env {
   export const language = 'pt-BR';
   export const clipboard = {
@@ -428,6 +438,10 @@ export namespace env {
       _clipboardText = s;
     },
   };
+  export function openExternal(uri: { toString(): string }): Promise<boolean> {
+    _openedExternal.push(uri.toString());
+    return Promise.resolve(true);
+  }
 }
 
 export const ProgressLocation = { SourceControl: 1, Window: 10, Notification: 15 } as const;
@@ -587,7 +601,7 @@ export namespace window {
   export function showErrorMessage(message: string) {
     _errorMessages.push(message);
   }
-  export function showInformationMessage(message: string) {
+  export function showInformationMessage(message: string, ..._items: string[]) {
     _informationMessages.push(message);
     return Promise.resolve(_informationResult);
   }

@@ -171,6 +171,7 @@ Test Explorer **as each test finishes**. The VSIX already includes the thin `ora
 | `utplsql.coverage.includeObjectExpr` | `""` | Regex of objects to include in coverage. |
 | `utplsql.coverage.excludeSchemaExpr` | `""` | Regex of schemas to exclude from coverage. |
 | `utplsql.coverage.excludeObjectExpr` | `""` | Regex of objects to exclude from coverage (e.g. `^UT_` for the utPLSQL framework). |
+| `utplsql.coverage.htmlReport` | `false` | Writes the utPLSQL HTML coverage report to `test-results/coverage.html` and offers **Open in Browser** / **Save As…** after the run (fire-and-forget). |
 | `utplsql.timeoutMinutes` | `60` | Timeout in minutes. |
 | `utplsql.dbmsOutput` | `false` | Enables `DBMS_OUTPUT` in the test session. |
 | `utplsql.additionalReporters` | `[]` | Additional reporters to include on every run (e.g. `["ut_coverage_html_reporter"]`). The defaults (documentation, junit) are always included and don't need to be listed. |

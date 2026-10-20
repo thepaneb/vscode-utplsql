@@ -17,6 +17,8 @@ export interface UtConfig {
   coverageIncludeObjectExpr: string;
   coverageExcludeSchemaExpr: string;
   coverageExcludeObjectExpr: string;
+  /** Gera o relatório HTML de cobertura e oferece abrir/salvar (PRD-108). */
+  coverageHtmlReport: boolean;
   tags: string;
   randomOrder: boolean;
   randomOrderSeed: number;
@@ -133,6 +135,7 @@ export function readConfig(): UtConfig {
     coverageIncludeObjectExpr: c.get<string>('coverage.includeObjectExpr', ''),
     coverageExcludeSchemaExpr: c.get<string>('coverage.excludeSchemaExpr', ''),
     coverageExcludeObjectExpr: c.get<string>('coverage.excludeObjectExpr', ''),
+    coverageHtmlReport: c.get<boolean>('coverage.htmlReport', false),
     tags: c.get<string>('tags', ''),
     randomOrder: c.get<boolean>('run.randomOrder', false),
     randomOrderSeed: c.get<number>('run.randomOrderSeed', 0),

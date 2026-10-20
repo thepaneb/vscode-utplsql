@@ -182,6 +182,7 @@ Test Explorer **καθώς ολοκληρώνεται κάθε test**.
 | `utplsql.coverage.includeObjectExpr` | `""` | Regex αντικειμένων προς συμπερίληψη στην κάλυψη. |
 | `utplsql.coverage.excludeSchemaExpr` | `""` | Regex schemas προς αποκλεισμό από την κάλυψη. |
 | `utplsql.coverage.excludeObjectExpr` | `""` | Regex αντικειμένων προς αποκλεισμό από την κάλυψη (π.χ. `^UT_` για το framework utPLSQL). |
+| `utplsql.coverage.htmlReport` | `false` | Γράφει την αναφορά HTML κάλυψης στο `test-results/coverage.html` και προσφέρει **Άνοιγμα στο πρόγραμμα περιήγησης** / **Αποθήκευση ως…** μετά την εκτέλεση (fire-and-forget). |
 | `utplsql.timeoutMinutes` | `60` | Χρονικό όριο σε λεπτά για την εκτέλεση των tests. |
 | `utplsql.dbmsOutput` | `false` | Ενεργοποιεί το `DBMS_OUTPUT` στη σύνοδο του test. Χρήσιμο για debugging. |
 | `utplsql.additionalReporters` | `[]` | Επιπλέον reporters που περιλαμβάνονται σε κάθε εκτέλεση (π.χ. `["ut_coverage_html_reporter"]`). Οι προεπιλεγμένοι (documentation, junit) περιλαμβάνονται πάντα και δεν χρειάζεται να αναφέρονται. |

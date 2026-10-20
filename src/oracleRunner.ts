@@ -3,6 +3,13 @@ import * as path from 'node:path';
 import * as vscode from 'vscode';
 import { getExtensionLocale, readConfig, type UtConfig } from './config';
 import { maskConnection } from './connectionProfiles';
+import {
+  type CoverageOutputKind,
+  classifyCoverageOutput,
+  coverageHtmlReportPath,
+  prepareCoverageHtmlReport,
+  writeCoverageHtmlReport,
+} from './coverage';
 import { t } from './i18n';
 import { parseJUnit } from './junit';
 import { logger } from './logger';
@@ -437,6 +444,12 @@ export interface OracleRunOptions {
   pathArgs: string[];
   /** Se true, coleta e aplica cobertura Cobertura */
   coverage: boolean;
+  /** Se true, gera o relatório HTML de cobertura (PRD-108). */
+  coverageHtmlReport?: boolean;
+  /** Root do workspace da suíte executada (destino do `test-results/`). */
+  reportRoot?: string;
+  /** Callback chamado após gravar o HTML (o runner notifica depois do run.end). */
+  onCoverageHtmlReport?: (filePath: string) => void;
   /** Caminho base do código-fonte para mapeamento de cobertura */
   sourcePath: string;
   /** TestRun atual do VSCode */
@@ -568,6 +581,9 @@ export async function executeRunOracle(
     connection,
     pathArgs,
     coverage,
+    coverageHtmlReport,
+    reportRoot,
+    onCoverageHtmlReport,
     sourcePath,
     run,
     leafTests,
@@ -602,6 +618,18 @@ export async function executeRunOracle(
   const { conn1, conn2 } = await acquireRunnerConnections(oracledb, connection, cfg);
 
   try {
+    const htmlReportTarget =
+      coverage && coverageHtmlReport ? coverageHtmlReportPath(reportRoot) : undefined;
+    if (htmlReportTarget) {
+      try {
+        await prepareCoverageHtmlReport(htmlReportTarget);
+      } catch (e) {
+        logger.debug('executeRunOracle: falha ao preparar o HTML de cobertura', {
+          error: String(e),
+        });
+      }
+    }
+
     const utSchema = await discoverUtplsqlSchema(conn1);
 
     await conn1.execute(`DELETE FROM ${utSchema}UT_OUTPUT_BUFFER_TMP`, {}, { autoCommit: true });
@@ -614,6 +642,7 @@ export async function executeRunOracle(
     const runners: string[] = [];
     const exportBinds: Record<string, import('oracledb').BindParameter> = {};
     let coverageEnabled = !exporting && coverage;
+    let htmlEnabled = false;
 
     if (exporting && exportReporter) {
       // Export (PRD-76): só o reporter escolhido; sem JUnit/cobertura adicionais.
@@ -646,6 +675,18 @@ export async function executeRunOracle(
           run.appendOutput(`\r\n${t(getExtensionLocale(), 'runner.reporterMissing')}\r\n`);
         } else {
           runners.push('ut_coverage_cobertura_reporter()');
+        }
+      }
+
+      // Relatório HTML (PRD-108): só entra com cobertura ligada e o setting on.
+      htmlEnabled = coverageEnabled && !!coverageHtmlReport;
+      if (htmlEnabled) {
+        const hasHtml = await checkReporterExists(conn1, 'UT_COVERAGE_HTML_REPORTER');
+        if (!hasHtml) {
+          htmlEnabled = false;
+          run.appendOutput(`\r\n${t(getExtensionLocale(), 'runner.htmlReporterMissing')}\r\n`);
+        } else {
+          runners.push('ut_coverage_html_reporter()');
         }
       }
 
@@ -810,12 +851,12 @@ export async function executeRunOracle(
     const runnerPromise = conn1.execute(plsql, binds, { autoCommit: true });
 
     let lastMsgId = 0;
-    let xmlBuffer = '';
-    // O reporter JUnit emite o DBMS_OUTPUT capturado dentro de
-    // `<system-out><![CDATA[...]]></system-out>`. As linhas de conteúdo e o
-    // fechamento `]]>` não começam com '<', então precisam ser roteadas para o
-    // XML enquanto um CDATA estiver aberto (senão o parse do JUnit quebra).
-    let inCdata = false;
+    // Cada reporter do utPLSQL escreve em um `output_id` próprio. Agrupar por
+    // ele evita que o HTML de cobertura contamine o XML de JUnit/Cobertura e
+    // dispensa o estado de CDATA (todas as linhas do grupo XML vão para o XML).
+    const outputs = new Map<string, { kind: 'unknown' | CoverageOutputKind; text: string }>();
+    const outputKey = (value: unknown): string =>
+      Buffer.isBuffer(value) ? value.toString('hex') : String(value ?? 'default');
 
     const cancelRun = () => {
       conn1.break().catch(() => {});
@@ -848,25 +889,39 @@ export async function executeRunOracle(
 
         try {
           const rows = await conn2.execute(
-            `SELECT message_id, text, is_finished FROM ${utSchema}UT_OUTPUT_BUFFER_TMP WHERE message_id > :last ORDER BY message_id`,
+            `SELECT output_id, message_id, text, is_finished FROM ${utSchema}UT_OUTPUT_BUFFER_TMP WHERE message_id > :last ORDER BY message_id`,
             { last: lastMsgId },
           );
 
           for (const row of rows.rows ?? []) {
-            const r = row as unknown as { MESSAGE_ID: number; TEXT: string | null };
+            const r = row as unknown as {
+              OUTPUT_ID?: unknown;
+              MESSAGE_ID: number;
+              TEXT: string | null;
+            };
             lastMsgId = r.MESSAGE_ID;
             const text = r.TEXT;
-            if (text) {
-              if (exporting) {
-                exportText += `${text}\n`;
-                run.appendOutput(`${text}\r\n`);
-              } else if (inCdata || text.startsWith('<')) {
-                xmlBuffer += `${text}\n`;
-                if (text.includes('<![CDATA[')) inCdata = true;
-                if (text.includes(']]>')) inCdata = false;
-              } else {
-                run.appendOutput(`${text}\r\n`);
-              }
+            if (!text) continue;
+
+            if (exporting) {
+              exportText += `${text}\n`;
+              run.appendOutput(`${text}\r\n`);
+              continue;
+            }
+
+            const key = outputKey(r.OUTPUT_ID);
+            let group = outputs.get(key);
+            if (!group) {
+              group = { kind: 'unknown', text: '' };
+              outputs.set(key, group);
+            }
+            if (group.kind === 'unknown') {
+              group.kind = classifyCoverageOutput(text);
+            }
+            if (group.kind === 'console') {
+              run.appendOutput(`${text}\r\n`);
+            } else {
+              group.text += `${text}\n`;
             }
           }
         } catch (e) {
@@ -902,6 +957,15 @@ export async function executeRunOracle(
     // Export (PRD-76): devolve a saída do reporter sem aplicar resultados/cobertura.
     if (exporting) return exportText;
 
+    const xmlBuffer = [...outputs.values()]
+      .filter((group) => group.kind === 'xml')
+      .map((group) => group.text)
+      .join('');
+    const htmlText = [...outputs.values()]
+      .filter((group) => group.kind === 'html')
+      .map((group) => group.text)
+      .join('');
+
     const runnerMs = Date.now() - runnerStart;
 
     const covStart = xmlBuffer.indexOf('<coverage');
@@ -936,6 +1000,20 @@ export async function executeRunOracle(
         applyCoverageFromXml(mappedXml, sourcePath, run, state, folders);
       } else {
         run.appendOutput(`\r\n${t(getExtensionLocale(), 'oracleRunner.coverNotGenerated')}\r\n`);
+      }
+    }
+
+    // HTML (PRD-108): grava só no fim, com o run não cancelado; o runner só
+    // notifica depois do `run.end()` (fire-and-forget).
+    if (htmlEnabled && htmlReportTarget && htmlText.trim() && !token.isCancellationRequested) {
+      try {
+        await writeCoverageHtmlReport(htmlText, htmlReportTarget);
+        onCoverageHtmlReport?.(htmlReportTarget);
+      } catch (e) {
+        logger.warn('executeRunOracle: falha ao gravar o HTML de cobertura', {
+          error: String(e),
+        });
+        run.appendOutput(`\r\n${t(getExtensionLocale(), 'common.error')}: ${String(e)}\r\n`);
       }
     }
 

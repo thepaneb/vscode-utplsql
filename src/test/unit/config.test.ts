@@ -24,6 +24,11 @@ test('readConfig: sqlCoverageEnabled default e false', () => {
   assert.strictEqual(cfg.sqlCoverageEnabled, false);
 });
 
+test('readConfig: coverage.htmlReport default e false', () => {
+  const cfg = readConfig();
+  assert.strictEqual(cfg.coverageHtmlReport, false);
+});
+
 test('readConfig: debuggerCompileOnDebug default e false', () => {
   const cfg = readConfig();
   assert.strictEqual(cfg.debuggerCompileOnDebug, false);
@@ -68,6 +73,7 @@ test('readConfig: lê valores não-default das settings 0.13.0', () => {
   __setConfigValue('discovery.source', 'database');
   __setConfigValue('discovery.languageIds', ['plsql']);
   __setConfigValue('coverage.schemes', ['APP']);
+  __setConfigValue('coverage.htmlReport', true);
   __setConfigValue('coverage.includeObjects', ['APP.PKG']);
   __setConfigValue('coverage.excludeObjects', ['UT3.UT']);
   __setConfigValue('coverage.includeSchemaExpr', '^APP$');
@@ -82,6 +88,7 @@ test('readConfig: lê valores não-default das settings 0.13.0', () => {
     assert.strictEqual(cfg.discoverySource, 'database');
     assert.deepStrictEqual(cfg.discoveryLanguageIds, ['plsql']);
     assert.deepStrictEqual(cfg.coverageSchemes, ['APP']);
+    assert.strictEqual(cfg.coverageHtmlReport, true);
     assert.deepStrictEqual(cfg.coverageIncludeObjects, ['APP.PKG']);
     assert.deepStrictEqual(cfg.coverageExcludeObjects, ['UT3.UT']);
     assert.strictEqual(cfg.coverageIncludeSchemaExpr, '^APP$');

@@ -21,8 +21,10 @@ in PL/SQL files. They are configurable with `utplsql.codeLens.enabled`.
 
 ## Snippets
 
-`contributes.snippets` registers `snippets/utplsql.code-snippets` for `sql`,
-`plsql` and `oracle-sql`. Type `ut-` in the editor to get:
+`contributes.snippets` registers `snippets/utplsql.code-snippets` for `sql` and
+`plsql` (`oracle-sql` remains accepted by discovery/CodeLens; registering
+snippets for a language ID no installed extension contributes makes VS Code
+emit a warning). Type `ut-` in the editor to get:
 
 - `ut-suite` — full suite package skeleton (`%suite` + `%suitepath` + `%test`);
 - `ut-%suite`, `ut-%suitepath`, `ut-%test`, `ut-%context`/`ut-%endcontext`,

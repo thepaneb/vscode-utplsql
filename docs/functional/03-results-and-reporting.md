@@ -129,12 +129,13 @@ Sempre incluídos:
 - `ut_documentation_reporter` — streaming (linhas não-XML exibidas em tempo real)
 - `ut_junit_reporter` — XML para resultados (buffer Oracle)
 - `ut_coverage_cobertura_reporter` — XML para cobertura (buffer Oracle, se coverage=true)
+- `ut_coverage_html_reporter` — HTML de cobertura (se `coverage.htmlReport=true`; PRD-108)
 
 ### Reporters adicionais
 
 ```typescript
 // Config fixa (settings.json)
-"utplsql.additionalReporters": ["UT_COVERAGE_HTML_REPORTER"]
+"utplsql.additionalReporters": ["UT_SONAR_TEST_REPORTER"]
 
 // Volátil (comando, uma execução)
 state.setExtraReporter(name) → state.consumeExtraReporter()
@@ -153,7 +154,10 @@ function listReportersOracle(conn): Promise<string[]>
 ## Output
 
 O output do documentation reporter é exibido em tempo real via `run.appendOutput()`.
-Linhas não-XML são exibidas diretamente; linhas XML são acumuladas para parse.
+Cada reporter escreve em um `output_id` próprio: o primeiro texto do grupo
+classifica o grupo em console/XML/HTML. Console vai direto para o output; XML
+(JUnit + Cobertura) é acumulado e separado por `<coverage`; HTML é acumulado à
+parte e gravado em `test-results/coverage.html` no fim (PRD-108).
 
 > Diagnósticos de compilação são publicados **após o run** por
 > `commands/run.ts` → `refreshCompilationDiagnostics()` (veja

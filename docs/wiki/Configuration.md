@@ -105,6 +105,7 @@ decoded by VSCode — the profile charset does not apply.
 | `utplsql.coverage.includeObjectExpr` | `""` | Regex of objects to include in coverage. |
 | `utplsql.coverage.excludeSchemaExpr` | `""` | Regex of schemas to exclude from coverage. |
 | `utplsql.coverage.excludeObjectExpr` | `""` | Regex of objects to exclude from coverage (e.g. `^UT_` for the utPLSQL framework). |
+| `utplsql.coverage.htmlReport` | `false` | Writes the utPLSQL HTML coverage report to `test-results/coverage.html` and offers **Open in Browser** / **Save As…** after the run (fire-and-forget; never rendered in a webview). |
 | `utplsql.sqlCoverageEnabled` | `false` | Tracks views (SQL objects) via `V$SQL` after the run, marking them as executed/not executed. Requires `GRANT SELECT ON V$SQL`. Best-effort. |
 
 ## PL/SQL Debug

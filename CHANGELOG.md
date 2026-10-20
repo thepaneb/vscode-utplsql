@@ -16,7 +16,17 @@
   `%rollback`, `%throws`, `%displayname`) and the main `ut.expect` matchers,
   including the cursor modifiers and JSON. The `ut-nls-cursor` snippet keeps
   `ut.set_nls` until `to_equal` and resets it afterwards (avoids `ORA-01861`).
-  Registered for `sql`, `plsql` and `oracle-sql` and validated in CI.
+  Registered for `sql` and `plsql` and validated in CI.
+
+- **HTML coverage report (PRD-108)**: new setting
+  `utplsql.coverage.htmlReport` (default `false`). On coverage runs the
+  extension also executes `ut_coverage_html_reporter`, captures its buffered
+  output by `output_id` (so it never contaminates the JUnit/Cobertura XML) and
+  writes **`test-results/coverage.html`** atomically in the workspace root of
+  the executed suite. After `run.end()` a fire-and-forget notification offers
+  **Open in Browser** / **Save As…**; the report is never rendered in a webview,
+  cancelled runs do not leave a partial file, and `additionalReporters` with the
+  same reporter is deduplicated.
 
 ## 0.16.0
 

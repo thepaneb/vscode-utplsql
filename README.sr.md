@@ -171,6 +171,7 @@ Test Explorer-у **како се сваки тест заврши**. VSIX већ
 | `utplsql.coverage.includeObjectExpr` | `""` | Regex објеката за укључивање у покривеност. |
 | `utplsql.coverage.excludeSchemaExpr` | `""` | Regex шема за искључивање из покривености. |
 | `utplsql.coverage.excludeObjectExpr` | `""` | Regex објеката за искључивање из покривености (нпр. `^UT_` за utPLSQL framework). |
+| `utplsql.coverage.htmlReport` | `false` | Уписује HTML извештај покривености у `test-results/coverage.html` и после извршавања нуди **Отвори у прегледачу** / **Сачувај као…** (fire-and-forget). |
 | `utplsql.timeoutMinutes` | `60` | Тимеаут у минутима. |
 | `utplsql.dbmsOutput` | `false` | Омогућава `DBMS_OUTPUT` у тест сесији. |
 | `utplsql.additionalReporters` | `[]` | Додатни reporter-и за укључивање у свако извршавање (нпр. `["ut_coverage_html_reporter"]`). Подразумевани (documentation, junit) су увек укључени и не морају се наводити. |

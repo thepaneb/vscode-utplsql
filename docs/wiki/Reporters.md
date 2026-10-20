@@ -34,6 +34,11 @@ Setting `utplsql.additionalReporters` — included in every run:
 The default reporters are automatically deduplicated — you don't need
 to remove them from the list.
 
+For the HTML coverage report, prefer **`utplsql.coverage.htmlReport`**: it adds
+`ut_coverage_html_reporter` only on coverage runs, captures its buffered output
+separately and offers **Open in Browser** / **Save As…** after the run. If the
+same reporter is also listed in `additionalReporters`, it is deduplicated.
+
 ## Volatile Session Reporter
 
 Palette command **utPLSQL: Select Additional Reporter...**:

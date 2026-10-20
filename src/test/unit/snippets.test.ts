@@ -127,15 +127,20 @@ test('snippets: ut-nls-cursor mantém set_nls antes do to_equal e reset_nls depo
   assert.ok(setNls >= 0 && equal > setNls && resetNls > equal, body);
 });
 
-test('snippets: package.json registra o arquivo para sql, plsql e oracle-sql', () => {
+test('snippets: package.json registra o arquivo para sql e plsql', () => {
   const pkg = JSON.parse(fs.readFileSync(path.join(ROOT, 'package.json'), 'utf8')) as {
     contributes?: { snippets?: Array<{ language: string; path: string }> };
   };
   const contributed = pkg.contributes?.snippets ?? [];
-  for (const language of ['sql', 'plsql', 'oracle-sql']) {
+  for (const language of ['sql', 'plsql']) {
     const entry = contributed.find((s) => s.language === language);
     assert.ok(entry, `contributes.snippets ausente para ${language}`);
     assert.strictEqual(entry?.path, './snippets/utplsql.code-snippets');
     assert.ok(fs.existsSync(path.join(ROOT, entry?.path ?? '')), 'arquivo de snippets ausente');
   }
+  assert.deepStrictEqual(
+    contributed.map((entry) => entry.language).sort(),
+    ['plsql', 'sql'],
+    'não registrar snippets para language IDs que a extensão não contribui (warning do VS Code)',
+  );
 });

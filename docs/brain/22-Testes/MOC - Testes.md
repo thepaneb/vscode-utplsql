@@ -39,6 +39,7 @@ SORT id ASC
 - [[TST - connectionProfiles.test.ts]] — `TST-connectionProfiles.test.ts`
 - [[TST - coverage.test.ts]] — `TST-coverage.test.ts`
 - [[TST - coverageDecision.test.ts]] — `TST-coverageDecision.test.ts`
+- [[TST - coverageHtml.test.ts]] — `TST-coverageHtml.test.ts`
 - [[TST - dbmsDebug.test.ts]] — `TST-dbmsDebug.test.ts`
 - [[TST - dbPaths.test.ts]] — `TST-dbPaths.test.ts`
 - [[TST - dbSourceProvider.test.ts]] — `TST-dbSourceProvider.test.ts`

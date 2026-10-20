@@ -23,7 +23,9 @@ functions live in `src/results.ts` (`applyResultsFromCases`,
 
 - `oracleRunner.ts`: conn1 executes `ut_runner.run(...)` (blocking); conn2 polls
   `UT_OUTPUT_BUFFER_TMP` every 200ms (real-time documentation +
-  JUnit/Cobertura XML at the end).
+  JUnit/Cobertura XML and the HTML coverage report at the end). Each reporter
+  writes to its own `output_id`; the router classifies it as console/XML/HTML,
+  so the HTML report never contaminates the JUnit/Cobertura XML.
 - **Connection pooling (v0.10.0)**: managed pool (`ensurePool`), recreated if
   the connection changes, closed in `deactivate()` with a 10s drain.
 - `discoverUtplsqlSchema`: `UT3.` prefix via `ALL_SYNONYMS` (shared install).
@@ -96,6 +98,7 @@ testable with `node --test` without any setup. Full list: `src/*.ts`.
 | `utplsql.run.randomOrder`/`run.randomOrderSeed` | `cfg.randomOrder`/`randomOrderSeed` | `a_random_test_order`/`_seed` of `ut_runner.run` |
 | `utplsql.coverage.schemes`/`includeObjects`/`excludeObjects` | `cfg.coverage*` | `a_coverage_schemes`/`a_include_objects`/`a_exclude_objects` binds |
 | `utplsql.coverage.includeSchemaExpr`/`…ObjectExpr`/`exclude…Expr` | `cfg.coverage*Expr` | `a_include_*_expr`/`a_exclude_*_expr` binds of `ut_runner.run` |
+| `utplsql.coverage.htmlReport` | `cfg.coverageHtmlReport` | `oracleRunner.ts` grava `test-results/coverage.html`; `runner.ts` notifica após o `run.end()` |
 | `utplsql.discovery.source` | `cfg.discoverySource` | `auto` \| `file` \| `database` — DB-first discovery (`testTree.ts`/`discovery.ts`) |
 | `utplsql.oraclePoolMin/Max/Increment/PingInterval` | `cfg.oraclePool*` | `oracleRunner.ts` (`ensurePool`) |
 | `utplsql.oracleClientMode`/`oracleClientLibDir`/`oracleClientConfigDir` | `cfg.oracleClient*` | `oracleClient.ts` (`ensureOracleClient`, called from `ensurePool`) |

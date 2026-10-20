@@ -47,9 +47,10 @@ fechadas:
   evitar a varredura de `.sql` restringe para `["plsql"]`. `includePatterns`
   continua sendo a lista de globs adicionais; CodeLens/watcher usam o conjunto
   efetivo (glob + language ID, sem duplicar).
-- **PRD-105 — snippets:** registrar para **`sql`, `plsql` e `oracle-sql`**;
-  incluir o skeleton de pacote **`ut-suite`** além das annotations/matchers. O
-  JSON é validado no CI.
+- **PRD-105 — snippets:** registrar para **`sql` e `plsql`**; incluir o skeleton
+  de pacote **`ut-suite`** além das annotations/matchers. `oracle-sql` fica fora
+  de `contributes.snippets` (language ID não contribuído gera warning no VS
+  Code), mas continua aceito na descoberta/CodeLens. O JSON é validado no CI.
 - **PRD-108 — HTML de cobertura:** gravar em **`test-results/coverage.html`** no
   workspace (root da suíte executada; fallback para temp do SO sem workspace),
   com `.gitignore`/`.vscodeignore`, escrita atômica e limpeza do alvo no início

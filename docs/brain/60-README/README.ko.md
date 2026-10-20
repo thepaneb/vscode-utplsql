@@ -181,6 +181,7 @@ Test Explorer에 나타납니다.
 | `utplsql.coverage.includeObjectExpr` | `""` | 커버리지에 포함할 객체 정규식. |
 | `utplsql.coverage.excludeSchemaExpr` | `""` | 커버리지에서 제외할 스키마 정규식. |
 | `utplsql.coverage.excludeObjectExpr` | `""` | 커버리지에서 제외할 객체 정규식(예: utPLSQL 프레임워크의 경우 `^UT_`). |
+| `utplsql.coverage.htmlReport` | `false` | 커버리지 HTML 보고서를 `test-results/coverage.html`에 쓰고 실행 후 **브라우저에서 열기** / **다른 이름으로 저장…**을 제공합니다(fire-and-forget). |
 | `utplsql.timeoutMinutes` | `60` | 실행 시간 제한(분). |
 | `utplsql.dbmsOutput` | `false` | 테스트 세션에서 `DBMS_OUTPUT`을 활성화합니다. |
 | `utplsql.additionalReporters` | `[]` | 모든 실행에 포함할 추가 리포터(예: `["ut_coverage_html_reporter"]`). 기본값(documentation, junit)은 항상 포함되며 나열할 필요가 없습니다. |

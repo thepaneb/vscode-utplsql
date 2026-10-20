@@ -180,6 +180,7 @@ Test Explorer **a medida que cada test termina**.
 | `utplsql.coverage.includeObjectExpr` | `""` | Regex de objetos a incluir en la cobertura. |
 | `utplsql.coverage.excludeSchemaExpr` | `""` | Regex de esquemas a excluir de la cobertura. |
 | `utplsql.coverage.excludeObjectExpr` | `""` | Regex de objetos a excluir de la cobertura (p. ej. `^UT_` para el framework utPLSQL). |
+| `utplsql.coverage.htmlReport` | `false` | Escribe el informe HTML de cobertura en `test-results/coverage.html` y ofrece **Abrir en el navegador** / **Guardar como…** tras la ejecución (fire-and-forget). |
 | `utplsql.timeoutMinutes` | `60` | Timeout en minutos para la ejecución de los tests. |
 | `utplsql.dbmsOutput` | `false` | Habilita `DBMS_OUTPUT` en la sesión de pruebas. Útil para depuración. |
 | `utplsql.additionalReporters` | `[]` | Reporters adicionales para incluir en cada ejecución (p. ej. `["ut_coverage_html_reporter"]`). Los predeterminados (documentation, junit) siempre se incluyen y no es necesario listarlos. |

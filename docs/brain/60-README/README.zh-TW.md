@@ -180,6 +180,7 @@ Test Explorer 中。
 | `utplsql.coverage.includeObjectExpr` | `""` | 要納入涵蓋的物件正則。 |
 | `utplsql.coverage.excludeSchemaExpr` | `""` | 要從涵蓋中排除的 schema 正則。 |
 | `utplsql.coverage.excludeObjectExpr` | `""` | 要從涵蓋中排除的物件正則（例如 utPLSQL 框架用 `^UT_`）。 |
+| `utplsql.coverage.htmlReport` | `false` | 將覆蓋率 HTML 報告寫入 `test-results/coverage.html`，並在執行後提供 **在瀏覽器中開啟** / **另存為…**（fire-and-forget）。 |
 | `utplsql.timeoutMinutes` | `60` | 執行逾時（分鐘）。 |
 | `utplsql.dbmsOutput` | `false` | 在測試工作階段中啟用 `DBMS_OUTPUT`。 |
 | `utplsql.additionalReporters` | `[]` | 每次執行都要包含的額外 reporters（例如 `["ut_coverage_html_reporter"]`）。預設（documentation、junit）一律包含，無需列出。 |

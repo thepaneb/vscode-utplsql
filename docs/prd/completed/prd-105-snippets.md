@@ -104,8 +104,10 @@ inexistente).
 
 ## 11. Decisões (2026-10-20)
 
-- Registrar também para **`oracle-sql`** (além de `sql` e `plsql`), alinhado ao
-  default de `discovery.languageIds` da PRD-109.
+- Registrar para **`sql` e `plsql`**. `oracle-sql` **não** entra em
+  `contributes.snippets`: o VS Code emite warning para um language ID que nenhuma
+  extensão instalada contribui. A descoberta/CodeLens continuam aceitando
+  `oracle-sql` (PRD-109).
 - Incluir o snippet de pacote inteiro **`ut-suite`** (`%suite` + `%suitepath` +
   `%test`), além dos snippets por annotation.
 
@@ -114,8 +116,8 @@ inexistente).
 **Concluída em 2026-10-20 (0.17.0).**
 
 - Criada **[[BR-UI-016 - Snippets espelham annotations e matchers com JSON validado|BR-UI-016]]**
-  — biblioteca espelha as annotations/matchers, registrada para `sql`, `plsql` e
-  `oracle-sql`, com JSON validado no CI. Cobre RF1–RF3 e RNF1/RNF2.
+  — biblioteca espelha as annotations/matchers, registrada para `sql` e `plsql`,
+  com JSON validado no CI. Cobre RF1–RF3 e RNF1/RNF2.
 - Documentação: `05-ux-components`, `Editor-integration` e README
   (canônico + pt-BR).
 - Nenhuma RNF ficou sem regra.

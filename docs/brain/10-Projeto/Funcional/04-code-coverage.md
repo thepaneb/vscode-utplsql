@@ -5,7 +5,7 @@ numero: 04
 titulo: "04 — Code Coverage"
 publicar: docs/functional/04-code-coverage.md
 verificado: 2026-09-23
-regras: ["BR-COB-001", "BR-COB-002", "BR-COB-003", "BR-EXEC-009", "BR-EXEC-013", "BR-COB-005"]
+regras: ["BR-COB-001", "BR-COB-002", "BR-COB-003", "BR-COB-008", "BR-EXEC-009", "BR-EXEC-013", "BR-COB-005"]
 relacionado: ["[[ADR-008 - Cobertura a partir do Cobertura XML e VSQL]]"]
 tags: [funcional]
 ---
@@ -149,6 +149,18 @@ Se `coverage.xml` não for gerado:
 - `UTPLSQL_NO_COVERAGE` só era emitido no fluxo legado (CLI) — **não** é emitido no fluxo Oracle-direto atual
 - Comando `utplsql.copyGrantsToClipboard` copia grants para clipboard
 
+## Relatório HTML (PRD-108)
+
+Com `utplsql.coverage.htmlReport = true` e cobertura ligada, o run também inclui
+`ut_coverage_html_reporter`. O `oracleRunner.ts` agrupa as linhas do buffer por
+`output_id` — o HTML nunca entra no XML de JUnit/Cobertura — e grava
+atomicamente em **`test-results/coverage.html`** no root da suíte executada
+(fallback para temp do SO sem workspace). O `runner.ts` só dispara a notificação
+**depois do `run.end()`** (fire-and-forget): **Abrir no navegador** ou
+**Salvar em arquivo…**. Nunca há webview; cancelamento não grava HTML parcial e
+o alvo anterior é removido no início do run. `test-results/` está no
+`.gitignore`/`.vscodeignore`.
+
 ## Settings
 
 | Setting | Default | Descrição |
@@ -162,6 +174,7 @@ Se `coverage.xml` não for gerado:
 | `utplsql.coverage.includeObjectExpr` | `""` | Regex de objeto a incluir |
 | `utplsql.coverage.excludeSchemaExpr` | `""` | Regex de schema a excluir |
 | `utplsql.coverage.excludeObjectExpr` | `""` | Regex de objeto a excluir (ex.: `^UT_` para o framework) |
+| `utplsql.coverage.htmlReport` | `false` | Grava `test-results/coverage.html` e oferece abrir/salvar após o run (PRD-108) |
 
 > PRD-79: os escopos vão como binds ao `ut_runner.run` (`a_include_objects`,
 > `a_exclude_objects` e as regex), que monta o `ut_coverage_options` internamente.
@@ -256,7 +269,7 @@ GRANT SELECT ON SYS.V_$SQL TO <schema>;
 ## Conexões
 
 <!-- brain:auto:start:conexoes -->
-- 📐 Regras: [[BR-COB-001 - Cobertura Oracle exige GRANT EXECUTE ON SYS.DBMS_PROFILER|BR-COB-001]] · [[BR-COB-002 - resolveSourceUri tenta variantes de extensão e bloqueia path traversal|BR-COB-002]] · [[BR-COB-003 - Cobertura de views via V$SQL é opt-in e best-effort|BR-COB-003]] · [[BR-EXEC-009 - Separação do XML de cobertura do XML JUnit no mesmo buffer|BR-EXEC-009]] · [[BR-EXEC-013 - Reporter de cobertura só entra se existir no banco|BR-EXEC-013]] · [[BR-COB-005 - XML Cobertura e cobertura por declaracao sao parseados de forma pura|BR-COB-005]]
+- 📐 Regras: [[BR-COB-001 - Cobertura Oracle exige GRANT EXECUTE ON SYS.DBMS_PROFILER|BR-COB-001]] · [[BR-COB-002 - resolveSourceUri tenta variantes de extensão e bloqueia path traversal|BR-COB-002]] · [[BR-COB-003 - Cobertura de views via V$SQL é opt-in e best-effort|BR-COB-003]] · [[BR-COB-008 - Relatorio HTML de cobertura abre no navegador sem segurar o TestRun|BR-COB-008]] · [[BR-EXEC-009 - Separação do XML de cobertura do XML JUnit no mesmo buffer|BR-EXEC-009]] · [[BR-EXEC-013 - Reporter de cobertura só entra se existir no banco|BR-EXEC-013]] · [[BR-COB-005 - XML Cobertura e cobertura por declaracao sao parseados de forma pura|BR-COB-005]]
 - 🔗 [[ADR-008 - Cobertura a partir do Cobertura XML e VSQL]]
 - ↩️ Referenciada por: [[Coverage]] · [[ENT-004 - Coverage|ENT-004]] · [[GLOSS-005 - Coverage owner|GLOSS-005]]
 <!-- brain:auto:end -->

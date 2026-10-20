@@ -59,8 +59,9 @@ class UtplsqlCodeLensProvider implements vscode.CodeLensProvider
 
 ## Snippets (`snippets/utplsql.code-snippets`)
 
-Biblioteca registrada em `contributes.snippets` para `sql`, `plsql` e
-`oracle-sql`:
+Biblioteca registrada em `contributes.snippets` para `sql` e `plsql`
+(`oracle-sql` fica só na identidade de descoberta/CodeLens; registrar snippets
+para um ID não contribuído gera warning no VS Code):
 
 - `ut-suite` — esqueleto completo do package de teste;
 - annotations: `%suite`, `%suitepath`, `%test`, `%context`/`%endcontext`,
