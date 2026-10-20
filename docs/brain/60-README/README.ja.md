@@ -162,6 +162,7 @@ Test Explorer に表示されます。
 | `utplsql.connection` | `""` | Oracle 接続。**空のまま**にして `UTPLSQL_CONN` 環境変数を使うとパスワードを保存せずに済みます。両方とも空の場合は拡張機能が尋ねます（セッション中のみ保持）。 |
 | `utplsql.sourcePath` | `install` | 本番コードのフォルダー（カバレッジをファイルにマッピングするため）。 |
 | `utplsql.includePatterns` | `["**/*.pks"]` | `%suite`/`%test` を含むスペックを検出するグロブ。テストが `.sql` 内にある場合は `["**/*.sql"]` を使用します。 |
+| `utplsql.discovery.languageIds` | `["plsql", "sql", "oracle-sql"]` | 検出、CodeLens、装飾で PL/SQL として扱う言語 ID。拡張子はインストール済み拡張機能と `files.associations` から解決されます。`.sql` を走査したくない場合は `["plsql"]` を指定します。 |
 | `utplsql.generate.testPackagePrefix` | `ut_` | 生成されるテストパッケージ名の接頭辞。 |
 | `utplsql.generate.testPackageSuffix` | `""` | 生成されるテストパッケージ名の接尾辞。 |
 | `utplsql.generate.numberOfTestsPerUnit` | `1` | 本番パッケージのルーチンごとに生成する `%test` の数。 |

@@ -52,6 +52,8 @@ export interface UtConfig {
   organization: 'file' | 'schema' | 'tag';
   organizationSchemaPattern: string;
   discoverySource: 'auto' | 'file' | 'database';
+  /** Language IDs aceitos na descoberta/CodeLens (PRD-109). */
+  discoveryLanguageIds: string[];
   refreshDebounceMs: number;
   setupDiagnosticsEnabled: boolean;
   /** Geração de suíte de teste (PRD-100): prefixo do nome do pacote de teste. */
@@ -165,6 +167,7 @@ export function readConfig(): UtConfig {
     organization: c.get<'file' | 'schema' | 'tag'>('organization', 'file'),
     organizationSchemaPattern: c.get<string>('organization.schemaPattern', 'db/{schema}/**'),
     discoverySource: c.get<'auto' | 'file' | 'database'>('discovery.source', 'auto'),
+    discoveryLanguageIds: c.get<string[]>('discovery.languageIds', ['plsql', 'sql', 'oracle-sql']),
     refreshDebounceMs: c.get<number>('refreshDebounceMs', 300),
     setupDiagnosticsEnabled: c.get<boolean>('setupDiagnostics.enabled', true),
     generateTestPackagePrefix: c.get<string>('generate.testPackagePrefix', 'ut_'),

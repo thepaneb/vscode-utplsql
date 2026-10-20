@@ -167,6 +167,7 @@ Extensia se conectează direct prin Oracle, citește rapoartele (JUnit + Coverag
 | `utplsql.connection` | `""` | Conexiunea Oracle. **Lasă gol** și folosește variabila de mediu `UTPLSQL_CONN` pentru a evita stocarea parolei. Dacă ambele sunt goale, extensia întreabă (o păstrează doar în sesiune). |
 | `utplsql.sourcePath` | `install` | Folderul codului de producție (pentru maparea acoperirii pe fișiere). |
 | `utplsql.includePatterns` | `["**/*.pks"]` | Glob-uri pentru descoperirea spec-urilor cu `%suite`/`%test`. Dacă testele tale sunt în `.sql`, folosește `["**/*.sql"]`. |
+| `utplsql.discovery.languageIds` | `["plsql", "sql", "oracle-sql"]` | ID-uri de limbaj tratate ca PL/SQL la descoperire, CodeLens și decorări. Extensiile sunt rezolvate din extensiile instalate și `files.associations`; folosiți `["plsql"]` pentru a nu scana `.sql`. |
 | `utplsql.generate.testPackagePrefix` | `ut_` | Prefixul numelui pachetului de teste generat. |
 | `utplsql.generate.testPackageSuffix` | `""` | Sufixul numelui pachetului de teste generat. |
 | `utplsql.generate.numberOfTestsPerUnit` | `1` | `%test` generate pentru fiecare rutină a pachetului de producție. |

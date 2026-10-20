@@ -158,6 +158,7 @@ Test Explorer에 나타납니다.
 | `utplsql.connection` | `""` | Oracle 연결. **비워 두고** 비밀번호 저장을 피하려면 `UTPLSQL_CONN` 환경 변수를 사용하세요. 둘 다 비어 있으면 확장 프로그램이 묻습니다(세션에만 유지). |
 | `utplsql.sourcePath` | `install` | 프로덕션 코드 폴더(커버리지를 파일에 매핑하기 위해). |
 | `utplsql.includePatterns` | `["**/*.pks"]` | `%suite`/`%test`가 있는 스펙을 발견하기 위한 glob. 테스트가 `.sql`에 있으면 `["**/*.sql"]`을 사용하세요. |
+| `utplsql.discovery.languageIds` | `["plsql", "sql", "oracle-sql"]` | 검색, CodeLens 및 장식에서 PL/SQL로 처리할 언어 ID입니다. 확장자는 설치된 확장과 `files.associations`에서 확인합니다. `.sql` 검색을 피하려면 `["plsql"]`을 사용하세요. |
 | `utplsql.generate.testPackagePrefix` | `ut_` | 생성되는 테스트 패키지 이름의 접두사입니다. |
 | `utplsql.generate.testPackageSuffix` | `""` | 생성되는 테스트 패키지 이름의 접미사입니다. |
 | `utplsql.generate.numberOfTestsPerUnit` | `1` | 운영 패키지의 루틴마다 생성되는 `%test` 수입니다. |

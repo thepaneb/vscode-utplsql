@@ -340,6 +340,14 @@
           "default": "auto",
           "markdownDescription": "Source of the test tree in `schema` mode: `auto` uses the database API (`ut_runner.get_suites_info`) and falls back to `ALL_SOURCE`/files when unavailable; `database` requires the API; `file` disables database discovery."
         },
+        "utplsql.discovery.languageIds": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "default": ["plsql", "sql", "oracle-sql"],
+          "markdownDescription": "Language IDs treated as PL/SQL for discovery, CodeLens and decorations. Their file extensions are resolved from the installed extensions and from `files.associations`; set `[\"plsql\"]` to avoid scanning `.sql` files."
+        },
         "utplsql.refreshDebounceMs": {
           "type": "number",
           "default": 300,
@@ -869,8 +877,8 @@
     "languages": [
       {
         "id": "plsql",
-        "aliases": ["PL/SQL", "plsql"],
-        "extensions": [".pks", ".pkb", ".prc", ".fnc", ".trg"]
+        "aliases": ["PL/SQL", "Oracle PL/SQL", "plsql"],
+        "extensions": [".pks", ".pkb", ".prc", ".fnc", ".trg", ".pls", ".plb", ".tps", ".tpb", ".vw"]
       }
     ],
     "breakpoints": [

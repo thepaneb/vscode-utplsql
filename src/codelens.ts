@@ -1,6 +1,11 @@
 import * as vscode from 'vscode';
 import { getExtensionLocale, readConfig } from './config';
 import { t } from './i18n';
+import {
+  currentLanguageContributions,
+  matchesLanguageIdentity,
+  workspaceAssociations,
+} from './languageIdentity';
 
 const RE_PACKAGE = /create\s+(?:or\s+replace\s+)?package\s+(?:body\s+)?(?:"?(\w+)"?\.)?"?(\w+)"?/i;
 const RE_SUITE = /--\s*%suite\s*(?:\(([^)]*)\))?/i;
@@ -77,8 +82,19 @@ export class UtplsqlCodeLensProvider implements vscode.CodeLensProvider {
     document: vscode.TextDocument,
     _token: vscode.CancellationToken,
   ): vscode.CodeLens[] {
-    if (!readConfig().codeLensEnabled) return [];
-    if (!document.fileName.endsWith('.pks')) return [];
+    const cfg = readConfig();
+    if (!cfg.codeLensEnabled) return [];
+    if (
+      !matchesLanguageIdentity(
+        document.fileName,
+        document.languageId,
+        cfg.discoveryLanguageIds,
+        currentLanguageContributions(),
+        workspaceAssociations(),
+      )
+    ) {
+      return [];
+    }
 
     const items = parseCodeLensItems(document.getText());
     const lenses: vscode.CodeLens[] = [];

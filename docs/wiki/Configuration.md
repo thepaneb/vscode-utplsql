@@ -126,7 +126,8 @@ decoded by VSCode — the profile charset does not apply.
 
 | Setting | Default | Description |
 |---|---|---|
-| `utplsql.includePatterns` | `["**/*.pks"]` | Globs to discover specs. Use `["**/*.sql"]` if your tests are in `.sql` files. |
+| `utplsql.includePatterns` | `["**/*.pks"]` | Additional globs to discover specs. Combined with `utplsql.discovery.languageIds` and `files.associations`. |
+| `utplsql.discovery.languageIds` | `["plsql", "sql", "oracle-sql"]` | Language IDs treated as PL/SQL for discovery, CodeLens and decorations. Extensions come from the installed extensions and `files.associations`; use `["plsql"]` to avoid scanning `.sql`. |
 | `utplsql.generate.testPackagePrefix` | `ut_` | Prefix of the generated test package name (`utplsql.generateTestSuite`). |
 | `utplsql.generate.testPackageSuffix` | `""` | Suffix of the generated test package name. |
 | `utplsql.generate.numberOfTestsPerUnit` | `1` | `%test` generated per routine of the production package (1–50). |

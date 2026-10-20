@@ -1,15 +1,21 @@
 <!-- GENERATED FROM docs/brain/10-Projeto/Funcional/01-test-discovery.md — DO NOT EDIT -->
 # 01 — Test Discovery
 
-Descoberta de suites e testes utPLSQL nos arquivos `.pks` do workspace e,
+Descoberta de suites e testes utPLSQL nos arquivos PL/SQL do workspace e,
 no modo `schema`, complementada por descoberta direto do banco (PRD-43).
+
+Desde a PRD-109, os patterns efetivos são a união de `includePatterns` com os
+globs derivados de `utplsql.discovery.languageIds` (default `plsql`, `sql`,
+`oracle-sql`) — extensões contribuídas por qualquer extensão instalada — e das
+chaves de `files.associations` que apontam para um desses IDs. `.pks` continua
+sempre aceito.
 
 ## Fluxo
 
 ```
 workspace folders
     │
-    ├─► vscode.workspace.findFiles(includePatterns)  →  lista de URIs (.pks)
+    ├─► vscode.workspace.findFiles(patterns efetivos)  →  lista de URIs PL/SQL
     │
     ├─► parseSuite(uri, text)
     │       │
@@ -40,6 +46,7 @@ workspace folders
 |---|---|---|
 | `src/suiteParser.ts` | Puro | `parseSuiteText(text)` — extrai `packageName` (via regex de `create package`), `suiteDescription`, `tests[]` |
 | `src/discovery.ts` | vscode | `discoverWorkspace()`, `parseSuite()`, `extractSchemaFromPath()`, `discoverSchemaFromDb()`, `discoverSchemaFromConn()`, `discoverSchemasFromFolders()`, `SuiteFile` |
+| `src/languageIdentity.ts` | vscode | `buildLanguageGlobs()`, `matchesLanguageIdentity()`, `buildLanguageSelector()`, `buildWatcherGlob()` — `discovery.languageIds` + `files.associations` (PRD-109) |
 | `src/matching.ts` | Puro | `filterSuitesByUri()`, `filterSuitesByFolder()` — filtragem por URI/pasta |
 | `src/codelens.ts` | Híbrido | `parseCodeLensItems()` puro + `UtplsqlCodeLensProvider` vscode |
 
@@ -174,7 +181,8 @@ Usados nos comandos `runFile` / `runFolder`.
 
 | Setting | Default | Descrição |
 |---|---|---|
-| `utplsql.includePatterns` | `["**/*.pks"]` | Globs para descobrir specs de teste |
+| `utplsql.includePatterns` | `["**/*.pks"]` | Globs adicionais para descobrir specs de teste (somados a `discovery.languageIds`/`files.associations`) |
+| `utplsql.discovery.languageIds` | `["plsql", "sql", "oracle-sql"]` | Language IDs tratados como PL/SQL; extensões vêm das extensões instaladas + `files.associations` (PRD-109) |
 | `utplsql.discovery.source` | `auto` | Fonte da árvore no modo `schema`: `auto` (API `get_suites_info` + fallback `ALL_SOURCE`), `database` (exige a API) ou `file` (desliga a descoberta via banco) |
 
 ## Descoberta DB-first (PRD-74)

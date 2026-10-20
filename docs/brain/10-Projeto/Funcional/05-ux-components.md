@@ -5,7 +5,7 @@ numero: 05
 titulo: "05 — UX Components"
 publicar: docs/functional/05-ux-components.md
 verificado: 2026-09-23
-regras: ["BR-UI-001", "BR-UI-002", "BR-UI-003", "BR-UI-004", "BR-UI-005", "BR-UI-006", "BR-UI-013", "BR-PARSE-015"]
+regras: ["BR-UI-001", "BR-UI-002", "BR-UI-003", "BR-UI-004", "BR-UI-005", "BR-UI-006", "BR-UI-013", "BR-PARSE-015", "BR-PARSE-019"]
 tags: [funcional]
 ---
 # 05 — UX Components
@@ -40,7 +40,11 @@ Exportado para reuso por CodeLens, Decorations e Run at Cursor.
 class UtplsqlCodeLensProvider implements vscode.CodeLensProvider
 ```
 
-- Registrado em `{ scheme: 'file', pattern: '**/*.pks' }` — **sem `language: 'plsql'`**
+- Registrado com um seletor que combina `**/*.pks` (canônico), os globs de
+  `discovery.languageIds` + `files.associations` e os language IDs configurados
+  (default `plsql`, `sql`, `oracle-sql`) — PRD-109
+- Um documento que casa com glob **e** language ID recebe **um único** conjunto
+  de lenses (provider registrado uma vez)
 - Gera 2 CodeLenses por anotação: Run + Run with Coverage
 - Comando: `utplsql.runLens` com `{ type, packageName, procName, uri, coverage }`
 
@@ -48,7 +52,9 @@ class UtplsqlCodeLensProvider implements vscode.CodeLensProvider
 
 - `%suite` → executa todas as suites do arquivo
 - `%test` → executa apenas o procedimento de teste
-- `.sql` (não `.pks`) → sem CodeLens
+- `.pks`, `.pls`, `.plb`, `.tps`, `.tpb`, `.vw` e extensões associadas → CodeLens
+  quando o arquivo está na identidade PL/SQL
+- Arquivo fora da identidade → sem CodeLens
 - URIs virtuais (`utplsql-db:/`) → sem CodeLens (provider registrado só para `scheme: file`)
 
 ## StatusBar (`src/statusBar.ts`)
@@ -181,6 +187,6 @@ Prefixo: `Ctrl+Shift+U` (Mac: `Cmd+Shift+U`).
 ## Conexões
 
 <!-- brain:auto:start:conexoes -->
-- 📐 Regras: [[BR-UI-001 - Context key utplsql-activated é setado na ativação|BR-UI-001]] · [[BR-UI-002 - utplsql-running liga no início e desliga em todos os caminhos de saída|BR-UI-002]] · [[BR-UI-003 - utplsql-connected reflete a resolução de conexão sem prompt|BR-UI-003]] · [[BR-UI-004 - utplsql-hasFailures derivado de lastFailedItems (failed ou error)|BR-UI-004]] · [[BR-UI-005 - Status bar - gating por setting, throttle de 200ms e ícone por falha-erro|BR-UI-005]] · [[BR-UI-006 - CodeLens registrado apenas em scheme file e padrão .pks sem language id|BR-UI-006]] · [[BR-UI-013 - Integracao nativa ao Test Explorer via a API de testes do VS Code|BR-UI-013]] · [[BR-PARSE-015 - CodeLens gera dois lenses por annotation, na linha da annotation|BR-PARSE-015]]
+- 📐 Regras: [[BR-UI-001 - Context key utplsql-activated é setado na ativação|BR-UI-001]] · [[BR-UI-002 - utplsql-running liga no início e desliga em todos os caminhos de saída|BR-UI-002]] · [[BR-UI-003 - utplsql-connected reflete a resolução de conexão sem prompt|BR-UI-003]] · [[BR-UI-004 - utplsql-hasFailures derivado de lastFailedItems (failed ou error)|BR-UI-004]] · [[BR-UI-005 - Status bar - gating por setting, throttle de 200ms e ícone por falha-erro|BR-UI-005]] · [[BR-UI-006 - CodeLens usa glob canonico e languageIds sem duplicar|BR-UI-006]] · [[BR-UI-013 - Integracao nativa ao Test Explorer via a API de testes do VS Code|BR-UI-013]] · [[BR-PARSE-015 - CodeLens gera dois lenses por annotation, na linha da annotation|BR-PARSE-015]] · [[BR-PARSE-019 - Descoberta e CodeLens respeitam discovery.languageIds e files.associations|BR-PARSE-019]]
 - ↩️ Referenciada por: [[Editor-integration]]
 <!-- brain:auto:end -->

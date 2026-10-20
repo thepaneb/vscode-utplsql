@@ -19,6 +19,12 @@ import {
 import { registerDbSourceProvider } from './dbSourceProvider';
 import { createDebounced } from './debounce';
 import { DecorationManager } from './decorations';
+import {
+  buildLanguageSelector,
+  buildWatcherGlob,
+  currentLanguageContributions,
+  workspaceAssociations,
+} from './languageIdentity';
 import { formatLogLine, setLogSink } from './logger';
 import { closeOraclePool, invalidatePool } from './oracleRunner';
 import { setupValidator, UtplsqlCodeActionProvider } from './quickfix';
@@ -107,12 +113,20 @@ export function activate(context: vscode.ExtensionContext) {
   registerScaffoldCommands(context);
   registerDebug(context, deps);
 
-  context.subscriptions.push(
-    vscode.languages.registerCodeLensProvider(
-      { scheme: 'file', pattern: '**/*.pks' },
-      new UtplsqlCodeLensProvider(),
-    ),
-  );
+  const codeLensProvider = new UtplsqlCodeLensProvider();
+  const buildCodeLensRegistration = (): vscode.Disposable => {
+    const cfg = readConfig();
+    return vscode.languages.registerCodeLensProvider(
+      buildLanguageSelector(
+        cfg.discoveryLanguageIds,
+        currentLanguageContributions(),
+        workspaceAssociations(),
+      ),
+      codeLensProvider,
+    );
+  };
+  let codeLensRegistration = buildCodeLensRegistration();
+  context.subscriptions.push({ dispose: () => codeLensRegistration.dispose() });
 
   statusBar = new UtplsqlStatusBar();
   context.subscriptions.push(statusBar);
@@ -125,6 +139,13 @@ export function activate(context: vscode.ExtensionContext) {
 
   context.subscriptions.push(
     vscode.workspace.onDidChangeConfiguration((e) => {
+      if (
+        e.affectsConfiguration('utplsql.discovery.languageIds') ||
+        e.affectsConfiguration('files.associations')
+      ) {
+        codeLensRegistration.dispose();
+        codeLensRegistration = buildCodeLensRegistration();
+      }
       if (!e.affectsConfiguration('utplsql')) return;
       invalidatePool();
     }),
@@ -157,7 +178,14 @@ export function activate(context: vscode.ExtensionContext) {
     }),
   );
 
-  const watcher = vscode.workspace.createFileSystemWatcher('**/*.{pks,pkb}');
+  const watchCfg = readConfig();
+  const watcher = vscode.workspace.createFileSystemWatcher(
+    buildWatcherGlob(
+      watchCfg.discoveryLanguageIds,
+      currentLanguageContributions(),
+      workspaceAssociations(),
+    ),
+  );
   const scheduleRefresh = createDebounced(
     () => void refresh(),
     () => readConfig().refreshDebounceMs,

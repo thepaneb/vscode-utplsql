@@ -84,11 +84,15 @@ When `.sql` files are encoded as Windows-1252, set the profile `charset` so
 }
 ```
 
-## 4. Tests stored in `.sql` files
+## 4. Tests stored in custom extensions
+
+`.sql` files are already covered by the default `utplsql.discovery.languageIds`
+(`plsql`, `sql`, `oracle-sql`). For a custom extension, map it to one of those
+language IDs (or add the ID to the setting):
 
 ```jsonc
 {
-  "utplsql.includePatterns": ["**/*.sql"]
+  "files.associations": { "*.utsql": "sql" }
 }
 ```
 

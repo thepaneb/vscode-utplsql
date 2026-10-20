@@ -164,6 +164,7 @@ Test Explorer **у міру завершення кожного тесту**. VS
 | `utplsql.connection` | `""` | Підключення до Oracle. **Залиште порожнім** і використовуйте змінну середовища `UTPLSQL_CONN`, щоб не зберігати пароль. Якщо обидва значення порожні, розширення запитає підключення (зберігає його лише в сесії). |
 | `utplsql.sourcePath` | `install` | Папка виробничого коду (для зіставлення покриття з файлами). |
 | `utplsql.includePatterns` | `["**/*.pks"]` | Globs для пошуку специфікацій із `%suite`/`%test`. Якщо ваші тести у `.sql`, використовуйте `["**/*.sql"]`. |
+| `utplsql.discovery.languageIds` | `["plsql", "sql", "oracle-sql"]` | Мовні ID, які вважаються PL/SQL під час виявлення, CodeLens і декорацій. Розширення беруться з інстальованих розширень і `files.associations`; використовуйте `["plsql"]`, щоб не сканувати `.sql`. |
 | `utplsql.generate.testPackagePrefix` | `ut_` | Префікс назви створюваного пакета тестів. |
 | `utplsql.generate.testPackageSuffix` | `""` | Суфікс назви створюваного пакета тестів. |
 | `utplsql.generate.numberOfTestsPerUnit` | `1` | `%test` на кожну підпрограму робочого пакета. |

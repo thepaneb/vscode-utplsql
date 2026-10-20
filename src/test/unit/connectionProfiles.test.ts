@@ -79,6 +79,7 @@ function makeGlobal(over: Partial<UtConfig> = {}): UtConfig {
     organization: 'file',
     organizationSchemaPattern: 'db/{schema}/**',
     discoverySource: 'auto',
+    discoveryLanguageIds: ['plsql', 'sql', 'oracle-sql'],
     refreshDebounceMs: 300,
     setupDiagnosticsEnabled: true,
     generateTestPackagePrefix: 'ut_',

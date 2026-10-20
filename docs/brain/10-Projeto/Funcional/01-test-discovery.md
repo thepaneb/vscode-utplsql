@@ -5,20 +5,26 @@ numero: 01
 titulo: "01 — Test Discovery"
 publicar: docs/functional/01-test-discovery.md
 verificado: 2026-09-23
-regras: ["BR-PARSE-001", "BR-PARSE-002", "BR-PARSE-003", "BR-PARSE-004", "BR-PARSE-005", "BR-PARSE-006", "BR-PARSE-007", "BR-PARSE-008", "BR-PARSE-009", "BR-PARSE-010"]
+regras: ["BR-PARSE-001", "BR-PARSE-002", "BR-PARSE-003", "BR-PARSE-004", "BR-PARSE-005", "BR-PARSE-006", "BR-PARSE-007", "BR-PARSE-008", "BR-PARSE-009", "BR-PARSE-010", "BR-PARSE-019"]
 tags: [funcional]
 ---
 # 01 — Test Discovery
 
-Descoberta de suites e testes utPLSQL nos arquivos `.pks` do workspace e,
+Descoberta de suites e testes utPLSQL nos arquivos PL/SQL do workspace e,
 no modo `schema`, complementada por descoberta direto do banco (PRD-43).
+
+Desde a PRD-109, os patterns efetivos são a união de `includePatterns` com os
+globs derivados de `utplsql.discovery.languageIds` (default `plsql`, `sql`,
+`oracle-sql`) — extensões contribuídas por qualquer extensão instalada — e das
+chaves de `files.associations` que apontam para um desses IDs. `.pks` continua
+sempre aceito.
 
 ## Fluxo
 
 ```
 workspace folders
     │
-    ├─► vscode.workspace.findFiles(includePatterns)  →  lista de URIs (.pks)
+    ├─► vscode.workspace.findFiles(patterns efetivos)  →  lista de URIs PL/SQL
     │
     ├─► parseSuite(uri, text)
     │       │
@@ -49,6 +55,7 @@ workspace folders
 |---|---|---|
 | `src/suiteParser.ts` | Puro | `parseSuiteText(text)` — extrai `packageName` (via regex de `create package`), `suiteDescription`, `tests[]` |
 | `src/discovery.ts` | vscode | `discoverWorkspace()`, `parseSuite()`, `extractSchemaFromPath()`, `discoverSchemaFromDb()`, `discoverSchemaFromConn()`, `discoverSchemasFromFolders()`, `SuiteFile` |
+| `src/languageIdentity.ts` | vscode | `buildLanguageGlobs()`, `matchesLanguageIdentity()`, `buildLanguageSelector()`, `buildWatcherGlob()` — `discovery.languageIds` + `files.associations` (PRD-109) |
 | `src/matching.ts` | Puro | `filterSuitesByUri()`, `filterSuitesByFolder()` — filtragem por URI/pasta |
 | `src/codelens.ts` | Híbrido | `parseCodeLensItems()` puro + `UtplsqlCodeLensProvider` vscode |
 
@@ -183,7 +190,8 @@ Usados nos comandos `runFile` / `runFolder`.
 
 | Setting | Default | Descrição |
 |---|---|---|
-| `utplsql.includePatterns` | `["**/*.pks"]` | Globs para descobrir specs de teste |
+| `utplsql.includePatterns` | `["**/*.pks"]` | Globs adicionais para descobrir specs de teste (somados a `discovery.languageIds`/`files.associations`) |
+| `utplsql.discovery.languageIds` | `["plsql", "sql", "oracle-sql"]` | Language IDs tratados como PL/SQL; extensões vêm das extensões instaladas + `files.associations` (PRD-109) |
 | `utplsql.discovery.source` | `auto` | Fonte da árvore no modo `schema`: `auto` (API `get_suites_info` + fallback `ALL_SOURCE`), `database` (exige a API) ou `file` (desliga a descoberta via banco) |
 
 ## Descoberta DB-first (PRD-74)
@@ -220,6 +228,6 @@ quando a origem é um objeto do banco (prompt `SCHEMA.OBJECT`).
 ## Conexões
 
 <!-- brain:auto:start:conexoes -->
-- 📐 Regras: [[BR-PARSE-001 - Arquivo só é suite utPLSQL se tiver %suite E CREATE PACKAGE|BR-PARSE-001]] · [[BR-PARSE-002 - RE_PACKAGE aceita schema qualificado, BODY e identificador entre aspas|BR-PARSE-002]] · [[BR-PARSE-003 - %test só materializa teste quando seguido de PROCEDURE; órfão é sobrescrito|BR-PARSE-003]] · [[BR-PARSE-004 - Annotations estendidas só valem após o primeiro %test|BR-PARSE-004]] · [[BR-PARSE-005 - Normalização de %throws, %tags e %displayname|BR-PARSE-005]] · [[BR-PARSE-006 - Descoberta por arquivo descarta suítes-testes disabled, vazios e ilegíveis|BR-PARSE-006]] · [[BR-PARSE-007 - Fallback ALL_OBJECTS-ALL_SOURCE ignora UT_- e nunca lança|BR-PARSE-007]] · [[BR-PARSE-008 - DB-first com gate de versão 3.1.3 e modos de fonte auto-database-file|BR-PARSE-008]] · [[BR-PARSE-009 - Linhas de get_suites_info - 1-based para 0-based e filtros|BR-PARSE-009]] · [[BR-PARSE-010 - Fusão arquivo+banco - arquivo prevalece em uri-linha, banco em descrição-tags|BR-PARSE-010]]
+- 📐 Regras: [[BR-PARSE-001 - Arquivo só é suite utPLSQL se tiver %suite E CREATE PACKAGE|BR-PARSE-001]] · [[BR-PARSE-002 - RE_PACKAGE aceita schema qualificado, BODY e identificador entre aspas|BR-PARSE-002]] · [[BR-PARSE-003 - %test só materializa teste quando seguido de PROCEDURE; órfão é sobrescrito|BR-PARSE-003]] · [[BR-PARSE-004 - Annotations estendidas só valem após o primeiro %test|BR-PARSE-004]] · [[BR-PARSE-005 - Normalização de %throws, %tags e %displayname|BR-PARSE-005]] · [[BR-PARSE-006 - Descoberta por arquivo descarta suítes-testes disabled, vazios e ilegíveis|BR-PARSE-006]] · [[BR-PARSE-007 - Fallback ALL_OBJECTS-ALL_SOURCE ignora UT_- e nunca lança|BR-PARSE-007]] · [[BR-PARSE-008 - DB-first com gate de versão 3.1.3 e modos de fonte auto-database-file|BR-PARSE-008]] · [[BR-PARSE-009 - Linhas de get_suites_info - 1-based para 0-based e filtros|BR-PARSE-009]] · [[BR-PARSE-010 - Fusão arquivo+banco - arquivo prevalece em uri-linha, banco em descrição-tags|BR-PARSE-010]] · [[BR-PARSE-019 - Descoberta e CodeLens respeitam discovery.languageIds e files.associations|BR-PARSE-019]]
 - ↩️ Referenciada por: [[ENT-002 - Suite|ENT-002]] · [[ENT-003 - TestCase|ENT-003]] · [[GLOSS-001 - Suite|GLOSS-001]] · [[GLOSS-002 - Teste (procedure de teste)|GLOSS-002]] · [[GLOSS-003 - Annotation utPLSQL|GLOSS-003]] · [[Tests]]
 <!-- brain:auto:end -->

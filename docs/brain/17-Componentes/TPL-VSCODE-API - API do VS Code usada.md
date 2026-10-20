@@ -54,17 +54,17 @@ host — o `docs-fidelity` cobra essa coerência.
 ## Inventário (gerado)
 
 <!-- brain:auto:start:vscode-api -->
-**`engines.vscode`:** `^1.101.0` · **`@types/vscode`:** `1.101.0` · **104 símbolos · 538 referências**
+**`engines.vscode`:** `^1.101.0` · **`@types/vscode`:** `1.101.0` · **106 símbolos · 547 referências**
 
 | Símbolo | Refs | Arquivos |
 |---|---|---|
 | `vscode.TestItem` | 55 | `src/commands/debug.ts`, `src/commands/run.ts`, `src/decorations.ts`, `src/matching.ts` +5 |
 | `vscode.commands.registerCommand` | 38 | `src/commands/connection.ts`, `src/commands/debug.ts`, `src/commands/profile.ts`, `src/commands/run.ts` +3 |
-| `vscode.Uri` | 33 | `src/commands/debug.ts`, `src/commands/run.ts`, `src/commands/scaffold.ts`, `src/commands/script.ts` +9 |
+| `vscode.Uri` | 34 | `src/commands/debug.ts`, `src/commands/run.ts`, `src/commands/scaffold.ts`, `src/commands/script.ts` +10 |
 | `vscode.window.showInformationMessage` | 27 | `src/commands/connection.ts`, `src/commands/debug.ts`, `src/commands/profile.ts`, `src/commands/run.ts` +4 |
 | `vscode.window.showWarningMessage` | 25 | `src/commands/debug.ts`, `src/commands/profile.ts`, `src/commands/run.ts`, `src/commands/scaffold.ts` +4 |
+| `vscode.WorkspaceFolder` | 21 | `src/debugger.ts`, `src/discovery.ts`, `src/languageIdentity.ts`, `src/oracleRunner.ts` +4 |
 | `vscode.window.showErrorMessage` | 20 | `src/commands/connection.ts`, `src/commands/debug.ts`, `src/commands/run.ts`, `src/commands/scaffold.ts` +3 |
-| `vscode.WorkspaceFolder` | 20 | `src/debugger.ts`, `src/discovery.ts`, `src/oracleRunner.ts`, `src/results.ts` +3 |
 | `vscode.commands.executeCommand` | 18 | `src/commands/connection.ts`, `src/commands/profile.ts`, `src/commands/run.ts`, `src/config.ts` +4 |
 | `vscode.TestController` | 14 | `src/commands/deps.ts`, `src/runner.ts`, `src/testTree.ts` |
 | `vscode.TestRunRequest` | 12 | `src/commands/run.ts`, `src/runner.ts` |
@@ -76,15 +76,16 @@ host — o `docs-fidelity` cobra essa coerência.
 | `vscode.Range` | 8 | `src/codelens.ts`, `src/compilationDiagnostics.ts`, `src/decorations.ts`, `src/quickfix.ts` +1 |
 | `vscode.ThemeColor` | 8 | `src/decorations.ts` |
 | `vscode.window.showQuickPick` | 8 | `src/commands/connection.ts`, `src/commands/debug.ts`, `src/commands/profile.ts`, `src/commands/run.ts` +1 |
+| `vscode.workspace.workspaceFolders` | 8 | `src/commands/run.ts`, `src/commands/scaffold.ts`, `src/discovery.ts`, `src/languageIdentity.ts` +3 |
 | `vscode.CancellationToken` | 7 | `src/codelens.ts`, `src/commands/run.ts`, `src/oracleRunner.ts`, `src/quickfix.ts` +2 |
 | `vscode.Location` | 7 | `src/results.ts` |
 | `vscode.window.showInputBox` | 7 | `src/commands/profile.ts`, `src/commands/scaffold.ts`, `src/config.ts` |
-| `vscode.workspace.workspaceFolders` | 7 | `src/commands/run.ts`, `src/commands/scaffold.ts`, `src/discovery.ts`, `src/results.ts` +2 |
 | `vscode.Diagnostic` | 6 | `src/compilationDiagnostics.ts`, `src/quickfix.ts` |
 | `vscode.Uri.file` | 6 | `src/commands/scaffold.ts`, `src/commands/script.ts`, `src/coverage.ts`, `src/extension.ts` +1 |
 | `vscode.Uri.joinPath` | 6 | `src/commands/debug.ts`, `src/commands/run.ts`, `src/commands/scaffold.ts`, `src/commands/script.ts` +2 |
 | `vscode.DecorationOptions` | 5 | `src/decorations.ts` |
 | `vscode.FileCoverageDetail` | 5 | `src/results.ts`, `src/state.ts`, `src/viewCoverage.ts` |
+| `vscode.workspace` | 5 | `src/config.ts`, `src/connectionProfiles.ts`, `src/languageIdentity.ts` |
 | `vscode.CodeActionKind.QuickFix` | 4 | `src/quickfix.ts` |
 | `vscode.CodeLens` | 4 | `src/codelens.ts` |
 | `vscode.FileType.Directory` | 4 | `src/commands/debug.ts`, `src/commands/script.ts`, `src/discovery.ts` |
@@ -93,12 +94,12 @@ host — o `docs-fidelity` cobra essa coerência.
 | `vscode.TestRun` | 4 | `src/oracleRunner.ts`, `src/results.ts`, `src/viewCoverage.ts` |
 | `vscode.TextDocument` | 4 | `src/codelens.ts`, `src/commands/scaffold.ts`, `src/quickfix.ts` |
 | `vscode.window.createTextEditorDecorationType` | 4 | `src/decorations.ts` |
-| `vscode.workspace` | 4 | `src/config.ts`, `src/connectionProfiles.ts` |
 | `vscode.workspace.getConfiguration` | 4 | `src/config.ts`, `src/connectionProfiles.ts` |
 | `vscode.CancellationTokenSource` | 3 | `src/commands/run.ts` |
 | `vscode.DebugConfiguration` | 3 | `src/debugger.ts` |
 | `vscode.DiagnosticSeverity.Error` | 3 | `src/compilationDiagnostics.ts`, `src/quickfix.ts` |
 | `vscode.DiagnosticSeverity.Warning` | 3 | `src/quickfix.ts` |
+| `vscode.Disposable` | 3 | `src/decorations.ts`, `src/extension.ts`, `src/statusBar.ts` |
 | `vscode.languages.registerCodeActionsProvider` | 3 | `src/commands/scaffold.ts`, `src/extension.ts` |
 | `vscode.OutputChannel` | 3 | `src/commands/run.ts`, `src/commands/script.ts` |
 | `vscode.TestMessage` | 3 | `src/results.ts`, `src/runner.ts` |
@@ -109,7 +110,8 @@ host — o `docs-fidelity` cobra essa coerência.
 | `vscode.DebugAdapterDescriptorFactory` | 2 | `src/commands/debug.ts`, `src/debugger.ts` |
 | `vscode.DebugConfigurationProvider` | 2 | `src/commands/debug.ts`, `src/debugger.ts` |
 | `vscode.DiagnosticCollection` | 2 | `src/compilationDiagnostics.ts`, `src/quickfix.ts` |
-| `vscode.Disposable` | 2 | `src/decorations.ts`, `src/statusBar.ts` |
+| `vscode.DocumentFilter` | 2 | `src/languageIdentity.ts` |
+| `vscode.DocumentSelector` | 2 | `src/commands/scaffold.ts`, `src/languageIdentity.ts` |
 | `vscode.env.clipboard` | 2 | `src/commands/connection.ts`, `src/commands/utility.ts` |
 | `vscode.env.language` | 2 | `src/config.ts`, `src/connectionProfiles.ts` |
 | `vscode.EventEmitter` | 2 | `src/codelens.ts`, `src/debugger.ts` |
@@ -138,8 +140,8 @@ host — o `docs-fidelity` cobra essa coerência.
 | `vscode.DebugSession` | 1 | `src/debugger.ts` |
 | `vscode.DeclarationCoverage` | 1 | `src/results.ts` |
 | `vscode.DiagnosticSeverity` | 1 | `src/quickfix.ts` |
-| `vscode.DocumentSelector` | 1 | `src/commands/scaffold.ts` |
 | `vscode.Event` | 1 | `src/debugger.ts` |
+| `vscode.extensions.all` | 1 | `src/languageIdentity.ts` |
 | `vscode.FileStat` | 1 | `src/commands/debug.ts` |
 | `vscode.languages.registerCodeLensProvider` | 1 | `src/extension.ts` |
 | `vscode.MarkdownString` | 1 | `src/decorations.ts` |

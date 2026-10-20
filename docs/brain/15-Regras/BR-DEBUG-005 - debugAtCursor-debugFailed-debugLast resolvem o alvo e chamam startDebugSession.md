@@ -8,7 +8,7 @@ status: ativo
 severidade: media
 fonte: codigo
 verificado: 2026-10-02
-implementacao: ["src/debugTargets.ts:22", "src/debugTargets.ts:36", "src/annotation.ts:8", "src/commands/debug.ts:157", "src/commands/debug.ts:185", "src/commands/debug.ts:216"]
+implementacao: ["src/debugTargets.ts:22", "src/debugTargets.ts:32", "src/annotation.ts:8", "src/commands/debug.ts:157", "src/commands/debug.ts:185", "src/commands/debug.ts:216"]
 testes: ["src/test/unit/debugTargets.test.ts", "src/test/unit/debugCommands.test.ts", "src/test/integration/prd015ExtraE2E.test.ts"]
 prds: ["PRD-53"]
 requisitos: ["PRD-53/RF1", "PRD-53/RF2", "PRD-53/RF3", "PRD-53/RNF1", "PRD-53/RNF2"]

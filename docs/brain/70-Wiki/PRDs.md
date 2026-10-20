@@ -122,6 +122,7 @@ The file is moved between folders as it progresses.
 | 56 | Duration per test and result persistence | 0.16.0 |
 | 57 | Multi-root: `root`/`sourcePath` per folder | 0.16.0 |
 | 58 | Run Related Tests | 0.16.0 |
+| 109 | PL/SQL language identity and configurable `languageIds` | 0.17.0 |
 
 ### ⚪ Proposed
 

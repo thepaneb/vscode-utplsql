@@ -18,7 +18,15 @@ import {
   resolveSubtree,
   resolveSuiteNode,
 } from '../../testTree';
-import { __resetConfigValues, __setConfigValue, workspace } from '../vscode-stub';
+import {
+  __resetConfigValues,
+  __resetExtensions,
+  __resetMockFiles,
+  __setConfigValue,
+  __setExtensions,
+  __setMockFile,
+  workspace,
+} from '../vscode-stub';
 
 function makeItem(id: string, uri?: unknown) {
   const children: any[] = [];
@@ -403,6 +411,31 @@ test('createRefresher: coalesce chamadas concorrentes e substitui a árvore', as
 
   assert.strictEqual(controller._items.length, 0);
   assert.strictEqual(state.cachedItems.length, 0);
+});
+
+test('createRefresher: descobre suite em extensão de linguagem (PRD-109)', async () => {
+  const controller = makeController();
+  const state = new TestStateManager();
+  __setExtensions([
+    { packageJSON: { contributes: { languages: [{ id: 'plsql', extensions: ['.tps'] }] } } },
+  ]);
+  __setMockFile(
+    '**/*.tps',
+    '/ws/ut_t.tps',
+    'CREATE OR REPLACE PACKAGE ut_t IS\n  --%suite(T)\n  --%test(x)\n  PROCEDURE x;\nEND;',
+  );
+  workspace.__setWorkspaceFolders([{ uri: { fsPath: '/ws' }, name: 'ws', index: 0 }] as never);
+  try {
+    const refresh = createRefresher(controller, state);
+    await refresh();
+    assert.strictEqual(controller._items.length, 1);
+    assert.strictEqual(controller._items[0].id, 'suite:ut_t');
+  } finally {
+    __resetExtensions();
+    __resetMockFiles();
+    __resetConfigValues();
+    workspace.__setWorkspaceFolders(undefined);
+  }
 });
 
 test('createRefresher: 3 chamadas concorrentes — as excedentes retornam sem novo run', async () => {

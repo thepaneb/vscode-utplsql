@@ -158,6 +158,7 @@ Test Explorerze **w miarę kończenia każdego testu**.
 | `utplsql.connection` | `""` | Połączenie Oracle. **Pozostaw puste** i użyj zmiennej środowiskowej `UTPLSQL_CONN`, aby nie przechowywać hasła. Jeśli oba są puste, rozszerzenie zapyta (przechowuje tylko w sesji). |
 | `utplsql.sourcePath` | `install` | Folder kodu produkcyjnego (do mapowania pokrycia na pliki). |
 | `utplsql.includePatterns` | `["**/*.pks"]` | Wzorce glob do wykrywania specyfikacji z `%suite`/`%test`. Jeśli testy są w `.sql`, użyj `["**/*.sql"]`. |
+| `utplsql.discovery.languageIds` | `["plsql", "sql", "oracle-sql"]` | Identyfikatory języków traktowane jako PL/SQL podczas wykrywania, CodeLens i dekoracji. Rozszerzenia są ustalane na podstawie zainstalowanych rozszerzeń i `files.associations`; użyj `["plsql"]`, aby nie skanować `.sql`. |
 | `utplsql.generate.testPackagePrefix` | `ut_` | Prefiks nazwy generowanego pakietu testów. |
 | `utplsql.generate.testPackageSuffix` | `""` | Sufiks nazwy generowanego pakietu testów. |
 | `utplsql.generate.numberOfTestsPerUnit` | `1` | `%test` generowanych na procedurę/funkcję pakietu produkcyjnego. |
