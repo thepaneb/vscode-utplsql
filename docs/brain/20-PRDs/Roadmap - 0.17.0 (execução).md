@@ -1,9 +1,10 @@
 ---
 tipo: nota
-status: ativo
+status: concluida
 modulo: prds
 data: 2026-10-10
 verificado: 2026-10-20
+concluida: 2026-10-20
 tags: [prd, roadmap, planejamento]
 ---
 
