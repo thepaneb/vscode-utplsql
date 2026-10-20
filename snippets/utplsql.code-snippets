@@ -1,0 +1,199 @@
+{
+  "utPLSQL suite package": {
+    "prefix": "ut-suite",
+    "body": [
+      "CREATE OR REPLACE PACKAGE ${1:test_package} IS",
+      "",
+      "  --%suite(${2:Description})",
+      "  --%suitepath(${3:alltests})",
+      "",
+      "  --%test(${4:Description})",
+      "  PROCEDURE ${5:test_name};",
+      "",
+      "END ${1:test_package};",
+      "/"
+    ],
+    "description": "utPLSQL test suite package skeleton"
+  },
+  "utPLSQL %suite": {
+    "prefix": "ut-%suite",
+    "body": "--%suite(${1:Description})",
+    "description": "utPLSQL %suite annotation"
+  },
+  "utPLSQL %suitepath": {
+    "prefix": "ut-%suitepath",
+    "body": "--%suitepath(${1:alltests})",
+    "description": "utPLSQL %suitepath annotation"
+  },
+  "utPLSQL %test": {
+    "prefix": "ut-%test",
+    "body": "--%test(${1:Description})",
+    "description": "utPLSQL %test annotation"
+  },
+  "utPLSQL %context": {
+    "prefix": "ut-%context",
+    "body": ["--%context(${1:Description})", "", "--%endcontext"],
+    "description": "utPLSQL %context block"
+  },
+  "utPLSQL %endcontext": {
+    "prefix": "ut-%endcontext",
+    "body": "--%endcontext",
+    "description": "utPLSQL %endcontext annotation"
+  },
+  "utPLSQL %name": {
+    "prefix": "ut-%name",
+    "body": "--%name(${1:name})",
+    "description": "utPLSQL %name annotation for a context"
+  },
+  "utPLSQL %beforeall": {
+    "prefix": "ut-%beforeall",
+    "body": "--%beforeall",
+    "description": "utPLSQL %beforeall annotation"
+  },
+  "utPLSQL %afterall": {
+    "prefix": "ut-%afterall",
+    "body": "--%afterall",
+    "description": "utPLSQL %afterall annotation"
+  },
+  "utPLSQL %beforeeach": {
+    "prefix": "ut-%beforeeach",
+    "body": "--%beforeeach",
+    "description": "utPLSQL %beforeeach annotation"
+  },
+  "utPLSQL %aftereach": {
+    "prefix": "ut-%aftereach",
+    "body": "--%aftereach",
+    "description": "utPLSQL %aftereach annotation"
+  },
+  "utPLSQL %beforetest": {
+    "prefix": "ut-%beforetest",
+    "body": "--%beforetest(${1:setup_procedure})",
+    "description": "utPLSQL %beforetest annotation"
+  },
+  "utPLSQL %aftertest": {
+    "prefix": "ut-%aftertest",
+    "body": "--%aftertest(${1:teardown_procedure})",
+    "description": "utPLSQL %aftertest annotation"
+  },
+  "utPLSQL %disabled": {
+    "prefix": "ut-%disabled",
+    "body": "--%disabled(${1:reason})",
+    "description": "utPLSQL %disabled annotation"
+  },
+  "utPLSQL %tags": {
+    "prefix": "ut-%tags",
+    "body": "--%tags(${1:tag1, tag2})",
+    "description": "utPLSQL %tags annotation"
+  },
+  "utPLSQL %rollback": {
+    "prefix": "ut-%rollback",
+    "body": "--%rollback(manual)",
+    "description": "utPLSQL %rollback(manual) annotation"
+  },
+  "utPLSQL %throws": {
+    "prefix": "ut-%throws",
+    "body": "--%throws(${1:-20001})",
+    "description": "utPLSQL %throws annotation"
+  },
+  "utPLSQL %displayname": {
+    "prefix": "ut-%displayname",
+    "body": "--%displayname(${1:Description})",
+    "description": "utPLSQL %displayname annotation"
+  },
+  "utPLSQL ut.expect to_equal": {
+    "prefix": "ut-expect-equal",
+    "body": "ut.expect(${1:actual}).to_equal(${2:expected});",
+    "description": "utPLSQL expectation: to_equal"
+  },
+  "utPLSQL ut.expect to_be_null": {
+    "prefix": "ut-expect-null",
+    "body": "ut.expect(${1:actual}).to_be_null;",
+    "description": "utPLSQL expectation: to_be_null"
+  },
+  "utPLSQL ut.expect to_be_not_null": {
+    "prefix": "ut-expect-not-null",
+    "body": "ut.expect(${1:actual}).to_be_not_null;",
+    "description": "utPLSQL expectation: to_be_not_null"
+  },
+  "utPLSQL ut.expect to_be_true": {
+    "prefix": "ut-expect-true",
+    "body": "ut.expect(${1:actual}).to_be_true;",
+    "description": "utPLSQL expectation: to_be_true"
+  },
+  "utPLSQL ut.expect to_be_false": {
+    "prefix": "ut-expect-false",
+    "body": "ut.expect(${1:actual}).to_be_false;",
+    "description": "utPLSQL expectation: to_be_false"
+  },
+  "utPLSQL ut.expect to_be_between": {
+    "prefix": "ut-expect-between",
+    "body": "ut.expect(${1:actual}).to_be_between(${2:lower_bound}, ${3:upper_bound});",
+    "description": "utPLSQL expectation: to_be_between"
+  },
+  "utPLSQL ut.expect to_be_greater_than": {
+    "prefix": "ut-expect-gt",
+    "body": "ut.expect(${1:actual}).to_be_greater_than(${2:expected});",
+    "description": "utPLSQL expectation: to_be_greater_than"
+  },
+  "utPLSQL ut.expect to_be_greater_or_equal": {
+    "prefix": "ut-expect-gte",
+    "body": "ut.expect(${1:actual}).to_be_greater_or_equal(${2:expected});",
+    "description": "utPLSQL expectation: to_be_greater_or_equal"
+  },
+  "utPLSQL ut.expect to_be_less_than": {
+    "prefix": "ut-expect-lt",
+    "body": "ut.expect(${1:actual}).to_be_less_than(${2:expected});",
+    "description": "utPLSQL expectation: to_be_less_than"
+  },
+  "utPLSQL ut.expect to_be_less_or_equal": {
+    "prefix": "ut-expect-lte",
+    "body": "ut.expect(${1:actual}).to_be_less_or_equal(${2:expected});",
+    "description": "utPLSQL expectation: to_be_less_or_equal"
+  },
+  "utPLSQL ut.expect to_match": {
+    "prefix": "ut-expect-match",
+    "body": "ut.expect(${1:actual}).to_match('${2:pattern}');",
+    "description": "utPLSQL expectation: to_match (REGEXP_LIKE)"
+  },
+  "utPLSQL ut.expect to_be_like": {
+    "prefix": "ut-expect-like",
+    "body": "ut.expect(${1:actual}).to_be_like('${2:%mask%}');",
+    "description": "utPLSQL expectation: to_be_like (SQL LIKE)"
+  },
+  "utPLSQL ut.expect to_contain": {
+    "prefix": "ut-expect-contain",
+    "body": "ut.expect(${1:actual_cursor}).to_contain(${2:expected_cursor});",
+    "description": "utPLSQL cursor expectation: to_contain"
+  },
+  "utPLSQL ut.expect to_have_count": {
+    "prefix": "ut-expect-count",
+    "body": "ut.expect(${1:actual_cursor}).to_have_count(${2:5});",
+    "description": "utPLSQL cursor expectation: to_have_count"
+  },
+  "utPLSQL ut.expect cursor to_equal with modifiers": {
+    "prefix": "ut-expect-cursor-equal",
+    "body": "ut.expect(${1:actual_cursor}).to_equal(${2:expected_cursor})${3:.include('${4:col1,col2}')}${5:.unordered};",
+    "description": "utPLSQL cursor expectation with the fluent to_equal modifiers (include/exclude/unordered/join_by); delete any placeholder segment you do not need"
+  },
+  "utPLSQL ut.expect JSON to_equal": {
+    "prefix": "ut-expect-json-equal",
+    "body": "ut.expect(${1:actual_json_element}).to_equal(${2:expected_json_element});",
+    "description": "utPLSQL JSON expectation: to_equal"
+  },
+  "utPLSQL ut.fail": {
+    "prefix": "ut-fail",
+    "body": "ut.fail('${1:message}');",
+    "description": "utPLSQL ut.fail — unconditionally fails the test"
+  },
+  "utPLSQL set_nls around a cursor comparison": {
+    "prefix": "ut-nls-cursor",
+    "body": [
+      "ut.set_nls;",
+      "OPEN ${1:l_actual} FOR ${2:SELECT * FROM dual};",
+      "OPEN ${3:l_expected} FOR ${4:SELECT * FROM dual};",
+      "ut.expect(${1:l_actual}).to_equal(${3:l_expected});",
+      "ut.reset_nls;"
+    ],
+    "description": "ut.set_nls/ut.reset_nls around a DATE-bearing cursor comparison; reset_nls must come after to_equal to avoid ORA-01861"
+  }
+}

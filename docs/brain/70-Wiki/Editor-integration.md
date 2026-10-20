@@ -5,7 +5,7 @@ titulo: "Editor Integration"
 publicar: docs/wiki/Editor-integration.md
 origem: ["05-ux-components","08-jump-to-failure"]
 verificado: 2026-09-25
-regras: ["BR-UI-006", "BR-UI-010", "BR-UI-011", "BR-UI-012", "BR-PARSE-015", "BR-PARSE-018", "BR-PARSE-019", "BR-UI-005", "BR-UI-014", "BR-UI-015"]
+regras: ["BR-UI-006", "BR-UI-010", "BR-UI-011", "BR-UI-012", "BR-UI-016", "BR-PARSE-015", "BR-PARSE-018", "BR-PARSE-019", "BR-UI-005", "BR-UI-014", "BR-UI-015"]
 tags: [wiki]
 ---
 
@@ -27,6 +27,24 @@ in PL/SQL files. They are configurable with `utplsql.codeLens.enabled`.
   lenses (the provider is registered once, not once per selector).
 - `%suite` runs all suites in the file; `%test` runs only that procedure.
 - Database-discovered suites (virtual `utplsql-db:/` URIs) have no CodeLens.
+
+## Snippets
+
+`contributes.snippets` registers `snippets/utplsql.code-snippets` for `sql`,
+`plsql` and `oracle-sql`. Type `ut-` in the editor to get:
+
+- `ut-suite` — full suite package skeleton (`%suite` + `%suitepath` + `%test`);
+- `ut-%suite`, `ut-%suitepath`, `ut-%test`, `ut-%context`/`ut-%endcontext`,
+  `ut-%name`, `ut-%beforeall`/`ut-%afterall`, `ut-%beforeeach`/`ut-%aftereach`,
+  `ut-%beforetest`/`ut-%aftertest`, `ut-%disabled`, `ut-%tags`, `ut-%rollback`,
+  `ut-%throws`, `ut-%displayname`;
+- `ut-expect-*` for the main matchers (`to_equal`, `to_be_*`, `to_match`,
+  `to_be_like`, `to_contain`, `to_have_count`, cursor modifiers, JSON) and
+  `ut-fail`;
+- `ut-nls-cursor` with `ut.set_nls` → `to_equal` → `ut.reset_nls` (avoids
+  `ORA-01861` when comparing `DATE` values).
+
+The JSON is validated by `src/test/unit/snippets.test.ts` in the unit suite.
 
 ## Inline decorations
 

@@ -101,6 +101,7 @@ SORT id ASC
 - [[TST - scriptRunner.test.ts]] — `TST-scriptRunner.test.ts`
 - [[TST - scriptsCli.test.ts]] — `TST-scriptsCli.test.ts`
 - [[TST - selectReporterCommand.test.ts]] — `TST-selectReporterCommand.test.ts`
+- [[TST - snippets.test.ts]] — `TST-snippets.test.ts`
 - [[TST - state.test.ts]] — `TST-state.test.ts`
 - [[TST - statusBar.test.ts]] — `TST-statusBar.test.ts`
 - [[TST - suiteParser.test.ts]] — `TST-suiteParser.test.ts`

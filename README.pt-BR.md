@@ -32,6 +32,8 @@ Execute e depure testes **utPLSQL** (Oracle PL/SQL) direto no VS Code — **Test
 
 - 🧪 **Test Explorer nativo** — suites e testes aparecem na view de testes; rode por teste, suite, arquivo ou pasta.
 - 🔍 **CodeLens** — botões Run/Run with Coverage sobre `%suite` e `%test` no editor, sem sair do código.
+- 🧬 **Identidade PL/SQL** — descoberta, CodeLens e decorações respeitam `utplsql.discovery.languageIds` (default `plsql`, `sql`, `oracle-sql`) e `files.associations`; `.pls`, `.plb`, `.tps`, `.tpb`, `.vw` e extensões próprias também funcionam.
+- ✂️ **Snippets** — snippets `ut-` para as annotations utPLSQL (`%suite`, `%test`, `%context`, lifecycle, `%tags`/`%throws`) e os principais matchers de `ut.expect`, disponíveis em `sql`, `plsql` e `oracle-sql`.
 - ⌨️ **Atalhos de teclado** — prefixo `Ctrl+Shift+U` + tecla para os comandos principais (R = Run All, T = Run File, L = Rerun Last, etc.).
 - 🖱️ **Menu de contexto** — clique direito em uma **pasta** ou em um arquivo **`.pks`/`.pkb`** (no Explorer ou no editor) para rodar os testes.
 - 🔁 **Smart Re-run** — Rerun Last, Run at Cursor, Run Failed Only com um atalho.

@@ -19,6 +19,24 @@ in PL/SQL files. They are configurable with `utplsql.codeLens.enabled`.
 - `%suite` runs all suites in the file; `%test` runs only that procedure.
 - Database-discovered suites (virtual `utplsql-db:/` URIs) have no CodeLens.
 
+## Snippets
+
+`contributes.snippets` registers `snippets/utplsql.code-snippets` for `sql`,
+`plsql` and `oracle-sql`. Type `ut-` in the editor to get:
+
+- `ut-suite` — full suite package skeleton (`%suite` + `%suitepath` + `%test`);
+- `ut-%suite`, `ut-%suitepath`, `ut-%test`, `ut-%context`/`ut-%endcontext`,
+  `ut-%name`, `ut-%beforeall`/`ut-%afterall`, `ut-%beforeeach`/`ut-%aftereach`,
+  `ut-%beforetest`/`ut-%aftertest`, `ut-%disabled`, `ut-%tags`, `ut-%rollback`,
+  `ut-%throws`, `ut-%displayname`;
+- `ut-expect-*` for the main matchers (`to_equal`, `to_be_*`, `to_match`,
+  `to_be_like`, `to_contain`, `to_have_count`, cursor modifiers, JSON) and
+  `ut-fail`;
+- `ut-nls-cursor` with `ut.set_nls` → `to_equal` → `ut.reset_nls` (avoids
+  `ORA-01861` when comparing `DATE` values).
+
+The JSON is validated by `src/test/unit/snippets.test.ts` in the unit suite.
+
 ## Inline decorations
 
 After a run, ✓/✗/⚠ markers appear on the `%suite`/`%test` lines, with the failure

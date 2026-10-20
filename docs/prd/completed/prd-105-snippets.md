@@ -4,7 +4,7 @@
 
 | Campo | Valor |
 |---|---|
-| Status | Aprovado |
+| Status | Concluído |
 | Autor | Gil Cleber Barboza |
 | Data | 2026-10-09 |
 | Componente | Extensão `paneb.vscode-utplsql` |
@@ -111,6 +111,11 @@ inexistente).
 
 ## 12. Impacto no cérebro
 
-Na conclusão, criar a regra `BR-UI-*` ("snippets espelham as annotations que o
-parser interpreta; o JSON é validado no CI"), com `prds: ["PRD-105"]`,
-`implementacao:` e `testes:`. Enquanto `proposed`, `regras: []`.
+**Concluída em 2026-10-20 (0.17.0).**
+
+- Criada **[[BR-UI-016 - Snippets espelham annotations e matchers com JSON validado|BR-UI-016]]**
+  — biblioteca espelha as annotations/matchers, registrada para `sql`, `plsql` e
+  `oracle-sql`, com JSON validado no CI. Cobre RF1–RF3 e RNF1/RNF2.
+- Documentação: `05-ux-components`, `Editor-integration` e README
+  (canônico + pt-BR).
+- Nenhuma RNF ficou sem regra.
