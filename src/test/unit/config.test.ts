@@ -56,11 +56,17 @@ test('readConfig: discovery.source default e auto', () => {
   assert.strictEqual(cfg.discoverySource, 'auto');
 });
 
+test('readConfig: discovery.languageIds default inclui plsql, sql e oracle-sql', () => {
+  const cfg = readConfig();
+  assert.deepStrictEqual(cfg.discoveryLanguageIds, ['plsql', 'sql', 'oracle-sql']);
+});
+
 test('readConfig: lê valores não-default das settings 0.13.0', () => {
   __setConfigValue('tags', 'fast');
   __setConfigValue('run.randomOrder', true);
   __setConfigValue('run.randomOrderSeed', 42);
   __setConfigValue('discovery.source', 'database');
+  __setConfigValue('discovery.languageIds', ['plsql']);
   __setConfigValue('coverage.schemes', ['APP']);
   __setConfigValue('coverage.includeObjects', ['APP.PKG']);
   __setConfigValue('coverage.excludeObjects', ['UT3.UT']);
@@ -74,6 +80,7 @@ test('readConfig: lê valores não-default das settings 0.13.0', () => {
     assert.strictEqual(cfg.randomOrder, true);
     assert.strictEqual(cfg.randomOrderSeed, 42);
     assert.strictEqual(cfg.discoverySource, 'database');
+    assert.deepStrictEqual(cfg.discoveryLanguageIds, ['plsql']);
     assert.deepStrictEqual(cfg.coverageSchemes, ['APP']);
     assert.deepStrictEqual(cfg.coverageIncludeObjects, ['APP.PKG']);
     assert.deepStrictEqual(cfg.coverageExcludeObjects, ['UT3.UT']);

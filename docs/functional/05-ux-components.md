@@ -31,7 +31,11 @@ Exportado para reuso por CodeLens, Decorations e Run at Cursor.
 class UtplsqlCodeLensProvider implements vscode.CodeLensProvider
 ```
 
-- Registrado em `{ scheme: 'file', pattern: '**/*.pks' }` — **sem `language: 'plsql'`**
+- Registrado com um seletor que combina `**/*.pks` (canônico), os globs de
+  `discovery.languageIds` + `files.associations` e os language IDs configurados
+  (default `plsql`, `sql`, `oracle-sql`) — PRD-109
+- Um documento que casa com glob **e** language ID recebe **um único** conjunto
+  de lenses (provider registrado uma vez)
 - Gera 2 CodeLenses por anotação: Run + Run with Coverage
 - Comando: `utplsql.runLens` com `{ type, packageName, procName, uri, coverage }`
 
@@ -39,7 +43,9 @@ class UtplsqlCodeLensProvider implements vscode.CodeLensProvider
 
 - `%suite` → executa todas as suites do arquivo
 - `%test` → executa apenas o procedimento de teste
-- `.sql` (não `.pks`) → sem CodeLens
+- `.pks`, `.pls`, `.plb`, `.tps`, `.tpb`, `.vw` e extensões associadas → CodeLens
+  quando o arquivo está na identidade PL/SQL
+- Arquivo fora da identidade → sem CodeLens
 - URIs virtuais (`utplsql-db:/`) → sem CodeLens (provider registrado só para `scheme: file`)
 
 ## StatusBar (`src/statusBar.ts`)

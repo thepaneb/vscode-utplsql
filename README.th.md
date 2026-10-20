@@ -157,6 +157,7 @@ Test Explorer **เมื่อแต่ละเทสต์เสร็จส�
 | `utplsql.connection` | `""` | การเชื่อมต่อ Oracle **ปล่อยว่างไว้**และใช้ตัวแปรสภาพแวดล้อม `UTPLSQL_CONN` เพื่อหลีกเลี่ยงการเก็บรหัสผ่าน หากทั้งคู่ว่าง ส่วนขยายจะถาม (เก็บไว้เฉพาะในเซสชัน) |
 | `utplsql.sourcePath` | `install` | โฟลเดอร์ของโค้ด production (เพื่อจับคู่ความครอบคลุมกับไฟล์) |
 | `utplsql.includePatterns` | `["**/*.pks"]` | Globs สำหรับค้นหา specs ที่มี `%suite`/`%test` หากเทสต์ของคุณอยู่ในไฟล์ `.sql` ให้ใช้ `["**/*.sql"]` |
+| `utplsql.discovery.languageIds` | `["plsql", "sql", "oracle-sql"]` | Language ID ที่ถือเป็น PL/SQL ในการค้นหา CodeLens และการตกแต่ง ส่วนขยายถูกเลือกจากส่วนขยายที่ติดตั้งและ `files.associations`; ใช้ `["plsql"]` เพื่อหลีกเลี่ยงการสแกน `.sql` |
 | `utplsql.generate.testPackagePrefix` | `ut_` | คำนำหน้าของชื่อแพ็กเกจทดสอบที่สร้างขึ้น |
 | `utplsql.generate.testPackageSuffix` | `""` | คำต่อท้ายของชื่อแพ็กเกจทดสอบที่สร้างขึ้น |
 | `utplsql.generate.numberOfTestsPerUnit` | `1` | จำนวน `%test` ที่สร้างต่อรูทีนของแพ็กเกจโปรดักชัน |

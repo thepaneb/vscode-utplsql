@@ -2,14 +2,14 @@
 tipo: prd
 id: PRD-109
 aliases: [PRD-109]
-status: approved
+status: completed
 titulo: "Identidade de linguagem PL/SQL ampliada e languageIds configuráveis"
 versao: "0.17.0"
 data: "2026-10-09"
 autor: "Gil Cleber Barboza"
 versao_titulo: "0.17.0 — UX de editor e cobertura"
 verificado: 2026-10-20
-regras: []
+regras: ["BR-PARSE-019", "BR-UI-006"]
 tags: [prd]
 ---
 
@@ -128,16 +128,30 @@ participem de descoberta, CodeLens e decorações.
 
 ## 12. Impacto no cérebro
 
-Na conclusão, criar a regra `BR-PARSE-*` ("descoberta/CodeLens respeitam
-`discovery.languageIds` e `files.associations`; sem CodeLens duplicado"), com
-`prds: ["PRD-109"]`, `implementacao:` e `testes:`. Enquanto `proposed`,
-`regras: []`.
+**Concluída em 2026-10-20 (0.17.0).**
+
+- Criada **[[BR-PARSE-019 - Descoberta e CodeLens respeitam discovery.languageIds e files.associations|BR-PARSE-019]]** — descoberta/CodeLens respeitam
+  `discovery.languageIds` + `files.associations`, com `.pks` canônico e sem
+  CodeLens duplicado. Cobre os RF1–RF4 e as RNF1/RNF2.
+- Atualizada **[[BR-UI-006 - CodeLens usa glob canonico e languageIds sem duplicar|BR-UI-006]]** — o CodeLens não é mais registrado apenas em
+  `**/*.pks`; usa o seletor efetivo (glob + language IDs) e re-registra quando
+  as settings mudam.
+- Documentação: `01-test-discovery`, `05-ux-components`, `Editor-integration`,
+  `Architecture`, `Configuration`, `FAQ` e `Configuration-examples`.
+- Nenhuma RNF ficou sem regra.
 
 ## Conexões
 
 <!-- brain:auto:start:conexoes -->
 - 🗺️ [[MOC - PRDs]]
+- 📐 Regras: [[BR-PARSE-019 - Descoberta e CodeLens respeitam discovery.languageIds e files.associations|BR-PARSE-019]] · [[BR-UI-006 - CodeLens usa glob canonico e languageIds sem duplicar|BR-UI-006]]
 - 🔗 PRDs relacionados: [[prd-24-codelens-integration|PRD-24]] · [[prd-42-suiteparser-annotations|PRD-42]] · [[prd-43-schema-db-discovery|PRD-43]] · [[prd-57-multiroot-root-resolution|PRD-57]] · [[prd-74-db-first-discovery|PRD-74]]
 - 🔗 Mesma versão (0.17.0): [[prd-105-snippets|PRD-105]] · [[prd-108-coverage-html-report|PRD-108]]
+- 🎯 RF1 — Extensões → [[BR-PARSE-019 - Descoberta e CodeLens respeitam discovery.languageIds e files.associations|BR-PARSE-019]]
+- 🎯 RF2 — `languageIds` → [[BR-PARSE-019 - Descoberta e CodeLens respeitam discovery.languageIds e files.associations|BR-PARSE-019]]
+- 🎯 RF3 — `files.associations` → [[BR-PARSE-019 - Descoberta e CodeLens respeitam discovery.languageIds e files.associations|BR-PARSE-019]]
+- 🎯 RF4 — Consistência de UI → [[BR-PARSE-019 - Descoberta e CodeLens respeitam discovery.languageIds e files.associations|BR-PARSE-019]] · [[BR-UI-006 - CodeLens usa glob canonico e languageIds sem duplicar|BR-UI-006]]
+- 🎯 RNF1 — Sem novas dependências; sem regressão de performance na descoberta. → [[BR-PARSE-019 - Descoberta e CodeLens respeitam discovery.languageIds e files.associations|BR-PARSE-019]]
+- 🎯 RNF2 — Multi-root permanece correto (PRD-57). → [[BR-PARSE-019 - Descoberta e CodeLens respeitam discovery.languageIds e files.associations|BR-PARSE-019]]
 - 🚀 ⬅️ release anterior: [[prd-100-generate-test-suite|PRD-100 (0.16.0)]] · ➡️ próxima release: [[prd-98-docs-anti-drift|PRD-98 (0.18.0)]]
 <!-- brain:auto:end -->

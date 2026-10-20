@@ -2,7 +2,12 @@ import './setup.js';
 import assert from 'node:assert';
 import { test } from 'node:test';
 import { parseCodeLensItems, UtplsqlCodeLensProvider } from '../../codelens';
-import { __setConfigValue } from '../vscode-stub';
+import {
+  __resetConfigValues,
+  __resetExtensions,
+  __setConfigValue,
+  __setExtensions,
+} from '../vscode-stub';
 
 function pkgWrapper(inner: string): string {
   return ['CREATE OR REPLACE PACKAGE test_math IS', inner, 'END;'].join('\n');
@@ -94,12 +99,77 @@ test('UtplsqlCodeLensProvider: arquivo sem anotacoes retorna vazio', () => {
   assert.strictEqual(lenses.length, 0);
 });
 
-test('UtplsqlCodeLensProvider: arquivo .sql e ignorado', () => {
+test('UtplsqlCodeLensProvider: arquivo .sql com languageId sql gera lenses', () => {
   const provider = new UtplsqlCodeLensProvider();
   const doc = {
     getText: () => pkgWrapper('--%suite(Math)\n  PROCEDURE add;'),
     fileName: '/test/test_math.sql',
+    languageId: 'sql',
     uri: { toString: () => 'file:///test/test_math.sql' },
+  } as any;
+  const lenses = provider.provideCodeLenses(doc, {} as any);
+  assert.strictEqual(lenses.length, 2);
+});
+
+test('UtplsqlCodeLensProvider: arquivo .tps com languageId plsql gera lenses', () => {
+  const provider = new UtplsqlCodeLensProvider();
+  const doc = {
+    getText: () => pkgWrapper('--%suite(Math)\n  PROCEDURE add;'),
+    fileName: '/test/test_math.tps',
+    languageId: 'plsql',
+    uri: { toString: () => 'file:///test/test_math.tps' },
+  } as any;
+  const lenses = provider.provideCodeLenses(doc, {} as any);
+  assert.strictEqual(lenses.length, 2);
+});
+
+test('UtplsqlCodeLensProvider: extensão contribuída sem languageId gera lenses', () => {
+  __setExtensions([
+    {
+      packageJSON: {
+        contributes: { languages: [{ id: 'plsql', extensions: ['.pls'] }] },
+      },
+    },
+  ]);
+  try {
+    const provider = new UtplsqlCodeLensProvider();
+    const doc = {
+      getText: () => pkgWrapper('--%suite(Math)\n  PROCEDURE add;'),
+      fileName: '/test/test_math.pls',
+      languageId: 'plaintext',
+      uri: { toString: () => 'file:///test/test_math.pls' },
+    } as any;
+    const lenses = provider.provideCodeLenses(doc, {} as any);
+    assert.strictEqual(lenses.length, 2);
+  } finally {
+    __resetExtensions();
+  }
+});
+
+test('UtplsqlCodeLensProvider: files.associations descobre extensão customizada', () => {
+  __setConfigValue('associations', { '*.foo': 'sql' });
+  try {
+    const provider = new UtplsqlCodeLensProvider();
+    const doc = {
+      getText: () => pkgWrapper('--%suite(Math)\n  PROCEDURE add;'),
+      fileName: '/test/test_math.foo',
+      languageId: 'plaintext',
+      uri: { toString: () => 'file:///test/test_math.foo' },
+    } as any;
+    const lenses = provider.provideCodeLenses(doc, {} as any);
+    assert.strictEqual(lenses.length, 2);
+  } finally {
+    __resetConfigValues();
+  }
+});
+
+test('UtplsqlCodeLensProvider: arquivo fora da identidade e ignorado', () => {
+  const provider = new UtplsqlCodeLensProvider();
+  const doc = {
+    getText: () => pkgWrapper('--%suite(Math)\n  PROCEDURE add;'),
+    fileName: '/test/test_math.txt',
+    languageId: 'plaintext',
+    uri: { toString: () => 'file:///test/test_math.txt' },
   } as any;
   const lenses = provider.provideCodeLenses(doc, {} as any);
   assert.strictEqual(lenses.length, 0);

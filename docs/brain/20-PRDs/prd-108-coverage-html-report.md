@@ -138,6 +138,6 @@ navegador e não segura o TestRun"), com `prds: ["PRD-108"]`, `implementacao:` e
 <!-- brain:auto:start:conexoes -->
 - 🗺️ [[MOC - PRDs]]
 - 🔗 PRDs relacionados: [[prd-12-sql-coverage|PRD-12]] · [[prd-35-windows-coverage-fix|PRD-35]] · [[prd-79-coverage-scope|PRD-79]]
-- 🔗 Mesma versão (0.17.0): [[prd-105-snippets|PRD-105]] · [[prd-109-language-identity|PRD-109]]
+- 🔗 Mesma versão (0.17.0): [[prd-105-snippets|PRD-105]]
 - 🚀 ⬅️ release anterior: [[prd-100-generate-test-suite|PRD-100 (0.16.0)]] · ➡️ próxima release: [[prd-98-docs-anti-drift|PRD-98 (0.18.0)]]
 <!-- brain:auto:end -->

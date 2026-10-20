@@ -1,5 +1,15 @@
 # Changelog
 
+## 0.17.0
+
+- **PL/SQL language identity (PRD-109)**: discovery, CodeLens and decorations now
+  honor `utplsql.discovery.languageIds` (default `plsql`, `sql`, `oracle-sql`)
+  and `files.associations`. File extensions are resolved dynamically from the
+  installed language contributions, so `.pls`, `.plb`, `.tps`, `.tpb`, `.vw` and
+  custom extensions mapped to a configured language ID are discovered and get
+  CodeLens. The canonical `**/*.pks` glob keeps working even with a restricted
+  list, and the CodeLens provider is registered once (no duplicate lenses).
+
 ## 0.16.0
 
 - **Run Related Tests (PRD-58)**: new **`utPLSQL: Run Related Tests`** command (palette, editor/

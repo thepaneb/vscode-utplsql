@@ -157,6 +157,7 @@ Test Explorer 中。
 | `utplsql.connection` | `""` | Oracle 連線。**留空**並使用 `UTPLSQL_CONN` 環境變數，以避免儲存密碼。若兩者皆為空，擴充功能會詢問（僅在工作階段中保留）。 |
 | `utplsql.sourcePath` | `install` | 正式程式碼的資料夾（用於將涵蓋率對應到檔案）。 |
 | `utplsql.includePatterns` | `["**/*.pks"]` | 用於探索含 `%suite`/`%test` 規格的 glob 模式。若測試位於 `.sql`，請使用 `["**/*.sql"]`。 |
+| `utplsql.discovery.languageIds` | `["plsql", "sql", "oracle-sql"]` | 在探索、CodeLens 與裝飾中視為 PL/SQL 的語言 ID。副檔名來自已安裝的擴充功能與 `files.associations`；使用 `["plsql"]` 可避免掃描 `.sql`。 |
 | `utplsql.generate.testPackagePrefix` | `ut_` | 產生的測試套件名稱前置字串。 |
 | `utplsql.generate.testPackageSuffix` | `""` | 產生的測試套件名稱後置字串。 |
 | `utplsql.generate.numberOfTestsPerUnit` | `1` | 生產套件每個例行程式產生的 `%test` 數量。 |

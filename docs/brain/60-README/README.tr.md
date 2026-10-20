@@ -166,6 +166,7 @@ Geçici dosya yok, toplu işin bitmesi beklenmez. Sonuçlar Test Explorer'da
 | `utplsql.connection` | `""` | Oracle bağlantısı. **Boş bırakın** ve parolayı saklamamak için `UTPLSQL_CONN` ortam değişkenini kullanın. İkisi de boşsa, uzantı sorar (yalnızca oturumda tutar). |
 | `utplsql.sourcePath` | `install` | Üretim kodunun klasörü (kapsamı dosyalara eşlemek için). |
 | `utplsql.includePatterns` | `["**/*.pks"]` | `%suite`/`%test` içeren şemaları keşfetmek için glob'lar. Testleriniz `.sql` içindeyse `["**/*.sql"]` kullanın. |
+| `utplsql.discovery.languageIds` | `["plsql", "sql", "oracle-sql"]` | Keşif, CodeLens ve süslemelerde PL/SQL olarak kabul edilen dil kimlikleri. Uzantılar yüklü uzantılardan ve `files.associations` üzerinden çözülür; `.sql` taranmasını önlemek için `["plsql"]` kullanın. |
 | `utplsql.generate.testPackagePrefix` | `ut_` | Oluşturulan test paketi adının öneki. |
 | `utplsql.generate.testPackageSuffix` | `""` | Oluşturulan test paketi adının soneki. |
 | `utplsql.generate.numberOfTestsPerUnit` | `1` | Üretim paketindeki her rutin için oluşturulan `%test` sayısı. |

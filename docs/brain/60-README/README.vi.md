@@ -166,6 +166,7 @@ Test Explorer **ngay khi từng bài kiểm thử hoàn tất**. VSIX đã kèm 
 | `utplsql.connection` | `""` | Chuỗi kết nối Oracle. **Để trống** và dùng biến môi trường `UTPLSQL_CONN` để tránh lưu mật khẩu. Nếu cả hai đều trống, extension sẽ hỏi (chỉ giữ trong phiên). |
 | `utplsql.sourcePath` | `install` | Thư mục chứa mã sản phẩm (để ánh xạ độ phủ tới các tệp). |
 | `utplsql.includePatterns` | `["**/*.pks"]` | Các glob để tìm các spec chứa `%suite`/`%test`. Nếu kiểm thử của bạn nằm trong `.sql`, dùng `["**/*.sql"]`. |
+| `utplsql.discovery.languageIds` | `["plsql", "sql", "oracle-sql"]` | Language ID được coi là PL/SQL khi khám phá, CodeLens và trang trí. Phần mở rộng được lấy từ các tiện ích đã cài và `files.associations`; dùng `["plsql"]` để tránh quét `.sql`. |
 | `utplsql.generate.testPackagePrefix` | `ut_` | Tiền tố của tên gói kiểm thử được tạo. |
 | `utplsql.generate.testPackageSuffix` | `""` | Hậu tố của tên gói kiểm thử được tạo. |
 | `utplsql.generate.numberOfTestsPerUnit` | `1` | Số `%test` được tạo cho mỗi thủ tục/hàm của gói production. |

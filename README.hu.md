@@ -158,6 +158,7 @@ A bővítmény közvetlenül Oracle-on keresztül csatlakozik, beolvassa a ripor
 | `utplsql.connection` | `""` | Oracle-kapcsolat. **Hagyd üresen**, és használd a `UTPLSQL_CONN` környezeti változót, hogy ne tárold a jelszót. Ha mindkettő üres, a bővítmény megkérdezi (csak a munkamenetben őrzi meg). |
 | `utplsql.sourcePath` | `install` | Az éles kód mappája (a lefedettség fájlokhoz rendeléséhez). |
 | `utplsql.includePatterns` | `["**/*.pks"]` | A `%suite`/`%test` tartalmú specifikációk felderítésére szolgáló globok. Ha a tesztjeid `.sql` fájlokban vannak, használd a `["**/*.sql"]` értéket. |
+| `utplsql.discovery.languageIds` | `["plsql", "sql", "oracle-sql"]` | A felderítés, CodeLens és díszítések során PL/SQL-ként kezelt nyelvi azonosítók. A kiterjesztések a telepített kiterjesztésekből és a `files.associations`-ból származnak; használja a `["plsql"]` értéket a `.sql` vizsgálatának elkerüléséhez. |
 | `utplsql.generate.testPackagePrefix` | `ut_` | A létrehozott tesztcsomag nevének előtagja. |
 | `utplsql.generate.testPackageSuffix` | `""` | A létrehozott tesztcsomag nevének utótagja. |
 | `utplsql.generate.numberOfTestsPerUnit` | `1` | Az éles csomag rutinonként létrehozott `%test` száma. |

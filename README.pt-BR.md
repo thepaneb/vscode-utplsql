@@ -159,6 +159,7 @@ Test Explorer **conforme cada teste termina**.
 | `utplsql.connection` | `""` | Conexão Oracle. **Deixe vazio** e use a variável de ambiente `UTPLSQL_CONN` para não gravar a senha. Se ambos vazios, a extensão pergunta (guarda só na sessão). |
 | `utplsql.sourcePath` | `install` | Pasta do código de produção (para mapear a cobertura aos arquivos). |
 | `utplsql.includePatterns` | `["**/*.pks"]` | Globs para descobrir os specs com `%suite`/`%test`. Se seus testes estão em `.sql`, use `["**/*.sql"]`. |
+| `utplsql.discovery.languageIds` | `["plsql", "sql", "oracle-sql"]` | Language IDs tratados como PL/SQL na descoberta, CodeLens e decorações. As extensões vêm das extensões instaladas e de `files.associations`; use `["plsql"]` para não varrer `.sql`. |
 | `utplsql.generate.testPackagePrefix` | `ut_` | Prefixo do nome do pacote de teste gerado. |
 | `utplsql.generate.testPackageSuffix` | `""` | Sufixo do nome do pacote de teste gerado. |
 | `utplsql.generate.numberOfTestsPerUnit` | `1` | `%test` gerados por rotina do package de produção. |

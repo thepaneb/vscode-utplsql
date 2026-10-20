@@ -61,6 +61,7 @@ SORT id ASC
 - [[TST - integration-compileForDebug.test.ts]] — `TST-integration-compileForDebug.test.ts`
 - [[TST - jumpToFailureE2E.test.ts]] — `TST-jumpToFailureE2E.test.ts`
 - [[TST - junit.test.ts]] — `TST-junit.test.ts`
+- [[TST - languageIdentity.test.ts]] — `TST-languageIdentity.test.ts`
 - [[TST - logger.test.ts]] — `TST-logger.test.ts`
 - [[TST - manifestDebugger.test.ts]] — `TST-manifestDebugger.test.ts`
 - [[TST - matching.test.ts]] — `TST-matching.test.ts`
@@ -116,6 +117,7 @@ SORT id ASC
 - [[TST - v014-features.test.ts]] — `TST-v014-features.test.ts`
 - [[TST - v014-tns.test.ts]] — `TST-v014-tns.test.ts`
 - [[TST - v016-features.test.ts]] — `TST-v016-features.test.ts`
+- [[TST - v017-features.test.ts]] — `TST-v017-features.test.ts`
 - [[TST - viewCoverage.test.ts]] — `TST-viewCoverage.test.ts`
 - [[TST - viewCoverageDenied.test.ts]] — `TST-viewCoverageDenied.test.ts`
 - [[TST - viewCoverageE2E.test.ts]] — `TST-viewCoverageE2E.test.ts`

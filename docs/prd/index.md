@@ -165,6 +165,7 @@ notas `prd-*`. O índice navegável do vault é a [[MOC - PRDs]].
 | 94 | [Piso de VS Code 1.101 e runtime Node 22](completed/prd-94-vscode-floor-1-101.md) | 0.14.0 | 2026-09-29 |
 | 96 | [Site público e landing page via GitHub Pages](completed/prd-96-public-landing-page-github-pages.md) | 0.15.0 | 2026-10-07 |
 | 100 | [Geração de suíte a partir do package (scaffold avançado)](completed/prd-100-generate-test-suite.md) | 0.16.0 | 2026-10-09 |
+| 109 | [Identidade de linguagem PL/SQL ampliada e languageIds configuráveis](completed/prd-109-language-identity.md) | 0.17.0 | 2026-10-09 |
 
 ### 🔵 Aprovados
 
@@ -172,7 +173,6 @@ notas `prd-*`. O índice navegável do vault é a [[MOC - PRDs]].
 |---|---|---|---|
 | 105 | [Snippets utPLSQL: biblioteca de annotations e matchers](approved/prd-105-snippets.md) | 0.17.0 | 2026-10-09 |
 | 108 | [Relatório HTML de cobertura aberto no navegador](approved/prd-108-coverage-html-report.md) | 0.17.0 | 2026-10-09 |
-| 109 | [Identidade de linguagem PL/SQL ampliada e languageIds configuráveis](approved/prd-109-language-identity.md) | 0.17.0 | 2026-10-09 |
 
 ### ⚪ Propostos
 
@@ -310,10 +310,10 @@ docs/prd/
 │   ├── prd-94-vscode-floor-1-101.md
 │   ├── prd-96-public-landing-page-github-pages.md
 │   ├── prd-100-generate-test-suite.md
+│   ├── prd-109-language-identity.md
 ├── approved/        ← aprovados, aguardando implementação
 │   ├── prd-105-snippets.md
 │   ├── prd-108-coverage-html-report.md
-│   ├── prd-109-language-identity.md
 ├── proposed/        ← em avaliação
 │   ├── prd-47-node-26-toolchain.md
 │   ├── prd-60-branch-coverage-investigation.md

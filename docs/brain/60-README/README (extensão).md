@@ -41,6 +41,7 @@ Run and debug **utPLSQL** (Oracle PL/SQL) tests right in VS Code — native **Te
 
 - 🧪 **Native Test Explorer** — suites and tests appear in the testing view; run by test, suite, file, or folder.
 - 🔍 **CodeLens** — Run/Run with Coverage buttons over `%suite` and `%test` in the editor, without leaving your code.
+- 🧬 **PL/SQL language identity** — discovery, CodeLens and decorations honor `utplsql.discovery.languageIds` (default `plsql`, `sql`, `oracle-sql`) and `files.associations`, so `.pls`, `.plb`, `.tps`, `.tpb`, `.vw` and custom extensions work too.
 - ⌨️ **Keyboard shortcuts** — `Ctrl+Shift+U` prefix + key for the main commands (R = Run All, T = Run File, L = Rerun Last, etc.).
 - 🖱️ **Context menu** — right-click a **folder** or a **`.pks`/`.pkb`** file (in the Explorer or in the editor) to run tests.
 - 🔁 **Smart Re-run** — Rerun Last, Run at Cursor, Run Failed Only with a single shortcut.
@@ -173,7 +174,8 @@ Test Explorer **as each test finishes**.
 |---|---|---|
 | `utplsql.connection` | `""` | Oracle connection. **Leave empty** and use the `UTPLSQL_CONN` environment variable to avoid storing the password. If both are empty, the extension asks (keeps it only in the session). |
 | `utplsql.sourcePath` | `install` | Folder of the production code (to map coverage to files). |
-| `utplsql.includePatterns` | `["**/*.pks"]` | Globs to discover the specs with `%suite`/`%test`. If your tests are in `.sql`, use `["**/*.sql"]`. |
+| `utplsql.includePatterns` | `["**/*.pks"]` | Additional globs to discover the specs with `%suite`/`%test`. Combined with `utplsql.discovery.languageIds` and `files.associations`. |
+| `utplsql.discovery.languageIds` | `["plsql", "sql", "oracle-sql"]` | Language IDs treated as PL/SQL for discovery, CodeLens and decorations. Extensions are resolved from the installed extensions and `files.associations`; use `["plsql"]` to avoid scanning `.sql`. |
 | `utplsql.generate.testPackagePrefix` | `ut_` | Prefix of the generated test package name. |
 | `utplsql.generate.testPackageSuffix` | `""` | Suffix of the generated test package name. |
 | `utplsql.generate.numberOfTestsPerUnit` | `1` | `%test` generated per routine of the production package. |

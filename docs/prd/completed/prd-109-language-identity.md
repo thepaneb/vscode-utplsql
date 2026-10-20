@@ -4,7 +4,7 @@
 
 | Campo | Valor |
 |---|---|
-| Status | Aprovado |
+| Status | Concluído |
 | Autor | Gil Cleber Barboza |
 | Data | 2026-10-09 |
 | Componente | Extensão `paneb.vscode-utplsql` |
@@ -116,7 +116,14 @@ participem de descoberta, CodeLens e decorações.
 
 ## 12. Impacto no cérebro
 
-Na conclusão, criar a regra `BR-PARSE-*` ("descoberta/CodeLens respeitam
-`discovery.languageIds` e `files.associations`; sem CodeLens duplicado"), com
-`prds: ["PRD-109"]`, `implementacao:` e `testes:`. Enquanto `proposed`,
-`regras: []`.
+**Concluída em 2026-10-20 (0.17.0).**
+
+- Criada **[[BR-PARSE-019 - Descoberta e CodeLens respeitam discovery.languageIds e files.associations|BR-PARSE-019]]** — descoberta/CodeLens respeitam
+  `discovery.languageIds` + `files.associations`, com `.pks` canônico e sem
+  CodeLens duplicado. Cobre os RF1–RF4 e as RNF1/RNF2.
+- Atualizada **[[BR-UI-006 - CodeLens usa glob canonico e languageIds sem duplicar|BR-UI-006]]** — o CodeLens não é mais registrado apenas em
+  `**/*.pks`; usa o seletor efetivo (glob + language IDs) e re-registra quando
+  as settings mudam.
+- Documentação: `01-test-discovery`, `05-ux-components`, `Editor-integration`,
+  `Architecture`, `Configuration`, `FAQ` e `Configuration-examples`.
+- Nenhuma RNF ficou sem regra.

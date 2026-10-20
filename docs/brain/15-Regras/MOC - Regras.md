@@ -115,6 +115,7 @@ SORT id ASC
 - [[BR-PARSE-016 - Tags de suite (%tags no header) viram ParsedSuite.tags e SuiteFile.tags]] — `BR-PARSE-016`
 - [[BR-PARSE-017 - Filtro por tag - inclusao e exclusao (!) case-insensitive; sem tag so sem inclusao]] — `BR-PARSE-017`
 - [[BR-PARSE-018 - TestMessage de falha ganha expectedOutput-actualOutput quando ha Expected-Actual]] — `BR-PARSE-018`
+- [[BR-PARSE-019 - Descoberta e CodeLens respeitam discovery.languageIds e files.associations]] — `BR-PARSE-019`
 - [[BR-PKG-001 - VSIX nao inclui fontes, scripts nem segredos]] — `BR-PKG-001`
 - [[BR-PLAT-001 - Piso de VS Code e runtime Node do host sao coerentes]] — `BR-PLAT-001`
 - [[BR-QUAL-001 - Thresholds de cobertura (c8) sao globais e bloqueiam o CI]] — `BR-QUAL-001`
@@ -134,7 +135,7 @@ SORT id ASC
 - [[BR-UI-003 - utplsql-connected reflete a resolução de conexão sem prompt]] — `BR-UI-003`
 - [[BR-UI-004 - utplsql-hasFailures derivado de lastFailedItems (failed ou error)]] — `BR-UI-004`
 - [[BR-UI-005 - Status bar - gating por setting, throttle de 200ms e ícone por falha-erro]] — `BR-UI-005`
-- [[BR-UI-006 - CodeLens registrado apenas em scheme file e padrão .pks sem language id]] — `BR-UI-006`
+- [[BR-UI-006 - CodeLens usa glob canonico e languageIds sem duplicar]] — `BR-UI-006`
 - [[BR-UI-007 - Diagnósticos de setup e quick-fixes restritos ao source utPLSQL Setup]] — `BR-UI-007`
 - [[BR-UI-008 - Diagnósticos de compilação mapeiam ALL_ERRORS e usam source utPLSQL Compilation]] — `BR-UI-008`
 - [[BR-UI-009 - Handlers dos comandos utplsql registrados e com aviso]] — `BR-UI-009`

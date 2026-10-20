@@ -180,8 +180,24 @@ export function __resetMockDirectoryEntries(): void {
   _mockDirErrors = {};
 }
 
+let _extensions: Array<{ packageJSON?: unknown }> = [];
+
+export const extensions = {
+  get all(): Array<{ packageJSON?: unknown }> {
+    return _extensions;
+  },
+};
+
+export function __setExtensions(list: Array<{ packageJSON?: unknown }>): void {
+  _extensions = list;
+}
+
+export function __resetExtensions(): void {
+  _extensions = [];
+}
+
 export namespace workspace {
-  export function getConfiguration(_section?: string) {
+  export function getConfiguration(_section?: string, _resource?: unknown) {
     return {
       get: <T>(_key: string, defaultValue?: T) =>
         (_key in _configValues ? _configValues[_key] : defaultValue) as T,

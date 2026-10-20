@@ -5,7 +5,7 @@ titulo: "Editor Integration"
 publicar: docs/wiki/Editor-integration.md
 origem: ["05-ux-components","08-jump-to-failure"]
 verificado: 2026-09-25
-regras: ["BR-UI-006", "BR-UI-010", "BR-UI-011", "BR-UI-012", "BR-PARSE-015", "BR-PARSE-018", "BR-UI-005", "BR-UI-014", "BR-UI-015"]
+regras: ["BR-UI-006", "BR-UI-010", "BR-UI-011", "BR-UI-012", "BR-PARSE-015", "BR-PARSE-018", "BR-PARSE-019", "BR-UI-005", "BR-UI-014", "BR-UI-015"]
 tags: [wiki]
 ---
 
@@ -17,10 +17,14 @@ decorations, the status bar, smart re-run and jump-to-failure.
 ## CodeLens
 
 **Run** and **Run with Coverage** buttons appear over every `%suite` and `%test`
-in `.pks` files. They are configurable with `utplsql.codeLens.enabled`.
+in PL/SQL files. They are configurable with `utplsql.codeLens.enabled`.
 
-- Registered for `{ scheme: 'file', pattern: '**/*.pks' }` — **not** tied to a
-  `plsql` language id, so it also works when `.pks` has no language association.
+- Registered by a selector that combines the canonical `**/*.pks` glob, the globs
+  derived from `utplsql.discovery.languageIds` (default `plsql`, `sql`,
+  `oracle-sql`) and `files.associations`, plus the configured language IDs —
+  covering `.pls`, `.plb`, `.tps`, `.tpb`, `.vw` and custom extensions.
+- A document matched by both a glob and a language ID yields a **single** set of
+  lenses (the provider is registered once, not once per selector).
 - `%suite` runs all suites in the file; `%test` runs only that procedure.
 - Database-discovered suites (virtual `utplsql-db:/` URIs) have no CodeLens.
 

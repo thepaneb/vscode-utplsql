@@ -157,6 +157,7 @@ Test Explorer-у **како се сваки тест заврши**. VSIX већ
 | `utplsql.connection` | `""` | Oracle веза. **Оставите празно** и користите веријаблу окруžeња `UTPLSQL_CONN` да бисте избегли чување лозинке. Ако су обе празне, екстензија пита (чува само у сесији). |
 | `utplsql.sourcePath` | `install` | Фасцикла продукционог кода (за мапирање покривености на датотеке). |
 | `utplsql.includePatterns` | `["**/*.pks"]` | Glob узорци за проналажење спецификација са `%suite`/`%test`. Ако су ваши тестови у `.sql`, користите `["**/*.sql"]`. |
+| `utplsql.discovery.languageIds` | `["plsql", "sql", "oracle-sql"]` | Језички ИД-ови који се третирају као PL/SQL при откривању, CodeLens-у и декорацијама. Екстензије се преузимају из инсталираних екстензија и `files.associations`; користите `["plsql"]` да не бисте скенирали `.sql`. |
 | `utplsql.generate.testPackagePrefix` | `ut_` | Префикс назива направљеног тест пакета. |
 | `utplsql.generate.testPackageSuffix` | `""` | Суфикс назива направљеног тест пакета. |
 | `utplsql.generate.numberOfTestsPerUnit` | `1` | `%test` по рутини продукционог пакета. |

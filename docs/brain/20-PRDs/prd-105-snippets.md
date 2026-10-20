@@ -132,6 +132,6 @@ parser interpreta; o JSON é validado no CI"), com `prds: ["PRD-105"]`,
 <!-- brain:auto:start:conexoes -->
 - 🗺️ [[MOC - PRDs]]
 - 🔗 PRDs relacionados: [[prd-42-suiteparser-annotations|PRD-42]] · [[prd-55-tag-organization|PRD-55]] · [[prd-100-generate-test-suite|PRD-100]] · [[prd-109-language-identity|PRD-109]]
-- 🔗 Mesma versão (0.17.0): [[prd-108-coverage-html-report|PRD-108]] · [[prd-109-language-identity|PRD-109]]
+- 🔗 Mesma versão (0.17.0): [[prd-108-coverage-html-report|PRD-108]]
 - 🚀 ⬅️ release anterior: [[prd-100-generate-test-suite|PRD-100 (0.16.0)]] · ➡️ próxima release: [[prd-98-docs-anti-drift|PRD-98 (0.18.0)]]
 <!-- brain:auto:end -->

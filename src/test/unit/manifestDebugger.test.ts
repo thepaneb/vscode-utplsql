@@ -35,10 +35,21 @@ test('activationEvents: ativa no startup e com .pks/.pkb/.sql (schema/DB-first)'
   }
 });
 
-test('contributes.languages: .pks/.pkb/.prc/.fnc/.trg mapeiam para plsql', () => {
+test('contributes.languages: extensões PL/SQL mapeiam para plsql', () => {
   const plsql = pkg.contributes.languages?.find((l) => l.id === 'plsql');
   assert.ok(plsql, 'linguagem plsql ausente no manifest');
-  for (const ext of ['.pks', '.pkb', '.prc', '.fnc', '.trg']) {
+  for (const ext of [
+    '.pks',
+    '.pkb',
+    '.prc',
+    '.fnc',
+    '.trg',
+    '.pls',
+    '.plb',
+    '.tps',
+    '.tpb',
+    '.vw',
+  ]) {
     assert.ok(plsql.extensions?.includes(ext), `${ext} não associada a plsql`);
   }
 });

@@ -7,7 +7,7 @@
 ### My tests do not appear in the Test Explorer
 
 Check the following:
-1. The files have an extension covered by `utplsql.includePatterns` (default: `**/*.pks`)
+1. The file is recognized as PL/SQL: covered by `utplsql.includePatterns`, by `utplsql.discovery.languageIds` (default: `plsql`, `sql`, `oracle-sql`) or by `files.associations`
 2. The `%suite` and `%test` annotations are in the **spec** (`.pks`), not the body
 3. The file has a `create package` declaration and at least one `%test` followed by `PROCEDURE`
 4. Run `utPLSQL: Refresh Tests` to force rediscovery

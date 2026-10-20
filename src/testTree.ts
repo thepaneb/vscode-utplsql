@@ -10,6 +10,11 @@ import {
   type SuiteFile,
 } from './discovery';
 import { t } from './i18n';
+import {
+  buildLanguageGlobs,
+  currentLanguageContributions,
+  workspaceAssociations,
+} from './languageIdentity';
 import { type TestStateManager, withDurationSuffix } from './state';
 
 /** Id de suite normalizado (`suite:<pkg lower>`). */
@@ -456,7 +461,15 @@ export function createRefresher(
   const doRefresh = async (): Promise<void> => {
     const folders = vscode.workspace.workspaceFolders;
     const cfg = readConfig();
-    const suites = await discoverWorkspace(cfg.includePatterns, folders ?? undefined);
+    const patterns = [
+      ...cfg.includePatterns,
+      ...buildLanguageGlobs(
+        cfg.discoveryLanguageIds,
+        currentLanguageContributions(),
+        workspaceAssociations(folders ?? undefined),
+      ),
+    ].filter((pattern) => pattern.trim().length > 0);
+    const suites = await discoverWorkspace([...new Set(patterns)], folders ?? undefined);
     controller.items.replace([]);
     state.cachedItems = [];
     state.clearSuiteMap();
