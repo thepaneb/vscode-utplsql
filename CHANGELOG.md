@@ -10,6 +10,14 @@
   CodeLens. The canonical `**/*.pks` glob keeps working even with a restricted
   list, and the CodeLens provider is registered once (no duplicate lenses).
 
+- **utPLSQL snippets (PRD-105)**: new `snippets/utplsql.code-snippets` with
+  `ut-suite` (full package skeleton), every documented annotation (`%suite`,
+  `%suitepath`, `%test`, `%context`, lifecycle, `%name`, `%disabled`, `%tags`,
+  `%rollback`, `%throws`, `%displayname`) and the main `ut.expect` matchers,
+  including the cursor modifiers and JSON. The `ut-nls-cursor` snippet keeps
+  `ut.set_nls` until `to_equal` and resets it afterwards (avoids `ORA-01861`).
+  Registered for `sql`, `plsql` and `oracle-sql` and validated in CI.
+
 ## 0.16.0
 
 - **Run Related Tests (PRD-58)**: new **`utPLSQL: Run Related Tests`** command (palette, editor/

@@ -2,14 +2,14 @@
 tipo: prd
 id: PRD-105
 aliases: [PRD-105]
-status: approved
+status: completed
 titulo: "Snippets utPLSQL: biblioteca de annotations e matchers"
 versao: "0.17.0"
 data: "2026-10-09"
 autor: "Gil Cleber Barboza"
 versao_titulo: "0.17.0 — UX de editor e cobertura"
 verificado: 2026-10-20
-regras: []
+regras: ["BR-UI-016"]
 tags: [prd]
 ---
 
@@ -123,15 +123,26 @@ inexistente).
 
 ## 12. Impacto no cérebro
 
-Na conclusão, criar a regra `BR-UI-*` ("snippets espelham as annotations que o
-parser interpreta; o JSON é validado no CI"), com `prds: ["PRD-105"]`,
-`implementacao:` e `testes:`. Enquanto `proposed`, `regras: []`.
+**Concluída em 2026-10-20 (0.17.0).**
+
+- Criada **[[BR-UI-016 - Snippets espelham annotations e matchers com JSON validado|BR-UI-016]]**
+  — biblioteca espelha as annotations/matchers, registrada para `sql`, `plsql` e
+  `oracle-sql`, com JSON validado no CI. Cobre RF1–RF3 e RNF1/RNF2.
+- Documentação: `05-ux-components`, `Editor-integration` e README
+  (canônico + pt-BR).
+- Nenhuma RNF ficou sem regra.
 
 ## Conexões
 
 <!-- brain:auto:start:conexoes -->
 - 🗺️ [[MOC - PRDs]]
+- 📐 Regras: [[BR-UI-016 - Snippets espelham annotations e matchers com JSON validado|BR-UI-016]]
 - 🔗 PRDs relacionados: [[prd-42-suiteparser-annotations|PRD-42]] · [[prd-55-tag-organization|PRD-55]] · [[prd-100-generate-test-suite|PRD-100]] · [[prd-109-language-identity|PRD-109]]
 - 🔗 Mesma versão (0.17.0): [[prd-108-coverage-html-report|PRD-108]]
+- 🎯 RF1 — Cobertura de annotations → [[BR-UI-016 - Snippets espelham annotations e matchers com JSON validado|BR-UI-016]]
+- 🎯 RF2 — Matchers → [[BR-UI-016 - Snippets espelham annotations e matchers com JSON validado|BR-UI-016]]
+- 🎯 RF3 — NLS verificado → [[BR-UI-016 - Snippets espelham annotations e matchers com JSON validado|BR-UI-016]]
+- 🎯 RNF1 — Snippet inválido não deve existir: validar o JSON no CI. → [[BR-UI-016 - Snippets espelham annotations e matchers com JSON validado|BR-UI-016]]
+- 🎯 RNF2 — Sem dependências novas. → [[BR-UI-016 - Snippets espelham annotations e matchers com JSON validado|BR-UI-016]]
 - 🚀 ⬅️ release anterior: [[prd-100-generate-test-suite|PRD-100 (0.16.0)]] · ➡️ próxima release: [[prd-98-docs-anti-drift|PRD-98 (0.18.0)]]
 <!-- brain:auto:end -->

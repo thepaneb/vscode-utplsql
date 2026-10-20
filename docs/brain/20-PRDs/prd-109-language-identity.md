@@ -146,7 +146,7 @@ participem de descoberta, CodeLens e decorações.
 - 🗺️ [[MOC - PRDs]]
 - 📐 Regras: [[BR-PARSE-019 - Descoberta e CodeLens respeitam discovery.languageIds e files.associations|BR-PARSE-019]] · [[BR-UI-006 - CodeLens usa glob canonico e languageIds sem duplicar|BR-UI-006]]
 - 🔗 PRDs relacionados: [[prd-24-codelens-integration|PRD-24]] · [[prd-42-suiteparser-annotations|PRD-42]] · [[prd-43-schema-db-discovery|PRD-43]] · [[prd-57-multiroot-root-resolution|PRD-57]] · [[prd-74-db-first-discovery|PRD-74]]
-- 🔗 Mesma versão (0.17.0): [[prd-105-snippets|PRD-105]] · [[prd-108-coverage-html-report|PRD-108]]
+- 🔗 Mesma versão (0.17.0): [[prd-108-coverage-html-report|PRD-108]]
 - 🎯 RF1 — Extensões → [[BR-PARSE-019 - Descoberta e CodeLens respeitam discovery.languageIds e files.associations|BR-PARSE-019]]
 - 🎯 RF2 — `languageIds` → [[BR-PARSE-019 - Descoberta e CodeLens respeitam discovery.languageIds e files.associations|BR-PARSE-019]]
 - 🎯 RF3 — `files.associations` → [[BR-PARSE-019 - Descoberta e CodeLens respeitam discovery.languageIds e files.associations|BR-PARSE-019]]

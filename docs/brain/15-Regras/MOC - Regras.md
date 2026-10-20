@@ -145,4 +145,5 @@ SORT id ASC
 - [[BR-UI-013 - Integracao nativa ao Test Explorer via a API de testes do VS Code]] — `BR-UI-013`
 - [[BR-UI-014 - Run Related Tests casa suites pela convencao ut_objeto e avisa sem match]] — `BR-UI-014`
 - [[BR-UI-015 - Gerar suite nao sobrescreve spec existente e produz template parseavel]] — `BR-UI-015`
+- [[BR-UI-016 - Snippets espelham annotations e matchers com JSON validado]] — `BR-UI-016`
 <!-- brain:auto:end -->

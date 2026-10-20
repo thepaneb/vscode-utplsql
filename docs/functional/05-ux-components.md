@@ -48,6 +48,24 @@ class UtplsqlCodeLensProvider implements vscode.CodeLensProvider
 - Arquivo fora da identidade → sem CodeLens
 - URIs virtuais (`utplsql-db:/`) → sem CodeLens (provider registrado só para `scheme: file`)
 
+## Snippets (`snippets/utplsql.code-snippets`)
+
+Biblioteca registrada em `contributes.snippets` para `sql`, `plsql` e
+`oracle-sql`:
+
+- `ut-suite` — esqueleto completo do package de teste;
+- annotations: `%suite`, `%suitepath`, `%test`, `%context`/`%endcontext`,
+  `%name`, `%beforeall`/`%afterall`, `%beforeeach`/`%aftereach`,
+  `%beforetest`/`%aftertest`, `%disabled`, `%tags`, `%rollback`, `%throws`,
+  `%displayname`;
+- matchers: `to_equal`, `to_be_*`, `to_match`, `to_be_like`, `to_contain`,
+  `to_have_count`, cursor com modifiers, JSON e `ut-fail`;
+- `ut-nls-cursor` com `ut.set_nls` → `to_equal` → `ut.reset_nls` (evita
+  `ORA-01861` em `DATE`).
+
+O JSON é validado por `src/test/unit/snippets.test.ts` (prefixos obrigatórios,
+`body` não vazio, matchers do RF2 e registro no `package.json`).
+
 ## StatusBar (`src/statusBar.ts`)
 
 Indicador na barra de status com contagem de resultados e progresso.

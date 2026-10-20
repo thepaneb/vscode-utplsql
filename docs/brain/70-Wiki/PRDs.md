@@ -123,6 +123,7 @@ The file is moved between folders as it progresses.
 | 57 | Multi-root: `root`/`sourcePath` per folder | 0.16.0 |
 | 58 | Run Related Tests | 0.16.0 |
 | 109 | PL/SQL language identity and configurable `languageIds` | 0.17.0 |
+| 105 | utPLSQL snippets: annotations and matchers | 0.17.0 |
 
 ### ⚪ Proposed
 

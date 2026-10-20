@@ -109,6 +109,7 @@ SORT id ASC
 - [[COD - tnsnames.ts]] — `COD-tnsnames.ts`
 - [[COD - types.ts]] — `COD-types.ts`
 - [[COD - utility.ts]] — `COD-utility.ts`
+- [[COD - utplsql.code-snippets]] — `COD-utplsql.code-snippets`
 - [[COD - viewCoverage.ts]] — `COD-viewCoverage.ts`
 - [[COD - virtualSource.ts]] — `COD-virtualSource.ts`
 - [[COD - vsce.cjs]] — `COD-vsce.cjs`

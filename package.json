@@ -881,6 +881,20 @@
         "extensions": [".pks", ".pkb", ".prc", ".fnc", ".trg", ".pls", ".plb", ".tps", ".tpb", ".vw"]
       }
     ],
+    "snippets": [
+      {
+        "language": "sql",
+        "path": "./snippets/utplsql.code-snippets"
+      },
+      {
+        "language": "plsql",
+        "path": "./snippets/utplsql.code-snippets"
+      },
+      {
+        "language": "oracle-sql",
+        "path": "./snippets/utplsql.code-snippets"
+      }
+    ],
     "breakpoints": [
       {
         "language": "plsql"
