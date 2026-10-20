@@ -70,6 +70,11 @@ test('smoke cobre as capacidades das PRDs 0.13 (get_suites_info/rebuild)', () =>
   assert.match(caps, /UTPLSQL_SUITES_INFO_MIN_VERSION/);
 });
 
+test('smoke cobre as features da versão corrente (v017)', () => {
+  const smoke = read('.vscode-test.smoke.mjs');
+  assert.match(smoke, /v017-features\.test\.js/);
+});
+
 test('integração 0.13 existe e é coberta pelo glob base do vscode-test', () => {
   assert.ok(
     fs.existsSync(path.join(ROOT, 'src/test/integration/v013-features.test.ts')),
@@ -148,8 +153,8 @@ test('parse-version: run.sh usa default estável (o export do loop não vaza)', 
   assert.match(run, /local_utplsql_version="\$UTPLSQL_BASE_VERSION"/);
   // O default passado ao parser é a base, nunca o UTPLSQL_VERSION reexportado
   // por banco (senão o 12.2/v3.1.x viraria default de todos os seguintes).
-  assert.match(run, /parse-version\.cjs"\s+"\$__line"\s+"\$UTPLSQL_BASE_VERSION"/);
-  assert.doesNotMatch(run, /parse-version\.cjs"\s+"\$__line"\s+"\$UTPLSQL_VERSION"/);
+  assert.match(run, /parse-version\.cjs"\)"\s+"\$__line"\s+"\$UTPLSQL_BASE_VERSION"/);
+  assert.doesNotMatch(run, /parse-version\.cjs"\)"\s+"\$__line"\s+"\$UTPLSQL_VERSION"/);
   // O export por banco continua, pois o bootstrap o consome.
   assert.match(run, /export[^\n]*UTPLSQL_VERSION="\$local_utplsql_version"/);
 });
@@ -178,6 +183,53 @@ test('parse-version.cjs: CLI --field fora do intervalo devolve vazio', () => {
   );
   assert.strictEqual(r.status, 0);
   assert.strictEqual(r.stdout, '');
+});
+
+test('run.sh: limpa o container em falha/interrupção e preserva o volume', () => {
+  const run = read('scripts/db-matrix/run.sh');
+  assert.match(run, /trap cleanup EXIT INT TERM/);
+  assert.match(run, /compose down --remove-orphans/);
+  // `--keep-db` desliga o cleanup; o volume nomeado nunca é removido no down.
+  assert.match(run, /KEEP_DB:-0/);
+  assert.doesNotMatch(run, /compose down[^\n]*-v/);
+});
+
+test('run.sh: --skip-bootstrap valida UT3/UTPLSQL_TEST antes dos testes', () => {
+  const run = read('scripts/db-matrix/run.sh');
+  assert.match(run, /assert_bootstrapped/);
+  assert.match(run, /UT_RUNNER/);
+  assert.match(run, /UTPLSQL_TEST/);
+  assert.match(run, /SKIP_BOOTSTRAP.*assert_bootstrapped/s);
+});
+
+test('run.sh: mascara a senha da conexão no log', () => {
+  const run = read('scripts/db-matrix/run.sh');
+  assert.match(run, /mask_conn\(\)/);
+  assert.match(run, /UTPLSQL_CONN=\$\(mask_conn "\$UTPLSQL_CONN"\)/);
+  assert.doesNotMatch(run, /UTPLSQL_CONN=\$UTPLSQL_CONN/);
+});
+
+test('run.sh: modos --full, --continue-on-error e resumo da matriz', () => {
+  const run = read('scripts/db-matrix/run.sh');
+  assert.match(run, /--full\)/);
+  assert.match(run, /test:integration:multiroot/);
+  assert.match(run, /--continue-on-error\)/);
+  assert.match(run, /summary\.cjs"\)"\s+append/);
+  assert.match(run, /summary\.cjs"\)"\s+render/);
+  assert.match(run, /matrix-summary-/);
+  // Sem `node` no PATH (WSL), o resumo é opcional e não derruba a matriz.
+  assert.match(run, /NODE_BIN=/);
+  assert.match(run, /node_path\(\)/);
+  assert.match(run, /wslpath -w/);
+  assert.match(run, /node_path "\$SUMMARY_FILE"/);
+  assert.match(run, /node não encontrado: resumo/);
+});
+
+test('workflow da matriz roda multi-root e publica o resumo', () => {
+  const workflow = read('.github/workflows/integration.yml');
+  assert.match(workflow, /test:integration:multiroot/);
+  assert.match(workflow, /upload-artifact/);
+  assert.match(workflow, /matrix-summary/);
 });
 
 test('parse-version.cjs: CLI sem --field devolve JSON', () => {

@@ -45,6 +45,7 @@ SORT id ASC
 - [[COD - commands-scaffold.ts]] — `COD-commands-scaffold.ts`
 - [[COD - compilationDiagnostics.ts]] — `COD-compilationDiagnostics.ts`
 - [[COD - compileForDebug.ts]] — `COD-compileForDebug.ts`
+- [[COD - compose.yaml]] — `COD-compose.yaml`
 - [[COD - config.ts]] — `COD-config.ts`
 - [[COD - connection.ts]] — `COD-connection.ts`
 - [[COD - connectionProfiles.ts]] — `COD-connectionProfiles.ts`
@@ -72,6 +73,7 @@ SORT id ASC
 - [[COD - i18n.ts]] — `COD-i18n.ts`
 - [[COD - i18nLocales.ts]] — `COD-i18nLocales.ts`
 - [[COD - index.html]] — `COD-index.html`
+- [[COD - integration.yml]] — `COD-integration.yml`
 - [[COD - junit.ts]] — `COD-junit.ts`
 - [[COD - languageIdentity.ts]] — `COD-languageIdentity.ts`
 - [[COD - logger.ts]] — `COD-logger.ts`
@@ -102,6 +104,7 @@ SORT id ASC
 - [[COD - state.ts]] — `COD-state.ts`
 - [[COD - statusBar.ts]] — `COD-statusBar.ts`
 - [[COD - suiteParser.ts]] — `COD-suiteParser.ts`
+- [[COD - summary.cjs]] — `COD-summary.cjs`
 - [[COD - sync-prds.cjs]] — `COD-sync-prds.cjs`
 - [[COD - tagFilter.ts]] — `COD-tagFilter.ts`
 - [[COD - test-setup.cjs]] — `COD-test-setup.cjs`

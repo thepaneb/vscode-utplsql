@@ -39,7 +39,8 @@ Workflow [`integration.yml`](../../../.github/workflows/integration.yml) — **g
 - `uses: actions/setup-node@v7`
 - `run: npm ci`
 - `run: |`
-- `run: bash scripts/db-matrix/run.sh --only 18xe,21xe,23free --tests "xvfb-run -a npm run test:integration"`
+- `run: bash scripts/db-matrix/run.sh --only 18xe,21xe,23free --tests "xvfb-run -a bash -c 'npm run test:integration && npm run test:integration:multiroot'"`
+- `uses: actions/upload-artifact@v4`
 
 ## Conexões
 

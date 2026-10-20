@@ -23,6 +23,7 @@ SORT id ASC
 ## Índice (links)
 
 <!-- brain:auto:start:moc-index -->
+- [[Mapa - matriz de bancos]]
 - [[TST - autoRun.test.ts]] — `TST-autoRun.test.ts`
 - [[TST - brainBuild.test.ts]] — `TST-brainBuild.test.ts`
 - [[TST - brainRules.test.ts]] — `TST-brainRules.test.ts`
@@ -40,6 +41,7 @@ SORT id ASC
 - [[TST - coverage.test.ts]] — `TST-coverage.test.ts`
 - [[TST - coverageDecision.test.ts]] — `TST-coverageDecision.test.ts`
 - [[TST - coverageHtml.test.ts]] — `TST-coverageHtml.test.ts`
+- [[TST - dbMatrixSummary.test.ts]] — `TST-dbMatrixSummary.test.ts`
 - [[TST - dbmsDebug.test.ts]] — `TST-dbmsDebug.test.ts`
 - [[TST - dbPaths.test.ts]] — `TST-dbPaths.test.ts`
 - [[TST - dbSourceProvider.test.ts]] — `TST-dbSourceProvider.test.ts`
