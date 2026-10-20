@@ -171,6 +171,7 @@ Test Explorer **เมื่อแต่ละเทสต์เสร็จส�
 | `utplsql.coverage.includeObjectExpr` | `""` | regex ของอ็อบเจกต์ที่จะรวมในการครอบคลุม |
 | `utplsql.coverage.excludeSchemaExpr` | `""` | regex ของ schema ที่จะยกเว้นจากการครอบคลุม |
 | `utplsql.coverage.excludeObjectExpr` | `""` | regex ของอ็อบเจกต์ที่จะยกเว้นจากการครอบคลุม (เช่น `^UT_` สำหรับ framework utPLSQL) |
+| `utplsql.coverage.htmlReport` | `false` | เขียนรายงาน HTML ความครอบคลุมไปที่ `test-results/coverage.html` และเสนอ **เปิดในเบราว์เซอร์** / **บันทึกเป็น…** หลังการรัน (fire-and-forget) |
 | `utplsql.timeoutMinutes` | `60` | Timeout เป็นนาที |
 | `utplsql.dbmsOutput` | `false` | เปิดใช้งาน `DBMS_OUTPUT` ในเซสชันการทดสอบ |
 | `utplsql.additionalReporters` | `[]` | Reporters เพิ่มเติมที่จะรวมในทุกรัน (เช่น `["ut_coverage_html_reporter"]`) ค่าเริ่มต้น (documentation, junit) จะถูกรวมเสมอและไม่จำเป็นต้องระบุ |

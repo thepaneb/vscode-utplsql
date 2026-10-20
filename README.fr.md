@@ -171,6 +171,7 @@ l'Explorateur de tests **au fur et à mesure que chaque test se termine**.
 | `utplsql.coverage.includeObjectExpr` | `""` | Regex d'objets à inclure dans la couverture. |
 | `utplsql.coverage.excludeSchemaExpr` | `""` | Regex de schémas à exclure de la couverture. |
 | `utplsql.coverage.excludeObjectExpr` | `""` | Regex d'objets à exclure de la couverture (par ex. `^UT_` pour le framework utPLSQL). |
+| `utplsql.coverage.htmlReport` | `false` | Écrit le rapport HTML de couverture dans `test-results/coverage.html` et propose **Ouvrir dans le navigateur** / **Enregistrer sous…** après l’exécution (fire-and-forget). |
 | `utplsql.timeoutMinutes` | `60` | Délai d'expiration en minutes pour l'exécution des tests. |
 | `utplsql.dbmsOutput` | `false` | Active `DBMS_OUTPUT` dans la session de test. Utile pour le débogage. |
 | `utplsql.additionalReporters` | `[]` | Reporters supplémentaires à inclure à chaque exécution (par ex. `["ut_coverage_html_reporter"]`). Les reporters par défaut (documentation, junit) sont toujours inclus et n'ont pas besoin d'être listés. |

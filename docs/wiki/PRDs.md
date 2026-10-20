@@ -116,6 +116,7 @@ The file is moved between folders as it progresses.
 | 58 | Run Related Tests | 0.16.0 |
 | 109 | PL/SQL language identity and configurable `languageIds` | 0.17.0 |
 | 105 | utPLSQL snippets: annotations and matchers | 0.17.0 |
+| 108 | HTML coverage report opened in the browser | 0.17.0 |
 
 ### ⚪ Proposed
 

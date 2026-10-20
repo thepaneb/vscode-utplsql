@@ -282,6 +282,37 @@ test('executeRun: coverage flag é passado para oracle', async () =>
     assert.strictEqual(receivedCoverage, true);
   }));
 
+test('executeRun: coverageHtmlReport/reportRoot e notificação após run.end', async () =>
+  withExecEnv(async () => {
+    __setConfigValue('coverage.htmlReport', true);
+    const { state, suiteItem } = makeExecState();
+    const run = new vscode.TestRun() as any;
+    const events: string[] = [];
+    const originalEnd = run.end.bind(run);
+    run.end = () => {
+      events.push('end');
+      originalEnd();
+    };
+    const controller = { createTestRun: () => run, items: { forEach: () => {} } } as any;
+    const request = { include: [suiteItem] } as any;
+
+    vscode.__resetMessages();
+    mock.method(oracleRunner, 'executeRunOracle', async (opts: any) => {
+      assert.strictEqual(opts.coverageHtmlReport, true);
+      assert.ok(opts.reportRoot, 'reportRoot deveria ser o folder da suíte');
+      opts.onCoverageHtmlReport?.('/tmp/utplsql-report.html');
+      return undefined;
+    });
+
+    await executeRun(controller, request, NEVER_TOKEN as any, true, state);
+
+    assert.deepStrictEqual(events, ['end'], 'run.end deve acontecer antes da notificação');
+    assert.ok(
+      vscode.__getInformationMessages().some((m) => m.includes('/tmp/utplsql-report.html')),
+      'a notificação do HTML deveria ser disparada',
+    );
+  }));
+
 test('executeRun: additionalReporters são passados para oracle', async () =>
   withExecEnv(async () => {
     const { state, suiteItem } = makeExecState();

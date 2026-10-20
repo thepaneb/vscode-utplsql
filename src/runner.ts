@@ -1,5 +1,6 @@
 import * as vscode from 'vscode';
 import { getExtensionLocale, readConfig, resolveConnection } from './config';
+import { offerCoverageHtmlReport } from './coverage';
 import { t } from './i18n';
 import { resolveRunRoots } from './matching';
 import { executeRunOracle, type OracleRunOptions } from './oracleRunner';
@@ -183,11 +184,17 @@ export async function executeRun(
   );
 
   let exportText: string | undefined;
+  let htmlReportPath: string | undefined;
   try {
     const oracleOpts: OracleRunOptions = {
       connection,
       pathArgs: [...pathArgs],
       coverage,
+      coverageHtmlReport: coverage && cfg.coverageHtmlReport,
+      reportRoot: roots[0],
+      onCoverageHtmlReport: (filePath) => {
+        htmlReportPath = filePath;
+      },
       sourcePath: cfg.sourcePath,
       run,
       leafTests,
@@ -231,6 +238,9 @@ export async function executeRun(
   } finally {
     run.end();
     void vscode.commands.executeCommand('setContext', 'utplsql:running', false);
+    // PRD-108 RF2: a notificação é fire-and-forget e só começa depois do
+    // run.end(), então nunca segura o spinner do Test Explorer.
+    if (htmlReportPath) void offerCoverageHtmlReport(htmlReportPath);
   }
 
   return exportText;

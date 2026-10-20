@@ -172,6 +172,7 @@ A bővítmény közvetlenül Oracle-on keresztül csatlakozik, beolvassa a ripor
 | `utplsql.coverage.includeObjectExpr` | `""` | A lefedésbe felveendő objektumok regexe. |
 | `utplsql.coverage.excludeSchemaExpr` | `""` | A lefedésből kizárandó sémák regexe. |
 | `utplsql.coverage.excludeObjectExpr` | `""` | A lefedésből kizárandó objektumok regexe (pl. `^UT_` az utPLSQL frameworkhöz). |
+| `utplsql.coverage.htmlReport` | `false` | A HTML lefedettségi jelentést a `test-results/coverage.html` fájlba írja, és a futás után **Megnyitás böngészőben** / **Mentés másként…** lehetőséget kínál (fire-and-forget). |
 | `utplsql.timeoutMinutes` | `60` | Időtúllépés percben a tesztek futtatásához. |
 | `utplsql.dbmsOutput` | `false` | Engedélyezi a `DBMS_OUTPUT` használatát a teszt-munkamenetben. Hasznos hibakereséshez. |
 | `utplsql.additionalReporters` | `[]` | További riporterek, amelyek minden futtatáskor bekerülnek (pl. `["ut_coverage_html_reporter"]`). Az alapértelmezettek (documentation, junit) mindig szerepelnek, és nem kell felsorolni őket. |

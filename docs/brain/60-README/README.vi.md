@@ -180,6 +180,7 @@ Test Explorer **ngay khi từng bài kiểm thử hoàn tất**. VSIX đã kèm 
 | `utplsql.coverage.includeObjectExpr` | `""` | Regex đối tượng đưa vào phạm vi phủ. |
 | `utplsql.coverage.excludeSchemaExpr` | `""` | Regex schema loại khỏi phạm vi phủ. |
 | `utplsql.coverage.excludeObjectExpr` | `""` | Regex đối tượng loại khỏi phạm vi phủ (ví dụ `^UT_` cho framework utPLSQL). |
+| `utplsql.coverage.htmlReport` | `false` | Ghi báo cáo HTML độ phủ vào `test-results/coverage.html` và sau khi chạy cung cấp **Mở trong trình duyệt** / **Lưu thành…** (fire-and-forget). |
 | `utplsql.timeoutMinutes` | `60` | Thời gian chờ (phút). |
 | `utplsql.dbmsOutput` | `false` | Bật `DBMS_OUTPUT` trong phiên kiểm thử. |
 | `utplsql.additionalReporters` | `[]` | Các reporter bổ sung đưa vào mỗi lần chạy (ví dụ `["ut_coverage_html_reporter"]`). Các reporter mặc định (documentation, junit) luôn được bao gồm và không cần liệt kê. |

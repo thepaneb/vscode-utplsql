@@ -55,6 +55,7 @@ SORT id ASC
 - [[BR-COB-005 - XML Cobertura e cobertura por declaracao sao parseados de forma pura]] — `BR-COB-005`
 - [[BR-COB-006 - Cobertura explicita ou coverageAlways e comandos Coverage forcam true]] — `BR-COB-006`
 - [[BR-COB-007 - Cobertura resolve root e sourcePath pelo folder do pacote em execucao]] — `BR-COB-007`
+- [[BR-COB-008 - Relatorio HTML de cobertura abre no navegador sem segurar o TestRun]] — `BR-COB-008`
 - [[BR-CONN-001 - Precedência de resolução da conexão]] — `BR-CONN-001`
 - [[BR-CONN-002 - Prompt só ocorre quando nada está configurado e não persiste]] — `BR-CONN-002`
 - [[BR-CONN-003 - Limpar conexão de sessão reseta o context key]] — `BR-CONN-003`
@@ -86,7 +87,7 @@ SORT id ASC
 - [[BR-EXEC-005 - Buffer de saída é limpo antes de cada run]] — `BR-EXEC-005`
 - [[BR-EXEC-006 - Reporters gravam na mesma UT_OUTPUT_BUFFER_TMP; CLOB não é usada]] — `BR-EXEC-006`
 - [[BR-EXEC-007 - Poll do buffer a cada 200ms por message_id incremental]] — `BR-EXEC-007`
-- [[BR-EXEC-008 - Roteamento XML x output de documentação com detecção de CDATA]] — `BR-EXEC-008`
+- [[BR-EXEC-008 - Roteamento por output_id separa console XML e HTML]] — `BR-EXEC-008`
 - [[BR-EXEC-009 - Separação do XML de cobertura do XML JUnit no mesmo buffer]] — `BR-EXEC-009`
 - [[BR-EXEC-010 - Cancelamento dispara conn.break() nas duas conexões]] — `BR-EXEC-010`
 - [[BR-EXEC-011 - Timeout opcional reusa o caminho de cancelamento]] — `BR-EXEC-011`

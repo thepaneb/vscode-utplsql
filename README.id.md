@@ -172,6 +172,7 @@ Ekstensi terhubung langsung ke Oracle, membaca laporan (JUnit + Coverage) lalu m
 | `utplsql.coverage.includeObjectExpr` | `""` | Regex objek yang disertakan dalam cakupan. |
 | `utplsql.coverage.excludeSchemaExpr` | `""` | Regex schema yang dikecualikan dari cakupan. |
 | `utplsql.coverage.excludeObjectExpr` | `""` | Regex objek yang dikecualikan dari cakupan (mis. `^UT_` untuk framework utPLSQL). |
+| `utplsql.coverage.htmlReport` | `false` | Menulis laporan HTML cakupan ke `test-results/coverage.html` dan menawarkan **Buka di browser** / **Simpan sebagai…** setelah run (fire-and-forget). |
 | `utplsql.timeoutMinutes` | `60` | Batas waktu (timeout) dalam menit untuk eksekusi pengujian. |
 | `utplsql.dbmsOutput` | `false` | Mengaktifkan `DBMS_OUTPUT` di sesi pengujian. Berguna untuk debugging. |
 | `utplsql.additionalReporters` | `[]` | Reporter tambahan yang disertakan pada setiap eksekusi (mis. `["ut_coverage_html_reporter"]`). Default (documentation, junit) selalu disertakan dan tidak perlu didaftarkan. |

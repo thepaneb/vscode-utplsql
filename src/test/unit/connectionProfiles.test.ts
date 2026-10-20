@@ -53,6 +53,7 @@ function makeGlobal(over: Partial<UtConfig> = {}): UtConfig {
     coverageIncludeObjectExpr: '',
     coverageExcludeSchemaExpr: '',
     coverageExcludeObjectExpr: '',
+    coverageHtmlReport: false,
     additionalReporters: [],
     reporterClientCharacterSet: '',
     reporterColorConsole: false,

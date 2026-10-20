@@ -5,7 +5,7 @@ titulo: "Custom Reporters"
 publicar: docs/wiki/Reporters.md
 origem: ["03-results-and-reporting"]
 verificado: 2026-09-23
-regras: ["BR-EXEC-015", "BR-EXEC-014"]
+regras: ["BR-EXEC-015", "BR-EXEC-014", "BR-COB-008"]
 tags: [wiki]
 ---
 
@@ -42,6 +42,11 @@ Setting `utplsql.additionalReporters` — included in every run:
 
 The default reporters are automatically deduplicated — you don't need
 to remove them from the list.
+
+For the HTML coverage report, prefer **`utplsql.coverage.htmlReport`**: it adds
+`ut_coverage_html_reporter` only on coverage runs, captures its buffered output
+separately and offers **Open in Browser** / **Save As…** after the run. If the
+same reporter is also listed in `additionalReporters`, it is deduplicated.
 
 ## Volatile Session Reporter
 

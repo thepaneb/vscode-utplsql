@@ -2,14 +2,14 @@
 tipo: prd
 id: PRD-108
 aliases: [PRD-108]
-status: approved
+status: completed
 titulo: "Relatório HTML de cobertura aberto no navegador"
 versao: "0.17.0"
 data: "2026-10-09"
 autor: "Gil Cleber Barboza"
 versao_titulo: "0.17.0 — UX de editor e cobertura"
 verificado: 2026-10-20
-regras: []
+regras: ["BR-COB-008", "BR-EXEC-008", "BR-EXEC-009"]
 tags: [prd]
 ---
 
@@ -129,14 +129,30 @@ Hoje só temos o painel nativo + Cobertura.
 
 ## 12. Impacto no cérebro
 
-Na conclusão, criar a regra `BR-COB-*` ("relatório HTML de cobertura abre no
-navegador e não segura o TestRun"), com `prds: ["PRD-108"]`, `implementacao:` e
-`testes:`. Enquanto `proposed`, `regras: []`.
+**Concluída em 2026-10-20 (0.17.0).**
+
+- Criada **[[BR-COB-008 - Relatorio HTML de cobertura abre no navegador sem segurar o TestRun|BR-COB-008]]**
+  — HTML em `test-results/coverage.html`, notificação fire-and-forget após o
+  `run.end()`, sem webview, sem conteúdo logado. Cobre RF1–RF4 e RNF1/RNF2.
+- Atualizada **[[BR-EXEC-008 - Roteamento por output_id separa console XML e HTML|BR-EXEC-008]]**
+  — o buffer passou a ser roteado por `output_id` (console/XML/HTML), eliminando
+  a dependência da detecção de CDATA.
+- Revisada **[[BR-EXEC-009 - Separação do XML de cobertura do XML JUnit no mesmo buffer|BR-EXEC-009]]**.
+- Documentação: `03-results-and-reporting`, `04-code-coverage`, `Coverage`,
+  `Reporters`, `Architecture`, `Configuration` e FAQ.
+- Nenhuma RNF ficou sem regra.
 
 ## Conexões
 
 <!-- brain:auto:start:conexoes -->
 - 🗺️ [[MOC - PRDs]]
+- 📐 Regras: [[BR-COB-008 - Relatorio HTML de cobertura abre no navegador sem segurar o TestRun|BR-COB-008]] · [[BR-EXEC-008 - Roteamento por output_id separa console XML e HTML|BR-EXEC-008]] · [[BR-EXEC-009 - Separação do XML de cobertura do XML JUnit no mesmo buffer|BR-EXEC-009]]
 - 🔗 PRDs relacionados: [[prd-12-sql-coverage|PRD-12]] · [[prd-35-windows-coverage-fix|PRD-35]] · [[prd-79-coverage-scope|PRD-79]]
+- 🎯 RF1 — Reporter HTML → [[BR-COB-008 - Relatorio HTML de cobertura abre no navegador sem segurar o TestRun|BR-COB-008]] · [[BR-EXEC-008 - Roteamento por output_id separa console XML e HTML|BR-EXEC-008]] · [[BR-EXEC-009 - Separação do XML de cobertura do XML JUnit no mesmo buffer|BR-EXEC-009]]
+- 🎯 RF2 — Não bloquear o TestRun → [[BR-COB-008 - Relatorio HTML de cobertura abre no navegador sem segurar o TestRun|BR-COB-008]] · [[BR-EXEC-008 - Roteamento por output_id separa console XML e HTML|BR-EXEC-008]]
+- 🎯 RF3 — Ações da notificação → [[BR-COB-008 - Relatorio HTML de cobertura abre no navegador sem segurar o TestRun|BR-COB-008]]
+- 🎯 RF4 — Segurança → [[BR-COB-008 - Relatorio HTML de cobertura abre no navegador sem segurar o TestRun|BR-COB-008]]
+- 🎯 RNF1 — Sem novas dependências; sem regressão quando o setting está off. → [[BR-COB-008 - Relatorio HTML de cobertura abre no navegador sem segurar o TestRun|BR-COB-008]]
+- 🎯 RNF2 — Compatível com `additionalReporters` existentes (sem duplicar reporter → [[BR-COB-008 - Relatorio HTML de cobertura abre no navegador sem segurar o TestRun|BR-COB-008]]
 - 🚀 ⬅️ release anterior: [[prd-100-generate-test-suite|PRD-100 (0.16.0)]] · ➡️ próxima release: [[prd-98-docs-anti-drift|PRD-98 (0.18.0)]]
 <!-- brain:auto:end -->

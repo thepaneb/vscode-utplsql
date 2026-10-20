@@ -33,7 +33,7 @@ Run and debug **utPLSQL** (Oracle PL/SQL) tests right in VS Code — native **Te
 - 🧪 **Native Test Explorer** — suites and tests appear in the testing view; run by test, suite, file, or folder.
 - 🔍 **CodeLens** — Run/Run with Coverage buttons over `%suite` and `%test` in the editor, without leaving your code.
 - 🧬 **PL/SQL language identity** — discovery, CodeLens and decorations honor `utplsql.discovery.languageIds` (default `plsql`, `sql`, `oracle-sql`) and `files.associations`, so `.pls`, `.plb`, `.tps`, `.tpb`, `.vw` and custom extensions work too.
-- ✂️ **Snippets** — `ut-` snippets for the utPLSQL annotations (`%suite`, `%test`, `%context`, lifecycle, `%tags`/`%throws`) and the main `ut.expect` matchers, available in `sql`, `plsql` and `oracle-sql`.
+- ✂️ **Snippets** — `ut-` snippets for the utPLSQL annotations (`%suite`, `%test`, `%context`, lifecycle, `%tags`/`%throws`) and the main `ut.expect` matchers, available in `sql` and `plsql`.
 - ⌨️ **Keyboard shortcuts** — `Ctrl+Shift+U` prefix + key for the main commands (R = Run All, T = Run File, L = Rerun Last, etc.).
 - 🖱️ **Context menu** — right-click a **folder** or a **`.pks`/`.pkb`** file (in the Explorer or in the editor) to run tests.
 - 🔁 **Smart Re-run** — Rerun Last, Run at Cursor, Run Failed Only with a single shortcut.
@@ -56,6 +56,7 @@ Run and debug **utPLSQL** (Oracle PL/SQL) tests right in VS Code — native **Te
 - 📈 **Statement and view coverage** — the Coverage tab shows `% of statements` (PROCEDURE/FUNCTION) per file and tracks views executed via `V$SQL`.
 - 🎯 **Coverage scope** — include/exclude objects and schema/object regexes (`utplsql.coverage.*`) to drop framework noise and add dynamically reached objects.
 - 🗂️ **Virtual database source** — with no local file, *jump to failure* and coverage open a read-only document resolved from `ALL_SOURCE` (`utplsql-source:/…`).
+- 🧾 **HTML coverage report** — with `utplsql.coverage.htmlReport`, the run writes `test-results/coverage.html` and offers **Open in Browser** / **Save As…** without blocking the Test Explorer.
 
 ### Debugger
 
@@ -181,6 +182,7 @@ Test Explorer **as each test finishes**.
 | `utplsql.coverage.includeObjectExpr` | `""` | Regex of objects to include in coverage. |
 | `utplsql.coverage.excludeSchemaExpr` | `""` | Regex of schemas to exclude from coverage. |
 | `utplsql.coverage.excludeObjectExpr` | `""` | Regex of objects to exclude from coverage (e.g. `^UT_` for the utPLSQL framework). |
+| `utplsql.coverage.htmlReport` | `false` | Writes the utPLSQL HTML coverage report to `test-results/coverage.html` and offers **Open in Browser** / **Save As…** after the run (fire-and-forget). |
 | `utplsql.timeoutMinutes` | `60` | Timeout in minutes for the test execution. |
 | `utplsql.dbmsOutput` | `false` | Enables `DBMS_OUTPUT` in the test session. Useful for debugging. |
 | `utplsql.additionalReporters` | `[]` | Additional reporters to include on every run (e.g. `["ut_coverage_html_reporter"]`). The default reporters (documentation and junit) are always included and don't need to be listed; the coverage reporter is added only when running with coverage. |

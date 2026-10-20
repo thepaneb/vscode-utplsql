@@ -4,7 +4,7 @@
 
 | Campo | Valor |
 |---|---|
-| Status | Aprovado |
+| Status | Concluído |
 | Autor | Gil Cleber Barboza |
 | Data | 2026-10-09 |
 | Componente | Extensão `paneb.vscode-utplsql` |
@@ -117,6 +117,15 @@ Hoje só temos o painel nativo + Cobertura.
 
 ## 12. Impacto no cérebro
 
-Na conclusão, criar a regra `BR-COB-*` ("relatório HTML de cobertura abre no
-navegador e não segura o TestRun"), com `prds: ["PRD-108"]`, `implementacao:` e
-`testes:`. Enquanto `proposed`, `regras: []`.
+**Concluída em 2026-10-20 (0.17.0).**
+
+- Criada **[[BR-COB-008 - Relatorio HTML de cobertura abre no navegador sem segurar o TestRun|BR-COB-008]]**
+  — HTML em `test-results/coverage.html`, notificação fire-and-forget após o
+  `run.end()`, sem webview, sem conteúdo logado. Cobre RF1–RF4 e RNF1/RNF2.
+- Atualizada **[[BR-EXEC-008 - Roteamento por output_id separa console XML e HTML|BR-EXEC-008]]**
+  — o buffer passou a ser roteado por `output_id` (console/XML/HTML), eliminando
+  a dependência da detecção de CDATA.
+- Revisada **[[BR-EXEC-009 - Separação do XML de cobertura do XML JUnit no mesmo buffer|BR-EXEC-009]]**.
+- Documentação: `03-results-and-reporting`, `04-code-coverage`, `Coverage`,
+  `Reporters`, `Architecture`, `Configuration` e FAQ.
+- Nenhuma RNF ficou sem regra.

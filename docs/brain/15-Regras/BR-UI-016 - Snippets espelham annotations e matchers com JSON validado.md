@@ -20,19 +20,23 @@ A biblioteca `snippets/utplsql.code-snippets` espelha as annotations que o parse
 interpreta (`%suite`, `%suitepath`, `%test`, `%context`, lifecycle, `%name`,
 `%disabled`, `%tags`, `%rollback`, `%throws`, `%displayname`) e os principais
 matchers de `ut.expect`, além de `ut.fail`. O JSON é registrado em
-`contributes.snippets` para `sql`, `plsql` e `oracle-sql` e é validado no CI por
+`contributes.snippets` para `sql` e `plsql` e é validado no CI por
 `src/test/unit/snippets.test.ts` (prefixos obrigatórios, `body` não vazio,
-prefixos únicos, matchers do RF2 e ordem do `ut-nls-cursor`).
+prefixos únicos, matchers do RF2 e ordem do `ut-nls-cursor`). Não registrar para
+`oracle-sql`: o VS Code emite warning para language IDs que nenhuma extensão
+instalada contribui; a descoberta/CodeLens continuam aceitando esse ID.
 
 ## Pré-condições
 
-Documento com language ID `sql`, `plsql` ou `oracle-sql`; o usuário digita um
-prefixo `ut-`.
+Documento com language ID `sql` ou `plsql`; o usuário digita um prefixo `ut-`.
 
 ## Exceções
 
 - As descrições dos snippets ficam em inglês (padrão do VS Code); não são
   traduzidas.
+- `contributes.snippets` cobre só linguagens que a extensão ou o VS Code
+  contribuem (`sql`, `plsql`); `oracle-sql` fica para a identidade de
+  descoberta/CodeLens.
 - Não há snippets de PL/SQL genérico fora do escopo utPLSQL.
 - O snippet `ut-nls-cursor` exige `ut.set_nls` ativo até o `to_equal` e
   `ut.reset_nls` depois; inverter a ordem reintroduz `ORA-01861`.

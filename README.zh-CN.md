@@ -171,6 +171,7 @@ Test Explorer 中。
 | `utplsql.coverage.includeObjectExpr` | `""` | 要纳入覆盖的对象正则。 |
 | `utplsql.coverage.excludeSchemaExpr` | `""` | 要从覆盖中排除的 schema 正则。 |
 | `utplsql.coverage.excludeObjectExpr` | `""` | 要从覆盖中排除的对象正则（例如 utPLSQL 框架用 `^UT_`）。 |
+| `utplsql.coverage.htmlReport` | `false` | 将覆盖 HTML 报告写入 `test-results/coverage.html`，并在运行后提供 **在浏览器中打开** / **另存为…**（fire-and-forget）。 |
 | `utplsql.timeoutMinutes` | `60` | 执行超时时间（分钟）。 |
 | `utplsql.dbmsOutput` | `false` | 在测试会话中启用 `DBMS_OUTPUT`。 |
 | `utplsql.additionalReporters` | `[]` | 每次运行时要包含的额外 reporter（例如 `["ut_coverage_html_reporter"]`）。默认的（documentation、junit）始终包含，无需列出。 |

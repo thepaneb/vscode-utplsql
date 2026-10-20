@@ -209,6 +209,11 @@
           "default": "",
           "description": "Regular expression of objects to exclude from coverage (e.g. \"^UT_\" for the utPLSQL framework)."
         },
+        "utplsql.coverage.htmlReport": {
+          "type": "boolean",
+          "default": false,
+          "description": "Generates the utPLSQL HTML coverage report in test-results/coverage.html and offers to open it in the browser or save it as another file (fire-and-forget, after the run ends)."
+        },
         "utplsql.timeoutMinutes": {
           "type": "number",
           "default": 60,
@@ -888,10 +893,6 @@
       },
       {
         "language": "plsql",
-        "path": "./snippets/utplsql.code-snippets"
-      },
-      {
-        "language": "oracle-sql",
         "path": "./snippets/utplsql.code-snippets"
       }
     ],

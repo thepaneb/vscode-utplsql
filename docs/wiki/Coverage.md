@@ -21,6 +21,22 @@ identifying each covered object as `<type> <schema>.<object>`
 (e.g. `package body UT3.CALC`). The extension maps those names to local source files
 using the `utplsql.sourcePath` setting and the `utplsql.coverageOwner` schema.
 
+## HTML coverage report
+
+Set `utplsql.coverage.htmlReport` to `true` to also run
+`ut_coverage_html_reporter` on coverage runs. The extension captures that
+reporter's buffered output (separate `output_id`, so it never contaminates the
+Cobertura XML) and writes it atomically to **`test-results/coverage.html`** in
+the workspace root of the executed suite.
+
+After the run, a notification offers **Open in Browser** and **Save As…**. The
+notification is fire-and-forget and starts only after `run.end()`, so the Test
+Explorer is never held by an unanswered prompt. The report is never rendered in
+a webview; a cancelled run does not write a partial file, and the previous
+`coverage.html` is removed at the start of the next run.
+
+`.gitignore`/`.vscodeignore` ignore `test-results/`.
+
 ## Coverage Scope
 
 By default the whole connection user schema is covered. The scope can be narrowed
