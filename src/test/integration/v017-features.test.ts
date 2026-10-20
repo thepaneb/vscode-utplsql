@@ -5,6 +5,12 @@ import * as path from 'node:path';
 import * as vscode from 'vscode';
 import { UtplsqlCodeLensProvider } from '../../codelens';
 import { readConfig } from '../../config';
+import { discoverWorkspace } from '../../discovery';
+import {
+  buildLanguageGlobs,
+  currentLanguageContributions,
+  workspaceAssociations,
+} from '../../languageIdentity';
 import { closeOraclePool, executeRunOracle, listReportersForConnection } from '../../oracleRunner';
 import { TestStateManager } from '../../state';
 
@@ -72,6 +78,13 @@ function makeState(): TestStateManager {
   return new TestStateManager();
 }
 
+function cancelToken(): vscode.CancellationToken {
+  return {
+    isCancellationRequested: false,
+    onCancellationRequested: () => ({ dispose: () => {} }),
+  } as vscode.CancellationToken;
+}
+
 describe('0.17.0 — PRD-109 (sem banco)', () => {
   after(() => removeFixtures());
 
@@ -90,6 +103,138 @@ describe('0.17.0 — PRD-109 (sem banco)', () => {
     } as vscode.CancellationToken);
 
     assert.strictEqual(lenses.length, 4, 'suite + test devem gerar 2 lenses cada');
+  });
+});
+
+describe('0.17.0 — PRD-109 (files.associations e CodeLens)', () => {
+  const ASSOC_DIR = path.join(TMP_DIR, 'assoc');
+  const ASSOC_EXT = '.v017assoc';
+  const ASSOC_FILE = path.join(ASSOC_DIR, `ut_v017_assoc${ASSOC_EXT}`);
+  const filesConfig = vscode.workspace.getConfiguration('files');
+  let previousAssociations: Record<string, string> | undefined;
+
+  before(async () => {
+    fs.mkdirSync(ASSOC_DIR, { recursive: true });
+    fs.writeFileSync(ASSOC_FILE, TPS_SRC.replace(/ut_v017_tps/g, 'ut_v017_assoc'));
+    previousAssociations =
+      filesConfig.inspect<Record<string, string>>('associations')?.workspaceValue;
+    await filesConfig.update(
+      'associations',
+      { ...(previousAssociations ?? {}), [`*${ASSOC_EXT}`]: 'sql' },
+      vscode.ConfigurationTarget.Workspace,
+    );
+    const ext = vscode.extensions.getExtension('paneb.vscode-utplsql');
+    await ext?.activate();
+  });
+
+  after(async () => {
+    await filesConfig.update(
+      'associations',
+      previousAssociations,
+      vscode.ConfigurationTarget.Workspace,
+    );
+    fs.rmSync(ASSOC_DIR, { recursive: true, force: true });
+  });
+
+  it('descobre a suite pela associação e gera CodeLens', async () => {
+    const cfg = readConfig();
+    const patterns = [
+      ...new Set([
+        ...cfg.includePatterns,
+        ...buildLanguageGlobs(
+          cfg.discoveryLanguageIds,
+          currentLanguageContributions(),
+          workspaceAssociations(),
+        ),
+      ]),
+    ];
+    const suites = await discoverWorkspace(patterns, vscode.workspace.workspaceFolders ?? []);
+    assert.ok(
+      suites.some((suite) => suite.uri.fsPath === ASSOC_FILE),
+      'suite .v017assoc deveria ser descoberta via files.associations',
+    );
+
+    const doc = await vscode.workspace.openTextDocument(vscode.Uri.file(ASSOC_FILE));
+    assert.strictEqual(doc.languageId, 'sql', 'files.associations deveria definir sql');
+    const lenses = new UtplsqlCodeLensProvider().provideCodeLenses(doc, cancelToken());
+    assert.strictEqual(lenses.length, 4, 'suite + test devem gerar 2 lenses cada');
+  });
+
+  it('não duplica CodeLens no provider registrado para .pks', async () => {
+    const file = path.join(ASSOC_DIR, 'ut_v017_dup.pks');
+    fs.writeFileSync(file, TPS_SRC.replace(/ut_v017_tps/g, 'ut_v017_dup'));
+    const doc = await vscode.workspace.openTextDocument(vscode.Uri.file(file));
+    await vscode.window.showTextDocument(doc);
+    const lenses = await vscode.commands.executeCommand<vscode.CodeLens[]>(
+      'vscode.executeCodeLensProvider',
+      doc.uri,
+    );
+    const runLenses = (lenses ?? []).filter((lens) => lens.command?.command === 'utplsql.runLens');
+    assert.strictEqual(
+      runLenses.length,
+      4,
+      `esperava 4 lenses do utPLSQL, recebeu ${runLenses.length}`,
+    );
+  });
+
+  it('respeita discovery.languageIds restrito', async () => {
+    const file = path.join(ASSOC_DIR, 'ut_v017_restrict.tps');
+    fs.writeFileSync(file, TPS_SRC.replace(/ut_v017_tps/g, 'ut_v017_restrict'));
+    const doc = await vscode.workspace.openTextDocument(vscode.Uri.file(file));
+    const cfg = vscode.workspace.getConfiguration('utplsql');
+    const previous = cfg.inspect<string[]>('discovery.languageIds')?.workspaceValue;
+    try {
+      await cfg.update('discovery.languageIds', [], vscode.ConfigurationTarget.Workspace);
+      const lenses = new UtplsqlCodeLensProvider().provideCodeLenses(doc, cancelToken());
+      assert.strictEqual(lenses.length, 0, 'sem languageIds o .tps não deve ter CodeLens');
+    } finally {
+      await cfg.update('discovery.languageIds', previous, vscode.ConfigurationTarget.Workspace);
+    }
+    const lenses = new UtplsqlCodeLensProvider().provideCodeLenses(doc, cancelToken());
+    assert.strictEqual(lenses.length, 4, 'ao restaurar a setting o .tps volta a ter CodeLens');
+  });
+});
+
+describe('0.17.0 — PRD-105 (snippets no editor)', () => {
+  const SNIP_DIR = path.join(TMP_DIR, 'snippets');
+  const SNIP_FILE = path.join(SNIP_DIR, 'ut_v017_snip.pks');
+
+  before(() => {
+    fs.mkdirSync(SNIP_DIR, { recursive: true });
+    fs.writeFileSync(SNIP_FILE, TPS_SRC.replace(/ut_v017_tps/g, 'ut_v017_snip'));
+  });
+
+  after(() => fs.rmSync(SNIP_DIR, { recursive: true, force: true }));
+
+  it('oferece ut-suite e ut-nls-cursor no completion', async () => {
+    const doc = await vscode.workspace.openTextDocument(vscode.Uri.file(SNIP_FILE));
+    await vscode.window.showTextDocument(doc);
+    const list = await vscode.commands.executeCommand<vscode.CompletionList>(
+      'vscode.executeCompletionItemProvider',
+      doc.uri,
+      new vscode.Position(2, 2),
+      undefined,
+    );
+    assert.ok(list, 'completion list ausente');
+    const items = list.items;
+    const bodyOf = (item: vscode.CompletionItem): string =>
+      typeof item.insertText === 'string' ? item.insertText : (item.insertText?.value ?? '');
+
+    const suite = items.find(
+      (item) =>
+        item.kind === vscode.CompletionItemKind.Snippet &&
+        bodyOf(item).includes('CREATE OR REPLACE PACKAGE') &&
+        bodyOf(item).includes('--%suite'),
+    );
+    assert.ok(suite, 'snippet ut-suite não apareceu no completion');
+    assert.ok(bodyOf(suite).includes('--%suitepath'));
+
+    const nls = items.find(
+      (item) =>
+        item.kind === vscode.CompletionItemKind.Snippet && bodyOf(item).includes('ut.set_nls'),
+    );
+    assert.ok(nls, 'snippet ut-nls-cursor não apareceu no completion');
+    assert.match(bodyOf(nls), /ut\.reset_nls/);
   });
 });
 
