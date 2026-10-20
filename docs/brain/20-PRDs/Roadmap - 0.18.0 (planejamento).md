@@ -56,4 +56,4 @@ do VSIX 0.15.0. É complementar à PRD-104 (*pin*/audit/CodeQL) e à PRD-118
 ## Relacionado
 
 - [[MOC - PRDs]]
-- [[Roadmap - 0.17.0 (planejamento)]] · [[Roadmap - 0.19.0 (planejamento)]]
+- [[Roadmap - 0.17.0 (execução)]] · [[Roadmap - 0.19.0 (planejamento)]]

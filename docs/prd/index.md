@@ -166,6 +166,14 @@ notas `prd-*`. O índice navegável do vault é a [[MOC - PRDs]].
 | 96 | [Site público e landing page via GitHub Pages](completed/prd-96-public-landing-page-github-pages.md) | 0.15.0 | 2026-10-07 |
 | 100 | [Geração de suíte a partir do package (scaffold avançado)](completed/prd-100-generate-test-suite.md) | 0.16.0 | 2026-10-09 |
 
+### 🔵 Aprovados
+
+| # | PRD | Versão | Data |
+|---|---|---|---|
+| 105 | [Snippets utPLSQL: biblioteca de annotations e matchers](approved/prd-105-snippets.md) | 0.17.0 | 2026-10-09 |
+| 108 | [Relatório HTML de cobertura aberto no navegador](approved/prd-108-coverage-html-report.md) | 0.17.0 | 2026-10-09 |
+| 109 | [Identidade de linguagem PL/SQL ampliada e languageIds configuráveis](approved/prd-109-language-identity.md) | 0.17.0 | 2026-10-09 |
+
 ### ⚪ Propostos
 
 | # | PRD | Versão | Data |
@@ -187,11 +195,8 @@ notas `prd-*`. O índice navegável do vault é a [[MOC - PRDs]].
 | 102 | [Observabilidade: tracing e instrumentação de desempenho](proposed/prd-102-trace-and-perf-instrumentation.md) | 0.20.0 | 2026-10-09 |
 | 103 | [Reindexação incremental de fontes (watcher por-URI)](proposed/prd-103-incremental-source-reindex.md) | 0.20.0 | 2026-10-09 |
 | 104 | [Cadeia de suprimentos do CI: Dependabot, pin de actions e auditoria de dependências](proposed/prd-104-ci-supply-chain.md) | 0.18.0 | 2026-10-09 |
-| 105 | [Snippets utPLSQL: biblioteca de annotations e matchers](proposed/prd-105-snippets.md) | 0.17.0 | 2026-10-09 |
 | 106 | [Harness de performance: fixture em escala e medição por fases](proposed/prd-106-perf-harness.md) | 0.20.0 | 2026-10-09 |
 | 107 | [Fixture de integração endurecido: usuário sem privilégios e fallbacks](proposed/prd-107-unprivileged-fixture.md) | 0.20.0 | 2026-10-09 |
-| 108 | [Relatório HTML de cobertura aberto no navegador](proposed/prd-108-coverage-html-report.md) | 0.17.0 | 2026-10-09 |
-| 109 | [Identidade de linguagem PL/SQL ampliada e languageIds configuráveis](proposed/prd-109-language-identity.md) | 0.17.0 | 2026-10-09 |
 | 110 | [Hardening defensivo: identificador SQL, redaction de logs e scripts de desenvolvimento](proposed/prd-110-defensive-hardening.md) | 0.18.0 | 2026-10-09 |
 | 111 | [Decompor `executeRunOracle` e agrupar `OracleRunOptions`](proposed/prd-111-decompose-oracle-runner.md) | 0.19.0 | 2026-10-10 |
 | 112 | [Auditoria de tratamento de erros: `catch` silenciosos e robustez](proposed/prd-112-error-handling-audit.md) | 0.23.0 | 2026-10-10 |
@@ -305,6 +310,10 @@ docs/prd/
 │   ├── prd-94-vscode-floor-1-101.md
 │   ├── prd-96-public-landing-page-github-pages.md
 │   ├── prd-100-generate-test-suite.md
+├── approved/        ← aprovados, aguardando implementação
+│   ├── prd-105-snippets.md
+│   ├── prd-108-coverage-html-report.md
+│   ├── prd-109-language-identity.md
 ├── proposed/        ← em avaliação
 │   ├── prd-47-node-26-toolchain.md
 │   ├── prd-60-branch-coverage-investigation.md
@@ -323,11 +332,8 @@ docs/prd/
 │   ├── prd-102-trace-and-perf-instrumentation.md
 │   ├── prd-103-incremental-source-reindex.md
 │   ├── prd-104-ci-supply-chain.md
-│   ├── prd-105-snippets.md
 │   ├── prd-106-perf-harness.md
 │   ├── prd-107-unprivileged-fixture.md
-│   ├── prd-108-coverage-html-report.md
-│   ├── prd-109-language-identity.md
 │   ├── prd-110-defensive-hardening.md
 │   ├── prd-111-decompose-oracle-runner.md
 │   ├── prd-112-error-handling-audit.md

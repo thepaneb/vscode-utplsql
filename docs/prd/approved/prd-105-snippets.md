@@ -4,7 +4,7 @@
 
 | Campo | Valor |
 |---|---|
-| Status | Proposto |
+| Status | Aprovado |
 | Autor | Gil Cleber Barboza |
 | Data | 2026-10-09 |
 | Componente | Extensão `paneb.vscode-utplsql` |
@@ -102,10 +102,12 @@ inexistente).
 - Snippets aparecem em `.pks`/`.pkb`/`.sql` (linguagens `plsql`/`sql`).
 - `npm test`/`lint` verdes.
 
-## 11. Questões em aberto
+## 11. Decisões (2026-10-20)
 
-- Registrar também para `oracle-sql` (ver PRD-109)?
-- Incluir um snippet de pacote inteiro (`%suite` + `%test`)?
+- Registrar também para **`oracle-sql`** (além de `sql` e `plsql`), alinhado ao
+  default de `discovery.languageIds` da PRD-109.
+- Incluir o snippet de pacote inteiro **`ut-suite`** (`%suite` + `%suitepath` +
+  `%test`), além dos snippets por annotation.
 
 ## 12. Impacto no cérebro
 

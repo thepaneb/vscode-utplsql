@@ -133,4 +133,4 @@ Roadmap **encerrado** — o próximo tema é **0.17.0** (PRD-105/108/109).
 ## Relacionado
 
 - [[MOC - PRDs]]
-- [[Roadmap - 0.15.0 (execução)]] · [[Roadmap - 0.17.0 (planejamento)]]
+- [[Roadmap - 0.15.0 (execução)]] · [[Roadmap - 0.17.0 (execução)]]

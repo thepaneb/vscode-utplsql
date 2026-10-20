@@ -2,13 +2,13 @@
 tipo: prd
 id: PRD-109
 aliases: [PRD-109]
-status: proposed
+status: approved
 titulo: "Identidade de linguagem PL/SQL ampliada e languageIds configuráveis"
 versao: "0.17.0"
 data: "2026-10-09"
 autor: "Gil Cleber Barboza"
 versao_titulo: "0.17.0 — UX de editor e cobertura"
-verificado: 2026-10-09
+verificado: 2026-10-20
 regras: []
 tags: [prd]
 ---
@@ -117,10 +117,14 @@ participem de descoberta, CodeLens e decorações.
 - `files.associations` para `sql` funciona na descoberta.
 - Sem CodeLens duplicado; `npm test`/`lint` verdes.
 
-## 11. Questões em aberto
+## 11. Decisões (2026-10-20)
 
-- Manter o id `plsql` ou adotar `oracle-sql` (alinhado ao SQL Developer)?
-- Incluir `.sql` no default de `languageIds` (risco de falso positivo)?
+- Mantido o id contribuído **`plsql`** (sem quebrar usuários/CodeLens existentes);
+  `oracle-sql` é aceito como language ID de terceiros.
+- Default de `utplsql.discovery.languageIds`: **`["plsql", "sql", "oracle-sql"]`**.
+  As extensões de cada ID são resolvidas dinamicamente em `vscode.extensions.all`
+  + `files.associations`; quem quiser evitar a varredura de `.sql` restringe para
+  `["plsql"]`.
 
 ## 12. Impacto no cérebro
 
