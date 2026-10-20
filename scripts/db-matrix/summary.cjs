@@ -94,7 +94,12 @@ function readEntries(file) {
 }
 
 function escapeCell(value) {
-  return String(value ?? '').replace(/\|/g, '\\|').replace(/\r?\n/g, ' ');
+  // Escapa a barra invertida ANTES do pipe: `\|` sem isso pode ser reinterpretado
+  // e permite quebrar a célula da tabela Markdown (CodeQL: incomplete escaping).
+  return String(value ?? '')
+    .replace(/\\/g, '\\\\')
+    .replace(/\|/g, '\\|')
+    .replace(/\r?\n/g, ' ');
 }
 
 function renderSummary(entries) {
@@ -172,7 +177,15 @@ function main(argv) {
   return 1;
 }
 
-module.exports = { parseTestCounts, entry, appendEntry, readEntries, renderSummary };
+module.exports = {
+  parseTestCounts,
+  entry,
+  appendEntry,
+  readEntries,
+  renderSummary,
+  escapeCell,
+  parseArgs,
+};
 
 if (require.main === module) {
   process.exitCode = main(process.argv.slice(2));

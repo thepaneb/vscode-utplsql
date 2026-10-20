@@ -9,7 +9,9 @@ import { test } from 'node:test';
 // Testa o parser/render do resumo da matriz (scripts/db-matrix/summary.cjs).
 const ROOT = path.resolve(__dirname, '../../..');
 const SUMMARY = path.join(ROOT, 'scripts', 'db-matrix', 'summary.cjs');
-const { parseTestCounts, entry, renderSummary } = require(SUMMARY) as {
+const { parseTestCounts, entry, renderSummary, escapeCell, parseArgs, readEntries } = require(
+  SUMMARY,
+) as {
   parseTestCounts: (output: string) => {
     tests: number | null;
     pass: number | null;
@@ -19,6 +21,9 @@ const { parseTestCounts, entry, renderSummary } = require(SUMMARY) as {
   };
   entry: (data: Record<string, unknown>) => Record<string, unknown>;
   renderSummary: (entries: Record<string, unknown>[]) => string;
+  escapeCell: (value: unknown) => string;
+  parseArgs: (argv: string[]) => Record<string, unknown>;
+  readEntries: (file: string) => Record<string, unknown>[];
 };
 
 test('db-matrix summary: parser do node --test', () => {
@@ -115,6 +120,68 @@ test('db-matrix summary: render gera tabela Markdown', () => {
   ]);
   assert.match(md, /\| Banco \| utPLSQL \| Status \|/);
   assert.match(md, /\| 23free \| v\.3\.2\.3 \| passed \| 120 \| 109 \| 0 \| 11 \| 42s \|/);
+});
+
+test('db-matrix summary: escapeCell escapa barra invertida, pipe e newline', () => {
+  assert.strictEqual(escapeCell('A\\B|C\nD'), 'A\\\\B\\|C D');
+  assert.strictEqual(escapeCell(undefined), '');
+});
+
+test('db-matrix summary: parseArgs aceita valor, flag sem valor e ignora posicional', () => {
+  assert.deepStrictEqual(parseArgs(['--file', 'x', '--flag', '--other', 'y', 'posicional']), {
+    file: 'x',
+    flag: true,
+    other: 'y',
+  });
+});
+
+test('db-matrix summary: readEntries de arquivo inexistente retorna []', () => {
+  assert.deepStrictEqual(readEntries('/nao/existe/summary.jsonl'), []);
+});
+
+test('db-matrix summary: render vazio e campos desconhecidos', () => {
+  assert.match(renderSummary([]), /sem execuções/);
+  const md = renderSummary([
+    {
+      label: 'x',
+      utplsql: 'v',
+      status: 'failed',
+      tests: null,
+      pass: null,
+      fail: null,
+      skipped: null,
+      durationSeconds: 0,
+      log: 'l',
+    },
+  ]);
+  assert.match(md, /x \| v \| failed \| \? \| \? \| \? \| \? \| 0s/);
+});
+
+test('db-matrix summary: CLI sem comando/desconhecido falha com uso', () => {
+  for (const args of [[], ['desconhecido']]) {
+    const result = spawnSync(process.execPath, [SUMMARY, ...args], { encoding: 'utf8' });
+    assert.strictEqual(result.status, 1);
+    assert.match(result.stderr, /uso: summary\.cjs/);
+  }
+});
+
+test('db-matrix summary: append sem log ainda grava entrada com contagens nulas', () => {
+  const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'utplsql-matrix-nolog-'));
+  const jsonl = path.join(dir, 'summary.jsonl');
+  try {
+    const result = spawnSync(
+      process.execPath,
+      [SUMMARY, 'append', '--file', jsonl, '--label', 'x', '--status', 'failed'],
+      { encoding: 'utf8' },
+    );
+    assert.strictEqual(result.status, 0, result.stderr);
+    const [row] = readEntries(jsonl);
+    assert.strictEqual(row.label, 'x');
+    assert.strictEqual(row.tests, null);
+    assert.strictEqual(row.status, 'failed');
+  } finally {
+    fs.rmSync(dir, { recursive: true, force: true });
+  }
 });
 
 test('db-matrix summary: CLI append + render', () => {
