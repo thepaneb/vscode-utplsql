@@ -30,7 +30,7 @@ npm run sync-prds
 
 - **0.15.0 — “Tags e UX de execução”**: [[Roadmap - 0.15.0 (execução)]]
 - **0.16.0 — “Produtividade e resultados”**: [[Roadmap - 0.16.0 (execução)]]
-- **0.17.0 — “UX de editor e cobertura”**: [[Roadmap - 0.17.0 (planejamento)]]
+- **0.17.0 — “UX de editor e cobertura”**: [[Roadmap - 0.17.0 (execução)]]
 - **0.18.0 — “Fundação: segurança, testes e anti-drift”**: [[Roadmap - 0.18.0 (planejamento)]]
 - **0.19.0 — “Refatoração de fundo”**: [[Roadmap - 0.19.0 (planejamento)]]
 - **0.20.0 — “Observabilidade e desempenho”**: [[Roadmap - 0.20.0 (planejamento)]]
@@ -41,8 +41,8 @@ npm run sync-prds
 ## Status (gerado)
 
 <!-- brain:auto:start:prd-summary -->
-- 📝 Propostos: **36**
-- 🔵 Aprovados: **0**
+- 📝 Propostos: **33**
+- 🔵 Aprovados: **3**
 - 🟡 Em desenvolvimento: **0**
 - 🟢 Concluídos: **87**
 
@@ -185,7 +185,7 @@ Detalhe completo (fonte da verdade): [docs/prd/index.md](../../prd/index.md)
 - [[prd-99-brain-reuse]] — `PRD-99`
 - [[Roadmap - 0.15.0 (execução)]]
 - [[Roadmap - 0.16.0 (execução)]]
-- [[Roadmap - 0.17.0 (planejamento)]]
+- [[Roadmap - 0.17.0 (execução)]]
 - [[Roadmap - 0.18.0 (planejamento)]]
 - [[Roadmap - 0.19.0 (planejamento)]]
 - [[Roadmap - 0.20.0 (planejamento)]]

@@ -2,13 +2,13 @@
 tipo: prd
 id: PRD-105
 aliases: [PRD-105]
-status: proposed
+status: approved
 titulo: "Snippets utPLSQL: biblioteca de annotations e matchers"
 versao: "0.17.0"
 data: "2026-10-09"
 autor: "Gil Cleber Barboza"
 versao_titulo: "0.17.0 — UX de editor e cobertura"
-verificado: 2026-10-09
+verificado: 2026-10-20
 regras: []
 tags: [prd]
 ---
@@ -114,10 +114,12 @@ inexistente).
 - Snippets aparecem em `.pks`/`.pkb`/`.sql` (linguagens `plsql`/`sql`).
 - `npm test`/`lint` verdes.
 
-## 11. Questões em aberto
+## 11. Decisões (2026-10-20)
 
-- Registrar também para `oracle-sql` (ver PRD-109)?
-- Incluir um snippet de pacote inteiro (`%suite` + `%test`)?
+- Registrar também para **`oracle-sql`** (além de `sql` e `plsql`), alinhado ao
+  default de `discovery.languageIds` da PRD-109.
+- Incluir o snippet de pacote inteiro **`ut-suite`** (`%suite` + `%suitepath` +
+  `%test`), além dos snippets por annotation.
 
 ## 12. Impacto no cérebro
 

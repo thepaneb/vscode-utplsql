@@ -4,7 +4,7 @@
 
 | Campo | Valor |
 |---|---|
-| Status | Proposto |
+| Status | Aprovado |
 | Autor | Gil Cleber Barboza |
 | Data | 2026-10-09 |
 | Componente | Extensão `paneb.vscode-utplsql` |
@@ -105,10 +105,14 @@ participem de descoberta, CodeLens e decorações.
 - `files.associations` para `sql` funciona na descoberta.
 - Sem CodeLens duplicado; `npm test`/`lint` verdes.
 
-## 11. Questões em aberto
+## 11. Decisões (2026-10-20)
 
-- Manter o id `plsql` ou adotar `oracle-sql` (alinhado ao SQL Developer)?
-- Incluir `.sql` no default de `languageIds` (risco de falso positivo)?
+- Mantido o id contribuído **`plsql`** (sem quebrar usuários/CodeLens existentes);
+  `oracle-sql` é aceito como language ID de terceiros.
+- Default de `utplsql.discovery.languageIds`: **`["plsql", "sql", "oracle-sql"]`**.
+  As extensões de cada ID são resolvidas dinamicamente em `vscode.extensions.all`
+  + `files.associations`; quem quiser evitar a varredura de `.sql` restringe para
+  `["plsql"]`.
 
 ## 12. Impacto no cérebro
 

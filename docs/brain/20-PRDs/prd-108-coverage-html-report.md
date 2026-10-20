@@ -2,13 +2,13 @@
 tipo: prd
 id: PRD-108
 aliases: [PRD-108]
-status: proposed
+status: approved
 titulo: "Relatório HTML de cobertura aberto no navegador"
 versao: "0.17.0"
 data: "2026-10-09"
 autor: "Gil Cleber Barboza"
 versao_titulo: "0.17.0 — UX de editor e cobertura"
-verificado: 2026-10-09
+verificado: 2026-10-20
 regras: []
 tags: [prd]
 ---
@@ -118,10 +118,14 @@ Hoje só temos o painel nativo + Cobertura.
 - Com o setting off, nenhuma mudança de comportamento.
 - Nenhum HTML renderizado em webview; `npm test`/`lint` verdes.
 
-## 11. Questões em aberto
+## 11. Decisões (2026-10-20)
 
-- Guardar o HTML em `test-results/`/workspace ou em pasta temp do SO?
-- Oferecer "Salvar como…" sempre ou só quando o navegador não abrir?
+- Guardar o HTML em **`test-results/coverage.html` no workspace** (root da suíte
+  executada; fallback para temp do SO sem workspace). `test-results/` entra no
+  `.gitignore`/`.vscodeignore`; a escrita é atômica e o alvo é removido no início
+  do run.
+- Oferecer **"Abrir no navegador" e "Salvar como…" sempre**, de forma
+  fire-and-forget depois do `run.end()`.
 
 ## 12. Impacto no cérebro
 
