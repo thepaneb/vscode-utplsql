@@ -116,4 +116,31 @@ describeDB('comandos E2E — handlers sem cobertura direta', () => {
     await vscode.commands.executeCommand('workbench.action.closeAllEditors');
     await vscode.commands.executeCommand('utplsql.runScript');
   });
+
+  it('utplsql.rebuildAnnotations executa contra o banco sem lançar', async function () {
+    this.timeout(180_000);
+    await vscode.commands.executeCommand('utplsql.rebuildAnnotations');
+  });
+
+  it('utplsql.compileForDebug sem editor ativo avisa sem lançar', async function () {
+    this.timeout(30_000);
+    await vscode.commands.executeCommand('workbench.action.closeAllEditors');
+    await vscode.commands.executeCommand('utplsql.compileForDebug');
+  });
+
+  it('utplsql.runByTag abre o picker e cancelar não executa', async function () {
+    this.timeout(30_000);
+    const running = vscode.commands.executeCommand('utplsql.runByTag');
+    await new Promise((resolve) => setTimeout(resolve, 300));
+    await vscode.commands.executeCommand('workbench.action.closeQuickOpen');
+    await running;
+  });
+
+  it('utplsql.runWithReporter abre o picker e cancelar não executa', async function () {
+    this.timeout(30_000);
+    const running = vscode.commands.executeCommand('utplsql.runWithReporter');
+    await new Promise((resolve) => setTimeout(resolve, 300));
+    await vscode.commands.executeCommand('workbench.action.closeQuickOpen');
+    await running;
+  });
 });

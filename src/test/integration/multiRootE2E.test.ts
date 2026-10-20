@@ -1,5 +1,7 @@
 /// <reference types="mocha" />
 import * as assert from 'node:assert';
+import * as fs from 'node:fs';
+import * as path from 'node:path';
 import * as vscode from 'vscode';
 import { installOutFormatIsolation } from './helpers';
 
@@ -18,10 +20,24 @@ const describeMulti = hasConnection() && folderCount >= 2 ? describe : describe.
 
 describeMulti('multi-root — 2 pastas de workspace (integração)', () => {
   installOutFormatIsolation();
+  const workspaceFile = vscode.workspace.workspaceFile;
+  const workspacePath = workspaceFile?.scheme === 'file' ? workspaceFile.fsPath : undefined;
+  let originalWorkspace: string | undefined;
 
   before(async () => {
+    if (workspacePath) {
+      originalWorkspace = fs.readFileSync(workspacePath, 'utf8');
+    }
     const ext = vscode.extensions.getExtension('paneb.vscode-utplsql');
     await ext?.activate();
+  });
+
+  after(() => {
+    // `files.associations` é window-scoped; o VS Code regrava o .code-workspace
+    // com `settings: {}` ao remover a setting. Restaura o fixture byte a byte.
+    if (workspacePath && originalWorkspace !== undefined) {
+      fs.writeFileSync(workspacePath, originalWorkspace);
+    }
   });
 
   it('expõe exatamente 2 pastas no workspace', () => {
@@ -66,5 +82,65 @@ describeMulti('multi-root — 2 pastas de workspace (integração)', () => {
       folders.map((f) => f.uri.fsPath).sort(),
       'as duas pastas deveriam entrar na resolução de root da execução',
     );
+  });
+
+  it('files.associations + multi-root atribui a suíte à pasta correta (PRD-109)', async function () {
+    this.timeout(120_000);
+    const folder = vscode.workspace.workspaceFolders?.[0];
+    assert.ok(folder, 'primeira pasta do multi-root ausente');
+    const ext = '.v017multi';
+    const file = path.join(folder.uri.fsPath, `ut_v017_multi${ext}`);
+    // `files.associations` é window-scoped (não aceita Folder Settings), então
+    // o teste valida a associação global + a resolução da pasta da suíte.
+    const cfg = vscode.workspace.getConfiguration('files');
+    const previous = cfg.inspect<Record<string, string>>('associations')?.workspaceValue;
+    fs.writeFileSync(
+      file,
+      `CREATE OR REPLACE PACKAGE ut_v017_multi IS
+  --%suite(v0.17 multi)
+
+  --%test(passa)
+  PROCEDURE ok;
+END ut_v017_multi;
+`,
+    );
+    try {
+      await cfg.update(
+        'associations',
+        { ...(previous ?? {}), [`*${ext}`]: 'sql' },
+        vscode.ConfigurationTarget.Workspace,
+      );
+      const [
+        { readConfig },
+        { buildLanguageGlobs, currentLanguageContributions, workspaceAssociations },
+        { discoverWorkspace },
+      ] = await Promise.all([
+        import('../../config.js'),
+        import('../../languageIdentity.js'),
+        import('../../discovery.js'),
+      ]);
+      const config = readConfig();
+      const patterns = [
+        ...new Set([
+          ...config.includePatterns,
+          ...buildLanguageGlobs(
+            config.discoveryLanguageIds,
+            currentLanguageContributions(),
+            workspaceAssociations(vscode.workspace.workspaceFolders),
+          ),
+        ]),
+      ];
+      const suites = await discoverWorkspace(patterns, vscode.workspace.workspaceFolders);
+      const found = suites.find((suite) => suite.uri.fsPath === file);
+      assert.ok(found, 'suite .v017multi deveria ser descoberta via associação');
+      assert.strictEqual(
+        found?.folder.name,
+        folder.name,
+        'a suíte deveria ser atribuída à pasta que contém o arquivo',
+      );
+    } finally {
+      await cfg.update('associations', previous, vscode.ConfigurationTarget.Workspace);
+      fs.rmSync(file, { force: true });
+    }
   });
 });
