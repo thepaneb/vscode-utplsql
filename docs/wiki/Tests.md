@@ -13,7 +13,7 @@ Overview of the extension's tests and how to run them.
 
 ## Unit tests
 
-Unit tests live in `src/test/unit/` (78 files at 0.17.0). They cover pure
+Unit tests live in `src/test/unit/` (78 files at 0.17.1). They cover pure
 modules and modules that depend on `vscode`, using `src/test/vscode-stub.ts`.
 The folder is the source of truth for the current list; run
 `npm run test:unit` to execute it.
@@ -89,7 +89,7 @@ src/test/integration/
 └── thickMode.test.ts
 ```
 
-Integration tests live in `src/test/integration/` (26 files at 0.17.0), with two
+Integration tests live in `src/test/integration/` (26 files at 0.17.1), with two
 modes:
 
 - **Without database**: test discovery, commands, UI — do not require Oracle

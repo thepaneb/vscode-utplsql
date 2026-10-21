@@ -4,7 +4,7 @@ status: ativo
 titulo: "Tests"
 publicar: docs/wiki/Tests.md
 origem: ["01-test-discovery","02-test-execution","03-results-and-reporting"]
-verificado: 2026-09-23
+verificado: 2026-10-21
 regras: ["BR-TEST-001", "BR-TEST-002"]
 tags: [wiki]
 ---
@@ -22,7 +22,7 @@ Overview of the extension's tests and how to run them.
 
 ## Unit tests
 
-Unit tests live in `src/test/unit/` (78 files at 0.17.0). They cover pure
+Unit tests live in `src/test/unit/` (78 files at 0.17.1). They cover pure
 modules and modules that depend on `vscode`, using `src/test/vscode-stub.ts`.
 The folder is the source of truth for the current list; run
 `npm run test:unit` to execute it.
@@ -98,7 +98,7 @@ src/test/integration/
 └── thickMode.test.ts
 ```
 
-Integration tests live in `src/test/integration/` (26 files at 0.17.0), with two
+Integration tests live in `src/test/integration/` (26 files at 0.17.1), with two
 modes:
 
 - **Without database**: test discovery, commands, UI — do not require Oracle
