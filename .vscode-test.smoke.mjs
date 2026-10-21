@@ -13,5 +13,8 @@ export default {
     'out/test/integration/oracleCapabilities.test.js',
     'out/test/integration/debuggerE2E.test.js',
     'out/test/integration/debuggerStandaloneFn.test.js',
+    // Cobre as features da versão corrente (0.17: CodeLens/associações/snippets/
+    // HTML de cobertura) também no smoke de cada banco da matriz.
+    'out/test/integration/v017-features.test.js',
   ],
 };

@@ -101,4 +101,15 @@ jobs:
           command -v xvfb-run >/dev/null 2>&1 || { sudo apt-get update && sudo apt-get install -y xvfb; }
 
       - name: Run integration matrix (18c, 21c, 23ai)
-        run: bash scripts/db-matrix/run.sh --only 18xe,21xe,23free --tests "xvfb-run -a npm run test:integration"
+        run: bash scripts/db-matrix/run.sh --only 18xe,21xe,23free --tests "xvfb-run -a bash -c 'npm run test:integration && npm run test:integration:multiroot'"
+
+      - name: Upload matrix summary
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: db-matrix-summary
+          path: |
+            docker/db-matrix/.cache/matrix-summary-*.md
+            docker/db-matrix/.cache/matrix-summary-*.jsonl
+            docker/db-matrix/.cache/logs/*.log
+          if-no-files-found: warn

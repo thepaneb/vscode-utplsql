@@ -8,13 +8,18 @@
 #   scripts/db-matrix/run.sh                        # roda a matriz inteira
 #   scripts/db-matrix/run.sh --only 21xe
 #   scripts/db-matrix/run.sh --only 18xe,19ee
-#   scripts/db-matrix/run.sh --smoke                # só capacidades + debugger (~1 min/versão)
-#   scripts/db-matrix/run.sh --thick                # thick mode (Instant Client) por versão
+#   scripts/db-matrix/run.sh --smoke                # smoke: capacidades + debugger + v017 (~1 min/versão)
+#   scripts/db-matrix/run.sh --thick                # thick smoke: Instant Client + conexão
+#   scripts/db-matrix/run.sh --full                 # integração completa + multi-root por banco
 #   scripts/db-matrix/run.sh --clean --only 18xe    # apaga o volume e recria o banco
-#   scripts/db-matrix/run.sh --skip-bootstrap       # volume já preparado: pula o bootstrap
+#   scripts/db-matrix/run.sh --skip-bootstrap       # volume já preparado (valida UT3/TEST antes)
 #   scripts/db-matrix/run.sh --bootstrap-only --only 21xe
 #   scripts/db-matrix/run.sh --keep-db --only 23free     # não derruba no fim
+#   scripts/db-matrix/run.sh --continue-on-error    # segue para o próximo banco se um falhar
 #   scripts/db-matrix/run.sh --tests "npm run test:integration"
+#
+# Resultado: logs em docker/db-matrix/.cache/logs/<label>.log e resumo
+# JSONL/Markdown em docker/db-matrix/.cache/matrix-summary-<timestamp>.{jsonl,md}.
 #
 # Persistência: os dados ficam num volume nomeado por versão
 # (`utplsql-dbmatrix-<label>`). A 1ª run cria o banco (~15-25 min); as seguintes
@@ -58,8 +63,61 @@ KEEP_DB=0
 KEEP_IMAGE=0
 NO_PULL=0
 CLEAN=0
+CONTINUE_ON_ERROR=0
+CURRENT_IMAGE=""
+# WSL pode não ter `node` no PATH (o binário real é `node.exe` do Windows);
+# o resumo é opcional e não pode derrubar a matriz.
+NODE_BIN="$(command -v node 2>/dev/null || command -v node.exe 2>/dev/null || true)"
+node_path() {
+  # node.exe do Windows não resolve caminhos /mnt/...; converte via wslpath.
+  if [[ "$NODE_BIN" == *.exe ]] && command -v wslpath >/dev/null 2>&1; then
+    wslpath -w "$1"
+  else
+    printf '%s' "$1"
+  fi
+}
+LOG_DIR="${LOG_DIR:-$ROOT_DIR/docker/db-matrix/.cache/logs}"
+SUMMARY_FILE="${MATRIX_SUMMARY_FILE:-$ROOT_DIR/docker/db-matrix/.cache/matrix-summary-$(date +%Y%m%d-%H%M%S).jsonl}"
 
 log() { printf '\n\033[1m== %s\033[0m\n' "$*"; }
+
+mask_conn() {
+  # Nunca logar a senha da conexão (CWE-532).
+  sed -E 's#^([^/]+)/[^@]*@#\1/***@#' <<< "$1"
+}
+
+cleanup() {
+  if [ "${KEEP_DB:-0}" = 1 ]; then
+    return 0
+  fi
+  compose down --remove-orphans >/dev/null 2>&1 || true
+  if [ "${KEEP_IMAGE:-0}" = 0 ] && [ -n "${CURRENT_IMAGE:-}" ]; then
+    docker image rm "$CURRENT_IMAGE" >/dev/null 2>&1 || true
+  fi
+}
+
+assert_bootstrapped() {
+  local ut3_ok test_ok
+  ut3_ok="$(docker exec -i -e "DBU=UT3" -e "DBP=$UT3_PASSWORD" -e "DBS=$service" "$CONTAINER" \
+    bash -lc '$ORACLE_HOME/bin/sqlplus -s "$DBU/$DBP@//localhost:1521/$DBS"' <<'SQL' 2>&1 | tr -d '\r'
+SET HEADING OFF FEEDBACK OFF PAGESIZE 0
+SELECT 'OK' FROM user_objects WHERE object_name = 'UT_RUNNER' AND object_type = 'PACKAGE';
+EXIT
+SQL
+)"
+  test_ok="$(docker exec -i -e "DBU=UTPLSQL_TEST" -e "DBP=$TEST_PASSWORD" -e "DBS=$service" "$CONTAINER" \
+    bash -lc '$ORACLE_HOME/bin/sqlplus -s "$DBU/$DBP@//localhost:1521/$DBS"' <<'SQL' 2>&1 | tr -d '\r'
+SET HEADING OFF FEEDBACK OFF PAGESIZE 0
+SELECT 'OK' FROM dual;
+EXIT
+SQL
+)"
+  if ! grep -q 'OK' <<<"$ut3_ok" || ! grep -q 'OK' <<<"$test_ok"; then
+    echo "volume $DB_VOLUME não tem bootstrap válido para $label." >&2
+    echo "rode sem --skip-bootstrap (ou com --clean) para reinstalar UT3/UTPLSQL_TEST." >&2
+    exit 1
+  fi
+}
 
 usage() { grep '^#' "$0" | sed 's/^# \{0,1\}//'; }
 
@@ -70,11 +128,13 @@ while [ $# -gt 0 ]; do
     --tests) TESTS_CMD="$2"; shift 2 ;;
     --smoke) TESTS_CMD="npm run test:integration:smoke"; shift ;;
     --thick) TESTS_CMD="npm run test:integration:thick"; shift ;;
+    --full) TESTS_CMD="npm run test:integration && npm run test:integration:multiroot"; shift ;;
     --bootstrap-only) BOOTSTRAP_ONLY=1; shift ;;
     --skip-bootstrap) SKIP_BOOTSTRAP=1; shift ;;
     --clean) CLEAN=1; shift ;;
     --keep-db) KEEP_DB=1; shift ;;
     --keep-image) KEEP_IMAGE=1; shift ;;
+    --continue-on-error) CONTINUE_ON_ERROR=1; shift ;;
     --no-pull) NO_PULL=1; shift ;;
     -h|--help) usage; exit 0 ;;
     *) echo "opção desconhecida: $1" >&2; usage; exit 1 ;;
@@ -82,6 +142,7 @@ while [ $# -gt 0 ]; do
 done
 
 compose() { docker compose -f "$COMPOSE_FILE" "$@"; }
+trap cleanup EXIT INT TERM
 
 login_registry() {
   if [ -n "${ORACLE_AUTH_USER:-}" ] && [ -n "${ORACLE_AUTH_TOKEN:-}" ]; then
@@ -94,6 +155,7 @@ login_registry() {
 selected() { [ -z "$ONLY" ] && return 0; case ",$ONLY," in *",$1,"*) return 0 ;; esac; return 1; }
 
 login_registry
+mkdir -p "$LOG_DIR" "$(dirname "$SUMMARY_FILE")"
 
 mapfile -t VERSION_LINES < <(echo "$VERSIONS" | sed '/^$/d')
 for __line in "${VERSION_LINES[@]}"; do
@@ -102,8 +164,8 @@ for __line in "${VERSION_LINES[@]}"; do
   local_utplsql_version="$UTPLSQL_BASE_VERSION"
   if command -v node >/dev/null 2>&1; then
     IFS='|' read -r label image service local_utplsql_version <<< \
-      "$(node "$SCRIPT_DIR/parse-version.cjs" "$__line" "$UTPLSQL_BASE_VERSION" | \
-        node -e 'let s="";process.stdin.on("data",d=>s+=d).on("end",()=>{const j=JSON.parse(s);process.stdout.write([j.label,j.image,j.service,j.utplsqlVersion].join("|"))})')"
+      "$("$NODE_BIN" "$(node_path "$SCRIPT_DIR/parse-version.cjs")" "$__line" "$UTPLSQL_BASE_VERSION" | \
+        "$NODE_BIN" -e 'let s="";process.stdin.on("data",d=>s+=d).on("end",()=>{const j=JSON.parse(s);process.stdout.write([j.label,j.image,j.service,j.utplsqlVersion].join("|"))})')"
   else
     IFS='|' read -r label image service version_field <<< "$__line"
     local_utplsql_version="${version_field:-$UTPLSQL_BASE_VERSION}"
@@ -111,6 +173,7 @@ for __line in "${VERSION_LINES[@]}"; do
   label="$(echo "$label" | tr -d ' ')"; image="$(echo "$image" | tr -d ' ')"
   service="$(echo "$service" | tr -d ' ')"; local_utplsql_version="$(echo "$local_utplsql_version" | tr -d ' ')"
   selected "$label" || continue
+  CURRENT_IMAGE="$image"
   log "$label — $image (serviço $service, utPLSQL $local_utplsql_version)"
 
   # Volume de dados por versão: a 1ª subida cria o banco; as demais reaproveitam.
@@ -133,7 +196,8 @@ for __line in "${VERSION_LINES[@]}"; do
   if [ "$SKIP_BOOTSTRAP" = 0 ]; then
     bash "$SCRIPT_DIR/bootstrap.sh" "$CONTAINER" "$service"
   else
-    log "pulando bootstrap (--skip-bootstrap): usando UT3/UTPLSQL_TEST já no volume"
+    log "pulando bootstrap (--skip-bootstrap): validando UT3/UTPLSQL_TEST no volume"
+    assert_bootstrapped
   fi
 
   if [ "$BOOTSTRAP_ONLY" = 0 ]; then
@@ -142,8 +206,29 @@ for __line in "${VERSION_LINES[@]}"; do
     # a variável atravessar para o processo dos testes. ORACLE_CLIENT_LIB_DIR/
     # TNS_ADMIN só são usados pelo modo --thick.
     export WSLENV="UTPLSQL_CONN${ORACLE_CLIENT_LIB_DIR:+:ORACLE_CLIENT_LIB_DIR}${TNS_ADMIN:+:TNS_ADMIN}${WSLENV:+:$WSLENV}"
-    log "rodando testes: $TESTS_CMD  (UTPLSQL_CONN=$UTPLSQL_CONN)"
-    (cd "$ROOT_DIR" && eval "$TESTS_CMD")
+    test_log="$LOG_DIR/$label.log"
+    start_ts="$(date +%s)"
+    log "rodando testes: $TESTS_CMD  (UTPLSQL_CONN=$(mask_conn "$UTPLSQL_CONN"))"
+    set +e
+    (cd "$ROOT_DIR" && eval "$TESTS_CMD") 2>&1 | tee "$test_log"
+    test_status="${PIPESTATUS[0]}"
+    set -e
+    duration="$(( $(date +%s) - start_ts ))"
+    if [ -n "$NODE_BIN" ]; then
+      "$NODE_BIN" "$(node_path "$SCRIPT_DIR/summary.cjs")" append \
+        --file "$(node_path "$SUMMARY_FILE")" \
+        --label "$label" \
+        --image "$image" \
+        --utplsql "$local_utplsql_version" \
+        --status "$([ "$test_status" -eq 0 ] && echo passed || echo failed)" \
+        --log "$(node_path "$test_log")" \
+        --duration "$duration"
+    else
+      log "node não encontrado: resumo JSONL/Markdown não será gerado"
+    fi
+    if [ "$test_status" -ne 0 ] && [ "$CONTINUE_ON_ERROR" = 0 ]; then
+      exit "$test_status"
+    fi
   fi
 
   if [ "$KEEP_DB" = 1 ]; then
@@ -157,5 +242,12 @@ for __line in "${VERSION_LINES[@]}"; do
     fi
   fi
 done
+
+if [ -f "$SUMMARY_FILE" ] && [ -n "$NODE_BIN" ]; then
+  "$NODE_BIN" "$(node_path "$SCRIPT_DIR/summary.cjs")" render \
+    --file "$(node_path "$SUMMARY_FILE")" \
+    --out "$(node_path "${SUMMARY_FILE%.jsonl}.md")"
+  log "resumo da matriz: ${SUMMARY_FILE%.jsonl}.md"
+fi
 
 log "matriz concluída"
