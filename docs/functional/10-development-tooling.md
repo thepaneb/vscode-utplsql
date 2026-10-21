@@ -34,6 +34,7 @@ Ferramentas e infraestrutura de desenvolvimento do projeto.
 | `npm run brain:ci` | `brain:sync` + `brain:build` + `brain:check` + `brain:rules` + `brain:gaps` (roda no CI) |
 | `npm run brain:gaps` | Reporta arquivos do repo sem referência no cérebro (`scripts/brain-gaps.cjs`; estrito, `--warn` não falha) |
 | `npm run docs:check` | Consistência da documentação versionada (roda no CI) |
+| `npm run version:check` | Garante `package.json` = `package-lock.json` = topo do `CHANGELOG` = `softwareVersion` do site e impede `.vsix` com versão fixa nos docs atuais (roda no CI) |
 | `npm run sync-prds` | Atualiza labels/issues no GitHub |
 | `npm run pr:create` | Cria pull request (`scripts/create-pr.cjs`) |
 | `npm run release:create` | Cria a **GitHub release** (dispara o `publish.yml`); notas do CHANGELOG (`scripts/create-release.cjs`) |

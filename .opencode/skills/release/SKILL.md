@@ -14,11 +14,12 @@ roda compile/lint/test/package e publica no Marketplace). **Nunca** rode
 
 - `npm run test:unit`, `npm run lint` e (com banco) `npm run test:integration` verdes.
 - Sem pendências de documentação: `npm run docs:check`.
+- Versão sincronizada: `npm run version:check` (package ↔ lock ↔ CHANGELOG ↔ site).
 
 ## Passos
 
 1. **Versão** — `minor` para feature, `patch` para correção. Defina `X.Y.Z`.
-2. **`package.json`** — atualize `"version"`.
+2. **`package.json`** — atualize `"version"` e rode `npm run version:check`.
 3. **`CHANGELOG.md`** — crie a seção `## X.Y.Z` no topo; se houver `## Unreleased`,
    mova os itens para ela (não deixe `Unreleased` órfã).
 4. **PRDs da versão** — conclua os PRDs entregues (mover para `completed/`,
@@ -45,7 +46,7 @@ grep "| X.Y.Z |" docs/prd/index.md | wc -l        # PRDs concluídos na versão
 
 ## Verificação (obrigatória)
 
-- [ ] `package.json` e a seção do `CHANGELOG` batem (`X.Y.Z`)
+- [ ] `package.json`, `package-lock.json`, topo do `CHANGELOG` e `softwareVersion` do site batem (`npm run version:check`)
 - [ ] PRDs concluídos da versão com a coluna **Versão** preenchida
 - [ ] PRDs concluídos (>= 0.14.0) com `regras:` derivado e vínculo bidirecional
       (`npm run brain:rules`)

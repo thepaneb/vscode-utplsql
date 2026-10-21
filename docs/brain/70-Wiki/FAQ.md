@@ -4,7 +4,7 @@ status: ativo
 titulo: "FAQ"
 publicar: docs/wiki/FAQ.md
 origem: ["MOC - Documentacao"]
-verificado: 2026-09-23
+verificado: 2026-10-21
 tags: [wiki]
 ---
 
@@ -189,8 +189,8 @@ to the Marketplace is done **exclusively** via a GitHub release (through the
 
 ```bash
 npm run package
-# generates: vscode-utplsql-0.17.0.vsix
-code --install-extension vscode-utplsql-0.17.0.vsix
+# generates: vscode-utplsql-<version>.vsix
+code --install-extension "$(ls -t vscode-utplsql-*.vsix | head -1)"
 ```
 
 ---

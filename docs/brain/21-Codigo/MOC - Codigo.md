@@ -113,6 +113,7 @@ SORT id ASC
 - [[COD - types.ts]] — `COD-types.ts`
 - [[COD - utility.ts]] — `COD-utility.ts`
 - [[COD - utplsql.code-snippets]] — `COD-utplsql.code-snippets`
+- [[COD - version-check.cjs]] — `COD-version-check.cjs`
 - [[COD - viewCoverage.ts]] — `COD-viewCoverage.ts`
 - [[COD - virtualSource.ts]] — `COD-virtualSource.ts`
 - [[COD - vsce.cjs]] — `COD-vsce.cjs`
