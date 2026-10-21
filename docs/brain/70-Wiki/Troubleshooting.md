@@ -32,7 +32,7 @@ Common issues and their solutions.
 ```
 
 Use `utPLSQL: Refresh Tests` (palette) to force rediscovery.
-For automatic diagnostics, run `utPLSQL: Validate Configuration`.
+For automatic diagnostics, run `utPLSQL: Validate setup`.
 
 ---
 

@@ -124,6 +124,7 @@ ALTER PACKAGE <schema>.<package> COMPILE DEBUG PLSQL_OPTIMIZE_LEVEL = 1;
 | `utplsql.debugger.enabled` | `true` | Enables PL/SQL test debugging |
 | `utplsql.debugger.stopOnException` | `true` | Pauses when an unhandled exception is raised |
 | `utplsql.debugger.timeoutSeconds` | `300` | Debug session timeout (terminates on expiry) |
+| `utplsql.debugger.compileOnDebug` | `false` | Recompiles the object with `COMPILE DEBUG` before starting the session |
 
 ## What you get
 

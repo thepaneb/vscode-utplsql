@@ -32,6 +32,8 @@
 
 - 🧪 **ネイティブ Test Explorer** — スイートとテストがテストビューに表示されます。テスト単位・スイート単位・ファイル単位・フォルダー単位で実行できます。
 - 🔍 **CodeLens** — エディター内の `%suite` と `%test` の上に Run/Run with Coverage ボタンを表示。コードから離れることなく実行できます。
+- 🧬 **PL/SQL 言語アイデンティティ** — 検出、CodeLens、装飾は `utplsql.discovery.languageIds`（デフォルト: `plsql`、`sql`、`oracle-sql`）と `files.associations` に従います。`.pls`、`.plb`、`.tps`、`.tpb`、`.vw` および独自拡張子も機能します。
+- ✂️ **スニペット** — utPLSQL の annotation（`%suite`、`%test`、`%context`、lifecycle、`%tags`/`%throws`）と主要な `ut.expect` matcher の `ut-` スニペット。`sql` と `plsql` で利用できます。
 - ⌨️ **キーボードショートカット** — `Ctrl+Shift+U` プレフィックス + キーで主要コマンドを実行（R = Run All、T = Run File、L = Rerun Last など）。
 - 🖱️ **コンテキストメニュー** — **フォルダー**または **`.pks`/`.pkb`** ファイルを右クリック（Explorer またはエディター内）してテストを実行。
 - 🔁 **スマート再実行** — ショートカット 1 つで Rerun Last / Run at Cursor / Run Failed Only。
@@ -54,6 +56,7 @@
 - 📈 **ステートメントとビューのカバレッジ** — Coverage タブにファイルごとの `% of statements`（PROCEDURE/FUNCTION）を表示し、`V$SQL` 経由で実行されたビューを追跡。
 - 🎯 **カバレッジ範囲** — オブジェクトや schema/object の正規表現（`utplsql.coverage.*`）で包含/除外し、フレームワークのノイズを除去して動的に到達するオブジェクトを追加します。
 - 🗂️ **仮想データベースソース** — ローカルファイルがない場合、*jump to failure* とカバレッジは `ALL_SOURCE` から解決した読み取り専用ドキュメントを開きます（`utplsql-source:/…`）。
+- 🧾 **HTML カバレッジレポート** — `utplsql.coverage.htmlReport` を有効にすると、実行は `test-results/coverage.html` を書き込み、Test Explorer をブロックせずに **ブラウザーで開く** / **ファイルに保存…** を提供します。
 
 ### デバッガー
 
@@ -167,7 +170,7 @@ Test Explorer に表示されます。
 | `utplsql.coverage.includeObjectExpr` | `""` | カバレッジに含めるオブジェクトの正規表現。 |
 | `utplsql.coverage.excludeSchemaExpr` | `""` | カバレッジから除外するスキーマの正規表現。 |
 | `utplsql.coverage.excludeObjectExpr` | `""` | カバレッジから除外するオブジェクトの正規表現（例: utPLSQL フレームワークには `^UT_`）。 |
-| `utplsql.coverage.htmlReport` | `false` | カバレッジの HTML レポートを `test-results/coverage.html` に書き込み、実行後に **ブラウザーで開く** / **名前を付けて保存…** を提供します（fire-and-forget）。 |
+| `utplsql.coverage.htmlReport` | `false` | カバレッジの HTML レポートを `test-results/coverage.html` に書き込み、実行後に **ブラウザーで開く** / **ファイルに保存…** を提供します（fire-and-forget）。 |
 | `utplsql.timeoutMinutes` | `60` | テスト実行のタイムアウト（分）。 |
 | `utplsql.dbmsOutput` | `false` | テストセッションで `DBMS_OUTPUT` を有効化。デバッグに便利。 |
 | `utplsql.additionalReporters` | `[]` | 毎回の実行に含める追加レポーター（例: `["ut_coverage_html_reporter"]`）。デフォルト（documentation、junit）は常に含まれ、リスト化する必要はありません。 |
@@ -319,6 +322,8 @@ UTPLSQL_CONN=your_user/password@//host:1521/service
 | `utPLSQL: reporter で実行（エクスポート）` | 選択範囲を選択した reporter で実行し、出力を Output/ファイルに書き込みます（結果は変えません） | Test Explorer → menu do item |
 | `utPLSQL: テストスイートを生成…` | `.pks`/`.pkb` またはデータベースオブジェクトから、ルーチンごとに `%test` を 1 つ持つ `ut_<パッケージ>.pks` を生成します（`utplsql.generate.*` オプション）。 | v3.2.x はコンパイル不可（`PLS-00222`）。イメージの `WE8DEC` では表現できない文字（例: `€`）が失われます。thin ドライバは `NLS_LANG` を無視します。 |
 | `utPLSQL: 関連テストを実行` | 本番の `.pks`/`.pkb`/`.sql` で `ut_<オブジェクト>` 規約に従うスイートを実行します（`Ctrl+Shift+U Shift+R`）。 | v3.2.x はコンパイル不可（`PLS-00222`）。イメージの `WE8DEC` では表現できない文字（例: `€`）が失われます。thin ドライバは `NLS_LANG` を無視します。 |
+| `utPLSQL: カバレッジを切り替え` | セッションのカバレッジモードを切り替えます（ステータスバーをクリック）。 | — |
+| `utPLSQL: タグでテストを実行...` | 選択したタグに一致するスイート/テストを実行します（`!tag` は除外）。 | — |
 
 > **Recompile UT3**（`utplsql.recompileUt3`）はパレットコマンド**ではありません** —
 > "utPLSQL Setup" 診断（utPLSQL スキーマ内の無効オブジェクト）の内部クイックフィックスです。
@@ -354,7 +359,7 @@ UTPLSQL_CONN=your_user/password@//host:1521/service
 カバレッジは `ut_coverage_cobertura_reporter` によって報告され、設定 `utplsql.sourcePath` と
 スキーマ `utplsql.coverageOwner` を使用してソースファイルに自動的にマッピングされます。この拡張機能は
 `package`、`package body`、`function`、`procedure`、`type body`、`trigger`、`view` の各オブジェクトを解決し、
-ソースフォルダー配下で `.sql`、`.pks`、`.pkb`、`.prc`、`.fnc`、`.trg`、`.tpb`、`.bdy` を試します。
+ソースフォルダー配下で `.sql`、`.pks`、`.pkb`、`.prc`、`.fnc`、`.trg`、`.tpb`、`.bdy`、`.typ` を試します。
 
 ## レポーター
 

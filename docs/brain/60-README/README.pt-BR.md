@@ -338,6 +338,8 @@ Todos os comandos da extensão (palette `Ctrl+Shift+P` prefixo `utPLSQL:`):
 | `utPLSQL: Rodar com reporter (export)` | Roda a seleção com um reporter escolhido e grava a saída em Output/arquivo (não altera os resultados) | Test Explorer → menu do item |
 | `utPLSQL: Gerar suíte de teste…` | gera `ut_<pacote>.pks` com um `%test` por rotina a partir de um `.pks`/`.pkb` ou de um objeto do banco, com as opções `utplsql.generate.*` | Clique direito → arquivo |
 | `utPLSQL: Rodar testes relacionados` | num `.pks`/`.pkb`/`.sql` de produção, roda as suítes pela convenção `ut_<objeto>` | Clique direito → arquivo |
+| `utPLSQL: Alternar cobertura` | Alterna o modo de cobertura da sessão (clique no item da barra de status). | — |
+| `utPLSQL: Executar testes por tag...` | Executa as suites/testes que correspondem às tags selecionadas (`!tag` exclui). | — |
 
 > **Recompilar UT3** (`utplsql.recompileUt3`) **não** é um comando da paleta — é
 > um quick-fix interno do diagnostic "utPLSQL Setup" (objetos inválidos no
@@ -375,7 +377,7 @@ A cobertura é reportada via `ut_coverage_cobertura_reporter` e mapeada aos arqu
 automaticamente usando o setting `utplsql.sourcePath` e o schema `utplsql.coverageOwner`.
 A extensão resolve objetos `package`, `package body`, `function`, `procedure`,
 `type body`, `trigger` e `view`, testando `.sql`, `.pks`, `.pkb`, `.prc`, `.fnc`,
-`.trg`, `.tpb` e `.bdy` sob as pastas de código-fonte.
+`.trg`, `.tpb`, `.bdy` e `.typ` sob as pastas de código-fonte.
 
 ## Reporters
 

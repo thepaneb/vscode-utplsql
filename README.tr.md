@@ -32,6 +32,8 @@
 
 - 🧪 **Doğal Test Explorer** — paketler ve testler test görünümünde görünür; teste, pakete, dosyaya veya klasöre göre çalıştırın.
 - 🔍 **CodeLens** — editörde `%suite` ve `%test` üzerinde Run/Run with Coverage düğmeleri; kodunuzdan ayrılmadan.
+- 🧬 **PL/SQL dil kimliği** — keşif, CodeLens ve süslemeler `utplsql.discovery.languageIds` (varsayılan `plsql`, `sql`, `oracle-sql`) ve `files.associations` ayarlarına uyar; `.pls`, `.plb`, `.tps`, `.tpb`, `.vw` ve özel uzantılar da çalışır.
+- ✂️ **Snippet'ler** — utPLSQL annotation'ları (`%suite`, `%test`, `%context`, lifecycle, `%tags`/`%throws`) ve ana `ut.expect` matcher'ları için `ut-` snippet'leri; `sql` ve `plsql` içinde kullanılabilir.
 - ⌨️ **Klavye kısayolları** — ana komutlar için `Ctrl+Shift+U` öneki + tuş (R = Tümünü Çalıştır, T = Dosyayı Çalıştır, L = Sonuncuyu Yeniden Çalıştır, vb.).
 - 🖱️ **Bağlam menüsü** — bir **klasöre** veya **`.pks`/`.pkb`** dosyasına (Explorer'da ya da editörde) sağ tıklayarak testleri çalıştırın.
 - 🔁 **Akıllı Yeniden Çalıştır** — tek bir kısayolla Sonuncuyu Yeniden Çalıştır, İmleçte Çalıştır, Yalnızca Başarısızları Çalıştır.
@@ -54,6 +56,7 @@
 - 📈 **İfade ve görünüm kapsamı** — Coverage sekmesi dosya başına `% of statements` (PROCEDURE/FUNCTION) gösterir ve `V$SQL` üzerinden çalıştırılan görünümleri izler.
 - 🎯 **Kapsam aralığı** — framework gürültüsünü kaldırmak ve dinamik erişilen nesneleri eklemek için nesneleri ve şema/nesne regex'lerini (`utplsql.coverage.*`) dahil/hariç tutun.
 - 🗂️ **Sanal veritabanı kaynağı** — yerel dosya yoksa *jump to failure* ve kapsam, `ALL_SOURCE`’dan çözülen salt okunur bir belge açar (`utplsql-source:/…`).
+- 🧾 **HTML kapsam raporu** — `utplsql.coverage.htmlReport` ile çalıştırma `test-results/coverage.html` dosyasını yazar ve Test Explorer'ı engellemeden **Tarayıcıda aç** / **Dosyaya kaydet…** seçeneklerini sunar.
 
 ### Hata ayıklayıcı
 
@@ -171,7 +174,7 @@ Geçici dosya yok, toplu işin bitmesi beklenmez. Sonuçlar Test Explorer'da
 | `utplsql.coverage.includeObjectExpr` | `""` | Kapsama dahil edilecek nesnelerin regex'i. |
 | `utplsql.coverage.excludeSchemaExpr` | `""` | Kapsamdan hariç tutulacak şemaların regex'i. |
 | `utplsql.coverage.excludeObjectExpr` | `""` | Kapsamdan hariç tutulacak nesnelerin regex'i (örn. utPLSQL çatısı için `^UT_`). |
-| `utplsql.coverage.htmlReport` | `false` | Kapsam HTML raporunu `test-results/coverage.html` dosyasına yazar ve çalıştırmadan sonra **Tarayıcıda aç** / **Farklı kaydet…** seçeneklerini sunar (fire-and-forget). |
+| `utplsql.coverage.htmlReport` | `false` | Kapsam HTML raporunu `test-results/coverage.html` dosyasına yazar ve çalıştırmadan sonra **Tarayıcıda aç** / **Dosyaya kaydet…** seçeneklerini sunar (fire-and-forget). |
 | `utplsql.timeoutMinutes` | `60` | Çalıştırma zaman aşımı (dakika). |
 | `utplsql.dbmsOutput` | `false` | Test oturumunda `DBMS_OUTPUT`'u etkinleştirir. |
 | `utplsql.additionalReporters` | `[]` | Her çalıştırmada eklenecek ek raporlayıcılar (örn. `["ut_coverage_html_reporter"]`). Varsayılanlar (documentation, junit) her zaman dahildir ve listelenmeleri gerekmez. |
@@ -325,6 +328,8 @@ Tüm uzantı komutları (palet `Ctrl+Shift+P` öneki `utPLSQL:`):
 | `utPLSQL: Reporter ile çalıştır (dışa aktar)` | Seçimi seçilen reporter ile çalıştırır ve çıktıyı Output/dosyaya yazar (sonuçları değiştirmez) | Test Explorer → menu do item |
 | `utPLSQL: Test paketi oluştur…` | bir `.pks`/`.pkb` veya veritabanı nesnesinden, her rutin için bir `%test` içeren `ut_<paket>.pks` üretir (`utplsql.generate.*` seçenekleri) | v3.2.x derlenmez (`PLS-00222`). İmajın `WE8DEC`'i gösterilemeyen karakterleri kaybeder (örn. `€`); ince sürücü `NLS_LANG`'i yok sayar. |
 | `utPLSQL: İlgili testleri çalıştır` | üretim `.pks`/`.pkb`/`.sql` dosyasında `ut_<nesne>` kuralına göre paketleri çalıştırır | v3.2.x derlenmez (`PLS-00222`). İmajın `WE8DEC`'i gösterilemeyen karakterleri kaybeder (örn. `€`); ince sürücü `NLS_LANG`'i yok sayar. |
+| `utPLSQL: Kapsamı değiştir` | Oturum kapsam modunu değiştirir (durum çubuğuna tıklayın). | — |
+| `utPLSQL: Testleri etikete göre çalıştır...` | Seçilen etiketlerle eşleşen suite/testleri çalıştırır (`!tag` hariç tutar). | — |
 
 > **Recompile UT3** (`utplsql.recompileUt3`) bir **palet komutu değildir** — "utPLSQL Setup"
 > tanılamasının iç bir hızlı düzeltmesidir (utPLSQL şemasındaki geçersiz nesneler).

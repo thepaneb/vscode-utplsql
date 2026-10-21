@@ -14,7 +14,7 @@ Guide for setting up the development environment and submitting contributions.
 
 ## Prerequisites
 
-- **Node.js 22+** (`.nvmrc` points to 24; CI tests 22/24 — Node 20 has reached EOL)
+- **Node.js 22+** (`.nvmrc` points to 24; CI tests 22/24/26 — Node 20 has reached EOL)
 - **npm** (comes with Node)
 - **Git**
 - (Optional) **Oracle Database** + **utPLSQL** for integration tests
@@ -90,7 +90,7 @@ npm run lint:fix         # biome check --write src/
 npm run format           # biome format --write src/
 npm run test:unit        # pretest:unit (compile+lint) → node scripts/run-tests.cjs
 npm run test:integration # pretest:integration (compile+bundle) → vscode-test
-npm run test:coverage    # compile → c8 node --test (thresholds 65/80/70)
+npm run test:coverage    # compile → c8 node --test (thresholds 97/93/97)
 npm test                 # = test:unit
 npm run bundle           # esbuild → dist/ (actual extension main)
 npm run package          # compile + bundle + vsce package → .vsix

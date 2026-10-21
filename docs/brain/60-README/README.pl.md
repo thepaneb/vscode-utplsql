@@ -41,6 +41,8 @@ Uruchamiaj i debuguj testy **utPLSQL** (Oracle PL/SQL) bezpośrednio w VS Code �
 
 - 🧪 **Natywny Test Explorer** — suite'y i testy pojawiają się w widoku testów; uruchamiaj według testu, suite'a, pliku lub folderu.
 - 🔍 **CodeLens** — przyciski Run/Run with Coverage nad `%suite` i `%test` w edytorze, bez opuszczania kodu.
+- 🧬 **Tożsamość języka PL/SQL** — wykrywanie, CodeLens i dekoracje respektują `utplsql.discovery.languageIds` (domyślnie `plsql`, `sql`, `oracle-sql`) oraz `files.associations`; działają też `.pls`, `.plb`, `.tps`, `.tpb`, `.vw` i własne rozszerzenia.
+- ✂️ **Snippety** — snippety `ut-` dla annotations utPLSQL (`%suite`, `%test`, `%context`, lifecycle, `%tags`/`%throws`) i głównych matchers `ut.expect`, dostępne w `sql` i `plsql`.
 - ⌨️ **Skróty klawiszowe** — prefiks `Ctrl+Shift+U` + klawisz dla głównych poleceń (R = Run All, T = Run File, L = Rerun Last, itd.).
 - 🖱️ **Menu kontekstowe** — kliknij prawym przyciskiem **folder** lub plik **`.pks`/`.pkb`** (w Explorerze lub edytorze), aby uruchomić testy.
 - 🔁 **Smart Re-run** — Rerun Last, Run at Cursor, Run Failed Only za pomocą jednego skrótu.
@@ -63,6 +65,7 @@ Uruchamiaj i debuguj testy **utPLSQL** (Oracle PL/SQL) bezpośrednio w VS Code �
 - 📈 **Pokrycie deklaracji i widoków** — karta Coverage pokazuje `% deklaracji` (PROCEDURE/FUNCTION) na plik i śledzi widoki wykonane przez `V$SQL`.
 - 🎯 **Zakres pokrycia** — uwzględniaj/wykluczaj obiekty i regex schematu/obiektu (`utplsql.coverage.*`), aby usunąć szum frameworka i dodać obiekty osiągane dynamicznie.
 - 🗂️ **Wirtualne źródło z bazy** — bez pliku lokalnego *jump to failure* i pokrycie otwierają dokument tylko do odczytu z `ALL_SOURCE` (`utplsql-source:/…`).
+- 🧾 **Raport HTML pokrycia** — z `utplsql.coverage.htmlReport` uruchomienie zapisuje `test-results/coverage.html` i oferuje **Otwórz w przeglądarce** / **Zapisz do pliku…** bez blokowania Test Explorer.
 
 ### Debugger
 
@@ -181,7 +184,7 @@ Test Explorerze **w miarę kończenia każdego testu**.
 | `utplsql.coverage.includeObjectExpr` | `""` | Regex obiektów do uwzględnienia w pokryciu. |
 | `utplsql.coverage.excludeSchemaExpr` | `""` | Regex schematów do wykluczenia z pokrycia. |
 | `utplsql.coverage.excludeObjectExpr` | `""` | Regex obiektów do wykluczenia z pokrycia (np. `^UT_` dla frameworka utPLSQL). |
-| `utplsql.coverage.htmlReport` | `false` | Zapisuje raport HTML pokrycia w `test-results/coverage.html` i po uruchomieniu oferuje **Otwórz w przeglądarce** / **Zapisz jako…** (fire-and-forget). |
+| `utplsql.coverage.htmlReport` | `false` | Zapisuje raport HTML pokrycia w `test-results/coverage.html` i po uruchomieniu oferuje **Otwórz w przeglądarce** / **Zapisz do pliku…** (fire-and-forget). |
 | `utplsql.timeoutMinutes` | `60` | Limit czasu w minutach dla wykonania. |
 | `utplsql.dbmsOutput` | `false` | Włącza `DBMS_OUTPUT` w sesji testowej. |
 | `utplsql.additionalReporters` | `[]` | Dodatkowe reportery dołączane przy każdym uruchomieniu (np. `["ut_coverage_html_reporter"]`). Domyślne (documentation, junit) są zawsze dołączane i nie trzeba ich wymieniać. |
@@ -335,6 +338,8 @@ Wszystkie polecenia rozszerzenia (paleta `Ctrl+Shift+P`, prefiks `utPLSQL:`):
 | `utPLSQL: Uruchom z reporterem (eksport)` | Uruchamia wybór z wybranym reporterem i zapisuje wyjście do Output/pliku (nie zmienia wyników) | Test Explorer → menu do item |
 | `utPLSQL: Generuj pakiet testów…` | generuje `ut_<pakiet>.pks` z jednym `%test` na rutynę z pliku `.pks`/`.pkb` lub obiektu bazy danych, z opcjami `utplsql.generate.*` | v3.2.x się nie kompiluje (`PLS-00222`). `WE8DEC` obrazu gubi znaki nieprzedstawialne (np. `€`); cienki sterownik ignoruje `NLS_LANG`. |
 | `utPLSQL: Uruchom powiązane testy` | w produkcyjnym `.pks`/`.pkb`/`.sql` uruchamia pakiety zgodnie z konwencją `ut_<obiekt>` | v3.2.x się nie kompiluje (`PLS-00222`). `WE8DEC` obrazu gubi znaki nieprzedstawialne (np. `€`); cienki sterownik ignoruje `NLS_LANG`. |
+| `utPLSQL: Przełącz pokrycie` | Przełącza tryb pokrycia sesji (kliknij element paska stanu). | — |
+| `utPLSQL: Uruchom testy według tagu...` | Uruchamia suite/testy pasujące do wybranych tagów (`!tag` wyklucza). | — |
 
 > **Recompile UT3** (`utplsql.recompileUt3`) **nie jest** poleceniem palety — to
 > wewnętrzny quick-fix diagnostyki "utPLSQL Setup" (nieprawidłowe obiekty w

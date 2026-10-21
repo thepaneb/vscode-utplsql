@@ -73,7 +73,7 @@ local layout (`packages/CALC.sql`, `functions/FN.sql`, `procedures/PR.sql`,
 `types/TY.sql`, `triggers/TR.sql`, `views/VW.sql`) and resolves it with
 `resolveSourceUri`, trying **each workspace folder** in turn (multi-root, PRD-57:
 `sourcePath` is relative to the folder of the package) and then the variants
-`.sql`, `.pks`, `.pkb`, `.prc`, `.fnc`, `.trg`, `.tpb` and `.bdy`. It does **not**
+`.sql`, `.pks`, `.pkb`, `.prc`, `.fnc`, `.trg`, `.tpb`, `.bdy` and `.typ`. It does **not**
 rely on `ut_file_mapper.build_file_mappings()` (which expects a list of **files**,
 not the `sourcePath` folder).
 

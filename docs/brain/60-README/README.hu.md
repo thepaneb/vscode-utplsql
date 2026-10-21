@@ -41,6 +41,8 @@ Futtasd és debugold az **utPLSQL** (Oracle PL/SQL) teszteket közvetlenül a VS
 
 - 🧪 **Natív Test Explorer** — a suite-ok és tesztek megjelennek a tesztnézetben; futtathatók teszt, suite, fájl vagy mappa szinten.
 - 🔍 **CodeLens** — Run/Run with Coverage gombok a `%suite` és `%test` fölött a szerkesztőben, anélkül hogy elhagynád a kódod.
+- 🧬 **PL/SQL nyelvi identitás** — a felderítés, a CodeLens és a díszítések tiszteletben tartják a `utplsql.discovery.languageIds` beállítást (alapértelmezés: `plsql`, `sql`, `oracle-sql`) és a `files.associations` beállítást; a `.pls`, `.plb`, `.tps`, `.tpb`, `.vw` és egyéni kiterjesztések is működnek.
+- ✂️ **Snippets** — `ut-` snippetek a utPLSQL annotációkhoz (`%suite`, `%test`, `%context`, lifecycle, `%tags`/`%throws`) és a fő `ut.expect` matcherekhez, `sql` és `plsql` nyelveken.
 - ⌨️ **Billentyűparancsok** — `Ctrl+Shift+U` előtag + billentyű a fő parancsokhoz (R = Run All, T = Run File, L = Rerun Last stb.).
 - 🖱️ **Helyi menü** — kattints jobb gombbal egy **mappára** vagy egy **`.pks`/`.pkb`** fájlra (az Explorerben vagy a szerkesztőben) a tesztek futtatásához.
 - 🔁 **Okos újrafuttatás** — Rerun Last, Run at Cursor, Run Failed Only egyetlen billentyűparanccsal.
@@ -63,6 +65,7 @@ Futtasd és debugold az **utPLSQL** (Oracle PL/SQL) teszteket közvetlenül a VS
 - 📈 **Utasítás- és nézetlefedettség** — a Coverage lap `% of statements` (PROCEDURE/FUNCTION) arányt mutat fájlonként, és a `V$SQL`-lal végrehajtott nézeteket is követi.
 - 🎯 **Lefedettségi hatókör** — objektumok és séma/objektum regexek (`utplsql.coverage.*`) bevonása/kizárása a framework zajának eltávolításához és dinamikusan elért objektumok hozzáadásához.
 - 🗂️ **Virtuális adatbázis-forrás** — helyi fájl nélkül a *jump to failure* és a lefedettség egy csak olvasható dokumentumot nyit meg az `ALL_SOURCE`-ból (`utplsql-source:/…`).
+- 🧾 **HTML lefedettségi jelentés** — a `utplsql.coverage.htmlReport` beállítással a futás a `test-results/coverage.html` fájlba ír, és **Megnyitás böngészőben** / **Mentés fájlba…** lehetőséget kínál a Test Explorer blokkolása nélkül.
 
 ### Hibakereső
 
@@ -181,7 +184,7 @@ A bővítmény közvetlenül Oracle-on keresztül csatlakozik, beolvassa a ripor
 | `utplsql.coverage.includeObjectExpr` | `""` | A lefedésbe felveendő objektumok regexe. |
 | `utplsql.coverage.excludeSchemaExpr` | `""` | A lefedésből kizárandó sémák regexe. |
 | `utplsql.coverage.excludeObjectExpr` | `""` | A lefedésből kizárandó objektumok regexe (pl. `^UT_` az utPLSQL frameworkhöz). |
-| `utplsql.coverage.htmlReport` | `false` | A HTML lefedettségi jelentést a `test-results/coverage.html` fájlba írja, és a futás után **Megnyitás böngészőben** / **Mentés másként…** lehetőséget kínál (fire-and-forget). |
+| `utplsql.coverage.htmlReport` | `false` | A HTML lefedettségi jelentést a `test-results/coverage.html` fájlba írja, és a futás után **Megnyitás böngészőben** / **Mentés fájlba…** lehetőséget kínál (fire-and-forget). |
 | `utplsql.timeoutMinutes` | `60` | Időtúllépés percben a tesztek futtatásához. |
 | `utplsql.dbmsOutput` | `false` | Engedélyezi a `DBMS_OUTPUT` használatát a teszt-munkamenetben. Hasznos hibakereséshez. |
 | `utplsql.additionalReporters` | `[]` | További riporterek, amelyek minden futtatáskor bekerülnek (pl. `["ut_coverage_html_reporter"]`). Az alapértelmezettek (documentation, junit) mindig szerepelnek, és nem kell felsorolni őket. |
@@ -335,6 +338,8 @@ A bővítmény összes parancsa (paletta `Ctrl+Shift+P`, előtag `utPLSQL:`):
 | `utPLSQL: Futtatás reporterrel (export)` | A kijelölést a választott reporterrel futtatja, és Output/fájlba írja (nem módosítja az eredményeket) | Test Explorer → menu do item |
 | `utPLSQL: Tesztcsomag létrehozása…` | `ut_<csomag>.pks` fájlt hoz létre rutinonként egy `%test`-tel `.pks`/`.pkb` fájlból vagy adatbázis-objektumból, a `utplsql.generate.*` beállításokkal | A v3.2.x nem fordul (`PLS-00222`). A kép `WE8DEC`-je elveszíti a nem ábrázolható karaktereket (pl. `€`); a thin illesztő figyelmen kívül hagyja a `NLS_LANG`-ot. |
 | `utPLSQL: Kapcsolódó tesztek futtatása` | éles `.pks`/`.pkb`/`.sql` fájlban a `ut_<objektum>` konvenció szerinti csomagokat futtatja | A v3.2.x nem fordul (`PLS-00222`). A kép `WE8DEC`-je elveszíti a nem ábrázolható karaktereket (pl. `€`); a thin illesztő figyelmen kívül hagyja a `NLS_LANG`-ot. |
+| `utPLSQL: Lefedettség váltása` | A munkamenet lefedettségi módját váltja (kattintson az állapotsorra). | — |
+| `utPLSQL: Tesztek futtatása tag szerint...` | A kiválasztott tageknek megfelelő suite-okat/teszteket futtatja (`!tag` kizár). | — |
 
 > **Recompile UT3** (`utplsql.recompileUt3`) **nem** palettaparancs — ez a
 > „utPLSQL Setup" diagnosztika belső gyorsjavítása (érvénytelen objektumok a

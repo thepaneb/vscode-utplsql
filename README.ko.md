@@ -32,6 +32,8 @@
 
 - 🧪 **네이티브 Test Explorer** — 테스트 뷰에 스위트와 테스트가 표시됩니다. 테스트, 스위트, 파일 또는 폴더 단위로 실행할 수 있습니다.
 - 🔍 **CodeLens** — 코드를 떠나지 않고 편집기의 `%suite` 및 `%test` 위에 Run/Run with Coverage 버튼을 표시합니다.
+- 🧬 **PL/SQL 언어 ID** — 검색, CodeLens 및 장식은 `utplsql.discovery.languageIds`(기본값 `plsql`, `sql`, `oracle-sql`)와 `files.associations`를 따릅니다. `.pls`, `.plb`, `.tps`, `.tpb`, `.vw` 및 사용자 지정 확장자도 작동합니다.
+- ✂️ **스니펫** — utPLSQL annotation(`%suite`, `%test`, `%context`, lifecycle, `%tags`/`%throws`)과 주요 `ut.expect` matcher용 `ut-` 스니펫이며 `sql` 및 `plsql`에서 사용할 수 있습니다.
 - ⌨️ **키보드 단축키** — `Ctrl+Shift+U` 접두사 + 주요 명령 키(R = Run All, T = Run File, L = Rerun Last 등).
 - 🖱️ **컨텍스트 메뉴** — **폴더** 또는 **`.pks`/`.pkb`** 파일(Explorer 또는 편집기에서)을 마우스 오른쪽 버튼으로 클릭하여 테스트를 실행합니다.
 - 🔁 **스마트 재실행** — 단일 단축키로 Rerun Last, Run at Cursor, Run Failed Only.
@@ -54,6 +56,7 @@
 - 📈 **문장 및 뷰 커버리지** — Coverage 탭에 파일별 `% of statements`(PROCEDURE/FUNCTION)를 표시하고 `V$SQL`을 통해 실행된 뷰를 추적.
 - 🎯 **커버리지 범위** — 객체와 스키마/객체 정규식(`utplsql.coverage.*`)으로 포함/제외하여 프레임워크 잡음을 제거하고 동적으로 도달하는 객체를 추가합니다.
 - 🗂️ **가상 데이터베이스 소스** — 로컬 파일이 없으면 *jump to failure*와 커버리지가 `ALL_SOURCE`에서 해석한 읽기 전용 문서를 엽니다(`utplsql-source:/…`).
+- 🧾 **HTML 커버리지 보고서** — `utplsql.coverage.htmlReport`를 사용하면 실행이 `test-results/coverage.html`을 쓰고 Test Explorer를 차단하지 않고 **브라우저에서 열기** / **파일로 저장…**을 제공합니다.
 
 ### 디버거
 
@@ -172,7 +175,7 @@ Test Explorer에 나타납니다.
 | `utplsql.coverage.includeObjectExpr` | `""` | 커버리지에 포함할 객체 정규식. |
 | `utplsql.coverage.excludeSchemaExpr` | `""` | 커버리지에서 제외할 스키마 정규식. |
 | `utplsql.coverage.excludeObjectExpr` | `""` | 커버리지에서 제외할 객체 정규식(예: utPLSQL 프레임워크의 경우 `^UT_`). |
-| `utplsql.coverage.htmlReport` | `false` | 커버리지 HTML 보고서를 `test-results/coverage.html`에 쓰고 실행 후 **브라우저에서 열기** / **다른 이름으로 저장…**을 제공합니다(fire-and-forget). |
+| `utplsql.coverage.htmlReport` | `false` | 커버리지 HTML 보고서를 `test-results/coverage.html`에 쓰고 실행 후 **브라우저에서 열기** / **파일로 저장…**을 제공합니다(fire-and-forget). |
 | `utplsql.timeoutMinutes` | `60` | 실행 시간 제한(분). |
 | `utplsql.dbmsOutput` | `false` | 테스트 세션에서 `DBMS_OUTPUT`을 활성화합니다. |
 | `utplsql.additionalReporters` | `[]` | 모든 실행에 포함할 추가 리포터(예: `["ut_coverage_html_reporter"]`). 기본값(documentation, junit)은 항상 포함되며 나열할 필요가 없습니다. |
@@ -325,6 +328,8 @@ UTPLSQL_CONN=your_user/password@//host:1521/service
 | `utPLSQL: reporter로 실행(내보내기)` | 선택 항목을 선택한 reporter로 실행하고 출력을 Output/파일에 저장합니다(결과는 변경하지 않음) | Test Explorer → menu do item |
 | `utPLSQL: 테스트 스위트 생성…` | `.pks`/`.pkb` 또는 데이터베이스 객체에서 루틴마다 `%test` 하나를 가진 `ut_<패키지>.pks`를 생성합니다(`utplsql.generate.*` 옵션) | v3.2.x는 컴파일되지 않습니다(`PLS-00222`). 이미지의 `WE8DEC`은 표현할 수 없는 문자(예: `€`)를 잃습니다. thin 드라이버는 `NLS_LANG`을 무시합니다. |
 | `utPLSQL: 관련 테스트 실행` | 운영 `.pks`/`.pkb`/`.sql`에서 `ut_<객체>` 규칙에 따라 스위트를 실행합니다 | v3.2.x는 컴파일되지 않습니다(`PLS-00222`). 이미지의 `WE8DEC`은 표현할 수 없는 문자(예: `€`)를 잃습니다. thin 드라이버는 `NLS_LANG`을 무시합니다. |
+| `utPLSQL: 커버리지 전환` | 세션 커버리지 모드를 전환합니다(상태 표시줄 클릭). | — |
+| `utPLSQL: 태그로 테스트 실행...` | 선택한 태그와 일치하는 스위트/테스트를 실행합니다(`!tag`는 제외). | — |
 
 > **Recompile UT3**(`utplsql.recompileUt3`)은 팔레트 명령이 **아닙니다** —
 > "utPLSQL Setup" 진단(utPLSQL 스키마의 잘못된 객체)의 내부 quick-fix입니다.

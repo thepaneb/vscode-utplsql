@@ -23,6 +23,8 @@ execution via `node-oracledb`. Available in **24 UI languages**; requires
 
 - 🧪 **Native Test Explorer** — suites and tests appear in the testing view; run by test, suite, file, or folder ([Test-explorer](Test-explorer)).
 - 🔍 **CodeLens** — Run/Run with Coverage buttons over `%suite` and `%test` in the editor, without leaving your code ([Editor-integration](Editor-integration)).
+- 🧬 **PL/SQL language identity** — discovery, CodeLens and decorations honor `utplsql.discovery.languageIds` (default `plsql`, `sql`, `oracle-sql`) and `files.associations`; `.pls`, `.plb`, `.tps`, `.tpb`, `.vw` and custom extensions work too ([Editor-integration](Editor-integration), [Configuration](Configuration)).
+- ✂️ **Snippets** — `ut-` snippets for the utPLSQL annotations and the main `ut.expect` matchers, available in `sql` and `plsql` ([Editor-integration](Editor-integration)).
 - ⌨️ **Keyboard shortcuts** — `Ctrl+Shift+U` prefix + key for the main commands (R = Run All, T = Run File, L = Rerun Last, etc.) ([Commands](Commands)).
 - 🖱️ **Context menu** — right-click a **folder** or a **`.pks`/`.pkb`** file (in the Explorer or in the editor) to run tests ([Commands](Commands)).
 - 🔁 **Smart Re-run** — Rerun Last, Run at Cursor, Run Failed Only with a single shortcut ([Editor-integration](Editor-integration)).
@@ -45,6 +47,7 @@ execution via `node-oracledb`. Available in **24 UI languages**; requires
 - 📈 **Statement and view coverage** — the Coverage tab shows `% of statements` (PROCEDURE/FUNCTION) per file and tracks views executed via `V$SQL` ([Coverage](Coverage)).
 - 🎯 **Coverage scope** — include/exclude objects and schema/object regexes (`utplsql.coverage.*`) to drop framework noise and add dynamically reached objects ([Coverage](Coverage)).
 - 🗂️ **Virtual database source** — with no local file, *jump to failure* and coverage open a read-only document resolved from `ALL_SOURCE` (`utplsql-source:/…`) ([Coverage](Coverage)).
+- 🧾 **HTML coverage report** — with `utplsql.coverage.htmlReport`, the run writes `test-results/coverage.html` and offers **Open in Browser** / **Save to file…** without blocking the Test Explorer ([Coverage](Coverage)).
 
 ### Debugger
 

@@ -41,6 +41,8 @@ tags: [readme]
 
 - 🧪 **原生 Test Explorer** — 套件和测试出现在测试视图中；可按测试、套件、文件或文件夹运行。
 - 🔍 **CodeLens** — 在编辑器中的 `%suite` 和 `%test` 上提供 Run/Run with Coverage 按钮，无需离开代码。
+- 🧬 **PL/SQL 语言标识** — 发现、CodeLens 和装饰遵循 `utplsql.discovery.languageIds`（默认 `plsql`、`sql`、`oracle-sql`）和 `files.associations`；`.pls`、`.plb`、`.tps`、`.tpb`、`.vw` 及自定义扩展名也可用。
+- ✂️ **代码片段** — 用于 utPLSQL annotation（`%suite`、`%test`、`%context`、lifecycle、`%tags`/`%throws`）和主要 `ut.expect` matcher 的 `ut-` 片段，可在 `sql` 和 `plsql` 中使用。
 - ⌨️ **键盘快捷键** — `Ctrl+Shift+U` 前缀 + 按键用于主要命令（R = Run All，T = Run File，L = Rerun Last 等）。
 - 🖱️ **上下文菜单** — 右键单击**文件夹**或 **`.pks`/`.pkb`** 文件（在资源管理器中或编辑器中）即可运行测试。
 - 🔁 **智能重新运行** — Rerun Last、Run at Cursor、Run Failed Only 只需一个快捷键。
@@ -63,6 +65,7 @@ tags: [readme]
 - 📈 **语句和视图覆盖率** — Coverage 选项卡显示每个文件的语句百分比（PROCEDURE/FUNCTION），并通过 `V$SQL` 跟踪执行的视图。
 - 🎯 **覆盖率范围** — 通过 `utplsql.coverage.*` 包含/排除对象和 schema/对象正则，去除框架噪声并纳入动态到达的对象。
 - 🗂️ **虚拟数据库源** — 没有本地文件时，*jump to failure* 和覆盖率会打开从 `ALL_SOURCE` 解析的只读文档（`utplsql-source:/…`）。
+- 🧾 **HTML 覆盖率报告** — 设置 `utplsql.coverage.htmlReport` 后，运行会写入 `test-results/coverage.html`，并提供 **在浏览器中打开** / **保存到文件…**，不会阻塞 Test Explorer。
 
 ### 调试器
 
@@ -180,7 +183,7 @@ Test Explorer 中。
 | `utplsql.coverage.includeObjectExpr` | `""` | 要纳入覆盖的对象正则。 |
 | `utplsql.coverage.excludeSchemaExpr` | `""` | 要从覆盖中排除的 schema 正则。 |
 | `utplsql.coverage.excludeObjectExpr` | `""` | 要从覆盖中排除的对象正则（例如 utPLSQL 框架用 `^UT_`）。 |
-| `utplsql.coverage.htmlReport` | `false` | 将覆盖 HTML 报告写入 `test-results/coverage.html`，并在运行后提供 **在浏览器中打开** / **另存为…**（fire-and-forget）。 |
+| `utplsql.coverage.htmlReport` | `false` | 将覆盖 HTML 报告写入 `test-results/coverage.html`，并在运行后提供 **在浏览器中打开** / **保存到文件…**（fire-and-forget）。 |
 | `utplsql.timeoutMinutes` | `60` | 执行超时时间（分钟）。 |
 | `utplsql.dbmsOutput` | `false` | 在测试会话中启用 `DBMS_OUTPUT`。 |
 | `utplsql.additionalReporters` | `[]` | 每次运行时要包含的额外 reporter（例如 `["ut_coverage_html_reporter"]`）。默认的（documentation、junit）始终包含，无需列出。 |
@@ -332,6 +335,8 @@ UTPLSQL_CONN=your_user/password@//host:1521/service
 | `utPLSQL: 使用 reporter 运行（导出）` | 使用所选 reporter 运行选择并将输出写入 Output/文件（不改变结果） | Test Explorer → menu do item |
 | `utPLSQL: 生成测试套件…` | 从 `.pks`/`.pkb` 或数据库对象生成 `ut_<包名>.pks`，每个例程一个 `%test`，使用 `utplsql.generate.*` 选项。 | v3.2.x 无法编译（`PLS-00222`）。镜像的 `WE8DEC` 会丢失无法表示的字符（例如 `€`）；精简驱动忽略 `NLS_LANG`。 |
 | `utPLSQL: 运行相关测试` | 在生产 `.pks`/`.pkb`/`.sql` 中，按 `ut_<对象>` 约定运行套件（`Ctrl+Shift+U Shift+R`）。 | v3.2.x 无法编译（`PLS-00222`）。镜像的 `WE8DEC` 会丢失无法表示的字符（例如 `€`）；精简驱动忽略 `NLS_LANG`。 |
+| `utPLSQL: 切换覆盖率` | 切换会话覆盖率模式（点击状态栏项）。 | — |
+| `utPLSQL: 按标签运行测试...` | 运行与所选标签匹配的套件/测试（`!tag` 表示排除）。 | — |
 
 > **Recompile UT3**（`utplsql.recompileUt3`）**不是**面板命令 — 它是
 > "utPLSQL Setup" 诊断（utPLSQL schema 中的无效对象）的内部快速修复。

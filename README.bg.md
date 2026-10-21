@@ -32,6 +32,8 @@
 
 - 🧪 **Роден Test Explorer** — комплектите и тестовете се появяват в изгледа за тестове; стартиране по тест, комплект, файл или папка.
 - 🔍 **CodeLens** — бутони Run/Run with Coverage над `%suite` и `%test` в редактора, без да напускате кода.
+- 🧬 **Идентичност на PL/SQL** — откриването, CodeLens и декорациите спазват `utplsql.discovery.languageIds` (по подразбиране `plsql`, `sql`, `oracle-sql`) и `files.associations`; `.pls`, `.plb`, `.tps`, `.tpb`, `.vw` и собствени разширения също работят.
+- ✂️ **Снипети** — `ut-` снипети за annotations на utPLSQL (`%suite`, `%test`, `%context`, lifecycle, `%tags`/`%throws`) и основните matchers на `ut.expect`, налични в `sql` и `plsql`.
 - ⌨️ **Клавишни комбинации** — префикс `Ctrl+Shift+U` + клавиш за основните команди (R = Run All, T = Run File, L = Rerun Last и т.н.).
 - 🖱️ **Контекстно меню** — щракнете с десния бутон върху **папка** или файл **`.pks`/`.pkb`** (в Explorer или в редактора), за да стартирате тестове.
 - 🔁 **Интелигентно повторно стартиране** — Rerun Last, Run at Cursor, Run Failed Only с една клавишна комбинация.
@@ -54,6 +56,7 @@
 - 📈 **Покритие на оператори и изгледи** — разделът Coverage показва `% of statements` (PROCEDURE/FUNCTION) по файл и проследява изгледите, изпълнени чрез `V$SQL`.
 - 🎯 **Обхват на покритие** — включвайте/изключвайте обекти и regex за схема/обект (`utplsql.coverage.*`), за да махнете шума от framework-а и да добавите динамично достигнати обекти.
 - 🗂️ **Виртуален източник от базата** — без локален файл *jump to failure* и покритието отварят документ само за четене от `ALL_SOURCE` (`utplsql-source:/…`).
+- 🧾 **HTML отчет за покритие** — с `utplsql.coverage.htmlReport`, изпълнението записва `test-results/coverage.html` и предлага **Отвори в браузъра** / **Запазване във файл…** без да блокира Test Explorer.
 
 ### Дебъгер
 
@@ -172,7 +175,7 @@ Test Explorer **с приключването на всеки тест**.
 | `utplsql.coverage.includeObjectExpr` | `""` | Regex на обекти за включване в покритието. |
 | `utplsql.coverage.excludeSchemaExpr` | `""` | Regex на схеми за изключване от покритието. |
 | `utplsql.coverage.excludeObjectExpr` | `""` | Regex на обекти за изключване от покритието (напр. `^UT_` за framework-а utPLSQL). |
-| `utplsql.coverage.htmlReport` | `false` | Записва HTML отчета за покритие в `test-results/coverage.html` и предлага **Отвори в браузъра** / **Запази като…** след изпълнението (fire-and-forget). |
+| `utplsql.coverage.htmlReport` | `false` | Записва HTML отчета за покритие в `test-results/coverage.html` и предлага **Отвори в браузъра** / **Запазване във файл…** след изпълнението (fire-and-forget). |
 | `utplsql.timeoutMinutes` | `60` | Таймаут в минути за изпълнението на тестовете. |
 | `utplsql.dbmsOutput` | `false` | Активира `DBMS_OUTPUT` в тестовата сесия. Полезно за отстраняване на грешки. |
 | `utplsql.additionalReporters` | `[]` | Допълнителни reporters, които да се включат при всяко изпълнение (напр. `["ut_coverage_html_reporter"]`). По подразбиране (documentation, junit) винаги са включени и не е нужно да се изброяват. |
@@ -326,6 +329,8 @@ UTPLSQL_CONN=your_user/password@//host:1521/service
 | `utPLSQL: Изпълни с reporter (експорт)` | Изпълнява селекцията с избран reporter и записва изхода в Output/файл (без промяна на резултатите) | Test Explorer → menu do item |
 | `utPLSQL: Генериране на тестов пакет…` | генерира `ut_<пакет>.pks` с един `%test` на процедура/функция от `.pks`/`.pkb` или обект от базата данни, с опциите `utplsql.generate.*` | v3.2.x не се компилира (`PLS-00222`). `WE8DEC` на образа губи непредставими символи (напр. `€`); thin драйверът игнорира `NLS_LANG`. |
 | `utPLSQL: Изпълни свързаните тестове` | в продукционен `.pks`/`.pkb`/`.sql` изпълнява пакетите по конвенцията `ut_<обект>` | v3.2.x не се компилира (`PLS-00222`). `WE8DEC` на образа губи непредставими символи (напр. `€`); thin драйверът игнорира `NLS_LANG`. |
+| `utPLSQL: Превключване на покритието` | Превключва режима на покритие на сесията (клик върху лентата на състоянието). | — |
+| `utPLSQL: Изпълни тестове по таг...` | Изпълнява suite/тестовете, отговарящи на избраните тагове (`!tag` изключва). | — |
 
 > **Recompile UT3** (`utplsql.recompileUt3`) **не** е команда от палитрата — това е
 > вътрешен quick-fix на диагностиката „utPLSQL Setup" (невалидни обекти в

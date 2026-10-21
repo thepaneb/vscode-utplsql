@@ -41,6 +41,8 @@ Rulează și depanează teste **utPLSQL** (Oracle PL/SQL) direct în VS Code —
 
 - 🧪 **Test Explorer nativ** — suitele și testele apar în vizualizarea de testare; rulează după test, suită, fișier sau folder.
 - 🔍 **CodeLens** — butoanele Run/Run with Coverage deasupra `%suite` și `%test` în editor, fără să părăsești codul.
+- 🧬 **Identitate PL/SQL** — descoperirea, CodeLens și decorările respectă `utplsql.discovery.languageIds` (implicit `plsql`, `sql`, `oracle-sql`) și `files.associations`; funcționează și `.pls`, `.plb`, `.tps`, `.tpb`, `.vw` și extensiile personalizate.
+- ✂️ **Snippeturi** — snippeturi `ut-` pentru annotations utPLSQL (`%suite`, `%test`, `%context`, lifecycle, `%tags`/`%throws`) și principalii matchers `ut.expect`, disponibile în `sql` și `plsql`.
 - ⌨️ **Scurtături de tastatură** — prefixul `Ctrl+Shift+U` + tastă pentru comenzile principale (R = Rulează tot, T = Rulează fișierul, L = Re-rulează ultimul etc.).
 - 🖱️ **Meniu contextual** — clic dreapta pe un **folder** sau pe un fișier **`.pks`/`.pkb`** (în Explorer sau în editor) pentru a rula testele.
 - 🔁 **Re-rulare inteligentă** — Re-rulează ultimul, Rulează la cursor, Rulează doar eșuatele cu o singură scurtătură.
@@ -63,6 +65,7 @@ Rulează și depanează teste **utPLSQL** (Oracle PL/SQL) direct în VS Code —
 - 📈 **Acoperire pe instrucțiuni și vizualizări** — fila Coverage arată `% din instrucțiuni` (PROCEDURE/FUNCTION) per fișier și urmărește vizualizările executate prin `V$SQL`.
 - 🎯 **Domeniu de acoperire** — include/exclude obiecte și regex de schemă/obiect (`utplsql.coverage.*`) pentru a elimina zgomotul framework-ului și a adăuga obiecte atinse dinamic.
 - 🗂️ **Sursă virtuală din baza de date** — fără fișier local, *jump to failure* și acoperirea deschid un document doar-citire rezolvat din `ALL_SOURCE` (`utplsql-source:/…`).
+- 🧾 **Raport HTML de acoperire** — cu `utplsql.coverage.htmlReport`, rularea scrie `test-results/coverage.html` și oferă **Deschide în browser** / **Salvează în fișier…** fără a bloca Test Explorer.
 
 ### Depanator
 
@@ -181,7 +184,7 @@ Extensia se conectează direct prin Oracle, citește rapoartele (JUnit + Coverag
 | `utplsql.coverage.includeObjectExpr` | `""` | Regex de obiecte de inclus în acoperire. |
 | `utplsql.coverage.excludeSchemaExpr` | `""` | Regex de scheme de exclus din acoperire. |
 | `utplsql.coverage.excludeObjectExpr` | `""` | Regex de obiecte de exclus din acoperire (ex.: `^UT_` pentru framework-ul utPLSQL). |
-| `utplsql.coverage.htmlReport` | `false` | Scrie raportul HTML de acoperire în `test-results/coverage.html` și oferă **Deschide în browser** / **Salvează ca…** după rulare (fire-and-forget). |
+| `utplsql.coverage.htmlReport` | `false` | Scrie raportul HTML de acoperire în `test-results/coverage.html` și oferă **Deschide în browser** / **Salvează în fișier…** după rulare (fire-and-forget). |
 | `utplsql.timeoutMinutes` | `60` | Timeout în minute pentru executarea testelor. |
 | `utplsql.dbmsOutput` | `false` | Activează `DBMS_OUTPUT` în sesiunea de test. Util pentru depanare. |
 | `utplsql.additionalReporters` | `[]` | Reporteri suplimentari de inclus la fiecare rulare (ex.: `["ut_coverage_html_reporter"]`). Cei implicați (documentation, junit) sunt întotdeauna incluși și nu trebuie listați. |
@@ -335,6 +338,8 @@ Toate comenzile extensiei (paletă `Ctrl+Shift+P`, prefix `utPLSQL:`):
 | `utPLSQL: Rulează cu reporter (export)` | Rulează selecția cu reporterul ales și scrie ieșirea în Output/fișier (nu schimbă rezultatele) | Test Explorer → menu do item |
 | `utPLSQL: Generează suita de teste…` | generează `ut_<pachet>.pks` cu un `%test` per rutină dintr-un `.pks`/`.pkb` sau obiect de bază de date, cu opțiunile `utplsql.generate.*` | v3.2.x nu se compilează (`PLS-00222`). `WE8DEC` al imaginii pierde caractere nereprezentabile (ex. `€`); driverul subțire ignoră `NLS_LANG`. |
 | `utPLSQL: Rulează testele asociate` | într-un `.pks`/`.pkb`/`.sql` de producție, rulează suitele după convenția `ut_<obiect>` | v3.2.x nu se compilează (`PLS-00222`). `WE8DEC` al imaginii pierde caractere nereprezentabile (ex. `€`); driverul subțire ignoră `NLS_LANG`. |
+| `utPLSQL: Comută acoperirea` | Comută modul de acoperire al sesiunii (clic pe bara de stare). | — |
+| `utPLSQL: Rulează teste după tag...` | Rulează suite-urile/testele care corespund tagurilor selectate (`!tag` exclude). | — |
 
 > **Recompile UT3** (`utplsql.recompileUt3`) **nu** este o comandă din paletă — este
 > un quick-fix intern al diagnosticului „utPLSQL Setup" (obiecte invalide în

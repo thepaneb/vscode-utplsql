@@ -226,7 +226,7 @@ Sem `.env`, `describeDB` é pulado (`describe.skip`).
 ## CI
 
 Workflow `.github/workflows/ci.yml` (push/PR para `main` e `release/**`):
-- Node 22/24 matrix
+- Node 22/24/26 matrix
 - `npm ci` → `npm run brain:ci` → `git diff --exit-code` → `npm run docs:check` →
   `npm run lint` → `npm run typecheck` → `npm run test:coverage` (enforça os
   thresholds do c8) → **upload ao Codecov**
@@ -299,7 +299,7 @@ GitHub Actions) via environment `github-pages`.
 
 ## Node
 
-`.nvmrc` → `24`. CI testa 22/24 (Node 20 atingiu EOL). Requer Node 22+ local.
+`.nvmrc` → `24`. CI testa 22/24/26 (Node 20 atingiu EOL). Requer Node 22+ local.
 
 ## Conexões
 

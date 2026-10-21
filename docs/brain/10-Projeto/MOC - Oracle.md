@@ -21,7 +21,7 @@ tags: [moc, oracle, oracledb]
 ## Conexão
 
 - Resolução: `setting → env UTPLSQL_CONN → cache sessão → prompt`. Nunca logada.
-- Cobertura Oracle: `ut_file_mapper.build_file_mappings()` + `GRANT EXECUTE ON DBMS_PROFILER`.
+- Cobertura Oracle: Cobertura XML do reporter + `GRANT EXECUTE ON DBMS_PROFILER`; sem `ut_file_mapper`.
 
 ## Diagnósticos
 

@@ -66,8 +66,8 @@ TestController
       └── Suite: Untagged  (UT_OTHER)
 ```
 
-- A suite/test with **several tags appears under each tag** (intentional
-  duplication, like the C# Dev Kit "Tests by Category" view).
+- A **suite** with several tags appears under each tag (intentional duplication,
+  like the C# Dev Kit "Tests by Category" view); its tests follow the suite.
 - Untagged suites go to the **`(sem tag)`** group, which appears last.
 - Suite/test **ids stay canonical** (`suite:<pkg>` / `test:<pkg>.<proc>`) for the
   first occurrence, so results, `suiteMap` and *jump to failure* keep working;

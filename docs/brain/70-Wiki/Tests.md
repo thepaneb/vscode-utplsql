@@ -22,49 +22,10 @@ Overview of the extension's tests and how to run them.
 
 ## Unit tests
 
-Test pure modules (no `vscode` dependency) — the full list of compiled
-files:
-
-```
-src/test/unit/  (TypeScript source; runs in out/test/unit/)
-├── cobertura.test.ts
-├── codelens.test.ts
-├── compileForDebug.test.ts
-├── config.test.ts
-├── connectionProfiles.test.ts
-├── coverage.test.ts
-├── dbSourceProvider.test.ts
-├── dbmsDebug.test.ts
-├── debounce.test.ts
-├── debugger.test.ts
-├── decorations.test.ts
-├── discovery.test.ts
-├── i18n.test.ts
-├── junit.test.ts
-├── logger.test.ts
-├── manifestDebugger.test.ts
-├── matching.test.ts
-├── matrixConfig.test.ts
-├── oracleClient.test.ts
-├── oracleRunner.test.ts
-├── oracledb-default-absent.test.ts
-├── oracledb-missing-catch.test.ts
-├── packageTarget.test.ts
-├── plsqlDeclarations.test.ts
-├── quickfix.test.ts
-├── quickfixActivation.test.ts
-├── rerun.test.ts
-├── results.test.ts
-├── runner.test.ts
-├── scriptRunner.test.ts
-├── scriptsCli.test.ts
-├── selectReporterCommand.test.ts
-├── state.test.ts
-├── statusBar.test.ts
-├── suiteParser.test.ts
-├── testTree.test.ts
-└── viewCoverage.test.ts
-```
+Unit tests live in `src/test/unit/` (78 files at 0.17.0). They cover pure
+modules and modules that depend on `vscode`, using `src/test/vscode-stub.ts`.
+The folder is the source of truth for the current list; run
+`npm run test:unit` to execute it.
 
 > Tests using `mock.module` (`oracledb-missing-catch.test.ts`,
 > `oracledb-default-absent.test.ts`) need `--experimental-test-module-mocks`.
@@ -73,7 +34,7 @@ src/test/unit/  (TypeScript source; runs in out/test/unit/)
 There is also **TypeScript coverage** with `c8`:
 
 ```bash
-npm run test:coverage   # thresholds: 90% lines/statements/functions, 85% branches
+npm run test:coverage   # thresholds: 97% lines/statements/functions, 93% branches
 ```
 
 ### How to create a test
@@ -137,7 +98,8 @@ src/test/integration/
 └── thickMode.test.ts
 ```
 
-Integration tests have two modes:
+Integration tests live in `src/test/integration/` (26 files at 0.17.0), with two
+modes:
 
 - **Without database**: test discovery, commands, UI — do not require Oracle
 - **With database** (`describeDB`): test real execution, coverage, reporters —
@@ -145,9 +107,9 @@ Integration tests have two modes:
 
 Fast subsets / modes:
 
-- `npm run test:integration:smoke` — only Oracle capabilities + the DBMS_DEBUG
-  cycle (package via direct call and standalone function/namespace `toplevel`,
-  ~1 min).
+- `npm run test:integration:smoke` — Oracle capabilities + the DBMS_DEBUG cycle
+  (package via direct call and standalone function/namespace `toplevel`) +
+  `v017-features` (CodeLens/associations/snippets/HTML coverage), ~1 min.
 - `npm run test:integration:thick` — thick mode (Instant Client) in an isolated
   host; needs `ORACLE_CLIENT_LIB_DIR`.
 - `npm run db:matrix` — runs the suite against multiple Oracle versions (see

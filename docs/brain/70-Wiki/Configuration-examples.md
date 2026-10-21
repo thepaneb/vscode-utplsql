@@ -39,14 +39,14 @@ PowerShell: `$env:UTPLSQL_CONN = "app/password@//localhost:1521/XEPDB1"`.
 ## 2. Multiple environments with profiles
 
 ```jsonc
-// user settings.json (contains credentials — keep it out of git)
+// user settings.json (no password: it lives in the SecretStorage)
 {
   "utplsql.activeProfile": "dev",
   "utplsql.profiles": [
     {
       "id": "11111111-1111-1111-1111-111111111111",
       "name": "DEV Local",
-      "connection": "app/password@//localhost:1521/XEPDB1",
+      "connection": "app@//localhost:1521/XEPDB1",
       "description": "Local development",
       "charset": "utf8",
       "sourcePath": "src",
@@ -55,7 +55,7 @@ PowerShell: `$env:UTPLSQL_CONN = "app/password@//localhost:1521/XEPDB1"`.
     {
       "id": "22222222-2222-2222-2222-222222222222",
       "name": "HOMOLOG",
-      "connection": "app/password@//homolog:1521/APP",
+      "connection": "app@//homolog:1521/APP",
       "sourcePath": "src",
       "coverageOwner": "APP"
     }
@@ -76,7 +76,7 @@ When `.sql` files are encoded as Windows-1252, set the profile `charset` so
     {
       "id": "33333333-3333-3333-3333-333333333333",
       "name": "LEGACY (win1252)",
-      "connection": "legacy/password@//old-db:1521/LEGACY",
+      "connection": "legacy@//old-db:1521/LEGACY",
       "charset": "win1252",
       "sourcePath": "legacy/src"
     }
