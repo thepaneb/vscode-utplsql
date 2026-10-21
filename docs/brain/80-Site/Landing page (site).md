@@ -5,7 +5,7 @@ titulo: "Landing page (site público)"
 publicar: site/index.html
 url: "https://thepaneb.github.io/vscode-utplsql/"
 implementacao: ["site/index.html", "site/404.html", "site/robots.txt", "site/sitemap.xml", "site/google408e9fc32b68946a.html"]
-verificado: 2026-10-07
+verificado: 2026-10-21
 tags: [site, docs]
 ---
 
@@ -86,8 +86,9 @@ tags: [site, docs]
       h1 { font-size: clamp(2rem, 6vw, 3rem); margin: 1rem 0 0.5rem; }
       .tagline { font-size: 1.15rem; color: var(--muted); max-width: 46rem; margin: 0 auto; }
       .meta { color: var(--muted); font-size: 0.95rem; }
-      .badges img { height: 20px; margin: 0 0.2rem; vertical-align: middle; }
+      .badges img { height: 20px; width: auto; margin: 0 0.2rem; vertical-align: middle; }
       .cta { margin-top: 1.5rem; display: flex; gap: 0.75rem; justify-content: center; flex-wrap: wrap; }
+      .cta img { height: 48px; width: auto; }
       .btn {
         display: inline-block;
         padding: 0.65rem 1.2rem;
@@ -110,7 +111,7 @@ tags: [site, docs]
       .grid li { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 1rem 1.15rem; }
       .grid h3 { margin: 0 0 0.35rem; font-size: 1.05rem; }
       .grid p { margin: 0; color: var(--muted); font-size: 0.95rem; }
-      section img { max-width: 100%; border: 1px solid var(--border); border-radius: 12px; margin-top: 0.75rem; }
+      section img { max-width: 100%; height: auto; border: 1px solid var(--border); border-radius: 12px; margin-top: 0.75rem; }
       footer {
         max-width: 1000px;
         margin: 0 auto;
