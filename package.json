@@ -980,6 +980,7 @@
     "brain:ci": "node scripts/brain.cjs sync && node scripts/brain-build.cjs && node scripts/brain.cjs check && node scripts/brain-rules.cjs && node scripts/brain-gaps.cjs --warn",
     "docs:check": "node scripts/docs-check.cjs",
     "docs:fidelity": "node scripts/docs-fidelity.cjs",
+    "version:check": "node scripts/version-check.cjs",
     "sync-prds": "node scripts/sync-prds.cjs",
     "pr:create": "node scripts/create-pr.cjs",
     "release:create": "node scripts/create-release.cjs",

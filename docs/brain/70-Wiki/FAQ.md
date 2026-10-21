@@ -189,8 +189,8 @@ to the Marketplace is done **exclusively** via a GitHub release (through the
 
 ```bash
 npm run package
-# generates: vscode-utplsql-0.17.1.vsix
-code --install-extension vscode-utplsql-0.17.1.vsix
+# generates: vscode-utplsql-<version>.vsix
+code --install-extension "$(ls -t vscode-utplsql-*.vsix | head -1)"
 ```
 
 ---

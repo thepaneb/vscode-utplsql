@@ -29,6 +29,8 @@ Workflow [`publish.yml`](../../../.github/workflows/publish.yml) — **gerado** 
 - `uses: actions/checkout@v7`
 - `uses: actions/setup-node@v7`
 - `run: npm ci`
+- `run: npm run version:check`
+- `run: |`
 - `run: npm run compile`
 - `run: npm run lint`
 - `run: npm run test:unit`
