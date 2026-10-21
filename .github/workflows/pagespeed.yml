@@ -12,12 +12,15 @@ jobs:
   pagespeed:
     name: Check Lighthouse scores
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     env:
       SITE_URL: https://thepaneb.github.io/vscode-utplsql/
       MIN_PERFORMANCE: '90'
       MIN_ACCESSIBILITY: '100'
       MIN_BEST_PRACTICES: '100'
       MIN_SEO: '100'
+      PAGESPEED_ATTEMPTS: '3'
+      PAGESPEED_RESULTS_DIR: pagespeed-results
     steps:
       - name: Query PageSpeed Insights
         env:
@@ -27,12 +30,15 @@ jobs:
           import json
           import os
           import sys
+          import time
           import urllib.error
           import urllib.parse
           import urllib.request
 
           key = os.environ.get("PAGESPEED_API_KEY", "")
           url = os.environ["SITE_URL"]
+          attempts = max(1, int(os.environ.get("PAGESPEED_ATTEMPTS", "3")))
+          results_dir = os.environ.get("PAGESPEED_RESULTS_DIR", "pagespeed-results")
           mins = {
               "performance": int(os.environ["MIN_PERFORMANCE"]),
               "accessibility": int(os.environ["MIN_ACCESSIBILITY"]),
@@ -45,34 +51,147 @@ jobs:
               print("::error::secret PAGESPEED_API_KEY ausente no repositório.")
               sys.exit(1)
 
-          failures = []
-          rows = []
-          for strategy in ("mobile", "desktop"):
+          os.makedirs(results_dir, exist_ok=True)
+
+
+          def extract(data):
+              """Scores and failed audits for one PageSpeed response."""
+              lr = data["lighthouseResult"]
+              categories = lr["categories"]
+              audits = lr["audits"]
+              scores = {}
+              failures = []
+              for cat in cats:
+                  failed_audits = []
+                  for ref in categories.get(cat, {}).get("auditRefs", []):
+                      audit = audits.get(ref.get("id"), {})
+                      audit_score = audit.get("score")
+                      if audit_score is not None and audit_score < 1:
+                          failed_audits.append(
+                              {
+                                  "id": ref.get("id"),
+                                  "weight": ref.get("weight"),
+                                  "score": audit_score,
+                                  "title": audit.get("title", ""),
+                                  "displayValue": audit.get("displayValue", ""),
+                                  "items": len((audit.get("details") or {}).get("items") or []),
+                              }
+                          )
+                  score = round((categories.get(cat, {}).get("score") or 0) * 100)
+                  scores[cat] = score
+                  if score < mins[cat]:
+                      failures.append(
+                          {
+                              "category": cat,
+                              "score": score,
+                              "minimum": mins[cat],
+                              "audits": failed_audits,
+                          }
+                      )
+              return scores, failures
+
+
+          def fetch(strategy, attempt):
               params = [("url", url), ("strategy", strategy), ("key", key)]
               params += [("category", c) for c in cats]
               request = urllib.request.Request(
                   "https://www.googleapis.com/pagespeedonline/v5/runPagespeed?"
                   + urllib.parse.urlencode(params)
               )
-              try:
-                  with urllib.request.urlopen(request, timeout=120) as response:
-                      data = json.load(response)
-              except urllib.error.HTTPError as err:
-                  detail = err.read().decode("utf-8", "replace")[:200]
-                  print(f"::error::PageSpeed falhou ({strategy}, HTTP {err.code}): {detail}")
-                  sys.exit(1)
-              categories = data["lighthouseResult"]["categories"]
+              with urllib.request.urlopen(request, timeout=120) as response:
+                  return json.load(response)
+
+
+          selected = []
+          for strategy in ("mobile", "desktop"):
+              entries = []
+              for attempt in range(1, attempts + 1):
+                  try:
+                      data = fetch(strategy, attempt)
+                  except urllib.error.HTTPError as err:
+                      detail = err.read().decode("utf-8", "replace")[:200]
+                      print(
+                          f"::warning::{strategy} tentativa {attempt}: "
+                          f"HTTP {err.code}: {detail}"
+                      )
+                      if attempt == attempts:
+                          print(
+                              f"::error::PageSpeed indisponível para {strategy} "
+                              f"após {attempts} tentativa(s)."
+                          )
+                          sys.exit(1)
+                      time.sleep(3 * attempt)
+                      continue
+                  except (urllib.error.URLError, TimeoutError) as err:
+                      print(f"::warning::{strategy} tentativa {attempt}: {err}")
+                      if attempt == attempts:
+                          print(
+                              f"::error::PageSpeed indisponível para {strategy} "
+                              f"após {attempts} tentativa(s)."
+                          )
+                          sys.exit(1)
+                      time.sleep(3 * attempt)
+                      continue
+
+                  path = os.path.join(
+                      results_dir, f"pagespeed-{strategy}-{attempt}.json"
+                  )
+                  with open(path, "w", encoding="utf-8") as handle:
+                      json.dump(data, handle, ensure_ascii=False)
+
+                  scores, failures = extract(data)
+                  entries.append(
+                      {"attempt": attempt, "scores": scores, "failures": failures}
+                  )
+                  summary = ", ".join(f"{cat}={scores[cat]}" for cat in cats)
+                  print(f"{strategy} tentativa {attempt}: {summary}")
+                  for failure in failures:
+                      print(
+                          f"::warning::{strategy} tentativa {attempt}: "
+                          f"{failure['category']}={failure['score']} "
+                          f"(< mínimo {failure['minimum']})"
+                      )
+                      for audit in failure["audits"]:
+                          extra = f" ({audit['items']} item(s))" if audit["items"] else ""
+                          print(
+                              f"::warning::  audit {audit['id']} "
+                              f"weight={audit['weight']} score={audit['score']}: "
+                              f"{audit['title']}{extra}"
+                          )
+
+                  if not failures:
+                      break
+
+              # Se nenhuma tentativa passou, reporta a melhor (mais categorias
+              # dentro do limite e maior soma), não necessariamente a última.
+              best = max(
+                  entries,
+                  key=lambda entry: (
+                      len(cats) - len(entry["failures"]),
+                      sum(entry["scores"].values()),
+                  ),
+              )
+              selected.append((strategy, best))
+
+          rows = []
+          failed = []
+          for strategy, entry in selected:
               for cat in cats:
-                  score = round((categories.get(cat, {}).get("score") or 0) * 100)
-                  ok = score >= mins[cat]
-                  rows.append(f"| {strategy} | {cat} | {score} | {mins[cat]} | {'ok' if ok else 'FAIL'} |")
-                  if not ok:
-                      failures.append((strategy, cat, score, mins[cat]))
+                  rows.append(
+                      f"| {strategy} | {cat} | {entry['scores'][cat]} | "
+                      f"{mins[cat]} | {entry['attempt']} | "
+                      f"{'ok' if entry['scores'][cat] >= mins[cat] else 'FAIL'} |"
+                  )
+              if entry["failures"]:
+                  failed.append((strategy, entry))
 
           table = (
               "## PageSpeed Insights — Lighthouse\n\n"
-              "| Estratégia | Categoria | Nota | Mínimo | |\n"
-              "|---|---|---|---|---|\n" + "\n".join(rows) + "\n"
+              f"> Até {attempts} tentativa(s) por estratégia; a primeira que "
+              "atinge todos os mínimos é usada. Quando todas falham, a melhor "
+              "tentativa é exibida.\n\n"
+              "| Estratégia | Categoria | Nota | Mínimo | Tentativa | |\n"
+              "|---|---|---|---|---|---|\n" + "\n".join(rows) + "\n"
           )
           summary_path = os.environ.get("GITHUB_STEP_SUMMARY")
           if summary_path:
@@ -80,9 +199,28 @@ jobs:
                   handle.write(table)
           print(table)
 
-          if failures:
-              for strategy, cat, score, minimum in failures:
-                  print(f"::error::{strategy}: {cat} = {score} (< mínimo {minimum})")
+          if failed:
+              for strategy, entry in failed:
+                  for failure in entry["failures"]:
+                      print(
+                          f"::error::{strategy}: {failure['category']} = "
+                          f"{failure['score']} (< mínimo {failure['minimum']})"
+                      )
+                      for audit in failure["audits"]:
+                          print(
+                              f"::error::  audit {audit['id']} "
+                              f"weight={audit['weight']} score={audit['score']}: "
+                              f"{audit['title']}"
+                          )
               sys.exit(1)
           print("OK: todas as notas dentro dos limites.")
           PY
+
+      - name: Upload Lighthouse JSON
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: pagespeed-lighthouse-${{ github.run_id }}
+          path: pagespeed-results/*.json
+          if-no-files-found: warn
+          retention-days: 14

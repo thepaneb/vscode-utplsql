@@ -4,7 +4,7 @@ status: ativo
 numero: 10
 titulo: "10 — Development Tooling"
 publicar: docs/functional/10-development-tooling.md
-verificado: 2026-10-07
+verificado: 2026-10-21
 regras: ["BR-SITE-001", "BR-QUAL-001", "BR-QUAL-002", "BR-DEP-001", "BR-PKG-001"]
 implementacao: ["scripts/brain.cjs", "scripts/brain-build.cjs", "scripts/brain-rules.cjs", "scripts/brain-gaps.cjs", "scripts/docs-check.cjs", "scripts/docs-fidelity.cjs", "scripts/run-tests.cjs", "scripts/test-setup.cjs", "scripts/sync-prds.cjs", "scripts/create-pr.cjs", "scripts/create-release.cjs", "scripts/publish.cjs", "scripts/vsce.cjs", "scripts/package-target.cjs", "scripts/gen-icon.cjs", "scripts/gen-diagrams.cjs", "scripts/obsidian-mcp.py", "scripts/db-matrix/bootstrap.sh", "scripts/db-matrix/wait-ready.sh", "scripts/db-matrix/parse-version.cjs"]
 testes: ["src/test/unit/brainBuild.test.ts", "src/test/unit/brainRules.test.ts", "src/test/unit/brainScripts.test.ts", "src/test/unit/docsFidelity.test.ts", "src/test/unit/docsFidelityNls.test.ts", "src/test/unit/packageTarget.test.ts", "src/test/unit/vsixIgnore.test.ts"]
@@ -288,7 +288,7 @@ GitHub Actions) via environment `github-pages`.
 - `site-health.yml` verifica a saúde do site **diariamente** (200, sem `x-robots-tag`, sitemap, robots de host, verificação do Google, chave do IndexNow) e **falha** se algo quebrar
 - `bing-index.yml` consulta a **API do Bing Webmaster** (secret `BWT_API_KEY`) diariamente e reporta a indexação da home — falha se a chave expirar ou se a home não indexar no prazo (14 dias)
 - `google-index.yml` consulta a **URL Inspection API** do Search Console (secret `GSC_SERVICE_ACCOUNT_JSON`) diariamente e reporta a indexação da home no Google — falha se as credenciais falharem ou se a home não indexar no prazo (14 dias)
-- `pagespeed.yml` consulta o **PageSpeed Insights** (secret `PAGESPEED_API_KEY`) diariamente e **falha** se as notas caírem (Performance < 90; SEO/Acessibilidade/Best Practices < 100)
+- `pagespeed.yml` consulta o **PageSpeed Insights** (secret `PAGESPEED_API_KEY`) diariamente, tenta até **3 vezes por estratégia** e **falha** apenas se todas as tentativas ficarem abaixo dos limites (Performance < 90; SEO/Acessibilidade/Best Practices < 100). Cada resposta do Lighthouse é salva como artifact para diagnosticar audits com score < 1.
 - `robots.txt` na raiz do host (`thepaneb.github.io`) declara o sitemap
 - `docs:check` valida o site (seção “Site (GitHub Pages)”); `brain:gaps` cobre `site/**`
 - `site/**` fica fora do VSIX (`.vscodeignore`)
