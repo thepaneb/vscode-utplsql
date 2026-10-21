@@ -32,6 +32,8 @@ Chạy và gỡ lỗi kiểm thử **utPLSQL** (Oracle PL/SQL) ngay trong VS Cod
 
 - 🧪 **Test Explorer gốc** — các suite và bài kiểm thử xuất hiện trong khung testing; chạy theo bài kiểm thử, suite, tệp hoặc thư mục.
 - 🔍 **CodeLens** — nút Run/Run with Coverage trên `%suite` và `%test` ngay trong trình soạn thảo, không cần rời khỏi mã.
+- 🧬 **Nhận diện PL/SQL** — tính năng khám phá, CodeLens và trang trí tuân theo `utplsql.discovery.languageIds` (mặc định `plsql`, `sql`, `oracle-sql`) và `files.associations`; `.pls`, `.plb`, `.tps`, `.tpb`, `.vw` và phần mở rộng tùy chỉnh cũng hoạt động.
+- ✂️ **Snippet** — snippet `ut-` cho annotation utPLSQL (`%suite`, `%test`, `%context`, lifecycle, `%tags`/`%throws`) và các matcher `ut.expect` chính, có sẵn trong `sql` và `plsql`.
 - ⌨️ **Phím tắt** — tiền tố `Ctrl+Shift+U` + phím cho các lệnh chính (R = Chạy tất cả, T = Chạy tệp, L = Chạy lại lần cuối, v.v.).
 - 🖱️ **Menu ngữ cảnh** — bấm chuột phải vào một **thư mục** hoặc tệp **`.pks`/`.pkb`** (trong Explorer hoặc trong trình soạn thảo) để chạy kiểm thử.
 - 🔁 **Chạy lại thông minh** — Chạy lại lần cuối, Chạy tại con trỏ, Chỉ chạy các bài thất bại chỉ với một phím tắt.
@@ -54,6 +56,7 @@ Chạy và gỡ lỗi kiểm thử **utPLSQL** (Oracle PL/SQL) ngay trong VS Cod
 - 📈 **Độ phủ câu lệnh và view** — tab Coverage hiển thị `% câu lệnh` (PROCEDURE/FUNCTION) theo tệp và theo dõi các view được thực thi qua `V$SQL`.
 - 🎯 **Phạm vi phủ** — thêm/loại đối tượng và regex schema/đối tượng (`utplsql.coverage.*`) để bỏ nhiễu framework và thêm các đối tượng chỉ truy cập động.
 - 🗂️ **Nguồn CSDL ảo** — khi không có tệp cục bộ, *jump to failure* và độ phủ mở tài liệu chỉ-đọc lấy từ `ALL_SOURCE` (`utplsql-source:/…`).
+- 🧾 **Báo cáo HTML độ phủ** — với `utplsql.coverage.htmlReport`, lần chạy ghi `test-results/coverage.html` và cung cấp **Mở trong trình duyệt** / **Lưu vào tệp…** mà không chặn Test Explorer.
 
 ### Trình gỡ lỗi
 
@@ -171,7 +174,7 @@ Test Explorer **ngay khi từng bài kiểm thử hoàn tất**. VSIX đã kèm 
 | `utplsql.coverage.includeObjectExpr` | `""` | Regex đối tượng đưa vào phạm vi phủ. |
 | `utplsql.coverage.excludeSchemaExpr` | `""` | Regex schema loại khỏi phạm vi phủ. |
 | `utplsql.coverage.excludeObjectExpr` | `""` | Regex đối tượng loại khỏi phạm vi phủ (ví dụ `^UT_` cho framework utPLSQL). |
-| `utplsql.coverage.htmlReport` | `false` | Ghi báo cáo HTML độ phủ vào `test-results/coverage.html` và sau khi chạy cung cấp **Mở trong trình duyệt** / **Lưu thành…** (fire-and-forget). |
+| `utplsql.coverage.htmlReport` | `false` | Ghi báo cáo HTML độ phủ vào `test-results/coverage.html` và sau khi chạy cung cấp **Mở trong trình duyệt** / **Lưu vào tệp…** (fire-and-forget). |
 | `utplsql.timeoutMinutes` | `60` | Thời gian chờ (phút). |
 | `utplsql.dbmsOutput` | `false` | Bật `DBMS_OUTPUT` trong phiên kiểm thử. |
 | `utplsql.additionalReporters` | `[]` | Các reporter bổ sung đưa vào mỗi lần chạy (ví dụ `["ut_coverage_html_reporter"]`). Các reporter mặc định (documentation, junit) luôn được bao gồm và không cần liệt kê. |
@@ -325,6 +328,8 @@ Tất cả các lệnh của extension (palette `Ctrl+Shift+P` tiền tố `utPL
 | `utPLSQL: Chạy với reporter (xuất)` | Chạy lựa chọn với reporter đã chọn và ghi đầu ra vào Output/tệp (không đổi kết quả) | Test Explorer → menu do item |
 | `utPLSQL: Tạo bộ kiểm thử…` | tạo `ut_<gói>.pks` với một `%test` cho mỗi thủ tục/hàm từ `.pks`/`.pkb` hoặc đối tượng cơ sở dữ liệu, dùng các tùy chọn `utplsql.generate.*` | v3.2.x không biên dịch được (`PLS-00222`). `WE8DEC` của image làm mất các ký tự không biểu diễn được (ví dụ `€`); driver mỏng bỏ qua `NLS_LANG`. |
 | `utPLSQL: Chạy các bài kiểm thử liên quan` | trong `.pks`/`.pkb`/`.sql` production, chạy các bộ kiểm thử theo quy ước `ut_<đối tượng>` | v3.2.x không biên dịch được (`PLS-00222`). `WE8DEC` của image làm mất các ký tự không biểu diễn được (ví dụ `€`); driver mỏng bỏ qua `NLS_LANG`. |
+| `utPLSQL: Bật/tắt độ phủ` | Chuyển chế độ độ phủ của phiên (nhấp vào thanh trạng thái). | — |
+| `utPLSQL: Chạy kiểm thử theo thẻ...` | Chạy các suite/bài kiểm thử khớp với thẻ đã chọn (`!tag` loại trừ). | — |
 
 > **Recompile UT3** (`utplsql.recompileUt3`) **không phải** là lệnh palette — nó là
 > quick-fix nội bộ của diagnostic "utPLSQL Setup" (các đối tượng không hợp lệ trong

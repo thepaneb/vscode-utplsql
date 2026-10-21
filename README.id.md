@@ -32,6 +32,8 @@ Jalankan dan debug pengujian **utPLSQL** (Oracle PL/SQL) langsung di VS Code —
 
 - 🧪 **Test Explorer asli** — suite dan pengujian muncul di tampilan testing; jalankan per pengujian, suite, file, atau folder.
 - 🔍 **CodeLens** — tombol Run/Run with Coverage di atas `%suite` dan `%test` di editor, tanpa meninggalkan kode Anda.
+- 🧬 **Identitas bahasa PL/SQL** — penemuan, CodeLens, dan dekorasi menghormati `utplsql.discovery.languageIds` (default `plsql`, `sql`, `oracle-sql`) dan `files.associations`; `.pls`, `.plb`, `.tps`, `.tpb`, `.vw`, dan ekstensi kustom juga berfungsi.
+- ✂️ **Snippet** — snippet `ut-` untuk anotasi utPLSQL (`%suite`, `%test`, `%context`, lifecycle, `%tags`/`%throws`) dan matcher `ut.expect` utama, tersedia di `sql` dan `plsql`.
 - ⌨️ **Pintasan keyboard** — prefiks `Ctrl+Shift+U` + tombol untuk perintah utama (R = Run All, T = Run File, L = Rerun Last, dll.).
 - 🖱️ **Menu konteks** — klik kanan pada **folder** atau file **`.pks`/`.pkb`** (di Explorer atau di editor) untuk menjalankan pengujian.
 - 🔁 **Smart Re-run** — Rerun Last, Run at Cursor, Run Failed Only dengan satu pintasan.
@@ -54,6 +56,7 @@ Jalankan dan debug pengujian **utPLSQL** (Oracle PL/SQL) langsung di VS Code —
 - 📈 **Cakupan pernyataan dan view** — tab Coverage menampilkan `% pernyataan` (PROCEDURE/FUNCTION) per file dan melacak view yang dieksekusi melalui `V$SQL`.
 - 🎯 **Lingkup cakupan** — sertakan/kecualikan objek dan regex schema/objek (`utplsql.coverage.*`) untuk menghilangkan noise framework dan menambahkan objek yang dijangkau secara dinamis.
 - 🗂️ **Sumber basis data virtual** — tanpa file lokal, *jump to failure* dan cakupan membuka dokumen hanya-baca dari `ALL_SOURCE` (`utplsql-source:/…`).
+- 🧾 **Laporan HTML cakupan** — dengan `utplsql.coverage.htmlReport`, run menulis `test-results/coverage.html` dan menawarkan **Buka di browser** / **Simpan ke file…** tanpa memblokir Test Explorer.
 
 ### Debugger
 
@@ -172,7 +175,7 @@ Ekstensi terhubung langsung ke Oracle, membaca laporan (JUnit + Coverage) lalu m
 | `utplsql.coverage.includeObjectExpr` | `""` | Regex objek yang disertakan dalam cakupan. |
 | `utplsql.coverage.excludeSchemaExpr` | `""` | Regex schema yang dikecualikan dari cakupan. |
 | `utplsql.coverage.excludeObjectExpr` | `""` | Regex objek yang dikecualikan dari cakupan (mis. `^UT_` untuk framework utPLSQL). |
-| `utplsql.coverage.htmlReport` | `false` | Menulis laporan HTML cakupan ke `test-results/coverage.html` dan menawarkan **Buka di browser** / **Simpan sebagai…** setelah run (fire-and-forget). |
+| `utplsql.coverage.htmlReport` | `false` | Menulis laporan HTML cakupan ke `test-results/coverage.html` dan menawarkan **Buka di browser** / **Simpan ke file…** setelah run (fire-and-forget). |
 | `utplsql.timeoutMinutes` | `60` | Batas waktu (timeout) dalam menit untuk eksekusi pengujian. |
 | `utplsql.dbmsOutput` | `false` | Mengaktifkan `DBMS_OUTPUT` di sesi pengujian. Berguna untuk debugging. |
 | `utplsql.additionalReporters` | `[]` | Reporter tambahan yang disertakan pada setiap eksekusi (mis. `["ut_coverage_html_reporter"]`). Default (documentation, junit) selalu disertakan dan tidak perlu didaftarkan. |
@@ -326,6 +329,8 @@ Semua perintah ekstensi (palet `Ctrl+Shift+P`, prefiks `utPLSQL:`):
 | `utPLSQL: Jalankan dengan reporter (ekspor)` | Menjalankan pilihan dengan reporter terpilih dan menulis output ke Output/file (tidak mengubah hasil) | Test Explorer → menu do item |
 | `utPLSQL: Buat rangkaian pengujian…` | menghasilkan `ut_<paket>.pks` dengan satu `%test` per rutin dari `.pks`/`.pkb` atau objek basis data, dengan opsi `utplsql.generate.*` | v3.2.x tidak dapat dikompilasi (`PLS-00222`). `WE8DEC` pada image kehilangan karakter yang tidak dapat direpresentasikan (mis. `€`); driver tipis mengabaikan `NLS_LANG`. |
 | `utPLSQL: Jalankan pengujian terkait` | pada `.pks`/`.pkb`/`.sql` produksi, menjalankan rangkaian sesuai konvensi `ut_<objek>` | v3.2.x tidak dapat dikompilasi (`PLS-00222`). `WE8DEC` pada image kehilangan karakter yang tidak dapat direpresentasikan (mis. `€`); driver tipis mengabaikan `NLS_LANG`. |
+| `utPLSQL: Alihkan cakupan` | Mengalihkan mode cakupan sesi (klik item status bar). | — |
+| `utPLSQL: Jalankan tes berdasarkan tag...` | Menjalankan suite/tes yang cocok dengan tag terpilih (`!tag` mengecualikan). | — |
 
 > **Recompile UT3** (`utplsql.recompileUt3`) **bukan** perintah palet — ini adalah
 > quick-fix internal dari diagnostik "utPLSQL Setup" (objek tidak valid di

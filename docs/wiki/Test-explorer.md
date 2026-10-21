@@ -103,8 +103,9 @@ utPLSQL documentation output streams to the test output in real time.
 ## Database-discovered suites
 
 In `schema` mode, suites found only in the database (not in the workspace) use a
-virtual URI `utplsql-db:/SCHEMA/PKG.pks`. They can be **executed**, but have no
-CodeLens, decorations or jump-to-failure (those providers require real files).
+virtual URI `utplsql-db:/SCHEMA/PKG.pks`. They can be **executed**; CodeLens and
+inline decorations require real files, but jump-to-failure works through the
+read-only `utplsql-source:` virtual document resolved from `ALL_SOURCE`.
 
 ## Related
 

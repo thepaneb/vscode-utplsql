@@ -65,7 +65,7 @@ Run and debug **utPLSQL** (Oracle PL/SQL) tests right in VS Code — native **Te
 - 📈 **Statement and view coverage** — the Coverage tab shows `% of statements` (PROCEDURE/FUNCTION) per file and tracks views executed via `V$SQL`.
 - 🎯 **Coverage scope** — include/exclude objects and schema/object regexes (`utplsql.coverage.*`) to drop framework noise and add dynamically reached objects.
 - 🗂️ **Virtual database source** — with no local file, *jump to failure* and coverage open a read-only document resolved from `ALL_SOURCE` (`utplsql-source:/…`).
-- 🧾 **HTML coverage report** — with `utplsql.coverage.htmlReport`, the run writes `test-results/coverage.html` and offers **Open in Browser** / **Save As…** without blocking the Test Explorer.
+- 🧾 **HTML coverage report** — with `utplsql.coverage.htmlReport`, the run writes `test-results/coverage.html` and offers **Open in Browser** / **Save to file…** without blocking the Test Explorer.
 
 ### Debugger
 
@@ -191,7 +191,7 @@ Test Explorer **as each test finishes**.
 | `utplsql.coverage.includeObjectExpr` | `""` | Regex of objects to include in coverage. |
 | `utplsql.coverage.excludeSchemaExpr` | `""` | Regex of schemas to exclude from coverage. |
 | `utplsql.coverage.excludeObjectExpr` | `""` | Regex of objects to exclude from coverage (e.g. `^UT_` for the utPLSQL framework). |
-| `utplsql.coverage.htmlReport` | `false` | Writes the utPLSQL HTML coverage report to `test-results/coverage.html` and offers **Open in Browser** / **Save As…** after the run (fire-and-forget). |
+| `utplsql.coverage.htmlReport` | `false` | Writes the utPLSQL HTML coverage report to `test-results/coverage.html` and offers **Open in Browser** / **Save to file…** after the run (fire-and-forget). |
 | `utplsql.timeoutMinutes` | `60` | Timeout in minutes for the test execution. |
 | `utplsql.dbmsOutput` | `false` | Enables `DBMS_OUTPUT` in the test session. Useful for debugging. |
 | `utplsql.additionalReporters` | `[]` | Additional reporters to include on every run (e.g. `["ut_coverage_html_reporter"]`). The default reporters (documentation and junit) are always included and don't need to be listed; the coverage reporter is added only when running with coverage. |
@@ -382,7 +382,7 @@ Coverage is reported via `ut_coverage_cobertura_reporter` and mapped to source f
 automatically using the `utplsql.sourcePath` setting and the `utplsql.coverageOwner`
 schema. The extension resolves `package`, `package body`, `function`, `procedure`,
 `type body`, `trigger` and `view` objects, trying `.sql`, `.pks`, `.pkb`, `.prc`,
-`.fnc`, `.trg`, `.tpb` and `.bdy` under the source folders.
+`.fnc`, `.trg`, `.tpb`, `.bdy` and `.typ` under the source folders.
 
 ## Reporters
 

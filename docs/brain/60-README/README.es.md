@@ -41,6 +41,8 @@ Ejecuta y depura pruebas **utPLSQL** (Oracle PL/SQL) directamente en VS Code —
 
 - 🧪 **Test Explorer nativo** — las suites y los tests aparecen en la vista de pruebas; ejecute por test, suite, archivo o carpeta.
 - 🔍 **CodeLens** — botones Run/Run with Coverage sobre `%suite` y `%test` en el editor, sin salir del código.
+- 🧬 **Identidad PL/SQL** — el descubrimiento, CodeLens y las decoraciones respetan `utplsql.discovery.languageIds` (por defecto `plsql`, `sql`, `oracle-sql`) y `files.associations`; `.pls`, `.plb`, `.tps`, `.tpb`, `.vw` y extensiones propias también funcionan.
+- ✂️ **Snippets** — snippets `ut-` para las annotations de utPLSQL (`%suite`, `%test`, `%context`, lifecycle, `%tags`/`%throws`) y los principales matchers de `ut.expect`, disponibles en `sql` y `plsql`.
 - ⌨️ **Atajos de teclado** — prefijo `Ctrl+Shift+U` + tecla para los comandos principales (R = Run All, T = Run File, L = Rerun Last, etc.).
 - 🖱️ **Menú contextual** — clic derecho en una **carpeta** o en un archivo **`.pks`/`.pkb`** (en el Explorer o en el editor) para ejecutar los tests.
 - 🔁 **Smart Re-run** — Rerun Last, Run at Cursor, Run Failed Only con un único atajo.
@@ -63,6 +65,7 @@ Ejecuta y depura pruebas **utPLSQL** (Oracle PL/SQL) directamente en VS Code —
 - 📈 **Cobertura por declaración y de vistas** — la pestaña Coverage muestra `% de declaraciones` (PROCEDURE/FUNCTION) por archivo y rastrea las vistas ejecutadas vía `V$SQL`.
 - 🎯 **Alcance de cobertura** — incluye/excluye objetos y regex de esquema/objeto (`utplsql.coverage.*`) para quitar ruido del framework y añadir objetos alcanzados dinámicamente.
 - 🗂️ **Fuente virtual de la base** — sin archivo local, el *jump to failure* y la cobertura abren un documento de solo lectura resuelto desde `ALL_SOURCE` (`utplsql-source:/…`).
+- 🧾 **Informe HTML de cobertura** — con `utplsql.coverage.htmlReport`, la ejecución escribe `test-results/coverage.html` y ofrece **Abrir en el navegador** / **Guardar en archivo…** sin bloquear el Test Explorer.
 
 ### Depurador
 
@@ -180,7 +183,7 @@ Test Explorer **a medida que cada test termina**.
 | `utplsql.coverage.includeObjectExpr` | `""` | Regex de objetos a incluir en la cobertura. |
 | `utplsql.coverage.excludeSchemaExpr` | `""` | Regex de esquemas a excluir de la cobertura. |
 | `utplsql.coverage.excludeObjectExpr` | `""` | Regex de objetos a excluir de la cobertura (p. ej. `^UT_` para el framework utPLSQL). |
-| `utplsql.coverage.htmlReport` | `false` | Escribe el informe HTML de cobertura en `test-results/coverage.html` y ofrece **Abrir en el navegador** / **Guardar como…** tras la ejecución (fire-and-forget). |
+| `utplsql.coverage.htmlReport` | `false` | Escribe el informe HTML de cobertura en `test-results/coverage.html` y ofrece **Abrir en el navegador** / **Guardar en archivo…** tras la ejecución (fire-and-forget). |
 | `utplsql.timeoutMinutes` | `60` | Timeout en minutos para la ejecución de los tests. |
 | `utplsql.dbmsOutput` | `false` | Habilita `DBMS_OUTPUT` en la sesión de pruebas. Útil para depuración. |
 | `utplsql.additionalReporters` | `[]` | Reporters adicionales para incluir en cada ejecución (p. ej. `["ut_coverage_html_reporter"]`). Los predeterminados (documentation, junit) siempre se incluyen y no es necesario listarlos. |
@@ -333,6 +336,8 @@ Todos los comandos de la extensión (paleta `Ctrl+Shift+P`, prefijo `utPLSQL:`):
 | `utPLSQL: Ejecutar con reporter (exportar)` | Ejecuta la selección con un reporter elegido y guarda la salida en Output/archivo (no cambia los resultados) | Test Explorer → menu do item |
 | `utPLSQL: Generar suite de pruebas…` | genera `ut_<paquete>.pks` con un `%test` por rutina desde un `.pks`/`.pkb` o un objeto de la base de datos, con las opciones `utplsql.generate.*` | El v3.2.x no compila (`PLS-00222`). El charset `WE8DEC` de la imagen pierde caracteres no representables (p. ej. `€`); el driver thin ignora `NLS_LANG`. |
 | `utPLSQL: Ejecutar tests relacionados` | en un `.pks`/`.pkb`/`.sql` de producción, ejecuta las suites por la convención `ut_<objeto>` | El v3.2.x no compila (`PLS-00222`). El charset `WE8DEC` de la imagen pierde caracteres no representables (p. ej. `€`); el driver thin ignora `NLS_LANG`. |
+| `utPLSQL: Alternar cobertura` | Alterna el modo de cobertura de la sesión (clic en la barra de estado). | — |
+| `utPLSQL: Ejecutar tests por tag...` | Ejecuta las suites/tests que coinciden con los tags seleccionados (`!tag` excluye). | — |
 
 > **Recompilar UT3** (`utplsql.recompileUt3`) **no** es un comando de paleta — es
 > un quick-fix interno del diagnóstico "utPLSQL Setup" (objetos inválidos en el
@@ -370,7 +375,7 @@ La cobertura se reporta mediante `ut_coverage_cobertura_reporter` y se mapea a l
 fuente automáticamente usando el setting `utplsql.sourcePath` y el esquema
 `utplsql.coverageOwner`. La extensión resuelve objetos `package`, `package body`, `function`,
 `procedure`, `type body`, `trigger` y `view`, probando `.sql`, `.pks`, `.pkb`, `.prc`, `.fnc`,
-`.trg`, `.tpb` y `.bdy` bajo las carpetas de código fuente.
+`.trg`, `.tpb`, `.bdy` y `.typ` bajo las carpetas de código fuente.
 
 ## Reporters
 

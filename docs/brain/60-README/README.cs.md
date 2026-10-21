@@ -41,6 +41,8 @@ Spouštějte a laďte testy **utPLSQL** (Oracle PL/SQL) přímo ve VS Code — n
 
 - 🧪 **Nativní Test Explorer** — sady a testy se zobrazují v pohledu testování; spouštění podle testu, sady, souboru nebo složky.
 - 🔍 **CodeLens** — tlačítka Run/Run with Coverage nad `%suite` a `%test` v editoru, bez opuštění kódu.
+- 🧬 **Identita PL/SQL** — objevování, CodeLens a dekorace respektují `utplsql.discovery.languageIds` (výchozí `plsql`, `sql`, `oracle-sql`) a `files.associations`; `.pls`, `.plb`, `.tps`, `.tpb`, `.vw` a vlastní přípony také fungují.
+- ✂️ **Snippety** — snippety `ut-` pro annotations utPLSQL (`%suite`, `%test`, `%context`, lifecycle, `%tags`/`%throws`) a hlavní matchers `ut.expect`, dostupné v `sql` a `plsql`.
 - ⌨️ **Klávesové zkratky** — předpona `Ctrl+Shift+U` + klávesa pro hlavní příkazy (R = Run All, T = Run File, L = Rerun Last atd.).
 - 🖱️ **Kontextová nabídka** — klikněte pravým tlačítkem na **složku** nebo soubor **`.pks`/`.pkb`** (v Průzkumníku nebo v editoru) pro spuštění testů.
 - 🔁 **Chytré opětovné spuštění** — Rerun Last, Run at Cursor, Run Failed Only jedinou zkratkou.
@@ -63,6 +65,7 @@ Spouštějte a laďte testy **utPLSQL** (Oracle PL/SQL) přímo ve VS Code — n
 - 📈 **Pokrytí příkazů a pohledů** — karta Coverage zobrazuje `% of statements` (PROCEDURE/FUNCTION) podle souboru a sleduje pohledy spuštěné přes `V$SQL`.
 - 🎯 **Rozsah pokrytí** — zahrňte/vylučte objekty a regex schématu/objektu (`utplsql.coverage.*`) pro odstranění šumu frameworku a přidání dynamicky dosažených objektů.
 - 🗂️ **Virtuální zdroj z databáze** — bez lokálního souboru *jump to failure* a pokrytí otevřou dokument jen pro čtení z `ALL_SOURCE` (`utplsql-source:/…`).
+- 🧾 **HTML report pokrytí** — s `utplsql.coverage.htmlReport` běh zapíše `test-results/coverage.html` a nabídne **Otevřít v prohlížeči** / **Uložit do souboru…** bez blokování Test Exploreru.
 
 ### Ladicí program
 
@@ -182,7 +185,7 @@ nativních API VSCode.
 | `utplsql.coverage.includeObjectExpr` | `""` | Regex objektů k zahrnutí do pokrytí. |
 | `utplsql.coverage.excludeSchemaExpr` | `""` | Regex schémat k vyloučení z pokrytí. |
 | `utplsql.coverage.excludeObjectExpr` | `""` | Regex objektů k vyloučení z pokrytí (např. `^UT_` pro framework utPLSQL). |
-| `utplsql.coverage.htmlReport` | `false` | Zapíše HTML report pokrytí do `test-results/coverage.html` a po běhu nabídne **Otevřít v prohlížeči** / **Uložit jako…** (fire-and-forget). |
+| `utplsql.coverage.htmlReport` | `false` | Zapíše HTML report pokrytí do `test-results/coverage.html` a po běhu nabídne **Otevřít v prohlížeči** / **Uložit do souboru…** (fire-and-forget). |
 | `utplsql.timeoutMinutes` | `60` | Časový limit v minutách pro spuštění testů. |
 | `utplsql.dbmsOutput` | `false` | Povolí `DBMS_OUTPUT` v testovací relaci. Užitečné pro ladění. |
 | `utplsql.additionalReporters` | `[]` | Další reportéry zahrnuté do každého spuštění (např. `["ut_coverage_html_reporter"]`). Výchozí (documentation, junit) jsou vždy zahrnuty a není třeba je vypisovat. |
@@ -336,6 +339,8 @@ Všechny příkazy rozšíření (paleta `Ctrl+Shift+P`, předpona `utPLSQL:`):
 | `utPLSQL: Spustit s reporterem (export)` | Spustí výběr se zvoleným reporterem a zapíše výstup do Output/souboru (nemění výsledky) | Test Explorer → menu do item |
 | `utPLSQL: Vygenerovat testovací sadu…` | vygeneruje `ut_<balíček>.pks` s jedním `%test` na rutinu ze souboru `.pks`/`.pkb` nebo databázového objektu, s možnostmi `utplsql.generate.*` | v3.2.x se nezkompiluje (`PLS-00222`). `WE8DEC` obrazu ztrácí nereprezentovatelné znaky (např. `€`); tenký ovladač ignoruje `NLS_LANG`. |
 | `utPLSQL: Spustit související testy` | v produkčním `.pks`/`.pkb`/`.sql` spustí sady podle konvence `ut_<objekt>` | v3.2.x se nezkompiluje (`PLS-00222`). `WE8DEC` obrazu ztrácí nereprezentovatelné znaky (např. `€`); tenký ovladač ignoruje `NLS_LANG`. |
+| `utPLSQL: Přepnout pokrytí` | Přepíná režim pokrytí relace (kliknutím na stavový řádek). | — |
+| `utPLSQL: Spustit testy podle tagu...` | Spustí suite/testy odpovídající vybraným tagům (`!tag` vylučuje). | — |
 
 > **Recompile UT3** (`utplsql.recompileUt3`) **není** příkaz palety — je to
 > interní rychlá oprava diagnostiky „utPLSQL Setup" (neplatné objekty ve

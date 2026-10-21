@@ -15,6 +15,9 @@ Sistema de configuração da extensão: settings, conexão, ambiente.
 
 ## `UtConfig` (src/config.ts)
 
+Resumo dos campos principais; a lista completa e os defaults são a fonte em
+`src/config.ts`.
+
 ```typescript
 interface UtConfig {
   // Pool do Oracle runner (PRD-38)
@@ -37,6 +40,10 @@ interface UtConfig {
   sourcePath: string;                 // default: "install"
   coverageOwner: string;              // default: ""
   sqlCoverageEnabled: boolean;        // default: false (PRD-12)
+  coverageHtmlReport: boolean;        // default: false (PRD-108: test-results/coverage.html)
+
+  // Descoberta/editor (PRD-109)
+  discoveryLanguageIds: string[];     // default: ["plsql", "sql", "oracle-sql"]
 
   // Execução
   timeoutMinutes: number;             // default: 60
@@ -46,6 +53,7 @@ interface UtConfig {
   debuggerEnabled: boolean;           // default: true
   debuggerStopOnException: boolean;   // default: true
   debuggerTimeoutSeconds: number;     // default: 300
+  debuggerCompileOnDebug: boolean;    // default: false (PRD-73: recompila com debug)
 
   // Script runner (PRD-62)
   scriptRunnerStopOnError: boolean;   // default: true

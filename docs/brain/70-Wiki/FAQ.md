@@ -19,7 +19,7 @@ Check the following:
 2. The `%suite` and `%test` annotations are in the **spec** (`.pks`), not the body
 3. The file has a `create package` declaration and at least one `%test` followed by `PROCEDURE`
 4. Run `utPLSQL: Refresh Tests` to force rediscovery
-5. Run `utPLSQL: Validate Configuration` for automatic diagnostics on connection and grants
+5. Run `utPLSQL: Validate setup` for automatic diagnostics on connection and grants
 
 ### Can I use it with Oracle XE?
 
@@ -231,7 +231,7 @@ by `utplsql.compilationDiagnostics.enabled` (default `true`); the query lives in
 
 ### How do I validate that my configuration is correct?
 
-Run `utPLSQL: Validate Configuration` (palette `Ctrl+Shift+P`). The extension
+Run `utPLSQL: Validate setup` (palette `Ctrl+Shift+P`). The extension
 checks the Oracle connection, utPLSQL version, and the **installation integrity**
 (invalid objects in the utPLSQL schema). Results appear in the Problems Panel
 with **quick-fix actions** (💡 icon) — including **"Recompile UT3"** when there

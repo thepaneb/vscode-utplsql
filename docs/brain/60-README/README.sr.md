@@ -41,6 +41,8 @@ Pokrenite i debugujte **utPLSQL** (Oracle PL/SQL) testove direktno u VS Code-u �
 
 - 🧪 **Нативни Test Explorer** — суитови и тестови се појављују у прегледу тестова; покрени по тесту, суиту, датотеци или фасцикли.
 - 🔍 **CodeLens** — дугмад Run/Run with Coverage изнад `%suite` и `%test` у едитору, без напуштања кода.
+- 🧬 **Идентитет PL/SQL-а** — откривање, CodeLens и декорације поштују `utplsql.discovery.languageIds` (подразумевано `plsql`, `sql`, `oracle-sql`) и `files.associations`; раде и `.pls`, `.plb`, `.tps`, `.tpb`, `.vw` и сопствена проширења.
+- ✂️ **Снипети** — `ut-` снипети за utPLSQL annotations (`%suite`, `%test`, `%context`, lifecycle, `%tags`/`%throws`) и главне `ut.expect` matchere, доступни у `sql` и `plsql`.
 - ⌨️ **Пречице на тастатури** — префикс `Ctrl+Shift+U` + тастер за главне команде (R = Run All, T = Run File, L = Rerun Last, итд.).
 - 🖱️ **Контекстни мени** — десни клик на **фасциклу** или на датотеку **`.pks`/`.pkb`** (у Explorer-у или у едитору) за покретање тестова.
 - 🔁 **Smart Re-run** — Rerun Last, Run at Cursor, Run Failed Only са једном пречицом.
@@ -63,6 +65,7 @@ Pokrenite i debugujte **utPLSQL** (Oracle PL/SQL) testove direktno u VS Code-u �
 - 📈 **Покривеност израза и погледа** — картица Coverage приказује `% израза` (PROCEDURE/FUNCTION) по датотеци и прати погледе извршене преко `V$SQL`.
 - 🎯 **Обим покривености** — укључи/искључи објекте и regex шеме/објекта (`utplsql.coverage.*`) да уклониш шум framework-а и додаш динамички достигнуте објекте.
 - 🗂️ **Virtuelni izvor iz baze** — bez lokalnog fajla *jump to failure* i pokrivenost otvaraju dokument samo za čitanje iz `ALL_SOURCE` (`utplsql-source:/…`).
+- 🧾 **HTML извештај покривености** — са `utplsql.coverage.htmlReport` извршавање уписује `test-results/coverage.html` и нуди **Отвори у прегледачу** / **Сачувај у датотеку…** без блокирања Test Explorer-а.
 
 ### Debager
 
@@ -180,7 +183,7 @@ Test Explorer-у **како се сваки тест заврши**. VSIX већ
 | `utplsql.coverage.includeObjectExpr` | `""` | Regex објеката за укључивање у покривеност. |
 | `utplsql.coverage.excludeSchemaExpr` | `""` | Regex шема за искључивање из покривености. |
 | `utplsql.coverage.excludeObjectExpr` | `""` | Regex објеката за искључивање из покривености (нпр. `^UT_` за utPLSQL framework). |
-| `utplsql.coverage.htmlReport` | `false` | Уписује HTML извештај покривености у `test-results/coverage.html` и после извршавања нуди **Отвори у прегледачу** / **Сачувај као…** (fire-and-forget). |
+| `utplsql.coverage.htmlReport` | `false` | Уписује HTML извештај покривености у `test-results/coverage.html` и после извршавања нуди **Отвори у прегледачу** / **Сачувај у датотеку…** (fire-and-forget). |
 | `utplsql.timeoutMinutes` | `60` | Тимеаут у минутима. |
 | `utplsql.dbmsOutput` | `false` | Омогућава `DBMS_OUTPUT` у тест сесији. |
 | `utplsql.additionalReporters` | `[]` | Додатни reporter-и за укључивање у свако извршавање (нпр. `["ut_coverage_html_reporter"]`). Подразумевани (documentation, junit) су увек укључени и не морају се наводити. |
@@ -334,6 +337,8 @@ UTPLSQL_CONN=your_user/password@//host:1521/service
 | `utPLSQL: Покрени са reporter-ом (извоз)` | Покреће избор са изабраним reporter-ом и пише излаз у Output/датотеку (не мења резултате) | Test Explorer → menu do item |
 | `utPLSQL: Направи тест пакет…` | прави `ut_<пакет>.pks` са једним `%test` по рутини из `.pks`/`.pkb` или објекта базе података, уз опције `utplsql.generate.*` | v3.2.x се не компајлира (`PLS-00222`). `WE8DEC` слике губи непредстављиве знакове (нпр. `€`); танки драјвер игнорише `NLS_LANG`. |
 | `utPLSQL: Покрени повезане тестове` | у продукционом `.pks`/`.pkb`/`.sql` покреће пакете по конвенцији `ut_<објекат>` | v3.2.x се не компајлира (`PLS-00222`). `WE8DEC` слике губи непредстављиве знакове (нпр. `€`); танки драјвер игнорише `NLS_LANG`. |
+| `utPLSQL: Укључи/искључи покривеност` | Мења режим покривености сесије (клик на траку стања). | — |
+| `utPLSQL: Покрени тестове по тагу...` | Покреће suite-ове/тестове који одговарају изабраним таговима (`!tag` искључује). | — |
 
 > **Recompile UT3** (`utplsql.recompileUt3`) **није** команда у палети — то је
 > интерни quick-fix дијагностике „utPLSQL Setup" (неважећи објекти у

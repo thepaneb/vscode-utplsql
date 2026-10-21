@@ -32,6 +32,8 @@
 
 - 🧪 **Εγγενές Test Explorer** — τα suites και τα tests εμφανίζονται στην προβολή testing· εκτέλεση ανά test, suite, αρχείο ή φάκελο.
 - 🔍 **CodeLens** — κουμπιά Run/Run with Coverage πάνω από τα `%suite` και `%test` στον editor, χωρίς να φύγετε από τον κώδικά σας.
+- 🧬 **Ταυτότητα γλώσσας PL/SQL** — η ανακάλυψη, το CodeLens και οι διακοσμήσεις σέβονται το `utplsql.discovery.languageIds` (προεπιλογή `plsql`, `sql`, `oracle-sql`) και το `files.associations`; λειτουργούν επίσης `.pls`, `.plb`, `.tps`, `.tpb`, `.vw` και προσαρμοσμένες επεκτάσεις.
+- ✂️ **Snippets** — snippets `ut-` για τις annotations του utPLSQL (`%suite`, `%test`, `%context`, lifecycle, `%tags`/`%throws`) και τους βασικούς matchers του `ut.expect`, διαθέσιμα σε `sql` και `plsql`.
 - ⌨️ **Συντομεύσεις πληκτρολογίου** — πρόθεμα `Ctrl+Shift+U` + πλήκτρο για τις κύριες εντολές (R = Run All, T = Run File, L = Rerun Last, κ.λπ.).
 - 🖱️ **Μενού περιβάλλοντος** — δεξί κλικ σε έναν **φάκελο** ή σε ένα αρχείο **`.pks`/`.pkb`** (στο Explorer ή στον editor) για να εκτελέσετε tests.
 - 🔁 **Smart Re-run** — Rerun Last, Run at Cursor, Run Failed Only με μία μόνο συντόμευση.
@@ -54,6 +56,7 @@
 - 📈 **Κάλυψη εντολών και views** — η καρτέλα Coverage δείχνει το `% των εντολών` (PROCEDURE/FUNCTION) ανά αρχείο και παρακολουθεί τα views που εκτελέστηκαν μέσω `V$SQL`.
 - 🎯 **Εύρος κάλυψης** — συμπεριλάβετε/αποκλείστε αντικείμενα και regex schema/αντικειμένου (`utplsql.coverage.*`) για να αφαιρέσετε τον θόρυβο του framework και να προσθέσετε δυναμικά αντικείμενα.
 - 🗂️ **Εικονική πηγή από τη βάση** — χωρίς τοπικό αρχείο, το *jump to failure* και η κάλυψη ανοίγουν έγγραφο μόνο για ανάγνωση από το `ALL_SOURCE` (`utplsql-source:/…`).
+- 🧾 **Αναφορά κάλυψης HTML** — με `utplsql.coverage.htmlReport`, η εκτέλεση γράφει `test-results/coverage.html` και προσφέρει **Άνοιγμα στο πρόγραμμα περιήγησης** / **Αποθήκευση σε αρχείο…** χωρίς να μπλοκάρει το Test Explorer.
 
 ### Αποσφαλματωτής
 
@@ -173,7 +176,7 @@ Test Explorer **καθώς ολοκληρώνεται κάθε test**.
 | `utplsql.coverage.includeObjectExpr` | `""` | Regex αντικειμένων προς συμπερίληψη στην κάλυψη. |
 | `utplsql.coverage.excludeSchemaExpr` | `""` | Regex schemas προς αποκλεισμό από την κάλυψη. |
 | `utplsql.coverage.excludeObjectExpr` | `""` | Regex αντικειμένων προς αποκλεισμό από την κάλυψη (π.χ. `^UT_` για το framework utPLSQL). |
-| `utplsql.coverage.htmlReport` | `false` | Γράφει την αναφορά HTML κάλυψης στο `test-results/coverage.html` και προσφέρει **Άνοιγμα στο πρόγραμμα περιήγησης** / **Αποθήκευση ως…** μετά την εκτέλεση (fire-and-forget). |
+| `utplsql.coverage.htmlReport` | `false` | Γράφει την αναφορά HTML κάλυψης στο `test-results/coverage.html` και προσφέρει **Άνοιγμα στο πρόγραμμα περιήγησης** / **Αποθήκευση σε αρχείο…** μετά την εκτέλεση (fire-and-forget). |
 | `utplsql.timeoutMinutes` | `60` | Χρονικό όριο σε λεπτά για την εκτέλεση των tests. |
 | `utplsql.dbmsOutput` | `false` | Ενεργοποιεί το `DBMS_OUTPUT` στη σύνοδο του test. Χρήσιμο για debugging. |
 | `utplsql.additionalReporters` | `[]` | Επιπλέον reporters που περιλαμβάνονται σε κάθε εκτέλεση (π.χ. `["ut_coverage_html_reporter"]`). Οι προεπιλεγμένοι (documentation, junit) περιλαμβάνονται πάντα και δεν χρειάζεται να αναφέρονται. |
@@ -327,6 +330,8 @@ UTPLSQL_CONN=your_user/password@//host:1521/service
 | `utPLSQL: Εκτέλεση με reporter (εξαγωγή)` | Εκτελεί την επιλογή με επιλεγμένο reporter και γράφει την έξοδο σε Output/αρχείο (δεν αλλάζει τα αποτελέσματα) | Test Explorer → menu do item |
 | `utPLSQL: Δημιουργία σουίτας δοκιμών…` | δημιουργεί `ut_<πακέτο>.pks` με ένα `%test` ανά ρουτίνα από `.pks`/`.pkb` ή αντικείμενο βάσης δεδομένων, με τις επιλογές `utplsql.generate.*` | Το v3.2.x δεν μεταγλωττίζεται (`PLS-00222`). Το `WE8DEC` της εικόνας χάνει μη αναπαραστάσιμους χαρακτήρες (π.χ. `€`); ο thin driver αγνοεί το `NLS_LANG`. |
 | `utPLSQL: Εκτέλεση σχετικών δοκιμών` | σε ένα αρχείο παραγωγής `.pks`/`.pkb`/`.sql` εκτελεί τις σουίτες κατά τη σύμβαση `ut_<αντικείμενο>` | Το v3.2.x δεν μεταγλωττίζεται (`PLS-00222`). Το `WE8DEC` της εικόνας χάνει μη αναπαραστάσιμους χαρακτήρες (π.χ. `€`); ο thin driver αγνοεί το `NLS_LANG`. |
+| `utPLSQL: Εναλλαγή κάλυψης` | Εναλλάσσει τη λειτουργία κάλυψης της συνεδρίας (κλικ στη γραμμή κατάστασης). | — |
+| `utPLSQL: Εκτέλεση δοκιμών ανά tag...` | Εκτελεί τις suites/δοκιμές που ταιριάζουν με τα επιλεγμένα tags (`!tag` εξαιρεί). | — |
 
 > **Recompile UT3** (`utplsql.recompileUt3`) **δεν** είναι εντολή palette — είναι
 > ένα εσωτερικό quick-fix του διαγνωστικού "utPLSQL Setup" (άκυρα αντικείμενα στο

@@ -32,6 +32,8 @@
 
 - 🧪 **Нативний Test Explorer** — набори та тести з'являються у поданні тестування; запуск за тестом, набором, файлом або папкою.
 - 🔍 **CodeLens** — кнопки Run/Run with Coverage над `%suite` та `%test` у редакторі, не виходячи з коду.
+- 🧬 **Ідентичність PL/SQL** — виявлення, CodeLens і декорації враховують `utplsql.discovery.languageIds` (типово `plsql`, `sql`, `oracle-sql`) і `files.associations`; також працюють `.pls`, `.plb`, `.tps`, `.tpb`, `.vw` і власні розширення.
+- ✂️ **Сніпети** — `ut-` сніпети для annotations utPLSQL (`%suite`, `%test`, `%context`, lifecycle, `%tags`/`%throws`) і основних matchers `ut.expect`, доступні в `sql` і `plsql`.
 - ⌨️ **Гарячі клавіші** — префікс `Ctrl+Shift+U` + клавіша для основних команд (R = Run All, T = Run File, L = Rerun Last тощо).
 - 🖱️ **Контекстне меню** — правий клік на **папці** або файлі **`.pks`/`.pkb`** (у Explorer або в редакторі) для запуску тестів.
 - 🔁 **Розумний повторний запуск** — Rerun Last, Run at Cursor, Run Failed Only одним сполученням клавіш.
@@ -54,6 +56,7 @@
 - 📈 **Покриття інструкцій та представлень** — вкладка Coverage показує `% of statements` (PROCEDURE/FUNCTION) по кожному файлу та відстежує представлення, виконані через `V$SQL`.
 - 🎯 **Обсяг покриття** — включайте/виключайте об'єкти та regex схеми/об'єкта (`utplsql.coverage.*`), щоб прибрати шум фреймворку й додати динамічно досяжні об'єкти.
 - 🗂️ **Віртуальне джерело з БД** — без локального файлу *jump to failure* і покриття відкривають документ лише для читання з `ALL_SOURCE` (`utplsql-source:/…`).
+- 🧾 **HTML-звіт покриття** — з `utplsql.coverage.htmlReport` запуск записує `test-results/coverage.html` і пропонує **Відкрити в браузері** / **Зберегти у файл…** без блокування Test Explorer.
 
 ### Налагоджувач
 
@@ -169,7 +172,7 @@ Test Explorer **у міру завершення кожного тесту**. VS
 | `utplsql.coverage.includeObjectExpr` | `""` | Regex об'єктів для включення в покриття. |
 | `utplsql.coverage.excludeSchemaExpr` | `""` | Regex схем для виключення з покриття. |
 | `utplsql.coverage.excludeObjectExpr` | `""` | Regex об'єктів для виключення з покриття (напр. `^UT_` для фреймворку utPLSQL). |
-| `utplsql.coverage.htmlReport` | `false` | Записує HTML-звіт покриття у `test-results/coverage.html` і після запуску пропонує **Відкрити в браузері** / **Зберегти як…** (fire-and-forget). |
+| `utplsql.coverage.htmlReport` | `false` | Записує HTML-звіт покриття у `test-results/coverage.html` і після запуску пропонує **Відкрити в браузері** / **Зберегти у файл…** (fire-and-forget). |
 | `utplsql.timeoutMinutes` | `60` | Час очікування у хвилинах. |
 | `utplsql.dbmsOutput` | `false` | Увімкнення `DBMS_OUTPUT` у сесії тестування. |
 | `utplsql.additionalReporters` | `[]` | Додаткові репортери, які включаються в кожен запуск (напр. `["ut_coverage_html_reporter"]`). Стандартні (documentation, junit) завжди включаються, їх не потрібно перелічувати. |
@@ -323,6 +326,8 @@ UTPLSQL_CONN=your_user/password@//host:1521/service
 | `utPLSQL: Запустити з reporter (експорт)` | Запускає вибір з обраним reporter і записує вивід у Output/файл (не змінює результати) | Test Explorer → menu do item |
 | `utPLSQL: Створити набір тестів…` | створює `ut_<пакет>.pks` з одним `%test` на підпрограму з `.pks`/`.pkb` або об’єкта бази даних, з параметрами `utplsql.generate.*` | v3.2.x не компілюється (`PLS-00222`). `WE8DEC` образу втрачає невідтворювані символи (напр. `€`); тонкий драйвер ігнорує `NLS_LANG`. |
 | `utPLSQL: Запустити пов’язані тести` | у робочому `.pks`/`.pkb`/`.sql` запускає набори за конвенцією `ut_<об’єкт>` | v3.2.x не компілюється (`PLS-00222`). `WE8DEC` образу втрачає невідтворювані символи (напр. `€`); тонкий драйвер ігнорує `NLS_LANG`. |
+| `utPLSQL: Перемкнути покриття` | Перемикає режим покриття сеансу (клацніть на рядку стану). | — |
+| `utPLSQL: Запустити тести за тегом...` | Запускає suites/тести, що відповідають вибраним тегам (`!tag` виключає). | — |
 
 > **Recompile UT3** (`utplsql.recompileUt3`) — **не** команда палітри: це
 > внутрішнє швидке виправлення діагностики "utPLSQL Setup" (недійсні об'єкти у

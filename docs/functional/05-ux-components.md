@@ -176,7 +176,7 @@ Prefixo: `Ctrl+Shift+U` (Mac: `Cmd+Shift+U`).
 | `Ctrl+Shift+U Shift+T` | Run File + Coverage | idem |
 | `Ctrl+Shift+U F` | Refresh | `utplsql:activated` |
 | `Ctrl+Shift+U I` | Show Info | `utplsql:activated` |
-| `Ctrl+Shift+U C` | Clear Connection | `utplsql:activated` |
+| `Ctrl+Shift+U C` | Clear session connection | `utplsql:activated` |
 | `Ctrl+Shift+U L` | Rerun Last | `utplsql:activated` |
 | `Ctrl+Shift+U U` | Run at Cursor | `editorTextFocus && .pks` |
 | `Ctrl+Shift+U X` | Run Failed | `utplsql:hasFailures` |

@@ -32,6 +32,8 @@
 
 - 🧪 **Test Explorer เนทีฟ** — suites และ tests จะปรากฏในมุมมองการทดสอบ; เรียกใช้ตาม test, suite, ไฟล์ หรือโฟลเดอร์
 - 🔍 **CodeLens** — ปุ่ม Run/Run with Coverage เหนือ `%suite` และ `%test` ในตัวแก้ไข โดยไม่ต้องออกจากโค้ด
+- 🧬 **อัตลักษณ์ภาษา PL/SQL** — การค้นหา CodeLens และการตกแต่งเป็นไปตาม `utplsql.discovery.languageIds` (ค่าเริ่มต้น `plsql`, `sql`, `oracle-sql`) และ `files.associations`; รองรับ `.pls`, `.plb`, `.tps`, `.tpb`, `.vw` และนามสกุลที่กำหนดเอง
+- ✂️ **Snippets** — snippet `ut-` สำหรับ annotation ของ utPLSQL (`%suite`, `%test`, `%context`, lifecycle, `%tags`/`%throws`) และ matcher หลักของ `ut.expect` ใช้ได้ใน `sql` และ `plsql`
 - ⌨️ **ปุ่มลัดคีย์บอร์ด** — คำนำหน้า `Ctrl+Shift+U` + คีย์สำหรับคำสั่งหลัก (R = Run All, T = Run File, L = Rerun Last, ฯลฯ)
 - 🖱️ **เมนูบริบท** — คลิกขวาที่ **โฟลเดอร์** หรือไฟล์ **`.pks`/`.pkb`** (ใน Explorer หรือในตัวแก้ไข) เพื่อรันการทดสอบ
 - 🔁 **Smart Re-run** — Rerun Last, Run at Cursor, Run Failed Only ด้วยปุ่มลัดเพียงปุ่มเดียว
@@ -54,6 +56,7 @@
 - 📈 **ความครอบคลุมของ statement และ view** — แท็บ Coverage แสดง `% ของ statements` (PROCEDURE/FUNCTION) ต่อไฟล์และติดตาม views ที่ถูกเรียกใช้ผ่าน `V$SQL`
 - 🎯 **ขอบเขตความครอบคลุม** — รวม/ยกเว้นอ็อบเจกต์และ regex ของ schema/อ็อบเจกต์ (`utplsql.coverage.*`) เพื่อตัดสัญญาณรบกวนของ framework และเพิ่มอ็อบเจกต์ที่เข้าถึงแบบไดนามิก
 - 🗂️ **แหล่งข้อมูลเสมือนจากฐานข้อมูล** — เมื่อไม่มีไฟล์ในเครื่อง *jump to failure* และ coverage จะเปิดเอกสารแบบอ่านอย่างเดียวจาก `ALL_SOURCE` (`utplsql-source:/…`)
+- 🧾 **รายงาน HTML ความครอบคลุม** — ด้วย `utplsql.coverage.htmlReport` การรันจะเขียน `test-results/coverage.html` และเสนอ **เปิดในเบราว์เซอร์** / **บันทึกเป็นไฟล์…** โดยไม่บล็อก Test Explorer
 
 ### ดีบักเกอร์
 
@@ -171,7 +174,7 @@ Test Explorer **เมื่อแต่ละเทสต์เสร็จส�
 | `utplsql.coverage.includeObjectExpr` | `""` | regex ของอ็อบเจกต์ที่จะรวมในการครอบคลุม |
 | `utplsql.coverage.excludeSchemaExpr` | `""` | regex ของ schema ที่จะยกเว้นจากการครอบคลุม |
 | `utplsql.coverage.excludeObjectExpr` | `""` | regex ของอ็อบเจกต์ที่จะยกเว้นจากการครอบคลุม (เช่น `^UT_` สำหรับ framework utPLSQL) |
-| `utplsql.coverage.htmlReport` | `false` | เขียนรายงาน HTML ความครอบคลุมไปที่ `test-results/coverage.html` และเสนอ **เปิดในเบราว์เซอร์** / **บันทึกเป็น…** หลังการรัน (fire-and-forget) |
+| `utplsql.coverage.htmlReport` | `false` | เขียนรายงาน HTML ความครอบคลุมไปที่ `test-results/coverage.html` และเสนอ **เปิดในเบราว์เซอร์** / **บันทึกเป็นไฟล์…** หลังการรัน (fire-and-forget) |
 | `utplsql.timeoutMinutes` | `60` | Timeout เป็นนาที |
 | `utplsql.dbmsOutput` | `false` | เปิดใช้งาน `DBMS_OUTPUT` ในเซสชันการทดสอบ |
 | `utplsql.additionalReporters` | `[]` | Reporters เพิ่มเติมที่จะรวมในทุกรัน (เช่น `["ut_coverage_html_reporter"]`) ค่าเริ่มต้น (documentation, junit) จะถูกรวมเสมอและไม่จำเป็นต้องระบุ |
@@ -325,6 +328,8 @@ Annotation ไม่คำนึงถึงตัวพิมพ์เล็ก
 | `utPLSQL: เรียกใช้ด้วย reporter (ส่งออก)` | เรียกใช้ส่วนที่เลือกด้วย reporter ที่เลือกและเขียนเอาต์พุตไปที่ Output/ไฟล์ (ไม่เปลี่ยนผลลัพธ์) | Test Explorer → menu do item |
 | `utPLSQL: สร้างชุดทดสอบ…` | สร้าง `ut_<แพ็กเกจ>.pks` โดยมี `%test` หนึ่งรายการต่อรูทีน จาก `.pks`/`.pkb` หรือออบเจ็กต์ฐานข้อมูล พร้อมตัวเลือก `utplsql.generate.*` | v3.2.x คอมไพล์ไม่ได้ (`PLS-00222`) `WE8DEC` ของอิมเมจจะสูญเสียอักขระที่ไม่สามารถแทนได้ (เช่น `€`); ไดรเวอร์ thin ไม่สนใจ `NLS_LANG` |
 | `utPLSQL: รันการทดสอบที่เกี่ยวข้อง` | ใน `.pks`/`.pkb`/`.sql` โปรดักชัน รันชุดทดสอบตามธรรมเนียม `ut_<ออบเจ็กต์>` | v3.2.x คอมไพล์ไม่ได้ (`PLS-00222`) `WE8DEC` ของอิมเมจจะสูญเสียอักขระที่ไม่สามารถแทนได้ (เช่น `€`); ไดรเวอร์ thin ไม่สนใจ `NLS_LANG` |
+| `utPLSQL: สลับความครอบคลุม` | สลับโหมดความครอบคลุมของเซสชัน (คลิกที่แถบสถานะ) | — |
+| `utPLSQL: เรียกใช้การทดสอบตามแท็ก...` | เรียกใช้ suite/การทดสอบที่ตรงกับแท็กที่เลือก (`!tag` ยกเว้น) | — |
 
 > **Recompile UT3** (`utplsql.recompileUt3`) **ไม่ใช่**คำสั่งใน palette — เป็น
 > quick-fix ภายในของการวินิจฉัย "utPLSQL Setup" (อ็อบเจกต์ที่ไม่ถูกต้องใน

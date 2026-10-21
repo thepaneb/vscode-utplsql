@@ -620,9 +620,9 @@ export const es: Record<string, string> = {
   'script.done': 'Done: {ok} ok, {failed} failed ({executed} statements).',
   'script.noStatements': 'No SQL statements found to run.',
   'ext.profile.guide.none':
-    'No saved connection profile. Create a profile or import from SQL Developer.',
-  'ext.profile.guide.new': 'New profile',
-  'ext.profile.guide.import': 'Import from SQL Developer',
+    'No hay ningún perfil de conexión guardado. Crea un perfil o importa desde SQL Developer.',
+  'ext.profile.guide.new': 'Nuevo perfil',
+  'ext.profile.guide.import': 'Importar desde SQL Developer',
   'ext.profile.new.charsetPrompt': 'Script charset (optional — Enter for utf8)',
   'nls.command.runScript': 'utPLSQL: Run script',
   'nls.command.runScriptFile': 'utPLSQL: Run script file',
@@ -681,7 +681,6 @@ export const es: Record<string, string> = {
   'ext.runRelated.noEditor': 'Abra un archivo de producción para ejecutar los tests relacionados.',
   'ext.runRelated.none': 'No se encontró ninguna suite relacionada con {file}.',
 };
-
 export const zhCn: Record<string, string> = {
   'ext.export.reporterPlaceholder': '选择要导出的数据库 reporter',
   'ext.export.toOutput': '在 Output 中显示',
@@ -1064,9 +1063,9 @@ export const ja: Record<string, string> = {
   'script.done': 'Done: {ok} ok, {failed} failed ({executed} statements).',
   'script.noStatements': 'No SQL statements found to run.',
   'ext.profile.guide.none':
-    'No saved connection profile. Create a profile or import from SQL Developer.',
-  'ext.profile.guide.new': 'New profile',
-  'ext.profile.guide.import': 'Import from SQL Developer',
+    '保存された接続プロファイルがありません。プロファイルを作成するか、SQL Developer からインポートしてください。',
+  'ext.profile.guide.new': '新しいプロファイル',
+  'ext.profile.guide.import': 'SQL Developer からインポート',
   'ext.profile.new.charsetPrompt': 'Script charset (optional — Enter for utf8)',
   'nls.command.runScript': 'utPLSQL: Run script',
   'nls.command.runScriptFile': 'utPLSQL: Run script file',
@@ -1125,7 +1124,6 @@ export const ja: Record<string, string> = {
   'ext.runRelated.noEditor': '関連テストを実行するには本番ファイルを開いてください。',
   'ext.runRelated.none': '{file} に関連するスイートが見つかりませんでした。',
 };
-
 export const de: Record<string, string> = {
   'ext.export.reporterPlaceholder': 'Datenbank-Reporter für den Export wählen',
   'ext.export.toOutput': 'In Output anzeigen',
@@ -1292,9 +1290,9 @@ export const de: Record<string, string> = {
   'script.done': 'Done: {ok} ok, {failed} failed ({executed} statements).',
   'script.noStatements': 'No SQL statements found to run.',
   'ext.profile.guide.none':
-    'No saved connection profile. Create a profile or import from SQL Developer.',
-  'ext.profile.guide.new': 'New profile',
-  'ext.profile.guide.import': 'Import from SQL Developer',
+    'Kein gespeichertes Verbindungsprofil. Erstellen Sie ein Profil oder importieren Sie aus SQL Developer.',
+  'ext.profile.guide.new': 'Neues Profil',
+  'ext.profile.guide.import': 'Aus SQL Developer importieren',
   'ext.profile.new.charsetPrompt': 'Script charset (optional — Enter for utf8)',
   'nls.command.runScript': 'utPLSQL: Run script',
   'nls.command.runScriptFile': 'utPLSQL: Run script file',
@@ -1355,7 +1353,6 @@ export const de: Record<string, string> = {
     'Öffnen Sie eine Produktionsdatei, um die zugehörigen Tests auszuführen.',
   'ext.runRelated.none': 'Keine Suite zu {file} gefunden.',
 };
-
 export const fr: Record<string, string> = {
   'ext.export.reporterPlaceholder': 'Choisissez un reporter de la base à exporter',
   'ext.export.toOutput': 'Afficher dans Output',
@@ -1524,9 +1521,9 @@ export const fr: Record<string, string> = {
   'script.done': 'Done: {ok} ok, {failed} failed ({executed} statements).',
   'script.noStatements': 'No SQL statements found to run.',
   'ext.profile.guide.none':
-    'No saved connection profile. Create a profile or import from SQL Developer.',
-  'ext.profile.guide.new': 'New profile',
-  'ext.profile.guide.import': 'Import from SQL Developer',
+    'Aucun profil de connexion enregistré. Créez un profil ou importez depuis SQL Developer.',
+  'ext.profile.guide.new': 'Nouveau profil',
+  'ext.profile.guide.import': 'Importer depuis SQL Developer',
   'ext.profile.new.charsetPrompt': 'Script charset (optional — Enter for utf8)',
   'nls.command.runScript': 'utPLSQL: Run script',
   'nls.command.runScriptFile': 'utPLSQL: Run script file',
@@ -1586,7 +1583,6 @@ export const fr: Record<string, string> = {
   'ext.runRelated.noEditor': 'Ouvrez un fichier de production pour exécuter les tests liés.',
   'ext.runRelated.none': 'Aucune suite liée à {file} n’a été trouvée.',
 };
-
 export const zhTw: Record<string, string> = {
   'ext.export.reporterPlaceholder': '選擇要匯出的資料庫 reporter',
   'ext.export.toOutput': '在 Output 中顯示',
@@ -1969,9 +1965,9 @@ export const it: Record<string, string> = {
   'script.done': 'Done: {ok} ok, {failed} failed ({executed} statements).',
   'script.noStatements': 'No SQL statements found to run.',
   'ext.profile.guide.none':
-    'No saved connection profile. Create a profile or import from SQL Developer.',
-  'ext.profile.guide.new': 'New profile',
-  'ext.profile.guide.import': 'Import from SQL Developer',
+    'Nessun profilo di connessione salvato. Crea un profilo o importa da SQL Developer.',
+  'ext.profile.guide.new': 'Nuovo profilo',
+  'ext.profile.guide.import': 'Importa da SQL Developer',
   'ext.profile.new.charsetPrompt': 'Script charset (optional — Enter for utf8)',
   'nls.command.runScript': 'utPLSQL: Run script',
   'nls.command.runScriptFile': 'utPLSQL: Run script file',
@@ -2031,7 +2027,6 @@ export const it: Record<string, string> = {
   'ext.runRelated.noEditor': 'Apri un file di produzione per eseguire i test correlati.',
   'ext.runRelated.none': 'Nessuna suite correlata a {file} trovata.',
 };
-
 export const ko: Record<string, string> = {
   'ext.export.reporterPlaceholder': '내보낼 데이터베이스 reporter 선택',
   'ext.export.toOutput': 'Output에 표시',
@@ -2195,9 +2190,9 @@ export const ko: Record<string, string> = {
   'script.done': 'Done: {ok} ok, {failed} failed ({executed} statements).',
   'script.noStatements': 'No SQL statements found to run.',
   'ext.profile.guide.none':
-    'No saved connection profile. Create a profile or import from SQL Developer.',
-  'ext.profile.guide.new': 'New profile',
-  'ext.profile.guide.import': 'Import from SQL Developer',
+    '저장된 연결 프로필이 없습니다. 프로필을 만들거나 SQL Developer에서 가져오세요.',
+  'ext.profile.guide.new': '새 프로필',
+  'ext.profile.guide.import': 'SQL Developer에서 가져오기',
   'ext.profile.new.charsetPrompt': 'Script charset (optional — Enter for utf8)',
   'nls.command.runScript': 'utPLSQL: Run script',
   'nls.command.runScriptFile': 'utPLSQL: Run script file',
@@ -2256,7 +2251,6 @@ export const ko: Record<string, string> = {
   'ext.runRelated.noEditor': '관련 테스트를 실행하려면 운영 파일을 여세요.',
   'ext.runRelated.none': '{file}과(와) 관련된 스위트를 찾을 수 없습니다.',
 };
-
 export const ru: Record<string, string> = {
   'ext.export.reporterPlaceholder': 'Выберите reporter базы данных для экспорта',
   'ext.export.toOutput': 'Показать в Output',
@@ -2420,9 +2414,9 @@ export const ru: Record<string, string> = {
   'script.done': 'Done: {ok} ok, {failed} failed ({executed} statements).',
   'script.noStatements': 'No SQL statements found to run.',
   'ext.profile.guide.none':
-    'No saved connection profile. Create a profile or import from SQL Developer.',
-  'ext.profile.guide.new': 'New profile',
-  'ext.profile.guide.import': 'Import from SQL Developer',
+    'Нет сохранённого профиля подключения. Создайте профиль или импортируйте из SQL Developer.',
+  'ext.profile.guide.new': 'Новый профиль',
+  'ext.profile.guide.import': 'Импорт из SQL Developer',
   'ext.profile.new.charsetPrompt': 'Script charset (optional — Enter for utf8)',
   'nls.command.runScript': 'utPLSQL: Run script',
   'nls.command.runScriptFile': 'utPLSQL: Run script file',
@@ -2482,7 +2476,6 @@ export const ru: Record<string, string> = {
   'ext.runRelated.noEditor': 'Откройте рабочий файл, чтобы запустить связанные тесты.',
   'ext.runRelated.none': 'Связанный с {file} набор не найден.',
 };
-
 export const tr: Record<string, string> = {
   'ext.export.reporterPlaceholder': 'Dışa aktarılacak veritabanı reporter seçin',
   'ext.export.toOutput': 'Output içinde göster',
@@ -2643,9 +2636,9 @@ export const tr: Record<string, string> = {
   'script.done': 'Done: {ok} ok, {failed} failed ({executed} statements).',
   'script.noStatements': 'No SQL statements found to run.',
   'ext.profile.guide.none':
-    'No saved connection profile. Create a profile or import from SQL Developer.',
-  'ext.profile.guide.new': 'New profile',
-  'ext.profile.guide.import': 'Import from SQL Developer',
+    "Kayıtlı bağlantı profili yok. Bir profil oluşturun veya SQL Developer'dan içe aktarın.",
+  'ext.profile.guide.new': 'Yeni profil',
+  'ext.profile.guide.import': "SQL Developer'dan içe aktar",
   'ext.profile.new.charsetPrompt': 'Script charset (optional — Enter for utf8)',
   'nls.command.runScript': 'utPLSQL: Run script',
   'nls.command.runScriptFile': 'utPLSQL: Run script file',
@@ -2704,7 +2697,6 @@ export const tr: Record<string, string> = {
   'ext.runRelated.noEditor': 'İlgili testleri çalıştırmak için bir üretim dosyası açın.',
   'ext.runRelated.none': '{file} ile ilgili paket bulunamadı.',
 };
-
 export const pl: Record<string, string> = {
   'ext.export.reporterPlaceholder': 'Wybierz reporter bazy do eksportu',
   'ext.export.toOutput': 'Pokaż w Output',
@@ -2870,9 +2862,9 @@ export const pl: Record<string, string> = {
   'script.done': 'Done: {ok} ok, {failed} failed ({executed} statements).',
   'script.noStatements': 'No SQL statements found to run.',
   'ext.profile.guide.none':
-    'No saved connection profile. Create a profile or import from SQL Developer.',
-  'ext.profile.guide.new': 'New profile',
-  'ext.profile.guide.import': 'Import from SQL Developer',
+    'Brak zapisanego profilu połączenia. Utwórz profil lub zaimportuj z SQL Developer.',
+  'ext.profile.guide.new': 'Nowy profil',
+  'ext.profile.guide.import': 'Importuj z SQL Developer',
   'ext.profile.new.charsetPrompt': 'Script charset (optional — Enter for utf8)',
   'nls.command.runScript': 'utPLSQL: Run script',
   'nls.command.runScriptFile': 'utPLSQL: Run script file',
@@ -2932,7 +2924,6 @@ export const pl: Record<string, string> = {
   'ext.runRelated.noEditor': 'Otwórz plik produkcyjny, aby uruchomić powiązane testy.',
   'ext.runRelated.none': 'Nie znaleziono pakietu powiązanego z {file}.',
 };
-
 export const cs: Record<string, string> = {
   'ext.export.reporterPlaceholder': 'Vyberte reporter databáze pro export',
   'ext.export.toOutput': 'Zobrazit v Output',
@@ -3098,9 +3089,9 @@ export const cs: Record<string, string> = {
   'script.done': 'Done: {ok} ok, {failed} failed ({executed} statements).',
   'script.noStatements': 'No SQL statements found to run.',
   'ext.profile.guide.none':
-    'No saved connection profile. Create a profile or import from SQL Developer.',
-  'ext.profile.guide.new': 'New profile',
-  'ext.profile.guide.import': 'Import from SQL Developer',
+    'Není uložený žádný profil připojení. Vytvořte profil nebo importujte ze SQL Developer.',
+  'ext.profile.guide.new': 'Nový profil',
+  'ext.profile.guide.import': 'Importovat ze SQL Developer',
   'ext.profile.new.charsetPrompt': 'Script charset (optional — Enter for utf8)',
   'nls.command.runScript': 'utPLSQL: Run script',
   'nls.command.runScriptFile': 'utPLSQL: Run script file',
@@ -3159,7 +3150,6 @@ export const cs: Record<string, string> = {
   'ext.runRelated.noEditor': 'Otevřete produkční soubor pro spuštění souvisejících testů.',
   'ext.runRelated.none': 'Nebyla nalezena sada související s {file}.',
 };
-
 export const hu: Record<string, string> = {
   'ext.export.reporterPlaceholder': 'Válasszon adatbázis-reportert az exporthoz',
   'ext.export.toOutput': 'Megjelenítés az Outputban',
@@ -3328,9 +3318,9 @@ export const hu: Record<string, string> = {
   'script.done': 'Done: {ok} ok, {failed} failed ({executed} statements).',
   'script.noStatements': 'No SQL statements found to run.',
   'ext.profile.guide.none':
-    'No saved connection profile. Create a profile or import from SQL Developer.',
-  'ext.profile.guide.new': 'New profile',
-  'ext.profile.guide.import': 'Import from SQL Developer',
+    'Nincs mentett kapcsolatprofil. Hozzon létre profilt, vagy importáljon az SQL Developerből.',
+  'ext.profile.guide.new': 'Új profil',
+  'ext.profile.guide.import': 'Importálás az SQL Developerből',
   'ext.profile.new.charsetPrompt': 'Script charset (optional — Enter for utf8)',
   'nls.command.runScript': 'utPLSQL: Run script',
   'nls.command.runScriptFile': 'utPLSQL: Run script file',
@@ -3390,7 +3380,6 @@ export const hu: Record<string, string> = {
   'ext.runRelated.noEditor': 'Nyisson meg egy éles fájlt a kapcsolódó tesztek futtatásához.',
   'ext.runRelated.none': 'Nem található a(z) {file} fájlhoz kapcsolódó csomag.',
 };
-
 export const enGb: Record<string, string> = {
   'ext.export.reporterPlaceholder': 'Choose a database reporter to export',
   'ext.export.toOutput': 'Show in Output',
@@ -3579,9 +3568,9 @@ export const bg: Record<string, string> = {
   'script.done': 'Done: {ok} ok, {failed} failed ({executed} statements).',
   'script.noStatements': 'No SQL statements found to run.',
   'ext.profile.guide.none':
-    'No saved connection profile. Create a profile or import from SQL Developer.',
-  'ext.profile.guide.new': 'New profile',
-  'ext.profile.guide.import': 'Import from SQL Developer',
+    'Няма запазен профил за връзка. Създайте профил или импортирайте от SQL Developer.',
+  'ext.profile.guide.new': 'Нов профил',
+  'ext.profile.guide.import': 'Импорт от SQL Developer',
   'ext.profile.new.charsetPrompt': 'Script charset (optional — Enter for utf8)',
   'nls.command.runScript': 'utPLSQL: Run script',
   'nls.command.runScriptFile': 'utPLSQL: Run script file',
@@ -3642,7 +3631,6 @@ export const bg: Record<string, string> = {
   'ext.runRelated.noEditor': 'Отворете продукционен файл, за да изпълните свързаните тестове.',
   'ext.runRelated.none': 'Не е намерен пакет, свързан с {file}.',
 };
-
 export const el: Record<string, string> = {
   'ext.export.reporterPlaceholder': 'Επιλέξτε reporter της βάσης για εξαγωγή',
   'ext.export.toOutput': 'Εμφάνιση στο Output',
@@ -3804,9 +3792,9 @@ export const el: Record<string, string> = {
   'script.done': 'Done: {ok} ok, {failed} failed ({executed} statements).',
   'script.noStatements': 'No SQL statements found to run.',
   'ext.profile.guide.none':
-    'No saved connection profile. Create a profile or import from SQL Developer.',
-  'ext.profile.guide.new': 'New profile',
-  'ext.profile.guide.import': 'Import from SQL Developer',
+    'Δεν υπάρχει αποθηκευμένο προφίλ σύνδεσης. Δημιουργήστε ένα προφίλ ή εισαγάγετε από το SQL Developer.',
+  'ext.profile.guide.new': 'Νέο προφίλ',
+  'ext.profile.guide.import': 'Εισαγωγή από SQL Developer',
   'ext.profile.new.charsetPrompt': 'Script charset (optional — Enter for utf8)',
   'nls.command.runScript': 'utPLSQL: Run script',
   'nls.command.runScriptFile': 'utPLSQL: Run script file',
@@ -3867,7 +3855,6 @@ export const el: Record<string, string> = {
   'ext.runRelated.noEditor': 'Ανοίξτε ένα αρχείο παραγωγής για να εκτελέσετε τις σχετικές δοκιμές.',
   'ext.runRelated.none': 'Δεν βρέθηκε σουίτα σχετική με το {file}.',
 };
-
 export const id: Record<string, string> = {
   'ext.export.reporterPlaceholder': 'Pilih reporter basis data untuk diekspor',
   'ext.export.toOutput': 'Tampilkan di Output',
@@ -4026,9 +4013,9 @@ export const id: Record<string, string> = {
   'script.done': 'Done: {ok} ok, {failed} failed ({executed} statements).',
   'script.noStatements': 'No SQL statements found to run.',
   'ext.profile.guide.none':
-    'No saved connection profile. Create a profile or import from SQL Developer.',
-  'ext.profile.guide.new': 'New profile',
-  'ext.profile.guide.import': 'Import from SQL Developer',
+    'Tidak ada profil koneksi tersimpan. Buat profil atau impor dari SQL Developer.',
+  'ext.profile.guide.new': 'Profil baru',
+  'ext.profile.guide.import': 'Impor dari SQL Developer',
   'ext.profile.new.charsetPrompt': 'Script charset (optional — Enter for utf8)',
   'nls.command.runScript': 'utPLSQL: Run script',
   'nls.command.runScriptFile': 'utPLSQL: Run script file',
@@ -4088,7 +4075,6 @@ export const id: Record<string, string> = {
   'ext.runRelated.noEditor': 'Buka file produksi untuk menjalankan pengujian terkait.',
   'ext.runRelated.none': 'Tidak ada rangkaian yang terkait dengan {file}.',
 };
-
 export const ro: Record<string, string> = {
   'ext.export.reporterPlaceholder': 'Alegeți un reporter din baza de date pentru export',
   'ext.export.toOutput': 'Afișează în Output',
@@ -4247,9 +4233,9 @@ export const ro: Record<string, string> = {
   'script.done': 'Done: {ok} ok, {failed} failed ({executed} statements).',
   'script.noStatements': 'No SQL statements found to run.',
   'ext.profile.guide.none':
-    'No saved connection profile. Create a profile or import from SQL Developer.',
-  'ext.profile.guide.new': 'New profile',
-  'ext.profile.guide.import': 'Import from SQL Developer',
+    'Nu există niciun profil de conexiune salvat. Creează un profil sau importă din SQL Developer.',
+  'ext.profile.guide.new': 'Profil nou',
+  'ext.profile.guide.import': 'Importă din SQL Developer',
   'ext.profile.new.charsetPrompt': 'Script charset (optional — Enter for utf8)',
   'nls.command.runScript': 'utPLSQL: Run script',
   'nls.command.runScriptFile': 'utPLSQL: Run script file',
@@ -4309,7 +4295,6 @@ export const ro: Record<string, string> = {
   'ext.runRelated.noEditor': 'Deschideți un fișier de producție pentru a rula testele asociate.',
   'ext.runRelated.none': 'Nu s-a găsit nicio suită asociată cu {file}.',
 };
-
 export const sr: Record<string, string> = {
   'ext.export.reporterPlaceholder': 'Изаберите reporter базе за извоз',
   'ext.export.toOutput': 'Прикажи у Output',
@@ -4468,9 +4453,9 @@ export const sr: Record<string, string> = {
   'script.done': 'Done: {ok} ok, {failed} failed ({executed} statements).',
   'script.noStatements': 'No SQL statements found to run.',
   'ext.profile.guide.none':
-    'No saved connection profile. Create a profile or import from SQL Developer.',
-  'ext.profile.guide.new': 'New profile',
-  'ext.profile.guide.import': 'Import from SQL Developer',
+    'Нема сачуваног профила везе. Направите профил или увезите из SQL Developer-а.',
+  'ext.profile.guide.new': 'Нови профил',
+  'ext.profile.guide.import': 'Увези из SQL Developer-а',
   'ext.profile.new.charsetPrompt': 'Script charset (optional — Enter for utf8)',
   'nls.command.runScript': 'utPLSQL: Run script',
   'nls.command.runScriptFile': 'utPLSQL: Run script file',
@@ -4530,7 +4515,6 @@ export const sr: Record<string, string> = {
   'ext.runRelated.noEditor': 'Отворите продукциону датотеку да покренете повезане тестове.',
   'ext.runRelated.none': 'Није пронађен пакет повезан са {file}.',
 };
-
 export const th: Record<string, string> = {
   'ext.export.reporterPlaceholder': 'เลือก reporter ของฐานข้อมูลเพื่อส่งออก',
   'ext.export.toOutput': 'แสดงใน Output',
@@ -4677,10 +4661,9 @@ export const th: Record<string, string> = {
   'script.dbms': '[dbms] {line}',
   'script.done': 'Done: {ok} ok, {failed} failed ({executed} statements).',
   'script.noStatements': 'No SQL statements found to run.',
-  'ext.profile.guide.none':
-    'No saved connection profile. Create a profile or import from SQL Developer.',
-  'ext.profile.guide.new': 'New profile',
-  'ext.profile.guide.import': 'Import from SQL Developer',
+  'ext.profile.guide.none': 'ไม่มีโปรไฟล์การเชื่อมต่อที่บันทึกไว้ สร้างโปรไฟล์หรือนำเข้าจาก SQL Developer',
+  'ext.profile.guide.new': 'โปรไฟล์ใหม่',
+  'ext.profile.guide.import': 'นำเข้าจาก SQL Developer',
   'ext.profile.new.charsetPrompt': 'Script charset (optional — Enter for utf8)',
   'nls.command.runScript': 'utPLSQL: Run script',
   'nls.command.runScriptFile': 'utPLSQL: Run script file',
@@ -4738,7 +4721,6 @@ export const th: Record<string, string> = {
   'ext.runRelated.noEditor': 'เปิดไฟล์โปรดักชันเพื่อรันการทดสอบที่เกี่ยวข้อง',
   'ext.runRelated.none': 'ไม่พบชุดทดสอบที่เกี่ยวข้องกับ {file}',
 };
-
 export const uk: Record<string, string> = {
   'ext.export.reporterPlaceholder': 'Виберіть reporter бази даних для експорту',
   'ext.export.toOutput': 'Показати в Output',
@@ -4897,9 +4879,9 @@ export const uk: Record<string, string> = {
   'script.done': 'Done: {ok} ok, {failed} failed ({executed} statements).',
   'script.noStatements': 'No SQL statements found to run.',
   'ext.profile.guide.none':
-    'No saved connection profile. Create a profile or import from SQL Developer.',
-  'ext.profile.guide.new': 'New profile',
-  'ext.profile.guide.import': 'Import from SQL Developer',
+    'Немає збереженого профілю підключення. Створіть профіль або імпортуйте з SQL Developer.',
+  'ext.profile.guide.new': 'Новий профіль',
+  'ext.profile.guide.import': 'Імпорт із SQL Developer',
   'ext.profile.new.charsetPrompt': 'Script charset (optional — Enter for utf8)',
   'nls.command.runScript': 'utPLSQL: Run script',
   'nls.command.runScriptFile': 'utPLSQL: Run script file',
@@ -4959,7 +4941,6 @@ export const uk: Record<string, string> = {
   'ext.runRelated.noEditor': 'Відкрийте робочий файл, щоб запустити пов’язані тести.',
   'ext.runRelated.none': 'Не знайдено набору, пов’язаного з {file}.',
 };
-
 export const vi: Record<string, string> = {
   'ext.export.reporterPlaceholder': 'Chọn reporter của cơ sở dữ liệu để xuất',
   'ext.export.toOutput': 'Hiển thị trong Output',
@@ -5118,9 +5099,9 @@ export const vi: Record<string, string> = {
   'script.done': 'Done: {ok} ok, {failed} failed ({executed} statements).',
   'script.noStatements': 'No SQL statements found to run.',
   'ext.profile.guide.none':
-    'No saved connection profile. Create a profile or import from SQL Developer.',
-  'ext.profile.guide.new': 'New profile',
-  'ext.profile.guide.import': 'Import from SQL Developer',
+    'Không có hồ sơ kết nối nào được lưu. Hãy tạo hồ sơ hoặc nhập từ SQL Developer.',
+  'ext.profile.guide.new': 'Hồ sơ mới',
+  'ext.profile.guide.import': 'Nhập từ SQL Developer',
   'ext.profile.new.charsetPrompt': 'Script charset (optional — Enter for utf8)',
   'nls.command.runScript': 'utPLSQL: Run script',
   'nls.command.runScriptFile': 'utPLSQL: Run script file',

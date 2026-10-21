@@ -57,8 +57,8 @@ bundled.
 | | `statusBar.ts` — status bar indicator |
 | | `viewCoverage.ts` — DeclarationCoverage + V$SQL view tracking |
 | | `dbmsDebug.ts`, `debugger.ts` — PL/SQL debugging via DBMS_DEBUG |
-| `tnsnames.ts` — `tnsnames.ora` alias resolution (thin driver); `virtualSource.ts` — URIs virtuais `utplsql-source:` | `oracleClient.ts` — thin/thick mode init |
-| `annotation.ts` — `findAnnotationAtLine` (run/debug at cursor); `debugTargets.ts` — alvo das variações de debug; `coverageDecision.ts` — cobertura efetiva (explícito ?? `coverageAlways`); `tagFilter.ts` — filtro por `%tags` (inclusão/exclusão); `autoRun.ts` — debounce por arquivo + guarda de concorrência do auto-run (watch) | `oracleRunner.ts` — pool, `executeRunOracle`, discovery helpers |
+| `tnsnames.ts` — `tnsnames.ora` alias resolution (thin driver) | `oracleClient.ts` — thin/thick mode init |
+| `debugTargets.ts` — alvo das variações de debug; `coverageDecision.ts` — cobertura efetiva (explícito ?? `coverageAlways`); `tagFilter.ts` — filtro por `%tags` (inclusão/exclusão); `autoRun.ts` — debounce por arquivo + guarda de concorrência do auto-run (watch) | `annotation.ts` — `findAnnotationAtLine` (run/debug at cursor); `virtualSource.ts` — URIs virtuais `utplsql-source:`; `oracleRunner.ts` — pool, `executeRunOracle`, discovery helpers |
 
 Modules in the left column **do not import `vscode`** (at runtime) and are
 testable with `node --test` without any setup. Full list: `src/*.ts`.
@@ -84,7 +84,7 @@ testable with `node --test` without any setup. Full list: `src/*.ts`.
 | `utplsql.includePatterns` | `cfg.includePatterns` | `discovery.ts` (findFiles) |
 | `utplsql.discovery.languageIds` | `cfg.discoveryLanguageIds` | `languageIdentity.ts` → globs for discovery/CodeLens/watcher (PRD-109) |
 | `utplsql.timeoutMinutes` | `cfg.timeoutMinutes` | run timeout (`Promise.race` + cancellation) |
-| `utplsql.dbmsOutput` | `cfg.dbmsOutput` | captures `DBMS_OUTPUT` via `GET_LINES` on the polling session |
+| `utplsql.dbmsOutput` | `cfg.dbmsOutput` | enables `DBMS_OUTPUT` and drains it with `GET_LINE` on `conn1` (the session that runs the tests) |
 | `utplsql.additionalReporters` | `cfg.additionalReporters` | extra reporters in the `a_reporters` param of `ut_runner.run` (deduplicated) |
 | `utplsql.tags` | `cfg.tags` | `a_tags` of `ut_runner.run` (server-side tag filter) |
 | `utplsql.run.randomOrder`/`run.randomOrderSeed` | `cfg.randomOrder`/`randomOrderSeed` | `a_random_test_order`/`_seed` of `ut_runner.run` |

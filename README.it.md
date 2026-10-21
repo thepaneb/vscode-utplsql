@@ -32,6 +32,8 @@ Esegui e debugga i test **utPLSQL** (Oracle PL/SQL) direttamente in VS Code — 
 
 - 🧪 **Test Explorer nativo** — suite e test appaiono nella vista di test; esegui per test, suite, file o cartella.
 - 🔍 **CodeLens** — pulsanti Run/Run with Coverage sopra `%suite` e `%test` nell'editor, senza lasciare il codice.
+- 🧬 **Identità PL/SQL** — discovery, CodeLens e decorazioni rispettano `utplsql.discovery.languageIds` (default `plsql`, `sql`, `oracle-sql`) e `files.associations`; funzionano anche `.pls`, `.plb`, `.tps`, `.tpb`, `.vw` ed estensioni personalizzate.
+- ✂️ **Snippet** — snippet `ut-` per le annotation utPLSQL (`%suite`, `%test`, `%context`, lifecycle, `%tags`/`%throws`) e i principali matcher di `ut.expect`, disponibili in `sql` e `plsql`.
 - ⌨️ **Scorciatoie da tastiera** — prefisso `Ctrl+Shift+U` + tasto per i comandi principali (R = Run All, T = Run File, L = Rerun Last, ecc.).
 - 🖱️ **Menu contestuale** — clic destro su una **cartella** o su un file **`.pks`/`.pkb`** (nell'Esplora file o nell'editor) per eseguire i test.
 - 🔁 **Re-esecuzione intelligente** — Rerun Last, Run at Cursor, Run Failed Only con una singola scorciatoia.
@@ -54,6 +56,7 @@ Esegui e debugga i test **utPLSQL** (Oracle PL/SQL) direttamente in VS Code — 
 - 📈 **Copertura di statement e viste** — la scheda Coverage mostra `% di statement` (PROCEDURE/FUNCTION) per file e tiene traccia delle viste eseguite tramite `V$SQL`.
 - 🎯 **Ambito di copertura** — includi/escludi oggetti e regex di schema/oggetto (`utplsql.coverage.*`) per rimuovere il rumore del framework e aggiungere oggetti raggiunti dinamicamente.
 - 🗂️ **Sorgente virtuale dal database** — senza file locale, il *jump to failure* e la copertura aprono un documento di sola lettura risolto da `ALL_SOURCE` (`utplsql-source:/…`).
+- 🧾 **Report HTML di copertura** — con `utplsql.coverage.htmlReport`, l’esecuzione scrive `test-results/coverage.html` e offre **Apri nel browser** / **Salva su file…** senza bloccare il Test Explorer.
 
 ### Debugger
 
@@ -171,7 +174,7 @@ Test Explorer **appena ogni test termina**.
 | `utplsql.coverage.includeObjectExpr` | `""` | Regex di oggetti da includere nella copertura. |
 | `utplsql.coverage.excludeSchemaExpr` | `""` | Regex di schemi da escludere dalla copertura. |
 | `utplsql.coverage.excludeObjectExpr` | `""` | Regex di oggetti da escludere dalla copertura (es. `^UT_` per il framework utPLSQL). |
-| `utplsql.coverage.htmlReport` | `false` | Scrive il report HTML di copertura in `test-results/coverage.html` e offre **Apri nel browser** / **Salva con nome…** dopo l’esecuzione (fire-and-forget). |
+| `utplsql.coverage.htmlReport` | `false` | Scrive il report HTML di copertura in `test-results/coverage.html` e offre **Apri nel browser** / **Salva su file…** dopo l’esecuzione (fire-and-forget). |
 | `utplsql.timeoutMinutes` | `60` | Timeout in minuti per l'esecuzione dei test. |
 | `utplsql.dbmsOutput` | `false` | Abilita `DBMS_OUTPUT` nella sessione di test. Utile per il debug. |
 | `utplsql.additionalReporters` | `[]` | Reporter aggiuntivi da includere in ogni esecuzione (es. `["ut_coverage_html_reporter"]`). I default (documentation, junit) sono sempre inclusi e non devono essere elencati. |
@@ -324,6 +327,8 @@ Tutti i comandi dell'estensione (palette `Ctrl+Shift+P`, prefisso `utPLSQL:`):
 | `utPLSQL: Esegui con reporter (export)` | Esegue la selezione con un reporter scelto e scrive l'output in Output/file (non cambia i risultati) | Test Explorer → menu do item |
 | `utPLSQL: Genera suite di test…` | genera `ut_<package>.pks` con un `%test` per routine da un `.pks`/`.pkb` o da un oggetto del database, con le opzioni `utplsql.generate.*` | Il v3.2.x non compila (`PLS-00222`). Il charset `WE8DEC` dell'immagine perde i caratteri non rappresentabili (es. `€`); il driver thin ignora `NLS_LANG`. |
 | `utPLSQL: Esegui test correlati` | su un `.pks`/`.pkb`/`.sql` di produzione, esegue le suite secondo la convenzione `ut_<oggetto>` | Il v3.2.x non compila (`PLS-00222`). Il charset `WE8DEC` dell'immagine perde i caratteri non rappresentabili (es. `€`); il driver thin ignora `NLS_LANG`. |
+| `utPLSQL: Attiva/disattiva copertura` | Attiva/disattiva la modalità copertura della sessione (clic sulla barra di stato). | — |
+| `utPLSQL: Esegui test per tag...` | Esegue le suite/i test corrispondenti ai tag selezionati (`!tag` esclude). | — |
 
 > **Recompile UT3** (`utplsql.recompileUt3`) **non** è un comando della palette — è
 > un quick-fix interno del diagnostico "utPLSQL Setup" (oggetti non validi nello
@@ -361,7 +366,7 @@ La copertura viene reportata tramite `ut_coverage_cobertura_reporter` e mappata 
 sorgente automaticamente usando l'impostazione `utplsql.sourcePath` e lo schema
 `utplsql.coverageOwner`. L'estensione risolve gli oggetti `package`, `package body`, `function`,
 `procedure`, `type body`, `trigger` e `view`, provando `.sql`, `.pks`, `.pkb`, `.prc`, `.fnc`,
-`.trg`, `.tpb` e `.bdy` nelle cartelle sorgente.
+`.trg`, `.tpb`, `.bdy` e `.typ` nelle cartelle sorgente.
 
 ## Reporter
 

@@ -53,7 +53,7 @@ per execution):
 
 - Pool is created **lazily** on the first execution; reused on subsequent ones
 - **Automatically recreated** if the connection changes (setting edited or
-  `utPLSQL: Clear Connection` + new connection)
+  `utPLSQL: Clear session connection` + new connection)
 - Health check for idle connections via `poolPingInterval` (internal ping from
   the Thin driver — no extra `SELECT 1 FROM DUAL`)
 - Closed on `deactivate()` with a 10s drain

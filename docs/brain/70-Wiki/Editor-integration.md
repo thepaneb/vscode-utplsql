@@ -90,7 +90,8 @@ JUnit `<failure>`/`<error>` body, filters framework frames and sets
 - The package is taken from the frame (1 segment = itself, 2 = last, 3+ =
   second-to-last) and matched against the discovered suite, falling back to
   `<package>.pks` in the workspace roots.
-- Works for code versioned locally (`.pks`/`.pkb` in the workspace).
+- Works for local workspace files and, when there is no local file, through the
+  read-only `utplsql-source:` virtual document resolved from `ALL_SOURCE`.
 - Only the first user frame is used; external/Oracle-internal code resolves to no
   location.
 - Test results are read from **nested** `<testsuite>` levels too, so suites run
