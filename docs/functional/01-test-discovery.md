@@ -46,7 +46,7 @@ workspace folders
 |---|---|---|
 | `src/suiteParser.ts` | Puro | `parseSuiteText(text)` — extrai `packageName` (via regex de `create package`), `suiteDescription`, `tests[]` |
 | `src/discovery.ts` | vscode | `discoverWorkspace()`, `parseSuite()`, `extractSchemaFromPath()`, `discoverSchemaFromDb()`, `discoverSchemaFromConn()`, `discoverSchemasFromFolders()`, `SuiteFile` |
-| `src/languageIdentity.ts` | vscode | `buildLanguageGlobs()`, `matchesLanguageIdentity()`, `buildLanguageSelector()`, `buildWatcherGlob()` — `discovery.languageIds` + `files.associations` (PRD-109) |
+| `src/languageIdentity.ts` | vscode | `buildLanguageGlobs()`, `matchesLanguageIdentity()`, `isPlsqlDocument()`, `buildLanguageSelector()`, `buildWatcherGlob()` — `discovery.languageIds` + `files.associations` (PRD-109); `isPlsqlDocument()` alimenta Run/Debug at Cursor |
 | `src/matching.ts` | Puro | `filterSuitesByUri()`, `filterSuitesByFolder()` — filtragem por URI/pasta |
 | `src/codelens.ts` | Híbrido | `parseCodeLensItems()` puro + `UtplsqlCodeLensProvider` vscode |
 

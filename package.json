@@ -846,7 +846,7 @@
         "command": "utplsql.runAtCursor",
         "key": "ctrl+shift+u u",
         "mac": "cmd+shift+u u",
-        "when": "editorTextFocus && resourceExtname == .pks"
+        "when": "editorTextFocus && (editorLangId == plsql || editorLangId == sql || resourceExtname == .pks)"
       },
       {
         "command": "utplsql.runFailed",
@@ -864,7 +864,7 @@
         "command": "utplsql.debugAtCursor",
         "key": "ctrl+shift+u d",
         "mac": "cmd+shift+u d",
-        "when": "editorTextFocus && resourceExtname == .pks"
+        "when": "editorTextFocus && (editorLangId == plsql || editorLangId == sql || resourceExtname == .pks)"
       },
       {
         "command": "utplsql.debugFailed",

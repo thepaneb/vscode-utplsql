@@ -355,13 +355,27 @@ test('debugAtCursor: desabilitado informa', async () => {
   assert.deepStrictEqual(startArgs, []);
 });
 
-test('debugAtCursor: sem .pks avisa', async () => {
+test('debugAtCursor: arquivo fora da identidade PL/SQL avisa', async () => {
   await register();
   __setActiveTextEditor(editor('/tmp/notes.txt', PKS));
   await commands.__getRegisteredCommand('utplsql.debugAtCursor')?.();
   assert.deepStrictEqual(__getWarningMessages(), [
-    'Executar no cursor disponível apenas em arquivos .pks.',
+    'Executar/depurar no cursor disponível apenas em arquivos PL/SQL (veja utplsql.discovery.languageIds e files.associations).',
   ]);
+});
+
+test('debugAtCursor: extensão associada à identidade PL/SQL é aceita', async () => {
+  await register();
+  __setConfigValue('associations', { '*.tps': 'plsql' });
+  try {
+    const ed = editor('/tmp/ut_math.tps', PKS) as { selection: { active: { line: number } } };
+    ed.selection.active.line = 2;
+    __setActiveTextEditor(ed as never);
+    await commands.__getRegisteredCommand('utplsql.debugAtCursor')?.();
+    assert.deepStrictEqual(startArgs, ['ut_math']);
+  } finally {
+    __resetConfigValues();
+  }
 });
 
 test('debugAtCursor: sem anotação avisa', async () => {

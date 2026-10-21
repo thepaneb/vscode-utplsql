@@ -7,6 +7,7 @@ import {
   buildLanguageSelector,
   buildWatcherGlob,
   currentLanguageContributions,
+  isPlsqlDocument,
   type LanguageContribution,
   matchesLanguageIdentity,
   workspaceAssociations,
@@ -118,6 +119,30 @@ test('currentLanguageContributions: lê vscode.extensions.all', () => {
   } finally {
     __resetExtensions();
   }
+});
+
+test('isPlsqlDocument: aceita languageId, .pks e associação', () => {
+  assert.strictEqual(
+    isPlsqlDocument({ fileName: '/x/a.pks', languageId: 'plaintext' }, ['plsql']),
+    true,
+  );
+  assert.strictEqual(
+    isPlsqlDocument({ fileName: '/x/a.tps', languageId: 'plsql' }, ['plsql']),
+    true,
+  );
+  __setConfigValue('associations', { '*.foo': 'plsql' });
+  try {
+    assert.strictEqual(
+      isPlsqlDocument({ fileName: '/x/a.foo', languageId: 'plaintext' }, ['plsql']),
+      true,
+    );
+  } finally {
+    __resetConfigValues();
+  }
+  assert.strictEqual(
+    isPlsqlDocument({ fileName: '/x/a.foo', languageId: 'plaintext' }, ['plsql']),
+    false,
+  );
 });
 
 test('workspaceAssociations: lê files.associations', () => {

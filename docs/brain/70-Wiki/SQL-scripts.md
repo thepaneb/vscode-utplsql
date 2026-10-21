@@ -4,7 +4,7 @@ status: ativo
 titulo: "Running SQL Scripts"
 publicar: docs/wiki/SQL-scripts.md
 origem: ["09-configuration"]
-verificado: 2026-09-23
+verificado: 2026-10-21
 regras: ["BR-SCRIPT-001"]
 tags: [wiki]
 ---
@@ -14,6 +14,9 @@ tags: [wiki]
 Run arbitrary SQL/PL/SQL scripts (migrations, seeds, setup) against an Oracle
 connection profile — without leaving VSCode. Output goes to the **"utPLSQL
 Script"** Output channel, one line per statement.
+
+Error and UX messages are localized. The per-statement technical output
+(`[n] ok`, affected rows, `[dbms]` lines) stays in English as diagnostic data.
 
 > Introduced in PRD-62.
 

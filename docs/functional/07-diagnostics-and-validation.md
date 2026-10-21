@@ -55,10 +55,11 @@ class SetupValidator {
 | Versão | `semverLt(utVersion, UTPLSQL_MIN_VERSION = "3.1.0")` | `UTPLSQL_OLD_VERSION` (Warning) |
 | Instalação utPLSQL | objetos inválidos em `ALL_OBJECTS` no schema utPLSQL | `UTPLSQL_INVALID_OBJECTS` (Warning) |
 
-> `UTPLSQL_NO_COVERAGE` **não é produzido** no fluxo atual:
-> `addCoverageDiagnostic` só era chamado por `applyCoverage` em `runner.ts`, um
-> wrapper **legado** (CLI) removido. O quick-fix correspondente no
-> `UtplsqlCodeActionProvider` permanece registrado, mas não dispara.
+> `UTPLSQL_NO_COVERAGE` também é produzido no fluxo Oracle-direto: quando a
+> cobertura é solicitada e o Cobertura XML não é gerado (ou o reporter não
+> existe), `executeRunOracle` chama `onCoverageResult` e o `runner.ts` publica o
+> diagnóstico. Ele é limpo quando a cobertura volta a ser gerada e respeita
+> `utplsql.setupDiagnostics.enabled`.
 >
 > Quando `oracleClientMode` é `thin` e `oracleClientLibDir` está preenchido, a
 > extensão apenas registra um aviso no log (não gera diagnostic).
@@ -92,9 +93,12 @@ Cria `vscode.Diagnostic` com source `"utPLSQL Setup"`. Agrupados em URI virtual
 
 ### `addCoverageDiagnostic`
 
-Emite `UTPLSQL_NO_COVERAGE` no URI virtual quando `coverage.xml` não existe e
-`setupDiagnosticsEnabled` é true. Só é chamado por `applyCoverage` em
-`runner.ts`, um wrapper **legado** (não usado pelo fluxo Oracle-direto atual).
+Emite `UTPLSQL_NO_COVERAGE` no URI virtual `utplsql-coverage:diagnostics` quando
+a cobertura é pedida mas o XML não é gerado (inclui reporter ausente). É
+chamado pelo callback `onCoverageResult` de `executeRunOracle` via `runner.ts`.
+`clearCoverageDiagnostic` remove o diagnóstico quando um run posterior gera a
+cobertura; a coleção `utplsql-setup` continua sendo a mesma, mas a URI separada
+evita apagar os demais diagnósticos de setup.
 
 ## Code Actions (`UtplsqlCodeActionProvider`)
 
@@ -102,8 +106,9 @@ Emite `UTPLSQL_NO_COVERAGE` no URI virtual quando `coverage.xml` não existe e
 class UtplsqlCodeActionProvider implements vscode.CodeActionProvider
 ```
 
-Registrado em `{ scheme: 'file', pattern: '**/*.pks' }` e também em
-`{ scheme: 'utplsql-setup' }` (diagnostics de setup vivem em URI virtual
+Registrado em `{ scheme: 'file', pattern: '**/*.pks' }`, em
+`{ scheme: 'utplsql-setup' }` e em `{ scheme: 'utplsql-coverage' }`
+(diagnostics de setup/cobertura vivem em URIs virtuais
 `utplsql-setup:diagnostics`). Oferece quick-fix para diagnostics com source
 `"utPLSQL Setup"`:
 

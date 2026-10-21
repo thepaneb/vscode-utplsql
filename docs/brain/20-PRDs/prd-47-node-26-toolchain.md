@@ -6,7 +6,7 @@ status: proposed
 titulo: "Node 26 no toolchain de desenvolvimento"
 data: "2026-08-29"
 autor: "Gil Cleber"
-verificado: 2026-10-07
+verificado: 2026-10-21
 regras: []
 tags: [prd]
 ---
@@ -30,6 +30,10 @@ partir do seu LTS (outubro/2026). `engines.node` permanece em `>= 22` — o piso
 do host do VSCode — e `@types/node` permanece em `^22`, tipando pelo runtime
 onde o bundle realmente executa.
 
+> **Status em 2026-10-20:** RF2 (CI matrix `[22, 24, 26]`) já foi entregue e
+> roda no CI. A PRD permanece `proposed` porque RF1 (`.nvmrc` → 26) e a
+> validação local no Node 26 ainda dependem do LTS.
+
 ## 2. Contexto e problema
 
 São dois runtimes distintos no projeto:
@@ -40,8 +44,8 @@ São dois runtimes distintos no projeto:
   anos de atraso). `engines.node >= 26` bloquearia a instalação em todo VSCode
   atual.
 - **Toolchain de desenvolvimento** = Node da máquina do dev/CI (`.nvmrc` 24,
-  matrix 22/24). Node 20 atingiu EOL (04/2026) e já foi removido da matrix
-  (0.11.0); o próximo passo natural é incluir o 26 — mas apenas após o LTS
+  matrix 22/24/26). Node 20 atingiu EOL (04/2026) e já foi removido da matrix
+  (0.11.0); o 26 já entrou no CI (RF2), mas o `.nvmrc` só muda após o LTS
   (out/2026), pois antes disso é "current" e CI em não-LTS é flaky.
 
 `@types/node` foi alinhado ao piso (`^22`, commit `81c77d7` na 0.11.0): o
@@ -52,7 +56,7 @@ ausentes em produção. Essa decisão permanece nesta PRD.
 
 **Objetivos**
 - `.nvmrc` → `26` (após o LTS do Node 26)
-- CI matrix → `[22, 24, 26]`
+- CI matrix → `[22, 24, 26]` — **entregue (RF2)**
 - Validar a suíte completa no Node 26 localmente antes de consolidar
 
 **Não-objetivos**
@@ -71,13 +75,15 @@ ausentes em produção. Essa decisão permanece nesta PRD.
 `ci.yml`: `node-version: [22, 24, 26]`. `npm test` (que dispara
 `pretest:unit` com compile + lint) deve passar nos três.
 
+**Entregue em 2026-10-20:** a matrix já roda `[22, 24, 26]` no CI.
+
 ### RF3 — Reavaliação do piso do host
 
 Quando o VSCode embarcar Node ≥ 24 (acompanhar roadmap do Electron/VSCode),
 reavaliar `engines.node` e `@types/node` — fora do escopo imediato desta PRD.
 
 **Não-funcionais**
-- RNF1 — Sem regressão: 350 unit + coverage acima dos thresholds no Node 26
+- RNF1 — Sem regressão: suíte unit atual + coverage acima dos thresholds no Node 26
 - RNF2 — VSIX inalterado (o bundle não muda — é só toolchain)
 
 ## 5. Solução proposta
@@ -88,7 +94,7 @@ reavaliar `engines.node` e `@types/node` — fora do escopo imediato desta PRD.
 # .nvmrc → 26
 # .github/workflows/ci.yml → node-version: [22, 24, 26]
 nvm use 26
-npm test          # pretest:unit (compile + lint) + 350 testes
+npm test          # pretest:unit (compile + lint) + suíte unit atual
 npm run test:coverage
 ```
 
@@ -101,7 +107,7 @@ Nenhuma setting/comando novo.
 
 ## 7. Plano de testes
 
-- **Unitários**: `npm test` local no Node 26 — 350 testes verdes
+- **Unitários**: `npm test` local no Node 26 — suíte unit atual verde
 - **Integração**: opcional (`npm run test:integration` local no 26)
 - **Validação manual**: `npm run package` gera o VSIX normalmente
 - **CI**: matrix 22/24/26 verde no push
@@ -125,8 +131,9 @@ Nenhuma setting/comando novo.
 
 ## 10. Critérios de aceite
 
-- [ ] `.nvmrc` → `26`; CI matrix → `[22, 24, 26]` (pós-LTS out/2026)
-- [ ] `npm test` verde localmente no Node 26 (350 testes + compile + lint)
+- [ ] `.nvmrc` → `26` (pós-LTS out/2026)
+- [x] CI matrix → `[22, 24, 26]` (RF2 entregue em 2026-10-20)
+- [ ] `npm test` verde localmente no Node 26 (suíte unit atual + compile + lint)
 - [ ] `npm run test:coverage` acima dos thresholds
 - [ ] `engines.node` permanece `>= 22` e `@types/node` permanece `^22`
 - [ ] Docs e CHANGELOG atualizados

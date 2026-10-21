@@ -7,7 +7,7 @@ dominio: privilegio
 status: ativo
 severidade: media
 verificado: 2026-09-23
-implementacao: ["src/commands/utility.ts:13", "src/quickfix.ts:157", "src/viewCoverage.ts:122"]
+implementacao: ["src/commands/utility.ts:13", "src/quickfix.ts:152", "src/viewCoverage.ts:122"]
 testes: ["src/test/unit/quickfix.test.ts"]
 regras: ["BR-COB-001", "BR-COB-003"]
 tags: ["seguranca", "privilegio"]

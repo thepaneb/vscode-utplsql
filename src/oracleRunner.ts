@@ -466,6 +466,8 @@ export interface OracleRunOptions {
     errored: number,
     durationMs: number,
   ) => void;
+  /** Callback opcional com o resultado da cobertura (true = gerada). */
+  onCoverageResult?: (generated: boolean) => void;
   /** Workspace folders para resolução de sourceUri */
   folders?: readonly vscode.WorkspaceFolder[];
   /** Extra reporters adicionados via config */
@@ -589,6 +591,7 @@ export async function executeRunOracle(
     leafTests,
     state,
     onComplete,
+    onCoverageResult,
     folders,
     additionalReporters,
     tags,
@@ -995,12 +998,18 @@ export async function executeRunOracle(
     }
 
     if (coverageEnabled) {
-      if (covXml.trim()) {
+      const generated = covXml.trim().length > 0;
+      if (generated) {
         const mappedXml = mapDbPathsToFiles(covXml);
         applyCoverageFromXml(mappedXml, sourcePath, run, state, folders);
       } else {
         run.appendOutput(`\r\n${t(getExtensionLocale(), 'oracleRunner.coverNotGenerated')}\r\n`);
       }
+      if (!token.isCancellationRequested) onCoverageResult?.(generated);
+    } else if (coverage && !exporting && !token.isCancellationRequested) {
+      // Cobertura pedida, mas o reporter não existe/foi desabilitado: também
+      // sinaliza para o diagnóstico de setup.
+      onCoverageResult?.(false);
     }
 
     // HTML (PRD-108): grava só no fim, com o run não cancelado; o runner só

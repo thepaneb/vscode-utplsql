@@ -9,6 +9,8 @@
   custom extensions mapped to a configured language ID are discovered and get
   CodeLens. The canonical `**/*.pks` glob keeps working even with a restricted
   list, and the CodeLens provider is registered once (no duplicate lenses).
+  **Run at Cursor** and **Debug at Cursor** now use the same identity instead of
+  being limited to `.pks`.
 
 - **utPLSQL snippets (PRD-105)**: new `snippets/utplsql.code-snippets` with
   `ut-suite` (full package skeleton), every documented annotation (`%suite`,
@@ -27,6 +29,15 @@
   **Open in Browser** / **Save As…**; the report is never rendered in a webview,
   cancelled runs do not leave a partial file, and `additionalReporters` with the
   same reporter is deduplicated.
+
+- **Coverage setup diagnostic**: when coverage is requested but the Cobertura
+  XML is not generated (including a missing reporter), `UTPLSQL_NO_COVERAGE`
+  is published in the Problems Panel with the **Copy coverage grants** quick-fix
+  and cleared on the next successful coverage run.
+
+- **Script runner messages**: error/UX messages are localized in all supported
+  locales; per-statement technical output (`[n] ok`, affected rows, `[dbms]`)
+  remains in English.
 
 ## 0.16.0
 

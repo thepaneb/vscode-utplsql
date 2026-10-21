@@ -46,9 +46,9 @@ common setup issues:
 | utPLSQL older than `UTPLSQL_MIN_VERSION` (3.1.0) | `UTPLSQL_OLD_VERSION` | Warning |
 | Invalid objects in the utPLSQL schema | `UTPLSQL_INVALID_OBJECTS` | Warning |
 
-> `UTPLSQL_NO_COVERAGE` still has a quick-fix handler in `quickfix.ts`, but is
-> **not emitted** in the Oracle-only flow (the coverage diagnostic is not added
-> during execution).
+> `UTPLSQL_NO_COVERAGE` is emitted when coverage was requested but the Cobertura
+> XML was not generated (including a missing reporter). It is cleared on the next
+> successful coverage run.
 
 The invalid objects check (`ALL_OBJECTS` for `PACKAGE`/`TYPE`/
 `PACKAGE BODY` in the utPLSQL schema) is best-effort: asynchronous, no
@@ -64,7 +64,7 @@ Each diagnostic provides a **Code Action** (lightbulb icon or `Ctrl+.`):
 | Diagnostic | Quick-fix |
 |---|---|
 | Invalid connection (`UTPLSQL_BAD_CONN`) | **Reconfigure connection** → opens settings at `utplsql.connection` |
-| Coverage grants (`UTPLSQL_NO_COVERAGE`) | **Copy coverage grants to clipboard** → copies ready-to-paste SQL (handler only — not emitted in the Oracle flow) |
+| Coverage grants (`UTPLSQL_NO_COVERAGE`) | **Copy coverage grants to clipboard** → copies ready-to-paste SQL |
 | Invalid objects in utPLSQL (`UTPLSQL_INVALID_OBJECTS`) | **Recompile UT3** → `DBMS_UTILITY.COMPILE_SCHEMA` and re-checks |
 
 ### Commands

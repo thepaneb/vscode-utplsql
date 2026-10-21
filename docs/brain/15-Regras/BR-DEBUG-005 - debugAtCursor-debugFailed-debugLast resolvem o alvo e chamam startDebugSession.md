@@ -7,8 +7,8 @@ dominio: debugger
 status: ativo
 severidade: media
 fonte: codigo
-verificado: 2026-10-02
-implementacao: ["src/debugTargets.ts:22", "src/debugTargets.ts:32", "src/annotation.ts:8", "src/commands/debug.ts:157", "src/commands/debug.ts:185", "src/commands/debug.ts:216"]
+verificado: 2026-10-21
+implementacao: ["src/debugTargets.ts:22", "src/debugTargets.ts:32", "src/annotation.ts:8", "src/languageIdentity.ts:217", "src/commands/debug.ts:158", "src/commands/debug.ts:187", "src/commands/debug.ts:218"]
 testes: ["src/test/unit/debugTargets.test.ts", "src/test/unit/debugCommands.test.ts", "src/test/integration/prd015ExtraE2E.test.ts"]
 prds: ["PRD-53"]
 requisitos: ["PRD-53/RF1", "PRD-53/RF2", "PRD-53/RF3", "PRD-53/RNF1", "PRD-53/RNF2"]
@@ -26,7 +26,9 @@ reproduz `state.getLastRun()` mapeando tipo→package/procName; todos chamam
 
 ## Pré-condições
 
-`utplsql.debugger.enabled` true (BR-DEBUG-004); cursor em `.pks` para o at cursor.
+`utplsql.debugger.enabled` true (BR-DEBUG-004); cursor em arquivo da identidade
+PL/SQL (`utplsql.discovery.languageIds`/`files.associations`; `.pks` sempre) para
+o at cursor.
 
 ## Exceções
 
@@ -45,7 +47,7 @@ atrito de depurar um teste específico.
 - 🗺️ [[MOC - Regras]]
 - 📄 PRDs: [[prd-53-debug-test-variants|PRD-53]]
 - 🎯 Requisitos: [[prd-53-debug-test-variants|PRD-53 RF1]] · [[prd-53-debug-test-variants|PRD-53 RF2]] · [[prd-53-debug-test-variants|PRD-53 RF3]] · [[prd-53-debug-test-variants|PRD-53 RNF1]] · [[prd-53-debug-test-variants|PRD-53 RNF2]]
-- 🧩 Código: [[COD - debugTargets.ts]] · [[COD - annotation.ts]] · [[COD - debug.ts]]
+- 🧩 Código: [[COD - debugTargets.ts]] · [[COD - annotation.ts]] · [[COD - languageIdentity.ts]] · [[COD - debug.ts]]
 - 🧪 Testes: [[TST - debugTargets.test.ts]] · [[TST - debugCommands.test.ts]] · [[TST - prd015ExtraE2E.test.ts]]
 - ↩️ Referenciada por: [[Debugger]] · [[prd-53-debug-test-variants|PRD-53]]
 <!-- brain:auto:end -->

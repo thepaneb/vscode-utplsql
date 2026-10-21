@@ -187,11 +187,11 @@ Prefixo: `Ctrl+Shift+U` (Mac: `Cmd+Shift+U`).
 | `Ctrl+Shift+U I` | Show Info | `utplsql:activated` |
 | `Ctrl+Shift+U C` | Clear session connection | `utplsql:activated` |
 | `Ctrl+Shift+U L` | Rerun Last | `utplsql:activated` |
-| `Ctrl+Shift+U U` | Run at Cursor | `editorTextFocus && .pks` |
+| `Ctrl+Shift+U U` | Run at Cursor | `editorTextFocus && (editorLangId == plsql \|\| editorLangId == sql \|\| .pks)` |
 | `Ctrl+Shift+U X` | Run Failed | `utplsql:hasFailures` |
 | `Ctrl+Shift+U Shift+C` | Toggle Coverage | `utplsql:activated` |
 | `Ctrl+Shift+U Shift+R` | Run Related Tests | `editorTextFocus && utplsql:connected` |
-| `Ctrl+Shift+U D` | Debug at Cursor | `editorTextFocus && .pks` |
+| `Ctrl+Shift+U D` | Debug at Cursor | `editorTextFocus && (editorLangId == plsql \|\| editorLangId == sql \|\| .pks)` |
 | `Ctrl+Shift+U Shift+D` | Debug Failed Tests | `utplsql:hasFailures` |
 | `Escape` | Cancel Run | `utplsql:running` |
 

@@ -126,7 +126,7 @@ END ut_v017_multi;
           ...buildLanguageGlobs(
             config.discoveryLanguageIds,
             currentLanguageContributions(),
-            workspaceAssociations(vscode.workspace.workspaceFolders),
+            workspaceAssociations(),
           ),
         ]),
       ];

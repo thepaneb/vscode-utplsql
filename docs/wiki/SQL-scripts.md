@@ -6,6 +6,9 @@ Run arbitrary SQL/PL/SQL scripts (migrations, seeds, setup) against an Oracle
 connection profile — without leaving VSCode. Output goes to the **"utPLSQL
 Script"** Output channel, one line per statement.
 
+Error and UX messages are localized. The per-statement technical output
+(`[n] ok`, affected rows, `[dbms]` lines) stays in English as diagnostic data.
+
 > Introduced in PRD-62.
 
 ## Commands

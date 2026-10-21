@@ -4,6 +4,7 @@ import { offerCoverageHtmlReport } from './coverage';
 import { t } from './i18n';
 import { resolveRunRoots } from './matching';
 import { executeRunOracle, type OracleRunOptions } from './oracleRunner';
+import { setupValidator } from './quickfix';
 import type { LastRunState, TestStateManager } from './state';
 import type { ItemMeta } from './types';
 import { applySqlCoverage } from './viewCoverage';
@@ -200,6 +201,10 @@ export async function executeRun(
       leafTests,
       state,
       onComplete,
+      onCoverageResult: (generated) => {
+        if (generated) setupValidator.clearCoverageDiagnostic();
+        else setupValidator.addCoverageDiagnostic();
+      },
       folders,
       additionalReporters: cfg.additionalReporters,
       tags: cfg.tags,

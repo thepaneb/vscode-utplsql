@@ -199,22 +199,30 @@ export function currentLanguageContributions(): LanguageContribution[] {
 }
 
 /**
- * `files.associations` efetivas. Em multi-root, une as configurações de cada
- * folder (o mesmo glob pode ter valores diferentes por pasta).
+ * `files.associations` efetivas. A configuração é window-scoped no VS Code
+ * (não aceita escopo por folder), então uma única leitura vale para o
+ * workspace inteiro, inclusive multi-root.
  */
-export function workspaceAssociations(
-  folders?: readonly vscode.WorkspaceFolder[],
-): Record<string, string> {
-  const targets = folders ?? vscode.workspace.workspaceFolders ?? [];
-  if (targets.length === 0) return readFileAssociations();
-  const merged: Record<string, string> = {};
-  for (const folder of targets) Object.assign(merged, readFileAssociations(folder.uri));
-  return merged;
-}
-
-function readFileAssociations(resource?: vscode.Uri): Record<string, string> {
+export function workspaceAssociations(): Record<string, string> {
   const value = vscode.workspace
-    .getConfiguration('files', resource)
+    .getConfiguration('files')
     .get<Record<string, string>>('associations', {});
   return value && typeof value === 'object' ? value : {};
+}
+
+/**
+ * O documento pertence à identidade PL/SQL configurada? Usado por comandos que
+ * operam no editor (Run/Debug at Cursor), não apenas por `.pks`.
+ */
+export function isPlsqlDocument(
+  document: Pick<vscode.TextDocument, 'fileName' | 'languageId'>,
+  ids: readonly string[],
+): boolean {
+  return matchesLanguageIdentity(
+    document.fileName,
+    document.languageId,
+    ids,
+    currentLanguageContributions(),
+    workspaceAssociations(),
+  );
 }

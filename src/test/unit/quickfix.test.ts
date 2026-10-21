@@ -4,7 +4,14 @@ import { test } from 'node:test';
 import { resetOracleClientStateForTests } from '../../oracleClient';
 import { closeOraclePool } from '../../oracleRunner';
 import { SetupValidator, UtplsqlCodeActionProvider } from '../../quickfix';
-import { __resetConfigValues, __setConfigValue, Diagnostic, Range } from '../vscode-stub';
+import {
+  __getLastDiagnosticCollection,
+  __resetConfigValues,
+  __setConfigValue,
+  Diagnostic,
+  Range,
+  Uri,
+} from '../vscode-stub';
 
 const CONN = 'user/pass@//host:1521/svc';
 
@@ -361,9 +368,30 @@ test('applyDiagnostics: multiplos diagnosticos', () => {
   v.clear();
 });
 
-test('addCoverageDiagnostic: nao quebra', () => {
+test('addCoverageDiagnostic: respeita setupDiagnostics.enabled', () => {
+  __setConfigValue('setupDiagnostics.enabled', false);
+  try {
+    const v = new SetupValidator();
+    v.addCoverageDiagnostic();
+    const collection = __getLastDiagnosticCollection();
+    assert.strictEqual(collection?.get(Uri.parse('utplsql-coverage:diagnostics')), undefined);
+  } finally {
+    __resetConfigValues();
+  }
+});
+
+test('addCoverageDiagnostic: publica UTPLSQL_NO_COVERAGE e clear remove', () => {
   const v = new SetupValidator();
-  assert.doesNotThrow(() => v.addCoverageDiagnostic());
+  v.addCoverageDiagnostic();
+  const collection = __getLastDiagnosticCollection();
+  assert.ok(collection);
+  const uri = Uri.parse('utplsql-coverage:diagnostics');
+  const diags = collection.get(uri);
+  assert.strictEqual(diags?.length, 1);
+  assert.strictEqual(diags?.[0].code, 'UTPLSQL_NO_COVERAGE');
+  assert.strictEqual(diags?.[0].source, 'utPLSQL Setup');
+  v.clearCoverageDiagnostic();
+  assert.strictEqual(collection.get(uri), undefined);
   v.clear();
 });
 

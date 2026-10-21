@@ -13,6 +13,8 @@ import {
   UTPLSQL_MIN_VERSION,
 } from './oracleRunner';
 
+const COVERAGE_DIAGNOSTIC_URI = 'utplsql-coverage:diagnostics';
+
 interface SetupDiagnostic {
   code: string;
   severity: vscode.DiagnosticSeverity;
@@ -148,6 +150,7 @@ export class SetupValidator {
   }
 
   addCoverageDiagnostic() {
+    if (!readConfig().setupDiagnosticsEnabled) return;
     const diag = new vscode.Diagnostic(
       new vscode.Range(0, 0, 0, 0),
       t(getExtensionLocale(), 'quickfix.noCoverage'),
@@ -155,7 +158,11 @@ export class SetupValidator {
     );
     diag.source = 'utPLSQL Setup';
     diag.code = 'UTPLSQL_NO_COVERAGE';
-    this.diagnosticCollection.set(vscode.Uri.parse('utplsql-setup:diagnostics'), [diag]);
+    this.diagnosticCollection.set(vscode.Uri.parse(COVERAGE_DIAGNOSTIC_URI), [diag]);
+  }
+
+  clearCoverageDiagnostic() {
+    this.diagnosticCollection.delete(vscode.Uri.parse(COVERAGE_DIAGNOSTIC_URI));
   }
 
   /**
