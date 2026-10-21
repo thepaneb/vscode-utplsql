@@ -302,6 +302,7 @@ describeDB('0.17.0 — PRD-108 (com banco)', () => {
 
     const { run, output } = makeRun();
     let reportPath: string | undefined;
+    let coverageGenerated: boolean | undefined;
     await executeRunOracle(
       {
         connection: process.env.UTPLSQL_CONN as string,
@@ -311,6 +312,9 @@ describeDB('0.17.0 — PRD-108 (com banco)', () => {
         reportRoot: TMP_DIR,
         onCoverageHtmlReport: (filePath) => {
           reportPath = filePath;
+        },
+        onCoverageResult: (generated) => {
+          coverageGenerated = generated;
         },
         sourcePath: TMP_DIR,
         run,
@@ -326,6 +330,11 @@ describeDB('0.17.0 — PRD-108 (com banco)', () => {
     );
 
     assert.ok(reportPath, 'callback do HTML deveria ser chamado');
+    assert.strictEqual(
+      coverageGenerated,
+      true,
+      'onCoverageResult deveria confirmar a cobertura gerada',
+    );
     assert.strictEqual(reportPath, path.join(TMP_DIR, 'test-results', 'coverage.html'));
     const html = fs.readFileSync(reportPath as string, 'utf8');
     assert.match(html, /<!DOCTYPE html>/i);
