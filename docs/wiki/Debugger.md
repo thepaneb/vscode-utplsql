@@ -44,7 +44,9 @@ header before the `CREATE` statement.
 - **Run and Debug:** choose **utPLSQL Debugger** when creating a `launch.json`;
   the generated configuration uses `packageName: "${fileBasenameNoExtension}"`.
 - **Variants (PRD-53):** `utPLSQL: Debug Test at Cursor` (`utplsql.debugAtCursor`,
-  `Ctrl+Shift+U D`) debugs the `%test`/`%suite` under the cursor;
+  `Ctrl+Shift+U D`) debugs the `%test`/`%suite` under the cursor in any file of
+  the PL/SQL identity (`.pks` always, plus `utplsql.discovery.languageIds`/
+  `files.associations`);
   `utPLSQL: Debug Failed Tests` (`utplsql.debugFailed`, `Ctrl+Shift+U Shift+D`)
   debugs the tests that failed in the last run (QuickPick when there is more than
   one); `utPLSQL: Debug Last Run` (`utplsql.debugLast`) repeats the last run in

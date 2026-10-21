@@ -4,7 +4,7 @@ status: ativo
 numero: 04
 titulo: "04 — Code Coverage"
 publicar: docs/functional/04-code-coverage.md
-verificado: 2026-09-23
+verificado: 2026-10-21
 regras: ["BR-COB-001", "BR-COB-002", "BR-COB-003", "BR-COB-008", "BR-EXEC-009", "BR-EXEC-013", "BR-COB-005"]
 relacionado: ["[[ADR-008 - Cobertura a partir do Cobertura XML e VSQL]]"]
 tags: [funcional]
@@ -145,8 +145,9 @@ GRANT EXECUTE ON SYS.DBMS_PLSQL_CODE_COVERAGE TO <schema>;
 ### Diagnóstico de falha
 
 Se `coverage.xml` não for gerado:
-- Output mostra caminho esperado + arquivos no diretório temp
-- `UTPLSQL_NO_COVERAGE` só era emitido no fluxo legado (CLI) — **não** é emitido no fluxo Oracle-direto atual
+- Output mostra o aviso de cobertura não gerada
+- `UTPLSQL_NO_COVERAGE` é publicado no Problems Panel (source `utPLSQL Setup`) e
+  limpo automaticamente quando a cobertura volta a ser gerada
 - Comando `utplsql.copyGrantsToClipboard` copia grants para clipboard
 
 ## Relatório HTML (PRD-108)

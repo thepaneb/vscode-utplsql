@@ -65,6 +65,10 @@ coverage mode. Controlled by `utplsql.statusBar.enabled`.
 | `Ctrl+Shift+U X` | Run Failed Only | Re-runs only the tests that failed |
 | `Ctrl+Shift+U Shift+R` | Run Related Tests | Runs the suites related to the active production file, by the `ut_<object>` convention (PRD-58) |
 
+Run/Debug at Cursor use the PL/SQL identity: `.pks` always works, and
+`utplsql.discovery.languageIds` (plus `files.associations`) adds other
+extensions/languages for discovery and the cursor commands.
+
 ## Jump to failure
 
 Failures include a native **"Go to Error"** action that jumps to the exact line

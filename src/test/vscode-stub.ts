@@ -994,6 +994,9 @@ export class DiagnosticCollection {
   get(uri: { toString(): string }): Diagnostic[] | undefined {
     return this._diags.get(uri.toString());
   }
+  delete(uri: { toString(): string }) {
+    this._diags.delete(uri.toString());
+  }
   clear() {
     this._diags.clear();
   }

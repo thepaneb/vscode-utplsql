@@ -160,6 +160,10 @@ export function activate(context: vscode.ExtensionContext) {
       codeActionProvider,
     ),
     vscode.languages.registerCodeActionsProvider({ scheme: 'utplsql-setup' }, codeActionProvider),
+    vscode.languages.registerCodeActionsProvider(
+      { scheme: 'utplsql-coverage' },
+      codeActionProvider,
+    ),
   );
 
   void (async () => {

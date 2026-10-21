@@ -135,8 +135,9 @@ GRANT EXECUTE ON SYS.DBMS_PLSQL_CODE_COVERAGE TO <schema>;
 ### Diagnóstico de falha
 
 Se `coverage.xml` não for gerado:
-- Output mostra caminho esperado + arquivos no diretório temp
-- `UTPLSQL_NO_COVERAGE` só era emitido no fluxo legado (CLI) — **não** é emitido no fluxo Oracle-direto atual
+- Output mostra o aviso de cobertura não gerada
+- `UTPLSQL_NO_COVERAGE` é publicado no Problems Panel (source `utPLSQL Setup`) e
+  limpo automaticamente quando a cobertura volta a ser gerada
 - Comando `utplsql.copyGrantsToClipboard` copia grants para clipboard
 
 ## Relatório HTML (PRD-108)

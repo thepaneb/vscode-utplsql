@@ -5,6 +5,7 @@ import { getExtensionLocale, readConfig } from '../config';
 import { resolveLastRunTarget, targetFromMeta } from '../debugTargets';
 import { extractSchemaFromPath } from '../discovery';
 import { t } from '../i18n';
+import { isPlsqlDocument } from '../languageIdentity';
 import type { CommandDeps } from './deps';
 
 // RF5: debugger carregado sob demanda (bundle menor).
@@ -155,12 +156,13 @@ export function registerDebug(_context: vscode.ExtensionContext, deps: CommandDe
   };
 
   const debugAtCursor = async (): Promise<void> => {
-    if (!readConfig().debuggerEnabled) {
+    const cfg = readConfig();
+    if (!cfg.debuggerEnabled) {
       vscode.window.showInformationMessage(t(locale, 'ext.debug.disabled'));
       return;
     }
     const editor = vscode.window.activeTextEditor;
-    if (!editor?.document.fileName.endsWith('.pks')) {
+    if (!editor || !isPlsqlDocument(editor.document, cfg.discoveryLanguageIds)) {
       vscode.window.showWarningMessage(t(locale, 'ext.runAtCursor.onlyPks'));
       return;
     }

@@ -466,7 +466,7 @@ export function createRefresher(
       ...buildLanguageGlobs(
         cfg.discoveryLanguageIds,
         currentLanguageContributions(),
-        workspaceAssociations(folders ?? undefined),
+        workspaceAssociations(),
       ),
     ].filter((pattern) => pattern.trim().length > 0);
     const suites = await discoverWorkspace([...new Set(patterns)], folders ?? undefined);

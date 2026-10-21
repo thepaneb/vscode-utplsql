@@ -2,6 +2,7 @@ import './setup.js';
 import assert from 'node:assert';
 import { mock, test } from 'node:test';
 import * as oracleRunner from '../../oracleRunner';
+import { setupValidator } from '../../quickfix';
 import {
   collectRunTargets,
   countResults,
@@ -280,6 +281,31 @@ test('executeRun: coverage flag é passado para oracle', async () =>
 
     await executeRun(controller, request, NEVER_TOKEN as any, true, state);
     assert.strictEqual(receivedCoverage, true);
+  }));
+
+test('executeRun: resultado da cobertura publica/limpa o diagnóstico', async () =>
+  withExecEnv(async () => {
+    const { state, suiteItem } = makeExecState();
+    const run = new vscode.TestRun() as any;
+    const controller = { createTestRun: () => run, items: { forEach: () => {} } } as any;
+    const request = { include: [suiteItem] } as any;
+
+    const add = mock.method(setupValidator, 'addCoverageDiagnostic', () => {});
+    const clear = mock.method(setupValidator, 'clearCoverageDiagnostic', () => {});
+    mock.method(oracleRunner, 'executeRunOracle', async (opts: any) => {
+      opts.onCoverageResult?.(false);
+      opts.onCoverageResult?.(true);
+      return undefined;
+    });
+
+    try {
+      await executeRun(controller, request, NEVER_TOKEN as any, true, state);
+      assert.strictEqual(add.mock.callCount(), 1);
+      assert.strictEqual(clear.mock.callCount(), 1);
+    } finally {
+      add.mock.restore();
+      clear.mock.restore();
+    }
   }));
 
 test('executeRun: coverageHtmlReport/reportRoot e notificação após run.end', async () =>

@@ -7,8 +7,10 @@ import { TestStateManager } from '../../state';
 import {
   __getInformationMessages,
   __getWarningMessages,
+  __resetConfigValues,
   __resetMessages,
   __setActiveTextEditor,
+  __setConfigValue,
   commands,
   TestItem,
   Uri,
@@ -67,17 +69,31 @@ test('runAtCursor: sem editor ativo avisa', async () => {
   __setActiveTextEditor(undefined);
   await commands.__getRegisteredCommand('utplsql.runAtCursor')?.();
   assert.deepStrictEqual(__getWarningMessages(), [
-    'Executar no cursor disponível apenas em arquivos .pks.',
+    'Executar/depurar no cursor disponível apenas em arquivos PL/SQL (veja utplsql.discovery.languageIds e files.associations).',
   ]);
 });
 
-test('runAtCursor: arquivo que não é .pks avisa', async () => {
+test('runAtCursor: arquivo fora da identidade PL/SQL avisa', async () => {
   setup();
-  __setActiveTextEditor(editor('/tmp/foo.sql', PKS, 1));
+  __setActiveTextEditor(editor('/tmp/notes.txt', PKS, 1));
   await commands.__getRegisteredCommand('utplsql.runAtCursor')?.();
   assert.deepStrictEqual(__getWarningMessages(), [
-    'Executar no cursor disponível apenas em arquivos .pks.',
+    'Executar/depurar no cursor disponível apenas em arquivos PL/SQL (veja utplsql.discovery.languageIds e files.associations).',
   ]);
+});
+
+test('runAtCursor: extensão associada à identidade PL/SQL é aceita', async () => {
+  setup();
+  __setConfigValue('associations', { '*.tps': 'plsql' });
+  try {
+    __setActiveTextEditor(editor('/tmp/test_math.tps', PKS, 1));
+    await commands.__getRegisteredCommand('utplsql.runAtCursor')?.();
+    assert.deepStrictEqual(__getWarningMessages(), [
+      'Nenhuma suite utPLSQL encontrada neste arquivo.',
+    ]);
+  } finally {
+    __resetConfigValues();
+  }
 });
 
 test('runAtCursor: sem anotação na linha avisa', async () => {

@@ -4,6 +4,7 @@ import { refreshCompilationDiagnostics } from '../compilationDiagnostics';
 import { getExtensionLocale, readConfig, resolveConnection } from '../config';
 import { effectiveCoverage } from '../coverageDecision';
 import { t } from '../i18n';
+import { isPlsqlDocument } from '../languageIdentity';
 import { filterSuitesByFolder, filterSuitesByUri, relatedSuiteMetas } from '../matching';
 import { listReportersForConnection } from '../oracleRunner';
 import { collectRunTargets, executeRun } from '../runner';
@@ -515,7 +516,7 @@ export function registerRunCommands(
     }),
     vscode.commands.registerCommand('utplsql.runAtCursor', async () => {
       const editor = vscode.window.activeTextEditor;
-      if (!editor?.document.fileName.endsWith('.pks')) {
+      if (!editor || !isPlsqlDocument(editor.document, readConfig().discoveryLanguageIds)) {
         vscode.window.showWarningMessage(t(locale, 'ext.runAtCursor.onlyPks'));
         return;
       }

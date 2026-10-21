@@ -9,7 +9,7 @@ severidade: alta
 fonte: codigo
 erros: [ERR-005]
 verificado: 2026-09-23
-implementacao: ["src/commands/utility.ts:13", "src/quickfix.ts:150", "src/i18nLocales.ts:98", "package.json:130"]
+implementacao: ["src/commands/utility.ts:13", "src/quickfix.ts:152", "src/i18nLocales.ts:122", "package.json:130"]
 testes: ["src/test/unit/quickfix.test.ts"]
 prds: ["PRD-12", "PRD-32"]
 requisitos: ["PRD-32/RF3", "PRD-32/RF5"]

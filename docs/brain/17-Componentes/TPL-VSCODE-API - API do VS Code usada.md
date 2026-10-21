@@ -60,15 +60,15 @@ host — o `docs-fidelity` cobra essa coerência.
 |---|---|---|
 | `vscode.TestItem` | 55 | `src/commands/debug.ts`, `src/commands/run.ts`, `src/decorations.ts`, `src/matching.ts` +5 |
 | `vscode.commands.registerCommand` | 38 | `src/commands/connection.ts`, `src/commands/debug.ts`, `src/commands/profile.ts`, `src/commands/run.ts` +3 |
-| `vscode.Uri` | 34 | `src/commands/debug.ts`, `src/commands/run.ts`, `src/commands/scaffold.ts`, `src/commands/script.ts` +10 |
+| `vscode.Uri` | 33 | `src/commands/debug.ts`, `src/commands/run.ts`, `src/commands/scaffold.ts`, `src/commands/script.ts` +9 |
 | `vscode.window.showInformationMessage` | 29 | `src/commands/connection.ts`, `src/commands/debug.ts`, `src/commands/profile.ts`, `src/commands/run.ts` +5 |
 | `vscode.window.showWarningMessage` | 25 | `src/commands/debug.ts`, `src/commands/profile.ts`, `src/commands/run.ts`, `src/commands/scaffold.ts` +4 |
 | `vscode.window.showErrorMessage` | 22 | `src/commands/connection.ts`, `src/commands/debug.ts`, `src/commands/run.ts`, `src/commands/scaffold.ts` +4 |
-| `vscode.WorkspaceFolder` | 21 | `src/debugger.ts`, `src/discovery.ts`, `src/languageIdentity.ts`, `src/oracleRunner.ts` +4 |
+| `vscode.WorkspaceFolder` | 20 | `src/debugger.ts`, `src/discovery.ts`, `src/oracleRunner.ts`, `src/results.ts` +3 |
 | `vscode.commands.executeCommand` | 18 | `src/commands/connection.ts`, `src/commands/profile.ts`, `src/commands/run.ts`, `src/config.ts` +4 |
 | `vscode.TestController` | 14 | `src/commands/deps.ts`, `src/runner.ts`, `src/testTree.ts` |
 | `vscode.TestRunRequest` | 12 | `src/commands/run.ts`, `src/runner.ts` |
-| `vscode.Uri.parse` | 11 | `src/commands/run.ts`, `src/compilationDiagnostics.ts`, `src/discovery.ts`, `src/quickfix.ts` +1 |
+| `vscode.Uri.parse` | 12 | `src/commands/run.ts`, `src/compilationDiagnostics.ts`, `src/discovery.ts`, `src/quickfix.ts` +1 |
 | `vscode.ExtensionContext` | 10 | `src/commands/connection.ts`, `src/commands/debug.ts`, `src/commands/profile.ts`, `src/commands/run.ts` +6 |
 | `vscode.window.activeTextEditor` | 10 | `src/commands/debug.ts`, `src/commands/run.ts`, `src/commands/scaffold.ts`, `src/commands/script.ts` |
 | `vscode.workspace.fs` | 10 | `src/commands/debug.ts`, `src/commands/run.ts`, `src/commands/scaffold.ts`, `src/commands/script.ts` +1 |
@@ -77,22 +77,23 @@ host — o `docs-fidelity` cobra essa coerência.
 | `vscode.ThemeColor` | 8 | `src/decorations.ts` |
 | `vscode.Uri.file` | 8 | `src/commands/scaffold.ts`, `src/commands/script.ts`, `src/coverage.ts`, `src/extension.ts` +1 |
 | `vscode.window.showQuickPick` | 8 | `src/commands/connection.ts`, `src/commands/debug.ts`, `src/commands/profile.ts`, `src/commands/run.ts` +1 |
-| `vscode.workspace.workspaceFolders` | 8 | `src/commands/run.ts`, `src/commands/scaffold.ts`, `src/discovery.ts`, `src/languageIdentity.ts` +3 |
 | `vscode.CancellationToken` | 7 | `src/codelens.ts`, `src/commands/run.ts`, `src/oracleRunner.ts`, `src/quickfix.ts` +2 |
 | `vscode.Location` | 7 | `src/results.ts` |
 | `vscode.window.showInputBox` | 7 | `src/commands/profile.ts`, `src/commands/scaffold.ts`, `src/config.ts` |
+| `vscode.workspace.workspaceFolders` | 7 | `src/commands/run.ts`, `src/commands/scaffold.ts`, `src/discovery.ts`, `src/results.ts` +2 |
 | `vscode.Diagnostic` | 6 | `src/compilationDiagnostics.ts`, `src/quickfix.ts` |
 | `vscode.Uri.joinPath` | 6 | `src/commands/debug.ts`, `src/commands/run.ts`, `src/commands/scaffold.ts`, `src/commands/script.ts` +2 |
 | `vscode.DecorationOptions` | 5 | `src/decorations.ts` |
 | `vscode.FileCoverageDetail` | 5 | `src/results.ts`, `src/state.ts`, `src/viewCoverage.ts` |
+| `vscode.TextDocument` | 5 | `src/codelens.ts`, `src/commands/scaffold.ts`, `src/languageIdentity.ts`, `src/quickfix.ts` |
 | `vscode.workspace` | 5 | `src/config.ts`, `src/connectionProfiles.ts`, `src/languageIdentity.ts` |
 | `vscode.CodeActionKind.QuickFix` | 4 | `src/quickfix.ts` |
 | `vscode.CodeLens` | 4 | `src/codelens.ts` |
 | `vscode.FileType.Directory` | 4 | `src/commands/debug.ts`, `src/commands/script.ts`, `src/discovery.ts` |
+| `vscode.languages.registerCodeActionsProvider` | 4 | `src/commands/scaffold.ts`, `src/extension.ts` |
 | `vscode.OverviewRulerLane.Right` | 4 | `src/decorations.ts` |
 | `vscode.Position` | 4 | `src/results.ts`, `src/viewCoverage.ts` |
 | `vscode.TestRun` | 4 | `src/oracleRunner.ts`, `src/results.ts`, `src/viewCoverage.ts` |
-| `vscode.TextDocument` | 4 | `src/codelens.ts`, `src/commands/scaffold.ts`, `src/quickfix.ts` |
 | `vscode.window.createTextEditorDecorationType` | 4 | `src/decorations.ts` |
 | `vscode.workspace.getConfiguration` | 4 | `src/config.ts`, `src/connectionProfiles.ts` |
 | `vscode.CancellationTokenSource` | 3 | `src/commands/run.ts` |
@@ -100,7 +101,6 @@ host — o `docs-fidelity` cobra essa coerência.
 | `vscode.DiagnosticSeverity.Error` | 3 | `src/compilationDiagnostics.ts`, `src/quickfix.ts` |
 | `vscode.DiagnosticSeverity.Warning` | 3 | `src/quickfix.ts` |
 | `vscode.Disposable` | 3 | `src/decorations.ts`, `src/extension.ts`, `src/statusBar.ts` |
-| `vscode.languages.registerCodeActionsProvider` | 3 | `src/commands/scaffold.ts`, `src/extension.ts` |
 | `vscode.OutputChannel` | 3 | `src/commands/run.ts`, `src/commands/script.ts` |
 | `vscode.TestMessage` | 3 | `src/results.ts`, `src/runner.ts` |
 | `vscode.window.createOutputChannel` | 3 | `src/commands/run.ts`, `src/commands/script.ts`, `src/extension.ts` |
