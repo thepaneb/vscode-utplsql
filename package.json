@@ -350,7 +350,11 @@
           "items": {
             "type": "string"
           },
-          "default": ["plsql", "sql", "oracle-sql"],
+          "default": [
+            "plsql",
+            "sql",
+            "oracle-sql"
+          ],
           "markdownDescription": "Language IDs treated as PL/SQL for discovery, CodeLens and decorations. Their file extensions are resolved from the installed extensions and from `files.associations`; set `[\"plsql\"]` to avoid scanning `.sql` files."
         },
         "utplsql.refreshDebounceMs": {
@@ -728,27 +732,27 @@
           "group": "utplsql@1",
           "when": "explorerResourceIsFolder"
         },
-      {
-        "command": "utplsql.runFolderCoverage",
-        "group": "utplsql@2",
-        "when": "explorerResourceIsFolder"
-      },
-      {
-        "command": "utplsql.compileForDebug",
-        "group": "utplsql@4",
-        "when": "resourceExtname == .sql || resourceExtname == .pks || resourceExtname == .pkb || resourceExtname == .fnc || resourceExtname == .prc || resourceExtname == .trg || explorerResourceIsFolder"
-      },
-      {
-        "command": "utplsql.generateTestSuite",
-        "group": "utplsql@6",
-        "when": "resourceExtname == .pks || resourceExtname == .pkb"
-      },
-      {
-        "command": "utplsql.runRelated",
-        "group": "utplsql@7",
-        "when": "resourceExtname == .pks || resourceExtname == .pkb || resourceExtname == .sql || resourceExtname == .fnc || resourceExtname == .prc || resourceExtname == .trg"
-      }
-    ],
+        {
+          "command": "utplsql.runFolderCoverage",
+          "group": "utplsql@2",
+          "when": "explorerResourceIsFolder"
+        },
+        {
+          "command": "utplsql.compileForDebug",
+          "group": "utplsql@4",
+          "when": "resourceExtname == .sql || resourceExtname == .pks || resourceExtname == .pkb || resourceExtname == .fnc || resourceExtname == .prc || resourceExtname == .trg || explorerResourceIsFolder"
+        },
+        {
+          "command": "utplsql.generateTestSuite",
+          "group": "utplsql@6",
+          "when": "resourceExtname == .pks || resourceExtname == .pkb"
+        },
+        {
+          "command": "utplsql.runRelated",
+          "group": "utplsql@7",
+          "when": "resourceExtname == .pks || resourceExtname == .pkb || resourceExtname == .sql || resourceExtname == .fnc || resourceExtname == .prc || resourceExtname == .trg"
+        }
+      ],
       "editor/context": [
         {
           "command": "utplsql.runFile",
@@ -760,32 +764,32 @@
           "group": "utplsql@2",
           "when": "resourceExtname == .pks || resourceExtname == .pkb"
         },
-      {
-        "command": "utplsql.runScript",
-        "group": "utplsql@3",
-        "when": "resourceExtname == .sql || resourceExtname == .pks || resourceExtname == .pkb || resourceExtname == .fnc || resourceExtname == .prc || resourceExtname == .trg"
-      },
-      {
-        "command": "utplsql.compileForDebug",
-        "group": "utplsql@4",
-        "when": "resourceExtname == .sql || resourceExtname == .pks || resourceExtname == .pkb || resourceExtname == .fnc || resourceExtname == .prc || resourceExtname == .trg"
-      },
-      {
-        "command": "utplsql.debugTest",
-        "group": "utplsql@5",
-        "when": "resourceExtname == .pks || resourceExtname == .pkb"
-      },
-      {
-        "command": "utplsql.generateTestSuite",
-        "group": "utplsql@6",
-        "when": "resourceExtname == .pks || resourceExtname == .pkb"
-      },
-      {
-        "command": "utplsql.runRelated",
-        "group": "utplsql@7",
-        "when": "resourceExtname == .pks || resourceExtname == .pkb || resourceExtname == .sql || resourceExtname == .fnc || resourceExtname == .prc || resourceExtname == .trg"
-      }
-    ],
+        {
+          "command": "utplsql.runScript",
+          "group": "utplsql@3",
+          "when": "resourceExtname == .sql || resourceExtname == .pks || resourceExtname == .pkb || resourceExtname == .fnc || resourceExtname == .prc || resourceExtname == .trg"
+        },
+        {
+          "command": "utplsql.compileForDebug",
+          "group": "utplsql@4",
+          "when": "resourceExtname == .sql || resourceExtname == .pks || resourceExtname == .pkb || resourceExtname == .fnc || resourceExtname == .prc || resourceExtname == .trg"
+        },
+        {
+          "command": "utplsql.debugTest",
+          "group": "utplsql@5",
+          "when": "resourceExtname == .pks || resourceExtname == .pkb"
+        },
+        {
+          "command": "utplsql.generateTestSuite",
+          "group": "utplsql@6",
+          "when": "resourceExtname == .pks || resourceExtname == .pkb"
+        },
+        {
+          "command": "utplsql.runRelated",
+          "group": "utplsql@7",
+          "when": "resourceExtname == .pks || resourceExtname == .pkb || resourceExtname == .sql || resourceExtname == .fnc || resourceExtname == .prc || resourceExtname == .trg"
+        }
+      ],
       "testing/item/context": [
         {
           "command": "utplsql.runWithReporter",
@@ -882,8 +886,23 @@
     "languages": [
       {
         "id": "plsql",
-        "aliases": ["PL/SQL", "Oracle PL/SQL", "plsql"],
-        "extensions": [".pks", ".pkb", ".prc", ".fnc", ".trg", ".pls", ".plb", ".tps", ".tpb", ".vw"]
+        "aliases": [
+          "PL/SQL",
+          "Oracle PL/SQL",
+          "plsql"
+        ],
+        "extensions": [
+          ".pks",
+          ".pkb",
+          ".prc",
+          ".fnc",
+          ".trg",
+          ".pls",
+          ".plb",
+          ".tps",
+          ".tpb",
+          ".vw"
+        ]
       }
     ],
     "snippets": [
@@ -944,9 +963,9 @@
     "clean": "node -e \"require('fs').rmSync('out',{recursive:true,force:true})\"",
     "typecheck": "tsc -p ./ --noEmit",
     "watch": "tsc -watch -p ./",
-    "lint": "biome check src/",
-    "lint:fix": "biome check --write src/",
-    "format": "biome format --write src/",
+    "lint": "biome check .",
+    "lint:fix": "biome check --write .",
+    "format": "biome format --write .",
     "pretest:unit": "npm run compile && npm run lint",
     "test:unit": "node scripts/run-tests.cjs",
     "pretest:integration": "npm run clean && npm run compile && npm run bundle",

@@ -1,7 +1,3 @@
 {
-  "recommendations": [
-    "biomejs.biome",
-    "connor4312.nodejs-testing",
-    "github.vscode-github-actions"
-  ]
+  "recommendations": ["biomejs.biome", "connor4312.nodejs-testing", "github.vscode-github-actions"]
 }

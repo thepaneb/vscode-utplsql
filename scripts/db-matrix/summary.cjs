@@ -121,11 +121,7 @@ function renderSummary(entries) {
   if (entries.length === 0) {
     lines.push('| _(sem execuções)_ | | | | | | | | |');
   }
-  lines.push(
-    '',
-    '> Contagens extraídas do log de cada versão; `?` = formato não reconhecido.',
-    '',
-  );
+  lines.push('', '> Contagens extraídas do log de cada versão; `?` = formato não reconhecido.', '');
   return lines.join('\n');
 }
 

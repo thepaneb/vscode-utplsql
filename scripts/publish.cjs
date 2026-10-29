@@ -10,8 +10,8 @@
 //   node scripts/publish.cjs [--target <target>]
 'use strict';
 
-const fs = require('fs');
-const { spawnSync } = require('child_process');
+const fs = require('node:fs');
+const { spawnSync } = require('node:child_process');
 const { resolveVsce } = require('./vsce.cjs');
 
 function flagValue(args, name) {

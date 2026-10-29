@@ -22,10 +22,10 @@
  */
 'use strict';
 
-const fs = require('fs');
-const path = require('path');
-const https = require('https');
-const { execFileSync } = require('child_process');
+const fs = require('node:fs');
+const path = require('node:path');
+const https = require('node:https');
+const { execFileSync } = require('node:child_process');
 
 const ROOT = path.resolve(__dirname, '..');
 
@@ -53,11 +53,7 @@ function readEnvToken() {
     .split('\n')
     .find((l) => l.startsWith('GITHUB_TOKEN='));
   if (!line) return null;
-  return line
-    .slice('GITHUB_TOKEN='.length)
-    .trim()
-    .replace(/\r$/, '')
-    .replace(/^"|"$/g, '');
+  return line.slice('GITHUB_TOKEN='.length).trim().replace(/\r$/, '').replace(/^"|"$/g, '');
 }
 
 function getRepo() {
@@ -85,9 +81,7 @@ function changelogNotes(version, root = ROOT) {
   const p = path.join(root, 'CHANGELOG.md');
   if (!fs.existsSync(p)) return '';
   const lines = fs.readFileSync(p, 'utf8').split(/\r?\n/);
-  const start = lines.findIndex((l) =>
-    new RegExp(`^##\\s+${escapeRegExp(version)}\\b`).test(l),
-  );
+  const start = lines.findIndex((l) => new RegExp(`^##\\s+${escapeRegExp(version)}\\b`).test(l));
   if (start < 0) return '';
   let end = lines.length;
   for (let i = start + 1; i < lines.length; i++) {
@@ -147,9 +141,7 @@ async function main() {
   const version = tag.slice(1);
   const pkg = JSON.parse(fs.readFileSync(path.join(ROOT, 'package.json'), 'utf8'));
   if (pkg.version !== version && !args.force) {
-    console.error(
-      `tag ${tag} ≠ package.json version ${pkg.version} (use --force para ignorar).`,
-    );
+    console.error(`tag ${tag} ≠ package.json version ${pkg.version} (use --force para ignorar).`);
     process.exit(1);
   }
 
@@ -178,7 +170,7 @@ async function main() {
   const existing = dryRun
     ? null
     : await github(token, 'GET', `/releases/tags/${tag}`, null, false).catch(() => null);
-  if (existing && existing.html_url) {
+  if (existing?.html_url) {
     console.error(`Release ${tag} já existe: ${existing.html_url}`);
     process.exit(1);
   }

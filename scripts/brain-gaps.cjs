@@ -15,8 +15,8 @@
  *
  * A referência pode vir de qualquer nota do vault (não só COD/TST geradas).
  */
-const fs = require('fs');
-const path = require('path');
+const fs = require('node:fs');
+const path = require('node:path');
 
 const ROOT = path.resolve(__dirname, '..');
 const VAULT = path.join(ROOT, 'docs', 'brain');
@@ -39,11 +39,17 @@ function referencedFiles() {
   const visit = (dir) => {
     for (const e of fs.readdirSync(dir, { withFileTypes: true })) {
       if (
-      ['.obsidian', '_templates', '.trash', '.copilot', '.smart-env', 'copilot', '.opencode'].includes(
-        e.name,
+        [
+          '.obsidian',
+          '_templates',
+          '.trash',
+          '.copilot',
+          '.smart-env',
+          'copilot',
+          '.opencode',
+        ].includes(e.name)
       )
-    )
-      continue;
+        continue;
       const full = path.join(dir, e.name);
       if (e.isDirectory()) {
         visit(full);
@@ -80,9 +86,9 @@ function main() {
       path.join(ROOT, 'src'),
       (f) => f.endsWith('.ts') && !path.relative(ROOT, f).split(path.sep).includes('test'),
     ),
-    'testes': walk(path.join(ROOT, 'src', 'test'), (f) => f.endsWith('.test.ts')),
-    'scripts': walk(path.join(ROOT, 'scripts'), (f) => /\.(cjs|sh|py)$/.test(f)),
-    'workflows': walk(path.join(ROOT, '.github', 'workflows'), () => true),
+    testes: walk(path.join(ROOT, 'src', 'test'), (f) => f.endsWith('.test.ts')),
+    scripts: walk(path.join(ROOT, 'scripts'), (f) => /\.(cjs|sh|py)$/.test(f)),
+    workflows: walk(path.join(ROOT, '.github', 'workflows'), () => true),
     'site (Pages)': walk(path.join(ROOT, 'site'), (f) => /\.(html|css|txt|xml)$/.test(f)),
   };
 

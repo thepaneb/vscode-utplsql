@@ -29,6 +29,6 @@ export function resolveLastRunTarget(lastRun: LastRunState | undefined): DebugTa
  * teste, para as variações de debug (PRD-53). Sem meta de teste → `undefined`.
  */
 export function targetFromMeta(meta: ItemMeta | undefined): DebugTarget | undefined {
-  if (!meta || meta.kind !== 'test') return undefined;
+  if (meta?.kind !== 'test') return undefined;
   return { packageName: meta.packageName, procName: meta.procName };
 }

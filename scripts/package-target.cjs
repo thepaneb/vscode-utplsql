@@ -15,15 +15,21 @@
  */
 'use strict';
 
-const fs = require('fs');
-const path = require('path');
-const { spawnSync } = require('child_process');
+const fs = require('node:fs');
+const path = require('node:path');
+const { spawnSync } = require('node:child_process');
 const { resolveVsce } = require('./vsce.cjs');
 
 // node-oracledb 7.0.1 publica glue pré-compilada para estes alvos (thick).
 const GLUE_TARGETS = ['win32-x64', 'linux-x64', 'linux-arm64', 'darwin-arm64'];
 // Alvos do VS Code sem glue: o VSIX vai sem binário nativo (thin mode apenas).
-const THIN_ONLY_TARGETS = ['win32-arm64', 'darwin-x64', 'linux-armhf', 'alpine-x64', 'alpine-arm64'];
+const THIN_ONLY_TARGETS = [
+  'win32-arm64',
+  'darwin-x64',
+  'linux-armhf',
+  'alpine-x64',
+  'alpine-arm64',
+];
 // `web` fica de fora: a extensão usa node APIs + node-oracledb.
 const PACKAGE_TARGETS = [...GLUE_TARGETS, ...THIN_ONLY_TARGETS];
 

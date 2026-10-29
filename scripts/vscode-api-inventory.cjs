@@ -13,8 +13,8 @@
  * `import * as vscode from 'vscode'`). Cobre namespaces (`vscode.window`),
  * membros (`vscode.window.showInputBox`), tipos e enums (`vscode.Uri`).
  */
-const fs = require('fs');
-const path = require('path');
+const fs = require('node:fs');
+const path = require('node:path');
 
 const ROOT = path.resolve(__dirname, '..');
 const API_RE = /\bvscode\.([A-Za-z_$][\w$]*)(?:\.([A-Za-z_$][\w$]*))?/g;
@@ -70,7 +70,9 @@ function main() {
   }
   const rows = summarize(refs);
   const total = rows.reduce((n, r) => n + r.count, 0);
-  console.log(`APIs do VS Code em src/** (produção): ${rows.length} símbolos, ${total} referências\n`);
+  console.log(
+    `APIs do VS Code em src/** (produção): ${rows.length} símbolos, ${total} referências\n`,
+  );
   for (const r of rows) {
     console.log(`${r.api}  (${r.count})`);
     for (const ref of refs.get(r.api)) console.log(`  ${ref.file}:${ref.line}`);
