@@ -207,6 +207,8 @@ notas `prd-*`. O índice navegável do vault é a [[MOC - PRDs]].
 | 121 | [Pacote auditável: source map do bundle no VSIX](proposed/prd-121-auditable-package-sourcemap.md) | 0.23.0 | 2026-10-13 |
 | 122 | [Confiança na distribuição: publisher verificado e política de privacidade](proposed/prd-122-marketplace-trust-metadata.md) | 0.23.0 | 2026-10-13 |
 | 124 | [Upgrade para node-oracledb 26 com matriz e packaging validados](proposed/prd-124-oracledb-26-upgrade.md) | 0.19.0 | 2026-10-29 |
+| 125 | [Suíte completa em thick e matriz de bancos no CI](proposed/prd-125-thick-full-matrix-ci.md) | 0.19.0 | 2026-10-29 |
+| 126 | [Cobertura de branches nos módulos críticos e CLIs de release](proposed/prd-126-branch-coverage-cli-tests.md) | 0.23.0 | 2026-10-29 |
 <!-- prd:roadmap:end -->
 
 ---
@@ -344,6 +346,8 @@ docs/prd/
 │   ├── prd-121-auditable-package-sourcemap.md
 │   ├── prd-122-marketplace-trust-metadata.md
 │   ├── prd-124-oracledb-26-upgrade.md
+│   ├── prd-125-thick-full-matrix-ci.md
+│   ├── prd-126-branch-coverage-cli-tests.md
 ```
 <!-- prd:estrutura:end -->
 

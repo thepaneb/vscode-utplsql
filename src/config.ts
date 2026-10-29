@@ -149,7 +149,9 @@ export function readConfig(): UtConfig {
     oraclePoolIncrement: c.get<number>('oraclePoolIncrement', 1),
     oraclePoolPingInterval: c.get<number>('oraclePoolPingInterval', 60),
     oracleClientMode: c.get<'thin' | 'thick'>('oracleClientMode', 'thin'),
-    oracleClientLibDir: c.get<string>('oracleClientLibDir', ''),
+    oracleClientLibDir:
+      c.get<string>('oracleClientLibDir', '').trim() ||
+      (process.env.ORACLE_CLIENT_LIB_DIR ?? '').trim(),
     oracleClientConfigDir: c.get<string>('oracleClientConfigDir', ''),
     tnsAdminPath:
       resolveTnsAdminPath(

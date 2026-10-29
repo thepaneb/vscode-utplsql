@@ -334,3 +334,16 @@ test('parse-version.cjs: CLI sem --field devolve JSON', () => {
   assert.strictEqual(parsed.utplsqlVersion, 'v.3.2.3');
   assert.strictEqual(parsed.hasExplicitVersion, false);
 });
+
+test('thick-full: run.sh aceita o eixo e o config exclui os testes thin-only', () => {
+  const run = read('scripts/db-matrix/run.sh');
+  assert.match(run, /--thick-full/);
+  assert.match(run, /test:integration:thick-full/);
+  assert.match(run, /só roda com --thick/);
+  const cfg = read('.vscode-test.thick-full.mjs');
+  assert.match(cfg, /prd70-sqlplus/);
+  assert.match(cfg, /v014-tns/);
+  assert.match(cfg, /utplsql\.oracleClientMode/);
+  assert.match(cfg, /utplsql\.oracleClientLibDir/);
+  assert.match(cfg, /UTPLSQL_THICK_CONN/);
+});

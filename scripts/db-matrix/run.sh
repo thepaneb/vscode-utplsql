@@ -10,6 +10,7 @@
 #   scripts/db-matrix/run.sh --only 18xe,19ee
 #   scripts/db-matrix/run.sh --smoke                # smoke: capacidades + debugger + v017 (~1 min/versão)
 #   scripts/db-matrix/run.sh --thick                # thick smoke: Instant Client + conexão
+#   scripts/db-matrix/run.sh --thick-full           # suíte completa em thick (inclui 11g)
 #   scripts/db-matrix/run.sh --full                 # integração completa + multi-root por banco
 #   scripts/db-matrix/run.sh --clean --only 18xe    # apaga o volume e recria o banco
 #   scripts/db-matrix/run.sh --skip-bootstrap       # volume já preparado (valida UT3/TEST antes)
@@ -38,6 +39,9 @@ COMPOSE_FILE="$ROOT_DIR/docker/db-matrix/compose.yaml"
 # shellcheck disable=SC1091
 [ -f "$SCRIPT_DIR/matrix.env" ] && source "$SCRIPT_DIR/matrix.env"
 [ -f "$ROOT_DIR/.env.dbmatrix" ] && source "$ROOT_DIR/.env.dbmatrix"
+# `source` não exporta: os testes rodam via node.exe e só recebem o que
+# atravessa o WSLENV (--thick/--thick-full).
+export ORACLE_CLIENT_LIB_DIR TNS_ADMIN
 # Fallback: reaproveita as credenciais já existentes no .env do projeto.
 if [ -f "$ROOT_DIR/.env" ] && [ -z "${ORACLE_AUTH_USER:-}" ]; then
   ORACLE_AUTH_USER="$(sed -n 's/^ORACLE_AUTH_USER=//p' "$ROOT_DIR/.env" | tr -d '\r')"
@@ -145,6 +149,7 @@ while [ $# -gt 0 ]; do
     --tests) TESTS_CMD="$2"; shift 2 ;;
     --smoke) TESTS_CMD="npm run test:integration:smoke"; shift ;;
     --thick) TESTS_CMD="npm run test:integration:thick"; shift ;;
+    --thick-full) TESTS_CMD="npm run test:integration:thick-full"; shift ;;
     --full) TESTS_CMD="npm run test:integration && npm run test:integration:multiroot"; shift ;;
     --bootstrap-only) BOOTSTRAP_ONLY=1; shift ;;
     --skip-bootstrap) SKIP_BOOTSTRAP=1; shift ;;

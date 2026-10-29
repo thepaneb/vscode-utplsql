@@ -144,13 +144,19 @@ export function __getLastSaveDialogOptions(): unknown {
 }
 
 let _writtenFiles: Record<string, string> = {};
+let _writeErrors: Record<string, boolean> = {};
 
 export function __getWrittenFile(path: string): string | undefined {
   return _writtenFiles[path];
 }
 
+export function __setWriteError(path: string, hasError: boolean): void {
+  _writeErrors[path] = hasError;
+}
+
 export function __resetWrittenFiles(): void {
   _writtenFiles = {};
+  _writeErrors = {};
 }
 
 let _warningResult: string | undefined;
@@ -284,6 +290,7 @@ export namespace workspace {
     },
     writeFile: (uri: any, content: unknown) => {
       const path = uri.fsPath ?? uri;
+      if (_writeErrors[path]) return Promise.reject(new Error('mock: write error'));
       _writtenFiles[path] = String(content);
       return Promise.resolve();
     },

@@ -7,9 +7,9 @@ dominio: ui
 status: ativo
 severidade: media
 fonte: codigo
-verificado: 2026-10-14
+verificado: 2026-10-29
 implementacao: ["src/scaffold.ts", "src/commands/scaffold.ts"]
-testes: ["src/test/unit/scaffold.test.ts", "src/test/unit/scaffoldCommands.test.ts"]
+testes: ["src/test/unit/scaffold.test.ts", "src/test/unit/scaffoldCommands.test.ts", "src/test/unit/scaffoldDatabaseSource.test.ts"]
 prds: ["PRD-59", "PRD-100"]
 requisitos: ["PRD-59/RF1", "PRD-59/RF2", "PRD-59/RNF1", "PRD-100/RF1", "PRD-100/RF3", "PRD-100/RF4", "PRD-100/RNF1"]
 tags: ["ui", "scaffold"]
@@ -54,6 +54,6 @@ uma suíte válida.
 - 📄 PRDs: [[prd-59-scaffold-suite|PRD-59]] · [[prd-100-generate-test-suite|PRD-100]]
 - 🎯 Requisitos: [[prd-59-scaffold-suite|PRD-59 RF1]] · [[prd-59-scaffold-suite|PRD-59 RF2]] · [[prd-59-scaffold-suite|PRD-59 RNF1]] · [[prd-100-generate-test-suite|PRD-100 RF1]] · [[prd-100-generate-test-suite|PRD-100 RF3]] · [[prd-100-generate-test-suite|PRD-100 RF4]] · [[prd-100-generate-test-suite|PRD-100 RNF1]]
 - 🧩 Código: [[COD - src-scaffold.ts]] · [[COD - commands-scaffold.ts]]
-- 🧪 Testes: [[TST - scaffold.test.ts]] · [[TST - scaffoldCommands.test.ts]]
+- 🧪 Testes: [[TST - scaffold.test.ts]] · [[TST - scaffoldCommands.test.ts]] · [[TST - scaffoldDatabaseSource.test.ts]]
 - ↩️ Referenciada por: [[Editor-integration]] · [[prd-100-generate-test-suite|PRD-100]] · [[prd-59-scaffold-suite|PRD-59]]
 <!-- brain:auto:end -->
