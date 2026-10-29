@@ -28,7 +28,7 @@ Workflow [`scorecard.yml`](../../../.github/workflows/scorecard.yml) — **gerad
 ## Passos
 
 - `uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7`
-- `uses: ossf/scorecard-action@62b2cac7ed8198b15735ed49ab1e5cf35480ba46 # v2.4.0`
+- `uses: ossf/scorecard-action@2d1146689b8cda280b9bc96326124645441f03bc # v2.4.4`
 - `uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4`
 - `uses: github/codeql-action/upload-sarif@9b3254085494b55a0f7c4c2b3d2d52cc712ce370 # v4`
 
