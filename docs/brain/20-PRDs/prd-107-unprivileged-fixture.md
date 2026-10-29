@@ -137,5 +137,5 @@ usuário restrito e fazem skip quando ausente"), com `prds: ["PRD-107"]`,
 - 🗺️ [[MOC - PRDs]]
 - 🔗 PRDs relacionados: [[prd-72-db-test-matrix|PRD-72]] · [[prd-101-connection-pool-lifecycle|PRD-101]]
 - 🔗 Mesma versão (0.20.0): [[prd-101-connection-pool-lifecycle|PRD-101]] · [[prd-102-trace-and-perf-instrumentation|PRD-102]] · [[prd-103-incremental-source-reindex|PRD-103]] · [[prd-106-perf-harness|PRD-106]] · [[prd-120-lean-activation-lazy-setup|PRD-120]]
-- 🚀 ⬅️ release anterior: [[prd-115-split-i18n-locales|PRD-115 (0.19.0)]] · ➡️ próxima release: [[prd-88-locale-aware-formatting|PRD-88 (0.21.0)]]
+- 🚀 ⬅️ release anterior: [[prd-124-oracledb-26-upgrade|PRD-124 (0.19.0)]] · ➡️ próxima release: [[prd-88-locale-aware-formatting|PRD-88 (0.21.0)]]
 <!-- brain:auto:end -->
