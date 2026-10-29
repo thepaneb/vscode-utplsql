@@ -84,6 +84,10 @@ pré-bumpada para 0.18.0 no início (package/lock/site/CHANGELOG) para manter o
 - **PRD-113** (2026-10-29, PR #230): `biome check .` cobre manifestos, configs e
   `scripts/**`; `BR-QUAL-002` atualizada; **zero diagnósticos** no escopo;
   `npm run package` OK; suíte final **1406 testes / 0 falhas** (2 skips).
+- **PRD-114** (2026-10-29, PR #231): stub de `vscode` tipado contra
+  `@types/vscode`, `TestItemCollection` real, fixtures tipadas e inventário de
+  APIs; **`as any` 356 → 116** (meta ≤178); `BR-TEST-003`; **1408 testes / 0
+  falhas** (2 skips); typecheck 0; integração 23free verde.
 
 ## Fluxo de execução (por PRD)
 
