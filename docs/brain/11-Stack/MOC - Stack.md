@@ -38,7 +38,7 @@ e os riscos das dependências **diretas** relevantes.
 
 **Desenvolvimento (12)**
 
-- `@biomejs/biome` `^2.5.2` — dev
+- `@biomejs/biome` `^2.5.15` — dev
 - `@resvg/resvg-js` `^2.6.2` — dev
 - `@types/mocha` `^10.0.7` — dev
 - `@types/node` `^22.20.1` — dev
