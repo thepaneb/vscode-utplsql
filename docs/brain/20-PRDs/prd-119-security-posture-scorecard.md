@@ -10,6 +10,7 @@ autor: "Gil Cleber Barboza"
 versao_titulo: "0.18.0 — Fundação: segurança, testes e anti-drift"
 verificado: 2026-10-13
 regras: []
+docs: ["CHANGELOG", "wiki/Contributing.md"]
 tags: [prd]
 ---
 
@@ -225,6 +226,10 @@ configuração do repo) e `testes:` (verificação manual documentada; sem teste
 unitário, pois é configuração externa — declarar a exceção). Avaliar se
 `SECURITY.md`/nota de segurança ganham menção à postura auditável.
 Enquanto `proposed`, `regras: []`.
+
+## Impacto nas docs
+
+`wiki/Contributing.md` documenta a postura de segurança; o CHANGELOG entra no release.
 
 ## Conexões
 

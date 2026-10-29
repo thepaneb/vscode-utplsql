@@ -10,6 +10,7 @@ autor: "Gil Cleber Barboza"
 versao_titulo: "0.18.0 — Fundação: segurança, testes e anti-drift"
 verificado: 2026-10-29
 regras: ["BR-TEST-003"]
+docs: ["CHANGELOG", "wiki/Contributing.md"]
 tags: [prd]
 ---
 
@@ -158,6 +159,10 @@ Nenhuma setting/comando. Possível ajuste do override do Biome para `src/test/**
 Ao concluir, criar/ajustar a regra `BR-TEST-*` ("o stub de `vscode` é tipado e
 coberto pelo inventário de APIs") com `prds: ["PRD-114"]`, `implementacao:` e
 `testes:`. Enquanto `proposed`, `regras: []`.
+
+## Impacto nas docs
+
+`wiki/Contributing.md` documenta o stub tipado e as fixtures; o CHANGELOG entra no release.
 
 ## Conexões
 

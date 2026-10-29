@@ -56,6 +56,20 @@ function pkgVersion() {
   return JSON.parse(read('package.json')).version;
 }
 
+/** Settings com `enum` (id + valores). */
+function settingsWithEnums() {
+  const pkg = JSON.parse(read('package.json'));
+  const props = pkg.contributes?.configuration?.properties ?? {};
+  return Object.entries(props)
+    .filter(([, v]) => Array.isArray(v?.enum))
+    .map(([id, v]) => ({ id, values: v.enum.map(String) }));
+}
+
+/** IDs `utplsql.*` presentes numa tabela markdown (primeira coluna em crase). */
+function tableSettingIds(text) {
+  return [...String(text).matchAll(/^\|\s*`(utplsql\.[^`]+)`\s*\|/gm)].map((m) => m[1]);
+}
+
 /** Módulos `src/*.ts` (basenames). */
 function srcModules() {
   const dir = path.join(REPO, 'src');
@@ -112,6 +126,7 @@ function checkFidelity(overrides = {}) {
   const files = {
     readme: overrides.readme ?? read('README.md'),
     wikiCommands: overrides.wikiCommands ?? read('docs/wiki/Commands.md'),
+    wikiConfiguration: overrides.wikiConfiguration ?? read('docs/wiki/Configuration.md'),
     wikiArchitecture: overrides.wikiArchitecture ?? read('docs/wiki/Architecture.md'),
     wikiPrds: overrides.wikiPrds ?? read('docs/wiki/PRDs.md'),
     faq: overrides.faq ?? read('docs/wiki/FAQ.md'),
@@ -119,27 +134,46 @@ function checkFidelity(overrides = {}) {
   };
   const completedPrds = overrides.completedPrds ?? listCompletedPrds();
 
-  // 1. settings ↔ README
-  const s = mentions(files.readme, settings);
-  for (const m of s.missing) problems.push(`setting ${m} sem menção no README.md`);
+  // 1. settings ↔ README **e** wiki/Configuration.md (todos os ids).
+  for (const m of mentions(files.readme, settings).missing) {
+    problems.push(`setting ${m} sem menção no README.md`);
+  }
+  for (const m of mentions(files.wikiConfiguration, settings).missing) {
+    problems.push(`setting ${m} sem menção em docs/wiki/Configuration.md`);
+  }
+  // Bidirecional: ids nas tabelas geradas precisam existir no package.json.
+  const knownSettings = new Set(settings);
+  for (const [name, text] of [
+    ['README.md', files.readme],
+    ['docs/wiki/Configuration.md', files.wikiConfiguration],
+  ]) {
+    for (const id of new Set(tableSettingIds(text))) {
+      if (!knownSettings.has(id))
+        problems.push(`${name}: setting "${id}" não existe no package.json`);
+    }
+  }
+  // Valores de enum relevantes aparecem no README e na wiki.
+  const enums = overrides.settingEnums ?? settingsWithEnums();
+  for (const { id, values } of enums) {
+    for (const value of values) {
+      if (!files.readme.includes(value)) {
+        problems.push(`setting ${id}: valor de enum "${value}" ausente no README.md`);
+      }
+      if (!files.wikiConfiguration.includes(value)) {
+        problems.push(`setting ${id}: valor de enum "${value}" ausente em Configuration.md`);
+      }
+    }
+  }
 
-  // 2. comandos de paleta ↔ wiki/Commands.md
-  //    A wiki pode reformular o título (ex.: "Import connections from SQL
-  //    Developer" vs nls "Import SQL Developer Connections"), então cobramos
-  //    por PRESENÇA de tokens significativos do título, não pela frase exata.
-  const wikiLower = files.wikiCommands.toLowerCase();
-  const STOP = new Set(['utplsql', 'the', 'a', 'an', 'of', 'in', 'on', 'to', 'and', 'from']);
-  for (const c of commandTitles) {
-    const tokens = c.title
-      .replace(/^utPLSQL:\s*/i, '')
-      .toLowerCase()
-      .split(/[^a-z0-9]+/)
-      .filter((w) => w.length > 2 && !STOP.has(w));
-    const missingToken = tokens.find((t) => !wikiLower.includes(t));
-    if (missingToken && !wikiLower.includes(c.id.toLowerCase())) {
-      problems.push(
-        `comando de paleta "${c.title}" (${c.id}) sem menção em Commands.md (token "${missingToken}")`,
-      );
+  // 2. comandos ↔ wiki/Commands.md e README por ID exato (a tabela gerada
+  //    inclui a coluna ID; títulos podem variar entre locales/prosa).
+  const commands = overrides.commands ?? realCommands();
+  for (const id of commands) {
+    if (!files.wikiCommands.includes(id)) {
+      problems.push(`comando ${id} sem menção em docs/wiki/Commands.md`);
+    }
+    if (!files.readme.includes(id)) {
+      problems.push(`comando ${id} sem menção no README.md`);
     }
   }
 
@@ -645,6 +679,8 @@ module.exports = {
   removedModules,
   realSettings,
   realCommands,
+  settingsWithEnums,
+  tableSettingIds,
   srcTsFiles,
   staleSymbols,
   ALLOW_STALE,

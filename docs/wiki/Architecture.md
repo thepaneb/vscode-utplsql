@@ -2,6 +2,8 @@
 
 # Architecture
 
+<!-- prd:PRD-110 -->
+
 Overview of the extension's internal architecture for contributors.
 
 ## Execution flow

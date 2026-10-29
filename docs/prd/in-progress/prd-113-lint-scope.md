@@ -135,3 +135,7 @@ Nenhuma setting/comando de usuário. Muda o script `lint` e a config do Biome.
 Ao concluir, criar/ajustar a regra `BR-QUAL-002` (lint cobre todo o repositório,
 não só `src/`) com `prds: ["PRD-113"]`, `implementacao:` e `testes:`. Enquanto
 `proposed`, `regras: []`.
+
+## Impacto nas docs
+
+`wiki/Contributing.md` documenta o escopo do lint; o CHANGELOG entra no release.

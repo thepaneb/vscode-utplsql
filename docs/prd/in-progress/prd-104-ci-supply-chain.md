@@ -204,3 +204,7 @@ Nenhuma setting da extensão.
 Na conclusão, criar a regra `BR-PLAT-*` ("actions pinadas por SHA e permissões
 escopadas; dependências auditadas no CI"), com `prds: ["PRD-104"]`,
 `implementacao:` e `testes:`. Enquanto `proposed`, `regras: []`.
+
+## Impacto nas docs
+
+`wiki/Contributing.md` documenta a cadeia de suprimentos; o CHANGELOG entra no release.

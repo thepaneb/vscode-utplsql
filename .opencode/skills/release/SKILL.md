@@ -26,7 +26,8 @@ roda compile/lint/test/package e publica no Marketplace). **Nunca** rode
    preencher a coluna **Versão**) usando a skill **`prd-workflow`**; ao concluir,
    crie/altere as regras `BR-*`/`SEC-*` que a PRD materializa e rode
    `npm run brain:rules` (o vínculo PRD ↔ regra/SEC é bidirecional e cobrado no
-   CI); rode `npm run sync-prds` no fim.
+   CI); preencha `docs:`/`## Impacto nas docs` e o registro de features; rode
+   `npm run docs:features-check -- <versão>` e `npm run sync-prds` no fim.
 5. **Docs** — se houve settings/comandos/features, aplique a skill
    **`docs-fidelity`** (README + 23 variantes, `docs/wiki` (en), functional).
 6. **Commit + push** da branch de release.
@@ -51,6 +52,7 @@ grep "| X.Y.Z |" docs/prd/index.md | wc -l        # PRDs concluídos na versão
 - [ ] PRDs concluídos (>= 0.14.0) com `regras:` derivado e vínculo bidirecional
       (`npm run brain:rules`)
 - [ ] `npm run docs:check` e `npm run brain:check` OK
+- [ ] `npm run docs:features-check -- <versão>` OK (README, wiki, posts/cards)
 - [ ] CI verde no commit da release
 - [ ] GitHub release publicada → workflow `Publish Extension` concluído
 - [ ] post de release no LinkedIn criado (local/gitignored)

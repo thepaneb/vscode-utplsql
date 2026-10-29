@@ -347,3 +347,7 @@ Na conclusão:
 - RNFs sem regra: nenhuma (todas as RNF têm alvo em regra/NFR).
 
 Enquanto `proposed`, `regras: []` (derivado pelo `brain:sync` na conclusão).
+
+## Impacto nas docs
+
+`wiki/Database-requirements.md` e `wiki/Troubleshooting.md` declaram 11.2 thick-only; README ×24 e NFR-001 entram no release.

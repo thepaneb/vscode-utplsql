@@ -173,7 +173,6 @@ notas `prd-*`. O índice navegável do vault é a [[MOC - PRDs]].
 
 | # | PRD | Versão | Data |
 |---|---|---|---|
-| 98 | [Anti-drift de documentação: tabelas geradas e vínculo PRD→docs](approved/prd-98-docs-anti-drift.md) | 0.18.0 | 2026-10-08 |
 | 118 | [Assinatura de commits e verificação de origem no main](approved/prd-118-commit-signing.md) | 0.18.0 | 2026-10-13 |
 | 119 | [Postura de segurança verificável: OSSF Scorecard e proteção de main](approved/prd-119-security-posture-scorecard.md) | 0.18.0 | 2026-10-13 |
 | 123 | [Suporte oficial ao Oracle 11g (11.2) em thick mode](approved/prd-123-oracle-11g-support.md) | 0.18.0 | 2026-10-17 |
@@ -182,6 +181,7 @@ notas `prd-*`. O índice navegável do vault é a [[MOC - PRDs]].
 
 | # | PRD | Versão | Data |
 |---|---|---|---|
+| 98 | [Anti-drift de documentação: tabelas geradas e vínculo PRD→docs](in-progress/prd-98-docs-anti-drift.md) | 0.18.0 | 2026-10-08 |
 | 104 | [Cadeia de suprimentos do CI: Dependabot, pin de actions e auditoria de dependências](in-progress/prd-104-ci-supply-chain.md) | 0.18.0 | 2026-10-09 |
 | 110 | [Hardening defensivo: identificador SQL, redaction de logs e scripts de desenvolvimento](in-progress/prd-110-defensive-hardening.md) | 0.18.0 | 2026-10-09 |
 | 113 | [Ampliar o escopo do lint (Biome) para além de `src/`](in-progress/prd-113-lint-scope.md) | 0.18.0 | 2026-10-10 |
@@ -319,11 +319,11 @@ docs/prd/
 │   ├── prd-108-coverage-html-report.md
 │   ├── prd-109-language-identity.md
 ├── approved/        ← aprovados, aguardando implementação
-│   ├── prd-98-docs-anti-drift.md
 │   ├── prd-118-commit-signing.md
 │   ├── prd-119-security-posture-scorecard.md
 │   ├── prd-123-oracle-11g-support.md
 ├── in-progress/        ← sendo implementados agora
+│   ├── prd-98-docs-anti-drift.md
 │   ├── prd-104-ci-supply-chain.md
 │   ├── prd-110-defensive-hardening.md
 │   ├── prd-113-lint-scope.md

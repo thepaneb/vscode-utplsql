@@ -29,7 +29,9 @@ Frontmatter (20-PRDs/)  ──brain:build──►  docs/prd/** + index.md (gera
    `docs/brain/_templates/template-prd.md` (NN = próximo sequencial de 2 dígitos;
    slug em kebab-case).
 2. Preencha o frontmatter (`id`, `status: proposed`, `titulo`, `versao`, `data`,
-   `autor`) e o corpo.
+   `autor`, `docs`) e o corpo. `docs:` lista as superfícies que a PRD toca
+   (`CHANGELOG`, `wiki/…`, `README`, `docs/linkedin/…`); cada destino precisa
+   mencionar o ID da PRD ou um marcador `<!-- prd:PRD-NN -->`.
 3. Regenerar e sincronizar:
    ```sh
    npm run brain:sync && npm run brain:build
@@ -49,10 +51,15 @@ Mudar o status é sempre a mesma sequência:
    das regras); a seção `## Impacto no cérebro` declara o que foi criado (ou
    "nenhuma"). PRDs concluídas (>= `0.14.0`) sem regra precisam da seção
    preenchida — o `brain:rules` cobra (vínculo bidirecional PRD ↔ regra/SEC).
-4. Regenerar e sincronizar:
+4. **Impacto nas docs**: preencha `docs:` no frontmatter e a seção
+   `## Impacto nas docs` com as superfícies alteradas. Para PRDs concluídas
+   ≥ `0.18.0`, o `brain:rules` exige o campo, a seção e o ID da PRD em cada
+   superfície (ou `<!-- prd:PRD-NN -->`).
+5. Regenerar e sincronizar:
    ```sh
    npm run brain:sync && npm run brain:build
    npm run sync-prds   # atualiza label / fecha a issue
+   npm run docs:features-check -- <versão>   # gate de features/posts/cards
    ```
 
 > A mudança de pasta em `docs/prd/**` é feita pelo `brain:build` (e o arquivo da
@@ -80,6 +87,8 @@ npm run sync-prds
 - [ ] `npm run brain:check` → valida os links do vault
 - [ ] `npm run brain:rules` → regras válidas **e** vínculo bidirecional
       PRD ↔ regra/SEC (`regras:` derivado, `prds:` de volta)
+- [ ] `docs:` + `## Impacto nas docs` preenchidos e superfícies citando a PRD
+- [ ] `npm run docs:features-check -- <versão>` (quando a PRD tem feature de usuário)
 - [ ] `CHANGELOG.md` atualizado ao concluir
 
 ## Armadilhas

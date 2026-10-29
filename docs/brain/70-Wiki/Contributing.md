@@ -5,11 +5,18 @@ titulo: "Contributing"
 publicar: docs/wiki/Contributing.md
 origem: ["MOC - Documentacao"]
 verificado: 2026-10-29
-regras: ["BR-PLAT-002", "BR-QUAL-002", "BR-TEST-003"]
+regras: ["BR-PLAT-002", "BR-QUAL-002", "BR-TEST-003", "BR-DOC-001", "BR-DOC-002"]
 tags: [wiki]
 ---
 
 # Contributing
+
+<!-- prd:PRD-98 -->
+<!-- prd:PRD-104 -->
+<!-- prd:PRD-113 -->
+<!-- prd:PRD-114 -->
+<!-- prd:PRD-118 -->
+<!-- prd:PRD-119 -->
 
 ## CI and supply chain
 
@@ -37,6 +44,13 @@ fails when a runtime API used by `src/**` is missing from the stub, and
 `anyBudget.test.ts` prevents `any` regressions. Prefer the typed helpers in
 `src/test/fixtures.ts` (`makeTestItem`, `makeTestRun`, `makeUri`, …) over
 `as any` when building fixtures.
+
+## Feature registry
+
+`docs/brain/10-Projeto/Registro de features.md` is the structured source for
+README bullets, wiki mentions and LinkedIn posts/cards. `npm run
+docs:features-check -- <version>` validates every completed PRD of the version;
+internal enablers use `interno: true` and only require the CHANGELOG entry.
 
 Guide for setting up the development environment and submitting contributions.
 
