@@ -36,4 +36,5 @@ SORT id ASC
 - [[SEC-011 - Settings de conexão não são sobrescrevíveis por workspace]] — `SEC-011`
 - [[SEC-012 - Senha da wallet nunca em settings nem em log]] — `SEC-012`
 - [[SEC-013 - Fonte virtual do banco é read-only]] — `SEC-013`
+- [[SEC-014 - Identificador de schema validado antes de concatenar no SQL]] — `SEC-014`
 <!-- brain:auto:end -->

@@ -5,6 +5,7 @@ import { t } from './i18n';
 import { resolveRunRoots } from './matching';
 import { executeRunOracle, type OracleRunOptions } from './oracleRunner';
 import { setupValidator } from './quickfix';
+import { redactConnection } from './redact';
 import type { LastRunState, TestStateManager } from './state';
 import type { ItemMeta } from './types';
 import { applySqlCoverage } from './viewCoverage';
@@ -235,7 +236,7 @@ export async function executeRun(
     }
   } catch (e) {
     if (exporting) throw e;
-    const msg = e instanceof Error ? e.message : String(e);
+    const msg = redactConnection(e instanceof Error ? e.message : String(e), connection);
     run.appendOutput(`\r\n${t(locale, 'runner.oracleErrorHeader', { error: msg })}\r\n`);
     for (const item of leafTests) {
       run.errored(item, new vscode.TestMessage(t(locale, 'runner.oracleError', { error: msg })));

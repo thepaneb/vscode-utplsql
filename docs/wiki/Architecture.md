@@ -52,7 +52,7 @@ bundled.
 | `charset.ts` — byte→string decoding (utf8/latin1/win1252) | `compileForDebug.ts` — compile object with debug info |
 | `charsetSupport.ts` — legacy-charset detection (euro preserved) | `compilationDiagnostics.ts` — ALL_ERRORS → Problems Panel |
 | `debounce.ts` — coalescing helper | `dbSourceProvider.ts` — `utplsql-db:` virtual documents |
-| `logger.ts` — logging (no `vscode`) | `connectionProfiles.ts` — connection profiles |
+| `logger.ts` — logging (no `vscode`); `oracleIdentifiers.ts` — validação do prefixo de schema (`UT3.`); `redact.ts` — `maskConnection`/`redactConnection` (PRD-110) | `connectionProfiles.ts` — connection profiles |
 | | `decorations.ts` — inline ✓/✗/⚠ decorations |
 | | `statusBar.ts` — status bar indicator |
 | | `viewCoverage.ts` — DeclarationCoverage + V$SQL view tracking |

@@ -38,6 +38,7 @@ SORT id ASC
 - [[TST - compileForDebugPool.test.ts]] — `TST-compileForDebugPool.test.ts`
 - [[TST - config.test.ts]] — `TST-config.test.ts`
 - [[TST - connectionProfiles.test.ts]] — `TST-connectionProfiles.test.ts`
+- [[TST - connectionRedaction.test.ts]] — `TST-connectionRedaction.test.ts`
 - [[TST - coverage.test.ts]] — `TST-coverage.test.ts`
 - [[TST - coverageDecision.test.ts]] — `TST-coverageDecision.test.ts`
 - [[TST - coverageHtml.test.ts]] — `TST-coverageHtml.test.ts`
@@ -75,6 +76,7 @@ SORT id ASC
 - [[TST - oracledb-default-absent.test.ts]] — `TST-oracledb-default-absent.test.ts`
 - [[TST - oracledb-missing-catch.test.ts]] — `TST-oracledb-missing-catch.test.ts`
 - [[TST - oracledbDefaultPresent.test.ts]] — `TST-oracledbDefaultPresent.test.ts`
+- [[TST - oracleIdentifiers.test.ts]] — `TST-oracleIdentifiers.test.ts`
 - [[TST - oracleRunner.test.ts]] — `TST-oracleRunner.test.ts`
 - [[TST - oracleRunnerReporters.test.ts]] — `TST-oracleRunnerReporters.test.ts`
 - [[TST - oracleRunnerTns.test.ts]] — `TST-oracleRunnerTns.test.ts`
@@ -86,6 +88,7 @@ SORT id ASC
 - [[TST - profileSecretStorageE2E.test.ts]] — `TST-profileSecretStorageE2E.test.ts`
 - [[TST - quickfix.test.ts]] — `TST-quickfix.test.ts`
 - [[TST - quickfixActivation.test.ts]] — `TST-quickfixActivation.test.ts`
+- [[TST - redact.test.ts]] — `TST-redact.test.ts`
 - [[TST - rerun.test.ts]] — `TST-rerun.test.ts`
 - [[TST - results.test.ts]] — `TST-results.test.ts`
 - [[TST - resultsUnreadable.test.ts]] — `TST-resultsUnreadable.test.ts`
@@ -103,6 +106,7 @@ SORT id ASC
 - [[TST - scriptCommandsExec.test.ts]] — `TST-scriptCommandsExec.test.ts`
 - [[TST - scriptRunner.test.ts]] — `TST-scriptRunner.test.ts`
 - [[TST - scriptsCli.test.ts]] — `TST-scriptsCli.test.ts`
+- [[TST - scriptsHardening.test.ts]] — `TST-scriptsHardening.test.ts`
 - [[TST - selectReporterCommand.test.ts]] — `TST-selectReporterCommand.test.ts`
 - [[TST - snippets.test.ts]] — `TST-snippets.test.ts`
 - [[TST - state.test.ts]] — `TST-state.test.ts`

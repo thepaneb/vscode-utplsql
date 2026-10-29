@@ -74,6 +74,7 @@ SORT id ASC
 - [[BR-CONN-016 - Settings de conexão machine-scoped e workspace confiável]] — `BR-CONN-016`
 - [[BR-CONN-017 - Senha da wallet vai para o SecretStorage e ao pool]] — `BR-CONN-017`
 - [[BR-CONN-018 - Alias TNS resolvido no thin por tnsAdminPath, SQL Developer e TNS_ADMIN]] — `BR-CONN-018`
+- [[BR-CONN-020 - Credencial é redigida em todo log do ciclo de conexão]] — `BR-CONN-020`
 - [[BR-DEBUG-001 - Ciclo do debugger DBMS_DEBUG para no breakpoint e le o frame]] — `BR-DEBUG-001`
 - [[BR-DEBUG-002 - stopOnException controla pausa em excecao (break_exception)]] — `BR-DEBUG-002`
 - [[BR-DEBUG-003 - Function standalone depura no namespace toplevel]] — `BR-DEBUG-003`
@@ -96,6 +97,7 @@ SORT id ASC
 - [[BR-EXEC-014 - Reporters adicionais são validados e sanitizados antes do PL-SQL]] — `BR-EXEC-014`
 - [[BR-EXEC-015 - Export com reporter não altera os resultados do Test Explorer]] — `BR-EXEC-015`
 - [[BR-EXEC-016 - Auto-run on save - default off, debounce por arquivo e guarda de concorrencia]] — `BR-EXEC-016`
+- [[BR-EXEC-017 - Prefixo de schema validado antes de concatenar no SQL]] — `BR-EXEC-017`
 - [[BR-I18N-001 - Resolução de locale e fallback de tradução]] — `BR-I18N-001`
 - [[BR-LOG-001 - Diagnostico vai para o LogOutputChannel utPLSQL]] — `BR-LOG-001`
 - [[BR-PARSE-001 - Arquivo só é suite utPLSQL se tiver %suite E CREATE PACKAGE]] — `BR-PARSE-001`

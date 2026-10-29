@@ -213,7 +213,10 @@ for __line in "${VERSION_LINES[@]}"; do
     start_ts="$(date +%s)"
     log "rodando testes: $TESTS_CMD  (UTPLSQL_CONN=$(mask_conn "$UTPLSQL_CONN"))"
     set +e
-    (cd "$ROOT_DIR" && eval "$TESTS_CMD") 2>&1 | tee "$test_log"
+    # Subshell explícito em vez de `eval` no shell do orquestrador: TESTS_CMD
+    # pode conter `&&` e `bash -c '...'` (--full/--tests). O valor é entrada
+    # do mantenedor (dev-only), mas não deve reavaliar o ambiente do run.sh.
+    (cd "$ROOT_DIR" && bash -c "$TESTS_CMD") 2>&1 | tee "$test_log"
     test_status="${PIPESTATUS[0]}"
     set -e
     duration="$(( $(date +%s) - start_ts ))"

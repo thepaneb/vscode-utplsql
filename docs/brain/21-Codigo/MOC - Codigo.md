@@ -82,6 +82,7 @@ SORT id ASC
 - [[COD - obsidian-mcp.py]] — `COD-obsidian-mcp.py`
 - [[COD - obsidian-portproxy.cmd]] — `COD-obsidian-portproxy.cmd`
 - [[COD - oracleClient.ts]] — `COD-oracleClient.ts`
+- [[COD - oracleIdentifiers.ts]] — `COD-oracleIdentifiers.ts`
 - [[COD - oracleRunner.ts]] — `COD-oracleRunner.ts`
 - [[COD - package-target.cjs]] — `COD-package-target.cjs`
 - [[COD - package.json]] — `COD-package.json`
@@ -91,6 +92,7 @@ SORT id ASC
 - [[COD - profile.ts]] — `COD-profile.ts`
 - [[COD - publish.cjs]] — `COD-publish.cjs`
 - [[COD - quickfix.ts]] — `COD-quickfix.ts`
+- [[COD - redact.ts]] — `COD-redact.ts`
 - [[COD - results.ts]] — `COD-results.ts`
 - [[COD - robots.txt]] — `COD-robots.txt`
 - [[COD - run-tests.cjs]] — `COD-run-tests.cjs`

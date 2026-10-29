@@ -6,30 +6,15 @@ import * as vscode from 'vscode';
 import type { UtConfig } from './config';
 import { resolveLocale, t } from './i18n';
 import { logger } from './logger';
+import { maskConnection } from './redact';
 import type { ConnectionProfile } from './types';
+
+export { maskConnection };
 
 /** Idioma efetivo sem importar `config.ts` (evita dependência circular). */
 function profileLocale() {
   const setting = vscode.workspace.getConfiguration('utplsql').get<string>('language', 'auto');
   return resolveLocale(setting, vscode.env.language);
-}
-
-/**
- * `scott/tiger@localhost:1521/XE` → `scott@localhost:1521/XE`.
- * Cobre também a credencial sem `@` (conexão malformada, ex.: `scott/tiger`,
- * que é justamente o caso que faz `parseConnString` lançar): sem host não há
- * como separar as partes, então corta após o 1º `/`.
- */
-export function maskConnection(conn: string): string {
-  const at = conn.lastIndexOf('@');
-  if (at < 0) {
-    const slash = conn.indexOf('/');
-    return slash >= 0 ? conn.slice(0, slash) : conn;
-  }
-  const cred = conn.slice(0, at);
-  const slash = cred.indexOf('/');
-  const user = slash >= 0 ? cred.slice(0, slash) : cred;
-  return `${user}${conn.slice(at)}`;
 }
 
 export function generateId(): string {

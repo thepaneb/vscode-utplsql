@@ -2,7 +2,6 @@ import * as fs from 'node:fs';
 import * as path from 'node:path';
 import * as vscode from 'vscode';
 import { getExtensionLocale, readConfig, type UtConfig } from './config';
-import { maskConnection } from './connectionProfiles';
 import {
   type CoverageOutputKind,
   classifyCoverageOutput,
@@ -14,6 +13,8 @@ import { t } from './i18n';
 import { parseJUnit } from './junit';
 import { logger } from './logger';
 import { ensureOracleClient } from './oracleClient';
+import { sanitizeSchemaPrefix } from './oracleIdentifiers';
+import { maskConnection, redactConnection } from './redact';
 import { applyCoverageFromXml, applyResultsFromCases, countResults } from './results';
 import type { TestStateManager } from './state';
 import { looksLikeTnsAlias, resolveTnsAlias, TNSNAMES_FILENAME } from './tnsnames';
@@ -105,7 +106,9 @@ export async function ensurePool(
     cfg.oracleClientConfigDir,
   );
   if (client.error) {
-    logger.warn('ensurePool: cliente Oracle thick não inicializou', { error: client.error });
+    logger.warn('ensurePool: cliente Oracle thick não inicializou', {
+      error: redactConnection(String(client.error ?? ''), connection),
+    });
   }
   if (currentPool?.key === key) return currentPool.pool;
   await closeOraclePool();
@@ -158,7 +161,9 @@ export async function withOracleConnection<T>(
       ? await pool.getConnection()
       : await oracledb.getConnection(parseConnString(connection));
   } catch (e) {
-    logger.debug('withOracleConnection: falha ao obter conexão', { error: String(e) });
+    logger.debug('withOracleConnection: falha ao obter conexão', {
+      error: redactConnection(String(e), connection),
+    });
     return undefined;
   }
   try {
@@ -216,7 +221,9 @@ export async function discoverUtplsqlSchema(conn: {
     const rows = result.rows;
     if (rows && rows.length > 0) {
       const owner = (rows[0] as { TABLE_OWNER?: string }).TABLE_OWNER;
-      if (owner) return `${owner}.`;
+      // Defesa em profundidade: o prefixo só chega ao SQL se for um
+      // identificador Oracle válido (PRD-110).
+      if (owner) return sanitizeSchemaPrefix(`${owner}.`);
     }
   } catch (e) {
     // ALL_SYNONYMS pode não estar acessível — sem prefixo
@@ -247,7 +254,9 @@ export async function findInvalidUt3Objects(
       ? await pool.getConnection()
       : await oracledb.getConnection(parseConnString(connection));
   } catch (e) {
-    logger.debug('findInvalidUt3Objects: falha ao obter conexão', { error: String(e) });
+    logger.debug('findInvalidUt3Objects: falha ao obter conexão', {
+      error: redactConnection(String(e), connection),
+    });
     return undefined;
   }
   const prevTimeout = conn.callTimeout;
@@ -273,7 +282,7 @@ export async function findInvalidUt3Objects(
     return { schema, invalid };
   } catch (e) {
     logger.debug('findInvalidUt3Objects: ALL_OBJECTS inacessível', {
-      error: String(e),
+      error: redactConnection(String(e), connection),
     });
     return undefined;
   } finally {
@@ -628,12 +637,12 @@ export async function executeRunOracle(
         await prepareCoverageHtmlReport(htmlReportTarget);
       } catch (e) {
         logger.debug('executeRunOracle: falha ao preparar o HTML de cobertura', {
-          error: String(e),
+          error: redactConnection(String(e), connection),
         });
       }
     }
 
-    const utSchema = await discoverUtplsqlSchema(conn1);
+    const utSchema = sanitizeSchemaPrefix(await discoverUtplsqlSchema(conn1));
 
     await conn1.execute(`DELETE FROM ${utSchema}UT_OUTPUT_BUFFER_TMP`, {}, { autoCommit: true });
     await conn1.execute(
@@ -846,7 +855,9 @@ export async function executeRunOracle(
         // DBMS_OUTPUT é por sessão: habilita em conn1, que executa os testes.
         await conn1.execute(`BEGIN DBMS_OUTPUT.ENABLE(NULL); END;`);
       } catch (e) {
-        logger.debug('executeRunOracle: DBMS_OUTPUT.ENABLE falhou', { error: String(e) });
+        logger.debug('executeRunOracle: DBMS_OUTPUT.ENABLE falhou', {
+          error: redactConnection(String(e), connection),
+        });
       }
     }
 
@@ -929,7 +940,9 @@ export async function executeRunOracle(
           }
         } catch (e) {
           // polling pode falhar se conn1 ainda não escreveu — ignorar
-          logger.debug('executeRunOracle: poll do buffer falhou', { error: String(e) });
+          logger.debug('executeRunOracle: poll do buffer falhou', {
+            error: redactConnection(String(e), connection),
+          });
         }
 
         if (done) break;
@@ -953,7 +966,9 @@ export async function executeRunOracle(
         }
       } catch (e) {
         // DBMS_OUTPUT pode não estar habilitado
-        logger.debug('executeRunOracle: DBMS_OUTPUT indisponível', { error: String(e) });
+        logger.debug('executeRunOracle: DBMS_OUTPUT indisponível', {
+          error: redactConnection(String(e), connection),
+        });
       }
     }
 
@@ -1019,10 +1034,11 @@ export async function executeRunOracle(
         await writeCoverageHtmlReport(htmlText, htmlReportTarget);
         onCoverageHtmlReport?.(htmlReportTarget);
       } catch (e) {
+        const redacted = redactConnection(String(e), connection);
         logger.warn('executeRunOracle: falha ao gravar o HTML de cobertura', {
-          error: String(e),
+          error: redacted,
         });
-        run.appendOutput(`\r\n${t(getExtensionLocale(), 'common.error')}: ${String(e)}\r\n`);
+        run.appendOutput(`\r\n${t(getExtensionLocale(), 'common.error')}: ${redacted}\r\n`);
       }
     }
 

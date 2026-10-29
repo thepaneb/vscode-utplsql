@@ -25,7 +25,7 @@
 const fs = require('fs');
 const path = require('path');
 const https = require('https');
-const { execSync } = require('child_process');
+const { execFileSync } = require('child_process');
 
 const ROOT = path.resolve(__dirname, '..');
 
@@ -63,7 +63,9 @@ function readEnvToken() {
 function getRepo() {
   if (process.env.GITHUB_REPOSITORY) return process.env.GITHUB_REPOSITORY;
   try {
-    const remote = execSync('git remote get-url origin', { encoding: 'utf8' }).trim();
+    const remote = execFileSync('git', ['remote', 'get-url', 'origin'], {
+      encoding: 'utf8',
+    }).trim();
     const m = remote.match(/github\.com[:/](.+?)(?:\.git)?$/);
     if (m) return m[1];
   } catch {
@@ -73,12 +75,19 @@ function getRepo() {
   process.exit(1);
 }
 
+/** Escapa metacaracteres de RegExp (o `version` vem do CHANGELOG/tag). */
+function escapeRegExp(value) {
+  return String(value).replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+}
+
 /** Corpo das notas: título + seção `## <version>` do CHANGELOG. */
-function changelogNotes(version) {
-  const p = path.join(ROOT, 'CHANGELOG.md');
+function changelogNotes(version, root = ROOT) {
+  const p = path.join(root, 'CHANGELOG.md');
   if (!fs.existsSync(p)) return '';
   const lines = fs.readFileSync(p, 'utf8').split(/\r?\n/);
-  const start = lines.findIndex((l) => new RegExp(`^##\\s+${version.replace(/\./g, '\\.')}\\b`).test(l));
+  const start = lines.findIndex((l) =>
+    new RegExp(`^##\\s+${escapeRegExp(version)}\\b`).test(l),
+  );
   if (start < 0) return '';
   let end = lines.length;
   for (let i = start + 1; i < lines.length; i++) {
@@ -189,7 +198,11 @@ async function main() {
   );
 }
 
-main().catch((err) => {
-  console.error(err.message);
-  process.exit(1);
-});
+if (require.main === module) {
+  main().catch((err) => {
+    console.error(err.message);
+    process.exit(1);
+  });
+}
+
+module.exports = { escapeRegExp, changelogNotes, parseArgs };
