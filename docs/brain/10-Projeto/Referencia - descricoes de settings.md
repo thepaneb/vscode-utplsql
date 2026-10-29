@@ -152,7 +152,7 @@ continuam vindo do `package.json`/`package.nls.json`.
   },
   "utplsql.oracleClientLibDir": {
     "default": "\"\"",
-    "description": "Oracle Instant Client directory. Required when `utplsql.oracleClientMode` is `thick` (e.g. `C:\\oracle\\instantclient_23_5`)."
+    "description": "Oracle Instant Client directory. Required when `utplsql.oracleClientMode` is `thick` (e.g. `C:\\\\oracle\\\\instantclient_23_5`). Falls back to the `ORACLE_CLIENT_LIB_DIR` environment variable when empty."
   },
   "utplsql.oracleClientConfigDir": {
     "default": "\"\"",

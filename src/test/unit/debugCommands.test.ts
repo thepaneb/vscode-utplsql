@@ -458,3 +458,37 @@ test('debugLast: tipo all cai no caminho dos falhos', async () => {
   // sem falhas registradas, o fallback avisa
   assert.deepStrictEqual(__getWarningMessages(), ['Nenhum teste falhou na última execução.']);
 });
+
+test('debugTest: arquivo sem nome de package avisa', async () => {
+  await register();
+  __setActiveTextEditor(editor('/tmp/.pks'));
+  await commands.__getRegisteredCommand('utplsql.debugTest')?.();
+  assert.deepStrictEqual(__getWarningMessages(), ['Abra um arquivo .pks/.pkb para debugar.']);
+  assert.deepStrictEqual(startArgs, []);
+});
+
+test('debugAtCursor: erro ao iniciar vira mensagem de erro', async () => {
+  await register();
+  const ed = editor('/tmp/ut_math.pks', PKS) as { selection: { active: { line: number } } };
+  ed.selection.active.line = 2;
+  __setActiveTextEditor(ed as never);
+  startThrow = true;
+  await commands.__getRegisteredCommand('utplsql.debugAtCursor')?.();
+  assert.deepStrictEqual(__getErrorMessages(), ['debug boom']);
+});
+
+test('debugFailed: item sem meta é ignorado', async () => {
+  await register();
+  fakeState.lastFailedItems = [{ id: 'test:sem-meta' }];
+  await commands.__getRegisteredCommand('utplsql.debugFailed')?.();
+  assert.deepStrictEqual(__getWarningMessages(), ['Nenhum teste falhou na última execução.']);
+  assert.deepStrictEqual(startArgs, []);
+});
+
+test('debugLast: erro ao iniciar vira mensagem de erro', async () => {
+  await register();
+  fakeState.lastRun = { type: 'test', packageName: 'ut_math', procName: 't_sum', coverage: false };
+  startThrow = true;
+  await commands.__getRegisteredCommand('utplsql.debugLast')?.();
+  assert.deepStrictEqual(__getErrorMessages(), ['debug boom']);
+});

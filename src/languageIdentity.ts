@@ -76,7 +76,7 @@ export function buildLanguageGlobs(
   }
 
   for (const [key, id] of Object.entries(associations ?? {})) {
-    if (!id || !wanted.has(id.toLowerCase())) continue;
+    if (!id || !wanted.has(id.trim().toLowerCase())) continue;
     const glob = associationToGlob(key);
     if (glob) globs.add(glob);
   }
@@ -120,7 +120,7 @@ export function matchesLanguageIdentity(
   }
 
   for (const [key, id] of Object.entries(associations ?? {})) {
-    if (!id || !wanted.has(id.toLowerCase())) continue;
+    if (!id || !wanted.has(id.trim().toLowerCase())) continue;
     const glob = associationToGlob(key);
     if (!glob) continue;
     const re = globToRegExp(glob);

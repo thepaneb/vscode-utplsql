@@ -153,3 +153,113 @@ test('workspaceAssociations: lê files.associations', () => {
     __resetConfigValues();
   }
 });
+
+test('associationToGlob: normaliza barras invertidas e preserva diretórios', () => {
+  assert.strictEqual(associationToGlob('db\\**\\*.sql'), 'db/**/*.sql');
+  assert.strictEqual(associationToGlob('  *.foo  '), '**/*.foo');
+});
+
+test('buildLanguageGlobs: ignora contribuições e associações incompletas', () => {
+  const globs = buildLanguageGlobs(
+    [' plsql ', '', 'SQL'],
+    [
+      { id: 'plsql', extensions: ['', '  ', '.tps'] },
+      { id: 'plsql', filenames: ['', '  ', 'build.pks'] },
+      { id: '', extensions: ['.ignored'] },
+      { extensions: ['.sem-id'] },
+    ],
+    {
+      '  ': 'plsql',
+      '*.foo': '',
+      '*.bar': 'desconhecida',
+      '*.baz': ' PLSQL ',
+    },
+  );
+  assert.ok(globs.includes('**/*.tps'));
+  assert.ok(globs.includes('**/build.pks'));
+  assert.ok(globs.includes('**/*.baz'));
+  assert.ok(!globs.includes('**/*.ignored'));
+  assert.ok(!globs.includes('**/*.sem-id'));
+  assert.ok(!globs.includes('**/*.foo'));
+  assert.ok(!globs.includes('**/*.bar'));
+});
+
+test('matchesLanguageIdentity: ids vazios e contribuições sem extensão', () => {
+  assert.strictEqual(matchesLanguageIdentity('/x/a.sql', 'sql', [], CONTRIB, {}), false);
+  assert.strictEqual(matchesLanguageIdentity('/x/a.sql', undefined, [''], CONTRIB, {}), false);
+  assert.strictEqual(
+    matchesLanguageIdentity('/x/a.sql', undefined, ['plsql'], [{ id: 'plsql' }], {}),
+    false,
+    'contribuição sem extensions/filenames não casa',
+  );
+});
+
+test('matchesLanguageIdentity: extensão e filename da contribuição (case-insensitive)', () => {
+  const contrib: LanguageContribution[] = [
+    { id: 'plsql', extensions: ['.TPS'], filenames: ['Build.PKS'] },
+  ];
+  assert.strictEqual(matchesLanguageIdentity('/x/a.tps', undefined, ['plsql'], contrib, {}), true);
+  assert.strictEqual(
+    matchesLanguageIdentity('/x/BUILD.PKS', undefined, ['plsql'], contrib, {}),
+    true,
+  );
+  assert.strictEqual(
+    matchesLanguageIdentity('/x/outro.pks', undefined, ['plsql'], contrib, {}),
+    true,
+    '.pks canônico continua aceito',
+  );
+});
+
+test('matchesLanguageIdentity: associação com glob de diretório e baseName', () => {
+  assert.strictEqual(
+    matchesLanguageIdentity('db/a.foo', undefined, ['sql'], CONTRIB, {
+      'db/**/*.foo': 'sql',
+    }),
+    true,
+  );
+  assert.strictEqual(
+    matchesLanguageIdentity('/repo/db/a.foo', undefined, ['sql'], CONTRIB, {
+      '': 'sql',
+    }),
+    false,
+  );
+  assert.strictEqual(
+    matchesLanguageIdentity('/repo/a.foo', undefined, ['sql'], CONTRIB, {
+      '*.foo': '  ',
+    }),
+    false,
+  );
+});
+
+test('buildWatcherGlob: inclui filenames contribuídos além das extensões', () => {
+  const glob = buildWatcherGlob(
+    ['plsql'],
+    [{ id: 'plsql', extensions: ['.tps'], filenames: ['build.pks'] }],
+    {},
+  );
+  assert.match(glob, /build\.pks/);
+  assert.match(glob, /tps/);
+});
+
+test('currentLanguageContributions: ignora extensões sem contributes/languages', () => {
+  __setExtensions([
+    {},
+    { packageJSON: {} },
+    { packageJSON: { contributes: { languages: 'x' } } },
+    { packageJSON: { contributes: { languages: [null, 'x', { id: 'plsql' }] } } },
+  ]);
+  try {
+    assert.deepStrictEqual(currentLanguageContributions(), [{ id: 'plsql' }]);
+  } finally {
+    __resetExtensions();
+  }
+});
+
+test('workspaceAssociations: valor não-objeto cai em vazio', () => {
+  __setConfigValue('associations', 'invalido');
+  try {
+    assert.deepStrictEqual(workspaceAssociations(), {});
+  } finally {
+    __resetConfigValues();
+  }
+});

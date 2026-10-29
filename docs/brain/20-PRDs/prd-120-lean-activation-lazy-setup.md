@@ -209,5 +209,5 @@ que a ativação tampouco conecta. Enquanto `proposed`, `regras: []`.
 - 🗺️ [[MOC - PRDs]]
 - 🔗 PRDs relacionados: [[prd-94-vscode-floor-1-101|PRD-94]] · [[prd-101-connection-pool-lifecycle|PRD-101]] · [[prd-102-trace-and-perf-instrumentation|PRD-102]] · [[prd-106-perf-harness|PRD-106]] · [[prd-107-unprivileged-fixture|PRD-107]] · [[prd-109-language-identity|PRD-109]]
 - 🔗 Mesma versão (0.20.0): [[prd-101-connection-pool-lifecycle|PRD-101]] · [[prd-102-trace-and-perf-instrumentation|PRD-102]] · [[prd-103-incremental-source-reindex|PRD-103]] · [[prd-106-perf-harness|PRD-106]] · [[prd-107-unprivileged-fixture|PRD-107]]
-- 🚀 ⬅️ release anterior: [[prd-124-oracledb-26-upgrade|PRD-124 (0.19.0)]] · ➡️ próxima release: [[prd-88-locale-aware-formatting|PRD-88 (0.21.0)]]
+- 🚀 ⬅️ release anterior: [[prd-125-thick-full-matrix-ci|PRD-125 (0.19.0)]] · ➡️ próxima release: [[prd-88-locale-aware-formatting|PRD-88 (0.21.0)]]
 <!-- brain:auto:end -->

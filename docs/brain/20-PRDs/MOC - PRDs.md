@@ -41,7 +41,7 @@ npm run sync-prds
 ## Status (gerado)
 
 <!-- brain:auto:start:prd-summary -->
-- 📝 Propostos: **26**
+- 📝 Propostos: **28**
 - 🔵 Aprovados: **0**
 - 🟡 Em desenvolvimento: **0**
 - 🟢 Concluídos: **98**
@@ -97,6 +97,8 @@ Detalhe completo (fonte da verdade): [docs/prd/index.md](../../prd/index.md)
 - [[prd-122-marketplace-trust-metadata]] — `PRD-122`
 - [[prd-123-oracle-11g-support]] — `PRD-123`
 - [[prd-124-oracledb-26-upgrade]] — `PRD-124`
+- [[prd-125-thick-full-matrix-ci]] — `PRD-125`
+- [[prd-126-branch-coverage-cli-tests]] — `PRD-126`
 - [[prd-13-oracle-infra]] — `PRD-13`
 - [[prd-14-test-schema-packages]] — `PRD-14`
 - [[prd-15-integration-tests-real-db]] — `PRD-15`

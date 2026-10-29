@@ -289,3 +289,29 @@ test('readConfig: perfil ativo sobrescreve settings globais', () => {
     __resetConfigValues();
   }
 });
+
+test('readConfig: ORACLE_CLIENT_LIB_DIR é fallback quando o setting está vazio', () => {
+  const previous = process.env.ORACLE_CLIENT_LIB_DIR;
+  process.env.ORACLE_CLIENT_LIB_DIR = 'D:\\oracle\\instantclient_23_0';
+  __resetConfigValues();
+  try {
+    assert.strictEqual(readConfig().oracleClientLibDir, 'D:\\oracle\\instantclient_23_0');
+  } finally {
+    if (previous === undefined) delete process.env.ORACLE_CLIENT_LIB_DIR;
+    else process.env.ORACLE_CLIENT_LIB_DIR = previous;
+    __resetConfigValues();
+  }
+});
+
+test('readConfig: setting oracleClientLibDir tem precedência sobre o env', () => {
+  const previous = process.env.ORACLE_CLIENT_LIB_DIR;
+  process.env.ORACLE_CLIENT_LIB_DIR = '/env/client';
+  __setConfigValue('oracleClientLibDir', '/setting/client');
+  try {
+    assert.strictEqual(readConfig().oracleClientLibDir, '/setting/client');
+  } finally {
+    __resetConfigValues();
+    if (previous === undefined) delete process.env.ORACLE_CLIENT_LIB_DIR;
+    else process.env.ORACLE_CLIENT_LIB_DIR = previous;
+  }
+});

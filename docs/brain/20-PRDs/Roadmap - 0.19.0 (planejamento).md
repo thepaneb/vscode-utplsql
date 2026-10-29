@@ -19,22 +19,25 @@ Plano da **0.19.0 — “Refatoração de fundo”**. O status e a versão alvo 
 |---|---|---|---|---|
 | 1 | PRD-111 | Decompor `executeRunOracle` e agrupar `OracleRunOptions` | 2–3 dias | Média-Alta |
 | 2 | PRD-124 | Upgrade para node-oracledb 26 com matriz e packaging validados | 2–3 dias | Média-Alta |
-| 3 | PRD-115 | Fatiar `i18nLocales.ts` por locale | 1–2 dias | Média |
+| 3 | PRD-125 | Suíte completa em thick e matriz de bancos no CI | 2–3 dias | Média-Alta |
+| 4 | PRD-115 | Fatiar `i18nLocales.ts` por locale | 1–2 dias | Média |
 
 **PRDs:** [[prd-111-decompose-oracle-runner|PRD-111]] ·
 [[prd-124-oracledb-26-upgrade|PRD-124]] ·
+[[prd-125-thick-full-matrix-ci|PRD-125]] ·
 [[prd-115-split-i18n-locales|PRD-115]]
 
 **Tema:** refatorações que **reduzem o retrabalho** das features seguintes. A
 PRD-111 decompõe `executeRunOracle` **antes** da instrumentação da PRD-102
 (observabilidade), a PRD-124 sobe o driver Oracle com matriz/packaging validados
-(issue #242) e a PRD-115 fatia os catálogos i18n **antes** das features de
-localização (0.21/0.22).
+(issue #242), a PRD-125 valida a suíte completa em thick (incluindo o 11g) e a
+PRD-115 fatia os catálogos i18n **antes** das features de localização
+(0.21/0.22).
 
 **Reorganização (2026-10-29):** a PRD-124 entrou após a PRD-111 (o runner já
 decomposto reduz o conflito no upgrade do driver) e antes da PRD-102 (0.20.0).
 
-**Total estimado:** ≈ 5–8 dias.
+**Total estimado:** ≈ 7–11 dias.
 
 ## Fluxo de execução (por PRD)
 

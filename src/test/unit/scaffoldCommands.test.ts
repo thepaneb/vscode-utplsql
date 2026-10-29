@@ -3,6 +3,7 @@ import assert from 'node:assert';
 import { test } from 'node:test';
 import { registerScaffoldCommands } from '../../commands/scaffold.js';
 import {
+  __getErrorMessages,
   __getInformationMessages,
   __getWarningMessages,
   __getWrittenFile,
@@ -15,6 +16,7 @@ import {
   __setInputBoxResult,
   __setMockFile,
   __setWarningResult,
+  __setWriteError,
   commands,
   languages,
   workspace,
@@ -185,4 +187,46 @@ test('Code Action: oferecida em produção, omitida em specs ut_* e em %suite', 
     }),
     [],
   );
+});
+
+test('generateTestSuite: extensão fora do seletor cai no banco e avisa sem input', async () => {
+  await register();
+  __setActiveTextEditor(editor(`${PROJ}/app_pkg.txt`, SPEC));
+  __setInputBoxResult(undefined);
+
+  await run();
+
+  assert.strictEqual(__getWrittenFile(`${PROJ}/ut_app_pkg.pks`), undefined);
+  assert.strictEqual(__getWarningMessages().length, 1);
+});
+
+test('generateTestSuite: caminho relativo sem pasta não é usado como fonte', async () => {
+  await register();
+  __setActiveTextEditor(editor('app_pkg.pks', SPEC));
+  __setInputBoxResult(undefined);
+
+  await run();
+
+  assert.strictEqual(__getWrittenFile('/ut_app_pkg.pks'), undefined);
+  assert.strictEqual(__getWarningMessages().length, 1);
+});
+
+test('generateTestSuite: extensão em maiúsculas é aceita', async () => {
+  await register();
+  __setActiveTextEditor(editor(`${PROJ}/app_pkg.PKS`, SPEC));
+
+  await run();
+
+  assert.ok((__getWrittenFile(`${PROJ}/ut_app_pkg.pks`) ?? '').includes('%suite(app_pkg)'));
+});
+
+test('generateTestSuite: erro de escrita vira mensagem e não abre o documento', async () => {
+  await register();
+  __setActiveTextEditor(editor(`${PROJ}/app_pkg.pkb`, SPEC));
+  __setWriteError(`${PROJ}/ut_app_pkg.pks`, true);
+
+  await run();
+
+  assert.match(__getErrorMessages()[0] ?? '', /Falha ao gerar a suíte: Error: mock: write error/);
+  assert.deepStrictEqual(__getInformationMessages(), []);
 });

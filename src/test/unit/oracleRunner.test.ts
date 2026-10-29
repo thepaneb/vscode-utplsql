@@ -1726,6 +1726,87 @@ test('executeRunOracle: setting off não inclui o reporter HTML', async () => {
   assert.ok(!/ut_coverage_html_reporter/.test(captured.runSql ?? ''));
 });
 
+test('executeRunOracle: reporter HTML ausente desliga o HTML e avisa', async () => {
+  const { mod } = makeOracleRunFake({
+    buffer: [JUNIT_XML],
+    reporters: ['UT_DOCUMENTATION_REPORTER', 'UT_COVERAGE_COBERTURA_REPORTER'],
+  });
+  const run = makeRun();
+  const { item, metaMap } = makeLeaf();
+  let called = false;
+  try {
+    await executeRunOracle(
+      {
+        connection: 'u/p@//h:1521/s',
+        pathArgs: ['pkg'],
+        coverage: true,
+        coverageHtmlReport: true,
+        onCoverageHtmlReport: () => {
+          called = true;
+        },
+        sourcePath: 'install',
+        run,
+        leafTests: [item],
+        state: makeState(metaMap),
+      },
+      neverCancel as never,
+      async () => mod as never,
+    );
+  } finally {
+    await closeOraclePool();
+  }
+  assert.strictEqual(called, false);
+  assert.match(run.output.join('\n'), /ut_coverage_html_reporter não encontrado/);
+});
+
+test('executeRunOracle: falha ao preparar/gravar o HTML não derruba o run', async () => {
+  const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'utplsql-run-html-fail-'));
+  const blocker = path.join(dir, 'blocker');
+  fs.writeFileSync(blocker, 'not a directory');
+  const { mod } = makeOracleRunFake({
+    buffer: [
+      { id: 'junit', text: JUNIT_XML },
+      { id: 'html', text: '<!DOCTYPE html><html>coverage</html>' },
+      { id: 'cobertura', text: COV_XML },
+    ],
+    reporters: [
+      'UT_DOCUMENTATION_REPORTER',
+      'UT_JUNIT_REPORTER',
+      'UT_COVERAGE_HTML_REPORTER',
+      'UT_COVERAGE_COBERTURA_REPORTER',
+    ],
+  });
+  const run = makeRun();
+  const { item, metaMap } = makeLeaf();
+  let called = false;
+  try {
+    await executeRunOracle(
+      {
+        connection: 'u/p@//h:1521/s',
+        pathArgs: ['pkg'],
+        coverage: true,
+        coverageHtmlReport: true,
+        reportRoot: blocker,
+        onCoverageHtmlReport: () => {
+          called = true;
+        },
+        sourcePath: 'install',
+        run,
+        leafTests: [item],
+        state: makeState(metaMap),
+      },
+      neverCancel as never,
+      async () => mod as never,
+    );
+  } finally {
+    await closeOraclePool();
+    fs.rmSync(dir, { recursive: true, force: true });
+  }
+  assert.strictEqual(called, false);
+  assert.strictEqual(run.passedList.length, 1, 'JUnit continua sendo aplicado');
+  assert.match(run.output.join('\n'), /Falha|Error|error/i);
+});
+
 test('executeRunOracle: additionalReporters com HTML não duplica o reporter', async () => {
   const { mod, captured } = makeOracleRunFake({
     buffer: [JUNIT_XML],
