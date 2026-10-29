@@ -948,7 +948,9 @@ function jsonFromNote(rel) {
 }
 
 function escapeCell(value) {
+  // Backslash primeiro: sem isso `\|` vira `\\|` (incomplete sanitization).
   return String(value ?? '')
+    .replace(/\\/g, '\\\\')
     .replace(/\|/g, '\\|')
     .replace(/\r?\n/g, ' ')
     .trim();
@@ -963,10 +965,10 @@ function displayDefault(value) {
 
 function firstSentence(text) {
   const first = String(text ?? '')
-    .replace(/\|/g, '\\|')
     .replace(/\r?\n/g, ' ')
     .trim();
   const cut = first.search(/\.\s/);
+  // `escapeCell` é o único ponto que escapa `\`/`|` da célula.
   return cut >= 0 ? first.slice(0, cut + 1) : first;
 }
 

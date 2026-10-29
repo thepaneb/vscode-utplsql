@@ -118,7 +118,7 @@ test('docs-tables: sem sidecar usa descrição/default do package e título cru'
 test('docs-tables: helpers de célula/default/frase', () => {
   assert.strictEqual(brain.displayDefault({ a: 1 }), '{"a":1}');
   assert.strictEqual(brain.displayDefault(true), 'true');
-  assert.strictEqual(brain.firstSentence('A|B. C'), 'A\\|B.');
+  assert.strictEqual(brain.firstSentence('A|B. C'), 'A|B.');
   assert.strictEqual(brain.escapeCell('a|b\nc'), 'a\\|b c');
   assert.strictEqual(brain.displayDefault(''), '""');
   assert.strictEqual(brain.displayDefault(['a']), '["a"]');

@@ -65,11 +65,13 @@ function completedPrds(root, version) {
   return out.sort((a, b) => a.id.localeCompare(b.id));
 }
 
+function escapeRegExp(value) {
+  return String(value).replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+}
+
 function changelogSection(root, version) {
   const lines = read(path.join(root, 'CHANGELOG.md')).split(/\r?\n/);
-  const start = lines.findIndex((l) =>
-    new RegExp(`^##\\s+${version.replace(/\./g, '\\.')}\\b`).test(l),
-  );
+  const start = lines.findIndex((l) => new RegExp(`^##\\s+${escapeRegExp(version)}\\b`).test(l));
   if (start < 0) return '';
   let end = lines.length;
   for (let i = start + 1; i < lines.length; i++) {
