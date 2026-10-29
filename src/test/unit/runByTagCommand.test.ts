@@ -61,7 +61,7 @@ interface SuiteOpts {
 function suite(state: TestStateManager, pkg: string, opts: SuiteOpts = {}) {
   const id = `suite:${pkg.toLowerCase()}`;
   const item = new TestItem(id);
-  (item as { children: unknown[] }).children = [];
+  item.children.replace([]);
   state.setMeta(
     item as never,
     {

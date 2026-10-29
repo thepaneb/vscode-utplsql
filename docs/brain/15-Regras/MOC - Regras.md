@@ -134,6 +134,7 @@ SORT id ASC
 - [[BR-SITE-001 - Landing page gerada de site e publicada no GitHub Pages, sem noindex]] — `BR-SITE-001`
 - [[BR-TEST-001 - Matriz de bancos Oracle cobre 12.2-23ai em thin e thick]] — `BR-TEST-001`
 - [[BR-TEST-002 - Testes de integração exigem banco e são skip sem UTPLSQL_CONN]] — `BR-TEST-002`
+- [[BR-TEST-003 - Stub de vscode é tipado e coberto pelo inventário de APIs]] — `BR-TEST-003`
 - [[BR-UI-001 - Context key utplsql-activated é setado na ativação]] — `BR-UI-001`
 - [[BR-UI-002 - utplsql-running liga no início e desliga em todos os caminhos de saída]] — `BR-UI-002`
 - [[BR-UI-003 - utplsql-connected reflete a resolução de conexão sem prompt]] — `BR-UI-003`

@@ -20,6 +20,15 @@ committed `codeql.yml`.
 `.opencode`, `.kilo`) are excluded. Run `npm run lint:fix` before opening a PR —
 CI runs the same check.
 
+## Typed VS Code stub
+
+Unit tests use `src/test/vscode-stub.ts`, typed against `@types/vscode`:
+`vscode-stub.types.ts` validates the contract in `tsc`, `vscodeApiInventory`
+fails when a runtime API used by `src/**` is missing from the stub, and
+`anyBudget.test.ts` prevents `any` regressions. Prefer the typed helpers in
+`src/test/fixtures.ts` (`makeTestItem`, `makeTestRun`, `makeUri`, …) over
+`as any` when building fixtures.
+
 Guide for setting up the development environment and submitting contributions.
 
 ## Prerequisites
