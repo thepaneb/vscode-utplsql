@@ -206,6 +206,7 @@ notas `prd-*`. O índice navegável do vault é a [[MOC - PRDs]].
 | 120 | [Ativação enxuta e validação de setup preguiçosa](proposed/prd-120-lean-activation-lazy-setup.md) | 0.20.0 | 2026-10-13 |
 | 121 | [Pacote auditável: source map do bundle no VSIX](proposed/prd-121-auditable-package-sourcemap.md) | 0.23.0 | 2026-10-13 |
 | 122 | [Confiança na distribuição: publisher verificado e política de privacidade](proposed/prd-122-marketplace-trust-metadata.md) | 0.23.0 | 2026-10-13 |
+| 124 | [Upgrade para node-oracledb 26 com matriz e packaging validados](proposed/prd-124-oracledb-26-upgrade.md) | 0.19.0 | 2026-10-29 |
 <!-- prd:roadmap:end -->
 
 ---
@@ -342,6 +343,7 @@ docs/prd/
 │   ├── prd-120-lean-activation-lazy-setup.md
 │   ├── prd-121-auditable-package-sourcemap.md
 │   ├── prd-122-marketplace-trust-metadata.md
+│   ├── prd-124-oracledb-26-upgrade.md
 ```
 <!-- prd:estrutura:end -->
 
