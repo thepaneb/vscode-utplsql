@@ -21,10 +21,10 @@
  * não precisa ser exportado para o node.exe). NUNCA imprime o token.
  */
 
-const fs = require('fs');
-const path = require('path');
-const https = require('https');
-const { execFileSync } = require('child_process');
+const fs = require('node:fs');
+const path = require('node:path');
+const https = require('node:https');
+const { execFileSync } = require('node:child_process');
 
 // ---------------------------------------------------------------------------
 // Helpers
@@ -74,11 +74,7 @@ function readEnvToken() {
     .split('\n')
     .find((l) => l.startsWith('GITHUB_TOKEN='));
   if (!line) return null;
-  return line
-    .slice('GITHUB_TOKEN='.length)
-    .trim()
-    .replace(/\r$/, '')
-    .replace(/^"|"$/g, '');
+  return line.slice('GITHUB_TOKEN='.length).trim().replace(/\r$/, '').replace(/^"|"$/g, '');
 }
 
 function getRepo() {
@@ -217,7 +213,7 @@ async function main() {
       null,
       dryRun,
     );
-    if (existing && existing.length) number = existing[0].number;
+    if (existing?.length) number = existing[0].number;
   }
 
   if (number) {

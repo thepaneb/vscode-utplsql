@@ -66,6 +66,7 @@ SORT id ASC
 - [[TST - jumpToFailureE2E.test.ts]] — `TST-jumpToFailureE2E.test.ts`
 - [[TST - junit.test.ts]] — `TST-junit.test.ts`
 - [[TST - languageIdentity.test.ts]] — `TST-languageIdentity.test.ts`
+- [[TST - lintScope.test.ts]] — `TST-lintScope.test.ts`
 - [[TST - logger.test.ts]] — `TST-logger.test.ts`
 - [[TST - manifestDebugger.test.ts]] — `TST-manifestDebugger.test.ts`
 - [[TST - matching.test.ts]] — `TST-matching.test.ts`

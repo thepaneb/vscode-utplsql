@@ -174,7 +174,6 @@ notas `prd-*`. O índice navegável do vault é a [[MOC - PRDs]].
 | # | PRD | Versão | Data |
 |---|---|---|---|
 | 98 | [Anti-drift de documentação: tabelas geradas e vínculo PRD→docs](approved/prd-98-docs-anti-drift.md) | 0.18.0 | 2026-10-08 |
-| 113 | [Ampliar o escopo do lint (Biome) para além de `src/`](approved/prd-113-lint-scope.md) | 0.18.0 | 2026-10-10 |
 | 114 | [Modernizar o stub de `vscode` e reduzir `any` nos testes](approved/prd-114-vscode-stub-modernization.md) | 0.18.0 | 2026-10-10 |
 | 118 | [Assinatura de commits e verificação de origem no main](approved/prd-118-commit-signing.md) | 0.18.0 | 2026-10-13 |
 | 119 | [Postura de segurança verificável: OSSF Scorecard e proteção de main](approved/prd-119-security-posture-scorecard.md) | 0.18.0 | 2026-10-13 |
@@ -186,6 +185,7 @@ notas `prd-*`. O índice navegável do vault é a [[MOC - PRDs]].
 |---|---|---|---|
 | 104 | [Cadeia de suprimentos do CI: Dependabot, pin de actions e auditoria de dependências](in-progress/prd-104-ci-supply-chain.md) | 0.18.0 | 2026-10-09 |
 | 110 | [Hardening defensivo: identificador SQL, redaction de logs e scripts de desenvolvimento](in-progress/prd-110-defensive-hardening.md) | 0.18.0 | 2026-10-09 |
+| 113 | [Ampliar o escopo do lint (Biome) para além de `src/`](in-progress/prd-113-lint-scope.md) | 0.18.0 | 2026-10-10 |
 
 ### ⚪ Propostos
 
@@ -320,7 +320,6 @@ docs/prd/
 │   ├── prd-109-language-identity.md
 ├── approved/        ← aprovados, aguardando implementação
 │   ├── prd-98-docs-anti-drift.md
-│   ├── prd-113-lint-scope.md
 │   ├── prd-114-vscode-stub-modernization.md
 │   ├── prd-118-commit-signing.md
 │   ├── prd-119-security-posture-scorecard.md
@@ -328,6 +327,7 @@ docs/prd/
 ├── in-progress/        ← sendo implementados agora
 │   ├── prd-104-ci-supply-chain.md
 │   ├── prd-110-defensive-hardening.md
+│   ├── prd-113-lint-scope.md
 ├── proposed/        ← em avaliação
 │   ├── prd-47-node-26-toolchain.md
 │   ├── prd-60-branch-coverage-investigation.md

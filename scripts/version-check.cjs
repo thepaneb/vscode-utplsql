@@ -11,8 +11,8 @@
  */
 'use strict';
 
-const fs = require('fs');
-const path = require('path');
+const fs = require('node:fs');
+const path = require('node:path');
 
 const REPO = path.resolve(__dirname, '..');
 const SEMVER_RE = /^\d+\.\d+\.\d+(?:-[0-9A-Za-z.-]+)?$/;
@@ -74,13 +74,9 @@ if (pkg && version) {
   }
   const firstHeading = headings[0];
   if (firstHeading !== version) {
-    errors.push(
-      `CHANGELOG.md: seção do topo é "${firstHeading ?? '?'}", esperado "${version}"`,
-    );
+    errors.push(`CHANGELOG.md: seção do topo é "${firstHeading ?? '?'}", esperado "${version}"`);
   } else {
-    const section = changelog
-      .split(/^## /m)
-      .find((part) => part.startsWith(`${version}\n`));
+    const section = changelog.split(/^## /m).find((part) => part.startsWith(`${version}\n`));
     if (!section || !/^-\s+\S/m.test(section)) {
       errors.push(`CHANGELOG.md: seção ${version} ausente ou sem itens`);
     }
@@ -100,9 +96,7 @@ for (const dir of CURRENT_DOC_DIRS) {
   for (const file of walkMarkdown(dir)) {
     const text = fs.readFileSync(file, 'utf8');
     if (VERSIONED_VSIX_RE.test(text)) {
-      errors.push(
-        `${path.relative(REPO, file)}: .vsix com versão fixa; use wildcard/placeholder`,
-      );
+      errors.push(`${path.relative(REPO, file)}: .vsix com versão fixa; use wildcard/placeholder`);
     }
   }
 }

@@ -1,11 +1,13 @@
-const fs = require('fs');
-const path = require('path');
-const { spawnSync } = require('child_process');
+const fs = require('node:fs');
+const path = require('node:path');
+const { spawnSync } = require('node:child_process');
 
 const unitTestDir = path.join(__dirname, '..', 'out', 'test', 'unit');
 
 if (!fs.existsSync(unitTestDir)) {
-  console.error(`Diretório de testes não encontrado: ${unitTestDir}. Execute 'npm run compile' primeiro.`);
+  console.error(
+    `Diretório de testes não encontrado: ${unitTestDir}. Execute 'npm run compile' primeiro.`,
+  );
   process.exit(1);
 }
 

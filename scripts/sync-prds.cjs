@@ -11,10 +11,10 @@
  *   GITHUB_REPOSITORY Opcional. Deduzido do git remote se omitido.
  */
 
-const fs = require('fs');
-const path = require('path');
-const https = require('https');
-const { execSync } = require('child_process');
+const fs = require('node:fs');
+const path = require('node:path');
+const https = require('node:https');
+const { execSync } = require('node:child_process');
 
 // ---------------------------------------------------------------------------
 // Config
@@ -42,7 +42,9 @@ function getRepo() {
     const remotes = execSync('git remote get-url origin', { encoding: 'utf8' }).trim();
     const m = remotes.match(/github\.com[:/](.+?)\.git$/);
     if (m) return m[1];
-  } catch { /* fallback */ }
+  } catch {
+    /* fallback */
+  }
   console.error('GITHUB_REPOSITORY não definido e não foi possível deduzir do git remote.');
   process.exit(1);
 }
@@ -76,15 +78,15 @@ function github(path, method = 'GET', body) {
       path: `/repos/${getRepo()}${path}`,
       method,
       headers: {
-        'Authorization': `Bearer ${token}`,
+        Authorization: `Bearer ${token}`,
         'User-Agent': 'sync-prds-script',
-        'Accept': 'application/vnd.github.v3+json',
+        Accept: 'application/vnd.github.v3+json',
         'Content-Type': 'application/json',
       },
     };
     const req = https.request(opts, (res) => {
       let data = '';
-      res.on('data', (c) => data += c);
+      res.on('data', (c) => (data += c));
       res.on('end', () => {
         if (res.statusCode >= 400) {
           console.error(`GitHub API error ${res.statusCode}: ${data}`);
@@ -103,9 +105,14 @@ function github(path, method = 'GET', body) {
 function ensureLabels() {
   return Promise.all(
     Object.values(STATUS_LABEL).map((name) =>
-      github('/labels', 'POST', { name, color: 'bfd4f2', description: 'Product Requirement Document' })
-        .catch(() => {/* label already exists */})
-    )
+      github('/labels', 'POST', {
+        name,
+        color: 'bfd4f2',
+        description: 'Product Requirement Document',
+      }).catch(() => {
+        /* label already exists */
+      }),
+    ),
   );
 }
 
@@ -142,11 +149,15 @@ function scanPRDs() {
 // Mapping (cache local)
 // ---------------------------------------------------------------------------
 function loadMapping() {
-  try { return JSON.parse(fs.readFileSync(MAPPING_FILE, 'utf8')); } catch { return {}; }
+  try {
+    return JSON.parse(fs.readFileSync(MAPPING_FILE, 'utf8'));
+  } catch {
+    return {};
+  }
 }
 
 function saveMapping(map) {
-  fs.writeFileSync(MAPPING_FILE, JSON.stringify(map, null, 2) + '\n');
+  fs.writeFileSync(MAPPING_FILE, `${JSON.stringify(map, null, 2)}\n`);
   console.log(`  → Mapeamento salvo em ${MAPPING_FILE}`);
 }
 
@@ -156,7 +167,10 @@ function saveMapping(map) {
 async function sync() {
   console.log('🔍 Escaneando PRDs locais...');
   const prds = scanPRDs();
-  if (!prds.length) { console.log('  Nenhum PRD encontrado.'); return; }
+  if (!prds.length) {
+    console.log('  Nenhum PRD encontrado.');
+    return;
+  }
   for (const p of prds) console.log(`  PRD-${p.number}: [${p.status}] ${p.title}`);
 
   console.log('\n🏷️  Garantindo labels...');
@@ -201,8 +215,9 @@ async function sync() {
       mapping[prd.number] = issue.number;
     } else {
       // Extrair primeira seção como body resumido (limite de caracteres)
-      const body = `_Sincronizado automaticamente de \`docs/prd/${prd.status}/${prd.file}\`_\n\n`
-        + prd.content.split('## ').slice(0, 2).join('\n## ').slice(0, 8000);
+      const body =
+        `_Sincronizado automaticamente de \`docs/prd/${prd.status}/${prd.file}\`_\n\n` +
+        prd.content.split('## ').slice(0, 2).join('\n## ').slice(0, 8000);
       console.log(`  🆕 PRD-${prd.number}: criando issue...`);
       const created = await github('/issues', 'POST', {
         title: `PRD-${prd.number}: ${prd.title}`,
@@ -217,7 +232,7 @@ async function sync() {
   // -----------------------------------------------------------------------
   // Fechar issues de PRDs concluídos
   // -----------------------------------------------------------------------
-  const completedPRDs = prds.filter(p => p.status === 'completed');
+  const completedPRDs = prds.filter((p) => p.status === 'completed');
   if (completedPRDs.length) {
     console.log('\n🔒 Verificando issues de PRDs concluídos...');
     for (const prd of completedPRDs) {
@@ -236,7 +251,9 @@ async function sync() {
           console.log(`  ✅ PRD-${prd.number}: issue #${issueNumber} já fechada`);
         }
       } catch (err) {
-        console.error(`  ⚠️  PRD-${prd.number}: erro ao buscar/fechar issue #${issueNumber}: ${err.message}`);
+        console.error(
+          `  ⚠️  PRD-${prd.number}: erro ao buscar/fechar issue #${issueNumber}: ${err.message}`,
+        );
       }
     }
   }

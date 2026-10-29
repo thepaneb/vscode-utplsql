@@ -1,6 +1,6 @@
 // Setup para testes unitários: substitui o módulo 'vscode' por um stub.
-const path = require('path');
-const Module = require('module');
+const path = require('node:path');
+const Module = require('node:module');
 const origResolve = Module._resolveFilename;
 
 const stubPath = path.resolve(__dirname, '..', 'out', 'test', 'vscode-stub.js');

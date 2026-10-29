@@ -17,8 +17,8 @@
  */
 'use strict';
 
-const fs = require('fs');
-const path = require('path');
+const fs = require('node:fs');
+const path = require('node:path');
 
 const ROOT = path.resolve(__dirname, '..');
 const VAULT = path.join(ROOT, 'docs', 'brain');
@@ -36,7 +36,10 @@ const RULES_BASELINE = '0.14.0';
 /** Schema das camadas de conhecimento (tipo do frontmatter → id + campos). */
 const LAYERS = {
   seguranca: { id: /^SEC-\d{3}$/, required: ['id', 'titulo', 'dominio', 'status', 'severidade'] },
-  erro: { id: /^ERR-\d{3}$/, required: ['id', 'titulo', 'dominio', 'codigo', 'status', 'severidade'] },
+  erro: {
+    id: /^ERR-\d{3}$/,
+    required: ['id', 'titulo', 'dominio', 'codigo', 'status', 'severidade'],
+  },
   padrao: { id: /^PAT-\d{3}$/, required: ['id', 'titulo', 'dominio', 'status'] },
   nfr: { id: /^NFR-\d{3}$/, required: ['id', 'titulo', 'dominio', 'status'] },
   entidade: { id: /^ENT-\d{3}$/, required: ['id', 'titulo', 'dominio', 'status'] },
@@ -109,7 +112,8 @@ function listAllNotes() {
         continue;
       const full = path.join(dir, entry.name);
       if (entry.isDirectory()) walk(full);
-      else if (entry.name.endsWith('.md')) out.push({ name: path.relative(VAULT, full), content: fs.readFileSync(full, 'utf8') });
+      else if (entry.name.endsWith('.md'))
+        out.push({ name: path.relative(VAULT, full), content: fs.readFileSync(full, 'utf8') });
     }
   };
   walk(VAULT);
@@ -126,7 +130,7 @@ function checkLayers(notes) {
   const seen = new Set();
   for (const note of notes) {
     const fm = parseFrontmatter(note.content);
-    if (!fm || !fm.tipo) continue;
+    if (!fm?.tipo) continue;
     const layer = LAYERS[fm.tipo];
     if (!layer) continue;
     for (const key of layer.required) {
@@ -136,7 +140,8 @@ function checkLayers(notes) {
     if (id && !layer.id.test(id)) problems.push(`${note.name}: id inválido: ${id}`);
     if (id && seen.has(id)) problems.push(`${note.name}: id duplicado: ${id}`);
     if (id) seen.add(id);
-    if (fm.status && !STATUS.has(fm.status)) problems.push(`${note.name}: status inválido: ${fm.status}`);
+    if (fm.status && !STATUS.has(fm.status))
+      problems.push(`${note.name}: status inválido: ${fm.status}`);
   }
   return problems;
 }
@@ -205,8 +210,7 @@ function checkRelacionado(fm, catalog) {
   const problems = [];
   for (const { value, label } of relTargets(fm)) {
     const v = relValue(value);
-    const ok =
-      catalog.noteBases?.has(v) || catalog.noteIds?.has(v) || catalog.adrIds?.has(v);
+    const ok = catalog.noteBases?.has(v) || catalog.noteIds?.has(v) || catalog.adrIds?.has(v);
     if (!ok) problems.push(`${label} inexistente: ${value}`);
   }
   return problems;
@@ -263,8 +267,12 @@ function checkSecRegras(notes, regraStatus) {
 
 /** `a` é semver >= `b`? (compara major/minor/patch numérico). */
 function semverGte(a, b) {
-  const pa = String(a ?? '').split('.').map((n) => Number.parseInt(n, 10) || 0);
-  const pb = String(b ?? '').split('.').map((n) => Number.parseInt(n, 10) || 0);
+  const pa = String(a ?? '')
+    .split('.')
+    .map((n) => Number.parseInt(n, 10) || 0);
+  const pb = String(b ?? '')
+    .split('.')
+    .map((n) => Number.parseInt(n, 10) || 0);
   for (let i = 0; i < 3; i++) {
     if ((pa[i] || 0) !== (pb[i] || 0)) return (pa[i] || 0) > (pb[i] || 0);
   }
@@ -289,7 +297,7 @@ function checkPrdRules(notes) {
   const rulePrds = new Map();
   for (const note of notes) {
     const fm = parseFrontmatter(note.content);
-    if (!fm || !fm.id) continue;
+    if (!fm?.id) continue;
     if (fm.tipo === 'prd') {
       const num = String(fm.id).replace(/\D/g, '');
       if (num) prds.set(String(Number(num)), { name: note.name, fm, content: note.content });
@@ -306,14 +314,17 @@ function checkPrdRules(notes) {
   for (const [num, prd] of prds) {
     if (prd.fm.status !== 'completed') continue;
     if (!semverGte(prd.fm.versao, RULES_BASELINE)) continue;
-    const declared = Array.isArray(prd.fm.regras) ? prd.fm.regras.map((r) => String(r).trim()) : null;
+    const declared = Array.isArray(prd.fm.regras)
+      ? prd.fm.regras.map((r) => String(r).trim())
+      : null;
     if (declared === null) {
       problems.push(`${prd.name}: PRD concluída (>= ${RULES_BASELINE}) sem o campo 'regras'`);
       continue;
     }
     for (const id of declared) {
       if (!ruleIds.has(id)) problems.push(`${prd.name}: regra '${id}' em regras: inexistente`);
-      else if (!rulePrds.get(id)?.has(num)) problems.push(`${prd.name}: regra '${id}' não lista a PRD (prds:)`);
+      else if (!rulePrds.get(id)?.has(num))
+        problems.push(`${prd.name}: regra '${id}' não lista a PRD (prds:)`);
     }
     for (const [id, set] of rulePrds) {
       if (set.has(num) && !declared.includes(id)) {
@@ -367,7 +378,7 @@ function checkPrdRnfVinculo(notes) {
   const linked = new Map(); // PRD-NN -> Set(RNFn)
   for (const note of notes) {
     const fm = parseFrontmatter(note.content);
-    if (!fm || !fm.id) continue;
+    if (!fm?.id) continue;
     if (fm.tipo === 'prd') {
       const num = String(fm.id).replace(/\D/g, '');
       if (num) prds.set(String(Number(num)), { name: note.name, fm, content: note.content });
@@ -506,14 +517,17 @@ function checkReferences(notes, exists, brIds, checkLines, relCatalog) {
     const isRule = fm.tipo === 'regra';
     if (!isRule) {
       for (const ref of Array.isArray(fm.implementacao) ? fm.implementacao : []) {
-        if (!refExists(ref, exists, checkLines)) problems.push(`${note.name}: implementacao inexistente: ${ref}`);
+        if (!refExists(ref, exists, checkLines))
+          problems.push(`${note.name}: implementacao inexistente: ${ref}`);
       }
       for (const ref of Array.isArray(fm.testes) ? fm.testes : []) {
-        if (!refExists(ref, exists, checkLines)) problems.push(`${note.name}: teste inexistente: ${ref}`);
+        if (!refExists(ref, exists, checkLines))
+          problems.push(`${note.name}: teste inexistente: ${ref}`);
       }
     }
     for (const ref of Array.isArray(fm.regras) ? fm.regras : []) {
-      if (brIds && !brIds.has(String(ref).trim())) problems.push(`${note.name}: regra referenciada inexistente: ${ref}`);
+      if (brIds && !brIds.has(String(ref).trim()))
+        problems.push(`${note.name}: regra referenciada inexistente: ${ref}`);
     }
     for (const p of checkRelacionado(fm, relCatalog)) problems.push(`${note.name}: ${p}`);
   }
@@ -593,7 +607,8 @@ function checkRules(overrides = {}) {
     if (id && seen.has(id)) at(`id duplicado: ${id}`);
     if (id) seen.add(id);
     if (fm.status && !STATUS.has(fm.status)) at(`status inválido: ${fm.status}`);
-    if (fm.severidade && !SEVERIDADE.has(fm.severidade)) at(`severidade inválida: ${fm.severidade}`);
+    if (fm.severidade && !SEVERIDADE.has(fm.severidade))
+      at(`severidade inválida: ${fm.severidade}`);
     if (fm.fonte && !FONTE.has(fm.fonte)) at(`fonte inválida: ${fm.fonte}`);
 
     const impl = Array.isArray(fm.implementacao) ? fm.implementacao : [];
@@ -673,5 +688,7 @@ if (require.main === module) {
     console.log(`\n${problems.length} problema(s) encontrado(s).`);
     process.exit(1);
   }
-  console.log(`OK: ${listRuleFiles().length} regras válidas${checkLines ? ' (linhas conferidas)' : ''}.`);
+  console.log(
+    `OK: ${listRuleFiles().length} regras válidas${checkLines ? ' (linhas conferidas)' : ''}.`,
+  );
 }

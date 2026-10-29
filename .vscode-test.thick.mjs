@@ -28,4 +28,3 @@ export default {
     TNS_ADMIN: process.env.TNS_ADMIN ?? '',
   },
 };
-

@@ -11,9 +11,9 @@
  */
 'use strict';
 
-const fs = require('fs');
-const path = require('path');
-const { execFileSync } = require('child_process');
+const fs = require('node:fs');
+const path = require('node:path');
+const { execFileSync } = require('node:child_process');
 const { scanVscodeApi } = require('./vscode-api-inventory.cjs');
 
 const DEFAULT_REPO = path.resolve(__dirname, '..');
@@ -32,9 +32,7 @@ const FUNC_ROW_RE = /^\|\s*(\d+)\s*\|\s*\[([^\]]+)\]\(([^)]+)\)\s*\|\s*(.*?)\s*\
 /** Redefine os caminhos usados pelos helpers; usado principalmente em fixtures de teste. */
 function configure(options = {}) {
   REPO = options.repo ? path.resolve(options.repo) : DEFAULT_REPO;
-  VAULT = options.vault
-    ? path.resolve(options.vault)
-    : path.join(REPO, 'docs', 'brain');
+  VAULT = options.vault ? path.resolve(options.vault) : path.join(REPO, 'docs', 'brain');
   resetCaches();
 }
 
@@ -110,7 +108,13 @@ function gitDate(relpath) {
 // ── generators ─────────────────────────────────────────────────────────
 
 function genRootDocs(note) {
-  const nomes = ['README.md', 'CHANGELOG.md', 'CONTRIBUTING.md', 'SECURITY.md', 'CODE_OF_CONDUCT.md'];
+  const nomes = [
+    'README.md',
+    'CHANGELOG.md',
+    'CONTRIBUTING.md',
+    'SECURITY.md',
+    'CODE_OF_CONDUCT.md',
+  ];
   const linhas = [];
   for (const nome of nomes) {
     const p = path.join(REPO, nome);
@@ -221,7 +225,13 @@ function prdNotes() {
 
 const PRD_STATUS = [
   { key: 'completed', icon: '🟢', label: 'Concluídos', grouped: false, col: 'Versão' },
-  { key: 'in-progress', icon: '🟡', label: 'Em desenvolvimento', grouped: true, col: 'Versão alvo' },
+  {
+    key: 'in-progress',
+    icon: '🟡',
+    label: 'Em desenvolvimento',
+    grouped: true,
+    col: 'Versão alvo',
+  },
   { key: 'approved', icon: '🔵', label: 'Aprovados', grouped: true, col: 'Versão alvo' },
   { key: 'proposed', icon: '⚪', label: 'Propostos', grouped: true, col: 'Versão alvo' },
 ];
@@ -231,8 +241,12 @@ const prdVersao = (p) => (p.versao && !/investiga/i.test(p.versao) ? p.versao : 
 const prdData = (p) => p.data || '—';
 
 function cmpVersao(a, b) {
-  const pa = prdVersao(a).split('.').map((n) => parseInt(n, 10) || 0);
-  const pb = prdVersao(b).split('.').map((n) => parseInt(n, 10) || 0);
+  const pa = prdVersao(a)
+    .split('.')
+    .map((n) => parseInt(n, 10) || 0);
+  const pb = prdVersao(b)
+    .split('.')
+    .map((n) => parseInt(n, 10) || 0);
   for (let i = 0; i < 3; i++) {
     if ((pa[i] || 0) !== (pb[i] || 0)) return (pa[i] || 0) - (pb[i] || 0);
   }
@@ -313,11 +327,13 @@ function genPrdSummary(note) {
     `- 🟢 Concluídos: **${count('completed')}**`,
   ];
   if (fs.existsSync(index)) {
-    linhas.push('', `Detalhe completo (fonte da verdade): [docs/prd/index.md](${rel(index, note)})`);
+    linhas.push(
+      '',
+      `Detalhe completo (fonte da verdade): [docs/prd/index.md](${rel(index, note)})`,
+    );
   }
   return linhas.join('\n');
 }
-
 
 function genStack() {
   const pkg = JSON.parse(fs.readFileSync(path.join(REPO, 'package.json'), 'utf8'));
@@ -458,10 +474,7 @@ const codeSlug = (name) =>
  */
 function buildCodeNoteSpecs(refs) {
   const specs = [];
-  const names = new Map([
-    ...noteNames(refs.impl, 'COD'),
-    ...noteNames(refs.tests, 'TST'),
-  ]);
+  const names = new Map([...noteNames(refs.impl, 'COD'), ...noteNames(refs.tests, 'TST')]);
   const implNames = noteNames(refs.impl, 'COD');
   const testNames = noteNames(refs.tests, 'TST');
 
@@ -532,7 +545,11 @@ function buildCodeNoteSpecs(refs) {
         '',
         `- 🗺️ [[${moc}]]`,
       );
-      specs.push({ dir, file: `${noteName}.md`, content: `${fm.join('\n')}\n\n${body.join('\n')}\n` });
+      specs.push({
+        dir,
+        file: `${noteName}.md`,
+        content: `${fm.join('\n')}\n\n${body.join('\n')}\n`,
+      });
     }
   };
   mk(refs.impl, CODE_DIR, 'COD', 'codigo', 'Implementa');
@@ -746,7 +763,12 @@ function genConexoes(notePath) {
       if (ids.has(id)) pipes.add(id);
     }
     if (pipes.size) {
-      lines.push(`- ⚙️ Pipelines: ${[...pipes].sort().map((id) => wl(ids.get(id), id)).join(' · ')}`);
+      lines.push(
+        `- ⚙️ Pipelines: ${[...pipes]
+          .sort()
+          .map((id) => wl(ids.get(id), id))
+          .join(' · ')}`,
+      );
     }
     if (fm.versao_titulo) {
       const siblings = prdNotes().filter(
@@ -768,7 +790,7 @@ function genConexoes(notePath) {
     }
     for (const [rid, title] of reqItems) {
       const refs = reqIdx.get(`${fm.id}/${rid}`);
-      if (!refs || !refs.size) continue;
+      if (!refs?.size) continue;
       const links = [...refs]
         .sort()
         .map((b) => wl(b, bases.get(b) || b))
@@ -785,7 +807,8 @@ function genConexoes(notePath) {
     const cmp = (a, b) => {
       const pa = semver(a);
       const pb = semver(b);
-      for (let i = 0; i < 3; i++) if ((pa[i] || 0) !== (pb[i] || 0)) return (pa[i] || 0) - (pb[i] || 0);
+      for (let i = 0; i < 3; i++)
+        if ((pa[i] || 0) !== (pb[i] || 0)) return (pa[i] || 0) - (pb[i] || 0);
       return 0;
     };
     if (fm.versao && /^\d/.test(String(fm.versao))) {
@@ -804,8 +827,14 @@ function genConexoes(notePath) {
       const ant = pick(antes, 'max');
       const seg = pick(depois, 'min');
       const elos = [];
-      if (ant) elos.push(`⬅️ release anterior: ${wl(ant.file.replace(/\.md$/, ''), `${ant.id} (${ant.versao})`)}`);
-      if (seg) elos.push(`➡️ próxima release: ${wl(seg.file.replace(/\.md$/, ''), `${seg.id} (${seg.versao})`)}`);
+      if (ant)
+        elos.push(
+          `⬅️ release anterior: ${wl(ant.file.replace(/\.md$/, ''), `${ant.id} (${ant.versao})`)}`,
+        );
+      if (seg)
+        elos.push(
+          `➡️ próxima release: ${wl(seg.file.replace(/\.md$/, ''), `${seg.id} (${seg.versao})`)}`,
+        );
       if (elos.length) lines.push(`- 🚀 ${elos.join(' · ')}`);
     }
   }
@@ -851,7 +880,9 @@ function genMocIndex(notePath) {
   const { bases } = idMaps();
   const files = fs
     .readdirSync(dir)
-    .filter((n) => n.endsWith('.md') && n !== `${self}.md` && !/^MOC - /.test(n) && n !== 'index.md')
+    .filter(
+      (n) => n.endsWith('.md') && n !== `${self}.md` && !/^MOC - /.test(n) && n !== 'index.md',
+    )
     .sort((a, b) => a.localeCompare(b));
   return (
     files
@@ -890,7 +921,10 @@ function genVscodeApi() {
     '| Símbolo | Refs | Arquivos |\n|---|---|---|';
   const body = rows
     .map((r) => {
-      const files = r.files.slice(0, 4).map((f) => `\`${f}\``).join(', ');
+      const files = r.files
+        .slice(0, 4)
+        .map((f) => `\`${f}\``)
+        .join(', ');
       const extra = r.files.length > 4 ? ` +${r.files.length - 4}` : '';
       return `| \`${r.api}\` | ${r.count} | ${files}${extra} |`;
     })
@@ -993,12 +1027,12 @@ function pipelineNotes() {
         const inline = line.match(/^__inline__:(.+)$/);
         if (inline) triggers.push(inline[1]);
         else {
-          const m = line.match(/^  ([a-z_]+):/);
+          const m = line.match(/^ {2}([a-z_]+):/);
           if (m) triggers.push(m[1]);
         }
       }
       const jobs = yamlBlock(text, 'jobs')
-        .map((line) => line.match(/^  ([a-z0-9_-]+):/))
+        .map((line) => line.match(/^ {2}([a-z0-9_-]+):/))
         .filter(Boolean)
         .map((m) => m[1]);
       const steps = [...text.matchAll(/^\s+(?:- )?(run|uses):\s*(.+)$/gm)].map(
@@ -1045,7 +1079,11 @@ function pipelineNotes() {
         '<!-- brain:auto:start:conexoes -->',
         '<!-- brain:auto:end -->',
       ].join('\n');
-      return { dir: '11-Stack', file: `PIPE-${slug} - ${name}.md`, content: `${fm.join('\n')}\n\n${body}\n` };
+      return {
+        dir: '11-Stack',
+        file: `PIPE-${slug} - ${name}.md`,
+        content: `${fm.join('\n')}\n\n${body}\n`,
+      };
     });
 }
 
@@ -1092,7 +1130,11 @@ function localeNotes() {
     const note = readmeNote[code];
     if (note) lines.push('', `README: [[${note}]]`);
     lines.push('', '## Conexões', '', '- 🗺️ [[MOC - I18n]]');
-    return { dir: '12-I18n', file: `LOC-${code} - ${lang}.md`, content: `${fm.join('\n')}\n\n${lines.join('\n')}\n` };
+    return {
+      dir: '12-I18n',
+      file: `LOC-${code} - ${lang}.md`,
+      content: `${fm.join('\n')}\n\n${lines.join('\n')}\n`,
+    };
   });
 }
 
@@ -1124,7 +1166,6 @@ function generateNotes() {
   }
   return changed;
 }
-
 
 // ── commands ───────────────────────────────────────────────────────────
 

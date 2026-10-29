@@ -5,7 +5,7 @@ titulo: "Contributing"
 publicar: docs/wiki/Contributing.md
 origem: ["MOC - Documentacao"]
 verificado: 2026-10-29
-regras: ["BR-PLAT-002"]
+regras: ["BR-PLAT-002", "BR-QUAL-002"]
 tags: [wiki]
 ---
 
@@ -20,6 +20,14 @@ production dependencies with `npm audit --omit=dev --audit-level=high`; the
 wiki token is never embedded in the clone URL (it uses an ephemeral
 `http.extraheader`). CodeQL runs via GitHub's **default setup** — there is no
 committed `codeql.yml`.
+
+## Lint and formatting
+
+`npm run lint` runs **`biome check .`** over the manifests (`package.json`,
+`package.nls*.json`), configs and `scripts/**`; generated/vendorized directories
+(`docs`, `site`, `out`, `dist`, `coverage`, `.vscode-test`, `.agents`,
+`.opencode`, `.kilo`) are excluded. Run `npm run lint:fix` before opening a PR —
+CI runs the same check.
 
 Guide for setting up the development environment and submitting contributions.
 

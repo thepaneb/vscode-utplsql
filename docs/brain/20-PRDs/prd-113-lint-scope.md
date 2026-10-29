@@ -2,14 +2,14 @@
 tipo: prd
 id: PRD-113
 aliases: [PRD-113]
-status: approved
+status: in-progress
 titulo: "Ampliar o escopo do lint (Biome) para além de `src/`"
 versao: "0.18.0"
 data: "2026-10-10"
 autor: "Gil Cleber Barboza"
 versao_titulo: "0.18.0 — Fundação: segurança, testes e anti-drift"
-verificado: 2026-10-10
-regras: []
+verificado: 2026-10-29
+regras: ["BR-QUAL-002"]
 tags: [prd]
 ---
 
@@ -131,6 +131,17 @@ Nenhuma setting/comando de usuário. Muda o script `lint` e a config do Biome.
 - Vale um `lint:ci` separado do `lint` local (mesma cobertura)?
 - Incluir `package.nls.*.json` no gate de formatação (são estáveis)?
 
+## Decisões (2026-10-29)
+
+- **`lint:ci` separado?** Não; `npm run lint` (`biome check .`) é o gate único no
+  `pretest:unit` e no CI.
+- **`package.nls.*.json` no format gate?** Sim; são manifestos estáveis e já
+  ficaram formatados.
+- **Regra:** atualizar a `BR-QUAL-002` existente (não criar uma nova).
+- **Escopo:** `docs/`, `site/`, `.agents/`, `.opencode/`, `.kilo/`, `out/`,
+  `dist/`, `coverage/`, `.vscode-test/`, `package-lock.json` e
+  `skills-lock.json` ficam fora; manifestos, configs e `scripts/**` entram.
+
 ## 12. Impacto no cérebro
 
 Ao concluir, criar/ajustar a regra `BR-QUAL-002` (lint cobre todo o repositório,
@@ -141,8 +152,11 @@ não só `src/`) com `prds: ["PRD-113"]`, `implementacao:` e `testes:`. Enquanto
 
 <!-- brain:auto:start:conexoes -->
 - 🗺️ [[MOC - PRDs]]
+- 📐 Regras: [[BR-QUAL-002 - Formatacao e lint do codigo sao do Biome|BR-QUAL-002]]
 - 🔗 PRDs relacionados: [[prd-03-ci-lint|PRD-03]] · [[prd-20-cleanup-deps-config|PRD-20]]
 - ⚙️ Pipelines: [[PIPE-ci - CI|PIPE-ci]]
 - 🔗 Mesma versão (0.18.0): [[prd-98-docs-anti-drift|PRD-98]] · [[prd-104-ci-supply-chain|PRD-104]] · [[prd-110-defensive-hardening|PRD-110]] · [[prd-114-vscode-stub-modernization|PRD-114]] · [[prd-118-commit-signing|PRD-118]] · [[prd-119-security-posture-scorecard|PRD-119]] · [[prd-123-oracle-11g-support|PRD-123]]
+- 🎯 RF1 — Escopo do lint → [[BR-QUAL-002 - Formatacao e lint do codigo sao do Biome|BR-QUAL-002]]
+- 🎯 RF2 — Normalização → [[BR-QUAL-002 - Formatacao e lint do codigo sao do Biome|BR-QUAL-002]]
 - 🚀 ⬅️ release anterior: [[prd-109-language-identity|PRD-109 (0.17.0)]] · ➡️ próxima release: [[prd-111-decompose-oracle-runner|PRD-111 (0.19.0)]]
 <!-- brain:auto:end -->

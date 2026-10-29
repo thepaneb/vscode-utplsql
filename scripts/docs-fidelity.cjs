@@ -25,9 +25,9 @@
  */
 'use strict';
 
-const { spawnSync } = require('child_process');
-const fs = require('fs');
-const path = require('path');
+const { spawnSync } = require('node:child_process');
+const fs = require('node:fs');
+const path = require('node:path');
 
 const REPO = path.resolve(__dirname, '..');
 
@@ -225,7 +225,11 @@ function checkFidelity(overrides = {}) {
     { phrase: 'is never called', symbol: 'consumeExtraReporter', docs: ['Reporters.md'] },
     { phrase: 'has no effect', symbol: 'compilationDiagnostics', docs: ['Configuration.md'] },
     { phrase: 'not wired', symbol: 'compilationDiagnostics', docs: ['FAQ.md'] },
-    { phrase: 'is never emitted', symbol: 'UTPLSQL_BAD_CONN', docs: ['Diagnostics-and-quick-fix.md'] },
+    {
+      phrase: 'is never emitted',
+      symbol: 'UTPLSQL_BAD_CONN',
+      docs: ['Diagnostics-and-quick-fix.md'],
+    },
   ];
   for (const { phrase, symbol, docs } of falseNegatives) {
     for (const rel of docs) {
@@ -235,7 +239,9 @@ function checkFidelity(overrides = {}) {
         overrides[rel.replace(/\.md$/, '').toLowerCase()];
       const text = inline ?? read(`docs/wiki/${rel}`);
       if (text.includes(phrase) && read(`src/${srcFileFor(symbol)}`).includes(symbol)) {
-        problems.push(`claim obsoleto "${phrase}" em docs/wiki/${rel} (${symbol} existe no código)`);
+        problems.push(
+          `claim obsoleto "${phrase}" em docs/wiki/${rel} (${symbol} existe no código)`,
+        );
       }
     }
   }
@@ -288,11 +294,11 @@ function checkFidelity(overrides = {}) {
 
     // Node embutido no host por versão do VS Code (fonte: .nvmrc do vscode por tag).
     const VSCODE_HOST_NODE = {
-      '1.88': 18,
+      1.88: 18,
       '1.90': 20,
       '1.100': 20,
-      '1.101': 22,
-      '1.102': 22,
+      1.101: 22,
+      1.102: 22,
     };
     const majorOf = (v) => {
       const m = String(v ?? '').match(/(\d+)/);
@@ -311,9 +317,7 @@ function checkFidelity(overrides = {}) {
         );
       }
       if (majorOf(typesNode) !== hostNode) {
-        problems.push(
-          `@types/node ("${typesNode}") ≠ Node ${hostNode} do host do VS Code ${mm}`,
-        );
+        problems.push(`@types/node ("${typesNode}") ≠ Node ${hostNode} do host do VS Code ${mm}`);
       }
       if (esbuildTarget && Number(esbuildTarget) !== hostNode) {
         problems.push(
@@ -400,7 +404,12 @@ function gitLines(args) {
   let result = null;
   try {
     const r = spawnSync('git', args, { cwd: REPO, encoding: 'utf8', maxBuffer: 32 * 1024 * 1024 });
-    result = r.status === 0 ? String(r.stdout ?? '').split('\n').filter(Boolean) : null;
+    result =
+      r.status === 0
+        ? String(r.stdout ?? '')
+            .split('\n')
+            .filter(Boolean)
+        : null;
   } catch {
     result = null;
   }
@@ -457,7 +466,10 @@ const LEGACY_REMOVED = {
 function staleSymbols() {
   if (staleSymbols.cache !== undefined) return staleSymbols.cache;
   const tag = latestTag();
-  if (!tag) return (staleSymbols.cache = null);
+  if (!tag) {
+    staleSymbols.cache = null;
+    return null;
+  }
   const historical = new Set(LEGACY_REMOVED.symbols);
   const lines = gitLines([
     'grep',
@@ -473,7 +485,9 @@ function staleSymbols() {
     for (const line of lines) for (const s of declaredSymbols(line)) historical.add(s);
   }
   const today = aliveNames();
-  return (staleSymbols.cache = new Set([...historical].filter((s) => !today.has(s))));
+  const result = new Set([...historical].filter((s) => !today.has(s)));
+  staleSymbols.cache = result;
+  return result;
 }
 staleSymbols.cache = undefined;
 
@@ -481,19 +495,24 @@ staleSymbols.cache = undefined;
 function latestTag() {
   if (latestTag.cache !== undefined) return latestTag.cache;
   const tags = gitLines(['tag', '--list', 'v*']);
-  if (!tags || tags.length === 0) return (latestTag.cache = null);
+  if (!tags || tags.length === 0) {
+    latestTag.cache = null;
+    return null;
+  }
   const cmp = (a, b) =>
     String(a)
       .slice(1)
       .split('.')
       .map(Number)
-      .reduce((acc, n, i) => acc * 1000 + (n || 0), 0) -
+      .reduce((acc, n, _i) => acc * 1000 + (n || 0), 0) -
     String(b)
       .slice(1)
       .split('.')
       .map(Number)
-      .reduce((acc, n, i) => acc * 1000 + (n || 0), 0);
-  return (latestTag.cache = [...tags].sort(cmp).pop() ?? null);
+      .reduce((acc, n, _i) => acc * 1000 + (n || 0), 0);
+  const result = [...tags].sort(cmp).pop() ?? null;
+  latestTag.cache = result;
+  return result;
 }
 latestTag.cache = undefined;
 
@@ -501,12 +520,17 @@ latestTag.cache = undefined;
 function removedModules() {
   if (removedModules.cache !== undefined) return removedModules.cache;
   const tag = latestTag();
-  if (!tag) return (removedModules.cache = null);
+  if (!tag) {
+    removedModules.cache = null;
+    return null;
+  }
   const historical = new Set(LEGACY_REMOVED.modules);
   const files = gitLines(['ls-tree', '-r', '--name-only', tag, '--', 'src']);
   if (files) for (const f of files) if (f.endsWith('.ts')) historical.add(path.posix.basename(f));
   const today = new Set(srcTsFiles().map((f) => path.basename(f)));
-  return (removedModules.cache = new Set([...historical].filter((f) => !today.has(f))));
+  const result = new Set([...historical].filter((f) => !today.has(f)));
+  removedModules.cache = result;
+  return result;
 }
 removedModules.cache = undefined;
 
