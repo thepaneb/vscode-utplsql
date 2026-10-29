@@ -13,6 +13,28 @@ updates:
         update-types:
           - minor
           - patch
+    # Tipos precisam acompanhar os pisos declarados, não o "último publicado":
+    #  - @types/vscode fica pinado no `engines.vscode` (1.101.0); subir os tipos
+    #    deixaria o código compilar contra APIs que não existem no VS Code mínimo.
+    #  - @types/node segue o piso `engines.node` (22); tipos 24/26 mascaram APIs
+    #    ausentes em runtime. Patches/minors continuam liberados.
+    #  - oracledb é major deliberado: exige matriz de bancos + packaging dos VSIX.
+    #  - biome minor muda a formatação de markdown/YAML, que é gerado do vault;
+    #    o upgrade precisa regenerar as docs no mesmo PR.
+    ignore:
+      - dependency-name: "@types/vscode"
+      - dependency-name: "@types/node"
+        update-types:
+          - version-update:semver-major
+      - dependency-name: oracledb
+        update-types:
+          - version-update:semver-major
+      - dependency-name: "@types/oracledb"
+        update-types:
+          - version-update:semver-major
+      - dependency-name: "@biomejs/biome"
+        update-types:
+          - version-update:semver-minor
 
   # Actions dos workflows — os pins por SHA são atualizados pelo Dependabot.
   - package-ecosystem: github-actions
