@@ -6,6 +6,10 @@
   11g R2 com utPLSQL `v3.1.14`, cobertura via `DBMS_PROFILER` e SQL de
   descoberta portátil (sem `FETCH FIRST`). O thin do node-oracledb tem piso
   12.1; o 11g exige `utplsql.oracleClientMode: thick`.
+- **Postura de segurança verificável (PRD-118/PRD-119)**: commits no `main`
+  passam a ser assinados/verificados (SSH) e o CI publica o OSSF Scorecard
+  semanalmente (`publish_results: true`), com `main` protegido por PR/checks e
+  sem force-push.
 - **Fundação da 0.18.0**: segurança (hardening defensivo, cadeia de suprimentos,
   assinatura de commits e OSSF Scorecard), testes (stub de `vscode` tipado) e
   anti-drift de documentação. Os itens por PRD são consolidados no release.

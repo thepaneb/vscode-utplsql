@@ -4,7 +4,7 @@
 
 | Campo | Valor |
 |---|---|
-| Status | Aprovado |
+| Status | Em desenvolvimento |
 | Autor | Gil Cleber Barboza |
 | Data | 2026-10-13 |
 | Componente | Segurança e CI do repositório (`.github/`) |
@@ -204,9 +204,20 @@ Nenhuma setting da extensão. Configuração no GitHub (workflow + *ruleset*).
   check por baixo valor para o escopo atual?
 - `upload-artifact`+`upload-sarif` no mesmo job, ou separar a publicação do SARIF?
 
+## Decisões (2026-10-29)
+
+- CodeQL permanece no **default setup**; o workflow do Scorecard é o único novo.
+- `workflow_dispatch` foi incluído para a validação manual do PRD.
+- Branch protection compatível com **mantenedor único** (sem autoaprovação;
+  bypass de admin documentado se necessário).
+- A ação `ossf/scorecard-action` é pinada por SHA (`v2.4.0`) e o upload SARIF
+  usa `github/codeql-action/upload-sarif` (`v4`), ambos atualizados pelo
+  Dependabot (PRD-104).
+- Regra **`BR-PLAT-004`** (o `BR-PLAT-002` já é da PRD-104).
+
 ## 12. Impacto no cérebro
 
-Na conclusão, criar a regra **`BR-PLAT-002`** — “o CI publica o OSSF Scorecard e o
+Na conclusão, criar a regra **`BR-PLAT-004`** — “o CI publica o OSSF Scorecard e o
 `main` é protegido (PR, checks obrigatórios, sem force-push)” — com
 `prds: ["PRD-119"]`, `implementacao:` (`.github/workflows/scorecard.yml` +
 configuração do repo) e `testes:` (verificação manual documentada; sem teste

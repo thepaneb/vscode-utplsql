@@ -35,7 +35,10 @@ test('workflows: permissions no topo de todos os arquivos', () => {
     const text = readWorkflow(file);
     const beforeJobs = text.split(/^jobs:/m)[0];
     assert.match(beforeJobs, /^permissions:/m, `${file}: sem permissions no topo`);
-    assert.match(beforeJobs, /contents:\s*read/, `${file}: sem contents: read no topo`);
+    assert.ok(
+      /contents:\s*read/.test(beforeJobs) || /permissions:\s*read-all/.test(beforeJobs),
+      `${file}: sem contents: read/read-all no topo`,
+    );
   }
 });
 
@@ -89,6 +92,18 @@ test('audit: gate de produção no package.json, CI e publish', () => {
   assert.match(pkg.scripts['audit:prod'], /--audit-level=high/);
   assert.match(readWorkflow('ci.yml'), /npm run audit:prod/);
   assert.match(readWorkflow('publish.yml'), /npm run audit:prod/);
+});
+
+test('Scorecard: publica resultado, upload SARIF e permissões mínimas', () => {
+  const text = readWorkflow('scorecard.yml');
+  assert.match(text, /publish_results:\s*true/);
+  assert.match(text, /persist-credentials:\s*false/);
+  assert.match(text, /security-events:\s*write/);
+  assert.match(text, /id-token:\s*write/);
+  assert.match(text, /workflow_dispatch/);
+  assert.match(text, /branch_protection_rule/);
+  assert.match(text, /upload-sarif/);
+  assert.match(text, /^permissions:\s*read-all/m);
 });
 
 test('CodeQL: decisão de manter o default setup (sem workflow commitado)', () => {

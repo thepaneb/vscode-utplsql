@@ -125,6 +125,8 @@ SORT id ASC
 - [[BR-PKG-001 - VSIX nao inclui fontes, scripts nem segredos]] — `BR-PKG-001`
 - [[BR-PLAT-001 - Piso de VS Code e runtime Node do host sao coerentes]] — `BR-PLAT-001`
 - [[BR-PLAT-002 - CI usa actions pinadas por SHA, permissões mínimas e dependências auditadas]] — `BR-PLAT-002`
+- [[BR-PLAT-003 - Commits no main são assinados e verificados]] — `BR-PLAT-003`
+- [[BR-PLAT-004 - OSSF Scorecard é publicado e o main é protegido]] — `BR-PLAT-004`
 - [[BR-QUAL-001 - Thresholds de cobertura (c8) sao globais e bloqueiam o CI]] — `BR-QUAL-001`
 - [[BR-QUAL-002 - Formatacao e lint do codigo sao do Biome]] — `BR-QUAL-002`
 - [[BR-QUAL-003 - Ultimo resultado persistido e restaurado com snapshot versionado]] — `BR-QUAL-003`

@@ -2,14 +2,14 @@
 tipo: prd
 id: PRD-118
 aliases: [PRD-118]
-status: approved
+status: in-progress
 titulo: "Assinatura de commits e verificação de origem no main"
 versao: "0.18.0"
 data: "2026-10-13"
 autor: "Gil Cleber Barboza"
 versao_titulo: "0.18.0 — Fundação: segurança, testes e anti-drift"
-verificado: 2026-10-13
-regras: []
+verificado: 2026-10-29
+regras: ["BR-PLAT-003"]
 docs: ["CHANGELOG", "wiki/Contributing.md"]
 tags: [prd]
 ---
@@ -149,6 +149,17 @@ Nenhuma setting da extensão; apenas configuração `git`/GitHub.
   published`, criado pela API — tags assinadas são só higiene local)?
 - Algum bot do repositório precisa de bypass explícito?
 
+## Decisões (2026-10-29)
+
+- **SSH signing** (reaproveita a chave existente); GPG fica como alternativa.
+- `commit.gpgsign`/`tag.gpgsign` locais; a chave pública é cadastrada como
+  **Signing Key** no GitHub.
+- A exigência de commits assinados é ativada no **fim** (depois do merge da
+  0.18.0), para não bloquear o fluxo atual; merges do GitHub/Dependabot são
+  assinados pela plataforma.
+- Regra **`BR-PLAT-003`**; a configuração local/GitHub é ação do mantenedor
+  (documentada no `CONTRIBUTING.md`), não versionável.
+
 ## 12. Impacto no cérebro
 
 Ao concluir, criar a regra que materializa a PRD, por exemplo uma `BR-PLAT-*`
@@ -164,7 +175,11 @@ Ao concluir, criar a regra que materializa a PRD, por exemplo uma `BR-PLAT-*`
 
 <!-- brain:auto:start:conexoes -->
 - 🗺️ [[MOC - PRDs]]
+- 📐 Regras: [[BR-PLAT-003 - Commits no main são assinados e verificados|BR-PLAT-003]]
 - 🔗 PRDs relacionados: [[prd-81-security-hardening|PRD-81]] · [[prd-104-ci-supply-chain|PRD-104]] · [[prd-110-defensive-hardening|PRD-110]]
 - 🔗 Mesma versão (0.18.0): [[prd-98-docs-anti-drift|PRD-98]] · [[prd-104-ci-supply-chain|PRD-104]] · [[prd-110-defensive-hardening|PRD-110]] · [[prd-113-lint-scope|PRD-113]] · [[prd-114-vscode-stub-modernization|PRD-114]] · [[prd-119-security-posture-scorecard|PRD-119]] · [[prd-123-oracle-11g-support|PRD-123]]
+- 🎯 RF1 — Assinatura local (SSH, preferida) → [[BR-PLAT-003 - Commits no main são assinados e verificados|BR-PLAT-003]]
+- 🎯 RF2 — Branch protection do `main` → [[BR-PLAT-003 - Commits no main são assinados e verificados|BR-PLAT-003]]
+- 🎯 RF3 — Documentação → [[BR-PLAT-003 - Commits no main são assinados e verificados|BR-PLAT-003]]
 - 🚀 ⬅️ release anterior: [[prd-109-language-identity|PRD-109 (0.17.0)]] · ➡️ próxima release: [[prd-111-decompose-oracle-runner|PRD-111 (0.19.0)]]
 <!-- brain:auto:end -->

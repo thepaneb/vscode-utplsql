@@ -53,6 +53,7 @@ SORT id ASC
 - [[COD - Configuration.md]] — `COD-Configuration.md`
 - [[COD - connection.ts]] — `COD-connection.ts`
 - [[COD - connectionProfiles.ts]] — `COD-connectionProfiles.ts`
+- [[COD - CONTRIBUTING.md]] — `COD-CONTRIBUTING.md`
 - [[COD - coverage.ts]] — `COD-coverage.ts`
 - [[COD - coverageDecision.ts]] — `COD-coverageDecision.ts`
 - [[COD - create-pr.cjs]] — `COD-create-pr.cjs`
@@ -113,6 +114,7 @@ SORT id ASC
 - [[COD - run.sh]] — `COD-run.sh`
 - [[COD - run.ts]] — `COD-run.ts`
 - [[COD - runner.ts]] — `COD-runner.ts`
+- [[COD - scorecard.yml]] — `COD-scorecard.yml`
 - [[COD - script.ts]] — `COD-script.ts`
 - [[COD - scriptRunner.ts]] — `COD-scriptRunner.ts`
 - [[COD - site-health.yml]] — `COD-site-health.yml`
