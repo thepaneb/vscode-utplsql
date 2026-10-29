@@ -203,6 +203,25 @@ e a validação thin/thick nas cinco versões. Falta o degrau mais antigo — e 
 - RNF5 — **Custo de execução**: uma versão por vez, volume por versão, imagem slim
   (download único de ~2–4 GB).
 
+## Resultado do RF0 — spike de viabilidade (2026-10-29)
+
+**GO.** O node-oracledb **7.0.1** conectou em **thick mode** ao Oracle
+**11.2.0.2.0 XE** (`docker.io/gvenzl/oracle-xe:11-slim`) usando o
+**Instant Client 23.0** (`install/instantclient_23_0`), sem `ORA-03134`/`NJS-*`:
+
+| Item | Valor |
+|---|---|
+| Servidor | Oracle Database 11g Express Edition 11.2.0.2.0 (64-bit) |
+| Driver | node-oracledb 7.0.1 |
+| Cliente | Instant Client 23.0 (thick) |
+| Imagem | `docker.io/gvenzl/oracle-xe:11-slim` (pin por digest no `matrix.env`) |
+| Conexão | `system/***@//localhost:1532/XE` |
+| Consulta | `select banner from v$version` / `select version from v$instance` |
+
+Observação: `BANNER_FULL`/`VERSION_FULL` são 12c+; o código de produção já usa
+`product_component_version` (compatível com 11g). O caminho thick + 11.2 está
+liberado para RF1–RF7; o escopo alternativo do §5.4 não é necessário.
+
 ## 5. Solução proposta
 
 ### 5.1 Matriz (`scripts/db-matrix/matrix.env`)
@@ -299,16 +318,16 @@ código é o `FETCH FIRST` (RF4); o restante é auditado e coberto pelo E2E novo
 
 ## 11. Questões em aberto
 
-- **RF0**: o Instant Client 23.0 conecta no 11.2.0.2? Se não, o escopo vira §5.4
-  (12.1 na matriz; 11g no Troubleshooting)?
-- **Versão alvo**: 0.18.0 (fundação/testes) ou antecipar para a 0.17.0?
-- **Badge/claim**: piso “11.2+ (thick)” no badge/README/site, ou manter “12.2+” e
-  anunciar o 11g apenas na tabela de compatibilidade?
-- **Pin da imagem** `gvenzl/oracle-xe:11-slim` por digest?
-- Mensagem amigável para `NJS-138`/`ORA-03134` (custo i18n ×24) — vale nesta PRD ou
-  follow-up?
-- Incluir **12.1** (registry, thin + thick) na mesma leva, agora que a infra da
-  matriz terá o campo de modo de cliente?
+- **RF0 — resolvido (2026-10-29): GO.** IC 23.0 + node-oracledb 7.0.1 conectam no
+  11.2.0.2 em thick; ver “Resultado do RF0”.
+- **Versão alvo — decidido (2026-10-29):** 0.18.0.
+- **Badge/claim — decidido (2026-10-29):** manter o claim principal **12.2+ (thin)**
+  e anunciar **11.2 (thick)** na tabela de compatibilidade e no Troubleshooting;
+  não alargar o badge para evitar over-claim do piso thin.
+- **Pin da imagem — decidido (2026-10-29):** pin por digest
+  (`sha256:a546a62d6574d125c6520011cad328748c869038d52cd94ca4eb0fed7407d1fe`).
+- Mensagem amigável para `NJS-138`/`ORA-03134` — **follow-up** (custo i18n ×24).
+- Incluir **12.1** — **fora do escopo** desta PRD; candidato a 0.19.0.
 
 ## 12. Impacto no cérebro
 
