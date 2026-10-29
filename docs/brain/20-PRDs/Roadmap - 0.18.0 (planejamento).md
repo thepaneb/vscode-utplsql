@@ -78,6 +78,12 @@ pré-bumpada para 0.18.0 no início (package/lock/site/CHANGELOG) para manter o
   completa no 23free **119 passing / 10 pending** + multiroot **6 passing**.
   Regras `BR-CONN-020`, `BR-EXEC-017` e `SEC-014`; triagem do CodeQL registrada na
   PRD.
+- **PRD-104** (2026-10-29, PR #229): Dependabot + actions pinadas por SHA +
+  `permissions` + `npm audit` gate; regra `BR-PLAT-002`; CI 22/24/26 e integração
+  23free verdes.
+- **PRD-113** (2026-10-29, PR #230): `biome check .` cobre manifestos, configs e
+  `scripts/**`; `BR-QUAL-002` atualizada; **zero diagnósticos** no escopo;
+  `npm run package` OK; suíte final **1406 testes / 0 falhas** (2 skips).
 
 ## Fluxo de execução (por PRD)
 
