@@ -79,6 +79,15 @@ um resumo livre.
 
 7. **Reportar a URL** do PR ao usuário.
 
+## Merge (aprovação obrigatória)
+
+Esta skill **cria/atualiza** o PR e para. **Não faça merge na `main`** (nem o PR
+final de `release/vX.Y.Z`) sem **aprovação específica e explícita do mantenedor
+na conversa**. Um “sim” genérico ou aprovação de etapa anterior não vale; peça a
+aprovação citando o PR e o commit. O merge da release e a criação de
+tag/GitHub release seguem a skill **`release`** (que também exige aprovação
+específica para a tag/release).
+
 ## Verificação (obrigatória)
 
 - [ ] Body preenchido no formato do `.github/PULL_REQUEST_TEMPLATE.md`
