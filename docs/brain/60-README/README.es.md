@@ -115,6 +115,7 @@ La extensión se conecta directamente a la base de datos Oracle mediante `node-o
 |---|---|---|
 | 18c+ | v3.2.x (18c+) / v3.1.x | Recomendado; charset `AL32UTF8`. |
 | 12.2 | solo v3.1.x | El v3.2.x no compila (`PLS-00222`). El charset `WE8DEC` de la imagen pierde caracteres no representables (p. ej. `€`); el driver thin ignora `NLS_LANG`. |
+| 11.2 (11g R2) | v3.1.x only | **Thick mode required** (thin starts at 12.1); coverage via `DBMS_PROFILER`. |
 
 ## Conexión
 

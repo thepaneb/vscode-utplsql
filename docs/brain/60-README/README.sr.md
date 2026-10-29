@@ -161,6 +161,7 @@ Test Explorer-у **како се сваки тест заврши**. VSIX већ
 |---|---|---|
 | 18c+ | v3.2.x (18c+) / v3.1.x | Препоручено; charset `AL32UTF8`. |
 | 12.2 | само v3.1.x | v3.2.x се не компајлира (`PLS-00222`). `WE8DEC` слике губи непредстављиве знакове (нпр. `€`); танки драјвер игнорише `NLS_LANG`. |
+| 11.2 (11g R2) | v3.1.x only | **Thick mode required** (thin starts at 12.1); coverage via `DBMS_PROFILER`. |
 
 ## Конфигурација
 

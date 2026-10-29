@@ -2,14 +2,14 @@
 tipo: prd
 id: PRD-123
 aliases: [PRD-123]
-status: approved
+status: in-progress
 titulo: "Suporte oficial ao Oracle 11g (11.2) em thick mode"
 versao: "0.18.0"
 data: "2026-10-17"
 autor: "Gil Cleber Barboza"
 versao_titulo: "0.18.0 — Fundação: segurança, testes e anti-drift"
 verificado: 2026-10-29
-regras: []
+regras: ["BR-CONN-019", "BR-TEST-001"]
 docs: ["CHANGELOG", "wiki/Database-requirements.md", "wiki/Troubleshooting.md"]
 tags: [prd]
 ---
@@ -342,6 +342,17 @@ código é o `FETCH FIRST` (RF4); o restante é auditado e coberto pelo E2E novo
 - Mensagem amigável para `NJS-138`/`ORA-03134` — **follow-up** (custo i18n ×24).
 - Incluir **12.1** — **fora do escopo** desta PRD; candidato a 0.19.0.
 
+## Validação (2026-10-29)
+
+- `bash scripts/db-matrix/run.sh --only 11xe --thick` **verde**: bootstrap do
+  utPLSQL **v3.1.14** no XE 11.2 (374 objetos em UT3) e **4 passing**
+  (`thickMode` 2 + `thickLegacyE2E` 2: execução com streaming, cobertura
+  Cobertura e descoberta DB-first via `ALL_SOURCE`).
+- `bash scripts/db-matrix/run.sh --list` anota `11xe … (thick-only)`.
+- `--only 11xe` sem `--thick` falha antes do Docker (guarda fail-fast).
+- README ×24, wiki, site, funcional, `.env.dbmatrix.example` e regras
+  (`BR-CONN-019`, `BR-TEST-001`, `NFR-001`) atualizados.
+
 ## 12. Impacto no cérebro
 
 Na conclusão:
@@ -369,7 +380,13 @@ Enquanto `proposed`, `regras: []` (derivado pelo `brain:sync` na conclusão).
 
 <!-- brain:auto:start:conexoes -->
 - 🗺️ [[MOC - PRDs]]
+- 📐 Regras: [[BR-CONN-019 - Oracle 11g (11.2) exige thick mode; thin tem piso 12.1|BR-CONN-019]] · [[BR-TEST-001 - Matriz de bancos Oracle cobre 12.2-23ai em thin e thick|BR-TEST-001]]
 - 🔗 PRDs relacionados: [[prd-70-thick-mode-nne|PRD-70]] · [[prd-72-db-test-matrix|PRD-72]] · [[prd-84-oracle-122-support|PRD-84]]
 - 🔗 Mesma versão (0.18.0): [[prd-98-docs-anti-drift|PRD-98]] · [[prd-104-ci-supply-chain|PRD-104]] · [[prd-110-defensive-hardening|PRD-110]] · [[prd-113-lint-scope|PRD-113]] · [[prd-114-vscode-stub-modernization|PRD-114]] · [[prd-118-commit-signing|PRD-118]] · [[prd-119-security-posture-scorecard|PRD-119]]
+- 🎯 RF0 — Spike de viabilidade do client (go/no-go) → [[NFR-001 - Compatibilidade com Oracle e piso do utPLSQL|NFR-001]]
+- 🎯 RF1 — Entrada `11xe` na matriz com modo de cliente → [[BR-CONN-019 - Oracle 11g (11.2) exige thick mode; thin tem piso 12.1|BR-CONN-019]]
+- 🎯 RF3 — Guarda fail-fast no orquestrador → [[BR-CONN-019 - Oracle 11g (11.2) exige thick mode; thin tem piso 12.1|BR-CONN-019]]
+- 🎯 RF4 — Portabilidade do SQL da extensão (11.2) → [[BR-CONN-019 - Oracle 11g (11.2) exige thick mode; thin tem piso 12.1|BR-CONN-019]]
+- 🎯 RF5 — Validação E2E no 11g (eixo thick ampliado) → [[BR-CONN-019 - Oracle 11g (11.2) exige thick mode; thin tem piso 12.1|BR-CONN-019]] · [[NFR-001 - Compatibilidade com Oracle e piso do utPLSQL|NFR-001]]
 - 🚀 ⬅️ release anterior: [[prd-109-language-identity|PRD-109 (0.17.0)]] · ➡️ próxima release: [[prd-111-decompose-oracle-runner|PRD-111 (0.19.0)]]
 <!-- brain:auto:end -->

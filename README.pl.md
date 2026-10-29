@@ -104,6 +104,7 @@ Rozszerzenie można zainstalować na dwa sposoby:
 |---|---|---|
 | 18c+ | v3.2.x (18c+) / v3.1.x | Zalecane; charset `AL32UTF8`. |
 | 12.2 | tylko v3.1.x | v3.2.x się nie kompiluje (`PLS-00222`). `WE8DEC` obrazu gubi znaki nieprzedstawialne (np. `€`); cienki sterownik ignoruje `NLS_LANG`. |
+| 11.2 (11g R2) | v3.1.x only | **Thick mode required** (thin starts at 12.1); coverage via `DBMS_PROFILER`. |
 - **VSCode 1.101+** (Node 22).
 
 Rozszerzenie jest tylko "graficznym klientem" — testy uruchamia baza danych: bezpośrednio przez node-oracledb.

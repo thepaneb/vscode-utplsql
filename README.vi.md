@@ -152,6 +152,7 @@ Test Explorer **ngay khi từng bài kiểm thử hoàn tất**. VSIX đã kèm 
 |---|---|---|
 | 18c+ | v3.2.x (18c+) / v3.1.x | Khuyến nghị; charset `AL32UTF8`. |
 | 12.2 | chỉ v3.1.x | v3.2.x không biên dịch được (`PLS-00222`). `WE8DEC` của image làm mất các ký tự không biểu diễn được (ví dụ `€`); driver mỏng bỏ qua `NLS_LANG`. |
+| 11.2 (11g R2) | v3.1.x only | **Thick mode required** (thin starts at 12.1); coverage via `DBMS_PROFILER`. |
 
 ## Cấu hình
 

@@ -104,6 +104,7 @@ A bővítmény kétféleképpen telepíthető:
 |---|---|---|
 | 18c+ | v3.2.x (18c+) / v3.1.x | Ajánlott; charset `AL32UTF8`. |
 | 12.2 | csak v3.1.x | A v3.2.x nem fordul (`PLS-00222`). A kép `WE8DEC`-je elveszíti a nem ábrázolható karaktereket (pl. `€`); a thin illesztő figyelmen kívül hagyja a `NLS_LANG`-ot. |
+| 11.2 (11g R2) | v3.1.x only | **Thick mode required** (thin starts at 12.1); coverage via `DBMS_PROFILER`. |
 - **VSCode 1.101+** (Node 22).
 
 A bővítmény csupán a „grafikus kliens" — a teszteket ténylegesen az adatbázis futtatja közvetlenül a node-oracledb-n keresztül.

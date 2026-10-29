@@ -4,7 +4,7 @@
 
 | Campo | Valor |
 |---|---|
-| Status | Aprovado |
+| Status | Em desenvolvimento |
 | Autor | Gil Cleber Barboza |
 | Data | 2026-10-17 |
 | Componente | Compatibilidade (driver/conexão) + infra da matriz (local, não vai no VSIX) |
@@ -328,6 +328,17 @@ código é o `FETCH FIRST` (RF4); o restante é auditado e coberto pelo E2E novo
   (`sha256:a546a62d6574d125c6520011cad328748c869038d52cd94ca4eb0fed7407d1fe`).
 - Mensagem amigável para `NJS-138`/`ORA-03134` — **follow-up** (custo i18n ×24).
 - Incluir **12.1** — **fora do escopo** desta PRD; candidato a 0.19.0.
+
+## Validação (2026-10-29)
+
+- `bash scripts/db-matrix/run.sh --only 11xe --thick` **verde**: bootstrap do
+  utPLSQL **v3.1.14** no XE 11.2 (374 objetos em UT3) e **4 passing**
+  (`thickMode` 2 + `thickLegacyE2E` 2: execução com streaming, cobertura
+  Cobertura e descoberta DB-first via `ALL_SOURCE`).
+- `bash scripts/db-matrix/run.sh --list` anota `11xe … (thick-only)`.
+- `--only 11xe` sem `--thick` falha antes do Docker (guarda fail-fast).
+- README ×24, wiki, site, funcional, `.env.dbmatrix.example` e regras
+  (`BR-CONN-019`, `BR-TEST-001`, `NFR-001`) atualizados.
 
 ## 12. Impacto no cérebro
 

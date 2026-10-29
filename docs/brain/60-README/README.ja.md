@@ -115,6 +115,7 @@ tags: [readme]
 |---|---|---|
 | 18c+ | v3.2.x (18c+) / v3.1.x | 推奨。charset は `AL32UTF8`。 |
 | 12.2 | v3.1.x のみ | v3.2.x はコンパイル不可（`PLS-00222`）。イメージの `WE8DEC` では表現できない文字（例: `€`）が失われます。thin ドライバは `NLS_LANG` を無視します。 |
+| 11.2 (11g R2) | v3.1.x only | **Thick mode required** (thin starts at 12.1); coverage via `DBMS_PROFILER`. |
 
 ## 接続
 
