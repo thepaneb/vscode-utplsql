@@ -2,14 +2,14 @@
 tipo: prd
 id: PRD-119
 aliases: [PRD-119]
-status: approved
+status: in-progress
 titulo: "Postura de segurança verificável: OSSF Scorecard e proteção de main"
 versao: "0.18.0"
 data: "2026-10-13"
 autor: "Gil Cleber Barboza"
 versao_titulo: "0.18.0 — Fundação: segurança, testes e anti-drift"
-verificado: 2026-10-13
-regras: []
+verificado: 2026-10-29
+regras: ["BR-PLAT-004"]
 docs: ["CHANGELOG", "wiki/Contributing.md"]
 tags: [prd]
 ---
@@ -217,9 +217,20 @@ Nenhuma setting da extensão. Configuração no GitHub (workflow + *ruleset*).
   check por baixo valor para o escopo atual?
 - `upload-artifact`+`upload-sarif` no mesmo job, ou separar a publicação do SARIF?
 
+## Decisões (2026-10-29)
+
+- CodeQL permanece no **default setup**; o workflow do Scorecard é o único novo.
+- `workflow_dispatch` foi incluído para a validação manual do PRD.
+- Branch protection compatível com **mantenedor único** (sem autoaprovação;
+  bypass de admin documentado se necessário).
+- A ação `ossf/scorecard-action` é pinada por SHA (`v2.4.0`) e o upload SARIF
+  usa `github/codeql-action/upload-sarif` (`v4`), ambos atualizados pelo
+  Dependabot (PRD-104).
+- Regra **`BR-PLAT-004`** (o `BR-PLAT-002` já é da PRD-104).
+
 ## 12. Impacto no cérebro
 
-Na conclusão, criar a regra **`BR-PLAT-002`** — “o CI publica o OSSF Scorecard e o
+Na conclusão, criar a regra **`BR-PLAT-004`** — “o CI publica o OSSF Scorecard e o
 `main` é protegido (PR, checks obrigatórios, sem force-push)” — com
 `prds: ["PRD-119"]`, `implementacao:` (`.github/workflows/scorecard.yml` +
 configuração do repo) e `testes:` (verificação manual documentada; sem teste
@@ -235,7 +246,12 @@ Enquanto `proposed`, `regras: []`.
 
 <!-- brain:auto:start:conexoes -->
 - 🗺️ [[MOC - PRDs]]
+- 📐 Regras: [[BR-PLAT-004 - OSSF Scorecard é publicado e o main é protegido|BR-PLAT-004]]
 - 🔗 PRDs relacionados: [[prd-81-security-hardening|PRD-81]] · [[prd-83-vsix-package-hygiene|PRD-83]] · [[prd-104-ci-supply-chain|PRD-104]] · [[prd-118-commit-signing|PRD-118]] · [[prd-122-marketplace-trust-metadata|PRD-122]]
+- ⚙️ Pipelines: [[PIPE-scorecard - Scorecard|PIPE-scorecard]]
 - 🔗 Mesma versão (0.18.0): [[prd-98-docs-anti-drift|PRD-98]] · [[prd-104-ci-supply-chain|PRD-104]] · [[prd-110-defensive-hardening|PRD-110]] · [[prd-113-lint-scope|PRD-113]] · [[prd-114-vscode-stub-modernization|PRD-114]] · [[prd-118-commit-signing|PRD-118]] · [[prd-123-oracle-11g-support|PRD-123]]
+- 🎯 RF1 — Workflow do OSSF Scorecard → [[BR-PLAT-004 - OSSF Scorecard é publicado e o main é protegido|BR-PLAT-004]]
+- 🎯 RF2 — `main` protegido → [[BR-PLAT-004 - OSSF Scorecard é publicado e o main é protegido|BR-PLAT-004]]
+- 🎯 RF3 — Triagem dos checks remanescentes → [[BR-PLAT-004 - OSSF Scorecard é publicado e o main é protegido|BR-PLAT-004]]
 - 🚀 ⬅️ release anterior: [[prd-109-language-identity|PRD-109 (0.17.0)]] · ➡️ próxima release: [[prd-111-decompose-oracle-runner|PRD-111 (0.19.0)]]
 <!-- brain:auto:end -->

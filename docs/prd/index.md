@@ -169,13 +169,6 @@ notas `prd-*`. O índice navegável do vault é a [[MOC - PRDs]].
 | 108 | [Relatório HTML de cobertura aberto no navegador](completed/prd-108-coverage-html-report.md) | 0.17.0 | 2026-10-09 |
 | 109 | [Identidade de linguagem PL/SQL ampliada e languageIds configuráveis](completed/prd-109-language-identity.md) | 0.17.0 | 2026-10-09 |
 
-### 🔵 Aprovados
-
-| # | PRD | Versão | Data |
-|---|---|---|---|
-| 118 | [Assinatura de commits e verificação de origem no main](approved/prd-118-commit-signing.md) | 0.18.0 | 2026-10-13 |
-| 119 | [Postura de segurança verificável: OSSF Scorecard e proteção de main](approved/prd-119-security-posture-scorecard.md) | 0.18.0 | 2026-10-13 |
-
 ### 🟡 Em desenvolvimento
 
 | # | PRD | Versão | Data |
@@ -185,6 +178,8 @@ notas `prd-*`. O índice navegável do vault é a [[MOC - PRDs]].
 | 110 | [Hardening defensivo: identificador SQL, redaction de logs e scripts de desenvolvimento](in-progress/prd-110-defensive-hardening.md) | 0.18.0 | 2026-10-09 |
 | 113 | [Ampliar o escopo do lint (Biome) para além de `src/`](in-progress/prd-113-lint-scope.md) | 0.18.0 | 2026-10-10 |
 | 114 | [Modernizar o stub de `vscode` e reduzir `any` nos testes](in-progress/prd-114-vscode-stub-modernization.md) | 0.18.0 | 2026-10-10 |
+| 118 | [Assinatura de commits e verificação de origem no main](in-progress/prd-118-commit-signing.md) | 0.18.0 | 2026-10-13 |
+| 119 | [Postura de segurança verificável: OSSF Scorecard e proteção de main](in-progress/prd-119-security-posture-scorecard.md) | 0.18.0 | 2026-10-13 |
 | 123 | [Suporte oficial ao Oracle 11g (11.2) em thick mode](in-progress/prd-123-oracle-11g-support.md) | 0.18.0 | 2026-10-17 |
 
 ### ⚪ Propostos
@@ -318,15 +313,14 @@ docs/prd/
 │   ├── prd-105-snippets.md
 │   ├── prd-108-coverage-html-report.md
 │   ├── prd-109-language-identity.md
-├── approved/        ← aprovados, aguardando implementação
-│   ├── prd-118-commit-signing.md
-│   ├── prd-119-security-posture-scorecard.md
 ├── in-progress/        ← sendo implementados agora
 │   ├── prd-98-docs-anti-drift.md
 │   ├── prd-104-ci-supply-chain.md
 │   ├── prd-110-defensive-hardening.md
 │   ├── prd-113-lint-scope.md
 │   ├── prd-114-vscode-stub-modernization.md
+│   ├── prd-118-commit-signing.md
+│   ├── prd-119-security-posture-scorecard.md
 │   ├── prd-123-oracle-11g-support.md
 ├── proposed/        ← em avaliação
 │   ├── prd-47-node-26-toolchain.md

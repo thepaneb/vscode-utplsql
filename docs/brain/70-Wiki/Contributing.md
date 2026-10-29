@@ -5,7 +5,7 @@ titulo: "Contributing"
 publicar: docs/wiki/Contributing.md
 origem: ["MOC - Documentacao"]
 verificado: 2026-10-29
-regras: ["BR-PLAT-002", "BR-QUAL-002", "BR-TEST-003", "BR-DOC-001", "BR-DOC-002"]
+regras: ["BR-PLAT-002", "BR-PLAT-003", "BR-PLAT-004", "BR-QUAL-002", "BR-TEST-003", "BR-DOC-001", "BR-DOC-002"]
 tags: [wiki]
 ---
 

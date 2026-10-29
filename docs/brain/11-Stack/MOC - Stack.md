@@ -92,6 +92,7 @@ SORT id ASC
 - [[PIPE-pages - Deploy Pages]] — `PIPE-pages`
 - [[PIPE-pagespeed - PageSpeed Check]] — `PIPE-pagespeed`
 - [[PIPE-publish - Publish Extension]] — `PIPE-publish`
+- [[PIPE-scorecard - Scorecard]] — `PIPE-scorecard`
 - [[PIPE-site-health - Site Health Check]] — `PIPE-site-health`
 - [[PIPE-wiki - Publish Wiki]] — `PIPE-wiki`
 <!-- brain:auto:end -->

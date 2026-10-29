@@ -4,7 +4,7 @@
 
 | Campo | Valor |
 |---|---|
-| Status | Aprovado |
+| Status | Em desenvolvimento |
 | Autor | Gil Cleber Barboza |
 | Data | 2026-10-13 |
 | Componente | Governança do repositório (configuração local do mantenedor + *branch protection* do `main`) |
@@ -135,6 +135,17 @@ Nenhuma setting da extensão; apenas configuração `git`/GitHub.
 - Exigir também **tags** assinadas (o `publish.yml` dispara em `release:
   published`, criado pela API — tags assinadas são só higiene local)?
 - Algum bot do repositório precisa de bypass explícito?
+
+## Decisões (2026-10-29)
+
+- **SSH signing** (reaproveita a chave existente); GPG fica como alternativa.
+- `commit.gpgsign`/`tag.gpgsign` locais; a chave pública é cadastrada como
+  **Signing Key** no GitHub.
+- A exigência de commits assinados é ativada no **fim** (depois do merge da
+  0.18.0), para não bloquear o fluxo atual; merges do GitHub/Dependabot são
+  assinados pela plataforma.
+- Regra **`BR-PLAT-003`**; a configuração local/GitHub é ação do mantenedor
+  (documentada no `CONTRIBUTING.md`), não versionável.
 
 ## 12. Impacto no cérebro
 
