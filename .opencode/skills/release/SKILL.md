@@ -10,6 +10,15 @@ Publicação é **exclusivamente via GitHub release** (workflow `publish.yml`, q
 roda compile/lint/test/package e publica no Marketplace). **Nunca** rode
 `npm run publish`/`vsce publish` local — local só `npm run package` (gera `.vsix`).
 
+## Aprovação obrigatória (mantenedor)
+
+**Não** faça **merge na `main`**, **não crie tag** e **não crie/publique GitHub
+release** sem **aprovação específica e explícita do mantenedor na conversa**.
+“Sim” genérico, “continue” ou aprovação de etapa anterior não valem. Preparar a
+branch de release, commitar, pushar, abrir/atualizar o PR e rodar os gates é
+permitido; o merge, a tag e a release exigem aprovação. Se a aprovação for só
+para o merge, pare depois dele e peça a aprovação da tag/release em separado.
+
 ## Pré-condições
 
 - `npm run test:unit`, `npm run lint` e (com banco) `npm run test:integration` verdes.
@@ -30,8 +39,12 @@ roda compile/lint/test/package e publica no Marketplace). **Nunca** rode
    `npm run docs:features-check -- <versão>` e `npm run sync-prds` no fim.
 5. **Docs** — se houve settings/comandos/features, aplique a skill
    **`docs-fidelity`** (README + 23 variantes, `docs/wiki` (en), functional).
-6. **Commit + push** da branch de release.
-7. **GitHub release** — crie a release com a tag `vX.Y.Z` e as notas do
+6. **Commit + push** da branch de release. **Não faça merge na `main`** ainda:
+   abra/atualize o PR final e aguarde a **aprovação específica** do mantenedor
+   para o merge.
+7. **Somente após a aprovação do merge**, faça o merge do PR
+   `release/vX.Y.Z` → `main`. Depois, **aguarde a aprovação específica para a
+   tag/release** e crie a GitHub release com a tag `vX.Y.Z` e as notas do
    `CHANGELOG` (`gh release create` ou pela UI). O `publish.yml` dispara no
    evento `published` e publica no Marketplace + anexa o `.vsix`.
 8. **Post de LinkedIn** — após publicar, crie/atualize o post de release
@@ -53,6 +66,8 @@ grep "| X.Y.Z |" docs/prd/index.md | wc -l        # PRDs concluídos na versão
       (`npm run brain:rules`)
 - [ ] `npm run docs:check` e `npm run brain:check` OK
 - [ ] `npm run docs:features-check -- <versão>` OK (README, wiki, posts/cards)
+- [ ] Aprovação explícita do mantenedor para o **merge na `main`**
+- [ ] Aprovação explícita do mantenedor para a **tag/GitHub release**
 - [ ] CI verde no commit da release
 - [ ] GitHub release publicada → workflow `Publish Extension` concluído
 - [ ] post de release no LinkedIn criado (local/gitignored)
