@@ -1,66 +1,27 @@
 import './setup.js';
 import assert from 'node:assert';
 import { test } from 'node:test';
+import type * as vscodeApi from 'vscode';
 import type { TestCaseResult } from '../../junit';
 import { applyCoverageFromXml, applyResultsFromCases, resolveStackFrameToUri } from '../../results';
 import type { ItemMeta } from '../../types';
+import {
+  makeFolder,
+  makeMeta,
+  makeTestRun as makeRun,
+  makeState,
+  makeTestItem,
+  makeUri,
+} from '../fixtures';
 import * as vscode from '../vscode-stub';
-
-function makeMeta(over: Partial<ItemMeta>): ItemMeta {
-  return {
-    kind: 'test',
-    packageName: 'app',
-    procName: 'proc',
-    description: 'desc',
-    uri: { fsPath: '/x', path: '/x', scheme: 'file' } as any,
-    ...over,
-  } as ItemMeta;
-}
-
-function makeRun() {
-  const passedList: any[] = [];
-  const failedList: any[] = [];
-  const skippedList: any[] = [];
-  const erroredList: any[] = [];
-  const output: string[] = [];
-  const coverageList: unknown[] = [];
-  return {
-    passed: (t: any, ms?: number) => passedList.push({ t, ms }),
-    failed: (t: any, m: any, ms?: number) => failedList.push({ t, m, ms }),
-    skipped: (t: any) => skippedList.push(t),
-    errored: (t: any, m: any, ms?: number) => erroredList.push({ t, m, ms }),
-    appendOutput: (s: string) => output.push(s),
-    enqueued: () => {},
-    started: () => {},
-    addCoverage: (fc: unknown) => coverageList.push(fc),
-    end: () => {},
-    passedList,
-    failedList,
-    skippedList,
-    erroredList,
-    output,
-    coverageList,
-  };
-}
-
-function makeState(metaMap: Map<any, ItemMeta>, cachedItems: any[] = []) {
-  return {
-    getMeta: (t: any) => metaMap.get(t),
-    setMeta: () => {},
-    setCoverage: () => {},
-    getCoverage: () => [],
-    clearCoverage: () => {},
-    cachedItems,
-  } as any;
-}
 
 // ── resolveStackFrameToUri ───────────────────────────────────────────
 
 test('resolveStackFrameToUri: encontra suite nos cachedItems', () => {
-  const suiteUri = { fsPath: '/ws/tests/ut_app.pks', path: '/ws/tests/ut_app.pks', scheme: 'file' };
-  const suiteItem = { id: 'suite:app' };
+  const suiteUri = makeUri('/ws/tests/ut_app.pks');
+  const suiteItem = makeTestItem('suite:app');
   const state = makeState(
-    new Map([[suiteItem, makeMeta({ kind: 'suite', packageName: 'app', uri: suiteUri as any })]]),
+    new Map([[suiteItem, makeMeta({ kind: 'suite', packageName: 'app', uri: suiteUri })]]),
     [suiteItem],
   );
   const loc = resolveStackFrameToUri([{ objectName: 'APP', line: 42 }], state);
@@ -70,10 +31,10 @@ test('resolveStackFrameToUri: encontra suite nos cachedItems', () => {
 });
 
 test('resolveStackFrameToUri: ignora frames internos UT_', () => {
-  const suiteUri = { fsPath: '/ws/ut_app.pks', path: '/ws/ut_app.pks', scheme: 'file' };
-  const suiteItem = { id: 'suite:app' };
+  const suiteUri = makeUri('/ws/ut_app.pks');
+  const suiteItem = makeTestItem('suite:app');
   const state = makeState(
-    new Map([[suiteItem, makeMeta({ kind: 'suite', packageName: 'app', uri: suiteUri as any })]]),
+    new Map([[suiteItem, makeMeta({ kind: 'suite', packageName: 'app', uri: suiteUri })]]),
     [suiteItem],
   );
   const loc = resolveStackFrameToUri(
@@ -114,10 +75,10 @@ test('resolveStackFrameToUri: undefined quando so ha frames internos', () => {
 // 3+ => penúltimo.
 
 function suiteState(packageName: string, fsPath: string) {
-  const suiteUri = { fsPath, path: fsPath, scheme: 'file' };
-  const suiteItem = { id: `suite:${packageName}` };
+  const suiteUri = makeUri(fsPath);
+  const suiteItem = makeTestItem(`suite:${packageName}`);
   return makeState(
-    new Map([[suiteItem, makeMeta({ kind: 'suite', packageName, uri: suiteUri as any })]]),
+    new Map([[suiteItem, makeMeta({ kind: 'suite', packageName, uri: suiteUri })]]),
     [suiteItem],
   );
 }
@@ -186,34 +147,34 @@ test('applyResultsFromCases: failed com stackFrames ganha location', () => {
       stackFrames: [{ objectName: 'APP', line: 42 }],
     },
   ];
-  const suiteUri = { fsPath: '/ws/ut_app.pks', path: '/ws/ut_app.pks', scheme: 'file' };
-  const suiteItem = { id: 'suite:app' };
-  const item = { id: 't1', children: [] };
-  const metaMap = new Map<any, ItemMeta>();
-  metaMap.set(suiteItem, makeMeta({ kind: 'suite', packageName: 'app', uri: suiteUri as any }));
+  const suiteUri = makeUri('/ws/ut_app.pks');
+  const suiteItem = makeTestItem('suite:app');
+  const item = makeTestItem('t1');
+  const metaMap = new Map<vscode.TestItem, ItemMeta>();
+  metaMap.set(suiteItem, makeMeta({ kind: 'suite', packageName: 'app', uri: suiteUri }));
   metaMap.set(item, makeMeta({ packageName: 'app', procName: 't_broken' }));
 
-  const run = makeRun() as any;
+  const run = makeRun();
   const state = makeState(metaMap, [suiteItem]);
 
-  const resultMap = applyResultsFromCases(cases, [item as any], run, state);
+  const resultMap = applyResultsFromCases(cases, [item], run, state);
   assert.strictEqual(resultMap.get('t1')?.status, 'failed');
   assert.strictEqual(run.failedList.length, 1);
-  const msg = run.failedList[0].m as any;
+  const msg = run.failedList[0].m;
   assert.ok(msg.location, 'TestMessage deveria ter location');
   assert.strictEqual(msg.location.uri.fsPath, '/ws/ut_app.pks');
 });
 
 test('applyResultsFromCases: unmatched gera aviso e skipped', () => {
   const cases: TestCaseResult[] = [];
-  const item = { id: 't_sem_match', children: [] };
-  const metaMap = new Map<any, ItemMeta>();
+  const item = makeTestItem('t_sem_match');
+  const metaMap = new Map<vscode.TestItem, ItemMeta>();
   metaMap.set(item, makeMeta({ packageName: 'pkg', procName: 'sem_match' }));
 
-  const run = makeRun() as any;
+  const run = makeRun();
   const state = makeState(metaMap);
 
-  const resultMap = applyResultsFromCases(cases, [item as any], run, state);
+  const resultMap = applyResultsFromCases(cases, [item], run, state);
   assert.strictEqual(resultMap.size, 0);
   assert.strictEqual(run.skippedList.length, 1);
   assert.strictEqual(run.skippedList[0].id, 't_sem_match');
@@ -240,7 +201,7 @@ const COV_XML = `<?xml version="1.0"?>
 </coverage>`;
 
 test('applyCoverageFromXml: sem arquivo local usa a fonte virtual e não emite aviso', () => {
-  const run = makeRun() as any;
+  const run = makeRun();
   const state = makeState(new Map());
   let cleared = 0;
   state.clearCoverage = () => {
@@ -282,20 +243,20 @@ test('applyResultsFromCases: error com stackFrames ganha location', () => {
       stackFrames: [{ objectName: 'APP', line: 10 }],
     },
   ];
-  const suiteUri = { fsPath: '/ws/ut_app.pks', path: '/ws/ut_app.pks', scheme: 'file' };
-  const suiteItem = { id: 'suite:app' };
-  const item = { id: 't1', children: [] };
-  const metaMap = new Map<any, ItemMeta>();
-  metaMap.set(suiteItem, makeMeta({ kind: 'suite', packageName: 'app', uri: suiteUri as any }));
+  const suiteUri = makeUri('/ws/ut_app.pks');
+  const suiteItem = makeTestItem('suite:app');
+  const item = makeTestItem('t1');
+  const metaMap = new Map<vscode.TestItem, ItemMeta>();
+  metaMap.set(suiteItem, makeMeta({ kind: 'suite', packageName: 'app', uri: suiteUri }));
   metaMap.set(item, makeMeta({ packageName: 'app', procName: 't_boom' }));
 
-  const run = makeRun() as any;
+  const run = makeRun();
   const state = makeState(metaMap, [suiteItem]);
 
-  const resultMap = applyResultsFromCases(cases, [item as any], run, state);
+  const resultMap = applyResultsFromCases(cases, [item], run, state);
   assert.strictEqual(resultMap.get('t1')?.status, 'error');
   assert.strictEqual(run.erroredList.length, 1);
-  const msg = run.erroredList[0].m as any;
+  const msg = run.erroredList[0].m;
   assert.ok(msg.location, 'TestMessage deveria ter location');
   assert.strictEqual(msg.location.range.start.line, 9);
 });
@@ -311,13 +272,13 @@ test('applyCoverageFromXml: mapeia arquivo quando folders resolve', async () => 
   fs.writeFileSync(path.join(installDir, 'app.sql'), 'create package app;');
 
   try {
-    const run = makeRun() as any;
+    const run = makeRun();
     const state = makeState(new Map());
     const setCoverageCalls: [string, unknown][] = [];
     state.setCoverage = (k: string, v: unknown) => setCoverageCalls.push([k, v]);
 
-    const folders = [{ uri: { fsPath: tmpDir }, name: 'tmp', index: 0 }];
-    applyCoverageFromXml(COV_XML, 'install', run, state, folders as any);
+    const folders = [makeFolder(tmpDir, 'tmp')];
+    applyCoverageFromXml(COV_XML, 'install', run, state, folders);
 
     assert.strictEqual(run.coverageList.length, 1);
     assert.strictEqual(setCoverageCalls.length, 1);
@@ -366,22 +327,22 @@ END;`,
 </coverage>`;
 
   try {
-    const run = makeRun() as any;
+    const run = makeRun();
     const state = makeState(new Map());
-    const setCoverageCalls: [string, unknown][] = [];
-    state.setCoverage = (k: string, v: unknown) => setCoverageCalls.push([k, v]);
+    const setCoverageCalls: Array<[string, vscodeApi.FileCoverageDetail[]]> = [];
+    state.setCoverage = (k, v) => setCoverageCalls.push([k, v]);
 
-    const folders = [{ uri: { fsPath: tmpDir }, name: 'tmp', index: 0 }];
-    applyCoverageFromXml(xml, 'install', run, state, folders as any);
+    const folders = [makeFolder(tmpDir, 'tmp')];
+    applyCoverageFromXml(xml, 'install', run, state, folders);
 
     assert.strictEqual(run.coverageList.length, 1);
-    const details = setCoverageCalls[0][1] as unknown[];
+    const details = setCoverageCalls[0][1];
     const declarations = details.filter(
-      (d) => (d as any).constructor?.name === 'DeclarationCoverage',
+      (d): d is vscode.DeclarationCoverage => d instanceof vscode.DeclarationCoverage,
     );
     assert.strictEqual(declarations.length, 2);
     // calc (linha 2) tem hits na linha 3; get_total não → só calc executada
-    const execNames = declarations.map((d) => [(d as any).name, (d as any).executed]);
+    const execNames = declarations.map((d) => [d.name, d.executed]);
     assert.deepStrictEqual(execNames, [
       ['calc', true],
       ['get_total', false],
@@ -403,7 +364,7 @@ test('applyCoverageFromXml: classe sem linhas emite aviso de nao mapeado', () =>
     </package>
   </packages>
 </coverage>`;
-  const run = makeRun() as any;
+  const run = makeRun();
   const state = makeState(new Map());
   applyCoverageFromXml(xml, 'install', run, state, []);
   const warnings = run.output.filter((s: string) => s.includes('nenhum arquivo mapeado'));
@@ -412,24 +373,24 @@ test('applyCoverageFromXml: classe sem linhas emite aviso de nao mapeado', () =>
 
 test('resolveStackFrameToUri: itens de teste são ignorados (continue)', () => {
   vscode.workspace.__setWorkspaceFolders(undefined);
-  const suiteItem = { id: 'suite:app' };
-  const testItem = { id: 't1', children: [] };
-  const metaMap = new Map<any, ItemMeta>();
+  const suiteItem = makeTestItem('suite:app');
+  const testItem = makeTestItem('t1');
+  const metaMap = new Map<vscode.TestItem, ItemMeta>();
   metaMap.set(testItem, makeMeta({ packageName: 'app', procName: 't1' }));
   metaMap.set(suiteItem, makeMeta({ kind: 'suite', packageName: 'app' }));
-  const state = makeState(metaMap, [testItem as any]);
+  const state = makeState(metaMap, [testItem]);
   const loc = resolveStackFrameToUri([{ objectName: 'APP', line: 42 }], state);
   assert.strictEqual(loc, undefined);
 });
 
 test('resolveStackFrameToUri: com workspace folders retorna Location', () => {
-  const folders = [{ uri: { fsPath: '/ws' }, name: 'ws', index: 0 }];
-  vscode.workspace.__setWorkspaceFolders(folders as any);
+  const folders = [makeFolder('/ws', 'ws')];
+  vscode.workspace.__setWorkspaceFolders(folders);
   try {
     const state = makeState(new Map(), []);
     const loc = resolveStackFrameToUri([{ objectName: 'APP', line: 10 }], state);
     assert.ok(loc, 'deveria resolver via workspace folder');
-    assert.strictEqual((loc as any).uri.fsPath, '/ws/app.pks');
+    assert.strictEqual(loc.uri.fsPath, '/ws/app.pks');
   } finally {
     vscode.workspace.__setWorkspaceFolders(undefined);
   }
@@ -439,12 +400,12 @@ test('applyResultsFromCases: failed sem message usa "Falhou"', () => {
   const cases: TestCaseResult[] = [
     { classname: 'pkg', name: 't1', status: 'failed', durationMs: 5 },
   ];
-  const item = { id: 't1', children: [] };
-  const metaMap = new Map<any, ItemMeta>();
+  const item = makeTestItem('t1');
+  const metaMap = new Map<vscode.TestItem, ItemMeta>();
   metaMap.set(item, makeMeta({ packageName: 'pkg', procName: 't1' }));
-  const run = makeRun() as any;
+  const run = makeRun();
   const state = makeState(metaMap);
-  applyResultsFromCases(cases, [item as any], run, state);
+  applyResultsFromCases(cases, [item], run, state);
   assert.strictEqual(run.failedList.length, 1);
   assert.strictEqual(run.failedList[0].m.message, 'Falhou');
 });
@@ -459,27 +420,27 @@ test('applyResultsFromCases: failed com stackFrames ganha location', () => {
       stackFrames: [{ objectName: 'APP', line: 9 }],
     },
   ];
-  const suiteUri = { fsPath: '/ws/ut_app.pks', path: '/ws/ut_app.pks', scheme: 'file' };
-  const suiteItem = { id: 'suite:app' };
-  const item = { id: 't1', children: [] };
-  const metaMap = new Map<any, ItemMeta>();
-  metaMap.set(suiteItem, makeMeta({ kind: 'suite', packageName: 'app', uri: suiteUri as any }));
+  const suiteUri = makeUri('/ws/ut_app.pks');
+  const suiteItem = makeTestItem('suite:app');
+  const item = makeTestItem('t1');
+  const metaMap = new Map<vscode.TestItem, ItemMeta>();
+  metaMap.set(suiteItem, makeMeta({ kind: 'suite', packageName: 'app', uri: suiteUri }));
   metaMap.set(item, makeMeta({ packageName: 'app', procName: 't1' }));
-  const run = makeRun() as any;
-  const state = makeState(metaMap, [suiteItem as any]);
-  applyResultsFromCases(cases, [item as any], run, state);
-  const msg = run.failedList[0].m as any;
+  const run = makeRun();
+  const state = makeState(metaMap, [suiteItem]);
+  applyResultsFromCases(cases, [item], run, state);
+  const msg = run.failedList[0].m;
   assert.ok(msg.location, 'failed com stack deveria ter location');
 });
 
 test('resolveStackFrameToUri: item não correspondente cai para workspace folders', () => {
-  const folders = [{ uri: { fsPath: '/ws' }, name: 'ws', index: 0 }];
-  vscode.workspace.__setWorkspaceFolders(folders as any);
+  const folders = [makeFolder('/ws', 'ws')];
+  vscode.workspace.__setWorkspaceFolders(folders);
   try {
-    const suiteItem = { id: 'suite:other' };
-    const metaMap = new Map<any, ItemMeta>();
+    const suiteItem = makeTestItem('suite:other');
+    const metaMap = new Map<vscode.TestItem, ItemMeta>();
     metaMap.set(suiteItem, makeMeta({ kind: 'suite', packageName: 'other' }));
-    const state = makeState(metaMap, [suiteItem as any]);
+    const state = makeState(metaMap, [suiteItem]);
     const loc = resolveStackFrameToUri([{ objectName: 'APP', line: 3 }], state);
     assert.ok(loc, 'deveria resolver via workspace folders');
   } finally {
@@ -491,12 +452,12 @@ test('applyResultsFromCases: error sem message usa "Erro"', () => {
   const cases: TestCaseResult[] = [
     { classname: 'pkg', name: 't1', status: 'error', durationMs: 5 },
   ];
-  const item = { id: 't1', children: [] };
-  const metaMap = new Map<any, ItemMeta>();
+  const item = makeTestItem('t1');
+  const metaMap = new Map<vscode.TestItem, ItemMeta>();
   metaMap.set(item, makeMeta({ packageName: 'pkg', procName: 't1' }));
-  const run = makeRun() as any;
+  const run = makeRun();
   const state = makeState(metaMap);
-  applyResultsFromCases(cases, [item as any], run, state);
+  applyResultsFromCases(cases, [item], run, state);
   assert.strictEqual(run.erroredList.length, 1);
   assert.strictEqual(run.erroredList[0].m.message, 'Erro');
 });
@@ -512,29 +473,29 @@ test('applyResultsFromCases: failed com Expected/Actual preenche the diff', () =
       message: 'Actual: 1 (number) was expected to equal: 2 (number)',
     },
   ];
-  const item = { id: 't1', children: [] };
-  const metaMap = new Map<any, ItemMeta>();
+  const item = makeTestItem('t1');
+  const metaMap = new Map<vscode.TestItem, ItemMeta>();
   metaMap.set(item, makeMeta({ packageName: 'pkg', procName: 't1' }));
-  const run = makeRun() as any;
+  const run = makeRun();
   const state = makeState(metaMap);
-  applyResultsFromCases(cases, [item as any], run, state);
-  const msg = run.failedList[0].m as any;
+  applyResultsFromCases(cases, [item], run, state);
+  const msg = run.failedList[0].m;
   assert.strictEqual(msg.expectedOutput, '2 (number)');
   assert.strictEqual(msg.actualOutput, '1 (number)');
-  assert.match(msg.message, /was expected to equal/);
+  assert.match(String(msg.message), /was expected to equal/);
 });
 
 test('applyResultsFromCases: failed sem marcadores não define o diff', () => {
   const cases: TestCaseResult[] = [
     { classname: 'pkg', name: 't1', status: 'failed', message: 'falhou sem detalhes' },
   ];
-  const item = { id: 't1', children: [] };
-  const metaMap = new Map<any, ItemMeta>();
+  const item = makeTestItem('t1');
+  const metaMap = new Map<vscode.TestItem, ItemMeta>();
   metaMap.set(item, makeMeta({ packageName: 'pkg', procName: 't1' }));
-  const run = makeRun() as any;
+  const run = makeRun();
   const state = makeState(metaMap);
-  applyResultsFromCases(cases, [item as any], run, state);
-  const msg = run.failedList[0].m as any;
+  applyResultsFromCases(cases, [item], run, state);
+  const msg = run.failedList[0].m;
   assert.strictEqual(msg.expectedOutput, undefined);
   assert.strictEqual(msg.actualOutput, undefined);
 });
@@ -548,13 +509,13 @@ test('applyResultsFromCases: error não recebe diff', () => {
       message: 'Expected: 2\nActual: 1',
     },
   ];
-  const item = { id: 't1', children: [] };
-  const metaMap = new Map<any, ItemMeta>();
+  const item = makeTestItem('t1');
+  const metaMap = new Map<vscode.TestItem, ItemMeta>();
   metaMap.set(item, makeMeta({ packageName: 'pkg', procName: 't1' }));
-  const run = makeRun() as any;
+  const run = makeRun();
   const state = makeState(metaMap);
-  applyResultsFromCases(cases, [item as any], run, state);
-  const msg = run.erroredList[0].m as any;
+  applyResultsFromCases(cases, [item], run, state);
+  const msg = run.erroredList[0].m;
   assert.strictEqual(msg.expectedOutput, undefined);
   assert.strictEqual(msg.actualOutput, undefined);
 });
@@ -566,39 +527,44 @@ function durationCase(): TestCaseResult[] {
 }
 
 test('applyResultsFromCases: showTestDuration sufixa o label e guarda duração/ts', () => {
-  const item = { id: 't1', label: 'app.add', children: [] };
-  const metaMap = new Map<any, ItemMeta>();
+  const item = makeTestItem('t1', 'app.add');
+  const metaMap = new Map<vscode.TestItem, ItemMeta>();
   metaMap.set(item, makeMeta({ packageName: 'app', procName: 'add' }));
-  const run = makeRun() as any;
+  const run = makeRun();
   const state = makeState(metaMap);
 
   vscode.__setConfigValue('showTestDuration', true);
-  const map = applyResultsFromCases(durationCase(), [item as any], run, state);
+  const map = applyResultsFromCases(durationCase(), [item], run, state);
 
   assert.strictEqual(item.label, 'app.add (1.2s)');
   assert.strictEqual(map.get('t1')?.durationMs, 1200);
   assert.strictEqual(typeof map.get('t1')?.ts, 'number');
 
   // reaplicar substitui o sufixo (não acumula)
-  applyResultsFromCases(durationCase(), [item as any], run, state);
+  applyResultsFromCases(durationCase(), [item], run, state);
   assert.strictEqual(item.label, 'app.add (1.2s)');
 
   // desligar limpa o sufixo anterior
   vscode.__setConfigValue('showTestDuration', false);
-  applyResultsFromCases(durationCase(), [item as any], run, state);
+  applyResultsFromCases(durationCase(), [item], run, state);
   assert.strictEqual(item.label, 'app.add');
   vscode.__resetConfigValues();
 });
 
 test('applyResultsFromCases: label não-string é preservado (TreeItemLabel)', () => {
-  const item = { id: 't1', label: { label: 'app.add' }, children: [] };
-  const metaMap = new Map<any, ItemMeta>();
+  // Cenário negativo: o produto preserva um `label` não-string (TreeItemLabel).
+  const item = {
+    id: 't1',
+    label: { label: 'app.add' },
+    children: [],
+  } as unknown as vscode.TestItem;
+  const metaMap = new Map<vscode.TestItem, ItemMeta>();
   metaMap.set(item, makeMeta({ packageName: 'app', procName: 'add' }));
-  const run = makeRun() as any;
+  const run = makeRun();
   const state = makeState(metaMap);
 
   vscode.__setConfigValue('showTestDuration', true);
-  applyResultsFromCases(durationCase(), [item as any], run, state);
+  applyResultsFromCases(durationCase(), [item], run, state);
 
   assert.deepStrictEqual(item.label, { label: 'app.add' });
   vscode.__resetConfigValues();

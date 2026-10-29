@@ -69,6 +69,7 @@ SORT id ASC
 - [[COD - docs-fidelity.cjs]] — `COD-docs-fidelity.cjs`
 - [[COD - esbuild.config.mjs]] — `COD-esbuild.config.mjs`
 - [[COD - extension.ts]] — `COD-extension.ts`
+- [[COD - fixtures.ts]] — `COD-fixtures.ts`
 - [[COD - gen-diagrams.cjs]] — `COD-gen-diagrams.cjs`
 - [[COD - gen-icon.cjs]] — `COD-gen-icon.cjs`
 - [[COD - google-index.yml]] — `COD-google-index.yml`
@@ -128,6 +129,7 @@ SORT id ASC
 - [[COD - vsce.cjs]] — `COD-vsce.cjs`
 - [[COD - vscode-api-inventory.cjs]] — `COD-vscode-api-inventory.cjs`
 - [[COD - vscode-stub.ts]] — `COD-vscode-stub.ts`
+- [[COD - vscode-stub.types.ts]] — `COD-vscode-stub.types.ts`
 - [[COD - wait-ready.sh]] — `COD-wait-ready.sh`
 - [[COD - wiki.yml]] — `COD-wiki.yml`
 <!-- brain:auto:end -->

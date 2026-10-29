@@ -54,8 +54,7 @@ function stateWithSuite() {
   const state = new TestStateManager();
   const suiteItem = new TestItem('suite:pkg');
   const testItem = new TestItem('test:pkg.proc');
-  // `TestItemCollection` real itera como pares [id, item].
-  (suiteItem as { children: unknown[] }).children = [['test:pkg.proc', testItem]];
+  suiteItem.children.add(testItem);
   const uri = {
     fsPath: '/tmp/proj/db/PKG/t.pks',
     path: '/tmp/proj/db/PKG/t.pks',

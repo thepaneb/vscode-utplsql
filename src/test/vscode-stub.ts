@@ -1,18 +1,36 @@
+import type * as vscode from 'vscode';
+
+function makeUri(scheme: string, path: string, fsPath = path): vscode.Uri {
+  return {
+    scheme,
+    authority: '',
+    path,
+    query: '',
+    fragment: '',
+    fsPath,
+    with(change) {
+      return makeUri(change.scheme ?? scheme, change.path ?? path, change.path ?? fsPath);
+    },
+    // Compatibilidade do stub: para `file:` o resto da suíte usa o fsPath como
+    // chave/string (o VS Code real devolve `file:///...`).
+    toString: () => (scheme === 'file' ? fsPath : `${scheme}:${path}`),
+    toJSON: () => ({ scheme, authority: '', path, query: '', fragment: '' }),
+  };
+}
+
 export namespace Uri {
-  export function file(path: string) {
-    return { fsPath: path, path, scheme: 'file', toString: () => path, toJSON: () => path };
+  export function file(path: string): vscode.Uri {
+    return makeUri('file', path);
   }
-  export function parse(s: string) {
+  export function parse(s: string): vscode.Uri {
     const schemeMatch = /^([a-zA-Z][a-zA-Z0-9+.-]*):(.*)$/.exec(s);
     if (schemeMatch && !/^[a-zA-Z]:[\\/]/.test(s)) {
-      const scheme = schemeMatch[1];
-      const rest = schemeMatch[2] || '/';
-      return { fsPath: s, path: rest, scheme, toString: () => s, toJSON: () => s };
+      return makeUri(schemeMatch[1], schemeMatch[2] || '/', s);
     }
-    return { fsPath: s, path: s, scheme: 'file', toString: () => s, toJSON: () => s };
+    return makeUri('file', s, s);
   }
-  export function joinPath(base: { fsPath: string }, ...pathSegments: string[]) {
-    const basePath = (base as { fsPath: string }).fsPath.replace(/[/\\]$/, '');
+  export function joinPath(base: vscode.Uri, ...pathSegments: string[]): vscode.Uri {
+    const basePath = base.fsPath.replace(/[/\\]$/, '');
     const joined = [basePath, ...pathSegments].join('/');
     return file(joined);
   }
@@ -42,7 +60,7 @@ export function __resetInputBoxResults(): void {
 }
 
 export function __setActiveTextEditor(editor: TextEditor | undefined): void {
-  window.activeTextEditor = editor;
+  window.__setActiveTextEditorForTests(editor);
 }
 
 export function __getInformationMessages(): string[] {
@@ -272,7 +290,7 @@ export namespace workspace {
   };
   export let workspaceFolders:
     | Array<{ uri: { fsPath: string }; name: string; index: number }>
-    | undefined;
+    | undefined = undefined;
 
   export function __setWorkspaceFolders(
     folders: Array<{ uri: { fsPath: string }; name: string; index: number }> | undefined,
@@ -448,13 +466,13 @@ export const ProgressLocation = { SourceControl: 1, Window: 10, Notification: 15
 
 export interface CancellationToken {
   isCancellationRequested: boolean;
-  onCancellationRequested(listener: () => void): { dispose: () => void };
+  onCancellationRequested(listener: (e: unknown) => void): { dispose: () => void };
 }
 
 const _cancellationTokenSources: CancellationTokenSource[] = [];
 
 export class CancellationTokenSource {
-  private listeners = new Set<() => void>();
+  private listeners = new Set<(e: unknown) => void>();
   private cancelled = false;
   private disposed = false;
   private cancellations = 0;
@@ -466,9 +484,9 @@ export class CancellationTokenSource {
       get isCancellationRequested() {
         return source.cancelled;
       },
-      onCancellationRequested(listener: () => void) {
+      onCancellationRequested(listener: (e: unknown) => void) {
         if (source.cancelled) {
-          listener();
+          listener(undefined);
           return { dispose: () => {} };
         }
         source.listeners.add(listener);
@@ -494,7 +512,7 @@ export class CancellationTokenSource {
     if (this.cancelled) return;
     this.cancelled = true;
     this.cancellations += 1;
-    for (const listener of [...this.listeners]) listener();
+    for (const listener of [...this.listeners]) listener(undefined);
     this.listeners.clear();
   }
 
@@ -514,9 +532,11 @@ export function __resetCancellationTokenSources(): void {
 
 export class TestRunRequest {
   constructor(
-    public include?: unknown[],
-    public exclude?: unknown,
-    public profile?: unknown,
+    public include: readonly vscode.TestItem[] | undefined = undefined,
+    public exclude: readonly vscode.TestItem[] | undefined = undefined,
+    public profile: vscode.TestRunProfile | undefined = undefined,
+    public continuous?: boolean,
+    public preserveFocus = false,
   ) {}
 }
 
@@ -660,7 +680,10 @@ export namespace window {
   export function createTextEditorDecorationType(_opts: any) {
     return { dispose: () => {} } as TextEditorDecorationType;
   }
-  export let activeTextEditor: TextEditor | undefined;
+  export let activeTextEditor: TextEditor | undefined = undefined;
+  export function __setActiveTextEditorForTests(editor: TextEditor | undefined): void {
+    activeTextEditor = editor;
+  }
   export function createStatusBarItem(_alignment: number, _priority: number) {
     return {
       text: '',
@@ -740,56 +763,79 @@ export const FileType = {
 
 export const TestRunProfileKind = { Run: 1, Coverage: 2, Debug: 3 } as const;
 
-export class TestItemCollection {
-  private map = new Map<string, TestItem>();
-  add(item: TestItem): void {
+export class TestItemCollection implements vscode.TestItemCollection {
+  private map = new Map<string, vscode.TestItem>();
+  add(item: vscode.TestItem): void {
     this.map.set(item.id, item);
   }
-  get(id: string): TestItem | undefined {
+  get(id: string): vscode.TestItem | undefined {
     return this.map.get(id);
   }
-  forEach(cb: (item: TestItem) => void): void {
-    for (const item of this.map.values()) cb(item);
+  forEach(
+    callback: (item: vscode.TestItem, collection: vscode.TestItemCollection) => unknown,
+    thisArg?: unknown,
+  ): void {
+    for (const item of this.map.values()) callback.call(thisArg, item, this);
   }
   get size(): number {
     return this.map.size;
+  }
+  replace(items: readonly vscode.TestItem[]): void {
+    this.map.clear();
+    for (const item of items) this.add(item);
+  }
+  delete(id: string): void {
+    this.map.delete(id);
+  }
+  [Symbol.iterator](): Iterator<[string, vscode.TestItem]> {
+    return this.map.entries();
+  }
+  /** Atalho de teste: snapshot dos itens (não existe na API real). */
+  toArray(): vscode.TestItem[] {
+    return [...this.map.values()];
   }
 }
 
 export class TestController {
   items = new TestItemCollection();
-  resolveHandler?: (item?: TestItem) => unknown;
-  refreshHandler?: () => unknown;
-  runProfiles: Array<Record<string, unknown>> = [];
+  resolveHandler: ((item?: vscode.TestItem) => void | Thenable<void>) | undefined = undefined;
+  refreshHandler: (() => void | Thenable<void>) | undefined = undefined;
+  runProfiles: vscode.TestRunProfile[] = [];
   constructor(
     public id: string,
     public label: string,
   ) {}
-  createTestItem(id: string, label: string, uri?: unknown): TestItem {
-    const item = new TestItem(id);
-    (item as { label?: string }).label = label;
-    (item as { uri?: unknown }).uri = uri;
-    return item;
+  createTestItem(id: string, label: string, uri?: vscode.Uri): TestItem {
+    return new TestItem(id, label, uri);
   }
   createRunProfile(
     name: string,
     kind: number,
     runHandler: unknown,
     isDefault?: boolean,
-  ): Record<string, unknown> {
-    const profile: Record<string, unknown> = {
-      name,
-      kind,
-      runHandler,
-      isDefault,
+  ): vscode.TestRunProfile {
+    const profile: vscode.TestRunProfile = {
+      label: name,
+      kind: kind as vscode.TestRunProfileKind,
+      isDefault: isDefault ?? false,
+      onDidChangeDefault: new EventEmitter<boolean>().event,
+      supportsContinuousRun: false,
+      tag: undefined,
+      runHandler: runHandler as vscode.TestRunProfile['runHandler'],
+      configureHandler: undefined,
       dispose: () => {},
     };
     this.runProfiles.push(profile);
     return profile;
   }
-  createTestRun(_request?: unknown): TestRun {
+  createTestRun(
+    _request?: vscode.TestRunRequest,
+    _name?: string,
+    _persist?: boolean,
+  ): vscode.TestRun {
     return new TestRun();
   }
+  invalidateTestResults(_item?: vscode.TestItem | vscode.TestItem[]): void {}
   dispose(): void {}
 }
 
@@ -805,7 +851,7 @@ export namespace tests {
   }
 }
 
-export class TestMessage {
+export class TestMessage implements vscode.TestMessage {
   message: string;
   expectedOutput?: string;
   actualOutput?: string;
@@ -815,7 +861,12 @@ export class TestMessage {
   }
 }
 
-export class TestRun {
+export class TestRun implements vscode.TestRun {
+  name = '';
+  token: vscode.CancellationToken = new CancellationTokenSource().token;
+  isPersisted = false;
+  private _onDidDispose = new EventEmitter<void>();
+  onDidDispose: vscode.Event<void> = this._onDidDispose.event;
   private _passed: number = 0;
   private _failed: number = 0;
   private _skipped: number = 0;
@@ -837,36 +888,58 @@ export class TestRun {
     return this._output.join('');
   }
 
-  enqueued(_item: TestItem) {}
-  started(_item: TestItem) {}
-  passed(_item: TestItem, _ms?: number) {
+  enqueued(_item: vscode.TestItem) {}
+  started(_item: vscode.TestItem) {}
+  passed(_item: vscode.TestItem, _ms?: number) {
     this._passed++;
   }
-  failed(_item: TestItem, _message: TestMessage, _ms?: number) {
+  failed(
+    _item: vscode.TestItem,
+    _message: vscode.TestMessage | readonly vscode.TestMessage[],
+    _ms?: number,
+  ) {
     this._failed++;
   }
-  skipped(_item: TestItem) {
+  skipped(_item: vscode.TestItem) {
     this._skipped++;
   }
-  errored(_item: TestItem, _message: TestMessage, _ms?: number) {
+  errored(
+    _item: vscode.TestItem,
+    _message: vscode.TestMessage | readonly vscode.TestMessage[],
+    _ms?: number,
+  ) {
     this._errored++;
   }
-  appendOutput(text: string) {
+  appendOutput(text: string, _location?: vscode.Location) {
     this._output.push(text);
   }
-  addCoverage(_coverage: FileCoverage) {}
+  addCoverage(_coverage: vscode.FileCoverage) {}
   end() {}
 }
 
-export class TestItem {
-  id: string;
-  children: TestItem[] = [];
-  constructor(id: string) {
-    this.id = id;
+export class TestItem implements vscode.TestItem {
+  label: string;
+  uri: vscode.Uri | undefined;
+  parent: vscode.TestItem | undefined = undefined;
+  children = new TestItemCollection();
+  canResolveChildren = false;
+  busy = false;
+  error: string | vscode.MarkdownString | undefined = undefined;
+  tags: vscode.TestTag[] = [];
+  range: vscode.Range | undefined = undefined;
+  description?: string;
+  sortText?: string;
+  constructor(
+    public id: string,
+    label?: string,
+    uri?: vscode.Uri,
+  ) {
+    this.label = label ?? id;
+    this.uri = uri;
   }
 }
 
-export class Range {
+export class Range implements vscode.Range {
   constructor(
     public startLine: number,
     public startCharacter: number,
@@ -879,15 +952,52 @@ export class Range {
   get end(): Position {
     return new Position(this.endLine, this.endCharacter);
   }
+  get isEmpty(): boolean {
+    return this.startLine === this.endLine && this.startCharacter === this.endCharacter;
+  }
+  get isSingleLine(): boolean {
+    return this.startLine === this.endLine;
+  }
+  contains(positionOrRange: vscode.Position | vscode.Range): boolean {
+    const isRange = (v: vscode.Position | vscode.Range): v is vscode.Range =>
+      'start' in v && 'end' in v;
+    const start = isRange(positionOrRange) ? positionOrRange.start : positionOrRange;
+    const end = isRange(positionOrRange) ? positionOrRange.end : positionOrRange;
+    return this.start.isBeforeOrEqual(start) && this.end.isAfterOrEqual(end);
+  }
+  isEqual(other: vscode.Range): boolean {
+    return this.start.isEqual(other.start) && this.end.isEqual(other.end);
+  }
+  intersection(other: vscode.Range): Range | undefined {
+    const start = this.start.isAfter(other.start) ? this.start : other.start;
+    const end = this.end.isBefore(other.end) ? this.end : other.end;
+    return start.isAfter(end)
+      ? undefined
+      : new Range(start.line, start.character, end.line, end.character);
+  }
+  union(other: vscode.Range): Range {
+    const start = this.start.isBefore(other.start) ? this.start : other.start;
+    const end = this.end.isAfter(other.end) ? this.end : other.end;
+    return new Range(start.line, start.character, end.line, end.character);
+  }
+  with(start?: vscode.Position, end?: vscode.Position): Range;
+  with(change: { start?: vscode.Position; end?: vscode.Position }): Range;
+  with(
+    startOrChange?: Position | { start?: vscode.Position; end?: vscode.Position },
+    end?: vscode.Position,
+  ): Range {
+    const nextStart =
+      startOrChange instanceof Position ? startOrChange : (startOrChange?.start ?? this.start);
+    const nextEnd =
+      startOrChange instanceof Position ? (end ?? this.end) : (startOrChange?.end ?? this.end);
+    return new Range(nextStart.line, nextStart.character, nextEnd.line, nextEnd.character);
+  }
 }
 
-export class Location {
-  uri: { fsPath: string; path: string; scheme: string };
+export class Location implements vscode.Location {
+  uri: vscode.Uri;
   range: Range;
-  constructor(
-    uri: { fsPath: string; path: string; scheme: string },
-    positionOrRange: Position | Range,
-  ) {
+  constructor(uri: vscode.Uri, positionOrRange: Position | Range) {
     this.uri = uri;
     this.range =
       positionOrRange instanceof Range
@@ -941,15 +1051,39 @@ export function __setVisibleEditors(editors: TextEditor[]): void {
 
 // biome-ignore lint/complexity/noStaticOnlyClass: mimics vscode.FileCoverage API
 export class FileCoverage {
-  static fromDetails(_uri: any, _details: StatementCoverage[]) {
-    return new FileCoverage();
+  constructor(
+    public uri: vscode.Uri,
+    public statementCoverage: vscode.TestCoverageCount,
+    public branchCoverage?: vscode.TestCoverageCount,
+    public declarationCoverage?: vscode.TestCoverageCount,
+    public includesTests?: vscode.TestItem[],
+  ) {}
+  static fromDetails(uri: vscode.Uri, details: readonly vscode.FileCoverageDetail[]): FileCoverage {
+    const statements = details.filter(
+      (d): d is vscode.StatementCoverage => d instanceof StatementCoverage,
+    );
+    const declarations = details.filter(
+      (d): d is vscode.DeclarationCoverage => d instanceof DeclarationCoverage,
+    );
+    return new FileCoverage(
+      uri,
+      {
+        covered: statements.filter((s) => s.executed !== false && s.executed !== 0).length,
+        total: statements.length,
+      },
+      undefined,
+      {
+        covered: declarations.filter((d) => d.executed !== false && d.executed !== 0).length,
+        total: declarations.length,
+      },
+    );
   }
 }
 
 export class StatementCoverage {
   constructor(
-    public hits: number,
-    public position: Position,
+    public executed: number | boolean,
+    public location: vscode.Position | vscode.Range,
   ) {}
 }
 
@@ -957,15 +1091,65 @@ export class DeclarationCoverage {
   constructor(
     public name: string,
     public executed: boolean | number,
-    public position: Position,
+    public location: vscode.Position | vscode.Range,
   ) {}
 }
 
-export class Position {
+export class Position implements vscode.Position {
   constructor(
     public line: number,
     public character: number,
   ) {}
+  isBefore(other: vscode.Position): boolean {
+    return this.line < other.line || (this.line === other.line && this.character < other.character);
+  }
+  isBeforeOrEqual(other: vscode.Position): boolean {
+    return this.isBefore(other) || this.isEqual(other);
+  }
+  isAfter(other: vscode.Position): boolean {
+    return !this.isBeforeOrEqual(other);
+  }
+  isAfterOrEqual(other: vscode.Position): boolean {
+    return !this.isBefore(other);
+  }
+  isEqual(other: vscode.Position): boolean {
+    return this.line === other.line && this.character === other.character;
+  }
+  compareTo(other: vscode.Position): number {
+    if (this.line !== other.line) return this.line < other.line ? -1 : 1;
+    if (this.character !== other.character) return this.character < other.character ? -1 : 1;
+    return 0;
+  }
+  translate(lineDelta?: number, characterDelta?: number): Position;
+  translate(change: { lineDelta?: number; characterDelta?: number }): Position;
+  translate(
+    lineDeltaOrChange: number | { lineDelta?: number; characterDelta?: number } = 0,
+    characterDelta = 0,
+  ): Position {
+    const lineDelta =
+      typeof lineDeltaOrChange === 'number'
+        ? lineDeltaOrChange
+        : (lineDeltaOrChange.lineDelta ?? 0);
+    const charDelta =
+      typeof lineDeltaOrChange === 'number'
+        ? characterDelta
+        : (lineDeltaOrChange.characterDelta ?? 0);
+    return new Position(this.line + lineDelta, this.character + charDelta);
+  }
+  with(line?: number, character?: number): Position;
+  with(change: { line?: number; character?: number }): Position;
+  with(
+    lineOrChange?: number | { line?: number; character?: number },
+    character?: number,
+  ): Position {
+    const line =
+      typeof lineOrChange === 'number' ? lineOrChange : (lineOrChange?.line ?? this.line);
+    const characterValue =
+      typeof lineOrChange === 'number'
+        ? (character ?? this.character)
+        : (lineOrChange?.character ?? this.character);
+    return new Position(line, characterValue);
+  }
 }
 
 export namespace DiagnosticSeverity {

@@ -24,6 +24,7 @@ SORT id ASC
 
 <!-- brain:auto:start:moc-index -->
 - [[Mapa - matriz de bancos]]
+- [[TST - anyBudget.test.ts]] — `TST-anyBudget.test.ts`
 - [[TST - autoRun.test.ts]] — `TST-autoRun.test.ts`
 - [[TST - brainBuild.test.ts]] — `TST-brainBuild.test.ts`
 - [[TST - brainRules.test.ts]] — `TST-brainRules.test.ts`

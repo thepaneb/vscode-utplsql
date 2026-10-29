@@ -4,7 +4,7 @@
 
 | Campo | Valor |
 |---|---|
-| Status | Aprovado |
+| Status | Em desenvolvimento |
 | Autor | Gil Cleber Barboza |
 | Data | 2026-10-10 |
 | Componente | Extensão `paneb.vscode-utplsql` (testes) |
@@ -124,6 +124,22 @@ Nenhuma setting/comando. Possível ajuste do override do Biome para `src/test/**
 
 - Vale gerar o stub parcialmente a partir do inventário de APIs?
 - O alvo de `any` nos testes deve ser zero ou um limite baixo e documentado?
+
+## Decisões (2026-10-29)
+
+- **Alvo de `any`:** `as any` em `src/test/**` caiu de **356 para 116**
+  (meta ≤178); `any` total: 188. O teste `anyBudget.test.ts` trava o patamar.
+- **Tipagem:** `TestItem`, `TestRun`, `Position`, `Range`, `Location`,
+  `TestMessage` e `TestItemCollection` usam `implements` contra
+  `@types/vscode`; `FileCoverage`/`StatementCoverage`/`DeclarationCoverage` e
+  `Uri` são checados no `vscode-stub.types.ts`.
+- **Fixtures:** `src/test/fixtures.ts` centraliza `makeTestRun`, `makeTestItem`,
+  `makeState`, `makeMeta`, `makeUri`, `makeFolder`, `makeController`,
+  `makeRequest` e `NEVER_TOKEN`.
+- **Inventário:** o teste falha se uma API de runtime usada em `src/**` não
+  existir no stub; roots type-only ficam numa allowlist explícita.
+- **Escopo:** `children` passou a ser uma `TestItemCollection` real (com
+  `add/get/forEach/replace/delete/iterator`), eliminando a suposição de array.
 
 ## 12. Impacto no cérebro
 
