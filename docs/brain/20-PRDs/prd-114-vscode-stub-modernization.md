@@ -2,7 +2,7 @@
 tipo: prd
 id: PRD-114
 aliases: [PRD-114]
-status: proposed
+status: approved
 titulo: "Modernizar o stub de `vscode` e reduzir `any` nos testes"
 versao: "0.18.0"
 data: "2026-10-10"

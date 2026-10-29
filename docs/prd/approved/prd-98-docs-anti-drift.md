@@ -4,7 +4,7 @@
 
 | Campo | Valor |
 |---|---|
-| Status | Proposto |
+| Status | Aprovado |
 | Autor | Gil Cleber |
 | Data | 2026-10-08 |
 | Componente | Tooling do repo (`scripts/**`), vault (`docs/brain/**`), skills e CI |

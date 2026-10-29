@@ -4,7 +4,7 @@
 
 | Campo | Valor |
 |---|---|
-| Status | Proposto |
+| Status | Aprovado |
 | Autor | Gil Cleber Barboza |
 | Data | 2026-10-13 |
 | Componente | Segurança e CI do repositório (`.github/`) |

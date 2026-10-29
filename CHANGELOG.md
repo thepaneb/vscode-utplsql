@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.18.0
+
+- **Fundação da 0.18.0**: segurança (hardening defensivo, cadeia de suprimentos,
+  assinatura de commits e OSSF Scorecard), testes (stub de `vscode` tipado) e
+  anti-drift de documentação. Os itens por PRD são consolidados no release.
+
 ## 0.17.1
 
 - **Run/Debug at Cursor on the PL/SQL identity**: both commands now honor

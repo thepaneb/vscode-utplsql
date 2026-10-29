@@ -2,7 +2,7 @@
 tipo: prd
 id: PRD-104
 aliases: [PRD-104]
-status: proposed
+status: approved
 titulo: "Cadeia de suprimentos do CI: Dependabot, pin de actions e auditoria de dependências"
 versao: "0.18.0"
 data: "2026-10-09"

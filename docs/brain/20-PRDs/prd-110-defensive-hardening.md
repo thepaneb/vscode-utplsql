@@ -2,7 +2,7 @@
 tipo: prd
 id: PRD-110
 aliases: [PRD-110]
-status: proposed
+status: approved
 titulo: "Hardening defensivo: identificador SQL, redaction de logs e scripts de desenvolvimento"
 versao: "0.18.0"
 data: "2026-10-09"

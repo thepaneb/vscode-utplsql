@@ -2,7 +2,7 @@
 tipo: prd
 id: PRD-123
 aliases: [PRD-123]
-status: proposed
+status: approved
 titulo: "Suporte oficial ao Oracle 11g (11.2) em thick mode"
 versao: "0.18.0"
 data: "2026-10-17"

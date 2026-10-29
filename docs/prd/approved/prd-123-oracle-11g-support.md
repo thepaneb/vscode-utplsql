@@ -4,7 +4,7 @@
 
 | Campo | Valor |
 |---|---|
-| Status | Proposto |
+| Status | Aprovado |
 | Autor | Gil Cleber Barboza |
 | Data | 2026-10-17 |
 | Componente | Compatibilidade (driver/conexão) + infra da matriz (local, não vai no VSIX) |

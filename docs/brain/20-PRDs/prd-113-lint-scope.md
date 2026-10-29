@@ -2,7 +2,7 @@
 tipo: prd
 id: PRD-113
 aliases: [PRD-113]
-status: proposed
+status: approved
 titulo: "Ampliar o escopo do lint (Biome) para além de `src/`"
 versao: "0.18.0"
 data: "2026-10-10"

@@ -169,6 +169,19 @@ notas `prd-*`. O índice navegável do vault é a [[MOC - PRDs]].
 | 108 | [Relatório HTML de cobertura aberto no navegador](completed/prd-108-coverage-html-report.md) | 0.17.0 | 2026-10-09 |
 | 109 | [Identidade de linguagem PL/SQL ampliada e languageIds configuráveis](completed/prd-109-language-identity.md) | 0.17.0 | 2026-10-09 |
 
+### 🔵 Aprovados
+
+| # | PRD | Versão | Data |
+|---|---|---|---|
+| 98 | [Anti-drift de documentação: tabelas geradas e vínculo PRD→docs](approved/prd-98-docs-anti-drift.md) | 0.18.0 | 2026-10-08 |
+| 104 | [Cadeia de suprimentos do CI: Dependabot, pin de actions e auditoria de dependências](approved/prd-104-ci-supply-chain.md) | 0.18.0 | 2026-10-09 |
+| 110 | [Hardening defensivo: identificador SQL, redaction de logs e scripts de desenvolvimento](approved/prd-110-defensive-hardening.md) | 0.18.0 | 2026-10-09 |
+| 113 | [Ampliar o escopo do lint (Biome) para além de `src/`](approved/prd-113-lint-scope.md) | 0.18.0 | 2026-10-10 |
+| 114 | [Modernizar o stub de `vscode` e reduzir `any` nos testes](approved/prd-114-vscode-stub-modernization.md) | 0.18.0 | 2026-10-10 |
+| 118 | [Assinatura de commits e verificação de origem no main](approved/prd-118-commit-signing.md) | 0.18.0 | 2026-10-13 |
+| 119 | [Postura de segurança verificável: OSSF Scorecard e proteção de main](approved/prd-119-security-posture-scorecard.md) | 0.18.0 | 2026-10-13 |
+| 123 | [Suporte oficial ao Oracle 11g (11.2) em thick mode](approved/prd-123-oracle-11g-support.md) | 0.18.0 | 2026-10-17 |
+
 ### ⚪ Propostos
 
 | # | PRD | Versão | Data |
@@ -184,28 +197,20 @@ notas `prd-*`. O índice navegável do vault é a [[MOC - PRDs]].
 | 93 | [Pipeline de localização contínua (glossário, TM e revisão)](proposed/prd-93-continuous-localization-pipeline.md) | 0.22.0 | 2026-09-29 |
 | 95 | [Modernização do runtime: ESM, ES2023 e stdlib Node 22](proposed/prd-95-esm-es2023-node22.md) | 0.23.0 | 2026-09-29 |
 | 97 | [Documentação no site (Fase 2 da PRD-96)](proposed/prd-97-doc-no-site.md) | 0.23.0 | 2026-10-07 |
-| 98 | [Anti-drift de documentação: tabelas geradas e vínculo PRD→docs](proposed/prd-98-docs-anti-drift.md) | 0.18.0 | 2026-10-08 |
 | 99 | [Cérebro reutilizável: guia de uso e reuso do knowledge base](proposed/prd-99-brain-reuse.md) | 0.23.0 | 2026-10-09 |
 | 101 | [Ciclo de vida de conexões: fechar pools ociosos após a execução](proposed/prd-101-connection-pool-lifecycle.md) | 0.20.0 | 2026-10-09 |
 | 102 | [Observabilidade: tracing e instrumentação de desempenho](proposed/prd-102-trace-and-perf-instrumentation.md) | 0.20.0 | 2026-10-09 |
 | 103 | [Reindexação incremental de fontes (watcher por-URI)](proposed/prd-103-incremental-source-reindex.md) | 0.20.0 | 2026-10-09 |
-| 104 | [Cadeia de suprimentos do CI: Dependabot, pin de actions e auditoria de dependências](proposed/prd-104-ci-supply-chain.md) | 0.18.0 | 2026-10-09 |
 | 106 | [Harness de performance: fixture em escala e medição por fases](proposed/prd-106-perf-harness.md) | 0.20.0 | 2026-10-09 |
 | 107 | [Fixture de integração endurecido: usuário sem privilégios e fallbacks](proposed/prd-107-unprivileged-fixture.md) | 0.20.0 | 2026-10-09 |
-| 110 | [Hardening defensivo: identificador SQL, redaction de logs e scripts de desenvolvimento](proposed/prd-110-defensive-hardening.md) | 0.18.0 | 2026-10-09 |
 | 111 | [Decompor `executeRunOracle` e agrupar `OracleRunOptions`](proposed/prd-111-decompose-oracle-runner.md) | 0.19.0 | 2026-10-10 |
 | 112 | [Auditoria de tratamento de erros: `catch` silenciosos e robustez](proposed/prd-112-error-handling-audit.md) | 0.23.0 | 2026-10-10 |
-| 113 | [Ampliar o escopo do lint (Biome) para além de `src/`](proposed/prd-113-lint-scope.md) | 0.18.0 | 2026-10-10 |
-| 114 | [Modernizar o stub de `vscode` e reduzir `any` nos testes](proposed/prd-114-vscode-stub-modernization.md) | 0.18.0 | 2026-10-10 |
 | 115 | [Fatiar `i18nLocales.ts` por locale](proposed/prd-115-split-i18n-locales.md) | 0.19.0 | 2026-10-10 |
 | 116 | [Testes diretos dos módulos sem cobertura dedicada](proposed/prd-116-direct-module-tests.md) | 0.23.0 | 2026-10-10 |
 | 117 | [Testes de propriedade do parser de scripts (`splitScript`)](proposed/prd-117-split-script-property-tests.md) | 0.23.0 | 2026-10-10 |
-| 118 | [Assinatura de commits e verificação de origem no main](proposed/prd-118-commit-signing.md) | 0.18.0 | 2026-10-13 |
-| 119 | [Postura de segurança verificável: OSSF Scorecard e proteção de main](proposed/prd-119-security-posture-scorecard.md) | 0.18.0 | 2026-10-13 |
 | 120 | [Ativação enxuta e validação de setup preguiçosa](proposed/prd-120-lean-activation-lazy-setup.md) | 0.20.0 | 2026-10-13 |
 | 121 | [Pacote auditável: source map do bundle no VSIX](proposed/prd-121-auditable-package-sourcemap.md) | 0.23.0 | 2026-10-13 |
 | 122 | [Confiança na distribuição: publisher verificado e política de privacidade](proposed/prd-122-marketplace-trust-metadata.md) | 0.23.0 | 2026-10-13 |
-| 123 | [Suporte oficial ao Oracle 11g (11.2) em thick mode](proposed/prd-123-oracle-11g-support.md) | 0.18.0 | 2026-10-17 |
 <!-- prd:roadmap:end -->
 
 ---
@@ -308,6 +313,15 @@ docs/prd/
 │   ├── prd-105-snippets.md
 │   ├── prd-108-coverage-html-report.md
 │   ├── prd-109-language-identity.md
+├── approved/        ← aprovados, aguardando implementação
+│   ├── prd-98-docs-anti-drift.md
+│   ├── prd-104-ci-supply-chain.md
+│   ├── prd-110-defensive-hardening.md
+│   ├── prd-113-lint-scope.md
+│   ├── prd-114-vscode-stub-modernization.md
+│   ├── prd-118-commit-signing.md
+│   ├── prd-119-security-posture-scorecard.md
+│   ├── prd-123-oracle-11g-support.md
 ├── proposed/        ← em avaliação
 │   ├── prd-47-node-26-toolchain.md
 │   ├── prd-60-branch-coverage-investigation.md
@@ -320,28 +334,20 @@ docs/prd/
 │   ├── prd-93-continuous-localization-pipeline.md
 │   ├── prd-95-esm-es2023-node22.md
 │   ├── prd-97-doc-no-site.md
-│   ├── prd-98-docs-anti-drift.md
 │   ├── prd-99-brain-reuse.md
 │   ├── prd-101-connection-pool-lifecycle.md
 │   ├── prd-102-trace-and-perf-instrumentation.md
 │   ├── prd-103-incremental-source-reindex.md
-│   ├── prd-104-ci-supply-chain.md
 │   ├── prd-106-perf-harness.md
 │   ├── prd-107-unprivileged-fixture.md
-│   ├── prd-110-defensive-hardening.md
 │   ├── prd-111-decompose-oracle-runner.md
 │   ├── prd-112-error-handling-audit.md
-│   ├── prd-113-lint-scope.md
-│   ├── prd-114-vscode-stub-modernization.md
 │   ├── prd-115-split-i18n-locales.md
 │   ├── prd-116-direct-module-tests.md
 │   ├── prd-117-split-script-property-tests.md
-│   ├── prd-118-commit-signing.md
-│   ├── prd-119-security-posture-scorecard.md
 │   ├── prd-120-lean-activation-lazy-setup.md
 │   ├── prd-121-auditable-package-sourcemap.md
 │   ├── prd-122-marketplace-trust-metadata.md
-│   ├── prd-123-oracle-11g-support.md
 ```
 <!-- prd:estrutura:end -->
 

@@ -2,7 +2,7 @@
 tipo: prd
 id: PRD-98
 aliases: [PRD-98]
-status: proposed
+status: approved
 titulo: "Anti-drift de documentação: tabelas geradas e vínculo PRD→docs"
 versao: "0.18.0"
 data: "2026-10-08"

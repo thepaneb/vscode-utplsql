@@ -2,7 +2,7 @@
 tipo: prd
 id: PRD-118
 aliases: [PRD-118]
-status: proposed
+status: approved
 titulo: "Assinatura de commits e verificação de origem no main"
 versao: "0.18.0"
 data: "2026-10-13"

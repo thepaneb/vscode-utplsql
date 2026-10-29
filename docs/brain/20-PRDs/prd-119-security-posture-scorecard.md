@@ -2,7 +2,7 @@
 tipo: prd
 id: PRD-119
 aliases: [PRD-119]
-status: proposed
+status: approved
 titulo: "Postura de segurança verificável: OSSF Scorecard e proteção de main"
 versao: "0.18.0"
 data: "2026-10-13"
