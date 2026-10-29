@@ -1010,16 +1010,16 @@
     "publish:patch": "echo '⚠️ Publicacao apenas via GitHub workflow (release). Use npm run package para .vsix local.' && exit 1"
   },
   "dependencies": {
-    "fast-xml-parser": "^5.11.1",
+    "fast-xml-parser": "^5.11.2",
     "oracledb": "^7.0.1"
   },
   "devDependencies": {
-    "@biomejs/biome": "^2.5.2",
+    "@biomejs/biome": "^2.6.3",
     "@resvg/resvg-js": "^2.6.2",
     "@types/mocha": "^10.0.7",
     "@types/node": "^22.20.1",
     "@types/oracledb": "^7.0.2",
-    "@types/vscode": "1.101.0",
+    "@types/vscode": "1.140.0",
     "@vscode/test-cli": "^0.0.15",
     "@vscode/test-electron": "^3.1.0",
     "@vscode/vsce": "^4.0.0",
