@@ -26,16 +26,17 @@ Workflow [`publish.yml`](../../../.github/workflows/publish.yml) — **gerado** 
 
 ## Passos
 
-- `uses: actions/checkout@v7`
-- `uses: actions/setup-node@v7`
+- `uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7`
+- `uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7`
 - `run: npm ci`
+- `run: npm run audit:prod`
 - `run: npm run version:check`
 - `run: |`
 - `run: npm run compile`
 - `run: npm run lint`
 - `run: npm run test:unit`
-- `uses: actions/checkout@v7`
-- `uses: actions/setup-node@v7`
+- `uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7`
+- `uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7`
 - `run: npm ci`
 - `run: npm run package:target -- ${{ matrix.target }}`
 - `run: npm run publish -- --packagePath vscode-utplsql-*@${{ matrix.target }}.vsix`

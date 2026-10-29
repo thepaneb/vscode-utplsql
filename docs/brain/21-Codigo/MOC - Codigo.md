@@ -32,6 +32,7 @@ SORT id ASC
 - [[COD - 404.html]] — `COD-404.html`
 - [[COD - annotation.ts]] — `COD-annotation.ts`
 - [[COD - autoRun.ts]] — `COD-autoRun.ts`
+- [[COD - bing-index.yml]] — `COD-bing-index.yml`
 - [[COD - biome.json]] — `COD-biome.json`
 - [[COD - bootstrap.sh]] — `COD-bootstrap.sh`
 - [[COD - brain-build.cjs]] — `COD-brain-build.cjs`
@@ -40,6 +41,7 @@ SORT id ASC
 - [[COD - brain.cjs]] — `COD-brain.cjs`
 - [[COD - charset.ts]] — `COD-charset.ts`
 - [[COD - charsetSupport.ts]] — `COD-charsetSupport.ts`
+- [[COD - ci.yml]] — `COD-ci.yml`
 - [[COD - cobertura.ts]] — `COD-cobertura.ts`
 - [[COD - codelens.ts]] — `COD-codelens.ts`
 - [[COD - commands-scaffold.ts]] — `COD-commands-scaffold.ts`
@@ -60,6 +62,7 @@ SORT id ASC
 - [[COD - debugger.ts]] — `COD-debugger.ts`
 - [[COD - debugTargets.ts]] — `COD-debugTargets.ts`
 - [[COD - decorations.ts]] — `COD-decorations.ts`
+- [[COD - dependabot.yml]] — `COD-dependabot.yml`
 - [[COD - deps.ts]] — `COD-deps.ts`
 - [[COD - discovery.ts]] — `COD-discovery.ts`
 - [[COD - docs-check.cjs]] — `COD-docs-check.cjs`
@@ -68,6 +71,7 @@ SORT id ASC
 - [[COD - extension.ts]] — `COD-extension.ts`
 - [[COD - gen-diagrams.cjs]] — `COD-gen-diagrams.cjs`
 - [[COD - gen-icon.cjs]] — `COD-gen-icon.cjs`
+- [[COD - google-index.yml]] — `COD-google-index.yml`
 - [[COD - google408e9fc32b68946a.html]] — `COD-google408e9fc32b68946a.html`
 - [[COD - helpers.ts]] — `COD-helpers.ts`
 - [[COD - i18n.ts]] — `COD-i18n.ts`
@@ -87,10 +91,12 @@ SORT id ASC
 - [[COD - package-target.cjs]] — `COD-package-target.cjs`
 - [[COD - package.json]] — `COD-package.json`
 - [[COD - pages.yml]] — `COD-pages.yml`
+- [[COD - pagespeed.yml]] — `COD-pagespeed.yml`
 - [[COD - parse-version.cjs]] — `COD-parse-version.cjs`
 - [[COD - plsqlDeclarations.ts]] — `COD-plsqlDeclarations.ts`
 - [[COD - profile.ts]] — `COD-profile.ts`
 - [[COD - publish.cjs]] — `COD-publish.cjs`
+- [[COD - publish.yml]] — `COD-publish.yml`
 - [[COD - quickfix.ts]] — `COD-quickfix.ts`
 - [[COD - redact.ts]] — `COD-redact.ts`
 - [[COD - results.ts]] — `COD-results.ts`
@@ -101,6 +107,7 @@ SORT id ASC
 - [[COD - runner.ts]] — `COD-runner.ts`
 - [[COD - script.ts]] — `COD-script.ts`
 - [[COD - scriptRunner.ts]] — `COD-scriptRunner.ts`
+- [[COD - site-health.yml]] — `COD-site-health.yml`
 - [[COD - sitemap.xml]] — `COD-sitemap.xml`
 - [[COD - src-scaffold.ts]] — `COD-src-scaffold.ts`
 - [[COD - state.ts]] — `COD-state.ts`
@@ -122,4 +129,5 @@ SORT id ASC
 - [[COD - vscode-api-inventory.cjs]] — `COD-vscode-api-inventory.cjs`
 - [[COD - vscode-stub.ts]] — `COD-vscode-stub.ts`
 - [[COD - wait-ready.sh]] — `COD-wait-ready.sh`
+- [[COD - wiki.yml]] — `COD-wiki.yml`
 <!-- brain:auto:end -->

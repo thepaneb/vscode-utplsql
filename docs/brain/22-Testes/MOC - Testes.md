@@ -132,4 +132,5 @@ SORT id ASC
 - [[TST - virtualSource.test.ts]] — `TST-virtualSource.test.ts`
 - [[TST - vscodeApiInventory.test.ts]] — `TST-vscodeApiInventory.test.ts`
 - [[TST - vsixIgnore.test.ts]] — `TST-vsixIgnore.test.ts`
+- [[TST - workflowPolicy.test.ts]] — `TST-workflowPolicy.test.ts`
 <!-- brain:auto:end -->

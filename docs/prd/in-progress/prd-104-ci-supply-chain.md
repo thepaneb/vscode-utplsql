@@ -4,7 +4,7 @@
 
 | Campo | Valor |
 |---|---|
-| Status | Aprovado |
+| Status | Em desenvolvimento |
 | Autor | Gil Cleber Barboza |
 | Data | 2026-10-09 |
 | Componente | CI/CD do repositório (`.github/`) |
@@ -185,6 +185,19 @@ Nenhuma setting da extensão.
 - Manter o CodeQL *default setup* (recomendado) ou migrar para *advanced*
   versionado, como no `paddi35`?
 - Incluir `github-actions` no mesmo PR de grupo do npm?
+
+## Decisões (2026-10-29)
+
+- **CodeQL**: manter o *default setup* do GitHub; **não** criar
+  `.github/workflows/codeql.yml` (evita duplicidade e manutenção).
+- **Dependabot**: PRs separados para `npm` e `github-actions`; grupos
+  `minor-patch`; majors abrem individualmente.
+- **Audit**: gate de produção (`--omit=dev --audit-level=high`) no `ci.yml` e no
+  `publish.yml`; o `audit:dev` fica informativo.
+- **Regra**: `BR-PLAT-002` (o `BR-PLAT-001` existente cobre o piso de
+  VS Code/Node).
+- **Triagem dos 5 alertas**: os dois de `permissions` fecham com a RF3; os três
+  restantes são da PRD-110; confirmar no Security tab após o merge na `main`.
 
 ## 12. Impacto no cérebro
 

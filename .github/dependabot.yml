@@ -1,0 +1,29 @@
+version: 2
+updates:
+  # Dependências de produção e dev do pacote (npm).
+  - package-ecosystem: npm
+    directory: /
+    schedule:
+      interval: weekly
+    open-pull-requests-limit: 5
+    groups:
+      minor-patch:
+        patterns:
+          - '*'
+        update-types:
+          - minor
+          - patch
+
+  # Actions dos workflows — os pins por SHA são atualizados pelo Dependabot.
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: weekly
+    open-pull-requests-limit: 5
+    groups:
+      minor-patch:
+        patterns:
+          - '*'
+        update-types:
+          - minor
+          - patch

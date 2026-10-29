@@ -37,6 +37,7 @@ If you identify a problem in any of these areas, it is considered a security vul
 - **No user value concatenated into PL/SQL** — everything goes as a bind; reporter names are validated against an allowlist.
 - **Schema identifier validation**: the `UT3.` prefix discovered from `ALL_SYNONYMS.TABLE_OWNER` is validated as an Oracle identifier before any concatenation; an atypical owner is treated as “no prefix” with a sanitized warning (`SEC-014` / `BR-EXEC-017`).
 - **No shell injection/eval in dev scripts**: `create-pr.cjs` validates `--base`/`--head` and uses `execFileSync`; `create-release.cjs` escapes the version in the CHANGELOG regex; `db-matrix/run.sh` runs the test command in an explicit subshell without `eval`.
+- **CI supply chain**: all actions are pinned by commit SHA; workflows declare least-privilege `permissions:`; Dependabot updates `npm`/`github-actions` weekly; CI gates production dependencies with `npm audit --omit=dev --audit-level=high`; the wiki token is never in the clone URL (`BR-PLAT-002`).
 
 ## How to report a vulnerability
 
