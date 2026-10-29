@@ -4,7 +4,7 @@
 
 | Campo | Valor |
 |---|---|
-| Status | Em desenvolvimento |
+| Status | Concluído |
 | Autor | Gil Cleber Barboza |
 | Data | 2026-10-13 |
 | Componente | Governança do repositório (configuração local do mantenedor + *branch protection* do `main`) |
@@ -149,6 +149,8 @@ Nenhuma setting da extensão; apenas configuração `git`/GitHub.
 
 ## 12. Impacto no cérebro
 
+
+RNFs sem regra: RNF1, RNF2 (fluxo de push e ausência de mudança de runtime são operacionais).
 Ao concluir, criar a regra que materializa a PRD, por exemplo uma `BR-PLAT-*`
 ("commits no `main` são assinados e verificados"), com `prds: ["PRD-118"]`,
 `implementacao:` (arquivo/ponto de configuração) e `testes:`. Enquanto

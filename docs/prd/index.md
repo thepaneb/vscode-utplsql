@@ -164,23 +164,18 @@ notas `prd-*`. O índice navegável do vault é a [[MOC - PRDs]].
 | 87 | [Resultados e jump-to-failure em suítes com %suitepath](completed/prd-87-suitepath-results-jump.md) | 0.13.0 | 2026-09-25 |
 | 94 | [Piso de VS Code 1.101 e runtime Node 22](completed/prd-94-vscode-floor-1-101.md) | 0.14.0 | 2026-09-29 |
 | 96 | [Site público e landing page via GitHub Pages](completed/prd-96-public-landing-page-github-pages.md) | 0.15.0 | 2026-10-07 |
+| 98 | [Anti-drift de documentação: tabelas geradas e vínculo PRD→docs](completed/prd-98-docs-anti-drift.md) | 0.18.0 | 2026-10-08 |
 | 100 | [Geração de suíte a partir do package (scaffold avançado)](completed/prd-100-generate-test-suite.md) | 0.16.0 | 2026-10-09 |
+| 104 | [Cadeia de suprimentos do CI: Dependabot, pin de actions e auditoria de dependências](completed/prd-104-ci-supply-chain.md) | 0.18.0 | 2026-10-09 |
 | 105 | [Snippets utPLSQL: biblioteca de annotations e matchers](completed/prd-105-snippets.md) | 0.17.0 | 2026-10-09 |
 | 108 | [Relatório HTML de cobertura aberto no navegador](completed/prd-108-coverage-html-report.md) | 0.17.0 | 2026-10-09 |
 | 109 | [Identidade de linguagem PL/SQL ampliada e languageIds configuráveis](completed/prd-109-language-identity.md) | 0.17.0 | 2026-10-09 |
-
-### 🟡 Em desenvolvimento
-
-| # | PRD | Versão | Data |
-|---|---|---|---|
-| 98 | [Anti-drift de documentação: tabelas geradas e vínculo PRD→docs](in-progress/prd-98-docs-anti-drift.md) | 0.18.0 | 2026-10-08 |
-| 104 | [Cadeia de suprimentos do CI: Dependabot, pin de actions e auditoria de dependências](in-progress/prd-104-ci-supply-chain.md) | 0.18.0 | 2026-10-09 |
-| 110 | [Hardening defensivo: identificador SQL, redaction de logs e scripts de desenvolvimento](in-progress/prd-110-defensive-hardening.md) | 0.18.0 | 2026-10-09 |
-| 113 | [Ampliar o escopo do lint (Biome) para além de `src/`](in-progress/prd-113-lint-scope.md) | 0.18.0 | 2026-10-10 |
-| 114 | [Modernizar o stub de `vscode` e reduzir `any` nos testes](in-progress/prd-114-vscode-stub-modernization.md) | 0.18.0 | 2026-10-10 |
-| 118 | [Assinatura de commits e verificação de origem no main](in-progress/prd-118-commit-signing.md) | 0.18.0 | 2026-10-13 |
-| 119 | [Postura de segurança verificável: OSSF Scorecard e proteção de main](in-progress/prd-119-security-posture-scorecard.md) | 0.18.0 | 2026-10-13 |
-| 123 | [Suporte oficial ao Oracle 11g (11.2) em thick mode](in-progress/prd-123-oracle-11g-support.md) | 0.18.0 | 2026-10-17 |
+| 110 | [Hardening defensivo: identificador SQL, redaction de logs e scripts de desenvolvimento](completed/prd-110-defensive-hardening.md) | 0.18.0 | 2026-10-09 |
+| 113 | [Ampliar o escopo do lint (Biome) para além de `src/`](completed/prd-113-lint-scope.md) | 0.18.0 | 2026-10-10 |
+| 114 | [Modernizar o stub de `vscode` e reduzir `any` nos testes](completed/prd-114-vscode-stub-modernization.md) | 0.18.0 | 2026-10-10 |
+| 118 | [Assinatura de commits e verificação de origem no main](completed/prd-118-commit-signing.md) | 0.18.0 | 2026-10-13 |
+| 119 | [Postura de segurança verificável: OSSF Scorecard e proteção de main](completed/prd-119-security-posture-scorecard.md) | 0.18.0 | 2026-10-13 |
+| 123 | [Suporte oficial ao Oracle 11g (11.2) em thick mode](completed/prd-123-oracle-11g-support.md) | 0.18.0 | 2026-10-17 |
 
 ### ⚪ Propostos
 
@@ -309,13 +304,12 @@ docs/prd/
 │   ├── prd-87-suitepath-results-jump.md
 │   ├── prd-94-vscode-floor-1-101.md
 │   ├── prd-96-public-landing-page-github-pages.md
+│   ├── prd-98-docs-anti-drift.md
 │   ├── prd-100-generate-test-suite.md
+│   ├── prd-104-ci-supply-chain.md
 │   ├── prd-105-snippets.md
 │   ├── prd-108-coverage-html-report.md
 │   ├── prd-109-language-identity.md
-├── in-progress/        ← sendo implementados agora
-│   ├── prd-98-docs-anti-drift.md
-│   ├── prd-104-ci-supply-chain.md
 │   ├── prd-110-defensive-hardening.md
 │   ├── prd-113-lint-scope.md
 │   ├── prd-114-vscode-stub-modernization.md

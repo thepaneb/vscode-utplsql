@@ -2,7 +2,7 @@
 tipo: prd
 id: PRD-119
 aliases: [PRD-119]
-status: in-progress
+status: completed
 titulo: "Postura de segurança verificável: OSSF Scorecard e proteção de main"
 versao: "0.18.0"
 data: "2026-10-13"
@@ -230,6 +230,8 @@ Nenhuma setting da extensão. Configuração no GitHub (workflow + *ruleset*).
 
 ## 12. Impacto no cérebro
 
+
+RNFs sem regra: RNF2, RNF3 (cadência do workflow e verificação de proteção são manuais/externas).
 Na conclusão, criar a regra **`BR-PLAT-004`** — “o CI publica o OSSF Scorecard e o
 `main` é protegido (PR, checks obrigatórios, sem force-push)” — com
 `prds: ["PRD-119"]`, `implementacao:` (`.github/workflows/scorecard.yml` +
@@ -249,9 +251,9 @@ Enquanto `proposed`, `regras: []`.
 - 📐 Regras: [[BR-PLAT-004 - OSSF Scorecard é publicado e o main é protegido|BR-PLAT-004]]
 - 🔗 PRDs relacionados: [[prd-81-security-hardening|PRD-81]] · [[prd-83-vsix-package-hygiene|PRD-83]] · [[prd-104-ci-supply-chain|PRD-104]] · [[prd-118-commit-signing|PRD-118]] · [[prd-122-marketplace-trust-metadata|PRD-122]]
 - ⚙️ Pipelines: [[PIPE-scorecard - Scorecard|PIPE-scorecard]]
-- 🔗 Mesma versão (0.18.0): [[prd-98-docs-anti-drift|PRD-98]] · [[prd-104-ci-supply-chain|PRD-104]] · [[prd-110-defensive-hardening|PRD-110]] · [[prd-113-lint-scope|PRD-113]] · [[prd-114-vscode-stub-modernization|PRD-114]] · [[prd-118-commit-signing|PRD-118]] · [[prd-123-oracle-11g-support|PRD-123]]
 - 🎯 RF1 — Workflow do OSSF Scorecard → [[BR-PLAT-004 - OSSF Scorecard é publicado e o main é protegido|BR-PLAT-004]]
 - 🎯 RF2 — `main` protegido → [[BR-PLAT-004 - OSSF Scorecard é publicado e o main é protegido|BR-PLAT-004]]
 - 🎯 RF3 — Triagem dos checks remanescentes → [[BR-PLAT-004 - OSSF Scorecard é publicado e o main é protegido|BR-PLAT-004]]
+- 🎯 RNF1 — O workflow não introduz segredos nem permissões acima das listadas; se → [[BR-PLAT-004 - OSSF Scorecard é publicado e o main é protegido|BR-PLAT-004]]
 - 🚀 ⬅️ release anterior: [[prd-109-language-identity|PRD-109 (0.17.0)]] · ➡️ próxima release: [[prd-111-decompose-oracle-runner|PRD-111 (0.19.0)]]
 <!-- brain:auto:end -->

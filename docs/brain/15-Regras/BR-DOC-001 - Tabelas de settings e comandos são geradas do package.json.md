@@ -12,7 +12,7 @@ verificado: 2026-10-29
 implementacao: ["scripts/brain.cjs", "scripts/docs-fidelity.cjs", "docs/brain/60-README/README (extensão).md", "docs/brain/70-Wiki/Configuration.md", "docs/brain/70-Wiki/Commands.md", "docs/brain/10-Projeto/Referencia - descricoes de settings.md", "docs/brain/10-Projeto/Referencia - descricoes de comandos.md"]
 testes: ["src/test/unit/docsTables.test.ts", "src/test/unit/docsFidelity.test.ts", "src/test/unit/brainBuild.test.ts"]
 prds: ["PRD-98"]
-requisitos: ["PRD-98/RF1", "PRD-98/RF2"]
+requisitos: ["PRD-98/RF1", "PRD-98/RF2", "PRD-98/RNF1"]
 tags: ["documentacao", "docs"]
 ---
 ## Enunciado

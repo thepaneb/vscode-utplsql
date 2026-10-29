@@ -2,7 +2,7 @@
 tipo: prd
 id: PRD-98
 aliases: [PRD-98]
-status: in-progress
+status: completed
 titulo: "Anti-drift de documentação: tabelas geradas e vínculo PRD→docs"
 versao: "0.18.0"
 data: "2026-10-08"
@@ -240,6 +240,8 @@ Nenhuma setting/comando novo na extensão. Novos **scripts npm** de tooling:
 
 ## 12. Impacto no cérebro
 
+
+RNFs sem regra: RNF2, RNF3 (neutralidade de idioma e preservação do fluxo são verificadas pelo brain:ci/docs:check).
 Nenhuma regra nesta proposta (PRD `proposed`). Na **conclusão**, criar as regras
 que a PRD materializa — provavelmente `BR-DOC-*` (ex.: "settings/comandos são
 gerados do `package.json`", "PRD concluída exige vínculo `docs:`") — com
@@ -256,12 +258,13 @@ bidirecional com `npm run brain:rules`.
 - 🗺️ [[MOC - PRDs]]
 - 📐 Regras: [[BR-DOC-001 - Tabelas de settings e comandos são geradas do package.json|BR-DOC-001]] · [[BR-DOC-002 - PRD concluída vincula docs e registro de features|BR-DOC-002]]
 - ⚙️ Pipelines: [[PIPE-ci - CI|PIPE-ci]]
-- 🔗 Mesma versão (0.18.0): [[prd-104-ci-supply-chain|PRD-104]] · [[prd-110-defensive-hardening|PRD-110]] · [[prd-113-lint-scope|PRD-113]] · [[prd-114-vscode-stub-modernization|PRD-114]] · [[prd-118-commit-signing|PRD-118]] · [[prd-119-security-posture-scorecard|PRD-119]] · [[prd-123-oracle-11g-support|PRD-123]]
 - 🎯 RF1 — Tabelas de settings e comandos geradas (fonte única = `package.json`) → [[BR-DOC-001 - Tabelas de settings e comandos são geradas do package.json|BR-DOC-001]]
 - 🎯 RF2 — `docs:fidelity` estrito e completo → [[BR-DOC-001 - Tabelas de settings e comandos são geradas do package.json|BR-DOC-001]]
 - 🎯 RF3 — Vínculo PRD → docs (bidirecional) → [[BR-DOC-002 - PRD concluída vincula docs e registro de features|BR-DOC-002]]
 - 🎯 RF4 — Registro de features (fonte para bullets + posts) → [[BR-DOC-002 - PRD concluída vincula docs e registro de features|BR-DOC-002]]
 - 🎯 RF5 — Gate de release → [[BR-DOC-002 - PRD concluída vincula docs e registro de features|BR-DOC-002]]
 - 🎯 RF6 — Convenção por tipo de PRD + seção "Impacto nas docs" → [[BR-DOC-002 - PRD concluída vincula docs e registro de features|BR-DOC-002]]
+- 🎯 RNF1 — Sem novas dependências: scripts em Node puro, como os demais. → [[BR-DOC-001 - Tabelas de settings e comandos são geradas do package.json|BR-DOC-001]]
+- 🎯 RNF4 — Falso-positivos próximos de zero; checks novos entram como **aviso** → [[BR-DOC-002 - PRD concluída vincula docs e registro de features|BR-DOC-002]]
 - 🚀 ⬅️ release anterior: [[prd-109-language-identity|PRD-109 (0.17.0)]] · ➡️ próxima release: [[prd-111-decompose-oracle-runner|PRD-111 (0.19.0)]]
 <!-- brain:auto:end -->

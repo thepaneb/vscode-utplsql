@@ -4,7 +4,7 @@
 
 | Campo | Valor |
 |---|---|
-| Status | Em desenvolvimento |
+| Status | Concluído |
 | Autor | Gil Cleber Barboza |
 | Data | 2026-10-13 |
 | Componente | Segurança e CI do repositório (`.github/`) |
@@ -217,6 +217,8 @@ Nenhuma setting da extensão. Configuração no GitHub (workflow + *ruleset*).
 
 ## 12. Impacto no cérebro
 
+
+RNFs sem regra: RNF2, RNF3 (cadência do workflow e verificação de proteção são manuais/externas).
 Na conclusão, criar a regra **`BR-PLAT-004`** — “o CI publica o OSSF Scorecard e o
 `main` é protegido (PR, checks obrigatórios, sem force-push)” — com
 `prds: ["PRD-119"]`, `implementacao:` (`.github/workflows/scorecard.yml` +

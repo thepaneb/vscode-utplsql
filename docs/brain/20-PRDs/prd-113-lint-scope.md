@@ -2,7 +2,7 @@
 tipo: prd
 id: PRD-113
 aliases: [PRD-113]
-status: in-progress
+status: completed
 titulo: "Ampliar o escopo do lint (Biome) para além de `src/`"
 versao: "0.18.0"
 data: "2026-10-10"
@@ -145,6 +145,8 @@ Nenhuma setting/comando de usuário. Muda o script `lint` e a config do Biome.
 
 ## 12. Impacto no cérebro
 
+
+RNFs sem regra: RNF1, RNF2 (tempo de lint e “sem regra desativada” verificados no CI).
 Ao concluir, criar/ajustar a regra `BR-QUAL-002` (lint cobre todo o repositório,
 não só `src/`) com `prds: ["PRD-113"]`, `implementacao:` e `testes:`. Enquanto
 `proposed`, `regras: []`.
@@ -160,7 +162,6 @@ não só `src/`) com `prds: ["PRD-113"]`, `implementacao:` e `testes:`. Enquanto
 - 📐 Regras: [[BR-QUAL-002 - Formatacao e lint do codigo sao do Biome|BR-QUAL-002]]
 - 🔗 PRDs relacionados: [[prd-03-ci-lint|PRD-03]] · [[prd-20-cleanup-deps-config|PRD-20]]
 - ⚙️ Pipelines: [[PIPE-ci - CI|PIPE-ci]]
-- 🔗 Mesma versão (0.18.0): [[prd-98-docs-anti-drift|PRD-98]] · [[prd-104-ci-supply-chain|PRD-104]] · [[prd-110-defensive-hardening|PRD-110]] · [[prd-114-vscode-stub-modernization|PRD-114]] · [[prd-118-commit-signing|PRD-118]] · [[prd-119-security-posture-scorecard|PRD-119]] · [[prd-123-oracle-11g-support|PRD-123]]
 - 🎯 RF1 — Escopo do lint → [[BR-QUAL-002 - Formatacao e lint do codigo sao do Biome|BR-QUAL-002]]
 - 🎯 RF2 — Normalização → [[BR-QUAL-002 - Formatacao e lint do codigo sao do Biome|BR-QUAL-002]]
 - 🚀 ⬅️ release anterior: [[prd-109-language-identity|PRD-109 (0.17.0)]] · ➡️ próxima release: [[prd-111-decompose-oracle-runner|PRD-111 (0.19.0)]]

@@ -12,7 +12,7 @@ verificado: 2026-10-29
 implementacao: ["scripts/brain-rules.cjs", "scripts/docs-features-check.cjs", "docs/brain/10-Projeto/Registro de features.md", "docs/brain/_templates/template-prd.md"]
 testes: ["src/test/unit/brainRules.test.ts", "src/test/unit/docsFeaturesCheck.test.ts"]
 prds: ["PRD-98"]
-requisitos: ["PRD-98/RF3", "PRD-98/RF4", "PRD-98/RF5", "PRD-98/RF6"]
+requisitos: ["PRD-98/RF3", "PRD-98/RF4", "PRD-98/RF5", "PRD-98/RF6", "PRD-98/RNF4", "PRD-123/RNF4"]
 tags: ["documentacao", "prd"]
 ---
 ## Enunciado
@@ -46,7 +46,7 @@ superfície documental ou (quando aplicável) feature registrada.
 <!-- brain:auto:start:conexoes -->
 - 🗺️ [[MOC - Regras]]
 - 📄 PRDs: [[prd-98-docs-anti-drift|PRD-98]]
-- 🎯 Requisitos: [[prd-98-docs-anti-drift|PRD-98 RF3]] · [[prd-98-docs-anti-drift|PRD-98 RF4]] · [[prd-98-docs-anti-drift|PRD-98 RF5]] · [[prd-98-docs-anti-drift|PRD-98 RF6]]
+- 🎯 Requisitos: [[prd-98-docs-anti-drift|PRD-98 RF3]] · [[prd-98-docs-anti-drift|PRD-98 RF4]] · [[prd-98-docs-anti-drift|PRD-98 RF5]] · [[prd-98-docs-anti-drift|PRD-98 RF6]] · [[prd-98-docs-anti-drift|PRD-98 RNF4]] · [[prd-123-oracle-11g-support|PRD-123 RNF4]]
 - 🧩 Código: [[COD - brain-rules.cjs]] · [[COD - docs-features-check.cjs]] · [[COD - Registro de features.md]] · [[COD - template-prd.md]]
 - 🧪 Testes: [[TST - brainRules.test.ts]] · [[TST - docsFeaturesCheck.test.ts]]
 - ↩️ Referenciada por: [[Contributing]] · [[prd-98-docs-anti-drift|PRD-98]]

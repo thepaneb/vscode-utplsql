@@ -11,7 +11,7 @@ verificado: 2026-10-29
 implementacao: ["scripts/db-matrix/matrix.env", "scripts/db-matrix/run.sh", "scripts/db-matrix/parse-version.cjs", "src/oracleClient.ts", "src/discovery.ts"]
 testes: ["src/test/unit/matrixConfig.test.ts", "src/test/unit/discovery.test.ts", "src/test/integration/thickLegacyE2E.test.ts"]
 prds: ["PRD-123"]
-requisitos: ["PRD-123/RF1", "PRD-123/RF3", "PRD-123/RF4", "PRD-123/RF5"]
+requisitos: ["PRD-123/RF1", "PRD-123/RF3", "PRD-123/RF4", "PRD-123/RF5", "PRD-123/RNF2"]
 tags: ["conexao", "oracle", "teste"]
 ---
 ## Enunciado
@@ -43,7 +43,7 @@ oferece; a matriz local é o gate (imagens grandes, fora do CI).
 <!-- brain:auto:start:conexoes -->
 - 🗺️ [[MOC - Regras]]
 - 📄 PRDs: [[prd-123-oracle-11g-support|PRD-123]]
-- 🎯 Requisitos: [[prd-123-oracle-11g-support|PRD-123 RF1]] · [[prd-123-oracle-11g-support|PRD-123 RF3]] · [[prd-123-oracle-11g-support|PRD-123 RF4]] · [[prd-123-oracle-11g-support|PRD-123 RF5]]
+- 🎯 Requisitos: [[prd-123-oracle-11g-support|PRD-123 RF1]] · [[prd-123-oracle-11g-support|PRD-123 RF3]] · [[prd-123-oracle-11g-support|PRD-123 RF4]] · [[prd-123-oracle-11g-support|PRD-123 RF5]] · [[prd-123-oracle-11g-support|PRD-123 RNF2]]
 - 🧩 Código: [[COD - matrix.env]] · [[COD - run.sh]] · [[COD - parse-version.cjs]] · [[COD - oracleClient.ts]] · [[COD - discovery.ts]]
 - 🧪 Testes: [[TST - matrixConfig.test.ts]] · [[TST - discovery.test.ts]] · [[TST - thickLegacyE2E.test.ts]]
 - ↩️ Referenciada por: [[Database-requirements]] · [[NFR-001 - Compatibilidade com Oracle e piso do utPLSQL|NFR-001]] · [[prd-123-oracle-11g-support|PRD-123]]

@@ -4,7 +4,7 @@
 
 | Campo | Valor |
 |---|---|
-| Status | Em desenvolvimento |
+| Status | Concluído |
 | Autor | Gil Cleber |
 | Data | 2026-10-08 |
 | Componente | Tooling do repo (`scripts/**`), vault (`docs/brain/**`), skills e CI |
@@ -227,6 +227,8 @@ Nenhuma setting/comando novo na extensão. Novos **scripts npm** de tooling:
 
 ## 12. Impacto no cérebro
 
+
+RNFs sem regra: RNF2, RNF3 (neutralidade de idioma e preservação do fluxo são verificadas pelo brain:ci/docs:check).
 Nenhuma regra nesta proposta (PRD `proposed`). Na **conclusão**, criar as regras
 que a PRD materializa — provavelmente `BR-DOC-*` (ex.: "settings/comandos são
 gerados do `package.json`", "PRD concluída exige vínculo `docs:`") — com

@@ -4,7 +4,7 @@
 
 | Campo | Valor |
 |---|---|
-| Status | Em desenvolvimento |
+| Status | Concluído |
 | Autor | Gil Cleber Barboza |
 | Data | 2026-10-09 |
 | Componente | Extensão `paneb.vscode-utplsql` + ferramentas de desenvolvimento (`scripts/`) |
@@ -190,6 +190,8 @@ Nenhuma setting nova; sem comandos/menus novos.
 
 ## 12. Impacto no cérebro
 
+
+RNFs sem regra: RNF1 (não mudança de comportamento coberta pelos testes de integração).
 Ao concluir, criar as regras que materializam a PRD, por exemplo:
 `SEC-012` ("identificador de schema validado antes de concatenar no SQL") e
 `BR-CONN-0xx` ("credencial redigida em todo log do ciclo de conexão"), cada uma

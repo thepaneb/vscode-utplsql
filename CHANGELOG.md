@@ -10,9 +10,11 @@
   passam a ser assinados/verificados (SSH) e o CI publica o OSSF Scorecard
   semanalmente (`publish_results: true`), com `main` protegido por PR/checks e
   sem force-push.
-- **Fundação da 0.18.0**: segurança (hardening defensivo, cadeia de suprimentos,
-  assinatura de commits e OSSF Scorecard), testes (stub de `vscode` tipado) e
-  anti-drift de documentação. Os itens por PRD são consolidados no release.
+- **Fundação (PRD-98, PRD-104, PRD-110, PRD-113, PRD-114)**: hardening
+  defensivo (identificador de schema, redaction, scripts), cadeia de suprimentos
+  do CI (Dependabot, pin por SHA, permissions, audit), escopo do lint ampliado,
+  stub de `vscode` tipado com orçamento de `any` e anti-drift de documentação
+  (tabelas geradas, `docs:` e registro de features).
 
 ## 0.17.1
 

@@ -4,7 +4,7 @@
 
 | Campo | Valor |
 |---|---|
-| Status | Em desenvolvimento |
+| Status | Concluído |
 | Autor | Gil Cleber Barboza |
 | Data | 2026-10-10 |
 | Componente | Extensão `paneb.vscode-utplsql` + ferramentas (`scripts/`, manifestos) |
@@ -132,6 +132,8 @@ Nenhuma setting/comando de usuário. Muda o script `lint` e a config do Biome.
 
 ## 12. Impacto no cérebro
 
+
+RNFs sem regra: RNF1, RNF2 (tempo de lint e “sem regra desativada” verificados no CI).
 Ao concluir, criar/ajustar a regra `BR-QUAL-002` (lint cobre todo o repositório,
 não só `src/`) com `prds: ["PRD-113"]`, `implementacao:` e `testes:`. Enquanto
 `proposed`, `regras: []`.

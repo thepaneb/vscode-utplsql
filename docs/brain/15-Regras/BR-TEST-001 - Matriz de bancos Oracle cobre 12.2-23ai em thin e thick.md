@@ -11,6 +11,7 @@ verificado: 2026-10-29
 implementacao: ["scripts/db-matrix/run.sh", "scripts/db-matrix/matrix.env", "scripts/db-matrix/parse-version.cjs", "scripts/db-matrix/bootstrap.sh", "docker/db-matrix/compose.yaml"]
 testes: ["src/test/unit/matrixConfig.test.ts", "src/test/unit/scriptsCli.test.ts", "src/test/integration/thickLegacyE2E.test.ts"]
 prds: ["PRD-72", "PRD-84", "PRD-123"]
+requisitos: ["PRD-123/RNF1", "PRD-123/RNF3"]
 tags: ["teste", "oracle"]
 ---
 ## Enunciado
@@ -45,6 +46,7 @@ Garantir que extensão e driver funcionem em todas as versões suportadas (piso 
 <!-- brain:auto:start:conexoes -->
 - 🗺️ [[MOC - Regras]]
 - 📄 PRDs: [[prd-72-db-test-matrix|PRD-72]] · [[prd-84-oracle-122-support|PRD-84]] · [[prd-123-oracle-11g-support|PRD-123]]
+- 🎯 Requisitos: [[prd-123-oracle-11g-support|PRD-123 RNF1]] · [[prd-123-oracle-11g-support|PRD-123 RNF3]]
 - 🧩 Código: [[COD - run.sh]] · [[COD - matrix.env]] · [[COD - parse-version.cjs]] · [[COD - bootstrap.sh]] · [[COD - compose.yaml]]
 - 🧪 Testes: [[TST - matrixConfig.test.ts]] · [[TST - scriptsCli.test.ts]] · [[TST - thickLegacyE2E.test.ts]]
 - ↩️ Referenciada por: [[ADR-011 - Thick mode opt-in e matriz de bancos|ADR-011]] · [[DEP-vscode-test]] · [[Database-requirements]] · [[NFR-001 - Compatibilidade com Oracle e piso do utPLSQL|NFR-001]] · [[PIPE-integration - Integration (Oracle)|PIPE-integration]] · [[Tests]] · [[prd-123-oracle-11g-support|PRD-123]] · [[prd-72-db-test-matrix|PRD-72]] · [[prd-84-oracle-122-support|PRD-84]]

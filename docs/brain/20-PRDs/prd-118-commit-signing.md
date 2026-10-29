@@ -2,7 +2,7 @@
 tipo: prd
 id: PRD-118
 aliases: [PRD-118]
-status: in-progress
+status: completed
 titulo: "Assinatura de commits e verificação de origem no main"
 versao: "0.18.0"
 data: "2026-10-13"
@@ -162,6 +162,8 @@ Nenhuma setting da extensão; apenas configuração `git`/GitHub.
 
 ## 12. Impacto no cérebro
 
+
+RNFs sem regra: RNF1, RNF2 (fluxo de push e ausência de mudança de runtime são operacionais).
 Ao concluir, criar a regra que materializa a PRD, por exemplo uma `BR-PLAT-*`
 ("commits no `main` são assinados e verificados"), com `prds: ["PRD-118"]`,
 `implementacao:` (arquivo/ponto de configuração) e `testes:`. Enquanto
@@ -177,7 +179,6 @@ Ao concluir, criar a regra que materializa a PRD, por exemplo uma `BR-PLAT-*`
 - 🗺️ [[MOC - PRDs]]
 - 📐 Regras: [[BR-PLAT-003 - Commits no main são assinados e verificados|BR-PLAT-003]]
 - 🔗 PRDs relacionados: [[prd-81-security-hardening|PRD-81]] · [[prd-104-ci-supply-chain|PRD-104]] · [[prd-110-defensive-hardening|PRD-110]]
-- 🔗 Mesma versão (0.18.0): [[prd-98-docs-anti-drift|PRD-98]] · [[prd-104-ci-supply-chain|PRD-104]] · [[prd-110-defensive-hardening|PRD-110]] · [[prd-113-lint-scope|PRD-113]] · [[prd-114-vscode-stub-modernization|PRD-114]] · [[prd-119-security-posture-scorecard|PRD-119]] · [[prd-123-oracle-11g-support|PRD-123]]
 - 🎯 RF1 — Assinatura local (SSH, preferida) → [[BR-PLAT-003 - Commits no main são assinados e verificados|BR-PLAT-003]]
 - 🎯 RF2 — Branch protection do `main` → [[BR-PLAT-003 - Commits no main são assinados e verificados|BR-PLAT-003]]
 - 🎯 RF3 — Documentação → [[BR-PLAT-003 - Commits no main são assinados e verificados|BR-PLAT-003]]

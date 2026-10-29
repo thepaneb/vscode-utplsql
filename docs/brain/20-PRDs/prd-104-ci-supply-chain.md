@@ -2,7 +2,7 @@
 tipo: prd
 id: PRD-104
 aliases: [PRD-104]
-status: in-progress
+status: completed
 titulo: "Cadeia de suprimentos do CI: Dependabot, pin de actions e auditoria de dependências"
 versao: "0.18.0"
 data: "2026-10-09"
@@ -214,6 +214,8 @@ Nenhuma setting da extensão.
 
 ## 12. Impacto no cérebro
 
+
+RNFs sem regra: RNF1, RNF2 (tempo/ruído do CI medidos no próprio pipeline; sem regra de produto).
 Na conclusão, criar a regra `BR-PLAT-*` ("actions pinadas por SHA e permissões
 escopadas; dependências auditadas no CI"), com `prds: ["PRD-104"]`,
 `implementacao:` e `testes:`. Enquanto `proposed`, `regras: []`.
@@ -229,7 +231,6 @@ escopadas; dependências auditadas no CI"), com `prds: ["PRD-104"]`,
 - 📐 Regras: [[BR-PLAT-002 - CI usa actions pinadas por SHA, permissões mínimas e dependências auditadas|BR-PLAT-002]]
 - 🔗 PRDs relacionados: [[prd-81-security-hardening|PRD-81]] · [[prd-110-defensive-hardening|PRD-110]]
 - ⚙️ Pipelines: [[PIPE-ci - CI|PIPE-ci]] · [[PIPE-publish - Publish Extension|PIPE-publish]]
-- 🔗 Mesma versão (0.18.0): [[prd-98-docs-anti-drift|PRD-98]] · [[prd-110-defensive-hardening|PRD-110]] · [[prd-113-lint-scope|PRD-113]] · [[prd-114-vscode-stub-modernization|PRD-114]] · [[prd-118-commit-signing|PRD-118]] · [[prd-119-security-posture-scorecard|PRD-119]] · [[prd-123-oracle-11g-support|PRD-123]]
 - 🎯 RF1 — Dependabot → [[BR-PLAT-002 - CI usa actions pinadas por SHA, permissões mínimas e dependências auditadas|BR-PLAT-002]]
 - 🎯 RF3 — Pin e permissões → [[BR-PLAT-002 - CI usa actions pinadas por SHA, permissões mínimas e dependências auditadas|BR-PLAT-002]]
 - 🎯 RF4 — Auditoria de dependências → [[BR-PLAT-002 - CI usa actions pinadas por SHA, permissões mínimas e dependências auditadas|BR-PLAT-002]]

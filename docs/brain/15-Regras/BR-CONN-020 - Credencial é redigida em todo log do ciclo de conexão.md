@@ -11,7 +11,7 @@ verificado: 2026-10-29
 implementacao: ["src/redact.ts", "src/oracleRunner.ts", "src/runner.ts", "src/discovery.ts", "src/scriptRunner.ts", "src/connectionProfiles.ts", "scripts/db-matrix/run.sh", "scripts/create-pr.cjs", "scripts/create-release.cjs"]
 testes: ["src/test/unit/redact.test.ts", "src/test/unit/connectionRedaction.test.ts", "src/test/unit/scriptsHardening.test.ts"]
 prds: ["PRD-110"]
-requisitos: ["PRD-110/RF2", "PRD-110/RF3"]
+requisitos: ["PRD-110/RF2", "PRD-110/RF3", "PRD-110/RNF3"]
 tags: ["conexao", "seguranca"]
 ---
 ## Enunciado
@@ -44,7 +44,7 @@ nunca aparece em log, saída de run ou mensagem de erro (CWE-532).
 <!-- brain:auto:start:conexoes -->
 - 🗺️ [[MOC - Regras]]
 - 📄 PRDs: [[prd-110-defensive-hardening|PRD-110]]
-- 🎯 Requisitos: [[prd-110-defensive-hardening|PRD-110 RF2]] · [[prd-110-defensive-hardening|PRD-110 RF3]]
+- 🎯 Requisitos: [[prd-110-defensive-hardening|PRD-110 RF2]] · [[prd-110-defensive-hardening|PRD-110 RF3]] · [[prd-110-defensive-hardening|PRD-110 RNF3]]
 - 🧩 Código: [[COD - redact.ts]] · [[COD - oracleRunner.ts]] · [[COD - runner.ts]] · [[COD - discovery.ts]] · [[COD - scriptRunner.ts]] · [[COD - connectionProfiles.ts]] · [[COD - run.sh]] · [[COD - create-pr.cjs]] · [[COD - create-release.cjs]]
 - 🧪 Testes: [[TST - redact.test.ts]] · [[TST - connectionRedaction.test.ts]] · [[TST - scriptsHardening.test.ts]]
 - ↩️ Referenciada por: [[Architecture]] · [[prd-110-defensive-hardening|PRD-110]]

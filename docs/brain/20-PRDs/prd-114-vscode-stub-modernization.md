@@ -2,7 +2,7 @@
 tipo: prd
 id: PRD-114
 aliases: [PRD-114]
-status: in-progress
+status: completed
 titulo: "Modernizar o stub de `vscode` e reduzir `any` nos testes"
 versao: "0.18.0"
 data: "2026-10-10"
@@ -156,6 +156,8 @@ Nenhuma setting/comando. Possível ajuste do override do Biome para `src/test/**
 
 ## 12. Impacto no cérebro
 
+
+RNFs sem regra: RNF1, RNF3 (suíte rápida e ausência de dependência nova verificadas no CI).
 Ao concluir, criar/ajustar a regra `BR-TEST-*` ("o stub de `vscode` é tipado e
 coberto pelo inventário de APIs") com `prds: ["PRD-114"]`, `implementacao:` e
 `testes:`. Enquanto `proposed`, `regras: []`.
@@ -170,9 +172,9 @@ coberto pelo inventário de APIs") com `prds: ["PRD-114"]`, `implementacao:` e
 - 🗺️ [[MOC - PRDs]]
 - 📐 Regras: [[BR-TEST-003 - Stub de vscode é tipado e coberto pelo inventário de APIs|BR-TEST-003]]
 - 🔗 PRDs relacionados: [[prd-04-expand-tests|PRD-04]] · [[prd-37-ts-coverage|PRD-37]] · [[prd-110-defensive-hardening|PRD-110]]
-- 🔗 Mesma versão (0.18.0): [[prd-98-docs-anti-drift|PRD-98]] · [[prd-104-ci-supply-chain|PRD-104]] · [[prd-110-defensive-hardening|PRD-110]] · [[prd-113-lint-scope|PRD-113]] · [[prd-118-commit-signing|PRD-118]] · [[prd-119-security-posture-scorecard|PRD-119]] · [[prd-123-oracle-11g-support|PRD-123]]
 - 🎯 RF1 — Stub tipado → [[BR-TEST-003 - Stub de vscode é tipado e coberto pelo inventário de APIs|BR-TEST-003]]
 - 🎯 RF2 — Redução de `any` nos testes → [[BR-TEST-003 - Stub de vscode é tipado e coberto pelo inventário de APIs|BR-TEST-003]]
 - 🎯 RF3 — Rede de segurança → [[BR-TEST-003 - Stub de vscode é tipado e coberto pelo inventário de APIs|BR-TEST-003]]
+- 🎯 RNF2 — Cobertura ≥ thresholds; o stub conta como código de teste (excluído do → [[BR-QUAL-001 - Thresholds de cobertura (c8) sao globais e bloqueiam o CI|BR-QUAL-001]]
 - 🚀 ⬅️ release anterior: [[prd-109-language-identity|PRD-109 (0.17.0)]] · ➡️ próxima release: [[prd-111-decompose-oracle-runner|PRD-111 (0.19.0)]]
 <!-- brain:auto:end -->

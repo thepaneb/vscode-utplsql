@@ -4,7 +4,7 @@
 
 | Campo | Valor |
 |---|---|
-| Status | Em desenvolvimento |
+| Status | Concluído |
 | Autor | Gil Cleber Barboza |
 | Data | 2026-10-09 |
 | Componente | CI/CD do repositório (`.github/`) |
@@ -201,6 +201,8 @@ Nenhuma setting da extensão.
 
 ## 12. Impacto no cérebro
 
+
+RNFs sem regra: RNF1, RNF2 (tempo/ruído do CI medidos no próprio pipeline; sem regra de produto).
 Na conclusão, criar a regra `BR-PLAT-*` ("actions pinadas por SHA e permissões
 escopadas; dependências auditadas no CI"), com `prds: ["PRD-104"]`,
 `implementacao:` e `testes:`. Enquanto `proposed`, `regras: []`.

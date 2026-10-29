@@ -11,7 +11,7 @@ verificado: 2026-10-29
 implementacao: [".github/workflows/scorecard.yml", "CONTRIBUTING.md"]
 testes: ["src/test/unit/workflowPolicy.test.ts"]
 prds: ["PRD-119"]
-requisitos: ["PRD-119/RF1", "PRD-119/RF2", "PRD-119/RF3"]
+requisitos: ["PRD-119/RF1", "PRD-119/RF2", "PRD-119/RF3", "PRD-119/RNF1"]
 tags: ["plataforma", "seguranca", "governanca"]
 ---
 ## Enunciado
@@ -42,7 +42,7 @@ segurança e impedir push direto/force-push no `main`.
 <!-- brain:auto:start:conexoes -->
 - 🗺️ [[MOC - Regras]]
 - 📄 PRDs: [[prd-119-security-posture-scorecard|PRD-119]]
-- 🎯 Requisitos: [[prd-119-security-posture-scorecard|PRD-119 RF1]] · [[prd-119-security-posture-scorecard|PRD-119 RF2]] · [[prd-119-security-posture-scorecard|PRD-119 RF3]]
+- 🎯 Requisitos: [[prd-119-security-posture-scorecard|PRD-119 RF1]] · [[prd-119-security-posture-scorecard|PRD-119 RF2]] · [[prd-119-security-posture-scorecard|PRD-119 RF3]] · [[prd-119-security-posture-scorecard|PRD-119 RNF1]]
 - 🧩 Código: [[COD - scorecard.yml]] · [[COD - CONTRIBUTING.md]]
 - 🧪 Testes: [[TST - workflowPolicy.test.ts]]
 - ↩️ Referenciada por: [[Contributing]] · [[prd-119-security-posture-scorecard|PRD-119]]

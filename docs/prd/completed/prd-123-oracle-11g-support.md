@@ -4,7 +4,7 @@
 
 | Campo | Valor |
 |---|---|
-| Status | Em desenvolvimento |
+| Status | Concluído |
 | Autor | Gil Cleber Barboza |
 | Data | 2026-10-17 |
 | Componente | Compatibilidade (driver/conexão) + infra da matriz (local, não vai no VSIX) |
@@ -355,7 +355,7 @@ Na conclusão:
   (`src/oracleClient.ts`, `scripts/db-matrix/matrix.env`, docs) e `testes:`
   (`thickLegacyE2E.test.ts`, `thickMode.test.ts`); referenciada no doc
   funcional/wiki (`Database-requirements`).
-- RNFs sem regra: nenhuma (todas as RNF têm alvo em regra/NFR).
+- RNFs sem regra: RNF5 (custo de execução da matriz local é operacional).
 
 Enquanto `proposed`, `regras: []` (derivado pelo `brain:sync` na conclusão).
 

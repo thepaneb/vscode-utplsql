@@ -2,7 +2,7 @@
 tipo: prd
 id: PRD-110
 aliases: [PRD-110]
-status: in-progress
+status: completed
 titulo: "Hardening defensivo: identificador SQL, redaction de logs e scripts de desenvolvimento"
 versao: "0.18.0"
 data: "2026-10-09"
@@ -203,6 +203,8 @@ Nenhuma setting nova; sem comandos/menus novos.
 
 ## 12. Impacto no cérebro
 
+
+RNFs sem regra: RNF1 (não mudança de comportamento coberta pelos testes de integração).
 Ao concluir, criar as regras que materializam a PRD, por exemplo:
 `SEC-012` ("identificador de schema validado antes de concatenar no SQL") e
 `BR-CONN-0xx` ("credencial redigida em todo log do ciclo de conexão"), cada uma
@@ -219,9 +221,10 @@ com `prds: ["PRD-110"]`, `implementacao:` (arquivo/linha) e `testes:`. Enquanto
 - 🗺️ [[MOC - PRDs]]
 - 📐 Regras: [[BR-CONN-020 - Credencial é redigida em todo log do ciclo de conexão|BR-CONN-020]] · [[BR-EXEC-017 - Prefixo de schema validado antes de concatenar no SQL|BR-EXEC-017]] · [[SEC-014 - Identificador de schema validado antes de concatenar no SQL|SEC-014]]
 - 🔗 PRDs relacionados: [[prd-66-connection-robustness-logging|PRD-66]] · [[prd-81-security-hardening|PRD-81]] · [[prd-104-ci-supply-chain|PRD-104]]
-- 🔗 Mesma versão (0.18.0): [[prd-98-docs-anti-drift|PRD-98]] · [[prd-104-ci-supply-chain|PRD-104]] · [[prd-113-lint-scope|PRD-113]] · [[prd-114-vscode-stub-modernization|PRD-114]] · [[prd-118-commit-signing|PRD-118]] · [[prd-119-security-posture-scorecard|PRD-119]] · [[prd-123-oracle-11g-support|PRD-123]]
 - 🎯 RF1 — Validação do identificador de schema → [[BR-EXEC-017 - Prefixo de schema validado antes de concatenar no SQL|BR-EXEC-017]] · [[SEC-014 - Identificador de schema validado antes de concatenar no SQL|SEC-014]]
 - 🎯 RF2 — Redaction de credenciais nos logs de conexão → [[BR-CONN-020 - Credencial é redigida em todo log do ciclo de conexão|BR-CONN-020]]
 - 🎯 RF3 — Scripts de desenvolvimento sem injeção/log de segredo → [[BR-CONN-020 - Credencial é redigida em todo log do ciclo de conexão|BR-CONN-020]]
+- 🎯 RNF2 — Novos helpers puros cobertos por teste unitário; thresholds do c8 → [[BR-QUAL-001 - Thresholds de cobertura (c8) sao globais e bloqueiam o CI|BR-QUAL-001]]
+- 🎯 RNF3 — `SECURITY.md` atualizado para refletir os invariantes (identificador → [[BR-CONN-020 - Credencial é redigida em todo log do ciclo de conexão|BR-CONN-020]]
 - 🚀 ⬅️ release anterior: [[prd-109-language-identity|PRD-109 (0.17.0)]] · ➡️ próxima release: [[prd-111-decompose-oracle-runner|PRD-111 (0.19.0)]]
 <!-- brain:auto:end -->

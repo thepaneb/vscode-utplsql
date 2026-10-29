@@ -12,6 +12,7 @@ verificado: 2026-10-09
 implementacao: [".c8rc"]
 testes: []
 relacionado: ["[[NFR-007 - Cobertura de testes TypeScript]]", "[[TPL-C8 - c8 (cobertura TypeScript)]]", "[[DEP-c8]]"]
+requisitos: ["PRD-110/RNF2", "PRD-114/RNF2"]
 tags: ["qualidade"]
 ---
 ## Enunciado
@@ -39,6 +40,7 @@ acompanha o alvo de projeto (97%).
 
 <!-- brain:auto:start:conexoes -->
 - 🗺️ [[MOC - Regras]]
+- 🎯 Requisitos: [[prd-110-defensive-hardening|PRD-110 RNF2]] · [[prd-114-vscode-stub-modernization|PRD-114 RNF2]]
 - 🧩 Código: [[COD - .c8rc]]
 - 🔗 [[NFR-007 - Cobertura de testes TypeScript]] · [[TPL-C8 - c8 (cobertura TypeScript)]] · [[DEP-c8]]
 - ↩️ Referenciada por: [[10-development-tooling]] · [[DEP-c8]] · [[TPL-C8 - c8 (cobertura TypeScript)|TPL-C8]]

@@ -4,7 +4,7 @@
 
 | Campo | Valor |
 |---|---|
-| Status | Em desenvolvimento |
+| Status | Concluído |
 | Autor | Gil Cleber Barboza |
 | Data | 2026-10-10 |
 | Componente | Extensão `paneb.vscode-utplsql` (testes) |
@@ -143,6 +143,8 @@ Nenhuma setting/comando. Possível ajuste do override do Biome para `src/test/**
 
 ## 12. Impacto no cérebro
 
+
+RNFs sem regra: RNF1, RNF3 (suíte rápida e ausência de dependência nova verificadas no CI).
 Ao concluir, criar/ajustar a regra `BR-TEST-*` ("o stub de `vscode` é tipado e
 coberto pelo inventário de APIs") com `prds: ["PRD-114"]`, `implementacao:` e
 `testes:`. Enquanto `proposed`, `regras: []`.

@@ -2,7 +2,7 @@
 tipo: prd
 id: PRD-123
 aliases: [PRD-123]
-status: in-progress
+status: completed
 titulo: "Suporte oficial ao Oracle 11g (11.2) em thick mode"
 versao: "0.18.0"
 data: "2026-10-17"
@@ -368,7 +368,7 @@ Na conclusão:
   (`src/oracleClient.ts`, `scripts/db-matrix/matrix.env`, docs) e `testes:`
   (`thickLegacyE2E.test.ts`, `thickMode.test.ts`); referenciada no doc
   funcional/wiki (`Database-requirements`).
-- RNFs sem regra: nenhuma (todas as RNF têm alvo em regra/NFR).
+- RNFs sem regra: RNF5 (custo de execução da matriz local é operacional).
 
 Enquanto `proposed`, `regras: []` (derivado pelo `brain:sync` na conclusão).
 
@@ -382,11 +382,14 @@ Enquanto `proposed`, `regras: []` (derivado pelo `brain:sync` na conclusão).
 - 🗺️ [[MOC - PRDs]]
 - 📐 Regras: [[BR-CONN-019 - Oracle 11g (11.2) exige thick mode; thin tem piso 12.1|BR-CONN-019]] · [[BR-TEST-001 - Matriz de bancos Oracle cobre 12.2-23ai em thin e thick|BR-TEST-001]]
 - 🔗 PRDs relacionados: [[prd-70-thick-mode-nne|PRD-70]] · [[prd-72-db-test-matrix|PRD-72]] · [[prd-84-oracle-122-support|PRD-84]]
-- 🔗 Mesma versão (0.18.0): [[prd-98-docs-anti-drift|PRD-98]] · [[prd-104-ci-supply-chain|PRD-104]] · [[prd-110-defensive-hardening|PRD-110]] · [[prd-113-lint-scope|PRD-113]] · [[prd-114-vscode-stub-modernization|PRD-114]] · [[prd-118-commit-signing|PRD-118]] · [[prd-119-security-posture-scorecard|PRD-119]]
 - 🎯 RF0 — Spike de viabilidade do client (go/no-go) → [[NFR-001 - Compatibilidade com Oracle e piso do utPLSQL|NFR-001]]
 - 🎯 RF1 — Entrada `11xe` na matriz com modo de cliente → [[BR-CONN-019 - Oracle 11g (11.2) exige thick mode; thin tem piso 12.1|BR-CONN-019]]
 - 🎯 RF3 — Guarda fail-fast no orquestrador → [[BR-CONN-019 - Oracle 11g (11.2) exige thick mode; thin tem piso 12.1|BR-CONN-019]]
 - 🎯 RF4 — Portabilidade do SQL da extensão (11.2) → [[BR-CONN-019 - Oracle 11g (11.2) exige thick mode; thin tem piso 12.1|BR-CONN-019]]
 - 🎯 RF5 — Validação E2E no 11g (eixo thick ampliado) → [[BR-CONN-019 - Oracle 11g (11.2) exige thick mode; thin tem piso 12.1|BR-CONN-019]] · [[NFR-001 - Compatibilidade com Oracle e piso do utPLSQL|NFR-001]]
+- 🎯 RNF1 — **Zero mudança de comportamento em 12.1+**: o fix de portabilidade é d → [[BR-TEST-001 - Matriz de bancos Oracle cobre 12.2-23ai em thin e thick|BR-TEST-001]]
+- 🎯 RNF2 — **11g é thick-only por desenho**: nenhum caminho cai em thin → [[BR-CONN-019 - Oracle 11g (11.2) exige thick mode; thin tem piso 12.1|BR-CONN-019]]
+- 🎯 RNF3 — **Infra local** (nada no VSIX, nada no CI); imagem 11g fixada por → [[BR-TEST-001 - Matriz de bancos Oracle cobre 12.2-23ai em thin e thick|BR-TEST-001]]
+- 🎯 RNF4 — **Paridade documental**: só o vault é editado; `brain:build`, `docs:ch → [[BR-DOC-002 - PRD concluída vincula docs e registro de features|BR-DOC-002]]
 - 🚀 ⬅️ release anterior: [[prd-109-language-identity|PRD-109 (0.17.0)]] · ➡️ próxima release: [[prd-111-decompose-oracle-runner|PRD-111 (0.19.0)]]
 <!-- brain:auto:end -->
