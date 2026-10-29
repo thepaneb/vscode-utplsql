@@ -13,7 +13,7 @@ import base from './.vscode-test.mjs';
 
 export default {
   ...base,
-  files: ['out/test/integration/thickMode.test.js'],
+  files: ['out/test/integration/thickMode.test.js', 'out/test/integration/thickLegacyE2E.test.js'],
   // Workspace SEM .pks/.pkb e SEM `UTPLSQL_CONN`: a extensão ativa em
   // `onStartupFinished` e `validateOnActivation` abriria uma conexão THIN,
   // impedindo o thick depois (NJS-118). Sem `UTPLSQL_CONN`, o host chega limpo

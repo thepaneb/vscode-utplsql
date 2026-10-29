@@ -176,11 +176,12 @@ time (`scripts/db-matrix/run.sh`; needs Docker, and `ORACLE_AUTH_USER`/
 `ORACLE_AUTH_TOKEN` in `.env.dbmatrix` for the Enterprise images):
 
 ```bash
-npm run db:matrix:list                 # versions: 12.2, 18xe, 19ee, 21xe, 23free
+npm run db:matrix:list                 # versions: 11xe (thick-only), 12.2, 18xe, 19ee, 21xe, 23free
 npm run db:matrix                      # whole matrix (one version at a time)
 npm run db:matrix -- --only 21xe       # a single version
 npm run db:matrix -- --smoke           # fast subset (capabilities + debugger)
 npm run db:matrix -- --thick           # thick mode per version
+npm run db:matrix -- --only 11xe --thick  # Oracle 11g (thick-only)
 npm run db:matrix -- --clean           # wipe the data volume and recreate
 ```
 
@@ -190,9 +191,9 @@ Data is kept in a per-version Docker volume: the first run creates the database
 root `CONTRIBUTING.md` for details.
 
 **Alternative utPLSQL floors:** each `VERSIONS` line may declare a 4th field
-with the utPLSQL version for that database. `12.2` uses **`v3.1.14`** because
-`v3.2.x` does not compile on it (`PLS-00222`); lines without the 4th field fall
-back to `UTPLSQL_VERSION` (PRD-84).
+with the utPLSQL version for that database. `11.2` and `12.2` use **`v3.1.14`** because
+`v3.2.x` does not compile on them (`PLS-00222`); lines without the 4th field fall
+back to `UTPLSQL_VERSION` (PRD-84). The 11g entry is **thick-only** (thin starts at 12.1) and uses `DBMS_PROFILER` for coverage (PRD-123).
 
 ## Code conventions
 

@@ -14,6 +14,9 @@ ORACLE_PWD="${ORACLE_PWD:?defina ORACLE_PWD}"
 UT3_PASSWORD="${UT3_PASSWORD:?defina UT3_PASSWORD}"
 TEST_PASSWORD="${TEST_PASSWORD:?defina TEST_PASSWORD}"
 UTPLSQL_VERSION="${UTPLSQL_VERSION:-v.3.2.3}"
+# Caminho do volume de dados: Oracle images usam /opt/oracle/oradata; XE 11g
+# usa /u01/app/oracle/oradata.
+DB_DATA_DIR="${DB_DATA_DIR:-/opt/oracle/oradata}"
 ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
 CACHE_DIR="${CACHE_DIR:-$ROOT_DIR/docker/db-matrix/.cache}"
 FIXTURES_DIR="${FIXTURES_DIR:-$ROOT_DIR/src/test/integration/fixtures}"
@@ -110,7 +113,7 @@ DECLARE
 BEGIN
   SELECT COUNT(*) INTO v_exists FROM dba_tablespaces WHERE tablespace_name = 'USERS';
   IF v_exists = 0 THEN
-    EXECUTE IMMEDIATE 'CREATE TABLESPACE users DATAFILE ''/opt/oracle/oradata/users01.dbf'' SIZE 200M REUSE AUTOEXTEND ON NEXT 100M MAXSIZE 4G';
+    EXECUTE IMMEDIATE 'CREATE TABLESPACE users DATAFILE ''${DB_DATA_DIR}/users01.dbf'' SIZE 200M REUSE AUTOEXTEND ON NEXT 100M MAXSIZE 4G';
   END IF;
 END;
 /
@@ -203,7 +206,13 @@ CREATE USER utplsql_test IDENTIFIED BY \"${TEST_PASSWORD}\"
   DEFAULT TABLESPACE users QUOTA UNLIMITED ON users;
 GRANT connect, resource, create procedure, create type, create table, create sequence TO utplsql_test;
 GRANT execute ON ut3.ut TO utplsql_test;
-GRANT inherit privileges ON user ut3 TO utplsql_test;
+BEGIN
+  -- 12c+; o 11g não tem INHERIT PRIVILEGES (ORA-00933/ORA-02000). O grant é
+  -- necessário para o utPLSQL 3.2 em 12c+, mas não para o 3.1 no 11g.
+  EXECUTE IMMEDIATE 'GRANT inherit privileges ON user ut3 TO utplsql_test';
+EXCEPTION WHEN OTHERS THEN NULL;
+END;
+/
 GRANT execute ON sys.dbms_profiler TO utplsql_test;
 GRANT execute ON sys.dbms_debug TO utplsql_test;
 GRANT debug connect session TO utplsql_test;

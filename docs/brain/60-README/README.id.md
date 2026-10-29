@@ -113,6 +113,7 @@ Ekstensi dapat diinstal dengan dua cara:
 |---|---|---|
 | 18c+ | v3.2.x (18c+) / v3.1.x | Disarankan; charset `AL32UTF8`. |
 | 12.2 | hanya v3.1.x | v3.2.x tidak dapat dikompilasi (`PLS-00222`). `WE8DEC` pada image kehilangan karakter yang tidak dapat direpresentasikan (mis. `€`); driver tipis mengabaikan `NLS_LANG`. |
+| 11.2 (11g R2) | v3.1.x only | **Thick mode required** (thin starts at 12.1); coverage via `DBMS_PROFILER`. |
 - **VSCode 1.101+** (Node 22).
 
 Ekstensi hanyalah "klien grafis" — yang menjalankan pengujian adalah database langsung via node-oracledb.

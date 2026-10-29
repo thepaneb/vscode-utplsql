@@ -5,7 +5,7 @@ titulo: "Database requirements"
 publicar: docs/wiki/Database-requirements.md
 origem: ["MOC - Oracle"]
 verificado: 2026-09-23
-regras: ["BR-TEST-001"]
+regras: ["BR-TEST-001", "BR-CONN-019"]
 tags: [wiki]
 ---
 
@@ -22,6 +22,7 @@ with all features.
 |---|---|---|---|
 | 18c+ | v3.2.x / v3.1.x | `AL32UTF8` | Recommended. |
 | 12.2 | **v3.1.x only** | prefer `AL32UTF8` | v3.2.x fails to compile (`PLS-00222`). Legacy `WE8DEC` loses non-representable chars. |
+| 11.2 (11g R2) | **v3.1.x only** | prefer `AL32UTF8` | **Thick mode required** (thin starts at 12.1); coverage via `DBMS_PROFILER`. |
 
 > The thin driver uses **always `AL32UTF8`** and ignores `NLS_LANG`; the server
 > converts to the database character set. On a `WE8DEC` database, `€` becomes

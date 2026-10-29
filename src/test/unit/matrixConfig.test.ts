@@ -22,10 +22,10 @@ test('matrix.env: cada versão tem label|imagem|service e label única', () => {
   const labels = new Set<string>();
   for (const line of entries) {
     const parts = line.split('|');
-    // label|imagem|service|[utplsql_version] — o 4º campo é opcional (piso por versão)
+    // label|imagem|service|[utplsql_version[|client]] — 4º/5º opcionais.
     assert.ok(
-      parts.length === 3 || parts.length === 4,
-      `linha malformada (esperado 3 ou 4 campos): ${line}`,
+      parts.length === 3 || parts.length === 4 || parts.length === 5,
+      `linha malformada (esperado 3, 4 ou 5 campos): ${line}`,
     );
     const [label, image, service] = parts;
     assert.ok(label && image && service, `campos vazios: ${line}`);
@@ -53,6 +53,23 @@ test('matrix.env: 12.2 usa piso alternativo utPLSQL v3.1.x', () => {
     .map((l) => l.trim())
     .filter((l) => l && !l.startsWith('12.2|') && l.split('|').length === 3);
   assert.ok(withoutVersion.length >= 4, 'demais versões devem usar o default UTPLSQL_VERSION');
+});
+
+test('matrix.env: 11xe é thick-only, usa XE e utPLSQL 3.1.x', () => {
+  const block = read('scripts/db-matrix/matrix.env').match(/VERSIONS="([^"]*)"/s);
+  assert.ok(block);
+  const line11 = block[1].split('\n').find((l) => l.trim().startsWith('11xe|'));
+  assert.ok(line11, 'entrada 11xe ausente no matrix.env');
+  const parts = line11.trim().split('|');
+  assert.strictEqual(parts.length, 5, '11xe deve declarar o 5º campo (client)');
+  assert.match(parts[1], /gvenzl\/oracle-xe:11-slim@sha256:[0-9a-f]{64}$/);
+  assert.strictEqual(parts[2], 'XE');
+  assert.match(parts[3], /^v?3\.1\./);
+  assert.strictEqual(parts[4], 'thick');
+  assert.match(
+    read('scripts/db-matrix/matrix.env'),
+    /DB_DATA_DIR_11XE=.*\/u01\/app\/oracle\/oradata/,
+  );
 });
 
 test('smoke inclui os testes de DBMS_DEBUG (package + function standalone)', () => {
@@ -122,6 +139,25 @@ test('parse-version: linha com 4 campos usa a versão explícita', () => {
   assert.strictEqual(r.hasExplicitVersion, true);
 });
 
+test('parse-version: 5º campo client normaliza both/thick', () => {
+  const thick = parseVersionLine('11xe|img|XE|v3.1.14|thick', 'v.3.2.3');
+  assert.strictEqual(thick.client, 'thick');
+  assert.strictEqual(thick.hasExplicitClient, true);
+  const both = parseVersionLine('23free|img|FREEPDB1||BOTH', 'v.3.2.3');
+  assert.strictEqual(both.client, 'both');
+  const invalid = parseVersionLine('x|img|svc||qualquer', 'v.3.2.3');
+  assert.strictEqual(invalid.client, 'both');
+});
+
+test('parse-version: run.sh aceita 5 campos, guarda thick e client por versão', () => {
+  const run = read('scripts/db-matrix/run.sh');
+  assert.match(run, /local_client/);
+  assert.match(run, /só roda com --thick/);
+  assert.match(run, /ORACLE_CLIENT_LIB_DIR_\$\{label_suffix\}/);
+  assert.match(run, /DB_DATA_DIR_11XE/);
+  assert.match(run, /thick-only/);
+});
+
 test('parse-version: linha com 3 campos cai no default', () => {
   const r = parseVersionLine('23free|image|FREEPDB1', 'v.3.2.3');
   assert.strictEqual(r.utplsqlVersion, 'v.3.2.3');
@@ -173,6 +209,50 @@ test('parse-version.cjs: CLI --field devolve o campo pedido', () => {
   );
   assert.strictEqual(r.status, 0);
   assert.strictEqual(r.stdout, 'v3.1.14');
+});
+
+test('parse-version.cjs: CLI --field 4 devolve o client', () => {
+  const r = spawnSync(
+    process.execPath,
+    [
+      path.join(ROOT, 'scripts/db-matrix/parse-version.cjs'),
+      '--field',
+      '4',
+      '11xe|img|XE|v3.1.14|thick',
+      'v.3.2.3',
+    ],
+    { encoding: 'utf8' },
+  );
+  assert.strictEqual(r.status, 0);
+  assert.strictEqual(r.stdout, 'thick');
+});
+
+test('run.sh: --list anota 11xe como thick-only sem subir banco', (t) => {
+  if (process.platform === 'win32') {
+    t.skip('bash/run.sh não é executável a partir do node Windows');
+    return;
+  }
+  const r = spawnSync('bash', [path.join(ROOT, 'scripts/db-matrix/run.sh'), '--list'], {
+    encoding: 'utf8',
+    cwd: ROOT,
+    env: { ...process.env, ORACLE_AUTH_USER: 'skip', ORACLE_AUTH_TOKEN: '' },
+  });
+  assert.strictEqual(r.status, 0, r.stderr);
+  assert.match(r.stdout, /11xe\|.*\(thick-only\)/);
+});
+
+test('run.sh: --only 11xe sem --thick falha antes do Docker', (t) => {
+  if (process.platform === 'win32') {
+    t.skip('bash/run.sh não é executável a partir do node Windows');
+    return;
+  }
+  const r = spawnSync('bash', [path.join(ROOT, 'scripts/db-matrix/run.sh'), '--only', '11xe'], {
+    encoding: 'utf8',
+    cwd: ROOT,
+    env: { ...process.env, ORACLE_AUTH_USER: 'skip', ORACLE_AUTH_TOKEN: '' },
+  });
+  assert.strictEqual(r.status, 1);
+  assert.match(r.stderr, /11xe só roda com --thick/);
 });
 
 test('parse-version.cjs: CLI --field fora do intervalo devolve vazio', () => {

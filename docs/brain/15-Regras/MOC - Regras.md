@@ -74,6 +74,7 @@ SORT id ASC
 - [[BR-CONN-016 - Settings de conexão machine-scoped e workspace confiável]] — `BR-CONN-016`
 - [[BR-CONN-017 - Senha da wallet vai para o SecretStorage e ao pool]] — `BR-CONN-017`
 - [[BR-CONN-018 - Alias TNS resolvido no thin por tnsAdminPath, SQL Developer e TNS_ADMIN]] — `BR-CONN-018`
+- [[BR-CONN-019 - Oracle 11g (11.2) exige thick mode; thin tem piso 12.1]] — `BR-CONN-019`
 - [[BR-CONN-020 - Credencial é redigida em todo log do ciclo de conexão]] — `BR-CONN-020`
 - [[BR-DEBUG-001 - Ciclo do debugger DBMS_DEBUG para no breakpoint e le o frame]] — `BR-DEBUG-001`
 - [[BR-DEBUG-002 - stopOnException controla pausa em excecao (break_exception)]] — `BR-DEBUG-002`

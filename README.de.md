@@ -106,6 +106,7 @@ Die Erweiterung verbindet sich direkt mit der Oracle-Datenbank über `node-oracl
 |---|---|---|
 | 18c+ | v3.2.x (18c+) / v3.1.x | Empfohlen; Zeichensatz `AL32UTF8`. |
 | 12.2 | nur v3.1.x | v3.2.x kompiliert nicht (`PLS-00222`). Der `WE8DEC`-Zeichensatz des Images verliert nicht darstellbare Zeichen (z. B. `€`); der Thin-Treiber ignoriert `NLS_LANG`. |
+| 11.2 (11g R2) | v3.1.x only | **Thick mode required** (thin starts at 12.1); coverage via `DBMS_PROFILER`. |
 
 ## Verbindung
 

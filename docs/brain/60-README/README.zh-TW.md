@@ -113,6 +113,7 @@ tags: [readme]
 |---|---|---|
 | 18c+ | v3.2.x (18c+) / v3.1.x | 建議；charset 為 `AL32UTF8`。 |
 | 12.2 | 僅 v3.1.x | v3.2.x 無法編譯（`PLS-00222`）。映像的 `WE8DEC` 會遺失無法表示的字元（例如 `€`）；精簡驅動程式會忽略 `NLS_LANG`。 |
+| 11.2 (11g R2) | v3.1.x only | **Thick mode required** (thin starts at 12.1); coverage via `DBMS_PROFILER`. |
 - **VSCode 1.101+** (Node 22).
 
 擴充功能只是「圖形化用戶端」— 真正執行測試的是資料庫，透過 node-oracledb 直連。

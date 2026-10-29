@@ -113,6 +113,7 @@ tags: [readme]
 |---|---|---|
 | 18c+ | v3.2.x (18c+) / v3.1.x | 推荐；charset 为 `AL32UTF8`。 |
 | 12.2 | 仅 v3.1.x | v3.2.x 无法编译（`PLS-00222`）。镜像的 `WE8DEC` 会丢失无法表示的字符（例如 `€`）；精简驱动忽略 `NLS_LANG`。 |
+| 11.2 (11g R2) | v3.1.x only | **Thick mode required** (thin starts at 12.1); coverage via `DBMS_PROFILER`. |
 - **VSCode 1.101+** (Node 22).
 
 扩展只是"图形客户端" — 真正运行测试的是数据库，通过 node-oracledb 直连。

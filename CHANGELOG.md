@@ -2,6 +2,10 @@
 
 ## 0.18.0
 
+- **Oracle 11g (11.2) em thick mode (PRD-123)**: suporte oficial ao legado
+  11g R2 com utPLSQL `v3.1.14`, cobertura via `DBMS_PROFILER` e SQL de
+  descoberta portátil (sem `FETCH FIRST`). O thin do node-oracledb tem piso
+  12.1; o 11g exige `utplsql.oracleClientMode: thick`.
 - **Fundação da 0.18.0**: segurança (hardening defensivo, cadeia de suprimentos,
   assinatura de commits e OSSF Scorecard), testes (stub de `vscode` tipado) e
   anti-drift de documentação. Os itens por PRD são consolidados no release.

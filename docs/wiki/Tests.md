@@ -104,7 +104,9 @@ Fast subsets / modes:
 - `npm run test:integration:thick` — thick mode (Instant Client) in an isolated
   host; needs `ORACLE_CLIENT_LIB_DIR`.
 - `npm run db:matrix` — runs the suite against multiple Oracle versions (see
-  [Contributing](Contributing)).
+  [Contributing](Contributing)). The 11g legacy axis is thick-only:
+  `npm run db:matrix -- --only 11xe --thick` (requires `ORACLE_CLIENT_LIB_DIR_11XE`
+  or the global `ORACLE_CLIENT_LIB_DIR`).
 
 ### Setup
 
