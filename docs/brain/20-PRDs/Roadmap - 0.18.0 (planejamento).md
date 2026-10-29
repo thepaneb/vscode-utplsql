@@ -70,6 +70,15 @@ pré-bumpada para 0.18.0 no início (package/lock/site/CHANGELOG) para manter o
 - **RF0 do 11g: GO** (IC 23.0 + node-oracledb 7.0.1 em thick no 11.2.0.2 XE;
   ver [[prd-123-oracle-11g-support|PRD-123]]).
 
+## Progresso
+
+- **PRD-110** (2026-10-29): implementada e validada. Unitários **1394 testes /
+  0 falhas** (2 skips); cobertura **97,93% linhas / 93,76% branches / 97,70%
+  funções** (o `scripts/**` passou a ser instrumentado pelo c8); integração
+  completa no 23free **119 passing / 10 pending** + multiroot **6 passing**.
+  Regras `BR-CONN-020`, `BR-EXEC-017` e `SEC-014`; triagem do CodeQL registrada na
+  PRD.
+
 ## Fluxo de execução (por PRD)
 
 1. `status: approved → in-progress` no frontmatter → `npm run brain:sync && npm run brain:build` + `npm run sync-prds`.

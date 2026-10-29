@@ -178,6 +178,16 @@ Nenhuma setting nova; sem comandos/menus novos.
   apoiada na `SEC-008` + redaction nos call sites. Não deixar aberto (a PRD-104,
   RF5, cobra a triagem).
 
+## Triagem do CodeQL (2026-10-29)
+
+- `js/clear-text-logging` (`src/logger.ts`): **dispensado** com justificativa
+  rastreável na `SEC-008` + `BR-CONN-020` (a redaction ocorre nos call sites do
+  ciclo de conexão; o logger genérico não conhece a connection). A dismissão é
+  feita no Security tab.
+- `js/regex-injection` e `js/incomplete-sanitization`
+  (`scripts/create-release.cjs`): **fechados** por `escapeRegExp` + teste
+  `scriptsHardening.test.ts`; confirmar no Security tab após o merge na `main`.
+
 ## 12. Impacto no cérebro
 
 Ao concluir, criar as regras que materializam a PRD, por exemplo:
