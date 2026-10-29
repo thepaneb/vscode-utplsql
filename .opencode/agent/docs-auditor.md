@@ -34,7 +34,8 @@ The code is authoritative. Read it first, then the docs:
 - `docs/functional/*.md` (PT functional spec)
 - `docs/prd/index.md`, `.opencode/skills/*/SKILL.md`, `AGENTS.md`, `CONTRIBUTING.md`
 
-Ignore `docs/brain/` and `docs/linkedin/` (gitignored, local).
+Ignore `docs/linkedin/` (gitignored, local). `docs/brain/` is **versioned** in
+this repo and is the canonical source for human text; it is in scope.
 
 ## What to look for (semantic drift — beyond docs:check)
 

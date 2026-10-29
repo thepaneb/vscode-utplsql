@@ -43,7 +43,7 @@ SELECT ut_meta.version() FROM dual;
 ### Local machine
 
 - **VSCode 1.101+** (required by the Test Coverage API).
-- Nothing else — the VSIX already includes the `oracledb` thin driver (no Instant Client needed). For databases with **NNE**, opt into thick mode with a local Oracle Instant Client via `utplsql.oracleClientMode`/`utplsql.oracleClientLibDir`.
+- Nothing else — the VSIX already includes the `oracledb` thin driver (no Instant Client needed). For databases with **NNE** or legacy **11.2 (11g)**, opt into thick mode with a local Oracle Instant Client **19c+** via `utplsql.oracleClientMode`/`utplsql.oracleClientLibDir` (or the `ORACLE_CLIENT_LIB_DIR` env fallback).
 
 ### Compatibility
 

@@ -106,7 +106,7 @@
 |---|---|---|
 | 18c+ | v3.2.x (18c+) / v3.1.x | 推奨。charset は `AL32UTF8`。 |
 | 12.2 | v3.1.x のみ | v3.2.x はコンパイル不可（`PLS-00222`）。イメージの `WE8DEC` では表現できない文字（例: `€`）が失われます。thin ドライバは `NLS_LANG` を無視します。 |
-| 11.2 (11g R2) | v3.1.x only | **Thick mode required** (thin starts at 12.1); coverage via `DBMS_PROFILER`. |
+| 11.2 (11g R2) | v3.1.x only | **Thick mode required** (thin starts at 12.1); coverage via `DBMS_PROFILER`. Instant Client 19c+. |
 
 ## 接続
 
@@ -188,7 +188,7 @@ Test Explorer に表示されます。
 | `utplsql.oraclePoolIncrement` | `1` | Oracle ランナープール（node-oracledb）拡張時の増分。 |
 | `utplsql.oraclePoolPingInterval` | `60` | アイドルプール接続のヘルスチェック間隔（秒）（node-oracledb）。`0` = チェックアウトのたびに ping。 |
 | `utplsql.oracleClientMode` | `thin` | ドライバーモード: `thin`（純粋な JavaScript、ネイティブクライアント不要）または `thick`（Oracle Instant Client を使用）。`thick` は NNE（Native Network Encryption）が必要なデータベースにのみ使用してください。`utplsql.oracleClientLibDir` とウィンドウの再読み込みが必要です。 |
-| `utplsql.oracleClientLibDir` | `""` | Oracle Instant Client のディレクトリ。`utplsql.oracleClientMode` が `thick` の場合は必須です（例: `C:\oracle\instantclient_23_5`）。 |
+| `utplsql.oracleClientLibDir` | `""` | Oracle Instant Client のディレクトリ。`utplsql.oracleClientMode` が `thick` の場合は必須です（例: `C:\oracle\instantclient_23_5`）。 Fallback: `ORACLE_CLIENT_LIB_DIR`. |
 | デバッグがブレークポイントで停止しない | デバッグ情報なしでコンパイルされたパッケージ、またはデバッグ権限の不足 | `PLSQL_OPTIMIZE_LEVEL <= 1` でコンパイル（または `ALTER PACKAGE ... COMPILE DEBUG PLSQL_OPTIMIZE_LEVEL = 1`）し、`DEBUG CONNECT SESSION` + `EXECUTE ON SYS.DBMS_DEBUG` を付与。`test_*.pkb` のブレークポイントはヒットしないことがあります（utPLSQL は動的 SQL でテストを実行します）。テスト対象のコードに設定してください。 |
 | `utplsql.oracleClientConfigDir` | `""` | `sqlnet.ora`/`tnsnames.ora` を含む Oracle 構成ディレクトリ（TNS_ADMIN）。任意。thick モードでのみ使用されます。 |
 | `utplsql.connections.tnsAdminPath` | `""` | `tnsnames.ora` のあるディレクトリ。**thin ドライバーで TNS 別名を解決**します。優先順位: この設定 → `sqldeveloper.connections.tnsConfiguration.path`（user/machine）→ `TNS_ADMIN`。 |
@@ -310,19 +310,19 @@ UTPLSQL_CONN=your_user/password@//host:1521/service
 | `utPLSQL: New connection profile...` | プロファイルを作成・有効化するウィザード | — |
 | `utPLSQL: Manage connection profiles` | `utplsql.profiles` で設定を開く | — |
 | `utPLSQL: Import connections from SQL Developer` | SQL Developer から接続をインポート（connections.xml） | — |
-| `utPLSQL: Debug test (PL/SQL)` | アクティブなファイルのテストのデバッグセッションを開始 | v3.2.x はコンパイル不可（`PLS-00222`）。イメージの `WE8DEC` では表現できない文字（例: `€`）が失われます。thin ドライバは `NLS_LANG` を無視します。 |
+| `utPLSQL: Debug test (PL/SQL)` | アクティブなファイルのテストのデバッグセッションを開始 | — |
 | `utPLSQL: アノテーションキャッシュを再構築` | データベース内の utPLSQL アノテーションキャッシュを再構築し、ツリーを更新します | — |
 | `utPLSQL: カーソル位置のテストをデバッグ` | カーソル位置の `%test`/`%suite` のデバッグセッションを開始します | — |
 | `utPLSQL: 失敗したテストをデバッグ` | 前回の実行で失敗したテストのデバッグセッションを開始します（複数ある場合は QuickPick） | — |
 | `utPLSQL: 前回の実行をデバッグ` | 前回の実行のデバッグセッションを開始します | — |
-| `utPLSQL: デバッグ用にコンパイル` | 選択したファイル/フォルダーのオブジェクトをデバッグ情報付きでコンパイルします | v3.2.x はコンパイル不可（`PLS-00222`）。イメージの `WE8DEC` では表現できない文字（例: `€`）が失われます。thin ドライバは `NLS_LANG` を無視します。 |
+| `utPLSQL: デバッグ用にコンパイル` | 選択したファイル/フォルダーのオブジェクトをデバッグ情報付きでコンパイルします | — |
 | `utPLSQL: Run script` | Runs the script open in the editor against a connection profile | Right-click → script file |
 | `utPLSQL: Run script file` | Runs an Explorer script file (decoded with the profile charset) | Right-click → file |
 | `utPLSQL: Run script folder` | Runs the folder scripts in alphabetical order | Right-click → folder |
 | `utPLSQL: ウォレットのパスワードを設定` | アクティブなプロファイルのウォレットパスワードを設定/クリア（SecretStorage） | — |
 | `utPLSQL: reporter で実行（エクスポート）` | 選択範囲を選択した reporter で実行し、出力を Output/ファイルに書き込みます（結果は変えません） | Test Explorer → menu do item |
-| `utPLSQL: テストスイートを生成…` | `.pks`/`.pkb` またはデータベースオブジェクトから、ルーチンごとに `%test` を 1 つ持つ `ut_<パッケージ>.pks` を生成します（`utplsql.generate.*` オプション）。 | v3.2.x はコンパイル不可（`PLS-00222`）。イメージの `WE8DEC` では表現できない文字（例: `€`）が失われます。thin ドライバは `NLS_LANG` を無視します。 |
-| `utPLSQL: 関連テストを実行` | 本番の `.pks`/`.pkb`/`.sql` で `ut_<オブジェクト>` 規約に従うスイートを実行します（`Ctrl+Shift+U Shift+R`）。 | v3.2.x はコンパイル不可（`PLS-00222`）。イメージの `WE8DEC` では表現できない文字（例: `€`）が失われます。thin ドライバは `NLS_LANG` を無視します。 |
+| `utPLSQL: テストスイートを生成…` | `.pks`/`.pkb` またはデータベースオブジェクトから、ルーチンごとに `%test` を 1 つ持つ `ut_<パッケージ>.pks` を生成します（`utplsql.generate.*` オプション）。 | — |
+| `utPLSQL: 関連テストを実行` | 本番の `.pks`/`.pkb`/`.sql` で `ut_<オブジェクト>` 規約に従うスイートを実行します（`Ctrl+Shift+U Shift+R`）。 | — |
 | `utPLSQL: カバレッジを切り替え` | セッションのカバレッジモードを切り替えます（ステータスバーをクリック）。 | — |
 | `utPLSQL: タグでテストを実行...` | 選択したタグに一致するスイート/テストを実行します（`!tag` は除外）。 | — |
 
@@ -390,6 +390,7 @@ UTPLSQL_CONN=your_user/password@//host:1521/service
 **カバレッジ**（常に）— プロファイラーを有効化します:
 ```sql
 GRANT EXECUTE ON SYS.DBMS_PROFILER TO <schema_that_runs_the_tests>;
+-- 11g: only DBMS_PROFILER (DBMS_PLSQL_CODE_COVERAGE is 12.2+)
 GRANT EXECUTE ON SYS.DBMS_PLSQL_CODE_COVERAGE TO <schema_that_runs_the_tests>;
 ```
 これがないと、テストは実行されますがカバレッジは**空**になります。
@@ -423,7 +424,7 @@ GRANT SELECT ON SYS.DBA_PROCEDURES TO <ut3_owner>;
 |---|---|---|
 | スイートが表示されない | 接続の問題 | 診断には `utPLSQL: Validate setup` を実行 |
 | カバレッジが空 | `GRANT EXECUTE ON DBMS_PROFILER` が不足 | [データベースの要件](#データベースの要件)の権限を実行、または `utPLSQL: Copy coverage grants to clipboard` を使用 |
-| カバレッジが空 | Oracle 19c では追加の権限が必要 | `GRANT EXECUTE ON DBMS_PROFILER` + `GRANT EXECUTE ON DBMS_PLSQL_CODE_COVERAGE` |
+| カバレッジが空 | Oracle 12.2+ では追加の権限が必要 | `GRANT EXECUTE ON DBMS_PROFILER` + `GRANT EXECUTE ON DBMS_PLSQL_CODE_COVERAGE` |
 | 原因不明のコンパイルエラー | PL/SQL 構文エラーを含むコード | `utplsql.compilationDiagnostics.enabled` をオン（既定）のままにします; 実行後、`ALL_ERRORS` からのエラーが「問題」パネルに表示されます |
 | 接続エラー | 文字列の形式が不正、または DB に到達できない | `utPLSQL: Validate setup` を使用 |
 | 実行中のタイムアウト | テストが `timeoutMinutes` より長い | `utplsql.timeoutMinutes` を増やす |

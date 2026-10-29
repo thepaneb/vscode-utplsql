@@ -23,8 +23,7 @@ Check the following:
 
 ### Can I use it with Oracle XE?
 
-Yes. utPLSQL works with Oracle XE 18c+. Coverage requires the `DBMS_PROFILER`
-grants (see [[Database-requirements|Database Requirements]]).
+Yes. utPLSQL works with Oracle XE **11.2 (11g, thick mode; Instant Client 19c+)** and **18c+ (thin)**. Coverage requires the `DBMS_PROFILER` grants; on **12.2+** also `DBMS_PLSQL_CODE_COVERAGE` (see [[Database-requirements|Database Requirements]]).
 
 ### Does it work with Oracle Cloud (Autonomous Database)?
 
@@ -201,9 +200,10 @@ code --install-extension "$(ls -t vscode-utplsql-*.vsix | head -1)"
 
 No — the VSIX already includes the `oracledb` **thin** driver (pure JavaScript,
 no Instant Client). Exception: databases with **NNE (Native Network Encryption)**
-are not supported by thin mode — set `utplsql.oracleClientMode` to `thick` and
-point `utplsql.oracleClientLibDir` to a local Oracle Instant Client, then reload
-the window.
+or legacy **11.2 (11g)** are not supported by thin mode — set
+`utplsql.oracleClientMode` to `thick` and point `utplsql.oracleClientLibDir`
+(or the `ORACLE_CLIENT_LIB_DIR` env fallback) to a local Oracle Instant Client
+**19c+**, then reload the window.
 
 ### Does it work with a shared install (UT3)?
 

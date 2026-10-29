@@ -152,7 +152,7 @@ Test Explorer **เมื่อแต่ละเทสต์เสร็จส�
 |---|---|---|
 | 18c+ | v3.2.x (18c+) / v3.1.x | แนะนำ; charset `AL32UTF8` |
 | 12.2 | เฉพาะ v3.1.x | v3.2.x คอมไพล์ไม่ได้ (`PLS-00222`) `WE8DEC` ของอิมเมจจะสูญเสียอักขระที่ไม่สามารถแทนได้ (เช่น `€`); ไดรเวอร์ thin ไม่สนใจ `NLS_LANG` |
-| 11.2 (11g R2) | v3.1.x only | **Thick mode required** (thin starts at 12.1); coverage via `DBMS_PROFILER`. |
+| 11.2 (11g R2) | v3.1.x only | **Thick mode required** (thin starts at 12.1); coverage via `DBMS_PROFILER`. Instant Client 19c+. |
 
 ## การกำหนดค่า
 
@@ -192,7 +192,7 @@ Test Explorer **เมื่อแต่ละเทสต์เสร็จส�
 | `utplsql.oraclePoolIncrement` | `1` | จำนวนที่เพิ่มเมื่อขยายพูลของ Oracle runner (node-oracledb) |
 | `utplsql.oraclePoolPingInterval` | `60` | วินาทีระหว่างการตรวจสอบความสมบูรณ์ของการเชื่อมต่อที่ว่างในพูล (node-oracledb) `0` = ping ทุกครั้งที่ยืมการเชื่อมต่อ |
 | `utplsql.oracleClientMode` | `thin` | โหมดไดรเวอร์: `thin` (JavaScript ล้วน ไม่ต้องมีไคลเอนต์เนทีฟ) หรือ `thick` (ใช้ Oracle Instant Client) ใช้ `thick` เฉพาะฐานข้อมูลที่ต้องการ NNE (Native Network Encryption) ต้องตั้ง `utplsql.oracleClientLibDir` และโหลดหน้าต่างใหม่ |
-| `utplsql.oracleClientLibDir` | `""` | ไดเรกทอรี Oracle Instant Client จำเป็นเมื่อ `utplsql.oracleClientMode` เป็น `thick` (เช่น `C:\oracle\instantclient_23_5`) |
+| `utplsql.oracleClientLibDir` | `""` | ไดเรกทอรี Oracle Instant Client จำเป็นเมื่อ `utplsql.oracleClientMode` เป็น `thick` (เช่น `C:\oracle\instantclient_23_5`) Fallback: `ORACLE_CLIENT_LIB_DIR`. |
 | ดีบักไม่หยุดที่เบรกพอยต์ | แพ็กเกจไม่มีข้อมูลดีบัก หรือขาดสิทธิ์ดีบัก | คอมไพล์ด้วย `PLSQL_OPTIMIZE_LEVEL <= 1` (หรือ `ALTER PACKAGE ... COMPILE DEBUG PLSQL_OPTIMIZE_LEVEL = 1`) และให้สิทธิ์ `DEBUG CONNECT SESSION` + `EXECUTE ON SYS.DBMS_DEBUG`. เบรกพอยต์ใน `test_*.pkb` อาจไม่หยุด (utPLSQL รันเทสต์ผ่าน SQL แบบไดนามิก) ให้ตั้งในโค้ดที่ทดสอบ |
 | `utplsql.oracleClientConfigDir` | `""` | ไดเรกทอรีการกำหนดค่า Oracle (TNS_ADMIN) ที่มี `sqlnet.ora`/`tnsnames.ora` ไม่บังคับ ใช้เฉพาะโหมด thick |
 | `utplsql.connections.tnsAdminPath` | `""` | ไดเรกทอรีที่มี `tnsnames.ora` เพื่อ **แปลง alias TNS ในไดรเวอร์ thin** ลำดับ: การตั้งนี้ → ค่า user/machine ของ `sqldeveloper.connections.tnsConfiguration.path` → `TNS_ADMIN` |
@@ -316,19 +316,19 @@ Annotation ไม่คำนึงถึงตัวพิมพ์เล็ก
 | `utPLSQL: New connection profile...` | วิซาร์ดสำหรับสร้างและเปิดใช้งานโปรไฟล์ | — |
 | `utPLSQL: Manage connection profiles` | เปิดการตั้งค่าที่ `utplsql.profiles` | — |
 | `utPLSQL: Import connections from SQL Developer` | นำเข้าการเชื่อมต่อจาก SQL Developer (connections.xml) | — |
-| `utPLSQL: Debug test (PL/SQL)` | เริ่มเซสชันการดีบักของเทสต์ภายใต้ไฟล์ที่ใช้งานอยู่ | v3.2.x คอมไพล์ไม่ได้ (`PLS-00222`) `WE8DEC` ของอิมเมจจะสูญเสียอักขระที่ไม่สามารถแทนได้ (เช่น `€`); ไดรเวอร์ thin ไม่สนใจ `NLS_LANG` |
+| `utPLSQL: Debug test (PL/SQL)` | เริ่มเซสชันการดีบักของเทสต์ภายใต้ไฟล์ที่ใช้งานอยู่ | — |
 | `utPLSQL: สร้างแคชคำอธิบายประกอบใหม่` | สร้างแคชคำอธิบายประกอบของ utPLSQL ในฐานข้อมูลใหม่และรีเฟรชทรี | — |
 | `utPLSQL: ดีบักการทดสอบที่เคอร์เซอร์` | เริ่มเซสชันดีบักของ `%test`/`%suite` ณ ตำแหน่งเคอร์เซอร์ | — |
 | `utPLSQL: ดีบักการทดสอบที่ล้มเหลว` | เริ่มเซสชันดีบักของการทดสอบที่ล้มเหลวในการรันล่าสุด (QuickPick เมื่อมีหลายรายการ) | — |
 | `utPLSQL: ดีบักการรันครั้งล่าสุด` | เริ่มเซสชันดีบักของการรันล่าสุด | — |
-| `utPLSQL: คอมไพล์สำหรับดีบัก` | คอมไพล์ออบเจ็กต์ของไฟล์/โฟลเดอร์ที่เลือกพร้อมข้อมูลดีบัก | v3.2.x คอมไพล์ไม่ได้ (`PLS-00222`) `WE8DEC` ของอิมเมจจะสูญเสียอักขระที่ไม่สามารถแทนได้ (เช่น `€`); ไดรเวอร์ thin ไม่สนใจ `NLS_LANG` |
+| `utPLSQL: คอมไพล์สำหรับดีบัก` | คอมไพล์ออบเจ็กต์ของไฟล์/โฟลเดอร์ที่เลือกพร้อมข้อมูลดีบัก | — |
 | `utPLSQL: Run script` | Runs the script open in the editor against a connection profile | Right-click → script file |
 | `utPLSQL: Run script file` | Runs an Explorer script file (decoded with the profile charset) | Right-click → file |
 | `utPLSQL: Run script folder` | Runs the folder scripts in alphabetical order | Right-click → folder |
 | `utPLSQL: ตั้งรหัสผ่านวอลเล็ต` | ตั้ง/ล้างรหัสผ่านวอลเล็ตของโปรไฟล์ที่ใช้งาน (SecretStorage) | — |
 | `utPLSQL: เรียกใช้ด้วย reporter (ส่งออก)` | เรียกใช้ส่วนที่เลือกด้วย reporter ที่เลือกและเขียนเอาต์พุตไปที่ Output/ไฟล์ (ไม่เปลี่ยนผลลัพธ์) | Test Explorer → menu do item |
-| `utPLSQL: สร้างชุดทดสอบ…` | สร้าง `ut_<แพ็กเกจ>.pks` โดยมี `%test` หนึ่งรายการต่อรูทีน จาก `.pks`/`.pkb` หรือออบเจ็กต์ฐานข้อมูล พร้อมตัวเลือก `utplsql.generate.*` | v3.2.x คอมไพล์ไม่ได้ (`PLS-00222`) `WE8DEC` ของอิมเมจจะสูญเสียอักขระที่ไม่สามารถแทนได้ (เช่น `€`); ไดรเวอร์ thin ไม่สนใจ `NLS_LANG` |
-| `utPLSQL: รันการทดสอบที่เกี่ยวข้อง` | ใน `.pks`/`.pkb`/`.sql` โปรดักชัน รันชุดทดสอบตามธรรมเนียม `ut_<ออบเจ็กต์>` | v3.2.x คอมไพล์ไม่ได้ (`PLS-00222`) `WE8DEC` ของอิมเมจจะสูญเสียอักขระที่ไม่สามารถแทนได้ (เช่น `€`); ไดรเวอร์ thin ไม่สนใจ `NLS_LANG` |
+| `utPLSQL: สร้างชุดทดสอบ…` | สร้าง `ut_<แพ็กเกจ>.pks` โดยมี `%test` หนึ่งรายการต่อรูทีน จาก `.pks`/`.pkb` หรือออบเจ็กต์ฐานข้อมูล พร้อมตัวเลือก `utplsql.generate.*` | — |
+| `utPLSQL: รันการทดสอบที่เกี่ยวข้อง` | ใน `.pks`/`.pkb`/`.sql` โปรดักชัน รันชุดทดสอบตามธรรมเนียม `ut_<ออบเจ็กต์>` | — |
 | `utPLSQL: สลับความครอบคลุม` | สลับโหมดความครอบคลุมของเซสชัน (คลิกที่แถบสถานะ) | — |
 | `utPLSQL: เรียกใช้การทดสอบตามแท็ก...` | เรียกใช้ suite/การทดสอบที่ตรงกับแท็กที่เลือก (`!tag` ยกเว้น) | — |
 
@@ -391,6 +391,7 @@ reporters เริ่มต้นจะถูกตัดรายการซ�
 **ความครอบคลุม** (เสมอ) — เปิดใช้งาน profiler:
 ```sql
 GRANT EXECUTE ON SYS.DBMS_PROFILER TO <schema_that_runs_the_tests>;
+-- 11g: only DBMS_PROFILER (DBMS_PLSQL_CODE_COVERAGE is 12.2+)
 GRANT EXECUTE ON SYS.DBMS_PLSQL_CODE_COVERAGE TO <schema_that_runs_the_tests>;
 ```
 หากไม่มีสิ่งนี้ เทสต์ยังรันได้แต่ความครอบคลุมจะออกมา **ว่างเปล่า**
@@ -424,7 +425,7 @@ GRANT SELECT ON SYS.DBA_PROCEDURES TO <ut3_owner>;
 |---|---|---|
 | Suites ไม่ปรากฏ | ไม่มีไฟล์ `.pks` ที่ค้นพบ | รัน `utPLSQL: Validate setup` เพื่อการวินิจฉัย |
 | ความครอบคลุมว่างเปล่า | ขาด `GRANT EXECUTE ON DBMS_PROFILER` | รัน grants ใน [ข้อกำหนด](#ข้อกำหนดฐานข้อมูล) หรือใช้ `utPLSQL: Copy coverage grants to clipboard` |
-| ความครอบคลุมว่างเปล่า | Oracle 19c ต้องใช้ grants เพิ่มเติม | `GRANT EXECUTE ON DBMS_PROFILER` + `GRANT EXECUTE ON DBMS_PLSQL_CODE_COVERAGE` |
+| ความครอบคลุมว่างเปล่า | Oracle 12.2+ ต้องใช้ grants เพิ่มเติม | `GRANT EXECUTE ON DBMS_PROFILER` + `GRANT EXECUTE ON DBMS_PLSQL_CODE_COVERAGE` |
 | ข้อผิดพลาดการคอมไพล์โดยไม่มีข้อบ่งชี้ | โค้ดที่มีข้อผิดพลาดไวยากรณ์ PL/SQL | เปิดใช้งาน `utplsql.compilationDiagnostics.enabled` ไว้ (ค่าเริ่มต้น); ข้อผิดพลาดจาก `ALL_ERRORS` จะปรากฏใน Problems Panel หลังจากการรัน |
 | ข้อผิดพลาดการเชื่อมต่อ | สตริงไม่ถูกต้องหรือฐานข้อมูลเข้าไม่ถึง | ใช้ `utPLSQL: Validate setup` |
 | Timeout ระหว่างรัน | เทสต์ใช้เวลานานกว่า `timeoutMinutes` | เพิ่ม `utplsql.timeoutMinutes` |

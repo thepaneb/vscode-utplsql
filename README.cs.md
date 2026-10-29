@@ -104,7 +104,7 @@ Rozšíření lze nainstalovat dvěma způsoby:
 |---|---|---|
 | 18c+ | v3.2.x (18c+) / v3.1.x | Doporučeno; charset `AL32UTF8`. |
 | 12.2 | pouze v3.1.x | v3.2.x se nezkompiluje (`PLS-00222`). `WE8DEC` obrazu ztrácí nereprezentovatelné znaky (např. `€`); tenký ovladač ignoruje `NLS_LANG`. |
-| 11.2 (11g R2) | v3.1.x only | **Thick mode required** (thin starts at 12.1); coverage via `DBMS_PROFILER`. |
+| 11.2 (11g R2) | v3.1.x only | **Thick mode required** (thin starts at 12.1); coverage via `DBMS_PROFILER`. Instant Client 19c+. |
 - **VSCode 1.101+** (Node 22).
 
 Rozšíření je pouze „grafický klient" — to, co testy spouští, je databáze přímo přes node-oracledb.
@@ -194,7 +194,7 @@ nativních API VSCode.
 | `utplsql.oraclePoolIncrement` | `1` | Přírůstek při rozšiřování poolu Oracle runneru (node-oracledb). |
 | `utplsql.oraclePoolPingInterval` | `60` | Sekundy mezi kontrolami stavu nečinných připojení v poolu (node-oracledb). `0` = ping při každém checkoutu. |
 | `utplsql.oracleClientMode` | `thin` | Režim ovladače: `thin` (čistý JavaScript, bez nativního klienta) nebo `thick` (používá Oracle Instant Client). `thick` používejte jen pro databáze vyžadující NNE (Native Network Encryption); vyžaduje `utplsql.oracleClientLibDir` a znovu načtení okna. |
-| `utplsql.oracleClientLibDir` | `""` | Adresář Oracle Instant Client. Povinný, když je `utplsql.oracleClientMode` nastaveno na `thick` (např. `C:\oracle\instantclient_23_5`). |
+| `utplsql.oracleClientLibDir` | `""` | Adresář Oracle Instant Client. Povinný, když je `utplsql.oracleClientMode` nastaveno na `thick` (např. `C:\oracle\instantclient_23_5`). Fallback: `ORACLE_CLIENT_LIB_DIR`. |
 | Ladění se nezastaví na zarážce | Balíček bez ladicích informací nebo chybějící ladicí granty | Zkompilujte s `PLSQL_OPTIMIZE_LEVEL <= 1` (nebo `ALTER PACKAGE ... COMPILE DEBUG PLSQL_OPTIMIZE_LEVEL = 1`) a udělte `DEBUG CONNECT SESSION` + `EXECUTE ON SYS.DBMS_DEBUG`. Zarážky v `test_*.pkb` se nemusí zastavit (utPLSQL spouští testy přes dynamický SQL); nastavte je v testovaném kódu. |
 | `utplsql.oracleClientConfigDir` | `""` | Adresář konfigurace Oracle (TNS_ADMIN) s `sqlnet.ora`/`tnsnames.ora`. Volitelný; používá jej pouze thick režim. |
 | `utplsql.connections.tnsAdminPath` | `""` | Adresář s `tnsnames.ora` pro řešení **aliasů TNS v thin ovladači**. Pořadí: toto nastavení → hodnota user/machine `sqldeveloper.connections.tnsConfiguration.path` → `TNS_ADMIN`. |
@@ -318,19 +318,19 @@ Všechny příkazy rozšíření (paleta `Ctrl+Shift+P`, předpona `utPLSQL:`):
 | `utPLSQL: New connection profile...` | Průvodce vytvořením a aktivací profilu | — |
 | `utPLSQL: Manage connection profiles` | Otevře nastavení na `utplsql.profiles` | — |
 | `utPLSQL: Import connections from SQL Developer` | Importuje připojení ze SQL Developeru (connections.xml) | — |
-| `utPLSQL: Debug test (PL/SQL)` | Spustí ladící relaci testu pod aktivním souborem | v3.2.x se nezkompiluje (`PLS-00222`). `WE8DEC` obrazu ztrácí nereprezentovatelné znaky (např. `€`); tenký ovladač ignoruje `NLS_LANG`. |
+| `utPLSQL: Debug test (PL/SQL)` | Spustí ladící relaci testu pod aktivním souborem | — |
 | `utPLSQL: Přestavět mezipaměť anotací` | Přestaví mezipaměť anotací utPLSQL v databázi a obnoví strom | — |
 | `utPLSQL: Ladit test na pozici kurzoru` | Spustí ladicí relaci pro `%test`/`%suite` pod kurzorem | — |
 | `utPLSQL: Ladit neúspěšné testy` | Spustí ladicí relaci pro testy, které selhaly při posledním běhu (QuickPick při více) | — |
 | `utPLSQL: Ladit poslední spuštění` | Spustí ladicí relaci posledního běhu | — |
-| `utPLSQL: Zkompilovat pro ladění` | Zkompiluje objekt vybraného souboru/složky s ladicími informacemi | v3.2.x se nezkompiluje (`PLS-00222`). `WE8DEC` obrazu ztrácí nereprezentovatelné znaky (např. `€`); tenký ovladač ignoruje `NLS_LANG`. |
+| `utPLSQL: Zkompilovat pro ladění` | Zkompiluje objekt vybraného souboru/složky s ladicími informacemi | — |
 | `utPLSQL: Run script` | Runs the script open in the editor against a connection profile | Right-click → script file |
 | `utPLSQL: Run script file` | Runs an Explorer script file (decoded with the profile charset) | Right-click → file |
 | `utPLSQL: Run script folder` | Runs the folder scripts in alphabetical order | Right-click → folder |
 | `utPLSQL: Nastavit heslo peněženky` | Nastaví/vymaže heslo peněženky aktivního profilu (SecretStorage) | — |
 | `utPLSQL: Spustit s reporterem (export)` | Spustí výběr se zvoleným reporterem a zapíše výstup do Output/souboru (nemění výsledky) | Test Explorer → menu do item |
-| `utPLSQL: Vygenerovat testovací sadu…` | vygeneruje `ut_<balíček>.pks` s jedním `%test` na rutinu ze souboru `.pks`/`.pkb` nebo databázového objektu, s možnostmi `utplsql.generate.*` | v3.2.x se nezkompiluje (`PLS-00222`). `WE8DEC` obrazu ztrácí nereprezentovatelné znaky (např. `€`); tenký ovladač ignoruje `NLS_LANG`. |
-| `utPLSQL: Spustit související testy` | v produkčním `.pks`/`.pkb`/`.sql` spustí sady podle konvence `ut_<objekt>` | v3.2.x se nezkompiluje (`PLS-00222`). `WE8DEC` obrazu ztrácí nereprezentovatelné znaky (např. `€`); tenký ovladač ignoruje `NLS_LANG`. |
+| `utPLSQL: Vygenerovat testovací sadu…` | vygeneruje `ut_<balíček>.pks` s jedním `%test` na rutinu ze souboru `.pks`/`.pkb` nebo databázového objektu, s možnostmi `utplsql.generate.*` | — |
+| `utPLSQL: Spustit související testy` | v produkčním `.pks`/`.pkb`/`.sql` spustí sady podle konvence `ut_<objekt>` | — |
 | `utPLSQL: Přepnout pokrytí` | Přepíná režim pokrytí relace (kliknutím na stavový řádek). | — |
 | `utPLSQL: Spustit testy podle tagu...` | Spustí suite/testy odpovídající vybraným tagům (`!tag` vylučuje). | — |
 
@@ -395,6 +395,7 @@ reportér se uloží do relace a **použije se při dalším spuštění**.
 **Pokrytí** (vždy) — povoluje profiler:
 ```sql
 GRANT EXECUTE ON SYS.DBMS_PROFILER TO <schema_that_runs_the_tests>;
+-- 11g: only DBMS_PROFILER (DBMS_PLSQL_CODE_COVERAGE is 12.2+)
 GRANT EXECUTE ON SYS.DBMS_PLSQL_CODE_COVERAGE TO <schema_that_runs_the_tests>;
 ```
 Bez toho testy běží, ale pokrytí vyjde **prázdné**.
@@ -427,7 +428,7 @@ GRANT SELECT ON SYS.DBA_PROCEDURES TO <ut3_owner>;
 | Příznak | Pravděpodobná příčina | Řešení |
 |---|---|---|
 | Prázdné pokrytí | Chybí `GRANT EXECUTE ON DBMS_PROFILER` | Spusťte granty v [Požadavky](#požadavky-na-databázi) nebo použijte `utPLSQL: Copy coverage grants to clipboard` |
-| Prázdné pokrytí | Oracle 19c vyžaduje další granty | `GRANT EXECUTE ON DBMS_PROFILER` + `GRANT EXECUTE ON DBMS_PLSQL_CODE_COVERAGE` |
+| Prázdné pokrytí | Oracle 12.2+ vyžaduje další granty | `GRANT EXECUTE ON DBMS_PROFILER` + `GRANT EXECUTE ON DBMS_PLSQL_CODE_COVERAGE` |
 | Chyba kompilace bez indikace | Kód se syntaktickou chybou PL/SQL | Ponechte `utplsql.compilationDiagnostics.enabled` zapnuté (výchozí); chyby z `ALL_ERRORS` se po spuštění zobrazí v panelu „Problémy" |
 | Chyba připojení | Chybný řetězec nebo nedostupná DB | Použijte `utPLSQL: Validate setup` |
 | `%suite` není rozpoznán | Chybí `%suite`/`create package` v souboru, nebo `%test` bez `PROCEDURE` | Zkontrolujte specifikaci; spusťte `utPLSQL: Refresh tests` |

@@ -2,7 +2,7 @@
 id: BR-PLAT-004
 aliases: [BR-PLAT-004]
 tipo: regra
-titulo: OSSF Scorecard é publicado e o main é protegido
+titulo: OSSF Scorecard é publicado e a proteção do main é aplicada por etapas
 dominio: plataforma
 status: ativo
 severidade: media
@@ -18,9 +18,14 @@ tags: ["plataforma", "seguranca", "governanca"]
 
 O CI publica o **OSSF Scorecard** (`.github/workflows/scorecard.yml`,
 `publish_results: true`, SARIF no Security tab) semanalmente e em mudanças de
-branch protection. O `main` é protegido: PR obrigatório, checks `ci`/`integration`
-e CodeQL, sem force-push/exclusão, histórico linear e commits assinados
-(`BR-PLAT-003`). A proteção é compatível com mantenedor único (sem autoaprovação).
+branch protection. A proteção do `main` é aplicada por etapas: **PR obrigatório**
+e revisão, sem force-push/exclusão e com histórico linear já estão ativos;
+**checks obrigatórios e commits assinados** (`BR-PLAT-003`) ainda estão
+**pendentes de ativação** (PRD-119). A proteção é compatível com mantenedor
+único (sem autoaprovação).
+
+**Estado atual (2026-10-29):** `required_status_checks` vazio e
+`required_signatures=false`; o restante (PR/revisão, force-push/deleção) ativo.
 
 ## Pré-condições
 

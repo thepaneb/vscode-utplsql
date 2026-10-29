@@ -18,8 +18,9 @@ through a 4-stage lifecycle.
 proposed/       approved/       in-progress/              completed/
 ```
 
-The **folder** where the file lives is the source of truth for its status.
-The file is moved between folders as it progresses.
+The **`status:` field in the note's frontmatter** (in `docs/brain/20-PRDs/`) is
+the source of truth. `npm run brain:build` generates the `docs/prd/<status>/`
+files and the index; do not move the generated files by hand.
 
 ## Current roadmap
 
@@ -128,13 +129,11 @@ The file is moved between folders as it progresses.
 
 ### ⚪ Proposed
 
-| # | PRD | Target version |
-|---|---|---|
-| 47 | Node 26 in development toolchain | — |
-| 95 | Runtime modernization (ESM/ES2023, Node 22) | 0.23.0 |
-| 97 | Project docs on the site (phase 2 of PRD-96) | 0.23.0 |
-| 88–91 | Locale-aware formatting, plurals, parity, pseudo-locale | 0.21.0 |
-| 92–93 | RTL, new locales, continuous localization pipeline | 0.22.0 |
+The complete, generated list is in [docs/prd/index.md](../../prd/index.md) —
+currently ~28 PRDs, including the 0.19.0 (111/115/124/125), 0.20.0
+(101–103/106/107/120), 0.21.0 (88–91), 0.22.0 (92–93) and 0.23.0
+(47/95/97/99/112/116/117/121/122/126) proposals. The `status:` in each note's
+frontmatter is authoritative; this page does not duplicate the full table.
 
 ## How to propose a PRD
 

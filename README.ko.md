@@ -104,7 +104,7 @@
 |---|---|---|
 | 18c+ | v3.2.x (18c+) / v3.1.x | 권장. charset `AL32UTF8`. |
 | 12.2 | v3.1.x만 | v3.2.x는 컴파일되지 않습니다(`PLS-00222`). 이미지의 `WE8DEC`은 표현할 수 없는 문자(예: `€`)를 잃습니다. thin 드라이버는 `NLS_LANG`을 무시합니다. |
-| 11.2 (11g R2) | v3.1.x only | **Thick mode required** (thin starts at 12.1); coverage via `DBMS_PROFILER`. |
+| 11.2 (11g R2) | v3.1.x only | **Thick mode required** (thin starts at 12.1); coverage via `DBMS_PROFILER`. Instant Client 19c+. |
 - **VSCode 1.101+** (Node 22).
 
 확장 프로그램은 "그래픽 클라이언트"일 뿐입니다 — 테스트를 실행하는 것은 데이터베이스입니다: node-oracledb 직접 연결을 통해.
@@ -193,7 +193,7 @@ Test Explorer에 나타납니다.
 | `utplsql.oraclePoolIncrement` | `1` | Oracle 러너 풀 확장 시 증가분(node-oracledb). |
 | `utplsql.oraclePoolPingInterval` | `60` | 유휴 풀 연결의 상태 검사 간격(초)(node-oracledb). `0` = 모든 체크아웃 시 ping. |
 | `utplsql.oracleClientMode` | `thin` | 드라이버 모드: `thin`(순수 JavaScript, 네이티브 클라이언트 불필요) 또는 `thick`(Oracle Instant Client 사용). `thick`는 NNE(Native Network Encryption)가 필요한 데이터베이스에만 사용하십시오. `utplsql.oracleClientLibDir`와 창 새로 고침이 필요합니다. |
-| `utplsql.oracleClientLibDir` | `""` | Oracle Instant Client 디렉터리. `utplsql.oracleClientMode`가 `thick`일 때 필수입니다(예: `C:\oracle\instantclient_23_5`). |
+| `utplsql.oracleClientLibDir` | `""` | Oracle Instant Client 디렉터리. `utplsql.oracleClientMode`가 `thick`일 때 필수입니다(예: `C:\oracle\instantclient_23_5`). Fallback: `ORACLE_CLIENT_LIB_DIR`. |
 | 디버그가 브레이크포인트에서 멈추지 않음 | 디버그 정보 없이 컴파일된 패키지, 또는 디버그 권한 누락 | `PLSQL_OPTIMIZE_LEVEL <= 1`로 컴파일(또는 `ALTER PACKAGE ... COMPILE DEBUG PLSQL_OPTIMIZE_LEVEL = 1`)하고 `DEBUG CONNECT SESSION` + `EXECUTE ON SYS.DBMS_DEBUG` 부여. `test_*.pkb`의 브레이크포인트가 적중하지 않을 수 있습니다(utPLSQL은 동적 SQL로 테스트를 실행). 테스트 대상 코드에 설정하세요. |
 | `utplsql.oracleClientConfigDir` | `""` | `sqlnet.ora`/`tnsnames.ora`가 있는 Oracle 구성 디렉터리(TNS_ADMIN). 선택 사항이며 thick 모드에서만 사용됩니다. |
 | `utplsql.connections.tnsAdminPath` | `""` | `tnsnames.ora`가 있는 디렉터리로 **thin 드라이버에서 TNS 별칭을 해석**합니다. 순서: 이 설정 → `sqldeveloper.connections.tnsConfiguration.path`의 user/machine 값 → `TNS_ADMIN`. |
@@ -316,19 +316,19 @@ UTPLSQL_CONN=your_user/password@//host:1521/service
 | `utPLSQL: New connection profile...` | 프로필 생성 및 활성화 마법사 | — |
 | `utPLSQL: Manage connection profiles` | `utplsql.profiles`에서 설정 열기 | — |
 | `utPLSQL: Import connections from SQL Developer` | SQL Developer에서 연결 가져오기(connections.xml) | — |
-| `utPLSQL: Debug test (PL/SQL)` | 활성 파일 아래의 테스트 디버그 세션 시작 | v3.2.x는 컴파일되지 않습니다(`PLS-00222`). 이미지의 `WE8DEC`은 표현할 수 없는 문자(예: `€`)를 잃습니다. thin 드라이버는 `NLS_LANG`을 무시합니다. |
+| `utPLSQL: Debug test (PL/SQL)` | 활성 파일 아래의 테스트 디버그 세션 시작 | — |
 | `utPLSQL: 주석 캐시 다시 작성` | 데이터베이스의 utPLSQL 주석 캐시를 다시 작성하고 트리를 갱신합니다 | — |
 | `utPLSQL: 커서 위치의 테스트 디버그` | 커서 위치의 `%test`/`%suite`에 대한 디버그 세션을 시작합니다 | — |
 | `utPLSQL: 실패한 테스트 디버그` | 마지막 실행에서 실패한 테스트의 디버그 세션을 시작합니다(여러 개면 QuickPick) | — |
 | `utPLSQL: 마지막 실행 디버그` | 마지막 실행의 디버그 세션을 시작합니다 | — |
-| `utPLSQL: 디버그용으로 컴파일` | 선택한 파일/폴더의 개체를 디버그 정보와 함께 컴파일합니다 | v3.2.x는 컴파일되지 않습니다(`PLS-00222`). 이미지의 `WE8DEC`은 표현할 수 없는 문자(예: `€`)를 잃습니다. thin 드라이버는 `NLS_LANG`을 무시합니다. |
+| `utPLSQL: 디버그용으로 컴파일` | 선택한 파일/폴더의 개체를 디버그 정보와 함께 컴파일합니다 | — |
 | `utPLSQL: Run script` | Runs the script open in the editor against a connection profile | Right-click → script file |
 | `utPLSQL: Run script file` | Runs an Explorer script file (decoded with the profile charset) | Right-click → file |
 | `utPLSQL: Run script folder` | Runs the folder scripts in alphabetical order | Right-click → folder |
 | `utPLSQL: 월렛 비밀번호 설정` | 활성 프로필의 월렛 비밀번호 설정/해제(SecretStorage) | — |
 | `utPLSQL: reporter로 실행(내보내기)` | 선택 항목을 선택한 reporter로 실행하고 출력을 Output/파일에 저장합니다(결과는 변경하지 않음) | Test Explorer → menu do item |
-| `utPLSQL: 테스트 스위트 생성…` | `.pks`/`.pkb` 또는 데이터베이스 객체에서 루틴마다 `%test` 하나를 가진 `ut_<패키지>.pks`를 생성합니다(`utplsql.generate.*` 옵션) | v3.2.x는 컴파일되지 않습니다(`PLS-00222`). 이미지의 `WE8DEC`은 표현할 수 없는 문자(예: `€`)를 잃습니다. thin 드라이버는 `NLS_LANG`을 무시합니다. |
-| `utPLSQL: 관련 테스트 실행` | 운영 `.pks`/`.pkb`/`.sql`에서 `ut_<객체>` 규칙에 따라 스위트를 실행합니다 | v3.2.x는 컴파일되지 않습니다(`PLS-00222`). 이미지의 `WE8DEC`은 표현할 수 없는 문자(예: `€`)를 잃습니다. thin 드라이버는 `NLS_LANG`을 무시합니다. |
+| `utPLSQL: 테스트 스위트 생성…` | `.pks`/`.pkb` 또는 데이터베이스 객체에서 루틴마다 `%test` 하나를 가진 `ut_<패키지>.pks`를 생성합니다(`utplsql.generate.*` 옵션) | — |
+| `utPLSQL: 관련 테스트 실행` | 운영 `.pks`/`.pkb`/`.sql`에서 `ut_<객체>` 규칙에 따라 스위트를 실행합니다 | — |
 | `utPLSQL: 커버리지 전환` | 세션 커버리지 모드를 전환합니다(상태 표시줄 클릭). | — |
 | `utPLSQL: 태그로 테스트 실행...` | 선택한 태그와 일치하는 스위트/테스트를 실행합니다(`!tag`는 제외). | — |
 
@@ -393,6 +393,7 @@ UTPLSQL_CONN=your_user/password@//host:1521/service
 **커버리지**(항상) — 프로파일러를 활성화합니다:
 ```sql
 GRANT EXECUTE ON SYS.DBMS_PROFILER TO <schema_that_runs_the_tests>;
+-- 11g: only DBMS_PROFILER (DBMS_PLSQL_CODE_COVERAGE is 12.2+)
 GRANT EXECUTE ON SYS.DBMS_PLSQL_CODE_COVERAGE TO <schema_that_runs_the_tests>;
 ```
 이것이 없으면 테스트는 실행되지만 커버리지는 **비어** 나옵니다.
@@ -426,7 +427,7 @@ GRANT SELECT ON SYS.DBA_PROCEDURES TO <ut3_owner>;
 |---|---|---|
 | 스위트가 나타나지 않음 | 데이터베이스를 찾을 수 없음 | 진단을 위해 `utPLSQL: Validate setup` 실행 |
 | 빈 커버리지 | `GRANT EXECUTE ON DBMS_PROFILER` 누락 | [Requirements](#database-requirements)의 권한을 실행하거나 `utPLSQL: Copy coverage grants to clipboard` 사용 |
-| 빈 커버리지 | Oracle 19c에는 추가 권한 필요 | `GRANT EXECUTE ON DBMS_PROFILER` + `GRANT EXECUTE ON DBMS_PLSQL_CODE_COVERAGE` |
+| 빈 커버리지 | Oracle 12.2+에는 추가 권한 필요 | `GRANT EXECUTE ON DBMS_PROFILER` + `GRANT EXECUTE ON DBMS_PLSQL_CODE_COVERAGE` |
 | 표시가 없는 컴파일 오류 | PL/SQL 구문 오류가 있는 코드 | `utplsql.compilationDiagnostics.enabled`를 켜 둔 상태(기본값)로 유지하세요; 실행 후 `ALL_ERRORS`의 오류가 "문제" 패널에 표시됩니다 |
 | 연결 오류 | 잘못된 문자열 또는 접근 불가능한 DB | `utPLSQL: Validate setup` 사용 |
 | 실행 중 시간 초과 | 테스트가 `timeoutMinutes`보다 오래 걸림 | `utplsql.timeoutMinutes` 증가 |

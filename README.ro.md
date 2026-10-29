@@ -104,7 +104,7 @@ Extensia poate fi instalată în două moduri:
 |---|---|---|
 | 18c+ | v3.2.x (18c+) / v3.1.x | Recomandat; charset `AL32UTF8`. |
 | 12.2 | doar v3.1.x | v3.2.x nu se compilează (`PLS-00222`). `WE8DEC` al imaginii pierde caractere nereprezentabile (ex. `€`); driverul subțire ignoră `NLS_LANG`. |
-| 11.2 (11g R2) | v3.1.x only | **Thick mode required** (thin starts at 12.1); coverage via `DBMS_PROFILER`. |
+| 11.2 (11g R2) | v3.1.x only | **Thick mode required** (thin starts at 12.1); coverage via `DBMS_PROFILER`. Instant Client 19c+. |
 - **VSCode 1.101+** (Node 22).
 
 Extensia este doar „clientul grafic" — ceea ce rulează testele este baza de date direct prin node-oracledb.
@@ -193,7 +193,7 @@ Extensia se conectează direct prin Oracle, citește rapoartele (JUnit + Coverag
 | `utplsql.oraclePoolIncrement` | `1` | Increment la extinderea pool-ului runner-ului Oracle (node-oracledb). |
 | `utplsql.oraclePoolPingInterval` | `60` | Secunde între verificările de sănătate ale conexiunilor idle din pool (node-oracledb). `0` = ping la fiecare checkout. |
 | `utplsql.oracleClientMode` | `thin` | Modul driverului: `thin` (JavaScript pur, fără client nativ) sau `thick` (folosește Oracle Instant Client). Folosiți `thick` doar pentru bazele care necesită NNE (Native Network Encryption); necesită `utplsql.oracleClientLibDir` și reîncărcarea ferestrei. |
-| `utplsql.oracleClientLibDir` | `""` | Directorul Oracle Instant Client. Obligatoriu când `utplsql.oracleClientMode` este `thick` (ex. `C:\oracle\instantclient_23_5`). |
+| `utplsql.oracleClientLibDir` | `""` | Directorul Oracle Instant Client. Obligatoriu când `utplsql.oracleClientMode` este `thick` (ex. `C:\oracle\instantclient_23_5`). Fallback: `ORACLE_CLIENT_LIB_DIR`. |
 | Debug nu se oprește la punctul de întrerupere | Pachet fără informații de depanare sau granturi de depanare lipsă | Compilați cu `PLSQL_OPTIMIZE_LEVEL <= 1` (sau `ALTER PACKAGE ... COMPILE DEBUG PLSQL_OPTIMIZE_LEVEL = 1`) și acordați `DEBUG CONNECT SESSION` + `EXECUTE ON SYS.DBMS_DEBUG`. Punctele de întrerupere din `test_*.pkb` pot să nu se declanșeze (utPLSQL rulează testele prin SQL dinamic); puneți-le în codul testat. |
 | `utplsql.oracleClientConfigDir` | `""` | Directorul de configurare Oracle (TNS_ADMIN) cu `sqlnet.ora`/`tnsnames.ora`. Opțional; folosit doar de driverul thick. |
 | `utplsql.connections.tnsAdminPath` | `""` | Director cu `tnsnames.ora` pentru **alias-uri TNS în driverul thin**. Ordine: această setare → valoarea user/machine a `sqldeveloper.connections.tnsConfiguration.path` → `TNS_ADMIN`. |
@@ -317,19 +317,19 @@ Toate comenzile extensiei (paletă `Ctrl+Shift+P`, prefix `utPLSQL:`):
 | `utPLSQL: New connection profile...` | Asistent pentru crearea și activarea unui profil | — |
 | `utPLSQL: Manage connection profiles` | Deschide setările la `utplsql.profiles` | — |
 | `utPLSQL: Import connections from SQL Developer` | Importă conexiuni din SQL Developer (connections.xml) | — |
-| `utPLSQL: Debug test (PL/SQL)` | Pornește o sesiune de depanare a testului din fișierul activ | v3.2.x nu se compilează (`PLS-00222`). `WE8DEC` al imaginii pierde caractere nereprezentabile (ex. `€`); driverul subțire ignoră `NLS_LANG`. |
+| `utPLSQL: Debug test (PL/SQL)` | Pornește o sesiune de depanare a testului din fișierul activ | — |
 | `utPLSQL: Reconstruiește cache-ul de adnotări` | Reconstruiește cache-ul de adnotări utPLSQL în baza de date și reîmprospătează arborele | — |
 | `utPLSQL: Depanează testul de la cursor` | Pornește o sesiune de depanare pentru `%test`/`%suite` de sub cursor | — |
 | `utPLSQL: Depanează testele eșuate` | Pornește o sesiune de depanare pentru testele care au eșuat la ultima rulare (QuickPick dacă sunt mai multe) | — |
 | `utPLSQL: Depanează ultima execuție` | Pornește o sesiune de depanare a ultimei rulări | — |
-| `utPLSQL: Compilare pentru depanare` | Compilează obiectul fișierului/dosarului selectat cu informații de depanare | v3.2.x nu se compilează (`PLS-00222`). `WE8DEC` al imaginii pierde caractere nereprezentabile (ex. `€`); driverul subțire ignoră `NLS_LANG`. |
+| `utPLSQL: Compilare pentru depanare` | Compilează obiectul fișierului/dosarului selectat cu informații de depanare | — |
 | `utPLSQL: Run script` | Runs the script open in the editor against a connection profile | Right-click → script file |
 | `utPLSQL: Run script file` | Runs an Explorer script file (decoded with the profile charset) | Right-click → file |
 | `utPLSQL: Run script folder` | Runs the folder scripts in alphabetical order | Right-click → folder |
 | `utPLSQL: Setează parola portofelului` | Setează/șterge parola portofelului profilului activ (SecretStorage) | — |
 | `utPLSQL: Rulează cu reporter (export)` | Rulează selecția cu reporterul ales și scrie ieșirea în Output/fișier (nu schimbă rezultatele) | Test Explorer → menu do item |
-| `utPLSQL: Generează suita de teste…` | generează `ut_<pachet>.pks` cu un `%test` per rutină dintr-un `.pks`/`.pkb` sau obiect de bază de date, cu opțiunile `utplsql.generate.*` | v3.2.x nu se compilează (`PLS-00222`). `WE8DEC` al imaginii pierde caractere nereprezentabile (ex. `€`); driverul subțire ignoră `NLS_LANG`. |
-| `utPLSQL: Rulează testele asociate` | într-un `.pks`/`.pkb`/`.sql` de producție, rulează suitele după convenția `ut_<obiect>` | v3.2.x nu se compilează (`PLS-00222`). `WE8DEC` al imaginii pierde caractere nereprezentabile (ex. `€`); driverul subțire ignoră `NLS_LANG`. |
+| `utPLSQL: Generează suita de teste…` | generează `ut_<pachet>.pks` cu un `%test` per rutină dintr-un `.pks`/`.pkb` sau obiect de bază de date, cu opțiunile `utplsql.generate.*` | — |
+| `utPLSQL: Rulează testele asociate` | într-un `.pks`/`.pkb`/`.sql` de producție, rulează suitele după convenția `ut_<obiect>` | — |
 | `utPLSQL: Comută acoperirea` | Comută modul de acoperire al sesiunii (clic pe bara de stare). | — |
 | `utPLSQL: Rulează teste după tag...` | Rulează suite-urile/testele care corespund tagurilor selectate (`!tag` exclude). | — |
 
@@ -392,6 +392,7 @@ listați aici.
 **Acoperire** (întotdeauna) — activează profiler-ul:
 ```sql
 GRANT EXECUTE ON SYS.DBMS_PROFILER TO <schema_that_runs_the_tests>;
+-- 11g: only DBMS_PROFILER (DBMS_PLSQL_CODE_COVERAGE is 12.2+)
 GRANT EXECUTE ON SYS.DBMS_PLSQL_CODE_COVERAGE TO <schema_that_runs_the_tests>;
 ```
 Fără acestea, testele rulează, dar acoperirea iese **goală**.
@@ -424,7 +425,7 @@ GRANT SELECT ON SYS.DBA_PROCEDURES TO <ut3_owner>;
 | Simptom | Cauză probabilă | Soluție |
 |---|---|---|
 | Acoperire goală | Lipsește `GRANT EXECUTE ON DBMS_PROFILER` | Rulează granturile din [Cerințe pentru baza de date](#cerințe-pentru-baza-de-date) sau folosește `utPLSQL: Copy coverage grants to clipboard` |
-| Acoperire goală | Oracle 19c necesită granturi suplimentare | `GRANT EXECUTE ON DBMS_PROFILER` + `GRANT EXECUTE ON DBMS_PLSQL_CODE_COVERAGE` |
+| Acoperire goală | Oracle 12.2+ necesită granturi suplimentare | `GRANT EXECUTE ON DBMS_PROFILER` + `GRANT EXECUTE ON DBMS_PLSQL_CODE_COVERAGE` |
 | Eroare de compilare fără indicație | Cod cu eroare de sintaxă PL/SQL | Menține `utplsql.compilationDiagnostics.enabled` activat (implicit); erorile din `ALL_ERRORS` apar în Problems Panel după o rulare |
 | Eroare de conexiune | String malformat sau bază de date inaccesibilă | Folosește `utPLSQL: Validate setup` |
 | `%suite` nu este recunoscut | Lipsesc `%suite`/`create package` în fișier, sau `%test` fără `PROCEDURE` | Verifică spec-ul; rulează `utPLSQL: Refresh tests` |

@@ -104,7 +104,7 @@ A bővítmény kétféleképpen telepíthető:
 |---|---|---|
 | 18c+ | v3.2.x (18c+) / v3.1.x | Ajánlott; charset `AL32UTF8`. |
 | 12.2 | csak v3.1.x | A v3.2.x nem fordul (`PLS-00222`). A kép `WE8DEC`-je elveszíti a nem ábrázolható karaktereket (pl. `€`); a thin illesztő figyelmen kívül hagyja a `NLS_LANG`-ot. |
-| 11.2 (11g R2) | v3.1.x only | **Thick mode required** (thin starts at 12.1); coverage via `DBMS_PROFILER`. |
+| 11.2 (11g R2) | v3.1.x only | **Thick mode required** (thin starts at 12.1); coverage via `DBMS_PROFILER`. Instant Client 19c+. |
 - **VSCode 1.101+** (Node 22).
 
 A bővítmény csupán a „grafikus kliens" — a teszteket ténylegesen az adatbázis futtatja közvetlenül a node-oracledb-n keresztül.
@@ -193,7 +193,7 @@ A bővítmény közvetlenül Oracle-on keresztül csatlakozik, beolvassa a ripor
 | `utplsql.oraclePoolIncrement` | `1` | Az Oracle futtatókészlet (node-oracledb) bővítésének lépésköze. |
 | `utplsql.oraclePoolPingInterval` | `60` | Az üresjárati készletkapcsolatok állapotellenőrzései közötti másodpercek száma (node-oracledb). `0` = ping minden kivételkor. |
 | `utplsql.oracleClientMode` | `thin` | Illesztőprogram-mód: `thin` (tiszta JavaScript, natív kliens nélkül) vagy `thick` (az Oracle Instant Clientet használja). A `thick` módot csak NNE-t (Native Network Encryption) igénylő adatbázisokhoz használja; `utplsql.oracleClientLibDir` és az ablak újratöltése szükséges. |
-| `utplsql.oracleClientLibDir` | `""` | Az Oracle Instant Client könyvtára. Kötelező, ha az `utplsql.oracleClientMode` értéke `thick` (pl. `C:\oracle\instantclient_23_5`). |
+| `utplsql.oracleClientLibDir` | `""` | Az Oracle Instant Client könyvtára. Kötelező, ha az `utplsql.oracleClientMode` értéke `thick` (pl. `C:\oracle\instantclient_23_5`). Fallback: `ORACLE_CLIENT_LIB_DIR`. |
 | A hibakeresés nem áll meg a törésponton | Csomag hibakeresési info nélkül, vagy hiányzó hibakeresési jogosultságok | Fordítsd `PLSQL_OPTIMIZE_LEVEL <= 1` értékkel (vagy `ALTER PACKAGE ... COMPILE DEBUG PLSQL_OPTIMIZE_LEVEL = 1`), és adj `DEBUG CONNECT SESSION` + `EXECUTE ON SYS.DBMS_DEBUG` jogosultságot. A `test_*.pkb` töréspontok nem biztos, hogy megállnak (az utPLSQL dinamikus SQL-lel futtatja a teszteket); a tesztelt kódba tedd őket. |
 | `utplsql.oracleClientConfigDir` | `""` | Oracle konfigurációs könyvtár (TNS_ADMIN) a `sqlnet.ora`/`tnsnames.ora` fájlokkal. Opcionális; csak a thick mód használja. |
 | `utplsql.connections.tnsAdminPath` | `""` | `tnsnames.ora` könyvtár a **TNS álnevek feloldásához a thin illesztőben**. Sorrend: ez a beállítás → `sqldeveloper.connections.tnsConfiguration.path` user/machine értéke → `TNS_ADMIN`. |
@@ -317,19 +317,19 @@ A bővítmény összes parancsa (paletta `Ctrl+Shift+P`, előtag `utPLSQL:`):
 | `utPLSQL: New connection profile...` | Varázsló profil létrehozásához és aktiválásához | — |
 | `utPLSQL: Manage connection profiles` | Megnyitja a beállításokat a `utplsql.profiles` értéknél | — |
 | `utPLSQL: Import connections from SQL Developer` | Kapcsolatok importálása az SQL Developerből (connections.xml) | — |
-| `utPLSQL: Debug test (PL/SQL)` | Hibakeresési munkamenetet indít az aktív fájlban lévő tesztre | A v3.2.x nem fordul (`PLS-00222`). A kép `WE8DEC`-je elveszíti a nem ábrázolható karaktereket (pl. `€`); a thin illesztő figyelmen kívül hagyja a `NLS_LANG`-ot. |
+| `utPLSQL: Debug test (PL/SQL)` | Hibakeresési munkamenetet indít az aktív fájlban lévő tesztre | — |
 | `utPLSQL: Megjegyzés-gyorsítótár újraépítése` | Újraépíti az utPLSQL megjegyzés-gyorsítótárat az adatbázisban, és frissíti a fát | — |
 | `utPLSQL: Teszt hibakeresése a kurzornál` | Debug-munkamenetet indít a kurzor alatti `%test`/`%suite` számára | — |
 | `utPLSQL: Sikertelen tesztek hibakeresése` | Debug-munkamenetet indít a legutóbbi futásban megbukott tesztekhez (több esetén QuickPick) | — |
 | `utPLSQL: Utolsó futtatás hibakeresése` | Debug-munkamenetet indít a legutóbbi futáshoz | — |
-| `utPLSQL: Fordítás hibakereséshez` | A kijelölt fájl/mappa objektumát hibakeresési információkkal fordítja le | A v3.2.x nem fordul (`PLS-00222`). A kép `WE8DEC`-je elveszíti a nem ábrázolható karaktereket (pl. `€`); a thin illesztő figyelmen kívül hagyja a `NLS_LANG`-ot. |
+| `utPLSQL: Fordítás hibakereséshez` | A kijelölt fájl/mappa objektumát hibakeresési információkkal fordítja le | — |
 | `utPLSQL: Run script` | Runs the script open in the editor against a connection profile | Right-click → script file |
 | `utPLSQL: Run script file` | Runs an Explorer script file (decoded with the profile charset) | Right-click → file |
 | `utPLSQL: Run script folder` | Runs the folder scripts in alphabetical order | Right-click → folder |
 | `utPLSQL: Tárca jelszó beállítása` | Beállítja/törli az aktív profil tárca jelszavát (SecretStorage) | — |
 | `utPLSQL: Futtatás reporterrel (export)` | A kijelölést a választott reporterrel futtatja, és Output/fájlba írja (nem módosítja az eredményeket) | Test Explorer → menu do item |
-| `utPLSQL: Tesztcsomag létrehozása…` | `ut_<csomag>.pks` fájlt hoz létre rutinonként egy `%test`-tel `.pks`/`.pkb` fájlból vagy adatbázis-objektumból, a `utplsql.generate.*` beállításokkal | A v3.2.x nem fordul (`PLS-00222`). A kép `WE8DEC`-je elveszíti a nem ábrázolható karaktereket (pl. `€`); a thin illesztő figyelmen kívül hagyja a `NLS_LANG`-ot. |
-| `utPLSQL: Kapcsolódó tesztek futtatása` | éles `.pks`/`.pkb`/`.sql` fájlban a `ut_<objektum>` konvenció szerinti csomagokat futtatja | A v3.2.x nem fordul (`PLS-00222`). A kép `WE8DEC`-je elveszíti a nem ábrázolható karaktereket (pl. `€`); a thin illesztő figyelmen kívül hagyja a `NLS_LANG`-ot. |
+| `utPLSQL: Tesztcsomag létrehozása…` | `ut_<csomag>.pks` fájlt hoz létre rutinonként egy `%test`-tel `.pks`/`.pkb` fájlból vagy adatbázis-objektumból, a `utplsql.generate.*` beállításokkal | — |
+| `utPLSQL: Kapcsolódó tesztek futtatása` | éles `.pks`/`.pkb`/`.sql` fájlban a `ut_<objektum>` konvenció szerinti csomagokat futtatja | — |
 | `utPLSQL: Lefedettség váltása` | A munkamenet lefedettségi módját váltja (kattintson az állapotsorra). | — |
 | `utPLSQL: Tesztek futtatása tag szerint...` | A kiválasztott tageknek megfelelő suite-okat/teszteket futtatja (`!tag` kizár). | — |
 
@@ -392,6 +392,7 @@ itt fel vannak sorolva.
 **Lefedettség** (mindig) — engedélyezi a profilt:
 ```sql
 GRANT EXECUTE ON SYS.DBMS_PROFILER TO <schema_that_runs_the_tests>;
+-- 11g: only DBMS_PROFILER (DBMS_PLSQL_CODE_COVERAGE is 12.2+)
 GRANT EXECUTE ON SYS.DBMS_PLSQL_CODE_COVERAGE TO <schema_that_runs_the_tests>;
 ```
 Enélkül a tesztek futnak, de a lefedettség **üres** lesz.
@@ -424,7 +425,7 @@ GRANT SELECT ON SYS.DBA_PROCEDURES TO <ut3_owner>;
 | Tünet | Valószínű ok | Megoldás |
 |---|---|---|
 | Üres lefedettség | Hiányzó `GRANT EXECUTE ON DBMS_PROFILER` | Futtasd a jogosultságokat az [Adatbázis-követelmények](#adatbázis-követelmények) rész szerint, vagy használd a `utPLSQL: Copy coverage grants to clipboard` parancsot |
-| Üres lefedettség | Az Oracle 19c további jogosultságokat igényel | `GRANT EXECUTE ON DBMS_PROFILER` + `GRANT EXECUTE ON DBMS_PLSQL_CODE_COVERAGE` |
+| Üres lefedettség | Az Oracle 12.2+ további jogosultságokat igényel | `GRANT EXECUTE ON DBMS_PROFILER` + `GRANT EXECUTE ON DBMS_PLSQL_CODE_COVERAGE` |
 | Fordítási hiba minden jelzés nélkül | PL/SQL szintaktikai hibát tartalmazó kód | Tartsd bekapcsolva a `utplsql.compilationDiagnostics.enabled` beállítást (alapértelmezett); az `ALL_ERRORS` hibái egy futtatás után megjelennek a Problems panelben |
 | Kapcsolati hiba | Hibás sztring vagy elérhetetlen adatbázis | Használd a `utPLSQL: Validate setup` parancsot |
 | A `%suite` nem kerül felismerésre | Hiányzó `%suite`/`create package` a fájlban, vagy `%test` `PROCEDURE` nélkül | Ellenőrizd a specifikációt; futtasd a `utPLSQL: Refresh tests` parancsot |

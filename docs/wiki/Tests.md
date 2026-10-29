@@ -13,7 +13,7 @@ Overview of the extension's tests and how to run them.
 
 ## Unit tests
 
-Unit tests live in `src/test/unit/` (78 files). They cover pure
+Unit tests live in `src/test/unit/` (88 files). They cover pure
 modules and modules that depend on `vscode`, using `src/test/vscode-stub.ts`.
 The folder is the source of truth for the current list; run
 `npm run test:unit` to execute it.
@@ -74,23 +74,8 @@ node --test --test-name-pattern "parse" out/test/unit/**/*.test.js
 
 Test the extension inside a real VSCode instance:
 
-```
-src/test/integration/
-├── extension.test.ts
-├── oracleCapabilities.test.ts
-├── v012-features.test.ts
-├── v013-features.test.ts
-├── compileForDebug.test.ts
-├── dbPaths.test.ts
-├── prd70-sqlplus.test.ts
-├── schemaRun.test.ts
-├── debuggerE2E.test.ts
-├── debuggerStandaloneFn.test.ts
-└── thickMode.test.ts
-```
-
-Integration tests live in `src/test/integration/` (26 files), with two
-modes:
+Integration tests live in `src/test/integration/` (27 files); the folder is
+the source of truth for the list, with two modes:
 
 - **Without database**: test discovery, commands, UI — do not require Oracle
 - **With database** (`describeDB`): test real execution, coverage, reporters —
@@ -102,11 +87,15 @@ Fast subsets / modes:
   (package via direct call and standalone function/namespace `toplevel`) +
   `v017-features` (CodeLens/associations/snippets/HTML coverage), ~1 min.
 - `npm run test:integration:thick` — thick mode (Instant Client) in an isolated
-  host; needs `ORACLE_CLIENT_LIB_DIR`.
+  host; needs `ORACLE_CLIENT_LIB_DIR` (Oracle Client 19c+).
+- `npm run test:integration:thick-full` — full suite in thick (experimental;
+  excludes the thin-only tests and is not in CI yet; PRD-125 covers the 11g
+  validation and skips). It needs `ORACLE_CLIENT_LIB_DIR` and `UTPLSQL_CONN`.
 - `npm run db:matrix` — runs the suite against multiple Oracle versions (see
   [Contributing](Contributing)). The 11g legacy axis is thick-only:
   `npm run db:matrix -- --only 11xe --thick` (requires `ORACLE_CLIENT_LIB_DIR_11XE`
-  or the global `ORACLE_CLIENT_LIB_DIR`).
+  or the global `ORACLE_CLIENT_LIB_DIR`). The full thick axis is
+  `--thick-full` (experimental).
 
 ### Setup
 
