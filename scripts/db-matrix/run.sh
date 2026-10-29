@@ -47,6 +47,10 @@ fi
 
 DB_PORT="${DB_PORT:-1531}"
 ORACLE_PWD="${ORACLE_PWD:-Oracle#2026}"
+# As imagens gvenzl (11g) leem ORACLE_PASSWORD; as Oracle leem ORACLE_PWD.
+ORACLE_PASSWORD="${ORACLE_PASSWORD:-$ORACLE_PWD}"
+DB_DATA_DIR="${DB_DATA_DIR:-/opt/oracle/oradata}"
+DB_DATA_DIR_11XE="${DB_DATA_DIR_11XE:-/u01/app/oracle/oradata}"
 UT3_PASSWORD="${UT3_PASSWORD:-ut3#matrix2026}"
 TEST_PASSWORD="${TEST_PASSWORD:-utplsql_test#2026}"
 UTPLSQL_VERSION="${UTPLSQL_VERSION:-v.3.2.3}"
@@ -104,16 +108,19 @@ SET HEADING OFF FEEDBACK OFF PAGESIZE 0
 SELECT 'OK' FROM user_objects WHERE object_name = 'UT_RUNNER' AND object_type = 'PACKAGE';
 EXIT
 SQL
-)"
+)" || true
   test_ok="$(docker exec -i -e "DBU=UTPLSQL_TEST" -e "DBP=$TEST_PASSWORD" -e "DBS=$service" "$CONTAINER" \
     bash -lc '$ORACLE_HOME/bin/sqlplus -s "$DBU/$DBP@//localhost:1521/$DBS"' <<'SQL' 2>&1 | tr -d '\r'
 SET HEADING OFF FEEDBACK OFF PAGESIZE 0
 SELECT 'OK' FROM dual;
 EXIT
 SQL
-)"
+)" || true
   if ! grep -q 'OK' <<<"$ut3_ok" || ! grep -q 'OK' <<<"$test_ok"; then
     echo "volume $DB_VOLUME não tem bootstrap válido para $label." >&2
+    # Diagnóstico sem ecoar credenciais: só a linha de erro do sqlplus.
+    echo "  UT3: $(grep -m1 -E 'ORA-|SP2-' <<<"$ut3_ok" || echo 'sem resposta OK')" >&2
+    echo "  UTPLSQL_TEST: $(grep -m1 -E 'ORA-|SP2-' <<<"$test_ok" || echo 'sem resposta OK')" >&2
     echo "rode sem --skip-bootstrap (ou com --clean) para reinstalar UT3/UTPLSQL_TEST." >&2
     exit 1
   fi
@@ -123,7 +130,17 @@ usage() { grep '^#' "$0" | sed 's/^# \{0,1\}//'; }
 
 while [ $# -gt 0 ]; do
   case "$1" in
-    --list) echo "$VERSIONS" | sed '/^$/d'; exit 0 ;;
+    --list)
+      # Anota o 5º campo (`client`) sem esconder label|imagem|serviço|versão.
+      echo "$VERSIONS" | sed '/^$/d' | while IFS='|' read -r l i s v c; do
+        if [ "${c:-both}" = thick ]; then
+          printf '%s|%s|%s|%s (thick-only)\n' "$l" "$i" "$s" "$v"
+        else
+          printf '%s|%s|%s|%s\n' "$l" "$i" "$s" "$v"
+        fi
+      done
+      exit 0
+      ;;
     --only) ONLY="$2"; shift 2 ;;
     --tests) TESTS_CMD="$2"; shift 2 ;;
     --smoke) TESTS_CMD="npm run test:integration:smoke"; shift ;;
@@ -159,26 +176,55 @@ mkdir -p "$LOG_DIR" "$(dirname "$SUMMARY_FILE")"
 
 mapfile -t VERSION_LINES < <(echo "$VERSIONS" | sed '/^$/d')
 for __line in "${VERSION_LINES[@]}"; do
-  # label|imagem|service[|utplsql_version] — o 4º campo é opcional (piso por
-  # banco). parse-version.cjs normaliza (testado em matrixConfig.test.ts).
+  # label|imagem|service[|utplsql_version[|client]] — o 4º/5º campos são
+  # opcionais. parse-version.cjs normaliza (testado em matrixConfig.test.ts).
   local_utplsql_version="$UTPLSQL_BASE_VERSION"
+  local_client="both"
   if command -v node >/dev/null 2>&1; then
-    IFS='|' read -r label image service local_utplsql_version <<< \
+    IFS='|' read -r label image service local_utplsql_version local_client <<< \
       "$("$NODE_BIN" "$(node_path "$SCRIPT_DIR/parse-version.cjs")" "$__line" "$UTPLSQL_BASE_VERSION" | \
-        "$NODE_BIN" -e 'let s="";process.stdin.on("data",d=>s+=d).on("end",()=>{const j=JSON.parse(s);process.stdout.write([j.label,j.image,j.service,j.utplsqlVersion].join("|"))})')"
+        "$NODE_BIN" -e 'let s="";process.stdin.on("data",d=>s+=d).on("end",()=>{const j=JSON.parse(s);process.stdout.write([j.label,j.image,j.service,j.utplsqlVersion,j.client].join("|"))})')"
   else
-    IFS='|' read -r label image service version_field <<< "$__line"
+    IFS='|' read -r label image service version_field client_field <<< "$__line"
     local_utplsql_version="${version_field:-$UTPLSQL_BASE_VERSION}"
+    local_client="${client_field:-both}"
   fi
   label="$(echo "$label" | tr -d ' ')"; image="$(echo "$image" | tr -d ' ')"
   service="$(echo "$service" | tr -d ' ')"; local_utplsql_version="$(echo "$local_utplsql_version" | tr -d ' ')"
+  local_client="$(echo "$local_client" | tr -d ' ')"
   selected "$label" || continue
   CURRENT_IMAGE="$image"
-  log "$label — $image (serviço $service, utPLSQL $local_utplsql_version)"
+
+  # Guarda fail-fast: 11g (client=thick) só roda no eixo thick. Melhor falhar
+  # antes do pull/bootstrap do que receber NJS-138 no meio da suíte.
+  if [ "$local_client" = "thick" ]; then
+    case "$TESTS_CMD" in
+      *test:integration:thick*) ;;
+      *)
+        echo "$label só roda com --thick (thin exige 12.1+; use --thick/--tests 'npm run test:integration:thick')." >&2
+        exit 1
+        ;;
+    esac
+  fi
+
+  log "$label — $image (serviço $service, utPLSQL $local_utplsql_version, client $local_client)"
+
+  # Instant Client específico da versão (ex.: ORACLE_CLIENT_LIB_DIR_11XE) tem
+  # precedência sobre o global; exportado para o WSLENV abaixo.
+  label_suffix="$(printf '%s' "$label" | tr '[:lower:]' '[:upper:]' | tr -c 'A-Z0-9' '_')"
+  client_var="ORACLE_CLIENT_LIB_DIR_${label_suffix}"
+  if [ -n "${!client_var:-}" ]; then
+    export ORACLE_CLIENT_LIB_DIR="${!client_var}"
+  fi
 
   # Volume de dados por versão: a 1ª subida cria o banco; as demais reaproveitam.
   export DB_VOLUME="${DB_VOLUME_PREFIX:-utplsql-dbmatrix}-${label}"
-  export DB_IMAGE="$image" DB_CONTAINER="$CONTAINER" DB_PORT ORACLE_PWD
+  if [ "$label" = "11xe" ]; then
+    export DB_DATA_DIR="${DB_DATA_DIR_11XE:-/u01/app/oracle/oradata}"
+  else
+    export DB_DATA_DIR="${DB_DATA_DIR:-/opt/oracle/oradata}"
+  fi
+  export DB_IMAGE="$image" DB_CONTAINER="$CONTAINER" DB_PORT ORACLE_PWD ORACLE_PASSWORD DB_DATA_DIR
   export UT3_PASSWORD TEST_PASSWORD UTPLSQL_VERSION="$local_utplsql_version"
 
   if [ "$CLEAN" = 1 ]; then
@@ -210,7 +256,10 @@ for __line in "${VERSION_LINES[@]}"; do
     start_ts="$(date +%s)"
     log "rodando testes: $TESTS_CMD  (UTPLSQL_CONN=$(mask_conn "$UTPLSQL_CONN"))"
     set +e
-    (cd "$ROOT_DIR" && eval "$TESTS_CMD") 2>&1 | tee "$test_log"
+    # Subshell explícito em vez de `eval` no shell do orquestrador: TESTS_CMD
+    # pode conter `&&` e `bash -c '...'` (--full/--tests). O valor é entrada
+    # do mantenedor (dev-only), mas não deve reavaliar o ambiente do run.sh.
+    (cd "$ROOT_DIR" && bash -c "$TESTS_CMD") 2>&1 | tee "$test_log"
     test_status="${PIPESTATUS[0]}"
     set -e
     duration="$(( $(date +%s) - start_ts ))"

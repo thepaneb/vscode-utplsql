@@ -14,8 +14,8 @@
  */
 'use strict';
 
-const fs = require('fs');
-const path = require('path');
+const fs = require('node:fs');
+const path = require('node:path');
 
 const REPO = path.resolve(__dirname, '..');
 const PRD_DIR = path.join(REPO, 'docs', 'prd');
@@ -54,9 +54,7 @@ function checkReadme() {
   const readme = path.join(REPO, 'README.md');
   if (!fs.existsSync(readme)) return fail('README.md ausente');
   const text = fs.readFileSync(readme, 'utf8');
-  const linked = new Set(
-    [...text.matchAll(/\]\((README\.[^)]+\.md)\)/g)].map((m) => m[1]),
-  );
+  const linked = new Set([...text.matchAll(/\]\((README\.[^)]+\.md)\)/g)].map((m) => m[1]));
   const exists = new Set(readdirSafe(REPO).filter((n) => /^README\..+\.md$/.test(n)));
 
   for (const l of linked) {
@@ -101,8 +99,11 @@ function checkPrd() {
 
   for (const a of actual) {
     if (!linkedInIndex.has(a)) fail(`${a} não está linkado no index.md`);
-    const occurrences = [...index.matchAll(new RegExp(`\\]\\(${a.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}\\)`, 'g'))].length;
-    if (occurrences > 1) console.log(`  ⚠ ${a} aparece ${occurrences}× no index.md (deveria ser 1)`);
+    const occurrences = [
+      ...index.matchAll(new RegExp(`\\]\\(${a.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}\\)`, 'g')),
+    ].length;
+    if (occurrences > 1)
+      console.log(`  ⚠ ${a} aparece ${occurrences}× no index.md (deveria ser 1)`);
   }
   for (const l of linkedInIndex) {
     if (!actual.has(l)) fail(`index.md linka ${l}, que não existe`);
@@ -118,7 +119,10 @@ function checkPrd() {
     }
   }
 
-  if ([...actual].every((a) => linkedInIndex.has(a)) && [...linkedInIndex].every((l) => actual.has(l))) {
+  if (
+    [...actual].every((a) => linkedInIndex.has(a)) &&
+    [...linkedInIndex].every((l) => actual.has(l))
+  ) {
     ok(`${actual.size} PRDs consistentes (pasta ↔ index ↔ status)`);
   }
 }

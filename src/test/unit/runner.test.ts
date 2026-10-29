@@ -11,37 +11,45 @@ import {
   lastSegment,
 } from '../../runner';
 import { TestStateManager } from '../../state';
-import type { ItemMeta } from '../../types';
 import * as viewCoverage from '../../viewCoverage';
+import {
+  makeController,
+  makeFolder,
+  makeMeta,
+  makeRequest,
+  makeTestItem,
+  makeUri,
+  NEVER_TOKEN,
+} from '../fixtures';
 import * as vscode from '../vscode-stub';
-
-const NEVER_TOKEN = {
-  isCancellationRequested: false,
-  onCancellationRequested: () => ({ dispose: () => {} }),
-} as any;
 
 function makeExecState() {
   const state = new TestStateManager();
-  const suiteItem = new vscode.TestItem('suite1') as any;
-  const testItem = new vscode.TestItem('test1') as any;
+  const suiteItem = makeTestItem('suite1');
+  const testItem = makeTestItem('test1');
 
-  // Add testItem as child of suiteItem
-  suiteItem.children = [testItem];
+  suiteItem.children.add(testItem);
 
-  state.setMeta(suiteItem, {
-    kind: 'suite',
-    packageName: 'TEST_PKG',
-    uri: { fsPath: '/tmp/test.pks', path: '/tmp/test.pks', scheme: 'file' },
-    folder: { uri: { fsPath: '/tmp', path: '/tmp', scheme: 'file' }, name: 'tmp', index: 0 },
-  } as ItemMeta);
-  state.setMeta(testItem, {
-    kind: 'test',
-    packageName: 'TEST_PKG',
-    procName: 'test_pass',
-    description: 'test_pass',
-    uri: { fsPath: '/tmp/test.pks', path: '/tmp/test.pks', scheme: 'file' },
-    folder: { uri: { fsPath: '/tmp', path: '/tmp', scheme: 'file' }, name: 'tmp', index: 0 },
-  } as ItemMeta);
+  state.setMeta(
+    suiteItem,
+    makeMeta({
+      kind: 'suite',
+      packageName: 'TEST_PKG',
+      uri: makeUri('/tmp/test.pks'),
+      folder: makeFolder('/tmp', 'tmp'),
+    }),
+  );
+  state.setMeta(
+    testItem,
+    makeMeta({
+      kind: 'test',
+      packageName: 'TEST_PKG',
+      procName: 'test_pass',
+      description: 'test_pass',
+      uri: makeUri('/tmp/test.pks'),
+      folder: makeFolder('/tmp', 'tmp'),
+    }),
+  );
 
   return { state, suiteItem, testItem };
 }
@@ -55,7 +63,7 @@ async function withExecEnv(
   try {
     if (!opts?.noConn) process.env.UTPLSQL_CONN = 'user/pass@//host:1521/svc';
     if (!opts?.noFolders) {
-      vscode.workspace.__setWorkspaceFolders([{ uri: { fsPath: '/tmp' }, name: 'tmp', index: 0 }]);
+      vscode.workspace.__setWorkspaceFolders([makeFolder('/tmp', 'tmp')]);
     } else {
       vscode.workspace.__setWorkspaceFolders(undefined);
     }
@@ -114,12 +122,9 @@ test('executeRun: sem workspace folders mostra erro e retorna', async () =>
   withExecEnv(
     async () => {
       const { state } = makeExecState();
-      const run = new vscode.TestRun() as any;
-      const controller = {
-        createTestRun: () => run,
-        items: { forEach: () => {} },
-      } as any;
-      await executeRun(controller, {} as any, NEVER_TOKEN as any, false, state);
+      const run = new vscode.TestRun();
+      const controller = makeController(run);
+      await executeRun(controller, makeRequest(), NEVER_TOKEN, false, state);
       assert.strictEqual(run.passedCount(), 0);
     },
     { noFolders: true },
@@ -129,12 +134,9 @@ test('executeRun: sem conexao mostra erro e retorna', async () =>
   withExecEnv(
     async () => {
       const { state } = makeExecState();
-      const run = new vscode.TestRun() as any;
-      const controller = {
-        createTestRun: () => run,
-        items: { forEach: () => {} },
-      } as any;
-      await executeRun(controller, {} as any, NEVER_TOKEN as any, false, state);
+      const run = new vscode.TestRun();
+      const controller = makeController(run);
+      await executeRun(controller, makeRequest(), NEVER_TOKEN, false, state);
       assert.strictEqual(run.passedCount(), 0);
     },
     { noConn: true },
@@ -143,18 +145,15 @@ test('executeRun: sem conexao mostra erro e retorna', async () =>
 test('executeRun: oracle falha marca todos como erro', async () =>
   withExecEnv(async () => {
     const { state, suiteItem } = makeExecState();
-    const run = new vscode.TestRun() as any;
-    const controller = {
-      createTestRun: () => run,
-      items: { forEach: () => {} },
-    } as any;
-    const request = { include: [suiteItem] } as any;
+    const run = new vscode.TestRun();
+    const controller = makeController(run);
+    const request = makeRequest([suiteItem]);
 
     mock.method(oracleRunner, 'executeRunOracle', async () => {
       throw new Error('ORA-00942');
     });
 
-    await executeRun(controller, request, NEVER_TOKEN as any, false, state);
+    await executeRun(controller, request, NEVER_TOKEN, false, state);
 
     assert.strictEqual(run.erroredCount(), 1);
     assert.match(run.output(), /Oracle runner/);
@@ -163,78 +162,76 @@ test('executeRun: oracle falha marca todos como erro', async () =>
 test('executeRun: erro oracle não-Error é stringificado', async () =>
   withExecEnv(async () => {
     const { state, suiteItem } = makeExecState();
-    const run = new vscode.TestRun() as any;
-    const controller = { createTestRun: () => run, items: { forEach: () => {} } } as any;
-    const request = { include: [suiteItem] } as any;
+    const run = new vscode.TestRun();
+    const controller = makeController(run);
+    const request = makeRequest([suiteItem]);
 
     mock.method(oracleRunner, 'executeRunOracle', async () => {
       throw 'mensagem crua';
     });
 
-    await executeRun(controller, request, NEVER_TOKEN as any, false, state);
+    await executeRun(controller, request, NEVER_TOKEN, false, state);
     assert.match(run.output(), /mensagem crua/);
   }));
 
 test('executeRun: include de teste único seta lastRun type test', async () =>
   withExecEnv(async () => {
     const { state, testItem } = makeExecState();
-    const run = new vscode.TestRun() as any;
-    const controller = { createTestRun: () => run, items: { forEach: () => {} } } as any;
-    const request = { include: [testItem] } as any;
+    const run = new vscode.TestRun();
+    const controller = makeController(run);
+    const request = makeRequest([testItem]);
 
     mock.method(oracleRunner, 'executeRunOracle', async () => {
       throw new Error('sem oracle');
     });
 
-    await executeRun(controller, request, NEVER_TOKEN as any, false, state);
+    await executeRun(controller, request, NEVER_TOKEN, false, state);
     assert.strictEqual(state.getLastRun()?.type, 'test');
   }));
 
 test('executeRun: include múltiplo seta lastRun type file', async () =>
   withExecEnv(async () => {
     const { state, suiteItem, testItem } = makeExecState();
-    const run = new vscode.TestRun() as any;
-    const controller = { createTestRun: () => run, items: { forEach: () => {} } } as any;
-    const request = { include: [suiteItem, testItem] } as any;
+    const run = new vscode.TestRun();
+    const controller = makeController(run);
+    const request = makeRequest([suiteItem, testItem]);
 
     mock.method(oracleRunner, 'executeRunOracle', async () => {
       throw new Error('sem oracle');
     });
 
-    await executeRun(controller, request, NEVER_TOKEN as any, false, state);
+    await executeRun(controller, request, NEVER_TOKEN, false, state);
     assert.strictEqual(state.getLastRun()?.type, 'file');
   }));
 
 test('executeRun: sem include roda "all" via controller.items', async () =>
   withExecEnv(async () => {
     const { state, suiteItem } = makeExecState();
-    const run = new vscode.TestRun() as any;
-    const controller = {
-      createTestRun: () => run,
-      items: { forEach: (cb: (i: any) => void) => [suiteItem].forEach(cb) },
-    } as any;
+    const run = new vscode.TestRun();
+    const controller = makeController(run);
+    controller.items.add(suiteItem);
 
     mock.method(oracleRunner, 'executeRunOracle', async () => {
       throw new Error('sem oracle');
     });
 
-    await executeRun(controller, {} as any, NEVER_TOKEN as any, false, state);
+    await executeRun(controller, makeRequest(), NEVER_TOKEN, false, state);
     assert.strictEqual(state.getLastRun()?.type, 'all');
   }));
 
 test('executeRun: onComplete é chamado quando oracle falha', async () =>
   withExecEnv(async () => {
     const { state, suiteItem } = makeExecState();
-    const run = new vscode.TestRun() as any;
-    const controller = { createTestRun: () => run, items: { forEach: () => {} } } as any;
-    const request = { include: [suiteItem] } as any;
+    const run = new vscode.TestRun();
+    const controller = makeController(run);
+    const request = makeRequest([suiteItem]);
 
     mock.method(oracleRunner, 'executeRunOracle', async () => {
       throw new Error('sem oracle');
     });
 
     let complete = false;
-    await executeRun(controller, request, NEVER_TOKEN as any, false, state, undefined, () => {
+    await executeRun(controller, request, NEVER_TOKEN, false, state, undefined, () => {
       complete = true;
     });
     assert.ok(!complete, 'onComplete nao deveria ser chamado quando oracle falha');
@@ -243,9 +240,9 @@ test('executeRun: onComplete é chamado quando oracle falha', async () =>
 test('executeRun: onSuiteStart é chamado para suites', async () =>
   withExecEnv(async () => {
     const { state, suiteItem } = makeExecState();
-    const run = new vscode.TestRun() as any;
-    const controller = { createTestRun: () => run, items: { forEach: () => {} } } as any;
-    const request = { include: [suiteItem] } as any;
+    const run = new vscode.TestRun();
+    const controller = makeController(run);
+    const request = makeRequest([suiteItem]);
 
     mock.method(oracleRunner, 'executeRunOracle', async () => {
       throw new Error('sem oracle');
@@ -255,7 +252,7 @@ test('executeRun: onSuiteStart é chamado para suites', async () =>
     await executeRun(
       controller,
       request,
-      NEVER_TOKEN as any,
+      NEVER_TOKEN,
       false,
       state,
       () => {
@@ -269,9 +266,9 @@ test('executeRun: onSuiteStart é chamado para suites', async () =>
 test('executeRun: coverage flag é passado para oracle', async () =>
   withExecEnv(async () => {
     const { state, suiteItem } = makeExecState();
-    const run = new vscode.TestRun() as any;
-    const controller = { createTestRun: () => run, items: { forEach: () => {} } } as any;
-    const request = { include: [suiteItem] } as any;
+    const run = new vscode.TestRun();
+    const controller = makeController(run);
+    const request = makeRequest([suiteItem]);
 
     let receivedCoverage = false;
     mock.method(oracleRunner, 'executeRunOracle', async (opts: any) => {
@@ -279,16 +276,16 @@ test('executeRun: coverage flag é passado para oracle', async () =>
       throw new Error('sem oracle');
     });
 
-    await executeRun(controller, request, NEVER_TOKEN as any, true, state);
+    await executeRun(controller, request, NEVER_TOKEN, true, state);
     assert.strictEqual(receivedCoverage, true);
   }));
 
 test('executeRun: resultado da cobertura publica/limpa o diagnóstico', async () =>
   withExecEnv(async () => {
     const { state, suiteItem } = makeExecState();
-    const run = new vscode.TestRun() as any;
-    const controller = { createTestRun: () => run, items: { forEach: () => {} } } as any;
-    const request = { include: [suiteItem] } as any;
+    const run = new vscode.TestRun();
+    const controller = makeController(run);
+    const request = makeRequest([suiteItem]);
 
     const add = mock.method(setupValidator, 'addCoverageDiagnostic', () => {});
     const clear = mock.method(setupValidator, 'clearCoverageDiagnostic', () => {});
@@ -299,7 +296,7 @@ test('executeRun: resultado da cobertura publica/limpa o diagnóstico', async ()
     });
 
     try {
-      await executeRun(controller, request, NEVER_TOKEN as any, true, state);
+      await executeRun(controller, request, NEVER_TOKEN, true, state);
       assert.strictEqual(add.mock.callCount(), 1);
       assert.strictEqual(clear.mock.callCount(), 1);
     } finally {
@@ -312,15 +309,15 @@ test('executeRun: coverageHtmlReport/reportRoot e notificação após run.end', 
   withExecEnv(async () => {
     __setConfigValue('coverage.htmlReport', true);
     const { state, suiteItem } = makeExecState();
-    const run = new vscode.TestRun() as any;
+    const run = new vscode.TestRun();
     const events: string[] = [];
     const originalEnd = run.end.bind(run);
     run.end = () => {
       events.push('end');
       originalEnd();
     };
-    const controller = { createTestRun: () => run, items: { forEach: () => {} } } as any;
-    const request = { include: [suiteItem] } as any;
+    const controller = makeController(run);
+    const request = makeRequest([suiteItem]);
 
     vscode.__resetMessages();
     mock.method(oracleRunner, 'executeRunOracle', async (opts: any) => {
@@ -330,7 +327,7 @@ test('executeRun: coverageHtmlReport/reportRoot e notificação após run.end', 
       return undefined;
     });
 
-    await executeRun(controller, request, NEVER_TOKEN as any, true, state);
+    await executeRun(controller, request, NEVER_TOKEN, true, state);
 
     assert.deepStrictEqual(events, ['end'], 'run.end deve acontecer antes da notificação');
     assert.ok(
@@ -342,9 +339,9 @@ test('executeRun: coverageHtmlReport/reportRoot e notificação após run.end', 
 test('executeRun: additionalReporters são passados para oracle', async () =>
   withExecEnv(async () => {
     const { state, suiteItem } = makeExecState();
-    const run = new vscode.TestRun() as any;
-    const controller = { createTestRun: () => run, items: { forEach: () => {} } } as any;
-    const request = { include: [suiteItem] } as any;
+    const run = new vscode.TestRun();
+    const controller = makeController(run);
+    const request = makeRequest([suiteItem]);
 
     __setConfigValue('additionalReporters', ['ut_custom']);
     let receivedReporters: string[] = [];
@@ -353,16 +350,16 @@ test('executeRun: additionalReporters são passados para oracle', async () =>
       throw new Error('sem oracle');
     });
 
-    await executeRun(controller, request, NEVER_TOKEN as any, false, state);
+    await executeRun(controller, request, NEVER_TOKEN, false, state);
     assert.deepStrictEqual(receivedReporters, ['ut_custom']);
   }));
 
 test('executeRun: dbmsOutput flag é passado para oracle', async () =>
   withExecEnv(async () => {
     const { state, suiteItem } = makeExecState();
-    const run = new vscode.TestRun() as any;
-    const controller = { createTestRun: () => run, items: { forEach: () => {} } } as any;
-    const request = { include: [suiteItem] } as any;
+    const run = new vscode.TestRun();
+    const controller = makeController(run);
+    const request = makeRequest([suiteItem]);
 
     __setConfigValue('dbmsOutput', true);
     let receivedDbmsOutput = false;
@@ -371,16 +368,16 @@ test('executeRun: dbmsOutput flag é passado para oracle', async () =>
       throw new Error('sem oracle');
     });
 
-    await executeRun(controller, request, NEVER_TOKEN as any, false, state);
+    await executeRun(controller, request, NEVER_TOKEN, false, state);
     assert.strictEqual(receivedDbmsOutput, true);
   }));
 
 test('executeRun: timeoutMinutes é passado para oracle', async () =>
   withExecEnv(async () => {
     const { state, suiteItem } = makeExecState();
-    const run = new vscode.TestRun() as any;
-    const controller = { createTestRun: () => run, items: { forEach: () => {} } } as any;
-    const request = { include: [suiteItem] } as any;
+    const run = new vscode.TestRun();
+    const controller = makeController(run);
+    const request = makeRequest([suiteItem]);
 
     __setConfigValue('timeoutMinutes', 30);
     let receivedTimeout = 0;
@@ -389,16 +386,16 @@ test('executeRun: timeoutMinutes é passado para oracle', async () =>
       throw new Error('sem oracle');
     });
 
-    await executeRun(controller, request, NEVER_TOKEN as any, false, state);
+    await executeRun(controller, request, NEVER_TOKEN, false, state);
     assert.strictEqual(receivedTimeout, 30);
   }));
 
 test('executeRun: coverageOwner é passado para oracle', async () =>
   withExecEnv(async () => {
     const { state, suiteItem } = makeExecState();
-    const run = new vscode.TestRun() as any;
-    const controller = { createTestRun: () => run, items: { forEach: () => {} } } as any;
-    const request = { include: [suiteItem] } as any;
+    const run = new vscode.TestRun();
+    const controller = makeController(run);
+    const request = makeRequest([suiteItem]);
 
     __setConfigValue('coverageOwner', 'MY_SCHEMA');
     let receivedOwner = '';
@@ -407,16 +404,16 @@ test('executeRun: coverageOwner é passado para oracle', async () =>
       throw new Error('sem oracle');
     });
 
-    await executeRun(controller, request, NEVER_TOKEN as any, false, state);
+    await executeRun(controller, request, NEVER_TOKEN, false, state);
     assert.strictEqual(receivedOwner, 'MY_SCHEMA');
   }));
 
 test('executeRun: sqlCoverageEnabled delega para applySqlCoverage no sucesso', async () =>
   withExecEnv(async () => {
     const { state, suiteItem } = makeExecState();
-    const run = new vscode.TestRun() as any;
-    const controller = { createTestRun: () => run, items: { forEach: () => {} } } as any;
-    const request = { include: [suiteItem] } as any;
+    const run = new vscode.TestRun();
+    const controller = makeController(run);
+    const request = makeRequest([suiteItem]);
 
     __setConfigValue('sqlCoverageEnabled', true);
     mock.method(oracleRunner, 'executeRunOracle', async () => {});
@@ -425,17 +422,17 @@ test('executeRun: sqlCoverageEnabled delega para applySqlCoverage no sucesso', a
       receivedConn = opts.connection;
     });
 
-    await executeRun(controller, request, NEVER_TOKEN as any, false, state);
+    await executeRun(controller, request, NEVER_TOKEN, false, state);
     assert.strictEqual(receivedConn, 'user/pass@//host:1521/svc');
   }));
 
 // ── collectRunTargets / schema-mode ───────────────────────────────
 
-function makeSchemaHierarchy(suiteItem: any) {
-  const pkg = new vscode.TestItem(`package:APP:${suiteItem.id}`) as any;
-  pkg.children = [suiteItem];
-  const schema = new vscode.TestItem('schema:APP') as any;
-  schema.children = [pkg];
+function makeSchemaHierarchy(suiteItem: vscode.TestItem) {
+  const pkg = makeTestItem(`package:APP:${suiteItem.id}`);
+  pkg.children.add(suiteItem);
+  const schema = makeTestItem('schema:APP');
+  schema.children.add(pkg);
   return { schema, pkg };
 }
 
@@ -465,34 +462,34 @@ test('executeRun: include de nó schema expande suites e passa path do package',
   withExecEnv(async () => {
     const { state, suiteItem } = makeExecState();
     const { schema } = makeSchemaHierarchy(suiteItem);
-    const run = new vscode.TestRun() as any;
-    const controller = { createTestRun: () => run, items: { forEach: () => {} } } as any;
-    const request = { include: [schema] } as any;
+    const run = new vscode.TestRun();
+    const controller = makeController(run);
+    const request = makeRequest([schema]);
 
     let receivedPaths: string[] = [];
     mock.method(oracleRunner, 'executeRunOracle', async (opts: any) => {
       receivedPaths = opts.pathArgs;
     });
 
-    await executeRun(controller, request, NEVER_TOKEN as any, false, state);
+    await executeRun(controller, request, NEVER_TOKEN, false, state);
     assert.deepStrictEqual(receivedPaths, ['TEST_PKG']);
   }));
 
 test('executeRun: nó sem testes não chama o Oracle e avisa', async () =>
   withExecEnv(async () => {
     const state = new TestStateManager();
-    const schema = new vscode.TestItem('schema:EMPTY') as any;
-    schema.children = [];
-    const run = new vscode.TestRun() as any;
-    const controller = { createTestRun: () => run, items: { forEach: () => {} } } as any;
-    const request = { include: [schema] } as any;
+    const schema = makeTestItem('schema:EMPTY');
+    schema.children.replace([]);
+    const run = new vscode.TestRun();
+    const controller = makeController(run);
+    const request = makeRequest([schema]);
 
     let called = false;
     mock.method(oracleRunner, 'executeRunOracle', async () => {
       called = true;
     });
 
-    await executeRun(controller, request, NEVER_TOKEN as any, false, state);
+    await executeRun(controller, request, NEVER_TOKEN, false, state);
     assert.strictEqual(called, false);
     assert.match(run.output(), /Nenhum teste/);
   }));
@@ -508,16 +505,18 @@ test('deriveLastRun: schema com uma suite vira lastRun suite', () => {
 
 test('deriveLastRun: schema com várias suites vira lastRun file', () => {
   const { state, suiteItem } = makeExecState();
-  const { schema } = makeSchemaHierarchy(suiteItem);
-  const otherSuite = new vscode.TestItem('suite:other') as any;
-  otherSuite.children = [];
-  state.setMeta(otherSuite, {
-    kind: 'suite',
-    packageName: 'OTHER_PKG',
-    uri: { fsPath: '/tmp/other.pks', path: '/tmp/other.pks', scheme: 'file' },
-    folder: { uri: { fsPath: '/tmp', path: '/tmp', scheme: 'file' }, name: 'tmp', index: 0 },
-  } as ItemMeta);
-  schema.children[0].children.push(otherSuite);
+  const { schema, pkg } = makeSchemaHierarchy(suiteItem);
+  const otherSuite = makeTestItem('suite:other');
+  state.setMeta(
+    otherSuite,
+    makeMeta({
+      kind: 'suite',
+      packageName: 'OTHER_PKG',
+      uri: makeUri('/tmp/other.pks'),
+      folder: makeFolder('/tmp', 'tmp'),
+    }),
+  );
+  pkg.children.add(otherSuite);
 
   const lr = deriveLastRun([schema], true, false, state);
   assert.strictEqual(lr.type, 'file');
@@ -534,11 +533,11 @@ test('executeRun: include de nó schema registra lastRun suite', async () =>
   withExecEnv(async () => {
     const { state, suiteItem } = makeExecState();
     const { schema } = makeSchemaHierarchy(suiteItem);
-    const run = new vscode.TestRun() as any;
-    const controller = { createTestRun: () => run, items: { forEach: () => {} } } as any;
-    const request = { include: [schema] } as any;
+    const run = new vscode.TestRun();
+    const controller = makeController(run);
+    const request = makeRequest([schema]);
 
     mock.method(oracleRunner, 'executeRunOracle', async () => {});
-    await executeRun(controller, request, NEVER_TOKEN as any, false, state);
+    await executeRun(controller, request, NEVER_TOKEN, false, state);
     assert.strictEqual(state.getLastRun()?.type, 'suite');
   }));

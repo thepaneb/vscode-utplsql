@@ -4,7 +4,7 @@
 
 | Campo | Valor |
 |---|---|
-| Status | Proposto |
+| Status | Concluído |
 | Autor | Gil Cleber |
 | Data | 2026-10-08 |
 | Componente | Tooling do repo (`scripts/**`), vault (`docs/brain/**`), skills e CI |
@@ -205,10 +205,36 @@ Nenhuma setting/comando novo na extensão. Novos **scripts npm** de tooling:
   (as variantes seguem a checagem de settings do `docs:check`).
 - Nível de rigor inicial (aviso vs. erro) por check.
 
+## Decisões (2026-10-29)
+
+- **RF1:** `brain:sync` gera as tabelas de settings/comandos **nas notas do
+  vault** (`60-README` e `70-Wiki`) entre marcadores; `brain:build` publica. As
+  descrições curtas curadas ficam em `10-Projeto/Referencia - descricoes de
+  settings/comandos.md` (JSON); IDs/defaults vêm do `package.json`.
+- **RF2:** `docs-fidelity` exige settings no README **e** em
+  `Configuration.md`, comandos por **ID** no README e `Commands.md`, valores de
+  `enum` e a direção inversa (ID na tabela que não existe no `package.json`).
+- **RF3:** `DOCS_BASELINE = 0.18.0`; PRD concluída declara `docs:` e
+  `## Impacto nas docs`; cada superfície cita `PRD-NN` ou
+  `<!-- prd:PRD-NN -->`. As 8 PRDs da 0.18.0 já têm o campo/seção.
+- **RF4/RF5:** registro `10-Projeto/Registro de features.md` + script
+  `docs:features-check`; a 0.18.0 é uma release de fundação, então os enablers
+  usam `interno: true` (só CHANGELOG). `docs/linkedin` é local e a checagem de
+  posts/cards só roda quando o diretório existe.
+- **RF6:** `prd-workflow` + template ganharam `docs:`/`## Impacto nas docs` e o
+  gate de features no checklist de release.
+- **Regras:** `BR-DOC-001` (tabelas geradas) e `BR-DOC-002` (PRD → docs/registro).
+
 ## 12. Impacto no cérebro
 
+
+RNFs sem regra: RNF2, RNF3 (neutralidade de idioma e preservação do fluxo são verificadas pelo brain:ci/docs:check).
 Nenhuma regra nesta proposta (PRD `proposed`). Na **conclusão**, criar as regras
 que a PRD materializa — provavelmente `BR-DOC-*` (ex.: "settings/comandos são
 gerados do `package.json`", "PRD concluída exige vínculo `docs:`") — com
 `prds: ["PRD-98"]`, `implementacao:` e `testes:`, e confirmar o vínculo
 bidirecional com `npm run brain:rules`.
+
+## Impacto nas docs
+
+`wiki/Contributing.md` documenta o fluxo de PRD/docs; o CHANGELOG entra no release.

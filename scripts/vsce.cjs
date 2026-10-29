@@ -7,7 +7,7 @@
 // Windows exigiria `vsce.cmd` e permitiria injeção de comando via argumentos
 // (ex.: `--out`/`--packagePath` com metacaracteres).
 
-const path = require('path');
+const path = require('node:path');
 
 /**
  * @returns {{ command: string, argsPrefix: string[] }}

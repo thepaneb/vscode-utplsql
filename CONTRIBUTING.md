@@ -159,6 +159,31 @@ npm run docs:check    # consistency + code<->docs fidelity (runs in CI)
 - First line with up to ~72 characters
 - Reference related issues/PRs when they exist
 
+### Commit signing
+
+The `main` branch requires **signed commits**. SSH signing is recommended
+(it reuses the key already used for GitHub authentication):
+
+```sh
+git config gpg.format ssh
+git config user.signingkey ~/.ssh/id_ed25519.pub
+git config commit.gpgsign true
+git config tag.gpgsign true
+```
+
+Add the **public** key to GitHub as a **Signing Key** (Settings → SSH and GPG
+keys → New SSH key → Key type: *Signing Key*), separately from the
+authentication key. Verify with:
+
+```sh
+git log --show-signature -1     # Good signature
+```
+
+CI-created merges and Dependabot commits are signed by GitHub; if a legitimate
+bot needs an exception, document the bypass in the PR. Tags for releases may be
+signed locally (`git tag -s`), but the GitHub release itself is created by the
+release workflow.
+
 ## Code style
 
 - TypeScript, following the style already used in `src/`

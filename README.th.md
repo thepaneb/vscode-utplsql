@@ -152,6 +152,7 @@ Test Explorer **เมื่อแต่ละเทสต์เสร็จส�
 |---|---|---|
 | 18c+ | v3.2.x (18c+) / v3.1.x | แนะนำ; charset `AL32UTF8` |
 | 12.2 | เฉพาะ v3.1.x | v3.2.x คอมไพล์ไม่ได้ (`PLS-00222`) `WE8DEC` ของอิมเมจจะสูญเสียอักขระที่ไม่สามารถแทนได้ (เช่น `€`); ไดรเวอร์ thin ไม่สนใจ `NLS_LANG` |
+| 11.2 (11g R2) | v3.1.x only | **Thick mode required** (thin starts at 12.1); coverage via `DBMS_PROFILER`. |
 
 ## การกำหนดค่า
 

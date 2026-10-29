@@ -32,6 +32,7 @@ SORT id ASC
 - [[COD - 404.html]] — `COD-404.html`
 - [[COD - annotation.ts]] — `COD-annotation.ts`
 - [[COD - autoRun.ts]] — `COD-autoRun.ts`
+- [[COD - bing-index.yml]] — `COD-bing-index.yml`
 - [[COD - biome.json]] — `COD-biome.json`
 - [[COD - bootstrap.sh]] — `COD-bootstrap.sh`
 - [[COD - brain-build.cjs]] — `COD-brain-build.cjs`
@@ -40,15 +41,19 @@ SORT id ASC
 - [[COD - brain.cjs]] — `COD-brain.cjs`
 - [[COD - charset.ts]] — `COD-charset.ts`
 - [[COD - charsetSupport.ts]] — `COD-charsetSupport.ts`
+- [[COD - ci.yml]] — `COD-ci.yml`
 - [[COD - cobertura.ts]] — `COD-cobertura.ts`
 - [[COD - codelens.ts]] — `COD-codelens.ts`
 - [[COD - commands-scaffold.ts]] — `COD-commands-scaffold.ts`
+- [[COD - Commands.md]] — `COD-Commands.md`
 - [[COD - compilationDiagnostics.ts]] — `COD-compilationDiagnostics.ts`
 - [[COD - compileForDebug.ts]] — `COD-compileForDebug.ts`
 - [[COD - compose.yaml]] — `COD-compose.yaml`
 - [[COD - config.ts]] — `COD-config.ts`
+- [[COD - Configuration.md]] — `COD-Configuration.md`
 - [[COD - connection.ts]] — `COD-connection.ts`
 - [[COD - connectionProfiles.ts]] — `COD-connectionProfiles.ts`
+- [[COD - CONTRIBUTING.md]] — `COD-CONTRIBUTING.md`
 - [[COD - coverage.ts]] — `COD-coverage.ts`
 - [[COD - coverageDecision.ts]] — `COD-coverageDecision.ts`
 - [[COD - create-pr.cjs]] — `COD-create-pr.cjs`
@@ -60,14 +65,18 @@ SORT id ASC
 - [[COD - debugger.ts]] — `COD-debugger.ts`
 - [[COD - debugTargets.ts]] — `COD-debugTargets.ts`
 - [[COD - decorations.ts]] — `COD-decorations.ts`
+- [[COD - dependabot.yml]] — `COD-dependabot.yml`
 - [[COD - deps.ts]] — `COD-deps.ts`
 - [[COD - discovery.ts]] — `COD-discovery.ts`
 - [[COD - docs-check.cjs]] — `COD-docs-check.cjs`
+- [[COD - docs-features-check.cjs]] — `COD-docs-features-check.cjs`
 - [[COD - docs-fidelity.cjs]] — `COD-docs-fidelity.cjs`
 - [[COD - esbuild.config.mjs]] — `COD-esbuild.config.mjs`
 - [[COD - extension.ts]] — `COD-extension.ts`
+- [[COD - fixtures.ts]] — `COD-fixtures.ts`
 - [[COD - gen-diagrams.cjs]] — `COD-gen-diagrams.cjs`
 - [[COD - gen-icon.cjs]] — `COD-gen-icon.cjs`
+- [[COD - google-index.yml]] — `COD-google-index.yml`
 - [[COD - google408e9fc32b68946a.html]] — `COD-google408e9fc32b68946a.html`
 - [[COD - helpers.ts]] — `COD-helpers.ts`
 - [[COD - i18n.ts]] — `COD-i18n.ts`
@@ -82,23 +91,33 @@ SORT id ASC
 - [[COD - obsidian-mcp.py]] — `COD-obsidian-mcp.py`
 - [[COD - obsidian-portproxy.cmd]] — `COD-obsidian-portproxy.cmd`
 - [[COD - oracleClient.ts]] — `COD-oracleClient.ts`
+- [[COD - oracleIdentifiers.ts]] — `COD-oracleIdentifiers.ts`
 - [[COD - oracleRunner.ts]] — `COD-oracleRunner.ts`
 - [[COD - package-target.cjs]] — `COD-package-target.cjs`
 - [[COD - package.json]] — `COD-package.json`
 - [[COD - pages.yml]] — `COD-pages.yml`
+- [[COD - pagespeed.yml]] — `COD-pagespeed.yml`
 - [[COD - parse-version.cjs]] — `COD-parse-version.cjs`
 - [[COD - plsqlDeclarations.ts]] — `COD-plsqlDeclarations.ts`
 - [[COD - profile.ts]] — `COD-profile.ts`
 - [[COD - publish.cjs]] — `COD-publish.cjs`
+- [[COD - publish.yml]] — `COD-publish.yml`
 - [[COD - quickfix.ts]] — `COD-quickfix.ts`
+- [[COD - README (extensão).md]] — `COD-README-extens-o-.md`
+- [[COD - redact.ts]] — `COD-redact.ts`
+- [[COD - Referencia - descricoes de comandos.md]] — `COD-Referencia---descricoes-de-comandos.md`
+- [[COD - Referencia - descricoes de settings.md]] — `COD-Referencia---descricoes-de-settings.md`
+- [[COD - Registro de features.md]] — `COD-Registro-de-features.md`
 - [[COD - results.ts]] — `COD-results.ts`
 - [[COD - robots.txt]] — `COD-robots.txt`
 - [[COD - run-tests.cjs]] — `COD-run-tests.cjs`
 - [[COD - run.sh]] — `COD-run.sh`
 - [[COD - run.ts]] — `COD-run.ts`
 - [[COD - runner.ts]] — `COD-runner.ts`
+- [[COD - scorecard.yml]] — `COD-scorecard.yml`
 - [[COD - script.ts]] — `COD-script.ts`
 - [[COD - scriptRunner.ts]] — `COD-scriptRunner.ts`
+- [[COD - site-health.yml]] — `COD-site-health.yml`
 - [[COD - sitemap.xml]] — `COD-sitemap.xml`
 - [[COD - src-scaffold.ts]] — `COD-src-scaffold.ts`
 - [[COD - state.ts]] — `COD-state.ts`
@@ -107,6 +126,7 @@ SORT id ASC
 - [[COD - summary.cjs]] — `COD-summary.cjs`
 - [[COD - sync-prds.cjs]] — `COD-sync-prds.cjs`
 - [[COD - tagFilter.ts]] — `COD-tagFilter.ts`
+- [[COD - template-prd.md]] — `COD-template-prd.md`
 - [[COD - test-setup.cjs]] — `COD-test-setup.cjs`
 - [[COD - testTree.ts]] — `COD-testTree.ts`
 - [[COD - tnsnames.ts]] — `COD-tnsnames.ts`
@@ -119,5 +139,7 @@ SORT id ASC
 - [[COD - vsce.cjs]] — `COD-vsce.cjs`
 - [[COD - vscode-api-inventory.cjs]] — `COD-vscode-api-inventory.cjs`
 - [[COD - vscode-stub.ts]] — `COD-vscode-stub.ts`
+- [[COD - vscode-stub.types.ts]] — `COD-vscode-stub.types.ts`
 - [[COD - wait-ready.sh]] — `COD-wait-ready.sh`
+- [[COD - wiki.yml]] — `COD-wiki.yml`
 <!-- brain:auto:end -->

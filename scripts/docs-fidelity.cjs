@@ -25,9 +25,9 @@
  */
 'use strict';
 
-const { spawnSync } = require('child_process');
-const fs = require('fs');
-const path = require('path');
+const { spawnSync } = require('node:child_process');
+const fs = require('node:fs');
+const path = require('node:path');
 
 const REPO = path.resolve(__dirname, '..');
 
@@ -54,6 +54,20 @@ function realCommands() {
 
 function pkgVersion() {
   return JSON.parse(read('package.json')).version;
+}
+
+/** Settings com `enum` (id + valores). */
+function settingsWithEnums() {
+  const pkg = JSON.parse(read('package.json'));
+  const props = pkg.contributes?.configuration?.properties ?? {};
+  return Object.entries(props)
+    .filter(([, v]) => Array.isArray(v?.enum))
+    .map(([id, v]) => ({ id, values: v.enum.map(String) }));
+}
+
+/** IDs `utplsql.*` presentes numa tabela markdown (primeira coluna em crase). */
+function tableSettingIds(text) {
+  return [...String(text).matchAll(/^\|\s*`(utplsql\.[^`]+)`\s*\|/gm)].map((m) => m[1]);
 }
 
 /** Módulos `src/*.ts` (basenames). */
@@ -112,6 +126,7 @@ function checkFidelity(overrides = {}) {
   const files = {
     readme: overrides.readme ?? read('README.md'),
     wikiCommands: overrides.wikiCommands ?? read('docs/wiki/Commands.md'),
+    wikiConfiguration: overrides.wikiConfiguration ?? read('docs/wiki/Configuration.md'),
     wikiArchitecture: overrides.wikiArchitecture ?? read('docs/wiki/Architecture.md'),
     wikiPrds: overrides.wikiPrds ?? read('docs/wiki/PRDs.md'),
     faq: overrides.faq ?? read('docs/wiki/FAQ.md'),
@@ -119,27 +134,46 @@ function checkFidelity(overrides = {}) {
   };
   const completedPrds = overrides.completedPrds ?? listCompletedPrds();
 
-  // 1. settings ↔ README
-  const s = mentions(files.readme, settings);
-  for (const m of s.missing) problems.push(`setting ${m} sem menção no README.md`);
+  // 1. settings ↔ README **e** wiki/Configuration.md (todos os ids).
+  for (const m of mentions(files.readme, settings).missing) {
+    problems.push(`setting ${m} sem menção no README.md`);
+  }
+  for (const m of mentions(files.wikiConfiguration, settings).missing) {
+    problems.push(`setting ${m} sem menção em docs/wiki/Configuration.md`);
+  }
+  // Bidirecional: ids nas tabelas geradas precisam existir no package.json.
+  const knownSettings = new Set(settings);
+  for (const [name, text] of [
+    ['README.md', files.readme],
+    ['docs/wiki/Configuration.md', files.wikiConfiguration],
+  ]) {
+    for (const id of new Set(tableSettingIds(text))) {
+      if (!knownSettings.has(id))
+        problems.push(`${name}: setting "${id}" não existe no package.json`);
+    }
+  }
+  // Valores de enum relevantes aparecem no README e na wiki.
+  const enums = overrides.settingEnums ?? settingsWithEnums();
+  for (const { id, values } of enums) {
+    for (const value of values) {
+      if (!files.readme.includes(value)) {
+        problems.push(`setting ${id}: valor de enum "${value}" ausente no README.md`);
+      }
+      if (!files.wikiConfiguration.includes(value)) {
+        problems.push(`setting ${id}: valor de enum "${value}" ausente em Configuration.md`);
+      }
+    }
+  }
 
-  // 2. comandos de paleta ↔ wiki/Commands.md
-  //    A wiki pode reformular o título (ex.: "Import connections from SQL
-  //    Developer" vs nls "Import SQL Developer Connections"), então cobramos
-  //    por PRESENÇA de tokens significativos do título, não pela frase exata.
-  const wikiLower = files.wikiCommands.toLowerCase();
-  const STOP = new Set(['utplsql', 'the', 'a', 'an', 'of', 'in', 'on', 'to', 'and', 'from']);
-  for (const c of commandTitles) {
-    const tokens = c.title
-      .replace(/^utPLSQL:\s*/i, '')
-      .toLowerCase()
-      .split(/[^a-z0-9]+/)
-      .filter((w) => w.length > 2 && !STOP.has(w));
-    const missingToken = tokens.find((t) => !wikiLower.includes(t));
-    if (missingToken && !wikiLower.includes(c.id.toLowerCase())) {
-      problems.push(
-        `comando de paleta "${c.title}" (${c.id}) sem menção em Commands.md (token "${missingToken}")`,
-      );
+  // 2. comandos ↔ wiki/Commands.md e README por ID exato (a tabela gerada
+  //    inclui a coluna ID; títulos podem variar entre locales/prosa).
+  const commands = overrides.commands ?? realCommands();
+  for (const id of commands) {
+    if (!files.wikiCommands.includes(id)) {
+      problems.push(`comando ${id} sem menção em docs/wiki/Commands.md`);
+    }
+    if (!files.readme.includes(id)) {
+      problems.push(`comando ${id} sem menção no README.md`);
     }
   }
 
@@ -225,7 +259,11 @@ function checkFidelity(overrides = {}) {
     { phrase: 'is never called', symbol: 'consumeExtraReporter', docs: ['Reporters.md'] },
     { phrase: 'has no effect', symbol: 'compilationDiagnostics', docs: ['Configuration.md'] },
     { phrase: 'not wired', symbol: 'compilationDiagnostics', docs: ['FAQ.md'] },
-    { phrase: 'is never emitted', symbol: 'UTPLSQL_BAD_CONN', docs: ['Diagnostics-and-quick-fix.md'] },
+    {
+      phrase: 'is never emitted',
+      symbol: 'UTPLSQL_BAD_CONN',
+      docs: ['Diagnostics-and-quick-fix.md'],
+    },
   ];
   for (const { phrase, symbol, docs } of falseNegatives) {
     for (const rel of docs) {
@@ -235,7 +273,9 @@ function checkFidelity(overrides = {}) {
         overrides[rel.replace(/\.md$/, '').toLowerCase()];
       const text = inline ?? read(`docs/wiki/${rel}`);
       if (text.includes(phrase) && read(`src/${srcFileFor(symbol)}`).includes(symbol)) {
-        problems.push(`claim obsoleto "${phrase}" em docs/wiki/${rel} (${symbol} existe no código)`);
+        problems.push(
+          `claim obsoleto "${phrase}" em docs/wiki/${rel} (${symbol} existe no código)`,
+        );
       }
     }
   }
@@ -288,11 +328,11 @@ function checkFidelity(overrides = {}) {
 
     // Node embutido no host por versão do VS Code (fonte: .nvmrc do vscode por tag).
     const VSCODE_HOST_NODE = {
-      '1.88': 18,
+      1.88: 18,
       '1.90': 20,
       '1.100': 20,
-      '1.101': 22,
-      '1.102': 22,
+      1.101: 22,
+      1.102: 22,
     };
     const majorOf = (v) => {
       const m = String(v ?? '').match(/(\d+)/);
@@ -311,9 +351,7 @@ function checkFidelity(overrides = {}) {
         );
       }
       if (majorOf(typesNode) !== hostNode) {
-        problems.push(
-          `@types/node ("${typesNode}") ≠ Node ${hostNode} do host do VS Code ${mm}`,
-        );
+        problems.push(`@types/node ("${typesNode}") ≠ Node ${hostNode} do host do VS Code ${mm}`);
       }
       if (esbuildTarget && Number(esbuildTarget) !== hostNode) {
         problems.push(
@@ -400,7 +438,12 @@ function gitLines(args) {
   let result = null;
   try {
     const r = spawnSync('git', args, { cwd: REPO, encoding: 'utf8', maxBuffer: 32 * 1024 * 1024 });
-    result = r.status === 0 ? String(r.stdout ?? '').split('\n').filter(Boolean) : null;
+    result =
+      r.status === 0
+        ? String(r.stdout ?? '')
+            .split('\n')
+            .filter(Boolean)
+        : null;
   } catch {
     result = null;
   }
@@ -457,7 +500,10 @@ const LEGACY_REMOVED = {
 function staleSymbols() {
   if (staleSymbols.cache !== undefined) return staleSymbols.cache;
   const tag = latestTag();
-  if (!tag) return (staleSymbols.cache = null);
+  if (!tag) {
+    staleSymbols.cache = null;
+    return null;
+  }
   const historical = new Set(LEGACY_REMOVED.symbols);
   const lines = gitLines([
     'grep',
@@ -473,7 +519,9 @@ function staleSymbols() {
     for (const line of lines) for (const s of declaredSymbols(line)) historical.add(s);
   }
   const today = aliveNames();
-  return (staleSymbols.cache = new Set([...historical].filter((s) => !today.has(s))));
+  const result = new Set([...historical].filter((s) => !today.has(s)));
+  staleSymbols.cache = result;
+  return result;
 }
 staleSymbols.cache = undefined;
 
@@ -481,19 +529,24 @@ staleSymbols.cache = undefined;
 function latestTag() {
   if (latestTag.cache !== undefined) return latestTag.cache;
   const tags = gitLines(['tag', '--list', 'v*']);
-  if (!tags || tags.length === 0) return (latestTag.cache = null);
+  if (!tags || tags.length === 0) {
+    latestTag.cache = null;
+    return null;
+  }
   const cmp = (a, b) =>
     String(a)
       .slice(1)
       .split('.')
       .map(Number)
-      .reduce((acc, n, i) => acc * 1000 + (n || 0), 0) -
+      .reduce((acc, n, _i) => acc * 1000 + (n || 0), 0) -
     String(b)
       .slice(1)
       .split('.')
       .map(Number)
-      .reduce((acc, n, i) => acc * 1000 + (n || 0), 0);
-  return (latestTag.cache = [...tags].sort(cmp).pop() ?? null);
+      .reduce((acc, n, _i) => acc * 1000 + (n || 0), 0);
+  const result = [...tags].sort(cmp).pop() ?? null;
+  latestTag.cache = result;
+  return result;
 }
 latestTag.cache = undefined;
 
@@ -501,12 +554,17 @@ latestTag.cache = undefined;
 function removedModules() {
   if (removedModules.cache !== undefined) return removedModules.cache;
   const tag = latestTag();
-  if (!tag) return (removedModules.cache = null);
+  if (!tag) {
+    removedModules.cache = null;
+    return null;
+  }
   const historical = new Set(LEGACY_REMOVED.modules);
   const files = gitLines(['ls-tree', '-r', '--name-only', tag, '--', 'src']);
   if (files) for (const f of files) if (f.endsWith('.ts')) historical.add(path.posix.basename(f));
   const today = new Set(srcTsFiles().map((f) => path.basename(f)));
-  return (removedModules.cache = new Set([...historical].filter((f) => !today.has(f))));
+  const result = new Set([...historical].filter((f) => !today.has(f)));
+  removedModules.cache = result;
+  return result;
 }
 removedModules.cache = undefined;
 
@@ -621,6 +679,8 @@ module.exports = {
   removedModules,
   realSettings,
   realCommands,
+  settingsWithEnums,
+  tableSettingIds,
   srcTsFiles,
   staleSymbols,
   ALLOW_STALE,

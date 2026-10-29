@@ -2,6 +2,47 @@
 
 # Contributing
 
+<!-- prd:PRD-98 -->
+<!-- prd:PRD-104 -->
+<!-- prd:PRD-113 -->
+<!-- prd:PRD-114 -->
+<!-- prd:PRD-118 -->
+<!-- prd:PRD-119 -->
+
+## CI and supply chain
+
+Actions are pinned by **commit SHA** (with the version in a comment), every
+workflow declares least-privilege `permissions:` at the top, and Dependabot
+updates `npm` and `github-actions` weekly (minor/patch grouped). CI gates
+production dependencies with `npm audit --omit=dev --audit-level=high`; the
+wiki token is never embedded in the clone URL (it uses an ephemeral
+`http.extraheader`). CodeQL runs via GitHub's **default setup** — there is no
+committed `codeql.yml`.
+
+## Lint and formatting
+
+`npm run lint` runs **`biome check .`** over the manifests (`package.json`,
+`package.nls*.json`), configs and `scripts/**`; generated/vendorized directories
+(`docs`, `site`, `out`, `dist`, `coverage`, `.vscode-test`, `.agents`,
+`.opencode`, `.kilo`) are excluded. Run `npm run lint:fix` before opening a PR —
+CI runs the same check.
+
+## Typed VS Code stub
+
+Unit tests use `src/test/vscode-stub.ts`, typed against `@types/vscode`:
+`vscode-stub.types.ts` validates the contract in `tsc`, `vscodeApiInventory`
+fails when a runtime API used by `src/**` is missing from the stub, and
+`anyBudget.test.ts` prevents `any` regressions. Prefer the typed helpers in
+`src/test/fixtures.ts` (`makeTestItem`, `makeTestRun`, `makeUri`, …) over
+`as any` when building fixtures.
+
+## Feature registry
+
+`docs/brain/10-Projeto/Registro de features.md` is the structured source for
+README bullets, wiki mentions and LinkedIn posts/cards. `npm run
+docs:features-check -- <version>` validates every completed PRD of the version;
+internal enablers use `interno: true` and only require the CHANGELOG entry.
+
 Guide for setting up the development environment and submitting contributions.
 
 ## Prerequisites
@@ -135,11 +176,12 @@ time (`scripts/db-matrix/run.sh`; needs Docker, and `ORACLE_AUTH_USER`/
 `ORACLE_AUTH_TOKEN` in `.env.dbmatrix` for the Enterprise images):
 
 ```bash
-npm run db:matrix:list                 # versions: 12.2, 18xe, 19ee, 21xe, 23free
+npm run db:matrix:list                 # versions: 11xe (thick-only), 12.2, 18xe, 19ee, 21xe, 23free
 npm run db:matrix                      # whole matrix (one version at a time)
 npm run db:matrix -- --only 21xe       # a single version
 npm run db:matrix -- --smoke           # fast subset (capabilities + debugger)
 npm run db:matrix -- --thick           # thick mode per version
+npm run db:matrix -- --only 11xe --thick  # Oracle 11g (thick-only)
 npm run db:matrix -- --clean           # wipe the data volume and recreate
 ```
 
@@ -149,9 +191,9 @@ Data is kept in a per-version Docker volume: the first run creates the database
 root `CONTRIBUTING.md` for details.
 
 **Alternative utPLSQL floors:** each `VERSIONS` line may declare a 4th field
-with the utPLSQL version for that database. `12.2` uses **`v3.1.14`** because
-`v3.2.x` does not compile on it (`PLS-00222`); lines without the 4th field fall
-back to `UTPLSQL_VERSION` (PRD-84).
+with the utPLSQL version for that database. `11.2` and `12.2` use **`v3.1.14`** because
+`v3.2.x` does not compile on them (`PLS-00222`); lines without the 4th field fall
+back to `UTPLSQL_VERSION` (PRD-84). The 11g entry is **thick-only** (thin starts at 12.1) and uses `DBMS_PROFILER` for coverage (PRD-123).
 
 ## Code conventions
 

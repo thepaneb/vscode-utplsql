@@ -1,7 +1,7 @@
 // Gera images/icon.png (128x128) a partir de images/icon.svg.
 // Requer @resvg/resvg-js (instale com: npm install --no-save @resvg/resvg-js).
-const fs = require('fs');
-const path = require('path');
+const fs = require('node:fs');
+const path = require('node:path');
 const { Resvg } = require('@resvg/resvg-js');
 
 const root = path.resolve(__dirname, '..');

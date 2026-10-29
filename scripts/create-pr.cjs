@@ -21,10 +21,10 @@
  * não precisa ser exportado para o node.exe). NUNCA imprime o token.
  */
 
-const fs = require('fs');
-const path = require('path');
-const https = require('https');
-const { execSync } = require('child_process');
+const fs = require('node:fs');
+const path = require('node:path');
+const https = require('node:https');
+const { execFileSync } = require('node:child_process');
 
 // ---------------------------------------------------------------------------
 // Helpers
@@ -44,6 +44,27 @@ function parseArgs(argv) {
   return args;
 }
 
+const REF_RE = /^[A-Za-z0-9._/-]+$/;
+
+/**
+ * Valida `--base`/`--head` antes de interpolá-los em argumentos do git.
+ * Rejeita metacaracteres de shell, `..` e refs começando com `-`.
+ * Lança (não chama process.exit) para ser testável.
+ */
+function validateRef(name, value) {
+  if (
+    typeof value !== 'string' ||
+    value.length === 0 ||
+    !REF_RE.test(value) ||
+    value.startsWith('-') ||
+    value.includes('..')
+  ) {
+    throw new Error(
+      `--${name} inválido: use apenas letras, números, '.', '_' e '/', sem '..' nem '-' inicial.`,
+    );
+  }
+}
+
 function readEnvToken() {
   if (process.env.GITHUB_TOKEN) return process.env.GITHUB_TOKEN;
   const envPath = path.resolve(__dirname, '..', '.env');
@@ -53,17 +74,15 @@ function readEnvToken() {
     .split('\n')
     .find((l) => l.startsWith('GITHUB_TOKEN='));
   if (!line) return null;
-  return line
-    .slice('GITHUB_TOKEN='.length)
-    .trim()
-    .replace(/\r$/, '')
-    .replace(/^"|"$/g, '');
+  return line.slice('GITHUB_TOKEN='.length).trim().replace(/\r$/, '').replace(/^"|"$/g, '');
 }
 
 function getRepo() {
   if (process.env.GITHUB_REPOSITORY) return process.env.GITHUB_REPOSITORY;
   try {
-    const remote = execSync('git remote get-url origin', { encoding: 'utf8' }).trim();
+    const remote = execFileSync('git', ['remote', 'get-url', 'origin'], {
+      encoding: 'utf8',
+    }).trim();
     const m = remote.match(/github\.com[:/](.+?)(?:\.git)?$/);
     if (m) return m[1];
   } catch {
@@ -75,7 +94,7 @@ function getRepo() {
 
 function currentBranch() {
   try {
-    return execSync('git branch --show-current', { encoding: 'utf8' }).trim();
+    return execFileSync('git', ['branch', '--show-current'], { encoding: 'utf8' }).trim();
   } catch {
     return null;
   }
@@ -86,8 +105,16 @@ function buildCloses(base) {
   const mapFile = path.resolve(__dirname, '..', 'docs', 'prd', '.prd-issues.json');
   if (!fs.existsSync(mapFile)) return '';
   const map = JSON.parse(fs.readFileSync(mapFile, 'utf8'));
-  const out = execSync(
-    `git diff --name-only --diff-filter=AR origin/${base}...HEAD -- docs/prd/completed`,
+  const out = execFileSync(
+    'git',
+    [
+      'diff',
+      '--name-only',
+      '--diff-filter=AR',
+      `origin/${base}...HEAD`,
+      '--',
+      'docs/prd/completed',
+    ],
     { encoding: 'utf8' },
   );
   const nums = [...new Set((out.match(/prd-(\d+)-/g) || []).map((s) => s.match(/\d+/)[0]))];
@@ -139,6 +166,8 @@ function github(token, method, apiPath, body, dryRun) {
 async function main() {
   const args = parseArgs(process.argv.slice(2));
   const base = args.base || 'main';
+  validateRef('base', base);
+  if (args.head) validateRef('head', args.head);
 
   if (args.closes) {
     const line = buildCloses(base);
@@ -184,7 +213,7 @@ async function main() {
       null,
       dryRun,
     );
-    if (existing && existing.length) number = existing[0].number;
+    if (existing?.length) number = existing[0].number;
   }
 
   if (number) {
@@ -210,7 +239,11 @@ async function main() {
   console.log(`PR criado: ${dryRun ? '(dry-run)' : pr.html_url}`);
 }
 
-main().catch((err) => {
-  console.error(err.message);
-  process.exit(1);
-});
+if (require.main === module) {
+  main().catch((err) => {
+    console.error(err.message);
+    process.exit(1);
+  });
+}
+
+module.exports = { validateRef, parseArgs };

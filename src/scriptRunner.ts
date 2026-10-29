@@ -8,9 +8,9 @@
 import type * as vscode from 'vscode';
 import { decodeBytes } from './charset';
 import { getExtensionLocale } from './config';
-import { maskConnection } from './connectionProfiles';
 import { t } from './i18n';
 import { ensurePool, parseConnString } from './oracleRunner';
+import { redactConnection } from './redact';
 import type { ProfileCharset } from './types';
 
 export type { ProfileCharset };
@@ -377,21 +377,9 @@ export interface ScriptDb {
 export type ScriptConnect = (connection: string) => Promise<ScriptDb>;
 
 /**
- * Mascara a connection **dentro** de uma mensagem sem heurística: substitui
- * apenas a ocorrência exata da connection conhecida pela versão mascarada.
- * Evita corromper o texto (um `maskConnection(message)` genérico cortava a
- * mensagem no 1º `/` do template i18n).
- */
-function maskConnectionIn(msg: string, connection: string): string {
-  const masked = maskConnection(connection);
-  if (!connection || masked === connection) return msg;
-  return msg.split(connection).join(masked);
-}
-
-/**
  * Executa statements em sequência, com saída estruturada por statement:
  * `[N] (ok|erro) <duração>ms — <resumo>`. A senha nunca é logada
- * (mensagens passam por `maskConnectionIn`). `stopOnError` (default true)
+ * (mensagens passam por `redactConnection`). `stopOnError` (default true)
  * interrompe na primeira falha; cancelamento via `token` + `conn.break()`.
  */
 export async function executeScript(
@@ -417,7 +405,7 @@ export async function executeScript(
     db = await connect(connection);
   } catch (err) {
     output.appendLine(
-      maskConnectionIn(err instanceof Error ? err.message : String(err), connection),
+      redactConnection(err instanceof Error ? err.message : String(err), connection),
     );
     return result;
   }
@@ -472,7 +460,7 @@ export async function executeScript(
         const ms = Date.now() - start;
         result.executed++;
         result.failed++;
-        const message = maskConnectionIn(
+        const message = redactConnection(
           err instanceof Error ? err.message : String(err),
           connection,
         );

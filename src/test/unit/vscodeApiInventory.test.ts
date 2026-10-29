@@ -5,6 +5,7 @@ import * as fs from 'node:fs';
 import * as os from 'node:os';
 import * as path from 'node:path';
 import { test } from 'node:test';
+import * as vscodeStub from '../vscode-stub';
 
 // Testa scripts/vscode-api-inventory.cjs (fonte do inventário de APIs do VS Code,
 // usado pela CLI `npm run vscode:api` e pelo gerador `brain:vscode-api`).
@@ -88,6 +89,64 @@ test('vscode-api-inventory: CLI --json devolve o inventário do repo', () => {
   assert.ok(rows.length > 0);
   assert.ok(rows.some((r) => r.api === 'vscode.TestItem'));
   assert.ok(rows.every((r) => r.count > 0 && r.files.length > 0));
+});
+
+/**
+ * Roots que são apenas tipos em `@types/vscode` (não existem em runtime) ou
+ * uma command ID (`vscode.open`). O `tsc` cobre a compatibilidade dos tipos;
+ * este teste garante que nenhuma API de **runtime** usada em `src/**` ficou
+ * fora do stub (PRD-114 RF3).
+ */
+const TYPE_ONLY = new Set([
+  'CancellationToken',
+  'CodeActionContext',
+  'CodeActionProvider',
+  'DecorationOptions',
+  'CodeLensProvider',
+  'DebugAdapter',
+  'DebugAdapterDescriptor',
+  'DebugAdapterDescriptorFactory',
+  'DebugConfiguration',
+  'DebugConfigurationProvider',
+  'DebugSession',
+  'Disposable',
+  'DocumentFilter',
+  'DocumentSelector',
+  'Event',
+  'ExtensionContext',
+  'FileCoverageDetail',
+  'FileStat',
+  'Memento',
+  'OutputChannel',
+  'ProviderResult',
+  'SecretStorage',
+  'StatusBarItem',
+  'TestRunProfile',
+  'TextDocument',
+  'TextEditor',
+  'TextDocumentContentProvider',
+  'WorkspaceFolder',
+  'open',
+]);
+
+test('vscode-api-inventory: o stub cobre as APIs de runtime usadas em src/**', () => {
+  const refs = scanVscodeApi(ROOT);
+  const stub = vscodeStub as unknown as Record<string, Record<string, unknown> | undefined>;
+  const missing: string[] = [];
+  for (const api of refs.keys()) {
+    const parts = api.split('.');
+    if (parts.length < 2) continue;
+    const root = parts[1];
+    const rootValue = stub[root];
+    if (!rootValue) {
+      if (!TYPE_ONLY.has(root)) missing.push(`${api} (root ${root})`);
+      continue;
+    }
+    if (parts.length >= 3 && !(parts[2] in rootValue)) {
+      missing.push(`${api} (membro ${parts[2]})`);
+    }
+  }
+  assert.deepStrictEqual(missing, [], `APIs sem cobertura no stub:\n${missing.join('\n')}`);
 });
 
 test('vscode-api-inventory: CLI texto imprime símbolo e referência', () => {

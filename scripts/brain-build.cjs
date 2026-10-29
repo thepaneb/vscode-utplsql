@@ -11,8 +11,8 @@
  */
 'use strict';
 
-const fs = require('fs');
-const path = require('path');
+const fs = require('node:fs');
+const path = require('node:path');
 
 const REPO = path.resolve(__dirname, '..');
 const VAULT = path.join(REPO, 'docs', 'brain');
@@ -44,7 +44,7 @@ function renderTokens(body, repo = REPO) {
   if (!body.includes('{{')) return body;
   const tokens = siteTokens(repo);
   return body.replace(/\{\{\s*([A-Z0-9_]+)\s*\}\}/g, (full, key) =>
-    Object.prototype.hasOwnProperty.call(tokens, key) ? tokens[key] : full,
+    Object.hasOwn(tokens, key) ? tokens[key] : full,
   );
 }
 
@@ -60,7 +60,7 @@ function renderHtml(item, body, repo = REPO) {
   const withBanner = /^<!doctype/i.test(doc)
     ? doc.replace(/^(<!doctype[^>]*>)/i, `$1\n${banner}`)
     : `${banner}\n${doc}`;
-  return withBanner.replace(/\s+$/, '') + '\n';
+  return `${withBanner.replace(/\s+$/, '')}\n`;
 }
 
 const WIKI_PREFIX = 'docs/wiki/';
@@ -96,7 +96,7 @@ function syncDir(src, dst, relLabel, check, mirror) {
     const desired = fs.readFileSync(path.join(src, name));
     const target = path.join(dst, name);
     const current = fs.existsSync(target) ? fs.readFileSync(target) : null;
-    if (current && current.equals(desired)) continue;
+    if (current?.equals(desired)) continue;
     if (check) {
       console.log(`[drift] ${relLabel}${name}`);
       drifted++;
@@ -276,7 +276,12 @@ function renderPrdIndex(item, vault = VAULT) {
     }
     linhasRoadmap.push('');
   }
-  const linhasEstrutura = ['```', 'docs/prd/', '├── index.md          ← este arquivo (catálogo + roadmap)', '├── template.md       ← molde para novos PRDs'];
+  const linhasEstrutura = [
+    '```',
+    'docs/prd/',
+    '├── index.md          ← este arquivo (catálogo + roadmap)',
+    '├── template.md       ← molde para novos PRDs',
+  ];
   for (const [st, desc] of [
     ['completed', 'já implementados'],
     ['approved', 'aprovados, aguardando implementação'],
@@ -306,7 +311,7 @@ function render(item, vault = VAULT) {
   else if (README_RE.test(item.target)) body = readmeLinks(body);
 
   if (HTML_RE.test(item.target)) return renderHtml(item, body);
-  return `${bannerFor(item.rel, item.target)}\n${body}`.replace(/\s+$/, '') + '\n';
+  return `${`${bannerFor(item.rel, item.target)}\n${body}`.replace(/\s+$/, '')}\n`;
 }
 
 /** Remove PRDs gerados em pastas que não correspondem mais ao status. */

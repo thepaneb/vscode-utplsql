@@ -301,6 +301,23 @@ test('discoverSchemaFromConn: retorna suites de packages com %suite', async () =
   assert.strictEqual(result[0].folder, FOLDER);
 });
 
+test('discoverSchemaFromConn: SQL do ALL_SOURCE é portátil (11.2, sem FETCH FIRST)', async () => {
+  let sourceSql = '';
+  const conn = {
+    execute: async (sql: string, binds?: Record<string, unknown>) => {
+      if (/all_objects/i.test(sql)) return { rows: [['APP_ORDERS']] };
+      sourceSql = sql;
+      const name = String(binds?.name ?? '');
+      return { rows: (name === 'APP_ORDERS' ? SUITE_LINES : []).map((l) => [l]) };
+    },
+  };
+  const result = await discoverSchemaFromConn(conn, 'hr', FOLDER);
+  assert.strictEqual(result.length, 1);
+  assert.doesNotMatch(sourceSql, /FETCH\s+FIRST/i);
+  assert.match(sourceSql, /ROWNUM\s*<=\s*10000/i);
+  assert.match(sourceSql, /ORDER BY line/i);
+});
+
 test('discoverSchemaFromConn: zero packages retorna vazio', async () => {
   const conn = makeConn({ packages: [] });
   const result = await discoverSchemaFromConn(conn, 'hr', FOLDER);

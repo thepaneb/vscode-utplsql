@@ -125,6 +125,14 @@ The file is moved between folders as it progresses.
 | 109 | PL/SQL language identity and configurable `languageIds` | 0.17.0 |
 | 105 | utPLSQL snippets: annotations and matchers | 0.17.0 |
 | 108 | HTML coverage report opened in the browser | 0.17.0 |
+| 98 | Documentation anti-drift: generated tables and PRD→docs link | 0.18.0 |
+| 104 | CI supply chain: Dependabot, SHA pins and dependency audit | 0.18.0 |
+| 110 | Defensive hardening: SQL identifier, log redaction and scripts | 0.18.0 |
+| 113 | Lint scope beyond `src/` | 0.18.0 |
+| 114 | Typed `vscode` stub and `any` reduction | 0.18.0 |
+| 118 | Commit signing and verified origin on `main` | 0.18.0 |
+| 119 | Verifiable security posture: OSSF Scorecard and `main` protection | 0.18.0 |
+| 123 | Official Oracle 11g (11.2) thick mode support | 0.18.0 |
 
 ### ⚪ Proposed
 

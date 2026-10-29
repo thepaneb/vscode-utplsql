@@ -4,7 +4,7 @@
 
 | Campo | Valor |
 |---|---|
-| Status | Proposto |
+| Status | Concluído |
 | Autor | Gil Cleber Barboza |
 | Data | 2026-10-09 |
 | Componente | CI/CD do repositório (`.github/`) |
@@ -186,8 +186,27 @@ Nenhuma setting da extensão.
   versionado, como no `paddi35`?
 - Incluir `github-actions` no mesmo PR de grupo do npm?
 
+## Decisões (2026-10-29)
+
+- **CodeQL**: manter o *default setup* do GitHub; **não** criar
+  `.github/workflows/codeql.yml` (evita duplicidade e manutenção).
+- **Dependabot**: PRs separados para `npm` e `github-actions`; grupos
+  `minor-patch`; majors abrem individualmente.
+- **Audit**: gate de produção (`--omit=dev --audit-level=high`) no `ci.yml` e no
+  `publish.yml`; o `audit:dev` fica informativo.
+- **Regra**: `BR-PLAT-002` (o `BR-PLAT-001` existente cobre o piso de
+  VS Code/Node).
+- **Triagem dos 5 alertas**: os dois de `permissions` fecham com a RF3; os três
+  restantes são da PRD-110; confirmar no Security tab após o merge na `main`.
+
 ## 12. Impacto no cérebro
 
+
+RNFs sem regra: RNF1, RNF2 (tempo/ruído do CI medidos no próprio pipeline; sem regra de produto).
 Na conclusão, criar a regra `BR-PLAT-*` ("actions pinadas por SHA e permissões
 escopadas; dependências auditadas no CI"), com `prds: ["PRD-104"]`,
 `implementacao:` e `testes:`. Enquanto `proposed`, `regras: []`.
+
+## Impacto nas docs
+
+`wiki/Contributing.md` documenta a cadeia de suprimentos; o CHANGELOG entra no release.

@@ -42,6 +42,51 @@ test('docs-fidelity: detecta setting ausente no README', () => {
   assert.ok(problems.some((p) => p.includes('utplsql.inexistente')));
 });
 
+test('docs-fidelity: detecta setting ausente na wiki Configuration', () => {
+  const problems = checkFidelity({
+    settings: ['utplsql.paraWiki'],
+    readme: 'utplsql.paraWiki',
+    wikiConfiguration: 'nada aqui',
+    readmeVariants: [],
+  });
+  assert.ok(problems.some((p) => p.includes('utplsql.paraWiki') && p.includes('Configuration')));
+});
+
+test('docs-fidelity: setting fantasma na tabela é reportada (bidirecional)', () => {
+  const problems = checkFidelity({
+    settings: ['utplsql.real'],
+    readme: '| `utplsql.ghost` | `x` | y |',
+    wikiConfiguration: '| `utplsql.ghost` | `x` | y |',
+    readmeVariants: [],
+  });
+  assert.ok(problems.some((p) => p.includes('utplsql.ghost') && p.includes('não existe')));
+});
+
+test('docs-fidelity: valor de enum ausente na wiki é reportado', () => {
+  const problems = checkFidelity({
+    settings: [],
+    commandTitles: [],
+    commands: [],
+    settingEnums: [{ id: 'demo.mode', values: ['thin'] }],
+    readme: 'nada',
+    wikiConfiguration: 'nada',
+    readmeVariants: [],
+  });
+  assert.ok(problems.some((p) => p.includes('demo.mode') && p.includes('thin')));
+});
+
+test('docs-fidelity: comando ausente no README é reportado por ID', () => {
+  const problems = checkFidelity({
+    settings: [],
+    commandTitles: [],
+    commands: ['utplsql.comandoX'],
+    wikiCommands: 'utplsql.comandoX',
+    readme: 'nada',
+    readmeVariants: [],
+  });
+  assert.ok(problems.some((p) => p.includes('utplsql.comandoX') && p.includes('README')));
+});
+
 test('docs-fidelity: detecta setting ausente numa variante de README', () => {
   const problems = checkFidelity({
     settings: ['utplsql.paraTestar'],
@@ -68,8 +113,12 @@ test('docs-fidelity: detecta termo obsoleto numa variante de README', () => {
 
 test('docs-fidelity: detecta comando de paleta ausente na wiki', () => {
   const problems = checkFidelity({
+    settings: [],
+    commands: ['utplsql.comandoX'],
     commandTitles: [{ id: 'utplsql.comandoX', title: 'Fazer algo muito especifico' }],
     wikiCommands: 'sem o comando aqui',
+    readme: 'utplsql.comandoX',
+    readmeVariants: [],
   });
   assert.ok(problems.some((p) => p.includes('utplsql.comandoX')));
 });
@@ -245,9 +294,10 @@ test('docs-fidelity.cjs: CLI valida fixture isolada', () => {
       }),
     );
     writeFixture(path.join(root, 'package.nls.json'), '{"demo":"Demo"}\n');
-    writeFixture(path.join(root, 'README.md'), '# Fixture\n\ndemo.setting\nDemo\n');
+    writeFixture(path.join(root, 'README.md'), '# Fixture\n\ndemo.setting\nutplsql.demo\nDemo\n');
     writeFixture(path.join(root, 'src', 'demo.ts'), 'export const demo = true;\n');
     writeFixture(path.join(root, 'docs', 'wiki', 'Commands.md'), 'utplsql.demo Demo\n');
+    writeFixture(path.join(root, 'docs', 'wiki', 'Configuration.md'), 'demo.setting\n');
     writeFixture(path.join(root, 'docs', 'wiki', 'Architecture.md'), 'demo.ts\n');
     writeFixture(path.join(root, 'docs', 'wiki', 'PRDs.md'), '| 7 | Demo | 1.2.3 |\n');
     writeFixture(path.join(root, 'docs', 'wiki', 'FAQ.md'), '# FAQ\n');

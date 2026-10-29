@@ -4,7 +4,7 @@
 
 | Campo | Valor |
 |---|---|
-| Status | Proposto |
+| Status | Concluído |
 | Autor | Gil Cleber Barboza |
 | Data | 2026-10-13 |
 | Componente | Governança do repositório (configuração local do mantenedor + *branch protection* do `main`) |
@@ -136,9 +136,26 @@ Nenhuma setting da extensão; apenas configuração `git`/GitHub.
   published`, criado pela API — tags assinadas são só higiene local)?
 - Algum bot do repositório precisa de bypass explícito?
 
+## Decisões (2026-10-29)
+
+- **SSH signing** (reaproveita a chave existente); GPG fica como alternativa.
+- `commit.gpgsign`/`tag.gpgsign` locais; a chave pública é cadastrada como
+  **Signing Key** no GitHub.
+- A exigência de commits assinados é ativada no **fim** (depois do merge da
+  0.18.0), para não bloquear o fluxo atual; merges do GitHub/Dependabot são
+  assinados pela plataforma.
+- Regra **`BR-PLAT-003`**; a configuração local/GitHub é ação do mantenedor
+  (documentada no `CONTRIBUTING.md`), não versionável.
+
 ## 12. Impacto no cérebro
 
+
+RNFs sem regra: RNF1, RNF2 (fluxo de push e ausência de mudança de runtime são operacionais).
 Ao concluir, criar a regra que materializa a PRD, por exemplo uma `BR-PLAT-*`
 ("commits no `main` são assinados e verificados"), com `prds: ["PRD-118"]`,
 `implementacao:` (arquivo/ponto de configuração) e `testes:`. Enquanto
 `proposed`, `regras: []`.
+
+## Impacto nas docs
+
+`wiki/Contributing.md` documenta a assinatura; o CHANGELOG entra no release.

@@ -74,12 +74,16 @@ SORT id ASC
 - [[BR-CONN-016 - Settings de conexão machine-scoped e workspace confiável]] — `BR-CONN-016`
 - [[BR-CONN-017 - Senha da wallet vai para o SecretStorage e ao pool]] — `BR-CONN-017`
 - [[BR-CONN-018 - Alias TNS resolvido no thin por tnsAdminPath, SQL Developer e TNS_ADMIN]] — `BR-CONN-018`
+- [[BR-CONN-019 - Oracle 11g (11.2) exige thick mode; thin tem piso 12.1]] — `BR-CONN-019`
+- [[BR-CONN-020 - Credencial é redigida em todo log do ciclo de conexão]] — `BR-CONN-020`
 - [[BR-DEBUG-001 - Ciclo do debugger DBMS_DEBUG para no breakpoint e le o frame]] — `BR-DEBUG-001`
 - [[BR-DEBUG-002 - stopOnException controla pausa em excecao (break_exception)]] — `BR-DEBUG-002`
 - [[BR-DEBUG-003 - Function standalone depura no namespace toplevel]] — `BR-DEBUG-003`
 - [[BR-DEBUG-004 - compileForDebug recompila com debug e mantem o objeto VALID]] — `BR-DEBUG-004`
 - [[BR-DEBUG-005 - debugAtCursor-debugFailed-debugLast resolvem o alvo e chamam startDebugSession]] — `BR-DEBUG-005`
 - [[BR-DEP-001 - Runtime deps em dependencies e nota DEP- para cada dep direta]] — `BR-DEP-001`
+- [[BR-DOC-001 - Tabelas de settings e comandos são geradas do package.json]] — `BR-DOC-001`
+- [[BR-DOC-002 - PRD concluída vincula docs e registro de features]] — `BR-DOC-002`
 - [[BR-EXEC-001 - Execução usa duas conexões dedicadas (conn1 runner, conn2 poll)]] — `BR-EXEC-001`
 - [[BR-EXEC-002 - Conexões do runner têm callTimeout zerado]] — `BR-EXEC-002`
 - [[BR-EXEC-003 - Falha na segunda conexão libera a primeira (sem vazamento)]] — `BR-EXEC-003`
@@ -96,6 +100,7 @@ SORT id ASC
 - [[BR-EXEC-014 - Reporters adicionais são validados e sanitizados antes do PL-SQL]] — `BR-EXEC-014`
 - [[BR-EXEC-015 - Export com reporter não altera os resultados do Test Explorer]] — `BR-EXEC-015`
 - [[BR-EXEC-016 - Auto-run on save - default off, debounce por arquivo e guarda de concorrencia]] — `BR-EXEC-016`
+- [[BR-EXEC-017 - Prefixo de schema validado antes de concatenar no SQL]] — `BR-EXEC-017`
 - [[BR-I18N-001 - Resolução de locale e fallback de tradução]] — `BR-I18N-001`
 - [[BR-LOG-001 - Diagnostico vai para o LogOutputChannel utPLSQL]] — `BR-LOG-001`
 - [[BR-PARSE-001 - Arquivo só é suite utPLSQL se tiver %suite E CREATE PACKAGE]] — `BR-PARSE-001`
@@ -119,6 +124,9 @@ SORT id ASC
 - [[BR-PARSE-019 - Descoberta e CodeLens respeitam discovery.languageIds e files.associations]] — `BR-PARSE-019`
 - [[BR-PKG-001 - VSIX nao inclui fontes, scripts nem segredos]] — `BR-PKG-001`
 - [[BR-PLAT-001 - Piso de VS Code e runtime Node do host sao coerentes]] — `BR-PLAT-001`
+- [[BR-PLAT-002 - CI usa actions pinadas por SHA, permissões mínimas e dependências auditadas]] — `BR-PLAT-002`
+- [[BR-PLAT-003 - Commits no main são assinados e verificados]] — `BR-PLAT-003`
+- [[BR-PLAT-004 - OSSF Scorecard é publicado e o main é protegido]] — `BR-PLAT-004`
 - [[BR-QUAL-001 - Thresholds de cobertura (c8) sao globais e bloqueiam o CI]] — `BR-QUAL-001`
 - [[BR-QUAL-002 - Formatacao e lint do codigo sao do Biome]] — `BR-QUAL-002`
 - [[BR-QUAL-003 - Ultimo resultado persistido e restaurado com snapshot versionado]] — `BR-QUAL-003`
@@ -131,6 +139,7 @@ SORT id ASC
 - [[BR-SITE-001 - Landing page gerada de site e publicada no GitHub Pages, sem noindex]] — `BR-SITE-001`
 - [[BR-TEST-001 - Matriz de bancos Oracle cobre 12.2-23ai em thin e thick]] — `BR-TEST-001`
 - [[BR-TEST-002 - Testes de integração exigem banco e são skip sem UTPLSQL_CONN]] — `BR-TEST-002`
+- [[BR-TEST-003 - Stub de vscode é tipado e coberto pelo inventário de APIs]] — `BR-TEST-003`
 - [[BR-UI-001 - Context key utplsql-activated é setado na ativação]] — `BR-UI-001`
 - [[BR-UI-002 - utplsql-running liga no início e desliga em todos os caminhos de saída]] — `BR-UI-002`
 - [[BR-UI-003 - utplsql-connected reflete a resolução de conexão sem prompt]] — `BR-UI-003`

@@ -22,10 +22,10 @@
  */
 'use strict';
 
-const fs = require('fs');
-const path = require('path');
-const https = require('https');
-const { execSync } = require('child_process');
+const fs = require('node:fs');
+const path = require('node:path');
+const https = require('node:https');
+const { execFileSync } = require('node:child_process');
 
 const ROOT = path.resolve(__dirname, '..');
 
@@ -53,17 +53,15 @@ function readEnvToken() {
     .split('\n')
     .find((l) => l.startsWith('GITHUB_TOKEN='));
   if (!line) return null;
-  return line
-    .slice('GITHUB_TOKEN='.length)
-    .trim()
-    .replace(/\r$/, '')
-    .replace(/^"|"$/g, '');
+  return line.slice('GITHUB_TOKEN='.length).trim().replace(/\r$/, '').replace(/^"|"$/g, '');
 }
 
 function getRepo() {
   if (process.env.GITHUB_REPOSITORY) return process.env.GITHUB_REPOSITORY;
   try {
-    const remote = execSync('git remote get-url origin', { encoding: 'utf8' }).trim();
+    const remote = execFileSync('git', ['remote', 'get-url', 'origin'], {
+      encoding: 'utf8',
+    }).trim();
     const m = remote.match(/github\.com[:/](.+?)(?:\.git)?$/);
     if (m) return m[1];
   } catch {
@@ -73,12 +71,17 @@ function getRepo() {
   process.exit(1);
 }
 
+/** Escapa metacaracteres de RegExp (o `version` vem do CHANGELOG/tag). */
+function escapeRegExp(value) {
+  return String(value).replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+}
+
 /** Corpo das notas: título + seção `## <version>` do CHANGELOG. */
-function changelogNotes(version) {
-  const p = path.join(ROOT, 'CHANGELOG.md');
+function changelogNotes(version, root = ROOT) {
+  const p = path.join(root, 'CHANGELOG.md');
   if (!fs.existsSync(p)) return '';
   const lines = fs.readFileSync(p, 'utf8').split(/\r?\n/);
-  const start = lines.findIndex((l) => new RegExp(`^##\\s+${version.replace(/\./g, '\\.')}\\b`).test(l));
+  const start = lines.findIndex((l) => new RegExp(`^##\\s+${escapeRegExp(version)}\\b`).test(l));
   if (start < 0) return '';
   let end = lines.length;
   for (let i = start + 1; i < lines.length; i++) {
@@ -138,9 +141,7 @@ async function main() {
   const version = tag.slice(1);
   const pkg = JSON.parse(fs.readFileSync(path.join(ROOT, 'package.json'), 'utf8'));
   if (pkg.version !== version && !args.force) {
-    console.error(
-      `tag ${tag} ≠ package.json version ${pkg.version} (use --force para ignorar).`,
-    );
+    console.error(`tag ${tag} ≠ package.json version ${pkg.version} (use --force para ignorar).`);
     process.exit(1);
   }
 
@@ -169,7 +170,7 @@ async function main() {
   const existing = dryRun
     ? null
     : await github(token, 'GET', `/releases/tags/${tag}`, null, false).catch(() => null);
-  if (existing && existing.html_url) {
+  if (existing?.html_url) {
     console.error(`Release ${tag} já existe: ${existing.html_url}`);
     process.exit(1);
   }
@@ -189,7 +190,11 @@ async function main() {
   );
 }
 
-main().catch((err) => {
-  console.error(err.message);
-  process.exit(1);
-});
+if (require.main === module) {
+  main().catch((err) => {
+    console.error(err.message);
+    process.exit(1);
+  });
+}
+
+module.exports = { escapeRegExp, changelogNotes, parseArgs };

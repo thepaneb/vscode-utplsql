@@ -33,7 +33,7 @@ Ferramentas e infraestrutura de desenvolvimento do projeto.
 | `npm run test:integration:smoke` | idem, com `.vscode-test.smoke.mjs` (subconjunto rápido) |
 | `npm run test:integration:thick` | idem, com `.vscode-test.thick.mjs` (Instant Client/thick; host sem `UTPLSQL_CONN` → conexão via `UTPLSQL_THICK_CONN`) |
 | `npm run test:integration:multiroot` | idem, com `.vscode-test.multiroot.mjs` (workspace multi-root via `.code-workspace`) |
-| `npm run db:matrix` | `bash scripts/db-matrix/run.sh` — testa contra Oracle 12.2/18c/19c/21c/23ai local (compose); o 12.2 usa utPLSQL `v3.1.14` (piso alternativo, PRD-84) |
+| `npm run db:matrix` | `bash scripts/db-matrix/run.sh` — testa contra Oracle 11.2 (11g, **thick-only**), 12.2/18c/19c/21c/23ai local (compose); 11.2 e 12.2 usam utPLSQL `v3.1.14` (piso alternativo, PRD-84/123) |
 | `npm run db:matrix:list` | Lista as versões da matriz |
 | `npm run bundle` | `node esbuild.config.mjs` → `dist/extension.js` (**entry point real da extensão**) |
 | `npm run package` | `compile && bundle && vsce package` → `.vsix` universal |

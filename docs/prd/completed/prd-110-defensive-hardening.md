@@ -4,7 +4,7 @@
 
 | Campo | Valor |
 |---|---|
-| Status | Proposto |
+| Status | Concluído |
 | Autor | Gil Cleber Barboza |
 | Data | 2026-10-09 |
 | Componente | Extensão `paneb.vscode-utplsql` + ferramentas de desenvolvimento (`scripts/`) |
@@ -178,10 +178,26 @@ Nenhuma setting nova; sem comandos/menus novos.
   apoiada na `SEC-008` + redaction nos call sites. Não deixar aberto (a PRD-104,
   RF5, cobra a triagem).
 
+## Triagem do CodeQL (2026-10-29)
+
+- `js/clear-text-logging` (`src/logger.ts`): **dispensado** com justificativa
+  rastreável na `SEC-008` + `BR-CONN-020` (a redaction ocorre nos call sites do
+  ciclo de conexão; o logger genérico não conhece a connection). A dismissão é
+  feita no Security tab.
+- `js/regex-injection` e `js/incomplete-sanitization`
+  (`scripts/create-release.cjs`): **fechados** por `escapeRegExp` + teste
+  `scriptsHardening.test.ts`; confirmar no Security tab após o merge na `main`.
+
 ## 12. Impacto no cérebro
 
+
+RNFs sem regra: RNF1 (não mudança de comportamento coberta pelos testes de integração).
 Ao concluir, criar as regras que materializam a PRD, por exemplo:
 `SEC-012` ("identificador de schema validado antes de concatenar no SQL") e
 `BR-CONN-0xx` ("credencial redigida em todo log do ciclo de conexão"), cada uma
 com `prds: ["PRD-110"]`, `implementacao:` (arquivo/linha) e `testes:`. Enquanto
 `proposed`, `regras: []`.
+
+## Impacto nas docs
+
+`SECURITY.md` e `wiki/Architecture.md` refletem os invariantes; o CHANGELOG entra no release.

@@ -1,5 +1,21 @@
 # Changelog
 
+## 0.18.0
+
+- **Oracle 11g (11.2) em thick mode (PRD-123)**: suporte oficial ao legado
+  11g R2 com utPLSQL `v3.1.14`, cobertura via `DBMS_PROFILER` e SQL de
+  descoberta portátil (sem `FETCH FIRST`). O thin do node-oracledb tem piso
+  12.1; o 11g exige `utplsql.oracleClientMode: thick`.
+- **Postura de segurança verificável (PRD-118/PRD-119)**: commits no `main`
+  passam a ser assinados/verificados (SSH) e o CI publica o OSSF Scorecard
+  semanalmente (`publish_results: true`), com `main` protegido por PR/checks e
+  sem force-push.
+- **Fundação (PRD-98, PRD-104, PRD-110, PRD-113, PRD-114)**: hardening
+  defensivo (identificador de schema, redaction, scripts), cadeia de suprimentos
+  do CI (Dependabot, pin por SHA, permissions, audit), escopo do lint ampliado,
+  stub de `vscode` tipado com orçamento de `any` e anti-drift de documentação
+  (tabelas geradas, `docs:` e registro de features).
+
 ## 0.17.1
 
 - **Run/Debug at Cursor on the PL/SQL identity**: both commands now honor

@@ -24,6 +24,7 @@ SORT id ASC
 
 <!-- brain:auto:start:moc-index -->
 - [[Mapa - matriz de bancos]]
+- [[TST - anyBudget.test.ts]] — `TST-anyBudget.test.ts`
 - [[TST - autoRun.test.ts]] — `TST-autoRun.test.ts`
 - [[TST - brainBuild.test.ts]] — `TST-brainBuild.test.ts`
 - [[TST - brainRules.test.ts]] — `TST-brainRules.test.ts`
@@ -38,6 +39,7 @@ SORT id ASC
 - [[TST - compileForDebugPool.test.ts]] — `TST-compileForDebugPool.test.ts`
 - [[TST - config.test.ts]] — `TST-config.test.ts`
 - [[TST - connectionProfiles.test.ts]] — `TST-connectionProfiles.test.ts`
+- [[TST - connectionRedaction.test.ts]] — `TST-connectionRedaction.test.ts`
 - [[TST - coverage.test.ts]] — `TST-coverage.test.ts`
 - [[TST - coverageDecision.test.ts]] — `TST-coverageDecision.test.ts`
 - [[TST - coverageHtml.test.ts]] — `TST-coverageHtml.test.ts`
@@ -55,8 +57,10 @@ SORT id ASC
 - [[TST - debugTargets.test.ts]] — `TST-debugTargets.test.ts`
 - [[TST - decorations.test.ts]] — `TST-decorations.test.ts`
 - [[TST - discovery.test.ts]] — `TST-discovery.test.ts`
+- [[TST - docsFeaturesCheck.test.ts]] — `TST-docsFeaturesCheck.test.ts`
 - [[TST - docsFidelity.test.ts]] — `TST-docsFidelity.test.ts`
 - [[TST - docsFidelityNls.test.ts]] — `TST-docsFidelityNls.test.ts`
+- [[TST - docsTables.test.ts]] — `TST-docsTables.test.ts`
 - [[TST - extension.test.ts]] — `TST-extension.test.ts`
 - [[TST - extensionActivation.test.ts]] — `TST-extensionActivation.test.ts`
 - [[TST - fsErrorsCatch.test.ts]] — `TST-fsErrorsCatch.test.ts`
@@ -65,6 +69,7 @@ SORT id ASC
 - [[TST - jumpToFailureE2E.test.ts]] — `TST-jumpToFailureE2E.test.ts`
 - [[TST - junit.test.ts]] — `TST-junit.test.ts`
 - [[TST - languageIdentity.test.ts]] — `TST-languageIdentity.test.ts`
+- [[TST - lintScope.test.ts]] — `TST-lintScope.test.ts`
 - [[TST - logger.test.ts]] — `TST-logger.test.ts`
 - [[TST - manifestDebugger.test.ts]] — `TST-manifestDebugger.test.ts`
 - [[TST - matching.test.ts]] — `TST-matching.test.ts`
@@ -75,6 +80,7 @@ SORT id ASC
 - [[TST - oracledb-default-absent.test.ts]] — `TST-oracledb-default-absent.test.ts`
 - [[TST - oracledb-missing-catch.test.ts]] — `TST-oracledb-missing-catch.test.ts`
 - [[TST - oracledbDefaultPresent.test.ts]] — `TST-oracledbDefaultPresent.test.ts`
+- [[TST - oracleIdentifiers.test.ts]] — `TST-oracleIdentifiers.test.ts`
 - [[TST - oracleRunner.test.ts]] — `TST-oracleRunner.test.ts`
 - [[TST - oracleRunnerReporters.test.ts]] — `TST-oracleRunnerReporters.test.ts`
 - [[TST - oracleRunnerTns.test.ts]] — `TST-oracleRunnerTns.test.ts`
@@ -86,6 +92,7 @@ SORT id ASC
 - [[TST - profileSecretStorageE2E.test.ts]] — `TST-profileSecretStorageE2E.test.ts`
 - [[TST - quickfix.test.ts]] — `TST-quickfix.test.ts`
 - [[TST - quickfixActivation.test.ts]] — `TST-quickfixActivation.test.ts`
+- [[TST - redact.test.ts]] — `TST-redact.test.ts`
 - [[TST - rerun.test.ts]] — `TST-rerun.test.ts`
 - [[TST - results.test.ts]] — `TST-results.test.ts`
 - [[TST - resultsUnreadable.test.ts]] — `TST-resultsUnreadable.test.ts`
@@ -103,6 +110,7 @@ SORT id ASC
 - [[TST - scriptCommandsExec.test.ts]] — `TST-scriptCommandsExec.test.ts`
 - [[TST - scriptRunner.test.ts]] — `TST-scriptRunner.test.ts`
 - [[TST - scriptsCli.test.ts]] — `TST-scriptsCli.test.ts`
+- [[TST - scriptsHardening.test.ts]] — `TST-scriptsHardening.test.ts`
 - [[TST - selectReporterCommand.test.ts]] — `TST-selectReporterCommand.test.ts`
 - [[TST - snippets.test.ts]] — `TST-snippets.test.ts`
 - [[TST - state.test.ts]] — `TST-state.test.ts`
@@ -111,6 +119,7 @@ SORT id ASC
 - [[TST - tagFilter.test.ts]] — `TST-tagFilter.test.ts`
 - [[TST - tagsStreamingE2E.test.ts]] — `TST-tagsStreamingE2E.test.ts`
 - [[TST - testTree.test.ts]] — `TST-testTree.test.ts`
+- [[TST - thickLegacyE2E.test.ts]] — `TST-thickLegacyE2E.test.ts`
 - [[TST - thickMode.test.ts]] — `TST-thickMode.test.ts`
 - [[TST - tnsnames.test.ts]] — `TST-tnsnames.test.ts`
 - [[TST - unit-compileForDebug.test.ts]] — `TST-unit-compileForDebug.test.ts`
@@ -128,4 +137,5 @@ SORT id ASC
 - [[TST - virtualSource.test.ts]] — `TST-virtualSource.test.ts`
 - [[TST - vscodeApiInventory.test.ts]] — `TST-vscodeApiInventory.test.ts`
 - [[TST - vsixIgnore.test.ts]] — `TST-vsixIgnore.test.ts`
+- [[TST - workflowPolicy.test.ts]] — `TST-workflowPolicy.test.ts`
 <!-- brain:auto:end -->

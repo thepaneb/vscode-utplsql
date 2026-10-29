@@ -152,6 +152,7 @@ Test Explorer **as each test finishes**. The VSIX already includes the thin `ora
 |---|---|---|
 | 18c+ | v3.2.x (18c+) / v3.1.x | Recommended; `AL32UTF8` character set. |
 | 12.2 | v3.1.x only | v3.2.x fails to compile (`PLS-00222`). The image's `WE8DEC` character set loses non-representable characters (e.g. `€`); the thin driver ignores `NLS_LANG`. |
+| 11.2 (11g R2) | v3.1.x only | **Thick mode required** (thin starts at 12.1); coverage via `DBMS_PROFILER`. |
 
 ## Configuration
 

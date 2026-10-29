@@ -15,6 +15,7 @@ const {
   checkMencoesPrd,
   checkSecRegras,
   checkPrdRules,
+  checkPrdDocs,
   checkPrdRnfVinculo,
   declaredRnfExceptions,
   checkLayerConnections,
@@ -34,6 +35,10 @@ const {
     regraStatus: Map<string, string>,
   ) => string[];
   checkPrdRules: (notes: { name: string; content: string }[]) => string[];
+  checkPrdDocs: (
+    notes: { name: string; content: string }[],
+    readFile?: (rel: string) => string | null,
+  ) => string[];
   checkPrdRnfVinculo: (notes: { name: string; content: string }[]) => string[];
   declaredRnfExceptions: (content: string) => Set<string>;
   checkLayerConnections: (notes: { name: string; content: string }[]) => string[];
@@ -658,6 +663,75 @@ test('brain-rules: seção de impacto numerada (## 12. …) é aceita', () => {
     '## 12. Impacto no cérebro\n\nnenhuma\n',
   );
   assert.deepStrictEqual(checkPrdRules([prd]), []);
+});
+
+test('brain-rules: PRD concluída >= 0.18.0 sem docs é reportada', () => {
+  const prd = prdNote(['tipo: prd', 'id: PRD-200', 'status: completed', 'versao: "0.18.0"']);
+  assert.ok(checkPrdDocs([prd], () => 'PRD-200').some((p) => p.includes("campo 'docs'")));
+});
+
+test('brain-rules: docs com superfície existente e marcador passa', () => {
+  const prd = prdNote(
+    [
+      'tipo: prd',
+      'id: PRD-200',
+      'status: completed',
+      'versao: "0.18.0"',
+      'docs: ["CHANGELOG", "wiki/Contributing.md"]',
+    ],
+    '## Impacto nas docs\n\nok\n',
+  );
+  const read = (rel: string) =>
+    rel === 'CHANGELOG.md'
+      ? '## 0.18.0 (PRD-200)'
+      : rel === 'docs/wiki/Contributing.md'
+        ? '<!-- prd:PRD-200 -->'
+        : null;
+  assert.deepStrictEqual(checkPrdDocs([prd], read), []);
+});
+
+test('brain-rules: superfície de docs sem o ID da PRD é reportada', () => {
+  const prd = prdNote(
+    ['tipo: prd', 'id: PRD-200', 'status: completed', 'versao: "0.18.0"', 'docs: ["CHANGELOG"]'],
+    '## Impacto nas docs\n\nok\n',
+  );
+  assert.ok(
+    checkPrdDocs([prd], () => 'sem menção').some((p) => p.includes('não menciona PRD-200')),
+  );
+});
+
+test('brain-rules: superfície de docs inexistente é reportada', () => {
+  const prd = prdNote(
+    [
+      'tipo: prd',
+      'id: PRD-200',
+      'status: completed',
+      'versao: "0.18.0"',
+      'docs: ["wiki/NaoExiste.md"]',
+    ],
+    '## Impacto nas docs\n\nok\n',
+  );
+  assert.ok(checkPrdDocs([prd], () => null).some((p) => p.includes('inexistente')));
+});
+
+test('brain-rules: PRD < 0.18.0 ou não concluída não é cobrada por docs', () => {
+  const old = prdNote(['tipo: prd', 'id: PRD-50', 'status: completed', 'versao: "0.17.0"']);
+  const wip = prdNote(['tipo: prd', 'id: PRD-201', 'status: in-progress', 'versao: "0.18.0"']);
+  assert.deepStrictEqual(
+    checkPrdDocs([old, wip], () => 'PRD-50 PRD-201'),
+    [],
+  );
+});
+
+test('brain-rules: seção Impacto nas docs numerada é aceita', () => {
+  const prd = prdNote(
+    ['tipo: prd', 'id: PRD-200', 'status: completed', 'versao: "0.18.0"', 'docs: ["CHANGELOG"]'],
+    '## 12. Impacto nas docs\n\nok\n',
+  );
+  assert.deepStrictEqual(
+    checkPrdDocs([prd], () => 'PRD-200'),
+    [],
+  );
 });
 
 test('brain-rules: vínculo bidirecional válido passa', () => {

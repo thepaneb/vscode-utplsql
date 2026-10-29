@@ -4,7 +4,7 @@
 
 | Campo | Valor |
 |---|---|
-| Status | Proposto |
+| Status | Concluído |
 | Autor | Gil Cleber Barboza |
 | Data | 2026-10-10 |
 | Componente | Extensão `paneb.vscode-utplsql` + ferramentas (`scripts/`, manifestos) |
@@ -119,8 +119,25 @@ Nenhuma setting/comando de usuário. Muda o script `lint` e a config do Biome.
 - Vale um `lint:ci` separado do `lint` local (mesma cobertura)?
 - Incluir `package.nls.*.json` no gate de formatação (são estáveis)?
 
+## Decisões (2026-10-29)
+
+- **`lint:ci` separado?** Não; `npm run lint` (`biome check .`) é o gate único no
+  `pretest:unit` e no CI.
+- **`package.nls.*.json` no format gate?** Sim; são manifestos estáveis e já
+  ficaram formatados.
+- **Regra:** atualizar a `BR-QUAL-002` existente (não criar uma nova).
+- **Escopo:** `docs/`, `site/`, `.agents/`, `.opencode/`, `.kilo/`, `out/`,
+  `dist/`, `coverage/`, `.vscode-test/`, `package-lock.json` e
+  `skills-lock.json` ficam fora; manifestos, configs e `scripts/**` entram.
+
 ## 12. Impacto no cérebro
 
+
+RNFs sem regra: RNF1, RNF2 (tempo de lint e “sem regra desativada” verificados no CI).
 Ao concluir, criar/ajustar a regra `BR-QUAL-002` (lint cobre todo o repositório,
 não só `src/`) com `prds: ["PRD-113"]`, `implementacao:` e `testes:`. Enquanto
 `proposed`, `regras: []`.
+
+## Impacto nas docs
+
+`wiki/Contributing.md` documenta o escopo do lint; o CHANGELOG entra no release.

@@ -9,6 +9,9 @@ on:
       - 'scripts/brain-build.cjs'
   workflow_dispatch:
 
+permissions:
+  contents: read
+
 jobs:
   publish:
     name: Sync wiki from docs/wiki/
@@ -17,9 +20,9 @@ jobs:
       contents: write
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v7
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
 
-      - uses: actions/setup-node@v7
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7
         with:
           node-version: 24
 
@@ -27,8 +30,14 @@ jobs:
         run: node scripts/brain-build.cjs
 
       - name: Clone wiki
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          git clone "https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.wiki.git" /tmp/wiki
+          AUTH="$(printf 'x-access-token:%s' "$GITHUB_TOKEN" | base64 -w0)"
+          git -c http.extraheader="AUTHORIZATION: basic $AUTH" clone \
+            "https://github.com/${{ github.repository }}.wiki.git" /tmp/wiki
+          # Persiste o header no repo efêmero (nunca na URL) para o push abaixo.
+          git -C /tmp/wiki config http.extraheader "AUTHORIZATION: basic $AUTH"
 
       - name: Copy wiki pages
         run: |

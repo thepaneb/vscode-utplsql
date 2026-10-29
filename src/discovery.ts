@@ -6,6 +6,7 @@ import { getActiveProfile } from './connectionProfiles';
 import { t } from './i18n';
 import { logger } from './logger';
 import { ensurePool, getOracleInfo, parseConnString, semverLt } from './oracleRunner';
+import { redactConnection } from './redact';
 import { parseSuiteText, type TestProc } from './suiteParser';
 
 export interface SuiteFile {
@@ -171,9 +172,13 @@ export async function discoverSchemaFromConn(
     let text: string;
     try {
       const source = await conn.execute(
-        `SELECT text FROM all_source
-         WHERE owner = :schema AND name = :name AND type = 'PACKAGE'
-         ORDER BY line FETCH FIRST ${ALL_SOURCE_MAX_ROWS} ROWS ONLY`,
+        // Forma portátil (11.2+): `FETCH FIRST` é 12c+ e, dentro do try com
+        // fallback silencioso, degradava a descoberta no 11g sem erro visível.
+        `SELECT text FROM (
+           SELECT text FROM all_source
+           WHERE owner = :schema AND name = :name AND type = 'PACKAGE'
+           ORDER BY line
+         ) WHERE ROWNUM <= ${ALL_SOURCE_MAX_ROWS}`,
         { schema: upper, name: pkgName },
       );
       const rows = source.rows ?? [];
@@ -392,7 +397,9 @@ export async function discoverDbSuites(
   try {
     oracledb = await loadOracledbMod();
   } catch (e) {
-    logger.debug('discoverDbSuites: oracledb indisponível', { error: String(e) });
+    logger.debug('discoverDbSuites: oracledb indisponível', {
+      error: redactConnection(String(e), connStr),
+    });
     return [];
   }
 
@@ -404,7 +411,9 @@ export async function discoverDbSuites(
       ? await pool.getConnection()
       : await oracledb.getConnection(parseConnString(connStr));
   } catch (e) {
-    logger.debug('discoverDbSuites: falha ao obter conexão', { error: String(e) });
+    logger.debug('discoverDbSuites: falha ao obter conexão', {
+      error: redactConnection(String(e), connStr),
+    });
     return [];
   }
 
@@ -422,7 +431,7 @@ export async function discoverDbSuites(
   } catch (e) {
     logger.debug('discoverDbSuites: descoberta via banco falhou', {
       schema,
-      error: String(e),
+      error: redactConnection(String(e), connStr),
     });
     return [];
   } finally {
@@ -449,7 +458,9 @@ export async function discoverSchemaFromDb(
   try {
     oracledb = await loadOracledbMod();
   } catch (e) {
-    logger.debug('discoverSchemaFromDb: oracledb indisponível', { error: String(e) });
+    logger.debug('discoverSchemaFromDb: oracledb indisponível', {
+      error: redactConnection(String(e), connStr),
+    });
     return [];
   }
 
@@ -461,7 +472,9 @@ export async function discoverSchemaFromDb(
       ? await pool.getConnection()
       : await oracledb.getConnection(parseConnString(connStr));
   } catch (e) {
-    logger.debug('discoverSchemaFromDb: falha ao obter conexão', { error: String(e) });
+    logger.debug('discoverSchemaFromDb: falha ao obter conexão', {
+      error: redactConnection(String(e), connStr),
+    });
     return [];
   }
 
@@ -472,7 +485,7 @@ export async function discoverSchemaFromDb(
   } catch (e) {
     logger.debug('discoverSchemaFromDb: descoberta via banco falhou', {
       schema,
-      error: String(e),
+      error: redactConnection(String(e), connStr),
     });
     return [];
   } finally {

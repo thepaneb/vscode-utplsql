@@ -11,9 +11,9 @@
  */
 'use strict';
 
-const fs = require('fs');
-const path = require('path');
-const { execFileSync } = require('child_process');
+const fs = require('node:fs');
+const path = require('node:path');
+const { execFileSync } = require('node:child_process');
 const { scanVscodeApi } = require('./vscode-api-inventory.cjs');
 
 const DEFAULT_REPO = path.resolve(__dirname, '..');
@@ -32,9 +32,7 @@ const FUNC_ROW_RE = /^\|\s*(\d+)\s*\|\s*\[([^\]]+)\]\(([^)]+)\)\s*\|\s*(.*?)\s*\
 /** Redefine os caminhos usados pelos helpers; usado principalmente em fixtures de teste. */
 function configure(options = {}) {
   REPO = options.repo ? path.resolve(options.repo) : DEFAULT_REPO;
-  VAULT = options.vault
-    ? path.resolve(options.vault)
-    : path.join(REPO, 'docs', 'brain');
+  VAULT = options.vault ? path.resolve(options.vault) : path.join(REPO, 'docs', 'brain');
   resetCaches();
 }
 
@@ -110,7 +108,13 @@ function gitDate(relpath) {
 // ── generators ─────────────────────────────────────────────────────────
 
 function genRootDocs(note) {
-  const nomes = ['README.md', 'CHANGELOG.md', 'CONTRIBUTING.md', 'SECURITY.md', 'CODE_OF_CONDUCT.md'];
+  const nomes = [
+    'README.md',
+    'CHANGELOG.md',
+    'CONTRIBUTING.md',
+    'SECURITY.md',
+    'CODE_OF_CONDUCT.md',
+  ];
   const linhas = [];
   for (const nome of nomes) {
     const p = path.join(REPO, nome);
@@ -221,7 +225,13 @@ function prdNotes() {
 
 const PRD_STATUS = [
   { key: 'completed', icon: '🟢', label: 'Concluídos', grouped: false, col: 'Versão' },
-  { key: 'in-progress', icon: '🟡', label: 'Em desenvolvimento', grouped: true, col: 'Versão alvo' },
+  {
+    key: 'in-progress',
+    icon: '🟡',
+    label: 'Em desenvolvimento',
+    grouped: true,
+    col: 'Versão alvo',
+  },
   { key: 'approved', icon: '🔵', label: 'Aprovados', grouped: true, col: 'Versão alvo' },
   { key: 'proposed', icon: '⚪', label: 'Propostos', grouped: true, col: 'Versão alvo' },
 ];
@@ -231,8 +241,12 @@ const prdVersao = (p) => (p.versao && !/investiga/i.test(p.versao) ? p.versao : 
 const prdData = (p) => p.data || '—';
 
 function cmpVersao(a, b) {
-  const pa = prdVersao(a).split('.').map((n) => parseInt(n, 10) || 0);
-  const pb = prdVersao(b).split('.').map((n) => parseInt(n, 10) || 0);
+  const pa = prdVersao(a)
+    .split('.')
+    .map((n) => parseInt(n, 10) || 0);
+  const pb = prdVersao(b)
+    .split('.')
+    .map((n) => parseInt(n, 10) || 0);
   for (let i = 0; i < 3; i++) {
     if ((pa[i] || 0) !== (pb[i] || 0)) return (pa[i] || 0) - (pb[i] || 0);
   }
@@ -313,11 +327,13 @@ function genPrdSummary(note) {
     `- 🟢 Concluídos: **${count('completed')}**`,
   ];
   if (fs.existsSync(index)) {
-    linhas.push('', `Detalhe completo (fonte da verdade): [docs/prd/index.md](${rel(index, note)})`);
+    linhas.push(
+      '',
+      `Detalhe completo (fonte da verdade): [docs/prd/index.md](${rel(index, note)})`,
+    );
   }
   return linhas.join('\n');
 }
-
 
 function genStack() {
   const pkg = JSON.parse(fs.readFileSync(path.join(REPO, 'package.json'), 'utf8'));
@@ -458,10 +474,7 @@ const codeSlug = (name) =>
  */
 function buildCodeNoteSpecs(refs) {
   const specs = [];
-  const names = new Map([
-    ...noteNames(refs.impl, 'COD'),
-    ...noteNames(refs.tests, 'TST'),
-  ]);
+  const names = new Map([...noteNames(refs.impl, 'COD'), ...noteNames(refs.tests, 'TST')]);
   const implNames = noteNames(refs.impl, 'COD');
   const testNames = noteNames(refs.tests, 'TST');
 
@@ -532,7 +545,11 @@ function buildCodeNoteSpecs(refs) {
         '',
         `- 🗺️ [[${moc}]]`,
       );
-      specs.push({ dir, file: `${noteName}.md`, content: `${fm.join('\n')}\n\n${body.join('\n')}\n` });
+      specs.push({
+        dir,
+        file: `${noteName}.md`,
+        content: `${fm.join('\n')}\n\n${body.join('\n')}\n`,
+      });
     }
   };
   mk(refs.impl, CODE_DIR, 'COD', 'codigo', 'Implementa');
@@ -746,7 +763,12 @@ function genConexoes(notePath) {
       if (ids.has(id)) pipes.add(id);
     }
     if (pipes.size) {
-      lines.push(`- ⚙️ Pipelines: ${[...pipes].sort().map((id) => wl(ids.get(id), id)).join(' · ')}`);
+      lines.push(
+        `- ⚙️ Pipelines: ${[...pipes]
+          .sort()
+          .map((id) => wl(ids.get(id), id))
+          .join(' · ')}`,
+      );
     }
     if (fm.versao_titulo) {
       const siblings = prdNotes().filter(
@@ -768,7 +790,7 @@ function genConexoes(notePath) {
     }
     for (const [rid, title] of reqItems) {
       const refs = reqIdx.get(`${fm.id}/${rid}`);
-      if (!refs || !refs.size) continue;
+      if (!refs?.size) continue;
       const links = [...refs]
         .sort()
         .map((b) => wl(b, bases.get(b) || b))
@@ -785,7 +807,8 @@ function genConexoes(notePath) {
     const cmp = (a, b) => {
       const pa = semver(a);
       const pb = semver(b);
-      for (let i = 0; i < 3; i++) if ((pa[i] || 0) !== (pb[i] || 0)) return (pa[i] || 0) - (pb[i] || 0);
+      for (let i = 0; i < 3; i++)
+        if ((pa[i] || 0) !== (pb[i] || 0)) return (pa[i] || 0) - (pb[i] || 0);
       return 0;
     };
     if (fm.versao && /^\d/.test(String(fm.versao))) {
@@ -804,8 +827,14 @@ function genConexoes(notePath) {
       const ant = pick(antes, 'max');
       const seg = pick(depois, 'min');
       const elos = [];
-      if (ant) elos.push(`⬅️ release anterior: ${wl(ant.file.replace(/\.md$/, ''), `${ant.id} (${ant.versao})`)}`);
-      if (seg) elos.push(`➡️ próxima release: ${wl(seg.file.replace(/\.md$/, ''), `${seg.id} (${seg.versao})`)}`);
+      if (ant)
+        elos.push(
+          `⬅️ release anterior: ${wl(ant.file.replace(/\.md$/, ''), `${ant.id} (${ant.versao})`)}`,
+        );
+      if (seg)
+        elos.push(
+          `➡️ próxima release: ${wl(seg.file.replace(/\.md$/, ''), `${seg.id} (${seg.versao})`)}`,
+        );
       if (elos.length) lines.push(`- 🚀 ${elos.join(' · ')}`);
     }
   }
@@ -851,7 +880,9 @@ function genMocIndex(notePath) {
   const { bases } = idMaps();
   const files = fs
     .readdirSync(dir)
-    .filter((n) => n.endsWith('.md') && n !== `${self}.md` && !/^MOC - /.test(n) && n !== 'index.md')
+    .filter(
+      (n) => n.endsWith('.md') && n !== `${self}.md` && !/^MOC - /.test(n) && n !== 'index.md',
+    )
     .sort((a, b) => a.localeCompare(b));
   return (
     files
@@ -890,7 +921,10 @@ function genVscodeApi() {
     '| Símbolo | Refs | Arquivos |\n|---|---|---|';
   const body = rows
     .map((r) => {
-      const files = r.files.slice(0, 4).map((f) => `\`${f}\``).join(', ');
+      const files = r.files
+        .slice(0, 4)
+        .map((f) => `\`${f}\``)
+        .join(', ');
       const extra = r.files.length > 4 ? ` +${r.files.length - 4}` : '';
       return `| \`${r.api}\` | ${r.count} | ${files}${extra} |`;
     })
@@ -898,7 +932,88 @@ function genVscodeApi() {
   return `${head}\n${body}`;
 }
 
+// ── tabelas geradas de settings/comandos (PRD-98 RF1) ──────────────────
+
+/** JSON de um bloco ```json numa nota do vault (descrições curadas). */
+function jsonFromNote(rel) {
+  const p = path.join(VAULT, rel);
+  if (!fs.existsSync(p)) return {};
+  const m = fs.readFileSync(p, 'utf8').match(/```json\n([\s\S]*?)\n```/);
+  if (!m) return {};
+  try {
+    return JSON.parse(m[1]);
+  } catch {
+    return {};
+  }
+}
+
+function escapeCell(value) {
+  // Backslash primeiro: sem isso `\|` vira `\\|` (incomplete sanitization).
+  return String(value ?? '')
+    .replace(/\\/g, '\\\\')
+    .replace(/\|/g, '\\|')
+    .replace(/\r?\n/g, ' ')
+    .trim();
+}
+
+function displayDefault(value) {
+  if (value === undefined) return '—';
+  if (typeof value === 'string') return value === '' ? '""' : value;
+  if (Array.isArray(value) || (value && typeof value === 'object')) return JSON.stringify(value);
+  return String(value);
+}
+
+function firstSentence(text) {
+  const first = String(text ?? '')
+    .replace(/\r?\n/g, ' ')
+    .trim();
+  const cut = first.search(/\.\s/);
+  // `escapeCell` é o único ponto que escapa `\`/`|` da célula.
+  return cut >= 0 ? first.slice(0, cut + 1) : first;
+}
+
+/** `| Setting | Default | Description |` a partir do package.json + sidecar. */
+function genSettingsTable() {
+  const pkg = JSON.parse(fs.readFileSync(path.join(REPO, 'package.json'), 'utf8'));
+  const curated = jsonFromNote('10-Projeto/Referencia - descricoes de settings.md');
+  const props = pkg.contributes?.configuration?.properties ?? {};
+  const rows = Object.keys(props)
+    .sort()
+    .map((id) => {
+      const p = props[id] ?? {};
+      const c = curated[id] ?? {};
+      const def = c.default ?? displayDefault(p.default);
+      const description =
+        c.description ?? firstSentence(p.markdownDescription ?? p.description ?? '—');
+      return `| \`${id}\` | \`${escapeCell(def)}\` | ${escapeCell(description)} |`;
+    });
+  return ['| Setting | Default | Description |', '|---|---|---|', ...rows].join('\n');
+}
+
+/** `| Command | Description | UI shortcut |` a partir do package/nls + sidecar. */
+function genCommandsTable() {
+  const pkg = JSON.parse(fs.readFileSync(path.join(REPO, 'package.json'), 'utf8'));
+  let nls = {};
+  try {
+    nls = JSON.parse(fs.readFileSync(path.join(REPO, 'package.nls.json'), 'utf8'));
+  } catch {
+    // sem catálogo NLS: usa o título do manifesto
+  }
+  const curated = jsonFromNote('10-Projeto/Referencia - descricoes de comandos.md');
+  const rows = (pkg.contributes?.commands ?? [])
+    .filter((c) => typeof c.title === 'string' && c.title.startsWith('%nls.'))
+    .map((c) => {
+      const key = c.title.replace(/^%|%$/g, '');
+      const title = nls[key] ?? c.command;
+      const d = curated[c.command] ?? {};
+      return `| \`${escapeCell(title)}\` | \`${c.command}\` | ${escapeCell(d.description ?? '—')} | ${escapeCell(d.shortcut ?? '—')} |`;
+    });
+  return ['| Command | ID | Description | UI shortcut |', '|---|---|---|---|', ...rows].join('\n');
+}
+
 const GENERATORS = {
+  settings: genSettingsTable,
+  commands: genCommandsTable,
   'root-docs': genRootDocs,
   'readme-variants': genReadmeVariants,
   'wiki-index': genWikiIndex,
@@ -993,12 +1108,12 @@ function pipelineNotes() {
         const inline = line.match(/^__inline__:(.+)$/);
         if (inline) triggers.push(inline[1]);
         else {
-          const m = line.match(/^  ([a-z_]+):/);
+          const m = line.match(/^ {2}([a-z_]+):/);
           if (m) triggers.push(m[1]);
         }
       }
       const jobs = yamlBlock(text, 'jobs')
-        .map((line) => line.match(/^  ([a-z0-9_-]+):/))
+        .map((line) => line.match(/^ {2}([a-z0-9_-]+):/))
         .filter(Boolean)
         .map((m) => m[1]);
       const steps = [...text.matchAll(/^\s+(?:- )?(run|uses):\s*(.+)$/gm)].map(
@@ -1045,7 +1160,11 @@ function pipelineNotes() {
         '<!-- brain:auto:start:conexoes -->',
         '<!-- brain:auto:end -->',
       ].join('\n');
-      return { dir: '11-Stack', file: `PIPE-${slug} - ${name}.md`, content: `${fm.join('\n')}\n\n${body}\n` };
+      return {
+        dir: '11-Stack',
+        file: `PIPE-${slug} - ${name}.md`,
+        content: `${fm.join('\n')}\n\n${body}\n`,
+      };
     });
 }
 
@@ -1092,7 +1211,11 @@ function localeNotes() {
     const note = readmeNote[code];
     if (note) lines.push('', `README: [[${note}]]`);
     lines.push('', '## Conexões', '', '- 🗺️ [[MOC - I18n]]');
-    return { dir: '12-I18n', file: `LOC-${code} - ${lang}.md`, content: `${fm.join('\n')}\n\n${lines.join('\n')}\n` };
+    return {
+      dir: '12-I18n',
+      file: `LOC-${code} - ${lang}.md`,
+      content: `${fm.join('\n')}\n\n${lines.join('\n')}\n`,
+    };
   });
 }
 
@@ -1124,7 +1247,6 @@ function generateNotes() {
   }
   return changed;
 }
-
 
 // ── commands ───────────────────────────────────────────────────────────
 
@@ -1265,6 +1387,12 @@ module.exports = {
   genWikiIndex,
   genLinkedinIndex,
   genFuncionalIndex,
+  genSettingsTable,
+  genCommandsTable,
+  jsonFromNote,
+  escapeCell,
+  displayDefault,
+  firstSentence,
   prdNotes,
   genPrdRoadmap,
   genPrdEstrutura,

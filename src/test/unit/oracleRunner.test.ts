@@ -28,52 +28,7 @@ import {
 } from '../../oracleRunner';
 import { applyResultsFromCases, countResults } from '../../results';
 import type { ItemMeta } from '../../types';
-
-function makeMeta(over: Partial<ItemMeta>): ItemMeta {
-  return {
-    kind: 'test',
-    packageName: 'app',
-    procName: 'proc',
-    description: 'desc',
-    uri: { fsPath: '/x', path: '/x', scheme: 'file' } as any,
-    ...over,
-  } as ItemMeta;
-}
-
-function makeRun() {
-  const passed: any[] = [];
-  const failed: any[] = [];
-  const skipped: any[] = [];
-  const errored: any[] = [];
-  const output: string[] = [];
-  return {
-    passed: (t: any, ms?: number) => passed.push({ t, ms }),
-    failed: (t: any, m: any, ms?: number) => failed.push({ t, m, ms }),
-    skipped: (t: any) => skipped.push(t),
-    errored: (t: any, m: any, ms?: number) => errored.push({ t, m, ms }),
-    appendOutput: (s: string) => output.push(s),
-    enqueued: () => {},
-    started: () => {},
-    addCoverage: () => {},
-    end: () => {},
-    passedList: passed,
-    failedList: failed,
-    skippedList: skipped,
-    erroredList: errored,
-    output,
-  };
-}
-
-function makeState(metaMap: Map<any, ItemMeta>) {
-  return {
-    getMeta: (t: any) => metaMap.get(t),
-    setMeta: () => {},
-    setCoverage: () => {},
-    getCoverage: () => [],
-    clearCoverage: () => {},
-    cachedItems: [] as any[],
-  } as any;
-}
+import { makeMeta, makeTestRun as makeRun, makeState, makeTestItem } from '../fixtures';
 
 // ── parseConnString ──────────────────────────────────────────────────
 
@@ -186,14 +141,14 @@ test('applyResultsFromCases: mapeia passed por packageName|procName', () => {
   const cases: TestCaseResult[] = [
     { classname: 'pkg', name: 't_one', status: 'passed', durationMs: 100 },
   ];
-  const item = { id: 't1', children: [] };
+  const item = makeTestItem('t1');
   const metaMap = new Map<any, ItemMeta>();
   metaMap.set(item, makeMeta({ packageName: 'pkg', procName: 't_one' }));
 
-  const run = makeRun() as any;
+  const run = makeRun();
   const state = makeState(metaMap);
 
-  const resultMap = applyResultsFromCases(cases, [item as any], run, state);
+  const resultMap = applyResultsFromCases(cases, [item], run, state);
   assert.strictEqual(resultMap.size, 1);
   assert.strictEqual(resultMap.get('t1')?.status, 'passed');
 });
@@ -208,28 +163,28 @@ test('applyResultsFromCases: mapeia failed com message', () => {
       durationMs: 50,
     },
   ];
-  const item = { id: 't2', children: [] };
+  const item = makeTestItem('t2');
   const metaMap = new Map<any, ItemMeta>();
   metaMap.set(item, makeMeta({ packageName: 'pkg', procName: 'f_test' }));
 
-  const run = makeRun() as any;
+  const run = makeRun();
   const state = makeState(metaMap);
 
-  const resultMap = applyResultsFromCases(cases, [item as any], run, state);
+  const resultMap = applyResultsFromCases(cases, [item], run, state);
   assert.strictEqual(resultMap.get('t2')?.status, 'failed');
   assert.strictEqual(resultMap.get('t2')?.message, 'expected 1 got 2');
 });
 
 test('applyResultsFromCases: mapeia skipped', () => {
   const cases: TestCaseResult[] = [{ classname: 'pkg', name: 's_me', status: 'skipped' }];
-  const item = { id: 't3', children: [] };
+  const item = makeTestItem('t3');
   const metaMap = new Map<any, ItemMeta>();
   metaMap.set(item, makeMeta({ packageName: 'pkg', procName: 's_me' }));
 
-  const run = makeRun() as any;
+  const run = makeRun();
   const state = makeState(metaMap);
 
-  const resultMap = applyResultsFromCases(cases, [item as any], run, state);
+  const resultMap = applyResultsFromCases(cases, [item], run, state);
   assert.strictEqual(resultMap.get('t3')?.status, 'skipped');
 });
 
@@ -237,31 +192,31 @@ test('applyResultsFromCases: mapeia errored', () => {
   const cases: TestCaseResult[] = [
     { classname: 'pkg', name: 'boom', status: 'error', message: 'ORA-00001' },
   ];
-  const item = { id: 't4', children: [] };
+  const item = makeTestItem('t4');
   const metaMap = new Map<any, ItemMeta>();
   metaMap.set(item, makeMeta({ packageName: 'pkg', procName: 'boom' }));
 
-  const run = makeRun() as any;
+  const run = makeRun();
   const state = makeState(metaMap);
 
-  const resultMap = applyResultsFromCases(cases, [item as any], run, state);
+  const resultMap = applyResultsFromCases(cases, [item], run, state);
   assert.strictEqual(resultMap.get('t4')?.status, 'error');
   assert.strictEqual(resultMap.get('t4')?.message, 'ORA-00001');
 });
 
 test('applyResultsFromCases: fallback por description quando procName nao bate', () => {
   const cases: TestCaseResult[] = [{ classname: 'shm.pkg', name: 'Cenario um', status: 'passed' }];
-  const item = { id: 't5', children: [] };
+  const item = makeTestItem('t5');
   const metaMap = new Map<any, ItemMeta>();
   metaMap.set(
     item,
     makeMeta({ packageName: 'pkg', procName: 'diff_proc', description: 'Cenario um' }),
   );
 
-  const run = makeRun() as any;
+  const run = makeRun();
   const state = makeState(metaMap);
 
-  const resultMap = applyResultsFromCases(cases, [item as any], run, state);
+  const resultMap = applyResultsFromCases(cases, [item], run, state);
   assert.strictEqual(resultMap.size, 1);
   assert.strictEqual(resultMap.get('t5')?.status, 'passed');
 });
@@ -270,27 +225,27 @@ test('applyResultsFromCases: fallback por procName sem package', () => {
   const cases: TestCaseResult[] = [
     { classname: 'some_schema.different', name: 'match_by_proc', status: 'passed' },
   ];
-  const item = { id: 't6', children: [] };
+  const item = makeTestItem('t6');
   const metaMap = new Map<any, ItemMeta>();
   metaMap.set(item, makeMeta({ packageName: 'different', procName: 'match_by_proc' }));
 
-  const run = makeRun() as any;
+  const run = makeRun();
   const state = makeState(metaMap);
 
-  const resultMap = applyResultsFromCases(cases, [item as any], run, state);
+  const resultMap = applyResultsFromCases(cases, [item], run, state);
   assert.strictEqual(resultMap.get('t6')?.status, 'passed');
 });
 
 test('applyResultsFromCases: unmatched items sao skipped', () => {
   const cases: TestCaseResult[] = [];
-  const item = { id: 't7', children: [] };
+  const item = makeTestItem('t7');
   const metaMap = new Map<any, ItemMeta>();
   metaMap.set(item, makeMeta({ packageName: 'pkg', procName: 'no_match' }));
 
-  const run = makeRun() as any;
+  const run = makeRun();
   const state = makeState(metaMap);
 
-  const resultMap = applyResultsFromCases(cases, [item as any], run, state);
+  const resultMap = applyResultsFromCases(cases, [item], run, state);
   assert.strictEqual(resultMap.size, 0);
 });
 
@@ -300,19 +255,19 @@ test('applyResultsFromCases: multiplos cases com match misto', () => {
     { classname: 'pkg', name: 't_b', status: 'failed', message: 'err', durationMs: 20 },
     { classname: 'pkg', name: 'diff_proc', status: 'skipped' },
   ];
-  const itemA = { id: 'a', children: [] };
-  const itemB = { id: 'b', children: [] };
-  const itemC = { id: 'c', children: [] };
+  const itemA = makeTestItem('a');
+  const itemB = makeTestItem('b');
+  const itemC = makeTestItem('c');
   const metaMap = new Map<any, ItemMeta>();
   metaMap.set(itemA, makeMeta({ packageName: 'pkg', procName: 't_a' }));
   metaMap.set(itemB, makeMeta({ packageName: 'pkg', procName: 't_b' }));
   metaMap.set(itemC, makeMeta({ packageName: 'pkg', procName: 'diff_proc' }));
   // itemC uses JUnit name 'diff_proc' which matches procName
 
-  const run = makeRun() as any;
+  const run = makeRun();
   const state = makeState(metaMap);
 
-  const resultMap = applyResultsFromCases(cases, [itemA, itemB, itemC] as any, run, state);
+  const resultMap = applyResultsFromCases(cases, [itemA, itemB, itemC], run, state);
   assert.strictEqual(resultMap.size, 3);
   assert.strictEqual(resultMap.get('a')?.status, 'passed');
   assert.strictEqual(resultMap.get('b')?.status, 'failed');
@@ -828,25 +783,9 @@ function makeOracleRunFake(opts: {
   return { mod, conn1, conn2, captured };
 }
 
-function makeOracleRunState(metaMap: Map<any, ItemMeta>) {
-  return {
-    getMeta: (t: any) => metaMap.get(t),
-    setMeta: () => {},
-    setCoverage: () => {},
-    getCoverage: () => [],
-    clearCoverage: () => {},
-    cachedItems: [] as any[],
-    setLastResults: () => {},
-    setLastFailedItems: () => {},
-    getLastFailedItems: () => [] as any[],
-    persist: () => {},
-  } as any;
-}
-
 function makeLeaf() {
-  const item = { id: 't1', children: [] };
-  const metaMap = new Map<any, ItemMeta>();
-  metaMap.set(item, makeMeta({ packageName: 'pkg', procName: 't1' }));
+  const item = makeTestItem('t1');
+  const metaMap = new Map([[item, makeMeta({ packageName: 'pkg', procName: 't1' })]]);
   return { item, metaMap };
 }
 
@@ -857,7 +796,7 @@ const neverCancel = {
 
 test('executeRunOracle: fluxo feliz aplica resultados e info no output', async () => {
   const { mod } = makeOracleRunFake({ buffer: [JUNIT_XML] });
-  const run = makeRun() as any;
+  const run = makeRun();
   const { item, metaMap } = makeLeaf();
   let complete: number[] | undefined;
   try {
@@ -868,8 +807,8 @@ test('executeRunOracle: fluxo feliz aplica resultados e info no output', async (
         coverage: false,
         sourcePath: 'install',
         run,
-        leafTests: [item as any],
-        state: makeOracleRunState(metaMap),
+        leafTests: [item],
+        state: makeState(metaMap),
         onComplete: (p, f, s, e, ms) => {
           complete = [p, f, s, e, ms];
         },
@@ -890,7 +829,7 @@ test('executeRunOracle: fluxo feliz aplica resultados e info no output', async (
 
 test('executeRunOracle: export usa só o reporter escolhido e devolve a saída', async () => {
   const { mod, captured } = makeOracleRunFake({ buffer: ['Doc export line'] });
-  const run = makeRun() as any;
+  const run = makeRun();
   const { item, metaMap } = makeLeaf();
   let text: string | undefined;
   try {
@@ -901,8 +840,8 @@ test('executeRunOracle: export usa só o reporter escolhido e devolve a saída',
         coverage: false,
         sourcePath: 'install',
         run,
-        leafTests: [item as any],
-        state: makeOracleRunState(metaMap),
+        leafTests: [item],
+        state: makeState(metaMap),
         exportReporter: { name: 'ut_documentation_reporter' },
       },
       neverCancel as never,
@@ -921,7 +860,7 @@ test('executeRunOracle: export usa só o reporter escolhido e devolve a saída',
 
 test('executeRunOracle: export monta charset/color na allowlist', async () => {
   const { mod, captured } = makeOracleRunFake({ buffer: ['x'] });
-  const run = makeRun() as any;
+  const run = makeRun();
   const { item, metaMap } = makeLeaf();
   try {
     await executeRunOracle(
@@ -931,8 +870,8 @@ test('executeRunOracle: export monta charset/color na allowlist', async () => {
         coverage: false,
         sourcePath: 'install',
         run,
-        leafTests: [item as any],
-        state: makeOracleRunState(metaMap),
+        leafTests: [item],
+        state: makeState(metaMap),
         exportReporter: {
           name: 'ut_documentation_reporter',
           charset: 'WE8ISO8859P1',
@@ -956,7 +895,7 @@ test('executeRunOracle: export monta charset/color na allowlist', async () => {
 
 test('executeRunOracle: export com reporter inválido lança sem rodar', async () => {
   const { mod, captured } = makeOracleRunFake({ buffer: [] });
-  const run = makeRun() as any;
+  const run = makeRun();
   const { item, metaMap } = makeLeaf();
   try {
     await assert.rejects(
@@ -967,8 +906,8 @@ test('executeRunOracle: export com reporter inválido lança sem rodar', async (
           coverage: false,
           sourcePath: 'install',
           run,
-          leafTests: [item as any],
-          state: makeOracleRunState(metaMap),
+          leafTests: [item],
+          state: makeState(metaMap),
           exportReporter: { name: 'x; drop' },
         },
         neverCancel as never,
@@ -983,7 +922,7 @@ test('executeRunOracle: export com reporter inválido lança sem rodar', async (
 
 test('executeRunOracle: reporter adicional inexistente é ignorado (não aborta o run)', async () => {
   const { mod, captured } = makeOracleRunFake({ buffer: [JUNIT_XML] });
-  const run = makeRun() as any;
+  const run = makeRun();
   const { item, metaMap } = makeLeaf();
   try {
     await executeRunOracle(
@@ -993,8 +932,8 @@ test('executeRunOracle: reporter adicional inexistente é ignorado (não aborta 
         coverage: false,
         sourcePath: 'install',
         run,
-        leafTests: [item as any],
-        state: makeOracleRunState(metaMap),
+        leafTests: [item],
+        state: makeState(metaMap),
         additionalReporters: ['ut_nao_existe_reporter'],
       },
       neverCancel as never,
@@ -1015,7 +954,7 @@ test('executeRunOracle: reporter adicional existente é incluído no run', async
     buffer: [JUNIT_XML],
     reporters: ['UT_DOCUMENTATION_REPORTER', 'UT_CUSTOM_REPORTER'],
   });
-  const run = makeRun() as any;
+  const run = makeRun();
   const { item, metaMap } = makeLeaf();
   try {
     await executeRunOracle(
@@ -1025,8 +964,8 @@ test('executeRunOracle: reporter adicional existente é incluído no run', async
         coverage: false,
         sourcePath: 'install',
         run,
-        leafTests: [item as any],
-        state: makeOracleRunState(metaMap),
+        leafTests: [item],
+        state: makeState(metaMap),
         additionalReporters: ['ut_custom_reporter'],
       },
       neverCancel as never,
@@ -1040,7 +979,7 @@ test('executeRunOracle: reporter adicional existente é incluído no run', async
 
 test('executeRunOracle: a_paths vira bind tipado UT_VARCHAR2_LIST', async () => {
   const { mod, captured } = makeOracleRunFake({ buffer: [JUNIT_XML] });
-  const run = makeRun() as any;
+  const run = makeRun();
   const { item, metaMap } = makeLeaf();
   try {
     await executeRunOracle(
@@ -1050,8 +989,8 @@ test('executeRunOracle: a_paths vira bind tipado UT_VARCHAR2_LIST', async () => 
         coverage: false,
         sourcePath: 'install',
         run,
-        leafTests: [item as any],
-        state: makeOracleRunState(metaMap),
+        leafTests: [item],
+        state: makeState(metaMap),
       },
       neverCancel as never,
       async () => mod as never,
@@ -1070,7 +1009,7 @@ test('executeRunOracle: a_paths vira bind tipado UT_VARCHAR2_LIST', async () => 
 
 test('executeRunOracle: pathArgs vazio envia a_paths => null (sem bind)', async () => {
   const { mod, captured } = makeOracleRunFake({ buffer: [JUNIT_XML] });
-  const run = makeRun() as any;
+  const run = makeRun();
   const { item, metaMap } = makeLeaf();
   try {
     await executeRunOracle(
@@ -1080,8 +1019,8 @@ test('executeRunOracle: pathArgs vazio envia a_paths => null (sem bind)', async 
         coverage: false,
         sourcePath: 'install',
         run,
-        leafTests: [item as any],
-        state: makeOracleRunState(metaMap),
+        leafTests: [item],
+        state: makeState(metaMap),
       },
       neverCancel as never,
       async () => mod as never,
@@ -1095,7 +1034,7 @@ test('executeRunOracle: pathArgs vazio envia a_paths => null (sem bind)', async 
 
 test('executeRunOracle: a_tags é bindado como STRING (null quando vazio)', async () => {
   const { mod, captured } = makeOracleRunFake({ buffer: [JUNIT_XML] });
-  const run = makeRun() as any;
+  const run = makeRun();
   const { item, metaMap } = makeLeaf();
   try {
     await executeRunOracle(
@@ -1105,8 +1044,8 @@ test('executeRunOracle: a_tags é bindado como STRING (null quando vazio)', asyn
         coverage: false,
         sourcePath: 'install',
         run,
-        leafTests: [item as any],
-        state: makeOracleRunState(metaMap),
+        leafTests: [item],
+        state: makeState(metaMap),
       },
       neverCancel as never,
       async () => mod as never,
@@ -1120,7 +1059,7 @@ test('executeRunOracle: a_tags é bindado como STRING (null quando vazio)', asyn
 
 test('executeRunOracle: tags preenchido é enviado em a_tags', async () => {
   const { mod, captured } = makeOracleRunFake({ buffer: [JUNIT_XML] });
-  const run = makeRun() as any;
+  const run = makeRun();
   const { item, metaMap } = makeLeaf();
   try {
     await executeRunOracle(
@@ -1130,8 +1069,8 @@ test('executeRunOracle: tags preenchido é enviado em a_tags', async () => {
         coverage: false,
         sourcePath: 'install',
         run,
-        leafTests: [item as any],
-        state: makeOracleRunState(metaMap),
+        leafTests: [item],
+        state: makeState(metaMap),
         tags: 'fast & !slow',
       },
       neverCancel as never,
@@ -1149,7 +1088,7 @@ test('executeRunOracle: cobertura usa bind UT_VARCHAR2_LIST para schemes', async
     buffer: [JUNIT_XML, COV_XML],
     reporters: ['UT_DOCUMENTATION_REPORTER', 'UT_COVERAGE_COBERTURA_REPORTER'],
   });
-  const run = makeRun() as any;
+  const run = makeRun();
   const { item, metaMap } = makeLeaf();
   try {
     await executeRunOracle(
@@ -1159,8 +1098,8 @@ test('executeRunOracle: cobertura usa bind UT_VARCHAR2_LIST para schemes', async
         coverage: true,
         sourcePath: 'install',
         run,
-        leafTests: [item as any],
-        state: makeOracleRunState(metaMap),
+        leafTests: [item],
+        state: makeState(metaMap),
         coverageOwner: 'app',
       },
       neverCancel as never,
@@ -1179,7 +1118,7 @@ test('executeRunOracle: cobertura usa bind UT_VARCHAR2_LIST para schemes', async
 
 test('executeRunOracle: sem cobertura envia a_coverage_schemes => null (sem bind)', async () => {
   const { mod, captured } = makeOracleRunFake({ buffer: [JUNIT_XML] });
-  const run = makeRun() as any;
+  const run = makeRun();
   const { item, metaMap } = makeLeaf();
   try {
     await executeRunOracle(
@@ -1189,8 +1128,8 @@ test('executeRunOracle: sem cobertura envia a_coverage_schemes => null (sem bind
         coverage: false,
         sourcePath: 'install',
         run,
-        leafTests: [item as any],
-        state: makeOracleRunState(metaMap),
+        leafTests: [item],
+        state: makeState(metaMap),
       },
       neverCancel as never,
       async () => mod as never,
@@ -1207,7 +1146,7 @@ test('executeRunOracle: coverage.schemes sobrescreve os schemas de cobertura', a
     buffer: [JUNIT_XML, COV_XML],
     reporters: ['UT_DOCUMENTATION_REPORTER', 'UT_COVERAGE_COBERTURA_REPORTER'],
   });
-  const run = makeRun() as any;
+  const run = makeRun();
   const { item, metaMap } = makeLeaf();
   try {
     await executeRunOracle(
@@ -1217,8 +1156,8 @@ test('executeRunOracle: coverage.schemes sobrescreve os schemas de cobertura', a
         coverage: true,
         sourcePath: 'install',
         run,
-        leafTests: [item as any],
-        state: makeOracleRunState(metaMap),
+        leafTests: [item],
+        state: makeState(metaMap),
         coverageOwner: 'app',
         coverageSchemes: ['APP', 'UT3'],
       },
@@ -1240,7 +1179,7 @@ test('executeRunOracle: includeObjects/excludeObjects viram binds tipados', asyn
     buffer: [JUNIT_XML, COV_XML],
     reporters: ['UT_DOCUMENTATION_REPORTER', 'UT_COVERAGE_COBERTURA_REPORTER'],
   });
-  const run = makeRun() as any;
+  const run = makeRun();
   const { item, metaMap } = makeLeaf();
   try {
     await executeRunOracle(
@@ -1250,8 +1189,8 @@ test('executeRunOracle: includeObjects/excludeObjects viram binds tipados', asyn
         coverage: true,
         sourcePath: 'install',
         run,
-        leafTests: [item as any],
-        state: makeOracleRunState(metaMap),
+        leafTests: [item],
+        state: makeState(metaMap),
         coverageIncludeObjects: ['APP.PKG'],
         coverageExcludeObjects: ['UT3.UT_COVERAGE'],
       },
@@ -1280,7 +1219,7 @@ test('executeRunOracle: regex de escopo viram binds STRING', async () => {
     buffer: [JUNIT_XML, COV_XML],
     reporters: ['UT_DOCUMENTATION_REPORTER', 'UT_COVERAGE_COBERTURA_REPORTER'],
   });
-  const run = makeRun() as any;
+  const run = makeRun();
   const { item, metaMap } = makeLeaf();
   try {
     await executeRunOracle(
@@ -1290,8 +1229,8 @@ test('executeRunOracle: regex de escopo viram binds STRING', async () => {
         coverage: true,
         sourcePath: 'install',
         run,
-        leafTests: [item as any],
-        state: makeOracleRunState(metaMap),
+        leafTests: [item],
+        state: makeState(metaMap),
         coverageExcludeObjectExpr: '^UT_',
         coverageIncludeSchemaExpr: '^APP$',
       },
@@ -1317,7 +1256,7 @@ test('executeRunOracle: regex de escopo viram binds STRING', async () => {
 
 test('executeRunOracle: sem cobertura não envia parâmetros de escopo', async () => {
   const { mod, captured } = makeOracleRunFake({ buffer: [JUNIT_XML] });
-  const run = makeRun() as any;
+  const run = makeRun();
   const { item, metaMap } = makeLeaf();
   try {
     await executeRunOracle(
@@ -1327,8 +1266,8 @@ test('executeRunOracle: sem cobertura não envia parâmetros de escopo', async (
         coverage: false,
         sourcePath: 'install',
         run,
-        leafTests: [item as any],
-        state: makeOracleRunState(metaMap),
+        leafTests: [item],
+        state: makeState(metaMap),
         coverageIncludeObjects: ['APP.PKG'],
         coverageExcludeObjectExpr: '^UT_',
       },
@@ -1345,7 +1284,7 @@ test('executeRunOracle: sem cobertura não envia parâmetros de escopo', async (
 
 test('executeRunOracle: randomOrder desligado não adiciona parâmetros', async () => {
   const { mod, captured } = makeOracleRunFake({ buffer: [JUNIT_XML] });
-  const run = makeRun() as any;
+  const run = makeRun();
   const { item, metaMap } = makeLeaf();
   try {
     await executeRunOracle(
@@ -1355,8 +1294,8 @@ test('executeRunOracle: randomOrder desligado não adiciona parâmetros', async 
         coverage: false,
         sourcePath: 'install',
         run,
-        leafTests: [item as any],
-        state: makeOracleRunState(metaMap),
+        leafTests: [item],
+        state: makeState(metaMap),
       },
       neverCancel as never,
       async () => mod as never,
@@ -1371,7 +1310,7 @@ test('executeRunOracle: randomOrder desligado não adiciona parâmetros', async 
 
 test('executeRunOracle: randomOrder ligado com seed 0 usa bind NULL', async () => {
   const { mod, captured } = makeOracleRunFake({ buffer: [JUNIT_XML] });
-  const run = makeRun() as any;
+  const run = makeRun();
   const { item, metaMap } = makeLeaf();
   try {
     await executeRunOracle(
@@ -1381,8 +1320,8 @@ test('executeRunOracle: randomOrder ligado com seed 0 usa bind NULL', async () =
         coverage: false,
         sourcePath: 'install',
         run,
-        leafTests: [item as any],
-        state: makeOracleRunState(metaMap),
+        leafTests: [item],
+        state: makeState(metaMap),
         randomOrder: true,
       },
       neverCancel as never,
@@ -1407,7 +1346,7 @@ test('executeRunOracle: randomOrder ligado com seed 0 usa bind NULL', async () =
 
 test('executeRunOracle: randomOrder com seed positiva é reproduzível e logada', async () => {
   const { mod, captured } = makeOracleRunFake({ buffer: [JUNIT_XML] });
-  const run = makeRun() as any;
+  const run = makeRun();
   const { item, metaMap } = makeLeaf();
   try {
     await executeRunOracle(
@@ -1417,8 +1356,8 @@ test('executeRunOracle: randomOrder com seed positiva é reproduzível e logada'
         coverage: false,
         sourcePath: 'install',
         run,
-        leafTests: [item as any],
-        state: makeOracleRunState(metaMap),
+        leafTests: [item],
+        state: makeState(metaMap),
         randomOrder: true,
         randomOrderSeed: 42,
       },
@@ -1491,7 +1430,7 @@ test('executeRunOracle: dbmsOutput habilita e drena DBMS_OUTPUT na conn1', async
       throw new Error('raw indisponivel');
     },
   };
-  const run = makeRun() as any;
+  const run = makeRun();
   const { item, metaMap } = makeLeaf();
   try {
     await executeRunOracle(
@@ -1501,8 +1440,8 @@ test('executeRunOracle: dbmsOutput habilita e drena DBMS_OUTPUT na conn1', async
         coverage: false,
         sourcePath: 'install',
         run,
-        leafTests: [item as any],
-        state: makeOracleRunState(metaMap),
+        leafTests: [item],
+        state: makeState(metaMap),
         dbmsOutput: true,
       },
       neverCancel as never,
@@ -1548,8 +1487,8 @@ function runOpts(
     coverage: false,
     sourcePath: 'install',
     run,
-    leafTests: [item as any],
-    state: makeOracleRunState(metaMap),
+    leafTests: [item],
+    state: makeState(metaMap),
     ...extra,
   };
 }
@@ -1607,7 +1546,7 @@ function makeGatedRunFake() {
 
 test('executeRunOracle: cancelamento chama break nas duas conexões', async () => {
   const { mod, broke } = makeGatedRunFake();
-  const run = makeRun() as any;
+  const run = makeRun();
   const { item, metaMap } = makeLeaf();
   const ctl = makeControllableToken();
   try {
@@ -1627,7 +1566,7 @@ test('executeRunOracle: cancelamento chama break nas duas conexões', async () =
 
 test('executeRunOracle: timeout dispara break e finaliza sem lançar', async () => {
   const { mod, broke } = makeGatedRunFake();
-  const run = makeRun() as any;
+  const run = makeRun();
   const { item, metaMap } = makeLeaf();
   try {
     await executeRunOracle(
@@ -1648,7 +1587,7 @@ test('executeRunOracle: erro ao drenar DBMS_OUTPUT não interrompe o run', async
     if (/DBMS_OUTPUT\.GET_LINE/.test(sql)) throw new Error('dbms off');
     return orig(sql);
   };
-  const run = makeRun() as any;
+  const run = makeRun();
   const { item, metaMap } = makeLeaf();
   try {
     await executeRunOracle(
@@ -1678,7 +1617,7 @@ test('executeRunOracle: CDATA fragmentado do system-out não corrompe o parse do
       '</testcase></testsuite></testsuites>',
     ],
   });
-  const run = makeRun() as any;
+  const run = makeRun();
   const { item, metaMap } = makeLeaf();
   try {
     await executeRunOracle(
@@ -1688,8 +1627,8 @@ test('executeRunOracle: CDATA fragmentado do system-out não corrompe o parse do
         coverage: false,
         sourcePath: 'install',
         run,
-        leafTests: [item as any],
-        state: makeOracleRunState(metaMap),
+        leafTests: [item],
+        state: makeState(metaMap),
       },
       neverCancel as never,
       async () => mod as never,
@@ -1719,7 +1658,7 @@ test('executeRunOracle: HTML de cobertura é gravado sem contaminar o JUnit', as
       'UT_COVERAGE_COBERTURA_REPORTER',
     ],
   });
-  const run = makeRun() as any;
+  const run = makeRun();
   const { item, metaMap } = makeLeaf();
   let reportPath: string | undefined;
   try {
@@ -1735,8 +1674,8 @@ test('executeRunOracle: HTML de cobertura é gravado sem contaminar o JUnit', as
         },
         sourcePath: 'install',
         run,
-        leafTests: [item as any],
-        state: makeOracleRunState(metaMap),
+        leafTests: [item],
+        state: makeState(metaMap),
       },
       neverCancel as never,
       async () => mod as never,
@@ -1759,7 +1698,7 @@ test('executeRunOracle: setting off não inclui o reporter HTML', async () => {
     buffer: [JUNIT_XML],
     reporters: ['UT_DOCUMENTATION_REPORTER', 'UT_COVERAGE_COBERTURA_REPORTER'],
   });
-  const run = makeRun() as any;
+  const run = makeRun();
   const { item, metaMap } = makeLeaf();
   let called = false;
   try {
@@ -1774,8 +1713,8 @@ test('executeRunOracle: setting off não inclui o reporter HTML', async () => {
         },
         sourcePath: 'install',
         run,
-        leafTests: [item as any],
-        state: makeOracleRunState(metaMap),
+        leafTests: [item],
+        state: makeState(metaMap),
       },
       neverCancel as never,
       async () => mod as never,
@@ -1796,7 +1735,7 @@ test('executeRunOracle: additionalReporters com HTML não duplica o reporter', a
       'UT_COVERAGE_COBERTURA_REPORTER',
     ],
   });
-  const run = makeRun() as any;
+  const run = makeRun();
   const { item, metaMap } = makeLeaf();
   try {
     await executeRunOracle(
@@ -1808,8 +1747,8 @@ test('executeRunOracle: additionalReporters com HTML não duplica o reporter', a
         additionalReporters: ['ut_coverage_html_reporter'],
         sourcePath: 'install',
         run,
-        leafTests: [item as any],
-        state: makeOracleRunState(metaMap),
+        leafTests: [item],
+        state: makeState(metaMap),
       },
       neverCancel as never,
       async () => mod as never,
@@ -1831,7 +1770,7 @@ test('executeRunOracle: cancelamento não grava o HTML', async () => {
       'UT_COVERAGE_COBERTURA_REPORTER',
     ],
   });
-  const run = makeRun() as any;
+  const run = makeRun();
   const { item, metaMap } = makeLeaf();
   let called = false;
   try {
@@ -1847,8 +1786,8 @@ test('executeRunOracle: cancelamento não grava o HTML', async () => {
         },
         sourcePath: 'install',
         run,
-        leafTests: [item as any],
-        state: makeOracleRunState(metaMap),
+        leafTests: [item],
+        state: makeState(metaMap),
       },
       {
         isCancellationRequested: true,
@@ -1869,7 +1808,7 @@ test('executeRunOracle: cobertura sem <coverage> avisa relatório não gerado', 
     buffer: [JUNIT_XML],
     reporters: ['UT_DOCUMENTATION_REPORTER', 'UT_COVERAGE_COBERTURA_REPORTER'],
   });
-  const run = makeRun() as any;
+  const run = makeRun();
   const { item, metaMap } = makeLeaf();
   try {
     await executeRunOracle(
@@ -1879,8 +1818,8 @@ test('executeRunOracle: cobertura sem <coverage> avisa relatório não gerado', 
         coverage: true,
         sourcePath: 'install',
         run,
-        leafTests: [item as any],
-        state: makeOracleRunState(metaMap),
+        leafTests: [item],
+        state: makeState(metaMap),
       },
       neverCancel as never,
       async () => mod as never,
@@ -1897,7 +1836,7 @@ test('executeRunOracle: cobertura com COV_XML aplica cobertura', async () => {
     buffer: [JUNIT_XML, COV_XML],
     reporters: ['UT_DOCUMENTATION_REPORTER', 'UT_COVERAGE_COBERTURA_REPORTER'],
   });
-  const run = makeRun() as any;
+  const run = makeRun();
   const { item, metaMap } = makeLeaf();
   try {
     await executeRunOracle(
@@ -1907,8 +1846,8 @@ test('executeRunOracle: cobertura com COV_XML aplica cobertura', async () => {
         coverage: true,
         sourcePath: 'install',
         run,
-        leafTests: [item as any],
-        state: makeOracleRunState(metaMap),
+        leafTests: [item],
+        state: makeState(metaMap),
       },
       neverCancel as never,
       async () => mod as never,
@@ -1926,7 +1865,7 @@ test('executeRunOracle: cobertura não envia a_source_file_mappings (senão zera
     buffer: [JUNIT_XML, COV_XML],
     reporters: ['UT_DOCUMENTATION_REPORTER', 'UT_COVERAGE_COBERTURA_REPORTER'],
   });
-  const run = makeRun() as any;
+  const run = makeRun();
   const { item, metaMap } = makeLeaf();
   try {
     await executeRunOracle(
@@ -1936,8 +1875,8 @@ test('executeRunOracle: cobertura não envia a_source_file_mappings (senão zera
         coverage: true,
         sourcePath: 'install',
         run,
-        leafTests: [item as any],
-        state: makeOracleRunState(metaMap),
+        leafTests: [item],
+        state: makeState(metaMap),
       },
       neverCancel as never,
       async () => mod as never,
@@ -1955,7 +1894,7 @@ test('executeRunOracle: cobertura não envia a_source_file_mappings (senão zera
 
 test('executeRunOracle: erro do ut_runner.run propaga (fallback CLI no runner.ts)', async () => {
   const { mod } = makeOracleRunFake({ buffer: [], runThrows: true });
-  const run = makeRun() as any;
+  const run = makeRun();
   const { item, metaMap } = makeLeaf();
   let err: Error | undefined;
   try {
@@ -1966,8 +1905,8 @@ test('executeRunOracle: erro do ut_runner.run propaga (fallback CLI no runner.ts
         coverage: false,
         sourcePath: 'install',
         run,
-        leafTests: [item as any],
-        state: makeOracleRunState(metaMap),
+        leafTests: [item],
+        state: makeState(metaMap),
       },
       neverCancel as never,
       async () => mod as never,
@@ -1982,7 +1921,7 @@ test('executeRunOracle: erro do ut_runner.run propaga (fallback CLI no runner.ts
 });
 
 test('executeRunOracle: sem oracledb lanca erro orientando a instalar', async () => {
-  const run = makeRun() as any;
+  const run = makeRun();
   const { item, metaMap } = makeLeaf();
   let err: Error | undefined;
   await executeRunOracle(
@@ -1992,8 +1931,8 @@ test('executeRunOracle: sem oracledb lanca erro orientando a instalar', async ()
       coverage: false,
       sourcePath: 'install',
       run,
-      leafTests: [item as any],
-      state: makeOracleRunState(metaMap),
+      leafTests: [item],
+      state: makeState(metaMap),
     },
     neverCancel as never,
     async () => undefined,
@@ -2005,7 +1944,7 @@ test('executeRunOracle: sem oracledb lanca erro orientando a instalar', async ()
 });
 
 test('executeRunOracle: loader padrão com conexão inválida rejeita (loadOracledb real)', async () => {
-  const run = makeRun() as any;
+  const run = makeRun();
   const { item, metaMap } = makeLeaf();
   await assert.rejects(() =>
     executeRunOracle(
@@ -2015,8 +1954,8 @@ test('executeRunOracle: loader padrão com conexão inválida rejeita (loadOracl
         coverage: false,
         sourcePath: 'install',
         run,
-        leafTests: [item as any],
-        state: makeOracleRunState(metaMap),
+        leafTests: [item],
+        state: makeState(metaMap),
       },
       neverCancel as never,
     ),
@@ -2079,7 +2018,7 @@ test('executeRunOracle: rows com TEXT null são ignorados no poll', async () => 
     },
     getConnection: async () => conn1,
   };
-  const run = makeRun() as any;
+  const run = makeRun();
   const { item, metaMap } = makeLeaf();
   try {
     await executeRunOracle(
@@ -2089,8 +2028,8 @@ test('executeRunOracle: rows com TEXT null são ignorados no poll', async () => 
         coverage: false,
         sourcePath: 'install',
         run,
-        leafTests: [item as any],
-        state: makeOracleRunState(metaMap),
+        leafTests: [item],
+        state: makeState(metaMap),
       },
       neverCancel as never,
       async () => mod as never,
@@ -2157,7 +2096,7 @@ test('executeRunOracle: poll com erro em conn2 é ignorado', async () => {
     },
     getConnection: async () => conn1,
   };
-  const run = makeRun() as any;
+  const run = makeRun();
   const { item, metaMap } = makeLeaf();
   try {
     await executeRunOracle(
@@ -2167,8 +2106,8 @@ test('executeRunOracle: poll com erro em conn2 é ignorado', async () => {
         coverage: false,
         sourcePath: 'install',
         run,
-        leafTests: [item as any],
-        state: makeOracleRunState(metaMap),
+        leafTests: [item],
+        state: makeState(metaMap),
       },
       neverCancel as never,
       async () => mod as never,
@@ -2479,7 +2418,7 @@ test('executeRunOracle: tags + randomOrder + cobertura combinados enviam todos o
     buffer: [JUNIT_XML, COV_XML],
     reporters: ['UT_DOCUMENTATION_REPORTER', 'UT_COVERAGE_COBERTURA_REPORTER'],
   });
-  const run = makeRun() as any;
+  const run = makeRun();
   const { item, metaMap } = makeLeaf();
   try {
     await executeRunOracle(
@@ -2489,8 +2428,8 @@ test('executeRunOracle: tags + randomOrder + cobertura combinados enviam todos o
         coverage: true,
         sourcePath: 'install',
         run,
-        leafTests: [item as any],
-        state: makeOracleRunState(metaMap),
+        leafTests: [item],
+        state: makeState(metaMap),
         tags: 'fast',
         randomOrder: true,
         randomOrderSeed: 7,
@@ -2525,7 +2464,7 @@ test('executeRunOracle: cobertura sem escopo configurado não adiciona parâmetr
     buffer: [JUNIT_XML, COV_XML],
     reporters: ['UT_DOCUMENTATION_REPORTER', 'UT_COVERAGE_COBERTURA_REPORTER'],
   });
-  const run = makeRun() as any;
+  const run = makeRun();
   const { item, metaMap } = makeLeaf();
   try {
     await executeRunOracle(
@@ -2535,8 +2474,8 @@ test('executeRunOracle: cobertura sem escopo configurado não adiciona parâmetr
         coverage: true,
         sourcePath: 'install',
         run,
-        leafTests: [item as any],
-        state: makeOracleRunState(metaMap),
+        leafTests: [item],
+        state: makeState(metaMap),
       },
       neverCancel as never,
       async () => mod as never,
@@ -2574,7 +2513,7 @@ test('executeRunOracle: cobertura sem reporter de cobertura desliga a cobertura'
     buffer: [JUNIT_XML],
     reporters: ['UT_DOCUMENTATION_REPORTER'],
   });
-  const run = makeRun() as any;
+  const run = makeRun();
   const { item, metaMap } = makeLeaf();
   try {
     await executeRunOracle(
@@ -2584,8 +2523,8 @@ test('executeRunOracle: cobertura sem reporter de cobertura desliga a cobertura'
         coverage: true,
         sourcePath: 'install',
         run,
-        leafTests: [item as any],
-        state: makeOracleRunState(metaMap),
+        leafTests: [item],
+        state: makeState(metaMap),
       },
       neverCancel as never,
       async () => mod as never,
@@ -2604,9 +2543,9 @@ test('executeRunOracle: reporter volátil da sessão é incluído e consumido', 
     buffer: [JUNIT_XML],
     reporters: ['UT_DOCUMENTATION_REPORTER', 'UT_SESSION_REPORTER'],
   });
-  const run = makeRun() as any;
+  const run = makeRun();
   const { item, metaMap } = makeLeaf();
-  const state = makeOracleRunState(metaMap);
+  const state = makeState(metaMap);
   let consumed = false;
   state.consumeExtraReporter = () => {
     if (consumed) return undefined;
@@ -2621,7 +2560,7 @@ test('executeRunOracle: reporter volátil da sessão é incluído e consumido', 
         coverage: false,
         sourcePath: 'install',
         run,
-        leafTests: [item as any],
+        leafTests: [item],
         state,
       },
       neverCancel as never,
@@ -2636,7 +2575,7 @@ test('executeRunOracle: reporter volátil da sessão é incluído e consumido', 
 
 test('executeRunOracle: reporter adicional com nome inválido é ignorado', async () => {
   const { mod, captured } = makeOracleRunFake({ buffer: [JUNIT_XML] });
-  const run = makeRun() as any;
+  const run = makeRun();
   const { item, metaMap } = makeLeaf();
   try {
     await executeRunOracle(
@@ -2646,8 +2585,8 @@ test('executeRunOracle: reporter adicional com nome inválido é ignorado', asyn
         coverage: false,
         sourcePath: 'install',
         run,
-        leafTests: [item as any],
-        state: makeOracleRunState(metaMap),
+        leafTests: [item],
+        state: makeState(metaMap),
         additionalReporters: ['reporter; DROP TABLE x'],
       },
       neverCancel as never,
@@ -2661,7 +2600,7 @@ test('executeRunOracle: reporter adicional com nome inválido é ignorado', asyn
 
 test('executeRunOracle: reporter padrão repetido em additionalReporters não duplica', async () => {
   const { mod, captured } = makeOracleRunFake({ buffer: [JUNIT_XML] });
-  const run = makeRun() as any;
+  const run = makeRun();
   const { item, metaMap } = makeLeaf();
   try {
     await executeRunOracle(
@@ -2671,8 +2610,8 @@ test('executeRunOracle: reporter padrão repetido em additionalReporters não du
         coverage: false,
         sourcePath: 'install',
         run,
-        leafTests: [item as any],
-        state: makeOracleRunState(metaMap),
+        leafTests: [item],
+        state: makeState(metaMap),
         additionalReporters: ['ut_documentation_reporter()'],
       },
       neverCancel as never,
@@ -2690,7 +2629,7 @@ test('executeRunOracle: includeObjectExpr/excludeSchemaExpr viram binds STRING',
     buffer: [JUNIT_XML, COV_XML],
     reporters: ['UT_DOCUMENTATION_REPORTER', 'UT_COVERAGE_COBERTURA_REPORTER'],
   });
-  const run = makeRun() as any;
+  const run = makeRun();
   const { item, metaMap } = makeLeaf();
   try {
     await executeRunOracle(
@@ -2700,8 +2639,8 @@ test('executeRunOracle: includeObjectExpr/excludeSchemaExpr viram binds STRING',
         coverage: true,
         sourcePath: 'install',
         run,
-        leafTests: [item as any],
-        state: makeOracleRunState(metaMap),
+        leafTests: [item],
+        state: makeState(metaMap),
         coverageIncludeObjectExpr: '^PKG$',
         coverageExcludeSchemaExpr: '^UT3$',
       },
@@ -2730,7 +2669,7 @@ test('executeRunOracle: falha ao habilitar DBMS_OUTPUT não interrompe o run', a
     buffer: [JUNIT_XML],
     enableDbmsOutputThrows: true,
   });
-  const run = makeRun() as any;
+  const run = makeRun();
   const { item, metaMap } = makeLeaf();
   await assert.doesNotReject(() =>
     executeRunOracle(
@@ -2740,8 +2679,8 @@ test('executeRunOracle: falha ao habilitar DBMS_OUTPUT não interrompe o run', a
         coverage: false,
         sourcePath: 'install',
         run,
-        leafTests: [item as any],
-        state: makeOracleRunState(metaMap),
+        leafTests: [item],
+        state: makeState(metaMap),
         dbmsOutput: true,
       },
       neverCancel as never,
