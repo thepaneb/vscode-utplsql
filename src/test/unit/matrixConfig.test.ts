@@ -202,6 +202,16 @@ test('run.sh: --skip-bootstrap valida UT3/UTPLSQL_TEST antes dos testes', () => 
   assert.match(run, /SKIP_BOOTSTRAP.*assert_bootstrapped/s);
 });
 
+test('run.sh: falha de bootstrap não sai silenciosamente (diagnóstico sem senha)', () => {
+  const run = read('scripts/db-matrix/run.sh');
+  // As duas checagens do --skip-bootstrap precisam de `|| true`: sem isso o
+  // `set -e` mata o script antes de imprimir o diagnóstico (bug real no 12.2).
+  const guarded = run.match(/\)" \|\| true/g) ?? [];
+  assert.ok(guarded.length >= 2, 'as checagens de UT3/UTPLSQL_TEST devem usar || true');
+  assert.match(run, /UT3: \$\(grep -m1 -E 'ORA-\|SP2-'/);
+  assert.match(run, /UTPLSQL_TEST: \$\(grep -m1 -E 'ORA-\|SP2-'/);
+});
+
 test('run.sh: mascara a senha da conexão no log', () => {
   const run = read('scripts/db-matrix/run.sh');
   assert.match(run, /mask_conn\(\)/);

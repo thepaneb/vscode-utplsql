@@ -104,16 +104,19 @@ SET HEADING OFF FEEDBACK OFF PAGESIZE 0
 SELECT 'OK' FROM user_objects WHERE object_name = 'UT_RUNNER' AND object_type = 'PACKAGE';
 EXIT
 SQL
-)"
+)" || true
   test_ok="$(docker exec -i -e "DBU=UTPLSQL_TEST" -e "DBP=$TEST_PASSWORD" -e "DBS=$service" "$CONTAINER" \
     bash -lc '$ORACLE_HOME/bin/sqlplus -s "$DBU/$DBP@//localhost:1521/$DBS"' <<'SQL' 2>&1 | tr -d '\r'
 SET HEADING OFF FEEDBACK OFF PAGESIZE 0
 SELECT 'OK' FROM dual;
 EXIT
 SQL
-)"
+)" || true
   if ! grep -q 'OK' <<<"$ut3_ok" || ! grep -q 'OK' <<<"$test_ok"; then
     echo "volume $DB_VOLUME não tem bootstrap válido para $label." >&2
+    # Diagnóstico sem ecoar credenciais: só a linha de erro do sqlplus.
+    echo "  UT3: $(grep -m1 -E 'ORA-|SP2-' <<<"$ut3_ok" || echo 'sem resposta OK')" >&2
+    echo "  UTPLSQL_TEST: $(grep -m1 -E 'ORA-|SP2-' <<<"$test_ok" || echo 'sem resposta OK')" >&2
     echo "rode sem --skip-bootstrap (ou com --clean) para reinstalar UT3/UTPLSQL_TEST." >&2
     exit 1
   fi

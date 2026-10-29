@@ -60,6 +60,16 @@ pré-bumpada para 0.18.0 no início (package/lock/site/CHANGELOG) para manter o
 `version:check` verde em todos os PRs. O CI roda também em `push` para
 `release/**` (drift e testes após cada merge).
 
+## Baseline (2026-10-29)
+
+- Unitários/cobertura: **99,48% linhas / 93,88% branches / 99,21% funções**
+  (thresholds 97/93/97).
+- Matriz local: **smoke 17 passing** em **12.2, 18xe, 19ee, 21xe e 23free**
+  (`--skip-bootstrap`); o 12.2 precisou de bootstrap novo (volume com senha
+  antiga) — o `assert_bootstrapped` foi corrigido para não falhar em silêncio.
+- **RF0 do 11g: GO** (IC 23.0 + node-oracledb 7.0.1 em thick no 11.2.0.2 XE;
+  ver [[prd-123-oracle-11g-support|PRD-123]]).
+
 ## Fluxo de execução (por PRD)
 
 1. `status: approved → in-progress` no frontmatter → `npm run brain:sync && npm run brain:build` + `npm run sync-prds`.
