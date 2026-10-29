@@ -29,18 +29,18 @@ Workflow [`integration.yml`](../../../.github/workflows/integration.yml) — **g
 
 ## Passos
 
-- `uses: actions/checkout@v7`
-- `uses: actions/setup-node@v7`
+- `uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7`
+- `uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7`
 - `run: npm ci`
 - `run: |`
 - `run: |`
 - `run: bash scripts/db-matrix/run.sh --only 23free --tests "xvfb-run -a bash -c '${{ steps.scope.outputs.cmd }}'"`
-- `uses: actions/checkout@v7`
-- `uses: actions/setup-node@v7`
+- `uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7`
+- `uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7`
 - `run: npm ci`
 - `run: |`
 - `run: bash scripts/db-matrix/run.sh --only 18xe,21xe,23free --tests "xvfb-run -a bash -c 'npm run test:integration && npm run test:integration:multiroot'"`
-- `uses: actions/upload-artifact@v4`
+- `uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4`
 
 ## Conexões
 

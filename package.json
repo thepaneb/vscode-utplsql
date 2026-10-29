@@ -981,6 +981,8 @@
     "docs:check": "node scripts/docs-check.cjs",
     "docs:fidelity": "node scripts/docs-fidelity.cjs",
     "version:check": "node scripts/version-check.cjs",
+    "audit:prod": "npm audit --omit=dev --audit-level=high",
+    "audit:dev": "npm audit --audit-level=high || true",
     "sync-prds": "node scripts/sync-prds.cjs",
     "pr:create": "node scripts/create-pr.cjs",
     "release:create": "node scripts/create-release.cjs",

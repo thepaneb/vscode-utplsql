@@ -27,7 +27,7 @@ Workflow [`pagespeed.yml`](../../../.github/workflows/pagespeed.yml) — **gerad
 ## Passos
 
 - `run: |`
-- `uses: actions/upload-artifact@v4`
+- `uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4`
 
 ## Conexões
 

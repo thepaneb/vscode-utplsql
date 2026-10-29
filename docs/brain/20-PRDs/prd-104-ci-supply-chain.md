@@ -2,14 +2,14 @@
 tipo: prd
 id: PRD-104
 aliases: [PRD-104]
-status: approved
+status: in-progress
 titulo: "Cadeia de suprimentos do CI: Dependabot, pin de actions e auditoria de dependências"
 versao: "0.18.0"
 data: "2026-10-09"
 autor: "Gil Cleber Barboza"
 versao_titulo: "0.18.0 — Fundação: segurança, testes e anti-drift"
-verificado: 2026-10-09
-regras: []
+verificado: 2026-10-29
+regras: ["BR-PLAT-002"]
 tags: [prd]
 ---
 
@@ -198,6 +198,19 @@ Nenhuma setting da extensão.
   versionado, como no `paddi35`?
 - Incluir `github-actions` no mesmo PR de grupo do npm?
 
+## Decisões (2026-10-29)
+
+- **CodeQL**: manter o *default setup* do GitHub; **não** criar
+  `.github/workflows/codeql.yml` (evita duplicidade e manutenção).
+- **Dependabot**: PRs separados para `npm` e `github-actions`; grupos
+  `minor-patch`; majors abrem individualmente.
+- **Audit**: gate de produção (`--omit=dev --audit-level=high`) no `ci.yml` e no
+  `publish.yml`; o `audit:dev` fica informativo.
+- **Regra**: `BR-PLAT-002` (o `BR-PLAT-001` existente cobre o piso de
+  VS Code/Node).
+- **Triagem dos 5 alertas**: os dois de `permissions` fecham com a RF3; os três
+  restantes são da PRD-110; confirmar no Security tab após o merge na `main`.
+
 ## 12. Impacto no cérebro
 
 Na conclusão, criar a regra `BR-PLAT-*` ("actions pinadas por SHA e permissões
@@ -208,8 +221,12 @@ escopadas; dependências auditadas no CI"), com `prds: ["PRD-104"]`,
 
 <!-- brain:auto:start:conexoes -->
 - 🗺️ [[MOC - PRDs]]
+- 📐 Regras: [[BR-PLAT-002 - CI usa actions pinadas por SHA, permissões mínimas e dependências auditadas|BR-PLAT-002]]
 - 🔗 PRDs relacionados: [[prd-81-security-hardening|PRD-81]] · [[prd-110-defensive-hardening|PRD-110]]
 - ⚙️ Pipelines: [[PIPE-ci - CI|PIPE-ci]] · [[PIPE-publish - Publish Extension|PIPE-publish]]
 - 🔗 Mesma versão (0.18.0): [[prd-98-docs-anti-drift|PRD-98]] · [[prd-110-defensive-hardening|PRD-110]] · [[prd-113-lint-scope|PRD-113]] · [[prd-114-vscode-stub-modernization|PRD-114]] · [[prd-118-commit-signing|PRD-118]] · [[prd-119-security-posture-scorecard|PRD-119]] · [[prd-123-oracle-11g-support|PRD-123]]
+- 🎯 RF1 — Dependabot → [[BR-PLAT-002 - CI usa actions pinadas por SHA, permissões mínimas e dependências auditadas|BR-PLAT-002]]
+- 🎯 RF3 — Pin e permissões → [[BR-PLAT-002 - CI usa actions pinadas por SHA, permissões mínimas e dependências auditadas|BR-PLAT-002]]
+- 🎯 RF4 — Auditoria de dependências → [[BR-PLAT-002 - CI usa actions pinadas por SHA, permissões mínimas e dependências auditadas|BR-PLAT-002]]
 - 🚀 ⬅️ release anterior: [[prd-109-language-identity|PRD-109 (0.17.0)]] · ➡️ próxima release: [[prd-111-decompose-oracle-runner|PRD-111 (0.19.0)]]
 <!-- brain:auto:end -->

@@ -26,9 +26,10 @@ Workflow [`ci.yml`](../../../.github/workflows/ci.yml) — **gerado** por `npm r
 
 ## Passos
 
-- `uses: actions/checkout@v7`
-- `uses: actions/setup-node@v7`
+- `uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7`
+- `uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7`
 - `run: npm ci`
+- `run: npm run audit:prod`
 - `run: npm run version:check`
 - `run: npm run brain:ci`
 - `run: git diff --exit-code`
@@ -36,7 +37,7 @@ Workflow [`ci.yml`](../../../.github/workflows/ci.yml) — **gerado** por `npm r
 - `run: npm run lint`
 - `run: npm run typecheck`
 - `run: npm run test:coverage`
-- `uses: codecov/codecov-action@v5`
+- `uses: codecov/codecov-action@0fb7174895f61a3b6b78fc075e0cd60383518dac # v5`
 
 ## Conexões
 
