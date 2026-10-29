@@ -81,6 +81,8 @@ SORT id ASC
 - [[BR-DEBUG-004 - compileForDebug recompila com debug e mantem o objeto VALID]] — `BR-DEBUG-004`
 - [[BR-DEBUG-005 - debugAtCursor-debugFailed-debugLast resolvem o alvo e chamam startDebugSession]] — `BR-DEBUG-005`
 - [[BR-DEP-001 - Runtime deps em dependencies e nota DEP- para cada dep direta]] — `BR-DEP-001`
+- [[BR-DOC-001 - Tabelas de settings e comandos são geradas do package.json]] — `BR-DOC-001`
+- [[BR-DOC-002 - PRD concluída vincula docs e registro de features]] — `BR-DOC-002`
 - [[BR-EXEC-001 - Execução usa duas conexões dedicadas (conn1 runner, conn2 poll)]] — `BR-EXEC-001`
 - [[BR-EXEC-002 - Conexões do runner têm callTimeout zerado]] — `BR-EXEC-002`
 - [[BR-EXEC-003 - Falha na segunda conexão libera a primeira (sem vazamento)]] — `BR-EXEC-003`

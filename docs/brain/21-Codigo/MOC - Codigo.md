@@ -45,10 +45,12 @@ SORT id ASC
 - [[COD - cobertura.ts]] — `COD-cobertura.ts`
 - [[COD - codelens.ts]] — `COD-codelens.ts`
 - [[COD - commands-scaffold.ts]] — `COD-commands-scaffold.ts`
+- [[COD - Commands.md]] — `COD-Commands.md`
 - [[COD - compilationDiagnostics.ts]] — `COD-compilationDiagnostics.ts`
 - [[COD - compileForDebug.ts]] — `COD-compileForDebug.ts`
 - [[COD - compose.yaml]] — `COD-compose.yaml`
 - [[COD - config.ts]] — `COD-config.ts`
+- [[COD - Configuration.md]] — `COD-Configuration.md`
 - [[COD - connection.ts]] — `COD-connection.ts`
 - [[COD - connectionProfiles.ts]] — `COD-connectionProfiles.ts`
 - [[COD - coverage.ts]] — `COD-coverage.ts`
@@ -66,6 +68,7 @@ SORT id ASC
 - [[COD - deps.ts]] — `COD-deps.ts`
 - [[COD - discovery.ts]] — `COD-discovery.ts`
 - [[COD - docs-check.cjs]] — `COD-docs-check.cjs`
+- [[COD - docs-features-check.cjs]] — `COD-docs-features-check.cjs`
 - [[COD - docs-fidelity.cjs]] — `COD-docs-fidelity.cjs`
 - [[COD - esbuild.config.mjs]] — `COD-esbuild.config.mjs`
 - [[COD - extension.ts]] — `COD-extension.ts`
@@ -99,7 +102,11 @@ SORT id ASC
 - [[COD - publish.cjs]] — `COD-publish.cjs`
 - [[COD - publish.yml]] — `COD-publish.yml`
 - [[COD - quickfix.ts]] — `COD-quickfix.ts`
+- [[COD - README (extensão).md]] — `COD-README-extens-o-.md`
 - [[COD - redact.ts]] — `COD-redact.ts`
+- [[COD - Referencia - descricoes de comandos.md]] — `COD-Referencia---descricoes-de-comandos.md`
+- [[COD - Referencia - descricoes de settings.md]] — `COD-Referencia---descricoes-de-settings.md`
+- [[COD - Registro de features.md]] — `COD-Registro-de-features.md`
 - [[COD - results.ts]] — `COD-results.ts`
 - [[COD - robots.txt]] — `COD-robots.txt`
 - [[COD - run-tests.cjs]] — `COD-run-tests.cjs`
@@ -117,6 +124,7 @@ SORT id ASC
 - [[COD - summary.cjs]] — `COD-summary.cjs`
 - [[COD - sync-prds.cjs]] — `COD-sync-prds.cjs`
 - [[COD - tagFilter.ts]] — `COD-tagFilter.ts`
+- [[COD - template-prd.md]] — `COD-template-prd.md`
 - [[COD - test-setup.cjs]] — `COD-test-setup.cjs`
 - [[COD - testTree.ts]] — `COD-testTree.ts`
 - [[COD - tnsnames.ts]] — `COD-tnsnames.ts`

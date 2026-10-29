@@ -8,6 +8,7 @@ data: "{YYYY-MM-DD}"
 autor: "{Nome}"
 verificado: "{YYYY-MM-DD}"
 regras: [] # derivado por brain:sync (BR-*/SEC-* que citam esta PRD)
+docs: ["CHANGELOG"] # superfícies tocadas; cada uma precisa citar a PRD (ou <!-- prd:PRD-NN -->)
 tags: [prd]
 ---
 
@@ -87,6 +88,12 @@ tags: [prd]
 O campo `regras:` do frontmatter é derivado por `npm run brain:sync` a partir do
 `prds:` das regras. Se a PRD não exigir regra alguma, deixe uma linha apenas
 com **nenhuma** — o CI exige essa confirmação quando `regras: []`.}
+
+## Impacto nas docs
+
+{Superfícies listadas em `docs:` e o que muda em cada uma. Se a PRD só entrou no
+CHANGELOG, mantenha `docs: ["CHANGELOG"]` e escreva `nenhuma` aqui. Para
+superfícies do vault, cite o ID da PRD ou use `<!-- prd:PRD-NN -->` no destino.}
 
 ## Conexões
 

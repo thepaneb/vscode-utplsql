@@ -146,3 +146,7 @@ Nenhuma setting/comando. Possível ajuste do override do Biome para `src/test/**
 Ao concluir, criar/ajustar a regra `BR-TEST-*` ("o stub de `vscode` é tipado e
 coberto pelo inventário de APIs") com `prds: ["PRD-114"]`, `implementacao:` e
 `testes:`. Enquanto `proposed`, `regras: []`.
+
+## Impacto nas docs
+
+`wiki/Contributing.md` documenta o stub tipado e as fixtures; o CHANGELOG entra no release.

@@ -10,6 +10,7 @@ autor: "Gil Cleber Barboza"
 versao_titulo: "0.18.0 — Fundação: segurança, testes e anti-drift"
 verificado: 2026-10-29
 regras: ["BR-CONN-020", "BR-EXEC-017", "SEC-014"]
+docs: ["CHANGELOG", "wiki/Architecture.md"]
 tags: [prd]
 ---
 
@@ -207,6 +208,10 @@ Ao concluir, criar as regras que materializam a PRD, por exemplo:
 `BR-CONN-0xx` ("credencial redigida em todo log do ciclo de conexão"), cada uma
 com `prds: ["PRD-110"]`, `implementacao:` (arquivo/linha) e `testes:`. Enquanto
 `proposed`, `regras: []`.
+
+## Impacto nas docs
+
+`SECURITY.md` e `wiki/Architecture.md` refletem os invariantes; o CHANGELOG entra no release.
 
 ## Conexões
 

@@ -10,6 +10,7 @@ autor: "Gil Cleber Barboza"
 versao_titulo: "0.18.0 — Fundação: segurança, testes e anti-drift"
 verificado: 2026-10-13
 regras: []
+docs: ["CHANGELOG", "wiki/Contributing.md"]
 tags: [prd]
 ---
 
@@ -154,6 +155,10 @@ Ao concluir, criar a regra que materializa a PRD, por exemplo uma `BR-PLAT-*`
 ("commits no `main` são assinados e verificados"), com `prds: ["PRD-118"]`,
 `implementacao:` (arquivo/ponto de configuração) e `testes:`. Enquanto
 `proposed`, `regras: []`.
+
+## Impacto nas docs
+
+`wiki/Contributing.md` documenta a assinatura; o CHANGELOG entra no release.
 
 ## Conexões
 

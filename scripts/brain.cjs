@@ -932,7 +932,86 @@ function genVscodeApi() {
   return `${head}\n${body}`;
 }
 
+// ── tabelas geradas de settings/comandos (PRD-98 RF1) ──────────────────
+
+/** JSON de um bloco ```json numa nota do vault (descrições curadas). */
+function jsonFromNote(rel) {
+  const p = path.join(VAULT, rel);
+  if (!fs.existsSync(p)) return {};
+  const m = fs.readFileSync(p, 'utf8').match(/```json\n([\s\S]*?)\n```/);
+  if (!m) return {};
+  try {
+    return JSON.parse(m[1]);
+  } catch {
+    return {};
+  }
+}
+
+function escapeCell(value) {
+  return String(value ?? '')
+    .replace(/\|/g, '\\|')
+    .replace(/\r?\n/g, ' ')
+    .trim();
+}
+
+function displayDefault(value) {
+  if (value === undefined) return '—';
+  if (typeof value === 'string') return value === '' ? '""' : value;
+  if (Array.isArray(value) || (value && typeof value === 'object')) return JSON.stringify(value);
+  return String(value);
+}
+
+function firstSentence(text) {
+  const first = String(text ?? '')
+    .replace(/\|/g, '\\|')
+    .replace(/\r?\n/g, ' ')
+    .trim();
+  const cut = first.search(/\.\s/);
+  return cut >= 0 ? first.slice(0, cut + 1) : first;
+}
+
+/** `| Setting | Default | Description |` a partir do package.json + sidecar. */
+function genSettingsTable() {
+  const pkg = JSON.parse(fs.readFileSync(path.join(REPO, 'package.json'), 'utf8'));
+  const curated = jsonFromNote('10-Projeto/Referencia - descricoes de settings.md');
+  const props = pkg.contributes?.configuration?.properties ?? {};
+  const rows = Object.keys(props)
+    .sort()
+    .map((id) => {
+      const p = props[id] ?? {};
+      const c = curated[id] ?? {};
+      const def = c.default ?? displayDefault(p.default);
+      const description =
+        c.description ?? firstSentence(p.markdownDescription ?? p.description ?? '—');
+      return `| \`${id}\` | \`${escapeCell(def)}\` | ${escapeCell(description)} |`;
+    });
+  return ['| Setting | Default | Description |', '|---|---|---|', ...rows].join('\n');
+}
+
+/** `| Command | Description | UI shortcut |` a partir do package/nls + sidecar. */
+function genCommandsTable() {
+  const pkg = JSON.parse(fs.readFileSync(path.join(REPO, 'package.json'), 'utf8'));
+  let nls = {};
+  try {
+    nls = JSON.parse(fs.readFileSync(path.join(REPO, 'package.nls.json'), 'utf8'));
+  } catch {
+    // sem catálogo NLS: usa o título do manifesto
+  }
+  const curated = jsonFromNote('10-Projeto/Referencia - descricoes de comandos.md');
+  const rows = (pkg.contributes?.commands ?? [])
+    .filter((c) => typeof c.title === 'string' && c.title.startsWith('%nls.'))
+    .map((c) => {
+      const key = c.title.replace(/^%|%$/g, '');
+      const title = nls[key] ?? c.command;
+      const d = curated[c.command] ?? {};
+      return `| \`${escapeCell(title)}\` | \`${c.command}\` | ${escapeCell(d.description ?? '—')} | ${escapeCell(d.shortcut ?? '—')} |`;
+    });
+  return ['| Command | ID | Description | UI shortcut |', '|---|---|---|---|', ...rows].join('\n');
+}
+
 const GENERATORS = {
+  settings: genSettingsTable,
+  commands: genCommandsTable,
   'root-docs': genRootDocs,
   'readme-variants': genReadmeVariants,
   'wiki-index': genWikiIndex,
@@ -1306,6 +1385,12 @@ module.exports = {
   genWikiIndex,
   genLinkedinIndex,
   genFuncionalIndex,
+  genSettingsTable,
+  genCommandsTable,
+  jsonFromNote,
+  escapeCell,
+  displayDefault,
+  firstSentence,
   prdNotes,
   genPrdRoadmap,
   genPrdEstrutura,

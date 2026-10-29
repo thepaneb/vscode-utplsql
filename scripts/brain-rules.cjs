@@ -32,6 +32,7 @@ const REQUIRED = ['id', 'titulo', 'dominio', 'status', 'severidade', 'fonte'];
 
 /** PRDs concluídas a partir desta versão precisam declarar/possuir `regras:`. */
 const RULES_BASELINE = '0.14.0';
+const DOCS_BASELINE = '0.18.0';
 
 /** Schema das camadas de conhecimento (tipo do frontmatter → id + campos). */
 const LAYERS = {
@@ -290,6 +291,75 @@ function semverGte(a, b) {
  *    `## Impacto no cérebro` com a confirmação explícita `nenhuma` (evita
  *    "esqueci" silencioso).
  */
+/** Resolve uma superfície do campo `docs:` para um caminho do repositório. */
+function resolveDocsSurface(surface) {
+  const s = String(surface).trim();
+  if (s === 'CHANGELOG') return 'CHANGELOG.md';
+  if (s === 'README') return 'README.md';
+  if (s.startsWith('wiki/')) {
+    const rest = s.slice('wiki/'.length).replace(/\.md$/, '');
+    return `docs/wiki/${rest}.md`;
+  }
+  if (s.startsWith('functional/')) {
+    const rest = s.slice('functional/'.length).replace(/\.md$/, '');
+    return `docs/functional/${rest}.md`;
+  }
+  return s;
+}
+
+/**
+ * PRD concluída recente (>= DOCS_BASELINE) declara `docs:` com as superfícies
+ * tocadas; cada superfície precisa mencionar o ID da PRD (ou um marcador
+ * `<!-- prd:PRD-NN -->`) e a nota precisa da seção `## Impacto nas docs`.
+ */
+function checkPrdDocs(
+  notes,
+  readFile = (rel) => {
+    const p = path.join(ROOT, rel);
+    return fs.existsSync(p) ? fs.readFileSync(p, 'utf8') : null;
+  },
+) {
+  const problems = [];
+  for (const note of notes) {
+    const fm = parseFrontmatter(note.content);
+    if (fm?.tipo !== 'prd' || fm.status !== 'completed') continue;
+    if (!semverGte(fm.versao, DOCS_BASELINE)) continue;
+    const docs = Array.isArray(fm.docs)
+      ? fm.docs.map((d) => String(d).trim()).filter(Boolean)
+      : null;
+    if (docs === null) {
+      problems.push(`${note.name}: PRD concluída (>= ${DOCS_BASELINE}) sem o campo 'docs'`);
+      continue;
+    }
+    if (docs.length === 0) {
+      problems.push(`${note.name}: campo 'docs' vazio (declare ao menos CHANGELOG)`);
+    }
+    const num = String(fm.id ?? '').replace(/\D/g, '');
+    for (const surface of docs) {
+      const rel = resolveDocsSurface(surface);
+      const content = readFile(rel);
+      if (content == null) {
+        problems.push(`${note.name}: superfície de docs inexistente: ${surface} (${rel})`);
+        continue;
+      }
+      const marker = new RegExp(
+        `(?:\\bPRD-0*${Number(num)}\\b|<!--\\s*prd:PRD-0*${Number(num)}\\s*-->)`,
+        'i',
+      );
+      if (!marker.test(content)) {
+        problems.push(`${note.name}: ${surface} não menciona PRD-${Number(num)}`);
+      }
+    }
+    const impacto = note.content
+      .split(/\n(?=##\s)/)
+      .find((s) => /^##\s*(?:\d+[.)]\s*)?Impacto nas docs/i.test(s));
+    if (!impacto) {
+      problems.push(`${note.name}: PRD concluída sem a seção '## Impacto nas docs'`);
+    }
+  }
+  return problems;
+}
+
 function checkPrdRules(notes) {
   const problems = [];
   const prds = new Map();
@@ -643,6 +713,7 @@ function checkRules(overrides = {}) {
     problems.push(...checkMencoesPrd(notes, new Set(relCatalog.noteIds)));
     problems.push(...checkSecRegras(notes, regraStatus));
     problems.push(...checkPrdRules(notes));
+    problems.push(...checkPrdDocs(notes, overrides.readFile));
     problems.push(...checkPrdRnfVinculo(notes));
     problems.push(...checkLayerConnections(notes));
     problems.push(...checkRulesDocumented(notes));
@@ -661,6 +732,7 @@ module.exports = {
   checkLayers,
   checkRequisitos,
   checkPrdRules,
+  checkPrdDocs,
   checkPrdRnfVinculo,
   declaredRnfExceptions,
   checkLayerConnections,

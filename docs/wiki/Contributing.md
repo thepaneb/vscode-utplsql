@@ -2,6 +2,13 @@
 
 # Contributing
 
+<!-- prd:PRD-98 -->
+<!-- prd:PRD-104 -->
+<!-- prd:PRD-113 -->
+<!-- prd:PRD-114 -->
+<!-- prd:PRD-118 -->
+<!-- prd:PRD-119 -->
+
 ## CI and supply chain
 
 Actions are pinned by **commit SHA** (with the version in a comment), every
@@ -28,6 +35,13 @@ fails when a runtime API used by `src/**` is missing from the stub, and
 `anyBudget.test.ts` prevents `any` regressions. Prefer the typed helpers in
 `src/test/fixtures.ts` (`makeTestItem`, `makeTestRun`, `makeUri`, …) over
 `as any` when building fixtures.
+
+## Feature registry
+
+`docs/brain/10-Projeto/Registro de features.md` is the structured source for
+README bullets, wiki mentions and LinkedIn posts/cards. `npm run
+docs:features-check -- <version>` validates every completed PRD of the version;
+internal enablers use `interno: true` and only require the CHANGELOG entry.
 
 Guide for setting up the development environment and submitting contributions.
 

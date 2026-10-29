@@ -10,6 +10,7 @@ autor: "Gil Cleber Barboza"
 versao_titulo: "0.18.0 — Fundação: segurança, testes e anti-drift"
 verificado: 2026-10-29
 regras: ["BR-PLAT-002"]
+docs: ["CHANGELOG", "wiki/Contributing.md"]
 tags: [prd]
 ---
 
@@ -216,6 +217,10 @@ Nenhuma setting da extensão.
 Na conclusão, criar a regra `BR-PLAT-*` ("actions pinadas por SHA e permissões
 escopadas; dependências auditadas no CI"), com `prds: ["PRD-104"]`,
 `implementacao:` e `testes:`. Enquanto `proposed`, `regras: []`.
+
+## Impacto nas docs
+
+`wiki/Contributing.md` documenta a cadeia de suprimentos; o CHANGELOG entra no release.
 
 ## Conexões
 

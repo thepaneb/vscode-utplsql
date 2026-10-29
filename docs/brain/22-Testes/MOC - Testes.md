@@ -57,8 +57,10 @@ SORT id ASC
 - [[TST - debugTargets.test.ts]] — `TST-debugTargets.test.ts`
 - [[TST - decorations.test.ts]] — `TST-decorations.test.ts`
 - [[TST - discovery.test.ts]] — `TST-discovery.test.ts`
+- [[TST - docsFeaturesCheck.test.ts]] — `TST-docsFeaturesCheck.test.ts`
 - [[TST - docsFidelity.test.ts]] — `TST-docsFidelity.test.ts`
 - [[TST - docsFidelityNls.test.ts]] — `TST-docsFidelityNls.test.ts`
+- [[TST - docsTables.test.ts]] — `TST-docsTables.test.ts`
 - [[TST - extension.test.ts]] — `TST-extension.test.ts`
 - [[TST - extensionActivation.test.ts]] — `TST-extensionActivation.test.ts`
 - [[TST - fsErrorsCatch.test.ts]] — `TST-fsErrorsCatch.test.ts`

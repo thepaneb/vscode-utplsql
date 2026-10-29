@@ -142,3 +142,7 @@ Ao concluir, criar a regra que materializa a PRD, por exemplo uma `BR-PLAT-*`
 ("commits no `main` são assinados e verificados"), com `prds: ["PRD-118"]`,
 `implementacao:` (arquivo/ponto de configuração) e `testes:`. Enquanto
 `proposed`, `regras: []`.
+
+## Impacto nas docs
+
+`wiki/Contributing.md` documenta a assinatura; o CHANGELOG entra no release.

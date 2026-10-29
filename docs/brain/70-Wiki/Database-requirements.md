@@ -11,6 +11,8 @@ tags: [wiki]
 
 # Database requirements
 
+<!-- prd:PRD-123 -->
+
 Grants and configurations required on the Oracle database to use the extension
 with all features.
 

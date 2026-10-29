@@ -2,14 +2,15 @@
 tipo: prd
 id: PRD-98
 aliases: [PRD-98]
-status: approved
+status: in-progress
 titulo: "Anti-drift de documentação: tabelas geradas e vínculo PRD→docs"
 versao: "0.18.0"
 data: "2026-10-08"
 autor: "Gil Cleber"
 versao_titulo: "0.18.0 — Fundação: segurança, testes e anti-drift"
-verificado: 2026-10-08
-regras: []
+verificado: 2026-10-29
+regras: ["BR-DOC-001", "BR-DOC-002"]
+docs: ["CHANGELOG", "wiki/Contributing.md"]
 tags: [prd]
 ---
 
@@ -217,6 +218,26 @@ Nenhuma setting/comando novo na extensão. Novos **scripts npm** de tooling:
   (as variantes seguem a checagem de settings do `docs:check`).
 - Nível de rigor inicial (aviso vs. erro) por check.
 
+## Decisões (2026-10-29)
+
+- **RF1:** `brain:sync` gera as tabelas de settings/comandos **nas notas do
+  vault** (`60-README` e `70-Wiki`) entre marcadores; `brain:build` publica. As
+  descrições curtas curadas ficam em `10-Projeto/Referencia - descricoes de
+  settings/comandos.md` (JSON); IDs/defaults vêm do `package.json`.
+- **RF2:** `docs-fidelity` exige settings no README **e** em
+  `Configuration.md`, comandos por **ID** no README e `Commands.md`, valores de
+  `enum` e a direção inversa (ID na tabela que não existe no `package.json`).
+- **RF3:** `DOCS_BASELINE = 0.18.0`; PRD concluída declara `docs:` e
+  `## Impacto nas docs`; cada superfície cita `PRD-NN` ou
+  `<!-- prd:PRD-NN -->`. As 8 PRDs da 0.18.0 já têm o campo/seção.
+- **RF4/RF5:** registro `10-Projeto/Registro de features.md` + script
+  `docs:features-check`; a 0.18.0 é uma release de fundação, então os enablers
+  usam `interno: true` (só CHANGELOG). `docs/linkedin` é local e a checagem de
+  posts/cards só roda quando o diretório existe.
+- **RF6:** `prd-workflow` + template ganharam `docs:`/`## Impacto nas docs` e o
+  gate de features no checklist de release.
+- **Regras:** `BR-DOC-001` (tabelas geradas) e `BR-DOC-002` (PRD → docs/registro).
+
 ## 12. Impacto no cérebro
 
 Nenhuma regra nesta proposta (PRD `proposed`). Na **conclusão**, criar as regras
@@ -225,11 +246,22 @@ gerados do `package.json`", "PRD concluída exige vínculo `docs:`") — com
 `prds: ["PRD-98"]`, `implementacao:` e `testes:`, e confirmar o vínculo
 bidirecional com `npm run brain:rules`.
 
+## Impacto nas docs
+
+`wiki/Contributing.md` documenta o fluxo de PRD/docs; o CHANGELOG entra no release.
+
 ## Conexões
 
 <!-- brain:auto:start:conexoes -->
 - 🗺️ [[MOC - PRDs]]
+- 📐 Regras: [[BR-DOC-001 - Tabelas de settings e comandos são geradas do package.json|BR-DOC-001]] · [[BR-DOC-002 - PRD concluída vincula docs e registro de features|BR-DOC-002]]
 - ⚙️ Pipelines: [[PIPE-ci - CI|PIPE-ci]]
 - 🔗 Mesma versão (0.18.0): [[prd-104-ci-supply-chain|PRD-104]] · [[prd-110-defensive-hardening|PRD-110]] · [[prd-113-lint-scope|PRD-113]] · [[prd-114-vscode-stub-modernization|PRD-114]] · [[prd-118-commit-signing|PRD-118]] · [[prd-119-security-posture-scorecard|PRD-119]] · [[prd-123-oracle-11g-support|PRD-123]]
+- 🎯 RF1 — Tabelas de settings e comandos geradas (fonte única = `package.json`) → [[BR-DOC-001 - Tabelas de settings e comandos são geradas do package.json|BR-DOC-001]]
+- 🎯 RF2 — `docs:fidelity` estrito e completo → [[BR-DOC-001 - Tabelas de settings e comandos são geradas do package.json|BR-DOC-001]]
+- 🎯 RF3 — Vínculo PRD → docs (bidirecional) → [[BR-DOC-002 - PRD concluída vincula docs e registro de features|BR-DOC-002]]
+- 🎯 RF4 — Registro de features (fonte para bullets + posts) → [[BR-DOC-002 - PRD concluída vincula docs e registro de features|BR-DOC-002]]
+- 🎯 RF5 — Gate de release → [[BR-DOC-002 - PRD concluída vincula docs e registro de features|BR-DOC-002]]
+- 🎯 RF6 — Convenção por tipo de PRD + seção "Impacto nas docs" → [[BR-DOC-002 - PRD concluída vincula docs e registro de features|BR-DOC-002]]
 - 🚀 ⬅️ release anterior: [[prd-109-language-identity|PRD-109 (0.17.0)]] · ➡️ próxima release: [[prd-111-decompose-oracle-runner|PRD-111 (0.19.0)]]
 <!-- brain:auto:end -->

@@ -195,3 +195,7 @@ Ao concluir, criar as regras que materializam a PRD, por exemplo:
 `BR-CONN-0xx` ("credencial redigida em todo log do ciclo de conexão"), cada uma
 com `prds: ["PRD-110"]`, `implementacao:` (arquivo/linha) e `testes:`. Enquanto
 `proposed`, `regras: []`.
+
+## Impacto nas docs
+
+`SECURITY.md` e `wiki/Architecture.md` refletem os invariantes; o CHANGELOG entra no release.
