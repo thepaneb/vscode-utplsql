@@ -3,7 +3,7 @@ tipo: nota
 status: ativo
 modulo: prds
 data: 2026-10-10
-verificado: 2026-10-10
+verificado: 2026-10-30
 tags: [prd, roadmap, planejamento]
 ---
 
@@ -17,22 +17,24 @@ a **fonte da verdade** no frontmatter das notas `prd-*`: ver [[MOC - PRDs]] e
 
 | Ordem | PRD | Título | Esforço | Complexidade |
 |---|---|---|---|---|
-| 1 | PRD-107 | Fixture de integração endurecido: usuário sem privilégios e fallbacks | 1–2 dias | Média |
-| 2 | PRD-101 | Ciclo de vida de conexões: fechar pools ociosos após a execução | 1–2 dias | Média |
-| 3 | PRD-102 | Observabilidade: tracing e instrumentação de desempenho | 2–3 dias | Média |
-| 4 | PRD-103 | Reindexação incremental de fontes (watcher por-URI) | 2–3 dias | Média |
-| 5 | PRD-106 | Harness de performance: fixture em escala e medição por fases | 2–3 dias | Média-Alta |
-| 6 | PRD-120 | Ativação enxuta e validação de setup preguiçosa | 1–2 dias | Média |
+| 1 | PRD-120 | Ativação enxuta e validação de setup preguiçosa | 1–2 dias | Média |
+| 2 | PRD-107 | Fixture de integração endurecido: usuário sem privilégios e fallbacks | 1–2 dias | Média |
+| 3 | PRD-101 | Ciclo de vida de conexões: fechar pools ociosos após a execução | 1–2 dias | Média |
+| 4 | PRD-102 | Observabilidade: tracing e instrumentação de desempenho | 2–3 dias | Média |
+| 5 | PRD-103 | Reindexação incremental de fontes (watcher por-URI) | 2–3 dias | Média |
+| 6 | PRD-106 | Harness de performance: fixture em escala e medição por fases | 2–3 dias | Média-Alta |
 
-**PRDs:** [[prd-107-unprivileged-fixture|PRD-107]] ·
+**PRDs:** [[prd-120-lean-activation-lazy-setup|PRD-120]] ·
+[[prd-107-unprivileged-fixture|PRD-107]] ·
 [[prd-101-connection-pool-lifecycle|PRD-101]] ·
 [[prd-102-trace-and-perf-instrumentation|PRD-102]] ·
-[[prd-103-incremental-source-reindex|PRD-103]] · [[prd-106-perf-harness|PRD-106]] ·
-[[prd-120-lean-activation-lazy-setup|PRD-120]]
+[[prd-103-incremental-source-reindex|PRD-103]] · [[prd-106-perf-harness|PRD-106]]
 
-**Tema:** confiabilidade e desempenho (ciclo de conexões, reindexação, tracing e
-medição de fases). Ordem sugerida: **107 → 101 → 102 → 103 → 106** (a 107 habilita
-os testes da 101; a 106 mede as fases instrumentadas pela 102).
+**Tema:** confiabilidade e desempenho (ativação, ciclo de conexões, reindexação,
+tracing e medição de fases). Ordem sugerida: **120 → 107 → 101 → 102 → 103 → 106**
+(a 120 remove o `onStartupFinished` e a conexão na ativação — achado “Broad
+Activation” do VSCan; a 107 habilita os testes da 101; a 106 mede as fases
+instrumentadas pela 102).
 
 **Reorganização (2026-10-10):** era a antiga 0.19.0; agora vem **após a PRD-111**
 (0.19.0) para que a instrumentação da 102 incida sobre o `oracleRunner` já

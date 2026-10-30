@@ -9,7 +9,7 @@
 | Data | 2026-10-13 |
 | Componente | Distribuição (Marketplace) + documentação de confiança |
 | Versão alvo | 0.23.0 |
-| Arquivos afetados | `docs/brain/16-Seguranca/` (nota nova da política), `docs/brain/60-README/README (extensão).md` (+ variantes geradas), `docs/brain/70-Wiki/`, `docs/brain/01-Projeto`/site (canal de publicação), `PRIVACY.md` (opcional, raiz), `CHANGELOG.md` |
+| Arquivos afetados | `docs/brain/16-Seguranca/` (nota nova da política), `docs/brain/60-README/README (extensão).md` (+ variantes geradas), `docs/brain/70-Wiki/`, `docs/brain/10-Projeto`/site (canal de publicação), `PRIVACY.md` (opcional, raiz), `CHANGELOG.md` |
 | Esforço estimado | 1–2 dias |
 | Complexidade | Baixa-Média |
 | Relaciona-se a | PRD-91 (paridade de docs/distribuição), PRD-96/97 (site), SEC-001/SEC-002/SEC-008/SEC-011 (dados e credenciais), PRD-119 (postura de segurança) |
@@ -109,7 +109,7 @@ privacidade** e a **identidade do publisher** não têm dono.
 
 ### RF5 — Registro no cérebro
 
-- Criar a `SEC-014` (ver §12) declarando a postura de dados publicamente; o
+- Criar a `SEC-015` (ver §12) declarando a postura de dados publicamente; o
   `brain:sync` gera o “↩️ Referenciada por” a partir do doc funcional/wiki.
 
 **Não-funcionais**
@@ -127,7 +127,7 @@ privacidade** e a **identidade do publisher** não têm dono.
 2. Seção “Dados e privacidade” na nota do README (vault) → `brain:build` propaga as
    24 variantes.
 3. Verificação do publisher no portal (ou registro da decisão de não verificar).
-4. `SEC-014` no cérebro, referenciada pelo doc funcional/wiki.
+4. `SEC-015` no cérebro, referenciada pelo doc funcional/wiki.
 5. Re-scan no VSCan para comprovar a queda dos fatores de risco.
 
 ## 6. Configuração
@@ -167,7 +167,7 @@ possivelmente um registro DNS TXT (RF2).
 - Verificação do publisher **fechada** (se houver domínio) **ou** decisão
   documentada com justificativa.
 - Seção de dados/privacidade no README (24 variantes) e wiki, com vínculo no cérebro
-  (`SEC-014`).
+  (`SEC-015`).
 - Re-scan do VSCan sem `missing-privacy-policy` (e sem `unverified-publisher`, se
   a verificação for possível).
 
@@ -179,11 +179,33 @@ possivelmente um registro DNS TXT (RF2).
   repositório? (O site precisa do suporte a páginas extras da PRD-97.)
 - `PRIVACY.md` deve ir **dentro** do VSIX (fica no repo do usuário) ou só no repo/site?
 
+## Reavaliação (2026-10-30)
+
+O re-scan do **VSCan 0.18.0** confirmou `unverified-publisher` (medium),
+`missing-privacy-policy` (low) e `low-popularity` (medium); o portal continua
+sem `privacyPolicyUrl`.
+
+- **SEC-014 já está em uso pela PRD-110** (identificador de schema). A regra
+  desta PRD passa a ser **`SEC-015`**.
+- **Publisher:** não há domínio próprio elegível (o projeto usa
+  `thepaneb.github.io`); a verificação do Marketplace fica **“unverified by
+  design”** até existir um domínio, com a decisão documentada (RF2). O fator
+  `unverified-publisher` não fecha sem domínio.
+- **Política:** a fase de repositório (RF1/RF3/RF5 + `PRIVACY.md` + link no
+  README/wiki) pode ser antecipada para **0.19.0** como docs-only; o campo
+  *Privacy Policy* do portal (RF4) é manual e só então o VSCan deixa de marcar
+  `missing-privacy-policy`.
+- **Nota:** mesmo com a política, a nota geral pode continuar **86** enquanto
+  `low-popularity` e `unverified-publisher` forem medium; o objetivo é
+  transparência, não “verde a qualquer custo”.
+- **Decisão recomendada:** manter a PRD em 0.23.0 para a decisão de
+  publisher/portal, mas executar a fase repo agora (0.19.0) e re-scan depois.
+
 ## 12. Impacto no cérebro
 
-Na conclusão, criar **`SEC-014`** — “Política de privacidade pública: nenhum dado
+Na conclusão, criar **`SEC-015`** — “Política de privacidade pública: nenhum dado
 sai do host além da conexão Oracle configurada; sem telemetria; credenciais só em
 `SecretStorage`” — com `prds: ["PRD-122"]`, `implementacao:` (URL pública da
 política + campos do portal) e `testes:` (re-scan do VSCan + conferência da API de
-metadados; sem teste unitário, declarar a exceção). Referenciar a `SEC-014` no doc
+metadados; sem teste unitário, declarar a exceção). Referenciar a `SEC-015` no doc
 funcional/wiki (regra de usuário ⇒ wiki). Enquanto `proposed`, `regras: []`.

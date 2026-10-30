@@ -56,6 +56,13 @@ antecipadas se houver auditoria planejada.
 fim, incide sobre um código maior. Se o churn pesar, promova a 95 para o início
 (versão curtíssima de runtime) — decisão a revisar na aprovação.
 
+**Reavaliação (2026-10-30):** a **PRD-122** tem duas fases. A política de
+privacidade e a postura de dados no repositório (RF1/RF3/RF5 + `PRIVACY.md`)
+podem ser antecipadas para **0.19.0** como docs-only; a verificação do publisher
+e o campo *Privacy Policy* do portal (RF2/RF4) dependem de domínio/GitHub e
+continuam aqui. O VSCan 0.18 confirmou `unverified-publisher` e
+`missing-privacy-policy`; ver a seção “Reavaliação” da nota.
+
 **Total estimado:** ≈ 10–17,5 dias.
 
 ## Fluxo de execução (por PRD)
