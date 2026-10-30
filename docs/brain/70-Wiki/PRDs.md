@@ -138,10 +138,11 @@ files and the index; do not move the generated files by hand.
 ### ⚪ Proposed
 
 The complete, generated list is in [docs/prd/index.md](../../prd/index.md) —
-currently ~28 PRDs, including the 0.19.0 (111/115/124/125), 0.20.0
-(101–103/106/107/120), 0.21.0 (88–91), 0.22.0 (92–93) and 0.23.0
-(47/95/97/99/112/116/117/121/122/126) proposals. The `status:` in each note's
-frontmatter is authoritative; this page does not duplicate the full table.
+currently 42 PRDs, including the 0.19.0 (47/95/111/124/125/127), 0.20.0
+(101–103/106/107/120), 0.21.0 (128–131/137–139), 0.22.0 (88–93/115), 0.23.0
+(97/99/112/116/117/126) and 0.24.0 (121/122/132/133/140–143) proposals. The
+`status:` in each note's frontmatter is authoritative; this page does not
+duplicate the full table.
 
 ## How to propose a PRD
 

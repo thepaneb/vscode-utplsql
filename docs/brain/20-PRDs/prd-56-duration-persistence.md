@@ -174,7 +174,7 @@ Entregue na branch `feat/prd-56-duration-persistence` (regra BR-QUAL-003):
   reload e resolução lazy). `withDurationSuffix` remove o sufixo anterior, então
   reaplicar não acumula.
 - **Formato da duração**: `< 1s` → `850ms`; `≥ 1s` → `1.2s` (uma casa). Sem
-  formatação sensível a locale — isso é o escopo da PRD-88 (0.21.0).
+  formatação sensível a locale — isso é o escopo da PRD-88 (0.22.0).
 - **Não persistido**: `lastRun`/"Rerun Last" continua sendo apenas de sessão
   (decisão registrada; a §2 pedia decorações e "Run Failed", que são cobertos).
 

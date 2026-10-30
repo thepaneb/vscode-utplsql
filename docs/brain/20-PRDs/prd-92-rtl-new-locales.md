@@ -7,7 +7,7 @@ titulo: "RTL e novos locales (árabe e hebraico)"
 versao: "0.22.0"
 data: "2026-09-29"
 autor: "Gil Cleber Barboza"
-versao_titulo: "0.22.0 — Localização (RTL, novos locales e pipeline)"
+versao_titulo: "0.22.0 — Localização completa"
 verificado: 2026-09-29
 regras: []
 tags: [prd]
@@ -132,6 +132,6 @@ Esperado criar `BR-I18N-006` (isolamento bidi em locales RTL) com
 <!-- brain:auto:start:conexoes -->
 - 🗺️ [[MOC - PRDs]]
 - 🔗 PRDs relacionados: [[prd-89-pseudo-localization-gate|PRD-89]] · [[prd-90-message-plurals-cldr|PRD-90]] · [[prd-91-doc-parity-localized-distribution|PRD-91]] · [[prd-93-continuous-localization-pipeline|PRD-93]]
-- 🔗 Mesma versão (0.22.0): [[prd-93-continuous-localization-pipeline|PRD-93]]
-- 🚀 ⬅️ release anterior: [[prd-91-doc-parity-localized-distribution|PRD-91 (0.21.0)]] · ➡️ próxima release: [[prd-97-doc-no-site|PRD-97 (0.23.0)]]
+- 🔗 Mesma versão (0.22.0): [[prd-88-locale-aware-formatting|PRD-88]] · [[prd-89-pseudo-localization-gate|PRD-89]] · [[prd-90-message-plurals-cldr|PRD-90]] · [[prd-91-doc-parity-localized-distribution|PRD-91]] · [[prd-93-continuous-localization-pipeline|PRD-93]] · [[prd-115-split-i18n-locales|PRD-115]]
+- 🚀 ⬅️ release anterior: [[prd-139-state-store-slicing-lru|PRD-139 (0.21.0)]] · ➡️ próxima release: [[prd-97-doc-no-site|PRD-97 (0.23.0)]]
 <!-- brain:auto:end -->

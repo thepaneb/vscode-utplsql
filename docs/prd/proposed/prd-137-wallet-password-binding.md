@@ -8,7 +8,7 @@
 | Autor | Gil Cleber Barboza |
 | Data | 2026-10-30 |
 | Componente | Extensão `paneb.vscode-utplsql` |
-| Versão alvo | 0.20.0 |
+| Versão alvo | 0.21.0 |
 | Arquivos afetados | `src/connectionProfiles.ts`, `src/config.ts`, `src/test/unit/connectionProfiles.test.ts` |
 | Esforço estimado | 0,5–1 dia |
 | Complexidade | Baixa |
@@ -95,7 +95,7 @@ connection) — atualizar call sites em `config.ts`.
 
 ## 9. Rollout
 
-- 0.20.0; registrar no CHANGELOG.
+- 0.21.0; registrar no CHANGELOG.
 
 ## 10. Critérios de aceite
 

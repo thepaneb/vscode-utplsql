@@ -154,6 +154,6 @@ sitemap completo) e atualizar a `BR-SITE-001`. `regras:` é derivado pelo
 - 🗺️ [[MOC - PRDs]]
 - 🔗 PRDs relacionados: [[prd-96-public-landing-page-github-pages|PRD-96]]
 - ⚙️ Pipelines: [[PIPE-pages - Deploy Pages|PIPE-pages]]
-- 🔗 Mesma versão (0.23.0): [[prd-99-brain-reuse|PRD-99]] · [[prd-112-error-handling-audit|PRD-112]] · [[prd-116-direct-module-tests|PRD-116]] · [[prd-117-split-script-property-tests|PRD-117]] · [[prd-121-auditable-package-sourcemap|PRD-121]] · [[prd-122-marketplace-trust-metadata|PRD-122]] · [[prd-126-branch-coverage-cli-tests|PRD-126]] · [[prd-132-ux-execution-dryrun-jump|PRD-132]] · [[prd-133-rate-limiting-keybindings|PRD-133]]
-- 🚀 ⬅️ release anterior: [[prd-93-continuous-localization-pipeline|PRD-93 (0.22.0)]]
+- 🔗 Mesma versão (0.23.0): [[prd-99-brain-reuse|PRD-99]] · [[prd-112-error-handling-audit|PRD-112]] · [[prd-116-direct-module-tests|PRD-116]] · [[prd-117-split-script-property-tests|PRD-117]] · [[prd-126-branch-coverage-cli-tests|PRD-126]]
+- 🚀 ⬅️ release anterior: [[prd-115-split-i18n-locales|PRD-115 (0.22.0)]] · ➡️ próxima release: [[prd-121-auditable-package-sourcemap|PRD-121 (0.24.0)]]
 <!-- brain:auto:end -->
