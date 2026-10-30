@@ -181,6 +181,7 @@ npm run db:matrix                      # whole matrix (one version at a time)
 npm run db:matrix -- --only 21xe       # a single version
 npm run db:matrix -- --smoke           # fast subset (capabilities + debugger)
 npm run db:matrix -- --thick           # thick mode per version
+npm run db:matrix -- --thick-full      # suíte completa em thick (experimental; PRD-125)
 npm run db:matrix -- --only 11xe --thick  # Oracle 11g (thick-only)
 npm run db:matrix -- --clean           # wipe the data volume and recreate
 ```

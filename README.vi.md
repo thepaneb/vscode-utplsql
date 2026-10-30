@@ -152,7 +152,7 @@ Test Explorer **ngay khi từng bài kiểm thử hoàn tất**. VSIX đã kèm 
 |---|---|---|
 | 18c+ | v3.2.x (18c+) / v3.1.x | Khuyến nghị; charset `AL32UTF8`. |
 | 12.2 | chỉ v3.1.x | v3.2.x không biên dịch được (`PLS-00222`). `WE8DEC` của image làm mất các ký tự không biểu diễn được (ví dụ `€`); driver mỏng bỏ qua `NLS_LANG`. |
-| 11.2 (11g R2) | v3.1.x only | **Thick mode required** (thin starts at 12.1); coverage via `DBMS_PROFILER`. |
+| 11.2 (11g R2) | v3.1.x only | **Thick mode required** (thin starts at 12.1); coverage via `DBMS_PROFILER`. Instant Client 19c+. |
 
 ## Cấu hình
 
@@ -192,7 +192,7 @@ Test Explorer **ngay khi từng bài kiểm thử hoàn tất**. VSIX đã kèm 
 | `utplsql.oraclePoolIncrement` | `1` | Mức tăng khi mở rộng pool của Oracle runner (node-oracledb). |
 | `utplsql.oraclePoolPingInterval` | `60` | Số giây giữa các lần kiểm tra sức khỏe của các kết nối nhàn rỗi trong pool (node-oracledb). `0` = ping mỗi lần checkout. |
 | `utplsql.oracleClientMode` | `thin` | Chế độ trình điều khiển: `thin` (JavaScript thuần, không cần client gốc) hoặc `thick` (dùng Oracle Instant Client). Chỉ dùng `thick` cho cơ sở dữ liệu yêu cầu NNE (Native Network Encryption); cần `utplsql.oracleClientLibDir` và tải lại cửa sổ. |
-| `utplsql.oracleClientLibDir` | `""` | Thư mục Oracle Instant Client. Bắt buộc khi `utplsql.oracleClientMode` là `thick` (ví dụ `C:\oracle\instantclient_23_5`). |
+| `utplsql.oracleClientLibDir` | `""` | Thư mục Oracle Instant Client. Bắt buộc khi `utplsql.oracleClientMode` là `thick` (ví dụ `C:\oracle\instantclient_23_5`). Fallback: `ORACLE_CLIENT_LIB_DIR`. |
 | Gỡ lỗi không dừng tại breakpoint | Gói không có thông tin gỡ lỗi hoặc thiếu quyền gỡ lỗi | Biên dịch với `PLSQL_OPTIMIZE_LEVEL <= 1` (hoặc `ALTER PACKAGE ... COMPILE DEBUG PLSQL_OPTIMIZE_LEVEL = 1`) và cấp `DEBUG CONNECT SESSION` + `EXECUTE ON SYS.DBMS_DEBUG`. Breakpoint trong `test_*.pkb` có thể không dừng (utPLSQL chạy test bằng SQL động); hãy đặt chúng trong mã đang kiểm thử. |
 | `utplsql.oracleClientConfigDir` | `""` | Thư mục cấu hình Oracle (TNS_ADMIN) chứa `sqlnet.ora`/`tnsnames.ora`. Tùy chọn; chỉ được dùng ở chế độ thick. |
 | `utplsql.connections.tnsAdminPath` | `""` | Thư mục chứa `tnsnames.ora` để **phân giải alias TNS trong driver thin**. Thứ tự: cài đặt này → giá trị user/machine của `sqldeveloper.connections.tnsConfiguration.path` → `TNS_ADMIN`. |
@@ -316,19 +316,19 @@ Tất cả các lệnh của extension (palette `Ctrl+Shift+P` tiền tố `utPL
 | `utPLSQL: New connection profile...` | Wizard tạo và kích hoạt một hồ sơ | — |
 | `utPLSQL: Manage connection profiles` | Mở cài đặt tại `utplsql.profiles` | — |
 | `utPLSQL: Import connections from SQL Developer` | Nhập kết nối từ SQL Developer (connections.xml) | — |
-| `utPLSQL: Debug test (PL/SQL)` | Bắt đầu phiên gỡ lỗi của bài kiểm thử trong tệp đang mở | v3.2.x không biên dịch được (`PLS-00222`). `WE8DEC` của image làm mất các ký tự không biểu diễn được (ví dụ `€`); driver mỏng bỏ qua `NLS_LANG`. |
+| `utPLSQL: Debug test (PL/SQL)` | Bắt đầu phiên gỡ lỗi của bài kiểm thử trong tệp đang mở | — |
 | `utPLSQL: Tạo lại bộ nhớ đệm chú thích` | Tạo lại bộ nhớ đệm chú thích utPLSQL trong cơ sở dữ liệu và làm mới cây | — |
 | `utPLSQL: Gỡ lỗi bài kiểm thử tại con trỏ` | Bắt đầu phiên gỡ lỗi cho `%test`/`%suite` tại vị trí con trỏ | — |
 | `utPLSQL: Gỡ lỗi các bài kiểm thử thất bại` | Bắt đầu phiên gỡ lỗi cho các bài kiểm thử đã thất bại trong lần chạy gần nhất (QuickPick nếu có nhiều) | — |
 | `utPLSQL: Gỡ lỗi lần chạy cuối` | Bắt đầu phiên gỡ lỗi của lần chạy gần nhất | — |
-| `utPLSQL: Biên dịch để gỡ lỗi` | Biên dịch đối tượng của tệp/thư mục đã chọn với thông tin gỡ lỗi | v3.2.x không biên dịch được (`PLS-00222`). `WE8DEC` của image làm mất các ký tự không biểu diễn được (ví dụ `€`); driver mỏng bỏ qua `NLS_LANG`. |
+| `utPLSQL: Biên dịch để gỡ lỗi` | Biên dịch đối tượng của tệp/thư mục đã chọn với thông tin gỡ lỗi | — |
 | `utPLSQL: Run script` | Runs the script open in the editor against a connection profile | Right-click → script file |
 | `utPLSQL: Run script file` | Runs an Explorer script file (decoded with the profile charset) | Right-click → file |
 | `utPLSQL: Run script folder` | Runs the folder scripts in alphabetical order | Right-click → folder |
 | `utPLSQL: Đặt mật khẩu ví` | Đặt/xóa mật khẩu ví của hồ sơ đang hoạt động (SecretStorage) | — |
 | `utPLSQL: Chạy với reporter (xuất)` | Chạy lựa chọn với reporter đã chọn và ghi đầu ra vào Output/tệp (không đổi kết quả) | Test Explorer → menu do item |
-| `utPLSQL: Tạo bộ kiểm thử…` | tạo `ut_<gói>.pks` với một `%test` cho mỗi thủ tục/hàm từ `.pks`/`.pkb` hoặc đối tượng cơ sở dữ liệu, dùng các tùy chọn `utplsql.generate.*` | v3.2.x không biên dịch được (`PLS-00222`). `WE8DEC` của image làm mất các ký tự không biểu diễn được (ví dụ `€`); driver mỏng bỏ qua `NLS_LANG`. |
-| `utPLSQL: Chạy các bài kiểm thử liên quan` | trong `.pks`/`.pkb`/`.sql` production, chạy các bộ kiểm thử theo quy ước `ut_<đối tượng>` | v3.2.x không biên dịch được (`PLS-00222`). `WE8DEC` của image làm mất các ký tự không biểu diễn được (ví dụ `€`); driver mỏng bỏ qua `NLS_LANG`. |
+| `utPLSQL: Tạo bộ kiểm thử…` | tạo `ut_<gói>.pks` với một `%test` cho mỗi thủ tục/hàm từ `.pks`/`.pkb` hoặc đối tượng cơ sở dữ liệu, dùng các tùy chọn `utplsql.generate.*` | — |
+| `utPLSQL: Chạy các bài kiểm thử liên quan` | trong `.pks`/`.pkb`/`.sql` production, chạy các bộ kiểm thử theo quy ước `ut_<đối tượng>` | — |
 | `utPLSQL: Bật/tắt độ phủ` | Chuyển chế độ độ phủ của phiên (nhấp vào thanh trạng thái). | — |
 | `utPLSQL: Chạy kiểm thử theo thẻ...` | Chạy các suite/bài kiểm thử khớp với thẻ đã chọn (`!tag` loại trừ). | — |
 
@@ -391,6 +391,7 @@ liệt kê ở đây.
 **Độ phủ (luôn luôn)** — bật profiler:
 ```sql
 GRANT EXECUTE ON SYS.DBMS_PROFILER TO <schema_that_runs_the_tests>;
+-- 11g: only DBMS_PROFILER (DBMS_PLSQL_CODE_COVERAGE is 12.2+)
 GRANT EXECUTE ON SYS.DBMS_PLSQL_CODE_COVERAGE TO <schema_that_runs_the_tests>;
 ```
 Không có điều này, kiểm thử vẫn chạy nhưng độ phủ ra **trống**.
@@ -424,7 +425,7 @@ GRANT SELECT ON SYS.DBA_PROCEDURES TO <ut3_owner>;
 |---|---|---|
 | Các suite không xuất hiện | Không có tệp `.pks` được phát hiện | Chạy `utPLSQL: Validate setup` để chẩn đoán |
 | Độ phủ trống | Thiếu `GRANT EXECUTE ON DBMS_PROFILER` | Chạy các grant trong [Yêu cầu cơ sở dữ liệu](#yêu-cầu-cơ-sở-dữ-liệu) hoặc dùng `utPLSQL: Copy coverage grants to clipboard` |
-| Độ phủ trống | Oracle 19c cần thêm grant | `GRANT EXECUTE ON DBMS_PROFILER` + `GRANT EXECUTE ON DBMS_PLSQL_CODE_COVERAGE` |
+| Độ phủ trống | Oracle 12.2+ cần thêm grant | `GRANT EXECUTE ON DBMS_PROFILER` + `GRANT EXECUTE ON DBMS_PLSQL_CODE_COVERAGE` |
 | Lỗi biên dịch không kèm chỉ dẫn | Mã có lỗi cú pháp PL/SQL | Giữ bật `utplsql.compilationDiagnostics.enabled` (mặc định); lỗi từ `ALL_ERRORS` xuất hiện trong bảng Problems sau khi chạy |
 | Lỗi kết nối | Chuỗi sai định dạng hoặc DB không truy cập được | Dùng `utPLSQL: Validate setup` |
 | Hết thời gian khi chạy | Kiểm thử lâu hơn `timeoutMinutes` | Tăng `utplsql.timeoutMinutes` |

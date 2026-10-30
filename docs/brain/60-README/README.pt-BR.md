@@ -115,7 +115,7 @@ A extensão conecta-se diretamente ao banco Oracle via `node-oracledb` (driver t
 |---|---|---|
 | 18c+ | v3.2.x (18c+) / v3.1.x | Recomendado; charset `AL32UTF8`. |
 | 12.2 | apenas v3.1.x | O v3.2.x não compila (`PLS-00222`). O charset `WE8DEC` da imagem perde caracteres não representáveis (ex.: `€`); o driver thin ignora `NLS_LANG`. |
-| 11.2 (11g R2) | v3.1.x only | **Thick mode required** (thin starts at 12.1); coverage via `DBMS_PROFILER`. |
+| 11.2 (11g R2) | v3.1.x only | **Thick mode required** (thin starts at 12.1); coverage via `DBMS_PROFILER`. Instant Client 19c+. |
 
 ## Conexão
 
@@ -203,7 +203,7 @@ Test Explorer **conforme cada teste termina**.
 | `utplsql.oraclePoolIncrement` | `1` | Incremento ao expandir o pool do Oracle runner (node-oracledb). |
 | `utplsql.oraclePoolPingInterval` | `60` | Segundos entre health checks das conexões ociosas do pool (node-oracledb). `0` = ping a cada checkout. |
 | `utplsql.oracleClientMode` | `thin` | Modo do driver: `thin` (JavaScript puro, sem cliente nativo) ou `thick` (usa o Oracle Instant Client). Use `thick` apenas em bancos que exigem NNE (Native Network Encryption); requer `utplsql.oracleClientLibDir` e recarregar a janela. |
-| `utplsql.oracleClientLibDir` | `""` | Diretório do Oracle Instant Client. Obrigatório quando `utplsql.oracleClientMode` é `thick` (ex.: `C:\oracle\instantclient_23_5`). |
+| `utplsql.oracleClientLibDir` | `""` | Diretório do Oracle Instant Client. Obrigatório quando `utplsql.oracleClientMode` é `thick` (ex.: `C:\oracle\instantclient_23_5`). Fallback: `ORACLE_CLIENT_LIB_DIR`. |
 | O debug não para no breakpoint | Package sem debug info ou grants de debug ausentes | Compile com `PLSQL_OPTIMIZE_LEVEL <= 1` (ou `ALTER PACKAGE ... COMPILE DEBUG PLSQL_OPTIMIZE_LEVEL = 1`) e conceda `DEBUG CONNECT SESSION` + `EXECUTE ON SYS.DBMS_DEBUG`. Breakpoints em `test_*.pkb` podem não parar (o utPLSQL executa os testes via SQL dinâmico); coloque-os no código sob teste. |
 | `utplsql.oracleClientConfigDir` | `""` | Diretório de configuração Oracle (TNS_ADMIN) com `sqlnet.ora`/`tnsnames.ora`. Opcional; usado apenas pelo driver thick. |
 | `utplsql.connections.tnsAdminPath` | `""` | Diretório com `tnsnames.ora` para resolver **aliases TNS no driver thin**. Precedência: esta setting → valor user/machine de `sqldeveloper.connections.tnsConfiguration.path` → `TNS_ADMIN`. |
@@ -326,11 +326,11 @@ Todos os comandos da extensão (palette `Ctrl+Shift+P` prefixo `utPLSQL:`):
 | `utPLSQL: Novo perfil de conexão...` | Wizard para criar e ativar um perfil | — |
 | `utPLSQL: Gerenciar perfis de conexão` | Abre settings em `utplsql.profiles` | — |
 | `utPLSQL: Importar conexões do SQL Developer` | Importa conexões do SQL Developer (connections.xml) | — |
-| `utPLSQL: Depurar teste (PL/SQL)` | Inicia sessão de debug do teste sob o arquivo ativo | O v3.2.x não compila (`PLS-00222`). O charset `WE8DEC` da imagem perde caracteres não representáveis (ex.: `€`); o driver thin ignora `NLS_LANG`. |
+| `utPLSQL: Depurar teste (PL/SQL)` | Inicia sessão de debug do teste sob o arquivo ativo | — |
 | `utPLSQL: Depurar teste no cursor` | Inicia uma sessão de depuração do `%test`/`%suite` sob o cursor | — |
 | `utPLSQL: Depurar testes falhos` | Inicia uma sessão de depuração dos testes que falharam na última execução (QuickPick quando houver vários) | — |
 | `utPLSQL: Depurar última execução` | Inicia uma sessão de depuração da última execução | — |
-| `utPLSQL: Compilar para debug` | Compila o objeto do arquivo/pasta selecionado com informação de debug | O v3.2.x não compila (`PLS-00222`). O charset `WE8DEC` da imagem perde caracteres não representáveis (ex.: `€`); o driver thin ignora `NLS_LANG`. |
+| `utPLSQL: Compilar para debug` | Compila o objeto do arquivo/pasta selecionado com informação de debug | — |
 | `utPLSQL: Reconstruir cache de anotações` | Reconstrói o cache de anotações do utPLSQL no banco e atualiza a árvore | — |
 | `utPLSQL: Executar script` | Executa o script aberto no editor contra um perfil de conexão | Clique direito → arquivo de script |
 | `utPLSQL: Executar arquivo de script` | Executa um arquivo de script do Explorer (decodificado no charset do perfil) | Clique direito → arquivo |
@@ -406,6 +406,7 @@ listados aqui.
 **Cobertura** (sempre) — habilita o profiler:
 ```sql
 GRANT EXECUTE ON SYS.DBMS_PROFILER TO <schema_que_roda_os_testes>;
+-- 11g: only DBMS_PROFILER (DBMS_PLSQL_CODE_COVERAGE is 12.2+)
 GRANT EXECUTE ON SYS.DBMS_PLSQL_CODE_COVERAGE TO <schema_que_roda_os_testes>;
 ```
 Sem isso, os testes rodam mas a cobertura sai **vazia**.
@@ -439,7 +440,7 @@ GRANT SELECT ON SYS.DBA_PROCEDURES TO <ut3_owner>;
 |---|---|---|
 | Suites não aparecem | Problema de conexão | Rode `utPLSQL: Validar configuração` para diagnóstico |
 | Cobertura vazia | Falta `GRANT EXECUTE ON DBMS_PROFILER` | Execute grants em [Requisitos](#requisitos-no-banco) ou use `utPLSQL: Copiar grants de cobertura para clipboard` |
-| Cobertura vazia | Oracle 19c exige grants adicionais | `GRANT EXECUTE ON DBMS_PROFILER` + `GRANT EXECUTE ON DBMS_PLSQL_CODE_COVERAGE` |
+| Cobertura vazia | Oracle 12.2+ exige grants adicionais | `GRANT EXECUTE ON DBMS_PROFILER` + `GRANT EXECUTE ON DBMS_PLSQL_CODE_COVERAGE` |
 | Erro de compilação sem indicação | Código com erro de sintaxe PL/SQL | Mantenha `utplsql.compilationDiagnostics.enabled` ativado (padrão); os erros de `ALL_ERRORS` aparecem no Problems Panel após uma execução |
 | Erro de conexão | String malformada ou DB inacessível | Use `utPLSQL: Validar configuração` |
 | Timeout ao executar | Testes demoram mais que `timeoutMinutes` | Aumente `utplsql.timeoutMinutes` |

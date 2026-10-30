@@ -113,7 +113,7 @@ tags: [readme]
 |---|---|---|
 | 18c+ | v3.2.x (18c+) / v3.1.x | Препоръчително; charset `AL32UTF8`. |
 | 12.2 | само v3.1.x | v3.2.x не се компилира (`PLS-00222`). `WE8DEC` на образа губи непредставими символи (напр. `€`); thin драйверът игнорира `NLS_LANG`. |
-| 11.2 (11g R2) | v3.1.x only | **Thick mode required** (thin starts at 12.1); coverage via `DBMS_PROFILER`. |
+| 11.2 (11g R2) | v3.1.x only | **Thick mode required** (thin starts at 12.1); coverage via `DBMS_PROFILER`. Instant Client 19c+. |
 - **VSCode 1.101+** (Node 22).
 
 Разширението е само „графичният клиент" — тестовете се изпълняват от базата данни директно чрез node-oracledb.
@@ -202,7 +202,7 @@ Test Explorer **с приключването на всеки тест**.
 | `utplsql.oraclePoolIncrement` | `1` | Увеличение при разширяване на пула на Oracle runner (node-oracledb). |
 | `utplsql.oraclePoolPingInterval` | `60` | Секунди между проверките за здраве на неактивните връзки в пула (node-oracledb). `0` = ping при всяко извличане. |
 | `utplsql.oracleClientMode` | `thin` | Режим на драйвера: `thin` (чист JavaScript, без нативен клиент) или `thick` (използва Oracle Instant Client). Използвайте `thick` само за бази, които изискват NNE (Native Network Encryption); изисква `utplsql.oracleClientLibDir` и презареждане на прозореца. |
-| `utplsql.oracleClientLibDir` | `""` | Директория на Oracle Instant Client. Задължителна, когато `utplsql.oracleClientMode` е `thick` (напр. `C:\oracle\instantclient_23_5`). |
+| `utplsql.oracleClientLibDir` | `""` | Директория на Oracle Instant Client. Задължителна, когато `utplsql.oracleClientMode` е `thick` (напр. `C:\oracle\instantclient_23_5`). Fallback: `ORACLE_CLIENT_LIB_DIR`. |
 | Дебъгът не спира на точката на прекъсване | Пакет без debug информация или липсващи debug привилегии | Компилирайте с `PLSQL_OPTIMIZE_LEVEL <= 1` (или `ALTER PACKAGE ... COMPILE DEBUG PLSQL_OPTIMIZE_LEVEL = 1`) и дайте `DEBUG CONNECT SESSION` + `EXECUTE ON SYS.DBMS_DEBUG`. Точките на прекъсване в `test_*.pkb` може да не се задействат (utPLSQL изпълнява тестовете чрез динамичен SQL); поставете ги в тествания код. |
 | `utplsql.oracleClientConfigDir` | `""` | Конфигурационна директория на Oracle (TNS_ADMIN) със `sqlnet.ora`/`tnsnames.ora`. Незадължителна; използва се само от thick режима. |
 | `utplsql.connections.tnsAdminPath` | `""` | Директория с `tnsnames.ora` за **TNS псевдоними в thin драйвера**. Ред: тази настройка → user/machine стойност на `sqldeveloper.connections.tnsConfiguration.path` → `TNS_ADMIN`. |
@@ -326,19 +326,19 @@ UTPLSQL_CONN=your_user/password@//host:1521/service
 | `utPLSQL: New connection profile...` | Съветник за създаване и активиране на профил | — |
 | `utPLSQL: Manage connection profiles` | Отваря настройките на `utplsql.profiles` | — |
 | `utPLSQL: Import connections from SQL Developer` | Импортира връзки от SQL Developer (connections.xml) | — |
-| `utPLSQL: Debug test (PL/SQL)` | Стартира дебъг сесия на теста под активния файл | v3.2.x не се компилира (`PLS-00222`). `WE8DEC` на образа губи непредставими символи (напр. `€`); thin драйверът игнорира `NLS_LANG`. |
+| `utPLSQL: Debug test (PL/SQL)` | Стартира дебъг сесия на теста под активния файл | — |
 | `utPLSQL: Възстановяване на кеша с анотации` | Възстановява кеша с анотации на utPLSQL в базата и обновява дървото | — |
 | `utPLSQL: Дебъгване на теста под курсора` | Стартира сесия за отстраняване на грешки на `%test`/`%suite` под курсора | — |
 | `utPLSQL: Дебъгване на неуспешните тестове` | Стартира сесия за отстраняване на грешки на тестовете, които се провалиха в последното изпълнение (QuickPick при няколко) | — |
 | `utPLSQL: Дебъгване на последното изпълнение` | Стартира сесия за отстраняване на грешки на последното изпълнение | — |
-| `utPLSQL: Компилиране за отстраняване на грешки` | Компилира обекта на избрания файл/папка с информация за отстраняване на грешки | v3.2.x не се компилира (`PLS-00222`). `WE8DEC` на образа губи непредставими символи (напр. `€`); thin драйверът игнорира `NLS_LANG`. |
+| `utPLSQL: Компилиране за отстраняване на грешки` | Компилира обекта на избрания файл/папка с информация за отстраняване на грешки | — |
 | `utPLSQL: Run script` | Runs the script open in the editor against a connection profile | Right-click → script file |
 | `utPLSQL: Run script file` | Runs an Explorer script file (decoded with the profile charset) | Right-click → file |
 | `utPLSQL: Run script folder` | Runs the folder scripts in alphabetical order | Right-click → folder |
 | `utPLSQL: Задаване на парола на портфейла` | Задава/изчиства паролата на портфейла на активния профил (SecretStorage) | — |
 | `utPLSQL: Изпълни с reporter (експорт)` | Изпълнява селекцията с избран reporter и записва изхода в Output/файл (без промяна на резултатите) | Test Explorer → menu do item |
-| `utPLSQL: Генериране на тестов пакет…` | генерира `ut_<пакет>.pks` с един `%test` на процедура/функция от `.pks`/`.pkb` или обект от базата данни, с опциите `utplsql.generate.*` | v3.2.x не се компилира (`PLS-00222`). `WE8DEC` на образа губи непредставими символи (напр. `€`); thin драйверът игнорира `NLS_LANG`. |
-| `utPLSQL: Изпълни свързаните тестове` | в продукционен `.pks`/`.pkb`/`.sql` изпълнява пакетите по конвенцията `ut_<обект>` | v3.2.x не се компилира (`PLS-00222`). `WE8DEC` на образа губи непредставими символи (напр. `€`); thin драйверът игнорира `NLS_LANG`. |
+| `utPLSQL: Генериране на тестов пакет…` | генерира `ut_<пакет>.pks` с един `%test` на процедура/функция от `.pks`/`.pkb` или обект от базата данни, с опциите `utplsql.generate.*` | — |
+| `utPLSQL: Изпълни свързаните тестове` | в продукционен `.pks`/`.pkb`/`.sql` изпълнява пакетите по конвенцията `ut_<обект>` | — |
 | `utPLSQL: Превключване на покритието` | Превключва режима на покритие на сесията (клик върху лентата на състоянието). | — |
 | `utPLSQL: Изпълни тестове по таг...` | Изпълнява suite/тестовете, отговарящи на избраните тагове (`!tag` изключва). | — |
 
@@ -403,6 +403,7 @@ reporter се запазва в сесията и се **прилага при �
 **Покритие** (винаги) — активира profiler-а:
 ```sql
 GRANT EXECUTE ON SYS.DBMS_PROFILER TO <schema_that_runs_the_tests>;
+-- 11g: only DBMS_PROFILER (DBMS_PLSQL_CODE_COVERAGE is 12.2+)
 GRANT EXECUTE ON SYS.DBMS_PLSQL_CODE_COVERAGE TO <schema_that_runs_the_tests>;
 ```
 Без това тестовете се изпълняват, но покритието излиза **празно**.
@@ -435,7 +436,7 @@ GRANT SELECT ON SYS.DBA_PROCEDURES TO <ut3_owner>;
 | Симптом | Вероятна причина | Решение |
 |---|---|---|
 | Празно покритие | Липсва `GRANT EXECUTE ON DBMS_PROFILER` | Изпълнете привилегиите от [Изисквания към базата данни](#изисквания-към-базата-данни) или използвайте `utPLSQL: Copy coverage grants to clipboard` |
-| Празно покритие | Oracle 19c изисква допълнителни привилегии | `GRANT EXECUTE ON DBMS_PROFILER` + `GRANT EXECUTE ON DBMS_PLSQL_CODE_COVERAGE` |
+| Празно покритие | Oracle 12.2+ изисква допълнителни привилегии | `GRANT EXECUTE ON DBMS_PROFILER` + `GRANT EXECUTE ON DBMS_PLSQL_CODE_COVERAGE` |
 | Грешка при компилация без индикация | Код с PL/SQL синтактична грешка | Оставете `utplsql.compilationDiagnostics.enabled` включен (по подразбиране); грешките от `ALL_ERRORS` се появяват в панела „Проблеми" след изпълнение |
 | Грешка при връзка | Невалиден низ или недостъпна БД | Използвайте `utPLSQL: Validate setup` |
 | `%suite` не се разпознава | Липсва `%suite`/`create package` във файла, или `%test` без `PROCEDURE` | Проверете спецификацията; изпълнете `utPLSQL: Refresh tests` |

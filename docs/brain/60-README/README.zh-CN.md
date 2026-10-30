@@ -113,7 +113,7 @@ tags: [readme]
 |---|---|---|
 | 18c+ | v3.2.x (18c+) / v3.1.x | 推荐；charset 为 `AL32UTF8`。 |
 | 12.2 | 仅 v3.1.x | v3.2.x 无法编译（`PLS-00222`）。镜像的 `WE8DEC` 会丢失无法表示的字符（例如 `€`）；精简驱动忽略 `NLS_LANG`。 |
-| 11.2 (11g R2) | v3.1.x only | **Thick mode required** (thin starts at 12.1); coverage via `DBMS_PROFILER`. |
+| 11.2 (11g R2) | v3.1.x only | **Thick mode required** (thin starts at 12.1); coverage via `DBMS_PROFILER`. Instant Client 19c+. |
 - **VSCode 1.101+** (Node 22).
 
 扩展只是"图形客户端" — 真正运行测试的是数据库，通过 node-oracledb 直连。
@@ -201,7 +201,7 @@ Test Explorer 中。
 | `utplsql.oraclePoolIncrement` | `1` | 扩展 Oracle runner 池（node-oracledb）时的增量。 |
 | `utplsql.oraclePoolPingInterval` | `60` | 空闲池连接健康检查之间的秒数（node-oracledb）。`0` = 每次签出时 ping。 |
 | `utplsql.oracleClientMode` | `thin` | 驱动程序模式：`thin`（纯 JavaScript，无需本机客户端）或 `thick`（使用 Oracle Instant Client）。仅在需要 NNE（原生网络加密）的数据库上使用 `thick`；需要 `utplsql.oracleClientLibDir` 并重新加载窗口。 |
-| `utplsql.oracleClientLibDir` | `""` | Oracle Instant Client 目录。当 `utplsql.oracleClientMode` 为 `thick` 时必填（例如 `C:\oracle\instantclient_23_5`）。 |
+| `utplsql.oracleClientLibDir` | `""` | Oracle Instant Client 目录。当 `utplsql.oracleClientMode` 为 `thick` 时必填（例如 `C:\oracle\instantclient_23_5`）。 Fallback: `ORACLE_CLIENT_LIB_DIR`. |
 | 调试不在断点处停止 | 包编译时没有调试信息，或缺少调试授权 | 使用 `PLSQL_OPTIMIZE_LEVEL <= 1` 编译（或 `ALTER PACKAGE ... COMPILE DEBUG`），并授予 `DEBUG CONNECT SESSION` + `EXECUTE ON SYS.DBMS_DEBUG`. `test_*.pkb` 中的断点可能不会命中（utPLSQL 通过动态 SQL 运行测试）；请将断点设在被测代码中。 |
 | `utplsql.oracleClientConfigDir` | `""` | 包含 `sqlnet.ora`/`tnsnames.ora` 的 Oracle 配置目录（TNS_ADMIN）。可选；仅 thick 模式使用。 |
 | `utplsql.connections.tnsAdminPath` | `""` | 包含 `tnsnames.ora` 的目录，用于在 **thin 驱动中解析 TNS 别名**。顺序：此设置 → `sqldeveloper.connections.tnsConfiguration.path` 的用户/机器值 → `TNS_ADMIN`。 |
@@ -323,19 +323,19 @@ UTPLSQL_CONN=your_user/password@//host:1521/service
 | `utPLSQL: New connection profile...` | 创建并激活配置的向导 | — |
 | `utPLSQL: Manage connection profiles` | 打开 `utplsql.profiles` 的设置 | — |
 | `utPLSQL: Import connections from SQL Developer` | 从 SQL Developer（connections.xml）导入连接 | — |
-| `utPLSQL: Debug test (PL/SQL)` | 为活动文件下的测试启动调试会话 | v3.2.x 无法编译（`PLS-00222`）。镜像的 `WE8DEC` 会丢失无法表示的字符（例如 `€`）；精简驱动忽略 `NLS_LANG`。 |
+| `utPLSQL: Debug test (PL/SQL)` | 为活动文件下的测试启动调试会话 | — |
 | `utPLSQL: 重建注释缓存` | 重建数据库中的 utPLSQL 注释缓存并刷新树 | — |
 | `utPLSQL: 在光标处调试测试` | 启动对光标处 `%test`/`%suite` 的调试会话 | — |
 | `utPLSQL: 调试失败的测试` | 启动对上次运行中失败测试的调试会话（多个时弹出 QuickPick） | — |
 | `utPLSQL: 调试上次运行` | 启动对上次运行的调试会话 | — |
-| `utPLSQL: 编译以进行调试` | 使用调试信息编译所选文件/文件夹的对象 | v3.2.x 无法编译（`PLS-00222`）。镜像的 `WE8DEC` 会丢失无法表示的字符（例如 `€`）；精简驱动忽略 `NLS_LANG`。 |
+| `utPLSQL: 编译以进行调试` | 使用调试信息编译所选文件/文件夹的对象 | — |
 | `utPLSQL: Run script` | Runs the script open in the editor against a connection profile | Right-click → script file |
 | `utPLSQL: Run script file` | Runs an Explorer script file (decoded with the profile charset) | Right-click → file |
 | `utPLSQL: Run script folder` | Runs the folder scripts in alphabetical order | Right-click → folder |
 | `utPLSQL: 设置钱包密码` | 设置/清除活动配置的 Oracle Cloud 钱包密码（SecretStorage） | — |
 | `utPLSQL: 使用 reporter 运行（导出）` | 使用所选 reporter 运行选择并将输出写入 Output/文件（不改变结果） | Test Explorer → menu do item |
-| `utPLSQL: 生成测试套件…` | 从 `.pks`/`.pkb` 或数据库对象生成 `ut_<包名>.pks`，每个例程一个 `%test`，使用 `utplsql.generate.*` 选项。 | v3.2.x 无法编译（`PLS-00222`）。镜像的 `WE8DEC` 会丢失无法表示的字符（例如 `€`）；精简驱动忽略 `NLS_LANG`。 |
-| `utPLSQL: 运行相关测试` | 在生产 `.pks`/`.pkb`/`.sql` 中，按 `ut_<对象>` 约定运行套件（`Ctrl+Shift+U Shift+R`）。 | v3.2.x 无法编译（`PLS-00222`）。镜像的 `WE8DEC` 会丢失无法表示的字符（例如 `€`）；精简驱动忽略 `NLS_LANG`。 |
+| `utPLSQL: 生成测试套件…` | 从 `.pks`/`.pkb` 或数据库对象生成 `ut_<包名>.pks`，每个例程一个 `%test`，使用 `utplsql.generate.*` 选项。 | — |
+| `utPLSQL: 运行相关测试` | 在生产 `.pks`/`.pkb`/`.sql` 中，按 `ut_<对象>` 约定运行套件（`Ctrl+Shift+U Shift+R`）。 | — |
 | `utPLSQL: 切换覆盖率` | 切换会话覆盖率模式（点击状态栏项）。 | — |
 | `utPLSQL: 按标签运行测试...` | 运行与所选标签匹配的套件/测试（`!tag` 表示排除）。 | — |
 
@@ -399,6 +399,7 @@ utPLSQL），覆盖率会被跳过并在输出中显示警告。测试执行
 **覆盖率**（始终）— 启用剖析器：
 ```sql
 GRANT EXECUTE ON SYS.DBMS_PROFILER TO <schema_that_runs_the_tests>;
+-- 11g: only DBMS_PROFILER (DBMS_PLSQL_CODE_COVERAGE is 12.2+)
 GRANT EXECUTE ON SYS.DBMS_PLSQL_CODE_COVERAGE TO <schema_that_runs_the_tests>;
 ```
 没有这些，测试可以运行，但覆盖率会是**空的**。
@@ -432,7 +433,7 @@ GRANT SELECT ON SYS.DBA_PROCEDURES TO <ut3_owner>;
 |---|---|---|
 | 套件不显示 | 未找到数据库 | 运行 `utPLSQL: Validate setup` 进行诊断 |
 | 覆盖率空 | 缺少 `GRANT EXECUTE ON DBMS_PROFILER` | 在 [数据库要求](#数据库要求) 中运行授权，或使用 `utPLSQL: Copy coverage grants to clipboard` |
-| 覆盖率空 | Oracle 19c 需要额外授权 | `GRANT EXECUTE ON DBMS_PROFILER` + `GRANT EXECUTE ON DBMS_PLSQL_CODE_COVERAGE` |
+| 覆盖率空 | Oracle 12.2+ 需要额外授权 | `GRANT EXECUTE ON DBMS_PROFILER` + `GRANT EXECUTE ON DBMS_PLSQL_CODE_COVERAGE` |
 | 编译错误无提示 | 代码有 PL/SQL 语法错误 | 保持 `utplsql.compilationDiagnostics.enabled` 开启（默认）；运行后，来自 `ALL_ERRORS` 的错误会显示在“问题”面板中 |
 | 连接错误 | 字符串格式错误或数据库不可达 | 使用 `utPLSQL: Validate setup` |
 | 运行超时 | 测试耗时超过 `timeoutMinutes` | 增加 `utplsql.timeoutMinutes` |

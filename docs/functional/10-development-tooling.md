@@ -20,6 +20,7 @@ Ferramentas e infraestrutura de desenvolvimento do projeto.
 | `npm run test:integration` | `pretest:integration` (compile + bundle) → `vscode-test` |
 | `npm run test:integration:smoke` | idem, com `.vscode-test.smoke.mjs` (subconjunto rápido) |
 | `npm run test:integration:thick` | idem, com `.vscode-test.thick.mjs` (Instant Client/thick; host sem `UTPLSQL_CONN` → conexão via `UTPLSQL_THICK_CONN`) |
+| `npm run test:integration:thick-full` | idem, com `.vscode-test.thick-full.mjs` (suíte completa em thick; experimental, fora do CI; PRD-125) |
 | `npm run test:integration:multiroot` | idem, com `.vscode-test.multiroot.mjs` (workspace multi-root via `.code-workspace`) |
 | `npm run db:matrix` | `bash scripts/db-matrix/run.sh` — testa contra Oracle 11.2 (11g, **thick-only**), 12.2/18c/19c/21c/23ai local (compose); 11.2 e 12.2 usam utPLSQL `v3.1.14` (piso alternativo, PRD-84/123) |
 | `npm run db:matrix:list` | Lista as versões da matriz |
@@ -118,12 +119,12 @@ extensão normalmente.
 
 ### Coverage atual (aprox. — pode variar por PRD)
 
-| Métrica | Threshold | Atual |
+| Metrics | Threshold | Current |
 |---|---|---|
-| Lines | 97% | 99.6% |
-| Branches | 93% | 94.7% |
-| Functions | 97% | 99.1% |
-| Statements | 97% | 99.6% |
+| Lines | 97% | 97.98% |
+| Branches | 93% | 93.78% |
+| Functions | 97% | 97.77% |
+| Statements | 97% | 97.98% |
 
 ## Testes unitários
 
@@ -131,7 +132,7 @@ extensão normalmente.
 
 ```
 src/test/
-├── unit/                       (34 arquivos .test.ts + setup.ts)
+├── unit/                       (88 arquivos .test.ts + setup.ts)
 │   ├── cobertura / codelens / config / connectionProfiles / coverage
 │   ├── dbSourceProvider / dbmsDebug / debounce / debugger / decorations
 │   ├── discovery / i18n / junit / logger / matching / oracleClient / oracleRunner
@@ -140,10 +141,11 @@ src/test/
 │   ├── scriptRunner / selectReporterCommand / state / statusBar / suiteParser
 │   ├── testTree / viewCoverage
 │   └── setup.ts
-├── integration/                (extension host; banco via describeDB)
+├── integration/                (27 arquivos .test.ts; banco via describeDB)
 │   ├── extension.test.ts
 │   ├── dbPaths / schemaRun / debuggerE2E / debuggerStandaloneFn
 │   ├── thickMode / oracleCapabilities / prd70-sqlplus / v012-features / helpers.ts
+│   ├── ... (demais features/e2e)
 │   └── fixtures/
 └── vscode-stub.ts              (mock da API vscode)
 ```

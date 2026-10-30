@@ -22,26 +22,32 @@ with all features.
 |---|---|---|---|
 | 18c+ | v3.2.x / v3.1.x | `AL32UTF8` | Recommended. |
 | 12.2 | **v3.1.x only** | prefer `AL32UTF8` | v3.2.x fails to compile (`PLS-00222`). Legacy `WE8DEC` loses non-representable chars. |
-| 11.2 (11g R2) | **v3.1.x only** | prefer `AL32UTF8` | **Thick mode required** (thin starts at 12.1); coverage via `DBMS_PROFILER`. |
+| 11.2 (11g R2) | **v3.1.x only** | prefer `AL32UTF8` | **Thick mode required** (thin starts at 12.1; Instant Client **19c+**); coverage via `DBMS_PROFILER`. |
 
 > The thin driver uses **always `AL32UTF8`** and ignores `NLS_LANG`; the server
 > converts to the database character set. On a `WE8DEC` database, `€` becomes
 > `¿` and the extension cannot fix it client-side.
 
-## Coverage (always)
+## Coverage
 
 Enables the profiler for the schema that runs the tests:
 
 ```sql
+-- 12.2+ (also 19c/23ai)
 GRANT EXECUTE ON SYS.DBMS_PROFILER TO <schema_that_runs_the_tests>;
 GRANT EXECUTE ON SYS.DBMS_PLSQL_CODE_COVERAGE TO <schema_that_runs_the_tests>;
+-- 11.2 (11g): only DBMS_PROFILER (DBMS_PLSQL_CODE_COVERAGE is 12.2+)
 ```
 
 Without these grants, tests will run but coverage will come back **empty** (0%).
 
-> Keep **both** grants: coverage uses `DBMS_PROFILER` and, on Oracle 19c+,
-> also `DBMS_PLSQL_CODE_COVERAGE`. The `Copy coverage grants to clipboard`
-> command copies both statements.
+> On Oracle **11.2 (11g)** grant only `DBMS_PROFILER`;
+> `DBMS_PLSQL_CODE_COVERAGE` was introduced in **12.2**. The
+> `Copy coverage grants to clipboard` command copies both statements — ignore
+> the second one on 11g.
+
+> Thick mode requires Oracle Instant Client **19c+** (node-oracledb 7); the 11g
+> axis uses Instant Client 23.0 in the matrix.
 
 ## Test discovery in OTHER schemas
 

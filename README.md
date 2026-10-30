@@ -106,7 +106,10 @@ The extension connects directly to the Oracle database via `node-oracledb` (thin
 |---|---|---|
 | 18c+ | v3.2.x (18c+) / v3.1.x | Recommended; `AL32UTF8` character set. |
 | 12.2 | v3.1.x only | v3.2.x fails to compile (`PLS-00222` on `UT_ANNOTATION_MANAGER`). The image's `WE8DEC` character set loses non-representable characters (e.g. `€`) — the thin driver ignores `NLS_LANG`. |
-| 11.2 (11g R2) | v3.1.x only | **Thick mode required** (thin starts at 12.1); coverage via `DBMS_PROFILER`. |
+| 11.2 (11g R2) | v3.1.x only | **Thick mode required** (thin starts at 12.1; Instant Client **19c+**); coverage via `DBMS_PROFILER`. |
+
+Thick mode requires Oracle Instant Client **19c+** (node-oracledb 7); the 11g
+axis in the matrix uses Instant Client 23.0.
 
 ## Connection
 
@@ -448,10 +451,12 @@ chosen reporter is stored in the session and **applied to the next run**
 
 ## Database requirements
 
-**Coverage** (always) — enables the profiler:
+**Coverage** — enables the profiler:
 ```sql
+-- 12.2+ (also 19c/23ai)
 GRANT EXECUTE ON SYS.DBMS_PROFILER TO <schema_that_runs_the_tests>;
 GRANT EXECUTE ON SYS.DBMS_PLSQL_CODE_COVERAGE TO <schema_that_runs_the_tests>;
+-- 11.2 (11g): only DBMS_PROFILER (DBMS_PLSQL_CODE_COVERAGE is 12.2+)
 ```
 Without this, tests run but coverage comes out **empty**.
 
@@ -484,7 +489,7 @@ GRANT SELECT ON SYS.DBA_PROCEDURES TO <ut3_owner>;
 |---|---|---|
 | Suites don't appear | Connection issue | Run `utPLSQL: Validate setup` for diagnostics |
 | Empty coverage | Missing `GRANT EXECUTE ON DBMS_PROFILER` | Run the grants in [Requirements](#database-requirements) or use `utPLSQL: Copy coverage grants to clipboard` |
-| Empty coverage | Oracle 19c requires additional grants | `GRANT EXECUTE ON DBMS_PROFILER` + `GRANT EXECUTE ON DBMS_PLSQL_CODE_COVERAGE` |
+| Empty coverage | Oracle 12.2+ requires additional grants | `GRANT EXECUTE ON DBMS_PROFILER` + `GRANT EXECUTE ON DBMS_PLSQL_CODE_COVERAGE` (11g: only `DBMS_PROFILER`) |
 | Compilation error with no indication | Code with PL/SQL syntax error | Keep `utplsql.compilationDiagnostics.enabled` on (default); errors from `ALL_ERRORS` appear in the Problems Panel after a run |
 | Connection error | Malformed string or unreachable DB | Use `utPLSQL: Validate setup` |
 | Connection error / `ORA-12660` / `NJS-500` | Database requires NNE (Native Network Encryption), unsupported by the thin driver | Set `utplsql.oracleClientMode` to `thick` and `utplsql.oracleClientLibDir` to your Oracle Instant Client, then reload the window |

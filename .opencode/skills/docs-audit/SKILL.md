@@ -65,5 +65,6 @@ afirmam/omitem/contradizem o comportamento real do código.
 
 - O subagente é **read-only**: ele reporta, você corrige.
 - Não duplique o `docs:fidelity` — reporte só o que ele não pega.
-- `docs/brain/` e `docs/linkedin/` são locais (gitignored): fora da auditoria
+- `docs/brain/` é **versionado** e é a fonte canônica do texto humano (em
+  escopo); `docs/linkedin/` é local (gitignored) e fica fora da auditoria.
   versionada (o LinkedIn tem o skill próprio).

@@ -104,7 +104,7 @@ Ekstensi dapat diinstal dengan dua cara:
 |---|---|---|
 | 18c+ | v3.2.x (18c+) / v3.1.x | Disarankan; charset `AL32UTF8`. |
 | 12.2 | hanya v3.1.x | v3.2.x tidak dapat dikompilasi (`PLS-00222`). `WE8DEC` pada image kehilangan karakter yang tidak dapat direpresentasikan (mis. `€`); driver tipis mengabaikan `NLS_LANG`. |
-| 11.2 (11g R2) | v3.1.x only | **Thick mode required** (thin starts at 12.1); coverage via `DBMS_PROFILER`. |
+| 11.2 (11g R2) | v3.1.x only | **Thick mode required** (thin starts at 12.1); coverage via `DBMS_PROFILER`. Instant Client 19c+. |
 - **VSCode 1.101+** (Node 22).
 
 Ekstensi hanyalah "klien grafis" — yang menjalankan pengujian adalah database langsung via node-oracledb.
@@ -193,7 +193,7 @@ Ekstensi terhubung langsung ke Oracle, membaca laporan (JUnit + Coverage) lalu m
 | `utplsql.oraclePoolIncrement` | `1` | Kenaikan saat memperluas pool runner Oracle (node-oracledb). |
 | `utplsql.oraclePoolPingInterval` | `60` | Detik antara pemeriksaan kesehatan koneksi idle di pool (node-oracledb). `0` = ping pada setiap checkout. |
 | `utplsql.oracleClientMode` | `thin` | Mode driver: `thin` (JavaScript murni, tanpa klien native) atau `thick` (memakai Oracle Instant Client). Gunakan `thick` hanya untuk database yang memerlukan NNE (Native Network Encryption); perlu `utplsql.oracleClientLibDir` dan memuat ulang jendela. |
-| `utplsql.oracleClientLibDir` | `""` | Direktori Oracle Instant Client. Wajib saat `utplsql.oracleClientMode` bernilai `thick` (mis. `C:\oracle\instantclient_23_5`). |
+| `utplsql.oracleClientLibDir` | `""` | Direktori Oracle Instant Client. Wajib saat `utplsql.oracleClientMode` bernilai `thick` (mis. `C:\oracle\instantclient_23_5`). Fallback: `ORACLE_CLIENT_LIB_DIR`. |
 | Debug tidak berhenti di breakpoint | Paket tanpa info debug atau grant debug tidak ada | Kompilasi dengan `PLSQL_OPTIMIZE_LEVEL <= 1` (atau `ALTER PACKAGE ... COMPILE DEBUG PLSQL_OPTIMIZE_LEVEL = 1`) dan berikan `DEBUG CONNECT SESSION` + `EXECUTE ON SYS.DBMS_DEBUG`. Breakpoint di `test_*.pkb` mungkin tidak berhenti (utPLSQL menjalankan test via SQL dinamis); pasang di kode yang diuji. |
 | `utplsql.oracleClientConfigDir` | `""` | Direktori konfigurasi Oracle (TNS_ADMIN) berisi `sqlnet.ora`/`tnsnames.ora`. Opsional; hanya dipakai oleh mode thick. |
 | `utplsql.connections.tnsAdminPath` | `""` | Direktori dengan `tnsnames.ora` untuk **menyelesaikan alias TNS di driver thin**. Urutan: setelan ini → nilai user/machine `sqldeveloper.connections.tnsConfiguration.path` → `TNS_ADMIN`. |
@@ -317,19 +317,19 @@ Semua perintah ekstensi (palet `Ctrl+Shift+P`, prefiks `utPLSQL:`):
 | `utPLSQL: New connection profile...` | Wizard untuk membuat dan mengaktifkan profil | — |
 | `utPLSQL: Manage connection profiles` | Membuka pengaturan di `utplsql.profiles` | — |
 | `utPLSQL: Import connections from SQL Developer` | Mengimpor koneksi dari SQL Developer (connections.xml) | — |
-| `utPLSQL: Debug test (PL/SQL)` | Memulai sesi debug untuk pengujian di bawah file aktif | v3.2.x tidak dapat dikompilasi (`PLS-00222`). `WE8DEC` pada image kehilangan karakter yang tidak dapat direpresentasikan (mis. `€`); driver tipis mengabaikan `NLS_LANG`. |
+| `utPLSQL: Debug test (PL/SQL)` | Memulai sesi debug untuk pengujian di bawah file aktif | — |
 | `utPLSQL: Debug tes di kursor` | Memulai sesi debug `%test`/`%suite` di bawah kursor | — |
 | `utPLSQL: Debug tes yang gagal` | Memulai sesi debug pengujian yang gagal pada eksekusi terakhir (QuickPick jika banyak) | — |
 | `utPLSQL: Debug eksekusi terakhir` | Memulai sesi debug eksekusi terakhir | — |
-| `utPLSQL: Kompilasi untuk debug` | Mengompilasi objek file/folder yang dipilih dengan informasi debug | v3.2.x tidak dapat dikompilasi (`PLS-00222`). `WE8DEC` pada image kehilangan karakter yang tidak dapat direpresentasikan (mis. `€`); driver tipis mengabaikan `NLS_LANG`. |
+| `utPLSQL: Kompilasi untuk debug` | Mengompilasi objek file/folder yang dipilih dengan informasi debug | — |
 | `utPLSQL: Bangun ulang cache anotasi` | Membangun ulang cache anotasi utPLSQL di basis data dan menyegarkan pohon | — |
 | `utPLSQL: Run script` | Runs the script open in the editor against a connection profile | Right-click → script file |
 | `utPLSQL: Run script file` | Runs an Explorer script file (decoded with the profile charset) | Right-click → file |
 | `utPLSQL: Run script folder` | Runs the folder scripts in alphabetical order | Right-click → folder |
 | `utPLSQL: Atur kata sandi wallet` | Mengatur/menghapus kata sandi wallet profil aktif (SecretStorage) | — |
 | `utPLSQL: Jalankan dengan reporter (ekspor)` | Menjalankan pilihan dengan reporter terpilih dan menulis output ke Output/file (tidak mengubah hasil) | Test Explorer → menu do item |
-| `utPLSQL: Buat rangkaian pengujian…` | menghasilkan `ut_<paket>.pks` dengan satu `%test` per rutin dari `.pks`/`.pkb` atau objek basis data, dengan opsi `utplsql.generate.*` | v3.2.x tidak dapat dikompilasi (`PLS-00222`). `WE8DEC` pada image kehilangan karakter yang tidak dapat direpresentasikan (mis. `€`); driver tipis mengabaikan `NLS_LANG`. |
-| `utPLSQL: Jalankan pengujian terkait` | pada `.pks`/`.pkb`/`.sql` produksi, menjalankan rangkaian sesuai konvensi `ut_<objek>` | v3.2.x tidak dapat dikompilasi (`PLS-00222`). `WE8DEC` pada image kehilangan karakter yang tidak dapat direpresentasikan (mis. `€`); driver tipis mengabaikan `NLS_LANG`. |
+| `utPLSQL: Buat rangkaian pengujian…` | menghasilkan `ut_<paket>.pks` dengan satu `%test` per rutin dari `.pks`/`.pkb` atau objek basis data, dengan opsi `utplsql.generate.*` | — |
+| `utPLSQL: Jalankan pengujian terkait` | pada `.pks`/`.pkb`/`.sql` produksi, menjalankan rangkaian sesuai konvensi `ut_<objek>` | — |
 | `utPLSQL: Alihkan cakupan` | Mengalihkan mode cakupan sesi (klik item status bar). | — |
 | `utPLSQL: Jalankan tes berdasarkan tag...` | Menjalankan suite/tes yang cocok dengan tag terpilih (`!tag` mengecualikan). | — |
 
@@ -392,6 +392,7 @@ didaftarkan di sini.
 **Coverage** (selalu) — mengaktifkan profiler:
 ```sql
 GRANT EXECUTE ON SYS.DBMS_PROFILER TO <schema_that_runs_the_tests>;
+-- 11g: only DBMS_PROFILER (DBMS_PLSQL_CODE_COVERAGE is 12.2+)
 GRANT EXECUTE ON SYS.DBMS_PLSQL_CODE_COVERAGE TO <schema_that_runs_the_tests>;
 ```
 Tanpa ini, pengujian tetap berjalan tetapi coverage keluar **kosong**.
@@ -424,7 +425,7 @@ GRANT SELECT ON SYS.DBA_PROCEDURES TO <ut3_owner>;
 | Gejala | Kemungkinan penyebab | Solusi |
 |---|---|---|
 | Coverage kosong | `GRANT EXECUTE ON DBMS_PROFILER` tidak ada | Jalankan grant di [Persyaratan basis data](#persyaratan-basis-data) atau gunakan `utPLSQL: Copy coverage grants to clipboard` |
-| Coverage kosong | Oracle 19c memerlukan grant tambahan | `GRANT EXECUTE ON DBMS_PROFILER` + `GRANT EXECUTE ON DBMS_PLSQL_CODE_COVERAGE` |
+| Coverage kosong | Oracle 12.2+ memerlukan grant tambahan | `GRANT EXECUTE ON DBMS_PROFILER` + `GRANT EXECUTE ON DBMS_PLSQL_CODE_COVERAGE` |
 | Error kompilasi tanpa keterangan | Kode dengan error sintaks PL/SQL | Biarkan `utplsql.compilationDiagnostics.enabled` tetap aktif (default); error dari `ALL_ERRORS` muncul di Problems Panel setelah dijalankan |
 | Error koneksi | String tidak valid atau DB tidak dapat dijangkau | Gunakan `utPLSQL: Validate setup` |
 | `%suite` tidak dikenali | Tidak ada `%suite`/`create package` di file, atau `%test` tanpa `PROCEDURE` | Periksa spec; jalankan `utPLSQL: Refresh tests` |

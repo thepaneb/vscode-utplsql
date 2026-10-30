@@ -113,7 +113,7 @@ tags: [readme]
 |---|---|---|
 | 18c+ | v3.2.x (18c+) / v3.1.x | 建議；charset 為 `AL32UTF8`。 |
 | 12.2 | 僅 v3.1.x | v3.2.x 無法編譯（`PLS-00222`）。映像的 `WE8DEC` 會遺失無法表示的字元（例如 `€`）；精簡驅動程式會忽略 `NLS_LANG`。 |
-| 11.2 (11g R2) | v3.1.x only | **Thick mode required** (thin starts at 12.1); coverage via `DBMS_PROFILER`. |
+| 11.2 (11g R2) | v3.1.x only | **Thick mode required** (thin starts at 12.1); coverage via `DBMS_PROFILER`. Instant Client 19c+. |
 - **VSCode 1.101+** (Node 22).
 
 擴充功能只是「圖形化用戶端」— 真正執行測試的是資料庫，透過 node-oracledb 直連。
@@ -201,7 +201,7 @@ Test Explorer 中。
 | `utplsql.oraclePoolIncrement` | `1` | 擴充 Oracle 執行器連線集區（node-oracledb）時的增量。 |
 | `utplsql.oraclePoolPingInterval` | `60` | 閒置集區連線健康檢查之間的秒數（node-oracledb）。`0` = 每次取出連線時皆 ping。 |
 | `utplsql.oracleClientMode` | `thin` | 驅動程式模式：`thin`（純 JavaScript，不需原生用戶端）或 `thick`（使用 Oracle Instant Client）。僅在需要 NNE（原生網路加密）的資料庫上使用 `thick`；需要 `utplsql.oracleClientLibDir` 並重新載入視窗。 |
-| `utplsql.oracleClientLibDir` | `""` | Oracle Instant Client 目錄。當 `utplsql.oracleClientMode` 為 `thick` 時必填（例如 `C:\oracle\instantclient_23_5`）。 |
+| `utplsql.oracleClientLibDir` | `""` | Oracle Instant Client 目錄。當 `utplsql.oracleClientMode` 為 `thick` 時必填（例如 `C:\oracle\instantclient_23_5`）。 Fallback: `ORACLE_CLIENT_LIB_DIR`. |
 | 除錯不會在斷點停下 | 套件編譯時沒有除錯資訊，或缺少除錯授權 | 使用 `PLSQL_OPTIMIZE_LEVEL <= 1` 編譯（或 `ALTER PACKAGE ... COMPILE DEBUG`），並授予 `DEBUG CONNECT SESSION` + `EXECUTE ON SYS.DBMS_DEBUG`. `test_*.pkb` 中的中斷點可能不會命中（utPLSQL 透過動態 SQL 執行測試）；請將中斷點設在被測程式碼中。 |
 | `utplsql.oracleClientConfigDir` | `""` | 包含 `sqlnet.ora`/`tnsnames.ora` 的 Oracle 設定目錄（TNS_ADMIN）。選用；僅 thick 模式使用。 |
 | `utplsql.connections.tnsAdminPath` | `""` | 包含 `tnsnames.ora` 的目錄，用於在 **thin 驅動中解析 TNS 別名**。順序：此設定 → `sqldeveloper.connections.tnsConfiguration.path` 的使用者/機器值 → `TNS_ADMIN`。 |
@@ -324,19 +324,19 @@ UTPLSQL_CONN=your_user/password@//host:1521/service
 | `utPLSQL: New connection profile...` | 建立並啟用設定檔的精靈 | — |
 | `utPLSQL: Manage connection profiles` | 在 `utplsql.profiles` 開啟設定 | — |
 | `utPLSQL: Import connections from SQL Developer` | 從 SQL Developer（connections.xml）匯入連線 | — |
-| `utPLSQL: Debug test (PL/SQL)` | 對作用中檔案下的測試啟動除錯工作階段 | v3.2.x 無法編譯（`PLS-00222`）。映像的 `WE8DEC` 會遺失無法表示的字元（例如 `€`）；精簡驅動程式會忽略 `NLS_LANG`。 |
+| `utPLSQL: Debug test (PL/SQL)` | 對作用中檔案下的測試啟動除錯工作階段 | — |
 | `utPLSQL: 重建註解快取` | 重建資料庫中的 utPLSQL 註解快取並重新整理樹狀結構 | — |
 | `utPLSQL: 在游標處偵錯測試` | 啟動對游標處 `%test`/`%suite` 的偵錯工作階段 | — |
 | `utPLSQL: 偵錯失敗的測試` | 啟動對上次執行中失敗測試的偵錯工作階段（多個時顯示 QuickPick） | — |
 | `utPLSQL: 偵錯上次執行` | 啟動對上次執行的偵錯工作階段 | — |
-| `utPLSQL: 編譯以供偵錯` | 使用偵錯資訊編譯所選檔案/資料夾的物件 | v3.2.x 無法編譯（`PLS-00222`）。映像的 `WE8DEC` 會遺失無法表示的字元（例如 `€`）；精簡驅動程式會忽略 `NLS_LANG`。 |
+| `utPLSQL: 編譯以供偵錯` | 使用偵錯資訊編譯所選檔案/資料夾的物件 | — |
 | `utPLSQL: Run script` | Runs the script open in the editor against a connection profile | Right-click → script file |
 | `utPLSQL: Run script file` | Runs an Explorer script file (decoded with the profile charset) | Right-click → file |
 | `utPLSQL: Run script folder` | Runs the folder scripts in alphabetical order | Right-click → folder |
 | `utPLSQL: 設定錢包密碼` | 設定/清除使用中設定檔的 Oracle Cloud 錢包密碼（SecretStorage） | — |
 | `utPLSQL: 使用 reporter 執行（匯出）` | 使用所選 reporter 執行選取並將輸出寫入 Output/檔案（不改變結果） | Test Explorer → menu do item |
-| `utPLSQL: 產生測試套件…` | 從 `.pks`/`.pkb` 或資料庫物件產生 `ut_<套件>.pks`，每個例行程式一個 `%test`，並使用 `utplsql.generate.*` 選項。 | v3.2.x 無法編譯（`PLS-00222`）。映像的 `WE8DEC` 會遺失無法表示的字元（例如 `€`）；精簡驅動程式會忽略 `NLS_LANG`。 |
-| `utPLSQL: 執行相關測試` | 在生產 `.pks`/`.pkb`/`.sql` 中，依 `ut_<物件>` 慣例執行套件（`Ctrl+Shift+U Shift+R`）。 | v3.2.x 無法編譯（`PLS-00222`）。映像的 `WE8DEC` 會遺失無法表示的字元（例如 `€`）；精簡驅動程式會忽略 `NLS_LANG`。 |
+| `utPLSQL: 產生測試套件…` | 從 `.pks`/`.pkb` 或資料庫物件產生 `ut_<套件>.pks`，每個例行程式一個 `%test`，並使用 `utplsql.generate.*` 選項。 | — |
+| `utPLSQL: 執行相關測試` | 在生產 `.pks`/`.pkb`/`.sql` 中，依 `ut_<物件>` 慣例執行套件（`Ctrl+Shift+U Shift+R`）。 | — |
 | `utPLSQL: 切換覆蓋率` | 切換工作階段覆蓋率模式（點擊狀態列項目）。 | — |
 | `utPLSQL: 依標籤執行測試...` | 執行符合所選標籤的套件/測試（`!tag` 表示排除）。 | — |
 
@@ -400,6 +400,7 @@ UTPLSQL_CONN=your_user/password@//host:1521/service
 **涵蓋率**（一律）— 啟用 profiler：
 ```sql
 GRANT EXECUTE ON SYS.DBMS_PROFILER TO <schema_that_runs_the_tests>;
+-- 11g: only DBMS_PROFILER (DBMS_PLSQL_CODE_COVERAGE is 12.2+)
 GRANT EXECUTE ON SYS.DBMS_PLSQL_CODE_COVERAGE TO <schema_that_runs_the_tests>;
 ```
 若無此項，測試可執行，但涵蓋率會是**空的**。
@@ -433,7 +434,7 @@ GRANT SELECT ON SYS.DBA_PROCEDURES TO <ut3_owner>;
 |---|---|---|
 | 套件不出現 | 找不到資料庫 | 執行 `utPLSQL: Validate setup` 以取得診斷 |
 | 涵蓋率為空 | 缺少 `GRANT EXECUTE ON DBMS_PROFILER` | 在 [資料庫需求](#資料庫需求) 中執行授權，或使用 `utPLSQL: Copy coverage grants to clipboard` |
-| 涵蓋率為空 | Oracle 19c 需要額外授權 | `GRANT EXECUTE ON DBMS_PROFILER` + `GRANT EXECUTE ON DBMS_PLSQL_CODE_COVERAGE` |
+| 涵蓋率為空 | Oracle 12.2+ 需要額外授權 | `GRANT EXECUTE ON DBMS_PROFILER` + `GRANT EXECUTE ON DBMS_PLSQL_CODE_COVERAGE` |
 | 編譯錯誤但無提示 | 含 PL/SQL 語法錯誤的程式碼 | 保持 `utplsql.compilationDiagnostics.enabled` 開啟（預設）；執行後，來自 `ALL_ERRORS` 的錯誤會顯示於「問題」面板中 |
 | 連線錯誤 | 字串格式錯誤或資料庫無法連線 | 使用 `utPLSQL: Validate setup` |
 | 執行時逾時 | 測試耗時超過 `timeoutMinutes` | 增加 `utplsql.timeoutMinutes` |

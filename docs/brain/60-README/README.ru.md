@@ -113,7 +113,7 @@ tags: [readme]
 |---|---|---|
 | 18c+ | v3.2.x (18c+) / v3.1.x | Рекомендуется; charset `AL32UTF8`. |
 | 12.2 | только v3.1.x | v3.2.x не компилируется (`PLS-00222`). `WE8DEC` образа теряет непредставимые символы (например, `€`); тонкий драйвер игнорирует `NLS_LANG`. |
-| 11.2 (11g R2) | v3.1.x only | **Thick mode required** (thin starts at 12.1); coverage via `DBMS_PROFILER`. |
+| 11.2 (11g R2) | v3.1.x only | **Thick mode required** (thin starts at 12.1); coverage via `DBMS_PROFILER`. Instant Client 19c+. |
 - **VSCode 1.101+** (Node 22).
 
 Расширение — это лишь «графический клиент»; тесты выполняет сама база данных: напрямую через node-oracledb.
@@ -202,7 +202,7 @@ Test Explorer **по мере завершения каждого теста**.
 | `utplsql.oraclePoolIncrement` | `1` | Приращение при расширении пула Oracle runner (node-oracledb). |
 | `utplsql.oraclePoolPingInterval` | `60` | Секунды между проверками работоспособности простаивающих подключений пула (node-oracledb). `0` = пинг при каждой выдаче из пула. |
 | `utplsql.oracleClientMode` | `thin` | Режим драйвера: `thin` (чистый JavaScript, без нативного клиента) или `thick` (использует Oracle Instant Client). Используйте `thick` только для баз, требующих NNE (Native Network Encryption); требует `utplsql.oracleClientLibDir` и перезагрузки окна. |
-| `utplsql.oracleClientLibDir` | `""` | Каталог Oracle Instant Client. Обязателен, когда `utplsql.oracleClientMode` имеет значение `thick` (например, `C:\oracle\instantclient_23_5`). |
+| `utplsql.oracleClientLibDir` | `""` | Каталог Oracle Instant Client. Обязателен, когда `utplsql.oracleClientMode` имеет значение `thick` (например, `C:\oracle\instantclient_23_5`). Fallback: `ORACLE_CLIENT_LIB_DIR`. |
 | Отладка не останавливается на точке останова | Пакет без отладочной информации или отсутствуют привилегии отладки | Скомпилируйте с `PLSQL_OPTIMIZE_LEVEL <= 1` (или `ALTER PACKAGE ... COMPILE DEBUG PLSQL_OPTIMIZE_LEVEL = 1`) и выдайте `DEBUG CONNECT SESSION` + `EXECUTE ON SYS.DBMS_DEBUG`. Точки останова в `test_*.pkb` могут не срабатывать (utPLSQL выполняет тесты через динамический SQL); ставьте их в тестируемом коде. |
 | `utplsql.oracleClientConfigDir` | `""` | Каталог конфигурации Oracle (TNS_ADMIN) с `sqlnet.ora`/`tnsnames.ora`. Необязателен; используется только в режиме thick. |
 | `utplsql.connections.tnsAdminPath` | `""` | Каталог с `tnsnames.ora` для разрешения **алиасов TNS в thin-драйвере**. Порядок: эта настройка → user/machine-значение `sqldeveloper.connections.tnsConfiguration.path` → `TNS_ADMIN`. |
@@ -326,19 +326,19 @@ UTPLSQL_CONN=your_user/password@//host:1521/service
 | `utPLSQL: New connection profile...` | Мастер создания и активации профиля | — |
 | `utPLSQL: Manage connection profiles` | Открывает настройки в `utplsql.profiles` | — |
 | `utPLSQL: Import connections from SQL Developer` | Импортирует подключения из SQL Developer (connections.xml) | — |
-| `utPLSQL: Debug test (PL/SQL)` | Запускает сеанс отладки теста в активном файле | v3.2.x не компилируется (`PLS-00222`). `WE8DEC` образа теряет непредставимые символы (например, `€`); тонкий драйвер игнорирует `NLS_LANG`. |
+| `utPLSQL: Debug test (PL/SQL)` | Запускает сеанс отладки теста в активном файле | — |
 | `utPLSQL: Перестроить кэш аннотаций` | Перестраивает кэш аннотаций utPLSQL в базе и обновляет дерево | — |
 | `utPLSQL: Отладка теста под курсором` | Запускает сеанс отладки `%test`/`%suite` под курсором | — |
 | `utPLSQL: Отладка неудачных тестов` | Запускает сеанс отладки тестов, упавших в последнем запуске (QuickPick, если их несколько) | — |
 | `utPLSQL: Отладка последнего запуска` | Запускает сеанс отладки последнего запуска | — |
-| `utPLSQL: Скомпилировать для отладки` | Компилирует объект выбранного файла/папки с отладочной информацией | v3.2.x не компилируется (`PLS-00222`). `WE8DEC` образа теряет непредставимые символы (например, `€`); тонкий драйвер игнорирует `NLS_LANG`. |
+| `utPLSQL: Скомпилировать для отладки` | Компилирует объект выбранного файла/папки с отладочной информацией | — |
 | `utPLSQL: Run script` | Runs the script open in the editor against a connection profile | Right-click → script file |
 | `utPLSQL: Run script file` | Runs an Explorer script file (decoded with the profile charset) | Right-click → file |
 | `utPLSQL: Run script folder` | Runs the folder scripts in alphabetical order | Right-click → folder |
 | `utPLSQL: Задать пароль кошелька` | Задаёт/очищает пароль кошелька активного профиля (SecretStorage) | — |
 | `utPLSQL: Запустить с reporter (экспорт)` | Запускает выбор с выбранным reporter и пишет вывод в Output/файл (не меняет результаты) | Test Explorer → menu do item |
-| `utPLSQL: Создать набор тестов…` | создаёт `ut_<пакет>.pks` с одним `%test` на подпрограмму из `.pks`/`.pkb` или объекта базы данных, с параметрами `utplsql.generate.*` | v3.2.x не компилируется (`PLS-00222`). `WE8DEC` образа теряет непредставимые символы (например, `€`); тонкий драйвер игнорирует `NLS_LANG`. |
-| `utPLSQL: Запустить связанные тесты` | в рабочем `.pks`/`.pkb`/`.sql` запускает наборы по соглашению `ut_<объект>` | v3.2.x не компилируется (`PLS-00222`). `WE8DEC` образа теряет непредставимые символы (например, `€`); тонкий драйвер игнорирует `NLS_LANG`. |
+| `utPLSQL: Создать набор тестов…` | создаёт `ut_<пакет>.pks` с одним `%test` на подпрограмму из `.pks`/`.pkb` или объекта базы данных, с параметрами `utplsql.generate.*` | — |
+| `utPLSQL: Запустить связанные тесты` | в рабочем `.pks`/`.pkb`/`.sql` запускает наборы по соглашению `ut_<объект>` | — |
 | `utPLSQL: Переключить покрытие` | Переключает режим покрытия сеанса (щелчок по строке состояния). | — |
 | `utPLSQL: Запустить тесты по тегу...` | Запускает suites/тесты, соответствующие выбранным тегам (`!tag` исключает). | — |
 
@@ -404,6 +404,7 @@ utPLSQL), покрытие пропускается с предупрежден�
 **Покрытие** (всегда) — включает профилировщик:
 ```sql
 GRANT EXECUTE ON SYS.DBMS_PROFILER TO <schema_that_runs_the_tests>;
+-- 11g: only DBMS_PROFILER (DBMS_PLSQL_CODE_COVERAGE is 12.2+)
 GRANT EXECUTE ON SYS.DBMS_PLSQL_CODE_COVERAGE TO <schema_that_runs_the_tests>;
 ```
 Без этого тесты выполняются, но покрытие получается **пустым**.
@@ -437,7 +438,7 @@ GRANT SELECT ON SYS.DBA_PROCEDURES TO <ut3_owner>;
 |---|---|---|
 | Наборы не отображаются | База данных не найдена | Выполните `utPLSQL: Validate setup` для диагностики |
 | Пустое покрытие | Отсутствует `GRANT EXECUTE ON DBMS_PROFILER` | Выполните привилегии из [Требования к базе данных](#требования-к-базе-данных) или используйте `utPLSQL: Copy coverage grants to clipboard` |
-| Пустое покрытие | Oracle 19c требует дополнительные привилегии | `GRANT EXECUTE ON DBMS_PROFILER` + `GRANT EXECUTE ON DBMS_PLSQL_CODE_COVERAGE` |
+| Пустое покрытие | Oracle 12.2+ требует дополнительные привилегии | `GRANT EXECUTE ON DBMS_PROFILER` + `GRANT EXECUTE ON DBMS_PLSQL_CODE_COVERAGE` |
 | Ошибка компиляции без указания причины | Код с синтаксической ошибкой PL/SQL | Оставьте `utplsql.compilationDiagnostics.enabled` включённым (по умолчанию); ошибки из `ALL_ERRORS` появляются в панели «Проблемы» после выполнения |
 | Ошибка подключения | Некорректная строка или недоступная БД | Используйте `utPLSQL: Validate setup` |
 | Тайм-аут при выполнении | Тесты выполняются дольше, чем `timeoutMinutes` | Увеличьте `utplsql.timeoutMinutes` |

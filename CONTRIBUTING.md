@@ -92,6 +92,7 @@ npm run db:matrix                      # run the whole matrix (one version at a 
 npm run db:matrix -- --only 21xe       # a single version
 npm run db:matrix -- --smoke           # fast subset per version
 npm run db:matrix -- --thick           # thick mode (Instant Client) per version
+npm run db:matrix -- --thick-full      # full suite in thick (experimental; PRD-125)
 npm run db:matrix -- --skip-bootstrap  # volume already prepared: skip utPLSQL/fixtures
 npm run db:matrix -- --clean           # delete the volume and recreate the database from scratch
 npm run db:matrix -- --keep-db --only 23free  # do not tear down the container at the end
@@ -108,11 +109,18 @@ Optional and local. Thick initialization is **global and irreversible** in the e
 
 ```bash
 # point to an Oracle Instant Client (Basic/Basic Light) on your machine
+# node-oracledb 7 thick requires Oracle Client 19c+
 export ORACLE_CLIENT_LIB_DIR='C:\oracle\instantclient_23_0'
 npm run test:integration:thick
 ```
 
+The extension itself also falls back to `ORACLE_CLIENT_LIB_DIR` when
+`utplsql.oracleClientLibDir` is empty (useful for CI/containers).
+
 In the matrix: `npm run db:matrix -- --thick` (or `--only <version> --thick`).
+The full suite in thick is experimental: `npm run db:matrix -- --only 23free --thick-full`
+(or `npm run test:integration:thick-full` directly); it excludes the thin-only
+tests and is **not** in CI yet (PRD-125 covers the 11g validation and skips).
 Without `ORACLE_CLIENT_LIB_DIR`, `thickMode.test.ts` is `skip`.
 
 ## Project structure
@@ -161,8 +169,11 @@ npm run docs:check    # consistency + code<->docs fidelity (runs in CI)
 
 ### Commit signing
 
-The `main` branch requires **signed commits**. SSH signing is recommended
-(it reuses the key already used for GitHub authentication):
+The project policy is to require **signed commits** on `main`; **activation is
+pending** (see PRD-118). The current branch protection already requires a PR and
+a review and blocks force-push/deletion, but `required_signatures` is not
+enabled yet. Once it is, SSH signing is recommended (it reuses the key already
+used for GitHub authentication):
 
 ```sh
 git config gpg.format ssh

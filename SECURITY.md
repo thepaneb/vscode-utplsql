@@ -38,7 +38,7 @@ If you identify a problem in any of these areas, it is considered a security vul
 - **Schema identifier validation**: the `UT3.` prefix discovered from `ALL_SYNONYMS.TABLE_OWNER` is validated as an Oracle identifier before any concatenation; an atypical owner is treated as “no prefix” with a sanitized warning (`SEC-014` / `BR-EXEC-017`).
 - **No shell injection/eval in dev scripts**: `create-pr.cjs` validates `--base`/`--head` and uses `execFileSync`; `create-release.cjs` escapes the version in the CHANGELOG regex; `db-matrix/run.sh` runs the test command in an explicit subshell without `eval`.
 - **CI supply chain**: all actions are pinned by commit SHA; workflows declare least-privilege `permissions:`; Dependabot updates `npm`/`github-actions` weekly; CI gates production dependencies with `npm audit --omit=dev --audit-level=high`; the wiki token is never in the clone URL (`BR-PLAT-002`).
-- **Verifiable governance**: the OSSF Scorecard is published weekly (`publish_results: true`) and the `main` branch requires PRs, checks and signed commits, with no force-push/deletion (`BR-PLAT-003`/`BR-PLAT-004`).
+- **Verifiable governance**: the OSSF Scorecard is published weekly (`publish_results: true`); the project policy is to require PRs, checks and signed commits on `main`, with no force-push/deletion (`BR-PLAT-003`/`BR-PLAT-004`). **Current state (2026-10-29):** PR/review and force-push/deletion blocks are active; required status checks and signed commits are pending activation (PRD-118/PRD-119).
 
 ## How to report a vulnerability
 

@@ -2,7 +2,7 @@
 id: BR-PLAT-003
 aliases: [BR-PLAT-003]
 tipo: regra
-titulo: Commits no main são assinados e verificados
+titulo: Política de commits assinados no main (ativação pendente)
 dominio: plataforma
 status: ativo
 severidade: media
@@ -16,11 +16,16 @@ tags: ["plataforma", "seguranca", "governanca"]
 ---
 ## Enunciado
 
-O `main` exige **commits assinados** (SSH de preferência, ou GPG). O mantenedor
-configura `gpg.format ssh`, `user.signingkey`, `commit.gpgsign` e
-`tag.gpgsign`; a chave pública é cadastrada no GitHub como **Signing Key**. Um
-commit novo aparece como **Verified** e `git log --show-signature` mostra
-`Good signature`.
+A política do projeto é exigir **commits assinados** no `main` (SSH de
+preferência, ou GPG). O mantenedor configura `gpg.format ssh`,
+`user.signingkey`, `commit.gpgsign` e `tag.gpgsign`; a chave pública é cadastrada
+no GitHub como **Signing Key**. Um commit novo aparece como **Verified** e
+`git log --show-signature` mostra `Good signature`.
+
+**Estado atual (2026-10-29):** a proteção do `main` exige PR/revisão e bloqueia
+force-push/deleção, mas `required_signatures` **ainda não está ativo**. A
+ativação é ação do mantenedor (PRD-118) e será feita depois da configuração da
+chave de assinatura.
 
 ## Pré-condições
 

@@ -104,7 +104,7 @@
 |---|---|---|
 | 18c+ | v3.2.x (18c+) / v3.1.x | Συνιστάται; charset `AL32UTF8`. |
 | 12.2 | μόνο v3.1.x | Το v3.2.x δεν μεταγλωττίζεται (`PLS-00222`). Το `WE8DEC` της εικόνας χάνει μη αναπαραστάσιμους χαρακτήρες (π.χ. `€`); ο thin driver αγνοεί το `NLS_LANG`. |
-| 11.2 (11g R2) | v3.1.x only | **Thick mode required** (thin starts at 12.1); coverage via `DBMS_PROFILER`. |
+| 11.2 (11g R2) | v3.1.x only | **Thick mode required** (thin starts at 12.1); coverage via `DBMS_PROFILER`. Instant Client 19c+. |
 - **VSCode 1.101+** (Node 22).
 
 Η επέκταση είναι μόνο ο «γραφικός πελάτης» — αυτό που εκτελεί τα tests είναι η βάση απευθείας μέσω node-oracledb.
@@ -194,7 +194,7 @@ Test Explorer **καθώς ολοκληρώνεται κάθε test**.
 | `utplsql.oraclePoolIncrement` | `1` | Βήμα αύξησης όταν επεκτείνεται το pool του Oracle runner (node-oracledb). |
 | `utplsql.oraclePoolPingInterval` | `60` | Δευτερόλεπτα μεταξύ των ελέγχων υγείας των αδρανών συνδέσεων του pool (node-oracledb). `0` = ping σε κάθε checkout. |
 | `utplsql.oracleClientMode` | `thin` | Λειτουργία προγράμματος οδήγησης: `thin` (καθαρή JavaScript, χωρίς εγγενή πελάτη) ή `thick` (χρησιμοποιεί το Oracle Instant Client). Χρησιμοποιήστε `thick` μόνο για βάσεις που απαιτούν NNE (Native Network Encryption)· απαιτεί `utplsql.oracleClientLibDir` και επαναφόρτωση του παραθύρου. |
-| `utplsql.oracleClientLibDir` | `""` | Κατάλογος του Oracle Instant Client. Απαιτείται όταν το `utplsql.oracleClientMode` είναι `thick` (π.χ. `C:\oracle\instantclient_23_5`). |
+| `utplsql.oracleClientLibDir` | `""` | Κατάλογος του Oracle Instant Client. Απαιτείται όταν το `utplsql.oracleClientMode` είναι `thick` (π.χ. `C:\oracle\instantclient_23_5`). Fallback: `ORACLE_CLIENT_LIB_DIR`. |
 | Το debug δεν σταματά στο σημείο διακοπής | Πακέτο χωρίς πληροφορίες debug ή λείπουν τα δικαιώματα debug | Μεταγλωττίστε με `PLSQL_OPTIMIZE_LEVEL <= 1` (ή `ALTER PACKAGE ... COMPILE DEBUG PLSQL_OPTIMIZE_LEVEL = 1`) και δώστε `DEBUG CONNECT SESSION` + `EXECUTE ON SYS.DBMS_DEBUG`. Τα σημεία διακοπής στο `test_*.pkb` μπορεί να μην πιάνονται (το utPLSQL εκτελεί τα test μέσω δυναμικού SQL)· βάλτε τα στον κώδικα υπό δοκιμή. |
 | `utplsql.oracleClientConfigDir` | `""` | Κατάλογος διαμόρφωσης Oracle (TNS_ADMIN) με `sqlnet.ora`/`tnsnames.ora`. Προαιρετικός· χρησιμοποιείται μόνο από τη λειτουργία thick. |
 | `utplsql.connections.tnsAdminPath` | `""` | Κατάλογος με `tnsnames.ora` για **ανάλυση TNS aliases στον thin driver**. Σειρά: αυτή η ρύθμιση → τιμή user/machine του `sqldeveloper.connections.tnsConfiguration.path` → `TNS_ADMIN`. |
@@ -318,19 +318,19 @@ UTPLSQL_CONN=your_user/password@//host:1521/service
 | `utPLSQL: New connection profile...` | Οδηγός για δημιουργία και ενεργοποίηση profile | — |
 | `utPLSQL: Manage connection profiles` | Ανοίγει τις ρυθμίσεις στο `utplsql.profiles` | — |
 | `utPLSQL: Import connections from SQL Developer` | Εισάγει συνδέσεις από το SQL Developer (connections.xml) | — |
-| `utPLSQL: Debug test (PL/SQL)` | Ξεκινά σύνοδο αποσφαλμάτωσης του test στο ενεργό αρχείο | Το v3.2.x δεν μεταγλωττίζεται (`PLS-00222`). Το `WE8DEC` της εικόνας χάνει μη αναπαραστάσιμους χαρακτήρες (π.χ. `€`); ο thin driver αγνοεί το `NLS_LANG`. |
+| `utPLSQL: Debug test (PL/SQL)` | Ξεκινά σύνοδο αποσφαλμάτωσης του test στο ενεργό αρχείο | — |
 | `utPLSQL: Αναδημιουργία προσωρινής μνήμης σχολίων` | Αναδημιουργεί την προσωρινή μνήμη σχολίων του utPLSQL στη βάση και ανανεώνει το δέντρο | — |
 | `utPLSQL: Αποσφαλμάτωση τεστ στον κέρσορα` | Ξεκινά συνεδρία αποσφαλμάτωσης του `%test`/`%suite` κάτω από τον δρομέα | — |
 | `utPLSQL: Αποσφαλμάτωση αποτυχημένων τεστ` | Ξεκινά συνεδρία αποσφαλμάτωσης των δοκιμών που απέτυχαν στην τελευταία εκτέλεση (QuickPick αν είναι πολλές) | — |
 | `utPLSQL: Αποσφαλμάτωση τελευταίας εκτέλεσης` | Ξεκινά συνεδρία αποσφαλμάτωσης της τελευταίας εκτέλεσης | — |
-| `utPLSQL: Μεταγλώττιση για αποσφαλμάτωση` | Μεταγλωττίζει το αντικείμενο του επιλεγμένου αρχείου/φακέλου με πληροφορίες αποσφαλμάτωσης | Το v3.2.x δεν μεταγλωττίζεται (`PLS-00222`). Το `WE8DEC` της εικόνας χάνει μη αναπαραστάσιμους χαρακτήρες (π.χ. `€`); ο thin driver αγνοεί το `NLS_LANG`. |
+| `utPLSQL: Μεταγλώττιση για αποσφαλμάτωση` | Μεταγλωττίζει το αντικείμενο του επιλεγμένου αρχείου/φακέλου με πληροφορίες αποσφαλμάτωσης | — |
 | `utPLSQL: Run script` | Runs the script open in the editor against a connection profile | Right-click → script file |
 | `utPLSQL: Run script file` | Runs an Explorer script file (decoded with the profile charset) | Right-click → file |
 | `utPLSQL: Run script folder` | Runs the folder scripts in alphabetical order | Right-click → folder |
 | `utPLSQL: Ορισμός κωδικού πορτοφολιού` | Ορίζει/καθαρίζει τον κωδικό wallet του ενεργού προφίλ (SecretStorage) | — |
 | `utPLSQL: Εκτέλεση με reporter (εξαγωγή)` | Εκτελεί την επιλογή με επιλεγμένο reporter και γράφει την έξοδο σε Output/αρχείο (δεν αλλάζει τα αποτελέσματα) | Test Explorer → menu do item |
-| `utPLSQL: Δημιουργία σουίτας δοκιμών…` | δημιουργεί `ut_<πακέτο>.pks` με ένα `%test` ανά ρουτίνα από `.pks`/`.pkb` ή αντικείμενο βάσης δεδομένων, με τις επιλογές `utplsql.generate.*` | Το v3.2.x δεν μεταγλωττίζεται (`PLS-00222`). Το `WE8DEC` της εικόνας χάνει μη αναπαραστάσιμους χαρακτήρες (π.χ. `€`); ο thin driver αγνοεί το `NLS_LANG`. |
-| `utPLSQL: Εκτέλεση σχετικών δοκιμών` | σε ένα αρχείο παραγωγής `.pks`/`.pkb`/`.sql` εκτελεί τις σουίτες κατά τη σύμβαση `ut_<αντικείμενο>` | Το v3.2.x δεν μεταγλωττίζεται (`PLS-00222`). Το `WE8DEC` της εικόνας χάνει μη αναπαραστάσιμους χαρακτήρες (π.χ. `€`); ο thin driver αγνοεί το `NLS_LANG`. |
+| `utPLSQL: Δημιουργία σουίτας δοκιμών…` | δημιουργεί `ut_<πακέτο>.pks` με ένα `%test` ανά ρουτίνα από `.pks`/`.pkb` ή αντικείμενο βάσης δεδομένων, με τις επιλογές `utplsql.generate.*` | — |
+| `utPLSQL: Εκτέλεση σχετικών δοκιμών` | σε ένα αρχείο παραγωγής `.pks`/`.pkb`/`.sql` εκτελεί τις σουίτες κατά τη σύμβαση `ut_<αντικείμενο>` | — |
 | `utPLSQL: Εναλλαγή κάλυψης` | Εναλλάσσει τη λειτουργία κάλυψης της συνεδρίας (κλικ στη γραμμή κατάστασης). | — |
 | `utPLSQL: Εκτέλεση δοκιμών ανά tag...` | Εκτελεί τις suites/δοκιμές που ταιριάζουν με τα επιλεγμένα tags (`!tag` εξαιρεί). | — |
 
@@ -393,6 +393,7 @@ utPLSQL), το coverage παραλείπεται με προειδοποίηση
 **Coverage** (πάντα) — ενεργοποιεί τον profiler:
 ```sql
 GRANT EXECUTE ON SYS.DBMS_PROFILER TO <schema_that_runs_the_tests>;
+-- 11g: only DBMS_PROFILER (DBMS_PLSQL_CODE_COVERAGE is 12.2+)
 GRANT EXECUTE ON SYS.DBMS_PLSQL_CODE_COVERAGE TO <schema_that_runs_the_tests>;
 ```
 Χωρίς αυτό, τα tests εκτελούνται αλλά το coverage βγαίνει **κενό**.
@@ -425,7 +426,7 @@ GRANT SELECT ON SYS.DBA_PROCEDURES TO <ut3_owner>;
 | Σύμπτωμα | Πιθανή αιτία | Λύση |
 |---|---|---|
 | Κενό coverage | Λείπει το `GRANT EXECUTE ON DBMS_PROFILER` | Εκτελέστε τα grants στις [Απαιτήσεις βάσης δεδομένων](#απαιτήσεις-βάσης-δεδομένων) ή χρησιμοποιήστε το `utPLSQL: Copy coverage grants to clipboard` |
-| Κενό coverage | Το Oracle 19c απαιτεί επιπλέον grants | `GRANT EXECUTE ON DBMS_PROFILER` + `GRANT EXECUTE ON DBMS_PLSQL_CODE_COVERAGE` |
+| Κενό coverage | Το Oracle 12.2+ απαιτεί επιπλέον grants | `GRANT EXECUTE ON DBMS_PROFILER` + `GRANT EXECUTE ON DBMS_PLSQL_CODE_COVERAGE` |
 | Σφάλμα μεταγλώττισης χωρίς ένδειξη | Κώδικας με συντακτικό σφάλμα PL/SQL | Διατηρήστε ενεργοποιημένο το `utplsql.compilationDiagnostics.enabled` (προεπιλογή)· τα σφάλματα από το `ALL_ERRORS` εμφανίζονται στο Problems Panel μετά από μια εκτέλεση |
 | Σφάλμα σύνδεσης | Κακοσχηματισμένη συμβολοσειρά ή μη προσβάσιμη βάση | Χρησιμοποιήστε το `utPLSQL: Validate setup` |
 | Το `%suite` δεν αναγνωρίζεται | Λείπει το `%suite`/`create package` στο αρχείο ή `%test` χωρίς `PROCEDURE` | Ελέγξτε το spec· εκτελέστε το `utPLSQL: Refresh tests` |

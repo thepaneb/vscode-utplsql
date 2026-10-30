@@ -150,7 +150,7 @@
             "name": "Which VS Code and Oracle versions are supported?",
             "acceptedAnswer": {
               "@type": "Answer",
-              "text": "VS Code 1.101 or newer and Oracle Database 12.2 or newer in thin mode (or 11.2+ in thick mode). The thin driver (node-oracledb) works out of the box; optional thick mode (Oracle Instant Client) also covers environments that require Native Network Encryption."
+              "text": "VS Code 1.101 or newer and Oracle Database 12.2 or newer in thin mode (or 11.2+ in thick mode). The thin driver (node-oracledb) works out of the box; optional thick mode requires Oracle Instant Client 19c+ and also covers environments that require Native Network Encryption."
             }
           },
           {
@@ -166,7 +166,7 @@
             "name": "Does it provide test coverage?",
             "acceptedAnswer": {
               "@type": "Answer",
-              "text": "Yes. Statement and view coverage with colored gutters per line and per-file percentages in the Coverage tab. Coverage requires GRANT EXECUTE ON DBMS_PROFILER."
+              "text": "Yes. Statement and view coverage with colored gutters per line and per-file percentages in the Coverage tab. Coverage requires GRANT EXECUTE ON DBMS_PROFILER; Oracle 12.2+ also requires DBMS_PLSQL_CODE_COVERAGE (11g uses only DBMS_PROFILER)."
             }
           },
           {
@@ -294,8 +294,8 @@
         <h3>Which VS Code and Oracle versions are supported?</h3>
         <p>
           VS Code <strong>1.101+</strong> and Oracle Database <strong>12.2+</strong> (thin) or <strong>11.2+</strong> (thick). The thin driver
-          (<code>node-oracledb</code>) works out of the box; optional thick mode (Oracle Instant
-          Client) covers environments that require Native Network Encryption.
+          (<code>node-oracledb</code>) works out of the box; optional thick mode requires Oracle
+          Instant Client <strong>19c+</strong> and covers environments that require Native Network Encryption.
         </p>
         <h3>Do I need the utPLSQL framework installed in the database?</h3>
         <p>
@@ -306,7 +306,9 @@
         <h3>Does it provide test coverage?</h3>
         <p>
           Yes. Statement and view coverage with colored gutters per line and per-file percentages in
-          the Coverage tab. Coverage requires <code>GRANT EXECUTE ON DBMS_PROFILER</code>.
+          the Coverage tab. Coverage requires <code>GRANT EXECUTE ON DBMS_PROFILER</code>;
+          Oracle 12.2+ also requires <code>DBMS_PLSQL_CODE_COVERAGE</code> (11g uses only
+          <code>DBMS_PROFILER</code>).
         </p>
         <h3>Can I debug PL/SQL tests?</h3>
         <p>

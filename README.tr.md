@@ -104,7 +104,7 @@ Uzantı iki şekilde kurulabilir:
 |---|---|---|
 | 18c+ | v3.2.x (18c+) / v3.1.x | Önerilir; charset `AL32UTF8`. |
 | 12.2 | yalnızca v3.1.x | v3.2.x derlenmez (`PLS-00222`). İmajın `WE8DEC`'i gösterilemeyen karakterleri kaybeder (örn. `€`); ince sürücü `NLS_LANG`'i yok sayar. |
-| 11.2 (11g R2) | v3.1.x only | **Thick mode required** (thin starts at 12.1); coverage via `DBMS_PROFILER`. |
+| 11.2 (11g R2) | v3.1.x only | **Thick mode required** (thin starts at 12.1); coverage via `DBMS_PROFILER`. Instant Client 19c+. |
 - **VSCode 1.101+** (Node 22).
 
 Uzantı yalnızca "grafik istemcidir" — testleri çalıştıran veritabanıdır: node-oracledb doğrudan bağlantısı üzerinden.
@@ -192,7 +192,7 @@ Geçici dosya yok, toplu işin bitmesi beklenmez. Sonuçlar Test Explorer'da
 | `utplsql.oraclePoolIncrement` | `1` | Oracle runner havuzunu genişletirken artış miktarı (node-oracledb). |
 | `utplsql.oraclePoolPingInterval` | `60` | Boştaki havuz bağlantılarının sağlık kontrolleri arasındaki saniye (node-oracledb). `0` = her kullanımda ping. |
 | `utplsql.oracleClientMode` | `thin` | Sürücü modu: `thin` (saf JavaScript, yerel istemci yok) veya `thick` (Oracle Instant Client kullanır). `thick` modunu yalnızca NNE (Native Network Encryption) gerektiren veritabanları için kullanın; `utplsql.oracleClientLibDir` ve pencerenin yeniden yüklenmesini gerektirir. |
-| `utplsql.oracleClientLibDir` | `""` | Oracle Instant Client dizini. `utplsql.oracleClientMode` `thick` olduğunda zorunludur (örn. `C:\oracle\instantclient_23_5`). |
+| `utplsql.oracleClientLibDir` | `""` | Oracle Instant Client dizini. `utplsql.oracleClientMode` `thick` olduğunda zorunludur (örn. `C:\oracle\instantclient_23_5`). Fallback: `ORACLE_CLIENT_LIB_DIR`. |
 | Hata ayıklama kesme noktasında durmuyor | Paket hata ayıklama bilgisi olmadan derlenmiş veya hata ayıklama yetkileri eksik | `PLSQL_OPTIMIZE_LEVEL <= 1` ile derleyin (veya `ALTER PACKAGE ... COMPILE DEBUG PLSQL_OPTIMIZE_LEVEL = 1`) ve `DEBUG CONNECT SESSION` + `EXECUTE ON SYS.DBMS_DEBUG` verin. `test_*.pkb` içindeki kesme noktaları isabet etmeyebilir (utPLSQL testleri dinamik SQL ile çalıştırır); bunları test edilen koda koyun. |
 | `utplsql.oracleClientConfigDir` | `""` | `sqlnet.ora`/`tnsnames.ora` içeren Oracle yapılandırma dizini (TNS_ADMIN). İsteğe bağlıdır; yalnızca thick modda kullanılır. |
 | `utplsql.connections.tnsAdminPath` | `""` | **Thin sürücüde TNS takma adlarını çözmek** için `tnsnames.ora` dizini. Sıra: bu ayar → `sqldeveloper.connections.tnsConfiguration.path` user/machine değeri → `TNS_ADMIN`. |
@@ -316,19 +316,19 @@ Tüm uzantı komutları (palet `Ctrl+Shift+P` öneki `utPLSQL:`):
 | `utPLSQL: New connection profile...` | Bir profil oluşturmak ve etkinleştirmek için sihirbaz | — |
 | `utPLSQL: Manage connection profiles` | Ayarları `utplsql.profiles` konumunda açar | — |
 | `utPLSQL: Import connections from SQL Developer` | SQL Developer'dan bağlantıları içe aktarır (connections.xml) | — |
-| `utPLSQL: Debug test (PL/SQL)` | Etkin dosyanın altındaki testin hata ayıklama oturumunu başlatır | v3.2.x derlenmez (`PLS-00222`). İmajın `WE8DEC`'i gösterilemeyen karakterleri kaybeder (örn. `€`); ince sürücü `NLS_LANG`'i yok sayar. |
+| `utPLSQL: Debug test (PL/SQL)` | Etkin dosyanın altındaki testin hata ayıklama oturumunu başlatır | — |
 | `utPLSQL: Açıklama önbelleğini yeniden oluştur` | utPLSQL açıklama önbelleğini veritabanında yeniden oluşturur ve ağacı yeniler | — |
 | `utPLSQL: İmleçteki testi hata ayıkla` | İmleç altındaki `%test`/`%suite` için hata ayıklama oturumu başlatır | — |
 | `utPLSQL: Başarısız testleri hata ayıkla` | Son çalıştırmada başarısız olan testler için hata ayıklama oturumu başlatır (birden fazlaysa QuickPick) | — |
 | `utPLSQL: Son çalıştırmayı hata ayıkla` | Son çalıştırmanın hata ayıklama oturumunu başlatır | — |
-| `utPLSQL: Hata ayıklama için derle` | Seçili dosya/klasör nesnesini hata ayıklama bilgileriyle derler | v3.2.x derlenmez (`PLS-00222`). İmajın `WE8DEC`'i gösterilemeyen karakterleri kaybeder (örn. `€`); ince sürücü `NLS_LANG`'i yok sayar. |
+| `utPLSQL: Hata ayıklama için derle` | Seçili dosya/klasör nesnesini hata ayıklama bilgileriyle derler | — |
 | `utPLSQL: Run script` | Runs the script open in the editor against a connection profile | Right-click → script file |
 | `utPLSQL: Run script file` | Runs an Explorer script file (decoded with the profile charset) | Right-click → file |
 | `utPLSQL: Run script folder` | Runs the folder scripts in alphabetical order | Right-click → folder |
 | `utPLSQL: Cüzdan parolasını ayarla` | Etkin profilin cüzdan parolasını ayarlar/temizler (SecretStorage) | — |
 | `utPLSQL: Reporter ile çalıştır (dışa aktar)` | Seçimi seçilen reporter ile çalıştırır ve çıktıyı Output/dosyaya yazar (sonuçları değiştirmez) | Test Explorer → menu do item |
-| `utPLSQL: Test paketi oluştur…` | bir `.pks`/`.pkb` veya veritabanı nesnesinden, her rutin için bir `%test` içeren `ut_<paket>.pks` üretir (`utplsql.generate.*` seçenekleri) | v3.2.x derlenmez (`PLS-00222`). İmajın `WE8DEC`'i gösterilemeyen karakterleri kaybeder (örn. `€`); ince sürücü `NLS_LANG`'i yok sayar. |
-| `utPLSQL: İlgili testleri çalıştır` | üretim `.pks`/`.pkb`/`.sql` dosyasında `ut_<nesne>` kuralına göre paketleri çalıştırır | v3.2.x derlenmez (`PLS-00222`). İmajın `WE8DEC`'i gösterilemeyen karakterleri kaybeder (örn. `€`); ince sürücü `NLS_LANG`'i yok sayar. |
+| `utPLSQL: Test paketi oluştur…` | bir `.pks`/`.pkb` veya veritabanı nesnesinden, her rutin için bir `%test` içeren `ut_<paket>.pks` üretir (`utplsql.generate.*` seçenekleri) | — |
+| `utPLSQL: İlgili testleri çalıştır` | üretim `.pks`/`.pkb`/`.sql` dosyasında `ut_<nesne>` kuralına göre paketleri çalıştırır | — |
 | `utPLSQL: Kapsamı değiştir` | Oturum kapsam modunu değiştirir (durum çubuğuna tıklayın). | — |
 | `utPLSQL: Testleri etikete göre çalıştır...` | Seçilen etiketlerle eşleşen suite/testleri çalıştırır (`!tag` hariç tutar). | — |
 
@@ -393,6 +393,7 @@ yinelenmekten (dedupe) çıkarılır.
 **Kapsam (coverage)** (her zaman) — profilleyiciyi etkinleştirir:
 ```sql
 GRANT EXECUTE ON SYS.DBMS_PROFILER TO <schema_that_runs_the_tests>;
+-- 11g: only DBMS_PROFILER (DBMS_PLSQL_CODE_COVERAGE is 12.2+)
 GRANT EXECUTE ON SYS.DBMS_PLSQL_CODE_COVERAGE TO <schema_that_runs_the_tests>;
 ```
 Bu olmadan testler çalışır ancak kapsam **boş** gelir.
@@ -426,7 +427,7 @@ GRANT SELECT ON SYS.DBA_PROCEDURES TO <ut3_owner>;
 |---|---|---|
 | Paketler görünmüyor | Veritabanı bulunamadı | Tanılama için `utPLSQL: Validate setup` çalıştırın |
 | Boş kapsam | `GRANT EXECUTE ON DBMS_PROFILER` eksik | [Veritabanı gereksinimleri](#veritabanı-gereksinimleri) içindeki yetkileri çalıştırın veya `utPLSQL: Copy coverage grants to clipboard` kullanın |
-| Boş kapsam | Oracle 19c ek yetkiler gerektirir | `GRANT EXECUTE ON DBMS_PROFILER` + `GRANT EXECUTE ON DBMS_PLSQL_CODE_COVERAGE` |
+| Boş kapsam | Oracle 12.2+ ek yetkiler gerektirir | `GRANT EXECUTE ON DBMS_PROFILER` + `GRANT EXECUTE ON DBMS_PLSQL_CODE_COVERAGE` |
 | Neden belirtilmeyen derleme hatası | PL/SQL sözdizimi hatası olan kod | `utplsql.compilationDiagnostics.enabled` seçeneğini açık tutun (varsayılan); `ALL_ERRORS` kaynaklı hatalar bir çalıştırmadan sonra Problems Panel'inde görünür |
 | Bağlantı hatası | Hatalı biçimli dize veya erişilemeyen veritabanı | `utPLSQL: Validate setup` kullanın |
 | Çalışırken zaman aşımı | Testler `timeoutMinutes` değerinden uzun sürüyor | `utplsql.timeoutMinutes` değerini artırın |
