@@ -277,5 +277,5 @@ Enquanto `proposed`, `regras: []`.
 - 🎯 RF2 — `main` protegido → [[BR-PLAT-004 - OSSF Scorecard é publicado e o main é protegido|BR-PLAT-004]]
 - 🎯 RF3 — Triagem dos checks remanescentes → [[BR-PLAT-004 - OSSF Scorecard é publicado e o main é protegido|BR-PLAT-004]]
 - 🎯 RNF1 — O workflow não introduz segredos nem permissões acima das listadas; se → [[BR-PLAT-004 - OSSF Scorecard é publicado e o main é protegido|BR-PLAT-004]]
-- 🚀 ⬅️ release anterior: [[prd-109-language-identity|PRD-109 (0.17.0)]] · ➡️ próxima release: [[prd-111-decompose-oracle-runner|PRD-111 (0.19.0)]]
+- 🚀 ⬅️ release anterior: [[prd-109-language-identity|PRD-109 (0.17.0)]] · ➡️ próxima release: [[prd-47-node-26-toolchain|PRD-47 (0.19.0)]]
 <!-- brain:auto:end -->

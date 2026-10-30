@@ -7,7 +7,7 @@ titulo: "Confiança na distribuição: publisher verificado e política de priva
 versao: "0.23.0"
 data: "2026-10-13"
 autor: "Gil Cleber Barboza"
-versao_titulo: "0.23.0 — Runtime, docs e qualidade residual"
+versao_titulo: "0.23.0 — Docs e qualidade residual"
 verificado: 2026-10-30
 regras: []
 tags: [prd]
@@ -227,6 +227,6 @@ funcional/wiki (regra de usuário ⇒ wiki). Enquanto `proposed`, `regras: []`.
 <!-- brain:auto:start:conexoes -->
 - 🗺️ [[MOC - PRDs]]
 - 🔗 PRDs relacionados: [[prd-91-doc-parity-localized-distribution|PRD-91]] · [[prd-96-public-landing-page-github-pages|PRD-96]] · [[prd-97-doc-no-site|PRD-97]] · [[prd-110-defensive-hardening|PRD-110]] · [[prd-119-security-posture-scorecard|PRD-119]]
-- 🔗 Mesma versão (0.23.0): [[prd-95-esm-es2023-node22|PRD-95]] · [[prd-97-doc-no-site|PRD-97]] · [[prd-99-brain-reuse|PRD-99]] · [[prd-112-error-handling-audit|PRD-112]] · [[prd-116-direct-module-tests|PRD-116]] · [[prd-117-split-script-property-tests|PRD-117]] · [[prd-121-auditable-package-sourcemap|PRD-121]] · [[prd-126-branch-coverage-cli-tests|PRD-126]]
+- 🔗 Mesma versão (0.23.0): [[prd-97-doc-no-site|PRD-97]] · [[prd-99-brain-reuse|PRD-99]] · [[prd-112-error-handling-audit|PRD-112]] · [[prd-116-direct-module-tests|PRD-116]] · [[prd-117-split-script-property-tests|PRD-117]] · [[prd-121-auditable-package-sourcemap|PRD-121]] · [[prd-126-branch-coverage-cli-tests|PRD-126]] · [[prd-132-ux-execution-dryrun-jump|PRD-132]] · [[prd-133-rate-limiting-keybindings|PRD-133]]
 - 🚀 ⬅️ release anterior: [[prd-93-continuous-localization-pipeline|PRD-93 (0.22.0)]]
 <!-- brain:auto:end -->

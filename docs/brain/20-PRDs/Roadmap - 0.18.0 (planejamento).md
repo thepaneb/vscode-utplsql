@@ -1,9 +1,10 @@
 ---
 tipo: nota
-status: ativo
+status: concluida
 modulo: prds
 data: 2026-10-10
-verificado: 2026-10-10
+verificado: 2026-10-30
+concluida: 2026-10-29
 tags: [prd, roadmap, planejamento]
 ---
 
@@ -88,6 +89,13 @@ pré-bumpada para 0.18.0 no início (package/lock/site/CHANGELOG) para manter o
   `@types/vscode`, `TestItemCollection` real, fixtures tipadas e inventário de
   APIs; **`as any` 356 → 116** (meta ≤178); `BR-TEST-003`; **1408 testes / 0
   falhas** (2 skips); typecheck 0; integração 23free verde.
+
+## Status — concluída (0.18.0)
+
+Release **0.18.0 “Fundação: segurança, testes e anti-drift”** publicada (tag
+`v0.18.0`, 2026-10-29). Os **8 PRDs** do escopo (98, 104, 110, 113, 114, 118,
+119 e 123) estão `completed` com `versao: "0.18.0"`; `package.json` = `0.18.0` e
+`CHANGELOG.md` com a seção `## 0.18.0`.
 
 ## Fluxo de execução (por PRD)
 

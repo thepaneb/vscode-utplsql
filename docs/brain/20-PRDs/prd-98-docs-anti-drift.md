@@ -266,5 +266,5 @@ bidirecional com `npm run brain:rules`.
 - 🎯 RF6 — Convenção por tipo de PRD + seção "Impacto nas docs" → [[BR-DOC-002 - PRD concluída vincula docs e registro de features|BR-DOC-002]]
 - 🎯 RNF1 — Sem novas dependências: scripts em Node puro, como os demais. → [[BR-DOC-001 - Tabelas de settings e comandos são geradas do package.json|BR-DOC-001]]
 - 🎯 RNF4 — Falso-positivos próximos de zero; checks novos entram como **aviso** → [[BR-DOC-002 - PRD concluída vincula docs e registro de features|BR-DOC-002]]
-- 🚀 ⬅️ release anterior: [[prd-109-language-identity|PRD-109 (0.17.0)]] · ➡️ próxima release: [[prd-111-decompose-oracle-runner|PRD-111 (0.19.0)]]
+- 🚀 ⬅️ release anterior: [[prd-109-language-identity|PRD-109 (0.17.0)]] · ➡️ próxima release: [[prd-47-node-26-toolchain|PRD-47 (0.19.0)]]
 <!-- brain:auto:end -->

@@ -7,7 +7,7 @@ titulo: "Cobertura de branches nos módulos críticos e CLIs de release"
 versao: "0.23.0"
 data: "2026-10-29"
 autor: "Gil Cleber Barboza"
-versao_titulo: "0.23.0 — Runtime, docs e qualidade residual"
+versao_titulo: "0.23.0 — Docs e qualidade residual"
 verificado: "2026-10-29"
 regras: []
 docs: ["CHANGELOG", "wiki/Contributing.md"]
@@ -225,6 +225,6 @@ registra na 0.23.0. Na conclusão, cada superfície cita `PRD-126` ou
 <!-- brain:auto:start:conexoes -->
 - 🗺️ [[MOC - PRDs]]
 - 🔗 PRDs relacionados: [[prd-04-expand-tests|PRD-04]] · [[prd-113-lint-scope|PRD-113]] · [[prd-114-vscode-stub-modernization|PRD-114]] · [[prd-116-direct-module-tests|PRD-116]]
-- 🔗 Mesma versão (0.23.0): [[prd-95-esm-es2023-node22|PRD-95]] · [[prd-97-doc-no-site|PRD-97]] · [[prd-99-brain-reuse|PRD-99]] · [[prd-112-error-handling-audit|PRD-112]] · [[prd-116-direct-module-tests|PRD-116]] · [[prd-117-split-script-property-tests|PRD-117]] · [[prd-121-auditable-package-sourcemap|PRD-121]] · [[prd-122-marketplace-trust-metadata|PRD-122]]
+- 🔗 Mesma versão (0.23.0): [[prd-97-doc-no-site|PRD-97]] · [[prd-99-brain-reuse|PRD-99]] · [[prd-112-error-handling-audit|PRD-112]] · [[prd-116-direct-module-tests|PRD-116]] · [[prd-117-split-script-property-tests|PRD-117]] · [[prd-121-auditable-package-sourcemap|PRD-121]] · [[prd-122-marketplace-trust-metadata|PRD-122]] · [[prd-132-ux-execution-dryrun-jump|PRD-132]] · [[prd-133-rate-limiting-keybindings|PRD-133]]
 - 🚀 ⬅️ release anterior: [[prd-93-continuous-localization-pipeline|PRD-93 (0.22.0)]]
 <!-- brain:auto:end -->

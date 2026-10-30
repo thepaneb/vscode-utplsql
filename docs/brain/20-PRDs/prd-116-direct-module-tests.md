@@ -7,7 +7,7 @@ titulo: "Testes diretos dos módulos sem cobertura dedicada"
 versao: "0.23.0"
 data: "2026-10-10"
 autor: "Gil Cleber Barboza"
-versao_titulo: "0.23.0 — Runtime, docs e qualidade residual"
+versao_titulo: "0.23.0 — Docs e qualidade residual"
 verificado: 2026-10-10
 regras: []
 tags: [prd]
@@ -112,7 +112,7 @@ Nenhuma.
 
 ## 9. Rollout
 
-- **0.23.0** ("Runtime, docs e qualidade residual"); sem impacto no runtime.
+- **0.23.0** ("Docs e qualidade residual"); sem impacto no runtime.
 
 ## 10. Critérios de aceite
 
@@ -137,6 +137,6 @@ direto; isenções são documentadas"). Se não houver regra nova, declarar
 <!-- brain:auto:start:conexoes -->
 - 🗺️ [[MOC - PRDs]]
 - 🔗 PRDs relacionados: [[prd-04-expand-tests|PRD-04]] · [[prd-53-debug-test-variants|PRD-53]] · [[prd-115-split-i18n-locales|PRD-115]]
-- 🔗 Mesma versão (0.23.0): [[prd-95-esm-es2023-node22|PRD-95]] · [[prd-97-doc-no-site|PRD-97]] · [[prd-99-brain-reuse|PRD-99]] · [[prd-112-error-handling-audit|PRD-112]] · [[prd-117-split-script-property-tests|PRD-117]] · [[prd-121-auditable-package-sourcemap|PRD-121]] · [[prd-122-marketplace-trust-metadata|PRD-122]] · [[prd-126-branch-coverage-cli-tests|PRD-126]]
+- 🔗 Mesma versão (0.23.0): [[prd-97-doc-no-site|PRD-97]] · [[prd-99-brain-reuse|PRD-99]] · [[prd-112-error-handling-audit|PRD-112]] · [[prd-117-split-script-property-tests|PRD-117]] · [[prd-121-auditable-package-sourcemap|PRD-121]] · [[prd-122-marketplace-trust-metadata|PRD-122]] · [[prd-126-branch-coverage-cli-tests|PRD-126]] · [[prd-132-ux-execution-dryrun-jump|PRD-132]] · [[prd-133-rate-limiting-keybindings|PRD-133]]
 - 🚀 ⬅️ release anterior: [[prd-93-continuous-localization-pipeline|PRD-93 (0.22.0)]]
 <!-- brain:auto:end -->
