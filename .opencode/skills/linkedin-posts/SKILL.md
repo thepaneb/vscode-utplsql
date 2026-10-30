@@ -153,6 +153,11 @@ scripts/db-matrix/run.sh --thick    # thick: Instant Client (thickMode) por banc
 ## Armadilhas
 
 - `docs/linkedin/` é **gitignored** — não incluir em commits.
+- **Little Text:** o `commentary` da Posts API trata `(`, `)`, `[`, `]`, `@`,
+  `*`, `_`, `~`, `|`, `{}`, `<>` e `\` como markup; sem escape o post trunca no
+  primeiro `(` e ainda retorna **201**. O `publish.cjs` escapa automaticamente
+  (`escapeLittleText`, preservando `#hashtags`); posts copiados manualmente no
+  editor web não são afetados.
 - A publicação da extensão é via **GitHub release** (`publish.yml`); este skill
   cuida só dos posts, não do release.
 - `brain:sync` só regenera o índice; não copia o conteúdo para o vault.
