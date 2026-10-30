@@ -8,7 +8,7 @@ versao: "0.18.0"
 data: "2026-10-13"
 autor: "Gil Cleber Barboza"
 versao_titulo: "0.18.0 — Fundação: segurança, testes e anti-drift"
-verificado: 2026-10-29
+verificado: 2026-10-30
 regras: ["BR-PLAT-004"]
 docs: ["CHANGELOG", "wiki/Contributing.md"]
 tags: [prd]
@@ -184,6 +184,27 @@ Nenhuma setting da extensão. Configuração no GitHub (workflow + *ruleset*).
   `mainRepoResult.scoreResult.error` fica `null`.
 - **CI**: `brain:ci`/`docs:check` seguem verdes.
 
+### Validação externa — VSCan 0.18.0 (2026-10-30)
+
+- **Análise:** `baf5ec71-f993-4a7d-aa0a-ba46a01b7bb9` — 9 módulos,
+  **86/100 (medium)**. Relatório:
+  <https://vscan.dev/?analysisId=baf5ec71-f993-4a7d-aa0a-ba46a01b7bb9>.
+- **OSSF Scorecard:** a penalidade do **repositório** desapareceu (o Scorecard
+  publicado passou a ser lido). O módulo agora aponta apenas a dependência
+  **`oracledb`** (`oracle/node-oracledb`, medium, upstream); o
+  `mainRepoResult.scoreResult.error` deixou de ser o problema.
+- **Metadata (medium):** poucas instalações/avaliações, domínio do publisher
+  não verificado e ausência de política de privacidade (low) — PRD-122.
+- **Permissions (medium):** `debuggers` (high, inerente ao debugger), contexto e
+  trust de workspace, settings que parecem caminho (`sourcePath`,
+  `testPackagePrefix`, `tnsAdminPath`) e **ativação ampla**
+  (`onStartupFinished`) — PRD-120.
+- **LOW:** VirusTotal, dependências, AST, Trufflehog, rede, ofuscação, Socket e
+  OpenGrep. O AI Malware Analysis não encontrou comportamento malicioso.
+- **Conclusão:** o objetivo de tornar o repositório visível/auditável foi
+  atingido; a nota geral segue **86** por metadata/permissions e pela
+  dependência upstream.
+
 ## 8. Riscos e mitigação
 
 | Risco | Mitigação |
@@ -250,7 +271,7 @@ Enquanto `proposed`, `regras: []`.
 <!-- brain:auto:start:conexoes -->
 - 🗺️ [[MOC - PRDs]]
 - 📐 Regras: [[BR-PLAT-004 - OSSF Scorecard é publicado e o main é protegido|BR-PLAT-004]]
-- 🔗 PRDs relacionados: [[prd-81-security-hardening|PRD-81]] · [[prd-83-vsix-package-hygiene|PRD-83]] · [[prd-104-ci-supply-chain|PRD-104]] · [[prd-118-commit-signing|PRD-118]] · [[prd-122-marketplace-trust-metadata|PRD-122]]
+- 🔗 PRDs relacionados: [[prd-81-security-hardening|PRD-81]] · [[prd-83-vsix-package-hygiene|PRD-83]] · [[prd-104-ci-supply-chain|PRD-104]] · [[prd-118-commit-signing|PRD-118]] · [[prd-120-lean-activation-lazy-setup|PRD-120]] · [[prd-122-marketplace-trust-metadata|PRD-122]]
 - ⚙️ Pipelines: [[PIPE-scorecard - Scorecard|PIPE-scorecard]]
 - 🎯 RF1 — Workflow do OSSF Scorecard → [[BR-PLAT-004 - OSSF Scorecard é publicado e o main é protegido|BR-PLAT-004]]
 - 🎯 RF2 — `main` protegido → [[BR-PLAT-004 - OSSF Scorecard é publicado e o main é protegido|BR-PLAT-004]]
