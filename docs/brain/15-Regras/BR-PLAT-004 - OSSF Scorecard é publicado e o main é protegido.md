@@ -19,13 +19,14 @@ tags: ["plataforma", "seguranca", "governanca"]
 O CI publica o **OSSF Scorecard** (`.github/workflows/scorecard.yml`,
 `publish_results: true`, SARIF no Security tab) semanalmente e em mudanças de
 branch protection. A proteção do `main` é aplicada por etapas: **PR obrigatório**
-e revisão, sem force-push/exclusão e com histórico linear já estão ativos;
-**checks obrigatórios e commits assinados** (`BR-PLAT-003`) ainda estão
-**pendentes de ativação** (PRD-119). A proteção é compatível com mantenedor
-único (sem autoaprovação).
+e revisão, sem force-push/exclusão já estão ativos; **checks obrigatórios,
+histórico linear e commits assinados** (`BR-PLAT-003`) ainda estão **pendentes
+de ativação** (PRD-119). A proteção é compatível com mantenedor único (sem
+autoaprovação).
 
-**Estado atual (2026-10-29):** `required_status_checks` vazio e
-`required_signatures=false`; o restante (PR/revisão, force-push/deleção) ativo.
+**Estado atual (2026-10-30):** `required_status_checks` vazio,
+`required_linear_history=false` e `required_signatures=false`; PR/revisão,
+force-push/deleção ativos.
 
 ## Pré-condições
 
