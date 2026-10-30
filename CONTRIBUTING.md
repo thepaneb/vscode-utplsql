@@ -169,17 +169,15 @@ npm run docs:check    # consistency + code<->docs fidelity (runs in CI)
 
 ### Commit signing
 
-The project policy is to require **signed commits** on `main`; **activation is
-pending** (see PRD-118). The current branch protection already requires a PR and
-a review and blocks force-push/deletion, but `required_signatures` is not
-enabled yet. Once it is, SSH signing is recommended (it reuses the key already
-used for GitHub authentication):
+The `main` branch **requires signed commits**. SSH signing is recommended
+(a dedicated signing key keeps the authentication key separate):
 
 ```sh
 git config gpg.format ssh
-git config user.signingkey ~/.ssh/id_ed25519.pub
+git config user.signingkey ~/.ssh/id_ed25519_signing.pub
 git config commit.gpgsign true
 git config tag.gpgsign true
+git config gpg.ssh.allowedSignersFile ~/.ssh/allowed_signers
 ```
 
 Add the **public** key to GitHub as a **Signing Key** (Settings → SSH and GPG
@@ -189,6 +187,11 @@ authentication key. Verify with:
 ```sh
 git log --show-signature -1     # Good signature
 ```
+
+The current `main` protection also requires a PR (0 approvals), the checks
+`build (22)`, `build (24)`, `build (26)` and `CodeQL`, and blocks force-push and
+deletion. **Linear history is not adopted** because the project uses merge
+commits; `enforce_admins` is on, so the rules apply to the maintainer too.
 
 CI-created merges and Dependabot commits are signed by GitHub; if a legitimate
 bot needs an exception, document the bypass in the PR. Tags for releases may be

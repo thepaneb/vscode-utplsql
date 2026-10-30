@@ -138,12 +138,13 @@ Nenhuma setting da extensão; apenas configuração `git`/GitHub.
 
 ## Decisões (2026-10-29)
 
-- **SSH signing** (reaproveita a chave existente); GPG fica como alternativa.
+- **SSH signing** com chave dedicada (`id_ed25519_signing`); GPG fica como
+  alternativa.
 - `commit.gpgsign`/`tag.gpgsign` locais; a chave pública é cadastrada como
   **Signing Key** no GitHub.
-- A exigência de commits assinados é ativada no **fim** (depois do merge da
-  0.18.0), para não bloquear o fluxo atual; merges do GitHub/Dependabot são
-  assinados pela plataforma.
+- A exigência de commits assinados foi **ativada em 2026-10-30**
+  (`required_signatures=true`), com um commit de teste verificado
+  (`verified: true`); merges do GitHub/Dependabot são assinados pela plataforma.
 - Regra **`BR-PLAT-003`**; a configuração local/GitHub é ação do mantenedor
   (documentada no `CONTRIBUTING.md`), não versionável.
 

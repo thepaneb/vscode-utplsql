@@ -221,11 +221,12 @@ Nenhuma setting da extensão. Configuração no GitHub (workflow + *ruleset*).
 
 - CodeQL permanece no **default setup**; o workflow do Scorecard é o único novo.
 - `workflow_dispatch` foi incluído para a validação manual do PRD.
-- Branch protection compatível com **mantenedor único** (sem autoaprovação;
-  bypass de admin documentado se necessário).
-- A ação `ossf/scorecard-action` é pinada por SHA (`v2.4.0`) e o upload SARIF
-  usa `github/codeql-action/upload-sarif` (`v4`), ambos atualizados pelo
-  Dependabot (PRD-104).
+- Branch protection ativada em **2026-10-30**: PR (0 aprovações), checks
+  `build (22/24/26)` + `CodeQL`, commits assinados, `enforce_admins=true`;
+  **histórico linear não adotado** (o projeto usa merge commits).
+- A ação `ossf/scorecard-action` está pinada por SHA (`v2.4.4`, imagem GHCR) e
+  o upload SARIF usa `github/codeql-action/upload-sarif` (`v4`), ambos
+  atualizados pelo Dependabot (PRD-104).
 - Regra **`BR-PLAT-004`** (o `BR-PLAT-002` já é da PRD-104).
 
 ## 12. Impacto no cérebro
