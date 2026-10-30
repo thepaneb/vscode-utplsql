@@ -8,7 +8,7 @@
 | Autor | Gil Cleber Barboza |
 | Data | 2026-10-13 |
 | Componente | Distribuição (Marketplace) + documentação de confiança |
-| Versão alvo | 0.23.0 |
+| Versão alvo | 0.24.0 |
 | Arquivos afetados | `docs/brain/16-Seguranca/` (nota nova da política), `docs/brain/60-README/README (extensão).md` (+ variantes geradas), `docs/brain/70-Wiki/`, `docs/brain/10-Projeto`/site (canal de publicação), `PRIVACY.md` (opcional, raiz), `CHANGELOG.md` |
 | Esforço estimado | 1–2 dias |
 | Complexidade | Baixa-Média |
@@ -156,7 +156,7 @@ possivelmente um registro DNS TXT (RF2).
 
 ## 9. Rollout
 
-- **0.23.0** — item de confiança/distribuição; barato e pode ser antecipado se
+- **0.24.0** — item de confiança/distribuição; barato e pode ser antecipado se
   houver auditoria externa planejada.
 - Registrar no `CHANGELOG.md`.
 
@@ -192,14 +192,15 @@ sem `privacyPolicyUrl`.
   design”** até existir um domínio, com a decisão documentada (RF2). O fator
   `unverified-publisher` não fecha sem domínio.
 - **Política:** a fase de repositório (RF1/RF3/RF5 + `PRIVACY.md` + link no
-  README/wiki) pode ser antecipada para **0.19.0** como docs-only; o campo
+  README/wiki) pode ser antecipada como docs-only, se houver folga; o campo
   *Privacy Policy* do portal (RF4) é manual e só então o VSCan deixa de marcar
   `missing-privacy-policy`.
 - **Nota:** mesmo com a política, a nota geral pode continuar **86** enquanto
   `low-popularity` e `unverified-publisher` forem medium; o objetivo é
   transparência, não “verde a qualquer custo”.
-- **Decisão recomendada:** manter a PRD em 0.23.0 para a decisão de
-  publisher/portal, mas executar a fase repo agora (0.19.0) e re-scan depois.
+- **Decisão recomendada:** manter a PRD em **0.24.0** para a decisão de
+  publisher/portal, com a fase repo (RF1/RF3/RF5 + `PRIVACY.md`) executada junto
+  ou antecipada como docs-only; re-scan depois.
 
 ## 12. Impacto no cérebro
 

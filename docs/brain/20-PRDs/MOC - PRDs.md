@@ -34,9 +34,10 @@ npm run sync-prds
 - **0.18.0 — “Fundação: segurança, testes e anti-drift”**: [[Roadmap - 0.18.0 (planejamento)]]
 - **0.19.0 — “Piso Node 24 e runtime moderno”**: [[Roadmap - 0.19.0 (planejamento)]]
 - **0.20.0 — “Observabilidade e desempenho”**: [[Roadmap - 0.20.0 (planejamento)]]
-- **0.21.0 — “Localização (formatação, plurais e paridade)”**: [[Roadmap - 0.21.0 (planejamento)]]
-- **0.22.0 — “Localização (RTL, novos locales e pipeline)”**: [[Roadmap - 0.22.0 (planejamento)]]
+- **0.21.0 — “Arquitetura, configuração e resiliência”**: [[Roadmap - 0.21.0 (planejamento)]]
+- **0.22.0 — “Localização completa”**: [[Roadmap - 0.22.0 (planejamento)]]
 - **0.23.0 — “Docs e qualidade residual”**: [[Roadmap - 0.23.0 (planejamento)]]
+- **0.24.0 — “UX, segurança e distribuição”**: [[Roadmap - 0.24.0 (planejamento)]]
 
 ## Status (gerado)
 
@@ -209,4 +210,5 @@ Detalhe completo (fonte da verdade): [docs/prd/index.md](../../prd/index.md)
 - [[Roadmap - 0.21.0 (planejamento)]]
 - [[Roadmap - 0.22.0 (planejamento)]]
 - [[Roadmap - 0.23.0 (planejamento)]]
+- [[Roadmap - 0.24.0 (planejamento)]]
 <!-- brain:auto:end -->

@@ -8,7 +8,7 @@
 | Autor | Gil Cleber Barboza |
 | Data | 2026-10-30 |
 | Componente | Extensão `paneb.vscode-utplsql` |
-| Versão alvo | 0.23.0 |
+| Versão alvo | 0.24.0 |
 | Arquivos afetados | `src/commands/run.ts`, `src/statusBar.ts`, `src/results.ts`, `src/oracleRunner.ts`, `src/test/unit/results*.test.ts` |
 | Esforço estimado | 2–3 dias |
 | Complexidade | Média |
@@ -98,7 +98,7 @@ formatos de stack Oracle/utPLSQL.
 
 ## 9. Rollout
 
-- **0.23.0** ("Docs e qualidade residual"); `CHANGELOG.md`.
+- **0.24.0** ("UX, segurança e distribuição"); `CHANGELOG.md`.
 - Atualizar wiki `Testing.md`.
 
 ## 10. Critérios de aceite

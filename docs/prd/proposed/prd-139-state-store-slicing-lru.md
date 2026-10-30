@@ -8,7 +8,7 @@
 | Autor | Gil Cleber Barboza |
 | Data | 2026-10-30 |
 | Componente | Extensão `paneb.vscode-utplsql` |
-| Versão alvo | 0.20.0 |
+| Versão alvo | 0.21.0 |
 | Arquivos afetados | `src/state.ts`, `src/coverage.ts`, `src/runner.ts`, `src/test/unit/state.test.ts` |
 | Esforço estimado | 1–2 dias |
 | Complexidade | Média |
@@ -81,7 +81,7 @@ Nenhuma setting nova (teto interno).
 
 ## 9. Rollout
 
-- 0.20.0; registrar no CHANGELOG.
+- 0.21.0; registrar no CHANGELOG.
 
 ## 10. Critérios de aceite
 

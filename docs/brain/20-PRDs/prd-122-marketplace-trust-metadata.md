@@ -4,10 +4,10 @@ id: PRD-122
 aliases: [PRD-122]
 status: proposed
 titulo: "Confiança na distribuição: publisher verificado e política de privacidade"
-versao: "0.23.0"
+versao: "0.24.0"
 data: "2026-10-13"
 autor: "Gil Cleber Barboza"
-versao_titulo: "0.23.0 — Docs e qualidade residual"
+versao_titulo: "0.24.0 — UX, segurança e distribuição"
 verificado: 2026-10-30
 regras: []
 tags: [prd]
@@ -20,7 +20,7 @@ tags: [prd]
 | Autor | Gil Cleber Barboza |
 | Data | 2026-10-13 |
 | Componente | Distribuição (Marketplace) + documentação de confiança |
-| Versão alvo | 0.23.0 |
+| Versão alvo | 0.24.0 |
 | Arquivos afetados | `docs/brain/16-Seguranca/` (nota nova da política), `docs/brain/60-README/README (extensão).md` (+ variantes geradas), `docs/brain/70-Wiki/`, `docs/brain/10-Projeto`/site (canal de publicação), `PRIVACY.md` (opcional, raiz), `CHANGELOG.md` |
 | Esforço estimado | 1–2 dias |
 | Complexidade | Baixa-Média |
@@ -168,7 +168,7 @@ possivelmente um registro DNS TXT (RF2).
 
 ## 9. Rollout
 
-- **0.23.0** — item de confiança/distribuição; barato e pode ser antecipado se
+- **0.24.0** — item de confiança/distribuição; barato e pode ser antecipado se
   houver auditoria externa planejada.
 - Registrar no `CHANGELOG.md`.
 
@@ -204,14 +204,15 @@ sem `privacyPolicyUrl`.
   design”** até existir um domínio, com a decisão documentada (RF2). O fator
   `unverified-publisher` não fecha sem domínio.
 - **Política:** a fase de repositório (RF1/RF3/RF5 + `PRIVACY.md` + link no
-  README/wiki) pode ser antecipada para **0.19.0** como docs-only; o campo
+  README/wiki) pode ser antecipada como docs-only, se houver folga; o campo
   *Privacy Policy* do portal (RF4) é manual e só então o VSCan deixa de marcar
   `missing-privacy-policy`.
 - **Nota:** mesmo com a política, a nota geral pode continuar **86** enquanto
   `low-popularity` e `unverified-publisher` forem medium; o objetivo é
   transparência, não “verde a qualquer custo”.
-- **Decisão recomendada:** manter a PRD em 0.23.0 para a decisão de
-  publisher/portal, mas executar a fase repo agora (0.19.0) e re-scan depois.
+- **Decisão recomendada:** manter a PRD em **0.24.0** para a decisão de
+  publisher/portal, com a fase repo (RF1/RF3/RF5 + `PRIVACY.md`) executada junto
+  ou antecipada como docs-only; re-scan depois.
 
 ## 12. Impacto no cérebro
 
@@ -227,6 +228,6 @@ funcional/wiki (regra de usuário ⇒ wiki). Enquanto `proposed`, `regras: []`.
 <!-- brain:auto:start:conexoes -->
 - 🗺️ [[MOC - PRDs]]
 - 🔗 PRDs relacionados: [[prd-91-doc-parity-localized-distribution|PRD-91]] · [[prd-96-public-landing-page-github-pages|PRD-96]] · [[prd-97-doc-no-site|PRD-97]] · [[prd-110-defensive-hardening|PRD-110]] · [[prd-119-security-posture-scorecard|PRD-119]]
-- 🔗 Mesma versão (0.23.0): [[prd-97-doc-no-site|PRD-97]] · [[prd-99-brain-reuse|PRD-99]] · [[prd-112-error-handling-audit|PRD-112]] · [[prd-116-direct-module-tests|PRD-116]] · [[prd-117-split-script-property-tests|PRD-117]] · [[prd-121-auditable-package-sourcemap|PRD-121]] · [[prd-126-branch-coverage-cli-tests|PRD-126]] · [[prd-132-ux-execution-dryrun-jump|PRD-132]] · [[prd-133-rate-limiting-keybindings|PRD-133]]
-- 🚀 ⬅️ release anterior: [[prd-93-continuous-localization-pipeline|PRD-93 (0.22.0)]]
+- 🔗 Mesma versão (0.24.0): [[prd-121-auditable-package-sourcemap|PRD-121]] · [[prd-132-ux-execution-dryrun-jump|PRD-132]] · [[prd-133-rate-limiting-keybindings|PRD-133]] · [[prd-140-statusbar-settings-grouping|PRD-140]] · [[prd-141-onboarding-walkthrough-accessibility|PRD-141]] · [[prd-142-supply-chain-provenance-typecheck-gate|PRD-142]] · [[prd-143-redos-regex-audit-input-validation|PRD-143]]
+- 🚀 ⬅️ release anterior: [[prd-126-branch-coverage-cli-tests|PRD-126 (0.23.0)]]
 <!-- brain:auto:end -->

@@ -8,7 +8,7 @@
 | Autor | Gil Cleber Barboza |
 | Data | 2026-10-13 |
 | Componente | Empacotamento (`esbuild` + VSIX) |
-| Versão alvo | 0.23.0 |
+| Versão alvo | 0.24.0 |
 | Arquivos afetados | `.vscodeignore`, `esbuild.config.mjs`, `src/test/unit/vsixIgnore.test.ts`, `docs/brain/30-Decisoes/ADR-004 - Bundling com esbuild e higiene do pacote VSIX.md`, `docs/brain/15-Regras/BR-PKG-001 - …md`, `CHANGELOG.md` |
 | Esforço estimado | 0,5 dia |
 | Complexidade | Baixa |
@@ -145,7 +145,7 @@ Nenhuma setting da extensão.
 
 ## 9. Rollout
 
-- **0.23.0** — item residual de empacotamento, sem valor direto ao usuário; pode ser
+- **0.24.0** — item residual de empacotamento, sem valor direto ao usuário; pode ser
   antecipado para qualquer versão se houver auditoria externa planejada.
 - Registrar no `CHANGELOG.md`.
 

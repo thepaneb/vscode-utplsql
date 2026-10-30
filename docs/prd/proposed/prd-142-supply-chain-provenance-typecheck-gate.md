@@ -8,7 +8,7 @@
 | Autor | Gil Cleber Barboza |
 | Data | 2026-10-30 |
 | Componente | CI/CD do repositório (`.github/`) |
-| Versão alvo | 0.20.0 |
+| Versão alvo | 0.24.0 |
 | Arquivos afetados | `.github/workflows/publish.yml`, `.github/workflows/ci.yml`, `package.json` |
 | Esforço estimado | 0,5–1 dia |
 | Complexidade | Baixa |
@@ -71,7 +71,7 @@ Nenhuma setting.
 
 ## 9. Rollout
 
-- 0.20.0; registrar no CHANGELOG.
+- 0.24.0; registrar no CHANGELOG.
 
 ## 10. Critérios de aceite
 

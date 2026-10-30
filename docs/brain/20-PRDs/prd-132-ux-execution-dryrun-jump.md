@@ -4,10 +4,10 @@ id: PRD-132
 aliases: [PRD-132]
 status: proposed
 titulo: "UX de execução: dry-run, perfil ativo e jump-to-failure"
-versao: "0.23.0"
+versao: "0.24.0"
 data: "2026-10-30"
 autor: "Gil Cleber Barboza"
-versao_titulo: "0.23.0 — Docs e qualidade residual"
+versao_titulo: "0.24.0 — UX, segurança e distribuição"
 verificado: "2026-10-30"
 regras: []
 docs: ["CHANGELOG", "wiki/Testing.md"]
@@ -21,7 +21,7 @@ tags: [prd]
 | Autor | Gil Cleber Barboza |
 | Data | 2026-10-30 |
 | Componente | Extensão `paneb.vscode-utplsql` |
-| Versão alvo | 0.23.0 |
+| Versão alvo | 0.24.0 |
 | Arquivos afetados | `src/commands/run.ts`, `src/statusBar.ts`, `src/results.ts`, `src/oracleRunner.ts`, `src/test/unit/results*.test.ts` |
 | Esforço estimado | 2–3 dias |
 | Complexidade | Média |
@@ -111,7 +111,7 @@ formatos de stack Oracle/utPLSQL.
 
 ## 9. Rollout
 
-- **0.23.0** ("Docs e qualidade residual"); `CHANGELOG.md`.
+- **0.24.0** ("UX, segurança e distribuição"); `CHANGELOG.md`.
 - Atualizar wiki `Testing.md`.
 
 ## 10. Critérios de aceite
@@ -141,6 +141,6 @@ reais de stack") com `prds: ["PRD-132"]`, `implementacao:` e `testes:`. Enquanto
 <!-- brain:auto:start:conexoes -->
 - 🗺️ [[MOC - PRDs]]
 - 🔗 PRDs relacionados: [[prd-27-default-keybindings|PRD-27]] · [[prd-29-jump-to-failing-assertion|PRD-29]] · [[prd-34-multi-connection-profiles|PRD-34]]
-- 🔗 Mesma versão (0.23.0): [[prd-97-doc-no-site|PRD-97]] · [[prd-99-brain-reuse|PRD-99]] · [[prd-112-error-handling-audit|PRD-112]] · [[prd-116-direct-module-tests|PRD-116]] · [[prd-117-split-script-property-tests|PRD-117]] · [[prd-121-auditable-package-sourcemap|PRD-121]] · [[prd-122-marketplace-trust-metadata|PRD-122]] · [[prd-126-branch-coverage-cli-tests|PRD-126]] · [[prd-133-rate-limiting-keybindings|PRD-133]]
-- 🚀 ⬅️ release anterior: [[prd-93-continuous-localization-pipeline|PRD-93 (0.22.0)]]
+- 🔗 Mesma versão (0.24.0): [[prd-121-auditable-package-sourcemap|PRD-121]] · [[prd-122-marketplace-trust-metadata|PRD-122]] · [[prd-133-rate-limiting-keybindings|PRD-133]] · [[prd-140-statusbar-settings-grouping|PRD-140]] · [[prd-141-onboarding-walkthrough-accessibility|PRD-141]] · [[prd-142-supply-chain-provenance-typecheck-gate|PRD-142]] · [[prd-143-redos-regex-audit-input-validation|PRD-143]]
+- 🚀 ⬅️ release anterior: [[prd-126-branch-coverage-cli-tests|PRD-126 (0.23.0)]]
 <!-- brain:auto:end -->

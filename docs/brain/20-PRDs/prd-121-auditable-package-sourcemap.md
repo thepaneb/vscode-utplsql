@@ -4,10 +4,10 @@ id: PRD-121
 aliases: [PRD-121]
 status: proposed
 titulo: "Pacote auditável: source map do bundle no VSIX"
-versao: "0.23.0"
+versao: "0.24.0"
 data: "2026-10-13"
 autor: "Gil Cleber Barboza"
-versao_titulo: "0.23.0 — Docs e qualidade residual"
+versao_titulo: "0.24.0 — UX, segurança e distribuição"
 verificado: 2026-10-13
 regras: []
 tags: [prd]
@@ -20,7 +20,7 @@ tags: [prd]
 | Autor | Gil Cleber Barboza |
 | Data | 2026-10-13 |
 | Componente | Empacotamento (`esbuild` + VSIX) |
-| Versão alvo | 0.23.0 |
+| Versão alvo | 0.24.0 |
 | Arquivos afetados | `.vscodeignore`, `esbuild.config.mjs`, `src/test/unit/vsixIgnore.test.ts`, `docs/brain/30-Decisoes/ADR-004 - Bundling com esbuild e higiene do pacote VSIX.md`, `docs/brain/15-Regras/BR-PKG-001 - …md`, `CHANGELOG.md` |
 | Esforço estimado | 0,5 dia |
 | Complexidade | Baixa |
@@ -157,7 +157,7 @@ Nenhuma setting da extensão.
 
 ## 9. Rollout
 
-- **0.23.0** — item residual de empacotamento, sem valor direto ao usuário; pode ser
+- **0.24.0** — item residual de empacotamento, sem valor direto ao usuário; pode ser
   antecipado para qualquer versão se houver auditoria externa planejada.
 - Registrar no `CHANGELOG.md`.
 
@@ -189,6 +189,6 @@ corpo do `ADR-004` a consequência de auditoria. Enquanto `proposed`, `regras: [
 <!-- brain:auto:start:conexoes -->
 - 🗺️ [[MOC - PRDs]]
 - 🔗 PRDs relacionados: [[prd-45-bundle-esbuild|PRD-45]] · [[prd-83-vsix-package-hygiene|PRD-83]]
-- 🔗 Mesma versão (0.23.0): [[prd-97-doc-no-site|PRD-97]] · [[prd-99-brain-reuse|PRD-99]] · [[prd-112-error-handling-audit|PRD-112]] · [[prd-116-direct-module-tests|PRD-116]] · [[prd-117-split-script-property-tests|PRD-117]] · [[prd-122-marketplace-trust-metadata|PRD-122]] · [[prd-126-branch-coverage-cli-tests|PRD-126]] · [[prd-132-ux-execution-dryrun-jump|PRD-132]] · [[prd-133-rate-limiting-keybindings|PRD-133]]
-- 🚀 ⬅️ release anterior: [[prd-93-continuous-localization-pipeline|PRD-93 (0.22.0)]]
+- 🔗 Mesma versão (0.24.0): [[prd-122-marketplace-trust-metadata|PRD-122]] · [[prd-132-ux-execution-dryrun-jump|PRD-132]] · [[prd-133-rate-limiting-keybindings|PRD-133]] · [[prd-140-statusbar-settings-grouping|PRD-140]] · [[prd-141-onboarding-walkthrough-accessibility|PRD-141]] · [[prd-142-supply-chain-provenance-typecheck-gate|PRD-142]] · [[prd-143-redos-regex-audit-input-validation|PRD-143]]
+- 🚀 ⬅️ release anterior: [[prd-126-branch-coverage-cli-tests|PRD-126 (0.23.0)]]
 <!-- brain:auto:end -->

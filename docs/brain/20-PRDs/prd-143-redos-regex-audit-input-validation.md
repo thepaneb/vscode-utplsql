@@ -4,10 +4,10 @@ id: PRD-143
 aliases: [PRD-143]
 status: proposed
 titulo: "Auditoria de ReDoS/regex e validação de entrada"
-versao: "0.20.0"
+versao: "0.24.0"
 data: "2026-10-30"
 autor: "Gil Cleber Barboza"
-versao_titulo: "0.20.0 — Observabilidade e desempenho"
+versao_titulo: "0.24.0 — UX, segurança e distribuição"
 verificado: 2026-10-30
 regras: []
 docs: ["CHANGELOG"]
@@ -21,7 +21,7 @@ tags: [prd]
 | Autor | Gil Cleber Barboza |
 | Data | 2026-10-30 |
 | Componente | Extensão `paneb.vscode-utplsql` |
-| Versão alvo | 0.20.0 |
+| Versão alvo | 0.24.0 |
 | Arquivos afetados | `src/suiteParser.ts`, `src/codelens.ts`, `src/languageIdentity.ts`, `src/scriptRunner.ts`, `src/test/unit/*` |
 | Esforço estimado | 1–2 dias |
 | Complexidade | Média |
@@ -93,7 +93,7 @@ Nenhuma setting nova (limite interno, talvez configurável).
 
 ## 9. Rollout
 
-- 0.20.0; registrar no CHANGELOG.
+- 0.24.0; registrar no CHANGELOG.
 
 ## 10. Critérios de aceite
 
@@ -118,6 +118,6 @@ Superfície listada: CHANGELOG.
 <!-- brain:auto:start:conexoes -->
 - 🗺️ [[MOC - PRDs]]
 - 🔗 PRDs relacionados: [[prd-109-language-identity|PRD-109]] · [[prd-110-defensive-hardening|PRD-110]]
-- 🔗 Mesma versão (0.20.0): [[prd-101-connection-pool-lifecycle|PRD-101]] · [[prd-102-trace-and-perf-instrumentation|PRD-102]] · [[prd-103-incremental-source-reindex|PRD-103]] · [[prd-106-perf-harness|PRD-106]] · [[prd-107-unprivileged-fixture|PRD-107]] · [[prd-120-lean-activation-lazy-setup|PRD-120]] · [[prd-128-event-bus-internal|PRD-128]] · [[prd-129-orchestration-strategy|PRD-129]] · [[prd-130-config-validation-typed-errors|PRD-130]] · [[prd-131-discovery-resilience-cache|PRD-131]] · [[prd-137-wallet-password-binding|PRD-137]] · [[prd-138-organization-strategy-pattern|PRD-138]] · [[prd-139-state-store-slicing-lru|PRD-139]] · [[prd-140-statusbar-settings-grouping|PRD-140]] · [[prd-141-onboarding-walkthrough-accessibility|PRD-141]] · [[prd-142-supply-chain-provenance-typecheck-gate|PRD-142]]
-- 🚀 ⬅️ release anterior: [[prd-127-vscode-floor-1-125|PRD-127 (0.19.0)]] · ➡️ próxima release: [[prd-88-locale-aware-formatting|PRD-88 (0.21.0)]]
+- 🔗 Mesma versão (0.24.0): [[prd-121-auditable-package-sourcemap|PRD-121]] · [[prd-122-marketplace-trust-metadata|PRD-122]] · [[prd-132-ux-execution-dryrun-jump|PRD-132]] · [[prd-133-rate-limiting-keybindings|PRD-133]] · [[prd-140-statusbar-settings-grouping|PRD-140]] · [[prd-141-onboarding-walkthrough-accessibility|PRD-141]] · [[prd-142-supply-chain-provenance-typecheck-gate|PRD-142]]
+- 🚀 ⬅️ release anterior: [[prd-126-branch-coverage-cli-tests|PRD-126 (0.23.0)]]
 <!-- brain:auto:end -->

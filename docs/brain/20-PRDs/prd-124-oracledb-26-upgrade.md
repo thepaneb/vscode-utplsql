@@ -280,6 +280,6 @@ entrada `interno: true`. Na conclusão, cada superfície cita `PRD-124` ou
 <!-- brain:auto:start:conexoes -->
 - 🗺️ [[MOC - PRDs]]
 - 🔗 PRDs relacionados: [[prd-38-connection-pooling|PRD-38]] · [[prd-70-thick-mode-nne|PRD-70]] · [[prd-72-db-test-matrix|PRD-72]] · [[prd-104-ci-supply-chain|PRD-104]] · [[prd-123-oracle-11g-support|PRD-123]]
-- 🔗 Mesma versão (0.19.0): [[prd-47-node-26-toolchain|PRD-47]] · [[prd-95-esm-es2023-node22|PRD-95]] · [[prd-111-decompose-oracle-runner|PRD-111]] · [[prd-115-split-i18n-locales|PRD-115]] · [[prd-125-thick-full-matrix-ci|PRD-125]] · [[prd-127-vscode-floor-1-125|PRD-127]]
+- 🔗 Mesma versão (0.19.0): [[prd-47-node-26-toolchain|PRD-47]] · [[prd-95-esm-es2023-node22|PRD-95]] · [[prd-111-decompose-oracle-runner|PRD-111]] · [[prd-125-thick-full-matrix-ci|PRD-125]] · [[prd-127-vscode-floor-1-125|PRD-127]]
 - 🚀 ⬅️ release anterior: [[prd-123-oracle-11g-support|PRD-123 (0.18.0)]] · ➡️ próxima release: [[prd-101-connection-pool-lifecycle|PRD-101 (0.20.0)]]
 <!-- brain:auto:end -->
