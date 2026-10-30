@@ -36,21 +36,24 @@ Todo post de feature segue o mesmo formato:
 1. **Gancho** — 1 linha, começa com um **emoji** (o mesmo do card).
 2. **Imagem** — `![título](../assets/<id>.png)` logo após o gancho.
 3. **Contexto** — 1 parágrafo do problema.
-4. **Bullets** — 3–4 itens com o destaque em `**negrito**`; emoji só quando o
-   bullet for um ponto de destaque real (não em todos).
+4. **Bullets** — 3–4 itens com o destaque em `**negrito**` e um marcador
+   emoji (🔹/✅/🚀/⚠️) para compensar a formatação pobre do LinkedIn.
 5. **Fecho** — 1–2 frases de benefício.
-6. **Link fixo** (landing page no GitHub Pages) e **hashtags** na última linha.
+6. **Links fixos** — landing page (GitHub Pages), **repositório no GitHub** e
+   **Marketplace** (os três, sempre, com emoji) e **hashtags** na última linha.
 
-Emojis concentram-se no **gancho** e no **badge do card**; nos bullets, use com
-parcimônia (só nos pontos de maior destaque).
+Emojis concentram-se no **gancho**, no **CTA**, nos **links** e no **badge do
+card**; nos bullets, use um marcador (🔹/✅/🚀) para compensar a formatação pobre
+do LinkedIn — sem exagerar a ponto de poluir.
 
 ### Post de release — bloco da matriz de bancos (obrigatório)
 
 Todo post de **release** fecha os destaques com um bullet da **matriz de bancos**
-(como os posts `05`/`06`/`07`/`08`), com:
+(como os posts `05`–`10`), com:
 
-- as **5 versões** validadas: `12c R2`, `18c XE`, `19c EE`, `21c XE`, `23ai Free`
-  (a lista canônica é `scripts/db-matrix/matrix.env`);
+- as **6 versões** validadas: `11.2 (11g, thick-only)`, `12c R2`, `18c XE`,
+  `19c EE`, `21c XE`, `23ai Free` (a lista canônica é
+  `scripts/db-matrix/matrix.env`);
 - os **modos**: **thin** (suíte de integração completa) e **thick** (`--thick`),
   dizendo o que cada um cobre quando os números diferem;
 - o **resultado real** da última execução (X testes por banco, 0 falhas) — nunca
@@ -66,6 +69,16 @@ A execução da matriz não fica num arquivo do repo: registre os números no
 `docs/linkedin/README.md` (nota do release) e, se houver, na nota do vault que
 descreve a versão (ex.: `Roadmap - <versão> (execução)`), para o post ser
 rastreável.
+
+## Cobertura de features (novo padrão)
+
+Toda feature de usuário do README precisa de um **post dedicado** (pt+en). O
+índice canônico feature → post fica em `docs/linkedin/README.md`; ao
+adicionar/mudar uma feature, atualize a tabela, o post, o card e o `en/`.
+
+Ângulos secundários (ex.: statement × views, debug × variações, filtro ×
+comando) são posts complementares, não features novas; a tabela aponta o post
+principal e os secundários.
 
 ## Gatilhos — o que fazer quando o projeto muda
 
@@ -106,7 +119,9 @@ rastreável.
 - **Sem números/locais inventados**: derive do repo.
 - Toda afirmação de implementação deve refletir o estado atual (ex.: não citar
   `type_mapping`/`ut_file_mapper`/CLI/Java — removidos; cobertura de views é via `V$SQL`).
-- Link fixo ao final: a **landing page** (`https://thepaneb.github.io/vscode-utplsql/`);
+- Link fixo ao final: **landing page** (`https://thepaneb.github.io/vscode-utplsql/`),
+  **repositório** (`https://github.com/thepaneb/vscode-utplsql`) e
+  **Marketplace** (`https://marketplace.visualstudio.com/items?itemName=paneb.vscode-utplsql`);
   hashtags na última linha.
 
 ## Obter números
@@ -125,9 +140,12 @@ scripts/db-matrix/run.sh --thick    # thick: Instant Client (thickMode) por banc
 
 - [ ] pt e en existem para cada post novo, com a mesma numeração/slug
 - [ ] card gráfico em `assets/` (par pt/en) e referenciado no topo do post
-- [ ] **post de release**: bullet da matriz de bancos (5 versões + thin/thick) e card com a matriz
+- [ ] **todos os links fixos**: landing page + GitHub + Marketplace
+- [ ] emojis no gancho, no CTA, nos links e como marcador dos bullets
+- [ ] **post de release**: bullet da matriz de bancos (6 versões + thin/thick) e card com a matriz
+- [ ] toda feature do README tem um post (índice em `docs/linkedin/README.md`)
 - [ ] árvore de `docs/linkedin/README.md` reflete as pastas
-- [ ] nenhum termo obsoleto: `grep -rn "build_file_mappings\|type_mapping\|utPLSQL-cli" docs/linkedin`
+- [ ] nenhum termo obsoleto como feature atual: `grep -rn "build_file_mappings\|type_mapping" docs/linkedin` (CLI/Java só podem aparecer como histórico, ex.: release 0.12.0)
 - [ ] números conferem com o repo (testes/PRDs/matriz)
 - [ ] `npm run brain:sync && npm run brain:check` (índice do vault)
 - [ ] `git status` limpo (a pasta é gitignored)
