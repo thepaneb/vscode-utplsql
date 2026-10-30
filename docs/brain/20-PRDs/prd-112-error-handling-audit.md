@@ -82,6 +82,12 @@ explícito justificando a supressão).
   quando a falha é irrelevante para o usuário e o custo de logar é maior que o
   benefício; caso contrário, logar a causa em nível apropriado"*.
 
+### RF4 — Redaction em `scriptRunner` e `debugger`
+- Garantir que todo path de erro em `src/scriptRunner.ts`, `src/debugger.ts` e
+  `src/dbmsDebug.ts` passe por `redactConnection`/`maskConnection`.
+- Proibir `String(e)` cru em logs desses módulos; adicionar testes que injetam
+  connection com senha e verificam mascaramento.
+
 **Não-funcionais**
 - RNF1 — Nenhuma mensagem de log expõe connection/credencial (SEC-002).
 - RNF2 — Sem regressão de comportamento; cobertura ≥ thresholds.

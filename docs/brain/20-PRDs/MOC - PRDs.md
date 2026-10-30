@@ -41,7 +41,7 @@ npm run sync-prds
 ## Status (gerado)
 
 <!-- brain:auto:start:prd-summary -->
-- 📝 Propostos: **35**
+- 📝 Propostos: **42**
 - 🔵 Aprovados: **0**
 - 🟡 Em desenvolvimento: **0**
 - 🟢 Concluídos: **98**
@@ -107,7 +107,14 @@ Detalhe completo (fonte da verdade): [docs/prd/index.md](../../prd/index.md)
 - [[prd-131-discovery-resilience-cache]] — `PRD-131`
 - [[prd-132-ux-execution-dryrun-jump]] — `PRD-132`
 - [[prd-133-rate-limiting-keybindings]] — `PRD-133`
+- [[prd-137-wallet-password-binding]] — `PRD-137`
+- [[prd-138-organization-strategy-pattern]] — `PRD-138`
+- [[prd-139-state-store-slicing-lru]] — `PRD-139`
 - [[prd-14-test-schema-packages]] — `PRD-14`
+- [[prd-140-statusbar-settings-grouping]] — `PRD-140`
+- [[prd-141-onboarding-walkthrough-accessibility]] — `PRD-141`
+- [[prd-142-supply-chain-provenance-typecheck-gate]] — `PRD-142`
+- [[prd-143-redos-regex-audit-input-validation]] — `PRD-143`
 - [[prd-15-integration-tests-real-db]] — `PRD-15`
 - [[prd-16-integration-test-invocation-modes]] — `PRD-16`
 - [[prd-17-java-args-setting]] — `PRD-17`
