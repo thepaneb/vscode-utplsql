@@ -33,7 +33,8 @@ idempotente e sem conexão durante a ativação**.
   "onStartupFinished",
   "workspaceContains:**/*.pks",
   "workspaceContains:**/*.pkb",
-  "workspaceContains:**/*.sql"
+  "workspaceContains:**/*.sql",
+  "onLanguage:plsql"
 ]
 ```
 
@@ -181,6 +182,22 @@ partir de `contributes.commands`, `contributes.debuggers` e `contributes.languag
   quando o aviso de setup aparece.)
 - A PRD-101 pode absorver parte do RF2/RF3, ou mantém-se a separação
   (101 = pool ocioso, 120 = ativação/probe)?
+
+## Reavaliação (2026-10-30)
+
+O re-scan do **VSCan 0.18.0** confirmou o achado: `onStartupFinished` continua
+presente, a extensão ativa em qualquer workspace e `activate()` ainda chama
+`validateOnActivation()` (conexão Oracle em *fire-and-forget*). O
+`activationEvents` atual tem **5** entradas (inclui `onLanguage:plsql`; o texto
+acima listava 4).
+
+A PRD segue **válida e sem bloqueios** (a PRD-109, que cobre identidade de
+linguagem, já foi concluída). **Prioridade recomendada:** subir para o **primeiro
+item da 0.20.0**, antes de 107/101/102/103/106 — é uma correção de
+permissão/startup de 1–2 dias, independente das demais, e resolve o “Broad
+Activation” (medium) do VSCan. O `workspaceContains:**/*.sql` pode ser decidido
+com a medição da PRD-106; o ganho principal é remover `onStartupFinished` e a
+conexão na ativação.
 
 ## 12. Impacto no cérebro
 
