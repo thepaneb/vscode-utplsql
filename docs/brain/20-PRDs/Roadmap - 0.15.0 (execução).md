@@ -49,12 +49,12 @@ que eles habilitam, runtime/docs por último. Detalhe em cada nota `Roadmap - *`
 | 0.16.0 | Produtividade e resultados | 56–59, 100 |
 | 0.17.0 | UX de editor e cobertura | 105, 108, 109 |
 | 0.18.0 | Fundação: segurança, testes e anti-drift | 98, 104, 110, 113, 114 |
-| 0.19.0 | Refatoração de fundo | 111, 115 |
+| 0.19.0 | Piso Node 24 e runtime moderno | 47, 95, 111, 115, 124, 125, 127 |
 | 0.20.0 | Observabilidade e desempenho | 101–103, 106, 107 |
 | 0.21.0 | Localização (formatação, plurais e paridade) | 88–91 |
 | 0.22.0 | Localização (RTL, novos locales e pipeline) | 92–93 |
-| 0.23.0 | Runtime, docs e qualidade residual | 95, 97, 99, 112, 116, 117 |
-| **A definir** | Toolchain (Node 26, **pós-LTS ~out/2026**; liberação prevista 2026-10-28) | 47 |
+| 0.23.0 | Docs e qualidade residual | 97, 99, 112, 116, 117, 121, 122, 126 |
+| **0.19.0** | Toolchain (Node 24; Node 26 no CI) — absorvido pela 0.19.0 | 47 |
 
 ## Fluxo de execução (por PRD)
 
@@ -79,10 +79,10 @@ Release **0.15.0 “Tags e UX de execução”** publicada. Os **7 PRDs** do esc
 (50, 51, 52, 53, 54, 55 e 96) estão `completed` com `versao: "0.15.0"`;
 `package.json` = `0.15.0` e `CHANGELOG.md` com a seção `## 0.15.0`.
 Integração + matriz Oracle (thin/thick) verdes; publicação via **GitHub
-release** (`publish.yml`) e post de release. Roadmap **encerrado** — o próximo
-tema é **0.16.0** (PRD-95/PRD-97).
+release** (`publish.yml`) e post de release. Roadmap **encerrado** — o roadmap
+vigente segue na 0.19.0.
 
 ## Relacionado
 
 - [[MOC - PRDs]]
-- [[prd-47-node-26-toolchain|PRD-47]] (A definir) · [[prd-95-esm-es2023-node22|PRD-95]] (0.16.0)
+- [[prd-47-node-26-toolchain|PRD-47]] (0.19.0) · [[prd-95-esm-es2023-node22|PRD-95]] (0.19.0)

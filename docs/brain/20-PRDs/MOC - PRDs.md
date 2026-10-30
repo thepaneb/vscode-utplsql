@@ -1,7 +1,7 @@
 ---
 tipo: moc
 status: ativo
-verificado: 2026-09-23
+verificado: 2026-10-30
 tags: [moc, prd]
 ---
 
@@ -32,16 +32,16 @@ npm run sync-prds
 - **0.16.0 — “Produtividade e resultados”**: [[Roadmap - 0.16.0 (execução)]]
 - **0.17.0 — “UX de editor e cobertura”**: [[Roadmap - 0.17.0 (execução)]]
 - **0.18.0 — “Fundação: segurança, testes e anti-drift”**: [[Roadmap - 0.18.0 (planejamento)]]
-- **0.19.0 — “Refatoração de fundo”**: [[Roadmap - 0.19.0 (planejamento)]]
+- **0.19.0 — “Piso Node 24 e runtime moderno”**: [[Roadmap - 0.19.0 (planejamento)]]
 - **0.20.0 — “Observabilidade e desempenho”**: [[Roadmap - 0.20.0 (planejamento)]]
 - **0.21.0 — “Localização (formatação, plurais e paridade)”**: [[Roadmap - 0.21.0 (planejamento)]]
 - **0.22.0 — “Localização (RTL, novos locales e pipeline)”**: [[Roadmap - 0.22.0 (planejamento)]]
-- **0.23.0 — “Runtime, docs e qualidade residual”**: [[Roadmap - 0.23.0 (planejamento)]]
+- **0.23.0 — “Docs e qualidade residual”**: [[Roadmap - 0.23.0 (planejamento)]]
 
 ## Status (gerado)
 
 <!-- brain:auto:start:prd-summary -->
-- 📝 Propostos: **28**
+- 📝 Propostos: **35**
 - 🔵 Aprovados: **0**
 - 🟡 Em desenvolvimento: **0**
 - 🟢 Concluídos: **98**
@@ -99,7 +99,14 @@ Detalhe completo (fonte da verdade): [docs/prd/index.md](../../prd/index.md)
 - [[prd-124-oracledb-26-upgrade]] — `PRD-124`
 - [[prd-125-thick-full-matrix-ci]] — `PRD-125`
 - [[prd-126-branch-coverage-cli-tests]] — `PRD-126`
+- [[prd-127-vscode-floor-1-125]] — `PRD-127`
+- [[prd-128-event-bus-internal]] — `PRD-128`
+- [[prd-129-orchestration-strategy]] — `PRD-129`
 - [[prd-13-oracle-infra]] — `PRD-13`
+- [[prd-130-config-validation-typed-errors]] — `PRD-130`
+- [[prd-131-discovery-resilience-cache]] — `PRD-131`
+- [[prd-132-ux-execution-dryrun-jump]] — `PRD-132`
+- [[prd-133-rate-limiting-keybindings]] — `PRD-133`
 - [[prd-14-test-schema-packages]] — `PRD-14`
 - [[prd-15-integration-tests-real-db]] — `PRD-15`
 - [[prd-16-integration-test-invocation-modes]] — `PRD-16`

@@ -135,7 +135,7 @@ Nenhuma setting/comando da extensão. Eventual script de doc (nenhum obrigatóri
 
 ## 9. Rollout
 
-- **0.23.0** (runtime, docs e qualidade residual; junto de PRD-95 e PRD-97).
+- **0.23.0** (docs e qualidade residual; junto de PRD-97).
 - Registrar no `CHANGELOG.md`; opcional post de feature no LinkedIn.
 - Publicação via **GitHub release** (`publish.yml`), como sempre.
 

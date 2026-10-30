@@ -226,5 +226,5 @@ com `prds: ["PRD-110"]`, `implementacao:` (arquivo/linha) e `testes:`. Enquanto
 - 🎯 RF3 — Scripts de desenvolvimento sem injeção/log de segredo → [[BR-CONN-020 - Credencial é redigida em todo log do ciclo de conexão|BR-CONN-020]]
 - 🎯 RNF2 — Novos helpers puros cobertos por teste unitário; thresholds do c8 → [[BR-QUAL-001 - Thresholds de cobertura (c8) sao globais e bloqueiam o CI|BR-QUAL-001]]
 - 🎯 RNF3 — `SECURITY.md` atualizado para refletir os invariantes (identificador → [[BR-CONN-020 - Credencial é redigida em todo log do ciclo de conexão|BR-CONN-020]]
-- 🚀 ⬅️ release anterior: [[prd-109-language-identity|PRD-109 (0.17.0)]] · ➡️ próxima release: [[prd-111-decompose-oracle-runner|PRD-111 (0.19.0)]]
+- 🚀 ⬅️ release anterior: [[prd-109-language-identity|PRD-109 (0.17.0)]] · ➡️ próxima release: [[prd-47-node-26-toolchain|PRD-47 (0.19.0)]]
 <!-- brain:auto:end -->

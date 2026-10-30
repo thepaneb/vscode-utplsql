@@ -4,7 +4,7 @@ status: ativo
 titulo: "PRDs — vscode-utplsql"
 publicar: docs/prd/index.md
 origem: ["MOC - PRDs"]
-verificado: 2026-09-23
+verificado: 2026-10-30
 tags: [prd, indice]
 ---
 

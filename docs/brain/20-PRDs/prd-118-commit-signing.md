@@ -183,5 +183,5 @@ Ao concluir, criar a regra que materializa a PRD, por exemplo uma `BR-PLAT-*`
 - 🎯 RF1 — Assinatura local (SSH, preferida) → [[BR-PLAT-003 - Commits no main são assinados e verificados|BR-PLAT-003]]
 - 🎯 RF2 — Branch protection do `main` → [[BR-PLAT-003 - Commits no main são assinados e verificados|BR-PLAT-003]]
 - 🎯 RF3 — Documentação → [[BR-PLAT-003 - Commits no main são assinados e verificados|BR-PLAT-003]]
-- 🚀 ⬅️ release anterior: [[prd-109-language-identity|PRD-109 (0.17.0)]] · ➡️ próxima release: [[prd-111-decompose-oracle-runner|PRD-111 (0.19.0)]]
+- 🚀 ⬅️ release anterior: [[prd-109-language-identity|PRD-109 (0.17.0)]] · ➡️ próxima release: [[prd-47-node-26-toolchain|PRD-47 (0.19.0)]]
 <!-- brain:auto:end -->

@@ -176,5 +176,5 @@ coberto pelo inventário de APIs") com `prds: ["PRD-114"]`, `implementacao:` e
 - 🎯 RF2 — Redução de `any` nos testes → [[BR-TEST-003 - Stub de vscode é tipado e coberto pelo inventário de APIs|BR-TEST-003]]
 - 🎯 RF3 — Rede de segurança → [[BR-TEST-003 - Stub de vscode é tipado e coberto pelo inventário de APIs|BR-TEST-003]]
 - 🎯 RNF2 — Cobertura ≥ thresholds; o stub conta como código de teste (excluído do → [[BR-QUAL-001 - Thresholds de cobertura (c8) sao globais e bloqueiam o CI|BR-QUAL-001]]
-- 🚀 ⬅️ release anterior: [[prd-109-language-identity|PRD-109 (0.17.0)]] · ➡️ próxima release: [[prd-111-decompose-oracle-runner|PRD-111 (0.19.0)]]
+- 🚀 ⬅️ release anterior: [[prd-109-language-identity|PRD-109 (0.17.0)]] · ➡️ próxima release: [[prd-47-node-26-toolchain|PRD-47 (0.19.0)]]
 <!-- brain:auto:end -->

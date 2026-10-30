@@ -234,5 +234,5 @@ escopadas; dependências auditadas no CI"), com `prds: ["PRD-104"]`,
 - 🎯 RF1 — Dependabot → [[BR-PLAT-002 - CI usa actions pinadas por SHA, permissões mínimas e dependências auditadas|BR-PLAT-002]]
 - 🎯 RF3 — Pin e permissões → [[BR-PLAT-002 - CI usa actions pinadas por SHA, permissões mínimas e dependências auditadas|BR-PLAT-002]]
 - 🎯 RF4 — Auditoria de dependências → [[BR-PLAT-002 - CI usa actions pinadas por SHA, permissões mínimas e dependências auditadas|BR-PLAT-002]]
-- 🚀 ⬅️ release anterior: [[prd-109-language-identity|PRD-109 (0.17.0)]] · ➡️ próxima release: [[prd-111-decompose-oracle-runner|PRD-111 (0.19.0)]]
+- 🚀 ⬅️ release anterior: [[prd-109-language-identity|PRD-109 (0.17.0)]] · ➡️ próxima release: [[prd-47-node-26-toolchain|PRD-47 (0.19.0)]]
 <!-- brain:auto:end -->

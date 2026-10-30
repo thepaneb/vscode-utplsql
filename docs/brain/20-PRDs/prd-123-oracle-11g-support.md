@@ -391,5 +391,5 @@ Enquanto `proposed`, `regras: []` (derivado pelo `brain:sync` na conclusão).
 - 🎯 RNF2 — **11g é thick-only por desenho**: nenhum caminho cai em thin → [[BR-CONN-019 - Oracle 11g (11.2) exige thick mode; thin tem piso 12.1|BR-CONN-019]]
 - 🎯 RNF3 — **Infra local** (nada no VSIX, nada no CI); imagem 11g fixada por → [[BR-TEST-001 - Matriz de bancos Oracle cobre 12.2-23ai em thin e thick|BR-TEST-001]]
 - 🎯 RNF4 — **Paridade documental**: só o vault é editado; `brain:build`, `docs:ch → [[BR-DOC-002 - PRD concluída vincula docs e registro de features|BR-DOC-002]]
-- 🚀 ⬅️ release anterior: [[prd-109-language-identity|PRD-109 (0.17.0)]] · ➡️ próxima release: [[prd-111-decompose-oracle-runner|PRD-111 (0.19.0)]]
+- 🚀 ⬅️ release anterior: [[prd-109-language-identity|PRD-109 (0.17.0)]] · ➡️ próxima release: [[prd-47-node-26-toolchain|PRD-47 (0.19.0)]]
 <!-- brain:auto:end -->

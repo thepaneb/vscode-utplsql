@@ -164,5 +164,5 @@ não só `src/`) com `prds: ["PRD-113"]`, `implementacao:` e `testes:`. Enquanto
 - ⚙️ Pipelines: [[PIPE-ci - CI|PIPE-ci]]
 - 🎯 RF1 — Escopo do lint → [[BR-QUAL-002 - Formatacao e lint do codigo sao do Biome|BR-QUAL-002]]
 - 🎯 RF2 — Normalização → [[BR-QUAL-002 - Formatacao e lint do codigo sao do Biome|BR-QUAL-002]]
-- 🚀 ⬅️ release anterior: [[prd-109-language-identity|PRD-109 (0.17.0)]] · ➡️ próxima release: [[prd-111-decompose-oracle-runner|PRD-111 (0.19.0)]]
+- 🚀 ⬅️ release anterior: [[prd-109-language-identity|PRD-109 (0.17.0)]] · ➡️ próxima release: [[prd-47-node-26-toolchain|PRD-47 (0.19.0)]]
 <!-- brain:auto:end -->
