@@ -7,9 +7,10 @@
   descoberta portátil (sem `FETCH FIRST`). O thin do node-oracledb tem piso
   12.1; o 11g exige `utplsql.oracleClientMode: thick`.
 - **Postura de segurança verificável (PRD-118/PRD-119)**: política de commits
-  assinados e checks obrigatórios documentada (**ativação pendente**), OSSF
-  Scorecard publicado semanalmente (`publish_results: true`) e `main` com
-  PR/revisão e sem force-push (checks/assinatura ainda não exigidos).
+  assinados e checks obrigatórios **ativa** (30/10/2026), OSSF Scorecard
+  publicado semanalmente (`publish_results: true`) e `main` protegido por PR
+  (0 aprovações), `build (22/24/26)` + CodeQL, commits assinados e sem
+  force-push/deleção; histórico linear não adotado (merge commits).
 - **Fundação (PRD-98, PRD-104, PRD-110, PRD-113, PRD-114)**: hardening
   defensivo (identificador de schema, redaction, scripts), cadeia de suprimentos
   do CI (Dependabot, pin por SHA, permissions, audit), escopo do lint ampliado,
