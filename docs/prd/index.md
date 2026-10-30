@@ -216,6 +216,13 @@ notas `prd-*`. O índice navegável do vault é a [[MOC - PRDs]].
 | 131 | [Resiliência na descoberta: retry, cache e limpeza de Memento](proposed/prd-131-discovery-resilience-cache.md) | 0.20.0 | 2026-10-30 |
 | 132 | [UX de execução: dry-run, perfil ativo e jump-to-failure](proposed/prd-132-ux-execution-dryrun-jump.md) | 0.23.0 | 2026-10-30 |
 | 133 | [Rate limiting e granularidade de atalhos](proposed/prd-133-rate-limiting-keybindings.md) | 0.23.0 | 2026-10-30 |
+| 137 | [Vincular senha da wallet ao connection do perfil (PRD-81 RF3 para wallet)](proposed/prd-137-wallet-password-binding.md) | 0.20.0 | 2026-10-30 |
+| 138 | [Padrão Strategy para organização da árvore de testes (file/schema/tag)](proposed/prd-138-organization-strategy-pattern.md) | 0.20.0 | 2026-10-30 |
+| 139 | [Fatiamento do TestStateManager e LRU no coverageStore](proposed/prd-139-state-store-slicing-lru.md) | 0.20.0 | 2026-10-30 |
+| 140 | [Indicador de conexão/perfil no status bar e agrupamento de settings](proposed/prd-140-statusbar-settings-grouping.md) | 0.20.0 | 2026-10-30 |
+| 141 | [Walkthrough de onboarding e auditoria de acessibilidade](proposed/prd-141-onboarding-walkthrough-accessibility.md) | 0.20.0 | 2026-10-30 |
+| 142 | [Proveniência (SLSA) no release e gate de typecheck no CI](proposed/prd-142-supply-chain-provenance-typecheck-gate.md) | 0.20.0 | 2026-10-30 |
+| 143 | [Auditoria de ReDoS/regex e validação de entrada](proposed/prd-143-redos-regex-audit-input-validation.md) | 0.20.0 | 2026-10-30 |
 <!-- prd:roadmap:end -->
 
 ---
@@ -362,6 +369,13 @@ docs/prd/
 │   ├── prd-131-discovery-resilience-cache.md
 │   ├── prd-132-ux-execution-dryrun-jump.md
 │   ├── prd-133-rate-limiting-keybindings.md
+│   ├── prd-137-wallet-password-binding.md
+│   ├── prd-138-organization-strategy-pattern.md
+│   ├── prd-139-state-store-slicing-lru.md
+│   ├── prd-140-statusbar-settings-grouping.md
+│   ├── prd-141-onboarding-walkthrough-accessibility.md
+│   ├── prd-142-supply-chain-provenance-typecheck-gate.md
+│   ├── prd-143-redos-regex-audit-input-validation.md
 ```
 <!-- prd:estrutura:end -->
 

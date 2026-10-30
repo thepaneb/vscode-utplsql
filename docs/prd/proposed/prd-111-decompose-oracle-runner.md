@@ -79,6 +79,12 @@ campos *flat*. Esta PRD **decompõe a função em etapas coesas e testáveis** e
 - Documentar o novo mapa de funções no cabeçalho do módulo (comentário), ligando
   cada etapa ao requisito de origem.
 
+### RF4 — Seams para testabilidade (injeção de dependência)
+- Introduzir interface `OracleClient`/`ConnectionProvider` injetada em
+  `executeRunOracle`/`OracleRunOptions`, com `loadOracledbMod()` como default.
+- Permitir testes de contrato com fake `oracledb` sem banco real.
+- Facilitar futura troca de driver sem tocar o orquestrador.
+
 **Não-funcionais**
 - RNF1 — Sem mudança de comportamento; suíte atual permanece verde.
 - RNF2 — Cobertura ≥ thresholds do `.c8rc`; nenhuma linha nova sem teste.
