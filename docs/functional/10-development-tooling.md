@@ -1,7 +1,7 @@
 <!-- GENERATED FROM docs/brain/10-Projeto/Funcional/10-development-tooling.md — DO NOT EDIT -->
 # 10 — Development Tooling
 
-<!-- prd:PRD-127 --> <!-- prd:PRD-47 --> <!-- prd:PRD-95 -->
+<!-- prd:PRD-127 --> <!-- prd:PRD-47 --> <!-- prd:PRD-95 --> <!-- prd:PRD-124 -->
 
 Ferramentas e infraestrutura de desenvolvimento do projeto.
 

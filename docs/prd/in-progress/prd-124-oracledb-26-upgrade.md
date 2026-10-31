@@ -4,7 +4,7 @@
 
 | Campo | Valor |
 |---|---|
-| Status | Aprovado |
+| Status | Em desenvolvimento |
 | Autor | Gil Cleber Barboza |
 | Data | 2026-10-29 |
 | Componente | Driver Oracle (`oracledb`) + packaging dos VSIX + matriz de bancos |
@@ -89,6 +89,27 @@ glues que não pertencem ao alvo usando `oracledb-<versão>-<target>.node`; o
 naming do v26 é o mesmo, mas o fluxo precisa ser exercitado com a versão nova
 (26.0.0) e o tamanho dos VSIX precisa ser medido.
 
+### 2.6 RF0 — GO/NO-GO (2026-10-31)
+
+Spike `spike/oracledb-26` (branch descartável, só o bump de `oracledb@26.0.0` +
+`@types/oracledb@26.0.1`):
+
+| Eixo | Resultado |
+|---|---|
+| `typecheck` / `lint` | verdes (sem `any` novo) |
+| Unitários / cobertura | **1486 testes / 1482 pass / 4 skip**; **98,01/93,75/97,95** |
+| 23free full thin + multiroot | **passou** (125 + 6) |
+| 11g thick (IC 23.0) | **passou** (4/4: thickMode + legacy/cobertura/descoberta) |
+| 12.2 smoke | **17 passing** |
+| 21xe smoke | **17 passing** |
+
+**Decisão: GO.** O v26 conecta no 11g thick com IC 23.0 e não regrediu
+streaming/cobertura/descoberta. A falha inicial de `DPI-1047` era ambiente: o
+`.env.dbmatrix` tinha a **barra invertida do caminho Windows sem quotes** e o
+`source` do `run.sh` a consumia; com o caminho entre aspas o thick inicializou.
+Registrar essa pegadinha no `wiki/Troubleshooting`/`Contributing` (caminho
+Windows do `ORACLE_CLIENT_LIB_DIR` deve ir entre aspas no `.env.dbmatrix`).
+
 ## 3. Objetivos / Não-objetivos
 
 **Objetivos**
@@ -153,6 +174,12 @@ Rodar o empacotamento dos 9 alvos e verificar:
 
 Atualizar os fixtures de `packageTarget.test.ts` para a versão 26.0.0.
 
+**Evidência (2026-10-31):** os 9 VSIX foram gerados com `oracledb-26.0.0`:
+`win32-x64` 1.231.427 B, `linux-x64` 1.188.313 B, `linux-arm64` 1.178.081 B,
+`darwin-arm64` 1.134.578 B (cada um só com o `.node` do alvo) e os 5 thin-only
+em ~947.704 B (sem `.node`). O VSIX universal 0.19.0 ficou em 1.863.487 B vs
+1.858.770 B do 0.18.0 (**+0,25%**, dentro dos 10%).
+
 ### RF4 — Matriz completa
 
 Além do RF0, rodar a suíte completa no **23free** (thin + multiroot) e o e2e
@@ -164,7 +191,9 @@ ou **18xe**. A matriz continua local (não vai ao CI).
 - README EN (nota do vault) + 23 variantes: piso de Client 19c no thick.
 - `wiki/Database-requirements.md`: requisito de Client/Instant Client.
 - `wiki/Troubleshooting.md`: `libclntsh.so` e erros de client antigo.
-- `wiki/Contributing.md`/`Tests.md`: matriz e eixo thick.
+- `wiki/Contributing.md`/`Tests.md`: matriz e eixo thick; caminho Windows do
+  `ORACLE_CLIENT_LIB_DIR` entre aspas no `.env.dbmatrix` (o `source` consome
+  backslashes sem quotes e o thick falha com `DPI-1047`).
 - `NFR-001`: versão do driver e piso de Client.
 - `Registro de features`: entrada `interno: true` (enabler).
 - `CHANGELOG.md`: seção 0.19.0 com a mudança do driver e o requisito de

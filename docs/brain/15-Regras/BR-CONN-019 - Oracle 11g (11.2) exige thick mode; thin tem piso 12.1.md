@@ -7,11 +7,11 @@ dominio: conexao
 status: ativo
 severidade: media
 fonte: codigo
-verificado: 2026-10-29
+verificado: 2026-10-31
 implementacao: ["scripts/db-matrix/matrix.env", "scripts/db-matrix/run.sh", "scripts/db-matrix/parse-version.cjs", "src/oracleClient.ts", "src/discovery.ts"]
 testes: ["src/test/unit/matrixConfig.test.ts", "src/test/unit/discovery.test.ts", "src/test/integration/thickLegacyE2E.test.ts"]
-prds: ["PRD-123"]
-requisitos: ["PRD-123/RF1", "PRD-123/RF3", "PRD-123/RF4", "PRD-123/RF5", "PRD-123/RNF2"]
+prds: ["PRD-123", "PRD-124"]
+requisitos: ["PRD-123/RF1", "PRD-123/RF3", "PRD-123/RF4", "PRD-123/RF5", "PRD-123/RNF2", "PRD-124/RF2"]
 tags: ["conexao", "oracle", "teste"]
 ---
 ## Enunciado
@@ -26,7 +26,9 @@ antes de subir o Docker. O 11g usa utPLSQL **3.1.x** (`v3.1.14`) e cobertura via
 
 Imagem `gvenzl/oracle-xe:11-slim` (pinada por digest), `ORACLE_PASSWORD`,
 `DB_DATA_DIR=/u01/app/oracle/oradata` e Instant Client 19c+ (global ou
-`ORACLE_CLIENT_LIB_DIR_11XE`).
+`ORACLE_CLIENT_LIB_DIR_11XE`). Desde o node-oracledb 26, o thick carrega
+`libclntsh.so`/`libclntsh.dylib` pelo **nome padrão**; nomes versionados
+(`libclntsh.so.19.1`) não são aceitos.
 
 ## Exceções
 
@@ -42,9 +44,9 @@ oferece; a matriz local é o gate (imagens grandes, fora do CI).
 
 <!-- brain:auto:start:conexoes -->
 - 🗺️ [[MOC - Regras]]
-- 📄 PRDs: [[prd-123-oracle-11g-support|PRD-123]]
-- 🎯 Requisitos: [[prd-123-oracle-11g-support|PRD-123 RF1]] · [[prd-123-oracle-11g-support|PRD-123 RF3]] · [[prd-123-oracle-11g-support|PRD-123 RF4]] · [[prd-123-oracle-11g-support|PRD-123 RF5]] · [[prd-123-oracle-11g-support|PRD-123 RNF2]]
+- 📄 PRDs: [[prd-123-oracle-11g-support|PRD-123]] · [[prd-124-oracledb-26-upgrade|PRD-124]]
+- 🎯 Requisitos: [[prd-123-oracle-11g-support|PRD-123 RF1]] · [[prd-123-oracle-11g-support|PRD-123 RF3]] · [[prd-123-oracle-11g-support|PRD-123 RF4]] · [[prd-123-oracle-11g-support|PRD-123 RF5]] · [[prd-123-oracle-11g-support|PRD-123 RNF2]] · [[prd-124-oracledb-26-upgrade|PRD-124 RF2]]
 - 🧩 Código: [[COD - matrix.env]] · [[COD - run.sh]] · [[COD - parse-version.cjs]] · [[COD - oracleClient.ts]] · [[COD - discovery.ts]]
 - 🧪 Testes: [[TST - matrixConfig.test.ts]] · [[TST - discovery.test.ts]] · [[TST - thickLegacyE2E.test.ts]]
-- ↩️ Referenciada por: [[Database-requirements]] · [[NFR-001 - Compatibilidade com Oracle e piso do utPLSQL|NFR-001]] · [[prd-123-oracle-11g-support|PRD-123]]
+- ↩️ Referenciada por: [[BR-CONN-021 - Major do driver Oracle so entra com matriz e packaging validados|BR-CONN-021]] · [[Database-requirements]] · [[NFR-001 - Compatibilidade com Oracle e piso do utPLSQL|NFR-001]] · [[prd-123-oracle-11g-support|PRD-123]] · [[prd-124-oracledb-26-upgrade|PRD-124]]
 <!-- brain:auto:end -->
