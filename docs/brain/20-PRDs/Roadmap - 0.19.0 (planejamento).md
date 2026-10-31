@@ -140,6 +140,13 @@ merge).
   `oracleRunCall.test.ts`/`oraclePoll.test.ts`. Suíte **1486/1482 pass/4 skip**,
   cobertura **98,01/93,75/97,95**. O **RF2** (agrupar `OracleRunOptions`) foi
   adiado para a 0.20.0 (mecânico, 18 arquivos de teste).
+- **PRD-124 (GO)** (2026-10-31): spike **GO** com `oracledb@26.0.0` +
+  `@types/oracledb@26.0.1`; 23free full (125+6), 11g thick (4/4), 12.2/21xe
+  smoke (17 cada); unitários/cobertura verdes. Os 9 VSIX foram gerados (glue
+  correta em 4 alvos, 5 thin-only sem `.node`); universal **1.863.487 B vs
+  1.858.770 B** do 0.18.0 (**+0,25%**). Regra **`BR-CONN-021`**; `BR-CONN-019`
+  ganhou o requisito de `libclntsh.so`/`.dylib` com nome padrão. A falha inicial
+  de `DPI-1047` era o `.env.dbmatrix` sem quotes no caminho Windows.
 
 ## Fluxo de execução (por PRD)
 

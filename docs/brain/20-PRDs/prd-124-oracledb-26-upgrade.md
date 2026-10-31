@@ -2,14 +2,14 @@
 tipo: prd
 id: PRD-124
 aliases: [PRD-124]
-status: approved
+status: in-progress
 titulo: "Upgrade para node-oracledb 26 com matriz e packaging validados"
 versao: "0.19.0"
 data: "2026-10-29"
 autor: "Gil Cleber Barboza"
 versao_titulo: "0.19.0 — Piso Node 24 e runtime moderno"
 verificado: "2026-10-31"
-regras: []
+regras: ["BR-CONN-019", "BR-CONN-021", "BR-TEST-001"]
 docs: ["CHANGELOG", "README", "wiki/Database-requirements.md", "wiki/Troubleshooting.md", "wiki/Contributing.md", "functional/10-development-tooling.md"]
 tags: [prd]
 ---
@@ -102,6 +102,27 @@ glues que não pertencem ao alvo usando `oracledb-<versão>-<target>.node`; o
 naming do v26 é o mesmo, mas o fluxo precisa ser exercitado com a versão nova
 (26.0.0) e o tamanho dos VSIX precisa ser medido.
 
+### 2.6 RF0 — GO/NO-GO (2026-10-31)
+
+Spike `spike/oracledb-26` (branch descartável, só o bump de `oracledb@26.0.0` +
+`@types/oracledb@26.0.1`):
+
+| Eixo | Resultado |
+|---|---|
+| `typecheck` / `lint` | verdes (sem `any` novo) |
+| Unitários / cobertura | **1486 testes / 1482 pass / 4 skip**; **98,01/93,75/97,95** |
+| 23free full thin + multiroot | **passou** (125 + 6) |
+| 11g thick (IC 23.0) | **passou** (4/4: thickMode + legacy/cobertura/descoberta) |
+| 12.2 smoke | **17 passing** |
+| 21xe smoke | **17 passing** |
+
+**Decisão: GO.** O v26 conecta no 11g thick com IC 23.0 e não regrediu
+streaming/cobertura/descoberta. A falha inicial de `DPI-1047` era ambiente: o
+`.env.dbmatrix` tinha a **barra invertida do caminho Windows sem quotes** e o
+`source` do `run.sh` a consumia; com o caminho entre aspas o thick inicializou.
+Registrar essa pegadinha no `wiki/Troubleshooting`/`Contributing` (caminho
+Windows do `ORACLE_CLIENT_LIB_DIR` deve ir entre aspas no `.env.dbmatrix`).
+
 ## 3. Objetivos / Não-objetivos
 
 **Objetivos**
@@ -166,6 +187,12 @@ Rodar o empacotamento dos 9 alvos e verificar:
 
 Atualizar os fixtures de `packageTarget.test.ts` para a versão 26.0.0.
 
+**Evidência (2026-10-31):** os 9 VSIX foram gerados com `oracledb-26.0.0`:
+`win32-x64` 1.231.427 B, `linux-x64` 1.188.313 B, `linux-arm64` 1.178.081 B,
+`darwin-arm64` 1.134.578 B (cada um só com o `.node` do alvo) e os 5 thin-only
+em ~947.704 B (sem `.node`). O VSIX universal 0.19.0 ficou em 1.863.487 B vs
+1.858.770 B do 0.18.0 (**+0,25%**, dentro dos 10%).
+
 ### RF4 — Matriz completa
 
 Além do RF0, rodar a suíte completa no **23free** (thin + multiroot) e o e2e
@@ -177,7 +204,9 @@ ou **18xe**. A matriz continua local (não vai ao CI).
 - README EN (nota do vault) + 23 variantes: piso de Client 19c no thick.
 - `wiki/Database-requirements.md`: requisito de Client/Instant Client.
 - `wiki/Troubleshooting.md`: `libclntsh.so` e erros de client antigo.
-- `wiki/Contributing.md`/`Tests.md`: matriz e eixo thick.
+- `wiki/Contributing.md`/`Tests.md`: matriz e eixo thick; caminho Windows do
+  `ORACLE_CLIENT_LIB_DIR` entre aspas no `.env.dbmatrix` (o `source` consome
+  backslashes sem quotes e o thick falha com `DPI-1047`).
 - `NFR-001`: versão do driver e piso de Client.
 - `Registro de features`: entrada `interno: true` (enabler).
 - `CHANGELOG.md`: seção 0.19.0 com a mudança do driver e o requisito de
@@ -298,7 +327,13 @@ conclusão, cada superfície cita `PRD-124` ou `<!-- prd:PRD-124 -->`.
 
 <!-- brain:auto:start:conexoes -->
 - 🗺️ [[MOC - PRDs]]
+- 📐 Regras: [[BR-CONN-019 - Oracle 11g (11.2) exige thick mode; thin tem piso 12.1|BR-CONN-019]] · [[BR-CONN-021 - Major do driver Oracle so entra com matriz e packaging validados|BR-CONN-021]] · [[BR-TEST-001 - Matriz de bancos Oracle cobre 12.2-23ai em thin e thick|BR-TEST-001]]
 - 🔗 PRDs relacionados: [[prd-38-connection-pooling|PRD-38]] · [[prd-47-node-26-toolchain|PRD-47]] · [[prd-70-thick-mode-nne|PRD-70]] · [[prd-72-db-test-matrix|PRD-72]] · [[prd-104-ci-supply-chain|PRD-104]] · [[prd-123-oracle-11g-support|PRD-123]]
 - 🔗 Mesma versão (0.19.0): [[prd-47-node-26-toolchain|PRD-47]] · [[prd-95-esm-es2023-node22|PRD-95]] · [[prd-111-decompose-oracle-runner|PRD-111]] · [[prd-125-thick-full-matrix-ci|PRD-125]] · [[prd-127-vscode-floor-1-125|PRD-127]]
+- 🎯 RF0 — Spike GO/NO-GO (bloqueante) → [[BR-CONN-021 - Major do driver Oracle so entra com matriz e packaging validados|BR-CONN-021]]
+- 🎯 RF1 — Atualizar o driver e os tipos → [[BR-CONN-021 - Major do driver Oracle so entra com matriz e packaging validados|BR-CONN-021]]
+- 🎯 RF2 — Validar e documentar o thick → [[BR-CONN-019 - Oracle 11g (11.2) exige thick mode; thin tem piso 12.1|BR-CONN-019]]
+- 🎯 RF3 — Packaging dos 9 alvos → [[BR-CONN-021 - Major do driver Oracle so entra com matriz e packaging validados|BR-CONN-021]]
+- 🎯 RF4 — Matriz completa → [[BR-CONN-021 - Major do driver Oracle so entra com matriz e packaging validados|BR-CONN-021]] · [[BR-TEST-001 - Matriz de bancos Oracle cobre 12.2-23ai em thin e thick|BR-TEST-001]]
 - 🚀 ⬅️ release anterior: [[prd-123-oracle-11g-support|PRD-123 (0.18.0)]] · ➡️ próxima release: [[prd-101-connection-pool-lifecycle|PRD-101 (0.20.0)]]
 <!-- brain:auto:end -->

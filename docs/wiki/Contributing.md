@@ -2,7 +2,7 @@
 
 # Contributing
 
-<!-- prd:PRD-47 -->
+<!-- prd:PRD-47 --> <!-- prd:PRD-124 -->
 
 <!-- prd:PRD-98 -->
 <!-- prd:PRD-104 -->
@@ -192,6 +192,12 @@ Data is kept in a per-version Docker volume: the first run creates the database
 (~15–25 min for 18c/19c); later runs boot from it in ~1–2 min. Use
 `--skip-bootstrap` when the volume is already prepared. See PRD-72 and the
 root `CONTRIBUTING.md` for details.
+
+> **Windows + WSL:** quote the Windows path in `.env.dbmatrix`, e.g.
+> `ORACLE_CLIENT_LIB_DIR="D:\oracle\instantclient_23_0"`. The `source` in
+> `run.sh` consumes unquoted backslashes and the thick test fails with
+> `DPI-1047` (the path arrives as `D:Users...`). The same path in `.env` is
+> parsed by the test config (no shell expansion), so it only bites the matrix.
 
 **Alternative utPLSQL floors:** each `VERSIONS` line may declare a 4th field
 with the utPLSQL version for that database. `11.2` and `12.2` use **`v3.1.14`** because

@@ -2,7 +2,7 @@
 
 # Database requirements
 
-<!-- prd:PRD-123 -->
+<!-- prd:PRD-123 --> <!-- prd:PRD-124 -->
 
 Grants and configurations required on the Oracle database to use the extension
 with all features.
@@ -37,8 +37,10 @@ Without these grants, tests will run but coverage will come back **empty** (0%).
 > `Copy coverage grants to clipboard` command copies both statements — ignore
 > the second one on 11g.
 
-> Thick mode requires Oracle Instant Client **19c+** (node-oracledb 7); the 11g
-> axis uses Instant Client 23.0 in the matrix.
+> Thick mode requires Oracle Instant Client **19c+** (node-oracledb 26); the
+> driver loads **`libclntsh.so`/`libclntsh.dylib` by the standard name**, so a
+> versioned file (`libclntsh.so.19.1`) is not loaded directly. The 11g axis uses
+> Instant Client 23.0 in the matrix.
 
 ## Test discovery in OTHER schemas
 

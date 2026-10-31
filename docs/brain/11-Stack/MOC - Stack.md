@@ -34,7 +34,7 @@ e os riscos das dependências **diretas** relevantes.
 **Runtime (2)**
 
 - `fast-xml-parser` `^5.11.2` — runtime
-- `oracledb` `^7.0.1` — runtime
+- `oracledb` `^26.0.0` — runtime
 
 **Desenvolvimento (12)**
 
@@ -42,7 +42,7 @@ e os riscos das dependências **diretas** relevantes.
 - `@resvg/resvg-js` `^2.6.2` — dev
 - `@types/mocha` `^10.0.7` — dev
 - `@types/node` `^24.19.0` — dev
-- `@types/oracledb` `^7.0.2` — dev
+- `@types/oracledb` `^26.0.1` — dev
 - `@types/vscode` `1.125.0` — dev
 - `@vscode/test-cli` `^0.0.15` — dev
 - `@vscode/test-electron` `^3.1.0` — dev
