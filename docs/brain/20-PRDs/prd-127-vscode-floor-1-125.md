@@ -2,14 +2,14 @@
 tipo: prd
 id: PRD-127
 aliases: [PRD-127]
-status: approved
+status: in-progress
 titulo: "Piso de VS Code 1.125 e runtime Node 24"
 versao: "0.19.0"
 data: "2026-10-30"
 autor: "Gil Cleber Barboza"
 versao_titulo: "0.19.0 — Piso Node 24 e runtime moderno"
 verificado: "2026-10-31"
-regras: []
+regras: ["BR-PLAT-001"]
 docs: ["CHANGELOG", "README", "wiki/Home.md", "wiki/Installation-and-requirements.md", "functional/10-development-tooling.md"]
 tags: [prd]
 ---
@@ -245,6 +245,24 @@ Nenhuma setting/comando novo. A mudança é de plataforma/build.
 - **Manual**: abrir workspace com `.pks`, conferir árvore/CodeLens/execução;
   confirmar que a versão antiga (<1.125) é recusada pelo Marketplace/host.
 
+## 7.1 Auditoria Node 24 (RF5)
+
+Executada em 2026-10-31 contra `@types/node` 24.19.2 e a documentação do Node 24.
+
+| Item do checklist | Achado | Decisão |
+|---|---|---|
+| APIs removidas/depreciadas (`url.parse`, `punycode`, `new Buffer`, `fs.exists`, `process.binding`, `substr`, `domain`) | **Nenhuma** ocorrência em `src/`/`scripts/` (produção) | nada a fazer |
+| Prefixo `node:` em builtins | **Já usado** em todos os imports de produção (`node:assert`, `node:fs`, `node:path`, `node:os`, `node:module`, `node:crypto`) | nada a fazer |
+| Flags/APIs experimentais | `--experimental-test-module-mocks` segue necessário no `test:coverage` (Node 24/26) | manter |
+| Recursos nativos do Node 24 | 3× `[len - 1]` → `.at(-1)`; 4× `new Promise((resolve…))` → `Promise.withResolvers()`; `timers/promises` no poll | **adiado para a PRD-95** (é a mesma frente de ES2024/stdlib) |
+| `lib` do `tsconfig` | dois testes já usam `.at(-1)`, que exige `lib` ES2022; com `@types/node` 24 o `tsc` passou a acusar | `lib: ["ES2022"]` (target/module seguem ES2021/node16; a PRD-95 sobe para ES2024) |
+| I/O e concorrência | poll de 200 ms com `Promise.race`; `setTimeout` do timeout do debugger; sem backpressure pendente | sem mudança de baixo risco nesta PRD |
+| `process`/`global`/`__dirname` | produção não usa `__dirname`/`require`/`module.exports`; `process.env` é usado só para config | nada a fazer |
+| Bundle/`target` | `esbuild target node24`; `@types/node` 24; `engines.node >=24` | feito nesta PRD |
+
+Nenhuma correção de código de runtime foi necessária: a base já estava aderente
+ao Node 24. As substituições de stdlib ficam na PRD-95 para não duplicar escopo.
+
 ## 8. Riscos e mitigação
 
 | Risco | Mitigação |
@@ -320,7 +338,10 @@ conclusão. O relatório da auditoria Node 24 (RF5) fica na PRD ou em nota de
 
 <!-- brain:auto:start:conexoes -->
 - 🗺️ [[MOC - PRDs]]
+- 📐 Regras: [[BR-PLAT-001 - Piso de VS Code e runtime Node do host sao coerentes|BR-PLAT-001]]
 - 🔗 PRDs relacionados: [[prd-47-node-26-toolchain|PRD-47]] · [[prd-94-vscode-floor-1-101|PRD-94]] · [[prd-95-esm-es2023-node22|PRD-95]] · [[prd-102-trace-and-perf-instrumentation|PRD-102]] · [[prd-120-lean-activation-lazy-setup|PRD-120]]
 - 🔗 Mesma versão (0.19.0): [[prd-47-node-26-toolchain|PRD-47]] · [[prd-95-esm-es2023-node22|PRD-95]] · [[prd-111-decompose-oracle-runner|PRD-111]] · [[prd-124-oracledb-26-upgrade|PRD-124]] · [[prd-125-thick-full-matrix-ci|PRD-125]]
+- 🎯 RF1 — Piso e tipos exatos → [[BR-PLAT-001 - Piso de VS Code e runtime Node do host sao coerentes|BR-PLAT-001]]
+- 🎯 RF2 — Runtime Node 24 → [[BR-PLAT-001 - Piso de VS Code e runtime Node do host sao coerentes|BR-PLAT-001]] · [[NFR-002 - Compatibilidade com Node|NFR-002]]
 - 🚀 ⬅️ release anterior: [[prd-123-oracle-11g-support|PRD-123 (0.18.0)]] · ➡️ próxima release: [[prd-101-connection-pool-lifecycle|PRD-101 (0.20.0)]]
 <!-- brain:auto:end -->

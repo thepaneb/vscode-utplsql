@@ -15,8 +15,8 @@ e os riscos das dependências **diretas** relevantes.
 ## Stack (gerado)
 
 <!-- brain:auto:start:stack -->
-- **Node (engines):** >=22.0.0
-- **VSCode (engines):** ^1.101.0
+- **Node (engines):** >=24.0.0
+- **VSCode (engines):** ^1.125.0
 - **.nvmrc:** 24
 - **TypeScript:** ES2021 / node16
 - **Biome:** lineWidth 100, single
@@ -41,9 +41,9 @@ e os riscos das dependências **diretas** relevantes.
 - `@biomejs/biome` `^2.5.15` — dev
 - `@resvg/resvg-js` `^2.6.2` — dev
 - `@types/mocha` `^10.0.7` — dev
-- `@types/node` `^22.20.1` — dev
+- `@types/node` `^24.19.0` — dev
 - `@types/oracledb` `^7.0.2` — dev
-- `@types/vscode` `1.101.0` — dev
+- `@types/vscode` `1.125.0` — dev
 - `@vscode/test-cli` `^0.0.15` — dev
 - `@vscode/test-electron` `^3.1.0` — dev
 - `@vscode/vsce` `^4.0.0` — dev

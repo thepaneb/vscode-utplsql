@@ -25,7 +25,7 @@ tags: [readme]
   <a href="https://marketplace.visualstudio.com/items?itemName=paneb.vscode-utplsql"><img alt="Downloads" src="https://vsmarketplacebadges.dev/downloads-short/paneb.vscode-utplsql.svg"></a>
   <a href="https://github.com/thepaneb/vscode-utplsql/actions/workflows/ci.yml"><img alt="CI" src="https://github.com/thepaneb/vscode-utplsql/actions/workflows/ci.yml/badge.svg"></a>
   <a href="https://codecov.io/gh/thepaneb/vscode-utplsql"><img alt="Coverage" src="https://codecov.io/gh/thepaneb/vscode-utplsql/branch/main/graph/badge.svg"></a>
-  <img alt="VS Code" src="https://img.shields.io/badge/VS%20Code-1.101%2B-007ACC">
+  <img alt="VS Code" src="https://img.shields.io/badge/VS%20Code-1.125%2B-007ACC">
   <img alt="Node" src="https://img.shields.io/badge/node-22-339933?logo=nodedotjs&logoColor=white">
   <img alt="TypeScript" src="https://img.shields.io/badge/TypeScript-7-3178C6?logo=typescript&logoColor=white">
   <img alt="Oracle" src="https://img.shields.io/badge/Oracle-12.2%2B-F80000?logo=oracle&logoColor=white">
@@ -35,7 +35,7 @@ tags: [readme]
 
 # utPLSQL Test Runner
 
-Uruchamiaj i debuguj testy **utPLSQL** (Oracle PL/SQL) bezpośrednio w VS Code — natywny **Test Explorer**, wizualne pokrycie, debugger PL/SQL i **bezpośrednie wykonanie Oracle** przez `node-oracledb`. Dostępne w **24 językach**; wymaga **VS Code 1.101+** (Node 22).
+Uruchamiaj i debuguj testy **utPLSQL** (Oracle PL/SQL) bezpośrednio w VS Code — natywny **Test Explorer**, wizualne pokrycie, debugger PL/SQL i **bezpośrednie wykonanie Oracle** przez `node-oracledb`. Dostępne w **24 językach**; wymaga **VS Code 1.125+** (Node 24).
 
 ### Test Explorer i uruchamianie
 
@@ -114,7 +114,7 @@ Rozszerzenie można zainstalować na dwa sposoby:
 | 18c+ | v3.2.x (18c+) / v3.1.x | Zalecane; charset `AL32UTF8`. |
 | 12.2 | tylko v3.1.x | v3.2.x się nie kompiluje (`PLS-00222`). `WE8DEC` obrazu gubi znaki nieprzedstawialne (np. `€`); cienki sterownik ignoruje `NLS_LANG`. |
 | 11.2 (11g R2) | v3.1.x only | **Thick mode required** (thin starts at 12.1); coverage via `DBMS_PROFILER`. Instant Client 19c+. |
-- **VSCode 1.101+** (Node 22).
+- **VSCode 1.125+** (Node 24).
 
 Rozszerzenie jest tylko "graficznym klientem" — testy uruchamia baza danych: bezpośrednio przez node-oracledb.
 
