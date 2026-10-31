@@ -1,6 +1,6 @@
 ---
 name: linkedin-posts
-description: Keep the local LinkedIn posts (docs/linkedin) in sync with the current project state as features ship and versions release. Use when adding/changing user-facing features, publishing a release, changing README features/settings, or when asked to "atualizar posts do linkedin", "criar post", "post da versão", "release post" or "divulgação".
+description: Keep the local LinkedIn posts (docs/linkedin) in sync with the current project state as features ship and versions release, and publish the next queued feature post. Use when adding/changing user-facing features, publishing a release, changing README features/settings, or when asked to "atualizar posts do linkedin", "criar post", "post da versão", "release post", "postar o próximo", "posta o próximo", "publique o próximo", "publica o próximo" or "divulgação".
 compatibility: opencode
 ---
 
@@ -18,8 +18,43 @@ docs/linkedin/
 ├── features/        ← posts por funcionalidade (NN-slug.md)
 ├── releases/        ← posts por versão (NN-release-vX.Y.Z.md)
 ├── assets/          ← cards 1200×627 (pt/en) + gen-cards.cjs
+├── published.json   ← estado da fila de features (local; criado no 1º publish)
+├── publish.cjs      ← publisher + fila (--list/--next/--mark/--unmark)
 └── en/              ← espelho em inglês (features/ + releases/, mesmo NN)
 ```
+
+## Publicação em fila
+
+A fila são os posts de **feature em inglês** (`en/features/`), em ordem
+numérica. O estado local `published.json` guarda o que já saiu, quando e o
+URN/link. Releases ficam fora da fila.
+
+Quando o usuário pedir **"poste o próximo"**, **"posta o próximo"**,
+**"publique o próximo"** ou equivalente, publique direto (sem parar para
+confirmação) e registre:
+
+```sh
+node docs/linkedin/publish.cjs --list             # opcional: ver fila e próximo
+node docs/linkedin/publish.cjs --next --publish   # publica o próximo e grava o estado
+```
+
+Depois, informe o **ID do post**, a **data** e o **URN/link** que o comando
+imprimiu. Se o comando falhar com `pending`/`failed`, **não insista**: confira
+no LinkedIn e use `--mark <id>` (se saiu) ou `--unmark <id>` (se não saiu).
+Para preview sem publicar, use só `--next` (dry-run).
+
+- Post da fila publicado manualmente (EN, editor web):
+  `--mark <id> [--at <data>] [--urn <urn>]`. Se publicou só o pt-BR e ainda quer
+  o EN, não marque.
+- Post novo de feature entra na fila automaticamente; não precisa cadastrar.
+- Release continua avulso: `--only releases/<NN>-... [--publish]`.
+- `published.json` é local/gitignored; não commitar.
+
+Verificação após publicar:
+
+- [ ] `--list` mostra o post como `publicado <data>` e o próximo avançou
+- [ ] o estado tem `postUrn`/`url` do post
+- [ ] nenhum `pending`/`failed` sobrou na fila
 
 ## Gráficos (cards)
 
@@ -84,6 +119,7 @@ principal e os secundários.
 
 | Mudança no projeto | Ação |
 |---|---|
+| Usuário pede para publicar o próximo | `publish.cjs --next --publish`; relatar ID/data/URN |
 | Feature nova/alterada (bullet do README) | criar/atualizar post de feature pt+en |
 | Versão publicada (release) | criar post de release pt+en, com o **bloco da matriz de bancos** |
 | Nova versão do Oracle na matriz / utPLSQL por banco | atualizar a matriz no post da versão e nos cards de release |
@@ -96,7 +132,7 @@ principal e os secundários.
 1. Identifique a feature na lista de bullets do `README.md` e no `docs/functional/`.
 2. Próximo `NN` em `features/` (numeração reinicia por categoria; `en/` espelha).
 3. Formato: **gancho** (1ª linha) + problema + como a extensão resolve + CTA + hashtags.
-4. Crie `features/NN-slug.md` (pt) e `en/features/NN-slug-en.md` (en).
+4. Crie `features/NN-slug.md` (pt) e `en/features/NN-slug.md` (en, mesmo NN/slug).
 5. Atualize a árvore em `docs/linkedin/README.md`.
 
 ## Workflow — post de release
@@ -153,6 +189,9 @@ scripts/db-matrix/run.sh --thick    # thick: Instant Client (thickMode) por banc
 ## Armadilhas
 
 - `docs/linkedin/` é **gitignored** — não incluir em commits.
+- `published.json` é o estado local da fila: não versionar/commitar.
+- `--next` **para** se houver `pending`/`failed`; confira o LinkedIn antes de
+  `--mark`/`--unmark` para não duplicar um post.
 - **Little Text:** o `commentary` da Posts API trata `(`, `)`, `[`, `]`, `@`,
   `*`, `_`, `~`, `|`, `{}`, `<>` e `\` como markup; sem escape o post trunca no
   primeiro `(` e ainda retorna **201**. O `publish.cjs` escapa automaticamente
