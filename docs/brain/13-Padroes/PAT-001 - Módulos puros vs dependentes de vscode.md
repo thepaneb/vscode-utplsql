@@ -38,5 +38,5 @@ cobertos por teste de integração ou pelo stub.
 <!-- brain:auto:start:conexoes -->
 - 🗺️ [[MOC - Padroes]]
 - 🔗 [[ADR-006 - Modulos puros vs dependentes de vscode]] · [[10-development-tooling]]
-- ↩️ Referenciada por: [[10-development-tooling]] · [[BR-LOG-001 - Diagnostico vai para o LogOutputChannel utPLSQL|BR-LOG-001]] · [[NFR-008 - Multi-root workspace|NFR-008]]
+- ↩️ Referenciada por: [[10-development-tooling]] · [[BR-LOG-001 - Diagnostico vai para o LogOutputChannel utPLSQL|BR-LOG-001]] · [[BR-QUAL-004 - executeRunOracle e orquestrador e as etapas sao funcoes testaveis|BR-QUAL-004]] · [[NFR-008 - Multi-root workspace|NFR-008]]
 <!-- brain:auto:end -->

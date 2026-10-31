@@ -59,17 +59,17 @@ host — o `docs-fidelity` cobra essa coerência.
 ## Inventário (gerado)
 
 <!-- brain:auto:start:vscode-api -->
-**`engines.vscode`:** `^1.125.0` · **`@types/vscode`:** `1.125.0` · **107 símbolos · 555 referências**
+**`engines.vscode`:** `^1.125.0` · **`@types/vscode`:** `1.125.0` · **107 símbolos · 563 referências**
 
 | Símbolo | Refs | Arquivos |
 |---|---|---|
-| `vscode.TestItem` | 55 | `src/commands/debug.ts`, `src/commands/run.ts`, `src/decorations.ts`, `src/matching.ts` +5 |
+| `vscode.TestItem` | 56 | `src/commands/debug.ts`, `src/commands/run.ts`, `src/decorations.ts`, `src/matching.ts` +5 |
 | `vscode.commands.registerCommand` | 38 | `src/commands/connection.ts`, `src/commands/debug.ts`, `src/commands/profile.ts`, `src/commands/run.ts` +3 |
 | `vscode.Uri` | 33 | `src/commands/debug.ts`, `src/commands/run.ts`, `src/commands/scaffold.ts`, `src/commands/script.ts` +9 |
 | `vscode.window.showInformationMessage` | 29 | `src/commands/connection.ts`, `src/commands/debug.ts`, `src/commands/profile.ts`, `src/commands/run.ts` +5 |
 | `vscode.window.showWarningMessage` | 25 | `src/commands/debug.ts`, `src/commands/profile.ts`, `src/commands/run.ts`, `src/commands/scaffold.ts` +4 |
 | `vscode.window.showErrorMessage` | 22 | `src/commands/connection.ts`, `src/commands/debug.ts`, `src/commands/run.ts`, `src/commands/scaffold.ts` +4 |
-| `vscode.WorkspaceFolder` | 20 | `src/debugger.ts`, `src/discovery.ts`, `src/oracleRunner.ts`, `src/results.ts` +3 |
+| `vscode.WorkspaceFolder` | 21 | `src/debugger.ts`, `src/discovery.ts`, `src/oracleRunner.ts`, `src/results.ts` +3 |
 | `vscode.commands.executeCommand` | 18 | `src/commands/connection.ts`, `src/commands/profile.ts`, `src/commands/run.ts`, `src/config.ts` +4 |
 | `vscode.TestController` | 14 | `src/commands/deps.ts`, `src/runner.ts`, `src/testTree.ts` |
 | `vscode.TestRunRequest` | 12 | `src/commands/run.ts`, `src/runner.ts` |
@@ -77,12 +77,13 @@ host — o `docs-fidelity` cobra essa coerência.
 | `vscode.ExtensionContext` | 10 | `src/commands/connection.ts`, `src/commands/debug.ts`, `src/commands/profile.ts`, `src/commands/run.ts` +6 |
 | `vscode.window.activeTextEditor` | 10 | `src/commands/debug.ts`, `src/commands/run.ts`, `src/commands/scaffold.ts`, `src/commands/script.ts` |
 | `vscode.workspace.fs` | 10 | `src/commands/debug.ts`, `src/commands/run.ts`, `src/commands/scaffold.ts`, `src/commands/script.ts` +1 |
+| `vscode.CancellationToken` | 9 | `src/codelens.ts`, `src/commands/run.ts`, `src/oracleRunner.ts`, `src/quickfix.ts` +2 |
 | `vscode.CodeAction` | 8 | `src/commands/scaffold.ts`, `src/quickfix.ts` |
 | `vscode.Range` | 8 | `src/codelens.ts`, `src/compilationDiagnostics.ts`, `src/decorations.ts`, `src/quickfix.ts` +1 |
+| `vscode.TestRun` | 8 | `src/oracleRunner.ts`, `src/results.ts`, `src/viewCoverage.ts` |
 | `vscode.ThemeColor` | 8 | `src/decorations.ts` |
 | `vscode.Uri.file` | 8 | `src/commands/scaffold.ts`, `src/commands/script.ts`, `src/coverage.ts`, `src/extension.ts` +1 |
 | `vscode.window.showQuickPick` | 8 | `src/commands/connection.ts`, `src/commands/debug.ts`, `src/commands/profile.ts`, `src/commands/run.ts` +1 |
-| `vscode.CancellationToken` | 7 | `src/codelens.ts`, `src/commands/run.ts`, `src/oracleRunner.ts`, `src/quickfix.ts` +2 |
 | `vscode.Location` | 7 | `src/results.ts` |
 | `vscode.window.showInputBox` | 7 | `src/commands/profile.ts`, `src/commands/scaffold.ts`, `src/config.ts` |
 | `vscode.workspace.workspaceFolders` | 7 | `src/commands/run.ts`, `src/commands/scaffold.ts`, `src/discovery.ts`, `src/results.ts` +2 |
@@ -98,7 +99,6 @@ host — o `docs-fidelity` cobra essa coerência.
 | `vscode.languages.registerCodeActionsProvider` | 4 | `src/commands/scaffold.ts`, `src/extension.ts` |
 | `vscode.OverviewRulerLane.Right` | 4 | `src/decorations.ts` |
 | `vscode.Position` | 4 | `src/results.ts`, `src/viewCoverage.ts` |
-| `vscode.TestRun` | 4 | `src/oracleRunner.ts`, `src/results.ts`, `src/viewCoverage.ts` |
 | `vscode.window.createTextEditorDecorationType` | 4 | `src/decorations.ts` |
 | `vscode.workspace.getConfiguration` | 4 | `src/config.ts`, `src/connectionProfiles.ts` |
 | `vscode.CancellationTokenSource` | 3 | `src/commands/run.ts` |

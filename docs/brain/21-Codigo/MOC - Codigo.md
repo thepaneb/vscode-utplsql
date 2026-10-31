@@ -93,6 +93,8 @@ SORT id ASC
 - [[COD - obsidian-portproxy.cmd]] — `COD-obsidian-portproxy.cmd`
 - [[COD - oracleClient.ts]] — `COD-oracleClient.ts`
 - [[COD - oracleIdentifiers.ts]] — `COD-oracleIdentifiers.ts`
+- [[COD - oraclePoll.ts]] — `COD-oraclePoll.ts`
+- [[COD - oracleRunCall.ts]] — `COD-oracleRunCall.ts`
 - [[COD - oracleRunner.ts]] — `COD-oracleRunner.ts`
 - [[COD - package-target.cjs]] — `COD-package-target.cjs`
 - [[COD - package.json]] — `COD-package.json`

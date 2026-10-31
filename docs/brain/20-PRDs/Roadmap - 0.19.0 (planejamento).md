@@ -133,6 +133,13 @@ merge).
   `esbuildConfig.test.ts`. Bundle **941.039 bytes** (≤ 942.777); VSIX 0.19.0
   empacota `dist/extension.mjs`; unitários **1475/1471 pass/4 skip** e cobertura
   **97,97/93,72/97,92**.
+- **PRD-111 (RF1)** (2026-10-31): `executeRunOracle` caiu de **467 para 167
+  linhas**; `src/oracleRunCall.ts` (builders puros), `src/oraclePoll.ts` (poll
+  de 200 ms), `prepareReporters`, `runAndPoll`, `finalizeRun` e
+  `drainDbmsOutput`; regra **`BR-QUAL-004`**; testes novos
+  `oracleRunCall.test.ts`/`oraclePoll.test.ts`. Suíte **1486/1482 pass/4 skip**,
+  cobertura **98,01/93,75/97,95**. O **RF2** (agrupar `OracleRunOptions`) foi
+  adiado para a 0.20.0 (mecânico, 18 arquivos de teste).
 
 ## Fluxo de execução (por PRD)
 

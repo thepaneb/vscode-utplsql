@@ -4,14 +4,14 @@ status: ativo
 titulo: "Architecture"
 publicar: docs/wiki/Architecture.md
 origem: ["MOC - Arquitetura"]
-verificado: 2026-10-29
+verificado: 2026-10-31
 regras: ["SEC-014", "BR-EXEC-017", "BR-CONN-020"]
 tags: [wiki]
 ---
 
 # Architecture
 
-<!-- prd:PRD-110 -->
+<!-- prd:PRD-110 --> <!-- prd:PRD-111 -->
 
 Overview of the extension's internal architecture for contributors.
 
@@ -29,6 +29,10 @@ functions live in `src/results.ts` (`applyResultsFromCases`,
   JUnit/Cobertura XML and the HTML coverage report at the end). Each reporter
   writes to its own `output_id`; the router classifies it as console/XML/HTML,
   so the HTML report never contaminates the JUnit/Cobertura XML.
+- `oracleRunCall.ts`: pure builders for the `ut_runner.run` call
+  (`buildReporterList`, `buildCoverageScope`, `buildRandomOrderParams`,
+  `buildRunCall`); `oraclePoll.ts`: the 200ms buffer poll. `executeRunOracle` is
+  the orchestrator (PRD-111).
 - **Connection pooling (v0.10.0)**: managed pool (`ensurePool`), recreated if
   the connection changes, closed in `deactivate()` with a 10s drain.
 - `discoverUtplsqlSchema`: `UT3.` prefix via `ALL_SYNONYMS` (shared install).
