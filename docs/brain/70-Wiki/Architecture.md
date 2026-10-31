@@ -35,7 +35,9 @@ functions live in `src/results.ts` (`applyResultsFromCases`,
 
 ### Build (v0.11.0)
 
-`main` points to `dist/extension.js` — a single bundle via **esbuild**
+<!-- prd:PRD-95 -->
+
+`main` points to `dist/extension.mjs` — a single **ESM** bundle via **esbuild**
 (`npm run bundle`), with `vscode` and `oracledb` **external**. The oracledb
 native glue for **thick mode** lets the optional `utplsql.oracleClientMode =
 thick` load a user-provided Oracle Instant Client; the thin driver remains the

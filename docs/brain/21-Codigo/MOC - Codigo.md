@@ -85,6 +85,7 @@ SORT id ASC
 - [[COD - integration.yml]] — `COD-integration.yml`
 - [[COD - junit.ts]] — `COD-junit.ts`
 - [[COD - languageIdentity.ts]] — `COD-languageIdentity.ts`
+- [[COD - launch.json]] — `COD-launch.json`
 - [[COD - logger.ts]] — `COD-logger.ts`
 - [[COD - matching.ts]] — `COD-matching.ts`
 - [[COD - matrix.env]] — `COD-matrix.env`
@@ -130,6 +131,7 @@ SORT id ASC
 - [[COD - test-setup.cjs]] — `COD-test-setup.cjs`
 - [[COD - testTree.ts]] — `COD-testTree.ts`
 - [[COD - tnsnames.ts]] — `COD-tnsnames.ts`
+- [[COD - tsconfig.json]] — `COD-tsconfig.json`
 - [[COD - types.ts]] — `COD-types.ts`
 - [[COD - utility.ts]] — `COD-utility.ts`
 - [[COD - utplsql.code-snippets]] — `COD-utplsql.code-snippets`

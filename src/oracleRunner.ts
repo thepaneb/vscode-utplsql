@@ -1,5 +1,6 @@
 import * as fs from 'node:fs';
 import * as path from 'node:path';
+import { setTimeout as delay } from 'node:timers/promises';
 import * as vscode from 'vscode';
 import { getExtensionLocale, readConfig, type UtConfig } from './config';
 import {
@@ -876,20 +877,17 @@ export async function executeRunOracle(
       conn1.break().catch(() => {});
       conn2.break().catch(() => {});
     };
-    let wakeRun: () => void = () => {};
-    const woken = new Promise<void>((resolve) => {
-      wakeRun = resolve;
-    });
+    const wakeRun = Promise.withResolvers<void>();
     const cancelSub = token.onCancellationRequested(() => {
       cancelRun();
-      wakeRun();
+      wakeRun.resolve();
     });
     const timeoutMs = (timeoutMinutes ?? 0) * 60 * 1000;
     const timeoutTimer =
       timeoutMs > 0
         ? setTimeout(() => {
             cancelRun();
-            wakeRun();
+            wakeRun.resolve();
           }, timeoutMs)
         : undefined;
 
@@ -897,8 +895,8 @@ export async function executeRunOracle(
       while (true) {
         const done = await Promise.race([
           runnerPromise.then(() => true),
-          woken.then(() => true),
-          new Promise<boolean>((r) => setTimeout(() => r(false), 200)),
+          wakeRun.promise.then(() => true),
+          delay(200, false),
         ]);
 
         try {

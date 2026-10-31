@@ -1,7 +1,7 @@
 <!-- GENERATED FROM docs/brain/10-Projeto/Funcional/10-development-tooling.md — DO NOT EDIT -->
 # 10 — Development Tooling
 
-<!-- prd:PRD-127 --> <!-- prd:PRD-47 -->
+<!-- prd:PRD-127 --> <!-- prd:PRD-47 --> <!-- prd:PRD-95 -->
 
 Ferramentas e infraestrutura de desenvolvimento do projeto.
 
@@ -26,7 +26,7 @@ Ferramentas e infraestrutura de desenvolvimento do projeto.
 | `npm run test:integration:multiroot` | idem, com `.vscode-test.multiroot.mjs` (workspace multi-root via `.code-workspace`) |
 | `npm run db:matrix` | `bash scripts/db-matrix/run.sh` — testa contra Oracle 11.2 (11g, **thick-only**), 12.2/18c/19c/21c/23ai local (compose); 11.2 e 12.2 usam utPLSQL `v3.1.14` (piso alternativo, PRD-84/123) |
 | `npm run db:matrix:list` | Lista as versões da matriz |
-| `npm run bundle` | `node esbuild.config.mjs` → `dist/extension.js` (**entry point real da extensão**) |
+| `npm run bundle` | `node esbuild.config.mjs` → `dist/extension.mjs` (**entry point real da extensão**, ESM) |
 | `npm run package` | `compile && bundle && vsce package` → `.vsix` universal |
 | `npm run package:win32-x64` / `:linux-x64` / `:linux-arm64` / `:darwin-arm64` | VSIX por plataforma (glue thick do alvo) |
 | `npm run package:target -- <target>` | VSIX genérico por target (usado pelo `publish.yml`) |
@@ -64,13 +64,13 @@ extensão normalmente.
 > Em versões antigas, as alternativas eram **`Ctrl+F5`** (sem depuração) ou o
 > config **“Anexar ao Extension Host”** (com `address: 127.0.0.1`).
 >
-> O `main` é o **bundle** (`dist/extension.js`); por isso o `outFiles` do launch
-> inclui `dist/**` **e** `out/**` (source maps) — sem isso os breakpoints podem
+> O `main` é o **bundle** (`dist/extension.mjs`); por isso o `outFiles` do launch
+> inclui `dist/**/*.mjs` **e** `out/**` (source maps) — sem isso os breakpoints podem
 > “prender” na primeira linha.
 
 ## Bundling com esbuild (PRD-45, ajustes na PRD-46)
 
-- `"main": "./dist/extension.js"` — bundle único gerado por `esbuild.config.mjs`
+- `"main": "./dist/extension.mjs"` — bundle único ESM gerado por `esbuild.config.mjs`
 - `vscode` e `oracledb` são **externos** (`await import('oracledb')` preservado)
 - `fast-xml-parser` (e deps puras) é embutido no bundle — incluindo as transitivas
   do fast-xml-parser v5 (`@nodable/entities`, `anynum`, `fast-xml-builder`,

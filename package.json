@@ -46,7 +46,7 @@
       "description": "Connection profiles point to a database and the password is kept in SecretStorage; the extension stays disabled until the workspace is trusted (Workspaces: Trust)."
     }
   },
-  "main": "./dist/extension.js",
+  "main": "./dist/extension.mjs",
   "contributes": {
     "configuration": {
       "title": "utPLSQL",
