@@ -177,12 +177,6 @@ notas `prd-*`. O índice navegável do vault é a [[MOC - PRDs]].
 | 119 | [Postura de segurança verificável: OSSF Scorecard e proteção de main](completed/prd-119-security-posture-scorecard.md) | 0.18.0 | 2026-10-13 |
 | 123 | [Suporte oficial ao Oracle 11g (11.2) em thick mode](completed/prd-123-oracle-11g-support.md) | 0.18.0 | 2026-10-17 |
 
-### 🔵 Aprovados
-
-| # | PRD | Versão | Data |
-|---|---|---|---|
-| 125 | [Suíte completa em thick e matriz de bancos no CI](approved/prd-125-thick-full-matrix-ci.md) | 0.19.0 | 2026-10-29 |
-
 ### 🟡 Em desenvolvimento
 
 | # | PRD | Versão | Data |
@@ -191,6 +185,7 @@ notas `prd-*`. O índice navegável do vault é a [[MOC - PRDs]].
 | 95 | [Modernização do runtime: ESM (.mjs), ES2024 e stdlib Node 24](in-progress/prd-95-esm-es2023-node22.md) | 0.19.0 | 2026-09-29 |
 | 111 | [Decompor `executeRunOracle` e agrupar `OracleRunOptions`](in-progress/prd-111-decompose-oracle-runner.md) | 0.19.0 | 2026-10-10 |
 | 124 | [Upgrade para node-oracledb 26 com matriz e packaging validados](in-progress/prd-124-oracledb-26-upgrade.md) | 0.19.0 | 2026-10-29 |
+| 125 | [Suíte completa em thick e matriz de bancos no CI](in-progress/prd-125-thick-full-matrix-ci.md) | 0.19.0 | 2026-10-29 |
 | 127 | [Piso de VS Code 1.125 e runtime Node 24](in-progress/prd-127-vscode-floor-1-125.md) | 0.19.0 | 2026-10-30 |
 
 ### ⚪ Propostos
@@ -343,13 +338,12 @@ docs/prd/
 │   ├── prd-118-commit-signing.md
 │   ├── prd-119-security-posture-scorecard.md
 │   ├── prd-123-oracle-11g-support.md
-├── approved/        ← aprovados, aguardando implementação
-│   ├── prd-125-thick-full-matrix-ci.md
 ├── in-progress/        ← sendo implementados agora
 │   ├── prd-47-node-26-toolchain.md
 │   ├── prd-95-esm-es2023-node22.md
 │   ├── prd-111-decompose-oracle-runner.md
 │   ├── prd-124-oracledb-26-upgrade.md
+│   ├── prd-125-thick-full-matrix-ci.md
 │   ├── prd-127-vscode-floor-1-125.md
 ├── proposed/        ← em avaliação
 │   ├── prd-60-branch-coverage-investigation.md

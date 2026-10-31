@@ -11,11 +11,14 @@
 - **node-oracledb 26 (PRD-124)**: driver e tipos na major 26, com matriz e
   packaging dos VSIX validados (thick exige Client 19c+ e `libclntsh.so` com o
   nome padrão).
-- **Thick-full e CI (PRD-125)**: suíte completa em thick no 23ai e no 11g, com
-  o eixo `--thick-full` e a política de CI documentada.
+- **Thick-full e CI (PRD-125, parcial)**: eixo `--thick-full` **experimental**
+  (exclui thin-only/UI/standalone), política de CI com full thin em
+  `release/**`/caminho crítico e matriz semanal; a validação da suíte completa
+  em thick fica para a 0.20.0.
 - **Refatoração interna (PRD-111)**: `executeRunOracle` decomposta em etapas
-  testáveis e `OracleRunOptions` agrupada por domínio, sem mudança de
-  comportamento.
+  testáveis (`oracleRunCall`/`oraclePoll`/`prepareReporters`/`runAndPoll`/
+  `finalizeRun`), sem mudança de comportamento; o agrupamento de
+  `OracleRunOptions` fica para a 0.20.0.
 
 ## 0.18.0
 

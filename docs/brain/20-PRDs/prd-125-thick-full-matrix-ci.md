@@ -2,14 +2,14 @@
 tipo: prd
 id: PRD-125
 aliases: [PRD-125]
-status: approved
+status: in-progress
 titulo: "Suíte completa em thick e matriz de bancos no CI"
 versao: "0.19.0"
 data: "2026-10-29"
 autor: "Gil Cleber Barboza"
 versao_titulo: "0.19.0 — Piso Node 24 e runtime moderno"
 verificado: "2026-10-31"
-regras: []
+regras: ["BR-TEST-001"]
 docs: ["CHANGELOG", "wiki/Contributing.md", "wiki/Tests.md", "functional/10-development-tooling.md"]
 tags: [prd]
 ---
@@ -68,6 +68,27 @@ O 11g é vendido como suportado (PRD-123), mas só o caminho feliz
 (run/cobertura/discovery de `test_math`) é exercitado. Debugger, pool,
 cancelamento, schema mode, tags, profile/SecretStorage, jump-to-failure e
 multiroot não têm cobertura no thick — e o driver 26 (PRD-124) aumenta o risco.
+
+### 2.4 Validação (2026-10-31)
+
+Tentativa de `run.sh --only 23free --thick-full` com `oracledb@26`:
+
+- 1ª execução (todos os testes): falhas em `extension`/`commandsE2E` e
+  `debuggerStandaloneFn`; o run foi interrompido em `utplsql.runFile` (>40 min).
+- 2ª/3ª execuções (excluindo UI/comandos/standalone): ainda falham
+  `schemaRun` (cancelamento), `tagsStreaming` (hooks), `thickLegacyE2E` (foi
+  escrito para o 11g), `v012`/`v013`/`v014` (perfis/views/scripts) e o run
+  passa de 25 min.
+- O eixo **thick smoke** (4 testes: thickMode + thickLegacyE2E) continua verde
+  no 11g e no 23free com o driver 26.
+- O **11g full** não foi tentado (timebox); o 11g permanece no smoke.
+
+**Decisão:** entregar o que é independente e estável — o eixo `--thick-full`
+com exclusões explícitas, a **política de CI** (RF4) e a documentação — e manter
+o thick-full **experimental**. A suíte completa em thick (RF3) fica para a
+**0.20.0**, com os testes thin-oriented/UI separados e o debugger standalone
+investigado. A PRD permanece `in-progress` (parcial); o 0.19.0 não promete a
+suíte completa em thick.
 
 ## 3. Objetivos / Não-objetivos
 
@@ -200,6 +221,12 @@ Nenhuma setting/comando de runtime novo. Apenas scripts de teste e CI.
   documenta o 11g como smoke (com a justificativa), sem regredir a promessa
   atual.
 
+## 9.1 Entrega parcial (2026-10-31)
+
+O 0.19.0 entrega o **RF1/RF2** (config/scripts), o **RF4** (CI) e a documentação;
+o **RF3** (full 23free/11g) fica para a **0.20.0**. Critérios de aceite abaixo
+marcados como pendentes não bloqueiam a 0.19.0; a PRD fica `in-progress`.
+
 ## 10. Critérios de aceite
 
 - `run.sh --thick-full` executa a suíte completa (menos thin-only e
@@ -242,8 +269,10 @@ cita `PRD-125` ou `<!-- prd:PRD-125 -->`.
 
 <!-- brain:auto:start:conexoes -->
 - 🗺️ [[MOC - PRDs]]
+- 📐 Regras: [[BR-TEST-001 - Matriz de bancos Oracle cobre 12.2-23ai em thin e thick|BR-TEST-001]]
 - 🔗 PRDs relacionados: [[prd-04-expand-tests|PRD-04]] · [[prd-72-db-test-matrix|PRD-72]] · [[prd-123-oracle-11g-support|PRD-123]] · [[prd-124-oracledb-26-upgrade|PRD-124]]
 - ⚙️ Pipelines: [[PIPE-integration - Integration (Oracle)|PIPE-integration]]
 - 🔗 Mesma versão (0.19.0): [[prd-47-node-26-toolchain|PRD-47]] · [[prd-95-esm-es2023-node22|PRD-95]] · [[prd-111-decompose-oracle-runner|PRD-111]] · [[prd-124-oracledb-26-upgrade|PRD-124]] · [[prd-127-vscode-floor-1-125|PRD-127]]
+- 🎯 RF4 — CI → [[BR-TEST-001 - Matriz de bancos Oracle cobre 12.2-23ai em thin e thick|BR-TEST-001]]
 - 🚀 ⬅️ release anterior: [[prd-123-oracle-11g-support|PRD-123 (0.18.0)]] · ➡️ próxima release: [[prd-101-connection-pool-lifecycle|PRD-101 (0.20.0)]]
 <!-- brain:auto:end -->

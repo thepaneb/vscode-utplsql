@@ -22,7 +22,7 @@ são a **fonte da verdade** no frontmatter das notas `prd-*`: ver [[MOC - PRDs]]
 | 3 | PRD-95 | Modernização do runtime: ESM (`.mjs`), ES2024 e stdlib Node 24 | 2–3 dias | Média | aprovada |
 | 4 | PRD-111 | Decompor `executeRunOracle` e agrupar `OracleRunOptions` | 3–4 dias | Média-Alta | aprovada |
 | 5 | PRD-124 | Upgrade para node-oracledb 26 com matriz e packaging validados | 2–3 dias | Média-Alta | aprovada (RF0 primeiro) |
-| 6 | PRD-125 | Suíte completa em thick e matriz de bancos no CI | 1,5–3 dias | Média | aprovada (parcial) |
+| 6 | PRD-125 | Suíte completa em thick e matriz de bancos no CI | 1,5–3 dias | Média | parcial (thick-full na 0.20.0) |
 
 **PRDs:** [[prd-127-vscode-floor-1-125|PRD-127]] ·
 [[prd-47-node-26-toolchain|PRD-47]] · [[prd-95-esm-es2023-node22|PRD-95]] ·
@@ -147,6 +147,13 @@ merge).
   1.858.770 B** do 0.18.0 (**+0,25%**). Regra **`BR-CONN-021`**; `BR-CONN-019`
   ganhou o requisito de `libclntsh.so`/`.dylib` com nome padrão. A falha inicial
   de `DPI-1047` era o `.env.dbmatrix` sem quotes no caminho Windows.
+- **PRD-125 (parcial)** (2026-10-31): RF1/RF2 (config/scripts), RF4 (CI) e docs
+  entregues; o `--thick-full` ficou **experimental** com exclusões explícitas
+  (thin-only, UI/comandos, `thickMode`, debugger standalone). A suíte completa
+  em thick no 23free/11g ainda falha/hanga em testes thin-oriented
+  (`schemaRun` cancelamento, `tagsStreaming`, `thickLegacyE2E` no 23free,
+  `v012`/`v013`/`v014`) e fica para a **0.20.0**. O 11g permanece no smoke
+  (4/4 verde com o driver 26).
 
 ## Fluxo de execução (por PRD)
 

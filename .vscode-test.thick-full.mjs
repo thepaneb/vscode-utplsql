@@ -8,6 +8,9 @@
 // O workspace é um `.code-workspace` temporário com a pasta do repositório e as
 // settings que a extensão lê (`oracleClientMode`/`oracleClientLibDir`). O
 // `prd70-sqlplus` (afirma thin default) e o `v014-tns` (TNS thin) ficam fora.
+// O `thickMode` também fica fora: ele reseta o estado e chama
+// `initOracleClient` de novo, mas o host já inicializou thick na ativação (o
+// driver acusa "already initialized"). O teste continua no eixo thick isolado.
 import { mkdtempSync, readdirSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { dirname, join, resolve } from 'node:path';
@@ -18,7 +21,19 @@ const root = resolve(dirname(fileURLToPath(import.meta.url)));
 const libDir = process.env.ORACLE_CLIENT_LIB_DIR ?? '';
 const conn = process.env.UTPLSQL_CONN ?? '';
 
-const EXCLUDED = new Set(['prd70-sqlplus.test.js', 'v014-tns.test.js']);
+const EXCLUDED = new Set([
+  // thin-only
+  'prd70-sqlplus.test.js',
+  'v014-tns.test.js',
+  // inicializa o cliente de novo (o host já está thick)
+  'thickMode.test.js',
+  // UI/comandos: cobertos pelo eixo thin; no workspace temporário do
+  // thick-full eles falham/hangam por dependerem do `.vscode/settings.json`
+  'extension.test.js',
+  'commandsE2E.test.js',
+  // debugger de function standalone: limitação conhecida no thick (PRD-125)
+  'debuggerStandaloneFn.test.js',
+]);
 const files = readdirSync(join(root, 'out', 'test', 'integration'))
   .filter((f) => f.endsWith('.test.js') && !EXCLUDED.has(f))
   .sort()
@@ -34,6 +49,11 @@ writeFileSync(
       settings: {
         'utplsql.oracleClientMode': 'thick',
         'utplsql.oracleClientLibDir': libDir,
+        // As fixtures do repo (o `.vscode/settings.json` da pasta não é
+        // herdado de forma confiável quando o host roda a partir de um
+        // `.code-workspace` temporário).
+        'utplsql.sourcePath': 'src/test/integration/fixtures',
+        'utplsql.includePatterns': ['src/test/integration/fixtures/*.pks'],
       },
     },
     null,
