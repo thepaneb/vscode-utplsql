@@ -4,7 +4,7 @@
 
 | Campo | Valor |
 |---|---|
-| Status | Aprovado |
+| Status | Em desenvolvimento |
 | Autor | Gil Cleber Barboza |
 | Data | 2026-10-10 |
 | Componente | Extensão `paneb.vscode-utplsql` |
@@ -82,6 +82,9 @@ campos** *flat*. Esta PRD **decompõe a função em etapas coesas e testáveis**
 - Atualizar o produtor (`runner.ts`), o consumidor e os **18 arquivos de teste**
   que montam `OracleRunOptions` (codemod + `tsc --noEmit`).
 - Nenhum campo é removido; a mudança é de forma.
+- **Adiado para a 0.20.0 (2026-10-31):** o RF2 é mecânico, mas toca 18 arquivos
+  de teste e não bloqueia a decomposição; o RF1 entra na 0.19.0 e o agrupamento
+  fica para a próxima versão (a regra `BR-QUAL-004` cobre o RF1).
 
 ### RF3 — Testes e rastreabilidade
 
@@ -144,10 +147,13 @@ Nenhuma setting, comando ou menu novo.
 
 ## 10. Critérios de aceite
 
-- `executeRunOracle` reduzida à orquestração; etapas em funções nomeadas.
-- `OracleRunOptions` com sub-objetos por domínio e call sites atualizados.
+- `executeRunOracle` reduzida à orquestração (**467 → 167 linhas**); etapas em
+  funções nomeadas (`prepareReporters`, `runAndPoll`, `finalizeRun`,
+  `drainDbmsOutput`, `oracleRunCall.*`, `oraclePoll`).
+- **RF2 adiado para a 0.20.0** (ver nota no RF2); o RF1 entra sozinho.
 - PL/SQL/binds comprovadamente idênticos (testes) e suíte verde.
-- Cobertura ≥ thresholds; nenhuma função > ~80 linhas na região refatorada.
+- Cobertura ≥ thresholds; as funções extraídas ficam em ~85–100 linhas e o
+  orquestrador em 167 (o “~80” era uma meta, não um gate).
 
 ## 11. Questões em aberto
 

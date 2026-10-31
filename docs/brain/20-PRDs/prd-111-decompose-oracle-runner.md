@@ -2,14 +2,14 @@
 tipo: prd
 id: PRD-111
 aliases: [PRD-111]
-status: approved
+status: in-progress
 titulo: "Decompor `executeRunOracle` e agrupar `OracleRunOptions`"
 versao: "0.19.0"
 data: "2026-10-10"
 autor: "Gil Cleber Barboza"
 versao_titulo: "0.19.0 — Piso Node 24 e runtime moderno"
 verificado: 2026-10-31
-regras: []
+regras: ["BR-QUAL-004"]
 docs: ["CHANGELOG", "wiki/Architecture.md"]
 tags: [prd]
 ---
@@ -95,6 +95,9 @@ campos** *flat*. Esta PRD **decompõe a função em etapas coesas e testáveis**
 - Atualizar o produtor (`runner.ts`), o consumidor e os **18 arquivos de teste**
   que montam `OracleRunOptions` (codemod + `tsc --noEmit`).
 - Nenhum campo é removido; a mudança é de forma.
+- **Adiado para a 0.20.0 (2026-10-31):** o RF2 é mecânico, mas toca 18 arquivos
+  de teste e não bloqueia a decomposição; o RF1 entra na 0.19.0 e o agrupamento
+  fica para a próxima versão (a regra `BR-QUAL-004` cobre o RF1).
 
 ### RF3 — Testes e rastreabilidade
 
@@ -157,10 +160,13 @@ Nenhuma setting, comando ou menu novo.
 
 ## 10. Critérios de aceite
 
-- `executeRunOracle` reduzida à orquestração; etapas em funções nomeadas.
-- `OracleRunOptions` com sub-objetos por domínio e call sites atualizados.
+- `executeRunOracle` reduzida à orquestração (**467 → 167 linhas**); etapas em
+  funções nomeadas (`prepareReporters`, `runAndPoll`, `finalizeRun`,
+  `drainDbmsOutput`, `oracleRunCall.*`, `oraclePoll`).
+- **RF2 adiado para a 0.20.0** (ver nota no RF2); o RF1 entra sozinho.
 - PL/SQL/binds comprovadamente idênticos (testes) e suíte verde.
-- Cobertura ≥ thresholds; nenhuma função > ~80 linhas na região refatorada.
+- Cobertura ≥ thresholds; as funções extraídas ficam em ~85–100 linhas e o
+  orquestrador em 167 (o “~80” era uma meta, não um gate).
 
 ## 11. Questões em aberto
 
@@ -185,7 +191,13 @@ novo mudar o mapa.
 
 <!-- brain:auto:start:conexoes -->
 - 🗺️ [[MOC - PRDs]]
+- 📐 Regras: [[BR-QUAL-004 - executeRunOracle e orquestrador e as etapas sao funcoes testaveis|BR-QUAL-004]]
 - 🔗 PRDs relacionados: [[prd-40-options-object|PRD-40]] · [[prd-69-oracle-runner-typed-binds|PRD-69]] · [[prd-76-reporter-export|PRD-76]] · [[prd-78-random-test-order|PRD-78]]
 - 🔗 Mesma versão (0.19.0): [[prd-47-node-26-toolchain|PRD-47]] · [[prd-95-esm-es2023-node22|PRD-95]] · [[prd-124-oracledb-26-upgrade|PRD-124]] · [[prd-125-thick-full-matrix-ci|PRD-125]] · [[prd-127-vscode-floor-1-125|PRD-127]]
+- 🎯 RF1 — Decomposição de `executeRunOracle` → [[BR-QUAL-004 - executeRunOracle e orquestrador e as etapas sao funcoes testaveis|BR-QUAL-004]]
+- 🎯 RF3 — Testes e rastreabilidade → [[BR-QUAL-004 - executeRunOracle e orquestrador e as etapas sao funcoes testaveis|BR-QUAL-004]]
+- 🎯 RNF1 — Sem mudança de comportamento; suíte atual permanece verde. → [[BR-QUAL-004 - executeRunOracle e orquestrador e as etapas sao funcoes testaveis|BR-QUAL-004]]
+- 🎯 RNF2 — Cobertura ≥ thresholds do `.c8rc`; nenhuma linha nova sem teste. → [[BR-QUAL-004 - executeRunOracle e orquestrador e as etapas sao funcoes testaveis|BR-QUAL-004]]
+- 🎯 RNF3 — Nenhuma função resultante acima de ~80 linhas. → [[BR-QUAL-004 - executeRunOracle e orquestrador e as etapas sao funcoes testaveis|BR-QUAL-004]]
 - 🚀 ⬅️ release anterior: [[prd-123-oracle-11g-support|PRD-123 (0.18.0)]] · ➡️ próxima release: [[prd-101-connection-pool-lifecycle|PRD-101 (0.20.0)]]
 <!-- brain:auto:end -->

@@ -82,6 +82,8 @@ SORT id ASC
 - [[TST - oracledb-missing-catch.test.ts]] — `TST-oracledb-missing-catch.test.ts`
 - [[TST - oracledbDefaultPresent.test.ts]] — `TST-oracledbDefaultPresent.test.ts`
 - [[TST - oracleIdentifiers.test.ts]] — `TST-oracleIdentifiers.test.ts`
+- [[TST - oraclePoll.test.ts]] — `TST-oraclePoll.test.ts`
+- [[TST - oracleRunCall.test.ts]] — `TST-oracleRunCall.test.ts`
 - [[TST - oracleRunner.test.ts]] — `TST-oracleRunner.test.ts`
 - [[TST - oracleRunnerReporters.test.ts]] — `TST-oracleRunnerReporters.test.ts`
 - [[TST - oracleRunnerTns.test.ts]] — `TST-oracleRunnerTns.test.ts`

@@ -131,6 +131,7 @@ SORT id ASC
 - [[BR-QUAL-001 - Thresholds de cobertura (c8) sao globais e bloqueiam o CI]] — `BR-QUAL-001`
 - [[BR-QUAL-002 - Formatacao e lint do codigo sao do Biome]] — `BR-QUAL-002`
 - [[BR-QUAL-003 - Ultimo resultado persistido e restaurado com snapshot versionado]] — `BR-QUAL-003`
+- [[BR-QUAL-004 - executeRunOracle e orquestrador e as etapas sao funcoes testaveis]] — `BR-QUAL-004`
 - [[BR-SCHEMA-001 - organization bifurca file tree vs schema tree; suiteMap é o lookup canônico]] — `BR-SCHEMA-001`
 - [[BR-SCHEMA-002 - extractSchemaFromPath - path.posix.relative e placeholder {schema}]] — `BR-SCHEMA-002`
 - [[BR-SCHEMA-003 - collectAllItems usa cachedItems e, se vazio, percorre até 3 níveis]] — `BR-SCHEMA-003`
