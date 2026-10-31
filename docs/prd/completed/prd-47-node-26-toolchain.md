@@ -4,7 +4,7 @@
 
 | Campo | Valor |
 |---|---|
-| Status | Em desenvolvimento |
+| Status | Concluído |
 | Autor | Gil Cleber |
 | Data | 2026-08-29 |
 | Componente | Extensão `paneb.vscode-utplsql` (toolchain de desenvolvimento) |
@@ -154,6 +154,10 @@ Nenhuma setting/comando novo.
 Nenhuma regra nova. Atualizar **`NFR-002`** (toolchain 24, CI 24/26) na conclusão;
 a **`BR-PLAT-001`** já é atualizada pela PRD-127 (piso/runtime). RNFs sem regra:
 RNF1 (suíte), RNF2 (VSIX), RNF3 (sem dep), RNF4 (custo de CI).
+
+nenhuma
+
+RNFs sem regra: RNF1, RNF2, RNF3, RNF4.
 
 ## Impacto nas docs
 

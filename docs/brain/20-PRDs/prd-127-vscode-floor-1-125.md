@@ -2,7 +2,7 @@
 tipo: prd
 id: PRD-127
 aliases: [PRD-127]
-status: in-progress
+status: completed
 titulo: "Piso de VS Code 1.125 e runtime Node 24"
 versao: "0.19.0"
 data: "2026-10-30"
@@ -323,8 +323,7 @@ auditoria de compatibilidade), **`NFR-003`** (piso 1.125),
 `DEP-typescript` (target `node24`) e `functional/10-development-tooling.md`.
 Nenhuma regra nova; a PRD-95 cria a regra de ESM (`BR-PLAT-005`).
 
-RNFs sem regra: RNF1/RNF3 (cobertos por testes), RNF2 (medição de bundle) e RNF4
-(pipeline de docs).
+RNFs sem regra: RNF1, RNF2, RNF3, RNF4, RNF5.
 
 ## Impacto nas docs
 
@@ -340,7 +339,7 @@ conclusão. O relatório da auditoria Node 24 (RF5) fica na PRD ou em nota de
 - 🗺️ [[MOC - PRDs]]
 - 📐 Regras: [[BR-PLAT-001 - Piso de VS Code e runtime Node do host sao coerentes|BR-PLAT-001]]
 - 🔗 PRDs relacionados: [[prd-47-node-26-toolchain|PRD-47]] · [[prd-94-vscode-floor-1-101|PRD-94]] · [[prd-95-esm-es2023-node22|PRD-95]] · [[prd-102-trace-and-perf-instrumentation|PRD-102]] · [[prd-120-lean-activation-lazy-setup|PRD-120]]
-- 🔗 Mesma versão (0.19.0): [[prd-47-node-26-toolchain|PRD-47]] · [[prd-95-esm-es2023-node22|PRD-95]] · [[prd-111-decompose-oracle-runner|PRD-111]] · [[prd-124-oracledb-26-upgrade|PRD-124]] · [[prd-125-thick-full-matrix-ci|PRD-125]]
+- 🔗 Mesma versão (0.19.0): [[prd-125-thick-full-matrix-ci|PRD-125]]
 - 🎯 RF1 — Piso e tipos exatos → [[BR-PLAT-001 - Piso de VS Code e runtime Node do host sao coerentes|BR-PLAT-001]]
 - 🎯 RF2 — Runtime Node 24 → [[BR-PLAT-001 - Piso de VS Code e runtime Node do host sao coerentes|BR-PLAT-001]] · [[NFR-002 - Compatibilidade com Node|NFR-002]]
 - 🚀 ⬅️ release anterior: [[prd-123-oracle-11g-support|PRD-123 (0.18.0)]] · ➡️ próxima release: [[prd-101-connection-pool-lifecycle|PRD-101 (0.20.0)]]

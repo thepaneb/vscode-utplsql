@@ -2,7 +2,7 @@
 tipo: prd
 id: PRD-124
 aliases: [PRD-124]
-status: in-progress
+status: completed
 titulo: "Upgrade para node-oracledb 26 com matriz e packaging validados"
 versao: "0.19.0"
 data: "2026-10-29"
@@ -310,9 +310,7 @@ packaging) com `prds: ["PRD-124"]` e `requisitos` de RF1–RF3; atualizar
 `libclntsh.so`/`.dylib` com o nome padrão) e **`BR-TEST-001`** (eixo do driver na
 matriz); atualizar **`NFR-001`** (versão do driver).
 
-RNFs sem regra (a declarar na conclusão): RNF1 (coberto pelos e2e), RNF3
-(medição de VSIX), RNF4 (rollback), RNF5 (matriz do CI), RNF6 (sem dependência
-nova).
+RNFs sem regra: RNF1, RNF2, RNF3, RNF4, RNF5, RNF6.
 
 ## Impacto nas docs
 
@@ -329,7 +327,7 @@ conclusão, cada superfície cita `PRD-124` ou `<!-- prd:PRD-124 -->`.
 - 🗺️ [[MOC - PRDs]]
 - 📐 Regras: [[BR-CONN-019 - Oracle 11g (11.2) exige thick mode; thin tem piso 12.1|BR-CONN-019]] · [[BR-CONN-021 - Major do driver Oracle so entra com matriz e packaging validados|BR-CONN-021]] · [[BR-TEST-001 - Matriz de bancos Oracle cobre 12.2-23ai em thin e thick|BR-TEST-001]]
 - 🔗 PRDs relacionados: [[prd-38-connection-pooling|PRD-38]] · [[prd-47-node-26-toolchain|PRD-47]] · [[prd-70-thick-mode-nne|PRD-70]] · [[prd-72-db-test-matrix|PRD-72]] · [[prd-104-ci-supply-chain|PRD-104]] · [[prd-123-oracle-11g-support|PRD-123]]
-- 🔗 Mesma versão (0.19.0): [[prd-47-node-26-toolchain|PRD-47]] · [[prd-95-esm-es2023-node22|PRD-95]] · [[prd-111-decompose-oracle-runner|PRD-111]] · [[prd-125-thick-full-matrix-ci|PRD-125]] · [[prd-127-vscode-floor-1-125|PRD-127]]
+- 🔗 Mesma versão (0.19.0): [[prd-125-thick-full-matrix-ci|PRD-125]]
 - 🎯 RF0 — Spike GO/NO-GO (bloqueante) → [[BR-CONN-021 - Major do driver Oracle so entra com matriz e packaging validados|BR-CONN-021]]
 - 🎯 RF1 — Atualizar o driver e os tipos → [[BR-CONN-021 - Major do driver Oracle so entra com matriz e packaging validados|BR-CONN-021]]
 - 🎯 RF2 — Validar e documentar o thick → [[BR-CONN-019 - Oracle 11g (11.2) exige thick mode; thin tem piso 12.1|BR-CONN-019]]

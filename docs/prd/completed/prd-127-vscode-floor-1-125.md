@@ -4,7 +4,7 @@
 
 | Campo | Valor |
 |---|---|
-| Status | Em desenvolvimento |
+| Status | Concluído |
 | Autor | Gil Cleber Barboza |
 | Data | 2026-10-30 |
 | Componente | Extensão `paneb.vscode-utplsql` (piso de plataforma e runtime) |
@@ -310,8 +310,7 @@ auditoria de compatibilidade), **`NFR-003`** (piso 1.125),
 `DEP-typescript` (target `node24`) e `functional/10-development-tooling.md`.
 Nenhuma regra nova; a PRD-95 cria a regra de ESM (`BR-PLAT-005`).
 
-RNFs sem regra: RNF1/RNF3 (cobertos por testes), RNF2 (medição de bundle) e RNF4
-(pipeline de docs).
+RNFs sem regra: RNF1, RNF2, RNF3, RNF4, RNF5.
 
 ## Impacto nas docs
 

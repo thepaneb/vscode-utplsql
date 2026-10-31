@@ -4,7 +4,7 @@
 
 | Campo | Valor |
 |---|---|
-| Status | Em desenvolvimento |
+| Status | Concluído |
 | Autor | Gil Cleber Barboza |
 | Data | 2026-10-10 |
 | Componente | Extensão `paneb.vscode-utplsql` |
@@ -173,3 +173,8 @@ etapas de montagem são funções testáveis"), com `prds: ["PRD-111"]`,
 Enquanto `proposed`, `regras: []`. A PRD também atualiza
 `wiki/Architecture.md` e o `functional/10-development-tooling.md` se o módulo
 novo mudar o mapa.
+
+## Impacto nas docs
+
+`CHANGELOG` (0.19.0) e `wiki/Architecture.md` (novo mapa de módulos/etapas do
+runner). Cada superfície cita `PRD-111` ou `<!-- prd:PRD-111 -->`.

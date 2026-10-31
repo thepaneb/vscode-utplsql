@@ -2,7 +2,7 @@
 tipo: prd
 id: PRD-47
 aliases: [PRD-47]
-status: in-progress
+status: completed
 titulo: "Node 24 no toolchain e Node 26 no CI"
 versao: "0.19.0"
 data: "2026-08-29"
@@ -168,6 +168,10 @@ Nenhuma regra nova. Atualizar **`NFR-002`** (toolchain 24, CI 24/26) na conclus�
 a **`BR-PLAT-001`** já é atualizada pela PRD-127 (piso/runtime). RNFs sem regra:
 RNF1 (suíte), RNF2 (VSIX), RNF3 (sem dep), RNF4 (custo de CI).
 
+nenhuma
+
+RNFs sem regra: RNF1, RNF2, RNF3, RNF4.
+
 ## Impacto nas docs
 
 `docs/functional/10-development-tooling.md` e `wiki/Contributing.md` passam a
@@ -180,7 +184,7 @@ conclusão, cada superfície cita `PRD-47` ou `<!-- prd:PRD-47 -->`.
 - 🗺️ [[MOC - PRDs]]
 - 🔗 PRDs relacionados: [[prd-18-engine-node-ci|PRD-18]] · [[prd-95-esm-es2023-node22|PRD-95]] · [[prd-127-vscode-floor-1-125|PRD-127]]
 - ⚙️ Pipelines: [[PIPE-ci - CI|PIPE-ci]]
-- 🔗 Mesma versão (0.19.0): [[prd-95-esm-es2023-node22|PRD-95]] · [[prd-111-decompose-oracle-runner|PRD-111]] · [[prd-124-oracledb-26-upgrade|PRD-124]] · [[prd-125-thick-full-matrix-ci|PRD-125]] · [[prd-127-vscode-floor-1-125|PRD-127]]
+- 🔗 Mesma versão (0.19.0): [[prd-125-thick-full-matrix-ci|PRD-125]]
 - 🎯 RF1 — `.nvmrc` permanece 24 → [[NFR-002 - Compatibilidade com Node|NFR-002]]
 - 🎯 RF2 — CI matrix `[24, 26]` → [[NFR-002 - Compatibilidade com Node|NFR-002]]
 - 🚀 ⬅️ release anterior: [[prd-123-oracle-11g-support|PRD-123 (0.18.0)]] · ➡️ próxima release: [[prd-101-connection-pool-lifecycle|PRD-101 (0.20.0)]]

@@ -4,7 +4,7 @@
 
 | Campo | Valor |
 |---|---|
-| Status | Em desenvolvimento |
+| Status | Concluído |
 | Autor | Gil Cleber Barboza |
 | Data | 2026-10-29 |
 | Componente | Driver Oracle (`oracledb`) + packaging dos VSIX + matriz de bancos |
@@ -297,9 +297,7 @@ packaging) com `prds: ["PRD-124"]` e `requisitos` de RF1–RF3; atualizar
 `libclntsh.so`/`.dylib` com o nome padrão) e **`BR-TEST-001`** (eixo do driver na
 matriz); atualizar **`NFR-001`** (versão do driver).
 
-RNFs sem regra (a declarar na conclusão): RNF1 (coberto pelos e2e), RNF3
-(medição de VSIX), RNF4 (rollback), RNF5 (matriz do CI), RNF6 (sem dependência
-nova).
+RNFs sem regra: RNF1, RNF2, RNF3, RNF4, RNF5, RNF6.
 
 ## Impacto nas docs
 
