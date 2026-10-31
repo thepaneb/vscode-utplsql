@@ -17,7 +17,7 @@ são a **fonte da verdade** no frontmatter das notas `prd-*`: ver [[MOC - PRDs]]
 
 | Ordem | PRD | Título | Esforço | Complexidade |
 |---|---|---|---|---|
-| 1 | PRD-127 | Piso de VS Code 1.125 e runtime Node 24 | 1–2 dias | Média |
+| 1 | PRD-127 | Piso de VS Code 1.125 e runtime Node 24 | 3–5 dias | Média-Alta |
 | 2 | PRD-47 | Node 24 no toolchain e Node 26 no CI | 0,5 dia | Baixa |
 | 3 | PRD-95 | Modernização do runtime: ESM (`.mjs`), ES2024 e stdlib Node 24 | 2–3 dias | Média |
 | 4 | PRD-111 | Decompor `executeRunOracle` e agrupar `OracleRunOptions` | 2–3 dias | Média-Alta |
@@ -31,7 +31,8 @@ são a **fonte da verdade** no frontmatter das notas `prd-*`: ver [[MOC - PRDs]]
 [[prd-125-thick-full-matrix-ci|PRD-125]]
 
 **Tema:** **plataforma e runtime primeiro**, refatorações depois. A PRD-127 sobe o
-piso para VS Code 1.125 / Node 24.15.0; a PRD-47 mantém o toolchain em Node 24 e
+piso para VS Code 1.125 / Node 24.15.0 e audita `src/` e `scripts/` contra as APIs
+e deprecações do Node 24 (RF5); a PRD-47 mantém o toolchain em Node 24 e
 cobre o 26 no CI; a PRD-95 aproveita o novo runtime para ESM (`.mjs`) e ES2024.
 Só então vêm as refatorações que reduzem retrabalho: PRD-111 decompõe
 `executeRunOracle` **antes** da instrumentação da PRD-102 (observabilidade), a
@@ -50,13 +51,14 @@ piso antes de modernizar o runtime.
 
 **Reorganização (2026-10-30, nivelamento):** a **PRD-115** saiu para a 0.22.0,
 que passou a concentrar todo o bloco de localização (115 + 88–93). A 0.19.0 fica
-só com plataforma/runtime e fecha em ≈ 9,5–14,5 dias; a ordem 127 → 47 → 95
-continua intacta.
+só com plataforma/runtime; a ordem 127 → 47 → 95 continua intacta. A **PRD-127**
+passou a incluir a auditoria de compatibilidade/otimização para Node 24 (RF5),
+com 3–5 dias.
 
 **Contingência:** se o escopo apertar, as primeiras a descer para a 0.20.0 são
 PRD-111/124/125; PRD-127/47/95 ficam juntas porque tocam o mesmo build/docs.
 
-**Total estimado:** ≈ 9,5–14,5 dias.
+**Total estimado:** ≈ 11,5–17,5 dias.
 
 ## Fluxo de execução (por PRD)
 
