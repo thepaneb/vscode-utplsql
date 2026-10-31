@@ -130,8 +130,9 @@ merge).
   `target: node24`, `dist` limpo antes), `main`/launch/`vsixIgnore` atualizados,
   `tsconfig` ES2024, 3× `.at(-1)` e 4× `Promise.withResolvers`, `timers/promises`
   no poll/timeout do debugger, regra **`BR-PLAT-005`** e teste
-  `esbuildConfig.test.ts`. Bundle **941.039 bytes** (≤ 942.777); VSIX 0.19.0
-  empacota `dist/extension.mjs`; unitários **1475/1471 pass/4 skip** e cobertura
+  `esbuildConfig.test.ts`. Bundle **941.039 bytes** na primeira medição e
+  **701.347 bytes** após `minify`/`keepNames` (≤ 942.777); VSIX 0.19.0 empacota
+  `dist/extension.mjs`; unitários **1475/1471 pass/4 skip** e cobertura
   **97,97/93,72/97,92**.
 - **PRD-111 (RF1)** (2026-10-31): `executeRunOracle` caiu de **467 para 167
   linhas**; `src/oracleRunCall.ts` (builders puros), `src/oraclePoll.ts` (poll

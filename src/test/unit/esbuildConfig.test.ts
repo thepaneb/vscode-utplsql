@@ -13,6 +13,8 @@ test('esbuild: bundle publicado é ESM (.mjs) com target node24', () => {
   assert.match(config, /target:\s*'node24'/, 'target precisa ser node24');
   assert.match(config, /external:\s*\[[^\]]*'vscode'[^\]]*'oracledb'[^\]]*\]/);
   assert.match(config, /rmSync\('dist'/, 'bundle precisa limpar o dist antes');
+  assert.match(config, /minify:\s*true/, 'bundle precisa caber no teto da PRD-95');
+  assert.match(config, /keepNames:\s*true/, 'minify não pode perder nomes de funções/classes');
 });
 
 test('package.json: main aponta para o bundle ESM', () => {

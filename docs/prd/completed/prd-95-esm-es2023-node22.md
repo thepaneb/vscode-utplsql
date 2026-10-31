@@ -164,7 +164,8 @@ Nenhuma setting de usuário nova.
 ## 10. Critérios de aceite
 
 - Extensão ativa a partir de `dist/extension.mjs` no host Node (F5) e no VSIX.
-- `dist/extension.mjs` **≤ 942.777 bytes** (920,7 KiB).
+- `dist/extension.mjs` **≤ 942.777 bytes** (920,7 KiB); a entrega final ficou
+  em **701.347 bytes** com `minify: true, keepNames: true`.
 - `tsc`, `lint`, `test:unit`, `test:coverage` e `test:integration:smoke` verdes.
 - `oracledb` carrega por `import()` em thin e thick.
 - `docs:check`/`docs-fidelity` verdes; `CHANGELOG` atualizado.

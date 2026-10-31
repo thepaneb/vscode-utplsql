@@ -14,4 +14,8 @@ await esbuild.build({
   target: 'node24',
   external: ['vscode', 'oracledb'],
   sourcemap: true,
+  // Mantém o bundle publicado abaixo do teto da PRD-95 sem perder nomes
+  // (o sourcemap continua disponível para os stack traces).
+  minify: true,
+  keepNames: true,
 });
