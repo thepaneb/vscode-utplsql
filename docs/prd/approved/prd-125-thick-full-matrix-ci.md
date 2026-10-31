@@ -4,7 +4,7 @@
 
 | Campo | Valor |
 |---|---|
-| Status | Proposto |
+| Status | Aprovado |
 | Autor | Gil Cleber Barboza |
 | Data | 2026-10-29 |
 | Componente | Testes de integração + matriz de bancos + CI |
@@ -22,6 +22,12 @@ completa (119 + 6 multiroot) roda em thin no 23free; a matriz 18c/21c/23ai é
 apenas `workflow_dispatch`. Esta PRD cria a **suíte completa em thick**
 (`--thick-full`), valida no 23free e no 11g com uma lista explícita de skips, e
 torna a matriz/full parte do fluxo de CI (release e caminhos críticos).
+
+> **Revisão (2026-10-31):** o **RF1/RF2 já foram entregues** no commit
+> `cd0fa51`: `.vscode-test.thick-full.mjs`, scripts `test:integration:thick-full`,
+> `run.sh --thick-full`, teste em `matrixConfig.test.ts` e docs. O que resta é a
+> **validação 23free/11g**, o ajuste do `thickMode.test` (ele reinicializa o
+> cliente e falha num host já thick) e a **política de CI** (RF4).
 
 ## 2. Contexto e problema
 
@@ -81,9 +87,13 @@ Criar `.vscode-test.thick-full.mjs` com:
 - `UTPLSQL_CONN`/`UTPLSQL_THICK_CONN` vindos do ambiente (sem thin antes do
   thick);
 - todos os `out/test/integration/**/*.test.js`, exceto os thin-only explícitos
-  (`prd70-sqlplus` — afirma thin default; `v014-tns` — TNS thin);
+  (`prd70-sqlplus` — afirma thin default; `v014-tns` — TNS thin) e o
+  **`thickMode.test.js`** — ele faz `resetOracleClientStateForTests()` e chama
+  `initOracleClient` de novo; num host que já inicializou thick na ativação o
+  driver acusa “already initialized”. O teste continua válido no
+  `.vscode-test.thick.mjs` isolado;
 - `package.json`: `pretest:integration:thick-full` (clean/compile/bundle) e
-  `test:integration:thick-full`.
+  `test:integration:thick-full` — **já entregues**.
 
 ### RF2 — `run.sh --thick-full`
 
@@ -97,17 +107,20 @@ PRD; o `--full` thin continua incluindo.
   “thick funciona” de “quirks do 11g”.
 - 11g: full thick com `utPLSQL 3.1.14`; criar uma lista de skips condicional
   (por env `UTPLSQL_LEGACY=1` ou detecção da versão do banco) para o que não
-  existe no 11g/3.1, documentando cada skip.
+  existe no 11g/3.1, documentando cada skip. **Timebox de 1 dia**; se a suíte
+  for estruturalmente incompatível, registrar a limitação e manter o 11g no
+  smoke (previsto no Rollout).
 - Medir tempo e registrar no resumo da matriz.
 
 ### RF4 — CI
 
 - **Full no PR** quando a base for `release/**` ou quando o PR tocar
   `src/oracleRunner.ts`, `src/results.ts`, `src/discovery.ts`, `src/runner.ts`
-  ou `src/scriptRunner.ts` (path filter no `integration.yml`).
-- **Matriz agendada**: 18xe/21xe/23free (imagens públicas) no nightly/semanal,
-  com `--full` no 23free e `--smoke` nos demais; 19ee/12.2/11g continuam
-  locais (credenciais/imagem).
+  ou `src/scriptRunner.ts` (detecção por `git diff` no `integration.yml`; o
+  workflow já roda em todo PR, então o passo “Decide scope” escolhe full vs
+  smoke).
+- **Matriz agendada**: 18xe/21xe **smoke** no semanal; o **23free full** já roda
+  no nightly existente. 19ee/12.2/11g continuam locais (credenciais/imagem).
 - Manter o label `run-integration` como escape manual para o full em qualquer
   PR.
 
@@ -128,7 +141,9 @@ nova só se a política de CI precisar de um invariante próprio.
 - RNF1 — O full thick no 23free não deve exceder ~2× o full thin no mesmo
   banco (ou ~10 min), excluindo o bootstrap.
 - RNF2 — Nenhuma dependência nova.
-- RNF3 — Skips determinísticos e documentados (nada de “flaky skip”).
+- RNF3 — Skips determinísticos e documentados (nada de “flaky skip”); incluir o
+  `thickMode.test` na lista de exclusão do `thick-full` com o motivo de
+  inicialização global.
 - RNF4 — O eixo thin continua verde e com os mesmos 119 + 6.
 
 ## 5. Solução proposta
@@ -174,7 +189,8 @@ Nenhuma setting/comando de runtime novo. Apenas scripts de teste e CI.
 
 ## 10. Critérios de aceite
 
-- `run.sh --thick-full` executa a suíte completa (menos os thin-only) no 23free.
+- `run.sh --thick-full` executa a suíte completa (menos thin-only e
+  `thickMode.test`) no 23free.
 - O 11g executa o full thick com skips documentados (ou a limitação registrada).
 - `npm run test:integration:thick-full` funciona com `UTPLSQL_CONN` +
   `ORACLE_CLIENT_LIB_DIR`.
@@ -184,20 +200,27 @@ Nenhuma setting/comando de runtime novo. Apenas scripts de teste e CI.
 
 ## 11. Questões em aberto
 
-- Vale manter o 11g no full thick com skips ou aceitar o smoke atual?
-- O full thick deve incluir multiroot? (proposta: não nesta PRD)
+- ~~Vale manter o 11g no full thick com skips ou aceitar o smoke atual?~~
+  **Decidido (2026-10-31):** tentar o full com timebox de 1 dia; se não fechar,
+  smoke documentado (o Rollout já permite).
+- O full thick deve incluir multiroot? **Decidido:** não nesta PRD (o `multiRootE2E`
+  faz skip em single-root).
 - Instalar Instant Client no CI (RPM/zip) para tornar o thick obrigatório?
-- A matriz agendada deve ser diária ou semanal (custo de imagem/tempo)?
+  **Adiado:** o eixo CI thick é opcional nesta PRD.
+- A matriz agendada deve ser diária ou semanal? **Decidido:** semanal para
+  18xe/21xe (smoke); o 23free full continua nightly.
 
 ## 12. Impacto no cérebro
 
 Atualizar **`BR-TEST-001`** (matriz cobre thick-full e o 11g deixa de ser só
-smoke) e **`BR-CONN-019`** se o requisito de Client/11g mudar. RNFs sem regra:
-RNF1 (tempo), RNF2 (sem dep nova), RNF3 (determinismo), RNF4 (regressão thin) —
-verificadas pelo próprio CI.
+smoke; ou registra a limitação se o full não fechar) e **`BR-CONN-019`** somente
+se o requisito de Client/11g mudar. RNFs sem regra: RNF1 (tempo), RNF2 (sem dep
+nova), RNF3 (determinismo), RNF4 (regressão thin) — verificadas pelo próprio CI.
+O RF1/RF2 já está no código; a nota só precisa refletir o estado.
 
 ## Impacto nas docs
 
-`wiki/Contributing.md` e `wiki/Tests.md` ganham `--thick-full` e a política de
-CI; `CHANGELOG` registra na 0.19.0. Na conclusão, cada superfície cita
-`PRD-125` ou `<!-- prd:PRD-125 -->`.
+`wiki/Contributing.md`, `wiki/Tests.md` e
+`functional/10-development-tooling.md` ganham `--thick-full` (sem “experimental”)
+e a política de CI; `CHANGELOG` registra na 0.19.0. Na conclusão, cada superfície
+cita `PRD-125` ou `<!-- prd:PRD-125 -->`.

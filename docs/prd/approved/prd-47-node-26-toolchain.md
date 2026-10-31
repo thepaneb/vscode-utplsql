@@ -4,7 +4,7 @@
 
 | Campo | Valor |
 |---|---|
-| Status | Proposto |
+| Status | Aprovado |
 | Autor | Gil Cleber |
 | Data | 2026-08-29 |
 | Componente | Extensão `paneb.vscode-utplsql` (toolchain de desenvolvimento) |
@@ -62,20 +62,25 @@ desalinhamento entre o Node local e o runtime real da extensão.
 
 ### RF1 — `.nvmrc` permanece 24
 
-`.nvmrc` aponta para **`24`**. A decisão é explícita: o Node 24 é o runtime do
-host (VS Code 1.125) e o baseline de desenvolvimento; o Node 26 não substitui o
-`.nvmrc` nesta versão.
+`.nvmrc` já aponta para **`24`** (estado da 0.18.0); não há mudança de arquivo.
+A decisão é explícita: o Node 24 é o runtime do host (VS Code 1.125) e o
+baseline de desenvolvimento; o Node 26 não substitui o `.nvmrc` nesta versão.
 
 ### RF2 — CI matrix `[24, 26]`
 
 `.github/workflows/ci.yml`: `node-version: [24, 26]`. `npm test` (que dispara
 `pretest:unit` com compile + lint) e `npm run test:coverage` devem passar nos dois.
-O Node 22 sai da matrix porque deixou de ser o host mínimo (PRD-127).
+O Node 22 sai da matrix **no mesmo PR da PRD-127**, porque deixou de ser o host
+mínimo (`engines.node >=24`). Para não duplicar custo, os passos de
+`audit:prod`, `version:check`, `brain:ci` + `git diff --exit-code`,
+`docs:check` e `docs:features-check` rodam só no Node 24
+(`if: matrix.node-version == 24`); `lint`, `typecheck` e `test:coverage` rodam
+nos dois.
 
 ### RF3 — Docs e CHANGELOG
 
 - `docs/brain/10-Projeto/Funcional/10-development-tooling.md`: Node 24 local,
-  matrix 24/26, Node 22 fora.
+  matrix 24/26, Node 22 fora; passos de docs/brain/audit só no 24.
 - `docs/brain/70-Wiki/Contributing.md`: requisito local e matrix.
 - `CHANGELOG.md`: entrada na 0.19.0.
 - `NFR-002` é atualizado pela PRD-127 (fonte da verdade do runtime); esta PRD
@@ -85,7 +90,8 @@ O Node 22 sai da matrix porque deixou de ser o host mínimo (PRD-127).
 - RNF1 — Suíte unitária e cobertura verdes no Node 24 e no 26.
 - RNF2 — VSIX inalterado (é só toolchain; o bundle não muda nesta PRD).
 - RNF3 — Nenhuma dependência nova.
-- RNF4 — CI não ganha um terceiro eixo (o custo cai em relação a 22/24/26).
+- RNF4 — CI não ganha um terceiro eixo (o custo cai em relação a 22/24/26); os
+  passos de documentação/auditoria rodam em um único job (24).
 
 ## 5. Solução proposta
 

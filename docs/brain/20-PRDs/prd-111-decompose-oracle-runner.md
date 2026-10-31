@@ -2,14 +2,15 @@
 tipo: prd
 id: PRD-111
 aliases: [PRD-111]
-status: proposed
+status: approved
 titulo: "Decompor `executeRunOracle` e agrupar `OracleRunOptions`"
 versao: "0.19.0"
 data: "2026-10-10"
 autor: "Gil Cleber Barboza"
 versao_titulo: "0.19.0 — Piso Node 24 e runtime moderno"
-verificado: 2026-10-10
+verificado: 2026-10-31
 regras: []
+docs: ["CHANGELOG", "wiki/Architecture.md"]
 tags: [prd]
 ---
 
@@ -28,12 +29,19 @@ tags: [prd]
 
 ## 1. Resumo
 
-`executeRunOracle` concentra hoje **~380 linhas** (`src/oracleRunner.ts:564-950`)
+`executeRunOracle` concentra hoje **467 linhas** (`src/oracleRunner.ts:586-1052`)
 num único fluxo com alto grau de ramificação — seleção de reporters, escopo de
 cobertura, ordem aleatória, `DBMS_OUTPUT`, export, polling do buffer e aplicação
-de resultados. A entrada `OracleRunOptions` (`src/oracleRunner.ts:433`) tem ~30
-campos *flat*. Esta PRD **decompõe a função em etapas coesas e testáveis** e
+de resultados. A entrada `OracleRunOptions` (`src/oracleRunner.ts:449`) tem **33
+campos** *flat*. Esta PRD **decompõe a função em etapas coesas e testáveis** e
 **agrupa as opções em sub-objetos**, sem mudança de comportamento.
+
+> **Revisão (2026-10-31):** o único produtor de `OracleRunOptions` é
+> `src/runner.ts` (`commands/run.ts` não constrói o objeto); porém há **18
+> arquivos de teste com 69 referências a `pathArgs`**, então o RF2 é mecânico,
+> mas maior que “dois produtores”. O `loadOracledbMod()` já é um parâmetro
+> injetável com default `loadOracledb` (RF4 parcialmente satisfeito). O RF2 é
+> timeboxed: se ameaçar a versão, desce para 0.20.0 sem derrubar o RF1.
 
 ## 2. Contexto e problema
 
@@ -79,21 +87,29 @@ campos *flat*. Esta PRD **decompõe a função em etapas coesas e testáveis** e
 
 - Reorganizar em sub-objetos, por exemplo:
   `coverage: { enabled, owner, schemes, includeObjects, excludeObjects, ... }`,
-  `run: { tags, randomOrder, randomOrderSeed, timeoutMinutes, dbmsOutput }`,
-  `export: { reporter }`.
-- Atualizar os produtores (`runner.ts`, `commands/run.ts`) e o único consumidor.
+  `execution: { run, leafTests, state, tags, randomOrder, randomOrderSeed,
+  timeoutMinutes, dbmsOutput }`,
+  `export: { reporter }`, `output: { additionalReporters }`.
+  **Não** use `run` como nome do sub-objeto: colide com o campo
+  `run: vscode.TestRun`.
+- Atualizar o produtor (`runner.ts`), o consumidor e os **18 arquivos de teste**
+  que montam `OracleRunOptions` (codemod + `tsc --noEmit`).
 - Nenhum campo é removido; a mudança é de forma.
 
 ### RF3 — Testes e rastreabilidade
 
+- **Antes da extração**, fixar a string PL/SQL e os binds para as combinações
+  tags × paths × cobertura (escopo completo/vazio) × ordem aleatória × export ×
+  reporters adicionais, e o roteamento `output_id`/CDATA no poll.
 - Testes unitários focados por etapa extraída (montagem de runners/escopo/SQL),
   além dos testes de `executeRunOracle` já existentes.
 - Documentar o novo mapa de funções no cabeçalho do módulo (comentário), ligando
   cada etapa ao requisito de origem.
 
 ### RF4 — Seams para testabilidade (injeção de dependência)
-- Introduzir interface `OracleClient`/`ConnectionProvider` injetada em
-  `executeRunOracle`/`OracleRunOptions`, com `loadOracledbMod()` como default.
+- `loadOracledbMod()` **já é** parâmetro de `executeRunOracle` (default
+  `loadOracledb`); formalizar a interface `OracleClient` só se ela simplificar os
+  testes. Um `ConnectionProvider` injetável é desejável, mas não bloqueia o RF1.
 - Permitir testes de contrato com fake `oracledb` sem banco real.
 - Facilitar futura troca de driver sem tocar o orquestrador.
 
@@ -148,15 +164,22 @@ Nenhuma setting, comando ou menu novo.
 
 ## 11. Questões em aberto
 
-- Extrair também a montagem de `plsql`/`binds` para um módulo dedicado
-  (`src/oracleRunCall.ts`) ou manter em `oracleRunner.ts`?
-- Sub-objeto `export` deve absorver `additionalReporters`/`sessionReporter`?
+- ~~Extrair `plsql`/`binds` para `src/oracleRunCall.ts` ou manter em
+  `oracleRunner.ts`?~~ **Decidido (2026-10-31):** extrair o módulo puro
+  (`src/oracleRunCall.ts`) para testar sem `vscode` e reduzir o arquivo.
+- ~~Sub-objeto `export` deve absorver `additionalReporters`/`sessionReporter`?~~
+  **Decidido:** não; `additionalReporters` fica em `output`, e `export` contém
+  só o reporter de export.
 
 ## 12. Impacto no cérebro
 
-Ao concluir, criar a regra `BR-QUAL-*` ("`executeRunOracle` é um orquestrador; as
+Ao concluir, criar **`BR-QUAL-004`** ("`executeRunOracle` é um orquestrador; as
 etapas de montagem são funções testáveis"), com `prds: ["PRD-111"]`,
-`implementacao:` e `testes:`. Enquanto `proposed`, `regras: []`.
+`implementacao:` (`src/oracleRunner.ts`, `src/oracleRunCall.ts` se extraído) e
+`testes:` (`src/test/unit/oracleRunner.test.ts` + o teste do módulo puro).
+Enquanto `proposed`, `regras: []`. A PRD também atualiza
+`wiki/Architecture.md` e o `functional/10-development-tooling.md` se o módulo
+novo mudar o mapa.
 
 ## Conexões
 
