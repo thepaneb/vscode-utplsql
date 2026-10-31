@@ -61,6 +61,7 @@ SORT id ASC
 - [[TST - docsFidelity.test.ts]] — `TST-docsFidelity.test.ts`
 - [[TST - docsFidelityNls.test.ts]] — `TST-docsFidelityNls.test.ts`
 - [[TST - docsTables.test.ts]] — `TST-docsTables.test.ts`
+- [[TST - esbuildConfig.test.ts]] — `TST-esbuildConfig.test.ts`
 - [[TST - extension.test.ts]] — `TST-extension.test.ts`
 - [[TST - extensionActivation.test.ts]] — `TST-extensionActivation.test.ts`
 - [[TST - fsErrorsCatch.test.ts]] — `TST-fsErrorsCatch.test.ts`

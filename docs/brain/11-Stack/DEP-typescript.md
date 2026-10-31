@@ -9,7 +9,7 @@ versao: "^7.0.2"
 escopo: dev
 licenca: Apache-2.0
 criticidade: alta
-risco: "Major 7 (mudanças de comportamento); alvo ES2021/node16"
+risco: "Major 7 (mudanças de comportamento); alvo ES2024/node16"
 alternativas: []
 tags: [dependencia, dev, build]
 decisoes: [ADR-006]
@@ -21,13 +21,13 @@ regras: [BR-PLAT-001]
 ## Papel no projeto
 
 Compila `src/**` para `out/**` (`tsc -p ./`) — usado pelos testes `node --test`.
-O `dist/extension.js` publicado é gerado pelo **esbuild** (não pelo `tsc`).
+O `dist/extension.mjs` publicado é gerado pelo **esbuild** (não pelo `tsc`).
 
 ## Riscos
 
 - **TypeScript 7** (major recente): mudanças de inferência/config; manter o
   `tsconfig` enxuto.
-- Alvo `ES2021`/`node16` (CommonJS) — o bundle do esbuild usa `node24`.
+- Alvo `ES2024`/`node16` (CommonJS nos testes) — o bundle do esbuild é ESM `node24`.
 
 ## Alternativas
 

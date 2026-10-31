@@ -18,9 +18,9 @@ e os riscos das dependências **diretas** relevantes.
 - **Node (engines):** >=24.0.0
 - **VSCode (engines):** ^1.125.0
 - **.nvmrc:** 24
-- **TypeScript:** ES2021 / node16
+- **TypeScript:** ES2024 / node16
 - **Biome:** lineWidth 100, single
-- **Empacotamento:** ./dist/extension.js
+- **Empacotamento:** ./dist/extension.mjs
 - **Agente (MCPs):** 4 (obsidian, context7, github, playwright)
 - **Agente (plugins):** ./.opencode/plugins/log-sanitizer
 - **Agente (skills externas):** 24

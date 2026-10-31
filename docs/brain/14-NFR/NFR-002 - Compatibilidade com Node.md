@@ -37,5 +37,5 @@ sem manter o Node 22, que deixou de ser o piso.
 - 🧩 Código: [[COD - package.json]] · [[COD - esbuild.config.mjs]] · [[COD - ci.yml]]
 - 🧪 Testes: [[TST - docsFidelity.test.ts]]
 - 🔗 [[ADR-004 - Bundling com esbuild e higiene do VSIX]] · [[TPL-ESBUILD - esbuild (bundling do VSIX)]] · [[MOC - Stack]]
-- ↩️ Referenciada por: [[09-configuration]]
+- ↩️ Referenciada por: [[09-configuration]] · [[BR-PLAT-005 - Bundle de producao e ESM e os testes continuam CJS|BR-PLAT-005]]
 <!-- brain:auto:end -->

@@ -126,6 +126,13 @@ merge).
   `docs:check`, `docs:fidelity`, `brain:rules:lines` e `version:check` verdes;
   `npm run package` gerou o VSIX 0.19.0 com `engines` 1.125/24. Falta a
   instalação manual do VSIX no 1.125 e no stable (gate do PR).
+- **PRD-95** (2026-10-31): bundle ESM `dist/extension.mjs` (`format: 'esm'`,
+  `target: node24`, `dist` limpo antes), `main`/launch/`vsixIgnore` atualizados,
+  `tsconfig` ES2024, 3× `.at(-1)` e 4× `Promise.withResolvers`, `timers/promises`
+  no poll/timeout do debugger, regra **`BR-PLAT-005`** e teste
+  `esbuildConfig.test.ts`. Bundle **941.039 bytes** (≤ 942.777); VSIX 0.19.0
+  empacota `dist/extension.mjs`; unitários **1475/1471 pass/4 skip** e cobertura
+  **97,97/93,72/97,92**.
 
 ## Fluxo de execução (por PRD)
 
