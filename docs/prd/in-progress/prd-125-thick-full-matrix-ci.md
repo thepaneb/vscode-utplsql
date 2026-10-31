@@ -4,7 +4,7 @@
 
 | Campo | Valor |
 |---|---|
-| Status | Aprovado |
+| Status | Em desenvolvimento |
 | Autor | Gil Cleber Barboza |
 | Data | 2026-10-29 |
 | Componente | Testes de integração + matriz de bancos + CI |
@@ -55,6 +55,27 @@ O 11g é vendido como suportado (PRD-123), mas só o caminho feliz
 (run/cobertura/discovery de `test_math`) é exercitado. Debugger, pool,
 cancelamento, schema mode, tags, profile/SecretStorage, jump-to-failure e
 multiroot não têm cobertura no thick — e o driver 26 (PRD-124) aumenta o risco.
+
+### 2.4 Validação (2026-10-31)
+
+Tentativa de `run.sh --only 23free --thick-full` com `oracledb@26`:
+
+- 1ª execução (todos os testes): falhas em `extension`/`commandsE2E` e
+  `debuggerStandaloneFn`; o run foi interrompido em `utplsql.runFile` (>40 min).
+- 2ª/3ª execuções (excluindo UI/comandos/standalone): ainda falham
+  `schemaRun` (cancelamento), `tagsStreaming` (hooks), `thickLegacyE2E` (foi
+  escrito para o 11g), `v012`/`v013`/`v014` (perfis/views/scripts) e o run
+  passa de 25 min.
+- O eixo **thick smoke** (4 testes: thickMode + thickLegacyE2E) continua verde
+  no 11g e no 23free com o driver 26.
+- O **11g full** não foi tentado (timebox); o 11g permanece no smoke.
+
+**Decisão:** entregar o que é independente e estável — o eixo `--thick-full`
+com exclusões explícitas, a **política de CI** (RF4) e a documentação — e manter
+o thick-full **experimental**. A suíte completa em thick (RF3) fica para a
+**0.20.0**, com os testes thin-oriented/UI separados e o debugger standalone
+investigado. A PRD permanece `in-progress` (parcial); o 0.19.0 não promete a
+suíte completa em thick.
 
 ## 3. Objetivos / Não-objetivos
 
@@ -186,6 +207,12 @@ Nenhuma setting/comando de runtime novo. Apenas scripts de teste e CI.
 - Se o 11g não puder rodar o full, a PRD entrega o `thick-full` no 23free e
   documenta o 11g como smoke (com a justificativa), sem regredir a promessa
   atual.
+
+## 9.1 Entrega parcial (2026-10-31)
+
+O 0.19.0 entrega o **RF1/RF2** (config/scripts), o **RF4** (CI) e a documentação;
+o **RF3** (full 23free/11g) fica para a **0.20.0**. Critérios de aceite abaixo
+marcados como pendentes não bloqueiam a 0.19.0; a PRD fica `in-progress`.
 
 ## 10. Critérios de aceite
 

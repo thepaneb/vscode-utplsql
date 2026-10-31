@@ -13,7 +13,7 @@ tags: [funcional]
 ---
 # 10 — Development Tooling
 
-<!-- prd:PRD-127 --> <!-- prd:PRD-47 --> <!-- prd:PRD-95 --> <!-- prd:PRD-124 -->
+<!-- prd:PRD-127 --> <!-- prd:PRD-47 --> <!-- prd:PRD-95 --> <!-- prd:PRD-124 --> <!-- prd:PRD-125 -->
 
 Ferramentas e infraestrutura de desenvolvimento do projeto.
 
@@ -34,7 +34,7 @@ Ferramentas e infraestrutura de desenvolvimento do projeto.
 | `npm run test:integration` | `pretest:integration` (compile + bundle) → `vscode-test` |
 | `npm run test:integration:smoke` | idem, com `.vscode-test.smoke.mjs` (subconjunto rápido) |
 | `npm run test:integration:thick` | idem, com `.vscode-test.thick.mjs` (Instant Client/thick; host sem `UTPLSQL_CONN` → conexão via `UTPLSQL_THICK_CONN`) |
-| `npm run test:integration:thick-full` | idem, com `.vscode-test.thick-full.mjs` (suíte completa em thick; experimental, fora do CI; PRD-125) |
+| `npm run test:integration:thick-full` | idem, com `.vscode-test.thick-full.mjs` (thick; experimental, fora do CI; exclui thin-only/UI/standalone; PRD-125) |
 | `npm run test:integration:multiroot` | idem, com `.vscode-test.multiroot.mjs` (workspace multi-root via `.code-workspace`) |
 | `npm run db:matrix` | `bash scripts/db-matrix/run.sh` — testa contra Oracle 11.2 (11g, **thick-only**), 12.2/18c/19c/21c/23ai local (compose); 11.2 e 12.2 usam utPLSQL `v3.1.14` (piso alternativo, PRD-84/123) |
 | `npm run db:matrix:list` | Lista as versões da matriz |
