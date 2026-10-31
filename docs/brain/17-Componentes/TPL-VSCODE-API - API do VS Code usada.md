@@ -8,7 +8,7 @@ fornecedor: Microsoft
 licenca: MIT
 criticidade: critica
 risco: medio
-versao: "engines.vscode ^1.101.0"
+versao: "engines.vscode ^1.125.0"
 status: ativo
 verificado: 2026-09-29
 implementacao: ["scripts/vscode-api-inventory.cjs", "package.json:11", "package.json:824"]
@@ -38,10 +38,15 @@ do dev/CI. Fonte: `.nvmrc` do repositório do VS Code por tag + versão do Elect
 | 1.88 | 28 | 18.18 (EOL abr/2025) |
 | 1.90 | 29 | 20.9 |
 | 1.100 | 34 | 20.19 |
-| **1.101** | 35 | **22.15** |
+| 1.101 | 35 | 22.15 |
 | 1.102 | 35 | 22.15 |
+| 1.123 | 42.3.0 | 24.15 |
+| 1.124 | 42.3.0 | 24.15 |
+| **1.125** | 42.3.0 | **24.15** |
 
-Piso atual: **1.101** (Node 22 = LTS mais antigo em suporte; EOL abr/2027).
+Piso atual: **1.125** (Node 24 = LTS atual; EOL abr/2028). A 1.123 é a primeira
+stable com Node 24, mas não tem `@types/vscode` no npm; a 1.125 é o primeiro piso
+publicável com os tipos exatos.
 `engines.node`, `@types/node` e o `esbuild target` devem casar com o Node do
 host — o `docs-fidelity` cobra essa coerência.
 
@@ -54,7 +59,7 @@ host — o `docs-fidelity` cobra essa coerência.
 ## Inventário (gerado)
 
 <!-- brain:auto:start:vscode-api -->
-**`engines.vscode`:** `^1.101.0` · **`@types/vscode`:** `1.101.0` · **107 símbolos · 555 referências**
+**`engines.vscode`:** `^1.125.0` · **`@types/vscode`:** `1.125.0` · **107 símbolos · 555 referências**
 
 | Símbolo | Refs | Arquivos |
 |---|---|---|

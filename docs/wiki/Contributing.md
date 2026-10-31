@@ -2,6 +2,8 @@
 
 # Contributing
 
+<!-- prd:PRD-47 -->
+
 <!-- prd:PRD-98 -->
 <!-- prd:PRD-104 -->
 <!-- prd:PRD-113 -->
@@ -47,7 +49,7 @@ Guide for setting up the development environment and submitting contributions.
 
 ## Prerequisites
 
-- **Node.js 22+** (`.nvmrc` points to 24; CI tests 22/24/26 — Node 20 has reached EOL)
+- **Node.js 24+** (`.nvmrc` points to 24; CI tests 24/26)
 - **npm** (comes with Node)
 - **Git**
 - (Optional) **Oracle Database** + **utPLSQL** for integration tests

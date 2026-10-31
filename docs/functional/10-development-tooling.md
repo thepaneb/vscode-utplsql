@@ -1,6 +1,8 @@
 <!-- GENERATED FROM docs/brain/10-Projeto/Funcional/10-development-tooling.md — DO NOT EDIT -->
 # 10 — Development Tooling
 
+<!-- prd:PRD-127 --> <!-- prd:PRD-47 -->
+
 Ferramentas e infraestrutura de desenvolvimento do projeto.
 
 ## Scripts npm
@@ -217,7 +219,7 @@ Sem `.env`, `describeDB` é pulado (`describe.skip`).
 ## CI
 
 Workflow `.github/workflows/ci.yml` (push/PR para `main` e `release/**`):
-- Node 22/24/26 matrix
+- Node 24/26 matrix (docs/brain/audit só no 24; PRD-47)
 - `npm ci` → `npm run brain:ci` → `git diff --exit-code` → `npm run docs:check` →
   `npm run lint` → `npm run typecheck` → `npm run test:coverage` (enforça os
   thresholds do c8) → **upload ao Codecov**
@@ -290,4 +292,5 @@ GitHub Actions) via environment `github-pages`.
 
 ## Node
 
-`.nvmrc` → `24`. CI testa 22/24/26 (Node 20 atingiu EOL). Requer Node 22+ local.
+`.nvmrc` → `24`. CI testa 24/26; os passos de docs/brain/audit rodam só no 24.
+Requer Node 24+ local (`engines.node >=24`, PRD-127/47).

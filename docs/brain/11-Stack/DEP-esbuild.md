@@ -19,7 +19,7 @@ decisoes: [ADR-004]
 
 ## Papel no projeto
 
-Gera o `dist/extension.js` (o `main` do manifesto): bundle CJS, `target: node22`,
+Gera o `dist/extension.js` (o `main` do manifesto): bundle CJS, `target: node24`,
 com `vscode` e `oracledb` **externos** (o driver nativo não pode ser embutido).
 É o artefato publicado; roda no `vscode:prepublish`.
 

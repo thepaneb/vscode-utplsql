@@ -16,7 +16,7 @@
   <a href="https://marketplace.visualstudio.com/items?itemName=paneb.vscode-utplsql"><img alt="Downloads" src="https://vsmarketplacebadges.dev/downloads-short/paneb.vscode-utplsql.svg"></a>
   <a href="https://github.com/thepaneb/vscode-utplsql/actions/workflows/ci.yml"><img alt="CI" src="https://github.com/thepaneb/vscode-utplsql/actions/workflows/ci.yml/badge.svg"></a>
   <a href="https://codecov.io/gh/thepaneb/vscode-utplsql"><img alt="Coverage" src="https://codecov.io/gh/thepaneb/vscode-utplsql/branch/main/graph/badge.svg"></a>
-  <img alt="VS Code" src="https://img.shields.io/badge/VS%20Code-1.101%2B-007ACC">
+  <img alt="VS Code" src="https://img.shields.io/badge/VS%20Code-1.125%2B-007ACC">
   <img alt="Node" src="https://img.shields.io/badge/node-22-339933?logo=nodedotjs&logoColor=white">
   <img alt="TypeScript" src="https://img.shields.io/badge/TypeScript-7-3178C6?logo=typescript&logoColor=white">
   <img alt="Oracle" src="https://img.shields.io/badge/Oracle-12.2%2B-F80000?logo=oracle&logoColor=white">
@@ -26,7 +26,7 @@
 
 # utPLSQL Test Runner
 
-在 VS Code 中直接运行和调试 **utPLSQL**（Oracle PL/SQL）测试 — 原生 **Test Explorer**、可视化覆盖率、PL/SQL 调试器，以及通过 `node-oracledb` 的 **Oracle 直连执行**。支持 **24 种语言**；需要 **VS Code 1.101+** (Node 22).
+在 VS Code 中直接运行和调试 **utPLSQL**（Oracle PL/SQL）测试 — 原生 **Test Explorer**、可视化覆盖率、PL/SQL 调试器，以及通过 `node-oracledb` 的 **Oracle 直连执行**。支持 **24 种语言**；需要 **VS Code 1.125+** (Node 24).
 
 ### Test Explorer 与执行
 
@@ -105,7 +105,7 @@
 | 18c+ | v3.2.x (18c+) / v3.1.x | 推荐；charset 为 `AL32UTF8`。 |
 | 12.2 | 仅 v3.1.x | v3.2.x 无法编译（`PLS-00222`）。镜像的 `WE8DEC` 会丢失无法表示的字符（例如 `€`）；精简驱动忽略 `NLS_LANG`。 |
 | 11.2 (11g R2) | v3.1.x only | **Thick mode required** (thin starts at 12.1); coverage via `DBMS_PROFILER`. Instant Client 19c+. |
-- **VSCode 1.101+** (Node 22).
+- **VSCode 1.125+** (Node 24).
 
 扩展只是"图形客户端" — 真正运行测试的是数据库，通过 node-oracledb 直连。
 

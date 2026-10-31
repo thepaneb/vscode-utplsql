@@ -14,7 +14,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        node-version: [22, 24, 26]
+        node-version: [24, 26]
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
         with:
@@ -23,12 +23,20 @@ jobs:
         with:
           node-version: ${{ matrix.node-version }}
       - run: npm ci
+      # Documentação, drift, auditoria e versão rodam uma vez (Node 24); o
+      # Node 26 é o eixo de compatibilidade do toolchain (PRD-47).
       - run: npm run audit:prod
+        if: ${{ matrix.node-version == 24 }}
       - run: npm run version:check
+        if: ${{ matrix.node-version == 24 }}
       - run: npm run brain:ci
+        if: ${{ matrix.node-version == 24 }}
       - run: git diff --exit-code
+        if: ${{ matrix.node-version == 24 }}
       - run: npm run docs:check
+        if: ${{ matrix.node-version == 24 }}
       - run: npm run docs:features-check
+        if: ${{ matrix.node-version == 24 }}
       - run: npm run lint
       - run: npm run typecheck
       - run: npm run test:coverage

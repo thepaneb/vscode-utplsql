@@ -117,6 +117,15 @@ merge).
 
 - **Fase 0** (2026-10-31): branch `release/v0.19.0`, pre-bump para 0.19.0,
   `CHANGELOG` inicial e revisão das PRDs.
+- **PRD-127 + PRD-47** (2026-10-31): piso `^1.125.0`, Node 24, `@types/vscode`
+  1.125.0, `@types/node ^24.19.0`, esbuild `node24`, CI `[24, 26]` com docs/
+  auditoria só no 24, README ×24/wiki/site/CONTRIBUTING, NFR/TPL/BR atualizados
+  e auditoria Node 24 registrada. `lib` do `tsconfig` subiu para ES2022 por causa
+  dos dois `.at(-1)` já existentes nos testes (a PRD-95 sobe para ES2024).
+  Gates: **1472 testes / 1468 pass / 4 skip**, cobertura **97,97/93,75/97,77**,
+  `docs:check`, `docs:fidelity`, `brain:rules:lines` e `version:check` verdes;
+  `npm run package` gerou o VSIX 0.19.0 com `engines` 1.125/24. Falta a
+  instalação manual do VSIX no 1.125 e no stable (gate do PR).
 
 ## Fluxo de execução (por PRD)
 

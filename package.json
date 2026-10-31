@@ -8,8 +8,8 @@
   "license": "MIT",
   "icon": "images/icon.png",
   "engines": {
-    "vscode": "^1.101.0",
-    "node": ">=22.0.0"
+    "vscode": "^1.125.0",
+    "node": ">=24.0.0"
   },
   "categories": [
     "Testing"
@@ -1019,9 +1019,9 @@
     "@biomejs/biome": "^2.5.15",
     "@resvg/resvg-js": "^2.6.2",
     "@types/mocha": "^10.0.7",
-    "@types/node": "^22.20.1",
+    "@types/node": "^24.19.0",
     "@types/oracledb": "^7.0.2",
-    "@types/vscode": "1.101.0",
+    "@types/vscode": "1.125.0",
     "@vscode/test-cli": "^0.0.15",
     "@vscode/test-electron": "^3.1.0",
     "@vscode/vsce": "^4.0.0",

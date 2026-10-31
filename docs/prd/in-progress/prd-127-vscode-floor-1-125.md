@@ -4,7 +4,7 @@
 
 | Campo | Valor |
 |---|---|
-| Status | Aprovado |
+| Status | Em desenvolvimento |
 | Autor | Gil Cleber Barboza |
 | Data | 2026-10-30 |
 | Componente | Extensão `paneb.vscode-utplsql` (piso de plataforma e runtime) |
@@ -231,6 +231,24 @@ Nenhuma setting/comando novo. A mudança é de plataforma/build.
 - **Packaging**: `npm run package`; instalar o `.vsix` no 1.125 e no stable.
 - **Manual**: abrir workspace com `.pks`, conferir árvore/CodeLens/execução;
   confirmar que a versão antiga (<1.125) é recusada pelo Marketplace/host.
+
+## 7.1 Auditoria Node 24 (RF5)
+
+Executada em 2026-10-31 contra `@types/node` 24.19.2 e a documentação do Node 24.
+
+| Item do checklist | Achado | Decisão |
+|---|---|---|
+| APIs removidas/depreciadas (`url.parse`, `punycode`, `new Buffer`, `fs.exists`, `process.binding`, `substr`, `domain`) | **Nenhuma** ocorrência em `src/`/`scripts/` (produção) | nada a fazer |
+| Prefixo `node:` em builtins | **Já usado** em todos os imports de produção (`node:assert`, `node:fs`, `node:path`, `node:os`, `node:module`, `node:crypto`) | nada a fazer |
+| Flags/APIs experimentais | `--experimental-test-module-mocks` segue necessário no `test:coverage` (Node 24/26) | manter |
+| Recursos nativos do Node 24 | 3× `[len - 1]` → `.at(-1)`; 4× `new Promise((resolve…))` → `Promise.withResolvers()`; `timers/promises` no poll | **adiado para a PRD-95** (é a mesma frente de ES2024/stdlib) |
+| `lib` do `tsconfig` | dois testes já usam `.at(-1)`, que exige `lib` ES2022; com `@types/node` 24 o `tsc` passou a acusar | `lib: ["ES2022"]` (target/module seguem ES2021/node16; a PRD-95 sobe para ES2024) |
+| I/O e concorrência | poll de 200 ms com `Promise.race`; `setTimeout` do timeout do debugger; sem backpressure pendente | sem mudança de baixo risco nesta PRD |
+| `process`/`global`/`__dirname` | produção não usa `__dirname`/`require`/`module.exports`; `process.env` é usado só para config | nada a fazer |
+| Bundle/`target` | `esbuild target node24`; `@types/node` 24; `engines.node >=24` | feito nesta PRD |
+
+Nenhuma correção de código de runtime foi necessária: a base já estava aderente
+ao Node 24. As substituições de stdlib ficam na PRD-95 para não duplicar escopo.
 
 ## 8. Riscos e mitigação
 

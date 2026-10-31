@@ -27,7 +27,7 @@ O `dist/extension.js` publicado é gerado pelo **esbuild** (não pelo `tsc`).
 
 - **TypeScript 7** (major recente): mudanças de inferência/config; manter o
   `tsconfig` enxuto.
-- Alvo `ES2021`/`node16` (CommonJS) — o bundle do esbuild usa `node22`.
+- Alvo `ES2021`/`node16` (CommonJS) — o bundle do esbuild usa `node24`.
 
 ## Alternativas
 
