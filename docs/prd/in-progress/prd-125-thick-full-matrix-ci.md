@@ -56,26 +56,37 @@ O 11g é vendido como suportado (PRD-123), mas só o caminho feliz
 cancelamento, schema mode, tags, profile/SecretStorage, jump-to-failure e
 multiroot não têm cobertura no thick — e o driver 26 (PRD-124) aumenta o risco.
 
-### 2.4 Validação (2026-10-31)
+### 2.4 Validação (2026-10-31 / 2026-11-01)
 
-Tentativa de `run.sh --only 23free --thick-full` com `oracledb@26`:
+Diagnóstico do `--thick-full` no 23free com `oracledb@26`:
 
-- 1ª execução (todos os testes): falhas em `extension`/`commandsE2E` e
-  `debuggerStandaloneFn`; o run foi interrompido em `utplsql.runFile` (>40 min).
-- 2ª/3ª execuções (excluindo UI/comandos/standalone): ainda falham
-  `schemaRun` (cancelamento), `tagsStreaming` (hooks), `thickLegacyE2E` (foi
-  escrito para o 11g), `v012`/`v013`/`v014` (perfis/views/scripts) e o run
-  passa de 25 min.
+- **UI/comandos** (`extension`, `commandsE2E`): falham/hangam no
+  `.code-workspace` temporário porque dependem do workspace/settings do repo;
+  são cobertos pelo eixo thin. **Não é bug do produto.**
+- **`thickMode`**: reinitializa o cliente num host que já está thick
+  (`already initialized`); o teste continua válido no eixo thick isolado.
+- **`debuggerStandaloneFn`**: falha no thick (function standalone/toplevel);
+  limitação registrada.
+- **`debuggerE2E`/`debuggerExceptionE2E`**: falham de forma **intermitente** no
+  run completo com `NJS-500`/`ORA-12547` (conexão fechada/perdida), mas
+  **passam isolados**. O banco está saudável (93/200 processes, 121/322
+  sessions), então não é limite de sessão evidente.
+- **`schemaRun` (cancelamento), `tagsStreaming`, `thickLegacyE2E`,
+  `v012`/`v013`/`v014`**: **passam isolados**; as falhas do run anterior eram
+  cascata do host/estado, não determinísticas.
+- Com as exclusões explícitas, o full thick no 23free **completou uma vez em
+  ~5 min** com **79 passing / 8 pending / 4 failing** (os 3 debugger +
+  `profileSecretStorage`, todos por conexão/estado); em outra execução o host
+  ficou instável e o run hangou.
 - O eixo **thick smoke** (4 testes: thickMode + thickLegacyE2E) continua verde
-  no 11g e no 23free com o driver 26.
-- O **11g full** não foi tentado (timebox); o 11g permanece no smoke.
+  no 11g e no 23free com o driver 26; o **11g full** não foi tentado (timebox).
 
 **Decisão:** entregar o que é independente e estável — o eixo `--thick-full`
 com exclusões explícitas, a **política de CI** (RF4) e a documentação — e manter
 o thick-full **experimental**. A suíte completa em thick (RF3) fica para a
-**0.20.0**, com os testes thin-oriented/UI separados e o debugger standalone
-investigado. A PRD permanece `in-progress` (parcial); o 0.19.0 não promete a
-suíte completa em thick.
+**0.20.0**, com a estabilidade de conexão/pool do host longo instrumentada
+(PRD-101/PRD-102) e os testes UI/standalone separados. A PRD permanece
+`in-progress` (parcial); o 0.19.0 não promete a suíte completa em thick.
 
 ## 3. Objetivos / Não-objetivos
 

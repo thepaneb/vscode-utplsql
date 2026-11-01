@@ -148,13 +148,16 @@ merge).
   1.858.770 B** do 0.18.0 (**+0,25%**). Regra **`BR-CONN-021`**; `BR-CONN-019`
   ganhou o requisito de `libclntsh.so`/`.dylib` com nome padrão. A falha inicial
   de `DPI-1047` era o `.env.dbmatrix` sem quotes no caminho Windows.
-- **PRD-125 (parcial)** (2026-10-31): RF1/RF2 (config/scripts), RF4 (CI) e docs
+- **PRD-125 (parcial)** (2026-11-01): RF1/RF2 (config/scripts), RF4 (CI) e docs
   entregues; o `--thick-full` ficou **experimental** com exclusões explícitas
-  (thin-only, UI/comandos, `thickMode`, debugger standalone). A suíte completa
-  em thick no 23free/11g ainda falha/hanga em testes thin-oriented
-  (`schemaRun` cancelamento, `tagsStreaming`, `thickLegacyE2E` no 23free,
-  `v012`/`v013`/`v014`) e fica para a **0.20.0**. O 11g permanece no smoke
-  (4/4 verde com o driver 26).
+  (thin-only, UI/comandos, `thickMode`, debugger standalone). Diagnóstico: os
+  testes de UI falham pelo workspace temporário (não é produto); `schemaRun`
+  cancelamento, `tagsStreaming`, `thickLegacyE2E` e `v012/v013/v014` **passam
+  isolados**; o run completo completou uma vez com **79 passing / 8 pending / 4
+  failing** (debugger `NJS-500`/`ORA-12547` + cascata no profile), e em outra
+  ficou instável/hangou. O banco está saudável (93/200 processes). A
+  estabilidade do host longo (pool/debugger) fica para a **0.20.0**
+  (PRD-101/102); o 11g permanece no smoke (4/4).
 
 ## Fluxo de execução (por PRD)
 
