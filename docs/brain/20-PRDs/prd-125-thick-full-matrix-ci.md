@@ -98,8 +98,9 @@ Diagnóstico do `--thick-full` no 23free com `oracledb@26`:
 com exclusões explícitas, a **política de CI** (RF4) e a documentação — e manter
 o thick-full **experimental**. A suíte completa em thick (RF3) fica para a
 **0.20.0**, com a estabilidade de conexão/pool do host longo instrumentada
-(PRD-101/PRD-102) e os testes UI/standalone separados. A PRD permanece
-`in-progress` (parcial); o 0.19.0 não promete a suíte completa em thick.
+(PRD-101/PRD-102; issue **#288**) e os testes UI/standalone separados. A PRD
+permanece `in-progress` (parcial); o 0.19.0 não promete a suíte completa em
+thick.
 
 ## 3. Objetivos / Não-objetivos
 

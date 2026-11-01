@@ -157,7 +157,7 @@ merge).
   failing** (debugger `NJS-500`/`ORA-12547` + cascata no profile), e em outra
   ficou instável/hangou. O banco está saudável (93/200 processes). A
   estabilidade do host longo (pool/debugger) fica para a **0.20.0**
-  (PRD-101/102); o 11g permanece no smoke (4/4).
+  (PRD-101/102; issue **#288**); o 11g permanece no smoke (4/4).
 
 ## Fluxo de execução (por PRD)
 
