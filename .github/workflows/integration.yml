@@ -17,16 +17,19 @@ on:
   workflow_dispatch:
     inputs:
       mode:
-        description: 'Escopo: smoke (rápido), full (23ai Free completo) ou matrix (18c/21c/23ai)'
+        description: 'Escopo: smoke (rápido), full (23ai Free completo), matrix (18c/21c/23ai completos) ou matrix-smoke (18c/21c, smoke)'
         type: choice
-        options: [smoke, full, matrix]
+        options: [smoke, full, matrix, matrix-smoke]
         default: smoke
 
 permissions:
   contents: read
 
 concurrency:
-  group: integration-${{ github.ref }}
+  # Nightly (0 3) e semanal (0 4 dom) rodam sobre o mesmo ref (`main`); sem o
+  # cron no grupo, o `cancel-in-progress` faz um derrubar o outro quando o
+  # scheduler atrasa. PRs continuam cancelando o run anterior do mesmo PR.
+  group: integration-${{ github.ref }}-${{ github.event.schedule || github.event_name }}
   cancel-in-progress: true
 
 jobs:
@@ -38,7 +41,7 @@ jobs:
     if: >-
       github.event_name == 'pull_request' ||
       (github.event_name == 'schedule' && github.event.schedule == '0 3 * * *') ||
-      (github.event_name == 'workflow_dispatch' && inputs.mode != 'matrix')
+      (github.event_name == 'workflow_dispatch' && inputs.mode != 'matrix' && inputs.mode != 'matrix-smoke')
     runs-on: ubuntu-latest
     timeout-minutes: 60
     env:
@@ -94,10 +97,10 @@ jobs:
 
   matrix:
     name: Integration matrix (Oracle 18c/21c/23ai)
-    # Dispatch `matrix` roda o full nos 3 bancos; o schedule semanal roda
-    # 18c/21c em smoke (o 23ai full é o nightly).
+    # Dispatch `matrix` roda o full nos 3 bancos; `matrix-smoke` e o schedule
+    # semanal rodam 18c/21c em smoke (o 23ai full é o nightly).
     if: >-
-      (github.event_name == 'workflow_dispatch' && inputs.mode == 'matrix') ||
+      (github.event_name == 'workflow_dispatch' && (inputs.mode == 'matrix' || inputs.mode == 'matrix-smoke')) ||
       (github.event_name == 'schedule' && github.event.schedule == '0 4 * * 0')
     runs-on: ubuntu-latest
     timeout-minutes: 240
@@ -122,7 +125,7 @@ jobs:
 
       - name: Run integration matrix
         run: |
-          if [ "${{ github.event_name }}" = "schedule" ]; then
+          if [ "${{ github.event_name }}" = "schedule" ] || [ "${{ inputs.mode }}" = "matrix-smoke" ]; then
             bash scripts/db-matrix/run.sh --only 18xe,21xe --smoke
           else
             bash scripts/db-matrix/run.sh --only 18xe,21xe,23free --tests "xvfb-run -a bash -c 'npm run test:integration && npm run test:integration:multiroot'"

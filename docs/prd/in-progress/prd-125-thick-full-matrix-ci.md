@@ -226,6 +226,10 @@ O 0.19.0 entrega o **RF1/RF2** (config/scripts), o **RF4** (CI) e a documentaç�
 o **RF3** (full 23free/11g) fica para a **0.20.0**. Critérios de aceite abaixo
 marcados como pendentes não bloqueiam a 0.19.0; a PRD fica `in-progress`.
 
+O cron semanal (`0 4 * * 0`) só passa a valer depois do merge na `main`
+(workflows agendados rodam a partir da default branch). Antes disso, o recorte
+do semanal (18c/21c em smoke) pode ser exercitado pelo dispatch `matrix-smoke`.
+
 ## 10. Critérios de aceite
 
 - `run.sh --thick-full` executa a suíte completa (menos thin-only e
@@ -260,6 +264,6 @@ O RF1/RF2 já está no código; a nota só precisa refletir o estado.
 ## Impacto nas docs
 
 `wiki/Contributing.md`, `wiki/Tests.md` e
-`functional/10-development-tooling.md` ganham `--thick-full` (sem “experimental”)
-e a política de CI; `CHANGELOG` registra na 0.19.0. Na conclusão, cada superfície
+`functional/10-development-tooling.md` ganham `--thick-full` (experimental) e a
+política de CI; `CHANGELOG` registra na 0.19.0. Na conclusão, cada superfície
 cita `PRD-125` ou `<!-- prd:PRD-125 -->`.

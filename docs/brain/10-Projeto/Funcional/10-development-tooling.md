@@ -239,14 +239,23 @@ Workflow `.github/workflows/ci.yml` (push/PR para `main` e `release/**`):
   `codecov.yml` — ver a armadilha do payload em *Coverage (c8) → Output*)
 
 Integração com **Oracle real** (`.github/workflows/integration.yml`):
-- **nightly** (`schedule`) e **dispatch `full`**: `scripts/db-matrix/run.sh --only 23free`
-  roda a suíte de integração completa em Oracle **23ai Free**
-- **dispatch `matrix`**: `--only 18xe,21xe,23free`
-- **PR**: roda **sempre**, em modo *smoke* (capacidades + debugger); com o label
-  **`run-integration`**, roda a suíte completa (inclui o cenário **multi-root**,
-  via `npm run test:integration:multiroot`)
+- **PR** (quando o diff toca `src/**`, `scripts/db-matrix/**`,
+  `docker/db-matrix/**`, `.vscode-test*.mjs` ou o próprio workflow): *smoke*
+  (capacidades + debugger) por padrão; **full** (inclui o cenário **multi-root**,
+  via `npm run test:integration:multiroot`) quando a base é `release/**`, o diff
+  toca o caminho crítico de execução/resultados (`src/oracleRunner.ts`,
+  `oracleRunCall`, `oraclePoll`, `results`, `discovery`, `runner`,
+  `scriptRunner`) ou o PR tem o label **`run-integration`**
+- **nightly** (`0 3 * * *`): suíte completa em Oracle **23ai Free**
+- **semanal** (`0 4 * * 0`): matriz **18c/21c em smoke**
+- **dispatch**: `smoke` (23free smoke), `full` (23free full), `matrix`
+  (18c/21c/23free full) e `matrix-smoke` (18c/21c smoke, mesmo recorte do
+  semanal)
 - O extension host roda sob `xvfb-run`; o Oracle sobe via `docker compose`
   (`docker/db-matrix/compose.yaml`) e é preparado pelo `bootstrap.sh` (UT3 + grants + fixtures)
+- Nightly e semanal usam grupos de **concorrência** separados (o cron entra no
+  grupo), para o `cancel-in-progress` não derrubar um schedule por causa do
+  atraso do outro
 
 `.github/workflows/publish.yml` (release publicada no GitHub):
 - Job **verify** (1×): `compile`, `lint`, `test:unit`
