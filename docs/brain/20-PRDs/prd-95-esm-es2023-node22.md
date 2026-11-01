@@ -2,15 +2,15 @@
 tipo: prd
 id: PRD-95
 aliases: [PRD-95]
-status: proposed
+status: completed
 titulo: "Modernização do runtime: ESM (.mjs), ES2024 e stdlib Node 24"
 versao: "0.19.0"
 data: "2026-09-29"
 autor: "Gil Cleber Barboza"
 versao_titulo: "0.19.0 — Piso Node 24 e runtime moderno"
-verificado: "2026-10-30"
-regras: []
-docs: ["CHANGELOG", "wiki/Architecture.md"]
+verificado: "2026-10-31"
+regras: ["BR-PLAT-005"]
+docs: ["CHANGELOG", "wiki/Architecture.md", "functional/10-development-tooling.md"]
 tags: [prd]
 ---
 
@@ -47,6 +47,11 @@ publicado vira ESM.
   host. A documentação/implementação aceita `"type": "module"` **ou** um `main`
   com sufixo `.mjs` — o que permite ESM só no bundle, sem converter os 109
   `require()` nem o stub de `vscode` dos testes.
+- **Probe de empacotamento (2026-10-31):** o `vsce@4.0.0` do repo empacota
+  `main: ./dist/extension.mjs` normalmente (inclui o arquivo no VSIX). O issue
+  aberto `microsoft/vscode-vsce#1273` é sobre `main` **sem extensão**
+  (`./dist/extension`), que não é o nosso caso. Mesmo assim, o VSIX deve ser
+  validado no 1.125 antes do merge.
 - Node 24 (V8 13.6) suporta **ES2024**: `Promise.withResolvers`,
   `Object.groupBy`/`Map.groupBy`, `Array.prototype.toSorted`, `.at`, entre outros.
 - O piso 1.125 remove o bloqueio de runtime que existia na 1.101/Node 22.
@@ -80,6 +85,9 @@ publicado vira ESM.
 - **Não** adicionar `"type": "module"`: o `tsc` continua emitindo CJS em `out/`
   para os testes e o `@vscode/test-cli`/Mocha seguem CJS.
 - `.vscode/launch.json`: incluir `dist/**/*.mjs` em `outFiles`.
+- **Limpar `dist/` antes do bundle** (remove o `extension.js` antigo) e atualizar
+  `src/test/unit/vsixIgnore.test.ts` (arquivo essencial = `dist/extension.mjs`);
+  o `.vscodeignore` já exclui `**/*.map` e não precisa mudar.
 
 ### RF2 — TypeScript ES2024
 
@@ -102,7 +110,8 @@ publicado vira ESM.
   `discovery`, `dbSourceProvider`).
 
 **Não-funcionais**
-- RNF1 — Bundle não maior que o atual (**921 KB**; medir `dist/extension.mjs`).
+- RNF1 — Bundle não maior que o atual (**942.777 bytes** = 920,7 KiB; medir
+  `dist/extension.mjs`).
 - RNF2 — `@vscode/test-cli`, Mocha, `tsc` e `vsce` funcionando; testes intactos.
 - RNF3 — Sem regressão de comportamento e sem API de VS Code/Node acima do piso.
 - RNF4 — `npm run package` gera VSIX com `.mjs` e ativa no floor 1.125.
@@ -168,7 +177,8 @@ Nenhuma setting de usuário nova.
 ## 10. Critérios de aceite
 
 - Extensão ativa a partir de `dist/extension.mjs` no host Node (F5) e no VSIX.
-- `dist/extension.mjs` **≤ 921 KB**.
+- `dist/extension.mjs` **≤ 942.777 bytes** (920,7 KiB); a entrega final ficou
+  em **701.347 bytes** com `minify: true, keepNames: true`.
 - `tsc`, `lint`, `test:unit`, `test:coverage` e `test:integration:smoke` verdes.
 - `oracledb` carrega por `import()` em thin e thick.
 - `docs:check`/`docs-fidelity` verdes; `CHANGELOG` atualizado.
@@ -182,24 +192,37 @@ Nenhuma setting de usuário nova.
 
 ## 12. Impacto no cérebro
 
-Criar **`BR-PLAT-002`** — “bundle de produção é ESM (`.mjs`); testes/`out`
-continuam CJS” — com `prds: ["PRD-95"]`, `implementacao:` e `testes:`; atualizar
-**`BR-PLAT-001`** se o `esbuild target` mudar de novo e a nota
-`TPL-VSCODE-API`/`Architecture` com a topologia do bundle. RNFs sem regra:
-RNF1 (bundle), RNF2 (harness), RNF3 (comportamento) e RNF4 (VSIX) — verificados
-por testes/packaging.
+Criar **`BR-PLAT-005`** — “bundle de produção é ESM (`.mjs`); testes/`out`
+continuam CJS” (a `BR-PLAT-002` já existe: CI com actions pinadas) — com
+`prds: ["PRD-95"]`, `implementacao:` (`esbuild.config.mjs`, `package.json`,
+`tsconfig.json`) e `testes:` (novo `src/test/unit/esbuildConfig.test.ts`);
+atualizar **`BR-PLAT-001`** se o `esbuild target` mudar de novo, a nota
+`TPL-VSCODE-API`/`Architecture` com a topologia do bundle e as notas
+`ADR-004`, `DEP-esbuild`, `DEP-typescript`, `TPL-ESBUILD` e
+`functional/10-development-tooling.md`. RNFs sem regra: RNF1 (bundle), RNF2
+(harness), RNF3 (comportamento) e RNF4 (VSIX) — verificados por
+testes/packaging.
 
 ## Impacto nas docs
 
-`CHANGELOG` (0.19.0) e `wiki/Architecture.md` (bundle `.mjs`, testes CJS);
-`docs/functional`/README não mudam (sem feature de usuário). Na conclusão, cada
-superfície cita `PRD-95` ou `<!-- prd:PRD-95 -->`.
+`CHANGELOG` (0.19.0), `wiki/Architecture.md` (bundle `.mjs`, testes CJS) e
+`functional/10-development-tooling.md` (bundle/main/launch); `ADR-004`,
+`DEP-esbuild`, `DEP-typescript` e `TPL-ESBUILD` acompanham a decisão. O README
+não muda (sem feature de usuário). Na conclusão, cada superfície cita `PRD-95`
+ou `<!-- prd:PRD-95 -->`.
 
 ## Conexões
 
 <!-- brain:auto:start:conexoes -->
 - 🗺️ [[MOC - PRDs]]
+- 📐 Regras: [[BR-PLAT-005 - Bundle de producao e ESM e os testes continuam CJS|BR-PLAT-005]]
 - 🔗 PRDs relacionados: [[prd-94-vscode-floor-1-101|PRD-94]] · [[prd-115-split-i18n-locales|PRD-115]] · [[prd-127-vscode-floor-1-125|PRD-127]]
-- 🔗 Mesma versão (0.19.0): [[prd-47-node-26-toolchain|PRD-47]] · [[prd-111-decompose-oracle-runner|PRD-111]] · [[prd-124-oracledb-26-upgrade|PRD-124]] · [[prd-125-thick-full-matrix-ci|PRD-125]] · [[prd-127-vscode-floor-1-125|PRD-127]]
+- 🔗 Mesma versão (0.19.0): [[prd-125-thick-full-matrix-ci|PRD-125]]
+- 🎯 RF1 — Extensão em ESM via `.mjs` → [[BR-PLAT-005 - Bundle de producao e ESM e os testes continuam CJS|BR-PLAT-005]]
+- 🎯 RF2 — TypeScript ES2024 → [[BR-PLAT-005 - Bundle de producao e ESM e os testes continuam CJS|BR-PLAT-005]]
+- 🎯 RNF1 — Bundle não maior que o atual (**942.777 bytes** = 920,7 KiB; medir → [[BR-PLAT-005 - Bundle de producao e ESM e os testes continuam CJS|BR-PLAT-005]]
+- 🎯 RNF2 — `@vscode/test-cli`, Mocha, `tsc` e `vsce` funcionando; testes intactos → [[BR-PLAT-005 - Bundle de producao e ESM e os testes continuam CJS|BR-PLAT-005]]
+- 🎯 RNF3 — Sem regressão de comportamento e sem API de VS Code/Node acima do piso → [[BR-PLAT-005 - Bundle de producao e ESM e os testes continuam CJS|BR-PLAT-005]]
+- 🎯 RNF4 — `npm run package` gera VSIX com `.mjs` e ativa no floor 1.125. → [[BR-PLAT-005 - Bundle de producao e ESM e os testes continuam CJS|BR-PLAT-005]]
 - 🚀 ⬅️ release anterior: [[prd-123-oracle-11g-support|PRD-123 (0.18.0)]] · ➡️ próxima release: [[prd-101-connection-pool-lifecycle|PRD-101 (0.20.0)]]
 <!-- brain:auto:end -->

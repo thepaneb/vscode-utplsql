@@ -322,6 +322,19 @@ test('workflow da matriz roda multi-root e publica o resumo', () => {
   assert.match(workflow, /matrix-summary/);
 });
 
+test('workflow da matriz separa os schedules e expõe matrix-smoke (PRD-125)', () => {
+  const workflow = read('.github/workflows/integration.yml');
+  // Nightly (0 3) e semanal (0 4 dom) usam o mesmo ref (main): sem o cron no
+  // grupo, o cancel-in-progress de um derruba o outro quando o scheduler atrasa.
+  assert.match(
+    workflow,
+    /group: integration-\$\{\{ github\.ref \}\}-\$\{\{ github\.event\.schedule \|\| github\.event_name \}\}/,
+  );
+  // Dispatch dedicado para validar 18c/21c em smoke antes de confiar no semanal.
+  assert.match(workflow, /matrix-smoke/);
+  assert.match(workflow, /--only 18xe,21xe --smoke/);
+});
+
 test('parse-version.cjs: CLI sem --field devolve JSON', () => {
   const r = spawnSync(
     process.execPath,
@@ -343,6 +356,7 @@ test('thick-full: run.sh aceita o eixo e o config exclui os testes thin-only', (
   const cfg = read('.vscode-test.thick-full.mjs');
   assert.match(cfg, /prd70-sqlplus/);
   assert.match(cfg, /v014-tns/);
+  assert.match(cfg, /thickMode/);
   assert.match(cfg, /utplsql\.oracleClientMode/);
   assert.match(cfg, /utplsql\.oracleClientLibDir/);
   assert.match(cfg, /UTPLSQL_THICK_CONN/);

@@ -25,7 +25,7 @@ tags: [readme]
   <a href="https://marketplace.visualstudio.com/items?itemName=paneb.vscode-utplsql"><img alt="Downloads" src="https://vsmarketplacebadges.dev/downloads-short/paneb.vscode-utplsql.svg"></a>
   <a href="https://github.com/thepaneb/vscode-utplsql/actions/workflows/ci.yml"><img alt="CI" src="https://github.com/thepaneb/vscode-utplsql/actions/workflows/ci.yml/badge.svg"></a>
   <a href="https://codecov.io/gh/thepaneb/vscode-utplsql"><img alt="Coverage" src="https://codecov.io/gh/thepaneb/vscode-utplsql/branch/main/graph/badge.svg"></a>
-  <img alt="VS Code" src="https://img.shields.io/badge/VS%20Code-1.101%2B-007ACC">
+  <img alt="VS Code" src="https://img.shields.io/badge/VS%20Code-1.125%2B-007ACC">
   <img alt="Node" src="https://img.shields.io/badge/node-22-339933?logo=nodedotjs&logoColor=white">
   <img alt="TypeScript" src="https://img.shields.io/badge/TypeScript-7-3178C6?logo=typescript&logoColor=white">
   <img alt="Oracle" src="https://img.shields.io/badge/Oracle-12.2%2B-F80000?logo=oracle&logoColor=white">
@@ -35,7 +35,7 @@ tags: [readme]
 
 # utPLSQL Test Runner
 
-Pokrenite i debugujte **utPLSQL** (Oracle PL/SQL) testove direktno u VS Code-u — nativni **Test Explorer**, vizuelna pokrivenost, PL/SQL debager i **direktno Oracle izvršavanje** preko `node-oracledb`. Dostupno na **24 jezika**; zahteva **VS Code 1.101+** (Node 22).
+Pokrenite i debugujte **utPLSQL** (Oracle PL/SQL) testove direktno u VS Code-u — nativni **Test Explorer**, vizuelna pokrivenost, PL/SQL debager i **direktno Oracle izvršavanje** preko `node-oracledb`. Dostupno na **24 jezika**; zahteva **VS Code 1.125+** (Node 24).
 
 ### Test Explorer i izvršavanje
 
@@ -105,7 +105,7 @@ Pokrenite i debugujte **utPLSQL** (Oracle PL/SQL) testove direktno u VS Code-u �
 ## Захтеви
 
 - [**utPLSQL**](https://github.com/utPLSQL/utPLSQL) **(UT3)** инсталиран у Oracle бази података.
-- **VSCode 1.101+** (Node 22).
+- **VSCode 1.125+** (Node 24).
 
 Екстензија је само „графички клијент" — оно што покреће тестове јесте база података директно (node-oracledb).
 

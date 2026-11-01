@@ -1,4 +1,5 @@
 import * as fs from 'node:fs';
+import { setTimeout as delay } from 'node:timers/promises';
 import * as vscode from 'vscode';
 import { getExtensionLocale, readConfig, resolveConnectionNoPrompt } from './config';
 import {
@@ -158,10 +159,7 @@ export class UtplsqlDebugAdapter implements vscode.DebugAdapter {
   private timer: NodeJS.Timeout | undefined;
   /** Erro do `ut_runner.run` no debuggee (o teste nunca entrou em debug). */
   private runFailure: string | undefined;
-  private resolveRunFailure!: () => void;
-  private runFailurePromise = new Promise<void>((resolve) => {
-    this.resolveRunFailure = resolve;
-  });
+  private runFailurePromise = Promise.withResolvers<void>();
   /** Handshake: o stop de entry só vale depois do configurationDone. */
   private configurationDone = false;
   private entryReady = false;
@@ -445,10 +443,8 @@ export class UtplsqlDebugAdapter implements vscode.DebugAdapter {
       // isso corremos contra a falha do teste e um timeout.
       const outcome = await Promise.race([
         this.debuggerClient.synchronize().then(() => 'sync' as const),
-        this.runFailurePromise.then(() => 'runfail' as const),
-        new Promise<'timeout'>((resolve) => {
-          setTimeout(() => resolve('timeout'), SYNCHRONIZE_TIMEOUT_MS).unref?.();
-        }),
+        this.runFailurePromise.promise.then(() => 'runfail' as const),
+        delay(SYNCHRONIZE_TIMEOUT_MS, 'timeout' as const, { ref: false }),
       ]);
       if (this.runFailure !== undefined) {
         throw new Error(t(getExtensionLocale(), 'debug.runTestFailed', { error: this.runFailure }));
@@ -498,7 +494,7 @@ export class UtplsqlDebugAdapter implements vscode.DebugAdapter {
       await this.runtime.runTest(this.debuggeeConn, cfg.packageName, cfg.testName);
     } catch (e) {
       this.runFailure = e instanceof Error ? e.message : String(e);
-      this.resolveRunFailure();
+      this.runFailurePromise.resolve();
     }
   }
 
@@ -631,12 +627,7 @@ export class UtplsqlDebugAdapter implements vscode.DebugAdapter {
         /* ignore */
       }
       try {
-        await Promise.race([
-          conn.close(),
-          new Promise<void>((resolve) => {
-            setTimeout(resolve, 5000).unref?.();
-          }),
-        ]);
+        await Promise.race([conn.close(), delay(5000, undefined, { ref: false })]);
       } catch {
         /* ignore */
       }

@@ -37,8 +37,8 @@ Good starting points:
 
 ### Prerequisites
 
-- **Node.js** and npm
-- **VS Code 1.101+**
+- **Node.js 24+** and npm
+- **VS Code 1.125+**
 - An **Oracle** database with the **utPLSQL (UT3)** framework installed, to test the extension end to end
 - **Docker** (optional) for the version matrix (`npm run db:matrix`)
 

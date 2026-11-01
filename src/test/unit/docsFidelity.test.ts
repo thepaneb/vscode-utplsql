@@ -168,6 +168,26 @@ test('docs-fidelity: @types/vscode acima do piso é reportado', () => {
   assert.ok(problems.some((p) => p.includes('@types/vscode')));
 });
 
+test('docs-fidelity: piso 1.125 com Node 24 e target node24 passa', () => {
+  const problems = checkFidelity({
+    pkg: {
+      engines: { vscode: '^1.125.0', node: '>=24.0.0' },
+      devDependencies: { '@types/vscode': '1.125.0', '@types/node': '^24.19.0' },
+    },
+    esbuild: "target: 'node24',",
+    settings: [],
+    readme: 'ok',
+    commandTitles: [],
+    modules: [],
+    readmeVariants: [],
+    completedPrds: [],
+  });
+  assert.deepStrictEqual(
+    problems.filter((p) => /engines\.node|@types\/node|esbuild target/.test(p)),
+    [],
+  );
+});
+
 test('docs-fidelity: runtime Node coerente com o piso de VS Code passa', () => {
   const problems = checkFidelity({
     pkg: {

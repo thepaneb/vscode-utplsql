@@ -134,11 +134,17 @@ files and the index; do not move the generated files by hand.
 | 118 | Commit signing and verified origin on `main` | 0.18.0 |
 | 119 | Verifiable security posture: OSSF Scorecard and `main` protection | 0.18.0 |
 | 123 | Official Oracle 11g (11.2) thick mode support | 0.18.0 |
+| 47 | Node 24 toolchain and Node 26 CI | 0.19.0 |
+| 95 | Runtime modernization: ESM (`.mjs`), ES2024 and Node 24 stdlib | 0.19.0 |
+| 111 | Split `executeRunOracle` into testable steps | 0.19.0 |
+| 124 | node-oracledb 26 upgrade with matrix and packaging validation | 0.19.0 |
+| 127 | VS Code 1.125 floor and Node 24 runtime | 0.19.0 |
 
 ### ⚪ Proposed
 
 The complete, generated list is in [docs/prd/index.md](../../prd/index.md) —
-currently 42 PRDs, including the 0.19.0 (47/95/111/124/125/127), 0.20.0
+currently 42 PRDs. The 0.19.0 has 47/95/111/124/127 **completed** and 125
+**in progress** (partial: thick-full experimental). Remaining: 0.20.0
 (101–103/106/107/120), 0.21.0 (128–131/137–139), 0.22.0 (88–93/115), 0.23.0
 (97/99/112/116/117/126) and 0.24.0 (121/122/132/133/140–143) proposals. The
 `status:` in each note's frontmatter is authoritative; this page does not

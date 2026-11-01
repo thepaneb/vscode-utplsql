@@ -4,12 +4,12 @@
 
 | Campo | Valor |
 |---|---|
-| Status | Proposto |
+| Status | Concluído |
 | Autor | Gil Cleber Barboza |
 | Data | 2026-10-30 |
 | Componente | Extensão `paneb.vscode-utplsql` (piso de plataforma e runtime) |
 | Versão alvo | 0.19.0 |
-| Arquivos afetados | `package.json`, `esbuild.config.mjs`, `scripts/docs-fidelity.cjs`, `src/**/*.ts`, `scripts/**/*.cjs`, `src/test/unit/docsFidelity.test.ts`, `src/test/unit/brainScripts.test.ts`, `docs/brain/14-NFR/NFR-002*.md`, `docs/brain/14-NFR/NFR-003*.md`, `docs/brain/15-Regras/BR-PLAT-001*.md`, `docs/brain/17-Componentes/TPL-VSCODE-API*.md`, `docs/brain/60-README/README (extensão).md` (+ 23 variantes geradas), `docs/brain/70-Wiki/{Home,Installation-and-requirements}.md`, `docs/brain/80-Site/Landing page (site).md`, `CONTRIBUTING.md`, `CHANGELOG.md` |
+| Arquivos afetados | `package.json`, `esbuild.config.mjs`, `scripts/docs-fidelity.cjs`, `src/**/*.ts`, `scripts/**/*.cjs`, `src/test/unit/docsFidelity.test.ts`, `src/test/unit/brainScripts.test.ts`, `docs/brain/14-NFR/NFR-002*.md`, `docs/brain/14-NFR/NFR-003*.md`, `docs/brain/15-Regras/BR-PLAT-001*.md`, `docs/brain/17-Componentes/TPL-VSCODE-API*.md`, `docs/brain/17-Componentes/TPL-ESBUILD*.md`, `docs/brain/11-Stack/{DEP-esbuild,DEP-typescript}.md`, `docs/brain/10-Projeto/Funcional/10-development-tooling.md`, `docs/brain/60-README/README (extensão).md` (+ 23 variantes geradas), `docs/brain/70-Wiki/{Home,Installation-and-requirements}.md`, `docs/brain/80-Site/Landing page (site).md`, `CONTRIBUTING.md`, `CHANGELOG.md` |
 | Esforço estimado | 3–5 dias |
 | Complexidade | Média-Alta |
 | Relaciona-se a | PRD-94 (piso anterior), PRD-95 (ESM/ES2024), PRD-47 (toolchain), PRD-120 (ativação), NFR-002, NFR-003, BR-PLAT-001 |
@@ -71,9 +71,28 @@ primeira release com Node 24, mas o piso efetivo é 1.125.
 
 ### 2.4 Baseline
 
-- Bundle CJS `dist/extension.js`: **921 KB** (0.18.0).
-- Cobertura: 97/93/97 (linhas/branches/funções) no `.c8rc`.
+- Bundle CJS `dist/extension.js`: **942.777 bytes** = **920,7 KiB** (0.18.0).
+- Cobertura: 97/93/97 (linhas/branches/funções) no `.c8rc`; baseline medido
+  **97,97/93,77/97,77** (margem curta).
 - `@types/node` 24.15.0 não existe; a linha 24 tem 24.13.6 e 24.19.2.
+
+### 2.5 Decisões de revisão (2026-10-31)
+
+- **`@types/node`**: adotar **`^24.19.0`** (24.19.2 na instalação), porque não
+  existe `24.15.x` e a série 24.19 é a mais próxima do host; o `docs-fidelity`
+  compara só o major. A alternativa `24.13.6` fica descartada por ficar atrás do
+  host e esconder APIs disponíveis em runtime.
+- **Mapa do `docs-fidelity`**: adicionar apenas **`'1.125': 24`**; a 1.123 fica
+  documentada como referência histórica na tabela, não no mapa (evita manter
+  uma entrada que ninguém usa).
+- **PRD-47 no mesmo PR**: `engines.node >=24` e a saída do Node 22 do CI são a
+  mesma mudança de plataforma; separá-las deixaria a matriz testando um runtime
+  que o manifesto não promete.
+- **Validação no floor**: `@vscode/test-cli` aceita `--code-version`; o smoke
+  roda com `--code-version 1.125.0` (sem criar config nova).
+- **Bundle**: o teto é **942.777 bytes** (o “921 KB” anterior era KiB).
+- **Refs da `BR-PLAT-001`**: as linhas `package.json:822/824` estão stale
+  (os tipos estão em `:1022/:1024`); corrigir na conclusão.
 
 ## 3. Objetivos / Não-objetivos
 
@@ -119,16 +138,18 @@ qualquer divergência de major.
   referência histórica) em `VSCODE_HOST_NODE`.
 - README (nota do vault + 23 variantes): `VS Code 1.125+ (Node 24)`.
 - Wiki `Home` e `Installation-and-requirements`; site landing page;
-  `CONTRIBUTING.md`.
-- `NFR-002` (Node), `NFR-003` (VS Code), `TPL-VSCODE-API` (tabela e inventário) e
-  `BR-PLAT-001` (piso/referências).
+  `CONTRIBUTING.md`; `functional/10-development-tooling.md`.
+- `NFR-002` (Node), `NFR-003` (VS Code), `TPL-VSCODE-API` (tabela e inventário),
+  `TPL-ESBUILD`/`DEP-esbuild`/`DEP-typescript` (target `node24`) e
+  `BR-PLAT-001` (piso/referências corrigidas).
 - `CHANGELOG.md`: seção `## 0.19.0` com a mudança breaking de plataforma.
 
 ### RF4 — Validação no floor
 
 - Unitários/cobertura em Node 24 e 26.
-- Integração `smoke` no VS Code **1.125.0** (via `@vscode/test-cli` com
-  `version: '1.125.0'`) e no stable atual, com Oracle quando disponível.
+- Integração `smoke` no VS Code **1.125.0** (via
+  `npx vscode-test --config .vscode-test.smoke.mjs --code-version 1.125.0`) e no
+  stable atual, com Oracle quando disponível.
 - `npm run package` + instalação do `.vsix` no 1.125 e no stable; extensão ativa,
   Test Explorer popula e CodeLens funciona.
 - Nenhuma API acima do piso: o `@types/vscode` 1.125 é o contrato.
@@ -169,7 +190,8 @@ observável.
 
 **Não-funcionais**
 - RNF1 — Nenhuma mudança de comportamento observável (settings/comandos/API).
-- RNF2 — Bundle CJS continua ≤ 921 KB (a PRD-95 pode reduzi-lo).
+- RNF2 — Bundle CJS continua ≤ **942.777 bytes** (920,7 KiB; a PRD-95 pode
+  reduzi-lo).
 - RNF3 — Cobertura mantém os thresholds do `.c8rc` (97/93/97).
 - RNF4 — `docs:check`, `docs:fidelity`, `brain:ci` e `version:check` verdes.
 - RNF5 — Nenhuma regressão de performance nas fases medidas; qualquer
@@ -210,6 +232,24 @@ Nenhuma setting/comando novo. A mudança é de plataforma/build.
 - **Manual**: abrir workspace com `.pks`, conferir árvore/CodeLens/execução;
   confirmar que a versão antiga (<1.125) é recusada pelo Marketplace/host.
 
+## 7.1 Auditoria Node 24 (RF5)
+
+Executada em 2026-10-31 contra `@types/node` 24.19.2 e a documentação do Node 24.
+
+| Item do checklist | Achado | Decisão |
+|---|---|---|
+| APIs removidas/depreciadas (`url.parse`, `punycode`, `new Buffer`, `fs.exists`, `process.binding`, `substr`, `domain`) | **Nenhuma** ocorrência em `src/`/`scripts/` (produção) | nada a fazer |
+| Prefixo `node:` em builtins | **Já usado** em todos os imports de produção (`node:assert`, `node:fs`, `node:path`, `node:os`, `node:module`, `node:crypto`) | nada a fazer |
+| Flags/APIs experimentais | `--experimental-test-module-mocks` segue necessário no `test:coverage` (Node 24/26) | manter |
+| Recursos nativos do Node 24 | 3× `[len - 1]` → `.at(-1)`; 4× `new Promise((resolve…))` → `Promise.withResolvers()`; `timers/promises` no poll | **adiado para a PRD-95** (é a mesma frente de ES2024/stdlib) |
+| `lib` do `tsconfig` | dois testes já usam `.at(-1)`, que exige `lib` ES2022; com `@types/node` 24 o `tsc` passou a acusar | `lib: ["ES2022"]` (target/module seguem ES2021/node16; a PRD-95 sobe para ES2024) |
+| I/O e concorrência | poll de 200 ms com `Promise.race`; `setTimeout` do timeout do debugger; sem backpressure pendente | sem mudança de baixo risco nesta PRD |
+| `process`/`global`/`__dirname` | produção não usa `__dirname`/`require`/`module.exports`; `process.env` é usado só para config | nada a fazer |
+| Bundle/`target` | `esbuild target node24`; `@types/node` 24; `engines.node >=24` | feito nesta PRD |
+
+Nenhuma correção de código de runtime foi necessária: a base já estava aderente
+ao Node 24. As substituições de stdlib ficam na PRD-95 para não duplicar escopo.
+
 ## 8. Riscos e mitigação
 
 | Risco | Mitigação |
@@ -248,11 +288,13 @@ Nenhuma setting/comando novo. A mudança é de plataforma/build.
 
 ## 11. Questões em aberto
 
-- `@types/node`: `^24.19.0` (padrão atual, tipos à frente do host) ou pin
-  `24.13.6` (mais conservador)?
-- Vale manter `1.123` explicitamente no mapa `VSCODE_HOST_NODE` como referência
-  histórica, ou só o piso efetivo?
-- O job de integração no floor roda no CI (com Oracle) ou fica local?
+- ~~`@types/node`: `^24.19.0` ou `24.13.6`?~~ **Decidido (2026-10-31):**
+  `^24.19.0` (não existe 24.15.x; o `docs-fidelity` compara major).
+- ~~Vale manter `1.123` no mapa `VSCODE_HOST_NODE`?~~ **Decidido:** só o piso
+  efetivo `1.125`; a 1.123 fica na tabela histórica.
+- O job de integração no floor roda no CI (com Oracle) ou fica local? **Proposta:**
+  local/opcional no CI, porque o `@vscode/test-electron` baixa o build 1.125 e o
+  Oracle já é coberto pela matriz.
 - O relatório da auditoria Node 24 fica como seção desta PRD ou em nota própria
   em `11-Stack`?
 - Alguma otimização de I/O deve ser medida junto da PRD-102 (observabilidade)
@@ -261,13 +303,14 @@ Nenhuma setting/comando novo. A mudança é de plataforma/build.
 ## 12. Impacto no cérebro
 
 Atualizar **`BR-PLAT-001`** (piso 1.125, `prds: ["PRD-94", "PRD-127"]`,
-`requisitos` de RF1/RF2 e `implementacao` do `docs-fidelity`), **`NFR-002`**
-(`engines.node >=24`, `.nvmrc` 24, CI 24/26, auditoria de compatibilidade),
-**`NFR-003`** (piso 1.125) e **`TPL-VSCODE-API`** (tabela/runtime). Nenhuma regra
-nova; a PRD-95 cria a regra de ESM.
+`requisitos` de RF1/RF2, `implementacao` do `docs-fidelity` e as linhas reais do
+`package.json`), **`NFR-002`** (`engines.node >=24`, `.nvmrc` 24, CI 24/26,
+auditoria de compatibilidade), **`NFR-003`** (piso 1.125),
+**`TPL-VSCODE-API`** (tabela/runtime), **`TPL-ESBUILD`**/`DEP-esbuild`/
+`DEP-typescript` (target `node24`) e `functional/10-development-tooling.md`.
+Nenhuma regra nova; a PRD-95 cria a regra de ESM (`BR-PLAT-005`).
 
-RNFs sem regra: RNF1/RNF3 (cobertos por testes), RNF2 (medição de bundle) e RNF4
-(pipeline de docs).
+RNFs sem regra: RNF1, RNF2, RNF3, RNF4, RNF5.
 
 ## Impacto nas docs
 

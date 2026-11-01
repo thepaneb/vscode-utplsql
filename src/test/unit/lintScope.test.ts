@@ -62,7 +62,7 @@ test('biome: schema acompanha a versão instalada do CLI', () => {
 test('package.json: segue íntegro após a normalização', () => {
   assert.ok(pkg.name.length > 0);
   assert.match(pkg.version, /^\d+\.\d+\.\d+/);
-  assert.match(pkg.engines.node, />=22/);
+  assert.match(pkg.engines.node, />=24/);
   assert.ok(pkg.contributes, 'contributes preservado');
   assert.match(pkg.scripts.compile ?? '', /tsc/);
   assert.match(pkg.scripts['test:coverage'] ?? '', /c8/);

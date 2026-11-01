@@ -333,6 +333,7 @@ function checkFidelity(overrides = {}) {
       '1.100': 20,
       1.101: 22,
       1.102: 22,
+      1.125: 24,
     };
     const majorOf = (v) => {
       const m = String(v ?? '').match(/(\d+)/);

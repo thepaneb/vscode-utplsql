@@ -7,17 +7,18 @@ dominio: plataforma
 status: ativo
 severidade: alta
 fonte: codigo
-verificado: 2026-09-29
-implementacao: ["package.json:11", "package.json:12", "package.json:822", "package.json:824", "esbuild.config.mjs:9", "scripts/docs-fidelity.cjs:283"]
+verificado: 2026-10-31
+implementacao: ["package.json:11", "package.json:12", "package.json:1022", "package.json:1024", "esbuild.config.mjs:9", "scripts/docs-fidelity.cjs:330"]
 testes: ["src/test/unit/docsFidelity.test.ts"]
-prds: ["PRD-94"]
-requisitos: ["PRD-94/RF1", "PRD-94/RF2", "PRD-94/RNF1", "PRD-94/RNF2"]
+prds: ["PRD-94", "PRD-127"]
+requisitos: ["PRD-94/RF1", "PRD-94/RF2", "PRD-94/RNF1", "PRD-94/RNF2", "PRD-127/RF1", "PRD-127/RF2"]
 relacionado: ["[[NFR-003 - Compatibilidade com VSCode]]", "[[TPL-VSCODE-API - API do VS Code usada]]"]
 tags: ["plataforma"]
 ---
 ## Enunciado
 
-A extensão roda no **Node embutido no VS Code** (Extension Host). Portanto:
+A extensão roda no **Node embutido no VS Code** (Extension Host). Portanto
+(piso atual: **VS Code 1.125 / Node 24.15**):
 
 - `engines.vscode` define o piso, e o Node do host dessa versão é o **runtime
   real** da extensão (não o Node do dev/CI);
@@ -45,10 +46,10 @@ quebrar no host mínimo; (b) manter o piso num VS Code cujo Node já está **EOL
 
 <!-- brain:auto:start:conexoes -->
 - 🗺️ [[MOC - Regras]]
-- 📄 PRDs: [[prd-94-vscode-floor-1-101|PRD-94]]
-- 🎯 Requisitos: [[prd-94-vscode-floor-1-101|PRD-94 RF1]] · [[prd-94-vscode-floor-1-101|PRD-94 RF2]] · [[prd-94-vscode-floor-1-101|PRD-94 RNF1]] · [[prd-94-vscode-floor-1-101|PRD-94 RNF2]]
+- 📄 PRDs: [[prd-94-vscode-floor-1-101|PRD-94]] · [[prd-127-vscode-floor-1-125|PRD-127]]
+- 🎯 Requisitos: [[prd-94-vscode-floor-1-101|PRD-94 RF1]] · [[prd-94-vscode-floor-1-101|PRD-94 RF2]] · [[prd-94-vscode-floor-1-101|PRD-94 RNF1]] · [[prd-94-vscode-floor-1-101|PRD-94 RNF2]] · [[prd-127-vscode-floor-1-125|PRD-127 RF1]] · [[prd-127-vscode-floor-1-125|PRD-127 RF2]]
 - 🧩 Código: [[COD - package.json]] · [[COD - esbuild.config.mjs]] · [[COD - docs-fidelity.cjs]]
 - 🧪 Testes: [[TST - docsFidelity.test.ts]]
 - 🔗 [[NFR-003 - Compatibilidade com VSCode]] · [[TPL-VSCODE-API - API do VS Code usada]]
-- ↩️ Referenciada por: [[DEP-typescript]] · [[Installation-and-requirements]] · [[NFR-002 - Compatibilidade com Node|NFR-002]] · [[NFR-003 - Compatibilidade com VSCode|NFR-003]] · [[PIPE-ci - CI|PIPE-ci]] · [[TPL-VSCODE-API - API do VS Code usada|TPL-VSCODE-API]] · [[prd-94-vscode-floor-1-101|PRD-94]]
+- ↩️ Referenciada por: [[DEP-typescript]] · [[Installation-and-requirements]] · [[NFR-002 - Compatibilidade com Node|NFR-002]] · [[NFR-003 - Compatibilidade com VSCode|NFR-003]] · [[PIPE-ci - CI|PIPE-ci]] · [[TPL-VSCODE-API - API do VS Code usada|TPL-VSCODE-API]] · [[prd-127-vscode-floor-1-125|PRD-127]] · [[prd-94-vscode-floor-1-101|PRD-94]]
 <!-- brain:auto:end -->

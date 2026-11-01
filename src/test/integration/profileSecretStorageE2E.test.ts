@@ -18,7 +18,7 @@ import { installOutFormatIsolation } from './helpers';
 //     `context.secrets` real do VSCode.
 //   * Aqui o comando é executado de verdade (`utplsql.importSqlDevConnections`)
 //     dentro do Extension Host, o que obriga o módulo BUNDLED
-//     (dist/extension.js) a usar o `context.secrets` real do `paneb.vscode-utplsql`.
+//     (dist/extension.mjs) a usar o `context.secrets` real do `paneb.vscode-utplsql`.
 //   * O efeito observável é público: (1) `utplsql.profiles` (Global) não pode
 //     conter a senha; (2) o perfil importado, com a senha só no SecretStorage,
 //     tem de conseguir CONECTAR — o que exige que a senha chegue à string

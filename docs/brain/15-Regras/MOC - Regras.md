@@ -76,6 +76,7 @@ SORT id ASC
 - [[BR-CONN-018 - Alias TNS resolvido no thin por tnsAdminPath, SQL Developer e TNS_ADMIN]] — `BR-CONN-018`
 - [[BR-CONN-019 - Oracle 11g (11.2) exige thick mode; thin tem piso 12.1]] — `BR-CONN-019`
 - [[BR-CONN-020 - Credencial é redigida em todo log do ciclo de conexão]] — `BR-CONN-020`
+- [[BR-CONN-021 - Major do driver Oracle so entra com matriz e packaging validados]] — `BR-CONN-021`
 - [[BR-DEBUG-001 - Ciclo do debugger DBMS_DEBUG para no breakpoint e le o frame]] — `BR-DEBUG-001`
 - [[BR-DEBUG-002 - stopOnException controla pausa em excecao (break_exception)]] — `BR-DEBUG-002`
 - [[BR-DEBUG-003 - Function standalone depura no namespace toplevel]] — `BR-DEBUG-003`
@@ -127,9 +128,11 @@ SORT id ASC
 - [[BR-PLAT-002 - CI usa actions pinadas por SHA, permissões mínimas e dependências auditadas]] — `BR-PLAT-002`
 - [[BR-PLAT-003 - Commits no main são assinados e verificados]] — `BR-PLAT-003`
 - [[BR-PLAT-004 - OSSF Scorecard é publicado e o main é protegido]] — `BR-PLAT-004`
+- [[BR-PLAT-005 - Bundle de producao e ESM e os testes continuam CJS]] — `BR-PLAT-005`
 - [[BR-QUAL-001 - Thresholds de cobertura (c8) sao globais e bloqueiam o CI]] — `BR-QUAL-001`
 - [[BR-QUAL-002 - Formatacao e lint do codigo sao do Biome]] — `BR-QUAL-002`
 - [[BR-QUAL-003 - Ultimo resultado persistido e restaurado com snapshot versionado]] — `BR-QUAL-003`
+- [[BR-QUAL-004 - executeRunOracle e orquestrador e as etapas sao funcoes testaveis]] — `BR-QUAL-004`
 - [[BR-SCHEMA-001 - organization bifurca file tree vs schema tree; suiteMap é o lookup canônico]] — `BR-SCHEMA-001`
 - [[BR-SCHEMA-002 - extractSchemaFromPath - path.posix.relative e placeholder {schema}]] — `BR-SCHEMA-002`
 - [[BR-SCHEMA-003 - collectAllItems usa cachedItems e, se vazio, percorre até 3 níveis]] — `BR-SCHEMA-003`

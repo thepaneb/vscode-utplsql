@@ -1,6 +1,8 @@
 <!-- GENERATED FROM docs/brain/10-Projeto/Funcional/10-development-tooling.md — DO NOT EDIT -->
 # 10 — Development Tooling
 
+<!-- prd:PRD-127 --> <!-- prd:PRD-47 --> <!-- prd:PRD-95 --> <!-- prd:PRD-124 --> <!-- prd:PRD-125 -->
+
 Ferramentas e infraestrutura de desenvolvimento do projeto.
 
 ## Scripts npm
@@ -20,11 +22,11 @@ Ferramentas e infraestrutura de desenvolvimento do projeto.
 | `npm run test:integration` | `pretest:integration` (compile + bundle) → `vscode-test` |
 | `npm run test:integration:smoke` | idem, com `.vscode-test.smoke.mjs` (subconjunto rápido) |
 | `npm run test:integration:thick` | idem, com `.vscode-test.thick.mjs` (Instant Client/thick; host sem `UTPLSQL_CONN` → conexão via `UTPLSQL_THICK_CONN`) |
-| `npm run test:integration:thick-full` | idem, com `.vscode-test.thick-full.mjs` (suíte completa em thick; experimental, fora do CI; PRD-125) |
+| `npm run test:integration:thick-full` | idem, com `.vscode-test.thick-full.mjs` (thick; experimental, fora do CI; exclui thin-only/UI/standalone; PRD-125) |
 | `npm run test:integration:multiroot` | idem, com `.vscode-test.multiroot.mjs` (workspace multi-root via `.code-workspace`) |
 | `npm run db:matrix` | `bash scripts/db-matrix/run.sh` — testa contra Oracle 11.2 (11g, **thick-only**), 12.2/18c/19c/21c/23ai local (compose); 11.2 e 12.2 usam utPLSQL `v3.1.14` (piso alternativo, PRD-84/123) |
 | `npm run db:matrix:list` | Lista as versões da matriz |
-| `npm run bundle` | `node esbuild.config.mjs` → `dist/extension.js` (**entry point real da extensão**) |
+| `npm run bundle` | `node esbuild.config.mjs` → `dist/extension.mjs` (**entry point real da extensão**, ESM) |
 | `npm run package` | `compile && bundle && vsce package` → `.vsix` universal |
 | `npm run package:win32-x64` / `:linux-x64` / `:linux-arm64` / `:darwin-arm64` | VSIX por plataforma (glue thick do alvo) |
 | `npm run package:target -- <target>` | VSIX genérico por target (usado pelo `publish.yml`) |
@@ -62,13 +64,13 @@ extensão normalmente.
 > Em versões antigas, as alternativas eram **`Ctrl+F5`** (sem depuração) ou o
 > config **“Anexar ao Extension Host”** (com `address: 127.0.0.1`).
 >
-> O `main` é o **bundle** (`dist/extension.js`); por isso o `outFiles` do launch
-> inclui `dist/**` **e** `out/**` (source maps) — sem isso os breakpoints podem
+> O `main` é o **bundle** (`dist/extension.mjs`); por isso o `outFiles` do launch
+> inclui `dist/**/*.mjs` **e** `out/**` (source maps) — sem isso os breakpoints podem
 > “prender” na primeira linha.
 
 ## Bundling com esbuild (PRD-45, ajustes na PRD-46)
 
-- `"main": "./dist/extension.js"` — bundle único gerado por `esbuild.config.mjs`
+- `"main": "./dist/extension.mjs"` — bundle único ESM gerado por `esbuild.config.mjs`
 - `vscode` e `oracledb` são **externos** (`await import('oracledb')` preservado)
 - `fast-xml-parser` (e deps puras) é embutido no bundle — incluindo as transitivas
   do fast-xml-parser v5 (`@nodable/entities`, `anynum`, `fast-xml-builder`,
@@ -217,7 +219,7 @@ Sem `.env`, `describeDB` é pulado (`describe.skip`).
 ## CI
 
 Workflow `.github/workflows/ci.yml` (push/PR para `main` e `release/**`):
-- Node 22/24/26 matrix
+- Node 24/26 matrix (docs/brain/audit só no 24; PRD-47)
 - `npm ci` → `npm run brain:ci` → `git diff --exit-code` → `npm run docs:check` →
   `npm run lint` → `npm run typecheck` → `npm run test:coverage` (enforça os
   thresholds do c8) → **upload ao Codecov**
@@ -225,14 +227,23 @@ Workflow `.github/workflows/ci.yml` (push/PR para `main` e `release/**`):
   `codecov.yml` — ver a armadilha do payload em *Coverage (c8) → Output*)
 
 Integração com **Oracle real** (`.github/workflows/integration.yml`):
-- **nightly** (`schedule`) e **dispatch `full`**: `scripts/db-matrix/run.sh --only 23free`
-  roda a suíte de integração completa em Oracle **23ai Free**
-- **dispatch `matrix`**: `--only 18xe,21xe,23free`
-- **PR**: roda **sempre**, em modo *smoke* (capacidades + debugger); com o label
-  **`run-integration`**, roda a suíte completa (inclui o cenário **multi-root**,
-  via `npm run test:integration:multiroot`)
+- **PR** (quando o diff toca `src/**`, `scripts/db-matrix/**`,
+  `docker/db-matrix/**`, `.vscode-test*.mjs` ou o próprio workflow): *smoke*
+  (capacidades + debugger) por padrão; **full** (inclui o cenário **multi-root**,
+  via `npm run test:integration:multiroot`) quando a base é `release/**`, o diff
+  toca o caminho crítico de execução/resultados (`src/oracleRunner.ts`,
+  `oracleRunCall`, `oraclePoll`, `results`, `discovery`, `runner`,
+  `scriptRunner`) ou o PR tem o label **`run-integration`**
+- **nightly** (`0 3 * * *`): suíte completa em Oracle **23ai Free**
+- **semanal** (`0 4 * * 0`): matriz **18c/21c em smoke**
+- **dispatch**: `smoke` (23free smoke), `full` (23free full), `matrix`
+  (18c/21c/23free full) e `matrix-smoke` (18c/21c smoke, mesmo recorte do
+  semanal)
 - O extension host roda sob `xvfb-run`; o Oracle sobe via `docker compose`
   (`docker/db-matrix/compose.yaml`) e é preparado pelo `bootstrap.sh` (UT3 + grants + fixtures)
+- Nightly e semanal usam grupos de **concorrência** separados (o cron entra no
+  grupo), para o `cancel-in-progress` não derrubar um schedule por causa do
+  atraso do outro
 
 `.github/workflows/publish.yml` (release publicada no GitHub):
 - Job **verify** (1×): `compile`, `lint`, `test:unit`
@@ -290,4 +301,5 @@ GitHub Actions) via environment `github-pages`.
 
 ## Node
 
-`.nvmrc` → `24`. CI testa 22/24/26 (Node 20 atingiu EOL). Requer Node 22+ local.
+`.nvmrc` → `24`. CI testa 24/26; os passos de docs/brain/audit rodam só no 24.
+Requer Node 24+ local (`engines.node >=24`, PRD-127/47).

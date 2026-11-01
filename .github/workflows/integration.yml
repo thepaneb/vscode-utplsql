@@ -12,31 +12,36 @@ on:
   schedule:
     # Nightly: integração completa em um Oracle (23ai Free).
     - cron: '0 3 * * *'
+    # Semanal: matriz pública 18c/21c em smoke (o 23ai full é o nightly).
+    - cron: '0 4 * * 0'
   workflow_dispatch:
     inputs:
       mode:
-        description: 'Escopo: smoke (rápido), full (23ai Free completo) ou matrix (18c/21c/23ai)'
+        description: 'Escopo: smoke (rápido), full (23ai Free completo), matrix (18c/21c/23ai completos) ou matrix-smoke (18c/21c, smoke)'
         type: choice
-        options: [smoke, full, matrix]
+        options: [smoke, full, matrix, matrix-smoke]
         default: smoke
 
 permissions:
   contents: read
 
 concurrency:
-  group: integration-${{ github.ref }}
+  # Nightly (0 3) e semanal (0 4 dom) rodam sobre o mesmo ref (`main`); sem o
+  # cron no grupo, o `cancel-in-progress` faz um derrubar o outro quando o
+  # scheduler atrasa. PRs continuam cancelando o run anterior do mesmo PR.
+  group: integration-${{ github.ref }}-${{ github.event.schedule || github.event_name }}
   cancel-in-progress: true
 
 jobs:
   integration:
     name: Integration (Oracle Free)
-    # Roda no PR (sempre, em modo smoke), no nightly e no dispatch. O label
-    # `run-integration` num PR troca o smoke pela suíte completa (que inclui o
-    # cenário multi-root, via `test:integration:multiroot`).
+    # Roda no PR (smoke; o label `run-integration` ou a base `release/**`/caminho
+    # crítico troca pelo full), no nightly e no dispatch. O schedule semanal da
+    # matriz é tratado no job `matrix`.
     if: >-
       github.event_name == 'pull_request' ||
-      github.event_name == 'schedule' ||
-      (github.event_name == 'workflow_dispatch' && inputs.mode != 'matrix')
+      (github.event_name == 'schedule' && github.event.schedule == '0 3 * * *') ||
+      (github.event_name == 'workflow_dispatch' && inputs.mode != 'matrix' && inputs.mode != 'matrix-smoke')
     runs-on: ubuntu-latest
     timeout-minutes: 60
     env:
@@ -46,6 +51,8 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        with:
+          fetch-depth: 0
 
       - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7
         with:
@@ -60,17 +67,29 @@ jobs:
 
       - name: Decide scope
         id: scope
+        env:
+          BASE_REF: ${{ github.base_ref }}
         run: |
+          full="npm run test:integration && npm run test:integration:multiroot"
+          smoke="npm run test:integration:smoke"
           if [ "${{ github.event_name }}" = "pull_request" ]; then
             if ${{ contains(github.event.pull_request.labels.*.name, 'run-integration') }}; then
-              echo "cmd=npm run test:integration && npm run test:integration:multiroot" >> "$GITHUB_OUTPUT"
+              echo "cmd=$full" >> "$GITHUB_OUTPUT"
             else
-              echo "cmd=npm run test:integration:smoke" >> "$GITHUB_OUTPUT"
+              # Full também quando a base é release/** ou o PR toca o caminho
+              # crítico de execução/resultados/descoberta (PRD-125 RF4).
+              git fetch --no-tags --depth=1 origin "$BASE_REF" >/dev/null 2>&1 || true
+              changed="$(git diff --name-only "origin/$BASE_REF...HEAD" 2>/dev/null || true)"
+              if [[ "$BASE_REF" == release/* ]] || echo "$changed" | grep -Eq '^src/(oracleRunner|oracleRunCall|oraclePoll|results|discovery|runner|scriptRunner)\.ts$'; then
+                echo "cmd=$full" >> "$GITHUB_OUTPUT"
+              else
+                echo "cmd=$smoke" >> "$GITHUB_OUTPUT"
+              fi
             fi
           elif [ "${{ inputs.mode }}" = "smoke" ]; then
-            echo "cmd=npm run test:integration:smoke" >> "$GITHUB_OUTPUT"
+            echo "cmd=$smoke" >> "$GITHUB_OUTPUT"
           else
-            echo "cmd=npm run test:integration && npm run test:integration:multiroot" >> "$GITHUB_OUTPUT"
+            echo "cmd=$full" >> "$GITHUB_OUTPUT"
           fi
 
       - name: Run integration on Oracle 23ai Free
@@ -78,7 +97,11 @@ jobs:
 
   matrix:
     name: Integration matrix (Oracle 18c/21c/23ai)
-    if: ${{ github.event_name == 'workflow_dispatch' && inputs.mode == 'matrix' }}
+    # Dispatch `matrix` roda o full nos 3 bancos; `matrix-smoke` e o schedule
+    # semanal rodam 18c/21c em smoke (o 23ai full é o nightly).
+    if: >-
+      (github.event_name == 'workflow_dispatch' && (inputs.mode == 'matrix' || inputs.mode == 'matrix-smoke')) ||
+      (github.event_name == 'schedule' && github.event.schedule == '0 4 * * 0')
     runs-on: ubuntu-latest
     timeout-minutes: 240
     env:
@@ -100,8 +123,13 @@ jobs:
         run: |
           command -v xvfb-run >/dev/null 2>&1 || { sudo apt-get update && sudo apt-get install -y xvfb; }
 
-      - name: Run integration matrix (18c, 21c, 23ai)
-        run: bash scripts/db-matrix/run.sh --only 18xe,21xe,23free --tests "xvfb-run -a bash -c 'npm run test:integration && npm run test:integration:multiroot'"
+      - name: Run integration matrix
+        run: |
+          if [ "${{ github.event_name }}" = "schedule" ] || [ "${{ inputs.mode }}" = "matrix-smoke" ]; then
+            bash scripts/db-matrix/run.sh --only 18xe,21xe --smoke
+          else
+            bash scripts/db-matrix/run.sh --only 18xe,21xe,23free --tests "xvfb-run -a bash -c 'npm run test:integration && npm run test:integration:multiroot'"
+          fi
 
       - name: Upload matrix summary
         if: always()

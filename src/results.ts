@@ -47,7 +47,7 @@ export function countResults(cases: TestCaseResult[]): RunResults {
 
 export function lastSegment(classname: string): string {
   const parts = classname.split(/[.:]/).filter(Boolean);
-  return parts.length ? parts[parts.length - 1] : classname;
+  return parts.at(-1) ?? classname;
 }
 
 /**

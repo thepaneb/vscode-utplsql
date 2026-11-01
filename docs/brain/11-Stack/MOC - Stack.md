@@ -15,12 +15,12 @@ e os riscos das dependências **diretas** relevantes.
 ## Stack (gerado)
 
 <!-- brain:auto:start:stack -->
-- **Node (engines):** >=22.0.0
-- **VSCode (engines):** ^1.101.0
+- **Node (engines):** >=24.0.0
+- **VSCode (engines):** ^1.125.0
 - **.nvmrc:** 24
-- **TypeScript:** ES2021 / node16
+- **TypeScript:** ES2024 / node16
 - **Biome:** lineWidth 100, single
-- **Empacotamento:** ./dist/extension.js
+- **Empacotamento:** ./dist/extension.mjs
 - **Agente (MCPs):** 4 (obsidian, context7, github, playwright)
 - **Agente (plugins):** ./.opencode/plugins/log-sanitizer
 - **Agente (skills externas):** 24
@@ -34,16 +34,16 @@ e os riscos das dependências **diretas** relevantes.
 **Runtime (2)**
 
 - `fast-xml-parser` `^5.11.2` — runtime
-- `oracledb` `^7.0.1` — runtime
+- `oracledb` `^26.0.0` — runtime
 
 **Desenvolvimento (12)**
 
 - `@biomejs/biome` `^2.5.15` — dev
 - `@resvg/resvg-js` `^2.6.2` — dev
 - `@types/mocha` `^10.0.7` — dev
-- `@types/node` `^22.20.1` — dev
-- `@types/oracledb` `^7.0.2` — dev
-- `@types/vscode` `1.101.0` — dev
+- `@types/node` `^24.19.0` — dev
+- `@types/oracledb` `^26.0.1` — dev
+- `@types/vscode` `1.125.0` — dev
 - `@vscode/test-cli` `^0.0.15` — dev
 - `@vscode/test-electron` `^3.1.0` — dev
 - `@vscode/vsce` `^4.0.0` — dev
