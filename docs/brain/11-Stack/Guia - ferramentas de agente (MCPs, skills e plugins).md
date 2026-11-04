@@ -1,9 +1,10 @@
 ---
 tipo: guia
 status: ativo
-verificado: 2026-10-16
-implementacao: ["scripts/obsidian-mcp.py", "scripts/obsidian-portproxy.cmd", ".gitattributes"]
-tags: [brain, opencode, agentes, mcp, skills, seguranca]
+verificado: 2026-11-04
+implementacao: ["scripts/obsidian-mcp.py", "scripts/obsidian-portproxy.cmd", ".gitattributes", "src/tools/jevReview.ts", "scripts/jev-review.cjs"]
+testes: ["src/test/unit/jevReview.test.ts"]
+tags: [brain, opencode, agentes, mcp, skills, seguranca, jev]
 ---
 
 # Guia — ferramentas de agente (MCPs, skills e plugins)
@@ -71,6 +72,38 @@ status dos plugins. A configuração versionada fica em
   - **Segurança:** `opencode service get` imprime o `env` do serviço em claro
     (inclui o `GITHUB_TOKEN`) — inspecione com
     `opencode service get | jq '.env | keys'` e rotacione o PAT se ele vazar.
+
+## Jev (review advisory)
+
+Jev é o modelo **System One** da TypeSafe servido pelo **OpenCode Console**
+(pay-as-you-go), não pelo plano Go. Ele não escreve código: recebe um `state` +
+perguntas tipadas (`noul`/`score`/`choice`) e devolve probabilidades.
+
+- **Endpoint:** `https://opencode.ai/inference/systemone/v1/systemone`
+- **Modelos:** `jev-1.13-free` (temporário) e `jev-1.13` (~$0,042/M input, output grátis)
+- **Credencial:** `OPENCODE_API_KEY` no `.env` (local) e secret no GitHub Actions
+- **CLI:** `npm run jev:review -- --base origin/main` (ou `--working-tree` para o diff não commitado; não inclui arquivos novos não rastreados — use `git add -N`)
+- **Módulo:** `src/tools/jevReview.ts` (puro; não entra no bundle da extensão)
+- **Skill:** `.opencode/skills/jev-review/SKILL.md`
+- **CI:** workflow [`jev-review.yml`](../../../.github/workflows/jev-review.yml) — advisory, PRs internos, resumo no Step Summary ([[PIPE-jev-review - Jev Review]])
+
+O script monta o diff (`git diff base...head`), ignora `.env*`, lockfiles,
+`node_modules/`, `out/`, `dist/`, `coverage/`, certificados e
+`docs/brain/.obsidian/plugins/*/data.json`, redige segredos e trunca o contexto
+(~64K tokens). Ele pergunta segurança, correção, lacuna de teste, severidade e
+recomendação; os limiares ficam em `THRESHOLDS` no módulo.
+
+Fluxo de uso:
+
+```sh
+npm run jev:review -- --base origin/main
+npm run jev:review -- --working-tree
+npm run jev:review -- --base origin/main --format json
+```
+
+O Jev é **sinal**, não prova: verifique cada achado, rode testes/lint e não
+refatore só para subir score. No CI, o secret é `OPENCODE_API_KEY`; PRs de fork
+são pulados e o job não é required check até calibração.
 
 ## Permissões (guard de `.env`)
 
