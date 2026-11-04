@@ -8,7 +8,7 @@ versao: "0.19.0"
 data: "2026-10-29"
 autor: "Gil Cleber Barboza"
 versao_titulo: "0.19.0 — Piso Node 24 e runtime moderno"
-verificado: "2026-10-31"
+verificado: "2026-11-04"
 regras: ["BR-TEST-001"]
 docs: ["CHANGELOG", "wiki/Contributing.md", "wiki/Tests.md", "functional/10-development-tooling.md"]
 tags: [prd]
@@ -263,6 +263,14 @@ no nightly e no dispatch, com Instant Client **basiclite** baixado no runner +
 `libaio`, no **23free e no 11g**; o thick-full completo (RF3) continua na 0.20.0,
 mas pode ser exercitado pelo dispatch `thick-full`/`thick-full-11g`
 (`continue-on-error`).
+
+**Thick-full 23free no CI (2026-11-04):** o dispatch `thick-full` (run
+`41855287424`, commit `ecc8a3a`) terminou com **81 passing / 8 pending /
+2 failing** em ~5 min. As 2 falhas são de **cancelamento/timeout** —
+`runTimeoutE2E` (abortou em 8,1 s; teto 5 s) e `schemaRun` (“run não foi
+cancelado em 5 s”) —, enquanto os 3 debugger e o `profileSecretStorage`
+passaram nesta execução. O quadro reforça a hipótese do #288 (estabilidade de
+conexão/pool no host longo), não uma incompatibilidade do thick.
 
 ## 10. Critérios de aceite
 

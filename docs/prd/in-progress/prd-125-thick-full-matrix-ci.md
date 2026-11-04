@@ -251,6 +251,14 @@ no nightly e no dispatch, com Instant Client **basiclite** baixado no runner +
 mas pode ser exercitado pelo dispatch `thick-full`/`thick-full-11g`
 (`continue-on-error`).
 
+**Thick-full 23free no CI (2026-11-04):** o dispatch `thick-full` (run
+`41855287424`, commit `ecc8a3a`) terminou com **81 passing / 8 pending /
+2 failing** em ~5 min. As 2 falhas são de **cancelamento/timeout** —
+`runTimeoutE2E` (abortou em 8,1 s; teto 5 s) e `schemaRun` (“run não foi
+cancelado em 5 s”) —, enquanto os 3 debugger e o `profileSecretStorage`
+passaram nesta execução. O quadro reforça a hipótese do #288 (estabilidade de
+conexão/pool no host longo), não uma incompatibilidade do thick.
+
 ## 10. Critérios de aceite
 
 - `run.sh --thick-full` executa a suíte completa (menos thin-only e
