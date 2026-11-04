@@ -2,7 +2,7 @@
 
 # Architecture
 
-<!-- prd:PRD-110 -->
+<!-- prd:PRD-110 --> <!-- prd:PRD-111 -->
 
 Overview of the extension's internal architecture for contributors.
 
@@ -20,13 +20,19 @@ functions live in `src/results.ts` (`applyResultsFromCases`,
   JUnit/Cobertura XML and the HTML coverage report at the end). Each reporter
   writes to its own `output_id`; the router classifies it as console/XML/HTML,
   so the HTML report never contaminates the JUnit/Cobertura XML.
+- `oracleRunCall.ts`: pure builders for the `ut_runner.run` call
+  (`buildReporterList`, `buildCoverageScope`, `buildRandomOrderParams`,
+  `buildRunCall`); `oraclePoll.ts`: the 200ms buffer poll. `executeRunOracle` is
+  the orchestrator (PRD-111).
 - **Connection pooling (v0.10.0)**: managed pool (`ensurePool`), recreated if
   the connection changes, closed in `deactivate()` with a 10s drain.
 - `discoverUtplsqlSchema`: `UT3.` prefix via `ALL_SYNONYMS` (shared install).
 
 ### Build (v0.11.0)
 
-`main` points to `dist/extension.js` — a single bundle via **esbuild**
+<!-- prd:PRD-95 -->
+
+`main` points to `dist/extension.mjs` — a single **ESM** bundle via **esbuild**
 (`npm run bundle`), with `vscode` and `oracledb` **external**. The oracledb
 native glue for **thick mode** lets the optional `utplsql.oracleClientMode =
 thick` load a user-provided Oracle Instant Client; the thin driver remains the

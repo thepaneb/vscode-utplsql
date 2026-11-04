@@ -5,7 +5,7 @@ tipo: nfr
 titulo: "Compatibilidade com Oracle e piso do utPLSQL"
 dominio: compatibilidade
 status: ativo
-verificado: 2026-10-29
+verificado: 2026-10-31
 implementacao: []
 testes: []
 regras: ["BR-EXEC-004", "BR-PARSE-008", "BR-TEST-001", "BR-CONN-019"]
@@ -18,7 +18,9 @@ tags: ["compatibilidade"]
 Suportar Oracle **11.2+ em thick mode** e **12.2+ em thin** (com piso
 alternativo de utPLSQL) e instalações shared; `UTPLSQL_MIN_VERSION` 3.1.0,
 `get_suites_info` a partir de 3.1.3. O thin do node-oracledb tem piso 12.1; o
-11g usa utPLSQL 3.1.x e cobertura via `DBMS_PROFILER`.
+11g usa utPLSQL 3.1.x e cobertura via `DBMS_PROFILER`. Driver:
+**node-oracledb 26.x**; o thick exige Oracle Client **19c+** e a biblioteca
+`libclntsh.so`/`libclntsh.dylib` com o nome padrão (v26).
 
 ## Justificativa
 
@@ -53,5 +55,5 @@ Matriz de bancos Oracle local (`scripts/db-matrix/run.sh`), suíte de integraç�
 - 📐 Regras: [[BR-EXEC-004 - Prefixo de schema utPLSQL descoberto via ALL_SYNONYMS|BR-EXEC-004]] · [[BR-PARSE-008 - DB-first com gate de versão 3.1.3 e modos de fonte auto-database-file|BR-PARSE-008]] · [[BR-TEST-001 - Matriz de bancos Oracle cobre 12.2-23ai em thin e thick|BR-TEST-001]] · [[BR-CONN-019 - Oracle 11g (11.2) exige thick mode; thin tem piso 12.1|BR-CONN-019]]
 - 🎯 Requisitos: [[prd-84-oracle-122-support|PRD-84 RF1]] · [[prd-84-oracle-122-support|PRD-84 RF3]] · [[prd-123-oracle-11g-support|PRD-123 RF0]] · [[prd-123-oracle-11g-support|PRD-123 RF5]]
 - 🔗 [[ADR-011 - Thick mode opt-in e matriz de bancos]] · [[TPL-ORACLEDB - node-oracledb]] · [[MOC - Oracle]]
-- ↩️ Referenciada por: [[09-configuration]] · [[11-debugger]]
+- ↩️ Referenciada por: [[09-configuration]] · [[11-debugger]] · [[BR-CONN-021 - Major do driver Oracle so entra com matriz e packaging validados|BR-CONN-021]]
 <!-- brain:auto:end -->

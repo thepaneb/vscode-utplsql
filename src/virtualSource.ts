@@ -39,7 +39,7 @@ export function parseSourceUri(uri: vscode.Uri): {
     uri.query && uri.query.length > 0 ? uri.query : qIndex >= 0 ? rawPath.slice(qIndex + 1) : '';
 
   const segments = pathPart.split('/').filter(Boolean);
-  const last = segments[segments.length - 1] ?? '';
+  const last = segments.at(-1) ?? '';
   const dot = last.lastIndexOf('.');
   const object = (dot > 0 ? last.slice(0, dot) : last).toUpperCase();
   const ext = (dot > 0 ? last.slice(dot + 1) : 'sql').toLowerCase();

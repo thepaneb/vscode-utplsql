@@ -2,6 +2,8 @@
 
 # Tests
 
+<!-- prd:PRD-125 -->
+
 Overview of the extension's tests and how to run them.
 
 ## Test types
@@ -88,9 +90,11 @@ Fast subsets / modes:
   `v017-features` (CodeLens/associations/snippets/HTML coverage), ~1 min.
 - `npm run test:integration:thick` — thick mode (Instant Client) in an isolated
   host; needs `ORACLE_CLIENT_LIB_DIR` (Oracle Client 19c+).
-- `npm run test:integration:thick-full` — full suite in thick (experimental;
-  excludes the thin-only tests and is not in CI yet; PRD-125 covers the 11g
-  validation and skips). It needs `ORACLE_CLIENT_LIB_DIR` and `UTPLSQL_CONN`.
+- `npm run test:integration:thick-full` — thick suite (experimental; PRD-125).
+  Excludes the thin-only tests (`prd70-sqlplus`, `v014-tns`), `thickMode`
+  (reinicializa o cliente), os testes de UI/comandos (`extension`,
+  `commandsE2E`) e o debugger de function standalone. It needs
+  `ORACLE_CLIENT_LIB_DIR` and `UTPLSQL_CONN`.
 - `npm run db:matrix` — runs the suite against multiple Oracle versions (see
   [Contributing](Contributing)). The 11g legacy axis is thick-only:
   `npm run db:matrix -- --only 11xe --thick` (requires `ORACLE_CLIENT_LIB_DIR_11XE`

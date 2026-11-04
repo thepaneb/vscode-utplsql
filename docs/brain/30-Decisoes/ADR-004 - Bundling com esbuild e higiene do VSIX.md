@@ -20,8 +20,9 @@ O `node-oracledb` traz binários nativos por plataforma (thick mode), e o
 
 ## Decisão
 
-1. **Bundling com esbuild** (`scripts`/`esbuild.config.mjs`) gerando
-   `dist/extension.js` (`main`).
+1. **Bundling com esbuild** (`esbuild.config.mjs`) gerando
+   **`dist/extension.mjs`** (`main`), em **ESM** desde a PRD-95; os testes
+   continuam CJS em `out/`.
 2. **`oracledb` como `dependencies`** (driver thin, sem Instant Client) e poda dos
    binários nativos não usados no VSIX.
 3. **Higiene do pacote** (PRD-83): bloquear o vazamento de arquivos de

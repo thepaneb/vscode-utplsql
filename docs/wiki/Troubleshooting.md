@@ -2,6 +2,8 @@
 
 # Troubleshooting
 
+<!-- prd:PRD-124 -->
+
 <!-- prd:PRD-123 -->
 
 Common issues and their solutions.
@@ -293,6 +295,21 @@ GRANT SELECT, DELETE ON UT3.UT_OUTPUT_BUFFER_TMP TO PUBLIC;
 GRANT SELECT, DELETE ON UT3.UT_OUTPUT_BUFFER_INFO_TMP TO PUBLIC;
 ```
 See [Direct Oracle Execution](Oracle-direct-execution).
+
+**Cause 3 (thick):** `DPI-1047`/`DPI-1072` — the Instant Client is **older than
+19c** or the driver cannot find `libclntsh.so`/`libclntsh.dylib` with the
+**standard name**. Since node-oracledb 26, versioned names
+(`libclntsh.so.19.1`) are no longer loaded directly.
+
+**Solution:** use Oracle Instant Client **19c+** and create the standard-name
+symlink in the client directory:
+
+```bash
+ln -s libclntsh.so.23.1 libclntsh.so   # Linux
+ln -s libclntsh.dylib.23.1 libclntsh.dylib   # macOS
+```
+
+On Windows, use the `oci.dll` from the Instant Client directory.
 
 ---
 

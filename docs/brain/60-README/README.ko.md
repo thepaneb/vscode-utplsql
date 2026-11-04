@@ -25,7 +25,7 @@ tags: [readme]
   <a href="https://marketplace.visualstudio.com/items?itemName=paneb.vscode-utplsql"><img alt="Downloads" src="https://vsmarketplacebadges.dev/downloads-short/paneb.vscode-utplsql.svg"></a>
   <a href="https://github.com/thepaneb/vscode-utplsql/actions/workflows/ci.yml"><img alt="CI" src="https://github.com/thepaneb/vscode-utplsql/actions/workflows/ci.yml/badge.svg"></a>
   <a href="https://codecov.io/gh/thepaneb/vscode-utplsql"><img alt="Coverage" src="https://codecov.io/gh/thepaneb/vscode-utplsql/branch/main/graph/badge.svg"></a>
-  <img alt="VS Code" src="https://img.shields.io/badge/VS%20Code-1.101%2B-007ACC">
+  <img alt="VS Code" src="https://img.shields.io/badge/VS%20Code-1.125%2B-007ACC">
   <img alt="Node" src="https://img.shields.io/badge/node-22-339933?logo=nodedotjs&logoColor=white">
   <img alt="TypeScript" src="https://img.shields.io/badge/TypeScript-7-3178C6?logo=typescript&logoColor=white">
   <img alt="Oracle" src="https://img.shields.io/badge/Oracle-12.2%2B-F80000?logo=oracle&logoColor=white">
@@ -35,7 +35,7 @@ tags: [readme]
 
 # utPLSQL Test Runner
 
-**utPLSQL**(Oracle PL/SQL) 테스트를 VS Code에서 바로 실행하고 디버그하세요 — 네이티브 **Test Explorer**, 시각적 커버리지, PL/SQL 디버거, `node-oracledb` 기반 **Oracle 직접 실행**. **24개 언어** 지원, **VS Code 1.101+** (Node 22).
+**utPLSQL**(Oracle PL/SQL) 테스트를 VS Code에서 바로 실행하고 디버그하세요 — 네이티브 **Test Explorer**, 시각적 커버리지, PL/SQL 디버거, `node-oracledb` 기반 **Oracle 직접 실행**. **24개 언어** 지원, **VS Code 1.125+** (Node 24).
 
 ### Test Explorer 및 실행
 
@@ -114,7 +114,7 @@ tags: [readme]
 | 18c+ | v3.2.x (18c+) / v3.1.x | 권장. charset `AL32UTF8`. |
 | 12.2 | v3.1.x만 | v3.2.x는 컴파일되지 않습니다(`PLS-00222`). 이미지의 `WE8DEC`은 표현할 수 없는 문자(예: `€`)를 잃습니다. thin 드라이버는 `NLS_LANG`을 무시합니다. |
 | 11.2 (11g R2) | v3.1.x only | **Thick mode required** (thin starts at 12.1); coverage via `DBMS_PROFILER`. Instant Client 19c+. |
-- **VSCode 1.101+** (Node 22).
+- **VSCode 1.125+** (Node 24).
 
 확장 프로그램은 "그래픽 클라이언트"일 뿐입니다 — 테스트를 실행하는 것은 데이터베이스입니다: node-oracledb 직접 연결을 통해.
 

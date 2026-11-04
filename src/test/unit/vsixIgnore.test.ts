@@ -74,7 +74,7 @@ test('vscodeignore: não vaza arquivos de agente/desenvolvimento no VSIX', () =>
 test('vscodeignore: arquivos essenciais NÃO são excluídos', () => {
   const lines = ignoreLines();
   const essenciais = [
-    'dist/extension.js',
+    'dist/extension.mjs',
     'package.json',
     'README.md',
     'package.nls.json',

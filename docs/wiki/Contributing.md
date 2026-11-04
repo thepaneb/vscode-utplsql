@@ -2,6 +2,8 @@
 
 # Contributing
 
+<!-- prd:PRD-47 --> <!-- prd:PRD-124 --> <!-- prd:PRD-125 -->
+
 <!-- prd:PRD-98 -->
 <!-- prd:PRD-104 -->
 <!-- prd:PRD-113 -->
@@ -47,7 +49,7 @@ Guide for setting up the development environment and submitting contributions.
 
 ## Prerequisites
 
-- **Node.js 22+** (`.nvmrc` points to 24; CI tests 22/24/26 — Node 20 has reached EOL)
+- **Node.js 24+** (`.nvmrc` points to 24; CI tests 24/26)
 - **npm** (comes with Node)
 - **Git**
 - (Optional) **Oracle Database** + **utPLSQL** for integration tests
@@ -181,7 +183,7 @@ npm run db:matrix                      # whole matrix (one version at a time)
 npm run db:matrix -- --only 21xe       # a single version
 npm run db:matrix -- --smoke           # fast subset (capabilities + debugger)
 npm run db:matrix -- --thick           # thick mode per version
-npm run db:matrix -- --thick-full      # suíte completa em thick (experimental; PRD-125)
+npm run db:matrix -- --thick-full      # thick-full (experimental; exclui thin-only/UI; PRD-125)
 npm run db:matrix -- --only 11xe --thick  # Oracle 11g (thick-only)
 npm run db:matrix -- --clean           # wipe the data volume and recreate
 ```
@@ -190,6 +192,12 @@ Data is kept in a per-version Docker volume: the first run creates the database
 (~15–25 min for 18c/19c); later runs boot from it in ~1–2 min. Use
 `--skip-bootstrap` when the volume is already prepared. See PRD-72 and the
 root `CONTRIBUTING.md` for details.
+
+> **Windows + WSL:** quote the Windows path in `.env.dbmatrix`, e.g.
+> `ORACLE_CLIENT_LIB_DIR="D:\oracle\instantclient_23_0"`. The `source` in
+> `run.sh` consumes unquoted backslashes and the thick test fails with
+> `DPI-1047` (the path arrives as `D:Users...`). The same path in `.env` is
+> parsed by the test config (no shell expansion), so it only bites the matrix.
 
 **Alternative utPLSQL floors:** each `VERSIONS` line may declare a 4th field
 with the utPLSQL version for that database. `11.2` and `12.2` use **`v3.1.14`** because

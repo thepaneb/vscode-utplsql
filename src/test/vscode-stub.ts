@@ -447,6 +447,7 @@ export namespace commands {
 }
 
 const _openedExternal: string[] = [];
+let _openExternalError: unknown;
 
 export function __getOpenedExternal(): string[] {
   return [..._openedExternal];
@@ -454,6 +455,14 @@ export function __getOpenedExternal(): string[] {
 
 export function __resetOpenedExternal(): void {
   _openedExternal.length = 0;
+}
+
+export function __setOpenExternalError(error: unknown): void {
+  _openExternalError = error;
+}
+
+export function __resetOpenExternalError(): void {
+  _openExternalError = undefined;
 }
 
 export namespace env {
@@ -464,6 +473,7 @@ export namespace env {
     },
   };
   export function openExternal(uri: { toString(): string }): Promise<boolean> {
+    if (_openExternalError !== undefined) return Promise.reject(_openExternalError);
     _openedExternal.push(uri.toString());
     return Promise.resolve(true);
   }

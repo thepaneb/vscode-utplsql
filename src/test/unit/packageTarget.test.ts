@@ -80,11 +80,11 @@ test('vsce: resolveVsce devolve o script do vsce para spawn sem shell', () => {
 });
 
 const FILES = [
-  'oracledb-7.0.1-darwin-arm64.node',
-  'oracledb-7.0.1-linux-arm64.node',
-  'oracledb-7.0.1-linux-x64.node',
-  'oracledb-7.0.1-win32-x64.node',
-  'oracledb-7.0.1-js-buildinfo.txt',
+  'oracledb-26.0.0-darwin-arm64.node',
+  'oracledb-26.0.0-linux-arm64.node',
+  'oracledb-26.0.0-linux-x64.node',
+  'oracledb-26.0.0-win32-x64.node',
+  'oracledb-26.0.0-js-buildinfo.txt',
 ];
 
 test('alvos: 4 com glue + 5 thin-only, sem web', () => {
@@ -111,36 +111,36 @@ test('isPackageTarget/isGlueTarget: classifica os alvos', () => {
 });
 
 test('glueFileName: monta o nome com a versão do driver', () => {
-  assert.strictEqual(glueFileName('win32-x64', '7.0.1'), 'oracledb-7.0.1-win32-x64.node');
+  assert.strictEqual(glueFileName('win32-x64', '26.0.0'), 'oracledb-26.0.0-win32-x64.node');
 });
 
 test('staleGlueFiles: alvo com glue mantém só a sua e ignora .txt', () => {
-  assert.deepStrictEqual(staleGlueFiles('linux-x64', FILES, '7.0.1'), [
-    'oracledb-7.0.1-darwin-arm64.node',
-    'oracledb-7.0.1-linux-arm64.node',
-    'oracledb-7.0.1-win32-x64.node',
+  assert.deepStrictEqual(staleGlueFiles('linux-x64', FILES, '26.0.0'), [
+    'oracledb-26.0.0-darwin-arm64.node',
+    'oracledb-26.0.0-linux-arm64.node',
+    'oracledb-26.0.0-win32-x64.node',
   ]);
 });
 
 test('staleGlueFiles: alvo thin-only remove todas as glues (fallback)', () => {
-  assert.deepStrictEqual(staleGlueFiles('win32-arm64', FILES, '7.0.1'), [
-    'oracledb-7.0.1-darwin-arm64.node',
-    'oracledb-7.0.1-linux-arm64.node',
-    'oracledb-7.0.1-linux-x64.node',
-    'oracledb-7.0.1-win32-x64.node',
+  assert.deepStrictEqual(staleGlueFiles('win32-arm64', FILES, '26.0.0'), [
+    'oracledb-26.0.0-darwin-arm64.node',
+    'oracledb-26.0.0-linux-arm64.node',
+    'oracledb-26.0.0-linux-x64.node',
+    'oracledb-26.0.0-win32-x64.node',
   ]);
-  assert.deepStrictEqual(staleGlueFiles('alpine-x64', FILES, '7.0.1').length, 4);
+  assert.deepStrictEqual(staleGlueFiles('alpine-x64', FILES, '26.0.0').length, 4);
 });
 
 test('staleGlueFiles: alvo único não remove nada', () => {
   assert.deepStrictEqual(
-    staleGlueFiles('win32-x64', ['oracledb-7.0.1-win32-x64.node'], '7.0.1'),
+    staleGlueFiles('win32-x64', ['oracledb-26.0.0-win32-x64.node'], '26.0.0'),
     [],
   );
 });
 
 test('staleGlueFiles: alvo inválido lança', () => {
-  assert.throws(() => staleGlueFiles('plan9', FILES, '7.0.1'), /target desconhecido/);
+  assert.throws(() => staleGlueFiles('plan9', FILES, '26.0.0'), /target desconhecido/);
 });
 
 test('package-target.readVersion: extrai a versão do package.json', () => {
@@ -170,7 +170,7 @@ test('package-target.main: lê versões, limpa glues e monta argumentos do vsce'
     readFileSync(filePath) {
       reads.push(filePath);
       if (filePath.includes(`${path.sep}oracledb${path.sep}package.json`)) {
-        return '{"version":"7.0.1"}';
+        return '{"version":"26.0.0"}';
       }
       return '{"version":"0.13.0"}';
     },
@@ -226,7 +226,7 @@ test('package-target.main: alvo thin-only remove todas as glues', () => {
     fsImpl: {
       readFileSync: (filePath) =>
         filePath.includes(`${path.sep}oracledb${path.sep}package.json`)
-          ? '{"version":"7.0.1"}'
+          ? '{"version":"26.0.0"}'
           : '{"version":"0.13.0"}',
       readdirSync: () => FILES,
       rmSync: (filePath) => removed.push(filePath),
@@ -264,7 +264,7 @@ test('package-target.main: falha de spawn retorna status de erro', () => {
     fsImpl: {
       readFileSync: (filePath) =>
         filePath.includes(`${path.sep}oracledb${path.sep}package.json`)
-          ? '{"version":"7.0.1"}'
+          ? '{"version":"26.0.0"}'
           : '{"version":"0.13.0"}',
       readdirSync: () => [],
       rmSync: () => {},

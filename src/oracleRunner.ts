@@ -14,6 +14,13 @@ import { parseJUnit } from './junit';
 import { logger } from './logger';
 import { ensureOracleClient } from './oracleClient';
 import { sanitizeSchemaPrefix } from './oracleIdentifiers';
+import { pollOutputStream } from './oraclePoll';
+import {
+  buildCoverageScope,
+  buildRandomOrderParams,
+  buildReporterList,
+  buildRunCall,
+} from './oracleRunCall';
 import { maskConnection, redactConnection } from './redact';
 import { applyCoverageFromXml, applyResultsFromCases, countResults } from './results';
 import type { TestStateManager } from './state';
@@ -527,46 +534,6 @@ async function loadOracledb(): Promise<LoadedOracledb | undefined> {
   }
 }
 
-/** Reporters do utPLSQL cujo construtor aceita `a_client_character_set`. */
-const EXPORT_CHARSET_REPORTERS = new Set([
-  'ut_documentation_reporter',
-  'ut_teamcity_reporter',
-  'ut_tap_reporter',
-  'ut_junit_reporter',
-  'ut_sonar_test_reporter',
-]);
-
-/** Reporters textuais de console cujo construtor aceita `a_color_console`. */
-const EXPORT_COLOR_REPORTERS = new Set([
-  'ut_documentation_reporter',
-  'ut_teamcity_reporter',
-  'ut_tap_reporter',
-]);
-
-/**
- * Monta a chamada do reporter de export (PRD-76 RF5). Os parâmetros só entram
- * quando configurados e quando o reporter está na allowlist que os aceita —
- * evita ORA em reporters com assinatura diferente.
- */
-function exportReporterCall(
-  name: string,
-  charset: string | undefined,
-  colorConsole: boolean | undefined,
-  binds: Record<string, import('oracledb').BindParameter>,
-  oracledb: typeof import('oracledb'),
-): string {
-  const args: string[] = [];
-  if (charset && EXPORT_CHARSET_REPORTERS.has(name)) {
-    binds.exportCharset = { dir: oracledb.BIND_IN, type: oracledb.STRING, val: charset };
-    args.push('a_client_character_set => :exportCharset');
-  }
-  if (colorConsole && EXPORT_COLOR_REPORTERS.has(name)) {
-    binds.exportColor = { dir: oracledb.BIND_IN, type: oracledb.DB_TYPE_BOOLEAN, val: true };
-    args.push('a_color_console => :exportColor');
-  }
-  return args.length > 0 ? `${name}(${args.join(', ')})` : `${name}()`;
-}
-
 /**
  * Lista os reporters do banco numa conexão própria (best-effort). Vazio quando
  * não há oracledb/conexão disponível.
@@ -581,6 +548,209 @@ export async function listReportersForConnection(
     listReportersOracle(conn),
   );
   return result ?? [];
+}
+
+interface ReporterPreparation {
+  runners: string[];
+  exportBinds: Record<string, import('oracledb').BindParameter>;
+  coverageEnabled: boolean;
+  htmlEnabled: boolean;
+}
+
+/** Resolve os reporters do banco e monta a lista do `a_reporters`. */
+async function prepareReporters(options: {
+  conn1: import('oracledb').Connection;
+  exporting: boolean;
+  exportReporter?: { name: string; charset?: string; colorConsole?: boolean };
+  coverage: boolean;
+  coverageHtmlReport?: boolean;
+  additionalReporters?: string[];
+  state: TestStateManager;
+  run: vscode.TestRun;
+  oracledb: typeof import('oracledb');
+}): Promise<ReporterPreparation> {
+  let coverageEnabled = !options.exporting && options.coverage;
+  let htmlEnabled = false;
+  let runners: string[] = [];
+  let exportBinds: Record<string, import('oracledb').BindParameter> = {};
+
+  if (options.exporting && options.exportReporter) {
+    // Export (PRD-76): só o reporter escolhido; sem JUnit/cobertura adicionais.
+    const normalized = options.exportReporter.name.toLowerCase().replace(/\(\)$/, '');
+    const known = await listReportersOracle(options.conn1);
+    const valid =
+      /^[a-z0-9_]+$/.test(normalized) &&
+      (known.length === 0 || known.some((k) => k.toLowerCase() === normalized));
+    if (!valid) {
+      throw new Error(
+        t(getExtensionLocale(), 'runner.reporterUnknown', { name: options.exportReporter.name }),
+      );
+    }
+    const list = buildReporterList({
+      exporting: true,
+      exportReporter: options.exportReporter,
+      coverageEnabled: false,
+      htmlEnabled: false,
+      knownReporters: known,
+      oracledb: options.oracledb,
+    });
+    runners = list.runners;
+    exportBinds = list.binds;
+    return { runners, exportBinds, coverageEnabled: false, htmlEnabled: false };
+  }
+
+  if (coverageEnabled) {
+    const hasReporter = await checkReporterExists(options.conn1, 'UT_COVERAGE_COBERTURA_REPORTER');
+    if (!hasReporter) {
+      coverageEnabled = false;
+      options.run.appendOutput(`\r\n${t(getExtensionLocale(), 'runner.reporterMissing')}\r\n`);
+    }
+  }
+
+  // Relatório HTML (PRD-108): só entra com cobertura ligada e o setting on.
+  htmlEnabled = coverageEnabled && !!options.coverageHtmlReport;
+  if (htmlEnabled) {
+    const hasHtml = await checkReporterExists(options.conn1, 'UT_COVERAGE_HTML_REPORTER');
+    if (!hasHtml) {
+      htmlEnabled = false;
+      options.run.appendOutput(`\r\n${t(getExtensionLocale(), 'runner.htmlReporterMissing')}\r\n`);
+    }
+  }
+
+  // Reporter adicional volátil da sessão (PRD-68 RF2): consumo único.
+  const sessionReporter = options.state.consumeExtraReporter?.();
+  if (sessionReporter) {
+    options.run.appendOutput(
+      `\r\n${t(getExtensionLocale(), 'runner.extraReporter', { name: sessionReporter })}\r\n`,
+    );
+  }
+
+  // Validar reporter adicional evita que um nome inexistente aborte todo o
+  // `ut_runner.run` com ORA. Lista indisponível (best-effort) → não bloqueia.
+  const extraReporters = [...(options.additionalReporters ?? [])];
+  if (sessionReporter) extraReporters.push(sessionReporter);
+  const knownReporters = extraReporters.length > 0 ? await listReportersOracle(options.conn1) : [];
+
+  const list = buildReporterList({
+    exporting: false,
+    coverageEnabled,
+    htmlEnabled,
+    additionalReporters: options.additionalReporters,
+    sessionReporter,
+    knownReporters,
+    oracledb: options.oracledb,
+  });
+  runners = list.runners;
+  exportBinds = list.binds;
+  for (const name of list.invalid) {
+    logger.warn('reporter adicional ignorado (nome inválido)', { reporter: name });
+  }
+  for (const name of list.unknown) {
+    logger.warn('reporter adicional inexistente ignorado', { reporter: name });
+    options.run.appendOutput(
+      `\r\n${t(getExtensionLocale(), 'runner.reporterUnknown', { name })}\r\n`,
+    );
+  }
+
+  return { runners, exportBinds, coverageEnabled, htmlEnabled };
+}
+
+interface RunAndPollResult {
+  exportText: string;
+  runnerMs: number;
+}
+
+/** Executa o `ut_runner.run`, faz o poll do buffer e devolve a saída de export. */
+async function runAndPoll(options: {
+  conn1: import('oracledb').Connection;
+  conn2: import('oracledb').Connection;
+  utSchema: string;
+  plsql: string;
+  binds: Record<string, import('oracledb').BindParameter>;
+  token: vscode.CancellationToken;
+  timeoutMinutes?: number;
+  dbmsOutput?: boolean;
+  exporting: boolean;
+  run: vscode.TestRun;
+  outputs: Map<string, { kind: 'unknown' | CoverageOutputKind; text: string }>;
+  connection: string;
+  oracledb: typeof import('oracledb');
+}): Promise<RunAndPollResult> {
+  if (options.dbmsOutput) {
+    try {
+      // DBMS_OUTPUT é por sessão: habilita em conn1, que executa os testes.
+      await options.conn1.execute(`BEGIN DBMS_OUTPUT.ENABLE(NULL); END;`);
+    } catch (e) {
+      logger.debug('executeRunOracle: DBMS_OUTPUT.ENABLE falhou', {
+        error: redactConnection(String(e), options.connection),
+      });
+    }
+  }
+
+  const runnerStart = Date.now();
+  const runnerPromise = options.conn1.execute(options.plsql, options.binds, { autoCommit: true });
+  const outputKey = (value: unknown): string =>
+    Buffer.isBuffer(value) ? value.toString('hex') : String(value ?? 'default');
+
+  const cancelRun = () => {
+    options.conn1.break().catch(() => {});
+    options.conn2.break().catch(() => {});
+  };
+  const wakeRun = Promise.withResolvers<void>();
+  const cancelSub = options.token.onCancellationRequested(() => {
+    cancelRun();
+    wakeRun.resolve();
+  });
+  const timeoutMs = (options.timeoutMinutes ?? 0) * 60 * 1000;
+  const timeoutTimer =
+    timeoutMs > 0
+      ? setTimeout(() => {
+          cancelRun();
+          wakeRun.resolve();
+        }, timeoutMs)
+      : undefined;
+
+  let exportText = '';
+  try {
+    await pollOutputStream({
+      conn: options.conn2,
+      utSchema: options.utSchema,
+      done: Promise.race([runnerPromise.then(() => true), wakeRun.promise.then(() => true)]),
+      onText: (text, outputId) => {
+        if (options.exporting) {
+          exportText += `${text}\n`;
+          options.run.appendOutput(`${text}\r\n`);
+          return;
+        }
+
+        const key = outputKey(outputId);
+        let group = options.outputs.get(key);
+        if (!group) {
+          group = { kind: 'unknown', text: '' };
+          options.outputs.set(key, group);
+        }
+        if (group.kind === 'unknown') {
+          group.kind = classifyCoverageOutput(text);
+        }
+        if (group.kind === 'console') {
+          options.run.appendOutput(`${text}\r\n`);
+        } else {
+          group.text += `${text}\n`;
+        }
+      },
+      onError: (e) => {
+        // polling pode falhar se conn1 ainda não escreveu — ignorar
+        logger.debug('executeRunOracle: poll do buffer falhou', {
+          error: redactConnection(String(e), options.connection),
+        });
+      },
+    });
+  } finally {
+    cancelSub.dispose();
+    if (timeoutTimer) clearTimeout(timeoutTimer);
+  }
+
+  return { exportText, runnerMs: Date.now() - runnerStart };
 }
 
 export async function executeRunOracle(
@@ -619,7 +789,6 @@ export async function executeRunOracle(
     exportReporter,
   } = options;
   const exporting = !!exportReporter;
-  let exportText = '';
 
   const oracledb = await loadOracledbMod();
   if (!oracledb) {
@@ -651,100 +820,17 @@ export async function executeRunOracle(
       { autoCommit: true },
     );
 
-    const runners: string[] = [];
-    const exportBinds: Record<string, import('oracledb').BindParameter> = {};
-    let coverageEnabled = !exporting && coverage;
-    let htmlEnabled = false;
-
-    if (exporting && exportReporter) {
-      // Export (PRD-76): só o reporter escolhido; sem JUnit/cobertura adicionais.
-      const normalized = exportReporter.name.toLowerCase().replace(/\(\)$/, '');
-      const known = await listReportersOracle(conn1);
-      const valid =
-        /^[a-z0-9_]+$/.test(normalized) &&
-        (known.length === 0 || known.some((k) => k.toLowerCase() === normalized));
-      if (!valid) {
-        throw new Error(
-          t(getExtensionLocale(), 'runner.reporterUnknown', { name: exportReporter.name }),
-        );
-      }
-      runners.push(
-        exportReporterCall(
-          normalized,
-          exportReporter.charset,
-          exportReporter.colorConsole,
-          exportBinds,
-          oracledb,
-        ),
-      );
-    } else {
-      runners.push('ut_documentation_reporter()', 'ut_junit_reporter()');
-
-      if (coverageEnabled) {
-        const hasReporter = await checkReporterExists(conn1, 'UT_COVERAGE_COBERTURA_REPORTER');
-        if (!hasReporter) {
-          coverageEnabled = false;
-          run.appendOutput(`\r\n${t(getExtensionLocale(), 'runner.reporterMissing')}\r\n`);
-        } else {
-          runners.push('ut_coverage_cobertura_reporter()');
-        }
-      }
-
-      // Relatório HTML (PRD-108): só entra com cobertura ligada e o setting on.
-      htmlEnabled = coverageEnabled && !!coverageHtmlReport;
-      if (htmlEnabled) {
-        const hasHtml = await checkReporterExists(conn1, 'UT_COVERAGE_HTML_REPORTER');
-        if (!hasHtml) {
-          htmlEnabled = false;
-          run.appendOutput(`\r\n${t(getExtensionLocale(), 'runner.htmlReporterMissing')}\r\n`);
-        } else {
-          runners.push('ut_coverage_html_reporter()');
-        }
-      }
-
-      // Reporter adicional volátil da sessão (PRD-68 RF2): consumo único.
-      const sessionReporter = state.consumeExtraReporter?.();
-      const extraReporters = [...(additionalReporters ?? [])];
-      if (sessionReporter) {
-        extraReporters.push(sessionReporter);
-        run.appendOutput(
-          `\r\n${t(getExtensionLocale(), 'runner.extraReporter', { name: sessionReporter })}\r\n`,
-        );
-      }
-
-      // Validar reporter adicional evita que um nome inexistente aborte todo o
-      // `ut_runner.run` com ORA. Lista indisponível (best-effort) → não bloqueia.
-      const knownReporters = extraReporters.length > 0 ? await listReportersOracle(conn1) : [];
-
-      for (const r of extraReporters) {
-        const normalized = r.toLowerCase().replace(/\(\)$/, '');
-        // Só aceita identificadores PL/SQL simples: o nome vem de settings (que
-        // podem ser definidas pelo workspace) e é concatenado no PL/SQL abaixo.
-        if (!/^[a-z0-9_]+$/.test(normalized)) {
-          logger.warn('reporter adicional ignorado (nome inválido)', { reporter: r });
-          continue;
-        }
-        if (
-          normalized === 'ut_documentation_reporter' ||
-          normalized === 'ut_junit_reporter' ||
-          (coverageEnabled && normalized === 'ut_coverage_cobertura_reporter')
-        ) {
-          continue;
-        }
-        if (runners.some((existing) => existing.startsWith(normalized))) continue;
-        if (
-          knownReporters.length > 0 &&
-          !knownReporters.some((k) => k.toLowerCase() === normalized)
-        ) {
-          logger.warn('reporter adicional inexistente ignorado', { reporter: r });
-          run.appendOutput(
-            `\r\n${t(getExtensionLocale(), 'runner.reporterUnknown', { name: r })}\r\n`,
-          );
-          continue;
-        }
-        runners.push(`${normalized}()`);
-      }
-    }
+    const { runners, exportBinds, coverageEnabled, htmlEnabled } = await prepareReporters({
+      conn1,
+      exporting,
+      exportReporter,
+      coverage,
+      coverageHtmlReport,
+      additionalReporters,
+      state,
+      run,
+      oracledb,
+    });
 
     const owner = (coverageOwner ?? '').trim() || parseConnString(connection).user.toUpperCase();
 
@@ -758,297 +844,217 @@ export async function executeRunOracle(
     // para caminhos locais (`packages/OBJ.sql`, etc.). Passar o diretório
     // `sourcePath` como `a_file_paths` (diretório, não arquivos) zerava a
     // cobertura — ver PRD-64 e testes de `mapDbPathsToFiles`.
-    const binds: Record<string, import('oracledb').BindParameter> = {
-      tags: { dir: oracledb.BIND_IN, type: oracledb.STRING, val: tags || null },
-    };
-    Object.assign(binds, exportBinds);
-    const pathsArg = pathArgs.length > 0 ? ':paths' : 'null';
-    if (pathArgs.length > 0) {
-      binds.paths = { dir: oracledb.BIND_IN, type: 'UT_VARCHAR2_LIST', val: pathArgs };
-    }
-    let coverageSchemes = 'null';
-    let coverageScopeParams = '';
-    if (coverageEnabled) {
-      const schemes = coverageSchemesCfg?.length ? coverageSchemesCfg : [owner];
-      coverageSchemes = ':schemes';
-      binds.schemes = { dir: oracledb.BIND_IN, type: 'UT_VARCHAR2_LIST', val: schemes };
-
-      // Escopo fino (PRD-79): incluir/excluir objetos e regex de schema/objeto.
-      // Todos vão como parâmetros do `ut_runner.run`, que monta o
-      // `ut_coverage_options` internamente — o reporter de cobertura não recebe
-      // opções (a assinatura real do utPLSQL 3.x não as aceita).
-      const scopeParts: string[] = [];
-      if (coverageIncludeObjects?.length) {
-        binds.includeObjects = {
-          dir: oracledb.BIND_IN,
-          type: 'UT_VARCHAR2_LIST',
-          val: coverageIncludeObjects,
-        };
-        scopeParts.push('a_include_objects => :includeObjects');
-      }
-      if (coverageExcludeObjects?.length) {
-        binds.excludeObjects = {
-          dir: oracledb.BIND_IN,
-          type: 'UT_VARCHAR2_LIST',
-          val: coverageExcludeObjects,
-        };
-        scopeParts.push('a_exclude_objects => :excludeObjects');
-      }
-      if (coverageIncludeSchemaExpr) {
-        binds.includeSchemaExpr = {
-          dir: oracledb.BIND_IN,
-          type: oracledb.STRING,
-          val: coverageIncludeSchemaExpr,
-        };
-        scopeParts.push('a_include_schema_expr => :includeSchemaExpr');
-      }
-      if (coverageIncludeObjectExpr) {
-        binds.includeObjectExpr = {
-          dir: oracledb.BIND_IN,
-          type: oracledb.STRING,
-          val: coverageIncludeObjectExpr,
-        };
-        scopeParts.push('a_include_object_expr => :includeObjectExpr');
-      }
-      if (coverageExcludeSchemaExpr) {
-        binds.excludeSchemaExpr = {
-          dir: oracledb.BIND_IN,
-          type: oracledb.STRING,
-          val: coverageExcludeSchemaExpr,
-        };
-        scopeParts.push('a_exclude_schema_expr => :excludeSchemaExpr');
-      }
-      if (coverageExcludeObjectExpr) {
-        binds.excludeObjectExpr = {
-          dir: oracledb.BIND_IN,
-          type: oracledb.STRING,
-          val: coverageExcludeObjectExpr,
-        };
-        scopeParts.push('a_exclude_object_expr => :excludeObjectExpr');
-      }
-      if (scopeParts.length) coverageScopeParams = `,\n      ${scopeParts.join(',\n      ')}`;
-    }
-
-    // Ordem aleatória (PRD-78): os parâmetros só entram quando habilitada, para
-    // manter o SQL idêntico ao atual no default (`randomOrder` false).
-    let randomParams = '';
+    const scope = buildCoverageScope(oracledb, {
+      enabled: coverageEnabled,
+      owner,
+      schemes: coverageSchemesCfg,
+      includeObjects: coverageIncludeObjects,
+      excludeObjects: coverageExcludeObjects,
+      includeSchemaExpr: coverageIncludeSchemaExpr,
+      includeObjectExpr: coverageIncludeObjectExpr,
+      excludeSchemaExpr: coverageExcludeSchemaExpr,
+      excludeObjectExpr: coverageExcludeObjectExpr,
+    });
+    const random = buildRandomOrderParams(oracledb, { randomOrder, randomOrderSeed });
     if (randomOrder) {
-      const seed = randomOrderSeed && randomOrderSeed > 0 ? randomOrderSeed : null;
-      binds.randomOrder = { dir: oracledb.BIND_IN, type: oracledb.DB_TYPE_BOOLEAN, val: true };
-      binds.randomSeed = { dir: oracledb.BIND_IN, type: oracledb.NUMBER, val: seed };
-      randomParams =
-        ',\n      a_random_test_order => :randomOrder,\n      a_random_test_order_seed => :randomSeed';
       run.appendOutput(
-        `\r\n${t(getExtensionLocale(), 'runner.randomOrderSeed', { seed: seed ?? 0 })}\r\n`,
+        `\r\n${t(getExtensionLocale(), 'runner.randomOrderSeed', { seed: random.seed })}\r\n`,
       );
     }
+    const call = buildRunCall(oracledb, {
+      pathArgs,
+      runners,
+      schemesArg: scope.schemesArg,
+      scopeParams: scope.scopeParams,
+      randomOrderParams: random.params,
+      tags,
+      binds: { ...exportBinds, ...scope.binds, ...random.binds },
+    });
+    const plsql = call.plsql;
+    const binds = call.binds;
 
-    const plsql = `BEGIN ut_runner.run(
-      a_paths => ${pathsArg},
-      a_reporters => ut_reporters(${runners.join(',')}),
-      a_coverage_schemes => ${coverageSchemes}${coverageScopeParams},
-      a_tags => :tags${randomParams}
-    ); END;`;
-
-    if (dbmsOutput) {
-      try {
-        // DBMS_OUTPUT é por sessão: habilita em conn1, que executa os testes.
-        await conn1.execute(`BEGIN DBMS_OUTPUT.ENABLE(NULL); END;`);
-      } catch (e) {
-        logger.debug('executeRunOracle: DBMS_OUTPUT.ENABLE falhou', {
-          error: redactConnection(String(e), connection),
-        });
-      }
-    }
-
-    const runnerStart = Date.now();
-    const runnerPromise = conn1.execute(plsql, binds, { autoCommit: true });
-
-    let lastMsgId = 0;
     // Cada reporter do utPLSQL escreve em um `output_id` próprio. Agrupar por
     // ele evita que o HTML de cobertura contamine o XML de JUnit/Cobertura e
     // dispensa o estado de CDATA (todas as linhas do grupo XML vão para o XML).
     const outputs = new Map<string, { kind: 'unknown' | CoverageOutputKind; text: string }>();
-    const outputKey = (value: unknown): string =>
-      Buffer.isBuffer(value) ? value.toString('hex') : String(value ?? 'default');
-
-    const cancelRun = () => {
-      conn1.break().catch(() => {});
-      conn2.break().catch(() => {});
-    };
-    let wakeRun: () => void = () => {};
-    const woken = new Promise<void>((resolve) => {
-      wakeRun = resolve;
+    const { exportText, runnerMs } = await runAndPoll({
+      conn1,
+      conn2,
+      utSchema,
+      plsql,
+      binds,
+      token,
+      timeoutMinutes,
+      dbmsOutput,
+      exporting,
+      run,
+      outputs,
+      connection,
+      oracledb,
     });
-    const cancelSub = token.onCancellationRequested(() => {
-      cancelRun();
-      wakeRun();
-    });
-    const timeoutMs = (timeoutMinutes ?? 0) * 60 * 1000;
-    const timeoutTimer =
-      timeoutMs > 0
-        ? setTimeout(() => {
-            cancelRun();
-            wakeRun();
-          }, timeoutMs)
-        : undefined;
 
-    try {
-      while (true) {
-        const done = await Promise.race([
-          runnerPromise.then(() => true),
-          woken.then(() => true),
-          new Promise<boolean>((r) => setTimeout(() => r(false), 200)),
-        ]);
-
-        try {
-          const rows = await conn2.execute(
-            `SELECT output_id, message_id, text, is_finished FROM ${utSchema}UT_OUTPUT_BUFFER_TMP WHERE message_id > :last ORDER BY message_id`,
-            { last: lastMsgId },
-          );
-
-          for (const row of rows.rows ?? []) {
-            const r = row as unknown as {
-              OUTPUT_ID?: unknown;
-              MESSAGE_ID: number;
-              TEXT: string | null;
-            };
-            lastMsgId = r.MESSAGE_ID;
-            const text = r.TEXT;
-            if (!text) continue;
-
-            if (exporting) {
-              exportText += `${text}\n`;
-              run.appendOutput(`${text}\r\n`);
-              continue;
-            }
-
-            const key = outputKey(r.OUTPUT_ID);
-            let group = outputs.get(key);
-            if (!group) {
-              group = { kind: 'unknown', text: '' };
-              outputs.set(key, group);
-            }
-            if (group.kind === 'unknown') {
-              group.kind = classifyCoverageOutput(text);
-            }
-            if (group.kind === 'console') {
-              run.appendOutput(`${text}\r\n`);
-            } else {
-              group.text += `${text}\n`;
-            }
-          }
-        } catch (e) {
-          // polling pode falhar se conn1 ainda não escreveu — ignorar
-          logger.debug('executeRunOracle: poll do buffer falhou', {
-            error: redactConnection(String(e), connection),
-          });
-        }
-
-        if (done) break;
-      }
-    } finally {
-      cancelSub.dispose();
-      if (timeoutTimer) clearTimeout(timeoutTimer);
-    }
-
-    if (dbmsOutput) {
-      try {
-        // Drena a mesma sessão (conn1) que rodou os testes.
-        for (;;) {
-          const r = await conn1.execute(`BEGIN DBMS_OUTPUT.GET_LINE(:line, :status); END;`, {
-            line: { dir: oracledb.BIND_OUT, type: oracledb.STRING, maxSize: 32767 },
-            status: { dir: oracledb.BIND_OUT, type: oracledb.NUMBER },
-          });
-          const out = (r.outBinds ?? {}) as { line?: unknown; status?: unknown };
-          if (Number(out.status) !== 0 || out.line == null) break;
-          run.appendOutput(`${String(out.line)}\r\n`);
-        }
-      } catch (e) {
-        // DBMS_OUTPUT pode não estar habilitado
-        logger.debug('executeRunOracle: DBMS_OUTPUT indisponível', {
-          error: redactConnection(String(e), connection),
-        });
-      }
-    }
+    if (dbmsOutput) await drainDbmsOutput(conn1, run, oracledb, connection);
 
     // Export (PRD-76): devolve a saída do reporter sem aplicar resultados/cobertura.
     if (exporting) return exportText;
 
-    const xmlBuffer = [...outputs.values()]
-      .filter((group) => group.kind === 'xml')
-      .map((group) => group.text)
-      .join('');
-    const htmlText = [...outputs.values()]
-      .filter((group) => group.kind === 'html')
-      .map((group) => group.text)
-      .join('');
-
-    const runnerMs = Date.now() - runnerStart;
-
-    const covStart = xmlBuffer.indexOf('<coverage');
-    const junitPart = covStart > 0 ? xmlBuffer.substring(0, covStart) : xmlBuffer;
-    const covXml = covStart > 0 ? xmlBuffer.substring(covStart) : '';
-
-    const cases = parseJUnit(junitPart);
-    const resultMap = applyResultsFromCases(cases, leafTests, run, state);
-    state.setLastResults(resultMap);
-    state.setLastFailedItems(
-      leafTests.filter((t) => {
-        const r = resultMap.get(t.id);
-        return r?.status === 'failed' || r?.status === 'error';
-      }),
-    );
-    // Snapshot do último resultado no workspaceState (PRD-56 RF2).
-    state.persist();
-    void vscode.commands.executeCommand(
-      'setContext',
-      'utplsql:hasFailures',
-      state.getLastFailedItems().length > 0,
-    );
-
-    if (onComplete) {
-      const r = countResults(cases);
-      onComplete(r.passed, r.failed, r.skipped, r.errored, r.totalMs);
-    }
-
-    if (coverageEnabled) {
-      const generated = covXml.trim().length > 0;
-      if (generated) {
-        const mappedXml = mapDbPathsToFiles(covXml);
-        applyCoverageFromXml(mappedXml, sourcePath, run, state, folders);
-      } else {
-        run.appendOutput(`\r\n${t(getExtensionLocale(), 'oracleRunner.coverNotGenerated')}\r\n`);
-      }
-      if (!token.isCancellationRequested) onCoverageResult?.(generated);
-    } else if (coverage && !exporting && !token.isCancellationRequested) {
-      // Cobertura pedida, mas o reporter não existe/foi desabilitado: também
-      // sinaliza para o diagnóstico de setup.
-      onCoverageResult?.(false);
-    }
-
-    // HTML (PRD-108): grava só no fim, com o run não cancelado; o runner só
-    // notifica depois do `run.end()` (fire-and-forget).
-    if (htmlEnabled && htmlReportTarget && htmlText.trim() && !token.isCancellationRequested) {
-      try {
-        await writeCoverageHtmlReport(htmlText, htmlReportTarget);
-        onCoverageHtmlReport?.(htmlReportTarget);
-      } catch (e) {
-        const redacted = redactConnection(String(e), connection);
-        logger.warn('executeRunOracle: falha ao gravar o HTML de cobertura', {
-          error: redacted,
-        });
-        run.appendOutput(`\r\n${t(getExtensionLocale(), 'common.error')}: ${redacted}\r\n`);
-      }
-    }
-
-    run.appendOutput(
-      `\r\n${t(getExtensionLocale(), 'runner.oracleInfo', { ms: runnerMs, chars: junitPart.length })}\r\n`,
-    );
+    await finalizeRun({
+      outputs,
+      runnerMs,
+      coverageEnabled,
+      coverageRequested: coverage,
+      htmlEnabled,
+      htmlReportTarget,
+      onCoverageHtmlReport,
+      onCoverageResult,
+      onComplete,
+      run,
+      leafTests,
+      state,
+      folders,
+      sourcePath,
+      token,
+      connection,
+    });
   } finally {
     await conn1.close().catch(() => {});
     await conn2.close().catch(() => {});
   }
+}
+
+/** Drena o DBMS_OUTPUT da sessão que executou os testes (conn1). */
+async function drainDbmsOutput(
+  conn1: import('oracledb').Connection,
+  run: vscode.TestRun,
+  oracledb: typeof import('oracledb'),
+  connection: string,
+): Promise<void> {
+  try {
+    for (;;) {
+      const r = await conn1.execute(`BEGIN DBMS_OUTPUT.GET_LINE(:line, :status); END;`, {
+        line: { dir: oracledb.BIND_OUT, type: oracledb.STRING, maxSize: 32767 },
+        status: { dir: oracledb.BIND_OUT, type: oracledb.NUMBER },
+      });
+      const out = (r.outBinds ?? {}) as { line?: unknown; status?: unknown };
+      if (Number(out.status) !== 0 || out.line == null) break;
+      run.appendOutput(`${String(out.line)}\r\n`);
+    }
+  } catch (e) {
+    // DBMS_OUTPUT pode não estar habilitado
+    logger.debug('executeRunOracle: DBMS_OUTPUT indisponível', {
+      error: redactConnection(String(e), connection),
+    });
+  }
+}
+
+interface FinalizeRunOptions {
+  outputs: Map<string, { kind: 'unknown' | CoverageOutputKind; text: string }>;
+  runnerMs: number;
+  coverageEnabled: boolean;
+  coverageRequested: boolean;
+  htmlEnabled: boolean;
+  htmlReportTarget?: string;
+  onCoverageHtmlReport?: (filePath: string) => void;
+  onCoverageResult?: (generated: boolean) => void;
+  onComplete?: (
+    passed: number,
+    failed: number,
+    skipped: number,
+    errored: number,
+    durationMs: number,
+  ) => void;
+  run: vscode.TestRun;
+  leafTests: vscode.TestItem[];
+  state: TestStateManager;
+  folders?: readonly vscode.WorkspaceFolder[];
+  sourcePath: string;
+  token: vscode.CancellationToken;
+  connection: string;
+}
+
+/** Parseia o JUnit/Cobertura e aplica resultados/cobertura (PRD-111 RF1). */
+async function finalizeRun(options: FinalizeRunOptions): Promise<void> {
+  const xmlBuffer = [...options.outputs.values()]
+    .filter((group) => group.kind === 'xml')
+    .map((group) => group.text)
+    .join('');
+  const htmlText = [...options.outputs.values()]
+    .filter((group) => group.kind === 'html')
+    .map((group) => group.text)
+    .join('');
+
+  const covStart = xmlBuffer.indexOf('<coverage');
+  const junitPart = covStart > 0 ? xmlBuffer.substring(0, covStart) : xmlBuffer;
+  const covXml = covStart > 0 ? xmlBuffer.substring(covStart) : '';
+
+  const cases = parseJUnit(junitPart);
+  const resultMap = applyResultsFromCases(cases, options.leafTests, options.run, options.state);
+  options.state.setLastResults(resultMap);
+  options.state.setLastFailedItems(
+    options.leafTests.filter((t) => {
+      const r = resultMap.get(t.id);
+      return r?.status === 'failed' || r?.status === 'error';
+    }),
+  );
+  // Snapshot do último resultado no workspaceState (PRD-56 RF2).
+  options.state.persist();
+  void vscode.commands.executeCommand(
+    'setContext',
+    'utplsql:hasFailures',
+    options.state.getLastFailedItems().length > 0,
+  );
+
+  if (options.onComplete) {
+    const r = countResults(cases);
+    options.onComplete(r.passed, r.failed, r.skipped, r.errored, r.totalMs);
+  }
+
+  if (options.coverageEnabled) {
+    const generated = covXml.trim().length > 0;
+    if (generated) {
+      const mappedXml = mapDbPathsToFiles(covXml);
+      applyCoverageFromXml(
+        mappedXml,
+        options.sourcePath,
+        options.run,
+        options.state,
+        options.folders,
+      );
+    } else {
+      options.run.appendOutput(
+        `\r\n${t(getExtensionLocale(), 'oracleRunner.coverNotGenerated')}\r\n`,
+      );
+    }
+    if (!options.token.isCancellationRequested) options.onCoverageResult?.(generated);
+  } else if (options.coverageRequested && !options.token.isCancellationRequested) {
+    // Cobertura pedida, mas o reporter não existe/foi desabilitado: também
+    // sinaliza para o diagnóstico de setup.
+    options.onCoverageResult?.(false);
+  }
+
+  // HTML (PRD-108): grava só no fim, com o run não cancelado; o runner só
+  // notifica depois do `run.end()` (fire-and-forget).
+  if (
+    options.htmlEnabled &&
+    options.htmlReportTarget &&
+    htmlText.trim() &&
+    !options.token.isCancellationRequested
+  ) {
+    try {
+      await writeCoverageHtmlReport(htmlText, options.htmlReportTarget);
+      options.onCoverageHtmlReport?.(options.htmlReportTarget);
+    } catch (e) {
+      const redacted = redactConnection(String(e), options.connection);
+      logger.warn('executeRunOracle: falha ao gravar o HTML de cobertura', {
+        error: redacted,
+      });
+      options.run.appendOutput(`\r\n${t(getExtensionLocale(), 'common.error')}: ${redacted}\r\n`);
+    }
+  }
+
+  options.run.appendOutput(
+    `\r\n${t(getExtensionLocale(), 'runner.oracleInfo', { ms: options.runnerMs, chars: junitPart.length })}\r\n`,
+  );
 }
 
 const COVERAGE_DIRS: Record<string, string> = {

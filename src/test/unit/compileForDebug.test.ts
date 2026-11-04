@@ -144,6 +144,20 @@ test('compileTargetsForDebug: ORA-04043 em todos os tipos vira falha', async () 
   assert.strictEqual(result.failed.length, 1);
 });
 
+test('compileTargetsForDebug: erro lançado como string vira texto e não casa ORA-04043', async () => {
+  const conn = {
+    execute: async () => {
+      throw 'falha crua';
+    },
+  };
+  const result = await compileTargetsForDebug(
+    conn,
+    [{ name: 'p', kinds: ['package', 'procedure'] }],
+    'app',
+  );
+  assert.deepStrictEqual(result.failed, [{ name: 'p', error: 'falha crua' }]);
+});
+
 test('compileForDebug: lista vazia retorna cedo sem tocar o Oracle', async () => {
   const result = await compileForDebug([]);
   assert.deepStrictEqual(result, { ok: [], failed: [] });

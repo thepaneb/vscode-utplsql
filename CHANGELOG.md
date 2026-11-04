@@ -1,5 +1,25 @@
 # Changelog
 
+## 0.19.0
+
+- **Plataforma e runtime (PRD-127, PRD-47)**: piso em **VS Code 1.125+**
+  (Extension Host com **Node 24.15**), `engines.node >=24`, `@types/vscode`
+  pinado em 1.125 e toolchain local em Node 24 com CI em **24/26**.
+- **Bundle ESM e ES2024 (PRD-95)**: o bundle publicado passa a ser
+  `dist/extension.mjs` (ESM), com `tsconfig` ES2024 e stdlib do Node 24; os
+  testes continuam CJS.
+- **node-oracledb 26 (PRD-124)**: driver e tipos na major 26, com matriz e
+  packaging dos VSIX validados (thick exige Client 19c+ e `libclntsh.so` com o
+  nome padrão).
+- **Thick-full e CI (PRD-125, parcial)**: eixo `--thick-full` **experimental**
+  (exclui thin-only/UI/standalone), política de CI com full thin em
+  `release/**`/caminho crítico e matriz semanal; a validação da suíte completa
+  em thick fica para a 0.20.0.
+- **Refatoração interna (PRD-111)**: `executeRunOracle` decomposta em etapas
+  testáveis (`oracleRunCall`/`oraclePoll`/`prepareReporters`/`runAndPoll`/
+  `finalizeRun`), sem mudança de comportamento; o agrupamento de
+  `OracleRunOptions` fica para a 0.20.0.
+
 ## 0.18.0
 
 - **Oracle 11g (11.2) em thick mode (PRD-123)**: suporte oficial ao legado

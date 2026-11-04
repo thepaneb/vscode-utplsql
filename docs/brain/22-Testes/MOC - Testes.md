@@ -61,11 +61,13 @@ SORT id ASC
 - [[TST - docsFidelity.test.ts]] — `TST-docsFidelity.test.ts`
 - [[TST - docsFidelityNls.test.ts]] — `TST-docsFidelityNls.test.ts`
 - [[TST - docsTables.test.ts]] — `TST-docsTables.test.ts`
+- [[TST - esbuildConfig.test.ts]] — `TST-esbuildConfig.test.ts`
 - [[TST - extension.test.ts]] — `TST-extension.test.ts`
 - [[TST - extensionActivation.test.ts]] — `TST-extensionActivation.test.ts`
 - [[TST - fsErrorsCatch.test.ts]] — `TST-fsErrorsCatch.test.ts`
 - [[TST - i18n.test.ts]] — `TST-i18n.test.ts`
 - [[TST - integration-compileForDebug.test.ts]] — `TST-integration-compileForDebug.test.ts`
+- [[TST - jevReview.test.ts]] — `TST-jevReview.test.ts`
 - [[TST - jumpToFailureE2E.test.ts]] — `TST-jumpToFailureE2E.test.ts`
 - [[TST - junit.test.ts]] — `TST-junit.test.ts`
 - [[TST - languageIdentity.test.ts]] — `TST-languageIdentity.test.ts`
@@ -81,6 +83,8 @@ SORT id ASC
 - [[TST - oracledb-missing-catch.test.ts]] — `TST-oracledb-missing-catch.test.ts`
 - [[TST - oracledbDefaultPresent.test.ts]] — `TST-oracledbDefaultPresent.test.ts`
 - [[TST - oracleIdentifiers.test.ts]] — `TST-oracleIdentifiers.test.ts`
+- [[TST - oraclePoll.test.ts]] — `TST-oraclePoll.test.ts`
+- [[TST - oracleRunCall.test.ts]] — `TST-oracleRunCall.test.ts`
 - [[TST - oracleRunner.test.ts]] — `TST-oracleRunner.test.ts`
 - [[TST - oracleRunnerReporters.test.ts]] — `TST-oracleRunnerReporters.test.ts`
 - [[TST - oracleRunnerTns.test.ts]] — `TST-oracleRunnerTns.test.ts`

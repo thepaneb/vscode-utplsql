@@ -281,7 +281,7 @@ export function splitScript(text: string): SqlStatement[] {
   if (hasContent()) {
     // `/` final (com ou sem newline) ainda é terminador/separador.
     const lines = buf.split('\n');
-    while (lines.length > 1 && /^\s*(\/)?\s*$/.test(lines[lines.length - 1])) lines.pop();
+    while (lines.length > 1 && /^\s*(\/)?\s*$/.test(lines.at(-1) ?? '')) lines.pop();
     const body = lines.join('\n').trim();
     if (body && !/^[;\s/]+$/.test(body) && stripComments(body).trim()) {
       statements.push({

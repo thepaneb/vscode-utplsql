@@ -217,6 +217,21 @@ test('autoRun onSave: salvar .pks agenda e executa após o delay', async () => {
   assert.strictEqual((runUriCalls[0][0] as { fsPath: string }).fsPath, '/ws/ut_pkg.pks');
 });
 
+test('autoRun onSave: saves rápidos do mesmo arquivo coalescem (clearTimeout)', async () => {
+  runUriCalls.length = 0;
+  runIsRunning = false;
+  __setConfigValue('autoRun', 'onSave');
+  __setConfigValue('autoRunDelayMs', 30);
+  const doc = {
+    fileName: '/ws/ut_pkg.pks',
+    uri: { fsPath: '/ws/ut_pkg.pks', toString: () => '/ws/ut_pkg.pks' },
+  };
+  workspace.__triggerSave(doc);
+  workspace.__triggerSave(doc);
+  await new Promise((resolve) => setTimeout(resolve, 80));
+  assert.strictEqual(runUriCalls.length, 1);
+});
+
 test('autoRun onSave: arquivo não-.pks é ignorado', async () => {
   runUriCalls.length = 0;
   __setConfigValue('autoRun', 'onSave');

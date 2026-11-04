@@ -83,8 +83,11 @@ SORT id ASC
 - [[COD - i18nLocales.ts]] — `COD-i18nLocales.ts`
 - [[COD - index.html]] — `COD-index.html`
 - [[COD - integration.yml]] — `COD-integration.yml`
+- [[COD - jev-review.cjs]] — `COD-jev-review.cjs`
+- [[COD - jevReview.ts]] — `COD-jevReview.ts`
 - [[COD - junit.ts]] — `COD-junit.ts`
 - [[COD - languageIdentity.ts]] — `COD-languageIdentity.ts`
+- [[COD - launch.json]] — `COD-launch.json`
 - [[COD - logger.ts]] — `COD-logger.ts`
 - [[COD - matching.ts]] — `COD-matching.ts`
 - [[COD - matrix.env]] — `COD-matrix.env`
@@ -92,6 +95,8 @@ SORT id ASC
 - [[COD - obsidian-portproxy.cmd]] — `COD-obsidian-portproxy.cmd`
 - [[COD - oracleClient.ts]] — `COD-oracleClient.ts`
 - [[COD - oracleIdentifiers.ts]] — `COD-oracleIdentifiers.ts`
+- [[COD - oraclePoll.ts]] — `COD-oraclePoll.ts`
+- [[COD - oracleRunCall.ts]] — `COD-oracleRunCall.ts`
 - [[COD - oracleRunner.ts]] — `COD-oracleRunner.ts`
 - [[COD - package-target.cjs]] — `COD-package-target.cjs`
 - [[COD - package.json]] — `COD-package.json`
@@ -130,6 +135,7 @@ SORT id ASC
 - [[COD - test-setup.cjs]] — `COD-test-setup.cjs`
 - [[COD - testTree.ts]] — `COD-testTree.ts`
 - [[COD - tnsnames.ts]] — `COD-tnsnames.ts`
+- [[COD - tsconfig.json]] — `COD-tsconfig.json`
 - [[COD - types.ts]] — `COD-types.ts`
 - [[COD - utility.ts]] — `COD-utility.ts`
 - [[COD - utplsql.code-snippets]] — `COD-utplsql.code-snippets`

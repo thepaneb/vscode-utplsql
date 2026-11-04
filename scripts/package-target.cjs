@@ -20,7 +20,7 @@ const path = require('node:path');
 const { spawnSync } = require('node:child_process');
 const { resolveVsce } = require('./vsce.cjs');
 
-// node-oracledb 7.0.1 publica glue pré-compilada para estes alvos (thick).
+// node-oracledb 26.0.0 publica glue pré-compilada para estes alvos (thick).
 const GLUE_TARGETS = ['win32-x64', 'linux-x64', 'linux-arm64', 'darwin-arm64'];
 // Alvos do VS Code sem glue: o VSIX vai sem binário nativo (thin mode apenas).
 const THIN_ONLY_TARGETS = [

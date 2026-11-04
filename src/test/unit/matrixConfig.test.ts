@@ -322,6 +322,66 @@ test('workflow da matriz roda multi-root e publica o resumo', () => {
   assert.match(workflow, /matrix-summary/);
 });
 
+test('workflow da matriz separa os schedules e expõe matrix-smoke (PRD-125)', () => {
+  const workflow = read('.github/workflows/integration.yml');
+  // Nightly (0 3) e semanal (0 4 dom) usam o mesmo ref (main): sem o cron no
+  // grupo, o cancel-in-progress de um derruba o outro quando o scheduler atrasa.
+  assert.match(
+    workflow,
+    /group: integration-\$\{\{ github\.ref \}\}-\$\{\{ github\.event\.schedule \|\| github\.event_name \}\}/,
+  );
+  // Dispatch dedicado para validar 18c/21c em smoke antes de confiar no semanal.
+  assert.match(workflow, /matrix-smoke/);
+  // O smoke também precisa de xvfb no CI: sem display o extension host falha.
+  assert.match(workflow, /--tests "xvfb-run -a bash -c 'npm run test:integration:smoke'"/);
+});
+
+test('workflow da matriz roda o full para bump de dependência (PRD-125)', () => {
+  const workflow = read('.github/workflows/integration.yml');
+  // package.json/lock disparam o workflow e entram no caminho crítico (full):
+  // um bump de node-oracledb não passa pelo smoke.
+  assert.match(workflow, /- 'package\.json'/);
+  assert.match(workflow, /- 'package-lock\.json'/);
+  assert.match(workflow, /package\(-lock\)\?\\\.json/);
+});
+
+test('workflow da matriz: semanal full e 19ee opt-in por credencial (PRD-125)', () => {
+  const workflow = read('.github/workflows/integration.yml');
+  // Semanal: 18c/21c completos; o smoke fica no dispatch matrix-smoke.
+  assert.match(workflow, /--only 18xe,21xe --tests "\$full"/);
+  // 19ee depende das credenciais EE; sem elas o passo é pulado.
+  assert.match(workflow, /--only 19ee --tests/);
+  assert.match(workflow, /env\.ORACLE_AUTH_USER != ''/);
+  assert.match(workflow, /ORACLE_AUTH_USER: \$\{\{ secrets\.ORACLE_AUTH_USER \}\}/);
+});
+
+test('workflow da matriz roda thick no nightly/dispatch com Instant Client (PRD-125)', () => {
+  const workflow = read('.github/workflows/integration.yml');
+  assert.match(workflow, /Thick mode \(Oracle Free\)/);
+  assert.match(workflow, /instantclient-basiclite/);
+  assert.match(workflow, /LD_LIBRARY_PATH/);
+  assert.match(workflow, /npm run test:integration:thick/);
+  assert.match(workflow, /--only 11xe --tests/);
+});
+
+test('workflow da matriz expõe thick-full experimental por dispatch (PRD-125)', () => {
+  const workflow = read('.github/workflows/integration.yml');
+  assert.match(workflow, /thick-full-11g/);
+  assert.match(workflow, /npm run test:integration:thick-full/);
+  assert.match(workflow, /continue-on-error: true/);
+  assert.match(workflow, /timeout-minutes: 20/);
+});
+
+test('workflow da matriz expõe dispatch 19ee (LTS) para validar o smoke EE', () => {
+  const workflow = read('.github/workflows/integration.yml');
+  assert.match(
+    workflow,
+    /options: \[smoke, full, matrix, matrix-smoke, 19ee, thick-full, thick-full-11g\]/,
+  );
+  assert.match(workflow, /inputs.mode == '19ee'/);
+  assert.match(workflow, /--only 19ee --tests "\$smoke"/);
+});
+
 test('parse-version.cjs: CLI sem --field devolve JSON', () => {
   const r = spawnSync(
     process.execPath,
@@ -343,6 +403,7 @@ test('thick-full: run.sh aceita o eixo e o config exclui os testes thin-only', (
   const cfg = read('.vscode-test.thick-full.mjs');
   assert.match(cfg, /prd70-sqlplus/);
   assert.match(cfg, /v014-tns/);
+  assert.match(cfg, /thickMode/);
   assert.match(cfg, /utplsql\.oracleClientMode/);
   assert.match(cfg, /utplsql\.oracleClientLibDir/);
   assert.match(cfg, /UTPLSQL_THICK_CONN/);

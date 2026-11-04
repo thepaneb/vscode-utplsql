@@ -16,7 +16,7 @@
   <a href="https://marketplace.visualstudio.com/items?itemName=paneb.vscode-utplsql"><img alt="Downloads" src="https://vsmarketplacebadges.dev/downloads-short/paneb.vscode-utplsql.svg"></a>
   <a href="https://github.com/thepaneb/vscode-utplsql/actions/workflows/ci.yml"><img alt="CI" src="https://github.com/thepaneb/vscode-utplsql/actions/workflows/ci.yml/badge.svg"></a>
   <a href="https://codecov.io/gh/thepaneb/vscode-utplsql"><img alt="Coverage" src="https://codecov.io/gh/thepaneb/vscode-utplsql/branch/main/graph/badge.svg"></a>
-  <img alt="VS Code" src="https://img.shields.io/badge/VS%20Code-1.101%2B-007ACC">
+  <img alt="VS Code" src="https://img.shields.io/badge/VS%20Code-1.125%2B-007ACC">
   <img alt="Node" src="https://img.shields.io/badge/node-22-339933?logo=nodedotjs&logoColor=white">
   <img alt="TypeScript" src="https://img.shields.io/badge/TypeScript-7-3178C6?logo=typescript&logoColor=white">
   <img alt="Oracle" src="https://img.shields.io/badge/Oracle-12.2%2B-F80000?logo=oracle&logoColor=white">
@@ -26,7 +26,7 @@
 
 # utPLSQL Test Runner
 
-Rulează și depanează teste **utPLSQL** (Oracle PL/SQL) direct în VS Code — **Test Explorer** nativ, acoperire vizuală, depanator PL/SQL și execuție **directă Oracle** via `node-oracledb`. Disponibil în **24 de limbi**; necesită **VS Code 1.101+** (Node 22).
+Rulează și depanează teste **utPLSQL** (Oracle PL/SQL) direct în VS Code — **Test Explorer** nativ, acoperire vizuală, depanator PL/SQL și execuție **directă Oracle** via `node-oracledb`. Disponibil în **24 de limbi**; necesită **VS Code 1.125+** (Node 24).
 
 ### Test Explorer și execuție
 
@@ -105,7 +105,7 @@ Extensia poate fi instalată în două moduri:
 | 18c+ | v3.2.x (18c+) / v3.1.x | Recomandat; charset `AL32UTF8`. |
 | 12.2 | doar v3.1.x | v3.2.x nu se compilează (`PLS-00222`). `WE8DEC` al imaginii pierde caractere nereprezentabile (ex. `€`); driverul subțire ignoră `NLS_LANG`. |
 | 11.2 (11g R2) | v3.1.x only | **Thick mode required** (thin starts at 12.1); coverage via `DBMS_PROFILER`. Instant Client 19c+. |
-- **VSCode 1.101+** (Node 22).
+- **VSCode 1.125+** (Node 24).
 
 Extensia este doar „clientul grafic" — ceea ce rulează testele este baza de date direct prin node-oracledb.
 

@@ -124,6 +124,7 @@ notas `prd-*`. O índice navegável do vault é a [[MOC - PRDs]].
 | 44 | [Extrair matching resultado→teste para funções puras testáveis](completed/prd-44-pure-matching.md) | 0.11.0 | 2026-08-08 |
 | 45 | [Bundling com esbuild + poda do node-oracledb no VSIX](completed/prd-45-bundle-esbuild.md) | 0.11.0 | 2026-08-26 |
 | 46 | [Atualização de dependências major (oracledb 7, fast-xml-parser 5, iconv-lite 0.7, TypeScript 7)](completed/prd-46-dependency-majors.md) | 0.11.0 | 2026-08-29 |
+| 47 | [Node 24 no toolchain e Node 26 no CI](completed/prd-47-node-26-toolchain.md) | 0.19.0 | 2026-08-29 |
 | 48 | [Function Coverage derivada (DeclarationCoverage no Test Coverage)](completed/prd-48-function-coverage.md) | 0.12.0 | 2026-08-29 |
 | 49 | [Internacionalização (i18n) dos conteúdos textuais da extensão](completed/prd-49-internacionalizacao.md) | 0.12.0 | 2026-08-29 |
 | 50 | [Auto-run on Save (Watch Mode)](completed/prd-50-auto-run-on-save.md) | 0.15.0 | 2026-09-06 |
@@ -163,6 +164,7 @@ notas `prd-*`. O índice navegável do vault é a [[MOC - PRDs]].
 | 86 | [Debugger honra stopOnException (break_exception)](completed/prd-86-debugger-stop-on-exception.md) | 0.13.0 | 2026-09-24 |
 | 87 | [Resultados e jump-to-failure em suítes com %suitepath](completed/prd-87-suitepath-results-jump.md) | 0.13.0 | 2026-09-25 |
 | 94 | [Piso de VS Code 1.101 e runtime Node 22](completed/prd-94-vscode-floor-1-101.md) | 0.14.0 | 2026-09-29 |
+| 95 | [Modernização do runtime: ESM (.mjs), ES2024 e stdlib Node 24](completed/prd-95-esm-es2023-node22.md) | 0.19.0 | 2026-09-29 |
 | 96 | [Site público e landing page via GitHub Pages](completed/prd-96-public-landing-page-github-pages.md) | 0.15.0 | 2026-10-07 |
 | 98 | [Anti-drift de documentação: tabelas geradas e vínculo PRD→docs](completed/prd-98-docs-anti-drift.md) | 0.18.0 | 2026-10-08 |
 | 100 | [Geração de suíte a partir do package (scaffold avançado)](completed/prd-100-generate-test-suite.md) | 0.16.0 | 2026-10-09 |
@@ -171,17 +173,25 @@ notas `prd-*`. O índice navegável do vault é a [[MOC - PRDs]].
 | 108 | [Relatório HTML de cobertura aberto no navegador](completed/prd-108-coverage-html-report.md) | 0.17.0 | 2026-10-09 |
 | 109 | [Identidade de linguagem PL/SQL ampliada e languageIds configuráveis](completed/prd-109-language-identity.md) | 0.17.0 | 2026-10-09 |
 | 110 | [Hardening defensivo: identificador SQL, redaction de logs e scripts de desenvolvimento](completed/prd-110-defensive-hardening.md) | 0.18.0 | 2026-10-09 |
+| 111 | [Decompor `executeRunOracle` e agrupar `OracleRunOptions`](completed/prd-111-decompose-oracle-runner.md) | 0.19.0 | 2026-10-10 |
 | 113 | [Ampliar o escopo do lint (Biome) para além de `src/`](completed/prd-113-lint-scope.md) | 0.18.0 | 2026-10-10 |
 | 114 | [Modernizar o stub de `vscode` e reduzir `any` nos testes](completed/prd-114-vscode-stub-modernization.md) | 0.18.0 | 2026-10-10 |
 | 118 | [Assinatura de commits e verificação de origem no main](completed/prd-118-commit-signing.md) | 0.18.0 | 2026-10-13 |
 | 119 | [Postura de segurança verificável: OSSF Scorecard e proteção de main](completed/prd-119-security-posture-scorecard.md) | 0.18.0 | 2026-10-13 |
 | 123 | [Suporte oficial ao Oracle 11g (11.2) em thick mode](completed/prd-123-oracle-11g-support.md) | 0.18.0 | 2026-10-17 |
+| 124 | [Upgrade para node-oracledb 26 com matriz e packaging validados](completed/prd-124-oracledb-26-upgrade.md) | 0.19.0 | 2026-10-29 |
+| 127 | [Piso de VS Code 1.125 e runtime Node 24](completed/prd-127-vscode-floor-1-125.md) | 0.19.0 | 2026-10-30 |
+
+### 🟡 Em desenvolvimento
+
+| # | PRD | Versão | Data |
+|---|---|---|---|
+| 125 | [Suíte completa em thick e matriz de bancos no CI](in-progress/prd-125-thick-full-matrix-ci.md) | 0.19.0 | 2026-10-29 |
 
 ### ⚪ Propostos
 
 | # | PRD | Versão | Data |
 |---|---|---|---|
-| 47 | [Node 24 no toolchain e Node 26 no CI](proposed/prd-47-node-26-toolchain.md) | 0.19.0 | 2026-08-29 |
 | 60 | [Cobertura de branch (investigação de viabilidade)](proposed/prd-60-branch-coverage-investigation.md) | Investigação — sem versão alvo | 2026-09-06 |
 | 61 | [Auto-provisionamento do utPLSQL-cli](proposed/prd-61-cli-auto-provision.md) | Suspenso — a reavaliar (PRD-64 removeu o CLI) | 2026-09-06 |
 | 88 | [Formatação sensível a locale (números e durações)](proposed/prd-88-locale-aware-formatting.md) | 0.22.0 | 2026-09-29 |
@@ -190,7 +200,6 @@ notas `prd-*`. O índice navegável do vault é a [[MOC - PRDs]].
 | 91 | [Paridade de documentação e distribuição localizada](proposed/prd-91-doc-parity-localized-distribution.md) | 0.22.0 | 2026-09-29 |
 | 92 | [RTL e novos locales (árabe e hebraico)](proposed/prd-92-rtl-new-locales.md) | 0.22.0 | 2026-09-29 |
 | 93 | [Pipeline de localização contínua (glossário, TM e revisão)](proposed/prd-93-continuous-localization-pipeline.md) | 0.22.0 | 2026-09-29 |
-| 95 | [Modernização do runtime: ESM (.mjs), ES2024 e stdlib Node 24](proposed/prd-95-esm-es2023-node22.md) | 0.19.0 | 2026-09-29 |
 | 97 | [Documentação no site (Fase 2 da PRD-96)](proposed/prd-97-doc-no-site.md) | 0.23.0 | 2026-10-07 |
 | 99 | [Cérebro reutilizável: guia de uso e reuso do knowledge base](proposed/prd-99-brain-reuse.md) | 0.23.0 | 2026-10-09 |
 | 101 | [Ciclo de vida de conexões: fechar pools ociosos após a execução](proposed/prd-101-connection-pool-lifecycle.md) | 0.20.0 | 2026-10-09 |
@@ -198,7 +207,6 @@ notas `prd-*`. O índice navegável do vault é a [[MOC - PRDs]].
 | 103 | [Reindexação incremental de fontes (watcher por-URI)](proposed/prd-103-incremental-source-reindex.md) | 0.20.0 | 2026-10-09 |
 | 106 | [Harness de performance: fixture em escala e medição por fases](proposed/prd-106-perf-harness.md) | 0.20.0 | 2026-10-09 |
 | 107 | [Fixture de integração endurecido: usuário sem privilégios e fallbacks](proposed/prd-107-unprivileged-fixture.md) | 0.20.0 | 2026-10-09 |
-| 111 | [Decompor `executeRunOracle` e agrupar `OracleRunOptions`](proposed/prd-111-decompose-oracle-runner.md) | 0.19.0 | 2026-10-10 |
 | 112 | [Auditoria de tratamento de erros: `catch` silenciosos e robustez](proposed/prd-112-error-handling-audit.md) | 0.23.0 | 2026-10-10 |
 | 115 | [Fatiar `i18nLocales.ts` por locale](proposed/prd-115-split-i18n-locales.md) | 0.22.0 | 2026-10-10 |
 | 116 | [Testes diretos dos módulos sem cobertura dedicada](proposed/prd-116-direct-module-tests.md) | 0.23.0 | 2026-10-10 |
@@ -206,10 +214,7 @@ notas `prd-*`. O índice navegável do vault é a [[MOC - PRDs]].
 | 120 | [Ativação enxuta e validação de setup preguiçosa](proposed/prd-120-lean-activation-lazy-setup.md) | 0.20.0 | 2026-10-13 |
 | 121 | [Pacote auditável: source map do bundle no VSIX](proposed/prd-121-auditable-package-sourcemap.md) | 0.24.0 | 2026-10-13 |
 | 122 | [Confiança na distribuição: publisher verificado e política de privacidade](proposed/prd-122-marketplace-trust-metadata.md) | 0.24.0 | 2026-10-13 |
-| 124 | [Upgrade para node-oracledb 26 com matriz e packaging validados](proposed/prd-124-oracledb-26-upgrade.md) | 0.19.0 | 2026-10-29 |
-| 125 | [Suíte completa em thick e matriz de bancos no CI](proposed/prd-125-thick-full-matrix-ci.md) | 0.19.0 | 2026-10-29 |
 | 126 | [Cobertura de branches nos módulos críticos e CLIs de release](proposed/prd-126-branch-coverage-cli-tests.md) | 0.23.0 | 2026-10-29 |
-| 127 | [Piso de VS Code 1.125 e runtime Node 24](proposed/prd-127-vscode-floor-1-125.md) | 0.19.0 | 2026-10-30 |
 | 128 | [Event bus interno e desacoplamento de callbacks de execução](proposed/prd-128-event-bus-internal.md) | 0.21.0 | 2026-10-30 |
 | 129 | [Orquestrador de execução com Strategy](proposed/prd-129-orchestration-strategy.md) | 0.21.0 | 2026-10-30 |
 | 130 | [Validação de configuração e classes de erro tipadas](proposed/prd-130-config-validation-typed-errors.md) | 0.21.0 | 2026-10-30 |
@@ -281,6 +286,7 @@ docs/prd/
 │   ├── prd-44-pure-matching.md
 │   ├── prd-45-bundle-esbuild.md
 │   ├── prd-46-dependency-majors.md
+│   ├── prd-47-node-26-toolchain.md
 │   ├── prd-48-function-coverage.md
 │   ├── prd-49-internacionalizacao.md
 │   ├── prd-50-auto-run-on-save.md
@@ -320,6 +326,7 @@ docs/prd/
 │   ├── prd-86-debugger-stop-on-exception.md
 │   ├── prd-87-suitepath-results-jump.md
 │   ├── prd-94-vscode-floor-1-101.md
+│   ├── prd-95-esm-es2023-node22.md
 │   ├── prd-96-public-landing-page-github-pages.md
 │   ├── prd-98-docs-anti-drift.md
 │   ├── prd-100-generate-test-suite.md
@@ -328,13 +335,17 @@ docs/prd/
 │   ├── prd-108-coverage-html-report.md
 │   ├── prd-109-language-identity.md
 │   ├── prd-110-defensive-hardening.md
+│   ├── prd-111-decompose-oracle-runner.md
 │   ├── prd-113-lint-scope.md
 │   ├── prd-114-vscode-stub-modernization.md
 │   ├── prd-118-commit-signing.md
 │   ├── prd-119-security-posture-scorecard.md
 │   ├── prd-123-oracle-11g-support.md
+│   ├── prd-124-oracledb-26-upgrade.md
+│   ├── prd-127-vscode-floor-1-125.md
+├── in-progress/        ← sendo implementados agora
+│   ├── prd-125-thick-full-matrix-ci.md
 ├── proposed/        ← em avaliação
-│   ├── prd-47-node-26-toolchain.md
 │   ├── prd-60-branch-coverage-investigation.md
 │   ├── prd-61-cli-auto-provision.md
 │   ├── prd-88-locale-aware-formatting.md
@@ -343,7 +354,6 @@ docs/prd/
 │   ├── prd-91-doc-parity-localized-distribution.md
 │   ├── prd-92-rtl-new-locales.md
 │   ├── prd-93-continuous-localization-pipeline.md
-│   ├── prd-95-esm-es2023-node22.md
 │   ├── prd-97-doc-no-site.md
 │   ├── prd-99-brain-reuse.md
 │   ├── prd-101-connection-pool-lifecycle.md
@@ -351,7 +361,6 @@ docs/prd/
 │   ├── prd-103-incremental-source-reindex.md
 │   ├── prd-106-perf-harness.md
 │   ├── prd-107-unprivileged-fixture.md
-│   ├── prd-111-decompose-oracle-runner.md
 │   ├── prd-112-error-handling-audit.md
 │   ├── prd-115-split-i18n-locales.md
 │   ├── prd-116-direct-module-tests.md
@@ -359,10 +368,7 @@ docs/prd/
 │   ├── prd-120-lean-activation-lazy-setup.md
 │   ├── prd-121-auditable-package-sourcemap.md
 │   ├── prd-122-marketplace-trust-metadata.md
-│   ├── prd-124-oracledb-26-upgrade.md
-│   ├── prd-125-thick-full-matrix-ci.md
 │   ├── prd-126-branch-coverage-cli-tests.md
-│   ├── prd-127-vscode-floor-1-125.md
 │   ├── prd-128-event-bus-internal.md
 │   ├── prd-129-orchestration-strategy.md
 │   ├── prd-130-config-validation-typed-errors.md

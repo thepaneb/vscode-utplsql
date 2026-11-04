@@ -8,7 +8,7 @@ status: ativo
 severidade: media
 interno: true
 fonte: codigo
-verificado: 2026-10-09
+verificado: 2026-11-04
 implementacao: [".c8rc"]
 testes: []
 relacionado: ["[[NFR-007 - Cobertura de testes TypeScript]]", "[[TPL-C8 - c8 (cobertura TypeScript)]]", "[[DEP-c8]]"]
@@ -18,7 +18,7 @@ tags: ["qualidade"]
 ## Enunciado
 
 Se `npm run test:coverage` roda, então o c8 exige, **globalmente**: 97% lines, 97%
-statements, **93% branches** e 97% functions; abaixo disso o processo sai com erro
+statements, **94% branches** e 98% functions; abaixo disso o processo sai com erro
 e o CI falha.
 
 ## Pré-condições
@@ -29,7 +29,7 @@ que bloquearia a instrumentação).
 ## Exceções
 
 Sem `per-file`; exclui `out/test/**` e `src/test/**`. Branches tem folga menor
-(93%) que as demais métricas.
+(94%) que as demais métricas.
 
 ## Justificativa
 

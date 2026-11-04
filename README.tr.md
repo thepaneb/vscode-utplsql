@@ -16,7 +16,7 @@
   <a href="https://marketplace.visualstudio.com/items?itemName=paneb.vscode-utplsql"><img alt="Downloads" src="https://vsmarketplacebadges.dev/downloads-short/paneb.vscode-utplsql.svg"></a>
   <a href="https://github.com/thepaneb/vscode-utplsql/actions/workflows/ci.yml"><img alt="CI" src="https://github.com/thepaneb/vscode-utplsql/actions/workflows/ci.yml/badge.svg"></a>
   <a href="https://codecov.io/gh/thepaneb/vscode-utplsql"><img alt="Coverage" src="https://codecov.io/gh/thepaneb/vscode-utplsql/branch/main/graph/badge.svg"></a>
-  <img alt="VS Code" src="https://img.shields.io/badge/VS%20Code-1.101%2B-007ACC">
+  <img alt="VS Code" src="https://img.shields.io/badge/VS%20Code-1.125%2B-007ACC">
   <img alt="Node" src="https://img.shields.io/badge/node-22-339933?logo=nodedotjs&logoColor=white">
   <img alt="TypeScript" src="https://img.shields.io/badge/TypeScript-7-3178C6?logo=typescript&logoColor=white">
   <img alt="Oracle" src="https://img.shields.io/badge/Oracle-12.2%2B-F80000?logo=oracle&logoColor=white">
@@ -26,7 +26,7 @@
 
 # utPLSQL Test Runner
 
-**utPLSQL** (Oracle PL/SQL) testlerini doğrudan VS Code'da çalıştırın ve hata ayıklayın — yerel **Test Explorer**, görsel kapsam, PL/SQL hata ayıklayıcı ve `node-oracledb` ile **doğrudan Oracle yürütme**. **24 dilde**; **VS Code 1.101+** (Node 22).
+**utPLSQL** (Oracle PL/SQL) testlerini doğrudan VS Code'da çalıştırın ve hata ayıklayın — yerel **Test Explorer**, görsel kapsam, PL/SQL hata ayıklayıcı ve `node-oracledb` ile **doğrudan Oracle yürütme**. **24 dilde**; **VS Code 1.125+** (Node 24).
 
 ### Test Explorer ve çalıştırma
 
@@ -105,7 +105,7 @@ Uzantı iki şekilde kurulabilir:
 | 18c+ | v3.2.x (18c+) / v3.1.x | Önerilir; charset `AL32UTF8`. |
 | 12.2 | yalnızca v3.1.x | v3.2.x derlenmez (`PLS-00222`). İmajın `WE8DEC`'i gösterilemeyen karakterleri kaybeder (örn. `€`); ince sürücü `NLS_LANG`'i yok sayar. |
 | 11.2 (11g R2) | v3.1.x only | **Thick mode required** (thin starts at 12.1); coverage via `DBMS_PROFILER`. Instant Client 19c+. |
-- **VSCode 1.101+** (Node 22).
+- **VSCode 1.125+** (Node 24).
 
 Uzantı yalnızca "grafik istemcidir" — testleri çalıştıran veritabanıdır: node-oracledb doğrudan bağlantısı üzerinden.
 

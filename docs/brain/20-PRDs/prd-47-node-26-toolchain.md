@@ -2,15 +2,15 @@
 tipo: prd
 id: PRD-47
 aliases: [PRD-47]
-status: proposed
+status: completed
 titulo: "Node 24 no toolchain e Node 26 no CI"
 versao: "0.19.0"
 data: "2026-08-29"
 autor: "Gil Cleber"
 versao_titulo: "0.19.0 — Piso Node 24 e runtime moderno"
-verificado: "2026-10-30"
+verificado: "2026-10-31"
 regras: []
-docs: ["CHANGELOG", "wiki/Contributing.md"]
+docs: ["CHANGELOG", "wiki/Contributing.md", "functional/10-development-tooling.md"]
 tags: [prd]
 ---
 
@@ -75,20 +75,25 @@ desalinhamento entre o Node local e o runtime real da extensão.
 
 ### RF1 — `.nvmrc` permanece 24
 
-`.nvmrc` aponta para **`24`**. A decisão é explícita: o Node 24 é o runtime do
-host (VS Code 1.125) e o baseline de desenvolvimento; o Node 26 não substitui o
-`.nvmrc` nesta versão.
+`.nvmrc` já aponta para **`24`** (estado da 0.18.0); não há mudança de arquivo.
+A decisão é explícita: o Node 24 é o runtime do host (VS Code 1.125) e o
+baseline de desenvolvimento; o Node 26 não substitui o `.nvmrc` nesta versão.
 
 ### RF2 — CI matrix `[24, 26]`
 
 `.github/workflows/ci.yml`: `node-version: [24, 26]`. `npm test` (que dispara
 `pretest:unit` com compile + lint) e `npm run test:coverage` devem passar nos dois.
-O Node 22 sai da matrix porque deixou de ser o host mínimo (PRD-127).
+O Node 22 sai da matrix **no mesmo PR da PRD-127**, porque deixou de ser o host
+mínimo (`engines.node >=24`). Para não duplicar custo, os passos de
+`audit:prod`, `version:check`, `brain:ci` + `git diff --exit-code`,
+`docs:check` e `docs:features-check` rodam só no Node 24
+(`if: matrix.node-version == 24`); `lint`, `typecheck` e `test:coverage` rodam
+nos dois.
 
 ### RF3 — Docs e CHANGELOG
 
 - `docs/brain/10-Projeto/Funcional/10-development-tooling.md`: Node 24 local,
-  matrix 24/26, Node 22 fora.
+  matrix 24/26, Node 22 fora; passos de docs/brain/audit só no 24.
 - `docs/brain/70-Wiki/Contributing.md`: requisito local e matrix.
 - `CHANGELOG.md`: entrada na 0.19.0.
 - `NFR-002` é atualizado pela PRD-127 (fonte da verdade do runtime); esta PRD
@@ -98,7 +103,8 @@ O Node 22 sai da matrix porque deixou de ser o host mínimo (PRD-127).
 - RNF1 — Suíte unitária e cobertura verdes no Node 24 e no 26.
 - RNF2 — VSIX inalterado (é só toolchain; o bundle não muda nesta PRD).
 - RNF3 — Nenhuma dependência nova.
-- RNF4 — CI não ganha um terceiro eixo (o custo cai em relação a 22/24/26).
+- RNF4 — CI não ganha um terceiro eixo (o custo cai em relação a 22/24/26); os
+  passos de documentação/auditoria rodam em um único job (24).
 
 ## 5. Solução proposta
 
@@ -162,6 +168,10 @@ Nenhuma regra nova. Atualizar **`NFR-002`** (toolchain 24, CI 24/26) na conclus�
 a **`BR-PLAT-001`** já é atualizada pela PRD-127 (piso/runtime). RNFs sem regra:
 RNF1 (suíte), RNF2 (VSIX), RNF3 (sem dep), RNF4 (custo de CI).
 
+nenhuma
+
+RNFs sem regra: RNF1, RNF2, RNF3, RNF4.
+
 ## Impacto nas docs
 
 `docs/functional/10-development-tooling.md` e `wiki/Contributing.md` passam a
@@ -174,6 +184,8 @@ conclusão, cada superfície cita `PRD-47` ou `<!-- prd:PRD-47 -->`.
 - 🗺️ [[MOC - PRDs]]
 - 🔗 PRDs relacionados: [[prd-18-engine-node-ci|PRD-18]] · [[prd-95-esm-es2023-node22|PRD-95]] · [[prd-127-vscode-floor-1-125|PRD-127]]
 - ⚙️ Pipelines: [[PIPE-ci - CI|PIPE-ci]]
-- 🔗 Mesma versão (0.19.0): [[prd-95-esm-es2023-node22|PRD-95]] · [[prd-111-decompose-oracle-runner|PRD-111]] · [[prd-124-oracledb-26-upgrade|PRD-124]] · [[prd-125-thick-full-matrix-ci|PRD-125]] · [[prd-127-vscode-floor-1-125|PRD-127]]
+- 🔗 Mesma versão (0.19.0): [[prd-125-thick-full-matrix-ci|PRD-125]]
+- 🎯 RF1 — `.nvmrc` permanece 24 → [[NFR-002 - Compatibilidade com Node|NFR-002]]
+- 🎯 RF2 — CI matrix `[24, 26]` → [[NFR-002 - Compatibilidade com Node|NFR-002]]
 - 🚀 ⬅️ release anterior: [[prd-123-oracle-11g-support|PRD-123 (0.18.0)]] · ➡️ próxima release: [[prd-101-connection-pool-lifecycle|PRD-101 (0.20.0)]]
 <!-- brain:auto:end -->

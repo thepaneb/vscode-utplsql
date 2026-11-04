@@ -25,7 +25,7 @@ tags: [readme]
   <a href="https://marketplace.visualstudio.com/items?itemName=paneb.vscode-utplsql"><img alt="Downloads" src="https://vsmarketplacebadges.dev/downloads-short/paneb.vscode-utplsql.svg"></a>
   <a href="https://github.com/thepaneb/vscode-utplsql/actions/workflows/ci.yml"><img alt="CI" src="https://github.com/thepaneb/vscode-utplsql/actions/workflows/ci.yml/badge.svg"></a>
   <a href="https://codecov.io/gh/thepaneb/vscode-utplsql"><img alt="Coverage" src="https://codecov.io/gh/thepaneb/vscode-utplsql/branch/main/graph/badge.svg"></a>
-  <img alt="VS Code" src="https://img.shields.io/badge/VS%20Code-1.101%2B-007ACC">
+  <img alt="VS Code" src="https://img.shields.io/badge/VS%20Code-1.125%2B-007ACC">
   <img alt="Node" src="https://img.shields.io/badge/node-22-339933?logo=nodedotjs&logoColor=white">
   <img alt="TypeScript" src="https://img.shields.io/badge/TypeScript-7-3178C6?logo=typescript&logoColor=white">
   <img alt="Oracle" src="https://img.shields.io/badge/Oracle-12.2%2B-F80000?logo=oracle&logoColor=white">
@@ -35,7 +35,7 @@ tags: [readme]
 
 # utPLSQL Test Runner
 
-Execute e depure testes **utPLSQL** (Oracle PL/SQL) direto no VS Code — **Test Explorer** nativo, cobertura visual, depurador PL/SQL e execução **Oracle direto** via `node-oracledb`. Disponível em **24 idiomas**; requer **VS Code 1.101+** (Node 22).
+Execute e depure testes **utPLSQL** (Oracle PL/SQL) direto no VS Code — **Test Explorer** nativo, cobertura visual, depurador PL/SQL e execução **Oracle direto** via `node-oracledb`. Disponível em **24 idiomas**; requer **VS Code 1.125+** (Node 24).
 
 ### Test Explorer e execução
 
@@ -105,7 +105,7 @@ A extensão pode ser instalada de duas formas:
 ## Requisitos
 
 - [**utPLSQL**](https://github.com/utPLSQL/utPLSQL) **(UT3)** instalado no banco Oracle.
-- **VSCode 1.101+** (Node 22).
+- **VSCode 1.125+** (Node 24).
 
 A extensão conecta-se diretamente ao banco Oracle via `node-oracledb` (driver thin, sem Instant Client). O VSIX já inclui o pacote `oracledb`.
 
