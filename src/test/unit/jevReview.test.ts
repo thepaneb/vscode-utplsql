@@ -11,6 +11,7 @@ import {
   choiceValue,
   DEFAULT_MAX_DIFF_CHARS,
   type ExecFileLike,
+  escapeTableCell,
   type FetchLike,
   type FetchResponse,
   filterDiff,
@@ -643,6 +644,10 @@ test('summarize: respostas ausentes', () => {
   assert.equal(summary.verdict, 'approve');
   assert.equal(summary.severityLabel, 'desconhecida');
   assert.equal(summary.hasFindings, false);
+});
+
+test('escapeTableCell: escapa backslash, pipe e newline', () => {
+  assert.equal(escapeTableCell('a\\b|c\nd'), 'a\\\\b\\|c<br>d');
 });
 
 test('formatMarkdown: inclui veredito, tabela e achados', () => {

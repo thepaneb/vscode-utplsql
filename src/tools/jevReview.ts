@@ -729,8 +729,8 @@ export function summarize(response: JevResponse): ReviewSummary {
   };
 }
 
-function tableCell(value: string): string {
-  return value.replace(/\|/g, '\\|');
+export function escapeTableCell(value: string): string {
+  return value.replace(/\\/g, '\\\\').replace(/\|/g, '\\|').replace(/\r?\n/g, '<br>');
 }
 
 function formatNoul(response: JevResponse, id: string): string {
@@ -779,7 +779,7 @@ export function formatMarkdown(
   if (summary.findings.length > 0) {
     lines.push('', '**Achados:**');
     for (const finding of summary.findings) {
-      lines.push(`- ${tableCell(finding.message)}`);
+      lines.push(`- ${escapeTableCell(finding.message)}`);
     }
   } else {
     lines.push('', '**Nenhum risco relevante** pelas perguntas atuais.');
