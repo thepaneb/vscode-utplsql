@@ -259,6 +259,14 @@ cancelado em 5 s”) —, enquanto os 3 debugger e o `profileSecretStorage`
 passaram nesta execução. O quadro reforça a hipótese do #288 (estabilidade de
 conexão/pool no host longo), não uma incompatibilidade do thick.
 
+**Thick-full 11g no CI (2026-11-04):** o dispatch `thick-full-11g` (run
+`41856855491`) **não completa no timebox de 20 min**: 10 testes estouram o
+timeout de 120 s (`jumpToFailure`, `runTimeoutE2E`, 3× `schemaRun`,
+2× `tagsStreaming`, 2× `thickLegacyE2E`, `v012-features`), indicando
+incompatibilidade/lentidão estrutural do 3.1/11g no run completo — não apenas
+skips. O 11g segue no **smoke thick** (verde, 4 passing) e o full fica para a
+0.20.0 com triagem/skips.
+
 ## 10. Critérios de aceite
 
 - `run.sh --thick-full` executa a suíte completa (menos thin-only e

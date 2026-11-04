@@ -164,8 +164,9 @@ jobs:
         run: bash scripts/db-matrix/run.sh --only 23free --tests "xvfb-run -a bash -c 'npm run test:integration:thick-full'"
 
       - name: Run thick-full on Oracle 11g (experimental)
-        # Validação timeboxed do RF3 no legado; as falhas de 3.1/11g viram
-        # skips/issue, não bloqueio dos outros eixos.
+        # Validação timeboxed do RF3 no legado. Em 2026-11-04 o run não completou
+        # em 20 min (10 testes estouraram o timeout de 120 s); o passo fica como
+        # probe e as falhas de 3.1/11g viram skips/issue, sem bloquear os eixos.
         if: github.event_name == 'workflow_dispatch' && inputs.mode == 'thick-full-11g'
         continue-on-error: true
         timeout-minutes: 20
