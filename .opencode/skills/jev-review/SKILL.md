@@ -85,8 +85,9 @@ Regras de uso:
 - Mesmo assim, não inclua credenciais Oracle, strings de conexão ou conteúdo
   proprietário que não seja necessário para revisar o diff.
 - O contexto do Jev é ~64K tokens; o script trunca o diff
-  (`--max-diff-chars`, default 100000 caracteres) e por arquivo
-  (`--max-file-chars`, default 20000).
+  (`--max-diff-chars`, default 40000 caracteres) e por arquivo
+  (`--max-file-chars`, default 20000). Se a API responder
+  `max_tokens_exceeded`, ele reduz o diff e tenta de novo (até 3 tentativas).
 - A chamada sai da máquina para o OpenCode Console; não use o modelo gratuito
   para dados sensíveis.
 

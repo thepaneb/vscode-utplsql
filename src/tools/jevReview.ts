@@ -4,6 +4,7 @@ import path from 'node:path';
 
 export const DEFAULT_ENDPOINT = 'https://opencode.ai/inference/systemone/v1/systemone';
 export const DEFAULT_MODEL = 'jev-1.13-free';
+export const DEFAULT_MAX_DIFF_CHARS = 40_000;
 export const THRESHOLDS = {
   security: 0.7,
   correctness: 0.7,
@@ -155,6 +156,14 @@ export class JevApiError extends Error {
   }
 }
 
+export function isMaxTokensError(error: unknown): boolean {
+  return (
+    error instanceof JevApiError &&
+    error.status === 400 &&
+    error.message.includes('max_tokens_exceeded')
+  );
+}
+
 const USAGE = `Uso: node scripts/jev-review.cjs [opções]
 
 Opções:
@@ -164,7 +173,7 @@ Opções:
   --diff-file <path>      Usa um diff salvo em vez de executar git
   --model <id>            Modelo Jev (default: ${DEFAULT_MODEL})
   --endpoint <url>        Endpoint System One (default: ${DEFAULT_ENDPOINT})
-  --max-diff-chars <n>    Limite total do diff (default: 100000)
+  --max-diff-chars <n>    Limite total do diff (default: ${DEFAULT_MAX_DIFF_CHARS})
   --max-file-chars <n>    Limite por arquivo (default: 20000)
   --timeout-ms <n>        Timeout da chamada (default: 60000)
   --format <json|markdown>
@@ -225,7 +234,7 @@ export function parseArgs(argv: string[]): CliOptions {
     repo: '.',
     model: DEFAULT_MODEL,
     endpoint: DEFAULT_ENDPOINT,
-    maxDiffChars: 100_000,
+    maxDiffChars: DEFAULT_MAX_DIFF_CHARS,
     maxFileChars: 20_000,
     timeoutMs: 60_000,
     format: 'markdown',
@@ -432,7 +441,7 @@ function truncateText(text: string, max: number): { text: string; truncated: boo
 
 export function filterDiff(
   diff: string,
-  maxDiffChars = 100_000,
+  maxDiffChars = DEFAULT_MAX_DIFF_CHARS,
   maxFileChars = 20_000,
 ): FilteredDiff {
   const blocks = splitDiff(diff);
@@ -897,13 +906,12 @@ export async function main(argv: string[], deps: MainDeps = {}): Promise<number>
     return 0;
   }
 
-  const filtered = filterDiff(diff, options.maxDiffChars, options.maxFileChars);
+  let filtered = filterDiff(diff, options.maxDiffChars, options.maxFileChars);
   if (filtered.files.length === 0) {
     stdout(`Nenhum arquivo relevante após o filtro (${filtered.omitted} omitido(s)).\n`);
     return 0;
   }
 
-  const state = buildState(filtered);
   const questions = buildQuestions();
 
   if (options.dryRun) {
@@ -917,7 +925,7 @@ export async function main(argv: string[], deps: MainDeps = {}): Promise<number>
             omitted: filtered.omitted,
             truncated: filtered.truncated,
           },
-          state,
+          state: buildState(filtered),
           questions,
         },
         null,
@@ -927,19 +935,30 @@ export async function main(argv: string[], deps: MainDeps = {}): Promise<number>
     return 0;
   }
 
-  let response: JevResponse;
-  try {
-    response = await callJev({
-      endpoint: options.endpoint,
-      apiKey: key,
-      model: options.model,
-      state,
-      questions,
-      fetchImpl: deps.fetchImpl,
-      timeoutMs: options.timeoutMs,
-    });
-  } catch (error) {
-    const message = `ERRO: ${errorMessage(error)}\n`;
+  let response: JevResponse | undefined;
+  let reviewError: unknown = new Error('falha desconhecida');
+  for (let attempt = 0; attempt < 3; attempt++) {
+    try {
+      response = await callJev({
+        endpoint: options.endpoint,
+        apiKey: key,
+        model: options.model,
+        state: buildState(filtered),
+        questions,
+        fetchImpl: deps.fetchImpl,
+        timeoutMs: options.timeoutMs,
+      });
+      break;
+    } catch (error) {
+      reviewError = error;
+      if (!isMaxTokensError(error) || attempt === 2) break;
+      const nextMax = Math.max(10_000, Math.floor(filtered.text.length / 2));
+      filtered = filterDiff(diff, nextMax, options.maxFileChars);
+    }
+  }
+
+  if (!response) {
+    const message = `ERRO: ${errorMessage(reviewError)}\n`;
     stderr(message);
     if (options.output) {
       try {
