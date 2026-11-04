@@ -125,8 +125,10 @@ jobs:
 
       - name: Run integration matrix
         run: |
+          # O extension host precisa de display no Linux (mesmo no smoke): use
+          # `--tests` com `xvfb-run` em vez de `--smoke`, que não embrulha.
           if [ "${{ github.event_name }}" = "schedule" ] || [ "${{ inputs.mode }}" = "matrix-smoke" ]; then
-            bash scripts/db-matrix/run.sh --only 18xe,21xe --smoke
+            bash scripts/db-matrix/run.sh --only 18xe,21xe --tests "xvfb-run -a bash -c 'npm run test:integration:smoke'"
           else
             bash scripts/db-matrix/run.sh --only 18xe,21xe,23free --tests "xvfb-run -a bash -c 'npm run test:integration && npm run test:integration:multiroot'"
           fi

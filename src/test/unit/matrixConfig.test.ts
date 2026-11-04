@@ -332,7 +332,8 @@ test('workflow da matriz separa os schedules e expõe matrix-smoke (PRD-125)', (
   );
   // Dispatch dedicado para validar 18c/21c em smoke antes de confiar no semanal.
   assert.match(workflow, /matrix-smoke/);
-  assert.match(workflow, /--only 18xe,21xe --smoke/);
+  // O smoke também precisa de xvfb no CI: sem display o extension host falha.
+  assert.match(workflow, /--tests "xvfb-run -a bash -c 'npm run test:integration:smoke'"/);
 });
 
 test('parse-version.cjs: CLI sem --field devolve JSON', () => {
