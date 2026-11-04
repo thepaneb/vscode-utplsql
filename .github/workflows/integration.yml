@@ -19,9 +19,9 @@ on:
   workflow_dispatch:
     inputs:
       mode:
-        description: 'Escopo: smoke, full (23ai Free), matrix (18c/21c/23ai), matrix-smoke (18c/21c smoke), thick-full (23ai, experimental) ou thick-full-11g (experimental)'
+        description: 'Escopo: smoke, full (23ai Free), matrix (18c/21c/23ai), matrix-smoke (18c/21c smoke), 19ee (smoke LTS), thick-full (23ai, experimental) ou thick-full-11g (experimental)'
         type: choice
-        options: [smoke, full, matrix, matrix-smoke, thick-full, thick-full-11g]
+        options: [smoke, full, matrix, matrix-smoke, 19ee, thick-full, thick-full-11g]
         default: smoke
 
 permissions:
@@ -43,7 +43,7 @@ jobs:
     if: >-
       github.event_name == 'pull_request' ||
       (github.event_name == 'schedule' && github.event.schedule == '0 3 * * *') ||
-      (github.event_name == 'workflow_dispatch' && inputs.mode != 'matrix' && inputs.mode != 'matrix-smoke' && inputs.mode != 'thick-full' && inputs.mode != 'thick-full-11g')
+      (github.event_name == 'workflow_dispatch' && inputs.mode != 'matrix' && inputs.mode != 'matrix-smoke' && inputs.mode != '19ee' && inputs.mode != 'thick-full' && inputs.mode != 'thick-full-11g')
     runs-on: ubuntu-latest
     timeout-minutes: 60
     env:
@@ -177,7 +177,7 @@ jobs:
     # Dispatch `matrix` roda o full nos 3 bancos; `matrix-smoke` e o schedule
     # semanal rodam 18c/21c em smoke (o 23ai full é o nightly).
     if: >-
-      (github.event_name == 'workflow_dispatch' && (inputs.mode == 'matrix' || inputs.mode == 'matrix-smoke')) ||
+      (github.event_name == 'workflow_dispatch' && (inputs.mode == 'matrix' || inputs.mode == 'matrix-smoke' || inputs.mode == '19ee')) ||
       (github.event_name == 'schedule' && github.event.schedule == '0 4 * * 0')
     runs-on: ubuntu-latest
     timeout-minutes: 240
@@ -209,7 +209,10 @@ jobs:
           # O extension host precisa de display no Linux, inclusive no smoke.
           full="xvfb-run -a bash -c 'npm run test:integration && npm run test:integration:multiroot'"
           smoke="xvfb-run -a bash -c 'npm run test:integration:smoke'"
-          if [ "${{ github.event_name }}" = "schedule" ]; then
+          if [ "${{ inputs.mode }}" = "19ee" ]; then
+            # Validação do LTS sob demanda (mesmo recorte do smoke semanal).
+            bash scripts/db-matrix/run.sh --only 19ee --tests "$smoke"
+          elif [ "${{ github.event_name }}" = "schedule" ]; then
             # Semanal: 18c/21c completos (o 23ai full é o nightly).
             bash scripts/db-matrix/run.sh --only 18xe,21xe --tests "$full"
           elif [ "${{ inputs.mode }}" = "matrix-smoke" ]; then

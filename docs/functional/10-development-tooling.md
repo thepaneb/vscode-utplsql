@@ -241,8 +241,9 @@ Integração com **Oracle real** (`.github/workflows/integration.yml`):
   **19ee smoke** quando `ORACLE_AUTH_USER`/`ORACLE_AUTH_TOKEN` estão nos secrets
 - **dispatch**: `smoke` (23free smoke), `full` (23free full), `matrix`
   (18c/21c/23free full), `matrix-smoke` (18c/21c smoke, validação rápida do
-  eixo da matriz) e `thick-full`/`thick-full-11g` (experimentais: 23free/11g
-  com `--thick-full`; usam `continue-on-error` e expõem o log)
+  eixo da matriz), `19ee` (smoke LTS sob demanda, requer credenciais EE) e
+  `thick-full`/`thick-full-11g` (experimentais: 23free/11g com `--thick-full`;
+  usam `continue-on-error` e expõem o log)
 - **thick** (nightly/dispatch): `--thick` no 23free e no **11g** com
   **Instant Client** (basiclite) baixado no runner e `libaio`; valida
   `thickMode`/`thickLegacyE2E`

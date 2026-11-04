@@ -244,6 +244,8 @@ smoke do CI passou a usar `xvfb-run` como o eixo de PR.
 Na revisão de 2026-11-04 o semanal 18c/21c passou de smoke para **full**
 (inclui multi-root) e o **19ee smoke** foi adicionado de forma opt-in: só roda
 quando `ORACLE_AUTH_USER`/`ORACLE_AUTH_TOKEN` estão cadastrados nos secrets.
+As credenciais EE foram cadastradas em 2026-11-04, e o mesmo recorte pode ser
+validado sob demanda pelo dispatch `19ee`.
 
 O eixo **thick smoke** (4 testes: `thickMode` + `thickLegacyE2E`) entrou no CI
 no nightly e no dispatch, com Instant Client **basiclite** baixado no runner +

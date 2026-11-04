@@ -372,6 +372,16 @@ test('workflow da matriz expõe thick-full experimental por dispatch (PRD-125)',
   assert.match(workflow, /timeout-minutes: 20/);
 });
 
+test('workflow da matriz expõe dispatch 19ee (LTS) para validar o smoke EE', () => {
+  const workflow = read('.github/workflows/integration.yml');
+  assert.match(
+    workflow,
+    /options: \[smoke, full, matrix, matrix-smoke, 19ee, thick-full, thick-full-11g\]/,
+  );
+  assert.match(workflow, /inputs.mode == '19ee'/);
+  assert.match(workflow, /--only 19ee --tests "\$smoke"/);
+});
+
 test('parse-version.cjs: CLI sem --field devolve JSON', () => {
   const r = spawnSync(
     process.execPath,
