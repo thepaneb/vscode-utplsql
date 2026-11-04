@@ -260,7 +260,9 @@ quando `ORACLE_AUTH_USER`/`ORACLE_AUTH_TOKEN` estão cadastrados nos secrets.
 
 O eixo **thick smoke** (4 testes: `thickMode` + `thickLegacyE2E`) entrou no CI
 no nightly e no dispatch, com Instant Client **basiclite** baixado no runner +
-`libaio`, no **23free e no 11g**; o thick-full completo (RF3) continua na 0.20.0.
+`libaio`, no **23free e no 11g**; o thick-full completo (RF3) continua na 0.20.0,
+mas pode ser exercitado pelo dispatch `thick-full`/`thick-full-11g`
+(`continue-on-error`).
 
 ## 10. Critérios de aceite
 

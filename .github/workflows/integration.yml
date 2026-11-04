@@ -19,9 +19,9 @@ on:
   workflow_dispatch:
     inputs:
       mode:
-        description: 'Escopo: smoke (rápido), full (23ai Free completo), matrix (18c/21c/23ai completos) ou matrix-smoke (18c/21c, smoke)'
+        description: 'Escopo: smoke, full (23ai Free), matrix (18c/21c/23ai), matrix-smoke (18c/21c smoke), thick-full (23ai, experimental) ou thick-full-11g (experimental)'
         type: choice
-        options: [smoke, full, matrix, matrix-smoke]
+        options: [smoke, full, matrix, matrix-smoke, thick-full, thick-full-11g]
         default: smoke
 
 permissions:
@@ -43,7 +43,7 @@ jobs:
     if: >-
       github.event_name == 'pull_request' ||
       (github.event_name == 'schedule' && github.event.schedule == '0 3 * * *') ||
-      (github.event_name == 'workflow_dispatch' && inputs.mode != 'matrix' && inputs.mode != 'matrix-smoke')
+      (github.event_name == 'workflow_dispatch' && inputs.mode != 'matrix' && inputs.mode != 'matrix-smoke' && inputs.mode != 'thick-full' && inputs.mode != 'thick-full-11g')
     runs-on: ubuntu-latest
     timeout-minutes: 60
     env:
@@ -145,12 +145,28 @@ jobs:
           echo "LD_LIBRARY_PATH=$dir:${LD_LIBRARY_PATH:-}" >> "$GITHUB_ENV"
 
       - name: Run thick smoke on Oracle 23ai Free
+        if: inputs.mode != 'thick-full' && inputs.mode != 'thick-full-11g'
         run: bash scripts/db-matrix/run.sh --only 23free --tests "xvfb-run -a bash -c 'npm run test:integration:thick'"
 
       - name: Run thick smoke on Oracle 11g
         # O 11g é thick-only (thin tem piso 12.1) e usa utPLSQL 3.1.14; o mesmo
         # Instant Client 23 cobre o legado (PRD-123).
+        if: inputs.mode != 'thick-full' && inputs.mode != 'thick-full-11g'
         run: bash scripts/db-matrix/run.sh --only 11xe --tests "xvfb-run -a bash -c 'npm run test:integration:thick'"
+
+      - name: Run thick-full on Oracle 23ai Free (experimental)
+        # Eixo thick-full (PRD-125 RF3): ainda tem falhas conhecidas (#288);
+        # `continue-on-error` mantém o dispatch verde e expõe o log.
+        if: github.event_name == 'workflow_dispatch' && inputs.mode == 'thick-full'
+        continue-on-error: true
+        run: bash scripts/db-matrix/run.sh --only 23free --tests "xvfb-run -a bash -c 'npm run test:integration:thick-full'"
+
+      - name: Run thick-full on Oracle 11g (experimental)
+        # Validação timeboxed do RF3 no legado; as falhas de 3.1/11g viram
+        # skips/issue, não bloqueio dos outros eixos.
+        if: github.event_name == 'workflow_dispatch' && inputs.mode == 'thick-full-11g'
+        continue-on-error: true
+        run: bash scripts/db-matrix/run.sh --only 11xe --tests "xvfb-run -a bash -c 'npm run test:integration:thick-full'"
 
   matrix:
     name: Integration matrix (Oracle 18c/21c/23ai)

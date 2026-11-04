@@ -28,8 +28,9 @@ O **CI** roda o full thin em PR de `release/**`/caminho crítico, o nightly 23fr
 completo e a matriz semanal 18xe/21xe em **full** (o smoke fica no dispatch
 `matrix-smoke`; o 19ee entra no semanal quando as credenciais EE estão nos
 secrets). O **thick smoke** (4 testes) roda no nightly/dispatch com Instant
-Client baixado no runner, no **23free e no 11g**. O `--thick-full` é
-experimental (PRD-125).
+Client baixado no runner, no **23free e no 11g**; o `--thick-full` continua
+experimental (PRD-125), mas pode ser exercitado pelo dispatch `thick-full`/
+`thick-full-11g` (com `continue-on-error`).
 
 ## Pré-condições
 

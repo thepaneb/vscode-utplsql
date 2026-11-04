@@ -364,6 +364,13 @@ test('workflow da matriz roda thick no nightly/dispatch com Instant Client (PRD-
   assert.match(workflow, /--only 11xe --tests/);
 });
 
+test('workflow da matriz expõe thick-full experimental por dispatch (PRD-125)', () => {
+  const workflow = read('.github/workflows/integration.yml');
+  assert.match(workflow, /thick-full-11g/);
+  assert.match(workflow, /npm run test:integration:thick-full/);
+  assert.match(workflow, /continue-on-error: true/);
+});
+
 test('parse-version.cjs: CLI sem --field devolve JSON', () => {
   const r = spawnSync(
     process.execPath,
