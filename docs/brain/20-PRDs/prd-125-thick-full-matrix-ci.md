@@ -161,10 +161,11 @@ PRD; o `--full` thin continua incluindo.
 ### RF4 — CI
 
 - **Full no PR** quando a base for `release/**` ou quando o PR tocar
-  `src/oracleRunner.ts`, `src/results.ts`, `src/discovery.ts`, `src/runner.ts`
-  ou `src/scriptRunner.ts` (detecção por `git diff` no `integration.yml`; o
-  workflow já roda em todo PR, então o passo “Decide scope” escolhe full vs
-  smoke).
+  `src/oracleRunner.ts`, `src/results.ts`, `src/discovery.ts`, `src/runner.ts`,
+  `src/scriptRunner.ts` ou as dependências (`package.json`/`package-lock.json`,
+  revisão 2026-11-04), por `git diff` no `integration.yml`. O workflow roda nos
+  PRs que tocam `src/**`, a matriz, as dependências ou o próprio workflow, e o
+  passo “Decide scope” escolhe full vs smoke.
 - **Matriz agendada**: 18xe/21xe **smoke** no semanal; o **23free full** já roda
   no nightly existente. 19ee/12.2/11g continuam locais (credenciais/imagem).
 - Manter o label `run-integration` como escape manual para o full em qualquer
@@ -242,6 +243,12 @@ marcados como pendentes não bloqueiam a 0.19.0; a PRD fica `in-progress`.
 O cron semanal (`0 4 * * 0`) só passa a valer depois do merge na `main`
 (workflows agendados rodam a partir da default branch). Antes disso, o recorte
 do semanal (18c/21c em smoke) pode ser exercitado pelo dispatch `matrix-smoke`.
+
+**Matriz 18c/21c validada (2026-11-04):** o dispatch `matrix-smoke` rodou o
+mesmo recorte do semanal — 18xe **17 passing** (28 s) e 21xe **17 passing**
+(26 s), job de ~15,5 min. O primeiro attempt expôs a falta de `xvfb` no caminho
+`--smoke` (extension host sem `DISPLAY`), corrigida em `b071270`; o caminho de
+smoke do CI passou a usar `xvfb-run` como o eixo de PR.
 
 ## 10. Critérios de aceite
 

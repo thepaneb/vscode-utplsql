@@ -336,6 +336,15 @@ test('workflow da matriz separa os schedules e expõe matrix-smoke (PRD-125)', (
   assert.match(workflow, /--tests "xvfb-run -a bash -c 'npm run test:integration:smoke'"/);
 });
 
+test('workflow da matriz roda o full para bump de dependência (PRD-125)', () => {
+  const workflow = read('.github/workflows/integration.yml');
+  // package.json/lock disparam o workflow e entram no caminho crítico (full):
+  // um bump de node-oracledb não passa pelo smoke.
+  assert.match(workflow, /- 'package\.json'/);
+  assert.match(workflow, /- 'package-lock\.json'/);
+  assert.match(workflow, /package\(-lock\)\?\\\.json/);
+});
+
 test('parse-version.cjs: CLI sem --field devolve JSON', () => {
   const r = spawnSync(
     process.execPath,

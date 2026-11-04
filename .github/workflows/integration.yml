@@ -8,6 +8,8 @@ on:
       - 'scripts/db-matrix/**'
       - 'docker/db-matrix/**'
       - '.vscode-test*.mjs'
+      - 'package.json'
+      - 'package-lock.json'
       - '.github/workflows/integration.yml'
   schedule:
     # Nightly: integração completa em um Oracle (23ai Free).
@@ -77,10 +79,11 @@ jobs:
               echo "cmd=$full" >> "$GITHUB_OUTPUT"
             else
               # Full também quando a base é release/** ou o PR toca o caminho
-              # crítico de execução/resultados/descoberta (PRD-125 RF4).
+              # crítico de execução/resultados/descoberta ou as dependências
+              # (um bump de node-oracledb afeta o runtime; PRD-125 RF4).
               git fetch --no-tags --depth=1 origin "$BASE_REF" >/dev/null 2>&1 || true
               changed="$(git diff --name-only "origin/$BASE_REF...HEAD" 2>/dev/null || true)"
-              if [[ "$BASE_REF" == release/* ]] || echo "$changed" | grep -Eq '^src/(oracleRunner|oracleRunCall|oraclePoll|results|discovery|runner|scriptRunner)\.ts$'; then
+              if [[ "$BASE_REF" == release/* ]] || echo "$changed" | grep -Eq '^(src/(oracleRunner|oracleRunCall|oraclePoll|results|discovery|runner|scriptRunner)\.ts|package(-lock)?\.json)$'; then
                 echo "cmd=$full" >> "$GITHUB_OUTPUT"
               else
                 echo "cmd=$smoke" >> "$GITHUB_OUTPUT"

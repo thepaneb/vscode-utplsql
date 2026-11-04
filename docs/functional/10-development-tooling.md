@@ -228,12 +228,14 @@ Workflow `.github/workflows/ci.yml` (push/PR para `main` e `release/**`):
 
 Integração com **Oracle real** (`.github/workflows/integration.yml`):
 - **PR** (quando o diff toca `src/**`, `scripts/db-matrix/**`,
-  `docker/db-matrix/**`, `.vscode-test*.mjs` ou o próprio workflow): *smoke*
-  (capacidades + debugger) por padrão; **full** (inclui o cenário **multi-root**,
-  via `npm run test:integration:multiroot`) quando a base é `release/**`, o diff
-  toca o caminho crítico de execução/resultados (`src/oracleRunner.ts`,
+  `docker/db-matrix/**`, `.vscode-test*.mjs`, `package.json`,
+  `package-lock.json` ou o próprio workflow): *smoke* (capacidades + debugger)
+  por padrão; **full** (inclui o cenário **multi-root**, via
+  `npm run test:integration:multiroot`) quando a base é `release/**`, o diff toca
+  o caminho crítico de execução/resultados (`src/oracleRunner.ts`,
   `oracleRunCall`, `oraclePoll`, `results`, `discovery`, `runner`,
-  `scriptRunner`) ou o PR tem o label **`run-integration`**
+  `scriptRunner`), as dependências (`package.json`/`package-lock.json`) ou o PR
+  tem o label **`run-integration`**
 - **nightly** (`0 3 * * *`): suíte completa em Oracle **23ai Free**
 - **semanal** (`0 4 * * 0`): matriz **18c/21c em smoke**
 - **dispatch**: `smoke` (23free smoke), `full` (23free full), `matrix`
