@@ -17,9 +17,9 @@
   <a href="https://github.com/thepaneb/vscode-utplsql/actions/workflows/ci.yml"><img alt="CI" src="https://github.com/thepaneb/vscode-utplsql/actions/workflows/ci.yml/badge.svg"></a>
   <a href="https://codecov.io/gh/thepaneb/vscode-utplsql"><img alt="Coverage" src="https://codecov.io/gh/thepaneb/vscode-utplsql/branch/main/graph/badge.svg"></a>
   <img alt="VS Code" src="https://img.shields.io/badge/VS%20Code-1.125%2B-007ACC">
-  <img alt="Node" src="https://img.shields.io/badge/node-22-339933?logo=nodedotjs&logoColor=white">
+  <img alt="Node" src="https://img.shields.io/badge/node-24-339933?logo=nodedotjs&logoColor=white">
   <img alt="TypeScript" src="https://img.shields.io/badge/TypeScript-7-3178C6?logo=typescript&logoColor=white">
-  <img alt="Oracle" src="https://img.shields.io/badge/Oracle-12.2%2B-F80000?logo=oracle&logoColor=white">
+  <img alt="Oracle" src="https://img.shields.io/badge/Oracle-12.1%2B-F80000?logo=oracle&logoColor=white">
   <img alt="License" src="https://img.shields.io/badge/license-MIT-blue">
   <a href="https://thepaneb.github.io/vscode-utplsql/"><img alt="Website" src="https://img.shields.io/badge/Website-vscode--utplsql-007ACC"></a>
 </p>
@@ -108,7 +108,7 @@ The extension connects directly to the Oracle database via `node-oracledb` (thin
 | 12.2 | v3.1.x only | v3.2.x fails to compile (`PLS-00222` on `UT_ANNOTATION_MANAGER`). The image's `WE8DEC` character set loses non-representable characters (e.g. `€`) — the thin driver ignores `NLS_LANG`. |
 | 11.2 (11g R2) | v3.1.x only | **Thick mode required** (thin starts at 12.1; Instant Client **19c+**); coverage via `DBMS_PROFILER`. |
 
-Thick mode requires Oracle Instant Client **19c+** (node-oracledb 7); the 11g
+Thick mode requires Oracle Instant Client **19c+** (node-oracledb 26); the 11g
 axis in the matrix uses Instant Client 23.0.
 
 ## Connection

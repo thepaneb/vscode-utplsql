@@ -65,12 +65,14 @@ SORT id ASC
 - [[TST - extension.test.ts]] — `TST-extension.test.ts`
 - [[TST - extensionActivation.test.ts]] — `TST-extensionActivation.test.ts`
 - [[TST - fsErrorsCatch.test.ts]] — `TST-fsErrorsCatch.test.ts`
+- [[TST - githubAbout.test.ts]] — `TST-githubAbout.test.ts`
 - [[TST - i18n.test.ts]] — `TST-i18n.test.ts`
 - [[TST - integration-compileForDebug.test.ts]] — `TST-integration-compileForDebug.test.ts`
 - [[TST - jevReview.test.ts]] — `TST-jevReview.test.ts`
 - [[TST - jumpToFailureE2E.test.ts]] — `TST-jumpToFailureE2E.test.ts`
 - [[TST - junit.test.ts]] — `TST-junit.test.ts`
 - [[TST - languageIdentity.test.ts]] — `TST-languageIdentity.test.ts`
+- [[TST - linkedinDrift.test.ts]] — `TST-linkedinDrift.test.ts`
 - [[TST - lintScope.test.ts]] — `TST-lintScope.test.ts`
 - [[TST - logger.test.ts]] — `TST-logger.test.ts`
 - [[TST - manifestDebugger.test.ts]] — `TST-manifestDebugger.test.ts`

@@ -35,6 +35,7 @@ Workflow [`ci.yml`](../../../.github/workflows/ci.yml) — **gerado** por `npm r
 - `run: git diff --exit-code`
 - `run: npm run docs:check`
 - `run: npm run docs:features-check`
+- `run: npm run about:check`
 - `run: npm run lint`
 - `run: npm run typecheck`
 - `run: npm run test:coverage`

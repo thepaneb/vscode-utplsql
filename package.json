@@ -1,7 +1,7 @@
 {
   "name": "vscode-utplsql",
   "displayName": "utPLSQL Test Runner",
-  "description": "Run utPLSQL (Oracle PL/SQL) tests from the VS Code Test Explorer, with context menus and visual coverage (pytest-style).",
+  "description": "Run, debug and cover utPLSQL (Oracle PL/SQL) tests in VS Code's native Test Explorer — Oracle-direct via node-oracledb, visual coverage, PL/SQL debugger and 24 UI languages.",
   "version": "0.19.0",
   "publisher": "paneb",
   "author": "Gil Cleber Barboza",
@@ -998,6 +998,9 @@
     "brain:rules:lines": "node scripts/brain-rules.cjs --check-lines",
     "brain:gaps": "node scripts/brain-gaps.cjs",
     "vscode:api": "node scripts/vscode-api-inventory.cjs",
+    "about:check": "node scripts/github-about.cjs --check",
+    "about:apply": "node scripts/github-about.cjs --apply",
+    "linkedin:check": "node scripts/linkedin-drift.cjs --check",
     "jev:review": "npm run compile && node scripts/jev-review.cjs",
     "brain:ci": "node scripts/brain.cjs sync && node scripts/brain-build.cjs && node scripts/brain.cjs check && node scripts/brain-rules.cjs && node scripts/brain-gaps.cjs --warn",
     "docs:check": "node scripts/docs-check.cjs",

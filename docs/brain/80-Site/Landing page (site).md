@@ -160,7 +160,7 @@ tags: [site, docs]
             "name": "Which VS Code and Oracle versions are supported?",
             "acceptedAnswer": {
               "@type": "Answer",
-              "text": "VS Code 1.125 or newer and Oracle Database 12.2 or newer in thin mode (or 11.2+ in thick mode). The thin driver (node-oracledb) works out of the box; optional thick mode requires Oracle Instant Client 19c+ and also covers environments that require Native Network Encryption."
+              "text": "VS Code 1.125 or newer and Oracle Database 12.1 or newer in thin mode (validated matrix from 12.2; or 11.2+ in thick mode). The thin driver (node-oracledb) works out of the box; optional thick mode requires Oracle Instant Client 19c+ and also covers environments that require Native Network Encryption."
             }
           },
           {
@@ -207,7 +207,7 @@ tags: [site, docs]
         visual <strong>test coverage</strong>, a PL/SQL debugger and <strong>Oracle-direct</strong>
         execution via <code>node-oracledb</code>.
       </p>
-      <p class="meta">24 UI languages · VS Code 1.125+ · Oracle 12.2+ (thin) / 11.2+ (thick) · MIT</p>
+      <p class="meta">24 UI languages · VS Code 1.125+ · Oracle 12.1+ (thin, matrix 12.2+) / 11.2+ (thick) · MIT</p>
 
       <p class="badges">
         <a href="https://marketplace.visualstudio.com/items?itemName=paneb.vscode-utplsql"
@@ -303,7 +303,7 @@ tags: [site, docs]
         </p>
         <h3>Which VS Code and Oracle versions are supported?</h3>
         <p>
-          VS Code <strong>1.125+</strong> and Oracle Database <strong>12.2+</strong> (thin) or <strong>11.2+</strong> (thick). The thin driver
+          VS Code <strong>1.125+</strong> and Oracle Database <strong>12.1+</strong> (thin; validated matrix from 12.2) or <strong>11.2+</strong> (thick). The thin driver
           (<code>node-oracledb</code>) works out of the box; optional thick mode requires Oracle
           Instant Client <strong>19c+</strong> and covers environments that require Native Network Encryption.
         </p>
