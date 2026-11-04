@@ -156,9 +156,11 @@ jobs:
 
       - name: Run thick-full on Oracle 23ai Free (experimental)
         # Eixo thick-full (PRD-125 RF3): ainda tem falhas conhecidas (#288);
-        # `continue-on-error` mantém o dispatch verde e expõe o log.
+        # `continue-on-error` mantém o dispatch verde e expõe o log. O timeout
+        # evita um host instável segurar o job até o limite de 60 min.
         if: github.event_name == 'workflow_dispatch' && inputs.mode == 'thick-full'
         continue-on-error: true
+        timeout-minutes: 20
         run: bash scripts/db-matrix/run.sh --only 23free --tests "xvfb-run -a bash -c 'npm run test:integration:thick-full'"
 
       - name: Run thick-full on Oracle 11g (experimental)
@@ -166,6 +168,7 @@ jobs:
         # skips/issue, não bloqueio dos outros eixos.
         if: github.event_name == 'workflow_dispatch' && inputs.mode == 'thick-full-11g'
         continue-on-error: true
+        timeout-minutes: 20
         run: bash scripts/db-matrix/run.sh --only 11xe --tests "xvfb-run -a bash -c 'npm run test:integration:thick-full'"
 
   matrix:

@@ -369,6 +369,7 @@ test('workflow da matriz expõe thick-full experimental por dispatch (PRD-125)',
   assert.match(workflow, /thick-full-11g/);
   assert.match(workflow, /npm run test:integration:thick-full/);
   assert.match(workflow, /continue-on-error: true/);
+  assert.match(workflow, /timeout-minutes: 20/);
 });
 
 test('parse-version.cjs: CLI sem --field devolve JSON', () => {

@@ -43,6 +43,8 @@ Workflow [`integration.yml`](../../../.github/workflows/integration.yml) — **g
 - `run: |`
 - `run: bash scripts/db-matrix/run.sh --only 23free --tests "xvfb-run -a bash -c 'npm run test:integration:thick'"`
 - `run: bash scripts/db-matrix/run.sh --only 11xe --tests "xvfb-run -a bash -c 'npm run test:integration:thick'"`
+- `run: bash scripts/db-matrix/run.sh --only 23free --tests "xvfb-run -a bash -c 'npm run test:integration:thick-full'"`
+- `run: bash scripts/db-matrix/run.sh --only 11xe --tests "xvfb-run -a bash -c 'npm run test:integration:thick-full'"`
 - `uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7`
 - `uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7`
 - `run: npm ci`
