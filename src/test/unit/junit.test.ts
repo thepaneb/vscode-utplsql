@@ -394,6 +394,10 @@ test('parseExpectedActual: só um marcador presente não preenche o par', () => 
   assert.deepStrictEqual(parseExpectedActual('Actual: 1 (number)'), {});
 });
 
+test('parseExpectedActual: dois Expected sem Actual não preenche o par', () => {
+  assert.deepStrictEqual(parseExpectedActual('Expected: 1 (number)\nExpected: 2 (number)'), {});
+});
+
 test('parseExpectedActual: não lança com string vazia', () => {
   assert.deepStrictEqual(parseExpectedActual(''), {});
 });

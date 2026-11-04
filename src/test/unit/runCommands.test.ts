@@ -242,3 +242,13 @@ test('toggleCoverage: inverte a flag de sessão', async () => {
   await commands.__getRegisteredCommand('utplsql.toggleCoverage')?.();
   assert.strictEqual(state.coverageAlways, false);
 });
+
+test('runUri: arquivo sem suite avisa e isRunning é falso', async () => {
+  commands.__resetRegisteredCommands();
+  __resetMessages();
+  const state = new TestStateManager();
+  const run = registerRunCommands({ subscriptions: [] } as never, makeDeps(state));
+  await run.runUri(Uri.file('/ws/sem_suite.pks'), false);
+  assert.ok(__getWarningMessages().length >= 1);
+  assert.strictEqual(run.isRunning(), false);
+});

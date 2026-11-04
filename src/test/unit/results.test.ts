@@ -569,3 +569,71 @@ test('applyResultsFromCases: label não-string é preservado (TreeItemLabel)', (
   assert.deepStrictEqual(item.label, { label: 'app.add' });
   vscode.__resetConfigValues();
 });
+
+test('resolveStackFrameToUri: usa o .pks existente no workspace antes do fallback', async () => {
+  const fs = await import('node:fs');
+  const os = await import('node:os');
+  const path = await import('node:path');
+  const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'frame-existing-'));
+  try {
+    const file = path.join(dir, 'app.pks');
+    fs.writeFileSync(file, '');
+    vscode.workspace.__setWorkspaceFolders([makeFolder(dir, 'ws')]);
+    const loc = resolveStackFrameToUri([{ objectName: 'APP', line: 5 }], makeState(new Map(), []));
+    assert.ok(loc);
+    assert.strictEqual(loc.uri.fsPath.replace(/\\/g, '/'), file.replace(/\\/g, '/'));
+    assert.strictEqual(loc.range.start.line, 4);
+  } finally {
+    vscode.workspace.__setWorkspaceFolders(undefined);
+    fs.rmSync(dir, { recursive: true, force: true });
+  }
+});
+
+test('applyResultsFromCases: leaf sem meta é ignorado (continue)', () => {
+  const item = makeTestItem('t_no_meta');
+  const run = makeRun();
+  const state = makeState(new Map());
+  applyResultsFromCases([], [item], run, state);
+  assert.strictEqual(run.skippedList.length, 1);
+});
+
+test('applyResultsFromCases: caso sem item correspondente é ignorado', () => {
+  const item = makeTestItem('t1');
+  const metaMap = new Map<vscode.TestItem, ItemMeta>();
+  metaMap.set(item, makeMeta({ packageName: 'pkg', procName: 't1' }));
+  const run = makeRun();
+  const state = makeState(metaMap);
+  const resultMap = applyResultsFromCases(
+    [{ classname: 'pkg', name: 'outro', status: 'passed' }],
+    [item],
+    run,
+    state,
+  );
+  assert.strictEqual(resultMap.size, 0);
+  assert.strictEqual(run.skippedList.length, 1);
+});
+
+test('applyResultsFromCases: leaf de suite sem resultado usa aviso sem pacote', () => {
+  const suiteItem = makeTestItem('suite:app');
+  const metaMap = new Map<vscode.TestItem, ItemMeta>();
+  metaMap.set(suiteItem, makeMeta({ kind: 'suite', packageName: 'app' }));
+  const run = makeRun();
+  const state = makeState(metaMap, [suiteItem]);
+  applyResultsFromCases([], [suiteItem], run, state);
+  assert.strictEqual(run.skippedList.length, 1);
+  assert.strictEqual(run.output.length, 1);
+});
+
+test('applyCoverageFromXml: filename sem extensão usa .sql na fonte virtual', () => {
+  const xml = `<?xml version="1.0"?>
+<coverage><packages><package name="pkg"><classes>
+  <class name="app" filename="app"><lines><line number="1" hits="1"/></lines></class>
+</classes></package></packages></coverage>`;
+  const run = makeRun();
+  const state = makeState(new Map());
+  const keys: string[] = [];
+  state.setCoverage = (k: string) => keys.push(k);
+  applyCoverageFromXml(xml, 'install', run, state, []);
+  assert.strictEqual(run.coverageList.length, 1);
+  assert.match(keys[0], /APP\.sql$/);
+});

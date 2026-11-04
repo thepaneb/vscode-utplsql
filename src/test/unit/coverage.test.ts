@@ -183,3 +183,14 @@ test('resolveSourceUri: path inválido (estat lança) é ignorado no catch', () 
     assert.strictEqual(uri, undefined);
   });
 });
+
+test('resolveSourceUri: raiz do filesystem exercita o prefixo já com separador', () => {
+  withTempDir((dir) => {
+    const filePath = path.join(dir, 'funcao.sql');
+    fs.writeFileSync(filePath, '');
+    const root = path.parse(dir).root;
+    const uri = resolveSourceUri(filePath, root, 'install');
+    assert.ok(uri);
+    assert.strictEqual(uri.fsPath, filePath);
+  });
+});

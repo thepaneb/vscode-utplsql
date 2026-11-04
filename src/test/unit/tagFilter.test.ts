@@ -72,3 +72,9 @@ test('collectTags: união distinta ordenada, sem vazios', () => {
 test('collectTags: lista vazia devolve array vazio', () => {
   assert.deepStrictEqual(collectTags([]), []);
 });
+
+test('filterItemsByTags: tags undefined conta como item sem tag', () => {
+  const D = { id: 'test:d' };
+  assert.deepStrictEqual(filterItemsByTags([{ item: D, tags: undefined }], [], []), [D]);
+  assert.deepStrictEqual(filterItemsByTags([{ item: D, tags: undefined }], ['fast'], []), []);
+});

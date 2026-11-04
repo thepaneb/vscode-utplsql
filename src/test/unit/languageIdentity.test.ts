@@ -263,3 +263,38 @@ test('workspaceAssociations: valor não-objeto cai em vazio', () => {
     __resetConfigValues();
   }
 });
+
+test('matchesLanguageIdentity: glob com ** colado e ? na associação', () => {
+  assert.strictEqual(
+    matchesLanguageIdentity('/x/aXYb', undefined, ['sql'], CONTRIB, { 'a**b': 'sql' }),
+    true,
+  );
+  assert.strictEqual(
+    matchesLanguageIdentity('/x/aXb', undefined, ['sql'], CONTRIB, { 'a?b': 'sql' }),
+    true,
+  );
+});
+
+test('buildLanguageGlobs: extensão sem ponto e associações indefinidas', () => {
+  const globs = buildLanguageGlobs(
+    ['plsql'],
+    [{ id: 'plsql', extensions: ['plain'] }],
+    undefined as never,
+  );
+  assert.ok(globs.includes('**/*.plain'));
+  assert.ok(globs.includes('**/*.pks'));
+});
+
+test('matchesLanguageIdentity: associações indefinidas não quebram', () => {
+  assert.strictEqual(
+    matchesLanguageIdentity('/x/a.sql', undefined, ['plsql'], CONTRIB, undefined as never),
+    false,
+  );
+});
+
+test('buildLanguageSelector: ids duplicados não repetem filtros', () => {
+  const selector = buildLanguageSelector(['plsql', 'plsql'], [], {}) as Array<
+    Record<string, string>
+  >;
+  assert.strictEqual(selector.filter((s) => s.language === 'plsql').length, 1);
+});

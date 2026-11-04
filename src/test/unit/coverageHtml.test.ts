@@ -12,12 +12,15 @@ import {
   writeCoverageHtmlReport,
 } from '../../coverage';
 import {
+  __getErrorMessages,
   __getOpenedExternal,
   __resetConfigValues,
   __resetMessages,
+  __resetOpenExternalError,
   __resetOpenedExternal,
   __setConfigValue,
   __setInformationResult,
+  __setOpenExternalError,
   __setSaveDialogResult,
   Uri,
 } from '../vscode-stub';
@@ -104,6 +107,60 @@ test('offerCoverageHtmlReport: "Save to file" copia para o destino escolhido', a
     await offerCoverageHtmlReport(source);
     assert.ok(fs.existsSync(target));
     assert.strictEqual(fs.readFileSync(target, 'utf8'), '<html>ok</html>');
+  } finally {
+    __resetConfigValues();
+    __resetMessages();
+    __setSaveDialogResult(undefined);
+    fs.rmSync(dir, { recursive: true, force: true });
+  }
+});
+
+test('offerCoverageHtmlReport: falha ao abrir no navegador mostra erro', async () => {
+  const dir = tempDir();
+  const source = path.join(dir, 'coverage.html');
+  fs.writeFileSync(source, '<html>ok</html>');
+  __setConfigValue('language', 'en');
+  __setInformationResult('Open in Browser');
+  __setOpenExternalError(new Error('sem browser'));
+  try {
+    await offerCoverageHtmlReport(source);
+    assert.ok(__getErrorMessages().some((m) => m.includes('sem browser')));
+  } finally {
+    __resetConfigValues();
+    __resetMessages();
+    __resetOpenExternalError();
+    fs.rmSync(dir, { recursive: true, force: true });
+  }
+});
+
+test('offerCoverageHtmlReport: cancelar o save não copia nem mostra erro', async () => {
+  const dir = tempDir();
+  const source = path.join(dir, 'coverage.html');
+  fs.writeFileSync(source, '<html>ok</html>');
+  __setConfigValue('language', 'en');
+  __setInformationResult('Save to file…');
+  __setSaveDialogResult(undefined);
+  try {
+    await offerCoverageHtmlReport(source);
+    assert.deepStrictEqual(__getErrorMessages(), []);
+  } finally {
+    __resetConfigValues();
+    __resetMessages();
+    fs.rmSync(dir, { recursive: true, force: true });
+  }
+});
+
+test('offerCoverageHtmlReport: erro ao salvar mostra erro', async () => {
+  const dir = tempDir();
+  const source = path.join(dir, 'coverage.html');
+  fs.writeFileSync(source, '<html>ok</html>');
+  __setConfigValue('language', 'en');
+  __setInformationResult('Save to file…');
+  // Destino é um diretório: copyFile lança e o catch mostra a mensagem.
+  __setSaveDialogResult(Uri.file(dir));
+  try {
+    await offerCoverageHtmlReport(source);
+    assert.strictEqual(__getErrorMessages().length, 1);
   } finally {
     __resetConfigValues();
     __resetMessages();
