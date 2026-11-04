@@ -25,7 +25,7 @@ e os riscos das dependências **diretas** relevantes.
 - **Agente (plugins):** ./.opencode/plugins/log-sanitizer
 - **Agente (skills externas):** 24
 - **Agente (subagentes):** 6
-- **Agente (skills do projeto):** 12
+- **Agente (skills do projeto):** 13
 <!-- brain:auto:end -->
 
 ## Dependências diretas (gerado)
@@ -89,6 +89,7 @@ SORT id ASC
 - [[PIPE-ci - CI]] — `PIPE-ci`
 - [[PIPE-google-index - Google Index Check]] — `PIPE-google-index`
 - [[PIPE-integration - Integration (Oracle)]] — `PIPE-integration`
+- [[PIPE-jev-review - Jev Review]] — `PIPE-jev-review`
 - [[PIPE-pages - Deploy Pages]] — `PIPE-pages`
 - [[PIPE-pagespeed - PageSpeed Check]] — `PIPE-pagespeed`
 - [[PIPE-publish - Publish Extension]] — `PIPE-publish`

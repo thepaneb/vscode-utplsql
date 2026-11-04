@@ -67,6 +67,7 @@ SORT id ASC
 - [[TST - fsErrorsCatch.test.ts]] — `TST-fsErrorsCatch.test.ts`
 - [[TST - i18n.test.ts]] — `TST-i18n.test.ts`
 - [[TST - integration-compileForDebug.test.ts]] — `TST-integration-compileForDebug.test.ts`
+- [[TST - jevReview.test.ts]] — `TST-jevReview.test.ts`
 - [[TST - jumpToFailureE2E.test.ts]] — `TST-jumpToFailureE2E.test.ts`
 - [[TST - junit.test.ts]] — `TST-junit.test.ts`
 - [[TST - languageIdentity.test.ts]] — `TST-languageIdentity.test.ts`
