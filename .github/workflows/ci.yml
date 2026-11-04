@@ -37,6 +37,10 @@ jobs:
         if: ${{ matrix.node-version == 24 }}
       - run: npm run docs:features-check
         if: ${{ matrix.node-version == 24 }}
+      - run: npm run about:check
+        if: ${{ matrix.node-version == 24 }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - run: npm run lint
       - run: npm run typecheck
       - run: npm run test:coverage

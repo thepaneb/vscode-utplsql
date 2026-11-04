@@ -76,6 +76,7 @@ SORT id ASC
 - [[COD - fixtures.ts]] — `COD-fixtures.ts`
 - [[COD - gen-diagrams.cjs]] — `COD-gen-diagrams.cjs`
 - [[COD - gen-icon.cjs]] — `COD-gen-icon.cjs`
+- [[COD - github-about.cjs]] — `COD-github-about.cjs`
 - [[COD - google-index.yml]] — `COD-google-index.yml`
 - [[COD - google408e9fc32b68946a.html]] — `COD-google408e9fc32b68946a.html`
 - [[COD - helpers.ts]] — `COD-helpers.ts`
@@ -88,6 +89,7 @@ SORT id ASC
 - [[COD - junit.ts]] — `COD-junit.ts`
 - [[COD - languageIdentity.ts]] — `COD-languageIdentity.ts`
 - [[COD - launch.json]] — `COD-launch.json`
+- [[COD - linkedin-drift.cjs]] — `COD-linkedin-drift.cjs`
 - [[COD - logger.ts]] — `COD-logger.ts`
 - [[COD - matching.ts]] — `COD-matching.ts`
 - [[COD - matrix.env]] — `COD-matrix.env`

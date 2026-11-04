@@ -23,7 +23,7 @@ Check the following:
 
 ### Can I use it with Oracle XE?
 
-Yes. utPLSQL works with Oracle XE **11.2 (11g, thick mode; Instant Client 19c+)** and **18c+ (thin)**. Coverage requires the `DBMS_PROFILER` grants; on **12.2+** also `DBMS_PLSQL_CODE_COVERAGE` (see [[Database-requirements|Database Requirements]]).
+Yes. utPLSQL works with Oracle XE **11.2 (11g, thick mode; Instant Client 19c+)** and **18c+ (thin)**. For non-XE databases, the thin driver starts at **12.1** (the validated matrix covers 12.2+). Coverage requires the `DBMS_PROFILER` grants; on **12.2+** also `DBMS_PLSQL_CODE_COVERAGE` (see [[Database-requirements|Database Requirements]]).
 
 ### Does it work with Oracle Cloud (Autonomous Database)?
 

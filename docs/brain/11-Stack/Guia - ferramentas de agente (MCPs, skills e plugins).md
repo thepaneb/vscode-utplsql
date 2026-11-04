@@ -2,8 +2,8 @@
 tipo: guia
 status: ativo
 verificado: 2026-11-04
-implementacao: ["scripts/obsidian-mcp.py", "scripts/obsidian-portproxy.cmd", ".gitattributes", "src/tools/jevReview.ts", "scripts/jev-review.cjs"]
-testes: ["src/test/unit/jevReview.test.ts"]
+implementacao: ["scripts/obsidian-mcp.py", "scripts/obsidian-portproxy.cmd", ".gitattributes", "src/tools/jevReview.ts", "scripts/jev-review.cjs", "scripts/github-about.cjs", "scripts/linkedin-drift.cjs"]
+testes: ["src/test/unit/jevReview.test.ts", "src/test/unit/githubAbout.test.ts", "src/test/unit/linkedinDrift.test.ts"]
 tags: [brain, opencode, agentes, mcp, skills, seguranca, jev]
 ---
 
@@ -104,6 +104,29 @@ npm run jev:review -- --base origin/main --format json
 O Jev é **sinal**, não prova: verifique cada achado, rode testes/lint e não
 refatore só para subir score. No CI, o secret é `OPENCODE_API_KEY`; PRs de fork
 são pulados e o job não é required check até calibração.
+
+## Anti-drift de claims públicas
+
+Além do `brain:ci`/`docs:check` estrutural, o `docs-fidelity` agora valida
+claims que já sofreram drift:
+
+- badges de **Node/VS Code/TypeScript/Oracle** em `README*` e na wiki;
+- piso do thin **Oracle 12.1** e major atual do **node-oracledb**;
+- versão no JSON-LD do site;
+- `descricao` da nota canônica do About do GitHub ([[About do repositório (GitHub)]]).
+
+Comandos:
+
+```sh
+npm run docs:check       # inclui docs-fidelity semântico
+npm run about:check      # About do GitHub vs nota; roda no CI (Node 24)
+npm run about:apply      # aplica descrição/homepage/tópicos no GitHub
+npm run linkedin:check   # perfil/About local do LinkedIn (docs/linkedin)
+```
+
+`about:check` falha só em divergência confirmada; falha de rede é aviso. O
+perfil do LinkedIn não tem API: o check valida o texto local e você cola no
+perfil.
 
 ## Permissões (guard de `.env`)
 

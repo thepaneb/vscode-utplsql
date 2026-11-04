@@ -10,6 +10,7 @@ import { test } from 'node:test';
 // Requer o módulo via require (CJS) para injetar conteúdo nos cenários.
 const {
   checkFidelity,
+  checkSemanticDrift,
   checkStaleReferences,
   realSettings,
   realCommands,
@@ -19,6 +20,7 @@ const {
   listCompletedPrds,
 } = require('../../../scripts/docs-fidelity.cjs') as {
   checkFidelity: (o?: Record<string, unknown>) => string[];
+  checkSemanticDrift: (o?: Record<string, unknown>) => string[];
   checkStaleReferences: (o?: Record<string, unknown>) => string[];
   realSettings: () => string[];
   realCommands: () => string[];
@@ -35,6 +37,60 @@ function writeFixture(file: string, content: string): void {
 
 test('docs-fidelity: o repositório atual é fiel (nenhum problema)', () => {
   assert.deepStrictEqual(checkFidelity(), []);
+});
+
+test('docs-fidelity semântica: repositório atual sem claims obsoletas', () => {
+  assert.deepStrictEqual(checkSemanticDrift(), []);
+});
+
+test('docs-fidelity semântica: detecta badge Node 22 e Oracle 12.2', () => {
+  const problems = checkSemanticDrift({
+    files: {
+      'README.md':
+        'VS Code 1.125+ (Node 24). badge/node-22- badge/VS%20Code-1.125%2B TypeScript-7- Oracle-12.2%2B node-oracledb 26',
+    },
+    pkg: {
+      version: '0.19.0',
+      engines: { vscode: '^1.125.0', node: '>=24.0.0' },
+      devDependencies: { typescript: '^7.0.2' },
+      dependencies: { oracledb: '^26.0.0' },
+    },
+  });
+  assert.ok(problems.some((problem) => problem.includes('badge de Node')));
+  assert.ok(problems.some((problem) => problem.includes('badge de Oracle')));
+});
+
+test('docs-fidelity semântica: detecta node-oracledb 7 no README', () => {
+  const problems = checkSemanticDrift({
+    files: {
+      'README.md':
+        'VS Code 1.125+ (Node 24). badge/node-24- VS%20Code-1.125%2B TypeScript-7- Oracle-12.1%2B node-oracledb 7',
+    },
+    pkg: {
+      version: '0.19.0',
+      engines: { vscode: '^1.125.0', node: '>=24.0.0' },
+      devDependencies: { typescript: '^7.0.2' },
+      dependencies: { oracledb: '^26.0.0' },
+    },
+  });
+  assert.ok(problems.some((problem) => problem.includes('driver Oracle antigo')));
+  assert.ok(problems.some((problem) => problem.includes('major do node-oracledb')));
+});
+
+test('docs-fidelity semântica: detecta piso Oracle 12.2 no site', () => {
+  const problems = checkSemanticDrift({
+    files: {
+      'site/index.html':
+        'VS Code 1.125+ · Oracle Database 12.2 or newer in thin mode · "softwareVersion": "0.19.0"',
+    },
+    pkg: {
+      version: '0.19.0',
+      engines: { vscode: '^1.125.0', node: '>=24.0.0' },
+      devDependencies: { typescript: '^7.0.2' },
+      dependencies: { oracledb: '^26.0.0' },
+    },
+  });
+  assert.ok(problems.some((problem) => problem.includes('piso Oracle thin')));
 });
 
 test('docs-fidelity: detecta setting ausente no README', () => {

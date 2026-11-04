@@ -23,6 +23,26 @@ docs/linkedin/
 └── en/              ← espelho em inglês (features/ + releases/, mesmo NN)
 ```
 
+## Anti-drift do perfil/About
+
+O perfil do LinkedIn não tem API de atualização. O texto canônico fica em
+`docs/linkedin/perfil-ideal-pt.md` e `-en.md`; as métricas em
+`docs/linkedin/metrics.json` (testes, cobertura, PRDs) e os settings são lidos
+do `package.json`.
+
+Antes de atualizar o About no LinkedIn ou publicar um release:
+
+```sh
+npm run linkedin:check          # falha se o About/experiência/histórico divergir
+node docs/linkedin/publish.cjs --list
+```
+
+O check valida: total de testes (ex.: `1.500+`), `60` settings, versão atual,
+5 PRDs da 0.19.0, menção a 11g thick, ausência de `1.200+`/`53`/`0.15.0` no
+About/experiência e a entrada da versão no histórico de releases. Falta de post
+de release é **aviso** (pode estar pendente da tag); os demais são erro.
+Atualize `metrics.json` após `test:coverage` e antes de rodar o check.
+
 ## Publicação em fila
 
 A fila são os posts de **feature em inglês** (`en/features/`), em ordem
@@ -124,7 +144,7 @@ principal e os secundários.
 | Versão publicada (release) | criar post de release pt+en, com o **bloco da matriz de bancos** |
 | Nova versão do Oracle na matriz / utPLSQL por banco | atualizar a matriz no post da versão e nos cards de release |
 | Feature removida/renomeada ou comportamento alterado | corrigir os posts que a citam |
-| Números mudam (testes, PRDs, matriz) | atualizar o post da versão |
+| Números mudam (testes, PRDs, matriz) | atualizar o post da versão e `docs/linkedin/metrics.json`; rodar `npm run linkedin:check` |
 | README/settings/comandos mudam | revisar posts afetados (claims de implementação) |
 
 ## Workflow — post de feature

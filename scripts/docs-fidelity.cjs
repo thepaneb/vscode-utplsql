@@ -365,6 +365,10 @@ function checkFidelity(overrides = {}) {
   // 11/12. módulos e símbolos descontinuados citados na documentação
   problems.push(...checkStaleReferences(overrides));
 
+  // 13. claims públicas (badges, pisos de runtime/Oracle, driver, About).
+  // Só roda no repositório real; testes com overrides usam fixtures isoladas.
+  if (Object.keys(overrides).length === 0) problems.push(...checkSemanticDrift());
+
   return problems;
 }
 
@@ -671,8 +675,158 @@ function checkStaleReferences(overrides = {}) {
   return problems;
 }
 
+// ── drift semântico de claims públicas ────────────────────────────────
+//
+// O docs-check estrutural não vê números de marketing (badges, piso de
+// VS Code/Node, Oracle, driver). Estas checagens cobrem as superfícies que já
+// sofreram drift: README + variantes, site, wiki Home/Installation e a nota
+// canônica do About do GitHub.
+function semanticParseRange(range) {
+  const match = String(range || '').match(/(\d+)(?:\.(\d+))?/);
+  return match ? { major: match[1], minor: match[2] || null } : { major: null, minor: null };
+}
+
+function semanticRead(overrides, file) {
+  if (overrides.files) {
+    return Object.hasOwn(overrides.files, file) ? overrides.files[file] : '';
+  }
+  return read(file);
+}
+
+function semanticRequire(problems, overrides, file, needle, label) {
+  const text = semanticRead(overrides, file);
+  if (!text) return;
+  if (!text.includes(needle)) problems.push(`${file}: ${label} ausente (${needle})`);
+}
+
+function semanticForbid(problems, overrides, file, needle, label) {
+  const text = semanticRead(overrides, file);
+  if (!text) return;
+  if (text.includes(needle)) problems.push(`${file}: ${label} obsoleto (${needle})`);
+}
+
+function checkSemanticDrift(overrides = {}) {
+  // Fixtures mínimas do CLI não têm site/notas; só o repositório real tem.
+  if (!overrides.files && !fs.existsSync(path.join(REPO, 'site', 'index.html'))) return [];
+  const problems = [];
+  const pkg = overrides.pkg || JSON.parse(read('package.json'));
+  const vscode = semanticParseRange(pkg.engines?.vscode).minor;
+  const vscodeFull = vscode ? `1.${vscode}` : null;
+  const node = semanticParseRange(pkg.engines?.node).major;
+  const ts = semanticParseRange(pkg.devDependencies?.typescript).major;
+  const oracledb = semanticParseRange(pkg.dependencies?.oracledb).major;
+  const version = pkg.version;
+
+  const readmeFiles = overrides.files
+    ? Object.keys(overrides.files).filter((file) => /^README(\.[^.]+)?\.md$/.test(file))
+    : ['README.md', ...listReadmeVariants().map((variant) => `README.${variant.name}.md`)];
+  const badgeFiles = overrides.files
+    ? readmeFiles.filter((file) => /^README/.test(file))
+    : [...readmeFiles, 'docs/wiki/Home.md', 'docs/brain/70-Wiki/Home (wiki).md'];
+
+  if (vscodeFull && node) {
+    for (const file of readmeFiles) {
+      semanticRequire(problems, overrides, file, `VS Code ${vscodeFull}`, 'piso de VS Code');
+      semanticRequire(problems, overrides, file, `Node ${node}`, 'piso de Node');
+      semanticForbid(problems, overrides, file, 'VS Code 1.101', 'piso de VS Code antigo');
+      semanticForbid(problems, overrides, file, 'Node 22', 'piso de Node antigo');
+    }
+  }
+
+  for (const file of badgeFiles) {
+    if (vscodeFull) {
+      semanticRequire(problems, overrides, file, `VS%20Code-${vscodeFull}%2B`, 'badge de VS Code');
+    }
+    if (node) {
+      semanticRequire(problems, overrides, file, `badge/node-${node}-`, 'badge de Node');
+      semanticForbid(problems, overrides, file, 'badge/node-22-', 'badge de Node antigo');
+    }
+    if (ts && file.startsWith('README')) {
+      semanticRequire(problems, overrides, file, `TypeScript-${ts}-`, 'badge de TypeScript');
+    }
+    semanticRequire(problems, overrides, file, 'Oracle-12.1%2B', 'badge de Oracle');
+    semanticForbid(problems, overrides, file, 'Oracle-12.2%2B', 'badge de Oracle antigo');
+  }
+
+  if (vscodeFull) {
+    for (const file of [
+      'site/index.html',
+      'docs/wiki/Home.md',
+      'docs/wiki/Installation-and-requirements.md',
+      'docs/brain/70-Wiki/Home (wiki).md',
+      'docs/brain/70-Wiki/Installation-and-requirements.md',
+      'docs/brain/80-Site/Landing page (site).md',
+    ]) {
+      semanticRequire(problems, overrides, file, vscodeFull, 'piso de VS Code');
+    }
+  }
+  if (node) {
+    for (const file of ['docs/wiki/Home.md', 'docs/brain/70-Wiki/Home (wiki).md']) {
+      semanticRequire(problems, overrides, file, `Node ${node}`, 'piso de Node');
+    }
+  }
+
+  for (const file of [
+    'README.md',
+    'docs/brain/60-README/README (extensão).md',
+    'docs/brain/80-Site/Landing page (site).md',
+    'site/index.html',
+  ]) {
+    semanticForbid(problems, overrides, file, 'node-oracledb 7', 'driver Oracle antigo');
+  }
+  if (oracledb) {
+    semanticRequire(
+      problems,
+      overrides,
+      'README.md',
+      `node-oracledb ${oracledb}`,
+      'major do node-oracledb',
+    );
+    semanticRequire(
+      problems,
+      overrides,
+      'docs/brain/60-README/README (extensão).md',
+      `node-oracledb ${oracledb}`,
+      'major do node-oracledb',
+    );
+  }
+
+  for (const file of ['site/index.html', 'docs/brain/80-Site/Landing page (site).md']) {
+    semanticRequire(problems, overrides, file, '12.1', 'piso Oracle thin');
+    semanticForbid(
+      problems,
+      overrides,
+      file,
+      'Oracle Database 12.2 or newer in thin mode',
+      'piso Oracle thin antigo',
+    );
+    semanticForbid(problems, overrides, file, 'Oracle 12.2+ (thin)', 'piso Oracle thin antigo');
+  }
+
+  if (version) {
+    semanticRequire(
+      problems,
+      overrides,
+      'site/index.html',
+      `"softwareVersion": "${version}"`,
+      'versão no JSON-LD',
+    );
+  }
+
+  const aboutNote = 'docs/brain/80-Site/About do repositório (GitHub).md';
+  const aboutText = semanticRead(overrides, aboutNote);
+  if (aboutText) {
+    if (vscodeFull) semanticRequire(problems, overrides, aboutNote, vscodeFull, 'piso de VS Code');
+    if (node) semanticRequire(problems, overrides, aboutNote, `Node ${node}`, 'piso de Node');
+    semanticRequire(problems, overrides, aboutNote, '24 UI languages', 'contagem de idiomas');
+  }
+
+  return problems;
+}
+
 module.exports = {
   checkFidelity,
+  checkSemanticDrift,
   checkStaleReferences,
   citedCodeIdentifiers,
   declaredSymbols,
