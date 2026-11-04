@@ -9,6 +9,7 @@ import {
   CliError,
   callJev,
   choiceValue,
+  DEFAULT_MAX_DIFF_CHARS,
   type ExecFileLike,
   type FetchLike,
   type FetchResponse,
@@ -16,6 +17,7 @@ import {
   formatJson,
   formatMarkdown,
   getGitDiff,
+  isMaxTokensError,
   isSensitivePath,
   JevApiError,
   type JevResponse,
@@ -59,6 +61,15 @@ function fakeResponse(body: unknown, ok = true, status = 200): FetchResponse {
 
 function fakeFetch(body: unknown, ok = true, status = 200): FetchLike {
   return async () => fakeResponse(body, ok, status);
+}
+
+function maxTokensResponse(): FetchResponse {
+  return {
+    ok: false,
+    status: 400,
+    json: async () => ({}),
+    text: async () => '{"detail":{"error_type":"max_tokens_exceeded"}}',
+  };
 }
 
 function capturingFetch(body: unknown): {
@@ -559,6 +570,13 @@ test('callJev: timeout', async () => {
   );
 });
 
+test('isMaxTokensError: só 400 com max_tokens_exceeded', () => {
+  assert.equal(isMaxTokensError(new JevApiError('HTTP 400: max_tokens_exceeded', 400)), true);
+  assert.equal(isMaxTokensError(new JevApiError('HTTP 400: outro erro', 400)), false);
+  assert.equal(isMaxTokensError(new JevApiError('HTTP 401: max_tokens_exceeded', 401)), false);
+  assert.equal(isMaxTokensError(new Error('max_tokens_exceeded')), false);
+});
+
 test('summarize: achados críticos', () => {
   const response = validResponse({
     answers: {
@@ -705,6 +723,7 @@ test('parseArgs: defaults', () => {
   assert.equal(options.head, 'HEAD');
   assert.equal(options.repo, '.');
   assert.equal(options.model, 'jev-1.13-free');
+  assert.equal(options.maxDiffChars, DEFAULT_MAX_DIFF_CHARS);
   assert.equal(options.format, 'markdown');
   assert.equal(options.workingTree, false);
   assert.equal(options.failOnFindings, false);
@@ -914,6 +933,44 @@ test('main: run completo em markdown', async () => {
     assert.equal(result.code, 0);
     assert.match(result.out, /Jev review/);
     assert.match(result.out, /approve/);
+  });
+});
+
+test('main: reduz o diff e repete em max_tokens_exceeded', async () => {
+  await withTempDirAsync(async (dir) => {
+    const file = writeDiff(dir, SAMPLE_DIFF);
+    let calls = 0;
+    const fetchImpl: FetchLike = async () => {
+      calls++;
+      return calls === 1 ? maxTokensResponse() : fakeResponse(validResponse());
+    };
+    const result = await runMain(['--diff-file', file], {
+      env: { OPENCODE_API_KEY: 'k' },
+      cwd: dir,
+      fetchImpl,
+    });
+    assert.equal(result.code, 0);
+    assert.equal(calls, 2);
+    assert.match(result.out, /Jev review/);
+  });
+});
+
+test('main: desiste após 3 max_tokens_exceeded', async () => {
+  await withTempDirAsync(async (dir) => {
+    const file = writeDiff(dir, SAMPLE_DIFF);
+    let calls = 0;
+    const fetchImpl: FetchLike = async () => {
+      calls++;
+      return maxTokensResponse();
+    };
+    const result = await runMain(['--diff-file', file], {
+      env: { OPENCODE_API_KEY: 'k' },
+      cwd: dir,
+      fetchImpl,
+    });
+    assert.equal(result.code, 1);
+    assert.equal(calls, 3);
+    assert.match(result.err, /max_tokens_exceeded/);
   });
 });
 
