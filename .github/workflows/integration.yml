@@ -14,7 +14,7 @@ on:
   schedule:
     # Nightly: integração completa em um Oracle (23ai Free).
     - cron: '0 3 * * *'
-    # Semanal: matriz pública 18c/21c em smoke (o 23ai full é o nightly).
+    # Semanal: matriz pública 18c/21c em full (o 23ai full é o nightly).
     - cron: '0 4 * * 0'
   workflow_dispatch:
     inputs:
@@ -98,15 +98,16 @@ jobs:
       - name: Run integration on Oracle 23ai Free
         run: bash scripts/db-matrix/run.sh --only 23free --tests "xvfb-run -a bash -c '${{ steps.scope.outputs.cmd }}'"
 
-  matrix:
-    name: Integration matrix (Oracle 18c/21c/23ai)
-    # Dispatch `matrix` roda o full nos 3 bancos; `matrix-smoke` e o schedule
-    # semanal rodam 18c/21c em smoke (o 23ai full é o nightly).
+  thick:
+    name: Thick mode (Oracle Free)
+    # Eixo thick no CI (PRD-125, revisão 2026-11-04): nightly e dispatch, sem
+    # somar ~5 min em todo PR. Usa Instant Client baixado no runner (a imagem
+    # 23free é thin; o thick valida o client nativo + o teste thickMode).
     if: >-
-      (github.event_name == 'workflow_dispatch' && (inputs.mode == 'matrix' || inputs.mode == 'matrix-smoke')) ||
-      (github.event_name == 'schedule' && github.event.schedule == '0 4 * * 0')
+      (github.event_name == 'schedule' && github.event.schedule == '0 3 * * *') ||
+      github.event_name == 'workflow_dispatch'
     runs-on: ubuntu-latest
-    timeout-minutes: 240
+    timeout-minutes: 60
     env:
       ORACLE_PWD: Oracle#2026
       UT3_PASSWORD: ut3#matrix2026
@@ -126,15 +127,82 @@ jobs:
         run: |
           command -v xvfb-run >/dev/null 2>&1 || { sudo apt-get update && sudo apt-get install -y xvfb; }
 
+      - name: Install Instant Client
+        run: |
+          # Ubuntu 24.04+ entrega libaio1t64; Instant Client procura libaio.so.1.
+          sudo apt-get update
+          sudo apt-get install -y unzip libaio1t64 || sudo apt-get install -y unzip libaio1
+          if [ -e /usr/lib/x86_64-linux-gnu/libaio.so.1t64 ]; then
+            sudo ln -sf /usr/lib/x86_64-linux-gnu/libaio.so.1t64 /usr/lib/x86_64-linux-gnu/libaio.so.1
+          fi
+          curl -fsSL -o "$RUNNER_TEMP/instantclient.zip" \
+            https://download.oracle.com/otn_software/linux/instantclient/instantclient-basiclite-linuxx64.zip
+          mkdir -p "$RUNNER_TEMP/instantclient"
+          unzip -q "$RUNNER_TEMP/instantclient.zip" -d "$RUNNER_TEMP/instantclient"
+          dir="$(find "$RUNNER_TEMP/instantclient" -maxdepth 1 -mindepth 1 -type d -name 'instantclient*' | head -1)"
+          test -f "$dir/libclntsh.so" || { echo "Instant Client sem libclntsh.so"; exit 1; }
+          echo "ORACLE_CLIENT_LIB_DIR=$dir" >> "$GITHUB_ENV"
+          echo "LD_LIBRARY_PATH=$dir:${LD_LIBRARY_PATH:-}" >> "$GITHUB_ENV"
+
+      - name: Run thick smoke on Oracle 23ai Free
+        run: bash scripts/db-matrix/run.sh --only 23free --tests "xvfb-run -a bash -c 'npm run test:integration:thick'"
+
+      - name: Run thick smoke on Oracle 11g
+        # O 11g é thick-only (thin tem piso 12.1) e usa utPLSQL 3.1.14; o mesmo
+        # Instant Client 23 cobre o legado (PRD-123).
+        run: bash scripts/db-matrix/run.sh --only 11xe --tests "xvfb-run -a bash -c 'npm run test:integration:thick'"
+
+  matrix:
+    name: Integration matrix (Oracle 18c/21c/23ai)
+    # Dispatch `matrix` roda o full nos 3 bancos; `matrix-smoke` e o schedule
+    # semanal rodam 18c/21c em smoke (o 23ai full é o nightly).
+    if: >-
+      (github.event_name == 'workflow_dispatch' && (inputs.mode == 'matrix' || inputs.mode == 'matrix-smoke')) ||
+      (github.event_name == 'schedule' && github.event.schedule == '0 4 * * 0')
+    runs-on: ubuntu-latest
+    timeout-minutes: 240
+    env:
+      ORACLE_PWD: Oracle#2026
+      UT3_PASSWORD: ut3#matrix2026
+      TEST_PASSWORD: utplsql_test#2026
+      # Imagens EE (19ee) só puxam com credenciais do Oracle Container Registry.
+      # Vazio ⇒ o passo do 19ee é pulado (o pull anônimo falharia).
+      ORACLE_AUTH_USER: ${{ secrets.ORACLE_AUTH_USER }}
+      ORACLE_AUTH_TOKEN: ${{ secrets.ORACLE_AUTH_TOKEN }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7
+        with:
+          node-version: 24
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Ensure xvfb (extension host)
+        run: |
+          command -v xvfb-run >/dev/null 2>&1 || { sudo apt-get update && sudo apt-get install -y xvfb; }
+
       - name: Run integration matrix
         run: |
-          # O extension host precisa de display no Linux (mesmo no smoke): use
-          # `--tests` com `xvfb-run` em vez de `--smoke`, que não embrulha.
-          if [ "${{ github.event_name }}" = "schedule" ] || [ "${{ inputs.mode }}" = "matrix-smoke" ]; then
-            bash scripts/db-matrix/run.sh --only 18xe,21xe --tests "xvfb-run -a bash -c 'npm run test:integration:smoke'"
+          # O extension host precisa de display no Linux, inclusive no smoke.
+          full="xvfb-run -a bash -c 'npm run test:integration && npm run test:integration:multiroot'"
+          smoke="xvfb-run -a bash -c 'npm run test:integration:smoke'"
+          if [ "${{ github.event_name }}" = "schedule" ]; then
+            # Semanal: 18c/21c completos (o 23ai full é o nightly).
+            bash scripts/db-matrix/run.sh --only 18xe,21xe --tests "$full"
+          elif [ "${{ inputs.mode }}" = "matrix-smoke" ]; then
+            bash scripts/db-matrix/run.sh --only 18xe,21xe --tests "$smoke"
           else
-            bash scripts/db-matrix/run.sh --only 18xe,21xe,23free --tests "xvfb-run -a bash -c 'npm run test:integration && npm run test:integration:multiroot'"
+            bash scripts/db-matrix/run.sh --only 18xe,21xe,23free --tests "$full"
           fi
+
+      - name: Run LTS 19ee smoke (weekly, requires EE credentials)
+        # Sem ORACLE_AUTH_USER/TOKEN o pull da imagem enterprise falharia; o
+        # passo é pulado até as credenciais serem cadastradas nos secrets.
+        if: github.event_name == 'schedule' && env.ORACLE_AUTH_USER != ''
+        run: bash scripts/db-matrix/run.sh --only 19ee --tests "xvfb-run -a bash -c 'npm run test:integration:smoke'"
 
       - name: Upload matrix summary
         if: always()

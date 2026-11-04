@@ -24,8 +24,12 @@ o 12.2 também usa `v3.1.14` (piso alternativo, `PRD-84`). Opções: `--list`,
 `--only`, `--smoke`, `--thick`; o 5º campo do `matrix.env` (`client`) declara
 `thick` para o 11g e a guarda recusa o eixo thin antes do Docker. A matriz roda
 com o **node-oracledb 26** (PRD-124): 23free full, 11g thick, 12.2/21xe smoke.
-O **CI** roda o full thin em PR de `release/**`/caminho crítico e a matriz
-semanal 18xe/21xe em smoke; o `--thick-full` é experimental (PRD-125).
+O **CI** roda o full thin em PR de `release/**`/caminho crítico, o nightly 23free
+completo e a matriz semanal 18xe/21xe em **full** (o smoke fica no dispatch
+`matrix-smoke`; o 19ee entra no semanal quando as credenciais EE estão nos
+secrets). O **thick smoke** (4 testes) roda no nightly/dispatch com Instant
+Client baixado no runner, no **23free e no 11g**. O `--thick-full` é
+experimental (PRD-125).
 
 ## Pré-condições
 

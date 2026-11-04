@@ -102,7 +102,9 @@ thick.
 
 **Não-objetivos**
 - Instalar Instant Client no runner do GitHub Actions nesta PRD (avaliar à
-  parte; o eixo CI thick é opcional).
+  parte; o eixo CI thick é opcional). **Revisado (2026-11-04):** o **thick
+  smoke** (4 testes) entra no nightly/dispatch; o thick-full completo segue
+  fora.
 - Rodar multiroot em thick (pode ser uma extensão futura; o foco é a suíte
   principal).
 - Adicionar 26ai/12.1 à matriz (PRD-124/123 tratam dos pisos).
@@ -153,8 +155,10 @@ PRD; o `--full` thin continua incluindo.
   revisão 2026-11-04), por `git diff` no `integration.yml`. O workflow roda nos
   PRs que tocam `src/**`, a matriz, as dependências ou o próprio workflow, e o
   passo “Decide scope” escolhe full vs smoke.
-- **Matriz agendada**: 18xe/21xe **smoke** no semanal; o **23free full** já roda
-  no nightly existente. 19ee/12.2/11g continuam locais (credenciais/imagem).
+- **Matriz agendada**: 18xe/21xe **full** no semanal (revisão 2026-11-04; o
+  smoke fica no dispatch `matrix-smoke`); o **23free full** já roda no nightly
+  existente. **19ee smoke** entra no semanal quando `ORACLE_AUTH_USER`/`TOKEN`
+  estão nos secrets; 12.2/11g continuam locais (credenciais/imagem).
 - Manter o label `run-integration` como escape manual para o full em qualquer
   PR.
 
@@ -237,6 +241,14 @@ mesmo recorte do semanal — 18xe **17 passing** (28 s) e 21xe **17 passing**
 `--smoke` (extension host sem `DISPLAY`), corrigida em `b071270`; o caminho de
 smoke do CI passou a usar `xvfb-run` como o eixo de PR.
 
+Na revisão de 2026-11-04 o semanal 18c/21c passou de smoke para **full**
+(inclui multi-root) e o **19ee smoke** foi adicionado de forma opt-in: só roda
+quando `ORACLE_AUTH_USER`/`ORACLE_AUTH_TOKEN` estão cadastrados nos secrets.
+
+O eixo **thick smoke** (4 testes: `thickMode` + `thickLegacyE2E`) entrou no CI
+no nightly e no dispatch, com Instant Client **basiclite** baixado no runner +
+`libaio`, no **23free e no 11g**; o thick-full completo (RF3) continua na 0.20.0.
+
 ## 10. Critérios de aceite
 
 - `run.sh --thick-full` executa a suíte completa (menos thin-only e
@@ -258,7 +270,7 @@ smoke do CI passou a usar `xvfb-run` como o eixo de PR.
 - Instalar Instant Client no CI (RPM/zip) para tornar o thick obrigatório?
   **Adiado:** o eixo CI thick é opcional nesta PRD.
 - A matriz agendada deve ser diária ou semanal? **Decidido:** semanal para
-  18xe/21xe (smoke); o 23free full continua nightly.
+  18xe/21xe (**full** desde 2026-11-04); o 23free full continua nightly.
 
 ## 12. Impacto no cérebro
 

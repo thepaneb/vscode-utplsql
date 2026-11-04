@@ -249,10 +249,14 @@ Integração com **Oracle real** (`.github/workflows/integration.yml`):
   `scriptRunner`), as dependências (`package.json`/`package-lock.json`) ou o PR
   tem o label **`run-integration`**
 - **nightly** (`0 3 * * *`): suíte completa em Oracle **23ai Free**
-- **semanal** (`0 4 * * 0`): matriz **18c/21c em smoke**
+- **semanal** (`0 4 * * 0`): matriz **18c/21c full** (o 23ai full é o nightly);
+  **19ee smoke** quando `ORACLE_AUTH_USER`/`ORACLE_AUTH_TOKEN` estão nos secrets
 - **dispatch**: `smoke` (23free smoke), `full` (23free full), `matrix`
-  (18c/21c/23free full) e `matrix-smoke` (18c/21c smoke, mesmo recorte do
-  semanal)
+  (18c/21c/23free full) e `matrix-smoke` (18c/21c smoke, validação rápida do
+  eixo da matriz)
+- **thick** (nightly/dispatch): `--thick` no 23free e no **11g** com
+  **Instant Client** (basiclite) baixado no runner e `libaio`; valida
+  `thickMode`/`thickLegacyE2E`
 - O extension host roda sob `xvfb-run`; o Oracle sobe via `docker compose`
   (`docker/db-matrix/compose.yaml`) e é preparado pelo `bootstrap.sh` (UT3 + grants + fixtures)
 - Nightly e semanal usam grupos de **concorrência** separados (o cron entra no

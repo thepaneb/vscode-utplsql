@@ -345,6 +345,25 @@ test('workflow da matriz roda o full para bump de dependência (PRD-125)', () =>
   assert.match(workflow, /package\(-lock\)\?\\\.json/);
 });
 
+test('workflow da matriz: semanal full e 19ee opt-in por credencial (PRD-125)', () => {
+  const workflow = read('.github/workflows/integration.yml');
+  // Semanal: 18c/21c completos; o smoke fica no dispatch matrix-smoke.
+  assert.match(workflow, /--only 18xe,21xe --tests "\$full"/);
+  // 19ee depende das credenciais EE; sem elas o passo é pulado.
+  assert.match(workflow, /--only 19ee --tests/);
+  assert.match(workflow, /env\.ORACLE_AUTH_USER != ''/);
+  assert.match(workflow, /ORACLE_AUTH_USER: \$\{\{ secrets\.ORACLE_AUTH_USER \}\}/);
+});
+
+test('workflow da matriz roda thick no nightly/dispatch com Instant Client (PRD-125)', () => {
+  const workflow = read('.github/workflows/integration.yml');
+  assert.match(workflow, /Thick mode \(Oracle Free\)/);
+  assert.match(workflow, /instantclient-basiclite/);
+  assert.match(workflow, /LD_LIBRARY_PATH/);
+  assert.match(workflow, /npm run test:integration:thick/);
+  assert.match(workflow, /--only 11xe --tests/);
+});
+
 test('parse-version.cjs: CLI sem --field devolve JSON', () => {
   const r = spawnSync(
     process.execPath,
