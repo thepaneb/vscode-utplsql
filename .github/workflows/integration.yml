@@ -103,9 +103,11 @@ jobs:
     # Eixo thick no CI (PRD-125, revisão 2026-11-04): nightly e dispatch, sem
     # somar ~5 min em todo PR. Usa Instant Client baixado no runner (a imagem
     # 23free é thin; o thick valida o client nativo + o teste thickMode).
+    # O dispatch `matrix`/`matrix-smoke`/`19ee` não roda o thick (foca no eixo
+    # pedido); `smoke`/`full` e os thick-full continuam rodando.
     if: >-
       (github.event_name == 'schedule' && github.event.schedule == '0 3 * * *') ||
-      github.event_name == 'workflow_dispatch'
+      (github.event_name == 'workflow_dispatch' && (inputs.mode == 'smoke' || inputs.mode == 'full' || inputs.mode == 'thick-full' || inputs.mode == 'thick-full-11g'))
     runs-on: ubuntu-latest
     timeout-minutes: 60
     env:
