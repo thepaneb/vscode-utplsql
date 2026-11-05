@@ -9,6 +9,7 @@ out/**
 scripts/**
 install/**
 images/*.svg
+images/social-preview.*
 **/*.ts
 **/*.map
 node_modules/oracledb/build/**/*.txt

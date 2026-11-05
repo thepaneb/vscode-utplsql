@@ -6,7 +6,7 @@ titulo: "10 — Development Tooling"
 publicar: docs/functional/10-development-tooling.md
 verificado: 2026-10-21
 regras: ["BR-SITE-001", "BR-QUAL-001", "BR-QUAL-002", "BR-DEP-001", "BR-PKG-001", "BR-PLAT-005", "BR-QUAL-004", "BR-CONN-021"]
-implementacao: ["scripts/brain.cjs", "scripts/brain-build.cjs", "scripts/brain-rules.cjs", "scripts/brain-gaps.cjs", "scripts/docs-check.cjs", "scripts/docs-fidelity.cjs", "scripts/version-check.cjs", "scripts/run-tests.cjs", "scripts/test-setup.cjs", "scripts/sync-prds.cjs", "scripts/create-pr.cjs", "scripts/create-release.cjs", "scripts/publish.cjs", "scripts/vsce.cjs", "scripts/package-target.cjs", "scripts/gen-icon.cjs", "scripts/gen-diagrams.cjs", "scripts/obsidian-mcp.py", "scripts/db-matrix/bootstrap.sh", "scripts/db-matrix/wait-ready.sh", "scripts/db-matrix/parse-version.cjs"]
+implementacao: ["scripts/brain.cjs", "scripts/brain-build.cjs", "scripts/brain-rules.cjs", "scripts/brain-gaps.cjs", "scripts/docs-check.cjs", "scripts/docs-fidelity.cjs", "scripts/version-check.cjs", "scripts/run-tests.cjs", "scripts/test-setup.cjs", "scripts/sync-prds.cjs", "scripts/create-pr.cjs", "scripts/create-release.cjs", "scripts/publish.cjs", "scripts/vsce.cjs", "scripts/package-target.cjs", "scripts/gen-icon.cjs", "scripts/gen-diagrams.cjs", "scripts/gen-social-preview.cjs", "scripts/obsidian-mcp.py", "scripts/db-matrix/bootstrap.sh", "scripts/db-matrix/wait-ready.sh", "scripts/db-matrix/parse-version.cjs"]
 testes: ["src/test/unit/brainBuild.test.ts", "src/test/unit/brainRules.test.ts", "src/test/unit/brainScripts.test.ts", "src/test/unit/docsFidelity.test.ts", "src/test/unit/docsFidelityNls.test.ts", "src/test/unit/packageTarget.test.ts", "src/test/unit/vsixIgnore.test.ts"]
 relacionado: ["[[NFR-007 - Cobertura de testes TypeScript]]", "[[PAT-001 - Módulos puros vs dependentes de vscode]]", "[[PAT-007 - Stub de vscode em duas camadas]]", "[[ADR-006 - Modulos puros vs dependentes de vscode]]"]
 tags: [funcional]
@@ -44,6 +44,7 @@ Ferramentas e infraestrutura de desenvolvimento do projeto.
 | `npm run package:target -- <target>` | VSIX genérico por target (usado pelo `publish.yml`) |
 | `npm run gen-icon` | `scripts/gen-icon.cjs` — gera o ícone |
 | `npm run gen-diagram` | `scripts/gen-diagrams.cjs` — renderiza todos os SVGs de `docs/wiki/images/` para PNG de 1200px via `@resvg/resvg-js` (cross-platform) |
+| `npm run gen-social-preview` | `scripts/gen-social-preview.cjs` — renderiza `images/social-preview.svg` → `images/social-preview.png` (1280×640) para o **Social preview** do repositório (upload manual em Settings) |
 | `npm run brain:sync` / `brain:check` | Sincroniza/valida o vault Obsidian (`docs/brain`) |
 | `npm run brain:rules` | Valida as `BR-*`, o schema das camadas (SEC/ERR/PAT/…), o vínculo bidirecional PRD ↔ regra/SEC, a rastreabilidade **RNF → regra**, o vínculo concreto de NFR/TPL/PAT/ENT/ERR/GLOSS/ADR, a **documentação das regras** (funcional/wiki) e a presença das regras de usuário na **wiki** (`interno: true` isenta) |
 | `npm run brain:ci` | `brain:sync` + `brain:build` + `brain:check` + `brain:rules` + `brain:gaps` (roda no CI) |
@@ -319,6 +320,21 @@ GitHub Actions) via environment `github-pages`.
 > Regra: **BR-SITE-001**. A documentação completa dentro do site (portar
 > `docs/wiki/`) é a fase 2 (PRD-97).
 
+## Social preview
+
+Card exibido quando o link do repositório é compartilhado (Slack, LinkedIn, X,
+Discord). Fonte em `images/social-preview.svg` (1280×640, paleta do ícone e da
+landing page); o PNG é gerado por `npm run gen-social-preview`
+(`scripts/gen-social-preview.cjs`, `@resvg/resvg-js`).
+
+- Upload **manual e por repositório**: GitHub → **Settings** → **General** →
+  **Social preview** → **Edit** → **Upload an image** (PNG/JPG/GIF até 1 MB)
+- **Não há endpoint REST/GraphQL público** para definir o social preview; o token
+  do repositório não acessa a página de settings (404). Sem upload, o GitHub serve
+  o card genérico de `opengraph.githubassets.com`
+- Reenvie o PNG quando o card mudar — o cache das plataformas demora a atualizar
+- `images/social-preview.*` fica fora do VSIX (`.vscodeignore`, BR-PKG-001)
+
 ## Node
 
 `.nvmrc` → `24`. CI testa 24/26; os passos de docs/brain/audit rodam só no 24.
@@ -328,7 +344,7 @@ Requer Node 24+ local (`engines.node >=24`, PRD-127/47).
 
 <!-- brain:auto:start:conexoes -->
 - 📐 Regras: [[BR-SITE-001 - Landing page gerada de site e publicada no GitHub Pages, sem noindex|BR-SITE-001]] · [[BR-QUAL-001 - Thresholds de cobertura (c8) sao globais e bloqueiam o CI|BR-QUAL-001]] · [[BR-QUAL-002 - Formatacao e lint do codigo sao do Biome|BR-QUAL-002]] · [[BR-DEP-001 - Runtime deps em dependencies e nota DEP- para cada dep direta|BR-DEP-001]] · [[BR-PKG-001 - VSIX nao inclui fontes, scripts nem segredos|BR-PKG-001]] · [[BR-PLAT-005 - Bundle de producao e ESM e os testes continuam CJS|BR-PLAT-005]] · [[BR-QUAL-004 - executeRunOracle e orquestrador e as etapas sao funcoes testaveis|BR-QUAL-004]] · [[BR-CONN-021 - Major do driver Oracle so entra com matriz e packaging validados|BR-CONN-021]]
-- 🧩 Código: [[COD - brain.cjs]] · [[COD - brain-build.cjs]] · [[COD - brain-rules.cjs]] · [[COD - brain-gaps.cjs]] · [[COD - docs-check.cjs]] · [[COD - docs-fidelity.cjs]] · [[COD - version-check.cjs]] · [[COD - run-tests.cjs]] · [[COD - test-setup.cjs]] · [[COD - sync-prds.cjs]] · [[COD - create-pr.cjs]] · [[COD - create-release.cjs]] · [[COD - publish.cjs]] · [[COD - vsce.cjs]] · [[COD - package-target.cjs]] · [[COD - gen-icon.cjs]] · [[COD - gen-diagrams.cjs]] · [[COD - obsidian-mcp.py]] · [[COD - bootstrap.sh]] · [[COD - wait-ready.sh]] · [[COD - parse-version.cjs]]
+- 🧩 Código: [[COD - brain.cjs]] · [[COD - brain-build.cjs]] · [[COD - brain-rules.cjs]] · [[COD - brain-gaps.cjs]] · [[COD - docs-check.cjs]] · [[COD - docs-fidelity.cjs]] · [[COD - version-check.cjs]] · [[COD - run-tests.cjs]] · [[COD - test-setup.cjs]] · [[COD - sync-prds.cjs]] · [[COD - create-pr.cjs]] · [[COD - create-release.cjs]] · [[COD - publish.cjs]] · [[COD - vsce.cjs]] · [[COD - package-target.cjs]] · [[COD - gen-icon.cjs]] · [[COD - gen-diagrams.cjs]] · [[COD - gen-social-preview.cjs]] · [[COD - obsidian-mcp.py]] · [[COD - bootstrap.sh]] · [[COD - wait-ready.sh]] · [[COD - parse-version.cjs]]
 - 🧪 Testes: [[TST - brainBuild.test.ts]] · [[TST - brainRules.test.ts]] · [[TST - brainScripts.test.ts]] · [[TST - docsFidelity.test.ts]] · [[TST - docsFidelityNls.test.ts]] · [[TST - packageTarget.test.ts]] · [[TST - vsixIgnore.test.ts]]
 - 🔗 [[NFR-007 - Cobertura de testes TypeScript]] · [[PAT-001 - Módulos puros vs dependentes de vscode]] · [[PAT-007 - Stub de vscode em duas camadas]] · [[ADR-006 - Modulos puros vs dependentes de vscode]]
 - ↩️ Referenciada por: [[PAT-001 - Módulos puros vs dependentes de vscode|PAT-001]] · [[PAT-007 - Stub de vscode em duas camadas|PAT-007]]
