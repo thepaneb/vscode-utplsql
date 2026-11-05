@@ -2,6 +2,7 @@ import * as vscode from 'vscode';
 import { getExtensionLocale, readConfig, resolveConnection } from './config';
 import { offerCoverageHtmlReport } from './coverage';
 import { t } from './i18n';
+import { logger } from './logger';
 import { resolveRunRoots } from './matching';
 import { beginOracleActivity, executeRunOracle, type OracleRunOptions } from './oracleRunner';
 import { setupValidator } from './quickfix';
@@ -159,6 +160,12 @@ export async function executeRun(
   }
 
   const { leafTests, pathArgs, suiteCount } = collectRunTargets(included, state);
+  logger.trace('executeRun: alvos', {
+    tests: leafTests.length,
+    suites: suiteCount,
+    pathArgs: [...pathArgs],
+    coverage,
+  });
   // Root por folder (PRD-57): os folders das suites/testes realmente em execução,
   // em vez de sempre o primeiro do workspace.
   const roots = resolveRunRoots(

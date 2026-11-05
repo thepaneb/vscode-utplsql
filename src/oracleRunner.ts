@@ -13,6 +13,7 @@ import { t } from './i18n';
 import { parseJUnit } from './junit';
 import { logger } from './logger';
 import { ensureOracleClient } from './oracleClient';
+import type { PerfProbe } from './perf';
 import { sanitizeSchemaPrefix } from './oracleIdentifiers';
 import { pollOutputStream } from './oraclePoll';
 import {
@@ -82,6 +83,12 @@ export function connectionUser(connection: string): string | undefined {
 
 let currentPool: { pool: OraclePool; key: string; connection: string } | undefined;
 let activeOracleActivities = 0;
+let globalPerfProbe: PerfProbe | undefined;
+
+/** Probe global usado pelo runner (PRD-102); `undefined` desliga a medição. */
+export function setPerfProbe(probe: PerfProbe | undefined): void {
+  globalPerfProbe = probe;
+}
 
 /**
  * Token de atividade Oracle (PRD-101): cobre run, cobertura, export, discovery
@@ -586,6 +593,8 @@ export interface OracleRunOptions {
   output?: { additionalReporters?: string[] };
   /** Export com reporter arbitrário (PRD-76). */
   export?: { reporter?: OracleExportReporter };
+  /** Probe de performance (PRD-102); default: probe global da extensão. */
+  perf?: PerfProbe;
 
   /** @deprecated Use `coverage.owner`. */
   coverageOwner?: string;
@@ -778,6 +787,7 @@ async function runAndPoll(options: {
   outputs: Map<string, { kind: 'unknown' | CoverageOutputKind; text: string }>;
   connection: string;
   oracledb: typeof import('oracledb');
+  perf?: PerfProbe;
 }): Promise<RunAndPollResult> {
   if (options.dbmsOutput) {
     try {
@@ -814,6 +824,7 @@ async function runAndPoll(options: {
       : undefined;
 
   let exportText = '';
+  const endPoll = options.perf?.start('poll');
   try {
     await pollOutputStream({
       conn: options.conn2,
@@ -849,6 +860,7 @@ async function runAndPoll(options: {
       },
     });
   } finally {
+    endPoll?.();
     cancelSub.dispose();
     if (timeoutTimer) clearTimeout(timeoutTimer);
   }
@@ -886,6 +898,7 @@ async function executeRunOracleCore(
     onCoverageResult,
     folders,
   } = options;
+  const perf = options.perf ?? globalPerfProbe;
   const coverageOptions: OracleCoverageOptions =
     typeof options.coverage === 'boolean'
       ? { enabled: options.coverage }
@@ -1008,45 +1021,58 @@ async function executeRunOracleCore(
     // ele evita que o HTML de cobertura contamine o XML de JUnit/Cobertura e
     // dispensa o estado de CDATA (todas as linhas do grupo XML vão para o XML).
     const outputs = new Map<string, { kind: 'unknown' | CoverageOutputKind; text: string }>();
-    const { exportText, runnerMs } = await runAndPoll({
-      conn1,
-      conn2,
-      utSchema,
-      plsql,
-      binds,
-      token,
-      timeoutMinutes,
-      dbmsOutput,
-      exporting,
-      run,
-      outputs,
-      connection,
-      oracledb,
-    });
+    const endRun = perf?.start('run');
+    let runResult: RunAndPollResult;
+    try {
+      runResult = await runAndPoll({
+        conn1,
+        conn2,
+        utSchema,
+        plsql,
+        binds,
+        token,
+        timeoutMinutes,
+        dbmsOutput,
+        exporting,
+        run,
+        outputs,
+        connection,
+        oracledb,
+        perf,
+      });
+    } finally {
+      endRun?.();
+    }
+    const { exportText, runnerMs } = runResult;
 
     if (dbmsOutput) await drainDbmsOutput(conn1, run, oracledb, connection);
 
     // Export (PRD-76): devolve a saída do reporter sem aplicar resultados/cobertura.
     if (exporting) return exportText;
 
-    await finalizeRun({
-      outputs,
-      runnerMs,
-      coverageEnabled,
-      coverageRequested: coverageEnabledRequested,
-      htmlEnabled,
-      htmlReportTarget,
-      onCoverageHtmlReport,
-      onCoverageResult,
-      onComplete,
-      run,
-      leafTests,
-      state,
-      folders,
-      sourcePath,
-      token,
-      connection,
-    });
+    const endParse = perf?.start('parseXml');
+    try {
+      await finalizeRun({
+        outputs,
+        runnerMs,
+        coverageEnabled,
+        coverageRequested: coverageEnabledRequested,
+        htmlEnabled,
+        htmlReportTarget,
+        onCoverageHtmlReport,
+        onCoverageResult,
+        onComplete,
+        run,
+        leafTests,
+        state,
+        folders,
+        sourcePath,
+        token,
+        connection,
+      });
+    } finally {
+      endParse?.();
+    }
   } finally {
     await conn1.close().catch(() => {});
     await conn2.close().catch(() => {});

@@ -59,6 +59,12 @@ export interface UtConfig {
   /** Language IDs aceitos na descoberta/CodeLens (PRD-109). */
   discoveryLanguageIds: string[];
   refreshDebounceMs: number;
+  /** Trace verboso por evento no canal `utPLSQL` (PRD-102). */
+  trace: boolean;
+  /** Instrumentação de fases (PRD-102). */
+  perfEnabled: boolean;
+  /** Arquivo JSONL de medições (vazio = não grava). */
+  perfReportFile: string;
   setupDiagnosticsEnabled: boolean;
   /** Geração de suíte de teste (PRD-100): prefixo do nome do pacote de teste. */
   generateTestPackagePrefix: string;
@@ -177,6 +183,9 @@ export function readConfig(): UtConfig {
     discoverySource: c.get<'auto' | 'file' | 'database'>('discovery.source', 'auto'),
     discoveryLanguageIds: c.get<string[]>('discovery.languageIds', ['plsql', 'sql', 'oracle-sql']),
     refreshDebounceMs: c.get<number>('refreshDebounceMs', 300),
+    trace: c.get<boolean>('trace', false),
+    perfEnabled: c.get<boolean>('perf.enabled', false),
+    perfReportFile: c.get<string>('perf.reportFile', ''),
     setupDiagnosticsEnabled: c.get<boolean>('setupDiagnostics.enabled', true),
     generateTestPackagePrefix: c.get<string>('generate.testPackagePrefix', 'ut_'),
     generateTestPackageSuffix: c.get<string>('generate.testPackageSuffix', ''),

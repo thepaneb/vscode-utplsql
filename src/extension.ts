@@ -1,3 +1,5 @@
+import * as fs from 'node:fs/promises';
+import * as path from 'node:path';
 import * as vscode from 'vscode';
 import { createAutoRunner } from './autoRun';
 import { UtplsqlCodeLensProvider } from './codelens';
@@ -26,8 +28,9 @@ import {
   isPlsqlDocument,
   workspaceAssociations,
 } from './languageIdentity';
-import { formatLogLine, logger, setLogSink } from './logger';
-import { closeOraclePool, invalidatePool } from './oracleRunner';
+import { formatLogLine, logger, setLogSink, setTraceEnabled } from './logger';
+import { closeOraclePool, invalidatePool, setPerfProbe } from './oracleRunner';
+import { createPerfProbe, formatPerfLine, type PerfProbe, type PerfSample } from './perf';
 import { setupValidator, UtplsqlCodeActionProvider } from './quickfix';
 import { TestStateManager } from './state';
 import { UtplsqlStatusBar } from './statusBar';
@@ -54,7 +57,51 @@ export function activate(context: vscode.ExtensionContext) {
   // Log de diagnóstico em um LogOutputChannel (nível controlado pelo usuário).
   const log = vscode.window.createOutputChannel('utPLSQL', { log: true });
   context.subscriptions.push(log);
-  setLogSink((level, msg, ctx) => log[level](formatLogLine(msg, ctx)));
+  setLogSink((level, msg, ctx) => {
+    const line = formatLogLine(msg, ctx);
+    if (level === 'trace') log.trace(line);
+    else log[level](line);
+  });
+
+  // PRD-102: trace e perf são opt-in. O probe é estável (proxy) para o
+  // refresher que já foi criado; a configuração pode recriá-lo sem reiniciar.
+  setTraceEnabled(readConfig().trace);
+  const appendPerf = async (sample: PerfSample): Promise<void> => {
+    const cfg = readConfig();
+    if (!cfg.perfEnabled || !cfg.perfReportFile.trim()) return;
+    const root = vscode.workspace.workspaceFolders?.[0]?.uri.fsPath ?? process.cwd();
+    const target = path.isAbsolute(cfg.perfReportFile)
+      ? cfg.perfReportFile
+      : path.join(root, cfg.perfReportFile);
+    try {
+      await fs.mkdir(path.dirname(target), { recursive: true });
+      await fs.appendFile(target, `${formatPerfLine(sample)}\n`, 'utf8');
+    } catch (e) {
+      logger.warn('perf: falha ao gravar o relatório', { error: String(e) });
+    }
+  };
+  const buildPerfProbe = (): PerfProbe =>
+    createPerfProbe({
+      enabled: readConfig().perfEnabled,
+      sink: (sample) => {
+        logger.info('perf', {
+          phase: sample.phase,
+          ms: sample.ms,
+          ts: sample.ts,
+          ...(sample.meta ? { meta: sample.meta } : {}),
+        });
+        void appendPerf(sample);
+      },
+    });
+  let perfProbe = buildPerfProbe();
+  const perfProxy: PerfProbe = {
+    get enabled() {
+      return perfProbe.enabled;
+    },
+    start: (phase) => perfProbe.start(phase),
+    record: (phase, ms, meta) => perfProbe.record(phase, ms, meta),
+  };
+  setPerfProbe(perfProxy);
 
   initSecretStorage(context.secrets);
   const profilesReady = (async () => {
@@ -65,7 +112,7 @@ export function activate(context: vscode.ExtensionContext) {
   const controller = vscode.tests.createTestController('utplsql', 'utPLSQL');
   context.subscriptions.push(controller);
 
-  const refresh = createRefresher(controller, state);
+  const refresh = createRefresher(controller, state, perfProxy);
 
   // PRD-120: a validação de setup é preguiçosa, memoizada e nunca roda no
   // `activate()`. O primeiro uso relevante (editor PL/SQL, refresh manual,
@@ -200,6 +247,9 @@ export function activate(context: vscode.ExtensionContext) {
       // PRD-120 RF3: mudança de configuração invalida o memo da validação.
       setupValidationDone = false;
       setupValidationScheduled = false;
+      // PRD-102: trace/perf também são lidos por configuração.
+      setTraceEnabled(readConfig().trace);
+      perfProbe = buildPerfProbe();
     }),
   );
 

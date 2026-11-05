@@ -366,6 +366,21 @@
           "minimum": 0,
           "description": "Debounce (ms) to coalesce .pks/.pkb file watcher events before refreshing the Test Explorer."
         },
+        "utplsql.trace": {
+          "type": "boolean",
+          "default": false,
+          "description": "Emits verbose per-event trace lines (test ids, generated SQL) in the utPLSQL output channel. Off by default; diagnostic use only."
+        },
+        "utplsql.perf.enabled": {
+          "type": "boolean",
+          "default": false,
+          "description": "Measures discovery, tree build, run, polling and XML parsing phases and emits them as info lines. Off by default."
+        },
+        "utplsql.perf.reportFile": {
+          "type": "string",
+          "default": "",
+          "description": "When set, each perf measurement is appended as one JSON line to this file (absolute or relative to the first workspace folder)."
+        },
         "utplsql.codeLens.enabled": {
           "type": "boolean",
           "default": true,

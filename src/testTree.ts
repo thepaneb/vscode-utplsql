@@ -15,6 +15,7 @@ import {
   currentLanguageContributions,
   workspaceAssociations,
 } from './languageIdentity';
+import type { PerfProbe } from './perf';
 import { type TestStateManager, withDurationSuffix } from './state';
 
 /** Id de suite normalizado (`suite:<pkg lower>`). */
@@ -454,6 +455,7 @@ const defaultMergeDbDeps: MergeDbDeps = {
 export function createRefresher(
   controller: vscode.TestController,
   state: TestStateManager,
+  perf?: PerfProbe,
 ): () => Promise<void> {
   let refreshPromise: Promise<void> | undefined;
   let needsRefresh = false;
@@ -469,7 +471,10 @@ export function createRefresher(
         workspaceAssociations(),
       ),
     ].filter((pattern) => pattern.trim().length > 0);
+    const endDiscovery = perf?.start('discovery');
     const suites = await discoverWorkspace([...new Set(patterns)], folders ?? undefined);
+    endDiscovery?.();
+    const endBuildTree = perf?.start('buildTree');
     controller.items.replace([]);
     state.cachedItems = [];
     state.clearSuiteMap();
@@ -488,6 +493,7 @@ export function createRefresher(
     } else {
       buildFileTree(controller, state, suites);
     }
+    endBuildTree?.();
   };
 
   const refresh = async (): Promise<void> => {
