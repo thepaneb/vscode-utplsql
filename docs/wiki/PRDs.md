@@ -131,13 +131,20 @@ files and the index; do not move the generated files by hand.
 | 111 | Split `executeRunOracle` into testable steps | 0.19.0 |
 | 124 | node-oracledb 26 upgrade with matrix and packaging validation | 0.19.0 |
 | 127 | VS Code 1.125 floor and Node 24 runtime | 0.19.0 |
+| 101 | Idle connection pool cleanup after the last operation | 0.20.0 |
+| 102 | Tracing and performance instrumentation | 0.20.0 |
+| 103 | Incremental source reindex (per-URI watcher) | 0.20.0 |
+| 106 | Performance harness: in-database fixture and phases | 0.20.0 |
+| 107 | Hardened integration fixture with an unprivileged user | 0.20.0 |
+| 120 | Lean activation and lazy setup validation | 0.20.0 |
+| 125 | Full thick suite and database matrix | 0.20.0 |
 
 ### ⚪ Proposed
 
 The complete, generated list is in [docs/prd/index.md](../../prd/index.md) —
-currently 42 PRDs. The 0.19.0 has 47/95/111/124/127 **completed** and 125
-**in progress** (partial: thick-full experimental). Remaining: 0.20.0
-(101–103/106/107/120), 0.21.0 (128–131/137–139), 0.22.0 (88–93/115), 0.23.0
+currently 42 PRDs. The 0.19.0 has 47/95/111/124/127 **completed**; the 0.20.0
+closes 101/102/103/106/107/120/125 (125 with the documented 11g limitation).
+Remaining: 0.21.0 (128–131/137–139), 0.22.0 (88–93/115), 0.23.0
 (97/99/112/116/117/126) and 0.24.0 (121/122/132/133/140–143) proposals. The
 `status:` in each note's frontmatter is authoritative; this page does not
 duplicate the full table.

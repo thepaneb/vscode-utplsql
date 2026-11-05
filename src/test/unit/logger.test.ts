@@ -1,13 +1,7 @@
 import './setup.js';
 import assert from 'node:assert';
 import { test } from 'node:test';
-import {
-  formatLogLine,
-  isTraceEnabled,
-  logger,
-  setLogSink,
-  setTraceEnabled,
-} from '../../logger';
+import { formatLogLine, isTraceEnabled, logger, setLogSink, setTraceEnabled } from '../../logger';
 
 function capture(fn: () => void): string[] {
   const original = console.debug;

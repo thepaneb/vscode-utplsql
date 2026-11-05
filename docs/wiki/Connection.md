@@ -2,6 +2,8 @@
 
 # Connection Configuration
 
+<!-- prd:PRD-101 -->
+
 The extension requires an Oracle connection string to run tests. The
 resolution follows this priority order:
 

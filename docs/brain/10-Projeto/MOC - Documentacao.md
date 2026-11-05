@@ -14,7 +14,8 @@ enumerations geradas (`npm run brain:sync`).
 ## Arquivos da raiz do repo
 
 <!-- brain:auto:start:root-docs -->
-- [README.md](../../../README.md) — _2026-11-04_
+- [README.md](../../../README.md) — _2026-11-05_
+- [MARKETPLACE.md](../../../MARKETPLACE.md) — _2026-11-05_
 - [CHANGELOG.md](../../../CHANGELOG.md) — _2026-11-05_
 - [CONTRIBUTING.md](../../../CONTRIBUTING.md) — _2026-10-31_
 - [SECURITY.md](../../../SECURITY.md) — _2026-11-05_
@@ -24,7 +25,10 @@ enumerations geradas (`npm run brain:sync`).
 ## README e variantes de idioma
 
 Notas canônicas em `60-README/`; os `README*.md` na raiz são **gerados**
-(`npm run brain:build`). A verdade é a nota [[README (extensão)]].
+(`npm run brain:build`). A verdade é a nota [[README (extensão)]]. A página do
+Marketplace é uma superfície separada, gerada de
+[[Marketplace (README)]] para `MARKETPLACE.md`; a captura manual segue
+[[Checklist - captura do Marketplace]].
 
 <!-- brain:auto:start:readme-variants -->
 - [[README (extensão)]] — `en` → `README.md`
@@ -84,6 +88,7 @@ e publicado pelo workflow `wiki.yml`.
 - [[Internationalization]]
 - [[Invocation-mode]]
 - [[Oracle-direct-execution]]
+- [[Performance]]
 - [[PRDs]]
 - [[Quick-start]]
 - [[Reporters]]

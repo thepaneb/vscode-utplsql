@@ -2,12 +2,7 @@
 //   node out/test/perf/support/cli.js generate --packages 1000 --tests 15 --seed 1
 //   node out/test/perf/support/cli.js drop
 // Usa UTPLSQL_CONN (mesmo contrato dos testes de integração).
-import {
-  dropPerfSql,
-  generatePerfSql,
-  expectedTestCount,
-  parsePerfArgs,
-} from '../perfFixture';
+import { dropPerfSql, expectedTestCount, generatePerfSql, parsePerfArgs } from '../perfFixture';
 
 async function main(): Promise<void> {
   const { command, options } = parsePerfArgs(process.argv.slice(2));

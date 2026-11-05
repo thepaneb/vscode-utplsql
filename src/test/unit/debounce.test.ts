@@ -68,7 +68,10 @@ test('per-key debounce: coalesce por chave sem afetar as demais (PRD-103)', (t) 
   t.after(() => mock.timers.reset());
 
   const calls: string[] = [];
-  const d = createPerKeyDebouncer((key) => calls.push(key), () => 100);
+  const d = createPerKeyDebouncer(
+    (key) => calls.push(key),
+    () => 100,
+  );
   d.schedule('a');
   d.schedule('b');
   d.schedule('a');
@@ -82,7 +85,10 @@ test('per-key debounce: cancel(key) e cancel() limpam timers', (t) => {
   t.after(() => mock.timers.reset());
 
   const calls: string[] = [];
-  const d = createPerKeyDebouncer((key) => calls.push(key), () => 50);
+  const d = createPerKeyDebouncer(
+    (key) => calls.push(key),
+    () => 50,
+  );
   d.schedule('a');
   d.schedule('b');
   assert.strictEqual(d.pending('a'), true);

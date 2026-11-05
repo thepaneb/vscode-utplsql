@@ -5,11 +5,13 @@ titulo: "Diagnostics and quick-fix"
 publicar: docs/wiki/Diagnostics-and-quick-fix.md
 origem: ["07-diagnostics-and-validation"]
 verificado: 2026-10-21
-regras: ["BR-UI-007", "BR-UI-008"]
+regras: ["BR-UI-007", "BR-UI-008", "BR-CONN-022"]
 tags: [wiki]
 ---
 
 # Diagnostics and quick-fix
+
+<!-- prd:PRD-120 -->
 
 The extension provides automatic diagnostics to reduce setup friction and
 accelerate the TDD cycle:

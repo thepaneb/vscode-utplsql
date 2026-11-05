@@ -191,6 +191,10 @@ Test Explorer 中。
 | `utplsql.oraclePoolMax` | `10` | Oracle runner 池（node-oracledb）中的最大连接数。 |
 | `utplsql.oraclePoolIncrement` | `1` | 扩展 Oracle runner 池（node-oracledb）时的增量。 |
 | `utplsql.oraclePoolPingInterval` | `60` | 空闲池连接健康检查之间的秒数（node-oracledb）。`0` = 每次签出时 ping。 |
+| `utplsql.oraclePoolCloseAfterRun` | `true` | Closes idle Oracle pool connections when the last run, coverage, export or discovery operation finishes. |
+| `utplsql.trace` | `false` | Emits verbose per-event trace lines in the utPLSQL output channel. |
+| `utplsql.perf.enabled` | `false` | Measures discovery, tree build, run, polling and XML parsing phases. |
+| `utplsql.perf.reportFile` | `""` | Appends each perf measurement as one JSON line to this file. |
 | `utplsql.oracleClientMode` | `thin` | 驱动程序模式：`thin`（纯 JavaScript，无需本机客户端）或 `thick`（使用 Oracle Instant Client）。仅在需要 NNE（原生网络加密）的数据库上使用 `thick`；需要 `utplsql.oracleClientLibDir` 并重新加载窗口。 |
 | `utplsql.oracleClientLibDir` | `""` | Oracle Instant Client 目录。当 `utplsql.oracleClientMode` 为 `thick` 时必填（例如 `C:\oracle\instantclient_23_5`）。 Fallback: `ORACLE_CLIENT_LIB_DIR`. |
 | 调试不在断点处停止 | 包编译时没有调试信息，或缺少调试授权 | 使用 `PLSQL_OPTIMIZE_LEVEL <= 1` 编译（或 `ALTER PACKAGE ... COMPILE DEBUG`），并授予 `DEBUG CONNECT SESSION` + `EXECUTE ON SYS.DBMS_DEBUG`. `test_*.pkb` 中的断点可能不会命中（utPLSQL 通过动态 SQL 运行测试）；请将断点设在被测代码中。 |

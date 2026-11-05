@@ -204,6 +204,10 @@ test('package-target.main: lê versões, limpa glues e monta argumentos do vsce'
       args: [
         '/vsce/bin/vsce',
         'package',
+        '--readme-path',
+        'MARKETPLACE.md',
+        '--githubBranch',
+        'main',
         '--target',
         'linux-x64',
         '--out',

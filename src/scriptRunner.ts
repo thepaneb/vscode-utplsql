@@ -568,9 +568,6 @@ export function adaptOracleConn(
       execute,
       break: () => conn.break(),
       close: () => conn.close(),
-      get callTimeout(): number {
-        return conn.callTimeout ?? 0;
-      },
       set callTimeout(value: number) {
         conn.callTimeout = value;
       },

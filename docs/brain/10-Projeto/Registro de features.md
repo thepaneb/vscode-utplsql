@@ -46,6 +46,14 @@ Campos:
   { "id": "toolchain-node24-ci26", "prd": "PRD-47", "interno": true },
   { "id": "bundle-esm-es2024", "prd": "PRD-95", "interno": true },
   { "id": "decompose-oracle-runner", "prd": "PRD-111", "interno": true },
-  { "id": "oracledb-26", "prd": "PRD-124", "interno": true }
+  { "id": "oracledb-26", "prd": "PRD-124", "interno": true },
+  { "id": "lean-activation", "prd": "PRD-120", "interno": true },
+  { "id": "unpriv-fixture", "prd": "PRD-107", "interno": true },
+  { "id": "idle-pool-cleanup", "prd": "PRD-101", "interno": true },
+  { "id": "grouped-run-options", "prd": "PRD-111", "interno": true },
+  { "id": "trace-perf", "prd": "PRD-102", "interno": true },
+  { "id": "incremental-reindex", "prd": "PRD-103", "interno": true },
+  { "id": "perf-harness", "prd": "PRD-106", "interno": true },
+  { "id": "thick-full-matrix", "prd": "PRD-125", "interno": true }
 ]
 ```

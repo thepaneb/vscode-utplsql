@@ -5,11 +5,13 @@ titulo: "Test Explorer"
 publicar: docs/wiki/Test-explorer.md
 origem: ["06-tree-organization"]
 verificado: 2026-09-23
-regras: ["BR-SCHEMA-001", "BR-SCHEMA-003", "BR-EXEC-016", "BR-EXEC-010", "BR-QUAL-003"]
+regras: ["BR-SCHEMA-001", "BR-SCHEMA-003", "BR-EXEC-016", "BR-EXEC-010", "BR-QUAL-003", "BR-PARSE-020"]
 tags: [wiki]
 ---
 
 # Test Explorer
+
+<!-- prd:PRD-103 -->
 
 The extension registers a native VSCode **Test Explorer** (`utplsql`) — suites and
 tests appear in the **Testing** view (flask icon in the sidebar) and use all the

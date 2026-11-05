@@ -4,7 +4,7 @@
 
 | Campo | Valor |
 |---|---|
-| Status | Proposto |
+| Status | Em desenvolvimento |
 | Autor | Gil Cleber Barboza |
 | Data | 2026-11-05 |
 | Componente | Distribuição (Marketplace) + documentação gerada |
@@ -435,6 +435,33 @@ Nenhuma setting/comando de runtime. Mudanças de distribuição:
 - **Comunicação:** o README do GitHub continua sendo a referência; a página do
   Marketplace é a vitrine. Evitar anunciar a mudança antes de a release estar
   publicada.
+
+## 9.1 Preparação entregue (2026-11-05)
+
+- Nota canônica `docs/brain/60-README/Marketplace (README).md` e
+  `MARKETPLACE.md` gerados; blocos de imagem comentados até a captura.
+- `MARKETPLACE.md` empacotado via `vsce --readme-path MARKETPLACE.md
+  --githubBranch main`; `.vscodeignore` exclui os READMEs do GitHub.
+- Metadata aplicada (description/keywords/categories/ícone 256/banner); o
+  `displayName` foi mantido como `utPLSQL Test Runner`.
+- Workspace de demonstração em
+  `src/test/fixtures/workspace-marketplace-screenshots/` e checklist em
+  `docs/brain/60-README/Checklist - captura do Marketplace.md`.
+- `npm run marketplace:check` valida manifesto/dimensões/tamanhos depois do
+  marcador `<!-- marketplace:images-ready -->`.
+- **Pendente:** captura manual das 4–5 screenshots reais e inspeção pós-publish.
+
+## Análise de cobertura (pós-PRD)
+
+- **Unitários:** `marketplaceImages.test.ts` valida manifesto, PNG 1600×900,
+  tamanhos e referências; `packageTarget.test.ts` cobre os args do `vsce`;
+  `docsFidelity.test.ts` cobre claims/settings/links da página.
+- **Integração:** `npm run package` + inspeção do VSIX (`extension/readme.md`,
+  ausência de `README.*.md`) no gate de release.
+- **Matriz:** não aplicável ao eixo de banco; o workspace de captura usa o
+  demo no 23free.
+- **Ações:** capturar as imagens e rodar `marketplace:check`/`package` antes do
+  commit final.
 
 ## 10. Critérios de aceite
 

@@ -189,6 +189,10 @@ Test Explorer **у міру завершення кожного тесту**. VS
 | `utplsql.oraclePoolMax` | `10` | Максимальна кількість з'єднань у пулі Oracle runner (node-oracledb). |
 | `utplsql.oraclePoolIncrement` | `1` | Приріст при розширенні пулу Oracle runner (node-oracledb). |
 | `utplsql.oraclePoolPingInterval` | `60` | Інтервал у секундах між перевірками стану простаючих з'єднань пулу (node-oracledb). `0` = ping при кожній перевірці з'єднання. |
+| `utplsql.oraclePoolCloseAfterRun` | `true` | Closes idle Oracle pool connections when the last run, coverage, export or discovery operation finishes. |
+| `utplsql.trace` | `false` | Emits verbose per-event trace lines in the utPLSQL output channel. |
+| `utplsql.perf.enabled` | `false` | Measures discovery, tree build, run, polling and XML parsing phases. |
+| `utplsql.perf.reportFile` | `""` | Appends each perf measurement as one JSON line to this file. |
 | `utplsql.oracleClientMode` | `thin` | Режим драйвера: `thin` (чистий JavaScript, без нативного клієнта) або `thick` (використовує Oracle Instant Client). Використовуйте `thick` лише для баз, що потребують NNE (Native Network Encryption); потрібні `utplsql.oracleClientLibDir` і перезавантаження вікна. |
 | `utplsql.oracleClientLibDir` | `""` | Каталог Oracle Instant Client. Обов'язковий, коли `utplsql.oracleClientMode` дорівнює `thick` (напр. `C:\oracle\instantclient_23_5`). Fallback: `ORACLE_CLIENT_LIB_DIR`. |
 | Налагодження не зупиняється на точці зупину | Пакет без налагоджувальної інформації або бракує привілеїв | Скомпілюйте з `PLSQL_OPTIMIZE_LEVEL <= 1` (або `ALTER PACKAGE ... COMPILE DEBUG PLSQL_OPTIMIZE_LEVEL = 1`) і надайте `DEBUG CONNECT SESSION` + `EXECUTE ON SYS.DBMS_DEBUG`. Точки зупину в `test_*.pkb` можуть не спрацьовувати (utPLSQL виконує тести через динамічний SQL); ставте їх у коді, що тестується. |

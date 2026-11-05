@@ -68,6 +68,21 @@ function checkReadme() {
   }
 }
 
+// ── Marketplace (superfície separada, PRD-147) ─────────────────────────
+
+function checkMarketplace() {
+  console.log('Marketplace (MARKETPLACE.md)');
+  const file = path.join(REPO, 'MARKETPLACE.md');
+  if (!fs.existsSync(file)) return fail('MARKETPLACE.md ausente');
+  const text = fs.readFileSync(file, 'utf8');
+  if (!/<!--\s*GENERATED/i.test(text)) fail('MARKETPLACE.md sem banner GENERATED');
+  if (!text.includes('<!-- prd:PRD-147 -->')) fail('MARKETPLACE.md sem marcador prd:PRD-147');
+  const variants = readdirSafe(REPO).filter((n) => /^README\..+\.md$/.test(n));
+  if (variants.length !== 23) fail(`esperadas 23 variantes de README (achei ${variants.length})`);
+  if (!fs.existsSync(path.join(REPO, 'README.md'))) fail('README.md ausente');
+  ok('MARKETPLACE.md gerado e separado das variantes');
+}
+
 // ── PRDs ───────────────────────────────────────────────────────────────
 
 function extractStatus(content) {
@@ -265,6 +280,7 @@ function checkSite() {
 // ── main ───────────────────────────────────────────────────────────────
 
 checkReadme();
+checkMarketplace();
 checkPrd();
 checkPrdVault();
 checkWiki();

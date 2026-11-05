@@ -31,7 +31,11 @@ function connParts(): { user: string; password: string; connectString: string } 
   return { user: m[1], password: m[2], connectString: m[3] };
 }
 
-function connectionString(parts: { user: string; password: string; connectString: string }): string {
+function connectionString(parts: {
+  user: string;
+  password: string;
+  connectString: string;
+}): string {
   const target = parts.connectString.startsWith('//')
     ? parts.connectString
     : `//${parts.connectString}`;

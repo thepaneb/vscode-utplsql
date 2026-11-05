@@ -39,8 +39,28 @@ mock.module('../../commands/run.js', {
 
 mock.module('../../testTree.js', {
   namedExports: {
-    createRefresher: () => async () => {
-      refreshCount += 1;
+    createRefresher: (
+      _c: unknown,
+      _s: unknown,
+      perf?: {
+        enabled: boolean;
+        start: (phase: string) => () => void;
+        record: (phase: string, ms: number) => void;
+      },
+    ) => {
+      const refresher = async () => {
+        void perf?.enabled;
+        perf?.start('discovery')();
+        perf?.record('buildTree', 1);
+        refreshCount += 1;
+      };
+      refresher.refreshUri = async () => {
+        refreshCount += 1;
+      };
+      refresher.removeUri = async () => {
+        refreshCount += 1;
+      };
+      return refresher;
     },
     collectAllItems: () => [],
     resolveSchemaNode: async (_c: unknown, _s: unknown, item: { id: string }) => {
@@ -91,6 +111,8 @@ function makeContext() {
 }
 
 test('activate: cria o controller, seta o contexto e registra os comandos', async () => {
+  __setConfigValue('perf.enabled', true);
+  __setConfigValue('perf.reportFile', 'test-results/perf-test.jsonl');
   const { activate } = await import('../../extension.js');
   const context = makeContext() as { subscriptions: Array<{ dispose?: () => void }> };
   capturedContext = context;
@@ -107,6 +129,12 @@ test('activate: cria o controller, seta o contexto e registra os comandos', asyn
   assert.ok(refreshCount >= 1);
   // PRD-120: a ativação não abre conexão nem roda a validação de setup.
   assert.deepStrictEqual(validateCalls, []);
+  // Cobre o sink de perf (sucesso e falha de I/O) sem derrubar a ativação.
+  __setConfigValue('perf.reportFile', 'package.json/perf.jsonl');
+  workspace.__triggerConfigChange({ affectsConfiguration: (s) => s === 'utplsql' });
+  await tests.__getLastTestController()?.refreshHandler?.();
+  await new Promise((resolve) => setTimeout(resolve, 10));
+  __setConfigValue('perf.reportFile', '');
 });
 
 test('setup validation: roda uma vez na primeira interação relevante (PRD-120)', async () => {
@@ -148,6 +176,9 @@ test('handlers de ativação: refresh, configuração, editor e watcher', async 
 
   workspace.__triggerConfigChange({ affectsConfiguration: () => false });
   workspace.__triggerConfigChange({ affectsConfiguration: (s) => s === 'utplsql' });
+  workspace.__triggerConfigChange({
+    affectsConfiguration: (s) => s === 'utplsql.discovery.languageIds',
+  });
   window.__triggerActiveTextEditorChange(undefined);
 
   __setConfigValue('refreshDebounceMs', 0);
@@ -155,6 +186,22 @@ test('handlers de ativação: refresh, configuração, editor e watcher', async 
   workspace.__triggerWatcher('change');
   workspace.__triggerWatcher('delete');
   await new Promise((resolve) => setTimeout(resolve, 10));
+  assert.ok(refreshCount > before);
+});
+
+test('watcher: URI alterado/removido usa refreshUri/removeUri e rajada cai no full (PRD-103)', async () => {
+  __setConfigValue('refreshDebounceMs', 0);
+  const before = refreshCount;
+  workspace.__triggerWatcher('change', { toString: () => '/ws/ut_a.pks' });
+  workspace.__triggerWatcher('delete', { toString: () => '/ws/ut_b.pks' });
+  await new Promise((resolve) => setTimeout(resolve, 20));
+  assert.ok(refreshCount > before);
+
+  // >8 URIs pendentes: o callback cancela os per-key e faz um full refresh.
+  for (let i = 0; i < 10; i += 1) {
+    workspace.__triggerWatcher('change', { toString: () => `/ws/ut_${i}.pks` });
+  }
+  await new Promise((resolve) => setTimeout(resolve, 30));
   assert.ok(refreshCount > before);
 });
 

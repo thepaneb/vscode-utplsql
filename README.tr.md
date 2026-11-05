@@ -191,6 +191,10 @@ Geçici dosya yok, toplu işin bitmesi beklenmez. Sonuçlar Test Explorer'da
 | `utplsql.oraclePoolMax` | `10` | Oracle runner havuzundaki maksimum bağlantı sayısı (node-oracledb). |
 | `utplsql.oraclePoolIncrement` | `1` | Oracle runner havuzunu genişletirken artış miktarı (node-oracledb). |
 | `utplsql.oraclePoolPingInterval` | `60` | Boştaki havuz bağlantılarının sağlık kontrolleri arasındaki saniye (node-oracledb). `0` = her kullanımda ping. |
+| `utplsql.oraclePoolCloseAfterRun` | `true` | Closes idle Oracle pool connections when the last run, coverage, export or discovery operation finishes. |
+| `utplsql.trace` | `false` | Emits verbose per-event trace lines in the utPLSQL output channel. |
+| `utplsql.perf.enabled` | `false` | Measures discovery, tree build, run, polling and XML parsing phases. |
+| `utplsql.perf.reportFile` | `""` | Appends each perf measurement as one JSON line to this file. |
 | `utplsql.oracleClientMode` | `thin` | Sürücü modu: `thin` (saf JavaScript, yerel istemci yok) veya `thick` (Oracle Instant Client kullanır). `thick` modunu yalnızca NNE (Native Network Encryption) gerektiren veritabanları için kullanın; `utplsql.oracleClientLibDir` ve pencerenin yeniden yüklenmesini gerektirir. |
 | `utplsql.oracleClientLibDir` | `""` | Oracle Instant Client dizini. `utplsql.oracleClientMode` `thick` olduğunda zorunludur (örn. `C:\oracle\instantclient_23_5`). Fallback: `ORACLE_CLIENT_LIB_DIR`. |
 | Hata ayıklama kesme noktasında durmuyor | Paket hata ayıklama bilgisi olmadan derlenmiş veya hata ayıklama yetkileri eksik | `PLSQL_OPTIMIZE_LEVEL <= 1` ile derleyin (veya `ALTER PACKAGE ... COMPILE DEBUG PLSQL_OPTIMIZE_LEVEL = 1`) ve `DEBUG CONNECT SESSION` + `EXECUTE ON SYS.DBMS_DEBUG` verin. `test_*.pkb` içindeki kesme noktaları isabet etmeyebilir (utPLSQL testleri dinamik SQL ile çalıştırır); bunları test edilen koda koyun. |

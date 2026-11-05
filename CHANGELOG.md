@@ -2,9 +2,36 @@
 
 ## 0.20.0
 
-- **Cadeia de suprimentos (PRD-146)**: `.vsix` publicados recebem
-  **attestações de proveniência** (GitHub Artifact Attestations), com
-  verificação via `gh attestation verify`.
+- **Lean activation and lazy setup validation (PRD-120)**: the extension no
+  longer subscribes to `onStartupFinished`/broad `.sql` workspaces and no longer
+  opens an Oracle connection during activation. Setup diagnostics run on the
+  first relevant interaction (or via `utPLSQL: Validate setup`) and are memoized
+  per session.
+- **Unprivileged integration fixture (PRD-107)**: the integration DB now also
+  provisions a `CREATE SESSION`-only user and a `v$session` observer, exercising
+  denied `V$SQL`, discovery fallback and session lifecycle assertions.
+- **Idle pool cleanup (PRD-101)**: `utplsql.oraclePoolCloseAfterRun` (default
+  `true`) closes idle runner pools after the last run/coverage/export/discovery
+  operation, without ever interrupting a connection in use.
+- **Grouped Oracle run options (PRD-111 RF2)**: `OracleRunOptions` is organized
+  into `coverage`, `execution`, `output` and `export`; behavior is unchanged and
+  the flat fields remain as deprecated aliases for test compatibility.
+- **Tracing and performance instrumentation (PRD-102)**: opt-in
+  `utplsql.trace` and `utplsql.perf.enabled`/`perf.reportFile` measure
+  discovery, tree build, run, polling and XML parsing, emitting JSONL on demand.
+- **Incremental source reindex (PRD-103)**: file watcher events are debounced
+  per URI and only the changed suite is reindexed in file mode; tag/schema and
+  bursts fall back to a full refresh.
+- **Performance harness (PRD-106)**: deterministic in-database fixture (up to
+  ~1000 packages/15k tests), JSONL measurements and a weekly/dispatch workflow
+  outside the PR critical path.
+- **Thick-full and matrix (PRD-125)**: the complete suite now runs in thick
+  mode on 23ai Free (81 passing / 13 pending, no failures) with explicit
+  thin-only/UI/11g-legacy exclusions; 11g remains on the thick smoke (its full
+  run is documented as an experimental dispatch limitation).
+- **Supply chain (PRD-146)**: published `.vsix` artifacts receive **build
+  provenance attestations** (GitHub Artifact Attestations), verified with
+  `gh attestation verify`.
 
 ## 0.19.0
 

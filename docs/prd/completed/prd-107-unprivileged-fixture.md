@@ -4,7 +4,7 @@
 
 | Campo | Valor |
 |---|---|
-| Status | Proposto |
+| Status | Concluído |
 | Autor | Gil Cleber Barboza |
 | Data | 2026-10-09 |
 | Componente | Testes de integração (banco real) |
@@ -118,3 +118,14 @@ Env de teste (não são settings da extensão): `UTPLSQL_IT_UNPRIV_USER`,
 Na conclusão, criar a regra `BR-TEST-*` ("testes de privilégio/sessão usam
 usuário restrito e fazem skip quando ausente"), com `prds: ["PRD-107"]`,
 `implementacao:` e `testes:`. Enquanto `proposed`, `regras: []`.
+
+## Análise de cobertura (pós-PRD)
+
+- **Unitários:** o fallback `ALL_SOURCE` negado já é coberto em `discovery.test.ts` (não revogável por usuário).
+- **Integração:** `prd107Unpriv.test.ts` cobre usuário só `CREATE SESSION`, DDL negado, `V$SQL` negado, discovery degradando sem grants e observador de `v$session`; `viewCoverageDenied.test.ts` passa a usar o usuário restrito quando disponível.
+- **Matriz:** 23free; o mesmo teste é aplicável ao 11g thick via matriz quando `UTPLSQL_IT_UNPRIV_*` está provisionado.
+- **Ações:** nenhuma lacuna aberta.
+
+## Impacto nas docs
+
+`CHANGELOG`, `wiki/Tests.md` e `functional/10-development-tooling.md` citam `PRD-107`.

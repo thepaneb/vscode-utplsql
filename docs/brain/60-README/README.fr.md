@@ -200,6 +200,10 @@ l'Explorateur de tests **au fur et à mesure que chaque test se termine**.
 | `utplsql.oraclePoolMax` | `10` | Nombre maximum de connexions dans le pool du runner Oracle (node-oracledb). |
 | `utplsql.oraclePoolIncrement` | `1` | Incrément lors de l'expansion du pool du runner Oracle (node-oracledb). |
 | `utplsql.oraclePoolPingInterval` | `60` | Secondes entre les vérifications de santé des connexions inactives du pool (node-oracledb). `0` = ping à chaque extraction. |
+| `utplsql.oraclePoolCloseAfterRun` | `true` | Closes idle Oracle pool connections when the last run, coverage, export or discovery operation finishes. |
+| `utplsql.trace` | `false` | Emits verbose per-event trace lines in the utPLSQL output channel. |
+| `utplsql.perf.enabled` | `false` | Measures discovery, tree build, run, polling and XML parsing phases. |
+| `utplsql.perf.reportFile` | `""` | Appends each perf measurement as one JSON line to this file. |
 | `utplsql.oracleClientMode` | `thin` | Mode du pilote : `thin` (JavaScript pur, sans client natif) ou `thick` (utilise l'Oracle Instant Client). Utilisez `thick` uniquement pour les bases nécessitant NNE (Native Network Encryption) ; nécessite `utplsql.oracleClientLibDir` et un rechargement de la fenêtre. |
 | `utplsql.oracleClientLibDir` | `""` | Répertoire de l'Oracle Instant Client. Obligatoire lorsque `utplsql.oracleClientMode` vaut `thick` (ex. `C:\oracle\instantclient_23_5`). Fallback: `ORACLE_CLIENT_LIB_DIR`. |
 | Le débogage ne s'arrête pas au point d'arrêt | Package compilé sans infos de débogage, ou grants de débogage manquants | Compilez avec `PLSQL_OPTIMIZE_LEVEL <= 1` (ou `ALTER PACKAGE ... COMPILE DEBUG PLSQL_OPTIMIZE_LEVEL = 1`) et accordez `DEBUG CONNECT SESSION` + `EXECUTE ON SYS.DBMS_DEBUG`. Les points d'arrêt dans `test_*.pkb` peuvent ne pas se déclencher (utPLSQL exécute les tests via SQL dynamique) ; placez-les dans le code testé. |

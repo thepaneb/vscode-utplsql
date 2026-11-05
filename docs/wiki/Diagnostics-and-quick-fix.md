@@ -2,6 +2,8 @@
 
 # Diagnostics and quick-fix
 
+<!-- prd:PRD-120 -->
+
 The extension provides automatic diagnostics to reduce setup friction and
 accelerate the TDD cycle:
 

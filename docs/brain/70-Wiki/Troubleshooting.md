@@ -5,11 +5,13 @@ titulo: "Troubleshooting"
 publicar: docs/wiki/Troubleshooting.md
 origem: ["MOC - Erros","07-diagnostics-and-validation"]
 verificado: 2026-10-31
-regras: ["BR-LOG-001", "BR-CONN-014"]
+regras: ["BR-LOG-001", "BR-CONN-014", "BR-LOG-002"]
 tags: [wiki]
 ---
 
 # Troubleshooting
+
+<!-- prd:PRD-102 -->
 
 <!-- prd:PRD-124 -->
 

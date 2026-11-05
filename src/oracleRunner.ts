@@ -13,7 +13,6 @@ import { t } from './i18n';
 import { parseJUnit } from './junit';
 import { logger } from './logger';
 import { ensureOracleClient } from './oracleClient';
-import type { PerfProbe } from './perf';
 import { sanitizeSchemaPrefix } from './oracleIdentifiers';
 import { pollOutputStream } from './oraclePoll';
 import {
@@ -22,6 +21,7 @@ import {
   buildReporterList,
   buildRunCall,
 } from './oracleRunCall';
+import type { PerfProbe } from './perf';
 import { maskConnection, redactConnection } from './redact';
 import { applyCoverageFromXml, applyResultsFromCases, countResults } from './results';
 import type { TestStateManager } from './state';
@@ -900,17 +900,13 @@ async function executeRunOracleCore(
   } = options;
   const perf = options.perf ?? globalPerfProbe;
   const coverageOptions: OracleCoverageOptions =
-    typeof options.coverage === 'boolean'
-      ? { enabled: options.coverage }
-      : options.coverage;
+    typeof options.coverage === 'boolean' ? { enabled: options.coverage } : options.coverage;
   const execution = options.execution ?? {};
   const coverageEnabledRequested = coverageOptions.enabled;
   const coverageOwner = coverageOptions.owner ?? options.coverageOwner;
   const coverageSchemesCfg = coverageOptions.schemes ?? options.coverageSchemes;
-  const coverageIncludeObjects =
-    coverageOptions.includeObjects ?? options.coverageIncludeObjects;
-  const coverageExcludeObjects =
-    coverageOptions.excludeObjects ?? options.coverageExcludeObjects;
+  const coverageIncludeObjects = coverageOptions.includeObjects ?? options.coverageIncludeObjects;
+  const coverageExcludeObjects = coverageOptions.excludeObjects ?? options.coverageExcludeObjects;
   const coverageIncludeSchemaExpr =
     coverageOptions.includeSchemaExpr ?? options.coverageIncludeSchemaExpr;
   const coverageIncludeObjectExpr =
@@ -922,8 +918,7 @@ async function executeRunOracleCore(
   const coverageHtmlReport = coverageOptions.htmlReport ?? options.coverageHtmlReport;
   const reportRoot = coverageOptions.reportRoot ?? options.reportRoot;
   const onCoverageHtmlReport = coverageOptions.onHtmlReport ?? options.onCoverageHtmlReport;
-  const additionalReporters =
-    options.output?.additionalReporters ?? options.additionalReporters;
+  const additionalReporters = options.output?.additionalReporters ?? options.additionalReporters;
   const tags = execution.tags ?? options.tags;
   const randomOrder = execution.randomOrder ?? options.randomOrder;
   const randomOrderSeed = execution.randomOrderSeed ?? options.randomOrderSeed;
@@ -1229,7 +1224,7 @@ export function mapDbPathsToFiles(covXml: string): string {
   return covXml.replace(
     /filename="(function|procedure|package body|package|type body|type|view|trigger)\s+[\w$#]+\.([\w$#]+)"/g,
     (_match, type: string, name: string) => {
-      const dir = COVERAGE_DIRS[type] ?? `${type}s`;
+      const dir = COVERAGE_DIRS[type];
       return `filename="${dir}/${name}.sql"`;
     },
   );

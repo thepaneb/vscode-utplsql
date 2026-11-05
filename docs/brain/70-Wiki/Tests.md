@@ -5,11 +5,15 @@ titulo: "Tests"
 publicar: docs/wiki/Tests.md
 origem: ["01-test-discovery","02-test-execution","03-results-and-reporting"]
 verificado: 2026-10-31
-regras: ["BR-TEST-001", "BR-TEST-002"]
+regras: ["BR-TEST-001", "BR-TEST-002", "BR-TEST-004", "BR-TEST-005"]
 tags: [wiki]
 ---
 
 # Tests
+
+<!-- prd:PRD-106 --> <!-- prd:PRD-107 --> <!-- prd:PRD-125 --> <!-- prd:PRD-147 -->
+
+O gate `src/test/unit/marketplaceImages.test.ts` valida o manifesto de imagens do Marketplace.
 
 <!-- prd:PRD-125 -->
 

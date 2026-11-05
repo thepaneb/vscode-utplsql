@@ -2,14 +2,15 @@
 tipo: prd
 id: PRD-107
 aliases: [PRD-107]
-status: proposed
+status: completed
 titulo: "Fixture de integração endurecido: usuário sem privilégios e fallbacks"
 versao: "0.20.0"
+docs: ["CHANGELOG", "wiki/Tests.md", "functional/10-development-tooling.md"]
 data: "2026-10-09"
 autor: "Gil Cleber Barboza"
 versao_titulo: "0.20.0 — Observabilidade e desempenho"
-verificado: 2026-10-09
-regras: []
+verificado: 2026-11-05
+regras: ["BR-TEST-004"]
 tags: [prd]
 ---
 
@@ -131,11 +132,25 @@ Na conclusão, criar a regra `BR-TEST-*` ("testes de privilégio/sessão usam
 usuário restrito e fazem skip quando ausente"), com `prds: ["PRD-107"]`,
 `implementacao:` e `testes:`. Enquanto `proposed`, `regras: []`.
 
+## Análise de cobertura (pós-PRD)
+
+- **Unitários:** o fallback `ALL_SOURCE` negado já é coberto em `discovery.test.ts` (não revogável por usuário).
+- **Integração:** `prd107Unpriv.test.ts` cobre usuário só `CREATE SESSION`, DDL negado, `V$SQL` negado, discovery degradando sem grants e observador de `v$session`; `viewCoverageDenied.test.ts` passa a usar o usuário restrito quando disponível.
+- **Matriz:** 23free; o mesmo teste é aplicável ao 11g thick via matriz quando `UTPLSQL_IT_UNPRIV_*` está provisionado.
+- **Ações:** nenhuma lacuna aberta.
+
+## Impacto nas docs
+
+`CHANGELOG`, `wiki/Tests.md` e `functional/10-development-tooling.md` citam `PRD-107`.
+
 ## Conexões
 
 <!-- brain:auto:start:conexoes -->
 - 🗺️ [[MOC - PRDs]]
+- 📐 Regras: [[BR-TEST-004 - Fixture de privilegio e sessao usa usuario restrito e skip quando ausente|BR-TEST-004]]
 - 🔗 PRDs relacionados: [[prd-72-db-test-matrix|PRD-72]] · [[prd-101-connection-pool-lifecycle|PRD-101]]
-- 🔗 Mesma versão (0.20.0): [[prd-101-connection-pool-lifecycle|PRD-101]] · [[prd-102-trace-and-perf-instrumentation|PRD-102]] · [[prd-103-incremental-source-reindex|PRD-103]] · [[prd-106-perf-harness|PRD-106]] · [[prd-120-lean-activation-lazy-setup|PRD-120]] · [[prd-125-thick-full-matrix-ci|PRD-125]] · [[prd-146-attestations-publish|PRD-146]] · [[prd-147-marketplace-listing-page|PRD-147]]
+- 🔗 Mesma versão (0.20.0): [[prd-146-attestations-publish|PRD-146]] · [[prd-147-marketplace-listing-page|PRD-147]]
+- 🎯 RNF1 — Compatível com a matriz Oracle (PRD-72) e com `.env`/`UTPLSQL_CONN`. → [[BR-TEST-004 - Fixture de privilegio e sessao usa usuario restrito e skip quando ausente|BR-TEST-004]]
+- 🎯 RNF2 — Sem novas dependências. → [[BR-TEST-004 - Fixture de privilegio e sessao usa usuario restrito e skip quando ausente|BR-TEST-004]]
 - 🚀 ⬅️ release anterior: [[prd-127-vscode-floor-1-125|PRD-127 (0.19.0)]] · ➡️ próxima release: [[prd-128-event-bus-internal|PRD-128 (0.21.0)]]
 <!-- brain:auto:end -->

@@ -76,6 +76,7 @@ SORT id ASC
 - [[TST - lintScope.test.ts]] — `TST-lintScope.test.ts`
 - [[TST - logger.test.ts]] — `TST-logger.test.ts`
 - [[TST - manifestDebugger.test.ts]] — `TST-manifestDebugger.test.ts`
+- [[TST - marketplaceImages.test.ts]] — `TST-marketplaceImages.test.ts`
 - [[TST - matching.test.ts]] — `TST-matching.test.ts`
 - [[TST - matrixConfig.test.ts]] — `TST-matrixConfig.test.ts`
 - [[TST - multiRootE2E.test.ts]] — `TST-multiRootE2E.test.ts`
@@ -86,13 +87,19 @@ SORT id ASC
 - [[TST - oracledbDefaultPresent.test.ts]] — `TST-oracledbDefaultPresent.test.ts`
 - [[TST - oracleIdentifiers.test.ts]] — `TST-oracleIdentifiers.test.ts`
 - [[TST - oraclePoll.test.ts]] — `TST-oraclePoll.test.ts`
+- [[TST - oraclePoolActivity.test.ts]] — `TST-oraclePoolActivity.test.ts`
 - [[TST - oracleRunCall.test.ts]] — `TST-oracleRunCall.test.ts`
 - [[TST - oracleRunner.test.ts]] — `TST-oracleRunner.test.ts`
 - [[TST - oracleRunnerReporters.test.ts]] — `TST-oracleRunnerReporters.test.ts`
 - [[TST - oracleRunnerTns.test.ts]] — `TST-oracleRunnerTns.test.ts`
 - [[TST - packageTarget.test.ts]] — `TST-packageTarget.test.ts`
+- [[TST - perf.test.ts]] — `TST-perf.test.ts`
+- [[TST - perfFixture.test.ts]] — `TST-perfFixture.test.ts`
+- [[TST - perfHarness.test.ts]] — `TST-perfHarness.test.ts`
 - [[TST - plsqlDeclarations.test.ts]] — `TST-plsqlDeclarations.test.ts`
 - [[TST - prd015ExtraE2E.test.ts]] — `TST-prd015ExtraE2E.test.ts`
+- [[TST - prd101PoolClose.test.ts]] — `TST-prd101PoolClose.test.ts`
+- [[TST - prd107Unpriv.test.ts]] — `TST-prd107Unpriv.test.ts`
 - [[TST - prd70-sqlplus.test.ts]] — `TST-prd70-sqlplus.test.ts`
 - [[TST - profileCommands.test.ts]] — `TST-profileCommands.test.ts`
 - [[TST - profileSecretStorageE2E.test.ts]] — `TST-profileSecretStorageE2E.test.ts`

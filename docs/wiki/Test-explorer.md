@@ -2,6 +2,8 @@
 
 # Test Explorer
 
+<!-- prd:PRD-103 -->
+
 The extension registers a native VSCode **Test Explorer** (`utplsql`) — suites and
 tests appear in the **Testing** view (flask icon in the sidebar) and use all the
 standard test UI: run profiles, status icons, per-test output and coverage.

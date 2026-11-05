@@ -4,8 +4,8 @@ import { beforeEach, test } from 'node:test';
 import { readConfig } from '../../config';
 import {
   beginOracleActivity,
-  closeOraclePool,
   closeIdleOraclePool,
+  closeOraclePool,
   ensurePool,
 } from '../../oracleRunner';
 import { __resetConfigValues, __setConfigValue } from '../vscode-stub';
@@ -13,6 +13,7 @@ import { __resetConfigValues, __setConfigValue } from '../vscode-stub';
 interface FakePool {
   connectionsInUse: number;
   closed: number[];
+  closeThrows?: boolean;
   close(drainTime: number): Promise<void>;
 }
 
@@ -27,6 +28,7 @@ function makeFakeDb(): { db: FakeDb; pool: FakePool } {
     closed: [],
     async close(drainTime: number) {
       pool.closed.push(drainTime);
+      if (pool.closeThrows) throw new Error('close failed');
     },
   };
   const db: FakeDb = {
@@ -95,6 +97,18 @@ test('PRD-101: end duplicado conta uma vez', async () => {
   await activity.end();
   await activity.end();
 
+  assert.deepStrictEqual(pool.closed, [0]);
+});
+
+test('PRD-101: falha ao fechar não lança e não derruba a operação', async () => {
+  __setConfigValue('oraclePoolCloseAfterRun', true);
+  const { db, pool } = makeFakeDb();
+  const cfg = readConfig();
+  await ensurePool(db as never, CONN, cfg);
+  pool.closeThrows = true;
+
+  const activity = beginOracleActivity(cfg);
+  await assert.doesNotReject(() => activity.end());
   assert.deepStrictEqual(pool.closed, [0]);
 });
 

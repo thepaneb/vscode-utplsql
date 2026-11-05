@@ -2,6 +2,10 @@
 
 # Tests
 
+<!-- prd:PRD-106 --> <!-- prd:PRD-107 --> <!-- prd:PRD-125 --> <!-- prd:PRD-147 -->
+
+O gate `src/test/unit/marketplaceImages.test.ts` valida o manifesto de imagens do Marketplace.
+
 <!-- prd:PRD-125 -->
 
 Overview of the extension's tests and how to run them.

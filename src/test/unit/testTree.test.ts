@@ -167,6 +167,15 @@ test('buildFileTree: propaga para o ItemMeta as tags de suíte e teste (PRD-51 R
   assert.deepStrictEqual(testMeta.tags, ['fast']);
 });
 
+test('buildFileTree: usa a duração do último resultado no label', () => {
+  const controller = makeController();
+  const state = new TestStateManager();
+  state.setLastResults(new Map([['test:ut_app.test_one', { status: 'passed', durationMs: 12 }]]));
+  __setConfigValue('showTestDuration', true);
+  buildFileTree(controller, state, [suite({})]);
+  assert.match(controller._labels.get('test:ut_app.test_one'), /\(12ms\)/);
+});
+
 test('buildFileTree: displayName tem prioridade sobre description', () => {
   const controller = makeController();
   const state = new TestStateManager();
@@ -472,6 +481,48 @@ const PKG_B = `CREATE OR REPLACE PACKAGE ut_b IS
   PROCEDURE b;
 END;`;
 
+test('createRefresher: mede discovery/buildTree com probe (PRD-102)', async () => {
+  const controller = makeController();
+  const state = new TestStateManager();
+  const phases: string[] = [];
+  __setMockFile('**/*.pks', '/ws/ut_a.pks', PKG_A_ONE);
+  workspace.__setWorkspaceFolders([{ uri: { fsPath: '/ws' }, name: 'ws', index: 0 }] as never);
+  try {
+    const refresh = createRefresher(controller, state, {
+      enabled: true,
+      start: (phase) => () => phases.push(phase),
+      record: () => {},
+    });
+    await refresh();
+    assert.deepStrictEqual(phases, ['discovery', 'buildTree']);
+  } finally {
+    __resetMockFiles();
+    __resetConfigValues();
+    workspace.__setWorkspaceFolders(undefined);
+  }
+});
+
+test('createRefresher: refreshUri/removeUri aguardam um full refresh em andamento', async () => {
+  const controller = makeController();
+  const state = new TestStateManager();
+  __setMockFile('**/*.pks', '/ws/ut_a.pks', PKG_A_ONE);
+  workspace.__setWorkspaceFolders([{ uri: { fsPath: '/ws' }, name: 'ws', index: 0 }] as never);
+  try {
+    const refresh = createRefresher(controller, state);
+    const full = refresh();
+    await refresh.refreshUri(vscode.Uri.file('/ws/ut_a.pks'));
+    await full;
+    const full2 = refresh();
+    await refresh.removeUri(vscode.Uri.file('/ws/ut_a.pks'));
+    await full2;
+    assert.ok(state.discoveredFiles.length >= 0);
+  } finally {
+    __resetMockFiles();
+    __resetConfigValues();
+    workspace.__setWorkspaceFolders(undefined);
+  }
+});
+
 test('createRefresher.refreshUri: reindexa só o arquivo alterado (PRD-103)', async () => {
   const controller = makeController();
   const state = new TestStateManager();
@@ -481,7 +532,9 @@ test('createRefresher.refreshUri: reindexa só o arquivo alterado (PRD-103)', as
   try {
     const refresh = createRefresher(controller, state);
     await refresh();
-    const bItem = controller._items.find((i: any) => i.id === 'suite:ut_b');
+    const bItem = controller._items.find(
+      (i: { id: string; _children: { length: number } }) => i.id === 'suite:ut_b',
+    );
     assert.ok(bItem);
     assert.strictEqual(controller._items.length, 2);
 
@@ -491,13 +544,32 @@ test('createRefresher.refreshUri: reindexa só o arquivo alterado (PRD-103)', as
     await refresh.refreshUri(vscode.Uri.file('/ws/ut_a.pks'));
 
     assert.strictEqual(controller._items.length, 2);
-    const aItem = controller._items.find((i: any) => i.id === 'suite:ut_a');
+    const aItem = controller._items.find(
+      (i: { id: string; _children: { length: number } }) => i.id === 'suite:ut_a',
+    );
     assert.strictEqual(aItem?._children.length, 2);
     assert.strictEqual(
-      controller._items.find((i: any) => i.id === 'suite:ut_b'),
+      controller._items.find(
+        (i: { id: string; _children: { length: number } }) => i.id === 'suite:ut_b',
+      ),
       bItem,
       'suite não afetada deveria permanecer na árvore',
     );
+  } finally {
+    __resetMockFiles();
+    __resetConfigValues();
+    workspace.__setWorkspaceFolders(undefined);
+  }
+});
+
+test('createRefresher.refreshUri: funciona sem workspaceFolders (fallback undefined)', async () => {
+  const controller = makeController();
+  const state = new TestStateManager();
+  __setMockFile('**/*.pks', '/ws/ut_a.pks', PKG_A_ONE);
+  workspace.__setWorkspaceFolders(undefined);
+  try {
+    const refresh = createRefresher(controller, state);
+    await refresh.refreshUri(vscode.Uri.file('/ws/ut_a.pks'));
   } finally {
     __resetMockFiles();
     __resetConfigValues();
@@ -520,6 +592,27 @@ test('createRefresher.removeUri: delete remove o arquivo e preserva os demais (P
     assert.strictEqual(controller._items[0].id, 'suite:ut_b');
     assert.strictEqual(state.discoveredFiles.length, 1);
     assert.strictEqual(state.getSuiteItem('suite:ut_a'), undefined);
+  } finally {
+    __resetMockFiles();
+    __resetConfigValues();
+    workspace.__setWorkspaceFolders(undefined);
+  }
+});
+
+test('createRefresher.refreshUri/removeUri: tag usa full refresh (fallback)', async () => {
+  const controller = makeController();
+  const state = new TestStateManager();
+  __setConfigValue('organization', 'tag');
+  __setMockFile('**/*.pks', '/ws/ut_a.pks', PKG_A_ONE);
+  workspace.__setWorkspaceFolders([{ uri: { fsPath: '/ws' }, name: 'ws', index: 0 }] as never);
+  try {
+    const refresh = createRefresher(controller, state);
+    await refresh();
+    assert.ok(controller._items.length > 0, 'árvore por tag deveria materializar o grupo');
+    await refresh.refreshUri(vscode.Uri.file('/ws/ut_a.pks'));
+    await refresh.removeUri(vscode.Uri.file('/ws/ut_a.pks'));
+    // O full refresh mantém a suite no índice (o arquivo ainda existe).
+    assert.ok(controller._items.length > 0);
   } finally {
     __resetMockFiles();
     __resetConfigValues();

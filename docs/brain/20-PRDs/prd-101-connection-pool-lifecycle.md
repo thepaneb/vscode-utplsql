@@ -2,14 +2,15 @@
 tipo: prd
 id: PRD-101
 aliases: [PRD-101]
-status: proposed
+status: completed
 titulo: "Ciclo de vida de conexões: fechar pools ociosos após a execução"
 versao: "0.20.0"
+docs: ["CHANGELOG", "README", "wiki/Configuration.md", "wiki/Connection.md"]
 data: "2026-10-09"
 autor: "Gil Cleber Barboza"
 versao_titulo: "0.20.0 — Observabilidade e desempenho"
-verificado: 2026-10-09
-regras: []
+verificado: 2026-11-05
+regras: ["BR-CONN-023"]
 tags: [prd]
 ---
 
@@ -142,11 +143,25 @@ Na conclusão, criar a regra `BR-CONN-*` ("pool ocioso é fechado ao fim da
 execução; nunca conexão em uso"), com `prds: ["PRD-101"]`, `implementacao:` e
 `testes:`. Enquanto `proposed`, `regras: []`.
 
+## Análise de cobertura (pós-PRD)
+
+- **Unitários:** `oraclePoolActivity.test.ts` cobre ref-count, `end` duplicado, `connectionsInUse`, setting off e remoção do cache antes do close.
+- **Integração:** `prd101PoolClose.test.ts` verifica a sessão do pool em `v$session` com o observador da PRD-107; o thick-full desliga o setting para preservar os testes de timeout/pool aquecido.
+- **Matriz:** 23free thin; 11g thick coberto pelo eixo thick quando disponível; 18c/21c/19ee executam o mesmo caminho de pool.
+- **Ações:** ampliar o teste de sessão para 11g no eixo thick-full (já habilitado pelo mesmo helper).
+
+## Impacto nas docs
+
+`CHANGELOG`, README (setting `utplsql.oraclePoolCloseAfterRun`), `wiki/Configuration.md` e `wiki/Connection.md` citam `PRD-101`.
+
 ## Conexões
 
 <!-- brain:auto:start:conexoes -->
 - 🗺️ [[MOC - PRDs]]
-- 🔗 PRDs relacionados: [[prd-34-multi-connection-profiles|PRD-34]] · [[prd-38-connection-pooling|PRD-38]] · [[prd-66-connection-robustness-logging|PRD-66]] · [[prd-82-tns-wallet|PRD-82]] · [[prd-95-esm-es2023-node22|PRD-95]]
-- 🔗 Mesma versão (0.20.0): [[prd-102-trace-and-perf-instrumentation|PRD-102]] · [[prd-103-incremental-source-reindex|PRD-103]] · [[prd-106-perf-harness|PRD-106]] · [[prd-107-unprivileged-fixture|PRD-107]] · [[prd-120-lean-activation-lazy-setup|PRD-120]] · [[prd-125-thick-full-matrix-ci|PRD-125]] · [[prd-146-attestations-publish|PRD-146]] · [[prd-147-marketplace-listing-page|PRD-147]]
+- 📐 Regras: [[BR-CONN-023 - Pool ocioso fecha ao fim da operacao e nunca conexao em uso|BR-CONN-023]]
+- 🔗 PRDs relacionados: [[prd-34-multi-connection-profiles|PRD-34]] · [[prd-38-connection-pooling|PRD-38]] · [[prd-66-connection-robustness-logging|PRD-66]] · [[prd-82-tns-wallet|PRD-82]] · [[prd-95-esm-es2023-node22|PRD-95]] · [[prd-107-unprivileged-fixture|PRD-107]]
+- 🔗 Mesma versão (0.20.0): [[prd-146-attestations-publish|PRD-146]] · [[prd-147-marketplace-listing-page|PRD-147]]
+- 🎯 RNF1 — Com o setting **desligado**, comportamento idêntico ao atual (sem → [[BR-CONN-023 - Pool ocioso fecha ao fim da operacao e nunca conexao em uso|BR-CONN-023]]
+- 🎯 RNF2 — Sem novas dependências. → [[BR-CONN-023 - Pool ocioso fecha ao fim da operacao e nunca conexao em uso|BR-CONN-023]]
 - 🚀 ⬅️ release anterior: [[prd-127-vscode-floor-1-125|PRD-127 (0.19.0)]] · ➡️ próxima release: [[prd-128-event-bus-internal|PRD-128 (0.21.0)]]
 <!-- brain:auto:end -->

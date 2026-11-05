@@ -5,13 +5,13 @@ titulo: "Architecture"
 publicar: docs/wiki/Architecture.md
 origem: ["MOC - Arquitetura"]
 verificado: 2026-10-31
-regras: ["SEC-014", "BR-EXEC-017", "BR-CONN-020"]
+regras: ["SEC-014", "BR-EXEC-017", "BR-CONN-020", "BR-CONN-023", "BR-LOG-002", "BR-PARSE-020"]
 tags: [wiki]
 ---
 
 # Architecture
 
-<!-- prd:PRD-110 --> <!-- prd:PRD-111 -->
+<!-- prd:PRD-101 --> <!-- prd:PRD-102 --> <!-- prd:PRD-103 --> <!-- prd:PRD-120 --> <!-- prd:PRD-110 --> <!-- prd:PRD-111 -->
 
 Overview of the extension's internal architecture for contributors.
 
@@ -34,7 +34,10 @@ functions live in `src/results.ts` (`applyResultsFromCases`,
   `buildRunCall`); `oraclePoll.ts`: the 200ms buffer poll. `executeRunOracle` is
   the orchestrator (PRD-111).
 - **Connection pooling (v0.10.0)**: managed pool (`ensurePool`), recreated if
-  the connection changes, closed in `deactivate()` with a 10s drain.
+  the connection changes, closed in `deactivate()` with a 10s drain. With
+  `utplsql.oraclePoolCloseAfterRun` (default `true`, PRD-101), the last
+  run/coverage/export/discovery closes an idle pool immediately; connections in
+  use are never interrupted.
 - `discoverUtplsqlSchema`: `UT3.` prefix via `ALL_SYNONYMS` (shared install).
 
 ### Build (v0.11.0)
@@ -68,7 +71,7 @@ bundled.
 | `i18n.ts`, `i18nLocales.ts` — localization (24 locales) | `quickfix.ts` — setup diagnostics + quick-fix |
 | `charset.ts` — byte→string decoding (utf8/latin1/win1252) | `compileForDebug.ts` — compile object with debug info |
 | `charsetSupport.ts` — legacy-charset detection (euro preserved) | `compilationDiagnostics.ts` — ALL_ERRORS → Problems Panel |
-| `debounce.ts` — coalescing helper | `dbSourceProvider.ts` — `utplsql-db:` virtual documents |
+| `debounce.ts` — coalescing helper (global + per-key, PRD-103); `perf.ts` — probe de fases/JSONL opt-in (PRD-102) | `dbSourceProvider.ts` — `utplsql-db:` virtual documents |
 | `logger.ts` — logging (no `vscode`); `oracleIdentifiers.ts` — validação do prefixo de schema (`UT3.`); `redact.ts` — `maskConnection`/`redactConnection` (PRD-110) | `connectionProfiles.ts` — connection profiles |
 | | `decorations.ts` — inline ✓/✗/⚠ decorations |
 | | `statusBar.ts` — status bar indicator |
@@ -110,6 +113,9 @@ testable with `node --test` without any setup. Full list: `src/*.ts`.
 | `utplsql.coverage.htmlReport` | `cfg.coverageHtmlReport` | `oracleRunner.ts` grava `test-results/coverage.html`; `runner.ts` notifica após o `run.end()` |
 | `utplsql.discovery.source` | `cfg.discoverySource` | `auto` \| `file` \| `database` — DB-first discovery (`testTree.ts`/`discovery.ts`) |
 | `utplsql.oraclePoolMin/Max/Increment/PingInterval` | `cfg.oraclePool*` | `oracleRunner.ts` (`ensurePool`) |
+| `utplsql.oraclePoolCloseAfterRun` | `cfg.oraclePoolCloseAfterRun` | `oracleRunner.ts` (`beginOracleActivity`/`closeIdleOraclePool`, PRD-101) |
+| `utplsql.trace` | `cfg.trace` | `logger.ts` (`setTraceEnabled`/`logger.trace`, PRD-102) |
+| `utplsql.perf.enabled`/`perf.reportFile` | `cfg.perfEnabled`/`cfg.perfReportFile` | `extension.ts` + `perf.ts` (probe de fases/JSONL, PRD-102) |
 | `utplsql.oracleClientMode`/`oracleClientLibDir`/`oracleClientConfigDir` | `cfg.oracleClient*` | `oracleClient.ts` (`ensureOracleClient`, called from `ensurePool`) |
 | `utplsql.connections.tnsAdminPath` | `cfg.tnsAdminPath` | `oracleRunner.ts` (`resolveConnectString` → `tnsnames.ora`); fallback: SQL Developer user path, `TNS_ADMIN` |
 | `utplsql.profiles` (`walletLocation`) | `cfg.walletLocation`/`cfg.walletPassword` | `oracleRunner.ts` (`ensurePool` → `createPool`); password in SecretStorage |

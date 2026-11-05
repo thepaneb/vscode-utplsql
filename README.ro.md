@@ -192,6 +192,10 @@ Extensia se conectează direct prin Oracle, citește rapoartele (JUnit + Coverag
 | `utplsql.oraclePoolMax` | `10` | Conexiuni maxime în pool-ul runner-ului Oracle (node-oracledb). |
 | `utplsql.oraclePoolIncrement` | `1` | Increment la extinderea pool-ului runner-ului Oracle (node-oracledb). |
 | `utplsql.oraclePoolPingInterval` | `60` | Secunde între verificările de sănătate ale conexiunilor idle din pool (node-oracledb). `0` = ping la fiecare checkout. |
+| `utplsql.oraclePoolCloseAfterRun` | `true` | Closes idle Oracle pool connections when the last run, coverage, export or discovery operation finishes. |
+| `utplsql.trace` | `false` | Emits verbose per-event trace lines in the utPLSQL output channel. |
+| `utplsql.perf.enabled` | `false` | Measures discovery, tree build, run, polling and XML parsing phases. |
+| `utplsql.perf.reportFile` | `""` | Appends each perf measurement as one JSON line to this file. |
 | `utplsql.oracleClientMode` | `thin` | Modul driverului: `thin` (JavaScript pur, fără client nativ) sau `thick` (folosește Oracle Instant Client). Folosiți `thick` doar pentru bazele care necesită NNE (Native Network Encryption); necesită `utplsql.oracleClientLibDir` și reîncărcarea ferestrei. |
 | `utplsql.oracleClientLibDir` | `""` | Directorul Oracle Instant Client. Obligatoriu când `utplsql.oracleClientMode` este `thick` (ex. `C:\oracle\instantclient_23_5`). Fallback: `ORACLE_CLIENT_LIB_DIR`. |
 | Debug nu se oprește la punctul de întrerupere | Pachet fără informații de depanare sau granturi de depanare lipsă | Compilați cu `PLSQL_OPTIMIZE_LEVEL <= 1` (sau `ALTER PACKAGE ... COMPILE DEBUG PLSQL_OPTIMIZE_LEVEL = 1`) și acordați `DEBUG CONNECT SESSION` + `EXECUTE ON SYS.DBMS_DEBUG`. Punctele de întrerupere din `test_*.pkb` pot să nu se declanșeze (utPLSQL rulează testele prin SQL dinamic); puneți-le în codul testat. |

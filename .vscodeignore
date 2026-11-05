@@ -1,5 +1,7 @@
 .vscode/**
 .vscode-test/**
+README.md
+README.*.md
 .vscode-test*
 esbuild.config.mjs
 docs/**

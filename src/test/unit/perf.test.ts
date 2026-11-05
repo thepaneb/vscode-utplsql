@@ -39,6 +39,12 @@ test('createPerfProbe: mede a fase e serializa uma linha JSONL', () => {
   assert.ok(!line.includes('\n'));
 });
 
+test('createPerfProbe: enabled sem sink e ms inválido não lançam', () => {
+  const probe = createPerfProbe({ enabled: true });
+  assert.doesNotThrow(() => probe.record('run', Number.NaN));
+  assert.doesNotThrow(() => probe.start('poll')());
+});
+
 test('createPerfProbe: aceita metadados e não lança quando o sink falha', () => {
   const samples: PerfSample[] = [];
   const throwing = createPerfProbe({

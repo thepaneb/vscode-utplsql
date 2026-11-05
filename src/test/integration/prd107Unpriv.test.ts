@@ -14,6 +14,11 @@ describeUnpriv('PRD-107: fixture sem privilégios', () => {
   let db: typeof import('oracledb');
   let conn: import('oracledb').Connection | undefined;
 
+  function activeConn(): import('oracledb').Connection {
+    assert.ok(conn, 'conexão restrita não inicializada');
+    return conn;
+  }
+
   before(async function () {
     this.timeout(120_000);
     const ext = vscode.extensions.getExtension('paneb.vscode-utplsql');
@@ -31,7 +36,7 @@ describeUnpriv('PRD-107: fixture sem privilégios', () => {
 
   it('usuário restrito não consegue executar DDL', async () => {
     await assert.rejects(
-      conn!.execute('CREATE TABLE UTPLSQL_UNPRIV_DDL (id NUMBER)'),
+      activeConn().execute('CREATE TABLE UTPLSQL_UNPRIV_DDL (id NUMBER)'),
       /ORA-/,
       'DDL deveria ser negado para o usuário restrito',
     );
@@ -41,7 +46,7 @@ describeUnpriv('PRD-107: fixture sem privilégios', () => {
     this.timeout(60_000);
     let denied = false;
     try {
-      await conn!.execute('SELECT sql_text FROM v$sql WHERE ROWNUM = 1');
+      await activeConn().execute('SELECT sql_text FROM v$sql WHERE ROWNUM = 1');
     } catch {
       denied = true;
     }
@@ -56,11 +61,7 @@ describeUnpriv('PRD-107: fixture sem privilégios', () => {
       name: 'root',
       index: 0,
     } as vscode.WorkspaceFolder;
-    const suites = await discoverSchemaFromConn(
-      conn as never,
-      'UTPLSQL_TEST',
-      folder as never,
-    );
+    const suites = await discoverSchemaFromConn(conn as never, 'UTPLSQL_TEST', folder as never);
     assert.ok(Array.isArray(suites));
     assert.strictEqual(suites.length, 0, 'sem grants, o schema de teste não é visível');
   });

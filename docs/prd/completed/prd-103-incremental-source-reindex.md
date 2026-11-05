@@ -4,7 +4,7 @@
 
 | Campo | Valor |
 |---|---|
-| Status | Proposto |
+| Status | Concluído |
 | Autor | Gil Cleber Barboza |
 | Data | 2026-10-09 |
 | Componente | Extensão `paneb.vscode-utplsql` |
@@ -122,3 +122,14 @@ grandes, criar/editar/apagar um arquivo não deve reindexar todo o workspace.
 Na conclusão, criar a regra `BR-PARSE-*` ("mudança de arquivo reindexa só o URI
 alterado; caso incerto faz full refresh"), com `prds: ["PRD-103"]`,
 `implementacao:` e `testes:`. Enquanto `proposed`, `regras: []`.
+
+## Análise de cobertura (pós-PRD)
+
+- **Unitários:** `debounce.test.ts` cobre coalescência por chave/cancel; `testTree.test.ts` cobre `refreshUri`, preservação de outra suite, remoção e arquivo que deixou de ser suite.
+- **Integração:** o wiring do watcher é coberto em `extensionActivation.test.ts`; eventos sem URI continuam fazendo full refresh.
+- **Matriz:** sem comportamento específico de banco; 23free smoke preserva a árvore e a descoberta.
+- **Ações:** o incremental é limitado ao modo `file`; `tag`/`schema` usam full refresh por design.
+
+## Impacto nas docs
+
+`CHANGELOG`, `wiki/Test-explorer.md` e `wiki/Architecture.md` citam `PRD-103`.

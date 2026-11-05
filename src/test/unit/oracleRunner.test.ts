@@ -667,6 +667,36 @@ test('discoverUtplsqlSchema: erro de acesso retorna vazio', async () => {
 
 // ── mapDbPathsToFiles ────────────────────────────────────────────────
 
+test('checkCompilationErrors: aceita rows em array e em objeto', async () => {
+  const errors = await checkCompilationErrors(
+    {
+      execute: async () => ({
+        rows: [
+          ['PKG_A', 'PACKAGE', 10, 2, 'missing'],
+          { NAME: 'PKG_B', TYPE: 'PROCEDURE', LINE: 3, POSITION: 1, TEXT: 'bad' },
+        ],
+      }),
+    },
+    'APP',
+  );
+  assert.deepStrictEqual(errors, [
+    { name: 'PKG_A', type: 'PACKAGE', line: 10, position: 2, text: 'missing' },
+    { name: 'PKG_B', type: 'PROCEDURE', line: 3, position: 1, text: 'bad' },
+  ]);
+});
+
+test('checkCompilationErrors: rows ausentes e valores nulos usam defaults', async () => {
+  assert.deepStrictEqual(await checkCompilationErrors({ execute: async () => ({}) }, 'APP'), []);
+  const errors = await checkCompilationErrors(
+    { execute: async () => ({ rows: [[undefined], {}] }) },
+    'APP',
+  );
+  assert.deepStrictEqual(errors, [
+    { name: '', type: '', line: 0, position: 0, text: '' },
+    { name: '', type: '', line: 0, position: 0, text: '' },
+  ]);
+});
+
 test('mapDbPathsToFiles: mapeia tipo para pasta', () => {
   const xml = `<coverage><filename="package body APP.CALC" /><filename="package APP.CALC" /><filename="function APP.FN1" /><filename="procedure APP.PR1" /><filename="trigger APP.TR1" /><filename="type body APP.TY1" /><filename="view APP.VW1" /></coverage>`;
   const mapped = mapDbPathsToFiles(xml);
@@ -799,6 +829,12 @@ test('executeRunOracle: fluxo feliz aplica resultados e info no output', async (
   const run = makeRun();
   const { item, metaMap } = makeLeaf();
   let complete: number[] | undefined;
+  const phases: string[] = [];
+  const probe = {
+    enabled: true,
+    start: (phase: string) => () => phases.push(phase),
+    record: (phase: string) => phases.push(phase),
+  };
   try {
     await executeRunOracle(
       {
@@ -809,6 +845,7 @@ test('executeRunOracle: fluxo feliz aplica resultados e info no output', async (
         run,
         leafTests: [item],
         state: makeState(metaMap),
+        perf: probe as never,
         onComplete: (p, f, s, e, ms) => {
           complete = [p, f, s, e, ms];
         },
@@ -822,6 +859,7 @@ test('executeRunOracle: fluxo feliz aplica resultados e info no output', async (
 
   assert.strictEqual(run.passedList.length, 1);
   assert.strictEqual(complete?.[0], 1);
+  for (const phase of ['run', 'poll', 'parseXml']) assert.ok(phases.includes(phase));
   const out = run.output.join('\n');
   assert.match(out, /Oracle runner/);
   assert.ok(out.includes('Doc output'), 'deveria streamar o reporter de documentação');
@@ -842,7 +880,7 @@ test('executeRunOracle: export usa só o reporter escolhido e devolve a saída',
         run,
         leafTests: [item],
         state: makeState(metaMap),
-        exportReporter: { name: 'ut_documentation_reporter' },
+        export: { reporter: { name: 'ut_documentation_reporter' } },
       },
       neverCancel as never,
       async () => mod as never,
@@ -1114,6 +1152,63 @@ test('executeRunOracle: cobertura usa bind UT_VARCHAR2_LIST para schemes', async
     type: 'UT_VARCHAR2_LIST',
     val: ['app'],
   });
+});
+
+test('executeRunOracle: aceita coverage/execution/output agrupados (PRD-111 RF2)', async () => {
+  const { mod } = makeOracleRunFake({ buffer: [JUNIT_XML] });
+  const run = makeRun();
+  const { item, metaMap } = makeLeaf();
+  try {
+    await executeRunOracle(
+      {
+        connection: 'u/p@//h:1521/s',
+        pathArgs: ['pkg'],
+        coverage: { enabled: false },
+        execution: { tags: 'fast', randomOrder: false, dbmsOutput: false, timeoutMinutes: 5 },
+        output: { additionalReporters: [] },
+        sourcePath: 'install',
+        run,
+        leafTests: [item],
+        state: makeState(metaMap),
+      },
+      neverCancel as never,
+      async () => mod as never,
+    );
+  } finally {
+    await closeOraclePool();
+  }
+  assert.strictEqual(run.passedList.length, 1);
+});
+
+test('executeRunOracle: cobertura pedida sem reporter sinaliza onCoverageResult(false)', async () => {
+  const { mod } = makeOracleRunFake({
+    buffer: [JUNIT_XML],
+    reporters: ['UT_DOCUMENTATION_REPORTER'],
+  });
+  const run = makeRun();
+  const { item, metaMap } = makeLeaf();
+  let generated: boolean | undefined;
+  try {
+    await executeRunOracle(
+      {
+        connection: 'u/p@//h:1521/s',
+        pathArgs: ['pkg'],
+        coverage: true,
+        sourcePath: 'install',
+        run,
+        leafTests: [item],
+        state: makeState(metaMap),
+        onCoverageResult: (value) => {
+          generated = value;
+        },
+      },
+      neverCancel as never,
+      async () => mod as never,
+    );
+  } finally {
+    await closeOraclePool();
+  }
+  assert.strictEqual(generated, false);
 });
 
 test('executeRunOracle: sem cobertura envia a_coverage_schemes => null (sem bind)', async () => {

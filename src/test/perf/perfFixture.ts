@@ -29,9 +29,9 @@ function assertPrefix(prefix: string): string {
 
 /** Quantidade de testes gerada (o modo não altera a contagem). */
 export function expectedTestCount(options: PerfFixtureOptions): number {
-  return assertPositive(options.packages, 'packages') * assertPositive(
-    options.testsPerPackage,
-    'testsPerPackage',
+  return (
+    assertPositive(options.packages, 'packages') *
+    assertPositive(options.testsPerPackage, 'testsPerPackage')
   );
 }
 
@@ -47,11 +47,7 @@ export function generatePerfSql(options: PerfFixtureOptions): string {
   const seed = Number.isInteger(options.seed) ? Number(options.seed) : 0;
   const mode = options.mode ?? 'mixed';
   const failMode =
-    mode === 'tree'
-      ? 'false'
-      : mode === 'full'
-        ? 'true'
-        : `mod(i * 31 + j * 17 + ${seed}, 10) = 0`;
+    mode === 'tree' ? 'false' : mode === 'full' ? 'true' : `mod(i * 31 + j * 17 + ${seed}, 10) = 0`;
 
   return `
 DECLARE
