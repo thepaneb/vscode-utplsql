@@ -192,11 +192,21 @@ export async function executeRun(
     const oracleOpts: OracleRunOptions = {
       connection,
       pathArgs: [...pathArgs],
-      coverage,
-      coverageHtmlReport: coverage && cfg.coverageHtmlReport,
-      reportRoot: roots[0],
-      onCoverageHtmlReport: (filePath) => {
-        htmlReportPath = filePath;
+      coverage: {
+        enabled: coverage,
+        htmlReport: coverage && cfg.coverageHtmlReport,
+        reportRoot: roots[0],
+        onHtmlReport: (filePath) => {
+          htmlReportPath = filePath;
+        },
+        owner: cfg.coverageOwner,
+        schemes: cfg.coverageSchemes,
+        includeObjects: cfg.coverageIncludeObjects,
+        excludeObjects: cfg.coverageExcludeObjects,
+        includeSchemaExpr: cfg.coverageIncludeSchemaExpr,
+        includeObjectExpr: cfg.coverageIncludeObjectExpr,
+        excludeSchemaExpr: cfg.coverageExcludeSchemaExpr,
+        excludeObjectExpr: cfg.coverageExcludeObjectExpr,
       },
       sourcePath: cfg.sourcePath,
       run,
@@ -208,21 +218,15 @@ export async function executeRun(
         else setupValidator.addCoverageDiagnostic();
       },
       folders,
-      additionalReporters: cfg.additionalReporters,
-      tags: cfg.tags,
-      randomOrder: cfg.randomOrder,
-      randomOrderSeed: cfg.randomOrderSeed,
-      coverageOwner: cfg.coverageOwner,
-      coverageSchemes: cfg.coverageSchemes,
-      coverageIncludeObjects: cfg.coverageIncludeObjects,
-      coverageExcludeObjects: cfg.coverageExcludeObjects,
-      coverageIncludeSchemaExpr: cfg.coverageIncludeSchemaExpr,
-      coverageIncludeObjectExpr: cfg.coverageIncludeObjectExpr,
-      coverageExcludeSchemaExpr: cfg.coverageExcludeSchemaExpr,
-      coverageExcludeObjectExpr: cfg.coverageExcludeObjectExpr,
-      dbmsOutput: cfg.dbmsOutput,
-      timeoutMinutes: cfg.timeoutMinutes,
-      exportReporter,
+      execution: {
+        tags: cfg.tags,
+        randomOrder: cfg.randomOrder,
+        randomOrderSeed: cfg.randomOrderSeed,
+        dbmsOutput: cfg.dbmsOutput,
+        timeoutMinutes: cfg.timeoutMinutes,
+      },
+      output: { additionalReporters: cfg.additionalReporters },
+      ...(exportReporter ? { export: { reporter: exportReporter } } : {}),
     };
     exportText = await executeRunOracle(oracleOpts, token);
     if (cfg.sqlCoverageEnabled && !exporting) {

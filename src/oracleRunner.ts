@@ -501,19 +501,63 @@ export async function checkCompilationErrors(
   }
 }
 
+export interface OracleCoverageOptions {
+  /** Se true, coleta e aplica cobertura Cobertura. */
+  enabled: boolean;
+  /** Se true, gera o relatório HTML de cobertura (PRD-108). */
+  htmlReport?: boolean;
+  /** Root do workspace da suíte executada (destino do `test-results/`). */
+  reportRoot?: string;
+  /** Callback chamado após gravar o HTML (o runner notifica depois do run.end). */
+  onHtmlReport?: (filePath: string) => void;
+  /** Owner do schema para coverage (override). */
+  owner?: string;
+  /** Schemas de cobertura (sobrepõe o owner; vazio = automático). */
+  schemes?: string[];
+  /** Objetos a incluir na cobertura (formato OWNER.NAME). */
+  includeObjects?: string[];
+  /** Objetos a excluir da cobertura (formato OWNER.NAME). */
+  excludeObjects?: string[];
+  /** Regex de schema a incluir na cobertura. */
+  includeSchemaExpr?: string;
+  /** Regex de objeto a incluir na cobertura. */
+  includeObjectExpr?: string;
+  /** Regex de schema a excluir da cobertura. */
+  excludeSchemaExpr?: string;
+  /** Regex de objeto a excluir da cobertura. */
+  excludeObjectExpr?: string;
+}
+
+export interface OracleExecutionOptions {
+  /** Expressão de tags do utPLSQL (ex.: `fast & !integration`); vazio = todas. */
+  tags?: string;
+  /** Se true, executa os testes em ordem aleatória (`a_random_test_order`). */
+  randomOrder?: boolean;
+  /** Seed da ordem aleatória (0 = sorteada pelo banco). */
+  randomOrderSeed?: number;
+  /** Se true, captura DBMS_OUTPUT. */
+  dbmsOutput?: boolean;
+  /** Timeout em minutos (0 = sem timeout). */
+  timeoutMinutes?: number;
+}
+
+export interface OracleExportReporter {
+  name: string;
+  charset?: string;
+  colorConsole?: boolean;
+}
+
+/**
+ * Opções canônicas do runner agrupadas por domínio (PRD-111 RF2).
+ * Os campos flat marcados `@deprecated` mantêm compatibilidade dos call sites
+ * antigos/testes; novos call sites devem usar `coverage`, `execution`, `output`
+ * e `export`.
+ */
 export interface OracleRunOptions {
   /** Connection string (user/pass@//host:port/service) */
   connection: string;
   /** Path args para ut_runner.run (ex.: ['package', 'package.proc']) */
   pathArgs: string[];
-  /** Se true, coleta e aplica cobertura Cobertura */
-  coverage: boolean;
-  /** Se true, gera o relatório HTML de cobertura (PRD-108). */
-  coverageHtmlReport?: boolean;
-  /** Root do workspace da suíte executada (destino do `test-results/`). */
-  reportRoot?: string;
-  /** Callback chamado após gravar o HTML (o runner notifica depois do run.end). */
-  onCoverageHtmlReport?: (filePath: string) => void;
   /** Caminho base do código-fonte para mapeamento de cobertura */
   sourcePath: string;
   /** TestRun atual do VSCode */
@@ -534,40 +578,51 @@ export interface OracleRunOptions {
   onCoverageResult?: (generated: boolean) => void;
   /** Workspace folders para resolução de sourceUri */
   folders?: readonly vscode.WorkspaceFolder[];
-  /** Extra reporters adicionados via config */
-  additionalReporters?: string[];
-  /** Expressão de tags do utPLSQL (ex.: `fast & !integration`); vazio = todas */
-  tags?: string;
-  /** Se true, executa os testes em ordem aleatória (`a_random_test_order`) */
-  randomOrder?: boolean;
-  /** Seed da ordem aleatória (0 = sorteada pelo banco) */
-  randomOrderSeed?: number;
-  /** Owner do schema para coverage (override) */
+  /** Cobertura Cobertura/HTML e escopo. */
+  coverage: OracleCoverageOptions | boolean;
+  /** Opções de execução (tags, ordem aleatória, DBMS_OUTPUT, timeout). */
+  execution?: OracleExecutionOptions;
+  /** Reporters adicionais. */
+  output?: { additionalReporters?: string[] };
+  /** Export com reporter arbitrário (PRD-76). */
+  export?: { reporter?: OracleExportReporter };
+
+  /** @deprecated Use `coverage.owner`. */
   coverageOwner?: string;
-  /** Schemas de cobertura (sobrepõe o owner; vazio = automático) */
+  /** @deprecated Use `coverage.schemes`. */
   coverageSchemes?: string[];
-  /** Objetos a incluir na cobertura (formato OWNER.NAME) */
+  /** @deprecated Use `coverage.includeObjects`. */
   coverageIncludeObjects?: string[];
-  /** Objetos a excluir da cobertura (formato OWNER.NAME) */
+  /** @deprecated Use `coverage.excludeObjects`. */
   coverageExcludeObjects?: string[];
-  /** Regex de schema a incluir na cobertura */
+  /** @deprecated Use `coverage.includeSchemaExpr`. */
   coverageIncludeSchemaExpr?: string;
-  /** Regex de objeto a incluir na cobertura */
+  /** @deprecated Use `coverage.includeObjectExpr`. */
   coverageIncludeObjectExpr?: string;
-  /** Regex de schema a excluir da cobertura */
+  /** @deprecated Use `coverage.excludeSchemaExpr`. */
   coverageExcludeSchemaExpr?: string;
-  /** Regex de objeto a excluir da cobertura */
+  /** @deprecated Use `coverage.excludeObjectExpr`. */
   coverageExcludeObjectExpr?: string;
-  /** Se true, captura DBMS_OUTPUT */
+  /** @deprecated Use `coverage.htmlReport`. */
+  coverageHtmlReport?: boolean;
+  /** @deprecated Use `coverage.reportRoot`. */
+  reportRoot?: string;
+  /** @deprecated Use `coverage.onHtmlReport`. */
+  onCoverageHtmlReport?: (filePath: string) => void;
+  /** @deprecated Use `execution.tags`. */
+  tags?: string;
+  /** @deprecated Use `execution.randomOrder`. */
+  randomOrder?: boolean;
+  /** @deprecated Use `execution.randomOrderSeed`. */
+  randomOrderSeed?: number;
+  /** @deprecated Use `execution.dbmsOutput`. */
   dbmsOutput?: boolean;
-  /** Timeout em minutos (0 = sem timeout) */
+  /** @deprecated Use `execution.timeoutMinutes`. */
   timeoutMinutes?: number;
-  /**
-   * Export com reporter arbitrário (PRD-76): quando presente, o run usa apenas
-   * esse reporter, captura a saída textual e a devolve (sem aplicar resultados
-   * de teste nem cobertura).
-   */
-  exportReporter?: { name: string; charset?: string; colorConsole?: boolean };
+  /** @deprecated Use `output.additionalReporters`. */
+  additionalReporters?: string[];
+  /** @deprecated Use `export.reporter`. */
+  exportReporter?: OracleExportReporter;
 }
 
 type LoadedOracledb = typeof import('oracledb');
@@ -823,10 +878,6 @@ async function executeRunOracleCore(
   const {
     connection,
     pathArgs,
-    coverage,
-    coverageHtmlReport,
-    reportRoot,
-    onCoverageHtmlReport,
     sourcePath,
     run,
     leafTests,
@@ -834,22 +885,38 @@ async function executeRunOracleCore(
     onComplete,
     onCoverageResult,
     folders,
-    additionalReporters,
-    tags,
-    randomOrder,
-    randomOrderSeed,
-    coverageOwner,
-    coverageSchemes: coverageSchemesCfg,
-    coverageIncludeObjects,
-    coverageExcludeObjects,
-    coverageIncludeSchemaExpr,
-    coverageIncludeObjectExpr,
-    coverageExcludeSchemaExpr,
-    coverageExcludeObjectExpr,
-    dbmsOutput,
-    timeoutMinutes,
-    exportReporter,
   } = options;
+  const coverageOptions: OracleCoverageOptions =
+    typeof options.coverage === 'boolean'
+      ? { enabled: options.coverage }
+      : options.coverage;
+  const execution = options.execution ?? {};
+  const coverageEnabledRequested = coverageOptions.enabled;
+  const coverageOwner = coverageOptions.owner ?? options.coverageOwner;
+  const coverageSchemesCfg = coverageOptions.schemes ?? options.coverageSchemes;
+  const coverageIncludeObjects =
+    coverageOptions.includeObjects ?? options.coverageIncludeObjects;
+  const coverageExcludeObjects =
+    coverageOptions.excludeObjects ?? options.coverageExcludeObjects;
+  const coverageIncludeSchemaExpr =
+    coverageOptions.includeSchemaExpr ?? options.coverageIncludeSchemaExpr;
+  const coverageIncludeObjectExpr =
+    coverageOptions.includeObjectExpr ?? options.coverageIncludeObjectExpr;
+  const coverageExcludeSchemaExpr =
+    coverageOptions.excludeSchemaExpr ?? options.coverageExcludeSchemaExpr;
+  const coverageExcludeObjectExpr =
+    coverageOptions.excludeObjectExpr ?? options.coverageExcludeObjectExpr;
+  const coverageHtmlReport = coverageOptions.htmlReport ?? options.coverageHtmlReport;
+  const reportRoot = coverageOptions.reportRoot ?? options.reportRoot;
+  const onCoverageHtmlReport = coverageOptions.onHtmlReport ?? options.onCoverageHtmlReport;
+  const additionalReporters =
+    options.output?.additionalReporters ?? options.additionalReporters;
+  const tags = execution.tags ?? options.tags;
+  const randomOrder = execution.randomOrder ?? options.randomOrder;
+  const randomOrderSeed = execution.randomOrderSeed ?? options.randomOrderSeed;
+  const dbmsOutput = execution.dbmsOutput ?? options.dbmsOutput;
+  const timeoutMinutes = execution.timeoutMinutes ?? options.timeoutMinutes;
+  const exportReporter = options.export?.reporter ?? options.exportReporter;
   const exporting = !!exportReporter;
 
   const oracledb = await loadOracledbMod();
@@ -862,7 +929,9 @@ async function executeRunOracleCore(
 
   try {
     const htmlReportTarget =
-      coverage && coverageHtmlReport ? coverageHtmlReportPath(reportRoot) : undefined;
+      coverageEnabledRequested && coverageHtmlReport
+        ? coverageHtmlReportPath(reportRoot)
+        : undefined;
     if (htmlReportTarget) {
       try {
         await prepareCoverageHtmlReport(htmlReportTarget);
@@ -886,7 +955,7 @@ async function executeRunOracleCore(
       conn1,
       exporting,
       exportReporter,
-      coverage,
+      coverage: coverageEnabledRequested,
       coverageHtmlReport,
       additionalReporters,
       state,
@@ -964,7 +1033,7 @@ async function executeRunOracleCore(
       outputs,
       runnerMs,
       coverageEnabled,
-      coverageRequested: coverage,
+      coverageRequested: coverageEnabledRequested,
       htmlEnabled,
       htmlReportTarget,
       onCoverageHtmlReport,

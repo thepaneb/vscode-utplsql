@@ -272,7 +272,7 @@ test('executeRun: coverage flag é passado para oracle', async () =>
 
     let receivedCoverage = false;
     mock.method(oracleRunner, 'executeRunOracle', async (opts: any) => {
-      receivedCoverage = opts.coverage;
+      receivedCoverage = opts.coverage.enabled;
       throw new Error('sem oracle');
     });
 
@@ -321,9 +321,9 @@ test('executeRun: coverageHtmlReport/reportRoot e notificação após run.end', 
 
     vscode.__resetMessages();
     mock.method(oracleRunner, 'executeRunOracle', async (opts: any) => {
-      assert.strictEqual(opts.coverageHtmlReport, true);
-      assert.ok(opts.reportRoot, 'reportRoot deveria ser o folder da suíte');
-      opts.onCoverageHtmlReport?.('/tmp/utplsql-report.html');
+      assert.strictEqual(opts.coverage.htmlReport, true);
+      assert.ok(opts.coverage.reportRoot, 'reportRoot deveria ser o folder da suíte');
+      opts.coverage.onHtmlReport?.('/tmp/utplsql-report.html');
       return undefined;
     });
 
@@ -346,7 +346,7 @@ test('executeRun: additionalReporters são passados para oracle', async () =>
     __setConfigValue('additionalReporters', ['ut_custom']);
     let receivedReporters: string[] = [];
     mock.method(oracleRunner, 'executeRunOracle', async (opts: any) => {
-      receivedReporters = opts.additionalReporters ?? [];
+      receivedReporters = opts.output?.additionalReporters ?? [];
       throw new Error('sem oracle');
     });
 
@@ -364,7 +364,7 @@ test('executeRun: dbmsOutput flag é passado para oracle', async () =>
     __setConfigValue('dbmsOutput', true);
     let receivedDbmsOutput = false;
     mock.method(oracleRunner, 'executeRunOracle', async (opts: any) => {
-      receivedDbmsOutput = opts.dbmsOutput;
+      receivedDbmsOutput = opts.execution.dbmsOutput;
       throw new Error('sem oracle');
     });
 
@@ -382,7 +382,7 @@ test('executeRun: timeoutMinutes é passado para oracle', async () =>
     __setConfigValue('timeoutMinutes', 30);
     let receivedTimeout = 0;
     mock.method(oracleRunner, 'executeRunOracle', async (opts: any) => {
-      receivedTimeout = opts.timeoutMinutes;
+      receivedTimeout = opts.execution.timeoutMinutes;
       throw new Error('sem oracle');
     });
 
@@ -400,7 +400,7 @@ test('executeRun: coverageOwner é passado para oracle', async () =>
     __setConfigValue('coverageOwner', 'MY_SCHEMA');
     let receivedOwner = '';
     mock.method(oracleRunner, 'executeRunOracle', async (opts: any) => {
-      receivedOwner = opts.coverageOwner;
+      receivedOwner = opts.coverage.owner;
       throw new Error('sem oracle');
     });
 
