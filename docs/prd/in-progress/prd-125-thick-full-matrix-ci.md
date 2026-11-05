@@ -8,7 +8,7 @@
 | Autor | Gil Cleber Barboza |
 | Data | 2026-10-29 |
 | Componente | Testes de integração + matriz de bancos + CI |
-| Versão alvo | 0.19.0 |
+| Versão alvo | 0.20.0 |
 | Arquivos afetados | `.vscode-test.thick-full.mjs` (novo), `scripts/db-matrix/run.sh`, `package.json`, `.github/workflows/integration.yml`, `src/test/integration/**` (skips condicionais), `docs/brain/70-Wiki/{Contributing,Tests}.md`, `docs/brain/15-Regras/BR-TEST-001*.md`, `docs/brain/10-Projeto/Funcional/10-development-tooling.md`, `CHANGELOG.md` |
 | Esforço estimado | 2–3 dias |
 | Complexidade | Média-Alta |
@@ -219,7 +219,7 @@ Nenhuma setting/comando de runtime novo. Apenas scripts de teste e CI.
 
 ## 9. Rollout
 
-- **Release alvo:** 0.19.0.
+- **Release alvo:** 0.20.0 (RF3); a 0.19.0 entregou o RF1/RF2/RF4.
 - `CHANGELOG` com o novo eixo e a política de CI.
 - Se o 11g não puder rodar o full, a PRD entrega o `thick-full` no 23free e
   documenta o 11g como smoke (com a justificativa), sem regredir a promessa
@@ -229,7 +229,8 @@ Nenhuma setting/comando de runtime novo. Apenas scripts de teste e CI.
 
 O 0.19.0 entrega o **RF1/RF2** (config/scripts), o **RF4** (CI) e a documentação;
 o **RF3** (full 23free/11g) fica para a **0.20.0**. Critérios de aceite abaixo
-marcados como pendentes não bloqueiam a 0.19.0; a PRD fica `in-progress`.
+marcados como pendentes não bloqueiam a 0.19.0; a PRD fica `in-progress` com
+`versao: 0.20.0` até a entrega do RF3.
 
 O cron semanal (`0 4 * * 0`) só passa a valer depois do merge na `main`
 (workflows agendados rodam a partir da default branch). Antes disso, o recorte

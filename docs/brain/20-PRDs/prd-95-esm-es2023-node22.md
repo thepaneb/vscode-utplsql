@@ -217,7 +217,6 @@ ou `<!-- prd:PRD-95 -->`.
 - 🗺️ [[MOC - PRDs]]
 - 📐 Regras: [[BR-PLAT-005 - Bundle de producao e ESM e os testes continuam CJS|BR-PLAT-005]]
 - 🔗 PRDs relacionados: [[prd-94-vscode-floor-1-101|PRD-94]] · [[prd-115-split-i18n-locales|PRD-115]] · [[prd-127-vscode-floor-1-125|PRD-127]]
-- 🔗 Mesma versão (0.19.0): [[prd-125-thick-full-matrix-ci|PRD-125]]
 - 🎯 RF1 — Extensão em ESM via `.mjs` → [[BR-PLAT-005 - Bundle de producao e ESM e os testes continuam CJS|BR-PLAT-005]]
 - 🎯 RF2 — TypeScript ES2024 → [[BR-PLAT-005 - Bundle de producao e ESM e os testes continuam CJS|BR-PLAT-005]]
 - 🎯 RNF1 — Bundle não maior que o atual (**942.777 bytes** = 920,7 KiB; medir → [[BR-PLAT-005 - Bundle de producao e ESM e os testes continuam CJS|BR-PLAT-005]]

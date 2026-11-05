@@ -147,6 +147,6 @@ execução; nunca conexão em uso"), com `prds: ["PRD-101"]`, `implementacao:` e
 <!-- brain:auto:start:conexoes -->
 - 🗺️ [[MOC - PRDs]]
 - 🔗 PRDs relacionados: [[prd-34-multi-connection-profiles|PRD-34]] · [[prd-38-connection-pooling|PRD-38]] · [[prd-66-connection-robustness-logging|PRD-66]] · [[prd-82-tns-wallet|PRD-82]] · [[prd-95-esm-es2023-node22|PRD-95]]
-- 🔗 Mesma versão (0.20.0): [[prd-102-trace-and-perf-instrumentation|PRD-102]] · [[prd-103-incremental-source-reindex|PRD-103]] · [[prd-106-perf-harness|PRD-106]] · [[prd-107-unprivileged-fixture|PRD-107]] · [[prd-120-lean-activation-lazy-setup|PRD-120]]
+- 🔗 Mesma versão (0.20.0): [[prd-102-trace-and-perf-instrumentation|PRD-102]] · [[prd-103-incremental-source-reindex|PRD-103]] · [[prd-106-perf-harness|PRD-106]] · [[prd-107-unprivileged-fixture|PRD-107]] · [[prd-120-lean-activation-lazy-setup|PRD-120]] · [[prd-125-thick-full-matrix-ci|PRD-125]] · [[prd-146-attestations-publish|PRD-146]] · [[prd-147-marketplace-listing-page|PRD-147]]
 - 🚀 ⬅️ release anterior: [[prd-127-vscode-floor-1-125|PRD-127 (0.19.0)]] · ➡️ próxima release: [[prd-128-event-bus-internal|PRD-128 (0.21.0)]]
 <!-- brain:auto:end -->

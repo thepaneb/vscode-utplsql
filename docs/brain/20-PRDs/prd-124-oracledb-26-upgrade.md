@@ -327,7 +327,6 @@ conclusão, cada superfície cita `PRD-124` ou `<!-- prd:PRD-124 -->`.
 - 🗺️ [[MOC - PRDs]]
 - 📐 Regras: [[BR-CONN-019 - Oracle 11g (11.2) exige thick mode; thin tem piso 12.1|BR-CONN-019]] · [[BR-CONN-021 - Major do driver Oracle so entra com matriz e packaging validados|BR-CONN-021]] · [[BR-TEST-001 - Matriz de bancos Oracle cobre 12.2-23ai em thin e thick|BR-TEST-001]]
 - 🔗 PRDs relacionados: [[prd-38-connection-pooling|PRD-38]] · [[prd-47-node-26-toolchain|PRD-47]] · [[prd-70-thick-mode-nne|PRD-70]] · [[prd-72-db-test-matrix|PRD-72]] · [[prd-104-ci-supply-chain|PRD-104]] · [[prd-123-oracle-11g-support|PRD-123]]
-- 🔗 Mesma versão (0.19.0): [[prd-125-thick-full-matrix-ci|PRD-125]]
 - 🎯 RF0 — Spike GO/NO-GO (bloqueante) → [[BR-CONN-021 - Major do driver Oracle so entra com matriz e packaging validados|BR-CONN-021]]
 - 🎯 RF1 — Atualizar o driver e os tipos → [[BR-CONN-021 - Major do driver Oracle so entra com matriz e packaging validados|BR-CONN-021]]
 - 🎯 RF2 — Validar e documentar o thick → [[BR-CONN-019 - Oracle 11g (11.2) exige thick mode; thin tem piso 12.1|BR-CONN-019]]

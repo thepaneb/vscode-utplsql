@@ -5,6 +5,7 @@ aliases: [PRD-147]
 status: proposed
 titulo: "Marketplace: superfície dedicada, screenshots e metadata de conversão"
 versao: "0.20.0"
+versao_titulo: "0.20.0 — Observabilidade e desempenho"
 data: "2026-11-05"
 autor: "Gil Cleber Barboza"
 verificado: "2026-11-05"
@@ -523,5 +524,6 @@ esperado; ao concluir, criar as regras e atualizar a seção.
 <!-- brain:auto:start:conexoes -->
 - 🗺️ [[MOC - PRDs]]
 - 🔗 PRDs relacionados: [[prd-83-vsix-package-hygiene|PRD-83]] · [[prd-91-doc-parity-localized-distribution|PRD-91]] · [[prd-98-docs-anti-drift|PRD-98]] · [[prd-122-marketplace-trust-metadata|PRD-122]] · [[prd-141-onboarding-walkthrough-accessibility|PRD-141]]
+- 🔗 Mesma versão (0.20.0): [[prd-101-connection-pool-lifecycle|PRD-101]] · [[prd-102-trace-and-perf-instrumentation|PRD-102]] · [[prd-103-incremental-source-reindex|PRD-103]] · [[prd-106-perf-harness|PRD-106]] · [[prd-107-unprivileged-fixture|PRD-107]] · [[prd-120-lean-activation-lazy-setup|PRD-120]] · [[prd-125-thick-full-matrix-ci|PRD-125]] · [[prd-146-attestations-publish|PRD-146]]
 - 🚀 ⬅️ release anterior: [[prd-127-vscode-floor-1-125|PRD-127 (0.19.0)]] · ➡️ próxima release: [[prd-128-event-bus-internal|PRD-128 (0.21.0)]]
 <!-- brain:auto:end -->

@@ -186,7 +186,8 @@ notas `prd-*`. O índice navegável do vault é a [[MOC - PRDs]].
 
 | # | PRD | Versão | Data |
 |---|---|---|---|
-| 125 | [Suíte completa em thick e matriz de bancos no CI](in-progress/prd-125-thick-full-matrix-ci.md) | 0.19.0 | 2026-10-29 |
+| 125 | [Suíte completa em thick e matriz de bancos no CI](in-progress/prd-125-thick-full-matrix-ci.md) | 0.20.0 | 2026-10-29 |
+| 146 | [Attestations de proveniência na publicação](in-progress/prd-146-attestations-publish.md) | 0.20.0 | 2026-11-05 |
 
 ### ⚪ Propostos
 
@@ -230,7 +231,6 @@ notas `prd-*`. O índice navegável do vault é a [[MOC - PRDs]].
 | 143 | [Auditoria de ReDoS/regex e validação de entrada](proposed/prd-143-redos-regex-audit-input-validation.md) | 0.24.0 | 2026-10-30 |
 | 144 | [Hardening de segurança do runtime: parsers de relatório, path traversal em views e redação de credenciais](proposed/prd-144-security-runtime-hardening.md) | 0.24.0 | 2026-11-05 |
 | 145 | [Segurança do entregável: logging de credenciais, cadeia de build e triagem dos alertas do GitHub](proposed/prd-145-security-alerts-deliverable.md) | 0.24.0 | 2026-11-05 |
-| 146 | [Attestations de proveniência na publicação](proposed/prd-146-attestations-publish.md) | 0.25.0 | 2026-11-05 |
 | 147 | [Marketplace: superfície dedicada, screenshots e metadata de conversão](proposed/prd-147-marketplace-listing-page.md) | 0.20.0 | 2026-11-05 |
 <!-- prd:roadmap:end -->
 
@@ -349,6 +349,7 @@ docs/prd/
 │   ├── prd-127-vscode-floor-1-125.md
 ├── in-progress/        ← sendo implementados agora
 │   ├── prd-125-thick-full-matrix-ci.md
+│   ├── prd-146-attestations-publish.md
 ├── proposed/        ← em avaliação
 │   ├── prd-60-branch-coverage-investigation.md
 │   ├── prd-61-cli-auto-provision.md
@@ -388,7 +389,6 @@ docs/prd/
 │   ├── prd-143-redos-regex-audit-input-validation.md
 │   ├── prd-144-security-runtime-hardening.md
 │   ├── prd-145-security-alerts-deliverable.md
-│   ├── prd-146-attestations-publish.md
 │   ├── prd-147-marketplace-listing-page.md
 ```
 <!-- prd:estrutura:end -->
