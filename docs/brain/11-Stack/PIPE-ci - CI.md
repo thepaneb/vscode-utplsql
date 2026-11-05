@@ -30,6 +30,7 @@ Workflow [`ci.yml`](../../../.github/workflows/ci.yml) — **gerado** por `npm r
 - `uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7`
 - `run: npm ci`
 - `run: npm run audit:prod`
+- `run: npm run audit:dev`
 - `run: npm run version:check`
 - `run: npm run brain:ci`
 - `run: git diff --exit-code`

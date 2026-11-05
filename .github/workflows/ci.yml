@@ -27,6 +27,10 @@ jobs:
       # Node 26 é o eixo de compatibilidade do toolchain (PRD-47).
       - run: npm run audit:prod
         if: ${{ matrix.node-version == 24 }}
+      # Gate dev: o toolchain de build empacota o .vsix; override sem advisory
+      # conhecido é exigido para manter o audit limpo (PRD-145 RF2).
+      - run: npm run audit:dev
+        if: ${{ matrix.node-version == 24 }}
       - run: npm run version:check
         if: ${{ matrix.node-version == 24 }}
       - run: npm run brain:ci

@@ -94,6 +94,30 @@ test('audit: gate de produção no package.json, CI e publish', () => {
   assert.match(readWorkflow('publish.yml'), /npm run audit:prod/);
 });
 
+test('audit: gate dev (toolchain de build) roda no CI sem mascarar falha', () => {
+  const pkg = JSON.parse(fs.readFileSync(path.join(ROOT, 'package.json'), 'utf8')) as {
+    scripts: Record<string, string>;
+  };
+  assert.match(pkg.scripts['audit:dev'], /--audit-level=high/);
+  assert.doesNotMatch(pkg.scripts['audit:dev'], /\|\|\s*true/);
+  assert.match(readWorkflow('ci.yml'), /npm run audit:dev/);
+});
+
+test('google-index: pip instalado por hash (requirements versionado)', () => {
+  const text = readWorkflow('google-index.yml');
+  assert.match(text, /--require-hashes/);
+  assert.match(text, /-r \.github\/requirements-google-index\.txt/);
+  assert.doesNotMatch(text, /pip install[^\n]*google-auth/);
+
+  const req = fs.readFileSync(path.join(ROOT, '.github', 'requirements-google-index.txt'), 'utf8');
+  const blocks = req.split(/\n\s*\n/).filter((b) => b.trim() && !/^#/m.test(b.trim()));
+  assert.ok(blocks.length > 0, 'requirements-google-index.txt vazio');
+  for (const block of blocks) {
+    assert.match(block, /=[=]/, `bloco sem versão pinada: ${block.slice(0, 40)}`);
+    assert.match(block, /--hash=sha256:[0-9a-f]{64}/, `bloco sem hash: ${block.slice(0, 40)}`);
+  }
+});
+
 test('Scorecard: publica resultado, upload SARIF e permissões mínimas', () => {
   const text = readWorkflow('scorecard.yml');
   assert.match(text, /publish_results:\s*true/);
