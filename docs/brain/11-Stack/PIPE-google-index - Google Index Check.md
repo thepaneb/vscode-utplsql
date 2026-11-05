@@ -28,6 +28,7 @@ Workflow [`google-index.yml`](../../../.github/workflows/google-index.yml) — *
 
 - `uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0 # v7.1.0`
 - `run: |`
+- `run: |`
 
 ## Conexões
 

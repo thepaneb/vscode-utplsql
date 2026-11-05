@@ -229,6 +229,7 @@ notas `prd-*`. O índice navegável do vault é a [[MOC - PRDs]].
 | 142 | [Proveniência (SLSA) no release e gate de typecheck no CI](proposed/prd-142-supply-chain-provenance-typecheck-gate.md) | 0.24.0 | 2026-10-30 |
 | 143 | [Auditoria de ReDoS/regex e validação de entrada](proposed/prd-143-redos-regex-audit-input-validation.md) | 0.24.0 | 2026-10-30 |
 | 144 | [Hardening de segurança do runtime: parsers de relatório, path traversal em views e redação de credenciais](proposed/prd-144-security-runtime-hardening.md) | 0.24.0 | 2026-11-05 |
+| 145 | [Segurança do entregável: logging de credenciais, cadeia de build e triagem dos alertas do GitHub](proposed/prd-145-security-alerts-deliverable.md) | 0.24.0 | 2026-11-05 |
 <!-- prd:roadmap:end -->
 
 ---
@@ -384,6 +385,7 @@ docs/prd/
 │   ├── prd-142-supply-chain-provenance-typecheck-gate.md
 │   ├── prd-143-redos-regex-audit-input-validation.md
 │   ├── prd-144-security-runtime-hardening.md
+│   ├── prd-145-security-alerts-deliverable.md
 ```
 <!-- prd:estrutura:end -->
 
