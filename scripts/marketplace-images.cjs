@@ -12,8 +12,6 @@ const fs = require('node:fs');
 const path = require('node:path');
 
 const REPO = path.resolve(__dirname, '..');
-const SOURCE_DIR = path.join(REPO, 'docs', 'brain', '60-README', 'images');
-const REPO_IMAGES = path.join(REPO, 'images');
 const READY_MARKER = '<!-- marketplace:images-ready -->';
 const MAX_PNG = 300 * 1024;
 const MAX_TOTAL = 2 * 1024 * 1024;
