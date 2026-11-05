@@ -29,6 +29,9 @@
   mode on 23ai Free (81 passing / 13 pending, no failures) with explicit
   thin-only/UI/11g-legacy exclusions; 11g remains on the thick smoke (its full
   run is documented as an experimental dispatch limitation).
+- **Marketplace page (PRD-147)**: dedicated `MARKETPLACE.md` generated from
+  the vault and packaged with `vsce --readme-path`, with conversion-oriented
+  content, metadata and marketplace-specific docs gates.
 - **Supply chain (PRD-146)**: published `.vsix` artifacts receive **build
   provenance attestations** (GitHub Artifact Attestations), verified with
   `gh attestation verify`.
