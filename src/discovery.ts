@@ -60,6 +60,29 @@ export function parseSuite(uri: vscode.Uri, text: string): ParsedSuite | null {
   return { uri, ...parsed };
 }
 
+/**
+ * Lê e parseia **um** arquivo (PRD-103). Devolve `undefined` para arquivo
+ * ilegível/sem suite habilitada — o chamador decide entre incremental e full.
+ */
+export async function discoverUri(
+  uri: vscode.Uri,
+  folders?: readonly vscode.WorkspaceFolder[],
+): Promise<SuiteFile | undefined> {
+  const targets = folders ?? vscode.workspace.workspaceFolders ?? [];
+  try {
+    const bytes = await vscode.workspace.fs.readFile(uri);
+    const text = decodeBytes(bytes, getActiveProfile()?.charset);
+    const suite = parseSuite(uri, text);
+    if (!suite || suite.disabled || suite.tests.length === 0) return undefined;
+    const tests = suite.tests.filter((t) => !t.disabled);
+    if (tests.length === 0) return undefined;
+    return { ...suite, tests, folder: resolveFolder(uri, targets) };
+  } catch (e) {
+    logger.debug('discovery: arquivo ilegível', { uri: uri.toString(), error: String(e) });
+    return undefined;
+  }
+}
+
 export async function discoverWorkspace(
   patterns: string[],
   folders?: readonly vscode.WorkspaceFolder[],
@@ -71,25 +94,10 @@ export async function discoverWorkspace(
   for (const pattern of patterns) {
     const uris = await vscode.workspace.findFiles(pattern, '**/node_modules/**');
     for (const uri of uris) {
-      if (seen.has(uri.toString())) {
-        continue;
-      }
+      if (seen.has(uri.toString())) continue;
       seen.add(uri.toString());
-      try {
-        const bytes = await vscode.workspace.fs.readFile(uri);
-        const text = decodeBytes(bytes, getActiveProfile()?.charset);
-        const suite = parseSuite(uri, text);
-        if (suite && !suite.disabled && suite.tests.length > 0) {
-          const tests = suite.tests.filter((t) => !t.disabled);
-          if (tests.length > 0) {
-            const folder = resolveFolder(uri, targets);
-            results.push({ ...suite, tests, folder });
-          }
-        }
-      } catch (e) {
-        // arquivo ilegível — ignora
-        logger.debug('discovery: arquivo ilegível', { uri: uri.toString(), error: String(e) });
-      }
+      const suite = await discoverUri(uri, targets);
+      if (suite) results.push(suite);
     }
   }
 

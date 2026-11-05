@@ -264,4 +264,26 @@ export class TestStateManager {
   clearSuiteFiles(): void {
     this.suiteFiles.clear();
   }
+
+  /**
+   * Remove dos mapas os itens/suites de um URI (PRD-103 incremental). O nó do
+   * controller é removido pelo refresher; aqui fica o estado compartilhado.
+   */
+  removeItemsByUri(uri: string): void {
+    for (const [id, item] of this.itemMap) {
+      if (this.meta.get(item)?.uri?.toString() === uri) {
+        this.itemMap.delete(id);
+        this.resolvedNodes.delete(id);
+      }
+    }
+    for (const [id, item] of this.suiteMap) {
+      if (this.meta.get(item)?.uri?.toString() === uri) this.suiteMap.delete(id);
+    }
+    for (const [id, suite] of this.suiteFiles) {
+      if (suite.uri.toString() === uri) this.suiteFiles.delete(id);
+    }
+    this.cachedItems = this.cachedItems.filter(
+      (item) => this.meta.get(item)?.uri?.toString() !== uri,
+    );
+  }
 }

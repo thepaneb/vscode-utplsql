@@ -19,7 +19,7 @@ import {
   migrateLegacyProfiles,
 } from './connectionProfiles';
 import { registerDbSourceProvider } from './dbSourceProvider';
-import { createDebounced } from './debounce';
+import { createPerKeyDebouncer } from './debounce';
 import { DecorationManager } from './decorations';
 import {
   buildLanguageSelector,
@@ -290,14 +290,44 @@ export function activate(context: vscode.ExtensionContext) {
       workspaceAssociations(),
     ),
   );
-  const scheduleRefresh = createDebounced(
-    () => void refresh(),
+  // PRD-103: debounce por URI + reindex incremental. Rajadas grandes caem no
+  // full refresh; tag/schema também (no próprio refresher).
+  const pendingWatcherActions = new Map<string, 'change' | 'delete'>();
+  const perKeyRefresh = createPerKeyDebouncer(
+    (key) => {
+      const action = pendingWatcherActions.get(key) ?? 'change';
+      pendingWatcherActions.delete(key);
+      if (perKeyRefresh.size > 8) {
+        perKeyRefresh.cancel();
+        pendingWatcherActions.clear();
+        void refresh();
+        return;
+      }
+      const uri = vscode.Uri.parse(key);
+      if (action === 'delete') void refresh.removeUri(uri);
+      else void refresh.refreshUri(uri);
+    },
     () => readConfig().refreshDebounceMs,
   );
-  watcher.onDidCreate(() => scheduleRefresh.schedule());
-  watcher.onDidChange(() => scheduleRefresh.schedule());
-  watcher.onDidDelete(() => scheduleRefresh.schedule());
-  context.subscriptions.push(watcher, { dispose: () => scheduleRefresh.cancel() });
+  const scheduleWatcher = (kind: 'change' | 'delete', uri: unknown): void => {
+    const key = (uri as { toString?: () => string } | undefined)?.toString?.();
+    // Harnesses antigos disparam o watcher sem URI: full refresh é o fallback.
+    if (!key) {
+      void refresh();
+      return;
+    }
+    pendingWatcherActions.set(key, kind);
+    perKeyRefresh.schedule(key);
+  };
+  watcher.onDidCreate((uri) => scheduleWatcher('change', uri));
+  watcher.onDidChange((uri) => scheduleWatcher('change', uri));
+  watcher.onDidDelete((uri) => scheduleWatcher('delete', uri));
+  context.subscriptions.push(watcher, {
+    dispose: () => {
+      perKeyRefresh.cancel();
+      pendingWatcherActions.clear();
+    },
+  });
 
   // Auto-run on save (watch mode, PRD-50). Default `off`.
   const autoRunner = createAutoRunner(
