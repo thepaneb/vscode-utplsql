@@ -42,7 +42,7 @@ npm run sync-prds
 ## Status (gerado)
 
 <!-- brain:auto:start:prd-summary -->
-- 📝 Propostos: **39**
+- 📝 Propostos: **40**
 - 🔵 Aprovados: **0**
 - 🟡 Em desenvolvimento: **1**
 - 🟢 Concluídos: **103**
@@ -119,6 +119,7 @@ Detalhe completo (fonte da verdade): [docs/prd/index.md](../../prd/index.md)
 - [[prd-144-security-runtime-hardening]] — `PRD-144`
 - [[prd-145-security-alerts-deliverable]] — `PRD-145`
 - [[prd-146-attestations-publish]] — `PRD-146`
+- [[prd-147-marketplace-listing-page]] — `PRD-147`
 - [[prd-15-integration-tests-real-db]] — `PRD-15`
 - [[prd-16-integration-test-invocation-modes]] — `PRD-16`
 - [[prd-17-java-args-setting]] — `PRD-17`
