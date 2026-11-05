@@ -231,6 +231,7 @@ notas `prd-*`. O índice navegável do vault é a [[MOC - PRDs]].
 | 144 | [Hardening de segurança do runtime: parsers de relatório, path traversal em views e redação de credenciais](proposed/prd-144-security-runtime-hardening.md) | 0.24.0 | 2026-11-05 |
 | 145 | [Segurança do entregável: logging de credenciais, cadeia de build e triagem dos alertas do GitHub](proposed/prd-145-security-alerts-deliverable.md) | 0.24.0 | 2026-11-05 |
 | 146 | [Attestations de proveniência na publicação](proposed/prd-146-attestations-publish.md) | 0.25.0 | 2026-11-05 |
+| 147 | [Marketplace: superfície dedicada, screenshots e metadata de conversão](proposed/prd-147-marketplace-listing-page.md) | 0.20.0 | 2026-11-05 |
 <!-- prd:roadmap:end -->
 
 ---
@@ -388,6 +389,7 @@ docs/prd/
 │   ├── prd-144-security-runtime-hardening.md
 │   ├── prd-145-security-alerts-deliverable.md
 │   ├── prd-146-attestations-publish.md
+│   ├── prd-147-marketplace-listing-page.md
 ```
 <!-- prd:estrutura:end -->
 
