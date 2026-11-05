@@ -1,0 +1,61 @@
+name: Performance
+
+on:
+  workflow_dispatch:
+    inputs:
+      packages:
+        description: 'Número de packages da fixture'
+        type: number
+        default: 1000
+      tests:
+        description: 'Testes por package'
+        type: number
+        default: 15
+      mode:
+        description: 'tree | mixed | full'
+        type: choice
+        options: [tree, mixed, full]
+        default: mixed
+  schedule:
+    # Semanal, fora do caminho crítico dos PRs (PRD-106).
+    - cron: '0 5 * * 0'
+
+permissions:
+  contents: read
+
+jobs:
+  perf:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    env:
+      ORACLE_PWD: Oracle#2026
+      UT3_PASSWORD: ut3#matrix2026
+      TEST_PASSWORD: utplsql_test#2026
+      UTPLSQL_PERF_PACKAGES: ${{ inputs.packages || 1000 }}
+      UTPLSQL_PERF_TESTS: ${{ inputs.tests || 15 }}
+      UTPLSQL_PERF_MODE: ${{ inputs.mode || 'mixed' }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7
+        with:
+          node-version: 24
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Ensure xvfb (extension host)
+        run: |
+          command -v xvfb-run >/dev/null 2>&1 || { sudo apt-get update && sudo apt-get install -y xvfb; }
+
+      - name: Run perf harness on Oracle 23ai Free
+        run: bash scripts/db-matrix/run.sh --only 23free --tests "bash scripts/perf-run.sh"
+
+      - name: Upload perf JSONL
+        if: always()
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: perf-report
+          path: test-results/perf-report.jsonl
+          if-no-files-found: warn
