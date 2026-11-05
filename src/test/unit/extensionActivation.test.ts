@@ -102,9 +102,24 @@ test('activate: cria o controller, seta o contexto e registra os comandos', asyn
   assert.strictEqual(controller?.id, 'utplsql');
   assert.ok(context.subscriptions.length > 0);
 
-  // Deixa as promessas de ativação (profilesReady.then + IIFE de setup) rodarem.
+  // Deixa as promessas de ativação (profilesReady.then) rodarem.
   await new Promise((resolve) => setTimeout(resolve, 0));
   assert.ok(refreshCount >= 1);
+  // PRD-120: a ativação não abre conexão nem roda a validação de setup.
+  assert.deepStrictEqual(validateCalls, []);
+});
+
+test('setup validation: roda uma vez na primeira interação relevante (PRD-120)', async () => {
+  const editor = {
+    document: { fileName: '/ws/ut_pkg.pks', languageId: 'plsql' },
+  };
+  window.__triggerActiveTextEditorChange(editor as never);
+  await new Promise((resolve) => setTimeout(resolve, 0));
+  assert.deepStrictEqual(validateCalls, ['activation', 'install', 'apply']);
+
+  // Memoizada por sessão: uma segunda interação não repete a conexão.
+  window.__triggerActiveTextEditorChange(editor as never);
+  await new Promise((resolve) => setTimeout(resolve, 0));
   assert.deepStrictEqual(validateCalls, ['activation', 'install', 'apply']);
 });
 

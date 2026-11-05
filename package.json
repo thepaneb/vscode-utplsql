@@ -34,10 +34,8 @@
     "theme": "dark"
   },
   "activationEvents": [
-    "onStartupFinished",
     "workspaceContains:**/*.pks",
     "workspaceContains:**/*.pkb",
-    "workspaceContains:**/*.sql",
     "onLanguage:plsql"
   ],
   "capabilities": {

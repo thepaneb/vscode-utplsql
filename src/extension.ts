@@ -23,9 +23,10 @@ import {
   buildLanguageSelector,
   buildWatcherGlob,
   currentLanguageContributions,
+  isPlsqlDocument,
   workspaceAssociations,
 } from './languageIdentity';
-import { formatLogLine, setLogSink } from './logger';
+import { formatLogLine, logger, setLogSink } from './logger';
 import { closeOraclePool, invalidatePool } from './oracleRunner';
 import { setupValidator, UtplsqlCodeActionProvider } from './quickfix';
 import { TestStateManager } from './state';
@@ -65,18 +66,60 @@ export function activate(context: vscode.ExtensionContext) {
   context.subscriptions.push(controller);
 
   const refresh = createRefresher(controller, state);
+
+  // PRD-120: a validação de setup é preguiçosa, memoizada e nunca roda no
+  // `activate()`. O primeiro uso relevante (editor PL/SQL, refresh manual,
+  // expansão da árvore ou execução) dispara uma única checagem por sessão.
+  let setupValidationPromise: Promise<void> | undefined;
+  let setupValidationDone = false;
+  let setupValidationScheduled = false;
+
+  const runSetupValidation = (): Promise<void> => {
+    if (setupValidationDone) return Promise.resolve();
+    if (setupValidationPromise) return setupValidationPromise;
+    setupValidationScheduled = true;
+    setupValidationPromise = (async () => {
+      const [activationDiags, installDiags] = await Promise.all([
+        setupValidator.validateOnActivation(),
+        setupValidator.validateUtplsqlInstall(),
+      ]);
+      setupValidator.applyDiagnostics([...activationDiags, ...installDiags]);
+    })()
+      .catch((e) => {
+        logger.warn('setup validation failed', { error: String(e) });
+      })
+      .finally(() => {
+        setupValidationDone = true;
+        setupValidationScheduled = false;
+        setupValidationPromise = undefined;
+      });
+    return setupValidationPromise;
+  };
+
+  const scheduleSetupValidation = (): void => {
+    if (setupValidationDone || setupValidationScheduled) return;
+    void runSetupValidation();
+  };
+
+  const refreshFromUser = async (): Promise<void> => {
+    scheduleSetupValidation();
+    await refresh();
+  };
+
   controller.resolveHandler = async (item) => {
     if (!item) {
+      // Carga inicial: não é interação do usuário (RNF1).
       await refresh();
       return;
     }
+    scheduleSetupValidation();
     // Resolução lazy por nível (PRD-75): schema → package → suite.
     if (item.id.startsWith('schema:')) await resolveSchemaNode(controller, state, item);
     else if (item.id.startsWith('package:')) resolvePackageNode(controller, state, item);
     else if (item.id.startsWith('suite:')) resolveSuiteNode(controller, state, item);
   };
   controller.refreshHandler = async () => {
-    await refresh();
+    await refreshFromUser();
   };
 
   const deps: CommandDeps = {
@@ -84,7 +127,7 @@ export function activate(context: vscode.ExtensionContext) {
     state,
     getStatusBar: () => statusBar,
     getDecorationManager: () => decorationManager,
-    refresh,
+    refresh: refreshFromUser,
   };
 
   const run = registerRunCommands(context, deps);
@@ -93,13 +136,19 @@ export function activate(context: vscode.ExtensionContext) {
   state.runProfile = controller.createRunProfile(
     'Run',
     vscode.TestRunProfileKind.Run,
-    (request, token) => run.runWithProgress(request, token, false),
+    (request, token) => {
+      scheduleSetupValidation();
+      return run.runWithProgress(request, token, false);
+    },
     true,
   );
   state.coverageProfile = controller.createRunProfile(
     'Run with Coverage',
     vscode.TestRunProfileKind.Coverage,
-    (request, token) => run.runWithProgress(request, token, true),
+    (request, token) => {
+      scheduleSetupValidation();
+      return run.runWithProgress(request, token, true);
+    },
     true,
   );
   state.coverageProfile.loadDetailedCoverage = async (_run, fc) =>
@@ -148,6 +197,9 @@ export function activate(context: vscode.ExtensionContext) {
       }
       if (!e.affectsConfiguration('utplsql')) return;
       invalidatePool();
+      // PRD-120 RF3: mudança de configuração invalida o memo da validação.
+      setupValidationDone = false;
+      setupValidationScheduled = false;
     }),
   );
 
@@ -166,16 +218,14 @@ export function activate(context: vscode.ExtensionContext) {
     ),
   );
 
-  void (async () => {
-    const [activationDiags, installDiags] = await Promise.all([
-      setupValidator.validateOnActivation(),
-      setupValidator.validateUtplsqlInstall(),
-    ]);
-    setupValidator.applyDiagnostics([...activationDiags, ...installDiags]);
-  })();
-
   context.subscriptions.push(
     vscode.window.onDidChangeActiveTextEditor((editor) => {
+      if (
+        editor?.document?.fileName &&
+        isPlsqlDocument(editor.document, readConfig().discoveryLanguageIds)
+      ) {
+        scheduleSetupValidation();
+      }
       if (editor && decorationManager?.hasResults()) {
         decorationManager.applyToVisibleEditors();
       }
