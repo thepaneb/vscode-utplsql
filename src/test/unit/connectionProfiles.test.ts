@@ -63,6 +63,7 @@ function makeGlobal(over: Partial<UtConfig> = {}): UtConfig {
     oraclePoolMax: 10,
     oraclePoolIncrement: 1,
     oraclePoolPingInterval: 60,
+    oraclePoolCloseAfterRun: false,
     oracleClientMode: 'thin',
     oracleClientLibDir: '',
     oracleClientConfigDir: '',

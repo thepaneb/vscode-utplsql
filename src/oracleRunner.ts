@@ -80,7 +80,50 @@ export function connectionUser(connection: string): string | undefined {
   }
 }
 
-let currentPool: { pool: OraclePool; key: string } | undefined;
+let currentPool: { pool: OraclePool; key: string; connection: string } | undefined;
+let activeOracleActivities = 0;
+
+/**
+ * Token de atividade Oracle (PRD-101): cobre run, cobertura, export, discovery
+ * e demais operações que usam o pool. `end()` é idempotente e, no último
+ * token, fecha o pool ocioso quando `oraclePoolCloseAfterRun` está ligado.
+ */
+export interface OracleActivity {
+  end(): Promise<void>;
+}
+
+export function beginOracleActivity(cfg: UtConfig = readConfig()): OracleActivity {
+  activeOracleActivities += 1;
+  let ended = false;
+  return {
+    async end(): Promise<void> {
+      if (ended) return;
+      ended = true;
+      activeOracleActivities = Math.max(0, activeOracleActivities - 1);
+      if (activeOracleActivities === 0) await closeIdleOraclePool(cfg);
+    },
+  };
+}
+
+/**
+ * Fecha o pool atual se estiver ocioso. Remove do cache **antes** do close
+ * assíncrono, para um `ensurePool` concorrente criar um novo pool em vez de
+ * receber um pool fechando.
+ */
+export async function closeIdleOraclePool(cfg: UtConfig = readConfig()): Promise<void> {
+  if (!cfg.oraclePoolCloseAfterRun) return;
+  const entry = currentPool;
+  if (!entry || entry.pool.connectionsInUse > 0) return;
+  currentPool = undefined;
+  try {
+    await entry.pool.close(0);
+    logger.info('pool Oracle fechado após a execução');
+  } catch (e) {
+    logger.warn('falha ao fechar pool Oracle ocioso', {
+      error: redactConnection(String(e), entry.connection),
+    });
+  }
+}
 
 /**
  * Resolve o `connectString` para o driver (PRD-82 RF3): se for um alias TNS e
@@ -132,7 +175,7 @@ export async function ensurePool(
     ...(cfg.walletLocation ? { walletLocation: cfg.walletLocation } : {}),
     ...(cfg.walletPassword ? { walletPassword: cfg.walletPassword } : {}),
   });
-  currentPool = { pool, key };
+  currentPool = { pool, key, connection };
   return pool;
 }
 
@@ -161,22 +204,27 @@ export async function withOracleConnection<T>(
   cfg: UtConfig,
   fn: (conn: OracleConnection) => Promise<T>,
 ): Promise<T | undefined> {
-  const pool = await ensurePool(oracledb, connection, cfg).catch(() => undefined);
-  let conn: OracleConnection;
+  const activity = beginOracleActivity(cfg);
   try {
-    conn = pool
-      ? await pool.getConnection()
-      : await oracledb.getConnection(parseConnString(connection));
-  } catch (e) {
-    logger.debug('withOracleConnection: falha ao obter conexão', {
-      error: redactConnection(String(e), connection),
-    });
-    return undefined;
-  }
-  try {
-    return await fn(conn);
+    const pool = await ensurePool(oracledb, connection, cfg).catch(() => undefined);
+    let conn: OracleConnection;
+    try {
+      conn = pool
+        ? await pool.getConnection()
+        : await oracledb.getConnection(parseConnString(connection));
+    } catch (e) {
+      logger.debug('withOracleConnection: falha ao obter conexão', {
+        error: redactConnection(String(e), connection),
+      });
+      return undefined;
+    }
+    try {
+      return await fn(conn);
+    } finally {
+      await conn.close().catch(() => {});
+    }
   } finally {
-    await conn.close().catch(() => {});
+    await activity.end();
   }
 }
 
@@ -754,6 +802,20 @@ async function runAndPoll(options: {
 }
 
 export async function executeRunOracle(
+  options: OracleRunOptions,
+  token: vscode.CancellationToken,
+  loadOracledbMod: () => Promise<LoadedOracledb | undefined> = loadOracledb,
+): Promise<string | undefined> {
+  // PRD-101: cobre run, cobertura e export; o pool só fecha no último `end`.
+  const activity = beginOracleActivity();
+  try {
+    return await executeRunOracleCore(options, token, loadOracledbMod);
+  } finally {
+    await activity.end();
+  }
+}
+
+async function executeRunOracleCore(
   options: OracleRunOptions,
   token: vscode.CancellationToken,
   loadOracledbMod: () => Promise<LoadedOracledb | undefined> = loadOracledb,

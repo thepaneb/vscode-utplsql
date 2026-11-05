@@ -282,6 +282,11 @@
           "minimum": 0,
           "description": "Seconds between health checks of idle pool connections (node-oracledb). 0 = ping on every checkout."
         },
+        "utplsql.oraclePoolCloseAfterRun": {
+          "type": "boolean",
+          "default": true,
+          "description": "Closes idle Oracle pool connections when the last run, coverage, export or discovery operation finishes. Disable to keep the pool warm between runs (may delay DROP USER until the window is reloaded)."
+        },
         "utplsql.oracleClientMode": {
           "type": "string",
           "enum": [

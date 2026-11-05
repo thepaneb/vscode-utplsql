@@ -5,7 +5,13 @@ import { getExtensionLocale, readConfig } from './config';
 import { getActiveProfile } from './connectionProfiles';
 import { t } from './i18n';
 import { logger } from './logger';
-import { ensurePool, getOracleInfo, parseConnString, semverLt } from './oracleRunner';
+import {
+  beginOracleActivity,
+  ensurePool,
+  getOracleInfo,
+  parseConnString,
+  semverLt,
+} from './oracleRunner';
 import { redactConnection } from './redact';
 import { parseSuiteText, type TestProc } from './suiteParser';
 
@@ -390,6 +396,21 @@ export async function discoverDbSuites(
   folders: readonly vscode.WorkspaceFolder[],
   loadOracledbMod: () => Promise<typeof import('oracledb')> = loadOracledb,
 ): Promise<SuiteFile[]> {
+  // PRD-101: discovery via banco é uma atividade Oracle como as demais.
+  const activity = beginOracleActivity();
+  try {
+    return await discoverDbSuitesCore(connStr, schema, folders, loadOracledbMod);
+  } finally {
+    await activity.end();
+  }
+}
+
+async function discoverDbSuitesCore(
+  connStr: string,
+  schema: string,
+  folders: readonly vscode.WorkspaceFolder[],
+  loadOracledbMod: () => Promise<typeof import('oracledb')> = loadOracledb,
+): Promise<SuiteFile[]> {
   const folder = folders[0];
   if (!folder) return [];
 
@@ -446,6 +467,20 @@ export async function discoverDbSuites(
  * falha (Oracle indisponível, sem acesso, timeout).
  */
 export async function discoverSchemaFromDb(
+  connStr: string,
+  schema: string,
+  folders: readonly vscode.WorkspaceFolder[],
+  loadOracledbMod: () => Promise<typeof import('oracledb')> = loadOracledb,
+): Promise<SuiteFile[]> {
+  const activity = beginOracleActivity();
+  try {
+    return await discoverSchemaFromDbCore(connStr, schema, folders, loadOracledbMod);
+  } finally {
+    await activity.end();
+  }
+}
+
+async function discoverSchemaFromDbCore(
   connStr: string,
   schema: string,
   folders: readonly vscode.WorkspaceFolder[],

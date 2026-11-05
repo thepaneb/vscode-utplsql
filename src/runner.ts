@@ -3,7 +3,7 @@ import { getExtensionLocale, readConfig, resolveConnection } from './config';
 import { offerCoverageHtmlReport } from './coverage';
 import { t } from './i18n';
 import { resolveRunRoots } from './matching';
-import { executeRunOracle, type OracleRunOptions } from './oracleRunner';
+import { beginOracleActivity, executeRunOracle, type OracleRunOptions } from './oracleRunner';
 import { setupValidator } from './quickfix';
 import { redactConnection } from './redact';
 import type { LastRunState, TestStateManager } from './state';
@@ -138,6 +138,7 @@ export async function executeRun(
   }
 
   const cfg = readConfig();
+  const activity = beginOracleActivity(cfg);
   const locale = getExtensionLocale();
   const exporting = !!exportReporter;
   const run = controller.createTestRun(request);
@@ -247,6 +248,8 @@ export async function executeRun(
     // PRD-108 RF2: a notificação é fire-and-forget e só começa depois do
     // run.end(), então nunca segura o spinner do Test Explorer.
     if (htmlReportPath) void offerCoverageHtmlReport(htmlReportPath);
+    // PRD-101: run/cobertura/export cobrem a atividade; fecha o pool ocioso.
+    await activity.end();
   }
 
   return exportText;

@@ -31,6 +31,8 @@ export interface UtConfig {
   oraclePoolMax: number;
   oraclePoolIncrement: number;
   oraclePoolPingInterval: number;
+  /** Fecha pools ociosos ao fim de cada operação (PRD-101). */
+  oraclePoolCloseAfterRun: boolean;
   oracleClientMode: 'thin' | 'thick';
   oracleClientLibDir: string;
   oracleClientConfigDir: string;
@@ -148,6 +150,7 @@ export function readConfig(): UtConfig {
     oraclePoolMax: c.get<number>('oraclePoolMax', 10),
     oraclePoolIncrement: c.get<number>('oraclePoolIncrement', 1),
     oraclePoolPingInterval: c.get<number>('oraclePoolPingInterval', 60),
+    oraclePoolCloseAfterRun: c.get<boolean>('oraclePoolCloseAfterRun', true),
     oracleClientMode: c.get<'thin' | 'thick'>('oracleClientMode', 'thin'),
     oracleClientLibDir:
       c.get<string>('oracleClientLibDir', '').trim() ||

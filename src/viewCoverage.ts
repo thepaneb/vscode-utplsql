@@ -3,7 +3,7 @@ import * as path from 'node:path';
 import * as vscode from 'vscode';
 import { getExtensionLocale, readConfig } from './config';
 import { t } from './i18n';
-import { ensurePool, parseConnString } from './oracleRunner';
+import { beginOracleActivity, ensurePool, parseConnString } from './oracleRunner';
 import type { TestStateManager } from './state';
 
 export interface ViewFile {
@@ -92,6 +92,18 @@ export interface SqlCoverageOptions {
  * atual.
  */
 export async function applySqlCoverage(
+  options: SqlCoverageOptions,
+  loadOracledbMod: () => Promise<LoadedOracledb | undefined> = loadOracledb,
+): Promise<void> {
+  const activity = beginOracleActivity();
+  try {
+    return await applySqlCoverageCore(options, loadOracledbMod);
+  } finally {
+    await activity.end();
+  }
+}
+
+async function applySqlCoverageCore(
   options: SqlCoverageOptions,
   loadOracledbMod: () => Promise<LoadedOracledb | undefined> = loadOracledb,
 ): Promise<void> {
