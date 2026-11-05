@@ -4,11 +4,11 @@ id: PRD-125
 aliases: [PRD-125]
 status: in-progress
 titulo: "Suíte completa em thick e matriz de bancos no CI"
-versao: "0.19.0"
+versao: "0.20.0"
 data: "2026-10-29"
 autor: "Gil Cleber Barboza"
-versao_titulo: "0.19.0 — Piso Node 24 e runtime moderno"
-verificado: "2026-11-04"
+versao_titulo: "0.20.0 — Observabilidade e desempenho"
+verificado: "2026-11-05"
 regras: ["BR-TEST-001"]
 docs: ["CHANGELOG", "wiki/Contributing.md", "wiki/Tests.md", "functional/10-development-tooling.md"]
 tags: [prd]
@@ -21,7 +21,7 @@ tags: [prd]
 | Autor | Gil Cleber Barboza |
 | Data | 2026-10-29 |
 | Componente | Testes de integração + matriz de bancos + CI |
-| Versão alvo | 0.19.0 |
+| Versão alvo | 0.20.0 |
 | Arquivos afetados | `.vscode-test.thick-full.mjs` (novo), `scripts/db-matrix/run.sh`, `package.json`, `.github/workflows/integration.yml`, `src/test/integration/**` (skips condicionais), `docs/brain/70-Wiki/{Contributing,Tests}.md`, `docs/brain/15-Regras/BR-TEST-001*.md`, `docs/brain/10-Projeto/Funcional/10-development-tooling.md`, `CHANGELOG.md` |
 | Esforço estimado | 2–3 dias |
 | Complexidade | Média-Alta |
@@ -232,7 +232,7 @@ Nenhuma setting/comando de runtime novo. Apenas scripts de teste e CI.
 
 ## 9. Rollout
 
-- **Release alvo:** 0.19.0.
+- **Release alvo:** 0.20.0 (RF3); a 0.19.0 entregou o RF1/RF2/RF4.
 - `CHANGELOG` com o novo eixo e a política de CI.
 - Se o 11g não puder rodar o full, a PRD entrega o `thick-full` no 23free e
   documenta o 11g como smoke (com a justificativa), sem regredir a promessa
@@ -242,7 +242,8 @@ Nenhuma setting/comando de runtime novo. Apenas scripts de teste e CI.
 
 O 0.19.0 entrega o **RF1/RF2** (config/scripts), o **RF4** (CI) e a documentação;
 o **RF3** (full 23free/11g) fica para a **0.20.0**. Critérios de aceite abaixo
-marcados como pendentes não bloqueiam a 0.19.0; a PRD fica `in-progress`.
+marcados como pendentes não bloqueiam a 0.19.0; a PRD fica `in-progress` com
+`versao: 0.20.0` até a entrega do RF3.
 
 O cron semanal (`0 4 * * 0`) só passa a valer depois do merge na `main`
 (workflows agendados rodam a partir da default branch). Antes disso, o recorte
@@ -327,6 +328,7 @@ cita `PRD-125` ou `<!-- prd:PRD-125 -->`.
 - 📐 Regras: [[BR-TEST-001 - Matriz de bancos Oracle cobre 12.2-23ai em thin e thick|BR-TEST-001]]
 - 🔗 PRDs relacionados: [[prd-04-expand-tests|PRD-04]] · [[prd-72-db-test-matrix|PRD-72]] · [[prd-101-connection-pool-lifecycle|PRD-101]] · [[prd-102-trace-and-perf-instrumentation|PRD-102]] · [[prd-123-oracle-11g-support|PRD-123]] · [[prd-124-oracledb-26-upgrade|PRD-124]]
 - ⚙️ Pipelines: [[PIPE-integration - Integration (Oracle)|PIPE-integration]]
+- 🔗 Mesma versão (0.20.0): [[prd-101-connection-pool-lifecycle|PRD-101]] · [[prd-102-trace-and-perf-instrumentation|PRD-102]] · [[prd-103-incremental-source-reindex|PRD-103]] · [[prd-106-perf-harness|PRD-106]] · [[prd-107-unprivileged-fixture|PRD-107]] · [[prd-120-lean-activation-lazy-setup|PRD-120]] · [[prd-146-attestations-publish|PRD-146]] · [[prd-147-marketplace-listing-page|PRD-147]]
 - 🎯 RF4 — CI → [[BR-TEST-001 - Matriz de bancos Oracle cobre 12.2-23ai em thin e thick|BR-TEST-001]]
-- 🚀 ⬅️ release anterior: [[prd-123-oracle-11g-support|PRD-123 (0.18.0)]] · ➡️ próxima release: [[prd-101-connection-pool-lifecycle|PRD-101 (0.20.0)]]
+- 🚀 ⬅️ release anterior: [[prd-127-vscode-floor-1-125|PRD-127 (0.19.0)]] · ➡️ próxima release: [[prd-128-event-bus-internal|PRD-128 (0.21.0)]]
 <!-- brain:auto:end -->

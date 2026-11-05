@@ -4,11 +4,11 @@
 
 | Campo | Valor |
 |---|---|
-| Status | Proposto |
+| Status | Em desenvolvimento |
 | Autor | security-auditor |
 | Data | 2026-11-05 |
 | Componente | Extensão `paneb.vscode-utplsql` |
-| Versão alvo | 0.25.0 |
+| Versão alvo | 0.20.0 |
 | Arquivos afetados | `.github/workflows/publish.yml`, `docs/brain/20-PRDs/prd-146-attestations-publish.md` |
 | Esforço estimado | 0,5 dia |
 | Complexidade | Média |
@@ -69,15 +69,18 @@ Nenhuma nova setting/comando. Apenas workflow CI.
 
 ## 9. Rollout
 
-- Alvo: versão 0.25.0 (ou próxima release)
+- Alvo: **0.20.0** — primeira publicação com attestations verificáveis.
+- Implementado no `main` em 2026-11-05 (commit `8750e28`), depois da tag
+  `v0.19.0`; a verificação de que todos os `.vsix` recebem attestations acontece
+  na publicação da 0.20.0.
 - Atualizar CHANGELOG.md
 
 ## 10. Critérios de aceite
 
-- [ ] Job publish tem `id-token: write` e `attestations: write`
-- [ ] Step de attestation adicionado com ação pinada por SHA
-- [ ] Attestations geradas para todos os .vsix da matriz
-- [ ] CHANGELOG atualizado
+- [x] Job publish tem `id-token: write` e `attestations: write`
+- [x] Step de attestation adicionado com ação pinada por SHA
+- [ ] Attestations geradas para todos os .vsix da matriz (pendente da publicação 0.20.0)
+- [x] CHANGELOG atualizado
 - [ ] Documentação de verificação adicionada (se aplicável)
 
 ## 11. Questões em aberto

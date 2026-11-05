@@ -198,7 +198,6 @@ runner). Cada superfície cita `PRD-111` ou `<!-- prd:PRD-111 -->`.
 - 🗺️ [[MOC - PRDs]]
 - 📐 Regras: [[BR-QUAL-004 - executeRunOracle e orquestrador e as etapas sao funcoes testaveis|BR-QUAL-004]]
 - 🔗 PRDs relacionados: [[prd-40-options-object|PRD-40]] · [[prd-69-oracle-runner-typed-binds|PRD-69]] · [[prd-76-reporter-export|PRD-76]] · [[prd-78-random-test-order|PRD-78]]
-- 🔗 Mesma versão (0.19.0): [[prd-125-thick-full-matrix-ci|PRD-125]]
 - 🎯 RF1 — Decomposição de `executeRunOracle` → [[BR-QUAL-004 - executeRunOracle e orquestrador e as etapas sao funcoes testaveis|BR-QUAL-004]]
 - 🎯 RF3 — Testes e rastreabilidade → [[BR-QUAL-004 - executeRunOracle e orquestrador e as etapas sao funcoes testaveis|BR-QUAL-004]]
 - 🎯 RNF1 — Sem mudança de comportamento; suíte atual permanece verde. → [[BR-QUAL-004 - executeRunOracle e orquestrador e as etapas sao funcoes testaveis|BR-QUAL-004]]

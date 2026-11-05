@@ -1,9 +1,10 @@
 ---
 tipo: nota
-status: ativo
+status: concluida
 modulo: prds
 data: 2026-10-10
-verificado: 2026-10-31
+verificado: 2026-11-05
+concluida: 2026-11-04
 tags: [prd, roadmap, planejamento]
 ---
 
@@ -158,6 +159,11 @@ merge).
   ficou instável/hangou. O banco está saudável (93/200 processes). A
   estabilidade do host longo (pool/debugger) fica para a **0.20.0**
   (PRD-101/102; issue **#288**); o 11g permanece no smoke (4/4).
+- **Publicação** (2026-11-04): `v0.19.0` tagueada e publicada no GitHub com
+  **9 VSIX**. O fechamento da versão deixa dois resíduos planejados para a
+  **0.20.0**: o RF3 da PRD-125 (suíte completa em thick, `in-progress`) e o RF2
+  da PRD-111 (agrupamento de `OracleRunOptions`). A PRD-146 (attestations)
+  entrou no `main` depois da tag e também passa a ser verificada na 0.20.0.
 
 ## Fluxo de execução (por PRD)
 

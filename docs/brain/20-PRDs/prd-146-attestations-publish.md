@@ -1,9 +1,10 @@
 ---
 tipo: prd
 id: PRD-146
-status: proposed
+status: in-progress
 titulo: "Attestations de proveniência na publicação"
-versao: "0.25.0"
+versao: "0.20.0"
+versao_titulo: "0.20.0 — Observabilidade e desempenho"
 data: "2026-11-05"
 autor: "security-auditor"
 verificado: "2026-11-05"
@@ -19,7 +20,7 @@ tags: [prd, security, supply-chain]
 | Autor | security-auditor |
 | Data | 2026-11-05 |
 | Componente | Extensão `paneb.vscode-utplsql` |
-| Versão alvo | 0.25.0 |
+| Versão alvo | 0.20.0 |
 | Arquivos afetados | `.github/workflows/publish.yml`, `docs/brain/20-PRDs/prd-146-attestations-publish.md` |
 | Esforço estimado | 0,5 dia |
 | Complexidade | Média |
@@ -80,15 +81,18 @@ Nenhuma nova setting/comando. Apenas workflow CI.
 
 ## 9. Rollout
 
-- Alvo: versão 0.25.0 (ou próxima release)
+- Alvo: **0.20.0** — primeira publicação com attestations verificáveis.
+- Implementado no `main` em 2026-11-05 (commit `8750e28`), depois da tag
+  `v0.19.0`; a verificação de que todos os `.vsix` recebem attestations acontece
+  na publicação da 0.20.0.
 - Atualizar CHANGELOG.md
 
 ## 10. Critérios de aceite
 
-- [ ] Job publish tem `id-token: write` e `attestations: write`
-- [ ] Step de attestation adicionado com ação pinada por SHA
-- [ ] Attestations geradas para todos os .vsix da matriz
-- [ ] CHANGELOG atualizado
+- [x] Job publish tem `id-token: write` e `attestations: write`
+- [x] Step de attestation adicionado com ação pinada por SHA
+- [ ] Attestations geradas para todos os .vsix da matriz (pendente da publicação 0.20.0)
+- [x] CHANGELOG atualizado
 - [ ] Documentação de verificação adicionada (se aplicável)
 
 ## 11. Questões em aberto
@@ -109,5 +113,6 @@ nenhuma
 <!-- brain:auto:start:conexoes -->
 - 🗺️ [[MOC - PRDs]]
 - ⚙️ Pipelines: [[PIPE-publish - Publish Extension|PIPE-publish]]
-- 🚀 ⬅️ release anterior: [[prd-145-security-alerts-deliverable|PRD-145 (0.24.0)]]
+- 🔗 Mesma versão (0.20.0): [[prd-101-connection-pool-lifecycle|PRD-101]] · [[prd-102-trace-and-perf-instrumentation|PRD-102]] · [[prd-103-incremental-source-reindex|PRD-103]] · [[prd-106-perf-harness|PRD-106]] · [[prd-107-unprivileged-fixture|PRD-107]] · [[prd-120-lean-activation-lazy-setup|PRD-120]] · [[prd-125-thick-full-matrix-ci|PRD-125]] · [[prd-147-marketplace-listing-page|PRD-147]]
+- 🚀 ⬅️ release anterior: [[prd-127-vscode-floor-1-125|PRD-127 (0.19.0)]] · ➡️ próxima release: [[prd-128-event-bus-internal|PRD-128 (0.21.0)]]
 <!-- brain:auto:end -->

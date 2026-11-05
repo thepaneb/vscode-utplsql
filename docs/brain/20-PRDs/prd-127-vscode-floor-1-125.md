@@ -339,7 +339,6 @@ conclusão. O relatório da auditoria Node 24 (RF5) fica na PRD ou em nota de
 - 🗺️ [[MOC - PRDs]]
 - 📐 Regras: [[BR-PLAT-001 - Piso de VS Code e runtime Node do host sao coerentes|BR-PLAT-001]]
 - 🔗 PRDs relacionados: [[prd-47-node-26-toolchain|PRD-47]] · [[prd-94-vscode-floor-1-101|PRD-94]] · [[prd-95-esm-es2023-node22|PRD-95]] · [[prd-102-trace-and-perf-instrumentation|PRD-102]] · [[prd-120-lean-activation-lazy-setup|PRD-120]]
-- 🔗 Mesma versão (0.19.0): [[prd-125-thick-full-matrix-ci|PRD-125]]
 - 🎯 RF1 — Piso e tipos exatos → [[BR-PLAT-001 - Piso de VS Code e runtime Node do host sao coerentes|BR-PLAT-001]]
 - 🎯 RF2 — Runtime Node 24 → [[BR-PLAT-001 - Piso de VS Code e runtime Node do host sao coerentes|BR-PLAT-001]] · [[NFR-002 - Compatibilidade com Node|NFR-002]]
 - 🚀 ⬅️ release anterior: [[prd-123-oracle-11g-support|PRD-123 (0.18.0)]] · ➡️ próxima release: [[prd-101-connection-pool-lifecycle|PRD-101 (0.20.0)]]
