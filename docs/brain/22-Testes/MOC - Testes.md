@@ -23,6 +23,7 @@ SORT id ASC
 ## Índice (links)
 
 <!-- brain:auto:start:moc-index -->
+- [[Análise de cobertura - 0.20.0]]
 - [[Mapa - matriz de bancos]]
 - [[TST - anyBudget.test.ts]] — `TST-anyBudget.test.ts`
 - [[TST - autoRun.test.ts]] — `TST-autoRun.test.ts`
