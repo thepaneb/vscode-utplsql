@@ -2,6 +2,9 @@
 
 ## 0.19.0
 
+- **Cadeia de suprimentos (PRD-146)**: `.vsix` publicados recebem
+  **attestações de proveniência** (GitHub Artifact Attestations), com
+  verificação via `gh attestation verify`.
 - **Plataforma e runtime (PRD-127, PRD-47)**: piso em **VS Code 1.125+**
   (Extension Host com **Node 24.15**), `engines.node >=24`, `@types/vscode`
   pinado em 1.125 e toolchain local em Node 24 com CI em **24/26**.
