@@ -7,7 +7,7 @@ versao: "0.25.0"
 data: "2026-11-05"
 autor: "security-auditor"
 verificado: "2026-11-05"
-regras: [] # derivado por brain:sync
+regras: []
 docs: ["CHANGELOG"]
 tags: [prd, security, supply-chain]
 ---
@@ -107,4 +107,7 @@ nenhuma
 ## Conexões
 
 <!-- brain:auto:start:conexoes -->
+- 🗺️ [[MOC - PRDs]]
+- ⚙️ Pipelines: [[PIPE-publish - Publish Extension|PIPE-publish]]
+- 🚀 ⬅️ release anterior: [[prd-145-security-alerts-deliverable|PRD-145 (0.24.0)]]
 <!-- brain:auto:end -->

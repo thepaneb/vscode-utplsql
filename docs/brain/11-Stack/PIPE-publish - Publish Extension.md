@@ -41,6 +41,7 @@ Workflow [`publish.yml`](../../../.github/workflows/publish.yml) — **gerado** 
 - `run: npm run package:target -- ${{ matrix.target }}`
 - `run: npm run publish -- --packagePath vscode-utplsql-*@${{ matrix.target }}.vsix`
 - `run: gh release upload ${{ github.event.release.tag_name }} *.vsix`
+- `uses: actions/attest-build-provenance@4d101475d8b20a2381f78447822ac1eab6504dd8 # v4.2.2`
 
 ## Conexões
 

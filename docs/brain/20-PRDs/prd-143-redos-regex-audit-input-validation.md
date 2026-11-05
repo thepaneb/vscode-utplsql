@@ -119,5 +119,5 @@ Superfície listada: CHANGELOG.
 - 🗺️ [[MOC - PRDs]]
 - 🔗 PRDs relacionados: [[prd-109-language-identity|PRD-109]] · [[prd-110-defensive-hardening|PRD-110]]
 - 🔗 Mesma versão (0.24.0): [[prd-121-auditable-package-sourcemap|PRD-121]] · [[prd-122-marketplace-trust-metadata|PRD-122]] · [[prd-132-ux-execution-dryrun-jump|PRD-132]] · [[prd-133-rate-limiting-keybindings|PRD-133]] · [[prd-140-statusbar-settings-grouping|PRD-140]] · [[prd-141-onboarding-walkthrough-accessibility|PRD-141]] · [[prd-142-supply-chain-provenance-typecheck-gate|PRD-142]] · [[prd-144-security-runtime-hardening|PRD-144]] · [[prd-145-security-alerts-deliverable|PRD-145]]
-- 🚀 ⬅️ release anterior: [[prd-126-branch-coverage-cli-tests|PRD-126 (0.23.0)]]
+- 🚀 ⬅️ release anterior: [[prd-126-branch-coverage-cli-tests|PRD-126 (0.23.0)]] · ➡️ próxima release: [[prd-146-attestations-publish|PRD-146 (0.25.0)]]
 <!-- brain:auto:end -->
