@@ -38,7 +38,8 @@ Use um perfil **separado do UT3** (a senha fica no SecretStorage):
 | `sourcePath` | `db` |
 | `coverageOwner` | `DEMO` |
 | `includePatterns` | `["db/**/*.pks"]` |
-| senha | `demo#2026` (somente ambiente local de demo) |
+| senha | `demo2026` (somente ambiente local de demo) |
+| prompt do assistente | `DEMO/demo2026@//localhost:1521/freepdb1` (com a senha; o assistente move para o SecretStorage) |
 
 O schema `DEMO` já está preparado no container local com:
 
