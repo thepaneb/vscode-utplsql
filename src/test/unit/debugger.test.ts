@@ -7,6 +7,7 @@ import { mock, test } from 'node:test';
 import { parseBreakpointTarget } from '../../dbmsDebug';
 import {
   type DebuggerRuntime,
+  enclosingSubprogramName,
   extractParamNames,
   startDebugSession,
   UtplsqlDebugAdapter,
@@ -451,6 +452,79 @@ test('debugger: stackTrace aponta para o arquivo real do breakpoint (não <unit>
     '/ws/functions/calcular_desconto.sql',
   );
   adapter.dispose();
+});
+
+test('enclosingSubprogramName: acha a function/procedure da linha', () => {
+  const src = `create or replace package body orders as
+  function calculate_total(p_quantity in number, p_unit_price in number) return number is
+  begin
+    return p_quantity * p_unit_price;
+  end;
+end;`;
+  assert.strictEqual(enclosingSubprogramName(src, 4), 'calculate_total');
+  assert.strictEqual(enclosingSubprogramName(src, 1), undefined);
+});
+
+test('debugger: variables de package usam o subprograma da linha atual', async () => {
+  const fs = await import('node:fs');
+  const os = await import('node:os');
+  const path = await import('node:path');
+  const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'utplsql-dbg-pkg-'));
+  const file = path.join(dir, 'ORDERS.pkb');
+  fs.writeFileSync(
+    file,
+    `create or replace package orders as
+  function calculate_total(p_quantity in number, p_unit_price in number) return number;
+end orders;
+/
+create or replace package body orders as
+  function calculate_total(p_quantity in number, p_unit_price in number) return number is
+  begin
+    return p_quantity * p_unit_price;
+  end calculate_total;
+end orders;`,
+  );
+
+  const names: string[] = [];
+  const conn = makeFakeConn();
+  const orig = conn.execute.bind(conn);
+  conn.execute = async (sql: string, binds?: Record<string, unknown>) => {
+    if (/CONTINUE/.test(sql)) {
+      return { outBinds: { status: 0, stopped: 1, ended: 0, line: 9, unit: 'APP.ORDERS' } };
+    }
+    if (/GET_VALUE/.test(sql)) {
+      names.push(String((binds as { name?: unknown })?.name ?? ''));
+      return { outBinds: { value: '1' } };
+    }
+    return orig(sql);
+  };
+
+  const adapter = new UtplsqlDebugAdapter(makeRuntime(conn));
+  const sent: Msg[] = [];
+  adapter.onDidSendMessage((m) => sent.push(m));
+  adapter.handleMessage({ type: 'request', seq: 1, command: 'initialize' });
+  adapter.handleMessage({
+    type: 'request',
+    seq: 2,
+    command: 'launch',
+    arguments: { packageName: 'ut_orders', connection: 'DEMO/demo2026@//h:1521/svc' },
+  });
+  await flushN(4);
+  adapter.handleMessage({
+    type: 'request',
+    seq: 3,
+    command: 'setBreakpoints',
+    arguments: { source: { path: file }, breakpoints: [{ line: 9 }] },
+  });
+  await flushN(2);
+  adapter.handleMessage({ type: 'request', seq: 4, command: 'configurationDone' });
+  adapter.handleMessage({ type: 'request', seq: 5, command: 'continue' });
+  await flushN(4);
+  adapter.handleMessage({ type: 'request', seq: 6, command: 'variables' });
+  await flushN(2);
+  assert.deepStrictEqual(names.sort(), ['p_quantity', 'p_unit_price']);
+  adapter.dispose();
+  fs.rmSync(dir, { recursive: true, force: true });
 });
 
 test('debugger: variables do DAP incluem variablesReference', async () => {

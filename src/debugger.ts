@@ -116,6 +116,24 @@ interface DapMessage {
   success?: boolean;
 }
 
+/**
+ * Nome da procedure/function que contém a linha (1-based) do fonte. O
+ * `DBMS_DEBUG.GET_RUNTIME_INFO` devolve a unidade (package), não o subprograma;
+ * para ler parâmetros via `GET_VALUE` é preciso localizar o subprograma no
+ * fonte pela linha atual.
+ */
+export function enclosingSubprogramName(text: string, line: number): string | undefined {
+  const lines = text.split(/\r?\n/);
+  const start = Math.min(Math.max(1, line), lines.length) - 1;
+  for (let i = start; i >= 0; i -= 1) {
+    const m = /\b(?:procedure|function)\s+"?([A-Za-z][\w$#]*)"?\s*(?:\(|\breturn\b|\bis\b|\bas\b)/i.exec(
+      lines[i],
+    );
+    if (m) return m[1];
+  }
+  return undefined;
+}
+
 export interface LaunchConfig {
   packageName: string;
   testName?: string;
@@ -294,11 +312,17 @@ export class UtplsqlDebugAdapter implements vscode.DebugAdapter {
    * (`unitSource`) em vez de inventar `<unit>.pks` — o objeto pode estar num
    * `.sql`/`.fnc`/`.prc`.
    */
+  private unitForFrame(name: string): string {
+    const parts = name.split('.').map((p) => p.toUpperCase());
+    const mapped = [...parts].reverse().find((p) => this.unitSource.has(p));
+    return mapped ?? parts[parts.length - 1] ?? name.toUpperCase();
+  }
+
   private sourceForFrame(): { name: string; path: string } {
     const frame = this.currentFrame;
     if (!frame) return { name: '', path: '' };
-    const unit = frame.name.split('.').pop() ?? frame.name;
-    const mapped = this.unitSource.get(unit.toUpperCase()) ?? this.sourcePath;
+    const unit = this.unitForFrame(frame.name);
+    const mapped = this.unitSource.get(unit) ?? this.sourcePath;
     if (mapped) {
       return { name: mapped.split(/[\\/]/).pop() ?? mapped, path: mapped };
     }
@@ -561,8 +585,8 @@ export class UtplsqlDebugAdapter implements vscode.DebugAdapter {
     if ((status === 'break' || isException) && this.debuggerClient) {
       const frame = await this.debuggerClient.getRuntimeFrame(1);
       // Converte a linha do objeto armazenado de volta para a do arquivo local.
-      const unit = frame.name.split('.').pop() ?? frame.name;
-      const offset = await this.unitLineOffset(unit, this.unitSource.get(unit.toUpperCase()));
+      const unit = this.unitForFrame(frame.name);
+      const offset = await this.unitLineOffset(unit, this.unitSource.get(unit));
       const line = frame.line > 0 ? frame.line + offset : frame.line;
       this.currentFrame = { name: frame.name, line };
       this.sendEvent('stopped', {
@@ -584,8 +608,11 @@ export class UtplsqlDebugAdapter implements vscode.DebugAdapter {
     try {
       const src = this.sourceForFrame();
       if (src.path && this.currentFrame) {
-        const proc = this.currentFrame.name.split('.').pop() ?? '';
         const text = fs.readFileSync(src.path, 'utf-8');
+        const proc =
+          enclosingSubprogramName(text, this.currentFrame.line) ??
+          this.currentFrame.name.split('.').pop() ??
+          '';
         names = extractParamNames(text, proc);
       }
     } catch {
