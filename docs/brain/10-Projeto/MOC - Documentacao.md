@@ -15,7 +15,7 @@ enumerations geradas (`npm run brain:sync`).
 
 <!-- brain:auto:start:root-docs -->
 - [README.md](../../../README.md) — _2026-11-05_
-- [MARKETPLACE.md](../../../MARKETPLACE.md) — _2026-11-05_
+- [MARKETPLACE.md](../../../MARKETPLACE.md) — _2026-11-07_
 - [CHANGELOG.md](../../../CHANGELOG.md) — _2026-11-05_
 - [CONTRIBUTING.md](../../../CONTRIBUTING.md) — _2026-10-31_
 - [SECURITY.md](../../../SECURITY.md) — _2026-11-05_
