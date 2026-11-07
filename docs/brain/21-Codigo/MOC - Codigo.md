@@ -76,6 +76,7 @@ SORT id ASC
 - [[COD - fixtures.ts]] — `COD-fixtures.ts`
 - [[COD - gen-diagrams.cjs]] — `COD-gen-diagrams.cjs`
 - [[COD - gen-icon.cjs]] — `COD-gen-icon.cjs`
+- [[COD - gen-social-preview.cjs]] — `COD-gen-social-preview.cjs`
 - [[COD - github-about.cjs]] — `COD-github-about.cjs`
 - [[COD - google-index.yml]] — `COD-google-index.yml`
 - [[COD - google408e9fc32b68946a.html]] — `COD-google408e9fc32b68946a.html`

@@ -36,6 +36,7 @@ O gate `npm run marketplace:check` (`scripts/marketplace-images.cjs`) valida o m
 | `npm run package:target -- <target>` | VSIX genérico por target (usado pelo `publish.yml`) |
 | `npm run gen-icon` | `scripts/gen-icon.cjs` — gera o ícone |
 | `npm run gen-diagram` | `scripts/gen-diagrams.cjs` — renderiza todos os SVGs de `docs/wiki/images/` para PNG de 1200px via `@resvg/resvg-js` (cross-platform) |
+| `npm run gen-social-preview` | `scripts/gen-social-preview.cjs` — renderiza `images/social-preview.svg` → `images/social-preview.png` (1280×640) para o **Social preview** do repositório (upload manual em Settings) |
 | `npm run brain:sync` / `brain:check` | Sincroniza/valida o vault Obsidian (`docs/brain`) |
 | `npm run brain:rules` | Valida as `BR-*`, o schema das camadas (SEC/ERR/PAT/…), o vínculo bidirecional PRD ↔ regra/SEC, a rastreabilidade **RNF → regra**, o vínculo concreto de NFR/TPL/PAT/ENT/ERR/GLOSS/ADR, a **documentação das regras** (funcional/wiki) e a presença das regras de usuário na **wiki** (`interno: true` isenta) |
 | `npm run brain:ci` | `brain:sync` + `brain:build` + `brain:check` + `brain:rules` + `brain:gaps` (roda no CI) |
@@ -310,6 +311,21 @@ GitHub Actions) via environment `github-pages`.
 
 > Regra: **BR-SITE-001**. A documentação completa dentro do site (portar
 > `docs/wiki/`) é a fase 2 (PRD-97).
+
+## Social preview
+
+Card exibido quando o link do repositório é compartilhado (Slack, LinkedIn, X,
+Discord). Fonte em `images/social-preview.svg` (1280×640, paleta do ícone e da
+landing page); o PNG é gerado por `npm run gen-social-preview`
+(`scripts/gen-social-preview.cjs`, `@resvg/resvg-js`).
+
+- Upload **manual e por repositório**: GitHub → **Settings** → **General** →
+  **Social preview** → **Edit** → **Upload an image** (PNG/JPG/GIF até 1 MB)
+- **Não há endpoint REST/GraphQL público** para definir o social preview; o token
+  do repositório não acessa a página de settings (404). Sem upload, o GitHub serve
+  o card genérico de `opengraph.githubassets.com`
+- Reenvie o PNG quando o card mudar — o cache das plataformas demora a atualizar
+- `images/social-preview.*` fica fora do VSIX (`.vscodeignore`, BR-PKG-001)
 
 ## Node
 

@@ -1024,6 +1024,7 @@
     "package:target": "node scripts/package-target.cjs",
     "gen-icon": "node scripts/gen-icon.cjs",
     "gen-diagram": "node scripts/gen-diagrams.cjs",
+    "gen-social-preview": "node scripts/gen-social-preview.cjs",
     "brain:sync": "node scripts/brain.cjs sync",
     "brain:check": "node scripts/brain.cjs check",
     "brain:build": "node scripts/brain-build.cjs",

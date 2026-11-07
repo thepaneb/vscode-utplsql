@@ -69,6 +69,8 @@ test('vscodeignore: não vaza arquivos de agente/desenvolvimento no VSIX', () =>
     'docs',
     'site',
     'coverage',
+    'images/social-preview.png',
+    'images/social-preview.svg',
   ];
   for (const p of proibidos) {
     assert.ok(isIgnored(p, lines), `${p} deveria estar coberto pelo .vscodeignore`);
