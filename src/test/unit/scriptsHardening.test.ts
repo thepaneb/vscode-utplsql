@@ -138,6 +138,8 @@ test('create-pr: dry-run atualiza PR existente', () => {
       'test: update',
       '--body-file',
       body,
+      '--head',
+      'feat/x',
       '--dry-run',
     ]);
     assert.strictEqual(r.status, 0, r.stderr);
@@ -365,18 +367,41 @@ test('create-pr: erro HTTP e erro de rede viram exit 1', () => {
   }
 });
 
-test('create-pr: sem GITHUB_REPOSITORY deduz do git remote e sem --head usa a branch atual', () => {
+test('create-pr: sem GITHUB_REPOSITORY deduz do git remote', () => {
   const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'utplsql-pr-'));
   const body = path.join(dir, 'body.md');
   try {
     fs.writeFileSync(body, 'corpo');
     const r = runCli(
       'create-pr.cjs',
-      ['--title', 'x', '--body-file', body, '--dry-run'],
+      ['--title', 'x', '--body-file', body, '--head', 'feat/x', '--dry-run'],
       cliEnv({ GITHUB_REPOSITORY: '' }),
     );
     assert.strictEqual(r.status, 0, r.stderr);
     assert.match(r.stdout, /\[dry-run\] POST \/pulls/);
+  } finally {
+    fs.rmSync(dir, { recursive: true, force: true });
+  }
+});
+
+test('create-pr: sem --head usa a branch atual', (t) => {
+  // CI faz checkout detached (PR): não há branch atual para inferir.
+  const branch = spawnSync('git', ['branch', '--show-current'], {
+    cwd: ROOT,
+    encoding: 'utf8',
+  }).stdout.trim();
+  if (!branch) {
+    t.skip('checkout detached: sem branch atual');
+    return;
+  }
+  const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'utplsql-pr-'));
+  const body = path.join(dir, 'body.md');
+  try {
+    fs.writeFileSync(body, 'corpo');
+    const r = runCli('create-pr.cjs', ['--title', 'x', '--body-file', body, '--dry-run']);
+    assert.strictEqual(r.status, 0, r.stderr);
+    assert.match(r.stdout, /\[dry-run\] POST \/pulls/);
+    assert.match(r.stdout, new RegExp(`"head":"${branch.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}"`));
   } finally {
     fs.rmSync(dir, { recursive: true, force: true });
   }
