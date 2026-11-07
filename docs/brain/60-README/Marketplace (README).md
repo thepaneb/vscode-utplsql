@@ -254,6 +254,12 @@ The interface is available in 24 languages. The complete localized READMEs are
 in the [GitHub repository](https://github.com/thepaneb/vscode-utplsql#readme);
 the Marketplace page is English-only.
 
+## Disclaimer
+
+This is an independent community project. It is **not** affiliated with,
+endorsed by, or sponsored by the utPLSQL framework team or Oracle Corporation.
+utPLSQL and Oracle are trademarks of their respective owners.
+
 ## License
 
 MIT. See [LICENSE](https://github.com/thepaneb/vscode-utplsql/blob/main/LICENSE).
