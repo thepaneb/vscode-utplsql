@@ -138,6 +138,9 @@ export function enclosingSubprogramName(text: string, line: number): string | un
 export interface LaunchConfig {
   packageName: string;
   testName?: string;
+  /** Owner usado para resolver breakpoints; nunca carrega a senha. */
+  schema?: string;
+  /** @deprecated compatibilidade com launch configs antigas; a extensão não injeta mais. */
   connection?: string;
   stopOnException?: boolean;
 }
@@ -201,21 +204,29 @@ export class UtplsqlDebugAdapter implements vscode.DebugAdapter {
           supportsTerminateRequest: true,
         });
         break;
-      case 'launch':
+      case 'launch': {
+        const connection = args.connection ? String(args.connection) : undefined;
+        const schema = args.schema
+          ? String(args.schema)
+          : connection
+            ? connectionUser(connection)
+            : undefined;
         this.config = {
           packageName: String(args.packageName ?? ''),
           testName: args.testName ? String(args.testName) : undefined,
-          connection: args.connection ? String(args.connection) : undefined,
+          ...(schema ? { schema } : {}),
+          // Mantém compatibilidade com launch configs antigas; a extensão não
+          // injeta mais a connection (e portanto a senha) no config público.
+          ...(connection ? { connection } : {}),
           stopOnException: Boolean(args.stopOnException ?? true),
         };
-        if (this.config.connection) {
-          this.schema = connectionUser(this.config.connection) ?? this.schema;
-        }
+        if (schema) this.schema = schema;
         this.sendResponse(message, {});
         // `initialized` após o launch (DAP): habilita setBreakpoints/configDone.
         this.sendEvent('initialized', {});
         void this.initSession();
         break;
+      }
       case 'setBreakpoints':
         this.breakpointPromise = this.breakpointPromise.then(async () => {
           const result = await this.applyBreakpoints(args);
@@ -632,6 +643,13 @@ export class UtplsqlDebugAdapter implements vscode.DebugAdapter {
   private async teardown(): Promise<void> {
     if (this.timer) clearTimeout(this.timer);
     this.terminated = true;
+    // Primeiro cancela o `ut_runner.run` bloqueado no debuggee; só então
+    // `DEBUG_OFF`/detach podem ser processados (BUG-07).
+    try {
+      await this.debuggeeConn?.break?.();
+    } catch {
+      /* ignore */
+    }
     if (this.debuggerClient) {
       try {
         await this.debuggerClient.detachSession();
@@ -649,7 +667,6 @@ export class UtplsqlDebugAdapter implements vscode.DebugAdapter {
     for (const conn of [this.debuggeeConn, this.debuggerConn]) {
       if (!conn) continue;
       try {
-        // Cancela o `ut_runner.run` pendente no debuggee, senão o close trava.
         await conn.break?.();
       } catch {
         /* ignore */
@@ -720,7 +737,12 @@ export class UtplsqlDebugConfigurationProvider implements vscode.DebugConfigurat
     const profile = resolveConnectionNoPrompt();
     config.type = 'utplsql';
     config.request = 'launch';
-    if (!config.connection && profile) config.connection = profile;
+    // Só o owner vai para a launch config: a configuration é pública para
+    // outras extensões e não pode carregar a senha da connection.
+    if (!config.schema && profile) {
+      const schema = connectionUser(profile);
+      if (schema) config.schema = schema;
+    }
     config.stopOnException = config.stopOnException ?? readConfig().debuggerStopOnException;
     return config;
   }
@@ -729,13 +751,14 @@ export class UtplsqlDebugConfigurationProvider implements vscode.DebugConfigurat
 /** Monta uma launch config para um teste/suite e inicia a sessão de debug. */
 export async function startDebugSession(packageName: string, testName?: string): Promise<void> {
   const connection = resolveConnectionNoPrompt();
+  const schema = connection ? connectionUser(connection) : undefined;
   const config: vscode.DebugConfiguration = {
     type: 'utplsql',
     request: 'launch',
     name: `Debug ${packageName}${testName ? ` > ${testName}` : ''}`,
     packageName,
     testName,
-    ...(connection ? { connection } : {}),
+    ...(schema ? { schema } : {}),
     stopOnException: readConfig().debuggerStopOnException,
   };
   await vscode.debug.startDebugging(undefined, config);

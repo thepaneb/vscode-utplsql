@@ -569,6 +569,41 @@ test('hydrateProfilePasswords: restaura senha do SecretStorage após reload', as
   }
 });
 
+test('hydrateProfilePasswords: falha em um perfil não impede os demais', async () => {
+  __resetConfigValues();
+  const { map } = fakeSecrets();
+  const storage = {
+    store: async (k: string, v: string) => {
+      map.set(k, v);
+    },
+    get: async (k: string) => {
+      if (k.includes('bad')) throw new Error('secret storage offline');
+      return map.get(k);
+    },
+    delete: async (k: string) => {
+      map.delete(k);
+    },
+    onDidChange: () => ({ dispose() {} }),
+  } as unknown as Parameters<typeof initSecretStorage>[0];
+  initSecretStorage(storage);
+  __setConfigValue('profiles', [
+    { id: 'bad', name: 'BAD', connection: 'bad@h:1521/s' },
+    { id: 'good', name: 'GOOD', connection: 'good@h:1521/s' },
+  ]);
+  await storage.store(
+    'utplsql.profile.good',
+    JSON.stringify({ connection: 'good@h:1521/s', password: 'ok' }),
+  );
+  try {
+    await hydrateProfilePasswords();
+    const good = getAllProfiles().find((p) => p.id === 'good');
+    assert.ok(good);
+    assert.strictEqual(getProfileConnection(good), 'good/ok@h:1521/s');
+  } finally {
+    __resetConfigValues();
+  }
+});
+
 test('getProfileConnection: legado com senha inline retorna como esta', () => {
   assert.strictEqual(
     getProfileConnection({ id: 'leg', name: 'L', connection: 'u/p@h:1521/s' }),

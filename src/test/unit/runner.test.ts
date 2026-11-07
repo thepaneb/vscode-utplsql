@@ -159,6 +159,37 @@ test('executeRun: oracle falha marca todos como erro', async () =>
     assert.match(run.output(), /Oracle runner/);
   }));
 
+test('executeRun: run vazio não abre atividade Oracle nem apaga o último resultado', async () =>
+  withExecEnv(async () => {
+    const state = new TestStateManager();
+    state.setLastResults(new Map([['test1', { status: 'passed', ts: 1 }]]));
+    const run = new vscode.TestRun();
+    const controller = makeController(run);
+    const began: string[] = [];
+    mock.method(oracleRunner, 'beginOracleActivity', () => {
+      began.push('begin');
+      return { end: async () => {} };
+    });
+    await executeRun(controller, makeRequest(), NEVER_TOKEN, false, state);
+    assert.deepStrictEqual(began, [], 'run sem alvos não deve abrir atividade Oracle');
+    assert.strictEqual(state.getLastResults().size, 1, 'resultado anterior deve ser preservado');
+  }));
+
+test('executeRun: timeout/cancelamento marca skipped e não erro', async () =>
+  withExecEnv(async () => {
+    const { state, testItem } = makeExecState();
+    const run = new vscode.TestRun();
+    const controller = makeController(run);
+    mock.method(oracleRunner, 'executeRunOracle', async () => {
+      throw new oracleRunner.RunAbortedError('timedOut');
+    });
+    await executeRun(controller, makeRequest([testItem]), NEVER_TOKEN, false, state);
+    assert.strictEqual(run.passedCount(), 0);
+    assert.strictEqual(run.erroredCount(), 0);
+    assert.strictEqual(run.skippedCount(), 1);
+    assert.match(run.output(), /timeout/i);
+  }));
+
 test('executeRun: erro oracle não-Error é stringificado', async () =>
   withExecEnv(async () => {
     const { state, suiteItem } = makeExecState();
@@ -172,6 +203,17 @@ test('executeRun: erro oracle não-Error é stringificado', async () =>
 
     await executeRun(controller, request, NEVER_TOKEN, false, state);
     assert.match(run.output(), /mensagem crua/);
+  }));
+
+test('executeRun: request sem include percorre controller.items', async () =>
+  withExecEnv(async () => {
+    const { state, suiteItem } = makeExecState();
+    const run = new vscode.TestRun();
+    const controller = makeController(run);
+    controller.items.add(suiteItem);
+    mock.method(oracleRunner, 'executeRunOracle', async () => {});
+    await executeRun(controller, new vscode.TestRunRequest(undefined), NEVER_TOKEN, false, state);
+    assert.strictEqual(state.getLastRun()?.type, 'all');
   }));
 
 test('executeRun: include de teste único seta lastRun type test', async () =>

@@ -26,9 +26,15 @@ function toArray<T>(x: T | T[] | undefined | null): T[] {
 /** Faz o parse do XML JUnit gerado pelo ut_junit_reporter. */
 export function parseJUnit(xml: string): TestCaseResult[] {
   const parser = new XMLParser({ ignoreAttributes: false, attributeNamePrefix: '@_' });
-  const doc = parser.parse(xml);
+  let doc: unknown;
+  try {
+    doc = parser.parse(xml);
+  } catch {
+    // XML truncado/malformado não derruba o run inteiro.
+    return [];
+  }
 
-  const root = doc.testsuites ?? doc;
+  const root = (doc as { testsuites?: unknown })?.testsuites ?? doc;
   const results: TestCaseResult[] = [];
 
   // O ut_junit_reporter ANINHA <testsuite> por nível (schema > package > suite)
@@ -72,7 +78,7 @@ export function parseJUnit(xml: string): TestCaseResult[] {
   };
 
   // biome-ignore lint/suspicious/noExplicitAny: XML parsing — structure is dynamic
-  for (const suite of toArray<any>(root.testsuite)) visit(suite);
+  for (const suite of toArray<any>((root as any).testsuite)) visit(suite);
 
   return results;
 }
@@ -175,16 +181,52 @@ export function parseStackFrames(body: string): StackFrame[] | undefined {
 }
 
 /**
- * Prefixos dos objetos INTERNOS do framework utPLSQL. O schema NÃO entra na
- * lista: num install próprio o schema do usuário é o de instalação (UT3), e o
- * frame do teste dele também vem qualificado (`UT3.TEST_MATH_FAIL.P`) — o que
- * precisa ser descartado é o objeto de framework (`UT3.UT_SUITE_MANAGER`).
+ * Objetos INTERNOS do framework utPLSQL. Usamos uma allowlist exata porque
+ * `UT_` também é a convenção das suites do usuário geradas pelo scaffold
+ * (`ut_<objeto>`): filtrar por prefixo descartaria o frame do próprio teste.
+ * O schema NÃO entra na lista (num install próprio o schema do usuário é UT3).
  */
-const INTERNAL_PREFIXES = ['UT_', 'UT$', 'UT3_', 'UT3$'];
+const INTERNAL_OBJECTS = new Set([
+  'UT_ANNOTATION_MANAGER',
+  'UT_ASSERT',
+  'UT_BLOCK',
+  'UT_COMMAND',
+  'UT_COVERAGE',
+  'UT_COVERAGE_RUNS',
+  'UT_DATA_VALUE_REFCURSOR',
+  'UT_EQUAL',
+  'UT_EXECUTABLE',
+  'UT_EXPECTATION',
+  'UT_FAILURE',
+  'UT_FORMAT',
+  'UT_FORMAT_ARRAY',
+  'UT_LOGICAL_SUITE',
+  'UT_METADATA',
+  'UT_OUTPUT_BUFFER',
+  'UT_OUTPUT_BUFFER_BASE',
+  'UT_OUTPUT_BULK_BUFFER',
+  'UT_OUTPUT_REPORTER_BASE',
+  'UT_OUTPUT_TABLE_BUFFER',
+  'UT_PARSING_FAILURE',
+  'UT_REPORTER',
+  'UT_REPORTERS',
+  'UT_RUNNER',
+  'UT_SESSION_REPORTER',
+  'UT_SUITE',
+  'UT_SUITE_CONTEXT',
+  'UT_SUITE_MANAGER',
+  'UT_TEST',
+  'UT_UTILS',
+]);
+
+/** Prefixos de pacotes internos do framework (não são nomes de suites). */
+const INTERNAL_PREFIXES = ['UT$', 'UT3$', 'UT3_'];
 
 /** Frame do utPLSQL: `OBJETO`, `SCHEMA.OBJETO` ou `SCHEMA.OBJETO.PROCEDURE`. */
 export function isUserFrame(frame: StackFrame): boolean {
   if (frame.line <= 0) return false;
   const segments = frame.objectName.toUpperCase().split('.');
-  return !segments.some((s) => INTERNAL_PREFIXES.some((p) => s.startsWith(p)));
+  return !segments.some(
+    (s) => INTERNAL_OBJECTS.has(s) || INTERNAL_PREFIXES.some((p) => s.startsWith(p)),
+  );
 }

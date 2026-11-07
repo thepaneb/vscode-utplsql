@@ -174,22 +174,34 @@ function parseStoredPassword(raw: string | undefined): StoredPassword | undefine
  */
 export async function hydrateProfilePasswords(): Promise<void> {
   if (!secretStorage) return;
-  for (const p of getAllProfiles()) {
-    const wallet = await secretStorage.get(`${WALLET_PREFIX}${p.id}`);
-    if (wallet) walletCache.set(p.id, wallet);
+  const secrets = secretStorage;
+  // Um perfil com SecretStorage indisponível não pode impedir a hidratação
+  // dos demais (e o refresh inicial que depende desta promise).
+  const results = await Promise.allSettled(
+    getAllProfiles().map(async (p) => {
+      const wallet = await secrets.get(`${WALLET_PREFIX}${p.id}`);
+      if (wallet) walletCache.set(p.id, wallet);
 
-    const key = `${SECRET_PREFIX}${p.id}`;
-    const stored = parseStoredPassword(await secretStorage.get(key));
-    if (!stored) continue;
-    if (stored.connection === p.connection) {
-      passwordCache.set(p.id, stored);
-    } else if (!stored.connection) {
-      const bound: StoredPassword = { connection: p.connection, password: stored.password };
-      passwordCache.set(p.id, bound);
-      await secretStorage.store(key, JSON.stringify(bound));
-    } else {
-      await secretStorage.delete(key);
-      logger.warn('utplsql: senha de perfil descartada — a conexão mudou desde que foi salva');
+      const key = `${SECRET_PREFIX}${p.id}`;
+      const stored = parseStoredPassword(await secrets.get(key));
+      if (!stored) return;
+      if (stored.connection === p.connection) {
+        passwordCache.set(p.id, stored);
+      } else if (!stored.connection) {
+        const bound: StoredPassword = { connection: p.connection, password: stored.password };
+        passwordCache.set(p.id, bound);
+        await secrets.store(key, JSON.stringify(bound));
+      } else {
+        await secrets.delete(key);
+        logger.warn('utplsql: senha de perfil descartada — a conexão mudou desde que foi salva');
+      }
+    }),
+  );
+  for (const result of results) {
+    if (result.status === 'rejected') {
+      logger.warn('hydrateProfilePasswords: falha ao ler o SecretStorage', {
+        error: String(result.reason),
+      });
     }
   }
 }

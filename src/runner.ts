@@ -4,7 +4,12 @@ import { offerCoverageHtmlReport } from './coverage';
 import { t } from './i18n';
 import { logger } from './logger';
 import { resolveRunRoots } from './matching';
-import { beginOracleActivity, executeRunOracle, type OracleRunOptions } from './oracleRunner';
+import {
+  beginOracleActivity,
+  executeRunOracle,
+  type OracleRunOptions,
+  RunAbortedError,
+} from './oracleRunner';
 import { setupValidator } from './quickfix';
 import { redactConnection } from './redact';
 import type { LastRunState, TestStateManager } from './state';
@@ -139,12 +144,9 @@ export async function executeRun(
   }
 
   const cfg = readConfig();
-  const activity = beginOracleActivity(cfg);
   const locale = getExtensionLocale();
   const exporting = !!exportReporter;
   const run = controller.createTestRun(request);
-
-  state.clearLastResults();
 
   void vscode.commands.executeCommand('setContext', 'utplsql:running', true);
 
@@ -182,20 +184,25 @@ export async function executeRun(
     return;
   }
 
-  if (!exporting) {
-    for (const item of leafTests) {
-      run.enqueued(item);
-    }
-    for (const item of leafTests) run.started(item);
-  }
-
-  run.appendOutput(
-    `${t(locale, 'runner.running', { coverage: coverage ? t(locale, 'runner.withCoverage') : '' })}\r\n`,
-  );
+  // Só abre atividade (e limpa o snapshot anterior) quando há algo para rodar:
+  // um run vazio não pode vazar o token de atividade nem apagar o último estado.
+  const activity = beginOracleActivity(cfg);
+  state.clearLastResults();
 
   let exportText: string | undefined;
   let htmlReportPath: string | undefined;
   try {
+    if (!exporting) {
+      for (const item of leafTests) {
+        run.enqueued(item);
+      }
+      for (const item of leafTests) run.started(item);
+    }
+
+    run.appendOutput(
+      `${t(locale, 'runner.running', { coverage: coverage ? t(locale, 'runner.withCoverage') : '' })}\r\n`,
+    );
+
     const oracleOpts: OracleRunOptions = {
       connection,
       pathArgs: [...pathArgs],
@@ -248,10 +255,20 @@ export async function executeRun(
     }
   } catch (e) {
     if (exporting) throw e;
-    const msg = redactConnection(e instanceof Error ? e.message : String(e), connection);
-    run.appendOutput(`\r\n${t(locale, 'runner.oracleErrorHeader', { error: msg })}\r\n`);
-    for (const item of leafTests) {
-      run.errored(item, new vscode.TestMessage(t(locale, 'runner.oracleError', { error: msg })));
+    if (e instanceof RunAbortedError) {
+      // Timeout/cancelamento: encerra sem aplicar resultados parciais. Os itens
+      // não executados ficam explicitamente `skipped` (o Test Explorer não tem
+      // um estado "não executado" terminal).
+      run.appendOutput(
+        `\r\n${t(locale, e.outcome === 'timedOut' ? 'runner.timedOut' : 'ext.runCancel')}\r\n`,
+      );
+      for (const item of leafTests) run.skipped(item);
+    } else {
+      const msg = redactConnection(e instanceof Error ? e.message : String(e), connection);
+      run.appendOutput(`\r\n${t(locale, 'runner.oracleErrorHeader', { error: msg })}\r\n`);
+      for (const item of leafTests) {
+        run.errored(item, new vscode.TestMessage(t(locale, 'runner.oracleError', { error: msg })));
+      }
     }
   } finally {
     run.end();

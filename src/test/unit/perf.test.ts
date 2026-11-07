@@ -1,7 +1,26 @@
 import './setup.js';
 import assert from 'node:assert';
+import * as path from 'node:path';
 import { test } from 'node:test';
-import { createPerfProbe, formatPerfLine, type PerfSample } from '../../perf';
+import {
+  createPerfProbe,
+  formatPerfLine,
+  type PerfSample,
+  resolvePerfReportPath,
+} from '../../perf';
+
+test('resolvePerfReportPath: exige .jsonl e contém relativos na raiz', () => {
+  const root = path.join(path.sep, 'ws');
+  assert.strictEqual(resolvePerfReportPath('', root), undefined);
+  assert.strictEqual(resolvePerfReportPath('perf.txt', root), undefined);
+  assert.strictEqual(
+    resolvePerfReportPath('test-results/perf.jsonl', root),
+    path.join(root, 'test-results', 'perf.jsonl'),
+  );
+  assert.strictEqual(resolvePerfReportPath('../fora.jsonl', root), undefined);
+  const absolute = path.join(path.sep, 'tmp', 'perf.jsonl');
+  assert.strictEqual(resolvePerfReportPath(absolute, root), absolute);
+});
 
 test('createPerfProbe: desligado não mede nem chama o sink', () => {
   let calls = 0;

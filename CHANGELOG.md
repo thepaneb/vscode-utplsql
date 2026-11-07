@@ -2,6 +2,14 @@
 
 ## 0.20.0
 
+- **Audit reliability fixes**: timeouts/cancellations no longer apply partial
+  results as success; empty runs no longer leak the Oracle activity token;
+  tag-tree results apply to every copy; jump-to-failure keeps user `UT_*`
+  suites; coverage maps package/type body to `.pkb`/`.tpb` and merges by URI.
+  Discovery/view paths are contained (including symlinks); `perf.reportFile`
+  is machine-scoped and JSONL-only; debug launch configs carry only the schema;
+  pool creation is serialized; `poolMax`/`poolMin` are validated; reporter
+  output is classified per `output_id`; XML parsers tolerate malformed input.
 - **Lean activation and lazy setup validation (PRD-120)**: the extension no
   longer subscribes to `onStartupFinished`/broad `.sql` workspaces and no longer
   opens an Oracle connection during activation. Setup diagnostics run on the

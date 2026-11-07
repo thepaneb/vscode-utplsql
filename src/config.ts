@@ -132,6 +132,15 @@ function sqlDevTnsPath(): string | undefined {
 
 export function readConfig(): UtConfig {
   const c = vscode.workspace.getConfiguration('utplsql');
+  // O runner abre conn1+conn2; `poolMax=1` faria a 2ª conexão esperar o
+  // queueTimeout e falhar (NJS-040). `min>max` também é inválido.
+  const rawMax = c.get<number>('oraclePoolMax', 10);
+  const rawMin = c.get<number>('oraclePoolMin', 2);
+  const oraclePoolMax = Math.max(2, Number.isFinite(rawMax) ? Math.trunc(rawMax) : 10);
+  const oraclePoolMin = Math.min(
+    oraclePoolMax,
+    Math.max(0, Number.isFinite(rawMin) ? Math.trunc(rawMin) : 2),
+  );
   const global: UtConfig = {
     sourcePath: c.get<string>('sourcePath', 'install'),
     includePatterns: c.get<string[]>('includePatterns', ['**/*.pks']),
@@ -152,8 +161,8 @@ export function readConfig(): UtConfig {
     reporterColorConsole: c.get<boolean>('reporter.colorConsole', false),
     timeoutMinutes: c.get<number>('timeoutMinutes', 60),
     dbmsOutput: c.get<boolean>('dbmsOutput', false),
-    oraclePoolMin: c.get<number>('oraclePoolMin', 2),
-    oraclePoolMax: c.get<number>('oraclePoolMax', 10),
+    oraclePoolMin,
+    oraclePoolMax,
     oraclePoolIncrement: c.get<number>('oraclePoolIncrement', 1),
     oraclePoolPingInterval: c.get<number>('oraclePoolPingInterval', 60),
     oraclePoolCloseAfterRun: c.get<boolean>('oraclePoolCloseAfterRun', true),

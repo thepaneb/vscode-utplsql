@@ -30,7 +30,13 @@ import {
 } from './languageIdentity';
 import { formatLogLine, logger, setLogSink, setTraceEnabled } from './logger';
 import { beginOracleActivity, closeOraclePool, invalidatePool, setPerfProbe } from './oracleRunner';
-import { createPerfProbe, formatPerfLine, type PerfProbe, type PerfSample } from './perf';
+import {
+  createPerfProbe,
+  formatPerfLine,
+  type PerfProbe,
+  type PerfSample,
+  resolvePerfReportPath,
+} from './perf';
 import { setupValidator, UtplsqlCodeActionProvider } from './quickfix';
 import { TestStateManager } from './state';
 import { UtplsqlStatusBar } from './statusBar';
@@ -68,11 +74,15 @@ export function activate(context: vscode.ExtensionContext) {
   setTraceEnabled(readConfig().trace);
   const appendPerf = async (sample: PerfSample): Promise<void> => {
     const cfg = readConfig();
-    if (!cfg.perfEnabled || !cfg.perfReportFile.trim()) return;
+    const raw = cfg.perfReportFile.trim();
+    if (!cfg.perfEnabled || !raw) return;
     const root = vscode.workspace.workspaceFolders?.[0]?.uri.fsPath ?? process.cwd();
-    const target = path.isAbsolute(cfg.perfReportFile)
-      ? cfg.perfReportFile
-      : path.join(root, cfg.perfReportFile);
+    // Só JSONL e, se relativo, contido na raiz do workspace (SEC-01).
+    const target = resolvePerfReportPath(raw, root);
+    if (!target) {
+      logger.warn('perf: reportFile inválido (use .jsonl dentro do workspace)', { file: raw });
+      return;
+    }
     try {
       await fs.mkdir(path.dirname(target), { recursive: true });
       await fs.appendFile(target, `${formatPerfLine(sample)}\n`, 'utf8');
@@ -107,7 +117,11 @@ export function activate(context: vscode.ExtensionContext) {
   const profilesReady = (async () => {
     await migrateLegacyProfiles();
     await hydrateProfilePasswords();
-  })();
+  })().catch((e) => {
+    // Falha de SecretStorage/settings não pode impedir o refresh inicial nem o
+    // restore do último resultado (BUG-26).
+    logger.warn('activation: falha ao preparar os perfis', { error: String(e) });
+  });
 
   const controller = vscode.tests.createTestController('utplsql', 'utPLSQL');
   context.subscriptions.push(controller);

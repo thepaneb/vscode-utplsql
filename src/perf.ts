@@ -1,5 +1,7 @@
 // Instrumentação de desempenho opt-in (PRD-102). Módulo puro (sem `vscode`):
 // mede fronteiras de fase e serializa uma linha JSON por amostra.
+import * as path from 'node:path';
+import { isInside } from './pathContainment';
 
 export type PerfPhase = 'discovery' | 'buildTree' | 'run' | 'poll' | 'parseXml';
 
@@ -30,6 +32,18 @@ export interface PerfProbeOptions {
 /** Serializa uma amostra como uma linha JSONL (sem quebras internas). */
 export function formatPerfLine(sample: PerfSample): string {
   return JSON.stringify(sample);
+}
+
+/**
+ * Resolve o alvo de `utplsql.perf.reportFile`: precisa ser `.jsonl`; relativo
+ * fica contido na raiz do workspace. Absoluto é permitido (setting machine).
+ */
+export function resolvePerfReportPath(raw: string, root: string): string | undefined {
+  const file = raw.trim();
+  if (!file?.toLowerCase().endsWith('.jsonl')) return undefined;
+  const target = path.isAbsolute(file) ? file : path.join(root, file);
+  if (!path.isAbsolute(file) && !isInside(target, root)) return undefined;
+  return target;
 }
 
 export function createPerfProbe(options: PerfProbeOptions): PerfProbe {

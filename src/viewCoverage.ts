@@ -4,6 +4,7 @@ import * as vscode from 'vscode';
 import { getExtensionLocale, readConfig } from './config';
 import { t } from './i18n';
 import { beginOracleActivity, ensurePool, parseConnString } from './oracleRunner';
+import { isInside, isReallyInside } from './pathContainment';
 import type { TestStateManager } from './state';
 
 export interface ViewFile {
@@ -37,28 +38,31 @@ export function matchExecutedViews(sqlTexts: string[], viewFiles: ViewFile[]): b
 }
 
 function walk(dir: string, ext: string, acc: string[]): void {
-  let entries: string[];
+  let entries: fs.Dirent[];
   try {
-    entries = fs.readdirSync(dir);
+    // `withFileTypes` evita `statSync` por entrada e permite pular symlinks
+    // ANTES de segui-los (um link dentro de `views/` poderia apontar para fora).
+    entries = fs.readdirSync(dir, { withFileTypes: true });
   } catch {
     return;
   }
   for (const entry of entries) {
-    const full = path.join(dir, entry);
-    let stat: fs.Stats;
-    try {
-      stat = fs.statSync(full);
-    } catch {
-      continue;
-    }
-    if (stat.isDirectory()) walk(full, ext, acc);
-    else if (entry.endsWith(ext)) acc.push(full);
+    if (entry.isSymbolicLink()) continue;
+    const full = path.join(dir, entry.name);
+    if (entry.isDirectory()) walk(full, ext, acc);
+    else if (entry.isFile() && entry.name.endsWith(ext)) acc.push(full);
   }
 }
 
-/** Descobre arquivos de view sob `<root>/<sourcePath>/views/`. */
+/**
+ * Descobre arquivos de view sob `<root>/<sourcePath>/views/`.
+ * A pasta e seus arquivos precisam estar contidos na raiz; symlinks são
+ * ignorados e um `views/` que é link para fora não é lido.
+ */
 export function discoverViewFiles(root: string, sourcePath: string): string[] {
   const viewsDir = path.join(root, sourcePath, 'views');
+  if (!isInside(viewsDir, root)) return [];
+  if (!isReallyInside(viewsDir, root)) return [];
   const acc: string[] = [];
   walk(viewsDir, '.sql', acc);
   return acc;

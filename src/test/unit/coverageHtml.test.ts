@@ -10,6 +10,7 @@ import {
   offerCoverageHtmlReport,
   prepareCoverageHtmlReport,
   writeCoverageHtmlReport,
+  xmlRootTag,
 } from '../../coverage';
 import {
   __getErrorMessages,
@@ -35,7 +36,15 @@ test('classifyCoverageOutput: HTML, XML e console', () => {
   assert.strictEqual(classifyCoverageOutput('<?xml version="1.0"?>'), 'xml');
   assert.strictEqual(classifyCoverageOutput('<coverage line-rate="1">'), 'xml');
   assert.strictEqual(classifyCoverageOutput('Suite APP.UT_X'), 'console');
+  assert.strictEqual(classifyCoverageOutput('<not-a-document>'), 'console');
   assert.strictEqual(classifyCoverageOutput(''), 'console');
+});
+
+test('xmlRootTag: ignora prolog e comentários', () => {
+  assert.strictEqual(xmlRootTag('<?xml version="1.0"?><coverage>'), 'coverage');
+  assert.strictEqual(xmlRootTag('<!-- c -->\n<testsuites>'), 'testsuites');
+  assert.strictEqual(xmlRootTag('texto sem tag'), undefined);
+  assert.strictEqual(xmlRootTag(''), undefined);
 });
 
 test('coverageHtmlReportPath: workspace e fallback temp', () => {
@@ -60,6 +69,50 @@ test('writeCoverageHtmlReport: grava de forma atômica e remove o alvo anterior'
     assert.ok(!fs.existsSync(`${target}.tmp`), 'o .tmp não deve sobrar');
   } finally {
     fs.rmSync(dir, { recursive: true, force: true });
+  }
+});
+
+test('prepareCoverageHtmlReport: alvo fora da raiz é rejeitado', async () => {
+  const root = tempDir();
+  const outside = tempDir();
+  try {
+    await assert.rejects(() =>
+      prepareCoverageHtmlReport(path.join(outside, 'coverage.html'), root),
+    );
+    assert.ok(!fs.existsSync(path.join(outside, 'coverage.html')));
+  } finally {
+    fs.rmSync(root, { recursive: true, force: true });
+    fs.rmSync(outside, { recursive: true, force: true });
+  }
+});
+
+test('prepareCoverageHtmlReport: symlink de test-results para fora é rejeitado', async () => {
+  const root = tempDir();
+  const outside = tempDir();
+  try {
+    fs.symlinkSync(
+      outside,
+      path.join(root, 'test-results'),
+      process.platform === 'win32' ? 'junction' : 'dir',
+    );
+    const target = path.join(root, 'test-results', 'coverage.html');
+    await assert.rejects(() => prepareCoverageHtmlReport(target, root));
+    assert.ok(!fs.existsSync(path.join(outside, 'coverage.html')));
+    assert.ok(!fs.existsSync(`${target}.tmp`));
+  } finally {
+    fs.rmSync(root, { recursive: true, force: true });
+    fs.rmSync(outside, { recursive: true, force: true });
+  }
+});
+
+test('prepareCoverageHtmlReport: diretório ainda inexistente dentro da raiz é criado', async () => {
+  const root = tempDir();
+  try {
+    const target = path.join(root, 'test-results', 'coverage.html');
+    await prepareCoverageHtmlReport(target, root);
+    assert.ok(fs.existsSync(path.dirname(target)));
+  } finally {
+    fs.rmSync(root, { recursive: true, force: true });
   }
 });
 

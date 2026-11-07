@@ -279,7 +279,7 @@ test('debugger factory: createDebugAdapterDescriptor retorna adapter inline', ()
   );
 });
 
-test('debugger config provider: preenche type/request/stopOnException/connection', async () => {
+test('debugger config provider: preenche schema e não serializa a connection', async () => {
   __setConfigValue('connection', 'user/senha@//h:1521/svc');
   try {
     const provider = new UtplsqlDebugConfigurationProvider();
@@ -290,7 +290,8 @@ test('debugger config provider: preenche type/request/stopOnException/connection
     assert.strictEqual(cfg.type, 'utplsql');
     assert.strictEqual(cfg.request, 'launch');
     assert.strictEqual(cfg.stopOnException, true);
-    assert.strictEqual(cfg.connection, 'user/senha@//h:1521/svc');
+    assert.strictEqual(cfg.schema, 'USER');
+    assert.strictEqual(cfg.connection, undefined);
   } finally {
     __resetConfigValues();
   }
@@ -307,6 +308,8 @@ test('startDebugSession: monta config e chama vscode.debug.startDebugging', asyn
     assert.strictEqual(cfg.packageName, 'test_app');
     assert.strictEqual(cfg.testName, 't1');
     assert.strictEqual(cfg.type, 'utplsql');
+    assert.strictEqual(cfg.schema, 'USER');
+    assert.strictEqual(cfg.connection, undefined, 'a senha não pode ir para a DebugConfiguration');
   } finally {
     __resetConfigValues();
   }
@@ -1041,6 +1044,30 @@ test('debugger: breakpoints pendentes são aplicados no entry (flush)', async ()
     .filter((m) => m.type === 'event' && m.event === 'output')
     .map((m) => JSON.stringify(m.body));
   assert.ok(outputs.some((o) => /aplicado|applied/i.test(o)));
+  adapter.dispose();
+});
+
+test('debugger: teardown quebra a execução antes de DEBUG_OFF', async () => {
+  const conn = makeFakeConn();
+  (conn as unknown as { break: () => Promise<void> }).break = async () => {
+    conn.calls.push('BREAK');
+  };
+  const adapter = new UtplsqlDebugAdapter(makeRuntime(conn));
+  adapter.handleMessage({ type: 'request', seq: 1, command: 'initialize' });
+  adapter.handleMessage({
+    type: 'request',
+    seq: 2,
+    command: 'launch',
+    arguments: { packageName: 'test_app', connection: 'APP/pass@//h:1521/svc' },
+  });
+  await flushN(4);
+  adapter.handleMessage({ type: 'request', seq: 3, command: 'disconnect' });
+  await flushN(4);
+  const breakIdx = conn.calls.indexOf('BREAK');
+  const offIdx = conn.calls.findIndex((s) => /DEBUG_OFF/.test(s));
+  assert.ok(breakIdx >= 0, 'deveria chamar break');
+  assert.ok(offIdx >= 0, 'deveria chamar DEBUG_OFF');
+  assert.ok(breakIdx < offIdx, 'break deve vir antes de DEBUG_OFF');
   adapter.dispose();
 });
 

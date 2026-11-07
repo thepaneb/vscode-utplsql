@@ -12,6 +12,7 @@ import {
   parseConnString,
   semverLt,
 } from './oracleRunner';
+import { hasTraversalSegment, isInside } from './pathContainment';
 import { redactConnection } from './redact';
 import { parseSuiteText, type TestProc } from './suiteParser';
 
@@ -554,6 +555,14 @@ export async function discoverSchemasFromFolders(
   const base = schemaBase(schemaPattern);
   if (base === undefined) return [];
   const segments = base.split('/').filter(Boolean);
+  // Mitiga path traversal via `organization.schemaPattern` (workspace
+  // malicioso): rejeita segmentos que escapam da raiz do folder, inclusive
+  // `..\` no Windows e caminhos absolutos de qualquer plataforma.
+  if (
+    segments.some((s) => hasTraversalSegment(s) || path.isAbsolute(s) || path.win32.isAbsolute(s))
+  ) {
+    return [];
+  }
   const schemas = new Set<string>();
 
   for (const folder of folders) {
@@ -561,6 +570,8 @@ export async function discoverSchemasFromFolders(
     for (const seg of segments) {
       dir = vscode.Uri.joinPath(dir, seg);
     }
+    // Confere que o diretório resolvido permanece dentro do folder.
+    if (!isInside(dir.fsPath, folder.uri.fsPath)) continue;
     let entries: [string, vscode.FileType][];
     try {
       entries = await vscode.workspace.fs.readDirectory(dir);

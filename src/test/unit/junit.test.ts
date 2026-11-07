@@ -178,8 +178,23 @@ test('isUserFrame: mantem frames de usuario', () => {
   assert.strictEqual(isUserFrame({ objectName: 'APP.TEST_MATH', line: 15 }), true);
 });
 
+test('isUserFrame: suite do usuário com prefixo UT_ é mantida', () => {
+  // O scaffold gera `ut_<objeto>`: o frame do teste do usuário não pode ser
+  // confundido com um objeto interno do framework.
+  assert.strictEqual(isUserFrame({ objectName: 'UT_MY_APP', line: 4 }), true);
+  assert.strictEqual(isUserFrame({ objectName: 'APP.UT_MY_APP.TEST_X', line: 4 }), true);
+  assert.strictEqual(isUserFrame({ objectName: 'UT3.UT_MY_APP.TEST_X', line: 4 }), true);
+  // Objetos internos continuam filtrados, inclusive qualificados pelo schema.
+  assert.strictEqual(isUserFrame({ objectName: 'UT_SUITE_MANAGER', line: 5 }), false);
+  assert.strictEqual(isUserFrame({ objectName: 'UT3.UT_SUITE_MANAGER', line: 5 }), false);
+});
+
 test('isUserFrame: frame com line 0 e descartado', () => {
   assert.strictEqual(isUserFrame({ objectName: 'APP.X', line: 0 }), false);
+});
+
+test('parseJUnit: XML malformado retorna vazio sem lançar', () => {
+  assert.deepStrictEqual(parseJUnit('<a><b'), []);
 });
 
 test('parseJUnit: raiz sem testsuites (apenas testsuite) usa o doc', () => {

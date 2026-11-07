@@ -278,8 +278,8 @@
         "utplsql.oraclePoolMax": {
           "type": "number",
           "default": 10,
-          "minimum": 1,
-          "description": "Maximum connections in the Oracle runner pool (node-oracledb)."
+          "minimum": 2,
+          "description": "Maximum connections in the Oracle runner pool (node-oracledb). The runner needs at least 2 (run + polling)."
         },
         "utplsql.oraclePoolIncrement": {
           "type": "number",
@@ -390,7 +390,8 @@
         "utplsql.perf.reportFile": {
           "type": "string",
           "default": "",
-          "description": "When set, each perf measurement is appended as one JSON line to this file (absolute or relative to the first workspace folder)."
+          "scope": "machine",
+          "description": "When set, each perf measurement is appended as one JSON line to this .jsonl file (absolute or relative to the first workspace folder). Relative paths must stay inside the workspace."
         },
         "utplsql.codeLens.enabled": {
           "type": "boolean",
