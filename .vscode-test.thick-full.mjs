@@ -81,5 +81,9 @@ export default {
   mocha: {
     ...base.mocha,
     timeout: 120_000,
+    // Inicializa o Instant Client antes de qualquer conexão raw dos testes.
+    // Sem isso o driver entra em thin e o `ensurePool`/`initOracleClient`
+    // posterior falha com NJS-118.
+    require: ['./out/test/integration/thickSetup.js'],
   },
 };
