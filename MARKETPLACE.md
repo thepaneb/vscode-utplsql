@@ -14,11 +14,11 @@ from VS Code — no Java, no Instant Client required in thin mode.**
 
 <!-- prd:PRD-147 -->
 
-<!-- marketplace-image: marketplace-test-explorer.png
+<!-- marketplace:images-ready -->
+
 ![VS Code Test Explorer showing utPLSQL suites and tests, with Run and Coverage CodeLens in the editor](images/marketplace-test-explorer.png)
 
 _Native Test Explorer: run, debug and see results without leaving VS Code._
--->
 
 ## What's new in 0.20.0
 
@@ -177,29 +177,21 @@ GitHub README keeps the full feature and configuration tables.
 
 ## Screenshots
 
-<!-- marketplace-image: marketplace-coverage.png
 ![PL/SQL editor with line coverage gutters and the Test Coverage panel](images/marketplace-coverage.png)
 
 _Line coverage for Oracle PL/SQL, mapped back to your source files._
--->
 
-<!-- marketplace-image: marketplace-debugger.png
 ![PL/SQL debugger stopped at a breakpoint with variables and call stack](images/marketplace-debugger.png)
 
 _Debug utPLSQL tests with breakpoints, stepping and variables._
--->
 
-<!-- marketplace-image: marketplace-failure-diff.png
 ![Failing utPLSQL test showing expected versus actual values and inline failure decoration](images/marketplace-failure-diff.png)
 
 _See the assertion diff and jump straight to the failing line._
--->
 
-<!-- marketplace-image: marketplace-connection-profiles.png
 ![Connection profile status bar and profile picker](images/marketplace-connection-profiles.png)
 
 _Switch between connection profiles without editing settings._
--->
 
 ## Requirements and compatibility
 

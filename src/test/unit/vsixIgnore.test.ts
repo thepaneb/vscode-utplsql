@@ -91,6 +91,7 @@ test('vscodeignore: arquivos essenciais NÃO são excluídos', () => {
   // GitHub (incluindo as 23 variantes) ficam fora do pacote.
   assert.ok(isIgnored('README.md', lines));
   assert.ok(isIgnored('README.pt-BR.md', lines));
+  assert.ok(isIgnored('images/marketplace-coverage.png', lines));
 });
 
 test('vscodeignore: pasta .opencode e variantes de ambiente cobertas', () => {

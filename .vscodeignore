@@ -11,6 +11,8 @@ out/**
 scripts/**
 install/**
 images/*.svg
+images/social-preview.*
+images/marketplace-*
 **/*.ts
 **/*.map
 node_modules/oracledb/build/**/*.txt

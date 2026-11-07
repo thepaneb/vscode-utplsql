@@ -17,7 +17,7 @@ English-only.
 - [ ] VS Code estável **1.125+**.
 - [ ] Abrir o **Extension Development Host** com `F5` a partir do repo.
 - [ ] No host, abrir `src/test/fixtures/workspace-marketplace-screenshots/` (no Windows, não no WSL).
-- [ ] Tema **`Default Dark Modern`**; zoom **100%**; janela **1600×900**.
+- [ ] Tema **`Default Dark Modern`**; zoom **100%**; janela **1600×900** (recorte de cliente ~1589×892 aceito).
 - [ ] Minimapa desligado; barra de status visível; notificações/terminais irrelevantes fechados.
 - [ ] Configurar um perfil de conexão de demonstração (schema `DEMO`), **sem commitar senha**.
 - [ ] Executar `utPLSQL: Validate setup` e confirmar que não há diagnóstico.
@@ -91,7 +91,7 @@ A cobertura do demo é limitada a `DEMO.ORDERS` pelo `coverage.includeObjects` d
 
 ## 4. Pós-captura
 
-- [ ] PNG **1600×900**, ≤300 KB cada; total dos assets ≤2 MB.
+- [ ] PNG **1600×900** (o recorte da janela pode sair ~1589×892; tolerância de 16 px), ≤300 KB cada; total dos assets ≤2 MB.
 - [ ] GIF ≤5 MB, 8–12 s (se houver).
 - [ ] Otimizar com `pngquant --quality=70-90 --ext .png --force <arquivo>` ou `oxipng -o 4 <arquivo>` (se disponível).
 - [ ] `npm run brain:build` para espelhar `docs/brain/60-README/images/` → `images/`.

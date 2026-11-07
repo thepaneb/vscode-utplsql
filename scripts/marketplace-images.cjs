@@ -22,6 +22,7 @@ const IMAGES = [
     file: 'marketplace-test-explorer.png',
     width: 1600,
     height: 900,
+    tolerance: 16,
     required: true,
     alt: 'VS Code Test Explorer showing utPLSQL suites and tests, with Run and Coverage CodeLens in the editor',
   },
@@ -29,6 +30,7 @@ const IMAGES = [
     file: 'marketplace-coverage.png',
     width: 1600,
     height: 900,
+    tolerance: 16,
     required: true,
     alt: 'PL/SQL editor with line coverage gutters and the Test Coverage panel',
   },
@@ -36,6 +38,7 @@ const IMAGES = [
     file: 'marketplace-debugger.png',
     width: 1600,
     height: 900,
+    tolerance: 16,
     required: true,
     alt: 'PL/SQL debugger stopped at a breakpoint with variables and call stack',
   },
@@ -43,6 +46,7 @@ const IMAGES = [
     file: 'marketplace-failure-diff.png',
     width: 1600,
     height: 900,
+    tolerance: 16,
     required: true,
     alt: 'Failing utPLSQL test showing expected versus actual values and inline failure decoration',
   },
@@ -50,6 +54,7 @@ const IMAGES = [
     file: 'marketplace-connection-profiles.png',
     width: 1600,
     height: 900,
+    tolerance: 16,
     required: false,
     alt: 'Connection profile status bar and profile picker',
   },
@@ -104,10 +109,16 @@ function checkMarketplaceImages({
     const dim = pngSize(target);
     if (!dim) {
       problems.push(`${image.file}: não é um PNG válido`);
-    } else if (dim.width !== image.width || dim.height !== image.height) {
-      problems.push(
-        `${image.file}: ${dim.width}×${dim.height} (esperado ${image.width}×${image.height})`,
-      );
+    } else {
+      const tolerance = image.tolerance ?? 0;
+      if (
+        Math.abs(dim.width - image.width) > tolerance ||
+        Math.abs(dim.height - image.height) > tolerance
+      ) {
+        problems.push(
+          `${image.file}: ${dim.width}×${dim.height} (esperado ${image.width}×${image.height} ±${tolerance})`,
+        );
+      }
     }
   }
   if (total > MAX_TOTAL) problems.push(`total de imagens ${total} > ${MAX_TOTAL} (2 MB)`);
