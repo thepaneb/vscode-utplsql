@@ -29,7 +29,7 @@ import {
   workspaceAssociations,
 } from './languageIdentity';
 import { formatLogLine, logger, setLogSink, setTraceEnabled } from './logger';
-import { closeOraclePool, invalidatePool, setPerfProbe } from './oracleRunner';
+import { beginOracleActivity, closeOraclePool, invalidatePool, setPerfProbe } from './oracleRunner';
 import { createPerfProbe, formatPerfLine, type PerfProbe, type PerfSample } from './perf';
 import { setupValidator, UtplsqlCodeActionProvider } from './quickfix';
 import { TestStateManager } from './state';
@@ -126,11 +126,16 @@ export function activate(context: vscode.ExtensionContext) {
     if (setupValidationPromise) return setupValidationPromise;
     setupValidationScheduled = true;
     setupValidationPromise = (async () => {
-      const [activationDiags, installDiags] = await Promise.all([
-        setupValidator.validateOnActivation(),
-        setupValidator.validateUtplsqlInstall(),
-      ]);
-      setupValidator.applyDiagnostics([...activationDiags, ...installDiags]);
+      const activity = beginOracleActivity();
+      try {
+        const [activationDiags, installDiags] = await Promise.all([
+          setupValidator.validateOnActivation(),
+          setupValidator.validateUtplsqlInstall(),
+        ]);
+        setupValidator.applyDiagnostics([...activationDiags, ...installDiags]);
+      } finally {
+        await activity.end();
+      }
     })()
       .catch((e) => {
         logger.warn('setup validation failed', { error: String(e) });

@@ -261,6 +261,12 @@ describeDB('run timeout E2E — break expira o teste e o pool sobrevive', () => 
     const root = vscode.workspace.workspaceFolders?.[0];
     assert.ok(root, 'a suite precisa de um workspace folder aberto');
 
+    // PRD-101: este teste mede o `break` (timeout) e assume que o pool
+    // continua aberto. Desliga o fechamento automático só durante o teste.
+    const cfg = vscode.workspace.getConfiguration('utplsql');
+    const previousCloseAfterRun = cfg.get<boolean>('oraclePoolCloseAfterRun', true);
+    await cfg.update('oraclePoolCloseAfterRun', false, vscode.ConfigurationTarget.Global);
+
     const dbc = await openRaw();
     const controller = vscode.tests.createTestController('utplsql-it-runtimeout', 'IT RunTimeout');
     // Token nunca é cancelado: o timeout tem de vir só do `timeoutMinutes`.
@@ -421,6 +427,13 @@ describeDB('run timeout E2E — break expira o teste e o pool sobrevive', () => 
       }
       await dbc.close().catch(() => {});
       await closeOraclePool();
+      await Promise.resolve(
+        cfg.update(
+          'oraclePoolCloseAfterRun',
+          previousCloseAfterRun,
+          vscode.ConfigurationTarget.Global,
+        ),
+      ).catch(() => {});
     }
   });
 

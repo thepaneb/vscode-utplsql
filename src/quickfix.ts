@@ -4,7 +4,6 @@ import { t } from './i18n';
 import { logger } from './logger';
 import { ensureOracleClient } from './oracleClient';
 import {
-  beginOracleActivity,
   discoverUtplsqlSchema,
   ensurePool,
   findInvalidUt3Objects,
@@ -32,17 +31,6 @@ export class SetupValidator {
   }
 
   async validateOnActivation(): Promise<SetupDiagnostic[]> {
-    // PRD-101: a validação preguiçosa também é uma atividade Oracle; o pool
-    // ocioso é fechado ao final quando o setting está ligado.
-    const activity = beginOracleActivity();
-    try {
-      return await this.validateOnActivationCore();
-    } finally {
-      await activity.end();
-    }
-  }
-
-  private async validateOnActivationCore(): Promise<SetupDiagnostic[]> {
     const locale = getExtensionLocale();
     const diagnostics: SetupDiagnostic[] = [];
     const cfg = readConfig();
