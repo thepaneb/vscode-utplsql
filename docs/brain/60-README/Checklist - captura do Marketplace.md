@@ -35,7 +35,7 @@ Use um perfil **separado do UT3** (a senha fica no SecretStorage):
 | `connection` | `DEMO@//localhost:1521/freepdb1` (sem senha) |
 | `description` | `Fictional DEMO schema for Marketplace screenshots` |
 | `charset` | `utf8` |
-| `sourcePath` | `db` |
+| `sourcePath` | `db/DEMO` |
 | `coverageOwner` | `DEMO` |
 | `includePatterns` | `["db/**/*.pks"]` |
 | senha | `demo2026` (somente ambiente local de demo) |
@@ -59,6 +59,8 @@ reporters, além de `SELECT/INSERT/UPDATE/DELETE` em
 `UT3.UT_OUTPUT_BUFFER_TMP` e `UT3.UT_OUTPUT_BUFFER_INFO_TMP` para `DEMO`.
 Para cobertura por bloco, também há synonyms públicos `DBMSPCC_BLOCKS`/`DBMSPCC_UNITS`/`DBMSPCC_RUNS` e `SELECT` em `UT3.UT_COVERAGE_RUNS` para `DEMO`. Se o `ut` não resolver em outro ambiente, conceda o grant de `UT3.UT`
 ou crie o synonym `UT`.
+
+A cobertura do demo é limitada a `DEMO.ORDERS` pelo `coverage.includeObjects` do workspace; por isso a aba Coverage mostra apenas `ORDERS.pkb` — é o esperado.
 
 ## 2. Prints
 

@@ -17,7 +17,7 @@ follow the capture checklist.
 ## Perfil de conexão
 
 - `connection`: `DEMO@//localhost:1521/freepdb1` (sem senha)
-- `sourcePath`: `db`; `coverageOwner`: `DEMO`; `includePatterns`: `["db/**/*.pks"]`
+- `sourcePath`: `db/DEMO`; `coverageOwner`: `DEMO`; `includePatterns`: `["db/**/*.pks"]`
 - A senha do demo (`demo2026`) fica no SecretStorage, nunca no repositório.
 - Grants e packages de demo estão descritos no checklist do vault.
 
