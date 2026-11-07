@@ -101,8 +101,20 @@ export function classifyCoverageOutput(text: string): CoverageOutputKind {
 
 /** Primeira tag do documento, ignorando declaração XML e comentários. */
 export function xmlRootTag(text: string): string | undefined {
-  const cleaned = text.replace(/<\?xml[\s\S]*?\?>/gi, '').replace(/<!--[\s\S]*?-->/g, '');
-  const match = /<\s*([A-Za-z_][\w:.-]*)/.exec(cleaned);
+  // Parse manual (sem `replace` de comentários): o CodeQL trata remoção de
+  // `<!--` por regex como sanitização incompleta, mas aqui só queremos a tag.
+  let rest = text.trimStart();
+  if (rest.startsWith('<?xml')) {
+    const end = rest.indexOf('?>');
+    if (end < 0) return undefined;
+    rest = rest.slice(end + 2).trimStart();
+  }
+  while (rest.startsWith('<!--')) {
+    const end = rest.indexOf('-->');
+    if (end < 0) return undefined;
+    rest = rest.slice(end + 3).trimStart();
+  }
+  const match = /^<\s*([A-Za-z_][\w:.-]*)/.exec(rest);
   return match?.[1]?.toLowerCase();
 }
 

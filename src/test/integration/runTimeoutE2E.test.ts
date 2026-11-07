@@ -230,6 +230,7 @@ describeDB('run timeout E2E — break expira o teste e o pool sobrevive', () => 
   installOutFormatIsolation();
 
   let slowRunMs = 0;
+  let slowError: unknown;
   let afterMs = 0;
   let cancelRequested = false;
   let inUseAfterTimeout = -1;
@@ -373,7 +374,11 @@ describeDB('run timeout E2E — break expira o teste e o pool sobrevive', () => 
       // coisa se as duas conexões do runner estiverem checked out.
       await new Promise((r) => setTimeout(r, 600));
       poolInUseDuringFirstRun = pool.connectionsInUse;
-      await slowRun;
+      try {
+        await slowRun;
+      } catch (e) {
+        slowError = e;
+      }
       slowRunMs = Date.now() - t0;
       cancelRequested = cts.token.isCancellationRequested;
       inUseAfterTimeout = pool.connectionsInUse;
@@ -439,6 +444,16 @@ describeDB('run timeout E2E — break expira o teste e o pool sobrevive', () => 
 
   it('o run lento aborta no timeout, sem cts.cancel(), muito antes dos 8s', () => {
     const out = slowCap.output.join('');
+    assert.strictEqual(
+      (slowError as { name?: string } | undefined)?.name,
+      'RunAbortedError',
+      'o timeout deve ser sinalizado como RunAbortedError, não como sucesso',
+    );
+    assert.strictEqual(
+      (slowError as { outcome?: string } | undefined)?.outcome,
+      'timedOut',
+      'o outcome do timeout deve ser timedOut',
+    );
     assert.strictEqual(
       cancelRequested,
       false,
