@@ -20,3 +20,5 @@ follow the capture checklist.
 - `sourcePath`: `db`; `coverageOwner`: `DEMO`; `includePatterns`: `["db/**/*.pks"]`
 - A senha do demo (`demo2026`) fica no SecretStorage, nunca no repositório.
 - Grants e packages de demo estão descritos no checklist do vault.
+
+- Instalação compartilhada: synonyms públicos de `UT_RUNNER`/`UT_REPORTERS`/reporters e grants DML nos buffers `UT3.UT_OUTPUT_BUFFER(_INFO)_TMP`.
