@@ -40,8 +40,14 @@ test('classifyCoverageOutput: HTML, XML e console', () => {
   assert.strictEqual(classifyCoverageOutput(''), 'console');
 });
 
-test('xmlRootTag: ignora prolog e comentários', () => {
+test('xmlRootTag: ignora prolog, comentários e DOCTYPE', () => {
   assert.strictEqual(xmlRootTag('<?xml version="1.0"?><coverage>'), 'coverage');
+  assert.strictEqual(
+    xmlRootTag(
+      '<?xml version="1.0"?>\n<!DOCTYPE coverage SYSTEM "http://cobertura.sourceforge.net/xml/coverage-04.dtd">\n<coverage>',
+    ),
+    'coverage',
+  );
   assert.strictEqual(xmlRootTag('<!-- c -->\n<testsuites>'), 'testsuites');
   assert.strictEqual(xmlRootTag('texto sem tag'), undefined);
   assert.strictEqual(xmlRootTag(''), undefined);

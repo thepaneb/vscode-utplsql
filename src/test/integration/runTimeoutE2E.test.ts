@@ -463,13 +463,10 @@ describeDB('run timeout E2E — break expira o teste e o pool sobrevive', () => 
       slowRunMs < MAX_RUN_MS,
       `o run deveria abortar em ~1,2s, levou ${slowRunMs}ms (teto ${MAX_RUN_MS}ms)\nsaida:\n${out}`,
     );
-    // Prova de que o teste lento chegou a rodar: sem isso, um package inválido
-    // (erro de compilação) também "terminaria em menos de 5s".
-    assert.match(
-      out,
-      new RegExp(SLOW_PKG, 'i'),
-      `a saída deveria citar o package em execução:\n${out}`,
-    );
+    // Prova de que a suíte lenta chegou a rodar: sem isso, um package inválido
+    // (erro de compilação) também "terminaria em menos de 5s". O reporter de
+    // documentação emite a descrição da suite, não necessariamente o package.
+    assert.match(out, /Timeout E2E/i, `a saída deveria citar a suite em execução:\n${out}`);
     assert.strictEqual(
       slowCap.passed.length,
       0,

@@ -114,6 +114,12 @@ export function xmlRootTag(text: string): string | undefined {
     if (end < 0) return undefined;
     rest = rest.slice(end + 3).trimStart();
   }
+  // Cobertura emite `<!DOCTYPE coverage ...>` antes da tag raiz.
+  while (rest.startsWith('<!')) {
+    const end = rest.indexOf('>');
+    if (end < 0) return undefined;
+    rest = rest.slice(end + 1).trimStart();
+  }
   const match = /^<\s*([A-Za-z_][\w:.-]*)/.exec(rest);
   return match?.[1]?.toLowerCase();
 }
