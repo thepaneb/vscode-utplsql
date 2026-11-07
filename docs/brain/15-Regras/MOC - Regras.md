@@ -56,6 +56,7 @@ SORT id ASC
 - [[BR-COB-006 - Cobertura explicita ou coverageAlways e comandos Coverage forcam true]] — `BR-COB-006`
 - [[BR-COB-007 - Cobertura resolve root e sourcePath pelo folder do pacote em execucao]] — `BR-COB-007`
 - [[BR-COB-008 - Relatorio HTML de cobertura abre no navegador sem segurar o TestRun]] — `BR-COB-008`
+- [[BR-COB-009 - Walks de workspace e HTML de cobertura são contidos na raiz]] — `BR-COB-009`
 - [[BR-CONN-001 - Precedência de resolução da conexão]] — `BR-CONN-001`
 - [[BR-CONN-002 - Prompt só ocorre quando nada está configurado e não persiste]] — `BR-CONN-002`
 - [[BR-CONN-003 - Limpar conexão de sessão reseta o context key]] — `BR-CONN-003`

@@ -114,6 +114,14 @@ escondem achados novos.
 - Documentar em `SECURITY.md` a política de `overrides`: cada pin cita o
   advisory, a versão corrigida e a condição de remoção (quando o upstream
   migrar). Revisão a cada bump de `mocha`/`c8`/`@vscode/test-cli`/`@vscode/vsce`.
+- `integration.yml`: baixar o Instant Client com checksum SHA256 fixo e
+  `sha256sum -c` antes do `unzip`.
+- Workflows: contexto GitHub (`release.tag_name`, `base_ref`) via `env:`, não
+  interpolado direto em `run:`; vale para `publish.yml`, `jev-review.yml` e
+  `integration.yml`.
+- `opencode.json`: pinar a imagem do MCP Playwright por digest (dev-only).
+- `scripts/sync-prds.cjs`: trocar `execSync` por
+  `execFileSync('git', ['remote', 'get-url', 'origin'], …)`.
 
 ### RF3 — Pinagem por hash do pip
 
@@ -140,6 +148,8 @@ Registrar no `SECURITY.md` (ou em nota do vault) a decisão para cada alerta:
 - Corrigir `build (22/24/26)` → `build (24)` + `build (26)` + `CodeQL`
   (checks exigidos pela proteção da `main`).
 - Acrescentar as proteções de RF1 e a política de overrides de RF2.
+- Documentar o trade-off do `UTPLSQL_CONN` com senha (`process.env` é visível
+  a todas as extensões do extension host); preferir perfil/SecretStorage.
 
 ### RF6 — Testes
 
@@ -238,5 +248,5 @@ Scorecard não gerar regra, registrar **nenhuma** adicional aqui.
 - 🔗 PRDs relacionados: [[prd-81-security-hardening|PRD-81]] · [[prd-104-ci-supply-chain|PRD-104]] · [[prd-119-security-posture-scorecard|PRD-119]] · [[prd-142-supply-chain-provenance-typecheck-gate|PRD-142]] · [[prd-143-redos-regex-audit-input-validation|PRD-143]] · [[prd-144-security-runtime-hardening|PRD-144]]
 - ⚙️ Pipelines: [[PIPE-ci - CI|PIPE-ci]] · [[PIPE-google-index - Google Index Check|PIPE-google-index]]
 - 🔗 Mesma versão (0.24.0): [[prd-121-auditable-package-sourcemap|PRD-121]] · [[prd-122-marketplace-trust-metadata|PRD-122]] · [[prd-132-ux-execution-dryrun-jump|PRD-132]] · [[prd-133-rate-limiting-keybindings|PRD-133]] · [[prd-140-statusbar-settings-grouping|PRD-140]] · [[prd-141-onboarding-walkthrough-accessibility|PRD-141]] · [[prd-142-supply-chain-provenance-typecheck-gate|PRD-142]] · [[prd-143-redos-regex-audit-input-validation|PRD-143]] · [[prd-144-security-runtime-hardening|PRD-144]]
-- 🚀 ⬅️ release anterior: [[prd-126-branch-coverage-cli-tests|PRD-126 (0.23.0)]]
+- 🚀 ⬅️ release anterior: [[prd-149-performance-engineering-quality|PRD-149 (0.23.0)]]
 <!-- brain:auto:end -->

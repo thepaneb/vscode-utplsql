@@ -53,6 +53,9 @@ de `executeRun`/`executeRunOracle`, eliminando condicionais aninhados (`exportin
 ### RF2 — Dispatcher
 - `executeRun` seleciona a estratégia a partir de `(coverage, exportReporter, debug)`
   e delega; o modo debug pode reusar `NormalRun` com hooks.
+- O dispatcher deve preservar a serialização de runs e o `outcome`
+  (`completed|cancelled|timedOut`) introduzidos pela PRD-148; a refatoração não
+  pode reintroduzir sobreposição de buffers.
 
 ### RF3 — Testabilidade
 - Estratégias testáveis isoladamente sem `vscode`; comportamento observável

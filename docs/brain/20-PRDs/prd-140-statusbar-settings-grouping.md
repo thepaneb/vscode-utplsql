@@ -61,6 +61,14 @@ discoverability.
 
 - Usar `order` e grupos no `configuration` do `package.json`.
 
+### RF3 — Reatividade de status bar e decorações
+
+- `utplsql.statusBar.enabled` deve criar/ocultar os itens ao mudar em runtime,
+  não só no construtor.
+- `utplsql.decorations.enabled` desligado deve limpar as decorações visíveis e
+  `applyToVisibleEditors` não pode continuar pintando estado antigo.
+- Testes com toggle ligado/desligado.
+
 **Não-funcionais**
 - RNF1 — Sem impacto de performance.
 
@@ -111,5 +119,5 @@ Superfícies: CHANGELOG, README (gerado).
 - 🗺️ [[MOC - PRDs]]
 - 🔗 PRDs relacionados: [[prd-65-schema-mode-security-fixes|PRD-65]] · [[prd-81-security-hardening|PRD-81]]
 - 🔗 Mesma versão (0.24.0): [[prd-121-auditable-package-sourcemap|PRD-121]] · [[prd-122-marketplace-trust-metadata|PRD-122]] · [[prd-132-ux-execution-dryrun-jump|PRD-132]] · [[prd-133-rate-limiting-keybindings|PRD-133]] · [[prd-141-onboarding-walkthrough-accessibility|PRD-141]] · [[prd-142-supply-chain-provenance-typecheck-gate|PRD-142]] · [[prd-143-redos-regex-audit-input-validation|PRD-143]] · [[prd-144-security-runtime-hardening|PRD-144]] · [[prd-145-security-alerts-deliverable|PRD-145]]
-- 🚀 ⬅️ release anterior: [[prd-126-branch-coverage-cli-tests|PRD-126 (0.23.0)]]
+- 🚀 ⬅️ release anterior: [[prd-149-performance-engineering-quality|PRD-149 (0.23.0)]]
 <!-- brain:auto:end -->

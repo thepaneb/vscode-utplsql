@@ -159,5 +159,5 @@ referenciar `SEC-002`. Enquanto `proposed`, `regras: []`.
 - 🔗 Mesma versão (0.20.0): [[prd-146-attestations-publish|PRD-146]] · [[prd-147-marketplace-listing-page|PRD-147]]
 - 🎯 RNF1 — Overhead desprezível com as settings desligadas. → [[BR-LOG-002 - Trace e perf sao opt-in e nunca registram credenciais|BR-LOG-002]]
 - 🎯 RNF2 — `perf.ts` puro e testável; sem dependências novas. → [[BR-LOG-002 - Trace e perf sao opt-in e nunca registram credenciais|BR-LOG-002]]
-- 🚀 ⬅️ release anterior: [[prd-127-vscode-floor-1-125|PRD-127 (0.19.0)]] · ➡️ próxima release: [[prd-128-event-bus-internal|PRD-128 (0.21.0)]]
+- 🚀 ⬅️ release anterior: [[prd-127-vscode-floor-1-125|PRD-127 (0.19.0)]] · ➡️ próxima release: [[prd-148-execution-state-reliability|PRD-148 (0.20.1)]]
 <!-- brain:auto:end -->

@@ -35,7 +35,8 @@ isolados.
 - `doRefresh` delega ao strategy selecionado por `cfg.organization`.
 
 **Não-objetivos**
-- Mudar a UX ou os ids existentes dos itens.
+- Mudar a UX ou os ids existentes dos itens. O formato com schema é
+  antecipado pela PRD-148; esta PRD preserva esse formato.
 - Alterar o protocolo de descoberta do banco.
 
 ## 4. Requisitos
@@ -53,6 +54,17 @@ isolados.
 - Factory `createOrganizationStrategy(mode)`; `extension.ts`/`testTree.ts` usam a
   factory.
 
+### RF4 — Reatividade de settings da árvore
+
+- Mudanças em `organization`, `includePatterns`, `showTagsInTree` e
+  `showTestDuration` disparam refresh (ou atualização incremental) da árvore.
+- `languageIds`/`files.associations` reconstroem o watcher, não só o CodeLens.
+
+### RF5 — Resolução concorrente de nó
+
+- Guardar a promise de `resolveSchemaNode` por nó (in-flight) para evitar
+  TOCTOU e queries duplicadas em expansões concorrentes.
+
 **Não-funcionais**
 - RNF1 — Cobertura ≥ thresholds; nenhuma função > ~80 linhas.
 - RNF2 — Comportamento idêntico (testes de regressão).
@@ -69,6 +81,8 @@ Nenhuma setting nova.
 ## 7. Plano de testes
 
 - **Unitários**: cada strategy isoladamente (build/resolve/collect) com fixtures.
+- **Reatividade**: mudança de settings reconstrói/atualiza a árvore; watcher
+  novo em `languageIds`/`files.associations`; resolução concorrente idempotente.
 - **Regressão**: suíte atual de `testTree` verde.
 
 ## 8. Riscos e mitigação

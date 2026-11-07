@@ -94,6 +94,7 @@ SORT id ASC
 - [[TST - oracleRunnerReporters.test.ts]] — `TST-oracleRunnerReporters.test.ts`
 - [[TST - oracleRunnerTns.test.ts]] — `TST-oracleRunnerTns.test.ts`
 - [[TST - packageTarget.test.ts]] — `TST-packageTarget.test.ts`
+- [[TST - pathContainment.test.ts]] — `TST-pathContainment.test.ts`
 - [[TST - perf.test.ts]] — `TST-perf.test.ts`
 - [[TST - perfFixture.test.ts]] — `TST-perfFixture.test.ts`
 - [[TST - perfHarness.test.ts]] — `TST-perfHarness.test.ts`

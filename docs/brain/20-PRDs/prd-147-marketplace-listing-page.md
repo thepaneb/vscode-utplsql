@@ -556,5 +556,5 @@ esperado; ao concluir, criar as regras e atualizar a seção.
 - 🎯 RNF1 — **Sem duplicação manual**: `MARKETPLACE.md` é uma nota canônica do → [[BR-DOC-003 - Marketplace usa MARKETPLACE.md gerado e README do GitHub segue como referencia|BR-DOC-003]]
 - 🎯 RNF6 — **Manutenibilidade**: uma única fonte por superfície; o GitHub não → [[BR-DOC-003 - Marketplace usa MARKETPLACE.md gerado e README do GitHub segue como referencia|BR-DOC-003]]
 - 🎯 RNF7 — **Compatibilidade**: `vsce` atual; `MARKETPLACE.md` funciona no → [[BR-PKG-002 - VSIX publica apenas o README do Marketplace|BR-PKG-002]]
-- 🚀 ⬅️ release anterior: [[prd-127-vscode-floor-1-125|PRD-127 (0.19.0)]] · ➡️ próxima release: [[prd-128-event-bus-internal|PRD-128 (0.21.0)]]
+- 🚀 ⬅️ release anterior: [[prd-127-vscode-floor-1-125|PRD-127 (0.19.0)]] · ➡️ próxima release: [[prd-148-execution-state-reliability|PRD-148 (0.20.1)]]
 <!-- brain:auto:end -->

@@ -76,6 +76,25 @@ explícito justificando a supressão).
 - Proibir `String(e)` cru em logs desses módulos; adicionar testes que injetam
   connection com senha e verificam mascaramento.
 
+### RF5 — Falhas de ativação não bloqueiam o refresh
+
+- `profilesReady` (migrate/hydrate) tem `.catch(logger.warn)` e o refresh
+  inicial/restore roda mesmo assim; `hydrateProfilePasswords` usa
+  `Promise.allSettled` por perfil. A correção emergencial pode antecipar, mas o
+  critério fica coberto aqui.
+
+### RF6 — `void` promises com catch
+
+- `autoRun`, `refresh`, `state.persist` e afins não podem ficar
+  fire-and-forget sem `.catch`; logar em `warn`/`debug` conforme o caso.
+
+### RF7 — Parsers e mensagens de erro
+
+- `parseJUnit`/`parseCobertura` com `try/catch` e mensagem útil; `hits`/`line`
+  inválidos normalizados.
+- Mensagem de falha do banco no hover de decoração em texto puro (sem Markdown
+  interpretável).
+
 **Não-funcionais**
 - RNF1 — Nenhuma mensagem de log expõe connection/credencial (SEC-002).
 - RNF2 — Sem regressão de comportamento; cobertura ≥ thresholds.

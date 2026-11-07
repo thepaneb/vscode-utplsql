@@ -5,7 +5,7 @@ titulo: "Architecture"
 publicar: docs/wiki/Architecture.md
 origem: ["MOC - Arquitetura"]
 verificado: 2026-10-31
-regras: ["SEC-014", "BR-EXEC-017", "BR-CONN-020", "BR-CONN-023", "BR-LOG-002", "BR-PARSE-020"]
+regras: ["SEC-014", "SEC-015", "BR-EXEC-017", "BR-CONN-020", "BR-CONN-023", "BR-LOG-002", "BR-PARSE-020"]
 tags: [wiki]
 ---
 
@@ -63,7 +63,7 @@ bundled.
 | `suiteParser.ts` — `%suite`/`%test` regex + annotations | `extension.ts` |
 | `junit.ts` — JUnit XML parsing + stack frames | `runner.ts`, `results.ts` |
 | `cobertura.ts` — Cobertura XML parsing | `config.ts` |
-| `matching.ts` — URI/folder filter + result→test matching | `discovery.ts` |
+| `matching.ts` — URI/folder filter + result→test matching; `pathContainment.ts` — `isInside`/`isReallyInside`/`hasTraversalSegment` (views, schema discovery e HTML de cobertura) | `discovery.ts` |
 | `codelens.ts` (parse) — `parseCodeLensItems` | `coverage.ts` — Cobertura → Coverage API |
 | `state.ts`, `types.ts` (type-only) | `testTree.ts` — builds the tree (file/schema/tag), `mergeDbSuites` |
 | | `languageIdentity.ts` — `discovery.languageIds` + `files.associations` → globs/seletor/watcher (PRD-109) |

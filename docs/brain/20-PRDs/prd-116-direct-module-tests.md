@@ -71,7 +71,18 @@ três primeiros e **documenta** por que `types.ts` não recebe teste.
 - Casos: `utf8` com e sem BOM; `latin1` (byte 0xE9 → `é`; BOM não removido);
   `win1252` (0x80 → `€`, distinto de latin1); charset ausente/inválido → `utf8`.
 
-### RF3 — `i18nLocales.ts`
+### RF3 — `extractParamNames` do debugger
+
+- Parser de parênteses balanceados: vírgula em tipo/default (`NUMBER(10,2)`,
+  `DEFAULT fn(a, b)`) não pode quebrar a lista de parâmetros.
+- Testes com tipos compostos, defaults e nomes citados.
+
+### RF4 — `checkDebugAccess`
+
+- Reconhecer grants de `DBMS_DEBUG` via role custom (`session_privs`/
+  `role_tab_privs`), não só DBA/PDB_DBA; manter o caminho direto atual.
+
+### RF5 — `i18nLocales.ts`
 
 - Invariantes dos catálogos: todo locale tem **todas** as chaves do `pt-BR`
   (sem chaves órfãs), todos os valores são strings não vazias, e o conjunto de

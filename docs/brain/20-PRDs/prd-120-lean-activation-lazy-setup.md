@@ -243,5 +243,5 @@ que a ativação tampouco conecta. Enquanto `proposed`, `regras: []`.
 - 🎯 RNF2 — Ativação sem conexão mensurável pelo harness da PRD-106 (baseline → [[BR-CONN-022 - Ativacao nao abre conexao e validacao de setup e preguicosa|BR-CONN-022]]
 - 🎯 RNF3 — Nenhuma mudança no comportamento da árvore/CodeLens ao abrir workspace → [[BR-CONN-022 - Ativacao nao abre conexao e validacao de setup e preguicosa|BR-CONN-022]]
 - 🎯 RNF4 — O diagnóstico segue aparecendo **no máximo uma vez** por sessão. → [[BR-CONN-022 - Ativacao nao abre conexao e validacao de setup e preguicosa|BR-CONN-022]]
-- 🚀 ⬅️ release anterior: [[prd-127-vscode-floor-1-125|PRD-127 (0.19.0)]] · ➡️ próxima release: [[prd-128-event-bus-internal|PRD-128 (0.21.0)]]
+- 🚀 ⬅️ release anterior: [[prd-127-vscode-floor-1-125|PRD-127 (0.19.0)]] · ➡️ próxima release: [[prd-148-execution-state-reliability|PRD-148 (0.20.1)]]
 <!-- brain:auto:end -->

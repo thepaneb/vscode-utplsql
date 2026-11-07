@@ -232,6 +232,8 @@ notas `prd-*`. O índice navegável do vault é a [[MOC - PRDs]].
 | 143 | [Auditoria de ReDoS/regex e validação de entrada](proposed/prd-143-redos-regex-audit-input-validation.md) | 0.24.0 | 2026-10-30 |
 | 144 | [Hardening de segurança do runtime: parsers de relatório, path traversal em views e redação de credenciais](proposed/prd-144-security-runtime-hardening.md) | 0.24.0 | 2026-11-05 |
 | 145 | [Segurança do entregável: logging de credenciais, cadeia de build e triagem dos alertas do GitHub](proposed/prd-145-security-alerts-deliverable.md) | 0.24.0 | 2026-11-05 |
+| 148 | [Confiabilidade de execução e estado após a auditoria 0.20.0](proposed/prd-148-execution-state-reliability.md) | 0.20.1 | 2026-11-07 |
+| 149 | [Performance mensurável e qualidade de engenharia](proposed/prd-149-performance-engineering-quality.md) | 0.23.0 | 2026-11-07 |
 <!-- prd:roadmap:end -->
 
 ---
@@ -390,6 +392,8 @@ docs/prd/
 │   ├── prd-143-redos-regex-audit-input-validation.md
 │   ├── prd-144-security-runtime-hardening.md
 │   ├── prd-145-security-alerts-deliverable.md
+│   ├── prd-148-execution-state-reliability.md
+│   ├── prd-149-performance-engineering-quality.md
 ```
 <!-- prd:estrutura:end -->
 

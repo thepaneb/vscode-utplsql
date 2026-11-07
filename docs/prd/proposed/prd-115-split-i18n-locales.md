@@ -40,7 +40,8 @@ sem alterar a saída do i18n.
 - Manter cobertura ≥ thresholds e a paridade de chaves validada por teste.
 
 **Não-objetivos**
-- Migrar catálogos para JSON/YAML ou carregá-los em runtime.
+- Migrar catálogos para JSON/YAML ou carregá-los em runtime. Lazy-load de
+  locale só entra se a medição de bundle justificar (PRD-149).
 - Mudar chaves, traduções, fallback (`locale → pt-BR → chave`) ou o motor.
 - Alterar `package.nls.*.json` (manifesto VSCode) — são outro artefato.
 
@@ -66,11 +67,20 @@ sem alterar a saída do i18n.
 - Confirmar que o `esbuild` continua produzindo o bundle e que o `.vsix` não
   regride de tamanho de forma relevante (mesmo conteúdo, módulos a mais).
 
+### RF4 — Locale resolvido na chamada
+
+- Remover a captura de `getExtensionLocale()` no registro dos comandos
+  (`commands/run.ts`, `connection.ts`, `profile.ts`, `script.ts`, `debug.ts`,
+  `utility.ts`); resolver o locale no momento da mensagem para que
+  `utplsql.language` valha sem reload.
+
 **Não-funcionais**
 - RNF1 — Saída idêntica: as strings resolvidas não mudam (teste de snapshot das
   chaves base).
 - RNF2 — Cobertura ≥ thresholds; nenhum catálogo ganha/perde chave.
 - RNF3 — Tempo de build estável.
+- RNF4 — Medir `dist/extension.mjs` antes/depois; o split por si só não reduz o
+  bundle e não deve ser vendido como redução.
 
 ## 5. Solução proposta
 

@@ -48,7 +48,8 @@ isolados.
 - `doRefresh` delega ao strategy selecionado por `cfg.organization`.
 
 **Não-objetivos**
-- Mudar a UX ou os ids existentes dos itens.
+- Mudar a UX ou os ids existentes dos itens. O formato com schema é
+  antecipado pela PRD-148; esta PRD preserva esse formato.
 - Alterar o protocolo de descoberta do banco.
 
 ## 4. Requisitos
@@ -66,6 +67,17 @@ isolados.
 - Factory `createOrganizationStrategy(mode)`; `extension.ts`/`testTree.ts` usam a
   factory.
 
+### RF4 — Reatividade de settings da árvore
+
+- Mudanças em `organization`, `includePatterns`, `showTagsInTree` e
+  `showTestDuration` disparam refresh (ou atualização incremental) da árvore.
+- `languageIds`/`files.associations` reconstroem o watcher, não só o CodeLens.
+
+### RF5 — Resolução concorrente de nó
+
+- Guardar a promise de `resolveSchemaNode` por nó (in-flight) para evitar
+  TOCTOU e queries duplicadas em expansões concorrentes.
+
 **Não-funcionais**
 - RNF1 — Cobertura ≥ thresholds; nenhuma função > ~80 linhas.
 - RNF2 — Comportamento idêntico (testes de regressão).
@@ -82,6 +94,8 @@ Nenhuma setting nova.
 ## 7. Plano de testes
 
 - **Unitários**: cada strategy isoladamente (build/resolve/collect) com fixtures.
+- **Reatividade**: mudança de settings reconstrói/atualiza a árvore; watcher
+  novo em `languageIds`/`files.associations`; resolução concorrente idempotente.
 - **Regressão**: suíte atual de `testTree` verde.
 
 ## 8. Riscos e mitigação
@@ -119,7 +133,7 @@ Superfície listada: CHANGELOG.
 
 <!-- brain:auto:start:conexoes -->
 - 🗺️ [[MOC - PRDs]]
-- 🔗 PRDs relacionados: [[prd-57-multiroot-root-resolution|PRD-57]] · [[prd-75-lazy-test-tree|PRD-75]] · [[prd-109-language-identity|PRD-109]]
+- 🔗 PRDs relacionados: [[prd-57-multiroot-root-resolution|PRD-57]] · [[prd-75-lazy-test-tree|PRD-75]] · [[prd-109-language-identity|PRD-109]] · [[prd-148-execution-state-reliability|PRD-148]]
 - 🔗 Mesma versão (0.21.0): [[prd-128-event-bus-internal|PRD-128]] · [[prd-129-orchestration-strategy|PRD-129]] · [[prd-130-config-validation-typed-errors|PRD-130]] · [[prd-131-discovery-resilience-cache|PRD-131]] · [[prd-137-wallet-password-binding|PRD-137]] · [[prd-139-state-store-slicing-lru|PRD-139]]
-- 🚀 ⬅️ release anterior: [[prd-147-marketplace-listing-page|PRD-147 (0.20.0)]] · ➡️ próxima release: [[prd-88-locale-aware-formatting|PRD-88 (0.22.0)]]
+- 🚀 ⬅️ release anterior: [[prd-148-execution-state-reliability|PRD-148 (0.20.1)]] · ➡️ próxima release: [[prd-88-locale-aware-formatting|PRD-88 (0.22.0)]]
 <!-- brain:auto:end -->

@@ -163,5 +163,5 @@ execução; nunca conexão em uso"), com `prds: ["PRD-101"]`, `implementacao:` e
 - 🔗 Mesma versão (0.20.0): [[prd-146-attestations-publish|PRD-146]] · [[prd-147-marketplace-listing-page|PRD-147]]
 - 🎯 RNF1 — Com o setting **desligado**, comportamento idêntico ao atual (sem → [[BR-CONN-023 - Pool ocioso fecha ao fim da operacao e nunca conexao em uso|BR-CONN-023]]
 - 🎯 RNF2 — Sem novas dependências. → [[BR-CONN-023 - Pool ocioso fecha ao fim da operacao e nunca conexao em uso|BR-CONN-023]]
-- 🚀 ⬅️ release anterior: [[prd-127-vscode-floor-1-125|PRD-127 (0.19.0)]] · ➡️ próxima release: [[prd-128-event-bus-internal|PRD-128 (0.21.0)]]
+- 🚀 ⬅️ release anterior: [[prd-127-vscode-floor-1-125|PRD-127 (0.19.0)]] · ➡️ próxima release: [[prd-148-execution-state-reliability|PRD-148 (0.20.1)]]
 <!-- brain:auto:end -->

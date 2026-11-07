@@ -52,6 +52,22 @@ injeção de padrões.
 ### RF3 — Validação de entrada
 
 - Sanitizar `discoveryLanguageIds` e associations antes de montar globs.
+- Validar `testPackagePrefix`/`testPackageSuffix` como identificador Oracle
+  (`^[A-Za-z][A-Za-z0-9_$#]*$`) antes de montar o nome do arquivo; rejeitar
+  `../`, separadores e metacaracteres PL/SQL.
+- Validar `exportReporterCall` localmente (allowlist) mesmo que o caller atual
+  já valide.
+
+### RF4 — `V$SQL` limitado
+
+- `applySqlCoverage` com `FETCH FIRST N ROWS ONLY`/`ROWNUM` (ou paginação) e
+  limite de payload; manter `callTimeout=5000` e o comportamento opt-in.
+
+### RF5 — Regex de views pré-compilada
+
+- `matchExecutedViews` não pode recompilar RegExp por par view×SQL; pré-compilar
+  por view ou tokenizar o SQL uma vez, preservando word boundary e
+  case-insensitive.
 
 **Não-funcionais**
 - RNF1 — Cobertura ≥ thresholds.

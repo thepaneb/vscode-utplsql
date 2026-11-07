@@ -152,5 +152,5 @@ por seed e não roda no caminho crítico do PR"), com `prds: ["PRD-106"]`,
 - 🔗 Mesma versão (0.20.0): [[prd-146-attestations-publish|PRD-146]] · [[prd-147-marketplace-listing-page|PRD-147]]
 - 🎯 RNF1 — Assert só estrutural (contagens, mix) + teto generoso. → [[BR-TEST-005 - Harness de perf usa fixture por seed e fica fora do caminho critico|BR-TEST-005]]
 - 🎯 RNF2 — Não roda no `npm test` padrão. → [[BR-TEST-005 - Harness de perf usa fixture por seed e fica fora do caminho critico|BR-TEST-005]]
-- 🚀 ⬅️ release anterior: [[prd-127-vscode-floor-1-125|PRD-127 (0.19.0)]] · ➡️ próxima release: [[prd-128-event-bus-internal|PRD-128 (0.21.0)]]
+- 🚀 ⬅️ release anterior: [[prd-127-vscode-floor-1-125|PRD-127 (0.19.0)]] · ➡️ próxima release: [[prd-148-execution-state-reliability|PRD-148 (0.20.1)]]
 <!-- brain:auto:end -->
