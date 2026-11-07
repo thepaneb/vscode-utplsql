@@ -122,6 +122,15 @@ test('runAtCursor: anotação de teste sem suite conhecida retorna em silêncio'
   assert.deepStrictEqual(__getInformationMessages(), []);
 });
 
+test('runAtCursor: %test de suite conhecida sem procedimento correspondente retorna em silêncio', async () => {
+  const state = setup();
+  addSuite(state, 'suite:test_math');
+  __setActiveTextEditor(editor('/tmp/test_math.pks', PKS, 2));
+  await commands.__getRegisteredCommand('utplsql.runAtCursor')?.();
+  assert.deepStrictEqual(__getWarningMessages(), []);
+  assert.deepStrictEqual(__getInformationMessages(), []);
+});
+
 test('runFailed: sem falhas mostra informação e não executa', async () => {
   setup();
   await commands.__getRegisteredCommand('utplsql.runFailed')?.();

@@ -151,6 +151,19 @@ test('runRelated: executa a suite relacionada (request com a suite certa)', asyn
   );
 });
 
+test('runRelated: modo global de cobertura usa o perfil de cobertura', async () => {
+  const { state, captured } = await boot({ suites: ['ut_app_pkg'] });
+  state.coverageAlways = true;
+  state.coverageProfile = { name: 'coverage' } as never;
+  __setConfigValue('connection', 'u/p@//127.0.0.1:1/s');
+  __setActiveTextEditor(editor(`${PROJ}/app_pkg.pkb`));
+
+  await runRelated();
+
+  assert.strictEqual(captured.length, 1);
+  assert.strictEqual((captured[0] as { profile?: unknown }).profile, state.coverageProfile);
+});
+
 test('runRelated: nome do arquivo sem base avisa (nenhum candidato)', async () => {
   const { captured } = await boot({ suites: ['ut_app_pkg'] });
   __setActiveTextEditor(editor(`${PROJ}/.pkb`));

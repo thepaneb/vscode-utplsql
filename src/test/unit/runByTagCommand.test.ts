@@ -95,6 +95,8 @@ test('runByTag: monta o QuickPick com as tags e contagem', async () => {
   const state = new TestStateManager();
   suite(state, 'UT_A', { tags: ['fast', 'smoke'] });
   suite(state, 'UT_B', { tags: ['fast'] });
+  // Suite sem tags participa da contagem com lista vazia (ramo `?? []`).
+  suite(state, 'UT_C');
   const call = await register(state);
   __setQuickPickResults([[]]); // cancela a seleção
 

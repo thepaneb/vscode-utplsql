@@ -127,6 +127,77 @@ test('runAll: dispara executeRun sem cobertura', async () => {
   assert.strictEqual(refreshCalled, 1);
 });
 
+test('runAll: modo global de cobertura liga coverage', async () => {
+  const { state } = stateWithSuite();
+  state.coverageAlways = true;
+  const { call } = await register(state);
+  await call('utplsql.runAll');
+  assert.strictEqual(executeCalls.length, 1);
+  assert.strictEqual(executeCalls[0][3], true);
+  assert.strictEqual((executeCalls[0][1] as TestRunRequest).profile, state.coverageProfile);
+});
+
+test('toggleCoverage: atualiza a status bar com o novo modo', async () => {
+  const { state } = stateWithSuite();
+  const coverageCalls: unknown[] = [];
+  const { call } = await register(state, {
+    statusBar: { showCoverage: (value: unknown) => coverageCalls.push(value) },
+  });
+  await call('utplsql.toggleCoverage');
+  await call('utplsql.toggleCoverage');
+  assert.deepStrictEqual(coverageCalls, [true, false]);
+});
+
+test('runWithProgress: falha ao cancelar pelo token externo é contida', async () => {
+  const { state, suiteItem } = stateWithSuite();
+  let externalListener: (() => void) | undefined;
+  const externalToken = {
+    isCancellationRequested: false,
+    onCancellationRequested(listener: () => void) {
+      externalListener = listener;
+      return { dispose: () => {} };
+    },
+  };
+  const { run } = await register(state);
+  executeHook = (args) => {
+    const source = __getCancellationTokenSources().find((item) => item.token === args[2]);
+    assert.ok(source);
+    source.cancel = () => {
+      throw new Error('cancel externo falhou');
+    };
+    externalListener?.();
+  };
+
+  await assert.doesNotReject(async () => {
+    await run.runWithProgress(
+      new TestRunRequest([suiteItem], undefined, state.runProfile) as never,
+      externalToken as never,
+      false,
+    );
+  });
+});
+
+test('runWithProgress: falha ao cancelar pelo progresso é contida', async () => {
+  const { state, suiteItem } = stateWithSuite();
+  const { run } = await register(state);
+  executeHook = (args) => {
+    const source = __getCancellationTokenSources().find((item) => item.token === args[2]);
+    assert.ok(source);
+    source.cancel = () => {
+      throw new Error('cancel do progresso falhou');
+    };
+    __cancelProgress();
+  };
+
+  await assert.doesNotReject(async () => {
+    await run.runWithProgress(
+      new TestRunRequest([suiteItem], undefined, state.runProfile) as never,
+      undefined,
+      false,
+    );
+  });
+});
+
 test('runWithProgress: executa callbacks de suite, resultado e decoração', async () => {
   const { state, suiteItem, testItem } = stateWithSuite();
   const lastResults = new Map<string, TestLineResult>();
@@ -513,8 +584,47 @@ test('runFailed: reexecuta os itens que falharam', async () => {
   assert.strictEqual(executeCalls.length, 1);
 });
 
+test('runFailed: modo global de cobertura liga coverage', async () => {
+  const { state, testItem } = stateWithSuite();
+  state.coverageAlways = true;
+  state.setLastFailedItems([testItem as never]);
+  const { call } = await register(state);
+  await call('utplsql.runFailed');
+  assert.strictEqual(executeCalls.length, 1);
+  assert.strictEqual(executeCalls[0][3], true);
+  assert.strictEqual((executeCalls[0][1] as TestRunRequest).profile, state.coverageProfile);
+});
+
 test('cancel: o cancelador devolvido não lança sem execução ativa', async () => {
   const { state } = stateWithSuite();
   const { run } = await register(state);
   assert.doesNotThrow(() => run.cancel());
+});
+
+test('isRunning/cancel refletem o token ativo da execução', async (t) => {
+  const { state, suiteItem } = stateWithSuite();
+  let release!: () => void;
+  const gate = new Promise<void>((resolve) => {
+    release = resolve;
+  });
+  const { run } = await register(state);
+  executeHook = () => gate;
+
+  const pending = run.runWithProgress(
+    new TestRunRequest([suiteItem], undefined, state.runProfile) as never,
+    undefined,
+    false,
+  );
+  t.after(async () => {
+    release();
+    await pending;
+  });
+  await new Promise((resolve) => setTimeout(resolve, 0));
+
+  assert.strictEqual(run.isRunning(), true);
+  run.cancel();
+  assert.strictEqual(run.isRunning(), false);
+  release();
+  await pending;
+  assert.strictEqual(run.isRunning(), false);
 });

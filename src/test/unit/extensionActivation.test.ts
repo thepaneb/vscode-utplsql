@@ -129,12 +129,6 @@ test('activate: cria o controller, seta o contexto e registra os comandos', asyn
   assert.ok(refreshCount >= 1);
   // PRD-120: a ativação não abre conexão nem roda a validação de setup.
   assert.deepStrictEqual(validateCalls, []);
-  // Cobre o sink de perf (sucesso e falha de I/O) sem derrubar a ativação.
-  __setConfigValue('perf.reportFile', 'package.json/perf.jsonl');
-  workspace.__triggerConfigChange({ affectsConfiguration: (s) => s === 'utplsql' });
-  await tests.__getLastTestController()?.refreshHandler?.();
-  await new Promise((resolve) => setTimeout(resolve, 10));
-  __setConfigValue('perf.reportFile', '');
 });
 
 test('setup validation: roda uma vez na primeira interação relevante (PRD-120)', async () => {
@@ -149,6 +143,27 @@ test('setup validation: roda uma vez na primeira interação relevante (PRD-120)
   window.__triggerActiveTextEditorChange(editor as never);
   await new Promise((resolve) => setTimeout(resolve, 0));
   assert.deepStrictEqual(validateCalls, ['activation', 'install', 'apply']);
+});
+
+test('perf: mudança de configuração reconstrói o probe (sucesso e paths inválidos)', async () => {
+  // Cobre o sink de perf (sucesso, path inválido e falha de I/O) sem derrubar
+  // a ativação. Cada mudança de config invalida o memo de setup (PRD-120 RF3),
+  // então o refresh seguinte roda a validação mais uma vez.
+  __setConfigValue('perf.reportFile', 'package.json/perf.jsonl');
+  workspace.__triggerConfigChange({ affectsConfiguration: (s) => s === 'utplsql' });
+  await tests.__getLastTestController()?.refreshHandler?.();
+  await new Promise((resolve) => setTimeout(resolve, 10));
+
+  __setConfigValue('perf.reportFile', '../fora.jsonl');
+  workspace.__triggerConfigChange({ affectsConfiguration: (s) => s === 'utplsql' });
+  await tests.__getLastTestController()?.refreshHandler?.();
+  await new Promise((resolve) => setTimeout(resolve, 10));
+
+  __setConfigValue('perf.reportFile', 'perf.txt');
+  workspace.__triggerConfigChange({ affectsConfiguration: (s) => s === 'utplsql' });
+  await tests.__getLastTestController()?.refreshHandler?.();
+  await new Promise((resolve) => setTimeout(resolve, 10));
+  __setConfigValue('perf.reportFile', '');
 });
 
 test('resolveHandler: resolve por nível (schema/package/suite)', async () => {
