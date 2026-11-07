@@ -177,6 +177,10 @@ GitHub README keeps the full feature and configuration tables.
 
 ## Screenshots
 
+![Short demo running utPLSQL tests and opening coverage](images/marketplace-run.gif)
+
+_From test run to coverage in one click._
+
 ![PL/SQL editor with line coverage gutters and the Test Coverage panel](images/marketplace-coverage.png)
 
 _Line coverage for Oracle PL/SQL, mapped back to your source files._
