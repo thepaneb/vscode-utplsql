@@ -396,6 +396,16 @@ test('debugAtCursor: cursor no %test depura a procedure', async () => {
   assert.deepStrictEqual(startArgs, ['ut_math']);
 });
 
+test('debugFailed: desabilitado informa', async () => {
+  await register();
+  __setConfigValue('debugger.enabled', false);
+  await commands.__getRegisteredCommand('utplsql.debugFailed')?.();
+  assert.deepStrictEqual(__getInformationMessages(), [
+    'Debug PL/SQL desabilitado (utplsql.debugger.enabled).',
+  ]);
+  assert.deepStrictEqual(startArgs, []);
+});
+
 test('debugFailed: sem falhas avisa', async () => {
   await register();
   await commands.__getRegisteredCommand('utplsql.debugFailed')?.();
@@ -434,6 +444,26 @@ test('debugFailed: picker cancelado não depura', async () => {
   fakeState.meta.set(b, { kind: 'test', packageName: 'ut_math', procName: 't_b' });
   __setQuickPickResult(undefined);
   await commands.__getRegisteredCommand('utplsql.debugFailed')?.();
+  assert.deepStrictEqual(startArgs, []);
+});
+
+test('debugFailed: erro ao iniciar vira mensagem de erro', async () => {
+  await register();
+  const item = { id: 'test:ut_math.t_sub' };
+  fakeState.lastFailedItems = [item];
+  fakeState.meta.set(item, { kind: 'test', packageName: 'ut_math', procName: 't_sub' });
+  startThrow = true;
+  await commands.__getRegisteredCommand('utplsql.debugFailed')?.();
+  assert.deepStrictEqual(__getErrorMessages(), ['debug boom']);
+});
+
+test('debugLast: desabilitado informa', async () => {
+  await register();
+  __setConfigValue('debugger.enabled', false);
+  await commands.__getRegisteredCommand('utplsql.debugLast')?.();
+  assert.deepStrictEqual(__getInformationMessages(), [
+    'Debug PL/SQL desabilitado (utplsql.debugger.enabled).',
+  ]);
   assert.deepStrictEqual(startArgs, []);
 });
 

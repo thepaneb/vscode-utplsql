@@ -6,7 +6,7 @@ import { installOutFormatIsolation } from './helpers';
 // E2E do timeout de execução (`utplsql.timeoutMinutes`) contra o banco real.
 //
 // Um package descartável (`UTPLSQL_TIMEOUT_SCHEMAIT`) tem um teste que fica em
-// busy-wait por 8s. Executado com `timeoutMinutes: 0.02` (1,2s), o
+// busy-wait por 8s. Executado com `timeoutMinutes: 0.04` (2,4s), o
 // `executeRunOracle` precisa abortar o run sozinho — `conn.break()` nas duas
 // conexões, sem ninguém chamar `cts.cancel()` — e devolver muito antes dos 8s.
 // Logo depois, um segundo run REAL de um package que passa
@@ -33,10 +33,14 @@ const PASS_PROC = 'passing_with_marker';
 const PASS_DESC = 'passes and prints a marker';
 const MARKER = 'utplsql-runtimeout-marker-it';
 
-/** 0,02 min = 1,2s: o timeout vence com folga do busy-wait de 8s do teste. */
-const TIMEOUT_MINUTES = 0.02;
+/**
+ * 0,04 min = 2,4s: o timeout vence com folga do busy-wait de 8s, mas dá tempo
+ * de o reporter de documentação emitir a suíte em bancos mais lentos (18c)
+ * antes do `break` — com 1,2s o buffer ainda estava vazio no 18c.
+ */
+const TIMEOUT_MINUTES = 0.04;
 /** Teto de duração do 1º run — bem abaixo dos 8s que o teste levaria. */
-const MAX_RUN_MS = 5000;
+const MAX_RUN_MS = 6000;
 
 function connParts(): { user: string; password: string; connectString: string } {
   const conn = process.env.UTPLSQL_CONN as string;
@@ -353,7 +357,7 @@ describeDB('run timeout E2E — break expira o teste e o pool sobrevive', () => 
       state.setSuiteItem(afterSuite.id, afterSuite);
       state.setItem(afterItem.id, afterItem);
 
-      // ── 1º run: o teste lento, com timeout de 1,2s ──────────────────────
+      // ── 1º run: o teste lento, com timeout de 2,4s ──────────────────────
       slowCap = { passed: [], output: [] };
       const t0 = Date.now();
       const slowRun = executeRunOracle(
@@ -461,7 +465,7 @@ describeDB('run timeout E2E — break expira o teste e o pool sobrevive', () => 
     );
     assert.ok(
       slowRunMs < MAX_RUN_MS,
-      `o run deveria abortar em ~1,2s, levou ${slowRunMs}ms (teto ${MAX_RUN_MS}ms)\nsaida:\n${out}`,
+      `o run deveria abortar em ~2,4s, levou ${slowRunMs}ms (teto ${MAX_RUN_MS}ms)\nsaida:\n${out}`,
     );
     // Prova de que a suíte lenta chegou a rodar: sem isso, um package inválido
     // (erro de compilação) também "terminaria em menos de 5s". O reporter de

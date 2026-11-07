@@ -10,6 +10,7 @@ import { __setConfigValue, commands, Range, tests, window, workspace } from '../
 let refreshCount = 0;
 const resolveCalls: string[] = [];
 const validateCalls: string[] = [];
+let validateShouldThrow = false;
 const runWithProgressCalls: unknown[][] = [];
 const runUriCalls: unknown[][] = [];
 let runIsRunning = false;
@@ -80,6 +81,7 @@ mock.module('../../quickfix.js', {
     setupValidator: {
       validateOnActivation: async () => {
         validateCalls.push('activation');
+        if (validateShouldThrow) throw new Error('validation boom');
         return [];
       },
       validateUtplsqlInstall: async () => {
@@ -164,6 +166,20 @@ test('perf: mudança de configuração reconstrói o probe (sucesso e paths inv�
   await tests.__getLastTestController()?.refreshHandler?.();
   await new Promise((resolve) => setTimeout(resolve, 10));
   __setConfigValue('perf.reportFile', '');
+});
+
+test('setup validation: falha não derruba a ativação', async () => {
+  validateShouldThrow = true;
+  const editor = {
+    document: { fileName: '/ws/ut_pkg.pks', languageId: 'plsql' },
+  };
+  // Mudança de config invalida o memo (PRD-120 RF3) e a interação agenda a
+  // validação; a rejeição é engolida e logada.
+  workspace.__triggerConfigChange({ affectsConfiguration: (s) => s === 'utplsql' });
+  window.__triggerActiveTextEditorChange(editor as never);
+  await new Promise((resolve) => setTimeout(resolve, 10));
+  validateShouldThrow = false;
+  assert.ok(refreshCount >= 1);
 });
 
 test('resolveHandler: resolve por nível (schema/package/suite)', async () => {
