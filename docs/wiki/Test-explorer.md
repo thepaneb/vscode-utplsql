@@ -109,6 +109,17 @@ virtual URI `utplsql-db:/SCHEMA/PKG.pks`. They can be **executed**; CodeLens and
 inline decorations require real files, but jump-to-failure works through the
 read-only `utplsql-source:` virtual document resolved from `ALL_SOURCE`.
 
+## Incremental refresh
+
+In the default `file` organization, file watcher events are debounced **per URI**
+(PRD-103): editing one suite reindexes only that file and preserves the other
+items in the tree. Deleting a file removes its items and lets jump-to-failure
+resolve the object through the database virtual source.
+
+`tag` and `schema` organizations, large bursts and any uncertain case fall back
+to the safe full refresh. The global `utplsql.refreshDebounceMs` still controls
+the coalescing window.
+
 ## Related
 
 - [Tree Organization](Tree-organization) — how the tree is built and schema extraction

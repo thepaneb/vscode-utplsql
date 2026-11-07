@@ -26,6 +26,18 @@ resolution follows this priority order:
 
 ![Oracle Connection Resolution](images/diagram-conexao.png)
 
+## Idle pool cleanup
+
+With `utplsql.oraclePoolCloseAfterRun` (default `true`, PRD-101), the runner
+closes **idle** Oracle pool connections when the last run, coverage, export or
+discovery operation finishes. Connections still in use are never interrupted;
+the pool is removed from the cache before the asynchronous `close(0)`, so a
+concurrent operation creates a fresh pool instead of receiving a closing one.
+
+This allows `DROP USER` after a test run without reloading VS Code. Disable the
+setting if you prefer to keep the pool warm between runs and accept the extra
+reconnect latency.
+
 ## Security Recommendation
 
 The connection string contains a password. **DO NOT** use the `utplsql.connection`

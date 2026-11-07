@@ -144,3 +144,15 @@ The stub is loaded in two ways:
 
 1. `import './setup.js'` at the top of the test file (explicit)
 2. `--require scripts/test-setup.cjs` in the global runner (safety net)
+## Performance harness and thick-full
+
+The performance harness (PRD-106) generates a deterministic in-database fixture
+(`UT_PERF_####`) with `npm run perf:generate` and runs the extension phases with
+`npm run test:perf`. Measurements are written as JSONL to
+`test-results/perf-report.jsonl`; the script is intended for weekly/dispatch CI
+and never for the PR critical path.
+
+The thick-full axis (PRD-125) runs the complete integration suite with
+`npm run test:integration:thick-full`. On 23ai Free the current suite passes
+with explicit exclusions for thin-only, UI and 11g-legacy tests; 11g keeps the
+thick smoke (the full 11g run remains an experimental dispatch limitation).

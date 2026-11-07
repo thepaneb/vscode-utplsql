@@ -35,7 +35,7 @@ tags: [readme]
 
 # utPLSQL Test Runner
 
-<!-- prd:PRD-101 --> <!-- prd:PRD-102 --> <!-- prd:PRD-120 -->
+<!-- prd:PRD-101 --> <!-- prd:PRD-102 --> <!-- prd:PRD-103 --> <!-- prd:PRD-120 -->
 
 Run and debug **utPLSQL** (Oracle PL/SQL) tests right in VS Code — native **Test Explorer**, visual coverage, a PL/SQL debugger and **Oracle-direct** execution via `node-oracledb`. Available in **24 UI languages**; requires **VS Code 1.125+** (Node 24).
 
@@ -57,6 +57,7 @@ Run and debug **utPLSQL** (Oracle PL/SQL) tests right in VS Code — native **Te
 - ♻️ **Auto-run on save** — re-run the suites of the saved `.pks` with `utplsql.autoRun = onSave`, with a per-file debounce (`utplsql.autoRunDelayMs`) and a queue policy when a run is in progress (`utplsql.autoRunQueue`: `skip`/`replace`).
 - 🗄️ **Database-first discovery** — build the tree from `ut_runner.get_suites_info` and rebuild the annotation cache from the palette.
 - 🌳 **Lazy test tree** — in `schema` mode, packages/suites/tests are resolved on demand when you expand, so large schemas open instantly.
+- ⚡ **Incremental reindex** — in `file` mode, the watcher debounces per URI and reindexes only the changed suite; tag/schema and bursts safely fall back to a full refresh (PRD-103).
 - 📁 **Multi-root workspace** — every workspace folder gets its own suites, with independent discovery, execution and coverage.
 - 🚀 **Oracle direct (via node-oracledb)** — real-time streaming, without waiting for the batch to finish.
 - 📜 **SQL scripts** — run the current script, an Explorer file, or a whole folder against the active connection profile (charset-aware, with `DBMS_OUTPUT` and `stopOnError`).
@@ -79,6 +80,7 @@ Run and debug **utPLSQL** (Oracle PL/SQL) tests right in VS Code — native **Te
 - 🔐 **TNS in thin + wallet** — `utplsql.connections.tnsAdminPath` resolves `tnsnames.ora` aliases in the thin driver (fallback to SQL Developer/`TNS_ADMIN`); the profile `walletLocation` and `utPLSQL: Set wallet password` keep the wallet password in the SecretStorage.
 - 🔒 **Connection security hardening** — connection settings are `machine`-scoped, the extension is disabled in untrusted workspaces, and the profile password is bound to the connection.
 - 🔧 **Setup diagnostics** — proactive validation of connection, grants, and version with quick-fix.
+- 🧹 **Idle pool cleanup** — `utplsql.oraclePoolCloseAfterRun` closes idle Oracle pool connections after the last run/coverage/export/discovery, so `DROP USER` works without reloading; disable it to keep the pool warm.
 
 ### Reporting
 
@@ -87,6 +89,8 @@ Run and debug **utPLSQL** (Oracle PL/SQL) tests right in VS Code — native **Te
 ### UX & diagnostics
 
 - ✅ **Inline decorations** — ✓/✗/⚠ icons in the editor after execution, with failure tooltip and overview ruler.
+- 🪶 **Lean activation** — the extension activates only for PL/SQL workspaces; setup validation is lazy, memoized and never opens Oracle during activation.
+- 🔎 **Trace and performance** — opt-in `utplsql.trace` and `utplsql.perf.enabled`/`perf.reportFile` measure discovery, tree build, run, polling and XML parsing; off by default and never log credentials.
 - 🔬 **Inline expected × actual diff** — on assertion failures, the Test Explorer shows VS Code's **native diff** with the *Expected*/*Actual* values extracted from the reporter message.
 - 📌 **Status Bar** — indicator with pass/fail count, duration and real-time progress; click the **coverage toggle** to switch the session coverage mode (`utPLSQL: Toggle Coverage`).
 - 🎯 **Jump to failure** — direct navigation to the line of the assertion that failed (via native "Go to Error").
