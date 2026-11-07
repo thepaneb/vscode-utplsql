@@ -22,3 +22,5 @@ follow the capture checklist.
 - Grants e packages de demo estão descritos no checklist do vault.
 
 - Instalação compartilhada: synonyms públicos de `UT_RUNNER`/`UT_REPORTERS`/reporters e grants DML nos buffers `UT3.UT_OUTPUT_BUFFER(_INFO)_TMP`.
+
+- Cobertura por bloco: synonyms `DBMSPCC_*` e `SELECT` em `UT3.UT_COVERAGE_RUNS` para o usuário de teste.

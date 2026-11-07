@@ -56,7 +56,8 @@ Os packages `orders`, `ut_orders` e `ut_customers` estão compilados no schema
 `DEMO`. Para a instalação compartilhada, o ambiente local também tem os
 synonyms públicos `UT`, `UT_RUNNER`, `UT_REPORTERS`, `UT_VARCHAR2_LIST` e os
 reporters, além de `SELECT/INSERT/UPDATE/DELETE` em
-`UT3.UT_OUTPUT_BUFFER_TMP` e `UT3.UT_OUTPUT_BUFFER_INFO_TMP` para `DEMO`. Se o `ut` não resolver em outro ambiente, conceda o grant de `UT3.UT`
+`UT3.UT_OUTPUT_BUFFER_TMP` e `UT3.UT_OUTPUT_BUFFER_INFO_TMP` para `DEMO`.
+Para cobertura por bloco, também há synonyms públicos `DBMSPCC_BLOCKS`/`DBMSPCC_UNITS`/`DBMSPCC_RUNS` e `SELECT` em `UT3.UT_COVERAGE_RUNS` para `DEMO`. Se o `ut` não resolver em outro ambiente, conceda o grant de `UT3.UT`
 ou crie o synonym `UT`.
 
 ## 2. Prints
