@@ -56,3 +56,9 @@ test('publish.cjs: no CI com --packagePath inexistente falha com aviso', () => {
   assert.strictEqual(r.status, 1);
   assert.match(r.stderr, /VSIX não encontrado/);
 });
+
+test('marketplace-images.cjs: sem images-ready informa pendência e sai 0', () => {
+  const r = runScript('marketplace-images.cjs', []);
+  assert.strictEqual(r.status, 0);
+  assert.match(r.stdout, /captura pendente|imagens do Marketplace válidas|OK/);
+});

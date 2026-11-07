@@ -31,6 +31,8 @@ export interface UtConfig {
   oraclePoolMax: number;
   oraclePoolIncrement: number;
   oraclePoolPingInterval: number;
+  /** Fecha pools ociosos ao fim de cada operação (PRD-101). */
+  oraclePoolCloseAfterRun: boolean;
   oracleClientMode: 'thin' | 'thick';
   oracleClientLibDir: string;
   oracleClientConfigDir: string;
@@ -57,6 +59,12 @@ export interface UtConfig {
   /** Language IDs aceitos na descoberta/CodeLens (PRD-109). */
   discoveryLanguageIds: string[];
   refreshDebounceMs: number;
+  /** Trace verboso por evento no canal `utPLSQL` (PRD-102). */
+  trace: boolean;
+  /** Instrumentação de fases (PRD-102). */
+  perfEnabled: boolean;
+  /** Arquivo JSONL de medições (vazio = não grava). */
+  perfReportFile: string;
   setupDiagnosticsEnabled: boolean;
   /** Geração de suíte de teste (PRD-100): prefixo do nome do pacote de teste. */
   generateTestPackagePrefix: string;
@@ -124,6 +132,15 @@ function sqlDevTnsPath(): string | undefined {
 
 export function readConfig(): UtConfig {
   const c = vscode.workspace.getConfiguration('utplsql');
+  // O runner abre conn1+conn2; `poolMax=1` faria a 2ª conexão esperar o
+  // queueTimeout e falhar (NJS-040). `min>max` também é inválido.
+  const rawMax = c.get<number>('oraclePoolMax', 10);
+  const rawMin = c.get<number>('oraclePoolMin', 2);
+  const oraclePoolMax = Math.max(2, Number.isFinite(rawMax) ? Math.trunc(rawMax) : 10);
+  const oraclePoolMin = Math.min(
+    oraclePoolMax,
+    Math.max(0, Number.isFinite(rawMin) ? Math.trunc(rawMin) : 2),
+  );
   const global: UtConfig = {
     sourcePath: c.get<string>('sourcePath', 'install'),
     includePatterns: c.get<string[]>('includePatterns', ['**/*.pks']),
@@ -144,10 +161,11 @@ export function readConfig(): UtConfig {
     reporterColorConsole: c.get<boolean>('reporter.colorConsole', false),
     timeoutMinutes: c.get<number>('timeoutMinutes', 60),
     dbmsOutput: c.get<boolean>('dbmsOutput', false),
-    oraclePoolMin: c.get<number>('oraclePoolMin', 2),
-    oraclePoolMax: c.get<number>('oraclePoolMax', 10),
+    oraclePoolMin,
+    oraclePoolMax,
     oraclePoolIncrement: c.get<number>('oraclePoolIncrement', 1),
     oraclePoolPingInterval: c.get<number>('oraclePoolPingInterval', 60),
+    oraclePoolCloseAfterRun: c.get<boolean>('oraclePoolCloseAfterRun', true),
     oracleClientMode: c.get<'thin' | 'thick'>('oracleClientMode', 'thin'),
     oracleClientLibDir:
       c.get<string>('oracleClientLibDir', '').trim() ||
@@ -174,6 +192,9 @@ export function readConfig(): UtConfig {
     discoverySource: c.get<'auto' | 'file' | 'database'>('discovery.source', 'auto'),
     discoveryLanguageIds: c.get<string[]>('discovery.languageIds', ['plsql', 'sql', 'oracle-sql']),
     refreshDebounceMs: c.get<number>('refreshDebounceMs', 300),
+    trace: c.get<boolean>('trace', false),
+    perfEnabled: c.get<boolean>('perf.enabled', false),
+    perfReportFile: c.get<string>('perf.reportFile', ''),
     setupDiagnosticsEnabled: c.get<boolean>('setupDiagnostics.enabled', true),
     generateTestPackagePrefix: c.get<string>('generate.testPackagePrefix', 'ut_'),
     generateTestPackageSuffix: c.get<string>('generate.testPackageSuffix', ''),

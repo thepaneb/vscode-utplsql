@@ -6,7 +6,7 @@ import { getExtensionLocale, readConfig } from './config';
 import { resolveSourceUri } from './coverage';
 import { t } from './i18n';
 import { isUserFrame, parseExpectedActual, type StackFrame, type TestCaseResult } from './junit';
-import { buildMatchIndex, findByNameOnly, type MatchEntry } from './matching';
+import { buildMatchIndex, findAllByNameOnly, type MatchEntry } from './matching';
 import { deriveDeclarationCoverage } from './plsqlDeclarations';
 import { type TestLineResult, type TestStateManager, withDurationSuffix } from './state';
 import { virtualSourceUri } from './virtualSource';
@@ -73,7 +73,18 @@ export function resolveStackFrameToUri(
   stackFrames: StackFrame[],
   state: TestStateManager,
 ): vscode.Location | undefined {
-  const userFrame = stackFrames.find(isUserFrame);
+  // Prefere um frame cujo package existe na árvore. Isso cobre suites do
+  // usuário com nomes que parecem internos (`UT_MY_APP`) mesmo antes de
+  // `isUserFrame` ser relaxado para a allowlist do framework.
+  const knownPackages = new Set<string>();
+  for (const item of state.cachedItems) {
+    const meta = state.getMeta(item);
+    if (meta?.kind === 'suite') knownPackages.add(meta.packageName.toLowerCase());
+  }
+  const knownFrame = stackFrames.find(
+    (f) => f.line > 0 && knownPackages.has(packageFromFrameObject(f.objectName).toLowerCase()),
+  );
+  const userFrame = knownFrame ?? stackFrames.find(isUserFrame);
   if (!userFrame || userFrame.line <= 0) return undefined;
 
   const packageName = packageFromFrameObject(userFrame.objectName);
@@ -129,66 +140,74 @@ export function applyResultsFromCases(
   }
   const index = buildMatchIndex(entries);
 
-  const matched = new Set<vscode.TestItem>();
+  const matched = new Set<string>();
+  // Um caso JUnit duplicado (mesmo teste lógico) não pode chamar
+  // `run.passed/failed` duas vezes no mesmo item.
+  const applied = new Set<string>();
 
   for (const c of cases) {
     const pkg = lastSegment(c.classname).toLowerCase();
     const name = c.name.toLowerCase().trim();
-    let item = index.get(`${pkg}|${name}`);
-    if (!item) {
-      item = findByNameOnly(entries, name);
+    let items = index.get(`${pkg}|${name}`) ?? [];
+    if (items.length === 0) {
+      items = findAllByNameOnly(entries, name, pkg);
     }
-    if (!item) continue;
-    matched.add(item);
-    resultMap.set(item.id, {
-      status: c.status,
-      ...(c.message !== undefined ? { message: c.message } : {}),
-      ...(c.durationMs !== undefined ? { durationMs: c.durationMs } : {}),
-      ts: Date.now(),
-    });
-    // Duração no label (PRD-56 RF4): reflete na hora, sem esperar um refresh.
-    // Fora do "ligado" a chamada também *remove* um sufixo antigo, mantendo o
-    // label coerente com a setting logo após o run.
-    if (typeof item.label === 'string') {
-      const next = withDurationSuffix(item.label, c.durationMs, showDuration);
-      if (next !== item.label) item.label = next;
-    }
+    if (items.length === 0) continue;
 
-    switch (c.status) {
-      case 'passed':
-        run.passed(item, c.durationMs);
-        break;
-      case 'failed': {
-        const msg = new vscode.TestMessage(c.message ?? t(locale, 'results.failedFallback'));
-        const ea = parseExpectedActual(c.message ?? '');
-        if (ea.expected !== undefined && ea.actual !== undefined) {
-          msg.expectedOutput = ea.expected;
-          msg.actualOutput = ea.actual;
-        }
-        if (c.stackFrames) {
-          const loc = resolveStackFrameToUri(c.stackFrames, state);
-          if (loc) msg.location = loc;
-        }
-        run.failed(item, msg, c.durationMs);
-        break;
+    for (const item of items) {
+      if (applied.has(item.id)) continue;
+      applied.add(item.id);
+      matched.add(item.id);
+      resultMap.set(item.id, {
+        status: c.status,
+        ...(c.message !== undefined ? { message: c.message } : {}),
+        ...(c.durationMs !== undefined ? { durationMs: c.durationMs } : {}),
+        ts: Date.now(),
+      });
+      // Duração no label (PRD-56 RF4): reflete na hora, sem esperar um refresh.
+      // Fora do "ligado" a chamada também *remove* um sufixo antigo, mantendo o
+      // label coerente com a setting logo após o run.
+      if (typeof item.label === 'string') {
+        const next = withDurationSuffix(item.label, c.durationMs, showDuration);
+        if (next !== item.label) item.label = next;
       }
-      case 'error': {
-        const msg = new vscode.TestMessage(c.message ?? t(locale, 'results.errorFallback'));
-        if (c.stackFrames) {
-          const loc = resolveStackFrameToUri(c.stackFrames, state);
-          if (loc) msg.location = loc;
+
+      switch (c.status) {
+        case 'passed':
+          run.passed(item, c.durationMs);
+          break;
+        case 'failed': {
+          const msg = new vscode.TestMessage(c.message ?? t(locale, 'results.failedFallback'));
+          const ea = parseExpectedActual(c.message ?? '');
+          if (ea.expected !== undefined && ea.actual !== undefined) {
+            msg.expectedOutput = ea.expected;
+            msg.actualOutput = ea.actual;
+          }
+          if (c.stackFrames) {
+            const loc = resolveStackFrameToUri(c.stackFrames, state);
+            if (loc) msg.location = loc;
+          }
+          run.failed(item, msg, c.durationMs);
+          break;
         }
-        run.errored(item, msg, c.durationMs);
-        break;
+        case 'error': {
+          const msg = new vscode.TestMessage(c.message ?? t(locale, 'results.errorFallback'));
+          if (c.stackFrames) {
+            const loc = resolveStackFrameToUri(c.stackFrames, state);
+            if (loc) msg.location = loc;
+          }
+          run.errored(item, msg, c.durationMs);
+          break;
+        }
+        case 'skipped':
+          run.skipped(item);
+          break;
       }
-      case 'skipped':
-        run.skipped(item);
-        break;
     }
   }
 
   for (const item of leafTests) {
-    if (!matched.has(item)) {
+    if (!matched.has(item.id)) {
       const m = state.getMeta(item);
       run.appendOutput(
         `${t(locale, 'runner.noJunitResult', { id: item.id })}` +
@@ -213,8 +232,12 @@ export function applyCoverageFromXml(
   const locale = getExtensionLocale();
   state.clearCoverage();
   const files = parseCobertura(covXml);
-  let mappedCount = 0;
 
+  // Spec + body (ou dois reporters que resolvem para o mesmo arquivo) geram
+  // duas FileCoverage para a mesma URI. Mescla por linha antes de publicar:
+  // `run.addCoverage`/`state.setCoverage` não podem receber a última e perder a
+  // primeira.
+  const byUri = new Map<string, { uri: vscode.Uri; lines: Map<number, number> }>();
   for (const f of files) {
     let uri: vscode.Uri | undefined;
     for (const folder of folders ?? []) {
@@ -231,7 +254,26 @@ export function applyCoverageFromXml(
       const ext = path.extname(base).replace(/^\./, '') || 'sql';
       uri = virtualSourceUri('', object, ext);
     }
-    const details: vscode.FileCoverageDetail[] = f.lines.map(
+    const key = uri.toString();
+    let entry = byUri.get(key);
+    if (!entry) {
+      entry = { uri, lines: new Map<number, number>() };
+      byUri.set(key, entry);
+    }
+    for (const l of f.lines) {
+      // `parseCobertura` já normaliza linha/hits; aqui só agregamos.
+      const hits = Math.max(0, Math.trunc(l.hits));
+      const previous = entry.lines.get(l.line);
+      if (previous === undefined || hits > previous) entry.lines.set(l.line, hits);
+    }
+  }
+
+  let mappedCount = 0;
+  for (const { uri, lines } of byUri.values()) {
+    const merged = [...lines.entries()]
+      .sort(([a], [b]) => a - b)
+      .map(([line, hits]) => ({ line, hits }));
+    const details: vscode.FileCoverageDetail[] = merged.map(
       (l) => new vscode.StatementCoverage(l.hits, new vscode.Position(Math.max(0, l.line - 1), 0)),
     );
     if (details.length === 0) continue;
@@ -240,7 +282,7 @@ export function applyCoverageFromXml(
     // Arquivo ilegível → só StatementCoverage (fallback silencioso).
     try {
       const srcText = fs.readFileSync(uri.fsPath, 'utf-8');
-      const declarations = deriveDeclarationCoverage(srcText, f.lines);
+      const declarations = deriveDeclarationCoverage(srcText, merged);
       for (const d of declarations) {
         details.push(
           new vscode.DeclarationCoverage(d.name, d.executed, new vscode.Position(d.line, 0)),

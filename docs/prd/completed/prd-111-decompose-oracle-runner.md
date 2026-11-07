@@ -72,6 +72,9 @@ campos** *flat*. Esta PRD **decompõe a função em etapas coesas e testáveis**
 
 ### RF2 — Agrupamento de `OracleRunOptions`
 
+> **RF2 entregue (2026-11-05):** `OracleRunOptions` agora expõe `coverage`, `execution`, `output` e `export`; `runner.ts` produz o formato agrupado e os campos flat ficam como aliases `@deprecated` para os testes legados. Comportamento preservado.
+
+
 - Reorganizar em sub-objetos, por exemplo:
   `coverage: { enabled, owner, schemes, includeObjects, excludeObjects, ... }`,
   `execution: { run, leafTests, state, tags, randomOrder, randomOrderSeed,
@@ -173,6 +176,13 @@ etapas de montagem são funções testáveis"), com `prds: ["PRD-111"]`,
 Enquanto `proposed`, `regras: []`. A PRD também atualiza
 `wiki/Architecture.md` e o `functional/10-development-tooling.md` se o módulo
 novo mudar o mapa.
+
+## Análise de cobertura (pós-PRD)
+
+- **Unitários:** a suíte existente de `executeRunOracle`/`runner` valida PL/SQL, binds, resultados e o novo formato agrupado; os aliases flat mantêm os testes históricos verdes.
+- **Integração:** regressão thin/thick sem mudança de comportamento.
+- **Matriz:** sem mudança específica de banco; thin/thick smoke.
+- **Ações:** migrar os testes restantes para o formato agrupado e remover os aliases numa próxima limpeza.
 
 ## Impacto nas docs
 

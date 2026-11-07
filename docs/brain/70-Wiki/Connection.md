@@ -5,11 +5,13 @@ titulo: "Connection Configuration"
 publicar: docs/wiki/Connection.md
 origem: ["09-configuration","BR-CONN-001"]
 verificado: 2026-09-23
-regras: ["BR-CONN-001", "BR-CONN-002", "BR-CONN-003", "BR-CONN-016", "BR-CONN-017", "BR-CONN-018", "BR-CONN-012", "BR-CONN-013"]
+regras: ["BR-CONN-001", "BR-CONN-002", "BR-CONN-003", "BR-CONN-016", "BR-CONN-017", "BR-CONN-018", "BR-CONN-012", "BR-CONN-013", "BR-CONN-023"]
 tags: [wiki]
 ---
 
 # Connection Configuration
+
+<!-- prd:PRD-101 -->
 
 The extension requires an Oracle connection string to run tests. The
 resolution follows this priority order:
@@ -23,6 +25,18 @@ resolution follows this priority order:
 | 5 | User prompt | No (volatile memory) |
 
 ![Oracle Connection Resolution](images/diagram-conexao.png)
+
+## Idle pool cleanup
+
+With `utplsql.oraclePoolCloseAfterRun` (default `true`, PRD-101), the runner
+closes **idle** Oracle pool connections when the last run, coverage, export or
+discovery operation finishes. Connections still in use are never interrupted;
+the pool is removed from the cache before the asynchronous `close(0)`, so a
+concurrent operation creates a fresh pool instead of receiving a closing one.
+
+This allows `DROP USER` after a test run without reloading VS Code. Disable the
+setting if you prefer to keep the pool warm between runs and accept the extra
+reconnect latency.
 
 ## Security Recommendation
 

@@ -131,6 +131,7 @@ function checkFidelity(overrides = {}) {
     wikiPrds: overrides.wikiPrds ?? read('docs/wiki/PRDs.md'),
     faq: overrides.faq ?? read('docs/wiki/FAQ.md'),
     install: overrides.install ?? read('docs/wiki/Installation-and-requirements.md'),
+    marketplace: overrides.marketplace ?? read('MARKETPLACE.md'),
   };
   const completedPrds = overrides.completedPrds ?? listCompletedPrds();
 
@@ -161,6 +162,61 @@ function checkFidelity(overrides = {}) {
       }
       if (!files.wikiConfiguration.includes(value)) {
         problems.push(`setting ${id}: valor de enum "${value}" ausente em Configuration.md`);
+      }
+    }
+  }
+
+  // 1b. Marketplace (PRD-147): superfície separada, curta e verificável.
+  if (files.marketplace) {
+    const mp = files.marketplace;
+    for (const id of new Set(mp.match(/`(utplsql\.[A-Za-z0-9_.-]+)`/g) ?? [])) {
+      const clean = id.replace(/`/g, '');
+      if (!knownSettings.has(clean)) {
+        problems.push(`MARKETPLACE.md: setting "${clean}" não existe no package.json`);
+      }
+    }
+    for (const claim of [
+      'VS Code',
+      '1.125',
+      'Oracle 12.1',
+      '11.2',
+      'node-oracledb',
+      '26',
+      '24 UI languages',
+    ]) {
+      if (!mp.includes(claim)) problems.push(`MARKETPLACE.md: claim ausente "${claim}"`);
+    }
+    for (const term of [
+      'coverageSourceArgs',
+      'type_mapping',
+      'VS Code 1.101',
+      'Node 22',
+      'node-oracledb 7',
+      '(sem tag)',
+      'Reporter adicional da sessão',
+    ]) {
+      if (mp.includes(term)) problems.push(`MARKETPLACE.md: termo obsoleto/proibido "${term}"`);
+    }
+    for (const heading of [
+      '## Quick start',
+      '## Requirements and compatibility',
+      '## Troubleshooting',
+      '## Documentation and support',
+    ]) {
+      if (!mp.includes(heading)) problems.push(`MARKETPLACE.md: seção ausente "${heading}"`);
+    }
+    const words = mp
+      .replace(/<!--[\s\S]*?-->/g, ' ')
+      .split(/\s+/)
+      .filter(Boolean).length;
+    if (words < 1200 || words > 2000) {
+      problems.push(`MARKETPLACE.md: ${words} palavras (alvo 1200-2000)`);
+    }
+    const ready = mp.includes('<!-- marketplace:images-ready -->');
+    for (const m of mp.matchAll(/!\[[^\]]*\]\((images\/[^)]+)\)/g)) {
+      const rel = m[1];
+      if (!fs.existsSync(path.join(REPO, rel))) {
+        if (ready) problems.push(`MARKETPLACE.md: imagem ausente ${rel}`);
       }
     }
   }

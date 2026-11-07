@@ -2,6 +2,7 @@ import * as vscode from 'vscode';
 import { getExtensionLocale, readConfig, resolveConnectionNoPrompt } from '../config';
 import { t } from '../i18n';
 import { logger } from '../logger';
+import { beginOracleActivity } from '../oracleRunner';
 import { setupValidator } from '../quickfix';
 import type { CommandDeps } from './deps';
 
@@ -19,11 +20,17 @@ export function registerUtilityCommands(context: vscode.ExtensionContext, deps: 
       vscode.window.showInformationMessage(t(locale, 'ext.grants.copied'));
     }),
     vscode.commands.registerCommand('utplsql.validateSetup', async () => {
-      const [activationDiags, installDiags] = await Promise.all([
-        setupValidator.validateOnActivation(),
-        setupValidator.validateUtplsqlInstall(),
-      ]);
-      const diags = [...activationDiags, ...installDiags];
+      const activity = beginOracleActivity();
+      let diags: Awaited<ReturnType<typeof setupValidator.validateOnActivation>>;
+      try {
+        const [activationDiags, installDiags] = await Promise.all([
+          setupValidator.validateOnActivation(),
+          setupValidator.validateUtplsqlInstall(),
+        ]);
+        diags = [...activationDiags, ...installDiags];
+      } finally {
+        await activity.end();
+      }
       setupValidator.applyDiagnostics(diags);
       vscode.window.showInformationMessage(
         diags.length === 0

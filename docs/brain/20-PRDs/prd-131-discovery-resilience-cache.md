@@ -81,6 +81,36 @@ TTL curto e **limpeza/limite de tamanho** no `workspaceState` (`lastResults`/
 - Cache (hit/miss/expiração).
 - Poda do Memento.
 
+### RF6 — Discovery DB sem N+1
+
+- Trocar uma query `ALL_SOURCE` por package por uma consulta agrupada (ou
+  concorrência limitada 8–16) com timeout global; medir com o harness real
+  antes/depois.
+- Manter o fallback e a ordem determinística dos schemas/suites.
+
+### RF7 — Folder correto em multi-root
+
+- `discoverDbSuitesCore` não pode atribuir todas as suites de DB a
+  `folders[0]`; resolver o folder por schema/pattern e usar a URI virtual
+  correta.
+- `resolveFolder` compara caminho com separador de diretório, não prefixo
+  simples (`/ws/a` não pode casar `/ws/ab/...`).
+
+### RF8 — Cache de metadados por run/pool
+
+- Memoizar `get_reporters_list`/`discoverUtplsqlSchema` por pool key/run,
+  invalidando em troca de conexão/refresh.
+- Reduzir as consultas repetidas de cobertura/html/extras.
+
+### RF9 — `collectAllItems` no schema mode
+
+- `runFile`/`runRelated`/`runFolder`/`runByTag` não devem resolver todos os
+  schemas antes de filtrar; usar os índices já descobertos ou cachear as
+  suites por schema.
+
+**Não duplicar:** `mergeSuiteLists` (união arquivo+banco) é tratado na
+PRD-148.
+
 **Não-funcionais**
 - RNF1 — Sem regressão de latência no caminho feliz.
 - RNF2 — Cobertura ≥ thresholds.
@@ -142,7 +172,7 @@ com TTL") com `prds: ["PRD-131"]`, `implementacao:` e `testes:`. Enquanto
 
 <!-- brain:auto:start:conexoes -->
 - 🗺️ [[MOC - PRDs]]
-- 🔗 PRDs relacionados: [[prd-56-duration-persistence|PRD-56]] · [[prd-103-incremental-source-reindex|PRD-103]]
+- 🔗 PRDs relacionados: [[prd-56-duration-persistence|PRD-56]] · [[prd-103-incremental-source-reindex|PRD-103]] · [[prd-148-execution-state-reliability|PRD-148]]
 - 🔗 Mesma versão (0.21.0): [[prd-128-event-bus-internal|PRD-128]] · [[prd-129-orchestration-strategy|PRD-129]] · [[prd-130-config-validation-typed-errors|PRD-130]] · [[prd-137-wallet-password-binding|PRD-137]] · [[prd-138-organization-strategy-pattern|PRD-138]] · [[prd-139-state-store-slicing-lru|PRD-139]]
-- 🚀 ⬅️ release anterior: [[prd-147-marketplace-listing-page|PRD-147 (0.20.0)]] · ➡️ próxima release: [[prd-88-locale-aware-formatting|PRD-88 (0.22.0)]]
+- 🚀 ⬅️ release anterior: [[prd-148-execution-state-reliability|PRD-148 (0.20.1)]] · ➡️ próxima release: [[prd-88-locale-aware-formatting|PRD-88 (0.22.0)]]
 <!-- brain:auto:end -->

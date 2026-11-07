@@ -192,6 +192,10 @@ A bővítmény közvetlenül Oracle-on keresztül csatlakozik, beolvassa a ripor
 | `utplsql.oraclePoolMax` | `10` | Az Oracle futtatókészlet (node-oracledb) maximális kapcsolatszáma. |
 | `utplsql.oraclePoolIncrement` | `1` | Az Oracle futtatókészlet (node-oracledb) bővítésének lépésköze. |
 | `utplsql.oraclePoolPingInterval` | `60` | Az üresjárati készletkapcsolatok állapotellenőrzései közötti másodpercek száma (node-oracledb). `0` = ping minden kivételkor. |
+| `utplsql.oraclePoolCloseAfterRun` | `true` | Closes idle Oracle pool connections when the last run, coverage, export or discovery operation finishes. |
+| `utplsql.trace` | `false` | Emits verbose per-event trace lines in the utPLSQL output channel. |
+| `utplsql.perf.enabled` | `false` | Measures discovery, tree build, run, polling and XML parsing phases. |
+| `utplsql.perf.reportFile` | `""` | Appends each perf measurement as one JSON line to this file. |
 | `utplsql.oracleClientMode` | `thin` | Illesztőprogram-mód: `thin` (tiszta JavaScript, natív kliens nélkül) vagy `thick` (az Oracle Instant Clientet használja). A `thick` módot csak NNE-t (Native Network Encryption) igénylő adatbázisokhoz használja; `utplsql.oracleClientLibDir` és az ablak újratöltése szükséges. |
 | `utplsql.oracleClientLibDir` | `""` | Az Oracle Instant Client könyvtára. Kötelező, ha az `utplsql.oracleClientMode` értéke `thick` (pl. `C:\oracle\instantclient_23_5`). Fallback: `ORACLE_CLIENT_LIB_DIR`. |
 | A hibakeresés nem áll meg a törésponton | Csomag hibakeresési info nélkül, vagy hiányzó hibakeresési jogosultságok | Fordítsd `PLSQL_OPTIMIZE_LEVEL <= 1` értékkel (vagy `ALTER PACKAGE ... COMPILE DEBUG PLSQL_OPTIMIZE_LEVEL = 1`), és adj `DEBUG CONNECT SESSION` + `EXECUTE ON SYS.DBMS_DEBUG` jogosultságot. A `test_*.pkb` töréspontok nem biztos, hogy megállnak (az utPLSQL dinamikus SQL-lel futtatja a teszteket); a tesztelt kódba tedd őket. |

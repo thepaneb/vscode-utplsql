@@ -2,6 +2,8 @@
 
 # Diagnostics and quick-fix
 
+<!-- prd:PRD-120 -->
+
 The extension provides automatic diagnostics to reduce setup friction and
 accelerate the TDD cycle:
 
@@ -89,6 +91,18 @@ Each diagnostic provides a **Code Action** (lightbulb icon or `Ctrl+.`):
 ```
 
 ---
+
+## Lazy setup validation
+
+Setup diagnostics do not run during activation (PRD-120). The extension activates
+only for PL/SQL workspaces (`workspaceContains:**/*.pks`) or on `onLanguage:plsql`
+and validates the setup on the first relevant interaction: opening a PL/SQL
+editor, refreshing the tree, expanding a node or running tests.
+
+The result is memoized per session and invalidated by `utplsql` configuration
+changes, so the Oracle connection is not opened on every event. The explicit
+`utPLSQL: Validate setup` command always re-runs the checks, including the UT3
+installation integrity.
 
 ## Interaction between diagnostics
 

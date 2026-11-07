@@ -46,6 +46,9 @@ segue com 6 PRDs de observabilidade/desempenho). Elas formam esta release de
 arquitetura, entre a instrumentação da 0.20.0 e a localização da 0.22.0. A antiga
 0.21.0 (bloco de i18n) foi fundida na 0.22.0.
 
+**Dependência:** a PRD-148 (0.20.1) fecha a serialização de runs e os IDs com
+schema antes das refatorações 129/131/138/139.
+
 **Total estimado:** ≈ 7,5–14 dias.
 
 ## Fluxo de execução (por PRD)

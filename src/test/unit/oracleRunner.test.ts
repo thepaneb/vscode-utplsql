@@ -22,6 +22,7 @@ import {
   listReportersOracle,
   mapDbPathsToFiles,
   parseConnString,
+  RunAbortedError,
   rebuildAnnotationCache,
   semverLt,
   withOracleConnection,
@@ -427,6 +428,27 @@ test('ensurePool: reutiliza pool quando connection string e igual', async () => 
   }
 });
 
+test('ensurePool: chamadas concorrentes criam um único pool', async () => {
+  const { mod } = makeFakeOracledb();
+  let created = 0;
+  const original = mod.createPool;
+  mod.createPool = async (attrs: Record<string, unknown>) => {
+    created += 1;
+    await new Promise((r) => setTimeout(r, 20));
+    return original(attrs);
+  };
+  try {
+    const [a, b] = await Promise.all([
+      ensurePool(mod as never, 'u/p@//h:1521/s', POOL_CFG),
+      ensurePool(mod as never, 'u/p@//h:1521/s', POOL_CFG),
+    ]);
+    assert.strictEqual(created, 1, 'não pode criar dois pools para a mesma key');
+    assert.strictEqual(a, b, 'ambas as chamadas devem receber o mesmo pool');
+  } finally {
+    await closeOraclePool();
+  }
+});
+
 test('ensurePool: fecha pool antigo e cria novo quando connection muda', async () => {
   const { mod, created, pools } = makeFakeOracledb();
   try {
@@ -667,14 +689,45 @@ test('discoverUtplsqlSchema: erro de acesso retorna vazio', async () => {
 
 // ── mapDbPathsToFiles ────────────────────────────────────────────────
 
-test('mapDbPathsToFiles: mapeia tipo para pasta', () => {
+test('checkCompilationErrors: aceita rows em array e em objeto', async () => {
+  const errors = await checkCompilationErrors(
+    {
+      execute: async () => ({
+        rows: [
+          ['PKG_A', 'PACKAGE', 10, 2, 'missing'],
+          { NAME: 'PKG_B', TYPE: 'PROCEDURE', LINE: 3, POSITION: 1, TEXT: 'bad' },
+        ],
+      }),
+    },
+    'APP',
+  );
+  assert.deepStrictEqual(errors, [
+    { name: 'PKG_A', type: 'PACKAGE', line: 10, position: 2, text: 'missing' },
+    { name: 'PKG_B', type: 'PROCEDURE', line: 3, position: 1, text: 'bad' },
+  ]);
+});
+
+test('checkCompilationErrors: rows ausentes e valores nulos usam defaults', async () => {
+  assert.deepStrictEqual(await checkCompilationErrors({ execute: async () => ({}) }, 'APP'), []);
+  const errors = await checkCompilationErrors(
+    { execute: async () => ({ rows: [[undefined], {}] }) },
+    'APP',
+  );
+  assert.deepStrictEqual(errors, [
+    { name: '', type: '', line: 0, position: 0, text: '' },
+    { name: '', type: '', line: 0, position: 0, text: '' },
+  ]);
+});
+
+test('mapDbPathsToFiles: mapeia tipo para pasta e preserva spec/body', () => {
   const xml = `<coverage><filename="package body APP.CALC" /><filename="package APP.CALC" /><filename="function APP.FN1" /><filename="procedure APP.PR1" /><filename="trigger APP.TR1" /><filename="type body APP.TY1" /><filename="view APP.VW1" /></coverage>`;
   const mapped = mapDbPathsToFiles(xml);
-  assert.ok(mapped.includes('filename="packages/CALC.sql"'));
-  assert.ok(mapped.includes('filename="functions/FN1.sql"'));
-  assert.ok(mapped.includes('filename="procedures/PR1.sql"'));
-  assert.ok(mapped.includes('filename="triggers/TR1.sql"'));
-  assert.ok(mapped.includes('filename="types/TY1.sql"'));
+  assert.ok(mapped.includes('filename="packages/CALC.pkb"'));
+  assert.ok(mapped.includes('filename="packages/CALC.pks"'));
+  assert.ok(mapped.includes('filename="functions/FN1.fnc"'));
+  assert.ok(mapped.includes('filename="procedures/PR1.prc"'));
+  assert.ok(mapped.includes('filename="triggers/TR1.trg"'));
+  assert.ok(mapped.includes('filename="types/TY1.tpb"'));
   assert.ok(mapped.includes('filename="views/VW1.sql"'));
 });
 
@@ -682,9 +735,9 @@ test('mapDbPathsToFiles: formato real lower-case do reporter (tipo schema.objeto
   const xml =
     '<class filename="function ut3.calcular_desconto" /><class filename="procedure ut3.reajustar_salario" /><class filename="package body ut3.pkg$#1" />';
   const mapped = mapDbPathsToFiles(xml);
-  assert.ok(mapped.includes('filename="functions/calcular_desconto.sql"'));
-  assert.ok(mapped.includes('filename="procedures/reajustar_salario.sql"'));
-  assert.ok(mapped.includes('filename="packages/pkg$#1.sql"'));
+  assert.ok(mapped.includes('filename="functions/calcular_desconto.fnc"'));
+  assert.ok(mapped.includes('filename="procedures/reajustar_salario.prc"'));
+  assert.ok(mapped.includes('filename="packages/pkg$#1.pkb"'));
 });
 
 test('mapDbPathsToFiles: xml sem filename permanece inalterado', () => {
@@ -799,6 +852,12 @@ test('executeRunOracle: fluxo feliz aplica resultados e info no output', async (
   const run = makeRun();
   const { item, metaMap } = makeLeaf();
   let complete: number[] | undefined;
+  const phases: string[] = [];
+  const probe = {
+    enabled: true,
+    start: (phase: string) => () => phases.push(phase),
+    record: (phase: string) => phases.push(phase),
+  };
   try {
     await executeRunOracle(
       {
@@ -809,6 +868,7 @@ test('executeRunOracle: fluxo feliz aplica resultados e info no output', async (
         run,
         leafTests: [item],
         state: makeState(metaMap),
+        perf: probe as never,
         onComplete: (p, f, s, e, ms) => {
           complete = [p, f, s, e, ms];
         },
@@ -822,6 +882,7 @@ test('executeRunOracle: fluxo feliz aplica resultados e info no output', async (
 
   assert.strictEqual(run.passedList.length, 1);
   assert.strictEqual(complete?.[0], 1);
+  for (const phase of ['run', 'poll', 'parseXml']) assert.ok(phases.includes(phase));
   const out = run.output.join('\n');
   assert.match(out, /Oracle runner/);
   assert.ok(out.includes('Doc output'), 'deveria streamar o reporter de documentação');
@@ -842,7 +903,7 @@ test('executeRunOracle: export usa só o reporter escolhido e devolve a saída',
         run,
         leafTests: [item],
         state: makeState(metaMap),
-        exportReporter: { name: 'ut_documentation_reporter' },
+        export: { reporter: { name: 'ut_documentation_reporter' } },
       },
       neverCancel as never,
       async () => mod as never,
@@ -1114,6 +1175,63 @@ test('executeRunOracle: cobertura usa bind UT_VARCHAR2_LIST para schemes', async
     type: 'UT_VARCHAR2_LIST',
     val: ['app'],
   });
+});
+
+test('executeRunOracle: aceita coverage/execution/output agrupados (PRD-111 RF2)', async () => {
+  const { mod } = makeOracleRunFake({ buffer: [JUNIT_XML] });
+  const run = makeRun();
+  const { item, metaMap } = makeLeaf();
+  try {
+    await executeRunOracle(
+      {
+        connection: 'u/p@//h:1521/s',
+        pathArgs: ['pkg'],
+        coverage: { enabled: false },
+        execution: { tags: 'fast', randomOrder: false, dbmsOutput: false, timeoutMinutes: 5 },
+        output: { additionalReporters: [] },
+        sourcePath: 'install',
+        run,
+        leafTests: [item],
+        state: makeState(metaMap),
+      },
+      neverCancel as never,
+      async () => mod as never,
+    );
+  } finally {
+    await closeOraclePool();
+  }
+  assert.strictEqual(run.passedList.length, 1);
+});
+
+test('executeRunOracle: cobertura pedida sem reporter sinaliza onCoverageResult(false)', async () => {
+  const { mod } = makeOracleRunFake({
+    buffer: [JUNIT_XML],
+    reporters: ['UT_DOCUMENTATION_REPORTER'],
+  });
+  const run = makeRun();
+  const { item, metaMap } = makeLeaf();
+  let generated: boolean | undefined;
+  try {
+    await executeRunOracle(
+      {
+        connection: 'u/p@//h:1521/s',
+        pathArgs: ['pkg'],
+        coverage: true,
+        sourcePath: 'install',
+        run,
+        leafTests: [item],
+        state: makeState(metaMap),
+        onCoverageResult: (value) => {
+          generated = value;
+        },
+      },
+      neverCancel as never,
+      async () => mod as never,
+    );
+  } finally {
+    await closeOraclePool();
+  }
+  assert.strictEqual(generated, false);
 });
 
 test('executeRunOracle: sem cobertura envia a_coverage_schemes => null (sem bind)', async () => {
@@ -1544,7 +1662,7 @@ function makeGatedRunFake() {
   return { mod, conn1, conn2, broke: () => ({ broke1, broke2 }) };
 }
 
-test('executeRunOracle: cancelamento chama break nas duas conexões', async () => {
+test('executeRunOracle: cancelamento chama break e rejeita com outcome cancelled', async () => {
   const { mod, broke } = makeGatedRunFake();
   const run = makeRun();
   const { item, metaMap } = makeLeaf();
@@ -1557,27 +1675,65 @@ test('executeRunOracle: cancelamento chama break nas duas conexões', async () =
     );
     await new Promise((r) => setTimeout(r, 20));
     ctl.cancel();
-    await p;
+    await assert.rejects(
+      p,
+      (e: unknown) => e instanceof RunAbortedError && e.outcome === 'cancelled',
+    );
   } finally {
     await closeOraclePool();
   }
   assert.deepStrictEqual(broke(), { broke1: 1, broke2: 1 });
+  assert.strictEqual(run.passedList.length, 0, 'cancelamento não pode aplicar resultado parcial');
 });
 
-test('executeRunOracle: timeout dispara break e finaliza sem lançar', async () => {
+test('executeRunOracle: timeout dispara break e rejeita com outcome timedOut', async () => {
   const { mod, broke } = makeGatedRunFake();
   const run = makeRun();
   const { item, metaMap } = makeLeaf();
   try {
-    await executeRunOracle(
-      runOpts(run, item, metaMap, { timeoutMinutes: 0.002 }),
-      neverCancel as never,
-      async () => mod as never,
+    await assert.rejects(
+      executeRunOracle(
+        runOpts(run, item, metaMap, { timeoutMinutes: 0.002 }),
+        neverCancel as never,
+        async () => mod as never,
+      ),
+      (e: unknown) => e instanceof RunAbortedError && e.outcome === 'timedOut',
     );
   } finally {
     await closeOraclePool();
   }
   assert.strictEqual(broke().broke1, 1, 'timeout deveria interromper o run');
+  assert.strictEqual(run.passedList.length, 0, 'timeout não pode aplicar resultado parcial');
+});
+
+test('executeRunOracle: timeout com run rejeitando ainda vira RunAbortedError', async () => {
+  const { mod, conn1 } = makeGatedRunFake();
+  let rejectRun: ((e: Error) => void) | undefined;
+  conn1.execute = async (sql: string) => {
+    if (/ut_runner\.run/.test(sql)) {
+      return new Promise((_resolve, reject) => {
+        rejectRun = reject;
+      });
+    }
+    return {};
+  };
+  conn1.break = async () => {
+    rejectRun?.(new Error('ORA-01013: user requested cancel'));
+  };
+  const run = makeRun();
+  const { item, metaMap } = makeLeaf();
+  try {
+    await assert.rejects(
+      executeRunOracle(
+        runOpts(run, item, metaMap, { timeoutMinutes: 0.002 }),
+        neverCancel as never,
+        async () => mod as never,
+      ),
+      (e: unknown) => e instanceof RunAbortedError && e.outcome === 'timedOut',
+    );
+  } finally {
+    await closeOraclePool();
+  }
 });
 
 test('executeRunOracle: erro ao drenar DBMS_OUTPUT não interrompe o run', async () => {
@@ -1855,26 +2011,29 @@ test('executeRunOracle: cancelamento não grava o HTML', async () => {
   const { item, metaMap } = makeLeaf();
   let called = false;
   try {
-    await executeRunOracle(
-      {
-        connection: 'u/p@//h:1521/s',
-        pathArgs: ['pkg'],
-        coverage: true,
-        coverageHtmlReport: true,
-        reportRoot: dir,
-        onCoverageHtmlReport: () => {
-          called = true;
+    await assert.rejects(
+      executeRunOracle(
+        {
+          connection: 'u/p@//h:1521/s',
+          pathArgs: ['pkg'],
+          coverage: true,
+          coverageHtmlReport: true,
+          reportRoot: dir,
+          onCoverageHtmlReport: () => {
+            called = true;
+          },
+          sourcePath: 'install',
+          run,
+          leafTests: [item],
+          state: makeState(metaMap),
         },
-        sourcePath: 'install',
-        run,
-        leafTests: [item],
-        state: makeState(metaMap),
-      },
-      {
-        isCancellationRequested: true,
-        onCancellationRequested: () => ({ dispose: () => {} }),
-      } as never,
-      async () => mod as never,
+        {
+          isCancellationRequested: true,
+          onCancellationRequested: () => ({ dispose: () => {} }),
+        } as never,
+        async () => mod as never,
+      ),
+      (e: unknown) => e instanceof RunAbortedError && e.outcome === 'cancelled',
     );
   } finally {
     await closeOraclePool();
@@ -1939,6 +2098,96 @@ test('executeRunOracle: cobertura com COV_XML aplica cobertura', async () => {
   const out = run.output.join('\n');
   assert.match(out, /Oracle runner/);
   assert.strictEqual(run.passedList.length, 1);
+});
+
+test('executeRunOracle: cobertura antes do JUnit não perde os resultados', async () => {
+  const { mod } = makeOracleRunFake({
+    buffer: [
+      { id: 'coverage', text: COV_XML },
+      { id: 'junit', text: JUNIT_XML },
+    ],
+    reporters: ['UT_DOCUMENTATION_REPORTER', 'UT_COVERAGE_COBERTURA_REPORTER'],
+  });
+  const run = makeRun();
+  const { item, metaMap } = makeLeaf();
+  try {
+    await executeRunOracle(
+      {
+        connection: 'u/p@//h:1521/s',
+        pathArgs: ['pkg'],
+        coverage: true,
+        sourcePath: 'install',
+        run,
+        leafTests: [item],
+        state: makeState(metaMap),
+      },
+      neverCancel as never,
+      async () => mod as never,
+    );
+  } finally {
+    await closeOraclePool();
+  }
+  assert.strictEqual(run.passedList.length, 1, 'JUnit deve ser parseado mesmo depois da cobertura');
+});
+
+test('executeRunOracle: Cobertura com prolog XML é reconhecida pela tag raiz', async () => {
+  const { mod } = makeOracleRunFake({
+    buffer: [
+      { id: 'junit', text: JUNIT_XML },
+      { id: 'cov', text: `<?xml version="1.0"?>\n${COV_XML}` },
+    ],
+    reporters: ['UT_DOCUMENTATION_REPORTER', 'UT_COVERAGE_COBERTURA_REPORTER'],
+  });
+  const run = makeRun();
+  const { item, metaMap } = makeLeaf();
+  try {
+    await executeRunOracle(
+      {
+        connection: 'u/p@//h:1521/s',
+        pathArgs: ['pkg'],
+        coverage: true,
+        sourcePath: 'install',
+        run,
+        leafTests: [item],
+        state: makeState(metaMap),
+      },
+      neverCancel as never,
+      async () => mod as never,
+    );
+  } finally {
+    await closeOraclePool();
+  }
+  assert.strictEqual(run.passedList.length, 1);
+  assert.strictEqual(run.coverageList.length, 1, 'cobertura com prolog deve ser aplicada');
+});
+
+test('executeRunOracle: chunk inicial em branco não sela o XML como console', async () => {
+  const { mod } = makeOracleRunFake({
+    buffer: [
+      { id: 'result', text: '\n' },
+      { id: 'result', text: JUNIT_XML },
+    ],
+  });
+  const run = makeRun();
+  const { item, metaMap } = makeLeaf();
+  try {
+    await executeRunOracle(
+      {
+        connection: 'u/p@//h:1521/s',
+        pathArgs: ['pkg'],
+        sourcePath: 'install',
+        coverage: false,
+        run,
+        leafTests: [item],
+        state: makeState(metaMap),
+      },
+      neverCancel as never,
+      async () => mod as never,
+    );
+  } finally {
+    await closeOraclePool();
+  }
+  assert.strictEqual(run.passedList.length, 1, 'o XML não pode ser perdido por whitespace inicial');
 });
 
 test('executeRunOracle: cobertura não envia a_source_file_mappings (senão zera o relatório)', async () => {

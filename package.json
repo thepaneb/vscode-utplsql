@@ -1,7 +1,7 @@
 {
   "name": "vscode-utplsql",
   "displayName": "utPLSQL Test Runner",
-  "description": "Run, debug and cover utPLSQL (Oracle PL/SQL) tests in VS Code's native Test Explorer — Oracle-direct via node-oracledb, visual coverage, PL/SQL debugger and 24 UI languages.",
+  "description": "Run, debug and measure coverage of utPLSQL (Oracle PL/SQL) unit tests in VS Code's native Test Explorer — Oracle-direct via node-oracledb (no Java/Instant Client in thin mode), visual coverage, PL/SQL debugger and 24 UI languages.",
   "version": "0.20.0",
   "publisher": "paneb",
   "author": "Gil Cleber Barboza",
@@ -12,14 +12,25 @@
     "node": ">=24.0.0"
   },
   "categories": [
-    "Testing"
+    "Testing",
+    "Debuggers"
   ],
   "keywords": [
     "utplsql",
     "plsql",
     "oracle",
     "test",
-    "coverage"
+    "coverage",
+    "pl/sql",
+    "oracle-database",
+    "unit-testing",
+    "tdd",
+    "test-explorer",
+    "test-runner",
+    "code-coverage",
+    "debugger",
+    "junit",
+    "cobertura"
   ],
   "repository": {
     "type": "git",
@@ -30,14 +41,12 @@
   },
   "homepage": "https://thepaneb.github.io/vscode-utplsql/",
   "galleryBanner": {
-    "color": "#1e1e1e",
+    "color": "#21262d",
     "theme": "dark"
   },
   "activationEvents": [
-    "onStartupFinished",
     "workspaceContains:**/*.pks",
     "workspaceContains:**/*.pkb",
-    "workspaceContains:**/*.sql",
     "onLanguage:plsql"
   ],
   "capabilities": {
@@ -269,8 +278,8 @@
         "utplsql.oraclePoolMax": {
           "type": "number",
           "default": 10,
-          "minimum": 1,
-          "description": "Maximum connections in the Oracle runner pool (node-oracledb)."
+          "minimum": 2,
+          "description": "Maximum connections in the Oracle runner pool (node-oracledb). The runner needs at least 2 (run + polling)."
         },
         "utplsql.oraclePoolIncrement": {
           "type": "number",
@@ -283,6 +292,11 @@
           "default": 60,
           "minimum": 0,
           "description": "Seconds between health checks of idle pool connections (node-oracledb). 0 = ping on every checkout."
+        },
+        "utplsql.oraclePoolCloseAfterRun": {
+          "type": "boolean",
+          "default": true,
+          "description": "Closes idle Oracle pool connections when the last run, coverage, export or discovery operation finishes. Disable to keep the pool warm between runs (may delay DROP USER until the window is reloaded)."
         },
         "utplsql.oracleClientMode": {
           "type": "string",
@@ -362,6 +376,22 @@
           "default": 300,
           "minimum": 0,
           "description": "Debounce (ms) to coalesce .pks/.pkb file watcher events before refreshing the Test Explorer."
+        },
+        "utplsql.trace": {
+          "type": "boolean",
+          "default": false,
+          "description": "Emits verbose per-event trace lines (test ids, generated SQL) in the utPLSQL output channel. Off by default; diagnostic use only."
+        },
+        "utplsql.perf.enabled": {
+          "type": "boolean",
+          "default": false,
+          "description": "Measures discovery, tree build, run, polling and XML parsing phases and emits them as info lines. Off by default."
+        },
+        "utplsql.perf.reportFile": {
+          "type": "string",
+          "default": "",
+          "scope": "machine",
+          "description": "When set, each perf measurement is appended as one JSON line to this .jsonl file (absolute or relative to the first workspace folder). Relative paths must stay inside the workspace."
         },
         "utplsql.codeLens.enabled": {
           "type": "boolean",
@@ -982,8 +1012,12 @@
     "db:matrix:list": "bash scripts/db-matrix/run.sh --list",
     "test": "npm run test:unit",
     "test:coverage": "npm run compile && c8 node --experimental-test-module-mocks --require ./scripts/test-setup.cjs --test out/test/unit/**/*.test.js",
+    "perf:generate": "npm run compile && node out/test/perf/support/cli.js generate",
+    "perf:scale": "npm run compile && node out/test/perf/support/cli.js scale",
+    "perf:drop": "npm run compile && node out/test/perf/support/cli.js drop",
+    "test:perf": "npm run compile && vscode-test --config .vscode-test.perf.mjs",
     "bundle": "node esbuild.config.mjs",
-    "package": "npm run compile && npm run bundle && vsce package",
+    "package": "npm run compile && npm run bundle && vsce package --readme-path MARKETPLACE.md --githubBranch main",
     "package:win32-x64": "npm run compile && npm run bundle && node scripts/package-target.cjs win32-x64",
     "package:linux-x64": "npm run compile && npm run bundle && node scripts/package-target.cjs linux-x64",
     "package:linux-arm64": "npm run compile && npm run bundle && node scripts/package-target.cjs linux-arm64",
@@ -1007,6 +1041,7 @@
     "docs:check": "node scripts/docs-check.cjs",
     "docs:fidelity": "node scripts/docs-fidelity.cjs",
     "docs:features-check": "node scripts/docs-features-check.cjs",
+    "marketplace:check": "node scripts/marketplace-images.cjs",
     "version:check": "node scripts/version-check.cjs",
     "audit:prod": "npm audit --omit=dev --audit-level=high",
     "audit:dev": "npm audit --audit-level=high",

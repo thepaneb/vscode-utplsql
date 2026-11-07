@@ -2,13 +2,13 @@
 tipo: prd
 id: PRD-125
 aliases: [PRD-125]
-status: in-progress
+status: completed
 titulo: "Suíte completa em thick e matriz de bancos no CI"
 versao: "0.20.0"
 data: "2026-10-29"
 autor: "Gil Cleber Barboza"
 versao_titulo: "0.20.0 — Observabilidade e desempenho"
-verificado: "2026-11-05"
+verificado: 2026-11-05
 regras: ["BR-TEST-001"]
 docs: ["CHANGELOG", "wiki/Contributing.md", "wiki/Tests.md", "functional/10-development-tooling.md"]
 tags: [prd]
@@ -283,6 +283,20 @@ incompatibilidade/lentidão estrutural do 3.1/11g no run completo — não apena
 skips. O 11g segue no **smoke thick** (verde, 4 passing) e o full fica para a
 0.20.0 com triagem/skips.
 
+## 9.2 Entrega final (2026-11-05)
+
+O eixo **thick-full 23free** foi reexecutado após a estabilização de
+conexão/pool (PRD-101) e a instrumentação (PRD-102): **81 passing / 13 pending /
+0 failing** em ~2 min, com as exclusões explícitas de thin-only, UI/comandos,
+`thickMode`, `debuggerStandaloneFn` e `thickLegacyE2E` (11g). O workspace do
+thick-full desliga `utplsql.oraclePoolCloseAfterRun` para preservar os testes
+que afirmam que o pool sobrevive ao `break`.
+
+**11g:** o full continua fora do timebox — a matriz mantém o **thick smoke**
+(4 passing, verde no 11g) e o dispatch `thick-full-11g` experimental. Esta é a
+limitação documentada permitida pelo Rollout; nenhuma promessa de suíte
+completa em 11g é feita nesta versão.
+
 ## 10. Critérios de aceite
 
 - `run.sh --thick-full` executa a suíte completa (menos thin-only e
@@ -328,7 +342,9 @@ cita `PRD-125` ou `<!-- prd:PRD-125 -->`.
 - 📐 Regras: [[BR-TEST-001 - Matriz de bancos Oracle cobre 12.2-23ai em thin e thick|BR-TEST-001]]
 - 🔗 PRDs relacionados: [[prd-04-expand-tests|PRD-04]] · [[prd-72-db-test-matrix|PRD-72]] · [[prd-101-connection-pool-lifecycle|PRD-101]] · [[prd-102-trace-and-perf-instrumentation|PRD-102]] · [[prd-123-oracle-11g-support|PRD-123]] · [[prd-124-oracledb-26-upgrade|PRD-124]]
 - ⚙️ Pipelines: [[PIPE-integration - Integration (Oracle)|PIPE-integration]]
-- 🔗 Mesma versão (0.20.0): [[prd-101-connection-pool-lifecycle|PRD-101]] · [[prd-102-trace-and-perf-instrumentation|PRD-102]] · [[prd-103-incremental-source-reindex|PRD-103]] · [[prd-106-perf-harness|PRD-106]] · [[prd-107-unprivileged-fixture|PRD-107]] · [[prd-120-lean-activation-lazy-setup|PRD-120]] · [[prd-146-attestations-publish|PRD-146]] · [[prd-147-marketplace-listing-page|PRD-147]]
+- 🔗 Mesma versão (0.20.0): [[prd-146-attestations-publish|PRD-146]] · [[prd-147-marketplace-listing-page|PRD-147]]
 - 🎯 RF4 — CI → [[BR-TEST-001 - Matriz de bancos Oracle cobre 12.2-23ai em thin e thick|BR-TEST-001]]
-- 🚀 ⬅️ release anterior: [[prd-127-vscode-floor-1-125|PRD-127 (0.19.0)]] · ➡️ próxima release: [[prd-128-event-bus-internal|PRD-128 (0.21.0)]]
+- 🎯 RNF3 — Skips determinísticos e documentados (nada de “flaky skip”); incluir o → [[BR-TEST-001 - Matriz de bancos Oracle cobre 12.2-23ai em thin e thick|BR-TEST-001]]
+- 🎯 RNF4 — O eixo thin continua verde e com os mesmos 119 + 6. → [[BR-TEST-001 - Matriz de bancos Oracle cobre 12.2-23ai em thin e thick|BR-TEST-001]]
+- 🚀 ⬅️ release anterior: [[prd-127-vscode-floor-1-125|PRD-127 (0.19.0)]] · ➡️ próxima release: [[prd-148-execution-state-reliability|PRD-148 (0.20.1)]]
 <!-- brain:auto:end -->

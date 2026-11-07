@@ -56,6 +56,7 @@ SORT id ASC
 - [[BR-COB-006 - Cobertura explicita ou coverageAlways e comandos Coverage forcam true]] — `BR-COB-006`
 - [[BR-COB-007 - Cobertura resolve root e sourcePath pelo folder do pacote em execucao]] — `BR-COB-007`
 - [[BR-COB-008 - Relatorio HTML de cobertura abre no navegador sem segurar o TestRun]] — `BR-COB-008`
+- [[BR-COB-009 - Walks de workspace e HTML de cobertura são contidos na raiz]] — `BR-COB-009`
 - [[BR-CONN-001 - Precedência de resolução da conexão]] — `BR-CONN-001`
 - [[BR-CONN-002 - Prompt só ocorre quando nada está configurado e não persiste]] — `BR-CONN-002`
 - [[BR-CONN-003 - Limpar conexão de sessão reseta o context key]] — `BR-CONN-003`
@@ -77,6 +78,8 @@ SORT id ASC
 - [[BR-CONN-019 - Oracle 11g (11.2) exige thick mode; thin tem piso 12.1]] — `BR-CONN-019`
 - [[BR-CONN-020 - Credencial é redigida em todo log do ciclo de conexão]] — `BR-CONN-020`
 - [[BR-CONN-021 - Major do driver Oracle so entra com matriz e packaging validados]] — `BR-CONN-021`
+- [[BR-CONN-022 - Ativacao nao abre conexao e validacao de setup e preguicosa]] — `BR-CONN-022`
+- [[BR-CONN-023 - Pool ocioso fecha ao fim da operacao e nunca conexao em uso]] — `BR-CONN-023`
 - [[BR-DEBUG-001 - Ciclo do debugger DBMS_DEBUG para no breakpoint e le o frame]] — `BR-DEBUG-001`
 - [[BR-DEBUG-002 - stopOnException controla pausa em excecao (break_exception)]] — `BR-DEBUG-002`
 - [[BR-DEBUG-003 - Function standalone depura no namespace toplevel]] — `BR-DEBUG-003`
@@ -85,6 +88,7 @@ SORT id ASC
 - [[BR-DEP-001 - Runtime deps em dependencies e nota DEP- para cada dep direta]] — `BR-DEP-001`
 - [[BR-DOC-001 - Tabelas de settings e comandos são geradas do package.json]] — `BR-DOC-001`
 - [[BR-DOC-002 - PRD concluída vincula docs e registro de features]] — `BR-DOC-002`
+- [[BR-DOC-003 - Marketplace usa MARKETPLACE.md gerado e README do GitHub segue como referencia]] — `BR-DOC-003`
 - [[BR-EXEC-001 - Execução usa duas conexões dedicadas (conn1 runner, conn2 poll)]] — `BR-EXEC-001`
 - [[BR-EXEC-002 - Conexões do runner têm callTimeout zerado]] — `BR-EXEC-002`
 - [[BR-EXEC-003 - Falha na segunda conexão libera a primeira (sem vazamento)]] — `BR-EXEC-003`
@@ -104,6 +108,7 @@ SORT id ASC
 - [[BR-EXEC-017 - Prefixo de schema validado antes de concatenar no SQL]] — `BR-EXEC-017`
 - [[BR-I18N-001 - Resolução de locale e fallback de tradução]] — `BR-I18N-001`
 - [[BR-LOG-001 - Diagnostico vai para o LogOutputChannel utPLSQL]] — `BR-LOG-001`
+- [[BR-LOG-002 - Trace e perf sao opt-in e nunca registram credenciais]] — `BR-LOG-002`
 - [[BR-PARSE-001 - Arquivo só é suite utPLSQL se tiver %suite E CREATE PACKAGE]] — `BR-PARSE-001`
 - [[BR-PARSE-002 - RE_PACKAGE aceita schema qualificado, BODY e identificador entre aspas]] — `BR-PARSE-002`
 - [[BR-PARSE-003 - %test só materializa teste quando seguido de PROCEDURE; órfão é sobrescrito]] — `BR-PARSE-003`
@@ -123,7 +128,9 @@ SORT id ASC
 - [[BR-PARSE-017 - Filtro por tag - inclusao e exclusao (!) case-insensitive; sem tag so sem inclusao]] — `BR-PARSE-017`
 - [[BR-PARSE-018 - TestMessage de falha ganha expectedOutput-actualOutput quando ha Expected-Actual]] — `BR-PARSE-018`
 - [[BR-PARSE-019 - Descoberta e CodeLens respeitam discovery.languageIds e files.associations]] — `BR-PARSE-019`
+- [[BR-PARSE-020 - Mudanca de arquivo reindexa so o URI e caso incerto faz full refresh]] — `BR-PARSE-020`
 - [[BR-PKG-001 - VSIX nao inclui fontes, scripts nem segredos]] — `BR-PKG-001`
+- [[BR-PKG-002 - VSIX publica apenas o README do Marketplace]] — `BR-PKG-002`
 - [[BR-PLAT-001 - Piso de VS Code e runtime Node do host sao coerentes]] — `BR-PLAT-001`
 - [[BR-PLAT-002 - CI usa actions pinadas por SHA, permissões mínimas e dependências auditadas]] — `BR-PLAT-002`
 - [[BR-PLAT-003 - Commits no main são assinados e verificados]] — `BR-PLAT-003`
@@ -143,6 +150,8 @@ SORT id ASC
 - [[BR-TEST-001 - Matriz de bancos Oracle cobre 12.2-23ai em thin e thick]] — `BR-TEST-001`
 - [[BR-TEST-002 - Testes de integração exigem banco e são skip sem UTPLSQL_CONN]] — `BR-TEST-002`
 - [[BR-TEST-003 - Stub de vscode é tipado e coberto pelo inventário de APIs]] — `BR-TEST-003`
+- [[BR-TEST-004 - Fixture de privilegio e sessao usa usuario restrito e skip quando ausente]] — `BR-TEST-004`
+- [[BR-TEST-005 - Harness de perf usa fixture por seed e fica fora do caminho critico]] — `BR-TEST-005`
 - [[BR-UI-001 - Context key utplsql-activated é setado na ativação]] — `BR-UI-001`
 - [[BR-UI-002 - utplsql-running liga no início e desliga em todos os caminhos de saída]] — `BR-UI-002`
 - [[BR-UI-003 - utplsql-connected reflete a resolução de conexão sem prompt]] — `BR-UI-003`

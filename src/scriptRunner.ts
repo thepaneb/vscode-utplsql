@@ -9,7 +9,7 @@ import type * as vscode from 'vscode';
 import { decodeBytes } from './charset';
 import { getExtensionLocale } from './config';
 import { t } from './i18n';
-import { ensurePool, parseConnString } from './oracleRunner';
+import { beginOracleActivity, ensurePool, parseConnString } from './oracleRunner';
 import { redactConnection } from './redact';
 import type { ProfileCharset } from './types';
 
@@ -568,9 +568,6 @@ export function adaptOracleConn(
       execute,
       break: () => conn.break(),
       close: () => conn.close(),
-      get callTimeout(): number {
-        return conn.callTimeout ?? 0;
-      },
       set callTimeout(value: number) {
         conn.callTimeout = value;
       },
@@ -594,9 +591,21 @@ export async function connectOracle(
     throw new Error(t(getExtensionLocale(), 'common.oracledbMissing'));
   }
   const { readConfig } = await import('./config.js');
-  const pool = await ensurePool(oracledb, connection, readConfig()).catch(() => undefined);
+  const cfg = readConfig();
+  const pool = await ensurePool(oracledb, connection, cfg).catch(() => undefined);
   const conn = pool
     ? await pool.getConnection()
     : await oracledb.getConnection(parseConnString(connection));
-  return adaptOracleConn(conn, oracledb, opts.timeoutSeconds ?? 300);
+  const activity = beginOracleActivity(cfg);
+  const adapted = adaptOracleConn(conn, oracledb, opts.timeoutSeconds ?? 300);
+  return {
+    ...adapted,
+    async close(): Promise<void> {
+      try {
+        await adapted.close();
+      } finally {
+        await activity.end();
+      }
+    },
+  };
 }

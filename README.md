@@ -26,6 +26,8 @@
 
 # utPLSQL Test Runner
 
+<!-- prd:PRD-101 --> <!-- prd:PRD-102 --> <!-- prd:PRD-103 --> <!-- prd:PRD-120 -->
+
 Run and debug **utPLSQL** (Oracle PL/SQL) tests right in VS Code — native **Test Explorer**, visual coverage, a PL/SQL debugger and **Oracle-direct** execution via `node-oracledb`. Available in **24 UI languages**; requires **VS Code 1.125+** (Node 24).
 
 ### Test Explorer & execution
@@ -46,6 +48,7 @@ Run and debug **utPLSQL** (Oracle PL/SQL) tests right in VS Code — native **Te
 - ♻️ **Auto-run on save** — re-run the suites of the saved `.pks` with `utplsql.autoRun = onSave`, with a per-file debounce (`utplsql.autoRunDelayMs`) and a queue policy when a run is in progress (`utplsql.autoRunQueue`: `skip`/`replace`).
 - 🗄️ **Database-first discovery** — build the tree from `ut_runner.get_suites_info` and rebuild the annotation cache from the palette.
 - 🌳 **Lazy test tree** — in `schema` mode, packages/suites/tests are resolved on demand when you expand, so large schemas open instantly.
+- ⚡ **Incremental reindex** — in `file` mode, the watcher debounces per URI and reindexes only the changed suite; tag/schema and bursts safely fall back to a full refresh (PRD-103).
 - 📁 **Multi-root workspace** — every workspace folder gets its own suites, with independent discovery, execution and coverage.
 - 🚀 **Oracle direct (via node-oracledb)** — real-time streaming, without waiting for the batch to finish.
 - 📜 **SQL scripts** — run the current script, an Explorer file, or a whole folder against the active connection profile (charset-aware, with `DBMS_OUTPUT` and `stopOnError`).
@@ -68,6 +71,7 @@ Run and debug **utPLSQL** (Oracle PL/SQL) tests right in VS Code — native **Te
 - 🔐 **TNS in thin + wallet** — `utplsql.connections.tnsAdminPath` resolves `tnsnames.ora` aliases in the thin driver (fallback to SQL Developer/`TNS_ADMIN`); the profile `walletLocation` and `utPLSQL: Set wallet password` keep the wallet password in the SecretStorage.
 - 🔒 **Connection security hardening** — connection settings are `machine`-scoped, the extension is disabled in untrusted workspaces, and the profile password is bound to the connection.
 - 🔧 **Setup diagnostics** — proactive validation of connection, grants, and version with quick-fix.
+- 🧹 **Idle pool cleanup** — `utplsql.oraclePoolCloseAfterRun` closes idle Oracle pool connections after the last run/coverage/export/discovery, so `DROP USER` works without reloading; disable it to keep the pool warm.
 
 ### Reporting
 
@@ -76,6 +80,8 @@ Run and debug **utPLSQL** (Oracle PL/SQL) tests right in VS Code — native **Te
 ### UX & diagnostics
 
 - ✅ **Inline decorations** — ✓/✗/⚠ icons in the editor after execution, with failure tooltip and overview ruler.
+- 🪶 **Lean activation** — the extension activates only for PL/SQL workspaces; setup validation is lazy, memoized and never opens Oracle during activation.
+- 🔎 **Trace and performance** — opt-in `utplsql.trace` and `utplsql.perf.enabled`/`perf.reportFile` measure discovery, tree build, run, polling and XML parsing; off by default and never log credentials.
 - 🔬 **Inline expected × actual diff** — on assertion failures, the Test Explorer shows VS Code's **native diff** with the *Expected*/*Actual* values extracted from the reporter message.
 - 📌 **Status Bar** — indicator with pass/fail count, duration and real-time progress; click the **coverage toggle** to switch the session coverage mode (`utPLSQL: Toggle Coverage`).
 - 🎯 **Jump to failure** — direct navigation to the line of the assertion that failed (via native "Go to Error").
@@ -249,12 +255,15 @@ Test Explorer **as each test finishes**.
 | `utplsql.oracleClientConfigDir` | `""` | Oracle configuration directory (TNS_ADMIN) with `sqlnet.ora`/`tnsnames.ora`. Optional; used only by the thick driver. |
 | `utplsql.oracleClientLibDir` | `""` | Oracle Instant Client directory. Required when `utplsql.oracleClientMode` is `thick` (e.g. `C:\\\\oracle\\\\instantclient_23_5`). Falls back to the `ORACLE_CLIENT_LIB_DIR` environment variable when empty. |
 | `utplsql.oracleClientMode` | `thin` | Driver mode: `thin` (pure JavaScript, no native client) or `thick` (uses the Oracle Instant Client). Use `thick` only for databases that require NNE (Native Network Encryption); requires `utplsql.oracleClientLibDir` and a window reload. |
+| `utplsql.oraclePoolCloseAfterRun` | `true` | Closes idle Oracle pool connections when the last run, coverage, export or discovery operation finishes. |
 | `utplsql.oraclePoolIncrement` | `1` | Increment when expanding the Oracle runner pool (node-oracledb). |
 | `utplsql.oraclePoolMax` | `10` | Maximum connections in the Oracle runner pool (node-oracledb). |
 | `utplsql.oraclePoolMin` | `2` | Minimum connections kept in the Oracle runner pool (node-oracledb). |
 | `utplsql.oraclePoolPingInterval` | `60` | Seconds between health checks of idle pool connections (node-oracledb). `0` = ping on every checkout. |
 | `utplsql.organization` | `file` | Tree organization: `file` (by path), `schema` (Schema > Package > Suite > Test) or `tag` (Tag > Suite > Test, from `%tags`; suites with several tags appear under each tag and untagged ones under "(sem tag)"). In `schema` mode, suites are also discovered from the database (`ut_runner.get_suites_info`, falling back to `ALL_OBJECTS`/`ALL_SOURCE`) when `.pks` files are not in the workspace — virtual URI `utplsql-db:/` (execution and jump to failure work; no CodeLens/decorations). Without local sources, failures and coverage open a **read-only virtual document** (`utplsql-source:/`, resolved from `ALL_SOURCE`). |
 | `utplsql.organization.schemaPattern` | `db/{schema}/**` | Glob pattern to extract the schema from the path. Use `{schema}` as the placeholder. In `schema` mode, the directories below the pattern base (e.g. `db/*`) define the schemas queried in the database. |
+| `utplsql.perf.enabled` | `false` | Measures discovery, tree build, run, polling and XML parsing phases and emits them as info lines. |
+| `utplsql.perf.reportFile` | `""` | When set, each perf measurement is appended as one JSON line to this .jsonl file (absolute or relative to the first workspace folder). |
 | `utplsql.profiles` | `[]` | Saved Oracle connection profiles (name, connection, and overrides of `sourcePath`/`coverageOwner`/etc.) to switch between environments. **Passwords are kept in the OS keychain (VS Code SecretStorage), not in settings** — the `connection` field stores only `user@//host:port/service`. Legacy profiles with an inline password are migrated automatically on first use. (Full field reference: [wiki](https://github.com/thepaneb/vscode-utplsql/wiki/Configuration)). |
 | `utplsql.refreshDebounceMs` | `300` | Debounce (ms) to coalesce `.pks`/`.pkb` file watcher events before refreshing the Test Explorer. |
 | `utplsql.reporter.clientCharacterSet` | `""` | Client charset (`a_client_character_set`) for the **Run with Reporter (Export)** command. Empty uses the reporter default. |
@@ -274,6 +283,7 @@ Test Explorer **as each test finishes**.
 | `utplsql.statusBar.enabled` | `true` | Shows the test status indicator in the status bar. |
 | `utplsql.tags` | `""` | utPLSQL tag expression to filter which tests run (e.g. `fast & !integration`). Empty runs all. |
 | `utplsql.timeoutMinutes` | `60` | Timeout in minutes for the test execution. |
+| `utplsql.trace` | `false` | Emits verbose per-event trace lines (test ids, generated SQL) in the utPLSQL output channel. |
 <!-- brain:auto:end -->
 
 Example (project `.vscode/settings.json`):

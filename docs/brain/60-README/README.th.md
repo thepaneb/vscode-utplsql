@@ -200,6 +200,10 @@ Test Explorer **เมื่อแต่ละเทสต์เสร็จส�
 | `utplsql.oraclePoolMax` | `10` | จำนวนการเชื่อมต่อสูงสุดในพูลของ Oracle runner (node-oracledb) |
 | `utplsql.oraclePoolIncrement` | `1` | จำนวนที่เพิ่มเมื่อขยายพูลของ Oracle runner (node-oracledb) |
 | `utplsql.oraclePoolPingInterval` | `60` | วินาทีระหว่างการตรวจสอบความสมบูรณ์ของการเชื่อมต่อที่ว่างในพูล (node-oracledb) `0` = ping ทุกครั้งที่ยืมการเชื่อมต่อ |
+| `utplsql.oraclePoolCloseAfterRun` | `true` | Closes idle Oracle pool connections when the last run, coverage, export or discovery operation finishes. |
+| `utplsql.trace` | `false` | Emits verbose per-event trace lines in the utPLSQL output channel. |
+| `utplsql.perf.enabled` | `false` | Measures discovery, tree build, run, polling and XML parsing phases. |
+| `utplsql.perf.reportFile` | `""` | Appends each perf measurement as one JSON line to this file. |
 | `utplsql.oracleClientMode` | `thin` | โหมดไดรเวอร์: `thin` (JavaScript ล้วน ไม่ต้องมีไคลเอนต์เนทีฟ) หรือ `thick` (ใช้ Oracle Instant Client) ใช้ `thick` เฉพาะฐานข้อมูลที่ต้องการ NNE (Native Network Encryption) ต้องตั้ง `utplsql.oracleClientLibDir` และโหลดหน้าต่างใหม่ |
 | `utplsql.oracleClientLibDir` | `""` | ไดเรกทอรี Oracle Instant Client จำเป็นเมื่อ `utplsql.oracleClientMode` เป็น `thick` (เช่น `C:\oracle\instantclient_23_5`) Fallback: `ORACLE_CLIENT_LIB_DIR`. |
 | ดีบักไม่หยุดที่เบรกพอยต์ | แพ็กเกจไม่มีข้อมูลดีบัก หรือขาดสิทธิ์ดีบัก | คอมไพล์ด้วย `PLSQL_OPTIMIZE_LEVEL <= 1` (หรือ `ALTER PACKAGE ... COMPILE DEBUG PLSQL_OPTIMIZE_LEVEL = 1`) และให้สิทธิ์ `DEBUG CONNECT SESSION` + `EXECUTE ON SYS.DBMS_DEBUG`. เบรกพอยต์ใน `test_*.pkb` อาจไม่หยุด (utPLSQL รันเทสต์ผ่าน SQL แบบไดนามิก) ให้ตั้งในโค้ดที่ทดสอบ |

@@ -110,6 +110,7 @@ function gitDate(relpath) {
 function genRootDocs(note) {
   const nomes = [
     'README.md',
+    'MARKETPLACE.md',
     'CHANGELOG.md',
     'CONTRIBUTING.md',
     'SECURITY.md',

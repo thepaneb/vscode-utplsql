@@ -1,7 +1,7 @@
 import { getExtensionLocale, readConfig, resolveConnection } from './config';
 import { t } from './i18n';
 import { logger } from './logger';
-import { connectionUser, ensurePool, parseConnString } from './oracleRunner';
+import { beginOracleActivity, connectionUser, ensurePool, parseConnString } from './oracleRunner';
 
 /** Tipos de objeto Oracle que aceitam `ALTER … COMPILE DEBUG`. */
 export type DebuggableKind = 'package' | 'function' | 'procedure' | 'trigger';
@@ -126,6 +126,15 @@ export async function compileTargetsForDebug(
  * Best-effort: nunca lança; devolve o que compilou e o que falhou.
  */
 export async function compileForDebug(targets: CompileTarget[]): Promise<CompileForDebugResult> {
+  const activity = beginOracleActivity();
+  try {
+    return await compileForDebugCore(targets);
+  } finally {
+    await activity.end();
+  }
+}
+
+async function compileForDebugCore(targets: CompileTarget[]): Promise<CompileForDebugResult> {
   const empty: CompileForDebugResult = { ok: [], failed: [] };
   if (targets.length === 0) return empty;
 

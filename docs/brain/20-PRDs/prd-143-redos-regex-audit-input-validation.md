@@ -65,6 +65,22 @@ injeção de padrões.
 ### RF3 — Validação de entrada
 
 - Sanitizar `discoveryLanguageIds` e associations antes de montar globs.
+- Validar `testPackagePrefix`/`testPackageSuffix` como identificador Oracle
+  (`^[A-Za-z][A-Za-z0-9_$#]*$`) antes de montar o nome do arquivo; rejeitar
+  `../`, separadores e metacaracteres PL/SQL.
+- Validar `exportReporterCall` localmente (allowlist) mesmo que o caller atual
+  já valide.
+
+### RF4 — `V$SQL` limitado
+
+- `applySqlCoverage` com `FETCH FIRST N ROWS ONLY`/`ROWNUM` (ou paginação) e
+  limite de payload; manter `callTimeout=5000` e o comportamento opt-in.
+
+### RF5 — Regex de views pré-compilada
+
+- `matchExecutedViews` não pode recompilar RegExp por par view×SQL; pré-compilar
+  por view ou tokenizar o SQL uma vez, preservando word boundary e
+  case-insensitive.
 
 **Não-funcionais**
 - RNF1 — Cobertura ≥ thresholds.
@@ -119,5 +135,5 @@ Superfície listada: CHANGELOG.
 - 🗺️ [[MOC - PRDs]]
 - 🔗 PRDs relacionados: [[prd-109-language-identity|PRD-109]] · [[prd-110-defensive-hardening|PRD-110]]
 - 🔗 Mesma versão (0.24.0): [[prd-121-auditable-package-sourcemap|PRD-121]] · [[prd-122-marketplace-trust-metadata|PRD-122]] · [[prd-132-ux-execution-dryrun-jump|PRD-132]] · [[prd-133-rate-limiting-keybindings|PRD-133]] · [[prd-140-statusbar-settings-grouping|PRD-140]] · [[prd-141-onboarding-walkthrough-accessibility|PRD-141]] · [[prd-142-supply-chain-provenance-typecheck-gate|PRD-142]] · [[prd-144-security-runtime-hardening|PRD-144]] · [[prd-145-security-alerts-deliverable|PRD-145]]
-- 🚀 ⬅️ release anterior: [[prd-126-branch-coverage-cli-tests|PRD-126 (0.23.0)]]
+- 🚀 ⬅️ release anterior: [[prd-149-performance-engineering-quality|PRD-149 (0.23.0)]]
 <!-- brain:auto:end -->

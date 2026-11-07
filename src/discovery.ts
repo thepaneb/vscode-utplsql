@@ -5,7 +5,14 @@ import { getExtensionLocale, readConfig } from './config';
 import { getActiveProfile } from './connectionProfiles';
 import { t } from './i18n';
 import { logger } from './logger';
-import { ensurePool, getOracleInfo, parseConnString, semverLt } from './oracleRunner';
+import {
+  beginOracleActivity,
+  ensurePool,
+  getOracleInfo,
+  parseConnString,
+  semverLt,
+} from './oracleRunner';
+import { hasTraversalSegment, isInside } from './pathContainment';
 import { redactConnection } from './redact';
 import { parseSuiteText, type TestProc } from './suiteParser';
 
@@ -54,6 +61,29 @@ export function parseSuite(uri: vscode.Uri, text: string): ParsedSuite | null {
   return { uri, ...parsed };
 }
 
+/**
+ * Lê e parseia **um** arquivo (PRD-103). Devolve `undefined` para arquivo
+ * ilegível/sem suite habilitada — o chamador decide entre incremental e full.
+ */
+export async function discoverUri(
+  uri: vscode.Uri,
+  folders?: readonly vscode.WorkspaceFolder[],
+): Promise<SuiteFile | undefined> {
+  const targets = folders ?? vscode.workspace.workspaceFolders ?? [];
+  try {
+    const bytes = await vscode.workspace.fs.readFile(uri);
+    const text = decodeBytes(bytes, getActiveProfile()?.charset);
+    const suite = parseSuite(uri, text);
+    if (!suite || suite.disabled || suite.tests.length === 0) return undefined;
+    const tests = suite.tests.filter((t) => !t.disabled);
+    if (tests.length === 0) return undefined;
+    return { ...suite, tests, folder: resolveFolder(uri, targets) };
+  } catch (e) {
+    logger.debug('discovery: arquivo ilegível', { uri: uri.toString(), error: String(e) });
+    return undefined;
+  }
+}
+
 export async function discoverWorkspace(
   patterns: string[],
   folders?: readonly vscode.WorkspaceFolder[],
@@ -65,25 +95,10 @@ export async function discoverWorkspace(
   for (const pattern of patterns) {
     const uris = await vscode.workspace.findFiles(pattern, '**/node_modules/**');
     for (const uri of uris) {
-      if (seen.has(uri.toString())) {
-        continue;
-      }
+      if (seen.has(uri.toString())) continue;
       seen.add(uri.toString());
-      try {
-        const bytes = await vscode.workspace.fs.readFile(uri);
-        const text = decodeBytes(bytes, getActiveProfile()?.charset);
-        const suite = parseSuite(uri, text);
-        if (suite && !suite.disabled && suite.tests.length > 0) {
-          const tests = suite.tests.filter((t) => !t.disabled);
-          if (tests.length > 0) {
-            const folder = resolveFolder(uri, targets);
-            results.push({ ...suite, tests, folder });
-          }
-        }
-      } catch (e) {
-        // arquivo ilegível — ignora
-        logger.debug('discovery: arquivo ilegível', { uri: uri.toString(), error: String(e) });
-      }
+      const suite = await discoverUri(uri, targets);
+      if (suite) results.push(suite);
     }
   }
 
@@ -390,6 +405,21 @@ export async function discoverDbSuites(
   folders: readonly vscode.WorkspaceFolder[],
   loadOracledbMod: () => Promise<typeof import('oracledb')> = loadOracledb,
 ): Promise<SuiteFile[]> {
+  // PRD-101: discovery via banco é uma atividade Oracle como as demais.
+  const activity = beginOracleActivity();
+  try {
+    return await discoverDbSuitesCore(connStr, schema, folders, loadOracledbMod);
+  } finally {
+    await activity.end();
+  }
+}
+
+async function discoverDbSuitesCore(
+  connStr: string,
+  schema: string,
+  folders: readonly vscode.WorkspaceFolder[],
+  loadOracledbMod: () => Promise<typeof import('oracledb')> = loadOracledb,
+): Promise<SuiteFile[]> {
   const folder = folders[0];
   if (!folder) return [];
 
@@ -446,6 +476,20 @@ export async function discoverDbSuites(
  * falha (Oracle indisponível, sem acesso, timeout).
  */
 export async function discoverSchemaFromDb(
+  connStr: string,
+  schema: string,
+  folders: readonly vscode.WorkspaceFolder[],
+  loadOracledbMod: () => Promise<typeof import('oracledb')> = loadOracledb,
+): Promise<SuiteFile[]> {
+  const activity = beginOracleActivity();
+  try {
+    return await discoverSchemaFromDbCore(connStr, schema, folders, loadOracledbMod);
+  } finally {
+    await activity.end();
+  }
+}
+
+async function discoverSchemaFromDbCore(
   connStr: string,
   schema: string,
   folders: readonly vscode.WorkspaceFolder[],
@@ -511,6 +555,14 @@ export async function discoverSchemasFromFolders(
   const base = schemaBase(schemaPattern);
   if (base === undefined) return [];
   const segments = base.split('/').filter(Boolean);
+  // Mitiga path traversal via `organization.schemaPattern` (workspace
+  // malicioso): rejeita segmentos que escapam da raiz do folder, inclusive
+  // `..\` no Windows e caminhos absolutos de qualquer plataforma.
+  if (
+    segments.some((s) => hasTraversalSegment(s) || path.isAbsolute(s) || path.win32.isAbsolute(s))
+  ) {
+    return [];
+  }
   const schemas = new Set<string>();
 
   for (const folder of folders) {
@@ -518,6 +570,8 @@ export async function discoverSchemasFromFolders(
     for (const seg of segments) {
       dir = vscode.Uri.joinPath(dir, seg);
     }
+    // Confere que o diretório resolvido permanece dentro do folder.
+    if (!isInside(dir.fsPath, folder.uri.fsPath)) continue;
     let entries: [string, vscode.FileType][];
     try {
       entries = await vscode.workspace.fs.readDirectory(dir);

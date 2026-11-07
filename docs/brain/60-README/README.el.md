@@ -202,6 +202,10 @@ Test Explorer **καθώς ολοκληρώνεται κάθε test**.
 | `utplsql.oraclePoolMax` | `10` | Μέγιστες συνδέσεις στο pool του Oracle runner (node-oracledb). |
 | `utplsql.oraclePoolIncrement` | `1` | Βήμα αύξησης όταν επεκτείνεται το pool του Oracle runner (node-oracledb). |
 | `utplsql.oraclePoolPingInterval` | `60` | Δευτερόλεπτα μεταξύ των ελέγχων υγείας των αδρανών συνδέσεων του pool (node-oracledb). `0` = ping σε κάθε checkout. |
+| `utplsql.oraclePoolCloseAfterRun` | `true` | Closes idle Oracle pool connections when the last run, coverage, export or discovery operation finishes. |
+| `utplsql.trace` | `false` | Emits verbose per-event trace lines in the utPLSQL output channel. |
+| `utplsql.perf.enabled` | `false` | Measures discovery, tree build, run, polling and XML parsing phases. |
+| `utplsql.perf.reportFile` | `""` | Appends each perf measurement as one JSON line to this file. |
 | `utplsql.oracleClientMode` | `thin` | Λειτουργία προγράμματος οδήγησης: `thin` (καθαρή JavaScript, χωρίς εγγενή πελάτη) ή `thick` (χρησιμοποιεί το Oracle Instant Client). Χρησιμοποιήστε `thick` μόνο για βάσεις που απαιτούν NNE (Native Network Encryption)· απαιτεί `utplsql.oracleClientLibDir` και επαναφόρτωση του παραθύρου. |
 | `utplsql.oracleClientLibDir` | `""` | Κατάλογος του Oracle Instant Client. Απαιτείται όταν το `utplsql.oracleClientMode` είναι `thick` (π.χ. `C:\oracle\instantclient_23_5`). Fallback: `ORACLE_CLIENT_LIB_DIR`. |
 | Το debug δεν σταματά στο σημείο διακοπής | Πακέτο χωρίς πληροφορίες debug ή λείπουν τα δικαιώματα debug | Μεταγλωττίστε με `PLSQL_OPTIMIZE_LEVEL <= 1` (ή `ALTER PACKAGE ... COMPILE DEBUG PLSQL_OPTIMIZE_LEVEL = 1`) και δώστε `DEBUG CONNECT SESSION` + `EXECUTE ON SYS.DBMS_DEBUG`. Τα σημεία διακοπής στο `test_*.pkb` μπορεί να μην πιάνονται (το utPLSQL εκτελεί τα test μέσω δυναμικού SQL)· βάλτε τα στον κώδικα υπό δοκιμή. |

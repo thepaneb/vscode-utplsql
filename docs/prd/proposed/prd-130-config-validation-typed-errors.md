@@ -48,6 +48,13 @@ customizadas** (`OracleConnectionError`, `UtplsqlVersionError`, `ReporterNotFoun
 - `readConfig()` valida via schema (validador manual sem dep nova, ou Zod se
   necessário) e registra `logger.warn` para valores inválidos com fallback ao
   default.
+- Validar/clamp `oraclePoolMax >= 2` e `oraclePoolMin <= oraclePoolMax` (o
+  runner abre conn1+conn2; a correção emergencial pode ser antecipada, mas a
+  validação geral fica aqui).
+- Cachear o snapshot de `readConfig()` com invalidação em
+  `onDidChangeConfiguration`, troca de perfil/conexão e wallet; os loops de
+  CodeLens/árvore deixam de reler ~50 settings por item.
+- Cachear `resolveConnectString` por `(path, mtime)` do `tnsnames.ora`.
 
 ### RF2 — Classes de erro
 - Hierarquia em `src/errors.ts`: `UtplsqlError` (base) → `OracleConnectionError`,
@@ -65,6 +72,7 @@ customizadas** (`OracleConnectionError`, `UtplsqlVersionError`, `ReporterNotFoun
 
 ### RF5 — Testes
 - Testes de config inválida e de mapeamento de erros Oracle.
+- Teste de cache/invalidação de `readConfig()` e do `tnsnames.ora` por mtime.
 
 **Não-funcionais**
 - RNF1 — Sem nova dependência se possível (validador manual).

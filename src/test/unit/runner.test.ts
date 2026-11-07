@@ -159,6 +159,37 @@ test('executeRun: oracle falha marca todos como erro', async () =>
     assert.match(run.output(), /Oracle runner/);
   }));
 
+test('executeRun: run vazio não abre atividade Oracle nem apaga o último resultado', async () =>
+  withExecEnv(async () => {
+    const state = new TestStateManager();
+    state.setLastResults(new Map([['test1', { status: 'passed', ts: 1 }]]));
+    const run = new vscode.TestRun();
+    const controller = makeController(run);
+    const began: string[] = [];
+    mock.method(oracleRunner, 'beginOracleActivity', () => {
+      began.push('begin');
+      return { end: async () => {} };
+    });
+    await executeRun(controller, makeRequest(), NEVER_TOKEN, false, state);
+    assert.deepStrictEqual(began, [], 'run sem alvos não deve abrir atividade Oracle');
+    assert.strictEqual(state.getLastResults().size, 1, 'resultado anterior deve ser preservado');
+  }));
+
+test('executeRun: timeout/cancelamento marca skipped e não erro', async () =>
+  withExecEnv(async () => {
+    const { state, testItem } = makeExecState();
+    const run = new vscode.TestRun();
+    const controller = makeController(run);
+    mock.method(oracleRunner, 'executeRunOracle', async () => {
+      throw new oracleRunner.RunAbortedError('timedOut');
+    });
+    await executeRun(controller, makeRequest([testItem]), NEVER_TOKEN, false, state);
+    assert.strictEqual(run.passedCount(), 0);
+    assert.strictEqual(run.erroredCount(), 0);
+    assert.strictEqual(run.skippedCount(), 1);
+    assert.match(run.output(), /timeout/i);
+  }));
+
 test('executeRun: erro oracle não-Error é stringificado', async () =>
   withExecEnv(async () => {
     const { state, suiteItem } = makeExecState();
@@ -172,6 +203,17 @@ test('executeRun: erro oracle não-Error é stringificado', async () =>
 
     await executeRun(controller, request, NEVER_TOKEN, false, state);
     assert.match(run.output(), /mensagem crua/);
+  }));
+
+test('executeRun: request sem include percorre controller.items', async () =>
+  withExecEnv(async () => {
+    const { state, suiteItem } = makeExecState();
+    const run = new vscode.TestRun();
+    const controller = makeController(run);
+    controller.items.add(suiteItem);
+    mock.method(oracleRunner, 'executeRunOracle', async () => {});
+    await executeRun(controller, new vscode.TestRunRequest(undefined), NEVER_TOKEN, false, state);
+    assert.strictEqual(state.getLastRun()?.type, 'all');
   }));
 
 test('executeRun: include de teste único seta lastRun type test', async () =>
@@ -272,7 +314,7 @@ test('executeRun: coverage flag é passado para oracle', async () =>
 
     let receivedCoverage = false;
     mock.method(oracleRunner, 'executeRunOracle', async (opts: any) => {
-      receivedCoverage = opts.coverage;
+      receivedCoverage = opts.coverage.enabled;
       throw new Error('sem oracle');
     });
 
@@ -321,9 +363,9 @@ test('executeRun: coverageHtmlReport/reportRoot e notificação após run.end', 
 
     vscode.__resetMessages();
     mock.method(oracleRunner, 'executeRunOracle', async (opts: any) => {
-      assert.strictEqual(opts.coverageHtmlReport, true);
-      assert.ok(opts.reportRoot, 'reportRoot deveria ser o folder da suíte');
-      opts.onCoverageHtmlReport?.('/tmp/utplsql-report.html');
+      assert.strictEqual(opts.coverage.htmlReport, true);
+      assert.ok(opts.coverage.reportRoot, 'reportRoot deveria ser o folder da suíte');
+      opts.coverage.onHtmlReport?.('/tmp/utplsql-report.html');
       return undefined;
     });
 
@@ -346,7 +388,7 @@ test('executeRun: additionalReporters são passados para oracle', async () =>
     __setConfigValue('additionalReporters', ['ut_custom']);
     let receivedReporters: string[] = [];
     mock.method(oracleRunner, 'executeRunOracle', async (opts: any) => {
-      receivedReporters = opts.additionalReporters ?? [];
+      receivedReporters = opts.output?.additionalReporters ?? [];
       throw new Error('sem oracle');
     });
 
@@ -364,7 +406,7 @@ test('executeRun: dbmsOutput flag é passado para oracle', async () =>
     __setConfigValue('dbmsOutput', true);
     let receivedDbmsOutput = false;
     mock.method(oracleRunner, 'executeRunOracle', async (opts: any) => {
-      receivedDbmsOutput = opts.dbmsOutput;
+      receivedDbmsOutput = opts.execution.dbmsOutput;
       throw new Error('sem oracle');
     });
 
@@ -382,7 +424,7 @@ test('executeRun: timeoutMinutes é passado para oracle', async () =>
     __setConfigValue('timeoutMinutes', 30);
     let receivedTimeout = 0;
     mock.method(oracleRunner, 'executeRunOracle', async (opts: any) => {
-      receivedTimeout = opts.timeoutMinutes;
+      receivedTimeout = opts.execution.timeoutMinutes;
       throw new Error('sem oracle');
     });
 
@@ -400,7 +442,7 @@ test('executeRun: coverageOwner é passado para oracle', async () =>
     __setConfigValue('coverageOwner', 'MY_SCHEMA');
     let receivedOwner = '';
     mock.method(oracleRunner, 'executeRunOracle', async (opts: any) => {
-      receivedOwner = opts.coverageOwner;
+      receivedOwner = opts.coverage.owner;
       throw new Error('sem oracle');
     });
 

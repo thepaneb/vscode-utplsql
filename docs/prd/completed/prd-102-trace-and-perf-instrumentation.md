@@ -4,7 +4,7 @@
 
 | Campo | Valor |
 |---|---|
-| Status | Proposto |
+| Status | Concluído |
 | Autor | Gil Cleber Barboza |
 | Data | 2026-10-09 |
 | Componente | Extensão `paneb.vscode-utplsql` |
@@ -125,3 +125,14 @@ ids/SQL no canal de saída a cada run.
 Na conclusão, criar a regra `BR-LOG-*` ("tracing e perf são opt-in e nunca
 registram credenciais"), com `prds: ["PRD-102"]`, `implementacao:` e `testes:`;
 referenciar `SEC-002`. Enquanto `proposed`, `regras: []`.
+
+## Análise de cobertura (pós-PRD)
+
+- **Unitários:** `perf.test.ts` cobre fases, JSONL, `enabled` e sink com falha; `logger.test.ts` cobre o gate de trace.
+- **Integração:** o harness da PRD-106 exercita as fases no host e grava `perf-report.jsonl`; o trace off não emite a linha de alvos.
+- **Matriz:** 23free; o probe é agnóstico de versão e roda no eixo semanal da matriz.
+- **Ações:** nenhuma lacuna aberta.
+
+## Impacto nas docs
+
+`CHANGELOG`, README (settings `trace`/`perf.*`), `wiki/Configuration.md`, `wiki/Performance.md` e `wiki/Troubleshooting.md` citam `PRD-102`.

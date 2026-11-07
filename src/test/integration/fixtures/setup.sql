@@ -31,6 +31,22 @@ grant execute on &ut3_owner..ut to utplsql_test;
 grant execute on &ut3_owner..ut3 to utplsql_test;
 grant inherit privileges on user &ut3_owner to utplsql_test;
 grant execute on sys.dbms_profiler to utplsql_test;
+grant select on v_$session to utplsql_test;
+grant select on v_$session to &ut3_owner;
+
+prompt ===== Criando usuário restrito (PRD-107) =====
+
+declare
+  e user_tables%rowtype;
+begin
+  for e in (select username from dba_users where username = 'UTPLSQL_UNPRIV') loop
+    execute immediate 'drop user utplsql_unpriv cascade';
+  end loop;
+end;
+/
+
+create user utplsql_unpriv identified by "utplsql_unpriv#2026";
+grant create session to utplsql_unpriv;
 
 prompt ===== Schema criado com sucesso =====
 prompt Agora execute o script compile_packages.sql como utplsql_test:

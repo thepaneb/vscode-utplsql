@@ -194,15 +194,26 @@ describe('utPLSQL extension', () => {
           this.skip();
           return;
         }
-        await vscode.commands.executeCommand('utplsql.runAll');
-        await vscode.commands.executeCommand('utplsql.runAll');
-        const pool = oracledb.getPool();
-        assert.ok(pool, 'pool default não encontrado após execução');
-        assert.strictEqual(pool.connectionsInUse, 0);
-        assert.ok(
-          pool.connectionsOpen >= 2,
-          `pool deveria manter poolMin(2) conexões, tem ${pool.connectionsOpen}`,
-        );
+        const cfg = vscode.workspace.getConfiguration('utplsql');
+        const previousCloseAfterRun = cfg.get<boolean>('oraclePoolCloseAfterRun', true);
+        await cfg.update('oraclePoolCloseAfterRun', false, vscode.ConfigurationTarget.Global);
+        try {
+          await vscode.commands.executeCommand('utplsql.runAll');
+          await vscode.commands.executeCommand('utplsql.runAll');
+          const pool = oracledb.getPool();
+          assert.ok(pool, 'pool default não encontrado após execução');
+          assert.strictEqual(pool.connectionsInUse, 0);
+          assert.ok(
+            pool.connectionsOpen >= 2,
+            `pool deveria manter poolMin(2) conexões, tem ${pool.connectionsOpen}`,
+          );
+        } finally {
+          await cfg.update(
+            'oraclePoolCloseAfterRun',
+            previousCloseAfterRun,
+            vscode.ConfigurationTarget.Global,
+          );
+        }
       });
     });
 

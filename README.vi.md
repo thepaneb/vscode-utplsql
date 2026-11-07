@@ -191,6 +191,10 @@ Test Explorer **ngay khi từng bài kiểm thử hoàn tất**. VSIX đã kèm 
 | `utplsql.oraclePoolMax` | `10` | Số kết nối tối đa trong pool của Oracle runner (node-oracledb). |
 | `utplsql.oraclePoolIncrement` | `1` | Mức tăng khi mở rộng pool của Oracle runner (node-oracledb). |
 | `utplsql.oraclePoolPingInterval` | `60` | Số giây giữa các lần kiểm tra sức khỏe của các kết nối nhàn rỗi trong pool (node-oracledb). `0` = ping mỗi lần checkout. |
+| `utplsql.oraclePoolCloseAfterRun` | `true` | Closes idle Oracle pool connections when the last run, coverage, export or discovery operation finishes. |
+| `utplsql.trace` | `false` | Emits verbose per-event trace lines in the utPLSQL output channel. |
+| `utplsql.perf.enabled` | `false` | Measures discovery, tree build, run, polling and XML parsing phases. |
+| `utplsql.perf.reportFile` | `""` | Appends each perf measurement as one JSON line to this file. |
 | `utplsql.oracleClientMode` | `thin` | Chế độ trình điều khiển: `thin` (JavaScript thuần, không cần client gốc) hoặc `thick` (dùng Oracle Instant Client). Chỉ dùng `thick` cho cơ sở dữ liệu yêu cầu NNE (Native Network Encryption); cần `utplsql.oracleClientLibDir` và tải lại cửa sổ. |
 | `utplsql.oracleClientLibDir` | `""` | Thư mục Oracle Instant Client. Bắt buộc khi `utplsql.oracleClientMode` là `thick` (ví dụ `C:\oracle\instantclient_23_5`). Fallback: `ORACLE_CLIENT_LIB_DIR`. |
 | Gỡ lỗi không dừng tại breakpoint | Gói không có thông tin gỡ lỗi hoặc thiếu quyền gỡ lỗi | Biên dịch với `PLSQL_OPTIMIZE_LEVEL <= 1` (hoặc `ALTER PACKAGE ... COMPILE DEBUG PLSQL_OPTIMIZE_LEVEL = 1`) và cấp `DEBUG CONNECT SESSION` + `EXECUTE ON SYS.DBMS_DEBUG`. Breakpoint trong `test_*.pkb` có thể không dừng (utPLSQL chạy test bằng SQL động); hãy đặt chúng trong mã đang kiểm thử. |

@@ -11,6 +11,8 @@ tags: [teste, matriz]
 ---
 # Mapa — testes da matriz de bancos
 
+Ver [[Análise de cobertura - 0.20.0]] para as lacunas por PRD e as decisões de matriz.
+
 Cobertura da orquestração em [[PIPE-integration - Integration (Oracle)]].
 
 ## Versões

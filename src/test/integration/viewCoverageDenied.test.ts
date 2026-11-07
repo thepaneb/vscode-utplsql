@@ -5,6 +5,7 @@ import * as os from 'node:os';
 import * as path from 'node:path';
 import * as vscode from 'vscode';
 import { installOutFormatIsolation } from './helpers';
+import { hasUnprivUser, unprivConnection } from './support/unpriv';
 
 // Cobre o caminho em que o `V$SQL` está **negado** em `applySqlCoverage`
 // (viewCoverage.ts): a extensão deve avisar com o grant necessário e não
@@ -19,10 +20,26 @@ function hasConnection(): boolean {
 const describeDB = hasConnection() ? describe : describe.skip;
 
 function connParts(): { user: string; password: string; connectString: string } {
+  // PRD-107: quando a fixture restrita existe, ela é o caminho determinístico
+  // para o V$SQL negado; senão usa a conexão principal (comportamento antigo).
+  const restricted = hasUnprivUser() ? unprivConnection() : undefined;
+  if (restricted) return restricted;
+
   const conn = process.env.UTPLSQL_CONN as string;
   const m = conn.match(/^([^/]+)\/([^@]+)@\/\/(.+)$/);
   assert.ok(m, 'UTPLSQL_CONN deve ser user/pass@//host:port/svc');
   return { user: m[1], password: m[2], connectString: m[3] };
+}
+
+function connectionString(parts: {
+  user: string;
+  password: string;
+  connectString: string;
+}): string {
+  const target = parts.connectString.startsWith('//')
+    ? parts.connectString
+    : `//${parts.connectString}`;
+  return `${parts.user}/${parts.password}@${target}`;
 }
 
 describeDB('viewCoverage: V$SQL negado (sem grant) emite aviso', () => {
@@ -74,7 +91,7 @@ describeDB('viewCoverage: V$SQL negado (sem grant) emite aviso', () => {
       const folder = { uri: vscode.Uri.file(root), name: 'root', index: 0 };
       try {
         await applySqlCoverage({
-          connection: process.env.UTPLSQL_CONN as string,
+          connection: connectionString({ user, password, connectString }),
           roots: [root],
           sourcePath: 'install',
           run: run as never,

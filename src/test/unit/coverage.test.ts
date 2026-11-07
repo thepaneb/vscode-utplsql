@@ -111,6 +111,24 @@ test('pipeline cobertura: tipo schema.objeto → mapDbPathsToFiles → resolveSo
   });
 });
 
+test('pipeline cobertura: spec e body resolvem para arquivos distintos', () => {
+  withTempDir((dir) => {
+    const sub = path.join(dir, 'install', 'packages');
+    fs.mkdirSync(sub, { recursive: true });
+    const spec = path.join(sub, 'CALCULATOR.pks');
+    const body = path.join(sub, 'CALCULATOR.pkb');
+    fs.writeFileSync(spec, 'CREATE OR REPLACE PACKAGE calculator AS END;');
+    fs.writeFileSync(body, 'CREATE OR REPLACE PACKAGE BODY calculator AS END;');
+
+    const specXml = mapDbPathsToFiles('<class filename="package UT3.CALCULATOR" />');
+    const bodyXml = mapDbPathsToFiles('<class filename="package body UT3.CALCULATOR" />');
+    const specFile = specXml.match(/filename="([^"]+)"/)?.[1] as string;
+    const bodyFile = bodyXml.match(/filename="([^"]+)"/)?.[1] as string;
+    assert.strictEqual(resolveSourceUri(specFile, dir, 'install')?.fsPath, spec);
+    assert.strictEqual(resolveSourceUri(bodyFile, dir, 'install')?.fsPath, body);
+  });
+});
+
 test('resolveSourceUri: arquivo inexistente retorna undefined', () => {
   withTempDir((dir) => {
     const uri = resolveSourceUri('nao_existe.sql', dir, 'install');

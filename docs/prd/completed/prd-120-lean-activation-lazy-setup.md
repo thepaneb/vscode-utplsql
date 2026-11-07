@@ -4,7 +4,7 @@
 
 | Campo | Valor |
 |---|---|
-| Status | Proposto |
+| Status | Concluído |
 | Autor | Gil Cleber Barboza |
 | Data | 2026-10-13 |
 | Componente | Extensão `paneb.vscode-utplsql` (ativação e diagnóstico de setup) |
@@ -207,3 +207,14 @@ e memoizada”) — com `prds: ["PRD-120"]`, `implementacao:` (`src/extension.ts
 `src/quickfix.ts`, `package.json`) e `testes:` (`src/test/unit/*` do
 ativação/probe + `dbPaths.test.ts`). Revisar `SEC-010` para citar explicitamente
 que a ativação tampouco conecta. Enquanto `proposed`, `regras: []`.
+
+## Análise de cobertura (pós-PRD)
+
+- **Unitários:** manifesto sem `onStartupFinished`/glob `.sql`; ativação sem validação; primeira interação dispara uma única vez; memoização/invalidação cobertas em `extensionActivation.test.ts`.
+- **Integração:** `dbPaths.test.ts` preserva árvore/diagnóstico; a suíte de integração ativa o host e confirma que o refresh não abre validação. O caso “workspace sem PL/SQL não ativa” é verificado pelo manifesto (o harness sempre ativa a extensão).
+- **Matriz:** 23free smoke; sem comportamento específico de banco — demais versões não aplicáveis.
+- **Ações:** nenhuma lacuna aberta.
+
+## Impacto nas docs
+
+`CHANGELOG`, README (nota do vault), `wiki/Architecture.md` e `wiki/Diagnostics-and-quick-fix.md` citam `PRD-120`.

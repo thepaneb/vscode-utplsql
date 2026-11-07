@@ -196,6 +196,10 @@ Test Explorer に表示されます。
 | `utplsql.oraclePoolMax` | `10` | Oracle ランナープール（node-oracledb）の最大接続数。 |
 | `utplsql.oraclePoolIncrement` | `1` | Oracle ランナープール（node-oracledb）拡張時の増分。 |
 | `utplsql.oraclePoolPingInterval` | `60` | アイドルプール接続のヘルスチェック間隔（秒）（node-oracledb）。`0` = チェックアウトのたびに ping。 |
+| `utplsql.oraclePoolCloseAfterRun` | `true` | Closes idle Oracle pool connections when the last run, coverage, export or discovery operation finishes. |
+| `utplsql.trace` | `false` | Emits verbose per-event trace lines in the utPLSQL output channel. |
+| `utplsql.perf.enabled` | `false` | Measures discovery, tree build, run, polling and XML parsing phases. |
+| `utplsql.perf.reportFile` | `""` | Appends each perf measurement as one JSON line to this file. |
 | `utplsql.oracleClientMode` | `thin` | ドライバーモード: `thin`（純粋な JavaScript、ネイティブクライアント不要）または `thick`（Oracle Instant Client を使用）。`thick` は NNE（Native Network Encryption）が必要なデータベースにのみ使用してください。`utplsql.oracleClientLibDir` とウィンドウの再読み込みが必要です。 |
 | `utplsql.oracleClientLibDir` | `""` | Oracle Instant Client のディレクトリ。`utplsql.oracleClientMode` が `thick` の場合は必須です（例: `C:\oracle\instantclient_23_5`）。 Fallback: `ORACLE_CLIENT_LIB_DIR`. |
 | デバッグがブレークポイントで停止しない | デバッグ情報なしでコンパイルされたパッケージ、またはデバッグ権限の不足 | `PLSQL_OPTIMIZE_LEVEL <= 1` でコンパイル（または `ALTER PACKAGE ... COMPILE DEBUG PLSQL_OPTIMIZE_LEVEL = 1`）し、`DEBUG CONNECT SESSION` + `EXECUTE ON SYS.DBMS_DEBUG` を付与。`test_*.pkb` のブレークポイントはヒットしないことがあります（utPLSQL は動的 SQL でテストを実行します）。テスト対象のコードに設定してください。 |

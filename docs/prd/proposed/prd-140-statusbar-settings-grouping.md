@@ -48,6 +48,14 @@ discoverability.
 
 - Usar `order` e grupos no `configuration` do `package.json`.
 
+### RF3 — Reatividade de status bar e decorações
+
+- `utplsql.statusBar.enabled` deve criar/ocultar os itens ao mudar em runtime,
+  não só no construtor.
+- `utplsql.decorations.enabled` desligado deve limpar as decorações visíveis e
+  `applyToVisibleEditors` não pode continuar pintando estado antigo.
+- Testes com toggle ligado/desligado.
+
 **Não-funcionais**
 - RNF1 — Sem impacto de performance.
 

@@ -230,6 +230,7 @@ describeDB('run timeout E2E — break expira o teste e o pool sobrevive', () => 
   installOutFormatIsolation();
 
   let slowRunMs = 0;
+  let slowError: unknown;
   let afterMs = 0;
   let cancelRequested = false;
   let inUseAfterTimeout = -1;
@@ -260,6 +261,12 @@ describeDB('run timeout E2E — break expira o teste e o pool sobrevive', () => 
     const conn = process.env.UTPLSQL_CONN as string;
     const root = vscode.workspace.workspaceFolders?.[0];
     assert.ok(root, 'a suite precisa de um workspace folder aberto');
+
+    // PRD-101: este teste mede o `break` (timeout) e assume que o pool
+    // continua aberto. Desliga o fechamento automático só durante o teste.
+    const cfg = vscode.workspace.getConfiguration('utplsql');
+    const previousCloseAfterRun = cfg.get<boolean>('oraclePoolCloseAfterRun', true);
+    await cfg.update('oraclePoolCloseAfterRun', false, vscode.ConfigurationTarget.Global);
 
     const dbc = await openRaw();
     const controller = vscode.tests.createTestController('utplsql-it-runtimeout', 'IT RunTimeout');
@@ -367,7 +374,11 @@ describeDB('run timeout E2E — break expira o teste e o pool sobrevive', () => 
       // coisa se as duas conexões do runner estiverem checked out.
       await new Promise((r) => setTimeout(r, 600));
       poolInUseDuringFirstRun = pool.connectionsInUse;
-      await slowRun;
+      try {
+        await slowRun;
+      } catch (e) {
+        slowError = e;
+      }
       slowRunMs = Date.now() - t0;
       cancelRequested = cts.token.isCancellationRequested;
       inUseAfterTimeout = pool.connectionsInUse;
@@ -421,11 +432,28 @@ describeDB('run timeout E2E — break expira o teste e o pool sobrevive', () => 
       }
       await dbc.close().catch(() => {});
       await closeOraclePool();
+      await Promise.resolve(
+        cfg.update(
+          'oraclePoolCloseAfterRun',
+          previousCloseAfterRun,
+          vscode.ConfigurationTarget.Global,
+        ),
+      ).catch(() => {});
     }
   });
 
   it('o run lento aborta no timeout, sem cts.cancel(), muito antes dos 8s', () => {
     const out = slowCap.output.join('');
+    assert.strictEqual(
+      (slowError as { name?: string } | undefined)?.name,
+      'RunAbortedError',
+      'o timeout deve ser sinalizado como RunAbortedError, não como sucesso',
+    );
+    assert.strictEqual(
+      (slowError as { outcome?: string } | undefined)?.outcome,
+      'timedOut',
+      'o outcome do timeout deve ser timedOut',
+    );
     assert.strictEqual(
       cancelRequested,
       false,
@@ -435,13 +463,10 @@ describeDB('run timeout E2E — break expira o teste e o pool sobrevive', () => 
       slowRunMs < MAX_RUN_MS,
       `o run deveria abortar em ~1,2s, levou ${slowRunMs}ms (teto ${MAX_RUN_MS}ms)\nsaida:\n${out}`,
     );
-    // Prova de que o teste lento chegou a rodar: sem isso, um package inválido
-    // (erro de compilação) também "terminaria em menos de 5s".
-    assert.match(
-      out,
-      new RegExp(SLOW_PKG, 'i'),
-      `a saída deveria citar o package em execução:\n${out}`,
-    );
+    // Prova de que a suíte lenta chegou a rodar: sem isso, um package inválido
+    // (erro de compilação) também "terminaria em menos de 5s". O reporter de
+    // documentação emite a descrição da suite, não necessariamente o package.
+    assert.match(out, /Timeout E2E/i, `a saída deveria citar a suite em execução:\n${out}`);
     assert.strictEqual(
       slowCap.passed.length,
       0,

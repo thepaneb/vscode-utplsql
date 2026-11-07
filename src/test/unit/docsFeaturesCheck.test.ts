@@ -31,7 +31,7 @@ function fixture(registry: unknown[]): { root: string; cleanup: () => void } {
   );
   write(
     path.join(root, 'docs', 'brain', '10-Projeto', 'Registro de features.md'),
-    '---\ntipo: nota\n---\n\n```json\n' + JSON.stringify(registry) + '\n```\n',
+    `---\ntipo: nota\n---\n\n\`\`\`json\n${JSON.stringify(registry)}\n\`\`\`\n`,
   );
   return { root, cleanup: () => fs.rmSync(root, { recursive: true, force: true }) };
 }

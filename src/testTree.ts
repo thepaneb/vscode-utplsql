@@ -4,6 +4,7 @@ import { clearDbSourceCache } from './dbSourceProvider';
 import {
   discoverDbSuites,
   discoverSchemasFromFolders,
+  discoverUri,
   discoverWorkspace,
   extractSchemaFromPath,
   mergeSuiteLists,
@@ -15,6 +16,7 @@ import {
   currentLanguageContributions,
   workspaceAssociations,
 } from './languageIdentity';
+import type { PerfProbe } from './perf';
 import { type TestStateManager, withDurationSuffix } from './state';
 
 /** Id de suite normalizado (`suite:<pkg lower>`). */
@@ -451,10 +453,19 @@ const defaultMergeDbDeps: MergeDbDeps = {
  * concorrentes (uma execução por vez; reexecuta se solicitado durante).
  * No modo `schema` materializa só os schemas; o restante é lazy (PRD-75).
  */
+export interface TestTreeRefresher {
+  (): Promise<void>;
+  /** Reindexa apenas o URI alterado; modos tag/schema caem no full refresh. */
+  refreshUri(uri: vscode.Uri): Promise<void>;
+  /** Remove o URI do índice/árvore (delete). */
+  removeUri(uri: vscode.Uri): Promise<void>;
+}
+
 export function createRefresher(
   controller: vscode.TestController,
   state: TestStateManager,
-): () => Promise<void> {
+  perf?: PerfProbe,
+): TestTreeRefresher {
   let refreshPromise: Promise<void> | undefined;
   let needsRefresh = false;
 
@@ -469,7 +480,10 @@ export function createRefresher(
         workspaceAssociations(),
       ),
     ].filter((pattern) => pattern.trim().length > 0);
+    const endDiscovery = perf?.start('discovery');
     const suites = await discoverWorkspace([...new Set(patterns)], folders ?? undefined);
+    endDiscovery?.();
+    const endBuildTree = perf?.start('buildTree');
     controller.items.replace([]);
     state.cachedItems = [];
     state.clearSuiteMap();
@@ -477,7 +491,7 @@ export function createRefresher(
     state.clearResolved();
     state.clearSchemaSuites();
     state.clearSuiteFiles();
-    state.setDiscoveredFiles([]);
+    state.setDiscoveredFiles(suites);
     clearDbSourceCache();
 
     if (cfg.organization === 'schema' && folders?.length) {
@@ -488,6 +502,7 @@ export function createRefresher(
     } else {
       buildFileTree(controller, state, suites);
     }
+    endBuildTree?.();
   };
 
   const refresh = async (): Promise<void> => {
@@ -509,5 +524,50 @@ export function createRefresher(
     }
   };
 
-  return refresh;
+  const removeUriFromTree = (uri: vscode.Uri): void => {
+    const key = uri.toString();
+    for (const item of [...state.cachedItems]) {
+      if (state.getMeta(item)?.uri?.toString() === key) controller.items.delete(item.id);
+    }
+    state.removeItemsByUri(key);
+  };
+
+  const updateDiscoveredFile = (key: string, suite: SuiteFile | undefined): void => {
+    const remaining = state.discoveredFiles.filter((s) => s.uri.toString() !== key);
+    if (suite) remaining.push(suite);
+    state.setDiscoveredFiles(remaining);
+  };
+
+  const refreshUri = async (uri: vscode.Uri): Promise<void> => {
+    const cfg = readConfig();
+    // O incremental é seguro no modo arquivo; tag/schema dependem de agrupar
+    // vários arquivos/DB, então o full refresh é o fallback correto.
+    if (cfg.organization !== 'file') {
+      await refresh();
+      return;
+    }
+    if (refreshPromise) await refreshPromise;
+    const key = uri.toString();
+    const suite = await discoverUri(uri, vscode.workspace.workspaceFolders ?? undefined);
+    removeUriFromTree(uri);
+    if (suite) buildFileTree(controller, state, [suite]);
+    updateDiscoveredFile(key, suite);
+  };
+
+  const removeUri = async (uri: vscode.Uri): Promise<void> => {
+    const cfg = readConfig();
+    if (cfg.organization !== 'file') {
+      await refresh();
+      return;
+    }
+    if (refreshPromise) await refreshPromise;
+    const key = uri.toString();
+    removeUriFromTree(uri);
+    updateDiscoveredFile(key, undefined);
+  };
+
+  const refresher = refresh as TestTreeRefresher;
+  refresher.refreshUri = refreshUri;
+  refresher.removeUri = removeUri;
+  return refresher;
 }

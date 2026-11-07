@@ -23,16 +23,17 @@ interface Manifest {
 const req = createRequire(__filename);
 const pkg = req('../../../package.json') as Manifest;
 
-test('activationEvents: ativa no startup e com .pks/.pkb/.sql (schema/DB-first)', () => {
+test('activationEvents: ativa só em workspace PL/SQL e não no startup (PRD-120)', () => {
   const events = pkg.activationEvents ?? [];
-  assert.ok(events.includes('onStartupFinished'), 'faltando onStartupFinished');
-  for (const glob of [
-    'workspaceContains:**/*.pks',
-    'workspaceContains:**/*.pkb',
-    'workspaceContains:**/*.sql',
-  ]) {
+  assert.ok(!events.includes('onStartupFinished'), 'onStartupFinished não deveria existir');
+  assert.ok(
+    !events.includes('workspaceContains:**/*.sql'),
+    'glob .sql amplo demais não deveria ativar a extensão',
+  );
+  for (const glob of ['workspaceContains:**/*.pks', 'workspaceContains:**/*.pkb']) {
     assert.ok(events.includes(glob), `faltando ${glob}`);
   }
+  assert.ok(events.includes('onLanguage:plsql'), 'faltando onLanguage:plsql');
 });
 
 test('contributes.languages: extensões PL/SQL mapeiam para plsql', () => {

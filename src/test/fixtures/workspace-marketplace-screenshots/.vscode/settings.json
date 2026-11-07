@@ -1,0 +1,16 @@
+{
+  "workbench.colorTheme": "Dark Modern",
+  "window.zoomLevel": 0,
+  "editor.minimap.enabled": false,
+  "workbench.startupEditor": "none",
+  "explorer.compactFolders": false,
+  "utplsql.sourcePath": "db/DEMO",
+  "utplsql.includePatterns": ["db/**/*.pks"],
+  "utplsql.organization": "schema",
+  "utplsql.organization.schemaPattern": "db/{schema}/**",
+  "utplsql.coverageOwner": "DEMO",
+  "utplsql.coverage.schemes": ["DEMO"],
+  "utplsql.coverage.includeObjects": ["DEMO.ORDERS"],
+  "utplsql.showTestDuration": true,
+  "utplsql.showTagsInTree": true
+}

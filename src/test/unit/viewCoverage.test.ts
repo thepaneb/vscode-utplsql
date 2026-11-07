@@ -61,12 +61,63 @@ test('discoverViewFiles: encontra .sql sob views/ recursivamente', () => {
   }
 });
 
+test('discoverViewFiles: views que não é diretório retorna vazio', () => {
+  const base = fs.mkdtempSync(path.join(os.tmpdir(), 'views-'));
+  try {
+    fs.mkdirSync(path.join(base, 'install'), { recursive: true });
+    fs.writeFileSync(path.join(base, 'install', 'views'), 'não é pasta');
+    assert.deepStrictEqual(discoverViewFiles(base, 'install'), []);
+  } finally {
+    fs.rmSync(base, { recursive: true, force: true });
+  }
+});
+
 test('discoverViewFiles: sem pasta views retorna vazio', () => {
   const base = fs.mkdtempSync(path.join(os.tmpdir(), 'views-'));
   try {
     assert.deepStrictEqual(discoverViewFiles(base, 'install'), []);
   } finally {
     fs.rmSync(base, { recursive: true, force: true });
+  }
+});
+
+test('discoverViewFiles: sourcePath com traversal retorna vazio', () => {
+  const base = fs.mkdtempSync(path.join(os.tmpdir(), 'views-'));
+  const outside = fs.mkdtempSync(path.join(os.tmpdir(), 'views-outside-'));
+  try {
+    fs.mkdirSync(path.join(outside, 'views'), { recursive: true });
+    fs.writeFileSync(path.join(outside, 'views', 'segredo.sql'), 'SELECT 1');
+    // `../nome` aponta para um diretório externo que existe de verdade.
+    const escaped = path.join('..', path.basename(outside));
+    assert.deepStrictEqual(discoverViewFiles(base, escaped), []);
+    assert.deepStrictEqual(discoverViewFiles(base, '../etc'), []);
+    assert.deepStrictEqual(discoverViewFiles(base, '/abs'), []);
+  } finally {
+    fs.rmSync(base, { recursive: true, force: true });
+    fs.rmSync(outside, { recursive: true, force: true });
+  }
+});
+
+test('discoverViewFiles: symlink dentro de views não é seguido', () => {
+  const base = fs.mkdtempSync(path.join(os.tmpdir(), 'views-'));
+  const outside = fs.mkdtempSync(path.join(os.tmpdir(), 'views-outside-'));
+  try {
+    const viewsDir = path.join(base, 'install', 'views');
+    fs.mkdirSync(viewsDir, { recursive: true });
+    fs.writeFileSync(path.join(outside, 'segredo.sql'), 'SELECT 1');
+    fs.symlinkSync(
+      outside,
+      path.join(viewsDir, 'link'),
+      process.platform === 'win32' ? 'junction' : 'dir',
+    );
+    fs.writeFileSync(path.join(viewsDir, 'vw_ok.sql'), 'CREATE VIEW vw_ok AS SELECT 1');
+    assert.deepStrictEqual(
+      discoverViewFiles(base, 'install').map((f) => path.basename(f)),
+      ['vw_ok.sql'],
+    );
+  } finally {
+    fs.rmSync(base, { recursive: true, force: true });
+    fs.rmSync(outside, { recursive: true, force: true });
   }
 });
 

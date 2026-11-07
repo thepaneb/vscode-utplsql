@@ -116,9 +116,31 @@ interface DapMessage {
   success?: boolean;
 }
 
+/**
+ * Nome da procedure/function que contém a linha (1-based) do fonte. O
+ * `DBMS_DEBUG.GET_RUNTIME_INFO` devolve a unidade (package), não o subprograma;
+ * para ler parâmetros via `GET_VALUE` é preciso localizar o subprograma no
+ * fonte pela linha atual.
+ */
+export function enclosingSubprogramName(text: string, line: number): string | undefined {
+  const lines = text.split(/\r?\n/);
+  const start = Math.min(Math.max(1, line), lines.length) - 1;
+  for (let i = start; i >= 0; i -= 1) {
+    const m =
+      /\b(?:procedure|function)\s+"?([A-Za-z][\w$#]*)"?\s*(?:\(|\breturn\b|\bis\b|\bas\b)/i.exec(
+        lines[i],
+      );
+    if (m) return m[1];
+  }
+  return undefined;
+}
+
 export interface LaunchConfig {
   packageName: string;
   testName?: string;
+  /** Owner usado para resolver breakpoints; nunca carrega a senha. */
+  schema?: string;
+  /** @deprecated compatibilidade com launch configs antigas; a extensão não injeta mais. */
   connection?: string;
   stopOnException?: boolean;
 }
@@ -182,21 +204,29 @@ export class UtplsqlDebugAdapter implements vscode.DebugAdapter {
           supportsTerminateRequest: true,
         });
         break;
-      case 'launch':
+      case 'launch': {
+        const connection = args.connection ? String(args.connection) : undefined;
+        const schema = args.schema
+          ? String(args.schema)
+          : connection
+            ? connectionUser(connection)
+            : undefined;
         this.config = {
           packageName: String(args.packageName ?? ''),
           testName: args.testName ? String(args.testName) : undefined,
-          connection: args.connection ? String(args.connection) : undefined,
+          ...(schema ? { schema } : {}),
+          // Mantém compatibilidade com launch configs antigas; a extensão não
+          // injeta mais a connection (e portanto a senha) no config público.
+          ...(connection ? { connection } : {}),
           stopOnException: Boolean(args.stopOnException ?? true),
         };
-        if (this.config.connection) {
-          this.schema = connectionUser(this.config.connection) ?? this.schema;
-        }
+        if (schema) this.schema = schema;
         this.sendResponse(message, {});
         // `initialized` após o launch (DAP): habilita setBreakpoints/configDone.
         this.sendEvent('initialized', {});
         void this.initSession();
         break;
+      }
       case 'setBreakpoints':
         this.breakpointPromise = this.breakpointPromise.then(async () => {
           const result = await this.applyBreakpoints(args);
@@ -294,11 +324,17 @@ export class UtplsqlDebugAdapter implements vscode.DebugAdapter {
    * (`unitSource`) em vez de inventar `<unit>.pks` — o objeto pode estar num
    * `.sql`/`.fnc`/`.prc`.
    */
+  private unitForFrame(name: string): string {
+    const parts = name.split('.').map((p) => p.toUpperCase());
+    const mapped = [...parts].reverse().find((p) => this.unitSource.has(p));
+    return mapped ?? parts[parts.length - 1] ?? name.toUpperCase();
+  }
+
   private sourceForFrame(): { name: string; path: string } {
     const frame = this.currentFrame;
     if (!frame) return { name: '', path: '' };
-    const unit = frame.name.split('.').pop() ?? frame.name;
-    const mapped = this.unitSource.get(unit.toUpperCase()) ?? this.sourcePath;
+    const unit = this.unitForFrame(frame.name);
+    const mapped = this.unitSource.get(unit) ?? this.sourcePath;
     if (mapped) {
       return { name: mapped.split(/[\\/]/).pop() ?? mapped, path: mapped };
     }
@@ -561,8 +597,8 @@ export class UtplsqlDebugAdapter implements vscode.DebugAdapter {
     if ((status === 'break' || isException) && this.debuggerClient) {
       const frame = await this.debuggerClient.getRuntimeFrame(1);
       // Converte a linha do objeto armazenado de volta para a do arquivo local.
-      const unit = frame.name.split('.').pop() ?? frame.name;
-      const offset = await this.unitLineOffset(unit, this.unitSource.get(unit.toUpperCase()));
+      const unit = this.unitForFrame(frame.name);
+      const offset = await this.unitLineOffset(unit, this.unitSource.get(unit));
       const line = frame.line > 0 ? frame.line + offset : frame.line;
       this.currentFrame = { name: frame.name, line };
       this.sendEvent('stopped', {
@@ -584,8 +620,11 @@ export class UtplsqlDebugAdapter implements vscode.DebugAdapter {
     try {
       const src = this.sourceForFrame();
       if (src.path && this.currentFrame) {
-        const proc = this.currentFrame.name.split('.').pop() ?? '';
         const text = fs.readFileSync(src.path, 'utf-8');
+        const proc =
+          enclosingSubprogramName(text, this.currentFrame.line) ??
+          this.currentFrame.name.split('.').pop() ??
+          '';
         names = extractParamNames(text, proc);
       }
     } catch {
@@ -604,6 +643,13 @@ export class UtplsqlDebugAdapter implements vscode.DebugAdapter {
   private async teardown(): Promise<void> {
     if (this.timer) clearTimeout(this.timer);
     this.terminated = true;
+    // Primeiro cancela o `ut_runner.run` bloqueado no debuggee; só então
+    // `DEBUG_OFF`/detach podem ser processados (BUG-07).
+    try {
+      await this.debuggeeConn?.break?.();
+    } catch {
+      /* ignore */
+    }
     if (this.debuggerClient) {
       try {
         await this.debuggerClient.detachSession();
@@ -621,7 +667,6 @@ export class UtplsqlDebugAdapter implements vscode.DebugAdapter {
     for (const conn of [this.debuggeeConn, this.debuggerConn]) {
       if (!conn) continue;
       try {
-        // Cancela o `ut_runner.run` pendente no debuggee, senão o close trava.
         await conn.break?.();
       } catch {
         /* ignore */
@@ -692,7 +737,12 @@ export class UtplsqlDebugConfigurationProvider implements vscode.DebugConfigurat
     const profile = resolveConnectionNoPrompt();
     config.type = 'utplsql';
     config.request = 'launch';
-    if (!config.connection && profile) config.connection = profile;
+    // Só o owner vai para a launch config: a configuration é pública para
+    // outras extensões e não pode carregar a senha da connection.
+    if (!config.schema && profile) {
+      const schema = connectionUser(profile);
+      if (schema) config.schema = schema;
+    }
     config.stopOnException = config.stopOnException ?? readConfig().debuggerStopOnException;
     return config;
   }
@@ -701,13 +751,14 @@ export class UtplsqlDebugConfigurationProvider implements vscode.DebugConfigurat
 /** Monta uma launch config para um teste/suite e inicia a sessão de debug. */
 export async function startDebugSession(packageName: string, testName?: string): Promise<void> {
   const connection = resolveConnectionNoPrompt();
+  const schema = connection ? connectionUser(connection) : undefined;
   const config: vscode.DebugConfiguration = {
     type: 'utplsql',
     request: 'launch',
     name: `Debug ${packageName}${testName ? ` > ${testName}` : ''}`,
     packageName,
     testName,
-    ...(connection ? { connection } : {}),
+    ...(schema ? { schema } : {}),
     stopOnException: readConfig().debuggerStopOnException,
   };
   await vscode.debug.startDebugging(undefined, config);

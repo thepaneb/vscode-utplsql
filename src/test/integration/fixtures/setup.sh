@@ -14,8 +14,17 @@ set -euo pipefail
 ORACLE_CONN="sys/Oracle#2026@//localhost:1521/freepdb1"
 UT3_PASS="XNtxj8eEgA6X6b6f"
 TEST_PASS="utplsql_test#2026"
+# PRD-107: usuário restrito (só CREATE SESSION) para exercitar os fallbacks de
+# privilégio e a observação de sessões. Overrides por env.
+UNPRIV_USER="${UTPLSQL_IT_UNPRIV_USER:-utplsql_unpriv}"
+UNPRIV_PASS="${UTPLSQL_IT_UNPRIV_PASSWORD:-utplsql_unpriv#2026}"
 UTPLSQL_SRC="/tmp/utplsql-source"
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+
+if [[ ! "${UNPRIV_USER}" =~ ^[A-Za-z][A-Za-z0-9_]*$ ]]; then
+  echo "ERRO: UTPLSQL_IT_UNPRIV_USER inválido: ${UNPRIV_USER}"
+  exit 1
+fi
 
 echo "===== Step 1: Verificando container Oracle ====="
 docker exec oracle-data sqlplus -s sys/Oracle#2026@//localhost:1521/freepdb1 as sysdba \
@@ -77,6 +86,15 @@ grant connect, resource, create procedure, create type, create table, create seq
 grant execute on ut3.ut to utplsql_test;
 grant inherit privileges on user ut3 to utplsql_test;
 grant execute on sys.dbms_profiler to utplsql_test;
+
+-- PRD-107: observador externo de sessões (sem conceder V$SQL).
+grant select on v_$session to utplsql_test;
+grant select on v_$session to ut3;
+
+-- PRD-107: usuário sem privilégios, apenas CREATE SESSION.
+drop user ${UNPRIV_USER} cascade;
+create user ${UNPRIV_USER} identified by "${UNPRIV_PASS}";
+grant create session to ${UNPRIV_USER};
 SQL
 
 echo "===== Step 7: Compilando packages de teste ====="

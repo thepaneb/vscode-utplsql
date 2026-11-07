@@ -63,44 +63,60 @@ Quatro pontos do runtime ficaram fora do hardening prévio (PRD-81/PRD-143):
 
 ## 4. Requisitos
 
-### RF1 — Entidades XML desabilitadas nos parsers
+### RF1 — Entidades XML com limites explícitos
 
-Em `src/junit.ts` e `src/cobertura.ts`, construir o `XMLParser` com
-`processEntities: { enabled: false }` (ou limites explícitos de expansão) e
-documentar a escolha. Manter `ignoreAttributes: false` e
+Em `src/junit.ts` e `src/cobertura.ts`, manter `processEntities` **habilitado**
+com limites explícitos de expansão (`maxTotalExpansions`, `maxExpandedLength`,
+`maxEntityCount`) e documentar a escolha. **Não** usar
+`processEntities: { enabled: false }`: nessa versão do `fast-xml-parser` isso
+também deixa de decodificar entidades predefinidas (`&lt;`, `&amp;`), quebrando
+mensagens e `parseExpectedActual`. Manter `ignoreAttributes: false` e
 `attributeNamePrefix: '@_'`.
 
 ### RF2 — Contenção em walks de filesystem
 
-Criar helper compartilhado (reutilizar `isInside` de `src/coverage.ts:35`) e
-aplicá-lo em:
-- `discoverViewFiles` (`src/viewCoverage.ts:60`);
+Reutilizar o helper `src/pathContainment.ts` (`isInside`/`isReallyInside`/
+`hasTraversalSegment`, criado na 0.20.0) e aplicá-lo em:
+- `discoverViewFiles` (`src/viewCoverage.ts`), incluindo symlinks internos;
 - `listFilesRecursive` (`src/commands/script.ts`);
+- `discoverSchemasFromFolders` (`src/discovery.ts`);
 - qualquer outro walk que resolva caminhos a partir de settings do workspace.
 
-Caminhos fora da raiz devem ser ignorados com `logger.debug`/`logger.warn`
-sanitizado (sem ecoar o caminho cru se sensível).
+A mitigação de `../`/absoluto em views/schema já entrou na 0.20.0; o residual é
+symlink e a centralização. Caminhos fora da raiz devem ser ignorados com
+`logger.debug`/`logger.warn` sanitizado (sem ecoar o caminho cru se sensível).
 
-### RF3 — Sanitização do HTML de cobertura
+### RF3 — HTML de cobertura: caminho e conteúdo
 
-Em `src/coverage.ts` (`writeCoverageHtmlReport`), neutralizar tags `<script>`
-e handlers `on*` antes de gravar, **ou** registrar em `SECURITY.md` como risco
-aceito (base Oracle confiável). Decisão a tomar na implementação; preferir a
-sanitização quando o custo for baixo.
+Em `src/coverage.ts`, validar `realpath`/`lstat` do diretório
+`test-results/` antes de `mkdir`/`rm`/`write` (um symlink para fora não pode
+apagar/gravar fora do workspace). Para o conteúdo, neutralizar `<script>` e
+handlers `on*` **ou** registrar em `SECURITY.md` como risco aceito (base Oracle
+confiável); preferir sanitizar quando o custo for baixo. A validação de caminho
+pode ser antecipada na 0.20.x.
 
 ### RF4 — Redação robusta de credenciais
 
 Em `src/redact.ts` (`redactConnection`), além da substituição exata, aplicar
 fallback que mascare padrões `user/pass@host` (regex) quando a connection
 conhecida não for encontrada literalmente. Manter `maskConnection` como está.
+Revisar os call sites de UI (`commands/debug.ts`, `commands/utility.ts`,
+`coverage.ts`, `commands/scaffold.ts`, `quickfix.ts`) que hoje usam `String(e)`
+cru; usar `redactConnection`/mensagem genérica onde houver conexão.
 
 ### RF5 — Testes
 
-- Unitários para parsers com XML contendo entidades (deve não expandir / não
-  travar).
-- Unitários para `discoverViewFiles`/`listFilesRecursive` com `sourcePath`
-  contendo `../` (deve ignorar).
-- Unitários para `redactConnection` com variantes de espaçamento.
+- Unitários para parsers com XML contendo entidades (deve limitar/não travar e
+  continuar decodificando `&lt;`/`&amp;`).
+- Unitários para `discoverViewFiles`/`listFilesRecursive`/
+  `discoverSchemasFromFolders` com `../`, absoluto e symlink (deve ignorar).
+- Unitários para `redactConnection` com variantes de espaçamento e para o HTML
+  com `test-results` symlinkado.
+
+### RF6 — Defesa em profundidade de reporter
+
+- Validar o nome do reporter dentro de `exportReporterCall` (allowlist
+  `^[a-z0-9_]+$` + conhecidos), mesmo que o caller atual já valide.
 
 **Não-funcionais**
 - RNF1 — Nenhuma regressão nos testes existentes de cobertura/XML/redação.
@@ -109,11 +125,12 @@ conhecida não for encontrada literalmente. Manter `maskConnection` como está.
 
 ## 5. Solução proposta
 
-- Refatorar `isInside` de `src/coverage.ts` para um módulo compartilhado
-  (ex.: `src/pathContainment.ts`) e importar em `viewCoverage.ts` e
-  `commands/script.ts`.
-- Ajustar construtores de `XMLParser` nos dois parsers.
-- Estender `redactConnection` com regex fallback.
+- O helper `src/pathContainment.ts` (`isInside`/`isReallyInside`/
+  `hasTraversalSegment`) já foi criado na 0.20.0; estendê-lo a
+  `commands/script.ts` e aos walks restantes.
+- Ajustar construtores de `XMLParser` com limites explícitos (não desabilitar).
+- Estender `redactConnection` com regex fallback e revisar os call sites de UI.
+- Validar `realpath`/`lstat` do HTML de cobertura.
 - Avaliar sanitização de HTML; se custo alto, documentar em `SECURITY.md`.
 
 ## 6. Configuração
@@ -131,7 +148,7 @@ Nenhuma nova setting ou comando.
 
 | Risco | Mitigação |
 |---|---|
-| Desabilitar entidades quebrar parse de relatórios legítimos | Entidades padrão (`&lt;`, `&amp;`) continuam suportadas pelo parser mesmo com `processEntities.enabled: false`? Validar; se não, usar limites explícitos em vez de desabilitar. |
+| Desabilitar entidades quebrar parse de relatórios legítimos | **Não desabilitar**: `processEntities.enabled: false` também deixa `&lt;`/`&amp;` sem decodificar no fast-xml-parser 5.11. Usar limites explícitos (`maxTotalExpansions`, `maxExpandedLength`, `maxEntityCount`). |
 | Sanitização de HTML remover conteúdo legítimo | Aplicar apenas a `<script>` e atributos `on*`, preservando o restante. |
 | Regex de redação mascarar texto não-credencial | Ancorar no formato `user/pass@host` e no usuário conhecido. |
 

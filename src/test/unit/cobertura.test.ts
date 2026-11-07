@@ -42,6 +42,23 @@ test('retorna vazio para XML sem cobertura', () => {
   assert.deepStrictEqual(parseCobertura('<coverage></coverage>'), []);
 });
 
+test('XML malformado retorna vazio sem lançar', () => {
+  assert.deepStrictEqual(parseCobertura('<a><b'), []);
+});
+
+test('hits inválido vira 0 e linha inválida é descartada', () => {
+  const xml = `<coverage><packages><package name="p"><classes>
+    <class filename="a.sql"><lines>
+      <line number="1" hits="NaN"/><line number="x" hits="2"/><line number="3" hits="-1"/>
+    </lines></class>
+  </classes></package></packages></coverage>`;
+  const files = parseCobertura(xml);
+  assert.deepStrictEqual(files[0].lines, [
+    { line: 1, hits: 0 },
+    { line: 3, hits: 0 },
+  ]);
+});
+
 test('parseCobertura: pula classe sem filename', () => {
   const xml = `<?xml version="1.0"?>
 <coverage>

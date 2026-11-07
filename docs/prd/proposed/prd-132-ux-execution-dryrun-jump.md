@@ -62,6 +62,9 @@ formatos de stack Oracle/utPLSQL.
 ### RF4 — Expansão de parseStackFrames
 - Cobrir: `SCHEMA.PKG.PROC, line N`, variantes com coluna, chamadas aninhadas,
   `UT3.`/`UT3$`/`UT3_*`; `isUserFrame` filtra também `DBMS_*` e `SYS.*`.
+- **Antecipado na 0.20.0:** o filtro por prefixo `UT_` foi substituído por uma
+  allowlist exata dos objetos do framework; suites do usuário `UT_*` não são
+  mais descartadas. Esta PRD mantém a expansão dos demais formatos.
 
 ### RF5 — Testes
 - Testes de parse para cada novo formato e de `isUserFrame`.

@@ -191,6 +191,10 @@ Test Explorer-у **како се сваки тест заврши**. VSIX већ
 | `utplsql.oraclePoolMax` | `10` | Максимални број веза у Oracle runner пулу (node-oracledb). |
 | `utplsql.oraclePoolIncrement` | `1` | Повећање при проширењу Oracle runner пула (node-oracledb). |
 | `utplsql.oraclePoolPingInterval` | `60` | Секунде између провера здравља неактивних веза у пулу (node-oracledb). `0` = ping при сваком преузимању. |
+| `utplsql.oraclePoolCloseAfterRun` | `true` | Closes idle Oracle pool connections when the last run, coverage, export or discovery operation finishes. |
+| `utplsql.trace` | `false` | Emits verbose per-event trace lines in the utPLSQL output channel. |
+| `utplsql.perf.enabled` | `false` | Measures discovery, tree build, run, polling and XML parsing phases. |
+| `utplsql.perf.reportFile` | `""` | Appends each perf measurement as one JSON line to this file. |
 | `utplsql.oracleClientMode` | `thin` | Режим драјвера: `thin` (чист JavaScript, без нативног клијента) или `thick` (користи Oracle Instant Client). Користите `thick` само за базе које захтевају NNE (Native Network Encryption); захтева `utplsql.oracleClientLibDir` и поновно учитавање прозора. |
 | `utplsql.oracleClientLibDir` | `""` | Директоријум Oracle Instant Client-а. Обавезан када је `utplsql.oracleClientMode` постављен на `thick` (нпр. `C:\oracle\instantclient_23_5`). Fallback: `ORACLE_CLIENT_LIB_DIR`. |
 | Дебагер се не зауставља на тачки прекида | Пакет без debug информација или недостају debug дозволе | Компајлирајте са `PLSQL_OPTIMIZE_LEVEL <= 1` (или `ALTER PACKAGE ... COMPILE DEBUG PLSQL_OPTIMIZE_LEVEL = 1`) и доделите `DEBUG CONNECT SESSION` + `EXECUTE ON SYS.DBMS_DEBUG`. Тачке прекида у `test_*.pkb` можда неће ухватити (utPLSQL покреће тестове преко динамичког SQL-а); поставите их у тестирани код. |

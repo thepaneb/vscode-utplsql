@@ -2,8 +2,14 @@ import * as vscode from 'vscode';
 import { getExtensionLocale, readConfig, resolveConnection } from './config';
 import { offerCoverageHtmlReport } from './coverage';
 import { t } from './i18n';
+import { logger } from './logger';
 import { resolveRunRoots } from './matching';
-import { executeRunOracle, type OracleRunOptions } from './oracleRunner';
+import {
+  beginOracleActivity,
+  executeRunOracle,
+  type OracleRunOptions,
+  RunAbortedError,
+} from './oracleRunner';
 import { setupValidator } from './quickfix';
 import { redactConnection } from './redact';
 import type { LastRunState, TestStateManager } from './state';
@@ -142,8 +148,6 @@ export async function executeRun(
   const exporting = !!exportReporter;
   const run = controller.createTestRun(request);
 
-  state.clearLastResults();
-
   void vscode.commands.executeCommand('setContext', 'utplsql:running', true);
 
   const included: vscode.TestItem[] = [];
@@ -158,6 +162,12 @@ export async function executeRun(
   }
 
   const { leafTests, pathArgs, suiteCount } = collectRunTargets(included, state);
+  logger.trace('executeRun: alvos', {
+    tests: leafTests.length,
+    suites: suiteCount,
+    pathArgs: [...pathArgs],
+    coverage,
+  });
   // Root por folder (PRD-57): os folders das suites/testes realmente em execução,
   // em vez de sempre o primeiro do workspace.
   const roots = resolveRunRoots(
@@ -174,28 +184,43 @@ export async function executeRun(
     return;
   }
 
-  if (!exporting) {
-    for (const item of leafTests) {
-      run.enqueued(item);
-    }
-    for (const item of leafTests) run.started(item);
-  }
-
-  run.appendOutput(
-    `${t(locale, 'runner.running', { coverage: coverage ? t(locale, 'runner.withCoverage') : '' })}\r\n`,
-  );
+  // Só abre atividade (e limpa o snapshot anterior) quando há algo para rodar:
+  // um run vazio não pode vazar o token de atividade nem apagar o último estado.
+  const activity = beginOracleActivity(cfg);
+  state.clearLastResults();
 
   let exportText: string | undefined;
   let htmlReportPath: string | undefined;
   try {
+    if (!exporting) {
+      for (const item of leafTests) {
+        run.enqueued(item);
+      }
+      for (const item of leafTests) run.started(item);
+    }
+
+    run.appendOutput(
+      `${t(locale, 'runner.running', { coverage: coverage ? t(locale, 'runner.withCoverage') : '' })}\r\n`,
+    );
+
     const oracleOpts: OracleRunOptions = {
       connection,
       pathArgs: [...pathArgs],
-      coverage,
-      coverageHtmlReport: coverage && cfg.coverageHtmlReport,
-      reportRoot: roots[0],
-      onCoverageHtmlReport: (filePath) => {
-        htmlReportPath = filePath;
+      coverage: {
+        enabled: coverage,
+        htmlReport: coverage && cfg.coverageHtmlReport,
+        reportRoot: roots[0],
+        onHtmlReport: (filePath) => {
+          htmlReportPath = filePath;
+        },
+        owner: cfg.coverageOwner,
+        schemes: cfg.coverageSchemes,
+        includeObjects: cfg.coverageIncludeObjects,
+        excludeObjects: cfg.coverageExcludeObjects,
+        includeSchemaExpr: cfg.coverageIncludeSchemaExpr,
+        includeObjectExpr: cfg.coverageIncludeObjectExpr,
+        excludeSchemaExpr: cfg.coverageExcludeSchemaExpr,
+        excludeObjectExpr: cfg.coverageExcludeObjectExpr,
       },
       sourcePath: cfg.sourcePath,
       run,
@@ -207,21 +232,15 @@ export async function executeRun(
         else setupValidator.addCoverageDiagnostic();
       },
       folders,
-      additionalReporters: cfg.additionalReporters,
-      tags: cfg.tags,
-      randomOrder: cfg.randomOrder,
-      randomOrderSeed: cfg.randomOrderSeed,
-      coverageOwner: cfg.coverageOwner,
-      coverageSchemes: cfg.coverageSchemes,
-      coverageIncludeObjects: cfg.coverageIncludeObjects,
-      coverageExcludeObjects: cfg.coverageExcludeObjects,
-      coverageIncludeSchemaExpr: cfg.coverageIncludeSchemaExpr,
-      coverageIncludeObjectExpr: cfg.coverageIncludeObjectExpr,
-      coverageExcludeSchemaExpr: cfg.coverageExcludeSchemaExpr,
-      coverageExcludeObjectExpr: cfg.coverageExcludeObjectExpr,
-      dbmsOutput: cfg.dbmsOutput,
-      timeoutMinutes: cfg.timeoutMinutes,
-      exportReporter,
+      execution: {
+        tags: cfg.tags,
+        randomOrder: cfg.randomOrder,
+        randomOrderSeed: cfg.randomOrderSeed,
+        dbmsOutput: cfg.dbmsOutput,
+        timeoutMinutes: cfg.timeoutMinutes,
+      },
+      output: { additionalReporters: cfg.additionalReporters },
+      ...(exportReporter ? { export: { reporter: exportReporter } } : {}),
     };
     exportText = await executeRunOracle(oracleOpts, token);
     if (cfg.sqlCoverageEnabled && !exporting) {
@@ -236,10 +255,20 @@ export async function executeRun(
     }
   } catch (e) {
     if (exporting) throw e;
-    const msg = redactConnection(e instanceof Error ? e.message : String(e), connection);
-    run.appendOutput(`\r\n${t(locale, 'runner.oracleErrorHeader', { error: msg })}\r\n`);
-    for (const item of leafTests) {
-      run.errored(item, new vscode.TestMessage(t(locale, 'runner.oracleError', { error: msg })));
+    if (e instanceof RunAbortedError) {
+      // Timeout/cancelamento: encerra sem aplicar resultados parciais. Os itens
+      // não executados ficam explicitamente `skipped` (o Test Explorer não tem
+      // um estado "não executado" terminal).
+      run.appendOutput(
+        `\r\n${t(locale, e.outcome === 'timedOut' ? 'runner.timedOut' : 'ext.runCancel')}\r\n`,
+      );
+      for (const item of leafTests) run.skipped(item);
+    } else {
+      const msg = redactConnection(e instanceof Error ? e.message : String(e), connection);
+      run.appendOutput(`\r\n${t(locale, 'runner.oracleErrorHeader', { error: msg })}\r\n`);
+      for (const item of leafTests) {
+        run.errored(item, new vscode.TestMessage(t(locale, 'runner.oracleError', { error: msg })));
+      }
     }
   } finally {
     run.end();
@@ -247,6 +276,8 @@ export async function executeRun(
     // PRD-108 RF2: a notificação é fire-and-forget e só começa depois do
     // run.end(), então nunca segura o spinner do Test Explorer.
     if (htmlReportPath) void offerCoverageHtmlReport(htmlReportPath);
+    // PRD-101: run/cobertura/export cobrem a atividade; fecha o pool ocioso.
+    await activity.end();
   }
 
   return exportText;

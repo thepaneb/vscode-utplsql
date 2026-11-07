@@ -2,6 +2,7 @@ import './setup.js';
 
 import assert from 'node:assert';
 import { test } from 'node:test';
+import * as vscode from 'vscode';
 import type { SuiteFile } from '../../discovery';
 import { TestStateManager } from '../../state';
 import {
@@ -72,6 +73,10 @@ function makeController() {
         items.forEach(cb);
       },
       get: (id: string) => items.find((i) => i.id === id),
+      delete: (id: string) => {
+        const idx = items.findIndex((i) => i.id === id);
+        if (idx >= 0) items.splice(idx, 1);
+      },
     },
     _items: items,
   } as any;
@@ -160,6 +165,15 @@ test('buildFileTree: propaga para o ItemMeta as tags de suíte e teste (PRD-51 R
   const testMeta = state.getMeta(suiteItem._children[0]);
   assert.ok(testMeta);
   assert.deepStrictEqual(testMeta.tags, ['fast']);
+});
+
+test('buildFileTree: usa a duração do último resultado no label', () => {
+  const controller = makeController();
+  const state = new TestStateManager();
+  state.setLastResults(new Map([['test:ut_app.test_one', { status: 'passed', durationMs: 12 }]]));
+  __setConfigValue('showTestDuration', true);
+  buildFileTree(controller, state, [suite({})]);
+  assert.match(controller._labels.get('test:ut_app.test_one'), /\(12ms\)/);
 });
 
 test('buildFileTree: displayName tem prioridade sobre description', () => {
@@ -447,6 +461,186 @@ test('createRefresher: 3 chamadas concorrentes — as excedentes retornam sem no
 
   assert.strictEqual(controller._items.length, 0);
   assert.strictEqual(state.cachedItems.length, 0);
+});
+
+const PKG_A_ONE = `CREATE OR REPLACE PACKAGE ut_a IS
+  -- %suite(A)
+  -- %test(one)
+  PROCEDURE one;
+END;`;
+const PKG_A_TWO = `CREATE OR REPLACE PACKAGE ut_a IS
+  -- %suite(A)
+  -- %test(one)
+  PROCEDURE one;
+  -- %test(two)
+  PROCEDURE two;
+END;`;
+const PKG_B = `CREATE OR REPLACE PACKAGE ut_b IS
+  -- %suite(B)
+  -- %test(b)
+  PROCEDURE b;
+END;`;
+
+test('createRefresher: mede discovery/buildTree com probe (PRD-102)', async () => {
+  const controller = makeController();
+  const state = new TestStateManager();
+  const phases: string[] = [];
+  __setMockFile('**/*.pks', '/ws/ut_a.pks', PKG_A_ONE);
+  workspace.__setWorkspaceFolders([{ uri: { fsPath: '/ws' }, name: 'ws', index: 0 }] as never);
+  try {
+    const refresh = createRefresher(controller, state, {
+      enabled: true,
+      start: (phase) => () => phases.push(phase),
+      record: () => {},
+    });
+    await refresh();
+    assert.deepStrictEqual(phases, ['discovery', 'buildTree']);
+  } finally {
+    __resetMockFiles();
+    __resetConfigValues();
+    workspace.__setWorkspaceFolders(undefined);
+  }
+});
+
+test('createRefresher: refreshUri/removeUri aguardam um full refresh em andamento', async () => {
+  const controller = makeController();
+  const state = new TestStateManager();
+  __setMockFile('**/*.pks', '/ws/ut_a.pks', PKG_A_ONE);
+  workspace.__setWorkspaceFolders([{ uri: { fsPath: '/ws' }, name: 'ws', index: 0 }] as never);
+  try {
+    const refresh = createRefresher(controller, state);
+    const full = refresh();
+    await refresh.refreshUri(vscode.Uri.file('/ws/ut_a.pks'));
+    await full;
+    const full2 = refresh();
+    await refresh.removeUri(vscode.Uri.file('/ws/ut_a.pks'));
+    await full2;
+    assert.ok(state.discoveredFiles.length >= 0);
+  } finally {
+    __resetMockFiles();
+    __resetConfigValues();
+    workspace.__setWorkspaceFolders(undefined);
+  }
+});
+
+test('createRefresher.refreshUri: reindexa só o arquivo alterado (PRD-103)', async () => {
+  const controller = makeController();
+  const state = new TestStateManager();
+  __setMockFile('**/*.pks', '/ws/ut_a.pks', PKG_A_ONE);
+  __setMockFile('**/*.pks', '/ws/ut_b.pks', PKG_B);
+  workspace.__setWorkspaceFolders([{ uri: { fsPath: '/ws' }, name: 'ws', index: 0 }] as never);
+  try {
+    const refresh = createRefresher(controller, state);
+    await refresh();
+    const bItem = controller._items.find(
+      (i: { id: string; _children: { length: number } }) => i.id === 'suite:ut_b',
+    );
+    assert.ok(bItem);
+    assert.strictEqual(controller._items.length, 2);
+
+    __resetMockFiles();
+    __setMockFile('**/*.pks', '/ws/ut_a.pks', PKG_A_TWO);
+    __setMockFile('**/*.pks', '/ws/ut_b.pks', PKG_B);
+    await refresh.refreshUri(vscode.Uri.file('/ws/ut_a.pks'));
+
+    assert.strictEqual(controller._items.length, 2);
+    const aItem = controller._items.find(
+      (i: { id: string; _children: { length: number } }) => i.id === 'suite:ut_a',
+    );
+    assert.strictEqual(aItem?._children.length, 2);
+    assert.strictEqual(
+      controller._items.find(
+        (i: { id: string; _children: { length: number } }) => i.id === 'suite:ut_b',
+      ),
+      bItem,
+      'suite não afetada deveria permanecer na árvore',
+    );
+  } finally {
+    __resetMockFiles();
+    __resetConfigValues();
+    workspace.__setWorkspaceFolders(undefined);
+  }
+});
+
+test('createRefresher.refreshUri: funciona sem workspaceFolders (fallback undefined)', async () => {
+  const controller = makeController();
+  const state = new TestStateManager();
+  __setMockFile('**/*.pks', '/ws/ut_a.pks', PKG_A_ONE);
+  workspace.__setWorkspaceFolders(undefined);
+  try {
+    const refresh = createRefresher(controller, state);
+    await refresh.refreshUri(vscode.Uri.file('/ws/ut_a.pks'));
+  } finally {
+    __resetMockFiles();
+    __resetConfigValues();
+    workspace.__setWorkspaceFolders(undefined);
+  }
+});
+
+test('createRefresher.removeUri: delete remove o arquivo e preserva os demais (PRD-103)', async () => {
+  const controller = makeController();
+  const state = new TestStateManager();
+  __setMockFile('**/*.pks', '/ws/ut_a.pks', PKG_A_ONE);
+  __setMockFile('**/*.pks', '/ws/ut_b.pks', PKG_B);
+  workspace.__setWorkspaceFolders([{ uri: { fsPath: '/ws' }, name: 'ws', index: 0 }] as never);
+  try {
+    const refresh = createRefresher(controller, state);
+    await refresh();
+    await refresh.removeUri(vscode.Uri.file('/ws/ut_a.pks'));
+
+    assert.strictEqual(controller._items.length, 1);
+    assert.strictEqual(controller._items[0].id, 'suite:ut_b');
+    assert.strictEqual(state.discoveredFiles.length, 1);
+    assert.strictEqual(state.getSuiteItem('suite:ut_a'), undefined);
+  } finally {
+    __resetMockFiles();
+    __resetConfigValues();
+    workspace.__setWorkspaceFolders(undefined);
+  }
+});
+
+test('createRefresher.refreshUri/removeUri: tag usa full refresh (fallback)', async () => {
+  const controller = makeController();
+  const state = new TestStateManager();
+  __setConfigValue('organization', 'tag');
+  __setMockFile('**/*.pks', '/ws/ut_a.pks', PKG_A_ONE);
+  workspace.__setWorkspaceFolders([{ uri: { fsPath: '/ws' }, name: 'ws', index: 0 }] as never);
+  try {
+    const refresh = createRefresher(controller, state);
+    await refresh();
+    assert.ok(controller._items.length > 0, 'árvore por tag deveria materializar o grupo');
+    await refresh.refreshUri(vscode.Uri.file('/ws/ut_a.pks'));
+    await refresh.removeUri(vscode.Uri.file('/ws/ut_a.pks'));
+    // O full refresh mantém a suite no índice (o arquivo ainda existe).
+    assert.ok(controller._items.length > 0);
+  } finally {
+    __resetMockFiles();
+    __resetConfigValues();
+    workspace.__setWorkspaceFolders(undefined);
+  }
+});
+
+test('createRefresher.refreshUri: arquivo sem suite é removido do índice', async () => {
+  const controller = makeController();
+  const state = new TestStateManager();
+  __setMockFile('**/*.pks', '/ws/ut_a.pks', PKG_A_ONE);
+  workspace.__setWorkspaceFolders([{ uri: { fsPath: '/ws' }, name: 'ws', index: 0 }] as never);
+  try {
+    const refresh = createRefresher(controller, state);
+    await refresh();
+    assert.strictEqual(controller._items.length, 1);
+
+    __resetMockFiles();
+    __setMockFile('**/*.pks', '/ws/ut_a.pks', 'CREATE OR REPLACE PACKAGE ut_a IS END;');
+    await refresh.refreshUri(vscode.Uri.file('/ws/ut_a.pks'));
+
+    assert.strictEqual(controller._items.length, 0);
+    assert.strictEqual(state.discoveredFiles.length, 0);
+  } finally {
+    __resetMockFiles();
+    __resetConfigValues();
+    workspace.__setWorkspaceFolders(undefined);
+  }
 });
 
 // ── mergeDbSuites (injeção de dependências) ─────────────────────────

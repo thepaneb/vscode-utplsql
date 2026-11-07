@@ -4,7 +4,7 @@
 
 | Campo | Valor |
 |---|---|
-| Status | Proposto |
+| Status | Concluído |
 | Autor | Gil Cleber Barboza |
 | Data | 2026-10-09 |
 | Componente | Extensão `paneb.vscode-utplsql` |
@@ -129,3 +129,14 @@ impede `DROP USER` do usuário de teste sem recarregar o VS Code.
 Na conclusão, criar a regra `BR-CONN-*` ("pool ocioso é fechado ao fim da
 execução; nunca conexão em uso"), com `prds: ["PRD-101"]`, `implementacao:` e
 `testes:`. Enquanto `proposed`, `regras: []`.
+
+## Análise de cobertura (pós-PRD)
+
+- **Unitários:** `oraclePoolActivity.test.ts` cobre ref-count, `end` duplicado, `connectionsInUse`, setting off e remoção do cache antes do close.
+- **Integração:** `prd101PoolClose.test.ts` verifica a sessão do pool em `v$session` com o observador da PRD-107; o thick-full desliga o setting para preservar os testes de timeout/pool aquecido.
+- **Matriz:** 23free thin; 11g thick coberto pelo eixo thick quando disponível; 18c/21c/19ee executam o mesmo caminho de pool.
+- **Ações:** ampliar o teste de sessão para 11g no eixo thick-full (já habilitado pelo mesmo helper).
+
+## Impacto nas docs
+
+`CHANGELOG`, README (setting `utplsql.oraclePoolCloseAfterRun`), `wiki/Configuration.md` e `wiki/Connection.md` citam `PRD-101`.

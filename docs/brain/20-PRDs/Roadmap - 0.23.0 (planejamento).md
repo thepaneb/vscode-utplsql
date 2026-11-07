@@ -21,13 +21,15 @@ Plano da **0.23.0 — “Docs e qualidade residual”**. O status e a versão al
 | 2 | PRD-116 | Testes diretos dos módulos sem cobertura dedicada | 0,5–1 dia | Baixa |
 | 3 | PRD-117 | Testes de propriedade do parser de scripts (`splitScript`) | 1–2 dias | Média |
 | 4 | PRD-126 | Cobertura de branches nos módulos críticos e CLIs de release | 1–2 dias | Média |
-| 5 | PRD-97 | Documentação no site (Fase 2 da PRD-96) | 2–3 dias | Média |
-| 6 | PRD-99 | Cérebro reutilizável: guia de uso e reuso do knowledge base | 1–2 dias | Baixa-Média |
+| 5 | PRD-149 | Performance mensurável e qualidade de engenharia | 3–5 dias | Média-Alta |
+| 6 | PRD-97 | Documentação no site (Fase 2 da PRD-96) | 2–3 dias | Média |
+| 7 | PRD-99 | Cérebro reutilizável: guia de uso e reuso do knowledge base | 1–2 dias | Baixa-Média |
 
 **PRDs:** [[prd-112-error-handling-audit|PRD-112]] ·
 [[prd-116-direct-module-tests|PRD-116]] ·
 [[prd-117-split-script-property-tests|PRD-117]] ·
 [[prd-126-branch-coverage-cli-tests|PRD-126]] ·
+[[prd-149-performance-engineering-quality|PRD-149]] ·
 [[prd-97-doc-no-site|PRD-97]] · [[prd-99-brain-reuse|PRD-99]]
 
 **Tema:** itens de **baixo valor direto ao usuário** (docs) e a qualidade interna
@@ -40,7 +42,7 @@ a **PRD-122** (publisher/privacidade) saíram para a 0.24.0, junto dos itens de
 UX/segurança/distribuição; a **PRD-132** e a **PRD-133**, que estavam órfãs nesta
 versão, também foram para a 0.24.0. A 0.23.0 fica só com qualidade e docs.
 
-**Total estimado:** ≈ 6,5–12 dias.
+**Total estimado:** ≈ 9,5–17 dias.
 
 ## Fluxo de execução (por PRD)
 

@@ -92,6 +92,8 @@ SORT id ASC
 - [[COD - launch.json]] — `COD-launch.json`
 - [[COD - linkedin-drift.cjs]] — `COD-linkedin-drift.cjs`
 - [[COD - logger.ts]] — `COD-logger.ts`
+- [[COD - Marketplace (README).md]] — `COD-Marketplace-README-.md`
+- [[COD - marketplace-images.cjs]] — `COD-marketplace-images.cjs`
 - [[COD - matching.ts]] — `COD-matching.ts`
 - [[COD - matrix.env]] — `COD-matrix.env`
 - [[COD - obsidian-mcp.py]] — `COD-obsidian-mcp.py`
@@ -106,6 +108,11 @@ SORT id ASC
 - [[COD - pages.yml]] — `COD-pages.yml`
 - [[COD - pagespeed.yml]] — `COD-pagespeed.yml`
 - [[COD - parse-version.cjs]] — `COD-parse-version.cjs`
+- [[COD - pathContainment.ts]] — `COD-pathContainment.ts`
+- [[COD - perf-run.sh]] — `COD-perf-run.sh`
+- [[COD - perf.ts]] — `COD-perf.ts`
+- [[COD - perfFixture.ts]] — `COD-perfFixture.ts`
+- [[COD - performance.yml]] — `COD-performance.yml`
 - [[COD - plsqlDeclarations.ts]] — `COD-plsqlDeclarations.ts`
 - [[COD - profile.ts]] — `COD-profile.ts`
 - [[COD - publish.cjs]] — `COD-publish.cjs`
@@ -125,6 +132,7 @@ SORT id ASC
 - [[COD - scorecard.yml]] — `COD-scorecard.yml`
 - [[COD - script.ts]] — `COD-script.ts`
 - [[COD - scriptRunner.ts]] — `COD-scriptRunner.ts`
+- [[COD - setup.sh]] — `COD-setup.sh`
 - [[COD - site-health.yml]] — `COD-site-health.yml`
 - [[COD - sitemap.xml]] — `COD-sitemap.xml`
 - [[COD - src-scaffold.ts]] — `COD-src-scaffold.ts`
@@ -137,9 +145,11 @@ SORT id ASC
 - [[COD - template-prd.md]] — `COD-template-prd.md`
 - [[COD - test-setup.cjs]] — `COD-test-setup.cjs`
 - [[COD - testTree.ts]] — `COD-testTree.ts`
+- [[COD - timing.ts]] — `COD-timing.ts`
 - [[COD - tnsnames.ts]] — `COD-tnsnames.ts`
 - [[COD - tsconfig.json]] — `COD-tsconfig.json`
 - [[COD - types.ts]] — `COD-types.ts`
+- [[COD - unpriv.ts]] — `COD-unpriv.ts`
 - [[COD - utility.ts]] — `COD-utility.ts`
 - [[COD - utplsql.code-snippets]] — `COD-utplsql.code-snippets`
 - [[COD - version-check.cjs]] — `COD-version-check.cjs`

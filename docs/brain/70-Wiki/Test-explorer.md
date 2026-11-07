@@ -5,11 +5,13 @@ titulo: "Test Explorer"
 publicar: docs/wiki/Test-explorer.md
 origem: ["06-tree-organization"]
 verificado: 2026-09-23
-regras: ["BR-SCHEMA-001", "BR-SCHEMA-003", "BR-EXEC-016", "BR-EXEC-010", "BR-QUAL-003"]
+regras: ["BR-SCHEMA-001", "BR-SCHEMA-003", "BR-EXEC-016", "BR-EXEC-010", "BR-QUAL-003", "BR-PARSE-020"]
 tags: [wiki]
 ---
 
 # Test Explorer
+
+<!-- prd:PRD-103 -->
 
 The extension registers a native VSCode **Test Explorer** (`utplsql`) — suites and
 tests appear in the **Testing** view (flask icon in the sidebar) and use all the
@@ -115,6 +117,17 @@ In `schema` mode, suites found only in the database (not in the workspace) use a
 virtual URI `utplsql-db:/SCHEMA/PKG.pks`. They can be **executed**; CodeLens and
 inline decorations require real files, but jump-to-failure works through the
 read-only `utplsql-source:` virtual document resolved from `ALL_SOURCE`.
+
+## Incremental refresh
+
+In the default `file` organization, file watcher events are debounced **per URI**
+(PRD-103): editing one suite reindexes only that file and preserves the other
+items in the tree. Deleting a file removes its items and lets jump-to-failure
+resolve the object through the database virtual source.
+
+`tag` and `schema` organizations, large bursts and any uncertain case fall back
+to the safe full refresh. The global `utplsql.refreshDebounceMs` still controls
+the coalescing window.
 
 ## Related
 

@@ -34,6 +34,7 @@ npm run sync-prds
 - **0.18.0 — “Fundação: segurança, testes e anti-drift”** (concluída): [[Roadmap - 0.18.0 (planejamento)]]
 - **0.19.0 — “Piso Node 24 e runtime moderno”** (publicada): [[Roadmap - 0.19.0 (planejamento)]]
 - **0.20.0 — “Observabilidade e desempenho”** (próxima): [[Roadmap - 0.20.0 (planejamento)]]
+- **0.20.1 — “Confiabilidade de execução e estado”**: [[Roadmap - 0.20.1 (execução)]]
 - **0.21.0 — “Arquitetura, configuração e resiliência”**: [[Roadmap - 0.21.0 (planejamento)]]
 - **0.22.0 — “Localização completa”**: [[Roadmap - 0.22.0 (planejamento)]]
 - **0.23.0 — “Docs e qualidade residual”**: [[Roadmap - 0.23.0 (planejamento)]]
@@ -42,10 +43,10 @@ npm run sync-prds
 ## Status (gerado)
 
 <!-- brain:auto:start:prd-summary -->
-- 📝 Propostos: **39**
+- 📝 Propostos: **34**
 - 🔵 Aprovados: **0**
 - 🟡 Em desenvolvimento: **2**
-- 🟢 Concluídos: **103**
+- 🟢 Concluídos: **110**
 
 Detalhe completo (fonte da verdade): [docs/prd/index.md](../../prd/index.md)
 <!-- brain:auto:end -->
@@ -120,6 +121,8 @@ Detalhe completo (fonte da verdade): [docs/prd/index.md](../../prd/index.md)
 - [[prd-145-security-alerts-deliverable]] — `PRD-145`
 - [[prd-146-attestations-publish]] — `PRD-146`
 - [[prd-147-marketplace-listing-page]] — `PRD-147`
+- [[prd-148-execution-state-reliability]] — `PRD-148`
+- [[prd-149-performance-engineering-quality]] — `PRD-149`
 - [[prd-15-integration-tests-real-db]] — `PRD-15`
 - [[prd-16-integration-test-invocation-modes]] — `PRD-16`
 - [[prd-17-java-args-setting]] — `PRD-17`
@@ -211,6 +214,7 @@ Detalhe completo (fonte da verdade): [docs/prd/index.md](../../prd/index.md)
 - [[Roadmap - 0.18.0 (planejamento)]]
 - [[Roadmap - 0.19.0 (planejamento)]]
 - [[Roadmap - 0.20.0 (planejamento)]]
+- [[Roadmap - 0.20.1 (execução)]]
 - [[Roadmap - 0.21.0 (planejamento)]]
 - [[Roadmap - 0.22.0 (planejamento)]]
 - [[Roadmap - 0.23.0 (planejamento)]]

@@ -47,11 +47,12 @@ async function executeRunOracle(options: OracleRunOptions, token: CancellationTo
 4. **Limpeza**: `DELETE FROM ${utSchema}UT_OUTPUT_BUFFER_TMP` + `UT_OUTPUT_BUFFER_INFO_TMP`
 5. **Execução**: `conn1.execute('BEGIN ut_runner.run(...) END;')` — bloqueante
 6. **Polling**: `conn2.execute('SELECT ... FROM UT_OUTPUT_BUFFER_TMP WHERE message_id > :last')` a cada 200ms
-7. **Separação doc/JUnit**: linhas iniciando com `<` são XML → acumular; demais →
-   `run.appendOutput()`. Dentro de um `<![CDATA[...]]>` (system-out do JUnit) as
-   linhas de conteúdo e o `]]>` **não** começam com `<`, então o roteamento é
-   mantido para o XML enquanto o CDATA estiver aberto (`inCdata`)
-8. **Parse final**: `parseJUnit(xmlBuffer)` → `applyResultsFromCases()` + `applyCoverageFromXml()` (src/results.ts)
+7. **Separação por `output_id`**: cada reporter escreve em um grupo próprio,
+   classificado como `html`, `xml` ou `console`; um chunk inicial só com brancos
+   aguarda o primeiro texto real. O HTML nunca entra no buffer XML
+8. **Parse final**: cada grupo XML é identificado pela tag raiz
+   (`<coverage` vs `<testsuites>`/`<testsuite>`) e parseado individualmente →
+   `applyResultsFromCases()` + `applyCoverageFromXml()` (src/results.ts)
 9. **Cancelamento**: `conn1.break()` / `conn2.break()` + `Promise.race` com cancellation promise
 
 ### Connection pooling (PRD-38)

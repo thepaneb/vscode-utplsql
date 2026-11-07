@@ -101,6 +101,14 @@ escondem achados novos.
 - Documentar em `SECURITY.md` a política de `overrides`: cada pin cita o
   advisory, a versão corrigida e a condição de remoção (quando o upstream
   migrar). Revisão a cada bump de `mocha`/`c8`/`@vscode/test-cli`/`@vscode/vsce`.
+- `integration.yml`: baixar o Instant Client com checksum SHA256 fixo e
+  `sha256sum -c` antes do `unzip`.
+- Workflows: contexto GitHub (`release.tag_name`, `base_ref`) via `env:`, não
+  interpolado direto em `run:`; vale para `publish.yml`, `jev-review.yml` e
+  `integration.yml`.
+- `opencode.json`: pinar a imagem do MCP Playwright por digest (dev-only).
+- `scripts/sync-prds.cjs`: trocar `execSync` por
+  `execFileSync('git', ['remote', 'get-url', 'origin'], …)`.
 
 ### RF3 — Pinagem por hash do pip
 
@@ -127,6 +135,8 @@ Registrar no `SECURITY.md` (ou em nota do vault) a decisão para cada alerta:
 - Corrigir `build (22/24/26)` → `build (24)` + `build (26)` + `CodeQL`
   (checks exigidos pela proteção da `main`).
 - Acrescentar as proteções de RF1 e a política de overrides de RF2.
+- Documentar o trade-off do `UTPLSQL_CONN` com senha (`process.env` é visível
+  a todas as extensões do extension host); preferir perfil/SecretStorage.
 
 ### RF6 — Testes
 
