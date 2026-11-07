@@ -126,9 +126,10 @@ export function enclosingSubprogramName(text: string, line: number): string | un
   const lines = text.split(/\r?\n/);
   const start = Math.min(Math.max(1, line), lines.length) - 1;
   for (let i = start; i >= 0; i -= 1) {
-    const m = /\b(?:procedure|function)\s+"?([A-Za-z][\w$#]*)"?\s*(?:\(|\breturn\b|\bis\b|\bas\b)/i.exec(
-      lines[i],
-    );
+    const m =
+      /\b(?:procedure|function)\s+"?([A-Za-z][\w$#]*)"?\s*(?:\(|\breturn\b|\bis\b|\bas\b)/i.exec(
+        lines[i],
+      );
     if (m) return m[1];
   }
   return undefined;
