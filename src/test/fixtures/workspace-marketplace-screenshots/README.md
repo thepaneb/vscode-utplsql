@@ -13,3 +13,10 @@ Demo workspace used **only** by the manual Marketplace capture checklist
 
 Open this folder in the Extension Development Host, run the suite once, then
 follow the capture checklist.
+
+## Perfil de conexão
+
+- `connection`: `DEMO@//localhost:1521/freepdb1` (sem senha)
+- `sourcePath`: `db`; `coverageOwner`: `DEMO`; `includePatterns`: `["db/**/*.pks"]`
+- A senha do demo (`demo#2026`) fica no SecretStorage, nunca no repositório.
+- Grants e packages de demo estão descritos no checklist do vault.

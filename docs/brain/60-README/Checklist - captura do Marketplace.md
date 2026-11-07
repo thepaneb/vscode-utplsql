@@ -24,6 +24,37 @@ English-only.
 - [ ] Rodar a suíte uma vez para popular resultados; abrir a aba **Testing** e deixar as suites expandidas.
 - [ ] Confirmar que nenhum host real, usuário, senha, wallet ou nome de cliente aparece na tela.
 
+## 1.1 Perfil de conexão do demo
+
+Use um perfil **separado do UT3** (a senha fica no SecretStorage):
+
+| Campo | Valor |
+|---|---|
+| `id` | `demo-marketplace` |
+| `name` | `DEMO — Marketplace` |
+| `connection` | `DEMO@//localhost:1521/freepdb1` (sem senha) |
+| `description` | `Fictional DEMO schema for Marketplace screenshots` |
+| `charset` | `utf8` |
+| `sourcePath` | `db` |
+| `coverageOwner` | `DEMO` |
+| `includePatterns` | `["db/**/*.pks"]` |
+| senha | `demo#2026` (somente ambiente local de demo) |
+
+O schema `DEMO` já está preparado no container local com:
+
+```sql
+GRANT CREATE SESSION, CREATE PROCEDURE TO DEMO;
+GRANT EXECUTE ON UT3.UT TO DEMO;
+GRANT EXECUTE ON SYS.DBMS_PROFILER TO DEMO;
+GRANT EXECUTE ON SYS.DBMS_PLSQL_CODE_COVERAGE TO DEMO;
+GRANT DEBUG CONNECT SESSION TO DEMO;
+GRANT EXECUTE ON SYS.DBMS_DEBUG TO DEMO;
+```
+
+Os packages `orders`, `ut_orders` e `ut_customers` estão compilados no schema
+`DEMO`. Se o `ut` não resolver em outro ambiente, conceda o grant de `UT3.UT`
+ou crie o synonym `UT`.
+
 ## 2. Prints
 
 | # | Arquivo | Cena | Alt text (EN) | Legenda (EN) |
