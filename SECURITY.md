@@ -36,9 +36,12 @@ If you identify a problem in any of these areas, it is considered a security vul
 - **Credential masking** in all output (picker, logs, error messages): the password never appears. Every connection-cycle call site redacts the exact known connection (`redactConnection`), and the dev scripts never print the raw connection (`BR-CONN-020`).
 - **No user value concatenated into PL/SQL** — everything goes as a bind; reporter names are validated against an allowlist.
 - **Schema identifier validation**: the `UT3.` prefix discovered from `ALL_SYNONYMS.TABLE_OWNER` is validated as an Oracle identifier before any concatenation; an atypical owner is treated as “no prefix” with a sanitized warning (`SEC-014` / `BR-EXEC-017`).
+- **Workspace path containment**: view/schema discovery and the coverage HTML target are resolved and checked against the workspace/folder root; symlinks pointing outside are not followed (`SEC-015` / `BR-COB-009`).
+- **Debug launch configs carry only the schema**: the public `activeDebugSession.configuration` no longer contains the Oracle connection/password; the adapter resolves the connection internally.
+- **`utplsql.perf.reportFile` is `machine`-scoped and `.jsonl`-only**; relative paths must stay inside the workspace.
 - **No shell injection/eval in dev scripts**: `create-pr.cjs` validates `--base`/`--head` and uses `execFileSync`; `create-release.cjs` escapes the version in the CHANGELOG regex; `db-matrix/run.sh` runs the test command in an explicit subshell without `eval`.
 - **CI supply chain**: all actions are pinned by commit SHA; workflows declare least-privilege `permissions:`; Dependabot updates `npm`/`github-actions` weekly; CI gates production dependencies with `npm audit --omit=dev --audit-level=high`; published `.vsix` artifacts are attested with GitHub Artifact Attestations (PRD-146) (`gh attestation verify <file>.vsix --repo thepaneb/vscode-utplsql`); the wiki token is never in the clone URL (`BR-PLAT-002`).
-- **Verifiable governance**: the OSSF Scorecard is published weekly (`publish_results: true`); `main` is protected by a PR (0 approvals), required checks (`build (22/24/26)` + `CodeQL`), signed commits, and no force-push/deletion (`BR-PLAT-003`/`BR-PLAT-004`). Linear history is not adopted because the project uses merge commits; `enforce_admins` is on.
+- **Verifiable governance**: the OSSF Scorecard is published weekly (`publish_results: true`); `main` is protected by a PR (0 approvals), required checks (`build (24)` + `build (26)` + `CodeQL`), signed commits, and no force-push/deletion (`BR-PLAT-003`/`BR-PLAT-004`). Linear history is not adopted because the project uses merge commits; `enforce_admins` is on.
 
 ## How to report a vulnerability
 
