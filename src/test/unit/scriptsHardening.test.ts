@@ -394,11 +394,26 @@ test('create-pr: sem --head usa a branch atual', (t) => {
     t.skip('checkout detached: sem branch atual');
     return;
   }
+  // Na main o default `--base main` faria head == base; usa uma base explícita
+  // diferente para exercitar apenas a inferência de --head.
+  const base = 'release/base-test';
+  if (branch === base) {
+    t.skip('branch atual coincide com a base de teste');
+    return;
+  }
   const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'utplsql-pr-'));
   const body = path.join(dir, 'body.md');
   try {
     fs.writeFileSync(body, 'corpo');
-    const r = runCli('create-pr.cjs', ['--title', 'x', '--body-file', body, '--dry-run']);
+    const r = runCli('create-pr.cjs', [
+      '--title',
+      'x',
+      '--body-file',
+      body,
+      '--base',
+      base,
+      '--dry-run',
+    ]);
     assert.strictEqual(r.status, 0, r.stderr);
     assert.match(r.stdout, /\[dry-run\] POST \/pulls/);
     assert.match(r.stdout, new RegExp(`"head":"${branch.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}"`));
