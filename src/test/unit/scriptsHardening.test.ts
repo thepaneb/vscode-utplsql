@@ -8,6 +8,11 @@ import { test } from 'node:test';
 
 const ROOT = path.resolve(__dirname, '../../..');
 
+const PKG_VERSION = (
+  JSON.parse(fs.readFileSync(path.join(ROOT, 'package.json'), 'utf8')) as { version: string }
+).version;
+const RELEASE_TAG = `v${PKG_VERSION}`;
+
 const createPr = require(path.join(ROOT, 'scripts', 'create-pr.cjs')) as {
   parseArgs: (argv: string[]) => Record<string, string | true>;
   validateRef: (name: string, value: unknown) => void;
@@ -96,8 +101,8 @@ test('create-pr/create-release: parseArgs lê flags e valores', () => {
     'body-file': 'b',
   });
   assert.deepStrictEqual(
-    createRelease.parseArgs(['--dry-run', '--tag', 'v0.20.0', '--prerelease']),
-    { 'dry-run': true, tag: 'v0.20.0', prerelease: true },
+    createRelease.parseArgs(['--dry-run', '--tag', RELEASE_TAG, '--prerelease']),
+    { 'dry-run': true, tag: RELEASE_TAG, prerelease: true },
   );
 });
 
@@ -184,14 +189,14 @@ test('create-pr: falha sem body-file, sem título e com head==base', () => {
 test('create-release: dry-run cria release com notas inline', () => {
   const r = runCli('create-release.cjs', [
     '--tag',
-    'v0.20.0',
+    RELEASE_TAG,
     '--notes',
     'notas da release',
     '--dry-run',
   ]);
   assert.strictEqual(r.status, 0, r.stderr);
   assert.match(r.stdout, /\[dry-run\] POST \/releases/);
-  assert.match(r.stdout, /"tag_name":"v0.20.0"/);
+  assert.ok(r.stdout.includes(`"tag_name":"${RELEASE_TAG}"`));
   assert.match(r.stdout, /"body":"notas da release"/);
 });
 
@@ -202,7 +207,7 @@ test('create-release: dry-run aceita notes-file', () => {
     fs.writeFileSync(notes, 'notas do arquivo');
     const r = runCli('create-release.cjs', [
       '--tag',
-      'v0.20.0',
+      RELEASE_TAG,
       '--notes-file',
       notes,
       '--draft',
@@ -229,7 +234,7 @@ test('create-release: valida tag, versão e notes-file ausente', () => {
 
   const missing = runCli('create-release.cjs', [
     '--tag',
-    'v0.20.0',
+    RELEASE_TAG,
     '--notes-file',
     path.join(os.tmpdir(), 'utplsql-not-exists.md'),
     '--dry-run',
@@ -425,27 +430,27 @@ test('create-pr: sem --head usa a branch atual', (t) => {
 test('create-release: caminho real cria release e detecta existente (API fake)', () => {
   const created = runFakeApi(
     'create-release.cjs',
-    ['--tag', 'v0.20.0', '--notes', 'notas', '--target', 'main'],
+    ['--tag', RELEASE_TAG, '--notes', 'notas', '--target', 'main'],
     [
       { status: 404, body: '{"message":"Not Found"}' },
       { status: 201, body: '{"html_url":"https://example/releases/1"}' },
     ],
   );
   assert.strictEqual(created.status, 0, created.stderr);
-  assert.match(created.stdout, /Release v0\.20\.0 criada: https:\/\/example\/releases\/1/);
+  assert.ok(created.stdout.includes(`Release ${RELEASE_TAG} criada: https://example/releases/1`));
   assert.match(created.stdout, /publish\.yml/);
 
   const existing = runFakeApi(
     'create-release.cjs',
-    ['--tag', 'v0.20.0', '--notes', 'notas'],
+    ['--tag', RELEASE_TAG, '--notes', 'notas'],
     [{ status: 200, body: '{"html_url":"https://example/releases/old"}' }],
   );
   assert.strictEqual(existing.status, 1);
-  assert.match(existing.stderr, /Release v0\.20\.0 já existe/);
+  assert.ok(existing.stderr.includes(`Release ${RELEASE_TAG} já existe`));
 
   const failed = runFakeApi(
     'create-release.cjs',
-    ['--tag', 'v0.20.0', '--notes', 'notas'],
+    ['--tag', RELEASE_TAG, '--notes', 'notas'],
     [
       { status: 404, body: '{}' },
       { status: 500, body: 'boom' },
@@ -456,9 +461,9 @@ test('create-release: caminho real cria release e detecta existente (API fake)',
 });
 
 test('create-release: usa a seção do CHANGELOG quando não há notas', () => {
-  const r = runCli('create-release.cjs', ['--tag', 'v0.20.0', '--dry-run']);
+  const r = runCli('create-release.cjs', ['--tag', RELEASE_TAG, '--dry-run']);
   assert.strictEqual(r.status, 0, r.stderr);
-  assert.match(r.stdout, /"body":"## 0\.20\.0/);
+  assert.ok(r.stdout.includes(`"body":"## ${PKG_VERSION}`));
 });
 
 test('run.sh: não usa eval e isola o comando em bash -c', () => {
