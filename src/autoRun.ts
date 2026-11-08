@@ -57,11 +57,20 @@ export function createAutoRunner(getOptions: () => AutoRunOptions, deps: AutoRun
 
   /** PRD-148 RF2: flush FIFO, um run por vez, sem reagendar em loop. */
   const notifyRunFinished = (): void => {
+    if (getOptions().queue !== 'replace' || !getOptions().enabled) {
+      deferred.clear();
+      return;
+    }
     if (flushing || deferred.size === 0) return;
     flushing = true;
     void (async () => {
       try {
-        while (deferred.size > 0 && !deps.isRunning()) {
+        while (
+          deferred.size > 0 &&
+          !deps.isRunning() &&
+          getOptions().queue === 'replace' &&
+          getOptions().enabled
+        ) {
           const next = deferred.values().next();
           if (next.done) break;
           const uri = next.value;
@@ -100,6 +109,7 @@ export function createAutoRunner(getOptions: () => AutoRunOptions, deps: AutoRun
       if (uri === undefined) {
         for (const handle of timers.values()) deps.clearTimeout(handle);
         timers.clear();
+        deferred.clear();
         return;
       }
       const handle = timers.get(uri);
@@ -107,6 +117,7 @@ export function createAutoRunner(getOptions: () => AutoRunOptions, deps: AutoRun
         deps.clearTimeout(handle);
         timers.delete(uri);
       }
+      deferred.delete(uri);
     },
     notifyRunFinished,
     get pending(): number {

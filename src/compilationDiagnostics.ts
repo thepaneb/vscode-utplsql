@@ -14,7 +14,7 @@ import type { TestStateManager } from './state';
  */
 const SOURCE = 'utPLSQL Compilation';
 /** Fontes de produção que podem receber diagnóstico (PRD-148 RF3). */
-const SOURCE_PATTERN = '**/*.{pks,pkb,typ,tpb,prc,fnc,trg}';
+const SOURCE_PATTERN = '**/*.{pks,pkb,typ,tpb,prc,fnc,trg,sql}';
 const EXT_BY_TYPE: Record<string, string> = {
   PACKAGE: 'pks',
   'PACKAGE BODY': 'pkb',
@@ -53,6 +53,9 @@ async function indexSources(): Promise<SourceIndex> {
   try {
     const uris = await vscode.workspace.findFiles(SOURCE_PATTERN, '**/node_modules/**');
     for (const uri of uris) {
+      // `findFiles` com exclude explícito ignora `files.exclude`; descarta
+      // saídas geradas para não publicar no arquivo errado (PRD-148 RF3).
+      if (/[\\/](?:node_modules|out|dist|build|coverage)[\\/]/i.test(uri.fsPath)) continue;
       const base = path.basename(uri.fsPath);
       const dot = base.lastIndexOf('.');
       if (dot <= 0) continue;
@@ -118,7 +121,8 @@ export async function refreshCompilationDiagnostics(state: TestStateManager): Pr
       for (const err of errors) {
         const name = err.name.toLowerCase();
         const ext = extForType(err.type);
-        const source = ext ? sources.byName.get(name)?.get(ext) : undefined;
+        const byExt = sources.byName.get(name);
+        const source = ext ? (byExt?.get(ext) ?? byExt?.get('sql')) : undefined;
         // Sem arquivo de produção resolvível, mantém o diagnóstico na suite de
         // mesmo nome (ex.: suite só-banco); sem suite, omite.
         const uri = source ?? suites.get(name);

@@ -139,6 +139,26 @@ test('autoRun: flush do replace ignora arquivo que deixou de ser elegível', asy
   assert.deepStrictEqual(h.runs, []);
 });
 
+test('autoRun: desligar o auto-run descarta o deferred do replace', () => {
+  const h = harness({ queue: 'replace' }, true);
+  h.runner.schedule('/ws/ut_a.pks');
+  h.flush();
+  h.setRunning(false);
+  h.setOpts({ enabled: false });
+  h.runner.notifyRunFinished();
+  assert.deepStrictEqual(h.runs, []);
+});
+
+test('autoRun: cancel(uri) remove o deferred do arquivo', () => {
+  const h = harness({ queue: 'replace' }, true);
+  h.runner.schedule('/ws/ut_a.pks');
+  h.flush();
+  h.runner.cancel('/ws/ut_a.pks');
+  h.setRunning(false);
+  h.runner.notifyRunFinished();
+  assert.deepStrictEqual(h.runs, []);
+});
+
 test('autoRun: cancel(uri) remove só o timer do arquivo', () => {
   const h = harness();
   h.runner.schedule('/ws/ut_a.pks');
