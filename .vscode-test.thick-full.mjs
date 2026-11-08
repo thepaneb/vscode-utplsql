@@ -31,6 +31,11 @@ const EXCLUDED = new Set([
   // thick-full eles falham/hangam por dependerem do `.vscode/settings.json`
   'extension.test.js',
   'commandsE2E.test.js',
+  // Debugger/DBMS_DEBUG: limitação conhecida no thick (#288). Os testes
+  // passam isolados, mas deixam sessões `pipe get` que envenenam o host
+  // compartilhado e derrubam timeout/cancelamento seguintes (PRD-150 RF3).
+  'debuggerE2E.test.js',
+  'debuggerExceptionE2E.test.js',
   // debugger de function standalone: limitação conhecida no thick (PRD-125)
   'debuggerStandaloneFn.test.js',
   // 11g legado: o full do 23free não deve inicializar thick depois de um thin;
