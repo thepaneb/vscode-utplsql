@@ -2,7 +2,7 @@
 
 # Contributing
 
-<!-- prd:PRD-47 --> <!-- prd:PRD-124 --> <!-- prd:PRD-125 -->
+<!-- prd:PRD-47 --> <!-- prd:PRD-124 --> <!-- prd:PRD-125 --> <!-- prd:PRD-150 -->
 
 <!-- prd:PRD-98 -->
 <!-- prd:PRD-104 -->
@@ -183,7 +183,7 @@ npm run db:matrix                      # whole matrix (one version at a time)
 npm run db:matrix -- --only 21xe       # a single version
 npm run db:matrix -- --smoke           # fast subset (capabilities + debugger)
 npm run db:matrix -- --thick           # thick mode per version
-npm run db:matrix -- --thick-full      # thick-full (experimental; exclui thin-only/UI; PRD-125)
+npm run db:matrix -- --thick-full      # thick-full (exclui thin-only/UI/debugger; PRD-125/150)
 npm run db:matrix -- --only 11xe --thick  # Oracle 11g (thick-only)
 npm run db:matrix -- --clean           # wipe the data volume and recreate
 ```
@@ -195,6 +195,11 @@ root `CONTRIBUTING.md` for details.
 
 > **Windows + WSL:** quote the Windows path in `.env.dbmatrix`, e.g.
 > `ORACLE_CLIENT_LIB_DIR="D:\oracle\instantclient_23_0"`. The `source` in
+> The thick-full axis has documented skips: UI/commands and multi-root (thin
+> axis), `thickMode` (isolated host), thin-only tests, and the DBMS_DEBUG E2E
+> files (they leave `pipe get` sessions that destabilize the shared thick host,
+> #288). The axis fails explicitly if the host starts thin (PRD-150 RF1).
+>
 > `run.sh` consumes unquoted backslashes and the thick test fails with
 > `DPI-1047` (the path arrives as `D:Users...`). The same path in `.env` is
 > parsed by the test config (no shell expansion), so it only bites the matrix.

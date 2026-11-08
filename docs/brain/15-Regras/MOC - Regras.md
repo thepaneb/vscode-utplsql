@@ -80,6 +80,7 @@ SORT id ASC
 - [[BR-CONN-021 - Major do driver Oracle so entra com matriz e packaging validados]] — `BR-CONN-021`
 - [[BR-CONN-022 - Ativacao nao abre conexao e validacao de setup e preguicosa]] — `BR-CONN-022`
 - [[BR-CONN-023 - Pool ocioso fecha ao fim da operacao e nunca conexao em uso]] — `BR-CONN-023`
+- [[BR-CONN-024 - Abort em thick descarta conexoes e pool quebrados]] — `BR-CONN-024`
 - [[BR-DEBUG-001 - Ciclo do debugger DBMS_DEBUG para no breakpoint e le o frame]] — `BR-DEBUG-001`
 - [[BR-DEBUG-002 - stopOnException controla pausa em excecao (break_exception)]] — `BR-DEBUG-002`
 - [[BR-DEBUG-003 - Function standalone depura no namespace toplevel]] — `BR-DEBUG-003`

@@ -191,6 +191,7 @@ notas `prd-*`. O índice navegável do vault é a [[MOC - PRDs]].
 | 146 | [Attestations de proveniência na publicação](completed/prd-146-attestations-publish.md) | 0.20.0 | 2026-11-05 |
 | 147 | [Marketplace: superfície dedicada, screenshots e metadata de conversão](completed/prd-147-marketplace-listing-page.md) | 0.20.0 | 2026-11-05 |
 | 148 | [Confiabilidade de execução e estado após a auditoria 0.20.0](completed/prd-148-execution-state-reliability.md) | 0.20.1 | 2026-11-07 |
+| 150 | [Thick-full verdadeiro: inicialização thick e recuperação do pool após break](completed/prd-150-thick-full-true-pool-recovery.md) | 0.20.1 | 2026-11-07 |
 
 ### ⚪ Propostos
 
@@ -229,7 +230,6 @@ notas `prd-*`. O índice navegável do vault é a [[MOC - PRDs]].
 | 144 | [Hardening de segurança do runtime: parsers de relatório, path traversal em views e redação de credenciais](proposed/prd-144-security-runtime-hardening.md) | 0.24.0 | 2026-11-05 |
 | 145 | [Segurança do entregável: logging de credenciais, cadeia de build e triagem dos alertas do GitHub](proposed/prd-145-security-alerts-deliverable.md) | 0.24.0 | 2026-11-05 |
 | 149 | [Performance mensurável e qualidade de engenharia](proposed/prd-149-performance-engineering-quality.md) | 0.23.0 | 2026-11-07 |
-| 150 | [Thick-full verdadeiro: inicialização thick e recuperação do pool após break](proposed/prd-150-thick-full-true-pool-recovery.md) | 0.20.1 | 2026-11-07 |
 | 151 | [CodeLens de debug de teste e suíte](proposed/prd-151-codelens-debug-test.md) | 0.25.0 | 2026-11-07 |
 <!-- prd:roadmap:end -->
 
@@ -356,6 +356,7 @@ docs/prd/
 │   ├── prd-146-attestations-publish.md
 │   ├── prd-147-marketplace-listing-page.md
 │   ├── prd-148-execution-state-reliability.md
+│   ├── prd-150-thick-full-true-pool-recovery.md
 ├── proposed/        ← em avaliação
 │   ├── prd-60-branch-coverage-investigation.md
 │   ├── prd-61-cli-auto-provision.md
@@ -390,7 +391,6 @@ docs/prd/
 │   ├── prd-144-security-runtime-hardening.md
 │   ├── prd-145-security-alerts-deliverable.md
 │   ├── prd-149-performance-engineering-quality.md
-│   ├── prd-150-thick-full-true-pool-recovery.md
 │   ├── prd-151-codelens-debug-test.md
 ```
 <!-- prd:estrutura:end -->

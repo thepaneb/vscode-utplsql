@@ -4,7 +4,7 @@
 
 | Campo | Valor |
 |---|---|
-| Status | Proposto |
+| Status | Concluído |
 | Autor | Gil Cleber Barboza |
 | Data | 2026-11-07 |
 | Componente | Testes de integração + matriz de bancos + `oracleRunner` |
@@ -251,12 +251,16 @@ scripts de matriz/CI.
 
 ## 12. Impacto no cérebro
 
-Atualizar **`BR-TEST-001`** para incluir a guarda de thick real no eixo
-thick-full (com `prds: ["PRD-125", "PRD-150"]`). Se a recuperação do pool após
-`break()` virar invariante de conexão, criar/ajustar uma regra `BR-CONN-*` com
-`prds: ["PRD-150"]`. RNFs sem regra: RNF1 (tempo), RNF2 (sem dep nova),
-RNF3 (determinismo), RNF4 (regressão thin), RNF5 (isolamento de estado) —
-verificadas pelo CI/matriz.
+Regras criadas/ajustadas com `prds: ["PRD-150"]`:
+
+- `BR-TEST-001` — eixo thick-full com guarda `oracledb.thin === false`, skips
+  documentados e dispatch experimental.
+- `BR-CONN-024` — abort descarta conexões quebradas e o pool; o próximo
+  `ensurePool` cria uma instância limpa.
+
+RNFs sem regra: RNF1, RNF2, RNF3, RNF4, RNF5 (tempo, sem dependência nova,
+determinismo dos skips, regressão thin e isolamento de estado — verificadas
+pela matriz/CI).
 
 ## Impacto nas docs
 
