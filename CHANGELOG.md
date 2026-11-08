@@ -1,5 +1,17 @@
 # Changelog
 
+## 0.20.1
+
+- **Execution and state reliability (PRD-148)**: runs and export are
+  serialized (the next execution waits for the previous unwind before touching
+  `UT_OUTPUT_BUFFER_TMP`); `autoRunQueue=replace` flushes the deferred file at
+  the end of the run; compilation diagnostics map production packages/body to
+  `.pks`/`.pkb`/`.typ`/`.tpb`; schema-mode failures restore after reload with
+  schema-scoped ids and lazy materialization; `mergeSuiteLists` preserves
+  file+DB tests without mutating the input; Oracle activity starts before the
+  connection checkout; `SET TRANSACTION`/`SET ROLE`, SQL Developer XML entities
+  and the default 1521 port are handled, and reporter dedupe is exact.
+
 ## 0.20.0
 
 - **Audit reliability fixes**: timeouts/cancellations no longer apply partial

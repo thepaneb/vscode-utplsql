@@ -4,7 +4,7 @@
 
 | Campo | Valor |
 |---|---|
-| Status | Em desenvolvimento |
+| Status | Concluído |
 | Autor | Gil Cleber Barboza |
 | Data | 2026-11-07 |
 | Componente | Extensão `paneb.vscode-utplsql` |
@@ -201,10 +201,20 @@ comportamento de `replace` passa a cumprir a descrição.
 
 ## 12. Impacto no cérebro
 
-Criar/ajustar regras `BR-EXEC-*` (serialização/outcome), `BR-STATE-*`
-(restore/IDs) e `BR-DISC-*` (união arquivo+banco) com `prds: ["PRD-148"]`,
-`implementacao:` e `testes:`. Se alguma RF não gerar regra, registrar
-**nenhuma** na implementação e justificar.
+Regras criadas/ajustadas com `prds: ["PRD-148"]`:
+
+- `BR-EXEC-018` — serialização de runs/export antes do buffer.
+- `BR-EXEC-016` — auto-run `replace` com flush real ao fim do run.
+- `BR-STATE-001` — restore de falhas no schema mode sob demanda.
+- `BR-STATE-002` — IDs de suite/teste com schema.
+- `BR-DISC-001` — união arquivo+banco sem mutação.
+- `BR-UI-004` — `hasFailures` derivado de `lastResults` no reload.
+- `BR-UI-008` — diagnósticos de produção por tipo de objeto.
+
+RNFs sem regra: RNF1, RNF2, RNF3 (sem dependência nova; cobertura verificada
+pelo `.c8rc`; nenhuma chave de i18n nova foi necessária).
+O caso JUnit duplicado do RF8 já estava implementado na 0.20.0 e foi
+apenas confirmado pela regressão.
 
 ## Impacto nas docs
 

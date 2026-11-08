@@ -190,12 +190,7 @@ notas `prd-*`. O índice navegável do vault é a [[MOC - PRDs]].
 | 127 | [Piso de VS Code 1.125 e runtime Node 24](completed/prd-127-vscode-floor-1-125.md) | 0.19.0 | 2026-10-30 |
 | 146 | [Attestations de proveniência na publicação](completed/prd-146-attestations-publish.md) | 0.20.0 | 2026-11-05 |
 | 147 | [Marketplace: superfície dedicada, screenshots e metadata de conversão](completed/prd-147-marketplace-listing-page.md) | 0.20.0 | 2026-11-05 |
-
-### 🟡 Em desenvolvimento
-
-| # | PRD | Versão | Data |
-|---|---|---|---|
-| 148 | [Confiabilidade de execução e estado após a auditoria 0.20.0](in-progress/prd-148-execution-state-reliability.md) | 0.20.1 | 2026-11-07 |
+| 148 | [Confiabilidade de execução e estado após a auditoria 0.20.0](completed/prd-148-execution-state-reliability.md) | 0.20.1 | 2026-11-07 |
 
 ### ⚪ Propostos
 
@@ -360,7 +355,6 @@ docs/prd/
 │   ├── prd-127-vscode-floor-1-125.md
 │   ├── prd-146-attestations-publish.md
 │   ├── prd-147-marketplace-listing-page.md
-├── in-progress/        ← sendo implementados agora
 │   ├── prd-148-execution-state-reliability.md
 ├── proposed/        ← em avaliação
 │   ├── prd-60-branch-coverage-investigation.md
