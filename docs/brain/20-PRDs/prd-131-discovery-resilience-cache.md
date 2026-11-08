@@ -174,5 +174,5 @@ com TTL") com `prds: ["PRD-131"]`, `implementacao:` e `testes:`. Enquanto
 - 🗺️ [[MOC - PRDs]]
 - 🔗 PRDs relacionados: [[prd-56-duration-persistence|PRD-56]] · [[prd-103-incremental-source-reindex|PRD-103]] · [[prd-148-execution-state-reliability|PRD-148]]
 - 🔗 Mesma versão (0.21.0): [[prd-128-event-bus-internal|PRD-128]] · [[prd-129-orchestration-strategy|PRD-129]] · [[prd-130-config-validation-typed-errors|PRD-130]] · [[prd-137-wallet-password-binding|PRD-137]] · [[prd-138-organization-strategy-pattern|PRD-138]] · [[prd-139-state-store-slicing-lru|PRD-139]]
-- 🚀 ⬅️ release anterior: [[prd-148-execution-state-reliability|PRD-148 (0.20.1)]] · ➡️ próxima release: [[prd-88-locale-aware-formatting|PRD-88 (0.22.0)]]
+- 🚀 ⬅️ release anterior: [[prd-150-thick-full-true-pool-recovery|PRD-150 (0.20.1)]] · ➡️ próxima release: [[prd-88-locale-aware-formatting|PRD-88 (0.22.0)]]
 <!-- brain:auto:end -->

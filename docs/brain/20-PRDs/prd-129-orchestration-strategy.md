@@ -136,5 +136,5 @@ condicionais") com `prds: ["PRD-129"]`, `implementacao:` e `testes:`. Enquanto
 - 🗺️ [[MOC - PRDs]]
 - 🔗 PRDs relacionados: [[prd-76-reporter-export|PRD-76]] · [[prd-78-random-test-order|PRD-78]] · [[prd-79-coverage-scope|PRD-79]] · [[prd-111-decompose-oracle-runner|PRD-111]] · [[prd-148-execution-state-reliability|PRD-148]]
 - 🔗 Mesma versão (0.21.0): [[prd-128-event-bus-internal|PRD-128]] · [[prd-130-config-validation-typed-errors|PRD-130]] · [[prd-131-discovery-resilience-cache|PRD-131]] · [[prd-137-wallet-password-binding|PRD-137]] · [[prd-138-organization-strategy-pattern|PRD-138]] · [[prd-139-state-store-slicing-lru|PRD-139]]
-- 🚀 ⬅️ release anterior: [[prd-148-execution-state-reliability|PRD-148 (0.20.1)]] · ➡️ próxima release: [[prd-88-locale-aware-formatting|PRD-88 (0.22.0)]]
+- 🚀 ⬅️ release anterior: [[prd-150-thick-full-true-pool-recovery|PRD-150 (0.20.1)]] · ➡️ próxima release: [[prd-88-locale-aware-formatting|PRD-88 (0.22.0)]]
 <!-- brain:auto:end -->

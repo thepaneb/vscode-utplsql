@@ -131,5 +131,5 @@ Superfície listada: CHANGELOG.
 - 🗺️ [[MOC - PRDs]]
 - 🔗 PRDs relacionados: [[prd-54-coverage-toggle|PRD-54]] · [[prd-56-duration-persistence|PRD-56]]
 - 🔗 Mesma versão (0.21.0): [[prd-128-event-bus-internal|PRD-128]] · [[prd-129-orchestration-strategy|PRD-129]] · [[prd-130-config-validation-typed-errors|PRD-130]] · [[prd-131-discovery-resilience-cache|PRD-131]] · [[prd-137-wallet-password-binding|PRD-137]] · [[prd-138-organization-strategy-pattern|PRD-138]]
-- 🚀 ⬅️ release anterior: [[prd-148-execution-state-reliability|PRD-148 (0.20.1)]] · ➡️ próxima release: [[prd-88-locale-aware-formatting|PRD-88 (0.22.0)]]
+- 🚀 ⬅️ release anterior: [[prd-150-thick-full-true-pool-recovery|PRD-150 (0.20.1)]] · ➡️ próxima release: [[prd-88-locale-aware-formatting|PRD-88 (0.22.0)]]
 <!-- brain:auto:end -->
