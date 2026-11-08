@@ -2,8 +2,9 @@ import './setup.js';
 import assert from 'node:assert';
 import { test } from 'node:test';
 import type * as vscode from 'vscode';
+import { readConfig } from '../../config';
 import { t } from '../../i18n';
-import { closeOraclePool } from '../../oracleRunner';
+import { beginOracleActivity, closeOraclePool } from '../../oracleRunner';
 import {
   adaptOracleConn,
   connectOracle,
@@ -20,6 +21,7 @@ import {
   stripSqlTerminator,
   summarizeStatement,
 } from '../../scriptRunner';
+import { __resetConfigValues, __setConfigValue } from '../vscode-stub';
 
 // `import('oracledb')` returns the CommonJS module through its interop default.
 // Keep the actual module object here so the connection tests can replace only
@@ -557,6 +559,44 @@ test('connectOracle: usa pool e aplica timeout padrão', async () => {
     assert.strictEqual(conn.callTimeout, 300_000);
     await db.close();
   } finally {
+    oracledb.createPool = originalCreatePool;
+    oracledb.getConnection = originalGetConnection;
+    await closeOraclePool();
+  }
+});
+
+test('connectOracle: começa a atividade antes de adquirir conexão (PRD-148 RF6)', async () => {
+  await closeOraclePool();
+  const originalCreatePool = oracledb.createPool;
+  const originalGetConnection = oracledb.getConnection;
+  const conn = fakeConn();
+  let closeCalls = 0;
+  const pool = {
+    getConnection: async () => {
+      // Outra atividade termina enquanto esta conexão está sendo adquirida.
+      // Se `connectOracle` ainda não abriu a sua atividade, o pool ocioso seria
+      // fechado no meio do checkout.
+      await beginOracleActivity(readConfig()).end();
+      return conn;
+    },
+    close: async () => {
+      closeCalls += 1;
+    },
+  };
+  oracledb.createPool = async () => pool;
+  oracledb.getConnection = async () => conn;
+  try {
+    __setConfigValue('oraclePoolCloseAfterRun', false);
+    const first = await connectOracle('u/p@//h:1521/s');
+    await first.close();
+    assert.strictEqual(closeCalls, 0);
+
+    __setConfigValue('oraclePoolCloseAfterRun', true);
+    const second = await connectOracle('u/p@//h:1521/s');
+    assert.strictEqual(closeCalls, 0, 'o pool não pode fechar durante a aquisição');
+    await second.close();
+  } finally {
+    __resetConfigValues();
     oracledb.createPool = originalCreatePool;
     oracledb.getConnection = originalGetConnection;
     await closeOraclePool();

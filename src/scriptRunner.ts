@@ -598,20 +598,27 @@ export async function connectOracle(
   }
   const { readConfig } = await import('./config.js');
   const cfg = readConfig();
-  const pool = await ensurePool(oracledb, connection, cfg).catch(() => undefined);
-  const conn = pool
-    ? await pool.getConnection()
-    : await oracledb.getConnection(parseConnString(connection));
+  // PRD-148 RF6: a atividade começa antes de adquirir a conexão; senão uma
+  // atividade concorrente pode fechar o pool ocioso entre o checkout e o begin.
   const activity = beginOracleActivity(cfg);
-  const adapted = adaptOracleConn(conn, oracledb, opts.timeoutSeconds ?? 300);
-  return {
-    ...adapted,
-    async close(): Promise<void> {
-      try {
-        await adapted.close();
-      } finally {
-        await activity.end();
-      }
-    },
-  };
+  try {
+    const pool = await ensurePool(oracledb, connection, cfg).catch(() => undefined);
+    const conn = pool
+      ? await pool.getConnection()
+      : await oracledb.getConnection(parseConnString(connection));
+    const adapted = adaptOracleConn(conn, oracledb, opts.timeoutSeconds ?? 300);
+    return {
+      ...adapted,
+      async close(): Promise<void> {
+        try {
+          await adapted.close();
+        } finally {
+          await activity.end();
+        }
+      },
+    };
+  } catch (e) {
+    await activity.end();
+    throw e;
+  }
 }
