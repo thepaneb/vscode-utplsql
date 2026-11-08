@@ -576,7 +576,13 @@ export function registerRunCommands(
     }),
     vscode.commands.registerCommand('utplsql.runRelated', () => runRelated()),
     vscode.commands.registerCommand('utplsql.runFailed', async () => {
-      const failed = state.getLastFailedItems();
+      let failed = state.getLastFailedItems();
+      // PRD-148 RF4: no schema mode a árvore é lazy; se o snapshot tem falhas
+      // mas os itens ainda não existem, materializa e tenta de novo.
+      if (failed.length === 0 && state.hasFailedResults()) {
+        await collectAllItems(controller, state);
+        failed = state.restoreLastFailed();
+      }
       if (failed.length === 0) {
         vscode.window.showInformationMessage(t(locale, 'ext.runFailed.none'));
         return;

@@ -279,3 +279,36 @@ test('persist: resultado sem ts ganha timestamp do persist (não fica undefined)
   };
   assert.strictEqual(typeof snapshot.items['test:a']?.ts, 'number');
 });
+
+test('restoreLastFailed: resolve id legado sem schema e hasFailedResults (PRD-148 RF4)', () => {
+  const mgr = new TestStateManager();
+  const item = { id: 'test:APP:ut_app.test_one' } as any;
+  mgr.setMeta(item, {
+    kind: 'test',
+    packageName: 'UT_APP',
+    procName: 'TEST_ONE',
+    description: 'one',
+    uri: { fsPath: '/tmp/ut_app.pks' } as any,
+    folder: { uri: { fsPath: '/tmp' } } as any,
+    schema: 'APP',
+  });
+  mgr.setItem(item.id, item);
+  mgr.setLastResults(new Map([['test:ut_app.test_one', { status: 'failed' as const, ts: 1 }]]));
+
+  assert.strictEqual(mgr.hasFailedResults(), true);
+  assert.deepStrictEqual(mgr.restoreLastFailed(), [item]);
+});
+
+test('hasFailedResults: só considera failed/error', () => {
+  const mgr = new TestStateManager();
+  assert.strictEqual(mgr.hasFailedResults(), false);
+  mgr.setLastResults(
+    new Map([
+      ['a', { status: 'passed' as const }],
+      ['b', { status: 'skipped' as const }],
+    ]),
+  );
+  assert.strictEqual(mgr.hasFailedResults(), false);
+  mgr.setLastResults(new Map([['c', { status: 'error' as const }]]));
+  assert.strictEqual(mgr.hasFailedResults(), true);
+});

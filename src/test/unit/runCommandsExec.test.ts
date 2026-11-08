@@ -595,6 +595,16 @@ test('runFailed: reexecuta os itens que falharam', async () => {
   assert.strictEqual(executeCalls.length, 1);
 });
 
+test('runFailed: restaura falhas do snapshot sem itens materializados (PRD-148 RF4)', async () => {
+  const { state, testItem } = stateWithSuite();
+  state.setLastResults(new Map([['test:pkg.proc', { status: 'failed' as const, ts: 1 }]]));
+  assert.deepStrictEqual(state.getLastFailedItems(), []);
+  const { call } = await register(state);
+  await call('utplsql.runFailed');
+  assert.strictEqual(executeCalls.length, 1);
+  assert.deepStrictEqual(state.getLastFailedItems(), [testItem]);
+});
+
 test('runFailed: modo global de cobertura liga coverage', async () => {
   const { state, testItem } = stateWithSuite();
   state.coverageAlways = true;
