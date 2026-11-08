@@ -368,6 +368,7 @@ export function activate(context: vscode.ExtensionContext) {
       clearTimeout: (handle) => clearTimeout(handle),
     },
   );
+  run.setOnRunFinished(() => autoRunner.notifyRunFinished());
   context.subscriptions.push(
     vscode.workspace.onDidSaveTextDocument((doc) => {
       if (!doc.fileName.endsWith('.pks')) return;

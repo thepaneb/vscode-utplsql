@@ -32,12 +32,18 @@ export interface AutoRunner {
   schedule(uri: string): void;
   /** Cancela timers pendentes de um arquivo (ou todos). */
   cancel(uri?: string): void;
+  /**
+   * Executa os arquivos que ficaram em `deferred` com `queue=replace` quando
+   * a execução anterior terminar (PRD-148 RF2). Chamado pelo runner no fim.
+   */
+  notifyRunFinished(): void;
   readonly pending: number;
 }
 
 export function createAutoRunner(getOptions: () => AutoRunOptions, deps: AutoRunDeps): AutoRunner {
   const timers = new Map<string, ReturnType<typeof setTimeout>>();
   const deferred = new Set<string>();
+  let flushing = false;
 
   const fire = (uri: string): void => {
     if (deps.isRunning()) {
@@ -47,6 +53,30 @@ export function createAutoRunner(getOptions: () => AutoRunOptions, deps: AutoRun
     }
     deferred.delete(uri);
     void deps.run(uri);
+  };
+
+  /** PRD-148 RF2: flush FIFO, um run por vez, sem reagendar em loop. */
+  const notifyRunFinished = (): void => {
+    if (flushing || deferred.size === 0) return;
+    flushing = true;
+    void (async () => {
+      try {
+        while (deferred.size > 0 && !deps.isRunning()) {
+          const next = deferred.values().next();
+          if (next.done) break;
+          const uri = next.value;
+          deferred.delete(uri);
+          if (deps.isEligible && !deps.isEligible(uri)) continue;
+          try {
+            await deps.run(uri);
+          } catch {
+            /* um auto-run com erro não pode impedir os demais */
+          }
+        }
+      } finally {
+        flushing = false;
+      }
+    })();
   };
 
   return {
@@ -78,6 +108,7 @@ export function createAutoRunner(getOptions: () => AutoRunOptions, deps: AutoRun
         timers.delete(uri);
       }
     },
+    notifyRunFinished,
     get pending(): number {
       return timers.size;
     },

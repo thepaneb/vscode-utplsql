@@ -24,6 +24,11 @@ export interface RunCommands {
   /** Há execução em andamento? (usada pelo auto-run/watch — PRD-50). */
   isRunning(): boolean;
   cancel(): void;
+  /**
+   * Registra o callback de fim de execução (auto-run `replace` — PRD-148 RF2).
+   * O callback roda depois que a promise pendente é limpa.
+   */
+  setOnRunFinished(callback: (() => void) | undefined): void;
 }
 
 export function registerRunCommands(
@@ -37,6 +42,7 @@ export function registerRunCommands(
   // de desenrolar. A promise cobre run, export e auto-run, que compartilham
   // `UT_OUTPUT_BUFFER_TMP` e o estado de resultados.
   let currentRunPromise: Promise<void> | undefined;
+  let onRunFinished: (() => void) | undefined;
 
   /**
    * Enfileira uma execução Oracle. Cancela a execução ativa, espera o unwind
@@ -82,6 +88,8 @@ export function registerRunCommands(
     currentRunPromise = tracked;
     return execution.finally(() => {
       if (currentRunPromise === tracked) currentRunPromise = undefined;
+      // PRD-148 RF2: só depois de limpar a promise o auto-run pode reagendar.
+      onRunFinished?.();
     });
   };
 
@@ -594,5 +602,8 @@ export function registerRunCommands(
     runUri: (uri, coverage) => runForUri(uri, coverage),
     isRunning: () => currentRunPromise !== undefined,
     cancel: () => currentRunToken?.cancel(),
+    setOnRunFinished: (callback) => {
+      onRunFinished = callback;
+    },
   };
 }
