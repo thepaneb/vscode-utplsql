@@ -297,6 +297,14 @@ que afirmam que o pool sobrevive ao `break`.
 limitação documentada permitida pelo Rollout; nenhuma promessa de suíte
 completa em 11g é feita nesta versão.
 
+**Correção (2026-11-07):** com a ativação preguiçosa da PRD-120 (0.20.0), o host
+do thick-full passou a abrir conexões raw antes de `ensurePool` e iniciou
+**thin** por `NJS-118`; a execução de 81/13/0 citada acima não era thick real.
+O preload `thickSetup` (commit `1e214e0`) restaura o thick, mas a suíte completa
+ainda entra em cascata após timeout/cancelamento. O residual está na
+**PRD-150** (0.20.1); o 0.20.0 mantém o eixo como **experimental** e o thick
+smoke verde no 11g/23free.
+
 ## 10. Critérios de aceite
 
 - `run.sh --thick-full` executa a suíte completa (menos thin-only e
@@ -340,7 +348,7 @@ cita `PRD-125` ou `<!-- prd:PRD-125 -->`.
 <!-- brain:auto:start:conexoes -->
 - 🗺️ [[MOC - PRDs]]
 - 📐 Regras: [[BR-TEST-001 - Matriz de bancos Oracle cobre 12.2-23ai em thin e thick|BR-TEST-001]]
-- 🔗 PRDs relacionados: [[prd-04-expand-tests|PRD-04]] · [[prd-72-db-test-matrix|PRD-72]] · [[prd-101-connection-pool-lifecycle|PRD-101]] · [[prd-102-trace-and-perf-instrumentation|PRD-102]] · [[prd-123-oracle-11g-support|PRD-123]] · [[prd-124-oracledb-26-upgrade|PRD-124]]
+- 🔗 PRDs relacionados: [[prd-04-expand-tests|PRD-04]] · [[prd-72-db-test-matrix|PRD-72]] · [[prd-101-connection-pool-lifecycle|PRD-101]] · [[prd-102-trace-and-perf-instrumentation|PRD-102]] · [[prd-120-lean-activation-lazy-setup|PRD-120]] · [[prd-123-oracle-11g-support|PRD-123]] · [[prd-124-oracledb-26-upgrade|PRD-124]] · [[prd-150-thick-full-true-pool-recovery|PRD-150]]
 - ⚙️ Pipelines: [[PIPE-integration - Integration (Oracle)|PIPE-integration]]
 - 🔗 Mesma versão (0.20.0): [[prd-146-attestations-publish|PRD-146]] · [[prd-147-marketplace-listing-page|PRD-147]]
 - 🎯 RF4 — CI → [[BR-TEST-001 - Matriz de bancos Oracle cobre 12.2-23ai em thin e thick|BR-TEST-001]]

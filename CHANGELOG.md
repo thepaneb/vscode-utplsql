@@ -33,10 +33,12 @@
 - **Performance harness (PRD-106)**: deterministic in-database fixture (up to
   ~1000 packages/15k tests), JSONL measurements and a weekly/dispatch workflow
   outside the PR critical path.
-- **Thick-full and matrix (PRD-125)**: the complete suite now runs in thick
-  mode on 23ai Free (81 passing / 13 pending, no failures) with explicit
-  thin-only/UI/11g-legacy exclusions; 11g remains on the thick smoke (its full
-  run is documented as an experimental dispatch limitation).
+- **Thick-full and matrix (PRD-125)**: the thick-full axis now initializes
+  Instant Client before raw-connection tests, so it no longer silently falls
+  back to thin (`NJS-118`); the thin full matrix passes on 23ai/18c/12.2/19ee/21xe
+  and the 11g thick smoke is green. The complete true-thick suite remains
+  experimental and is tracked by PRD-150 (0.20.1); 11g keeps the thick smoke
+  (its full run remains an experimental dispatch limitation).
 - **Marketplace page (PRD-147)**: dedicated `MARKETPLACE.md` generated from
   the vault and packaged with `vsce --readme-path`, with conversion-oriented
   content, metadata and marketplace-specific docs gates.

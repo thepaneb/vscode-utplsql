@@ -284,6 +284,14 @@ que afirmam que o pool sobrevive ao `break`.
 limitação documentada permitida pelo Rollout; nenhuma promessa de suíte
 completa em 11g é feita nesta versão.
 
+**Correção (2026-11-07):** com a ativação preguiçosa da PRD-120 (0.20.0), o host
+do thick-full passou a abrir conexões raw antes de `ensurePool` e iniciou
+**thin** por `NJS-118`; a execução de 81/13/0 citada acima não era thick real.
+O preload `thickSetup` (commit `1e214e0`) restaura o thick, mas a suíte completa
+ainda entra em cascata após timeout/cancelamento. O residual está na
+**PRD-150** (0.20.1); o 0.20.0 mantém o eixo como **experimental** e o thick
+smoke verde no 11g/23free.
+
 ## 10. Critérios de aceite
 
 - `run.sh --thick-full` executa a suíte completa (menos thin-only e

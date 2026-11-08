@@ -462,7 +462,10 @@ Nenhuma setting/comando de runtime. Mudanças de distribuição:
   `docs/brain/60-README/Checklist - captura do Marketplace.md`.
 - `npm run marketplace:check` valida manifesto/dimensões/tamanhos depois do
   marcador `<!-- marketplace:images-ready -->`.
-- **Pendente:** captura manual das 4–5 screenshots reais e inspeção pós-publish.
+- **Atualização (2026-11-07):** screenshots capturadas (`images/marketplace-*.png`
+e GIF), `npm run marketplace:check` verde e VSIX inspecionado
+(`extension/readme.md` do Marketplace, sem `README.*.md`). **Pendente apenas a
+inspeção pós-publish** da página/Version History e o baseline de métricas.
 
 ## Análise de cobertura (pós-PRD)
 
@@ -478,23 +481,23 @@ Nenhuma setting/comando de runtime. Mudanças de distribuição:
 
 ## 10. Critérios de aceite
 
-- [ ] `docs/brain/60-README/Marketplace (README).md` existe e `brain:build` gera
+- [x] `docs/brain/60-README/Marketplace (README).md` existe e `brain:build` gera
       `MARKETPLACE.md` sem drift.
-- [ ] `npm run package` e `package-target` usam `--readme-path MARKETPLACE.md`.
-- [ ] O VSIX contém `extension/readme.md` com o conteúdo do Marketplace e **não**
+- [x] `npm run package` e `package-target` usam `--readme-path MARKETPLACE.md`.
+- [x] O VSIX contém `extension/readme.md` com o conteúdo do Marketplace e **não**
       contém `README.*.md`.
-- [ ] A página tem hero + screenshot/GIF + quick start + “por que usar” +
+- [x] A página tem hero + screenshot/GIF + quick start + “por que usar” +
       compatibilidade + troubleshooting + links de docs/suporte, com
       1.200–2.000 palavras.
-- [ ] 4–5 screenshots reais (e GIF opcional) com alt text, sem credenciais/PII,
+- [x] 4–5 screenshots reais (e GIF opcional) com alt text, sem credenciais/PII,
       otimizadas dentro do orçamento.
-- [ ] Metadata atualizada (description/keywords/categories/ícone/banner) e decisão
+- [x] Metadata atualizada (description/keywords/categories/ícone/banner) e decisão
       sobre `displayName` registrada.
 - [ ] Version History recente em inglês (0.19.0/0.18.0 traduzidas ou resumidas).
-- [ ] `MARKETPLACE.md` não contém `(sem tag)` nem mensagens de log em PT-BR.
-- [ ] `docs:check`, `docs:fidelity`, `brain:ci`, `brain:rules` e
+- [x] `MARKETPLACE.md` não contém `(sem tag)` nem mensagens de log em PT-BR.
+- [x] `docs:check`, `docs:fidelity`, `brain:ci`, `brain:rules` e
       `docs:features-check` verdes.
-- [ ] O `README.md` do GitHub e as 23 variantes continuam funcionando; a PRD-91
+- [x] O `README.md` do GitHub e as 23 variantes continuam funcionando; a PRD-91
       não é quebrada.
 - [ ] Após o publish, a página do Marketplace exibe imagens/links corretos e o
       Version History em inglês; baseline de métricas registrado.

@@ -162,7 +162,9 @@ The performance harness (PRD-106) generates a deterministic in-database fixture
 and never for the PR critical path.
 
 The thick-full axis (PRD-125) runs the complete integration suite with
-`npm run test:integration:thick-full`. On 23ai Free the current suite passes
-with explicit exclusions for thin-only, UI and 11g-legacy tests; 11g keeps the
-thick smoke (the full 11g run remains an experimental dispatch limitation).
+`npm run test:integration:thick-full`. The harness initializes Instant Client
+before raw-connection tests, so it no longer silently falls back to thin
+(`NJS-118`). The complete true-thick suite is still **experimental** and is
+tracked by PRD-150 (0.20.1); 11g keeps the thick smoke (the full 11g run remains
+an experimental dispatch limitation).
 

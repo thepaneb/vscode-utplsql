@@ -87,13 +87,18 @@ Nenhuma nova setting/comando. Apenas workflow CI.
   na publicação da 0.20.0.
 - Atualizar CHANGELOG.md
 
+**Atualização (2026-11-07):** `publish.yml` com `id-token`/`attestations`,
+step `actions/attest-build-provenance` pinado e verificação documentada em
+`SECURITY.md`. **Pendente apenas** confirmar as attestations dos `.vsix` após a
+publicação da 0.20.0.
+
 ## 10. Critérios de aceite
 
 - [x] Job publish tem `id-token: write` e `attestations: write`
 - [x] Step de attestation adicionado com ação pinada por SHA
 - [ ] Attestations geradas para todos os .vsix da matriz (pendente da publicação 0.20.0)
 - [x] CHANGELOG atualizado
-- [ ] Documentação de verificação adicionada (se aplicável)
+- [x] Documentação de verificação adicionada (SECURITY.md)
 
 ## 11. Questões em aberto
 
