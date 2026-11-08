@@ -2,7 +2,7 @@
 tipo: nota
 status: ativo
 titulo: "Registro de features (fonte para README, wiki e posts)"
-verificado: 2026-10-31
+verificado: 2026-11-08
 tags: [docs, features]
 ---
 
@@ -31,6 +31,9 @@ Campos:
 > A 0.19.0 é uma release de **plataforma/runtime** (piso 1.125/Node 24, ESM,
 > driver 26): os itens da versão também são `interno: true`; a PRD-125 ficou
 > parcial e não entra no registro até concluir a suíte thick-full.
+>
+> A 0.20.0 fecha a PRD-125 (eixo experimental) e inclui PRD-146 (attestations)
+> e PRD-147 (Marketplace) como enablers de distribuição (`interno: true`).
 
 ```json
 [
@@ -54,6 +57,8 @@ Campos:
   { "id": "trace-perf", "prd": "PRD-102", "interno": true },
   { "id": "incremental-reindex", "prd": "PRD-103", "interno": true },
   { "id": "perf-harness", "prd": "PRD-106", "interno": true },
-  { "id": "thick-full-matrix", "prd": "PRD-125", "interno": true }
+  { "id": "thick-full-matrix", "prd": "PRD-125", "interno": true },
+  { "id": "publish-attestations", "prd": "PRD-146", "interno": true },
+  { "id": "marketplace-listing", "prd": "PRD-147", "interno": true }
 ]
 ```

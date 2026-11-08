@@ -160,7 +160,6 @@ execução; nunca conexão em uso"), com `prds: ["PRD-101"]`, `implementacao:` e
 - 🗺️ [[MOC - PRDs]]
 - 📐 Regras: [[BR-CONN-023 - Pool ocioso fecha ao fim da operacao e nunca conexao em uso|BR-CONN-023]]
 - 🔗 PRDs relacionados: [[prd-34-multi-connection-profiles|PRD-34]] · [[prd-38-connection-pooling|PRD-38]] · [[prd-66-connection-robustness-logging|PRD-66]] · [[prd-82-tns-wallet|PRD-82]] · [[prd-95-esm-es2023-node22|PRD-95]] · [[prd-107-unprivileged-fixture|PRD-107]]
-- 🔗 Mesma versão (0.20.0): [[prd-146-attestations-publish|PRD-146]] · [[prd-147-marketplace-listing-page|PRD-147]]
 - 🎯 RNF1 — Com o setting **desligado**, comportamento idêntico ao atual (sem → [[BR-CONN-023 - Pool ocioso fecha ao fim da operacao e nunca conexao em uso|BR-CONN-023]]
 - 🎯 RNF2 — Sem novas dependências. → [[BR-CONN-023 - Pool ocioso fecha ao fim da operacao e nunca conexao em uso|BR-CONN-023]]
 - 🚀 ⬅️ release anterior: [[prd-127-vscode-floor-1-125|PRD-127 (0.19.0)]] · ➡️ próxima release: [[prd-148-execution-state-reliability|PRD-148 (0.20.1)]]

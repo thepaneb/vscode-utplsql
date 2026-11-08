@@ -188,13 +188,8 @@ notas `prd-*`. O índice navegável do vault é a [[MOC - PRDs]].
 | 124 | [Upgrade para node-oracledb 26 com matriz e packaging validados](completed/prd-124-oracledb-26-upgrade.md) | 0.19.0 | 2026-10-29 |
 | 125 | [Suíte completa em thick e matriz de bancos no CI](completed/prd-125-thick-full-matrix-ci.md) | 0.20.0 | 2026-10-29 |
 | 127 | [Piso de VS Code 1.125 e runtime Node 24](completed/prd-127-vscode-floor-1-125.md) | 0.19.0 | 2026-10-30 |
-
-### 🟡 Em desenvolvimento
-
-| # | PRD | Versão | Data |
-|---|---|---|---|
-| 146 | [Attestations de proveniência na publicação](in-progress/prd-146-attestations-publish.md) | 0.20.0 | 2026-11-05 |
-| 147 | [Marketplace: superfície dedicada, screenshots e metadata de conversão](in-progress/prd-147-marketplace-listing-page.md) | 0.20.0 | 2026-11-05 |
+| 146 | [Attestations de proveniência na publicação](completed/prd-146-attestations-publish.md) | 0.20.0 | 2026-11-05 |
+| 147 | [Marketplace: superfície dedicada, screenshots e metadata de conversão](completed/prd-147-marketplace-listing-page.md) | 0.20.0 | 2026-11-05 |
 
 ### ⚪ Propostos
 
@@ -358,7 +353,6 @@ docs/prd/
 │   ├── prd-124-oracledb-26-upgrade.md
 │   ├── prd-125-thick-full-matrix-ci.md
 │   ├── prd-127-vscode-floor-1-125.md
-├── in-progress/        ← sendo implementados agora
 │   ├── prd-146-attestations-publish.md
 │   ├── prd-147-marketplace-listing-page.md
 ├── proposed/        ← em avaliação

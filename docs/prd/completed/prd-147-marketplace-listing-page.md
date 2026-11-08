@@ -4,7 +4,7 @@
 
 | Campo | Valor |
 |---|---|
-| Status | Em desenvolvimento |
+| Status | Concluído |
 | Autor | Gil Cleber Barboza |
 | Data | 2026-11-05 |
 | Componente | Distribuição (Marketplace) + documentação gerada |
@@ -451,8 +451,11 @@ Nenhuma setting/comando de runtime. Mudanças de distribuição:
   marcador `<!-- marketplace:images-ready -->`.
 - **Atualização (2026-11-07):** screenshots capturadas (`images/marketplace-*.png`
 e GIF), `npm run marketplace:check` verde e VSIX inspecionado
-(`extension/readme.md` do Marketplace, sem `README.*.md`). **Pendente apenas a
-inspeção pós-publish** da página/Version History e o baseline de métricas.
+(`extension/readme.md` do Marketplace, sem `README.*.md`).
+
+**Concluída (2026-11-08):** release `v0.20.0` publicada; a página do Marketplace
+exibe 0.20.0, as 5 imagens + GIF, “What's new in 0.20.0” e Version History.
+Baseline de métricas registrado no momento da publicação.
 
 ## Análise de cobertura (pós-PRD)
 
@@ -480,13 +483,13 @@ inspeção pós-publish** da página/Version History e o baseline de métricas.
       otimizadas dentro do orçamento.
 - [x] Metadata atualizada (description/keywords/categories/ícone/banner) e decisão
       sobre `displayName` registrada.
-- [ ] Version History recente em inglês (0.19.0/0.18.0 traduzidas ou resumidas).
+- [x] Version History recente em inglês (0.19.0/0.18.0 traduzidas ou resumidas).
 - [x] `MARKETPLACE.md` não contém `(sem tag)` nem mensagens de log em PT-BR.
 - [x] `docs:check`, `docs:fidelity`, `brain:ci`, `brain:rules` e
       `docs:features-check` verdes.
 - [x] O `README.md` do GitHub e as 23 variantes continuam funcionando; a PRD-91
       não é quebrada.
-- [ ] Após o publish, a página do Marketplace exibe imagens/links corretos e o
+- [x] Após o publish, a página do Marketplace exibe imagens/links corretos e o
       Version History em inglês; baseline de métricas registrado.
 
 ## 11. Questões em aberto
@@ -517,6 +520,9 @@ Candidatas:
 - `BR-PKG-002` — “O VSIX publica apenas o README do Marketplace; READMEs do
   GitHub (incluindo variantes) não entram no pacote.”
 - Se o RF6 entrar: `BR-I18N-*` para o grupo “untagged” localizado.
+
+RNFs sem regra: RNF2, RNF3, RNF4, RNF5, RNF8 (verificadas por
+`marketplace:check`, `docs:check` e `package`).
 
 O campo `regras:` do frontmatter é derivado por `npm run brain:sync` a partir do
 `prds:` dessas regras. Enquanto a PRD estiver `proposed`, `regras: []` é
