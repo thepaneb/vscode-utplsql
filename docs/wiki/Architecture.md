@@ -2,7 +2,7 @@
 
 # Architecture
 
-<!-- prd:PRD-101 --> <!-- prd:PRD-102 --> <!-- prd:PRD-103 --> <!-- prd:PRD-120 --> <!-- prd:PRD-110 --> <!-- prd:PRD-111 -->
+<!-- prd:PRD-101 --> <!-- prd:PRD-102 --> <!-- prd:PRD-103 --> <!-- prd:PRD-120 --> <!-- prd:PRD-110 --> <!-- prd:PRD-111 --> <!-- prd:PRD-148 -->
 
 Overview of the extension's internal architecture for contributors.
 
@@ -24,6 +24,16 @@ functions live in `src/results.ts` (`applyResultsFromCases`,
   (`buildReporterList`, `buildCoverageScope`, `buildRandomOrderParams`,
   `buildRunCall`); `oraclePoll.ts`: the 200ms buffer poll. `executeRunOracle` is
   the orchestrator (PRD-111).
+- **Run serialization (PRD-148 RF1)**: `commands/run.ts` keeps the pending
+  execution promise, cancels the previous run and waits for its unwind before
+  the next `DELETE`/`ut_runner.run`. Export and auto-run share the same gate,
+  so two executions never overlap in `UT_OUTPUT_BUFFER_TMP` or overwrite the
+  results snapshot out of order.
+- **Schema-mode identity and restore (PRD-148 RF4/RF7)**: suite/test ids carry
+  the schema (`suite:<schema>:<pkg>`, `test:<schema>:<pkg>.<proc>`) to avoid
+  collisions between owners; file/tag trees keep the legacy ids. The legacy
+  `suite:<pkg>` lookup still works, and `hasFailures`/`Run Failed` derive from
+  `lastResults`, materializing the lazy schema tree on demand after a reload.
 - **Connection pooling (v0.10.0)**: managed pool (`ensurePool`), recreated if
   the connection changes, closed in `deactivate()` with a 10s drain. With
   `utplsql.oraclePoolCloseAfterRun` (default `true`, PRD-101), the last

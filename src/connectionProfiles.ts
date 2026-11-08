@@ -28,8 +28,35 @@ export function findProfileById(
   return profiles.find((p) => p.id === id);
 }
 
+const XML_ENTITY_RE = /&(#x[0-9a-f]+|#\d+|amp|lt|gt|quot|apos);/gi;
+const XML_ENTITIES: Record<string, string> = {
+  amp: '&',
+  lt: '<',
+  gt: '>',
+  quot: '"',
+  apos: "'",
+};
+
+/** Decodifica as entidades usadas pelo `connections.xml` do SQL Developer. */
+function decodeXmlEntities(value: string): string {
+  return value.replace(XML_ENTITY_RE, (match, entity: string) => {
+    if (entity[0] === '#') {
+      const code =
+        entity[1]?.toLowerCase() === 'x'
+          ? Number.parseInt(entity.slice(2), 16)
+          : Number.parseInt(entity.slice(1), 10);
+      try {
+        return Number.isFinite(code) ? String.fromCodePoint(code) : match;
+      } catch {
+        return match;
+      }
+    }
+    return XML_ENTITIES[entity.toLowerCase()] ?? match;
+  });
+}
+
 function attr(attrs: string, name: string): string {
-  return new RegExp(`\\b${name}="([^"]*)"`).exec(attrs)?.[1] ?? '';
+  return decodeXmlEntities(new RegExp(`\\b${name}="([^"]*)"`).exec(attrs)?.[1] ?? '');
 }
 
 /**
@@ -50,11 +77,12 @@ export function parseSqlDevConnections(xml: string): ConnectionProfile[] {
     const kv: Record<string, string> = {};
     const addrRe = /<StringRefAddr\s+addrType="([^"]+)">([\s\S]*?)<\/StringRefAddr>/g;
     for (const am of body.matchAll(addrRe)) {
-      kv[am[1]] = am[2];
+      kv[am[1]] = decodeXmlEntities(am[2]);
     }
     const host = kv.hostname ?? '';
     if (!host) continue;
-    const port = kv.port ?? '';
+    // A porta é opcional no XML; o listener padrão do Oracle é 1521.
+    const port = kv.port?.trim() || '1521';
     const service = kv.serviceName ?? kv.sid ?? '';
     profiles.push({
       id: generateId(),

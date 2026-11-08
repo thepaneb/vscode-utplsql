@@ -514,7 +514,7 @@ export async function checkCompilationErrors(
       `SELECT name, type, line, position, text
        FROM ALL_ERRORS
        WHERE owner = :schema
-         AND type IN ('PACKAGE','PACKAGE BODY','FUNCTION','PROCEDURE','TRIGGER')
+         AND type IN ('PACKAGE','PACKAGE BODY','TYPE','TYPE BODY','FUNCTION','PROCEDURE','TRIGGER')
          AND attribute = 'ERROR'
        ORDER BY name, type, sequence`,
       { schema },

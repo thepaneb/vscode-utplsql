@@ -19,9 +19,15 @@ import {
 import type { PerfProbe } from './perf';
 import { type TestStateManager, withDurationSuffix } from './state';
 
-/** Id de suite normalizado (`suite:<pkg lower>`). */
-function suiteId(packageName: string): string {
-  return `suite:${packageName.toLowerCase()}`;
+/**
+ * Id de suite normalizado. No modo `schema`, o schema entra no id
+ * (`suite:<schema>:<pkg>`) para o mesmo package em dois owners não colidir
+ * (PRD-148 RF7); file/tag mantêm o id legado.
+ */
+function suiteId(packageName: string, schema?: string): string {
+  return schema
+    ? `suite:${schema}:${packageName.toLowerCase()}`
+    : `suite:${packageName.toLowerCase()}`;
 }
 
 /** Sufixo `[tag1, tag2]` no label quando `utplsql.showTagsInTree` (PRD-51 RF4). */
@@ -36,12 +42,18 @@ function fillSuiteTests(
   suiteItem: vscode.TestItem,
   suite: SuiteFile,
   idSuffix = '',
+  schema?: string,
 ): void {
   const cfg = readConfig();
+  const prefix = schema ? `${schema}:` : '';
   for (const t of suite.tests) {
-    const id = `test:${suite.packageName.toLowerCase()}.${t.procName.toLowerCase()}${idSuffix}`;
-    // Duração do último run restaurado/persistido (PRD-56 RF4).
-    const durationMs = state.getLastResults().get(id)?.durationMs;
+    const id = `test:${prefix}${suite.packageName.toLowerCase()}.${t.procName.toLowerCase()}${idSuffix}`;
+    // Duração do último run restaurado/persistido (PRD-56 RF4). Snapshots
+    // antigos (sem schema) continuam válidos no modo schema.
+    const legacyId = `test:${suite.packageName.toLowerCase()}.${t.procName.toLowerCase()}${idSuffix}`;
+    const durationMs =
+      state.getLastResults().get(id)?.durationMs ??
+      (schema ? state.getLastResults().get(legacyId)?.durationMs : undefined);
     const testItem = controller.createTestItem(
       id,
       withDurationSuffix(
@@ -59,6 +71,7 @@ function fillSuiteTests(
       description: t.displayName ?? t.description,
       uri: suite.uri,
       folder: suite.folder,
+      ...(schema ? { schema } : {}),
       ...(t.tags && t.tags.length > 0 ? { tags: t.tags } : {}),
     });
     suiteItem.children.add(testItem);
@@ -78,8 +91,9 @@ function addSuiteItem(
   parent: vscode.TestItem | undefined,
   suite: SuiteFile,
   idSuffix = '',
+  schema?: string,
 ): vscode.TestItem {
-  const canonicalId = suiteId(suite.packageName);
+  const canonicalId = suiteId(suite.packageName, schema);
   const id = `${canonicalId}${idSuffix}`;
   const baseLabel = `${suite.suiteDescription}  (${suite.packageName})`;
   const suiteItem = controller.createTestItem(
@@ -92,6 +106,7 @@ function addSuiteItem(
     packageName: suite.packageName,
     uri: suite.uri,
     folder: suite.folder,
+    ...(schema ? { schema } : {}),
     ...(suite.tags && suite.tags.length > 0 ? { tags: suite.tags } : {}),
   });
   suiteItem.range = new vscode.Range(suite.suiteLine, 0, suite.suiteLine, 0);
@@ -102,6 +117,13 @@ function addSuiteItem(
   // O id canônico é o lookup dos comandos; só a primeira ocorrência o registra.
   if (!state.getSuiteItem(canonicalId)) state.setSuiteItem(canonicalId, suiteItem);
   if (!state.getSuiteFile(canonicalId)) state.setSuiteFile(canonicalId, suite);
+  // Lookup legado (`suite:<pkg>`) continua funcionando no modo schema; em
+  // multi-schema ele aponta para a primeira ocorrência (PRD-148 RF7).
+  if (schema) {
+    const legacyId = suiteId(suite.packageName);
+    if (!state.getSuiteItem(legacyId)) state.setSuiteItem(legacyId, suiteItem);
+    if (!state.getSuiteFile(legacyId)) state.setSuiteFile(legacyId, suite);
+  }
   state.setItem(id, suiteItem);
   return suiteItem;
 }
@@ -300,7 +322,7 @@ export function resolvePackageNode(
   const schema = parts[1] ?? '';
   const pkg = parts.slice(2).join(':');
   const suites = (state.getSchemaSuites(schema) ?? []).filter((s) => s.packageName === pkg);
-  for (const suite of suites) addSuiteItem(controller, state, item, suite);
+  for (const suite of suites) addSuiteItem(controller, state, item, suite, '', schema);
   item.canResolveChildren = false;
   state.markResolved(item.id);
 }
@@ -313,7 +335,17 @@ export function resolveSuiteNode(
 ): void {
   if (state.isResolved(item.id)) return;
   const suite = state.getSuiteFile(item.id);
-  if (suite) fillSuiteTests(controller, state, item, suite);
+  if (suite) {
+    const meta = state.getMeta(item);
+    fillSuiteTests(
+      controller,
+      state,
+      item,
+      suite,
+      '',
+      meta?.kind === 'suite' ? meta.schema : undefined,
+    );
+  }
   item.canResolveChildren = false;
   state.markResolved(item.id);
 }

@@ -4,14 +4,14 @@ status: ativo
 titulo: "Troubleshooting"
 publicar: docs/wiki/Troubleshooting.md
 origem: ["MOC - Erros","07-diagnostics-and-validation"]
-verificado: 2026-10-31
-regras: ["BR-LOG-001", "BR-CONN-014", "BR-LOG-002"]
+verificado: 2026-11-08
+regras: ["BR-LOG-001", "BR-CONN-014", "BR-LOG-002", "BR-EXEC-016", "BR-UI-008"]
 tags: [wiki]
 ---
 
 # Troubleshooting
 
-<!-- prd:PRD-102 -->
+<!-- prd:PRD-102 --> <!-- prd:PRD-148 -->
 
 <!-- prd:PRD-124 -->
 
@@ -42,6 +42,22 @@ For automatic diagnostics, run `utPLSQL: Validate setup`.
 
 ---
 
+## Auto-run does not fire after a run with `autoRunQueue=replace`
+
+**Symptom:** You save a `.pks` while a run is in progress with
+`utplsql.autoRunQueue = "replace"`, but the saved file is not executed when the
+run finishes.
+
+**Cause:** Before PRD-148 RF2 the URI was stored as *deferred* but nothing
+consumed it at the end of the run.
+
+**Solution:** Update to 0.20.1+. The runner now calls the auto-run flush when
+the execution promise settles; deferred files run in save order, one at a time.
+If the file is no longer an eligible `.pks` (or auto-run was disabled in the
+meantime), it is dropped instead of looping.
+
+---
+
 ## Compilation errors not showing in the editor
 
 **Symptom:** Tests fail with a compilation error, but the editor does not show
@@ -49,12 +65,16 @@ squiggly underlines.
 
 **Cause 1:** `utplsql.compilationDiagnostics.enabled` is `false` (default is `true`).
 
-**Cause 2:** Diagnostics are published **after a test run**, and only for packages
-discovered in the workspace (best-effort) — nothing appears before the first run.
+**Cause 2:** Diagnostics are published **after a test run** (best-effort) —
+nothing appears before the first run. Since PRD-148 RF3, errors are indexed by
+object name and mapped to the production source by type (`.pks`/`.pkb`/
+`.typ`/`.tpb`/`.prc`/`.fnc`/`.trg`); when the source file is not resolvable, the
+diagnostic stays on the suite with the same name.
 
 **Solution:** Enable `utplsql.compilationDiagnostics.enabled` and run the tests.
-Errors from `ALL_ERRORS` are then mapped to the suite files and shown as
-underlines in the editor and in the Problems Panel (source "utPLSQL Compilation").
+Errors from `ALL_ERRORS` are then mapped to the production file or suite and
+shown as underlines in the editor and in the Problems Panel (source "utPLSQL
+Compilation").
 
 ---
 

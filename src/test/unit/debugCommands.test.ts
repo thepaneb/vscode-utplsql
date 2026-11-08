@@ -91,6 +91,9 @@ const fakeState = {
   getLastRun() {
     return this.lastRun;
   },
+  hasFailedResults() {
+    return false;
+  },
 };
 
 async function register() {

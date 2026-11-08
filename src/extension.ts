@@ -368,6 +368,7 @@ export function activate(context: vscode.ExtensionContext) {
       clearTimeout: (handle) => clearTimeout(handle),
     },
   );
+  run.setOnRunFinished(() => autoRunner.notifyRunFinished());
   context.subscriptions.push(
     vscode.workspace.onDidSaveTextDocument((doc) => {
       if (!doc.fileName.endsWith('.pks')) return;
@@ -385,7 +386,7 @@ export function activate(context: vscode.ExtensionContext) {
       void vscode.commands.executeCommand(
         'setContext',
         'utplsql:hasFailures',
-        state.getLastFailedItems().length > 0,
+        state.hasFailedResults(),
       );
       decorationManager?.update(state.getLastResults(), (id) => state.getItem(id));
     });

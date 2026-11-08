@@ -42,11 +42,17 @@ const SLASH_LINE_RE = /^\s*\/\s*$/;
  * ignorados (não viram statement nem quebram a classificação PL/SQL).
  */
 const SQLPLUS_DIRECTIVE_RE =
-  /^(?:PROMPT|REMARK|REM|SPOOL|WHENEVER|TTITLE|BTITLE|COLUMN|COL|DEFINE|UNDEFINE|ACCEPT|PAUSE|HOST|CONNECT|DISCONNECT|SHOW|CLEAR|BREAK|COMPUTE|STORE|SAVE|GET|RUN|EDIT|ED|TIMING|SET|START)(?:\s|$)/i;
+  /^(?:PROMPT|REMARK|REM|SPOOL|WHENEVER|TTITLE|BTITLE|COLUMN|COL|DEFINE|UNDEFINE|ACCEPT|PAUSE|HOST|CONNECT|DISCONNECT|SHOW|CLEAR|BREAK|COMPUTE|STORE|SAVE|GET|RUN|EDIT|ED|TIMING|START)(?:\s|$)/i;
+// `SET` só é diretiva quando seguido de opção de cliente. `SET TRANSACTION`,
+// `SET ROLE` e `SET CONSTRAINT(S)` são SQL e precisam executar (PRD-148 RF8).
+const SQLPLUS_SET_RE =
+  /^SET\s+(?:ARRAYSIZE|AUTOCOMMIT|AUTOPRINT|AUTOTRACE|BLOCKTERMINATOR|CMDSETERROR|CMDSHOWERR|COLSEP|CONCAT|COPYCOMMIT|COPYTYPECHECK|DEFINE|DESCRIBE|ECHO|EDITFILE|EMBEDDED|ERRORLOGGING|ESCAPE|EXITCOMMIT|FEEDBACK|FLAGGER|FLUSH|HEADING|INSTANCE|LINESIZE|LOBOFFSET|LONG|MARKUP|NEWPAGE|NULL|NUMFORMAT|NUMWIDTH|PAGESIZE|PAUSE|RECYCLEBIN|ROWCOUNT|SCAN|SERVEROUT|SERVEROUTPUT|SHOWMODE|SQLBLANKLINES|SQLCASE|SQLCONTINUE|SQLNUMBER|SQLPLUSCOMPATIBILITY|SQLPROMPT|SQLTERMINATOR|SUFFIX|TAB|TERMOUT|TIME|TIMING|TRIMOUT|TRIMSPOOL|UNDERLINE|VERIFY|WRAP|XMLOPTIMIZATION)(?:\s|$)/i;
 const SQLPLUS_SYMBOL_RE = /^(?:@@?|!)/;
 
 function isSqlplusDirectiveLine(rest: string): boolean {
-  return SQLPLUS_DIRECTIVE_RE.test(rest) || SQLPLUS_SYMBOL_RE.test(rest);
+  return (
+    SQLPLUS_DIRECTIVE_RE.test(rest) || SQLPLUS_SET_RE.test(rest) || SQLPLUS_SYMBOL_RE.test(rest)
+  );
 }
 
 function stripComments(text: string): string {
@@ -592,20 +598,27 @@ export async function connectOracle(
   }
   const { readConfig } = await import('./config.js');
   const cfg = readConfig();
-  const pool = await ensurePool(oracledb, connection, cfg).catch(() => undefined);
-  const conn = pool
-    ? await pool.getConnection()
-    : await oracledb.getConnection(parseConnString(connection));
+  // PRD-148 RF6: a atividade começa antes de adquirir a conexão; senão uma
+  // atividade concorrente pode fechar o pool ocioso entre o checkout e o begin.
   const activity = beginOracleActivity(cfg);
-  const adapted = adaptOracleConn(conn, oracledb, opts.timeoutSeconds ?? 300);
-  return {
-    ...adapted,
-    async close(): Promise<void> {
-      try {
-        await adapted.close();
-      } finally {
-        await activity.end();
-      }
-    },
-  };
+  try {
+    const pool = await ensurePool(oracledb, connection, cfg).catch(() => undefined);
+    const conn = pool
+      ? await pool.getConnection()
+      : await oracledb.getConnection(parseConnString(connection));
+    const adapted = adaptOracleConn(conn, oracledb, opts.timeoutSeconds ?? 300);
+    return {
+      ...adapted,
+      async close(): Promise<void> {
+        try {
+          await adapted.close();
+        } finally {
+          await activity.end();
+        }
+      },
+    };
+  } catch (e) {
+    await activity.end();
+    throw e;
+  }
 }

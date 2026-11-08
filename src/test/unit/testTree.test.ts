@@ -296,13 +296,50 @@ test('resolvedores: materializam schema → package → suite → teste por nív
   resolvePackageNode(controller, state, pkgItem);
   assert.strictEqual(pkgItem._children.length, 1);
   const suiteItem = pkgItem._children[0];
-  assert.strictEqual(suiteItem.id, 'suite:ut_app');
+  assert.strictEqual(suiteItem.id, 'suite:APP:ut_app');
   assert.strictEqual(suiteItem._children.length, 0);
-  assert.ok(state.getSuiteItem('suite:ut_app'));
+  assert.ok(state.getSuiteItem('suite:APP:ut_app'));
+  assert.ok(state.getSuiteItem('suite:ut_app'), 'lookup legado continua funcionando');
 
   resolveSuiteNode(controller, state, suiteItem);
   assert.strictEqual(suiteItem._children.length, 2);
-  assert.ok(state.getItem('test:ut_app.test_one'));
+  assert.ok(state.getItem('test:APP:ut_app.test_one'));
+});
+
+test('schema mode: IDs únicos por schema e lookup legado (PRD-148 RF7)', async () => {
+  const controller = makeController();
+  const state = new TestStateManager();
+  buildSchemaTree(
+    controller,
+    state,
+    [
+      suite({ dbSchema: 'APP', uri: { fsPath: '/ws/db/APP/ut_app.pks', scheme: 'file' } as never }),
+      suite({
+        dbSchema: 'OTHER',
+        uri: { fsPath: '/ws/db/OTHER/ut_app.pks', scheme: 'file' } as never,
+      }),
+    ],
+    'db/{schema}/**',
+  );
+
+  const resolved: Array<{ id: string }> = [];
+  for (const schemaItem of controller._items) {
+    await resolveSchemaNode(controller, state, schemaItem, lazyDeps as never);
+    const pkgItem = schemaItem._children[0];
+    resolvePackageNode(controller, state, pkgItem);
+    const suiteItem = pkgItem._children[0];
+    resolveSuiteNode(controller, state, suiteItem);
+    resolved.push(suiteItem);
+  }
+
+  assert.deepStrictEqual(
+    resolved.map((i) => i.id),
+    ['suite:APP:ut_app', 'suite:OTHER:ut_app'],
+  );
+  assert.notStrictEqual(resolved[0], resolved[1]);
+  assert.ok(state.getItem('test:APP:ut_app.test_one'));
+  assert.ok(state.getItem('test:OTHER:ut_app.test_one'));
+  assert.strictEqual(state.getSuiteItem('suite:ut_app'), resolved[0]);
 });
 
 test('resolveSchemaNode: idempotente (não duplica package)', async () => {
@@ -398,7 +435,7 @@ test('collectAllItems: resolve a árvore lazy e devolve as suites', async () => 
 
   const items = await collectAllItems(controller, state, lazyDeps as never);
   assert.strictEqual(items.length, 1);
-  assert.strictEqual(items[0].id, 'suite:ut_app');
+  assert.strictEqual(items[0].id, 'suite:APP:ut_app');
 });
 
 test('resolveSubtree: resolve schema → package → suite de um nó não expandido', async () => {
@@ -411,7 +448,7 @@ test('resolveSubtree: resolve schema → package → suite de um nó não expand
 
   const pkgItem = schemaItem._children[0];
   const suiteItem = pkgItem._children[0];
-  assert.strictEqual(suiteItem.id, 'suite:ut_app');
+  assert.strictEqual(suiteItem.id, 'suite:APP:ut_app');
   assert.strictEqual(suiteItem._children.length, 2, 'testes deveriam ser materializados');
 });
 

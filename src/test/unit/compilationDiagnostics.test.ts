@@ -5,7 +5,9 @@ import { TestStateManager } from '../../state';
 import {
   __getLastDiagnosticCollection,
   __resetConfigValues,
+  __resetMockFiles,
   __setConfigValue,
+  __setMockFile,
   Uri,
 } from '../vscode-stub';
 
@@ -52,12 +54,14 @@ function makeState() {
 async function withConn(fn: () => Promise<void>): Promise<void> {
   const orig = process.env.UTPLSQL_CONN;
   process.env.UTPLSQL_CONN = 'u/p@//h:1521/s';
+  __resetMockFiles();
   try {
     await fn();
   } finally {
     if (orig === undefined) delete process.env.UTPLSQL_CONN;
     else process.env.UTPLSQL_CONN = orig;
     __resetConfigValues();
+    __resetMockFiles();
   }
 }
 
@@ -247,6 +251,74 @@ test('refresh: metadata de suite sem URI é ignorada', async () => {
     await refreshCompilationDiagnostics(state);
     assert.strictEqual(
       __getLastDiagnosticCollection()?.get({ toString: () => '/tmp/test_pkg.pks' }),
+      undefined,
+    );
+  });
+});
+
+test('refresh: package body de produção vai para o .pkb (PRD-148 RF3)', async () => {
+  await withConn(async () => {
+    const { registerCompilationDiagnostics, refreshCompilationDiagnostics } = await import(
+      '../../compilationDiagnostics.js'
+    );
+    registerCompilationDiagnostics({ subscriptions: [] } as never);
+    __setMockFile('**/*.{pks,pkb,typ,tpb,prc,fnc,trg}', '/tmp/app_pkg.pkb', '');
+    __setMockFile('**/*.{pks,pkb,typ,tpb,prc,fnc,trg}', '/tmp/app_pkg.pks', '');
+    errors = [{ name: 'APP_PKG', type: 'PACKAGE BODY', line: 7, position: 0, text: 'boom' }];
+    await refreshCompilationDiagnostics(makeState());
+
+    const diags = __getLastDiagnosticCollection()?.get({ toString: () => '/tmp/app_pkg.pkb' });
+    assert.strictEqual(diags?.length, 1);
+    assert.strictEqual(diags?.[0].message, 'PACKAGE BODY: boom');
+    assert.strictEqual(
+      __getLastDiagnosticCollection()?.get({ toString: () => '/tmp/app_pkg.pks' }),
+      undefined,
+      'o body não pode cair no spec',
+    );
+  });
+});
+
+test('refresh: package de produção vai para o .pks', async () => {
+  await withConn(async () => {
+    const { registerCompilationDiagnostics, refreshCompilationDiagnostics } = await import(
+      '../../compilationDiagnostics.js'
+    );
+    registerCompilationDiagnostics({ subscriptions: [] } as never);
+    __setMockFile('**/*.{pks,pkb,typ,tpb,prc,fnc,trg}', '/tmp/app_pkg.pks', '');
+    errors = [{ name: 'APP_PKG', type: 'PACKAGE', line: 3, position: 0, text: 'spec' }];
+    await refreshCompilationDiagnostics(makeState());
+
+    const diags = __getLastDiagnosticCollection()?.get({ toString: () => '/tmp/app_pkg.pks' });
+    assert.strictEqual(diags?.length, 1);
+    assert.strictEqual(diags?.[0].message, 'PACKAGE: spec');
+  });
+});
+
+test('refresh: sem arquivo de produção mantém o diagnóstico na suite', async () => {
+  await withConn(async () => {
+    const { registerCompilationDiagnostics, refreshCompilationDiagnostics } = await import(
+      '../../compilationDiagnostics.js'
+    );
+    registerCompilationDiagnostics({ subscriptions: [] } as never);
+    errors = [{ name: 'TEST_PKG', type: 'PACKAGE', line: 5, position: 0, text: 'sem arquivo' }];
+    await refreshCompilationDiagnostics(makeState());
+
+    const diags = __getLastDiagnosticCollection()?.get({ toString: () => '/tmp/test_pkg.pks' });
+    assert.strictEqual(diags?.length, 1);
+    assert.strictEqual(diags?.[0].message, 'PACKAGE: sem arquivo');
+  });
+});
+
+test('refresh: erro de produção sem arquivo nem suite é omitido', async () => {
+  await withConn(async () => {
+    const { registerCompilationDiagnostics, refreshCompilationDiagnostics } = await import(
+      '../../compilationDiagnostics.js'
+    );
+    registerCompilationDiagnostics({ subscriptions: [] } as never);
+    errors = [{ name: 'OUTRO_PKG', type: 'PACKAGE BODY', line: 1, position: 0, text: 'x' }];
+    await refreshCompilationDiagnostics(makeState());
+    assert.strictEqual(
+      __getLastDiagnosticCollection()?.get({ toString: () => '/tmp/outro_pkg.pkb' }),
       undefined,
     );
   });
