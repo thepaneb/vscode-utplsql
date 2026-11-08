@@ -33,6 +33,7 @@ mock.module('../../commands/run.js', {
         cancel: () => {
           cancelCalls += 1;
         },
+        setOnRunFinished: () => {},
       };
     },
   },

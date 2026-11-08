@@ -282,14 +282,16 @@ test('persist: resultado sem ts ganha timestamp do persist (não fica undefined)
 
 test('restoreLastFailed: resolve id legado sem schema e hasFailedResults (PRD-148 RF4)', () => {
   const mgr = new TestStateManager();
-  const item = { id: 'test:APP:ut_app.test_one' } as any;
+  const item = { id: 'test:APP:ut_app.test_one' } as unknown as Parameters<
+    TestStateManager['setItem']
+  >[1];
   mgr.setMeta(item, {
     kind: 'test',
     packageName: 'UT_APP',
     procName: 'TEST_ONE',
     description: 'one',
-    uri: { fsPath: '/tmp/ut_app.pks' } as any,
-    folder: { uri: { fsPath: '/tmp' } } as any,
+    uri: { fsPath: '/tmp/ut_app.pks' } as never,
+    folder: { uri: { fsPath: '/tmp' } } as never,
     schema: 'APP',
   });
   mgr.setItem(item.id, item);

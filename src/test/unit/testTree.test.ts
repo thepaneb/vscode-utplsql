@@ -313,16 +313,16 @@ test('schema mode: IDs únicos por schema e lookup legado (PRD-148 RF7)', async 
     controller,
     state,
     [
-      suite({ dbSchema: 'APP', uri: { fsPath: '/ws/db/APP/ut_app.pks', scheme: 'file' } as any }),
+      suite({ dbSchema: 'APP', uri: { fsPath: '/ws/db/APP/ut_app.pks', scheme: 'file' } as never }),
       suite({
         dbSchema: 'OTHER',
-        uri: { fsPath: '/ws/db/OTHER/ut_app.pks', scheme: 'file' } as any,
+        uri: { fsPath: '/ws/db/OTHER/ut_app.pks', scheme: 'file' } as never,
       }),
     ],
     'db/{schema}/**',
   );
 
-  const resolved: any[] = [];
+  const resolved: Array<{ id: string }> = [];
   for (const schemaItem of controller._items) {
     await resolveSchemaNode(controller, state, schemaItem, lazyDeps as never);
     const pkgItem = schemaItem._children[0];
