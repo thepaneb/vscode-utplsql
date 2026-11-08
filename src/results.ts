@@ -152,6 +152,18 @@ export function applyResultsFromCases(
     if (items.length === 0) {
       items = findAllByNameOnly(entries, name, pkg);
     }
+    // `classname` costuma ser `<owner>.<package>`; quando há mais de uma cópia
+    // do mesmo package (schema mode), prefere a do owner do caso. Se o
+    // segmento não for um schema (ex.: `%suitepath`), mantém todas.
+    const parts = c.classname.split('.');
+    const owner = parts.length >= 2 ? parts[parts.length - 2]?.toLowerCase() : undefined;
+    if (owner && items.length > 1) {
+      const byOwner = items.filter((item) => {
+        const meta = state.getMeta(item);
+        return meta?.kind === 'test' && meta.schema?.toLowerCase() === owner;
+      });
+      if (byOwner.length > 0) items = byOwner;
+    }
     if (items.length === 0) continue;
 
     for (const item of items) {
