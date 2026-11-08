@@ -158,6 +158,9 @@ describeDB('executeRun schema-mode + reporters + cancelamento (banco real)', () 
     const controller = vscode.tests.createTestController('utplsql-it-schemarun', 'IT SchemaRun');
     const state = new TestStateManager();
     try {
+      // Um run anterior interrompido pode ter deixado o package lento no
+      // schema; ele entraria no "run do nó Schema" e mascararia este teste.
+      await dropPackage(dbc, SLOW_PKG);
       await createPassingPackage(dbc, SCHEMA_PKG, 'schema-run-marker');
       await cfg.update('organization', 'schema', vscode.ConfigurationTarget.Workspace);
       await cfg.update(

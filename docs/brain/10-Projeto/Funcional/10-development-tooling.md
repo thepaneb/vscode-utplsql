@@ -5,7 +5,7 @@ numero: 10
 titulo: "10 — Development Tooling"
 publicar: docs/functional/10-development-tooling.md
 verificado: 2026-10-21
-regras: ["BR-SITE-001", "BR-QUAL-001", "BR-QUAL-002", "BR-DEP-001", "BR-PKG-001", "BR-PLAT-005", "BR-QUAL-004", "BR-CONN-021", "BR-TEST-004", "BR-TEST-005", "BR-DOC-003", "BR-PKG-002"]
+regras: ["BR-SITE-001", "BR-QUAL-001", "BR-QUAL-002", "BR-DEP-001", "BR-PKG-001", "BR-PLAT-005", "BR-QUAL-004", "BR-CONN-021", "BR-CONN-024", "BR-TEST-004", "BR-TEST-005", "BR-DOC-003", "BR-PKG-002"]
 implementacao: ["scripts/brain.cjs", "scripts/brain-build.cjs", "scripts/brain-rules.cjs", "scripts/brain-gaps.cjs", "scripts/docs-check.cjs", "scripts/docs-fidelity.cjs", "scripts/version-check.cjs", "scripts/run-tests.cjs", "scripts/test-setup.cjs", "scripts/sync-prds.cjs", "scripts/create-pr.cjs", "scripts/create-release.cjs", "scripts/publish.cjs", "scripts/vsce.cjs", "scripts/package-target.cjs", "scripts/gen-icon.cjs", "scripts/gen-diagrams.cjs", "scripts/gen-social-preview.cjs", "scripts/obsidian-mcp.py", "scripts/db-matrix/bootstrap.sh", "scripts/db-matrix/wait-ready.sh", "scripts/db-matrix/parse-version.cjs", "scripts/marketplace-images.cjs"]
 testes: ["src/test/unit/brainBuild.test.ts", "src/test/unit/brainRules.test.ts", "src/test/unit/brainScripts.test.ts", "src/test/unit/docsFidelity.test.ts", "src/test/unit/docsFidelityNls.test.ts", "src/test/unit/packageTarget.test.ts", "src/test/unit/vsixIgnore.test.ts"]
 relacionado: ["[[NFR-007 - Cobertura de testes TypeScript]]", "[[PAT-001 - Módulos puros vs dependentes de vscode]]", "[[PAT-007 - Stub de vscode em duas camadas]]", "[[ADR-006 - Modulos puros vs dependentes de vscode]]"]
@@ -13,7 +13,7 @@ tags: [funcional]
 ---
 # 10 — Development Tooling
 
-<!-- prd:PRD-106 --> <!-- prd:PRD-107 --> <!-- prd:PRD-125 --> <!-- prd:PRD-127 --> <!-- prd:PRD-47 --> <!-- prd:PRD-95 --> <!-- prd:PRD-124 -->
+<!-- prd:PRD-106 --> <!-- prd:PRD-107 --> <!-- prd:PRD-125 --> <!-- prd:PRD-127 --> <!-- prd:PRD-47 --> <!-- prd:PRD-95 --> <!-- prd:PRD-124 --> <!-- prd:PRD-150 -->
 
 Ferramentas e infraestrutura de desenvolvimento do projeto.
 
@@ -36,7 +36,7 @@ O gate `npm run marketplace:check` (`scripts/marketplace-images.cjs`) valida o m
 | `npm run test:integration` | `pretest:integration` (compile + bundle) → `vscode-test` |
 | `npm run test:integration:smoke` | idem, com `.vscode-test.smoke.mjs` (subconjunto rápido) |
 | `npm run test:integration:thick` | idem, com `.vscode-test.thick.mjs` (Instant Client/thick; host sem `UTPLSQL_CONN` → conexão via `UTPLSQL_THICK_CONN`) |
-| `npm run test:integration:thick-full` | idem, com `.vscode-test.thick-full.mjs` (thick; experimental, fora do CI; exclui thin-only/UI/standalone; PRD-125) |
+| `npm run test:integration:thick-full` | idem, com `.vscode-test.thick-full.mjs` (thick; fora do CI comum; exclui thin-only/UI/standalone/debugger; guarda anti-thin e reciclagem do pool — PRD-125/150) |
 | `npm run test:integration:multiroot` | idem, com `.vscode-test.multiroot.mjs` (workspace multi-root via `.code-workspace`) |
 | `npm run db:matrix` | `bash scripts/db-matrix/run.sh` — testa contra Oracle 11.2 (11g, **thick-only**), 12.2/18c/19c/21c/23ai local (compose); 11.2 e 12.2 usam utPLSQL `v3.1.14` (piso alternativo, PRD-84/123) |
 | `npm run db:matrix:list` | Lista as versões da matriz |
@@ -345,7 +345,7 @@ Requer Node 24+ local (`engines.node >=24`, PRD-127/47).
 ## Conexões
 
 <!-- brain:auto:start:conexoes -->
-- 📐 Regras: [[BR-SITE-001 - Landing page gerada de site e publicada no GitHub Pages, sem noindex|BR-SITE-001]] · [[BR-QUAL-001 - Thresholds de cobertura (c8) sao globais e bloqueiam o CI|BR-QUAL-001]] · [[BR-QUAL-002 - Formatacao e lint do codigo sao do Biome|BR-QUAL-002]] · [[BR-DEP-001 - Runtime deps em dependencies e nota DEP- para cada dep direta|BR-DEP-001]] · [[BR-PKG-001 - VSIX nao inclui fontes, scripts nem segredos|BR-PKG-001]] · [[BR-PLAT-005 - Bundle de producao e ESM e os testes continuam CJS|BR-PLAT-005]] · [[BR-QUAL-004 - executeRunOracle e orquestrador e as etapas sao funcoes testaveis|BR-QUAL-004]] · [[BR-CONN-021 - Major do driver Oracle so entra com matriz e packaging validados|BR-CONN-021]] · [[BR-TEST-004 - Fixture de privilegio e sessao usa usuario restrito e skip quando ausente|BR-TEST-004]] · [[BR-TEST-005 - Harness de perf usa fixture por seed e fica fora do caminho critico|BR-TEST-005]] · [[BR-DOC-003 - Marketplace usa MARKETPLACE.md gerado e README do GitHub segue como referencia|BR-DOC-003]] · [[BR-PKG-002 - VSIX publica apenas o README do Marketplace|BR-PKG-002]]
+- 📐 Regras: [[BR-SITE-001 - Landing page gerada de site e publicada no GitHub Pages, sem noindex|BR-SITE-001]] · [[BR-QUAL-001 - Thresholds de cobertura (c8) sao globais e bloqueiam o CI|BR-QUAL-001]] · [[BR-QUAL-002 - Formatacao e lint do codigo sao do Biome|BR-QUAL-002]] · [[BR-DEP-001 - Runtime deps em dependencies e nota DEP- para cada dep direta|BR-DEP-001]] · [[BR-PKG-001 - VSIX nao inclui fontes, scripts nem segredos|BR-PKG-001]] · [[BR-PLAT-005 - Bundle de producao e ESM e os testes continuam CJS|BR-PLAT-005]] · [[BR-QUAL-004 - executeRunOracle e orquestrador e as etapas sao funcoes testaveis|BR-QUAL-004]] · [[BR-CONN-021 - Major do driver Oracle so entra com matriz e packaging validados|BR-CONN-021]] · [[BR-CONN-024 - Abort em thick descarta conexoes e pool quebrados|BR-CONN-024]] · [[BR-TEST-004 - Fixture de privilegio e sessao usa usuario restrito e skip quando ausente|BR-TEST-004]] · [[BR-TEST-005 - Harness de perf usa fixture por seed e fica fora do caminho critico|BR-TEST-005]] · [[BR-DOC-003 - Marketplace usa MARKETPLACE.md gerado e README do GitHub segue como referencia|BR-DOC-003]] · [[BR-PKG-002 - VSIX publica apenas o README do Marketplace|BR-PKG-002]]
 - 🧩 Código: [[COD - brain.cjs]] · [[COD - brain-build.cjs]] · [[COD - brain-rules.cjs]] · [[COD - brain-gaps.cjs]] · [[COD - docs-check.cjs]] · [[COD - docs-fidelity.cjs]] · [[COD - version-check.cjs]] · [[COD - run-tests.cjs]] · [[COD - test-setup.cjs]] · [[COD - sync-prds.cjs]] · [[COD - create-pr.cjs]] · [[COD - create-release.cjs]] · [[COD - publish.cjs]] · [[COD - vsce.cjs]] · [[COD - package-target.cjs]] · [[COD - gen-icon.cjs]] · [[COD - gen-diagrams.cjs]] · [[COD - gen-social-preview.cjs]] · [[COD - obsidian-mcp.py]] · [[COD - bootstrap.sh]] · [[COD - wait-ready.sh]] · [[COD - parse-version.cjs]] · [[COD - marketplace-images.cjs]]
 - 🧪 Testes: [[TST - brainBuild.test.ts]] · [[TST - brainRules.test.ts]] · [[TST - brainScripts.test.ts]] · [[TST - docsFidelity.test.ts]] · [[TST - docsFidelityNls.test.ts]] · [[TST - packageTarget.test.ts]] · [[TST - vsixIgnore.test.ts]]
 - 🔗 [[NFR-007 - Cobertura de testes TypeScript]] · [[PAT-001 - Módulos puros vs dependentes de vscode]] · [[PAT-007 - Stub de vscode em duas camadas]] · [[ADR-006 - Modulos puros vs dependentes de vscode]]

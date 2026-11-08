@@ -13,6 +13,7 @@ import {
   checkReporterExists,
   closeOraclePool,
   connectionUser,
+  discardOraclePool,
   discoverUtplsqlSchema,
   ensurePool,
   executeRunOracle,
@@ -2654,6 +2655,21 @@ test('invalidatePool: força recriação no próximo ensurePool', async () => {
     invalidatePool();
     await ensurePool(mod as never, 'u/p@//h:1521/s', POOL_CFG);
     assert.strictEqual(pools.length, 2);
+  } finally {
+    await closeOraclePool();
+  }
+});
+
+test('discardOraclePool: descarta o pool e o próximo ensurePool cria outro (PRD-150)', async () => {
+  await closeOraclePool();
+  const { mod, pools } = makeFakeOracledb();
+  try {
+    await ensurePool(mod as never, 'u/p@//h:1521/s', POOL_CFG);
+    discardOraclePool();
+    await new Promise((resolve) => setTimeout(resolve, 0));
+    assert.strictEqual(pools[0].closed, true, 'o pool descartado deve ser fechado');
+    await ensurePool(mod as never, 'u/p@//h:1521/s', POOL_CFG);
+    assert.strictEqual(pools.length, 2, 'o próximo run deve criar um pool novo');
   } finally {
     await closeOraclePool();
   }

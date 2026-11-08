@@ -28,6 +28,7 @@ SORT id ASC
 - [[COD - .c8rc]] — `COD-.c8rc`
 - [[COD - .gitattributes]] — `COD-.gitattributes`
 - [[COD - .gitignore]] — `COD-.gitignore`
+- [[COD - .vscode-test.thick-full.mjs]] — `COD-.vscode-test.thick-full.mjs`
 - [[COD - .vscodeignore]] — `COD-.vscodeignore`
 - [[COD - 404.html]] — `COD-404.html`
 - [[COD - annotation.ts]] — `COD-annotation.ts`
@@ -145,6 +146,7 @@ SORT id ASC
 - [[COD - template-prd.md]] — `COD-template-prd.md`
 - [[COD - test-setup.cjs]] — `COD-test-setup.cjs`
 - [[COD - testTree.ts]] — `COD-testTree.ts`
+- [[COD - thickSetup.ts]] — `COD-thickSetup.ts`
 - [[COD - timing.ts]] — `COD-timing.ts`
 - [[COD - tnsnames.ts]] — `COD-tnsnames.ts`
 - [[COD - tsconfig.json]] — `COD-tsconfig.json`

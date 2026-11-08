@@ -135,6 +135,7 @@ SORT id ASC
 - [[TST - tagFilter.test.ts]] — `TST-tagFilter.test.ts`
 - [[TST - tagsStreamingE2E.test.ts]] — `TST-tagsStreamingE2E.test.ts`
 - [[TST - testTree.test.ts]] — `TST-testTree.test.ts`
+- [[TST - thickFullGuard.test.ts]] — `TST-thickFullGuard.test.ts`
 - [[TST - thickLegacyE2E.test.ts]] — `TST-thickLegacyE2E.test.ts`
 - [[TST - thickMode.test.ts]] — `TST-thickMode.test.ts`
 - [[TST - tnsnames.test.ts]] — `TST-tnsnames.test.ts`

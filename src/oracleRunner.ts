@@ -230,6 +230,23 @@ export function invalidatePool(): void {
   if (currentPool) currentPool.key = '';
 }
 
+/**
+ * Descarta o pool atual após um abort (timeout/cancelamento — PRD-150 RF2).
+ * Em thick, conexões quebradas por `break()` voltam ao pool e o próximo
+ * checkout pode pendurar; aqui o pool é removido do cache imediatamente e
+ * fechado em background (`close(0)`), sem bloquear a próxima execução.
+ */
+export function discardOraclePool(): void {
+  const entry = currentPool;
+  if (!entry) return;
+  currentPool = undefined;
+  void entry.pool.close(0).catch((e) => {
+    logger.warn('falha ao descartar pool Oracle após abort', {
+      error: redactConnection(String(e), entry.connection),
+    });
+  });
+}
+
 export async function closeOraclePool(): Promise<void> {
   // Não fecha o pool enquanto uma criação concorrente está em andamento; senão
   // o `ensurePool` terminaria com um pool já fechado.
@@ -957,6 +974,13 @@ export async function executeRunOracle(
   const activity = beginOracleActivity();
   try {
     return await executeRunOracleCore(options, token, loadOracledbMod);
+  } catch (e) {
+    // PRD-150 RF2: em thick, conexões quebradas por timeout/cancelamento
+    // voltam ao pool e o próximo checkout pode pendurar. Invalida o pool para
+    // o próximo `ensurePool` criar uma instância limpa (o caminho thin não
+    // depende disso, mas a invalidação é segura nos dois modos).
+    if (e instanceof RunAbortedError) discardOraclePool();
+    throw e;
   } finally {
     await activity.end();
   }
@@ -1014,6 +1038,11 @@ async function executeRunOracleCore(
 
   const cfg = readConfig();
   const { conn1, conn2 } = await acquireRunnerConnections(oracledb, connection, cfg);
+  // PRD-150 RF2: após timeout/cancelamento, `break()` interrompe o cliente mas
+  // a sessão do servidor pode continuar rodando e segurando o buffer. Nesse
+  // caso as conexões são dropadas (`close({ drop: true })`), não devolvidas ao
+  // pool.
+  let dropConnections = false;
 
   try {
     const htmlReportTarget =
@@ -1122,7 +1151,10 @@ async function executeRunOracleCore(
 
     // Timeout/cancelamento não são runs concluídos: não parseia JUnit/Cobertura,
     // não aplica resultados parciais e não persiste snapshot.
-    if (outcome !== 'completed') throw new RunAbortedError(outcome);
+    if (outcome !== 'completed') {
+      dropConnections = true;
+      throw new RunAbortedError(outcome);
+    }
 
     if (dbmsOutput) await drainDbmsOutput(conn1, run, oracledb, connection);
 
@@ -1154,8 +1186,13 @@ async function executeRunOracleCore(
       endParse?.();
     }
   } finally {
-    await conn1.close().catch(() => {});
-    await conn2.close().catch(() => {});
+    if (dropConnections) {
+      await conn1.close({ drop: true }).catch(() => {});
+      await conn2.close({ drop: true }).catch(() => {});
+    } else {
+      await conn1.close().catch(() => {});
+      await conn2.close().catch(() => {});
+    }
   }
 }
 

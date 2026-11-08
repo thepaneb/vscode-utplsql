@@ -11,6 +11,13 @@
   file+DB tests without mutating the input; Oracle activity starts before the
   connection checkout; `SET TRANSACTION`/`SET ROLE`, SQL Developer XML entities
   and the default 1521 port are handled, and reporter dedupe is exact.
+- **True thick-full and pool recovery (PRD-150)**: the thick-full axis fails
+  explicitly when the driver starts thin (`UTPLSQL_THICK_ACTIVE`/guard test);
+  after a timeout or cancellation the runner drops the broken connections and
+  discards the pool, so the next run gets a clean pool instead of hanging. The
+  23free thick-full suite is green (80 passing / 13 documented pending), with
+  DBMS_DEBUG E2E skips documented as an isolated thick limitation (#288); the
+  11g full run remains a timeboxed experimental limitation.
 
 ## 0.20.0
 
