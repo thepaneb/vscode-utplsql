@@ -151,6 +151,17 @@ test('parseSqlDevConnections: XML valido gera perfis', () => {
   assert.ok(profiles[0].id);
 });
 
+test('parseSqlDevConnections: decodifica entidades XML e usa porta 1521 default', () => {
+  const xml = `<Reference name="A&amp;B" userName="scott" password="p&amp;ss">
+    <StringRefAddr addrType="hostname">db&amp;test</StringRefAddr>
+    <StringRefAddr addrType="serviceName">XEPDB1</StringRefAddr>
+  </Reference>`;
+  const profiles = parseSqlDevConnections(xml);
+  assert.strictEqual(profiles.length, 1);
+  assert.strictEqual(profiles[0].name, 'A&B');
+  assert.strictEqual(profiles[0].connection, 'scott/p&ss@db&test:1521/XEPDB1');
+});
+
 test('parseSqlDevConnections: sem host ignora a conexao', () => {
   const xml = `<Reference name="NOHOST" userName="scott" password="tiger">
     <StringRefAddr addrType="port">1521</StringRefAddr>
@@ -327,12 +338,12 @@ test('parseSqlDevConnections: Reference sem name é ignorado', () => {
   assert.deepStrictEqual(parseSqlDevConnections(xml), []);
 });
 
-test('parseSqlDevConnections: host sem porta/serviço usa vazio', () => {
+test('parseSqlDevConnections: host sem porta usa 1521; serviço ausente fica vazio', () => {
   const xml = `<Reference name="X" userName="u" password="p">
     <StringRefAddr addrType="hostname">h</StringRefAddr>
   </Reference>`;
   const ps = parseSqlDevConnections(xml);
-  assert.strictEqual(ps[0].connection, 'u/p@h:/');
+  assert.strictEqual(ps[0].connection, 'u/p@h:1521/');
 });
 
 test('findSqlDevConnectionsPath: sem system dirs retorna undefined', () => {

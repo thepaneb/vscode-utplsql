@@ -191,6 +191,22 @@ test('splitScript: só diretivas retorna []', () => {
   assert.deepStrictEqual(splitScript('PROMPT hi\nSHOW ERRORS'), []);
 });
 
+test('splitScript: SET TRANSACTION/SET ROLE executam (PRD-148 RF8)', () => {
+  const stmts = splitScript('SET TRANSACTION READ ONLY;\nSET ROLE app_role;\nSELECT 1;');
+  assert.deepStrictEqual(
+    stmts.map((s) => s.text),
+    ['SET TRANSACTION READ ONLY;', 'SET ROLE app_role;', 'SELECT 1;'],
+  );
+});
+
+test('splitScript: SET de opção de cliente continua sendo diretiva', () => {
+  const stmts = splitScript('SET SERVEROUTPUT ON\nSELECT 1;');
+  assert.deepStrictEqual(
+    stmts.map((s) => s.text),
+    ['SELECT 1;'],
+  );
+});
+
 test('splitScript: SET no meio de UPDATE não é diretiva', () => {
   const stmts = splitScript('UPDATE t\nSET x = 1;');
   assert.strictEqual(stmts.length, 1);
