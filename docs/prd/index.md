@@ -235,6 +235,7 @@ notas `prd-*`. O índice navegável do vault é a [[MOC - PRDs]].
 | 148 | [Confiabilidade de execução e estado após a auditoria 0.20.0](proposed/prd-148-execution-state-reliability.md) | 0.20.1 | 2026-11-07 |
 | 149 | [Performance mensurável e qualidade de engenharia](proposed/prd-149-performance-engineering-quality.md) | 0.23.0 | 2026-11-07 |
 | 150 | [Thick-full verdadeiro: inicialização thick e recuperação do pool após break](proposed/prd-150-thick-full-true-pool-recovery.md) | 0.20.1 | 2026-11-07 |
+| 151 | [CodeLens de debug de teste e suíte](proposed/prd-151-codelens-debug-test.md) | 0.24.0 | 2026-11-07 |
 <!-- prd:roadmap:end -->
 
 ---
@@ -396,6 +397,7 @@ docs/prd/
 │   ├── prd-148-execution-state-reliability.md
 │   ├── prd-149-performance-engineering-quality.md
 │   ├── prd-150-thick-full-true-pool-recovery.md
+│   ├── prd-151-codelens-debug-test.md
 ```
 <!-- prd:estrutura:end -->
 
