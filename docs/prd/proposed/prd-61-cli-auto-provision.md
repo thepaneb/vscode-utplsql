@@ -20,6 +20,9 @@
 > `utplsql.cliPath`/`cliHome` e o modo de invocação `java`, que não existem
 > mais. Mantida apenas como registro histórico — reavaliar somente se o CLI
 > voltar a ser pré-requisito.
+>
+> **Arquivada (2026-11-07):** não implementar no roadmap atual; permanece como
+> histórico. Qualquer retomada exige uma nova PRD alinhada ao modelo Oracle-only.
 
 Oferecer download/verificação automática do `utPLSQL-cli` (analogia ao Python
 Extension que instala `pytest`), com quick-fix no diagnóstico de setup. Hoje o

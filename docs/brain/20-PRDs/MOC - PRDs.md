@@ -221,4 +221,5 @@ Detalhe completo (fonte da verdade): [docs/prd/index.md](../../prd/index.md)
 - [[Roadmap - 0.22.0 (planejamento)]]
 - [[Roadmap - 0.23.0 (planejamento)]]
 - [[Roadmap - 0.24.0 (planejamento)]]
+- [[Roadmap - 0.25.0 (planejamento)]]
 <!-- brain:auto:end -->

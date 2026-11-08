@@ -8,7 +8,7 @@
 | Autor | Gil Cleber Barboza |
 | Data | 2026-11-07 |
 | Componente | Extensão `paneb.vscode-utplsql` (CodeLens + debugger) |
-| Versão alvo | 0.24.0 (ou 0.25.0 se a onda de UX for separada) |
+| Versão alvo | 0.25.0 (onda de UX) |
 | Arquivos afetados | `src/codelens.ts`, `src/commands/debug.ts`, `src/i18nLocales.ts`, `package.json`, `package.nls*.json`, `src/test/unit/codelens.test.ts`, `src/test/unit/debugCommands.test.ts`, docs geradas |
 | Esforço estimado | 1–2 dias |
 | Complexidade | Baixa-Média |
@@ -147,7 +147,7 @@ reutiliza `startDebugSession(packageName, procName?)`, respeita
 - `wiki/Commands.md`: linha do `utplsql.debugLens`.
 - `wiki/Configuration.md`: ajustar a descrição de `utplsql.codeLens.enabled`
   para “Run/Run with Coverage/Debug”.
-- `CHANGELOG.md`: 0.24.0 (ou 0.25.0, se a onda de UX for separada).
+- `CHANGELOG.md`: 0.25.0.
 - Cada superfície cita `PRD-151` ou `<!-- prd:PRD-151 -->`.
 
 **Não-funcionais**
@@ -206,8 +206,7 @@ Nenhuma setting nova. O lens de debug depende de:
 
 ## 9. Rollout
 
-- **0.24.0** (onda de UX) ou **0.25.0** se a 0.24.0 for dividida em
-  segurança/distribuição + UX.
+- **0.25.0** (onda de UX, separada da 0.24.0 de segurança/distribuição).
 - `CHANGELOG.md` com o novo CodeLens.
 - Sem migração de settings; usuários com debugger desabilitado não veem
   diferença.

@@ -3,7 +3,7 @@ tipo: nota
 status: ativo
 modulo: prds
 data: 2026-10-09
-verificado: 2026-10-30
+verificado: 2026-11-07
 tags: [prd, roadmap, planejamento]
 ---
 
@@ -17,9 +17,9 @@ alvo são a **fonte da verdade** no frontmatter das notas `prd-*`: ver [[MOC - P
 
 | Ordem | PRD | Título | Esforço | Complexidade |
 |---|---|---|---|---|
-| 1 | PRD-129 | Orquestrador de execução com Strategy | 2–3 dias | Média-Alta |
-| 2 | PRD-128 | Event bus interno e desacoplamento de callbacks de execução | 1–2 dias | Média |
-| 3 | PRD-130 | Validação de configuração e classes de erro tipadas | 1–2 dias | Média |
+| 1 | PRD-130 | Validação de configuração e classes de erro tipadas | 1–2 dias | Média |
+| 2 | PRD-129 | Orquestrador de execução com Strategy | 2–3 dias | Média-Alta |
+| 3 | PRD-128 | Event bus interno e desacoplamento de callbacks de execução | 1–2 dias | Média |
 | 4 | PRD-131 | Resiliência na descoberta: retry, cache e limpeza de Memento | 1–2 dias | Média |
 | 5 | PRD-137 | Vincular senha da wallet ao connection do perfil | 0,5–1 dia | Baixa |
 | 6 | PRD-138 | Padrão Strategy para organização da árvore de testes | 1–2 dias | Média |
@@ -34,11 +34,17 @@ alvo são a **fonte da verdade** no frontmatter das notas `prd-*`: ver [[MOC - P
 [[prd-139-state-store-slicing-lru|PRD-139]]
 
 **Tema:** refatorações estruturais que destravam as releases seguintes. A ordem
-**129 → 128** separa a orquestração (estratégias de run) do barramento de eventos
-que expõe os efeitos colaterais; a 130 tipa a configuração e os erros antes de a
-131 mexer em descoberta/cache. A 137 fecha a pendência da PRD-81 (wallet) sobre o
-modelo de conexão estabilizado na 0.20.0; a 138 e a 139 fatiam a árvore e o estado
-antes da UX da 0.24.0.
+**130 → 129 → 128** coloca a configuração/erros tipados como fundação, depois
+separa a orquestração (estratégias de run) do barramento de eventos que expõe os
+efeitos colaterais; a 131 mexe em descoberta/cache só depois. A 137 fecha a
+pendência da PRD-81 (wallet) sobre o modelo de conexão estabilizado na 0.20.0 e
+pode andar em paralelo; a 138 e a 139 fatiam a árvore e o estado antes da UX da
+0.25.0.
+
+> **Revisão (2026-11-07):** a ordem original era 129 → 128 → 130. A 130
+> (config/erros tipados) é fundacional e passou para primeiro; a 137 (wallet) é
+> independente e pode ser paralela. O WIP recomendado é 2–3 PRDs simultâneas
+> para não transformar a release de arquitetura em uma pilha de refatorações.
 
 **Reorganização (2026-10-30, nivelamento):** as PRDs **128/129/130/131/137/138/139**
 estavam marcadas como 0.20.0, mas nunca entraram no escopo daquela release (que

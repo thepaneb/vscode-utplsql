@@ -8,7 +8,7 @@
 | Autor | Gil Cleber Barboza |
 | Data | 2026-10-30 |
 | Componente | Extensão `paneb.vscode-utplsql` |
-| Versão alvo | 0.24.0 |
+| Versão alvo | 0.25.0 |
 | Arquivos afetados | `src/statusBar.ts`, `package.json`, `src/test/unit/statusBar.test.ts` |
 | Esforço estimado | 1 dia |
 | Complexidade | Baixa |
@@ -81,7 +81,7 @@ Nenhuma setting nova.
 
 ## 9. Rollout
 
-- 0.24.0; registrar no CHANGELOG.
+- 0.25.0; registrar no CHANGELOG.
 
 ## 10. Critérios de aceite
 

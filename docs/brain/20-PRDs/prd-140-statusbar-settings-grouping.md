@@ -4,11 +4,11 @@ id: PRD-140
 aliases: [PRD-140]
 status: proposed
 titulo: "Indicador de conexão/perfil no status bar e agrupamento de settings"
-versao: "0.24.0"
+versao: "0.25.0"
 data: "2026-10-30"
 autor: "Gil Cleber Barboza"
-versao_titulo: "0.24.0 — UX, segurança e distribuição"
-verificado: 2026-10-30
+versao_titulo: "0.25.0 — UX, onboarding e descoberta"
+verificado: 2026-11-07
 regras: []
 docs: ["CHANGELOG"]
 tags: [prd]
@@ -21,7 +21,7 @@ tags: [prd]
 | Autor | Gil Cleber Barboza |
 | Data | 2026-10-30 |
 | Componente | Extensão `paneb.vscode-utplsql` |
-| Versão alvo | 0.24.0 |
+| Versão alvo | 0.25.0 |
 | Arquivos afetados | `src/statusBar.ts`, `package.json`, `src/test/unit/statusBar.test.ts` |
 | Esforço estimado | 1 dia |
 | Complexidade | Baixa |
@@ -94,7 +94,7 @@ Nenhuma setting nova.
 
 ## 9. Rollout
 
-- 0.24.0; registrar no CHANGELOG.
+- 0.25.0; registrar no CHANGELOG.
 
 ## 10. Critérios de aceite
 
@@ -118,6 +118,6 @@ Superfícies: CHANGELOG, README (gerado).
 <!-- brain:auto:start:conexoes -->
 - 🗺️ [[MOC - PRDs]]
 - 🔗 PRDs relacionados: [[prd-65-schema-mode-security-fixes|PRD-65]] · [[prd-81-security-hardening|PRD-81]]
-- 🔗 Mesma versão (0.24.0): [[prd-121-auditable-package-sourcemap|PRD-121]] · [[prd-122-marketplace-trust-metadata|PRD-122]] · [[prd-132-ux-execution-dryrun-jump|PRD-132]] · [[prd-133-rate-limiting-keybindings|PRD-133]] · [[prd-141-onboarding-walkthrough-accessibility|PRD-141]] · [[prd-142-supply-chain-provenance-typecheck-gate|PRD-142]] · [[prd-143-redos-regex-audit-input-validation|PRD-143]] · [[prd-144-security-runtime-hardening|PRD-144]] · [[prd-145-security-alerts-deliverable|PRD-145]]
-- 🚀 ⬅️ release anterior: [[prd-149-performance-engineering-quality|PRD-149 (0.23.0)]]
+- 🔗 Mesma versão (0.25.0): [[prd-132-ux-execution-dryrun-jump|PRD-132]] · [[prd-133-rate-limiting-keybindings|PRD-133]] · [[prd-141-onboarding-walkthrough-accessibility|PRD-141]] · [[prd-151-codelens-debug-test|PRD-151]]
+- 🚀 ⬅️ release anterior: [[prd-145-security-alerts-deliverable|PRD-145 (0.24.0)]]
 <!-- brain:auto:end -->

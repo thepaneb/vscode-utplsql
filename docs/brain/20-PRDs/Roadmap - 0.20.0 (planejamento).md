@@ -60,8 +60,12 @@ beneficiar do harness de desempenho da PRD-106 para medir a ativação.
 2026-11-04. Entram como resíduos o **RF2 da PRD-111** e o **RF3 da PRD-125**
 (ambos já previstos no fechamento da versão anterior), a **verificação da
 PRD-146** (implementada no `main` depois da tag `v0.19.0`) e a **PRD-147**
-(versão declarada 0.20.0). Com isso a **0.25.0 deixa de existir**: a PRD-146 era
-a única PRD atribuída a ela.
+(versão declarada 0.20.0). Com isso a **0.25.0 deixou de existir** naquele
+momento: a PRD-146 era a única PRD atribuída a ela.
+
+> **Reorganização (2026-11-07):** a 0.25.0 **volta a existir** para a onda de UX
+> (PRD-132, PRD-133, PRD-140, PRD-141 e a nova PRD-151), separada da 0.24.0 de
+> segurança/distribuição. Ver [[Roadmap - 0.25.0 (planejamento)]].
 
 **Total estimado:** ≈ 13,5–22,5 dias.
 
