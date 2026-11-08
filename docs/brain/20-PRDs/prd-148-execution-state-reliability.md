@@ -2,7 +2,7 @@
 tipo: prd
 id: PRD-148
 aliases: [PRD-148]
-status: proposed
+status: in-progress
 titulo: "Confiabilidade de execução e estado após a auditoria 0.20.0"
 versao: "0.20.1"
 data: "2026-11-07"
