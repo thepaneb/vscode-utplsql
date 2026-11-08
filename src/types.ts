@@ -6,6 +6,8 @@ export type ItemMeta =
       packageName: string;
       uri: vscode.Uri;
       folder: vscode.WorkspaceFolder;
+      /** Schema do modo `schema`; entra no id para não colidir entre owners. */
+      schema?: string;
       tags?: string[];
     }
   | {
@@ -15,6 +17,8 @@ export type ItemMeta =
       description: string;
       uri: vscode.Uri;
       folder: vscode.WorkspaceFolder;
+      /** Schema do modo `schema`; entra no id para não colidir entre owners. */
+      schema?: string;
       tags?: string[];
     };
 
