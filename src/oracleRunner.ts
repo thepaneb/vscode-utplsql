@@ -234,13 +234,16 @@ export function invalidatePool(): void {
  * Descarta o pool atual após um abort (timeout/cancelamento — PRD-150 RF2).
  * Em thick, conexões quebradas por `break()` voltam ao pool e o próximo
  * checkout pode pendurar; aqui o pool é removido do cache imediatamente e
- * fechado em background (`close(0)`), sem bloquear a próxima execução.
+ * fechado em background com drain, sem bloquear a próxima execução nem
+ * interromper outras atividades que ainda usem uma conexão.
  */
 export function discardOraclePool(): void {
   const entry = currentPool;
   if (!entry) return;
   currentPool = undefined;
-  void entry.pool.close(0).catch((e) => {
+  // Drain em background: outras atividades (script/discovery) podem estar com
+  // uma conexão do pool; `close(0)` as mataria no meio da operação.
+  void entry.pool.close(10).catch((e) => {
     logger.warn('falha ao descartar pool Oracle após abort', {
       error: redactConnection(String(e), entry.connection),
     });

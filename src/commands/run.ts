@@ -171,7 +171,7 @@ export function registerRunCommands(
       .map((i) => state.getMeta(i))
       .filter(Boolean) as ItemMeta[];
     const include = filterSuitesByUri(metas, uri.fsPath)
-      .map((m) => state.getSuiteItem(`suite:${m.packageName.toLowerCase()}`))
+      .map((m) => state.getSuiteItemFor(m.packageName, m.schema))
       .filter(Boolean) as vscode.TestItem[];
     if (!include.length) {
       vscode.window.showWarningMessage(t(locale, 'ext.noSuiteInFile'));
@@ -202,7 +202,7 @@ export function registerRunCommands(
       .map((i) => state.getMeta(i))
       .filter(Boolean) as ItemMeta[];
     const include = relatedSuiteMetas(metas, editor.document.fileName)
-      .map((m) => state.getSuiteItem(`suite:${m.packageName.toLowerCase()}`))
+      .map((m) => state.getSuiteItemFor(m.packageName, m.schema))
       .filter(Boolean) as vscode.TestItem[];
     if (!include.length) {
       const file = editor.document.fileName.replace(/\\/g, '/').split('/').pop() ?? '';
@@ -226,7 +226,7 @@ export function registerRunCommands(
       .map((i) => state.getMeta(i))
       .filter(Boolean) as ItemMeta[];
     const include = filterSuitesByFolder(metas, uri.fsPath)
-      .map((m) => state.getSuiteItem(`suite:${m.packageName.toLowerCase()}`))
+      .map((m) => state.getSuiteItemFor(m.packageName, m.schema))
       .filter(Boolean) as vscode.TestItem[];
     if (!include.length) {
       vscode.window.showWarningMessage(t(locale, 'ext.noSuiteInFolder'));
@@ -247,8 +247,11 @@ export function registerRunCommands(
     packageName: string,
     procName: string,
     coverage: boolean,
+    uri?: vscode.Uri,
   ): Promise<void> => {
-    const suiteItem = state.getSuiteItem(`suite:${packageName.toLowerCase()}`);
+    const suiteItem = uri
+      ? state.findSuiteItemForUri(uri, packageName)
+      : state.getSuiteItemFor(packageName);
     if (!suiteItem) return;
     const testItems: vscode.TestItem[] = [];
     for (const [, c] of suiteItem.children) {
@@ -270,8 +273,14 @@ export function registerRunCommands(
     );
   };
 
-  const findTestItem = (packageName: string, procName: string): vscode.TestItem | undefined => {
-    const suiteItem = state.getSuiteItem(`suite:${packageName.toLowerCase()}`);
+  const findTestItem = (
+    packageName: string,
+    procName: string,
+    uri?: vscode.Uri,
+  ): vscode.TestItem | undefined => {
+    const suiteItem = uri
+      ? state.findSuiteItemForUri(uri, packageName)
+      : state.getSuiteItemFor(packageName);
     if (!suiteItem) return undefined;
     let found: vscode.TestItem | undefined;
     suiteItem.children.forEach((c) => {
@@ -347,8 +356,8 @@ export function registerRunCommands(
         if (annotation) {
           const target =
             annotation.type === 'test' && annotation.procName
-              ? findTestItem(annotation.packageName, annotation.procName)
-              : state.getSuiteItem(`suite:${annotation.packageName.toLowerCase()}`);
+              ? findTestItem(annotation.packageName, annotation.procName, editor.document.uri)
+              : state.findSuiteItemForUri(editor.document.uri, annotation.packageName);
           if (target) include = [target];
         }
       }
@@ -502,7 +511,7 @@ export function registerRunCommands(
         const docUri = vscode.Uri.parse(args.uri);
         if (args.type === 'test' && args.procName) {
           const procName = args.procName;
-          const suiteItem = state.getSuiteItem(`suite:${args.packageName.toLowerCase()}`);
+          const suiteItem = state.findSuiteItemForUri(docUri, args.packageName);
           if (!suiteItem) return;
           const testItems: vscode.TestItem[] = [];
           for (const [, c] of suiteItem.children) {
@@ -548,6 +557,7 @@ export function registerRunCommands(
               lr.packageName,
               lr.procName,
               effectiveCoverage(lr.coverage, state.coverageAlways),
+              lr.uri,
             );
           }
           break;
@@ -569,7 +579,12 @@ export function registerRunCommands(
       }
       const cursorCoverage = effectiveCoverage(undefined, state.coverageAlways);
       if (annotation.type === 'test' && annotation.procName) {
-        await runSingleTest(annotation.packageName, annotation.procName, cursorCoverage);
+        await runSingleTest(
+          annotation.packageName,
+          annotation.procName,
+          cursorCoverage,
+          editor.document.uri,
+        );
       } else {
         await runForUri(editor.document.uri, cursorCoverage);
       }

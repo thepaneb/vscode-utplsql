@@ -262,8 +262,8 @@ test('refresh: package body de produção vai para o .pkb (PRD-148 RF3)', async 
       '../../compilationDiagnostics.js'
     );
     registerCompilationDiagnostics({ subscriptions: [] } as never);
-    __setMockFile('**/*.{pks,pkb,typ,tpb,prc,fnc,trg}', '/tmp/app_pkg.pkb', '');
-    __setMockFile('**/*.{pks,pkb,typ,tpb,prc,fnc,trg}', '/tmp/app_pkg.pks', '');
+    __setMockFile('**/*.{pks,pkb,typ,tpb,prc,fnc,trg,sql}', '/tmp/app_pkg.pkb', '');
+    __setMockFile('**/*.{pks,pkb,typ,tpb,prc,fnc,trg,sql}', '/tmp/app_pkg.pks', '');
     errors = [{ name: 'APP_PKG', type: 'PACKAGE BODY', line: 7, position: 0, text: 'boom' }];
     await refreshCompilationDiagnostics(makeState());
 
@@ -284,7 +284,7 @@ test('refresh: package de produção vai para o .pks', async () => {
       '../../compilationDiagnostics.js'
     );
     registerCompilationDiagnostics({ subscriptions: [] } as never);
-    __setMockFile('**/*.{pks,pkb,typ,tpb,prc,fnc,trg}', '/tmp/app_pkg.pks', '');
+    __setMockFile('**/*.{pks,pkb,typ,tpb,prc,fnc,trg,sql}', '/tmp/app_pkg.pks', '');
     errors = [{ name: 'APP_PKG', type: 'PACKAGE', line: 3, position: 0, text: 'spec' }];
     await refreshCompilationDiagnostics(makeState());
 

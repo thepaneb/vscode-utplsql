@@ -204,14 +204,14 @@ root `CONTRIBUTING.md` for details.
 
 > **Windows + WSL:** quote the Windows path in `.env.dbmatrix`, e.g.
 > `ORACLE_CLIENT_LIB_DIR="D:\oracle\instantclient_23_0"`. The `source` in
-> The thick-full axis has documented skips: UI/commands and multi-root (thin
-> axis), `thickMode` (isolated host), thin-only tests, and the DBMS_DEBUG E2E
-> files (they leave `pipe get` sessions that destabilize the shared thick host,
-> #288). The axis fails explicitly if the host starts thin (PRD-150 RF1).
->
 > `run.sh` consumes unquoted backslashes and the thick test fails with
 > `DPI-1047` (the path arrives as `D:Users...`). The same path in `.env` is
 > parsed by the test config (no shell expansion), so it only bites the matrix.
+
+The thick-full axis has documented skips: UI/commands and multi-root (thin
+axis), `thickMode` (isolated host), thin-only tests, and the DBMS_DEBUG E2E
+files (they leave `pipe get` sessions that destabilize the shared thick host,
+#288). The axis fails explicitly if the host starts thin (PRD-150 RF1).
 
 **Alternative utPLSQL floors:** each `VERSIONS` line may declare a 4th field
 with the utPLSQL version for that database. `11.2` and `12.2` use **`v3.1.14`** because

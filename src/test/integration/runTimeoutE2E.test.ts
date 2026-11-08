@@ -230,7 +230,7 @@ function makeTestRun(cap: Capture, name: string, token: vscode.CancellationToken
   } as unknown as vscode.TestRun;
 }
 
-describeDB('run timeout E2E — break expira o teste e o pool sobrevive', () => {
+describeDB('run timeout E2E — break expira o teste e o pool é reciclado', () => {
   installOutFormatIsolation();
 
   let slowRunMs = 0;
@@ -500,10 +500,10 @@ describeDB('run timeout E2E — break expira o teste e o pool sobrevive', () => 
       inUseAfterTimeout === 0 || inUseAfterTimeout === undefined,
       `o run deveria devolver as 2 conexões (conn1/conn2); em uso: ${inUseAfterTimeout} (durante o run: ${poolInUseDuringFirstRun})`,
     );
-    assert.notStrictEqual(
+    assert.strictEqual(
       poolOpenAfterTimeout,
-      true,
-      'o pool com conexões quebradas não pode continuar aberto no cache',
+      false,
+      'o pool com conexões quebradas deve ser fechado, não permanecer aberto no cache',
     );
   });
 

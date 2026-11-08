@@ -314,3 +314,34 @@ test('hasFailedResults: só considera failed/error', () => {
   mgr.setLastResults(new Map([['c', { status: 'error' as const }]]));
   assert.strictEqual(mgr.hasFailedResults(), true);
 });
+
+test('getSuiteItemFor/findSuiteItemForUri desambiguam schema e arquivo (PRD-148 RF7)', () => {
+  const mgr = new TestStateManager();
+  type Item = Parameters<TestStateManager['setItem']>[1];
+  const app = { id: 'suite:APP:ut_app' } as unknown as Item;
+  const other = { id: 'suite:OTHER:ut_app' } as unknown as Item;
+  mgr.setMeta(app, {
+    kind: 'suite',
+    packageName: 'UT_APP',
+    uri: { fsPath: '/ws/db/APP/ut_app.pks' } as never,
+    folder: { uri: { fsPath: '/ws' } } as never,
+    schema: 'APP',
+  });
+  mgr.setMeta(other, {
+    kind: 'suite',
+    packageName: 'UT_APP',
+    uri: { fsPath: '/ws/db/OTHER/ut_app.pks' } as never,
+    folder: { uri: { fsPath: '/ws' } } as never,
+    schema: 'OTHER',
+  });
+  mgr.setSuiteItem('suite:APP:ut_app', app);
+  mgr.setSuiteItem('suite:OTHER:ut_app', other);
+  mgr.setSuiteItem('suite:ut_app', app);
+
+  assert.strictEqual(mgr.getSuiteItemFor('UT_APP', 'OTHER'), other);
+  assert.strictEqual(
+    mgr.findSuiteItemForUri({ fsPath: '/ws/db/OTHER/ut_app.pks' } as never, 'UT_APP'),
+    other,
+  );
+  assert.strictEqual(mgr.getSuiteItemFor('UT_APP'), app);
+});

@@ -43,13 +43,15 @@ const SLASH_LINE_RE = /^\s*\/\s*$/;
  */
 const SQLPLUS_DIRECTIVE_RE =
   /^(?:PROMPT|REMARK|REM|SPOOL|WHENEVER|TTITLE|BTITLE|COLUMN|COL|DEFINE|UNDEFINE|ACCEPT|PAUSE|HOST|CONNECT|DISCONNECT|SHOW|CLEAR|BREAK|COMPUTE|STORE|SAVE|GET|RUN|EDIT|ED|TIMING|START)(?:\s|$)/i;
-// `SET` só é diretiva quando seguido de opção de cliente. `SET TRANSACTION`,
-// `SET ROLE` e `SET CONSTRAINT(S)` são SQL e precisam executar (PRD-148 RF8).
-const SQLPLUS_SET_RE =
-  /^SET\s+(?:ARRAYSIZE|AUTOCOMMIT|AUTOPRINT|AUTOTRACE|BLOCKTERMINATOR|CMDSETERROR|CMDSHOWERR|COLSEP|CONCAT|COPYCOMMIT|COPYTYPECHECK|DEFINE|DESCRIBE|ECHO|EDITFILE|EMBEDDED|ERRORLOGGING|ESCAPE|EXITCOMMIT|FEEDBACK|FLAGGER|FLUSH|HEADING|INSTANCE|LINESIZE|LOBOFFSET|LONG|MARKUP|NEWPAGE|NULL|NUMFORMAT|NUMWIDTH|PAGESIZE|PAUSE|RECYCLEBIN|ROWCOUNT|SCAN|SERVEROUT|SERVEROUTPUT|SHOWMODE|SQLBLANKLINES|SQLCASE|SQLCONTINUE|SQLNUMBER|SQLPLUSCOMPATIBILITY|SQLPROMPT|SQLTERMINATOR|SUFFIX|TAB|TERMOUT|TIME|TIMING|TRIMOUT|TRIMSPOOL|UNDERLINE|VERIFY|WRAP|XMLOPTIMIZATION)(?:\s|$)/i;
+// `SET` é diretiva de cliente em qualquer opção/abreviação (`SET FEED OFF`,
+// `SET SQLBLANKLINES ON`), exceto nas formas que são SQL: `SET TRANSACTION`,
+// `SET ROLE` e `SET CONSTRAINT(S)` precisam executar (PRD-148 RF8).
+const SQLPLUS_SET_SQL_RE = /^SET\s+(?:TRANSACTION|ROLE|CONSTRAINT|CONSTRAINTS)\b/i;
+const SQLPLUS_SET_RE = /^SET(?:\s|$)/i;
 const SQLPLUS_SYMBOL_RE = /^(?:@@?|!)/;
 
 function isSqlplusDirectiveLine(rest: string): boolean {
+  if (SQLPLUS_SET_SQL_RE.test(rest)) return false;
   return (
     SQLPLUS_DIRECTIVE_RE.test(rest) || SQLPLUS_SET_RE.test(rest) || SQLPLUS_SYMBOL_RE.test(rest)
   );
@@ -144,6 +146,7 @@ export function splitScript(text: string): SqlStatement[] {
 
     // Diretiva SQL*Plus no início de um statement (buffer só com brancos/
     // comentários): ignora a linha inteira, preservando a contagem de linhas.
+    const directiveLineEnd = text.indexOf('\n', i);
     if (
       !inLine &&
       !inBlock &&
@@ -151,10 +154,12 @@ export function splitScript(text: string): SqlStatement[] {
       !inIdent &&
       lineBuf.trim() === '' &&
       /\S/.test(c) &&
-      isSqlplusDirectiveLine(text.slice(i, i + 16)) &&
+      isSqlplusDirectiveLine(
+        text.slice(i, directiveLineEnd < 0 ? text.length : directiveLineEnd).trimEnd(),
+      ) &&
       !stripComments(buf).trim()
     ) {
-      const nl = text.indexOf('\n', i);
+      const nl = directiveLineEnd;
       buf = buf.replace(/[ \t]+$/, '');
       if (nl < 0) {
         i = text.length;

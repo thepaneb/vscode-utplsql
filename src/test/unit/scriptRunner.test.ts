@@ -201,8 +201,10 @@ test('splitScript: SET TRANSACTION/SET ROLE executam (PRD-148 RF8)', () => {
   );
 });
 
-test('splitScript: SET de opção de cliente continua sendo diretiva', () => {
-  const stmts = splitScript('SET SERVEROUTPUT ON\nSELECT 1;');
+test('splitScript: SET de opção de cliente (inclusive longa/abreviada) é diretiva', () => {
+  const stmts = splitScript(
+    'SET SERVEROUTPUT ON\nSET SQLBLANKLINES ON\nSET FEED OFF\nSET LIN 200\nSELECT 1;',
+  );
   assert.deepStrictEqual(
     stmts.map((s) => s.text),
     ['SELECT 1;'],

@@ -237,6 +237,28 @@ export class TestStateManager {
   getSuiteItem(id: string): vscode.TestItem | undefined {
     return this.suiteMap.get(id);
   }
+
+  /** Lookup por package com schema opcional (modo schema — PRD-148 RF7). */
+  getSuiteItemFor(packageName: string, schema?: string): vscode.TestItem | undefined {
+    const pkg = packageName.toLowerCase();
+    if (schema) {
+      const exact = this.suiteMap.get(`suite:${schema}:${pkg}`);
+      if (exact) return exact;
+    }
+    return this.suiteMap.get(`suite:${pkg}`);
+  }
+
+  /** Lookup pelo URI do arquivo, desambiguando owners no modo schema. */
+  findSuiteItemForUri(uri: vscode.Uri, packageName?: string): vscode.TestItem | undefined {
+    const target = uri.fsPath.replace(/\\/g, '/').toLowerCase();
+    for (const item of this.suiteMap.values()) {
+      const meta = this.getMeta(item);
+      if (meta?.kind !== 'suite') continue;
+      if (packageName && meta.packageName.toLowerCase() !== packageName.toLowerCase()) continue;
+      if (meta.uri.fsPath.replace(/\\/g, '/').toLowerCase() === target) return item;
+    }
+    return packageName ? this.getSuiteItemFor(packageName) : undefined;
+  }
   clearSuiteMap(): void {
     this.suiteMap.clear();
   }

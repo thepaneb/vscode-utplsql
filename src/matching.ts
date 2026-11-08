@@ -68,17 +68,11 @@ export function findAllByNameOnly(
 }
 
 export function filterSuitesByUri(items: ItemMeta[], uriFsPath: string): ItemMeta[] {
-  const base = path
-    .basename(uriFsPath)
-    .replace(/\.(pks|pkb)$/i, '')
-    .toLowerCase();
+  // Caminho completo (não basename): dois owners podem ter o mesmo package em
+  // diretórios diferentes (PRD-148 RF7).
+  const target = uriFsPath.toLowerCase().replace(sepRe, '/');
   return items.filter(
-    (m) =>
-      m.kind === 'suite' &&
-      path
-        .basename(m.uri.fsPath)
-        .replace(/\.(pks|pkb)$/i, '')
-        .toLowerCase() === base,
+    (m) => m.kind === 'suite' && m.uri.fsPath.toLowerCase().replace(sepRe, '/') === target,
   );
 }
 
