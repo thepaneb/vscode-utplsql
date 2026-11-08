@@ -350,7 +350,6 @@ cita `PRD-125` ou `<!-- prd:PRD-125 -->`.
 - 📐 Regras: [[BR-TEST-001 - Matriz de bancos Oracle cobre 12.2-23ai em thin e thick|BR-TEST-001]]
 - 🔗 PRDs relacionados: [[prd-04-expand-tests|PRD-04]] · [[prd-72-db-test-matrix|PRD-72]] · [[prd-101-connection-pool-lifecycle|PRD-101]] · [[prd-102-trace-and-perf-instrumentation|PRD-102]] · [[prd-120-lean-activation-lazy-setup|PRD-120]] · [[prd-123-oracle-11g-support|PRD-123]] · [[prd-124-oracledb-26-upgrade|PRD-124]] · [[prd-150-thick-full-true-pool-recovery|PRD-150]]
 - ⚙️ Pipelines: [[PIPE-integration - Integration (Oracle)|PIPE-integration]]
-- 🔗 Mesma versão (0.20.0): [[prd-146-attestations-publish|PRD-146]] · [[prd-147-marketplace-listing-page|PRD-147]]
 - 🎯 RF4 — CI → [[BR-TEST-001 - Matriz de bancos Oracle cobre 12.2-23ai em thin e thick|BR-TEST-001]]
 - 🎯 RNF3 — Skips determinísticos e documentados (nada de “flaky skip”); incluir o → [[BR-TEST-001 - Matriz de bancos Oracle cobre 12.2-23ai em thin e thick|BR-TEST-001]]
 - 🎯 RNF4 — O eixo thin continua verde e com os mesmos 119 + 6. → [[BR-TEST-001 - Matriz de bancos Oracle cobre 12.2-23ai em thin e thick|BR-TEST-001]]

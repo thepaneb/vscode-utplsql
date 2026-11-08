@@ -138,16 +138,19 @@ files and the index; do not move the generated files by hand.
 | 107 | Hardened integration fixture with an unprivileged user | 0.20.0 |
 | 120 | Lean activation and lazy setup validation | 0.20.0 |
 | 125 | Full thick suite and database matrix | 0.20.0 |
+| 146 | Build provenance attestations on publish | 0.20.0 |
+| 147 | Marketplace listing page with screenshots and metadata | 0.20.0 |
 
 ### ⚪ Proposed
 
-The complete, generated list is in [docs/prd/index.md](../../prd/index.md) —
-currently 42 PRDs. The 0.19.0 has 47/95/111/124/127 **completed**; the 0.20.0
-closes 101/102/103/106/107/120/125 (125 with the documented 11g limitation).
-Remaining: 0.21.0 (128–131/137–139), 0.22.0 (88–93/115), 0.23.0
-(97/99/112/116/117/126) and 0.24.0 (121/122/132/133/140–143) proposals. The
-`status:` in each note's frontmatter is authoritative; this page does not
-duplicate the full table.
+The complete, generated list is in [docs/prd/index.md](../../prd/index.md).
+The 0.19.0 has 47/95/111/124/127 **completed**; the 0.20.0 closes
+101/102/103/106/107/120/125/146/147 (125 with the documented 11g limitation and
+the true-thick residual tracked by PRD-150). Next: 0.20.1 (148/150), 0.21.0
+(128–131/137–139), 0.22.0 (88–93/115), 0.23.0 (60/97/99/112/116/117/126/149),
+0.24.0 (121/122/142–145) and 0.25.0 (132/133/140/141/151). The `status:` in each
+note's frontmatter is authoritative; this page does not duplicate the full
+table.
 
 ## How to propose a PRD
 

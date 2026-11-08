@@ -1,13 +1,13 @@
 ---
 tipo: prd
 id: PRD-146
-status: in-progress
+status: completed
 titulo: "Attestations de proveniência na publicação"
 versao: "0.20.0"
 versao_titulo: "0.20.0 — Observabilidade e desempenho"
 data: "2026-11-05"
 autor: "security-auditor"
-verificado: "2026-11-05"
+verificado: "2026-11-08"
 regras: []
 docs: ["CHANGELOG", "SECURITY.md"]
 tags: [prd, security, supply-chain]
@@ -89,14 +89,17 @@ Nenhuma nova setting/comando. Apenas workflow CI.
 
 **Atualização (2026-11-07):** `publish.yml` com `id-token`/`attestations`,
 step `actions/attest-build-provenance` pinado e verificação documentada em
-`SECURITY.md`. **Pendente apenas** confirmar as attestations dos `.vsix` após a
-publicação da 0.20.0.
+`SECURITY.md`.
+
+**Concluída (2026-11-08):** release `v0.20.0` publicada; os **9 .vsix** da
+matriz têm attestation verificável (`GET /repos/.../attestations/<digest>` →
+1 attestation por artefato).
 
 ## 10. Critérios de aceite
 
 - [x] Job publish tem `id-token: write` e `attestations: write`
 - [x] Step de attestation adicionado com ação pinada por SHA
-- [ ] Attestations geradas para todos os .vsix da matriz (pendente da publicação 0.20.0)
+- [x] Attestations geradas para todos os .vsix da matriz (9/9 verificadas na release v0.20.0)
 - [x] CHANGELOG atualizado
 - [x] Documentação de verificação adicionada (SECURITY.md)
 
@@ -108,6 +111,8 @@ Nenhuma.
 
 nenhuma
 
+RNFs sem regra: RNF1, RNF2, RNF3 (verificadas pelo workflow de publicação/CI).
+
 ## Impacto nas docs
 
 - CHANGELOG: adicionar entrada "Supply-chain: attestations de proveniência nos artefatos publicados"
@@ -118,6 +123,5 @@ nenhuma
 <!-- brain:auto:start:conexoes -->
 - 🗺️ [[MOC - PRDs]]
 - ⚙️ Pipelines: [[PIPE-publish - Publish Extension|PIPE-publish]]
-- 🔗 Mesma versão (0.20.0): [[prd-147-marketplace-listing-page|PRD-147]]
 - 🚀 ⬅️ release anterior: [[prd-127-vscode-floor-1-125|PRD-127 (0.19.0)]] · ➡️ próxima release: [[prd-148-execution-state-reliability|PRD-148 (0.20.1)]]
 <!-- brain:auto:end -->

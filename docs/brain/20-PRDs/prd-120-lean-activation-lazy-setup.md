@@ -238,7 +238,6 @@ que a ativação tampouco conecta. Enquanto `proposed`, `regras: []`.
 - 🗺️ [[MOC - PRDs]]
 - 📐 Regras: [[BR-CONN-022 - Ativacao nao abre conexao e validacao de setup e preguicosa|BR-CONN-022]]
 - 🔗 PRDs relacionados: [[prd-94-vscode-floor-1-101|PRD-94]] · [[prd-101-connection-pool-lifecycle|PRD-101]] · [[prd-102-trace-and-perf-instrumentation|PRD-102]] · [[prd-106-perf-harness|PRD-106]] · [[prd-107-unprivileged-fixture|PRD-107]] · [[prd-109-language-identity|PRD-109]]
-- 🔗 Mesma versão (0.20.0): [[prd-146-attestations-publish|PRD-146]] · [[prd-147-marketplace-listing-page|PRD-147]]
 - 🎯 RNF1 — **Zero** conexões Oracle durante a ativação (garantido por teste). → [[BR-CONN-022 - Ativacao nao abre conexao e validacao de setup e preguicosa|BR-CONN-022]]
 - 🎯 RNF2 — Ativação sem conexão mensurável pelo harness da PRD-106 (baseline → [[BR-CONN-022 - Ativacao nao abre conexao e validacao de setup e preguicosa|BR-CONN-022]]
 - 🎯 RNF3 — Nenhuma mudança no comportamento da árvore/CodeLens ao abrir workspace → [[BR-CONN-022 - Ativacao nao abre conexao e validacao de setup e preguicosa|BR-CONN-022]]

@@ -153,7 +153,6 @@ alterado; caso incerto faz full refresh"), com `prds: ["PRD-103"]`,
 - 🗺️ [[MOC - PRDs]]
 - 📐 Regras: [[BR-PARSE-020 - Mudanca de arquivo reindexa so o URI e caso incerto faz full refresh|BR-PARSE-020]]
 - 🔗 PRDs relacionados: [[prd-30-schema-aware-organization|PRD-30]] · [[prd-50-auto-run-on-save|PRD-50]] · [[prd-74-db-first-discovery|PRD-74]] · [[prd-80-virtual-db-source|PRD-80]]
-- 🔗 Mesma versão (0.20.0): [[prd-146-attestations-publish|PRD-146]] · [[prd-147-marketplace-listing-page|PRD-147]]
 - 🎯 RNF1 — Sem regressão de corretude: qualquer caso incerto faz full refresh. → [[BR-PARSE-020 - Mudanca de arquivo reindexa so o URI e caso incerto faz full refresh|BR-PARSE-020]]
 - 🎯 RNF2 — `debounce.ts` permanece puro/testável. → [[BR-PARSE-020 - Mudanca de arquivo reindexa so o URI e caso incerto faz full refresh|BR-PARSE-020]]
 - 🚀 ⬅️ release anterior: [[prd-127-vscode-floor-1-125|PRD-127 (0.19.0)]] · ➡️ próxima release: [[prd-148-execution-state-reliability|PRD-148 (0.20.1)]]

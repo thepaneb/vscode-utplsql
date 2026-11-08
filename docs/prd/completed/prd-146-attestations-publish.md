@@ -4,7 +4,7 @@
 
 | Campo | Valor |
 |---|---|
-| Status | Em desenvolvimento |
+| Status | Concluído |
 | Autor | security-auditor |
 | Data | 2026-11-05 |
 | Componente | Extensão `paneb.vscode-utplsql` |
@@ -77,14 +77,17 @@ Nenhuma nova setting/comando. Apenas workflow CI.
 
 **Atualização (2026-11-07):** `publish.yml` com `id-token`/`attestations`,
 step `actions/attest-build-provenance` pinado e verificação documentada em
-`SECURITY.md`. **Pendente apenas** confirmar as attestations dos `.vsix` após a
-publicação da 0.20.0.
+`SECURITY.md`.
+
+**Concluída (2026-11-08):** release `v0.20.0` publicada; os **9 .vsix** da
+matriz têm attestation verificável (`GET /repos/.../attestations/<digest>` →
+1 attestation por artefato).
 
 ## 10. Critérios de aceite
 
 - [x] Job publish tem `id-token: write` e `attestations: write`
 - [x] Step de attestation adicionado com ação pinada por SHA
-- [ ] Attestations geradas para todos os .vsix da matriz (pendente da publicação 0.20.0)
+- [x] Attestations geradas para todos os .vsix da matriz (9/9 verificadas na release v0.20.0)
 - [x] CHANGELOG atualizado
 - [x] Documentação de verificação adicionada (SECURITY.md)
 
@@ -95,6 +98,8 @@ Nenhuma.
 ## 12. Impacto no cérebro
 
 nenhuma
+
+RNFs sem regra: RNF1, RNF2, RNF3 (verificadas pelo workflow de publicação/CI).
 
 ## Impacto nas docs
 
