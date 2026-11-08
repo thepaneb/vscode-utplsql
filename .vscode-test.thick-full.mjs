@@ -33,6 +33,9 @@ const EXCLUDED = new Set([
   'commandsE2E.test.js',
   // debugger de function standalone: limitação conhecida no thick (PRD-125)
   'debuggerStandaloneFn.test.js',
+  // 11g legado: o full do 23free não deve inicializar thick depois de um thin;
+  // o eixo `--thick`/11g cobre este teste no host isolado.
+  'thickLegacyE2E.test.js',
 ]);
 const files = readdirSync(join(root, 'out', 'test', 'integration'))
   .filter((f) => f.endsWith('.test.js') && !EXCLUDED.has(f))
@@ -54,6 +57,9 @@ writeFileSync(
         // `.code-workspace` temporário).
         'utplsql.sourcePath': 'src/test/integration/fixtures',
         'utplsql.includePatterns': ['src/test/integration/fixtures/*.pks'],
+        // PRD-101: o eixo thick-full mantém o pool entre runs (o teste de
+        // fechamento do pool é coberto no eixo thin e no unitário).
+        'utplsql.oraclePoolCloseAfterRun': false,
       },
     },
     null,
@@ -75,5 +81,9 @@ export default {
   mocha: {
     ...base.mocha,
     timeout: 120_000,
+    // Inicializa o Instant Client antes de qualquer conexão raw dos testes.
+    // Sem isso o driver entra em thin e o `ensurePool`/`initOracleClient`
+    // posterior falha com NJS-118.
+    require: ['./out/test/integration/thickSetup.js'],
   },
 };

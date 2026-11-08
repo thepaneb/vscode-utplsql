@@ -142,6 +142,12 @@ Depois do ganho, subir `.c8rc`:
 
 Atualizar `BR-QUAL-001` com os novos valores.
 
+### RF5 — Scripts fora do lcov
+
+- Incluir no gate (ou excluir explicitamente com comentário) `brain-gaps`,
+  `docs-check`, `version-check` e `sync-prds`, hoje sem cobertura porque nenhum
+  teste os importa. O gate de cobertura não pode ser verde falso para eles.
+
 **Não-funcionais**
 - RNF1 — Nenhuma mudança de comportamento de runtime; os CLIs mantêm os mesmos
   argumentos/saídas.

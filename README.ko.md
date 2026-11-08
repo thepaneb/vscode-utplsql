@@ -192,6 +192,10 @@ Test Explorer에 나타납니다.
 | `utplsql.oraclePoolMax` | `10` | Oracle 러너 풀의 최대 연결 수(node-oracledb). |
 | `utplsql.oraclePoolIncrement` | `1` | Oracle 러너 풀 확장 시 증가분(node-oracledb). |
 | `utplsql.oraclePoolPingInterval` | `60` | 유휴 풀 연결의 상태 검사 간격(초)(node-oracledb). `0` = 모든 체크아웃 시 ping. |
+| `utplsql.oraclePoolCloseAfterRun` | `true` | Closes idle Oracle pool connections when the last run, coverage, export or discovery operation finishes. |
+| `utplsql.trace` | `false` | Emits verbose per-event trace lines in the utPLSQL output channel. |
+| `utplsql.perf.enabled` | `false` | Measures discovery, tree build, run, polling and XML parsing phases. |
+| `utplsql.perf.reportFile` | `""` | Appends each perf measurement as one JSON line to this file. |
 | `utplsql.oracleClientMode` | `thin` | 드라이버 모드: `thin`(순수 JavaScript, 네이티브 클라이언트 불필요) 또는 `thick`(Oracle Instant Client 사용). `thick`는 NNE(Native Network Encryption)가 필요한 데이터베이스에만 사용하십시오. `utplsql.oracleClientLibDir`와 창 새로 고침이 필요합니다. |
 | `utplsql.oracleClientLibDir` | `""` | Oracle Instant Client 디렉터리. `utplsql.oracleClientMode`가 `thick`일 때 필수입니다(예: `C:\oracle\instantclient_23_5`). Fallback: `ORACLE_CLIENT_LIB_DIR`. |
 | 디버그가 브레이크포인트에서 멈추지 않음 | 디버그 정보 없이 컴파일된 패키지, 또는 디버그 권한 누락 | `PLSQL_OPTIMIZE_LEVEL <= 1`로 컴파일(또는 `ALTER PACKAGE ... COMPILE DEBUG PLSQL_OPTIMIZE_LEVEL = 1`)하고 `DEBUG CONNECT SESSION` + `EXECUTE ON SYS.DBMS_DEBUG` 부여. `test_*.pkb`의 브레이크포인트가 적중하지 않을 수 있습니다(utPLSQL은 동적 SQL로 테스트를 실행). 테스트 대상 코드에 설정하세요. |

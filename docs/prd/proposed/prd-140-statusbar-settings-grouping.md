@@ -8,7 +8,7 @@
 | Autor | Gil Cleber Barboza |
 | Data | 2026-10-30 |
 | Componente | Extensão `paneb.vscode-utplsql` |
-| Versão alvo | 0.24.0 |
+| Versão alvo | 0.25.0 |
 | Arquivos afetados | `src/statusBar.ts`, `package.json`, `src/test/unit/statusBar.test.ts` |
 | Esforço estimado | 1 dia |
 | Complexidade | Baixa |
@@ -48,6 +48,14 @@ discoverability.
 
 - Usar `order` e grupos no `configuration` do `package.json`.
 
+### RF3 — Reatividade de status bar e decorações
+
+- `utplsql.statusBar.enabled` deve criar/ocultar os itens ao mudar em runtime,
+  não só no construtor.
+- `utplsql.decorations.enabled` desligado deve limpar as decorações visíveis e
+  `applyToVisibleEditors` não pode continuar pintando estado antigo.
+- Testes com toggle ligado/desligado.
+
 **Não-funcionais**
 - RNF1 — Sem impacto de performance.
 
@@ -73,7 +81,7 @@ Nenhuma setting nova.
 
 ## 9. Rollout
 
-- 0.24.0; registrar no CHANGELOG.
+- 0.25.0; registrar no CHANGELOG.
 
 ## 10. Critérios de aceite
 

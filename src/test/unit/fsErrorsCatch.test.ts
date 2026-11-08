@@ -14,7 +14,21 @@ mock.module('node:fs', {
       if (String(p).includes('lança')) throw new Error('EACCES stat');
       return { isDirectory: () => false, isFile: () => true };
     },
-    readdirSync: () => ['lança.sql', 'vw_a.sql'],
+    realpathSync: (p: unknown) => String(p),
+    readdirSync: () => [
+      {
+        name: 'lança.sql',
+        isSymbolicLink: () => false,
+        isDirectory: () => false,
+        isFile: () => true,
+      },
+      {
+        name: 'vw_a.sql',
+        isSymbolicLink: () => false,
+        isDirectory: () => false,
+        isFile: () => true,
+      },
+    ],
     readFileSync: () => {
       throw new Error('EACCES read');
     },
@@ -26,9 +40,10 @@ test('resolveSourceUri: statSync que lança cai no catch e segue', async () => {
   assert.strictEqual(resolveSourceUri('lança.sql', '/ws', 'install'), undefined);
 });
 
-test('discoverViewFiles: statSync que lança é ignorado (ramo continue)', async () => {
+test('discoverViewFiles: lê Dirents sem statSync e inclui arquivos regulares', async () => {
   const { discoverViewFiles } = await import('../../viewCoverage.js');
   assert.deepStrictEqual(discoverViewFiles('/root', 'install'), [
+    path.join('/root', 'install', 'views', 'lança.sql'),
     path.join('/root', 'install', 'views', 'vw_a.sql'),
   ]);
 });

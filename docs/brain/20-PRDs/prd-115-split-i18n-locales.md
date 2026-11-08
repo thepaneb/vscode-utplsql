@@ -52,7 +52,8 @@ sem alterar a saída do i18n.
 - Manter cobertura ≥ thresholds e a paridade de chaves validada por teste.
 
 **Não-objetivos**
-- Migrar catálogos para JSON/YAML ou carregá-los em runtime.
+- Migrar catálogos para JSON/YAML ou carregá-los em runtime. Lazy-load de
+  locale só entra se a medição de bundle justificar (PRD-149).
 - Mudar chaves, traduções, fallback (`locale → pt-BR → chave`) ou o motor.
 - Alterar `package.nls.*.json` (manifesto VSCode) — são outro artefato.
 
@@ -78,11 +79,20 @@ sem alterar a saída do i18n.
 - Confirmar que o `esbuild` continua produzindo o bundle e que o `.vsix` não
   regride de tamanho de forma relevante (mesmo conteúdo, módulos a mais).
 
+### RF4 — Locale resolvido na chamada
+
+- Remover a captura de `getExtensionLocale()` no registro dos comandos
+  (`commands/run.ts`, `connection.ts`, `profile.ts`, `script.ts`, `debug.ts`,
+  `utility.ts`); resolver o locale no momento da mensagem para que
+  `utplsql.language` valha sem reload.
+
 **Não-funcionais**
 - RNF1 — Saída idêntica: as strings resolvidas não mudam (teste de snapshot das
   chaves base).
 - RNF2 — Cobertura ≥ thresholds; nenhum catálogo ganha/perde chave.
 - RNF3 — Tempo de build estável.
+- RNF4 — Medir `dist/extension.mjs` antes/depois; o split por si só não reduz o
+  bundle e não deve ser vendido como redução.
 
 ## 5. Solução proposta
 
@@ -137,7 +147,7 @@ arquivo por locale, exportados por barrel") com `prds: ["PRD-115"]`,
 
 <!-- brain:auto:start:conexoes -->
 - 🗺️ [[MOC - PRDs]]
-- 🔗 PRDs relacionados: [[prd-49-internacionalizacao|PRD-49]] · [[prd-91-doc-parity-localized-distribution|PRD-91]] · [[prd-95-esm-es2023-node22|PRD-95]]
+- 🔗 PRDs relacionados: [[prd-49-internacionalizacao|PRD-49]] · [[prd-91-doc-parity-localized-distribution|PRD-91]] · [[prd-95-esm-es2023-node22|PRD-95]] · [[prd-149-performance-engineering-quality|PRD-149]]
 - 🔗 Mesma versão (0.22.0): [[prd-88-locale-aware-formatting|PRD-88]] · [[prd-89-pseudo-localization-gate|PRD-89]] · [[prd-90-message-plurals-cldr|PRD-90]] · [[prd-91-doc-parity-localized-distribution|PRD-91]] · [[prd-92-rtl-new-locales|PRD-92]] · [[prd-93-continuous-localization-pipeline|PRD-93]]
-- 🚀 ⬅️ release anterior: [[prd-139-state-store-slicing-lru|PRD-139 (0.21.0)]] · ➡️ próxima release: [[prd-97-doc-no-site|PRD-97 (0.23.0)]]
+- 🚀 ⬅️ release anterior: [[prd-139-state-store-slicing-lru|PRD-139 (0.21.0)]] · ➡️ próxima release: [[prd-60-branch-coverage-investigation|PRD-60 (0.23.0)]]
 <!-- brain:auto:end -->

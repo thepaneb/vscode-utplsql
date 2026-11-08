@@ -200,6 +200,10 @@ Test Explorer 中。
 | `utplsql.oraclePoolMax` | `10` | Oracle 執行器連線集區（node-oracledb）中的最大連線數。 |
 | `utplsql.oraclePoolIncrement` | `1` | 擴充 Oracle 執行器連線集區（node-oracledb）時的增量。 |
 | `utplsql.oraclePoolPingInterval` | `60` | 閒置集區連線健康檢查之間的秒數（node-oracledb）。`0` = 每次取出連線時皆 ping。 |
+| `utplsql.oraclePoolCloseAfterRun` | `true` | Closes idle Oracle pool connections when the last run, coverage, export or discovery operation finishes. |
+| `utplsql.trace` | `false` | Emits verbose per-event trace lines in the utPLSQL output channel. |
+| `utplsql.perf.enabled` | `false` | Measures discovery, tree build, run, polling and XML parsing phases. |
+| `utplsql.perf.reportFile` | `""` | Appends each perf measurement as one JSON line to this file. |
 | `utplsql.oracleClientMode` | `thin` | 驅動程式模式：`thin`（純 JavaScript，不需原生用戶端）或 `thick`（使用 Oracle Instant Client）。僅在需要 NNE（原生網路加密）的資料庫上使用 `thick`；需要 `utplsql.oracleClientLibDir` 並重新載入視窗。 |
 | `utplsql.oracleClientLibDir` | `""` | Oracle Instant Client 目錄。當 `utplsql.oracleClientMode` 為 `thick` 時必填（例如 `C:\oracle\instantclient_23_5`）。 Fallback: `ORACLE_CLIENT_LIB_DIR`. |
 | 除錯不會在斷點停下 | 套件編譯時沒有除錯資訊，或缺少除錯授權 | 使用 `PLSQL_OPTIMIZE_LEVEL <= 1` 編譯（或 `ALTER PACKAGE ... COMPILE DEBUG`），並授予 `DEBUG CONNECT SESSION` + `EXECUTE ON SYS.DBMS_DEBUG`. `test_*.pkb` 中的中斷點可能不會命中（utPLSQL 透過動態 SQL 執行測試）；請將中斷點設在被測程式碼中。 |

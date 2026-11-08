@@ -99,7 +99,18 @@ function main({
   const { command, argsPrefix } = resolveVsceImpl();
   const result = spawnSyncImpl(
     command,
-    [...argsPrefix, 'package', '--target', target, '--out', out],
+    [
+      ...argsPrefix,
+      'package',
+      '--readme-path',
+      'MARKETPLACE.md',
+      '--githubBranch',
+      'main',
+      '--target',
+      target,
+      '--out',
+      out,
+    ],
     { stdio: 'inherit', cwd: root },
   );
   return result.status ?? 1;

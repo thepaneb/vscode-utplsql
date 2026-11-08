@@ -1,9 +1,13 @@
 import './setup.js';
 import assert from 'node:assert';
+import * as fs from 'node:fs';
+import * as os from 'node:os';
+import * as path from 'node:path';
 import { test } from 'node:test';
 import type * as vscodeApi from 'vscode';
 import type { TestCaseResult } from '../../junit';
 import { applyCoverageFromXml, applyResultsFromCases, resolveStackFrameToUri } from '../../results';
+import { TestStateManager } from '../../state';
 import type { ItemMeta } from '../../types';
 import {
   makeFolder,
@@ -120,6 +124,14 @@ test('resolveStackFrameToUri: frame qualificado sem suite no cache usa a fonte v
   }
 });
 
+test('resolveStackFrameToUri: suite do usuário com prefixo UT_ resolve o frame', () => {
+  const state = suiteState('ut_my_app', '/ws/tests/ut_my_app.pks');
+  const loc = resolveStackFrameToUri([{ objectName: 'APP.UT_MY_APP.TEST_X', line: 7 }], state);
+  assert.ok(loc);
+  assert.strictEqual(loc.uri.fsPath, '/ws/tests/ut_my_app.pks');
+  assert.strictEqual(loc.range.start.line, 6);
+});
+
 test('resolveStackFrameToUri: frame interno do schema de install e o do usuario', () => {
   const state = suiteState('test_math_fail', '/ws/tests/test_math_fail.pks');
   const loc = resolveStackFrameToUri(
@@ -163,6 +175,37 @@ test('applyResultsFromCases: failed com stackFrames ganha location', () => {
   const msg = run.failedList[0].m;
   assert.ok(msg.location, 'TestMessage deveria ter location');
   assert.strictEqual(msg.location.uri.fsPath, '/ws/ut_app.pks');
+});
+
+test('applyResultsFromCases: aplica o resultado a todas as cópias do modo tag', () => {
+  const cases: TestCaseResult[] = [{ classname: 'pkg', name: 't_one', status: 'passed' }];
+  const fast = makeTestItem('t1#fast');
+  const smoke = makeTestItem('t1#smoke');
+  const metaMap = new Map<vscode.TestItem, ItemMeta>();
+  for (const item of [fast, smoke]) {
+    metaMap.set(item, makeMeta({ packageName: 'pkg', procName: 't_one', description: 't_one' }));
+  }
+  const run = makeRun();
+  const state = makeState(metaMap);
+  const resultMap = applyResultsFromCases(cases, [fast, smoke], run, state);
+  assert.strictEqual(resultMap.get('t1#fast')?.status, 'passed');
+  assert.strictEqual(resultMap.get('t1#smoke')?.status, 'passed');
+  assert.strictEqual(run.passedList.length, 2);
+  assert.strictEqual(run.skippedList.length, 0);
+});
+
+test('applyResultsFromCases: caso duplicado não aplica duas vezes no mesmo item', () => {
+  const cases: TestCaseResult[] = [
+    { classname: 'pkg', name: 't_one', status: 'passed' },
+    { classname: 'pkg', name: 't_one', status: 'passed' },
+  ];
+  const item = makeTestItem('t1');
+  const metaMap = new Map<vscode.TestItem, ItemMeta>();
+  metaMap.set(item, makeMeta({ packageName: 'pkg', procName: 't_one', description: 't_one' }));
+  const run = makeRun();
+  const state = makeState(metaMap);
+  applyResultsFromCases(cases, [item], run, state);
+  assert.strictEqual(run.passedList.length, 1, 'não pode chamar run.passed duas vezes');
 });
 
 test('applyResultsFromCases: unmatched gera aviso e skipped', () => {
@@ -350,6 +393,47 @@ END;`,
   } finally {
     fs.rmSync(tmpDir, { recursive: true, force: true });
   }
+});
+
+test('applyCoverageFromXml: mescla classes que resolvem para a mesma URI', () => {
+  const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'cov-merge-'));
+  try {
+    fs.mkdirSync(path.join(dir, 'packages'), { recursive: true });
+    const uri = path.join(dir, 'packages', 'app.sql');
+    fs.writeFileSync(uri, 'CREATE OR REPLACE PACKAGE app AS END;');
+
+    const xml = `<?xml version="1.0"?>
+<coverage><packages><package name="pkg"><classes>
+  <class filename="packages/app.sql"><lines>
+    <line number="1" hits="1"/><line number="2" hits="0"/>
+  </lines></class>
+  <class filename="packages/app.sql"><lines>
+    <line number="2" hits="3"/><line number="3" hits="1"/>
+  </lines></class>
+</classes></package></packages></coverage>`;
+
+    const run = makeRun();
+    const state = new TestStateManager();
+    applyCoverageFromXml(xml, 'install', run, state, [makeFolder(dir, 'ws')]);
+
+    assert.strictEqual(run.coverageList.length, 1, 'mesma URI deve gerar uma FileCoverage');
+    const details = state.getCoverage(vscode.Uri.file(uri).toString());
+    assert.strictEqual(details.length, 3, 'linhas 1, 2 e 3 devem ser mescladas');
+    assert.strictEqual(run.coverageList[0].statementCoverage.total, 3);
+  } finally {
+    fs.rmSync(dir, { recursive: true, force: true });
+  }
+});
+
+test('applyCoverageFromXml: filename sem objeto é ignorado sem mapear', () => {
+  const xml = `<coverage><packages><package name="p"><classes>
+    <class filename="packages/.sql"><lines><line number="1" hits="1"/></lines></class>
+  </classes></package></packages></coverage>`;
+  const run = makeRun();
+  const state = new TestStateManager();
+  applyCoverageFromXml(xml, 'install', run, state, []);
+  assert.strictEqual(run.coverageList.length, 0);
+  assert.ok(run.output.some((s: string) => s.includes('nenhum arquivo mapeado')));
 });
 
 test('applyCoverageFromXml: classe sem linhas emite aviso de nao mapeado', () => {

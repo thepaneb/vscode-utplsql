@@ -168,8 +168,13 @@ notas `prd-*`. O índice navegável do vault é a [[MOC - PRDs]].
 | 96 | [Site público e landing page via GitHub Pages](completed/prd-96-public-landing-page-github-pages.md) | 0.15.0 | 2026-10-07 |
 | 98 | [Anti-drift de documentação: tabelas geradas e vínculo PRD→docs](completed/prd-98-docs-anti-drift.md) | 0.18.0 | 2026-10-08 |
 | 100 | [Geração de suíte a partir do package (scaffold avançado)](completed/prd-100-generate-test-suite.md) | 0.16.0 | 2026-10-09 |
+| 101 | [Ciclo de vida de conexões: fechar pools ociosos após a execução](completed/prd-101-connection-pool-lifecycle.md) | 0.20.0 | 2026-10-09 |
+| 102 | [Observabilidade: tracing e instrumentação de desempenho](completed/prd-102-trace-and-perf-instrumentation.md) | 0.20.0 | 2026-10-09 |
+| 103 | [Reindexação incremental de fontes (watcher por-URI)](completed/prd-103-incremental-source-reindex.md) | 0.20.0 | 2026-10-09 |
 | 104 | [Cadeia de suprimentos do CI: Dependabot, pin de actions e auditoria de dependências](completed/prd-104-ci-supply-chain.md) | 0.18.0 | 2026-10-09 |
 | 105 | [Snippets utPLSQL: biblioteca de annotations e matchers](completed/prd-105-snippets.md) | 0.17.0 | 2026-10-09 |
+| 106 | [Harness de performance: fixture em escala e medição por fases](completed/prd-106-perf-harness.md) | 0.20.0 | 2026-10-09 |
+| 107 | [Fixture de integração endurecido: usuário sem privilégios e fallbacks](completed/prd-107-unprivileged-fixture.md) | 0.20.0 | 2026-10-09 |
 | 108 | [Relatório HTML de cobertura aberto no navegador](completed/prd-108-coverage-html-report.md) | 0.17.0 | 2026-10-09 |
 | 109 | [Identidade de linguagem PL/SQL ampliada e languageIds configuráveis](completed/prd-109-language-identity.md) | 0.17.0 | 2026-10-09 |
 | 110 | [Hardening defensivo: identificador SQL, redaction de logs e scripts de desenvolvimento](completed/prd-110-defensive-hardening.md) | 0.18.0 | 2026-10-09 |
@@ -178,22 +183,24 @@ notas `prd-*`. O índice navegável do vault é a [[MOC - PRDs]].
 | 114 | [Modernizar o stub de `vscode` e reduzir `any` nos testes](completed/prd-114-vscode-stub-modernization.md) | 0.18.0 | 2026-10-10 |
 | 118 | [Assinatura de commits e verificação de origem no main](completed/prd-118-commit-signing.md) | 0.18.0 | 2026-10-13 |
 | 119 | [Postura de segurança verificável: OSSF Scorecard e proteção de main](completed/prd-119-security-posture-scorecard.md) | 0.18.0 | 2026-10-13 |
+| 120 | [Ativação enxuta e validação de setup preguiçosa](completed/prd-120-lean-activation-lazy-setup.md) | 0.20.0 | 2026-10-13 |
 | 123 | [Suporte oficial ao Oracle 11g (11.2) em thick mode](completed/prd-123-oracle-11g-support.md) | 0.18.0 | 2026-10-17 |
 | 124 | [Upgrade para node-oracledb 26 com matriz e packaging validados](completed/prd-124-oracledb-26-upgrade.md) | 0.19.0 | 2026-10-29 |
+| 125 | [Suíte completa em thick e matriz de bancos no CI](completed/prd-125-thick-full-matrix-ci.md) | 0.20.0 | 2026-10-29 |
 | 127 | [Piso de VS Code 1.125 e runtime Node 24](completed/prd-127-vscode-floor-1-125.md) | 0.19.0 | 2026-10-30 |
 
 ### 🟡 Em desenvolvimento
 
 | # | PRD | Versão | Data |
 |---|---|---|---|
-| 125 | [Suíte completa em thick e matriz de bancos no CI](in-progress/prd-125-thick-full-matrix-ci.md) | 0.20.0 | 2026-10-29 |
 | 146 | [Attestations de proveniência na publicação](in-progress/prd-146-attestations-publish.md) | 0.20.0 | 2026-11-05 |
+| 147 | [Marketplace: superfície dedicada, screenshots e metadata de conversão](in-progress/prd-147-marketplace-listing-page.md) | 0.20.0 | 2026-11-05 |
 
 ### ⚪ Propostos
 
 | # | PRD | Versão | Data |
 |---|---|---|---|
-| 60 | [Cobertura de branch (investigação de viabilidade)](proposed/prd-60-branch-coverage-investigation.md) | Investigação — sem versão alvo | 2026-09-06 |
+| 60 | [Cobertura de branch (investigação de viabilidade)](proposed/prd-60-branch-coverage-investigation.md) | 0.23.0 | 2026-09-06 |
 | 61 | [Auto-provisionamento do utPLSQL-cli](proposed/prd-61-cli-auto-provision.md) | Suspenso — a reavaliar (PRD-64 removeu o CLI) | 2026-09-06 |
 | 88 | [Formatação sensível a locale (números e durações)](proposed/prd-88-locale-aware-formatting.md) | 0.22.0 | 2026-09-29 |
 | 89 | [Pseudo-localização e gate de strings não traduzidas](proposed/prd-89-pseudo-localization-gate.md) | 0.22.0 | 2026-09-29 |
@@ -203,16 +210,10 @@ notas `prd-*`. O índice navegável do vault é a [[MOC - PRDs]].
 | 93 | [Pipeline de localização contínua (glossário, TM e revisão)](proposed/prd-93-continuous-localization-pipeline.md) | 0.22.0 | 2026-09-29 |
 | 97 | [Documentação no site (Fase 2 da PRD-96)](proposed/prd-97-doc-no-site.md) | 0.23.0 | 2026-10-07 |
 | 99 | [Cérebro reutilizável: guia de uso e reuso do knowledge base](proposed/prd-99-brain-reuse.md) | 0.23.0 | 2026-10-09 |
-| 101 | [Ciclo de vida de conexões: fechar pools ociosos após a execução](proposed/prd-101-connection-pool-lifecycle.md) | 0.20.0 | 2026-10-09 |
-| 102 | [Observabilidade: tracing e instrumentação de desempenho](proposed/prd-102-trace-and-perf-instrumentation.md) | 0.20.0 | 2026-10-09 |
-| 103 | [Reindexação incremental de fontes (watcher por-URI)](proposed/prd-103-incremental-source-reindex.md) | 0.20.0 | 2026-10-09 |
-| 106 | [Harness de performance: fixture em escala e medição por fases](proposed/prd-106-perf-harness.md) | 0.20.0 | 2026-10-09 |
-| 107 | [Fixture de integração endurecido: usuário sem privilégios e fallbacks](proposed/prd-107-unprivileged-fixture.md) | 0.20.0 | 2026-10-09 |
 | 112 | [Auditoria de tratamento de erros: `catch` silenciosos e robustez](proposed/prd-112-error-handling-audit.md) | 0.23.0 | 2026-10-10 |
 | 115 | [Fatiar `i18nLocales.ts` por locale](proposed/prd-115-split-i18n-locales.md) | 0.22.0 | 2026-10-10 |
 | 116 | [Testes diretos dos módulos sem cobertura dedicada](proposed/prd-116-direct-module-tests.md) | 0.23.0 | 2026-10-10 |
 | 117 | [Testes de propriedade do parser de scripts (`splitScript`)](proposed/prd-117-split-script-property-tests.md) | 0.23.0 | 2026-10-10 |
-| 120 | [Ativação enxuta e validação de setup preguiçosa](proposed/prd-120-lean-activation-lazy-setup.md) | 0.20.0 | 2026-10-13 |
 | 121 | [Pacote auditável: source map do bundle no VSIX](proposed/prd-121-auditable-package-sourcemap.md) | 0.24.0 | 2026-10-13 |
 | 122 | [Confiança na distribuição: publisher verificado e política de privacidade](proposed/prd-122-marketplace-trust-metadata.md) | 0.24.0 | 2026-10-13 |
 | 126 | [Cobertura de branches nos módulos críticos e CLIs de release](proposed/prd-126-branch-coverage-cli-tests.md) | 0.23.0 | 2026-10-29 |
@@ -220,18 +221,21 @@ notas `prd-*`. O índice navegável do vault é a [[MOC - PRDs]].
 | 129 | [Orquestrador de execução com Strategy](proposed/prd-129-orchestration-strategy.md) | 0.21.0 | 2026-10-30 |
 | 130 | [Validação de configuração e classes de erro tipadas](proposed/prd-130-config-validation-typed-errors.md) | 0.21.0 | 2026-10-30 |
 | 131 | [Resiliência na descoberta: retry, cache e limpeza de Memento](proposed/prd-131-discovery-resilience-cache.md) | 0.21.0 | 2026-10-30 |
-| 132 | [UX de execução: dry-run, perfil ativo e jump-to-failure](proposed/prd-132-ux-execution-dryrun-jump.md) | 0.24.0 | 2026-10-30 |
-| 133 | [Rate limiting e granularidade de atalhos](proposed/prd-133-rate-limiting-keybindings.md) | 0.24.0 | 2026-10-30 |
+| 132 | [UX de execução: dry-run, perfil ativo e jump-to-failure](proposed/prd-132-ux-execution-dryrun-jump.md) | 0.25.0 | 2026-10-30 |
+| 133 | [Rate limiting e granularidade de atalhos](proposed/prd-133-rate-limiting-keybindings.md) | 0.25.0 | 2026-10-30 |
 | 137 | [Vincular senha da wallet ao connection do perfil (PRD-81 RF3 para wallet)](proposed/prd-137-wallet-password-binding.md) | 0.21.0 | 2026-10-30 |
 | 138 | [Padrão Strategy para organização da árvore de testes (file/schema/tag)](proposed/prd-138-organization-strategy-pattern.md) | 0.21.0 | 2026-10-30 |
 | 139 | [Fatiamento do TestStateManager e LRU no coverageStore](proposed/prd-139-state-store-slicing-lru.md) | 0.21.0 | 2026-10-30 |
-| 140 | [Indicador de conexão/perfil no status bar e agrupamento de settings](proposed/prd-140-statusbar-settings-grouping.md) | 0.24.0 | 2026-10-30 |
-| 141 | [Walkthrough de onboarding e auditoria de acessibilidade](proposed/prd-141-onboarding-walkthrough-accessibility.md) | 0.24.0 | 2026-10-30 |
+| 140 | [Indicador de conexão/perfil no status bar e agrupamento de settings](proposed/prd-140-statusbar-settings-grouping.md) | 0.25.0 | 2026-10-30 |
+| 141 | [Walkthrough de onboarding e auditoria de acessibilidade](proposed/prd-141-onboarding-walkthrough-accessibility.md) | 0.25.0 | 2026-10-30 |
 | 142 | [Proveniência (SLSA) no release e gate de typecheck no CI](proposed/prd-142-supply-chain-provenance-typecheck-gate.md) | 0.24.0 | 2026-10-30 |
 | 143 | [Auditoria de ReDoS/regex e validação de entrada](proposed/prd-143-redos-regex-audit-input-validation.md) | 0.24.0 | 2026-10-30 |
 | 144 | [Hardening de segurança do runtime: parsers de relatório, path traversal em views e redação de credenciais](proposed/prd-144-security-runtime-hardening.md) | 0.24.0 | 2026-11-05 |
 | 145 | [Segurança do entregável: logging de credenciais, cadeia de build e triagem dos alertas do GitHub](proposed/prd-145-security-alerts-deliverable.md) | 0.24.0 | 2026-11-05 |
-| 147 | [Marketplace: superfície dedicada, screenshots e metadata de conversão](proposed/prd-147-marketplace-listing-page.md) | 0.20.0 | 2026-11-05 |
+| 148 | [Confiabilidade de execução e estado após a auditoria 0.20.0](proposed/prd-148-execution-state-reliability.md) | 0.20.1 | 2026-11-07 |
+| 149 | [Performance mensurável e qualidade de engenharia](proposed/prd-149-performance-engineering-quality.md) | 0.23.0 | 2026-11-07 |
+| 150 | [Thick-full verdadeiro: inicialização thick e recuperação do pool após break](proposed/prd-150-thick-full-true-pool-recovery.md) | 0.20.1 | 2026-11-07 |
+| 151 | [CodeLens de debug de teste e suíte](proposed/prd-151-codelens-debug-test.md) | 0.25.0 | 2026-11-07 |
 <!-- prd:roadmap:end -->
 
 ---
@@ -334,8 +338,13 @@ docs/prd/
 │   ├── prd-96-public-landing-page-github-pages.md
 │   ├── prd-98-docs-anti-drift.md
 │   ├── prd-100-generate-test-suite.md
+│   ├── prd-101-connection-pool-lifecycle.md
+│   ├── prd-102-trace-and-perf-instrumentation.md
+│   ├── prd-103-incremental-source-reindex.md
 │   ├── prd-104-ci-supply-chain.md
 │   ├── prd-105-snippets.md
+│   ├── prd-106-perf-harness.md
+│   ├── prd-107-unprivileged-fixture.md
 │   ├── prd-108-coverage-html-report.md
 │   ├── prd-109-language-identity.md
 │   ├── prd-110-defensive-hardening.md
@@ -344,12 +353,14 @@ docs/prd/
 │   ├── prd-114-vscode-stub-modernization.md
 │   ├── prd-118-commit-signing.md
 │   ├── prd-119-security-posture-scorecard.md
+│   ├── prd-120-lean-activation-lazy-setup.md
 │   ├── prd-123-oracle-11g-support.md
 │   ├── prd-124-oracledb-26-upgrade.md
+│   ├── prd-125-thick-full-matrix-ci.md
 │   ├── prd-127-vscode-floor-1-125.md
 ├── in-progress/        ← sendo implementados agora
-│   ├── prd-125-thick-full-matrix-ci.md
 │   ├── prd-146-attestations-publish.md
+│   ├── prd-147-marketplace-listing-page.md
 ├── proposed/        ← em avaliação
 │   ├── prd-60-branch-coverage-investigation.md
 │   ├── prd-61-cli-auto-provision.md
@@ -361,16 +372,10 @@ docs/prd/
 │   ├── prd-93-continuous-localization-pipeline.md
 │   ├── prd-97-doc-no-site.md
 │   ├── prd-99-brain-reuse.md
-│   ├── prd-101-connection-pool-lifecycle.md
-│   ├── prd-102-trace-and-perf-instrumentation.md
-│   ├── prd-103-incremental-source-reindex.md
-│   ├── prd-106-perf-harness.md
-│   ├── prd-107-unprivileged-fixture.md
 │   ├── prd-112-error-handling-audit.md
 │   ├── prd-115-split-i18n-locales.md
 │   ├── prd-116-direct-module-tests.md
 │   ├── prd-117-split-script-property-tests.md
-│   ├── prd-120-lean-activation-lazy-setup.md
 │   ├── prd-121-auditable-package-sourcemap.md
 │   ├── prd-122-marketplace-trust-metadata.md
 │   ├── prd-126-branch-coverage-cli-tests.md
@@ -389,7 +394,10 @@ docs/prd/
 │   ├── prd-143-redos-regex-audit-input-validation.md
 │   ├── prd-144-security-runtime-hardening.md
 │   ├── prd-145-security-alerts-deliverable.md
-│   ├── prd-147-marketplace-listing-page.md
+│   ├── prd-148-execution-state-reliability.md
+│   ├── prd-149-performance-engineering-quality.md
+│   ├── prd-150-thick-full-true-pool-recovery.md
+│   ├── prd-151-codelens-debug-test.md
 ```
 <!-- prd:estrutura:end -->
 

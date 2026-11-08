@@ -11,6 +11,7 @@ import {
   __getOutputChannelLines,
   __getWarningMessages,
   __getWrittenFile,
+  __resetLastQuickPickItems,
   __resetMessages,
   __resetOutputChannels,
   __resetQuickPickResults,
@@ -29,14 +30,14 @@ import {
 
 const executeCalls: unknown[][] = [];
 let exportText: string | undefined = 'REPORTER OUTPUT';
-let executeThrows = false;
+let executeThrowValue: unknown;
 
 mock.module('../../runner.js', {
   namedExports: {
     collectRunTargets: () => ({ leafTests: [], pathArgs: new Set<string>(), suiteCount: 0 }),
     executeRun: async (...args: unknown[]) => {
       executeCalls.push(args);
-      if (executeThrows) throw new Error('export boom');
+      if (executeThrowValue !== undefined) throw executeThrowValue;
       return exportText;
     },
   },
@@ -159,12 +160,13 @@ async function register(state: TestStateManager) {
   __resetMessages();
   __resetOutputChannels();
   __resetQuickPickResults();
+  __resetLastQuickPickItems();
   __resetWrittenFiles();
   __setActiveTextEditor(undefined);
   __setSaveDialogResult(undefined);
   executeCalls.length = 0;
   exportText = 'REPORTER OUTPUT';
-  executeThrows = false;
+  executeThrowValue = undefined;
   const { registerRunCommands } = await import('../../commands/run.js');
   registerRunCommands({ subscriptions: [] } as never, makeDeps(state));
   return (name: string, ...args: unknown[]) =>
@@ -257,12 +259,123 @@ test('runWithReporter: erro do export vira mensagem de erro', async () =>
     const { state, suiteItem } = makeState();
     const call = await register(state);
     __setQuickPickResults(['ut_x', { label: 'Output', value: 'output' }]);
-    executeThrows = true;
+    executeThrowValue = new Error('export boom');
 
     await call('utplsql.runWithReporter', suiteItem);
 
     assert.ok(__getErrorMessages().some((m) => m.includes('export boom')));
     assert.strictEqual(__getOutputChannelLines('utPLSQL reporter').length, 0);
+  }));
+
+test('runWithReporter: erro não-Error do export é convertido em string', async () =>
+  withConn(async () => {
+    const { state, suiteItem } = makeState();
+    const call = await register(state);
+    __setQuickPickResults(['ut_x', { label: 'Output', value: 'output' }]);
+    executeThrowValue = 'falha bruta';
+
+    await call('utplsql.runWithReporter', suiteItem);
+
+    assert.ok(__getErrorMessages().some((m) => m.includes('falha bruta')));
+  }));
+
+test('runWithReporter: reporter XML sugere .xml e filtro XML', async () =>
+  withConn(async () => {
+    const { state, suiteItem } = makeState();
+    workspace.__setWorkspaceFolders([{ uri: { fsPath: '/ws' }, name: 'ws', index: 0 }] as never);
+    const call = await register(state);
+    __setQuickPickResults(['ut_junit_reporter', { label: 'File', value: 'file' }]);
+    __setSaveDialogResult(Uri.file('/ws/out.xml'));
+
+    try {
+      await call('utplsql.runWithReporter', suiteItem);
+    } finally {
+      workspace.__setWorkspaceFolders(undefined);
+    }
+
+    const opts = __getLastSaveDialogOptions() as {
+      defaultUri?: { fsPath?: string };
+      filters?: Record<string, string[]>;
+    };
+    assert.ok(opts.defaultUri?.fsPath?.endsWith('.xml'));
+    assert.deepStrictEqual(opts.filters, { XML: ['xml'] });
+    assert.strictEqual(__getWrittenFile('/ws/out.xml'), 'REPORTER OUTPUT');
+  }));
+
+test('runWithReporter: sem workspace folder e save cancelado não grava', async () =>
+  withConn(async () => {
+    const { state, suiteItem } = makeState();
+    workspace.__setWorkspaceFolders(undefined);
+    const call = await register(state);
+    __setQuickPickResults(['ut_x', { label: 'File', value: 'file' }]);
+    __setSaveDialogResult(undefined);
+
+    await call('utplsql.runWithReporter', suiteItem);
+
+    const opts = __getLastSaveDialogOptions() as {
+      defaultUri?: unknown;
+      filters?: Record<string, string[]>;
+    };
+    assert.strictEqual(opts.defaultUri, undefined);
+    assert.deepStrictEqual(opts.filters, { Text: ['txt'] });
+    assert.strictEqual(__getInformationMessages().length, 0);
+  }));
+
+test('runWithReporter: cancelar o QuickPick de destino não executa nem grava', async () =>
+  withConn(async () => {
+    const { state, suiteItem } = makeState();
+    const call = await register(state);
+    __setQuickPickResults(['ut_x', undefined]);
+
+    await call('utplsql.runWithReporter', suiteItem);
+
+    assert.strictEqual(executeCalls.length, 0);
+    assert.strictEqual(__getWrittenFile('/ws/out.xml'), undefined);
+  }));
+
+test('runWithReporter: %test de pacote não descoberto cai no QuickPick de suítes', async () =>
+  withConn(async () => {
+    const { state, suiteItem } = makeState();
+    const call = await register(state);
+    // Texto com %test de um pacote sem suite registrada: findTestItem devolve
+    // undefined e o fluxo cai no QuickPick de suítes descobertas.
+    __setActiveTextEditor({
+      document: {
+        fileName: '/ws/ut_desconhecida.pks',
+        uri: Uri.file('/ws/ut_desconhecida.pks'),
+        getText: () =>
+          [
+            'create or replace package ut_desconhecida is',
+            '--%suite(Desconhecida)',
+            '--%test(one)',
+            'procedure t_one;',
+            'end;',
+          ].join('\n'),
+      },
+      selection: { active: { line: 2 } },
+    } as never);
+    __setQuickPickResults([
+      { label: 'UT_PKG', item: suiteItem },
+      'ut_x',
+      { label: 'Output', value: 'output' },
+    ]);
+
+    await call('utplsql.runWithReporter');
+
+    assert.strictEqual(executeCalls.length, 1);
+  }));
+
+test('runWithReporter: estado sem suites avisa e não abre picker', async () =>
+  withConn(async () => {
+    const state = new TestStateManager();
+    const call = await register(state);
+    __setActiveTextEditor(undefined);
+
+    await call('utplsql.runWithReporter');
+
+    assert.ok(__getWarningMessages().length >= 1);
+    assert.strictEqual(__getLastQuickPickItems(), undefined);
+    assert.strictEqual(executeCalls.length, 0);
   }));
 
 test('runWithReporter: saída indefinida (cancelado) não grava', async () =>

@@ -8,6 +8,7 @@ import {
   coverageHtmlReportPath,
   prepareCoverageHtmlReport,
   writeCoverageHtmlReport,
+  xmlRootTag,
 } from './coverage';
 import { t } from './i18n';
 import { parseJUnit } from './junit';
@@ -21,6 +22,7 @@ import {
   buildReporterList,
   buildRunCall,
 } from './oracleRunCall';
+import type { PerfProbe } from './perf';
 import { maskConnection, redactConnection } from './redact';
 import { applyCoverageFromXml, applyResultsFromCases, countResults } from './results';
 import type { TestStateManager } from './state';
@@ -80,7 +82,56 @@ export function connectionUser(connection: string): string | undefined {
   }
 }
 
-let currentPool: { pool: OraclePool; key: string } | undefined;
+let currentPool: { pool: OraclePool; key: string; connection: string } | undefined;
+let activeOracleActivities = 0;
+let globalPerfProbe: PerfProbe | undefined;
+
+/** Probe global usado pelo runner (PRD-102); `undefined` desliga a medição. */
+export function setPerfProbe(probe: PerfProbe | undefined): void {
+  globalPerfProbe = probe;
+}
+
+/**
+ * Token de atividade Oracle (PRD-101): cobre run, cobertura, export, discovery
+ * e demais operações que usam o pool. `end()` é idempotente e, no último
+ * token, fecha o pool ocioso quando `oraclePoolCloseAfterRun` está ligado.
+ */
+export interface OracleActivity {
+  end(): Promise<void>;
+}
+
+export function beginOracleActivity(cfg: UtConfig = readConfig()): OracleActivity {
+  activeOracleActivities += 1;
+  let ended = false;
+  return {
+    async end(): Promise<void> {
+      if (ended) return;
+      ended = true;
+      activeOracleActivities = Math.max(0, activeOracleActivities - 1);
+      if (activeOracleActivities === 0) await closeIdleOraclePool(cfg);
+    },
+  };
+}
+
+/**
+ * Fecha o pool atual se estiver ocioso. Remove do cache **antes** do close
+ * assíncrono, para um `ensurePool` concorrente criar um novo pool em vez de
+ * receber um pool fechando.
+ */
+export async function closeIdleOraclePool(cfg: UtConfig = readConfig()): Promise<void> {
+  if (!cfg.oraclePoolCloseAfterRun) return;
+  const entry = currentPool;
+  if (!entry || entry.pool.connectionsInUse > 0) return;
+  currentPool = undefined;
+  try {
+    await entry.pool.close(0);
+    logger.info('pool Oracle fechado após a execução');
+  } catch (e) {
+    logger.warn('falha ao fechar pool Oracle ocioso', {
+      error: redactConnection(String(e), entry.connection),
+    });
+  }
+}
 
 /**
  * Resolve o `connectString` para o driver (PRD-82 RF3): se for um alias TNS e
@@ -97,6 +148,21 @@ export function resolveConnectString(connectString: string, tnsAdminPath: string
   } catch (e) {
     logger.debug('resolveConnectString: tnsnames.ora inacessível', { file, error: String(e) });
     return connectString;
+  }
+}
+
+/**
+ * Serializa criação/fechamento de pool. Duas chamadas concorrentes com a mesma
+ * key não podem criar dois pools e sobrescrever `currentPool` sem fechar o
+ * perdedor (BUG-06).
+ */
+let poolCreation: Promise<OraclePool> | undefined;
+
+async function closeCurrentPool(): Promise<void> {
+  if (currentPool) {
+    const pool = currentPool.pool;
+    currentPool = undefined;
+    await pool.close(10).catch(() => {});
   }
 }
 
@@ -118,22 +184,42 @@ export async function ensurePool(
     });
   }
   if (currentPool?.key === key) return currentPool.pool;
-  await closeOraclePool();
-  const parsed = parseConnString(connection);
-  const pool = await oracledb.createPool({
-    user: parsed.user,
-    password: parsed.password,
-    connectString: resolveConnectString(parsed.connectionString, cfg.tnsAdminPath),
-    poolMin: cfg.oraclePoolMin,
-    poolMax: cfg.oraclePoolMax,
-    poolIncrement: cfg.oraclePoolIncrement,
-    poolPingInterval: cfg.oraclePoolPingInterval,
-    stmtCacheSize: 30,
-    ...(cfg.walletLocation ? { walletLocation: cfg.walletLocation } : {}),
-    ...(cfg.walletPassword ? { walletPassword: cfg.walletPassword } : {}),
-  });
-  currentPool = { pool, key };
-  return pool;
+
+  // Se outra chamada já está criando, espera e reavalia a key. A criação em si
+  // é registrada em `poolCreation` para que `closeOraclePool()` também espere.
+  if (poolCreation) {
+    await poolCreation.catch(() => {});
+    if (currentPool?.key === key) return currentPool.pool;
+  }
+
+  const creation = (async () => {
+    if (currentPool?.key === key) return currentPool.pool;
+    await closeCurrentPool();
+    const parsed = parseConnString(connection);
+    const pool = await oracledb.createPool({
+      user: parsed.user,
+      password: parsed.password,
+      connectString: resolveConnectString(parsed.connectionString, cfg.tnsAdminPath),
+      poolMin: cfg.oraclePoolMin,
+      poolMax: cfg.oraclePoolMax,
+      poolIncrement: cfg.oraclePoolIncrement,
+      poolPingInterval: cfg.oraclePoolPingInterval,
+      stmtCacheSize: 30,
+      ...(cfg.walletLocation ? { walletLocation: cfg.walletLocation } : {}),
+      ...(cfg.walletPassword ? { walletPassword: cfg.walletPassword } : {}),
+    });
+    // `poolCreation` serializa as criações; `closeOraclePool()` espera a
+    // criação em andamento antes de fechar. Não há pool "perdedor" aqui.
+    currentPool = { pool, key, connection };
+    return pool;
+  })();
+
+  poolCreation = creation;
+  try {
+    return await creation;
+  } finally {
+    if (poolCreation === creation) poolCreation = undefined;
+  }
 }
 
 /**
@@ -145,10 +231,10 @@ export function invalidatePool(): void {
 }
 
 export async function closeOraclePool(): Promise<void> {
-  if (currentPool) {
-    await currentPool.pool.close(10).catch(() => {});
-    currentPool = undefined;
-  }
+  // Não fecha o pool enquanto uma criação concorrente está em andamento; senão
+  // o `ensurePool` terminaria com um pool já fechado.
+  if (poolCreation) await poolCreation.catch(() => {});
+  await closeCurrentPool();
 }
 
 /**
@@ -161,22 +247,27 @@ export async function withOracleConnection<T>(
   cfg: UtConfig,
   fn: (conn: OracleConnection) => Promise<T>,
 ): Promise<T | undefined> {
-  const pool = await ensurePool(oracledb, connection, cfg).catch(() => undefined);
-  let conn: OracleConnection;
+  const activity = beginOracleActivity(cfg);
   try {
-    conn = pool
-      ? await pool.getConnection()
-      : await oracledb.getConnection(parseConnString(connection));
-  } catch (e) {
-    logger.debug('withOracleConnection: falha ao obter conexão', {
-      error: redactConnection(String(e), connection),
-    });
-    return undefined;
-  }
-  try {
-    return await fn(conn);
+    const pool = await ensurePool(oracledb, connection, cfg).catch(() => undefined);
+    let conn: OracleConnection;
+    try {
+      conn = pool
+        ? await pool.getConnection()
+        : await oracledb.getConnection(parseConnString(connection));
+    } catch (e) {
+      logger.debug('withOracleConnection: falha ao obter conexão', {
+        error: redactConnection(String(e), connection),
+      });
+      return undefined;
+    }
+    try {
+      return await fn(conn);
+    } finally {
+      await conn.close().catch(() => {});
+    }
   } finally {
-    await conn.close().catch(() => {});
+    await activity.end();
   }
 }
 
@@ -453,19 +544,63 @@ export async function checkCompilationErrors(
   }
 }
 
+export interface OracleCoverageOptions {
+  /** Se true, coleta e aplica cobertura Cobertura. */
+  enabled: boolean;
+  /** Se true, gera o relatório HTML de cobertura (PRD-108). */
+  htmlReport?: boolean;
+  /** Root do workspace da suíte executada (destino do `test-results/`). */
+  reportRoot?: string;
+  /** Callback chamado após gravar o HTML (o runner notifica depois do run.end). */
+  onHtmlReport?: (filePath: string) => void;
+  /** Owner do schema para coverage (override). */
+  owner?: string;
+  /** Schemas de cobertura (sobrepõe o owner; vazio = automático). */
+  schemes?: string[];
+  /** Objetos a incluir na cobertura (formato OWNER.NAME). */
+  includeObjects?: string[];
+  /** Objetos a excluir da cobertura (formato OWNER.NAME). */
+  excludeObjects?: string[];
+  /** Regex de schema a incluir na cobertura. */
+  includeSchemaExpr?: string;
+  /** Regex de objeto a incluir na cobertura. */
+  includeObjectExpr?: string;
+  /** Regex de schema a excluir da cobertura. */
+  excludeSchemaExpr?: string;
+  /** Regex de objeto a excluir da cobertura. */
+  excludeObjectExpr?: string;
+}
+
+export interface OracleExecutionOptions {
+  /** Expressão de tags do utPLSQL (ex.: `fast & !integration`); vazio = todas. */
+  tags?: string;
+  /** Se true, executa os testes em ordem aleatória (`a_random_test_order`). */
+  randomOrder?: boolean;
+  /** Seed da ordem aleatória (0 = sorteada pelo banco). */
+  randomOrderSeed?: number;
+  /** Se true, captura DBMS_OUTPUT. */
+  dbmsOutput?: boolean;
+  /** Timeout em minutos (0 = sem timeout). */
+  timeoutMinutes?: number;
+}
+
+export interface OracleExportReporter {
+  name: string;
+  charset?: string;
+  colorConsole?: boolean;
+}
+
+/**
+ * Opções canônicas do runner agrupadas por domínio (PRD-111 RF2).
+ * Os campos flat marcados `@deprecated` mantêm compatibilidade dos call sites
+ * antigos/testes; novos call sites devem usar `coverage`, `execution`, `output`
+ * e `export`.
+ */
 export interface OracleRunOptions {
   /** Connection string (user/pass@//host:port/service) */
   connection: string;
   /** Path args para ut_runner.run (ex.: ['package', 'package.proc']) */
   pathArgs: string[];
-  /** Se true, coleta e aplica cobertura Cobertura */
-  coverage: boolean;
-  /** Se true, gera o relatório HTML de cobertura (PRD-108). */
-  coverageHtmlReport?: boolean;
-  /** Root do workspace da suíte executada (destino do `test-results/`). */
-  reportRoot?: string;
-  /** Callback chamado após gravar o HTML (o runner notifica depois do run.end). */
-  onCoverageHtmlReport?: (filePath: string) => void;
   /** Caminho base do código-fonte para mapeamento de cobertura */
   sourcePath: string;
   /** TestRun atual do VSCode */
@@ -486,40 +621,53 @@ export interface OracleRunOptions {
   onCoverageResult?: (generated: boolean) => void;
   /** Workspace folders para resolução de sourceUri */
   folders?: readonly vscode.WorkspaceFolder[];
-  /** Extra reporters adicionados via config */
-  additionalReporters?: string[];
-  /** Expressão de tags do utPLSQL (ex.: `fast & !integration`); vazio = todas */
-  tags?: string;
-  /** Se true, executa os testes em ordem aleatória (`a_random_test_order`) */
-  randomOrder?: boolean;
-  /** Seed da ordem aleatória (0 = sorteada pelo banco) */
-  randomOrderSeed?: number;
-  /** Owner do schema para coverage (override) */
+  /** Cobertura Cobertura/HTML e escopo. */
+  coverage: OracleCoverageOptions | boolean;
+  /** Opções de execução (tags, ordem aleatória, DBMS_OUTPUT, timeout). */
+  execution?: OracleExecutionOptions;
+  /** Reporters adicionais. */
+  output?: { additionalReporters?: string[] };
+  /** Export com reporter arbitrário (PRD-76). */
+  export?: { reporter?: OracleExportReporter };
+  /** Probe de performance (PRD-102); default: probe global da extensão. */
+  perf?: PerfProbe;
+
+  /** @deprecated Use `coverage.owner`. */
   coverageOwner?: string;
-  /** Schemas de cobertura (sobrepõe o owner; vazio = automático) */
+  /** @deprecated Use `coverage.schemes`. */
   coverageSchemes?: string[];
-  /** Objetos a incluir na cobertura (formato OWNER.NAME) */
+  /** @deprecated Use `coverage.includeObjects`. */
   coverageIncludeObjects?: string[];
-  /** Objetos a excluir da cobertura (formato OWNER.NAME) */
+  /** @deprecated Use `coverage.excludeObjects`. */
   coverageExcludeObjects?: string[];
-  /** Regex de schema a incluir na cobertura */
+  /** @deprecated Use `coverage.includeSchemaExpr`. */
   coverageIncludeSchemaExpr?: string;
-  /** Regex de objeto a incluir na cobertura */
+  /** @deprecated Use `coverage.includeObjectExpr`. */
   coverageIncludeObjectExpr?: string;
-  /** Regex de schema a excluir da cobertura */
+  /** @deprecated Use `coverage.excludeSchemaExpr`. */
   coverageExcludeSchemaExpr?: string;
-  /** Regex de objeto a excluir da cobertura */
+  /** @deprecated Use `coverage.excludeObjectExpr`. */
   coverageExcludeObjectExpr?: string;
-  /** Se true, captura DBMS_OUTPUT */
+  /** @deprecated Use `coverage.htmlReport`. */
+  coverageHtmlReport?: boolean;
+  /** @deprecated Use `coverage.reportRoot`. */
+  reportRoot?: string;
+  /** @deprecated Use `coverage.onHtmlReport`. */
+  onCoverageHtmlReport?: (filePath: string) => void;
+  /** @deprecated Use `execution.tags`. */
+  tags?: string;
+  /** @deprecated Use `execution.randomOrder`. */
+  randomOrder?: boolean;
+  /** @deprecated Use `execution.randomOrderSeed`. */
+  randomOrderSeed?: number;
+  /** @deprecated Use `execution.dbmsOutput`. */
   dbmsOutput?: boolean;
-  /** Timeout em minutos (0 = sem timeout) */
+  /** @deprecated Use `execution.timeoutMinutes`. */
   timeoutMinutes?: number;
-  /**
-   * Export com reporter arbitrário (PRD-76): quando presente, o run usa apenas
-   * esse reporter, captura a saída textual e a devolve (sem aplicar resultados
-   * de teste nem cobertura).
-   */
-  exportReporter?: { name: string; charset?: string; colorConsole?: boolean };
+  /** @deprecated Use `output.additionalReporters`. */
+  additionalReporters?: string[];
+  /** @deprecated Use `export.reporter`. */
+  exportReporter?: OracleExportReporter;
 }
 
 type LoadedOracledb = typeof import('oracledb');
@@ -655,9 +803,21 @@ async function prepareReporters(options: {
   return { runners, exportBinds, coverageEnabled, htmlEnabled };
 }
 
+export type RunOutcome = 'completed' | 'cancelled' | 'timedOut';
+
 interface RunAndPollResult {
   exportText: string;
   runnerMs: number;
+  /** `completed` só quando o `ut_runner.run` terminou por conta própria. */
+  outcome: RunOutcome;
+}
+
+/** Sinaliza que o run foi interrompido por timeout ou cancelamento do usuário. */
+export class RunAbortedError extends Error {
+  constructor(readonly outcome: Exclude<RunOutcome, 'completed'>) {
+    super(t(getExtensionLocale(), outcome === 'timedOut' ? 'runner.timedOut' : 'ext.runCancel'));
+    this.name = 'RunAbortedError';
+  }
 }
 
 /** Executa o `ut_runner.run`, faz o poll do buffer e devolve a saída de export. */
@@ -675,6 +835,7 @@ async function runAndPoll(options: {
   outputs: Map<string, { kind: 'unknown' | CoverageOutputKind; text: string }>;
   connection: string;
   oracledb: typeof import('oracledb');
+  perf?: PerfProbe;
 }): Promise<RunAndPollResult> {
   if (options.dbmsOutput) {
     try {
@@ -688,16 +849,24 @@ async function runAndPoll(options: {
   }
 
   const runnerStart = Date.now();
-  const runnerPromise = options.conn1.execute(options.plsql, options.binds, { autoCommit: true });
+  let runnerSettled = false;
+  const runnerPromise = options.conn1
+    .execute(options.plsql, options.binds, { autoCommit: true })
+    .finally(() => {
+      runnerSettled = true;
+    });
   const outputKey = (value: unknown): string =>
     Buffer.isBuffer(value) ? value.toString('hex') : String(value ?? 'default');
 
+  let cancelled = false;
+  let timedOut = false;
   const cancelRun = () => {
     options.conn1.break().catch(() => {});
     options.conn2.break().catch(() => {});
   };
   const wakeRun = Promise.withResolvers<void>();
   const cancelSub = options.token.onCancellationRequested(() => {
+    if (!runnerSettled) cancelled = true;
     cancelRun();
     wakeRun.resolve();
   });
@@ -705,52 +874,78 @@ async function runAndPoll(options: {
   const timeoutTimer =
     timeoutMs > 0
       ? setTimeout(() => {
+          // Não marca timeout se o `ut_runner.run` já terminou (evita falso
+          // timeout por corrida entre o timer e o último tick do poll).
+          if (!runnerSettled) timedOut = true;
           cancelRun();
           wakeRun.resolve();
         }, timeoutMs)
       : undefined;
 
-  let exportText = '';
-  try {
-    await pollOutputStream({
-      conn: options.conn2,
-      utSchema: options.utSchema,
-      done: Promise.race([runnerPromise.then(() => true), wakeRun.promise.then(() => true)]),
-      onText: (text, outputId) => {
-        if (options.exporting) {
-          exportText += `${text}\n`;
-          options.run.appendOutput(`${text}\r\n`);
-          return;
-        }
+  // Token já cancelado antes do run (ex.: cancelamento imediato do TestRun):
+  // não inicia o poll sem antes sinalizar o outcome.
+  if (options.token.isCancellationRequested) {
+    if (!runnerSettled) cancelled = true;
+    cancelRun();
+    wakeRun.resolve();
+  }
 
-        const key = outputKey(outputId);
-        let group = options.outputs.get(key);
-        if (!group) {
-          group = { kind: 'unknown', text: '' };
-          options.outputs.set(key, group);
-        }
-        if (group.kind === 'unknown') {
-          group.kind = classifyCoverageOutput(text);
-        }
-        if (group.kind === 'console') {
-          options.run.appendOutput(`${text}\r\n`);
-        } else {
-          group.text += `${text}\n`;
-        }
-      },
-      onError: (e) => {
-        // polling pode falhar se conn1 ainda não escreveu — ignorar
-        logger.debug('executeRunOracle: poll do buffer falhou', {
-          error: redactConnection(String(e), options.connection),
-        });
-      },
-    });
+  let exportText = '';
+  const endPoll = options.perf?.start('poll');
+  try {
+    try {
+      await pollOutputStream({
+        conn: options.conn2,
+        utSchema: options.utSchema,
+        done: Promise.race([runnerPromise.then(() => true), wakeRun.promise.then(() => true)]),
+        onText: (text, outputId) => {
+          if (options.exporting) {
+            exportText += `${text}\n`;
+            options.run.appendOutput(`${text}\r\n`);
+            return;
+          }
+
+          const key = outputKey(outputId);
+          let group = options.outputs.get(key);
+          if (!group) {
+            group = { kind: 'unknown', text: '' };
+            options.outputs.set(key, group);
+          }
+          // Um chunk inicial só com brancos não pode selar o grupo como
+          // `console`; espera o primeiro texto real.
+          if (group.kind === 'unknown' && text.trim().length > 0) {
+            group.kind = classifyCoverageOutput(text);
+          }
+          if (group.kind === 'console') {
+            options.run.appendOutput(`${text}\r\n`);
+          } else {
+            group.text += `${text}\n`;
+          }
+        },
+        onError: (e) => {
+          // polling pode falhar se conn1 ainda não escreveu — ignorar
+          logger.debug('executeRunOracle: poll do buffer falhou', {
+            error: redactConnection(String(e), options.connection),
+          });
+        },
+      });
+    } catch (e) {
+      // `break()` faz o `ut_runner.run` rejeitar; após timeout/cancelamento
+      // esse erro é esperado e não deve virar `runner.oracleError`.
+      if (!cancelled && !timedOut) throw e;
+      logger.debug('executeRunOracle: run interrompido', {
+        outcome: timedOut ? 'timedOut' : 'cancelled',
+        error: redactConnection(String(e), options.connection),
+      });
+    }
   } finally {
+    endPoll?.();
     cancelSub.dispose();
     if (timeoutTimer) clearTimeout(timeoutTimer);
   }
 
-  return { exportText, runnerMs: Date.now() - runnerStart };
+  const outcome: RunOutcome = timedOut ? 'timedOut' : cancelled ? 'cancelled' : 'completed';
+  return { exportText, runnerMs: Date.now() - runnerStart, outcome };
 }
 
 export async function executeRunOracle(
@@ -758,13 +953,23 @@ export async function executeRunOracle(
   token: vscode.CancellationToken,
   loadOracledbMod: () => Promise<LoadedOracledb | undefined> = loadOracledb,
 ): Promise<string | undefined> {
+  // PRD-101: cobre run, cobertura e export; o pool só fecha no último `end`.
+  const activity = beginOracleActivity();
+  try {
+    return await executeRunOracleCore(options, token, loadOracledbMod);
+  } finally {
+    await activity.end();
+  }
+}
+
+async function executeRunOracleCore(
+  options: OracleRunOptions,
+  token: vscode.CancellationToken,
+  loadOracledbMod: () => Promise<LoadedOracledb | undefined> = loadOracledb,
+): Promise<string | undefined> {
   const {
     connection,
     pathArgs,
-    coverage,
-    coverageHtmlReport,
-    reportRoot,
-    onCoverageHtmlReport,
     sourcePath,
     run,
     leafTests,
@@ -772,22 +977,34 @@ export async function executeRunOracle(
     onComplete,
     onCoverageResult,
     folders,
-    additionalReporters,
-    tags,
-    randomOrder,
-    randomOrderSeed,
-    coverageOwner,
-    coverageSchemes: coverageSchemesCfg,
-    coverageIncludeObjects,
-    coverageExcludeObjects,
-    coverageIncludeSchemaExpr,
-    coverageIncludeObjectExpr,
-    coverageExcludeSchemaExpr,
-    coverageExcludeObjectExpr,
-    dbmsOutput,
-    timeoutMinutes,
-    exportReporter,
   } = options;
+  const perf = options.perf ?? globalPerfProbe;
+  const coverageOptions: OracleCoverageOptions =
+    typeof options.coverage === 'boolean' ? { enabled: options.coverage } : options.coverage;
+  const execution = options.execution ?? {};
+  const coverageEnabledRequested = coverageOptions.enabled;
+  const coverageOwner = coverageOptions.owner ?? options.coverageOwner;
+  const coverageSchemesCfg = coverageOptions.schemes ?? options.coverageSchemes;
+  const coverageIncludeObjects = coverageOptions.includeObjects ?? options.coverageIncludeObjects;
+  const coverageExcludeObjects = coverageOptions.excludeObjects ?? options.coverageExcludeObjects;
+  const coverageIncludeSchemaExpr =
+    coverageOptions.includeSchemaExpr ?? options.coverageIncludeSchemaExpr;
+  const coverageIncludeObjectExpr =
+    coverageOptions.includeObjectExpr ?? options.coverageIncludeObjectExpr;
+  const coverageExcludeSchemaExpr =
+    coverageOptions.excludeSchemaExpr ?? options.coverageExcludeSchemaExpr;
+  const coverageExcludeObjectExpr =
+    coverageOptions.excludeObjectExpr ?? options.coverageExcludeObjectExpr;
+  const coverageHtmlReport = coverageOptions.htmlReport ?? options.coverageHtmlReport;
+  const reportRoot = coverageOptions.reportRoot ?? options.reportRoot;
+  const onCoverageHtmlReport = coverageOptions.onHtmlReport ?? options.onCoverageHtmlReport;
+  const additionalReporters = options.output?.additionalReporters ?? options.additionalReporters;
+  const tags = execution.tags ?? options.tags;
+  const randomOrder = execution.randomOrder ?? options.randomOrder;
+  const randomOrderSeed = execution.randomOrderSeed ?? options.randomOrderSeed;
+  const dbmsOutput = execution.dbmsOutput ?? options.dbmsOutput;
+  const timeoutMinutes = execution.timeoutMinutes ?? options.timeoutMinutes;
+  const exportReporter = options.export?.reporter ?? options.exportReporter;
   const exporting = !!exportReporter;
 
   const oracledb = await loadOracledbMod();
@@ -800,10 +1017,12 @@ export async function executeRunOracle(
 
   try {
     const htmlReportTarget =
-      coverage && coverageHtmlReport ? coverageHtmlReportPath(reportRoot) : undefined;
+      coverageEnabledRequested && coverageHtmlReport
+        ? coverageHtmlReportPath(reportRoot)
+        : undefined;
     if (htmlReportTarget) {
       try {
-        await prepareCoverageHtmlReport(htmlReportTarget);
+        await prepareCoverageHtmlReport(htmlReportTarget, reportRoot);
       } catch (e) {
         logger.debug('executeRunOracle: falha ao preparar o HTML de cobertura', {
           error: redactConnection(String(e), connection),
@@ -824,7 +1043,7 @@ export async function executeRunOracle(
       conn1,
       exporting,
       exportReporter,
-      coverage,
+      coverage: coverageEnabledRequested,
       coverageHtmlReport,
       additionalReporters,
       state,
@@ -877,45 +1096,63 @@ export async function executeRunOracle(
     // ele evita que o HTML de cobertura contamine o XML de JUnit/Cobertura e
     // dispensa o estado de CDATA (todas as linhas do grupo XML vão para o XML).
     const outputs = new Map<string, { kind: 'unknown' | CoverageOutputKind; text: string }>();
-    const { exportText, runnerMs } = await runAndPoll({
-      conn1,
-      conn2,
-      utSchema,
-      plsql,
-      binds,
-      token,
-      timeoutMinutes,
-      dbmsOutput,
-      exporting,
-      run,
-      outputs,
-      connection,
-      oracledb,
-    });
+    const endRun = perf?.start('run');
+    let runResult: RunAndPollResult;
+    try {
+      runResult = await runAndPoll({
+        conn1,
+        conn2,
+        utSchema,
+        plsql,
+        binds,
+        token,
+        timeoutMinutes,
+        dbmsOutput,
+        exporting,
+        run,
+        outputs,
+        connection,
+        oracledb,
+        perf,
+      });
+    } finally {
+      endRun?.();
+    }
+    const { exportText, runnerMs, outcome } = runResult;
+
+    // Timeout/cancelamento não são runs concluídos: não parseia JUnit/Cobertura,
+    // não aplica resultados parciais e não persiste snapshot.
+    if (outcome !== 'completed') throw new RunAbortedError(outcome);
 
     if (dbmsOutput) await drainDbmsOutput(conn1, run, oracledb, connection);
 
     // Export (PRD-76): devolve a saída do reporter sem aplicar resultados/cobertura.
     if (exporting) return exportText;
 
-    await finalizeRun({
-      outputs,
-      runnerMs,
-      coverageEnabled,
-      coverageRequested: coverage,
-      htmlEnabled,
-      htmlReportTarget,
-      onCoverageHtmlReport,
-      onCoverageResult,
-      onComplete,
-      run,
-      leafTests,
-      state,
-      folders,
-      sourcePath,
-      token,
-      connection,
-    });
+    const endParse = perf?.start('parseXml');
+    try {
+      await finalizeRun({
+        outputs,
+        runnerMs,
+        coverageEnabled,
+        coverageRequested: coverageEnabledRequested,
+        htmlEnabled,
+        htmlReportTarget,
+        htmlReportRoot: reportRoot,
+        onCoverageHtmlReport,
+        onCoverageResult,
+        onComplete,
+        run,
+        leafTests,
+        state,
+        folders,
+        sourcePath,
+        token,
+        connection,
+      });
+    } finally {
+      endParse?.();
+    }
   } finally {
     await conn1.close().catch(() => {});
     await conn2.close().catch(() => {});
@@ -954,6 +1191,7 @@ interface FinalizeRunOptions {
   coverageRequested: boolean;
   htmlEnabled: boolean;
   htmlReportTarget?: string;
+  htmlReportRoot?: string;
   onCoverageHtmlReport?: (filePath: string) => void;
   onCoverageResult?: (generated: boolean) => void;
   onComplete?: (
@@ -974,18 +1212,21 @@ interface FinalizeRunOptions {
 
 /** Parseia o JUnit/Cobertura e aplica resultados/cobertura (PRD-111 RF1). */
 async function finalizeRun(options: FinalizeRunOptions): Promise<void> {
-  const xmlBuffer = [...options.outputs.values()]
-    .filter((group) => group.kind === 'xml')
-    .map((group) => group.text)
-    .join('');
+  // Cada reporter tem seu `output_id`; classificar o XML por grupo evita
+  // depender da ordem JUnit→Cobertura e do `indexOf('<coverage')` (BUG-08).
+  let junitPart = '';
+  let covXml = '';
+  for (const group of options.outputs.values()) {
+    if (group.kind !== 'xml') continue;
+    // A tag raiz ignora o prolog `<?xml ...?>`; antes, um Cobertura com prolog
+    // caía no JUnit e a cobertura era perdida.
+    if (xmlRootTag(group.text) === 'coverage') covXml += group.text;
+    else junitPart += group.text;
+  }
   const htmlText = [...options.outputs.values()]
     .filter((group) => group.kind === 'html')
     .map((group) => group.text)
     .join('');
-
-  const covStart = xmlBuffer.indexOf('<coverage');
-  const junitPart = covStart > 0 ? xmlBuffer.substring(0, covStart) : xmlBuffer;
-  const covXml = covStart > 0 ? xmlBuffer.substring(covStart) : '';
 
   const cases = parseJUnit(junitPart);
   const resultMap = applyResultsFromCases(cases, options.leafTests, options.run, options.state);
@@ -1041,7 +1282,7 @@ async function finalizeRun(options: FinalizeRunOptions): Promise<void> {
     !options.token.isCancellationRequested
   ) {
     try {
-      await writeCoverageHtmlReport(htmlText, options.htmlReportTarget);
+      await writeCoverageHtmlReport(htmlText, options.htmlReportTarget, options.htmlReportRoot);
       options.onCoverageHtmlReport?.(options.htmlReportTarget);
     } catch (e) {
       const redacted = redactConnection(String(e), options.connection);
@@ -1057,23 +1298,31 @@ async function finalizeRun(options: FinalizeRunOptions): Promise<void> {
   );
 }
 
-const COVERAGE_DIRS: Record<string, string> = {
-  function: 'functions',
-  procedure: 'procedures',
-  'package body': 'packages',
-  package: 'packages',
-  'type body': 'types',
-  type: 'types',
-  view: 'views',
-  trigger: 'triggers',
+const COVERAGE_TARGETS: Record<string, { dir: string; ext: string }> = {
+  function: { dir: 'functions', ext: '.fnc' },
+  procedure: { dir: 'procedures', ext: '.prc' },
+  'package body': { dir: 'packages', ext: '.pkb' },
+  package: { dir: 'packages', ext: '.pks' },
+  'type body': { dir: 'types', ext: '.tpb' },
+  type: { dir: 'types', ext: '.typ' },
+  view: { dir: 'views', ext: '.sql' },
+  trigger: { dir: 'triggers', ext: '.trg' },
 };
 
+/**
+ * O reporter Cobertura usa `filename="<tipo> <schema>.<objeto>"`. O tipo
+ * distingue spec/body; preservar essa distinção na extensão evita que a
+ * cobertura do `package body` seja aplicada ao `.pks` (e vice-versa).
+ * `resolveSourceUri` ainda testa variantes (`.sql`, etc.) para layouts
+ * legados.
+ */
 export function mapDbPathsToFiles(covXml: string): string {
   return covXml.replace(
-    /filename="(function|procedure|package body|package|type body|type|view|trigger)\s+[\w$#]+\.([\w$#]+)"/g,
-    (_match, type: string, name: string) => {
-      const dir = COVERAGE_DIRS[type] ?? `${type}s`;
-      return `filename="${dir}/${name}.sql"`;
+    /filename="(function|procedure|package body|package|type body|type|view|trigger)\s+(?:"[^"]+"|[\w$#]+)\.(?:"([^"]+)"|([\w$#]+))"/g,
+    (_match, type: string, quotedName: string | undefined, plainName: string) => {
+      const target = COVERAGE_TARGETS[type];
+      const name = quotedName ?? plainName;
+      return `filename="${target.dir}/${name}${target.ext}"`;
     },
   );
 }

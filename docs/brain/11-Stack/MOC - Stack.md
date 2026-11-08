@@ -92,6 +92,7 @@ SORT id ASC
 - [[PIPE-jev-review - Jev Review]] — `PIPE-jev-review`
 - [[PIPE-pages - Deploy Pages]] — `PIPE-pages`
 - [[PIPE-pagespeed - PageSpeed Check]] — `PIPE-pagespeed`
+- [[PIPE-performance - Performance]] — `PIPE-performance`
 - [[PIPE-publish - Publish Extension]] — `PIPE-publish`
 - [[PIPE-scorecard - Scorecard]] — `PIPE-scorecard`
 - [[PIPE-site-health - Site Health Check]] — `PIPE-site-health`

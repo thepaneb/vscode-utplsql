@@ -4,6 +4,7 @@ import * as path from 'node:path';
 import * as vscode from 'vscode';
 import { getExtensionLocale } from './config';
 import { t } from './i18n';
+import { isInside, isReallyInside } from './pathContainment';
 
 /** Extensões de código-fonte PL/SQL consideradas na resolução de cobertura. */
 const SOURCE_EXTENSIONS = ['.sql', '.pks', '.pkb', '.prc', '.fnc', '.trg', '.tpb', '.bdy', '.typ'];
@@ -85,8 +86,42 @@ export type CoverageOutputKind = 'html' | 'xml' | 'console';
 export function classifyCoverageOutput(text: string): CoverageOutputKind {
   const head = text.trimStart().toLowerCase();
   if (head.startsWith('<!doctype html') || head.startsWith('<html')) return 'html';
-  if (head.startsWith('<')) return 'xml';
+  // Só tags reais de documento: uma linha de console começando com `<` não
+  // pode selar o grupo inteiro como XML (BUG-25).
+  if (
+    head.startsWith('<?xml') ||
+    head.startsWith('<testsuites') ||
+    head.startsWith('<testsuite') ||
+    head.startsWith('<coverage')
+  ) {
+    return 'xml';
+  }
   return 'console';
+}
+
+/** Primeira tag do documento, ignorando declaração XML e comentários. */
+export function xmlRootTag(text: string): string | undefined {
+  // Parse manual (sem `replace` de comentários): o CodeQL trata remoção de
+  // `<!--` por regex como sanitização incompleta, mas aqui só queremos a tag.
+  let rest = text.trimStart();
+  if (rest.startsWith('<?xml')) {
+    const end = rest.indexOf('?>');
+    if (end < 0) return undefined;
+    rest = rest.slice(end + 2).trimStart();
+  }
+  while (rest.startsWith('<!--')) {
+    const end = rest.indexOf('-->');
+    if (end < 0) return undefined;
+    rest = rest.slice(end + 3).trimStart();
+  }
+  // Cobertura emite `<!DOCTYPE coverage ...>` antes da tag raiz.
+  while (rest.startsWith('<!')) {
+    const end = rest.indexOf('>');
+    if (end < 0) return undefined;
+    rest = rest.slice(end + 1).trimStart();
+  }
+  const match = /^<\s*([A-Za-z_][\w:.-]*)/.exec(rest);
+  return match?.[1]?.toLowerCase();
 }
 
 /** Caminho do HTML: `test-results/coverage.html` no root executado (ou temp). */
@@ -95,16 +130,38 @@ export function coverageHtmlReportPath(reportRoot?: string): string {
   return path.join(reportRoot, 'test-results', 'coverage.html');
 }
 
+/**
+ * Valida que o diretório do HTML (`test-results/`) pertence à raiz. Um
+ * `test-results` que é symlink para fora permitiria `mkdir`/`rm`/`write` fora
+ * do workspace (SEC-04).
+ */
+function assertCoverageHtmlPathSafe(filePath: string, root?: string): void {
+  if (!root) return;
+  const dir = path.dirname(filePath);
+  if (!isInside(filePath, root)) {
+    throw new Error(`coverage html path escapes the workspace: ${filePath}`);
+  }
+  if (!fs.existsSync(dir)) return;
+  if (!isReallyInside(dir, root)) {
+    throw new Error(`coverage html directory escapes the workspace: ${dir}`);
+  }
+}
+
 /** Remove o alvo anterior e o `.tmp` (no início do run, para não deixar stale). */
-export async function prepareCoverageHtmlReport(filePath: string): Promise<void> {
+export async function prepareCoverageHtmlReport(filePath: string, root?: string): Promise<void> {
+  assertCoverageHtmlPathSafe(filePath, root);
   await fs.promises.mkdir(path.dirname(filePath), { recursive: true });
   await fs.promises.rm(filePath, { force: true }).catch(() => {});
   await fs.promises.rm(`${filePath}.tmp`, { force: true }).catch(() => {});
 }
 
 /** Escrita atômica: `.tmp` → rename, para nunca abrir um arquivo parcial. */
-export async function writeCoverageHtmlReport(html: string, filePath: string): Promise<void> {
-  await prepareCoverageHtmlReport(filePath);
+export async function writeCoverageHtmlReport(
+  html: string,
+  filePath: string,
+  root?: string,
+): Promise<void> {
+  await prepareCoverageHtmlReport(filePath, root);
   const tmp = `${filePath}.tmp`;
   await fs.promises.writeFile(tmp, html, 'utf8');
   await fs.promises.rename(tmp, filePath);

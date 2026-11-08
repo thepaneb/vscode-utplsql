@@ -3,10 +3,20 @@
  * para um *sink* opcional — o `LogOutputChannel` `utPLSQL` (ver `extension.ts`).
  * Módulo puro (sem `vscode`); nunca lança e nunca deve receber credenciais.
  */
-export type LogLevel = 'debug' | 'info' | 'warn' | 'error';
+export type LogLevel = 'trace' | 'debug' | 'info' | 'warn' | 'error';
 export type LogSink = (level: LogLevel, msg: string, ctx?: Record<string, unknown>) => void;
 
 let sink: LogSink | undefined;
+let traceEnabled = false;
+
+/** Liga/desliga o trace verboso por evento (`utplsql.trace`, PRD-102). */
+export function setTraceEnabled(enabled: boolean): void {
+  traceEnabled = enabled === true;
+}
+
+export function isTraceEnabled(): boolean {
+  return traceEnabled;
+}
 
 /** Define o destino do log estruturado (LogOutputChannel). `undefined` limpa. */
 export function setLogSink(next: LogSink | undefined): void {
@@ -32,6 +42,11 @@ function emit(level: LogLevel, msg: string, ctx?: Record<string, unknown>): void
 }
 
 export const logger = {
+  trace(msg: string, ctx?: Record<string, unknown>): void {
+    if (!traceEnabled) return;
+    if (process.env.UTPLSQL_DEBUG === '1') console.debug('[utplsql][trace]', msg, ctx ?? '');
+    emit('trace', msg, ctx);
+  },
   debug(msg: string, ctx?: Record<string, unknown>): void {
     if (process.env.UTPLSQL_DEBUG === '1') console.debug('[utplsql]', msg, ctx ?? '');
     emit('debug', msg, ctx);

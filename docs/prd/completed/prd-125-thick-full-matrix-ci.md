@@ -4,7 +4,7 @@
 
 | Campo | Valor |
 |---|---|
-| Status | Em desenvolvimento |
+| Status | Concluído |
 | Autor | Gil Cleber Barboza |
 | Data | 2026-10-29 |
 | Componente | Testes de integração + matriz de bancos + CI |
@@ -269,6 +269,28 @@ timeout de 120 s (`jumpToFailure`, `runTimeoutE2E`, 3× `schemaRun`,
 incompatibilidade/lentidão estrutural do 3.1/11g no run completo — não apenas
 skips. O 11g segue no **smoke thick** (verde, 4 passing) e o full fica para a
 0.20.0 com triagem/skips.
+
+## 9.2 Entrega final (2026-11-05)
+
+O eixo **thick-full 23free** foi reexecutado após a estabilização de
+conexão/pool (PRD-101) e a instrumentação (PRD-102): **81 passing / 13 pending /
+0 failing** em ~2 min, com as exclusões explícitas de thin-only, UI/comandos,
+`thickMode`, `debuggerStandaloneFn` e `thickLegacyE2E` (11g). O workspace do
+thick-full desliga `utplsql.oraclePoolCloseAfterRun` para preservar os testes
+que afirmam que o pool sobrevive ao `break`.
+
+**11g:** o full continua fora do timebox — a matriz mantém o **thick smoke**
+(4 passing, verde no 11g) e o dispatch `thick-full-11g` experimental. Esta é a
+limitação documentada permitida pelo Rollout; nenhuma promessa de suíte
+completa em 11g é feita nesta versão.
+
+**Correção (2026-11-07):** com a ativação preguiçosa da PRD-120 (0.20.0), o host
+do thick-full passou a abrir conexões raw antes de `ensurePool` e iniciou
+**thin** por `NJS-118`; a execução de 81/13/0 citada acima não era thick real.
+O preload `thickSetup` (commit `1e214e0`) restaura o thick, mas a suíte completa
+ainda entra em cascata após timeout/cancelamento. O residual está na
+**PRD-150** (0.20.1); o 0.20.0 mantém o eixo como **experimental** e o thick
+smoke verde no 11g/23free.
 
 ## 10. Critérios de aceite
 

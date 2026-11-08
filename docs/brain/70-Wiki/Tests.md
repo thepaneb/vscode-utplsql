@@ -5,11 +5,15 @@ titulo: "Tests"
 publicar: docs/wiki/Tests.md
 origem: ["01-test-discovery","02-test-execution","03-results-and-reporting"]
 verificado: 2026-10-31
-regras: ["BR-TEST-001", "BR-TEST-002"]
+regras: ["BR-TEST-001", "BR-TEST-002", "BR-TEST-004", "BR-TEST-005"]
 tags: [wiki]
 ---
 
 # Tests
+
+<!-- prd:PRD-106 --> <!-- prd:PRD-107 --> <!-- prd:PRD-125 --> <!-- prd:PRD-147 -->
+
+O gate `src/test/unit/marketplaceImages.test.ts` valida o manifesto de imagens do Marketplace.
 
 <!-- prd:PRD-125 -->
 
@@ -149,3 +153,18 @@ The stub is loaded in two ways:
 
 1. `import './setup.js'` at the top of the test file (explicit)
 2. `--require scripts/test-setup.cjs` in the global runner (safety net)
+## Performance harness and thick-full
+
+The performance harness (PRD-106) generates a deterministic in-database fixture
+(`UT_PERF_####`) with `npm run perf:generate` and runs the extension phases with
+`npm run test:perf`. Measurements are written as JSONL to
+`test-results/perf-report.jsonl`; the script is intended for weekly/dispatch CI
+and never for the PR critical path.
+
+The thick-full axis (PRD-125) runs the complete integration suite with
+`npm run test:integration:thick-full`. The harness initializes Instant Client
+before raw-connection tests, so it no longer silently falls back to thin
+(`NJS-118`). The complete true-thick suite is still **experimental** and is
+tracked by PRD-150 (0.20.1); 11g keeps the thick smoke (the full 11g run remains
+an experimental dispatch limitation).
+

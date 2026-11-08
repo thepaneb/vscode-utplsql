@@ -4,11 +4,11 @@ id: PRD-132
 aliases: [PRD-132]
 status: proposed
 titulo: "UX de execução: dry-run, perfil ativo e jump-to-failure"
-versao: "0.24.0"
+versao: "0.25.0"
 data: "2026-10-30"
 autor: "Gil Cleber Barboza"
-versao_titulo: "0.24.0 — UX, segurança e distribuição"
-verificado: "2026-10-30"
+versao_titulo: "0.25.0 — UX, onboarding e descoberta"
+verificado: "2026-11-07"
 regras: []
 docs: ["CHANGELOG", "wiki/Testing.md"]
 tags: [prd]
@@ -21,9 +21,9 @@ tags: [prd]
 | Autor | Gil Cleber Barboza |
 | Data | 2026-10-30 |
 | Componente | Extensão `paneb.vscode-utplsql` |
-| Versão alvo | 0.24.0 |
+| Versão alvo | 0.25.0 |
 | Arquivos afetados | `src/commands/run.ts`, `src/statusBar.ts`, `src/results.ts`, `src/oracleRunner.ts`, `src/test/unit/results*.test.ts` |
-| Esforço estimado | 2–3 dias |
+| Esforço estimado | 1,5–2,5 dias |
 | Complexidade | Média |
 | Relaciona-se a | PRD-27 (keybindings), PRD-29 (jump-to-failure), PRD-34 (perfis) |
 
@@ -33,6 +33,10 @@ Melhorar a UX de execução com (a) **validação pré-execução (dry-run)** de
 paths/tags/reporters antes de abrir conexões, (b) **indicador de perfil ativo** mais
 visível na status bar, e (c) **expansão de `parseStackFrames`** para cobrir mais
 formatos de stack Oracle/utPLSQL.
+
+> **Revisão (2026-11-07):** o RF4 (filtro `UT_*`) foi parcialmente antecipado
+> na 0.20.0; o esforço caiu de 2–3 para 1,5–2,5 dias e o restante (expansão de
+> formatos de stack) continua nesta PRD.
 
 ## 2. Contexto e problema
 
@@ -75,6 +79,9 @@ formatos de stack Oracle/utPLSQL.
 ### RF4 — Expansão de parseStackFrames
 - Cobrir: `SCHEMA.PKG.PROC, line N`, variantes com coluna, chamadas aninhadas,
   `UT3.`/`UT3$`/`UT3_*`; `isUserFrame` filtra também `DBMS_*` e `SYS.*`.
+- **Antecipado na 0.20.0:** o filtro por prefixo `UT_` foi substituído por uma
+  allowlist exata dos objetos do framework; suites do usuário `UT_*` não são
+  mais descartadas. Esta PRD mantém a expansão dos demais formatos.
 
 ### RF5 — Testes
 - Testes de parse para cada novo formato e de `isUserFrame`.
@@ -111,7 +118,7 @@ formatos de stack Oracle/utPLSQL.
 
 ## 9. Rollout
 
-- **0.24.0** ("UX, segurança e distribuição"); `CHANGELOG.md`.
+- **0.25.0** ("UX, onboarding e descoberta"); `CHANGELOG.md`.
 - Atualizar wiki `Testing.md`.
 
 ## 10. Critérios de aceite
@@ -141,6 +148,6 @@ reais de stack") com `prds: ["PRD-132"]`, `implementacao:` e `testes:`. Enquanto
 <!-- brain:auto:start:conexoes -->
 - 🗺️ [[MOC - PRDs]]
 - 🔗 PRDs relacionados: [[prd-27-default-keybindings|PRD-27]] · [[prd-29-jump-to-failing-assertion|PRD-29]] · [[prd-34-multi-connection-profiles|PRD-34]]
-- 🔗 Mesma versão (0.24.0): [[prd-121-auditable-package-sourcemap|PRD-121]] · [[prd-122-marketplace-trust-metadata|PRD-122]] · [[prd-133-rate-limiting-keybindings|PRD-133]] · [[prd-140-statusbar-settings-grouping|PRD-140]] · [[prd-141-onboarding-walkthrough-accessibility|PRD-141]] · [[prd-142-supply-chain-provenance-typecheck-gate|PRD-142]] · [[prd-143-redos-regex-audit-input-validation|PRD-143]] · [[prd-144-security-runtime-hardening|PRD-144]] · [[prd-145-security-alerts-deliverable|PRD-145]]
-- 🚀 ⬅️ release anterior: [[prd-126-branch-coverage-cli-tests|PRD-126 (0.23.0)]]
+- 🔗 Mesma versão (0.25.0): [[prd-133-rate-limiting-keybindings|PRD-133]] · [[prd-140-statusbar-settings-grouping|PRD-140]] · [[prd-141-onboarding-walkthrough-accessibility|PRD-141]] · [[prd-151-codelens-debug-test|PRD-151]]
+- 🚀 ⬅️ release anterior: [[prd-145-security-alerts-deliverable|PRD-145 (0.24.0)]]
 <!-- brain:auto:end -->

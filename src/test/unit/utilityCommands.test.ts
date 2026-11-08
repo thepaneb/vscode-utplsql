@@ -47,6 +47,7 @@ let rebuildShouldThrow = false;
 let rebuildError: unknown = new Error('boom');
 mock.module('../../oracleRunner.js', {
   namedExports: {
+    beginOracleActivity: () => ({ end: async () => {} }),
     rebuildAnnotationCache: async () => {
       rebuildCalled += 1;
       if (rebuildShouldThrow) throw rebuildError;

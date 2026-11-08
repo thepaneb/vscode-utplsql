@@ -193,6 +193,10 @@ nativních API VSCode.
 | `utplsql.oraclePoolMax` | `10` | Maximální počet připojení v poolu Oracle runneru (node-oracledb). |
 | `utplsql.oraclePoolIncrement` | `1` | Přírůstek při rozšiřování poolu Oracle runneru (node-oracledb). |
 | `utplsql.oraclePoolPingInterval` | `60` | Sekundy mezi kontrolami stavu nečinných připojení v poolu (node-oracledb). `0` = ping při každém checkoutu. |
+| `utplsql.oraclePoolCloseAfterRun` | `true` | Closes idle Oracle pool connections when the last run, coverage, export or discovery operation finishes. |
+| `utplsql.trace` | `false` | Emits verbose per-event trace lines in the utPLSQL output channel. |
+| `utplsql.perf.enabled` | `false` | Measures discovery, tree build, run, polling and XML parsing phases. |
+| `utplsql.perf.reportFile` | `""` | Appends each perf measurement as one JSON line to this file. |
 | `utplsql.oracleClientMode` | `thin` | Režim ovladače: `thin` (čistý JavaScript, bez nativního klienta) nebo `thick` (používá Oracle Instant Client). `thick` používejte jen pro databáze vyžadující NNE (Native Network Encryption); vyžaduje `utplsql.oracleClientLibDir` a znovu načtení okna. |
 | `utplsql.oracleClientLibDir` | `""` | Adresář Oracle Instant Client. Povinný, když je `utplsql.oracleClientMode` nastaveno na `thick` (např. `C:\oracle\instantclient_23_5`). Fallback: `ORACLE_CLIENT_LIB_DIR`. |
 | Ladění se nezastaví na zarážce | Balíček bez ladicích informací nebo chybějící ladicí granty | Zkompilujte s `PLSQL_OPTIMIZE_LEVEL <= 1` (nebo `ALTER PACKAGE ... COMPILE DEBUG PLSQL_OPTIMIZE_LEVEL = 1`) a udělte `DEBUG CONNECT SESSION` + `EXECUTE ON SYS.DBMS_DEBUG`. Zarážky v `test_*.pkb` se nemusí zastavit (utPLSQL spouští testy přes dynamický SQL); nastavte je v testovaném kódu. |

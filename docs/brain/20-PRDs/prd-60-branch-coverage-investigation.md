@@ -4,23 +4,27 @@ id: PRD-60
 aliases: [PRD-60]
 status: proposed
 titulo: "Cobertura de branch (investigação de viabilidade)"
-versao: "Investigação — sem versão alvo"
+versao: "0.23.0"
 data: "2026-09-06"
 autor: "Gil Cleber Barboza"
-versao_titulo: "Fora de release (investigação / a reavaliar)"
-verificado: 2026-09-23
+versao_titulo: "0.23.0 — Qualidade e performance"
+verificado: 2026-11-07
 regras: []
 tags: [prd]
 ---
 
 # PRD-60 — Cobertura de branch (investigação de viabilidade)
 
+> **Alocada (2026-11-07):** entra na 0.23.0 (qualidade) como spike curto;
+> se o Cobertura do utPLSQL não expuser branches, encerrar com a limitação
+> documentada (RF3).
+
 | Campo | Valor |
 |---|---|
 | Autor | Gil Cleber Barboza |
 | Data | 2026-09-06 |
 | Componente | Extensão `paneb.vscode-utplsql` |
-| Versão alvo | Investigação — sem versão alvo |
+| Versão alvo | 0.23.0 (investigação de qualidade) |
 | Arquivos afetados | `src/cobertura.ts`, `src/results.ts`, `src/test/unit/cobertura.test.ts` |
 | Esforço estimado | 0,5–1 dia (investigação) |
 | Complexidade | Alta (depende do framework) |
@@ -113,5 +117,5 @@ Nenhuma.
 <!-- brain:auto:start:conexoes -->
 - 🗺️ [[MOC - PRDs]]
 - 🔗 PRDs relacionados: [[prd-13-oracle-infra|PRD-13]]
-- 🔗 Mesma versão (Fora de release (investigação / a reavaliar)): [[prd-61-cli-auto-provision|PRD-61]]
+- 🚀 ⬅️ release anterior: [[prd-115-split-i18n-locales|PRD-115 (0.22.0)]] · ➡️ próxima release: [[prd-121-auditable-package-sourcemap|PRD-121 (0.24.0)]]
 <!-- brain:auto:end -->

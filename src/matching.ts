@@ -9,13 +9,21 @@ export interface MatchEntry {
   meta: ItemMeta;
 }
 
-export function buildMatchIndex(entries: MatchEntry[]): Map<string, vscode.TestItem> {
-  const index = new Map<string, vscode.TestItem>();
+export function buildMatchIndex(entries: MatchEntry[]): Map<string, vscode.TestItem[]> {
+  const index = new Map<string, vscode.TestItem[]>();
+  const add = (key: string, item: vscode.TestItem) => {
+    const list = index.get(key);
+    if (!list) {
+      index.set(key, [item]);
+    } else if (!list.includes(item)) {
+      list.push(item);
+    }
+  };
   for (const { item, meta } of entries) {
     if (meta.kind !== 'test') continue;
     const pkg = meta.packageName.toLowerCase();
-    index.set(`${pkg}|${meta.procName.toLowerCase()}`, item);
-    index.set(`${pkg}|${meta.description.toLowerCase().trim()}`, item);
+    add(`${pkg}|${meta.procName.toLowerCase()}`, item);
+    add(`${pkg}|${meta.description.toLowerCase().trim()}`, item);
   }
   return index;
 }
@@ -29,6 +37,34 @@ export function findByNameOnly(entries: MatchEntry[], name: string): vscode.Test
     }
   }
   return undefined;
+}
+
+/**
+ * Todas as cópias de um teste lógico (modo tag: a mesma suite pode aparecer
+ * sob várias tags). Quando o caso não traz package, devolve só a primeira
+ * ocorrência para não aplicar o resultado a pacotes não relacionados.
+ */
+export function findAllByNameOnly(
+  entries: MatchEntry[],
+  name: string,
+  packageName?: string,
+): vscode.TestItem[] {
+  const lower = name.toLowerCase().trim();
+  const pkg = packageName?.toLowerCase();
+  const matches: vscode.TestItem[] = [];
+  for (const { item, meta } of entries) {
+    if (meta.kind !== 'test') continue;
+    if (meta.procName.toLowerCase() !== lower && meta.description.toLowerCase().trim() !== lower) {
+      continue;
+    }
+    if (pkg && meta.packageName.toLowerCase() !== pkg) continue;
+    if (!matches.includes(item)) matches.push(item);
+  }
+  if (matches.length > 0) return pkg ? matches : matches.slice(0, 1);
+  // Sem correspondência no package do caso (ex.: `%suitepath`): mantém o
+  // comportamento antigo, usando a primeira ocorrência pelo nome.
+  const first = findByNameOnly(entries, name);
+  return first ? [first] : [];
 }
 
 export function filterSuitesByUri(items: ItemMeta[], uriFsPath: string): ItemMeta[] {

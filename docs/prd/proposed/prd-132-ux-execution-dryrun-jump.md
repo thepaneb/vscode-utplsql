@@ -8,9 +8,9 @@
 | Autor | Gil Cleber Barboza |
 | Data | 2026-10-30 |
 | Componente | Extensão `paneb.vscode-utplsql` |
-| Versão alvo | 0.24.0 |
+| Versão alvo | 0.25.0 |
 | Arquivos afetados | `src/commands/run.ts`, `src/statusBar.ts`, `src/results.ts`, `src/oracleRunner.ts`, `src/test/unit/results*.test.ts` |
-| Esforço estimado | 2–3 dias |
+| Esforço estimado | 1,5–2,5 dias |
 | Complexidade | Média |
 | Relaciona-se a | PRD-27 (keybindings), PRD-29 (jump-to-failure), PRD-34 (perfis) |
 
@@ -20,6 +20,10 @@ Melhorar a UX de execução com (a) **validação pré-execução (dry-run)** de
 paths/tags/reporters antes de abrir conexões, (b) **indicador de perfil ativo** mais
 visível na status bar, e (c) **expansão de `parseStackFrames`** para cobrir mais
 formatos de stack Oracle/utPLSQL.
+
+> **Revisão (2026-11-07):** o RF4 (filtro `UT_*`) foi parcialmente antecipado
+> na 0.20.0; o esforço caiu de 2–3 para 1,5–2,5 dias e o restante (expansão de
+> formatos de stack) continua nesta PRD.
 
 ## 2. Contexto e problema
 
@@ -62,6 +66,9 @@ formatos de stack Oracle/utPLSQL.
 ### RF4 — Expansão de parseStackFrames
 - Cobrir: `SCHEMA.PKG.PROC, line N`, variantes com coluna, chamadas aninhadas,
   `UT3.`/`UT3$`/`UT3_*`; `isUserFrame` filtra também `DBMS_*` e `SYS.*`.
+- **Antecipado na 0.20.0:** o filtro por prefixo `UT_` foi substituído por uma
+  allowlist exata dos objetos do framework; suites do usuário `UT_*` não são
+  mais descartadas. Esta PRD mantém a expansão dos demais formatos.
 
 ### RF5 — Testes
 - Testes de parse para cada novo formato e de `isUserFrame`.
@@ -98,7 +105,7 @@ formatos de stack Oracle/utPLSQL.
 
 ## 9. Rollout
 
-- **0.24.0** ("UX, segurança e distribuição"); `CHANGELOG.md`.
+- **0.25.0** ("UX, onboarding e descoberta"); `CHANGELOG.md`.
 - Atualizar wiki `Testing.md`.
 
 ## 10. Critérios de aceite

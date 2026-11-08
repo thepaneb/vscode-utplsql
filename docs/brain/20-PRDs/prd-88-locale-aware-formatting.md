@@ -133,5 +133,5 @@ locale-aware) com `prds: ["PRD-88"]`, `implementacao` em `src/i18n.ts` e testes.
 - 🗺️ [[MOC - PRDs]]
 - 🔗 PRDs relacionados: [[prd-90-message-plurals-cldr|PRD-90]]
 - 🔗 Mesma versão (0.22.0): [[prd-89-pseudo-localization-gate|PRD-89]] · [[prd-90-message-plurals-cldr|PRD-90]] · [[prd-91-doc-parity-localized-distribution|PRD-91]] · [[prd-92-rtl-new-locales|PRD-92]] · [[prd-93-continuous-localization-pipeline|PRD-93]] · [[prd-115-split-i18n-locales|PRD-115]]
-- 🚀 ⬅️ release anterior: [[prd-139-state-store-slicing-lru|PRD-139 (0.21.0)]] · ➡️ próxima release: [[prd-97-doc-no-site|PRD-97 (0.23.0)]]
+- 🚀 ⬅️ release anterior: [[prd-139-state-store-slicing-lru|PRD-139 (0.21.0)]] · ➡️ próxima release: [[prd-60-branch-coverage-investigation|PRD-60 (0.23.0)]]
 <!-- brain:auto:end -->

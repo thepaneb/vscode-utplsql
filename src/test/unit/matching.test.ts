@@ -4,6 +4,7 @@ import {
   buildMatchIndex,
   filterSuitesByFolder,
   filterSuitesByUri,
+  findAllByNameOnly,
   findByNameOnly,
   type MatchEntry,
   relatedSuiteMetas,
@@ -138,10 +139,31 @@ test('buildMatchIndex: 2 testes no mesmo package geram 4 chaves', () => {
     entry('t2', testMeta({ packageName: 'ut_pkg', procName: 'proc_b', description: 'Desc B' })),
   ]);
   assert.strictEqual(index.size, 4);
-  assert.strictEqual(index.get('ut_pkg|proc_a')?.id, 't1');
-  assert.strictEqual(index.get('ut_pkg|desc a')?.id, 't1');
-  assert.strictEqual(index.get('ut_pkg|proc_b')?.id, 't2');
-  assert.strictEqual(index.get('ut_pkg|desc b')?.id, 't2');
+  assert.strictEqual(index.get('ut_pkg|proc_a')?.[0]?.id, 't1');
+  assert.strictEqual(index.get('ut_pkg|desc a')?.[0]?.id, 't1');
+  assert.strictEqual(index.get('ut_pkg|proc_b')?.[0]?.id, 't2');
+  assert.strictEqual(index.get('ut_pkg|desc b')?.[0]?.id, 't2');
+});
+
+test('buildMatchIndex: mantém todas as cópias do mesmo teste lógico (modo tag)', () => {
+  const index = buildMatchIndex([
+    entry(
+      't1#fast',
+      testMeta({ packageName: 'ut_pkg', procName: 'proc_a', description: 'Desc A' }),
+    ),
+    entry(
+      't1#smoke',
+      testMeta({ packageName: 'ut_pkg', procName: 'proc_a', description: 'Desc A' }),
+    ),
+  ]);
+  assert.deepStrictEqual(
+    index.get('ut_pkg|proc_a')?.map((i) => i.id),
+    ['t1#fast', 't1#smoke'],
+  );
+  assert.deepStrictEqual(
+    index.get('ut_pkg|desc a')?.map((i) => i.id),
+    ['t1#fast', 't1#smoke'],
+  );
 });
 
 test('buildMatchIndex: 0 entradas retorna Map vazio', () => {
@@ -191,6 +213,45 @@ test('findByNameOnly: nome inexistente retorna undefined', () => {
   const e = entry('t1', testMeta({ procName: 'proc_x', description: 'desc x' }));
   const found = findByNameOnly([e], 'nao_existe');
   assert.strictEqual(found, undefined);
+});
+
+test('findAllByNameOnly: devolve todas as cópias do package', () => {
+  const entries = [
+    entry(
+      't1#fast',
+      testMeta({ packageName: 'ut_pkg', procName: 'proc_x', description: 'desc x' }),
+    ),
+    entry(
+      't1#smoke',
+      testMeta({ packageName: 'ut_pkg', procName: 'proc_x', description: 'desc x' }),
+    ),
+    entry('t2', testMeta({ packageName: 'other', procName: 'proc_x', description: 'desc x' })),
+  ];
+  assert.deepStrictEqual(
+    findAllByNameOnly(entries, 'proc_x', 'ut_pkg').map((i) => i.id),
+    ['t1#fast', 't1#smoke'],
+  );
+});
+
+test('findAllByNameOnly: sem package mantém só a primeira ocorrência', () => {
+  const entries = [
+    entry('t1', testMeta({ packageName: 'ut_pkg', procName: 'proc_x', description: 'desc x' })),
+    entry('t2', testMeta({ packageName: 'other', procName: 'proc_x', description: 'desc x' })),
+  ];
+  assert.deepStrictEqual(
+    findAllByNameOnly(entries, 'proc_x').map((i) => i.id),
+    ['t1'],
+  );
+});
+
+test('findAllByNameOnly: package sem match cai na primeira ocorrência', () => {
+  const entries = [
+    entry('t1', testMeta({ packageName: 'ut_pkg', procName: 'proc_x', description: 'desc x' })),
+  ];
+  assert.deepStrictEqual(
+    findAllByNameOnly(entries, 'proc_x', 'other').map((i) => i.id),
+    ['t1'],
+  );
 });
 
 test('findByNameOnly: ignora entries que nao sao test', () => {

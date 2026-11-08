@@ -4,7 +4,7 @@
 
 | Campo | Valor |
 |---|---|
-| Status | Proposto |
+| Status | Concluído |
 | Autor | Gil Cleber Barboza |
 | Data | 2026-10-09 |
 | Componente | Testes (infra de performance) |
@@ -117,3 +117,14 @@ Nenhuma setting da extensão (usa `describeDB`/`UTPLSQL_CONN`).
 Na conclusão, criar a regra `BR-TEST-*` ("harness de perf gera fixture no banco
 por seed e não roda no caminho crítico do PR"), com `prds: ["PRD-106"]`,
 `implementacao:` e `testes:`. Enquanto `proposed`, `regras: []`.
+
+## Análise de cobertura (pós-PRD)
+
+- **Unitários:** `perfFixture.test.ts` cobre seed, contagem, modos, prefixo inválido e parsing do CLI.
+- **Integração/perf:** `perfHarness.test.ts` mede discovery, buildTree, run, poll e parseXml e grava JSONL; requer `UTPLSQL_PERF_PACKAGES`/`UTPLSQL_CONN` (skip sem a fixture).
+- **Matriz:** 23free no workflow semanal; 18c/21c podem usar o mesmo script via `db-matrix`; 11g documentado como fora do harness completo.
+- **Ações:** o fixture de 1000 packages é gerado sob demanda; a validação de escala fica no workflow semanal.
+
+## Impacto nas docs
+
+`CHANGELOG`, `wiki/Tests.md` e `functional/10-development-tooling.md` citam `PRD-106`.

@@ -2,14 +2,15 @@
 tipo: prd
 id: PRD-106
 aliases: [PRD-106]
-status: proposed
+status: completed
 titulo: "Harness de performance: fixture em escala e medição por fases"
 versao: "0.20.0"
+docs: ["CHANGELOG", "wiki/Tests.md", "functional/10-development-tooling.md"]
 data: "2026-10-09"
 autor: "Gil Cleber Barboza"
 versao_titulo: "0.20.0 — Observabilidade e desempenho"
-verificado: 2026-10-09
-regras: []
+verificado: 2026-11-05
+regras: ["BR-TEST-005"]
 tags: [prd]
 ---
 
@@ -130,11 +131,26 @@ Na conclusão, criar a regra `BR-TEST-*` ("harness de perf gera fixture no banco
 por seed e não roda no caminho crítico do PR"), com `prds: ["PRD-106"]`,
 `implementacao:` e `testes:`. Enquanto `proposed`, `regras: []`.
 
+## Análise de cobertura (pós-PRD)
+
+- **Unitários:** `perfFixture.test.ts` cobre seed, contagem, modos, prefixo inválido e parsing do CLI.
+- **Integração/perf:** `perfHarness.test.ts` mede discovery, buildTree, run, poll e parseXml e grava JSONL; requer `UTPLSQL_PERF_PACKAGES`/`UTPLSQL_CONN` (skip sem a fixture).
+- **Matriz:** 23free no workflow semanal; 18c/21c podem usar o mesmo script via `db-matrix`; 11g documentado como fora do harness completo.
+- **Ações:** o fixture de 1000 packages é gerado sob demanda; a validação de escala fica no workflow semanal.
+
+## Impacto nas docs
+
+`CHANGELOG`, `wiki/Tests.md` e `functional/10-development-tooling.md` citam `PRD-106`.
+
 ## Conexões
 
 <!-- brain:auto:start:conexoes -->
 - 🗺️ [[MOC - PRDs]]
+- 📐 Regras: [[BR-TEST-005 - Harness de perf usa fixture por seed e fica fora do caminho critico|BR-TEST-005]]
 - 🔗 PRDs relacionados: [[prd-75-lazy-test-tree|PRD-75]] · [[prd-102-trace-and-perf-instrumentation|PRD-102]]
-- 🔗 Mesma versão (0.20.0): [[prd-101-connection-pool-lifecycle|PRD-101]] · [[prd-102-trace-and-perf-instrumentation|PRD-102]] · [[prd-103-incremental-source-reindex|PRD-103]] · [[prd-107-unprivileged-fixture|PRD-107]] · [[prd-120-lean-activation-lazy-setup|PRD-120]] · [[prd-125-thick-full-matrix-ci|PRD-125]] · [[prd-146-attestations-publish|PRD-146]] · [[prd-147-marketplace-listing-page|PRD-147]]
-- 🚀 ⬅️ release anterior: [[prd-127-vscode-floor-1-125|PRD-127 (0.19.0)]] · ➡️ próxima release: [[prd-128-event-bus-internal|PRD-128 (0.21.0)]]
+- ⚙️ Pipelines: [[PIPE-performance - Performance|PIPE-performance]]
+- 🔗 Mesma versão (0.20.0): [[prd-146-attestations-publish|PRD-146]] · [[prd-147-marketplace-listing-page|PRD-147]]
+- 🎯 RNF1 — Assert só estrutural (contagens, mix) + teto generoso. → [[BR-TEST-005 - Harness de perf usa fixture por seed e fica fora do caminho critico|BR-TEST-005]]
+- 🎯 RNF2 — Não roda no `npm test` padrão. → [[BR-TEST-005 - Harness de perf usa fixture por seed e fica fora do caminho critico|BR-TEST-005]]
+- 🚀 ⬅️ release anterior: [[prd-127-vscode-floor-1-125|PRD-127 (0.19.0)]] · ➡️ próxima release: [[prd-148-execution-state-reliability|PRD-148 (0.20.1)]]
 <!-- brain:auto:end -->

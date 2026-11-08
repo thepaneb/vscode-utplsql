@@ -1,6 +1,6 @@
 import * as vscode from 'vscode';
 import { readConfig, resolveConnectionNoPrompt } from './config';
-import { ensurePool, parseConnString } from './oracleRunner';
+import { beginOracleActivity, ensurePool, parseConnString } from './oracleRunner';
 import { LEGACY_DB_SCHEME, parseSourceUri, VIRTUAL_SOURCE_SCHEME } from './virtualSource';
 
 export {
@@ -78,6 +78,18 @@ const SPEC_FIRST = [
 ];
 
 async function withConnection<T>(
+  loadOracledbMod: () => Promise<LoadedOracledb | undefined>,
+  fn: (conn: import('oracledb').Connection, connStr: string) => Promise<T>,
+): Promise<T | undefined> {
+  const activity = beginOracleActivity();
+  try {
+    return await withConnectionCore(loadOracledbMod, fn);
+  } finally {
+    await activity.end();
+  }
+}
+
+async function withConnectionCore<T>(
   loadOracledbMod: () => Promise<LoadedOracledb | undefined>,
   fn: (conn: import('oracledb').Connection, connStr: string) => Promise<T>,
 ): Promise<T | undefined> {

@@ -1066,7 +1066,6 @@ export function __setVisibleEditors(editors: TextEditor[]): void {
   _mockVisibleEditors.push(...editors);
 }
 
-// biome-ignore lint/complexity/noStaticOnlyClass: mimics vscode.FileCoverage API
 export class FileCoverage {
   constructor(
     public uri: vscode.Uri,

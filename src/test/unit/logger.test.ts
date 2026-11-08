@@ -1,7 +1,7 @@
 import './setup.js';
 import assert from 'node:assert';
 import { test } from 'node:test';
-import { formatLogLine, logger, setLogSink } from '../../logger';
+import { formatLogLine, isTraceEnabled, logger, setLogSink, setTraceEnabled } from '../../logger';
 
 function capture(fn: () => void): string[] {
   const original = console.debug;
@@ -77,6 +77,25 @@ test('logger: sink defeituoso nunca lança', () => {
   try {
     assert.doesNotThrow(() => logger.info('x'));
   } finally {
+    setLogSink(undefined);
+  }
+});
+
+test('logger.trace: desligado por padrão e ligado por setTraceEnabled (PRD-102)', () => {
+  const seen: string[] = [];
+  setLogSink((level, msg) => seen.push(`${level}:${msg}`));
+  setTraceEnabled(false);
+  try {
+    logger.trace('sql', { ids: ['a'] });
+    assert.deepStrictEqual(seen, []);
+    assert.strictEqual(isTraceEnabled(), false);
+
+    setTraceEnabled(true);
+    logger.trace('sql', { ids: ['a'] });
+    assert.deepStrictEqual(seen, ['trace:sql']);
+    assert.strictEqual(isTraceEnabled(), true);
+  } finally {
+    setTraceEnabled(false);
     setLogSink(undefined);
   }
 });

@@ -88,6 +88,9 @@ dependência nova) para expor bordas que exemplos dificilmente cobrem.
 
 - Se um invariante legítimo falhar, corrigir `splitScript` com um caso de
   regressão reduzido, documentando a decisão.
+- Regressão explícita: `SET TRANSACTION READ ONLY` e `SET ROLE` no início de um
+  statement **não** podem ser descartados como diretiva SQL*Plus; só `SET` de
+  opção de cliente (`SERVEROUTPUT`, `DEFINE`, `ECHO`, `TIMING`, …) é diretiva.
 
 **Não-funcionais**
 - RNF1 — Sem dependência nova; testes puros e rápidos (limite de iterações

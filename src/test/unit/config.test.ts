@@ -19,6 +19,30 @@ test('readConfig: defaults sao usados quando sem config', () => {
   assert.strictEqual(cfg.dbmsOutput, false);
 });
 
+test('readConfig: pool max mínimo 2 e min nunca maior que max', () => {
+  __setConfigValue('oraclePoolMax', 1);
+  __setConfigValue('oraclePoolMin', 5);
+  try {
+    const cfg = readConfig();
+    assert.strictEqual(cfg.oraclePoolMax, 2);
+    assert.strictEqual(cfg.oraclePoolMin, 2);
+  } finally {
+    __resetConfigValues();
+  }
+});
+
+test('readConfig: pool com NaN cai nos defaults seguros', () => {
+  __setConfigValue('oraclePoolMax', Number.NaN);
+  __setConfigValue('oraclePoolMin', Number.NaN);
+  try {
+    const cfg = readConfig();
+    assert.strictEqual(cfg.oraclePoolMax, 10);
+    assert.strictEqual(cfg.oraclePoolMin, 2);
+  } finally {
+    __resetConfigValues();
+  }
+});
+
 test('readConfig: sqlCoverageEnabled default e false', () => {
   const cfg = readConfig();
   assert.strictEqual(cfg.sqlCoverageEnabled, false);

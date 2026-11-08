@@ -117,6 +117,10 @@ function checkFeatures(options = {}) {
   const prds = completedPrds(root, version);
   const changelog = changelogSection(root, version);
   if (prds.length && !changelog) problems.push(`CHANGELOG.md sem seção ${version}`);
+  const marketplace = read(path.join(root, 'MARKETPLACE.md'));
+  if (marketplace && !marketplace.includes(version)) {
+    problems.push(`MARKETPLACE.md não menciona a versão ${version}`);
+  }
 
   const readme = read(path.join(root, 'README.md'));
   const variants = readmeVariants(root);

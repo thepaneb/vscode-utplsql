@@ -17,11 +17,17 @@ function toArray<T>(x: T | T[] | undefined | null): T[] {
 /** Faz o parse do XML Cobertura gerado pelo ut_coverage_cobertura_reporter. */
 export function parseCobertura(xml: string): FileLines[] {
   const parser = new XMLParser({ ignoreAttributes: false, attributeNamePrefix: '@_' });
-  const doc = parser.parse(xml);
+  let doc: unknown;
+  try {
+    doc = parser.parse(xml);
+  } catch {
+    // XML truncado/malformado não derruba o run; a cobertura é best-effort.
+    return [];
+  }
 
   const out: FileLines[] = [];
   // biome-ignore lint/suspicious/noExplicitAny: XML parsing — structure is dynamic
-  const packages = toArray<any>(doc?.coverage?.packages?.package);
+  const packages = toArray<any>((doc as any)?.coverage?.packages?.package);
 
   for (const pkg of packages) {
     // biome-ignore lint/suspicious/noExplicitAny: XML parsing — structure is dynamic
@@ -32,11 +38,15 @@ export function parseCobertura(xml: string): FileLines[] {
       }
       // biome-ignore lint/suspicious/noExplicitAny: XML parsing — structure is dynamic
       const lines = toArray<any>(cls?.lines?.line)
-        .map((l) => ({
-          line: parseInt(l['@_number'], 10),
-          hits: parseInt(l['@_hits'], 10),
-        }))
-        .filter((l) => !Number.isNaN(l.line));
+        .map((l) => {
+          const line = parseInt(l['@_number'], 10);
+          const hits = parseInt(l['@_hits'], 10);
+          return {
+            line,
+            hits: Number.isFinite(hits) ? Math.max(0, hits) : 0,
+          };
+        })
+        .filter((l) => Number.isFinite(l.line) && l.line > 0);
       out.push({ file, lines });
     }
   }

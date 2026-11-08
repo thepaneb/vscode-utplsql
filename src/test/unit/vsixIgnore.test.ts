@@ -34,6 +34,10 @@ function isIgnored(rel: string, lines: string[]): boolean {
       );
       return re.test(posix);
     }
+    if (r.includes('*')) {
+      const re = new RegExp(`^${r.replace(/[.+^${}()|[\]\\]/g, '\\$&').replace(/\*/g, '[^/]*')}$`);
+      return re.test(posix);
+    }
     if (r.startsWith('*.')) return posix.endsWith(r.slice(1));
     if (r.endsWith('.*')) return posix.startsWith(`${r.slice(0, -1)}`);
     // Glob de prefixo (ex.: `.vscode-test*`) — cobre a família inteira e evita
@@ -78,13 +82,18 @@ test('vscodeignore: arquivos essenciais NÃO são excluídos', () => {
   const essenciais = [
     'dist/extension.mjs',
     'package.json',
-    'README.md',
+    'MARKETPLACE.md',
     'package.nls.json',
     'images/icon.png',
   ];
   for (const p of essenciais) {
     assert.ok(!isIgnored(p, lines), `${p} não deveria ser excluído`);
   }
+  // PRD-147: o VSIX publica apenas o README do Marketplace; os READMEs do
+  // GitHub (incluindo as 23 variantes) ficam fora do pacote.
+  assert.ok(isIgnored('README.md', lines));
+  assert.ok(isIgnored('README.pt-BR.md', lines));
+  assert.ok(isIgnored('images/marketplace-coverage.png', lines));
 });
 
 test('vscodeignore: pasta .opencode e variantes de ambiente cobertas', () => {

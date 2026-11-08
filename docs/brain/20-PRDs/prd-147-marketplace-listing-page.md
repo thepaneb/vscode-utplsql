@@ -2,14 +2,14 @@
 tipo: prd
 id: PRD-147
 aliases: [PRD-147]
-status: proposed
+status: in-progress
 titulo: "Marketplace: superfície dedicada, screenshots e metadata de conversão"
 versao: "0.20.0"
 versao_titulo: "0.20.0 — Observabilidade e desempenho"
 data: "2026-11-05"
 autor: "Gil Cleber Barboza"
-verificado: "2026-11-05"
-regras: []
+verificado: 2026-11-05
+regras: ["BR-DOC-003", "BR-PKG-002"]
 docs: ["CHANGELOG", "MARKETPLACE.md"]
 tags: [prd, marketplace, docs, distribution, ux]
 ---
@@ -449,25 +449,55 @@ Nenhuma setting/comando de runtime. Mudanças de distribuição:
   Marketplace é a vitrine. Evitar anunciar a mudança antes de a release estar
   publicada.
 
+## 9.1 Preparação entregue (2026-11-05)
+
+- Nota canônica `docs/brain/60-README/Marketplace (README).md` e
+  `MARKETPLACE.md` gerados; blocos de imagem comentados até a captura.
+- `MARKETPLACE.md` empacotado via `vsce --readme-path MARKETPLACE.md
+  --githubBranch main`; `.vscodeignore` exclui os READMEs do GitHub.
+- Metadata aplicada (description/keywords/categories/ícone 256/banner); o
+  `displayName` foi mantido como `utPLSQL Test Runner`.
+- Workspace de demonstração em
+  `src/test/fixtures/workspace-marketplace-screenshots/` e checklist em
+  `docs/brain/60-README/Checklist - captura do Marketplace.md`.
+- `npm run marketplace:check` valida manifesto/dimensões/tamanhos depois do
+  marcador `<!-- marketplace:images-ready -->`.
+- **Atualização (2026-11-07):** screenshots capturadas (`images/marketplace-*.png`
+e GIF), `npm run marketplace:check` verde e VSIX inspecionado
+(`extension/readme.md` do Marketplace, sem `README.*.md`). **Pendente apenas a
+inspeção pós-publish** da página/Version History e o baseline de métricas.
+
+## Análise de cobertura (pós-PRD)
+
+- **Unitários:** `marketplaceImages.test.ts` valida manifesto, PNG 1600×900,
+  tamanhos e referências; `packageTarget.test.ts` cobre os args do `vsce`;
+  `docsFidelity.test.ts` cobre claims/settings/links da página.
+- **Integração:** `npm run package` + inspeção do VSIX (`extension/readme.md`,
+  ausência de `README.*.md`) no gate de release.
+- **Matriz:** não aplicável ao eixo de banco; o workspace de captura usa o
+  demo no 23free.
+- **Ações:** capturar as imagens e rodar `marketplace:check`/`package` antes do
+  commit final.
+
 ## 10. Critérios de aceite
 
-- [ ] `docs/brain/60-README/Marketplace (README).md` existe e `brain:build` gera
+- [x] `docs/brain/60-README/Marketplace (README).md` existe e `brain:build` gera
       `MARKETPLACE.md` sem drift.
-- [ ] `npm run package` e `package-target` usam `--readme-path MARKETPLACE.md`.
-- [ ] O VSIX contém `extension/readme.md` com o conteúdo do Marketplace e **não**
+- [x] `npm run package` e `package-target` usam `--readme-path MARKETPLACE.md`.
+- [x] O VSIX contém `extension/readme.md` com o conteúdo do Marketplace e **não**
       contém `README.*.md`.
-- [ ] A página tem hero + screenshot/GIF + quick start + “por que usar” +
+- [x] A página tem hero + screenshot/GIF + quick start + “por que usar” +
       compatibilidade + troubleshooting + links de docs/suporte, com
       1.200–2.000 palavras.
-- [ ] 4–5 screenshots reais (e GIF opcional) com alt text, sem credenciais/PII,
+- [x] 4–5 screenshots reais (e GIF opcional) com alt text, sem credenciais/PII,
       otimizadas dentro do orçamento.
-- [ ] Metadata atualizada (description/keywords/categories/ícone/banner) e decisão
+- [x] Metadata atualizada (description/keywords/categories/ícone/banner) e decisão
       sobre `displayName` registrada.
 - [ ] Version History recente em inglês (0.19.0/0.18.0 traduzidas ou resumidas).
-- [ ] `MARKETPLACE.md` não contém `(sem tag)` nem mensagens de log em PT-BR.
-- [ ] `docs:check`, `docs:fidelity`, `brain:ci`, `brain:rules` e
+- [x] `MARKETPLACE.md` não contém `(sem tag)` nem mensagens de log em PT-BR.
+- [x] `docs:check`, `docs:fidelity`, `brain:ci`, `brain:rules` e
       `docs:features-check` verdes.
-- [ ] O `README.md` do GitHub e as 23 variantes continuam funcionando; a PRD-91
+- [x] O `README.md` do GitHub e as 23 variantes continuam funcionando; a PRD-91
       não é quebrada.
 - [ ] Após o publish, a página do Marketplace exibe imagens/links corretos e o
       Version History em inglês; baseline de métricas registrado.
@@ -523,7 +553,11 @@ esperado; ao concluir, criar as regras e atualizar a seção.
 
 <!-- brain:auto:start:conexoes -->
 - 🗺️ [[MOC - PRDs]]
+- 📐 Regras: [[BR-DOC-003 - Marketplace usa MARKETPLACE.md gerado e README do GitHub segue como referencia|BR-DOC-003]] · [[BR-PKG-002 - VSIX publica apenas o README do Marketplace|BR-PKG-002]]
 - 🔗 PRDs relacionados: [[prd-83-vsix-package-hygiene|PRD-83]] · [[prd-91-doc-parity-localized-distribution|PRD-91]] · [[prd-98-docs-anti-drift|PRD-98]] · [[prd-122-marketplace-trust-metadata|PRD-122]] · [[prd-141-onboarding-walkthrough-accessibility|PRD-141]]
-- 🔗 Mesma versão (0.20.0): [[prd-101-connection-pool-lifecycle|PRD-101]] · [[prd-102-trace-and-perf-instrumentation|PRD-102]] · [[prd-103-incremental-source-reindex|PRD-103]] · [[prd-106-perf-harness|PRD-106]] · [[prd-107-unprivileged-fixture|PRD-107]] · [[prd-120-lean-activation-lazy-setup|PRD-120]] · [[prd-125-thick-full-matrix-ci|PRD-125]] · [[prd-146-attestations-publish|PRD-146]]
-- 🚀 ⬅️ release anterior: [[prd-127-vscode-floor-1-125|PRD-127 (0.19.0)]] · ➡️ próxima release: [[prd-128-event-bus-internal|PRD-128 (0.21.0)]]
+- 🔗 Mesma versão (0.20.0): [[prd-146-attestations-publish|PRD-146]]
+- 🎯 RNF1 — **Sem duplicação manual**: `MARKETPLACE.md` é uma nota canônica do → [[BR-DOC-003 - Marketplace usa MARKETPLACE.md gerado e README do GitHub segue como referencia|BR-DOC-003]]
+- 🎯 RNF6 — **Manutenibilidade**: uma única fonte por superfície; o GitHub não → [[BR-DOC-003 - Marketplace usa MARKETPLACE.md gerado e README do GitHub segue como referencia|BR-DOC-003]]
+- 🎯 RNF7 — **Compatibilidade**: `vsce` atual; `MARKETPLACE.md` funciona no → [[BR-PKG-002 - VSIX publica apenas o README do Marketplace|BR-PKG-002]]
+- 🚀 ⬅️ release anterior: [[prd-127-vscode-floor-1-125|PRD-127 (0.19.0)]] · ➡️ próxima release: [[prd-148-execution-state-reliability|PRD-148 (0.20.1)]]
 <!-- brain:auto:end -->

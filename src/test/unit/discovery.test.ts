@@ -513,6 +513,12 @@ test('discoverSchemasFromFolders: padrao sem {schema} retorna vazio', async () =
   assert.deepStrictEqual(result, []);
 });
 
+test('discoverSchemasFromFolders: padrao com traversal retorna vazio', async () => {
+  const folders = [{ uri: { fsPath: '/root' }, name: 'root', index: 0 }] as never;
+  const result = await discoverSchemasFromFolders(folders, '../{schema}/**');
+  assert.deepStrictEqual(result, []);
+});
+
 test('discoverSchemasFromFolders: base no nivel da raiz ({schema}/**)', async () => {
   const { __setMockDirectoryEntries, __resetMockDirectoryEntries } = await import(
     '../vscode-stub.js'

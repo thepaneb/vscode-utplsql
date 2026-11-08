@@ -66,6 +66,9 @@ de `executeRun`/`executeRunOracle`, eliminando condicionais aninhados (`exportin
 ### RF2 — Dispatcher
 - `executeRun` seleciona a estratégia a partir de `(coverage, exportReporter, debug)`
   e delega; o modo debug pode reusar `NormalRun` com hooks.
+- O dispatcher deve preservar a serialização de runs e o `outcome`
+  (`completed|cancelled|timedOut`) introduzidos pela PRD-148; a refatoração não
+  pode reintroduzir sobreposição de buffers.
 
 ### RF3 — Testabilidade
 - Estratégias testáveis isoladamente sem `vscode`; comportamento observável
@@ -131,7 +134,7 @@ condicionais") com `prds: ["PRD-129"]`, `implementacao:` e `testes:`. Enquanto
 
 <!-- brain:auto:start:conexoes -->
 - 🗺️ [[MOC - PRDs]]
-- 🔗 PRDs relacionados: [[prd-76-reporter-export|PRD-76]] · [[prd-78-random-test-order|PRD-78]] · [[prd-79-coverage-scope|PRD-79]] · [[prd-111-decompose-oracle-runner|PRD-111]]
+- 🔗 PRDs relacionados: [[prd-76-reporter-export|PRD-76]] · [[prd-78-random-test-order|PRD-78]] · [[prd-79-coverage-scope|PRD-79]] · [[prd-111-decompose-oracle-runner|PRD-111]] · [[prd-148-execution-state-reliability|PRD-148]]
 - 🔗 Mesma versão (0.21.0): [[prd-128-event-bus-internal|PRD-128]] · [[prd-130-config-validation-typed-errors|PRD-130]] · [[prd-131-discovery-resilience-cache|PRD-131]] · [[prd-137-wallet-password-binding|PRD-137]] · [[prd-138-organization-strategy-pattern|PRD-138]] · [[prd-139-state-store-slicing-lru|PRD-139]]
-- 🚀 ⬅️ release anterior: [[prd-147-marketplace-listing-page|PRD-147 (0.20.0)]] · ➡️ próxima release: [[prd-88-locale-aware-formatting|PRD-88 (0.22.0)]]
+- 🚀 ⬅️ release anterior: [[prd-150-thick-full-true-pool-recovery|PRD-150 (0.20.1)]] · ➡️ próxima release: [[prd-88-locale-aware-formatting|PRD-88 (0.22.0)]]
 <!-- brain:auto:end -->

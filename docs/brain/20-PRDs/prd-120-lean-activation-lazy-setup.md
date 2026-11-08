@@ -2,14 +2,15 @@
 tipo: prd
 id: PRD-120
 aliases: [PRD-120]
-status: proposed
+status: completed
 titulo: "Ativação enxuta e validação de setup preguiçosa"
 versao: "0.20.0"
+docs: ["CHANGELOG", "README", "wiki/Architecture.md", "wiki/Diagnostics-and-quick-fix.md"]
 data: "2026-10-13"
 autor: "Gil Cleber Barboza"
 versao_titulo: "0.20.0 — Observabilidade e desempenho"
-verificado: 2026-10-30
-regras: []
+verificado: 2026-11-05
+regras: ["BR-CONN-022"]
 tags: [prd]
 ---
 
@@ -220,11 +221,27 @@ e memoizada”) — com `prds: ["PRD-120"]`, `implementacao:` (`src/extension.ts
 ativação/probe + `dbPaths.test.ts`). Revisar `SEC-010` para citar explicitamente
 que a ativação tampouco conecta. Enquanto `proposed`, `regras: []`.
 
+## Análise de cobertura (pós-PRD)
+
+- **Unitários:** manifesto sem `onStartupFinished`/glob `.sql`; ativação sem validação; primeira interação dispara uma única vez; memoização/invalidação cobertas em `extensionActivation.test.ts`.
+- **Integração:** `dbPaths.test.ts` preserva árvore/diagnóstico; a suíte de integração ativa o host e confirma que o refresh não abre validação. O caso “workspace sem PL/SQL não ativa” é verificado pelo manifesto (o harness sempre ativa a extensão).
+- **Matriz:** 23free smoke; sem comportamento específico de banco — demais versões não aplicáveis.
+- **Ações:** nenhuma lacuna aberta.
+
+## Impacto nas docs
+
+`CHANGELOG`, README (nota do vault), `wiki/Architecture.md` e `wiki/Diagnostics-and-quick-fix.md` citam `PRD-120`.
+
 ## Conexões
 
 <!-- brain:auto:start:conexoes -->
 - 🗺️ [[MOC - PRDs]]
+- 📐 Regras: [[BR-CONN-022 - Ativacao nao abre conexao e validacao de setup e preguicosa|BR-CONN-022]]
 - 🔗 PRDs relacionados: [[prd-94-vscode-floor-1-101|PRD-94]] · [[prd-101-connection-pool-lifecycle|PRD-101]] · [[prd-102-trace-and-perf-instrumentation|PRD-102]] · [[prd-106-perf-harness|PRD-106]] · [[prd-107-unprivileged-fixture|PRD-107]] · [[prd-109-language-identity|PRD-109]]
-- 🔗 Mesma versão (0.20.0): [[prd-101-connection-pool-lifecycle|PRD-101]] · [[prd-102-trace-and-perf-instrumentation|PRD-102]] · [[prd-103-incremental-source-reindex|PRD-103]] · [[prd-106-perf-harness|PRD-106]] · [[prd-107-unprivileged-fixture|PRD-107]] · [[prd-125-thick-full-matrix-ci|PRD-125]] · [[prd-146-attestations-publish|PRD-146]] · [[prd-147-marketplace-listing-page|PRD-147]]
-- 🚀 ⬅️ release anterior: [[prd-127-vscode-floor-1-125|PRD-127 (0.19.0)]] · ➡️ próxima release: [[prd-128-event-bus-internal|PRD-128 (0.21.0)]]
+- 🔗 Mesma versão (0.20.0): [[prd-146-attestations-publish|PRD-146]] · [[prd-147-marketplace-listing-page|PRD-147]]
+- 🎯 RNF1 — **Zero** conexões Oracle durante a ativação (garantido por teste). → [[BR-CONN-022 - Ativacao nao abre conexao e validacao de setup e preguicosa|BR-CONN-022]]
+- 🎯 RNF2 — Ativação sem conexão mensurável pelo harness da PRD-106 (baseline → [[BR-CONN-022 - Ativacao nao abre conexao e validacao de setup e preguicosa|BR-CONN-022]]
+- 🎯 RNF3 — Nenhuma mudança no comportamento da árvore/CodeLens ao abrir workspace → [[BR-CONN-022 - Ativacao nao abre conexao e validacao de setup e preguicosa|BR-CONN-022]]
+- 🎯 RNF4 — O diagnóstico segue aparecendo **no máximo uma vez** por sessão. → [[BR-CONN-022 - Ativacao nao abre conexao e validacao de setup e preguicosa|BR-CONN-022]]
+- 🚀 ⬅️ release anterior: [[prd-127-vscode-floor-1-125|PRD-127 (0.19.0)]] · ➡️ próxima release: [[prd-148-execution-state-reliability|PRD-148 (0.20.1)]]
 <!-- brain:auto:end -->

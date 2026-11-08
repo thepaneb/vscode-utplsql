@@ -192,6 +192,10 @@ Ekstensi terhubung langsung ke Oracle, membaca laporan (JUnit + Coverage) lalu m
 | `utplsql.oraclePoolMax` | `10` | Jumlah maksimum koneksi di pool runner Oracle (node-oracledb). |
 | `utplsql.oraclePoolIncrement` | `1` | Kenaikan saat memperluas pool runner Oracle (node-oracledb). |
 | `utplsql.oraclePoolPingInterval` | `60` | Detik antara pemeriksaan kesehatan koneksi idle di pool (node-oracledb). `0` = ping pada setiap checkout. |
+| `utplsql.oraclePoolCloseAfterRun` | `true` | Closes idle Oracle pool connections when the last run, coverage, export or discovery operation finishes. |
+| `utplsql.trace` | `false` | Emits verbose per-event trace lines in the utPLSQL output channel. |
+| `utplsql.perf.enabled` | `false` | Measures discovery, tree build, run, polling and XML parsing phases. |
+| `utplsql.perf.reportFile` | `""` | Appends each perf measurement as one JSON line to this file. |
 | `utplsql.oracleClientMode` | `thin` | Mode driver: `thin` (JavaScript murni, tanpa klien native) atau `thick` (memakai Oracle Instant Client). Gunakan `thick` hanya untuk database yang memerlukan NNE (Native Network Encryption); perlu `utplsql.oracleClientLibDir` dan memuat ulang jendela. |
 | `utplsql.oracleClientLibDir` | `""` | Direktori Oracle Instant Client. Wajib saat `utplsql.oracleClientMode` bernilai `thick` (mis. `C:\oracle\instantclient_23_5`). Fallback: `ORACLE_CLIENT_LIB_DIR`. |
 | Debug tidak berhenti di breakpoint | Paket tanpa info debug atau grant debug tidak ada | Kompilasi dengan `PLSQL_OPTIMIZE_LEVEL <= 1` (atau `ALTER PACKAGE ... COMPILE DEBUG PLSQL_OPTIMIZE_LEVEL = 1`) dan berikan `DEBUG CONNECT SESSION` + `EXECUTE ON SYS.DBMS_DEBUG`. Breakpoint di `test_*.pkb` mungkin tidak berhenti (utPLSQL menjalankan test via SQL dinamis); pasang di kode yang diuji. |

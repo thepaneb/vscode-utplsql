@@ -4,7 +4,7 @@
 
 | Campo | Valor |
 |---|---|
-| Status | Proposto |
+| Status | Em desenvolvimento |
 | Autor | Gil Cleber Barboza |
 | Data | 2026-11-05 |
 | Componente | Distribuição (Marketplace) + documentação gerada |
@@ -436,25 +436,55 @@ Nenhuma setting/comando de runtime. Mudanças de distribuição:
   Marketplace é a vitrine. Evitar anunciar a mudança antes de a release estar
   publicada.
 
+## 9.1 Preparação entregue (2026-11-05)
+
+- Nota canônica `docs/brain/60-README/Marketplace (README).md` e
+  `MARKETPLACE.md` gerados; blocos de imagem comentados até a captura.
+- `MARKETPLACE.md` empacotado via `vsce --readme-path MARKETPLACE.md
+  --githubBranch main`; `.vscodeignore` exclui os READMEs do GitHub.
+- Metadata aplicada (description/keywords/categories/ícone 256/banner); o
+  `displayName` foi mantido como `utPLSQL Test Runner`.
+- Workspace de demonstração em
+  `src/test/fixtures/workspace-marketplace-screenshots/` e checklist em
+  `docs/brain/60-README/Checklist - captura do Marketplace.md`.
+- `npm run marketplace:check` valida manifesto/dimensões/tamanhos depois do
+  marcador `<!-- marketplace:images-ready -->`.
+- **Atualização (2026-11-07):** screenshots capturadas (`images/marketplace-*.png`
+e GIF), `npm run marketplace:check` verde e VSIX inspecionado
+(`extension/readme.md` do Marketplace, sem `README.*.md`). **Pendente apenas a
+inspeção pós-publish** da página/Version History e o baseline de métricas.
+
+## Análise de cobertura (pós-PRD)
+
+- **Unitários:** `marketplaceImages.test.ts` valida manifesto, PNG 1600×900,
+  tamanhos e referências; `packageTarget.test.ts` cobre os args do `vsce`;
+  `docsFidelity.test.ts` cobre claims/settings/links da página.
+- **Integração:** `npm run package` + inspeção do VSIX (`extension/readme.md`,
+  ausência de `README.*.md`) no gate de release.
+- **Matriz:** não aplicável ao eixo de banco; o workspace de captura usa o
+  demo no 23free.
+- **Ações:** capturar as imagens e rodar `marketplace:check`/`package` antes do
+  commit final.
+
 ## 10. Critérios de aceite
 
-- [ ] `docs/brain/60-README/Marketplace (README).md` existe e `brain:build` gera
+- [x] `docs/brain/60-README/Marketplace (README).md` existe e `brain:build` gera
       `MARKETPLACE.md` sem drift.
-- [ ] `npm run package` e `package-target` usam `--readme-path MARKETPLACE.md`.
-- [ ] O VSIX contém `extension/readme.md` com o conteúdo do Marketplace e **não**
+- [x] `npm run package` e `package-target` usam `--readme-path MARKETPLACE.md`.
+- [x] O VSIX contém `extension/readme.md` com o conteúdo do Marketplace e **não**
       contém `README.*.md`.
-- [ ] A página tem hero + screenshot/GIF + quick start + “por que usar” +
+- [x] A página tem hero + screenshot/GIF + quick start + “por que usar” +
       compatibilidade + troubleshooting + links de docs/suporte, com
       1.200–2.000 palavras.
-- [ ] 4–5 screenshots reais (e GIF opcional) com alt text, sem credenciais/PII,
+- [x] 4–5 screenshots reais (e GIF opcional) com alt text, sem credenciais/PII,
       otimizadas dentro do orçamento.
-- [ ] Metadata atualizada (description/keywords/categories/ícone/banner) e decisão
+- [x] Metadata atualizada (description/keywords/categories/ícone/banner) e decisão
       sobre `displayName` registrada.
 - [ ] Version History recente em inglês (0.19.0/0.18.0 traduzidas ou resumidas).
-- [ ] `MARKETPLACE.md` não contém `(sem tag)` nem mensagens de log em PT-BR.
-- [ ] `docs:check`, `docs:fidelity`, `brain:ci`, `brain:rules` e
+- [x] `MARKETPLACE.md` não contém `(sem tag)` nem mensagens de log em PT-BR.
+- [x] `docs:check`, `docs:fidelity`, `brain:ci`, `brain:rules` e
       `docs:features-check` verdes.
-- [ ] O `README.md` do GitHub e as 23 variantes continuam funcionando; a PRD-91
+- [x] O `README.md` do GitHub e as 23 variantes continuam funcionando; a PRD-91
       não é quebrada.
 - [ ] Após o publish, a página do Marketplace exibe imagens/links corretos e o
       Version History em inglês; baseline de métricas registrado.

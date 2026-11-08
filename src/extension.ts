@@ -1,3 +1,5 @@
+import * as fs from 'node:fs/promises';
+import * as path from 'node:path';
 import * as vscode from 'vscode';
 import { createAutoRunner } from './autoRun';
 import { UtplsqlCodeLensProvider } from './codelens';
@@ -17,16 +19,24 @@ import {
   migrateLegacyProfiles,
 } from './connectionProfiles';
 import { registerDbSourceProvider } from './dbSourceProvider';
-import { createDebounced } from './debounce';
+import { createPerKeyDebouncer } from './debounce';
 import { DecorationManager } from './decorations';
 import {
   buildLanguageSelector,
   buildWatcherGlob,
   currentLanguageContributions,
+  isPlsqlDocument,
   workspaceAssociations,
 } from './languageIdentity';
-import { formatLogLine, setLogSink } from './logger';
-import { closeOraclePool, invalidatePool } from './oracleRunner';
+import { formatLogLine, logger, setLogSink, setTraceEnabled } from './logger';
+import { beginOracleActivity, closeOraclePool, invalidatePool, setPerfProbe } from './oracleRunner';
+import {
+  createPerfProbe,
+  formatPerfLine,
+  type PerfProbe,
+  type PerfSample,
+  resolvePerfReportPath,
+} from './perf';
 import { setupValidator, UtplsqlCodeActionProvider } from './quickfix';
 import { TestStateManager } from './state';
 import { UtplsqlStatusBar } from './statusBar';
@@ -53,30 +63,129 @@ export function activate(context: vscode.ExtensionContext) {
   // Log de diagnóstico em um LogOutputChannel (nível controlado pelo usuário).
   const log = vscode.window.createOutputChannel('utPLSQL', { log: true });
   context.subscriptions.push(log);
-  setLogSink((level, msg, ctx) => log[level](formatLogLine(msg, ctx)));
+  setLogSink((level, msg, ctx) => {
+    const line = formatLogLine(msg, ctx);
+    if (level === 'trace') log.trace(line);
+    else log[level](line);
+  });
+
+  // PRD-102: trace e perf são opt-in. O probe é estável (proxy) para o
+  // refresher que já foi criado; a configuração pode recriá-lo sem reiniciar.
+  setTraceEnabled(readConfig().trace);
+  const appendPerf = async (sample: PerfSample): Promise<void> => {
+    const cfg = readConfig();
+    const raw = cfg.perfReportFile.trim();
+    if (!cfg.perfEnabled || !raw) return;
+    const root = vscode.workspace.workspaceFolders?.[0]?.uri.fsPath ?? process.cwd();
+    // Só JSONL e, se relativo, contido na raiz do workspace (SEC-01).
+    const target = resolvePerfReportPath(raw, root);
+    if (!target) {
+      logger.warn('perf: reportFile inválido (use .jsonl dentro do workspace)', { file: raw });
+      return;
+    }
+    try {
+      await fs.mkdir(path.dirname(target), { recursive: true });
+      await fs.appendFile(target, `${formatPerfLine(sample)}\n`, 'utf8');
+    } catch (e) {
+      logger.warn('perf: falha ao gravar o relatório', { error: String(e) });
+    }
+  };
+  const buildPerfProbe = (): PerfProbe =>
+    createPerfProbe({
+      enabled: readConfig().perfEnabled,
+      sink: (sample) => {
+        logger.info('perf', {
+          phase: sample.phase,
+          ms: sample.ms,
+          ts: sample.ts,
+          ...(sample.meta ? { meta: sample.meta } : {}),
+        });
+        void appendPerf(sample);
+      },
+    });
+  let perfProbe = buildPerfProbe();
+  const perfProxy: PerfProbe = {
+    get enabled() {
+      return perfProbe.enabled;
+    },
+    start: (phase) => perfProbe.start(phase),
+    record: (phase, ms, meta) => perfProbe.record(phase, ms, meta),
+  };
+  setPerfProbe(perfProxy);
 
   initSecretStorage(context.secrets);
   const profilesReady = (async () => {
     await migrateLegacyProfiles();
     await hydrateProfilePasswords();
-  })();
+  })().catch((e) => {
+    // Falha de SecretStorage/settings não pode impedir o refresh inicial nem o
+    // restore do último resultado (BUG-26).
+    logger.warn('activation: falha ao preparar os perfis', { error: String(e) });
+  });
 
   const controller = vscode.tests.createTestController('utplsql', 'utPLSQL');
   context.subscriptions.push(controller);
 
-  const refresh = createRefresher(controller, state);
+  const refresh = createRefresher(controller, state, perfProxy);
+
+  // PRD-120: a validação de setup é preguiçosa, memoizada e nunca roda no
+  // `activate()`. O primeiro uso relevante (editor PL/SQL, refresh manual,
+  // expansão da árvore ou execução) dispara uma única checagem por sessão.
+  let setupValidationPromise: Promise<void> | undefined;
+  let setupValidationDone = false;
+  let setupValidationScheduled = false;
+
+  const runSetupValidation = (): Promise<void> => {
+    if (setupValidationDone) return Promise.resolve();
+    if (setupValidationPromise) return setupValidationPromise;
+    setupValidationScheduled = true;
+    setupValidationPromise = (async () => {
+      const activity = beginOracleActivity();
+      try {
+        const [activationDiags, installDiags] = await Promise.all([
+          setupValidator.validateOnActivation(),
+          setupValidator.validateUtplsqlInstall(),
+        ]);
+        setupValidator.applyDiagnostics([...activationDiags, ...installDiags]);
+      } finally {
+        await activity.end();
+      }
+    })()
+      .catch((e) => {
+        logger.warn('setup validation failed', { error: String(e) });
+      })
+      .finally(() => {
+        setupValidationDone = true;
+        setupValidationScheduled = false;
+        setupValidationPromise = undefined;
+      });
+    return setupValidationPromise;
+  };
+
+  const scheduleSetupValidation = (): void => {
+    if (setupValidationDone || setupValidationScheduled) return;
+    void runSetupValidation();
+  };
+
+  const refreshFromUser = async (): Promise<void> => {
+    scheduleSetupValidation();
+    await refresh();
+  };
+
   controller.resolveHandler = async (item) => {
     if (!item) {
+      // Carga inicial: não é interação do usuário (RNF1).
       await refresh();
       return;
     }
+    scheduleSetupValidation();
     // Resolução lazy por nível (PRD-75): schema → package → suite.
     if (item.id.startsWith('schema:')) await resolveSchemaNode(controller, state, item);
     else if (item.id.startsWith('package:')) resolvePackageNode(controller, state, item);
     else if (item.id.startsWith('suite:')) resolveSuiteNode(controller, state, item);
   };
   controller.refreshHandler = async () => {
-    await refresh();
+    await refreshFromUser();
   };
 
   const deps: CommandDeps = {
@@ -84,7 +193,7 @@ export function activate(context: vscode.ExtensionContext) {
     state,
     getStatusBar: () => statusBar,
     getDecorationManager: () => decorationManager,
-    refresh,
+    refresh: refreshFromUser,
   };
 
   const run = registerRunCommands(context, deps);
@@ -93,13 +202,19 @@ export function activate(context: vscode.ExtensionContext) {
   state.runProfile = controller.createRunProfile(
     'Run',
     vscode.TestRunProfileKind.Run,
-    (request, token) => run.runWithProgress(request, token, false),
+    (request, token) => {
+      scheduleSetupValidation();
+      return run.runWithProgress(request, token, false);
+    },
     true,
   );
   state.coverageProfile = controller.createRunProfile(
     'Run with Coverage',
     vscode.TestRunProfileKind.Coverage,
-    (request, token) => run.runWithProgress(request, token, true),
+    (request, token) => {
+      scheduleSetupValidation();
+      return run.runWithProgress(request, token, true);
+    },
     true,
   );
   state.coverageProfile.loadDetailedCoverage = async (_run, fc) =>
@@ -148,6 +263,12 @@ export function activate(context: vscode.ExtensionContext) {
       }
       if (!e.affectsConfiguration('utplsql')) return;
       invalidatePool();
+      // PRD-120 RF3: mudança de configuração invalida o memo da validação.
+      setupValidationDone = false;
+      setupValidationScheduled = false;
+      // PRD-102: trace/perf também são lidos por configuração.
+      setTraceEnabled(readConfig().trace);
+      perfProbe = buildPerfProbe();
     }),
   );
 
@@ -166,16 +287,14 @@ export function activate(context: vscode.ExtensionContext) {
     ),
   );
 
-  void (async () => {
-    const [activationDiags, installDiags] = await Promise.all([
-      setupValidator.validateOnActivation(),
-      setupValidator.validateUtplsqlInstall(),
-    ]);
-    setupValidator.applyDiagnostics([...activationDiags, ...installDiags]);
-  })();
-
   context.subscriptions.push(
     vscode.window.onDidChangeActiveTextEditor((editor) => {
+      if (
+        editor?.document?.fileName &&
+        isPlsqlDocument(editor.document, readConfig().discoveryLanguageIds)
+      ) {
+        scheduleSetupValidation();
+      }
       if (editor && decorationManager?.hasResults()) {
         decorationManager.applyToVisibleEditors();
       }
@@ -190,14 +309,44 @@ export function activate(context: vscode.ExtensionContext) {
       workspaceAssociations(),
     ),
   );
-  const scheduleRefresh = createDebounced(
-    () => void refresh(),
+  // PRD-103: debounce por URI + reindex incremental. Rajadas grandes caem no
+  // full refresh; tag/schema também (no próprio refresher).
+  const pendingWatcherActions = new Map<string, 'change' | 'delete'>();
+  const perKeyRefresh = createPerKeyDebouncer(
+    (key) => {
+      const action = pendingWatcherActions.get(key) ?? 'change';
+      pendingWatcherActions.delete(key);
+      if (perKeyRefresh.size > 8) {
+        perKeyRefresh.cancel();
+        pendingWatcherActions.clear();
+        void refresh();
+        return;
+      }
+      const uri = vscode.Uri.parse(key);
+      if (action === 'delete') void refresh.removeUri(uri);
+      else void refresh.refreshUri(uri);
+    },
     () => readConfig().refreshDebounceMs,
   );
-  watcher.onDidCreate(() => scheduleRefresh.schedule());
-  watcher.onDidChange(() => scheduleRefresh.schedule());
-  watcher.onDidDelete(() => scheduleRefresh.schedule());
-  context.subscriptions.push(watcher, { dispose: () => scheduleRefresh.cancel() });
+  const scheduleWatcher = (kind: 'change' | 'delete', uri: unknown): void => {
+    const key = (uri as { toString?: () => string } | undefined)?.toString?.();
+    // Harnesses antigos disparam o watcher sem URI: full refresh é o fallback.
+    if (!key) {
+      void refresh();
+      return;
+    }
+    pendingWatcherActions.set(key, kind);
+    perKeyRefresh.schedule(key);
+  };
+  watcher.onDidCreate((uri) => scheduleWatcher('change', uri));
+  watcher.onDidChange((uri) => scheduleWatcher('change', uri));
+  watcher.onDidDelete((uri) => scheduleWatcher('delete', uri));
+  context.subscriptions.push(watcher, {
+    dispose: () => {
+      perKeyRefresh.cancel();
+      pendingWatcherActions.clear();
+    },
+  });
 
   // Auto-run on save (watch mode, PRD-50). Default `off`.
   const autoRunner = createAutoRunner(

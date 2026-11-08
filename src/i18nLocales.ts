@@ -86,6 +86,7 @@ export const ptBr: Record<string, string> = {
     '[aviso] Reporter adicional "{name}" não encontrado no banco; ignorado.',
   'runner.noResults': 'Sem relatório de resultados.',
   'runner.noTests': 'Nenhum teste utPLSQL encontrado para executar.',
+  'runner.timedOut': 'Execução interrompida por timeout.',
   'runner.noJunitResult': '[aviso] Nenhum resultado JUnit encontrado para "{id}".',
   'runner.noJunitResultPkg': ' packageName esperado: {package}',
   'runner.coverNoReport':
@@ -312,6 +313,7 @@ export const en: Record<string, string> = {
     '[warning] Additional reporter "{name}" not found in the database; ignored.',
   'runner.noResults': 'No results report.',
   'runner.noTests': 'No utPLSQL tests found to run.',
+  'runner.timedOut': 'The run timed out.',
   'runner.noJunitResult': '[warning] No JUnit result found for "{id}".',
   'runner.noJunitResultPkg': ' expected packageName: {package}',
   'runner.coverNoReport':
@@ -541,6 +543,7 @@ export const es: Record<string, string> = {
     '[aviso] Reporter adicional "{name}" no encontrado en la base; ignorado.',
   'runner.noResults': 'Sin informe de resultados.',
   'runner.noTests': 'No se encontraron pruebas utPLSQL para ejecutar.',
+  'runner.timedOut': 'La ejecución se interrumpió por tiempo de espera.',
   'runner.noJunitResult': '[aviso] No se encontró un resultado JUnit para "{id}".',
   'runner.noJunitResultPkg': ' packageName esperado: {package}',
   'runner.coverNoReport':
@@ -762,6 +765,7 @@ export const zhCn: Record<string, string> = {
   'runner.reporterUnknown': '[警告] 数据库中未找到附加报告器 "{name}"；已忽略。',
   'runner.noResults': '没有结果报告。',
   'runner.noTests': '未找到可运行的 utPLSQL 测试。',
+  'runner.timedOut': '运行超时。',
   'runner.noJunitResult': '[警告] 未找到 "{id}" 的 JUnit 结果。',
   'runner.noJunitResultPkg': ' 期望的 packageName：{package}',
   'runner.coverNoReport':
@@ -984,6 +988,7 @@ export const ja: Record<string, string> = {
     '[警告] 追加レポーター "{name}" がデータベースに見つかりません。無視します。',
   'runner.noResults': '結果レポートがありません。',
   'runner.noTests': '実行する utPLSQL テストが見つかりません。',
+  'runner.timedOut': '実行がタイムアウトしました。',
   'runner.noJunitResult': '[警告] 「{id}」の JUnit 結果が見つかりません。',
   'runner.noJunitResultPkg': ' 期待される packageName: {package}',
   'runner.coverNoReport':
@@ -1213,6 +1218,7 @@ export const de: Record<string, string> = {
     '[Warnung] Zusätzlicher Reporter "{name}" nicht in der Datenbank gefunden; ignoriert.',
   'runner.noResults': 'Kein Ergebnisbericht.',
   'runner.noTests': 'Keine utPLSQL-Tests zum Ausführen gefunden.',
+  'runner.timedOut': 'Die Ausführung wurde wegen Zeitüberschreitung abgebrochen.',
   'runner.noJunitResult': '[Warnung] Kein JUnit-Ergebnis für „{id}" gefunden.',
   'runner.noJunitResultPkg': ' erwarteter packageName: {package}',
   'runner.coverNoReport':
@@ -1445,6 +1451,7 @@ export const fr: Record<string, string> = {
     '[avertissement] Reporter supplémentaire "{name}" introuvable dans la base ; ignoré.',
   'runner.noResults': 'Aucun rapport de résultats.',
   'runner.noTests': 'Aucun test utPLSQL à exécuter.',
+  'runner.timedOut': 'L’exécution a été interrompue par expiration du délai.',
   'runner.noJunitResult': '[avertissement] Aucun résultat JUnit trouvé pour « {id} ».',
   'runner.noJunitResultPkg': ' packageName attendu : {package}',
   'runner.coverNoReport':
@@ -1667,6 +1674,7 @@ export const zhTw: Record<string, string> = {
   'runner.reporterUnknown': '[警告] 資料庫中未找到附加報告器 "{name}"；已忽略。',
   'runner.noResults': '沒有結果報告。',
   'runner.noTests': '未找到可執行的 utPLSQL 測試。',
+  'runner.timedOut': '執行逾時。',
   'runner.noJunitResult': '[警告] 找不到「{id}」的 JUnit 結果。',
   'runner.noJunitResultPkg': ' 預期的 packageName：{package}',
   'runner.coverNoReport':
@@ -1890,6 +1898,7 @@ export const it: Record<string, string> = {
     '[avviso] Reporter aggiuntivo "{name}" non trovato nel database; ignorato.',
   'runner.noResults': 'Nessun report dei risultati.',
   'runner.noTests': 'Nessun test utPLSQL da eseguire.',
+  'runner.timedOut': 'Esecuzione interrotta per timeout.',
   'runner.noJunitResult': '[avviso] Nessun risultato JUnit trovato per "{id}".',
   'runner.noJunitResultPkg': ' packageName atteso: {package}',
   'runner.coverNoReport':
@@ -2118,6 +2127,7 @@ export const ko: Record<string, string> = {
     '[경고] 데이터베이스에서 추가 리포터 "{name}"를 찾을 수 없습니다. 무시합니다.',
   'runner.noResults': '결과 보고서가 없습니다.',
   'runner.noTests': '실행할 utPLSQL 테스트를 찾을 수 없습니다.',
+  'runner.timedOut': '시간 초과로 실행이 중단되었습니다.',
   'runner.noJunitResult': '[경고] "{id}"의 JUnit 결과를 찾을 수 없습니다.',
   'runner.noJunitResultPkg': ' 예상 packageName: {package}',
   'runner.coverNoReport':
@@ -2342,6 +2352,7 @@ export const ru: Record<string, string> = {
     '[предупреждение] Дополнительный репортёр "{name}" не найден в базе; пропущен.',
   'runner.noResults': 'Нет отчёта о результатах.',
   'runner.noTests': 'Не найдено тестов utPLSQL для запуска.',
+  'runner.timedOut': 'Выполнение прервано по тайм-ауту.',
   'runner.noJunitResult': '[предупреждение] Результат JUnit для «{id}» не найден.',
   'runner.noJunitResultPkg': ' ожидаемый packageName: {package}',
   'runner.coverNoReport':
@@ -2566,6 +2577,7 @@ export const tr: Record<string, string> = {
   'runner.reporterUnknown': '[uyarı] Ek reporter "{name}" veritabanında bulunamadı; yok sayıldı.',
   'runner.noResults': 'Sonuç raporu yok.',
   'runner.noTests': 'Çalıştırılacak utPLSQL testi bulunamadı.',
+  'runner.timedOut': 'Çalışma zaman aşımı nedeniyle durduruldu.',
   'runner.noJunitResult': '[uyarı] "{id}" için JUnit sonucu bulunamadı.',
   'runner.noJunitResultPkg': ' beklenen packageName: {package}',
   'runner.coverNoReport':
@@ -2791,6 +2803,7 @@ export const pl: Record<string, string> = {
     '[ostrzeżenie] Dodatkowy reporter "{name}" nie znaleziony w bazie; pominięto.',
   'runner.noResults': 'Brak raportu wyników.',
   'runner.noTests': 'Nie znaleziono testów utPLSQL do uruchomienia.',
+  'runner.timedOut': 'Wykonanie przerwane z powodu przekroczenia limitu czasu.',
   'runner.noJunitResult': '[ostrzeżenie] Nie znaleziono wyniku JUnit dla „{id}”.',
   'runner.noJunitResultPkg': ' oczekiwany packageName: {package}',
   'runner.coverNoReport':
@@ -3020,6 +3033,7 @@ export const cs: Record<string, string> = {
     '[varování] Doplňkový reporter "{name}" nebyl v databázi nalezen; přeskočeno.',
   'runner.noResults': 'Žádná zpráva o výsledcích.',
   'runner.noTests': 'Nebyly nalezeny žádné testy utPLSQL ke spuštění.',
+  'runner.timedOut': 'Spuštění bylo přerušeno z důvodu vypršení časového limitu.',
   'runner.noJunitResult': '[varování] Pro „{id}“ nebyl nalezen výsledek JUnit.',
   'runner.noJunitResultPkg': ' očekávaný packageName: {package}',
   'runner.coverNoReport':
@@ -3248,6 +3262,7 @@ export const hu: Record<string, string> = {
     '[figyelem] A(z) "{name}" kiegészítő reporter nem található az adatbázisban; kihagyva.',
   'runner.noResults': 'Nincs eredményjelentés.',
   'runner.noTests': 'Nem található futtatható utPLSQL teszt.',
+  'runner.timedOut': 'A futás időtúllépés miatt megszakadt.',
   'runner.noJunitResult': '[figyelmeztetés] Nem található JUnit-eredmény ehhez: „{id}”.',
   'runner.noJunitResultPkg': ' várt packageName: {package}',
   'runner.coverNoReport':
@@ -3505,6 +3520,7 @@ export const bg: Record<string, string> = {
     '[предупреждение] Допълнителен reporter "{name}" не е намерен в базата; пропуснат.',
   'runner.noResults': 'Няма отчет за резултатите.',
   'runner.noTests': 'Не са намерени utPLSQL тестове за изпълнение.',
+  'runner.timedOut': 'Изпълнението беше прекъснато поради изтичане на времето.',
   'runner.noJunitResult': '[предупреждение] Няма JUnit резултат за "{id}".',
   'runner.noJunitResultPkg': ' очакван packageName: {package}',
   'runner.coverNoReport':
@@ -3729,6 +3745,7 @@ export const el: Record<string, string> = {
     '[προειδοποίηση] Ο πρόσθετος reporter "{name}" δεν βρέθηκε στη βάση· παραλείπεται.',
   'runner.noResults': 'Δεν υπάρχει αναφορά αποτελεσμάτων.',
   'runner.noTests': 'Δεν βρέθηκαν δοκιμές utPLSQL για εκτέλεση.',
+  'runner.timedOut': 'Η εκτέλεση διακόπηκε λόγω υπέρβασης χρόνου.',
   'runner.noJunitResult': '[προειδοποίηση] Δεν βρέθηκε αποτέλεσμα JUnit για "{id}".',
   'runner.noJunitResultPkg': ' αναμενόμενο packageName: {package}',
   'runner.coverNoReport':
@@ -3953,6 +3970,7 @@ export const id: Record<string, string> = {
     '[peringatan] Reporter tambahan "{name}" tidak ditemukan di database; diabaikan.',
   'runner.noResults': 'Tidak ada laporan hasil.',
   'runner.noTests': 'Tidak ada tes utPLSQL untuk dijalankan.',
+  'runner.timedOut': 'Eksekusi dihentikan karena waktu habis.',
   'runner.noJunitResult': '[peringatan] Tidak ada hasil JUnit untuk "{id}".',
   'runner.noJunitResultPkg': ' packageName yang diharapkan: {package}',
   'runner.coverNoReport':
@@ -4174,6 +4192,7 @@ export const ro: Record<string, string> = {
     '[avertisment] Reporterul suplimentar "{name}" nu a fost găsit în baza de date; ignorat.',
   'runner.noResults': 'Fără raport de rezultate.',
   'runner.noTests': 'Nu s-au găsit teste utPLSQL de executat.',
+  'runner.timedOut': 'Execuția a fost întreruptă din cauza expirării timpului.',
   'runner.noJunitResult': '[avertisment] Niciun rezultat JUnit pentru "{id}".',
   'runner.noJunitResultPkg': ' packageName așteptat: {package}',
   'runner.coverNoReport':
@@ -4395,6 +4414,7 @@ export const sr: Record<string, string> = {
     '[упозорење] Додатни reporter "{name}" није пронађен у бази; прескочено.',
   'runner.noResults': 'Нема извештаја о резултатима.',
   'runner.noTests': 'Нема utPLSQL тестова за покретање.',
+  'runner.timedOut': 'Извршавање је прекинуто због истека времена.',
   'runner.noJunitResult': '[упозорење] Нема JUnit резултата за "{id}".',
   'runner.noJunitResultPkg': ' очекивани packageName: {package}',
   'runner.coverNoReport':
@@ -4609,6 +4629,7 @@ export const th: Record<string, string> = {
   'runner.reporterUnknown': '[คำเตือน] ไม่พบ reporter เพิ่มเติม "{name}" ในฐานข้อมูล; ข้าม',
   'runner.noResults': 'ไม่มีรายงานผลลัพธ์',
   'runner.noTests': 'ไม่พบการทดสอบ utPLSQL ที่จะเรียกใช้',
+  'runner.timedOut': 'การรันหยุดลงเนื่องจากหมดเวลา',
   'runner.noJunitResult': '[คำเตือน] ไม่พบผลลัพธ์ JUnit สำหรับ "{id}"',
   'runner.noJunitResultPkg': ' packageName ที่คาดหวัง: {package}',
   'runner.coverNoReport':
@@ -4823,6 +4844,7 @@ export const uk: Record<string, string> = {
     '[попередження] Додатковий reporter "{name}" не знайдено в базі; пропущено.',
   'runner.noResults': 'Немає звіту про результати.',
   'runner.noTests': 'Не знайдено тестів utPLSQL для запуску.',
+  'runner.timedOut': 'Виконання перервано через перевищення часу.',
   'runner.noJunitResult': '[попередження] Не знайдено результату JUnit для "{id}".',
   'runner.noJunitResultPkg': ' очікуваний packageName: {package}',
   'runner.coverNoReport':
@@ -5044,6 +5066,7 @@ export const vi: Record<string, string> = {
     '[cảnh báo] Không tìm thấy reporter bổ sung "{name}" trong cơ sở dữ liệu; bỏ qua.',
   'runner.noResults': 'Không có báo cáo kết quả.',
   'runner.noTests': 'Không tìm thấy bài kiểm thử utPLSQL nào để chạy.',
+  'runner.timedOut': 'Lần chạy đã dừng do hết thời gian.',
   'runner.noJunitResult': '[cảnh báo] Không tìm thấy kết quả JUnit cho "{id}".',
   'runner.noJunitResultPkg': ' packageName dự kiến: {package}',
   'runner.coverNoReport':

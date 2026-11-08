@@ -8,7 +8,7 @@ versao: "Suspenso — a reavaliar (PRD-64 removeu o CLI)"
 data: "2026-09-06"
 autor: "Gil Cleber Barboza"
 versao_titulo: "Fora de release (investigação / a reavaliar)"
-verificado: 2026-09-23
+verificado: 2026-11-07
 regras: []
 tags: [prd]
 ---
@@ -32,6 +32,9 @@ tags: [prd]
 > `utplsql.cliPath`/`cliHome` e o modo de invocação `java`, que não existem
 > mais. Mantida apenas como registro histórico — reavaliar somente se o CLI
 > voltar a ser pré-requisito.
+>
+> **Arquivada (2026-11-07):** não implementar no roadmap atual; permanece como
+> histórico. Qualquer retomada exige uma nova PRD alinhada ao modelo Oracle-only.
 
 Oferecer download/verificação automática do `utPLSQL-cli` (analogia ao Python
 Extension que instala `pytest`), com quick-fix no diagnóstico de setup. Hoje o
@@ -136,5 +139,4 @@ pós-instalação.
 <!-- brain:auto:start:conexoes -->
 - 🗺️ [[MOC - PRDs]]
 - 🔗 PRDs relacionados: [[prd-64-oracle-only-migration|PRD-64]]
-- 🔗 Mesma versão (Fora de release (investigação / a reavaliar)): [[prd-60-branch-coverage-investigation|PRD-60]]
 <!-- brain:auto:end -->

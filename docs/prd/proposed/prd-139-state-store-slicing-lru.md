@@ -54,6 +54,16 @@ compostos pelo manager (API preservada), e adicionar LRU/limpeza automática no
 
 - `executeRun` chama `state.clearCoverage()` no início (ou equivalente).
 
+### RF4 — LRU no `dbSourceProvider`
+
+- Limitar o cache de documentos virtuais (`Map`) por LRU/TTL e liberar as
+  conexões associadas; hoje cresce até o refresh.
+
+### RF5 — Persistência limitada
+
+- `state.persist()` com cap de entradas/idade e `.catch(logger.warn)`; o
+  snapshot não pode crescer indefinidamente nem falhar em silêncio.
+
 **Não-funcionais**
 - RNF1 — Cobertura ≥ thresholds.
 - RNF2 — Nenhuma regressão de testes.

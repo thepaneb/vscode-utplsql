@@ -7,6 +7,7 @@ import { mock, test } from 'node:test';
 import { parseBreakpointTarget } from '../../dbmsDebug';
 import {
   type DebuggerRuntime,
+  enclosingSubprogramName,
   extractParamNames,
   startDebugSession,
   UtplsqlDebugAdapter,
@@ -278,7 +279,7 @@ test('debugger factory: createDebugAdapterDescriptor retorna adapter inline', ()
   );
 });
 
-test('debugger config provider: preenche type/request/stopOnException/connection', async () => {
+test('debugger config provider: preenche schema e não serializa a connection', async () => {
   __setConfigValue('connection', 'user/senha@//h:1521/svc');
   try {
     const provider = new UtplsqlDebugConfigurationProvider();
@@ -289,7 +290,8 @@ test('debugger config provider: preenche type/request/stopOnException/connection
     assert.strictEqual(cfg.type, 'utplsql');
     assert.strictEqual(cfg.request, 'launch');
     assert.strictEqual(cfg.stopOnException, true);
-    assert.strictEqual(cfg.connection, 'user/senha@//h:1521/svc');
+    assert.strictEqual(cfg.schema, 'USER');
+    assert.strictEqual(cfg.connection, undefined);
   } finally {
     __resetConfigValues();
   }
@@ -306,6 +308,8 @@ test('startDebugSession: monta config e chama vscode.debug.startDebugging', asyn
     assert.strictEqual(cfg.packageName, 'test_app');
     assert.strictEqual(cfg.testName, 't1');
     assert.strictEqual(cfg.type, 'utplsql');
+    assert.strictEqual(cfg.schema, 'USER');
+    assert.strictEqual(cfg.connection, undefined, 'a senha não pode ir para a DebugConfiguration');
   } finally {
     __resetConfigValues();
   }
@@ -451,6 +455,79 @@ test('debugger: stackTrace aponta para o arquivo real do breakpoint (não <unit>
     '/ws/functions/calcular_desconto.sql',
   );
   adapter.dispose();
+});
+
+test('enclosingSubprogramName: acha a function/procedure da linha', () => {
+  const src = `create or replace package body orders as
+  function calculate_total(p_quantity in number, p_unit_price in number) return number is
+  begin
+    return p_quantity * p_unit_price;
+  end;
+end;`;
+  assert.strictEqual(enclosingSubprogramName(src, 4), 'calculate_total');
+  assert.strictEqual(enclosingSubprogramName(src, 1), undefined);
+});
+
+test('debugger: variables de package usam o subprograma da linha atual', async () => {
+  const fs = await import('node:fs');
+  const os = await import('node:os');
+  const path = await import('node:path');
+  const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'utplsql-dbg-pkg-'));
+  const file = path.join(dir, 'ORDERS.pkb');
+  fs.writeFileSync(
+    file,
+    `create or replace package orders as
+  function calculate_total(p_quantity in number, p_unit_price in number) return number;
+end orders;
+/
+create or replace package body orders as
+  function calculate_total(p_quantity in number, p_unit_price in number) return number is
+  begin
+    return p_quantity * p_unit_price;
+  end calculate_total;
+end orders;`,
+  );
+
+  const names: string[] = [];
+  const conn = makeFakeConn();
+  const orig = conn.execute.bind(conn);
+  conn.execute = async (sql: string, binds?: Record<string, unknown>) => {
+    if (/CONTINUE/.test(sql)) {
+      return { outBinds: { status: 0, stopped: 1, ended: 0, line: 9, unit: 'APP.ORDERS' } };
+    }
+    if (/GET_VALUE/.test(sql)) {
+      names.push(String((binds as { name?: unknown })?.name ?? ''));
+      return { outBinds: { value: '1' } };
+    }
+    return orig(sql);
+  };
+
+  const adapter = new UtplsqlDebugAdapter(makeRuntime(conn));
+  const sent: Msg[] = [];
+  adapter.onDidSendMessage((m) => sent.push(m));
+  adapter.handleMessage({ type: 'request', seq: 1, command: 'initialize' });
+  adapter.handleMessage({
+    type: 'request',
+    seq: 2,
+    command: 'launch',
+    arguments: { packageName: 'ut_orders', connection: 'DEMO/demo2026@//h:1521/svc' },
+  });
+  await flushN(4);
+  adapter.handleMessage({
+    type: 'request',
+    seq: 3,
+    command: 'setBreakpoints',
+    arguments: { source: { path: file }, breakpoints: [{ line: 9 }] },
+  });
+  await flushN(2);
+  adapter.handleMessage({ type: 'request', seq: 4, command: 'configurationDone' });
+  adapter.handleMessage({ type: 'request', seq: 5, command: 'continue' });
+  await flushN(4);
+  adapter.handleMessage({ type: 'request', seq: 6, command: 'variables' });
+  await flushN(2);
+  assert.deepStrictEqual(names.sort(), ['p_quantity', 'p_unit_price']);
+  adapter.dispose();
+  fs.rmSync(dir, { recursive: true, force: true });
 });
 
 test('debugger: variables do DAP incluem variablesReference', async () => {
@@ -967,6 +1044,30 @@ test('debugger: breakpoints pendentes são aplicados no entry (flush)', async ()
     .filter((m) => m.type === 'event' && m.event === 'output')
     .map((m) => JSON.stringify(m.body));
   assert.ok(outputs.some((o) => /aplicado|applied/i.test(o)));
+  adapter.dispose();
+});
+
+test('debugger: teardown quebra a execução antes de DEBUG_OFF', async () => {
+  const conn = makeFakeConn();
+  (conn as unknown as { break: () => Promise<void> }).break = async () => {
+    conn.calls.push('BREAK');
+  };
+  const adapter = new UtplsqlDebugAdapter(makeRuntime(conn));
+  adapter.handleMessage({ type: 'request', seq: 1, command: 'initialize' });
+  adapter.handleMessage({
+    type: 'request',
+    seq: 2,
+    command: 'launch',
+    arguments: { packageName: 'test_app', connection: 'APP/pass@//h:1521/svc' },
+  });
+  await flushN(4);
+  adapter.handleMessage({ type: 'request', seq: 3, command: 'disconnect' });
+  await flushN(4);
+  const breakIdx = conn.calls.indexOf('BREAK');
+  const offIdx = conn.calls.findIndex((s) => /DEBUG_OFF/.test(s));
+  assert.ok(breakIdx >= 0, 'deveria chamar break');
+  assert.ok(offIdx >= 0, 'deveria chamar DEBUG_OFF');
+  assert.ok(breakIdx < offIdx, 'break deve vir antes de DEBUG_OFF');
   adapter.dispose();
 });
 
