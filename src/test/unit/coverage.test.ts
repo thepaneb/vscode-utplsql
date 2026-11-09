@@ -4,7 +4,7 @@ import * as fs from 'node:fs';
 import * as os from 'node:os';
 import * as path from 'node:path';
 import { test } from 'node:test';
-import { resolveSourceUri } from '../../coverage';
+import { resolveSourceUri, xmlRootTag } from '../../coverage';
 import { mapDbPathsToFiles } from '../../oracleRunner';
 
 function withTempDir(fn: (dir: string) => void) {
@@ -15,6 +15,13 @@ function withTempDir(fn: (dir: string) => void) {
     fs.rmSync(dir, { recursive: true, force: true });
   }
 }
+
+test('xmlRootTag: declaração/comentário/doctype sem fechamento retorna undefined', () => {
+  assert.strictEqual(xmlRootTag('<?xml version="1.0"'), undefined);
+  assert.strictEqual(xmlRootTag('<!-- sem fim'), undefined);
+  assert.strictEqual(xmlRootTag('<!DOCTYPE coverage'), undefined);
+  assert.strictEqual(xmlRootTag('<?xml version="1.0"?><!-- c --><coverage/>'), 'coverage');
+});
 
 test('resolveSourceUri: caminho absoluto existente', () => {
   withTempDir((dir) => {
