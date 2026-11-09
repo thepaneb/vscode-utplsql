@@ -352,5 +352,5 @@ tags: [site, docs]
 ## Conexões
 
 <!-- brain:auto:start:conexoes -->
-- 🧩 Código: [[COD - index.html]] · [[COD - 404.html]] · [[COD - robots.txt]] · [[COD - sitemap.xml]] · [[COD - google408e9fc32b68946a.html]]
+- 🧩 Código: [[COD - index.html]] · [[COD - 404.html]] · [[COD - robots.txt]] · [[COD - sitemap.xml]] · [[COD - google408e9fc32b68946a.html]] · [[COD - og.png]]
 <!-- brain:auto:end -->
