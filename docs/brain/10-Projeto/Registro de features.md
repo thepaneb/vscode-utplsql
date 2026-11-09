@@ -34,6 +34,9 @@ Campos:
 >
 > A 0.20.0 fecha a PRD-125 (eixo experimental) e inclui PRD-146 (attestations)
 > e PRD-147 (Marketplace) como enablers de distribuição (`interno: true`).
+>
+> A 0.20.1 é uma release de **confiabilidade** (PRD-148/PRD-150), também com
+> itens `interno: true`; não há feature de usuário individual no registro.
 
 ```json
 [

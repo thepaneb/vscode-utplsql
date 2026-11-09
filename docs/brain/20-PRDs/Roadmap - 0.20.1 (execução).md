@@ -1,13 +1,17 @@
 ---
 tipo: nota
-status: ativo
+status: concluida
 modulo: prds
 data: 2026-11-07
-verificado: 2026-11-07
+verificado: 2026-11-09
+concluida: 2026-11-09
 tags: [prd, roadmap, execucao]
 ---
 
 # Roadmap — 0.20.1 (execução)
+
+> Publicada em **2026-11-09** como release `v0.20.1`
+> ([GitHub](https://github.com/thepaneb/vscode-utplsql/releases/tag/v0.20.1)).
 
 Patch de **confiabilidade** logo após a 0.20.0. O status e a versão alvo são a
 **fonte da verdade** no frontmatter das notas `prd-*`: ver [[MOC - PRDs]] e
