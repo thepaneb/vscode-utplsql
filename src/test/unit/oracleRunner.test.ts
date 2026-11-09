@@ -417,6 +417,22 @@ test('ensurePool: nao inicializa thick em thin (default)', async () => {
   }
 });
 
+test('ensurePool: repassa walletLocation/walletPassword ao pool', async () => {
+  await closeOraclePool();
+  const { mod, created } = makeFakeOracledb();
+  try {
+    await ensurePool(mod as never, 'u/p@//h:1521/s', {
+      ...POOL_CFG,
+      walletLocation: '/wallet',
+      walletPassword: 'segredo',
+    } as UtConfig);
+    assert.strictEqual(created[0].walletLocation, '/wallet');
+    assert.strictEqual(created[0].walletPassword, 'segredo');
+  } finally {
+    await closeOraclePool();
+  }
+});
+
 test('ensurePool: reutiliza pool quando connection string e igual', async () => {
   const { mod, created } = makeFakeOracledb();
   try {
@@ -634,6 +650,30 @@ test('findInvalidUt3Objects: restaura callTimeout original ao devolver conexao',
     assert.strictEqual(conn.callTimeout, 777);
     assert.ok(seenTimeouts.length > 0);
     assert.ok(seenTimeouts.every((t) => t === 5000));
+  } finally {
+    await closeOraclePool();
+  }
+});
+
+test('findInvalidUt3Objects: aceita rows em objeto (OUT_FORMAT_OBJECT)', async () => {
+  const conn = {
+    callTimeout: 0,
+    execute: async (sql: string) => {
+      if (/ALL_SYNONYMS/i.test(sql)) return { rows: [{ TABLE_OWNER: 'UT3' }] };
+      return { rows: [{ OBJECT_NAME: 'PKG_X', OBJECT_TYPE: 'PACKAGE BODY' }] };
+    },
+    close: async () => {},
+  };
+  try {
+    const result = await findInvalidUt3Objects(
+      makeFindInvalidMod(conn) as never,
+      'u/p@//h:1521/s',
+      POOL_CFG,
+    );
+    assert.deepStrictEqual(result, {
+      schema: 'UT3',
+      invalid: [{ name: 'PKG_X', type: 'PACKAGE BODY' }],
+    });
   } finally {
     await closeOraclePool();
   }
@@ -2664,12 +2704,41 @@ test('discardOraclePool: descarta o pool e o próximo ensurePool cria outro (PRD
   await closeOraclePool();
   const { mod, pools } = makeFakeOracledb();
   try {
+    discardOraclePool(); // sem pool: early return
     await ensurePool(mod as never, 'u/p@//h:1521/s', POOL_CFG);
     discardOraclePool();
     await new Promise((resolve) => setTimeout(resolve, 0));
     assert.strictEqual(pools[0].closed, true, 'o pool descartado deve ser fechado');
     await ensurePool(mod as never, 'u/p@//h:1521/s', POOL_CFG);
     assert.strictEqual(pools.length, 2, 'o próximo run deve criar um pool novo');
+  } finally {
+    await closeOraclePool();
+  }
+});
+
+test('discardOraclePool: fecha em background e engole erro do close (PRD-150)', async () => {
+  await closeOraclePool();
+  let closeCalls = 0;
+  const pool = {
+    getConnection: async () => ({ callTimeout: 0 }),
+    close: async () => {
+      closeCalls += 1;
+      throw new Error('close falhou');
+    },
+  };
+  const mod = {
+    OUT_FORMAT_OBJECT: {},
+    outFormat: undefined as unknown,
+    createPool: async () => pool,
+    getConnection: async () => ({ fromPool: false }),
+  };
+  try {
+    await ensurePool(mod as never, 'u/p@//h:1521/s', POOL_CFG);
+    discardOraclePool();
+    await new Promise((resolve) => setTimeout(resolve, 0));
+    assert.strictEqual(closeCalls, 1);
+    discardOraclePool();
+    assert.doesNotThrow(() => discardOraclePool());
   } finally {
     await closeOraclePool();
   }

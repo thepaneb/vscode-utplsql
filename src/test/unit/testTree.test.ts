@@ -293,7 +293,7 @@ test('resolvedores: materializam schema → package → suite → teste por nív
   assert.strictEqual(pkgItem.id, 'package:APP:UT_APP');
   assert.strictEqual(pkgItem._children.length, 0);
 
-  resolvePackageNode(controller, state, pkgItem);
+  resolvePackageNode(controller, state, pkgItem as never);
   assert.strictEqual(pkgItem._children.length, 1);
   const suiteItem = pkgItem._children[0];
   assert.strictEqual(suiteItem.id, 'suite:APP:ut_app');
@@ -301,7 +301,7 @@ test('resolvedores: materializam schema → package → suite → teste por nív
   assert.ok(state.getSuiteItem('suite:APP:ut_app'));
   assert.ok(state.getSuiteItem('suite:ut_app'), 'lookup legado continua funcionando');
 
-  resolveSuiteNode(controller, state, suiteItem);
+  resolveSuiteNode(controller, state, suiteItem as never);
   assert.strictEqual(suiteItem._children.length, 2);
   assert.ok(state.getItem('test:APP:ut_app.test_one'));
 });
@@ -326,9 +326,9 @@ test('schema mode: IDs únicos por schema e lookup legado (PRD-148 RF7)', async 
   for (const schemaItem of controller._items) {
     await resolveSchemaNode(controller, state, schemaItem, lazyDeps as never);
     const pkgItem = schemaItem._children[0];
-    resolvePackageNode(controller, state, pkgItem);
+    resolvePackageNode(controller, state, pkgItem as never);
     const suiteItem = pkgItem._children[0];
-    resolveSuiteNode(controller, state, suiteItem);
+    resolveSuiteNode(controller, state, suiteItem as never);
     resolved.push(suiteItem);
   }
 
@@ -340,6 +340,50 @@ test('schema mode: IDs únicos por schema e lookup legado (PRD-148 RF7)', async 
   assert.ok(state.getItem('test:APP:ut_app.test_one'));
   assert.ok(state.getItem('test:OTHER:ut_app.test_one'));
   assert.strictEqual(state.getSuiteItem('suite:ut_app'), resolved[0]);
+});
+
+test('resolvePackageNode: idempotente e schema sem suites não quebra', () => {
+  const controller = makeController();
+  const state = new TestStateManager();
+  buildSchemaTree(controller, state, [suite({ dbSchema: 'APP' })], 'db/{schema}/**');
+  const schemaItem = controller._items[0];
+  state.setSchemaSuites('APP', [suite({ dbSchema: 'APP' })]);
+  const pkgItem = makeItem('package:APP:UT_APP');
+  resolvePackageNode(controller, state, pkgItem as never);
+  resolvePackageNode(controller, state, pkgItem as never);
+  assert.strictEqual(pkgItem._children.length, 1);
+
+  const unknown = makeItem('package:APP:NAO_EXISTE');
+  resolvePackageNode(controller, state, unknown as never);
+  assert.strictEqual(unknown._children.length, 0);
+});
+
+test('resolveSuiteNode: suite sem meta resolve sem schema', () => {
+  const controller = makeController();
+  const state = new TestStateManager();
+  const item = makeItem('suite:sem-meta');
+  state.setSuiteFile('suite:sem-meta', suite({}));
+  resolveSuiteNode(controller, state, item as never);
+  assert.strictEqual(item._children.length, 2);
+  assert.strictEqual(item._children[0].id, 'test:ut_app.test_one');
+});
+
+test('fillSuiteTests: duração de snapshot legado no schema mode', () => {
+  __setConfigValue('showTestDuration', true);
+  const controller = makeController();
+  const state = new TestStateManager();
+  state.setLastResults(
+    new Map([['test:ut_app.test_one', { status: 'passed' as const, durationMs: 12 }]]),
+  );
+  buildSchemaTree(controller, state, [suite({ dbSchema: 'APP' })], 'db/{schema}/**');
+  const schemaItem = controller._items[0];
+  state.setSchemaSuites('APP', [suite({ dbSchema: 'APP' })]);
+  const pkgItem = makeItem('package:APP:UT_APP');
+  resolvePackageNode(controller, state, pkgItem as never);
+  const suiteItem = pkgItem._children[0];
+  resolveSuiteNode(controller, state, suiteItem as never);
+  assert.match(controller._labels.get(suiteItem._children[0].id), /\(12ms\)/);
+  __resetConfigValues();
 });
 
 test('resolveSchemaNode: idempotente (não duplica package)', async () => {

@@ -323,3 +323,36 @@ test('refresh: erro de produção sem arquivo nem suite é omitido', async () =>
     );
   });
 });
+
+test('refresh: usa .sql como fallback quando o tipo não tem extensão própria', async () => {
+  await withConn(async () => {
+    const { registerCompilationDiagnostics, refreshCompilationDiagnostics } = await import(
+      '../../compilationDiagnostics.js'
+    );
+    registerCompilationDiagnostics({ subscriptions: [] } as never);
+    __setMockFile('**/*.{pks,pkb,typ,tpb,prc,fnc,trg,sql}', '/tmp/app_pkg.sql', '');
+    errors = [{ name: 'APP_PKG', type: 'FUNCTION', line: 2, position: 0, text: 'fn' }];
+    // `FUNCTION` mapeia .fnc; sem .fnc, o fallback usa o .sql.
+    await refreshCompilationDiagnostics(makeState());
+    const diags = __getLastDiagnosticCollection()?.get({ toString: () => '/tmp/app_pkg.sql' });
+    assert.strictEqual(diags?.length, 1);
+    assert.strictEqual(diags?.[0].message, 'FUNCTION: fn');
+  });
+});
+
+test('refresh: ignora saída gerada e arquivo sem extensão no índice (PRD-148 RF3)', async () => {
+  await withConn(async () => {
+    const { registerCompilationDiagnostics, refreshCompilationDiagnostics } = await import(
+      '../../compilationDiagnostics.js'
+    );
+    registerCompilationDiagnostics({ subscriptions: [] } as never);
+    __setMockFile('**/*.{pks,pkb,typ,tpb,prc,fnc,trg,sql}', '/tmp/out/app_pkg.pkb', '');
+    __setMockFile('**/*.{pks,pkb,typ,tpb,prc,fnc,trg,sql}', '/tmp/sem-extensao', '');
+    errors = [{ name: 'APP_PKG', type: 'PACKAGE BODY', line: 1, position: 0, text: 'x' }];
+    await refreshCompilationDiagnostics(makeState());
+    assert.strictEqual(
+      __getLastDiagnosticCollection()?.get({ toString: () => '/tmp/out/app_pkg.pkb' }),
+      undefined,
+    );
+  });
+});

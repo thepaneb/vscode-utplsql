@@ -162,6 +162,22 @@ test('parseSqlDevConnections: decodifica entidades XML e usa porta 1521 default'
   assert.strictEqual(profiles[0].connection, 'scott/p&ss@db&test:1521/XEPDB1');
 });
 
+test('parseSqlDevConnections: entidades numéricas decimais e hexadecimais', () => {
+  const xml = `<Reference name="A&#38;B&#x26;C" userName="u">
+    <StringRefAddr addrType="hostname">h</StringRefAddr>
+  </Reference>`;
+  const profiles = parseSqlDevConnections(xml);
+  assert.strictEqual(profiles[0].name, 'A&B&C');
+});
+
+test('parseSqlDevConnections: code point inválido e entidade desconhecida ficam literais', () => {
+  const xml = `<Reference name="X&#x110000;Y&unknown;" userName="u">
+    <StringRefAddr addrType="hostname">h</StringRefAddr>
+  </Reference>`;
+  const profiles = parseSqlDevConnections(xml);
+  assert.strictEqual(profiles[0].name, 'X&#x110000;Y&unknown;');
+});
+
 test('parseSqlDevConnections: sem host ignora a conexao', () => {
   const xml = `<Reference name="NOHOST" userName="scott" password="tiger">
     <StringRefAddr addrType="port">1521</StringRefAddr>
