@@ -4,7 +4,7 @@ status: ativo
 titulo: "Landing page (site público)"
 publicar: site/index.html
 url: "https://thepaneb.github.io/vscode-utplsql/"
-implementacao: ["site/index.html", "site/404.html", "site/robots.txt", "site/sitemap.xml", "site/google408e9fc32b68946a.html"]
+implementacao: ["site/index.html", "site/404.html", "site/robots.txt", "site/sitemap.xml", "site/google408e9fc32b68946a.html", "site/og.png"]
 verificado: 2026-10-29
 tags: [site, docs]
 ---
@@ -34,16 +34,20 @@ tags: [site, docs]
       content="Native Test Explorer, visual coverage, PL/SQL debugger and Oracle-direct execution for utPLSQL tests, right in VS Code."
     />
     <meta property="og:url" content="{{SITE_URL}}" />
-    <meta property="og:image" content="https://raw.githubusercontent.com/thepaneb/vscode-utplsql/main/images/icon.png" />
+    <meta property="og:image" content="https://thepaneb.github.io/vscode-utplsql/og.png" />
+    <meta property="og:image:width" content="1280" />
+    <meta property="og:image:height" content="640" />
+    <meta property="og:image:alt" content="utPLSQL Test Runner — Test Explorer, coverage and PL/SQL debugger in VS Code" />
 
     <!-- Twitter -->
-    <meta name="twitter:card" content="summary" />
+    <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content="utPLSQL Test Runner — Oracle PL/SQL tests in VS Code" />
     <meta
       name="twitter:description"
       content="Native Test Explorer, visual coverage, PL/SQL debugger and Oracle-direct execution for utPLSQL tests, right in VS Code."
     />
-    <meta name="twitter:image" content="https://raw.githubusercontent.com/thepaneb/vscode-utplsql/main/images/icon.png" />
+    <meta name="twitter:image" content="https://thepaneb.github.io/vscode-utplsql/og.png" />
+    <meta name="twitter:image:alt" content="utPLSQL Test Runner — Test Explorer, coverage and PL/SQL debugger in VS Code" />
 
     <style>
       :root {
@@ -348,5 +352,5 @@ tags: [site, docs]
 ## Conexões
 
 <!-- brain:auto:start:conexoes -->
-- 🧩 Código: [[COD - index.html]] · [[COD - 404.html]] · [[COD - robots.txt]] · [[COD - sitemap.xml]] · [[COD - google408e9fc32b68946a.html]]
+- 🧩 Código: [[COD - index.html]] · [[COD - 404.html]] · [[COD - robots.txt]] · [[COD - sitemap.xml]] · [[COD - google408e9fc32b68946a.html]] · [[COD - og.png]]
 <!-- brain:auto:end -->

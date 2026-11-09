@@ -99,6 +99,7 @@ SORT id ASC
 - [[COD - matrix.env]] — `COD-matrix.env`
 - [[COD - obsidian-mcp.py]] — `COD-obsidian-mcp.py`
 - [[COD - obsidian-portproxy.cmd]] — `COD-obsidian-portproxy.cmd`
+- [[COD - og.png]] — `COD-og.png`
 - [[COD - oracleClient.ts]] — `COD-oracleClient.ts`
 - [[COD - oracleIdentifiers.ts]] — `COD-oracleIdentifiers.ts`
 - [[COD - oraclePoll.ts]] — `COD-oraclePoll.ts`
