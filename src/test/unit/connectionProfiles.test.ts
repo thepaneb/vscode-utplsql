@@ -107,6 +107,10 @@ function makeGlobal(over: Partial<UtConfig> = {}): UtConfig {
   };
 }
 
+test('hydrateProfilePasswords: sem SecretStorage é no-op', async () => {
+  await assert.doesNotReject(() => hydrateProfilePasswords());
+});
+
 test('maskConnection: esconde a senha', () => {
   assert.strictEqual(maskConnection('scott/tiger@localhost:1521/XE'), 'scott@localhost:1521/XE');
   assert.strictEqual(maskConnection('user/pass@//host:1521/svc'), 'user@//host:1521/svc');
@@ -636,6 +640,19 @@ test('getProfileConnection: legado com senha inline retorna como esta', () => {
     getProfileConnection({ id: 'leg', name: 'L', connection: 'u/p@h:1521/s' }),
     'u/p@h:1521/s',
   );
+});
+
+test('getProfileConnection: connection sem @ retorna como está', () => {
+  assert.strictEqual(
+    getProfileConnection({ id: 'x', name: 'X', connection: 'sem-arroba' }),
+    'sem-arroba',
+  );
+});
+
+test('setActiveProfile(undefined) limpa o perfil ativo', async () => {
+  __resetConfigValues();
+  await setActiveProfile(undefined);
+  assert.strictEqual(getActiveProfile(), undefined);
 });
 
 test('migrateLegacyProfiles: move senha legada e reescreve a settings', async () => {

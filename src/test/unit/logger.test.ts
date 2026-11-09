@@ -100,6 +100,22 @@ test('logger.trace: desligado por padrão e ligado por setTraceEnabled (PRD-102)
   }
 });
 
+test('logger.trace/error: sem contexto não lançam', () => {
+  setTraceEnabled(true);
+  const origWarn = console.warn;
+  const origError = console.error;
+  console.warn = () => {};
+  console.error = () => {};
+  try {
+    assert.doesNotThrow(() => logger.trace('sem ctx'));
+    assert.doesNotThrow(() => logger.error('sem ctx'));
+  } finally {
+    console.warn = origWarn;
+    console.error = origError;
+    setTraceEnabled(false);
+  }
+});
+
 test('logger: formatLogLine omite contexto inválido (circular) sem lançar', () => {
   const circular: Record<string, unknown> = {};
   circular.self = circular;

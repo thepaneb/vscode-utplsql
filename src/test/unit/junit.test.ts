@@ -112,6 +112,19 @@ test('parseJUnit: failure sem message e sem texto retorna undefined (i18n no cha
   assert.strictEqual(cases[0].message, undefined);
 });
 
+test('parseJUnit: error auto-fechado e dummy não quebram extractMessage/body', () => {
+  const auto = parseJUnit(
+    `<testsuites><testsuite name="s"><testcase classname="s" name="e" time="0.1"><error/></testcase></testsuite></testsuites>`,
+  );
+  assert.strictEqual(auto[0].status, 'error');
+  assert.strictEqual(auto[0].message, '');
+  const dummy = parseJUnit(
+    `<testsuites><testsuite name="s"><testcase classname="s" name="e2" time="0.1"><error dummy="x"/></testcase></testsuite></testsuites>`,
+  );
+  assert.strictEqual(dummy[0].status, 'error');
+  assert.strictEqual(dummy[0].message, undefined);
+});
+
 test('parseJUnit: failure com message attr sem texto', () => {
   const xml = `<testsuites><testsuite name="s"><testcase classname="s" name="f" time="0.1"><failure message="Something wrong"/></testcase></testsuite></testsuites>`;
   const cases = parseJUnit(xml);

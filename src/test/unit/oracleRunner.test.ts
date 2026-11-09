@@ -94,6 +94,8 @@ test('semverLt: compara major.minor.patch tolerando prefixo v (RF4)', () => {
   assert.strictEqual(semverLt('v3.1.0', '3.1.0'), false);
   assert.strictEqual(semverLt('3.1.0', 'v2.9.9'), false);
   assert.strictEqual(semverLt('2.9.9', '3.0.0'), true);
+  assert.strictEqual(semverLt('3.1', '3.1.1'), true, 'segmento ausente vira 0');
+  assert.strictEqual(semverLt('3.1.1', '3.1'), false);
 });
 
 test('parseConnString: formato invalido lanca erro', () => {
@@ -135,6 +137,7 @@ test('connectionUser: formato invalido retorna undefined', () => {
   assert.strictEqual(connectionUser('invalid'), undefined);
   assert.strictEqual(connectionUser(''), undefined);
   assert.strictEqual(connectionUser('user/pass@'), undefined);
+  assert.strictEqual(connectionUser('@//h:1521/s'), undefined);
 });
 
 // ── applyResultsFromCases ────────────────────────────────────────────
@@ -655,6 +658,29 @@ test('findInvalidUt3Objects: restaura callTimeout original ao devolver conexao',
   }
 });
 
+test('findInvalidUt3Objects: rows ausente e close com erro são tolerados', async () => {
+  const conn = {
+    callTimeout: 0,
+    execute: async (sql: string) => {
+      if (/ALL_SYNONYMS/i.test(sql)) return { rows: [{ TABLE_OWNER: 'UT3' }] };
+      return {};
+    },
+    close: async () => {
+      throw new Error('close falhou');
+    },
+  };
+  try {
+    const result = await findInvalidUt3Objects(
+      makeFindInvalidMod(conn as never) as never,
+      'u/p@//h:1521/s',
+      POOL_CFG,
+    );
+    assert.deepStrictEqual(result, { schema: 'UT3', invalid: [] });
+  } finally {
+    await closeOraclePool();
+  }
+});
+
 test('findInvalidUt3Objects: aceita rows em objeto (OUT_FORMAT_OBJECT)', async () => {
   const conn = {
     callTimeout: 0,
@@ -841,7 +867,9 @@ function makeOracleRunFake(opts: {
       if (/UT_OUTPUT_BUFFER_TMP/.test(sql) && /SELECT/.test(sql)) {
         polls++;
         if (polls === 1) {
-          return { rows: [{ OUTPUT_ID: 'doc', MESSAGE_ID: 1, TEXT: 'Doc output' }] };
+          return {
+            rows: [{ OUTPUT_ID: Buffer.from('doc'), MESSAGE_ID: 1, TEXT: 'Doc output' }],
+          };
         }
         return {
           rows: opts.buffer.map((item, i) => {
@@ -2543,6 +2571,14 @@ test('getOracleInfo: sem linhas retorna nulos', async () => {
 test('listReportersOracle: mapeia linhas em nomes', async () => {
   const conn = infoConn(() => ({ rows: [['UT_FOO_REPORTER'], ['UT_BAR_REPORTER']] }));
   assert.deepStrictEqual(await listReportersOracle(conn), ['UT_FOO_REPORTER', 'UT_BAR_REPORTER']);
+});
+
+test('listReportersOracle: rows ausente e valores nulos usam fallback', async () => {
+  assert.deepStrictEqual(await listReportersOracle(infoConn(() => ({}))), []);
+  const conn = infoConn(() => ({ rows: [[null], [{}], ['UT_X_REPORTER']] }));
+  const names = await listReportersOracle(conn);
+  assert.strictEqual(names.length, 3);
+  assert.strictEqual(names[2], 'UT_X_REPORTER');
 });
 
 test('listReportersOracle: erro retorna array vazio', async () => {

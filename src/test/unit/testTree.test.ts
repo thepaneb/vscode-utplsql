@@ -223,6 +223,19 @@ test('buildTagTree: suites sem tag vão para "(sem tag)" por último', () => {
   assert.strictEqual(controller._items[1]._children[0].id, `suite:ut_x#${NO_TAG_GROUP}`);
 });
 
+test('buildTagTree: ordena tag antes de "(sem tag)" em ambas as ordens de entrada', () => {
+  const controller = makeController();
+  const state = new TestStateManager();
+  buildTagTree(controller, state, [
+    suite({ packageName: 'UT_A', tags: ['fast'] }),
+    suite({ packageName: 'UT_X' }),
+  ]);
+  assert.deepStrictEqual(
+    controller._items.map((i: { id: string }) => i.id),
+    ['tag:fast', `tag:${NO_TAG_GROUP}`],
+  );
+});
+
 test('buildTagTree: suite com múltiplas tags aparece sob cada tag com id próprio', () => {
   const controller = makeController();
   const state = new TestStateManager();
@@ -470,6 +483,15 @@ test('collectAllItems: devolve as suites após resolução', async () => {
   buildFileTree(controller, state, [suite({})]);
   const items = await collectAllItems(controller, state);
   assert.strictEqual(items.length, 1);
+});
+
+test('collectAllItems: árvore por tag resolve suites filhas', async () => {
+  const controller = makeController();
+  const state = new TestStateManager();
+  buildTagTree(controller, state, [suite({ tags: ['fast'] })]);
+  const items = await collectAllItems(controller, state);
+  assert.strictEqual(items.length, 1);
+  assert.strictEqual(items[0].id, 'suite:ut_app#fast');
 });
 
 test('collectAllItems: resolve a árvore lazy e devolve as suites', async () => {
