@@ -288,6 +288,7 @@ test('filterScriptFiles: casing equivalente tem desempate determinístico', () =
     'a.sql',
     'z.SQL',
   ]);
+  assert.deepStrictEqual(filterScriptFiles(['a.sql', 'A.SQL'], '**/*.sql'), ['A.SQL', 'a.sql']);
 });
 
 // ─── executeScript ───────────────────────────────────────────────────────────

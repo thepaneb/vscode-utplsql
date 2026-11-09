@@ -109,7 +109,7 @@ test('debugger: ciclo launch -> breakpoint -> stack/scopes/variables -> disconne
     type: 'request',
     seq: 3,
     command: 'setBreakpoints',
-    arguments: { source: { path: '/ws/test_app.pks' }, breakpoints: [{ line: 5 }] },
+    arguments: { source: { path: '/ws/test_app.pks' }, breakpoints: [{ line: 5 }, {}] },
   });
   await flushN(2);
   const bpResp = sent.find((m) => m.type === 'response' && m.command === 'setBreakpoints');
@@ -380,6 +380,49 @@ test('debugger: launch sem connection não configura schema', async () => {
   adapter.dispose();
 });
 
+test('debugger: launch com connection e sem schema/package preenche config', async () => {
+  const adapter = new UtplsqlDebugAdapter({
+    acquireConnection: async () => undefined,
+    runTest: async () => {},
+  });
+  adapter.handleMessage({ type: 'request', seq: 1, command: 'initialize' });
+  adapter.handleMessage({
+    type: 'request',
+    seq: 2,
+    command: 'launch',
+    arguments: { connection: 'APP/pass@//h:1521/svc' },
+  });
+  await flushN(2);
+  const cfg = (adapter as unknown as { config?: { packageName: string; schema?: string } }).config;
+  assert.strictEqual(cfg?.packageName, '');
+  assert.strictEqual(cfg?.schema, 'APP');
+  adapter.dispose();
+});
+
+test('debugger: flushPendingBreakpoints sem client retorna 0', async () => {
+  const adapter = new UtplsqlDebugAdapter({
+    acquireConnection: async () => undefined,
+    runTest: async () => {},
+  });
+  const flushPending = (
+    adapter as unknown as { flushPendingBreakpoints(): Promise<number> }
+  ).flushPendingBreakpoints.bind(adapter);
+  assert.strictEqual(await flushPending(), 0);
+  adapter.dispose();
+});
+
+test('debugger: runTestInBackground sem debuggee é no-op', async () => {
+  const adapter = new UtplsqlDebugAdapter({
+    acquireConnection: async () => undefined,
+    runTest: async () => {},
+  });
+  const runInBackground = (
+    adapter as unknown as { runTestInBackground(cfg: unknown): Promise<void> }
+  ).runTestInBackground.bind(adapter);
+  await assert.doesNotReject(() => runInBackground({ packageName: 'X' }));
+  adapter.dispose();
+});
+
 test('debugger: setBreakpoints antes de anexar guarda alvos não verificados', async () => {
   const conn = makeFakeConn();
   const adapter = new UtplsqlDebugAdapter(makeRuntime(conn));
@@ -390,11 +433,12 @@ test('debugger: setBreakpoints antes de anexar guarda alvos não verificados', a
     type: 'request',
     seq: 1,
     command: 'setBreakpoints',
-    arguments: { source: { path: '/ws/test_app.pks' }, breakpoints: [{ line: 5 }] },
+    arguments: { source: { path: '/ws/test_app.pks' }, breakpoints: [{ line: 5 }, {}] },
   });
   await flushN(2);
   const resp = sent.find((m) => m.command === 'setBreakpoints') as any;
   assert.strictEqual(resp.body.breakpoints[0].verified, false);
+  assert.strictEqual(resp.body.breakpoints[1].verified, false);
   adapter.dispose();
 });
 

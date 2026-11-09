@@ -644,6 +644,48 @@ test('cancel: o cancelador devolvido não lança sem execução ativa', async ()
   assert.doesNotThrow(() => run.cancel());
 });
 
+test('runWithProgress: cancelar enquanto aguarda o run anterior não inicia o próximo', async (t) => {
+  const { state, suiteItem } = stateWithSuite();
+  let firstResolve!: () => void;
+  const gate = new Promise<void>((resolve) => {
+    firstResolve = resolve;
+  });
+  const tokens: Array<{ isCancellationRequested: boolean }> = [];
+  const pending: Promise<void>[] = [];
+  t.after(async () => {
+    firstResolve();
+    await Promise.allSettled(pending);
+  });
+  let calls = 0;
+  const { run } = await register(state);
+  executeHook = async (args) => {
+    tokens.push(args[2] as { isCancellationRequested: boolean });
+    if (calls++ === 0) await gate;
+  };
+
+  const first = run.runWithProgress(
+    new TestRunRequest([suiteItem], undefined, state.runProfile) as never,
+    undefined,
+    false,
+  );
+  pending.push(first);
+  await new Promise((resolve) => setTimeout(resolve, 0));
+  const second = run.runWithProgress(
+    new TestRunRequest([suiteItem], undefined, state.runProfile) as never,
+    undefined,
+    false,
+  );
+  pending.push(second);
+  await new Promise((resolve) => setTimeout(resolve, 0));
+
+  run.cancel(); // cancela o segundo enquanto ele espera o primeiro
+  firstResolve();
+  await first;
+  await second;
+  assert.strictEqual(tokens.length, 1, 'o segundo não pode iniciar depois de cancelado');
+  assert.strictEqual(run.isRunning(), false);
+});
+
 test('isRunning/cancel refletem a promise pendente da execução', async (t) => {
   const { state, suiteItem } = stateWithSuite();
   let release!: () => void;
