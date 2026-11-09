@@ -226,8 +226,12 @@ for __line in "${VERSION_LINES[@]}"; do
   export DB_VOLUME="${DB_VOLUME_PREFIX:-utplsql-dbmatrix}-${label}"
   if [ "$label" = "11xe" ]; then
     export DB_DATA_DIR="${DB_DATA_DIR_11XE:-/u01/app/oracle/oradata}"
+    # utPLSQL 3.1/11g: sem bind BOOLEAN e com stack/timeout limitados; os
+    # testes usam este marcador para skips determinísticos (PRD-150 RF4).
+    export UTPLSQL_LEGACY=1
   else
     export DB_DATA_DIR="${DB_DATA_DIR:-/opt/oracle/oradata}"
+    unset UTPLSQL_LEGACY
   fi
   export DB_IMAGE="$image" DB_CONTAINER="$CONTAINER" DB_PORT ORACLE_PWD ORACLE_PASSWORD DB_DATA_DIR
   export UT3_PASSWORD TEST_PASSWORD UTPLSQL_VERSION="$local_utplsql_version"
@@ -256,7 +260,7 @@ for __line in "${VERSION_LINES[@]}"; do
     # WSL: o `node` é o binário do Windows e não herda env do WSL — WSLENV faz
     # a variável atravessar para o processo dos testes. ORACLE_CLIENT_LIB_DIR/
     # TNS_ADMIN só são usados pelo modo --thick.
-    export WSLENV="UTPLSQL_CONN${ORACLE_CLIENT_LIB_DIR:+:ORACLE_CLIENT_LIB_DIR}${TNS_ADMIN:+:TNS_ADMIN}${WSLENV:+:$WSLENV}"
+    export WSLENV="UTPLSQL_CONN${UTPLSQL_LEGACY:+:UTPLSQL_LEGACY}${ORACLE_CLIENT_LIB_DIR:+:ORACLE_CLIENT_LIB_DIR}${TNS_ADMIN:+:TNS_ADMIN}${WSLENV:+:$WSLENV}"
     test_log="$LOG_DIR/$label.log"
     start_ts="$(date +%s)"
     log "rodando testes: $TESTS_CMD  (UTPLSQL_CONN=$(mask_conn "$UTPLSQL_CONN"))"

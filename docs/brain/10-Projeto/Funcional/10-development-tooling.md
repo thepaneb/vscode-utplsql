@@ -36,7 +36,7 @@ O gate `npm run marketplace:check` (`scripts/marketplace-images.cjs`) valida o m
 | `npm run test:integration` | `pretest:integration` (compile + bundle) → `vscode-test` |
 | `npm run test:integration:smoke` | idem, com `.vscode-test.smoke.mjs` (subconjunto rápido) |
 | `npm run test:integration:thick` | idem, com `.vscode-test.thick.mjs` (Instant Client/thick; host sem `UTPLSQL_CONN` → conexão via `UTPLSQL_THICK_CONN`) |
-| `npm run test:integration:thick-full` | idem, com `.vscode-test.thick-full.mjs` (thick; fora do CI comum; exclui thin-only/UI/standalone/debugger; guarda anti-thin e reciclagem do pool — PRD-125/150) |
+| `npm run test:integration:thick-full` | idem, com `.vscode-test.thick-full.mjs` (thick; fora do CI comum; exclui thin-only/UI/standalone/debugger; guarda anti-thin e reciclagem do pool; 11g usa `UTPLSQL_LEGACY=1` para skips documentados — PRD-125/150) |
 | `npm run test:integration:multiroot` | idem, com `.vscode-test.multiroot.mjs` (workspace multi-root via `.code-workspace`) |
 | `npm run db:matrix` | `bash scripts/db-matrix/run.sh` — testa contra Oracle 11.2 (11g, **thick-only**), 12.2/18c/19c/21c/23ai local (compose); 11.2 e 12.2 usam utPLSQL `v3.1.14` (piso alternativo, PRD-84/123) |
 | `npm run db:matrix:list` | Lista as versões da matriz |

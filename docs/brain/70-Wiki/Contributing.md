@@ -211,7 +211,9 @@ root `CONTRIBUTING.md` for details.
 The thick-full axis has documented skips: UI/commands and multi-root (thin
 axis), `thickMode` (isolated host), thin-only tests, and the DBMS_DEBUG E2E
 files (they leave `pipe get` sessions that destabilize the shared thick host,
-#288). The axis fails explicitly if the host starts thin (PRD-150 RF1).
+#288). On 11g/utPLSQL 3.1, `UTPLSQL_LEGACY=1` skips timeout/cancel, schema-node
+run, randomOrder/BOOLEAN and stack qualification; the full run is green with
+those skips. The axis fails explicitly if the host starts thin (PRD-150 RF1).
 
 **Alternative utPLSQL floors:** each `VERSIONS` line may declare a 4th field
 with the utPLSQL version for that database. `11.2` and `12.2` use **`v3.1.14`** because

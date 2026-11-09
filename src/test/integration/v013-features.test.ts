@@ -6,6 +6,8 @@ import * as path from 'node:path';
 import * as vscode from 'vscode';
 import { firstCol, installOutFormatIsolation } from './helpers';
 
+const LEGACY = process.env.UTPLSQL_LEGACY === '1';
+
 // Testes de integração das features 0.13.0 contra o banco Oracle real:
 //   PRD-69 binds tipados + a_tags | PRD-74 get_suites_info | PRD-77 rebuild
 //   PRD-78 ordem aleatória | PRD-79 escopo de cobertura.
@@ -149,6 +151,8 @@ describeDB('v0.13.0 — features contra o banco real', () => {
 
   it('executeRunOracle com randomOrder + seed (bind BOOLEAN) e a_tags null', async function () {
     this.timeout(120_000);
+    // utPLSQL 3.1/11g não aceita bind BOOLEAN (ORA-03115).
+    if (LEGACY) this.skip();
     const { executeRunOracle, closeOraclePool } = require('../../oracleRunner.js');
     const outputs: string[] = [];
     const run = {
