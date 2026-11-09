@@ -259,6 +259,26 @@ tags: [site, docs]
     </header>
 
     <main>
+      <section aria-labelledby="screenshot">
+        <h2 id="screenshot">See it in action</h2>
+        <a
+          href="https://raw.githubusercontent.com/thepaneb/vscode-utplsql/main/images/marketplace-run.gif"
+          rel="noopener"
+        >
+          <img
+            src="https://raw.githubusercontent.com/thepaneb/vscode-utplsql/main/images/marketplace-test-explorer.png"
+            alt="VS Code Test Explorer showing utPLSQL suites and tests, with Run and Run with Coverage CodeLens"
+            width="1589"
+            height="892"
+            loading="lazy"
+          />
+        </a>
+        <p class="meta">
+          Native Test Explorer — run, debug and see results without leaving VS Code.
+          The link opens the demo recording.
+        </p>
+      </section>
+
       <section aria-labelledby="features">
         <h2 id="features">Why use it</h2>
         <ul class="grid">
