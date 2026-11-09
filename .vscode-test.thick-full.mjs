@@ -42,8 +42,12 @@ const EXCLUDED = new Set([
   // o eixo `--thick`/11g cobre este teste no host isolado.
   'thickLegacyE2E.test.js',
 ]);
+// 11g/utPLSQL 3.1: timeout/cancelamento não interrompem o run no thick — o
+// teste inteiro (inclusive o before) é excluído por eixo, não silenciado.
+const LEGACY = process.env.UTPLSQL_LEGACY === '1';
+const LEGACY_EXCLUDED = new Set(LEGACY ? ['runTimeoutE2E.test.js'] : []);
 const files = readdirSync(join(root, 'out', 'test', 'integration'))
-  .filter((f) => f.endsWith('.test.js') && !EXCLUDED.has(f))
+  .filter((f) => f.endsWith('.test.js') && !EXCLUDED.has(f) && !LEGACY_EXCLUDED.has(f))
   .sort()
   .map((f) => `out/test/integration/${f}`);
 
@@ -81,6 +85,7 @@ export default {
     UTPLSQL_CONN: conn,
     UTPLSQL_THICK_CONN: conn,
     UTPLSQL_THICK_TEST: '1',
+    UTPLSQL_LEGACY: process.env.UTPLSQL_LEGACY ?? '',
     ORACLE_CLIENT_LIB_DIR: libDir,
   },
   mocha: {

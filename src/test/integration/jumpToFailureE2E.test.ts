@@ -5,6 +5,8 @@ import * as path from 'node:path';
 import * as vscode from 'vscode';
 import { installOutFormatIsolation } from './helpers';
 
+const LEGACY = process.env.UTPLSQL_LEGACY === '1';
+
 // E2E do jump-to-failure: cria um package de teste DESCARTÁVEL no banco real,
 // roda `executeRunOracle` nele e verifica o contrato publicado no TestRun —
 // `failed(item, TestMessage)` com `location` apontando para o .pks da suite na
@@ -402,7 +404,9 @@ describeDB('jump to failure E2E — utPLSQL real -> failed() + TestMessage.locat
     );
   });
 
-  it('a mensagem da falha carrega o indício do ut.expect e o stack real', () => {
+  it('a mensagem da falha carrega o indício do ut.expect e o stack real', function () {
+    // utPLSQL 3.1/11g não qualifica o frame com o procedure no stack real.
+    if (LEGACY) this.skip();
     const { parseStackFrames } = require('../../junit.js');
     const text = msgText(cap.failed[0].message);
 
