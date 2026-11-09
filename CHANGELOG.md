@@ -1,5 +1,26 @@
 # Changelog
 
+## 0.20.1
+
+- **Execution and state reliability (PRD-148)**: runs and export are
+  serialized (the next execution waits for the previous unwind before touching
+  `UT_OUTPUT_BUFFER_TMP`); `autoRunQueue=replace` flushes the deferred file at
+  the end of the run; compilation diagnostics map production packages/body to
+  `.pks`/`.pkb`/`.typ`/`.tpb`; schema-mode failures restore after reload with
+  schema-scoped ids and lazy materialization; `mergeSuiteLists` preserves
+  file+DB tests without mutating the input; Oracle activity starts before the
+  connection checkout; `SET TRANSACTION`/`SET ROLE`, SQL Developer XML entities
+  and the default 1521 port are handled, and reporter dedupe is exact.
+- **True thick-full and pool recovery (PRD-150)**: the thick-full axis fails
+  explicitly when the driver starts thin (`UTPLSQL_THICK_ACTIVE`/guard test);
+  after a timeout or cancellation the runner drops the broken connections and
+  discards the pool, so the next run gets a clean pool instead of hanging. The
+  23free thick-full suite is green (80 passing / 13 documented pending); the
+  11g full run is also green (72 passing / 17 documented pending) with
+  legacy-only skips (timeout/cancel on 3.1, bind BOOLEAN, schema-node run and
+  stack qualification) and DBMS_DEBUG E2E excluded as an isolated thick
+  limitation (#288).
+
 ## 0.20.0
 
 - **Audit reliability fixes**: timeouts/cancellations no longer apply partial

@@ -182,11 +182,40 @@ export class TestStateManager {
     const out: vscode.TestItem[] = [];
     for (const [id, r] of this.lastResults) {
       if (r.status !== 'failed' && r.status !== 'error') continue;
-      const item = this.getItem(id);
+      const item = this.getItem(id) ?? this.findTestByLegacyId(id);
       if (item) out.push(item);
     }
     this.lastFailedItems = out;
     return out;
+  }
+
+  /** Há resultado `failed`/`error` no snapshot, mesmo sem itens materializados? */
+  hasFailedResults(): boolean {
+    for (const r of this.lastResults.values()) {
+      if (r.status === 'failed' || r.status === 'error') return true;
+    }
+    return false;
+  }
+
+  /**
+   * Resolve um id de resultado antigo (`test:<pkg>.<proc>`) ou de outro schema
+   * para o item atual por package/proc (PRD-148 RF4/RF7).
+   */
+  private findTestByLegacyId(id: string): vscode.TestItem | undefined {
+    if (!id.startsWith('test:')) return undefined;
+    const base = id.slice('test:'.length).split('#')[0] ?? '';
+    const dot = base.indexOf('.');
+    if (dot <= 0) return undefined;
+    const packagePart = base.slice(0, dot);
+    const pkg = packagePart.slice(packagePart.lastIndexOf(':') + 1).toLowerCase();
+    const proc = base.slice(dot + 1).toLowerCase();
+    for (const [, item] of this.itemMap) {
+      const meta = this.getMeta(item);
+      if (meta?.kind !== 'test') continue;
+      if (meta.packageName.toLowerCase() === pkg && meta.procName.toLowerCase() === proc)
+        return item;
+    }
+    return undefined;
   }
 
   setLastRun(state: LastRunState): void {
@@ -207,6 +236,28 @@ export class TestStateManager {
   }
   getSuiteItem(id: string): vscode.TestItem | undefined {
     return this.suiteMap.get(id);
+  }
+
+  /** Lookup por package com schema opcional (modo schema — PRD-148 RF7). */
+  getSuiteItemFor(packageName: string, schema?: string): vscode.TestItem | undefined {
+    const pkg = packageName.toLowerCase();
+    if (schema) {
+      const exact = this.suiteMap.get(`suite:${schema}:${pkg}`);
+      if (exact) return exact;
+    }
+    return this.suiteMap.get(`suite:${pkg}`);
+  }
+
+  /** Lookup pelo URI do arquivo, desambiguando owners no modo schema. */
+  findSuiteItemForUri(uri: vscode.Uri, packageName?: string): vscode.TestItem | undefined {
+    const target = uri.fsPath.replace(/\\/g, '/').toLowerCase();
+    for (const item of this.suiteMap.values()) {
+      const meta = this.getMeta(item);
+      if (meta?.kind !== 'suite') continue;
+      if (packageName && meta.packageName.toLowerCase() !== packageName.toLowerCase()) continue;
+      if (meta.uri.fsPath.replace(/\\/g, '/').toLowerCase() === target) return item;
+    }
+    return packageName ? this.getSuiteItemFor(packageName) : undefined;
   }
   clearSuiteMap(): void {
     this.suiteMap.clear();

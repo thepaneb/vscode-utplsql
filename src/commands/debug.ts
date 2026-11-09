@@ -6,6 +6,7 @@ import { resolveLastRunTarget, targetFromMeta } from '../debugTargets';
 import { extractSchemaFromPath } from '../discovery';
 import { t } from '../i18n';
 import { isPlsqlDocument } from '../languageIdentity';
+import { collectAllItems } from '../testTree';
 import type { CommandDeps } from './deps';
 
 // RF5: debugger carregado sob demanda (bundle menor).
@@ -189,7 +190,12 @@ export function registerDebug(_context: vscode.ExtensionContext, deps: CommandDe
       vscode.window.showInformationMessage(t(locale, 'ext.debug.disabled'));
       return;
     }
-    const failed = state.getLastFailedItems().filter((i) => targetFromMeta(state.getMeta(i)));
+    let failed = state.getLastFailedItems().filter((i) => targetFromMeta(state.getMeta(i)));
+    if (failed.length === 0 && state.hasFailedResults()) {
+      // PRD-148 RF4: materializa a árvore lazy do schema mode sob demanda.
+      await collectAllItems(deps.controller, state);
+      failed = state.restoreLastFailed().filter((i) => targetFromMeta(state.getMeta(i)));
+    }
     if (failed.length === 0) {
       vscode.window.showWarningMessage(t(locale, 'ext.runFailed.none'));
       return;

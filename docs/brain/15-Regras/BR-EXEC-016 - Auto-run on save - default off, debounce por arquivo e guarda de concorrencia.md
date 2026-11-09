@@ -8,10 +8,10 @@ status: ativo
 severidade: alta
 fonte: codigo
 verificado: 2026-10-02
-implementacao: ["src/autoRun.ts:41", "src/config.ts:151", "src/extension.ts:162", "src/commands/run.ts:523"]
+implementacao: ["src/autoRun.ts", "src/config.ts", "src/extension.ts", "src/commands/run.ts"]
 testes: ["src/test/unit/autoRun.test.ts", "src/test/integration/prd015ExtraE2E.test.ts"]
-prds: ["PRD-50"]
-requisitos: ["PRD-50/RF1", "PRD-50/RF2", "PRD-50/RF3", "PRD-50/RF4", "PRD-50/RNF1", "PRD-50/RNF2"]
+prds: ["PRD-50", "PRD-148"]
+requisitos: ["PRD-50/RF1", "PRD-50/RF2", "PRD-50/RF3", "PRD-50/RF4", "PRD-50/RNF1", "PRD-50/RNF2", "PRD-148/RF2"]
 tags: ["execucao", "watch"]
 ---
 
@@ -24,6 +24,9 @@ Com `utplsql.autoRun` = `off` (default) salvar `.pks` não executa nada; com
 coalescendo saves rápidos, sem cancelar arquivos distintos); havendo execução em
 andamento aplica `utplsql.autoRunQueue` (default `skip`) e reusa `runForUri`
 respeitando o `runnerMode` (BR-EXEC-001) e a flag de cobertura (BR-COB-006).
+Com `replace`, o arquivo fica em `deferred` e é executado pelo
+`notifyRunFinished()` quando a execução termina — sem exigir um novo save —
+em ordem FIFO, um por vez (PRD-148 RF2).
 
 ## Pré-condições
 
@@ -44,9 +47,9 @@ default `off` e guarda de concorrência.
 
 <!-- brain:auto:start:conexoes -->
 - 🗺️ [[MOC - Regras]]
-- 📄 PRDs: [[prd-50-auto-run-on-save|PRD-50]]
-- 🎯 Requisitos: [[prd-50-auto-run-on-save|PRD-50 RF1]] · [[prd-50-auto-run-on-save|PRD-50 RF2]] · [[prd-50-auto-run-on-save|PRD-50 RF3]] · [[prd-50-auto-run-on-save|PRD-50 RF4]] · [[prd-50-auto-run-on-save|PRD-50 RNF1]] · [[prd-50-auto-run-on-save|PRD-50 RNF2]]
+- 📄 PRDs: [[prd-50-auto-run-on-save|PRD-50]] · [[prd-148-execution-state-reliability|PRD-148]]
+- 🎯 Requisitos: [[prd-50-auto-run-on-save|PRD-50 RF1]] · [[prd-50-auto-run-on-save|PRD-50 RF2]] · [[prd-50-auto-run-on-save|PRD-50 RF3]] · [[prd-50-auto-run-on-save|PRD-50 RF4]] · [[prd-50-auto-run-on-save|PRD-50 RNF1]] · [[prd-50-auto-run-on-save|PRD-50 RNF2]] · [[prd-148-execution-state-reliability|PRD-148 RF2]]
 - 🧩 Código: [[COD - autoRun.ts]] · [[COD - config.ts]] · [[COD - extension.ts]] · [[COD - run.ts]]
 - 🧪 Testes: [[TST - autoRun.test.ts]] · [[TST - prd015ExtraE2E.test.ts]]
-- ↩️ Referenciada por: [[Configuration]] · [[Test-explorer]] · [[prd-50-auto-run-on-save|PRD-50]]
+- ↩️ Referenciada por: [[Configuration]] · [[Test-explorer]] · [[Troubleshooting]] · [[prd-148-execution-state-reliability|PRD-148]] · [[prd-50-auto-run-on-save|PRD-50]]
 <!-- brain:auto:end -->

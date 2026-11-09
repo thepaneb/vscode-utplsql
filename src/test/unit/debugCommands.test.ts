@@ -91,6 +91,9 @@ const fakeState = {
   getLastRun() {
     return this.lastRun;
   },
+  hasFailedResults() {
+    return false;
+  },
 };
 
 async function register() {
@@ -376,6 +379,64 @@ test('debugAtCursor: extensão associada à identidade PL/SQL é aceita', async 
   } finally {
     __resetConfigValues();
   }
+});
+
+test('debugAtCursor: anotação de suite depura só o package', async () => {
+  await register();
+  const ed = editor('/tmp/ut_math.pks', PKS) as { selection: { active: { line: number } } };
+  ed.selection.active.line = 1; // --%suite
+  __setActiveTextEditor(ed as never);
+  await commands.__getRegisteredCommand('utplsql.debugAtCursor')?.();
+  assert.deepStrictEqual(startArgs, ['ut_math']);
+});
+
+test('debugAtCursor: erro ao iniciar vira mensagem de erro', async () => {
+  await register();
+  startThrow = true;
+  const ed = editor('/tmp/ut_math.pks', PKS) as { selection: { active: { line: number } } };
+  ed.selection.active.line = 2;
+  __setActiveTextEditor(ed as never);
+  await commands.__getRegisteredCommand('utplsql.debugAtCursor')?.();
+  assert.deepStrictEqual(__getErrorMessages(), ['debug boom']);
+});
+
+test('debugFailed: item sem meta é ignorado', async () => {
+  await register();
+  fakeState.lastFailedItems = [{ id: 'test:sem-meta' }];
+  await commands.__getRegisteredCommand('utplsql.debugFailed')?.();
+  assert.deepStrictEqual(__getWarningMessages(), ['Nenhum teste falhou na última execução.']);
+});
+
+test('debugFailed: erro ao iniciar vira mensagem de erro', async () => {
+  await register();
+  const item = { id: 'test:ut_math.t_sub' };
+  fakeState.lastFailedItems = [item];
+  fakeState.meta.set(item, { kind: 'test', packageName: 'ut_math', procName: 't_sub' });
+  startThrow = true;
+  await commands.__getRegisteredCommand('utplsql.debugFailed')?.();
+  assert.deepStrictEqual(__getErrorMessages(), ['debug boom']);
+});
+
+test('debugAtCursor: erro string vira mensagem', async () => {
+  await register();
+  startThrow = true;
+  startError = 'erro-string';
+  const ed = editor('/tmp/ut_math.pks', PKS) as { selection: { active: { line: number } } };
+  ed.selection.active.line = 2;
+  __setActiveTextEditor(ed as never);
+  await commands.__getRegisteredCommand('utplsql.debugAtCursor')?.();
+  assert.deepStrictEqual(__getErrorMessages(), ['erro-string']);
+});
+
+test('debugFailed: erro string vira mensagem', async () => {
+  await register();
+  const item = { id: 'test:ut_math.t_sub' };
+  fakeState.lastFailedItems = [item];
+  fakeState.meta.set(item, { kind: 'test', packageName: 'ut_math', procName: 't_sub' });
+  startThrow = true;
+  startError = 'erro-string';
+  await commands.__getRegisteredCommand('utplsql.debugFailed')?.();
+  assert.deepStrictEqual(__getErrorMessages(), ['erro-string']);
 });
 
 test('debugAtCursor: sem anotação avisa', async () => {

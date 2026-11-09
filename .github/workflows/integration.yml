@@ -156,12 +156,11 @@ jobs:
         if: inputs.mode != 'thick-full' && inputs.mode != 'thick-full-11g'
         run: bash scripts/db-matrix/run.sh --only 11xe --tests "xvfb-run -a bash -c 'npm run test:integration:thick'"
 
-      - name: Run thick-full on Oracle 23ai Free (experimental)
-        # Eixo thick-full (PRD-125 RF3): ainda tem falhas conhecidas (#288);
-        # `continue-on-error` mantém o dispatch verde e expõe o log. O timeout
-        # evita um host instável segurar o job até o limite de 60 min.
+      - name: Run thick-full on Oracle 23ai Free
+        # Eixo thick-full (PRD-150 RF1/RF5): a guarda falha o passo se o host
+        # iniciar thin. Verde em 2026-11-08 (80 passing/13 pending), sem
+        # `continue-on-error`; o 11g abaixo segue como probe experimental.
         if: github.event_name == 'workflow_dispatch' && inputs.mode == 'thick-full'
-        continue-on-error: true
         timeout-minutes: 20
         run: bash scripts/db-matrix/run.sh --only 23free --tests "xvfb-run -a bash -c 'npm run test:integration:thick-full'"
 

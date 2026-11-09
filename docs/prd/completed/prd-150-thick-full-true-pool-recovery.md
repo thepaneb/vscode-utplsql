@@ -4,7 +4,7 @@
 
 | Campo | Valor |
 |---|---|
-| Status | Proposto |
+| Status | Concluído |
 | Autor | Gil Cleber Barboza |
 | Data | 2026-11-07 |
 | Componente | Testes de integração + matriz de bancos + `oracleRunner` |
@@ -67,9 +67,11 @@ Com o preload (`src/test/integration/thickSetup.ts` + `mocha.require`):
 - Thin full local (2026-11-07): 23free/18xe/12.2/19ee/21xe com
   **125 passing / 17 pending / 0 failing** cada (inclui multi-root).
 - 11g thick-only: **4 passing** no eixo thick smoke.
-- Thick-full 23free: **experimental**, sem execução completa estável em thick
-  real; o dispatch de CI (`thick-full`) também não tem guarda contra o
-  falso-verde thin.
+- Thick-full 23free (2026-11-08, após a correção): **80 passing / 13 pending /
+  0 failing** em ~2 min, com guarda de thick real e sem `continue-on-error`.
+- Thick-full 11g (2026-11-08): **72 passing / 17 pending / 0 failing** com os
+  skips legacy documentados (timeout/cancel, schema-node run, randomOrder/bind
+  BOOLEAN e qualificação do stack); o eixo thick smoke continua verde.
 
 ## 3. Objetivos / Não-objetivos
 
@@ -251,12 +253,16 @@ scripts de matriz/CI.
 
 ## 12. Impacto no cérebro
 
-Atualizar **`BR-TEST-001`** para incluir a guarda de thick real no eixo
-thick-full (com `prds: ["PRD-125", "PRD-150"]`). Se a recuperação do pool após
-`break()` virar invariante de conexão, criar/ajustar uma regra `BR-CONN-*` com
-`prds: ["PRD-150"]`. RNFs sem regra: RNF1 (tempo), RNF2 (sem dep nova),
-RNF3 (determinismo), RNF4 (regressão thin), RNF5 (isolamento de estado) —
-verificadas pelo CI/matriz.
+Regras criadas/ajustadas com `prds: ["PRD-150"]`:
+
+- `BR-TEST-001` — eixo thick-full com guarda `oracledb.thin === false`, skips
+  documentados e dispatch experimental.
+- `BR-CONN-024` — abort descarta conexões quebradas e o pool; o próximo
+  `ensurePool` cria uma instância limpa.
+
+RNFs sem regra: RNF1, RNF2, RNF3, RNF4, RNF5 (tempo, sem dependência nova,
+determinismo dos skips, regressão thin e isolamento de estado — verificadas
+pela matriz/CI).
 
 ## Impacto nas docs
 

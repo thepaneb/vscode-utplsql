@@ -107,6 +107,10 @@ function makeGlobal(over: Partial<UtConfig> = {}): UtConfig {
   };
 }
 
+test('hydrateProfilePasswords: sem SecretStorage é no-op', async () => {
+  await assert.doesNotReject(() => hydrateProfilePasswords());
+});
+
 test('maskConnection: esconde a senha', () => {
   assert.strictEqual(maskConnection('scott/tiger@localhost:1521/XE'), 'scott@localhost:1521/XE');
   assert.strictEqual(maskConnection('user/pass@//host:1521/svc'), 'user@//host:1521/svc');
@@ -149,6 +153,33 @@ test('parseSqlDevConnections: XML valido gera perfis', () => {
   assert.strictEqual(profiles[0].connection, 'scott/tiger@localhost:1521/XEPDB1');
   assert.strictEqual(profiles[1].name, 'TEST');
   assert.ok(profiles[0].id);
+});
+
+test('parseSqlDevConnections: decodifica entidades XML e usa porta 1521 default', () => {
+  const xml = `<Reference name="A&amp;B" userName="scott" password="p&amp;ss">
+    <StringRefAddr addrType="hostname">db&amp;test</StringRefAddr>
+    <StringRefAddr addrType="serviceName">XEPDB1</StringRefAddr>
+  </Reference>`;
+  const profiles = parseSqlDevConnections(xml);
+  assert.strictEqual(profiles.length, 1);
+  assert.strictEqual(profiles[0].name, 'A&B');
+  assert.strictEqual(profiles[0].connection, 'scott/p&ss@db&test:1521/XEPDB1');
+});
+
+test('parseSqlDevConnections: entidades numéricas decimais e hexadecimais', () => {
+  const xml = `<Reference name="A&#38;B&#x26;C" userName="u">
+    <StringRefAddr addrType="hostname">h</StringRefAddr>
+  </Reference>`;
+  const profiles = parseSqlDevConnections(xml);
+  assert.strictEqual(profiles[0].name, 'A&B&C');
+});
+
+test('parseSqlDevConnections: code point inválido e entidade desconhecida ficam literais', () => {
+  const xml = `<Reference name="X&#x110000;Y&unknown;" userName="u">
+    <StringRefAddr addrType="hostname">h</StringRefAddr>
+  </Reference>`;
+  const profiles = parseSqlDevConnections(xml);
+  assert.strictEqual(profiles[0].name, 'X&#x110000;Y&unknown;');
 });
 
 test('parseSqlDevConnections: sem host ignora a conexao', () => {
@@ -327,12 +358,12 @@ test('parseSqlDevConnections: Reference sem name é ignorado', () => {
   assert.deepStrictEqual(parseSqlDevConnections(xml), []);
 });
 
-test('parseSqlDevConnections: host sem porta/serviço usa vazio', () => {
+test('parseSqlDevConnections: host sem porta usa 1521; serviço ausente fica vazio', () => {
   const xml = `<Reference name="X" userName="u" password="p">
     <StringRefAddr addrType="hostname">h</StringRefAddr>
   </Reference>`;
   const ps = parseSqlDevConnections(xml);
-  assert.strictEqual(ps[0].connection, 'u/p@h:/');
+  assert.strictEqual(ps[0].connection, 'u/p@h:1521/');
 });
 
 test('findSqlDevConnectionsPath: sem system dirs retorna undefined', () => {
@@ -609,6 +640,19 @@ test('getProfileConnection: legado com senha inline retorna como esta', () => {
     getProfileConnection({ id: 'leg', name: 'L', connection: 'u/p@h:1521/s' }),
     'u/p@h:1521/s',
   );
+});
+
+test('getProfileConnection: connection sem @ retorna como está', () => {
+  assert.strictEqual(
+    getProfileConnection({ id: 'x', name: 'X', connection: 'sem-arroba' }),
+    'sem-arroba',
+  );
+});
+
+test('setActiveProfile(undefined) limpa o perfil ativo', async () => {
+  __resetConfigValues();
+  await setActiveProfile(undefined);
+  assert.strictEqual(getActiveProfile(), undefined);
 });
 
 test('migrateLegacyProfiles: move senha legada e reescreve a settings', async () => {

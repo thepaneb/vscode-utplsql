@@ -2,13 +2,13 @@
 tipo: prd
 id: PRD-148
 aliases: [PRD-148]
-status: proposed
+status: completed
 titulo: "Confiabilidade de execução e estado após a auditoria 0.20.0"
 versao: "0.20.1"
 data: "2026-11-07"
 autor: "Gil Cleber Barboza"
-verificado: "2026-11-07"
-regras: []
+verificado: "2026-11-08"
+regras: ["BR-DISC-001", "BR-EXEC-016", "BR-EXEC-018", "BR-STATE-001", "BR-STATE-002", "BR-UI-004", "BR-UI-008"]
 docs: ["CHANGELOG", "wiki/Architecture.md", "wiki/Troubleshooting.md"]
 tags: [prd]
 ---
@@ -213,10 +213,20 @@ comportamento de `replace` passa a cumprir a descrição.
 
 ## 12. Impacto no cérebro
 
-Criar/ajustar regras `BR-EXEC-*` (serialização/outcome), `BR-STATE-*`
-(restore/IDs) e `BR-DISC-*` (união arquivo+banco) com `prds: ["PRD-148"]`,
-`implementacao:` e `testes:`. Se alguma RF não gerar regra, registrar
-**nenhuma** na implementação e justificar.
+Regras criadas/ajustadas com `prds: ["PRD-148"]`:
+
+- `BR-EXEC-018` — serialização de runs/export antes do buffer.
+- `BR-EXEC-016` — auto-run `replace` com flush real ao fim do run.
+- `BR-STATE-001` — restore de falhas no schema mode sob demanda.
+- `BR-STATE-002` — IDs de suite/teste com schema.
+- `BR-DISC-001` — união arquivo+banco sem mutação.
+- `BR-UI-004` — `hasFailures` derivado de `lastResults` no reload.
+- `BR-UI-008` — diagnósticos de produção por tipo de objeto.
+
+RNFs sem regra: RNF1, RNF2, RNF3 (sem dependência nova; cobertura verificada
+pelo `.c8rc`; nenhuma chave de i18n nova foi necessária).
+O caso JUnit duplicado do RF8 já estava implementado na 0.20.0 e foi
+apenas confirmado pela regressão.
 
 ## Impacto nas docs
 
@@ -229,6 +239,13 @@ Criar/ajustar regras `BR-EXEC-*` (serialização/outcome), `BR-STATE-*`
 
 <!-- brain:auto:start:conexoes -->
 - 🗺️ [[MOC - PRDs]]
+- 📐 Regras: [[BR-DISC-001 - mergeSuiteLists devolve a uniao sem mutar a entrada|BR-DISC-001]] · [[BR-EXEC-016 - Auto-run on save - default off, debounce por arquivo e guarda de concorrencia|BR-EXEC-016]] · [[BR-EXEC-018 - Runs e export sao serializados antes do proximo uso do buffer|BR-EXEC-018]] · [[BR-STATE-001 - Falhas persistidas restauram no schema mode sob demanda|BR-STATE-001]] · [[BR-STATE-002 - IDs de suite e teste incluem o schema no schema mode|BR-STATE-002]] · [[BR-UI-004 - utplsql-hasFailures derivado de lastFailedItems (failed ou error)|BR-UI-004]] · [[BR-UI-008 - Diagnósticos de compilação mapeiam ALL_ERRORS e usam source utPLSQL Compilation|BR-UI-008]]
 - 🔗 PRDs relacionados: [[prd-128-event-bus-internal|PRD-128]] · [[prd-129-orchestration-strategy|PRD-129]] · [[prd-132-ux-execution-dryrun-jump|PRD-132]] · [[prd-139-state-store-slicing-lru|PRD-139]] · [[prd-144-security-runtime-hardening|PRD-144]] · [[prd-149-performance-engineering-quality|PRD-149]]
+- 🎯 RF1 — Serialização de runs → [[BR-EXEC-018 - Runs e export sao serializados antes do proximo uso do buffer|BR-EXEC-018]]
+- 🎯 RF2 — Auto-run “replace” com flush real → [[BR-EXEC-016 - Auto-run on save - default off, debounce por arquivo e guarda de concorrencia|BR-EXEC-016]]
+- 🎯 RF3 — Diagnósticos de compilação completos → [[BR-UI-008 - Diagnósticos de compilação mapeiam ALL_ERRORS e usam source utPLSQL Compilation|BR-UI-008]]
+- 🎯 RF4 — Restore no schema mode → [[BR-STATE-001 - Falhas persistidas restauram no schema mode sob demanda|BR-STATE-001]] · [[BR-UI-004 - utplsql-hasFailures derivado de lastFailedItems (failed ou error)|BR-UI-004]]
+- 🎯 RF5 — Fusão arquivo+banco preservando a união → [[BR-DISC-001 - mergeSuiteLists devolve a uniao sem mutar a entrada|BR-DISC-001]]
+- 🎯 RF7 — IDs com schema → [[BR-STATE-002 - IDs de suite e teste incluem o schema no schema mode|BR-STATE-002]]
 - 🚀 ⬅️ release anterior: [[prd-147-marketplace-listing-page|PRD-147 (0.20.0)]] · ➡️ próxima release: [[prd-128-event-bus-internal|PRD-128 (0.21.0)]]
 <!-- brain:auto:end -->

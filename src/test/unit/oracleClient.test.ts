@@ -101,6 +101,25 @@ test('falha DPI-1047 devolve erro sem lancar', () => {
   assert.match(String(again.error), /DPI-1047/);
 });
 
+test('libDir/configDir undefined usam fallback vazio', () => {
+  const { mod, calls } = makeFakeOracledb();
+  const semLib = ensureOracleClient(mod, 'thick', undefined as never, '');
+  assert.strictEqual(semLib.thick, false);
+  resetOracleClientStateForTests();
+  const ok = ensureOracleClient(mod, 'thick', '/opt/ic', undefined as never);
+  assert.strictEqual(ok.thick, true);
+  assert.deepStrictEqual(calls, [{ libDir: '/opt/ic' }]);
+});
+
+test('erro não-Error no init vira string', () => {
+  const { mod } = makeFakeOracledb(() => {
+    throw 'falha-string';
+  });
+  const result = ensureOracleClient(mod, 'thick', '/opt/ic', '');
+  assert.strictEqual(result.thick, false);
+  assert.match(String(result.error), /falha-string/);
+});
+
 test('initOracleClient ausente na build devolve erro', () => {
   const mod = {} as unknown as typeof import('oracledb');
   const result = ensureOracleClient(mod, 'thick', '/opt/ic', '');

@@ -194,6 +194,34 @@ test('applyResultsFromCases: aplica o resultado a todas as cópias do modo tag',
   assert.strictEqual(run.skippedList.length, 0);
 });
 
+test('applyResultsFromCases: owner do classname desambigua schema mode', () => {
+  const app = makeTestItem('test:APP:ut_app.t_one');
+  const other = makeTestItem('test:OTHER:ut_app.t_one');
+  const metaMap = new Map<vscode.TestItem, ItemMeta>();
+  metaMap.set(
+    app,
+    makeMeta({ packageName: 'UT_APP', procName: 't_one', description: 't_one', schema: 'APP' }),
+  );
+  metaMap.set(
+    other,
+    makeMeta({ packageName: 'UT_APP', procName: 't_one', description: 't_one', schema: 'OTHER' }),
+  );
+  const run = makeRun();
+  const state = makeState(metaMap);
+  const resultMap = applyResultsFromCases(
+    [{ classname: 'OTHER.UT_APP', name: 't_one', status: 'passed' }],
+    [app, other],
+    run,
+    state,
+  );
+  assert.strictEqual(resultMap.get('test:OTHER:ut_app.t_one')?.status, 'passed');
+  assert.strictEqual(resultMap.get('test:APP:ut_app.t_one'), undefined);
+  assert.deepStrictEqual(
+    run.passedList.map((p) => p.t.id),
+    ['test:OTHER:ut_app.t_one'],
+  );
+});
+
 test('applyResultsFromCases: caso duplicado não aplica duas vezes no mesmo item', () => {
   const cases: TestCaseResult[] = [
     { classname: 'pkg', name: 't_one', status: 'passed' },

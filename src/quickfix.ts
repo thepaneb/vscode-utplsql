@@ -4,6 +4,7 @@ import { t } from './i18n';
 import { logger } from './logger';
 import { ensureOracleClient } from './oracleClient';
 import {
+  beginOracleActivity,
   discoverUtplsqlSchema,
   ensurePool,
   findInvalidUt3Objects,
@@ -81,45 +82,51 @@ export class SetupValidator {
         return diagnostics;
       }
 
-      const pool = await ensurePool(oracledb, conn, cfg).catch(() => undefined);
-      let oracleConn: import('oracledb').Connection;
+      // PRD-148 RF6: cobre a aquisição e o uso da conexão numa única atividade.
+      const activity = beginOracleActivity(cfg);
       try {
-        oracleConn = pool
-          ? await pool.getConnection()
-          : await oracledb.getConnection(parseConnString(conn));
-      } catch (e) {
-        logger.debug('validateOnActivation: falha ao conectar', { error: String(e) });
-        diagnostics.push({
-          code: 'UTPLSQL_BAD_CONN',
-          severity: vscode.DiagnosticSeverity.Error,
-          message: t(locale, 'quickfix.badConn'),
-          command: {
-            title: t(locale, 'quickfix.reconfigureConn'),
-            command: 'utplsql.configureConnection',
-          },
-        });
-        return diagnostics;
-      }
+        const pool = await ensurePool(oracledb, conn, cfg).catch(() => undefined);
+        let oracleConn: import('oracledb').Connection;
+        try {
+          oracleConn = pool
+            ? await pool.getConnection()
+            : await oracledb.getConnection(parseConnString(conn));
+        } catch (e) {
+          logger.debug('validateOnActivation: falha ao conectar', { error: String(e) });
+          diagnostics.push({
+            code: 'UTPLSQL_BAD_CONN',
+            severity: vscode.DiagnosticSeverity.Error,
+            message: t(locale, 'quickfix.badConn'),
+            command: {
+              title: t(locale, 'quickfix.reconfigureConn'),
+              command: 'utplsql.configureConnection',
+            },
+          });
+          return diagnostics;
+        }
 
-      try {
-        const info = await getOracleInfo(oracleConn);
-        if (info.utVersion && info.dbVersion) {
-          if (semverLt(info.utVersion, UTPLSQL_MIN_VERSION)) {
-            diagnostics.push({
-              code: 'UTPLSQL_OLD_VERSION',
-              severity: vscode.DiagnosticSeverity.Warning,
-              message: t(locale, 'quickfix.oldVersion', { version: info.utVersion }),
-              command: {
-                title: t(locale, 'quickfix.oldVersionUpgrade'),
-                command: 'vscode.open',
-                arguments: [vscode.Uri.parse('https://github.com/utPLSQL/utPLSQL/releases')],
-              },
-              helpUrl: 'https://github.com/utPLSQL/utPLSQL/releases',
-            });
+        try {
+          const info = await getOracleInfo(oracleConn);
+          if (info.utVersion && info.dbVersion) {
+            if (semverLt(info.utVersion, UTPLSQL_MIN_VERSION)) {
+              diagnostics.push({
+                code: 'UTPLSQL_OLD_VERSION',
+                severity: vscode.DiagnosticSeverity.Warning,
+                message: t(locale, 'quickfix.oldVersion', { version: info.utVersion }),
+                command: {
+                  title: t(locale, 'quickfix.oldVersionUpgrade'),
+                  command: 'vscode.open',
+                  arguments: [vscode.Uri.parse('https://github.com/utPLSQL/utPLSQL/releases')],
+                },
+                helpUrl: 'https://github.com/utPLSQL/utPLSQL/releases',
+              });
+            }
           }
+        } finally {
+          await oracleConn.close().catch(() => {});
         }
       } finally {
-        await oracleConn.close().catch(() => {});
+        await activity.end();
       }
     }
 
@@ -233,40 +240,47 @@ export class SetupValidator {
       return;
     }
 
+    // PRD-148 RF6: `begin` antes de `ensurePool`, com `end` garantido mesmo se
+    // a aquisição falhar (o pool não pode ser fechado no meio do checkout).
+    const activity = beginOracleActivity(cfg);
     try {
-      const pool = await ensurePool(oracledb, connStr, cfg).catch(() => undefined);
-      const conn = pool
-        ? await pool.getConnection()
-        : await oracledb.getConnection(parseConnString(connStr));
       try {
-        const prefix = await discoverUtplsqlSchema(conn);
-        const schema = prefix.replace(/\.$/, '') || 'UT3';
-        await conn.execute(
-          'BEGIN DBMS_UTILITY.COMPILE_SCHEMA(schema => :schema, compile_all => FALSE); END;',
-          { schema },
-          { autoCommit: true },
-        );
-
-        const issue = await findInvalidUt3Objects(oracledb, connStr, cfg);
-        if (!issue || issue.invalid.length === 0) {
-          this.removeDiagnostic('UTPLSQL_INVALID_OBJECTS');
-          vscode.window.showInformationMessage(t(locale, 'quickfix.recompiledOk', { schema }));
-        } else {
-          const names = issue.invalid.map((i) => i.name).join(', ');
-          vscode.window.showWarningMessage(
-            t(locale, 'quickfix.stillInvalid', {
-              count: issue.invalid.length,
-              schema,
-              names,
-            }),
+        const pool = await ensurePool(oracledb, connStr, cfg).catch(() => undefined);
+        const conn = pool
+          ? await pool.getConnection()
+          : await oracledb.getConnection(parseConnString(connStr));
+        try {
+          const prefix = await discoverUtplsqlSchema(conn);
+          const schema = prefix.replace(/\.$/, '') || 'UT3';
+          await conn.execute(
+            'BEGIN DBMS_UTILITY.COMPILE_SCHEMA(schema => :schema, compile_all => FALSE); END;',
+            { schema },
+            { autoCommit: true },
           );
+
+          const issue = await findInvalidUt3Objects(oracledb, connStr, cfg);
+          if (!issue || issue.invalid.length === 0) {
+            this.removeDiagnostic('UTPLSQL_INVALID_OBJECTS');
+            vscode.window.showInformationMessage(t(locale, 'quickfix.recompiledOk', { schema }));
+          } else {
+            const names = issue.invalid.map((i) => i.name).join(', ');
+            vscode.window.showWarningMessage(
+              t(locale, 'quickfix.stillInvalid', {
+                count: issue.invalid.length,
+                schema,
+                names,
+              }),
+            );
+          }
+        } finally {
+          await conn.close().catch(() => {});
         }
-      } finally {
-        await conn.close().catch(() => {});
+      } catch (e) {
+        const msg = e instanceof Error ? e.message : String(e);
+        vscode.window.showErrorMessage(t(locale, 'quickfix.recompileFail', { error: msg }));
       }
-    } catch (e) {
-      const msg = e instanceof Error ? e.message : String(e);
-      vscode.window.showErrorMessage(t(locale, 'quickfix.recompileFail', { error: msg }));
+    } finally {
+      await activity.end();
     }
   }
 

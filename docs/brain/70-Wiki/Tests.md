@@ -4,14 +4,14 @@ status: ativo
 titulo: "Tests"
 publicar: docs/wiki/Tests.md
 origem: ["01-test-discovery","02-test-execution","03-results-and-reporting"]
-verificado: 2026-10-31
-regras: ["BR-TEST-001", "BR-TEST-002", "BR-TEST-004", "BR-TEST-005"]
+verificado: 2026-11-08
+regras: ["BR-TEST-001", "BR-TEST-002", "BR-TEST-004", "BR-TEST-005", "BR-CONN-024"]
 tags: [wiki]
 ---
 
 # Tests
 
-<!-- prd:PRD-106 --> <!-- prd:PRD-107 --> <!-- prd:PRD-125 --> <!-- prd:PRD-147 -->
+<!-- prd:PRD-106 --> <!-- prd:PRD-107 --> <!-- prd:PRD-125 --> <!-- prd:PRD-147 --> <!-- prd:PRD-150 -->
 
 O gate `src/test/unit/marketplaceImages.test.ts` valida o manifesto de imagens do Marketplace.
 
@@ -161,10 +161,19 @@ The performance harness (PRD-106) generates a deterministic in-database fixture
 `test-results/perf-report.jsonl`; the script is intended for weekly/dispatch CI
 and never for the PR critical path.
 
-The thick-full axis (PRD-125) runs the complete integration suite with
+The thick-full axis (PRD-125/PRD-150) runs the integration suite with
 `npm run test:integration:thick-full`. The harness initializes Instant Client
 before raw-connection tests, so it no longer silently falls back to thin
-(`NJS-118`). The complete true-thick suite is still **experimental** and is
-tracked by PRD-150 (0.20.1); 11g keeps the thick smoke (the full 11g run remains
-an experimental dispatch limitation).
+(`NJS-118`), and `thickSetup` fails the host if `oracledb.thin !== false`
+(guard test). After a timeout/cancellation the runner drops the broken
+connections and discards the pool, so the next run gets a clean pool.
+
+Known skips in this axis (documented, not `continue-on-error`): UI/commands and
+multi-root (thin axis), `thickMode` (isolated host), thin-only tests, and the
+DBMS_DEBUG E2E files — they pass isolated but leave `pipe get` sessions that
+destabilize the shared thick host (#288). On 11g/utPLSQL 3.1 the axis also skips
+`runTimeoutE2E` (before-hook flow), schema-node run, cancellation, random-order
+bind BOOLEAN and the stack-frame qualification assertion; with those skips the
+11g full is green (72 passing / 17 pending). The 11g dispatch remains
+experimental; the thick smoke (4 tests) is the supported gate.
 

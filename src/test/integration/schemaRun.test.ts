@@ -3,6 +3,8 @@ import * as assert from 'node:assert';
 import * as vscode from 'vscode';
 import { installOutFormatIsolation } from './helpers';
 
+const LEGACY = process.env.UTPLSQL_LEGACY === '1';
+
 // Integração do executeRun no modo schema + validação de reporters + cancelamento
 // real. Gate: UTPLSQL_CONN no .env (mesma regra dos demais testes de integração).
 //
@@ -141,6 +143,9 @@ describeDB('executeRun schema-mode + reporters + cancelamento (banco real)', () 
 
   it('run a partir de um nó Schema expande os filhos e aplica resultados', async function () {
     this.timeout(180_000);
+    // O schema UT3 do 11g contém fixtures/perf que o utPLSQL 3.1 não executa
+    // de forma estável; o eixo 23free cobre o run por nó Schema.
+    if (LEGACY) this.skip();
     const dbc = await openRaw();
     const root = vscode.workspace.workspaceFolders?.[0]?.uri;
     assert.ok(root, 'workspace folder required');
@@ -158,6 +163,9 @@ describeDB('executeRun schema-mode + reporters + cancelamento (banco real)', () 
     const controller = vscode.tests.createTestController('utplsql-it-schemarun', 'IT SchemaRun');
     const state = new TestStateManager();
     try {
+      // Um run anterior interrompido pode ter deixado o package lento no
+      // schema; ele entraria no "run do nó Schema" e mascararia este teste.
+      await dropPackage(dbc, SLOW_PKG);
       await createPassingPackage(dbc, SCHEMA_PKG, 'schema-run-marker');
       await cfg.update('organization', 'schema', vscode.ConfigurationTarget.Workspace);
       await cfg.update(
@@ -234,6 +242,9 @@ describeDB('executeRun schema-mode + reporters + cancelamento (banco real)', () 
 
   it('cancelamento interrompe um teste longo (busy-wait de 8s)', async function () {
     this.timeout(120_000);
+    // utPLSQL 3.1/11g: o break não interrompe o run no thick (limitação
+    // documentada da PRD-150; o eixo 23free cobre este caminho).
+    if (LEGACY) this.skip();
     const dbc = await openRaw();
     const { executeRunOracle } = require('../../oracleRunner.js');
     const { TestStateManager } = require('../../state.js');

@@ -24,6 +24,11 @@ export interface RunCommands {
   /** Há execução em andamento? (usada pelo auto-run/watch — PRD-50). */
   isRunning(): boolean;
   cancel(): void;
+  /**
+   * Registra o callback de fim de execução (auto-run `replace` — PRD-148 RF2).
+   * O callback roda depois que a promise pendente é limpa.
+   */
+  setOnRunFinished(callback: (() => void) | undefined): void;
 }
 
 export function registerRunCommands(
@@ -33,17 +38,26 @@ export function registerRunCommands(
   const { controller, state } = deps;
   const locale = getExtensionLocale();
   let currentRunToken: vscode.CancellationTokenSource | undefined;
+  // PRD-148 RF1: um run só começa depois que o anterior (cancelado) terminou
+  // de desenrolar. A promise cobre run, export e auto-run, que compartilham
+  // `UT_OUTPUT_BUFFER_TMP` e o estado de resultados.
+  let currentRunPromise: Promise<void> | undefined;
+  let onRunFinished: (() => void) | undefined;
 
-  const runWithProgress = async (
-    request: vscode.TestRunRequest,
+  /**
+   * Enfileira uma execução Oracle. Cancela a execução ativa, espera o unwind
+   * dela e só então chama `fn`. Devolve `undefined` quando a execução foi
+   * cancelada enquanto aguardava a anterior.
+   */
+  const startExecution = <T>(
     externalToken: vscode.CancellationToken | undefined,
-    coverage: boolean,
-  ): Promise<void> => {
+    fn: (cts: vscode.CancellationTokenSource) => Promise<T>,
+  ): Promise<T | undefined> => {
+    const previous = currentRunPromise;
     currentRunToken?.cancel();
 
     const cts = new vscode.CancellationTokenSource();
     currentRunToken = cts;
-
     const externalSub = externalToken?.onCancellationRequested(() => {
       try {
         cts.cancel();
@@ -52,7 +66,39 @@ export function registerRunCommands(
       }
     });
 
-    try {
+    const execution = (async (): Promise<T | undefined> => {
+      try {
+        if (previous) await previous;
+        // Cancelado enquanto esperava o run anterior: não inicia o próximo.
+        if (cts.token.isCancellationRequested) return undefined;
+        return await fn(cts);
+      } finally {
+        externalSub?.dispose();
+        if (currentRunToken === cts) currentRunToken = undefined;
+        cts.dispose();
+      }
+    })();
+
+    // `isRunning()` olha a promise, não o token: entre o cancelamento e o
+    // unwind a execução ainda está pendente (PRD-148 RF1).
+    const tracked = execution.then(
+      () => undefined,
+      () => undefined,
+    );
+    currentRunPromise = tracked;
+    return execution.finally(() => {
+      if (currentRunPromise === tracked) currentRunPromise = undefined;
+      // PRD-148 RF2: só depois de limpar a promise o auto-run pode reagendar.
+      onRunFinished?.();
+    });
+  };
+
+  const runWithProgress = async (
+    request: vscode.TestRunRequest,
+    externalToken: vscode.CancellationToken | undefined,
+    coverage: boolean,
+  ): Promise<void> => {
+    await startExecution(externalToken, async (cts) => {
       await vscode.window.withProgress(
         {
           location: vscode.ProgressLocation.Notification,
@@ -117,11 +163,7 @@ export function registerRunCommands(
           }
         },
       );
-    } finally {
-      externalSub?.dispose();
-      if (currentRunToken === cts) currentRunToken = undefined;
-      cts.dispose();
-    }
+    });
   };
 
   const runForUri = async (uri: vscode.Uri, coverage: boolean): Promise<void> => {
@@ -129,7 +171,7 @@ export function registerRunCommands(
       .map((i) => state.getMeta(i))
       .filter(Boolean) as ItemMeta[];
     const include = filterSuitesByUri(metas, uri.fsPath)
-      .map((m) => state.getSuiteItem(`suite:${m.packageName.toLowerCase()}`))
+      .map((m) => state.getSuiteItemFor(m.packageName, m.schema))
       .filter(Boolean) as vscode.TestItem[];
     if (!include.length) {
       vscode.window.showWarningMessage(t(locale, 'ext.noSuiteInFile'));
@@ -160,7 +202,7 @@ export function registerRunCommands(
       .map((i) => state.getMeta(i))
       .filter(Boolean) as ItemMeta[];
     const include = relatedSuiteMetas(metas, editor.document.fileName)
-      .map((m) => state.getSuiteItem(`suite:${m.packageName.toLowerCase()}`))
+      .map((m) => state.getSuiteItemFor(m.packageName, m.schema))
       .filter(Boolean) as vscode.TestItem[];
     if (!include.length) {
       const file = editor.document.fileName.replace(/\\/g, '/').split('/').pop() ?? '';
@@ -184,7 +226,7 @@ export function registerRunCommands(
       .map((i) => state.getMeta(i))
       .filter(Boolean) as ItemMeta[];
     const include = filterSuitesByFolder(metas, uri.fsPath)
-      .map((m) => state.getSuiteItem(`suite:${m.packageName.toLowerCase()}`))
+      .map((m) => state.getSuiteItemFor(m.packageName, m.schema))
       .filter(Boolean) as vscode.TestItem[];
     if (!include.length) {
       vscode.window.showWarningMessage(t(locale, 'ext.noSuiteInFolder'));
@@ -205,8 +247,11 @@ export function registerRunCommands(
     packageName: string,
     procName: string,
     coverage: boolean,
+    uri?: vscode.Uri,
   ): Promise<void> => {
-    const suiteItem = state.getSuiteItem(`suite:${packageName.toLowerCase()}`);
+    const suiteItem = uri
+      ? state.findSuiteItemForUri(uri, packageName)
+      : state.getSuiteItemFor(packageName);
     if (!suiteItem) return;
     const testItems: vscode.TestItem[] = [];
     for (const [, c] of suiteItem.children) {
@@ -228,8 +273,14 @@ export function registerRunCommands(
     );
   };
 
-  const findTestItem = (packageName: string, procName: string): vscode.TestItem | undefined => {
-    const suiteItem = state.getSuiteItem(`suite:${packageName.toLowerCase()}`);
+  const findTestItem = (
+    packageName: string,
+    procName: string,
+    uri?: vscode.Uri,
+  ): vscode.TestItem | undefined => {
+    const suiteItem = uri
+      ? state.findSuiteItemForUri(uri, packageName)
+      : state.getSuiteItemFor(packageName);
     if (!suiteItem) return undefined;
     let found: vscode.TestItem | undefined;
     suiteItem.children.forEach((c) => {
@@ -305,8 +356,8 @@ export function registerRunCommands(
         if (annotation) {
           const target =
             annotation.type === 'test' && annotation.procName
-              ? findTestItem(annotation.packageName, annotation.procName)
-              : state.getSuiteItem(`suite:${annotation.packageName.toLowerCase()}`);
+              ? findTestItem(annotation.packageName, annotation.procName, editor.document.uri)
+              : state.findSuiteItemForUri(editor.document.uri, annotation.packageName);
           if (target) include = [target];
         }
       }
@@ -337,33 +388,30 @@ export function registerRunCommands(
     ]);
     if (!dest) return;
 
-    const cts = new vscode.CancellationTokenSource();
-    currentRunToken = cts;
     try {
-      const request = new vscode.TestRunRequest(include, undefined, state.runProfile);
-      const text = await executeRun(
-        controller,
-        request,
-        cts.token,
-        false,
-        state,
-        undefined,
-        undefined,
-        {
-          name: reporter,
-          charset: cfg.reporterClientCharacterSet || undefined,
-          colorConsole: cfg.reporterColorConsole || undefined,
-        },
-      );
-      if (cts.token.isCancellationRequested || text === undefined) return;
-      await deliverExport(reporter, text, dest.value);
+      await startExecution(undefined, async (cts) => {
+        const request = new vscode.TestRunRequest(include, undefined, state.runProfile);
+        const text = await executeRun(
+          controller,
+          request,
+          cts.token,
+          false,
+          state,
+          undefined,
+          undefined,
+          {
+            name: reporter,
+            charset: cfg.reporterClientCharacterSet || undefined,
+            colorConsole: cfg.reporterColorConsole || undefined,
+          },
+        );
+        if (cts.token.isCancellationRequested || text === undefined) return;
+        await deliverExport(reporter, text, dest.value);
+      });
     } catch (e) {
       vscode.window.showErrorMessage(
         t(locale, 'ext.export.failed', { error: e instanceof Error ? e.message : String(e) }),
       );
-    } finally {
-      if (currentRunToken === cts) currentRunToken = undefined;
-      cts.dispose();
     }
   };
 
@@ -463,7 +511,7 @@ export function registerRunCommands(
         const docUri = vscode.Uri.parse(args.uri);
         if (args.type === 'test' && args.procName) {
           const procName = args.procName;
-          const suiteItem = state.getSuiteItem(`suite:${args.packageName.toLowerCase()}`);
+          const suiteItem = state.findSuiteItemForUri(docUri, args.packageName);
           if (!suiteItem) return;
           const testItems: vscode.TestItem[] = [];
           for (const [, c] of suiteItem.children) {
@@ -509,6 +557,7 @@ export function registerRunCommands(
               lr.packageName,
               lr.procName,
               effectiveCoverage(lr.coverage, state.coverageAlways),
+              lr.uri,
             );
           }
           break;
@@ -530,14 +579,25 @@ export function registerRunCommands(
       }
       const cursorCoverage = effectiveCoverage(undefined, state.coverageAlways);
       if (annotation.type === 'test' && annotation.procName) {
-        await runSingleTest(annotation.packageName, annotation.procName, cursorCoverage);
+        await runSingleTest(
+          annotation.packageName,
+          annotation.procName,
+          cursorCoverage,
+          editor.document.uri,
+        );
       } else {
         await runForUri(editor.document.uri, cursorCoverage);
       }
     }),
     vscode.commands.registerCommand('utplsql.runRelated', () => runRelated()),
     vscode.commands.registerCommand('utplsql.runFailed', async () => {
-      const failed = state.getLastFailedItems();
+      let failed = state.getLastFailedItems();
+      // PRD-148 RF4: no schema mode a árvore é lazy; se o snapshot tem falhas
+      // mas os itens ainda não existem, materializa e tenta de novo.
+      if (failed.length === 0 && state.hasFailedResults()) {
+        await collectAllItems(controller, state);
+        failed = state.restoreLastFailed();
+      }
       if (failed.length === 0) {
         vscode.window.showInformationMessage(t(locale, 'ext.runFailed.none'));
         return;
@@ -561,8 +621,10 @@ export function registerRunCommands(
   return {
     runWithProgress,
     runUri: (uri, coverage) => runForUri(uri, coverage),
-    isRunning: () =>
-      currentRunToken !== undefined && !currentRunToken.token.isCancellationRequested,
+    isRunning: () => currentRunPromise !== undefined,
     cancel: () => currentRunToken?.cancel(),
+    setOnRunFinished: (callback) => {
+      onRunFinished = callback;
+    },
   };
 }

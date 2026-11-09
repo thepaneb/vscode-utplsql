@@ -230,7 +230,7 @@ function makeTestRun(cap: Capture, name: string, token: vscode.CancellationToken
   } as unknown as vscode.TestRun;
 }
 
-describeDB('run timeout E2E — break expira o teste e o pool sobrevive', () => {
+describeDB('run timeout E2E — break expira o teste e o pool é reciclado', () => {
   installOutFormatIsolation();
 
   let slowRunMs = 0;
@@ -385,10 +385,13 @@ describeDB('run timeout E2E — break expira o teste e o pool sobrevive', () => 
       }
       slowRunMs = Date.now() - t0;
       cancelRequested = cts.token.isCancellationRequested;
+      // O pool quebrado é descartado em background (PRD-150 RF2); dá um
+      // instante para o close(0) refletir no status.
+      await new Promise((r) => setTimeout(r, 100));
       inUseAfterTimeout = pool.connectionsInUse;
       poolOpenAfterTimeout = pool.status === oracledb.POOL_STATUS_OPEN;
 
-      // ── 2º run: package que passa, no MESMO pool, sem timeout ─────────────
+      // ── 2º run: package que passa, sem timeout, após o pool ser reciclado ──
       afterCap = { passed: [], output: [] };
       afterCounts = { passed: 0, failed: 0, skipped: 0, errored: 0 };
       const t1 = Date.now();
@@ -410,6 +413,10 @@ describeDB('run timeout E2E — break expira o teste e o pool sobrevive', () => 
         cts.token,
       );
       afterMs = Date.now() - t1;
+
+      // PRD-150 RF2: o pool com conexões quebradas não pode voltar ao cache.
+      const currentPool = await ensurePool(oracledb, conn, readConfig());
+      assert.notStrictEqual(currentPool, pool, 'o pool quebrado não pode ser reutilizado');
 
       // O DBMS_OUTPUT é bônus: prova que a sessão do 2º run (a mesma que saiu
       // do `break`) ainda drena output. Ausência não reprova o E2E.
@@ -488,20 +495,19 @@ describeDB('run timeout E2E — break expira o teste e o pool sobrevive', () => 
     );
   });
 
-  it('o pool não fica com conexão em uso depois do break', () => {
-    assert.strictEqual(
-      inUseAfterTimeout,
-      0,
-      `o run deveria devolver as 2 conexões (conn1/conn2) ao pool; em uso: ${inUseAfterTimeout} (durante o run: ${poolInUseDuringFirstRun})`,
+  it('o pool quebrado é descartado depois do break', () => {
+    assert.ok(
+      inUseAfterTimeout === 0 || inUseAfterTimeout === undefined,
+      `o run deveria devolver as 2 conexões (conn1/conn2); em uso: ${inUseAfterTimeout} (durante o run: ${poolInUseDuringFirstRun})`,
     );
     assert.strictEqual(
       poolOpenAfterTimeout,
-      true,
-      'o pool deveria continuar aberto após o timeout (break ≠ close)',
+      false,
+      'o pool com conexões quebradas deve ser fechado, não permanecer aberto no cache',
     );
   });
 
-  it('um run real seguinte, no mesmo pool, termina com passed >= 1', () => {
+  it('um run real seguinte, em pool novo, termina com passed >= 1', () => {
     const out = afterCap.output.join('');
     assert.ok(
       afterCounts.passed >= 1,

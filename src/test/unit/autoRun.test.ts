@@ -13,6 +13,7 @@ function harness(
   over: Partial<AutoRunOptions> = {},
   running = false,
   eligible?: (u: string) => boolean,
+  runImpl?: (uri: string) => void | Promise<void>,
 ) {
   const scheduled: Scheduled[] = [];
   const cleared: Scheduled[] = [];
@@ -22,6 +23,7 @@ function harness(
   const runner = createAutoRunner(() => opts, {
     run: (uri) => {
       runs.push(uri);
+      return runImpl?.(uri);
     },
     isRunning: () => isRunning,
     setTimeout: (fn, ms) => {
@@ -103,16 +105,73 @@ test('autoRun: execução em andamento com queue=skip descarta o disparo', () =>
   assert.deepStrictEqual(h.runs, []);
 });
 
-test('autoRun: execução em andamento com queue=replace reagenda e roda ao liberar', () => {
+test('autoRun: queue=replace executa o pendente quando o run termina (sem novo save)', () => {
   const h = harness({ queue: 'replace' }, true);
   h.runner.schedule('/ws/ut_a.pks');
   h.flush();
   assert.deepStrictEqual(h.runs, [], 'ainda rodando: não executa');
+  h.runner.notifyRunFinished();
+  assert.deepStrictEqual(h.runs, [], 'notify com run ativo ainda não dispara');
   h.setRunning(false);
-  // Um novo save após liberar dispara o pendente.
+  h.runner.notifyRunFinished();
+  assert.deepStrictEqual(h.runs, ['/ws/ut_a.pks']);
+});
+
+test('autoRun: flush do replace preserva a ordem dos arquivos distintos', async () => {
+  const h = harness({ queue: 'replace' }, true);
+  h.runner.schedule('/ws/ut_a.pks');
+  h.runner.schedule('/ws/ut_b.pks');
+  h.flush();
+  assert.deepStrictEqual(h.runs, []);
+  h.setRunning(false);
+  h.runner.notifyRunFinished();
+  await new Promise((resolve) => setTimeout(resolve, 0));
+  assert.deepStrictEqual(h.runs, ['/ws/ut_a.pks', '/ws/ut_b.pks']);
+});
+
+test('autoRun: flush do replace ignora arquivo que deixou de ser elegível', async () => {
+  let eligible = true;
+  const h = harness({ queue: 'replace' }, true, () => eligible);
   h.runner.schedule('/ws/ut_a.pks');
   h.flush();
-  assert.deepStrictEqual(h.runs, ['/ws/ut_a.pks']);
+  eligible = false;
+  h.setRunning(false);
+  h.runner.notifyRunFinished();
+  await new Promise((resolve) => setTimeout(resolve, 0));
+  assert.deepStrictEqual(h.runs, []);
+});
+
+test('autoRun: desligar o auto-run descarta o deferred do replace', () => {
+  const h = harness({ queue: 'replace' }, true);
+  h.runner.schedule('/ws/ut_a.pks');
+  h.flush();
+  h.setRunning(false);
+  h.setOpts({ enabled: false });
+  h.runner.notifyRunFinished();
+  assert.deepStrictEqual(h.runs, []);
+});
+
+test('autoRun: erro em um deferred não impede o próximo', async () => {
+  const h = harness({ queue: 'replace' }, true, undefined, (uri) => {
+    if (uri === '/ws/ut_a.pks') throw new Error('falhou');
+  });
+  h.runner.schedule('/ws/ut_a.pks');
+  h.runner.schedule('/ws/ut_b.pks');
+  h.flush();
+  h.setRunning(false);
+  h.runner.notifyRunFinished();
+  await new Promise((resolve) => setTimeout(resolve, 0));
+  assert.deepStrictEqual(h.runs, ['/ws/ut_a.pks', '/ws/ut_b.pks']);
+});
+
+test('autoRun: cancel(uri) remove o deferred do arquivo', () => {
+  const h = harness({ queue: 'replace' }, true);
+  h.runner.schedule('/ws/ut_a.pks');
+  h.flush();
+  h.runner.cancel('/ws/ut_a.pks');
+  h.setRunning(false);
+  h.runner.notifyRunFinished();
+  assert.deepStrictEqual(h.runs, []);
 });
 
 test('autoRun: cancel(uri) remove só o timer do arquivo', () => {

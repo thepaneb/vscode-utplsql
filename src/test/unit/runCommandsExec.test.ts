@@ -348,7 +348,7 @@ test('runWithProgress: descarta a assinatura do progresso ao concluir', async ()
   assert.strictEqual(receivedToken?.isCancellationRequested, false);
 });
 
-test('runWithProgress: cancela a execução ativa e limpa currentRunToken', async (t) => {
+test('runWithProgress: serializa runs e só inicia o próximo após o unwind', async (t) => {
   const { state, suiteItem } = stateWithSuite();
   let firstResolve!: () => void;
   let secondResolve!: () => void;
@@ -379,30 +379,41 @@ test('runWithProgress: cancela a execução ativa e limpa currentRunToken', asyn
     false,
   );
   pending.push(first);
+
+  // A resolução lazy (PRD-75) adiciona um microtask antes do executeRun.
+  await new Promise((resolve) => setTimeout(resolve, 0));
+  assert.strictEqual(tokens.length, 1);
+  assert.strictEqual(run.isRunning(), true);
+
   const second = run.runWithProgress(
     new TestRunRequest([suiteItem], undefined, state.runProfile) as never,
     undefined,
     false,
   );
   pending.push(second);
-
-  // A resolução lazy (PRD-75) adiciona um microtask antes do executeRun.
   await new Promise((resolve) => setTimeout(resolve, 0));
-  assert.strictEqual(tokens.length, 2);
+
+  // O segundo run cancela o primeiro, mas não inicia no buffer antes do unwind.
+  assert.strictEqual(tokens.length, 1, 'o segundo run não pode começar antes do unwind');
   assert.strictEqual(tokens[0].isCancellationRequested, true);
-  assert.strictEqual(tokens[1].isCancellationRequested, false);
+  assert.strictEqual(run.isRunning(), true);
+
   firstResolve();
   await first;
+  await new Promise((resolve) => setTimeout(resolve, 0));
+
+  assert.strictEqual(tokens.length, 2);
+  assert.strictEqual(tokens[1].isCancellationRequested, false);
   assert.strictEqual(
     __getCancellationTokenSources().find((item) => item.token === tokens[0])?.isDisposed,
     true,
   );
-  assert.strictEqual(tokens[1].isCancellationRequested, false);
 
   await call('utplsql.cancelRun');
   assert.strictEqual(tokens[1].isCancellationRequested, true);
   secondResolve();
   await second;
+  assert.strictEqual(run.isRunning(), false);
   assert.strictEqual(
     __getCancellationTokenSources().find((item) => item.token === tokens[1])?.isDisposed,
     true,
@@ -584,6 +595,16 @@ test('runFailed: reexecuta os itens que falharam', async () => {
   assert.strictEqual(executeCalls.length, 1);
 });
 
+test('runFailed: restaura falhas do snapshot sem itens materializados (PRD-148 RF4)', async () => {
+  const { state, testItem } = stateWithSuite();
+  state.setLastResults(new Map([['test:pkg.proc', { status: 'failed' as const, ts: 1 }]]));
+  assert.deepStrictEqual(state.getLastFailedItems(), []);
+  const { call } = await register(state);
+  await call('utplsql.runFailed');
+  assert.strictEqual(executeCalls.length, 1);
+  assert.deepStrictEqual(state.getLastFailedItems(), [testItem]);
+});
+
 test('runFailed: modo global de cobertura liga coverage', async () => {
   const { state, testItem } = stateWithSuite();
   state.coverageAlways = true;
@@ -595,13 +616,77 @@ test('runFailed: modo global de cobertura liga coverage', async () => {
   assert.strictEqual((executeCalls[0][1] as TestRunRequest).profile, state.coverageProfile);
 });
 
+test('setOnRunFinished: callback roda ao fim e pode ser removido', async () => {
+  const { state, suiteItem } = stateWithSuite();
+  const { run } = await register(state);
+  let calls = 0;
+  run.setOnRunFinished(() => {
+    calls += 1;
+  });
+  await run.runWithProgress(
+    new TestRunRequest([suiteItem], undefined, state.runProfile) as never,
+    undefined,
+    false,
+  );
+  assert.strictEqual(calls, 1);
+  run.setOnRunFinished(undefined);
+  await run.runWithProgress(
+    new TestRunRequest([suiteItem], undefined, state.runProfile) as never,
+    undefined,
+    false,
+  );
+  assert.strictEqual(calls, 1);
+});
+
 test('cancel: o cancelador devolvido não lança sem execução ativa', async () => {
   const { state } = stateWithSuite();
   const { run } = await register(state);
   assert.doesNotThrow(() => run.cancel());
 });
 
-test('isRunning/cancel refletem o token ativo da execução', async (t) => {
+test('runWithProgress: cancelar enquanto aguarda o run anterior não inicia o próximo', async (t) => {
+  const { state, suiteItem } = stateWithSuite();
+  let firstResolve!: () => void;
+  const gate = new Promise<void>((resolve) => {
+    firstResolve = resolve;
+  });
+  const tokens: Array<{ isCancellationRequested: boolean }> = [];
+  const pending: Promise<void>[] = [];
+  t.after(async () => {
+    firstResolve();
+    await Promise.allSettled(pending);
+  });
+  let calls = 0;
+  const { run } = await register(state);
+  executeHook = async (args) => {
+    tokens.push(args[2] as { isCancellationRequested: boolean });
+    if (calls++ === 0) await gate;
+  };
+
+  const first = run.runWithProgress(
+    new TestRunRequest([suiteItem], undefined, state.runProfile) as never,
+    undefined,
+    false,
+  );
+  pending.push(first);
+  await new Promise((resolve) => setTimeout(resolve, 0));
+  const second = run.runWithProgress(
+    new TestRunRequest([suiteItem], undefined, state.runProfile) as never,
+    undefined,
+    false,
+  );
+  pending.push(second);
+  await new Promise((resolve) => setTimeout(resolve, 0));
+
+  run.cancel(); // cancela o segundo enquanto ele espera o primeiro
+  firstResolve();
+  await first;
+  await second;
+  assert.strictEqual(tokens.length, 1, 'o segundo não pode iniciar depois de cancelado');
+  assert.strictEqual(run.isRunning(), false);
+});
+
+test('isRunning/cancel refletem a promise pendente da execução', async (t) => {
   const { state, suiteItem } = stateWithSuite();
   let release!: () => void;
   const gate = new Promise<void>((resolve) => {
@@ -623,7 +708,8 @@ test('isRunning/cancel refletem o token ativo da execução', async (t) => {
 
   assert.strictEqual(run.isRunning(), true);
   run.cancel();
-  assert.strictEqual(run.isRunning(), false);
+  // PRD-148 RF1: o token foi cancelado, mas a execução ainda está desenrolando.
+  assert.strictEqual(run.isRunning(), true);
   release();
   await pending;
   assert.strictEqual(run.isRunning(), false);

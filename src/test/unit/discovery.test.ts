@@ -910,6 +910,69 @@ test('mergeSuiteLists: arquivo prevalece em uri/linha; banco em descrição/tags
   assert.strictEqual(merged[0].tests[1].line, 8);
 });
 
+test('mergeSuiteLists: preserva a união de testes só-arquivo e só-banco (PRD-148 RF5)', () => {
+  const fileSuite = {
+    uri: { fsPath: '/ws/ut_app.pks', scheme: 'file' },
+    packageName: 'UT_APP',
+    suiteDescription: 'File',
+    tests: [
+      { procName: 'only_file', description: 'file', line: 10 },
+      { procName: 'both', description: 'file both', line: 11 },
+    ],
+    folder: FOLDER,
+    suiteLine: 1,
+  } as unknown as SuiteFile;
+  const dbSuite = {
+    uri: { fsPath: '' },
+    packageName: 'ut_app',
+    suiteDescription: 'DB',
+    tests: [
+      { procName: 'both', description: 'db both', line: 4 },
+      { procName: 'only_db', description: 'db', line: 8 },
+    ],
+    folder: FOLDER,
+    suiteLine: 2,
+    dbSchema: 'APP',
+  } as unknown as SuiteFile;
+
+  const merged = mergeSuiteLists([fileSuite], [dbSuite]);
+  assert.deepStrictEqual(
+    merged[0].tests.map((t) => t.procName),
+    ['only_file', 'both', 'only_db'],
+  );
+  assert.strictEqual(merged[0].tests[1].line, 11);
+  assert.strictEqual(merged[0].tests[1].description, 'db both');
+});
+
+test('mergeSuiteLists: não muta a suite de arquivo de entrada (PRD-148 RF5)', () => {
+  const fileSuite = {
+    uri: { fsPath: '/ws/ut_app.pks', scheme: 'file' },
+    packageName: 'UT_APP',
+    suiteDescription: 'File',
+    tests: [{ procName: 'only_file', description: 'file', line: 10 }],
+    folder: FOLDER,
+    suiteLine: 1,
+  } as unknown as SuiteFile;
+  const dbSuite = {
+    uri: { fsPath: '' },
+    packageName: 'UT_APP',
+    suiteDescription: 'DB',
+    tests: [{ procName: 'only_db', description: 'db', line: 4 }],
+    folder: FOLDER,
+    suiteLine: 2,
+  } as unknown as SuiteFile;
+
+  const merged = mergeSuiteLists([fileSuite], [dbSuite]);
+  assert.strictEqual(fileSuite.tests.length, 1);
+  assert.strictEqual(fileSuite.tests[0].procName, 'only_file');
+  assert.strictEqual(fileSuite.suiteDescription, 'File');
+  assert.notStrictEqual(merged[0], fileSuite);
+  assert.deepStrictEqual(
+    merged[0].tests.map((t) => t.procName),
+    ['only_file', 'only_db'],
+  );
+});
+
 test('mergeSuiteLists: suite só-DB é adicionada', () => {
   const dbSuite = {
     uri: { fsPath: '' },

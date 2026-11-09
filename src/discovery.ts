@@ -362,29 +362,52 @@ export function mapSuitesInfoToSuiteFiles(
 /**
  * Fusão DB-first (PRD-74 RF3): a lista final é a união por `LOWER(packageName)`.
  * Quando existe suite vinda de arquivo, ela prevalece em `uri`/`range`/`folder`;
- * o banco manda na descrição e nas tags. Suíte só-banco entra com URI virtual.
+ * o banco manda na descrição e nas tags. Testes só-arquivo e só-banco são
+ * preservados e o input não é mutado (PRD-148 RF5). Suíte só-banco entra com
+ * URI virtual.
  */
 export function mergeSuiteLists(fileSuites: SuiteFile[], dbSuites: SuiteFile[]): SuiteFile[] {
-  const result = [...fileSuites];
-  const byPackage = new Map(fileSuites.map((s) => [s.packageName.toLowerCase(), s]));
+  // Clona a camada que pode ser mesclada; os testes em si só são substituídos
+  // por objetos novos quando recebem metadados do banco.
+  const result: SuiteFile[] = fileSuites.map((s) => ({ ...s, tests: [...s.tests] }));
+  const byPackage = new Map<string, SuiteFile[]>();
+  for (const suite of result) {
+    const key = suite.packageName.toLowerCase();
+    const list = byPackage.get(key) ?? [];
+    list.push(suite);
+    byPackage.set(key, list);
+  }
+  const used = new Set<SuiteFile>();
+
   for (const db of dbSuites) {
     const key = db.packageName.toLowerCase();
-    const file = byPackage.get(key);
+    const candidates = byPackage.get(key) ?? [];
+    const file = candidates.find((s) => !used.has(s));
     if (!file) {
-      result.push(db);
-      byPackage.set(key, db);
+      const dbOnly: SuiteFile = { ...db, tests: [...db.tests] };
+      result.push(dbOnly);
+      candidates.push(dbOnly);
+      byPackage.set(key, candidates);
+      used.add(dbOnly);
       continue;
     }
-    const fileTests = new Map(file.tests.map((t) => [t.procName.toLowerCase(), t]));
-    const tests: TestProc[] = db.tests.map((dbTest) => {
-      const fileTest = fileTests.get(dbTest.procName.toLowerCase());
-      if (!fileTest) return dbTest;
+
+    used.add(file);
+    const dbTests = new Map(db.tests.map((t) => [t.procName.toLowerCase(), t]));
+    const fileNames = new Set(file.tests.map((t) => t.procName.toLowerCase()));
+    const tests: TestProc[] = file.tests.map((fileTest) => {
+      const dbTest = dbTests.get(fileTest.procName.toLowerCase());
+      if (!dbTest) return fileTest;
       return {
         ...fileTest,
-        description: dbTest.description || fileTest.description,
+        ...(dbTest.description ? { description: dbTest.description } : {}),
         ...(dbTest.tags && dbTest.tags.length > 0 ? { tags: dbTest.tags } : {}),
       };
     });
+    // Testes que só existem no banco entram no fim, preservando os do arquivo.
+    for (const dbTest of db.tests) {
+      if (!fileNames.has(dbTest.procName.toLowerCase())) tests.push(dbTest);
+    }
     file.tests = tests;
     if (db.suiteDescription) file.suiteDescription = db.suiteDescription;
     // Banco prevalece nas tags de suíte, como nas de teste (PRD-74 RF3/PRD-51).

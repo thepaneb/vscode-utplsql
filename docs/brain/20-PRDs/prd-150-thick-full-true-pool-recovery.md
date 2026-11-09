@@ -2,13 +2,13 @@
 tipo: prd
 id: PRD-150
 aliases: [PRD-150]
-status: proposed
+status: completed
 titulo: "Thick-full verdadeiro: inicialização thick e recuperação do pool após break"
 versao: "0.20.1"
 data: "2026-11-07"
 autor: "Gil Cleber Barboza"
-verificado: "2026-11-07"
-regras: []
+verificado: "2026-11-08"
+regras: ["BR-CONN-024", "BR-TEST-001"]
 docs: ["CHANGELOG", "wiki/Tests.md", "wiki/Contributing.md", "functional/10-development-tooling.md"]
 tags: [prd]
 ---
@@ -79,9 +79,11 @@ Com o preload (`src/test/integration/thickSetup.ts` + `mocha.require`):
 - Thin full local (2026-11-07): 23free/18xe/12.2/19ee/21xe com
   **125 passing / 17 pending / 0 failing** cada (inclui multi-root).
 - 11g thick-only: **4 passing** no eixo thick smoke.
-- Thick-full 23free: **experimental**, sem execução completa estável em thick
-  real; o dispatch de CI (`thick-full`) também não tem guarda contra o
-  falso-verde thin.
+- Thick-full 23free (2026-11-08, após a correção): **80 passing / 13 pending /
+  0 failing** em ~2 min, com guarda de thick real e sem `continue-on-error`.
+- Thick-full 11g (2026-11-08): **72 passing / 17 pending / 0 failing** com os
+  skips legacy documentados (timeout/cancel, schema-node run, randomOrder/bind
+  BOOLEAN e qualificação do stack); o eixo thick smoke continua verde.
 
 ## 3. Objetivos / Não-objetivos
 
@@ -263,12 +265,16 @@ scripts de matriz/CI.
 
 ## 12. Impacto no cérebro
 
-Atualizar **`BR-TEST-001`** para incluir a guarda de thick real no eixo
-thick-full (com `prds: ["PRD-125", "PRD-150"]`). Se a recuperação do pool após
-`break()` virar invariante de conexão, criar/ajustar uma regra `BR-CONN-*` com
-`prds: ["PRD-150"]`. RNFs sem regra: RNF1 (tempo), RNF2 (sem dep nova),
-RNF3 (determinismo), RNF4 (regressão thin), RNF5 (isolamento de estado) —
-verificadas pelo CI/matriz.
+Regras criadas/ajustadas com `prds: ["PRD-150"]`:
+
+- `BR-TEST-001` — eixo thick-full com guarda `oracledb.thin === false`, skips
+  documentados e dispatch experimental.
+- `BR-CONN-024` — abort descarta conexões quebradas e o pool; o próximo
+  `ensurePool` cria uma instância limpa.
+
+RNFs sem regra: RNF1, RNF2, RNF3, RNF4, RNF5 (tempo, sem dependência nova,
+determinismo dos skips, regressão thin e isolamento de estado — verificadas
+pela matriz/CI).
 
 ## Impacto nas docs
 
@@ -282,7 +288,12 @@ verificadas pelo CI/matriz.
 
 <!-- brain:auto:start:conexoes -->
 - 🗺️ [[MOC - PRDs]]
+- 📐 Regras: [[BR-CONN-024 - Abort em thick descarta conexoes e pool quebrados|BR-CONN-024]] · [[BR-TEST-001 - Matriz de bancos Oracle cobre 12.2-23ai em thin e thick|BR-TEST-001]]
 - 🔗 PRDs relacionados: [[prd-101-connection-pool-lifecycle|PRD-101]] · [[prd-120-lean-activation-lazy-setup|PRD-120]] · [[prd-125-thick-full-matrix-ci|PRD-125]] · [[prd-128-event-bus-internal|PRD-128]] · [[prd-148-execution-state-reliability|PRD-148]]
 - ⚙️ Pipelines: [[PIPE-integration - Integration (Oracle)|PIPE-integration]]
+- 🎯 RF1 — Inicialização thick determinística (feito no `1e214e0`) → [[BR-TEST-001 - Matriz de bancos Oracle cobre 12.2-23ai em thin e thick|BR-TEST-001]]
+- 🎯 RF2 — Recuperação do pool após timeout/cancelamento em thick → [[BR-CONN-024 - Abort em thick descarta conexoes e pool quebrados|BR-CONN-024]]
+- 🎯 RF3 — Suíte completa thick no 23free → [[BR-TEST-001 - Matriz de bancos Oracle cobre 12.2-23ai em thin e thick|BR-TEST-001]]
+- 🎯 RF5 — CI e anti-falso-verde → [[BR-TEST-001 - Matriz de bancos Oracle cobre 12.2-23ai em thin e thick|BR-TEST-001]]
 - 🚀 ⬅️ release anterior: [[prd-147-marketplace-listing-page|PRD-147 (0.20.0)]] · ➡️ próxima release: [[prd-128-event-bus-internal|PRD-128 (0.21.0)]]
 <!-- brain:auto:end -->

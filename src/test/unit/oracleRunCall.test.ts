@@ -86,6 +86,22 @@ test('buildReporterList: ignora inválidos/duplicados/desconhecidos', () => {
   assert.deepStrictEqual(list.unknown, ['ut_missing_reporter']);
 });
 
+test('buildReporterList: dedupe de reporter é por nome exato, não prefixo (PRD-148 RF8)', () => {
+  const list = buildReporterList({
+    exporting: false,
+    coverageEnabled: false,
+    htmlEnabled: false,
+    additionalReporters: ['ut_junit_rep'],
+    knownReporters: [],
+    oracledb: oracle,
+  });
+  assert.deepStrictEqual(list.runners, [
+    'ut_documentation_reporter()',
+    'ut_junit_reporter()',
+    'ut_junit_rep()',
+  ]);
+});
+
 test('buildCoverageScope: desabilitado devolve null', () => {
   const scope = buildCoverageScope(oracle, { enabled: false, owner: 'APP' });
   assert.deepStrictEqual(scope, { schemesArg: 'null', scopeParams: '', binds: {} });

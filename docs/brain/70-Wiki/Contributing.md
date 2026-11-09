@@ -4,14 +4,14 @@ status: ativo
 titulo: "Contributing"
 publicar: docs/wiki/Contributing.md
 origem: ["MOC - Documentacao"]
-verificado: 2026-10-29
-regras: ["BR-PLAT-002", "BR-PLAT-003", "BR-PLAT-004", "BR-QUAL-002", "BR-TEST-003", "BR-DOC-001", "BR-DOC-002"]
+verificado: 2026-11-08
+regras: ["BR-PLAT-002", "BR-PLAT-003", "BR-PLAT-004", "BR-QUAL-002", "BR-TEST-003", "BR-DOC-001", "BR-DOC-002", "BR-CONN-024"]
 tags: [wiki]
 ---
 
 # Contributing
 
-<!-- prd:PRD-47 --> <!-- prd:PRD-124 --> <!-- prd:PRD-125 -->
+<!-- prd:PRD-47 --> <!-- prd:PRD-124 --> <!-- prd:PRD-125 --> <!-- prd:PRD-150 -->
 
 <!-- prd:PRD-98 -->
 <!-- prd:PRD-104 -->
@@ -192,7 +192,7 @@ npm run db:matrix                      # whole matrix (one version at a time)
 npm run db:matrix -- --only 21xe       # a single version
 npm run db:matrix -- --smoke           # fast subset (capabilities + debugger)
 npm run db:matrix -- --thick           # thick mode per version
-npm run db:matrix -- --thick-full      # thick-full (experimental; exclui thin-only/UI; PRD-125)
+npm run db:matrix -- --thick-full      # thick-full (exclui thin-only/UI/debugger; PRD-125/150)
 npm run db:matrix -- --only 11xe --thick  # Oracle 11g (thick-only)
 npm run db:matrix -- --clean           # wipe the data volume and recreate
 ```
@@ -207,6 +207,13 @@ root `CONTRIBUTING.md` for details.
 > `run.sh` consumes unquoted backslashes and the thick test fails with
 > `DPI-1047` (the path arrives as `D:Users...`). The same path in `.env` is
 > parsed by the test config (no shell expansion), so it only bites the matrix.
+
+The thick-full axis has documented skips: UI/commands and multi-root (thin
+axis), `thickMode` (isolated host), thin-only tests, and the DBMS_DEBUG E2E
+files (they leave `pipe get` sessions that destabilize the shared thick host,
+#288). On 11g/utPLSQL 3.1, `UTPLSQL_LEGACY=1` skips timeout/cancel, schema-node
+run, randomOrder/BOOLEAN and stack qualification; the full run is green with
+those skips. The axis fails explicitly if the host starts thin (PRD-150 RF1).
 
 **Alternative utPLSQL floors:** each `VERSIONS` line may declare a 4th field
 with the utPLSQL version for that database. `11.2` and `12.2` use **`v3.1.14`** because

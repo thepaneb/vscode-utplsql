@@ -33,8 +33,8 @@ npm run sync-prds
 - **0.17.0 — “UX de editor e cobertura”**: [[Roadmap - 0.17.0 (execução)]]
 - **0.18.0 — “Fundação: segurança, testes e anti-drift”** (concluída): [[Roadmap - 0.18.0 (planejamento)]]
 - **0.19.0 — “Piso Node 24 e runtime moderno”** (publicada): [[Roadmap - 0.19.0 (planejamento)]]
-- **0.20.0 — “Observabilidade e desempenho”** (próxima): [[Roadmap - 0.20.0 (planejamento)]]
-- **0.20.1 — “Confiabilidade de execução e estado”**: [[Roadmap - 0.20.1 (execução)]]
+- **0.20.0 — “Observabilidade e desempenho”** (publicada): [[Roadmap - 0.20.0 (planejamento)]]
+- **0.20.1 — “Confiabilidade de execução e estado”** (próxima): [[Roadmap - 0.20.1 (execução)]]
 - **0.21.0 — “Arquitetura, configuração e resiliência”**: [[Roadmap - 0.21.0 (planejamento)]]
 - **0.22.0 — “Localização completa”**: [[Roadmap - 0.22.0 (planejamento)]]
 - **0.23.0 — “Docs e qualidade residual”**: [[Roadmap - 0.23.0 (planejamento)]]
@@ -43,10 +43,10 @@ npm run sync-prds
 ## Status (gerado)
 
 <!-- brain:auto:start:prd-summary -->
-- 📝 Propostos: **36**
+- 📝 Propostos: **34**
 - 🔵 Aprovados: **0**
 - 🟡 Em desenvolvimento: **0**
-- 🟢 Concluídos: **112**
+- 🟢 Concluídos: **114**
 
 Detalhe completo (fonte da verdade): [docs/prd/index.md](../../prd/index.md)
 <!-- brain:auto:end -->

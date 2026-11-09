@@ -140,6 +140,8 @@ files and the index; do not move the generated files by hand.
 | 125 | Full thick suite and database matrix | 0.20.0 |
 | 146 | Build provenance attestations on publish | 0.20.0 |
 | 147 | Marketplace listing page with screenshots and metadata | 0.20.0 |
+| 148 | Execution and state reliability after the 0.20.0 audit | 0.20.1 |
+| 150 | True thick-full: thick init and pool recovery after break | 0.20.1 |
 
 ### ⚪ Proposed
 

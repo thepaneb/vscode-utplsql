@@ -347,6 +347,44 @@ test('applySqlCoverage: loader retorna undefined -> retorna cedo', async () => {
   }
 });
 
+test('applySqlCoverage: V$SQL sem rows não emite cobertura', async () => {
+  const base = makeViewDir('no-rows', 'vw_no_rows');
+  try {
+    const run = makeRun() as never;
+    const state = { setCoverage: () => {}, clearCoverage: () => {} } as never;
+    await applySqlCoverage(
+      {
+        connection: 'u/p@//h:1521/s',
+        roots: [base],
+        sourcePath: 'install',
+        run,
+        state,
+        folders: [{ uri: { fsPath: base }, name: 'r', index: 0 }] as never,
+      },
+      async () =>
+        ({
+          OUT_FORMAT_OBJECT: {},
+          createPool: async () => ({
+            getConnection: async () => ({
+              callTimeout: 0,
+              execute: async () => ({}),
+              close: async () => {},
+            }),
+            close: async () => {},
+          }),
+          getConnection: async () => ({
+            callTimeout: 0,
+            execute: async () => ({}),
+            close: async () => {},
+          }),
+        }) as never,
+    );
+    assert.strictEqual((run as unknown as { coverageList: unknown[] }).coverageList.length, 1);
+  } finally {
+    fs.rmSync(base, { recursive: true, force: true });
+  }
+});
+
 test('applySqlCoverage: V$SQL com rows em objeto (SQL_TEXT)', async () => {
   const base = fs.mkdtempSync(path.join(os.tmpdir(), 'vsql-obj-'));
   try {

@@ -120,7 +120,9 @@ export function buildReporterList(options: ReporterListOptions): ReporterList {
     ) {
       continue;
     }
-    if (runners.some((existing) => existing.startsWith(normalized))) continue;
+    // Dedupe exato: `ut_junit_rep` não pode ser confundido com
+    // `ut_junit_reporter()` (PRD-148 RF8).
+    if (runners.some((existing) => existing === `${normalized}()`)) continue;
     if (
       options.knownReporters.length > 0 &&
       !options.knownReporters.some((known) => known.toLowerCase() === normalized)

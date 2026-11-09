@@ -50,6 +50,16 @@ test('filterSuitesByUri: ignora arquivo com nome diferente', () => {
   assert.strictEqual(result.length, 0);
 });
 
+test('filterSuitesByUri: mesmo basename em owners diferentes não colide', () => {
+  const items: ItemMeta[] = [
+    suiteMeta('app', '/root/db/APP/app.pks'),
+    suiteMeta('app', '/root/db/OTHER/app.pks'),
+  ];
+  const result = filterSuitesByUri(items, '/root/db/OTHER/app.pks');
+  assert.strictEqual(result.length, 1);
+  assert.strictEqual(result[0].uri.fsPath, '/root/db/OTHER/app.pks');
+});
+
 test('filterSuitesByUri: ignora extensao .pks e .pkb', () => {
   const items: ItemMeta[] = [suiteMeta('app', '/root/app.pks'), suiteMeta('lib', '/root/lib.pkb')];
   const result = filterSuitesByUri(items, '/root/app.pks');

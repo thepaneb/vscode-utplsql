@@ -223,6 +223,19 @@ test('buildTagTree: suites sem tag vão para "(sem tag)" por último', () => {
   assert.strictEqual(controller._items[1]._children[0].id, `suite:ut_x#${NO_TAG_GROUP}`);
 });
 
+test('buildTagTree: ordena tag antes de "(sem tag)" em ambas as ordens de entrada', () => {
+  const controller = makeController();
+  const state = new TestStateManager();
+  buildTagTree(controller, state, [
+    suite({ packageName: 'UT_A', tags: ['fast'] }),
+    suite({ packageName: 'UT_X' }),
+  ]);
+  assert.deepStrictEqual(
+    controller._items.map((i: { id: string }) => i.id),
+    ['tag:fast', `tag:${NO_TAG_GROUP}`],
+  );
+});
+
 test('buildTagTree: suite com múltiplas tags aparece sob cada tag com id próprio', () => {
   const controller = makeController();
   const state = new TestStateManager();
@@ -293,16 +306,97 @@ test('resolvedores: materializam schema → package → suite → teste por nív
   assert.strictEqual(pkgItem.id, 'package:APP:UT_APP');
   assert.strictEqual(pkgItem._children.length, 0);
 
-  resolvePackageNode(controller, state, pkgItem);
+  resolvePackageNode(controller, state, pkgItem as never);
   assert.strictEqual(pkgItem._children.length, 1);
   const suiteItem = pkgItem._children[0];
-  assert.strictEqual(suiteItem.id, 'suite:ut_app');
+  assert.strictEqual(suiteItem.id, 'suite:APP:ut_app');
   assert.strictEqual(suiteItem._children.length, 0);
-  assert.ok(state.getSuiteItem('suite:ut_app'));
+  assert.ok(state.getSuiteItem('suite:APP:ut_app'));
+  assert.ok(state.getSuiteItem('suite:ut_app'), 'lookup legado continua funcionando');
 
-  resolveSuiteNode(controller, state, suiteItem);
+  resolveSuiteNode(controller, state, suiteItem as never);
   assert.strictEqual(suiteItem._children.length, 2);
-  assert.ok(state.getItem('test:ut_app.test_one'));
+  assert.ok(state.getItem('test:APP:ut_app.test_one'));
+});
+
+test('schema mode: IDs únicos por schema e lookup legado (PRD-148 RF7)', async () => {
+  const controller = makeController();
+  const state = new TestStateManager();
+  buildSchemaTree(
+    controller,
+    state,
+    [
+      suite({ dbSchema: 'APP', uri: { fsPath: '/ws/db/APP/ut_app.pks', scheme: 'file' } as never }),
+      suite({
+        dbSchema: 'OTHER',
+        uri: { fsPath: '/ws/db/OTHER/ut_app.pks', scheme: 'file' } as never,
+      }),
+    ],
+    'db/{schema}/**',
+  );
+
+  const resolved: Array<{ id: string }> = [];
+  for (const schemaItem of controller._items) {
+    await resolveSchemaNode(controller, state, schemaItem, lazyDeps as never);
+    const pkgItem = schemaItem._children[0];
+    resolvePackageNode(controller, state, pkgItem as never);
+    const suiteItem = pkgItem._children[0];
+    resolveSuiteNode(controller, state, suiteItem as never);
+    resolved.push(suiteItem);
+  }
+
+  assert.deepStrictEqual(
+    resolved.map((i) => i.id),
+    ['suite:APP:ut_app', 'suite:OTHER:ut_app'],
+  );
+  assert.notStrictEqual(resolved[0], resolved[1]);
+  assert.ok(state.getItem('test:APP:ut_app.test_one'));
+  assert.ok(state.getItem('test:OTHER:ut_app.test_one'));
+  assert.strictEqual(state.getSuiteItem('suite:ut_app'), resolved[0]);
+});
+
+test('resolvePackageNode: idempotente e schema sem suites não quebra', () => {
+  const controller = makeController();
+  const state = new TestStateManager();
+  buildSchemaTree(controller, state, [suite({ dbSchema: 'APP' })], 'db/{schema}/**');
+  const schemaItem = controller._items[0];
+  state.setSchemaSuites('APP', [suite({ dbSchema: 'APP' })]);
+  const pkgItem = makeItem('package:APP:UT_APP');
+  resolvePackageNode(controller, state, pkgItem as never);
+  resolvePackageNode(controller, state, pkgItem as never);
+  assert.strictEqual(pkgItem._children.length, 1);
+
+  const unknown = makeItem('package:APP:NAO_EXISTE');
+  resolvePackageNode(controller, state, unknown as never);
+  assert.strictEqual(unknown._children.length, 0);
+});
+
+test('resolveSuiteNode: suite sem meta resolve sem schema', () => {
+  const controller = makeController();
+  const state = new TestStateManager();
+  const item = makeItem('suite:sem-meta');
+  state.setSuiteFile('suite:sem-meta', suite({}));
+  resolveSuiteNode(controller, state, item as never);
+  assert.strictEqual(item._children.length, 2);
+  assert.strictEqual(item._children[0].id, 'test:ut_app.test_one');
+});
+
+test('fillSuiteTests: duração de snapshot legado no schema mode', () => {
+  __setConfigValue('showTestDuration', true);
+  const controller = makeController();
+  const state = new TestStateManager();
+  state.setLastResults(
+    new Map([['test:ut_app.test_one', { status: 'passed' as const, durationMs: 12 }]]),
+  );
+  buildSchemaTree(controller, state, [suite({ dbSchema: 'APP' })], 'db/{schema}/**');
+  const schemaItem = controller._items[0];
+  state.setSchemaSuites('APP', [suite({ dbSchema: 'APP' })]);
+  const pkgItem = makeItem('package:APP:UT_APP');
+  resolvePackageNode(controller, state, pkgItem as never);
+  const suiteItem = pkgItem._children[0];
+  resolveSuiteNode(controller, state, suiteItem as never);
+  assert.match(controller._labels.get(suiteItem._children[0].id), /\(12ms\)/);
+  __resetConfigValues();
 });
 
 test('resolveSchemaNode: idempotente (não duplica package)', async () => {
@@ -391,6 +485,15 @@ test('collectAllItems: devolve as suites após resolução', async () => {
   assert.strictEqual(items.length, 1);
 });
 
+test('collectAllItems: árvore por tag resolve suites filhas', async () => {
+  const controller = makeController();
+  const state = new TestStateManager();
+  buildTagTree(controller, state, [suite({ tags: ['fast'] })]);
+  const items = await collectAllItems(controller, state);
+  assert.strictEqual(items.length, 1);
+  assert.strictEqual(items[0].id, 'suite:ut_app#fast');
+});
+
 test('collectAllItems: resolve a árvore lazy e devolve as suites', async () => {
   const controller = makeController();
   const state = new TestStateManager();
@@ -398,7 +501,7 @@ test('collectAllItems: resolve a árvore lazy e devolve as suites', async () => 
 
   const items = await collectAllItems(controller, state, lazyDeps as never);
   assert.strictEqual(items.length, 1);
-  assert.strictEqual(items[0].id, 'suite:ut_app');
+  assert.strictEqual(items[0].id, 'suite:APP:ut_app');
 });
 
 test('resolveSubtree: resolve schema → package → suite de um nó não expandido', async () => {
@@ -411,7 +514,7 @@ test('resolveSubtree: resolve schema → package → suite de um nó não expand
 
   const pkgItem = schemaItem._children[0];
   const suiteItem = pkgItem._children[0];
-  assert.strictEqual(suiteItem.id, 'suite:ut_app');
+  assert.strictEqual(suiteItem.id, 'suite:APP:ut_app');
   assert.strictEqual(suiteItem._children.length, 2, 'testes deveriam ser materializados');
 });
 
