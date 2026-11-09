@@ -79,9 +79,11 @@ Com o preload (`src/test/integration/thickSetup.ts` + `mocha.require`):
 - Thin full local (2026-11-07): 23free/18xe/12.2/19ee/21xe com
   **125 passing / 17 pending / 0 failing** cada (inclui multi-root).
 - 11g thick-only: **4 passing** no eixo thick smoke.
-- Thick-full 23free: **experimental**, sem execução completa estável em thick
-  real; o dispatch de CI (`thick-full`) também não tem guarda contra o
-  falso-verde thin.
+- Thick-full 23free (2026-11-08, após a correção): **80 passing / 13 pending /
+  0 failing** em ~2 min, com guarda de thick real e sem `continue-on-error`.
+- Thick-full 11g (2026-11-08): **72 passing / 17 pending / 0 failing** com os
+  skips legacy documentados (timeout/cancel, schema-node run, randomOrder/bind
+  BOOLEAN e qualificação do stack); o eixo thick smoke continua verde.
 
 ## 3. Objetivos / Não-objetivos
 

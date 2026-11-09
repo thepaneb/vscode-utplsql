@@ -162,5 +162,8 @@ connections and discards the pool, so the next run gets a clean pool.
 Known skips in this axis (documented, not `continue-on-error`): UI/commands and
 multi-root (thin axis), `thickMode` (isolated host), thin-only tests, and the
 DBMS_DEBUG E2E files — they pass isolated but leave `pipe get` sessions that
-destabilize the shared thick host (#288). The 11g full run remains a timeboxed
-experimental limitation; the thick smoke (4 tests) is the supported gate.
+destabilize the shared thick host (#288). On 11g/utPLSQL 3.1 the axis also skips
+`runTimeoutE2E` (before-hook flow), schema-node run, cancellation, random-order
+bind BOOLEAN and the stack-frame qualification assertion; with those skips the
+11g full is green (72 passing / 17 pending). The 11g dispatch remains
+experimental; the thick smoke (4 tests) is the supported gate.

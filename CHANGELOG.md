@@ -15,9 +15,11 @@
   explicitly when the driver starts thin (`UTPLSQL_THICK_ACTIVE`/guard test);
   after a timeout or cancellation the runner drops the broken connections and
   discards the pool, so the next run gets a clean pool instead of hanging. The
-  23free thick-full suite is green (80 passing / 13 documented pending), with
-  DBMS_DEBUG E2E skips documented as an isolated thick limitation (#288); the
-  11g full run remains a timeboxed experimental limitation.
+  23free thick-full suite is green (80 passing / 13 documented pending); the
+  11g full run is also green (72 passing / 17 documented pending) with
+  legacy-only skips (timeout/cancel on 3.1, bind BOOLEAN, schema-node run and
+  stack qualification) and DBMS_DEBUG E2E excluded as an isolated thick
+  limitation (#288).
 
 ## 0.20.0
 
