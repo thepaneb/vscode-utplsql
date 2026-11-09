@@ -13,6 +13,7 @@ function harness(
   over: Partial<AutoRunOptions> = {},
   running = false,
   eligible?: (u: string) => boolean,
+  runImpl?: (uri: string) => void | Promise<void>,
 ) {
   const scheduled: Scheduled[] = [];
   const cleared: Scheduled[] = [];
@@ -22,6 +23,7 @@ function harness(
   const runner = createAutoRunner(() => opts, {
     run: (uri) => {
       runs.push(uri);
+      return runImpl?.(uri);
     },
     isRunning: () => isRunning,
     setTimeout: (fn, ms) => {
@@ -147,6 +149,19 @@ test('autoRun: desligar o auto-run descarta o deferred do replace', () => {
   h.setOpts({ enabled: false });
   h.runner.notifyRunFinished();
   assert.deepStrictEqual(h.runs, []);
+});
+
+test('autoRun: erro em um deferred não impede o próximo', async () => {
+  const h = harness({ queue: 'replace' }, true, undefined, (uri) => {
+    if (uri === '/ws/ut_a.pks') throw new Error('falhou');
+  });
+  h.runner.schedule('/ws/ut_a.pks');
+  h.runner.schedule('/ws/ut_b.pks');
+  h.flush();
+  h.setRunning(false);
+  h.runner.notifyRunFinished();
+  await new Promise((resolve) => setTimeout(resolve, 0));
+  assert.deepStrictEqual(h.runs, ['/ws/ut_a.pks', '/ws/ut_b.pks']);
 });
 
 test('autoRun: cancel(uri) remove o deferred do arquivo', () => {

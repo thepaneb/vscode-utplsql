@@ -616,6 +616,28 @@ test('runFailed: modo global de cobertura liga coverage', async () => {
   assert.strictEqual((executeCalls[0][1] as TestRunRequest).profile, state.coverageProfile);
 });
 
+test('setOnRunFinished: callback roda ao fim e pode ser removido', async () => {
+  const { state, suiteItem } = stateWithSuite();
+  const { run } = await register(state);
+  let calls = 0;
+  run.setOnRunFinished(() => {
+    calls += 1;
+  });
+  await run.runWithProgress(
+    new TestRunRequest([suiteItem], undefined, state.runProfile) as never,
+    undefined,
+    false,
+  );
+  assert.strictEqual(calls, 1);
+  run.setOnRunFinished(undefined);
+  await run.runWithProgress(
+    new TestRunRequest([suiteItem], undefined, state.runProfile) as never,
+    undefined,
+    false,
+  );
+  assert.strictEqual(calls, 1);
+});
+
 test('cancel: o cancelador devolvido não lança sem execução ativa', async () => {
   const { state } = stateWithSuite();
   const { run } = await register(state);

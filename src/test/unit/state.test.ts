@@ -301,6 +301,26 @@ test('restoreLastFailed: resolve id legado sem schema e hasFailedResults (PRD-14
   assert.deepStrictEqual(mgr.restoreLastFailed(), [item]);
 });
 
+test('restoreLastFailed: ids inválidos e itens não-teste são ignorados', () => {
+  const mgr = new TestStateManager();
+  const suite = { id: 'suite:ut_app' } as unknown as Parameters<TestStateManager['setItem']>[1];
+  mgr.setMeta(suite, {
+    kind: 'suite',
+    packageName: 'UT_APP',
+    uri: { fsPath: '/tmp/ut_app.pks' } as never,
+    folder: { uri: { fsPath: '/tmp' } } as never,
+  });
+  mgr.setItem('suite:ut_app', suite);
+  mgr.setLastResults(
+    new Map([
+      ['sem-prefixo', { status: 'failed' as const, ts: 1 }],
+      ['test:sem-ponto', { status: 'failed' as const, ts: 1 }],
+      ['test:ut_app.test_one', { status: 'failed' as const, ts: 1 }],
+    ]),
+  );
+  assert.deepStrictEqual(mgr.restoreLastFailed(), []);
+});
+
 test('hasFailedResults: só considera failed/error', () => {
   const mgr = new TestStateManager();
   assert.strictEqual(mgr.hasFailedResults(), false);
@@ -344,4 +364,10 @@ test('getSuiteItemFor/findSuiteItemForUri desambiguam schema e arquivo (PRD-148 
     other,
   );
   assert.strictEqual(mgr.getSuiteItemFor('UT_APP'), app);
+  assert.strictEqual(
+    mgr.findSuiteItemForUri({ fsPath: '/outro/lugar.pks' } as never, 'UT_APP'),
+    app,
+    'sem URI correspondente, cai no fallback por package',
+  );
+  assert.strictEqual(mgr.findSuiteItemForUri({ fsPath: '/outro/lugar.pks' } as never), undefined);
 });

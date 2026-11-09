@@ -545,6 +545,26 @@ test('deriveLastRun: schema com uma suite vira lastRun suite', () => {
   assert.strictEqual(lr.packageName, 'TEST_PKG');
 });
 
+test('deriveLastRun: vários testes sem suite viram file usando o primeiro teste', () => {
+  const state = new TestStateManager();
+  const a = makeTestItem('test:a');
+  const b = makeTestItem('test:b');
+  for (const item of [a, b]) {
+    state.setMeta(
+      item,
+      makeMeta({
+        packageName: 'UT_A',
+        procName: item.id,
+        uri: makeUri('/tmp/ut_a.pks'),
+        folder: makeFolder('/tmp', 'tmp'),
+      }),
+    );
+  }
+  const lr = deriveLastRun([a, b], true, false, state);
+  assert.strictEqual(lr.type, 'file');
+  assert.strictEqual(lr.uri?.fsPath, '/tmp/ut_a.pks');
+});
+
 test('deriveLastRun: schema com várias suites vira lastRun file', () => {
   const { state, suiteItem } = makeExecState();
   const { schema, pkg } = makeSchemaHierarchy(suiteItem);
