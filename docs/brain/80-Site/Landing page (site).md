@@ -5,7 +5,7 @@ titulo: "Landing page (site público)"
 publicar: site/index.html
 url: "https://thepaneb.github.io/vscode-utplsql/"
 implementacao: ["site/index.html", "site/404.html", "site/robots.txt", "site/sitemap.xml", "site/google408e9fc32b68946a.html", "site/og.png"]
-verificado: 2026-10-29
+verificado: 2026-11-10
 tags: [site, docs]
 ---
 
@@ -18,7 +18,7 @@ tags: [site, docs]
     <title>utPLSQL Test Runner — Run and debug Oracle PL/SQL tests in VS Code</title>
     <meta
       name="description"
-      content="VS Code extension to run, debug and cover utPLSQL (Oracle PL/SQL) unit tests against any Oracle database: native Test Explorer, visual test coverage, a PL/SQL debugger and Oracle-direct execution via node-oracledb. 24 UI languages."
+      content="Run, debug and cover utPLSQL (Oracle PL/SQL) tests in VS Code with native Test Explorer, visual coverage, a PL/SQL debugger and Oracle-direct execution."
     />
     <link rel="canonical" href="{{SITE_URL}}" />
     <meta name="robots" content="index, follow, max-image-preview:large" />
