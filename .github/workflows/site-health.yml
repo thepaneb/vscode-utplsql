@@ -16,37 +16,83 @@ jobs:
       - name: Check published site
         run: |
           set -uo pipefail
-          HOME_URL="https://thepaneb.github.io/vscode-utplsql/"
-          SITEMAP="${HOME_URL}sitemap.xml"
-          HOST_ROBOTS="https://thepaneb.github.io/robots.txt"
-          GOOGLE_FILE="${HOME_URL}google408e9fc32b68946a.html"
+          PROJECT_URL="https://thepaneb.github.io/vscode-utplsql/"
+          PROJECT_SITEMAP="${PROJECT_URL}sitemap.xml"
+          HUB_URL="https://thepaneb.github.io/"
+          HUB_SITEMAP="${HUB_URL}sitemap.xml"
+          HUB_PAGES_SITEMAP="${HUB_URL}sitemap-hub.xml"
+          HOST_ROBOTS="${HUB_URL}robots.txt"
+          GOOGLE_FILE="${PROJECT_URL}google408e9fc32b68946a.html"
           INDEXNOW_KEY="ba3b4edc519041308f1dc227c70163f1"
           INDEXNOW_FILE="https://thepaneb.github.io/${INDEXNOW_KEY}.txt"
+          LANDINGS=(
+            "${HUB_URL}isis-report-lib/"
+            "${HUB_URL}isis-report/"
+            "${HUB_URL}base-flask/"
+            "${HUB_URL}base-robyn/"
+          )
           CURL=(curl -sS --retry 3 --retry-delay 5 --retry-all-errors --max-time 20)
 
           fails=0
           ok() { echo "  ok:   $1"; }
           bad() { echo "  FAIL: $1"; fails=$((fails + 1)); }
           code() { "${CURL[@]}" -o /dev/null -w '%{http_code}' "$1"; }
+          no_robots_tag() {
+            if "${CURL[@]}" -I "$1" | grep -qi '^x-robots-tag'; then
+              bad "$2 responde com x-robots-tag"
+            else
+              ok "$2 sem x-robots-tag (indexável)"
+            fi
+          }
 
-          echo "== Home =="
-          h=$(code "$HOME_URL"); [ "$h" = "200" ] && ok "home 200" || bad "home status=$h"
-          if "${CURL[@]}" -I "$HOME_URL" | grep -qi '^x-robots-tag'; then
-            bad "home responde com x-robots-tag"
-          else
-            ok "home sem x-robots-tag (indexável)"
-          fi
+          echo "== Project home =="
+          h=$(code "$PROJECT_URL"); [ "$h" = "200" ] && ok "project home 200" || bad "project home status=$h"
+          no_robots_tag "$PROJECT_URL" "project home"
 
-          echo "== Sitemap =="
-          s=$(code "$SITEMAP"); [ "$s" = "200" ] && ok "sitemap 200" || bad "sitemap status=$s"
-          body=$("${CURL[@]}" "$SITEMAP")
-          printf '%s' "$body" | grep -q '</urlset>' && ok "sitemap é XML (urlset)" || bad "sitemap não é um urlset válido"
-          printf '%s' "$body" | grep -q "<loc>${HOME_URL}</loc>" && ok "sitemap inclui a home" || bad "sitemap não inclui a home"
+          echo "== Hub home =="
+          h=$(code "$HUB_URL"); [ "$h" = "200" ] && ok "hub home 200" || bad "hub home status=$h"
+          no_robots_tag "$HUB_URL" "hub home"
+          hub_body=$("${CURL[@]}" "$HUB_URL")
+          printf '%s' "$hub_body" | grep -qi 'noindex' && bad "hub home contém noindex" || ok "hub home sem noindex"
+          printf '%s' "$hub_body" | grep -q 'rel="canonical" href="'"${HUB_URL}"'"' && ok "hub canonical ok" || bad "hub canonical ausente/incorreto"
+          printf '%s' "$hub_body" | grep -q 'property="og:image"' && ok "hub og:image ok" || bad "hub sem og:image"
+
+          echo "== Landing pages =="
+          for url in "${LANDINGS[@]}"; do
+            c=$(code "$url"); [ "$c" = "200" ] && ok "$(basename "$url") 200" || bad "$(basename "$url") status=$c"
+            no_robots_tag "$url" "$(basename "$url")"
+            body=$("${CURL[@]}" "$url")
+            printf '%s' "$body" | grep -q 'rel="canonical" href="'"${url}"'"' && ok "$(basename "$url") canonical ok" || bad "$(basename "$url") canonical ausente/incorreto"
+            printf '%s' "$body" | grep -q 'property="og:image"' && ok "$(basename "$url") og:image ok" || bad "$(basename "$url") sem og:image"
+            printf '%s' "$body" | grep -qi 'noindex' && bad "$(basename "$url") contém noindex" || ok "$(basename "$url") sem noindex"
+          done
+
+          echo "== Project sitemap =="
+          s=$(code "$PROJECT_SITEMAP"); [ "$s" = "200" ] && ok "project sitemap 200" || bad "project sitemap status=$s"
+          body=$("${CURL[@]}" "$PROJECT_SITEMAP")
+          printf '%s' "$body" | grep -q '</urlset>' && ok "project sitemap é XML (urlset)" || bad "project sitemap não é um urlset válido"
+          printf '%s' "$body" | grep -q "<loc>${PROJECT_URL}</loc>" && ok "project sitemap inclui a home" || bad "project sitemap não inclui a home"
+
+          echo "== Hub sitemap index =="
+          si=$(code "$HUB_SITEMAP"); [ "$si" = "200" ] && ok "hub sitemap 200" || bad "hub sitemap status=$si"
+          body=$("${CURL[@]}" "$HUB_SITEMAP")
+          printf '%s' "$body" | grep -q '<sitemapindex' && ok "hub sitemap é um índice" || bad "hub sitemap não é um sitemapindex"
+          printf '%s' "$body" | grep -q "<loc>${HUB_PAGES_SITEMAP}</loc>" && ok "hub sitemap inclui sitemap-hub.xml" || bad "hub sitemap sem sitemap-hub.xml"
+          printf '%s' "$body" | grep -q "<loc>${PROJECT_SITEMAP}</loc>" && ok "hub sitemap inclui o sitemap do projeto" || bad "hub sitemap sem o sitemap do projeto"
+
+          echo "== Hub pages sitemap =="
+          sp=$(code "$HUB_PAGES_SITEMAP"); [ "$sp" = "200" ] && ok "sitemap-hub.xml 200" || bad "sitemap-hub.xml status=$sp"
+          body=$("${CURL[@]}" "$HUB_PAGES_SITEMAP")
+          printf '%s' "$body" | grep -q '</urlset>' && ok "sitemap-hub.xml é XML (urlset)" || bad "sitemap-hub.xml não é um urlset válido"
+          printf '%s' "$body" | grep -q "<loc>${HUB_URL}</loc>" && ok "sitemap-hub.xml inclui o hub" || bad "sitemap-hub.xml não inclui o hub"
+          for url in "${LANDINGS[@]}"; do
+            printf '%s' "$body" | grep -q "<loc>${url}</loc>" && ok "sitemap-hub.xml inclui $(basename "$url")" || bad "sitemap-hub.xml sem $(basename "$url")"
+          done
 
           echo "== robots.txt da raiz do host =="
           r=$(code "$HOST_ROBOTS"); [ "$r" = "200" ] && ok "host robots 200" || bad "host robots status=$r"
           rb=$("${CURL[@]}" "$HOST_ROBOTS")
-          printf '%s' "$rb" | grep -q "Sitemap: ${SITEMAP}" && ok "host robots aponta o sitemap" || bad "host robots sem o Sitemap do projeto"
+          printf '%s' "$rb" | grep -q "Sitemap: ${HUB_SITEMAP}" && ok "host robots aponta o sitemap index" || bad "host robots sem o sitemap index"
           printf '%s' "$rb" | grep -qiE '^Disallow:[[:space:]]*/[[:space:]]*$' && bad "host robots bloqueia (Disallow: /)" || ok "host robots não bloqueia"
 
           echo "== Verificação do Google Search Console =="
