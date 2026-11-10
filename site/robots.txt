@@ -1,3 +1,5 @@
+# Served under /vscode-utplsql/. Googlebot reads robots.txt only at the host
+# root; the authoritative file is https://thepaneb.github.io/robots.txt.
 User-agent: *
 Allow: /
 
