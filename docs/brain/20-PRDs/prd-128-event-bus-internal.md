@@ -155,7 +155,7 @@ ordem de emissão.
 - 🗺️ [[MOC - PRDs]]
 - 📐 Regras: [[BR-ARCH-002 - Efeitos colaterais da execução passam pelo event bus tipado|BR-ARCH-002]]
 - 🔗 PRDs relacionados: [[prd-102-trace-and-perf-instrumentation|PRD-102]] · [[prd-111-decompose-oracle-runner|PRD-111]]
-- 🔗 Mesma versão (0.21.0): [[prd-138-organization-strategy-pattern|PRD-138]] · [[prd-139-state-store-slicing-lru|PRD-139]]
+- 🔗 Mesma versão (0.21.0): [[prd-139-state-store-slicing-lru|PRD-139]]
 - 🎯 RF1 — Definição do bus → [[BR-ARCH-002 - Efeitos colaterais da execução passam pelo event bus tipado|BR-ARCH-002]]
 - 🎯 RF2 — Integração → [[BR-ARCH-002 - Efeitos colaterais da execução passam pelo event bus tipado|BR-ARCH-002]]
 - 🎯 RF3 — Desacoplamento da UI → [[BR-ARCH-002 - Efeitos colaterais da execução passam pelo event bus tipado|BR-ARCH-002]]

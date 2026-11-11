@@ -50,6 +50,7 @@ SORT id ASC
 <!-- brain:auto:start:moc-index -->
 - [[BR-ARCH-001 - Modos de execução são estratégias, não condicionais no orquestrador]] — `BR-ARCH-001`
 - [[BR-ARCH-002 - Efeitos colaterais da execução passam pelo event bus tipado]] — `BR-ARCH-002`
+- [[BR-ARCH-003 - Organização da árvore de testes é selecionada por Strategy]] — `BR-ARCH-003`
 - [[BR-COB-001 - Cobertura Oracle exige GRANT EXECUTE ON SYS.DBMS_PROFILER]] — `BR-COB-001`
 - [[BR-COB-002 - resolveSourceUri tenta variantes de extensão e bloqueia path traversal]] — `BR-COB-002`
 - [[BR-COB-003 - Cobertura de views via V$SQL é opt-in e best-effort]] — `BR-COB-003`

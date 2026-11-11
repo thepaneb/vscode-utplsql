@@ -130,6 +130,5 @@ Superfície listada: CHANGELOG.
 <!-- brain:auto:start:conexoes -->
 - 🗺️ [[MOC - PRDs]]
 - 🔗 PRDs relacionados: [[prd-54-coverage-toggle|PRD-54]] · [[prd-56-duration-persistence|PRD-56]]
-- 🔗 Mesma versão (0.21.0): [[prd-138-organization-strategy-pattern|PRD-138]]
 - 🚀 ⬅️ release anterior: [[prd-150-thick-full-true-pool-recovery|PRD-150 (0.20.1)]] · ➡️ próxima release: [[prd-88-locale-aware-formatting|PRD-88 (0.22.0)]]
 <!-- brain:auto:end -->

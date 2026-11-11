@@ -2,6 +2,13 @@
 
 ## 0.21.0
 
+- **Tree organization strategies (PRD-138)**: `src/organization/strategy.ts`
+  selects `FileOrganization`, `SchemaOrganization` or `TagOrganization`, with
+  `testTree.ts` kept as the facade. Changes to `organization`,
+  `includePatterns`, `showTagsInTree`, `showTestDuration` or
+  `discovery.source` refresh the tree; `discovery.languageIds` and
+  `files.associations` rebuild CodeLens **and** the file watcher. Concurrent
+  expansions of the same schema share one in-flight query.
 - **Run strategies (PRD-129)**: `executeRun` now dispatches to `NormalRun`,
   `CoverageRun`, `ExportRun` or `DebugRun` (`src/runStrategy.ts`), removing the
   nested `coverage`/`export` conditionals from the orchestrator. The strategies

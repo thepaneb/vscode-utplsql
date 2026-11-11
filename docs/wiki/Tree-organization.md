@@ -2,8 +2,12 @@
 
 # Test tree organization
 
+<!-- prd:PRD-138 -->
+
 The extension offers three modes for organizing the tree in the Test Explorer:
-by **file** (default), by **Oracle schema** or by **`%tags`**.
+by **file** (default), by **Oracle schema** or by **`%tags`**. Each mode is an
+`OrganizationStrategy` (`src/organization/strategy.ts`); `testTree.ts` is the
+facade used by the refresher and the commands.
 
 ## `file` mode (default)
 

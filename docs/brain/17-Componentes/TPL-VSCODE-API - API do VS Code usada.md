@@ -59,19 +59,19 @@ host — o `docs-fidelity` cobra essa coerência.
 ## Inventário (gerado)
 
 <!-- brain:auto:start:vscode-api -->
-**`engines.vscode`:** `^1.125.0` · **`@types/vscode`:** `1.125.0` · **107 símbolos · 605 referências**
+**`engines.vscode`:** `^1.125.0` · **`@types/vscode`:** `1.125.0` · **107 símbolos · 620 referências**
 
 | Símbolo | Refs | Arquivos |
 |---|---|---|
-| `vscode.TestItem` | 64 | `src/commands/debug.ts`, `src/commands/run.ts`, `src/decorations.ts`, `src/matching.ts` +5 |
+| `vscode.TestItem` | 70 | `src/commands/debug.ts`, `src/commands/run.ts`, `src/decorations.ts`, `src/matching.ts` +6 |
 | `vscode.Uri` | 46 | `src/commands/debug.ts`, `src/commands/run.ts`, `src/commands/scaffold.ts`, `src/commands/script.ts` +10 |
 | `vscode.commands.registerCommand` | 38 | `src/commands/connection.ts`, `src/commands/debug.ts`, `src/commands/profile.ts`, `src/commands/run.ts` +3 |
+| `vscode.WorkspaceFolder` | 30 | `src/debugger.ts`, `src/discovery.ts`, `src/oracleRunner.ts`, `src/organization/strategy.ts` +5 |
 | `vscode.window.showInformationMessage` | 29 | `src/commands/connection.ts`, `src/commands/debug.ts`, `src/commands/profile.ts`, `src/commands/run.ts` +5 |
-| `vscode.WorkspaceFolder` | 28 | `src/debugger.ts`, `src/discovery.ts`, `src/oracleRunner.ts`, `src/results.ts` +4 |
 | `vscode.window.showWarningMessage` | 25 | `src/commands/debug.ts`, `src/commands/profile.ts`, `src/commands/run.ts`, `src/commands/scaffold.ts` +4 |
 | `vscode.window.showErrorMessage` | 22 | `src/commands/connection.ts`, `src/commands/debug.ts`, `src/commands/run.ts`, `src/commands/scaffold.ts` +4 |
+| `vscode.TestController` | 21 | `src/commands/deps.ts`, `src/organization/strategy.ts`, `src/runner.ts`, `src/testTree.ts` |
 | `vscode.commands.executeCommand` | 18 | `src/commands/connection.ts`, `src/commands/profile.ts`, `src/commands/run.ts`, `src/config.ts` +4 |
-| `vscode.TestController` | 15 | `src/commands/deps.ts`, `src/runner.ts`, `src/testTree.ts` |
 | `vscode.Uri.parse` | 13 | `src/commands/run.ts`, `src/compilationDiagnostics.ts`, `src/discovery.ts`, `src/extension.ts` +2 |
 | `vscode.TestRunRequest` | 12 | `src/commands/run.ts`, `src/runner.ts` |
 | `vscode.CancellationToken` | 11 | `src/codelens.ts`, `src/commands/run.ts`, `src/oracleRunner.ts`, `src/quickfix.ts` +2 |
@@ -96,6 +96,7 @@ host — o `docs-fidelity` cobra essa coerência.
 | `vscode.workspace` | 5 | `src/config.ts`, `src/connectionProfiles.ts`, `src/languageIdentity.ts` |
 | `vscode.CodeActionKind.QuickFix` | 4 | `src/quickfix.ts` |
 | `vscode.CodeLens` | 4 | `src/codelens.ts` |
+| `vscode.Disposable` | 4 | `src/decorations.ts`, `src/extension.ts`, `src/statusBar.ts` |
 | `vscode.languages.registerCodeActionsProvider` | 4 | `src/commands/scaffold.ts`, `src/extension.ts` |
 | `vscode.OverviewRulerLane.Right` | 4 | `src/decorations.ts` |
 | `vscode.Position` | 4 | `src/results.ts`, `src/viewCoverage.ts` |
@@ -105,7 +106,6 @@ host — o `docs-fidelity` cobra essa coerência.
 | `vscode.DebugConfiguration` | 3 | `src/debugger.ts` |
 | `vscode.DiagnosticSeverity.Error` | 3 | `src/compilationDiagnostics.ts`, `src/quickfix.ts` |
 | `vscode.DiagnosticSeverity.Warning` | 3 | `src/quickfix.ts` |
-| `vscode.Disposable` | 3 | `src/decorations.ts`, `src/extension.ts`, `src/statusBar.ts` |
 | `vscode.OutputChannel` | 3 | `src/commands/run.ts`, `src/commands/script.ts` |
 | `vscode.TestMessage` | 3 | `src/results.ts`, `src/runner.ts` |
 | `vscode.window.createOutputChannel` | 3 | `src/commands/run.ts`, `src/commands/script.ts`, `src/extension.ts` |

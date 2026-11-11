@@ -16,6 +16,7 @@ import {
   currentLanguageContributions,
   workspaceAssociations,
 } from './languageIdentity';
+import { createOrganizationStrategy } from './organization/strategy';
 import { isInside } from './pathContainment';
 import type { PerfProbe } from './perf';
 import { type TestStateManager, withDurationSuffix } from './state';
@@ -266,12 +267,32 @@ const defaultResolveDeps: TreeResolveDeps = {
   discoverDbSuites,
 };
 
+const schemaResolutions = new Map<string, Promise<void>>();
+
 /** Resolve um nó `schema:` → filhos `package:` (arquivos + banco do schema). */
 export async function resolveSchemaNode(
   controller: vscode.TestController,
   state: TestStateManager,
   item: vscode.TestItem,
   deps: TreeResolveDeps = defaultResolveDeps,
+): Promise<void> {
+  if (state.isResolved(item.id)) return;
+  const existing = schemaResolutions.get(item.id);
+  if (existing) return existing;
+  const promise = resolveSchemaNodeCore(controller, state, item, deps);
+  schemaResolutions.set(item.id, promise);
+  try {
+    await promise;
+  } finally {
+    if (schemaResolutions.get(item.id) === promise) schemaResolutions.delete(item.id);
+  }
+}
+
+async function resolveSchemaNodeCore(
+  controller: vscode.TestController,
+  state: TestStateManager,
+  item: vscode.TestItem,
+  deps: TreeResolveDeps,
 ): Promise<void> {
   if (state.isResolved(item.id)) return;
   const schema = item.id.slice('schema:'.length);
@@ -560,14 +581,20 @@ export function createRefresher(
     state.setDiscoveredFiles(suites);
     clearDbSourceCache();
 
-    if (cfg.organization === 'schema' && folders?.length) {
-      const extra = await discoverSchemasFromFolders(folders, cfg.organizationSchemaPattern);
-      buildSchemaTree(controller, state, suites, cfg.organizationSchemaPattern, extra);
-    } else if (cfg.organization === 'tag') {
-      buildTagTree(controller, state, suites);
-    } else {
-      buildFileTree(controller, state, suites);
-    }
+    const strategy = createOrganizationStrategy(cfg.organization, {
+      buildFile: buildFileTree,
+      buildTag: buildTagTree,
+      buildSchema: buildSchemaTree,
+      discoverSchemas: discoverSchemasFromFolders,
+      collectAll: collectAllItems,
+    });
+    await strategy.build({
+      controller,
+      state,
+      suites,
+      folders: folders ?? undefined,
+      schemaPattern: cfg.organizationSchemaPattern,
+    });
     endBuildTree?.();
   };
 

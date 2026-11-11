@@ -40,6 +40,7 @@ SORT id ASC
 - [[TST - compileForDebugPool.test.ts]] — `TST-compileForDebugPool.test.ts`
 - [[TST - config.test.ts]] — `TST-config.test.ts`
 - [[TST - configCache.test.ts]] — `TST-configCache.test.ts`
+- [[TST - configReactivity.test.ts]] — `TST-configReactivity.test.ts`
 - [[TST - configValidation.test.ts]] — `TST-configValidation.test.ts`
 - [[TST - connectionProfiles.test.ts]] — `TST-connectionProfiles.test.ts`
 - [[TST - connectionRedaction.test.ts]] — `TST-connectionRedaction.test.ts`
@@ -97,6 +98,7 @@ SORT id ASC
 - [[TST - oracleRunner.test.ts]] — `TST-oracleRunner.test.ts`
 - [[TST - oracleRunnerReporters.test.ts]] — `TST-oracleRunnerReporters.test.ts`
 - [[TST - oracleRunnerTns.test.ts]] — `TST-oracleRunnerTns.test.ts`
+- [[TST - organizationStrategy.test.ts]] — `TST-organizationStrategy.test.ts`
 - [[TST - packageTarget.test.ts]] — `TST-packageTarget.test.ts`
 - [[TST - pathContainment.test.ts]] — `TST-pathContainment.test.ts`
 - [[TST - perf.test.ts]] — `TST-perf.test.ts`

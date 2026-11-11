@@ -52,6 +52,7 @@ SORT id ASC
 - [[COD - compose.yaml]] — `COD-compose.yaml`
 - [[COD - config.ts]] — `COD-config.ts`
 - [[COD - configCache.ts]] — `COD-configCache.ts`
+- [[COD - configReactivity.ts]] — `COD-configReactivity.ts`
 - [[COD - Configuration.md]] — `COD-Configuration.md`
 - [[COD - configValidation.ts]] — `COD-configValidation.ts`
 - [[COD - connection.ts]] — `COD-connection.ts`
@@ -148,6 +149,7 @@ SORT id ASC
 - [[COD - src-scaffold.ts]] — `COD-src-scaffold.ts`
 - [[COD - state.ts]] — `COD-state.ts`
 - [[COD - statusBar.ts]] — `COD-statusBar.ts`
+- [[COD - strategy.ts]] — `COD-strategy.ts`
 - [[COD - suiteParser.ts]] — `COD-suiteParser.ts`
 - [[COD - summary.cjs]] — `COD-summary.cjs`
 - [[COD - sync-prds.cjs]] — `COD-sync-prds.cjs`

@@ -175,7 +175,7 @@ a coleta filtrada por schema.
 - 🗺️ [[MOC - PRDs]]
 - 📐 Regras: [[BR-DISC-002 - Descoberta Oracle tem retry transitório, cache TTL e folder por schema|BR-DISC-002]] · [[BR-STATE-003 - Snapshot do último run é podado por idade e tamanho|BR-STATE-003]]
 - 🔗 PRDs relacionados: [[prd-56-duration-persistence|PRD-56]] · [[prd-103-incremental-source-reindex|PRD-103]] · [[prd-148-execution-state-reliability|PRD-148]]
-- 🔗 Mesma versão (0.21.0): [[prd-138-organization-strategy-pattern|PRD-138]] · [[prd-139-state-store-slicing-lru|PRD-139]]
+- 🔗 Mesma versão (0.21.0): [[prd-139-state-store-slicing-lru|PRD-139]]
 - 🎯 RF1 — Retry → [[BR-DISC-002 - Descoberta Oracle tem retry transitório, cache TTL e folder por schema|BR-DISC-002]]
 - 🎯 RF2 — Identificação de erros transitórios → [[BR-DISC-002 - Descoberta Oracle tem retry transitório, cache TTL e folder por schema|BR-DISC-002]]
 - 🎯 RF3 — Cache de metadados → [[BR-DISC-002 - Descoberta Oracle tem retry transitório, cache TTL e folder por schema|BR-DISC-002]]

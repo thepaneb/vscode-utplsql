@@ -2,15 +2,15 @@
 tipo: prd
 id: PRD-138
 aliases: [PRD-138]
-status: proposed
+status: completed
 titulo: "Padrão Strategy para organização da árvore de testes (file/schema/tag)"
 versao: "0.21.0"
 data: "2026-10-30"
 autor: "Gil Cleber Barboza"
 versao_titulo: "0.21.0 — Arquitetura, configuração e resiliência"
 verificado: 2026-10-30
-regras: []
-docs: ["CHANGELOG"]
+regras: ["BR-ARCH-003"]
+docs: ["CHANGELOG", "wiki/Architecture.md", "wiki/Tree-organization.md"]
 tags: [prd]
 ---
 
@@ -122,18 +122,27 @@ Nenhuma setting nova.
 
 ## 12. Impacto no cérebro
 
-Ao concluir, criar regra `BR-ARCH-*` com `prds: ["PRD-138"]`. Enquanto `proposed`,
-`regras: []`.
+Regra criada: `BR-ARCH-003` ("organização da árvore de testes é selecionada por
+Strategy"), com `prds: ["PRD-138"]`, `implementacao:` e `testes:`.
 
 ## Impacto nas docs
 
-Superfície listada: CHANGELOG.
+`CHANGELOG`, `wiki/Architecture.md` e `wiki/Tree-organization.md` descrevem as
+strategies, a reatividade das settings e a resolução concorrente.
 
 ## Conexões
 
 <!-- brain:auto:start:conexoes -->
 - 🗺️ [[MOC - PRDs]]
+- 📐 Regras: [[BR-ARCH-003 - Organização da árvore de testes é selecionada por Strategy|BR-ARCH-003]]
 - 🔗 PRDs relacionados: [[prd-57-multiroot-root-resolution|PRD-57]] · [[prd-75-lazy-test-tree|PRD-75]] · [[prd-109-language-identity|PRD-109]] · [[prd-148-execution-state-reliability|PRD-148]]
 - 🔗 Mesma versão (0.21.0): [[prd-139-state-store-slicing-lru|PRD-139]]
+- 🎯 RF1 — Interface → [[BR-ARCH-003 - Organização da árvore de testes é selecionada por Strategy|BR-ARCH-003]]
+- 🎯 RF2 — Implementações → [[BR-ARCH-003 - Organização da árvore de testes é selecionada por Strategy|BR-ARCH-003]]
+- 🎯 RF3 — Seleção → [[BR-ARCH-003 - Organização da árvore de testes é selecionada por Strategy|BR-ARCH-003]]
+- 🎯 RF4 — Reatividade de settings da árvore → [[BR-ARCH-003 - Organização da árvore de testes é selecionada por Strategy|BR-ARCH-003]]
+- 🎯 RF5 — Resolução concorrente de nó → [[BR-ARCH-003 - Organização da árvore de testes é selecionada por Strategy|BR-ARCH-003]]
+- 🎯 RNF1 — Cobertura ≥ thresholds; nenhuma função > ~80 linhas. → [[BR-ARCH-003 - Organização da árvore de testes é selecionada por Strategy|BR-ARCH-003]]
+- 🎯 RNF2 — Comportamento idêntico (testes de regressão). → [[BR-ARCH-003 - Organização da árvore de testes é selecionada por Strategy|BR-ARCH-003]]
 - 🚀 ⬅️ release anterior: [[prd-150-thick-full-true-pool-recovery|PRD-150 (0.20.1)]] · ➡️ próxima release: [[prd-88-locale-aware-formatting|PRD-88 (0.22.0)]]
 <!-- brain:auto:end -->

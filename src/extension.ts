@@ -14,6 +14,7 @@ import { registerUtilityCommands } from './commands/utility';
 import { registerCompilationDiagnostics } from './compilationDiagnostics';
 import { readConfig } from './config';
 import { invalidateConfigCache } from './configCache';
+import { classifyConfigChange } from './configReactivity';
 import {
   hydrateProfilePasswords,
   initSecretStorage,
@@ -258,27 +259,28 @@ export function activate(context: vscode.ExtensionContext) {
 
   context.subscriptions.push(
     vscode.workspace.onDidChangeConfiguration((e) => {
-      if (
-        e.affectsConfiguration('utplsql.discovery.languageIds') ||
-        e.affectsConfiguration('files.associations')
-      ) {
+      const actions = classifyConfigChange((section) => e.affectsConfiguration(section));
+      if (actions.rebuildCodeLens) {
         codeLensRegistration.dispose();
         codeLensRegistration = buildCodeLensRegistration();
       }
-      if (
-        e.affectsConfiguration('utplsql') ||
-        e.affectsConfiguration('sqldeveloper.connections.tnsConfiguration.path')
-      ) {
-        invalidateConfigCache();
+      if (actions.rebuildWatcher) {
+        watcherRegistration?.dispose();
+        watcherRegistration = createWatcherRegistration();
       }
-      if (!e.affectsConfiguration('utplsql')) return;
-      invalidatePool();
-      // PRD-120 RF3: mudança de configuração invalida o memo da validação.
-      setupValidationDone = false;
-      setupValidationScheduled = false;
-      // PRD-102: trace/perf também são lidos por configuração.
-      setTraceEnabled(readConfig().trace);
-      perfProbe = buildPerfProbe();
+      if (actions.invalidateConfigCache) invalidateConfigCache();
+      if (actions.refreshTree) void refresh();
+      if (actions.invalidatePool) invalidatePool();
+      if (actions.resetSetupValidation) {
+        // PRD-120 RF3: mudança de configuração invalida o memo da validação.
+        setupValidationDone = false;
+        setupValidationScheduled = false;
+      }
+      if (actions.recomputeTrace) {
+        // PRD-102: trace/perf também são lidos por configuração.
+        setTraceEnabled(readConfig().trace);
+        perfProbe = buildPerfProbe();
+      }
     }),
   );
 
@@ -311,52 +313,57 @@ export function activate(context: vscode.ExtensionContext) {
     }),
   );
 
-  const watchCfg = readConfig();
-  const watcher = vscode.workspace.createFileSystemWatcher(
-    buildWatcherGlob(
-      watchCfg.discoveryLanguageIds,
-      currentLanguageContributions(),
-      workspaceAssociations(),
-    ),
-  );
-  // PRD-103: debounce por URI + reindex incremental. Rajadas grandes caem no
-  // full refresh; tag/schema também (no próprio refresher).
-  const pendingWatcherActions = new Map<string, 'change' | 'delete'>();
-  const perKeyRefresh = createPerKeyDebouncer(
-    (key) => {
-      const action = pendingWatcherActions.get(key) ?? 'change';
-      pendingWatcherActions.delete(key);
-      if (perKeyRefresh.size > 8) {
-        perKeyRefresh.cancel();
-        pendingWatcherActions.clear();
+  function createWatcherRegistration(): vscode.Disposable {
+    const watchCfg = readConfig();
+    const watcher = vscode.workspace.createFileSystemWatcher(
+      buildWatcherGlob(
+        watchCfg.discoveryLanguageIds,
+        currentLanguageContributions(),
+        workspaceAssociations(),
+      ),
+    );
+    // PRD-103: debounce por URI + reindex incremental. Rajadas grandes caem no
+    // full refresh; tag/schema também (no próprio refresher).
+    const pendingWatcherActions = new Map<string, 'change' | 'delete'>();
+    const perKeyRefresh = createPerKeyDebouncer(
+      (key) => {
+        const action = pendingWatcherActions.get(key) ?? 'change';
+        pendingWatcherActions.delete(key);
+        if (perKeyRefresh.size > 8) {
+          perKeyRefresh.cancel();
+          pendingWatcherActions.clear();
+          void refresh();
+          return;
+        }
+        const uri = vscode.Uri.parse(key);
+        if (action === 'delete') void refresh.removeUri(uri);
+        else void refresh.refreshUri(uri);
+      },
+      () => readConfig().refreshDebounceMs,
+    );
+    const scheduleWatcher = (kind: 'change' | 'delete', uri: unknown): void => {
+      const key = (uri as { toString?: () => string } | undefined)?.toString?.();
+      // Harnesses antigos disparam o watcher sem URI: full refresh é o fallback.
+      if (!key) {
         void refresh();
         return;
       }
-      const uri = vscode.Uri.parse(key);
-      if (action === 'delete') void refresh.removeUri(uri);
-      else void refresh.refreshUri(uri);
-    },
-    () => readConfig().refreshDebounceMs,
-  );
-  const scheduleWatcher = (kind: 'change' | 'delete', uri: unknown): void => {
-    const key = (uri as { toString?: () => string } | undefined)?.toString?.();
-    // Harnesses antigos disparam o watcher sem URI: full refresh é o fallback.
-    if (!key) {
-      void refresh();
-      return;
-    }
-    pendingWatcherActions.set(key, kind);
-    perKeyRefresh.schedule(key);
-  };
-  watcher.onDidCreate((uri) => scheduleWatcher('change', uri));
-  watcher.onDidChange((uri) => scheduleWatcher('change', uri));
-  watcher.onDidDelete((uri) => scheduleWatcher('delete', uri));
-  context.subscriptions.push(watcher, {
-    dispose: () => {
-      perKeyRefresh.cancel();
-      pendingWatcherActions.clear();
-    },
-  });
+      pendingWatcherActions.set(key, kind);
+      perKeyRefresh.schedule(key);
+    };
+    watcher.onDidCreate((uri) => scheduleWatcher('change', uri));
+    watcher.onDidChange((uri) => scheduleWatcher('change', uri));
+    watcher.onDidDelete((uri) => scheduleWatcher('delete', uri));
+    return {
+      dispose: () => {
+        perKeyRefresh.cancel();
+        pendingWatcherActions.clear();
+        watcher.dispose();
+      },
+    };
+  }
+  let watcherRegistration = createWatcherRegistration();
+  context.subscriptions.push({ dispose: () => watcherRegistration.dispose() });
 
   // Auto-run on save (watch mode, PRD-50). Default `off`.
   const autoRunner = createAutoRunner(
