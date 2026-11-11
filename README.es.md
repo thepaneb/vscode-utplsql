@@ -65,7 +65,11 @@ Ejecuta y depura pruebas **utPLSQL** (Oracle PL/SQL) directamente en VS Code —
 ### Conexiones y seguridad
 
 - 🔌 **Perfiles de conexión** — guarde y alterne entre múltiples entornos (DEV/TEST/PROD) con configuración por perfil, desde la barra de estado o la paleta de comandos.
-- 🔐 **TNS en thin + wallet** — `utplsql.connections.tnsAdminPath` resuelve alias de `tnsnames.ora` en el driver thin (fallback a SQL Developer/`TNS_ADMIN`); `walletLocation` del perfil y `utPLSQL: Set wallet password` guardan la contraseña de la wallet en el SecretStorage.
+- 🔐 **TNS en thin + wallet** — `utplsql.connections.tnsAdminPath` resuelve alias de `tnsnames.ora` en el driver thin (fallback a SQL Developer/`TNS_ADMIN`); `walletLocation` del perfil y `utPLSQL: Set wallet password` guardan la contraseña de la wallet en el SecretStorage; El secreto de la wallet está vinculado a la `connection` del perfil; cambiarla descarta la contraseña guardada (los secretos antiguos se migran en la primera lectura).
+- ⚡ **Reindexación incremental** — en modo file el watcher hace debounce por URI y reindexa solo la suite cambiada; tag/schema y las ráfagas caen en un full refresh (PRD-103).
+- 🧹 **Limpieza del pool inactivo** — `utplsql.oraclePoolCloseAfterRun` cierra las conexiones inactivas del pool Oracle tras el último run/coverage/export/discovery; desactívelo para mantener el pool caliente.
+- 🪶 **Activación ligera** — la extensión solo se activa para workspaces PL/SQL; la validación de setup es lazy, memoizada y nunca abre Oracle durante la activación.
+- 🔎 **Trace y rendimiento** — `utplsql.trace` y `utplsql.perf.enabled`/`perf.reportFile` (opt-in) miden discovery, tree build, run, polling y XML parsing; desactivados por defecto y nunca registran credenciales.
 - 🔒 **Endurecimiento de seguridad de las conexiones** — los ajustes de conexión son `machine`-scoped, la extensión se deshabilita en espacios de trabajo no confiables y la contraseña del perfil queda vinculada a la conexión.
 - 🔧 **Diagnósticos de configuración** — validación proactiva de conexión, grants y versión con quick-fix.
 

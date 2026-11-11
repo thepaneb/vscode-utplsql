@@ -74,7 +74,11 @@ Run and debug **utPLSQL** (Oracle PL/SQL) tests right in VS Code — native **Te
 ### Connections & security
 
 - 🔌 **Connection profiles** — save and switch between multiple environments (DEV/TEST/PROD) with per-profile settings, via status bar or command palette.
-- 🔐 **TNS in thin + wallet** — `utplsql.connections.tnsAdminPath` resolves `tnsnames.ora` aliases in the thin driver (fallback to SQL Developer/`TNS_ADMIN`); the profile `walletLocation` and `utPLSQL: Set wallet password` keep the wallet password in the SecretStorage.
+- 🔐 **TNS in thin + wallet** — `utplsql.connections.tnsAdminPath` resolves `tnsnames.ora` aliases in the thin driver (fallback to SQL Developer/`TNS_ADMIN`); the profile `walletLocation` and `utPLSQL: Set wallet password` keep the wallet password in the SecretStorage; The wallet secret is bound to the profile `connection`; changing it discards the stored password (legacy secrets are migrated on first read).
+- ⚡ **Incremental reindex** — in file mode the watcher debounces per URI and reindexes only the changed suite; tag/schema and bursts fall back to a full refresh (PRD-103).
+- 🧹 **Idle pool cleanup** — `utplsql.oraclePoolCloseAfterRun` closes idle Oracle pool connections after the last run/coverage/export/discovery; disable it to keep the pool warm.
+- 🪶 **Lean activation** — the extension activates only for PL/SQL workspaces; setup validation is lazy, memoized and never opens Oracle during activation.
+- 🔎 **Trace and performance** — opt-in `utplsql.trace` and `utplsql.perf.enabled`/`perf.reportFile` measure discovery, tree build, run, polling and XML parsing; off by default and never log credentials.
 - 🔒 **Connection security hardening** — connection settings are `machine`-scoped, the extension is disabled in untrusted workspaces, and the profile password is bound to the connection.
 - 🔧 **Setup diagnostics** — proactive validation of connection, grants, and version with quick-fix.
 

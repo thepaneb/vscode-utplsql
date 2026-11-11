@@ -74,7 +74,11 @@ Chạy và gỡ lỗi kiểm thử **utPLSQL** (Oracle PL/SQL) ngay trong VS Cod
 ### Kết nối và bảo mật
 
 - 🔌 **Hồ sơ kết nối** — lưu và chuyển đổi giữa nhiều môi trường (DEV/TEST/PROD) với cài đặt theo hồ sơ, qua thanh trạng thái hoặc command palette.
-- 🔐 **TNS ở thin + wallet** — `utplsql.connections.tnsAdminPath` phân giải alias `tnsnames.ora` trong driver thin (dự phòng SQL Developer/`TNS_ADMIN`); `walletLocation` của profile và `utPLSQL: Set wallet password` lưu mật khẩu wallet trong SecretStorage.
+- 🔐 **TNS ở thin + wallet** — `utplsql.connections.tnsAdminPath` phân giải alias `tnsnames.ora` trong driver thin (dự phòng SQL Developer/`TNS_ADMIN`); `walletLocation` của profile và `utPLSQL: Set wallet password` lưu mật khẩu wallet trong SecretStorage; Bí mật wallet được gắn với `connection` của profile; thay đổi sẽ bỏ mật khẩu đã lưu (bí mật cũ được di chuyển khi đọc lần đầu).
+- ⚡ **Đánh chỉ mục lại tăng dần** — ở chế độ file, watcher debounce theo URI và chỉ đánh chỉ mục lại suite thay đổi; tag/schema và các đợt lớn chuyển sang full refresh (PRD-103).
+- 🧹 **Dọn pool nhàn rỗi** — `utplsql.oraclePoolCloseAfterRun` đóng các kết nối Oracle pool nhàn rỗi sau lần run/coverage/export/discovery cuối; tắt để giữ pool ấm.
+- 🪶 **Kích hoạt nhẹ** — tiện ích chỉ kích hoạt cho workspace PL/SQL; kiểm tra setup là lazy, memoized và không bao giờ mở Oracle khi kích hoạt.
+- 🔎 **Trace và hiệu năng** — `utplsql.trace` và `utplsql.perf.enabled`/`perf.reportFile` (opt-in) đo discovery, tree build, run, polling và XML parsing; mặc định tắt và không bao giờ ghi thông tin đăng nhập.
 - 🔒 **Tăng cường bảo mật kết nối** — các cài đặt kết nối nay là `machine`-scoped, tiện ích bị vô hiệu hóa trong workspace không đáng tin cậy và mật khẩu profile gắn với kết nối.
 - 🔧 **Chẩn đoán thiết lập** — xác thực chủ động kết nối, quyền (grants) và phiên bản kèm quick-fix.
 

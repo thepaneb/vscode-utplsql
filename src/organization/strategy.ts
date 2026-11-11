@@ -38,11 +38,13 @@ export interface OrganizationDeps {
     controller: vscode.TestController,
     state: TestStateManager,
   ): Promise<vscode.TestItem[]>;
+  resolveNode(ctx: OrganizationContext, item: vscode.TestItem): Promise<void> | void;
 }
 
 export interface OrganizationStrategy {
   readonly mode: OrganizationMode;
   build(ctx: OrganizationContext): Promise<void>;
+  resolve(ctx: OrganizationContext, item: vscode.TestItem): Promise<void>;
   collectAll(ctx: OrganizationContext): Promise<vscode.TestItem[]>;
 }
 
@@ -52,6 +54,10 @@ class FileOrganization implements OrganizationStrategy {
 
   async build(ctx: OrganizationContext): Promise<void> {
     this.deps.buildFile(ctx.controller, ctx.state, ctx.suites);
+  }
+
+  async resolve(ctx: OrganizationContext, item: vscode.TestItem): Promise<void> {
+    await this.deps.resolveNode(ctx, item);
   }
 
   async collectAll(ctx: OrganizationContext): Promise<vscode.TestItem[]> {
@@ -65,6 +71,10 @@ class TagOrganization implements OrganizationStrategy {
 
   async build(ctx: OrganizationContext): Promise<void> {
     this.deps.buildTag(ctx.controller, ctx.state, ctx.suites);
+  }
+
+  async resolve(ctx: OrganizationContext, item: vscode.TestItem): Promise<void> {
+    await this.deps.resolveNode(ctx, item);
   }
 
   async collectAll(ctx: OrganizationContext): Promise<vscode.TestItem[]> {
@@ -81,6 +91,10 @@ class SchemaOrganization implements OrganizationStrategy {
       ? await this.deps.discoverSchemas(ctx.folders, ctx.schemaPattern)
       : [];
     this.deps.buildSchema(ctx.controller, ctx.state, ctx.suites, ctx.schemaPattern, extra);
+  }
+
+  async resolve(ctx: OrganizationContext, item: vscode.TestItem): Promise<void> {
+    await this.deps.resolveNode(ctx, item);
   }
 
   async collectAll(ctx: OrganizationContext): Promise<vscode.TestItem[]> {

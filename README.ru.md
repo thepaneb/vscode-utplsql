@@ -65,7 +65,11 @@
 ### Подключения и безопасность
 
 - 🔌 **Профили подключения** — сохранение и переключение между несколькими окружениями (DEV/TEST/PROD) с настройками для каждого профиля через строку состояния или палитру команд.
-- 🔐 **TNS в thin + wallet** — `utplsql.connections.tnsAdminPath` разрешает алиасы `tnsnames.ora` в thin-драйвере (fallback: SQL Developer/`TNS_ADMIN`); `walletLocation` профиля и `utPLSQL: Set wallet password` хранят пароль wallet в SecretStorage.
+- 🔐 **TNS в thin + wallet** — `utplsql.connections.tnsAdminPath` разрешает алиасы `tnsnames.ora` в thin-драйвере (fallback: SQL Developer/`TNS_ADMIN`); `walletLocation` профиля и `utPLSQL: Set wallet password` хранят пароль wallet в SecretStorage; Секрет wallet привязан к `connection` профиля; при её изменении сохранённый пароль отбрасывается (старые секреты мигрируют при первом чтении).
+- ⚡ **Инкрементальная переиндексация** — в режиме file watcher делает debounce по URI и переиндексирует только изменённую suite; tag/schema и серии изменений переходят на full refresh (PRD-103).
+- 🧹 **Очистка простаивающего pool** — `utplsql.oraclePoolCloseAfterRun` закрывает простаивающие соединения Oracle после последнего run/coverage/export/discovery; отключите, чтобы держать pool тёплым.
+- 🪶 **Лёгкая активация** — расширение активируется только для PL/SQL workspace; проверка setup ленивая, мемоизированная и никогда не открывает Oracle при активации.
+- 🔎 **Trace и производительность** — opt-in `utplsql.trace` и `utplsql.perf.enabled`/`perf.reportFile` измеряют discovery, tree build, run, polling и XML parsing; по умолчанию выключены и никогда не логируют учётные данные.
 - 🔒 **Усиление безопасности соединений** — настройки соединения теперь `machine`-scoped, расширение отключено в недоверенных рабочих пространствах, а пароль профиля привязан к соединению.
 - 🔧 **Диагностика настройки** — упреждающая проверка подключения, привилегий и версии с быстрым исправлением.
 

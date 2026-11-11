@@ -28,6 +28,9 @@ function deps(over: Partial<OrganizationDeps> = {}): OrganizationDeps & { calls:
     buildSchema: (_c, _s, _suites, _pattern, extra) => calls.push(`schema:${extra.join(',')}`),
     discoverSchemas: async () => ['APP'],
     collectAll: async () => [],
+    resolveNode: () => {
+      calls.push('resolve');
+    },
     ...over,
   };
 }
@@ -39,6 +42,14 @@ test('organization: file delega para buildFile e collectAll', async () => {
   await strategy.build(context());
   assert.deepStrictEqual(d.calls, ['file']);
   await strategy.collectAll(context());
+});
+
+test('organization: resolve é delegado nos três modos', async () => {
+  const d = deps();
+  await createOrganizationStrategy('file', d).resolve(context(), { id: 'suite:x' } as never);
+  await createOrganizationStrategy('tag', d).resolve(context(), { id: 'suite:x' } as never);
+  await createOrganizationStrategy('schema', d).resolve(context(), { id: 'schema:APP' } as never);
+  assert.deepStrictEqual(d.calls, ['resolve', 'resolve', 'resolve']);
 });
 
 test('organization: collectAll é delegado nos três modos', async () => {

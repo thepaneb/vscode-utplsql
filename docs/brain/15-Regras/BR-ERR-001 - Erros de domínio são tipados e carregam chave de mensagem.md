@@ -18,10 +18,12 @@ tags: ["erros", "arquitetura"]
 ---
 ## Enunciado
 
-Falhas de conexão/autenticação, timeout, versão do utPLSQL, reporter ausente e
-configuração inválida usam a hierarquia `UtplsqlError` (`src/errors.ts`) com
-`code` estável e `userMessageKey` do catálogo i18n. `mapOracleError` preserva a
-causa original (`cause`) e `formatUserError` redige a conexão antes de exibir.
+Falhas de conexão/autenticação, timeout e reporter ausente usam a hierarquia
+`UtplsqlError` (`src/errors.ts`) com `code` estável e `userMessageKey` do
+catálogo i18n. `mapOracleError` preserva a causa original (`cause`) e
+`formatUserError` redige a conexão antes de exibir. `UtplsqlVersionError` e
+`ConfigurationError` existem para callers, mas a validação de versão continua
+como diagnóstico (`quickfix.ts`) e configuração inválida faz fallback com warn.
 
 ## Controle
 

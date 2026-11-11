@@ -53,6 +53,33 @@ test('NormalRun: cobertura desligada e finalize aplica SQL coverage só se ligad
   assert.strictEqual(calls, 1);
 });
 
+test('RunStrategy.run: delega ao executor injetado com options/token', async () => {
+  const strategy = selectRunStrategy({ coverage: false });
+  let received: unknown[] = [];
+  const options = { connection: 'x', pathArgs: [] } as never;
+  const token = { isCancellationRequested: false } as never;
+  const result = await strategy.run(options, token, {
+    executeOracle: async (opts, tok) => {
+      received = [opts, tok];
+      return 'saida';
+    },
+  });
+  assert.strictEqual(result, 'saida');
+  assert.deepStrictEqual(received, [options, token]);
+});
+
+test('ExportRun/DebugRun.run também delegam ao executor', async () => {
+  const options = { connection: 'x', pathArgs: [] } as never;
+  const token = { isCancellationRequested: false } as never;
+  const deps = {
+    executeOracle: async () => 'saida',
+  };
+  const exported = selectRunStrategy({ coverage: false, exportReporter: { name: 'UT_X' } });
+  assert.strictEqual(await exported.run(options, token, deps), 'saida');
+  const debug = selectRunStrategy({ coverage: false, debug: true });
+  assert.strictEqual(await debug.run(options, token, deps), 'saida');
+});
+
 test('CoverageRun: monta escopo e HTML a partir da config', () => {
   const cfg = {
     ...readConfig(),

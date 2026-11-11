@@ -74,7 +74,11 @@ Rulează și depanează teste **utPLSQL** (Oracle PL/SQL) direct în VS Code —
 ### Conexiuni și securitate
 
 - 🔌 **Profiluri de conexiune** — salvează și comută între mai multe medii (DEV/TEST/PROD) cu setări per profil, prin bara de stare sau paleta de comenzi.
-- 🔐 **TNS în thin + wallet** — `utplsql.connections.tnsAdminPath` rezolvă aliasuri `tnsnames.ora` în driverul thin (fallback la SQL Developer/`TNS_ADMIN`); `walletLocation` din profil și `utPLSQL: Set wallet password` păstrează parola wallet-ului în SecretStorage.
+- 🔐 **TNS în thin + wallet** — `utplsql.connections.tnsAdminPath` rezolvă aliasuri `tnsnames.ora` în driverul thin (fallback la SQL Developer/`TNS_ADMIN`); `walletLocation` din profil și `utPLSQL: Set wallet password` păstrează parola wallet-ului în SecretStorage; Secretul wallet-ului este legat de `connection`-ul profilului; schimbarea acesteia elimină parola salvată (secretele vechi sunt migrate la prima citire).
+- ⚡ **Reindexare incrementală** — în modul file watcher-ul face debounce per URI și reindexează doar suite-ul modificat; tag/schema și rafalelor revin la full refresh (PRD-103).
+- 🧹 **Curățarea pool-ului inactiv** — `utplsql.oraclePoolCloseAfterRun` închide conexiunile Oracle inactive după ultimul run/coverage/export/discovery; dezactivați pentru a menține pool-ul cald.
+- 🪶 **Activare ușoară** — extensia se activează doar pentru workspace-uri PL/SQL; validarea setup este lazy, memoizată și nu deschide niciodată Oracle la activare.
+- 🔎 **Trace și performanță** — `utplsql.trace` și `utplsql.perf.enabled`/`perf.reportFile` (opt-in) măsoară discovery, tree build, run, polling și XML parsing; oprite implicit și nu loghează niciodată credențiale.
 - 🔒 **Hardening de securitate al conexiunilor** — setările de conexiune sunt `machine`-scoped, extensia este dezactivată în workspace-uri neîncrezute și parola profilului este legată de conexiune.
 - 🔧 **Diagnosticare de configurare** — validare proactivă a conexiunii, granturilor și versiunii, cu acțiuni quick-fix.
 

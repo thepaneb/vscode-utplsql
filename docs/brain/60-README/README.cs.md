@@ -74,7 +74,11 @@ Spouštějte a laďte testy **utPLSQL** (Oracle PL/SQL) přímo ve VS Code — n
 ### Připojení a zabezpečení
 
 - 🔌 **Profily připojení** — ukládání a přepínání mezi více prostředími (DEV/TEST/PROD) s nastavením podle profilu, přes stavový řádek nebo paletu příkazů.
-- 🔐 **TNS v thin + wallet** — `utplsql.connections.tnsAdminPath` řeší aliasy `tnsnames.ora` v thin ovladači (fallback na SQL Developer/`TNS_ADMIN`); `walletLocation` v profilu a `utPLSQL: Set wallet password` uchovávají heslo k walletu v SecretStorage.
+- 🔐 **TNS v thin + wallet** — `utplsql.connections.tnsAdminPath` řeší aliasy `tnsnames.ora` v thin ovladači (fallback na SQL Developer/`TNS_ADMIN`); `walletLocation` v profilu a `utPLSQL: Set wallet password` uchovávají heslo k walletu v SecretStorage; Tajemství wallet je vázáno na `connection` profilu; změna jej zahodí (starší tajemství se migrují při prvním čtení).
+- ⚡ **Inkrementální reindexace** — v režimu file watcher debounce-uje podle URI a reindexuje jen změněnou suite; tag/schema a velké dávky přecházejí na full refresh (PRD-103).
+- 🧹 **Úklid neaktivního poolu** — `utplsql.oraclePoolCloseAfterRun` zavírá neaktivní Oracle pool spojení po posledním run/coverage/export/discovery; vypněte jej, chcete-li pool udržet teplý.
+- 🪶 **Odlehčená aktivace** — rozšíření se aktivuje jen pro PL/SQL workspace; setup validace je líná, memoizovaná a při aktivaci nikdy neotevírá Oracle.
+- 🔎 **Trace a výkon** — opt-in `utplsql.trace` a `utplsql.perf.enabled`/`perf.reportFile` měří discovery, tree build, run, polling a XML parsing; ve výchozím stavu vypnuté a nikdy nelogují credentials.
 - 🔒 **Zpevnění zabezpečení připojení** — nastavení připojení jsou `machine`-scoped, rozšíření je zakázáno v nedůvěryhodných pracovních prostorech a heslo profilu je vázáno na připojení.
 - 🔧 **Diagnostika nastavení** — proaktivní ověření připojení, grantů a verze s rychlou opravou (quick-fix).
 

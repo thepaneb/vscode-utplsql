@@ -30,6 +30,14 @@ continuam vindo do `package.json`/`package.nls.json`.
     "default": "[\"plsql\", \"sql\", \"oracle-sql\"]",
     "description": "Language IDs treated as PL/SQL for discovery, CodeLens and decorations. Extensions are resolved from the installed extensions and `files.associations`; use `[\"plsql\"]` to avoid scanning `.sql`."
   },
+  "utplsql.discovery.retryAttempts": {
+    "default": "2",
+    "description": "Extra attempts for transient database discovery failures (network/timeout). 0 disables retries; authentication and permission errors are never retried."
+  },
+  "utplsql.discovery.cacheTtlSeconds": {
+    "default": "30",
+    "description": "TTL in seconds for the in-memory Oracle metadata cache (`get_suites_info`, reporters and the utPLSQL schema prefix). 0 disables the cache."
+  },
   "utplsql.generate.testPackagePrefix": {
     "default": "ut_",
     "description": "Prefix of the generated test package name."

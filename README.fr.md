@@ -65,7 +65,11 @@ Exécutez et déboguez vos tests **utPLSQL** (Oracle PL/SQL) directement dans VS
 ### Connexions et sécurité
 
 - 🔌 **Profils de connexion** — enregistrez et basculez entre plusieurs environnements (DEV/TEST/PROD) avec des paramètres par profil, via la barre d'état ou la palette de commandes.
-- 🔐 **TNS en thin + wallet** — `utplsql.connections.tnsAdminPath` résout les alias de `tnsnames.ora` dans le driver thin (repli vers SQL Developer/`TNS_ADMIN`) ; `walletLocation` du profil et `utPLSQL: Set wallet password` gardent le mot de passe du wallet dans le SecretStorage.
+- 🔐 **TNS en thin + wallet** — `utplsql.connections.tnsAdminPath` résout les alias de `tnsnames.ora` dans le driver thin (repli vers SQL Developer/`TNS_ADMIN`) ; `walletLocation` du profil et `utPLSQL: Set wallet password` gardent le mot de passe du wallet dans le SecretStorage; Le secret du wallet est lié à la `connection` du profil ; la modifier supprime le mot de passe stocké (les anciens secrets sont migrés à la première lecture).
+- ⚡ **Réindexation incrémentale** — en mode file, le watcher debounce par URI et ne réindexe que la suite modifiée ; tag/schema et les rafales retombent sur un full refresh (PRD-103).
+- 🧹 **Nettoyage du pool inactif** — `utplsql.oraclePoolCloseAfterRun` ferme les connexions Oracle inactives après le dernier run/coverage/export/discovery ; désactivez-le pour garder le pool chaud.
+- 🪶 **Activation allégée** — l'extension ne s'active que pour les workspaces PL/SQL ; la validation du setup est paresseuse, mémoïsée et n'ouvre jamais Oracle à l'activation.
+- 🔎 **Trace et performance** — `utplsql.trace` et `utplsql.perf.enabled`/`perf.reportFile` (opt-in) mesurent discovery, tree build, run, polling et XML parsing ; désactivés par défaut et jamais de credentials dans les logs.
 - 🔒 **Durcissement de la sécurité des connexions** — les réglages de connexion sont `machine`-scoped, l’extension est désactivée dans les espaces de travail non fiables et le mot de passe du profil est lié à la connexion.
 - 🔧 **Diagnostics de configuration** — validation proactive de la connexion, des privilèges (grants) et de la version avec action rapide.
 

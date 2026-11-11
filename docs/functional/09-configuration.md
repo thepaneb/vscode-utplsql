@@ -16,6 +16,12 @@ interface UtConfig {
   oraclePoolIncrement: number;        // default: 1
   oraclePoolPingInterval: number;     // default: 60 (health check de conexões ociosas)
 
+  // Descoberta (PRD-109/PRD-131)
+  discoverySource: 'auto' | 'file' | 'database'; // default: "auto"
+  discoveryRetryAttempts: number;     // default: 2 (tentativas extras; 0 desliga)
+  discoveryCacheTtlSeconds: number;   // default: 30 (TTL do cache; 0 desliga)
+  discoveryLanguageIds: string[];     // default: ["plsql", "sql", "oracle-sql"]
+
   // Cliente Oracle (PRD-70)
   oracleClientMode: 'thin' | 'thick'; // default: "thin"
   oracleClientLibDir: string;         // default: "" (Instant Client; obrigatório no thick)
@@ -141,7 +147,9 @@ function readConfig(): UtConfig
 ```
 
 Lê `vscode.workspace.getConfiguration('utplsql')`. Todos os valores têm defaults
-— a extensão funciona sem nenhuma configuração.
+— a extensão funciona sem nenhuma configuração. O snapshot é validado
+(números/enums/regex; inválido vira default + `logger.warn`) e cacheado dentro do
+tick síncrono, com invalidação em mudança de setting/perfil/wallet.
 
 ## `resolveConnection()`
 

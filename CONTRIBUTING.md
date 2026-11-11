@@ -101,7 +101,7 @@ npm run db:matrix -- --keep-db --only 23free  # do not tear down the container a
 The orchestrator (`scripts/db-matrix/run.sh`) pulls the image, brings up the container, waits for the PDB to open, installs utPLSQL + grants + schemas/fixtures and runs the tests; at the end it tears down the container, **preserving the data volume**.
 
 **Persistence:** each version has its own named volume
-(`utplsql-dbmatrix-<label>`, mounted at `/opt/oracle/oradata`). The **first** run creates the database (~15–25 min for 18c/19c); the following ones come up from the volume in ~1–2 min. Use `--skip-bootstrap` when the volume is already prepared (skips the utPLSQL reinstall) and `--clean` to delete the volume and start over. Requirements: Docker and, for the `database/enterprise` images, `ORACLE_AUTH_USER`/`ORACLE_AUTH_TOKEN` in `.env.dbmatrix` (see `.env.dbmatrix.example`). CI does **not** run the matrix — it is local and manual. The target version and details are in PRD-72.
+(`utplsql-dbmatrix-<label>`, mounted at `/opt/oracle/oradata`). The **first** run creates the database (~15–25 min for 18c/19c); the following ones come up from the volume in ~1–2 min. Use `--skip-bootstrap` when the volume is already prepared (skips the utPLSQL reinstall) and `--clean` to delete the volume and start over. Requirements: Docker and, for the `database/enterprise` images, `ORACLE_AUTH_USER`/`ORACLE_AUTH_TOKEN` in `.env.dbmatrix` (see `.env.dbmatrix.example`). CI runs the matrix weekly (18c/21c full, 23ai nightly) and the thick axes on schedule/dispatch; `npm run db:matrix` remains available for local edge versions. The target version and details are in PRD-72.
 
 ### Thick mode (Instant Client)
 
@@ -109,7 +109,7 @@ Optional and local. Thick initialization is **global and irreversible** in the e
 
 ```bash
 # point to an Oracle Instant Client (Basic/Basic Light) on your machine
-# node-oracledb 7 thick requires Oracle Client 19c+
+# node-oracledb 26 thick requires Oracle Client 19c+
 export ORACLE_CLIENT_LIB_DIR='C:\oracle\instantclient_23_0'
 npm run test:integration:thick
 ```
@@ -120,7 +120,7 @@ The extension itself also falls back to `ORACLE_CLIENT_LIB_DIR` when
 In the matrix: `npm run db:matrix -- --thick` (or `--only <version> --thick`).
 The full suite in thick is experimental: `npm run db:matrix -- --only 23free --thick-full`
 (or `npm run test:integration:thick-full` directly); it excludes the thin-only
-tests and is **not** in CI yet (PRD-125 covers the 11g validation and skips).
+tests; the 23ai thick-full runs nightly, the 11g dispatch remains experimental (PRD-125/PRD-150).
 Without `ORACLE_CLIENT_LIB_DIR`, `thickMode.test.ts` is `skip`.
 
 ## Project structure
@@ -189,7 +189,7 @@ git log --show-signature -1     # Good signature
 ```
 
 The current `main` protection also requires a PR (0 approvals), the checks
-`build (22)`, `build (24)`, `build (26)` and `CodeQL`, and blocks force-push and
+`build (24)`, `build (26)` and `CodeQL`, and blocks force-push and
 deletion. **Linear history is not adopted** because the project uses merge
 commits; `enforce_admins` is on, so the rules apply to the maintainer too.
 

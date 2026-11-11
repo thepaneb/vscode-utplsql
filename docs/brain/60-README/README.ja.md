@@ -74,7 +74,11 @@ tags: [readme]
 ### 接続とセキュリティ
 
 - 🔌 **接続プロファイル** — DEV/TEST/PROD などの複数環境をプロファイルごとの設定で保存・切替。ステータスバーまたはコマンドパレットから。
-- 🔐 **thin の TNS + wallet** — `utplsql.connections.tnsAdminPath` が thin ドライバで `tnsnames.ora` の別名を解決します（SQL Developer/`TNS_ADMIN` にフォールバック）。プロファイルの `walletLocation` と `utPLSQL: Set wallet password` が wallet のパスワードを SecretStorage に保存します。
+- 🔐 **thin の TNS + wallet** — `utplsql.connections.tnsAdminPath` が thin ドライバで `tnsnames.ora` の別名を解決します（SQL Developer/`TNS_ADMIN` にフォールバック）。プロファイルの `walletLocation` と `utPLSQL: Set wallet password` が wallet のパスワードを SecretStorage に保存します。; wallet のシークレットはプロファイルの `connection` に紐付けられ、変更すると保存済みパスワードは破棄されます（旧形式は初回読み込み時に移行）。
+- ⚡ **増分再インデックス** — file モードでは watcher が URI ごとに debounce し、変更された suite だけを再インデックスします。tag/schema と大量変更は full refresh にフォールバックします（PRD-103）。
+- 🧹 **アイドル pool のクリーンアップ** — `utplsql.oraclePoolCloseAfterRun` は最後の run/coverage/export/discovery 後にアイドル状態の Oracle pool 接続を閉じます。pool を暖かく保つには無効にしてください。
+- 🪶 **軽量なアクティベーション** — 拡張機能は PL/SQL ワークスペースでのみ有効化され、setup 検証は遅延・メモ化され、有効化時に Oracle を開きません。
+- 🔎 **トレースとパフォーマンス** — opt-in の `utplsql.trace` と `utplsql.perf.enabled`/`perf.reportFile` が discovery、tree build、run、polling、XML parsing を計測します。既定はオフで、資格情報はログに残しません。
 - 🔒 **接続のセキュリティ強化** — 接続設定は `machine`-scoped になり、信頼されていないワークスペースでは拡張機能が無効化され、プロファイルのパスワードは接続に紐づきます。
 - 🔧 **セットアップ診断** — 接続・権限・バージョンのプロアクティブな検証とクイックフィックス。
 

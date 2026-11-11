@@ -65,7 +65,11 @@
 ### การเชื่อมต่อและความปลอดภัย
 
 - 🔌 **โปรไฟล์การเชื่อมต่อ** — บันทึกและสลับระหว่างหลายสภาพแวดล้อม (DEV/TEST/PROD) พร้อมการตั้งค่าต่อโปรไฟล์ ผ่านแถบสถานะหรือ command palette
-- 🔐 **TNS ใน thin + wallet** — `utplsql.connections.tnsAdminPath` แปลง alias ของ `tnsnames.ora` ในไดรเวอร์ thin (fallback ไป SQL Developer/`TNS_ADMIN`); `walletLocation` ของโปรไฟล์และ `utPLSQL: Set wallet password` เก็บรหัส wallet ไว้ใน SecretStorage
+- 🔐 **TNS ใน thin + wallet** — `utplsql.connections.tnsAdminPath` แปลง alias ของ `tnsnames.ora` ในไดรเวอร์ thin (fallback ไป SQL Developer/`TNS_ADMIN`); `walletLocation` ของโปรไฟล์และ `utPLSQL: Set wallet password` เก็บรหัส wallet ไว้ใน SecretStorage; ความลับของ wallet ผูกกับ `connection` ของโปรไฟล์ การเปลี่ยนจะทิ้งรหัสผ่านที่บันทึกไว้ (ความลับแบบเก่าจะถูกย้ายเมื่ออ่านครั้งแรก)
+- ⚡ **การจัดทำดัชนีใหม่แบบเพิ่มขึ้น** — ในโหมด file watcher จะ debounce ตาม URI และจัดทำดัชนีเฉพาะ suite ที่เปลี่ยน; tag/schema และการเปลี่ยนแปลงจำนวนมากจะ fallback เป็น full refresh (PRD-103)
+- 🧹 **ล้าง pool ที่ไม่ได้ใช้งาน** — `utplsql.oraclePoolCloseAfterRun` ปิดการเชื่อมต่อ Oracle pool ที่ว่างหลัง run/coverage/export/discovery ครั้งล่าสุด; ปิดการตั้งค่านี้เพื่อให้ pool อุ่นอยู่เสมอ
+- 🪶 **การเปิดใช้งานแบบเบา** — ส่วนขยายเปิดใช้งานเฉพาะ workspace PL/SQL; การตรวจสอบ setup เป็นแบบ lazy, memoized และไม่เปิด Oracle ระหว่างการเปิดใช้งาน
+- 🔎 **Trace และประสิทธิภาพ** — `utplsql.trace` และ `utplsql.perf.enabled`/`perf.reportFile` (opt-in) วัด discovery, tree build, run, polling และ XML parsing; ปิดโดยค่าเริ่มต้นและไม่บันทึกข้อมูลรับรอง
 - 🔒 **เสริมความปลอดภัยของการเชื่อมต่อ** — การตั้งค่าการเชื่อมต่อเป็น `machine`-scoped ส่วนขยายถูกปิดในเวิร์กสเปซที่ไม่น่าเชื่อถือ และรหัสของโปรไฟล์ผูกกับการเชื่อมต่อ
 - 🔧 **การวินิจฉัยการตั้งค่า (Setup diagnostics)** — ตรวจสอบการเชื่อมต่อ, grants และเวอร์ชันเชิงรุกพร้อม quick-fix
 

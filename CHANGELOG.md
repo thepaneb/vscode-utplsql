@@ -39,13 +39,15 @@
   secret is migrated on first hydration and a mismatched secret is discarded
   with a warning.
 - **Typed errors and validated configuration (PRD-130)**: Oracle
-  connection/authentication errors, pool timeouts, missing reporters, version
-  mismatches and invalid configuration now use the `UtplsqlError` hierarchy
-  with stable codes, localized `userMessageKey` and the original `cause`
-  preserved. `readConfig()` validates every setting (numbers, enums, booleans,
-  arrays and coverage regexes) with safe fallbacks plus a warning, caches the
-  snapshot until a setting/profile/wallet change, and `tnsnames.ora` is cached
-  by file mtime instead of being re-read on every pool/discovery call.
+  connection/authentication errors, pool timeouts and missing reporters now use
+  the `UtplsqlError` hierarchy with stable codes, localized `userMessageKey` and
+  the original `cause` preserved; `UtplsqlVersionError`/`ConfigurationError` are
+  available for callers, while version checks remain diagnostics and invalid
+  settings fall back with a warning. `readConfig()` validates every setting
+  (numbers, enums, booleans, arrays and coverage regexes) with safe fallbacks
+  plus a warning, caches the snapshot until a setting/profile/wallet change, and
+  `tnsnames.ora` is cached by file mtime instead of being re-read on every
+  pool/discovery call.
 
 ## 0.20.1
 

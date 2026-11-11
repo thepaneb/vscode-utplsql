@@ -19,7 +19,7 @@ Overview of the extension's tests and how to run them.
 
 ## Unit tests
 
-Unit tests live in `src/test/unit/` (88 files). They cover pure
+Unit tests live in `src/test/unit/` (109 files). They cover pure
 modules and modules that depend on `vscode`, using `src/test/vscode-stub.ts`.
 The folder is the source of truth for the current list; run
 `npm run test:unit` to execute it.
@@ -80,7 +80,7 @@ node --test --test-name-pattern "parse" out/test/unit/**/*.test.js
 
 Test the extension inside a real VSCode instance:
 
-Integration tests live in `src/test/integration/` (27 files); the folder is
+Integration tests live in `src/test/integration/` (31 files); the folder is
 the source of truth for the list, with two modes:
 
 - **Without database**: test discovery, commands, UI — do not require Oracle
@@ -166,4 +166,4 @@ destabilize the shared thick host (#288). On 11g/utPLSQL 3.1 the axis also skips
 `runTimeoutE2E` (before-hook flow), schema-node run, cancellation, random-order
 bind BOOLEAN and the stack-frame qualification assertion; with those skips the
 11g full is green (72 passing / 17 pending). The 11g dispatch remains
-experimental; the thick smoke (4 tests) is the supported gate.
+experimental; the thick smoke (5 tests) is the supported gate.

@@ -74,7 +74,11 @@ tags: [readme]
 ### Συνδέσεις και ασφάλεια
 
 - 🔌 **Connection profiles** — αποθήκευση και εναλλαγή μεταξύ πολλών περιβαλλόντων (DEV/TEST/PROD) με ρυθμίσεις ανά profile, μέσω status bar ή command palette.
-- 🔐 **TNS σε thin + wallet** — το `utplsql.connections.tnsAdminPath` επιλύει aliases του `tnsnames.ora` στον thin driver (fallback σε SQL Developer/`TNS_ADMIN`); το `walletLocation` του προφίλ και το `utPLSQL: Set wallet password` κρατούν τον κωδικό του wallet στο SecretStorage.
+- 🔐 **TNS σε thin + wallet** — το `utplsql.connections.tnsAdminPath` επιλύει aliases του `tnsnames.ora` στον thin driver (fallback σε SQL Developer/`TNS_ADMIN`); το `walletLocation` του προφίλ και το `utPLSQL: Set wallet password` κρατούν τον κωδικό του wallet στο SecretStorage; Το μυστικό του wallet είναι δεσμευμένο στη `connection` του προφίλ· η αλλαγή της το απορρίπτει (τα παλιά μυστικά μεταφέρονται στην πρώτη ανάγνωση).
+- ⚡ **Επαυξητική επανευρετηρίαση** — στη λειτουργία file ο watcher κάνει debounce ανά URI και επανευρετηριάζει μόνο τη suite που άλλαξε· tag/schema και ριπές πέφτουν σε full refresh (PRD-103).
+- 🧹 **Καθαρισμός αδρανούς pool** — το `utplsql.oraclePoolCloseAfterRun` κλείνει αδρανείς συνδέσεις Oracle pool μετά το τελευταίο run/coverage/export/discovery· απενεργοποιήστε το για να κρατήσετε το pool ζεστό.
+- 🪶 **Ελαφριά ενεργοποίηση** — η επέκταση ενεργοποιείται μόνο για PL/SQL workspace· η επικύρωση setup είναι lazy, memoized και δεν ανοίγει ποτέ Oracle κατά την ενεργοποίηση.
+- 🔎 **Trace και απόδοση** — opt-in `utplsql.trace` και `utplsql.perf.enabled`/`perf.reportFile` μετρούν discovery, tree build, run, polling και XML parsing· απενεργοποιημένα από προεπιλογή και ποτέ δεν καταγράφουν credentials.
 - 🔒 **Ενίσχυση ασφάλειας συνδέσεων** — οι ρυθμίσεις σύνδεσης είναι `machine`-scoped, η επέκταση απενεργοποιείται σε μη αξιόπιστα workspaces και ο κωδικός του προφίλ συνδέεται με τη σύνδεση.
 - 🔧 **Διαγνωστικά ρυθμίσεων** — προληπτική επικύρωση σύνδεσης, grants και έκδοσης με quick-fix.
 

@@ -74,7 +74,11 @@ Futtasd és debugold az **utPLSQL** (Oracle PL/SQL) teszteket közvetlenül a VS
 ### Kapcsolatok és biztonság
 
 - 🔌 **Kapcsolati profilok** — több környezet (DEV/TEST/PROD) mentése és váltása köztük profil-specifikus beállításokkal, az állapotsorból vagy a parancspalettáról.
-- 🔐 **TNS thin módban + wallet** — a `utplsql.connections.tnsAdminPath` feloldja a `tnsnames.ora` aliasokat a thin driverben (fallback: SQL Developer/`TNS_ADMIN`); a profil `walletLocation` mezője és a `utPLSQL: Set wallet password` a wallet jelszavát a SecretStorage-ban tartja.
+- 🔐 **TNS thin módban + wallet** — a `utplsql.connections.tnsAdminPath` feloldja a `tnsnames.ora` aliasokat a thin driverben (fallback: SQL Developer/`TNS_ADMIN`); a profil `walletLocation` mezője és a `utPLSQL: Set wallet password` a wallet jelszavát a SecretStorage-ban tartja; A wallet titka a profil `connection` értékéhez van kötve; ennek módosítása eldobja a tárolt jelszót (a régi titkok az első olvasáskor migrálódnak).
+- ⚡ **Növekményes újraindexelés** — file módban a watcher URI-nként debounce-ol, és csak a változott suite-ot indexeli újra; a tag/schema és a nagy sorozatok full refresh-re esnek vissza (PRD-103).
+- 🧹 **Hibernált pool tisztítása** — a `utplsql.oraclePoolCloseAfterRun` lezárja a tétlen Oracle pool kapcsolatokat az utolsó run/coverage/export/discovery után; kapcsold ki, ha melegen akarod tartani a poolt.
+- 🪶 **Könnyű aktiválás** — a kiterjesztés csak PL/SQL workspace-eknél aktiválódik; a setup ellenőrzés lusta, memoizált, és aktiváláskor soha nem nyit Oracle-t.
+- 🔎 **Trace és teljesítmény** — opt-in `utplsql.trace` és `utplsql.perf.enabled`/`perf.reportFile` méri a discovery, tree build, run, polling és XML parsing fázisokat; alapból ki, és soha nem naplóz credentialt.
 - 🔒 **Kapcsolatok biztonsági megerősítése** — a kapcsolati beállítások `machine`-scopedok, a bővítmény le van tiltva nem megbízható munkaterületeken, és a profil jelszava a kapcsolathoz van kötve.
 - 🔧 **Beállítás-diagnosztika** — proaktív ellenőrzés: kapcsolat, jogosultságok és verzió, gyorsjavítással.
 

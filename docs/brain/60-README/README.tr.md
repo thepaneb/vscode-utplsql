@@ -74,7 +74,11 @@ tags: [readme]
 ### Bağlantılar ve güvenlik
 
 - 🔌 **Bağlantı profilleri** — status bar veya komut paleti aracılığıyla profil başına ayarlarla birden fazla ortam (DEV/TEST/PROD) arasında kaydedin ve geçiş yapın.
-- 🔐 **Thin’de TNS + wallet** — `utplsql.connections.tnsAdminPath`, thin sürücüde `tnsnames.ora` takma adlarını çözer (SQL Developer/`TNS_ADMIN`’e fallback); profildeki `walletLocation` ve `utPLSQL: Set wallet password` wallet parolasını SecretStorage’da tutar.
+- 🔐 **Thin’de TNS + wallet** — `utplsql.connections.tnsAdminPath`, thin sürücüde `tnsnames.ora` takma adlarını çözer (SQL Developer/`TNS_ADMIN`’e fallback); profildeki `walletLocation` ve `utPLSQL: Set wallet password` wallet parolasını SecretStorage’da tutar; Wallet sırrı profilin `connection` değerine bağlıdır; değiştirilmesi kayıtlı parolayı siler (eski sırlar ilk okumada taşınır).
+- ⚡ **Artımlı yeniden indeksleme** — file modunda watcher URI başına debounce yapar ve yalnızca değişen suite’i yeniden indeksler; tag/schema ve yoğun değişiklikler full refresh’e düşer (PRD-103).
+- 🧹 **Boşta pool temizliği** — `utplsql.oraclePoolCloseAfterRun`, son run/coverage/export/discovery sonrası boştaki Oracle pool bağlantılarını kapatır; pool’u sıcak tutmak için kapatın.
+- 🪶 **Hafif aktivasyon** — uzantı yalnızca PL/SQL workspace’lerinde etkinleşir; setup doğrulaması lazy, memoized ve aktivasyon sırasında Oracle açmaz.
+- 🔎 **Trace ve performans** — opt-in `utplsql.trace` ve `utplsql.perf.enabled`/`perf.reportFile`; discovery, tree build, run, polling ve XML parsing’i ölçer; varsayılan kapalı ve asla kimlik bilgisi loglamaz.
 - 🔒 **Bağlantı güvenliği sıkılaştırması** — bağlantı ayarları `machine`-scoped oldu, uzantı güvenilmeyen çalışma alanlarında devre dışı ve profil parolası bağlantıya bağlı.
 - 🔧 **Kurulum tanılama** — bağlantı, yetkiler ve sürümün hızlı düzeltmeyle (quick-fix) proaktif doğrulaması.
 

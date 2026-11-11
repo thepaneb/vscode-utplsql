@@ -43,12 +43,7 @@ import { setupValidator, UtplsqlCodeActionProvider } from './quickfix';
 import { createRunEventBus } from './runEvents';
 import { TestStateManager } from './state';
 import { UtplsqlStatusBar } from './statusBar';
-import {
-  createRefresher,
-  resolvePackageNode,
-  resolveSchemaNode,
-  resolveSuiteNode,
-} from './testTree';
+import { createRefresher, resolveTreeNode } from './testTree';
 
 const state = new TestStateManager();
 let statusBar: UtplsqlStatusBar | undefined;
@@ -184,10 +179,8 @@ export function activate(context: vscode.ExtensionContext) {
       return;
     }
     scheduleSetupValidation();
-    // Resolução lazy por nível (PRD-75): schema → package → suite.
-    if (item.id.startsWith('schema:')) await resolveSchemaNode(controller, state, item);
-    else if (item.id.startsWith('package:')) resolvePackageNode(controller, state, item);
-    else if (item.id.startsWith('suite:')) resolveSuiteNode(controller, state, item);
+    // Resolução lazy por nível (PRD-75) via estratégia de organização (PRD-138).
+    await resolveTreeNode(controller, state, item);
   };
   controller.refreshHandler = async () => {
     await refreshFromUser();

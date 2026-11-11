@@ -65,7 +65,11 @@ Uruchamiaj i debuguj testy **utPLSQL** (Oracle PL/SQL) bezpośrednio w VS Code �
 ### Połączenia i bezpieczeństwo
 
 - 🔌 **Profile połączeń** — zapisuj i przełączaj się między wieloma środowiskami (DEV/TEST/PROD) z ustawieniami dla każdego profilu, z paska stanu lub palety poleceń.
-- 🔐 **TNS w thin + wallet** — `utplsql.connections.tnsAdminPath` rozwiązuje aliasy `tnsnames.ora` w sterowniku thin (fallback: SQL Developer/`TNS_ADMIN`); `walletLocation` profilu i `utPLSQL: Set wallet password` przechowują hasło wallet w SecretStorage.
+- 🔐 **TNS w thin + wallet** — `utplsql.connections.tnsAdminPath` rozwiązuje aliasy `tnsnames.ora` w sterowniku thin (fallback: SQL Developer/`TNS_ADMIN`); `walletLocation` profilu i `utPLSQL: Set wallet password` przechowują hasło wallet w SecretStorage; Sekret wallet jest powiązany z `connection` profilu; zmiana go usuwa zapisane hasło (starsze sekrety są migrowane przy pierwszym odczycie).
+- ⚡ **Indeksowanie przyrostowe** — w trybie file watcher debounce-uje per URI i reindeksuje tylko zmienioną suite; tag/schema i serie zmian przechodzą na full refresh (PRD-103).
+- 🧹 **Czyszczenie bezczynnego poolu** — `utplsql.oraclePoolCloseAfterRun` zamyka bezczynne połączenia Oracle po ostatnim run/coverage/export/discovery; wyłącz, aby utrzymać pool ciepły.
+- 🪶 **Lekka aktywacja** — rozszerzenie aktywuje się tylko dla workspace PL/SQL; walidacja setup jest leniwa, memoizowana i nigdy nie otwiera Oracle przy aktywacji.
+- 🔎 **Trace i wydajność** — opt-in `utplsql.trace` i `utplsql.perf.enabled`/`perf.reportFile` mierzą discovery, tree build, run, polling i XML parsing; domyślnie wyłączone i nigdy nie logują danych logowania.
 - 🔒 **Wzmocnienie bezpieczeństwa połączeń** — ustawienia połączenia są `machine`-scoped, rozszerzenie jest wyłączone w niezaufanych obszarach roboczych, a hasło profilu jest powiązane z połączeniem.
 - 🔧 **Diagnostyka konfiguracji** — proaktywna walidacja połączenia, grantów i wersji z quick-fix.
 

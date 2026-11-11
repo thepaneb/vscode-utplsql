@@ -6,7 +6,7 @@
 
 import type * as vscode from 'vscode';
 import type { UtConfig } from './config';
-import type { OracleCoverageOptions, OracleExportReporter } from './oracleRunner';
+import type { OracleCoverageOptions, OracleExportReporter, OracleRunOptions } from './oracleRunner';
 import type { TestStateManager } from './state';
 
 export type RunMode = 'normal' | 'coverage' | 'export' | 'debug';
@@ -33,9 +33,21 @@ export interface RunStrategyFinalizeDeps {
   applySqlCoverage(): Promise<void>;
 }
 
+export interface RunStrategyRunDeps {
+  executeOracle(
+    options: OracleRunOptions,
+    token: vscode.CancellationToken,
+  ): Promise<string | undefined>;
+}
+
 export interface RunStrategy {
   readonly kind: RunMode;
   prepare(ctx: RunStrategyContext): RunPreparation;
+  run(
+    options: OracleRunOptions,
+    token: vscode.CancellationToken,
+    deps: RunStrategyRunDeps,
+  ): Promise<string | undefined>;
   finalize(ctx: RunStrategyContext, deps: RunStrategyFinalizeDeps): Promise<void>;
 }
 
@@ -63,6 +75,14 @@ class NormalRun implements RunStrategy {
     return { coverage: coverageOptions(ctx, false) };
   }
 
+  run(
+    options: OracleRunOptions,
+    token: vscode.CancellationToken,
+    deps: RunStrategyRunDeps,
+  ): Promise<string | undefined> {
+    return deps.executeOracle(options, token);
+  }
+
   async finalize(ctx: RunStrategyContext, deps: RunStrategyFinalizeDeps): Promise<void> {
     if (ctx.cfg.sqlCoverageEnabled) await deps.applySqlCoverage();
   }
@@ -84,6 +104,14 @@ class ExportRun implements RunStrategy {
       coverage: coverageOptions(ctx, false),
       exportReporter: ctx.exportReporter as OracleExportReporter,
     };
+  }
+
+  run(
+    options: OracleRunOptions,
+    token: vscode.CancellationToken,
+    deps: RunStrategyRunDeps,
+  ): Promise<string | undefined> {
+    return deps.executeOracle(options, token);
   }
 
   async finalize(): Promise<void> {

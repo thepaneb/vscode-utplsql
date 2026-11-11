@@ -65,7 +65,11 @@ Pokrenite i debugujte **utPLSQL** (Oracle PL/SQL) testove direktno u VS Code-u �
 ### Veze i bezbednost
 
 - 🔌 **Профили веза** — сачувај и пребацуј се између више окружења (DEV/TEST/PROD) са подешавањима по профилу, преко статусне траке или палете команди.
-- 🔐 **TNS u thin + wallet** — `utplsql.connections.tnsAdminPath` razrešava alias-e iz `tnsnames.ora` u thin drajveru (fallback na SQL Developer/`TNS_ADMIN`); `walletLocation` profila i `utPLSQL: Set wallet password` čuvaju lozinku wallet-a u SecretStorage.
+- 🔐 **TNS u thin + wallet** — `utplsql.connections.tnsAdminPath` razrešava alias-e iz `tnsnames.ora` u thin drajveru (fallback na SQL Developer/`TNS_ADMIN`); `walletLocation` profila i `utPLSQL: Set wallet password` čuvaju lozinku wallet-a u SecretStorage; Tajna wallet-a je vezana za `connection` profila; promena je odbacuje sačuvanu lozinku (stari tajni podaci se migriraju pri prvom čitanju).
+- ⚡ **Inkrementalno reindeksiranje** — u file režimu watcher debounce-uje po URI-ju i reindeksira samo izmenjenu suite; tag/schema i rafali prelaze na full refresh (PRD-103).
+- 🧹 **Čišćenje neaktivnog pool-a** — `utplsql.oraclePoolCloseAfterRun` zatvara neaktivne Oracle pool konekcije posle poslednjeg run/coverage/export/discovery; isključite da bi pool ostao topao.
+- 🪶 **Lagana aktivacija** — ekstenzija se aktivira samo za PL/SQL workspace; setup validacija je lenja, memoizovana i nikada ne otvara Oracle pri aktivaciji.
+- 🔎 **Trace i performanse** — opt-in `utplsql.trace` i `utplsql.perf.enabled`/`perf.reportFile` mere discovery, tree build, run, polling i XML parsing; podrazumevano isključeni i nikada ne loguju akreditive.
 - 🔒 **Jačanje bezbednosti veza** — podešavanja veze su `machine`-scoped, ekstenzija je onemogućena u nepouzdanim radnim prostorima, a lozinka profila je vezana za vezu.
 - 🔧 **Дијагностика подешавања** — проактивна провера везе, grant-ова и верзије са quick-fix-ом.
 

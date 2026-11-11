@@ -74,7 +74,11 @@ tags: [readme]
 ### 연결 및 보안
 
 - 🔌 **연결 프로필** — 프로필별 설정으로 여러 환경(DEV/TEST/PROD)을 저장하고 전환(상태 표시줄 또는 명령 팔레트를 통해).
-- 🔐 **thin의 TNS + wallet** — `utplsql.connections.tnsAdminPath`가 thin 드라이버에서 `tnsnames.ora` 별칭을 해석합니다(SQL Developer/`TNS_ADMIN` 폴백). 프로필의 `walletLocation`과 `utPLSQL: Set wallet password`가 wallet 비밀번호를 SecretStorage에 보관합니다.
+- 🔐 **thin의 TNS + wallet** — `utplsql.connections.tnsAdminPath`가 thin 드라이버에서 `tnsnames.ora` 별칭을 해석합니다(SQL Developer/`TNS_ADMIN` 폴백). 프로필의 `walletLocation`과 `utPLSQL: Set wallet password`가 wallet 비밀번호를 SecretStorage에 보관합니다; wallet 시크릿은 프로필 `connection`에 연결되며, 변경하면 저장된 비밀번호가 삭제됩니다(레거시 시크릿은 첫 읽기 시 마이그레이션).
+- ⚡ **증분 재인덱싱** — file 모드에서 watcher는 URI별로 debounce하고 변경된 suite만 다시 인덱싱합니다. tag/schema와 대량 변경은 full refresh로 폴백합니다(PRD-103).
+- 🧹 **유휴 pool 정리** — `utplsql.oraclePoolCloseAfterRun`은 마지막 run/coverage/export/discovery 후 유휴 Oracle pool 연결을 닫습니다. pool을 따뜻하게 유지하려면 비활성화하세요.
+- 🪶 **경량 활성화** — 확장은 PL/SQL 워크스페이스에서만 활성화되며, setup 검증은 지연·메모화되고 활성화 중 Oracle을 열지 않습니다.
+- 🔎 **추적 및 성능** — opt-in `utplsql.trace`와 `utplsql.perf.enabled`/`perf.reportFile`이 discovery, tree build, run, polling, XML parsing을 측정합니다. 기본은 꺼짐이며 자격 증명을 기록하지 않습니다.
 - 🔒 **연결 보안 강화** — 연결 설정이 `machine`-scoped가 되고, 신뢰할 수 없는 워크스페이스에서는 확장이 비활성화되며, 프로필 비밀번호가 연결에 묶입니다.
 - 🔧 **설정 진단** — 연결, 권한 및 버전에 대한 선제적 검증 및 quick-fix.
 

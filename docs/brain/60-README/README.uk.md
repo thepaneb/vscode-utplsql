@@ -74,7 +74,11 @@ tags: [readme]
 ### З'єднання та безпека
 
 - 🔌 **Профілі підключення** — збереження та перемикання між кількома середовищами (DEV/TEST/PROD) із налаштуваннями на профіль, через рядок стану або палітру команд.
-- 🔐 **TNS у thin + wallet** — `utplsql.connections.tnsAdminPath` розв’язує аліаси `tnsnames.ora` у thin-драйвері (fallback: SQL Developer/`TNS_ADMIN`); `walletLocation` профілю та `utPLSQL: Set wallet password` зберігають пароль wallet у SecretStorage.
+- 🔐 **TNS у thin + wallet** — `utplsql.connections.tnsAdminPath` розв’язує аліаси `tnsnames.ora` у thin-драйвері (fallback: SQL Developer/`TNS_ADMIN`); `walletLocation` профілю та `utPLSQL: Set wallet password` зберігають пароль wallet у SecretStorage; Секрет wallet прив’язаний до `connection` профілю; зміна відкидає збережений пароль (старі секрети мігрують під час першого читання).
+- ⚡ **Інкрементальна переіндексація** — у режимі file watcher робить debounce за URI і переіндексує лише змінену suite; tag/schema та серії змін переходять на full refresh (PRD-103).
+- 🧹 **Очищення неактивного pool** — `utplsql.oraclePoolCloseAfterRun` закриває неактивні з’єднання Oracle після останнього run/coverage/export/discovery; вимкніть, щоб тримати pool теплим.
+- 🪶 **Легка активація** — розширення активується лише для PL/SQL workspace; перевірка setup є лінивою, мемоізованою і ніколи не відкриває Oracle під час активації.
+- 🔎 **Trace і продуктивність** — opt-in `utplsql.trace` та `utplsql.perf.enabled`/`perf.reportFile` вимірюють discovery, tree build, run, polling і XML parsing; вимкнені за замовчуванням і ніколи не логують облікові дані.
 - 🔒 **Посилення безпеки з’єднань** — налаштування з’єднання тепер `machine`-scoped, розширення вимкнено в недовірених робочих просторах, а пароль профілю прив’язано до з’єднання.
 - 🔧 **Діагностика налаштувань** — проактивна перевірка підключення, привілеїв та версії зі швидким виправленням.
 

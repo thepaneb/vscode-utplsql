@@ -135,6 +135,8 @@ export async function executeRun(
   exportReporter?: { name: string; charset?: string; colorConsole?: boolean },
   /** Event bus opcional (PRD-128); callbacks continuam como adapters legados. */
   bus?: RunEventBus,
+  /** Seleciona `DebugRun` (PRD-129); o DAP continua fora deste fluxo. */
+  debug?: boolean,
 ): Promise<string | undefined> {
   const folders = vscode.workspace.workspaceFolders;
   if (!folders?.length) {
@@ -149,7 +151,7 @@ export async function executeRun(
 
   const cfg = readConfig();
   const locale = getExtensionLocale();
-  const strategy = selectRunStrategy({ coverage, exportReporter });
+  const strategy = selectRunStrategy({ coverage, exportReporter, debug });
   const exporting = strategy.kind === 'export';
   const run = controller.createTestRun(request);
 
@@ -260,7 +262,9 @@ export async function executeRun(
       output: { additionalReporters: cfg.additionalReporters },
       ...(prepared.exportReporter ? { export: { reporter: prepared.exportReporter } } : {}),
     };
-    exportText = await executeRunOracle(oracleOpts, token);
+    exportText = await strategy.run(oracleOpts, token, {
+      executeOracle: (options, cancellationToken) => executeRunOracle(options, cancellationToken),
+    });
     await strategy.finalize(
       {
         cfg,

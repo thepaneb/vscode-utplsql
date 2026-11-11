@@ -65,7 +65,11 @@ Führe **utPLSQL**-Tests (Oracle PL/SQL) direkt in VS Code aus und debugge sie �
 ### Verbindungen und Sicherheit
 
 - 🔌 **Verbindungsprofile** — mehrere Umgebungen (DEV/TEST/PROD) mit profilbezogenen Einstellungen speichern und zwischen ihnen wechseln, über Statusleiste oder Befehlspalette.
-- 🔐 **TNS im Thin-Treiber + Wallet** — `utplsql.connections.tnsAdminPath` löst `tnsnames.ora`-Aliase im Thin-Treiber auf (Fallback: SQL Developer/`TNS_ADMIN`); `walletLocation` im Profil und `utPLSQL: Set wallet password` halten das Wallet-Passwort im SecretStorage.
+- 🔐 **TNS im Thin-Treiber + Wallet** — `utplsql.connections.tnsAdminPath` löst `tnsnames.ora`-Aliase im Thin-Treiber auf (Fallback: SQL Developer/`TNS_ADMIN`); `walletLocation` im Profil und `utPLSQL: Set wallet password` halten das Wallet-Passwort im SecretStorage; Das Wallet-Geheimnis ist an die `connection` des Profils gebunden; eine Änderung verwirft das gespeicherte Passwort (Altformate werden beim ersten Lesen migriert).
+- ⚡ **Inkrementelle Neuindexierung** — im File-Modus debounced der Watcher pro URI und indexiert nur die geänderte Suite neu; Tag/Schema und Bursts fallen auf einen Full Refresh zurück (PRD-103).
+- 🧹 **Aufräumen des Leerlauf-Pools** — `utplsql.oraclePoolCloseAfterRun` schließt ungenutzte Oracle-Pool-Verbindungen nach dem letzten Run/Coverage/Export/Discovery; deaktivieren hält den Pool warm.
+- 🪶 **Schlanke Aktivierung** — die Extension aktiviert nur für PL/SQL-Workspaces; die Setup-Validierung ist lazy, memoized und öffnet bei der Aktivierung nie Oracle.
+- 🔎 **Trace und Performance** — opt-in `utplsql.trace` und `utplsql.perf.enabled`/`perf.reportFile` messen Discovery, Tree-Build, Run, Polling und XML-Parsing; standardmäßig aus und nie mit Credentials im Log.
 - 🔒 **Sicherheits-Hardening der Verbindungen** — Verbindungs-Einstellungen sind `machine`-scoped, die Extension ist in nicht vertrauenswürdigen Workspaces deaktiviert und das Profilpasswort ist an die Verbindung gebunden.
 - 🔧 **Setup-Diagnose** — proaktive Validierung von Verbindung, Grants und Version mit Quick-Fix.
 

@@ -535,6 +535,46 @@ const defaultMergeDbDeps: MergeDbDeps = {
   discoverDbSuites,
 };
 
+/** Resolve um nó da árvore pela estratégia de organização (PRD-138 RF1). */
+export async function resolveTreeNode(
+  controller: vscode.TestController,
+  state: TestStateManager,
+  item: vscode.TestItem,
+): Promise<void> {
+  const cfg = readConfig();
+  const strategy = createOrganizationStrategy(cfg.organization, {
+    buildFile: buildFileTree,
+    buildTag: buildTagTree,
+    buildSchema: buildSchemaTree,
+    discoverSchemas: discoverSchemasFromFolders,
+    collectAll: collectAllItems,
+    resolveNode: resolveNodeForStrategy,
+  });
+  await strategy.resolve(
+    {
+      controller,
+      state,
+      suites: [],
+      folders: vscode.workspace.workspaceFolders ?? undefined,
+      schemaPattern: cfg.organizationSchemaPattern,
+    },
+    item,
+  );
+}
+
+async function resolveNodeForStrategy(
+  ctx: { controller: vscode.TestController; state: TestStateManager },
+  item: vscode.TestItem,
+): Promise<void> {
+  if (item.id.startsWith('schema:')) {
+    await resolveSchemaNode(ctx.controller, ctx.state, item);
+  } else if (item.id.startsWith('package:')) {
+    resolvePackageNode(ctx.controller, ctx.state, item);
+  } else if (item.id.startsWith('suite:')) {
+    resolveSuiteNode(ctx.controller, ctx.state, item);
+  }
+}
+
 /**
  * Cria o refresher da árvore de testes com coalescência de chamadas
  * concorrentes (uma execução por vez; reexecuta se solicitado durante).
@@ -587,6 +627,7 @@ export function createRefresher(
       buildSchema: buildSchemaTree,
       discoverSchemas: discoverSchemasFromFolders,
       collectAll: collectAllItems,
+      resolveNode: resolveNodeForStrategy,
     });
     await strategy.build({
       controller,
