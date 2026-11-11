@@ -139,6 +139,7 @@ SORT id ASC
 - [[TST - selectReporterCommand.test.ts]] — `TST-selectReporterCommand.test.ts`
 - [[TST - snippets.test.ts]] — `TST-snippets.test.ts`
 - [[TST - state.test.ts]] — `TST-state.test.ts`
+- [[TST - stateStore.test.ts]] — `TST-stateStore.test.ts`
 - [[TST - statusBar.test.ts]] — `TST-statusBar.test.ts`
 - [[TST - suiteParser.test.ts]] — `TST-suiteParser.test.ts`
 - [[TST - tagFilter.test.ts]] — `TST-tagFilter.test.ts`

@@ -4,7 +4,7 @@
 
 | Campo | Valor |
 |---|---|
-| Status | Proposto |
+| Status | Concluído |
 | Autor | Gil Cleber Barboza |
 | Data | 2026-10-30 |
 | Componente | Extensão `paneb.vscode-utplsql` |
@@ -105,9 +105,11 @@ Nenhuma setting nova (teto interno).
 
 ## 12. Impacto no cérebro
 
-Ao concluir, criar regra `BR-ARCH-*` com `prds: ["PRD-139"]`. Enquanto `proposed`,
-`regras: []`.
+Regra criada: `BR-STATE-004` ("estado da árvore, cobertura e snapshot são
+stores separados com LRU"), com `prds: ["PRD-139"]`, `implementacao:` e
+`testes:`.
 
 ## Impacto nas docs
 
-Superfície listada: CHANGELOG.
+`CHANGELOG` e `wiki/Architecture.md` descrevem os stores, o LRU e a limpeza de
+cobertura no início do run.

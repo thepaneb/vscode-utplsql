@@ -159,6 +159,7 @@ SORT id ASC
 - [[BR-STATE-001 - Falhas persistidas restauram no schema mode sob demanda]] — `BR-STATE-001`
 - [[BR-STATE-002 - IDs de suite e teste incluem o schema no schema mode]] — `BR-STATE-002`
 - [[BR-STATE-003 - Snapshot do último run é podado por idade e tamanho]] — `BR-STATE-003`
+- [[BR-STATE-004 - Estado da árvore, cobertura e snapshot são stores separados com LRU]] — `BR-STATE-004`
 - [[BR-TEST-001 - Matriz de bancos Oracle cobre 12.2-23ai em thin e thick]] — `BR-TEST-001`
 - [[BR-TEST-002 - Testes de integração exigem banco e são skip sem UTPLSQL_CONN]] — `BR-TEST-002`
 - [[BR-TEST-003 - Stub de vscode é tipado e coberto pelo inventário de APIs]] — `BR-TEST-003`

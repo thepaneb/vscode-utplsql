@@ -70,6 +70,7 @@ Campos:
   { "id": "discovery-resilience-cache", "prd": "PRD-131", "interno": true },
   { "id": "run-event-bus", "prd": "PRD-128", "interno": true },
   { "id": "run-strategies", "prd": "PRD-129", "interno": true },
-  { "id": "tree-organization-strategies", "prd": "PRD-138", "interno": true }
+  { "id": "tree-organization-strategies", "prd": "PRD-138", "interno": true },
+  { "id": "state-stores-lru", "prd": "PRD-139", "interno": true }
 ]
 ```

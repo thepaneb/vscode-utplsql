@@ -5,13 +5,13 @@ titulo: "Architecture"
 publicar: docs/wiki/Architecture.md
 origem: ["MOC - Arquitetura"]
 verificado: 2026-11-08
-regras: ["SEC-014", "SEC-015", "BR-EXEC-017", "BR-CONN-020", "BR-CONN-023", "BR-LOG-002", "BR-PARSE-020", "BR-EXEC-018", "BR-STATE-001", "BR-STATE-002", "BR-DISC-001", "BR-ERR-001", "BR-CONN-025", "BR-DISC-002", "BR-STATE-003", "BR-ARCH-002", "BR-ARCH-001", "BR-ARCH-003"]
+regras: ["SEC-014", "SEC-015", "BR-EXEC-017", "BR-CONN-020", "BR-CONN-023", "BR-LOG-002", "BR-PARSE-020", "BR-EXEC-018", "BR-STATE-001", "BR-STATE-002", "BR-DISC-001", "BR-ERR-001", "BR-CONN-025", "BR-DISC-002", "BR-STATE-003", "BR-ARCH-002", "BR-ARCH-001", "BR-ARCH-003", "BR-STATE-004"]
 tags: [wiki]
 ---
 
 # Architecture
 
-<!-- prd:PRD-101 --> <!-- prd:PRD-102 --> <!-- prd:PRD-103 --> <!-- prd:PRD-120 --> <!-- prd:PRD-110 --> <!-- prd:PRD-111 --> <!-- prd:PRD-148 --> <!-- prd:PRD-130 --> <!-- prd:PRD-131 --> <!-- prd:PRD-128 --> <!-- prd:PRD-129 --> <!-- prd:PRD-138 -->
+<!-- prd:PRD-101 --> <!-- prd:PRD-102 --> <!-- prd:PRD-103 --> <!-- prd:PRD-120 --> <!-- prd:PRD-110 --> <!-- prd:PRD-111 --> <!-- prd:PRD-148 --> <!-- prd:PRD-130 --> <!-- prd:PRD-131 --> <!-- prd:PRD-128 --> <!-- prd:PRD-129 --> <!-- prd:PRD-138 --> <!-- prd:PRD-139 -->
 
 Overview of the extension's internal architecture for contributors.
 
@@ -52,6 +52,9 @@ functions live in `src/results.ts` (`applyResultsFromCases`,
   organization/pattern/tag/duration changes and rebuilds CodeLens + watcher on
   `discovery.languageIds`/`files.associations`; concurrent schema expansions
   share the in-flight promise.
+- **State stores (PRD-139)**: `TestStateManager` composes `CoverageStore` (LRU,
+  500), `TestItemIndex` and `RunSnapshot`; `executeRun` clears coverage at the
+  start of a non-empty run and the virtual-source cache is LRU-bounded (50).
 - **Schema-mode identity and restore (PRD-148 RF4/RF7)**: suite/test ids carry
   the schema (`suite:<schema>:<pkg>`, `test:<schema>:<pkg>.<proc>`) to avoid
   collisions between owners; file/tag trees keep the legacy ids. The legacy
@@ -103,7 +106,7 @@ bundled.
 | `charsetSupport.ts` — legacy-charset detection (euro preserved) | `compilationDiagnostics.ts` — ALL_ERRORS → Problems Panel |
 | `debounce.ts` — coalescing helper (global + per-key, PRD-103); `perf.ts` — probe de fases/JSONL opt-in (PRD-102) | `dbSourceProvider.ts` — `utplsql-db:` virtual documents |
 | `logger.ts` — logging (no `vscode`); `oracleIdentifiers.ts` — validação do prefixo de schema (`UT3.`); `redact.ts` — `maskConnection`/`redactConnection` (PRD-110) | `connectionProfiles.ts` — connection profiles |
-| `errors.ts` — hierarquia `UtplsqlError` + `mapOracleError`/`formatUserError` (PRD-130); `configValidation.ts` — validação de settings com fallback; `configCache.ts` — snapshot de configuração invalidável (PRD-130); `retry.ts` — retry/backoff e `isRetryable`; `metadataCache.ts` — cache TTL de metadados Oracle (PRD-131) | `decorations.ts` — inline ✓/✗/⚠ decorations |
+| `errors.ts` — hierarquia `UtplsqlError` + `mapOracleError`/`formatUserError` (PRD-130); `configValidation.ts` — validação de settings com fallback; `configCache.ts` — snapshot de configuração invalidável (PRD-130); `retry.ts` — retry/backoff e `isRetryable`; `metadataCache.ts` — cache TTL de metadados Oracle (PRD-131); `lru.ts` — LRU genérico; `stateStore/coverageStore.ts`, `stateStore/testItemIndex.ts`, `stateStore/runSnapshot.ts`, `stateStore/persisted.ts` — stores do estado (PRD-139) | `decorations.ts` — inline ✓/✗/⚠ decorations |
 | | `statusBar.ts` — status bar indicator |
 | | `viewCoverage.ts` — DeclarationCoverage + V$SQL view tracking |
 | | `dbmsDebug.ts`, `debugger.ts` — PL/SQL debugging via DBMS_DEBUG |

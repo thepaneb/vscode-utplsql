@@ -137,7 +137,6 @@ dos quatro modos.
 - 🗺️ [[MOC - PRDs]]
 - 📐 Regras: [[BR-ARCH-001 - Modos de execução são estratégias, não condicionais no orquestrador|BR-ARCH-001]]
 - 🔗 PRDs relacionados: [[prd-76-reporter-export|PRD-76]] · [[prd-78-random-test-order|PRD-78]] · [[prd-79-coverage-scope|PRD-79]] · [[prd-111-decompose-oracle-runner|PRD-111]] · [[prd-148-execution-state-reliability|PRD-148]]
-- 🔗 Mesma versão (0.21.0): [[prd-139-state-store-slicing-lru|PRD-139]]
 - 🎯 RF1 — Interface e estratégias → [[BR-ARCH-001 - Modos de execução são estratégias, não condicionais no orquestrador|BR-ARCH-001]]
 - 🎯 RF2 — Dispatcher → [[BR-ARCH-001 - Modos de execução são estratégias, não condicionais no orquestrador|BR-ARCH-001]]
 - 🎯 RF3 — Testabilidade → [[BR-ARCH-001 - Modos de execução são estratégias, não condicionais no orquestrador|BR-ARCH-001]]

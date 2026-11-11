@@ -217,6 +217,8 @@ export async function executeRun(
   // um run vazio não pode vazar o token de atividade nem apagar o último estado.
   const activity = beginOracleActivity(cfg);
   state.clearLastResults();
+  // PRD-139 RF3: cobertura de runs anteriores não vaza para o novo run.
+  state.clearCoverage();
 
   let exportText: string | undefined;
   try {

@@ -136,7 +136,6 @@ strategies, a reatividade das settings e a resolução concorrente.
 - 🗺️ [[MOC - PRDs]]
 - 📐 Regras: [[BR-ARCH-003 - Organização da árvore de testes é selecionada por Strategy|BR-ARCH-003]]
 - 🔗 PRDs relacionados: [[prd-57-multiroot-root-resolution|PRD-57]] · [[prd-75-lazy-test-tree|PRD-75]] · [[prd-109-language-identity|PRD-109]] · [[prd-148-execution-state-reliability|PRD-148]]
-- 🔗 Mesma versão (0.21.0): [[prd-139-state-store-slicing-lru|PRD-139]]
 - 🎯 RF1 — Interface → [[BR-ARCH-003 - Organização da árvore de testes é selecionada por Strategy|BR-ARCH-003]]
 - 🎯 RF2 — Implementações → [[BR-ARCH-003 - Organização da árvore de testes é selecionada por Strategy|BR-ARCH-003]]
 - 🎯 RF3 — Seleção → [[BR-ARCH-003 - Organização da árvore de testes é selecionada por Strategy|BR-ARCH-003]]

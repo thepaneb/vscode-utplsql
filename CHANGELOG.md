@@ -2,6 +2,11 @@
 
 ## 0.21.0
 
+- **Split state stores and LRU caches (PRD-139)**: `TestStateManager` now
+  composes `CoverageStore` (LRU, 500 entries), `TestItemIndex` and
+  `RunSnapshot` behind the same public API. Coverage is cleared at the start of
+  each non-empty run and the virtual-source document cache is LRU-bounded
+  (50 entries), preventing unbounded growth in long sessions.
 - **Tree organization strategies (PRD-138)**: `src/organization/strategy.ts`
   selects `FileOrganization`, `SchemaOrganization` or `TagOrganization`, with
   `testTree.ts` kept as the facade. Changes to `organization`,
