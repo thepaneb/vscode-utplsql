@@ -23,7 +23,8 @@ tags: [site, docs]
     <link rel="canonical" href="{{SITE_URL}}" />
     <meta name="robots" content="index, follow, max-image-preview:large" />
     <meta name="theme-color" content="#007acc" />
-    <link rel="icon" href="favicon.png" type="image/png" />
+    <link rel="icon" href="favicon.png" sizes="128x128" type="image/png" />
+    <link rel="apple-touch-icon" href="favicon.png" />
 
     <!-- Open Graph -->
     <meta property="og:type" content="website" />
