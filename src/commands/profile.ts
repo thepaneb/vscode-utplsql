@@ -56,7 +56,7 @@ export function registerProfileCommands(context: vscode.ExtensionContext, deps: 
         );
         return;
       }
-      await setWalletPassword(profile.id, password);
+      await setWalletPassword(profile.id, profile.connection, password);
       vscode.window.showInformationMessage(t(locale, 'ext.wallet.saved', { name: profile.name }));
     }),
     vscode.commands.registerCommand('utplsql.importSqlDevConnections', async () => {

@@ -2,6 +2,11 @@
 
 ## 0.21.0
 
+- **Wallet password bound to the profile connection (PRD-137)**: the Oracle
+  Cloud wallet secret now stores `{ connection, password }` and is only reused
+  when the profile still points to the same connection; a legacy raw-string
+  secret is migrated on first hydration and a mismatched secret is discarded
+  with a warning.
 - **Typed errors and validated configuration (PRD-130)**: Oracle
   connection/authentication errors, pool timeouts, missing reporters, version
   mismatches and invalid configuration now use the `UtplsqlError` hierarchy

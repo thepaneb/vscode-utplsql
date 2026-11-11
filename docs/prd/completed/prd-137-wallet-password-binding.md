@@ -4,7 +4,7 @@
 
 | Campo | Valor |
 |---|---|
-| Status | Proposto |
+| Status | Concluído |
 | Autor | Gil Cleber Barboza |
 | Data | 2026-10-30 |
 | Componente | Extensão `paneb.vscode-utplsql` |
@@ -109,9 +109,10 @@ connection) — atualizar call sites em `config.ts`.
 
 ## 12. Impacto no cérebro
 
-Ao concluir, criar/alterar a regra `SEC-011` (ou equivalente) com
-`prds: ["PRD-137"]`, `implementacao:` e `testes:`. Enquanto `proposed`,
-`regras: []`.
+Regras atualizadas: `SEC-012` ("senha da wallet é vinculada à connection e nunca
+fica em settings/log") e `BR-CONN-017` ("senha da wallet vai para o
+SecretStorage e é propagada ao pool"), ambas com `prds` incluindo `PRD-137`,
+`implementacao:` e `testes:`.
 
 ## Impacto nas docs
 

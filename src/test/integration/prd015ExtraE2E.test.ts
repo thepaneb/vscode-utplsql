@@ -117,14 +117,15 @@ describeDB('0.15.0 — features de UI/execução (integração)', () => {
     this.timeout(60_000);
     const cp = await import('../../connectionProfiles.js');
     const id = `e2e-wallet-${Date.now()}`;
+    const connection = 'u@//h:1521/s';
     try {
-      assert.strictEqual(cp.getWalletPassword(id), undefined);
-      await cp.setWalletPassword(id, 'p@ss-e2e');
-      assert.strictEqual(cp.getWalletPassword(id), 'p@ss-e2e');
+      assert.strictEqual(cp.getWalletPassword(id, connection), undefined);
+      await cp.setWalletPassword(id, connection, 'p@ss-e2e');
+      assert.strictEqual(cp.getWalletPassword(id, connection), 'p@ss-e2e');
     } finally {
       await cp.clearWalletPassword(id);
     }
-    assert.strictEqual(cp.getWalletPassword(id), undefined);
+    assert.strictEqual(cp.getWalletPassword(id, connection), undefined);
   });
 
   it('setWalletPassword sem perfil ativo avisa e não abre input (PRD-81)', async function () {
