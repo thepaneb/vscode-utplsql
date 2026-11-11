@@ -29,12 +29,12 @@ from VS Code — no Java, no Instant Client required in thin mode.**
 
 _Native Test Explorer: run, debug and see results without leaving VS Code._
 
-## What's new in 0.20.1
+## What's new in 0.21.0
 
-Execution reliability: runs and auto-run are serialized, schema-mode failures
-restore after reload, compilation diagnostics reach production packages, and
-the thick-full axis now recovers the pool after timeout/cancellation instead of
-falling back to thin or hanging. The full release notes are in the
+Architecture and reliability release: typed domain errors and validated
+configuration, a typed execution event bus with decoupled UI subscribers, run
+strategies, resilient database discovery with retry and metadata cache, and
+bounded state/coverage caches. The full release notes are in the
 [CHANGELOG](https://github.com/thepaneb/vscode-utplsql/blob/main/CHANGELOG.md).
 
 ## Why use this extension?

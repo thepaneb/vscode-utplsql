@@ -2,7 +2,7 @@
   "name": "vscode-utplsql",
   "displayName": "utPLSQL Test Runner",
   "description": "Run, debug and measure coverage of utPLSQL (Oracle PL/SQL) unit tests in VS Code's native Test Explorer — Oracle-direct via node-oracledb (no Java/Instant Client in thin mode), visual coverage, PL/SQL debugger and 24 UI languages.",
-  "version": "0.20.1",
+  "version": "0.21.0",
   "publisher": "paneb",
   "author": "Gil Cleber Barboza",
   "license": "MIT",
