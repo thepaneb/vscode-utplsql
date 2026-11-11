@@ -153,14 +153,15 @@ files and the index; do not move the generated files by hand.
 | 130 | Configuration validation and typed errors | 0.21.0 |
 | 137 | Wallet password bound to the profile connection | 0.21.0 |
 | 131 | Discovery resilience: retry, metadata cache and Memento pruning | 0.21.0 |
+| 128 | Typed run event bus and callback decoupling | 0.21.0 |
 
 ### ⚪ Proposed
 
 The complete, generated list is in [docs/prd/index.md](../../prd/index.md).
 The 0.19.0 has 47/95/111/124/127 **completed**; the 0.20.0 closes
 101/102/103/106/107/120/125/146/147 (125 with the documented 11g limitation and
-the true-thick residual tracked by PRD-150). Next: 0.21.0 (130/131/137 completed;
-128/129/138/139), 0.22.0 (88–93/115), 0.23.0 (60/97/99/112/116/117/126/149),
+the true-thick residual tracked by PRD-150). Next: 0.21.0 (128/130/131/137 completed;
+129/138/139), 0.22.0 (88–93/115), 0.23.0 (60/97/99/112/116/117/126/149),
 0.24.0 (121/122/142–145) and 0.25.0 (132/133/140/141/151). The `status:` in each
 note's frontmatter is authoritative; this page does not duplicate the full
 table.

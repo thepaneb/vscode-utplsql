@@ -12,6 +12,7 @@ import {
   RunAbortedError,
 } from './oracleRunner';
 import { setupValidator } from './quickfix';
+import type { RunEventBus } from './runEvents';
 import type { LastRunState, TestStateManager } from './state';
 import type { ItemMeta } from './types';
 import { applySqlCoverage } from './viewCoverage';
@@ -131,6 +132,8 @@ export async function executeRun(
   ) => void,
   /** Export com reporter arbitrário (PRD-76): devolve a saída textual. */
   exportReporter?: { name: string; charset?: string; colorConsole?: boolean },
+  /** Event bus opcional (PRD-128); callbacks continuam como adapters legados. */
+  bus?: RunEventBus,
 ): Promise<string | undefined> {
   const folders = vscode.workspace.workspaceFolders;
   if (!folders?.length) {
@@ -168,6 +171,12 @@ export async function executeRun(
     pathArgs: [...pathArgs],
     coverage,
   });
+  bus?.emit({
+    type: 'run:start',
+    pathArgs: [...pathArgs],
+    coverage,
+    exporting,
+  });
   // Root por folder (PRD-57): os folders das suites/testes realmente em execução,
   // em vez de sempre o primeiro do workspace.
   const roots = resolveRunRoots(
@@ -175,7 +184,10 @@ export async function executeRun(
     folders,
   );
   state.setLastRun(deriveLastRun(included, !!request.include, coverage, state));
-  for (let i = 0; i < suiteCount; i++) onSuiteStart?.();
+  for (let i = 0; i < suiteCount; i++) {
+    onSuiteStart?.();
+    bus?.emit({ type: 'suite:start', index: i + 1, total: suiteCount });
+  }
 
   if (leafTests.length === 0) {
     run.appendOutput(`\r\n${t(locale, 'runner.noTests')}\r\n`);
@@ -227,10 +239,13 @@ export async function executeRun(
       leafTests,
       state,
       onComplete,
-      onCoverageResult: (generated) => {
-        if (generated) setupValidator.clearCoverageDiagnostic();
-        else setupValidator.addCoverageDiagnostic();
-      },
+      onCoverageResult: bus
+        ? undefined
+        : (generated) => {
+            if (generated) setupValidator.clearCoverageDiagnostic();
+            else setupValidator.addCoverageDiagnostic();
+          },
+      bus,
       folders,
       execution: {
         tags: cfg.tags,
@@ -263,19 +278,24 @@ export async function executeRun(
         `\r\n${t(locale, e.outcome === 'timedOut' ? 'runner.timedOut' : 'ext.runCancel')}\r\n`,
       );
       for (const item of leafTests) run.skipped(item);
+      bus?.emit({ type: 'run:cancelled', outcome: e.outcome });
     } else {
       const msg = formatUserError(e, locale, connection);
       run.appendOutput(`\r\n${t(locale, 'runner.oracleErrorHeader', { error: msg })}\r\n`);
       for (const item of leafTests) {
         run.errored(item, new vscode.TestMessage(t(locale, 'runner.oracleError', { error: msg })));
       }
+      bus?.emit({ type: 'run:error', error: msg });
     }
   } finally {
     run.end();
     void vscode.commands.executeCommand('setContext', 'utplsql:running', false);
     // PRD-108 RF2: a notificação é fire-and-forget e só começa depois do
     // run.end(), então nunca segura o spinner do Test Explorer.
-    if (htmlReportPath) void offerCoverageHtmlReport(htmlReportPath);
+    if (htmlReportPath) {
+      bus?.emit({ type: 'coverage:html:written', path: htmlReportPath });
+      void offerCoverageHtmlReport(htmlReportPath);
+    }
     // PRD-101: run/cobertura/export cobrem a atividade; fecha o pool ocioso.
     await activity.end();
   }

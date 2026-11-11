@@ -8,6 +8,8 @@ import { t } from '../i18n';
 import { isPlsqlDocument } from '../languageIdentity';
 import { filterSuitesByFolder, filterSuitesByUri, relatedSuiteMetas } from '../matching';
 import { listReportersForConnection } from '../oracleRunner';
+import { setupValidator } from '../quickfix';
+import { createRunEventBus } from '../runEvents';
 import { collectRunTargets, executeRun } from '../runner';
 import { collectTags, filterItemsByTags, parseTagSelection } from '../tagFilter';
 import { collectAllItems, collectItemsForPath, resolveSubtree } from '../testTree';
@@ -38,12 +40,30 @@ export function registerRunCommands(
 ): RunCommands {
   const { controller, state } = deps;
   const locale = getExtensionLocale();
+  const bus = deps.runEvents ?? createRunEventBus();
   let currentRunToken: vscode.CancellationTokenSource | undefined;
   // PRD-148 RF1: um run só começa depois que o anterior (cancelado) terminou
   // de desenrolar. A promise cobre run, export e auto-run, que compartilham
   // `UT_OUTPUT_BUFFER_TMP` e o estado de resultados.
   let currentRunPromise: Promise<void> | undefined;
   let onRunFinished: (() => void) | undefined;
+
+  // PRD-128: efeitos colaterais da execução assinam o bus em vez de serem
+  // chamados inline pelo orquestrador. O status bar continua via callback
+  // (adapter) para preservar o progresso incremental.
+  context.subscriptions.push({
+    dispose: bus.on('run:complete', () => {
+      const dm = deps.getDecorationManager();
+      if (dm) dm.update(state.getLastResults(), (id) => state.getItem(id));
+      void refreshCompilationDiagnostics(state).catch(() => {});
+    }),
+  });
+  context.subscriptions.push({
+    dispose: bus.on('coverage:generated', ({ generated }) => {
+      if (generated) setupValidator.clearCoverageDiagnostic();
+      else setupValidator.addCoverageDiagnostic();
+    }),
+  });
 
   /**
    * Enfileira uma execução Oracle. Cancela a execução ativa, espera o unwind
@@ -148,15 +168,9 @@ export function registerRunCommands(
                 ? (passed, failed, skipped, errored, durationMs) =>
                     sb.showResults(passed, failed, skipped, errored, durationMs)
                 : undefined,
+              undefined,
+              bus,
             );
-
-            // Diagnóstico de compilação PL/SQL pós-run (PRD-68 RF1).
-            await refreshCompilationDiagnostics(state).catch(() => {});
-
-            const dm = deps.getDecorationManager();
-            if (dm) {
-              dm.update(state.getLastResults(), (id) => state.getItem(id));
-            }
 
             progress.report({ message: t(locale, 'ext.run.parsingResults') });
           } finally {
@@ -413,6 +427,7 @@ export function registerRunCommands(
             charset: cfg.reporterClientCharacterSet || undefined,
             colorConsole: cfg.reporterColorConsole || undefined,
           },
+          bus,
         );
         if (cts.token.isCancellationRequested || text === undefined) return;
         await deliverExport(reporter, text, dest.value);

@@ -39,6 +39,7 @@ import {
   resolvePerfReportPath,
 } from './perf';
 import { setupValidator, UtplsqlCodeActionProvider } from './quickfix';
+import { createRunEventBus } from './runEvents';
 import { TestStateManager } from './state';
 import { UtplsqlStatusBar } from './statusBar';
 import {
@@ -128,6 +129,8 @@ export function activate(context: vscode.ExtensionContext) {
   context.subscriptions.push(controller);
 
   const refresh = createRefresher(controller, state, perfProxy);
+  const runEvents = createRunEventBus();
+  context.subscriptions.push({ dispose: () => runEvents.dispose() });
 
   // PRD-120: a validação de setup é preguiçosa, memoizada e nunca roda no
   // `activate()`. O primeiro uso relevante (editor PL/SQL, refresh manual,
@@ -195,11 +198,11 @@ export function activate(context: vscode.ExtensionContext) {
     getStatusBar: () => statusBar,
     getDecorationManager: () => decorationManager,
     refresh: refreshFromUser,
+    runEvents,
   };
 
   const run = registerRunCommands(context, deps);
   cancelCurrentRun = run.cancel;
-
   state.runProfile = controller.createRunProfile(
     'Run',
     vscode.TestRunProfileKind.Run,

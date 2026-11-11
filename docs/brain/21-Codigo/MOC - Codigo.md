@@ -136,6 +136,7 @@ SORT id ASC
 - [[COD - run-tests.cjs]] — `COD-run-tests.cjs`
 - [[COD - run.sh]] — `COD-run.sh`
 - [[COD - run.ts]] — `COD-run.ts`
+- [[COD - runEvents.ts]] — `COD-runEvents.ts`
 - [[COD - runner.ts]] — `COD-runner.ts`
 - [[COD - scorecard.yml]] — `COD-scorecard.yml`
 - [[COD - script.ts]] — `COD-script.ts`

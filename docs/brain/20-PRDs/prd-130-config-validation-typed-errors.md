@@ -150,7 +150,7 @@ A wiki cita `src/errors.ts`, `src/configValidation.ts` e `src/configCache.ts`.
 - 🗺️ [[MOC - PRDs]]
 - 📐 Regras: [[BR-CONN-025 - Configuração é validada, cacheada e invalidada em cada mudança|BR-CONN-025]] · [[BR-ERR-001 - Erros de domínio são tipados e carregam chave de mensagem|BR-ERR-001]]
 - 🔗 PRDs relacionados: [[prd-112-error-handling-audit|PRD-112]]
-- 🔗 Mesma versão (0.21.0): [[prd-128-event-bus-internal|PRD-128]] · [[prd-129-orchestration-strategy|PRD-129]] · [[prd-138-organization-strategy-pattern|PRD-138]] · [[prd-139-state-store-slicing-lru|PRD-139]]
+- 🔗 Mesma versão (0.21.0): [[prd-129-orchestration-strategy|PRD-129]] · [[prd-138-organization-strategy-pattern|PRD-138]] · [[prd-139-state-store-slicing-lru|PRD-139]]
 - 🎯 RF1 — Validação de configuração → [[BR-CONN-025 - Configuração é validada, cacheada e invalidada em cada mudança|BR-CONN-025]]
 - 🎯 RF2 — Classes de erro → [[BR-ERR-001 - Erros de domínio são tipados e carregam chave de mensagem|BR-ERR-001]]
 - 🎯 RF3 — Mapeamento Oracle → [[BR-ERR-001 - Erros de domínio são tipados e carregam chave de mensagem|BR-ERR-001]]

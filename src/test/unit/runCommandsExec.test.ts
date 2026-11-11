@@ -37,6 +37,26 @@ mock.module('../../runner.js', {
     executeRun: async (...args: unknown[]) => {
       executeCalls.push(args);
       await executeHook?.(args);
+      const bus = args[8] as
+        | {
+            emit?: (event: {
+              type: 'run:complete';
+              passed: number;
+              failed: number;
+              skipped: number;
+              errored: number;
+              durationMs: number;
+            }) => void;
+          }
+        | undefined;
+      bus?.emit?.({
+        type: 'run:complete',
+        passed: 0,
+        failed: 0,
+        skipped: 0,
+        errored: 0,
+        durationMs: 0,
+      });
     },
   },
 });

@@ -26,6 +26,7 @@ import {
 import type { PerfProbe } from './perf';
 import { maskConnection, redactConnection } from './redact';
 import { applyCoverageFromXml, applyResultsFromCases, countResults } from './results';
+import type { RunEventBus } from './runEvents';
 import type { TestStateManager } from './state';
 import {
   looksLikeTnsAlias,
@@ -679,6 +680,8 @@ export interface OracleRunOptions {
   export?: { reporter?: OracleExportReporter };
   /** Probe de performance (PRD-102); default: probe global da extensão. */
   perf?: PerfProbe;
+  /** Event bus de execução (PRD-128). */
+  bus?: RunEventBus;
 
   /** @deprecated Use `coverage.owner`. */
   coverageOwner?: string;
@@ -1219,6 +1222,7 @@ async function executeRunOracleCore(
         onCoverageHtmlReport,
         onCoverageResult,
         onComplete,
+        bus: options.bus,
         run,
         leafTests,
         state,
@@ -1290,6 +1294,7 @@ interface FinalizeRunOptions {
   sourcePath: string;
   token: vscode.CancellationToken;
   connection: string;
+  bus?: RunEventBus;
 }
 
 /** Parseia o JUnit/Cobertura e aplica resultados/cobertura (PRD-111 RF1). */
@@ -1331,6 +1336,17 @@ async function finalizeRun(options: FinalizeRunOptions): Promise<void> {
     const r = countResults(cases);
     options.onComplete(r.passed, r.failed, r.skipped, r.errored, r.totalMs);
   }
+  if (options.bus) {
+    const r = countResults(cases);
+    options.bus.emit({
+      type: 'run:complete',
+      passed: r.passed,
+      failed: r.failed,
+      skipped: r.skipped,
+      errored: r.errored,
+      durationMs: r.totalMs,
+    });
+  }
 
   if (options.coverageEnabled) {
     const generated = covXml.trim().length > 0;
@@ -1349,10 +1365,14 @@ async function finalizeRun(options: FinalizeRunOptions): Promise<void> {
       );
     }
     if (!options.token.isCancellationRequested) options.onCoverageResult?.(generated);
+    if (!options.token.isCancellationRequested) {
+      options.bus?.emit({ type: 'coverage:generated', generated });
+    }
   } else if (options.coverageRequested && !options.token.isCancellationRequested) {
     // Cobertura pedida, mas o reporter não existe/foi desabilitado: também
     // sinaliza para o diagnóstico de setup.
     options.onCoverageResult?.(false);
+    options.bus?.emit({ type: 'coverage:generated', generated: false });
   }
 
   // HTML (PRD-108): grava só no fim, com o run não cancelado; o runner só

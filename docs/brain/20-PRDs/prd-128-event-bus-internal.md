@@ -2,14 +2,14 @@
 tipo: prd
 id: PRD-128
 aliases: [PRD-128]
-status: proposed
+status: completed
 titulo: "Event bus interno e desacoplamento de callbacks de execução"
 versao: "0.21.0"
 data: "2026-10-30"
 autor: "Gil Cleber Barboza"
 versao_titulo: "0.21.0 — Arquitetura, configuração e resiliência"
 verificado: "2026-10-30"
-regras: []
+regras: ["BR-ARCH-002"]
 docs: ["CHANGELOG", "wiki/Architecture.md"]
 tags: [prd]
 ---
@@ -141,19 +141,27 @@ Nenhuma setting nova.
 
 ## 12. Impacto no cérebro
 
-Ao concluir, criar a regra `BR-ARCH-*` ("efeitos colaterais de run passam pelo
-event bus tipado, não por callbacks ad hoc") com `prds: ["PRD-128"]`,
-`implementacao:` e `testes:`. Enquanto `proposed`, `regras: []`.
+Regra criada: `BR-ARCH-002` ("efeitos colaterais da execução passam pelo event
+bus tipado"), com `prds: ["PRD-128"]`, `implementacao:` e `testes:`.
 
 ## Impacto nas docs
 
-`CHANGELOG` e `wiki/Architecture.md` descrevem o bus e a lista de eventos.
+`CHANGELOG` e `wiki/Architecture.md` descrevem o bus, a lista de eventos e a
+ordem de emissão.
 
 ## Conexões
 
 <!-- brain:auto:start:conexoes -->
 - 🗺️ [[MOC - PRDs]]
+- 📐 Regras: [[BR-ARCH-002 - Efeitos colaterais da execução passam pelo event bus tipado|BR-ARCH-002]]
 - 🔗 PRDs relacionados: [[prd-102-trace-and-perf-instrumentation|PRD-102]] · [[prd-111-decompose-oracle-runner|PRD-111]]
 - 🔗 Mesma versão (0.21.0): [[prd-129-orchestration-strategy|PRD-129]] · [[prd-138-organization-strategy-pattern|PRD-138]] · [[prd-139-state-store-slicing-lru|PRD-139]]
+- 🎯 RF1 — Definição do bus → [[BR-ARCH-002 - Efeitos colaterais da execução passam pelo event bus tipado|BR-ARCH-002]]
+- 🎯 RF2 — Integração → [[BR-ARCH-002 - Efeitos colaterais da execução passam pelo event bus tipado|BR-ARCH-002]]
+- 🎯 RF3 — Desacoplamento da UI → [[BR-ARCH-002 - Efeitos colaterais da execução passam pelo event bus tipado|BR-ARCH-002]]
+- 🎯 RF4 — Testabilidade → [[BR-ARCH-002 - Efeitos colaterais da execução passam pelo event bus tipado|BR-ARCH-002]]
+- 🎯 RNF1 — Sem mudança de comportamento observável; suíte verde. → [[BR-ARCH-002 - Efeitos colaterais da execução passam pelo event bus tipado|BR-ARCH-002]]
+- 🎯 RNF2 — Cobertura ≥ thresholds; bus coberto por testes unitários. → [[BR-ARCH-002 - Efeitos colaterais da execução passam pelo event bus tipado|BR-ARCH-002]]
+- 🎯 RNF3 — Nenhum listener registrado fora do ciclo de vida da extensão. → [[BR-ARCH-002 - Efeitos colaterais da execução passam pelo event bus tipado|BR-ARCH-002]]
 - 🚀 ⬅️ release anterior: [[prd-150-thick-full-true-pool-recovery|PRD-150 (0.20.1)]] · ➡️ próxima release: [[prd-88-locale-aware-formatting|PRD-88 (0.22.0)]]
 <!-- brain:auto:end -->

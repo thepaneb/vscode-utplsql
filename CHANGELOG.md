@@ -2,6 +2,12 @@
 
 ## 0.21.0
 
+- **Typed execution event bus (PRD-128)**: `src/runEvents.ts` provides a
+  synchronous, typed bus (`suite:start`, `run:start`, `run:complete`,
+  `coverage:generated`, `coverage:html:written`, `run:cancelled`, `run:error`).
+  Status bar, inline decorations, coverage diagnostics and compilation
+  diagnostics subscribe to the bus instead of being invoked inline; legacy
+  callbacks remain as adapters and the event order is covered by tests.
 - **Resilient discovery with retry and metadata cache (PRD-131)**: transient
   Oracle connection failures are retried with exponential backoff
   (`utplsql.discovery.retryAttempts`); `get_suites_info`, `get_reporters_list`

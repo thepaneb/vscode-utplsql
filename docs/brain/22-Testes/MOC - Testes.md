@@ -119,6 +119,7 @@ SORT id ASC
 - [[TST - runByTagCommand.test.ts]] — `TST-runByTagCommand.test.ts`
 - [[TST - runCommands.test.ts]] — `TST-runCommands.test.ts`
 - [[TST - runCommandsExec.test.ts]] — `TST-runCommandsExec.test.ts`
+- [[TST - runEvents.test.ts]] — `TST-runEvents.test.ts`
 - [[TST - runExportCommand.test.ts]] — `TST-runExportCommand.test.ts`
 - [[TST - runner.test.ts]] — `TST-runner.test.ts`
 - [[TST - runRelated.test.ts]] — `TST-runRelated.test.ts`
