@@ -1,5 +1,6 @@
 import * as vscode from 'vscode';
 import { getExtensionLocale, readConfig } from './config';
+import { invalidateConfigCache } from './configCache';
 import { t } from './i18n';
 import {
   currentLanguageContributions,
@@ -82,6 +83,9 @@ export class UtplsqlCodeLensProvider implements vscode.CodeLensProvider {
     document: vscode.TextDocument,
     _token: vscode.CancellationToken,
   ): vscode.CodeLens[] {
+    // A atualização de setting pode disparar o evento depois do `update()`; o
+    // provider é o ponto de leitura por documento, então revalida aqui (PRD-130).
+    invalidateConfigCache();
     const cfg = readConfig();
     if (!cfg.codeLensEnabled) return [];
     if (
