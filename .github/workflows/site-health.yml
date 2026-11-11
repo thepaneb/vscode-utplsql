@@ -28,6 +28,7 @@ jobs:
           LANDINGS=(
             "${HUB_URL}isis-report-lib/"
             "${HUB_URL}isis-report/"
+            "${HUB_URL}samsung-remote/"
             "${HUB_URL}base-flask/"
             "${HUB_URL}base-robyn/"
           )
