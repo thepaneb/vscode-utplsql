@@ -41,6 +41,7 @@ export function registerRunCommands(
   const { controller, state } = deps;
   const locale = getExtensionLocale();
   const bus = deps.runEvents ?? createRunEventBus();
+  const useBus = deps.runEvents !== undefined;
   let currentRunToken: vscode.CancellationTokenSource | undefined;
   // PRD-148 RF1: um run só começa depois que o anterior (cancelado) terminou
   // de desenrolar. A promise cobre run, export e auto-run, que compartilham
@@ -64,6 +65,18 @@ export function registerRunCommands(
       else setupValidator.addCoverageDiagnostic();
     }),
   });
+  if (useBus) {
+    context.subscriptions.push({
+      dispose: bus.on('suite:start', ({ index, total }) => {
+        deps.getStatusBar()?.showRunning(index, total);
+      }),
+    });
+    context.subscriptions.push({
+      dispose: bus.on('run:complete', ({ passed, failed, skipped, errored, durationMs }) => {
+        deps.getStatusBar()?.showResults(passed, failed, skipped, errored, durationMs);
+      }),
+    });
+  }
 
   /**
    * Enfileira uma execução Oracle. Cancela a execução ativa, espera o unwind
@@ -153,10 +166,10 @@ export function registerRunCommands(
             const onSuiteStart = () => {
               done++;
               progress.report({ message: `${done}/${total}` });
-              deps.getStatusBar()?.showRunning(done, total);
+              if (!useBus) deps.getStatusBar()?.showRunning(done, total);
             };
 
-            const sb = deps.getStatusBar();
+            const sb = useBus ? undefined : deps.getStatusBar();
             await executeRun(
               controller,
               request,
