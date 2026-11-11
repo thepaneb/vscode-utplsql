@@ -16,5 +16,7 @@ export default {
     // Cobre as features da versão corrente (0.17: CodeLens/associações/snippets/
     // HTML de cobertura) também no smoke de cada banco da matriz.
     'out/test/integration/v017-features.test.js',
+    // Camada 0.21.0: config/cache/wallet no eixo thin.
+    'out/test/integration/v021-features.test.js',
   ],
 };

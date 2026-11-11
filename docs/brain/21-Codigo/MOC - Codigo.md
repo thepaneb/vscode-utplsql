@@ -123,6 +123,7 @@ SORT id ASC
 - [[COD - perf.ts]] — `COD-perf.ts`
 - [[COD - perfFixture.ts]] — `COD-perfFixture.ts`
 - [[COD - performance.yml]] — `COD-performance.yml`
+- [[COD - persisted.ts]] — `COD-persisted.ts`
 - [[COD - plsqlDeclarations.ts]] — `COD-plsqlDeclarations.ts`
 - [[COD - profile.ts]] — `COD-profile.ts`
 - [[COD - publish.cjs]] — `COD-publish.cjs`

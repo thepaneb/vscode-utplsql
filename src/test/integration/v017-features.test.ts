@@ -30,7 +30,7 @@ END ut_v017_tps;
 `;
 
 function removeFixtures(): void {
-  fs.rmSync(TMP_DIR, { recursive: true, force: true });
+  fs.rmSync(TMP_DIR, { recursive: true, force: true, maxRetries: 5, retryDelay: 100 });
 }
 
 function hasConnection(): boolean {
@@ -133,7 +133,7 @@ describe('0.17.0 — PRD-109 (files.associations e CodeLens)', () => {
       previousAssociations,
       vscode.ConfigurationTarget.Workspace,
     );
-    fs.rmSync(ASSOC_DIR, { recursive: true, force: true });
+    fs.rmSync(ASSOC_DIR, { recursive: true, force: true, maxRetries: 5, retryDelay: 100 });
   });
 
   it('descobre a suite pela associação e gera CodeLens', async () => {
@@ -204,7 +204,9 @@ describe('0.17.0 — PRD-105 (snippets no editor)', () => {
     fs.writeFileSync(SNIP_FILE, TPS_SRC.replace(/ut_v017_tps/g, 'ut_v017_snip'));
   });
 
-  after(() => fs.rmSync(SNIP_DIR, { recursive: true, force: true }));
+  after(() =>
+    fs.rmSync(SNIP_DIR, { recursive: true, force: true, maxRetries: 5, retryDelay: 100 }),
+  );
 
   it('oferece ut-suite e ut-nls-cursor no completion', async () => {
     const doc = await vscode.workspace.openTextDocument(vscode.Uri.file(SNIP_FILE));

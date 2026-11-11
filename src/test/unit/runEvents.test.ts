@@ -47,6 +47,43 @@ test('runEvents: emitAsync aguarda listeners assíncronos', async () => {
   assert.strictEqual(done, true);
 });
 
+test('runEvents: emitAsync continua após listener rejeitado', async () => {
+  const bus = createRunEventBus();
+  const seen: string[] = [];
+  bus.on('coverage:generated', async () => {
+    throw new Error('listener quebrado');
+  });
+  bus.on('coverage:generated', (event) => {
+    seen.push(String(event.generated));
+  });
+  await bus.emitAsync({ type: 'coverage:generated', generated: true });
+  assert.deepStrictEqual(seen, ['true']);
+});
+
+test('runEvents: emit não deixa rejeição assíncrona escapar', async () => {
+  const bus = createRunEventBus();
+  bus.on('run:error', async () => {
+    throw new Error('async boom');
+  });
+  bus.emit({ type: 'run:error', error: 'x' });
+  // Deixa o microtask do catch rodar; se a rejeição escapasse, o runner
+  // marcaria unhandledRejection e o teste falharia.
+  await Promise.resolve();
+  await Promise.resolve();
+});
+
+test('runEvents: off inexistente e tipos diferentes não lançam', () => {
+  const bus = createRunEventBus();
+  const listener = () => {};
+  bus.off('suite:start', listener);
+  bus.on('suite:start', listener);
+  bus.on('run:start', listener);
+  assert.strictEqual(bus.listenerCount('suite:start'), 1);
+  assert.strictEqual(bus.listenerCount('run:start'), 1);
+  bus.off('suite:start', listener);
+  assert.strictEqual(bus.listenerCount('suite:start'), 0);
+});
+
 test('runEvents: dispose limpa listeners e ignora emissões', () => {
   const bus = createRunEventBus();
   let calls = 0;

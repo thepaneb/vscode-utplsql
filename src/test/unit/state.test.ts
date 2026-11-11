@@ -59,7 +59,9 @@ test('TestStateManager: getCoverate retorna array vazio para chave inexistente',
 test('TestStateManager: clearCoverage limpa o store', () => {
   const mgr = new TestStateManager();
   mgr.setCoverage('file:///test.sql', [{ line: 1, hits: 2 } as any]);
+  assert.strictEqual(mgr.coverageSize, 1);
   mgr.clearCoverage();
+  assert.strictEqual(mgr.coverageSize, 0);
   assert.deepStrictEqual(mgr.getCoverage('file:///test.sql'), []);
 });
 

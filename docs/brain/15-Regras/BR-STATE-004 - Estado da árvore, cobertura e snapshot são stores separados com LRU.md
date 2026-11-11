@@ -9,7 +9,7 @@ severidade: media
 interno: true
 fonte: codigo
 verificado: 2026-11-11
-implementacao: ["src/state.ts", "src/stateStore/coverageStore.ts", "src/stateStore/testItemIndex.ts", "src/stateStore/runSnapshot.ts", "src/lru.ts", "src/dbSourceProvider.ts"]
+implementacao: ["src/state.ts", "src/stateStore/coverageStore.ts", "src/stateStore/testItemIndex.ts", "src/stateStore/runSnapshot.ts", "src/stateStore/persisted.ts", "src/lru.ts", "src/dbSourceProvider.ts"]
 testes: ["src/test/unit/stateStore.test.ts", "src/test/unit/state.test.ts", "src/test/unit/dbSourceProvider.test.ts", "src/test/unit/runner.test.ts"]
 prds: ["PRD-139"]
 requisitos: ["PRD-139/RF1", "PRD-139/RF2", "PRD-139/RF3", "PRD-139/RF4", "PRD-139/RF5", "PRD-139/RNF1", "PRD-139/RNF2"]
@@ -39,7 +39,7 @@ semântica observável de resultados/cobertura.
 - 🗺️ [[MOC - Regras]]
 - 📄 PRDs: [[prd-139-state-store-slicing-lru|PRD-139]]
 - 🎯 Requisitos: [[prd-139-state-store-slicing-lru|PRD-139 RF1]] · [[prd-139-state-store-slicing-lru|PRD-139 RF2]] · [[prd-139-state-store-slicing-lru|PRD-139 RF3]] · [[prd-139-state-store-slicing-lru|PRD-139 RF4]] · [[prd-139-state-store-slicing-lru|PRD-139 RF5]] · [[prd-139-state-store-slicing-lru|PRD-139 RNF1]] · [[prd-139-state-store-slicing-lru|PRD-139 RNF2]]
-- 🧩 Código: [[COD - state.ts]] · [[COD - coverageStore.ts]] · [[COD - testItemIndex.ts]] · [[COD - runSnapshot.ts]] · [[COD - lru.ts]] · [[COD - dbSourceProvider.ts]]
+- 🧩 Código: [[COD - state.ts]] · [[COD - coverageStore.ts]] · [[COD - testItemIndex.ts]] · [[COD - runSnapshot.ts]] · [[COD - persisted.ts]] · [[COD - lru.ts]] · [[COD - dbSourceProvider.ts]]
 - 🧪 Testes: [[TST - stateStore.test.ts]] · [[TST - state.test.ts]] · [[TST - dbSourceProvider.test.ts]] · [[TST - runner.test.ts]]
 - ↩️ Referenciada por: [[Architecture]] · [[prd-139-state-store-slicing-lru|PRD-139]]
 <!-- brain:auto:end -->

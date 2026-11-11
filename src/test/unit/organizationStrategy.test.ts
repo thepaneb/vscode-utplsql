@@ -41,6 +41,20 @@ test('organization: file delega para buildFile e collectAll', async () => {
   await strategy.collectAll(context());
 });
 
+test('organization: collectAll é delegado nos três modos', async () => {
+  let collected = 0;
+  const d = deps({
+    collectAll: async () => {
+      collected += 1;
+      return [];
+    },
+  });
+  await createOrganizationStrategy('file', d).collectAll(context());
+  await createOrganizationStrategy('tag', d).collectAll(context());
+  await createOrganizationStrategy('schema', d).collectAll(context());
+  assert.strictEqual(collected, 3);
+});
+
 test('organization: tag delega para buildTag', async () => {
   const d = deps();
   await createOrganizationStrategy('tag', d).build(context());

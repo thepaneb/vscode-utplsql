@@ -65,18 +65,17 @@ export async function retryWithBackoff<T>(
   const base = Math.max(1, options.baseDelayMs ?? 200);
   const max = Math.max(base, options.maxDelayMs ?? 800);
   const sleep = options.sleep ?? defaultSleep;
-  let last: unknown;
+  let attempt = 0;
 
-  for (let attempt = 0; attempt <= attempts; attempt++) {
+  for (;;) {
     try {
       return await fn();
     } catch (error) {
-      last = error;
       const retryable = options.isRetryable?.(error) ?? false;
       if (attempt >= attempts || !retryable) throw error;
-      options.onRetry?.(error, attempt + 1);
-      await sleep(Math.min(base * 2 ** attempt, max));
+      attempt += 1;
+      options.onRetry?.(error, attempt);
+      await sleep(Math.min(base * 2 ** (attempt - 1), max));
     }
   }
-  throw last;
 }

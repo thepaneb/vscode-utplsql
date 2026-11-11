@@ -10,7 +10,7 @@ interno: true
 fonte: codigo
 verificado: 2026-11-11
 implementacao: ["src/config.ts", "src/configValidation.ts", "src/configCache.ts", "src/tnsnames.ts", "src/connectionProfiles.ts", "src/extension.ts"]
-testes: ["src/test/unit/configValidation.test.ts", "src/test/unit/configCache.test.ts", "src/test/unit/config.test.ts", "src/test/unit/tnsnames.test.ts"]
+testes: ["src/test/unit/configValidation.test.ts", "src/test/unit/configCache.test.ts", "src/test/unit/config.test.ts", "src/test/unit/tnsnames.test.ts", "src/test/integration/v021-features.test.ts"]
 prds: ["PRD-130"]
 requisitos: ["PRD-130/RF1", "PRD-130/RF5", "PRD-130/RNF1", "PRD-130/RNF2"]
 tags: ["configuracao", "cache"]
@@ -43,6 +43,6 @@ em cada item de CodeLens/árvore, mantendo o comportamento observável.
 - 📄 PRDs: [[prd-130-config-validation-typed-errors|PRD-130]]
 - 🎯 Requisitos: [[prd-130-config-validation-typed-errors|PRD-130 RF1]] · [[prd-130-config-validation-typed-errors|PRD-130 RF5]] · [[prd-130-config-validation-typed-errors|PRD-130 RNF1]] · [[prd-130-config-validation-typed-errors|PRD-130 RNF2]]
 - 🧩 Código: [[COD - config.ts]] · [[COD - configValidation.ts]] · [[COD - configCache.ts]] · [[COD - tnsnames.ts]] · [[COD - connectionProfiles.ts]] · [[COD - extension.ts]]
-- 🧪 Testes: [[TST - configValidation.test.ts]] · [[TST - configCache.test.ts]] · [[TST - config.test.ts]] · [[TST - tnsnames.test.ts]]
+- 🧪 Testes: [[TST - configValidation.test.ts]] · [[TST - configCache.test.ts]] · [[TST - config.test.ts]] · [[TST - tnsnames.test.ts]] · [[TST - v021-features.test.ts]]
 - ↩️ Referenciada por: [[Architecture]] · [[prd-130-config-validation-typed-errors|PRD-130]]
 <!-- brain:auto:end -->

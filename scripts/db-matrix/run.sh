@@ -262,6 +262,10 @@ for __line in "${VERSION_LINES[@]}"; do
     # TNS_ADMIN só são usados pelo modo --thick.
     export WSLENV="UTPLSQL_CONN${UTPLSQL_LEGACY:+:UTPLSQL_LEGACY}${ORACLE_CLIENT_LIB_DIR:+:ORACLE_CLIENT_LIB_DIR}${TNS_ADMIN:+:TNS_ADMIN}${WSLENV:+:$WSLENV}"
     test_log="$LOG_DIR/$label.log"
+    client_mode="thin"
+    case "$TESTS_CMD" in
+      *test:integration:thick*) client_mode="thick" ;;
+    esac
     start_ts="$(date +%s)"
     log "rodando testes: $TESTS_CMD  (UTPLSQL_CONN=$(mask_conn "$UTPLSQL_CONN"))"
     set +e
@@ -277,6 +281,7 @@ for __line in "${VERSION_LINES[@]}"; do
         --file "$(node_path "$SUMMARY_FILE")" \
         --label "$label" \
         --image "$image" \
+        --client "$client_mode" \
         --utplsql "$local_utplsql_version" \
         --status "$([ "$test_status" -eq 0 ] && echo passed || echo failed)" \
         --log "$(node_path "$test_log")" \

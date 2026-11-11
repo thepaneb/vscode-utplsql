@@ -158,6 +158,7 @@ SORT id ASC
 - [[TST - v014-tns.test.ts]] — `TST-v014-tns.test.ts`
 - [[TST - v016-features.test.ts]] — `TST-v016-features.test.ts`
 - [[TST - v017-features.test.ts]] — `TST-v017-features.test.ts`
+- [[TST - v021-features.test.ts]] — `TST-v021-features.test.ts`
 - [[TST - viewCoverage.test.ts]] — `TST-viewCoverage.test.ts`
 - [[TST - viewCoverageDenied.test.ts]] — `TST-viewCoverageDenied.test.ts`
 - [[TST - viewCoverageE2E.test.ts]] — `TST-viewCoverageE2E.test.ts`

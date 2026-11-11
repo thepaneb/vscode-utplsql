@@ -260,6 +260,7 @@ export function activate(context: vscode.ExtensionContext) {
   context.subscriptions.push(
     vscode.workspace.onDidChangeConfiguration((e) => {
       const actions = classifyConfigChange((section) => e.affectsConfiguration(section));
+      if (actions.invalidateConfigCache) invalidateConfigCache();
       if (actions.rebuildCodeLens) {
         codeLensRegistration.dispose();
         codeLensRegistration = buildCodeLensRegistration();
@@ -268,8 +269,7 @@ export function activate(context: vscode.ExtensionContext) {
         watcherRegistration?.dispose();
         watcherRegistration = createWatcherRegistration();
       }
-      if (actions.invalidateConfigCache) invalidateConfigCache();
-      if (actions.refreshTree) void refresh();
+      if (actions.refreshTree) queueMicrotask(() => void refresh());
       if (actions.invalidatePool) invalidatePool();
       if (actions.resetSetupValidation) {
         // PRD-120 RF3: mudança de configuração invalida o memo da validação.
@@ -277,9 +277,12 @@ export function activate(context: vscode.ExtensionContext) {
         setupValidationScheduled = false;
       }
       if (actions.recomputeTrace) {
-        // PRD-102: trace/perf também são lidos por configuração.
-        setTraceEnabled(readConfig().trace);
-        perfProbe = buildPerfProbe();
+        // PRD-102: trace/perf também são lidos por configuração. Adia para
+        // depois do evento, quando o novo valor já é visível (PRD-130).
+        queueMicrotask(() => {
+          setTraceEnabled(readConfig().trace);
+          perfProbe = buildPerfProbe();
+        });
       }
     }),
   );

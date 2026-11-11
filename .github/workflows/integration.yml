@@ -19,9 +19,9 @@ on:
   workflow_dispatch:
     inputs:
       mode:
-        description: 'Escopo: smoke, full (23ai Free), matrix (18c/21c/23ai), matrix-smoke (18c/21c smoke), 19ee (smoke LTS), thick-full (23ai, experimental) ou thick-full-11g (experimental)'
+        description: 'Escopo: smoke, full (23ai Free), matrix (18c/21c/23ai), matrix-smoke (18c/21c smoke), matrix-thick (18c/21c/23ai thick smoke), 19ee (smoke LTS), thick-full (23ai, experimental) ou thick-full-11g (experimental)'
         type: choice
-        options: [smoke, full, matrix, matrix-smoke, 19ee, thick-full, thick-full-11g]
+        options: [smoke, full, matrix, matrix-smoke, matrix-thick, 19ee, thick-full, thick-full-11g]
         default: smoke
 
 permissions:
@@ -43,7 +43,7 @@ jobs:
     if: >-
       github.event_name == 'pull_request' ||
       (github.event_name == 'schedule' && github.event.schedule == '0 3 * * *') ||
-      (github.event_name == 'workflow_dispatch' && inputs.mode != 'matrix' && inputs.mode != 'matrix-smoke' && inputs.mode != '19ee' && inputs.mode != 'thick-full' && inputs.mode != 'thick-full-11g')
+      (github.event_name == 'workflow_dispatch' && inputs.mode != 'matrix' && inputs.mode != 'matrix-smoke' && inputs.mode != 'matrix-thick' && inputs.mode != '19ee' && inputs.mode != 'thick-full' && inputs.mode != 'thick-full-11g')
     runs-on: ubuntu-latest
     timeout-minutes: 60
     env:
@@ -156,6 +156,13 @@ jobs:
         if: inputs.mode != 'thick-full' && inputs.mode != 'thick-full-11g'
         run: bash scripts/db-matrix/run.sh --only 11xe --tests "xvfb-run -a bash -c 'npm run test:integration:thick'"
 
+      - name: Run thick-full on Oracle 23ai Free (nightly)
+        # Eixo completo em thick no nightly, além do smoke; mantém o dispatch
+        # `thick-full` como validação sob demanda.
+        if: github.event_name == 'schedule'
+        timeout-minutes: 20
+        run: bash scripts/db-matrix/run.sh --only 23free --tests "xvfb-run -a bash -c 'npm run test:integration:thick-full'"
+
       - name: Run thick-full on Oracle 23ai Free
         # Eixo thick-full (PRD-150 RF1/RF5): a guarda falha o passo se o host
         # iniciar thin. Verde em 2026-11-08 (80 passing/13 pending), sem
@@ -233,6 +240,67 @@ jobs:
         uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           name: db-matrix-summary
+          path: |
+            docker/db-matrix/.cache/matrix-summary-*.md
+            docker/db-matrix/.cache/matrix-summary-*.jsonl
+            docker/db-matrix/.cache/logs/*.log
+          if-no-files-found: warn
+
+  matrix-thick:
+    name: Integration matrix thick (Oracle 18c/21c/23ai)
+    # Eixo thick da matriz: cada banco roda em um host isolado com Instant
+    # Client; semanal/sob demanda para não somar ~5 min por banco em todo PR.
+    if: >-
+      (github.event_name == 'schedule' && github.event.schedule == '0 5 * * 0') ||
+      (github.event_name == 'workflow_dispatch' && inputs.mode == 'matrix-thick')
+    runs-on: ubuntu-latest
+    timeout-minutes: 240
+    env:
+      ORACLE_PWD: Oracle#2026
+      UT3_PASSWORD: ut3#matrix2026
+      TEST_PASSWORD: utplsql_test#2026
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7
+        with:
+          node-version: 24
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Ensure xvfb (extension host)
+        run: |
+          command -v xvfb-run >/dev/null 2>&1 || { sudo apt-get update && sudo apt-get install -y xvfb; }
+
+      - name: Install Instant Client
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y unzip libaio1t64 || sudo apt-get install -y unzip libaio1
+          if [ -e /usr/lib/x86_64-linux-gnu/libaio.so.1t64 ]; then
+            sudo ln -sf /usr/lib/x86_64-linux-gnu/libaio.so.1t64 /usr/lib/x86_64-linux-gnu/libaio.so.1
+          fi
+          curl -fsSL -o "$RUNNER_TEMP/instantclient.zip" \
+            https://download.oracle.com/otn_software/linux/instantclient/instantclient-basiclite-linuxx64.zip
+          mkdir -p "$RUNNER_TEMP/instantclient"
+          unzip -q "$RUNNER_TEMP/instantclient.zip" -d "$RUNNER_TEMP/instantclient"
+          dir="$(find "$RUNNER_TEMP/instantclient" -maxdepth 1 -mindepth 1 -type d -name 'instantclient*' | head -1)"
+          test -f "$dir/libclntsh.so" || { echo "Instant Client sem libclntsh.so"; exit 1; }
+          echo "ORACLE_CLIENT_LIB_DIR=$dir" >> "$GITHUB_ENV"
+          echo "LD_LIBRARY_PATH=$dir:${LD_LIBRARY_PATH:-}" >> "$GITHUB_ENV"
+
+      - name: Run thick smoke matrix
+        run: |
+          bash scripts/db-matrix/run.sh \
+            --only 18xe,21xe,23free \
+            --tests "xvfb-run -a bash -c 'npm run test:integration:thick'"
+
+      - name: Upload matrix summary
+        if: always()
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: db-matrix-thick-summary
           path: |
             docker/db-matrix/.cache/matrix-summary-*.md
             docker/db-matrix/.cache/matrix-summary-*.jsonl

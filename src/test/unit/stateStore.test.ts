@@ -3,6 +3,7 @@ import assert from 'node:assert';
 import { test } from 'node:test';
 import { LruMap } from '../../lru';
 import { COVERAGE_STORE_MAX_ENTRIES, CoverageStore } from '../../stateStore/coverageStore';
+import { RunSnapshot } from '../../stateStore/runSnapshot';
 
 test('LruMap: evicta o menos recente e promove no get', () => {
   const lru = new LruMap<string, number>(2);
@@ -27,4 +28,19 @@ test('CoverageStore: teto LRU de 500 entradas e get ausente devolve []', () => {
   assert.strictEqual(store.get(`file:///f${COVERAGE_STORE_MAX_ENTRIES + 1}`).length, 1);
   store.clear();
   assert.strictEqual(store.size, 0);
+});
+
+test('RunSnapshot: falha do Memento.update é capturada (não vira unhandled)', async () => {
+  const snapshot = new RunSnapshot();
+  snapshot.attachMemento({
+    get: () => undefined,
+    update: async () => {
+      throw new Error('memento offline');
+    },
+    keys: () => [],
+  } as never);
+  snapshot.setLastResults(new Map([['a', { status: 'passed' as const, ts: Date.now() }]]));
+  assert.doesNotThrow(() => snapshot.persist());
+  await Promise.resolve();
+  await Promise.resolve();
 });

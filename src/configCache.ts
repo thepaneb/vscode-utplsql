@@ -8,6 +8,7 @@
 
 let generation = 0;
 let cached: { generation: number; value: unknown } | undefined;
+let resetScheduled = false;
 
 /** Invalida o snapshot; o próximo `readConfig()` reconstrói. */
 export function invalidateConfigCache(): void {
@@ -24,11 +25,25 @@ export function configGeneration(): number {
   return generation;
 }
 
-/** Devolve o valor em cache para a geração atual ou reconstrói. */
+/**
+ * Devolve o valor em cache para a geração atual ou reconstrói.
+ *
+ * O cache vale apenas dentro do tick síncrono: um microtask o descarta. Isso
+ * coalesce os loops de CodeLens/árvore (que leem ~50 settings por item) sem
+ * deixar um snapshot velho para o próximo `await`/comando — importante quando
+ * a mudança de setting e a leitura acontecem antes do evento de configuração.
+ */
 export function cachedConfig<T>(build: () => T): T {
   if (cached?.generation === generation) return cached.value as T;
   const value = build();
   cached = { generation, value };
+  if (!resetScheduled) {
+    resetScheduled = true;
+    queueMicrotask(() => {
+      resetScheduled = false;
+      cached = undefined;
+    });
+  }
   return value;
 }
 

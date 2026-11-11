@@ -10,6 +10,7 @@ import {
   buildSchemaTree,
   buildTagTree,
   collectAllItems,
+  collectItemsForPath,
   createRefresher,
   type MergeDbDeps,
   mergeDbSuites,
@@ -510,6 +511,32 @@ test('collectAllItems: devolve as suites após resolução', async () => {
   buildFileTree(controller, state, [suite({})]);
   const items = await collectAllItems(controller, state);
   assert.strictEqual(items.length, 1);
+});
+
+test('collectItemsForPath: schema mode resolve só o schema dono do path (PRD-131 RF9)', async () => {
+  const controller = makeController();
+  const state = new TestStateManager();
+  buildSchemaTree(
+    controller,
+    state,
+    [
+      suite({ dbSchema: 'APP', packageName: 'UT_APP' }),
+      suite({ dbSchema: 'OTHER', packageName: 'UT_OTHER' }),
+    ],
+    'db/{schema}/**',
+  );
+  workspace.__setWorkspaceFolders([{ uri: { fsPath: '/ws' }, name: 'ws', index: 0 }]);
+  __setConfigValue('organization', 'schema');
+  __setConfigValue('discovery.source', 'file');
+  try {
+    const items = await collectItemsForPath(controller, state, '/ws/db/APP/tests/ut_app.pks');
+    const schemas = [...new Set(items.map((item) => state.getMeta(item)?.schema))];
+    assert.deepStrictEqual(schemas, ['APP']);
+    assert.strictEqual(state.isResolved('schema:OTHER'), false);
+  } finally {
+    __resetConfigValues();
+    workspace.__setWorkspaceFolders(undefined);
+  }
 });
 
 test('collectAllItems: árvore por tag resolve suites filhas', async () => {
