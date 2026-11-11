@@ -74,6 +74,7 @@ SORT id ASC
 - [[COD - docs-fidelity.cjs]] — `COD-docs-fidelity.cjs`
 - [[COD - esbuild.config.mjs]] — `COD-esbuild.config.mjs`
 - [[COD - extension.ts]] — `COD-extension.ts`
+- [[COD - favicon.png]] — `COD-favicon.png`
 - [[COD - fixtures.ts]] — `COD-fixtures.ts`
 - [[COD - gen-diagrams.cjs]] — `COD-gen-diagrams.cjs`
 - [[COD - gen-icon.cjs]] — `COD-gen-icon.cjs`

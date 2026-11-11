@@ -4,7 +4,7 @@ status: ativo
 titulo: "Landing page (site público)"
 publicar: site/index.html
 url: "https://thepaneb.github.io/vscode-utplsql/"
-implementacao: ["site/index.html", "site/404.html", "site/robots.txt", "site/sitemap.xml", "site/google408e9fc32b68946a.html", "site/og.png"]
+implementacao: ["site/index.html", "site/404.html", "site/robots.txt", "site/sitemap.xml", "site/google408e9fc32b68946a.html", "site/og.png", "site/favicon.png"]
 verificado: 2026-11-10
 tags: [site, docs]
 ---
@@ -23,7 +23,7 @@ tags: [site, docs]
     <link rel="canonical" href="{{SITE_URL}}" />
     <meta name="robots" content="index, follow, max-image-preview:large" />
     <meta name="theme-color" content="#007acc" />
-    <link rel="icon" href="https://raw.githubusercontent.com/thepaneb/vscode-utplsql/main/images/icon.png" type="image/png" />
+    <link rel="icon" href="favicon.png" type="image/png" />
 
     <!-- Open Graph -->
     <meta property="og:type" content="website" />
@@ -372,5 +372,5 @@ tags: [site, docs]
 ## Conexões
 
 <!-- brain:auto:start:conexoes -->
-- 🧩 Código: [[COD - index.html]] · [[COD - 404.html]] · [[COD - robots.txt]] · [[COD - sitemap.xml]] · [[COD - google408e9fc32b68946a.html]] · [[COD - og.png]]
+- 🧩 Código: [[COD - index.html]] · [[COD - 404.html]] · [[COD - robots.txt]] · [[COD - sitemap.xml]] · [[COD - google408e9fc32b68946a.html]] · [[COD - og.png]] · [[COD - favicon.png]]
 <!-- brain:auto:end -->
