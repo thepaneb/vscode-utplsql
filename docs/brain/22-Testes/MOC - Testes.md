@@ -83,6 +83,7 @@ SORT id ASC
 - [[TST - marketplaceImages.test.ts]] — `TST-marketplaceImages.test.ts`
 - [[TST - matching.test.ts]] — `TST-matching.test.ts`
 - [[TST - matrixConfig.test.ts]] — `TST-matrixConfig.test.ts`
+- [[TST - metadataCache.test.ts]] — `TST-metadataCache.test.ts`
 - [[TST - multiRootE2E.test.ts]] — `TST-multiRootE2E.test.ts`
 - [[TST - oracleCapabilities.test.ts]] — `TST-oracleCapabilities.test.ts`
 - [[TST - oracleClient.test.ts]] — `TST-oracleClient.test.ts`
@@ -114,6 +115,7 @@ SORT id ASC
 - [[TST - rerun.test.ts]] — `TST-rerun.test.ts`
 - [[TST - results.test.ts]] — `TST-results.test.ts`
 - [[TST - resultsUnreadable.test.ts]] — `TST-resultsUnreadable.test.ts`
+- [[TST - retry.test.ts]] — `TST-retry.test.ts`
 - [[TST - runByTagCommand.test.ts]] — `TST-runByTagCommand.test.ts`
 - [[TST - runCommands.test.ts]] — `TST-runCommands.test.ts`
 - [[TST - runCommandsExec.test.ts]] — `TST-runCommandsExec.test.ts`

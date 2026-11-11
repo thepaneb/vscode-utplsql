@@ -164,6 +164,8 @@ nativních API VSCode.
 | `utplsql.sourcePath` | `install` | Složka produkčního kódu (pro mapování pokrytí na soubory). |
 | `utplsql.includePatterns` | `["**/*.pks"]` | Globy pro objevení specifikací s `%suite`/`%test`. Pokud jsou vaše testy v `.sql`, použijte `["**/*.sql"]`. |
 | `utplsql.discovery.languageIds` | `["plsql", "sql", "oracle-sql"]` | Jazyková ID považovaná za PL/SQL při objevování, CodeLens a dekoracích. Přípony se berou z nainstalovaných rozšíření a `files.associations`; použijte `["plsql"]`, abyste neskenovali `.sql`. |
+| `utplsql.discovery.retryAttempts` | `2` | Další pokusy při přechodných chybách zjišťování (síť/timeout). 0 vypne; chyby ověření/oprávnění se nikdy neopakují. |
+| `utplsql.discovery.cacheTtlSeconds` | `30` | TTL v sekundách pro mezipaměť metadat Oracle v paměti (`get_suites_info`, reportéry a prefix schématu utPLSQL). 0 vypne mezipaměť. |
 | `utplsql.generate.testPackagePrefix` | `ut_` | Předpona názvu generovaného testovacího balíčku. |
 | `utplsql.generate.testPackageSuffix` | `""` | Přípona názvu generovaného testovacího balíčku. |
 | `utplsql.generate.numberOfTestsPerUnit` | `1` | `%test` vygenerovaných pro každou rutinu produkčního balíčku. |

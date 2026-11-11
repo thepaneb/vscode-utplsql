@@ -162,6 +162,8 @@ l'Explorateur de tests **au fur et à mesure que chaque test se termine**.
 | `utplsql.sourcePath` | `install` | Dossier du code de production (pour mapper la couverture vers les fichiers). |
 | `utplsql.includePatterns` | `["**/*.pks"]` | Globs pour découvrir les specs contenant `%suite`/`%test`. Si vos tests sont dans des `.sql`, utilisez `["**/*.sql"]`. |
 | `utplsql.discovery.languageIds` | `["plsql", "sql", "oracle-sql"]` | Language IDs traités comme PL/SQL pour la découverte, CodeLens et décorations. Les extensions sont résolues depuis les extensions installées et `files.associations` ; utilisez `["plsql"]` pour éviter d'analyser les `.sql`. |
+| `utplsql.discovery.retryAttempts` | `2` | Tentatives supplémentaires pour les échecs transitoires de découverte (réseau/timeout). 0 désactive ; les erreurs d'authentification/permission ne sont jamais réessayées. |
+| `utplsql.discovery.cacheTtlSeconds` | `30` | TTL en secondes du cache mémoire des métadonnées Oracle (`get_suites_info`, reporters et préfixe du schéma utPLSQL). 0 désactive le cache. |
 | `utplsql.generate.testPackagePrefix` | `ut_` | Préfixe du nom du paquet de tests généré. |
 | `utplsql.generate.testPackageSuffix` | `""` | Suffixe du nom du paquet de tests généré. |
 | `utplsql.generate.numberOfTestsPerUnit` | `1` | `%test` générés par routine du paquet de production. |

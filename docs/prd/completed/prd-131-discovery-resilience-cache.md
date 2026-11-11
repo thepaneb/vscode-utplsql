@@ -4,7 +4,7 @@
 
 | Campo | Valor |
 |---|---|
-| Status | Proposto |
+| Status | Concluído |
 | Autor | Gil Cleber Barboza |
 | Data | 2026-10-30 |
 | Componente | Extensão `paneb.vscode-utplsql` |
@@ -147,10 +147,11 @@ PRD-148.
 
 ## 12. Impacto no cérebro
 
-Criar regra `BR-DISC-*` ("descoberta DB é resiliente a falhas transitórias e cacheada
-com TTL") com `prds: ["PRD-131"]`, `implementacao:` e `testes:`. Enquanto
-`proposed`, `regras: []`.
+Regras criadas: `BR-DISC-002` ("descoberta Oracle tem retry transitório, cache
+TTL e folder por schema") e `BR-STATE-003` ("snapshot do último run é podado por
+idade e tamanho"), com `prds: ["PRD-131"]`, `implementacao:` e `testes:`.
 
 ## Impacto nas docs
 
-`CHANGELOG` e `wiki/Architecture.md`.
+`CHANGELOG` e `wiki/Architecture.md` descrevem retry/cache, folder multi-root e
+a coleta filtrada por schema.

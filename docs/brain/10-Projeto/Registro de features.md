@@ -66,6 +66,7 @@ Campos:
   { "id": "execution-state-reliability", "prd": "PRD-148", "interno": true },
   { "id": "thick-full-pool-recovery", "prd": "PRD-150", "interno": true },
   { "id": "typed-errors-config", "prd": "PRD-130", "interno": true },
-  { "id": "wallet-connection-binding", "prd": "PRD-137", "interno": true }
+  { "id": "wallet-connection-binding", "prd": "PRD-137", "interno": true },
+  { "id": "discovery-resilience-cache", "prd": "PRD-131", "interno": true }
 ]
 ```

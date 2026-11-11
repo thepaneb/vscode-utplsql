@@ -172,6 +172,8 @@ Test Explorerze **w miarę kończenia każdego testu**.
 | `utplsql.sourcePath` | `install` | Folder kodu produkcyjnego (do mapowania pokrycia na pliki). |
 | `utplsql.includePatterns` | `["**/*.pks"]` | Wzorce glob do wykrywania specyfikacji z `%suite`/`%test`. Jeśli testy są w `.sql`, użyj `["**/*.sql"]`. |
 | `utplsql.discovery.languageIds` | `["plsql", "sql", "oracle-sql"]` | Identyfikatory języków traktowane jako PL/SQL podczas wykrywania, CodeLens i dekoracji. Rozszerzenia są ustalane na podstawie zainstalowanych rozszerzeń i `files.associations`; użyj `["plsql"]`, aby nie skanować `.sql`. |
+| `utplsql.discovery.retryAttempts` | `2` | Dodatkowe próby dla przejściowych błędów odkrywania (sieć/timeout). 0 wyłącza; błędy uwierzytelniania/uprawnień nie są powtarzane. |
+| `utplsql.discovery.cacheTtlSeconds` | `30` | TTL w sekundach pamięciowego cache metadanych Oracle (`get_suites_info`, reportery i prefiks schematu utPLSQL). 0 wyłącza cache. |
 | `utplsql.generate.testPackagePrefix` | `ut_` | Prefiks nazwy generowanego pakietu testów. |
 | `utplsql.generate.testPackageSuffix` | `""` | Sufiks nazwy generowanego pakietu testów. |
 | `utplsql.generate.numberOfTestsPerUnit` | `1` | `%test` generowanych na procedurę/funkcję pakietu produkcyjnego. |

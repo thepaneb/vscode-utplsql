@@ -163,6 +163,8 @@ Test Explorer에 나타납니다.
 | `utplsql.sourcePath` | `install` | 프로덕션 코드 폴더(커버리지를 파일에 매핑하기 위해). |
 | `utplsql.includePatterns` | `["**/*.pks"]` | `%suite`/`%test`가 있는 스펙을 발견하기 위한 glob. 테스트가 `.sql`에 있으면 `["**/*.sql"]`을 사용하세요. |
 | `utplsql.discovery.languageIds` | `["plsql", "sql", "oracle-sql"]` | 검색, CodeLens 및 장식에서 PL/SQL로 처리할 언어 ID입니다. 확장자는 설치된 확장과 `files.associations`에서 확인합니다. `.sql` 검색을 피하려면 `["plsql"]`을 사용하세요. |
+| `utplsql.discovery.retryAttempts` | `2` | 데이터베이스 검색의 일시적 실패(네트워크/시간 초과)에 대한 추가 시도 횟수입니다. 0이면 비활성화되며 인증/권한 오류는 재시도하지 않습니다. |
+| `utplsql.discovery.cacheTtlSeconds` | `30` | Oracle 메타데이터(`get_suites_info`, 리포터, utPLSQL 스키마 접두사) 메모리 캐시의 TTL(초)입니다. 0이면 캐시를 사용하지 않습니다. |
 | `utplsql.generate.testPackagePrefix` | `ut_` | 생성되는 테스트 패키지 이름의 접두사입니다. |
 | `utplsql.generate.testPackageSuffix` | `""` | 생성되는 테스트 패키지 이름의 접미사입니다. |
 | `utplsql.generate.numberOfTestsPerUnit` | `1` | 운영 패키지의 루틴마다 생성되는 `%test` 수입니다. |

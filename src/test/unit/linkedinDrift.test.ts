@@ -47,7 +47,7 @@ Mantenho o projeto com [1.500+] testes, [~98%] de cobertura e 24 idiomas.
 
 ## 4. Experiência
 
-[64] configurações; 0.19.0; [5] PRDs; Oracle 11g thick.
+[66] configurações; 0.19.0; [5] PRDs; Oracle 11g thick.
 
 ## 5. Competências
 `;
@@ -58,7 +58,7 @@ I maintain the project with [1,500+] tests, [~98%] coverage and 24 languages.
 
 ## 4. Experience
 
-[64] settings; 0.19.0; [5] PRDs; Oracle 11g thick.
+[66] settings; 0.19.0; [5] PRDs; Oracle 11g thick.
 
 ## 5. Skills
 `;
@@ -125,12 +125,12 @@ test('extractSection: recorta até o próximo ##', () => {
 });
 
 test('checkProfile: PT/EN atuais passam', () => {
-  assert.deepEqual(checkProfile(PT_GOOD, 'pt', METRICS, 64), []);
-  assert.deepEqual(checkProfile(EN_GOOD, 'en', METRICS, 64), []);
+  assert.deepEqual(checkProfile(PT_GOOD, 'pt', METRICS, 66), []);
+  assert.deepEqual(checkProfile(EN_GOOD, 'en', METRICS, 66), []);
 });
 
 test('checkProfile: detecta números antigos e falta de 11g', () => {
-  const problems = checkProfile(PT_STALE, 'pt', METRICS, 64);
+  const problems = checkProfile(PT_STALE, 'pt', METRICS, 66);
   assert.ok(problems.some((problem) => problem.includes('1.200')));
   assert.ok(problems.some((problem) => problem.includes('53')));
   assert.ok(problems.some((problem) => problem.includes('0.15.0')));
@@ -139,14 +139,14 @@ test('checkProfile: detecta números antigos e falta de 11g', () => {
 });
 
 test('checkProfile: seções ausentes e post antigo', () => {
-  assert.ok(checkProfile('sem seções', 'pt', METRICS, 64).some((p) => p.includes('About')));
+  assert.ok(checkProfile('sem seções', 'pt', METRICS, 66).some((p) => p.includes('About')));
   const withOldPost = PT_GOOD.replace(
     '## 5. Competências',
     'Post do release 0.15.0\n## 5. Competências',
   );
-  assert.ok(checkProfile(withOldPost, 'pt', METRICS, 64).some((p) => p.includes('0.15.0')));
+  assert.ok(checkProfile(withOldPost, 'pt', METRICS, 66).some((p) => p.includes('0.15.0')));
   const aboutWithout24 = PT_GOOD.replace('24 idiomas', 'idiomas');
-  assert.ok(checkProfile(aboutWithout24, 'pt', METRICS, 64).some((p) => p.includes('24')));
+  assert.ok(checkProfile(aboutWithout24, 'pt', METRICS, 66).some((p) => p.includes('24')));
 });
 
 test('checkReleaseHistory: sem seção usa o texto inteiro', () => {
@@ -181,7 +181,7 @@ test('main: perfil atual passa', async () => {
   const result = await runMain([], {
     files: {
       metrics: JSON.stringify(METRICS),
-      package: JSON.stringify(packageWithSettings(64)),
+      package: JSON.stringify(packageWithSettings(66)),
       pt: PT_GOOD,
       en: EN_GOOD,
       readme: README_GOOD,
@@ -196,7 +196,7 @@ test('main: drift falha e --warn não falha', async () => {
   const base = {
     files: {
       metrics: JSON.stringify(METRICS),
-      package: JSON.stringify(packageWithSettings(64)),
+      package: JSON.stringify(packageWithSettings(66)),
       pt: PT_STALE,
       en: EN_GOOD,
       readme: README_GOOD,
@@ -220,7 +220,7 @@ test('main: opção inválida retorna 2', async () => {
   const result = await runMain(['--nope'], {
     files: {
       metrics: JSON.stringify(METRICS),
-      package: JSON.stringify(packageWithSettings(64)),
+      package: JSON.stringify(packageWithSettings(66)),
       pt: PT_GOOD,
       en: EN_GOOD,
       readme: README_GOOD,

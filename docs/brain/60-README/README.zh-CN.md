@@ -171,6 +171,8 @@ Test Explorer 中。
 | `utplsql.sourcePath` | `install` | 生产代码的文件夹（用于将覆盖率映射到文件）。 |
 | `utplsql.includePatterns` | `["**/*.pks"]` | 用于发现包含 `%suite`/`%test` 的 spec 的 glob 模式。如果您的测试在 `.sql` 中，请使用 `["**/*.sql"]`。 |
 | `utplsql.discovery.languageIds` | `["plsql", "sql", "oracle-sql"]` | 在发现、CodeLens 和装饰中视为 PL/SQL 的语言 ID。扩展名来自已安装的扩展和 `files.associations`；使用 `["plsql"]` 可避免扫描 `.sql`。 |
+| `utplsql.discovery.retryAttempts` | `2` | 数据库发现瞬时故障（网络/超时）的额外重试次数。0 表示禁用；身份验证和权限错误永不重试。 |
+| `utplsql.discovery.cacheTtlSeconds` | `30` | Oracle 元数据（`get_suites_info`、报告器和 utPLSQL 模式前缀）内存缓存的 TTL（秒）。0 表示禁用缓存。 |
 | `utplsql.generate.testPackagePrefix` | `ut_` | 生成的测试包名称前缀。 |
 | `utplsql.generate.testPackageSuffix` | `""` | 生成的测试包名称后缀。 |
 | `utplsql.generate.numberOfTestsPerUnit` | `1` | 生产包的每个例程生成的 `%test` 数量。 |

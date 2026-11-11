@@ -59,43 +59,43 @@ host — o `docs-fidelity` cobra essa coerência.
 ## Inventário (gerado)
 
 <!-- brain:auto:start:vscode-api -->
-**`engines.vscode`:** `^1.125.0` · **`@types/vscode`:** `1.125.0` · **107 símbolos · 591 referências**
+**`engines.vscode`:** `^1.125.0` · **`@types/vscode`:** `1.125.0` · **107 símbolos · 603 referências**
 
 | Símbolo | Refs | Arquivos |
 |---|---|---|
-| `vscode.TestItem` | 61 | `src/commands/debug.ts`, `src/commands/run.ts`, `src/decorations.ts`, `src/matching.ts` +5 |
+| `vscode.TestItem` | 64 | `src/commands/debug.ts`, `src/commands/run.ts`, `src/decorations.ts`, `src/matching.ts` +5 |
 | `vscode.Uri` | 46 | `src/commands/debug.ts`, `src/commands/run.ts`, `src/commands/scaffold.ts`, `src/commands/script.ts` +10 |
 | `vscode.commands.registerCommand` | 38 | `src/commands/connection.ts`, `src/commands/debug.ts`, `src/commands/profile.ts`, `src/commands/run.ts` +3 |
 | `vscode.window.showInformationMessage` | 29 | `src/commands/connection.ts`, `src/commands/debug.ts`, `src/commands/profile.ts`, `src/commands/run.ts` +5 |
+| `vscode.WorkspaceFolder` | 27 | `src/debugger.ts`, `src/discovery.ts`, `src/oracleRunner.ts`, `src/results.ts` +3 |
 | `vscode.window.showWarningMessage` | 25 | `src/commands/debug.ts`, `src/commands/profile.ts`, `src/commands/run.ts`, `src/commands/scaffold.ts` +4 |
-| `vscode.WorkspaceFolder` | 24 | `src/debugger.ts`, `src/discovery.ts`, `src/oracleRunner.ts`, `src/results.ts` +3 |
 | `vscode.window.showErrorMessage` | 22 | `src/commands/connection.ts`, `src/commands/debug.ts`, `src/commands/run.ts`, `src/commands/scaffold.ts` +4 |
 | `vscode.commands.executeCommand` | 18 | `src/commands/connection.ts`, `src/commands/profile.ts`, `src/commands/run.ts`, `src/config.ts` +4 |
-| `vscode.TestController` | 14 | `src/commands/deps.ts`, `src/runner.ts`, `src/testTree.ts` |
+| `vscode.TestController` | 15 | `src/commands/deps.ts`, `src/runner.ts`, `src/testTree.ts` |
 | `vscode.Uri.parse` | 13 | `src/commands/run.ts`, `src/compilationDiagnostics.ts`, `src/discovery.ts`, `src/extension.ts` +2 |
 | `vscode.TestRunRequest` | 12 | `src/commands/run.ts`, `src/runner.ts` |
 | `vscode.CancellationToken` | 11 | `src/codelens.ts`, `src/commands/run.ts`, `src/oracleRunner.ts`, `src/quickfix.ts` +2 |
+| `vscode.workspace.fs` | 11 | `src/commands/debug.ts`, `src/commands/run.ts`, `src/commands/scaffold.ts`, `src/commands/script.ts` +1 |
+| `vscode.workspace.workspaceFolders` | 11 | `src/commands/run.ts`, `src/commands/scaffold.ts`, `src/discovery.ts`, `src/extension.ts` +3 |
 | `vscode.ExtensionContext` | 10 | `src/commands/connection.ts`, `src/commands/debug.ts`, `src/commands/profile.ts`, `src/commands/run.ts` +6 |
 | `vscode.window.activeTextEditor` | 10 | `src/commands/debug.ts`, `src/commands/run.ts`, `src/commands/scaffold.ts`, `src/commands/script.ts` |
-| `vscode.workspace.fs` | 10 | `src/commands/debug.ts`, `src/commands/run.ts`, `src/commands/scaffold.ts`, `src/commands/script.ts` +1 |
-| `vscode.workspace.workspaceFolders` | 10 | `src/commands/run.ts`, `src/commands/scaffold.ts`, `src/discovery.ts`, `src/extension.ts` +3 |
 | `vscode.CodeAction` | 8 | `src/commands/scaffold.ts`, `src/quickfix.ts` |
 | `vscode.Range` | 8 | `src/codelens.ts`, `src/compilationDiagnostics.ts`, `src/decorations.ts`, `src/quickfix.ts` +1 |
 | `vscode.TestRun` | 8 | `src/oracleRunner.ts`, `src/results.ts`, `src/viewCoverage.ts` |
 | `vscode.ThemeColor` | 8 | `src/decorations.ts` |
 | `vscode.Uri.file` | 8 | `src/commands/scaffold.ts`, `src/commands/script.ts`, `src/coverage.ts`, `src/extension.ts` +1 |
+| `vscode.Uri.joinPath` | 8 | `src/commands/debug.ts`, `src/commands/run.ts`, `src/commands/scaffold.ts`, `src/commands/script.ts` +2 |
 | `vscode.window.showQuickPick` | 8 | `src/commands/connection.ts`, `src/commands/debug.ts`, `src/commands/profile.ts`, `src/commands/run.ts` +1 |
 | `vscode.Location` | 7 | `src/results.ts` |
 | `vscode.window.showInputBox` | 7 | `src/commands/profile.ts`, `src/commands/scaffold.ts`, `src/config.ts` |
 | `vscode.Diagnostic` | 6 | `src/compilationDiagnostics.ts`, `src/quickfix.ts` |
-| `vscode.Uri.joinPath` | 6 | `src/commands/debug.ts`, `src/commands/run.ts`, `src/commands/scaffold.ts`, `src/commands/script.ts` +2 |
 | `vscode.DecorationOptions` | 5 | `src/decorations.ts` |
 | `vscode.FileCoverageDetail` | 5 | `src/results.ts`, `src/state.ts`, `src/viewCoverage.ts` |
+| `vscode.FileType.Directory` | 5 | `src/commands/debug.ts`, `src/commands/script.ts`, `src/discovery.ts` |
 | `vscode.TextDocument` | 5 | `src/codelens.ts`, `src/commands/scaffold.ts`, `src/languageIdentity.ts`, `src/quickfix.ts` |
 | `vscode.workspace` | 5 | `src/config.ts`, `src/connectionProfiles.ts`, `src/languageIdentity.ts` |
 | `vscode.CodeActionKind.QuickFix` | 4 | `src/quickfix.ts` |
 | `vscode.CodeLens` | 4 | `src/codelens.ts` |
-| `vscode.FileType.Directory` | 4 | `src/commands/debug.ts`, `src/commands/script.ts`, `src/discovery.ts` |
 | `vscode.languages.registerCodeActionsProvider` | 4 | `src/commands/scaffold.ts`, `src/extension.ts` |
 | `vscode.OverviewRulerLane.Right` | 4 | `src/decorations.ts` |
 | `vscode.Position` | 4 | `src/results.ts`, `src/viewCoverage.ts` |

@@ -171,6 +171,8 @@ Test Explorer **as each test finishes**. The VSIX already includes the thin `ora
 | `utplsql.sourcePath` | `install` | Folder of the production code (to map coverage to files). |
 | `utplsql.includePatterns` | `["**/*.pks"]` | Globs to discover the specs with `%suite`/`%test`. If your tests are in `.sql`, use `["**/*.sql"]`. |
 | `utplsql.discovery.languageIds` | `["plsql", "sql", "oracle-sql"]` | Language IDs treated as PL/SQL for discovery, CodeLens and decorations. Extensions are resolved from the installed extensions and `files.associations`; use `["plsql"]` to avoid scanning `.sql`. |
+| `utplsql.discovery.retryAttempts` | `2` | Extra attempts for transient database discovery failures (network/timeout). 0 disables retries; authentication and permission errors are never retried. |
+| `utplsql.discovery.cacheTtlSeconds` | `30` | TTL in seconds for the in-memory Oracle metadata cache (`get_suites_info`, reporters and the utPLSQL schema prefix). 0 disables the cache. |
 | `utplsql.generate.testPackagePrefix` | `ut_` | Prefix of the generated test package name. |
 | `utplsql.generate.testPackageSuffix` | `""` | Suffix of the generated test package name. |
 | `utplsql.generate.numberOfTestsPerUnit` | `1` | `%test` generated per routine of the production package. |

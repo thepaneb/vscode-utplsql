@@ -162,6 +162,8 @@ Test Explorer **เมื่อแต่ละเทสต์เสร็จส�
 | `utplsql.sourcePath` | `install` | โฟลเดอร์ของโค้ด production (เพื่อจับคู่ความครอบคลุมกับไฟล์) |
 | `utplsql.includePatterns` | `["**/*.pks"]` | Globs สำหรับค้นหา specs ที่มี `%suite`/`%test` หากเทสต์ของคุณอยู่ในไฟล์ `.sql` ให้ใช้ `["**/*.sql"]` |
 | `utplsql.discovery.languageIds` | `["plsql", "sql", "oracle-sql"]` | Language ID ที่ถือเป็น PL/SQL ในการค้นหา CodeLens และการตกแต่ง ส่วนขยายถูกเลือกจากส่วนขยายที่ติดตั้งและ `files.associations`; ใช้ `["plsql"]` เพื่อหลีกเลี่ยงการสแกน `.sql` |
+| `utplsql.discovery.retryAttempts` | `2` | จำนวนครั้งเพิ่มเติมสำหรับความล้มเหลวชั่วคราวในการค้นหาฐานข้อมูล (เครือข่าย/หมดเวลา) 0 ปิดใช้งาน；ข้อผิดพลาดการรับรองความถูกต้อง/สิทธิ์จะไม่ลองใหม่ |
+| `utplsql.discovery.cacheTtlSeconds` | `30` | TTL เป็นวินาทีสำหรับแคชหน่วยความจำของข้อมูลเมตา Oracle (`get_suites_info`, รายงาน และคำนำหน้าสคีมา utPLSQL) 0 ปิดแคช |
 | `utplsql.generate.testPackagePrefix` | `ut_` | คำนำหน้าของชื่อแพ็กเกจทดสอบที่สร้างขึ้น |
 | `utplsql.generate.testPackageSuffix` | `""` | คำต่อท้ายของชื่อแพ็กเกจทดสอบที่สร้างขึ้น |
 | `utplsql.generate.numberOfTestsPerUnit` | `1` | จำนวน `%test` ที่สร้างต่อรูทีนของแพ็กเกจโปรดักชัน |

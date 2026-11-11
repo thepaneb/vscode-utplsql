@@ -162,6 +162,8 @@ Geçici dosya yok, toplu işin bitmesi beklenmez. Sonuçlar Test Explorer'da
 | `utplsql.sourcePath` | `install` | Üretim kodunun klasörü (kapsamı dosyalara eşlemek için). |
 | `utplsql.includePatterns` | `["**/*.pks"]` | `%suite`/`%test` içeren şemaları keşfetmek için glob'lar. Testleriniz `.sql` içindeyse `["**/*.sql"]` kullanın. |
 | `utplsql.discovery.languageIds` | `["plsql", "sql", "oracle-sql"]` | Keşif, CodeLens ve süslemelerde PL/SQL olarak kabul edilen dil kimlikleri. Uzantılar yüklü uzantılardan ve `files.associations` üzerinden çözülür; `.sql` taranmasını önlemek için `["plsql"]` kullanın. |
+| `utplsql.discovery.retryAttempts` | `2` | Geçici veritabanı keşif hataları (ağ/zaman aşımı) için ek denemeler. 0 devre dışı bırakır; kimlik doğrulama/yetki hataları asla yinelenmez. |
+| `utplsql.discovery.cacheTtlSeconds` | `30` | Oracle meta verileri (`get_suites_info`, raporlayıcılar ve utPLSQL şema öneki) için bellek içi önbelleğin TTL değeri (saniye). 0 önbelleği kapatır. |
 | `utplsql.generate.testPackagePrefix` | `ut_` | Oluşturulan test paketi adının öneki. |
 | `utplsql.generate.testPackageSuffix` | `""` | Oluşturulan test paketi adının soneki. |
 | `utplsql.generate.numberOfTestsPerUnit` | `1` | Üretim paketindeki her rutin için oluşturulan `%test` sayısı. |

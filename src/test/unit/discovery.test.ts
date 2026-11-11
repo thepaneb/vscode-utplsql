@@ -7,6 +7,7 @@ import {
   discoverSchemaFromConn,
   discoverSchemaFromDb,
   discoverSchemasFromFolders,
+  discoverUri,
   discoverWorkspace,
   extractSchemaFromPath,
   getSuitesInfo,
@@ -15,12 +16,14 @@ import {
   parseSuite,
   type SuiteFile,
 } from '../../discovery';
+import { clearOracleMetadataCache } from '../../metadataCache';
 import { closeOraclePool } from '../../oracleRunner';
 import {
   __resetConfigValues,
   __resetMockFiles,
   __setConfigValue,
   __setMockFile,
+  workspace,
 } from '../vscode-stub';
 
 test('parseSuite: retorna ParsedSuite para arquivo com %suite', () => {
@@ -473,6 +476,30 @@ test('discoverSchemaFromDb: createPool falha retorna vazio', async () => {
   }
 });
 
+test('discoverSchemaFromDb: retry recupera de falha transitória', async () => {
+  const failing = {
+    createPool: async () => {
+      throw Object.assign(new Error('ORA-12541: no listener'), { errorNum: 12541 });
+    },
+    getConnection: async () => {
+      throw Object.assign(new Error('ORA-12541: no listener'), { errorNum: 12541 });
+    },
+  };
+  const { mod } = makeFakeOracledb({ APP_ORDERS: SUITE_LINES });
+  let loads = 0;
+  try {
+    const result = await discoverSchemaFromDb('u/p@//h:1521/s', 'hr', [FOLDER], async () => {
+      loads += 1;
+      return (loads === 1 ? failing : mod) as never;
+    });
+    assert.strictEqual(result.length, 1);
+    assert.strictEqual(loads, 2);
+  } finally {
+    __resetConfigValues();
+    await closeOraclePool();
+  }
+});
+
 test('discoverSchemaFromDb: sem folders retorna vazio', async () => {
   const { mod } = makeFakeOracledb({ APP_ORDERS: SUITE_LINES });
   const result = await discoverSchemaFromDb('u/p@//h:1521/s', 'hr', [], async () => mod as never);
@@ -807,6 +834,28 @@ test('getSuitesInfo: rows em formato objeto (OUT_FORMAT_OBJECT)', async () => {
 test('getSuitesInfo: erro (API ausente) retorna vazio', async () => {
   const rows = await getSuitesInfo(makeInfoConn([], true), 'hr');
   assert.deepStrictEqual(rows, []);
+});
+
+test('getSuitesInfo: cache por (connection, owner) evita query repetida', async () => {
+  clearOracleMetadataCache();
+  let queries = 0;
+  const conn = {
+    execute: async () => {
+      queries += 1;
+      return { rows: INFO_ROWS };
+    },
+  };
+  try {
+    const first = await getSuitesInfo(conn, 'hr', 'u/p@//h:1521/s');
+    const second = await getSuitesInfo(conn, 'hr', 'u/p@//h:1521/s');
+    assert.deepStrictEqual(second, first);
+    assert.strictEqual(queries, 1);
+    clearOracleMetadataCache();
+    await getSuitesInfo(conn, 'hr', 'u/p@//h:1521/s');
+    assert.strictEqual(queries, 2);
+  } finally {
+    clearOracleMetadataCache();
+  }
 });
 
 test('mapSuitesInfoToSuiteFiles: agrupa por package e omite disabled', async () => {
@@ -1475,5 +1524,28 @@ test('discoverWorkspace: usa charset do perfil ativo ao decodificar bytes', asyn
   } finally {
     __resetMockFiles();
     __resetConfigValues();
+  }
+});
+
+test('discoverUri: resolveFolder não casa /ws/a com /ws/ab (PRD-131 RF7)', async () => {
+  const file = '/ws/ab/tests/ut_x.pks';
+  __setMockFile(
+    '**/*.pks',
+    file,
+    'CREATE OR REPLACE PACKAGE ut_x IS\n  --%suite(X)\n  --%test(Y)\n  PROCEDURE y;\nEND;',
+  );
+  workspace.__setWorkspaceFolders([
+    { uri: { fsPath: '/ws/a' }, name: 'a', index: 0 },
+    { uri: { fsPath: '/ws/ab' }, name: 'ab', index: 1 },
+  ]);
+  try {
+    const suite = await discoverUri({ fsPath: file } as never, [
+      { uri: { fsPath: '/ws/a' }, name: 'a', index: 0 } as never,
+      { uri: { fsPath: '/ws/ab' }, name: 'ab', index: 1 } as never,
+    ]);
+    assert.strictEqual(suite?.folder.name, 'ab');
+  } finally {
+    __resetMockFiles();
+    workspace.__setWorkspaceFolders(undefined);
   }
 });

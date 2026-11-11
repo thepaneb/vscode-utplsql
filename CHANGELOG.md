@@ -2,6 +2,14 @@
 
 ## 0.21.0
 
+- **Resilient discovery with retry and metadata cache (PRD-131)**: transient
+  Oracle connection failures are retried with exponential backoff
+  (`utplsql.discovery.retryAttempts`); `get_suites_info`, `get_reporters_list`
+  and the utPLSQL schema prefix are cached in memory for
+  `utplsql.discovery.cacheTtlSeconds` and invalidated on refresh/connection
+  change. The `ALL_SOURCE` fallback uses bounded concurrency, multi-root folder
+  resolution uses path containment, and the persisted run snapshot is pruned by
+  age (7 days) and size (2000 entries).
 - **Wallet password bound to the profile connection (PRD-137)**: the Oracle
   Cloud wallet secret now stores `{ connection, password }` and is only reused
   when the profile still points to the same connection; a legacy raw-string

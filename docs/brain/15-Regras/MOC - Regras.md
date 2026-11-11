@@ -89,6 +89,7 @@ SORT id ASC
 - [[BR-DEBUG-005 - debugAtCursor-debugFailed-debugLast resolvem o alvo e chamam startDebugSession]] — `BR-DEBUG-005`
 - [[BR-DEP-001 - Runtime deps em dependencies e nota DEP- para cada dep direta]] — `BR-DEP-001`
 - [[BR-DISC-001 - mergeSuiteLists devolve a uniao sem mutar a entrada]] — `BR-DISC-001`
+- [[BR-DISC-002 - Descoberta Oracle tem retry transitório, cache TTL e folder por schema]] — `BR-DISC-002`
 - [[BR-DOC-001 - Tabelas de settings e comandos são geradas do package.json]] — `BR-DOC-001`
 - [[BR-DOC-002 - PRD concluída vincula docs e registro de features]] — `BR-DOC-002`
 - [[BR-DOC-003 - Marketplace usa MARKETPLACE.md gerado e README do GitHub segue como referencia]] — `BR-DOC-003`
@@ -154,6 +155,7 @@ SORT id ASC
 - [[BR-SITE-001 - Landing page gerada de site e publicada no GitHub Pages, sem noindex]] — `BR-SITE-001`
 - [[BR-STATE-001 - Falhas persistidas restauram no schema mode sob demanda]] — `BR-STATE-001`
 - [[BR-STATE-002 - IDs de suite e teste incluem o schema no schema mode]] — `BR-STATE-002`
+- [[BR-STATE-003 - Snapshot do último run é podado por idade e tamanho]] — `BR-STATE-003`
 - [[BR-TEST-001 - Matriz de bancos Oracle cobre 12.2-23ai em thin e thick]] — `BR-TEST-001`
 - [[BR-TEST-002 - Testes de integração exigem banco e são skip sem UTPLSQL_CONN]] — `BR-TEST-002`
 - [[BR-TEST-003 - Stub de vscode é tipado e coberto pelo inventário de APIs]] — `BR-TEST-003`

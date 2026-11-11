@@ -162,6 +162,8 @@ Test Explorer 中。
 | `utplsql.sourcePath` | `install` | 正式程式碼的資料夾（用於將涵蓋率對應到檔案）。 |
 | `utplsql.includePatterns` | `["**/*.pks"]` | 用於探索含 `%suite`/`%test` 規格的 glob 模式。若測試位於 `.sql`，請使用 `["**/*.sql"]`。 |
 | `utplsql.discovery.languageIds` | `["plsql", "sql", "oracle-sql"]` | 在探索、CodeLens 與裝飾中視為 PL/SQL 的語言 ID。副檔名來自已安裝的擴充功能與 `files.associations`；使用 `["plsql"]` 可避免掃描 `.sql`。 |
+| `utplsql.discovery.retryAttempts` | `2` | 資料庫探索暫時性故障（網路/逾時）的額外重試次數。0 表示停用；驗證與權限錯誤永不重試。 |
+| `utplsql.discovery.cacheTtlSeconds` | `30` | Oracle 中繼資料（`get_suites_info`、報告器與 utPLSQL 結構描述前綴）記憶體快取的 TTL（秒）。0 表示停用快取。 |
 | `utplsql.generate.testPackagePrefix` | `ut_` | 產生的測試套件名稱前置字串。 |
 | `utplsql.generate.testPackageSuffix` | `""` | 產生的測試套件名稱後置字串。 |
 | `utplsql.generate.numberOfTestsPerUnit` | `1` | 生產套件每個例行程式產生的 `%test` 數量。 |

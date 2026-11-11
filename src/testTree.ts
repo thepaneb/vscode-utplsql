@@ -16,6 +16,7 @@ import {
   currentLanguageContributions,
   workspaceAssociations,
 } from './languageIdentity';
+import { isInside } from './pathContainment';
 import type { PerfProbe } from './perf';
 import { type TestStateManager, withDurationSuffix } from './state';
 
@@ -391,6 +392,39 @@ export async function collectAllItems(
 ): Promise<vscode.TestItem[]> {
   await resolveAllTree(controller, state, deps);
   return state.cachedItems;
+}
+
+/**
+ * Coleta só o schema dono do path (PRD-131 RF9). Em file/tag ou sem schema
+ * reconhecível, cai no `collectAllItems` para preservar o comportamento.
+ */
+export async function collectItemsForPath(
+  controller: vscode.TestController,
+  state: TestStateManager,
+  fsPath: string,
+  deps: TreeResolveDeps = defaultResolveDeps,
+): Promise<vscode.TestItem[]> {
+  const cfg = readConfig();
+  if (cfg.organization !== 'schema') return collectAllItems(controller, state, deps);
+  const folders = vscode.workspace.workspaceFolders ?? [];
+  const folder = folders.find((f) => isInside(fsPath, f.uri.fsPath));
+  if (!folder) return collectAllItems(controller, state, deps);
+  const schema = deps.extractSchemaFromPath(
+    fsPath,
+    folder.uri.fsPath,
+    cfg.organizationSchemaPattern,
+  );
+  if (!schema) return collectAllItems(controller, state, deps);
+  const root = controller.items.get(`schema:${schema}`);
+  if (!root) return collectAllItems(controller, state, deps);
+
+  await resolveSchemaNode(controller, state, root, deps);
+  const packages: vscode.TestItem[] = [];
+  root.children.forEach((item) => {
+    if (item.id.startsWith('package:')) packages.push(item);
+  });
+  for (const pkg of packages) resolvePackageNode(controller, state, pkg);
+  return state.cachedItems.filter((item) => state.getMeta(item)?.schema === schema);
 }
 
 /**

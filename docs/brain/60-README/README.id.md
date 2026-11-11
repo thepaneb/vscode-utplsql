@@ -172,6 +172,8 @@ Ekstensi terhubung langsung ke Oracle, membaca laporan (JUnit + Coverage) lalu m
 | `utplsql.sourcePath` | `install` | Folder kode produksi (untuk memetakan coverage ke file). |
 | `utplsql.includePatterns` | `["**/*.pks"]` | Glob untuk menemukan spec dengan `%suite`/`%test`. Jika pengujian Anda di `.sql`, gunakan `["**/*.sql"]`. |
 | `utplsql.discovery.languageIds` | `["plsql", "sql", "oracle-sql"]` | Language ID yang diperlakukan sebagai PL/SQL dalam penemuan, CodeLens, dan dekorasi. Ekstensi diambil dari ekstensi terpasang dan `files.associations`; gunakan `["plsql"]` agar tidak memindai `.sql`. |
+| `utplsql.discovery.retryAttempts` | `2` | Percobaan tambahan untuk kegagalan penemuan database sementara (jaringan/timeout). 0 menonaktifkan; kesalahan autentikasi/izin tidak pernah diulang. |
+| `utplsql.discovery.cacheTtlSeconds` | `30` | TTL dalam detik untuk cache memori metadata Oracle (`get_suites_info`, reporter, dan awalan skema utPLSQL). 0 menonaktifkan cache. |
 | `utplsql.generate.testPackagePrefix` | `ut_` | Prefiks nama paket pengujian yang dihasilkan. |
 | `utplsql.generate.testPackageSuffix` | `""` | Sufiks nama paket pengujian yang dihasilkan. |
 | `utplsql.generate.numberOfTestsPerUnit` | `1` | `%test` yang dihasilkan per rutin paket produksi. |

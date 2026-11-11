@@ -171,6 +171,8 @@ Test Explorer-у **како се сваки тест заврши**. VSIX већ
 | `utplsql.sourcePath` | `install` | Фасцикла продукционог кода (за мапирање покривености на датотеке). |
 | `utplsql.includePatterns` | `["**/*.pks"]` | Glob узорци за проналажење спецификација са `%suite`/`%test`. Ако су ваши тестови у `.sql`, користите `["**/*.sql"]`. |
 | `utplsql.discovery.languageIds` | `["plsql", "sql", "oracle-sql"]` | Језички ИД-ови који се третирају као PL/SQL при откривању, CodeLens-у и декорацијама. Екстензије се преузимају из инсталираних екстензија и `files.associations`; користите `["plsql"]` да не бисте скенирали `.sql`. |
+| `utplsql.discovery.retryAttempts` | `2` | Dodatni pokušaji za prolazne greške otkrivanja (mreža/timeout). 0 isključuje; greške autentifikacije/dovola se nikada ne ponavljaju. |
+| `utplsql.discovery.cacheTtlSeconds` | `30` | TTL u sekundama za keš Oracle metapodataka u memoriji (`get_suites_info`, reporteri i prefiks šeme utPLSQL). 0 isključuje keš. |
 | `utplsql.generate.testPackagePrefix` | `ut_` | Префикс назива направљеног тест пакета. |
 | `utplsql.generate.testPackageSuffix` | `""` | Суфикс назива направљеног тест пакета. |
 | `utplsql.generate.numberOfTestsPerUnit` | `1` | `%test` по рутини продукционог пакета. |

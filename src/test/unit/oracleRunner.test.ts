@@ -6,6 +6,7 @@ import * as path from 'node:path';
 import { test } from 'node:test';
 import type { UtConfig } from '../../config';
 import type { TestCaseResult } from '../../junit';
+import { clearOracleMetadataCache } from '../../metadataCache';
 import { resetOracleClientStateForTests } from '../../oracleClient';
 import {
   acquireRunnerConnections,
@@ -752,6 +753,27 @@ test('discoverUtplsqlSchema: erro de acesso retorna vazio', async () => {
   };
   const prefix = await discoverUtplsqlSchema(conn as never);
   assert.strictEqual(prefix, '');
+});
+
+test('discoverUtplsqlSchema: cache por connection evita query repetida', async () => {
+  clearOracleMetadataCache();
+  let queries = 0;
+  const conn = {
+    execute: async () => {
+      queries += 1;
+      return { rows: [{ TABLE_OWNER: 'UT3' }] };
+    },
+  };
+  try {
+    assert.strictEqual(await discoverUtplsqlSchema(conn, 'conn-1'), 'UT3.');
+    assert.strictEqual(await discoverUtplsqlSchema(conn, 'conn-1'), 'UT3.');
+    assert.strictEqual(queries, 1);
+    clearOracleMetadataCache();
+    await discoverUtplsqlSchema(conn, 'conn-1');
+    assert.strictEqual(queries, 2);
+  } finally {
+    clearOracleMetadataCache();
+  }
 });
 
 // ── mapDbPathsToFiles ────────────────────────────────────────────────
@@ -2586,6 +2608,23 @@ test('listReportersOracle: erro retorna array vazio', async () => {
     throw new Error('ORA-00942');
   });
   assert.deepStrictEqual(await listReportersOracle(conn), []);
+});
+
+test('listReportersOracle: cache por connection evita query repetida', async () => {
+  clearOracleMetadataCache();
+  let queries = 0;
+  const conn = infoConn(() => {
+    queries += 1;
+    return { rows: [['UT3.UT_DOCUMENTATION_REPORTER']] };
+  });
+  try {
+    const first = await listReportersOracle(conn, 'conn-1');
+    const second = await listReportersOracle(conn, 'conn-1');
+    assert.deepStrictEqual(second, first);
+    assert.strictEqual(queries, 1);
+  } finally {
+    clearOracleMetadataCache();
+  }
 });
 
 test('checkReporterExists: compara sem case', async () => {

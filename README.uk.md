@@ -160,6 +160,8 @@ Test Explorer **у міру завершення кожного тесту**. VS
 | `utplsql.sourcePath` | `install` | Папка виробничого коду (для зіставлення покриття з файлами). |
 | `utplsql.includePatterns` | `["**/*.pks"]` | Globs для пошуку специфікацій із `%suite`/`%test`. Якщо ваші тести у `.sql`, використовуйте `["**/*.sql"]`. |
 | `utplsql.discovery.languageIds` | `["plsql", "sql", "oracle-sql"]` | Мовні ID, які вважаються PL/SQL під час виявлення, CodeLens і декорацій. Розширення беруться з інстальованих розширень і `files.associations`; використовуйте `["plsql"]`, щоб не сканувати `.sql`. |
+| `utplsql.discovery.retryAttempts` | `2` | Додаткові спроби для тимчасових збоїв виявлення (мережа/таймаут). 0 вимикає; помилки автентифікації/дозволів не повторюються. |
+| `utplsql.discovery.cacheTtlSeconds` | `30` | TTL у секундах для кешу метаданих Oracle у пам’яті (`get_suites_info`, репортери та префікс схеми utPLSQL). 0 вимикає кеш. |
 | `utplsql.generate.testPackagePrefix` | `ut_` | Префікс назви створюваного пакета тестів. |
 | `utplsql.generate.testPackageSuffix` | `""` | Суфікс назви створюваного пакета тестів. |
 | `utplsql.generate.numberOfTestsPerUnit` | `1` | `%test` на кожну підпрограму робочого пакета. |

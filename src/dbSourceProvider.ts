@@ -1,5 +1,6 @@
 import * as vscode from 'vscode';
 import { readConfig, resolveConnectionNoPrompt } from './config';
+import { clearOracleMetadataCache } from './metadataCache';
 import { beginOracleActivity, ensurePool, parseConnString } from './oracleRunner';
 import { LEGACY_DB_SCHEME, parseSourceUri, VIRTUAL_SOURCE_SCHEME } from './virtualSource';
 
@@ -219,4 +220,5 @@ export function registerDbSourceProvider(context: vscode.ExtensionContext): void
 /** Limpa o cache do provider (ex.: após refresh da árvore). */
 export function clearDbSourceCache(): void {
   cache.clear();
+  clearOracleMetadataCache();
 }

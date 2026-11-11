@@ -13,6 +13,7 @@ import { mapOracleError, ReporterNotFoundError, UtplsqlError } from './errors';
 import { t } from './i18n';
 import { parseJUnit } from './junit';
 import { logger } from './logger';
+import { clearOracleMetadataCache, oracleMetadataCache } from './metadataCache';
 import { ensureOracleClient } from './oracleClient';
 import { sanitizeSchemaPrefix } from './oracleIdentifiers';
 import { pollOutputStream } from './oraclePoll';
@@ -198,6 +199,7 @@ export async function ensurePool(
 
   const creation = (async () => {
     if (currentPool?.key === key) return currentPool.pool;
+    clearOracleMetadataCache();
     await closeCurrentPool();
     const parsed = parseConnString(connection);
     const pool = await oracledb.createPool({
@@ -232,6 +234,7 @@ export async function ensurePool(
  */
 export function invalidatePool(): void {
   if (currentPool) currentPool.key = '';
+  clearOracleMetadataCache();
 }
 
 /**
@@ -328,13 +331,22 @@ export async function acquireRunnerConnections(
   return { conn1, conn2 };
 }
 
-export async function discoverUtplsqlSchema(conn: {
-  execute(
-    sql: string,
-    bindParams?: Record<string, unknown>,
-    options?: Record<string, unknown>,
-  ): Promise<{ rows?: unknown[] }>;
-}): Promise<string> {
+export async function discoverUtplsqlSchema(
+  conn: {
+    execute(
+      sql: string,
+      bindParams?: Record<string, unknown>,
+      options?: Record<string, unknown>,
+    ): Promise<{ rows?: unknown[] }>;
+  },
+  cacheKey?: string,
+): Promise<string> {
+  const key = cacheKey ? `utSchema|${cacheKey}` : undefined;
+  if (key) {
+    const cached = oracleMetadataCache.get<string>(key);
+    if (cached !== undefined) return cached;
+  }
+  let prefix = '';
   try {
     const result = await conn.execute(
       `SELECT table_owner FROM ALL_SYNONYMS WHERE synonym_name = 'UT_RUNNER' AND owner = 'PUBLIC'`,
@@ -345,13 +357,14 @@ export async function discoverUtplsqlSchema(conn: {
       const owner = (rows[0] as { TABLE_OWNER?: string }).TABLE_OWNER;
       // Defesa em profundidade: o prefixo só chega ao SQL se for um
       // identificador Oracle válido (PRD-110).
-      if (owner) return sanitizeSchemaPrefix(`${owner}.`);
+      if (owner) prefix = sanitizeSchemaPrefix(`${owner}.`);
     }
   } catch (e) {
     // ALL_SYNONYMS pode não estar acessível — sem prefixo
     logger.debug('discoverUtplsqlSchema: ALL_SYNONYMS inacessível', { error: String(e) });
   }
-  return '';
+  if (key) oracleMetadataCache.set(key, prefix, readConfig().discoveryCacheTtlSeconds * 1000);
+  return prefix;
 }
 
 export interface InvalidUt3Object {
@@ -450,13 +463,22 @@ export async function getOracleInfo(conn: {
   return { utVersion, dbVersion };
 }
 
-export async function listReportersOracle(conn: {
-  execute(
-    sql: string,
-    bindParams?: Record<string, unknown>,
-    options?: Record<string, unknown>,
-  ): Promise<{ rows?: unknown[] }>;
-}): Promise<string[]> {
+export async function listReportersOracle(
+  conn: {
+    execute(
+      sql: string,
+      bindParams?: Record<string, unknown>,
+      options?: Record<string, unknown>,
+    ): Promise<{ rows?: unknown[] }>;
+  },
+  cacheKey?: string,
+): Promise<string[]> {
+  const key = cacheKey ? `reporters|${cacheKey}` : undefined;
+  if (key) {
+    const cached = oracleMetadataCache.get<string[]>(key);
+    if (cached !== undefined) return cached;
+  }
+  let reporters: string[] = [];
   try {
     const result = await conn.execute(
       `SELECT reporter_object_name FROM TABLE(ut_runner.get_reporters_list())`,
@@ -465,7 +487,7 @@ export async function listReportersOracle(conn: {
     // (ex.: `UT3.UT_COVERAGE_COBERTURA_REPORTER`); normalizamos para o nome do
     // objeto, que é o que os callers (check de cobertura, QuickPick de
     // reporter) usam.
-    return (result.rows ?? []).map((r) => {
+    reporters = (result.rows ?? []).map((r) => {
       const name = String(extractScalar(r));
       return name.slice(name.lastIndexOf('.') + 1);
     });
@@ -473,8 +495,9 @@ export async function listReportersOracle(conn: {
     logger.debug('listReportersOracle: ut_runner.get_reporters_list falhou', {
       error: String(e),
     });
-    return [];
   }
+  if (key) oracleMetadataCache.set(key, reporters, readConfig().discoveryCacheTtlSeconds * 1000);
+  return reporters;
 }
 
 export async function checkReporterExists(
@@ -486,9 +509,10 @@ export async function checkReporterExists(
     ): Promise<{ rows?: unknown[] }>;
   },
   reporterName: string,
+  cacheKey?: string,
 ): Promise<boolean> {
   const bare = (s: string) => s.slice(s.lastIndexOf('.') + 1).toUpperCase();
-  const reporters = await listReportersOracle(conn);
+  const reporters = await listReportersOracle(conn, cacheKey);
   return reporters.some((r) => bare(r) === bare(reporterName));
 }
 
@@ -717,7 +741,7 @@ export async function listReportersForConnection(
   const oracledb = await loadOracledb();
   if (!oracledb) return [];
   const result = await withOracleConnection(oracledb, connection, cfg, (conn) =>
-    listReportersOracle(conn),
+    listReportersOracle(conn, connection),
   );
   return result ?? [];
 }
@@ -740,6 +764,7 @@ async function prepareReporters(options: {
   state: TestStateManager;
   run: vscode.TestRun;
   oracledb: typeof import('oracledb');
+  cacheKey?: string;
 }): Promise<ReporterPreparation> {
   let coverageEnabled = !options.exporting && options.coverage;
   let htmlEnabled = false;
@@ -749,7 +774,7 @@ async function prepareReporters(options: {
   if (options.exporting && options.exportReporter) {
     // Export (PRD-76): só o reporter escolhido; sem JUnit/cobertura adicionais.
     const normalized = options.exportReporter.name.toLowerCase().replace(/\(\)$/, '');
-    const known = await listReportersOracle(options.conn1);
+    const known = await listReportersOracle(options.conn1, options.cacheKey);
     const valid =
       /^[a-z0-9_]+$/.test(normalized) &&
       (known.length === 0 || known.some((k) => k.toLowerCase() === normalized));
@@ -770,7 +795,11 @@ async function prepareReporters(options: {
   }
 
   if (coverageEnabled) {
-    const hasReporter = await checkReporterExists(options.conn1, 'UT_COVERAGE_COBERTURA_REPORTER');
+    const hasReporter = await checkReporterExists(
+      options.conn1,
+      'UT_COVERAGE_COBERTURA_REPORTER',
+      options.cacheKey,
+    );
     if (!hasReporter) {
       coverageEnabled = false;
       options.run.appendOutput(`\r\n${t(getExtensionLocale(), 'runner.reporterMissing')}\r\n`);
@@ -780,7 +809,11 @@ async function prepareReporters(options: {
   // Relatório HTML (PRD-108): só entra com cobertura ligada e o setting on.
   htmlEnabled = coverageEnabled && !!options.coverageHtmlReport;
   if (htmlEnabled) {
-    const hasHtml = await checkReporterExists(options.conn1, 'UT_COVERAGE_HTML_REPORTER');
+    const hasHtml = await checkReporterExists(
+      options.conn1,
+      'UT_COVERAGE_HTML_REPORTER',
+      options.cacheKey,
+    );
     if (!hasHtml) {
       htmlEnabled = false;
       options.run.appendOutput(`\r\n${t(getExtensionLocale(), 'runner.htmlReporterMissing')}\r\n`);
@@ -799,7 +832,8 @@ async function prepareReporters(options: {
   // `ut_runner.run` com ORA. Lista indisponível (best-effort) → não bloqueia.
   const extraReporters = [...(options.additionalReporters ?? [])];
   if (sessionReporter) extraReporters.push(sessionReporter);
-  const knownReporters = extraReporters.length > 0 ? await listReportersOracle(options.conn1) : [];
+  const knownReporters =
+    extraReporters.length > 0 ? await listReportersOracle(options.conn1, options.cacheKey) : [];
 
   const list = buildReporterList({
     exporting: false,
@@ -1069,7 +1103,7 @@ async function executeRunOracleCore(
       }
     }
 
-    const utSchema = sanitizeSchemaPrefix(await discoverUtplsqlSchema(conn1));
+    const utSchema = sanitizeSchemaPrefix(await discoverUtplsqlSchema(conn1, connection));
 
     await conn1.execute(`DELETE FROM ${utSchema}UT_OUTPUT_BUFFER_TMP`, {}, { autoCommit: true });
     await conn1.execute(
@@ -1088,6 +1122,7 @@ async function executeRunOracleCore(
       state,
       run,
       oracledb,
+      cacheKey: connection,
     });
 
     const owner = (coverageOwner ?? '').trim() || parseConnString(connection).user.toUpperCase();

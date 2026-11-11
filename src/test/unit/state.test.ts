@@ -3,6 +3,7 @@ import { test } from 'node:test';
 import {
   formatDuration,
   PERSIST_KEY,
+  PERSIST_MAX_ENTRIES,
   PERSIST_MESSAGE_LIMIT,
   TestStateManager,
   truncateMessage,
@@ -177,13 +178,18 @@ test('persist/restore: round-trip com duração, ts e mensagem truncada', () => 
   const mgr = new TestStateManager();
   const memento = fakeMemento();
   mgr.attachMemento(memento);
+  const now = Date.now();
 
   mgr.setLastResults(
     new Map([
-      ['test:app.ok', { status: 'passed' as const, durationMs: 1200, ts: 111 }],
+      ['test:app.ok', { status: 'passed' as const, durationMs: 1200, ts: now - 10 }],
       [
         'test:app.bad',
-        { status: 'failed' as const, message: 'x'.repeat(PERSIST_MESSAGE_LIMIT + 10), ts: 222 },
+        {
+          status: 'failed' as const,
+          message: 'x'.repeat(PERSIST_MESSAGE_LIMIT + 10),
+          ts: now - 5,
+        },
       ],
     ]),
   );
@@ -196,7 +202,7 @@ test('persist/restore: round-trip com duração, ts e mensagem truncada', () => 
   };
   assert.strictEqual(snapshot.v, 1);
   assert.strictEqual(snapshot.items['test:app.ok']?.durationMs, 1200);
-  assert.strictEqual(snapshot.items['test:app.ok']?.ts, 111);
+  assert.strictEqual(snapshot.items['test:app.ok']?.ts, now - 10);
   assert.strictEqual(
     (snapshot.items['test:app.bad']?.message ?? '').length,
     PERSIST_MESSAGE_LIMIT + 1,
@@ -214,6 +220,44 @@ test('persist: sem Memento é no-op (não lança)', () => {
   mgr.setLastResults(new Map([['a', { status: 'passed' as const }]]));
   mgr.persist();
   assert.strictEqual(mgr.restore(), 0);
+});
+
+test('persist: poda resultados mais antigos que PERSIST_MAX_AGE_DAYS', () => {
+  const memento = fakeMemento();
+  const mgr = new TestStateManager();
+  mgr.attachMemento(memento);
+  const now = Date.now();
+  mgr.setLastResults(
+    new Map([
+      ['test:app.old', { status: 'passed' as const, ts: now - 8 * 24 * 60 * 60 * 1000 }],
+      ['test:app.new', { status: 'passed' as const, ts: now }],
+    ]),
+  );
+  mgr.persist();
+  const snapshot = (memento as { store: Record<string, unknown> }).store[PERSIST_KEY] as {
+    items: Record<string, unknown>;
+  };
+  assert.ok(!('test:app.old' in snapshot.items));
+  assert.ok('test:app.new' in snapshot.items);
+});
+
+test('persist: respeita PERSIST_MAX_ENTRIES mantendo os mais recentes', () => {
+  const memento = fakeMemento();
+  const mgr = new TestStateManager();
+  mgr.attachMemento(memento);
+  const results = new Map<string, { status: 'passed'; ts: number }>();
+  const now = Date.now();
+  for (let i = 0; i < PERSIST_MAX_ENTRIES + 5; i++) {
+    results.set(`test:app.t${i}`, { status: 'passed', ts: now - (PERSIST_MAX_ENTRIES + 5 - i) });
+  }
+  mgr.setLastResults(results);
+  mgr.persist();
+  const snapshot = (memento as { store: Record<string, unknown> }).store[PERSIST_KEY] as {
+    items: Record<string, unknown>;
+  };
+  assert.strictEqual(Object.keys(snapshot.items).length, PERSIST_MAX_ENTRIES);
+  assert.ok(`test:app.t${PERSIST_MAX_ENTRIES + 4}` in snapshot.items);
+  assert.ok(!('test:app.t0' in snapshot.items));
 });
 
 test('restore: descarta versão desconhecida e entradas inválidas', () => {

@@ -173,6 +173,8 @@ Test Explorer **καθώς ολοκληρώνεται κάθε test**.
 | `utplsql.sourcePath` | `install` | Φάκελος του κώδικα παραγωγής (για την αντιστοίχιση της κάλυψης σε αρχεία). |
 | `utplsql.includePatterns` | `["**/*.pks"]` | Globs για την εύρεση των specs με `%suite`/`%test`. Αν τα tests σας είναι σε `.sql`, χρησιμοποιήστε `["**/*.sql"]`. |
 | `utplsql.discovery.languageIds` | `["plsql", "sql", "oracle-sql"]` | Αναγνωριστικά γλώσσας που αντιμετωπίζονται ως PL/SQL στην ανακάλυψη, το CodeLens και τις διακοσμήσεις. Οι επεκτάσεις προκύπτουν από τις εγκατεστημένες επεκτάσεις και το `files.associations`; χρησιμοποιήστε `["plsql"]` για να μην σαρώνετε `.sql`. |
+| `utplsql.discovery.retryAttempts` | `2` | Πρόσθετες προσπάθειες για παροδικά σφάλματα ανακάλυψης (δίκτυο/timeout). 0 απενεργοποιεί· τα σφάλματα ελέγχου ταυτότητας/δικαιωμάτων δεν επαναλαμβάνονται. |
+| `utplsql.discovery.cacheTtlSeconds` | `30` | TTL σε δευτερόλεπτα για την προσωρινή μνήμη μεταδεδομένων Oracle (`get_suites_info`, reporters και πρόθεμα σχήματος utPLSQL). 0 απενεργοποιεί την προσωρινή μνήμη. |
 | `utplsql.generate.testPackagePrefix` | `ut_` | Πρόθεμα του ονόματος του παραγόμενου πακέτου δοκιμών. |
 | `utplsql.generate.testPackageSuffix` | `""` | Επίθεμα του ονόματος του παραγόμενου πακέτου δοκιμών. |
 | `utplsql.generate.numberOfTestsPerUnit` | `1` | `%test` ανά ρουτίνα του πακέτου παραγωγής. |

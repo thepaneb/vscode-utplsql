@@ -45,7 +45,9 @@ As tabelas de settings e comandos do README (EN) e da wiki são **geradas** por
 | `utplsql.debugger.stopOnException` | `true` | Pauses on PL/SQL exceptions during debugging. |
 | `utplsql.debugger.timeoutSeconds` | `300` | Timeout (s) of the debug session. |
 | `utplsql.decorations.enabled` | `true` | Shows pass/fail decorations on `%suite` and `%test` lines after execution. |
+| `utplsql.discovery.cacheTtlSeconds` | `30` | TTL in seconds for the in-memory cache of Oracle metadata (get_suites_info, reporters and the utPLSQL schema prefix). |
 | `utplsql.discovery.languageIds` | `["plsql", "sql", "oracle-sql"]` | Language IDs treated as PL/SQL for discovery, CodeLens and decorations. Extensions are resolved from the installed extensions and `files.associations`; use `["plsql"]` to avoid scanning `.sql`. |
+| `utplsql.discovery.retryAttempts` | `2` | Extra attempts for transient database discovery failures (network/timeout). |
 | `utplsql.discovery.source` | `auto` | Source of the test tree in `schema` mode: `auto` uses the database API (`ut_runner.get_suites_info`) and falls back to `ALL_SOURCE`/files when unavailable; `database` requires the API; `file` disables database discovery. |
 | `utplsql.generate.generateComments` | `true` | Adds `-- TODO` to each generated `%test`. |
 | `utplsql.generate.numberOfTestsPerUnit` | `1` | `%test` generated per routine of the production package. |

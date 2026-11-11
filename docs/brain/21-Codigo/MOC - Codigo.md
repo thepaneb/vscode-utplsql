@@ -101,6 +101,7 @@ SORT id ASC
 - [[COD - marketplace-images.cjs]] — `COD-marketplace-images.cjs`
 - [[COD - matching.ts]] — `COD-matching.ts`
 - [[COD - matrix.env]] — `COD-matrix.env`
+- [[COD - metadataCache.ts]] — `COD-metadataCache.ts`
 - [[COD - obsidian-mcp.py]] — `COD-obsidian-mcp.py`
 - [[COD - obsidian-portproxy.cmd]] — `COD-obsidian-portproxy.cmd`
 - [[COD - og.png]] — `COD-og.png`
@@ -130,6 +131,7 @@ SORT id ASC
 - [[COD - Referencia - descricoes de settings.md]] — `COD-Referencia---descricoes-de-settings.md`
 - [[COD - Registro de features.md]] — `COD-Registro-de-features.md`
 - [[COD - results.ts]] — `COD-results.ts`
+- [[COD - retry.ts]] — `COD-retry.ts`
 - [[COD - robots.txt]] — `COD-robots.txt`
 - [[COD - run-tests.cjs]] — `COD-run-tests.cjs`
 - [[COD - run.sh]] — `COD-run.sh`

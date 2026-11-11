@@ -59,6 +59,10 @@ export interface UtConfig {
   organization: 'file' | 'schema' | 'tag';
   organizationSchemaPattern: string;
   discoverySource: 'auto' | 'file' | 'database';
+  /** Tentativas extras de descoberta em erros transitórios (PRD-131). */
+  discoveryRetryAttempts: number;
+  /** TTL em segundos do cache de metadados Oracle (PRD-131). */
+  discoveryCacheTtlSeconds: number;
   /** Language IDs aceitos na descoberta/CodeLens (PRD-109). */
   discoveryLanguageIds: string[];
   refreshDebounceMs: number;
@@ -188,6 +192,8 @@ function buildConfig(): UtConfig {
     organization: c.get<'file' | 'schema' | 'tag'>('organization', 'file'),
     organizationSchemaPattern: c.get<string>('organization.schemaPattern', 'db/{schema}/**'),
     discoverySource: c.get<'auto' | 'file' | 'database'>('discovery.source', 'auto'),
+    discoveryRetryAttempts: c.get<number>('discovery.retryAttempts', 2),
+    discoveryCacheTtlSeconds: c.get<number>('discovery.cacheTtlSeconds', 30),
     discoveryLanguageIds: c.get<string[]>('discovery.languageIds', ['plsql', 'sql', 'oracle-sql']),
     refreshDebounceMs: c.get<number>('refreshDebounceMs', 300),
     trace: c.get<boolean>('trace', false),

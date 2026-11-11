@@ -259,6 +259,20 @@ export function validateConfig(raw: UtConfig, warn: ConfigWarn): UtConfig {
     'discovery.source',
     warn,
   );
+  out.discoveryRetryAttempts = numberValue(
+    raw.discoveryRetryAttempts,
+    2,
+    'discovery.retryAttempts',
+    warn,
+    { min: 0, max: 5, integer: true },
+  );
+  out.discoveryCacheTtlSeconds = numberValue(
+    raw.discoveryCacheTtlSeconds,
+    30,
+    'discovery.cacheTtlSeconds',
+    warn,
+    { min: 0, max: 3600, integer: true },
+  );
   out.discoveryLanguageIds = stringArray(
     raw.discoveryLanguageIds,
     ['plsql', 'sql', 'oracle-sql'],

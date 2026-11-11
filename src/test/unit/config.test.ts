@@ -85,6 +85,12 @@ test('readConfig: discovery.source default e auto', () => {
   assert.strictEqual(cfg.discoverySource, 'auto');
 });
 
+test('readConfig: discovery retry/cache defaults', () => {
+  const cfg = readConfig();
+  assert.strictEqual(cfg.discoveryRetryAttempts, 2);
+  assert.strictEqual(cfg.discoveryCacheTtlSeconds, 30);
+});
+
 test('readConfig: discovery.languageIds default inclui plsql, sql e oracle-sql', () => {
   const cfg = readConfig();
   assert.deepStrictEqual(cfg.discoveryLanguageIds, ['plsql', 'sql', 'oracle-sql']);

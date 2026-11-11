@@ -1,6 +1,7 @@
 import type * as vscode from 'vscode';
 import type { SuiteFile } from './discovery';
 import type { TestStatus } from './junit';
+import { logger } from './logger';
 import type { ItemMeta } from './types';
 
 export interface TestLineResult {
@@ -31,6 +32,10 @@ export interface PersistedRun {
 export const PERSIST_KEY = 'utplsql.lastRunSnapshot';
 /** Teto de caracteres por mensagem persistida (PRD-56 RNF1). */
 export const PERSIST_MESSAGE_LIMIT = 500;
+/** Máximo de resultados mantidos no snapshot (PRD-131 RF4). */
+export const PERSIST_MAX_ENTRIES = 2000;
+/** Idade máxima de um resultado persistido (PRD-131 RF4). */
+export const PERSIST_MAX_AGE_DAYS = 7;
 
 /** `(850ms)` / `(1.2s)` para o label do teste (PRD-56 RF4). */
 export function formatDuration(durationMs: number): string {
@@ -139,17 +144,25 @@ export class TestStateManager {
   /** Grava o snapshot do último run (chamado ao fim de cada execução). */
   persist(): void {
     if (!this.memento) return;
+    const now = Date.now();
+    const maxAgeMs = PERSIST_MAX_AGE_DAYS * 24 * 60 * 60 * 1000;
+    const recent = [...this.lastResults]
+      .filter(([, result]) => now - (result.ts ?? now) <= maxAgeMs)
+      .sort(([, a], [, b]) => (b.ts ?? 0) - (a.ts ?? 0))
+      .slice(0, PERSIST_MAX_ENTRIES);
     const items: Record<string, PersistedResult> = {};
-    for (const [id, r] of this.lastResults) {
+    for (const [id, r] of recent) {
       items[id] = {
         status: r.status,
         ...(r.message ? { message: truncateMessage(r.message) } : {}),
         ...(r.durationMs !== undefined ? { durationMs: r.durationMs } : {}),
-        ts: r.ts ?? Date.now(),
+        ts: r.ts ?? now,
       };
     }
-    const snapshot: PersistedRun = { v: 1, ts: Date.now(), items };
-    void this.memento.update(PERSIST_KEY, snapshot);
+    const snapshot: PersistedRun = { v: 1, ts: now, items };
+    Promise.resolve(this.memento.update(PERSIST_KEY, snapshot)).catch((e) => {
+      logger.warn('state.persist: falha ao gravar o snapshot', { error: String(e) });
+    });
   }
 
   /**

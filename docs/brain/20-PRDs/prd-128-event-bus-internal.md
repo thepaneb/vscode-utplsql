@@ -154,6 +154,6 @@ event bus tipado, não por callbacks ad hoc") com `prds: ["PRD-128"]`,
 <!-- brain:auto:start:conexoes -->
 - 🗺️ [[MOC - PRDs]]
 - 🔗 PRDs relacionados: [[prd-102-trace-and-perf-instrumentation|PRD-102]] · [[prd-111-decompose-oracle-runner|PRD-111]]
-- 🔗 Mesma versão (0.21.0): [[prd-129-orchestration-strategy|PRD-129]] · [[prd-131-discovery-resilience-cache|PRD-131]] · [[prd-138-organization-strategy-pattern|PRD-138]] · [[prd-139-state-store-slicing-lru|PRD-139]]
+- 🔗 Mesma versão (0.21.0): [[prd-129-orchestration-strategy|PRD-129]] · [[prd-138-organization-strategy-pattern|PRD-138]] · [[prd-139-state-store-slicing-lru|PRD-139]]
 - 🚀 ⬅️ release anterior: [[prd-150-thick-full-true-pool-recovery|PRD-150 (0.20.1)]] · ➡️ próxima release: [[prd-88-locale-aware-formatting|PRD-88 (0.22.0)]]
 <!-- brain:auto:end -->

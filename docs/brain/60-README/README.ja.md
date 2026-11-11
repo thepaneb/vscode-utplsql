@@ -167,6 +167,8 @@ Test Explorer に表示されます。
 | `utplsql.sourcePath` | `install` | 本番コードのフォルダー（カバレッジをファイルにマッピングするため）。 |
 | `utplsql.includePatterns` | `["**/*.pks"]` | `%suite`/`%test` を含むスペックを検出するグロブ。テストが `.sql` 内にある場合は `["**/*.sql"]` を使用します。 |
 | `utplsql.discovery.languageIds` | `["plsql", "sql", "oracle-sql"]` | 検出、CodeLens、装飾で PL/SQL として扱う言語 ID。拡張子はインストール済み拡張機能と `files.associations` から解決されます。`.sql` を走査したくない場合は `["plsql"]` を指定します。 |
+| `utplsql.discovery.retryAttempts` | `2` | データベース検出の一時的な失敗（ネットワーク/タイムアウト）に対する追加試行回数。0 で無効。認証/権限エラーは再試行しません。 |
+| `utplsql.discovery.cacheTtlSeconds` | `30` | Oracle メタデータ（`get_suites_info`、レポーター、utPLSQL スキーマ接頭辞）のメモリキャッシュ TTL（秒）。0 でキャッシュ無効。 |
 | `utplsql.generate.testPackagePrefix` | `ut_` | 生成されるテストパッケージ名の接頭辞。 |
 | `utplsql.generate.testPackageSuffix` | `""` | 生成されるテストパッケージ名の接尾辞。 |
 | `utplsql.generate.numberOfTestsPerUnit` | `1` | 本番パッケージのルーチンごとに生成する `%test` の数。 |

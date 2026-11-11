@@ -10,7 +10,7 @@ import { filterSuitesByFolder, filterSuitesByUri, relatedSuiteMetas } from '../m
 import { listReportersForConnection } from '../oracleRunner';
 import { collectRunTargets, executeRun } from '../runner';
 import { collectTags, filterItemsByTags, parseTagSelection } from '../tagFilter';
-import { collectAllItems, resolveSubtree } from '../testTree';
+import { collectAllItems, collectItemsForPath, resolveSubtree } from '../testTree';
 import type { ItemMeta } from '../types';
 import type { CommandDeps } from './deps';
 
@@ -168,7 +168,7 @@ export function registerRunCommands(
   };
 
   const runForUri = async (uri: vscode.Uri, coverage: boolean): Promise<void> => {
-    const metas = (await collectAllItems(controller, state))
+    const metas = (await collectItemsForPath(controller, state, uri.fsPath))
       .map((i) => state.getMeta(i))
       .filter(Boolean) as ItemMeta[];
     const include = filterSuitesByUri(metas, uri.fsPath)
@@ -199,12 +199,20 @@ export function registerRunCommands(
       vscode.window.showWarningMessage(t(locale, 'ext.runRelated.noEditor'));
       return;
     }
-    const metas = (await collectAllItems(controller, state))
-      .map((i) => state.getMeta(i))
-      .filter(Boolean) as ItemMeta[];
-    const include = relatedSuiteMetas(metas, editor.document.fileName)
+    let items = await collectItemsForPath(controller, state, editor.document.fileName);
+    let metas = items.map((i) => state.getMeta(i)).filter(Boolean) as ItemMeta[];
+    let include = relatedSuiteMetas(metas, editor.document.fileName)
       .map((m) => state.getSuiteItemFor(m.packageName, m.schema))
       .filter(Boolean) as vscode.TestItem[];
+    if (!include.length) {
+      // Alguns layouts (suite só no banco, schema não reconhecido) ainda exigem
+      // a árvore completa; só então pagamos o custo (PRD-131 RF9).
+      items = await collectAllItems(controller, state);
+      metas = items.map((i) => state.getMeta(i)).filter(Boolean) as ItemMeta[];
+      include = relatedSuiteMetas(metas, editor.document.fileName)
+        .map((m) => state.getSuiteItemFor(m.packageName, m.schema))
+        .filter(Boolean) as vscode.TestItem[];
+    }
     if (!include.length) {
       const file = editor.document.fileName.replace(/\\/g, '/').split('/').pop() ?? '';
       vscode.window.showWarningMessage(t(locale, 'ext.runRelated.none', { file }));
@@ -223,7 +231,7 @@ export function registerRunCommands(
   };
 
   const runForFolder = async (uri: vscode.Uri, coverage: boolean): Promise<void> => {
-    const metas = (await collectAllItems(controller, state))
+    const metas = (await collectItemsForPath(controller, state, uri.fsPath))
       .map((i) => state.getMeta(i))
       .filter(Boolean) as ItemMeta[];
     const include = filterSuitesByFolder(metas, uri.fsPath)
