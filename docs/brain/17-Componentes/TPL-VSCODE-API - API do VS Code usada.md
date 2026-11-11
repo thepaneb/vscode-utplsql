@@ -59,7 +59,7 @@ host — o `docs-fidelity` cobra essa coerência.
 ## Inventário (gerado)
 
 <!-- brain:auto:start:vscode-api -->
-**`engines.vscode`:** `^1.125.0` · **`@types/vscode`:** `1.125.0` · **107 símbolos · 603 referências**
+**`engines.vscode`:** `^1.125.0` · **`@types/vscode`:** `1.125.0` · **107 símbolos · 605 referências**
 
 | Símbolo | Refs | Arquivos |
 |---|---|---|
@@ -67,7 +67,7 @@ host — o `docs-fidelity` cobra essa coerência.
 | `vscode.Uri` | 46 | `src/commands/debug.ts`, `src/commands/run.ts`, `src/commands/scaffold.ts`, `src/commands/script.ts` +10 |
 | `vscode.commands.registerCommand` | 38 | `src/commands/connection.ts`, `src/commands/debug.ts`, `src/commands/profile.ts`, `src/commands/run.ts` +3 |
 | `vscode.window.showInformationMessage` | 29 | `src/commands/connection.ts`, `src/commands/debug.ts`, `src/commands/profile.ts`, `src/commands/run.ts` +5 |
-| `vscode.WorkspaceFolder` | 27 | `src/debugger.ts`, `src/discovery.ts`, `src/oracleRunner.ts`, `src/results.ts` +3 |
+| `vscode.WorkspaceFolder` | 28 | `src/debugger.ts`, `src/discovery.ts`, `src/oracleRunner.ts`, `src/results.ts` +4 |
 | `vscode.window.showWarningMessage` | 25 | `src/commands/debug.ts`, `src/commands/profile.ts`, `src/commands/run.ts`, `src/commands/scaffold.ts` +4 |
 | `vscode.window.showErrorMessage` | 22 | `src/commands/connection.ts`, `src/commands/debug.ts`, `src/commands/run.ts`, `src/commands/scaffold.ts` +4 |
 | `vscode.commands.executeCommand` | 18 | `src/commands/connection.ts`, `src/commands/profile.ts`, `src/commands/run.ts`, `src/config.ts` +4 |
@@ -79,9 +79,9 @@ host — o `docs-fidelity` cobra essa coerência.
 | `vscode.workspace.workspaceFolders` | 11 | `src/commands/run.ts`, `src/commands/scaffold.ts`, `src/discovery.ts`, `src/extension.ts` +3 |
 | `vscode.ExtensionContext` | 10 | `src/commands/connection.ts`, `src/commands/debug.ts`, `src/commands/profile.ts`, `src/commands/run.ts` +6 |
 | `vscode.window.activeTextEditor` | 10 | `src/commands/debug.ts`, `src/commands/run.ts`, `src/commands/scaffold.ts`, `src/commands/script.ts` |
+| `vscode.TestRun` | 9 | `src/oracleRunner.ts`, `src/results.ts`, `src/runStrategy.ts`, `src/viewCoverage.ts` |
 | `vscode.CodeAction` | 8 | `src/commands/scaffold.ts`, `src/quickfix.ts` |
 | `vscode.Range` | 8 | `src/codelens.ts`, `src/compilationDiagnostics.ts`, `src/decorations.ts`, `src/quickfix.ts` +1 |
-| `vscode.TestRun` | 8 | `src/oracleRunner.ts`, `src/results.ts`, `src/viewCoverage.ts` |
 | `vscode.ThemeColor` | 8 | `src/decorations.ts` |
 | `vscode.Uri.file` | 8 | `src/commands/scaffold.ts`, `src/commands/script.ts`, `src/coverage.ts`, `src/extension.ts` +1 |
 | `vscode.Uri.joinPath` | 8 | `src/commands/debug.ts`, `src/commands/run.ts`, `src/commands/scaffold.ts`, `src/commands/script.ts` +2 |

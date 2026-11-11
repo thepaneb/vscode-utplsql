@@ -354,18 +354,22 @@ test('executeRun: emite a sequência de eventos no bus (PRD-128)', async () =>
     const run = new vscode.TestRun();
     const controller = makeController(run);
     const request = makeRequest([suiteItem]);
-    mock.method(oracleRunner, 'executeRunOracle', async (opts: { bus?: { emit(event: unknown): void } }) => {
-      opts.bus?.emit({
-        type: 'run:complete',
-        passed: 1,
-        failed: 0,
-        skipped: 0,
-        errored: 0,
-        durationMs: 10,
-      });
-      opts.bus?.emit({ type: 'coverage:generated', generated: true });
-      return undefined;
-    });
+    mock.method(
+      oracleRunner,
+      'executeRunOracle',
+      async (opts: { bus?: { emit(event: unknown): void } }) => {
+        opts.bus?.emit({
+          type: 'run:complete',
+          passed: 1,
+          failed: 0,
+          skipped: 0,
+          errored: 0,
+          durationMs: 10,
+        });
+        opts.bus?.emit({ type: 'coverage:generated', generated: true });
+        return undefined;
+      },
+    );
 
     const bus = createRunEventBus();
     const events: string[] = [];

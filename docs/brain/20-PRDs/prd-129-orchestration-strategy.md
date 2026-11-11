@@ -2,14 +2,14 @@
 tipo: prd
 id: PRD-129
 aliases: [PRD-129]
-status: proposed
+status: completed
 titulo: "Orquestrador de execução com Strategy"
 versao: "0.21.0"
 data: "2026-10-30"
 autor: "Gil Cleber Barboza"
 versao_titulo: "0.21.0 — Arquitetura, configuração e resiliência"
 verificado: "2026-10-30"
-regras: []
+regras: ["BR-ARCH-001"]
 docs: ["CHANGELOG", "wiki/Architecture.md"]
 tags: [prd]
 ---
@@ -122,19 +122,27 @@ Nenhuma setting nova.
 
 ## 12. Impacto no cérebro
 
-Ao concluir, criar a regra `BR-ARCH-*` ("modos de execução são estratégias, não
-condicionais") com `prds: ["PRD-129"]`, `implementacao:` e `testes:`. Enquanto
-`proposed`, `regras: []`.
+Regra criada: `BR-ARCH-001` ("modos de execução são estratégias, não
+condicionais no orquestrador"), com `prds: ["PRD-129"]`, `implementacao:` e
+`testes:`.
 
 ## Impacto nas docs
 
-`CHANGELOG` e `wiki/Architecture.md` descrevem o padrão Strategy.
+`CHANGELOG` e `wiki/Architecture.md` descrevem o padrão Strategy e a seleção
+dos quatro modos.
 
 ## Conexões
 
 <!-- brain:auto:start:conexoes -->
 - 🗺️ [[MOC - PRDs]]
+- 📐 Regras: [[BR-ARCH-001 - Modos de execução são estratégias, não condicionais no orquestrador|BR-ARCH-001]]
 - 🔗 PRDs relacionados: [[prd-76-reporter-export|PRD-76]] · [[prd-78-random-test-order|PRD-78]] · [[prd-79-coverage-scope|PRD-79]] · [[prd-111-decompose-oracle-runner|PRD-111]] · [[prd-148-execution-state-reliability|PRD-148]]
 - 🔗 Mesma versão (0.21.0): [[prd-138-organization-strategy-pattern|PRD-138]] · [[prd-139-state-store-slicing-lru|PRD-139]]
+- 🎯 RF1 — Interface e estratégias → [[BR-ARCH-001 - Modos de execução são estratégias, não condicionais no orquestrador|BR-ARCH-001]]
+- 🎯 RF2 — Dispatcher → [[BR-ARCH-001 - Modos de execução são estratégias, não condicionais no orquestrador|BR-ARCH-001]]
+- 🎯 RF3 — Testabilidade → [[BR-ARCH-001 - Modos de execução são estratégias, não condicionais no orquestrador|BR-ARCH-001]]
+- 🎯 RNF1 — Sem mudança de comportamento; suíte verde. → [[BR-ARCH-001 - Modos de execução são estratégias, não condicionais no orquestrador|BR-ARCH-001]]
+- 🎯 RNF2 — Cobertura ≥ thresholds. → [[BR-ARCH-001 - Modos de execução são estratégias, não condicionais no orquestrador|BR-ARCH-001]]
+- 🎯 RNF3 — Nenhuma estratégia acima de ~120 linhas. → [[BR-ARCH-001 - Modos de execução são estratégias, não condicionais no orquestrador|BR-ARCH-001]]
 - 🚀 ⬅️ release anterior: [[prd-150-thick-full-true-pool-recovery|PRD-150 (0.20.1)]] · ➡️ próxima release: [[prd-88-locale-aware-formatting|PRD-88 (0.22.0)]]
 <!-- brain:auto:end -->

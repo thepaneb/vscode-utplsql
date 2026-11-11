@@ -2,6 +2,11 @@
 
 ## 0.21.0
 
+- **Run strategies (PRD-129)**: `executeRun` now dispatches to `NormalRun`,
+  `CoverageRun`, `ExportRun` or `DebugRun` (`src/runStrategy.ts`), removing the
+  nested `coverage`/`export` conditionals from the orchestrator. The strategies
+  build the coverage/export scope and the SQL-coverage finalizer; the Oracle
+  protocol, run serialization, outcomes and legacy callbacks are unchanged.
 - **Typed execution event bus (PRD-128)**: `src/runEvents.ts` provides a
   synchronous, typed bus (`suite:start`, `run:start`, `run:complete`,
   `coverage:generated`, `coverage:html:written`, `run:cancelled`, `run:error`).

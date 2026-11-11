@@ -13,6 +13,7 @@ import {
 } from './oracleRunner';
 import { setupValidator } from './quickfix';
 import type { RunEventBus } from './runEvents';
+import { selectRunStrategy } from './runStrategy';
 import type { LastRunState, TestStateManager } from './state';
 import type { ItemMeta } from './types';
 import { applySqlCoverage } from './viewCoverage';
@@ -148,7 +149,8 @@ export async function executeRun(
 
   const cfg = readConfig();
   const locale = getExtensionLocale();
-  const exporting = !!exportReporter;
+  const strategy = selectRunStrategy({ coverage, exportReporter });
+  const exporting = strategy.kind === 'export';
   const run = controller.createTestRun(request);
 
   void vscode.commands.executeCommand('setContext', 'utplsql:running', true);
@@ -183,6 +185,21 @@ export async function executeRun(
     leafTests.map((t) => state.getMeta(t)),
     folders,
   );
+  let htmlReportPath: string | undefined;
+  const prepared = strategy.prepare({
+    cfg,
+    coverage,
+    exportReporter,
+    roots,
+    connection,
+    sourcePath: cfg.sourcePath,
+    run,
+    state,
+    folders,
+    onHtmlReport: (filePath) => {
+      htmlReportPath = filePath;
+    },
+  });
   state.setLastRun(deriveLastRun(included, !!request.include, coverage, state));
   for (let i = 0; i < suiteCount; i++) {
     onSuiteStart?.();
@@ -202,7 +219,6 @@ export async function executeRun(
   state.clearLastResults();
 
   let exportText: string | undefined;
-  let htmlReportPath: string | undefined;
   try {
     if (!exporting) {
       for (const item of leafTests) {
@@ -218,22 +234,7 @@ export async function executeRun(
     const oracleOpts: OracleRunOptions = {
       connection,
       pathArgs: [...pathArgs],
-      coverage: {
-        enabled: coverage,
-        htmlReport: coverage && cfg.coverageHtmlReport,
-        reportRoot: roots[0],
-        onHtmlReport: (filePath) => {
-          htmlReportPath = filePath;
-        },
-        owner: cfg.coverageOwner,
-        schemes: cfg.coverageSchemes,
-        includeObjects: cfg.coverageIncludeObjects,
-        excludeObjects: cfg.coverageExcludeObjects,
-        includeSchemaExpr: cfg.coverageIncludeSchemaExpr,
-        includeObjectExpr: cfg.coverageIncludeObjectExpr,
-        excludeSchemaExpr: cfg.coverageExcludeSchemaExpr,
-        excludeObjectExpr: cfg.coverageExcludeObjectExpr,
-      },
+      coverage: prepared.coverage,
       sourcePath: cfg.sourcePath,
       run,
       leafTests,
@@ -255,19 +256,33 @@ export async function executeRun(
         timeoutMinutes: cfg.timeoutMinutes,
       },
       output: { additionalReporters: cfg.additionalReporters },
-      ...(exportReporter ? { export: { reporter: exportReporter } } : {}),
+      ...(prepared.exportReporter ? { export: { reporter: prepared.exportReporter } } : {}),
     };
     exportText = await executeRunOracle(oracleOpts, token);
-    if (cfg.sqlCoverageEnabled && !exporting) {
-      await applySqlCoverage({
-        connection,
+    await strategy.finalize(
+      {
+        cfg,
+        coverage,
+        exportReporter,
         roots,
+        connection,
         sourcePath: cfg.sourcePath,
         run,
         state,
         folders,
-      });
-    }
+      },
+      {
+        applySqlCoverage: () =>
+          applySqlCoverage({
+            connection,
+            roots,
+            sourcePath: cfg.sourcePath,
+            run,
+            state,
+            folders,
+          }),
+      },
+    );
   } catch (e) {
     if (exporting) throw e;
     if (e instanceof RunAbortedError) {

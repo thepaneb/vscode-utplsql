@@ -123,6 +123,7 @@ SORT id ASC
 - [[TST - runExportCommand.test.ts]] — `TST-runExportCommand.test.ts`
 - [[TST - runner.test.ts]] — `TST-runner.test.ts`
 - [[TST - runRelated.test.ts]] — `TST-runRelated.test.ts`
+- [[TST - runStrategy.test.ts]] — `TST-runStrategy.test.ts`
 - [[TST - runTimeoutE2E.test.ts]] — `TST-runTimeoutE2E.test.ts`
 - [[TST - scaffold.test.ts]] — `TST-scaffold.test.ts`
 - [[TST - scaffoldCommands.test.ts]] — `TST-scaffoldCommands.test.ts`

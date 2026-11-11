@@ -5,13 +5,13 @@ titulo: "Architecture"
 publicar: docs/wiki/Architecture.md
 origem: ["MOC - Arquitetura"]
 verificado: 2026-11-08
-regras: ["SEC-014", "SEC-015", "BR-EXEC-017", "BR-CONN-020", "BR-CONN-023", "BR-LOG-002", "BR-PARSE-020", "BR-EXEC-018", "BR-STATE-001", "BR-STATE-002", "BR-DISC-001", "BR-ERR-001", "BR-CONN-025", "BR-DISC-002", "BR-STATE-003", "BR-ARCH-002"]
+regras: ["SEC-014", "SEC-015", "BR-EXEC-017", "BR-CONN-020", "BR-CONN-023", "BR-LOG-002", "BR-PARSE-020", "BR-EXEC-018", "BR-STATE-001", "BR-STATE-002", "BR-DISC-001", "BR-ERR-001", "BR-CONN-025", "BR-DISC-002", "BR-STATE-003", "BR-ARCH-002", "BR-ARCH-001"]
 tags: [wiki]
 ---
 
 # Architecture
 
-<!-- prd:PRD-101 --> <!-- prd:PRD-102 --> <!-- prd:PRD-103 --> <!-- prd:PRD-120 --> <!-- prd:PRD-110 --> <!-- prd:PRD-111 --> <!-- prd:PRD-148 --> <!-- prd:PRD-130 --> <!-- prd:PRD-131 --> <!-- prd:PRD-128 -->
+<!-- prd:PRD-101 --> <!-- prd:PRD-102 --> <!-- prd:PRD-103 --> <!-- prd:PRD-120 --> <!-- prd:PRD-110 --> <!-- prd:PRD-111 --> <!-- prd:PRD-148 --> <!-- prd:PRD-130 --> <!-- prd:PRD-131 --> <!-- prd:PRD-128 --> <!-- prd:PRD-129 -->
 
 Overview of the extension's internal architecture for contributors.
 
@@ -43,6 +43,9 @@ functions live in `src/results.ts` (`applyResultsFromCases`,
   `run:cancelled` and `run:error`. Status bar, decorations, coverage setup
   diagnostics and compilation diagnostics subscribe to the bus; the old
   callbacks remain as adapters.
+- **Run strategies (PRD-129)**: `src/runStrategy.ts` selects `NormalRun`,
+  `CoverageRun`, `ExportRun` or `DebugRun` from `(coverage, exportReporter,
+  debug)`; `executeRun` is the dispatcher and keeps run serialization/outcome.
 - **Schema-mode identity and restore (PRD-148 RF4/RF7)**: suite/test ids carry
   the schema (`suite:<schema>:<pkg>`, `test:<schema>:<pkg>.<proc>`) to avoid
   collisions between owners; file/tag trees keep the legacy ids. The legacy

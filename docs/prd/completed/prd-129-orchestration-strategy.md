@@ -4,7 +4,7 @@
 
 | Campo | Valor |
 |---|---|
-| Status | Proposto |
+| Status | Concluído |
 | Autor | Gil Cleber Barboza |
 | Data | 2026-10-30 |
 | Componente | Extensão `paneb.vscode-utplsql` |
@@ -109,10 +109,11 @@ Nenhuma setting nova.
 
 ## 12. Impacto no cérebro
 
-Ao concluir, criar a regra `BR-ARCH-*` ("modos de execução são estratégias, não
-condicionais") com `prds: ["PRD-129"]`, `implementacao:` e `testes:`. Enquanto
-`proposed`, `regras: []`.
+Regra criada: `BR-ARCH-001` ("modos de execução são estratégias, não
+condicionais no orquestrador"), com `prds: ["PRD-129"]`, `implementacao:` e
+`testes:`.
 
 ## Impacto nas docs
 
-`CHANGELOG` e `wiki/Architecture.md` descrevem o padrão Strategy.
+`CHANGELOG` e `wiki/Architecture.md` descrevem o padrão Strategy e a seleção
+dos quatro modos.
