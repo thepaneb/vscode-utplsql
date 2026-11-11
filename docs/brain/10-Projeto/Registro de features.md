@@ -64,6 +64,7 @@ Campos:
   { "id": "publish-attestations", "prd": "PRD-146", "interno": true },
   { "id": "marketplace-listing", "prd": "PRD-147", "interno": true },
   { "id": "execution-state-reliability", "prd": "PRD-148", "interno": true },
-  { "id": "thick-full-pool-recovery", "prd": "PRD-150", "interno": true }
+  { "id": "thick-full-pool-recovery", "prd": "PRD-150", "interno": true },
+  { "id": "typed-errors-config", "prd": "PRD-130", "interno": true }
 ]
 ```

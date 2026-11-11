@@ -1,4 +1,3 @@
-import * as fs from 'node:fs';
 import * as path from 'node:path';
 import * as vscode from 'vscode';
 import { getExtensionLocale, readConfig, type UtConfig } from './config';
@@ -10,6 +9,7 @@ import {
   writeCoverageHtmlReport,
   xmlRootTag,
 } from './coverage';
+import { mapOracleError, ReporterNotFoundError, UtplsqlError } from './errors';
 import { t } from './i18n';
 import { parseJUnit } from './junit';
 import { logger } from './logger';
@@ -26,7 +26,12 @@ import type { PerfProbe } from './perf';
 import { maskConnection, redactConnection } from './redact';
 import { applyCoverageFromXml, applyResultsFromCases, countResults } from './results';
 import type { TestStateManager } from './state';
-import { looksLikeTnsAlias, resolveTnsAlias, TNSNAMES_FILENAME } from './tnsnames';
+import {
+  looksLikeTnsAlias,
+  readTnsnamesFile,
+  resolveTnsAlias,
+  TNSNAMES_FILENAME,
+} from './tnsnames';
 
 type OraclePool = import('oracledb').Pool;
 type OracleConnection = import('oracledb').Connection;
@@ -142,13 +147,12 @@ export async function closeIdleOraclePool(cfg: UtConfig = readConfig()): Promise
 export function resolveConnectString(connectString: string, tnsAdminPath: string): string {
   if (!tnsAdminPath || !looksLikeTnsAlias(connectString)) return connectString;
   const file = path.join(tnsAdminPath, TNSNAMES_FILENAME);
-  try {
-    const content = fs.readFileSync(file, 'utf8');
-    return resolveTnsAlias(content, connectString) ?? connectString;
-  } catch (e) {
-    logger.debug('resolveConnectString: tnsnames.ora inacessível', { file, error: String(e) });
+  const content = readTnsnamesFile(file);
+  if (content === undefined) {
+    logger.debug('resolveConnectString: tnsnames.ora inacessível', { file });
     return connectString;
   }
+  return resolveTnsAlias(content, connectString) ?? connectString;
 }
 
 /**
@@ -750,9 +754,7 @@ async function prepareReporters(options: {
       /^[a-z0-9_]+$/.test(normalized) &&
       (known.length === 0 || known.some((k) => k.toLowerCase() === normalized));
     if (!valid) {
-      throw new Error(
-        t(getExtensionLocale(), 'runner.reporterUnknown', { name: options.exportReporter.name }),
-      );
+      throw new ReporterNotFoundError(options.exportReporter.name);
     }
     const list = buildReporterList({
       exporting: true,
@@ -833,9 +835,13 @@ interface RunAndPollResult {
 }
 
 /** Sinaliza que o run foi interrompido por timeout ou cancelamento do usuário. */
-export class RunAbortedError extends Error {
+export class RunAbortedError extends UtplsqlError {
   constructor(readonly outcome: Exclude<RunOutcome, 'completed'>) {
-    super(t(getExtensionLocale(), outcome === 'timedOut' ? 'runner.timedOut' : 'ext.runCancel'));
+    super(t(getExtensionLocale(), outcome === 'timedOut' ? 'runner.timedOut' : 'ext.runCancel'), {
+      code: outcome === 'timedOut' ? 'UTPLSQL_TIMEOUT' : 'UTPLSQL_CANCELLED',
+      userMessageKey: outcome === 'timedOut' ? 'runner.timedOut' : 'ext.runCancel',
+      includeDetail: false,
+    });
     this.name = 'RunAbortedError';
   }
 }
@@ -983,7 +989,8 @@ export async function executeRunOracle(
     // o próximo `ensurePool` criar uma instância limpa (o caminho thin não
     // depende disso, mas a invalidação é segura nos dois modos).
     if (e instanceof RunAbortedError) discardOraclePool();
-    throw e;
+    // PRD-130: ORA de conexão/autenticação e timeout viram erros tipados.
+    throw mapOracleError(e);
   } finally {
     await activity.end();
   }

@@ -3,6 +3,7 @@ import { findAnnotationAtLine } from '../annotation';
 import { refreshCompilationDiagnostics } from '../compilationDiagnostics';
 import { getExtensionLocale, readConfig, resolveConnection } from '../config';
 import { effectiveCoverage } from '../coverageDecision';
+import { formatUserError } from '../errors';
 import { t } from '../i18n';
 import { isPlsqlDocument } from '../languageIdentity';
 import { filterSuitesByFolder, filterSuitesByUri, relatedSuiteMetas } from '../matching';
@@ -410,7 +411,7 @@ export function registerRunCommands(
       });
     } catch (e) {
       vscode.window.showErrorMessage(
-        t(locale, 'ext.export.failed', { error: e instanceof Error ? e.message : String(e) }),
+        t(locale, 'ext.export.failed', { error: formatUserError(e, locale) }),
       );
     }
   };

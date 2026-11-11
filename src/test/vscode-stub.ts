@@ -1,4 +1,5 @@
 import type * as vscode from 'vscode';
+import { bumpConfigGeneration } from '../configCache';
 
 function makeUri(scheme: string, path: string, fsPath = path): vscode.Uri {
   return {
@@ -95,12 +96,14 @@ export function __resetOutputChannels(): void {
 
 export function __setConfigValue(key: string, value: unknown): void {
   _configValues[key] = value;
+  bumpConfigGeneration();
 }
 
 export function __resetConfigValues(): void {
   for (const key of Object.keys(_configValues)) {
     delete _configValues[key];
   }
+  bumpConfigGeneration();
 }
 
 export function __setInputBoxResult(value: string | undefined): void {
@@ -231,6 +234,7 @@ export namespace workspace {
       }),
       update: async <T>(_key: string, value: T, _target?: unknown) => {
         _configValues[_key] = value;
+        bumpConfigGeneration();
       },
     };
   }

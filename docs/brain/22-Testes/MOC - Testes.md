@@ -39,6 +39,8 @@ SORT id ASC
 - [[TST - compilationDiagnosticsE2E.test.ts]] — `TST-compilationDiagnosticsE2E.test.ts`
 - [[TST - compileForDebugPool.test.ts]] — `TST-compileForDebugPool.test.ts`
 - [[TST - config.test.ts]] — `TST-config.test.ts`
+- [[TST - configCache.test.ts]] — `TST-configCache.test.ts`
+- [[TST - configValidation.test.ts]] — `TST-configValidation.test.ts`
 - [[TST - connectionProfiles.test.ts]] — `TST-connectionProfiles.test.ts`
 - [[TST - connectionRedaction.test.ts]] — `TST-connectionRedaction.test.ts`
 - [[TST - coverage.test.ts]] — `TST-coverage.test.ts`
@@ -62,6 +64,7 @@ SORT id ASC
 - [[TST - docsFidelity.test.ts]] — `TST-docsFidelity.test.ts`
 - [[TST - docsFidelityNls.test.ts]] — `TST-docsFidelityNls.test.ts`
 - [[TST - docsTables.test.ts]] — `TST-docsTables.test.ts`
+- [[TST - errors.test.ts]] — `TST-errors.test.ts`
 - [[TST - esbuildConfig.test.ts]] — `TST-esbuildConfig.test.ts`
 - [[TST - extension.test.ts]] — `TST-extension.test.ts`
 - [[TST - extensionActivation.test.ts]] — `TST-extensionActivation.test.ts`

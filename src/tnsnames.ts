@@ -7,7 +7,42 @@
  * e o entregamos como `connectString`, o que funciona no thin sem mexer em env.
  */
 
+import * as fs from 'node:fs';
+
 export const TNSNAMES_FILENAME = 'tnsnames.ora';
+
+interface TnsFileEntry {
+  mtimeMs: number;
+  size: number;
+  content: string;
+}
+
+const tnsFileCache = new Map<string, TnsFileEntry>();
+
+/**
+ * Lê o `tnsnames.ora` com cache por `(path, mtime, size)` (PRD-130 RF1).
+ * Devolve `undefined` quando o arquivo não existe/está ilegível.
+ */
+export function readTnsnamesFile(file: string): string | undefined {
+  try {
+    const stat = fs.statSync(file);
+    const cached = tnsFileCache.get(file);
+    if (cached && cached.mtimeMs === stat.mtimeMs && cached.size === stat.size) {
+      return cached.content;
+    }
+    const content = fs.readFileSync(file, 'utf8');
+    tnsFileCache.set(file, { mtimeMs: stat.mtimeMs, size: stat.size, content });
+    return content;
+  } catch {
+    tnsFileCache.delete(file);
+    return undefined;
+  }
+}
+
+/** Limpa o cache de arquivos TNS (testes/troca explícita de diretório). */
+export function clearTnsnamesCache(): void {
+  tnsFileCache.clear();
+}
 
 /**
  * Precedência do diretório TNS (PRD-82 RF1):

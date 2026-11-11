@@ -13,6 +13,7 @@ import { registerScriptCommands } from './commands/script';
 import { registerUtilityCommands } from './commands/utility';
 import { registerCompilationDiagnostics } from './compilationDiagnostics';
 import { readConfig } from './config';
+import { invalidateConfigCache } from './configCache';
 import {
   hydrateProfilePasswords,
   initSecretStorage,
@@ -260,6 +261,12 @@ export function activate(context: vscode.ExtensionContext) {
       ) {
         codeLensRegistration.dispose();
         codeLensRegistration = buildCodeLensRegistration();
+      }
+      if (
+        e.affectsConfiguration('utplsql') ||
+        e.affectsConfiguration('sqldeveloper.connections.tnsConfiguration.path')
+      ) {
+        invalidateConfigCache();
       }
       if (!e.affectsConfiguration('utplsql')) return;
       invalidatePool();

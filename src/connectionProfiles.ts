@@ -4,6 +4,7 @@ import * as os from 'node:os';
 import * as path from 'node:path';
 import * as vscode from 'vscode';
 import type { UtConfig } from './config';
+import { invalidateConfigCache } from './configCache';
 import { resolveLocale, t } from './i18n';
 import { logger } from './logger';
 import { maskConnection } from './redact';
@@ -145,6 +146,7 @@ export async function saveProfiles(profiles: ConnectionProfile[]): Promise<void>
   await vscode.workspace
     .getConfiguration('utplsql')
     .update('profiles', sanitized, vscode.ConfigurationTarget.Global);
+  invalidateConfigCache();
 }
 
 // ── Senhas em SecretStorage (PRD-65 RF3 · vínculo PRD-81 RF3) ───────────
@@ -232,6 +234,7 @@ export async function hydrateProfilePasswords(): Promise<void> {
       });
     }
   }
+  invalidateConfigCache();
 }
 
 /** `user/pass@host` → `{ connection: 'user@host', password: 'pass' }`. */
@@ -306,18 +309,21 @@ export function getWalletPassword(profileId: string): string | undefined {
 export async function setWalletPassword(profileId: string, password: string): Promise<void> {
   walletCache.set(profileId, password);
   if (secretStorage) await secretStorage.store(`${WALLET_PREFIX}${profileId}`, password);
+  invalidateConfigCache();
 }
 
 /** Remove a senha da wallet do cache e do SecretStorage. */
 export async function clearWalletPassword(profileId: string): Promise<void> {
   walletCache.delete(profileId);
   if (secretStorage) await secretStorage.delete(`${WALLET_PREFIX}${profileId}`);
+  invalidateConfigCache();
 }
 
 export async function setActiveProfile(id: string | undefined): Promise<void> {
   await vscode.workspace
     .getConfiguration('utplsql')
     .update('activeProfile', id ?? '', vscode.ConfigurationTarget.Global);
+  invalidateConfigCache();
 }
 
 export function activeProfileName(): string | undefined {

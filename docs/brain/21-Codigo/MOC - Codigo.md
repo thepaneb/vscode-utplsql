@@ -51,7 +51,9 @@ SORT id ASC
 - [[COD - compileForDebug.ts]] — `COD-compileForDebug.ts`
 - [[COD - compose.yaml]] — `COD-compose.yaml`
 - [[COD - config.ts]] — `COD-config.ts`
+- [[COD - configCache.ts]] — `COD-configCache.ts`
 - [[COD - Configuration.md]] — `COD-Configuration.md`
+- [[COD - configValidation.ts]] — `COD-configValidation.ts`
 - [[COD - connection.ts]] — `COD-connection.ts`
 - [[COD - connectionProfiles.ts]] — `COD-connectionProfiles.ts`
 - [[COD - CONTRIBUTING.md]] — `COD-CONTRIBUTING.md`
@@ -72,6 +74,7 @@ SORT id ASC
 - [[COD - docs-check.cjs]] — `COD-docs-check.cjs`
 - [[COD - docs-features-check.cjs]] — `COD-docs-features-check.cjs`
 - [[COD - docs-fidelity.cjs]] — `COD-docs-fidelity.cjs`
+- [[COD - errors.ts]] — `COD-errors.ts`
 - [[COD - esbuild.config.mjs]] — `COD-esbuild.config.mjs`
 - [[COD - extension.ts]] — `COD-extension.ts`
 - [[COD - favicon.png]] — `COD-favicon.png`

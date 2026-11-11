@@ -81,6 +81,7 @@ SORT id ASC
 - [[BR-CONN-022 - Ativacao nao abre conexao e validacao de setup e preguicosa]] — `BR-CONN-022`
 - [[BR-CONN-023 - Pool ocioso fecha ao fim da operacao e nunca conexao em uso]] — `BR-CONN-023`
 - [[BR-CONN-024 - Abort em thick descarta conexoes e pool quebrados]] — `BR-CONN-024`
+- [[BR-CONN-025 - Configuração é validada, cacheada e invalidada em cada mudança]] — `BR-CONN-025`
 - [[BR-DEBUG-001 - Ciclo do debugger DBMS_DEBUG para no breakpoint e le o frame]] — `BR-DEBUG-001`
 - [[BR-DEBUG-002 - stopOnException controla pausa em excecao (break_exception)]] — `BR-DEBUG-002`
 - [[BR-DEBUG-003 - Function standalone depura no namespace toplevel]] — `BR-DEBUG-003`
@@ -91,6 +92,7 @@ SORT id ASC
 - [[BR-DOC-001 - Tabelas de settings e comandos são geradas do package.json]] — `BR-DOC-001`
 - [[BR-DOC-002 - PRD concluída vincula docs e registro de features]] — `BR-DOC-002`
 - [[BR-DOC-003 - Marketplace usa MARKETPLACE.md gerado e README do GitHub segue como referencia]] — `BR-DOC-003`
+- [[BR-ERR-001 - Erros de domínio são tipados e carregam chave de mensagem]] — `BR-ERR-001`
 - [[BR-EXEC-001 - Execução usa duas conexões dedicadas (conn1 runner, conn2 poll)]] — `BR-EXEC-001`
 - [[BR-EXEC-002 - Conexões do runner têm callTimeout zerado]] — `BR-EXEC-002`
 - [[BR-EXEC-003 - Falha na segunda conexão libera a primeira (sem vazamento)]] — `BR-EXEC-003`

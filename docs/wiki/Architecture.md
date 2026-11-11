@@ -2,7 +2,7 @@
 
 # Architecture
 
-<!-- prd:PRD-101 --> <!-- prd:PRD-102 --> <!-- prd:PRD-103 --> <!-- prd:PRD-120 --> <!-- prd:PRD-110 --> <!-- prd:PRD-111 --> <!-- prd:PRD-148 -->
+<!-- prd:PRD-101 --> <!-- prd:PRD-102 --> <!-- prd:PRD-103 --> <!-- prd:PRD-120 --> <!-- prd:PRD-110 --> <!-- prd:PRD-111 --> <!-- prd:PRD-148 --> <!-- prd:PRD-130 -->
 
 Overview of the extension's internal architecture for contributors.
 
@@ -74,7 +74,7 @@ bundled.
 | `charsetSupport.ts` — legacy-charset detection (euro preserved) | `compilationDiagnostics.ts` — ALL_ERRORS → Problems Panel |
 | `debounce.ts` — coalescing helper (global + per-key, PRD-103); `perf.ts` — probe de fases/JSONL opt-in (PRD-102) | `dbSourceProvider.ts` — `utplsql-db:` virtual documents |
 | `logger.ts` — logging (no `vscode`); `oracleIdentifiers.ts` — validação do prefixo de schema (`UT3.`); `redact.ts` — `maskConnection`/`redactConnection` (PRD-110) | `connectionProfiles.ts` — connection profiles |
-| | `decorations.ts` — inline ✓/✗/⚠ decorations |
+| `errors.ts` — hierarquia `UtplsqlError` + `mapOracleError`/`formatUserError` (PRD-130); `configValidation.ts` — validação de settings com fallback; `configCache.ts` — snapshot de configuração invalidável (PRD-130) | `decorations.ts` — inline ✓/✗/⚠ decorations |
 | | `statusBar.ts` — status bar indicator |
 | | `viewCoverage.ts` — DeclarationCoverage + V$SQL view tracking |
 | | `dbmsDebug.ts`, `debugger.ts` — PL/SQL debugging via DBMS_DEBUG |
