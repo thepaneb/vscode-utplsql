@@ -30,10 +30,11 @@ completo e a matriz semanal 18xe/21xe em **full** (o smoke fica no dispatch
 secrets). O **matrix-thick** semanal cobre 18xe/21xe/23free em thick smoke. O **thick smoke** (5 testes) roda no nightly/dispatch com Instant
 Client baixado no runner, no **23free e no 11g**. O `--thick-full` (PRD-125/150)
 roda o full no 23free com guarda `oracledb.thin === false` e reciclagem do pool
-após abort; skips documentados (UI, multi-root, thin-only, DBMS_DEBUG e, no
-11g, `UTPLSQL_LEGACY`) ficam fora. O 23free thick-full roda no **nightly**; o
-11g full local fecha com skips e o dispatch `thick-full-11g` segue como probe
-experimental. O eixo thin segue inalterado.
+após abort; skips documentados (UI, multi-root, thin-only, DBMS_DEBUG, no 11g
+`UTPLSQL_LEGACY` e, em todo o thick, timeout/cancelamento porque `break()` não
+preempta o execute bloqueante de forma confiável) ficam fora. O 23free thick-full roda no
+**nightly**; o 11g full local fecha com skips e o dispatch `thick-full-11g`
+segue como probe experimental. O eixo thin segue inalterado.
 
 ## Pré-condições
 

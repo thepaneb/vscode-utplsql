@@ -224,14 +224,32 @@ for __line in "${VERSION_LINES[@]}"; do
 
   # Volume de dados por versão: a 1ª subida cria o banco; as demais reaproveitam.
   export DB_VOLUME="${DB_VOLUME_PREFIX:-utplsql-dbmatrix}-${label}"
+  thick_axis=0
+  case "$TESTS_CMD" in
+    *test:integration:thick*) thick_axis=1 ;;
+  esac
+  legacy_version=0
+  case "$local_utplsql_version" in
+    v3.1.*|3.1.*) legacy_version=1 ;;
+  esac
   if [ "$label" = "11xe" ]; then
     export DB_DATA_DIR="${DB_DATA_DIR_11XE:-/u01/app/oracle/oradata}"
-    # utPLSQL 3.1/11g: sem bind BOOLEAN e com stack/timeout limitados; os
-    # testes usam este marcador para skips determinísticos (PRD-150 RF4).
-    export UTPLSQL_LEGACY=1
   else
     export DB_DATA_DIR="${DB_DATA_DIR:-/opt/oracle/oradata}"
+  fi
+  if [ "$label" = "11xe" ] || { [ "$legacy_version" = 1 ] && [ "$thick_axis" = 1 ]; }; then
+    # utPLSQL 3.1: sem bind BOOLEAN e com stack/timeout limitados; os testes
+    # usam este marcador para skips determinísticos (PRD-150 RF4).
+    export UTPLSQL_LEGACY=1
+  else
     unset UTPLSQL_LEGACY
+  fi
+  # Em thick, o break() pode não preemptar o execute bloqueante (12.2/18c e
+  # de forma intermitente em 19/21); os testes de cancelamento/timeout skipam o
+  # eixo thick e o thin cobre esse caminho.
+  unset UTPLSQL_THICK_BREAK_LEGACY
+  if [ "$thick_axis" = 1 ]; then
+    export UTPLSQL_THICK_BREAK_LEGACY=1
   fi
   export DB_IMAGE="$image" DB_CONTAINER="$CONTAINER" DB_PORT ORACLE_PWD ORACLE_PASSWORD DB_DATA_DIR
   export UT3_PASSWORD TEST_PASSWORD UTPLSQL_VERSION="$local_utplsql_version"
@@ -260,7 +278,7 @@ for __line in "${VERSION_LINES[@]}"; do
     # WSL: o `node` é o binário do Windows e não herda env do WSL — WSLENV faz
     # a variável atravessar para o processo dos testes. ORACLE_CLIENT_LIB_DIR/
     # TNS_ADMIN só são usados pelo modo --thick.
-    export WSLENV="UTPLSQL_CONN${UTPLSQL_LEGACY:+:UTPLSQL_LEGACY}${ORACLE_CLIENT_LIB_DIR:+:ORACLE_CLIENT_LIB_DIR}${TNS_ADMIN:+:TNS_ADMIN}${WSLENV:+:$WSLENV}"
+    export WSLENV="UTPLSQL_CONN${UTPLSQL_LEGACY:+:UTPLSQL_LEGACY}${UTPLSQL_THICK_BREAK_LEGACY:+:UTPLSQL_THICK_BREAK_LEGACY}${ORACLE_CLIENT_LIB_DIR:+:ORACLE_CLIENT_LIB_DIR}${TNS_ADMIN:+:TNS_ADMIN}${WSLENV:+:$WSLENV}"
     test_log="$LOG_DIR/$label.log"
     client_mode="thin"
     case "$TESTS_CMD" in

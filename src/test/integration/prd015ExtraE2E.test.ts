@@ -21,6 +21,8 @@ import { installOutFormatIsolation } from './helpers';
 function hasConnection(): boolean {
   return !!process.env.UTPLSQL_CONN;
 }
+const LEGACY = process.env.UTPLSQL_LEGACY === '1';
+const THICK_BREAK_LEGACY = process.env.UTPLSQL_THICK_BREAK_LEGACY === '1';
 const describeDB = hasConnection() ? describe : describe.skip;
 
 const cfg = (): vscode.WorkspaceConfiguration => vscode.workspace.getConfiguration('utplsql');
@@ -142,6 +144,8 @@ describeDB('0.15.0 — features de UI/execução (integração)', () => {
 
   it('cancelRun durante uma execução não lança e a interrompe', async function () {
     this.timeout(120_000);
+    // Thick 12.2/18c (e utPLSQL 3.1): break() não preempta o run bloqueante.
+    if (LEGACY || THICK_BREAK_LEGACY) this.skip();
     const running = vscode.commands.executeCommand('utplsql.runAll');
     await sleep(300); // dá tempo da execução iniciar antes de cancelar
     await vscode.commands.executeCommand('utplsql.cancelRun');

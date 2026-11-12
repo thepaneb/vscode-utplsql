@@ -23,7 +23,10 @@ import { installOutFormatIsolation } from './helpers';
 function hasConnection(): boolean {
   return !!process.env.UTPLSQL_CONN;
 }
-const describeDB = hasConnection() ? describe : describe.skip;
+// Thick 12.2/18c: `break()` não é preemptivo; o teste de tempo não se aplica.
+const THICK_BREAK_LEGACY =
+  process.env.UTPLSQL_THICK_BREAK_LEGACY === '1' || process.env.UTPLSQL_LEGACY === '1';
+const describeDB = hasConnection() && !THICK_BREAK_LEGACY ? describe : describe.skip;
 
 const SLOW_PKG = 'UTPLSQL_TIMEOUT_SCHEMAIT';
 const SLOW_PROC = 'busy_wait_8s';

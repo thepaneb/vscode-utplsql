@@ -174,6 +174,9 @@ DBMS_DEBUG E2E files — they pass isolated but leave `pipe get` sessions that
 destabilize the shared thick host (#288). On 11g/utPLSQL 3.1 the axis also skips
 `runTimeoutE2E` (before-hook flow), schema-node run, cancellation, random-order
 bind BOOLEAN and the stack-frame qualification assertion; with those skips the
-11g full is green (72 passing / 17 pending). The 11g dispatch remains
-experimental; the thick smoke (5 tests) is the supported gate.
+11g full is green (75 passing / 17 pending). In thick, `break()` does not reliably
+preempt a blocking `execute` (12.2/18c always; 19c/21c can be intermittent), so
+the cancellation/timeout tests are skipped on the thick axis; the thin axis and
+the dedicated 23free run cover the abort path. The 11g dispatch remains
+experimental and the thick smoke (5 tests) is the supported gate.
 
