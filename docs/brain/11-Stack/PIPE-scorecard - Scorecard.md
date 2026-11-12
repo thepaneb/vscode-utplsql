@@ -30,7 +30,7 @@ Workflow [`scorecard.yml`](../../../.github/workflows/scorecard.yml) — **gerad
 - `uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7`
 - `uses: ossf/scorecard-action@fa7117db83c52d787ae5a89f350999701505d78e # v2.5.0`
 - `uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2`
-- `uses: github/codeql-action/upload-sarif@9b3254085494b55a0f7c4c2b3d2d52cc712ce370 # v4`
+- `uses: github/codeql-action/upload-sarif@33d7b85da1a04171e211befe2c739303b9a4c066 # v4`
 
 ## Conexões
 
