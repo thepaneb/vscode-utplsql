@@ -33,7 +33,7 @@ e os riscos das dependências **diretas** relevantes.
 <!-- brain:auto:start:deps -->
 **Runtime (2)**
 
-- `fast-xml-parser` `^5.11.2` — runtime
+- `fast-xml-parser` `^5.12.0` — runtime
 - `oracledb` `^26.0.0` — runtime
 
 **Desenvolvimento (12)**
