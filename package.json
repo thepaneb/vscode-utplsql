@@ -2,7 +2,7 @@
   "name": "vscode-utplsql",
   "displayName": "utPLSQL Test Runner",
   "description": "Run, debug and measure coverage of utPLSQL (Oracle PL/SQL) unit tests in VS Code's native Test Explorer — Oracle-direct via node-oracledb (no Java/Instant Client in thin mode), visual coverage, PL/SQL debugger and 24 UI languages.",
-  "version": "0.20.1",
+  "version": "0.21.0",
   "publisher": "paneb",
   "author": "Gil Cleber Barboza",
   "license": "MIT",
@@ -370,6 +370,20 @@
             "oracle-sql"
           ],
           "markdownDescription": "Language IDs treated as PL/SQL for discovery, CodeLens and decorations. Their file extensions are resolved from the installed extensions and from `files.associations`; set `[\"plsql\"]` to avoid scanning `.sql` files."
+        },
+        "utplsql.discovery.retryAttempts": {
+          "type": "number",
+          "default": 2,
+          "minimum": 0,
+          "maximum": 5,
+          "description": "Extra attempts for transient database discovery failures (network/timeout). 0 disables retries; authentication and permission errors are never retried."
+        },
+        "utplsql.discovery.cacheTtlSeconds": {
+          "type": "number",
+          "default": 30,
+          "minimum": 0,
+          "maximum": 3600,
+          "description": "TTL in seconds for the in-memory cache of Oracle metadata (get_suites_info, reporters and the utPLSQL schema prefix). 0 disables the cache."
         },
         "utplsql.refreshDebounceMs": {
           "type": "number",

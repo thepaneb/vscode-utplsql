@@ -65,7 +65,11 @@
 ### Συνδέσεις και ασφάλεια
 
 - 🔌 **Connection profiles** — αποθήκευση και εναλλαγή μεταξύ πολλών περιβαλλόντων (DEV/TEST/PROD) με ρυθμίσεις ανά profile, μέσω status bar ή command palette.
-- 🔐 **TNS σε thin + wallet** — το `utplsql.connections.tnsAdminPath` επιλύει aliases του `tnsnames.ora` στον thin driver (fallback σε SQL Developer/`TNS_ADMIN`); το `walletLocation` του προφίλ και το `utPLSQL: Set wallet password` κρατούν τον κωδικό του wallet στο SecretStorage.
+- 🔐 **TNS σε thin + wallet** — το `utplsql.connections.tnsAdminPath` επιλύει aliases του `tnsnames.ora` στον thin driver (fallback σε SQL Developer/`TNS_ADMIN`); το `walletLocation` του προφίλ και το `utPLSQL: Set wallet password` κρατούν τον κωδικό του wallet στο SecretStorage; Το μυστικό του wallet είναι δεσμευμένο στη `connection` του προφίλ· η αλλαγή της το απορρίπτει (τα παλιά μυστικά μεταφέρονται στην πρώτη ανάγνωση).
+- ⚡ **Επαυξητική επανευρετηρίαση** — στη λειτουργία file ο watcher κάνει debounce ανά URI και επανευρετηριάζει μόνο τη suite που άλλαξε· tag/schema και ριπές πέφτουν σε full refresh (PRD-103).
+- 🧹 **Καθαρισμός αδρανούς pool** — το `utplsql.oraclePoolCloseAfterRun` κλείνει αδρανείς συνδέσεις Oracle pool μετά το τελευταίο run/coverage/export/discovery· απενεργοποιήστε το για να κρατήσετε το pool ζεστό.
+- 🪶 **Ελαφριά ενεργοποίηση** — η επέκταση ενεργοποιείται μόνο για PL/SQL workspace· η επικύρωση setup είναι lazy, memoized και δεν ανοίγει ποτέ Oracle κατά την ενεργοποίηση.
+- 🔎 **Trace και απόδοση** — opt-in `utplsql.trace` και `utplsql.perf.enabled`/`perf.reportFile` μετρούν discovery, tree build, run, polling και XML parsing· απενεργοποιημένα από προεπιλογή και ποτέ δεν καταγράφουν credentials.
 - 🔒 **Ενίσχυση ασφάλειας συνδέσεων** — οι ρυθμίσεις σύνδεσης είναι `machine`-scoped, η επέκταση απενεργοποιείται σε μη αξιόπιστα workspaces και ο κωδικός του προφίλ συνδέεται με τη σύνδεση.
 - 🔧 **Διαγνωστικά ρυθμίσεων** — προληπτική επικύρωση σύνδεσης, grants και έκδοσης με quick-fix.
 
@@ -164,6 +168,8 @@ Test Explorer **καθώς ολοκληρώνεται κάθε test**.
 | `utplsql.sourcePath` | `install` | Φάκελος του κώδικα παραγωγής (για την αντιστοίχιση της κάλυψης σε αρχεία). |
 | `utplsql.includePatterns` | `["**/*.pks"]` | Globs για την εύρεση των specs με `%suite`/`%test`. Αν τα tests σας είναι σε `.sql`, χρησιμοποιήστε `["**/*.sql"]`. |
 | `utplsql.discovery.languageIds` | `["plsql", "sql", "oracle-sql"]` | Αναγνωριστικά γλώσσας που αντιμετωπίζονται ως PL/SQL στην ανακάλυψη, το CodeLens και τις διακοσμήσεις. Οι επεκτάσεις προκύπτουν από τις εγκατεστημένες επεκτάσεις και το `files.associations`; χρησιμοποιήστε `["plsql"]` για να μην σαρώνετε `.sql`. |
+| `utplsql.discovery.retryAttempts` | `2` | Πρόσθετες προσπάθειες για παροδικά σφάλματα ανακάλυψης (δίκτυο/timeout). 0 απενεργοποιεί· τα σφάλματα ελέγχου ταυτότητας/δικαιωμάτων δεν επαναλαμβάνονται. |
+| `utplsql.discovery.cacheTtlSeconds` | `30` | TTL σε δευτερόλεπτα για την προσωρινή μνήμη μεταδεδομένων Oracle (`get_suites_info`, reporters και πρόθεμα σχήματος utPLSQL). 0 απενεργοποιεί την προσωρινή μνήμη. |
 | `utplsql.generate.testPackagePrefix` | `ut_` | Πρόθεμα του ονόματος του παραγόμενου πακέτου δοκιμών. |
 | `utplsql.generate.testPackageSuffix` | `""` | Επίθεμα του ονόματος του παραγόμενου πακέτου δοκιμών. |
 | `utplsql.generate.numberOfTestsPerUnit` | `1` | `%test` ανά ρουτίνα του πακέτου παραγωγής. |

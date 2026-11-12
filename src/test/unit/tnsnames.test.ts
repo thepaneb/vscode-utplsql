@@ -1,9 +1,14 @@
 import './setup.js';
 import assert from 'node:assert';
+import * as fs from 'node:fs';
+import * as os from 'node:os';
+import * as path from 'node:path';
 import { test } from 'node:test';
 import {
+  clearTnsnamesCache,
   looksLikeTnsAlias,
   parseTnsnames,
+  readTnsnamesFile,
   resolveTnsAdminPath,
   resolveTnsAlias,
 } from '../../tnsnames';
@@ -71,4 +76,35 @@ test('resolveTnsAdminPath: setting > SQL Developer (user) > env', () => {
   assert.strictEqual(resolveTnsAdminPath('  ', undefined, '/env'), '/env');
   assert.strictEqual(resolveTnsAdminPath('', '', ''), undefined);
   assert.strictEqual(resolveTnsAdminPath(undefined, undefined, undefined), undefined);
+});
+
+test('readTnsnamesFile: lê o arquivo e reutiliza pelo mtime/tamanho', (t) => {
+  const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'utplsql-tns-'));
+  t.after(() => {
+    clearTnsnamesCache();
+    fs.rmSync(dir, { recursive: true, force: true });
+  });
+  const file = path.join(dir, 'tnsnames.ora');
+  fs.writeFileSync(file, 'DEV = (DESCRIPTION = (HOST = dev))\n');
+  assert.match(readTnsnamesFile(file) ?? '', /HOST = dev/);
+
+  // Mesmo conteúdo: continua válido.
+  assert.match(readTnsnamesFile(file) ?? '', /HOST = dev/);
+
+  // Conteúdo novo de tamanho diferente é relido.
+  fs.writeFileSync(file, 'PROD = (DESCRIPTION = (HOST = prod-host))\n');
+  assert.match(readTnsnamesFile(file) ?? '', /prod-host/);
+});
+
+test('readTnsnamesFile: arquivo ausente devolve undefined e limpa o cache', (t) => {
+  const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'utplsql-tns-'));
+  t.after(() => {
+    clearTnsnamesCache();
+    fs.rmSync(dir, { recursive: true, force: true });
+  });
+  const file = path.join(dir, 'tnsnames.ora');
+  fs.writeFileSync(file, 'DEV = (DESCRIPTION = (HOST = dev))\n');
+  assert.ok(readTnsnamesFile(file));
+  fs.rmSync(file);
+  assert.strictEqual(readTnsnamesFile(file), undefined);
 });

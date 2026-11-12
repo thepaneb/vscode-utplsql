@@ -66,10 +66,11 @@ function parseTestCounts(output) {
   return { tests: null, pass: null, fail: null, skipped: null, framework: null };
 }
 
-function entry({ label, image, utplsql, status, log, duration, output }) {
+function entry({ label, image, client, utplsql, status, log, duration, output }) {
   return {
     label,
     image,
+    client: client ?? 'thin',
     utplsql,
     status,
     durationSeconds: Number.parseInt(String(duration ?? '0'), 10) || 0,
@@ -106,12 +107,12 @@ function renderSummary(entries) {
   const lines = [
     '# Matriz de bancos — resumo',
     '',
-    '| Banco | utPLSQL | Status | Testes | Pass | Fail | Skipped | Duração | Log |',
-    '|---|---|---|---:|---:|---:|---:|---:|---|',
+    '| Banco | Client | utPLSQL | Status | Testes | Pass | Fail | Skipped | Duração | Log |',
+    '|---|---|---|---|---:|---:|---:|---:|---:|---|',
   ];
   for (const e of entries) {
     lines.push(
-      `| ${escapeCell(e.label)} | ${escapeCell(e.utplsql)} | ${escapeCell(e.status)} | ${
+      `| ${escapeCell(e.label)} | ${escapeCell(e.client ?? 'thin')} | ${escapeCell(e.utplsql)} | ${escapeCell(e.status)} | ${
         e.tests ?? '?'
       } | ${e.pass ?? '?'} | ${e.fail ?? '?'} | ${e.skipped ?? '?'} | ${
         e.durationSeconds ?? 0
@@ -119,7 +120,7 @@ function renderSummary(entries) {
     );
   }
   if (entries.length === 0) {
-    lines.push('| _(sem execuções)_ | | | | | | | | |');
+    lines.push('| _(sem execuções)_ | | | | | | | | | |');
   }
   lines.push('', '> Contagens extraídas do log de cada versão; `?` = formato não reconhecido.', '');
   return lines.join('\n');
@@ -153,6 +154,7 @@ function main(argv) {
       entry({
         label: flags.label,
         image: flags.image,
+        client: flags.client,
         utplsql: flags.utplsql,
         status: flags.status,
         log,

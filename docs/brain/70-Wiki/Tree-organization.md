@@ -5,14 +5,18 @@ titulo: "Test tree organization"
 publicar: docs/wiki/Tree-organization.md
 origem: ["06-tree-organization"]
 verificado: 2026-09-23
-regras: ["BR-SCHEMA-001", "BR-SCHEMA-002", "BR-SCHEMA-003", "BR-SCHEMA-004", "BR-SCHEMA-005", "BR-PARSE-016"]
+regras: ["BR-SCHEMA-001", "BR-SCHEMA-002", "BR-SCHEMA-003", "BR-SCHEMA-004", "BR-SCHEMA-005", "BR-PARSE-016", "BR-ARCH-003"]
 tags: [wiki]
 ---
 
 # Test tree organization
 
+<!-- prd:PRD-138 -->
+
 The extension offers three modes for organizing the tree in the Test Explorer:
-by **file** (default), by **Oracle schema** or by **`%tags`**.
+by **file** (default), by **Oracle schema** or by **`%tags`**. Each mode is an
+`OrganizationStrategy` (`src/organization/strategy.ts`); `testTree.ts` is the
+facade used by the refresher and the commands.
 
 ## `file` mode (default)
 

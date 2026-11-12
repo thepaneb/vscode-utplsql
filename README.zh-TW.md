@@ -65,7 +65,11 @@
 ### 連線與安全性
 
 - 🔌 **連線設定檔** — 透過狀態列或命令面板，儲存並切換多個環境（DEV/TEST/PROD），支援依設定檔自訂設定。
-- 🔐 **thin 模式下的 TNS + wallet** — `utplsql.connections.tnsAdminPath` 在 thin 驅動中解析 `tnsnames.ora` 別名（回退至 SQL Developer/`TNS_ADMIN`）；設定檔的 `walletLocation` 與 `utPLSQL: Set wallet password` 將 wallet 密碼保存在 SecretStorage。
+- 🔐 **thin 模式下的 TNS + wallet** — `utplsql.connections.tnsAdminPath` 在 thin 驅動中解析 `tnsnames.ora` 別名（回退至 SQL Developer/`TNS_ADMIN`）；設定檔的 `walletLocation` 與 `utPLSQL: Set wallet password` 將 wallet 密碼保存在 SecretStorage。; wallet 密鑰綁定至設定檔的 `connection`；變更連線會捨棄已儲存的密碼（舊格式會在首次讀取時移轉）。
+- ⚡ **增量重建索引** — file 模式下 watcher 依 URI 防抖，只重建變更 suite 的索引；tag/schema 與大量變更會回退至 full refresh（PRD-103）。
+- 🧹 **閒置 pool 清理** — `utplsql.oraclePoolCloseAfterRun` 在最後一次 run/coverage/export/discovery 後關閉閒置的 Oracle pool 連線；關閉此設定可保持 pool 溫熱。
+- 🪶 **輕量啟用** — 擴充功能僅在 PL/SQL 工作區啟用；setup 驗證為惰性、記憶化，啟用時從不開啟 Oracle。
+- 🔎 **追蹤與效能** — opt-in 的 `utplsql.trace` 與 `utplsql.perf.enabled`/`perf.reportFile` 量測 discovery、tree build、run、polling 與 XML parsing；預設關閉，且從不記錄憑證。
 - 🔒 **連線安全強化** — 連線設定改為 `machine` 範圍，擴充功能在不受信任的工作區中停用，設定檔密碼與連線綁定。
 - 🔧 **安裝診斷** — 主動驗證連線、授權與版本，並提供快速修復。
 
@@ -162,6 +166,8 @@ Test Explorer 中。
 | `utplsql.sourcePath` | `install` | 正式程式碼的資料夾（用於將涵蓋率對應到檔案）。 |
 | `utplsql.includePatterns` | `["**/*.pks"]` | 用於探索含 `%suite`/`%test` 規格的 glob 模式。若測試位於 `.sql`，請使用 `["**/*.sql"]`。 |
 | `utplsql.discovery.languageIds` | `["plsql", "sql", "oracle-sql"]` | 在探索、CodeLens 與裝飾中視為 PL/SQL 的語言 ID。副檔名來自已安裝的擴充功能與 `files.associations`；使用 `["plsql"]` 可避免掃描 `.sql`。 |
+| `utplsql.discovery.retryAttempts` | `2` | 資料庫探索暫時性故障（網路/逾時）的額外重試次數。0 表示停用；驗證與權限錯誤永不重試。 |
+| `utplsql.discovery.cacheTtlSeconds` | `30` | Oracle 中繼資料（`get_suites_info`、報告器與 utPLSQL 結構描述前綴）記憶體快取的 TTL（秒）。0 表示停用快取。 |
 | `utplsql.generate.testPackagePrefix` | `ut_` | 產生的測試套件名稱前置字串。 |
 | `utplsql.generate.testPackageSuffix` | `""` | 產生的測試套件名稱後置字串。 |
 | `utplsql.generate.numberOfTestsPerUnit` | `1` | 生產套件每個例行程式產生的 `%test` 數量。 |

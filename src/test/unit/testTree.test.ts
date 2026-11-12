@@ -10,6 +10,7 @@ import {
   buildSchemaTree,
   buildTagTree,
   collectAllItems,
+  collectItemsForPath,
   createRefresher,
   type MergeDbDeps,
   mergeDbSuites,
@@ -423,6 +424,33 @@ test('resolveSchemaNode: funde suites do banco quando há conexão', async () =>
   assert.strictEqual(schemaItem._children.length, 2, 'deveria unir arquivo + banco');
 });
 
+test('resolveSchemaNode: expansões concorrentes compartilham a mesma promise (PRD-138 RF5)', async () => {
+  const controller = makeController();
+  const state = new TestStateManager();
+  buildSchemaTree(controller, state, [suite({ dbSchema: 'APP' })], 'db/{schema}/**');
+  const schemaItem = controller._items[0];
+  let calls = 0;
+  let release: () => void = () => {};
+  const gate = new Promise<void>((resolve) => {
+    release = resolve;
+  });
+  const deps = {
+    resolveConnection: () => 'u/p@//h:1521/s',
+    extractSchemaFromPath: () => 'APP',
+    discoverDbSuites: async () => {
+      calls += 1;
+      await gate;
+      return [suite({ dbSchema: 'APP', packageName: 'UT_DB_ONLY' })];
+    },
+  };
+  const first = resolveSchemaNode(controller, state, schemaItem, deps as never);
+  const second = resolveSchemaNode(controller, state, schemaItem, deps as never);
+  release();
+  await Promise.all([first, second]);
+  assert.strictEqual(calls, 1, 'deveria haver uma única consulta em voo');
+  assert.strictEqual(schemaItem._children.length, 2);
+});
+
 test('buildSchemaTree: schema desconhecido vai para UNKNOWN por último', () => {
   const controller = makeController();
   const state = new TestStateManager();
@@ -483,6 +511,32 @@ test('collectAllItems: devolve as suites após resolução', async () => {
   buildFileTree(controller, state, [suite({})]);
   const items = await collectAllItems(controller, state);
   assert.strictEqual(items.length, 1);
+});
+
+test('collectItemsForPath: schema mode resolve só o schema dono do path (PRD-131 RF9)', async () => {
+  const controller = makeController();
+  const state = new TestStateManager();
+  buildSchemaTree(
+    controller,
+    state,
+    [
+      suite({ dbSchema: 'APP', packageName: 'UT_APP' }),
+      suite({ dbSchema: 'OTHER', packageName: 'UT_OTHER' }),
+    ],
+    'db/{schema}/**',
+  );
+  workspace.__setWorkspaceFolders([{ uri: { fsPath: '/ws' }, name: 'ws', index: 0 }]);
+  __setConfigValue('organization', 'schema');
+  __setConfigValue('discovery.source', 'file');
+  try {
+    const items = await collectItemsForPath(controller, state, '/ws/db/APP/tests/ut_app.pks');
+    const schemas = [...new Set(items.map((item) => state.getMeta(item)?.schema))];
+    assert.deepStrictEqual(schemas, ['APP']);
+    assert.strictEqual(state.isResolved('schema:OTHER'), false);
+  } finally {
+    __resetConfigValues();
+    workspace.__setWorkspaceFolders(undefined);
+  }
 });
 
 test('collectAllItems: árvore por tag resolve suites filhas', async () => {

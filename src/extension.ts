@@ -13,6 +13,8 @@ import { registerScriptCommands } from './commands/script';
 import { registerUtilityCommands } from './commands/utility';
 import { registerCompilationDiagnostics } from './compilationDiagnostics';
 import { readConfig } from './config';
+import { invalidateConfigCache } from './configCache';
+import { classifyConfigChange } from './configReactivity';
 import {
   hydrateProfilePasswords,
   initSecretStorage,
@@ -38,14 +40,10 @@ import {
   resolvePerfReportPath,
 } from './perf';
 import { setupValidator, UtplsqlCodeActionProvider } from './quickfix';
+import { createRunEventBus } from './runEvents';
 import { TestStateManager } from './state';
 import { UtplsqlStatusBar } from './statusBar';
-import {
-  createRefresher,
-  resolvePackageNode,
-  resolveSchemaNode,
-  resolveSuiteNode,
-} from './testTree';
+import { createRefresher, resolveTreeNode } from './testTree';
 
 const state = new TestStateManager();
 let statusBar: UtplsqlStatusBar | undefined;
@@ -127,6 +125,8 @@ export function activate(context: vscode.ExtensionContext) {
   context.subscriptions.push(controller);
 
   const refresh = createRefresher(controller, state, perfProxy);
+  const runEvents = createRunEventBus();
+  context.subscriptions.push({ dispose: () => runEvents.dispose() });
 
   // PRD-120: a validação de setup é preguiçosa, memoizada e nunca roda no
   // `activate()`. O primeiro uso relevante (editor PL/SQL, refresh manual,
@@ -179,10 +179,8 @@ export function activate(context: vscode.ExtensionContext) {
       return;
     }
     scheduleSetupValidation();
-    // Resolução lazy por nível (PRD-75): schema → package → suite.
-    if (item.id.startsWith('schema:')) await resolveSchemaNode(controller, state, item);
-    else if (item.id.startsWith('package:')) resolvePackageNode(controller, state, item);
-    else if (item.id.startsWith('suite:')) resolveSuiteNode(controller, state, item);
+    // Resolução lazy por nível (PRD-75) via estratégia de organização (PRD-138).
+    await resolveTreeNode(controller, state, item);
   };
   controller.refreshHandler = async () => {
     await refreshFromUser();
@@ -194,11 +192,11 @@ export function activate(context: vscode.ExtensionContext) {
     getStatusBar: () => statusBar,
     getDecorationManager: () => decorationManager,
     refresh: refreshFromUser,
+    runEvents,
   };
 
   const run = registerRunCommands(context, deps);
   cancelCurrentRun = run.cancel;
-
   state.runProfile = controller.createRunProfile(
     'Run',
     vscode.TestRunProfileKind.Run,
@@ -254,21 +252,31 @@ export function activate(context: vscode.ExtensionContext) {
 
   context.subscriptions.push(
     vscode.workspace.onDidChangeConfiguration((e) => {
-      if (
-        e.affectsConfiguration('utplsql.discovery.languageIds') ||
-        e.affectsConfiguration('files.associations')
-      ) {
+      const actions = classifyConfigChange((section) => e.affectsConfiguration(section));
+      if (actions.invalidateConfigCache) invalidateConfigCache();
+      if (actions.rebuildCodeLens) {
         codeLensRegistration.dispose();
         codeLensRegistration = buildCodeLensRegistration();
       }
-      if (!e.affectsConfiguration('utplsql')) return;
-      invalidatePool();
-      // PRD-120 RF3: mudança de configuração invalida o memo da validação.
-      setupValidationDone = false;
-      setupValidationScheduled = false;
-      // PRD-102: trace/perf também são lidos por configuração.
-      setTraceEnabled(readConfig().trace);
-      perfProbe = buildPerfProbe();
+      if (actions.rebuildWatcher) {
+        watcherRegistration?.dispose();
+        watcherRegistration = createWatcherRegistration();
+      }
+      if (actions.refreshTree) queueMicrotask(() => void refresh());
+      if (actions.invalidatePool) invalidatePool();
+      if (actions.resetSetupValidation) {
+        // PRD-120 RF3: mudança de configuração invalida o memo da validação.
+        setupValidationDone = false;
+        setupValidationScheduled = false;
+      }
+      if (actions.recomputeTrace) {
+        // PRD-102: trace/perf também são lidos por configuração. Adia para
+        // depois do evento, quando o novo valor já é visível (PRD-130).
+        queueMicrotask(() => {
+          setTraceEnabled(readConfig().trace);
+          perfProbe = buildPerfProbe();
+        });
+      }
     }),
   );
 
@@ -301,52 +309,57 @@ export function activate(context: vscode.ExtensionContext) {
     }),
   );
 
-  const watchCfg = readConfig();
-  const watcher = vscode.workspace.createFileSystemWatcher(
-    buildWatcherGlob(
-      watchCfg.discoveryLanguageIds,
-      currentLanguageContributions(),
-      workspaceAssociations(),
-    ),
-  );
-  // PRD-103: debounce por URI + reindex incremental. Rajadas grandes caem no
-  // full refresh; tag/schema também (no próprio refresher).
-  const pendingWatcherActions = new Map<string, 'change' | 'delete'>();
-  const perKeyRefresh = createPerKeyDebouncer(
-    (key) => {
-      const action = pendingWatcherActions.get(key) ?? 'change';
-      pendingWatcherActions.delete(key);
-      if (perKeyRefresh.size > 8) {
-        perKeyRefresh.cancel();
-        pendingWatcherActions.clear();
+  function createWatcherRegistration(): vscode.Disposable {
+    const watchCfg = readConfig();
+    const watcher = vscode.workspace.createFileSystemWatcher(
+      buildWatcherGlob(
+        watchCfg.discoveryLanguageIds,
+        currentLanguageContributions(),
+        workspaceAssociations(),
+      ),
+    );
+    // PRD-103: debounce por URI + reindex incremental. Rajadas grandes caem no
+    // full refresh; tag/schema também (no próprio refresher).
+    const pendingWatcherActions = new Map<string, 'change' | 'delete'>();
+    const perKeyRefresh = createPerKeyDebouncer(
+      (key) => {
+        const action = pendingWatcherActions.get(key) ?? 'change';
+        pendingWatcherActions.delete(key);
+        if (perKeyRefresh.size > 8) {
+          perKeyRefresh.cancel();
+          pendingWatcherActions.clear();
+          void refresh();
+          return;
+        }
+        const uri = vscode.Uri.parse(key);
+        if (action === 'delete') void refresh.removeUri(uri);
+        else void refresh.refreshUri(uri);
+      },
+      () => readConfig().refreshDebounceMs,
+    );
+    const scheduleWatcher = (kind: 'change' | 'delete', uri: unknown): void => {
+      const key = (uri as { toString?: () => string } | undefined)?.toString?.();
+      // Harnesses antigos disparam o watcher sem URI: full refresh é o fallback.
+      if (!key) {
         void refresh();
         return;
       }
-      const uri = vscode.Uri.parse(key);
-      if (action === 'delete') void refresh.removeUri(uri);
-      else void refresh.refreshUri(uri);
-    },
-    () => readConfig().refreshDebounceMs,
-  );
-  const scheduleWatcher = (kind: 'change' | 'delete', uri: unknown): void => {
-    const key = (uri as { toString?: () => string } | undefined)?.toString?.();
-    // Harnesses antigos disparam o watcher sem URI: full refresh é o fallback.
-    if (!key) {
-      void refresh();
-      return;
-    }
-    pendingWatcherActions.set(key, kind);
-    perKeyRefresh.schedule(key);
-  };
-  watcher.onDidCreate((uri) => scheduleWatcher('change', uri));
-  watcher.onDidChange((uri) => scheduleWatcher('change', uri));
-  watcher.onDidDelete((uri) => scheduleWatcher('delete', uri));
-  context.subscriptions.push(watcher, {
-    dispose: () => {
-      perKeyRefresh.cancel();
-      pendingWatcherActions.clear();
-    },
-  });
+      pendingWatcherActions.set(key, kind);
+      perKeyRefresh.schedule(key);
+    };
+    watcher.onDidCreate((uri) => scheduleWatcher('change', uri));
+    watcher.onDidChange((uri) => scheduleWatcher('change', uri));
+    watcher.onDidDelete((uri) => scheduleWatcher('delete', uri));
+    return {
+      dispose: () => {
+        perKeyRefresh.cancel();
+        pendingWatcherActions.clear();
+        watcher.dispose();
+      },
+    };
+  }
+  let watcherRegistration = createWatcherRegistration();
+  context.subscriptions.push({ dispose: () => watcherRegistration.dispose() });
 
   // Auto-run on save (watch mode, PRD-50). Default `off`.
   const autoRunner = createAutoRunner(

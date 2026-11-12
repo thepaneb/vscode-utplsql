@@ -64,6 +64,13 @@ Campos:
   { "id": "publish-attestations", "prd": "PRD-146", "interno": true },
   { "id": "marketplace-listing", "prd": "PRD-147", "interno": true },
   { "id": "execution-state-reliability", "prd": "PRD-148", "interno": true },
-  { "id": "thick-full-pool-recovery", "prd": "PRD-150", "interno": true }
+  { "id": "thick-full-pool-recovery", "prd": "PRD-150", "interno": true },
+  { "id": "typed-errors-config", "prd": "PRD-130", "interno": true },
+  { "id": "wallet-connection-binding", "prd": "PRD-137", "interno": true },
+  { "id": "discovery-resilience-cache", "prd": "PRD-131", "interno": true },
+  { "id": "run-event-bus", "prd": "PRD-128", "interno": true },
+  { "id": "run-strategies", "prd": "PRD-129", "interno": true },
+  { "id": "tree-organization-strategies", "prd": "PRD-138", "interno": true },
+  { "id": "state-stores-lru", "prd": "PRD-139", "interno": true }
 ]
 ```

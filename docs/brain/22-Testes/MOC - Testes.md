@@ -39,6 +39,9 @@ SORT id ASC
 - [[TST - compilationDiagnosticsE2E.test.ts]] — `TST-compilationDiagnosticsE2E.test.ts`
 - [[TST - compileForDebugPool.test.ts]] — `TST-compileForDebugPool.test.ts`
 - [[TST - config.test.ts]] — `TST-config.test.ts`
+- [[TST - configCache.test.ts]] — `TST-configCache.test.ts`
+- [[TST - configReactivity.test.ts]] — `TST-configReactivity.test.ts`
+- [[TST - configValidation.test.ts]] — `TST-configValidation.test.ts`
 - [[TST - connectionProfiles.test.ts]] — `TST-connectionProfiles.test.ts`
 - [[TST - connectionRedaction.test.ts]] — `TST-connectionRedaction.test.ts`
 - [[TST - coverage.test.ts]] — `TST-coverage.test.ts`
@@ -62,6 +65,7 @@ SORT id ASC
 - [[TST - docsFidelity.test.ts]] — `TST-docsFidelity.test.ts`
 - [[TST - docsFidelityNls.test.ts]] — `TST-docsFidelityNls.test.ts`
 - [[TST - docsTables.test.ts]] — `TST-docsTables.test.ts`
+- [[TST - errors.test.ts]] — `TST-errors.test.ts`
 - [[TST - esbuildConfig.test.ts]] — `TST-esbuildConfig.test.ts`
 - [[TST - extension.test.ts]] — `TST-extension.test.ts`
 - [[TST - extensionActivation.test.ts]] — `TST-extensionActivation.test.ts`
@@ -80,6 +84,7 @@ SORT id ASC
 - [[TST - marketplaceImages.test.ts]] — `TST-marketplaceImages.test.ts`
 - [[TST - matching.test.ts]] — `TST-matching.test.ts`
 - [[TST - matrixConfig.test.ts]] — `TST-matrixConfig.test.ts`
+- [[TST - metadataCache.test.ts]] — `TST-metadataCache.test.ts`
 - [[TST - multiRootE2E.test.ts]] — `TST-multiRootE2E.test.ts`
 - [[TST - oracleCapabilities.test.ts]] — `TST-oracleCapabilities.test.ts`
 - [[TST - oracleClient.test.ts]] — `TST-oracleClient.test.ts`
@@ -93,6 +98,7 @@ SORT id ASC
 - [[TST - oracleRunner.test.ts]] — `TST-oracleRunner.test.ts`
 - [[TST - oracleRunnerReporters.test.ts]] — `TST-oracleRunnerReporters.test.ts`
 - [[TST - oracleRunnerTns.test.ts]] — `TST-oracleRunnerTns.test.ts`
+- [[TST - organizationStrategy.test.ts]] — `TST-organizationStrategy.test.ts`
 - [[TST - packageTarget.test.ts]] — `TST-packageTarget.test.ts`
 - [[TST - pathContainment.test.ts]] — `TST-pathContainment.test.ts`
 - [[TST - perf.test.ts]] — `TST-perf.test.ts`
@@ -111,12 +117,15 @@ SORT id ASC
 - [[TST - rerun.test.ts]] — `TST-rerun.test.ts`
 - [[TST - results.test.ts]] — `TST-results.test.ts`
 - [[TST - resultsUnreadable.test.ts]] — `TST-resultsUnreadable.test.ts`
+- [[TST - retry.test.ts]] — `TST-retry.test.ts`
 - [[TST - runByTagCommand.test.ts]] — `TST-runByTagCommand.test.ts`
 - [[TST - runCommands.test.ts]] — `TST-runCommands.test.ts`
 - [[TST - runCommandsExec.test.ts]] — `TST-runCommandsExec.test.ts`
+- [[TST - runEvents.test.ts]] — `TST-runEvents.test.ts`
 - [[TST - runExportCommand.test.ts]] — `TST-runExportCommand.test.ts`
 - [[TST - runner.test.ts]] — `TST-runner.test.ts`
 - [[TST - runRelated.test.ts]] — `TST-runRelated.test.ts`
+- [[TST - runStrategy.test.ts]] — `TST-runStrategy.test.ts`
 - [[TST - runTimeoutE2E.test.ts]] — `TST-runTimeoutE2E.test.ts`
 - [[TST - scaffold.test.ts]] — `TST-scaffold.test.ts`
 - [[TST - scaffoldCommands.test.ts]] — `TST-scaffoldCommands.test.ts`
@@ -130,6 +139,7 @@ SORT id ASC
 - [[TST - selectReporterCommand.test.ts]] — `TST-selectReporterCommand.test.ts`
 - [[TST - snippets.test.ts]] — `TST-snippets.test.ts`
 - [[TST - state.test.ts]] — `TST-state.test.ts`
+- [[TST - stateStore.test.ts]] — `TST-stateStore.test.ts`
 - [[TST - statusBar.test.ts]] — `TST-statusBar.test.ts`
 - [[TST - suiteParser.test.ts]] — `TST-suiteParser.test.ts`
 - [[TST - tagFilter.test.ts]] — `TST-tagFilter.test.ts`
@@ -148,6 +158,7 @@ SORT id ASC
 - [[TST - v014-tns.test.ts]] — `TST-v014-tns.test.ts`
 - [[TST - v016-features.test.ts]] — `TST-v016-features.test.ts`
 - [[TST - v017-features.test.ts]] — `TST-v017-features.test.ts`
+- [[TST - v021-features.test.ts]] — `TST-v021-features.test.ts`
 - [[TST - viewCoverage.test.ts]] — `TST-viewCoverage.test.ts`
 - [[TST - viewCoverageDenied.test.ts]] — `TST-viewCoverageDenied.test.ts`
 - [[TST - viewCoverageE2E.test.ts]] — `TST-viewCoverageE2E.test.ts`

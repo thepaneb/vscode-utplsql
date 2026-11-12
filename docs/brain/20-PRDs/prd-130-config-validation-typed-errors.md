@@ -2,14 +2,14 @@
 tipo: prd
 id: PRD-130
 aliases: [PRD-130]
-status: proposed
+status: completed
 titulo: "Validação de configuração e classes de erro tipadas"
 versao: "0.21.0"
 data: "2026-10-30"
 autor: "Gil Cleber Barboza"
 versao_titulo: "0.21.0 — Arquitetura, configuração e resiliência"
 verificado: "2026-10-30"
-regras: []
+regras: ["BR-CONN-025", "BR-ERR-001"]
 docs: ["CHANGELOG", "wiki/Architecture.md"]
 tags: [prd]
 ---
@@ -135,19 +135,27 @@ Nenhuma setting nova (validação interna de settings existentes).
 
 ## 12. Impacto no cérebro
 
-Criar regra `BR-ERR-*` ("erros de domínio são tipados e carregam chave de mensagem")
-com `prds: ["PRD-130"]`, `implementacao:` e `testes:`. Enquanto `proposed`,
-`regras: []`.
+Regras criadas: `BR-ERR-001` ("erros de domínio são tipados e carregam chave de
+mensagem") e `BR-CONN-025` ("configuração é validada, cacheada e invalidada em
+cada mudança"), com `prds: ["PRD-130"]`, `implementacao:` e `testes:`.
 
 ## Impacto nas docs
 
 `CHANGELOG` e `wiki/Architecture.md` descrevem classes de erro e validação.
+A wiki cita `src/errors.ts`, `src/configValidation.ts` e `src/configCache.ts`.
 
 ## Conexões
 
 <!-- brain:auto:start:conexoes -->
 - 🗺️ [[MOC - PRDs]]
+- 📐 Regras: [[BR-CONN-025 - Configuração é validada, cacheada e invalidada em cada mudança|BR-CONN-025]] · [[BR-ERR-001 - Erros de domínio são tipados e carregam chave de mensagem|BR-ERR-001]]
 - 🔗 PRDs relacionados: [[prd-112-error-handling-audit|PRD-112]]
-- 🔗 Mesma versão (0.21.0): [[prd-128-event-bus-internal|PRD-128]] · [[prd-129-orchestration-strategy|PRD-129]] · [[prd-131-discovery-resilience-cache|PRD-131]] · [[prd-137-wallet-password-binding|PRD-137]] · [[prd-138-organization-strategy-pattern|PRD-138]] · [[prd-139-state-store-slicing-lru|PRD-139]]
+- 🎯 RF1 — Validação de configuração → [[BR-CONN-025 - Configuração é validada, cacheada e invalidada em cada mudança|BR-CONN-025]]
+- 🎯 RF2 — Classes de erro → [[BR-ERR-001 - Erros de domínio são tipados e carregam chave de mensagem|BR-ERR-001]]
+- 🎯 RF3 — Mapeamento Oracle → [[BR-ERR-001 - Erros de domínio são tipados e carregam chave de mensagem|BR-ERR-001]]
+- 🎯 RF4 — Tratamento no runner → [[BR-ERR-001 - Erros de domínio são tipados e carregam chave de mensagem|BR-ERR-001]]
+- 🎯 RF5 — Testes → [[BR-CONN-025 - Configuração é validada, cacheada e invalidada em cada mudança|BR-CONN-025]]
+- 🎯 RNF1 — Sem nova dependência se possível (validador manual). → [[BR-CONN-025 - Configuração é validada, cacheada e invalidada em cada mudança|BR-CONN-025]]
+- 🎯 RNF2 — Cobertura ≥ thresholds. → [[BR-CONN-025 - Configuração é validada, cacheada e invalidada em cada mudança|BR-CONN-025]]
 - 🚀 ⬅️ release anterior: [[prd-150-thick-full-true-pool-recovery|PRD-150 (0.20.1)]] · ➡️ próxima release: [[prd-88-locale-aware-formatting|PRD-88 (0.22.0)]]
 <!-- brain:auto:end -->

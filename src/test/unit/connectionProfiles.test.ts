@@ -81,6 +81,8 @@ function makeGlobal(over: Partial<UtConfig> = {}): UtConfig {
     organization: 'file',
     organizationSchemaPattern: 'db/{schema}/**',
     discoverySource: 'auto',
+    discoveryRetryAttempts: 2,
+    discoveryCacheTtlSeconds: 30,
     discoveryLanguageIds: ['plsql', 'sql', 'oracle-sql'],
     refreshDebounceMs: 300,
     trace: false,
@@ -761,13 +763,30 @@ test('setWalletPassword/clearWalletPassword: grava no SecretStorage e limpa', as
   const { map, storage } = fakeSecrets();
   initSecretStorage(storage);
   try {
-    await setWalletPassword('w1', 'wpass');
-    assert.strictEqual(map.get('utplsql.wallet.w1'), 'wpass');
-    assert.strictEqual(getWalletPassword('w1'), 'wpass');
+    await setWalletPassword('w1', 'u@h:1521/s', 'wpass');
+    assert.deepStrictEqual(JSON.parse(map.get('utplsql.wallet.w1') ?? ''), {
+      connection: 'u@h:1521/s',
+      password: 'wpass',
+    });
+    assert.strictEqual(getWalletPassword('w1', 'u@h:1521/s'), 'wpass');
 
     await clearWalletPassword('w1');
-    assert.strictEqual(getWalletPassword('w1'), undefined);
+    assert.strictEqual(getWalletPassword('w1', 'u@h:1521/s'), undefined);
     assert.ok(!map.has('utplsql.wallet.w1'));
+  } finally {
+    __resetConfigValues();
+  }
+});
+
+test('getWalletPassword: descarta a senha quando a connection do perfil muda', async () => {
+  __resetConfigValues();
+  const { storage } = fakeSecrets();
+  initSecretStorage(storage);
+  try {
+    await setWalletPassword('wm', 'u@h1:1521/s', 'wpass');
+    assert.strictEqual(getWalletPassword('wm', 'u@h2:1521/s'), undefined);
+    // Depois do descarte, nem a connection original recupera a senha.
+    assert.strictEqual(getWalletPassword('wm', 'u@h1:1521/s'), undefined);
   } finally {
     __resetConfigValues();
   }
@@ -778,10 +797,40 @@ test('hydrateProfilePasswords: restaura a senha da wallet', async () => {
   const { storage } = fakeSecrets();
   initSecretStorage(storage);
   __setConfigValue('profiles', [{ id: 'whyd-1', name: 'DEV', connection: 'u@h:1521/s' }]);
-  await storage.store('utplsql.wallet.whyd-1', 'wpass');
+  await storage.store(
+    'utplsql.wallet.whyd-1',
+    JSON.stringify({ connection: 'u@h:1521/s', password: 'wpass' }),
+  );
   try {
     await hydrateProfilePasswords();
-    assert.strictEqual(getWalletPassword('whyd-1'), 'wpass');
+    assert.strictEqual(getWalletPassword('whyd-1', 'u@h:1521/s'), 'wpass');
+  } finally {
+    __resetConfigValues();
+  }
+});
+
+test('hydrateProfilePasswords: migra wallet legada e descarta vínculo divergente', async () => {
+  __resetConfigValues();
+  const { map, storage } = fakeSecrets();
+  initSecretStorage(storage);
+  __setConfigValue('profiles', [
+    { id: 'wlegacy', name: 'DEV', connection: 'u@h:1521/s' },
+    { id: 'wmismatch', name: 'PROD', connection: 'u@outro:1521/s' },
+  ]);
+  await storage.store('utplsql.wallet.wlegacy', 'legacy-pass');
+  await storage.store(
+    'utplsql.wallet.wmismatch',
+    JSON.stringify({ connection: 'u@antigo:1521/s', password: 'old-pass' }),
+  );
+  try {
+    await hydrateProfilePasswords();
+    assert.strictEqual(getWalletPassword('wlegacy', 'u@h:1521/s'), 'legacy-pass');
+    assert.deepStrictEqual(JSON.parse(map.get('utplsql.wallet.wlegacy') ?? ''), {
+      connection: 'u@h:1521/s',
+      password: 'legacy-pass',
+    });
+    assert.strictEqual(getWalletPassword('wmismatch', 'u@outro:1521/s'), undefined);
+    assert.ok(!map.has('utplsql.wallet.wmismatch'));
   } finally {
     __resetConfigValues();
   }
@@ -791,7 +840,7 @@ test('mergeProfileConfig: propaga walletLocation e walletPassword do perfil', as
   __resetConfigValues();
   const { storage } = fakeSecrets();
   initSecretStorage(storage);
-  await setWalletPassword('mw1', 'wpass');
+  await setWalletPassword('mw1', 'u@h:1521/s', 'wpass');
   try {
     const merged = mergeProfileConfig(makeGlobal(), {
       id: 'mw1',

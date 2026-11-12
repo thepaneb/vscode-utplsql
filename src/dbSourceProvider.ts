@@ -1,5 +1,7 @@
 import * as vscode from 'vscode';
 import { readConfig, resolveConnectionNoPrompt } from './config';
+import { LruMap } from './lru';
+import { clearOracleMetadataCache } from './metadataCache';
 import { beginOracleActivity, ensurePool, parseConnString } from './oracleRunner';
 import { LEGACY_DB_SCHEME, parseSourceUri, VIRTUAL_SOURCE_SCHEME } from './virtualSource';
 
@@ -21,7 +23,8 @@ export {
  *
  * Tudo read-only; nunca grava fora do workspace.
  */
-const cache = new Map<string, string>();
+const DB_SOURCE_CACHE_MAX_ENTRIES = 50;
+const cache = new LruMap<string, string>(DB_SOURCE_CACHE_MAX_ENTRIES);
 
 function cell(row: unknown, key: string): string {
   if (Array.isArray(row)) return String(row[0] ?? '');
@@ -219,4 +222,5 @@ export function registerDbSourceProvider(context: vscode.ExtensionContext): void
 /** Limpa o cache do provider (ex.: após refresh da árvore). */
 export function clearDbSourceCache(): void {
   cache.clear();
+  clearOracleMetadataCache();
 }

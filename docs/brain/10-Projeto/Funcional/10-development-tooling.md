@@ -149,7 +149,7 @@ extensão normalmente.
 
 ```
 src/test/
-├── unit/                       (88 arquivos .test.ts + setup.ts)
+├── unit/                       (109 arquivos .test.ts + setup.ts)
 │   ├── cobertura / codelens / config / connectionProfiles / coverage
 │   ├── dbSourceProvider / dbmsDebug / debounce / debugger / decorations
 │   ├── discovery / i18n / junit / logger / matching / oracleClient / oracleRunner
@@ -158,7 +158,7 @@ src/test/
 │   ├── scriptRunner / selectReporterCommand / state / statusBar / suiteParser
 │   ├── testTree / viewCoverage
 │   └── setup.ts
-├── integration/                (27 arquivos .test.ts; banco via describeDB)
+├── integration/                (31 arquivos .test.ts; banco via describeDB)
 │   ├── extension.test.ts
 │   ├── dbPaths / schemaRun / debuggerE2E / debuggerStandaloneFn
 │   ├── thickMode / oracleCapabilities / prd70-sqlplus / v012-features / helpers.ts
@@ -256,12 +256,14 @@ Integração com **Oracle real** (`.github/workflows/integration.yml`):
   **19ee smoke** quando `ORACLE_AUTH_USER`/`ORACLE_AUTH_TOKEN` estão nos secrets
 - **dispatch**: `smoke` (23free smoke), `full` (23free full), `matrix`
   (18c/21c/23free full), `matrix-smoke` (18c/21c smoke, validação rápida do
-  eixo da matriz), `19ee` (smoke LTS sob demanda, requer credenciais EE) e
-  `thick-full`/`thick-full-11g` (experimentais: 23free/11g com `--thick-full`;
-  usam `continue-on-error` e expõem o log)
+  eixo da matriz), `matrix-thick` (18c/21c/23free thick smoke), `19ee` (smoke
+  LTS sob demanda, requer credenciais EE) e `thick-full`/`thick-full-11g`
+  (experimentais: 23free/11g com `--thick-full`; usam `continue-on-error` e
+  expõem o log)
 - **thick** (nightly/dispatch): `--thick` no 23free e no **11g** com
   **Instant Client** (basiclite) baixado no runner e `libaio`; valida
-  `thickMode`/`thickLegacyE2E`
+  `thickMode`/`thickLegacyE2E`. O **thick-full** do 23free roda no nightly;
+  `matrix-thick` roda semanalmente às 05:00 de domingo
 - O extension host roda sob `xvfb-run`; o Oracle sobe via `docker compose`
   (`docker/db-matrix/compose.yaml`) e é preparado pelo `bootstrap.sh` (UT3 + grants + fixtures)
 - Nightly e semanal usam grupos de **concorrência** separados (o cron entra no

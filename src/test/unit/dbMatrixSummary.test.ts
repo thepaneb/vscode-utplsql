@@ -89,6 +89,7 @@ test('db-matrix summary: entry não inclui connection string', () => {
   const data = entry({
     label: '23free',
     image: 'database/free:23.26.3.0',
+    client: 'thick',
     utplsql: 'v.3.2.3',
     status: 'passed',
     log: '/tmp/23free.log',
@@ -98,6 +99,7 @@ test('db-matrix summary: entry não inclui connection string', () => {
   const serialized = JSON.stringify(data);
   assert.ok(!serialized.includes('UT3/'));
   assert.ok(!serialized.includes('password'));
+  assert.strictEqual(data.client, 'thick');
   assert.strictEqual(data.tests, 120);
   assert.strictEqual(data.pass, 109);
   assert.strictEqual(data.skipped, 11);
@@ -108,6 +110,7 @@ test('db-matrix summary: render gera tabela Markdown', () => {
   const md = renderSummary([
     {
       label: '23free',
+      client: 'thick',
       utplsql: 'v.3.2.3',
       status: 'passed',
       tests: 120,
@@ -118,8 +121,8 @@ test('db-matrix summary: render gera tabela Markdown', () => {
       log: '/tmp/23free.log',
     },
   ]);
-  assert.match(md, /\| Banco \| utPLSQL \| Status \|/);
-  assert.match(md, /\| 23free \| v\.3\.2\.3 \| passed \| 120 \| 109 \| 0 \| 11 \| 42s \|/);
+  assert.match(md, /\| Banco \| Client \| utPLSQL \| Status \|/);
+  assert.match(md, /\| 23free \| thick \| v\.3\.2\.3 \| passed \| 120 \| 109 \| 0 \| 11 \| 42s \|/);
 });
 
 test('db-matrix summary: escapeCell escapa barra invertida, pipe e newline', () => {
@@ -154,7 +157,7 @@ test('db-matrix summary: render vazio e campos desconhecidos', () => {
       log: 'l',
     },
   ]);
-  assert.match(md, /x \| v \| failed \| \? \| \? \| \? \| \? \| 0s/);
+  assert.match(md, /x \| thin \| v \| failed \| \? \| \? \| \? \| \? \| 0s/);
 });
 
 test('db-matrix summary: CLI sem comando/desconhecido falha com uso', () => {

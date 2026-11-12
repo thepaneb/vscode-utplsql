@@ -37,8 +37,9 @@ from the database. See [Tree Organization](Tree-organization).
 | `schema` | Schema > Package > Suite > Test |
 | `tag` | Tag > Suite > Test (from `%tags`; a suite with several tags appears under each tag) |
 
-Suites and tests have stable ids (`suite:<pkg>`, `test:<pkg>.<proc>`), which keeps
-results consistent across both modes. Set `utplsql.organization` to switch.
+Suites and tests have stable ids: `suite:<pkg>`/`test:<pkg>.<proc>` in file/tag
+modes and `suite:<schema>:<pkg>`/`test:<schema>:<pkg>.<proc>` in schema mode,
+which keeps results consistent across both modes. Set `utplsql.organization` to switch.
 
 ## Run profiles
 

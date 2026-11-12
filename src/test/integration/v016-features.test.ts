@@ -49,7 +49,8 @@ function writeFixture(name: string, content: string): string {
 }
 
 function removeFixtures(): void {
-  fs.rmSync(TMP_DIR, { recursive: true, force: true });
+  // Windows pode manter um handle do watcher/editor aberto por alguns ms.
+  fs.rmSync(TMP_DIR, { recursive: true, force: true, maxRetries: 5, retryDelay: 100 });
 }
 
 function hasConnection(): boolean {
@@ -100,8 +101,8 @@ describe('0.16.0 — comandos e scaffold (sem banco)', () => {
         ['is_valid', 'total'],
       );
     } finally {
-      fs.rmSync(prodFile, { force: true });
-      fs.rmSync(generated, { force: true });
+      fs.rmSync(prodFile, { force: true, maxRetries: 5, retryDelay: 100 });
+      fs.rmSync(generated, { force: true, maxRetries: 5, retryDelay: 100 });
     }
   });
 
@@ -131,8 +132,8 @@ describe('0.16.0 — comandos e scaffold (sem banco)', () => {
         'não deveria oferecer scaffold numa spec ut_*',
       );
     } finally {
-      fs.rmSync(prodFile, { force: true });
-      fs.rmSync(specFile, { force: true });
+      fs.rmSync(prodFile, { force: true, maxRetries: 5, retryDelay: 100 });
+      fs.rmSync(specFile, { force: true, maxRetries: 5, retryDelay: 100 });
     }
   });
 });
@@ -188,8 +189,8 @@ describeDB('0.16.0 — Run Related Tests (integração com banco)', () => {
 
       await vscode.commands.executeCommand('utplsql.runRelated');
     } finally {
-      fs.rmSync(prodFile, { force: true });
-      fs.rmSync(specFile, { force: true });
+      fs.rmSync(prodFile, { force: true, maxRetries: 5, retryDelay: 100 });
+      fs.rmSync(specFile, { force: true, maxRetries: 5, retryDelay: 100 });
       await dbc
         .execute(
           `BEGIN EXECUTE IMMEDIATE 'DROP PACKAGE ${SPEC_PKG}'; EXCEPTION WHEN OTHERS THEN NULL; END;`,
@@ -210,7 +211,7 @@ describeDB('0.16.0 — Run Related Tests (integração com banco)', () => {
 
       await vscode.commands.executeCommand('utplsql.runRelated');
     } finally {
-      fs.rmSync(orphan, { force: true });
+      fs.rmSync(orphan, { force: true, maxRetries: 5, retryDelay: 100 });
     }
   });
 });

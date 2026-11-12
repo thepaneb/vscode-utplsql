@@ -215,8 +215,11 @@ test('setWalletPassword: salva a senha da wallet no perfil ativo', async () => {
 
   await commands.__getRegisteredCommand('utplsql.setWalletPassword')?.();
 
-  assert.strictEqual(map.get('utplsql.wallet.w1'), 'wallet-pass');
-  assert.strictEqual(getWalletPassword('w1'), 'wallet-pass');
+  assert.deepStrictEqual(JSON.parse(map.get('utplsql.wallet.w1') ?? ''), {
+    connection: 'u@//h:1521/s',
+    password: 'wallet-pass',
+  });
+  assert.strictEqual(getWalletPassword('w1', 'u@//h:1521/s'), 'wallet-pass');
   assert.ok(__getInformationMessages().some((m) => m.includes('DEV')));
 });
 
@@ -227,12 +230,12 @@ test('setWalletPassword: senha vazia limpa a wallet', async () => {
   initSecretStorage(storage);
   __setConfigValue('profiles', [{ id: 'w2', name: 'DEV', connection: 'u@//h:1521/s' }]);
   __setConfigValue('activeProfile', 'w2');
-  await setWalletPassword('w2', 'old');
+  await setWalletPassword('w2', 'u@//h:1521/s', 'old');
   __setInputBoxResults(['']);
 
   await commands.__getRegisteredCommand('utplsql.setWalletPassword')?.();
 
-  assert.strictEqual(getWalletPassword('w2'), undefined);
+  assert.strictEqual(getWalletPassword('w2', 'u@//h:1521/s'), undefined);
   assert.ok(!map.has('utplsql.wallet.w2'));
 });
 
@@ -246,5 +249,5 @@ test('setWalletPassword: cancelar não altera a wallet', async () => {
 
   await commands.__getRegisteredCommand('utplsql.setWalletPassword')?.();
 
-  assert.strictEqual(getWalletPassword('w3'), undefined);
+  assert.strictEqual(getWalletPassword('w3', 'u@//h:1521/s'), undefined);
 });

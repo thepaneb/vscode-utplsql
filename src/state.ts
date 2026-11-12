@@ -1,36 +1,24 @@
 import type * as vscode from 'vscode';
 import type { SuiteFile } from './discovery';
 import type { TestStatus } from './junit';
+import { CoverageStore } from './stateStore/coverageStore';
+import type { TestLineResult } from './stateStore/persisted';
+import { RunSnapshot } from './stateStore/runSnapshot';
+import { TestItemIndex } from './stateStore/testItemIndex';
 import type { ItemMeta } from './types';
 
-export interface TestLineResult {
-  status: TestStatus;
-  message?: string;
-  /** Duração do teste (ms), quando o reporter informa (PRD-56). */
-  durationMs?: number;
-  /** Timestamp do resultado (ms) — PRD-56. */
-  ts?: number;
-}
+export { COVERAGE_STORE_MAX_ENTRIES } from './stateStore/coverageStore';
+export type { PersistedResult, PersistedRun, TestLineResult } from './stateStore/persisted';
 
-/** Resultado serializável de um teste no snapshot do último run (PRD-56). */
-export interface PersistedResult {
-  status: TestStatus;
-  message?: string;
-  durationMs?: number;
-  ts: number;
-}
-
-/** Snapshot do último run gravado no `workspaceState`. `v` versiona o formato. */
-export interface PersistedRun {
-  v: 1;
-  ts: number;
-  items: Record<string, PersistedResult>;
-}
-
-/** Chave do snapshot — por workspace, então outro workspace não vê (PRD-56 RNF2). */
-export const PERSIST_KEY = 'utplsql.lastRunSnapshot';
-/** Teto de caracteres por mensagem persistida (PRD-56 RNF1). */
-export const PERSIST_MESSAGE_LIMIT = 500;
+/** Reexportado para compatibilidade dos call sites/testes (PRD-56/PRD-139). */
+export {
+  PERSIST_KEY,
+  PERSIST_MAX_AGE_DAYS,
+  PERSIST_MAX_ENTRIES,
+  PERSIST_MESSAGE_LIMIT,
+  truncateMessage,
+} from './stateStore/persisted';
+export type { LastRunState } from './stateStore/runSnapshot';
 
 /** `(850ms)` / `(1.2s)` para o label do teste (PRD-56 RF4). */
 export function formatDuration(durationMs: number): string {
@@ -55,30 +43,10 @@ export function withDurationSuffix(
   return `${clean} (${formatDuration(durationMs)})`;
 }
 
-/** Trunca mensagens longas antes de persistir (PRD-56 RNF1). */
-export function truncateMessage(message: string, limit = PERSIST_MESSAGE_LIMIT): string {
-  return message.length <= limit ? message : `${message.slice(0, limit)}…`;
-}
-
-export interface LastRunState {
-  type: 'all' | 'file' | 'suite' | 'test';
-  uri?: vscode.Uri;
-  packageName?: string;
-  procName?: string;
-  coverage: boolean;
-}
-
 export class TestStateManager {
-  private meta = new WeakMap<vscode.TestItem, ItemMeta>();
-  private coverageStore = new Map<string, vscode.FileCoverageDetail[]>();
-  private lastResults = new Map<string, TestLineResult>();
-  private lastRun: LastRunState | undefined;
-  private lastFailedItems: vscode.TestItem[] = [];
-  private suiteMap = new Map<string, vscode.TestItem>();
-
-  cachedItems: vscode.TestItem[] = [];
-  runProfile?: vscode.TestRunProfile;
-  coverageProfile?: vscode.TestRunProfile;
+  private readonly coverageStore = new CoverageStore();
+  private readonly index = new TestItemIndex();
+  private readonly snapshot = new RunSnapshot();
 
   /** Modo global de cobertura da sessão (PRD-54). Não persiste. */
   coverageAlways = false;
@@ -86,25 +54,44 @@ export class TestStateManager {
     this.coverageAlways = value;
   }
 
+  get cachedItems(): vscode.TestItem[] {
+    return this.index.cachedItems;
+  }
+  set cachedItems(items: vscode.TestItem[]) {
+    this.index.cachedItems = items;
+  }
+
+  get discoveredFiles(): SuiteFile[] {
+    return this.index.discoveredFiles;
+  }
+  set discoveredFiles(files: SuiteFile[]) {
+    this.index.discoveredFiles = files;
+  }
+
+  runProfile?: vscode.TestRunProfile;
+  coverageProfile?: vscode.TestRunProfile;
+
   setMeta(item: vscode.TestItem, m: ItemMeta): void {
-    this.meta.set(item, m);
+    this.index.setMeta(item, m);
   }
   getMeta(item: vscode.TestItem): ItemMeta | undefined {
-    return this.meta.get(item);
+    return this.index.getMeta(item);
   }
 
   setCoverage(uriStr: string, details: vscode.FileCoverageDetail[]): void {
     this.coverageStore.set(uriStr, details);
   }
   getCoverage(uriStr: string): vscode.FileCoverageDetail[] {
-    return this.coverageStore.get(uriStr) ?? [];
+    return this.coverageStore.get(uriStr);
   }
   clearCoverage(): void {
     this.coverageStore.clear();
   }
+  get coverageSize(): number {
+    return this.coverageStore.size;
+  }
 
   extraReporter?: string;
-
   setExtraReporter(name: string): void {
     this.extraReporter = name;
   }
@@ -114,227 +101,121 @@ export class TestStateManager {
     return r;
   }
 
+  // ── Persistência do último resultado (PRD-56/PRD-139) ─────────────────
+
+  attachMemento(memento: vscode.Memento): void {
+    this.snapshot.attachMemento(memento);
+  }
+  persist(): void {
+    this.snapshot.persist();
+  }
+  restore(): number {
+    return this.snapshot.restore();
+  }
+
   setLastResults(results: Map<string, TestLineResult>): void {
-    this.lastResults = results;
+    this.snapshot.setLastResults(results);
   }
   getLastResults(): Map<string, TestLineResult> {
-    return this.lastResults;
+    return this.snapshot.getLastResults();
   }
   clearLastResults(): void {
-    this.lastResults.clear();
+    this.snapshot.clearLastResults();
   }
-
-  // ── Persistência do último resultado (PRD-56) ─────────────────────────
-
-  private memento?: vscode.Memento;
-
-  /**
-   * Recebe o `Memento` por **setter** (não pelo construtor): evita mexer na
-   * assinatura usada por toda a suíte de testes.
-   */
-  attachMemento(memento: vscode.Memento): void {
-    this.memento = memento;
-  }
-
-  /** Grava o snapshot do último run (chamado ao fim de cada execução). */
-  persist(): void {
-    if (!this.memento) return;
-    const items: Record<string, PersistedResult> = {};
-    for (const [id, r] of this.lastResults) {
-      items[id] = {
-        status: r.status,
-        ...(r.message ? { message: truncateMessage(r.message) } : {}),
-        ...(r.durationMs !== undefined ? { durationMs: r.durationMs } : {}),
-        ts: r.ts ?? Date.now(),
-      };
-    }
-    const snapshot: PersistedRun = { v: 1, ts: Date.now(), items };
-    void this.memento.update(PERSIST_KEY, snapshot);
-  }
-
-  /**
-   * Restaura o snapshot do workspace. Formato desconhecido/ inválido é
-   * descartado silenciosamente (RF1/RNF2). Devolve quantos resultados voltaram.
-   */
-  restore(): number {
-    const raw = this.memento?.get<PersistedRun>(PERSIST_KEY);
-    if (raw?.v !== 1 || !raw.items) return 0;
-    const map = new Map<string, TestLineResult>();
-    for (const [id, r] of Object.entries(raw.items)) {
-      if (!r || typeof r.ts !== 'number' || !r.status) continue;
-      map.set(id, {
-        status: r.status,
-        ...(r.message ? { message: r.message } : {}),
-        ...(r.durationMs !== undefined ? { durationMs: r.durationMs } : {}),
-        ts: r.ts,
-      });
-    }
-    this.lastResults = map;
-    return map.size;
+  hasFailedResults(): boolean {
+    return this.snapshot.hasFailedResults();
   }
 
   /**
    * Reconstrói `lastFailedItems` a partir do snapshot, mapeando ids → itens já
-   * presentes na árvore (só faz sentido **depois** do primeiro refresh).
-   * Ids sem item correspondente são ignorados (teste removido).
+   * presentes na árvore. Ids sem item correspondente são ignorados.
    */
   restoreLastFailed(): vscode.TestItem[] {
     const out: vscode.TestItem[] = [];
-    for (const [id, r] of this.lastResults) {
+    for (const [id, r] of this.getLastResults()) {
       if (r.status !== 'failed' && r.status !== 'error') continue;
-      const item = this.getItem(id) ?? this.findTestByLegacyId(id);
+      const item = this.getItem(id) ?? this.index.findTestByLegacyId(id);
       if (item) out.push(item);
     }
-    this.lastFailedItems = out;
+    this.setLastFailedItems(out);
     return out;
   }
 
-  /** Há resultado `failed`/`error` no snapshot, mesmo sem itens materializados? */
-  hasFailedResults(): boolean {
-    for (const r of this.lastResults.values()) {
-      if (r.status === 'failed' || r.status === 'error') return true;
-    }
-    return false;
+  setLastRun(state: import('./stateStore/runSnapshot').LastRunState): void {
+    this.snapshot.setLastRun(state);
   }
-
-  /**
-   * Resolve um id de resultado antigo (`test:<pkg>.<proc>`) ou de outro schema
-   * para o item atual por package/proc (PRD-148 RF4/RF7).
-   */
-  private findTestByLegacyId(id: string): vscode.TestItem | undefined {
-    if (!id.startsWith('test:')) return undefined;
-    const base = id.slice('test:'.length).split('#')[0] ?? '';
-    const dot = base.indexOf('.');
-    if (dot <= 0) return undefined;
-    const packagePart = base.slice(0, dot);
-    const pkg = packagePart.slice(packagePart.lastIndexOf(':') + 1).toLowerCase();
-    const proc = base.slice(dot + 1).toLowerCase();
-    for (const [, item] of this.itemMap) {
-      const meta = this.getMeta(item);
-      if (meta?.kind !== 'test') continue;
-      if (meta.packageName.toLowerCase() === pkg && meta.procName.toLowerCase() === proc)
-        return item;
-    }
-    return undefined;
-  }
-
-  setLastRun(state: LastRunState): void {
-    this.lastRun = state;
-  }
-  getLastRun(): LastRunState | undefined {
-    return this.lastRun;
+  getLastRun(): import('./stateStore/runSnapshot').LastRunState | undefined {
+    return this.snapshot.getLastRun();
   }
   setLastFailedItems(items: vscode.TestItem[]): void {
-    this.lastFailedItems = items;
+    this.snapshot.setLastFailedItems(items);
   }
   getLastFailedItems(): vscode.TestItem[] {
-    return this.lastFailedItems;
+    return this.snapshot.getLastFailedItems();
   }
 
   setSuiteItem(id: string, item: vscode.TestItem): void {
-    this.suiteMap.set(id, item);
+    this.index.setSuiteItem(id, item);
   }
   getSuiteItem(id: string): vscode.TestItem | undefined {
-    return this.suiteMap.get(id);
+    return this.index.getSuiteItem(id);
   }
-
-  /** Lookup por package com schema opcional (modo schema — PRD-148 RF7). */
   getSuiteItemFor(packageName: string, schema?: string): vscode.TestItem | undefined {
-    const pkg = packageName.toLowerCase();
-    if (schema) {
-      const exact = this.suiteMap.get(`suite:${schema}:${pkg}`);
-      if (exact) return exact;
-    }
-    return this.suiteMap.get(`suite:${pkg}`);
+    return this.index.getSuiteItemFor(packageName, schema);
   }
-
-  /** Lookup pelo URI do arquivo, desambiguando owners no modo schema. */
   findSuiteItemForUri(uri: vscode.Uri, packageName?: string): vscode.TestItem | undefined {
-    const target = uri.fsPath.replace(/\\/g, '/').toLowerCase();
-    for (const item of this.suiteMap.values()) {
-      const meta = this.getMeta(item);
-      if (meta?.kind !== 'suite') continue;
-      if (packageName && meta.packageName.toLowerCase() !== packageName.toLowerCase()) continue;
-      if (meta.uri.fsPath.replace(/\\/g, '/').toLowerCase() === target) return item;
-    }
-    return packageName ? this.getSuiteItemFor(packageName) : undefined;
+    return this.index.findSuiteItemForUri(uri, packageName);
   }
   clearSuiteMap(): void {
-    this.suiteMap.clear();
+    this.index.clearSuiteMap();
   }
 
-  /** Mapa id → item para todos os nós da árvore (file e schema). */
-  private itemMap = new Map<string, vscode.TestItem>();
   setItem(id: string, item: vscode.TestItem): void {
-    this.itemMap.set(id, item);
+    this.index.setItem(id, item);
   }
   getItem(id: string): vscode.TestItem | undefined {
-    return this.itemMap.get(id);
+    return this.index.getItem(id);
   }
   clearItemMap(): void {
-    this.itemMap.clear();
+    this.index.clearItemMap();
   }
 
-  // ── Resolução lazy da árvore (PRD-75) ────────────────────────────────
-
-  private resolvedNodes = new Set<string>();
   markResolved(id: string): void {
-    this.resolvedNodes.add(id);
+    this.index.markResolved(id);
   }
   isResolved(id: string): boolean {
-    return this.resolvedNodes.has(id);
+    return this.index.isResolved(id);
   }
   clearResolved(): void {
-    this.resolvedNodes.clear();
+    this.index.clearResolved();
   }
 
-  /** Suites descobertas por `discoverWorkspace` (antes da resolução lazy). */
-  discoveredFiles: SuiteFile[] = [];
   setDiscoveredFiles(files: SuiteFile[]): void {
-    this.discoveredFiles = files;
+    this.index.setDiscoveredFiles(files);
   }
-
-  private schemaSuites = new Map<string, SuiteFile[]>();
   setSchemaSuites(schema: string, suites: SuiteFile[]): void {
-    this.schemaSuites.set(schema, suites);
+    this.index.setSchemaSuites(schema, suites);
   }
   getSchemaSuites(schema: string): SuiteFile[] | undefined {
-    return this.schemaSuites.get(schema);
+    return this.index.getSchemaSuites(schema);
   }
   clearSchemaSuites(): void {
-    this.schemaSuites.clear();
+    this.index.clearSchemaSuites();
   }
-
-  private suiteFiles = new Map<string, SuiteFile>();
   setSuiteFile(id: string, suite: SuiteFile): void {
-    this.suiteFiles.set(id, suite);
+    this.index.setSuiteFile(id, suite);
   }
   getSuiteFile(id: string): SuiteFile | undefined {
-    return this.suiteFiles.get(id);
+    return this.index.getSuiteFile(id);
   }
   clearSuiteFiles(): void {
-    this.suiteFiles.clear();
+    this.index.clearSuiteFiles();
   }
 
-  /**
-   * Remove dos mapas os itens/suites de um URI (PRD-103 incremental). O nó do
-   * controller é removido pelo refresher; aqui fica o estado compartilhado.
-   */
   removeItemsByUri(uri: string): void {
-    for (const [id, item] of this.itemMap) {
-      if (this.meta.get(item)?.uri?.toString() === uri) {
-        this.itemMap.delete(id);
-        this.resolvedNodes.delete(id);
-      }
-    }
-    for (const [id, item] of this.suiteMap) {
-      if (this.meta.get(item)?.uri?.toString() === uri) this.suiteMap.delete(id);
-    }
-    for (const [id, suite] of this.suiteFiles) {
-      if (suite.uri.toString() === uri) this.suiteFiles.delete(id);
-    }
-    this.cachedItems = this.cachedItems.filter(
-      (item) => this.meta.get(item)?.uri?.toString() !== uri,
-    );
+    this.index.removeItemsByUri(uri);
   }
 }
+
+// Reexporta tipos usados por call sites antigos.
+export type { TestStatus };

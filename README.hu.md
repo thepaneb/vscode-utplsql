@@ -65,7 +65,11 @@ Futtasd és debugold az **utPLSQL** (Oracle PL/SQL) teszteket közvetlenül a VS
 ### Kapcsolatok és biztonság
 
 - 🔌 **Kapcsolati profilok** — több környezet (DEV/TEST/PROD) mentése és váltása köztük profil-specifikus beállításokkal, az állapotsorból vagy a parancspalettáról.
-- 🔐 **TNS thin módban + wallet** — a `utplsql.connections.tnsAdminPath` feloldja a `tnsnames.ora` aliasokat a thin driverben (fallback: SQL Developer/`TNS_ADMIN`); a profil `walletLocation` mezője és a `utPLSQL: Set wallet password` a wallet jelszavát a SecretStorage-ban tartja.
+- 🔐 **TNS thin módban + wallet** — a `utplsql.connections.tnsAdminPath` feloldja a `tnsnames.ora` aliasokat a thin driverben (fallback: SQL Developer/`TNS_ADMIN`); a profil `walletLocation` mezője és a `utPLSQL: Set wallet password` a wallet jelszavát a SecretStorage-ban tartja; A wallet titka a profil `connection` értékéhez van kötve; ennek módosítása eldobja a tárolt jelszót (a régi titkok az első olvasáskor migrálódnak).
+- ⚡ **Növekményes újraindexelés** — file módban a watcher URI-nként debounce-ol, és csak a változott suite-ot indexeli újra; a tag/schema és a nagy sorozatok full refresh-re esnek vissza (PRD-103).
+- 🧹 **Hibernált pool tisztítása** — a `utplsql.oraclePoolCloseAfterRun` lezárja a tétlen Oracle pool kapcsolatokat az utolsó run/coverage/export/discovery után; kapcsold ki, ha melegen akarod tartani a poolt.
+- 🪶 **Könnyű aktiválás** — a kiterjesztés csak PL/SQL workspace-eknél aktiválódik; a setup ellenőrzés lusta, memoizált, és aktiváláskor soha nem nyit Oracle-t.
+- 🔎 **Trace és teljesítmény** — opt-in `utplsql.trace` és `utplsql.perf.enabled`/`perf.reportFile` méri a discovery, tree build, run, polling és XML parsing fázisokat; alapból ki, és soha nem naplóz credentialt.
 - 🔒 **Kapcsolatok biztonsági megerősítése** — a kapcsolati beállítások `machine`-scopedok, a bővítmény le van tiltva nem megbízható munkaterületeken, és a profil jelszava a kapcsolathoz van kötve.
 - 🔧 **Beállítás-diagnosztika** — proaktív ellenőrzés: kapcsolat, jogosultságok és verzió, gyorsjavítással.
 
@@ -163,6 +167,8 @@ A bővítmény közvetlenül Oracle-on keresztül csatlakozik, beolvassa a ripor
 | `utplsql.sourcePath` | `install` | Az éles kód mappája (a lefedettség fájlokhoz rendeléséhez). |
 | `utplsql.includePatterns` | `["**/*.pks"]` | A `%suite`/`%test` tartalmú specifikációk felderítésére szolgáló globok. Ha a tesztjeid `.sql` fájlokban vannak, használd a `["**/*.sql"]` értéket. |
 | `utplsql.discovery.languageIds` | `["plsql", "sql", "oracle-sql"]` | A felderítés, CodeLens és díszítések során PL/SQL-ként kezelt nyelvi azonosítók. A kiterjesztések a telepített kiterjesztésekből és a `files.associations`-ból származnak; használja a `["plsql"]` értéket a `.sql` vizsgálatának elkerüléséhez. |
+| `utplsql.discovery.retryAttempts` | `2` | További próbálkozások átmeneti adatbázis-felderítési hibákhoz (hálózat/timeout). 0 kikapcsolja; a hitelesítési/engedélyhibák soha nem ismétlődnek. |
+| `utplsql.discovery.cacheTtlSeconds` | `30` | Az Oracle metaadatok (`get_suites_info`, riporterek és utPLSQL séma-előtag) memóriabeli gyorsítótárának TTL-je másodpercben. 0 kikapcsolja a gyorsítótárat. |
 | `utplsql.generate.testPackagePrefix` | `ut_` | A létrehozott tesztcsomag nevének előtagja. |
 | `utplsql.generate.testPackageSuffix` | `""` | A létrehozott tesztcsomag nevének utótagja. |
 | `utplsql.generate.numberOfTestsPerUnit` | `1` | Az éles csomag rutinonként létrehozott `%test` száma. |

@@ -4,6 +4,7 @@ import type { CompileTarget } from '../compileForDebug.js';
 import { getExtensionLocale, readConfig } from '../config';
 import { resolveLastRunTarget, targetFromMeta } from '../debugTargets';
 import { extractSchemaFromPath } from '../discovery';
+import { formatUserError } from '../errors';
 import { t } from '../i18n';
 import { isPlsqlDocument } from '../languageIdentity';
 import { collectAllItems } from '../testTree';
@@ -116,7 +117,7 @@ export function registerDebug(_context: vscode.ExtensionContext, deps: CommandDe
         const { startDebugSession } = await loadDebugger();
         await startDebugSession(packageName);
       } catch (e) {
-        vscode.window.showErrorMessage(e instanceof Error ? e.message : String(e));
+        vscode.window.showErrorMessage(formatUserError(e, locale));
       }
     }),
   );
@@ -145,7 +146,7 @@ export function registerDebug(_context: vscode.ExtensionContext, deps: CommandDe
         );
       } catch (e) {
         // Nunca ficar mudo: qualquer erro inesperado vira mensagem.
-        const error = e instanceof Error ? e.message : String(e);
+        const error = formatUserError(e, locale);
         vscode.window.showErrorMessage(t(locale, 'ext.compileForDebug.failed', { error }));
       }
     }),
@@ -181,7 +182,7 @@ export function registerDebug(_context: vscode.ExtensionContext, deps: CommandDe
         annotation.type === 'test' ? annotation.procName : undefined,
       );
     } catch (e) {
-      vscode.window.showErrorMessage(e instanceof Error ? e.message : String(e));
+      vscode.window.showErrorMessage(formatUserError(e, locale));
     }
   };
 
@@ -217,7 +218,7 @@ export function registerDebug(_context: vscode.ExtensionContext, deps: CommandDe
     try {
       await startForTarget(meta.packageName, meta.procName);
     } catch (e) {
-      vscode.window.showErrorMessage(e instanceof Error ? e.message : String(e));
+      vscode.window.showErrorMessage(formatUserError(e, locale));
     }
   };
 
@@ -240,7 +241,7 @@ export function registerDebug(_context: vscode.ExtensionContext, deps: CommandDe
     try {
       await startForTarget(target.packageName, target.procName);
     } catch (e) {
-      vscode.window.showErrorMessage(e instanceof Error ? e.message : String(e));
+      vscode.window.showErrorMessage(formatUserError(e, locale));
     }
   };
 

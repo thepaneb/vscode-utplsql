@@ -4,6 +4,7 @@ import * as vscode from 'vscode';
 import { installOutFormatIsolation } from './helpers';
 
 const LEGACY = process.env.UTPLSQL_LEGACY === '1';
+const THICK_BREAK_LEGACY = process.env.UTPLSQL_THICK_BREAK_LEGACY === '1';
 
 // Integração do executeRun no modo schema + validação de reporters + cancelamento
 // real. Gate: UTPLSQL_CONN no .env (mesma regra dos demais testes de integração).
@@ -242,9 +243,9 @@ describeDB('executeRun schema-mode + reporters + cancelamento (banco real)', () 
 
   it('cancelamento interrompe um teste longo (busy-wait de 8s)', async function () {
     this.timeout(120_000);
-    // utPLSQL 3.1/11g: o break não interrompe o run no thick (limitação
-    // documentada da PRD-150; o eixo 23free cobre este caminho).
-    if (LEGACY) this.skip();
+    // utPLSQL 3.1/11g e thick 12.2/18c: o break não interrompe o run
+    // bloqueante (limitação documentada da PRD-150; 23free cobre o caminho).
+    if (LEGACY || THICK_BREAK_LEGACY) this.skip();
     const dbc = await openRaw();
     const { executeRunOracle } = require('../../oracleRunner.js');
     const { TestStateManager } = require('../../state.js');

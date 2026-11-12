@@ -3,13 +3,16 @@ import { findAnnotationAtLine } from '../annotation';
 import { refreshCompilationDiagnostics } from '../compilationDiagnostics';
 import { getExtensionLocale, readConfig, resolveConnection } from '../config';
 import { effectiveCoverage } from '../coverageDecision';
+import { formatUserError } from '../errors';
 import { t } from '../i18n';
 import { isPlsqlDocument } from '../languageIdentity';
 import { filterSuitesByFolder, filterSuitesByUri, relatedSuiteMetas } from '../matching';
 import { listReportersForConnection } from '../oracleRunner';
+import { setupValidator } from '../quickfix';
+import { createRunEventBus } from '../runEvents';
 import { collectRunTargets, executeRun } from '../runner';
 import { collectTags, filterItemsByTags, parseTagSelection } from '../tagFilter';
-import { collectAllItems, resolveSubtree } from '../testTree';
+import { collectAllItems, collectItemsForPath, resolveSubtree } from '../testTree';
 import type { ItemMeta } from '../types';
 import type { CommandDeps } from './deps';
 
@@ -37,12 +40,43 @@ export function registerRunCommands(
 ): RunCommands {
   const { controller, state } = deps;
   const locale = getExtensionLocale();
+  const bus = deps.runEvents ?? createRunEventBus();
+  const useBus = deps.runEvents !== undefined;
   let currentRunToken: vscode.CancellationTokenSource | undefined;
   // PRD-148 RF1: um run só começa depois que o anterior (cancelado) terminou
   // de desenrolar. A promise cobre run, export e auto-run, que compartilham
   // `UT_OUTPUT_BUFFER_TMP` e o estado de resultados.
   let currentRunPromise: Promise<void> | undefined;
   let onRunFinished: (() => void) | undefined;
+
+  // PRD-128: efeitos colaterais da execução assinam o bus em vez de serem
+  // chamados inline pelo orquestrador. O status bar continua via callback
+  // (adapter) para preservar o progresso incremental.
+  context.subscriptions.push({
+    dispose: bus.on('run:complete', () => {
+      const dm = deps.getDecorationManager();
+      if (dm) dm.update(state.getLastResults(), (id) => state.getItem(id));
+      void refreshCompilationDiagnostics(state).catch(() => {});
+    }),
+  });
+  context.subscriptions.push({
+    dispose: bus.on('coverage:generated', ({ generated }) => {
+      if (generated) setupValidator.clearCoverageDiagnostic();
+      else setupValidator.addCoverageDiagnostic();
+    }),
+  });
+  if (useBus) {
+    context.subscriptions.push({
+      dispose: bus.on('suite:start', ({ index, total }) => {
+        deps.getStatusBar()?.showRunning(index, total);
+      }),
+    });
+    context.subscriptions.push({
+      dispose: bus.on('run:complete', ({ passed, failed, skipped, errored, durationMs }) => {
+        deps.getStatusBar()?.showResults(passed, failed, skipped, errored, durationMs);
+      }),
+    });
+  }
 
   /**
    * Enfileira uma execução Oracle. Cancela a execução ativa, espera o unwind
@@ -132,10 +166,10 @@ export function registerRunCommands(
             const onSuiteStart = () => {
               done++;
               progress.report({ message: `${done}/${total}` });
-              deps.getStatusBar()?.showRunning(done, total);
+              if (!useBus) deps.getStatusBar()?.showRunning(done, total);
             };
 
-            const sb = deps.getStatusBar();
+            const sb = useBus ? undefined : deps.getStatusBar();
             await executeRun(
               controller,
               request,
@@ -147,15 +181,9 @@ export function registerRunCommands(
                 ? (passed, failed, skipped, errored, durationMs) =>
                     sb.showResults(passed, failed, skipped, errored, durationMs)
                 : undefined,
+              undefined,
+              bus,
             );
-
-            // Diagnóstico de compilação PL/SQL pós-run (PRD-68 RF1).
-            await refreshCompilationDiagnostics(state).catch(() => {});
-
-            const dm = deps.getDecorationManager();
-            if (dm) {
-              dm.update(state.getLastResults(), (id) => state.getItem(id));
-            }
 
             progress.report({ message: t(locale, 'ext.run.parsingResults') });
           } finally {
@@ -167,7 +195,7 @@ export function registerRunCommands(
   };
 
   const runForUri = async (uri: vscode.Uri, coverage: boolean): Promise<void> => {
-    const metas = (await collectAllItems(controller, state))
+    const metas = (await collectItemsForPath(controller, state, uri.fsPath))
       .map((i) => state.getMeta(i))
       .filter(Boolean) as ItemMeta[];
     const include = filterSuitesByUri(metas, uri.fsPath)
@@ -198,12 +226,20 @@ export function registerRunCommands(
       vscode.window.showWarningMessage(t(locale, 'ext.runRelated.noEditor'));
       return;
     }
-    const metas = (await collectAllItems(controller, state))
-      .map((i) => state.getMeta(i))
-      .filter(Boolean) as ItemMeta[];
-    const include = relatedSuiteMetas(metas, editor.document.fileName)
+    let items = await collectItemsForPath(controller, state, editor.document.fileName);
+    let metas = items.map((i) => state.getMeta(i)).filter(Boolean) as ItemMeta[];
+    let include = relatedSuiteMetas(metas, editor.document.fileName)
       .map((m) => state.getSuiteItemFor(m.packageName, m.schema))
       .filter(Boolean) as vscode.TestItem[];
+    if (!include.length) {
+      // Alguns layouts (suite só no banco, schema não reconhecido) ainda exigem
+      // a árvore completa; só então pagamos o custo (PRD-131 RF9).
+      items = await collectAllItems(controller, state);
+      metas = items.map((i) => state.getMeta(i)).filter(Boolean) as ItemMeta[];
+      include = relatedSuiteMetas(metas, editor.document.fileName)
+        .map((m) => state.getSuiteItemFor(m.packageName, m.schema))
+        .filter(Boolean) as vscode.TestItem[];
+    }
     if (!include.length) {
       const file = editor.document.fileName.replace(/\\/g, '/').split('/').pop() ?? '';
       vscode.window.showWarningMessage(t(locale, 'ext.runRelated.none', { file }));
@@ -222,7 +258,7 @@ export function registerRunCommands(
   };
 
   const runForFolder = async (uri: vscode.Uri, coverage: boolean): Promise<void> => {
-    const metas = (await collectAllItems(controller, state))
+    const metas = (await collectItemsForPath(controller, state, uri.fsPath))
       .map((i) => state.getMeta(i))
       .filter(Boolean) as ItemMeta[];
     const include = filterSuitesByFolder(metas, uri.fsPath)
@@ -404,13 +440,14 @@ export function registerRunCommands(
             charset: cfg.reporterClientCharacterSet || undefined,
             colorConsole: cfg.reporterColorConsole || undefined,
           },
+          bus,
         );
         if (cts.token.isCancellationRequested || text === undefined) return;
         await deliverExport(reporter, text, dest.value);
       });
     } catch (e) {
       vscode.window.showErrorMessage(
-        t(locale, 'ext.export.failed', { error: e instanceof Error ? e.message : String(e) }),
+        t(locale, 'ext.export.failed', { error: formatUserError(e, locale) }),
       );
     }
   };

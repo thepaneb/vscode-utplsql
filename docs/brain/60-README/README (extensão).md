@@ -78,7 +78,7 @@ Run and debug **utPLSQL** (Oracle PL/SQL) tests right in VS Code — native **Te
 ### Connections & security
 
 - 🔌 **Connection profiles** — save and switch between multiple environments (DEV/TEST/PROD) with per-profile settings, via status bar or command palette.
-- 🔐 **TNS in thin + wallet** — `utplsql.connections.tnsAdminPath` resolves `tnsnames.ora` aliases in the thin driver (fallback to SQL Developer/`TNS_ADMIN`); the profile `walletLocation` and `utPLSQL: Set wallet password` keep the wallet password in the SecretStorage.
+- 🔐 **TNS in thin + wallet** — `utplsql.connections.tnsAdminPath` resolves `tnsnames.ora` aliases in the thin driver (fallback to SQL Developer/`TNS_ADMIN`); the profile `walletLocation` and `utPLSQL: Set wallet password` keep the wallet password in the SecretStorage, bound to the profile `connection` (changing it discards the password).
 - 🔒 **Connection security hardening** — connection settings are `machine`-scoped, the extension is disabled in untrusted workspaces, and the profile password is bound to the connection.
 - 🔧 **Setup diagnostics** — proactive validation of connection, grants, and version with quick-fix.
 - 🧹 **Idle pool cleanup** — `utplsql.oraclePoolCloseAfterRun` closes idle Oracle pool connections after the last run/coverage/export/discovery, so `DROP USER` works without reloading; disable it to keep the pool warm.
@@ -254,7 +254,9 @@ Test Explorer **as each test finishes**.
 | `utplsql.debugger.stopOnException` | `true` | Pauses on PL/SQL exceptions during debugging. |
 | `utplsql.debugger.timeoutSeconds` | `300` | Timeout (s) of the debug session. |
 | `utplsql.decorations.enabled` | `true` | Shows pass/fail decorations on `%suite` and `%test` lines after execution. |
+| `utplsql.discovery.cacheTtlSeconds` | `30` | TTL in seconds for the in-memory Oracle metadata cache (`get_suites_info`, reporters and the utPLSQL schema prefix). 0 disables the cache. |
 | `utplsql.discovery.languageIds` | `["plsql", "sql", "oracle-sql"]` | Language IDs treated as PL/SQL for discovery, CodeLens and decorations. Extensions are resolved from the installed extensions and `files.associations`; use `["plsql"]` to avoid scanning `.sql`. |
+| `utplsql.discovery.retryAttempts` | `2` | Extra attempts for transient database discovery failures (network/timeout). 0 disables retries; authentication and permission errors are never retried. |
 | `utplsql.discovery.source` | `auto` | Source of the test tree in `schema` mode: `auto` uses the database API (`ut_runner.get_suites_info`) and falls back to `ALL_SOURCE`/files when unavailable; `database` requires the API; `file` disables database discovery. |
 | `utplsql.generate.generateComments` | `true` | Adds `-- TODO` to each generated `%test`. |
 | `utplsql.generate.numberOfTestsPerUnit` | `1` | `%test` generated per routine of the production package. |

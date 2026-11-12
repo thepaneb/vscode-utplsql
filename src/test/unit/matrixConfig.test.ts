@@ -376,10 +376,19 @@ test('workflow da matriz expõe dispatch 19ee (LTS) para validar o smoke EE', ()
   const workflow = read('.github/workflows/integration.yml');
   assert.match(
     workflow,
-    /options: \[smoke, full, matrix, matrix-smoke, 19ee, thick-full, thick-full-11g\]/,
+    /options: \[smoke, full, matrix, matrix-smoke, matrix-thick, 19ee, thick-full, thick-full-11g\]/,
   );
   assert.match(workflow, /inputs.mode == '19ee'/);
   assert.match(workflow, /--only 19ee --tests "\$smoke"/);
+});
+
+test('workflow da matriz expõe o eixo matrix-thick semanal (PRD-125/PRD-131)', () => {
+  const workflow = read('.github/workflows/integration.yml');
+  assert.match(workflow, /Integration matrix thick \(Oracle 18c\/21c\/23ai\)/);
+  assert.match(workflow, /inputs\.mode == 'matrix-thick'/);
+  assert.match(workflow, /--only 18xe,21xe,23free/);
+  assert.match(workflow, /0 5 \* \* 0/);
+  assert.match(workflow, /npm run test:integration:thick/);
 });
 
 test('parse-version.cjs: CLI sem --field devolve JSON', () => {

@@ -68,6 +68,9 @@ mock.module('../../testTree.js', {
     resolveSchemaNode: async (_c: unknown, _s: unknown, item: { id: string }) => {
       resolveCalls.push(item.id);
     },
+    resolveTreeNode: async (_c: unknown, _s: unknown, item: { id: string }) => {
+      resolveCalls.push(item.id);
+    },
     resolvePackageNode: (_c: unknown, _s: unknown, item: { id: string }) => {
       resolveCalls.push(item.id);
     },

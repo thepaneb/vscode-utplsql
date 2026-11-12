@@ -5,6 +5,7 @@ import { getExtensionLocale, readConfig } from './config';
 import { getActiveProfile } from './connectionProfiles';
 import { t } from './i18n';
 import { logger } from './logger';
+import { oracleMetadataCache } from './metadataCache';
 import {
   beginOracleActivity,
   ensurePool,
@@ -14,6 +15,7 @@ import {
 } from './oracleRunner';
 import { hasTraversalSegment, isInside } from './pathContainment';
 import { redactConnection } from './redact';
+import { isRetryable, retryWithBackoff } from './retry';
 import { parseSuiteText, type TestProc } from './suiteParser';
 
 export interface SuiteFile {
@@ -40,14 +42,15 @@ function resolveFolder(
   uri: vscode.Uri,
   folders: readonly vscode.WorkspaceFolder[],
 ): vscode.WorkspaceFolder {
-  const uriStr = uri.toString().toLowerCase();
   let best: vscode.WorkspaceFolder | undefined;
   let bestLen = 0;
   for (const f of folders) {
-    const prefix = f.uri.toString().toLowerCase();
-    if (uriStr.startsWith(prefix) && prefix.length > bestLen) {
+    // `isInside` usa path.relative: `/ws/a` não casa `/ws/ab` (PRD-131 RF7).
+    if (!isInside(uri.fsPath, f.uri.fsPath)) continue;
+    const len = f.uri.fsPath.length;
+    if (len > bestLen) {
       best = f;
-      bestLen = prefix.length;
+      bestLen = len;
     }
   }
   return best ?? folders[0];
@@ -179,53 +182,79 @@ export async function discoverSchemaFromConn(
     { schema: upper },
   );
 
-  const results: SuiteFile[] = [];
+  const names: string[] = [];
   for (const row of pkgs.rows ?? []) {
     const pkgName = rowValue(row, 0, 'OBJECT_NAME');
     if (!pkgName || /^UT_/i.test(pkgName)) continue;
-
-    let text: string;
-    try {
-      const source = await conn.execute(
-        // Forma portátil (11.2+): `FETCH FIRST` é 12c+ e, dentro do try com
-        // fallback silencioso, degradava a descoberta no 11g sem erro visível.
-        `SELECT text FROM (
-           SELECT text FROM all_source
-           WHERE owner = :schema AND name = :name AND type = 'PACKAGE'
-           ORDER BY line
-         ) WHERE ROWNUM <= ${ALL_SOURCE_MAX_ROWS}`,
-        { schema: upper, name: pkgName },
-      );
-      const rows = source.rows ?? [];
-      if (rows.length >= ALL_SOURCE_MAX_ROWS) {
-        logger.warn(
-          t(getExtensionLocale(), 'discovery.sourceTruncated', {
-            schema: upper,
-            name: pkgName,
-            max: ALL_SOURCE_MAX_ROWS,
-          }),
-        );
-      }
-      text = `CREATE OR REPLACE ${rows.map((r) => rowValue(r, 0, 'TEXT')).join('\n')}`;
-    } catch (e) {
-      // ALL_SOURCE inacessível (ex.: ORA-00942) — fallback silencioso
-      logger.debug('discoverSchemaFromConn: ALL_SOURCE inacessível', {
-        schema: upper,
-        name: pkgName,
-        error: String(e),
-      });
-      continue;
-    }
-
-    const parsed = parseSuiteText(text);
-    if (!parsed || parsed.disabled || parsed.tests.length === 0) continue;
-    const tests = parsed.tests.filter((t) => !t.disabled);
-    if (tests.length === 0) continue;
-
-    const uri = vscode.Uri.parse(`utplsql-db:/${upper}/${pkgName}.pks`);
-    results.push({ uri, ...parsed, tests, folder, dbSchema: upper });
+    names.push(pkgName);
   }
-  return results;
+
+  // Concorrência limitada (PRD-131 RF6): mantém uma query por package (e o
+  // limite/warning de 10k linhas), mas evita o N+1 serial em schemas grandes.
+  const results = new Map<string, SuiteFile>();
+  const queue = [...names];
+  const concurrency = Math.min(8, queue.length);
+  const workers = Array.from({ length: concurrency }, async () => {
+    while (queue.length > 0) {
+      const pkgName = queue.shift();
+      if (!pkgName) break;
+      const suite = await discoverPackageSuite(conn, upper, pkgName, folder);
+      if (suite) results.set(pkgName, suite);
+    }
+  });
+  await Promise.all(workers);
+  return names
+    .map((name) => results.get(name))
+    .filter((suite): suite is SuiteFile => suite !== undefined);
+}
+
+/** Lê o fonte de um package e o converte em `SuiteFile` (ou `undefined`). */
+async function discoverPackageSuite(
+  conn: DiscoveryConnection,
+  schema: string,
+  pkgName: string,
+  folder: vscode.WorkspaceFolder,
+): Promise<SuiteFile | undefined> {
+  let text: string;
+  try {
+    const source = await conn.execute(
+      // Forma portátil (11.2+): `FETCH FIRST` é 12c+ e, dentro do try com
+      // fallback silencioso, degradava a descoberta no 11g sem erro visível.
+      `SELECT text FROM (
+         SELECT text FROM all_source
+         WHERE owner = :schema AND name = :name AND type = 'PACKAGE'
+         ORDER BY line
+       ) WHERE ROWNUM <= ${ALL_SOURCE_MAX_ROWS}`,
+      { schema, name: pkgName },
+    );
+    const rows = source.rows ?? [];
+    if (rows.length >= ALL_SOURCE_MAX_ROWS) {
+      logger.warn(
+        t(getExtensionLocale(), 'discovery.sourceTruncated', {
+          schema,
+          name: pkgName,
+          max: ALL_SOURCE_MAX_ROWS,
+        }),
+      );
+    }
+    text = `CREATE OR REPLACE ${rows.map((r) => rowValue(r, 0, 'TEXT')).join('\n')}`;
+  } catch (e) {
+    // ALL_SOURCE inacessível (ex.: ORA-00942) — fallback silencioso
+    logger.debug('discoverSchemaFromConn: ALL_SOURCE inacessível', {
+      schema,
+      name: pkgName,
+      error: String(e),
+    });
+    return undefined;
+  }
+
+  const parsed = parseSuiteText(text);
+  if (!parsed || parsed.disabled || parsed.tests.length === 0) return undefined;
+  const tests = parsed.tests.filter((test) => !test.disabled);
+  if (tests.length === 0) return undefined;
+
+  const uri = vscode.Uri.parse(`utplsql-db:/${schema}/${pkgName}.pks`);
+  return { uri, ...parsed, tests, folder, dbSchema: schema };
 }
 
 async function loadOracledb(): Promise<typeof import('oracledb')> {
@@ -276,7 +305,14 @@ function parseTagList(raw: string): string[] {
 export async function getSuitesInfo(
   conn: DiscoveryConnection,
   owner: string,
+  cacheKey?: string,
 ): Promise<DbSuiteRow[]> {
+  const key = cacheKey ? `suites|${cacheKey}|${owner.toUpperCase()}` : undefined;
+  if (key) {
+    const cached = oracleMetadataCache.get<DbSuiteRow[]>(key);
+    if (cached !== undefined) return cached;
+  }
+  let rows: DbSuiteRow[] = [];
   try {
     const result = await conn.execute(
       `SELECT object_owner, object_name, item_name, item_description, item_type,
@@ -284,7 +320,6 @@ export async function getSuitesInfo(
          FROM TABLE(ut_runner.get_suites_info(:owner, null))`,
       { owner: owner.toUpperCase() },
     );
-    const rows: DbSuiteRow[] = [];
     for (const row of result.rows ?? []) {
       const itemType = mapItemType(rowValue(row, 4, 'ITEM_TYPE'));
       if (!itemType) continue;
@@ -300,14 +335,15 @@ export async function getSuitesInfo(
         tags: parseTagList(rowValue(row, 9, 'TAGS')),
       });
     }
-    return rows;
   } catch (e) {
     logger.debug('getSuitesInfo: ut_runner.get_suites_info indisponível', {
       owner,
       error: String(e),
     });
-    return [];
+    rows = [];
   }
+  if (key) oracleMetadataCache.set(key, rows, readConfig().discoveryCacheTtlSeconds * 1000);
+  return rows;
 }
 
 /**
@@ -430,8 +466,28 @@ export async function discoverDbSuites(
 ): Promise<SuiteFile[]> {
   // PRD-101: discovery via banco é uma atividade Oracle como as demais.
   const activity = beginOracleActivity();
+  const cfg = readConfig();
   try {
-    return await discoverDbSuitesCore(connStr, schema, folders, loadOracledbMod);
+    return await retryWithBackoff(
+      () => discoverDbSuitesCore(connStr, schema, folders, loadOracledbMod),
+      {
+        attempts: cfg.discoveryRetryAttempts,
+        isRetryable,
+        onRetry: (error, attempt) => {
+          logger.warn('discoverDbSuites: nova tentativa após falha transitória', {
+            attempt,
+            schema,
+            error: redactConnection(String(error), connStr),
+          });
+        },
+      },
+    );
+  } catch (e) {
+    logger.debug('discoverDbSuites: descoberta via banco falhou', {
+      schema,
+      error: redactConnection(String(e), connStr),
+    });
+    return [];
   } finally {
     await activity.end();
   }
@@ -443,7 +499,10 @@ async function discoverDbSuitesCore(
   folders: readonly vscode.WorkspaceFolder[],
   loadOracledbMod: () => Promise<typeof import('oracledb')> = loadOracledb,
 ): Promise<SuiteFile[]> {
-  const folder = folders[0];
+  if (folders.length === 0) return [];
+  const cfg = readConfig();
+  const folder =
+    (await resolveFolderForSchema(schema, folders, cfg.organizationSchemaPattern)) ?? folders[0];
   if (!folder) return [];
 
   let oracledb: typeof import('oracledb');
@@ -456,19 +515,10 @@ async function discoverDbSuitesCore(
     return [];
   }
 
-  const cfg = readConfig();
   const pool = await ensurePool(oracledb, connStr, cfg).catch(() => undefined);
-  let conn: import('oracledb').Connection;
-  try {
-    conn = pool
-      ? await pool.getConnection()
-      : await oracledb.getConnection(parseConnString(connStr));
-  } catch (e) {
-    logger.debug('discoverDbSuites: falha ao obter conexão', {
-      error: redactConnection(String(e), connStr),
-    });
-    return [];
-  }
+  const conn = pool
+    ? await pool.getConnection()
+    : await oracledb.getConnection(parseConnString(connStr));
 
   const prevTimeout = conn.callTimeout;
   try {
@@ -476,12 +526,13 @@ async function discoverDbSuitesCore(
     const { utVersion } = await getOracleInfo(conn);
     const apiAvailable = !utVersion || !semverLt(utVersion, UTPLSQL_SUITES_INFO_MIN_VERSION);
     if (apiAvailable) {
-      const rows = await getSuitesInfo(conn, schema);
+      const rows = await getSuitesInfo(conn, schema, connStr);
       if (rows.length > 0) return mapSuitesInfoToSuiteFiles(rows, folder);
     }
     if (cfg.discoverySource === 'database') return [];
     return await discoverSchemaFromConn(conn, schema, folder);
   } catch (e) {
+    if (isRetryable(e)) throw e;
     logger.debug('discoverDbSuites: descoberta via banco falhou', {
       schema,
       error: redactConnection(String(e), connStr),
@@ -491,6 +542,34 @@ async function discoverDbSuitesCore(
     conn.callTimeout = prevTimeout;
     await conn.close().catch(() => {});
   }
+}
+
+/**
+ * Resolve o workspace folder do schema pelo layout `organization.schemaPattern`
+ * (`db/{schema}/**` → `db/<SCHEMA>`). Sem diretório correspondente, usa o
+ * primeiro folder (comportamento legado).
+ */
+async function resolveFolderForSchema(
+  schema: string,
+  folders: readonly vscode.WorkspaceFolder[],
+  pattern: string,
+): Promise<vscode.WorkspaceFolder | undefined> {
+  if (folders.length <= 1) return folders[0];
+  const base = schemaBase(pattern);
+  if (base === undefined) return folders[0];
+  const segments = base.split('/').filter(Boolean);
+  for (const folder of folders) {
+    let dir = folder.uri;
+    for (const segment of segments) dir = vscode.Uri.joinPath(dir, segment);
+    const candidate = vscode.Uri.joinPath(dir, schema);
+    try {
+      const stat = await vscode.workspace.fs.stat(candidate);
+      if (stat.type === vscode.FileType.Directory) return folder;
+    } catch {
+      /* schema não está neste folder */
+    }
+  }
+  return folders[0];
 }
 
 /**
@@ -505,8 +584,28 @@ export async function discoverSchemaFromDb(
   loadOracledbMod: () => Promise<typeof import('oracledb')> = loadOracledb,
 ): Promise<SuiteFile[]> {
   const activity = beginOracleActivity();
+  const cfg = readConfig();
   try {
-    return await discoverSchemaFromDbCore(connStr, schema, folders, loadOracledbMod);
+    return await retryWithBackoff(
+      () => discoverSchemaFromDbCore(connStr, schema, folders, loadOracledbMod),
+      {
+        attempts: cfg.discoveryRetryAttempts,
+        isRetryable,
+        onRetry: (error, attempt) => {
+          logger.warn('discoverSchemaFromDb: nova tentativa após falha transitória', {
+            attempt,
+            schema,
+            error: redactConnection(String(error), connStr),
+          });
+        },
+      },
+    );
+  } catch (e) {
+    logger.debug('discoverSchemaFromDb: descoberta via banco falhou', {
+      schema,
+      error: redactConnection(String(e), connStr),
+    });
+    return [];
   } finally {
     await activity.end();
   }
@@ -518,7 +617,10 @@ async function discoverSchemaFromDbCore(
   folders: readonly vscode.WorkspaceFolder[],
   loadOracledbMod: () => Promise<typeof import('oracledb')> = loadOracledb,
 ): Promise<SuiteFile[]> {
-  const folder = folders[0];
+  if (folders.length === 0) return [];
+  const cfg = readConfig();
+  const folder =
+    (await resolveFolderForSchema(schema, folders, cfg.organizationSchemaPattern)) ?? folders[0];
   if (!folder) return [];
 
   let oracledb: typeof import('oracledb');
@@ -531,25 +633,17 @@ async function discoverSchemaFromDbCore(
     return [];
   }
 
-  const cfg = readConfig();
   const pool = await ensurePool(oracledb, connStr, cfg).catch(() => undefined);
-  let conn: import('oracledb').Connection;
-  try {
-    conn = pool
-      ? await pool.getConnection()
-      : await oracledb.getConnection(parseConnString(connStr));
-  } catch (e) {
-    logger.debug('discoverSchemaFromDb: falha ao obter conexão', {
-      error: redactConnection(String(e), connStr),
-    });
-    return [];
-  }
+  const conn = pool
+    ? await pool.getConnection()
+    : await oracledb.getConnection(parseConnString(connStr));
 
   const prevTimeout = conn.callTimeout;
   try {
     conn.callTimeout = 10_000;
     return await discoverSchemaFromConn(conn, schema, folder);
   } catch (e) {
+    if (isRetryable(e)) throw e;
     logger.debug('discoverSchemaFromDb: descoberta via banco falhou', {
       schema,
       error: redactConnection(String(e), connStr),
@@ -587,6 +681,7 @@ export async function discoverSchemasFromFolders(
     return [];
   }
   const schemas = new Set<string>();
+  const attempts = readConfig().discoveryRetryAttempts;
 
   for (const folder of folders) {
     let dir = folder.uri;
@@ -597,7 +692,13 @@ export async function discoverSchemasFromFolders(
     if (!isInside(dir.fsPath, folder.uri.fsPath)) continue;
     let entries: [string, vscode.FileType][];
     try {
-      entries = await vscode.workspace.fs.readDirectory(dir);
+      entries = await retryWithBackoff(
+        () => Promise.resolve(vscode.workspace.fs.readDirectory(dir)),
+        {
+          attempts,
+          isRetryable,
+        },
+      );
     } catch (e) {
       logger.debug('discoverSchemasFromFolders: pasta base ausente', {
         dir: dir.fsPath,

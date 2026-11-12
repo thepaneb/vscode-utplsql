@@ -1,6 +1,9 @@
 import * as vscode from 'vscode';
+import { cachedConfig } from './configCache';
+import { validateConfig } from './configValidation';
 import { getActiveProfile, getProfileConnection, mergeProfileConfig } from './connectionProfiles';
 import { type ExtensionLocale, resolveLocale, t } from './i18n';
+import { logger } from './logger';
 import { resolveTnsAdminPath } from './tnsnames';
 
 /** Conexão mantida apenas em memória durante a sessão (quando o usuário digita). */
@@ -56,6 +59,10 @@ export interface UtConfig {
   organization: 'file' | 'schema' | 'tag';
   organizationSchemaPattern: string;
   discoverySource: 'auto' | 'file' | 'database';
+  /** Tentativas extras de descoberta em erros transitórios (PRD-131). */
+  discoveryRetryAttempts: number;
+  /** TTL em segundos do cache de metadados Oracle (PRD-131). */
+  discoveryCacheTtlSeconds: number;
   /** Language IDs aceitos na descoberta/CodeLens (PRD-109). */
   discoveryLanguageIds: string[];
   refreshDebounceMs: number;
@@ -131,16 +138,11 @@ function sqlDevTnsPath(): string | undefined {
 }
 
 export function readConfig(): UtConfig {
+  return cachedConfig(buildConfig);
+}
+
+function buildConfig(): UtConfig {
   const c = vscode.workspace.getConfiguration('utplsql');
-  // O runner abre conn1+conn2; `poolMax=1` faria a 2ª conexão esperar o
-  // queueTimeout e falhar (NJS-040). `min>max` também é inválido.
-  const rawMax = c.get<number>('oraclePoolMax', 10);
-  const rawMin = c.get<number>('oraclePoolMin', 2);
-  const oraclePoolMax = Math.max(2, Number.isFinite(rawMax) ? Math.trunc(rawMax) : 10);
-  const oraclePoolMin = Math.min(
-    oraclePoolMax,
-    Math.max(0, Number.isFinite(rawMin) ? Math.trunc(rawMin) : 2),
-  );
   const global: UtConfig = {
     sourcePath: c.get<string>('sourcePath', 'install'),
     includePatterns: c.get<string[]>('includePatterns', ['**/*.pks']),
@@ -161,8 +163,8 @@ export function readConfig(): UtConfig {
     reporterColorConsole: c.get<boolean>('reporter.colorConsole', false),
     timeoutMinutes: c.get<number>('timeoutMinutes', 60),
     dbmsOutput: c.get<boolean>('dbmsOutput', false),
-    oraclePoolMin,
-    oraclePoolMax,
+    oraclePoolMin: c.get<number>('oraclePoolMin', 2),
+    oraclePoolMax: c.get<number>('oraclePoolMax', 10),
     oraclePoolIncrement: c.get<number>('oraclePoolIncrement', 1),
     oraclePoolPingInterval: c.get<number>('oraclePoolPingInterval', 60),
     oraclePoolCloseAfterRun: c.get<boolean>('oraclePoolCloseAfterRun', true),
@@ -190,6 +192,8 @@ export function readConfig(): UtConfig {
     organization: c.get<'file' | 'schema' | 'tag'>('organization', 'file'),
     organizationSchemaPattern: c.get<string>('organization.schemaPattern', 'db/{schema}/**'),
     discoverySource: c.get<'auto' | 'file' | 'database'>('discovery.source', 'auto'),
+    discoveryRetryAttempts: c.get<number>('discovery.retryAttempts', 2),
+    discoveryCacheTtlSeconds: c.get<number>('discovery.cacheTtlSeconds', 30),
     discoveryLanguageIds: c.get<string[]>('discovery.languageIds', ['plsql', 'sql', 'oracle-sql']),
     refreshDebounceMs: c.get<number>('refreshDebounceMs', 300),
     trace: c.get<boolean>('trace', false),
@@ -242,7 +246,14 @@ export function readConfig(): UtConfig {
       | 'vi'
     >('language', 'auto'),
   };
-  return mergeProfileConfig(global, getActiveProfile());
+  const validated = validateConfig(global, (warning) => {
+    logger.warn('config inválida; usando fallback', {
+      setting: warning.setting,
+      value: warning.value,
+      fallback: warning.fallback,
+    });
+  });
+  return mergeProfileConfig(validated, getActiveProfile());
 }
 
 /**

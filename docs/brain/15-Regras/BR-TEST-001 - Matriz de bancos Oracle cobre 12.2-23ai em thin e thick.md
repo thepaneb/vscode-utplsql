@@ -27,12 +27,14 @@ com o **node-oracledb 26** (PRD-124): 23free full, 11g thick, 12.2/21xe smoke.
 O **CI** roda o full thin em PR de `release/**`/caminho crítico, o nightly 23free
 completo e a matriz semanal 18xe/21xe em **full** (o smoke fica no dispatch
 `matrix-smoke`; o 19ee entra no semanal quando as credenciais EE estão nos
-secrets). O **thick smoke** (4 testes) roda no nightly/dispatch com Instant
+secrets). O **matrix-thick** semanal cobre 18xe/21xe/23free em thick smoke. O **thick smoke** (5 testes) roda no nightly/dispatch com Instant
 Client baixado no runner, no **23free e no 11g**. O `--thick-full` (PRD-125/150)
 roda o full no 23free com guarda `oracledb.thin === false` e reciclagem do pool
-após abort; skips documentados (UI, multi-root, thin-only, DBMS_DEBUG e, no
-11g, `UTPLSQL_LEGACY`) ficam fora. O 11g full local fecha com skips; o dispatch
-`thick-full-11g` segue como probe experimental. O eixo thin segue inalterado.
+após abort; skips documentados (UI, multi-root, thin-only, DBMS_DEBUG, no 11g
+`UTPLSQL_LEGACY` e, em todo o thick, timeout/cancelamento porque `break()` não
+preempta o execute bloqueante de forma confiável) ficam fora. O 23free thick-full roda no
+**nightly**; o 11g full local fecha com skips e o dispatch `thick-full-11g`
+segue como probe experimental. O eixo thin segue inalterado.
 
 ## Pré-condições
 
@@ -42,9 +44,13 @@ disponível. Para thick, `ORACLE_CLIENT_LIB_DIR` (Instant Client); no 11g,
 
 ## Exceções
 
-A matriz é **local** — o CI (`ci.yml`) roda só `compile`/`lint`/`test:unit` e a
-matriz não entra no VSIX (`PRD-83`). `--only` restringe aos bancos pedidos; sem
-Docker/credenciais ela não roda. O 11g só é executado no eixo `--thick`.
+`npm run db:matrix` é o orquestrador local para todas as versões (11g, 12.2,
+19ee etc.). No CI, `.github/workflows/integration.yml` roda o thin nightly
+(23ai full), a matriz semanal 18c/21c full, o `matrix-thick` semanal
+(18c/21c/23ai thick smoke) e o thick-full 23ai nightly; o 11g entra por dispatch
+thick. O `ci.yml` cobre apenas compile/lint/test:unit. `--only` restringe aos
+bancos pedidos; sem Docker/credenciais a matriz local não roda. O 11g só é
+executado no eixo `--thick`.
 
 ## Justificativa
 

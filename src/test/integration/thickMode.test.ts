@@ -71,4 +71,49 @@ describeThick('thick mode (Instant Client) — opt-in', () => {
       await conn.close().catch(() => {});
     }
   });
+
+  it('pool, conexões do runner e descoberta funcionam em thick', async function () {
+    this.timeout(90_000);
+    if (!hasConnection()) {
+      this.skip();
+      return;
+    }
+    const oracledb = await loadOracledb();
+    const connStr = process.env.UTPLSQL_THICK_CONN as string;
+    const {
+      acquireRunnerConnections,
+      closeOraclePool,
+      discoverUtplsqlSchema,
+      ensurePool,
+      listReportersOracle,
+    } = require('../../oracleRunner.js');
+    const { readConfig } = require('../../config.js');
+    const cfg = {
+      ...readConfig(),
+      oracleClientMode: 'thick',
+      oracleClientLibDir: libDir as string,
+      oraclePoolMin: 2,
+      oraclePoolMax: 2,
+      oraclePoolCloseAfterRun: false,
+    };
+    try {
+      const pool = await ensurePool(oracledb, connStr, cfg);
+      assert.ok(pool, 'pool deveria ser criado em thick');
+      const { conn1, conn2 } = await acquireRunnerConnections(oracledb, connStr, cfg);
+      try {
+        const r = await conn1.execute('SELECT 1 AS n FROM dual');
+        assert.ok(r.rows && r.rows.length === 1, 'conn1 deveria executar SELECT');
+        assert.strictEqual(oracledb.thin, false, 'o driver deveria continuar thick');
+        const prefix = await discoverUtplsqlSchema(conn1, `thick|${connStr}`);
+        assert.ok(typeof prefix === 'string');
+        const reporters = await listReportersOracle(conn1, `thick|${connStr}`);
+        assert.ok(Array.isArray(reporters));
+      } finally {
+        await conn1.close().catch(() => {});
+        await conn2.close().catch(() => {});
+      }
+    } finally {
+      await closeOraclePool();
+    }
+  });
 });

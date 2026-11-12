@@ -74,7 +74,11 @@ Jalankan dan debug pengujian **utPLSQL** (Oracle PL/SQL) langsung di VS Code —
 ### Koneksi dan keamanan
 
 - 🔌 **Profil koneksi** — simpan dan beralih antar beberapa lingkungan (DEV/TEST/PROD) dengan pengaturan per profil, melalui bilah status atau palet perintah.
-- 🔐 **TNS di thin + wallet** — `utplsql.connections.tnsAdminPath` menyelesaikan alias `tnsnames.ora` di driver thin (fallback ke SQL Developer/`TNS_ADMIN`); `walletLocation` profil dan `utPLSQL: Set wallet password` menyimpan sandi wallet di SecretStorage.
+- 🔐 **TNS di thin + wallet** — `utplsql.connections.tnsAdminPath` menyelesaikan alias `tnsnames.ora` di driver thin (fallback ke SQL Developer/`TNS_ADMIN`); `walletLocation` profil dan `utPLSQL: Set wallet password` menyimpan sandi wallet di SecretStorage; Rahasia wallet terikat ke `connection` profil; mengubahnya membuang kata sandi tersimpan (rahasia lama dimigrasikan saat pertama dibaca).
+- ⚡ **Reindex bertahap** — dalam mode file, watcher melakukan debounce per URI dan hanya mengindeks ulang suite yang berubah; tag/schema dan burst jatuh ke full refresh (PRD-103).
+- 🧹 **Pembersihan pool idle** — `utplsql.oraclePoolCloseAfterRun` menutup koneksi pool Oracle yang idle setelah run/coverage/export/discovery terakhir; nonaktifkan untuk menjaga pool tetap hangat.
+- 🪶 **Aktivasi ringan** — ekstensi hanya aktif untuk workspace PL/SQL; validasi setup bersifat lazy, memoized, dan tidak pernah membuka Oracle saat aktivasi.
+- 🔎 **Trace dan performa** — `utplsql.trace` dan `utplsql.perf.enabled`/`perf.reportFile` (opt-in) mengukur discovery, tree build, run, polling, dan XML parsing; nonaktif secara default dan tidak pernah mencatat kredensial.
 - 🔒 **Pengerasan keamanan koneksi** — setelan koneksi kini `machine`-scoped, ekstensi dinonaktifkan di workspace yang tidak tepercaya, dan sandi profil terikat pada koneksi.
 - 🔧 **Diagnostik pengaturan** — validasi proaktif terhadap koneksi, grant, dan versi dengan quick-fix.
 
@@ -172,6 +176,8 @@ Ekstensi terhubung langsung ke Oracle, membaca laporan (JUnit + Coverage) lalu m
 | `utplsql.sourcePath` | `install` | Folder kode produksi (untuk memetakan coverage ke file). |
 | `utplsql.includePatterns` | `["**/*.pks"]` | Glob untuk menemukan spec dengan `%suite`/`%test`. Jika pengujian Anda di `.sql`, gunakan `["**/*.sql"]`. |
 | `utplsql.discovery.languageIds` | `["plsql", "sql", "oracle-sql"]` | Language ID yang diperlakukan sebagai PL/SQL dalam penemuan, CodeLens, dan dekorasi. Ekstensi diambil dari ekstensi terpasang dan `files.associations`; gunakan `["plsql"]` agar tidak memindai `.sql`. |
+| `utplsql.discovery.retryAttempts` | `2` | Percobaan tambahan untuk kegagalan penemuan database sementara (jaringan/timeout). 0 menonaktifkan; kesalahan autentikasi/izin tidak pernah diulang. |
+| `utplsql.discovery.cacheTtlSeconds` | `30` | TTL dalam detik untuk cache memori metadata Oracle (`get_suites_info`, reporter, dan awalan skema utPLSQL). 0 menonaktifkan cache. |
 | `utplsql.generate.testPackagePrefix` | `ut_` | Prefiks nama paket pengujian yang dihasilkan. |
 | `utplsql.generate.testPackageSuffix` | `""` | Sufiks nama paket pengujian yang dihasilkan. |
 | `utplsql.generate.numberOfTestsPerUnit` | `1` | `%test` yang dihasilkan per rutin paket produksi. |

@@ -4,7 +4,7 @@
 
 | Campo | Valor |
 |---|---|
-| Status | Proposto |
+| Status | Concluído |
 | Autor | Gil Cleber Barboza |
 | Data | 2026-10-30 |
 | Componente | Extensão `paneb.vscode-utplsql` |
@@ -109,9 +109,10 @@ Nenhuma setting nova.
 
 ## 12. Impacto no cérebro
 
-Ao concluir, criar regra `BR-ARCH-*` com `prds: ["PRD-138"]`. Enquanto `proposed`,
-`regras: []`.
+Regra criada: `BR-ARCH-003` ("organização da árvore de testes é selecionada por
+Strategy"), com `prds: ["PRD-138"]`, `implementacao:` e `testes:`.
 
 ## Impacto nas docs
 
-Superfície listada: CHANGELOG.
+`CHANGELOG`, `wiki/Architecture.md` e `wiki/Tree-organization.md` descrevem as
+strategies, a reatividade das settings e a resolução concorrente.

@@ -188,6 +188,13 @@ notas `prd-*`. O índice navegável do vault é a [[MOC - PRDs]].
 | 124 | [Upgrade para node-oracledb 26 com matriz e packaging validados](completed/prd-124-oracledb-26-upgrade.md) | 0.19.0 | 2026-10-29 |
 | 125 | [Suíte completa em thick e matriz de bancos no CI](completed/prd-125-thick-full-matrix-ci.md) | 0.20.0 | 2026-10-29 |
 | 127 | [Piso de VS Code 1.125 e runtime Node 24](completed/prd-127-vscode-floor-1-125.md) | 0.19.0 | 2026-10-30 |
+| 128 | [Event bus interno e desacoplamento de callbacks de execução](completed/prd-128-event-bus-internal.md) | 0.21.0 | 2026-10-30 |
+| 129 | [Orquestrador de execução com Strategy](completed/prd-129-orchestration-strategy.md) | 0.21.0 | 2026-10-30 |
+| 130 | [Validação de configuração e classes de erro tipadas](completed/prd-130-config-validation-typed-errors.md) | 0.21.0 | 2026-10-30 |
+| 131 | [Resiliência na descoberta: retry, cache e limpeza de Memento](completed/prd-131-discovery-resilience-cache.md) | 0.21.0 | 2026-10-30 |
+| 137 | [Vincular senha da wallet ao connection do perfil (PRD-81 RF3 para wallet)](completed/prd-137-wallet-password-binding.md) | 0.21.0 | 2026-10-30 |
+| 138 | [Padrão Strategy para organização da árvore de testes (file/schema/tag)](completed/prd-138-organization-strategy-pattern.md) | 0.21.0 | 2026-10-30 |
+| 139 | [Fatiamento do TestStateManager e LRU no coverageStore](completed/prd-139-state-store-slicing-lru.md) | 0.21.0 | 2026-10-30 |
 | 146 | [Attestations de proveniência na publicação](completed/prd-146-attestations-publish.md) | 0.20.0 | 2026-11-05 |
 | 147 | [Marketplace: superfície dedicada, screenshots e metadata de conversão](completed/prd-147-marketplace-listing-page.md) | 0.20.0 | 2026-11-05 |
 | 148 | [Confiabilidade de execução e estado após a auditoria 0.20.0](completed/prd-148-execution-state-reliability.md) | 0.20.1 | 2026-11-07 |
@@ -214,15 +221,8 @@ notas `prd-*`. O índice navegável do vault é a [[MOC - PRDs]].
 | 121 | [Pacote auditável: source map do bundle no VSIX](proposed/prd-121-auditable-package-sourcemap.md) | 0.24.0 | 2026-10-13 |
 | 122 | [Confiança na distribuição: publisher verificado e política de privacidade](proposed/prd-122-marketplace-trust-metadata.md) | 0.24.0 | 2026-10-13 |
 | 126 | [Cobertura de branches nos módulos críticos e CLIs de release](proposed/prd-126-branch-coverage-cli-tests.md) | 0.23.0 | 2026-10-29 |
-| 128 | [Event bus interno e desacoplamento de callbacks de execução](proposed/prd-128-event-bus-internal.md) | 0.21.0 | 2026-10-30 |
-| 129 | [Orquestrador de execução com Strategy](proposed/prd-129-orchestration-strategy.md) | 0.21.0 | 2026-10-30 |
-| 130 | [Validação de configuração e classes de erro tipadas](proposed/prd-130-config-validation-typed-errors.md) | 0.21.0 | 2026-10-30 |
-| 131 | [Resiliência na descoberta: retry, cache e limpeza de Memento](proposed/prd-131-discovery-resilience-cache.md) | 0.21.0 | 2026-10-30 |
 | 132 | [UX de execução: dry-run, perfil ativo e jump-to-failure](proposed/prd-132-ux-execution-dryrun-jump.md) | 0.25.0 | 2026-10-30 |
 | 133 | [Rate limiting e granularidade de atalhos](proposed/prd-133-rate-limiting-keybindings.md) | 0.25.0 | 2026-10-30 |
-| 137 | [Vincular senha da wallet ao connection do perfil (PRD-81 RF3 para wallet)](proposed/prd-137-wallet-password-binding.md) | 0.21.0 | 2026-10-30 |
-| 138 | [Padrão Strategy para organização da árvore de testes (file/schema/tag)](proposed/prd-138-organization-strategy-pattern.md) | 0.21.0 | 2026-10-30 |
-| 139 | [Fatiamento do TestStateManager e LRU no coverageStore](proposed/prd-139-state-store-slicing-lru.md) | 0.21.0 | 2026-10-30 |
 | 140 | [Indicador de conexão/perfil no status bar e agrupamento de settings](proposed/prd-140-statusbar-settings-grouping.md) | 0.25.0 | 2026-10-30 |
 | 141 | [Walkthrough de onboarding e auditoria de acessibilidade](proposed/prd-141-onboarding-walkthrough-accessibility.md) | 0.25.0 | 2026-10-30 |
 | 142 | [Proveniência (SLSA) no release e gate de typecheck no CI](proposed/prd-142-supply-chain-provenance-typecheck-gate.md) | 0.24.0 | 2026-10-30 |
@@ -353,6 +353,13 @@ docs/prd/
 │   ├── prd-124-oracledb-26-upgrade.md
 │   ├── prd-125-thick-full-matrix-ci.md
 │   ├── prd-127-vscode-floor-1-125.md
+│   ├── prd-128-event-bus-internal.md
+│   ├── prd-129-orchestration-strategy.md
+│   ├── prd-130-config-validation-typed-errors.md
+│   ├── prd-131-discovery-resilience-cache.md
+│   ├── prd-137-wallet-password-binding.md
+│   ├── prd-138-organization-strategy-pattern.md
+│   ├── prd-139-state-store-slicing-lru.md
 │   ├── prd-146-attestations-publish.md
 │   ├── prd-147-marketplace-listing-page.md
 │   ├── prd-148-execution-state-reliability.md
@@ -375,15 +382,8 @@ docs/prd/
 │   ├── prd-121-auditable-package-sourcemap.md
 │   ├── prd-122-marketplace-trust-metadata.md
 │   ├── prd-126-branch-coverage-cli-tests.md
-│   ├── prd-128-event-bus-internal.md
-│   ├── prd-129-orchestration-strategy.md
-│   ├── prd-130-config-validation-typed-errors.md
-│   ├── prd-131-discovery-resilience-cache.md
 │   ├── prd-132-ux-execution-dryrun-jump.md
 │   ├── prd-133-rate-limiting-keybindings.md
-│   ├── prd-137-wallet-password-binding.md
-│   ├── prd-138-organization-strategy-pattern.md
-│   ├── prd-139-state-store-slicing-lru.md
 │   ├── prd-140-statusbar-settings-grouping.md
 │   ├── prd-141-onboarding-walkthrough-accessibility.md
 │   ├── prd-142-supply-chain-provenance-typecheck-gate.md

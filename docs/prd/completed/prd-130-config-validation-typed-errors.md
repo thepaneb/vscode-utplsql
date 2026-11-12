@@ -4,7 +4,7 @@
 
 | Campo | Valor |
 |---|---|
-| Status | Proposto |
+| Status | Concluído |
 | Autor | Gil Cleber Barboza |
 | Data | 2026-10-30 |
 | Componente | Extensão `paneb.vscode-utplsql` |
@@ -122,10 +122,11 @@ Nenhuma setting nova (validação interna de settings existentes).
 
 ## 12. Impacto no cérebro
 
-Criar regra `BR-ERR-*` ("erros de domínio são tipados e carregam chave de mensagem")
-com `prds: ["PRD-130"]`, `implementacao:` e `testes:`. Enquanto `proposed`,
-`regras: []`.
+Regras criadas: `BR-ERR-001` ("erros de domínio são tipados e carregam chave de
+mensagem") e `BR-CONN-025` ("configuração é validada, cacheada e invalidada em
+cada mudança"), com `prds: ["PRD-130"]`, `implementacao:` e `testes:`.
 
 ## Impacto nas docs
 
 `CHANGELOG` e `wiki/Architecture.md` descrevem classes de erro e validação.
+A wiki cita `src/errors.ts`, `src/configValidation.ts` e `src/configCache.ts`.

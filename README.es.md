@@ -65,7 +65,11 @@ Ejecuta y depura pruebas **utPLSQL** (Oracle PL/SQL) directamente en VS Code —
 ### Conexiones y seguridad
 
 - 🔌 **Perfiles de conexión** — guarde y alterne entre múltiples entornos (DEV/TEST/PROD) con configuración por perfil, desde la barra de estado o la paleta de comandos.
-- 🔐 **TNS en thin + wallet** — `utplsql.connections.tnsAdminPath` resuelve alias de `tnsnames.ora` en el driver thin (fallback a SQL Developer/`TNS_ADMIN`); `walletLocation` del perfil y `utPLSQL: Set wallet password` guardan la contraseña de la wallet en el SecretStorage.
+- 🔐 **TNS en thin + wallet** — `utplsql.connections.tnsAdminPath` resuelve alias de `tnsnames.ora` en el driver thin (fallback a SQL Developer/`TNS_ADMIN`); `walletLocation` del perfil y `utPLSQL: Set wallet password` guardan la contraseña de la wallet en el SecretStorage; El secreto de la wallet está vinculado a la `connection` del perfil; cambiarla descarta la contraseña guardada (los secretos antiguos se migran en la primera lectura).
+- ⚡ **Reindexación incremental** — en modo file el watcher hace debounce por URI y reindexa solo la suite cambiada; tag/schema y las ráfagas caen en un full refresh (PRD-103).
+- 🧹 **Limpieza del pool inactivo** — `utplsql.oraclePoolCloseAfterRun` cierra las conexiones inactivas del pool Oracle tras el último run/coverage/export/discovery; desactívelo para mantener el pool caliente.
+- 🪶 **Activación ligera** — la extensión solo se activa para workspaces PL/SQL; la validación de setup es lazy, memoizada y nunca abre Oracle durante la activación.
+- 🔎 **Trace y rendimiento** — `utplsql.trace` y `utplsql.perf.enabled`/`perf.reportFile` (opt-in) miden discovery, tree build, run, polling y XML parsing; desactivados por defecto y nunca registran credenciales.
 - 🔒 **Endurecimiento de seguridad de las conexiones** — los ajustes de conexión son `machine`-scoped, la extensión se deshabilita en espacios de trabajo no confiables y la contraseña del perfil queda vinculada a la conexión.
 - 🔧 **Diagnósticos de configuración** — validación proactiva de conexión, grants y versión con quick-fix.
 
@@ -162,6 +166,8 @@ Test Explorer **a medida que cada test termina**.
 | `utplsql.sourcePath` | `install` | Carpeta del código de producción (para mapear la cobertura a los archivos). |
 | `utplsql.includePatterns` | `["**/*.pks"]` | Globs para descubrir los specs con `%suite`/`%test`. Si sus tests están en `.sql`, use `["**/*.sql"]`. |
 | `utplsql.discovery.languageIds` | `["plsql", "sql", "oracle-sql"]` | Language IDs tratados como PL/SQL en el descubrimiento, CodeLens y decoraciones. Las extensiones se resuelven desde las extensiones instaladas y `files.associations`; usa `["plsql"]` para no escanear `.sql`. |
+| `utplsql.discovery.retryAttempts` | `2` | Intentos adicionales para fallos transitorios de descubrimiento en la base (red/timeout). 0 desactiva; los errores de autenticación/permiso nunca se reintentan. |
+| `utplsql.discovery.cacheTtlSeconds` | `30` | TTL en segundos de la caché en memoria de metadatos Oracle (`get_suites_info`, reporters y prefijo del esquema utPLSQL). 0 desactiva la caché. |
 | `utplsql.generate.testPackagePrefix` | `ut_` | Prefijo del nombre del paquete de pruebas generado. |
 | `utplsql.generate.testPackageSuffix` | `""` | Sufijo del nombre del paquete de pruebas generado. |
 | `utplsql.generate.numberOfTestsPerUnit` | `1` | `%test` generados por rutina del paquete de producción. |

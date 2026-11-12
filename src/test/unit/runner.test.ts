@@ -3,6 +3,7 @@ import assert from 'node:assert';
 import { mock, test } from 'node:test';
 import * as oracleRunner from '../../oracleRunner';
 import { setupValidator } from '../../quickfix';
+import { createRunEventBus } from '../../runEvents';
 import {
   collectRunTargets,
   countResults,
@@ -345,6 +346,55 @@ test('executeRun: resultado da cobertura publica/limpa o diagnóstico', async ()
       add.mock.restore();
       clear.mock.restore();
     }
+  }));
+
+test('executeRun: emite a sequência de eventos no bus (PRD-128)', async () =>
+  withExecEnv(async () => {
+    const { state, suiteItem } = makeExecState();
+    const run = new vscode.TestRun();
+    const controller = makeController(run);
+    const request = makeRequest([suiteItem]);
+    mock.method(
+      oracleRunner,
+      'executeRunOracle',
+      async (opts: { bus?: { emit(event: unknown): void } }) => {
+        opts.bus?.emit({
+          type: 'run:complete',
+          passed: 1,
+          failed: 0,
+          skipped: 0,
+          errored: 0,
+          durationMs: 10,
+        });
+        opts.bus?.emit({ type: 'coverage:generated', generated: true });
+        return undefined;
+      },
+    );
+
+    const bus = createRunEventBus();
+    const events: string[] = [];
+    bus.on('run:start', () => events.push('run:start'));
+    bus.on('suite:start', () => events.push('suite:start'));
+    bus.on('run:complete', () => events.push('run:complete'));
+    bus.on('coverage:generated', () => events.push('coverage:generated'));
+
+    await executeRun(
+      controller,
+      request,
+      NEVER_TOKEN,
+      false,
+      state,
+      undefined,
+      undefined,
+      undefined,
+      bus,
+    );
+    assert.deepStrictEqual(events, [
+      'run:start',
+      'suite:start',
+      'run:complete',
+      'coverage:generated',
+    ]);
   }));
 
 test('executeRun: coverageHtmlReport/reportRoot e notificação após run.end', async () =>

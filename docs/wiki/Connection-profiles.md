@@ -61,6 +61,9 @@ For databases that require an Oracle Cloud wallet, set `walletLocation` on the
 profile and store the wallet password with **`utPLSQL: Set wallet password`**
 (run it with the profile active; leave the input empty to clear). The password
 lives in the SecretStorage (`utplsql.wallet.<profileId>`), never in settings.
+The secret is **bound to the profile `connection`**: changing it discards the
+stored wallet password, and a legacy raw-string secret is migrated on first
+hydration (PRD-137).
 
 ## Example
 

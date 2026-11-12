@@ -1,5 +1,6 @@
 import * as vscode from 'vscode';
 import { getExtensionLocale, readConfig, resolveConnectionNoPrompt } from '../config';
+import { formatUserError } from '../errors';
 import { t } from '../i18n';
 import { logger } from '../logger';
 import { beginOracleActivity } from '../oracleRunner';
@@ -61,7 +62,7 @@ export function registerUtilityCommands(context: vscode.ExtensionContext, deps: 
         await deps.refresh();
         vscode.window.showInformationMessage(t(locale, 'ext.rebuildCache.ok'));
       } catch (e) {
-        const msg = e instanceof Error ? e.message : String(e);
+        const msg = formatUserError(e, locale);
         logger.warn('utplsql.rebuildAnnotations falhou', { error: msg });
         vscode.window.showErrorMessage(msg);
       }

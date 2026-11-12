@@ -1,5 +1,54 @@
 # Changelog
 
+## 0.21.0
+
+- **Split state stores and LRU caches (PRD-139)**: `TestStateManager` now
+  composes `CoverageStore` (LRU, 500 entries), `TestItemIndex` and
+  `RunSnapshot` behind the same public API. Coverage is cleared at the start of
+  each non-empty run and the virtual-source document cache is LRU-bounded
+  (50 entries), preventing unbounded growth in long sessions.
+- **Tree organization strategies (PRD-138)**: `src/organization/strategy.ts`
+  selects `FileOrganization`, `SchemaOrganization` or `TagOrganization`, with
+  `testTree.ts` kept as the facade. Changes to `organization`,
+  `includePatterns`, `showTagsInTree`, `showTestDuration` or
+  `discovery.source` refresh the tree; `discovery.languageIds` and
+  `files.associations` rebuild CodeLens **and** the file watcher. Concurrent
+  expansions of the same schema share one in-flight query.
+- **Run strategies (PRD-129)**: `executeRun` now dispatches to `NormalRun`,
+  `CoverageRun`, `ExportRun` or `DebugRun` (`src/runStrategy.ts`), removing the
+  nested `coverage`/`export` conditionals from the orchestrator. The strategies
+  build the coverage/export scope and the SQL-coverage finalizer; the Oracle
+  protocol, run serialization, outcomes and legacy callbacks are unchanged.
+- **Typed execution event bus (PRD-128)**: `src/runEvents.ts` provides a
+  synchronous, typed bus (`suite:start`, `run:start`, `run:complete`,
+  `coverage:generated`, `coverage:html:written`, `run:cancelled`, `run:error`).
+  Status bar, inline decorations, coverage diagnostics and compilation
+  diagnostics subscribe to the bus instead of being invoked inline; legacy
+  callbacks remain as adapters and the event order is covered by tests.
+- **Resilient discovery with retry and metadata cache (PRD-131)**: transient
+  Oracle connection failures are retried with exponential backoff
+  (`utplsql.discovery.retryAttempts`); `get_suites_info`, `get_reporters_list`
+  and the utPLSQL schema prefix are cached in memory for
+  `utplsql.discovery.cacheTtlSeconds` and invalidated on refresh/connection
+  change. The `ALL_SOURCE` fallback uses bounded concurrency, multi-root folder
+  resolution uses path containment, and the persisted run snapshot is pruned by
+  age (7 days) and size (2000 entries).
+- **Wallet password bound to the profile connection (PRD-137)**: the Oracle
+  Cloud wallet secret now stores `{ connection, password }` and is only reused
+  when the profile still points to the same connection; a legacy raw-string
+  secret is migrated on first hydration and a mismatched secret is discarded
+  with a warning.
+- **Typed errors and validated configuration (PRD-130)**: Oracle
+  connection/authentication errors, pool timeouts and missing reporters now use
+  the `UtplsqlError` hierarchy with stable codes, localized `userMessageKey` and
+  the original `cause` preserved; `UtplsqlVersionError`/`ConfigurationError` are
+  available for callers, while version checks remain diagnostics and invalid
+  settings fall back with a warning. `readConfig()` validates every setting
+  (numbers, enums, booleans, arrays and coverage regexes) with safe fallbacks
+  plus a warning, caches the snapshot until a setting/profile/wallet change, and
+  `tnsnames.ora` is cached by file mtime instead of being re-read on every
+  pool/discovery call.
+
 ## 0.20.1
 
 - **Execution and state reliability (PRD-148)**: runs and export are

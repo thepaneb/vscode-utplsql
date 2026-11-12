@@ -65,7 +65,11 @@
 ### 连接与安全
 
 - 🔌 **连接配置** — 通过状态栏或命令面板，保存并切换多个环境（DEV/TEST/PROD），支持按配置自定义设置。
-- 🔐 **thin 模式下的 TNS + wallet** — `utplsql.connections.tnsAdminPath` 在 thin 驱动中解析 `tnsnames.ora` 别名（回退到 SQL Developer/`TNS_ADMIN`）；配置文件的 `walletLocation` 与 `utPLSQL: Set wallet password` 将 wallet 密码保存在 SecretStorage。
+- 🔐 **thin 模式下的 TNS + wallet** — `utplsql.connections.tnsAdminPath` 在 thin 驱动中解析 `tnsnames.ora` 别名（回退到 SQL Developer/`TNS_ADMIN`）；配置文件的 `walletLocation` 与 `utPLSQL: Set wallet password` 将 wallet 密码保存在 SecretStorage。; wallet 密钥绑定到配置文件的 `connection`；修改连接会丢弃已保存的密码（旧格式会在首次读取时迁移）。
+- ⚡ **增量重建索引** — file 模式下 watcher 按 URI 防抖，只重建变更 suite 的索引；tag/schema 和大量变更会回退到 full refresh（PRD-103）。
+- 🧹 **空闲 pool 清理** — `utplsql.oraclePoolCloseAfterRun` 在最后一次 run/coverage/export/discovery 后关闭空闲的 Oracle pool 连接；关闭此设置可保持 pool 温热。
+- 🪶 **轻量激活** — 扩展仅在 PL/SQL 工作区激活；setup 校验是惰性、记忆化的，激活时从不打开 Oracle。
+- 🔎 **跟踪与性能** — opt-in 的 `utplsql.trace` 和 `utplsql.perf.enabled`/`perf.reportFile` 测量 discovery、tree build、run、polling 和 XML parsing；默认关闭，且从不记录凭据。
 - 🔒 **连接安全加固** — 连接设置改为 `machine` 作用域，扩展在不受信任的工作区中被禁用，配置文件的密码与连接绑定。
 - 🔧 **配置诊断** — 主动验证连接、授权和版本，并提供快速修复。
 
@@ -162,6 +166,8 @@ Test Explorer 中。
 | `utplsql.sourcePath` | `install` | 生产代码的文件夹（用于将覆盖率映射到文件）。 |
 | `utplsql.includePatterns` | `["**/*.pks"]` | 用于发现包含 `%suite`/`%test` 的 spec 的 glob 模式。如果您的测试在 `.sql` 中，请使用 `["**/*.sql"]`。 |
 | `utplsql.discovery.languageIds` | `["plsql", "sql", "oracle-sql"]` | 在发现、CodeLens 和装饰中视为 PL/SQL 的语言 ID。扩展名来自已安装的扩展和 `files.associations`；使用 `["plsql"]` 可避免扫描 `.sql`。 |
+| `utplsql.discovery.retryAttempts` | `2` | 数据库发现瞬时故障（网络/超时）的额外重试次数。0 表示禁用；身份验证和权限错误永不重试。 |
+| `utplsql.discovery.cacheTtlSeconds` | `30` | Oracle 元数据（`get_suites_info`、报告器和 utPLSQL 模式前缀）内存缓存的 TTL（秒）。0 表示禁用缓存。 |
 | `utplsql.generate.testPackagePrefix` | `ut_` | 生成的测试包名称前缀。 |
 | `utplsql.generate.testPackageSuffix` | `""` | 生成的测试包名称后缀。 |
 | `utplsql.generate.numberOfTestsPerUnit` | `1` | 生产包的每个例程生成的 `%test` 数量。 |

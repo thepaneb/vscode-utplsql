@@ -51,12 +51,16 @@ SORT id ASC
 - [[COD - compileForDebug.ts]] — `COD-compileForDebug.ts`
 - [[COD - compose.yaml]] — `COD-compose.yaml`
 - [[COD - config.ts]] — `COD-config.ts`
+- [[COD - configCache.ts]] — `COD-configCache.ts`
+- [[COD - configReactivity.ts]] — `COD-configReactivity.ts`
 - [[COD - Configuration.md]] — `COD-Configuration.md`
+- [[COD - configValidation.ts]] — `COD-configValidation.ts`
 - [[COD - connection.ts]] — `COD-connection.ts`
 - [[COD - connectionProfiles.ts]] — `COD-connectionProfiles.ts`
 - [[COD - CONTRIBUTING.md]] — `COD-CONTRIBUTING.md`
 - [[COD - coverage.ts]] — `COD-coverage.ts`
 - [[COD - coverageDecision.ts]] — `COD-coverageDecision.ts`
+- [[COD - coverageStore.ts]] — `COD-coverageStore.ts`
 - [[COD - create-pr.cjs]] — `COD-create-pr.cjs`
 - [[COD - create-release.cjs]] — `COD-create-release.cjs`
 - [[COD - dbmsDebug.ts]] — `COD-dbmsDebug.ts`
@@ -72,6 +76,7 @@ SORT id ASC
 - [[COD - docs-check.cjs]] — `COD-docs-check.cjs`
 - [[COD - docs-features-check.cjs]] — `COD-docs-features-check.cjs`
 - [[COD - docs-fidelity.cjs]] — `COD-docs-fidelity.cjs`
+- [[COD - errors.ts]] — `COD-errors.ts`
 - [[COD - esbuild.config.mjs]] — `COD-esbuild.config.mjs`
 - [[COD - extension.ts]] — `COD-extension.ts`
 - [[COD - favicon.png]] — `COD-favicon.png`
@@ -94,10 +99,12 @@ SORT id ASC
 - [[COD - launch.json]] — `COD-launch.json`
 - [[COD - linkedin-drift.cjs]] — `COD-linkedin-drift.cjs`
 - [[COD - logger.ts]] — `COD-logger.ts`
+- [[COD - lru.ts]] — `COD-lru.ts`
 - [[COD - Marketplace (README).md]] — `COD-Marketplace-README-.md`
 - [[COD - marketplace-images.cjs]] — `COD-marketplace-images.cjs`
 - [[COD - matching.ts]] — `COD-matching.ts`
 - [[COD - matrix.env]] — `COD-matrix.env`
+- [[COD - metadataCache.ts]] — `COD-metadataCache.ts`
 - [[COD - obsidian-mcp.py]] — `COD-obsidian-mcp.py`
 - [[COD - obsidian-portproxy.cmd]] — `COD-obsidian-portproxy.cmd`
 - [[COD - og.png]] — `COD-og.png`
@@ -116,6 +123,7 @@ SORT id ASC
 - [[COD - perf.ts]] — `COD-perf.ts`
 - [[COD - perfFixture.ts]] — `COD-perfFixture.ts`
 - [[COD - performance.yml]] — `COD-performance.yml`
+- [[COD - persisted.ts]] — `COD-persisted.ts`
 - [[COD - plsqlDeclarations.ts]] — `COD-plsqlDeclarations.ts`
 - [[COD - profile.ts]] — `COD-profile.ts`
 - [[COD - publish.cjs]] — `COD-publish.cjs`
@@ -127,11 +135,15 @@ SORT id ASC
 - [[COD - Referencia - descricoes de settings.md]] — `COD-Referencia---descricoes-de-settings.md`
 - [[COD - Registro de features.md]] — `COD-Registro-de-features.md`
 - [[COD - results.ts]] — `COD-results.ts`
+- [[COD - retry.ts]] — `COD-retry.ts`
 - [[COD - robots.txt]] — `COD-robots.txt`
 - [[COD - run-tests.cjs]] — `COD-run-tests.cjs`
 - [[COD - run.sh]] — `COD-run.sh`
 - [[COD - run.ts]] — `COD-run.ts`
+- [[COD - runEvents.ts]] — `COD-runEvents.ts`
 - [[COD - runner.ts]] — `COD-runner.ts`
+- [[COD - runSnapshot.ts]] — `COD-runSnapshot.ts`
+- [[COD - runStrategy.ts]] — `COD-runStrategy.ts`
 - [[COD - scorecard.yml]] — `COD-scorecard.yml`
 - [[COD - script.ts]] — `COD-script.ts`
 - [[COD - scriptRunner.ts]] — `COD-scriptRunner.ts`
@@ -141,12 +153,14 @@ SORT id ASC
 - [[COD - src-scaffold.ts]] — `COD-src-scaffold.ts`
 - [[COD - state.ts]] — `COD-state.ts`
 - [[COD - statusBar.ts]] — `COD-statusBar.ts`
+- [[COD - strategy.ts]] — `COD-strategy.ts`
 - [[COD - suiteParser.ts]] — `COD-suiteParser.ts`
 - [[COD - summary.cjs]] — `COD-summary.cjs`
 - [[COD - sync-prds.cjs]] — `COD-sync-prds.cjs`
 - [[COD - tagFilter.ts]] — `COD-tagFilter.ts`
 - [[COD - template-prd.md]] — `COD-template-prd.md`
 - [[COD - test-setup.cjs]] — `COD-test-setup.cjs`
+- [[COD - testItemIndex.ts]] — `COD-testItemIndex.ts`
 - [[COD - testTree.ts]] — `COD-testTree.ts`
 - [[COD - thickSetup.ts]] — `COD-thickSetup.ts`
 - [[COD - timing.ts]] — `COD-timing.ts`

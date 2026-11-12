@@ -65,7 +65,11 @@
 ### Bağlantılar ve güvenlik
 
 - 🔌 **Bağlantı profilleri** — status bar veya komut paleti aracılığıyla profil başına ayarlarla birden fazla ortam (DEV/TEST/PROD) arasında kaydedin ve geçiş yapın.
-- 🔐 **Thin’de TNS + wallet** — `utplsql.connections.tnsAdminPath`, thin sürücüde `tnsnames.ora` takma adlarını çözer (SQL Developer/`TNS_ADMIN`’e fallback); profildeki `walletLocation` ve `utPLSQL: Set wallet password` wallet parolasını SecretStorage’da tutar.
+- 🔐 **Thin’de TNS + wallet** — `utplsql.connections.tnsAdminPath`, thin sürücüde `tnsnames.ora` takma adlarını çözer (SQL Developer/`TNS_ADMIN`’e fallback); profildeki `walletLocation` ve `utPLSQL: Set wallet password` wallet parolasını SecretStorage’da tutar; Wallet sırrı profilin `connection` değerine bağlıdır; değiştirilmesi kayıtlı parolayı siler (eski sırlar ilk okumada taşınır).
+- ⚡ **Artımlı yeniden indeksleme** — file modunda watcher URI başına debounce yapar ve yalnızca değişen suite’i yeniden indeksler; tag/schema ve yoğun değişiklikler full refresh’e düşer (PRD-103).
+- 🧹 **Boşta pool temizliği** — `utplsql.oraclePoolCloseAfterRun`, son run/coverage/export/discovery sonrası boştaki Oracle pool bağlantılarını kapatır; pool’u sıcak tutmak için kapatın.
+- 🪶 **Hafif aktivasyon** — uzantı yalnızca PL/SQL workspace’lerinde etkinleşir; setup doğrulaması lazy, memoized ve aktivasyon sırasında Oracle açmaz.
+- 🔎 **Trace ve performans** — opt-in `utplsql.trace` ve `utplsql.perf.enabled`/`perf.reportFile`; discovery, tree build, run, polling ve XML parsing’i ölçer; varsayılan kapalı ve asla kimlik bilgisi loglamaz.
 - 🔒 **Bağlantı güvenliği sıkılaştırması** — bağlantı ayarları `machine`-scoped oldu, uzantı güvenilmeyen çalışma alanlarında devre dışı ve profil parolası bağlantıya bağlı.
 - 🔧 **Kurulum tanılama** — bağlantı, yetkiler ve sürümün hızlı düzeltmeyle (quick-fix) proaktif doğrulaması.
 
@@ -162,6 +166,8 @@ Geçici dosya yok, toplu işin bitmesi beklenmez. Sonuçlar Test Explorer'da
 | `utplsql.sourcePath` | `install` | Üretim kodunun klasörü (kapsamı dosyalara eşlemek için). |
 | `utplsql.includePatterns` | `["**/*.pks"]` | `%suite`/`%test` içeren şemaları keşfetmek için glob'lar. Testleriniz `.sql` içindeyse `["**/*.sql"]` kullanın. |
 | `utplsql.discovery.languageIds` | `["plsql", "sql", "oracle-sql"]` | Keşif, CodeLens ve süslemelerde PL/SQL olarak kabul edilen dil kimlikleri. Uzantılar yüklü uzantılardan ve `files.associations` üzerinden çözülür; `.sql` taranmasını önlemek için `["plsql"]` kullanın. |
+| `utplsql.discovery.retryAttempts` | `2` | Geçici veritabanı keşif hataları (ağ/zaman aşımı) için ek denemeler. 0 devre dışı bırakır; kimlik doğrulama/yetki hataları asla yinelenmez. |
+| `utplsql.discovery.cacheTtlSeconds` | `30` | Oracle meta verileri (`get_suites_info`, raporlayıcılar ve utPLSQL şema öneki) için bellek içi önbelleğin TTL değeri (saniye). 0 önbelleği kapatır. |
 | `utplsql.generate.testPackagePrefix` | `ut_` | Oluşturulan test paketi adının öneki. |
 | `utplsql.generate.testPackageSuffix` | `""` | Oluşturulan test paketi adının soneki. |
 | `utplsql.generate.numberOfTestsPerUnit` | `1` | Üretim paketindeki her rutin için oluşturulan `%test` sayısı. |

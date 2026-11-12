@@ -74,7 +74,11 @@ tags: [readme]
 ### 연결 및 보안
 
 - 🔌 **연결 프로필** — 프로필별 설정으로 여러 환경(DEV/TEST/PROD)을 저장하고 전환(상태 표시줄 또는 명령 팔레트를 통해).
-- 🔐 **thin의 TNS + wallet** — `utplsql.connections.tnsAdminPath`가 thin 드라이버에서 `tnsnames.ora` 별칭을 해석합니다(SQL Developer/`TNS_ADMIN` 폴백). 프로필의 `walletLocation`과 `utPLSQL: Set wallet password`가 wallet 비밀번호를 SecretStorage에 보관합니다.
+- 🔐 **thin의 TNS + wallet** — `utplsql.connections.tnsAdminPath`가 thin 드라이버에서 `tnsnames.ora` 별칭을 해석합니다(SQL Developer/`TNS_ADMIN` 폴백). 프로필의 `walletLocation`과 `utPLSQL: Set wallet password`가 wallet 비밀번호를 SecretStorage에 보관합니다; wallet 시크릿은 프로필 `connection`에 연결되며, 변경하면 저장된 비밀번호가 삭제됩니다(레거시 시크릿은 첫 읽기 시 마이그레이션).
+- ⚡ **증분 재인덱싱** — file 모드에서 watcher는 URI별로 debounce하고 변경된 suite만 다시 인덱싱합니다. tag/schema와 대량 변경은 full refresh로 폴백합니다(PRD-103).
+- 🧹 **유휴 pool 정리** — `utplsql.oraclePoolCloseAfterRun`은 마지막 run/coverage/export/discovery 후 유휴 Oracle pool 연결을 닫습니다. pool을 따뜻하게 유지하려면 비활성화하세요.
+- 🪶 **경량 활성화** — 확장은 PL/SQL 워크스페이스에서만 활성화되며, setup 검증은 지연·메모화되고 활성화 중 Oracle을 열지 않습니다.
+- 🔎 **추적 및 성능** — opt-in `utplsql.trace`와 `utplsql.perf.enabled`/`perf.reportFile`이 discovery, tree build, run, polling, XML parsing을 측정합니다. 기본은 꺼짐이며 자격 증명을 기록하지 않습니다.
 - 🔒 **연결 보안 강화** — 연결 설정이 `machine`-scoped가 되고, 신뢰할 수 없는 워크스페이스에서는 확장이 비활성화되며, 프로필 비밀번호가 연결에 묶입니다.
 - 🔧 **설정 진단** — 연결, 권한 및 버전에 대한 선제적 검증 및 quick-fix.
 
@@ -172,6 +176,8 @@ Test Explorer에 나타납니다.
 | `utplsql.sourcePath` | `install` | 프로덕션 코드 폴더(커버리지를 파일에 매핑하기 위해). |
 | `utplsql.includePatterns` | `["**/*.pks"]` | `%suite`/`%test`가 있는 스펙을 발견하기 위한 glob. 테스트가 `.sql`에 있으면 `["**/*.sql"]`을 사용하세요. |
 | `utplsql.discovery.languageIds` | `["plsql", "sql", "oracle-sql"]` | 검색, CodeLens 및 장식에서 PL/SQL로 처리할 언어 ID입니다. 확장자는 설치된 확장과 `files.associations`에서 확인합니다. `.sql` 검색을 피하려면 `["plsql"]`을 사용하세요. |
+| `utplsql.discovery.retryAttempts` | `2` | 데이터베이스 검색의 일시적 실패(네트워크/시간 초과)에 대한 추가 시도 횟수입니다. 0이면 비활성화되며 인증/권한 오류는 재시도하지 않습니다. |
+| `utplsql.discovery.cacheTtlSeconds` | `30` | Oracle 메타데이터(`get_suites_info`, 리포터, utPLSQL 스키마 접두사) 메모리 캐시의 TTL(초)입니다. 0이면 캐시를 사용하지 않습니다. |
 | `utplsql.generate.testPackagePrefix` | `ut_` | 생성되는 테스트 패키지 이름의 접두사입니다. |
 | `utplsql.generate.testPackageSuffix` | `""` | 생성되는 테스트 패키지 이름의 접미사입니다. |
 | `utplsql.generate.numberOfTestsPerUnit` | `1` | 운영 패키지의 루틴마다 생성되는 `%test` 수입니다. |

@@ -1,6 +1,7 @@
 import * as vscode from 'vscode';
 import { getExtensionLocale, readConfig, resolveConnection } from './config';
 import { offerCoverageHtmlReport } from './coverage';
+import { formatUserError } from './errors';
 import { t } from './i18n';
 import { logger } from './logger';
 import { resolveRunRoots } from './matching';
@@ -11,7 +12,8 @@ import {
   RunAbortedError,
 } from './oracleRunner';
 import { setupValidator } from './quickfix';
-import { redactConnection } from './redact';
+import type { RunEventBus } from './runEvents';
+import { selectRunStrategy } from './runStrategy';
 import type { LastRunState, TestStateManager } from './state';
 import type { ItemMeta } from './types';
 import { applySqlCoverage } from './viewCoverage';
@@ -131,6 +133,10 @@ export async function executeRun(
   ) => void,
   /** Export com reporter arbitrário (PRD-76): devolve a saída textual. */
   exportReporter?: { name: string; charset?: string; colorConsole?: boolean },
+  /** Event bus opcional (PRD-128); callbacks continuam como adapters legados. */
+  bus?: RunEventBus,
+  /** Seleciona `DebugRun` (PRD-129); o DAP continua fora deste fluxo. */
+  debug?: boolean,
 ): Promise<string | undefined> {
   const folders = vscode.workspace.workspaceFolders;
   if (!folders?.length) {
@@ -145,7 +151,8 @@ export async function executeRun(
 
   const cfg = readConfig();
   const locale = getExtensionLocale();
-  const exporting = !!exportReporter;
+  const strategy = selectRunStrategy({ coverage, exportReporter, debug });
+  const exporting = strategy.kind === 'export';
   const run = controller.createTestRun(request);
 
   void vscode.commands.executeCommand('setContext', 'utplsql:running', true);
@@ -168,14 +175,38 @@ export async function executeRun(
     pathArgs: [...pathArgs],
     coverage,
   });
+  bus?.emit({
+    type: 'run:start',
+    pathArgs: [...pathArgs],
+    coverage,
+    exporting,
+  });
   // Root por folder (PRD-57): os folders das suites/testes realmente em execução,
   // em vez de sempre o primeiro do workspace.
   const roots = resolveRunRoots(
     leafTests.map((t) => state.getMeta(t)),
     folders,
   );
+  let htmlReportPath: string | undefined;
+  const prepared = strategy.prepare({
+    cfg,
+    coverage,
+    exportReporter,
+    roots,
+    connection,
+    sourcePath: cfg.sourcePath,
+    run,
+    state,
+    folders,
+    onHtmlReport: (filePath) => {
+      htmlReportPath = filePath;
+    },
+  });
   state.setLastRun(deriveLastRun(included, !!request.include, coverage, state));
-  for (let i = 0; i < suiteCount; i++) onSuiteStart?.();
+  for (let i = 0; i < suiteCount; i++) {
+    onSuiteStart?.();
+    bus?.emit({ type: 'suite:start', index: i + 1, total: suiteCount });
+  }
 
   if (leafTests.length === 0) {
     run.appendOutput(`\r\n${t(locale, 'runner.noTests')}\r\n`);
@@ -188,9 +219,10 @@ export async function executeRun(
   // um run vazio não pode vazar o token de atividade nem apagar o último estado.
   const activity = beginOracleActivity(cfg);
   state.clearLastResults();
+  // PRD-139 RF3: cobertura de runs anteriores não vaza para o novo run.
+  state.clearCoverage();
 
   let exportText: string | undefined;
-  let htmlReportPath: string | undefined;
   try {
     if (!exporting) {
       for (const item of leafTests) {
@@ -206,31 +238,19 @@ export async function executeRun(
     const oracleOpts: OracleRunOptions = {
       connection,
       pathArgs: [...pathArgs],
-      coverage: {
-        enabled: coverage,
-        htmlReport: coverage && cfg.coverageHtmlReport,
-        reportRoot: roots[0],
-        onHtmlReport: (filePath) => {
-          htmlReportPath = filePath;
-        },
-        owner: cfg.coverageOwner,
-        schemes: cfg.coverageSchemes,
-        includeObjects: cfg.coverageIncludeObjects,
-        excludeObjects: cfg.coverageExcludeObjects,
-        includeSchemaExpr: cfg.coverageIncludeSchemaExpr,
-        includeObjectExpr: cfg.coverageIncludeObjectExpr,
-        excludeSchemaExpr: cfg.coverageExcludeSchemaExpr,
-        excludeObjectExpr: cfg.coverageExcludeObjectExpr,
-      },
+      coverage: prepared.coverage,
       sourcePath: cfg.sourcePath,
       run,
       leafTests,
       state,
       onComplete,
-      onCoverageResult: (generated) => {
-        if (generated) setupValidator.clearCoverageDiagnostic();
-        else setupValidator.addCoverageDiagnostic();
-      },
+      onCoverageResult: bus
+        ? undefined
+        : (generated) => {
+            if (generated) setupValidator.clearCoverageDiagnostic();
+            else setupValidator.addCoverageDiagnostic();
+          },
+      bus,
       folders,
       execution: {
         tags: cfg.tags,
@@ -240,19 +260,35 @@ export async function executeRun(
         timeoutMinutes: cfg.timeoutMinutes,
       },
       output: { additionalReporters: cfg.additionalReporters },
-      ...(exportReporter ? { export: { reporter: exportReporter } } : {}),
+      ...(prepared.exportReporter ? { export: { reporter: prepared.exportReporter } } : {}),
     };
-    exportText = await executeRunOracle(oracleOpts, token);
-    if (cfg.sqlCoverageEnabled && !exporting) {
-      await applySqlCoverage({
-        connection,
+    exportText = await strategy.run(oracleOpts, token, {
+      executeOracle: (options, cancellationToken) => executeRunOracle(options, cancellationToken),
+    });
+    await strategy.finalize(
+      {
+        cfg,
+        coverage,
+        exportReporter,
         roots,
+        connection,
         sourcePath: cfg.sourcePath,
         run,
         state,
         folders,
-      });
-    }
+      },
+      {
+        applySqlCoverage: () =>
+          applySqlCoverage({
+            connection,
+            roots,
+            sourcePath: cfg.sourcePath,
+            run,
+            state,
+            folders,
+          }),
+      },
+    );
   } catch (e) {
     if (exporting) throw e;
     if (e instanceof RunAbortedError) {
@@ -263,19 +299,24 @@ export async function executeRun(
         `\r\n${t(locale, e.outcome === 'timedOut' ? 'runner.timedOut' : 'ext.runCancel')}\r\n`,
       );
       for (const item of leafTests) run.skipped(item);
+      bus?.emit({ type: 'run:cancelled', outcome: e.outcome });
     } else {
-      const msg = redactConnection(e instanceof Error ? e.message : String(e), connection);
+      const msg = formatUserError(e, locale, connection);
       run.appendOutput(`\r\n${t(locale, 'runner.oracleErrorHeader', { error: msg })}\r\n`);
       for (const item of leafTests) {
         run.errored(item, new vscode.TestMessage(t(locale, 'runner.oracleError', { error: msg })));
       }
+      bus?.emit({ type: 'run:error', error: msg });
     }
   } finally {
     run.end();
     void vscode.commands.executeCommand('setContext', 'utplsql:running', false);
     // PRD-108 RF2: a notificação é fire-and-forget e só começa depois do
     // run.end(), então nunca segura o spinner do Test Explorer.
-    if (htmlReportPath) void offerCoverageHtmlReport(htmlReportPath);
+    if (htmlReportPath) {
+      bus?.emit({ type: 'coverage:html:written', path: htmlReportPath });
+      void offerCoverageHtmlReport(htmlReportPath);
+    }
     // PRD-101: run/cobertura/export cobrem a atividade; fecha o pool ocioso.
     await activity.end();
   }

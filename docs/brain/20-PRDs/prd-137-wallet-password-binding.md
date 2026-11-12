@@ -2,14 +2,14 @@
 tipo: prd
 id: PRD-137
 aliases: [PRD-137]
-status: proposed
+status: completed
 titulo: "Vincular senha da wallet ao connection do perfil (PRD-81 RF3 para wallet)"
 versao: "0.21.0"
 data: "2026-10-30"
 autor: "Gil Cleber Barboza"
 versao_titulo: "0.21.0 — Arquitetura, configuração e resiliência"
 verificado: 2026-10-30
-regras: []
+regras: ["BR-CONN-017", "SEC-012"]
 docs: ["CHANGELOG"]
 tags: [prd]
 ---
@@ -122,9 +122,10 @@ connection) — atualizar call sites em `config.ts`.
 
 ## 12. Impacto no cérebro
 
-Ao concluir, criar/alterar a regra `SEC-011` (ou equivalente) com
-`prds: ["PRD-137"]`, `implementacao:` e `testes:`. Enquanto `proposed`,
-`regras: []`.
+Regras atualizadas: `SEC-012` ("senha da wallet é vinculada à connection e nunca
+fica em settings/log") e `BR-CONN-017` ("senha da wallet vai para o
+SecretStorage e é propagada ao pool"), ambas com `prds` incluindo `PRD-137`,
+`implementacao:` e `testes:`.
 
 ## Impacto nas docs
 
@@ -134,7 +135,11 @@ Superfície listada: CHANGELOG. Atualizar CHANGELOG ao concluir.
 
 <!-- brain:auto:start:conexoes -->
 - 🗺️ [[MOC - PRDs]]
+- 📐 Regras: [[BR-CONN-017 - Senha da wallet vai para o SecretStorage e ao pool|BR-CONN-017]] · [[SEC-012 - Senha da wallet nunca em settings nem em log|SEC-012]]
 - 🔗 PRDs relacionados: [[prd-65-schema-mode-security-fixes|PRD-65]] · [[prd-81-security-hardening|PRD-81]] · [[prd-82-tns-wallet|PRD-82]]
-- 🔗 Mesma versão (0.21.0): [[prd-128-event-bus-internal|PRD-128]] · [[prd-129-orchestration-strategy|PRD-129]] · [[prd-130-config-validation-typed-errors|PRD-130]] · [[prd-131-discovery-resilience-cache|PRD-131]] · [[prd-138-organization-strategy-pattern|PRD-138]] · [[prd-139-state-store-slicing-lru|PRD-139]]
+- 🎯 RF1 — Estrutura vinculada → [[BR-CONN-017 - Senha da wallet vai para o SecretStorage e ao pool|BR-CONN-017]]
+- 🎯 RF2 — Hidratação → [[BR-CONN-017 - Senha da wallet vai para o SecretStorage e ao pool|BR-CONN-017]]
+- 🎯 RNF1 — Nenhuma senha é logada (redact). → [[SEC-012 - Senha da wallet nunca em settings nem em log|SEC-012]]
+- 🎯 RNF2 — Cobertura ≥ thresholds. → [[SEC-012 - Senha da wallet nunca em settings nem em log|SEC-012]]
 - 🚀 ⬅️ release anterior: [[prd-150-thick-full-true-pool-recovery|PRD-150 (0.20.1)]] · ➡️ próxima release: [[prd-88-locale-aware-formatting|PRD-88 (0.22.0)]]
 <!-- brain:auto:end -->

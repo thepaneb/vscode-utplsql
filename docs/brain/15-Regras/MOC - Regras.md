@@ -48,6 +48,9 @@ SORT id ASC
 ## Índice (links)
 
 <!-- brain:auto:start:moc-index -->
+- [[BR-ARCH-001 - Modos de execução são estratégias, não condicionais no orquestrador]] — `BR-ARCH-001`
+- [[BR-ARCH-002 - Efeitos colaterais da execução passam pelo event bus tipado]] — `BR-ARCH-002`
+- [[BR-ARCH-003 - Organização da árvore de testes é selecionada por Strategy]] — `BR-ARCH-003`
 - [[BR-COB-001 - Cobertura Oracle exige GRANT EXECUTE ON SYS.DBMS_PROFILER]] — `BR-COB-001`
 - [[BR-COB-002 - resolveSourceUri tenta variantes de extensão e bloqueia path traversal]] — `BR-COB-002`
 - [[BR-COB-003 - Cobertura de views via V$SQL é opt-in e best-effort]] — `BR-COB-003`
@@ -81,6 +84,7 @@ SORT id ASC
 - [[BR-CONN-022 - Ativacao nao abre conexao e validacao de setup e preguicosa]] — `BR-CONN-022`
 - [[BR-CONN-023 - Pool ocioso fecha ao fim da operacao e nunca conexao em uso]] — `BR-CONN-023`
 - [[BR-CONN-024 - Abort em thick descarta conexoes e pool quebrados]] — `BR-CONN-024`
+- [[BR-CONN-025 - Configuração é validada, cacheada e invalidada em cada mudança]] — `BR-CONN-025`
 - [[BR-DEBUG-001 - Ciclo do debugger DBMS_DEBUG para no breakpoint e le o frame]] — `BR-DEBUG-001`
 - [[BR-DEBUG-002 - stopOnException controla pausa em excecao (break_exception)]] — `BR-DEBUG-002`
 - [[BR-DEBUG-003 - Function standalone depura no namespace toplevel]] — `BR-DEBUG-003`
@@ -88,9 +92,11 @@ SORT id ASC
 - [[BR-DEBUG-005 - debugAtCursor-debugFailed-debugLast resolvem o alvo e chamam startDebugSession]] — `BR-DEBUG-005`
 - [[BR-DEP-001 - Runtime deps em dependencies e nota DEP- para cada dep direta]] — `BR-DEP-001`
 - [[BR-DISC-001 - mergeSuiteLists devolve a uniao sem mutar a entrada]] — `BR-DISC-001`
+- [[BR-DISC-002 - Descoberta Oracle tem retry transitório, cache TTL e folder por schema]] — `BR-DISC-002`
 - [[BR-DOC-001 - Tabelas de settings e comandos são geradas do package.json]] — `BR-DOC-001`
 - [[BR-DOC-002 - PRD concluída vincula docs e registro de features]] — `BR-DOC-002`
 - [[BR-DOC-003 - Marketplace usa MARKETPLACE.md gerado e README do GitHub segue como referencia]] — `BR-DOC-003`
+- [[BR-ERR-001 - Erros de domínio são tipados e carregam chave de mensagem]] — `BR-ERR-001`
 - [[BR-EXEC-001 - Execução usa duas conexões dedicadas (conn1 runner, conn2 poll)]] — `BR-EXEC-001`
 - [[BR-EXEC-002 - Conexões do runner têm callTimeout zerado]] — `BR-EXEC-002`
 - [[BR-EXEC-003 - Falha na segunda conexão libera a primeira (sem vazamento)]] — `BR-EXEC-003`
@@ -152,6 +158,8 @@ SORT id ASC
 - [[BR-SITE-001 - Landing page gerada de site e publicada no GitHub Pages, sem noindex]] — `BR-SITE-001`
 - [[BR-STATE-001 - Falhas persistidas restauram no schema mode sob demanda]] — `BR-STATE-001`
 - [[BR-STATE-002 - IDs de suite e teste incluem o schema no schema mode]] — `BR-STATE-002`
+- [[BR-STATE-003 - Snapshot do último run é podado por idade e tamanho]] — `BR-STATE-003`
+- [[BR-STATE-004 - Estado da árvore, cobertura e snapshot são stores separados com LRU]] — `BR-STATE-004`
 - [[BR-TEST-001 - Matriz de bancos Oracle cobre 12.2-23ai em thin e thick]] — `BR-TEST-001`
 - [[BR-TEST-002 - Testes de integração exigem banco e são skip sem UTPLSQL_CONN]] — `BR-TEST-002`
 - [[BR-TEST-003 - Stub de vscode é tipado e coberto pelo inventário de APIs]] — `BR-TEST-003`

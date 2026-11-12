@@ -16,6 +16,8 @@ import {
   currentLanguageContributions,
   workspaceAssociations,
 } from './languageIdentity';
+import { createOrganizationStrategy } from './organization/strategy';
+import { isInside } from './pathContainment';
 import type { PerfProbe } from './perf';
 import { type TestStateManager, withDurationSuffix } from './state';
 
@@ -265,12 +267,32 @@ const defaultResolveDeps: TreeResolveDeps = {
   discoverDbSuites,
 };
 
+const schemaResolutions = new Map<string, Promise<void>>();
+
 /** Resolve um nó `schema:` → filhos `package:` (arquivos + banco do schema). */
 export async function resolveSchemaNode(
   controller: vscode.TestController,
   state: TestStateManager,
   item: vscode.TestItem,
   deps: TreeResolveDeps = defaultResolveDeps,
+): Promise<void> {
+  if (state.isResolved(item.id)) return;
+  const existing = schemaResolutions.get(item.id);
+  if (existing) return existing;
+  const promise = resolveSchemaNodeCore(controller, state, item, deps);
+  schemaResolutions.set(item.id, promise);
+  try {
+    await promise;
+  } finally {
+    if (schemaResolutions.get(item.id) === promise) schemaResolutions.delete(item.id);
+  }
+}
+
+async function resolveSchemaNodeCore(
+  controller: vscode.TestController,
+  state: TestStateManager,
+  item: vscode.TestItem,
+  deps: TreeResolveDeps,
 ): Promise<void> {
   if (state.isResolved(item.id)) return;
   const schema = item.id.slice('schema:'.length);
@@ -394,6 +416,39 @@ export async function collectAllItems(
 }
 
 /**
+ * Coleta só o schema dono do path (PRD-131 RF9). Em file/tag ou sem schema
+ * reconhecível, cai no `collectAllItems` para preservar o comportamento.
+ */
+export async function collectItemsForPath(
+  controller: vscode.TestController,
+  state: TestStateManager,
+  fsPath: string,
+  deps: TreeResolveDeps = defaultResolveDeps,
+): Promise<vscode.TestItem[]> {
+  const cfg = readConfig();
+  if (cfg.organization !== 'schema') return collectAllItems(controller, state, deps);
+  const folders = vscode.workspace.workspaceFolders ?? [];
+  const folder = folders.find((f) => isInside(fsPath, f.uri.fsPath));
+  if (!folder) return collectAllItems(controller, state, deps);
+  const schema = deps.extractSchemaFromPath(
+    fsPath,
+    folder.uri.fsPath,
+    cfg.organizationSchemaPattern,
+  );
+  if (!schema) return collectAllItems(controller, state, deps);
+  const root = controller.items.get(`schema:${schema}`);
+  if (!root) return collectAllItems(controller, state, deps);
+
+  await resolveSchemaNode(controller, state, root, deps);
+  const packages: vscode.TestItem[] = [];
+  root.children.forEach((item) => {
+    if (item.id.startsWith('package:')) packages.push(item);
+  });
+  for (const pkg of packages) resolvePackageNode(controller, state, pkg);
+  return state.cachedItems.filter((item) => state.getMeta(item)?.schema === schema);
+}
+
+/**
  * Resolve a subárvore de um item não resolvido (schema → package → suite),
  * sob demanda. Usado antes de montar um `TestRunRequest` para um nó que ainda
  * não foi expandido (PRD-75 RF4).
@@ -480,6 +535,46 @@ const defaultMergeDbDeps: MergeDbDeps = {
   discoverDbSuites,
 };
 
+/** Resolve um nó da árvore pela estratégia de organização (PRD-138 RF1). */
+export async function resolveTreeNode(
+  controller: vscode.TestController,
+  state: TestStateManager,
+  item: vscode.TestItem,
+): Promise<void> {
+  const cfg = readConfig();
+  const strategy = createOrganizationStrategy(cfg.organization, {
+    buildFile: buildFileTree,
+    buildTag: buildTagTree,
+    buildSchema: buildSchemaTree,
+    discoverSchemas: discoverSchemasFromFolders,
+    collectAll: collectAllItems,
+    resolveNode: resolveNodeForStrategy,
+  });
+  await strategy.resolve(
+    {
+      controller,
+      state,
+      suites: [],
+      folders: vscode.workspace.workspaceFolders ?? undefined,
+      schemaPattern: cfg.organizationSchemaPattern,
+    },
+    item,
+  );
+}
+
+async function resolveNodeForStrategy(
+  ctx: { controller: vscode.TestController; state: TestStateManager },
+  item: vscode.TestItem,
+): Promise<void> {
+  if (item.id.startsWith('schema:')) {
+    await resolveSchemaNode(ctx.controller, ctx.state, item);
+  } else if (item.id.startsWith('package:')) {
+    resolvePackageNode(ctx.controller, ctx.state, item);
+  } else if (item.id.startsWith('suite:')) {
+    resolveSuiteNode(ctx.controller, ctx.state, item);
+  }
+}
+
 /**
  * Cria o refresher da árvore de testes com coalescência de chamadas
  * concorrentes (uma execução por vez; reexecuta se solicitado durante).
@@ -526,14 +621,21 @@ export function createRefresher(
     state.setDiscoveredFiles(suites);
     clearDbSourceCache();
 
-    if (cfg.organization === 'schema' && folders?.length) {
-      const extra = await discoverSchemasFromFolders(folders, cfg.organizationSchemaPattern);
-      buildSchemaTree(controller, state, suites, cfg.organizationSchemaPattern, extra);
-    } else if (cfg.organization === 'tag') {
-      buildTagTree(controller, state, suites);
-    } else {
-      buildFileTree(controller, state, suites);
-    }
+    const strategy = createOrganizationStrategy(cfg.organization, {
+      buildFile: buildFileTree,
+      buildTag: buildTagTree,
+      buildSchema: buildSchemaTree,
+      discoverSchemas: discoverSchemasFromFolders,
+      collectAll: collectAllItems,
+      resolveNode: resolveNodeForStrategy,
+    });
+    await strategy.build({
+      controller,
+      state,
+      suites,
+      folders: folders ?? undefined,
+      schemaPattern: cfg.organizationSchemaPattern,
+    });
     endBuildTree?.();
   };
 

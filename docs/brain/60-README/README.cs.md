@@ -74,7 +74,11 @@ Spouštějte a laďte testy **utPLSQL** (Oracle PL/SQL) přímo ve VS Code — n
 ### Připojení a zabezpečení
 
 - 🔌 **Profily připojení** — ukládání a přepínání mezi více prostředími (DEV/TEST/PROD) s nastavením podle profilu, přes stavový řádek nebo paletu příkazů.
-- 🔐 **TNS v thin + wallet** — `utplsql.connections.tnsAdminPath` řeší aliasy `tnsnames.ora` v thin ovladači (fallback na SQL Developer/`TNS_ADMIN`); `walletLocation` v profilu a `utPLSQL: Set wallet password` uchovávají heslo k walletu v SecretStorage.
+- 🔐 **TNS v thin + wallet** — `utplsql.connections.tnsAdminPath` řeší aliasy `tnsnames.ora` v thin ovladači (fallback na SQL Developer/`TNS_ADMIN`); `walletLocation` v profilu a `utPLSQL: Set wallet password` uchovávají heslo k walletu v SecretStorage; Tajemství wallet je vázáno na `connection` profilu; změna jej zahodí (starší tajemství se migrují při prvním čtení).
+- ⚡ **Inkrementální reindexace** — v režimu file watcher debounce-uje podle URI a reindexuje jen změněnou suite; tag/schema a velké dávky přecházejí na full refresh (PRD-103).
+- 🧹 **Úklid neaktivního poolu** — `utplsql.oraclePoolCloseAfterRun` zavírá neaktivní Oracle pool spojení po posledním run/coverage/export/discovery; vypněte jej, chcete-li pool udržet teplý.
+- 🪶 **Odlehčená aktivace** — rozšíření se aktivuje jen pro PL/SQL workspace; setup validace je líná, memoizovaná a při aktivaci nikdy neotevírá Oracle.
+- 🔎 **Trace a výkon** — opt-in `utplsql.trace` a `utplsql.perf.enabled`/`perf.reportFile` měří discovery, tree build, run, polling a XML parsing; ve výchozím stavu vypnuté a nikdy nelogují credentials.
 - 🔒 **Zpevnění zabezpečení připojení** — nastavení připojení jsou `machine`-scoped, rozšíření je zakázáno v nedůvěryhodných pracovních prostorech a heslo profilu je vázáno na připojení.
 - 🔧 **Diagnostika nastavení** — proaktivní ověření připojení, grantů a verze s rychlou opravou (quick-fix).
 
@@ -173,6 +177,8 @@ nativních API VSCode.
 | `utplsql.sourcePath` | `install` | Složka produkčního kódu (pro mapování pokrytí na soubory). |
 | `utplsql.includePatterns` | `["**/*.pks"]` | Globy pro objevení specifikací s `%suite`/`%test`. Pokud jsou vaše testy v `.sql`, použijte `["**/*.sql"]`. |
 | `utplsql.discovery.languageIds` | `["plsql", "sql", "oracle-sql"]` | Jazyková ID považovaná za PL/SQL při objevování, CodeLens a dekoracích. Přípony se berou z nainstalovaných rozšíření a `files.associations`; použijte `["plsql"]`, abyste neskenovali `.sql`. |
+| `utplsql.discovery.retryAttempts` | `2` | Další pokusy při přechodných chybách zjišťování (síť/timeout). 0 vypne; chyby ověření/oprávnění se nikdy neopakují. |
+| `utplsql.discovery.cacheTtlSeconds` | `30` | TTL v sekundách pro mezipaměť metadat Oracle v paměti (`get_suites_info`, reportéry a prefix schématu utPLSQL). 0 vypne mezipaměť. |
 | `utplsql.generate.testPackagePrefix` | `ut_` | Předpona názvu generovaného testovacího balíčku. |
 | `utplsql.generate.testPackageSuffix` | `""` | Přípona názvu generovaného testovacího balíčku. |
 | `utplsql.generate.numberOfTestsPerUnit` | `1` | `%test` vygenerovaných pro každou rutinu produkčního balíčku. |

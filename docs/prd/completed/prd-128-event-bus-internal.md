@@ -4,7 +4,7 @@
 
 | Campo | Valor |
 |---|---|
-| Status | Proposto |
+| Status | Concluído |
 | Autor | Gil Cleber Barboza |
 | Data | 2026-10-30 |
 | Componente | Extensão `paneb.vscode-utplsql` |
@@ -128,10 +128,10 @@ Nenhuma setting nova.
 
 ## 12. Impacto no cérebro
 
-Ao concluir, criar a regra `BR-ARCH-*` ("efeitos colaterais de run passam pelo
-event bus tipado, não por callbacks ad hoc") com `prds: ["PRD-128"]`,
-`implementacao:` e `testes:`. Enquanto `proposed`, `regras: []`.
+Regra criada: `BR-ARCH-002` ("efeitos colaterais da execução passam pelo event
+bus tipado"), com `prds: ["PRD-128"]`, `implementacao:` e `testes:`.
 
 ## Impacto nas docs
 
-`CHANGELOG` e `wiki/Architecture.md` descrevem o bus e a lista de eventos.
+`CHANGELOG` e `wiki/Architecture.md` descrevem o bus, a lista de eventos e a
+ordem de emissão.

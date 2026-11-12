@@ -40,6 +40,10 @@ execution via `node-oracledb`. Available in **24 UI languages**; requires
 - 🗄️ **Database-first discovery** — build the tree from `ut_runner.get_suites_info` and rebuild the annotation cache from the palette ([Test-explorer](Test-explorer)).
 - 🌳 **Lazy test tree** — in `schema` mode, packages/suites/tests are resolved on demand when you expand, so large schemas open instantly ([Tree-organization](Tree-organization)).
 - 📁 **Multi-root workspace** — every workspace folder gets its own suites, with independent discovery, execution and coverage ([Test-explorer](Test-explorer)).
+- ⚡ **Incremental reindex** — in file mode the watcher debounces per URI and reindexes only the changed suite; tag/schema and bursts fall back to a full refresh ([Architecture](Architecture)).
+- 🧹 **Idle pool cleanup** — `utplsql.oraclePoolCloseAfterRun` closes idle Oracle pool connections after the last run/coverage/export/discovery; disable it to keep the pool warm ([Configuration](Configuration)).
+- 🪶 **Lean activation** — the extension activates only for PL/SQL workspaces; setup validation is lazy, memoized and never opens Oracle during activation ([Architecture](Architecture)).
+- 🔎 **Trace and performance** — opt-in `utplsql.trace` and `utplsql.perf.enabled`/`perf.reportFile` measure discovery, tree build, run, polling and XML parsing; off by default and never log credentials ([Performance](Performance)).
 - 🚀 **Oracle direct (via node-oracledb)** — real-time streaming, without waiting for the batch to finish ([Oracle-direct-execution](Oracle-direct-execution)).
 - 📜 **SQL scripts** — run the current script, an Explorer file, or a whole folder against the active connection profile (charset-aware, with `DBMS_OUTPUT` and `stopOnError`) ([SQL-scripts](SQL-scripts)).
 
@@ -58,7 +62,7 @@ execution via `node-oracledb`. Available in **24 UI languages**; requires
 ### Connections & security
 
 - 🔌 **Connection profiles** — save and switch between multiple environments (DEV/TEST/PROD) with per-profile settings, via status bar or command palette ([Connection-profiles](Connection-profiles)).
-- 🔐 **TNS in thin + wallet** — `utplsql.connections.tnsAdminPath` resolves `tnsnames.ora` aliases in the thin driver (fallback to SQL Developer/`TNS_ADMIN`); the profile `walletLocation` and `utPLSQL: Set wallet password` keep the wallet password in the SecretStorage ([Connection](Connection)).
+- 🔐 **TNS in thin + wallet** — `utplsql.connections.tnsAdminPath` resolves `tnsnames.ora` aliases in the thin driver (fallback to SQL Developer/`TNS_ADMIN`); the profile `walletLocation` and `utPLSQL: Set wallet password` keep the wallet password in the SecretStorage, bound to the profile `connection` ([Connection](Connection)).
 - 🔒 **Connection security hardening** — connection settings are `machine`-scoped, the extension is disabled in untrusted workspaces, and the profile password is bound to the connection ([Connection](Connection)).
 - 🔧 **Setup diagnostics** — proactive validation of connection, grants, and version with quick-fix ([Diagnostics-and-quick-fix](Diagnostics-and-quick-fix)).
 

@@ -198,8 +198,8 @@ em `schema > package > suite`. O `suiteMap` oferece acesso direto por ID,
 independente da profundidade.
 
 Usado por:
-- `runForUri` / `runForFolder`: `state.getSuiteItem(`suite:${pkg}`)`
-- `runSingleTest`: idem
+- `runForUri` / `runForFolder`: `collectItemsForPath` + `state.getSuiteItemFor(packageName, schema)`
+- `runSingleTest`: `state.findSuiteItemForUri` + `getSuiteItemFor`
 - `collectAllItems`: fallback via `cachedItems` (já contém suites)
 
 ## `collectAllItems` — recursão (`src/testTree.ts`)

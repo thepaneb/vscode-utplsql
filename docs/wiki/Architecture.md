@@ -2,7 +2,7 @@
 
 # Architecture
 
-<!-- prd:PRD-101 --> <!-- prd:PRD-102 --> <!-- prd:PRD-103 --> <!-- prd:PRD-120 --> <!-- prd:PRD-110 --> <!-- prd:PRD-111 --> <!-- prd:PRD-148 -->
+<!-- prd:PRD-101 --> <!-- prd:PRD-102 --> <!-- prd:PRD-103 --> <!-- prd:PRD-120 --> <!-- prd:PRD-110 --> <!-- prd:PRD-111 --> <!-- prd:PRD-148 --> <!-- prd:PRD-130 --> <!-- prd:PRD-131 --> <!-- prd:PRD-128 --> <!-- prd:PRD-129 --> <!-- prd:PRD-138 --> <!-- prd:PRD-139 -->
 
 Overview of the extension's internal architecture for contributors.
 
@@ -29,6 +29,23 @@ functions live in `src/results.ts` (`applyResultsFromCases`,
   the next `DELETE`/`ut_runner.run`. Export and auto-run share the same gate,
   so two executions never overlap in `UT_OUTPUT_BUFFER_TMP` or overwrite the
   results snapshot out of order.
+- **Run event bus (PRD-128)**: `src/runEvents.ts` emits `suite:start`,
+  `run:start`, `run:complete`, `coverage:generated`, `coverage:html:written`,
+  `run:cancelled` and `run:error`. Status bar, decorations, coverage setup
+  diagnostics and compilation diagnostics subscribe to the bus; the old
+  callbacks remain as adapters.
+- **Run strategies (PRD-129)**: `src/runStrategy.ts` selects `NormalRun`,
+  `CoverageRun`, `ExportRun` or `DebugRun` from `(coverage, exportReporter,
+  debug)`; `executeRun` is the dispatcher and keeps run serialization/outcome.
+- **Tree organization strategies (PRD-138)**: `src/organization/strategy.ts`
+  selects `FileOrganization`, `SchemaOrganization` or `TagOrganization`;
+  `testTree.ts` remains the facade. `configReactivity.ts` refreshes the tree on
+  organization/pattern/tag/duration changes and rebuilds CodeLens + watcher on
+  `discovery.languageIds`/`files.associations`; concurrent schema expansions
+  share the in-flight promise.
+- **State stores (PRD-139)**: `TestStateManager` composes `CoverageStore` (LRU,
+  500), `TestItemIndex` and `RunSnapshot`; `executeRun` clears coverage at the
+  start of a non-empty run and the virtual-source cache is LRU-bounded (50).
 - **Schema-mode identity and restore (PRD-148 RF4/RF7)**: suite/test ids carry
   the schema (`suite:<schema>:<pkg>`, `test:<schema>:<pkg>.<proc>`) to avoid
   collisions between owners; file/tag trees keep the legacy ids. The legacy
@@ -40,6 +57,12 @@ functions live in `src/results.ts` (`applyResultsFromCases`,
   run/coverage/export/discovery closes an idle pool immediately; connections in
   use are never interrupted.
 - `discoverUtplsqlSchema`: `UT3.` prefix via `ALL_SYNONYMS` (shared install).
+- **Discovery resilience (PRD-131)**: transient connection failures use
+  `retryWithBackoff` (`discovery.retryAttempts`); `get_suites_info`,
+  `get_reporters_list` and the utPLSQL schema prefix are cached in memory with
+  `discovery.cacheTtlSeconds`; `discoverDbSuites` resolves the workspace folder
+  by `organization.schemaPattern` (path containment, not string prefix) and
+  `ALL_SOURCE` reads run with bounded concurrency (8).
 
 ### Build (v0.11.0)
 
@@ -74,7 +97,7 @@ bundled.
 | `charsetSupport.ts` — legacy-charset detection (euro preserved) | `compilationDiagnostics.ts` — ALL_ERRORS → Problems Panel |
 | `debounce.ts` — coalescing helper (global + per-key, PRD-103); `perf.ts` — probe de fases/JSONL opt-in (PRD-102) | `dbSourceProvider.ts` — `utplsql-db:` virtual documents |
 | `logger.ts` — logging (no `vscode`); `oracleIdentifiers.ts` — validação do prefixo de schema (`UT3.`); `redact.ts` — `maskConnection`/`redactConnection` (PRD-110) | `connectionProfiles.ts` — connection profiles |
-| | `decorations.ts` — inline ✓/✗/⚠ decorations |
+| `errors.ts` — hierarquia `UtplsqlError` + `mapOracleError`/`formatUserError` (PRD-130); `configValidation.ts` — validação de settings com fallback; `configCache.ts` — snapshot de configuração invalidável (PRD-130); `retry.ts` — retry/backoff e `isRetryable`; `metadataCache.ts` — cache TTL de metadados Oracle (PRD-131); `lru.ts` — LRU genérico; `stateStore/coverageStore.ts`, `stateStore/testItemIndex.ts`, `stateStore/runSnapshot.ts`, `stateStore/persisted.ts` — stores do estado (PRD-139) | `decorations.ts` — inline ✓/✗/⚠ decorations |
 | | `statusBar.ts` — status bar indicator |
 | | `viewCoverage.ts` — DeclarationCoverage + V$SQL view tracking |
 | | `dbmsDebug.ts`, `debugger.ts` — PL/SQL debugging via DBMS_DEBUG |

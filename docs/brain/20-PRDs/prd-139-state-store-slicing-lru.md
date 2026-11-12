@@ -2,15 +2,15 @@
 tipo: prd
 id: PRD-139
 aliases: [PRD-139]
-status: proposed
+status: completed
 titulo: "Fatiamento do TestStateManager e LRU no coverageStore"
 versao: "0.21.0"
 data: "2026-10-30"
 autor: "Gil Cleber Barboza"
 versao_titulo: "0.21.0 — Arquitetura, configuração e resiliência"
 verificado: 2026-10-30
-regras: []
-docs: ["CHANGELOG"]
+regras: ["BR-STATE-004"]
+docs: ["CHANGELOG", "wiki/Architecture.md"]
 tags: [prd]
 ---
 
@@ -118,18 +118,27 @@ Nenhuma setting nova (teto interno).
 
 ## 12. Impacto no cérebro
 
-Ao concluir, criar regra `BR-ARCH-*` com `prds: ["PRD-139"]`. Enquanto `proposed`,
-`regras: []`.
+Regra criada: `BR-STATE-004` ("estado da árvore, cobertura e snapshot são
+stores separados com LRU"), com `prds: ["PRD-139"]`, `implementacao:` e
+`testes:`.
 
 ## Impacto nas docs
 
-Superfície listada: CHANGELOG.
+`CHANGELOG` e `wiki/Architecture.md` descrevem os stores, o LRU e a limpeza de
+cobertura no início do run.
 
 ## Conexões
 
 <!-- brain:auto:start:conexoes -->
 - 🗺️ [[MOC - PRDs]]
+- 📐 Regras: [[BR-STATE-004 - Estado da árvore, cobertura e snapshot são stores separados com LRU|BR-STATE-004]]
 - 🔗 PRDs relacionados: [[prd-54-coverage-toggle|PRD-54]] · [[prd-56-duration-persistence|PRD-56]]
-- 🔗 Mesma versão (0.21.0): [[prd-128-event-bus-internal|PRD-128]] · [[prd-129-orchestration-strategy|PRD-129]] · [[prd-130-config-validation-typed-errors|PRD-130]] · [[prd-131-discovery-resilience-cache|PRD-131]] · [[prd-137-wallet-password-binding|PRD-137]] · [[prd-138-organization-strategy-pattern|PRD-138]]
+- 🎯 RF1 — CoverageStore com LRU → [[BR-STATE-004 - Estado da árvore, cobertura e snapshot são stores separados com LRU|BR-STATE-004]]
+- 🎯 RF2 — Composição → [[BR-STATE-004 - Estado da árvore, cobertura e snapshot são stores separados com LRU|BR-STATE-004]]
+- 🎯 RF3 — Limpeza automática → [[BR-STATE-004 - Estado da árvore, cobertura e snapshot são stores separados com LRU|BR-STATE-004]]
+- 🎯 RF4 — LRU no `dbSourceProvider` → [[BR-STATE-004 - Estado da árvore, cobertura e snapshot são stores separados com LRU|BR-STATE-004]]
+- 🎯 RF5 — Persistência limitada → [[BR-STATE-004 - Estado da árvore, cobertura e snapshot são stores separados com LRU|BR-STATE-004]]
+- 🎯 RNF1 — Cobertura ≥ thresholds. → [[BR-STATE-004 - Estado da árvore, cobertura e snapshot são stores separados com LRU|BR-STATE-004]]
+- 🎯 RNF2 — Nenhuma regressão de testes. → [[BR-STATE-004 - Estado da árvore, cobertura e snapshot são stores separados com LRU|BR-STATE-004]]
 - 🚀 ⬅️ release anterior: [[prd-150-thick-full-true-pool-recovery|PRD-150 (0.20.1)]] · ➡️ próxima release: [[prd-88-locale-aware-formatting|PRD-88 (0.22.0)]]
 <!-- brain:auto:end -->
