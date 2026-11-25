@@ -115,13 +115,16 @@ As sete PRDs saíram para **`approved`** e as questões em aberto foram fechadas
 
 | PRD | Status | Issue |
 |---|---|---|
-| PRD-115 | 🔵 approved | #186 |
+| PRD-115 | 🟡 in-progress (PR #328) | #186 |
 | PRD-88 | 🔵 approved | #126 |
 | PRD-90 | 🔵 approved | #128 |
 | PRD-89 | 🔵 approved | #127 |
 | PRD-91 | 🔵 approved | #129 |
 | PRD-92 | 🔵 approved | #130 |
 | PRD-93 | 🔵 approved | #131 |
+
+> PRD-115 implementada no **PR #328**; a conclusão (`completed` + `versao: "0.22.0"`)
+> e a entrada no `CHANGELOG` entram no release, junto com o bump.
 
 ## Fluxo de execução (por PRD)
 
