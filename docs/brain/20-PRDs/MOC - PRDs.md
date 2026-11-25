@@ -35,16 +35,16 @@ npm run sync-prds
 - **0.19.0 — “Piso Node 24 e runtime moderno”** (publicada): [[Roadmap - 0.19.0 (planejamento)]]
 - **0.20.0 — “Observabilidade e desempenho”** (publicada): [[Roadmap - 0.20.0 (planejamento)]]
 - **0.20.1 — “Confiabilidade de execução e estado”** (publicada): [[Roadmap - 0.20.1 (execução)]]
-- **0.21.0 — “Arquitetura, configuração e resiliência”** (próxima): [[Roadmap - 0.21.0 (planejamento)]]
-- **0.22.0 — “Localização completa”**: [[Roadmap - 0.22.0 (planejamento)]]
+- **0.21.0 — “Arquitetura, configuração e resiliência”** (publicada): [[Roadmap - 0.21.0 (planejamento)]]
+- **0.22.0 — “Localização completa”** (em execução): [[Roadmap - 0.22.0 (execução)]]
 - **0.23.0 — “Docs e qualidade residual”**: [[Roadmap - 0.23.0 (planejamento)]]
 - **0.24.0 — “UX, segurança e distribuição”**: [[Roadmap - 0.24.0 (planejamento)]]
 
 ## Status (gerado)
 
 <!-- brain:auto:start:prd-summary -->
-- 📝 Propostos: **27**
-- 🔵 Aprovados: **0**
+- 📝 Propostos: **20**
+- 🔵 Aprovados: **7**
 - 🟡 Em desenvolvimento: **0**
 - 🟢 Concluídos: **121**
 
@@ -218,7 +218,7 @@ Detalhe completo (fonte da verdade): [docs/prd/index.md](../../prd/index.md)
 - [[Roadmap - 0.20.0 (planejamento)]]
 - [[Roadmap - 0.20.1 (execução)]]
 - [[Roadmap - 0.21.0 (planejamento)]]
-- [[Roadmap - 0.22.0 (planejamento)]]
+- [[Roadmap - 0.22.0 (execução)]]
 - [[Roadmap - 0.23.0 (planejamento)]]
 - [[Roadmap - 0.24.0 (planejamento)]]
 - [[Roadmap - 0.25.0 (planejamento)]]

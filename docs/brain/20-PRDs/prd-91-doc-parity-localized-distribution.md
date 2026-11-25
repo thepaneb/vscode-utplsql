@@ -2,14 +2,15 @@
 tipo: prd
 id: PRD-91
 aliases: [PRD-91]
-status: proposed
+status: approved
 titulo: "Paridade de documentação e distribuição localizada"
 versao: "0.22.0"
 data: "2026-09-29"
 autor: "Gil Cleber Barboza"
 versao_titulo: "0.22.0 — Localização completa"
-verificado: 2026-09-29
+verificado: 2026-11-25
 regras: []
+docs: ["CHANGELOG", "wiki/Contributing.md"]
 tags: [prd]
 ---
 
@@ -21,23 +22,28 @@ tags: [prd]
 | Data | 2026-09-29 |
 | Componente | Extensão `paneb.vscode-utplsql` |
 | Versão alvo | 0.22.0 |
-| Arquivos afetados | `scripts/docs-fidelity.cjs`, `src/test/unit/docsFidelity.test.ts`, `docs/brain/12-I18n/` (registro), `docs/brain/60-README/*`, `README*`, `docs/wiki/`, `.opencode/skills/docs-fidelity` |
+| Arquivos afetados | `scripts/docs-fidelity.cjs`, `scripts/docs-check.cjs`, `src/test/unit/docsFidelity.test.ts`, `docs/brain/12-I18n/` (registro), `docs/brain/60-README/*`, `README*`, `docs/wiki/`, `.opencode/skills/docs-fidelity` |
 | Esforço estimado | 1–2 dias |
 | Complexidade | Média |
 
 ## 1. Resumo
 
 O `docs:check` valida que as variantes de README **existem e estão linkadas**, mas
-**não** cobra paridade de conteúdo: um bullet de feature pode existir no
-`README.md` e faltar nas 23 variantes. Esta PRD fecha esse gate, cria um
-**registro de locales** no cérebro com status/revisor, e formaliza a
-**distribuição localizada** (Marketplace renderiza o README; wiki em inglês; posts
-pt/en) e a **política de priorização** de locales por adoção.
+**não** cobra paridade de estrutura/conteúdo: um bullet de feature ou um comando
+pode existir no `README.md` e faltar nas 23 variantes. O `docs-fidelity` já cobre
+as **settings** (item 9), mas não bullets, comandos nem o conjunto de links de
+idioma. Esta PRD estende esse gate, cria um **registro de locales** no cérebro com
+status/revisor, e formaliza a **distribuição localizada** (Marketplace renderiza o
+README; wiki em inglês; posts pt/en) e a **política de priorização** de locales por
+adoção.
 
 ## 2. Contexto e problema
 
 - `scripts/docs-check.cjs` (`checkReadme`) só confere existência/links das
-  variantes — **sem** comparar bullets, settings ou comandos.
+  variantes — **sem** comparar bullets, comandos ou o conjunto de links de
+  idioma. O `docs-fidelity` já compara settings, mas não o resto.
+- `scripts/docs-check.cjs:81` tem o número **23 hardcoded**; com `ar`/`he`
+  (PRD-92) isso vira 25 e precisa ser derivado.
 - Na 0.14.0, os 5 bullets novos e depois 3 retroativos tiveram de ser inseridos
   manualmente em 24 arquivos; nada no CI garantia que as variantes ficassem iguais.
 - Não há um inventário de locales (quem revisa, cobertura, status) — os `LOC-*`
@@ -66,13 +72,16 @@ pt/en) e a **política de priorização** de locales por adoção.
 
 ### RF1 — Paridade estrutural das variantes
 
-`docs-fidelity` compara, por variante: contagem de bullets de feature, presença
-das tabelas de settings/comandos e conjunto de links de idioma.
+`docs-fidelity` compara, por variante, **tokens normalizados** (ids
+`utplsql.*`, links de idioma e âncoras de feature) e a estrutura por seção, não a
+prosa traduzida; settings continuam cobertas pelo item 9. O `docs-check` deixa de
+ter o número de variantes hardcoded e passa a derivá-lo de `package.nls.*.json`.
 
 ### RF2 — Registro de locales
 
-`12-I18n/` ganha um índice (ou campo nas `LOC-*`) com status, revisor e
-cobertura; `docs-fidelity` cobra a existência do registro para cada locale ativo.
+`12-I18n/Registro de locales.md` (nota **manual** — as `LOC-*` são geradas pelo
+`brain:sync`) com status, revisor, cobertura e pendências; `docs-fidelity` cobra
+uma entrada para cada locale ativo.
 
 ### RF3 — Distribuição
 
@@ -90,9 +99,10 @@ instalações por região e custo de manutenção.
 
 ## 5. Solução proposta
 
-- Estender `docs-fidelity.cjs` com `checkReadmeParity()` e testes em
-  `docsFidelity.test.ts`.
-- Índice em `docs/brain/12-I18n/` (MOC + notas `LOC-*`).
+- Estender `docs-fidelity.cjs` com `checkReadmeParity()` (tokens/âncoras) e testes
+  em `docsFidelity.test.ts`; remover o `23` hardcoded do `docs-check`.
+- Registro manual em `docs/brain/12-I18n/Registro de locales.md` (MOC + `LOC-*`
+  continuam geradas).
 - Atualizar a skill `docs-fidelity` com o passo de paridade.
 
 ## 6. Configuração
@@ -124,20 +134,33 @@ Nenhuma.
 - Registro de locales existe para os 24 e é cobrado.
 - Política de priorização publicada no cérebro.
 
-## 11. Questões em aberto
+## 11. Decisões (2026-11-25)
 
-- Comparar paridade também no **conteúdo** das tabelas (não só presença)?
+- Paridade por **tokens normalizados** (ids `utplsql.*`, links de idioma,
+  âncoras de feature) e estrutura por seção; **não** comparar prosa traduzida
+  (falso positivo semântico).
+- O registro de locales é uma **nota manual** (`12-I18n/Registro de locales.md`),
+  porque as `LOC-*` são geradas; donos/revisores são compartilhados com a PRD-93.
+- O número de variantes deixa de ser literal no `docs-check` e passa a derivar de
+  `package.nls.*.json` (já prepara a PRD-92).
+- O gate roda no `docs-fidelity`/`docs:check`, sem job novo no CI.
 
 ## 12. Impacto no cérebro
 
 Esperado criar `BR-I18N-005` (paridade estrutural das variantes de README) e o
 registro de locales (NFR/ENT a definir), com `prds: ["PRD-91"]`.
 
+## 13. Impacto nas docs
+
+- `CHANGELOG` — bullet do gate de paridade e do registro de locales (PRD-91).
+- `wiki/Contributing.md` — passo de paridade das variantes e como manter o
+  registro (PRD-91).
+
 ## Conexões
 
 <!-- brain:auto:start:conexoes -->
 - 🗺️ [[MOC - PRDs]]
-- 🔗 PRDs relacionados: [[prd-93-continuous-localization-pipeline|PRD-93]]
+- 🔗 PRDs relacionados: [[prd-92-rtl-new-locales|PRD-92]] · [[prd-93-continuous-localization-pipeline|PRD-93]]
 - 🔗 Mesma versão (0.22.0): [[prd-88-locale-aware-formatting|PRD-88]] · [[prd-89-pseudo-localization-gate|PRD-89]] · [[prd-90-message-plurals-cldr|PRD-90]] · [[prd-92-rtl-new-locales|PRD-92]] · [[prd-93-continuous-localization-pipeline|PRD-93]] · [[prd-115-split-i18n-locales|PRD-115]]
 - 🚀 ⬅️ release anterior: [[prd-139-state-store-slicing-lru|PRD-139 (0.21.0)]] · ➡️ próxima release: [[prd-60-branch-coverage-investigation|PRD-60 (0.23.0)]]
 <!-- brain:auto:end -->

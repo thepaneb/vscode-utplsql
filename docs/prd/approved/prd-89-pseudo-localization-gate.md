@@ -4,12 +4,12 @@
 
 | Campo | Valor |
 |---|---|
-| Status | Proposto |
+| Status | Aprovado |
 | Autor | Gil Cleber Barboza |
 | Data | 2026-09-29 |
 | Componente | Extensão `paneb.vscode-utplsql` |
 | Versão alvo | 0.22.0 |
-| Arquivos afetados | `src/i18n.ts`, `src/i18nLocales.ts`, `src/test/unit/i18nPseudo.test.ts`, `scripts/scrape-strings.cjs` (novo), `scripts/docs-fidelity.cjs`, `docs/brain/12-I18n/` |
+| Arquivos afetados | `src/i18n.ts`, `src/i18n/locales/*.ts`, `src/test/unit/i18nPseudo.test.ts`, `scripts/scrape-strings.cjs` (novo), `scripts/scrape-strings.allow.json` (novo), `scripts/docs-fidelity.cjs`, `docs/brain/12-I18n/` |
 | Esforço estimado | 1 dia |
 | Complexidade | Baixa-Média |
 
@@ -52,8 +52,9 @@ exibidos ao usuário fora de `t()`.
 
 ### RF1 — Pseudo-locale
 
-`resolveLocale` aceita `qps-ploc` (só via env de dev); `t()` transforma o texto de
-forma determinística (`a`→`á`, adiciona `~` e padding de ~30 %).
+`resolveLocale` aceita `qps-ploc` (só via env de dev); `t()` aplica a
+transformação **depois da interpolação** (para não corromper `{count}`/`{total}`),
+de forma determinística (`a`→`á`, adiciona `~` e padding de ~30 %).
 
 ### RF2 — Teste do pseudo
 
@@ -62,8 +63,10 @@ interpolação `{count}`/`{total}`.
 
 ### RF3 — Varredura anti-hardcode
 
-`scrape-strings.cjs` percorre `src/**` (fora de teste) e reporta literais de UI
-fora de `t()`; allowlist em arquivo versionado; falha (ou avisa) conforme modo.
+`scrape-strings.cjs` usa a **API do compilador TypeScript** (não regex) para
+percorrer `src/**` (fora de teste) e reportar literais de UI fora de `t()`;
+allowlist versionada em `scripts/scrape-strings.allow.json`; **aviso** no CI
+(`--strict` opt-in para falhar).
 
 ### RF4 — Doc de layout
 
@@ -76,9 +79,11 @@ inspecionar no Extension Development Host).
 
 ## 5. Solução proposta
 
-- Mapa de transformação em `i18n.ts` (só ativo com `UTPLSQL_PSEUDO_LOC=1`).
-- `scripts/scrape-strings.cjs` com AST leve (regex por chamada) + allowlist.
-- Integrar a varredura ao `brain:ci`/`docs:check` como **aviso** inicialmente.
+- Mapa de transformação em `i18n.ts` (só ativo com `UTPLSQL_PSEUDO_LOC=1`),
+  aplicado após a interpolação.
+- `scripts/scrape-strings.cjs` com a API do TypeScript + allowlist versionada.
+- Integrar a varredura ao `docs-fidelity`/`docs:check` como **aviso** nesta
+  release; o bloqueio (`--strict`) fica para a 0.23.0.
 
 ## 6. Configuração
 
@@ -110,11 +115,23 @@ Nenhuma setting pública; apenas env de desenvolvimento.
 - Scanner roda no CI e reporta literais hardcoded.
 - Checklist de layout documentado e executado no aceite.
 
-## 11. Questões em aberto
+## 11. Decisões (2026-11-25)
 
-- Scanner bloqueia ou só avisa? (proposta: só aviso agora; o bloqueio fica para depois.)
+- **Só aviso** no CI nesta release; `--strict` existe para uso local e o bloqueio
+  vira o default na 0.23.0, depois de estabilizar a allowlist.
+- Scanner via **AST do TypeScript** (o `typescript` já é devDependency), não
+  regex; a allowlist é versionada e revisada no PR.
+- A transformação pseudo ocorre **depois** da interpolação e nunca altera
+  placeholders.
+- Integração no `docs-fidelity` (que o `docs:check` já executa), sem job novo.
 
 ## 12. Impacto no cérebro
 
 Esperado criar `BR-I18N-003` (mensagem de UI sempre via `t()`; pseudo-loc e
 varredura cobrem) com `prds: ["PRD-89"]`.
+
+## 13. Impacto nas docs
+
+- `CHANGELOG` — bullet da pseudo-localização e do scanner (PRD-89).
+- `wiki/Contributing.md` — como rodar o pseudo (`UTPLSQL_PSEUDO_LOC=1`) e o gate
+  de strings (PRD-89).

@@ -4,12 +4,12 @@
 
 | Campo | Valor |
 |---|---|
-| Status | Proposto |
+| Status | Aprovado |
 | Autor | Gil Cleber Barboza |
 | Data | 2026-09-29 |
 | Componente | Extensão `paneb.vscode-utplsql` |
 | Versão alvo | 0.22.0 |
-| Arquivos afetados | `src/i18n.ts`, `src/i18nLocales.ts`, `src/statusBar.ts`, `src/quickfix.ts`, `src/commands/*.ts`, `src/test/unit/i18n.test.ts`, `docs/brain/12-I18n/`, `docs/brain/30-Decisoes/` (ADR) |
+| Arquivos afetados | `src/i18n.ts`, `src/i18n/locales/*.ts`, `src/statusBar.ts`, `src/quickfix.ts`, `src/commands/*.ts`, `src/test/unit/i18n.test.ts`, `docs/brain/12-I18n/`, `docs/brain/30-Decisoes/` (ADR + revisão do ADR-007) |
 | Esforço estimado | 2–3 dias |
 | Complexidade | Média-Alta |
 
@@ -22,12 +22,14 @@ por CLDR** no catálogo próprio (`Intl.PluralRules`) e migra essas mensagens.
 
 ## 2. Contexto e problema
 
-Strings afetadas hoje (amostra de `src/i18nLocales.ts`):
+As **10 chaves com `{count}`** do catálogo base (após a PRD-115, em
+`src/i18n/locales/*.ts`) incluem:
 
-- `{count} problema(s) de configuração encontrado(s)…`
-- `{count} conexão(ões) importada(s) do SQL Developer.`
-- `{count} breakpoint(s) aplicado(s); sessão pronta.`
-- `{count} objetos inválidos`, `{count} linhas afetadas`, `{count} setup problem(s)`
+- `ext.validate.problems` — `{count} problema(s)…`
+- `ext.sqlDev.import.ok` — `{count} conexão(ões) importada(s)…`
+- `debug.breakpointsApplied` — `{count} breakpoint(s) aplicado(s)…`
+- `quickfix.invalidObjects`/`stillInvalid`, `script.rows`, `status.passed`/
+  `failed`/`errored`/`skipped`
 
 Em **ru/pl/cs** um número pode exigir formas `one`/`few`/`many`; em **ar**, até 6
 (`zero/one/two/few/many/other`). O `(s)` do inglês ignora essas regras.
@@ -52,21 +54,26 @@ Em **ru/pl/cs** um número pode exigir formas `one`/`few`/`many`; em **ar**, at�
 
 ### RF1 — Formato plural no catálogo
 
-`i18nLocales.ts` aceita `key: { one: '…', other: '…' }` (e `few`/`many`/`zero`/`two`).
+Cada catálogo em `src/i18n/locales/<locale>.ts` aceita
+`key: { one: '…', other: '…' }` (e `few`/`many`/`zero`/`two`), mantendo
+`string` para as chaves escalares.
 
 ### RF2 — Seleção por `Intl.PluralRules`
 
-`t()` detecta a forma plural, seleciona a categoria do `count` e interpola.
+`t()` detecta a forma plural, seleciona a categoria do `count` bruto e interpola
+o número já formatado pelo locale (PRD-88); fallback para `other`.
 
 ### RF3 — Paridade e migração
 
 Todas as chaves plurais existem em **todos** os locales (fallback `other`);
-`missingCatalogKeys` e `docs-fidelity` passam a validar formas plurais.
+`missingCatalogKeys` e o teste de paridade passam a validar as formas plurais
+exigidas pelo CLDR de cada locale.
 
 ### RF4 — ADR de localização
 
 Nota de decisão em `30-Decisoes/` comparando catálogo próprio × `vscode.l10n`,
-justificando a permanência no próprio (24 locales, fallback, testes, plural).
+justificando a permanência no próprio (24 locales, fallback, testes, plural) e
+atualizando o **ADR-007** (que ainda fala em 23 locales).
 
 **Não-funcionais**
 - RNF1 — Sem dependência nova (`Intl.PluralRules` nativo).
@@ -74,9 +81,12 @@ justificando a permanência no próprio (24 locales, fallback, testes, plural).
 
 ## 5. Solução proposta
 
-- `t()`: resolve o locale → se a entrada for objeto, `select(count)` → forma.
-- Tipos: `type Message = string | Partial<Record<Intl.LDMLPluralRule, string>>`.
-- Migração mecânica das chaves `(s)`; testes por categoria.
+- `t()`: resolve o locale → se a entrada for objeto, `select(count)` → forma
+  (fallback `other`), depois interpola com o número formatado.
+- Tipos: `type Message = string | Partial<Record<Intl.LDMLPluralRule, string>>`;
+  `Catalog = Record<string, Message>`.
+- Migração mecânica das **10 chaves com `{count}`**; testes por categoria e por
+  locale (incluindo `ru`, `pl`, `cs` e, na PRD-92, `ar`).
 
 ## 6. Configuração
 
@@ -108,11 +118,24 @@ Nenhuma nova.
 - `ru` usa `few`/`many` conforme o número; `ar` cobre as 6 categorias.
 - Paridade de formas plurais verde no CI.
 
-## 11. Questões em aberto
+## 11. Decisões (2026-11-25)
 
-- Suportar **select** (gênero/contexto) junto do plural? (avaliar na ADR.)
+- **Sem `select`** (gênero/contexto) nesta release; o formato do catálogo fica
+  restrito a formas plurais e a ADR registra a decisão.
+- Forma **shorthand** `{ one, few, many, other }` (sem envelope `plural`) para
+  minimizar o churn; se `select` for necessário depois, entra por PRD própria.
+- Fallback da forma: categoria do locale → `other` → pt-BR → chave.
+- Aplicar **depois da PRD-115** (um arquivo por locale) para evitar conflito nos
+  24 catálogos.
+- `BR-I18N-001` passa a mencionar a seleção plural no `t()`.
 
 ## 12. Impacto no cérebro
 
 Esperado criar `BR-I18N-004` (plurais via CLDR; formas exigidas por locale) com
-`prds: ["PRD-90"]`, e a ADR de localização.
+`prds: ["PRD-90"]`, e a ADR de localização (`ADR-014`), atualizando o `ADR-007`.
+
+## 13. Impacto nas docs
+
+- `CHANGELOG` — bullet dos plurais CLDR (PRD-90).
+- `wiki/Internationalization.md` — nota sobre formas plurais por locale e a ADR
+  de localização (PRD-90).
