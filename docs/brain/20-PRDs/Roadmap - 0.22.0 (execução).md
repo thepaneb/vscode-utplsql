@@ -120,14 +120,13 @@ As sete PRDs saíram para **`approved`** e as questões em aberto foram fechadas
 | PRD-90 | 🟡 in-progress (PR #333) | #128 |
 | PRD-89 | 🟡 in-progress (PR #331) | #127 |
 | PRD-91 | 🟡 in-progress (PR #330) | #129 |
-| PRD-92 | 🔵 approved | #130 |
+| PRD-92 | 🟡 in-progress (PR #334) | #130 |
 | PRD-93 | 🟡 in-progress (PR #332) | #131 |
 
-> PRD-115 (PR #328), PRD-88 (PR #329), PRD-91 (PR #330), PRD-89 (PR #331),
-> PRD-93 (PR #332) e PRD-90 (PR #333) implementadas; falta a **PRD-92**
-> (`ar`/`he`, RTL). A conclusão (`completed` + `versao: "0.22.0"`) e a entrada no
-> `CHANGELOG` entram no release, junto com o bump. As traduções seguem em draft
-> até a revisão in-country.
+> As **7 PRDs** estão implementadas: 115 (#328), 88 (#329), 91 (#330), 89
+> (#331), 93 (#332), 90 (#333) e 92 (#334). A conclusão (`completed` +
+> `versao: "0.22.0"`), o `CHANGELOG` e o bump entram no release; as traduções de
+> `ar`/`he` e as formas plurais seguem em draft/beta até a revisão in-country.
 
 ## Fluxo de execução (por PRD)
 
@@ -142,9 +141,9 @@ As sete PRDs saíram para **`approved`** e as questões em aberto foram fechadas
 - **ar/he sem revisor:** entram como **beta** no `Registro de locales`; o
   suporte RTL/bidi e a paridade de catálogo não são bloqueados. A revisão
   in-country vira pendência explícita da 0.23.0.
-- **Traduções (PRD-90/92):** se a revisão de plurais/RTL não chegar, as duas
-  descem para a 0.23.0; a 0.22.0 entrega o bloco sem tradução (split, formatação,
-  docs/registro, pseudo/scanner e pipeline) e registra a pendência.
+- **Traduções draft (PRD-90/92):** entram na 0.22.0 como **beta/draft**; a revisão
+  in-country de plurais e RTL fica registrada como pendência da 0.23.0 e não
+  bloqueia a release.
 - **PRD-89:** o scanner fica em **aviso** no CI (`--strict` opt-in), sem bloquear
   a release.
 - **Conflito nos catálogos:** 90/92/93 só entram depois da 115; se a 115 atrasar,
