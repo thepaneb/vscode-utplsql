@@ -12,7 +12,7 @@ follow your VSCode display language, and can be pinned with the
 
 | Setting | Values | Default |
 |---|---|---|
-| `utplsql.language` | `auto` \| `pt-br` \| `en` \| `en-gb` \| `es` \| `zh-cn` \| `zh-tw` \| `ja` \| `de` \| `fr` \| `it` \| `ko` \| `ru` \| `tr` \| `pl` \| `cs` \| `hu` \| `bg` \| `el` \| `id` \| `ro` \| `sr` \| `th` \| `uk` \| `vi` | `auto` |
+| `utplsql.language` | `auto` \| `pt-br` \| `en` \| `en-gb` \| `es` \| `zh-cn` \| `zh-tw` \| `ja` \| `de` \| `fr` \| `it` \| `ko` \| `ru` \| `tr` \| `pl` \| `cs` \| `hu` \| `bg` \| `el` \| `id` \| `ro` \| `sr` \| `th` \| `uk` \| `vi` \| `ar` \| `he` | `auto` |
 
 `auto` follows the VSCode locale: `pt` → `pt-br`, `zh-tw`/`zh-hk` → `zh-tw`, and
 so on; anything unsupported falls back to `en`. A fixed value always wins.
@@ -64,11 +64,23 @@ A catalogue entry can be a plain string or CLDR plural forms:
 - Draft translations of the forms are accepted while in-country review is
   pending (see [Registro de locales](Registro de locales)).
 
+## RTL (PRD-92)
+
+- `ar` (Arabic) and `he` (Hebrew) are RTL; identifiers, paths, commands and
+  Oracle codes remain **LTR**.
+- `t()` wraps technical parameters (`name`, `path`, `schema`, `conn`, `package`,
+  `proc`, `error`, …) in FSI/PDI (`U+2068`/`U+2069`) when the locale is RTL, so
+  `UT3.PKG` is not visually reordered inside an RTL sentence.
+- Both locales ship as **beta** with draft translations; the manual RTL pass is
+  in [Checklist de pseudo-localização](Checklist de pseudo-localização) and the review status in
+  [Registro de locales](Registro de locales).
+
 ![Internationalization architecture](images/diagram-i18n.svg)
 
 ## Notes
 
-- The catalogues cover the **24 locales** listed above (+ `auto`), so the setting
-  has 25 valid values.
+- The catalogues cover the **26 locales** listed above (+ `auto`), so the setting
+  has 27 valid values. `ar` and `he` are **beta** (draft translations, RTL)
+  until in-country review; see [Registro de locales](Registro de locales).
 - Diagnostics from Oracle (e.g. `ORA-`, `DPI-`) are not translated — only the
   extension's own wrapper messages are.

@@ -6,7 +6,7 @@
 
 <div align="center">
 
-[English](README.md) · [中文(简体)](README.zh-CN.md) · [中文(繁體)](README.zh-TW.md) · [日本語](README.ja.md) · [한국어](README.ko.md) · [Español](README.es.md) · [Français](README.fr.md) · [Português](README.pt-BR.md) · [Italiano](README.it.md) · [Română](README.ro.md) · [Deutsch](README.de.md) · [Русский](README.ru.md) · [Polski](README.pl.md) · [Українська](README.uk.md) · [Čeština](README.cs.md) · [Български](README.bg.md) · [Српски](README.sr.md) · [Türkçe](README.tr.md) · [Ελληνικά](README.el.md) · [Magyar](README.hu.md) · **Bahasa Indonesia** · [Tiếng Việt](README.vi.md) · [ไทย](README.th.md) · [English (UK)](README.en-GB.md)
+[English](README.md) · [العربية](README.ar.md) · [עברית](README.he.md) · [中文(简体)](README.zh-CN.md) · [中文(繁體)](README.zh-TW.md) · [日本語](README.ja.md) · [한국어](README.ko.md) · [Español](README.es.md) · [Français](README.fr.md) · [Português](README.pt-BR.md) · [Italiano](README.it.md) · [Română](README.ro.md) · [Deutsch](README.de.md) · [Русский](README.ru.md) · [Polski](README.pl.md) · [Українська](README.uk.md) · [Čeština](README.cs.md) · [Български](README.bg.md) · [Српски](README.sr.md) · [Türkçe](README.tr.md) · [Ελληνικά](README.el.md) · [Magyar](README.hu.md) · **Bahasa Indonesia** · [Tiếng Việt](README.vi.md) · [ไทย](README.th.md) · [English (UK)](README.en-GB.md)
 
 </div>
 
@@ -26,7 +26,7 @@
 
 # utPLSQL Test Runner
 
-Jalankan dan debug pengujian **utPLSQL** (Oracle PL/SQL) langsung di VS Code — **Test Explorer** native, cakupan visual, debugger PL/SQL, dan eksekusi **langsung Oracle** via `node-oracledb`. Tersedia dalam **24 bahasa**; memerlukan **VS Code 1.125+** (Node 24).
+Jalankan dan debug pengujian **utPLSQL** (Oracle PL/SQL) langsung di VS Code — **Test Explorer** native, cakupan visual, debugger PL/SQL, dan eksekusi **langsung Oracle** via `node-oracledb`. Tersedia dalam **26 bahasa**; memerlukan **VS Code 1.125+** (Node 24).
 
 ### Test Explorer dan eksekusi
 
@@ -85,7 +85,7 @@ Jalankan dan debug pengujian **utPLSQL** (Oracle PL/SQL) langsung di VS Code —
 - 🎯 **Langsung ke kegagalan** — navigasi langsung ke baris asersi yang gagal (melalui "Go to Error" asli).
 - 🧱 **Diagnostik kompilasi** — setelah setiap eksekusi, kesalahan kompilasi PL/SQL (`ALL_ERRORS`) muncul di Problems Panel dengan source `utPLSQL Compilation` (setelan `utplsql.compilationDiagnostics.enabled`).
 - ⏳ **Progres dan pembatalan** — eksekusi panjang menampilkan notifikasi progres dengan jumlah dan tombol *Cancel* (plus `utplsql.timeoutMinutes` opsional).
-- 🌍 **i18n — 24 bahasa** — `utplsql.language` mengikuti VSCode (24 locale: pt-br, en, en-gb, es, zh-cn, zh-tw, ja, de, fr, it, ko, ru, tr, pl, cs, hu, bg, el, id, ro, sr, th, uk, vi).
+- 🌍 **i18n — 26 bahasa** — `utplsql.language` mengikuti VSCode (26 locale: pt-br, en, en-gb, es, zh-cn, zh-tw, ja, de, fr, it, ko, ru, tr, pl, cs, hu, bg, el, id, ro, sr, th, uk, vi, ar, he).
 
 
 ## Instalasi
@@ -229,7 +229,7 @@ Ekstensi terhubung langsung ke Oracle, membaca laporan (JUnit + Coverage) lalu m
 | `utplsql.scriptRunner.filePattern` | `**/*.{sql,pks,pkb,fnc,prc,trg}` | Globs to list files when running a script folder. |
 | `utplsql.scriptRunner.dbmsOutput` | `false` | Captures and displays `DBMS_OUTPUT` during script execution. |
 | `utplsql.scriptRunner.timeoutSeconds` | `300` | Per-statement timeout (s) for scripts (`callTimeout`). |
-| `utplsql.language` | `auto` | Bahasa pesan runtime. `auto` mengikuti VSCode (pt, zh-tw/zh-hk, zh, es, ja, de, fr, it, ko, ru, tr, pl, cs, hu, bg, el, id, ro, sr, th, uk, vi, en-gb; selain itu en). Mencakup **24 locale**. |
+| `utplsql.language` | `auto` | Bahasa pesan runtime. `auto` mengikuti VSCode (pt, zh-tw/zh-hk, zh, es, ja, de, fr, it, ko, ru, tr, pl, cs, hu, bg, el, id, ro, sr, th, uk, vi, en-gb; selain itu en). Mencakup **26 locale**. |
 
 Contoh (`.vscode/settings.json` proyek):
 

@@ -6,7 +6,7 @@
 
 <div align="center">
 
-[English](README.md) · [中文(简体)](README.zh-CN.md) · [中文(繁體)](README.zh-TW.md) · **日本語** · [한국어](README.ko.md) · [Español](README.es.md) · [Français](README.fr.md) · [Português](README.pt-BR.md) · [Italiano](README.it.md) · [Română](README.ro.md) · [Deutsch](README.de.md) · [Русский](README.ru.md) · [Polski](README.pl.md) · [Українська](README.uk.md) · [Čeština](README.cs.md) · [Български](README.bg.md) · [Српски](README.sr.md) · [Türkçe](README.tr.md) · [Ελληνικά](README.el.md) · [Magyar](README.hu.md) · [Bahasa Indonesia](README.id.md) · [Tiếng Việt](README.vi.md) · [ไทย](README.th.md) · [English (UK)](README.en-GB.md)
+[English](README.md) · [العربية](README.ar.md) · [עברית](README.he.md) · [中文(简体)](README.zh-CN.md) · [中文(繁體)](README.zh-TW.md) · **日本語** · [한국어](README.ko.md) · [Español](README.es.md) · [Français](README.fr.md) · [Português](README.pt-BR.md) · [Italiano](README.it.md) · [Română](README.ro.md) · [Deutsch](README.de.md) · [Русский](README.ru.md) · [Polski](README.pl.md) · [Українська](README.uk.md) · [Čeština](README.cs.md) · [Български](README.bg.md) · [Српски](README.sr.md) · [Türkçe](README.tr.md) · [Ελληνικά](README.el.md) · [Magyar](README.hu.md) · [Bahasa Indonesia](README.id.md) · [Tiếng Việt](README.vi.md) · [ไทย](README.th.md) · [English (UK)](README.en-GB.md)
 
 </div>
 
@@ -26,7 +26,7 @@
 
 # utPLSQL Test Runner
 
-**utPLSQL**（Oracle PL/SQL）のテストを VS Code 上で実行・デバッグ — ネイティブの **Test Explorer**、視覚的なカバレッジ、PL/SQL デバッガー、`node-oracledb` による **Oracle 直接実行**。**24 言語**対応。**VS Code 1.125+** (Node 24).
+**utPLSQL**（Oracle PL/SQL）のテストを VS Code 上で実行・デバッグ — ネイティブの **Test Explorer**、視覚的なカバレッジ、PL/SQL デバッガー、`node-oracledb` による **Oracle 直接実行**。**26 言語**対応。**VS Code 1.125+** (Node 24).
 
 ### Test Explorer と実行
 
@@ -85,7 +85,7 @@
 - 🎯 **失敗箇所へのジャンプ** — 失敗したアサーションの行へ直接移動（ネイティブの "Go to Error" 経由）。
 - 🧱 **コンパイル診断** — 実行のたびに PL/SQL のコンパイルエラー（`ALL_ERRORS`）が Problems Panel に source `utPLSQL Compilation` で表示されます（設定 `utplsql.compilationDiagnostics.enabled`）。
 - ⏳ **進捗とキャンセル** — 長時間の実行ではカウント付きの進捗通知と *Cancel* ボタンを表示します（任意で `utplsql.timeoutMinutes`）。
-- 🌍 **i18n — 24 言語** — `utplsql.language` は VSCode に追従（24 ロケール: pt-br, en, en-gb, es, zh-cn, zh-tw, ja, de, fr, it, ko, ru, tr, pl, cs, hu, bg, el, id, ro, sr, th, uk, vi）。
+- 🌍 **i18n — 26 言語** — `utplsql.language` は VSCode に追従（26 ロケール: pt-br, en, en-gb, es, zh-cn, zh-tw, ja, de, fr, it, ko, ru, tr, pl, cs, hu, bg, el, id, ro, sr, th, uk, vi, ar, he）。
 
 
 ## インストール
@@ -224,7 +224,7 @@ Test Explorer に表示されます。
 | `utplsql.scriptRunner.filePattern` | `**/*.{sql,pks,pkb,fnc,prc,trg}` | Globs to list files when running a script folder. |
 | `utplsql.scriptRunner.dbmsOutput` | `false` | Captures and displays `DBMS_OUTPUT` during script execution. |
 | `utplsql.scriptRunner.timeoutSeconds` | `300` | Per-statement timeout (s) for scripts (`callTimeout`). |
-| `utplsql.language` | `auto` | ランタイムメッセージの言語。`auto` は VSCode に追従（pt, zh-tw/zh-hk, zh, es, ja, de, fr, it, ko, ru, tr, pl, cs, hu, bg, el, id, ro, sr, th, uk, vi, en-gb; それ以外は en）。**24 ロケール**をカバー。 |
+| `utplsql.language` | `auto` | ランタイムメッセージの言語。`auto` は VSCode に追従（pt, zh-tw/zh-hk, zh, es, ja, de, fr, it, ko, ru, tr, pl, cs, hu, bg, el, id, ro, sr, th, uk, vi, en-gb; それ以外は en）。**26 ロケール**をカバー。 |
 
 例（プロジェクト `.vscode/settings.json`）:
 

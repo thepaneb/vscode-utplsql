@@ -15,6 +15,7 @@ export const PSEUDO_LOCALE = 'qps-ploc' as const;
 
 export type ExtensionLocale = LocaleCode | typeof PSEUDO_LOCALE;
 export {
+  ar,
   bg,
   cs,
   de,
@@ -23,6 +24,7 @@ export {
   enGb,
   es,
   fr,
+  he,
   hu,
   id,
   it,
@@ -86,6 +88,8 @@ export function resolveLocale(setting: string, vscodeLanguage: string): Extensio
   if (setting in catalogs) return setting as ExtensionLocale;
   const lang = vscodeLanguage.toLowerCase();
   if (lang.startsWith('pt')) return 'pt-br';
+  if (lang.startsWith('ar')) return 'ar';
+  if (lang === 'iw' || lang.startsWith('he')) return 'he';
   if (lang === 'zh-tw' || lang === 'zh-hk') return 'zh-tw';
   if (lang.startsWith('zh')) return 'zh-cn';
   if (lang.startsWith('es')) return 'es';
@@ -141,6 +145,29 @@ export function formatDuration(locale: ExtensionLocale, ms: number): string {
 /** Parâmetros numéricos que representam contagens (recebem grouping do locale). */
 const LOCALIZED_NUMERIC_PARAMS = new Set(['count', 'total', 'current']);
 
+/** Locales RTL; identificadores técnicos recebem isolamento bidi (PRD-92). */
+const RTL_LOCALES = new Set(['ar', 'he']);
+const TECHNICAL_PARAMS = new Set([
+  'name',
+  'path',
+  'file',
+  'schema',
+  'conn',
+  'id',
+  'cmd',
+  'package',
+  'proc',
+  'desc',
+  'reporter',
+  'error',
+  'version',
+  'user',
+  'dir',
+  'label',
+  'profile',
+  'charset',
+]);
+
 function interpolate(
   template: string,
   locale: ExtensionLocale,
@@ -153,7 +180,8 @@ function interpolate(
     if (typeof value === 'number' && LOCALIZED_NUMERIC_PARAMS.has(k)) {
       return formatNumber(locale, value);
     }
-    return String(value);
+    const text = String(value);
+    return RTL_LOCALES.has(locale) && TECHNICAL_PARAMS.has(k) ? `\u2068${text}\u2069` : text;
   });
 }
 

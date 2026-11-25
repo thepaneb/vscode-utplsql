@@ -6,7 +6,7 @@
 
 <div align="center">
 
-[English](README.md) · [中文(简体)](README.zh-CN.md) · [中文(繁體)](README.zh-TW.md) · [日本語](README.ja.md) · [한국어](README.ko.md) · [Español](README.es.md) · [Français](README.fr.md) · [Português](README.pt-BR.md) · [Italiano](README.it.md) · [Română](README.ro.md) · [Deutsch](README.de.md) · **Русский** · [Polski](README.pl.md) · [Українська](README.uk.md) · [Čeština](README.cs.md) · [Български](README.bg.md) · [Српски](README.sr.md) · [Türkçe](README.tr.md) · [Ελληνικά](README.el.md) · [Magyar](README.hu.md) · [Bahasa Indonesia](README.id.md) · [Tiếng Việt](README.vi.md) · [ไทย](README.th.md) · [English (UK)](README.en-GB.md)
+[English](README.md) · [العربية](README.ar.md) · [עברית](README.he.md) · [中文(简体)](README.zh-CN.md) · [中文(繁體)](README.zh-TW.md) · [日本語](README.ja.md) · [한국어](README.ko.md) · [Español](README.es.md) · [Français](README.fr.md) · [Português](README.pt-BR.md) · [Italiano](README.it.md) · [Română](README.ro.md) · [Deutsch](README.de.md) · **Русский** · [Polski](README.pl.md) · [Українська](README.uk.md) · [Čeština](README.cs.md) · [Български](README.bg.md) · [Српски](README.sr.md) · [Türkçe](README.tr.md) · [Ελληνικά](README.el.md) · [Magyar](README.hu.md) · [Bahasa Indonesia](README.id.md) · [Tiếng Việt](README.vi.md) · [ไทย](README.th.md) · [English (UK)](README.en-GB.md)
 
 </div>
 
@@ -26,7 +26,7 @@
 
 # utPLSQL Test Runner
 
-Запускайте и отлаживайте тесты **utPLSQL** (Oracle PL/SQL) прямо в VS Code — нативный **Test Explorer**, визуальное покрытие, отладчик PL/SQL и **прямое выполнение Oracle** через `node-oracledb`. Доступно на **24 языках**; требуется **VS Code 1.125+** (Node 24).
+Запускайте и отлаживайте тесты **utPLSQL** (Oracle PL/SQL) прямо в VS Code — нативный **Test Explorer**, визуальное покрытие, отладчик PL/SQL и **прямое выполнение Oracle** через `node-oracledb`. Доступно на **26 языках**; требуется **VS Code 1.125+** (Node 24).
 
 ### Test Explorer и выполнение
 
@@ -85,7 +85,7 @@
 - 🎯 **Переход к ошибке** — прямая навигация к строке упавшей проверки (через нативное «Go to Error»).
 - 🧱 **Диагностика компиляции** — после каждого запуска ошибки компиляции PL/SQL (`ALL_ERRORS`) появляются в Problems Panel под источником `utPLSQL Compilation` (настройка `utplsql.compilationDiagnostics.enabled`).
 - ⏳ **Прогресс и отмена** — долгие запуски показывают уведомление о прогрессе со счётчиком и кнопкой *Cancel* (плюс опциональный `utplsql.timeoutMinutes`).
-- 🌍 **i18n — 24 языка** — `utplsql.language` следует за VSCode (24 локали: pt-br, en, en-gb, es, zh-cn, zh-tw, ja, de, fr, it, ko, ru, tr, pl, cs, hu, bg, el, id, ro, sr, th, uk, vi).
+- 🌍 **i18n — 26 языка** — `utplsql.language` следует за VSCode (26 локали: pt-br, en, en-gb, es, zh-cn, zh-tw, ja, de, fr, it, ko, ru, tr, pl, cs, hu, bg, el, id, ro, sr, th, uk, vi, ar, he).
 
 
 ## Установка
@@ -229,7 +229,7 @@ Test Explorer **по мере завершения каждого теста**.
 | `utplsql.scriptRunner.filePattern` | `**/*.{sql,pks,pkb,fnc,prc,trg}` | Globs to list files when running a script folder. |
 | `utplsql.scriptRunner.dbmsOutput` | `false` | Captures and displays `DBMS_OUTPUT` during script execution. |
 | `utplsql.scriptRunner.timeoutSeconds` | `300` | Per-statement timeout (s) for scripts (`callTimeout`). |
-| `utplsql.language` | `auto` | Язык сообщений среды выполнения. `auto` следует за VSCode (pt, zh-tw/zh-hk, zh, es, ja, de, fr, it, ko, ru, tr, pl, cs, hu, bg, el, id, ro, sr, th, uk, vi, en-gb; в остальных случаях en). Охватывает **24 локали**. |
+| `utplsql.language` | `auto` | Язык сообщений среды выполнения. `auto` следует за VSCode (pt, zh-tw/zh-hk, zh, es, ja, de, fr, it, ko, ru, tr, pl, cs, hu, bg, el, id, ro, sr, th, uk, vi, en-gb; в остальных случаях en). Охватывает **26 локали**. |
 
 Пример (`.vscode/settings.json` проекта):
 

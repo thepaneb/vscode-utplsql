@@ -5,7 +5,7 @@
 **Run, debug and measure coverage of utPLSQL (Oracle PL/SQL) unit tests directly
 from VS Code — no Java, no Instant Client required in thin mode.**
 
-`24 UI languages · VS Code 1.125+ · Oracle 12.1+ (thin) / 11.2+ (thick) · MIT`
+`26 UI languages · VS Code 1.125+ · Oracle 12.1+ (thin) / 11.2+ (thick) · MIT`
 
 [Install from the Marketplace](https://marketplace.visualstudio.com/items?itemName=paneb.vscode-utplsql) ·
 [Quick start](https://github.com/thepaneb/vscode-utplsql#quick-start) ·
@@ -44,7 +44,7 @@ bounded state/coverage caches. The full release notes are in the
   in VS Code SecretStorage.
 - **CodeLens and inline results** — run at cursor and see pass/fail
   decorations next to the test.
-- **24 UI languages** — the interface follows your VS Code language.
+- **26 UI languages** — the interface follows your VS Code language.
 
 ## Quick start
 
@@ -243,7 +243,7 @@ More troubleshooting: [wiki/Troubleshooting](https://github.com/thepaneb/vscode-
 
 ## Languages
 
-The interface is available in 24 languages. The complete localized READMEs are
+The interface is available in 26 languages. The complete localized READMEs are
 in the [GitHub repository](https://github.com/thepaneb/vscode-utplsql#readme);
 the Marketplace page is English-only.
 

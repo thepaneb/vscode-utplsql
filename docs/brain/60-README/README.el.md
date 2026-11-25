@@ -15,7 +15,7 @@ tags: [readme]
 
 <div align="center">
 
-[[README (extensão)|English]] · [[README.zh-CN|中文(简体)]] · [[README.zh-TW|中文(繁體)]] · [[README.ja|日本語]] · [[README.ko|한국어]] · [[README.es|Español]] · [[README.fr|Français]] · [[README.pt-BR|Português]] · [[README.it|Italiano]] · [[README.ro|Română]] · [[README.de|Deutsch]] · [[README.ru|Русский]] · [[README.pl|Polski]] · [[README.uk|Українська]] · [[README.cs|Čeština]] · [[README.bg|Български]] · [[README.sr|Српски]] · [[README.tr|Türkçe]] · **Ελληνικά** · [[README.hu|Magyar]] · [[README.id|Bahasa Indonesia]] · [[README.vi|Tiếng Việt]] · [[README.th|ไทย]] · [[README.en-GB|English (UK)]]
+[[README (extensão)|English]] · [[README.ar|العربية]] · [[README.he|עברית]] · [[README.zh-CN|中文(简体)]] · [[README.zh-TW|中文(繁體)]] · [[README.ja|日本語]] · [[README.ko|한국어]] · [[README.es|Español]] · [[README.fr|Français]] · [[README.pt-BR|Português]] · [[README.it|Italiano]] · [[README.ro|Română]] · [[README.de|Deutsch]] · [[README.ru|Русский]] · [[README.pl|Polski]] · [[README.uk|Українська]] · [[README.cs|Čeština]] · [[README.bg|Български]] · [[README.sr|Српски]] · [[README.tr|Türkçe]] · **Ελληνικά** · [[README.hu|Magyar]] · [[README.id|Bahasa Indonesia]] · [[README.vi|Tiếng Việt]] · [[README.th|ไทย]] · [[README.en-GB|English (UK)]]
 
 </div>
 
@@ -35,7 +35,7 @@ tags: [readme]
 
 # utPLSQL Test Runner
 
-Εκτελέστε και αποσφαλματώστε δοκιμές **utPLSQL** (Oracle PL/SQL) απευθείας στο VS Code — εγγενές **Test Explorer**, οπτική κάλυψη, αποσφαλματωτής PL/SQL και **απευθείας εκτέλεση Oracle** μέσω `node-oracledb`. Διαθέσιμο σε **24 γλώσσες**· απαιτεί **VS Code 1.125+** (Node 24).
+Εκτελέστε και αποσφαλματώστε δοκιμές **utPLSQL** (Oracle PL/SQL) απευθείας στο VS Code — εγγενές **Test Explorer**, οπτική κάλυψη, αποσφαλματωτής PL/SQL και **απευθείας εκτέλεση Oracle** μέσω `node-oracledb`. Διαθέσιμο σε **26 γλώσσες**· απαιτεί **VS Code 1.125+** (Node 24).
 
 ### Test Explorer και εκτέλεση
 
@@ -94,7 +94,7 @@ tags: [readme]
 - 🎯 **Jump to failure** — άμεση μετάβαση στη γραμμή του assertion που απέτυχε (μέσω του εγγενούς "Go to Error").
 - 🧱 **Διαγνωστικά μεταγλώττισης** — μετά από κάθε εκτέλεση, τα σφάλματα μεταγλώττισης PL/SQL (`ALL_ERRORS`) εμφανίζονται στο Problems Panel με source `utPLSQL Compilation` (ρύθμιση `utplsql.compilationDiagnostics.enabled`).
 - ⏳ **Πρόοδος και ακύρωση** — οι μεγάλες εκτελέσεις εμφανίζουν ειδοποίηση προόδου με μετρητή και κουμπί *Cancel* (και προαιρετικό `utplsql.timeoutMinutes`).
-- 🌍 **i18n — 24 γλώσσες** — το `utplsql.language` ακολουθεί το VSCode (24 τοπικές ρυθμίσεις: pt-br, en, en-gb, es, zh-cn, zh-tw, ja, de, fr, it, ko, ru, tr, pl, cs, hu, bg, el, id, ro, sr, th, uk, vi).
+- 🌍 **i18n — 26 γλώσσες** — το `utplsql.language` ακολουθεί το VSCode (26 τοπικές ρυθμίσεις: pt-br, en, en-gb, es, zh-cn, zh-tw, ja, de, fr, it, ko, ru, tr, pl, cs, hu, bg, el, id, ro, sr, th, uk, vi, ar, he).
 
 
 ## Εγκατάσταση
@@ -239,7 +239,7 @@ Test Explorer **καθώς ολοκληρώνεται κάθε test**.
 | `utplsql.scriptRunner.filePattern` | `**/*.{sql,pks,pkb,fnc,prc,trg}` | Globs to list files when running a script folder. |
 | `utplsql.scriptRunner.dbmsOutput` | `false` | Captures and displays `DBMS_OUTPUT` during script execution. |
 | `utplsql.scriptRunner.timeoutSeconds` | `300` | Per-statement timeout (s) for scripts (`callTimeout`). |
-| `utplsql.language` | `auto` | Γλώσσα των μηνυμάτων του runtime. Το `auto` ακολουθεί το VSCode (pt, zh-tw/zh-hk, zh, es, ja, de, fr, it, ko, ru, tr, pl, cs, hu, bg, el, id, ro, sr, th, uk, vi, en-gb· διαφορετικά en). Καλύπτει τις **24 τοπικές ρυθμίσεις**. |
+| `utplsql.language` | `auto` | Γλώσσα των μηνυμάτων του runtime. Το `auto` ακολουθεί το VSCode (pt, zh-tw/zh-hk, zh, es, ja, de, fr, it, ko, ru, tr, pl, cs, hu, bg, el, id, ro, sr, th, uk, vi, en-gb· διαφορετικά en). Καλύπτει τις **26 τοπικές ρυθμίσεις**. |
 
 Παράδειγμα (`.vscode/settings.json` του project):
 

@@ -15,7 +15,7 @@ tags: [readme]
 
 <div align="center">
 
-[[README (extensão)|English]] · [[README.zh-CN|中文(简体)]] · [[README.zh-TW|中文(繁體)]] · [[README.ja|日本語]] · [[README.ko|한국어]] · [[README.es|Español]] · [[README.fr|Français]] · [[README.pt-BR|Português]] · [[README.it|Italiano]] · **Română** · [[README.de|Deutsch]] · [[README.ru|Русский]] · [[README.pl|Polski]] · [[README.uk|Українська]] · [[README.cs|Čeština]] · [[README.bg|Български]] · [[README.sr|Српски]] · [[README.tr|Türkçe]] · [[README.el|Ελληνικά]] · [[README.hu|Magyar]] · [[README.id|Bahasa Indonesia]] · [[README.vi|Tiếng Việt]] · [[README.th|ไทย]] · [[README.en-GB|English (UK)]]
+[[README (extensão)|English]] · [[README.ar|العربية]] · [[README.he|עברית]] · [[README.zh-CN|中文(简体)]] · [[README.zh-TW|中文(繁體)]] · [[README.ja|日本語]] · [[README.ko|한국어]] · [[README.es|Español]] · [[README.fr|Français]] · [[README.pt-BR|Português]] · [[README.it|Italiano]] · **Română** · [[README.de|Deutsch]] · [[README.ru|Русский]] · [[README.pl|Polski]] · [[README.uk|Українська]] · [[README.cs|Čeština]] · [[README.bg|Български]] · [[README.sr|Српски]] · [[README.tr|Türkçe]] · [[README.el|Ελληνικά]] · [[README.hu|Magyar]] · [[README.id|Bahasa Indonesia]] · [[README.vi|Tiếng Việt]] · [[README.th|ไทย]] · [[README.en-GB|English (UK)]]
 
 </div>
 
@@ -35,7 +35,7 @@ tags: [readme]
 
 # utPLSQL Test Runner
 
-Rulează și depanează teste **utPLSQL** (Oracle PL/SQL) direct în VS Code — **Test Explorer** nativ, acoperire vizuală, depanator PL/SQL și execuție **directă Oracle** via `node-oracledb`. Disponibil în **24 de limbi**; necesită **VS Code 1.125+** (Node 24).
+Rulează și depanează teste **utPLSQL** (Oracle PL/SQL) direct în VS Code — **Test Explorer** nativ, acoperire vizuală, depanator PL/SQL și execuție **directă Oracle** via `node-oracledb`. Disponibil în **26 de limbi**; necesită **VS Code 1.125+** (Node 24).
 
 ### Test Explorer și execuție
 
@@ -94,7 +94,7 @@ Rulează și depanează teste **utPLSQL** (Oracle PL/SQL) direct în VS Code —
 - 🎯 **Salt la eșec** — navigare directă la linia aserțiunii care a eșuat (prin „Go to Error" nativ).
 - 🧱 **Diagnostice de compilare** — după fiecare rulare, erorile de compilare PL/SQL (`ALL_ERRORS`) apar în Problems Panel sub sursa `utPLSQL Compilation` (setarea `utplsql.compilationDiagnostics.enabled`).
 - ⏳ **Progres și anulare** — rulările lungi afișează o notificare de progres cu contor și buton *Cancel* (plus `utplsql.timeoutMinutes` opțional).
-- 🌍 **i18n — 24 de limbi** — `utplsql.language` urmărește VSCode (24 de localizări: pt-br, en, en-gb, es, zh-cn, zh-tw, ja, de, fr, it, ko, ru, tr, pl, cs, hu, bg, el, id, ro, sr, th, uk, vi).
+- 🌍 **i18n — 26 de limbi** — `utplsql.language` urmărește VSCode (26 de localizări: pt-br, en, en-gb, es, zh-cn, zh-tw, ja, de, fr, it, ko, ru, tr, pl, cs, hu, bg, el, id, ro, sr, th, uk, vi, ar, he).
 
 
 ## Instalare
@@ -238,7 +238,7 @@ Extensia se conectează direct prin Oracle, citește rapoartele (JUnit + Coverag
 | `utplsql.scriptRunner.filePattern` | `**/*.{sql,pks,pkb,fnc,prc,trg}` | Globs to list files when running a script folder. |
 | `utplsql.scriptRunner.dbmsOutput` | `false` | Captures and displays `DBMS_OUTPUT` during script execution. |
 | `utplsql.scriptRunner.timeoutSeconds` | `300` | Per-statement timeout (s) for scripts (`callTimeout`). |
-| `utplsql.language` | `auto` | Limba mesajelor runtime. `auto` urmează VSCode (pt, zh-tw/zh-hk, zh, es, ja, de, fr, it, ko, ru, tr, pl, cs, hu, bg, el, id, ro, sr, th, uk, vi, en-gb; altfel en). Acoperă cele **24 de localizări**. |
+| `utplsql.language` | `auto` | Limba mesajelor runtime. `auto` urmează VSCode (pt, zh-tw/zh-hk, zh, es, ja, de, fr, it, ko, ru, tr, pl, cs, hu, bg, el, id, ro, sr, th, uk, vi, en-gb; altfel en). Acoperă cele **26 de localizări**. |
 
 Exemplu (`.vscode/settings.json` din proiect):
 

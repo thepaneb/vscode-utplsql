@@ -26,6 +26,8 @@ const LOCALES = [
   { code: 'th', symbol: 'th', file: 'th.ts' },
   { code: 'uk', symbol: 'uk', file: 'uk.ts' },
   { code: 'vi', symbol: 'vi', file: 'vi.ts' },
+  { code: 'ar', symbol: 'ar', file: 'ar.ts' },
+  { code: 'he', symbol: 'he', file: 'he.ts' },
 ];
 
 module.exports = { LOCALES };

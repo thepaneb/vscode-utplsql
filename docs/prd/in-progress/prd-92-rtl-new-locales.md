@@ -4,7 +4,7 @@
 
 | Campo | Valor |
 |---|---|
-| Status | Aprovado |
+| Status | Em desenvolvimento |
 | Autor | Gil Cleber Barboza |
 | Data | 2026-09-29 |
 | Componente | Extensão `paneb.vscode-utplsql` |
@@ -128,8 +128,9 @@ Development Host com `utplsql.language = ar`.
 
 ## 12. Impacto no cérebro
 
-Esperado criar `BR-I18N-006` (isolamento bidi em locales RTL) com
-`prds: ["PRD-92"]`.
+Criada a regra `BR-I18N-006` (isolamento bidi em locales RTL) com
+`prds: ["PRD-92"]`; `ar`/`he` entram como **beta** no registro e o checklist
+RTL foi adicionado ao cérebro.
 
 ## 13. Impacto nas docs
 

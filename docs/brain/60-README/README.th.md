@@ -15,7 +15,7 @@ tags: [readme]
 
 <div align="center">
 
-[[README (extensão)|English]] · [[README.zh-CN|中文(简体)]] · [[README.zh-TW|中文(繁體)]] · [[README.ja|日本語]] · [[README.ko|한국어]] · [[README.es|Español]] · [[README.fr|Français]] · [[README.pt-BR|Português]] · [[README.it|Italiano]] · [[README.ro|Română]] · [[README.de|Deutsch]] · [[README.ru|Русский]] · [[README.pl|Polski]] · [[README.uk|Українська]] · [[README.cs|Čeština]] · [[README.bg|Български]] · [[README.sr|Српски]] · [[README.tr|Türkçe]] · [[README.el|Ελληνικά]] · [[README.hu|Magyar]] · [[README.id|Bahasa Indonesia]] · [[README.vi|Tiếng Việt]] · **ไทย** · [[README.en-GB|English (UK)]]
+[[README (extensão)|English]] · [[README.ar|العربية]] · [[README.he|עברית]] · [[README.zh-CN|中文(简体)]] · [[README.zh-TW|中文(繁體)]] · [[README.ja|日本語]] · [[README.ko|한국어]] · [[README.es|Español]] · [[README.fr|Français]] · [[README.pt-BR|Português]] · [[README.it|Italiano]] · [[README.ro|Română]] · [[README.de|Deutsch]] · [[README.ru|Русский]] · [[README.pl|Polski]] · [[README.uk|Українська]] · [[README.cs|Čeština]] · [[README.bg|Български]] · [[README.sr|Српски]] · [[README.tr|Türkçe]] · [[README.el|Ελληνικά]] · [[README.hu|Magyar]] · [[README.id|Bahasa Indonesia]] · [[README.vi|Tiếng Việt]] · **ไทย** · [[README.en-GB|English (UK)]]
 
 </div>
 
@@ -35,7 +35,7 @@ tags: [readme]
 
 # utPLSQL Test Runner
 
-รันและดีบักเทสต์ **utPLSQL** (Oracle PL/SQL) ได้ใน VS Code — **Test Explorer** แบบเนทีฟ, coverage แบบเห็นภาพ, ดีบักเกอร์ PL/SQL และการรัน **Oracle โดยตรง** ผ่าน `node-oracledb` รองรับ **24 ภาษา** ต้องใช้ **VS Code 1.125+** (Node 24).
+รันและดีบักเทสต์ **utPLSQL** (Oracle PL/SQL) ได้ใน VS Code — **Test Explorer** แบบเนทีฟ, coverage แบบเห็นภาพ, ดีบักเกอร์ PL/SQL และการรัน **Oracle โดยตรง** ผ่าน `node-oracledb` รองรับ **26 ภาษา** ต้องใช้ **VS Code 1.125+** (Node 24).
 
 ### Test Explorer และการรัน
 
@@ -94,7 +94,7 @@ tags: [readme]
 - 🎯 **Jump to failure** — นำทางตรงไปยังบรรทัดของ assertion ที่ล้มเหลว (ผ่าน "Go to Error" เนทีฟ)
 - 🧱 **การวินิจฉัยการคอมไพล์** — หลังการรันแต่ละครั้ง ข้อผิดพลาดการคอมไพล์ PL/SQL (`ALL_ERRORS`) จะแสดงใน Problems Panel ภายใต้ source `utPLSQL Compilation` (การตั้งค่า `utplsql.compilationDiagnostics.enabled`)
 - ⏳ **ความคืบหน้าและการยกเลิก** — การรันที่ยาวนานจะแสดงการแจ้งเตือนความคืบหน้าพร้อมจำนวนและปุ่ม *Cancel* (พร้อม `utplsql.timeoutMinutes` แบบเลือกได้)
-- 🌍 **i18n — 24 ภาษา** — `utplsql.language` เป็นไปตาม VSCode (24 ภาษาท้องถิ่น: pt-br, en, en-gb, es, zh-cn, zh-tw, ja, de, fr, it, ko, ru, tr, pl, cs, hu, bg, el, id, ro, sr, th, uk, vi)
+- 🌍 **i18n — 26 ภาษา** — `utplsql.language` เป็นไปตาม VSCode (26 ภาษาท้องถิ่น: pt-br, en, en-gb, es, zh-cn, zh-tw, ja, de, fr, it, ko, ru, tr, pl, cs, hu, bg, el, id, ro, sr, th, uk, vi, ar, he)
 
 
 ## การติดตั้ง
@@ -237,7 +237,7 @@ Test Explorer **เมื่อแต่ละเทสต์เสร็จส�
 | `utplsql.scriptRunner.filePattern` | `**/*.{sql,pks,pkb,fnc,prc,trg}` | Globs to list files when running a script folder. |
 | `utplsql.scriptRunner.dbmsOutput` | `false` | Captures and displays `DBMS_OUTPUT` during script execution. |
 | `utplsql.scriptRunner.timeoutSeconds` | `300` | Per-statement timeout (s) for scripts (`callTimeout`). |
-| `utplsql.language` | `auto` | ภาษาของข้อความรันไทม์ `auto` เป็นไปตาม VSCode (pt, zh-tw/zh-hk, zh, es, ja, de, fr, it, ko, ru, tr, pl, cs, hu, bg, el, id, ro, sr, th, uk, vi, en-gb; นอกนั้น en) ครอบคลุม **24 ภาษาท้องถิ่น** |
+| `utplsql.language` | `auto` | ภาษาของข้อความรันไทม์ `auto` เป็นไปตาม VSCode (pt, zh-tw/zh-hk, zh, es, ja, de, fr, it, ko, ru, tr, pl, cs, hu, bg, el, id, ro, sr, th, uk, vi, en-gb; นอกนั้น en) ครอบคลุม **26 ภาษาท้องถิ่น** |
 
 ตัวอย่าง (`.vscode/settings.json` ของโปรเจกต์):
 

@@ -37,11 +37,11 @@ function evaluateCatalog(text: string): Record<string, unknown> {
   return new Function(body)() as Record<string, unknown>;
 }
 
-test('i18n-export: exporta 24 locales; en-gb vira overlay', () => {
+test('i18n-export: exporta 26 locales; en-gb vira overlay', () => {
   const outDir = tempDir('i18n-export');
   try {
     const written = exportCatalogs({ root: ROOT, outDir });
-    assert.strictEqual(written.length, 24);
+    assert.strictEqual(written.length, 26);
     const compiled = require(path.join(ROOT, 'out', 'i18n', 'locales', 'index.js')) as {
       catalogs: Record<string, Record<string, string>>;
     };
@@ -64,15 +64,15 @@ test('i18n-export: erro claro sem out/ compilado', () => {
   }
 });
 
-test('i18n-export: CLI grava os 24 JSONs', () => {
+test('i18n-export: CLI grava os 26 JSONs', () => {
   const outDir = tempDir('i18n-export-cli');
   try {
     const result = spawnSync(process.execPath, [EXPORT, '--root', ROOT, '--out', outDir], {
       encoding: 'utf8',
     });
     assert.strictEqual(result.status, 0, `${result.stdout}\n${result.stderr}`);
-    assert.strictEqual(fs.readdirSync(outDir).length, 24);
-    assert.match(result.stdout, /Exportados 24 locales/);
+    assert.strictEqual(fs.readdirSync(outDir).length, 26);
+    assert.match(result.stdout, /Exportados 26 locales/);
   } finally {
     fs.rmSync(outDir, { recursive: true, force: true });
   }

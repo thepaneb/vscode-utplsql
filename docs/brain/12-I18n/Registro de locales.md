@@ -44,7 +44,9 @@ A revisão in-country é registrada aqui e detalhada na
   { "code": "sr", "nome": "Српски", "status": "ativo", "revisor": "Gil Cleber Barboza", "cobertura": "README.sr.md + package.nls.sr.json + catálogo" },
   { "code": "th", "nome": "ไทย", "status": "ativo", "revisor": "Gil Cleber Barboza", "cobertura": "README.th.md + package.nls.th.json + catálogo" },
   { "code": "uk", "nome": "Українська", "status": "ativo", "revisor": "Gil Cleber Barboza", "cobertura": "README.uk.md + package.nls.uk.json + catálogo" },
-  { "code": "vi", "nome": "Tiếng Việt", "status": "ativo", "revisor": "Gil Cleber Barboza", "cobertura": "README.vi.md + package.nls.vi.json + catálogo" }
+  { "code": "vi", "nome": "Tiếng Việt", "status": "ativo", "revisor": "Gil Cleber Barboza", "cobertura": "README.vi.md + package.nls.vi.json + catálogo" },
+  { "code": "ar", "nome": "العربية", "status": "beta", "revisor": "pendente", "cobertura": "README.ar.md + package.nls.ar.json + catálogo" },
+  { "code": "he", "nome": "עברית", "status": "beta", "revisor": "pendente", "cobertura": "README.he.md + package.nls.he.json + catálogo" }
 ]
 ```
 

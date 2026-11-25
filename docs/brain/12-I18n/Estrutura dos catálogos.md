@@ -4,7 +4,7 @@ status: ativo
 modulo: i18n
 data: 2026-11-25
 verificado: 2026-11-25
-implementacao: ["src/i18n/locales/index.ts", "src/i18n/locales/pt-br.ts", "src/i18n/locales/en.ts", "src/i18n/locales/en-gb.ts", "src/i18n/locales/es.ts", "src/i18n/locales/zh-cn.ts", "src/i18n/locales/zh-tw.ts", "src/i18n/locales/ja.ts", "src/i18n/locales/de.ts", "src/i18n/locales/fr.ts", "src/i18n/locales/it.ts", "src/i18n/locales/ko.ts", "src/i18n/locales/ru.ts", "src/i18n/locales/tr.ts", "src/i18n/locales/pl.ts", "src/i18n/locales/cs.ts", "src/i18n/locales/hu.ts", "src/i18n/locales/bg.ts", "src/i18n/locales/el.ts", "src/i18n/locales/id.ts", "src/i18n/locales/ro.ts", "src/i18n/locales/sr.ts", "src/i18n/locales/th.ts", "src/i18n/locales/uk.ts", "src/i18n/locales/vi.ts"]
+implementacao: ["src/i18n/locales/index.ts", "src/i18n/locales/pt-br.ts", "src/i18n/locales/en.ts", "src/i18n/locales/en-gb.ts", "src/i18n/locales/es.ts", "src/i18n/locales/zh-cn.ts", "src/i18n/locales/zh-tw.ts", "src/i18n/locales/ja.ts", "src/i18n/locales/de.ts", "src/i18n/locales/fr.ts", "src/i18n/locales/it.ts", "src/i18n/locales/ko.ts", "src/i18n/locales/ru.ts", "src/i18n/locales/tr.ts", "src/i18n/locales/pl.ts", "src/i18n/locales/cs.ts", "src/i18n/locales/hu.ts", "src/i18n/locales/bg.ts", "src/i18n/locales/el.ts", "src/i18n/locales/id.ts", "src/i18n/locales/ro.ts", "src/i18n/locales/sr.ts", "src/i18n/locales/th.ts", "src/i18n/locales/uk.ts", "src/i18n/locales/vi.ts", "src/i18n/locales/ar.ts", "src/i18n/locales/he.ts"]
 tags: [i18n, locale]
 ---
 

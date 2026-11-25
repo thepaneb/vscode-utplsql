@@ -2,6 +2,7 @@
 // pt-BR é o base; os demais traduzem. Chave ausente → pt-BR → a própria chave.
 // Um arquivo por locale (PRD-115); a ordem de LOCALE_CODES é canônica.
 
+import { ar } from './ar';
 import { bg } from './bg';
 import { cs } from './cs';
 import { de } from './de';
@@ -10,6 +11,7 @@ import { en } from './en';
 import { enGb } from './en-gb';
 import { es } from './es';
 import { fr } from './fr';
+import { he } from './he';
 import { hu } from './hu';
 import { id } from './id';
 import { it } from './it';
@@ -53,6 +55,8 @@ export const LOCALE_CODES = [
   'th',
   'uk',
   'vi',
+  'ar',
+  'he',
 ] as const;
 
 export type ExtensionLocale = (typeof LOCALE_CODES)[number];
@@ -83,9 +87,12 @@ export const catalogs: Record<ExtensionLocale, Catalog> = {
   th: th,
   uk: uk,
   vi: vi,
+  ar: ar,
+  he: he,
 };
 
 export {
+  ar,
   bg,
   cs,
   de,
@@ -94,6 +101,7 @@ export {
   enGb,
   es,
   fr,
+  he,
   hu,
   id,
   it,
