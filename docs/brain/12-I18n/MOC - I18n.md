@@ -29,10 +29,12 @@ SORT id ASC
 - [[Estrutura dos catálogos]]
 - [[Registro de locales]]
 - [[Política de locales]]
+- [[Checklist de pseudo-localização]]
 
 ## Índice (links)
 
 <!-- brain:auto:start:moc-index -->
+- [[Checklist de pseudo-localização]]
 - [[Estrutura dos catálogos]]
 - [[LOC-bg - Български]] — `LOC-bg`
 - [[LOC-cs - Čeština]] — `LOC-cs`

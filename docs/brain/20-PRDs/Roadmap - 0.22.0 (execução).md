@@ -72,9 +72,9 @@ As sete PRDs saíram para **`approved`** e as questões em aberto foram fechadas
   `string | { one, few, many, other }`; seleção por `Intl.PluralRules` com
   fallback `other → pt-BR → chave`; aplicar depois da 115; ADR nova + revisão do
   ADR-007.
-- **PRD-89 — pseudo/gate:** transformação depois da interpolação; scanner via
-  AST do TypeScript, **aviso** no CI (`--strict` opt-in) e allowlist versionada;
-  integração no `docs-fidelity`/`docs:check`.
+- **PRD-89 — pseudo/gate:** transformação depois da interpolação; scanner por
+  parser léxico ancorado (`show*Message`), **aviso** no CI (`--strict` opt-in) e
+  allowlist versionada; integração no `docs-check`.
 - **PRD-91 — paridade:** comparar tokens normalizados + âncoras por seção (não
   prosa); registry em nota manual `12-I18n/Registro de locales.md`; remover o
   “23” hardcoded do `docs-check`.

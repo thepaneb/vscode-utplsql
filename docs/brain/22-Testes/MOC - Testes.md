@@ -72,6 +72,7 @@ SORT id ASC
 - [[TST - fsErrorsCatch.test.ts]] — `TST-fsErrorsCatch.test.ts`
 - [[TST - githubAbout.test.ts]] — `TST-githubAbout.test.ts`
 - [[TST - i18n.test.ts]] — `TST-i18n.test.ts`
+- [[TST - i18nPseudo.test.ts]] — `TST-i18nPseudo.test.ts`
 - [[TST - integration-compileForDebug.test.ts]] — `TST-integration-compileForDebug.test.ts`
 - [[TST - jevReview.test.ts]] — `TST-jevReview.test.ts`
 - [[TST - jumpToFailureE2E.test.ts]] — `TST-jumpToFailureE2E.test.ts`
@@ -131,6 +132,7 @@ SORT id ASC
 - [[TST - scaffoldCommands.test.ts]] — `TST-scaffoldCommands.test.ts`
 - [[TST - scaffoldDatabaseSource.test.ts]] — `TST-scaffoldDatabaseSource.test.ts`
 - [[TST - schemaRun.test.ts]] — `TST-schemaRun.test.ts`
+- [[TST - scrapeStrings.test.ts]] — `TST-scrapeStrings.test.ts`
 - [[TST - scriptCommands.test.ts]] — `TST-scriptCommands.test.ts`
 - [[TST - scriptCommandsExec.test.ts]] — `TST-scriptCommandsExec.test.ts`
 - [[TST - scriptRunner.test.ts]] — `TST-scriptRunner.test.ts`

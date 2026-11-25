@@ -2,9 +2,12 @@
 // Catálogos em i18n/locales (um arquivo por locale, barrel com LOCALE_CODES).
 // Chave ausente → pt-BR → a própria chave.
 
-import { catalogs, type ExtensionLocale, LOCALE_CODES } from './i18n/locales';
+import { catalogs, LOCALE_CODES, type ExtensionLocale as LocaleCode } from './i18n/locales';
 
-export type { ExtensionLocale } from './i18n/locales';
+/** Locale pseudo de desenvolvimento (`UTPLSQL_PSEUDO_LOC=1`), fora da setting pública. */
+export const PSEUDO_LOCALE = 'qps-ploc' as const;
+
+export type ExtensionLocale = LocaleCode | typeof PSEUDO_LOCALE;
 export {
   bg,
   cs,
@@ -37,8 +40,43 @@ export function missingCatalogKeys(catalog: Record<string, string>): string[] {
   return Object.keys(catalogs['pt-br']).filter((k) => !(k in catalog));
 }
 
+/** Pseudo-locale ligado apenas por env de desenvolvimento (nunca em produção). */
+function isPseudoEnabled(): boolean {
+  return process.env.UTPLSQL_PSEUDO_LOC === '1';
+}
+
+const PSEUDO_ACCENTS = {
+  a: 'á',
+  e: 'é',
+  i: 'í',
+  o: 'ó',
+  u: 'ú',
+  n: 'ñ',
+  c: 'ç',
+  A: 'Á',
+  E: 'É',
+  I: 'Í',
+  O: 'Ó',
+  U: 'Ú',
+  N: 'Ñ',
+  C: 'Ç',
+} as const;
+
+/**
+ * Transforma o texto para pseudo-localização: acentua vogais/consoantes
+ * estáveis e acrescenta padding (~30%) entre marcadores. Determinístico.
+ */
+export function pseudoLocalize(text: string): string {
+  const accented = text.replace(
+    /[aeiouncAEIOUNC]/g,
+    (ch) => PSEUDO_ACCENTS[ch as keyof typeof PSEUDO_ACCENTS],
+  );
+  return `[${accented}${'~'.repeat(Math.ceil(text.length * 0.3))}]`;
+}
+
 /** Resolve o idioma efetivo a partir da setting e do idioma do VSCode. */
 export function resolveLocale(setting: string, vscodeLanguage: string): ExtensionLocale {
+  if (setting === PSEUDO_LOCALE && isPseudoEnabled()) return PSEUDO_LOCALE;
   if (setting in catalogs) return setting as ExtensionLocale;
   const lang = vscodeLanguage.toLowerCase();
   if (lang.startsWith('pt')) return 'pt-br';
@@ -119,7 +157,8 @@ export function t(
   key: string,
   params?: Record<string, string | number>,
 ): string {
-  const catalog = catalogs[locale];
+  const catalog = locale === PSEUDO_LOCALE ? catalogs.en : catalogs[locale];
   const template = catalog[key] ?? catalogs['pt-br'][key] ?? key;
-  return interpolate(template, locale, params);
+  const text = interpolate(template, locale, params);
+  return isPseudoEnabled() ? pseudoLocalize(text) : text;
 }

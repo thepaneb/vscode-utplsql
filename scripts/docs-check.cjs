@@ -290,9 +290,27 @@ function checkSite() {
   else ok('landing page indexável, robots.txt e sitemap.xml coerentes');
 }
 
+// ── Strings de UI hardcoded (aviso, PRD-89) ────────────────────────────
+
+function checkHardcodedStrings() {
+  console.log('Strings de UI hardcoded (aviso)');
+  try {
+    const { scan, loadAllowlist, isAllowed } = require('./scrape-strings.cjs');
+    const pending = scan(REPO).filter((f) => !isAllowed(f, loadAllowlist(REPO)));
+    if (!pending.length) return ok('nenhuma string nova fora de t()');
+    for (const f of pending.slice(0, 10)) {
+      console.log(`  ⚠ ${f.file}:${f.line} ${JSON.stringify(f.text)}`);
+    }
+    if (pending.length > 10) console.log(`  … +${pending.length - 10} achado(s)`);
+  } catch (e) {
+    console.log(`  ⚠ scanner indisponível: ${e instanceof Error ? e.message : String(e)}`);
+  }
+}
+
 // ── main ───────────────────────────────────────────────────────────────
 
 checkReadme();
+checkHardcodedStrings();
 checkMarketplace();
 checkPrd();
 checkPrdVault();

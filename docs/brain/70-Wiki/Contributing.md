@@ -5,7 +5,7 @@ titulo: "Contributing"
 publicar: docs/wiki/Contributing.md
 origem: ["MOC - Documentacao"]
 verificado: 2026-11-08
-regras: ["BR-PLAT-002", "BR-PLAT-003", "BR-PLAT-004", "BR-QUAL-002", "BR-TEST-003", "BR-DOC-001", "BR-DOC-002", "BR-CONN-024", "BR-I18N-005"]
+regras: ["BR-PLAT-002", "BR-PLAT-003", "BR-PLAT-004", "BR-QUAL-002", "BR-TEST-003", "BR-DOC-001", "BR-DOC-002", "BR-CONN-024", "BR-I18N-003", "BR-I18N-005"]
 tags: [wiki]
 ---
 
@@ -274,3 +274,16 @@ branch (files in `docs/wiki/`).
 - [[Registro de locales]] lists status/reviewer/coverage for every active locale
   and is required by `docs:check`; [[Política de locales]] defines when to
   keep/add/archive a locale.
+
+### Pseudo-localization and hardcoded strings (PRD-89)
+
+- Run the Extension Development Host with `UTPLSQL_PSEUDO_LOC=1`: runtime
+  messages are accented and padded (~30%) to reveal **hardcoded strings** (which
+  stay in plain English) and layout overflow. The manual pass is in
+  [[Checklist de pseudo-localização]].
+- `node scripts/scrape-strings.cjs` reports `showInformationMessage`/
+  `showWarningMessage`/`showErrorMessage` literals outside `t()`; `--strict`
+  fails. `docs:check` runs it as a **warning**, with exceptions in
+  `scripts/scrape-strings.allow.json`.
+- Pseudo is dev-only (`UTPLSQL_PSEUDO_LOC`), never a public setting; the default
+  output is unchanged.
