@@ -15,7 +15,7 @@ tags: [readme]
 
 <div align="center">
 
-[[README (extensão)|English]] · [[README.zh-CN|中文(简体)]] · [[README.zh-TW|中文(繁體)]] · [[README.ja|日本語]] · [[README.ko|한국어]] · [[README.es|Español]] · [[README.fr|Français]] · [[README.pt-BR|Português]] · [[README.it|Italiano]] · [[README.ro|Română]] · [[README.de|Deutsch]] · [[README.ru|Русский]] · [[README.pl|Polski]] · [[README.uk|Українська]] · [[README.cs|Čeština]] · [[README.bg|Български]] · [[README.sr|Српски]] · **Türkçe** · [[README.el|Ελληνικά]] · [[README.hu|Magyar]] · [[README.id|Bahasa Indonesia]] · [[README.vi|Tiếng Việt]] · [[README.th|ไทย]] · [[README.en-GB|English (UK)]]
+[[README (extensão)|English]] · [[README.ar|العربية]] · [[README.he|עברית]] · [[README.zh-CN|中文(简体)]] · [[README.zh-TW|中文(繁體)]] · [[README.ja|日本語]] · [[README.ko|한국어]] · [[README.es|Español]] · [[README.fr|Français]] · [[README.pt-BR|Português]] · [[README.it|Italiano]] · [[README.ro|Română]] · [[README.de|Deutsch]] · [[README.ru|Русский]] · [[README.pl|Polski]] · [[README.uk|Українська]] · [[README.cs|Čeština]] · [[README.bg|Български]] · [[README.sr|Српски]] · **Türkçe** · [[README.el|Ελληνικά]] · [[README.hu|Magyar]] · [[README.id|Bahasa Indonesia]] · [[README.vi|Tiếng Việt]] · [[README.th|ไทย]] · [[README.en-GB|English (UK)]]
 
 </div>
 
@@ -35,7 +35,7 @@ tags: [readme]
 
 # utPLSQL Test Runner
 
-**utPLSQL** (Oracle PL/SQL) testlerini doğrudan VS Code'da çalıştırın ve hata ayıklayın — yerel **Test Explorer**, görsel kapsam, PL/SQL hata ayıklayıcı ve `node-oracledb` ile **doğrudan Oracle yürütme**. **24 dilde**; **VS Code 1.125+** (Node 24).
+**utPLSQL** (Oracle PL/SQL) testlerini doğrudan VS Code'da çalıştırın ve hata ayıklayın — yerel **Test Explorer**, görsel kapsam, PL/SQL hata ayıklayıcı ve `node-oracledb` ile **doğrudan Oracle yürütme**. **26 dilde**; **VS Code 1.125+** (Node 24).
 
 ### Test Explorer ve çalıştırma
 
@@ -94,7 +94,7 @@ tags: [readme]
 - 🎯 **Hataya atlama** — başarısız olan iddianın satırına doğrudan gezinme (doğal "Go to Error" ile).
 - 🧱 **Derleme tanılamaları** — her çalıştırmadan sonra PL/SQL derleme hataları (`ALL_ERRORS`) `utPLSQL Compilation` kaynağı altında Problems Panel’de görünür (`utplsql.compilationDiagnostics.enabled` ayarı).
 - ⏳ **İlerleme ve iptal** — uzun çalıştırmalar sayaçlı bir ilerleme bildirimi ve *Cancel* düğmesi gösterir (ayrıca isteğe bağlı `utplsql.timeoutMinutes`).
-- 🌍 **i18n — 24 dil** — `utplsql.language` VSCode'u takip eder (24 yerel ayar: pt-br, en, en-gb, es, zh-cn, zh-tw, ja, de, fr, it, ko, ru, tr, pl, cs, hu, bg, el, id, ro, sr, th, uk, vi).
+- 🌍 **i18n — 26 dil** — `utplsql.language` VSCode'u takip eder (26 yerel ayar: pt-br, en, en-gb, es, zh-cn, zh-tw, ja, de, fr, it, ko, ru, tr, pl, cs, hu, bg, el, id, ro, sr, th, uk, vi, ar, he).
 
 
 ## Kurulum
@@ -237,7 +237,7 @@ Geçici dosya yok, toplu işin bitmesi beklenmez. Sonuçlar Test Explorer'da
 | `utplsql.scriptRunner.filePattern` | `**/*.{sql,pks,pkb,fnc,prc,trg}` | Globs to list files when running a script folder. |
 | `utplsql.scriptRunner.dbmsOutput` | `false` | Captures and displays `DBMS_OUTPUT` during script execution. |
 | `utplsql.scriptRunner.timeoutSeconds` | `300` | Per-statement timeout (s) for scripts (`callTimeout`). |
-| `utplsql.language` | `auto` | Çalışma zamanı mesajlarının dili. `auto`, VSCode'u takip eder (pt, zh-tw/zh-hk, zh, es, ja, de, fr, it, ko, ru, tr, pl, cs, hu, bg, el, id, ro, sr, th, uk, vi, en-gb; aksi halde en). **24 yerel ayarı** kapsar. |
+| `utplsql.language` | `auto` | Çalışma zamanı mesajlarının dili. `auto`, VSCode'u takip eder (pt, zh-tw/zh-hk, zh, es, ja, de, fr, it, ko, ru, tr, pl, cs, hu, bg, el, id, ro, sr, th, uk, vi, en-gb; aksi halde en). **26 yerel ayarı** kapsar. |
 
 Örnek (proje `.vscode/settings.json`):
 

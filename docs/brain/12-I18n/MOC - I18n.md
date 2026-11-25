@@ -38,6 +38,7 @@ SORT id ASC
 - [[Checklist de pseudo-localização]]
 - [[Estrutura dos catálogos]]
 - [[Glossário de localização]]
+- [[LOC-ar - ar]] — `LOC-ar`
 - [[LOC-bg - Български]] — `LOC-bg`
 - [[LOC-cs - Čeština]] — `LOC-cs`
 - [[LOC-de - Deutsch]] — `LOC-de`
@@ -46,6 +47,7 @@ SORT id ASC
 - [[LOC-en-gb - English (UK)]] — `LOC-en-gb`
 - [[LOC-es - Español]] — `LOC-es`
 - [[LOC-fr - Français]] — `LOC-fr`
+- [[LOC-he - he]] — `LOC-he`
 - [[LOC-hu - Magyar]] — `LOC-hu`
 - [[LOC-id - Bahasa Indonesia]] — `LOC-id`
 - [[LOC-it - Italiano]] — `LOC-it`

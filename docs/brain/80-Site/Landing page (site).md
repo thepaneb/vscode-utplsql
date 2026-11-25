@@ -212,7 +212,7 @@ tags: [site, docs]
         visual <strong>test coverage</strong>, a PL/SQL debugger and <strong>Oracle-direct</strong>
         execution via <code>node-oracledb</code>.
       </p>
-      <p class="meta">24 UI languages · VS Code 1.125+ · Oracle 12.1+ (thin, matrix 12.2+) / 11.2+ (thick) · MIT</p>
+      <p class="meta">26 UI languages · VS Code 1.125+ · Oracle 12.1+ (thin, matrix 12.2+) / 11.2+ (thick) · MIT</p>
 
       <p class="badges">
         <a href="https://marketplace.visualstudio.com/items?itemName=paneb.vscode-utplsql"
@@ -290,7 +290,7 @@ tags: [site, docs]
           <li><h3>Oracle-direct execution</h3><p>Real-time streaming through <code>node-oracledb</code> — no waiting for the batch to finish.</p></li>
           <li><h3>Schema-aware tree</h3><p>Organize tests by Schema &gt; Package &gt; Suite &gt; Test, with lazy loading for large schemas.</p></li>
           <li><h3>Connection profiles</h3><p>Switch between DEV/TEST/PROD environments; passwords stay in SecretStorage.</p></li>
-          <li><h3>24 UI languages</h3><p>Follows the VS Code display language, from pt-BR to 中文 and more.</p></li>
+          <li><h3>26 UI languages</h3><p>Follows the VS Code display language, from pt-BR to 中文 and more.</p></li>
         </ul>
       </section>
 

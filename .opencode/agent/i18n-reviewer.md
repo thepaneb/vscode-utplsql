@@ -1,5 +1,5 @@
 ---
-description: Checks localization parity for this extension — 24 locales across README variants, package.nls.*.json, src/i18n/locales/*.ts, package.nls.json and the wiki. Use when adding/changing user-facing strings, a setting/command, or before a release.
+description: Checks localization parity for this extension — 26 locales across README variants, package.nls.*.json, src/i18n/locales/*.ts, package.nls.json and the wiki. Use when adding/changing user-facing strings, a setting/command, or before a release.
 mode: subagent
 permissions:
   - action: edit

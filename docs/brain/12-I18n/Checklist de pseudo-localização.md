@@ -38,6 +38,15 @@ com pass/fail/skip/erro e uma execução com cobertura.
 - [ ] **Identificadores técnicos**: nomes de pacote/procedure, paths e códigos
       `ORA-` continuam íntegros (só o texto de UI é pseudo).
 
+## RTL (`ar`/`he`)
+
+- [ ] Status bar, tooltips, Test Explorer, decorações e Problems legíveis em RTL.
+- [ ] Identificadores (`UT3.PKG`), paths e códigos `ORA-` aparecem **LTR** e na
+      ordem correta (FSI/PDI).
+- [ ] Números e durações usam o formato do locale (dígitos latinos).
+- [ ] Texto que permanecer em inglês é marcado como pendência no
+      [[Registro de locales]] (tradução draft/beta).
+
 ## Interpretação
 
 - Texto **sem acento/padding** em uma tela = string hardcoded; externalize via

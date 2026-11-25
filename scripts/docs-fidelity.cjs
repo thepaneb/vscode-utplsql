@@ -182,7 +182,7 @@ function checkFidelity(overrides = {}) {
       '11.2',
       'node-oracledb',
       '26',
-      '24 UI languages',
+      '26 UI languages',
     ]) {
       if (!mp.includes(claim)) problems.push(`MARKETPLACE.md: claim ausente "${claim}"`);
     }
@@ -964,7 +964,7 @@ function checkSemanticDrift(overrides = {}) {
   if (aboutText) {
     if (vscodeFull) semanticRequire(problems, overrides, aboutNote, vscodeFull, 'piso de VS Code');
     if (node) semanticRequire(problems, overrides, aboutNote, `Node ${node}`, 'piso de Node');
-    semanticRequire(problems, overrides, aboutNote, '24 UI languages', 'contagem de idiomas');
+    semanticRequire(problems, overrides, aboutNote, '26 UI languages', 'contagem de idiomas');
   }
 
   return problems;

@@ -14,7 +14,7 @@ tags: [wiki]
 
 Run and debug **utPLSQL** (Oracle PL/SQL) tests right in VS Code — native
 **Test Explorer**, visual coverage, a PL/SQL debugger and **Oracle-direct**
-execution via `node-oracledb`. Available in **24 UI languages**; requires
+execution via `node-oracledb`. Available in **26 UI languages**; requires
 **VS Code 1.125+** (Node 24).
 
 <p align="center">
@@ -86,7 +86,7 @@ execution via `node-oracledb`. Available in **24 UI languages**; requires
 - 🎯 **Jump to failure** — direct navigation to the line of the assertion that failed (via native "Go to Error") ([[Editor-integration]]).
 - 🧱 **Compilation diagnostics** — after every run, PL/SQL compilation errors (`ALL_ERRORS`) show up in the Problems Panel under the `utPLSQL Compilation` source ([[Diagnostics-and-quick-fix]]).
 - ⏳ **Progress and cancellation** — long runs show a progress notification with counts and a *Cancel* button (plus the optional `utplsql.timeoutMinutes`) ([[Test-explorer]]).
-- 🌍 **i18n — 24 languages** — `utplsql.language` follows VSCode (24 locales: pt-br, en, en-gb, es, zh-cn, zh-tw, ja, de, fr, it, ko, ru, tr, pl, cs, hu, bg, el, id, ro, sr, th, uk, vi) ([[Internationalization]]).
+- 🌍 **i18n — 26 languages** — `utplsql.language` follows VSCode (26 locales: pt-br, en, en-gb, es, zh-cn, zh-tw, ja, de, fr, it, ko, ru, tr, pl, cs, hu, bg, el, id, ro, sr, th, uk, vi, ar, he) ([[Internationalization]]).
 
 ![Test Explorer with expanded suites](images/test-explorer-suites.png)
 

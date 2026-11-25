@@ -14,8 +14,8 @@ enumerations geradas (`npm run brain:sync`).
 ## Arquivos da raiz do repo
 
 <!-- brain:auto:start:root-docs -->
-- [README.md](../../../README.md) — _2026-11-11_
-- [MARKETPLACE.md](../../../MARKETPLACE.md) — _2026-11-11_
+- [README.md](../../../README.md) — _2026-11-25_
+- [MARKETPLACE.md](../../../MARKETPLACE.md) — _2026-11-25_
 - [CHANGELOG.md](../../../CHANGELOG.md) — _2026-11-11_
 - [CONTRIBUTING.md](../../../CONTRIBUTING.md) — _2026-11-11_
 - [SECURITY.md](../../../SECURITY.md) — _2026-11-07_
@@ -32,6 +32,7 @@ Marketplace é uma superfície separada, gerada de
 
 <!-- brain:auto:start:readme-variants -->
 - [[README (extensão)]] — `en` → `README.md`
+- [[README.ar]] — `ar` → `README.ar.md`
 - [[README.bg]] — `bg` → `README.bg.md`
 - [[README.cs]] — `cs` → `README.cs.md`
 - [[README.de]] — `de` → `README.de.md`
@@ -39,6 +40,7 @@ Marketplace é uma superfície separada, gerada de
 - [[README.en-GB]] — `en-gb` → `README.en-GB.md`
 - [[README.es]] — `es` → `README.es.md`
 - [[README.fr]] — `fr` → `README.fr.md`
+- [[README.he]] — `he` → `README.he.md`
 - [[README.hu]] — `hu` → `README.hu.md`
 - [[README.id]] — `id` → `README.id.md`
 - [[README.it]] — `it` → `README.it.md`

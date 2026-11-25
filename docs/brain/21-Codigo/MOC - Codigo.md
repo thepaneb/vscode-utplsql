@@ -32,6 +32,7 @@ SORT id ASC
 - [[COD - .vscodeignore]] — `COD-.vscodeignore`
 - [[COD - 404.html]] — `COD-404.html`
 - [[COD - annotation.ts]] — `COD-annotation.ts`
+- [[COD - ar.ts]] — `COD-ar.ts`
 - [[COD - autoRun.ts]] — `COD-autoRun.ts`
 - [[COD - bg.ts]] — `COD-bg.ts`
 - [[COD - bing-index.yml]] — `COD-bing-index.yml`
@@ -95,6 +96,7 @@ SORT id ASC
 - [[COD - github-about.cjs]] — `COD-github-about.cjs`
 - [[COD - google-index.yml]] — `COD-google-index.yml`
 - [[COD - google408e9fc32b68946a.html]] — `COD-google408e9fc32b68946a.html`
+- [[COD - he.ts]] — `COD-he.ts`
 - [[COD - helpers.ts]] — `COD-helpers.ts`
 - [[COD - hu.ts]] — `COD-hu.ts`
 - [[COD - i18n-apply.cjs]] — `COD-i18n-apply.cjs`

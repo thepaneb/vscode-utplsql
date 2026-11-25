@@ -4,6 +4,7 @@ import * as fs from 'node:fs';
 import * as path from 'node:path';
 import { test } from 'node:test';
 import {
+  ar,
   bg,
   cs,
   de,
@@ -15,6 +16,7 @@ import {
   formatDuration,
   formatNumber,
   fr,
+  he,
   hu,
   id,
   it,
@@ -62,10 +64,12 @@ const ALL_CATALOGS: [string, Catalog][] = [
   ['th', th],
   ['uk', uk],
   ['vi', vi],
+  ['ar', ar],
+  ['he', he],
 ];
 
 test('barrel: LOCALE_CODES cobre os 24 catálogos na ordem canônica', () => {
-  assert.strictEqual(LOCALE_CODES.length, 24);
+  assert.strictEqual(LOCALE_CODES.length, 26);
   assert.deepStrictEqual([...new Set(LOCALE_CODES)], [...LOCALE_CODES]);
   assert.deepStrictEqual(Object.keys(catalogs), [...LOCALE_CODES]);
   for (const code of LOCALE_CODES) {
@@ -108,6 +112,9 @@ test('resolveLocale: auto detecta os idiomas suportados', () => {
   assert.strictEqual(resolveLocale('auto', 'uk'), 'uk');
   assert.strictEqual(resolveLocale('auto', 'vi'), 'vi');
   assert.strictEqual(resolveLocale('auto', 'en-GB'), 'en-gb');
+  assert.strictEqual(resolveLocale('auto', 'ar-EG'), 'ar');
+  assert.strictEqual(resolveLocale('auto', 'he'), 'he');
+  assert.strictEqual(resolveLocale('auto', 'iw'), 'he');
 });
 
 test('resolveLocale: forçado ignora idioma do editor', () => {
@@ -135,6 +142,14 @@ test('resolveLocale: forçado ignora idioma do editor', () => {
 test('resolveLocale: valor invalido cai no auto', () => {
   assert.strictEqual(resolveLocale('xx', 'pt'), 'pt-br');
   assert.strictEqual(resolveLocale('xx', 'en'), 'en');
+});
+
+test('t: isolamento bidi só em locales RTL e parâmetros técnicos', () => {
+  const isolated = '\u2068UT3.PKG\u2069';
+  assert.ok(t('ar', 'ext.profile.active', { name: 'UT3.PKG' }).includes(isolated));
+  assert.ok(t('he', 'ext.profile.active', { name: 'UT3.PKG' }).includes(isolated));
+  assert.ok(!t('en', 'ext.profile.active', { name: 'UT3.PKG' }).includes('\u2068'));
+  assert.ok(!t('ar', 'status.failed', { count: 3 }).includes('\u2068'));
 });
 
 test('t: pt-br retorna a chave do catalogo pt', () => {

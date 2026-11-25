@@ -6,7 +6,7 @@
 
 <div align="center">
 
-[English](README.md) · [中文(简体)](README.zh-CN.md) · **中文(繁體)** · [日本語](README.ja.md) · [한국어](README.ko.md) · [Español](README.es.md) · [Français](README.fr.md) · [Português](README.pt-BR.md) · [Italiano](README.it.md) · [Română](README.ro.md) · [Deutsch](README.de.md) · [Русский](README.ru.md) · [Polski](README.pl.md) · [Українська](README.uk.md) · [Čeština](README.cs.md) · [Български](README.bg.md) · [Српски](README.sr.md) · [Türkçe](README.tr.md) · [Ελληνικά](README.el.md) · [Magyar](README.hu.md) · [Bahasa Indonesia](README.id.md) · [Tiếng Việt](README.vi.md) · [ไทย](README.th.md) · [English (UK)](README.en-GB.md)
+[English](README.md) · [العربية](README.ar.md) · [עברית](README.he.md) · [中文(简体)](README.zh-CN.md) · **中文(繁體)** · [日本語](README.ja.md) · [한국어](README.ko.md) · [Español](README.es.md) · [Français](README.fr.md) · [Português](README.pt-BR.md) · [Italiano](README.it.md) · [Română](README.ro.md) · [Deutsch](README.de.md) · [Русский](README.ru.md) · [Polski](README.pl.md) · [Українська](README.uk.md) · [Čeština](README.cs.md) · [Български](README.bg.md) · [Српски](README.sr.md) · [Türkçe](README.tr.md) · [Ελληνικά](README.el.md) · [Magyar](README.hu.md) · [Bahasa Indonesia](README.id.md) · [Tiếng Việt](README.vi.md) · [ไทย](README.th.md) · [English (UK)](README.en-GB.md)
 
 </div>
 
@@ -26,7 +26,7 @@
 
 # utPLSQL Test Runner
 
-在 VS Code 中直接執行與偵錯 **utPLSQL**（Oracle PL/SQL）測試 — 原生 **Test Explorer**、視覺化覆蓋率、PL/SQL 偵錯工具，以及透過 `node-oracledb` 的 **Oracle 直連執行**。支援 **24 種語言**；需要 **VS Code 1.125+** (Node 24).
+在 VS Code 中直接執行與偵錯 **utPLSQL**（Oracle PL/SQL）測試 — 原生 **Test Explorer**、視覺化覆蓋率、PL/SQL 偵錯工具，以及透過 `node-oracledb` 的 **Oracle 直連執行**。支援 **26 種語言**；需要 **VS Code 1.125+** (Node 24).
 
 ### Test Explorer 與執行
 
@@ -85,7 +85,7 @@
 - 🎯 **跳轉至失敗** — 直接導覽到失敗的斷言所在行（透過原生的 "Go to Error"）。
 - 🧱 **編譯診斷** — 每次執行後，PL/SQL 編譯錯誤（`ALL_ERRORS`）會以 source `utPLSQL Compilation` 顯示於 Problems Panel（設定 `utplsql.compilationDiagnostics.enabled`）。
 - ⏳ **進度與取消** — 長時間執行會顯示含計數的進度通知與 *Cancel* 按鈕（以及選用的 `utplsql.timeoutMinutes`）。
-- 🌍 **i18n — 24 種語言** — `utplsql.language` 跟隨 VSCode（24 locales：pt-br、en、en-gb、es、zh-cn、zh-tw、ja、de、fr、it、ko、ru、tr、pl、cs、hu、bg、el、id、ro、sr、th、uk、vi）。
+- 🌍 **i18n — 26 種語言** — `utplsql.language` 跟隨 VSCode（26 locales：pt-br、en、en-gb、es、zh-cn、zh-tw、ja、de、fr、it、ko、ru、tr、pl、cs、hu、bg、el、id、ro、sr、th、uk、vi）。
 
 
 ## 安裝
@@ -228,7 +228,7 @@ Test Explorer 中。
 | `utplsql.scriptRunner.filePattern` | `**/*.{sql,pks,pkb,fnc,prc,trg}` | Globs to list files when running a script folder. |
 | `utplsql.scriptRunner.dbmsOutput` | `false` | Captures and displays `DBMS_OUTPUT` during script execution. |
 | `utplsql.scriptRunner.timeoutSeconds` | `300` | Per-statement timeout (s) for scripts (`callTimeout`). |
-| `utplsql.language` | `auto` | 執行時期訊息的語言。`auto` 跟隨 VSCode（pt、zh-tw/zh-hk、zh、es、ja、de、fr、it、ko、ru、tr、pl、cs、hu、bg、el、id、ro、sr、th、uk、vi、en-gb；否則為 en）。涵蓋 **24 個地區設定**。 |
+| `utplsql.language` | `auto` | 執行時期訊息的語言。`auto` 跟隨 VSCode（pt、zh-tw/zh-hk、zh、es、ja、de、fr、it、ko、ru、tr、pl、cs、hu、bg、el、id、ro、sr、th、uk、vi、en-gb；否則為 en）。涵蓋 **26 個地區設定**。 |
 
 範例（專案 `.vscode/settings.json`）：
 

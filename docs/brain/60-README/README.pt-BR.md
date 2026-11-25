@@ -15,7 +15,7 @@ tags: [readme]
 
 <div align="center">
 
-[[README (extensão)|English]] · [[README.zh-CN|中文(简体)]] · [[README.zh-TW|中文(繁體)]] · [[README.ja|日本語]] · [[README.ko|한국어]] · [[README.es|Español]] · [[README.fr|Français]] · **Português** · [[README.it|Italiano]] · [[README.ro|Română]] · [[README.de|Deutsch]] · [[README.ru|Русский]] · [[README.pl|Polski]] · [[README.uk|Українська]] · [[README.cs|Čeština]] · [[README.bg|Български]] · [[README.sr|Српски]] · [[README.tr|Türkçe]] · [[README.el|Ελληνικά]] · [[README.hu|Magyar]] · [[README.id|Bahasa Indonesia]] · [[README.vi|Tiếng Việt]] · [[README.th|ไทย]] · [[README.en-GB|English (UK)]]
+[[README (extensão)|English]] · [[README.ar|العربية]] · [[README.he|עברית]] · [[README.zh-CN|中文(简体)]] · [[README.zh-TW|中文(繁體)]] · [[README.ja|日本語]] · [[README.ko|한국어]] · [[README.es|Español]] · [[README.fr|Français]] · **Português** · [[README.it|Italiano]] · [[README.ro|Română]] · [[README.de|Deutsch]] · [[README.ru|Русский]] · [[README.pl|Polski]] · [[README.uk|Українська]] · [[README.cs|Čeština]] · [[README.bg|Български]] · [[README.sr|Српски]] · [[README.tr|Türkçe]] · [[README.el|Ελληνικά]] · [[README.hu|Magyar]] · [[README.id|Bahasa Indonesia]] · [[README.vi|Tiếng Việt]] · [[README.th|ไทย]] · [[README.en-GB|English (UK)]]
 
 </div>
 
@@ -35,7 +35,7 @@ tags: [readme]
 
 # utPLSQL Test Runner
 
-Execute e depure testes **utPLSQL** (Oracle PL/SQL) direto no VS Code — **Test Explorer** nativo, cobertura visual, depurador PL/SQL e execução **Oracle direto** via `node-oracledb`. Disponível em **24 idiomas**; requer **VS Code 1.125+** (Node 24).
+Execute e depure testes **utPLSQL** (Oracle PL/SQL) direto no VS Code — **Test Explorer** nativo, cobertura visual, depurador PL/SQL e execução **Oracle direto** via `node-oracledb`. Disponível em **26 idiomas**; requer **VS Code 1.125+** (Node 24).
 
 ### Test Explorer e execução
 
@@ -94,7 +94,7 @@ Execute e depure testes **utPLSQL** (Oracle PL/SQL) direto no VS Code — **Test
 - 🎯 **Jump to failure** — navegação direta para a linha da asserção que falhou (via "Go to Error" nativo).
 - 🧱 **Diagnósticos de compilação** — após cada execução, erros de compilação PL/SQL (`ALL_ERRORS`) aparecem no Problems Panel sob o source `utPLSQL Compilation` (setting `utplsql.compilationDiagnostics.enabled`).
 - ⏳ **Progresso e cancelamento** — execuções longas mostram notificação de progresso com contagem e botão *Cancel* (além do `utplsql.timeoutMinutes` opcional).
-- 🌍 **i18n — 24 idiomas** — `utplsql.language` segue o VSCode (24 locales: pt-br, en, en-gb, es, zh-cn, zh-tw, ja, de, fr, it, ko, ru, tr, pl, cs, hu, bg, el, id, ro, sr, th, uk, vi).
+- 🌍 **i18n — 26 idiomas** — `utplsql.language` segue o VSCode (26 locales: pt-br, en, en-gb, es, zh-cn, zh-tw, ja, de, fr, it, ko, ru, tr, pl, cs, hu, bg, el, id, ro, sr, th, uk, vi, ar, he).
 
 
 ## Instalação
@@ -239,7 +239,7 @@ Test Explorer **conforme cada teste termina**.
 | `utplsql.scriptRunner.filePattern` | `**/*.{sql,pks,pkb,fnc,prc,trg}` | Globs para listar arquivos na execução de pasta de scripts. |
 | `utplsql.scriptRunner.dbmsOutput` | `false` | Captura e exibe `DBMS_OUTPUT` durante a execução do script. |
 | `utplsql.scriptRunner.timeoutSeconds` | `300` | Timeout (s) por statement do script (`callTimeout`). |
-| `utplsql.language` | `auto` | Idioma das mensagens de runtime. `auto` segue o VSCode (pt, zh-tw/zh-hk, zh, es, ja, de, fr, it, ko, ru, tr, pl, cs, hu, bg, el, id, ro, sr, th, uk, vi, en-gb; senão en). Cobre os **24 locales**. |
+| `utplsql.language` | `auto` | Idioma das mensagens de runtime. `auto` segue o VSCode (pt, zh-tw/zh-hk, zh, es, ja, de, fr, it, ko, ru, tr, pl, cs, hu, bg, el, id, ro, sr, th, uk, vi, en-gb; senão en). Cobre os **26 locales**. |
 
 Exemplo (`.vscode/settings.json` do projeto):
 

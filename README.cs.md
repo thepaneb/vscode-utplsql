@@ -6,7 +6,7 @@
 
 <div align="center">
 
-[English](README.md) · [中文(简体)](README.zh-CN.md) · [中文(繁體)](README.zh-TW.md) · [日本語](README.ja.md) · [한국어](README.ko.md) · [Español](README.es.md) · [Français](README.fr.md) · [Português](README.pt-BR.md) · [Italiano](README.it.md) · [Română](README.ro.md) · [Deutsch](README.de.md) · [Русский](README.ru.md) · [Polski](README.pl.md) · [Українська](README.uk.md) · **Čeština** · [Български](README.bg.md) · [Српски](README.sr.md) · [Türkçe](README.tr.md) · [Ελληνικά](README.el.md) · [Magyar](README.hu.md) · [Bahasa Indonesia](README.id.md) · [Tiếng Việt](README.vi.md) · [ไทย](README.th.md) · [English (UK)](README.en-GB.md)
+[English](README.md) · [العربية](README.ar.md) · [עברית](README.he.md) · [中文(简体)](README.zh-CN.md) · [中文(繁體)](README.zh-TW.md) · [日本語](README.ja.md) · [한국어](README.ko.md) · [Español](README.es.md) · [Français](README.fr.md) · [Português](README.pt-BR.md) · [Italiano](README.it.md) · [Română](README.ro.md) · [Deutsch](README.de.md) · [Русский](README.ru.md) · [Polski](README.pl.md) · [Українська](README.uk.md) · **Čeština** · [Български](README.bg.md) · [Српски](README.sr.md) · [Türkçe](README.tr.md) · [Ελληνικά](README.el.md) · [Magyar](README.hu.md) · [Bahasa Indonesia](README.id.md) · [Tiếng Việt](README.vi.md) · [ไทย](README.th.md) · [English (UK)](README.en-GB.md)
 
 </div>
 
@@ -26,7 +26,7 @@
 
 # utPLSQL Test Runner
 
-Spouštějte a laďte testy **utPLSQL** (Oracle PL/SQL) přímo ve VS Code — nativní **Test Explorer**, vizuální pokrytí, ladicí program PL/SQL a **přímé spuštění Oracle** přes `node-oracledb`. K dispozici ve **24 jazycích**; vyžaduje **VS Code 1.125+** (Node 24).
+Spouštějte a laďte testy **utPLSQL** (Oracle PL/SQL) přímo ve VS Code — nativní **Test Explorer**, vizuální pokrytí, ladicí program PL/SQL a **přímé spuštění Oracle** přes `node-oracledb`. K dispozici ve **26 jazycích**; vyžaduje **VS Code 1.125+** (Node 24).
 
 ### Test Explorer a spouštění
 
@@ -85,7 +85,7 @@ Spouštějte a laďte testy **utPLSQL** (Oracle PL/SQL) přímo ve VS Code — n
 - 🎯 **Skok na selhání** — přímá navigace na řádek tvrzení, které selhalo (přes nativní „Go to Error").
 - 🧱 **Diagnostika kompilace** — po každém spuštění se chyby kompilace PL/SQL (`ALL_ERRORS`) zobrazí v Problems Panelu pod zdrojem `utPLSQL Compilation` (nastavení `utplsql.compilationDiagnostics.enabled`).
 - ⏳ **Průběh a zrušení** — dlouhá spuštění zobrazují oznámení o průběhu s počtem a tlačítkem *Cancel* (plus volitelný `utplsql.timeoutMinutes`).
-- 🌍 **i18n — 24 jazyků** — `utplsql.language` se řídí VSCode (24 locale: pt-br, en, en-gb, es, zh-cn, zh-tw, ja, de, fr, it, ko, ru, tr, pl, cs, hu, bg, el, id, ro, sr, th, uk, vi).
+- 🌍 **i18n — 26 jazyků** — `utplsql.language` se řídí VSCode (26 locale: pt-br, en, en-gb, es, zh-cn, zh-tw, ja, de, fr, it, ko, ru, tr, pl, cs, hu, bg, el, id, ro, sr, th, uk, vi, ar, he).
 
 
 ## Instalace
@@ -230,7 +230,7 @@ nativních API VSCode.
 | `utplsql.scriptRunner.filePattern` | `**/*.{sql,pks,pkb,fnc,prc,trg}` | Globs to list files when running a script folder. |
 | `utplsql.scriptRunner.dbmsOutput` | `false` | Captures and displays `DBMS_OUTPUT` during script execution. |
 | `utplsql.scriptRunner.timeoutSeconds` | `300` | Per-statement timeout (s) for scripts (`callTimeout`). |
-| `utplsql.language` | `auto` | Jazyk běhových zpráv. `auto` se řídí VSCode (pt, zh-tw/zh-hk, zh, es, ja, de, fr, it, ko, ru, tr, pl, cs, hu, bg, el, id, ro, sr, th, uk, vi, en-gb; jinak en). Pokrývá **24 locale**. |
+| `utplsql.language` | `auto` | Jazyk běhových zpráv. `auto` se řídí VSCode (pt, zh-tw/zh-hk, zh, es, ja, de, fr, it, ko, ru, tr, pl, cs, hu, bg, el, id, ro, sr, th, uk, vi, en-gb; jinak en). Pokrývá **26 locale**. |
 
 Příklad (soubor `.vscode/settings.json` projektu):
 
