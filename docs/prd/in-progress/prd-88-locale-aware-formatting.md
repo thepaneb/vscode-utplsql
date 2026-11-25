@@ -4,7 +4,7 @@
 
 | Campo | Valor |
 |---|---|
-| Status | Aprovado |
+| Status | Em desenvolvimento |
 | Autor | Gil Cleber Barboza |
 | Data | 2026-09-29 |
 | Componente | Extensão `paneb.vscode-utplsql` |
@@ -65,8 +65,9 @@ mais a unidade separada por espaço. Ex.: `en` → `12.3 s`; `pt-BR` → `12,3 s
 ### RF2 — `formatNumber`
 
 `formatNumber(locale, n, opts)` delega a `Intl.NumberFormat(locale, opts)` com
-`useGrouping` controlável. `t()` formata `count` e `total` automaticamente
-(números usados em prosa), mantendo os demais parâmetros técnicos intactos.
+`useGrouping` controlável. `t()` formata `count`, `total` e `current`
+automaticamente (números usados em prosa), mantendo os demais parâmetros
+técnicos intactos.
 
 ### RF3 — Integração na UI
 
@@ -125,16 +126,18 @@ Nenhuma nova (`utplsql.language` já define o locale).
 - **Sem grouping na status bar**: o contador compacto `passed/total` não usa
   separador de milhar (largura); contagens em prosa (`count`, `total`) usam o
   grouping do locale.
-- **`t()` formata `count`/`total`**, não o call site: os demais parâmetros
-  numéricos (`line`, `ms`, `index`) ficam crus para não localizar dados técnicos.
+- **`t()` formata `count`/`total`/`current`**, não o call site: os demais
+  parâmetros numéricos (`line`, `ms`, `index`) ficam crus para não localizar
+  dados técnicos.
 - Duração mantém `ms` abaixo de 1 s e `s` acima, sempre com o separador do
   locale; o espaço antes da unidade é fixo.
 - `state.ts` continua puro: recebe o locale, não importa `vscode`.
 
 ## 12. Impacto no cérebro
 
-Esperado criar/alterar `BR-I18N-002` (formatação de números/durações é
-locale-aware) com `prds: ["PRD-88"]`, `implementacao` em `src/i18n.ts` e testes.
+Criada a regra `BR-I18N-002` (formatação de números/durações é locale-aware) com
+`prds: ["PRD-88"]`, `implementacao` em `src/i18n.ts`/`statusBar.ts`/`state.ts` e
+testes; a wiki `Internationalization` documenta os helpers.
 
 ## 13. Impacto nas docs
 

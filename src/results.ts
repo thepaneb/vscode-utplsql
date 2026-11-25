@@ -180,7 +180,7 @@ export function applyResultsFromCases(
       // Fora do "ligado" a chamada também *remove* um sufixo antigo, mantendo o
       // label coerente com a setting logo após o run.
       if (typeof item.label === 'string') {
-        const next = withDurationSuffix(item.label, c.durationMs, showDuration);
+        const next = withDurationSuffix(item.label, c.durationMs, showDuration, locale);
         if (next !== item.label) item.label = next;
       }
 

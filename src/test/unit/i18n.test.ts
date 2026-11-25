@@ -7,10 +7,13 @@ import {
   bg,
   cs,
   de,
+  type ExtensionLocale,
   el,
   en,
   enGb,
   es,
+  formatDuration,
+  formatNumber,
   fr,
   hu,
   id,
@@ -256,4 +259,38 @@ test('catalogos nao vazios', () => {
 
 test('t: placeholder ausente nos params permanece literal (branch não-coberto)', () => {
   assert.strictEqual(t('pt-br', 'ext.profile.active', {}), 'Perfil ativo: {name}');
+});
+
+test('formatNumber: separador e grouping do locale; fallback en', () => {
+  assert.strictEqual(formatNumber('en', 1234), '1,234');
+  assert.strictEqual(formatNumber('pt-br', 1234), '1.234');
+  assert.strictEqual(
+    formatNumber('pt-br', 12.3, { minimumFractionDigits: 1, maximumFractionDigits: 1 }),
+    '12,3',
+  );
+  assert.strictEqual(formatNumber('en', 1234, { useGrouping: false }), '1234');
+  assert.strictEqual(formatNumber('xx' as unknown as ExtensionLocale, 1234), '1,234');
+  assert.strictEqual(
+    formatNumber('en', 42, { style: 'currency', currency: 'INVALID' } as Intl.NumberFormatOptions),
+    '42',
+  );
+});
+
+test('formatDuration: ms abaixo de 1s; s com 1 decimal do locale', () => {
+  assert.strictEqual(formatDuration('en', 0), '0 ms');
+  assert.strictEqual(formatDuration('en', 850), '850 ms');
+  assert.strictEqual(formatDuration('en', 1000), '1.0 s');
+  assert.strictEqual(formatDuration('en', 12300), '12.3 s');
+  assert.strictEqual(formatDuration('pt-br', 12300), '12,3 s');
+  assert.strictEqual(formatDuration('ru', 12300), '12,3 s');
+  assert.strictEqual(formatDuration('xx' as unknown as ExtensionLocale, 12300), '12.3 s');
+  assert.strictEqual(formatDuration('en', Number.NaN), '');
+  assert.strictEqual(formatDuration('en', -1), '');
+});
+
+test('t: count/total/current são formatados; outros números ficam crus', () => {
+  assert.match(t('pt-br', 'ext.validate.problems', { count: 1234 }), /1\.234/);
+  assert.match(t('en', 'ext.validate.problems', { count: 1234 }), /1,234/);
+  assert.match(t('pt-br', 'status.running', { current: 1234, total: 5678 }), /1\.234\/5\.678/);
+  assert.strictEqual(t('pt-br', 'script.dbms', { line: 1234 }), '[dbms] 1234');
 });

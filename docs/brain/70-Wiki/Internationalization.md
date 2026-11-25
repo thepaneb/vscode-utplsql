@@ -5,7 +5,7 @@ titulo: "Internationalization (i18n)"
 publicar: docs/wiki/Internationalization.md
 origem: ["MOC - I18n"]
 verificado: 2026-09-23
-regras: ["BR-I18N-001", "BR-I18N-008"]
+regras: ["BR-I18N-001", "BR-I18N-002", "BR-I18N-008"]
 tags: [wiki]
 ---
 
@@ -40,6 +40,22 @@ function t(locale: ExtensionLocale, key: string, params?): string;
 
 - `t` interpolates `{param}` placeholders: `t(locale, 'key', { param: value })`.
 - A missing key falls back to **pt-BR**, then to the key itself. It never throws.
+
+## Formatting (PRD-88)
+
+Numbers and durations shown to the user use the resolved locale:
+
+```typescript
+formatNumber(locale, 1234); // en → 1,234 · pt-BR → 1.234
+formatDuration(locale, 12300); // en → 12.3 s · pt-BR → 12,3 s
+formatDuration(locale, 850); // 850 ms
+```
+
+- `t()` formats the counting parameters (`count`, `total`, `current`); technical
+  numbers (`line`, `ms`, identifiers) stay raw.
+- The status bar and the Test Explorer duration suffix use these helpers;
+  machine-readable formats (ISO dates, JUnit/Cobertura XML, PL/SQL) are never
+  localized.
 
 ![Internationalization architecture](images/diagram-i18n.svg)
 

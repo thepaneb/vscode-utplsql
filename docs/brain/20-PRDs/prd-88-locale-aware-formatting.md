@@ -2,14 +2,14 @@
 tipo: prd
 id: PRD-88
 aliases: [PRD-88]
-status: approved
+status: in-progress
 titulo: "Formatação sensível a locale (números e durações)"
 versao: "0.22.0"
 data: "2026-09-29"
 autor: "Gil Cleber Barboza"
 versao_titulo: "0.22.0 — Localização completa"
 verificado: 2026-11-25
-regras: []
+regras: ["BR-I18N-002"]
 docs: ["CHANGELOG", "wiki/Internationalization.md"]
 tags: [prd]
 ---
@@ -78,8 +78,9 @@ mais a unidade separada por espaço. Ex.: `en` → `12.3 s`; `pt-BR` → `12,3 s
 ### RF2 — `formatNumber`
 
 `formatNumber(locale, n, opts)` delega a `Intl.NumberFormat(locale, opts)` com
-`useGrouping` controlável. `t()` formata `count` e `total` automaticamente
-(números usados em prosa), mantendo os demais parâmetros técnicos intactos.
+`useGrouping` controlável. `t()` formata `count`, `total` e `current`
+automaticamente (números usados em prosa), mantendo os demais parâmetros
+técnicos intactos.
 
 ### RF3 — Integração na UI
 
@@ -138,16 +139,18 @@ Nenhuma nova (`utplsql.language` já define o locale).
 - **Sem grouping na status bar**: o contador compacto `passed/total` não usa
   separador de milhar (largura); contagens em prosa (`count`, `total`) usam o
   grouping do locale.
-- **`t()` formata `count`/`total`**, não o call site: os demais parâmetros
-  numéricos (`line`, `ms`, `index`) ficam crus para não localizar dados técnicos.
+- **`t()` formata `count`/`total`/`current`**, não o call site: os demais
+  parâmetros numéricos (`line`, `ms`, `index`) ficam crus para não localizar
+  dados técnicos.
 - Duração mantém `ms` abaixo de 1 s e `s` acima, sempre com o separador do
   locale; o espaço antes da unidade é fixo.
 - `state.ts` continua puro: recebe o locale, não importa `vscode`.
 
 ## 12. Impacto no cérebro
 
-Esperado criar/alterar `BR-I18N-002` (formatação de números/durações é
-locale-aware) com `prds: ["PRD-88"]`, `implementacao` em `src/i18n.ts` e testes.
+Criada a regra `BR-I18N-002` (formatação de números/durações é locale-aware) com
+`prds: ["PRD-88"]`, `implementacao` em `src/i18n.ts`/`statusBar.ts`/`state.ts` e
+testes; a wiki `Internationalization` documenta os helpers.
 
 ## 13. Impacto nas docs
 
@@ -159,7 +162,11 @@ locale-aware) com `prds: ["PRD-88"]`, `implementacao` em `src/i18n.ts` e testes.
 
 <!-- brain:auto:start:conexoes -->
 - 🗺️ [[MOC - PRDs]]
+- 📐 Regras: [[BR-I18N-002 - Números e durações exibidos respeitam o locale|BR-I18N-002]]
 - 🔗 PRDs relacionados: [[prd-90-message-plurals-cldr|PRD-90]]
 - 🔗 Mesma versão (0.22.0): [[prd-89-pseudo-localization-gate|PRD-89]] · [[prd-90-message-plurals-cldr|PRD-90]] · [[prd-91-doc-parity-localized-distribution|PRD-91]] · [[prd-92-rtl-new-locales|PRD-92]] · [[prd-93-continuous-localization-pipeline|PRD-93]] · [[prd-115-split-i18n-locales|PRD-115]]
+- 🎯 RF1 — `formatDuration` → [[BR-I18N-002 - Números e durações exibidos respeitam o locale|BR-I18N-002]]
+- 🎯 RF2 — `formatNumber` → [[BR-I18N-002 - Números e durações exibidos respeitam o locale|BR-I18N-002]]
+- 🎯 RF3 — Integração na UI → [[BR-I18N-002 - Números e durações exibidos respeitam o locale|BR-I18N-002]]
 - 🚀 ⬅️ release anterior: [[prd-139-state-store-slicing-lru|PRD-139 (0.21.0)]] · ➡️ próxima release: [[prd-60-branch-coverage-investigation|PRD-60 (0.23.0)]]
 <!-- brain:auto:end -->

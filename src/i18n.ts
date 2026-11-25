@@ -2,7 +2,7 @@
 // Catálogos em i18n/locales (um arquivo por locale, barrel com LOCALE_CODES).
 // Chave ausente → pt-BR → a própria chave.
 
-import { catalogs, type ExtensionLocale } from './i18n/locales';
+import { catalogs, type ExtensionLocale, LOCALE_CODES } from './i18n/locales';
 
 export type { ExtensionLocale } from './i18n/locales';
 export {
@@ -67,11 +67,50 @@ export function resolveLocale(setting: string, vscodeLanguage: string): Extensio
   return 'en';
 }
 
-function interpolate(template: string, params?: Record<string, string | number>): string {
+/** Formata número para exibição; fallback en → String. Nunca lança. */
+export function formatNumber(
+  locale: ExtensionLocale,
+  value: number,
+  options?: Intl.NumberFormatOptions,
+): string {
+  const safeLocale: ExtensionLocale = (LOCALE_CODES as readonly string[]).includes(locale)
+    ? locale
+    : 'en';
+  try {
+    return new Intl.NumberFormat(safeLocale, options).format(value);
+  } catch {
+    // Opções inválidas (`Intl` lança): devolve o número cru, sem quebrar a UI.
+    return String(value);
+  }
+}
+
+/** Duração legível: `850 ms` abaixo de 1 s; `12,3 s` acima. */
+export function formatDuration(locale: ExtensionLocale, ms: number): string {
+  if (!Number.isFinite(ms) || ms < 0) return '';
+  if (ms < 1000) return `${Math.round(ms)} ms`;
+  return `${formatNumber(locale, ms / 1000, {
+    minimumFractionDigits: 1,
+    maximumFractionDigits: 1,
+  })} s`;
+}
+
+/** Parâmetros numéricos que representam contagens (recebem grouping do locale). */
+const LOCALIZED_NUMERIC_PARAMS = new Set(['count', 'total', 'current']);
+
+function interpolate(
+  template: string,
+  locale: ExtensionLocale,
+  params?: Record<string, string | number>,
+): string {
   if (!params) return template;
-  return template.replace(/\{(\w+)\}/g, (_m, k: string) =>
-    k in params ? String(params[k]) : `{${k}}`,
-  );
+  return template.replace(/\{(\w+)\}/g, (_m, k: string) => {
+    if (!(k in params)) return `{${k}}`;
+    const value = params[k];
+    if (typeof value === 'number' && LOCALIZED_NUMERIC_PARAMS.has(k)) {
+      return formatNumber(locale, value);
+    }
+    return String(value);
+  });
 }
 
 /** Traduz uma chave; chave ausente → pt-BR → a própria chave. Nunca lança. */
@@ -82,5 +121,5 @@ export function t(
 ): string {
   const catalog = catalogs[locale];
   const template = catalog[key] ?? catalogs['pt-br'][key] ?? key;
-  return interpolate(template, params);
+  return interpolate(template, locale, params);
 }

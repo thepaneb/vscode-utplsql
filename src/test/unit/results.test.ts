@@ -648,13 +648,13 @@ test('applyResultsFromCases: showTestDuration sufixa o label e guarda duração/
   vscode.__setConfigValue('showTestDuration', true);
   const map = applyResultsFromCases(durationCase(), [item], run, state);
 
-  assert.strictEqual(item.label, 'app.add (1.2s)');
+  assert.strictEqual(item.label, 'app.add (1,2 s)');
   assert.strictEqual(map.get('t1')?.durationMs, 1200);
   assert.strictEqual(typeof map.get('t1')?.ts, 'number');
 
   // reaplicar substitui o sufixo (não acumula)
   applyResultsFromCases(durationCase(), [item], run, state);
-  assert.strictEqual(item.label, 'app.add (1.2s)');
+  assert.strictEqual(item.label, 'app.add (1,2 s)');
 
   // desligar limpa o sufixo anterior
   vscode.__setConfigValue('showTestDuration', false);
