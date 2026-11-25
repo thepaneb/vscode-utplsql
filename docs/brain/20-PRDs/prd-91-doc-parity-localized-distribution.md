@@ -2,7 +2,7 @@
 tipo: prd
 id: PRD-91
 aliases: [PRD-91]
-status: approved
+status: in-progress
 titulo: "Paridade de documentação e distribuição localizada"
 versao: "0.22.0"
 data: "2026-09-29"

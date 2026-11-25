@@ -206,7 +206,6 @@ notas `prd-*`. O índice navegável do vault é a [[MOC - PRDs]].
 |---|---|---|---|
 | 89 | [Pseudo-localização e gate de strings não traduzidas](approved/prd-89-pseudo-localization-gate.md) | 0.22.0 | 2026-09-29 |
 | 90 | [Plurais (CLDR) e seleção no catálogo de mensagens](approved/prd-90-message-plurals-cldr.md) | 0.22.0 | 2026-09-29 |
-| 91 | [Paridade de documentação e distribuição localizada](approved/prd-91-doc-parity-localized-distribution.md) | 0.22.0 | 2026-09-29 |
 | 92 | [RTL e novos locales (árabe e hebraico)](approved/prd-92-rtl-new-locales.md) | 0.22.0 | 2026-09-29 |
 | 93 | [Pipeline de localização contínua (glossário, TM e revisão)](approved/prd-93-continuous-localization-pipeline.md) | 0.22.0 | 2026-09-29 |
 
@@ -215,6 +214,7 @@ notas `prd-*`. O índice navegável do vault é a [[MOC - PRDs]].
 | # | PRD | Versão | Data |
 |---|---|---|---|
 | 88 | [Formatação sensível a locale (números e durações)](in-progress/prd-88-locale-aware-formatting.md) | 0.22.0 | 2026-09-29 |
+| 91 | [Paridade de documentação e distribuição localizada](in-progress/prd-91-doc-parity-localized-distribution.md) | 0.22.0 | 2026-09-29 |
 | 115 | [Fatiar `i18nLocales.ts` por locale](in-progress/prd-115-split-i18n-locales.md) | 0.22.0 | 2026-10-10 |
 
 ### ⚪ Propostos
@@ -377,11 +377,11 @@ docs/prd/
 ├── approved/        ← aprovados, aguardando implementação
 │   ├── prd-89-pseudo-localization-gate.md
 │   ├── prd-90-message-plurals-cldr.md
-│   ├── prd-91-doc-parity-localized-distribution.md
 │   ├── prd-92-rtl-new-locales.md
 │   ├── prd-93-continuous-localization-pipeline.md
 ├── in-progress/        ← sendo implementados agora
 │   ├── prd-88-locale-aware-formatting.md
+│   ├── prd-91-doc-parity-localized-distribution.md
 │   ├── prd-115-split-i18n-locales.md
 ├── proposed/        ← em avaliação
 │   ├── prd-60-branch-coverage-investigation.md
