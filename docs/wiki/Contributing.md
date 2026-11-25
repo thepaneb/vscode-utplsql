@@ -255,3 +255,13 @@ If the change completes a PRD, reference `Closes #N` in the commit/PR body.
 
 The wiki is automatically synced via workflow when pushing to the `main`
 branch (files in `docs/wiki/`).
+
+### Localized docs parity (PRD-91)
+
+- `npm run docs:fidelity` (via `docs:check`) compares each `README.<locale>.md`
+  with `README.md`: feature bullets (emoji multiset), Commands table presence and
+  the full language-link set; settings are already covered by the fidelity check.
+- The number of variants is derived from `package.nls.*.json` (no hardcoded 23).
+- [Registro de locales](Registro de locales) lists status/reviewer/coverage for every active locale
+  and is required by `docs:check`; [Política de locales](Política de locales) defines when to
+  keep/add/archive a locale.

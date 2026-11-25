@@ -123,9 +123,10 @@ Nenhuma.
 
 ## 11. Decisões (2026-11-25)
 
-- Paridade por **tokens normalizados** (ids `utplsql.*`, links de idioma,
-  âncoras de feature) e estrutura por seção; **não** comparar prosa traduzida
-  (falso positivo semântico).
+- Paridade por **multiset de bullets de feature (emoji)**, presença da tabela de
+  Comandos e conjunto completo de links de idioma; settings já são cobertas pelo
+  item 9 do `docs-fidelity`. **Não** comparar prosa traduzida (falso positivo
+  semântico).
 - O registro de locales é uma **nota manual** (`12-I18n/Registro de locales.md`),
   porque as `LOC-*` são geradas; donos/revisores são compartilhados com a PRD-93.
 - O número de variantes deixa de ser literal no `docs-check` e passa a derivar de
@@ -134,8 +135,9 @@ Nenhuma.
 
 ## 12. Impacto no cérebro
 
-Esperado criar `BR-I18N-005` (paridade estrutural das variantes de README) e o
-registro de locales (NFR/ENT a definir), com `prds: ["PRD-91"]`.
+Criada a regra `BR-I18N-005` (paridade estrutural das variantes + registro de
+locale) com `prds: ["PRD-91"]`; o registro está em
+`12-I18n/Registro de locales.md` e a política em `12-I18n/Política de locales.md`.
 
 ## 13. Impacto nas docs
 

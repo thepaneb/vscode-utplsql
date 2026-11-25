@@ -27,6 +27,8 @@ SORT id ASC
 - [[MOC - Documentacao]]
 - [[NFR-006 - Internacionalização]]
 - [[Estrutura dos catálogos]]
+- [[Registro de locales]]
+- [[Política de locales]]
 
 ## Índice (links)
 
@@ -56,4 +58,6 @@ SORT id ASC
 - [[LOC-vi - Tiếng Việt]] — `LOC-vi`
 - [[LOC-zh-cn - 中文(简体)]] — `LOC-zh-cn`
 - [[LOC-zh-tw - 中文(繁體)]] — `LOC-zh-tw`
+- [[Política de locales]]
+- [[Registro de locales]]
 <!-- brain:auto:end -->

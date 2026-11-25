@@ -117,6 +117,7 @@ SORT id ASC
 - [[BR-EXEC-018 - Runs e export sao serializados antes do proximo uso do buffer]] — `BR-EXEC-018`
 - [[BR-I18N-001 - Resolução de locale e fallback de tradução]] — `BR-I18N-001`
 - [[BR-I18N-002 - Números e durações exibidos respeitam o locale]] — `BR-I18N-002`
+- [[BR-I18N-005 - Variantes de README mantêm paridade estrutural e registro de locale]] — `BR-I18N-005`
 - [[BR-I18N-008 - Catálogos de locale em um arquivo por locale com barrel canônico]] — `BR-I18N-008`
 - [[BR-LOG-001 - Diagnostico vai para o LogOutputChannel utPLSQL]] — `BR-LOG-001`
 - [[BR-LOG-002 - Trace e perf sao opt-in e nunca registram credenciais]] — `BR-LOG-002`
