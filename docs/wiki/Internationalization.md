@@ -48,6 +48,22 @@ formatDuration(locale, 850); // 850 ms
   machine-readable formats (ISO dates, JUnit/Cobertura XML, PL/SQL) are never
   localized.
 
+## Plurals (PRD-90)
+
+A catalogue entry can be a plain string or CLDR plural forms:
+
+```typescript
+'status.failed': { one: '{count} failure', other: '{count} failures' }
+```
+
+- `t()` picks the form with `Intl.PluralRules(locale).select(count)`; missing
+  forms fall back to `other`, then pt-BR, then the key.
+- Every locale must define the categories that its CLDR rules can return (plus
+  `other`); `npm run i18n:check` and the unit parity test enforce it.
+- `en-gb` is an overlay of `en` and inherits its plural forms.
+- Draft translations of the forms are accepted while in-country review is
+  pending (see [Registro de locales](Registro de locales)).
+
 ![Internationalization architecture](images/diagram-i18n.svg)
 
 ## Notes

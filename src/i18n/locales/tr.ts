@@ -1,6 +1,8 @@
 // Catálogo i18n `tr`. PURO (sem 'vscode').
-// Extraído de src/i18nLocales.ts no split da PRD-115; paridade em i18n.test.ts.
-export const tr: Record<string, string> = {
+// Gerado por scripts/i18n-apply.cjs; paridade em i18n.test.ts.
+import type { Message } from './types';
+
+export const tr: Record<string, Message> = {
   'ext.export.reporterPlaceholder': 'Dışa aktarılacak veritabanı reporter seçin',
   'ext.export.toOutput': 'Output içinde göster',
   'ext.export.toFile': 'Dosyaya kaydet…',
@@ -22,7 +24,6 @@ export const tr: Record<string, string> = {
   'common.copy': 'Kopyala',
   'common.oracledbMissing':
     'oracledb kullanılamıyor. Bağımlılıkları "npm install" ile yeniden yükleyin.',
-
   'ext.reporters.listFailed': 'Reporter listesi alınamadı: {error}',
   'ext.reporters.placeholder': 'Bu çalıştırma için ek bir reporter seçin',
   'ext.reporters.willUse': '"{name}" reporter\'ı bir sonraki çalıştırmada kullanılacak.',
@@ -38,7 +39,10 @@ export const tr: Record<string, string> = {
   'ext.tag.noMatch': 'Seçilen etiketlerle eşleşen test yok.',
   'ext.grants.copied': "Kapsam grant'ları panoya kopyalandı.",
   'ext.validate.ok': 'utPLSQL kurulumu OK — sorun bulunamadı.',
-  'ext.validate.problems': '{count} kurulum sorunu bulundu. Sorunlar paneline bakın.',
+  'ext.validate.problems': {
+    one: '{count} kurulum sorunu bulundu. Sorunlar paneline bakın.',
+    other: '{count} kurulum sorunu bulundu. Sorunlar paneline bakın.',
+  },
   'ext.debug.disabled': 'PL/SQL hata ayıklama devre dışı (utplsql.debugger.enabled).',
   'ext.debug.openPks': 'Hata ayıklamak için bir .pks/.pkb dosyası açın.',
   'ext.debug.pickTest': 'Hata ayıklanacak testi seçin',
@@ -46,7 +50,6 @@ export const tr: Record<string, string> = {
   'ext.rebuildCache.ok': 'Açıklama önbelleği yeniden oluşturuldu.',
   'ext.compileForDebug.failed': 'Hata ayıklama için derleme başarısız: {error}',
   'ext.compileForDebug.none': 'Bu seçimde hata ayıklama için derlenecek PL/SQL nesnesi yok.',
-
   'ext.profile.none': 'Kayıtlı bağlantı profili yok. "utPLSQL: Yeni bağlantı profili..." kullanın.',
   'ext.profile.active': 'Etkin profil: {name}',
   'ext.profile.new.title': 'utPLSQL — Yeni profil',
@@ -57,7 +60,10 @@ export const tr: Record<string, string> = {
   'ext.profile.new.sourcePlaceholder': 'install',
   'ext.profile.new.created': '"{name}" profili oluşturuldu ve etkinleştirildi.',
   'ext.sqlDev.import.none': 'SQL Developer bağlantısı bulunamadı (connections.xml).',
-  'ext.sqlDev.import.ok': "SQL Developer'dan {count} bağlantı içe aktarıldı.",
+  'ext.sqlDev.import.ok': {
+    one: "SQL Developer'dan {count} bağlantı içe aktarıldı.",
+    other: "SQL Developer'dan {count} bağlantı içe aktarıldı.",
+  },
   'ext.noSuiteInFile': 'Bu dosyada utPLSQL paketi bulunamadı.',
   'ext.noSuiteInFolder': 'Bu klasörde utPLSQL paketi bulunamadı.',
   'ext.openFolder': 'utPLSQL testlerini çalıştırmak için bir klasör/proje açın.',
@@ -66,7 +72,6 @@ export const tr: Record<string, string> = {
     'Bağlantıyı girin (kullanıcı/parola@//sunucu:port/hizmet). Yalnızca bu oturumda saklanır.',
   'ext.conn.placeholder': 'DEV_FULANO/parola@//localhost:1521/XEPDB1',
   'ext.runCancel': 'Çalıştırma iptal edildi.',
-
   'runner.oracleError': 'Oracle çalıştırıcısı: {error}',
   'runner.oracleErrorHeader': '[hata] Oracle çalıştırıcısı: {error}',
   'runner.running': 'utPLSQL{coverage} çalıştırılıyor...',
@@ -89,7 +94,6 @@ export const tr: Record<string, string> = {
   'runner.oracleInfo': '[bilgi] Oracle çalıştırıcısı {ms}ms | {chars} JUnit karakteri',
   'runner.randomOrderSeed': '[bilgi] Rastgele sıra etkin (seed: {seed}).',
   'runner.stderr': '[stderr]',
-
   'oracleRunner.coverNotGenerated':
     "[kapsam] rapor oluşturulmadı. GRANT EXECUTE ON SYS.DBMS_PROFILER'ı doğrulayın.",
   'oracleRunner.badConnFormat':
@@ -97,39 +101,53 @@ export const tr: Record<string, string> = {
   'discovery.sourceTruncated': '{schema}.{name} kaynağı, DB keşfinde {max} satırda kesildi.',
   'results.noMapped':
     '[kapsam] eşleştirilen dosya yok. "utplsql.sourcePath" değerini kaynak kod klasörüne ayarlayın.',
-
   'status.idle': "Henüz test çalıştırılmadı. Test Explorer'ı açmak için tıklayın.",
   'status.running': '{current}/{total} paket çalıştırılıyor',
   'status.runningDetail': '{current}/{total} test paketi çalıştırılıyor...',
   'status.profileTooltip': 'Profil: {name}. Değiştirmek için tıklayın.',
-  'status.passed': '{count} geçti',
-  'status.failed': '{count} başarısız',
-  'status.errored': '{count} hata',
-  'status.skipped': '{count} atlandı',
+  'status.passed': {
+    one: '{count} geçti',
+    other: '{count} geçti',
+  },
+  'status.failed': {
+    one: '{count} başarısız',
+    other: '{count} başarısız',
+  },
+  'status.errored': {
+    one: '{count} hata',
+    other: '{count} hata',
+  },
+  'status.skipped': {
+    one: '{count} atlandı',
+    other: '{count} atlandı',
+  },
   'status.coverage.on': 'Kapsam: açık',
   'status.coverage.off': 'Kapsam: kapalı',
   'status.coverage.onTooltip': 'Kapsam her zaman açık (oturum). Kapatmak için tıklayın.',
   'status.coverage.offTooltip': 'Kapsam kapalı. Sonraki çalıştırmalarda açmak için tıklayın.',
-
   'quickfix.oldVersion': 'Veritabanındaki utPLSQL sürümü eski ({version}); minimum 3.1.0.',
   'quickfix.badConn': 'Veritabanına bağlanılamadı. Bağlantıyı/profili kontrol edin.',
   'quickfix.oldVersionUpgrade': 'utPLSQL nasıl güncellenir',
-  'quickfix.invalidObjects': '{schema} şemasında {count} geçersiz nesne var: {names}',
+  'quickfix.invalidObjects': {
+    one: '{schema} şemasında {count} geçersiz nesne var: {names}',
+    other: '{schema} şemasında {count} geçersiz nesne var: {names}',
+  },
   'quickfix.noCoverage':
     "Kapsam raporu oluşturulmadı. Grant'ları çalıştırın: GRANT EXECUTE ON SYS.DBMS_PROFILER TO <schema>;",
   'quickfix.recompile': "UT3'ü yeniden derle",
   'quickfix.recompiledOk': '{schema} şeması yeniden derlendi — geçersiz nesne yok.',
-  'quickfix.stillInvalid': '{schema} içinde hâlâ {count} geçersiz nesne var: {names}',
+  'quickfix.stillInvalid': {
+    one: '{schema} içinde hâlâ {count} geçersiz nesne var: {names}',
+    other: '{schema} içinde hâlâ {count} geçersiz nesne var: {names}',
+  },
   'quickfix.recompileFail':
     'UT3 yeniden derlenemedi: {error}. ALTER ANY PROCEDURE veya şema sahibi olarak çalıştırma gerekir.',
   'quickfix.noConnection': 'Oracle bağlantısı yapılandırılmadı.',
   'quickfix.oracledbMissing':
     'oracledb kullanılamıyor. Bağımlılıkları "npm install" ile yeniden yükleyin.',
-
   'viewCoverage.none': '[kapsam] eşleştirilen dosya yok.',
   'viewCoverage.vsqlDenied':
     '[kapsam] V$SQL üzerinden görünüm takibi kullanılamıyor. Erişim izni verin: GRANT SELECT ON SYS.V_$SQL TO <schema>.',
-
   'nls.command.showTestExplorer': "Test Explorer'ı göster",
   'nls.command.runLens': 'Testi çalıştır (CodeLens)',
   'nls.command.refresh': 'Testleri yenile',
@@ -157,7 +175,10 @@ export const tr: Record<string, string> = {
   'script.header.untitled': 'düzenleyici betiği',
   'script.stmtOk': '[{index}] ok {ms}ms — {summary}',
   'script.stmtErr': '[{index}] hata {ms}ms — {summary}',
-  'script.rows': ' ({count} rows affected)',
+  'script.rows': {
+    one: ' ({count} rows affected)',
+    other: ' ({count} rows affected)',
+  },
   'script.dbms': '[dbms] {line}',
   'script.done': 'Tamamlandı: {ok} ok, {failed} başarısız ({executed} statements).',
   'script.noStatements': 'Çalıştırılacak SQL ifadesi bulunamadı.',
@@ -175,7 +196,6 @@ export const tr: Record<string, string> = {
   'ext.profile.new.descPrompt': 'Description (optional — Enter to skip)',
   'ext.profile.new.descPlaceholder': 'Local development database',
   'ext.profile.new.charsetDefault': 'default',
-
   'results.failedFallback': 'Başarısız',
   'results.errorFallback': 'Hata',
   'runner.coverEmptyDir': '(boş)',
@@ -191,7 +211,6 @@ export const tr: Record<string, string> = {
   'ext.reporters.listEmpty': 'reporter bulunamadı',
   'quickfix.reconfigureConn': 'Bağlantıyı yeniden yapılandır',
   'quickfix.copyGrants': "Grants'leri panoya kopyala",
-
   'debug.noConnection':
     'oracledb kullanılamıyor veya bağlantı yapılandırılmamış. Bağımlılıkları "npm install" ile yeniden yükleyin.',
   'debug.controlFail': 'DBMS_DEBUG denetim oturumu açılamadı.',
@@ -200,7 +219,10 @@ export const tr: Record<string, string> = {
   'debug.pauseUnsupported': 'Pause DBMS_DEBUG tarafından desteklenmiyor.',
   'debug.commandUnsupported': 'Desteklenmeyen komut: {cmd}',
   'debug.sessionAttached': '{id} oturumu eklendi.',
-  'debug.breakpointsApplied': '{count} kesme noktası uygulandı; oturum hazır.',
+  'debug.breakpointsApplied': {
+    one: '{count} kesme noktası uygulandı; oturum hazır.',
+    other: '{count} kesme noktası uygulandı; oturum hazır.',
+  },
   'debug.stoppedAtEntry': 'entry noktasında durdu — kesme noktasına gitmek için Continue kullanın.',
   'debug.sessionTimeout': 'Hata ayıklama oturumu zaman aşımına uğradı — sonlandırılıyor.',
   'debug.runTestFailed': 'Test çalıştırılamadı: {error}',

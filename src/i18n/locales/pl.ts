@@ -1,6 +1,8 @@
 // Catálogo i18n `pl`. PURO (sem 'vscode').
-// Extraído de src/i18nLocales.ts no split da PRD-115; paridade em i18n.test.ts.
-export const pl: Record<string, string> = {
+// Gerado por scripts/i18n-apply.cjs; paridade em i18n.test.ts.
+import type { Message } from './types';
+
+export const pl: Record<string, Message> = {
   'ext.export.reporterPlaceholder': 'Wybierz reporter bazy do eksportu',
   'ext.export.toOutput': 'Pokaż w Output',
   'ext.export.toFile': 'Zapisz do pliku…',
@@ -22,7 +24,6 @@ export const pl: Record<string, string> = {
   'common.copy': 'Kopiuj',
   'common.oracledbMissing':
     'oracledb niedostępny. Zainstaluj ponownie zależności przez „npm install”.',
-
   'ext.reporters.listFailed': 'Nie udało się pobrać listy reporterów: {error}',
   'ext.reporters.placeholder': 'Wybierz dodatkowy reporter dla tego uruchomienia',
   'ext.reporters.willUse': 'Reporter „{name}” zostanie użyty przy następnym uruchomieniu.',
@@ -38,7 +39,12 @@ export const pl: Record<string, string> = {
   'ext.tag.noMatch': 'Żaden test nie pasuje do wybranych tagów.',
   'ext.grants.copied': 'Skopiowano granty pokrycia do schowka.',
   'ext.validate.ok': 'Konfiguracja utPLSQL OK — nie znaleziono problemów.',
-  'ext.validate.problems': 'Znaleziono {count} problemów konfiguracji. Zobacz panel problemów.',
+  'ext.validate.problems': {
+    one: 'Znaleziono {count} problemów konfiguracji. Zobacz panel problemów.',
+    few: 'Znaleziono {count} problemów konfiguracji. Zobacz panel problemów.',
+    many: 'Znaleziono {count} problemów konfiguracji. Zobacz panel problemów.',
+    other: 'Znaleziono {count} problemów konfiguracji. Zobacz panel problemów.',
+  },
   'ext.debug.disabled': 'Debugowanie PL/SQL wyłączone (utplsql.debugger.enabled).',
   'ext.debug.openPks': 'Otwórz plik .pks/.pkb, aby debugować.',
   'ext.debug.pickTest': 'Wybierz test do debugowania',
@@ -46,7 +52,6 @@ export const pl: Record<string, string> = {
   'ext.rebuildCache.ok': 'Przebudowano pamięć podręczną adnotacji.',
   'ext.compileForDebug.failed': 'Nie udało się skompilować do debugowania: {error}',
   'ext.compileForDebug.none': 'Brak obiektu PL/SQL do skompilowania do debugowania w tym wyborze.',
-
   'ext.profile.none':
     'Brak zapisanych profili połączeń. Użyj „utPLSQL: Nowy profil połączenia...”.',
   'ext.profile.active': 'Aktywny profil: {name}',
@@ -58,7 +63,12 @@ export const pl: Record<string, string> = {
   'ext.profile.new.sourcePlaceholder': 'install',
   'ext.profile.new.created': 'Utworzono i aktywowano profil „{name}”.',
   'ext.sqlDev.import.none': 'Nie znaleziono połączeń SQL Developer (connections.xml).',
-  'ext.sqlDev.import.ok': 'Zaimportowano {count} połączeń z SQL Developer.',
+  'ext.sqlDev.import.ok': {
+    one: 'Zaimportowano {count} połączeń z SQL Developer.',
+    few: 'Zaimportowano {count} połączeń z SQL Developer.',
+    many: 'Zaimportowano {count} połączeń z SQL Developer.',
+    other: 'Zaimportowano {count} połączeń z SQL Developer.',
+  },
   'ext.noSuiteInFile': 'Nie znaleziono pakietu utPLSQL w tym pliku.',
   'ext.noSuiteInFolder': 'Nie znaleziono pakietu utPLSQL w tym folderze.',
   'ext.openFolder': 'Otwórz folder/projekt, aby uruchomić testy utPLSQL.',
@@ -67,7 +77,6 @@ export const pl: Record<string, string> = {
     'Wprowadź połączenie (użytkownik/hasło@//host:port/usługa). Zachowane tylko w tej sesji.',
   'ext.conn.placeholder': 'DEV_FULANO/hasło@//localhost:1521/XEPDB1',
   'ext.runCancel': 'Anulowano uruchomienie.',
-
   'runner.oracleError': 'Runner Oracle: {error}',
   'runner.oracleErrorHeader': '[błąd] Runner Oracle: {error}',
   'runner.running': 'Uruchamianie utPLSQL{coverage}...',
@@ -92,7 +101,6 @@ export const pl: Record<string, string> = {
   'runner.oracleInfo': '[info] Runner Oracle {ms}ms | {chars} znaków JUnit',
   'runner.randomOrderSeed': '[info] Włączono losową kolejność (seed: {seed}).',
   'runner.stderr': '[stderr]',
-
   'oracleRunner.coverNotGenerated':
     '[pokrycie] raport nie został wygenerowany. Sprawdź GRANT EXECUTE ON SYS.DBMS_PROFILER.',
   'oracleRunner.badConnFormat':
@@ -101,40 +109,66 @@ export const pl: Record<string, string> = {
     'Źródło {schema}.{name} obcięte na {max} wierszach w wykrywaniu w bazie.',
   'results.noMapped':
     '[pokrycie] brak przypisanych plików. Ustaw „utplsql.sourcePath” na folder kodu źródłowego.',
-
   'status.idle': 'Nie uruchomiono jeszcze testów. Kliknij, aby otworzyć Test Explorer.',
   'status.running': 'Uruchamianie {current}/{total} pakietów',
   'status.runningDetail': 'Wykonywanie {current} z {total} pakietów testów...',
   'status.profileTooltip': 'Profil: {name}. Kliknij, aby zmienić.',
-  'status.passed': '{count} zaliczone',
-  'status.failed': '{count} nieudane',
-  'status.errored': '{count} błędów',
-  'status.skipped': '{count} pominięte',
+  'status.passed': {
+    one: '{count} zaliczone',
+    few: '{count} zaliczone',
+    many: '{count} zaliczone',
+    other: '{count} zaliczone',
+  },
+  'status.failed': {
+    one: '{count} nieudane',
+    few: '{count} nieudane',
+    many: '{count} nieudane',
+    other: '{count} nieudane',
+  },
+  'status.errored': {
+    one: '{count} błędów',
+    few: '{count} błędów',
+    many: '{count} błędów',
+    other: '{count} błędów',
+  },
+  'status.skipped': {
+    one: '{count} pominięte',
+    few: '{count} pominięte',
+    many: '{count} pominięte',
+    other: '{count} pominięte',
+  },
   'status.coverage.on': 'Pokrycie: włączone',
   'status.coverage.off': 'Pokrycie: wyłączone',
   'status.coverage.onTooltip': 'Pokrycie zawsze włączone (sesja). Kliknij, aby wyłączyć.',
   'status.coverage.offTooltip':
     'Pokrycie wyłączone. Kliknij, aby włączyć w kolejnych uruchomieniach.',
-
   'quickfix.oldVersion': 'Wersja utPLSQL w bazie jest stara ({version}); minimum 3.1.0.',
   'quickfix.badConn': 'Nie można połączyć się z bazą. Sprawdź połączenie/profil.',
   'quickfix.oldVersionUpgrade': 'Jak zaktualizować utPLSQL',
-  'quickfix.invalidObjects': 'Schemat {schema} zawiera {count} nieprawidłowych obiektów: {names}',
+  'quickfix.invalidObjects': {
+    one: 'Schemat {schema} zawiera {count} nieprawidłowych obiektów: {names}',
+    few: 'Schemat {schema} zawiera {count} nieprawidłowych obiektów: {names}',
+    many: 'Schemat {schema} zawiera {count} nieprawidłowych obiektów: {names}',
+    other: 'Schemat {schema} zawiera {count} nieprawidłowych obiektów: {names}',
+  },
   'quickfix.noCoverage':
     'Raport pokrycia nie został wygenerowany. Wykonaj granty: GRANT EXECUTE ON SYS.DBMS_PROFILER TO <schema>;',
   'quickfix.recompile': 'Przekompiluj UT3',
   'quickfix.recompiledOk': 'Schemat {schema} przekompilowany — brak nieprawidłowych obiektów.',
-  'quickfix.stillInvalid': 'W {schema} pozostało {count} nieprawidłowych obiektów: {names}',
+  'quickfix.stillInvalid': {
+    one: 'W {schema} pozostało {count} nieprawidłowych obiektów: {names}',
+    few: 'W {schema} pozostało {count} nieprawidłowych obiektów: {names}',
+    many: 'W {schema} pozostało {count} nieprawidłowych obiektów: {names}',
+    other: 'W {schema} pozostało {count} nieprawidłowych obiektów: {names}',
+  },
   'quickfix.recompileFail':
     'Nie udało się przekompilować UT3: {error}. Wymaga ALTER ANY PROCEDURE lub uruchomienia jako właściciel schematu.',
   'quickfix.noConnection': 'Połączenie Oracle nie skonfigurowane.',
   'quickfix.oracledbMissing':
     'oracledb niedostępny. Zainstaluj ponownie zależności przez „npm install”.',
-
   'viewCoverage.none': '[pokrycie] brak przypisanych plików.',
   'viewCoverage.vsqlDenied':
     '[pokrycie] śledzenie widoków przez V$SQL niedostępne. Nadaj dostęp: GRANT SELECT ON SYS.V_$SQL TO <schema>.',
-
   'nls.command.showTestExplorer': 'Pokaż Test Explorer',
   'nls.command.runLens': 'Uruchom test (CodeLens)',
   'nls.command.refresh': 'Odśwież testy',
@@ -162,7 +196,12 @@ export const pl: Record<string, string> = {
   'script.header.untitled': 'skrypt edytora',
   'script.stmtOk': '[{index}] ok {ms}ms — {summary}',
   'script.stmtErr': '[{index}] błąd {ms}ms — {summary}',
-  'script.rows': ' ({count} rows affected)',
+  'script.rows': {
+    one: ' ({count} rows affected)',
+    few: ' ({count} rows affected)',
+    many: ' ({count} rows affected)',
+    other: ' ({count} rows affected)',
+  },
   'script.dbms': '[dbms] {line}',
   'script.done': 'Gotowe: {ok} ok, {failed} niepowodzeń ({executed} statements).',
   'script.noStatements': 'Nie znaleziono instrukcji SQL do wykonania.',
@@ -180,7 +219,6 @@ export const pl: Record<string, string> = {
   'ext.profile.new.descPrompt': 'Description (optional — Enter to skip)',
   'ext.profile.new.descPlaceholder': 'Local development database',
   'ext.profile.new.charsetDefault': 'default',
-
   'results.failedFallback': 'Niezaliczony',
   'results.errorFallback': 'Błąd',
   'runner.coverEmptyDir': '(pusty)',
@@ -196,7 +234,6 @@ export const pl: Record<string, string> = {
   'ext.reporters.listEmpty': 'nie znaleziono reporterów',
   'quickfix.reconfigureConn': 'Skonfiguruj połączenie ponownie',
   'quickfix.copyGrants': 'Kopiuj granty do schowka',
-
   'debug.noConnection':
     'oracledb niedostępny lub połączenie nieskonfigurowane. Zainstaluj ponownie zależności przez „npm install”.',
   'debug.controlFail': 'Nie można otworzyć sesji kontrolnej DBMS_DEBUG.',
@@ -205,7 +242,12 @@ export const pl: Record<string, string> = {
   'debug.pauseUnsupported': 'Pause nie jest obsługiwane przez DBMS_DEBUG.',
   'debug.commandUnsupported': 'Nieobsługiwane polecenie: {cmd}',
   'debug.sessionAttached': 'Dołączono sesję {id}.',
-  'debug.breakpointsApplied': 'Zastosowano {count} punktów przerwania; sesja gotowa.',
+  'debug.breakpointsApplied': {
+    one: 'Zastosowano {count} punktów przerwania; sesja gotowa.',
+    few: 'Zastosowano {count} punktów przerwania; sesja gotowa.',
+    many: 'Zastosowano {count} punktów przerwania; sesja gotowa.',
+    other: 'Zastosowano {count} punktów przerwania; sesja gotowa.',
+  },
   'debug.stoppedAtEntry': 'Zatrzymano na entry — użyj Continue, aby dojść do punktu przerwania.',
   'debug.sessionTimeout': 'Przekroczono limit czasu sesji debugowania — zamykanie.',
   'debug.runTestFailed': 'Nie udało się uruchomić testu: {error}',

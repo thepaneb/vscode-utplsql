@@ -1,6 +1,8 @@
 // Catálogo i18n `de`. PURO (sem 'vscode').
-// Extraído de src/i18nLocales.ts no split da PRD-115; paridade em i18n.test.ts.
-export const de: Record<string, string> = {
+// Gerado por scripts/i18n-apply.cjs; paridade em i18n.test.ts.
+import type { Message } from './types';
+
+export const de: Record<string, Message> = {
   'ext.export.reporterPlaceholder': 'Datenbank-Reporter für den Export wählen',
   'ext.export.toOutput': 'In Output anzeigen',
   'ext.export.toFile': 'In Datei speichern…',
@@ -23,7 +25,6 @@ export const de: Record<string, string> = {
   'common.copy': 'Kopieren',
   'common.oracledbMissing':
     'oracledb nicht verfügbar. Installieren Sie die Abhängigkeiten mit "npm install" neu.',
-
   'ext.reporters.listFailed': 'Reporter auflisten fehlgeschlagen: {error}',
   'ext.reporters.placeholder': 'Zusätzlichen Reporter für diesen Lauf auswählen',
   'ext.reporters.willUse': 'Reporter „{name}" wird beim nächsten Lauf verwendet.',
@@ -39,7 +40,10 @@ export const de: Record<string, string> = {
   'ext.tag.noMatch': 'Kein Test entspricht den ausgewählten Tags.',
   'ext.grants.copied': 'Coverage-Grants in die Zwischenablage kopiert.',
   'ext.validate.ok': 'utPLSQL-Einrichtung OK — keine Probleme gefunden.',
-  'ext.validate.problems': '{count} Einrichtungsproblem(e) gefunden. Siehe Problembereich.',
+  'ext.validate.problems': {
+    one: '{count} Einrichtungsproblem(e) gefunden. Siehe Problembereich.',
+    other: '{count} Einrichtungsproblem(e) gefunden. Siehe Problembereich.',
+  },
   'ext.debug.disabled': 'PL/SQL-Debugging deaktiviert (utplsql.debugger.enabled).',
   'ext.debug.openPks': 'Öffnen Sie eine .pks/.pkb-Datei zum Debuggen.',
   'ext.debug.pickTest': 'Wählen Sie den Test zum Debuggen',
@@ -47,7 +51,6 @@ export const de: Record<string, string> = {
   'ext.rebuildCache.ok': 'Anmerkungs-Cache neu aufgebaut.',
   'ext.compileForDebug.failed': 'Kompilierung für Debug fehlgeschlagen: {error}',
   'ext.compileForDebug.none': 'Kein PL/SQL-Objekt zum Kompilieren für Debug in dieser Auswahl.',
-
   'ext.profile.none':
     'Kein gespeichertes Verbindungsprofil. Verwenden Sie „utPLSQL: Neues Verbindungsprofil...".',
   'ext.profile.active': 'Aktives Profil: {name}',
@@ -59,7 +62,10 @@ export const de: Record<string, string> = {
   'ext.profile.new.sourcePlaceholder': 'install',
   'ext.profile.new.created': 'Profil „{name}" erstellt und aktiviert.',
   'ext.sqlDev.import.none': 'Keine SQL-Developer-Verbindungen gefunden (connections.xml).',
-  'ext.sqlDev.import.ok': '{count} Verbindung(en) aus SQL Developer importiert.',
+  'ext.sqlDev.import.ok': {
+    one: '{count} Verbindung aus SQL Developer importiert.',
+    other: '{count} Verbindung(en) aus SQL Developer importiert.',
+  },
   'ext.noSuiteInFile': 'Keine utPLSQL-Suite in dieser Datei gefunden.',
   'ext.noSuiteInFolder': 'Keine utPLSQL-Suite in diesem Ordner gefunden.',
   'ext.openFolder': 'Öffnen Sie einen Ordner/ein Projekt, um utPLSQL-Tests auszuführen.',
@@ -68,7 +74,6 @@ export const de: Record<string, string> = {
     'Verbindung eingeben (Benutzer/Passwort@//Host:Port/Dienst). Wird nur in dieser Sitzung gespeichert.',
   'ext.conn.placeholder': 'DEV_FULANO/Passwort@//localhost:1521/XEPDB1',
   'ext.runCancel': 'Lauf abgebrochen.',
-
   'runner.oracleError': 'Oracle-Runner: {error}',
   'runner.oracleErrorHeader': '[Fehler] Oracle-Runner: {error}',
   'runner.running': 'utPLSQL{coverage} wird ausgeführt...',
@@ -93,7 +98,6 @@ export const de: Record<string, string> = {
   'runner.oracleInfo': '[Info] Oracle-Runner {ms}ms | {chars} JUnit-Zeichen',
   'runner.randomOrderSeed': '[info] Zufällige Reihenfolge aktiviert (Seed: {seed}).',
   'runner.stderr': '[stderr]',
-
   'oracleRunner.coverNotGenerated':
     '[Coverage] Bericht nicht generiert. Prüfen Sie GRANT EXECUTE ON SYS.DBMS_PROFILER.',
   'oracleRunner.badConnFormat':
@@ -102,40 +106,54 @@ export const de: Record<string, string> = {
     'Quelltext von {schema}.{name} bei der DB-Erkennung auf {max} Zeilen abgeschnitten.',
   'results.noMapped':
     '[Coverage] keine Datei zugeordnet. Passen Sie „utplsql.sourcePath" auf den Quellcode-Ordner an.',
-
   'status.idle': 'Noch keine Tests ausgeführt. Klicken Sie, um den Test Explorer zu öffnen.',
   'status.running': '{current}/{total} Suites werden ausgeführt',
   'status.runningDetail': '{current} von {total} Test-Suites werden ausgeführt...',
   'status.profileTooltip': 'Profil: {name}. Klicken zum Wechseln.',
-  'status.passed': '{count} bestanden',
-  'status.failed': '{count} fehlgeschlagen',
-  'status.errored': '{count} Fehler',
-  'status.skipped': '{count} übersprungen',
+  'status.passed': {
+    one: '{count} bestanden',
+    other: '{count} bestanden',
+  },
+  'status.failed': {
+    one: '{count} fehlgeschlagen',
+    other: '{count} fehlgeschlagen',
+  },
+  'status.errored': {
+    one: '{count} Fehler',
+    other: '{count} Fehler',
+  },
+  'status.skipped': {
+    one: '{count} übersprungen',
+    other: '{count} übersprungen',
+  },
   'status.coverage.on': 'Abdeckung: an',
   'status.coverage.off': 'Abdeckung: aus',
   'status.coverage.onTooltip': 'Abdeckung immer aktiv (Sitzung). Klicken zum Ausschalten.',
   'status.coverage.offTooltip':
     'Abdeckung aus. Klicken, um sie in den nächsten Läufen zu aktivieren.',
-
   'quickfix.oldVersion': 'utPLSQL-Datenbankversion ist alt ({version}); mindestens 3.1.0.',
   'quickfix.badConn': 'Verbindung zur Datenbank fehlgeschlagen. Prüfen Sie Verbindung/Profil.',
   'quickfix.oldVersionUpgrade': 'utPLSQL aktualisieren',
-  'quickfix.invalidObjects': 'Schema {schema} enthält {count} ungültige Objekte: {names}',
+  'quickfix.invalidObjects': {
+    one: 'Schema {schema} enthält {count} ungültige Objekte: {names}',
+    other: 'Schema {schema} enthält {count} ungültige Objekte: {names}',
+  },
   'quickfix.noCoverage':
     'Coverage-Bericht wurde nicht generiert. Führen Sie die Grants aus: GRANT EXECUTE ON SYS.DBMS_PROFILER TO <schema>;',
   'quickfix.recompile': 'UT3 neu kompilieren',
   'quickfix.recompiledOk': 'Schema {schema} neu kompiliert — keine ungültigen Objekte.',
-  'quickfix.stillInvalid': 'Es gibt noch {count} ungültige Objekte in {schema}: {names}',
+  'quickfix.stillInvalid': {
+    one: 'Es gibt noch {count} ungültige Objekte in {schema}: {names}',
+    other: 'Es gibt noch {count} ungültige Objekte in {schema}: {names}',
+  },
   'quickfix.recompileFail':
     'Neu kompilieren von UT3 fehlgeschlagen: {error}. Erfordert ALTER ANY PROCEDURE oder Ausführung als Schema-Eigentümer.',
   'quickfix.noConnection': 'Oracle-Verbindung nicht konfiguriert.',
   'quickfix.oracledbMissing':
     'oracledb nicht verfügbar. Installieren Sie die Abhängigkeiten mit "npm install" neu.',
-
   'viewCoverage.none': '[Coverage] keine Datei zugeordnet.',
   'viewCoverage.vsqlDenied':
     '[Coverage] V$SQL-View-Verfolgung nicht verfügbar. Zugriff gewähren: GRANT SELECT ON SYS.V_$SQL TO <schema>.',
-
   'nls.command.showTestExplorer': 'Test Explorer anzeigen',
   'nls.command.runLens': 'Test ausführen (CodeLens)',
   'nls.command.refresh': 'Tests aktualisieren',
@@ -163,7 +181,10 @@ export const de: Record<string, string> = {
   'script.header.untitled': 'Editor-Skript',
   'script.stmtOk': '[{index}] ok {ms}ms — {summary}',
   'script.stmtErr': '[{index}] Fehler {ms}ms — {summary}',
-  'script.rows': ' ({count} rows affected)',
+  'script.rows': {
+    one: ' ({count} rows affected)',
+    other: ' ({count} rows affected)',
+  },
   'script.dbms': '[dbms] {line}',
   'script.done': 'Fertig: {ok} ok, {failed} fehlgeschlagen ({executed} Statements).',
   'script.noStatements': 'Keine SQL-Statements zum Ausführen gefunden.',
@@ -181,7 +202,6 @@ export const de: Record<string, string> = {
   'ext.profile.new.descPrompt': 'Description (optional — Enter to skip)',
   'ext.profile.new.descPlaceholder': 'Local development database',
   'ext.profile.new.charsetDefault': 'default',
-
   'results.failedFallback': 'Fehlgeschlagen',
   'results.errorFallback': 'Fehler',
   'runner.coverEmptyDir': '(leer)',
@@ -197,7 +217,6 @@ export const de: Record<string, string> = {
   'ext.reporters.listEmpty': 'keine Reporter gefunden',
   'quickfix.reconfigureConn': 'Verbindung neu konfigurieren',
   'quickfix.copyGrants': 'Grants in Zwischenablage kopieren',
-
   'debug.noConnection':
     'oracledb nicht verfügbar oder Verbindung nicht konfiguriert. Installieren Sie die Abhängigkeiten mit "npm install" neu.',
   'debug.controlFail': 'Steuersitzung von DBMS_DEBUG konnte nicht geöffnet werden.',
@@ -206,7 +225,10 @@ export const de: Record<string, string> = {
   'debug.pauseUnsupported': 'Pause wird von DBMS_DEBUG nicht unterstützt.',
   'debug.commandUnsupported': 'Nicht unterstützter Befehl: {cmd}',
   'debug.sessionAttached': 'Sitzung {id} angehängt.',
-  'debug.breakpointsApplied': '{count} Breakpoint(s) gesetzt; Sitzung bereit.',
+  'debug.breakpointsApplied': {
+    one: '{count} Breakpoint gesetzt; Sitzung bereit.',
+    other: '{count} Breakpoint(s) gesetzt; Sitzung bereit.',
+  },
   'debug.stoppedAtEntry': 'Am Entry angehalten — mit Continue zum Breakpoint.',
   'debug.sessionTimeout': 'Debug-Sitzung hat das Zeitlimit überschritten — wird beendet.',
   'debug.runTestFailed': 'Test konnte nicht ausgeführt werden: {error}',

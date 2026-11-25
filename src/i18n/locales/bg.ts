@@ -1,6 +1,8 @@
 // Catálogo i18n `bg`. PURO (sem 'vscode').
-// Extraído de src/i18nLocales.ts no split da PRD-115; paridade em i18n.test.ts.
-export const bg: Record<string, string> = {
+// Gerado por scripts/i18n-apply.cjs; paridade em i18n.test.ts.
+import type { Message } from './types';
+
+export const bg: Record<string, Message> = {
   'ext.export.reporterPlaceholder': 'Изберете reporter от базата за експорт',
   'ext.export.toOutput': 'Показване в Output',
   'ext.export.toFile': 'Запазване във файл…',
@@ -36,7 +38,10 @@ export const bg: Record<string, string> = {
   'ext.tag.noMatch': 'Няма тест, който да отговаря на избраните етикети.',
   'ext.grants.copied': 'Грантовете за покритие са копирани в клипборда.',
   'ext.validate.ok': 'Настройката на utPLSQL е ОК — няма проблеми.',
-  'ext.validate.problems': 'Намерени са {count} проблема с настройката. Вижте панела с проблеми.',
+  'ext.validate.problems': {
+    one: 'Намерени са {count} проблема с настройката. Вижте панела с проблеми.',
+    other: 'Намерени са {count} проблема с настройката. Вижте панела с проблеми.',
+  },
   'ext.debug.disabled': 'Дебагването на PL/SQL е деактивирано (utplsql.debugger.enabled).',
   'ext.debug.openPks': 'Отворете .pks/.pkb файл за дебъгване.',
   'ext.debug.pickTest': 'Изберете теста за дебъгване',
@@ -45,7 +50,6 @@ export const bg: Record<string, string> = {
   'ext.compileForDebug.failed': 'Неуспешно компилиране за отстраняване на грешки: {error}',
   'ext.compileForDebug.none':
     'Няма PL/SQL обект за компилиране за отстраняване на грешки в тази селекция.',
-
   'ext.profile.none':
     'Няма запазен профил за връзка. Използвайте "utPLSQL: Нов профил за връзка...".',
   'ext.profile.active': 'Активен профил: {name}',
@@ -57,7 +61,10 @@ export const bg: Record<string, string> = {
   'ext.profile.new.sourcePlaceholder': 'install',
   'ext.profile.new.created': 'Профилът "{name}" е създаден и активиран.',
   'ext.sqlDev.import.none': 'Не са намерени SQL Developer връзки (connections.xml).',
-  'ext.sqlDev.import.ok': 'Импортирани са {count} връзки от SQL Developer.',
+  'ext.sqlDev.import.ok': {
+    one: 'Импортирани са {count} връзки от SQL Developer.',
+    other: 'Импортирани са {count} връзки от SQL Developer.',
+  },
   'ext.noSuiteInFile': 'Няма utPLSQL пакет в този файл.',
   'ext.noSuiteInFolder': 'Няма utPLSQL пакет в тази папка.',
   'ext.openFolder': 'Отворете папка/проект, за да стартирате utPLSQL тестове.',
@@ -102,10 +109,22 @@ export const bg: Record<string, string> = {
   'status.running': 'Изпълнение на {current}/{total} пакета',
   'status.runningDetail': 'Изпълняват се {current} от {total} тестови пакета...',
   'status.profileTooltip': 'Профил: {name}. Кликнете, за да смените.',
-  'status.passed': '{count} преминали',
-  'status.failed': '{count} неуспешни',
-  'status.errored': '{count} грешки',
-  'status.skipped': '{count} пропуснати',
+  'status.passed': {
+    one: '{count} преминали',
+    other: '{count} преминали',
+  },
+  'status.failed': {
+    one: '{count} неуспешни',
+    other: '{count} неуспешни',
+  },
+  'status.errored': {
+    one: '{count} грешки',
+    other: '{count} грешки',
+  },
+  'status.skipped': {
+    one: '{count} пропуснати',
+    other: '{count} пропуснати',
+  },
   'status.coverage.on': 'Покритие: вкл.',
   'status.coverage.off': 'Покритие: изкл.',
   'status.coverage.onTooltip': 'Покритието винаги е включено (сесия). Щракнете, за да изключите.',
@@ -114,12 +133,18 @@ export const bg: Record<string, string> = {
   'quickfix.oldVersion': 'Версията на utPLSQL в базата е стара ({version}); минимум 3.1.0.',
   'quickfix.badConn': 'Неуспешно свързване с базата. Проверете връзката/профила.',
   'quickfix.oldVersionUpgrade': 'Как да обновите utPLSQL',
-  'quickfix.invalidObjects': 'Схемата {schema} съдържа {count} невалидни обекта: {names}',
+  'quickfix.invalidObjects': {
+    one: 'Схемата {schema} съдържа {count} невалидни обекта: {names}',
+    other: 'Схемата {schema} съдържа {count} невалидни обекта: {names}',
+  },
   'quickfix.noCoverage':
     'Отчетът за покритие не е създаден. Изпълнете грантовете: GRANT EXECUTE ON SYS.DBMS_PROFILER TO <schema>;',
   'quickfix.recompile': 'Прекомпилиране на UT3',
   'quickfix.recompiledOk': 'Схемата {schema} е прекомпилирана — няма невалидни обекти.',
-  'quickfix.stillInvalid': 'Все още има {count} невалидни обекта в {schema}: {names}',
+  'quickfix.stillInvalid': {
+    one: 'Все още има {count} невалидни обекта в {schema}: {names}',
+    other: 'Все още има {count} невалидни обекта в {schema}: {names}',
+  },
   'quickfix.recompileFail':
     'Неуспешно прекомпилиране на UT3: {error}. Изисква ALTER ANY PROCEDURE или изпълнение като собственик на схемата.',
   'quickfix.noConnection': 'Oracle връзката не е конфигурирана.',
@@ -155,7 +180,10 @@ export const bg: Record<string, string> = {
   'script.header.untitled': 'скрипт от редактора',
   'script.stmtOk': '[{index}] ok {ms}ms — {summary}',
   'script.stmtErr': '[{index}] грешка {ms}ms — {summary}',
-  'script.rows': ' ({count} rows affected)',
+  'script.rows': {
+    one: ' ({count} rows affected)',
+    other: ' ({count} rows affected)',
+  },
   'script.dbms': '[dbms] {line}',
   'script.done': 'Готово: {ok} ok, {failed} неуспешни ({executed} statements).',
   'script.noStatements': 'Няма намерени SQL изрази за изпълнение.',
@@ -173,7 +201,6 @@ export const bg: Record<string, string> = {
   'ext.profile.new.descPrompt': 'Description (optional — Enter to skip)',
   'ext.profile.new.descPlaceholder': 'Local development database',
   'ext.profile.new.charsetDefault': 'default',
-
   'results.failedFallback': 'Неуспешен',
   'results.errorFallback': 'Грешка',
   'runner.coverEmptyDir': '(празно)',
@@ -189,7 +216,6 @@ export const bg: Record<string, string> = {
   'ext.reporters.listEmpty': 'не са намерени репортери',
   'quickfix.reconfigureConn': 'Преконфигурирай връзката',
   'quickfix.copyGrants': 'Копирай grants в клипборда',
-
   'debug.noConnection':
     'oracledb не е наличен или връзката не е конфигурирана. Преинсталирайте зависимостите с "npm install".',
   'debug.controlFail': 'Неуспешно отваряне на контролната сесия на DBMS_DEBUG.',
@@ -198,7 +224,10 @@ export const bg: Record<string, string> = {
   'debug.pauseUnsupported': 'Pause не се поддържа от DBMS_DEBUG.',
   'debug.commandUnsupported': 'Неподдържана команда: {cmd}',
   'debug.sessionAttached': 'Сесия {id} е прикачена.',
-  'debug.breakpointsApplied': 'Приложени {count} точки на прекъсване; сесията е готова.',
+  'debug.breakpointsApplied': {
+    one: 'Приложени {count} точки на прекъсване; сесията е готова.',
+    other: 'Приложени {count} точки на прекъсване; сесията е готова.',
+  },
   'debug.stoppedAtEntry':
     'Спряно на entry — използвайте Continue, за да стигнете до точката на прекъсване.',
   'debug.sessionTimeout': 'Времето на сесията за отстраняване на грешки изтече — прекратяване.',

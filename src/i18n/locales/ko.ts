@@ -1,6 +1,8 @@
 // Catálogo i18n `ko`. PURO (sem 'vscode').
-// Extraído de src/i18nLocales.ts no split da PRD-115; paridade em i18n.test.ts.
-export const ko: Record<string, string> = {
+// Gerado por scripts/i18n-apply.cjs; paridade em i18n.test.ts.
+import type { Message } from './types';
+
+export const ko: Record<string, Message> = {
   'ext.export.reporterPlaceholder': '내보낼 데이터베이스 reporter 선택',
   'ext.export.toOutput': 'Output에 표시',
   'ext.export.toFile': '파일로 저장…',
@@ -23,7 +25,6 @@ export const ko: Record<string, string> = {
   'common.copy': '복사',
   'common.oracledbMissing':
     'oracledb를 사용할 수 없습니다. "npm install"로 종속성을 다시 설치하세요.',
-
   'ext.reporters.listFailed': 'reporter 목록을 가져오지 못했습니다: {error}',
   'ext.reporters.placeholder': '이 실행에 사용할 추가 reporter 선택',
   'ext.reporters.willUse': 'reporter "{name}"을(를) 다음 실행에서 사용합니다.',
@@ -39,7 +40,9 @@ export const ko: Record<string, string> = {
   'ext.tag.noMatch': '선택한 태그와 일치하는 테스트가 없습니다.',
   'ext.grants.copied': '커버리지 grant를 클립보드에 복사했습니다.',
   'ext.validate.ok': 'utPLSQL 설정이 정상입니다 — 문제가 없습니다.',
-  'ext.validate.problems': '설정 문제 {count}개를 찾았습니다. 문제 패널을 확인하세요.',
+  'ext.validate.problems': {
+    other: '설정 문제 {count}개를 찾았습니다. 문제 패널을 확인하세요.',
+  },
   'ext.debug.disabled': 'PL/SQL 디버그가 비활성화되었습니다 (utplsql.debugger.enabled).',
   'ext.debug.openPks': '디버그하려면 .pks/.pkb 파일을 여세요.',
   'ext.debug.pickTest': '디버그할 테스트 선택',
@@ -47,7 +50,6 @@ export const ko: Record<string, string> = {
   'ext.rebuildCache.ok': '주석 캐시를 다시 작성했습니다.',
   'ext.compileForDebug.failed': '디버그용 컴파일 실패: {error}',
   'ext.compileForDebug.none': '이 선택 항목에 디버그용으로 컴파일할 PL/SQL 개체가 없습니다.',
-
   'ext.profile.none': '저장된 연결 프로필이 없습니다. "utPLSQL: 새 연결 프로필..."을 사용하세요.',
   'ext.profile.active': '활성 프로필: {name}',
   'ext.profile.new.title': 'utPLSQL — 새 프로필',
@@ -58,7 +60,9 @@ export const ko: Record<string, string> = {
   'ext.profile.new.sourcePlaceholder': 'install',
   'ext.profile.new.created': '프로필 "{name}"을(를) 만들고 활성화했습니다.',
   'ext.sqlDev.import.none': 'SQL Developer 연결을 찾을 수 없습니다 (connections.xml).',
-  'ext.sqlDev.import.ok': 'SQL Developer에서 {count}개 연결을 가져왔습니다.',
+  'ext.sqlDev.import.ok': {
+    other: 'SQL Developer에서 {count}개 연결을 가져왔습니다.',
+  },
   'ext.noSuiteInFile': '이 파일에서 utPLSQL 스위트를 찾을 수 없습니다.',
   'ext.noSuiteInFolder': '이 폴더에서 utPLSQL 스위트를 찾을 수 없습니다.',
   'ext.openFolder': 'utPLSQL 테스트를 실행하려면 폴더/프로젝트를 여세요.',
@@ -67,7 +71,6 @@ export const ko: Record<string, string> = {
     '연결을 입력하세요 (사용자/비밀번호@//호스트:포트/서비스). 이 세션에서만 유지됩니다.',
   'ext.conn.placeholder': 'DEV_FULANO/비밀번호@//localhost:1521/XEPDB1',
   'ext.runCancel': '실행이 취소되었습니다.',
-
   'runner.oracleError': 'Oracle 러너: {error}',
   'runner.oracleErrorHeader': '[오류] Oracle 러너: {error}',
   'runner.running': 'utPLSQL{coverage} 실행 중...',
@@ -92,7 +95,6 @@ export const ko: Record<string, string> = {
   'runner.oracleInfo': '[정보] Oracle 러너 {ms}ms | JUnit {chars}자',
   'runner.randomOrderSeed': '[info] 무작위 순서가 활성화되었습니다(seed: {seed}).',
   'runner.stderr': '[stderr]',
-
   'oracleRunner.coverNotGenerated':
     '[커버리지] 보고서가 생성되지 않았습니다. GRANT EXECUTE ON SYS.DBMS_PROFILER를 확인하세요.',
   'oracleRunner.badConnFormat':
@@ -100,39 +102,47 @@ export const ko: Record<string, string> = {
   'discovery.sourceTruncated': 'DB 검색에서 {schema}.{name} 소스가 {max}줄로 잘렸습니다.',
   'results.noMapped':
     '[커버리지] 매핑된 파일이 없습니다. "utplsql.sourcePath"를 소스 코드 폴더로 조정하세요.',
-
   'status.idle': '아직 테스트가 실행되지 않았습니다. 클릭하여 Test Explorer를 여세요.',
   'status.running': '{current}/{total} 스위트 실행 중',
   'status.runningDetail': '{current}/{total} 테스트 스위트 실행 중...',
   'status.profileTooltip': '프로필: {name}. 클릭하여 전환.',
-  'status.passed': '{count} 통과',
-  'status.failed': '{count} 실패',
-  'status.errored': '{count} 오류',
-  'status.skipped': '{count} 건너뜀',
+  'status.passed': {
+    other: '{count} 통과',
+  },
+  'status.failed': {
+    other: '{count} 실패',
+  },
+  'status.errored': {
+    other: '{count} 오류',
+  },
+  'status.skipped': {
+    other: '{count} 건너뜀',
+  },
   'status.coverage.on': '커버리지: 켜짐',
   'status.coverage.off': '커버리지: 꺼짐',
   'status.coverage.onTooltip': '커버리지 항상 켜짐(세션). 클릭하여 끄기.',
   'status.coverage.offTooltip': '커버리지 꺼짐. 클릭하여 다음 실행에서 켜기.',
-
   'quickfix.oldVersion': '데이터베이스의 utPLSQL 버전이 오래되었습니다 ({version}); 최소 3.1.0.',
   'quickfix.badConn': '데이터베이스에 연결할 수 없습니다. 연결/프로필을 확인하세요.',
   'quickfix.oldVersionUpgrade': 'utPLSQL 업그레이드 방법',
-  'quickfix.invalidObjects': '스키마 {schema}에 잘못된 객체가 {count}개 있습니다: {names}',
+  'quickfix.invalidObjects': {
+    other: '스키마 {schema}에 잘못된 객체가 {count}개 있습니다: {names}',
+  },
   'quickfix.noCoverage':
     '커버리지 보고서가 생성되지 않았습니다. grant를 실행하세요: GRANT EXECUTE ON SYS.DBMS_PROFILER TO <schema>;',
   'quickfix.recompile': 'UT3 다시 컴파일',
   'quickfix.recompiledOk': '스키마 {schema}을(를) 다시 컴파일했습니다 — 잘못된 객체가 없습니다.',
-  'quickfix.stillInvalid': '{schema}에 잘못된 객체가 {count}개 남아 있습니다: {names}',
+  'quickfix.stillInvalid': {
+    other: '{schema}에 잘못된 객체가 {count}개 남아 있습니다: {names}',
+  },
   'quickfix.recompileFail':
     'UT3 다시 컴파일에 실패했습니다: {error}. ALTER ANY PROCEDURE 또는 스키마 소유자로 실행해야 합니다.',
   'quickfix.noConnection': 'Oracle 연결이 구성되지 않았습니다.',
   'quickfix.oracledbMissing':
     'oracledb를 사용할 수 없습니다. "npm install"로 종속성을 다시 설치하세요.',
-
   'viewCoverage.none': '[커버리지] 매핑된 파일이 없습니다.',
   'viewCoverage.vsqlDenied':
     '[커버리지] V$SQL을 통한 뷰 추적이 불가능합니다. 액세스 권한을 부여하세요: GRANT SELECT ON SYS.V_$SQL TO <schema>.',
-
   'nls.command.showTestExplorer': 'Test Explorer 표시',
   'nls.command.runLens': '테스트 실행 (CodeLens)',
   'nls.command.refresh': '테스트 새로 고침',
@@ -160,7 +170,9 @@ export const ko: Record<string, string> = {
   'script.header.untitled': '편집기 스크립트',
   'script.stmtOk': '[{index}] ok {ms}ms — {summary}',
   'script.stmtErr': '[{index}] 오류 {ms}ms — {summary}',
-  'script.rows': ' ({count} rows affected)',
+  'script.rows': {
+    other: ' ({count} rows affected)',
+  },
   'script.dbms': '[dbms] {line}',
   'script.done': '완료: {ok} ok, {failed} 실패 ({executed} statements).',
   'script.noStatements': '실행할 SQL 문을 찾을 수 없습니다.',
@@ -178,7 +190,6 @@ export const ko: Record<string, string> = {
   'ext.profile.new.descPrompt': 'Description (optional — Enter to skip)',
   'ext.profile.new.descPlaceholder': 'Local development database',
   'ext.profile.new.charsetDefault': 'default',
-
   'results.failedFallback': '실패',
   'results.errorFallback': '오류',
   'runner.coverEmptyDir': '(비어 있음)',
@@ -194,7 +205,6 @@ export const ko: Record<string, string> = {
   'ext.reporters.listEmpty': 'reporter를 찾을 수 없음',
   'quickfix.reconfigureConn': '연결 다시 구성',
   'quickfix.copyGrants': 'grants를 클립보드에 복사',
-
   'debug.noConnection':
     'oracledb를 사용할 수 없거나 연결이 구성되지 않았습니다. "npm install"로 종속성을 다시 설치하세요.',
   'debug.controlFail': 'DBMS_DEBUG 제어 세션을 열지 못했습니다.',
@@ -203,7 +213,9 @@ export const ko: Record<string, string> = {
   'debug.pauseUnsupported': 'DBMS_DEBUG는 Pause를 지원하지 않습니다.',
   'debug.commandUnsupported': '지원되지 않는 명령: {cmd}',
   'debug.sessionAttached': '세션 {id}이(가) 연결되었습니다.',
-  'debug.breakpointsApplied': '브레이크포인트 {count}개가 적용되었습니다. 세션 준비 완료.',
+  'debug.breakpointsApplied': {
+    other: '브레이크포인트 {count}개가 적용되었습니다. 세션 준비 완료.',
+  },
   'debug.stoppedAtEntry': 'entry에서 중지되었습니다 — Continue로 브레이크포인트로 이동하세요.',
   'debug.sessionTimeout': '디버그 세션 시간이 초과되었습니다 — 종료합니다.',
   'debug.runTestFailed': '테스트 실행 실패: {error}',

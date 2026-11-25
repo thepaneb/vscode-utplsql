@@ -1,16 +1,16 @@
 ---
-id: COD-types.ts
-aliases: [COD-types.ts]
+id: COD-locales-types.ts
+aliases: [COD-locales-types.ts]
 tipo: codigo
 titulo: "types.ts"
-arquivo: "src/types.ts"
+arquivo: "src/i18n/locales/types.ts"
 gerado: true
 tags: [codigo]
 ---
 
-# COD-types.ts — types.ts
+# COD-locales-types.ts — types.ts
 
-Implementa [`src/types.ts`](../../../src/types.ts) — **gerado** por `npm run brain:sync`.
+Implementa [`src/i18n/locales/types.ts`](../../../src/i18n/locales/types.ts) — **gerado** por `npm run brain:sync`.
 
 ## Testes que cobrem
 

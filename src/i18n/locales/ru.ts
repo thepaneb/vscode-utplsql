@@ -1,6 +1,8 @@
 // Catálogo i18n `ru`. PURO (sem 'vscode').
-// Extraído de src/i18nLocales.ts no split da PRD-115; paridade em i18n.test.ts.
-export const ru: Record<string, string> = {
+// Gerado por scripts/i18n-apply.cjs; paridade em i18n.test.ts.
+import type { Message } from './types';
+
+export const ru: Record<string, Message> = {
   'ext.export.reporterPlaceholder': 'Выберите reporter базы данных для экспорта',
   'ext.export.toOutput': 'Показать в Output',
   'ext.export.toFile': 'Сохранить в файл…',
@@ -22,7 +24,6 @@ export const ru: Record<string, string> = {
   'common.copy': 'Копировать',
   'common.oracledbMissing':
     'oracledb недоступен. Переустановите зависимости с помощью «npm install».',
-
   'ext.reporters.listFailed': 'Не удалось получить список reporters: {error}',
   'ext.reporters.placeholder': 'Выберите дополнительный reporter для этого запуска',
   'ext.reporters.willUse': 'Reporter «{name}» будет использован при следующем запуске.',
@@ -38,7 +39,12 @@ export const ru: Record<string, string> = {
   'ext.tag.noMatch': 'Ни один тест не соответствует выбранным тегам.',
   'ext.grants.copied': 'Гранты покрытия скопированы в буфер обмена.',
   'ext.validate.ok': 'Настройка utPLSQL в порядке — проблем не найдено.',
-  'ext.validate.problems': 'Найдено проблем настройки: {count}. См. панель проблем.',
+  'ext.validate.problems': {
+    one: 'Найдено проблем настройки: {count}. См. панель проблем.',
+    few: 'Найдено проблем настройки: {count}. См. панель проблем.',
+    many: 'Найдено проблем настройки: {count}. См. панель проблем.',
+    other: 'Найдено проблем настройки: {count}. См. панель проблем.',
+  },
   'ext.debug.disabled': 'Отладка PL/SQL отключена (utplsql.debugger.enabled).',
   'ext.debug.openPks': 'Откройте файл .pks/.pkb для отладки.',
   'ext.debug.pickTest': 'Выберите тест для отладки',
@@ -46,7 +52,6 @@ export const ru: Record<string, string> = {
   'ext.rebuildCache.ok': 'Кэш аннотаций перестроен.',
   'ext.compileForDebug.failed': 'Не удалось скомпилировать для отладки: {error}',
   'ext.compileForDebug.none': 'В этом выборе нет объектов PL/SQL для компиляции для отладки.',
-
   'ext.profile.none':
     'Сохраненных профилей подключения нет. Используйте «utPLSQL: Новый профиль подключения...».',
   'ext.profile.active': 'Активный профиль: {name}',
@@ -58,7 +63,12 @@ export const ru: Record<string, string> = {
   'ext.profile.new.sourcePlaceholder': 'install',
   'ext.profile.new.created': 'Профиль «{name}» создан и активирован.',
   'ext.sqlDev.import.none': 'Подключения SQL Developer не найдены (connections.xml).',
-  'ext.sqlDev.import.ok': 'Импортировано подключений из SQL Developer: {count}.',
+  'ext.sqlDev.import.ok': {
+    one: 'Импортировано подключений из SQL Developer: {count}.',
+    few: 'Импортировано подключений из SQL Developer: {count}.',
+    many: 'Импортировано подключений из SQL Developer: {count}.',
+    other: 'Импортировано подключений из SQL Developer: {count}.',
+  },
   'ext.noSuiteInFile': 'В этом файле не найдено наборов utPLSQL.',
   'ext.noSuiteInFolder': 'В этой папке не найдено наборов utPLSQL.',
   'ext.openFolder': 'Откройте папку/проект для запуска тестов utPLSQL.',
@@ -67,7 +77,6 @@ export const ru: Record<string, string> = {
     'Введите подключение (пользователь/пароль@//хост:порт/служба). Сохраняется только в этом сеансе.',
   'ext.conn.placeholder': 'DEV_FULANO/пароль@//localhost:1521/XEPDB1',
   'ext.runCancel': 'Запуск отменён.',
-
   'runner.oracleError': 'Oracle runner: {error}',
   'runner.oracleErrorHeader': '[ошибка] Oracle runner: {error}',
   'runner.running': 'Запуск utPLSQL{coverage}...',
@@ -91,7 +100,6 @@ export const ru: Record<string, string> = {
   'runner.oracleInfo': '[инфо] Oracle runner {ms}мс | {chars} символов JUnit',
   'runner.randomOrderSeed': '[инфо] Случайный порядок включён (seed: {seed}).',
   'runner.stderr': '[stderr]',
-
   'oracleRunner.coverNotGenerated':
     '[покрытие] отчёт не создан. Проверьте GRANT EXECUTE ON SYS.DBMS_PROFILER.',
   'oracleRunner.badConnFormat':
@@ -100,39 +108,65 @@ export const ru: Record<string, string> = {
     'Исходный код {schema}.{name} обрезан на {max} строках при обнаружении в БД.',
   'results.noMapped':
     '[покрытие] файлы не сопоставлены. Укажите «utplsql.sourcePath» на папку с исходным кодом.',
-
   'status.idle': 'Тесты ещё не запускались. Нажмите, чтобы открыть Test Explorer.',
   'status.running': 'Запуск {current}/{total} наборов',
   'status.runningDetail': 'Выполняется {current} из {total} наборов тестов...',
   'status.profileTooltip': 'Профиль: {name}. Нажмите для переключения.',
-  'status.passed': '{count} пройдено',
-  'status.failed': '{count} провалено',
-  'status.errored': '{count} ошибок',
-  'status.skipped': '{count} пропущено',
+  'status.passed': {
+    one: '{count} пройдено',
+    few: '{count} пройдено',
+    many: '{count} пройдено',
+    other: '{count} пройдено',
+  },
+  'status.failed': {
+    one: '{count} провалено',
+    few: '{count} провалено',
+    many: '{count} провалено',
+    other: '{count} провалено',
+  },
+  'status.errored': {
+    one: '{count} ошибок',
+    few: '{count} ошибок',
+    many: '{count} ошибок',
+    other: '{count} ошибок',
+  },
+  'status.skipped': {
+    one: '{count} пропущено',
+    few: '{count} пропущено',
+    many: '{count} пропущено',
+    other: '{count} пропущено',
+  },
   'status.coverage.on': 'Покрытие: вкл.',
   'status.coverage.off': 'Покрытие: выкл.',
   'status.coverage.onTooltip': 'Покрытие всегда включено (сеанс). Нажмите, чтобы выключить.',
   'status.coverage.offTooltip': 'Покрытие выключено. Нажмите, чтобы включить в следующих запусках.',
-
   'quickfix.oldVersion': 'Версия utPLSQL в БД устарела ({version}); минимум 3.1.0.',
   'quickfix.badConn': 'Не удалось подключиться к базе. Проверьте подключение/профиль.',
   'quickfix.oldVersionUpgrade': 'Как обновить utPLSQL',
-  'quickfix.invalidObjects': 'Схема {schema} содержит {count} недопустимых объектов: {names}',
+  'quickfix.invalidObjects': {
+    one: 'Схема {schema} содержит {count} недопустимых объектов: {names}',
+    few: 'Схема {schema} содержит {count} недопустимых объектов: {names}',
+    many: 'Схема {schema} содержит {count} недопустимых объектов: {names}',
+    other: 'Схема {schema} содержит {count} недопустимых объектов: {names}',
+  },
   'quickfix.noCoverage':
     'Отчёт о покрытии не создан. Выполните grants: GRANT EXECUTE ON SYS.DBMS_PROFILER TO <schema>;',
   'quickfix.recompile': 'Перекомпилировать UT3',
   'quickfix.recompiledOk': 'Схема {schema} перекомпилирована — недопустимых объектов нет.',
-  'quickfix.stillInvalid': 'В {schema} осталось {count} недопустимых объектов: {names}',
+  'quickfix.stillInvalid': {
+    one: 'В {schema} осталось {count} недопустимых объектов: {names}',
+    few: 'В {schema} осталось {count} недопустимых объектов: {names}',
+    many: 'В {schema} осталось {count} недопустимых объектов: {names}',
+    other: 'В {schema} осталось {count} недопустимых объектов: {names}',
+  },
   'quickfix.recompileFail':
     'Не удалось перекомпилировать UT3: {error}. Требуется ALTER ANY PROCEDURE или выполнение от имени владельца схемы.',
   'quickfix.noConnection': 'Подключение Oracle не настроено.',
   'quickfix.oracledbMissing':
     'oracledb недоступен. Переустановите зависимости с помощью «npm install».',
-
   'viewCoverage.none': '[покрытие] файлы не сопоставлены.',
   'viewCoverage.vsqlDenied':
     '[покрытие] отслеживание представлений через V$SQL недоступно. Предоставьте доступ: GRANT SELECT ON SYS.V_$SQL TO <schema>.',
-
   'nls.command.showTestExplorer': 'Показать Test Explorer',
   'nls.command.runLens': 'Запустить тест (CodeLens)',
   'nls.command.refresh': 'Обновить тесты',
@@ -160,7 +194,12 @@ export const ru: Record<string, string> = {
   'script.header.untitled': 'скрипт редактора',
   'script.stmtOk': '[{index}] ok {ms}ms — {summary}',
   'script.stmtErr': '[{index}] ошибка {ms}ms — {summary}',
-  'script.rows': ' ({count} rows affected)',
+  'script.rows': {
+    one: ' ({count} rows affected)',
+    few: ' ({count} rows affected)',
+    many: ' ({count} rows affected)',
+    other: ' ({count} rows affected)',
+  },
   'script.dbms': '[dbms] {line}',
   'script.done': 'Готово: {ok} ok, {failed} с ошибкой ({executed} statements).',
   'script.noStatements': 'Не найдено SQL-инструкций для выполнения.',
@@ -178,7 +217,6 @@ export const ru: Record<string, string> = {
   'ext.profile.new.descPrompt': 'Description (optional — Enter to skip)',
   'ext.profile.new.descPlaceholder': 'Local development database',
   'ext.profile.new.charsetDefault': 'default',
-
   'results.failedFallback': 'Не пройден',
   'results.errorFallback': 'Ошибка',
   'runner.coverEmptyDir': '(пусто)',
@@ -194,7 +232,6 @@ export const ru: Record<string, string> = {
   'ext.reporters.listEmpty': 'репортеры не найдены',
   'quickfix.reconfigureConn': 'Перенастроить подключение',
   'quickfix.copyGrants': 'Скопировать grants в буфер обмена',
-
   'debug.noConnection':
     'oracledb недоступен или подключение не настроено. Переустановите зависимости с помощью «npm install».',
   'debug.controlFail': 'Не удалось открыть управляющий сеанс DBMS_DEBUG.',
@@ -203,7 +240,12 @@ export const ru: Record<string, string> = {
   'debug.pauseUnsupported': 'Pause не поддерживается DBMS_DEBUG.',
   'debug.commandUnsupported': 'Неподдерживаемая команда: {cmd}',
   'debug.sessionAttached': 'Сессия {id} подключена.',
-  'debug.breakpointsApplied': 'Применено точек останова: {count}; сессия готова.',
+  'debug.breakpointsApplied': {
+    one: 'Применено точек останова: {count}; сессия готова.',
+    few: 'Применено точек останова: {count}; сессия готова.',
+    many: 'Применено точек останова: {count}; сессия готова.',
+    other: 'Применено точек останова: {count}; сессия готова.',
+  },
   'debug.stoppedAtEntry': 'Остановлено на entry — нажмите Continue, чтобы дойти до точки останова.',
   'debug.sessionTimeout': 'Время сессии отладки истекло — завершение.',
   'debug.runTestFailed': 'Не удалось выполнить тест: {error}',

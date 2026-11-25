@@ -118,6 +118,7 @@ SORT id ASC
 - [[BR-I18N-001 - Resolução de locale e fallback de tradução]] — `BR-I18N-001`
 - [[BR-I18N-002 - Números e durações exibidos respeitam o locale]] — `BR-I18N-002`
 - [[BR-I18N-003 - Mensagens de UI passam por t e a varredura cobre literais]] — `BR-I18N-003`
+- [[BR-I18N-004 - Mensagens plurais seguem as formas CLDR do locale]] — `BR-I18N-004`
 - [[BR-I18N-005 - Variantes de README mantêm paridade estrutural e registro de locale]] — `BR-I18N-005`
 - [[BR-I18N-007 - Pipeline de localização com round-trip e gate de i18n]] — `BR-I18N-007`
 - [[BR-I18N-008 - Catálogos de locale em um arquivo por locale com barrel canônico]] — `BR-I18N-008`

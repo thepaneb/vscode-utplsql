@@ -13,6 +13,18 @@ const { LOCALES } = require('./i18n-locale-meta.cjs');
 
 const ROOT = path.resolve(__dirname, '..');
 const GLOSSARY_TERMS = ['utPLSQL', 'PL/SQL', 'V$SQL', 'thin', 'DBMS_DEBUG', 'wallet'];
+const PLURAL_KEYS = [
+  'ext.validate.problems',
+  'ext.sqlDev.import.ok',
+  'debug.breakpointsApplied',
+  'quickfix.invalidObjects',
+  'quickfix.stillInvalid',
+  'script.rows',
+  'status.passed',
+  'status.failed',
+  'status.errored',
+  'status.skipped',
+];
 
 function read(file) {
   return fs.existsSync(file) ? fs.readFileSync(file, 'utf8') : '';
@@ -40,6 +52,18 @@ function check(root = ROOT) {
     }
     const missing = baseKeys.filter((key) => !(key in catalog));
     if (missing.length) problems.push(`${code}: ${missing.length} chave(s) ausente(s)`);
+    const categories = new Intl.PluralRules(code).resolvedOptions().pluralCategories;
+    for (const key of PLURAL_KEYS) {
+      const value = catalog[key];
+      if (!value || typeof value !== 'object') {
+        problems.push(`${code}: ${key} sem formas plurais`);
+        continue;
+      }
+      for (const category of categories) {
+        if (!value[category]) problems.push(`${code}: ${key} sem forma ${category}`);
+      }
+      if (!value.other) problems.push(`${code}: ${key} sem forma other`);
+    }
     if (code !== 'en' && !fs.existsSync(path.join(root, `package.nls.${code}.json`))) {
       problems.push(`${code}: package.nls.${code}.json ausente`);
     }

@@ -1,6 +1,8 @@
 // Catálogo i18n `ro`. PURO (sem 'vscode').
-// Extraído de src/i18nLocales.ts no split da PRD-115; paridade em i18n.test.ts.
-export const ro: Record<string, string> = {
+// Gerado por scripts/i18n-apply.cjs; paridade em i18n.test.ts.
+import type { Message } from './types';
+
+export const ro: Record<string, Message> = {
   'ext.export.reporterPlaceholder': 'Alegeți un reporter din baza de date pentru export',
   'ext.export.toOutput': 'Afișează în Output',
   'ext.export.toFile': 'Salvează în fișier…',
@@ -37,7 +39,11 @@ export const ro: Record<string, string> = {
   'ext.tag.noMatch': 'Niciun test nu corespunde etichetelor selectate.',
   'ext.grants.copied': 'Granturile de acoperire au fost copiate în clipboard.',
   'ext.validate.ok': 'Configurarea utPLSQL OK — nu s-au găsit probleme.',
-  'ext.validate.problems': 'S-au găsit {count} probleme de configurare. Vezi panoul de probleme.',
+  'ext.validate.problems': {
+    one: 'S-au găsit {count} probleme de configurare. Vezi panoul de probleme.',
+    few: 'S-au găsit {count} probleme de configurare. Vezi panoul de probleme.',
+    other: 'S-au găsit {count} probleme de configurare. Vezi panoul de probleme.',
+  },
   'ext.debug.disabled': 'Debug PL/SQL dezactivat (utplsql.debugger.enabled).',
   'ext.debug.openPks': 'Deschideți un fișier .pks/.pkb pentru debug.',
   'ext.debug.pickTest': 'Selectați testul de depanat',
@@ -46,7 +52,6 @@ export const ro: Record<string, string> = {
   'ext.compileForDebug.failed': 'Compilarea pentru depanare a eșuat: {error}',
   'ext.compileForDebug.none':
     'Niciun obiect PL/SQL de compilat pentru depanare în această selecție.',
-
   'ext.profile.none':
     'Nu există profil de conexiune salvat. Folosiți "utPLSQL: Profil de conexiune nou...".',
   'ext.profile.active': 'Profil activ: {name}',
@@ -58,7 +63,11 @@ export const ro: Record<string, string> = {
   'ext.profile.new.sourcePlaceholder': 'install',
   'ext.profile.new.created': 'Profilul "{name}" a fost creat și activat.',
   'ext.sqlDev.import.none': 'Nu s-au găsit conexiuni SQL Developer (connections.xml).',
-  'ext.sqlDev.import.ok': '{count} conexiuni importate din SQL Developer.',
+  'ext.sqlDev.import.ok': {
+    one: '{count} conexiuni importate din SQL Developer.',
+    few: '{count} conexiuni importate din SQL Developer.',
+    other: '{count} conexiuni importate din SQL Developer.',
+  },
   'ext.noSuiteInFile': 'Nu s-a găsit nicio suită utPLSQL în acest fișier.',
   'ext.noSuiteInFolder': 'Nu s-a găsit nicio suită utPLSQL în acest folder.',
   'ext.openFolder': 'Deschideți un folder/proiect pentru a rula testele utPLSQL.',
@@ -103,10 +112,26 @@ export const ro: Record<string, string> = {
   'status.running': 'Se execută {current}/{total} suite',
   'status.runningDetail': 'Se execută {current} din {total} suite de teste...',
   'status.profileTooltip': 'Profil: {name}. Faceți clic pentru a schimba.',
-  'status.passed': '{count} trecute',
-  'status.failed': '{count} eșuate',
-  'status.errored': '{count} erori',
-  'status.skipped': '{count} sărite',
+  'status.passed': {
+    one: '{count} trecute',
+    few: '{count} trecute',
+    other: '{count} trecute',
+  },
+  'status.failed': {
+    one: '{count} eșuate',
+    few: '{count} eșuate',
+    other: '{count} eșuate',
+  },
+  'status.errored': {
+    one: '{count} erori',
+    few: '{count} erori',
+    other: '{count} erori',
+  },
+  'status.skipped': {
+    one: '{count} sărite',
+    few: '{count} sărite',
+    other: '{count} sărite',
+  },
   'status.coverage.on': 'Acoperire: activată',
   'status.coverage.off': 'Acoperire: dezactivată',
   'status.coverage.onTooltip': 'Acoperire mereu activă (sesiune). Faceți clic pentru a dezactiva.',
@@ -115,12 +140,20 @@ export const ro: Record<string, string> = {
   'quickfix.oldVersion': 'Versiunea utPLSQL din baza de date este veche ({version}); minim 3.1.0.',
   'quickfix.badConn': 'Nu s-a putut conecta la baza de date. Verificați conexiunea/profilul.',
   'quickfix.oldVersionUpgrade': 'Cum să actualizați utPLSQL',
-  'quickfix.invalidObjects': 'Schema {schema} conține {count} obiecte invalide: {names}',
+  'quickfix.invalidObjects': {
+    one: 'Schema {schema} conține {count} obiecte invalide: {names}',
+    few: 'Schema {schema} conține {count} obiecte invalide: {names}',
+    other: 'Schema {schema} conține {count} obiecte invalide: {names}',
+  },
   'quickfix.noCoverage':
     'Raportul de acoperire nu a fost generat. Rulați granturile: GRANT EXECUTE ON SYS.DBMS_PROFILER TO <schema>;',
   'quickfix.recompile': 'Recompilează UT3',
   'quickfix.recompiledOk': 'Schema {schema} recompilată — fără obiecte invalide.',
-  'quickfix.stillInvalid': 'Mai există {count} obiecte invalide în {schema}: {names}',
+  'quickfix.stillInvalid': {
+    one: 'Mai există {count} obiecte invalide în {schema}: {names}',
+    few: 'Mai există {count} obiecte invalide în {schema}: {names}',
+    other: 'Mai există {count} obiecte invalide în {schema}: {names}',
+  },
   'quickfix.recompileFail':
     'Eroare la recompilarea UT3: {error}. Necesită ALTER ANY PROCEDURE sau execuție ca proprietar al schemei.',
   'quickfix.noConnection': 'Conexiunea Oracle nu este configurată.',
@@ -155,7 +188,11 @@ export const ro: Record<string, string> = {
   'script.header.untitled': 'script din editor',
   'script.stmtOk': '[{index}] ok {ms}ms — {summary}',
   'script.stmtErr': '[{index}] eroare {ms}ms — {summary}',
-  'script.rows': ' ({count} rows affected)',
+  'script.rows': {
+    one: ' ({count} rows affected)',
+    few: ' ({count} rows affected)',
+    other: ' ({count} rows affected)',
+  },
   'script.dbms': '[dbms] {line}',
   'script.done': 'Finalizat: {ok} ok, {failed} eșuate ({executed} statements).',
   'script.noStatements': 'Nu s-au găsit instrucțiuni SQL de executat.',
@@ -173,7 +210,6 @@ export const ro: Record<string, string> = {
   'ext.profile.new.descPrompt': 'Description (optional — Enter to skip)',
   'ext.profile.new.descPlaceholder': 'Local development database',
   'ext.profile.new.charsetDefault': 'default',
-
   'results.failedFallback': 'Eșuat',
   'results.errorFallback': 'Eroare',
   'runner.coverEmptyDir': '(gol)',
@@ -189,7 +225,6 @@ export const ro: Record<string, string> = {
   'ext.reporters.listEmpty': 'nu a fost găsit niciun reporter',
   'quickfix.reconfigureConn': 'Reconfigurează conexiunea',
   'quickfix.copyGrants': 'Copiază grants în clipboard',
-
   'debug.noConnection':
     'oracledb indisponibil sau conexiunea nu este configurată. Reinstalați dependențele cu "npm install".',
   'debug.controlFail': 'Deschiderea sesiunii de control DBMS_DEBUG a eșuat.',
@@ -198,7 +233,11 @@ export const ro: Record<string, string> = {
   'debug.pauseUnsupported': 'Pause nu este acceptat de DBMS_DEBUG.',
   'debug.commandUnsupported': 'Comandă neacceptată: {cmd}',
   'debug.sessionAttached': 'Sesiunea {id} a fost atașată.',
-  'debug.breakpointsApplied': '{count} punct(e) de întrerupere aplicate; sesiune pregătită.',
+  'debug.breakpointsApplied': {
+    one: '{count} punct(e) de întrerupere aplicate; sesiune pregătită.',
+    few: '{count} punct(e) de întrerupere aplicate; sesiune pregătită.',
+    other: '{count} punct(e) de întrerupere aplicate; sesiune pregătită.',
+  },
   'debug.stoppedAtEntry':
     'Oprit la entry — folosește Continue pentru a ajunge la punctul de întrerupere.',
   'debug.sessionTimeout': 'Sesiunea de depanare a expirat — se închide.',

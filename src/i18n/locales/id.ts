@@ -1,6 +1,8 @@
 // Catálogo i18n `id`. PURO (sem 'vscode').
-// Extraído de src/i18nLocales.ts no split da PRD-115; paridade em i18n.test.ts.
-export const id: Record<string, string> = {
+// Gerado por scripts/i18n-apply.cjs; paridade em i18n.test.ts.
+import type { Message } from './types';
+
+export const id: Record<string, Message> = {
   'ext.export.reporterPlaceholder': 'Pilih reporter basis data untuk diekspor',
   'ext.export.toOutput': 'Tampilkan di Output',
   'ext.export.toFile': 'Simpan ke file…',
@@ -37,7 +39,9 @@ export const id: Record<string, string> = {
   'ext.tag.noMatch': 'Tidak ada tes yang cocok dengan tag terpilih.',
   'ext.grants.copied': 'Grant cakupan disalin ke clipboard.',
   'ext.validate.ok': 'Pengaturan utPLSQL OK — tidak ada masalah ditemukan.',
-  'ext.validate.problems': 'Ditemukan {count} masalah pengaturan. Lihat panel masalah.',
+  'ext.validate.problems': {
+    other: 'Ditemukan {count} masalah pengaturan. Lihat panel masalah.',
+  },
   'ext.debug.disabled': 'Debug PL/SQL dinonaktifkan (utplsql.debugger.enabled).',
   'ext.debug.openPks': 'Buka file .pks/.pkb untuk men-debug.',
   'ext.debug.pickTest': 'Pilih tes yang akan di-debug',
@@ -46,7 +50,6 @@ export const id: Record<string, string> = {
   'ext.compileForDebug.failed': 'Gagal mengompilasi untuk debug: {error}',
   'ext.compileForDebug.none':
     'Tidak ada objek PL/SQL untuk dikompilasi untuk debug dalam pilihan ini.',
-
   'ext.profile.none':
     'Tidak ada profil koneksi tersimpan. Gunakan "utPLSQL: Profil koneksi baru...".',
   'ext.profile.active': 'Profil aktif: {name}',
@@ -58,7 +61,9 @@ export const id: Record<string, string> = {
   'ext.profile.new.sourcePlaceholder': 'install',
   'ext.profile.new.created': 'Profil "{name}" dibuat dan diaktifkan.',
   'ext.sqlDev.import.none': 'Tidak ditemukan koneksi SQL Developer (connections.xml).',
-  'ext.sqlDev.import.ok': '{count} koneksi diimpor dari SQL Developer.',
+  'ext.sqlDev.import.ok': {
+    other: '{count} koneksi diimpor dari SQL Developer.',
+  },
   'ext.noSuiteInFile': 'Tidak ada suite utPLSQL di file ini.',
   'ext.noSuiteInFolder': 'Tidak ada suite utPLSQL di folder ini.',
   'ext.openFolder': 'Buka folder/proyek untuk menjalankan tes utPLSQL.',
@@ -103,10 +108,18 @@ export const id: Record<string, string> = {
   'status.running': 'Menjalankan {current}/{total} suite',
   'status.runningDetail': 'Menjalankan {current} dari {total} suite tes...',
   'status.profileTooltip': 'Profil: {name}. Klik untuk mengganti.',
-  'status.passed': '{count} lulus',
-  'status.failed': '{count} gagal',
-  'status.errored': '{count} kesalahan',
-  'status.skipped': '{count} dilewati',
+  'status.passed': {
+    other: '{count} lulus',
+  },
+  'status.failed': {
+    other: '{count} gagal',
+  },
+  'status.errored': {
+    other: '{count} kesalahan',
+  },
+  'status.skipped': {
+    other: '{count} dilewati',
+  },
   'status.coverage.on': 'Cakupan: aktif',
   'status.coverage.off': 'Cakupan: nonaktif',
   'status.coverage.onTooltip': 'Cakupan selalu aktif (sesi). Klik untuk menonaktifkan.',
@@ -114,12 +127,16 @@ export const id: Record<string, string> = {
   'quickfix.oldVersion': 'Versi utPLSQL di database sudah lama ({version}); minimal 3.1.0.',
   'quickfix.badConn': 'Tidak dapat terhubung ke database. Periksa koneksi/profil.',
   'quickfix.oldVersionUpgrade': 'Cara memperbarui utPLSQL',
-  'quickfix.invalidObjects': 'Skema {schema} memiliki {count} objek tidak valid: {names}',
+  'quickfix.invalidObjects': {
+    other: 'Skema {schema} memiliki {count} objek tidak valid: {names}',
+  },
   'quickfix.noCoverage':
     'Laporan cakupan tidak dibuat. Jalankan grant: GRANT EXECUTE ON SYS.DBMS_PROFILER TO <schema>;',
   'quickfix.recompile': 'Kompilasi ulang UT3',
   'quickfix.recompiledOk': 'Skema {schema} dikompilasi ulang — tidak ada objek tidak valid.',
-  'quickfix.stillInvalid': 'Masih ada {count} objek tidak valid di {schema}: {names}',
+  'quickfix.stillInvalid': {
+    other: 'Masih ada {count} objek tidak valid di {schema}: {names}',
+  },
   'quickfix.recompileFail':
     'Gagal mengompilasi ulang UT3: {error}. Membutuhkan ALTER ANY PROCEDURE atau eksekusi sebagai pemilik skema.',
   'quickfix.noConnection': 'Koneksi Oracle belum dikonfigurasi.',
@@ -155,7 +172,9 @@ export const id: Record<string, string> = {
   'script.header.untitled': 'skrip editor',
   'script.stmtOk': '[{index}] ok {ms}ms — {summary}',
   'script.stmtErr': '[{index}] error {ms}ms — {summary}',
-  'script.rows': ' ({count} rows affected)',
+  'script.rows': {
+    other: ' ({count} rows affected)',
+  },
   'script.dbms': '[dbms] {line}',
   'script.done': 'Selesai: {ok} ok, {failed} gagal ({executed} statements).',
   'script.noStatements': 'Tidak ada pernyataan SQL yang ditemukan untuk dijalankan.',
@@ -173,7 +192,6 @@ export const id: Record<string, string> = {
   'ext.profile.new.descPrompt': 'Description (optional — Enter to skip)',
   'ext.profile.new.descPlaceholder': 'Local development database',
   'ext.profile.new.charsetDefault': 'default',
-
   'results.failedFallback': 'Gagal',
   'results.errorFallback': 'Kesalahan',
   'runner.coverEmptyDir': '(kosong)',
@@ -189,7 +207,6 @@ export const id: Record<string, string> = {
   'ext.reporters.listEmpty': 'tidak ada reporter ditemukan',
   'quickfix.reconfigureConn': 'Konfigurasi ulang koneksi',
   'quickfix.copyGrants': 'Salin grants ke clipboard',
-
   'debug.noConnection':
     'oracledb tidak tersedia atau koneksi belum dikonfigurasi. Instal ulang dependensi dengan "npm install".',
   'debug.controlFail': 'Gagal membuka sesi kontrol DBMS_DEBUG.',
@@ -198,7 +215,9 @@ export const id: Record<string, string> = {
   'debug.pauseUnsupported': 'Pause tidak didukung oleh DBMS_DEBUG.',
   'debug.commandUnsupported': 'Perintah tidak didukung: {cmd}',
   'debug.sessionAttached': 'Sesi {id} dilampirkan.',
-  'debug.breakpointsApplied': '{count} breakpoint diterapkan; sesi siap.',
+  'debug.breakpointsApplied': {
+    other: '{count} breakpoint diterapkan; sesi siap.',
+  },
   'debug.stoppedAtEntry': 'Berhenti di entry — gunakan Continue untuk mencapai breakpoint.',
   'debug.sessionTimeout': 'Sesi debug timeout — mengakhiri.',
   'debug.runTestFailed': 'Gagal menjalankan test: {error}',

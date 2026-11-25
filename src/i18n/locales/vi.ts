@@ -1,6 +1,8 @@
 // Catálogo i18n `vi`. PURO (sem 'vscode').
-// Extraído de src/i18nLocales.ts no split da PRD-115; paridade em i18n.test.ts.
-export const vi: Record<string, string> = {
+// Gerado por scripts/i18n-apply.cjs; paridade em i18n.test.ts.
+import type { Message } from './types';
+
+export const vi: Record<string, Message> = {
   'ext.export.reporterPlaceholder': 'Chọn reporter của cơ sở dữ liệu để xuất',
   'ext.export.toOutput': 'Hiển thị trong Output',
   'ext.export.toFile': 'Lưu vào tệp…',
@@ -38,7 +40,9 @@ export const vi: Record<string, string> = {
   'ext.tag.noMatch': 'Không có bài kiểm thử nào khớp với thẻ đã chọn.',
   'ext.grants.copied': 'Đã sao chép grant phủ sóng vào clipboard.',
   'ext.validate.ok': 'Cấu hình utPLSQL OK — không tìm thấy vấn đề.',
-  'ext.validate.problems': 'Tìm thấy {count} vấn đề cấu hình. Xem bảng sự cố.',
+  'ext.validate.problems': {
+    other: 'Tìm thấy {count} vấn đề cấu hình. Xem bảng sự cố.',
+  },
   'ext.debug.disabled': 'Đã tắt gỡ lỗi PL/SQL (utplsql.debugger.enabled).',
   'ext.debug.openPks': 'Mở tệp .pks/.pkb để gỡ lỗi.',
   'ext.debug.pickTest': 'Chọn bài kiểm thử để gỡ lỗi',
@@ -47,7 +51,6 @@ export const vi: Record<string, string> = {
   'ext.compileForDebug.failed': 'Biên dịch để gỡ lỗi thất bại: {error}',
   'ext.compileForDebug.none':
     'Không có đối tượng PL/SQL để biên dịch cho gỡ lỗi trong lựa chọn này.',
-
   'ext.profile.none': 'Không có hồ sơ kết nối nào được lưu. Dùng "utPLSQL: Hồ sơ kết nối mới...".',
   'ext.profile.active': 'Hồ sơ đang dùng: {name}',
   'ext.profile.new.title': 'utPLSQL — Hồ sơ mới',
@@ -58,7 +61,9 @@ export const vi: Record<string, string> = {
   'ext.profile.new.sourcePlaceholder': 'install',
   'ext.profile.new.created': 'Đã tạo và kích hoạt hồ sơ "{name}".',
   'ext.sqlDev.import.none': 'Không tìm thấy kết nối SQL Developer (connections.xml).',
-  'ext.sqlDev.import.ok': 'Đã nhập {count} kết nối từ SQL Developer.',
+  'ext.sqlDev.import.ok': {
+    other: 'Đã nhập {count} kết nối từ SQL Developer.',
+  },
   'ext.noSuiteInFile': 'Không tìm thấy bộ utPLSQL trong tệp này.',
   'ext.noSuiteInFolder': 'Không tìm thấy bộ utPLSQL trong thư mục này.',
   'ext.openFolder': 'Mở thư mục/dự án để chạy kiểm thử utPLSQL.',
@@ -103,10 +108,18 @@ export const vi: Record<string, string> = {
   'status.running': 'Đang chạy {current}/{total} bộ',
   'status.runningDetail': 'Đang chạy {current}/{total} bộ kiểm thử...',
   'status.profileTooltip': 'Hồ sơ: {name}. Nhấp để đổi.',
-  'status.passed': '{count} đạt',
-  'status.failed': '{count} thất bại',
-  'status.errored': '{count} lỗi',
-  'status.skipped': '{count} bỏ qua',
+  'status.passed': {
+    other: '{count} đạt',
+  },
+  'status.failed': {
+    other: '{count} thất bại',
+  },
+  'status.errored': {
+    other: '{count} lỗi',
+  },
+  'status.skipped': {
+    other: '{count} bỏ qua',
+  },
   'status.coverage.on': 'Độ phủ: bật',
   'status.coverage.off': 'Độ phủ: tắt',
   'status.coverage.onTooltip': 'Độ phủ luôn bật (phiên). Nhấp để tắt.',
@@ -114,12 +127,16 @@ export const vi: Record<string, string> = {
   'quickfix.oldVersion': 'Phiên bản utPLSQL trong cơ sở dữ liệu cũ ({version}); tối thiểu 3.1.0.',
   'quickfix.badConn': 'Không thể kết nối tới cơ sở dữ liệu. Kiểm tra kết nối/hồ sơ.',
   'quickfix.oldVersionUpgrade': 'Cách nâng cấp utPLSQL',
-  'quickfix.invalidObjects': 'Lược đồ {schema} chứa {count} đối tượng không hợp lệ: {names}',
+  'quickfix.invalidObjects': {
+    other: 'Lược đồ {schema} chứa {count} đối tượng không hợp lệ: {names}',
+  },
   'quickfix.noCoverage':
     'Chưa tạo báo cáo phủ sóng. Chạy grant: GRANT EXECUTE ON SYS.DBMS_PROFILER TO <schema>;',
   'quickfix.recompile': 'Biên dịch lại UT3',
   'quickfix.recompiledOk': 'Đã biên dịch lại lược đồ {schema} — không có đối tượng không hợp lệ.',
-  'quickfix.stillInvalid': 'Còn {count} đối tượng không hợp lệ trong {schema}: {names}',
+  'quickfix.stillInvalid': {
+    other: 'Còn {count} đối tượng không hợp lệ trong {schema}: {names}',
+  },
   'quickfix.recompileFail':
     'Biên dịch lại UT3 thất bại: {error}. Cần ALTER ANY PROCEDURE hoặc chạy với tư cách chủ sở hữu lược đồ.',
   'quickfix.noConnection': 'Chưa cấu hình kết nối Oracle.',
@@ -155,7 +172,9 @@ export const vi: Record<string, string> = {
   'script.header.untitled': 'script từ trình soạn thảo',
   'script.stmtOk': '[{index}] ok {ms}ms — {summary}',
   'script.stmtErr': '[{index}] lỗi {ms}ms — {summary}',
-  'script.rows': ' ({count} rows affected)',
+  'script.rows': {
+    other: ' ({count} rows affected)',
+  },
   'script.dbms': '[dbms] {line}',
   'script.done': 'Hoàn tất: {ok} ok, {failed} thất bại ({executed} statements).',
   'script.noStatements': 'Không tìm thấy câu lệnh SQL nào để chạy.',
@@ -173,7 +192,6 @@ export const vi: Record<string, string> = {
   'ext.profile.new.descPrompt': 'Description (optional — Enter to skip)',
   'ext.profile.new.descPlaceholder': 'Local development database',
   'ext.profile.new.charsetDefault': 'default',
-
   'results.failedFallback': 'Thất bại',
   'results.errorFallback': 'Lỗi',
   'runner.coverEmptyDir': '(trống)',
@@ -189,7 +207,6 @@ export const vi: Record<string, string> = {
   'ext.reporters.listEmpty': 'không tìm thấy reporter',
   'quickfix.reconfigureConn': 'Cấu hình lại kết nối',
   'quickfix.copyGrants': 'Sao chép grants vào clipboard',
-
   'debug.noConnection':
     'oracledb không khả dụng hoặc chưa cấu hình kết nối. Cài đặt lại các phụ thuộc bằng "npm install".',
   'debug.controlFail': 'Không mở được phiên điều khiển DBMS_DEBUG.',
@@ -198,7 +215,9 @@ export const vi: Record<string, string> = {
   'debug.pauseUnsupported': 'Pause không được DBMS_DEBUG hỗ trợ.',
   'debug.commandUnsupported': 'Lệnh không được hỗ trợ: {cmd}',
   'debug.sessionAttached': 'Đã gắn phiên {id}.',
-  'debug.breakpointsApplied': 'Đã áp dụng {count} điểm dừng; phiên sẵn sàng.',
+  'debug.breakpointsApplied': {
+    other: 'Đã áp dụng {count} điểm dừng; phiên sẵn sàng.',
+  },
   'debug.stoppedAtEntry': 'Dừng tại entry — dùng Continue để đến điểm dừng.',
   'debug.sessionTimeout': 'Phiên gỡ lỗi quá thời gian — đang kết thúc.',
   'debug.runTestFailed': 'Chạy test thất bại: {error}',

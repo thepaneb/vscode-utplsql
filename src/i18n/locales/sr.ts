@@ -1,6 +1,8 @@
 // Catálogo i18n `sr`. PURO (sem 'vscode').
-// Extraído de src/i18nLocales.ts no split da PRD-115; paridade em i18n.test.ts.
-export const sr: Record<string, string> = {
+// Gerado por scripts/i18n-apply.cjs; paridade em i18n.test.ts.
+import type { Message } from './types';
+
+export const sr: Record<string, Message> = {
   'ext.export.reporterPlaceholder': 'Изаберите reporter базе за извоз',
   'ext.export.toOutput': 'Прикажи у Output',
   'ext.export.toFile': 'Сачувај у датотеку…',
@@ -37,7 +39,11 @@ export const sr: Record<string, string> = {
   'ext.tag.noMatch': 'Ниједан тест не одговара изабраним ознакама.',
   'ext.grants.copied': 'Грантови за покриће су копирани у клипборд.',
   'ext.validate.ok': 'Подешавање utPLSQL је ОК — нема проблема.',
-  'ext.validate.problems': 'Пронађено {count} проблема са подешавањем. Погледајте панел проблема.',
+  'ext.validate.problems': {
+    one: 'Пронађено {count} проблема са подешавањем. Погледајте панел проблема.',
+    few: 'Пронађено {count} проблема са подешавањем. Погледајте панел проблема.',
+    other: 'Пронађено {count} проблема са подешавањем. Погледајте панел проблема.',
+  },
   'ext.debug.disabled': 'Дебаговање PL/SQL је онемогућено (utplsql.debugger.enabled).',
   'ext.debug.openPks': 'Отворите .pks/.pkb датотеку за дебаговање.',
   'ext.debug.pickTest': 'Изаберите тест за отклањање грешака',
@@ -46,7 +52,6 @@ export const sr: Record<string, string> = {
   'ext.compileForDebug.failed': 'Компилација за отстрањивање грешака није успела: {error}',
   'ext.compileForDebug.none':
     'У овом избору нема PL/SQL објекта за компилацију за отстрањивање грешака.',
-
   'ext.profile.none':
     'Нема сачуваног профила за везу. Користите "utPLSQL: Нови профил за везу...".',
   'ext.profile.active': 'Активан профил: {name}',
@@ -58,7 +63,11 @@ export const sr: Record<string, string> = {
   'ext.profile.new.sourcePlaceholder': 'install',
   'ext.profile.new.created': 'Профил "{name}" је креиран и активиран.',
   'ext.sqlDev.import.none': 'Нису пронађене SQL Developer везе (connections.xml).',
-  'ext.sqlDev.import.ok': 'Увезено {count} веза из SQL Developer-а.',
+  'ext.sqlDev.import.ok': {
+    one: 'Увезено {count} веза из SQL Developer-а.',
+    few: 'Увезено {count} веза из SQL Developer-а.',
+    other: 'Увезено {count} веза из SQL Developer-а.',
+  },
   'ext.noSuiteInFile': 'Нема utPLSQL пакета у овој датотеци.',
   'ext.noSuiteInFolder': 'Нема utPLSQL пакета у овој фасцикли.',
   'ext.openFolder': 'Отворите фасциклу/пројекат за покретање utPLSQL тестова.',
@@ -103,10 +112,26 @@ export const sr: Record<string, string> = {
   'status.running': 'Извршавање {current}/{total} пакета',
   'status.runningDetail': 'Извршава се {current} од {total} тест пакета...',
   'status.profileTooltip': 'Профил: {name}. Кликните за промену.',
-  'status.passed': '{count} прошлих',
-  'status.failed': '{count} неуспешних',
-  'status.errored': '{count} грешака',
-  'status.skipped': '{count} прескочених',
+  'status.passed': {
+    one: '{count} прошлих',
+    few: '{count} прошлих',
+    other: '{count} прошлих',
+  },
+  'status.failed': {
+    one: '{count} неуспешних',
+    few: '{count} неуспешних',
+    other: '{count} неуспешних',
+  },
+  'status.errored': {
+    one: '{count} грешака',
+    few: '{count} грешака',
+    other: '{count} грешака',
+  },
+  'status.skipped': {
+    one: '{count} прескочених',
+    few: '{count} прескочених',
+    other: '{count} прескочених',
+  },
   'status.coverage.on': 'Покривеност: укључено',
   'status.coverage.off': 'Покривеност: искључено',
   'status.coverage.onTooltip': 'Покривеност је увек укључена (сесија). Кликните да искључите.',
@@ -115,12 +140,20 @@ export const sr: Record<string, string> = {
   'quickfix.oldVersion': 'Верзија utPLSQL у бази је стара ({version}); минимум 3.1.0.',
   'quickfix.badConn': 'Није могуће повезивање са базом. Проверите везу/профил.',
   'quickfix.oldVersionUpgrade': 'Како ажурирати utPLSQL',
-  'quickfix.invalidObjects': 'Шема {schema} садржи {count} невалидних објеката: {names}',
+  'quickfix.invalidObjects': {
+    one: 'Шема {schema} садржи {count} невалидних објеката: {names}',
+    few: 'Шема {schema} садржи {count} невалидних објеката: {names}',
+    other: 'Шема {schema} садржи {count} невалидних објеката: {names}',
+  },
   'quickfix.noCoverage':
     'Извештај о покрићу није генерисан. Извршите грантове: GRANT EXECUTE ON SYS.DBMS_PROFILER TO <schema>;',
   'quickfix.recompile': 'Поновно компилирање UT3',
   'quickfix.recompiledOk': 'Шема {schema} је поново компилирана — нема невалидних објеката.',
-  'quickfix.stillInvalid': 'Још увек има {count} невалидних објеката у {schema}: {names}',
+  'quickfix.stillInvalid': {
+    one: 'Још увек има {count} невалидних објеката у {schema}: {names}',
+    few: 'Још увек има {count} невалидних објеката у {schema}: {names}',
+    other: 'Још увек има {count} невалидних објеката у {schema}: {names}',
+  },
   'quickfix.recompileFail':
     'Неуспешно поновно компилирање UT3: {error}. Захтева ALTER ANY PROCEDURE или извршавање као власник шеме.',
   'quickfix.noConnection': 'Oracle веза није конфигурисана.',
@@ -155,7 +188,11 @@ export const sr: Record<string, string> = {
   'script.header.untitled': 'скрипта из уређивача',
   'script.stmtOk': '[{index}] ok {ms}ms — {summary}',
   'script.stmtErr': '[{index}] грешка {ms}ms — {summary}',
-  'script.rows': ' ({count} rows affected)',
+  'script.rows': {
+    one: ' ({count} rows affected)',
+    few: ' ({count} rows affected)',
+    other: ' ({count} rows affected)',
+  },
   'script.dbms': '[dbms] {line}',
   'script.done': 'Завршено: {ok} ok, {failed} неуспешних ({executed} statements).',
   'script.noStatements': 'Нису пронађене SQL наредбе за извршавање.',
@@ -173,7 +210,6 @@ export const sr: Record<string, string> = {
   'ext.profile.new.descPrompt': 'Description (optional — Enter to skip)',
   'ext.profile.new.descPlaceholder': 'Local development database',
   'ext.profile.new.charsetDefault': 'default',
-
   'results.failedFallback': 'Neuspešno',
   'results.errorFallback': 'Greška',
   'runner.coverEmptyDir': '(prazno)',
@@ -189,7 +225,6 @@ export const sr: Record<string, string> = {
   'ext.reporters.listEmpty': 'nije pronađen nijedan reporter',
   'quickfix.reconfigureConn': 'Rekonfiguriši vezu',
   'quickfix.copyGrants': 'Kopiraj grants u clipboard',
-
   'debug.noConnection':
     'oracledb није доступан или веза није конфигурисана. Реинсталирајте зависности са "npm install".',
   'debug.controlFail': 'Neuspešno otvaranje kontrolne sesije DBMS_DEBUG.',
@@ -198,7 +233,11 @@ export const sr: Record<string, string> = {
   'debug.pauseUnsupported': 'Pause није подржано од стране DBMS_DEBUG.',
   'debug.commandUnsupported': 'Неподржана команда: {cmd}',
   'debug.sessionAttached': 'Сесија {id} је прикачена.',
-  'debug.breakpointsApplied': 'Примењено {count} тачака прекида; сесија је спремна.',
+  'debug.breakpointsApplied': {
+    one: 'Примењено {count} тачака прекида; сесија је спремна.',
+    few: 'Примењено {count} тачака прекида; сесија је спремна.',
+    other: 'Примењено {count} тачака прекида; сесија је спремна.',
+  },
   'debug.stoppedAtEntry': 'Заустављено на entry — користите Continue да стигнете до тачке прекида.',
   'debug.sessionTimeout': 'Сесија за отклањање грешака је истекла — прекид.',
   'debug.runTestFailed': 'Покретање теста није успело: {error}',
