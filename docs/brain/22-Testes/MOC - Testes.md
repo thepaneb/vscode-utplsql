@@ -72,6 +72,7 @@ SORT id ASC
 - [[TST - fsErrorsCatch.test.ts]] — `TST-fsErrorsCatch.test.ts`
 - [[TST - githubAbout.test.ts]] — `TST-githubAbout.test.ts`
 - [[TST - i18n.test.ts]] — `TST-i18n.test.ts`
+- [[TST - i18nPipeline.test.ts]] — `TST-i18nPipeline.test.ts`
 - [[TST - i18nPseudo.test.ts]] — `TST-i18nPseudo.test.ts`
 - [[TST - integration-compileForDebug.test.ts]] — `TST-integration-compileForDebug.test.ts`
 - [[TST - jevReview.test.ts]] — `TST-jevReview.test.ts`

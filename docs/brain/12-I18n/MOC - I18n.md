@@ -29,6 +29,7 @@ SORT id ASC
 - [[Estrutura dos catálogos]]
 - [[Registro de locales]]
 - [[Política de locales]]
+- [[Glossário de localização]]
 - [[Checklist de pseudo-localização]]
 
 ## Índice (links)
@@ -36,6 +37,7 @@ SORT id ASC
 <!-- brain:auto:start:moc-index -->
 - [[Checklist de pseudo-localização]]
 - [[Estrutura dos catálogos]]
+- [[Glossário de localização]]
 - [[LOC-bg - Български]] — `LOC-bg`
 - [[LOC-cs - Čeština]] — `LOC-cs`
 - [[LOC-de - Deutsch]] — `LOC-de`

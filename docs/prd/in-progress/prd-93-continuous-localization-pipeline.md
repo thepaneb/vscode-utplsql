@@ -4,7 +4,7 @@
 
 | Campo | Valor |
 |---|---|
-| Status | Aprovado |
+| Status | Em desenvolvimento |
 | Autor | Gil Cleber Barboza |
 | Data | 2026-09-29 |
 | Componente | Extensão `paneb.vscode-utplsql` |
@@ -125,8 +125,9 @@ Nenhuma setting de extensão; env/CI para TMS quando adotado.
 
 ## 12. Impacto no cérebro
 
-Esperado criar `BR-I18N-007` (pipeline: round-trip + glossário + gate) e notas
-`ENT`/`NFR` do registro de locales, com `prds: ["PRD-93"]`.
+Criada a regra `BR-I18N-007` (pipeline: round-trip + glossário + gate) com
+`prds: ["PRD-93"]`; o glossário está em `12-I18n/Glossário de localização.md` e
+o registro/donos em `12-I18n/Registro de locales.md`.
 
 ## 13. Impacto nas docs
 

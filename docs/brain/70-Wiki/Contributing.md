@@ -5,7 +5,7 @@ titulo: "Contributing"
 publicar: docs/wiki/Contributing.md
 origem: ["MOC - Documentacao"]
 verificado: 2026-11-08
-regras: ["BR-PLAT-002", "BR-PLAT-003", "BR-PLAT-004", "BR-QUAL-002", "BR-TEST-003", "BR-DOC-001", "BR-DOC-002", "BR-CONN-024", "BR-I18N-003", "BR-I18N-005"]
+regras: ["BR-PLAT-002", "BR-PLAT-003", "BR-PLAT-004", "BR-QUAL-002", "BR-TEST-003", "BR-DOC-001", "BR-DOC-002", "BR-CONN-024", "BR-I18N-003", "BR-I18N-005", "BR-I18N-007"]
 tags: [wiki]
 ---
 
@@ -287,3 +287,15 @@ branch (files in `docs/wiki/`).
   `scripts/scrape-strings.allow.json`.
 - Pseudo is dev-only (`UTPLSQL_PSEUDO_LOC`), never a public setting; the default
   output is unchanged.
+
+### Localization pipeline (PRD-93)
+
+- `npm run i18n:export` compiles and writes `i18n-export/<locale>.json`
+  (`{ locale, base?, messages }`; `en-gb` is an overlay of `en`).
+- Translate/edit the JSON, then `npm run i18n:apply`: it regenerates the whole
+  `src/i18n/locales/<locale>.ts` from the JSON and runs the Biome formatter.
+- Vocabulary is fixed by [[Glossário de localização]]; owners/reviewers and
+  locale status live in [[Registro de locales]].
+- `npm run i18n:check` runs in CI (after `test:coverage`) and validates
+  catalogues × `LOCALE_CODES` × `package.nls.*` × glossary. An external TMS is
+  optional; the JSON format is TMS-friendly.
