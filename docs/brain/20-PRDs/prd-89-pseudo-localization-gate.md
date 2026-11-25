@@ -2,14 +2,14 @@
 tipo: prd
 id: PRD-89
 aliases: [PRD-89]
-status: approved
+status: in-progress
 titulo: "Pseudo-localização e gate de strings não traduzidas"
 versao: "0.22.0"
 data: "2026-09-29"
 autor: "Gil Cleber Barboza"
 versao_titulo: "0.22.0 — Localização completa"
 verificado: 2026-11-25
-regras: []
+regras: ["BR-I18N-003"]
 docs: ["CHANGELOG", "wiki/Contributing.md"]
 tags: [prd]
 ---
@@ -76,10 +76,12 @@ interpolação `{count}`/`{total}`.
 
 ### RF3 — Varredura anti-hardcode
 
-`scrape-strings.cjs` usa a **API do compilador TypeScript** (não regex) para
-percorrer `src/**` (fora de teste) e reportar literais de UI fora de `t()`;
-allowlist versionada em `scripts/scrape-strings.allow.json`; **aviso** no CI
-(`--strict` opt-in para falhar).
+`scrape-strings.cjs` percorre `src/**` (fora de teste) com um parser léxico
+ancorado nas chamadas `show*Message(...)` e reporta o primeiro argumento quando é
+string/template sem interpolação; allowlist versionada em
+`scripts/scrape-strings.allow.json`; **aviso** no CI (`--strict` opt-in para
+falhar). O TypeScript 7 nativo não expõe mais o parser clássico no Node, então a
+varredura usa regex de chamada (alvo estável) em vez de AST.
 
 ### RF4 — Doc de layout
 
@@ -132,16 +134,18 @@ Nenhuma setting pública; apenas env de desenvolvimento.
 
 - **Só aviso** no CI nesta release; `--strict` existe para uso local e o bloqueio
   vira o default na 0.23.0, depois de estabilizar a allowlist.
-- Scanner via **AST do TypeScript** (o `typescript` já é devDependency), não
-  regex; a allowlist é versionada e revisada no PR.
+- Scanner por **parser léxico ancorado** (`show*Message(...)`), não AST: o
+  TypeScript 7 nativo não expõe o parser clássico no Node; a allowlist é
+  versionada e revisada no PR.
 - A transformação pseudo ocorre **depois** da interpolação e nunca altera
   placeholders.
 - Integração no `docs-fidelity` (que o `docs:check` já executa), sem job novo.
 
 ## 12. Impacto no cérebro
 
-Esperado criar `BR-I18N-003` (mensagem de UI sempre via `t()`; pseudo-loc e
-varredura cobrem) com `prds: ["PRD-89"]`.
+Criada a regra `BR-I18N-003` (mensagem de UI sempre via `t()`; pseudo-loc e
+varredura cobrem) com `prds: ["PRD-89"]`; o checklist está em
+`12-I18n/Checklist de pseudo-localização.md`.
 
 ## 13. Impacto nas docs
 
@@ -153,6 +157,9 @@ varredura cobrem) com `prds: ["PRD-89"]`.
 
 <!-- brain:auto:start:conexoes -->
 - 🗺️ [[MOC - PRDs]]
+- 📐 Regras: [[BR-I18N-003 - Mensagens de UI passam por t e a varredura cobre literais|BR-I18N-003]]
 - 🔗 Mesma versão (0.22.0): [[prd-88-locale-aware-formatting|PRD-88]] · [[prd-90-message-plurals-cldr|PRD-90]] · [[prd-91-doc-parity-localized-distribution|PRD-91]] · [[prd-92-rtl-new-locales|PRD-92]] · [[prd-93-continuous-localization-pipeline|PRD-93]] · [[prd-115-split-i18n-locales|PRD-115]]
+- 🎯 RF1 — Pseudo-locale → [[BR-I18N-003 - Mensagens de UI passam por t e a varredura cobre literais|BR-I18N-003]]
+- 🎯 RF3 — Varredura anti-hardcode → [[BR-I18N-003 - Mensagens de UI passam por t e a varredura cobre literais|BR-I18N-003]]
 - 🚀 ⬅️ release anterior: [[prd-139-state-store-slicing-lru|PRD-139 (0.21.0)]] · ➡️ próxima release: [[prd-60-branch-coverage-investigation|PRD-60 (0.23.0)]]
 <!-- brain:auto:end -->

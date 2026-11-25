@@ -162,6 +162,8 @@ SORT id ASC
 - [[COD - runSnapshot.ts]] — `COD-runSnapshot.ts`
 - [[COD - runStrategy.ts]] — `COD-runStrategy.ts`
 - [[COD - scorecard.yml]] — `COD-scorecard.yml`
+- [[COD - scrape-strings.allow.json]] — `COD-scrape-strings.allow.json`
+- [[COD - scrape-strings.cjs]] — `COD-scrape-strings.cjs`
 - [[COD - script.ts]] — `COD-script.ts`
 - [[COD - scriptRunner.ts]] — `COD-scriptRunner.ts`
 - [[COD - setup.sh]] — `COD-setup.sh`

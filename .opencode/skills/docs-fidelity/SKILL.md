@@ -26,7 +26,7 @@ docs/brain/ (texto humano = fonte)  ──brain:build──►  README*, docs/wi
 |---|---|---|
 | Feature/comportamento | `10-Projeto/Funcional/`, `70-Wiki/` | `docs/functional/`, `docs/wiki/` |
 | Setting / comando / keybinding | nota `60-README/README (extensão)` + variantes (uma por locale), `package.json`, `package.nls.*.json` | `README*.md` |
-| Nova string de UI | `package.nls.json` + `package.nls.<locale>.json` (23) | — |
+| Nova string de UI | `package.nls.json` + `package.nls.<locale>.json` (um por locale) | validar com `UTPLSQL_PSEUDO_LOC=1` + `node scripts/scrape-strings.cjs` |
 | Arquitetura / módulo | `70-Wiki/Architecture` (+ MOCs) | `docs/wiki/Architecture.md` |
 | PRD (criar/aprovar/implementar/concluir) | notas `20-PRDs/` | `docs/prd/**` → skill **`prd-workflow`** |
 | Feature/versão (divulgação) | posts LinkedIn `docs/linkedin/` | skill **`linkedin-posts`** |
@@ -71,6 +71,8 @@ npm run brain:check     # valida wikilinks internos + links externos do vault
 - [ ] PRD mudou de status? frontmatter + `brain:build` (o `index.md` é gerado)
 - [ ] README mudou? variantes atualizadas (bullets, tabela de Comandos e switcher)
 - [ ] Locale novo/removido? `12-I18n/Registro de locales.md` atualizado (PRD-91)
+- [ ] String nova de UI? `t()` + catálogo; `node scripts/scrape-strings.cjs --strict`
+      e o checklist de pseudo-localização (PRD-89)
 - [ ] `CHANGELOG.md` atualizado se houve correção/feature
 - [ ] `npm run lint` passa (se mexeu em `src/`)
 

@@ -4,7 +4,7 @@
 
 | Campo | Valor |
 |---|---|
-| Status | Aprovado |
+| Status | Em desenvolvimento |
 | Autor | Gil Cleber Barboza |
 | Data | 2026-09-29 |
 | Componente | Extensão `paneb.vscode-utplsql` |
@@ -63,10 +63,12 @@ interpolação `{count}`/`{total}`.
 
 ### RF3 — Varredura anti-hardcode
 
-`scrape-strings.cjs` usa a **API do compilador TypeScript** (não regex) para
-percorrer `src/**` (fora de teste) e reportar literais de UI fora de `t()`;
-allowlist versionada em `scripts/scrape-strings.allow.json`; **aviso** no CI
-(`--strict` opt-in para falhar).
+`scrape-strings.cjs` percorre `src/**` (fora de teste) com um parser léxico
+ancorado nas chamadas `show*Message(...)` e reporta o primeiro argumento quando é
+string/template sem interpolação; allowlist versionada em
+`scripts/scrape-strings.allow.json`; **aviso** no CI (`--strict` opt-in para
+falhar). O TypeScript 7 nativo não expõe mais o parser clássico no Node, então a
+varredura usa regex de chamada (alvo estável) em vez de AST.
 
 ### RF4 — Doc de layout
 
@@ -119,16 +121,18 @@ Nenhuma setting pública; apenas env de desenvolvimento.
 
 - **Só aviso** no CI nesta release; `--strict` existe para uso local e o bloqueio
   vira o default na 0.23.0, depois de estabilizar a allowlist.
-- Scanner via **AST do TypeScript** (o `typescript` já é devDependency), não
-  regex; a allowlist é versionada e revisada no PR.
+- Scanner por **parser léxico ancorado** (`show*Message(...)`), não AST: o
+  TypeScript 7 nativo não expõe o parser clássico no Node; a allowlist é
+  versionada e revisada no PR.
 - A transformação pseudo ocorre **depois** da interpolação e nunca altera
   placeholders.
 - Integração no `docs-fidelity` (que o `docs:check` já executa), sem job novo.
 
 ## 12. Impacto no cérebro
 
-Esperado criar `BR-I18N-003` (mensagem de UI sempre via `t()`; pseudo-loc e
-varredura cobrem) com `prds: ["PRD-89"]`.
+Criada a regra `BR-I18N-003` (mensagem de UI sempre via `t()`; pseudo-loc e
+varredura cobrem) com `prds: ["PRD-89"]`; o checklist está em
+`12-I18n/Checklist de pseudo-localização.md`.
 
 ## 13. Impacto nas docs
 
