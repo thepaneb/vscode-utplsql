@@ -117,16 +117,17 @@ As sete PRDs saíram para **`approved`** e as questões em aberto foram fechadas
 |---|---|---|
 | PRD-115 | 🟡 in-progress (PR #328) | #186 |
 | PRD-88 | 🟡 in-progress (PR #329) | #126 |
-| PRD-90 | 🔵 approved | #128 |
+| PRD-90 | 🟡 in-progress (PR #333) | #128 |
 | PRD-89 | 🟡 in-progress (PR #331) | #127 |
 | PRD-91 | 🟡 in-progress (PR #330) | #129 |
 | PRD-92 | 🔵 approved | #130 |
 | PRD-93 | 🟡 in-progress (PR #332) | #131 |
 
-> PRD-115 (PR #328), PRD-88 (PR #329), PRD-91 (PR #330), PRD-89 (PR #331) e
-> PRD-93 (PR #332) implementadas; a conclusão (`completed` + `versao: "0.22.0"`)
-> e a entrada no `CHANGELOG` entram no release, junto com o bump. **PRD-90/92**
-> seguem aguardando revisão de tradução.
+> PRD-115 (PR #328), PRD-88 (PR #329), PRD-91 (PR #330), PRD-89 (PR #331),
+> PRD-93 (PR #332) e PRD-90 (PR #333) implementadas; falta a **PRD-92**
+> (`ar`/`he`, RTL). A conclusão (`completed` + `versao: "0.22.0"`) e a entrada no
+> `CHANGELOG` entram no release, junto com o bump. As traduções seguem em draft
+> até a revisão in-country.
 
 ## Fluxo de execução (por PRD)
 
