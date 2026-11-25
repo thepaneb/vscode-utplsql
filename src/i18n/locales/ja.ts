@@ -1,6 +1,8 @@
 // Catálogo i18n `ja`. PURO (sem 'vscode').
-// Extraído de src/i18nLocales.ts no split da PRD-115; paridade em i18n.test.ts.
-export const ja: Record<string, string> = {
+// Gerado por scripts/i18n-apply.cjs; paridade em i18n.test.ts.
+import type { Message } from './types';
+
+export const ja: Record<string, Message> = {
   'ext.export.reporterPlaceholder': 'エクスポートするデータベース reporter を選択',
   'ext.export.toOutput': 'Output に表示',
   'ext.export.toFile': 'ファイルに保存…',
@@ -23,7 +25,6 @@ export const ja: Record<string, string> = {
   'common.copy': 'コピー',
   'common.oracledbMissing':
     'oracledb が利用できません。「npm install」で依存関係を再インストールしてください。',
-
   'ext.reporters.listFailed': 'レポーターの一覧取得に失敗しました: {error}',
   'ext.reporters.placeholder': 'この実行で使用する追加レポーターを選択',
   'ext.reporters.willUse': 'レポーター「{name}」を次回の実行で使用します。',
@@ -39,7 +40,9 @@ export const ja: Record<string, string> = {
   'ext.tag.noMatch': '選択したタグに一致するテストがありません。',
   'ext.grants.copied': 'カバレッジの grants をクリップボードにコピーしました。',
   'ext.validate.ok': 'utPLSQL の設定は OK — 問題は見つかりませんでした。',
-  'ext.validate.problems': '設定の問題が {count} 件見つかりました。問題パネルを確認してください。',
+  'ext.validate.problems': {
+    other: '設定の問題が {count} 件見つかりました。問題パネルを確認してください。',
+  },
   'ext.debug.disabled': 'PL/SQL デバッグは無効です（utplsql.debugger.enabled）。',
   'ext.debug.openPks': 'デバッグするには .pks/.pkb ファイルを開いてください。',
   'ext.debug.pickTest': 'デバッグするテストを選択',
@@ -48,7 +51,6 @@ export const ja: Record<string, string> = {
   'ext.compileForDebug.failed': 'デバッグ用のコンパイルに失敗しました: {error}',
   'ext.compileForDebug.none':
     'この選択にデバッグ用にコンパイルする PL/SQL オブジェクトがありません。',
-
   'ext.profile.none':
     '保存された接続プロファイルがありません。「utPLSQL: 接続プロファイルを新規作成...」を使用してください。',
   'ext.profile.active': 'アクティブなプロファイル: {name}',
@@ -60,7 +62,9 @@ export const ja: Record<string, string> = {
   'ext.profile.new.sourcePlaceholder': 'install',
   'ext.profile.new.created': 'プロファイル「{name}」を作成し、有効にしました。',
   'ext.sqlDev.import.none': 'SQL Developer の接続が見つかりません（connections.xml）。',
-  'ext.sqlDev.import.ok': 'SQL Developer から {count} 件の接続をインポートしました。',
+  'ext.sqlDev.import.ok': {
+    other: 'SQL Developer から {count} 件の接続をインポートしました。',
+  },
   'ext.noSuiteInFile': 'このファイルに utPLSQL スイートが見つかりません。',
   'ext.noSuiteInFolder': 'このフォルダーに utPLSQL スイートが見つかりません。',
   'ext.openFolder': 'utPLSQL テストを実行するにはフォルダー/プロジェクトを開いてください。',
@@ -69,7 +73,6 @@ export const ja: Record<string, string> = {
     '接続を入力してください（ユーザー/パスワード@//ホスト:ポート/サービス）。このセッション内でのみ保持されます。',
   'ext.conn.placeholder': 'DEV_FULANO/パスワード@//localhost:1521/XEPDB1',
   'ext.runCancel': '実行をキャンセルしました。',
-
   'runner.oracleError': 'Oracle ランナー: {error}',
   'runner.oracleErrorHeader': '[エラー] Oracle ランナー: {error}',
   'runner.running': 'utPLSQL{coverage} を実行中...',
@@ -94,7 +97,6 @@ export const ja: Record<string, string> = {
   'runner.oracleInfo': '[情報] Oracle ランナー {ms}ms | JUnit {chars} 文字',
   'runner.randomOrderSeed': '[info] ランダム順を有効化しました（seed: {seed}）。',
   'runner.stderr': '[stderr]',
-
   'oracleRunner.coverNotGenerated':
     '[カバレッジ] レポートが生成されませんでした。GRANT EXECUTE ON SYS.DBMS_PROFILER を確認してください。',
   'oracleRunner.badConnFormat':
@@ -103,41 +105,49 @@ export const ja: Record<string, string> = {
     'DB 検出で {schema}.{name} のソースが {max} 行で切り捨てられました。',
   'results.noMapped':
     '[カバレッジ] マップされたファイルがありません。「utplsql.sourcePath」をソースコードのフォルダーに調整してください。',
-
   'status.idle': 'まだテストは実行されていません。クリックして Test Explorer を開きます。',
   'status.running': '{current}/{total} スイートを実行中',
   'status.runningDetail': '{current}/{total} のテストスイートを実行中...',
   'status.profileTooltip': 'プロファイル: {name}。クリックして切り替え。',
-  'status.passed': '{count} 成功',
-  'status.failed': '{count} 失敗',
-  'status.errored': '{count} エラー',
-  'status.skipped': '{count} スキップ',
+  'status.passed': {
+    other: '{count} 成功',
+  },
+  'status.failed': {
+    other: '{count} 失敗',
+  },
+  'status.errored': {
+    other: '{count} エラー',
+  },
+  'status.skipped': {
+    other: '{count} スキップ',
+  },
   'status.coverage.on': 'カバレッジ: オン',
   'status.coverage.off': 'カバレッジ: オフ',
   'status.coverage.onTooltip': 'カバレッジを常に有効（セッション）。クリックで無効化。',
   'status.coverage.offTooltip': 'カバレッジは無効です。クリックで次回以降有効化。',
-
   'quickfix.oldVersion':
     'データベースの utPLSQL のバージョンが古い（{version}）；最低 3.1.0 が必要です。',
   'quickfix.badConn': 'データベースに接続できませんでした。接続/プロファイルを確認してください。',
   'quickfix.oldVersionUpgrade': 'utPLSQL をアップグレードする方法',
-  'quickfix.invalidObjects': 'スキーマ {schema} に無効なオブジェクトが {count} 個あります: {names}',
+  'quickfix.invalidObjects': {
+    other: 'スキーマ {schema} に無効なオブジェクトが {count} 個あります: {names}',
+  },
   'quickfix.noCoverage':
     'カバレッジレポートが生成されませんでした。grants を実行してください: GRANT EXECUTE ON SYS.DBMS_PROFILER TO <schema>;',
   'quickfix.recompile': 'UT3 を再コンパイル',
   'quickfix.recompiledOk':
     'スキーマ {schema} を再コンパイルしました — 無効なオブジェクトはありません。',
-  'quickfix.stillInvalid': '{schema} にまだ {count} 個の無効なオブジェクトがあります: {names}',
+  'quickfix.stillInvalid': {
+    other: '{schema} にまだ {count} 個の無効なオブジェクトがあります: {names}',
+  },
   'quickfix.recompileFail':
     'UT3 の再コンパイルに失敗しました: {error}。ALTER ANY PROCEDURE またはスキーマ所有者としての実行が必要です。',
   'quickfix.noConnection': 'Oracle 接続が設定されていません。',
   'quickfix.oracledbMissing':
     'oracledb が利用できません。「npm install」で依存関係を再インストールしてください。',
-
   'viewCoverage.none': '[カバレッジ] マップされたファイルがありません。',
   'viewCoverage.vsqlDenied':
     '[カバレッジ] V$SQL によるビューの追跡ができません。アクセス権を付与してください：GRANT SELECT ON SYS.V_$SQL TO <schema>。',
-
   'nls.command.showTestExplorer': 'Test Explorer を表示',
   'nls.command.runLens': 'テストを実行（CodeLens）',
   'nls.command.refresh': 'テストを更新',
@@ -165,7 +175,9 @@ export const ja: Record<string, string> = {
   'script.header.untitled': 'エディターのスクリプト',
   'script.stmtOk': '[{index}] ok {ms}ms — {summary}',
   'script.stmtErr': '[{index}] エラー {ms}ms — {summary}',
-  'script.rows': ' ({count} rows affected)',
+  'script.rows': {
+    other: ' ({count} rows affected)',
+  },
   'script.dbms': '[dbms] {line}',
   'script.done': '完了: {ok} ok、{failed} 失敗 ({executed} statements)。',
   'script.noStatements': '実行する SQL ステートメントが見つかりません。',
@@ -183,7 +195,6 @@ export const ja: Record<string, string> = {
   'ext.profile.new.descPrompt': 'Description (optional — Enter to skip)',
   'ext.profile.new.descPlaceholder': 'Local development database',
   'ext.profile.new.charsetDefault': 'default',
-
   'results.failedFallback': '失敗',
   'results.errorFallback': 'エラー',
   'runner.coverEmptyDir': '（空）',
@@ -199,7 +210,6 @@ export const ja: Record<string, string> = {
   'ext.reporters.listEmpty': 'レポーターが見つかりません',
   'quickfix.reconfigureConn': '接続を再設定',
   'quickfix.copyGrants': 'grants をクリップボードにコピー',
-
   'debug.noConnection':
     'oracledb が利用できないか、接続が設定されていません。「npm install」で依存関係を再インストールしてください。',
   'debug.controlFail': 'DBMS_DEBUG 制御セッションを開けませんでした。',
@@ -208,7 +218,9 @@ export const ja: Record<string, string> = {
   'debug.pauseUnsupported': 'DBMS_DEBUG は Pause をサポートしていません。',
   'debug.commandUnsupported': 'サポートされていないコマンド: {cmd}',
   'debug.sessionAttached': 'セッション {id} をアタッチしました。',
-  'debug.breakpointsApplied': '{count} 個のブレークポイントを適用しました。セッション準備完了。',
+  'debug.breakpointsApplied': {
+    other: '{count} 個のブレークポイントを適用しました。セッション準備完了。',
+  },
   'debug.stoppedAtEntry': 'entry で停止しました — Continue でブレークポイントへ移動してください。',
   'debug.sessionTimeout': 'デバッグセッションがタイムアウトしました — 終了します。',
   'debug.runTestFailed': 'テストの実行に失敗しました: {error}',

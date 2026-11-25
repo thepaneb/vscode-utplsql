@@ -1,6 +1,8 @@
 // Catálogo i18n `uk`. PURO (sem 'vscode').
-// Extraído de src/i18nLocales.ts no split da PRD-115; paridade em i18n.test.ts.
-export const uk: Record<string, string> = {
+// Gerado por scripts/i18n-apply.cjs; paridade em i18n.test.ts.
+import type { Message } from './types';
+
+export const uk: Record<string, Message> = {
   'ext.export.reporterPlaceholder': 'Виберіть reporter бази даних для експорту',
   'ext.export.toOutput': 'Показати в Output',
   'ext.export.toFile': 'Зберегти у файл…',
@@ -37,7 +39,12 @@ export const uk: Record<string, string> = {
   'ext.tag.noMatch': 'Жоден тест не відповідає вибраним тегам.',
   'ext.grants.copied': 'Гранти покриття скопійовано до буфера обміну.',
   'ext.validate.ok': 'Налаштування utPLSQL OK — проблем не знайдено.',
-  'ext.validate.problems': 'Знайдено {count} проблем налаштування. Перегляньте панель проблем.',
+  'ext.validate.problems': {
+    one: 'Знайдено {count} проблем налаштування. Перегляньте панель проблем.',
+    few: 'Знайдено {count} проблем налаштування. Перегляньте панель проблем.',
+    many: 'Знайдено {count} проблем налаштування. Перегляньте панель проблем.',
+    other: 'Знайдено {count} проблем налаштування. Перегляньте панель проблем.',
+  },
   'ext.debug.disabled': 'Налагодження PL/SQL вимкнено (utplsql.debugger.enabled).',
   'ext.debug.openPks': 'Відкрийте файл .pks/.pkb для налагодження.',
   'ext.debug.pickTest': 'Виберіть тест для налагодження',
@@ -46,7 +53,6 @@ export const uk: Record<string, string> = {
   'ext.compileForDebug.failed': 'Не вдалося скомпілювати для налагодження: {error}',
   'ext.compileForDebug.none':
     'У цьому виборі немає об’єкта PL/SQL для компіляції для налагодження.',
-
   'ext.profile.none':
     'Немає збереженого профілю з\'єднання. Використайте "utPLSQL: Новий профіль з\'єднання...".',
   'ext.profile.active': 'Активний профіль: {name}',
@@ -58,7 +64,12 @@ export const uk: Record<string, string> = {
   'ext.profile.new.sourcePlaceholder': 'install',
   'ext.profile.new.created': 'Профіль "{name}" створено та активовано.',
   'ext.sqlDev.import.none': "Не знайдено з'єднань SQL Developer (connections.xml).",
-  'ext.sqlDev.import.ok': "Імпортовано {count} з'єднань з SQL Developer.",
+  'ext.sqlDev.import.ok': {
+    one: "Імпортовано {count} з'єднань з SQL Developer.",
+    few: "Імпортовано {count} з'єднань з SQL Developer.",
+    many: "Імпортовано {count} з'єднань з SQL Developer.",
+    other: "Імпортовано {count} з'єднань з SQL Developer.",
+  },
   'ext.noSuiteInFile': 'Не знайдено набору utPLSQL у цьому файлі.',
   'ext.noSuiteInFolder': 'Не знайдено набору utPLSQL у цій папці.',
   'ext.openFolder': 'Відкрийте папку/проєкт, щоб запустити тести utPLSQL.',
@@ -103,10 +114,30 @@ export const uk: Record<string, string> = {
   'status.running': 'Запуск {current}/{total} наборів',
   'status.runningDetail': 'Виконується {current} з {total} тестових наборів...',
   'status.profileTooltip': 'Профіль: {name}. Натисніть, щоб змінити.',
-  'status.passed': '{count} пройдено',
-  'status.failed': '{count} невдало',
-  'status.errored': '{count} помилок',
-  'status.skipped': '{count} пропущено',
+  'status.passed': {
+    one: '{count} пройдено',
+    few: '{count} пройдено',
+    many: '{count} пройдено',
+    other: '{count} пройдено',
+  },
+  'status.failed': {
+    one: '{count} невдало',
+    few: '{count} невдало',
+    many: '{count} невдало',
+    other: '{count} невдало',
+  },
+  'status.errored': {
+    one: '{count} помилок',
+    few: '{count} помилок',
+    many: '{count} помилок',
+    other: '{count} помилок',
+  },
+  'status.skipped': {
+    one: '{count} пропущено',
+    few: '{count} пропущено',
+    many: '{count} пропущено',
+    other: '{count} пропущено',
+  },
   'status.coverage.on': 'Покриття: увімк.',
   'status.coverage.off': 'Покриття: вимк.',
   'status.coverage.onTooltip': 'Покриття завжди увімкнено (сеанс). Натисніть, щоб вимкнути.',
@@ -114,12 +145,22 @@ export const uk: Record<string, string> = {
   'quickfix.oldVersion': 'Версія utPLSQL у БД застаріла ({version}); мінімум 3.1.0.',
   'quickfix.badConn': 'Не вдалося підключитися до бази. Перевірте з’єднання/профіль.',
   'quickfix.oldVersionUpgrade': 'Як оновити utPLSQL',
-  'quickfix.invalidObjects': "Схема {schema} містить {count} недійсних об'єктів: {names}",
+  'quickfix.invalidObjects': {
+    one: "Схема {schema} містить {count} недійсних об'єктів: {names}",
+    few: "Схема {schema} містить {count} недійсних об'єктів: {names}",
+    many: "Схема {schema} містить {count} недійсних об'єктів: {names}",
+    other: "Схема {schema} містить {count} недійсних об'єктів: {names}",
+  },
   'quickfix.noCoverage':
     'Звіт про покриття не створено. Виконайте гранти: GRANT EXECUTE ON SYS.DBMS_PROFILER TO <schema>;',
   'quickfix.recompile': 'Перекомпілювати UT3',
   'quickfix.recompiledOk': "Схему {schema} перекомпільовано — немає недійсних об'єктів.",
-  'quickfix.stillInvalid': "У {schema} залишилося {count} недійсних об'єктів: {names}",
+  'quickfix.stillInvalid': {
+    one: "У {schema} залишилося {count} недійсних об'єктів: {names}",
+    few: "У {schema} залишилося {count} недійсних об'єктів: {names}",
+    many: "У {schema} залишилося {count} недійсних об'єктів: {names}",
+    other: "У {schema} залишилося {count} недійсних об'єктів: {names}",
+  },
   'quickfix.recompileFail':
     'Не вдалося перекомпілювати UT3: {error}. Потрібно ALTER ANY PROCEDURE або виконання як власник схеми.',
   'quickfix.noConnection': "З'єднання Oracle не налаштовано.",
@@ -155,7 +196,12 @@ export const uk: Record<string, string> = {
   'script.header.untitled': 'скрипт редактора',
   'script.stmtOk': '[{index}] ok {ms}ms — {summary}',
   'script.stmtErr': '[{index}] помилка {ms}ms — {summary}',
-  'script.rows': ' ({count} rows affected)',
+  'script.rows': {
+    one: ' ({count} rows affected)',
+    few: ' ({count} rows affected)',
+    many: ' ({count} rows affected)',
+    other: ' ({count} rows affected)',
+  },
   'script.dbms': '[dbms] {line}',
   'script.done': 'Готово: {ok} ok, {failed} з помилкою ({executed} statements).',
   'script.noStatements': 'Не знайдено SQL-інструкцій для виконання.',
@@ -173,7 +219,6 @@ export const uk: Record<string, string> = {
   'ext.profile.new.descPrompt': 'Description (optional — Enter to skip)',
   'ext.profile.new.descPlaceholder': 'Local development database',
   'ext.profile.new.charsetDefault': 'default',
-
   'results.failedFallback': 'Не пройдено',
   'results.errorFallback': 'Помилка',
   'runner.coverEmptyDir': '(порожньо)',
@@ -189,7 +234,6 @@ export const uk: Record<string, string> = {
   'ext.reporters.listEmpty': 'репортери не знайдені',
   'quickfix.reconfigureConn': 'Переналаштувати підключення',
   'quickfix.copyGrants': 'Скопіювати grants до буфера обміну',
-
   'debug.noConnection':
     'oracledb недоступний або підключення не налаштовано. Перевстановіть залежності за допомогою "npm install".',
   'debug.controlFail': 'Не вдалося відкрити керувальний сеанс DBMS_DEBUG.',
@@ -198,7 +242,12 @@ export const uk: Record<string, string> = {
   'debug.pauseUnsupported': 'Pause не підтримується DBMS_DEBUG.',
   'debug.commandUnsupported': 'Непідтримувана команда: {cmd}',
   'debug.sessionAttached': 'Сесію {id} приєднано.',
-  'debug.breakpointsApplied': 'Застосовано точок зупину: {count}; сесію готово.',
+  'debug.breakpointsApplied': {
+    one: 'Застосовано точок зупину: {count}; сесію готово.',
+    few: 'Застосовано точок зупину: {count}; сесію готово.',
+    many: 'Застосовано точок зупину: {count}; сесію готово.',
+    other: 'Застосовано точок зупину: {count}; сесію готово.',
+  },
   'debug.stoppedAtEntry': 'Зупинено на entry — натисніть Continue, щоб дійти до точки зупину.',
   'debug.sessionTimeout': 'Час сесії налагодження вичерпано — завершення.',
   'debug.runTestFailed': 'Не вдалося виконати тест: {error}',

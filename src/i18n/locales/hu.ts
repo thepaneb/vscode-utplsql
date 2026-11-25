@@ -1,6 +1,8 @@
 // Catálogo i18n `hu`. PURO (sem 'vscode').
-// Extraído de src/i18nLocales.ts no split da PRD-115; paridade em i18n.test.ts.
-export const hu: Record<string, string> = {
+// Gerado por scripts/i18n-apply.cjs; paridade em i18n.test.ts.
+import type { Message } from './types';
+
+export const hu: Record<string, Message> = {
   'ext.export.reporterPlaceholder': 'Válasszon adatbázis-reportert az exporthoz',
   'ext.export.toOutput': 'Megjelenítés az Outputban',
   'ext.export.toFile': 'Mentés fájlba…',
@@ -23,7 +25,6 @@ export const hu: Record<string, string> = {
   'common.copy': 'Másolás',
   'common.oracledbMissing':
     'az oracledb nem érhető el. Telepítse újra a függőségeket a „npm install” paranccsal.',
-
   'ext.reporters.listFailed': 'A riporterek listázása sikertelen: {error}',
   'ext.reporters.placeholder': 'Válasszon további riportert ehhez a futtatáshoz',
   'ext.reporters.willUse': 'A(z) „{name}” riporter a következő futtatásnál lesz használva.',
@@ -39,7 +40,10 @@ export const hu: Record<string, string> = {
   'ext.tag.noMatch': 'Egyetlen teszt sem felel meg a kiválasztott címkéknek.',
   'ext.grants.copied': 'A lefedettségi grantek a vágólapra másolva.',
   'ext.validate.ok': 'utPLSQL beállítás OK — nem található probléma.',
-  'ext.validate.problems': '{count} beállítási probléma található. Lásd a problémák panelt.',
+  'ext.validate.problems': {
+    one: '{count} beállítási probléma található. Lásd a problémák panelt.',
+    other: '{count} beállítási probléma található. Lásd a problémák panelt.',
+  },
   'ext.debug.disabled': 'PL/SQL hibakeresés letiltva (utplsql.debugger.enabled).',
   'ext.debug.openPks': 'Nyisson egy .pks/.pkb fájlt a hibakereséshez.',
   'ext.debug.pickTest': 'Válassza ki a hibakeresendő tesztet',
@@ -48,7 +52,6 @@ export const hu: Record<string, string> = {
   'ext.compileForDebug.failed': 'A hibakereséshez való fordítás sikertelen: {error}',
   'ext.compileForDebug.none':
     'Ebben a kijelölésben nincs hibakereséshez fordítható PL/SQL objektum.',
-
   'ext.profile.none':
     'Nincs mentett kapcsolati profil. Használja az „utPLSQL: Új kapcsolati profil...” parancsot.',
   'ext.profile.active': 'Aktív profil: {name}',
@@ -60,7 +63,10 @@ export const hu: Record<string, string> = {
   'ext.profile.new.sourcePlaceholder': 'install',
   'ext.profile.new.created': 'A(z) „{name}” profil létrehozva és aktiválva.',
   'ext.sqlDev.import.none': 'Nem található SQL Developer kapcsolat (connections.xml).',
-  'ext.sqlDev.import.ok': '{count} kapcsolat importálva az SQL Developerből.',
+  'ext.sqlDev.import.ok': {
+    one: '{count} kapcsolat importálva az SQL Developerből.',
+    other: '{count} kapcsolat importálva az SQL Developerből.',
+  },
   'ext.noSuiteInFile': 'Ebben a fájlban nem található utPLSQL szvit.',
   'ext.noSuiteInFolder': 'Ebben a mappában nem található utPLSQL szvit.',
   'ext.openFolder': 'Nyisson egy mappát/projektet az utPLSQL-tesztek futtatásához.',
@@ -69,7 +75,6 @@ export const hu: Record<string, string> = {
     'Adja meg a kapcsolatot (felhasználó/jelszó@//gép:port/szolgáltatás). Csak ebben a munkamenetben őrződik meg.',
   'ext.conn.placeholder': 'DEV_FULANO/jelszó@//localhost:1521/XEPDB1',
   'ext.runCancel': 'A futtatás megszakítva.',
-
   'runner.oracleError': 'Oracle-futtató: {error}',
   'runner.oracleErrorHeader': '[hiba] Oracle-futtató: {error}',
   'runner.running': 'utPLSQL{coverage} futtatása...',
@@ -94,7 +99,6 @@ export const hu: Record<string, string> = {
   'runner.oracleInfo': '[info] Oracle-futtató {ms}ms | {chars} JUnit karakter',
   'runner.randomOrderSeed': '[info] Véletlen sorrend bekapcsolva (seed: {seed}).',
   'runner.stderr': '[stderr]',
-
   'oracleRunner.coverNotGenerated':
     '[lefedettség] jelentés nem készült. Ellenőrizze: GRANT EXECUTE ON SYS.DBMS_PROFILER.',
   'oracleRunner.badConnFormat':
@@ -103,41 +107,55 @@ export const hu: Record<string, string> = {
     'A(z) {schema}.{name} forrása {max} sornál csonkolva az adatbázis-felderítés során.',
   'results.noMapped':
     '[lefedettség] nem lett fájl hozzárendelve. Állítsa a „utplsql.sourcePath” értéket a forráskód mappájára.',
-
   'status.idle': 'Még nem futottak tesztek. Kattintson a Test Explorer megnyitásához.',
   'status.running': '{current}/{total} szvit fut',
   'status.runningDetail': '{current}/{total} tesztszvit végrehajtása...',
   'status.profileTooltip': 'Profil: {name}. Kattintson a váltáshoz.',
-  'status.passed': '{count} sikeres',
-  'status.failed': '{count} sikertelen',
-  'status.errored': '{count} hiba',
-  'status.skipped': '{count} kihagyva',
+  'status.passed': {
+    one: '{count} sikeres',
+    other: '{count} sikeres',
+  },
+  'status.failed': {
+    one: '{count} sikertelen',
+    other: '{count} sikertelen',
+  },
+  'status.errored': {
+    one: '{count} hiba',
+    other: '{count} hiba',
+  },
+  'status.skipped': {
+    one: '{count} kihagyva',
+    other: '{count} kihagyva',
+  },
   'status.coverage.on': 'Lefedettség: be',
   'status.coverage.off': 'Lefedettség: ki',
   'status.coverage.onTooltip': 'Lefedettség mindig be (munkamenet). Kattintson a kikapcsoláshoz.',
   'status.coverage.offTooltip':
     'Lefedettség kikapcsolva. Kattintson a következő futásoknál való bekapcsoláshoz.',
-
   'quickfix.oldVersion': 'Az adatbázis utPLSQL-verziója régi ({version}); minimum 3.1.0.',
   'quickfix.badConn':
     'Nem sikerült csatlakozni az adatbázishoz. Ellenőrizze a kapcsolatot/profilt.',
   'quickfix.oldVersionUpgrade': 'Az utPLSQL frissítése',
-  'quickfix.invalidObjects': 'A {schema} séma {count} érvénytelen objektumot tartalmaz: {names}',
+  'quickfix.invalidObjects': {
+    one: 'A {schema} séma {count} érvénytelen objektumot tartalmaz: {names}',
+    other: 'A {schema} séma {count} érvénytelen objektumot tartalmaz: {names}',
+  },
   'quickfix.noCoverage':
     'A lefedettségi jelentés nem készült. Futtassa a granteket: GRANT EXECUTE ON SYS.DBMS_PROFILER TO <schema>;',
   'quickfix.recompile': 'UT3 újrafordítása',
   'quickfix.recompiledOk': 'A {schema} séma újrafordítva — nincs érvénytelen objektum.',
-  'quickfix.stillInvalid': 'A {schema} sémában még {count} érvénytelen objektum van: {names}',
+  'quickfix.stillInvalid': {
+    one: 'A {schema} sémában még {count} érvénytelen objektum van: {names}',
+    other: 'A {schema} sémában még {count} érvénytelen objektum van: {names}',
+  },
   'quickfix.recompileFail':
     'Az UT3 újrafordítása nem sikerült: {error}. ALTER ANY PROCEDURE jogosultság vagy sématulajdonosként való futtatás szükséges.',
   'quickfix.noConnection': 'Oracle-kapcsolat nincs beállítva.',
   'quickfix.oracledbMissing':
     'az oracledb nem érhető el. Telepítse újra a függőségeket a „npm install” paranccsal.',
-
   'viewCoverage.none': '[lefedettség] nem lett fájl hozzárendelve.',
   'viewCoverage.vsqlDenied':
     '[lefedettség] nézetek követése V$SQL-en keresztül nem érhető el. Adjon hozzáférést: GRANT SELECT ON SYS.V_$SQL TO <schema>.',
-
   'nls.command.showTestExplorer': 'Test Explorer megjelenítése',
   'nls.command.runLens': 'Teszt futtatása (CodeLens)',
   'nls.command.refresh': 'Tesztek frissítése',
@@ -165,7 +183,10 @@ export const hu: Record<string, string> = {
   'script.header.untitled': 'szerkesztő scriptje',
   'script.stmtOk': '[{index}] ok {ms}ms — {summary}',
   'script.stmtErr': '[{index}] hiba {ms}ms — {summary}',
-  'script.rows': ' ({count} rows affected)',
+  'script.rows': {
+    one: ' ({count} rows affected)',
+    other: ' ({count} rows affected)',
+  },
   'script.dbms': '[dbms] {line}',
   'script.done': 'Kész: {ok} ok, {failed} sikertelen ({executed} statements).',
   'script.noStatements': 'Nem található végrehajtható SQL utasítás.',
@@ -183,7 +204,6 @@ export const hu: Record<string, string> = {
   'ext.profile.new.descPrompt': 'Description (optional — Enter to skip)',
   'ext.profile.new.descPlaceholder': 'Local development database',
   'ext.profile.new.charsetDefault': 'default',
-
   'results.failedFallback': 'Sikertelen',
   'results.errorFallback': 'Hiba',
   'runner.coverEmptyDir': '(üres)',
@@ -199,7 +219,6 @@ export const hu: Record<string, string> = {
   'ext.reporters.listEmpty': 'nem található reporter',
   'quickfix.reconfigureConn': 'Kapcsolat újrakonfigurálása',
   'quickfix.copyGrants': 'Grants másolása a vágólapra',
-
   'debug.noConnection':
     'az oracledb nem érhető el, vagy a kapcsolat nincs beállítva. Telepítse újra a függőségeket a „npm install” paranccsal.',
   'debug.controlFail': 'Nem sikerült megnyitni a DBMS_DEBUG vezérlőmunkamenetet.',
@@ -208,7 +227,10 @@ export const hu: Record<string, string> = {
   'debug.pauseUnsupported': 'A Pause nem támogatott a DBMS_DEBUG-ban.',
   'debug.commandUnsupported': 'Nem támogatott parancs: {cmd}',
   'debug.sessionAttached': '{id} munkamenet csatolva.',
-  'debug.breakpointsApplied': '{count} töréspont alkalmazva; a munkamenet kész.',
+  'debug.breakpointsApplied': {
+    one: '{count} töréspont alkalmazva; a munkamenet kész.',
+    other: '{count} töréspont alkalmazva; a munkamenet kész.',
+  },
   'debug.stoppedAtEntry': 'Megállva az entry ponton — a Continue gombbal érsz el a töréspontig.',
   'debug.sessionTimeout': 'A hibakeresési munkamenet túllépte az időkorlátot — leállítás.',
   'debug.runTestFailed': 'A teszt futtatása sikertelen: {error}',

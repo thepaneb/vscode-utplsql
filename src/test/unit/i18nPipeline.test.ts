@@ -33,7 +33,7 @@ function tempDir(prefix: string): string {
 }
 
 function evaluateCatalog(text: string): Record<string, unknown> {
-  const body = text.replace(/^[\s\S]*?export const \w+: Record<string, string> = /, 'return ');
+  const body = text.replace(/^[\s\S]*?export const \w+: Record<string, Message> = /, 'return ');
   return new Function(body)() as Record<string, unknown>;
 }
 
@@ -90,7 +90,7 @@ test('i18n-apply: regenera catálogo e suporta formas plurais (objeto)', () => {
       },
     });
     const text = fs.readFileSync(file, 'utf8');
-    assert.match(text, /export const ptBr: Record<string, string> = \{/);
+    assert.match(text, /export const ptBr: Record<string, Message> = \{/);
     const catalog = evaluateCatalog(text) as Record<string, unknown>;
     assert.strictEqual(catalog['demo.key'], "valor com 'aspas' e \\ barra");
     assert.deepStrictEqual(catalog['demo.plural'], {

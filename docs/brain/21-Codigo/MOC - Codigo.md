@@ -115,6 +115,7 @@ SORT id ASC
 - [[COD - languageIdentity.ts]] — `COD-languageIdentity.ts`
 - [[COD - launch.json]] — `COD-launch.json`
 - [[COD - linkedin-drift.cjs]] — `COD-linkedin-drift.cjs`
+- [[COD - locales-types.ts]] — `COD-locales-types.ts`
 - [[COD - logger.ts]] — `COD-logger.ts`
 - [[COD - lru.ts]] — `COD-lru.ts`
 - [[COD - Marketplace (README).md]] — `COD-Marketplace-README-.md`
@@ -175,6 +176,7 @@ SORT id ASC
 - [[COD - sitemap.xml]] — `COD-sitemap.xml`
 - [[COD - sr.ts]] — `COD-sr.ts`
 - [[COD - src-scaffold.ts]] — `COD-src-scaffold.ts`
+- [[COD - src-types.ts]] — `COD-src-types.ts`
 - [[COD - state.ts]] — `COD-state.ts`
 - [[COD - statusBar.ts]] — `COD-statusBar.ts`
 - [[COD - strategy.ts]] — `COD-strategy.ts`
@@ -192,7 +194,6 @@ SORT id ASC
 - [[COD - tnsnames.ts]] — `COD-tnsnames.ts`
 - [[COD - tr.ts]] — `COD-tr.ts`
 - [[COD - tsconfig.json]] — `COD-tsconfig.json`
-- [[COD - types.ts]] — `COD-types.ts`
 - [[COD - uk.ts]] — `COD-uk.ts`
 - [[COD - unpriv.ts]] — `COD-unpriv.ts`
 - [[COD - utility.ts]] — `COD-utility.ts`

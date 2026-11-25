@@ -1,6 +1,8 @@
 // Catálogo i18n `cs`. PURO (sem 'vscode').
-// Extraído de src/i18nLocales.ts no split da PRD-115; paridade em i18n.test.ts.
-export const cs: Record<string, string> = {
+// Gerado por scripts/i18n-apply.cjs; paridade em i18n.test.ts.
+import type { Message } from './types';
+
+export const cs: Record<string, Message> = {
   'ext.export.reporterPlaceholder': 'Vyberte reporter databáze pro export',
   'ext.export.toOutput': 'Zobrazit v Output',
   'ext.export.toFile': 'Uložit do souboru…',
@@ -23,7 +25,6 @@ export const cs: Record<string, string> = {
   'common.copy': 'Kopírovat',
   'common.oracledbMissing':
     'oracledb není k dispozici. Přeinstalujte závislosti pomocí „npm install“.',
-
   'ext.reporters.listFailed': 'Nepodařilo se vypsat reportery: {error}',
   'ext.reporters.placeholder': 'Vyberte další reporter pro toto spuštění',
   'ext.reporters.willUse': 'Reporter „{name}“ bude použit při příštím spuštění.',
@@ -39,7 +40,12 @@ export const cs: Record<string, string> = {
   'ext.tag.noMatch': 'Žádný test neodpovídá vybraným značkám.',
   'ext.grants.copied': 'Granty pokrytí zkopírovány do schránky.',
   'ext.validate.ok': 'Nastavení utPLSQL OK — nebyly nalezeny žádné problémy.',
-  'ext.validate.problems': 'Nalezeno {count} problémů nastavení. Viz panel problémů.',
+  'ext.validate.problems': {
+    one: 'Nalezeno {count} problémů nastavení. Viz panel problémů.',
+    few: 'Nalezeno {count} problémů nastavení. Viz panel problémů.',
+    many: 'Nalezeno {count} problémů nastavení. Viz panel problémů.',
+    other: 'Nalezeno {count} problémů nastavení. Viz panel problémů.',
+  },
   'ext.debug.disabled': 'Ladění PL/SQL je zakázáno (utplsql.debugger.enabled).',
   'ext.debug.openPks': 'Pro ladění otevřete soubor .pks/.pkb.',
   'ext.debug.pickTest': 'Vyberte test k ladění',
@@ -47,7 +53,6 @@ export const cs: Record<string, string> = {
   'ext.rebuildCache.ok': 'Mezipaměť anotací byla přestavěna.',
   'ext.compileForDebug.failed': 'Kompilace pro ladění se nezdařila: {error}',
   'ext.compileForDebug.none': 'V tomto výběru není žádný objekt PL/SQL ke kompilaci pro ladění.',
-
   'ext.profile.none':
     'Žádný uložený profil připojení. Použijte „utPLSQL: Nový profil připojení...“.',
   'ext.profile.active': 'Aktivní profil: {name}',
@@ -59,7 +64,12 @@ export const cs: Record<string, string> = {
   'ext.profile.new.sourcePlaceholder': 'install',
   'ext.profile.new.created': 'Profil „{name}“ vytvořen a aktivován.',
   'ext.sqlDev.import.none': 'Nebyly nalezeny žádné připojení SQL Developer (connections.xml).',
-  'ext.sqlDev.import.ok': 'Ze SQL Developer importováno {count} připojení.',
+  'ext.sqlDev.import.ok': {
+    one: 'Ze SQL Developer importováno {count} připojení.',
+    few: 'Ze SQL Developer importováno {count} připojení.',
+    many: 'Ze SQL Developer importováno {count} připojení.',
+    other: 'Ze SQL Developer importováno {count} připojení.',
+  },
   'ext.noSuiteInFile': 'V tomto souboru nebyla nalezena žádná sada utPLSQL.',
   'ext.noSuiteInFolder': 'V této složce nebyla nalezena žádná sada utPLSQL.',
   'ext.openFolder': 'Pro spuštění testů utPLSQL otevřete složku/projekt.',
@@ -68,7 +78,6 @@ export const cs: Record<string, string> = {
     'Zadejte připojení (uživatel/heslo@//host:port/služba). Uloží se pouze v této relaci.',
   'ext.conn.placeholder': 'DEV_FULANO/heslo@//localhost:1521/XEPDB1',
   'ext.runCancel': 'Spuštění zrušeno.',
-
   'runner.oracleError': 'Oracle runner: {error}',
   'runner.oracleErrorHeader': '[chyba] Oracle runner: {error}',
   'runner.running': 'Spouští se utPLSQL{coverage}...',
@@ -93,7 +102,6 @@ export const cs: Record<string, string> = {
   'runner.oracleInfo': '[info] Oracle runner {ms}ms | {chars} znaků JUnit',
   'runner.randomOrderSeed': '[info] Náhodné pořadí zapnuto (seed: {seed}).',
   'runner.stderr': '[stderr]',
-
   'oracleRunner.coverNotGenerated':
     '[pokrytí] zpráva nebyla vytvořena. Ověřte GRANT EXECUTE ON SYS.DBMS_PROFILER.',
   'oracleRunner.badConnFormat':
@@ -102,39 +110,65 @@ export const cs: Record<string, string> = {
     'Zdroj {schema}.{name} zkrácen na {max} řádcích při zjišťování v DB.',
   'results.noMapped':
     '[pokrytí] nebyl mapován žádný soubor. Nastavte „utplsql.sourcePath“ na složku se zdrojovým kódem.',
-
   'status.idle': 'Zatím nebyly spuštěny žádné testy. Klepnutím otevřete Test Explorer.',
   'status.running': 'Spouští se {current}/{total} sad',
   'status.runningDetail': 'Provádí se {current} z {total} testovacích sad...',
   'status.profileTooltip': 'Profil: {name}. Klepnutím přepnete.',
-  'status.passed': '{count} úspěšných',
-  'status.failed': '{count} neúspěšných',
-  'status.errored': '{count} chyb',
-  'status.skipped': '{count} přeskočeno',
+  'status.passed': {
+    one: '{count} úspěšných',
+    few: '{count} úspěšných',
+    many: '{count} úspěšných',
+    other: '{count} úspěšných',
+  },
+  'status.failed': {
+    one: '{count} neúspěšných',
+    few: '{count} neúspěšných',
+    many: '{count} neúspěšných',
+    other: '{count} neúspěšných',
+  },
+  'status.errored': {
+    one: '{count} chyb',
+    few: '{count} chyb',
+    many: '{count} chyb',
+    other: '{count} chyb',
+  },
+  'status.skipped': {
+    one: '{count} přeskočeno',
+    few: '{count} přeskočeno',
+    many: '{count} přeskočeno',
+    other: '{count} přeskočeno',
+  },
   'status.coverage.on': 'Pokrytí: zapnuto',
   'status.coverage.off': 'Pokrytí: vypnuto',
   'status.coverage.onTooltip': 'Pokrytí vždy zapnuto (relace). Kliknutím vypnete.',
   'status.coverage.offTooltip': 'Pokrytí vypnuto. Kliknutím je zapnete při dalších spuštěních.',
-
   'quickfix.oldVersion': 'Verze utPLSQL v databázi je stará ({version}); minimum 3.1.0.',
   'quickfix.badConn': 'Nelze se připojit k databázi. Zkontrolujte připojení/profil.',
   'quickfix.oldVersionUpgrade': 'Jak aktualizovat utPLSQL',
-  'quickfix.invalidObjects': 'Schéma {schema} obsahuje {count} neplatných objektů: {names}',
+  'quickfix.invalidObjects': {
+    one: 'Schéma {schema} obsahuje {count} neplatných objektů: {names}',
+    few: 'Schéma {schema} obsahuje {count} neplatných objektů: {names}',
+    many: 'Schéma {schema} obsahuje {count} neplatných objektů: {names}',
+    other: 'Schéma {schema} obsahuje {count} neplatných objektů: {names}',
+  },
   'quickfix.noCoverage':
     'Zpráva o pokrytí nebyla vytvořena. Spusťte granty: GRANT EXECUTE ON SYS.DBMS_PROFILER TO <schema>;',
   'quickfix.recompile': 'Překompilovat UT3',
   'quickfix.recompiledOk': 'Schéma {schema} překompilováno — žádné neplatné objekty.',
-  'quickfix.stillInvalid': 'V {schema} zbývá {count} neplatných objektů: {names}',
+  'quickfix.stillInvalid': {
+    one: 'V {schema} zbývá {count} neplatných objektů: {names}',
+    few: 'V {schema} zbývá {count} neplatných objektů: {names}',
+    many: 'V {schema} zbývá {count} neplatných objektů: {names}',
+    other: 'V {schema} zbývá {count} neplatných objektů: {names}',
+  },
   'quickfix.recompileFail':
     'Překompilování UT3 se nezdařilo: {error}. Vyžaduje ALTER ANY PROCEDURE nebo spuštění jako vlastník schématu.',
   'quickfix.noConnection': 'Připojení Oracle není nakonfigurováno.',
   'quickfix.oracledbMissing':
     'oracledb není k dispozici. Přeinstalujte závislosti pomocí „npm install“.',
-
   'viewCoverage.none': '[pokrytí] nebyl mapován žádný soubor.',
   'viewCoverage.vsqlDenied':
     '[pokrytí] sledování pohledů přes V$SQL není dostupné. Udělte přístup: GRANT SELECT ON SYS.V_$SQL TO <schema>.',
-
   'nls.command.showTestExplorer': 'Zobrazit Test Explorer',
   'nls.command.runLens': 'Spustit test (CodeLens)',
   'nls.command.refresh': 'Obnovit testy',
@@ -162,7 +196,12 @@ export const cs: Record<string, string> = {
   'script.header.untitled': 'skript z editoru',
   'script.stmtOk': '[{index}] ok {ms}ms — {summary}',
   'script.stmtErr': '[{index}] chyba {ms}ms — {summary}',
-  'script.rows': ' ({count} rows affected)',
+  'script.rows': {
+    one: ' ({count} rows affected)',
+    few: ' ({count} rows affected)',
+    many: ' ({count} rows affected)',
+    other: ' ({count} rows affected)',
+  },
   'script.dbms': '[dbms] {line}',
   'script.done': 'Hotovo: {ok} ok, {failed} selhalo ({executed} statements).',
   'script.noStatements': 'Nebyly nalezeny žádné SQL příkazy k provedení.',
@@ -180,7 +219,6 @@ export const cs: Record<string, string> = {
   'ext.profile.new.descPrompt': 'Description (optional — Enter to skip)',
   'ext.profile.new.descPlaceholder': 'Local development database',
   'ext.profile.new.charsetDefault': 'default',
-
   'results.failedFallback': 'Neúspěšný',
   'results.errorFallback': 'Chyba',
   'runner.coverEmptyDir': '(prázdné)',
@@ -196,7 +234,6 @@ export const cs: Record<string, string> = {
   'ext.reporters.listEmpty': 'nebyly nalezeny reportery',
   'quickfix.reconfigureConn': 'Znovu nakonfigurovat připojení',
   'quickfix.copyGrants': 'Zkopírovat granty do schránky',
-
   'debug.noConnection':
     'oracledb není k dispozici nebo připojení není nakonfigurováno. Přeinstalujte závislosti pomocí „npm install“.',
   'debug.controlFail': 'Nepodařilo se otevřít řídicí relaci DBMS_DEBUG.',
@@ -205,7 +242,12 @@ export const cs: Record<string, string> = {
   'debug.pauseUnsupported': 'Pause není podporováno DBMS_DEBUG.',
   'debug.commandUnsupported': 'Nepodporovaný příkaz: {cmd}',
   'debug.sessionAttached': 'Relace {id} připojena.',
-  'debug.breakpointsApplied': 'Použito {count} zarážek; relace připravena.',
+  'debug.breakpointsApplied': {
+    one: 'Použito {count} zarážek; relace připravena.',
+    few: 'Použito {count} zarážek; relace připravena.',
+    many: 'Použito {count} zarážek; relace připravena.',
+    other: 'Použito {count} zarážek; relace připravena.',
+  },
   'debug.stoppedAtEntry': 'Zastaveno na entry — použijte Continue k dosažení zarážky.',
   'debug.sessionTimeout': 'Časový limit ladicí relace vypršel — ukončuji.',
   'debug.runTestFailed': 'Test se nepodařilo spustit: {error}',

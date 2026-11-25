@@ -36,7 +36,7 @@ Guardar a senha da wallet com o mesmo padrão do perfil (keychain do SO), sem te
 - 🗺️ [[MOC - Regras]]
 - 📄 PRDs: [[prd-82-tns-wallet|PRD-82]] · [[prd-137-wallet-password-binding|PRD-137]]
 - 🎯 Requisitos: [[prd-82-tns-wallet|PRD-82 RF4]] · [[prd-137-wallet-password-binding|PRD-137 RF1]] · [[prd-137-wallet-password-binding|PRD-137 RF2]]
-- 🧩 Código: [[COD - connectionProfiles.ts]] · [[COD - oracleRunner.ts]] · [[COD - types.ts]]
+- 🧩 Código: [[COD - connectionProfiles.ts]] · [[COD - oracleRunner.ts]] · [[COD - src-types.ts]]
 - 🧪 Testes: [[TST - connectionProfiles.test.ts]] · [[TST - oracleRunner.test.ts]] · [[TST - prd015ExtraE2E.test.ts]]
 - ↩️ Referenciada por: [[Connection]] · [[SEC-012 - Senha da wallet nunca em settings nem em log|SEC-012]] · [[prd-137-wallet-password-binding|PRD-137]] · [[prd-82-tns-wallet|PRD-82]]
 <!-- brain:auto:end -->

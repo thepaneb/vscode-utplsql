@@ -2,7 +2,13 @@
 // Catálogos em i18n/locales (um arquivo por locale, barrel com LOCALE_CODES).
 // Chave ausente → pt-BR → a própria chave.
 
-import { catalogs, LOCALE_CODES, type ExtensionLocale as LocaleCode } from './i18n/locales';
+import {
+  type Catalog,
+  catalogs,
+  LOCALE_CODES,
+  type ExtensionLocale as LocaleCode,
+  type Message,
+} from './i18n/locales';
 
 /** Locale pseudo de desenvolvimento (`UTPLSQL_PSEUDO_LOC=1`), fora da setting pública. */
 export const PSEUDO_LOCALE = 'qps-ploc' as const;
@@ -36,7 +42,7 @@ export {
 } from './i18n/locales';
 
 /** Chaves do catálogo base (pt-BR) ausentes em um catálogo alvo. */
-export function missingCatalogKeys(catalog: Record<string, string>): string[] {
+export function missingCatalogKeys(catalog: Catalog): string[] {
   return Object.keys(catalogs['pt-br']).filter((k) => !(k in catalog));
 }
 
@@ -151,14 +157,41 @@ function interpolate(
   });
 }
 
+function catalogFor(locale: ExtensionLocale): Catalog {
+  return locale === PSEUDO_LOCALE ? catalogs.en : catalogs[locale];
+}
+
+function resolveMessage(locale: ExtensionLocale, key: string): Message {
+  const catalog = catalogFor(locale);
+  return catalog[key] ?? catalogs['pt-br'][key] ?? key;
+}
+
+/** Seleciona a forma plural via CLDR; fallback other → pt-BR → chave. */
+function selectForm(
+  locale: ExtensionLocale,
+  key: string,
+  message: Message,
+  params?: Record<string, string | number>,
+): string {
+  if (typeof message === 'string') return message;
+  const count = typeof params?.count === 'number' ? params.count : undefined;
+  if (count === undefined) return message.other ?? message.one ?? key;
+  const rules = new Intl.PluralRules(locale === PSEUDO_LOCALE ? 'en' : locale);
+  const category = rules.select(count);
+  if (message[category] !== undefined) return message[category] as string;
+  if (message.other !== undefined) return message.other;
+  const base = catalogs['pt-br'][key];
+  if (typeof base === 'object') return base[category] ?? base.other ?? base.one ?? key;
+  return typeof base === 'string' ? base : key;
+}
+
 /** Traduz uma chave; chave ausente → pt-BR → a própria chave. Nunca lança. */
 export function t(
   locale: ExtensionLocale,
   key: string,
   params?: Record<string, string | number>,
 ): string {
-  const catalog = locale === PSEUDO_LOCALE ? catalogs.en : catalogs[locale];
-  const template = catalog[key] ?? catalogs['pt-br'][key] ?? key;
+  const template = selectForm(locale, key, resolveMessage(locale, key), params);
   const text = interpolate(template, locale, params);
   return isPseudoEnabled() ? pseudoLocalize(text) : text;
 }

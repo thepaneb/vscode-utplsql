@@ -41,9 +41,14 @@ duplicar lógica nem introduzir dependência de runtime i18n.
   defasagem); a documentação é **gerada** do vault (`60-README`, `70-Wiki`), então
   a tradução é feita na nota do vault.
 
+> **Atualização (2026-11-25):** o catálogo de runtime próprio agora usa plurais
+> CLDR ([[ADR-014 - Catálogo próprio com plurais CLDR|ADR-014]]); este ADR cobre
+> o manifesto `package.nls.*` e a distribuição documental.
+
 ## Referências
 
 - PRDs: [[prd-49-internacionalizacao|PRD-49]] ·
-  [[prd-63-diagram-i18n|PRD-63]]
+  [[prd-63-diagram-i18n|PRD-63]] ·
+  [[prd-90-message-plurals-cldr|PRD-90]]
 - Código: `src/i18n.ts`, `src/i18n/locales/*`, `package.nls.*.json`
 - [[MOC - I18n]] · [[NFR-006 - Internacionalização]]

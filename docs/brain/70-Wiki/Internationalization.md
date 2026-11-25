@@ -5,7 +5,7 @@ titulo: "Internationalization (i18n)"
 publicar: docs/wiki/Internationalization.md
 origem: ["MOC - I18n"]
 verificado: 2026-09-23
-regras: ["BR-I18N-001", "BR-I18N-002", "BR-I18N-008"]
+regras: ["BR-I18N-001", "BR-I18N-002", "BR-I18N-004", "BR-I18N-008"]
 tags: [wiki]
 ---
 
@@ -56,6 +56,22 @@ formatDuration(locale, 850); // 850 ms
 - The status bar and the Test Explorer duration suffix use these helpers;
   machine-readable formats (ISO dates, JUnit/Cobertura XML, PL/SQL) are never
   localized.
+
+## Plurals (PRD-90)
+
+A catalogue entry can be a plain string or CLDR plural forms:
+
+```typescript
+'status.failed': { one: '{count} failure', other: '{count} failures' }
+```
+
+- `t()` picks the form with `Intl.PluralRules(locale).select(count)`; missing
+  forms fall back to `other`, then pt-BR, then the key.
+- Every locale must define the categories that its CLDR rules can return (plus
+  `other`); `npm run i18n:check` and the unit parity test enforce it.
+- `en-gb` is an overlay of `en` and inherits its plural forms.
+- Draft translations of the forms are accepted while in-country review is
+  pending (see [[Registro de locales]]).
 
 ![Internationalization architecture](images/diagram-i18n.svg)
 

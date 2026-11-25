@@ -1,6 +1,8 @@
 // Catálogo i18n `zh-cn`. PURO (sem 'vscode').
-// Extraído de src/i18nLocales.ts no split da PRD-115; paridade em i18n.test.ts.
-export const zhCn: Record<string, string> = {
+// Gerado por scripts/i18n-apply.cjs; paridade em i18n.test.ts.
+import type { Message } from './types';
+
+export const zhCn: Record<string, Message> = {
   'ext.export.reporterPlaceholder': '选择要导出的数据库 reporter',
   'ext.export.toOutput': '在 Output 中显示',
   'ext.export.toFile': '保存到文件…',
@@ -20,7 +22,6 @@ export const zhCn: Record<string, string> = {
   'common.failed': '失败',
   'common.copy': '复制',
   'common.oracledbMissing': 'oracledb 不可用。请使用 "npm install" 重新安装依赖。',
-
   'ext.reporters.listFailed': '列出 reporters 失败：{error}',
   'ext.reporters.placeholder': '为本次运行选择一个附加 reporter',
   'ext.reporters.willUse': 'Reporter "{name}" 将在下次运行中使用。',
@@ -36,7 +37,9 @@ export const zhCn: Record<string, string> = {
   'ext.tag.noMatch': '没有测试匹配所选标签。',
   'ext.grants.copied': '覆盖率授权已复制到剪贴板。',
   'ext.validate.ok': 'utPLSQL 配置正常 — 未发现问题。',
-  'ext.validate.problems': '发现 {count} 个配置问题。请查看问题面板。',
+  'ext.validate.problems': {
+    other: '发现 {count} 个配置问题。请查看问题面板。',
+  },
   'ext.debug.disabled': 'PL/SQL 调试已禁用（utplsql.debugger.enabled）。',
   'ext.debug.openPks': '请打开 .pks/.pkb 文件进行调试。',
   'ext.debug.pickTest': '选择要调试的测试',
@@ -44,7 +47,6 @@ export const zhCn: Record<string, string> = {
   'ext.rebuildCache.ok': '注释缓存已重建。',
   'ext.compileForDebug.failed': '编译以进行调试失败：{error}',
   'ext.compileForDebug.none': '此选择中没有可编译以进行调试的 PL/SQL 对象。',
-
   'ext.profile.none': '没有已保存的连接配置。请使用 "utPLSQL: 新建连接配置..."。',
   'ext.profile.active': '当前配置：{name}',
   'ext.profile.new.title': 'utPLSQL — 新建配置',
@@ -55,7 +57,9 @@ export const zhCn: Record<string, string> = {
   'ext.profile.new.sourcePlaceholder': 'install',
   'ext.profile.new.created': '配置 "{name}" 已创建并激活。',
   'ext.sqlDev.import.none': '未找到 SQL Developer 连接（connections.xml）。',
-  'ext.sqlDev.import.ok': '已从 SQL Developer 导入 {count} 个连接。',
+  'ext.sqlDev.import.ok': {
+    other: '已从 SQL Developer 导入 {count} 个连接。',
+  },
   'ext.noSuiteInFile': '此文件中未找到 utPLSQL 套件。',
   'ext.noSuiteInFolder': '此文件夹中未找到 utPLSQL 套件。',
   'ext.openFolder': '请打开一个文件夹/项目以运行 utPLSQL 测试。',
@@ -63,7 +67,6 @@ export const zhCn: Record<string, string> = {
   'ext.conn.prompt': '请输入连接（用户/密码@//主机:端口/服务）。仅保留在此会话中。',
   'ext.conn.placeholder': 'DEV_FULANO/密码@//localhost:1521/XEPDB1',
   'ext.runCancel': '运行已取消。',
-
   'runner.oracleError': 'Oracle 运行器：{error}',
   'runner.oracleErrorHeader': '[错误] Oracle 运行器：{error}',
   'runner.running': '正在运行 utPLSQL{coverage}...',
@@ -86,44 +89,51 @@ export const zhCn: Record<string, string> = {
   'runner.oracleInfo': '[信息] Oracle 运行器 {ms}ms | {chars} 个 JUnit 字符',
   'runner.randomOrderSeed': '[info] 已启用随机顺序（seed：{seed}）。',
   'runner.stderr': '[stderr]',
-
   'oracleRunner.coverNotGenerated':
     '[覆盖率] 未生成报告。请检查 GRANT EXECUTE ON SYS.DBMS_PROFILER。',
   'oracleRunner.badConnFormat': '连接格式无效："{conn}"。请使用 用户名/密码@//主机:端口/服务。',
   'discovery.sourceTruncated': '数据库发现中 {schema}.{name} 的源代码在 {max} 行处被截断。',
   'results.noMapped': '[覆盖率] 未映射任何文件。请将 "utplsql.sourcePath" 调整为源代码文件夹。',
-
   'status.idle': '尚未运行测试。单击以打开 Test Explorer。',
   'status.running': '正在运行 {current}/{total} 个套件',
   'status.runningDetail': '正在执行 {current}/{total} 个测试套件...',
   'status.profileTooltip': '配置：{name}。单击以切换。',
-  'status.passed': '{count} 通过',
-  'status.failed': '{count} 失败',
-  'status.errored': '{count} 错误',
-  'status.skipped': '{count} 跳过',
+  'status.passed': {
+    other: '{count} 通过',
+  },
+  'status.failed': {
+    other: '{count} 失败',
+  },
+  'status.errored': {
+    other: '{count} 错误',
+  },
+  'status.skipped': {
+    other: '{count} 跳过',
+  },
   'status.coverage.on': '覆盖率：开启',
   'status.coverage.off': '覆盖率：关闭',
   'status.coverage.onTooltip': '覆盖率始终开启（会话）。单击关闭。',
   'status.coverage.offTooltip': '覆盖率已关闭。单击以在下次运行中启用。',
-
   'quickfix.oldVersion': '数据库中的 utPLSQL 版本较旧（{version}）；最低要求 3.1.0。',
   'quickfix.badConn': '无法连接到数据库。请检查连接/配置。',
   'quickfix.oldVersionUpgrade': '如何升级 utPLSQL',
-  'quickfix.invalidObjects': '架构 {schema} 包含 {count} 个无效对象：{names}',
+  'quickfix.invalidObjects': {
+    other: '架构 {schema} 包含 {count} 个无效对象：{names}',
+  },
   'quickfix.noCoverage':
     '未生成覆盖率报告。请执行授权：GRANT EXECUTE ON SYS.DBMS_PROFILER TO <schema>;',
   'quickfix.recompile': '重新编译 UT3',
   'quickfix.recompiledOk': '架构 {schema} 已重新编译 — 没有无效对象。',
-  'quickfix.stillInvalid': '{schema} 中仍有 {count} 个无效对象：{names}',
+  'quickfix.stillInvalid': {
+    other: '{schema} 中仍有 {count} 个无效对象：{names}',
+  },
   'quickfix.recompileFail':
     '重新编译 UT3 失败：{error}。需要 ALTER ANY PROCEDURE 或以架构所有者身份执行。',
   'quickfix.noConnection': '未配置 Oracle 连接。',
   'quickfix.oracledbMissing': 'oracledb 不可用。请使用 "npm install" 重新安装依赖。',
-
   'viewCoverage.none': '[覆盖率] 未映射任何文件。',
   'viewCoverage.vsqlDenied':
     '[覆盖率] 无法通过 V$SQL 跟踪视图。请授予访问权限：GRANT SELECT ON SYS.V_$SQL TO <schema>。',
-
   'nls.command.showTestExplorer': '显示 Test Explorer',
   'nls.command.runLens': '运行测试（CodeLens）',
   'nls.command.refresh': '刷新测试',
@@ -151,7 +161,9 @@ export const zhCn: Record<string, string> = {
   'script.header.untitled': '编辑器脚本',
   'script.stmtOk': '[{index}] ok {ms}ms — {summary}',
   'script.stmtErr': '[{index}] 错误 {ms}ms — {summary}',
-  'script.rows': ' ({count} rows affected)',
+  'script.rows': {
+    other: ' ({count} rows affected)',
+  },
   'script.dbms': '[dbms] {line}',
   'script.done': '完成：{ok} ok，{failed} 失败（{executed} statements）。',
   'script.noStatements': '未找到可执行的 SQL 语句。',
@@ -168,7 +180,6 @@ export const zhCn: Record<string, string> = {
   'ext.profile.new.descPrompt': 'Description (optional — Enter to skip)',
   'ext.profile.new.descPlaceholder': 'Local development database',
   'ext.profile.new.charsetDefault': 'default',
-
   'results.failedFallback': '失败',
   'results.errorFallback': '错误',
   'runner.coverEmptyDir': '（空）',
@@ -184,7 +195,6 @@ export const zhCn: Record<string, string> = {
   'ext.reporters.listEmpty': '未找到 reporter',
   'quickfix.reconfigureConn': '重新配置连接',
   'quickfix.copyGrants': '将 grants 复制到剪贴板',
-
   'debug.noConnection': 'oracledb 不可用或连接未配置。请使用 "npm install" 重新安装依赖。',
   'debug.controlFail': '无法打开 DBMS_DEBUG 控制会话。',
   'debug.attachFail':
@@ -192,7 +202,9 @@ export const zhCn: Record<string, string> = {
   'debug.pauseUnsupported': 'DBMS_DEBUG 不支持暂停。',
   'debug.commandUnsupported': '不支持的命令：{cmd}',
   'debug.sessionAttached': '会话 {id} 已附加。',
-  'debug.breakpointsApplied': '已应用 {count} 个断点；会话就绪。',
+  'debug.breakpointsApplied': {
+    other: '已应用 {count} 个断点；会话就绪。',
+  },
   'debug.stoppedAtEntry': '已在入口处暂停 — 使用“继续”到达断点。',
   'debug.sessionTimeout': '调试会话超时 — 正在终止。',
   'debug.runTestFailed': '执行测试失败：{error}',

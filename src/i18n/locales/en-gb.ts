@@ -1,8 +1,10 @@
 // Catálogo i18n `en-gb`. PURO (sem 'vscode').
-// Extraído de src/i18nLocales.ts no split da PRD-115; paridade em i18n.test.ts.
+// Gerado por scripts/i18n-apply.cjs; paridade em i18n.test.ts.
 import { en } from './en';
+import type { Message } from './types';
 
-export const enGb: Record<string, string> = {
+export const enGb: Record<string, Message> = {
+  ...en,
   'ext.export.reporterPlaceholder': 'Choose a database reporter to export',
   'ext.export.toOutput': 'Show in Output',
   'ext.export.toFile': 'Save to file…',
@@ -19,7 +21,6 @@ export const enGb: Record<string, string> = {
   'ext.wallet.cleared': 'Wallet password removed from profile "{name}".',
   'ext.wallet.noProfile':
     'No active connection profile. Activate a profile before setting the wallet password.',
-  ...en,
   'nls.command.generateTestSuite': 'utPLSQL: Generate test suite…',
   'ext.scaffold.noSource': 'No source found. Open a .pks/.pkb file or provide a database object.',
   'ext.scaffold.objectPrompt': 'Production database object (e.g. APP.APP_PKG)',

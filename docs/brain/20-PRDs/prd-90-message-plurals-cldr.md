@@ -9,7 +9,7 @@ data: "2026-09-29"
 autor: "Gil Cleber Barboza"
 versao_titulo: "0.22.0 — Localização completa"
 verificado: 2026-11-25
-regras: []
+regras: ["BR-I18N-004"]
 docs: ["CHANGELOG", "wiki/Internationalization.md"]
 tags: [prd]
 ---
@@ -141,11 +141,14 @@ Nenhuma nova.
 - Aplicar **depois da PRD-115** (um arquivo por locale) para evitar conflito nos
   24 catálogos.
 - `BR-I18N-001` passa a mencionar a seleção plural no `t()`.
+- As formas são geradas como **draft** a partir da tradução existente; a revisão
+  in-country fica registrada no `Registro de locales` e não bloqueia a release.
 
 ## 12. Impacto no cérebro
 
-Esperado criar `BR-I18N-004` (plurais via CLDR; formas exigidas por locale) com
-`prds: ["PRD-90"]`, e a ADR de localização (`ADR-014`), atualizando o `ADR-007`.
+Criada a regra `BR-I18N-004` (plurais via CLDR; formas exigidas por locale) com
+`prds: ["PRD-90"]` e a `ADR-014` (catálogo próprio com plurais); o `ADR-007` foi
+atualizado. As formas iniciais são **draft** até a revisão in-country.
 
 ## 13. Impacto nas docs
 
@@ -157,7 +160,11 @@ Esperado criar `BR-I18N-004` (plurais via CLDR; formas exigidas por locale) com
 
 <!-- brain:auto:start:conexoes -->
 - 🗺️ [[MOC - PRDs]]
+- 📐 Regras: [[BR-I18N-004 - Mensagens plurais seguem as formas CLDR do locale|BR-I18N-004]]
 - 🔗 PRDs relacionados: [[prd-88-locale-aware-formatting|PRD-88]] · [[prd-92-rtl-new-locales|PRD-92]] · [[prd-93-continuous-localization-pipeline|PRD-93]] · [[prd-115-split-i18n-locales|PRD-115]]
 - 🔗 Mesma versão (0.22.0): [[prd-88-locale-aware-formatting|PRD-88]] · [[prd-89-pseudo-localization-gate|PRD-89]] · [[prd-91-doc-parity-localized-distribution|PRD-91]] · [[prd-92-rtl-new-locales|PRD-92]] · [[prd-93-continuous-localization-pipeline|PRD-93]] · [[prd-115-split-i18n-locales|PRD-115]]
+- 🎯 RF1 — Formato plural no catálogo → [[BR-I18N-004 - Mensagens plurais seguem as formas CLDR do locale|BR-I18N-004]]
+- 🎯 RF2 — Seleção por `Intl.PluralRules` → [[BR-I18N-004 - Mensagens plurais seguem as formas CLDR do locale|BR-I18N-004]]
+- 🎯 RF3 — Paridade e migração → [[BR-I18N-004 - Mensagens plurais seguem as formas CLDR do locale|BR-I18N-004]]
 - 🚀 ⬅️ release anterior: [[prd-139-state-store-slicing-lru|PRD-139 (0.21.0)]] · ➡️ próxima release: [[prd-60-branch-coverage-investigation|PRD-60 (0.23.0)]]
 <!-- brain:auto:end -->

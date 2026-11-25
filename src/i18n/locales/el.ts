@@ -1,6 +1,8 @@
 // Catálogo i18n `el`. PURO (sem 'vscode').
-// Extraído de src/i18nLocales.ts no split da PRD-115; paridade em i18n.test.ts.
-export const el: Record<string, string> = {
+// Gerado por scripts/i18n-apply.cjs; paridade em i18n.test.ts.
+import type { Message } from './types';
+
+export const el: Record<string, Message> = {
   'ext.export.reporterPlaceholder': 'Επιλέξτε reporter της βάσης για εξαγωγή',
   'ext.export.toOutput': 'Εμφάνιση στο Output',
   'ext.export.toFile': 'Αποθήκευση σε αρχείο…',
@@ -38,7 +40,10 @@ export const el: Record<string, string> = {
   'ext.tag.noMatch': 'Κανένα τεστ δεν ταιριάζει με τις επιλεγμένες ετικέτες.',
   'ext.grants.copied': 'Τα grants κάλυψης αντιγράφηκαν στο πρόχειρο.',
   'ext.validate.ok': 'Η ρύθμιση utPLSQL OK — δεν βρέθηκαν προβλήματα.',
-  'ext.validate.problems': 'Βρέθηκαν {count} προβλήματα ρύθμισης. Δείτε τον πίνακα προβλημάτων.',
+  'ext.validate.problems': {
+    one: 'Βρέθηκαν {count} προβλήματα ρύθμισης. Δείτε τον πίνακα προβλημάτων.',
+    other: 'Βρέθηκαν {count} προβλήματα ρύθμισης. Δείτε τον πίνακα προβλημάτων.',
+  },
   'ext.debug.disabled': 'Η αποσφαλμάτωση PL/SQL είναι απενεργοποιημένη (utplsql.debugger.enabled).',
   'ext.debug.openPks': 'Ανοίξτε ένα .pks/.pkb αρχείο για αποσφαλμάτωση.',
   'ext.debug.pickTest': 'Επιλέξτε το τεστ για αποσφαλμάτωση',
@@ -47,7 +52,6 @@ export const el: Record<string, string> = {
   'ext.compileForDebug.failed': 'Αποτυχία μεταγλώττισης για αποσφαλμάτωση: {error}',
   'ext.compileForDebug.none':
     'Δεν υπάρχει αντικείμενο PL/SQL για μεταγλώττιση για αποσφαλμάτωση σε αυτή την επιλογή.',
-
   'ext.profile.none':
     'Δεν υπάρχει αποθηκευμένο προφίλ σύνδεσης. Χρησιμοποιήστε "utPLSQL: Νέο προφίλ σύνδεσης...".',
   'ext.profile.active': 'Ενεργό προφίλ: {name}',
@@ -59,7 +63,10 @@ export const el: Record<string, string> = {
   'ext.profile.new.sourcePlaceholder': 'install',
   'ext.profile.new.created': 'Το προφίλ "{name}" δημιουργήθηκε και ενεργοποιήθηκε.',
   'ext.sqlDev.import.none': 'Δεν βρέθηκαν συνδέσεις SQL Developer (connections.xml).',
-  'ext.sqlDev.import.ok': 'Εισήχθησαν {count} συνδέσεις από το SQL Developer.',
+  'ext.sqlDev.import.ok': {
+    one: 'Εισήχθησαν {count} συνδέσεις από το SQL Developer.',
+    other: 'Εισήχθησαν {count} συνδέσεις από το SQL Developer.',
+  },
   'ext.noSuiteInFile': 'Δεν βρέθηκε utPLSQL suite σε αυτό το αρχείο.',
   'ext.noSuiteInFolder': 'Δεν βρέθηκε utPLSQL suite σε αυτόν τον φάκελο.',
   'ext.openFolder': 'Ανοίξτε έναν φάκελο/έργο για να εκτελέσετε τα τεστ utPLSQL.',
@@ -104,10 +111,22 @@ export const el: Record<string, string> = {
   'status.running': 'Εκτέλεση {current}/{total} suites',
   'status.runningDetail': 'Εκτελούνται {current} από {total} test suites...',
   'status.profileTooltip': 'Προφίλ: {name}. Κάντε κλικ για αλλαγή.',
-  'status.passed': '{count} επιτυχημένα',
-  'status.failed': '{count} αποτυχημένα',
-  'status.errored': '{count} σφάλματα',
-  'status.skipped': '{count} παραλειφθέντα',
+  'status.passed': {
+    one: '{count} επιτυχημένα',
+    other: '{count} επιτυχημένα',
+  },
+  'status.failed': {
+    one: '{count} αποτυχημένα',
+    other: '{count} αποτυχημένα',
+  },
+  'status.errored': {
+    one: '{count} σφάλματα',
+    other: '{count} σφάλματα',
+  },
+  'status.skipped': {
+    one: '{count} παραλειφθέντα',
+    other: '{count} παραλειφθέντα',
+  },
   'status.coverage.on': 'Κάλυψη: ενεργή',
   'status.coverage.off': 'Κάλυψη: ανενεργή',
   'status.coverage.onTooltip':
@@ -117,12 +136,18 @@ export const el: Record<string, string> = {
   'quickfix.oldVersion': 'Η έκδοση utPLSQL στη βάση είναι παλιά ({version}); ελάχιστο 3.1.0.',
   'quickfix.badConn': 'Δεν ήταν δυνατή η σύνδεση στη βάση. Ελέγξτε τη σύνδεση/προφίλ.',
   'quickfix.oldVersionUpgrade': 'Πώς να αναβαθμίσετε το utPLSQL',
-  'quickfix.invalidObjects': 'Το σχήμα {schema} περιέχει {count} μη έγκυρα αντικείμενα: {names}',
+  'quickfix.invalidObjects': {
+    one: 'Το σχήμα {schema} περιέχει {count} μη έγκυρα αντικείμενα: {names}',
+    other: 'Το σχήμα {schema} περιέχει {count} μη έγκυρα αντικείμενα: {names}',
+  },
   'quickfix.noCoverage':
     'Η αναφορά κάλυψης δεν δημιουργήθηκε. Εκτελέστε τα grants: GRANT EXECUTE ON SYS.DBMS_PROFILER TO <schema>;',
   'quickfix.recompile': 'Μεταγλώττιση UT3',
   'quickfix.recompiledOk': 'Το σχήμα {schema} μεταγλωττίστηκε — κανένα μη έγκυρο αντικείμενο.',
-  'quickfix.stillInvalid': 'Υπάρχουν ακόμη {count} μη έγκυρα αντικείμενα στο {schema}: {names}',
+  'quickfix.stillInvalid': {
+    one: 'Υπάρχουν ακόμη {count} μη έγκυρα αντικείμενα στο {schema}: {names}',
+    other: 'Υπάρχουν ακόμη {count} μη έγκυρα αντικείμενα στο {schema}: {names}',
+  },
   'quickfix.recompileFail':
     'Αποτυχία μεταγλώττισης UT3: {error}. Απαιτεί ALTER ANY PROCEDURE ή εκτέλεση ως κάτοχος του σχήματος.',
   'quickfix.noConnection': 'Η σύνδεση Oracle δεν έχει ρυθμιστεί.',
@@ -158,7 +183,10 @@ export const el: Record<string, string> = {
   'script.header.untitled': 'script από τον editor',
   'script.stmtOk': '[{index}] ok {ms}ms — {summary}',
   'script.stmtErr': '[{index}] σφάλμα {ms}ms — {summary}',
-  'script.rows': ' ({count} rows affected)',
+  'script.rows': {
+    one: ' ({count} rows affected)',
+    other: ' ({count} rows affected)',
+  },
   'script.dbms': '[dbms] {line}',
   'script.done': 'Ολοκληρώθηκε: {ok} ok, {failed} απέτυχαν ({executed} statements).',
   'script.noStatements': 'Δεν βρέθηκαν SQL statements για εκτέλεση.',
@@ -176,7 +204,6 @@ export const el: Record<string, string> = {
   'ext.profile.new.descPrompt': 'Description (optional — Enter to skip)',
   'ext.profile.new.descPlaceholder': 'Local development database',
   'ext.profile.new.charsetDefault': 'default',
-
   'results.failedFallback': 'Αποτυχημένο',
   'results.errorFallback': 'Σφάλμα',
   'runner.coverEmptyDir': '(κενό)',
@@ -192,7 +219,6 @@ export const el: Record<string, string> = {
   'ext.reporters.listEmpty': 'δεν βρέθηκαν reporters',
   'quickfix.reconfigureConn': 'Επαναρύθμιση σύνδεσης',
   'quickfix.copyGrants': 'Αντιγραφή grants στο πρόχειρο',
-
   'debug.noConnection':
     'Η oracledb δεν είναι διαθέσιμη ή η σύνδεση δεν έχει ρυθμιστεί. Επανεγκαταστήστε τις εξαρτήσεις με "npm install".',
   'debug.controlFail': 'Αποτυχία ανοίγματος της συνεδρίας ελέγχου DBMS_DEBUG.',
@@ -201,7 +227,10 @@ export const el: Record<string, string> = {
   'debug.pauseUnsupported': 'Το Pause δεν υποστηρίζεται από το DBMS_DEBUG.',
   'debug.commandUnsupported': 'Μη υποστηριζόμενη εντολή: {cmd}',
   'debug.sessionAttached': 'Η συνεδρία {id} προσαρτήθηκε.',
-  'debug.breakpointsApplied': 'Εφαρμόστηκαν {count} σημεία διακοπής· η συνεδρία είναι έτοιμη.',
+  'debug.breakpointsApplied': {
+    one: 'Εφαρμόστηκαν {count} σημεία διακοπής· η συνεδρία είναι έτοιμη.',
+    other: 'Εφαρμόστηκαν {count} σημεία διακοπής· η συνεδρία είναι έτοιμη.',
+  },
   'debug.stoppedAtEntry':
     'Σταμάτησε στο entry — χρησιμοποιήστε το Continue για να φτάσετε στο σημείο διακοπής.',
   'debug.sessionTimeout': 'Το χρονικό όριο της συνεδρίας αποσφαλμάτωσης έληξε — τερματισμός.',

@@ -57,13 +57,15 @@ function applyLocale({ root = ROOT, locale, base, messages }) {
   const header =
     `// Catálogo i18n \`${locale}\`. PURO (sem 'vscode').\n` +
     '// Gerado por scripts/i18n-apply.cjs; paridade em i18n.test.ts.\n';
-  const importBase = baseMeta ? `import { ${baseMeta.symbol} } from './${baseMeta.code}';\n\n` : '';
+  const imports = baseMeta
+    ? `import { ${baseMeta.symbol} } from './${baseMeta.code}';\nimport type { Message } from './types';\n\n`
+    : "import type { Message } from './types';\n\n";
   const spread = baseMeta ? `  ...${baseMeta.symbol},\n` : '';
   const body =
-    `export const ${meta.symbol}: Record<string, string> = {\n` +
+    `export const ${meta.symbol}: Record<string, Message> = {\n` +
     `${spread}${serializeMessages(messages)}\n};\n`;
   const file = path.join(dir, meta.file);
-  fs.writeFileSync(file, header + importBase + body);
+  fs.writeFileSync(file, header + imports + body);
   return file;
 }
 

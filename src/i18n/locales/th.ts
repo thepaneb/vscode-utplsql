@@ -1,6 +1,8 @@
 // Catálogo i18n `th`. PURO (sem 'vscode').
-// Extraído de src/i18nLocales.ts no split da PRD-115; paridade em i18n.test.ts.
-export const th: Record<string, string> = {
+// Gerado por scripts/i18n-apply.cjs; paridade em i18n.test.ts.
+import type { Message } from './types';
+
+export const th: Record<string, Message> = {
   'ext.export.reporterPlaceholder': 'เลือก reporter ของฐานข้อมูลเพื่อส่งออก',
   'ext.export.toOutput': 'แสดงใน Output',
   'ext.export.toFile': 'บันทึกเป็นไฟล์…',
@@ -35,7 +37,9 @@ export const th: Record<string, string> = {
   'ext.tag.noMatch': 'ไม่มีเทสต์ที่ตรงกับแท็กที่เลือก',
   'ext.grants.copied': 'คัดลอก grant ความครอบคลุมไปยังคลิปบอร์ดแล้ว',
   'ext.validate.ok': 'การตั้งค่า utPLSQL เรียบร้อย — ไม่พบปัญหา',
-  'ext.validate.problems': 'พบ {count} ปัญหาการตั้งค่า ดูแผงปัญหา',
+  'ext.validate.problems': {
+    other: 'พบ {count} ปัญหาการตั้งค่า ดูแผงปัญหา',
+  },
   'ext.debug.disabled': 'ปิดการดีบัก PL/SQL แล้ว (utplsql.debugger.enabled)',
   'ext.debug.openPks': 'เปิดไฟล์ .pks/.pkb เพื่อดีบัก',
   'ext.debug.pickTest': 'เลือกการทดสอบที่จะดีบัก',
@@ -43,7 +47,6 @@ export const th: Record<string, string> = {
   'ext.rebuildCache.ok': 'สร้างแคชคำอธิบายประกอบใหม่แล้ว',
   'ext.compileForDebug.failed': 'คอมไพล์สำหรับดีบากล้มเหลว: {error}',
   'ext.compileForDebug.none': 'ไม่พบออบเจ็กต์ PL/SQL ที่จะคอมไพล์สำหรับดีบักในส่วนที่เลือกนี้',
-
   'ext.profile.none': 'ไม่มีโปรไฟล์การเชื่อมต่อที่บันทึกไว้ ใช้ "utPLSQL: โปรไฟล์การเชื่อมต่อใหม่..."',
   'ext.profile.active': 'โปรไฟล์ที่ใช้งาน: {name}',
   'ext.profile.new.title': 'utPLSQL — โปรไฟล์ใหม่',
@@ -54,7 +57,9 @@ export const th: Record<string, string> = {
   'ext.profile.new.sourcePlaceholder': 'install',
   'ext.profile.new.created': 'สร้างและเปิดใช้งานโปรไฟล์ "{name}" แล้ว',
   'ext.sqlDev.import.none': 'ไม่พบการเชื่อมต่อ SQL Developer (connections.xml)',
-  'ext.sqlDev.import.ok': 'นำเข้าการเชื่อมต่อ {count} รายการจาก SQL Developer',
+  'ext.sqlDev.import.ok': {
+    other: 'นำเข้าการเชื่อมต่อ {count} รายการจาก SQL Developer',
+  },
   'ext.noSuiteInFile': 'ไม่พบชุดเทสต์ utPLSQL ในไฟล์นี้',
   'ext.noSuiteInFolder': 'ไม่พบชุดเทสต์ utPLSQL ในโฟลเดอร์นี้',
   'ext.openFolder': 'เปิดโฟลเดอร์/โปรเจกต์เพื่อรันเทสต์ utPLSQL',
@@ -93,10 +98,18 @@ export const th: Record<string, string> = {
   'status.running': 'กำลังรัน {current}/{total} ชุดเทสต์',
   'status.runningDetail': 'กำลังรัน {current} จาก {total} ชุดเทสต์...',
   'status.profileTooltip': 'โปรไฟล์: {name} คลิกเพื่อเปลี่ยน',
-  'status.passed': 'ผ่าน {count}',
-  'status.failed': 'ล้มเหลว {count}',
-  'status.errored': 'ข้อผิดพลาด {count}',
-  'status.skipped': 'ข้าม {count}',
+  'status.passed': {
+    other: 'ผ่าน {count}',
+  },
+  'status.failed': {
+    other: 'ล้มเหลว {count}',
+  },
+  'status.errored': {
+    other: 'ข้อผิดพลาด {count}',
+  },
+  'status.skipped': {
+    other: 'ข้าม {count}',
+  },
   'status.coverage.on': 'ความครอบคลุม: เปิด',
   'status.coverage.off': 'ความครอบคลุม: ปิด',
   'status.coverage.onTooltip': 'ความครอบคลุมเปิดตลอด (เซสชัน) คลิกเพื่อปิด',
@@ -104,12 +117,16 @@ export const th: Record<string, string> = {
   'quickfix.oldVersion': 'เวอร์ชัน utPLSQL ในฐานข้อมูลเก่า ({version}); ขั้นต่ำ 3.1.0',
   'quickfix.badConn': 'ไม่สามารถเชื่อมต่อฐานข้อมูลได้ ตรวจสอบการเชื่อมต่อ/โปรไฟล์',
   'quickfix.oldVersionUpgrade': 'วิธีอัปเกรด utPLSQL',
-  'quickfix.invalidObjects': 'สคีมา {schema} มีวัตถุไม่ถูกต้อง {count} รายการ: {names}',
+  'quickfix.invalidObjects': {
+    other: 'สคีมา {schema} มีวัตถุไม่ถูกต้อง {count} รายการ: {names}',
+  },
   'quickfix.noCoverage':
     'ไม่ได้สร้างรายงานความครอบคลุม รัน grant: GRANT EXECUTE ON SYS.DBMS_PROFILER TO <schema>;',
   'quickfix.recompile': 'คอมไพล์ UT3 ใหม่',
   'quickfix.recompiledOk': 'สคีมา {schema} คอมไพล์ใหม่แล้ว — ไม่มีวัตถุไม่ถูกต้อง',
-  'quickfix.stillInvalid': 'ยังมีวัตถุไม่ถูกต้อง {count} รายการใน {schema}: {names}',
+  'quickfix.stillInvalid': {
+    other: 'ยังมีวัตถุไม่ถูกต้อง {count} รายการใน {schema}: {names}',
+  },
   'quickfix.recompileFail':
     'คอมไพล์ UT3 ใหม่ล้มเหลว: {error} ต้องใช้ ALTER ANY PROCEDURE หรือรันในฐานะเจ้าของสคีมา',
   'quickfix.noConnection': 'ยังไม่ได้ตั้งค่าการเชื่อมต่อ Oracle',
@@ -144,7 +161,9 @@ export const th: Record<string, string> = {
   'script.header.untitled': 'สคริปต์จากเอดิเตอร์',
   'script.stmtOk': '[{index}] ok {ms}ms — {summary}',
   'script.stmtErr': '[{index}] ข้อผิดพลาด {ms}ms — {summary}',
-  'script.rows': ' ({count} rows affected)',
+  'script.rows': {
+    other: ' ({count} rows affected)',
+  },
   'script.dbms': '[dbms] {line}',
   'script.done': 'เสร็จสิ้น: {ok} ok, {failed} ล้มเหลว ({executed} statements)',
   'script.noStatements': 'ไม่พบคำสั่ง SQL สำหรับเรียกใช้',
@@ -161,7 +180,6 @@ export const th: Record<string, string> = {
   'ext.profile.new.descPrompt': 'Description (optional — Enter to skip)',
   'ext.profile.new.descPlaceholder': 'Local development database',
   'ext.profile.new.charsetDefault': 'default',
-
   'results.failedFallback': 'ไม่ผ่าน',
   'results.errorFallback': 'ข้อผิดพลาด',
   'runner.coverEmptyDir': '(ว่าง)',
@@ -177,7 +195,6 @@ export const th: Record<string, string> = {
   'ext.reporters.listEmpty': 'ไม่พบ reporter',
   'quickfix.reconfigureConn': 'กำหนดค่าการเชื่อมต่อใหม่',
   'quickfix.copyGrants': 'คัดลอก grants ไปยังคลิปบอร์ด',
-
   'debug.noConnection':
     'oracledb ไม่พร้อมใช้งานหรือยังไม่ได้กำหนดค่าการเชื่อมต่อ ติดตั้งการพึ่งพาใหม่ด้วย "npm install"',
   'debug.controlFail': 'ไม่สามารถเปิดเซสชันการควบคุม DBMS_DEBUG ได้',
@@ -186,7 +203,9 @@ export const th: Record<string, string> = {
   'debug.pauseUnsupported': 'DBMS_DEBUG ไม่รองรับ Pause',
   'debug.commandUnsupported': 'คำสั่งที่ไม่รองรับ: {cmd}',
   'debug.sessionAttached': 'แนบเซสชัน {id} แล้ว',
-  'debug.breakpointsApplied': 'ใช้เบรกพอยต์แล้ว {count} จุด; เซสชันพร้อม',
+  'debug.breakpointsApplied': {
+    other: 'ใช้เบรกพอยต์แล้ว {count} จุด; เซสชันพร้อม',
+  },
   'debug.stoppedAtEntry': 'หยุดที่ entry — ใช้ Continue เพื่อไปยังเบรกพอยต์',
   'debug.sessionTimeout': 'เซสชันดีบักหมดเวลา — กำลังสิ้นสุด',
   'debug.runTestFailed': 'เรียกใช้เทสต์ไม่สำเร็จ: {error}',

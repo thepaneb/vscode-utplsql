@@ -22,6 +22,7 @@ import { ru } from './ru';
 import { sr } from './sr';
 import { th } from './th';
 import { tr } from './tr';
+import type { Catalog } from './types';
 import { uk } from './uk';
 import { vi } from './vi';
 import { zhCn } from './zh-cn';
@@ -55,8 +56,9 @@ export const LOCALE_CODES = [
 ] as const;
 
 export type ExtensionLocale = (typeof LOCALE_CODES)[number];
+export type { Catalog, Message, PluralForms } from './types';
 
-export const catalogs: Record<ExtensionLocale, Record<string, string>> = {
+export const catalogs: Record<ExtensionLocale, Catalog> = {
   'pt-br': ptBr,
   en: en,
   'en-gb': enGb,

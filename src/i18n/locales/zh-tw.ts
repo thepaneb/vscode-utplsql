@@ -1,6 +1,8 @@
 // Catálogo i18n `zh-tw`. PURO (sem 'vscode').
-// Extraído de src/i18nLocales.ts no split da PRD-115; paridade em i18n.test.ts.
-export const zhTw: Record<string, string> = {
+// Gerado por scripts/i18n-apply.cjs; paridade em i18n.test.ts.
+import type { Message } from './types';
+
+export const zhTw: Record<string, Message> = {
   'ext.export.reporterPlaceholder': '選擇要匯出的資料庫 reporter',
   'ext.export.toOutput': '在 Output 中顯示',
   'ext.export.toFile': '儲存至檔案…',
@@ -20,7 +22,6 @@ export const zhTw: Record<string, string> = {
   'common.failed': '失敗',
   'common.copy': '複製',
   'common.oracledbMissing': 'oracledb 無法使用。請使用「npm install」重新安裝相依性。',
-
   'ext.reporters.listFailed': '列出 reporters 失敗：{error}',
   'ext.reporters.placeholder': '為本次執行選擇一個額外 reporter',
   'ext.reporters.willUse': 'Reporter「{name}」將於下次執行時使用。',
@@ -36,7 +37,9 @@ export const zhTw: Record<string, string> = {
   'ext.tag.noMatch': '沒有測試符合所選標籤。',
   'ext.grants.copied': '已將涵蓋範圍授權複製到剪貼簿。',
   'ext.validate.ok': 'utPLSQL 設定正常 — 未發現問題。',
-  'ext.validate.problems': '發現 {count} 個設定問題。請查看問題面板。',
+  'ext.validate.problems': {
+    other: '發現 {count} 個設定問題。請查看問題面板。',
+  },
   'ext.debug.disabled': '已停用 PL/SQL 偵錯（utplsql.debugger.enabled）。',
   'ext.debug.openPks': '請開啟 .pks/.pkb 檔案進行偵錯。',
   'ext.debug.pickTest': '選擇要偵錯的測試',
@@ -44,7 +47,6 @@ export const zhTw: Record<string, string> = {
   'ext.rebuildCache.ok': '註解快取已重建。',
   'ext.compileForDebug.failed': '編譯以供偵錯失敗：{error}',
   'ext.compileForDebug.none': '此選取範圍中沒有可編譯以供偵錯的 PL/SQL 物件。',
-
   'ext.profile.none': '沒有已儲存的連線設定檔。請使用「utPLSQL: 新增連線設定檔...」。',
   'ext.profile.active': '使用中的設定檔：{name}',
   'ext.profile.new.title': 'utPLSQL — 新增設定檔',
@@ -55,7 +57,9 @@ export const zhTw: Record<string, string> = {
   'ext.profile.new.sourcePlaceholder': 'install',
   'ext.profile.new.created': '設定檔「{name}」已建立並啟用。',
   'ext.sqlDev.import.none': '找不到 SQL Developer 連線（connections.xml）。',
-  'ext.sqlDev.import.ok': '已從 SQL Developer 匯入 {count} 個連線。',
+  'ext.sqlDev.import.ok': {
+    other: '已從 SQL Developer 匯入 {count} 個連線。',
+  },
   'ext.noSuiteInFile': '此檔案中找不到 utPLSQL 套件。',
   'ext.noSuiteInFolder': '此資料夾中找不到 utPLSQL 套件。',
   'ext.openFolder': '請開啟資料夾/專案以執行 utPLSQL 測試。',
@@ -63,7 +67,6 @@ export const zhTw: Record<string, string> = {
   'ext.conn.prompt': '請輸入連線（使用者/密碼@//主機:連接埠/服務）。僅保留在此工作階段。',
   'ext.conn.placeholder': 'DEV_FULANO/密碼@//localhost:1521/XEPDB1',
   'ext.runCancel': '執行已取消。',
-
   'runner.oracleError': 'Oracle 執行器：{error}',
   'runner.oracleErrorHeader': '[錯誤] Oracle 執行器：{error}',
   'runner.running': '正在執行 utPLSQL{coverage}...',
@@ -86,44 +89,51 @@ export const zhTw: Record<string, string> = {
   'runner.oracleInfo': '[資訊] Oracle 執行器 {ms}ms | {chars} 個 JUnit 字元',
   'runner.randomOrderSeed': '[info] 已啟用隨機順序（seed：{seed}）。',
   'runner.stderr': '[stderr]',
-
   'oracleRunner.coverNotGenerated':
     '[涵蓋範圍] 未產生報告。請檢查 GRANT EXECUTE ON SYS.DBMS_PROFILER。',
   'oracleRunner.badConnFormat': '連線格式無效："{conn}"。請使用 使用者/密碼@//主機:連接埠/服務。',
   'discovery.sourceTruncated': '資料庫探索中 {schema}.{name} 的原始碼在 {max} 行處被截斷。',
   'results.noMapped': '[涵蓋範圍] 未對應任何檔案。請將「utplsql.sourcePath」調整為原始碼資料夾。',
-
   'status.idle': '尚未執行測試。按一下以開啟 Test Explorer。',
   'status.running': '正在執行 {current}/{total} 個套件',
   'status.runningDetail': '正在執行 {current}/{total} 個測試套件...',
   'status.profileTooltip': '設定檔：{name}。按一下以切換。',
-  'status.passed': '{count} 通過',
-  'status.failed': '{count} 失敗',
-  'status.errored': '{count} 錯誤',
-  'status.skipped': '{count} 略過',
+  'status.passed': {
+    other: '{count} 通過',
+  },
+  'status.failed': {
+    other: '{count} 失敗',
+  },
+  'status.errored': {
+    other: '{count} 錯誤',
+  },
+  'status.skipped': {
+    other: '{count} 略過',
+  },
   'status.coverage.on': '覆蓋率：開啟',
   'status.coverage.off': '覆蓋率：關閉',
   'status.coverage.onTooltip': '覆蓋率始終開啟（工作階段）。點擊關閉。',
   'status.coverage.offTooltip': '覆蓋率已關閉。點擊以在下次執行時啟用。',
-
   'quickfix.oldVersion': '資料庫中的 utPLSQL 版本過舊（{version}）；最低要求 3.1.0。',
   'quickfix.badConn': '無法連線到資料庫。請檢查連線/設定。',
   'quickfix.oldVersionUpgrade': '如何升級 utPLSQL',
-  'quickfix.invalidObjects': '結構描述 {schema} 包含 {count} 個無效物件：{names}',
+  'quickfix.invalidObjects': {
+    other: '結構描述 {schema} 包含 {count} 個無效物件：{names}',
+  },
   'quickfix.noCoverage':
     '未產生涵蓋範圍報告。請執行授權：GRANT EXECUTE ON SYS.DBMS_PROFILER TO <schema>;',
   'quickfix.recompile': '重新編譯 UT3',
   'quickfix.recompiledOk': '結構描述 {schema} 已重新編譯 — 沒有無效物件。',
-  'quickfix.stillInvalid': '{schema} 中仍有 {count} 個無效物件：{names}',
+  'quickfix.stillInvalid': {
+    other: '{schema} 中仍有 {count} 個無效物件：{names}',
+  },
   'quickfix.recompileFail':
     '重新編譯 UT3 失敗：{error}。需要 ALTER ANY PROCEDURE 或以結構描述擁有者身分執行。',
   'quickfix.noConnection': '未設定 Oracle 連線。',
   'quickfix.oracledbMissing': 'oracledb 無法使用。請使用「npm install」重新安裝相依性。',
-
   'viewCoverage.none': '[涵蓋範圍] 未對應任何檔案。',
   'viewCoverage.vsqlDenied':
     '[涵蓋範圍] 無法透過 V$SQL 追蹤檢視。請授予存取權限：GRANT SELECT ON SYS.V_$SQL TO <schema>。',
-
   'nls.command.showTestExplorer': '顯示 Test Explorer',
   'nls.command.runLens': '執行測試（CodeLens）',
   'nls.command.refresh': '重新整理測試',
@@ -151,7 +161,9 @@ export const zhTw: Record<string, string> = {
   'script.header.untitled': '編輯器指令碼',
   'script.stmtOk': '[{index}] ok {ms}ms — {summary}',
   'script.stmtErr': '[{index}] 錯誤 {ms}ms — {summary}',
-  'script.rows': ' ({count} rows affected)',
+  'script.rows': {
+    other: ' ({count} rows affected)',
+  },
   'script.dbms': '[dbms] {line}',
   'script.done': '完成：{ok} ok，{failed} 失敗（{executed} statements）。',
   'script.noStatements': '找不到可執行的 SQL 陳述式。',
@@ -168,7 +180,6 @@ export const zhTw: Record<string, string> = {
   'ext.profile.new.descPrompt': 'Description (optional — Enter to skip)',
   'ext.profile.new.descPlaceholder': 'Local development database',
   'ext.profile.new.charsetDefault': 'default',
-
   'results.failedFallback': '失敗',
   'results.errorFallback': '錯誤',
   'runner.coverEmptyDir': '（空白）',
@@ -184,7 +195,6 @@ export const zhTw: Record<string, string> = {
   'ext.reporters.listEmpty': '找不到 reporter',
   'quickfix.reconfigureConn': '重新設定連線',
   'quickfix.copyGrants': '將 grants 複製到剪貼簿',
-
   'debug.noConnection': 'oracledb 無法使用或連線未設定。請使用「npm install」重新安裝相依性。',
   'debug.controlFail': '無法開啟 DBMS_DEBUG 控制工作階段。',
   'debug.attachFail':
@@ -192,7 +202,9 @@ export const zhTw: Record<string, string> = {
   'debug.pauseUnsupported': 'DBMS_DEBUG 不支援暫停。',
   'debug.commandUnsupported': '不支援的指令：{cmd}',
   'debug.sessionAttached': '工作階段 {id} 已附加。',
-  'debug.breakpointsApplied': '已套用 {count} 個中斷點；工作階段就緒。',
+  'debug.breakpointsApplied': {
+    other: '已套用 {count} 個中斷點；工作階段就緒。',
+  },
   'debug.stoppedAtEntry': '已在入口暫停 — 使用「繼續」到達中斷點。',
   'debug.sessionTimeout': '偵錯工作階段逾時 — 正在終止。',
   'debug.runTestFailed': '執行測試失敗：{error}',

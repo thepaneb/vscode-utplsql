@@ -31,7 +31,7 @@ function loadCompiled(root = ROOT) {
 function readEnGbOverrides(root = ROOT) {
   const file = path.join(root, 'src', 'i18n', 'locales', 'en-gb.ts');
   const text = fs.readFileSync(file, 'utf8');
-  const match = text.match(/export const enGb: Record<string, string> = \{([\s\S]*?)\n\};/);
+  const match = text.match(/export const enGb:\s*Record<[^>]+>\s*=\s*\{([\s\S]*?)\n\};/);
   if (!match) throw new Error('não foi possível ler os overrides de en-gb.ts');
   const body = match[1].replace(/^\s*\.\.\.en,?\s*$/m, '');
   return new Function(`return {${body}}`)();

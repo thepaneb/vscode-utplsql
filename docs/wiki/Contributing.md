@@ -288,5 +288,6 @@ branch (files in `docs/wiki/`).
 - Vocabulary is fixed by [Glossário de localização](Glossário de localização); owners/reviewers and
   locale status live in [Registro de locales](Registro de locales).
 - `npm run i18n:check` runs in CI (after `test:coverage`) and validates
-  catalogues × `LOCALE_CODES` × `package.nls.*` × glossary. An external TMS is
-  optional; the JSON format is TMS-friendly.
+  catalogues × `LOCALE_CODES` × `package.nls.*` × glossary, including the CLDR
+  plural forms of every locale. An external TMS is optional; the JSON format is
+  TMS-friendly.

@@ -128,11 +128,14 @@ Nenhuma nova.
 - Aplicar **depois da PRD-115** (um arquivo por locale) para evitar conflito nos
   24 catálogos.
 - `BR-I18N-001` passa a mencionar a seleção plural no `t()`.
+- As formas são geradas como **draft** a partir da tradução existente; a revisão
+  in-country fica registrada no `Registro de locales` e não bloqueia a release.
 
 ## 12. Impacto no cérebro
 
-Esperado criar `BR-I18N-004` (plurais via CLDR; formas exigidas por locale) com
-`prds: ["PRD-90"]`, e a ADR de localização (`ADR-014`), atualizando o `ADR-007`.
+Criada a regra `BR-I18N-004` (plurais via CLDR; formas exigidas por locale) com
+`prds: ["PRD-90"]` e a `ADR-014` (catálogo próprio com plurais); o `ADR-007` foi
+atualizado. As formas iniciais são **draft** até a revisão in-country.
 
 ## 13. Impacto nas docs
 

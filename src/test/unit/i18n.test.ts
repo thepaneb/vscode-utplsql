@@ -35,9 +35,10 @@ import {
   zhCn,
   zhTw,
 } from '../../i18n';
-import { catalogs, LOCALE_CODES } from '../../i18n/locales';
+import { type Catalog, catalogs, LOCALE_CODES, type PluralForms } from '../../i18n/locales';
 
-const ALL_CATALOGS: [string, Record<string, string>][] = [
+const ALL_CATALOGS: [string, Catalog][] = [
+  ['pt-br', ptBr],
   ['en', en],
   ['en-gb', enGb],
   ['es', es],
@@ -189,10 +190,10 @@ test('t: interpolacao parametrizada', () => {
 test('t: chave ausente em en cai para pt-br', () => {
   const original = en['ext.noConnection'];
   try {
-    delete (en as Record<string, string>)['ext.noConnection'];
+    delete (en as Catalog)['ext.noConnection'];
     assert.strictEqual(t('en', 'ext.noConnection'), 'Conexão Oracle não informada.');
   } finally {
-    (en as Record<string, string>)['ext.noConnection'] = original;
+    (en as Catalog)['ext.noConnection'] = original;
   }
 });
 
@@ -220,6 +221,87 @@ test('paridade: catálogos não têm chaves extras nem valores vazios', () => {
     const empty = Object.keys(cat).filter((k) => !String(cat[k]).trim());
     assert.deepStrictEqual(empty, [], `valores vazios em ${name}`);
   }
+});
+
+const PLURAL_KEYS = [
+  'ext.validate.problems',
+  'ext.sqlDev.import.ok',
+  'debug.breakpointsApplied',
+  'quickfix.invalidObjects',
+  'quickfix.stillInvalid',
+  'script.rows',
+  'status.passed',
+  'status.failed',
+  'status.errored',
+  'status.skipped',
+];
+
+test('plural: chaves têm as formas exigidas pelo CLDR de cada locale', () => {
+  for (const [name, cat] of ALL_CATALOGS) {
+    const required = new Intl.PluralRules(name).resolvedOptions().pluralCategories;
+    for (const key of PLURAL_KEYS) {
+      const value = cat[key];
+      assert.ok(value && typeof value === 'object', `${name}.${key} não é plural`);
+      const forms = value as PluralForms;
+      for (const category of required) {
+        assert.ok(forms[category], `${name}.${key} sem forma ${category}`);
+      }
+      assert.ok(forms.other, `${name}.${key} sem forma other`);
+    }
+  }
+});
+
+test('plural: t() seleciona a forma por Intl.PluralRules (ru)', () => {
+  const original = ru['status.failed'];
+  ru['status.failed'] = {
+    one: 'ONE {count}',
+    few: 'FEW {count}',
+    many: 'MANY {count}',
+    other: 'OTHER {count}',
+  };
+  try {
+    assert.strictEqual(t('ru', 'status.failed', { count: 1 }), 'ONE 1');
+    assert.strictEqual(t('ru', 'status.failed', { count: 3 }), 'FEW 3');
+    assert.strictEqual(t('ru', 'status.failed', { count: 5 }), 'MANY 5');
+    assert.strictEqual(t('ru', 'status.failed', { count: 21 }), 'ONE 21');
+  } finally {
+    ru['status.failed'] = original;
+  }
+});
+
+test('plural: forma ausente cai para other', () => {
+  const original = ru['status.failed'];
+  ru['status.failed'] = { other: 'OTHER {count}' };
+  try {
+    assert.strictEqual(t('ru', 'status.failed', { count: 3 }), 'OTHER 3');
+  } finally {
+    ru['status.failed'] = original;
+  }
+});
+
+test('plural: fallback para pt-BR quando o locale não tem a forma', () => {
+  const original = en['status.failed'];
+  en['status.failed'] = {};
+  try {
+    assert.match(t('en', 'status.failed', { count: 1 }), /falha/);
+  } finally {
+    en['status.failed'] = original;
+  }
+  const originalString = en['ext.noConnection'];
+  en['ext.noConnection'] = {};
+  try {
+    assert.strictEqual(t('en', 'ext.noConnection', { count: 1 }), 'Conexão Oracle não informada.');
+  } finally {
+    en['ext.noConnection'] = originalString;
+  }
+  assert.ok(t('en', 'status.failed').length > 0);
+});
+
+test('plural: inglês usa one/other (draft) no catálogo', () => {
+  const singular = t('en', 'ext.validate.problems', { count: 1 });
+  const plural = t('en', 'ext.validate.problems', { count: 2 });
+  assert.ok(!singular.includes('(s)'));
+  assert.ok(plural.includes('(s)'));
 });
 
 test('package.nls.*: alinhados com package.nls.json (sem faltas/extras/vazios)', () => {

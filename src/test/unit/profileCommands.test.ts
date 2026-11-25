@@ -117,9 +117,7 @@ test('importSqlDevConnections: importa e salva o perfil mesclado', async () => {
   await register();
   fakeHome = sqlDevHome;
   await commands.__getRegisteredCommand('utplsql.importSqlDevConnections')?.();
-  assert.deepStrictEqual(__getInformationMessages(), [
-    '1 conexão(ões) importada(s) do SQL Developer.',
-  ]);
+  assert.deepStrictEqual(__getInformationMessages(), ['1 conexão importada do SQL Developer.']);
   const saved = profilesSetting();
   assert.strictEqual(saved.length, 1);
   assert.strictEqual(saved[0].name, 'DEV');

@@ -43,7 +43,7 @@ e apenas uma cópia sobrevivia (dedupe silencioso).
 - 🗺️ [[MOC - Regras]]
 - 📄 PRDs: [[prd-148-execution-state-reliability|PRD-148]]
 - 🎯 Requisitos: [[prd-148-execution-state-reliability|PRD-148 RF7]]
-- 🧩 Código: [[COD - testTree.ts]] · [[COD - types.ts]] · [[COD - state.ts]]
+- 🧩 Código: [[COD - testTree.ts]] · [[COD - src-types.ts]] · [[COD - state.ts]]
 - 🧪 Testes: [[TST - testTree.test.ts]] · [[TST - state.test.ts]]
 - ↩️ Referenciada por: [[Architecture]] · [[prd-148-execution-state-reliability|PRD-148]]
 <!-- brain:auto:end -->
