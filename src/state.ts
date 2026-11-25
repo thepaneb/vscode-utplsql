@@ -1,5 +1,6 @@
 import type * as vscode from 'vscode';
 import type { SuiteFile } from './discovery';
+import { type ExtensionLocale, formatDuration } from './i18n';
 import type { TestStatus } from './junit';
 import { CoverageStore } from './stateStore/coverageStore';
 import type { TestLineResult } from './stateStore/persisted';
@@ -20,12 +21,7 @@ export {
 } from './stateStore/persisted';
 export type { LastRunState } from './stateStore/runSnapshot';
 
-/** `(850ms)` / `(1.2s)` para o label do teste (PRD-56 RF4). */
-export function formatDuration(durationMs: number): string {
-  return durationMs < 1000 ? `${Math.round(durationMs)}ms` : `${(durationMs / 1000).toFixed(1)}s`;
-}
-
-const DURATION_SUFFIX_RE = / \(\d+(?:\.\d+)?(?:ms|s)\)$/;
+const DURATION_SUFFIX_RE = / \(\d+(?:[.,]\d+)?\s*(?:ms|s)\)$/;
 
 /**
  * Aplica o sufixo de duração ao label, **substituindo** um sufixo anterior
@@ -35,12 +31,13 @@ export function withDurationSuffix(
   base: string,
   durationMs: number | undefined,
   show: boolean,
+  locale: ExtensionLocale,
 ): string {
   const clean = base.replace(DURATION_SUFFIX_RE, '');
   if (!show || durationMs === undefined || !Number.isFinite(durationMs) || durationMs < 0) {
     return clean;
   }
-  return `${clean} (${formatDuration(durationMs)})`;
+  return `${clean} (${formatDuration(locale, durationMs)})`;
 }
 
 export class TestStateManager {

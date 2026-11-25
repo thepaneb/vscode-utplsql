@@ -2,7 +2,7 @@ import * as vscode from 'vscode';
 import { getExtensionLocale, readConfig } from './config';
 import { activeProfileName } from './connectionProfiles';
 import { coverageToggleText } from './coverageDecision';
-import { t } from './i18n';
+import { formatDuration, formatNumber, t } from './i18n';
 
 export interface StatusBarFormat {
   icon: string;
@@ -20,8 +20,10 @@ export function formatResults(
   const locale = getExtensionLocale();
   const total = passed + failed + skipped + errored;
   const icon = failed > 0 || errored > 0 ? '$(testing-failed)' : '$(testing-passed)';
-  const duration = (durationMs / 1000).toFixed(1);
-  const text = `${icon} ${passed}/${total} ${duration}s`;
+  const duration = formatDuration(locale, durationMs);
+  const passedText = formatNumber(locale, passed, { useGrouping: false });
+  const totalText = formatNumber(locale, total, { useGrouping: false });
+  const text = `${icon} ${passedText}/${totalText} ${duration}`;
 
   const parts: string[] = [];
   if (passed > 0) parts.push(`$(check) ${t(locale, 'status.passed', { count: passed })}`);
@@ -29,7 +31,7 @@ export function formatResults(
   if (errored > 0) parts.push(`$(warning) ${t(locale, 'status.errored', { count: errored })}`);
   if (skipped > 0)
     parts.push(`$(debug-step-over) ${t(locale, 'status.skipped', { count: skipped })}`);
-  parts.push(`$(watch) ${duration}s`);
+  parts.push(`$(watch) ${duration}`);
 
   return { icon, text, tooltip: parts.join('\n') };
 }

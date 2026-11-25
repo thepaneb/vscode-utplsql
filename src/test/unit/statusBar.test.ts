@@ -8,7 +8,7 @@ test('formatResults: todos pass', () => {
   const fmt = formatResults(4, 0, 0, 0, 2500);
   assert.strictEqual(fmt.icon, '$(testing-passed)');
   assert.match(fmt.text, /4\/4/);
-  assert.match(fmt.text, /2\.5s/);
+  assert.match(fmt.text, /2,5 s/);
   assert.match(fmt.tooltip, /4 aprovados/);
 });
 
@@ -16,7 +16,7 @@ test('formatResults: com falhas', () => {
   const fmt = formatResults(3, 2, 0, 0, 5100);
   assert.strictEqual(fmt.icon, '$(testing-failed)');
   assert.match(fmt.text, /3\/5/);
-  assert.match(fmt.text, /5\.1s/);
+  assert.match(fmt.text, /5,1 s/);
   assert.match(fmt.tooltip, /3 aprovados/);
   assert.match(fmt.tooltip, /2 falhas/);
 });
@@ -38,14 +38,25 @@ test('formatResults: com skipped', () => {
 
 test('formatResults: tooltip com duracao', () => {
   const fmt = formatResults(2, 1, 3, 0, 4200);
-  assert.match(fmt.tooltip, /4\.2s/);
+  assert.match(fmt.tooltip, /4,2 s/);
 });
 
 test('formatResults: zero testes', () => {
   const fmt = formatResults(0, 0, 0, 0, 0);
   assert.strictEqual(fmt.icon, '$(testing-passed)');
   assert.match(fmt.text, /0\/0/);
-  assert.match(fmt.text, /0\.0s/);
+  assert.match(fmt.text, /0 ms/);
+});
+
+test('formatResults: locale en usa ponto e grouping só na prosa', () => {
+  __setConfigValue('language', 'en');
+  try {
+    const fmt = formatResults(1234, 0, 0, 0, 2500);
+    assert.match(fmt.text, /1234\/1234 2\.5 s/);
+    assert.match(fmt.tooltip, /1,234 passed/);
+  } finally {
+    __setConfigValue('language', 'auto');
+  }
 });
 
 test('UtplsqlStatusBar: showIdle seta texto e tooltip', () => {
