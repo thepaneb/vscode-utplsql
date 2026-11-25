@@ -2,14 +2,14 @@
 tipo: prd
 id: PRD-91
 aliases: [PRD-91]
-status: approved
+status: in-progress
 titulo: "Paridade de documentação e distribuição localizada"
 versao: "0.22.0"
 data: "2026-09-29"
 autor: "Gil Cleber Barboza"
 versao_titulo: "0.22.0 — Localização completa"
 verificado: 2026-11-25
-regras: []
+regras: ["BR-I18N-005"]
 docs: ["CHANGELOG", "wiki/Contributing.md"]
 tags: [prd]
 ---
@@ -136,9 +136,10 @@ Nenhuma.
 
 ## 11. Decisões (2026-11-25)
 
-- Paridade por **tokens normalizados** (ids `utplsql.*`, links de idioma,
-  âncoras de feature) e estrutura por seção; **não** comparar prosa traduzida
-  (falso positivo semântico).
+- Paridade por **multiset de bullets de feature (emoji)**, presença da tabela de
+  Comandos e conjunto completo de links de idioma; settings já são cobertas pelo
+  item 9 do `docs-fidelity`. **Não** comparar prosa traduzida (falso positivo
+  semântico).
 - O registro de locales é uma **nota manual** (`12-I18n/Registro de locales.md`),
   porque as `LOC-*` são geradas; donos/revisores são compartilhados com a PRD-93.
 - O número de variantes deixa de ser literal no `docs-check` e passa a derivar de
@@ -147,8 +148,9 @@ Nenhuma.
 
 ## 12. Impacto no cérebro
 
-Esperado criar `BR-I18N-005` (paridade estrutural das variantes de README) e o
-registro de locales (NFR/ENT a definir), com `prds: ["PRD-91"]`.
+Criada a regra `BR-I18N-005` (paridade estrutural das variantes + registro de
+locale) com `prds: ["PRD-91"]`; o registro está em
+`12-I18n/Registro de locales.md` e a política em `12-I18n/Política de locales.md`.
 
 ## 13. Impacto nas docs
 
@@ -160,7 +162,10 @@ registro de locales (NFR/ENT a definir), com `prds: ["PRD-91"]`.
 
 <!-- brain:auto:start:conexoes -->
 - 🗺️ [[MOC - PRDs]]
+- 📐 Regras: [[BR-I18N-005 - Variantes de README mantêm paridade estrutural e registro de locale|BR-I18N-005]]
 - 🔗 PRDs relacionados: [[prd-92-rtl-new-locales|PRD-92]] · [[prd-93-continuous-localization-pipeline|PRD-93]]
 - 🔗 Mesma versão (0.22.0): [[prd-88-locale-aware-formatting|PRD-88]] · [[prd-89-pseudo-localization-gate|PRD-89]] · [[prd-90-message-plurals-cldr|PRD-90]] · [[prd-92-rtl-new-locales|PRD-92]] · [[prd-93-continuous-localization-pipeline|PRD-93]] · [[prd-115-split-i18n-locales|PRD-115]]
+- 🎯 RF1 — Paridade estrutural das variantes → [[BR-I18N-005 - Variantes de README mantêm paridade estrutural e registro de locale|BR-I18N-005]]
+- 🎯 RF2 — Registro de locales → [[BR-I18N-005 - Variantes de README mantêm paridade estrutural e registro de locale|BR-I18N-005]]
 - 🚀 ⬅️ release anterior: [[prd-139-state-store-slicing-lru|PRD-139 (0.21.0)]] · ➡️ próxima release: [[prd-60-branch-coverage-investigation|PRD-60 (0.23.0)]]
 <!-- brain:auto:end -->

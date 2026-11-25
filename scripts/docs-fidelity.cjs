@@ -357,6 +357,72 @@ function checkFidelity(overrides = {}) {
     if (files.readme.includes(term)) problems.push(`README.md: termo obsoleto "${term}"`);
   }
 
+  // 9b. paridade estrutural das variantes (PRD-91): bullets de feature,
+  //     tabela de Comandos e conjunto de links de idioma.
+  const baseEmojis = featureEmojiCounts(files.readme);
+  const expectedLinks = new Set(['README.md', ...variants.map((v) => `README.${v.name}.md`)]);
+  const fmtEmojis = (entries) => entries.map(([emoji, n]) => `${emoji}×${n}`).join(' ');
+  for (const { name, text } of variants) {
+    const counts = featureEmojiCounts(text);
+    const missing = [...baseEmojis].filter(([emoji, n]) => (counts.get(emoji) ?? 0) < n);
+    const extra = [...counts].filter(([emoji, n]) => (baseEmojis.get(emoji) ?? 0) < n);
+    if (missing.length || extra.length) {
+      problems.push(
+        `README.${name}: bullets de feature divergentes (faltam: ${
+          fmtEmojis(missing) || '—'
+        }; sobram: ${fmtEmojis(extra) || '—'})`,
+      );
+    }
+    if (!/^\|\s*`utPLSQL:/m.test(text)) {
+      problems.push(`README.${name}: tabela de Comandos ausente`);
+    }
+    const links = new Set([...text.matchAll(/\]\((README[^)]*\.md)\)/g)].map((m) => m[1]));
+    const own = `README.${name}.md`;
+    const missingLinks = [...expectedLinks].filter((l) => l !== own && !links.has(l));
+    const extraLinks = [...links].filter((l) => !expectedLinks.has(l));
+    if (missingLinks.length) {
+      problems.push(`README.${name}: links de idioma ausentes: ${missingLinks.join(', ')}`);
+    }
+    if (extraLinks.length) {
+      problems.push(`README.${name}: links de idioma desconhecidos: ${extraLinks.join(', ')}`);
+    }
+  }
+
+  // 9c. registro de locales (PRD-91): uma entrada por locale ativo.
+  const registryText =
+    overrides.localeRegistry ?? read('docs/brain/12-I18n/Registro de locales.md');
+  if (!registryText) {
+    problems.push('registro de locales ausente (docs/brain/12-I18n/Registro de locales.md)');
+  } else {
+    const json = String(registryText).match(/```json\n([\s\S]*?)\n```/);
+    if (!json) {
+      problems.push('registro de locales sem bloco ```json');
+    } else {
+      let entries = [];
+      try {
+        entries = JSON.parse(json[1]);
+      } catch {
+        problems.push('registro de locales com JSON inválido');
+      }
+      if (!Array.isArray(entries)) {
+        problems.push('registro de locales: o JSON deve ser um array');
+      } else {
+        const expectedCodes = new Set(overrides.localeCodes ?? ['en', ...localeManifests()]);
+        const codes = new Set(entries.map((e) => e?.code).filter(Boolean));
+        const missing = [...expectedCodes].filter((c) => !codes.has(c));
+        if (missing.length) {
+          problems.push(`registro de locales sem entrada para: ${missing.join(', ')}`);
+        }
+        const incomplete = entries
+          .filter((e) => !e?.code || !e?.status || !e?.revisor || !e?.cobertura)
+          .map((e) => e?.code ?? '?');
+        if (incomplete.length) {
+          problems.push(`registro de locales com entradas incompletas: ${incomplete.join(', ')}`);
+        }
+      }
+    }
+  }
+
   // 10. Piso de VS Code e coerência do runtime Node:
   //     (a) @types/vscode deve ser exatamente o piso de engines.vscode;
   //     (b) engines.node, @types/node e o target do esbuild devem casar com o
@@ -453,6 +519,30 @@ function listReadmeVariants() {
     .filter((f) => /^README\.[a-zA-Z-]+\.md$/.test(f))
     .sort()
     .map((f) => ({ name: f.slice('README.'.length, -3), text: read(f) }));
+}
+
+/** Locales com manifesto `package.nls.<locale>.json` (o `en` é o base). */
+function localeManifests() {
+  return fs
+    .readdirSync(REPO)
+    .filter((f) => /^package\.nls\..+\.json$/.test(f))
+    .map((f) => f.slice('package.nls.'.length, -'.json'.length))
+    .sort();
+}
+
+/**
+ * Multiset das emojis que iniciam bullets de feature (área antes do primeiro
+ * `## `). Emojis são o único trecho estável entre as variantes traduzidas.
+ */
+function featureEmojiCounts(text) {
+  const area = String(text).split(/\r?\n##\s/)[0] ?? '';
+  const counts = new Map();
+  for (const line of area.split(/\r?\n/)) {
+    const m = line.match(/^- ([^\w\s*`[])/u);
+    if (!m) continue;
+    counts.set(m[1], (counts.get(m[1]) ?? 0) + 1);
+  }
+  return counts;
 }
 
 function listCompletedPrds() {
