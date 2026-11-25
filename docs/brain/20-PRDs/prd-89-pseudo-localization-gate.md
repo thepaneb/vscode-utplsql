@@ -2,7 +2,7 @@
 tipo: prd
 id: PRD-89
 aliases: [PRD-89]
-status: in-progress
+status: completed
 titulo: "Pseudo-localização e gate de strings não traduzidas"
 versao: "0.22.0"
 data: "2026-09-29"
@@ -147,6 +147,8 @@ Criada a regra `BR-I18N-003` (mensagem de UI sempre via `t()`; pseudo-loc e
 varredura cobrem) com `prds: ["PRD-89"]`; o checklist está em
 `12-I18n/Checklist de pseudo-localização.md`.
 
+RNFs sem regra: RNF1, RNF2 (cobertos pelos testes/gates de qualidade).
+
 ## 13. Impacto nas docs
 
 - `CHANGELOG` — bullet da pseudo-localização e do scanner (PRD-89).
@@ -158,7 +160,6 @@ varredura cobrem) com `prds: ["PRD-89"]`; o checklist está em
 <!-- brain:auto:start:conexoes -->
 - 🗺️ [[MOC - PRDs]]
 - 📐 Regras: [[BR-I18N-003 - Mensagens de UI passam por t e a varredura cobre literais|BR-I18N-003]]
-- 🔗 Mesma versão (0.22.0): [[prd-88-locale-aware-formatting|PRD-88]] · [[prd-90-message-plurals-cldr|PRD-90]] · [[prd-91-doc-parity-localized-distribution|PRD-91]] · [[prd-92-rtl-new-locales|PRD-92]] · [[prd-93-continuous-localization-pipeline|PRD-93]] · [[prd-115-split-i18n-locales|PRD-115]]
 - 🎯 RF1 — Pseudo-locale → [[BR-I18N-003 - Mensagens de UI passam por t e a varredura cobre literais|BR-I18N-003]]
 - 🎯 RF3 — Varredura anti-hardcode → [[BR-I18N-003 - Mensagens de UI passam por t e a varredura cobre literais|BR-I18N-003]]
 - 🚀 ⬅️ release anterior: [[prd-139-state-store-slicing-lru|PRD-139 (0.21.0)]] · ➡️ próxima release: [[prd-60-branch-coverage-investigation|PRD-60 (0.23.0)]]

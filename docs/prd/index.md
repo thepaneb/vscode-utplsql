@@ -163,6 +163,12 @@ notas `prd-*`. O índice navegável do vault é a [[MOC - PRDs]].
 | 85 | [Second brain canônico (Obsidian) com MCP e extração de conhecimento](completed/prd-85-brain-source-of-truth.md) | 0.13.0 | 2026-09-23 |
 | 86 | [Debugger honra stopOnException (break_exception)](completed/prd-86-debugger-stop-on-exception.md) | 0.13.0 | 2026-09-24 |
 | 87 | [Resultados e jump-to-failure em suítes com %suitepath](completed/prd-87-suitepath-results-jump.md) | 0.13.0 | 2026-09-25 |
+| 88 | [Formatação sensível a locale (números e durações)](completed/prd-88-locale-aware-formatting.md) | 0.22.0 | 2026-09-29 |
+| 89 | [Pseudo-localização e gate de strings não traduzidas](completed/prd-89-pseudo-localization-gate.md) | 0.22.0 | 2026-09-29 |
+| 90 | [Plurais (CLDR) e seleção no catálogo de mensagens](completed/prd-90-message-plurals-cldr.md) | 0.22.0 | 2026-09-29 |
+| 91 | [Paridade de documentação e distribuição localizada](completed/prd-91-doc-parity-localized-distribution.md) | 0.22.0 | 2026-09-29 |
+| 92 | [RTL e novos locales (árabe e hebraico)](completed/prd-92-rtl-new-locales.md) | 0.22.0 | 2026-09-29 |
+| 93 | [Pipeline de localização contínua (glossário, TM e revisão)](completed/prd-93-continuous-localization-pipeline.md) | 0.22.0 | 2026-09-29 |
 | 94 | [Piso de VS Code 1.101 e runtime Node 22](completed/prd-94-vscode-floor-1-101.md) | 0.14.0 | 2026-09-29 |
 | 95 | [Modernização do runtime: ESM (.mjs), ES2024 e stdlib Node 24](completed/prd-95-esm-es2023-node22.md) | 0.19.0 | 2026-09-29 |
 | 96 | [Site público e landing page via GitHub Pages](completed/prd-96-public-landing-page-github-pages.md) | 0.15.0 | 2026-10-07 |
@@ -181,6 +187,7 @@ notas `prd-*`. O índice navegável do vault é a [[MOC - PRDs]].
 | 111 | [Decompor `executeRunOracle` e agrupar `OracleRunOptions`](completed/prd-111-decompose-oracle-runner.md) | 0.19.0 | 2026-10-10 |
 | 113 | [Ampliar o escopo do lint (Biome) para além de `src/`](completed/prd-113-lint-scope.md) | 0.18.0 | 2026-10-10 |
 | 114 | [Modernizar o stub de `vscode` e reduzir `any` nos testes](completed/prd-114-vscode-stub-modernization.md) | 0.18.0 | 2026-10-10 |
+| 115 | [Fatiar `i18nLocales.ts` por locale](completed/prd-115-split-i18n-locales.md) | 0.22.0 | 2026-10-10 |
 | 118 | [Assinatura de commits e verificação de origem no main](completed/prd-118-commit-signing.md) | 0.18.0 | 2026-10-13 |
 | 119 | [Postura de segurança verificável: OSSF Scorecard e proteção de main](completed/prd-119-security-posture-scorecard.md) | 0.18.0 | 2026-10-13 |
 | 120 | [Ativação enxuta e validação de setup preguiçosa](completed/prd-120-lean-activation-lazy-setup.md) | 0.20.0 | 2026-10-13 |
@@ -199,18 +206,6 @@ notas `prd-*`. O índice navegável do vault é a [[MOC - PRDs]].
 | 147 | [Marketplace: superfície dedicada, screenshots e metadata de conversão](completed/prd-147-marketplace-listing-page.md) | 0.20.0 | 2026-11-05 |
 | 148 | [Confiabilidade de execução e estado após a auditoria 0.20.0](completed/prd-148-execution-state-reliability.md) | 0.20.1 | 2026-11-07 |
 | 150 | [Thick-full verdadeiro: inicialização thick e recuperação do pool após break](completed/prd-150-thick-full-true-pool-recovery.md) | 0.20.1 | 2026-11-07 |
-
-### 🟡 Em desenvolvimento
-
-| # | PRD | Versão | Data |
-|---|---|---|---|
-| 88 | [Formatação sensível a locale (números e durações)](in-progress/prd-88-locale-aware-formatting.md) | 0.22.0 | 2026-09-29 |
-| 89 | [Pseudo-localização e gate de strings não traduzidas](in-progress/prd-89-pseudo-localization-gate.md) | 0.22.0 | 2026-09-29 |
-| 90 | [Plurais (CLDR) e seleção no catálogo de mensagens](in-progress/prd-90-message-plurals-cldr.md) | 0.22.0 | 2026-09-29 |
-| 91 | [Paridade de documentação e distribuição localizada](in-progress/prd-91-doc-parity-localized-distribution.md) | 0.22.0 | 2026-09-29 |
-| 92 | [RTL e novos locales (árabe e hebraico)](in-progress/prd-92-rtl-new-locales.md) | 0.22.0 | 2026-09-29 |
-| 93 | [Pipeline de localização contínua (glossário, TM e revisão)](in-progress/prd-93-continuous-localization-pipeline.md) | 0.22.0 | 2026-09-29 |
-| 115 | [Fatiar `i18nLocales.ts` por locale](in-progress/prd-115-split-i18n-locales.md) | 0.22.0 | 2026-10-10 |
 
 ### ⚪ Propostos
 
@@ -333,6 +328,12 @@ docs/prd/
 │   ├── prd-85-brain-source-of-truth.md
 │   ├── prd-86-debugger-stop-on-exception.md
 │   ├── prd-87-suitepath-results-jump.md
+│   ├── prd-88-locale-aware-formatting.md
+│   ├── prd-89-pseudo-localization-gate.md
+│   ├── prd-90-message-plurals-cldr.md
+│   ├── prd-91-doc-parity-localized-distribution.md
+│   ├── prd-92-rtl-new-locales.md
+│   ├── prd-93-continuous-localization-pipeline.md
 │   ├── prd-94-vscode-floor-1-101.md
 │   ├── prd-95-esm-es2023-node22.md
 │   ├── prd-96-public-landing-page-github-pages.md
@@ -351,6 +352,7 @@ docs/prd/
 │   ├── prd-111-decompose-oracle-runner.md
 │   ├── prd-113-lint-scope.md
 │   ├── prd-114-vscode-stub-modernization.md
+│   ├── prd-115-split-i18n-locales.md
 │   ├── prd-118-commit-signing.md
 │   ├── prd-119-security-posture-scorecard.md
 │   ├── prd-120-lean-activation-lazy-setup.md
@@ -369,14 +371,6 @@ docs/prd/
 │   ├── prd-147-marketplace-listing-page.md
 │   ├── prd-148-execution-state-reliability.md
 │   ├── prd-150-thick-full-true-pool-recovery.md
-├── in-progress/        ← sendo implementados agora
-│   ├── prd-88-locale-aware-formatting.md
-│   ├── prd-89-pseudo-localization-gate.md
-│   ├── prd-90-message-plurals-cldr.md
-│   ├── prd-91-doc-parity-localized-distribution.md
-│   ├── prd-92-rtl-new-locales.md
-│   ├── prd-93-continuous-localization-pipeline.md
-│   ├── prd-115-split-i18n-locales.md
 ├── proposed/        ← em avaliação
 │   ├── prd-60-branch-coverage-investigation.md
 │   ├── prd-61-cli-auto-provision.md

@@ -2,7 +2,7 @@
 tipo: prd
 id: PRD-115
 aliases: [PRD-115]
-status: in-progress
+status: completed
 titulo: "Fatiar `i18nLocales.ts` por locale"
 versao: "0.22.0"
 data: "2026-10-10"
@@ -171,6 +171,8 @@ exportados por barrel") com `prds: ["PRD-115"]`, `implementacao:` e `testes:`;
 `BR-I18N-001` e `BR-COB-001` foram atualizadas para o novo caminho. O campo
 `regras:` é derivado pelo `brain:sync`.
 
+RNFs sem regra: RNF1, RNF2, RNF3, RNF4 (cobertos pelos testes/gates de qualidade).
+
 ## 13. Impacto nas docs
 
 - `CHANGELOG` — bullet do split dos catálogos (PRD-115).
@@ -183,7 +185,6 @@ exportados por barrel") com `prds: ["PRD-115"]`, `implementacao:` e `testes:`;
 - 🗺️ [[MOC - PRDs]]
 - 📐 Regras: [[BR-I18N-008 - Catálogos de locale em um arquivo por locale com barrel canônico|BR-I18N-008]]
 - 🔗 PRDs relacionados: [[prd-49-internacionalizacao|PRD-49]] · [[prd-91-doc-parity-localized-distribution|PRD-91]] · [[prd-95-esm-es2023-node22|PRD-95]] · [[prd-149-performance-engineering-quality|PRD-149]]
-- 🔗 Mesma versão (0.22.0): [[prd-88-locale-aware-formatting|PRD-88]] · [[prd-89-pseudo-localization-gate|PRD-89]] · [[prd-90-message-plurals-cldr|PRD-90]] · [[prd-91-doc-parity-localized-distribution|PRD-91]] · [[prd-92-rtl-new-locales|PRD-92]] · [[prd-93-continuous-localization-pipeline|PRD-93]]
 - 🎯 RF1 — Um arquivo por locale → [[BR-I18N-008 - Catálogos de locale em um arquivo por locale com barrel canônico|BR-I18N-008]]
 - 🎯 RF2 — Paridade e testes → [[BR-I18N-008 - Catálogos de locale em um arquivo por locale com barrel canônico|BR-I18N-008]]
 - 🚀 ⬅️ release anterior: [[prd-139-state-store-slicing-lru|PRD-139 (0.21.0)]] · ➡️ próxima release: [[prd-60-branch-coverage-investigation|PRD-60 (0.23.0)]]

@@ -4,7 +4,7 @@
 
 | Campo | Valor |
 |---|---|
-| Status | Em desenvolvimento |
+| Status | Concluído |
 | Autor | Gil Cleber Barboza |
 | Data | 2026-10-10 |
 | Componente | Extensão `paneb.vscode-utplsql` |
@@ -157,6 +157,8 @@ Criada a regra `BR-I18N-008` ("catálogos de locale são um arquivo por locale,
 exportados por barrel") com `prds: ["PRD-115"]`, `implementacao:` e `testes:`;
 `BR-I18N-001` e `BR-COB-001` foram atualizadas para o novo caminho. O campo
 `regras:` é derivado pelo `brain:sync`.
+
+RNFs sem regra: RNF1, RNF2, RNF3, RNF4 (cobertos pelos testes/gates de qualidade).
 
 ## 13. Impacto nas docs
 

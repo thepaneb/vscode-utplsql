@@ -4,7 +4,7 @@
 
 | Campo | Valor |
 |---|---|
-| Status | Em desenvolvimento |
+| Status | Concluído |
 | Autor | Gil Cleber Barboza |
 | Data | 2026-09-29 |
 | Componente | Extensão `paneb.vscode-utplsql` |
@@ -128,6 +128,8 @@ Nenhuma setting de extensão; env/CI para TMS quando adotado.
 Criada a regra `BR-I18N-007` (pipeline: round-trip + glossário + gate) com
 `prds: ["PRD-93"]`; o glossário está em `12-I18n/Glossário de localização.md` e
 o registro/donos em `12-I18n/Registro de locales.md`.
+
+RNFs sem regra: RNF1, RNF2 (cobertos pelos testes/gates de qualidade).
 
 ## 13. Impacto nas docs
 

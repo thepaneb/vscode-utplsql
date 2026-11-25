@@ -4,7 +4,7 @@
 
 | Campo | Valor |
 |---|---|
-| Status | Em desenvolvimento |
+| Status | Concluído |
 | Autor | Gil Cleber Barboza |
 | Data | 2026-09-29 |
 | Componente | Extensão `paneb.vscode-utplsql` |
@@ -131,6 +131,8 @@ Development Host com `utplsql.language = ar`.
 Criada a regra `BR-I18N-006` (isolamento bidi em locales RTL) com
 `prds: ["PRD-92"]`; `ar`/`he` entram como **beta** no registro e o checklist
 RTL foi adicionado ao cérebro.
+
+RNFs sem regra: RNF1, RNF2 (cobertos pelos testes/gates de qualidade).
 
 ## 13. Impacto nas docs
 

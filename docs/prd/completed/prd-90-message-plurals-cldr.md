@@ -4,7 +4,7 @@
 
 | Campo | Valor |
 |---|---|
-| Status | Em desenvolvimento |
+| Status | Concluído |
 | Autor | Gil Cleber Barboza |
 | Data | 2026-09-29 |
 | Componente | Extensão `paneb.vscode-utplsql` |
@@ -136,6 +136,8 @@ Nenhuma nova.
 Criada a regra `BR-I18N-004` (plurais via CLDR; formas exigidas por locale) com
 `prds: ["PRD-90"]` e a `ADR-014` (catálogo próprio com plurais); o `ADR-007` foi
 atualizado. As formas iniciais são **draft** até a revisão in-country.
+
+RNFs sem regra: RNF1, RNF2 (cobertos pelos testes/gates de qualidade).
 
 ## 13. Impacto nas docs
 

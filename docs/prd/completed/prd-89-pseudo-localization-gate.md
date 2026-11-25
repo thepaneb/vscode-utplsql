@@ -4,7 +4,7 @@
 
 | Campo | Valor |
 |---|---|
-| Status | Em desenvolvimento |
+| Status | Concluído |
 | Autor | Gil Cleber Barboza |
 | Data | 2026-09-29 |
 | Componente | Extensão `paneb.vscode-utplsql` |
@@ -133,6 +133,8 @@ Nenhuma setting pública; apenas env de desenvolvimento.
 Criada a regra `BR-I18N-003` (mensagem de UI sempre via `t()`; pseudo-loc e
 varredura cobrem) com `prds: ["PRD-89"]`; o checklist está em
 `12-I18n/Checklist de pseudo-localização.md`.
+
+RNFs sem regra: RNF1, RNF2 (cobertos pelos testes/gates de qualidade).
 
 ## 13. Impacto nas docs
 

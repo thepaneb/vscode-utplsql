@@ -4,7 +4,7 @@
 
 | Campo | Valor |
 |---|---|
-| Status | Em desenvolvimento |
+| Status | Concluído |
 | Autor | Gil Cleber Barboza |
 | Data | 2026-09-29 |
 | Componente | Extensão `paneb.vscode-utplsql` |
@@ -138,6 +138,8 @@ Nenhuma.
 Criada a regra `BR-I18N-005` (paridade estrutural das variantes + registro de
 locale) com `prds: ["PRD-91"]`; o registro está em
 `12-I18n/Registro de locales.md` e a política em `12-I18n/Política de locales.md`.
+
+RNFs sem regra: RNF1, RNF2 (cobertos pelos testes/gates de qualidade).
 
 ## 13. Impacto nas docs
 

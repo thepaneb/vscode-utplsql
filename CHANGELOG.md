@@ -1,5 +1,33 @@
 # Changelog
 
+## 0.22.0
+
+- **Locale catalogs split (PRD-115)**: the 24 runtime catalogs now live one per
+  file under `src/i18n/locales/`, exported by a barrel with the canonical
+  `LOCALE_CODES`; `i18nLocales.ts` is gone and the locale is resolved at message
+  time in the commands.
+- **Locale-aware numbers and durations (PRD-88)**: `formatNumber`/`formatDuration`
+  use `Intl` with the resolved locale; the status bar and Test Explorer show
+  `12,3 s` in pt-BR and `12.3 s` in en, and counting parameters are formatted
+  without touching technical values.
+- **CLDR plurals (PRD-90)**: the ten `{count}` messages use
+  `Intl.PluralRules` (one/few/many/two/zero/other) with `other → pt-BR → key`
+  fallback; the initial forms are drafts pending in-country review.
+- **Pseudo-localization and hardcoded-string gate (PRD-89)**: `UTPLSQL_PSEUDO_LOC=1`
+  accents/pads runtime messages, and `scrape-strings.cjs` reports UI literals
+  outside `t()` (warning in CI, `--strict` opt-in).
+- **README parity and locale registry (PRD-91)**: `docs:check` now enforces the
+  feature-bullet/commands/language-link parity of every README variant and
+  requires the locale registry (status/reviewer/coverage); the variant count is
+  derived from `package.nls.*.json`.
+- **RTL and Arabic/Hebrew (PRD-92)**: `ar` and `he` join the extension (26 locales,
+  25 README variants) with FSI/PDI bidi isolation for technical identifiers;
+  translations are **beta** pending in-country review.
+- **Continuous localization pipeline (PRD-93)**: `i18n:export`/`i18n:apply` move
+  catalogs through JSON (en-gb as an overlay), the localization glossary is in
+  the vault, and `i18n:check` validates catalogs × locales × manifests × plural
+  forms × glossary in CI.
+
 ## 0.21.0
 
 - **Split state stores and LRU caches (PRD-139)**: `TestStateManager` now

@@ -2,7 +2,7 @@
 tipo: prd
 id: PRD-93
 aliases: [PRD-93]
-status: in-progress
+status: completed
 titulo: "Pipeline de localização contínua (glossário, TM e revisão)"
 versao: "0.22.0"
 data: "2026-09-29"
@@ -142,6 +142,8 @@ Criada a regra `BR-I18N-007` (pipeline: round-trip + glossário + gate) com
 `prds: ["PRD-93"]`; o glossário está em `12-I18n/Glossário de localização.md` e
 o registro/donos em `12-I18n/Registro de locales.md`.
 
+RNFs sem regra: RNF1, RNF2 (cobertos pelos testes/gates de qualidade).
+
 ## 13. Impacto nas docs
 
 - `CHANGELOG` — bullet do pipeline de localização (PRD-93).
@@ -155,7 +157,6 @@ o registro/donos em `12-I18n/Registro de locales.md`.
 - 📐 Regras: [[BR-I18N-007 - Pipeline de localização com round-trip e gate de i18n|BR-I18N-007]]
 - 🔗 PRDs relacionados: [[prd-89-pseudo-localization-gate|PRD-89]] · [[prd-90-message-plurals-cldr|PRD-90]] · [[prd-91-doc-parity-localized-distribution|PRD-91]] · [[prd-115-split-i18n-locales|PRD-115]]
 - ⚙️ Pipelines: [[PIPE-ci - CI|PIPE-ci]]
-- 🔗 Mesma versão (0.22.0): [[prd-88-locale-aware-formatting|PRD-88]] · [[prd-89-pseudo-localization-gate|PRD-89]] · [[prd-90-message-plurals-cldr|PRD-90]] · [[prd-91-doc-parity-localized-distribution|PRD-91]] · [[prd-92-rtl-new-locales|PRD-92]] · [[prd-115-split-i18n-locales|PRD-115]]
 - 🎯 RF1 — Export/Import → [[BR-I18N-007 - Pipeline de localização com round-trip e gate de i18n|BR-I18N-007]]
 - 🎯 RF4 — Integração contínua → [[BR-I18N-007 - Pipeline de localização com round-trip e gate de i18n|BR-I18N-007]]
 - 🚀 ⬅️ release anterior: [[prd-139-state-store-slicing-lru|PRD-139 (0.21.0)]] · ➡️ próxima release: [[prd-60-branch-coverage-investigation|PRD-60 (0.23.0)]]

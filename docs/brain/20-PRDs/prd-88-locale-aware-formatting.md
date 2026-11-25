@@ -2,7 +2,7 @@
 tipo: prd
 id: PRD-88
 aliases: [PRD-88]
-status: in-progress
+status: completed
 titulo: "Formatação sensível a locale (números e durações)"
 versao: "0.22.0"
 data: "2026-09-29"
@@ -152,6 +152,8 @@ Criada a regra `BR-I18N-002` (formatação de números/durações é locale-awar
 `prds: ["PRD-88"]`, `implementacao` em `src/i18n.ts`/`statusBar.ts`/`state.ts` e
 testes; a wiki `Internationalization` documenta os helpers.
 
+RNFs sem regra: RNF1, RNF2 (cobertos pelos testes/gates de qualidade).
+
 ## 13. Impacto nas docs
 
 - `CHANGELOG` — bullet da formatação locale-aware (PRD-88).
@@ -164,7 +166,6 @@ testes; a wiki `Internationalization` documenta os helpers.
 - 🗺️ [[MOC - PRDs]]
 - 📐 Regras: [[BR-I18N-002 - Números e durações exibidos respeitam o locale|BR-I18N-002]]
 - 🔗 PRDs relacionados: [[prd-90-message-plurals-cldr|PRD-90]]
-- 🔗 Mesma versão (0.22.0): [[prd-89-pseudo-localization-gate|PRD-89]] · [[prd-90-message-plurals-cldr|PRD-90]] · [[prd-91-doc-parity-localized-distribution|PRD-91]] · [[prd-92-rtl-new-locales|PRD-92]] · [[prd-93-continuous-localization-pipeline|PRD-93]] · [[prd-115-split-i18n-locales|PRD-115]]
 - 🎯 RF1 — `formatDuration` → [[BR-I18N-002 - Números e durações exibidos respeitam o locale|BR-I18N-002]]
 - 🎯 RF2 — `formatNumber` → [[BR-I18N-002 - Números e durações exibidos respeitam o locale|BR-I18N-002]]
 - 🎯 RF3 — Integração na UI → [[BR-I18N-002 - Números e durações exibidos respeitam o locale|BR-I18N-002]]

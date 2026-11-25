@@ -20,12 +20,12 @@ from VS Code — no Java, no Instant Client required in thin mode.**
 
 _Native Test Explorer: run, debug and see results without leaving VS Code._
 
-## What's new in 0.21.0
+## What's new in 0.22.0
 
-Architecture and reliability release: typed domain errors and validated
-configuration, a typed execution event bus with decoupled UI subscribers, run
-strategies, resilient database discovery with retry and metadata cache, and
-bounded state/coverage caches. The full release notes are in the
+Localization release: catalogs split per locale, locale-aware numbers and
+durations, CLDR plurals, pseudo-localization and a hardcoded-string scanner,
+structural README parity with a locale registry, **Arabic/Hebrew (RTL, beta)**
+and an export/import pipeline. The full release notes are in the
 [CHANGELOG](https://github.com/thepaneb/vscode-utplsql/blob/main/CHANGELOG.md).
 
 ## Why use this extension?

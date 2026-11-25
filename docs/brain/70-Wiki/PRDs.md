@@ -157,6 +157,13 @@ files and the index; do not move the generated files by hand.
 | 129 | Run orchestration with the Strategy pattern | 0.21.0 |
 | 138 | Tree organization with the Strategy pattern | 0.21.0 |
 | 139 | Split state stores and LRU coverage cache | 0.21.0 |
+| 115 | Split locale catalogs by locale | 0.22.0 |
+| 88 | Locale-aware number and duration formatting | 0.22.0 |
+| 90 | CLDR plurals in the message catalog | 0.22.0 |
+| 89 | Pseudo-localization and hardcoded-string gate | 0.22.0 |
+| 91 | README variant parity and locale registry | 0.22.0 |
+| 92 | RTL locales: Arabic and Hebrew | 0.22.0 |
+| 93 | Continuous localization pipeline | 0.22.0 |
 
 ### ⚪ Proposed
 

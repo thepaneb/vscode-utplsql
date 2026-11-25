@@ -2,7 +2,7 @@
 tipo: prd
 id: PRD-90
 aliases: [PRD-90]
-status: in-progress
+status: completed
 titulo: "Plurais (CLDR) e seleção no catálogo de mensagens"
 versao: "0.22.0"
 data: "2026-09-29"
@@ -150,6 +150,8 @@ Criada a regra `BR-I18N-004` (plurais via CLDR; formas exigidas por locale) com
 `prds: ["PRD-90"]` e a `ADR-014` (catálogo próprio com plurais); o `ADR-007` foi
 atualizado. As formas iniciais são **draft** até a revisão in-country.
 
+RNFs sem regra: RNF1, RNF2 (cobertos pelos testes/gates de qualidade).
+
 ## 13. Impacto nas docs
 
 - `CHANGELOG` — bullet dos plurais CLDR (PRD-90).
@@ -162,7 +164,6 @@ atualizado. As formas iniciais são **draft** até a revisão in-country.
 - 🗺️ [[MOC - PRDs]]
 - 📐 Regras: [[BR-I18N-004 - Mensagens plurais seguem as formas CLDR do locale|BR-I18N-004]]
 - 🔗 PRDs relacionados: [[prd-88-locale-aware-formatting|PRD-88]] · [[prd-92-rtl-new-locales|PRD-92]] · [[prd-93-continuous-localization-pipeline|PRD-93]] · [[prd-115-split-i18n-locales|PRD-115]]
-- 🔗 Mesma versão (0.22.0): [[prd-88-locale-aware-formatting|PRD-88]] · [[prd-89-pseudo-localization-gate|PRD-89]] · [[prd-91-doc-parity-localized-distribution|PRD-91]] · [[prd-92-rtl-new-locales|PRD-92]] · [[prd-93-continuous-localization-pipeline|PRD-93]] · [[prd-115-split-i18n-locales|PRD-115]]
 - 🎯 RF1 — Formato plural no catálogo → [[BR-I18N-004 - Mensagens plurais seguem as formas CLDR do locale|BR-I18N-004]]
 - 🎯 RF2 — Seleção por `Intl.PluralRules` → [[BR-I18N-004 - Mensagens plurais seguem as formas CLDR do locale|BR-I18N-004]]
 - 🎯 RF3 — Paridade e migração → [[BR-I18N-004 - Mensagens plurais seguem as formas CLDR do locale|BR-I18N-004]]

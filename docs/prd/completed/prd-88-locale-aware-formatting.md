@@ -4,7 +4,7 @@
 
 | Campo | Valor |
 |---|---|
-| Status | Em desenvolvimento |
+| Status | Concluído |
 | Autor | Gil Cleber Barboza |
 | Data | 2026-09-29 |
 | Componente | Extensão `paneb.vscode-utplsql` |
@@ -138,6 +138,8 @@ Nenhuma nova (`utplsql.language` já define o locale).
 Criada a regra `BR-I18N-002` (formatação de números/durações é locale-aware) com
 `prds: ["PRD-88"]`, `implementacao` em `src/i18n.ts`/`statusBar.ts`/`state.ts` e
 testes; a wiki `Internationalization` documenta os helpers.
+
+RNFs sem regra: RNF1, RNF2 (cobertos pelos testes/gates de qualidade).
 
 ## 13. Impacto nas docs
 
