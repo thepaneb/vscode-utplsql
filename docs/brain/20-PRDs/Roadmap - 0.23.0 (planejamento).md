@@ -59,4 +59,4 @@ versão, também foram para a 0.24.0. A 0.23.0 fica só com qualidade e docs.
 ## Relacionado
 
 - [[MOC - PRDs]]
-- [[Roadmap - 0.22.0 (planejamento)]] · [[Roadmap - 0.24.0 (planejamento)]]
+- [[Roadmap - 0.22.0 (execução)]] · [[Roadmap - 0.24.0 (planejamento)]]

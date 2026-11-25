@@ -200,22 +200,27 @@ notas `prd-*`. O índice navegável do vault é a [[MOC - PRDs]].
 | 148 | [Confiabilidade de execução e estado após a auditoria 0.20.0](completed/prd-148-execution-state-reliability.md) | 0.20.1 | 2026-11-07 |
 | 150 | [Thick-full verdadeiro: inicialização thick e recuperação do pool após break](completed/prd-150-thick-full-true-pool-recovery.md) | 0.20.1 | 2026-11-07 |
 
+### 🔵 Aprovados
+
+| # | PRD | Versão | Data |
+|---|---|---|---|
+| 88 | [Formatação sensível a locale (números e durações)](approved/prd-88-locale-aware-formatting.md) | 0.22.0 | 2026-09-29 |
+| 89 | [Pseudo-localização e gate de strings não traduzidas](approved/prd-89-pseudo-localization-gate.md) | 0.22.0 | 2026-09-29 |
+| 90 | [Plurais (CLDR) e seleção no catálogo de mensagens](approved/prd-90-message-plurals-cldr.md) | 0.22.0 | 2026-09-29 |
+| 91 | [Paridade de documentação e distribuição localizada](approved/prd-91-doc-parity-localized-distribution.md) | 0.22.0 | 2026-09-29 |
+| 92 | [RTL e novos locales (árabe e hebraico)](approved/prd-92-rtl-new-locales.md) | 0.22.0 | 2026-09-29 |
+| 93 | [Pipeline de localização contínua (glossário, TM e revisão)](approved/prd-93-continuous-localization-pipeline.md) | 0.22.0 | 2026-09-29 |
+| 115 | [Fatiar `i18nLocales.ts` por locale](approved/prd-115-split-i18n-locales.md) | 0.22.0 | 2026-10-10 |
+
 ### ⚪ Propostos
 
 | # | PRD | Versão | Data |
 |---|---|---|---|
 | 60 | [Cobertura de branch (investigação de viabilidade)](proposed/prd-60-branch-coverage-investigation.md) | 0.23.0 | 2026-09-06 |
 | 61 | [Auto-provisionamento do utPLSQL-cli](proposed/prd-61-cli-auto-provision.md) | Suspenso — a reavaliar (PRD-64 removeu o CLI) | 2026-09-06 |
-| 88 | [Formatação sensível a locale (números e durações)](proposed/prd-88-locale-aware-formatting.md) | 0.22.0 | 2026-09-29 |
-| 89 | [Pseudo-localização e gate de strings não traduzidas](proposed/prd-89-pseudo-localization-gate.md) | 0.22.0 | 2026-09-29 |
-| 90 | [Plurais (CLDR) e seleção no catálogo de mensagens](proposed/prd-90-message-plurals-cldr.md) | 0.22.0 | 2026-09-29 |
-| 91 | [Paridade de documentação e distribuição localizada](proposed/prd-91-doc-parity-localized-distribution.md) | 0.22.0 | 2026-09-29 |
-| 92 | [RTL e novos locales (árabe e hebraico)](proposed/prd-92-rtl-new-locales.md) | 0.22.0 | 2026-09-29 |
-| 93 | [Pipeline de localização contínua (glossário, TM e revisão)](proposed/prd-93-continuous-localization-pipeline.md) | 0.22.0 | 2026-09-29 |
 | 97 | [Documentação no site (Fase 2 da PRD-96)](proposed/prd-97-doc-no-site.md) | 0.23.0 | 2026-10-07 |
 | 99 | [Cérebro reutilizável: guia de uso e reuso do knowledge base](proposed/prd-99-brain-reuse.md) | 0.23.0 | 2026-10-09 |
 | 112 | [Auditoria de tratamento de erros: `catch` silenciosos e robustez](proposed/prd-112-error-handling-audit.md) | 0.23.0 | 2026-10-10 |
-| 115 | [Fatiar `i18nLocales.ts` por locale](proposed/prd-115-split-i18n-locales.md) | 0.22.0 | 2026-10-10 |
 | 116 | [Testes diretos dos módulos sem cobertura dedicada](proposed/prd-116-direct-module-tests.md) | 0.23.0 | 2026-10-10 |
 | 117 | [Testes de propriedade do parser de scripts (`splitScript`)](proposed/prd-117-split-script-property-tests.md) | 0.23.0 | 2026-10-10 |
 | 121 | [Pacote auditável: source map do bundle no VSIX](proposed/prd-121-auditable-package-sourcemap.md) | 0.24.0 | 2026-10-13 |
@@ -364,19 +369,20 @@ docs/prd/
 │   ├── prd-147-marketplace-listing-page.md
 │   ├── prd-148-execution-state-reliability.md
 │   ├── prd-150-thick-full-true-pool-recovery.md
-├── proposed/        ← em avaliação
-│   ├── prd-60-branch-coverage-investigation.md
-│   ├── prd-61-cli-auto-provision.md
+├── approved/        ← aprovados, aguardando implementação
 │   ├── prd-88-locale-aware-formatting.md
 │   ├── prd-89-pseudo-localization-gate.md
 │   ├── prd-90-message-plurals-cldr.md
 │   ├── prd-91-doc-parity-localized-distribution.md
 │   ├── prd-92-rtl-new-locales.md
 │   ├── prd-93-continuous-localization-pipeline.md
+│   ├── prd-115-split-i18n-locales.md
+├── proposed/        ← em avaliação
+│   ├── prd-60-branch-coverage-investigation.md
+│   ├── prd-61-cli-auto-provision.md
 │   ├── prd-97-doc-no-site.md
 │   ├── prd-99-brain-reuse.md
 │   ├── prd-112-error-handling-audit.md
-│   ├── prd-115-split-i18n-locales.md
 │   ├── prd-116-direct-module-tests.md
 │   ├── prd-117-split-script-property-tests.md
 │   ├── prd-121-auditable-package-sourcemap.md

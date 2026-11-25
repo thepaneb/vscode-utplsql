@@ -1,13 +1,16 @@
 ---
 tipo: nota
-status: ativo
+status: concluida
 modulo: prds
 data: 2026-10-09
-verificado: 2026-11-07
-tags: [prd, roadmap, planejamento]
+verificado: 2026-11-25
+concluida: 2026-11-12
+tags: [prd, roadmap, execucao]
 ---
 
 # Roadmap — 0.21.0 (planejamento)
+
+> Publicada em **2026-11-12** (release `v0.21.0`); escopo 100% concluído.
 
 Plano da **0.21.0 — “Arquitetura, configuração e resiliência”**. O status e a versão
 alvo são a **fonte da verdade** no frontmatter das notas `prd-*`: ver [[MOC - PRDs]] e
@@ -68,4 +71,4 @@ schema antes das refatorações 129/131/138/139.
 ## Relacionado
 
 - [[MOC - PRDs]]
-- [[Roadmap - 0.20.0 (planejamento)]] · [[Roadmap - 0.22.0 (planejamento)]]
+- [[Roadmap - 0.20.0 (planejamento)]] · [[Roadmap - 0.22.0 (execução)]]
