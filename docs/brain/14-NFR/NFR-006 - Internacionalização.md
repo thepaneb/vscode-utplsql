@@ -24,7 +24,7 @@ Alcance internacional da extensão.
 
 ## Verificação
 
-`i18n.ts`, `i18nLocales.ts`, `docs:check`.
+`i18n.ts`, `i18n/locales/*`, `docs:check`.
 
 ## Conexões
 

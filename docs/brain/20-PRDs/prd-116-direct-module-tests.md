@@ -21,7 +21,7 @@ tags: [prd]
 | Data | 2026-10-10 |
 | Componente | Extensão `paneb.vscode-utplsql` (testes) |
 | Versão alvo | 0.23.0 |
-| Arquivos afetados | `src/test/unit/annotation.test.ts` (novo), `src/test/unit/charset.test.ts` (novo), `src/test/unit/i18nLocales.test.ts` (novo) |
+| Arquivos afetados | `src/test/unit/annotation.test.ts` (novo), `src/test/unit/charset.test.ts` (novo), `src/test/unit/i18nLocales.test.ts` (novo), `src/i18n/locales/index.ts` (barrel) |
 | Esforço estimado | 0,5–1 dia |
 | Complexidade | Baixa |
 | Relaciona-se a | PRD-04 (expansão de testes), PRD-115 (split do i18n) |
@@ -29,10 +29,11 @@ tags: [prd]
 ## 1. Resumo
 
 Quatro módulos de produção **não têm teste direto** próprio: `annotation.ts`,
-`charset.ts`, `i18nLocales.ts` e `types.ts`. Os três primeiros têm lógica pura
-(não apenas dados/tipos) e hoje são exercitados só de forma indireta; `types.ts`
-é só de tipos (não testável em runtime). Esta PRD **adiciona testes diretos** aos
-três primeiros e **documenta** por que `types.ts` não recebe teste.
+`charset.ts`, `src/i18n/locales/index.ts` (barrel dos catálogos) e `types.ts`. Os
+três primeiros têm lógica pura (não apenas dados/tipos) e hoje são exercitados só
+de forma indireta; `types.ts` é só de tipos (não testável em runtime). Esta PRD
+**adiciona testes diretos** aos três primeiros e **documenta** por que `types.ts`
+não recebe teste.
 
 ## 2. Contexto e problema
 
@@ -41,16 +42,16 @@ três primeiros e **documenta** por que `types.ts` não recebe teste.
   inválida, CRLF) não têm teste focado.
 - `charset.ts` (`decodeBytes`) decide o encoding usado ao ler scripts; a lógica de
   BOM e a diferença `latin1` × `windows-1252` merecem casos explícitos.
-- `i18nLocales.ts` é dado, mas a **paridade de chaves** e a ausência de chaves
-  órfãs são invariantes que um teste direto de catálogo torna visíveis (hoje o
-  `i18n.test.ts` cobre indiretamente).
+- O barrel `src/i18n/locales/index.ts` é dado, mas a **paridade de chaves** e a
+  ausência de chaves órfãs são invariantes que um teste direto de catálogo torna
+  visíveis (hoje o `i18n.test.ts` cobre indiretamente).
 - `types.ts` é *type-only*: não tem comportamento para testar em runtime.
 
 ## 3. Objetivos / Não-objetivos
 
 **Objetivos**
 - Testes unitários diretos para `annotation.ts`, `charset.ts` e para os
-  invariantes dos catálogos em `i18nLocales.ts`.
+  invariantes dos catálogos em `src/i18n/locales/index.ts`.
 - Registrar oficialmente `types.ts` como não-testável (exceção justificada).
 
 **Não-objetivos**
@@ -82,7 +83,7 @@ três primeiros e **documenta** por que `types.ts` não recebe teste.
 - Reconhecer grants de `DBMS_DEBUG` via role custom (`session_privs`/
   `role_tab_privs`), não só DBA/PDB_DBA; manter o caminho direto atual.
 
-### RF5 — `i18nLocales.ts`
+### RF5 — `src/i18n/locales/index.ts` (barrel)
 
 - Invariantes dos catálogos: todo locale tem **todas** as chaves do `pt-BR`
   (sem chaves órfãs), todos os valores são strings não vazias, e o conjunto de
@@ -98,8 +99,9 @@ três primeiros e **documenta** por que `types.ts` não recebe teste.
 ## 5. Solução proposta
 
 - Adicionar três arquivos de teste unitário puros, no estilo dos existentes.
-- Para `i18nLocales.ts`, escrever um teste de paridade parametrizado (24 locales
-  alimentam a mesma bateria de asserções), evitando código repetitivo.
+- Para o barrel `src/i18n/locales/index.ts`, escrever um teste de paridade
+  parametrizado (24 locales alimentam a mesma bateria de asserções), evitando
+  código repetitivo.
 
 ## 6. Configuração
 
@@ -127,14 +129,15 @@ Nenhuma.
 
 ## 10. Critérios de aceite
 
-- `annotation.ts`, `charset.ts` e `i18nLocales.ts` com teste direto e verde.
+- `annotation.ts`, `charset.ts` e `src/i18n/locales/index.ts` com teste direto e
+  verde.
 - `types.ts` documentado como isento (type-only), sem teste artificial.
 - Cobertura ≥ thresholds.
 
 ## 11. Questões em aberto
 
 - Vale um teste de paridade compartilhado (helper) entre `i18n` e
-  `i18nLocales` em vez de dois testes?
+  `i18n/locales` em vez de dois testes?
 - Incluir `package.nls.*.json` no teste de paridade (manifesto VSCode)?
 
 ## 12. Impacto no cérebro

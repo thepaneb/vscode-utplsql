@@ -44,11 +44,10 @@ async function runScriptText(
   profile: ConnectionProfile,
   charset: ProfileCharset | undefined,
 ): Promise<void> {
-  const locale = getExtensionLocale();
   const { connectOracle, executeScript, splitScript } = await loadScriptRunner();
   const statements = splitScript(text);
   if (statements.length === 0) {
-    vscode.window.showInformationMessage(t(locale, 'script.noStatements'));
+    vscode.window.showInformationMessage(t(getExtensionLocale(), 'script.noStatements'));
     return;
   }
   const cfg = readConfig();
@@ -102,13 +101,11 @@ async function runScriptFiles(paths: string[], profile: ConnectionProfile): Prom
 }
 
 export function registerScriptCommands(context: vscode.ExtensionContext): void {
-  const locale = getExtensionLocale();
-
   context.subscriptions.push(
     vscode.commands.registerCommand('utplsql.runScript', async () => {
       const editor = vscode.window.activeTextEditor;
       if (!editor) {
-        vscode.window.showWarningMessage(t(locale, 'script.noEditor'));
+        vscode.window.showWarningMessage(t(getExtensionLocale(), 'script.noEditor'));
         return;
       }
       const profile = await pickProfileOrGuide();
@@ -119,7 +116,7 @@ export function registerScriptCommands(context: vscode.ExtensionContext): void {
     vscode.commands.registerCommand('utplsql.runScriptFile', async (uri?: vscode.Uri) => {
       const target = uri ?? vscode.window.activeTextEditor?.document.uri;
       if (!target) {
-        vscode.window.showWarningMessage(t(locale, 'script.noEditor'));
+        vscode.window.showWarningMessage(t(getExtensionLocale(), 'script.noEditor'));
         return;
       }
       const profile = await pickProfileOrGuide();
@@ -129,18 +126,18 @@ export function registerScriptCommands(context: vscode.ExtensionContext): void {
     vscode.commands.registerCommand('utplsql.runScriptFolder', async (uri?: vscode.Uri) => {
       const target = uri ?? vscode.window.activeTextEditor?.document.uri;
       if (!target) {
-        vscode.window.showWarningMessage(t(locale, 'script.noEditor'));
+        vscode.window.showWarningMessage(t(getExtensionLocale(), 'script.noEditor'));
         return;
       }
       const folderUri = target;
       try {
         const stat = await vscode.workspace.fs.stat(folderUri);
         if (stat.type !== vscode.FileType.Directory) {
-          vscode.window.showWarningMessage(t(locale, 'script.notFolder'));
+          vscode.window.showWarningMessage(t(getExtensionLocale(), 'script.notFolder'));
           return;
         }
       } catch {
-        vscode.window.showWarningMessage(t(locale, 'script.notFolder'));
+        vscode.window.showWarningMessage(t(getExtensionLocale(), 'script.notFolder'));
         return;
       }
       const profile = await pickProfileOrGuide();
@@ -149,7 +146,7 @@ export function registerScriptCommands(context: vscode.ExtensionContext): void {
       const { filterScriptFiles } = await loadScriptRunner();
       const files = filterScriptFiles(all, readConfig().scriptRunnerFilePattern);
       if (files.length === 0) {
-        vscode.window.showWarningMessage(t(locale, 'script.noScriptsInFolder'));
+        vscode.window.showWarningMessage(t(getExtensionLocale(), 'script.noScriptsInFolder'));
         return;
       }
       await runScriptFiles(files, profile);

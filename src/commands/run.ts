@@ -39,7 +39,6 @@ export function registerRunCommands(
   deps: CommandDeps,
 ): RunCommands {
   const { controller, state } = deps;
-  const locale = getExtensionLocale();
   const bus = deps.runEvents ?? createRunEventBus();
   const useBus = deps.runEvents !== undefined;
   let currentRunToken: vscode.CancellationTokenSource | undefined;
@@ -185,7 +184,7 @@ export function registerRunCommands(
               bus,
             );
 
-            progress.report({ message: t(locale, 'ext.run.parsingResults') });
+            progress.report({ message: t(getExtensionLocale(), 'ext.run.parsingResults') });
           } finally {
             progressSub.dispose();
           }
@@ -202,7 +201,7 @@ export function registerRunCommands(
       .map((m) => state.getSuiteItemFor(m.packageName, m.schema))
       .filter(Boolean) as vscode.TestItem[];
     if (!include.length) {
-      vscode.window.showWarningMessage(t(locale, 'ext.noSuiteInFile'));
+      vscode.window.showWarningMessage(t(getExtensionLocale(), 'ext.noSuiteInFile'));
       return;
     }
     await runWithProgress(
@@ -223,7 +222,7 @@ export function registerRunCommands(
   const runRelated = async (): Promise<void> => {
     const editor = vscode.window.activeTextEditor;
     if (!editor) {
-      vscode.window.showWarningMessage(t(locale, 'ext.runRelated.noEditor'));
+      vscode.window.showWarningMessage(t(getExtensionLocale(), 'ext.runRelated.noEditor'));
       return;
     }
     let items = await collectItemsForPath(controller, state, editor.document.fileName);
@@ -242,7 +241,7 @@ export function registerRunCommands(
     }
     if (!include.length) {
       const file = editor.document.fileName.replace(/\\/g, '/').split('/').pop() ?? '';
-      vscode.window.showWarningMessage(t(locale, 'ext.runRelated.none', { file }));
+      vscode.window.showWarningMessage(t(getExtensionLocale(), 'ext.runRelated.none', { file }));
       return;
     }
     const relatedCoverage = effectiveCoverage(undefined, state.coverageAlways);
@@ -265,7 +264,7 @@ export function registerRunCommands(
       .map((m) => state.getSuiteItemFor(m.packageName, m.schema))
       .filter(Boolean) as vscode.TestItem[];
     if (!include.length) {
-      vscode.window.showWarningMessage(t(locale, 'ext.noSuiteInFolder'));
+      vscode.window.showWarningMessage(t(getExtensionLocale(), 'ext.noSuiteInFolder'));
       return;
     }
     await runWithProgress(
@@ -369,7 +368,7 @@ export function registerRunCommands(
     if (!target) return;
     await vscode.workspace.fs.writeFile(target, Buffer.from(text, 'utf8'));
     vscode.window.showInformationMessage(
-      t(locale, 'ext.export.saved', { reporter, path: target.fsPath }),
+      t(getExtensionLocale(), 'ext.export.saved', { reporter, path: target.fsPath }),
     );
   };
 
@@ -400,7 +399,7 @@ export function registerRunCommands(
       include ??= await pickSuiteItem();
     }
     if (!include?.length) {
-      vscode.window.showWarningMessage(t(locale, 'ext.export.noTargets'));
+      vscode.window.showWarningMessage(t(getExtensionLocale(), 'ext.export.noTargets'));
       return;
     }
     // Resolve nós lazy antes de rodar (PRD-75 RF4).
@@ -408,19 +407,19 @@ export function registerRunCommands(
 
     const connection = await resolveConnection();
     if (!connection) {
-      vscode.window.showErrorMessage(t(locale, 'ext.noConnection'));
+      vscode.window.showErrorMessage(t(getExtensionLocale(), 'ext.noConnection'));
       return;
     }
     const cfg = readConfig();
     const reporters = await listReportersForConnection(connection, cfg);
     const reporter = await vscode.window.showQuickPick(reporters, {
-      placeHolder: t(locale, 'ext.export.reporterPlaceholder'),
+      placeHolder: t(getExtensionLocale(), 'ext.export.reporterPlaceholder'),
     });
     if (!reporter) return;
 
     const dest = await vscode.window.showQuickPick([
-      { label: t(locale, 'ext.export.toOutput'), value: 'output' as const },
-      { label: t(locale, 'ext.export.toFile'), value: 'file' as const },
+      { label: t(getExtensionLocale(), 'ext.export.toOutput'), value: 'output' as const },
+      { label: t(getExtensionLocale(), 'ext.export.toFile'), value: 'file' as const },
     ]);
     if (!dest) return;
 
@@ -447,7 +446,9 @@ export function registerRunCommands(
       });
     } catch (e) {
       vscode.window.showErrorMessage(
-        t(locale, 'ext.export.failed', { error: formatUserError(e, locale) }),
+        t(getExtensionLocale(), 'ext.export.failed', {
+          error: formatUserError(e, getExtensionLocale()),
+        }),
       );
     }
   };
@@ -462,7 +463,7 @@ export function registerRunCommands(
     const entries = all.map((item) => ({ item, tags: state.getMeta(item)?.tags }));
     const available = collectTags(entries.map((e) => ({ tags: e.tags })));
     if (available.length === 0) {
-      vscode.window.showInformationMessage(t(locale, 'ext.tag.none'));
+      vscode.window.showInformationMessage(t(getExtensionLocale(), 'ext.tag.none'));
       return;
     }
     const picked = await vscode.window.showQuickPick(
@@ -474,14 +475,14 @@ export function registerRunCommands(
       }),
       {
         canPickMany: true,
-        placeHolder: t(locale, 'ext.tag.placeholder'),
+        placeHolder: t(getExtensionLocale(), 'ext.tag.placeholder'),
       },
     );
     if (!picked?.length) return;
     const { include, exclude } = parseTagSelection(picked.map((p) => p.label.replace(/^#/, '')));
     const includeItems = filterItemsByTags(entries, include, exclude);
     if (includeItems.length === 0) {
-      vscode.window.showWarningMessage(t(locale, 'ext.tag.noMatch'));
+      vscode.window.showWarningMessage(t(getExtensionLocale(), 'ext.tag.noMatch'));
       return;
     }
     for (const item of includeItems) await resolveSubtree(controller, state, item);
@@ -577,7 +578,7 @@ export function registerRunCommands(
     vscode.commands.registerCommand('utplsql.rerunLast', async () => {
       const lr = state.getLastRun();
       if (!lr) {
-        vscode.window.showInformationMessage(t(locale, 'ext.noPreviousRun'));
+        vscode.window.showInformationMessage(t(getExtensionLocale(), 'ext.noPreviousRun'));
         return;
       }
       switch (lr.type) {
@@ -603,7 +604,7 @@ export function registerRunCommands(
     vscode.commands.registerCommand('utplsql.runAtCursor', async () => {
       const editor = vscode.window.activeTextEditor;
       if (!editor || !isPlsqlDocument(editor.document, readConfig().discoveryLanguageIds)) {
-        vscode.window.showWarningMessage(t(locale, 'ext.runAtCursor.onlyPks'));
+        vscode.window.showWarningMessage(t(getExtensionLocale(), 'ext.runAtCursor.onlyPks'));
         return;
       }
       const annotation = findAnnotationAtLine(
@@ -611,7 +612,7 @@ export function registerRunCommands(
         editor.selection.active.line,
       );
       if (!annotation) {
-        vscode.window.showWarningMessage(t(locale, 'ext.runAtCursor.noAnnotation'));
+        vscode.window.showWarningMessage(t(getExtensionLocale(), 'ext.runAtCursor.noAnnotation'));
         return;
       }
       const cursorCoverage = effectiveCoverage(undefined, state.coverageAlways);
@@ -636,7 +637,7 @@ export function registerRunCommands(
         failed = state.restoreLastFailed();
       }
       if (failed.length === 0) {
-        vscode.window.showInformationMessage(t(locale, 'ext.runFailed.none'));
+        vscode.window.showInformationMessage(t(getExtensionLocale(), 'ext.runFailed.none'));
         return;
       }
       const failedCoverage = effectiveCoverage(undefined, state.coverageAlways);

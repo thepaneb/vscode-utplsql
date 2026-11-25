@@ -116,6 +116,7 @@ SORT id ASC
 - [[BR-EXEC-017 - Prefixo de schema validado antes de concatenar no SQL]] — `BR-EXEC-017`
 - [[BR-EXEC-018 - Runs e export sao serializados antes do proximo uso do buffer]] — `BR-EXEC-018`
 - [[BR-I18N-001 - Resolução de locale e fallback de tradução]] — `BR-I18N-001`
+- [[BR-I18N-008 - Catálogos de locale em um arquivo por locale com barrel canônico]] — `BR-I18N-008`
 - [[BR-LOG-001 - Diagnostico vai para o LogOutputChannel utPLSQL]] — `BR-LOG-001`
 - [[BR-LOG-002 - Trace e perf sao opt-in e nunca registram credenciais]] — `BR-LOG-002`
 - [[BR-PARSE-001 - Arquivo só é suite utPLSQL se tiver %suite E CREATE PACKAGE]] — `BR-PARSE-001`
