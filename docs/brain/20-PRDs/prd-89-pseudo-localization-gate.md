@@ -2,7 +2,7 @@
 tipo: prd
 id: PRD-89
 aliases: [PRD-89]
-status: approved
+status: in-progress
 titulo: "Pseudo-localização e gate de strings não traduzidas"
 versao: "0.22.0"
 data: "2026-09-29"
