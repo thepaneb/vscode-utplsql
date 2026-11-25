@@ -50,6 +50,9 @@ docs/brain/.obsidian/plugins/copilot/
 docs/brain/.obsidian/plugins/smart-connections/
 docs/brain/.obsidian/plugins/smart-lookup/
 
+# Artefatos locais do pipeline de i18n (PRD-93)
+i18n-export/
+
 # Ferramentas locais de agentes
 .kilo/
 

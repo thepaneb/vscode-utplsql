@@ -97,6 +97,10 @@ SORT id ASC
 - [[COD - google408e9fc32b68946a.html]] — `COD-google408e9fc32b68946a.html`
 - [[COD - helpers.ts]] — `COD-helpers.ts`
 - [[COD - hu.ts]] — `COD-hu.ts`
+- [[COD - i18n-apply.cjs]] — `COD-i18n-apply.cjs`
+- [[COD - i18n-check.cjs]] — `COD-i18n-check.cjs`
+- [[COD - i18n-export.cjs]] — `COD-i18n-export.cjs`
+- [[COD - i18n-locale-meta.cjs]] — `COD-i18n-locale-meta.cjs`
 - [[COD - i18n.ts]] — `COD-i18n.ts`
 - [[COD - id.ts]] — `COD-id.ts`
 - [[COD - index.html]] — `COD-index.html`

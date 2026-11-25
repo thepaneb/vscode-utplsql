@@ -119,6 +119,7 @@ SORT id ASC
 - [[BR-I18N-002 - Números e durações exibidos respeitam o locale]] — `BR-I18N-002`
 - [[BR-I18N-003 - Mensagens de UI passam por t e a varredura cobre literais]] — `BR-I18N-003`
 - [[BR-I18N-005 - Variantes de README mantêm paridade estrutural e registro de locale]] — `BR-I18N-005`
+- [[BR-I18N-007 - Pipeline de localização com round-trip e gate de i18n]] — `BR-I18N-007`
 - [[BR-I18N-008 - Catálogos de locale em um arquivo por locale com barrel canônico]] — `BR-I18N-008`
 - [[BR-LOG-001 - Diagnostico vai para o LogOutputChannel utPLSQL]] — `BR-LOG-001`
 - [[BR-LOG-002 - Trace e perf sao opt-in e nunca registram credenciais]] — `BR-LOG-002`
