@@ -2,7 +2,7 @@
 tipo: prd
 id: PRD-90
 aliases: [PRD-90]
-status: approved
+status: in-progress
 titulo: "Plurais (CLDR) e seleção no catálogo de mensagens"
 versao: "0.22.0"
 data: "2026-09-29"
