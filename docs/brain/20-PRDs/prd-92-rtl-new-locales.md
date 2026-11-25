@@ -2,7 +2,7 @@
 tipo: prd
 id: PRD-92
 aliases: [PRD-92]
-status: approved
+status: in-progress
 titulo: "RTL e novos locales (árabe e hebraico)"
 versao: "0.22.0"
 data: "2026-09-29"
