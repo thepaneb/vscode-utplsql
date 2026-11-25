@@ -2,7 +2,7 @@
 tipo: prd
 id: PRD-115
 aliases: [PRD-115]
-status: approved
+status: in-progress
 titulo: "Fatiar `i18nLocales.ts` por locale"
 versao: "0.22.0"
 data: "2026-10-10"
