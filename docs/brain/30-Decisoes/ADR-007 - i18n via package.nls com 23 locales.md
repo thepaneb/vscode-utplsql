@@ -45,5 +45,5 @@ duplicar lógica nem introduzir dependência de runtime i18n.
 
 - PRDs: [[prd-49-internacionalizacao|PRD-49]] ·
   [[prd-63-diagram-i18n|PRD-63]]
-- Código: `src/i18n.ts`, `src/i18nLocales.ts`, `package.nls.*.json`
+- Código: `src/i18n.ts`, `src/i18n/locales/*`, `package.nls.*.json`
 - [[MOC - I18n]] · [[NFR-006 - Internacionalização]]

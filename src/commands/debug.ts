@@ -75,7 +75,6 @@ async function collectCompileTargets(uri?: vscode.Uri): Promise<CompileTarget[]>
 }
 
 export function registerDebug(_context: vscode.ExtensionContext, deps: CommandDeps): void {
-  const locale = getExtensionLocale();
   const { state } = deps;
 
   try {
@@ -102,7 +101,7 @@ export function registerDebug(_context: vscode.ExtensionContext, deps: CommandDe
   _context.subscriptions.push(
     vscode.commands.registerCommand('utplsql.debugTest', async () => {
       if (!readConfig().debuggerEnabled) {
-        vscode.window.showInformationMessage(t(locale, 'ext.debug.disabled'));
+        vscode.window.showInformationMessage(t(getExtensionLocale(), 'ext.debug.disabled'));
         return;
       }
       try {
@@ -111,13 +110,13 @@ export function registerDebug(_context: vscode.ExtensionContext, deps: CommandDe
         const base = file.split(/[\\/]/).pop() ?? '';
         const packageName = base.replace(/\.(pks|pkb|sql)$/i, '');
         if (!packageName) {
-          vscode.window.showWarningMessage(t(locale, 'ext.debug.openPks'));
+          vscode.window.showWarningMessage(t(getExtensionLocale(), 'ext.debug.openPks'));
           return;
         }
         const { startDebugSession } = await loadDebugger();
         await startDebugSession(packageName);
       } catch (e) {
-        vscode.window.showErrorMessage(formatUserError(e, locale));
+        vscode.window.showErrorMessage(formatUserError(e, getExtensionLocale()));
       }
     }),
   );
@@ -125,29 +124,33 @@ export function registerDebug(_context: vscode.ExtensionContext, deps: CommandDe
   _context.subscriptions.push(
     vscode.commands.registerCommand('utplsql.compileForDebug', async (uri?: vscode.Uri) => {
       if (!readConfig().debuggerEnabled) {
-        vscode.window.showInformationMessage(t(locale, 'ext.debug.disabled'));
+        vscode.window.showInformationMessage(t(getExtensionLocale(), 'ext.debug.disabled'));
         return;
       }
       try {
         const targets = await collectCompileTargets(uri);
         if (targets.length === 0) {
-          vscode.window.showInformationMessage(t(locale, 'ext.compileForDebug.none'));
+          vscode.window.showInformationMessage(t(getExtensionLocale(), 'ext.compileForDebug.none'));
           return;
         }
         const { compileForDebug } = await loadCompileHelper();
         const result = await compileForDebug(targets);
         if (result.failed.length > 0) {
           const error = result.failed.map((f) => `${f.name}: ${f.error}`).join('; ');
-          vscode.window.showErrorMessage(t(locale, 'ext.compileForDebug.failed', { error }));
+          vscode.window.showErrorMessage(
+            t(getExtensionLocale(), 'ext.compileForDebug.failed', { error }),
+          );
           return;
         }
         vscode.window.showInformationMessage(
-          t(locale, 'ext.compileForDebug.ok', { name: result.ok.join(', ') }),
+          t(getExtensionLocale(), 'ext.compileForDebug.ok', { name: result.ok.join(', ') }),
         );
       } catch (e) {
         // Nunca ficar mudo: qualquer erro inesperado vira mensagem.
-        const error = formatUserError(e, locale);
-        vscode.window.showErrorMessage(t(locale, 'ext.compileForDebug.failed', { error }));
+        const error = formatUserError(e, getExtensionLocale());
+        vscode.window.showErrorMessage(
+          t(getExtensionLocale(), 'ext.compileForDebug.failed', { error }),
+        );
       }
     }),
   );
@@ -160,12 +163,12 @@ export function registerDebug(_context: vscode.ExtensionContext, deps: CommandDe
   const debugAtCursor = async (): Promise<void> => {
     const cfg = readConfig();
     if (!cfg.debuggerEnabled) {
-      vscode.window.showInformationMessage(t(locale, 'ext.debug.disabled'));
+      vscode.window.showInformationMessage(t(getExtensionLocale(), 'ext.debug.disabled'));
       return;
     }
     const editor = vscode.window.activeTextEditor;
     if (!editor || !isPlsqlDocument(editor.document, cfg.discoveryLanguageIds)) {
-      vscode.window.showWarningMessage(t(locale, 'ext.runAtCursor.onlyPks'));
+      vscode.window.showWarningMessage(t(getExtensionLocale(), 'ext.runAtCursor.onlyPks'));
       return;
     }
     const annotation = findAnnotationAtLine(
@@ -173,7 +176,7 @@ export function registerDebug(_context: vscode.ExtensionContext, deps: CommandDe
       editor.selection.active.line,
     );
     if (!annotation) {
-      vscode.window.showWarningMessage(t(locale, 'ext.runAtCursor.noAnnotation'));
+      vscode.window.showWarningMessage(t(getExtensionLocale(), 'ext.runAtCursor.noAnnotation'));
       return;
     }
     try {
@@ -182,13 +185,13 @@ export function registerDebug(_context: vscode.ExtensionContext, deps: CommandDe
         annotation.type === 'test' ? annotation.procName : undefined,
       );
     } catch (e) {
-      vscode.window.showErrorMessage(formatUserError(e, locale));
+      vscode.window.showErrorMessage(formatUserError(e, getExtensionLocale()));
     }
   };
 
   const debugFailed = async (): Promise<void> => {
     if (!readConfig().debuggerEnabled) {
-      vscode.window.showInformationMessage(t(locale, 'ext.debug.disabled'));
+      vscode.window.showInformationMessage(t(getExtensionLocale(), 'ext.debug.disabled'));
       return;
     }
     let failed = state.getLastFailedItems().filter((i) => targetFromMeta(state.getMeta(i)));
@@ -198,7 +201,7 @@ export function registerDebug(_context: vscode.ExtensionContext, deps: CommandDe
       failed = state.restoreLastFailed().filter((i) => targetFromMeta(state.getMeta(i)));
     }
     if (failed.length === 0) {
-      vscode.window.showWarningMessage(t(locale, 'ext.runFailed.none'));
+      vscode.window.showWarningMessage(t(getExtensionLocale(), 'ext.runFailed.none'));
       return;
     }
     let target = failed[0];
@@ -208,7 +211,7 @@ export function registerDebug(_context: vscode.ExtensionContext, deps: CommandDe
         return { label: meta?.kind === 'test' ? meta.procName : i.id, item: i };
       });
       const picked = await vscode.window.showQuickPick(items, {
-        placeHolder: t(locale, 'ext.debug.pickTest'),
+        placeHolder: t(getExtensionLocale(), 'ext.debug.pickTest'),
       });
       if (!picked) return;
       target = picked.item;
@@ -218,18 +221,18 @@ export function registerDebug(_context: vscode.ExtensionContext, deps: CommandDe
     try {
       await startForTarget(meta.packageName, meta.procName);
     } catch (e) {
-      vscode.window.showErrorMessage(formatUserError(e, locale));
+      vscode.window.showErrorMessage(formatUserError(e, getExtensionLocale()));
     }
   };
 
   const debugLast = async (): Promise<void> => {
     if (!readConfig().debuggerEnabled) {
-      vscode.window.showInformationMessage(t(locale, 'ext.debug.disabled'));
+      vscode.window.showInformationMessage(t(getExtensionLocale(), 'ext.debug.disabled'));
       return;
     }
     const lastRun = state.getLastRun();
     if (!lastRun) {
-      vscode.window.showInformationMessage(t(locale, 'ext.noPreviousRun'));
+      vscode.window.showInformationMessage(t(getExtensionLocale(), 'ext.noPreviousRun'));
       return;
     }
     const target = resolveLastRunTarget(lastRun);
@@ -241,7 +244,7 @@ export function registerDebug(_context: vscode.ExtensionContext, deps: CommandDe
     try {
       await startForTarget(target.packageName, target.procName);
     } catch (e) {
-      vscode.window.showErrorMessage(formatUserError(e, locale));
+      vscode.window.showErrorMessage(formatUserError(e, getExtensionLocale()));
     }
   };
 

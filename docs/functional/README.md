@@ -24,7 +24,7 @@ discovery (.pks + banco)  ──►  executeRun  ──►  Oracle direto  ─�
 | **Cobertura** | `cobertura.ts`, `coverage.ts`, `viewCoverage.ts`, `plsqlDeclarations.ts` | Parse do XML Cobertura, mapeamento para arquivos fonte, cobertura de views e por declaração |
 | **UX** | `codelens.ts`, `statusBar.ts`, `decorations.ts` | CodeLens, StatusBar, decorações inline |
 | **Diagnósticos** | `compilationDiagnostics.ts`, `quickfix.ts` + `oracleRunner.checkCompilationErrors()` | Erros de compilação PL/SQL (`ALL_ERRORS` → Problems Panel, pós-run) e validação de setup/integridade UT3 com quick-fix |
-| **Configuração** | `config.ts`, `state.ts`, `types.ts`, `connectionProfiles.ts`, `i18n.ts`, `i18nLocales.ts`, `oracleClient.ts` | Settings, conexão, perfis, i18n, modo thin/thick e estado persistente |
+| **Configuração** | `config.ts`, `state.ts`, `types.ts`, `connectionProfiles.ts`, `i18n.ts`, `i18n/locales/*`, `oracleClient.ts` | Settings, conexão, perfis, i18n, modo thin/thick e estado persistente |
 | **Infra** | `charset.ts`, `charsetSupport.ts`, `logger.ts`, `debounce.ts`, `dbSourceProvider.ts` | Decodificação de charset, detecção de charset legado, logging, coalescência e documentos virtuais `utplsql-db:` |
 | **Orquestração** | `extension.ts`, `commands/` | Registro de comandos, providers, ciclo de vida; handlers agrupados por área (`run`, `script`, `connection`, `profile`, `debug`, `utility`, `deps`) |
 
@@ -32,7 +32,7 @@ discovery (.pks + banco)  ──►  executeRun  ──►  Oracle direto  ─�
 
 | Puro (testável com `node --test`) | Depende de `vscode` |
 |---|---|
-| `suiteParser.ts`, `junit.ts`, `cobertura.ts`, `i18n.ts`, `i18nLocales.ts` | `extension.ts`, `runner.ts`, `config.ts` |
+| `suiteParser.ts`, `junit.ts`, `cobertura.ts`, `i18n.ts`, `i18n/locales/*` | `extension.ts`, `runner.ts`, `config.ts` |
 | `matching.ts`, `plsqlDeclarations.ts`, `charset.ts`, `charsetSupport.ts` | `discovery.ts`, `coverage.ts`, `viewCoverage.ts` |
 | `codelens.ts` (parse), `state.ts`, `types.ts`, `scriptRunner.ts`, `logger.ts`, `debounce.ts` | `decorations.ts`, `statusBar.ts` (classe), `oracleRunner.ts`, `results.ts`, `testTree.ts` |
 | | `connectionProfiles.ts`, `debugger.ts`, `quickfix.ts`, `compileForDebug.ts`, `oracleClient.ts`, `commands/` |

@@ -9,7 +9,7 @@ severidade: alta
 fonte: codigo
 erros: [ERR-005]
 verificado: 2026-09-23
-implementacao: ["src/commands/utility.ts:13", "src/quickfix.ts:152", "src/i18nLocales.ts:122", "package.json:130"]
+implementacao: ["src/commands/utility.ts:13", "src/quickfix.ts:152", "src/i18n/locales/pt-br.ts:123", "package.json:130"]
 testes: ["src/test/unit/quickfix.test.ts"]
 prds: ["PRD-12", "PRD-32"]
 requisitos: ["PRD-32/RF3", "PRD-32/RF5"]
@@ -38,7 +38,7 @@ DBMS_PROFILER é recurso privilegiado; a extensão não pode conceder grants e p
 - 📄 PRDs: [[prd-12-sql-coverage|PRD-12]] · [[prd-32-quickfix-setup-diagnostics|PRD-32]]
 - ⚠️ Erros: [[ERR-005 - UTPLSQL_NO_COVERAGE — cobertura não gerada por falta de grants|ERR-005]]
 - 🎯 Requisitos: [[prd-32-quickfix-setup-diagnostics|PRD-32 RF3]] · [[prd-32-quickfix-setup-diagnostics|PRD-32 RF5]]
-- 🧩 Código: [[COD - utility.ts]] · [[COD - quickfix.ts]] · [[COD - i18nLocales.ts]] · [[COD - package.json]]
+- 🧩 Código: [[COD - utility.ts]] · [[COD - quickfix.ts]] · [[COD - pt-br.ts]] · [[COD - package.json]]
 - 🧪 Testes: [[TST - quickfix.test.ts]]
 - ↩️ Referenciada por: [[04-code-coverage]] · [[07-diagnostics-and-validation]] · [[ADR-008 - Cobertura a partir do Cobertura XML e VSQL|ADR-008]] · [[Coverage]] · [[ENT-004 - Coverage|ENT-004]] · [[ERR-005 - UTPLSQL_NO_COVERAGE — cobertura não gerada por falta de grants|ERR-005]] · [[SEC-009 - Grants são copiados para o clipboard, nunca executados automaticamente|SEC-009]] · [[TPL-UTPLSQL - utPLSQL (framework no banco)|TPL-UTPLSQL]] · [[prd-12-sql-coverage|PRD-12]] · [[prd-32-quickfix-setup-diagnostics|PRD-32]]
 <!-- brain:auto:end -->

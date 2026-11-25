@@ -153,10 +153,10 @@ Nenhuma setting/comando. Sem impacto para o usuário.
 
 ## 12. Impacto no cérebro
 
-Ao concluir, criar/ajustar a regra `BR-I18N-008` ("catálogos de locale são um
-arquivo por locale, exportados por barrel") com `prds: ["PRD-115"]`,
-`implementacao:` e `testes:`; atualizar `BR-I18N-001` e `BR-COB-001` para o novo
-caminho. O campo `regras:` é derivado pelo `brain:sync`.
+Criada a regra `BR-I18N-008` ("catálogos de locale são um arquivo por locale,
+exportados por barrel") com `prds: ["PRD-115"]`, `implementacao:` e `testes:`;
+`BR-I18N-001` e `BR-COB-001` foram atualizadas para o novo caminho. O campo
+`regras:` é derivado pelo `brain:sync`.
 
 ## 13. Impacto nas docs
 

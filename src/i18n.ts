@@ -1,59 +1,10 @@
 // Motor i18n da extensão. PURO (sem 'vscode') — testável com node --test.
-// Catálogos em i18nLocales.ts. Chave ausente → pt-BR → a própria chave.
+// Catálogos em i18n/locales (um arquivo por locale, barrel com LOCALE_CODES).
+// Chave ausente → pt-BR → a própria chave.
 
-import {
-  bg,
-  cs,
-  de,
-  el,
-  en,
-  enGb,
-  es,
-  fr,
-  hu,
-  id,
-  it,
-  ja,
-  ko,
-  pl,
-  ptBr,
-  ro,
-  ru,
-  sr,
-  th,
-  tr,
-  uk,
-  vi,
-  zhCn,
-  zhTw,
-} from './i18nLocales';
+import { catalogs, type ExtensionLocale } from './i18n/locales';
 
-export type ExtensionLocale =
-  | 'pt-br'
-  | 'en'
-  | 'en-gb'
-  | 'es'
-  | 'zh-cn'
-  | 'zh-tw'
-  | 'ja'
-  | 'de'
-  | 'fr'
-  | 'it'
-  | 'ko'
-  | 'ru'
-  | 'tr'
-  | 'pl'
-  | 'cs'
-  | 'hu'
-  | 'bg'
-  | 'el'
-  | 'id'
-  | 'ro'
-  | 'sr'
-  | 'th'
-  | 'uk'
-  | 'vi';
-
+export type { ExtensionLocale } from './i18n/locales';
 export {
   bg,
   cs,
@@ -79,38 +30,11 @@ export {
   vi,
   zhCn,
   zhTw,
-} from './i18nLocales';
-
-const catalogs: Record<ExtensionLocale, Record<string, string>> = {
-  'pt-br': ptBr,
-  en,
-  'en-gb': enGb,
-  es,
-  'zh-cn': zhCn,
-  'zh-tw': zhTw,
-  ja,
-  de,
-  fr,
-  it,
-  ko,
-  ru,
-  tr,
-  pl,
-  cs,
-  hu,
-  bg,
-  el,
-  id,
-  ro,
-  sr,
-  th,
-  uk,
-  vi,
-};
+} from './i18n/locales';
 
 /** Chaves do catálogo base (pt-BR) ausentes em um catálogo alvo. */
 export function missingCatalogKeys(catalog: Record<string, string>): string[] {
-  return Object.keys(ptBr).filter((k) => !(k in catalog));
+  return Object.keys(catalogs['pt-br']).filter((k) => !(k in catalog));
 }
 
 /** Resolve o idioma efetivo a partir da setting e do idioma do VSCode. */
@@ -157,6 +81,6 @@ export function t(
   params?: Record<string, string | number>,
 ): string {
   const catalog = catalogs[locale];
-  const template = catalog[key] ?? ptBr[key] ?? key;
+  const template = catalog[key] ?? catalogs['pt-br'][key] ?? key;
   return interpolate(template, params);
 }

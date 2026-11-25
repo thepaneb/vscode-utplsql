@@ -1,16 +1,16 @@
 ---
-id: COD-i18nLocales.ts
-aliases: [COD-i18nLocales.ts]
+id: COD-ja.ts
+aliases: [COD-ja.ts]
 tipo: codigo
-titulo: "i18nLocales.ts"
-arquivo: "src/i18nLocales.ts"
+titulo: "ja.ts"
+arquivo: "src/i18n/locales/ja.ts"
 gerado: true
 tags: [codigo]
 ---
 
-# COD-i18nLocales.ts — i18nLocales.ts
+# COD-ja.ts — ja.ts
 
-Implementa [`src/i18nLocales.ts`](../../../src/i18nLocales.ts) — **gerado** por `npm run brain:sync`.
+Implementa [`src/i18n/locales/ja.ts`](../../../src/i18n/locales/ja.ts) — **gerado** por `npm run brain:sync`.
 
 ## Testes que cobrem
 

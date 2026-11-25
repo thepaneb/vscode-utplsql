@@ -32,6 +32,7 @@ import {
   zhCn,
   zhTw,
 } from '../../i18n';
+import { catalogs, LOCALE_CODES } from '../../i18n/locales';
 
 const ALL_CATALOGS: [string, Record<string, string>][] = [
   ['en', en],
@@ -58,6 +59,15 @@ const ALL_CATALOGS: [string, Record<string, string>][] = [
   ['uk', uk],
   ['vi', vi],
 ];
+
+test('barrel: LOCALE_CODES cobre os 24 catálogos na ordem canônica', () => {
+  assert.strictEqual(LOCALE_CODES.length, 24);
+  assert.deepStrictEqual([...new Set(LOCALE_CODES)], [...LOCALE_CODES]);
+  assert.deepStrictEqual(Object.keys(catalogs), [...LOCALE_CODES]);
+  for (const code of LOCALE_CODES) {
+    assert.ok(catalogs[code], `catálogo ausente para ${code}`);
+  }
+});
 
 test('resolveLocale: auto com editor pt -> pt-br', () => {
   assert.strictEqual(resolveLocale('auto', 'pt-BR'), 'pt-br');

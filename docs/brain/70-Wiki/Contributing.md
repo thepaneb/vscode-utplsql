@@ -104,7 +104,7 @@ vscode-utplsql/
 │   ├── debugger.ts          ← DBMS_DEBUG debug adapter
 │   ├── dbmsDebug.ts         ← DBMS_DEBUG client (pure SQL/parse)
 │   ├── i18n.ts              ← translation runtime (pure)
-│   ├── i18nLocales.ts       ← locale catalogs (pure)
+│   ├── i18n/locales/*.ts    ← locale catalogs (pure, one per locale)
 │   ├── state.ts             ← session state (pure)
 │   ├── types.ts             ← interfaces (type-only)
 │   └── test/

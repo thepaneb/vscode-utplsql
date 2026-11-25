@@ -5,7 +5,7 @@ titulo: "Internationalization (i18n)"
 publicar: docs/wiki/Internationalization.md
 origem: ["MOC - I18n"]
 verificado: 2026-09-23
-regras: ["BR-I18N-001"]
+regras: ["BR-I18N-001", "BR-I18N-008"]
 tags: [wiki]
 ---
 
@@ -31,7 +31,7 @@ so on; anything unsupported falls back to `en`. A fixed value always wins.
 | Layer | Source |
 |---|---|
 | Command / setting titles | `package.nls.json` + `package.nls.<locale>.json` (contributed by VSCode) |
-| Runtime messages | `src/i18n.ts` (engine) + `src/i18nLocales.ts` (catalogues) |
+| Runtime messages | `src/i18n.ts` (engine) + `src/i18n/locales/*.ts` (one per locale) |
 
 ```typescript
 function resolveLocale(setting: string, vscodeLanguage: string): ExtensionLocale;
@@ -41,7 +41,7 @@ function t(locale: ExtensionLocale, key: string, params?): string;
 - `t` interpolates `{param}` placeholders: `t(locale, 'key', { param: value })`.
 - A missing key falls back to **pt-BR**, then to the key itself. It never throws.
 
-![Internationalization architecture](images/diagram-i18n.png)
+![Internationalization architecture](images/diagram-i18n.svg)
 
 ## Notes
 

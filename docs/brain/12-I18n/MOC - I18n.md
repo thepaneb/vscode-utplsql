@@ -8,8 +8,10 @@ tags: [moc, i18n, locale]
 # MOC - I18n
 
 Locales da extensão (`LOC-*`, **geradas** de `package.nls.*.json` por
-`npm run brain:sync`). As strings de UI ficam em `package.nls.<locale>.json` na
-raiz; o README tem variantes em `60-README/` e a wiki é pt-BR/en.
+`npm run brain:sync`). As strings de UI de manifesto ficam em
+`package.nls.<locale>.json` na raiz; as mensagens de runtime ficam em
+`src/i18n/locales/*.ts` (um arquivo por locale). O README tem variantes em
+`60-README/` e a wiki é pt-BR/en.
 
 ## Locales
 
@@ -24,10 +26,12 @@ SORT id ASC
 
 - [[MOC - Documentacao]]
 - [[NFR-006 - Internacionalização]]
+- [[Estrutura dos catálogos]]
 
 ## Índice (links)
 
 <!-- brain:auto:start:moc-index -->
+- [[Estrutura dos catálogos]]
 - [[LOC-bg - Български]] — `LOC-bg`
 - [[LOC-cs - Čeština]] — `LOC-cs`
 - [[LOC-de - Deutsch]] — `LOC-de`

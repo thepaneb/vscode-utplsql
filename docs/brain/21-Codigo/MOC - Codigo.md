@@ -33,6 +33,7 @@ SORT id ASC
 - [[COD - 404.html]] — `COD-404.html`
 - [[COD - annotation.ts]] — `COD-annotation.ts`
 - [[COD - autoRun.ts]] — `COD-autoRun.ts`
+- [[COD - bg.ts]] — `COD-bg.ts`
 - [[COD - bing-index.yml]] — `COD-bing-index.yml`
 - [[COD - biome.json]] — `COD-biome.json`
 - [[COD - bootstrap.sh]] — `COD-bootstrap.sh`
@@ -63,8 +64,10 @@ SORT id ASC
 - [[COD - coverageStore.ts]] — `COD-coverageStore.ts`
 - [[COD - create-pr.cjs]] — `COD-create-pr.cjs`
 - [[COD - create-release.cjs]] — `COD-create-release.cjs`
+- [[COD - cs.ts]] — `COD-cs.ts`
 - [[COD - dbmsDebug.ts]] — `COD-dbmsDebug.ts`
 - [[COD - dbSourceProvider.ts]] — `COD-dbSourceProvider.ts`
+- [[COD - de.ts]] — `COD-de.ts`
 - [[COD - debounce.ts]] — `COD-debounce.ts`
 - [[COD - debug.ts]] — `COD-debug.ts`
 - [[COD - debugger.ts]] — `COD-debugger.ts`
@@ -76,11 +79,16 @@ SORT id ASC
 - [[COD - docs-check.cjs]] — `COD-docs-check.cjs`
 - [[COD - docs-features-check.cjs]] — `COD-docs-features-check.cjs`
 - [[COD - docs-fidelity.cjs]] — `COD-docs-fidelity.cjs`
+- [[COD - el.ts]] — `COD-el.ts`
+- [[COD - en-gb.ts]] — `COD-en-gb.ts`
+- [[COD - en.ts]] — `COD-en.ts`
 - [[COD - errors.ts]] — `COD-errors.ts`
+- [[COD - es.ts]] — `COD-es.ts`
 - [[COD - esbuild.config.mjs]] — `COD-esbuild.config.mjs`
 - [[COD - extension.ts]] — `COD-extension.ts`
 - [[COD - favicon.png]] — `COD-favicon.png`
 - [[COD - fixtures.ts]] — `COD-fixtures.ts`
+- [[COD - fr.ts]] — `COD-fr.ts`
 - [[COD - gen-diagrams.cjs]] — `COD-gen-diagrams.cjs`
 - [[COD - gen-icon.cjs]] — `COD-gen-icon.cjs`
 - [[COD - gen-social-preview.cjs]] — `COD-gen-social-preview.cjs`
@@ -88,13 +96,18 @@ SORT id ASC
 - [[COD - google-index.yml]] — `COD-google-index.yml`
 - [[COD - google408e9fc32b68946a.html]] — `COD-google408e9fc32b68946a.html`
 - [[COD - helpers.ts]] — `COD-helpers.ts`
+- [[COD - hu.ts]] — `COD-hu.ts`
 - [[COD - i18n.ts]] — `COD-i18n.ts`
-- [[COD - i18nLocales.ts]] — `COD-i18nLocales.ts`
+- [[COD - id.ts]] — `COD-id.ts`
 - [[COD - index.html]] — `COD-index.html`
+- [[COD - index.ts]] — `COD-index.ts`
 - [[COD - integration.yml]] — `COD-integration.yml`
+- [[COD - it.ts]] — `COD-it.ts`
+- [[COD - ja.ts]] — `COD-ja.ts`
 - [[COD - jev-review.cjs]] — `COD-jev-review.cjs`
 - [[COD - jevReview.ts]] — `COD-jevReview.ts`
 - [[COD - junit.ts]] — `COD-junit.ts`
+- [[COD - ko.ts]] — `COD-ko.ts`
 - [[COD - languageIdentity.ts]] — `COD-languageIdentity.ts`
 - [[COD - launch.json]] — `COD-launch.json`
 - [[COD - linkedin-drift.cjs]] — `COD-linkedin-drift.cjs`
@@ -124,8 +137,10 @@ SORT id ASC
 - [[COD - perfFixture.ts]] — `COD-perfFixture.ts`
 - [[COD - performance.yml]] — `COD-performance.yml`
 - [[COD - persisted.ts]] — `COD-persisted.ts`
+- [[COD - pl.ts]] — `COD-pl.ts`
 - [[COD - plsqlDeclarations.ts]] — `COD-plsqlDeclarations.ts`
 - [[COD - profile.ts]] — `COD-profile.ts`
+- [[COD - pt-br.ts]] — `COD-pt-br.ts`
 - [[COD - publish.cjs]] — `COD-publish.cjs`
 - [[COD - publish.yml]] — `COD-publish.yml`
 - [[COD - quickfix.ts]] — `COD-quickfix.ts`
@@ -136,7 +151,9 @@ SORT id ASC
 - [[COD - Registro de features.md]] — `COD-Registro-de-features.md`
 - [[COD - results.ts]] — `COD-results.ts`
 - [[COD - retry.ts]] — `COD-retry.ts`
+- [[COD - ro.ts]] — `COD-ro.ts`
 - [[COD - robots.txt]] — `COD-robots.txt`
+- [[COD - ru.ts]] — `COD-ru.ts`
 - [[COD - run-tests.cjs]] — `COD-run-tests.cjs`
 - [[COD - run.sh]] — `COD-run.sh`
 - [[COD - run.ts]] — `COD-run.ts`
@@ -150,6 +167,7 @@ SORT id ASC
 - [[COD - setup.sh]] — `COD-setup.sh`
 - [[COD - site-health.yml]] — `COD-site-health.yml`
 - [[COD - sitemap.xml]] — `COD-sitemap.xml`
+- [[COD - sr.ts]] — `COD-sr.ts`
 - [[COD - src-scaffold.ts]] — `COD-src-scaffold.ts`
 - [[COD - state.ts]] — `COD-state.ts`
 - [[COD - statusBar.ts]] — `COD-statusBar.ts`
@@ -162,15 +180,19 @@ SORT id ASC
 - [[COD - test-setup.cjs]] — `COD-test-setup.cjs`
 - [[COD - testItemIndex.ts]] — `COD-testItemIndex.ts`
 - [[COD - testTree.ts]] — `COD-testTree.ts`
+- [[COD - th.ts]] — `COD-th.ts`
 - [[COD - thickSetup.ts]] — `COD-thickSetup.ts`
 - [[COD - timing.ts]] — `COD-timing.ts`
 - [[COD - tnsnames.ts]] — `COD-tnsnames.ts`
+- [[COD - tr.ts]] — `COD-tr.ts`
 - [[COD - tsconfig.json]] — `COD-tsconfig.json`
 - [[COD - types.ts]] — `COD-types.ts`
+- [[COD - uk.ts]] — `COD-uk.ts`
 - [[COD - unpriv.ts]] — `COD-unpriv.ts`
 - [[COD - utility.ts]] — `COD-utility.ts`
 - [[COD - utplsql.code-snippets]] — `COD-utplsql.code-snippets`
 - [[COD - version-check.cjs]] — `COD-version-check.cjs`
+- [[COD - vi.ts]] — `COD-vi.ts`
 - [[COD - viewCoverage.ts]] — `COD-viewCoverage.ts`
 - [[COD - virtualSource.ts]] — `COD-virtualSource.ts`
 - [[COD - vsce.cjs]] — `COD-vsce.cjs`
@@ -179,4 +201,6 @@ SORT id ASC
 - [[COD - vscode-stub.types.ts]] — `COD-vscode-stub.types.ts`
 - [[COD - wait-ready.sh]] — `COD-wait-ready.sh`
 - [[COD - wiki.yml]] — `COD-wiki.yml`
+- [[COD - zh-cn.ts]] — `COD-zh-cn.ts`
+- [[COD - zh-tw.ts]] — `COD-zh-tw.ts`
 <!-- brain:auto:end -->
