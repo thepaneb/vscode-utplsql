@@ -79,11 +79,8 @@ export function formatNumber(
   try {
     return new Intl.NumberFormat(safeLocale, options).format(value);
   } catch {
-    try {
-      return new Intl.NumberFormat('en', options).format(value);
-    } catch {
-      return String(value);
-    }
+    // Opções inválidas (`Intl` lança): devolve o número cru, sem quebrar a UI.
+    return String(value);
   }
 }
 

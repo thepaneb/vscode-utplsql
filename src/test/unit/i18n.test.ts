@@ -270,6 +270,10 @@ test('formatNumber: separador e grouping do locale; fallback en', () => {
   );
   assert.strictEqual(formatNumber('en', 1234, { useGrouping: false }), '1234');
   assert.strictEqual(formatNumber('xx' as unknown as ExtensionLocale, 1234), '1,234');
+  assert.strictEqual(
+    formatNumber('en', 42, { style: 'currency', currency: 'INVALID' } as Intl.NumberFormatOptions),
+    '42',
+  );
 });
 
 test('formatDuration: ms abaixo de 1s; s com 1 decimal do locale', () => {
