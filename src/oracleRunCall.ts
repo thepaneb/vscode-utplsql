@@ -139,6 +139,8 @@ export function buildReporterList(options: ReporterListOptions): ReporterList {
 export interface CoverageScopeOptions {
   enabled: boolean;
   owner: string;
+  /** Prefixo do schema do utPLSQL (`UT3.` ou vazio) para qualificar o tipo da coleção. */
+  utSchema?: string;
   schemes?: string[];
   includeObjects?: string[];
   excludeObjects?: string[];
@@ -164,14 +166,15 @@ export function buildCoverageScope(
   if (!options.enabled) return { schemesArg: 'null', scopeParams: '', binds: {} };
 
   const binds: Binds = {};
+  const listType = `${options.utSchema ?? ''}UT_VARCHAR2_LIST`;
   const schemes = options.schemes?.length ? options.schemes : [options.owner];
-  binds.schemes = { dir: oracledb.BIND_IN, type: 'UT_VARCHAR2_LIST', val: schemes };
+  binds.schemes = { dir: oracledb.BIND_IN, type: listType, val: schemes };
 
   const scopeParts: string[] = [];
   if (options.includeObjects?.length) {
     binds.includeObjects = {
       dir: oracledb.BIND_IN,
-      type: 'UT_VARCHAR2_LIST',
+      type: listType,
       val: options.includeObjects,
     };
     scopeParts.push('a_include_objects => :includeObjects');
@@ -179,7 +182,7 @@ export function buildCoverageScope(
   if (options.excludeObjects?.length) {
     binds.excludeObjects = {
       dir: oracledb.BIND_IN,
-      type: 'UT_VARCHAR2_LIST',
+      type: listType,
       val: options.excludeObjects,
     };
     scopeParts.push('a_exclude_objects => :excludeObjects');
@@ -261,6 +264,8 @@ export interface RunCallOptions {
   scopeParams?: string;
   randomOrderParams?: string;
   tags?: string;
+  /** Prefixo do schema do utPLSQL (`UT3.` ou vazio) para qualificar o tipo da coleção. */
+  utSchema?: string;
   /** Binds já montados (ex.: export). São mesclados com os desta função. */
   binds?: Binds;
 }
@@ -278,7 +283,11 @@ export function buildRunCall(oracledb: OracleModule, options: RunCallOptions): R
   };
   const pathsArg = options.pathArgs.length > 0 ? ':paths' : 'null';
   if (options.pathArgs.length > 0) {
-    binds.paths = { dir: oracledb.BIND_IN, type: 'UT_VARCHAR2_LIST', val: options.pathArgs };
+    binds.paths = {
+      dir: oracledb.BIND_IN,
+      type: `${options.utSchema ?? ''}UT_VARCHAR2_LIST`,
+      val: options.pathArgs,
+    };
   }
 
   const plsql = `BEGIN ut_runner.run(

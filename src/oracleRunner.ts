@@ -1215,6 +1215,7 @@ async function executeRunOracleCore(
     const scope = buildCoverageScope(oracledb, {
       enabled: coverageEnabled,
       owner,
+      utSchema,
       schemes: coverageSchemesCfg,
       includeObjects: coverageIncludeObjects,
       excludeObjects: coverageExcludeObjects,
@@ -1233,6 +1234,7 @@ async function executeRunOracleCore(
       pathArgs,
       runners,
       schemesArg: scope.schemesArg,
+      utSchema,
       scopeParams: scope.scopeParams,
       randomOrderParams: random.params,
       tags,

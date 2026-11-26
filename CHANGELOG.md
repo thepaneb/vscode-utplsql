@@ -31,6 +31,9 @@
   Oracle's name-resolution order (current-schema package, private synonym, public
   synonym, accessible package), so a private synonym such as `DEMO.UT_RUNNER →
   UT3.UT_RUNNER` no longer causes `ORA-00942` on `UT_OUTPUT_BUFFER_TMP`.
+- **Typed collection binds**: `UT_VARCHAR2_LIST` is qualified with the discovered
+  utPLSQL schema in `a_paths`/coverage binds, fixing `NJS-129` when the test
+  schema reaches utPLSQL through a private synonym without a local type synonym.
 
 ## 0.21.0
 

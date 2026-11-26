@@ -134,6 +134,31 @@ test('buildCoverageScope: schemes + escopo fino', () => {
   });
 });
 
+test('buildCoverageScope: qualifica UT_VARCHAR2_LIST com o schema do utPLSQL', () => {
+  const scope = buildCoverageScope(oracle, {
+    enabled: true,
+    owner: 'APP',
+    utSchema: 'UT3.',
+    includeObjects: ['APP.A'],
+    excludeObjects: ['APP.B'],
+  });
+  assert.deepStrictEqual(scope.binds.schemes, {
+    dir: 3001,
+    type: 'UT3.UT_VARCHAR2_LIST',
+    val: ['APP'],
+  });
+  assert.deepStrictEqual(scope.binds.includeObjects, {
+    dir: 3001,
+    type: 'UT3.UT_VARCHAR2_LIST',
+    val: ['APP.A'],
+  });
+  assert.deepStrictEqual(scope.binds.excludeObjects, {
+    dir: 3001,
+    type: 'UT3.UT_VARCHAR2_LIST',
+    val: ['APP.B'],
+  });
+});
+
 test('buildRandomOrderParams: desabilitado e com seed', () => {
   assert.deepStrictEqual(buildRandomOrderParams(oracle, {}), {
     params: '',
@@ -171,6 +196,20 @@ test('buildRunCall: PL/SQL e binds idênticos ao contrato', () => {
     val: ['pkg', 'pkg.proc'],
   });
   assert.deepStrictEqual(call.binds.exportCharset, { dir: 3001, type: 2001, val: 'UTF-8' });
+});
+
+test('buildRunCall: qualifica UT_VARCHAR2_LIST quando o utPLSQL está em outro schema', () => {
+  const call = buildRunCall(oracle, {
+    pathArgs: ['pkg'],
+    runners: ['ut_documentation_reporter()'],
+    schemesArg: 'null',
+    utSchema: 'UT3.',
+  });
+  assert.deepStrictEqual(call.binds.paths, {
+    dir: 3001,
+    type: 'UT3.UT_VARCHAR2_LIST',
+    val: ['pkg'],
+  });
 });
 
 test('buildRunCall: sem paths/tags/cobertura mantém null', () => {
