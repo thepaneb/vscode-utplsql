@@ -27,6 +27,10 @@
   catalogs through JSON (en-gb as an overlay), the localization glossary is in
   the vault, and `i18n:check` validates catalogs × locales × manifests × plural
   forms × glossary in CI.
+- **Schema discovery fix**: `discoverUtplsqlSchema` resolves `UT_RUNNER` in
+  Oracle's name-resolution order (current-schema package, private synonym, public
+  synonym, accessible package), so a private synonym such as `DEMO.UT_RUNNER →
+  UT3.UT_RUNNER` no longer causes `ORA-00942` on `UT_OUTPUT_BUFFER_TMP`.
 
 ## 0.21.0
 

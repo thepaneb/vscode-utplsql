@@ -745,6 +745,42 @@ test('discoverUtplsqlSchema: sem synonym retorna vazio', async () => {
   assert.strictEqual(prefix, '');
 });
 
+test('discoverUtplsqlSchema: synonym privado do schema atual aponta para UT3', async () => {
+  const conn = {
+    execute: async (sql: string) =>
+      /UNION ALL/.test(sql)
+        ? { rows: [{ PRIO: 1, KIND: 'SYNONYM', OWNER: 'DEMO', TABLE_OWNER: 'UT3' }] }
+        : { rows: [] },
+  };
+  const prefix = await discoverUtplsqlSchema(conn as never);
+  assert.strictEqual(prefix, 'UT3.');
+});
+
+test('discoverUtplsqlSchema: pacote UT_RUNNER no schema atual não cai no fallback', async () => {
+  const calls: string[] = [];
+  const conn = {
+    execute: async (sql: string) => {
+      calls.push(sql);
+      if (/UNION ALL/.test(sql)) {
+        return { rows: [{ PRIO: 0, KIND: 'OBJECT', OWNER: 'DEMO', TABLE_OWNER: null }] };
+      }
+      throw new Error('fallback não deveria rodar');
+    },
+  };
+  const prefix = await discoverUtplsqlSchema(conn as never);
+  assert.strictEqual(prefix, '');
+  assert.strictEqual(calls.length, 1);
+});
+
+test('discoverUtplsqlSchema: sem synonym usa pacote UT_RUNNER acessível', async () => {
+  const conn = {
+    execute: async (sql: string) =>
+      /UNION ALL/.test(sql) ? { rows: [] } : { rows: [{ OWNER: 'UT3' }] },
+  };
+  const prefix = await discoverUtplsqlSchema(conn as never);
+  assert.strictEqual(prefix, 'UT3.');
+});
+
 test('discoverUtplsqlSchema: erro de acesso retorna vazio', async () => {
   const conn = {
     execute: async () => {
