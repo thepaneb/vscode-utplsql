@@ -53,26 +53,27 @@ describeDB('capacidades Oracle do banco real', () => {
     }
   }
 
-  it('discoverUtplsqlSchema reflete o synonym público (ou vazio sem ele)', async function () {
+  it('discoverUtplsqlSchema resolve o schema dono de UT_OUTPUT_BUFFER_TMP', async function () {
     this.timeout(60_000);
     const { discoverUtplsqlSchema } = require('../../oracleRunner.js');
     const dbc = await openRaw();
     try {
-      const expected = await withObjectFormat(async () => {
-        const r = await dbc.execute(
-          `SELECT table_owner FROM ALL_SYNONYMS WHERE synonym_name = 'UT_RUNNER' AND owner = 'PUBLIC'`,
-          {},
-        );
-        const owner = r.rows?.[0] ? firstCol(r.rows[0]) : '';
-        return owner ? `${owner}.` : '';
-      });
       const prefix: string = await withObjectFormat(() => discoverUtplsqlSchema(dbc));
-      assert.strictEqual(prefix, expected);
       // Contrato de normalização: prefixo é 'SCHEMA.' (sem espaços) ou vazio.
       assert.ok(
         prefix === '' || /^[A-Z0-9_$#]+\.$/.test(prefix),
         `prefixo deveria ser 'SCHEMA.' ou vazio, veio: ${JSON.stringify(prefix)}`,
       );
+      const owner = await withObjectFormat(async () => {
+        if (prefix) return prefix.replace(/\.$/, '');
+        const r = await dbc.execute(`SELECT SYS_CONTEXT('USERENV','CURRENT_SCHEMA') FROM dual`, {});
+        return String(firstCol(r.rows?.[0]) ?? '');
+      });
+      const buffer = await dbc.execute(
+        `SELECT 1 FROM all_tables WHERE owner = :owner AND table_name = :name`,
+        { owner, name: 'UT_OUTPUT_BUFFER_TMP' },
+      );
+      assert.ok((buffer.rows?.length ?? 0) > 0, `UT_OUTPUT_BUFFER_TMP não encontrada em ${owner}`);
     } finally {
       await dbc.close().catch(() => {});
     }
