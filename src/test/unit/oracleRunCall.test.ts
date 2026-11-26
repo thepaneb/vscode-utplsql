@@ -209,6 +209,7 @@ test('buildRunCall: PL/SQL e binds idênticos ao contrato', () => {
     tags: 'fast & !slow',
     binds: { exportCharset: { dir: 3001, type: 2001, val: 'UTF-8' } },
   });
+  assert.match(call.plsql, /^BEGIN ut_runner\.run\(/);
   assert.match(call.plsql, /a_paths => :paths/);
   assert.match(
     call.plsql,
@@ -239,13 +240,14 @@ test('buildRunCall: qualifica UT_VARCHAR2_LIST quando o utPLSQL está em outro s
   });
 });
 
-test('buildRunCall: qualifica o construtor ut_reporters', () => {
+test('buildRunCall: qualifica pacote e construtor ut_reporters com o schema do utPLSQL', () => {
   const call = buildRunCall(oracle, {
     pathArgs: [],
     runners: ['UT3.ut_documentation_reporter()'],
     schemesArg: 'null',
     utSchema: 'UT3.',
   });
+  assert.match(call.plsql, /^BEGIN UT3\.ut_runner\.run\(/);
   assert.match(
     call.plsql,
     /a_reporters => UT3\.ut_reporters\(UT3\.ut_documentation_reporter\(\)\)/,

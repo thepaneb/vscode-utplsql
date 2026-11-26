@@ -8,6 +8,7 @@ import { logger } from './logger';
 import { oracleMetadataCache } from './metadataCache';
 import {
   beginOracleActivity,
+  discoverUtplsqlSchema,
   ensurePool,
   getOracleInfo,
   parseConnString,
@@ -314,10 +315,11 @@ export async function getSuitesInfo(
   }
   let rows: DbSuiteRow[] = [];
   try {
+    const utSchema = await discoverUtplsqlSchema(conn, cacheKey);
     const result = await conn.execute(
       `SELECT object_owner, object_name, item_name, item_description, item_type,
               item_line_no, path, disabled_flag, disabled_reason, tags
-         FROM TABLE(ut_runner.get_suites_info(:owner, null))`,
+         FROM TABLE(${utSchema}ut_runner.get_suites_info(:owner, null))`,
       { owner: owner.toUpperCase() },
     );
     for (const row of result.rows ?? []) {
@@ -523,7 +525,7 @@ async function discoverDbSuitesCore(
   const prevTimeout = conn.callTimeout;
   try {
     conn.callTimeout = 10_000;
-    const { utVersion } = await getOracleInfo(conn);
+    const { utVersion } = await getOracleInfo(conn, connStr);
     const apiAvailable = !utVersion || !semverLt(utVersion, UTPLSQL_SUITES_INFO_MIN_VERSION);
     if (apiAvailable) {
       const rows = await getSuitesInfo(conn, schema, connStr);

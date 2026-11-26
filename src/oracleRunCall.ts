@@ -270,7 +270,7 @@ export interface RunCallOptions {
   scopeParams?: string;
   randomOrderParams?: string;
   tags?: string;
-  /** Prefixo do schema do utPLSQL (`UT3.` ou vazio) para qualificar o tipo da coleção. */
+  /** Prefixo do schema do utPLSQL (`UT3.` ou vazio) para qualificar o pacote e o tipo. */
   utSchema?: string;
   /** Binds já montados (ex.: export). São mesclados com os desta função. */
   binds?: Binds;
@@ -296,7 +296,7 @@ export function buildRunCall(oracledb: OracleModule, options: RunCallOptions): R
     };
   }
 
-  const plsql = `BEGIN ut_runner.run(
+  const plsql = `BEGIN ${options.utSchema ?? ''}ut_runner.run(
       a_paths => ${pathsArg},
       a_reporters => ${options.utSchema ?? ''}ut_reporters(${options.runners.join(',')}),
       a_coverage_schemes => ${options.schemesArg}${options.scopeParams ?? ''},

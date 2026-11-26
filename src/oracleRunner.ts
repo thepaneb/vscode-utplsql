@@ -497,17 +497,21 @@ function extractScalar(row: unknown, colName?: string): string | null {
   return vals.length > 0 && vals[0] != null ? String(vals[0]) : null;
 }
 
-export async function getOracleInfo(conn: {
-  execute(
-    sql: string,
-    bindParams?: Record<string, unknown>,
-    options?: Record<string, unknown>,
-  ): Promise<{ rows?: unknown[] }>;
-}): Promise<{ utVersion: string | null; dbVersion: string | null }> {
+export async function getOracleInfo(
+  conn: {
+    execute(
+      sql: string,
+      bindParams?: Record<string, unknown>,
+      options?: Record<string, unknown>,
+    ): Promise<{ rows?: unknown[] }>;
+  },
+  cacheKey?: string,
+): Promise<{ utVersion: string | null; dbVersion: string | null }> {
   let utVersion: string | null = null;
   let dbVersion: string | null = null;
   try {
-    const r = await conn.execute(`SELECT ut_runner.version() FROM dual`);
+    const utSchema = await discoverUtplsqlSchema(conn, cacheKey);
+    const r = await conn.execute(`SELECT ${utSchema}ut_runner.version() FROM dual`);
     utVersion = extractScalar(r.rows?.[0]);
   } catch (e) {
     // utRunner pode não existir
@@ -542,8 +546,9 @@ export async function listReportersOracle(
   }
   let reporters: string[] = [];
   try {
+    const utSchema = await discoverUtplsqlSchema(conn, cacheKey);
     const result = await conn.execute(
-      `SELECT reporter_object_name FROM TABLE(ut_runner.get_reporters_list())`,
+      `SELECT reporter_object_name FROM TABLE(${utSchema}ut_runner.get_reporters_list())`,
     );
     // `get_reporters_list()` devolve o nome qualificado pelo schema
     // (ex.: `UT3.UT_COVERAGE_COBERTURA_REPORTER`); normalizamos para o nome do
@@ -590,8 +595,9 @@ export async function rebuildAnnotationCache(
 ): Promise<void> {
   const owner = parseConnString(connection).user.toUpperCase();
   const done = await withOracleConnection(oracledb, connection, cfg, async (conn) => {
+    const utSchema = await discoverUtplsqlSchema(conn, connection);
     await conn.execute(
-      `BEGIN ut_runner.rebuild_annotation_cache(:owner); END;`,
+      `BEGIN ${utSchema}ut_runner.rebuild_annotation_cache(:owner); END;`,
       { owner: { dir: oracledb.BIND_IN, type: oracledb.STRING, val: owner } },
       { autoCommit: true },
     );

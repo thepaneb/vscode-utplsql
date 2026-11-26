@@ -8,6 +8,9 @@ const connection = {
   callTimeout: 123,
   execute: async (sql: string, binds?: Record<string, unknown>) => {
     executeCalls.push({ sql, binds });
+    // Descoberta do utPLSQL resolve o pacote em outro schema (shared install).
+    if (/all_synonyms|union all/i.test(sql)) return { rows: [{ TABLE_OWNER: 'UT3' }] };
+    return { rows: [] };
   },
   close: async () => {},
 };
@@ -49,10 +52,13 @@ test('liveRuntime.runTest: aceita package e package.test', async () => {
   await liveRuntime.runTest(connection as never, 'test_app');
   await liveRuntime.runTest(connection as never, 'test_app', 't1');
 
-  assert.strictEqual(executeCalls.length, 2);
+  const runCalls = executeCalls.filter((call) => /ut_runner\.run/.test(call.sql));
+  assert.strictEqual(runCalls.length, 2);
   assert.deepStrictEqual(
-    executeCalls.map((call) => call.binds?.path),
+    runCalls.map((call) => call.binds?.path),
     ['test_app', 'test_app.t1'],
   );
-  assert.ok(executeCalls.every((call) => /ut_runner\.run/.test(call.sql)));
+  assert.ok(runCalls.every((call) => /UT3\.ut_runner\.run/.test(call.sql)));
+  assert.ok(runCalls.every((call) => /UT3\.ut_varchar2_list\(:path\)/.test(call.sql)));
+  assert.ok(runCalls.every((call) => /UT3\.ut_reporters\(\)/.test(call.sql)));
 });
