@@ -13,7 +13,7 @@ tags: [adr, i18n, locale, plural]
 
 ## Contexto
 
-A extensão mantém o catálogo de runtime em `src/i18n/locales/*.ts` (24 locales,
+A extensão mantém o catálogo de runtime em `src/i18n/locales/*.ts` (26 locales,
 base pt-BR) e o manifesto em `package.nls.*.json`. Mensagens com contagem usam
 `(s)` — um truque que não cobre as 3+ formas de `ru`/`uk`/`pl`/`cs` nem as 6 do
 árabe. A API `vscode.l10n`/`bundle.l10n.*` é nativa para o manifesto, mas **não**
@@ -36,7 +36,7 @@ seleciona plurais.
 
 - **`vscode.l10n`/`bundle.l10n.*`:** integração nativa, porém sem plural,
   sem fallback entre locales e sem controle de paridade; exigiria converter os
-  24 catálogos e perder o teste atual.
+  26 catálogos e perder o teste atual.
 - **Biblioteca i18n externa:** dependência de runtime e bundle extra.
 - **Manter `(s)`:** simples, mas incorreto para a maioria dos locales.
 
@@ -53,4 +53,4 @@ seleciona plurais.
 - PRDs: [[prd-90-message-plurals-cldr|PRD-90]] ·
   [[prd-92-rtl-new-locales|PRD-92]]
 - Código: `src/i18n.ts`, `src/i18n/locales/`, `scripts/i18n-check.cjs`
-- [[MOC - I18n]] · [[NFR-006 - Internacionalização]] · [[ADR-007 - i18n via package.nls com 23 locales|ADR-007]]
+- [[MOC - I18n]] · [[NFR-006 - Internacionalização]] · [[ADR-007 - i18n via package.nls com 23 locales|ADR-007]] (título histórico; 26 locales)

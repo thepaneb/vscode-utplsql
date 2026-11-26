@@ -19,7 +19,7 @@ Campos:
 - `prd` — ID da PRD (`PRD-NN`);
 - `interno: true` — enabler de infraestrutura/testes; dispensa bullet/wiki/posts;
 - `readme_bullet` — texto exato do bullet no `README.md` (EN);
-- `readme_anchor` — trecho estável presente nas 23 variantes (emoji/heading);
+- `readme_anchor` — trecho estável presente nas 25 variantes (emoji/heading);
 - `wiki` — página em `docs/brain/70-Wiki` (sem `.md`);
 - `linkedin` — `["docs/linkedin/features/...-pt.md", "...-en.md"]`;
 - `card` — `["docs/linkedin/assets/....png", "...-en.png"]`.

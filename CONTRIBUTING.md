@@ -204,7 +204,7 @@ release workflow.
 - Avoid introducing new dependencies without discussing them first in an issue
 - Execution is **Oracle-direct** (node-oracledb, thin by default; thick is opt-in)
   — changes in `oracleRunner.ts`/`discovery.ts` must consider both driver modes
-  and the shared install (`ALL_SYNONYMS`)
+  and the shared install (schema discovery via `ALL_SYNONYMS`/`ALL_OBJECTS`)
 
 ## Review process
 

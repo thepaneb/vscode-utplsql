@@ -83,8 +83,9 @@ parser understands `%displayname`, `%disabled`, `%throws` and the standard
 utPLSQL annotations, and the tree reflects exactly what the database will
 execute. Suites can be organized by file, by schema (including lazy
 schema → package → suite resolution for large schemas) or by tag. Shared
-installations are supported: the extension discovers the `UT3` owner from
-`ALL_SYNONYMS` and works with the utPLSQL packages installed there.
+installations are supported: the extension resolves the utPLSQL owner in Oracle
+order (current schema → private synonym → public synonym → accessible package)
+and works with the utPLSQL packages installed there.
 
 When a test fails, the message includes the expected/actual diff produced by
 utPLSQL and a **Go to Error** location resolved from the PL/SQL stack frame.

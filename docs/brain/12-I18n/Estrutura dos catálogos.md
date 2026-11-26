@@ -19,7 +19,7 @@ o barrel `src/i18n/locales/index.ts` exporta os catálogos, a lista canônica
 - Base: **pt-BR**; chave ausente → pt-BR → a própria chave.
 - Paridade de chaves: `src/test/unit/i18n.test.ts`.
 - Regra: [[BR-I18N-001 - Resolução de locale e fallback de tradução|BR-I18N-001]].
-- Decisão de localização: [[ADR-007 - i18n via package.nls com 23 locales|ADR-007]].
+- Decisão de localização: [[ADR-007 - i18n via package.nls com 23 locales|ADR-007]] (título histórico; atualmente 26 locales).
 
 ## Conexões
 

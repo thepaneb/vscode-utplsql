@@ -220,6 +220,6 @@ scripts/db-matrix/run.sh --thick    # thick: Instant Client (thickMode) por banc
 - A publicação da extensão é via **GitHub release** (`publish.yml`); este skill
   cuida só dos posts, não do release.
 - `brain:sync` só regenera o índice; não copia o conteúdo para o vault.
-- Ao adicionar bullet de feature ao README, atualize também as 23 variantes e a
+- Ao adicionar bullet de feature ao README, atualize também as 25 variantes e a
   wiki (skill **`docs-fidelity`**) — o post do LinkedIn vem depois, com as
   mesmas features.

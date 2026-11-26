@@ -2,7 +2,7 @@
 
 ## 0.22.0
 
-- **Locale catalogs split (PRD-115)**: the 24 runtime catalogs now live one per
+- **Locale catalogs split (PRD-115)**: the 26 runtime catalogs now live one per
   file under `src/i18n/locales/`, exported by a barrel with the canonical
   `LOCALE_CODES`; `i18nLocales.ts` is gone and the locale is resolved at message
   time in the commands.

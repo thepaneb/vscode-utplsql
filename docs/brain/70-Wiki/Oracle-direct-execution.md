@@ -69,11 +69,15 @@ grant access to the buffer tables used by the polling:
 
 ```sql
 -- As DBA (or UT3 owner):
-GRANT SELECT, DELETE ON UT3.UT_OUTPUT_BUFFER_TMP TO PUBLIC;
-GRANT SELECT, DELETE ON UT3.UT_OUTPUT_BUFFER_INFO_TMP TO PUBLIC;
+GRANT SELECT, INSERT, UPDATE, DELETE ON UT3.UT_OUTPUT_BUFFER_TMP TO <schema>;
+GRANT SELECT, INSERT, UPDATE, DELETE ON UT3.UT_OUTPUT_BUFFER_INFO_TMP TO <schema>;
 ```
 
-Without these grants, execution fails with `ORA-00942`.
+Without these grants, execution fails with `ORA-00942`. For coverage, also
+grant `SELECT` on `UT3.DBMSPCC_BLOCKS/RUNS/UNITS` and create the
+`DBMSPCC_*` synonyms in the test schema (the coverage helpers run with
+`AUTHID CURRENT_USER`). The `UT` synonym is required by `ut.expect` in the
+test packages.
 
 > In **schema-level** installs (utPLSQL in the same schema as the tests), these
 > grants are not needed — the tables are in the same schema.

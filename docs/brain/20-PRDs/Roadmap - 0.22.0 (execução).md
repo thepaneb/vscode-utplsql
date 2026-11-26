@@ -79,7 +79,7 @@ As sete PRDs saíram para **`approved`** e as questões em aberto foram fechadas
   prosa); registry em nota manual `12-I18n/Registro de locales.md`; remover o
   “23” hardcoded do `docs-check`.
 - **PRD-92 — RTL:** só `ar`/`he` (26 locales/25 variantes); isolamento bidi só
-  em parâmetros técnicos; atualizar switcher das 24 notas de README, enum,
+  em parâmetros técnicos; atualizar switcher das 25 notas de README, enum,
   `NFR-006` e o agente `i18n-reviewer`. Sem revisor até o aceite → **beta** no
   registro, sem bloquear a release.
 - **PRD-93 — pipeline:** scripts próprios (sem TMS); export JSON; `i18n-apply`
@@ -103,7 +103,7 @@ As sete PRDs saíram para **`approved`** e as questões em aberto foram fechadas
 |---|---|---|---|
 | 1 | PRD-115 | — | Fundação: um arquivo por locale reduz conflito nas fases seguintes; inclui o sweep de docs. |
 | 2 | PRD-88 + PRD-91 (paralelo) | 115 (para 88); — (para 91) | 88 mexe em `i18n.ts`/status bar; 91 mexe só em scripts/docs e destrava a 92. |
-| 3 | PRD-90 | 115 | Plurais mudam a forma dos 24 catálogos (já fatiados). |
+| 3 | PRD-90 | 115 | Plurais mudam a forma dos 26 catálogos (já fatiados). |
 | 4 | PRD-89 | 90 | Pseudo transforma a mensagem já resolvida (plural incluso). |
 | 5 | PRD-92 | 90 + 91 | `ar`/`he` exigem as 6 categorias de plural e o gate de variantes. |
 | 6 | PRD-93 | 89 + 90 + 91 | Pipeline escreve nos catálogos fatiados e reusa os gates/registro. |
@@ -115,18 +115,29 @@ As sete PRDs saíram para **`approved`** e as questões em aberto foram fechadas
 
 | PRD | Status | Issue |
 |---|---|---|
-| PRD-115 | 🟡 in-progress (PR #328) | #186 |
-| PRD-88 | 🟡 in-progress (PR #329) | #126 |
-| PRD-90 | 🟡 in-progress (PR #333) | #128 |
-| PRD-89 | 🟡 in-progress (PR #331) | #127 |
-| PRD-91 | 🟡 in-progress (PR #330) | #129 |
-| PRD-92 | 🟡 in-progress (PR #334) | #130 |
-| PRD-93 | 🟡 in-progress (PR #332) | #131 |
+| PRD-115 | ✅ completed (PR #328) | #186 |
+| PRD-88 | ✅ completed (PR #329) | #126 |
+| PRD-90 | ✅ completed (PR #333) | #128 |
+| PRD-89 | ✅ completed (PR #331) | #127 |
+| PRD-91 | ✅ completed (PR #330) | #129 |
+| PRD-92 | ✅ completed (PR #334) | #130 |
+| PRD-93 | ✅ completed (PR #332) | #131 |
 
-> As **7 PRDs** estão implementadas: 115 (#328), 88 (#329), 91 (#330), 89
-> (#331), 93 (#332), 90 (#333) e 92 (#334). A conclusão (`completed` +
-> `versao: "0.22.0"`), o `CHANGELOG` e o bump entram no release; as traduções de
-> `ar`/`he` e as formas plurais seguem em draft/beta até a revisão in-country.
+> As **7 PRDs** estão concluídas e mergeadas na `release/v0.22.0`: 115 (#328),
+> 88 (#329), 91 (#330), 89 (#331), 93 (#332), 90 (#333) e 92 (#334). O release
+> PR é o **#335**; as traduções de `ar`/`he` e as formas plurais seguem em
+> draft/beta até a revisão in-country.
+
+## Validação final (2026-11-26)
+
+- Unitários: **1925 testes / 1921 pass / 4 skip / 0 fail** (`npm run test:unit`).
+- Cobertura: **98,92% linhas/statements · 94,5% branches · 98,74% funções**.
+- Matriz no commit `624ccc4`: thin full 18c/21c/23ai + multiroot ✅ · thick smoke
+  18c/21c/23ai ✅ · thick full 23ai/11g ✅ · 19ee smoke ✅.
+- Correções Oracle da validação no `DEMO`: descoberta pela ordem de nomes,
+  qualificação de `ut_runner.run`/tipos/reporters/buffer e synonyms `UT`/`DBMSPCC_*`
+  documentados no guia de setup.
+- Gates: `docs:check`, `docs:fidelity`, `version:check`, `brain:ci` verdes.
 
 ## Fluxo de execução (por PRD)
 

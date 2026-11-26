@@ -43,9 +43,9 @@ async function executeRunOracle(options: OracleRunOptions, token: CancellationTo
 
 1. **Import dinâmica**: `const oracledb = await import('oracledb')` — falha se não instalado
 2. **Conexões**: `acquireRunnerConnections()` — pool gerenciado (veja abaixo)
-3. **Schema discovery**: `discoverUtplsqlSchema(conn1)` — query `ALL_SYNONYMS` para prefixo
+3. **Schema discovery**: `discoverUtplsqlSchema(conn1)` — resolve o owner do utPLSQL (schema atual → synonym privado → synonym público → pacote acessível em `ALL_OBJECTS`)
 4. **Limpeza**: `DELETE FROM ${utSchema}UT_OUTPUT_BUFFER_TMP` + `UT_OUTPUT_BUFFER_INFO_TMP`
-5. **Execução**: `conn1.execute('BEGIN ut_runner.run(...) END;')` — bloqueante
+5. **Execução**: `conn1.execute('BEGIN ${utSchema}ut_runner.run(...) END;')` — bloqueante (`ut_runner`, `ut_reporters` e `ut_varchar2_list` qualificados com o schema descoberto)
 6. **Polling**: `conn2.execute('SELECT ... FROM UT_OUTPUT_BUFFER_TMP WHERE message_id > :last')` a cada 200ms
 7. **Separação por `output_id`**: cada reporter escreve em um grupo próprio,
    classificado como `html`, `xml` ou `console`; um chunk inicial só com brancos
@@ -107,8 +107,12 @@ async function closeOraclePool(): Promise<void>  // chamado no deactivate() (dra
 async function discoverUtplsqlSchema(conn): Promise<string>
 ```
 
-Query `ALL_SYNONYMS` para `UT_RUNNER` com owner `PUBLIC`. Retorna `"UT3."` se
-encontrado (shared install), ou `""` se mesmo schema.
+Resolve o owner na mesma ordem do Oracle: pacote `UT_RUNNER` no schema atual →
+synonym privado do schema atual → synonym público → pacote acessível em
+`ALL_OBJECTS` (preferindo `UT3`). Retorna `"UT3."`/`"OWNER."` no shared install,
+ou `""` quando o pacote está no mesmo schema. O prefixo é reutilizado em
+`ut_runner.run`, `UT_VARCHAR2_LIST`, `UT_REPORTERS`, reporters e na tabela de
+buffer; no debug, também em `ut_runner.run`/`ut_varchar2_list`/`ut_reporters`.
 
 ### `parseConnString`
 

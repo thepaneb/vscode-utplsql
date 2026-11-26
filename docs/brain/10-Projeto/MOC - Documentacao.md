@@ -14,10 +14,10 @@ enumerations geradas (`npm run brain:sync`).
 ## Arquivos da raiz do repo
 
 <!-- brain:auto:start:root-docs -->
-- [README.md](../../../README.md) — _2026-11-25_
-- [MARKETPLACE.md](../../../MARKETPLACE.md) — _2026-11-25_
+- [README.md](../../../README.md) — _2026-11-26_
+- [MARKETPLACE.md](../../../MARKETPLACE.md) — _2026-11-26_
 - [CHANGELOG.md](../../../CHANGELOG.md) — _2026-11-26_
-- [CONTRIBUTING.md](../../../CONTRIBUTING.md) — _2026-11-11_
+- [CONTRIBUTING.md](../../../CONTRIBUTING.md) — _2026-11-26_
 - [SECURITY.md](../../../SECURITY.md) — _2026-11-07_
 - [CODE_OF_CONDUCT.md](../../../CODE_OF_CONDUCT.md) — _2026-07-01_
 <!-- brain:auto:end -->
@@ -111,7 +111,7 @@ locais: `docs/analise.md`, `docs/analise-comparativa.md`,
 
 ## i18n da extensão (não é doc)
 
-Strings da UI ficam em `package.nls.<locale>.json` na raiz (23 locales) e são
+Strings da UI ficam em `package.nls.<locale>.json` na raiz (26 locales) e são
 referenciadas como `%nls.*%` no `package.json`.
 
 ## Dependências

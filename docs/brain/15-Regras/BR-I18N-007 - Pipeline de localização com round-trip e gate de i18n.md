@@ -35,7 +35,7 @@ TMS externo é opcional e não entra nesta release; o `en-gb` é um overlay
 
 ## Justificativa
 
-Reduz o custo de manter 24 catálogos e evita corrupção/formatação divergente na
+Reduz o custo de manter 26 catálogos e evita corrupção/formatação divergente na
 volta do tradutor; o gate impede catálogo/manifesto/glossário fora de sincronia.
 
 ## Conexões

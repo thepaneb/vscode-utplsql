@@ -9,7 +9,7 @@ regras: ["BR-I18N-001", "BR-CONN-015"]
 tags: [adr, i18n, nls, locale]
 ---
 
-# ADR-007 - i18n via package.nls com 23 locales
+# ADR-007 - i18n via package.nls com 26 locales
 
 ## Contexto
 
@@ -23,7 +23,7 @@ duplicar lógica nem introduzir dependência de runtime i18n.
    referenciadas como `%nls.*%` no `package.json` — sem biblioteca i18n.
 2. **Seguir o display language** por padrão (`utplsql.language: auto`), com
    override explícito.
-3. **Documentação localizada**: `README.<locale>.md` (23 variantes) e wiki pt-BR/en.
+3. **Documentação localizada**: `README.<locale>.md` (25 variantes) e wiki pt-BR/en.
 4. **Camada `LOC-*`** (gerada) inventaria os locales a partir dos `package.nls`.
 
 ## Alternativas consideradas
@@ -35,15 +35,19 @@ duplicar lógica nem introduzir dependência de runtime i18n.
 
 ## Consequências
 
-- **Positivas:** zero dependência i18n; integração nativa; 24 locales de UI + 23
+- **Positivas:** zero dependência i18n; integração nativa; 26 locales de UI + 25
   READMEs.
-- **Negativas / trade-offs:** manter 23 traduções sincronizadas (risco de
+- **Negativas / trade-offs:** manter 25 traduções sincronizadas (risco de
   defasagem); a documentação é **gerada** do vault (`60-README`, `70-Wiki`), então
   a tradução é feita na nota do vault.
 
 > **Atualização (2026-11-25):** o catálogo de runtime próprio agora usa plurais
 > CLDR ([[ADR-014 - Catálogo próprio com plurais CLDR|ADR-014]]); este ADR cobre
 > o manifesto `package.nls.*` e a distribuição documental.
+>
+> **Atualização (2026-11-26):** a PRD-92 adicionou `ar`/`he` (beta, revisão
+> in-country pendente), levando o total a **26 locales** e **25 variantes** de
+> README. O número original desta decisão era 23/24.
 
 ## Referências
 

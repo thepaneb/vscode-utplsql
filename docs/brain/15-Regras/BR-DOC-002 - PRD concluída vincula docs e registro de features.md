@@ -21,7 +21,7 @@ PRD concluída com `versao >= 0.18.0` declara `docs:` com as superfícies tocada
 e a seção `## Impacto nas docs`; cada superfície lista precisa mencionar o ID da
 PRD (ou `<!-- prd:PRD-NN -->`). Toda PRD concluída na versão precisa de uma
 entrada no `Registro de features`; para features de usuário (`interno: false`),
-o gate `docs:features-check` exige bullet no README, âncora nas 23 variantes,
+o gate `docs:features-check` exige bullet no README, âncora nas 25 variantes,
 menção na wiki e, quando `docs/linkedin` existir localmente, posts pt/en + cards.
 
 ## Pré-condições

@@ -16,7 +16,7 @@ tags: ["execucao", "seguranca", "sql"]
 ---
 ## Enunciado
 
-O prefixo descoberto em `ALL_SYNONYMS.TABLE_OWNER` só chega ao SQL depois de
+O prefixo descoberto na resolução de nomes (synonym privado/público ou `ALL_OBJECTS.OWNER`) só chega ao SQL depois de
 `sanitizeSchemaPrefix`: aceita `^[A-Z0-9_$#]+\.$` ou vazio; qualquer outro valor
 vira vazio (sem prefixo), com `warn` que não ecoa o valor cru. A validação ocorre
 em `discoverUtplsqlSchema` e novamente no ponto de uso do `executeRunOracle`.
