@@ -35,7 +35,9 @@ export function exportReporterCall(
   colorConsole: boolean | undefined,
   binds: Binds,
   oracledb: OracleModule,
+  utSchema = '',
 ): string {
+  const qualified = `${utSchema}${name}`;
   const args: string[] = [];
   if (charset && EXPORT_CHARSET_REPORTERS.has(name)) {
     binds.exportCharset = { dir: oracledb.BIND_IN, type: oracledb.STRING, val: charset };
@@ -45,7 +47,7 @@ export function exportReporterCall(
     binds.exportColor = { dir: oracledb.BIND_IN, type: oracledb.DB_TYPE_BOOLEAN, val: true };
     args.push('a_color_console => :exportColor');
   }
-  return args.length > 0 ? `${name}(${args.join(', ')})` : `${name}()`;
+  return args.length > 0 ? `${qualified}(${args.join(', ')})` : `${qualified}()`;
 }
 
 export interface ReporterListOptions {
@@ -56,6 +58,8 @@ export interface ReporterListOptions {
   additionalReporters?: string[];
   sessionReporter?: string;
   knownReporters: string[];
+  /** Prefixo do schema do utPLSQL (`UT3.` ou vazio) para qualificar os reporters. */
+  utSchema?: string;
   oracledb: OracleModule;
 }
 
@@ -75,6 +79,7 @@ export interface ReporterList {
  */
 export function buildReporterList(options: ReporterListOptions): ReporterList {
   const { oracledb } = options;
+  const prefix = options.utSchema ?? '';
   const binds: Binds = {};
   const invalid: string[] = [];
   const unknown: string[] = [];
@@ -89,6 +94,7 @@ export function buildReporterList(options: ReporterListOptions): ReporterList {
           options.exportReporter.colorConsole,
           binds,
           oracledb,
+          prefix,
         ),
       ],
       binds,
@@ -97,9 +103,9 @@ export function buildReporterList(options: ReporterListOptions): ReporterList {
     };
   }
 
-  const runners = ['ut_documentation_reporter()', 'ut_junit_reporter()'];
-  if (options.coverageEnabled) runners.push('ut_coverage_cobertura_reporter()');
-  if (options.htmlEnabled) runners.push('ut_coverage_html_reporter()');
+  const runners = [`${prefix}ut_documentation_reporter()`, `${prefix}ut_junit_reporter()`];
+  if (options.coverageEnabled) runners.push(`${prefix}ut_coverage_cobertura_reporter()`);
+  if (options.htmlEnabled) runners.push(`${prefix}ut_coverage_html_reporter()`);
 
   const extraReporters = [...(options.additionalReporters ?? [])];
   if (options.sessionReporter) extraReporters.push(options.sessionReporter);
@@ -122,7 +128,7 @@ export function buildReporterList(options: ReporterListOptions): ReporterList {
     }
     // Dedupe exato: `ut_junit_rep` não pode ser confundido com
     // `ut_junit_reporter()` (PRD-148 RF8).
-    if (runners.some((existing) => existing === `${normalized}()`)) continue;
+    if (runners.some((existing) => existing === `${prefix}${normalized}()`)) continue;
     if (
       options.knownReporters.length > 0 &&
       !options.knownReporters.some((known) => known.toLowerCase() === normalized)
@@ -130,7 +136,7 @@ export function buildReporterList(options: ReporterListOptions): ReporterList {
       unknown.push(reporter);
       continue;
     }
-    runners.push(`${normalized}()`);
+    runners.push(`${prefix}${normalized}()`);
   }
 
   return { runners, binds, invalid, unknown };
@@ -292,7 +298,7 @@ export function buildRunCall(oracledb: OracleModule, options: RunCallOptions): R
 
   const plsql = `BEGIN ut_runner.run(
       a_paths => ${pathsArg},
-      a_reporters => ut_reporters(${options.runners.join(',')}),
+      a_reporters => ${options.utSchema ?? ''}ut_reporters(${options.runners.join(',')}),
       a_coverage_schemes => ${options.schemesArg}${options.scopeParams ?? ''},
       a_tags => :tags${options.randomOrderParams ?? ''}
     ); END;`;

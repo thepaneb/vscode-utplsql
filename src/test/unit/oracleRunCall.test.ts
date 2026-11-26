@@ -48,6 +48,33 @@ test('buildReporterList: default, cobertura e HTML', () => {
   ]);
 });
 
+test('buildReporterList: qualifica reporters com o schema do utPLSQL', () => {
+  const list = buildReporterList({
+    exporting: false,
+    coverageEnabled: true,
+    htmlEnabled: true,
+    additionalReporters: ['ut_custom_reporter'],
+    knownReporters: ['UT_CUSTOM_REPORTER'],
+    utSchema: 'UT3.',
+    oracledb: oracle,
+  });
+  assert.deepStrictEqual(list.runners, [
+    'UT3.ut_documentation_reporter()',
+    'UT3.ut_junit_reporter()',
+    'UT3.ut_coverage_cobertura_reporter()',
+    'UT3.ut_coverage_html_reporter()',
+    'UT3.ut_custom_reporter()',
+  ]);
+});
+
+test('exportReporterCall: qualifica o reporter com o schema do utPLSQL', () => {
+  const binds: Record<string, import('oracledb').BindParameter> = {};
+  assert.strictEqual(
+    exportReporterCall('ut_junit_reporter', 'UTF-8', false, binds, oracle, 'UT3.'),
+    'UT3.ut_junit_reporter(a_client_character_set => :exportCharset)',
+  );
+});
+
 test('buildReporterList: export usa só o reporter escolhido', () => {
   const list = buildReporterList({
     exporting: true,
@@ -210,6 +237,19 @@ test('buildRunCall: qualifica UT_VARCHAR2_LIST quando o utPLSQL está em outro s
     type: 'UT3.UT_VARCHAR2_LIST',
     val: ['pkg'],
   });
+});
+
+test('buildRunCall: qualifica o construtor ut_reporters', () => {
+  const call = buildRunCall(oracle, {
+    pathArgs: [],
+    runners: ['UT3.ut_documentation_reporter()'],
+    schemesArg: 'null',
+    utSchema: 'UT3.',
+  });
+  assert.match(
+    call.plsql,
+    /a_reporters => UT3\.ut_reporters\(UT3\.ut_documentation_reporter\(\)\)/,
+  );
 });
 
 test('buildRunCall: sem paths/tags/cobertura mantém null', () => {

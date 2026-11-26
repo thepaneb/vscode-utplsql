@@ -829,6 +829,7 @@ async function prepareReporters(options: {
   run: vscode.TestRun;
   oracledb: typeof import('oracledb');
   cacheKey?: string;
+  utSchema: string;
 }): Promise<ReporterPreparation> {
   let coverageEnabled = !options.exporting && options.coverage;
   let htmlEnabled = false;
@@ -852,6 +853,7 @@ async function prepareReporters(options: {
       htmlEnabled: false,
       knownReporters: known,
       oracledb: options.oracledb,
+      utSchema: options.utSchema,
     });
     runners = list.runners;
     exportBinds = list.binds;
@@ -907,6 +909,7 @@ async function prepareReporters(options: {
     sessionReporter,
     knownReporters,
     oracledb: options.oracledb,
+    utSchema: options.utSchema,
   });
   runners = list.runners;
   exportBinds = list.binds;
@@ -1198,6 +1201,7 @@ async function executeRunOracleCore(
       run,
       oracledb,
       cacheKey: connection,
+      utSchema,
     });
 
     const owner = (coverageOwner ?? '').trim() || parseConnString(connection).user.toUpperCase();
