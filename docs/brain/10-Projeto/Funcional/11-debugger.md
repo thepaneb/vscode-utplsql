@@ -20,7 +20,8 @@ PRD-71).
 O debugger usa **duas sessões Oracle**:
 
 ```
-conn debuggee  ──► ut_runner.run(a_paths => pkg[.proc])   (roda o teste)
+conn debuggee  ──► ${utSchema}ut_runner.run(a_paths => pkg[.proc])   (roda o teste;
+                   ut_varchar2_list/ut_reporters também qualificados)
 conn debugger  ──► DBMS_DEBUG: INITIALIZE / DEBUG_ON,
                    ATTACH_SESSION, SET_BREAKPOINT, CONTINUE, GET_VALUE
 ```
