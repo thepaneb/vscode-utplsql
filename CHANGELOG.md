@@ -27,6 +27,12 @@
   catalogs through JSON (en-gb as an overlay), the localization glossary is in
   the vault, and `i18n:check` validates catalogs × locales × manifests × plural
   forms × glossary in CI.
+- **AI development tooling (PRD-153 P0 / PRD-154 phase 1)**: the Jev review can
+  fall back from `jev-1.13-free` to `jev-1.14` and supports `--no-fallback`/
+  `--fail-on` with stricter output validation and redaction; `AI_USAGE.md`, the
+  PR template, `CONTRIBUTING.md` and `SECURITY.md` document AI disclosure and
+  the no-runtime-AI/no-telemetry posture. Internal tooling only — there is no
+  extension runtime change.
 - **Schema discovery fix**: `discoverUtplsqlSchema` resolves `UT_RUNNER` in
   Oracle's name-resolution order (current-schema package, private synonym, public
   synonym, accessible package), so a private synonym such as `DEMO.UT_RUNNER →

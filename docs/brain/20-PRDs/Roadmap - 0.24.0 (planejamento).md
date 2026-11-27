@@ -33,6 +33,11 @@ a **fonte da verdade** no frontmatter das notas `prd-*`: ver [[MOC - PRDs]] e
 | 8 | PRD-154 | AI disclosure e proveniência no desenvolvimento | 1-2 dias | Baixa-Média |
 | 9 | PRD-155 | Jev review: packs e profiles por domínio | 2-3 dias | Média |
 
+> **Antecipação (2026-11-27):** o P0 da PRD-153, a Fase 1 da PRD-154 e a
+> proposta da PRD-155 foram integrados na **0.22.0** como groundwork
+> (Jev fallback/gates, disclosure e política de IA); a conclusão do restante
+> dessas PRDs permanece nesta versão.
+
 **PRDs:** [[prd-143-redos-regex-audit-input-validation|PRD-143]] ·
 [[prd-144-security-runtime-hardening|PRD-144]] ·
 [[prd-145-security-alerts-deliverable|PRD-145]] ·

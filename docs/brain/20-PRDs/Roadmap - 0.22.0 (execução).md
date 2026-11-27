@@ -137,6 +137,11 @@ As sete PRDs saíram para **`approved`** e as questões em aberto foram fechadas
 - Correções Oracle da validação no `DEMO`: descoberta pela ordem de nomes,
   qualificação de `ut_runner.run`/tipos/reporters/buffer e synonyms `UT`/`DBMSPCC_*`
   documentados no guia de setup.
+- Ferramental de IA incluído como groundwork: P0 da PRD-153, Fase 1 da PRD-154 e
+  a proposta da PRD-155 (Jev fallback/gates + disclosure); a conclusão dessas
+  PRDs permanece na 0.24.0.
+- Dependabot incluído na release: `fast-xml-parser` 5.12.1,
+  `@vscode/vsce` 4.1.1 e os pins de Scorecard/CodeQL.
 - Gates: `docs:check`, `docs:fidelity`, `version:check`, `brain:ci` verdes.
 
 ## Fluxo de execução (por PRD)
