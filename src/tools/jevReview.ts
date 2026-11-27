@@ -906,6 +906,64 @@ export function combineResponses(responses: JevResponse[]): JevResponse {
   };
 }
 
+const AGGREGATE_SEVERITY_PERCENTILE = 0.9;
+const SEVERITY_COMMENT_THRESHOLD = 2;
+
+function percentile(values: number[], p: number): number | undefined {
+  if (values.length === 0) return undefined;
+  const sorted = [...values].sort((left, right) => left - right);
+  const index = Math.min(sorted.length - 1, Math.max(0, Math.ceil(sorted.length * p) - 1));
+  return sorted[index];
+}
+
+/**
+ * Agrega os blocos com um veredito robusto:
+ * - segurança/correção continuam sendo máximos (são gates);
+ * - a severidade usa o p90, para um bloco isolado não dominar o PR inteiro;
+ * - o `block` bruto de um bloco só vira block se houver evidência forte;
+ *   caso contrário, vira comment (o veredito bruto fica nos chunks do JSON).
+ */
+export function aggregateChunkResponses(responses: JevResponse[]): JevResponse {
+  if (responses.length === 0) return combineResponses([]);
+
+  const combined = combineResponses(responses);
+  const severities = responses
+    .map((response) => scoreValue(response, 'severity'))
+    .filter((value): value is number => value !== undefined);
+  const severity = percentile(severities, AGGREGATE_SEVERITY_PERCENTILE);
+  const security = noulValue(combined, 'security');
+  const correctness = noulValue(combined, 'correctness');
+  const tests = noulValue(combined, 'tests');
+  const rawRecommendations = responses
+    .map((response) => choiceValue(response, 'recommendation'))
+    .filter((value): value is string => value !== undefined);
+
+  let recommendation: 'approve' | 'comment' | 'block' = 'approve';
+  if (
+    (security ?? 0) >= THRESHOLDS.security ||
+    (correctness ?? 0) >= THRESHOLDS.correctness ||
+    (severity ?? 0) >= THRESHOLDS.severity
+  ) {
+    recommendation = 'block';
+  } else if (
+    (tests ?? 0) >= THRESHOLDS.tests ||
+    (severity ?? 0) >= SEVERITY_COMMENT_THRESHOLD ||
+    rawRecommendations.some((value) => value === 'comment' || value === 'block')
+  ) {
+    recommendation = 'comment';
+  }
+
+  const answers = { ...combined.answers };
+  if (severity === undefined) {
+    delete answers.severity;
+  } else {
+    answers.severity = { type: 'score', score: severity };
+  }
+  answers.recommendation = { type: 'choice', choice: recommendation };
+
+  return { ...combined, answers };
+}
+
 export function escapeTableCell(value: string): string {
   return value
     .replace(/\\/g, '\\\\')
@@ -982,8 +1040,10 @@ export function formatMarkdown(aggregate: AggregateReview): string {
   if (chunks.length > 1) {
     lines.push(
       '',
+      '**Agregação:** segurança/correção máximas · severidade no p90 · veredito derivado. O veredito por bloco abaixo é bruto.',
+      '',
       '<details>',
-      `<summary>Blocos revisados (${chunks.length})</summary>`,
+      `<summary>Blocos revisados (${chunks.length}) — veredito bruto por bloco</summary>`,
       '',
       '| Bloco | Arquivos | Veredito | Severidade | Achados |',
       '|---|---|---|---|---|',
@@ -1265,7 +1325,7 @@ export async function main(argv: string[], deps: MainDeps = {}): Promise<number>
     return 1;
   }
 
-  const response = combineResponses(chunks.map((chunk) => chunk.response));
+  const response = aggregateChunkResponses(chunks.map((chunk) => chunk.response));
   const summary = summarize(response);
   const aggregate: AggregateReview = { response, summary, plan, chunks };
   const markdown = formatMarkdown(aggregate);

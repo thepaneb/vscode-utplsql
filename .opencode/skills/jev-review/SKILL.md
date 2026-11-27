@@ -55,8 +55,10 @@ npm run jev:review -- --base origin/main --fail-on-findings
 ```
 
 O script usa `https://opencode.ai/inference/systemone/v1/systemone` com
-`jev-1.13-free` por padrão. Se o modelo gratuito sair do ar, use
-`--model jev-1.13` (pago; ~$0,042/M tokens de input, output grátis).
+`jev-1.13-free` por padrão. O modelo pago **`jev-1.14`** foi validado em
+nov/2026: ~$0,042/M tokens de input (output grátis), ~US$ 0,0002 para um PR de
+5 mil tokens e ~US$ 0,016 para o release de 379 mil tokens. `--model jev-1.13`
+continua disponível como alternativa paga.
 
 ## Cobertura do diff (chunking)
 
@@ -69,8 +71,12 @@ numeradas; **todo o `src/**` entra no contexto**.
 - Se a API responder `max_tokens_exceeded`, o bloco é dividido em dois e
   reenviado (até 4 níveis); se ainda falhar, o review sai com erro visível —
   nunca omite `src` silenciosamente.
-- O relatório agrega os blocos: pior veredito, maior severidade, união dos
-  achados e soma de tokens/custo. O JSON inclui `chunks[]` e o resumo do diff.
+- O relatório agrega os blocos de forma robusta: segurança/correção continuam
+  sendo **máximos** (gates), a severidade usa o **p90** (um bloco isolado não
+  domina o PR inteiro) e a recomendação é **derivada**: `block` exige
+  segurança/correção acima do limiar ou p90 ≥ 3; um `block` bruto de bloco sem
+  essa evidência vira `comment`. O veredito bruto por bloco fica no JSON
+  (`chunks[]`) e na tabela de detalhes; a soma de tokens/custo é preservada.
 - PRs muito grandes fazem várias chamadas (~1–2 s cada, modelo grátis); PRs
   normais continuam em uma única chamada.
 - Docs só entram no review se estiverem dentro de um arquivo de código; o
@@ -87,6 +93,11 @@ O relatório traz cinco dimensões:
 | `tests` | mudou comportamento sem teste? | ≥ 0,60 |
 | `severity` | severidade do problema | ≥ 3,0/4 |
 | `recommendation` | aprovar/comentar/bloquear | `comment`/`block` |
+
+A agregação de vários blocos é **robusta**: segurança e correção são gates
+(máximo entre blocos), a severidade usa p90 e a recomendação é derivada dessa
+evidência. O `block` por bloco é bruto; confira os blocos no JSON antes de
+tratar o agregado como bloqueio.
 
 Regras de uso:
 
