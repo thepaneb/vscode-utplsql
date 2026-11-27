@@ -50,8 +50,12 @@ npm run jev:review -- --base origin/main --dry-run
 # Salvar markdown + JSON (usado pelo CI)
 npm run jev:review -- --base origin/main --output jev-review.md --json-output jev-review.json
 
-# Falhar (exit 1) quando houver achados — usar só em gate calibrado
-npm run jev:review -- --base origin/main --fail-on-findings
+# Falhar (exit 1) a partir de um veredito — usar só em gate calibrado
+npm run jev:review -- --base origin/main --fail-on comment
+npm run jev:review -- --base origin/main --fail-on block
+
+# Forçar um modelo e desligar o fallback
+npm run jev:review -- --base origin/main --model jev-1.14 --no-fallback
 ```
 
 O script usa `https://opencode.ai/inference/systemone/v1/systemone` com
@@ -59,6 +63,16 @@ O script usa `https://opencode.ai/inference/systemone/v1/systemone` com
 nov/2026: ~$0,042/M tokens de input (output grátis), ~US$ 0,0002 para um PR de
 5 mil tokens e ~US$ 0,016 para o release de 379 mil tokens. `--model jev-1.13`
 continua disponível como alternativa paga.
+
+Falhas retryable (rede, 403/404/408/410/425/429/451, 5xx e 400 de modelo)
+trocam para o próximo modelo da cadeia **`jev-1.13-free` → `jev-1.14` →
+`jev-1.13`**; a escolha é sticky para os blocos seguintes. Use
+`--fallback-model <id>` (repetível) para mudar a cadeia ou `--no-fallback` para
+usar só o `--model`. O markdown mostra o fallback e o JSON expõe
+`models.attempted`/`models.fallbackUsed` para auditoria. `--fail-on` aceita
+`none` (default), `comment` ou `block`; `--fail-on-findings` continua como
+alias legado. O endpoint precisa ser HTTPS; `--allow-insecure-endpoint` libera
+apenas proxy local.
 
 ## Cobertura do diff (chunking)
 
@@ -111,9 +125,11 @@ Regras de uso:
 
 ## Privacidade e limites
 
-- O script redige segredos (`.env`, tokens, bearer, chaves privadas, JWT, AWS) e
-  **ignora** `.env*`, lockfiles, `node_modules/`, `out/`, `dist/`, `coverage/`,
-  `.vscode-patched`, certificados e `docs/brain/.obsidian/plugins/*/data.json`.
+- O script redige segredos (`.env`, tokens bearer, chaves privadas, JWT, AWS,
+  GitHub/OpenAI/Slack, URL com `user:pass`) e **ignora** `.env*`, lockfiles,
+  `node_modules/`, `out/`, `dist/`, `coverage/`, `.vscode-patched`,
+  `secrets/`/`credentials/`, `.ssh/`, `.npmrc`/`.pypirc`/`.netrc`, certificados
+  e `docs/brain/.obsidian/plugins/*/data.json`.
 - Mesmo assim, não inclua credenciais Oracle, strings de conexão ou conteúdo
   proprietário que não seja necessário para revisar o diff.
 - O contexto do Jev é ~64K tokens; cada bloco tem no máximo `--max-diff-chars`

@@ -4,6 +4,8 @@ import path from 'node:path';
 
 export const DEFAULT_ENDPOINT = 'https://opencode.ai/inference/systemone/v1/systemone';
 export const DEFAULT_MODEL = 'jev-1.13-free';
+export const DEFAULT_FALLBACK_MODELS = ['jev-1.14', 'jev-1.13'] as const;
+export type FailOn = 'none' | 'comment' | 'block';
 export const DEFAULT_MAX_DIFF_CHARS = 30_000;
 export const THRESHOLDS = {
   security: 0.7,
@@ -101,9 +103,19 @@ export interface CliOptions {
   jsonOutput?: string;
   workingTree: boolean;
   failOnFindings: boolean;
+  failOn: FailOn;
+  fallbackModels: string[];
+  noFallback: boolean;
+  allowInsecureEndpoint: boolean;
   requireKey: boolean;
   dryRun: boolean;
   help: boolean;
+}
+
+export interface JevModelMeta {
+  primary: string;
+  attempted: string[];
+  fallbackUsed: boolean;
 }
 
 export interface FilteredDiff {
@@ -139,6 +151,7 @@ export interface AggregateReview {
   summary: ReviewSummary;
   plan: DiffPlan;
   chunks: ChunkReview[];
+  meta?: JevModelMeta;
 }
 
 export interface Finding {
@@ -201,7 +214,10 @@ Opções:
   --repo <path>           Repositório alvo (default: .)
   --diff-file <path>      Usa um diff salvo em vez de executar git
   --model <id>            Modelo Jev (default: ${DEFAULT_MODEL})
+  --fallback-model <id>   Fallback para falhas retryable (repeatable; default: ${DEFAULT_FALLBACK_MODELS.join(', ')})
+  --no-fallback           Desativa o fallback; usa só --model
   --endpoint <url>        Endpoint System One (default: ${DEFAULT_ENDPOINT})
+  --allow-insecure-endpoint  Permite endpoint http (apenas proxy local)
   --max-diff-chars <n>    Limite de cada bloco enviado (default: ${DEFAULT_MAX_DIFF_CHARS})
   --max-file-chars <n>    Tamanho máximo de cada parte de um arquivo (default: 20000)
   --timeout-ms <n>        Timeout da chamada (default: 60000)
@@ -210,7 +226,8 @@ Opções:
   --json-output <path>    Escreve também o relatório JSON
   --working-tree          Revisa a árvore de trabalho (git diff <base>)
   --dry-run               Mostra o payload sem chamar a API
-  --fail-on-findings      Sai 1 quando houver achados
+  --fail-on <none|comment|block>  Sai 1 a partir deste veredito (default: none)
+  --fail-on-findings      Sai 1 quando houver achados (legado)
   --require-key           Sai 2 se a chave não estiver definida
   --help, -h              Mostra esta ajuda
 `;
@@ -257,6 +274,30 @@ function parseFormat(value: string): 'json' | 'markdown' {
   return value;
 }
 
+function parseFailOn(value: string): FailOn {
+  if (value !== 'none' && value !== 'comment' && value !== 'block') {
+    throw new CliError('--fail-on precisa ser "none", "comment" ou "block"');
+  }
+  return value;
+}
+
+export function isHttpsEndpoint(endpoint: string): boolean {
+  try {
+    return new URL(endpoint).protocol === 'https:';
+  } catch {
+    return false;
+  }
+}
+
+export function isRetryableModelError(error: unknown): boolean {
+  if (!(error instanceof JevApiError) || isMaxTokensError(error)) return false;
+  const status = error.status;
+  if (status === undefined) return /falha de rede|timeout/i.test(error.message);
+  if ([403, 404, 408, 410, 425, 429, 451].includes(status)) return true;
+  if (status >= 500 && status <= 599) return true;
+  return status === 400 && /model/i.test(error.message);
+}
+
 export function parseArgs(argv: string[]): CliOptions {
   const options: CliOptions = {
     base: 'origin/main',
@@ -270,10 +311,15 @@ export function parseArgs(argv: string[]): CliOptions {
     format: 'markdown',
     workingTree: false,
     failOnFindings: false,
+    failOn: 'none',
+    fallbackModels: [...DEFAULT_FALLBACK_MODELS],
+    noFallback: false,
+    allowInsecureEndpoint: false,
     requireKey: false,
     dryRun: false,
     help: false,
   };
+  let fallbacksProvided = false;
 
   for (let index = 0; index < argv.length; index++) {
     const arg = argv[index];
@@ -315,8 +361,25 @@ export function parseArgs(argv: string[]): CliOptions {
       case '--model':
         options.model = readValue();
         break;
+      case '--fallback-model': {
+        const model = readValue();
+        if (!fallbacksProvided) {
+          options.fallbackModels = [];
+          fallbacksProvided = true;
+        }
+        options.fallbackModels.push(model);
+        break;
+      }
+      case '--no-fallback':
+        rejectInline();
+        options.noFallback = true;
+        break;
       case '--endpoint':
         options.endpoint = readValue();
+        break;
+      case '--allow-insecure-endpoint':
+        rejectInline();
+        options.allowInsecureEndpoint = true;
         break;
       case '--max-diff-chars':
         options.maxDiffChars = positiveInt(readValue(), name);
@@ -340,6 +403,9 @@ export function parseArgs(argv: string[]): CliOptions {
         rejectInline();
         options.workingTree = true;
         break;
+      case '--fail-on':
+        options.failOn = parseFailOn(readValue());
+        break;
       case '--fail-on-findings':
         rejectInline();
         options.failOnFindings = true;
@@ -357,6 +423,7 @@ export function parseArgs(argv: string[]): CliOptions {
     }
   }
 
+  if (options.noFallback) options.fallbackModels = [];
   return options;
 }
 
@@ -417,6 +484,11 @@ export function redactSecrets(text: string): string {
       '[REDACTED PRIVATE KEY]',
     )
     .replace(/\bAKIA[0-9A-Z]{16}\b/g, '[REDACTED AWS KEY]')
+    .replace(/\bgh[pousr]_[A-Za-z0-9]{20,}\b/g, '[REDACTED GITHUB TOKEN]')
+    .replace(/\bgithub_pat_[A-Za-z0-9_]{20,}\b/g, '[REDACTED GITHUB TOKEN]')
+    .replace(/\bsk-[A-Za-z0-9]{20,}\b/g, '[REDACTED OPENAI KEY]')
+    .replace(/\bxox[baprs]-[A-Za-z0-9-]{10,}\b/g, '[REDACTED SLACK TOKEN]')
+    .replace(/(https?:\/\/)[^/\s:@]+:[^/\s@]+@/gi, '$1[REDACTED]@')
     .replace(/\beyJ[A-Za-z0-9_-]{8,}\.[A-Za-z0-9_-]{8,}\.[A-Za-z0-9_-]{8,}\b/g, '[REDACTED JWT]');
 }
 
@@ -441,7 +513,22 @@ export function isSensitivePath(file: string): boolean {
     return true;
   }
   if (/\.(pem|key|p12|pfx|jks|keystore)$/i.test(base)) return true;
-  if (['id_rsa', 'id_ed25519', 'credentials', 'secrets'].includes(base)) return true;
+  if (
+    [
+      'id_rsa',
+      'id_dsa',
+      'id_ecdsa',
+      'id_ed25519',
+      '.npmrc',
+      '.pypirc',
+      '.netrc',
+      'credentials',
+      'secrets',
+    ].includes(base)
+  ) {
+    return true;
+  }
+  if (/(^|\/)(secrets?|credentials?|\.ssh)\//.test(normalized)) return true;
   if (/(^|\/)(node_modules|out|dist|coverage|\.vscode-test|\.git)\//.test(normalized)) {
     return true;
   }
@@ -1001,15 +1088,20 @@ function formatFiles(files: string[]): string {
 }
 
 export function formatMarkdown(aggregate: AggregateReview): string {
-  const { response, summary, plan, chunks } = aggregate;
+  const { response, summary, plan, chunks, meta } = aggregate;
   const severity =
     summary.severity === undefined
       ? '—'
       : `${summary.severity.toFixed(2)}/4 (${summary.severityLabel})`;
+  const fallbackNote =
+    meta?.fallbackUsed === true
+      ? `**Fallback de modelo:** ${meta.attempted.map((model) => `\`${formatModel(model)}\``).join(' → ')}`
+      : undefined;
   const lines = [
     '## Jev review — advisory',
     '',
     `**Veredito:** \`${summary.verdict}\` · **Severidade:** ${severity} · **Modelo:** \`${formatModel(response.model)}\``,
+    ...(fallbackNote === undefined ? [] : ['', fallbackNote]),
     '',
     '| Dimensão | Resultado | Leitura |',
     '|---|---|---|',
@@ -1069,10 +1161,11 @@ export function formatMarkdown(aggregate: AggregateReview): string {
 }
 
 export function formatJson(aggregate: AggregateReview): string {
-  const { response, summary, plan, chunks } = aggregate;
+  const { response, summary, plan, chunks, meta } = aggregate;
   return JSON.stringify(
     {
       model: response.model,
+      models: meta ?? null,
       verdict: summary.verdict,
       severity: summary.severity ?? null,
       severityLabel: summary.severityLabel,
@@ -1138,15 +1231,58 @@ function readDiff(options: CliOptions, cwd: string, deps: MainDeps): string {
   );
 }
 
+interface ModelState {
+  chain: string[];
+  index: number;
+  attempted: string[];
+  fallbackUsed: boolean;
+}
+
 interface ReviewContext {
   options: CliOptions;
   apiKey: string;
   questions: Record<string, JevQuestion>;
   deps: MainDeps;
   stderr: (text: string) => void;
+  modelState: ModelState;
+}
+
+function createModelState(options: CliOptions): ModelState {
+  const chain = [options.model, ...(options.noFallback ? [] : options.fallbackModels)].filter(
+    (model, index, all) => model.length > 0 && all.indexOf(model) === index,
+  );
+  return { chain, index: 0, attempted: [], fallbackUsed: false };
 }
 
 const MAX_SPLIT_DEPTH = 4;
+
+async function callJevWithFallback(chunk: DiffChunk, context: ReviewContext): Promise<JevResponse> {
+  while (true) {
+    const state = context.modelState;
+    const model = state.chain[state.index];
+    if (!state.attempted.includes(model)) state.attempted.push(model);
+    try {
+      return await callJev({
+        endpoint: context.options.endpoint,
+        apiKey: context.apiKey,
+        model,
+        state: buildState({ text: chunk.text, files: chunk.files, omitted: 0, truncated: false }),
+        questions: context.questions,
+        fetchImpl: context.deps.fetchImpl,
+        timeoutMs: context.options.timeoutMs,
+      });
+    } catch (error) {
+      if (!isRetryableModelError(error) || state.index + 1 >= state.chain.length) {
+        throw error;
+      }
+      state.index++;
+      state.fallbackUsed = true;
+      context.stderr(
+        `[jev] modelo ${model} falhou (${errorMessage(error)}); tentando ${state.chain[state.index]}.\n`,
+      );
+    }
+  }
+}
 
 function splitChunkForRetry(chunk: DiffChunk): [DiffChunk, DiffChunk] | undefined {
   const { text, files } = chunk;
@@ -1176,15 +1312,7 @@ async function reviewChunkWithRetry(
   depth = 0,
 ): Promise<JevResponse> {
   try {
-    return await callJev({
-      endpoint: context.options.endpoint,
-      apiKey: context.apiKey,
-      model: context.options.model,
-      state: buildState({ text: chunk.text, files: chunk.files, omitted: 0, truncated: false }),
-      questions: context.questions,
-      fetchImpl: context.deps.fetchImpl,
-      timeoutMs: context.options.timeoutMs,
-    });
+    return await callJevWithFallback(chunk, context);
   } catch (error) {
     if (!isMaxTokensError(error) || depth >= MAX_SPLIT_DEPTH) throw error;
     const halves = splitChunkForRetry(chunk);
@@ -1215,6 +1343,13 @@ export async function main(argv: string[], deps: MainDeps = {}): Promise<number>
   if (options.help) {
     stdout(USAGE);
     return 0;
+  }
+
+  if (!options.allowInsecureEndpoint && !isHttpsEndpoint(options.endpoint)) {
+    stderr(
+      'ERRO: --endpoint precisa usar HTTPS; use --allow-insecure-endpoint apenas para proxy local.\n',
+    );
+    return 2;
   }
 
   const repo = path.resolve(cwd, options.repo);
@@ -1286,7 +1421,8 @@ export async function main(argv: string[], deps: MainDeps = {}): Promise<number>
   const write = (file: string, data: string): void => {
     (deps.writeFile ?? defaultWriteFile)(path.resolve(cwd, file), data);
   };
-  const context: ReviewContext = { options, apiKey: key, questions, deps, stderr };
+  const modelState = createModelState(options);
+  const context: ReviewContext = { options, apiKey: key, questions, deps, stderr, modelState };
   const chunks: ChunkReview[] = [];
 
   try {
@@ -1327,7 +1463,12 @@ export async function main(argv: string[], deps: MainDeps = {}): Promise<number>
 
   const response = aggregateChunkResponses(chunks.map((chunk) => chunk.response));
   const summary = summarize(response);
-  const aggregate: AggregateReview = { response, summary, plan, chunks };
+  const meta: JevModelMeta = {
+    primary: options.model,
+    attempted: [...modelState.attempted],
+    fallbackUsed: modelState.fallbackUsed,
+  };
+  const aggregate: AggregateReview = { response, summary, plan, chunks, meta };
   const markdown = formatMarkdown(aggregate);
   const json = formatJson(aggregate);
   const selected = options.format === 'json' ? json : markdown;
@@ -1353,5 +1494,8 @@ export async function main(argv: string[], deps: MainDeps = {}): Promise<number>
   }
   if (!wrote) stdout(`${selected}\n`);
 
-  return options.failOnFindings && summary.hasFindings ? 1 : 0;
+  if (options.failOnFindings && summary.hasFindings) return 1;
+  const verdictRank = summary.verdict === 'block' ? 2 : summary.verdict === 'comment' ? 1 : 0;
+  const failRank = options.failOn === 'block' ? 2 : options.failOn === 'comment' ? 1 : Infinity;
+  return verdictRank >= failRank ? 1 : 0;
 }
