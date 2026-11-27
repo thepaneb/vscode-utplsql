@@ -275,5 +275,5 @@ testes/CI.
 - 🗺️ [[MOC - PRDs]]
 - 🔗 PRDs relacionados: [[prd-33-plsql-debugger-integration|PRD-33]] · [[prd-53-debug-test-variants|PRD-53]]
 - 🔗 Mesma versão (0.25.0): [[prd-132-ux-execution-dryrun-jump|PRD-132]] · [[prd-133-rate-limiting-keybindings|PRD-133]] · [[prd-140-statusbar-settings-grouping|PRD-140]] · [[prd-141-onboarding-walkthrough-accessibility|PRD-141]]
-- 🚀 ⬅️ release anterior: [[prd-145-security-alerts-deliverable|PRD-145 (0.24.0)]]
+- 🚀 ⬅️ release anterior: [[prd-154-ai-disclosure-provenance|PRD-154 (0.24.0)]]
 <!-- brain:auto:end -->

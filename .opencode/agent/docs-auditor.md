@@ -9,6 +9,31 @@ tools:
   glob: true
   write: false
   edit: false
+permissions:
+  - action: edit
+    resource: "*"
+    effect: deny
+  - action: shell
+    resource: "*"
+    effect: ask
+  - action: shell
+    resource: "npm run docs:check"
+    effect: allow
+  - action: shell
+    resource: "npm run docs:check *"
+    effect: allow
+  - action: shell
+    resource: "npm run docs:features-check *"
+    effect: allow
+  - action: shell
+    resource: "npm run brain:check"
+    effect: allow
+  - action: shell
+    resource: "git diff *"
+    effect: allow
+  - action: shell
+    resource: "git status *"
+    effect: allow
 ---
 
 You are the **docs-auditor** for this repository (a VSCode extension for

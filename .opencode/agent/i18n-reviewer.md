@@ -5,6 +5,9 @@ permissions:
   - action: edit
     resource: "*"
     effect: deny
+  - action: shell
+    resource: "*"
+    effect: deny
 ---
 
 You are the **i18n-reviewer**. You are **read-only**: report drift, do not edit.

@@ -43,9 +43,9 @@ npm run sync-prds
 ## Status (gerado)
 
 <!-- brain:auto:start:prd-summary -->
-- 📝 Propostos: **20**
+- 📝 Propostos: **21**
 - 🔵 Aprovados: **0**
-- 🟡 Em desenvolvimento: **0**
+- 🟡 Em desenvolvimento: **1**
 - 🟢 Concluídos: **128**
 
 Detalhe completo (fonte da verdade): [docs/prd/index.md](../../prd/index.md)
@@ -126,6 +126,8 @@ Detalhe completo (fonte da verdade): [docs/prd/index.md](../../prd/index.md)
 - [[prd-15-integration-tests-real-db]] — `PRD-15`
 - [[prd-150-thick-full-true-pool-recovery]] — `PRD-150`
 - [[prd-151-codelens-debug-test]] — `PRD-151`
+- [[prd-153-ai-security-prompt-injection-data-egress]] — `PRD-153`
+- [[prd-154-ai-disclosure-provenance]] — `PRD-154`
 - [[prd-16-integration-test-invocation-modes]] — `PRD-16`
 - [[prd-17-java-args-setting]] — `PRD-17`
 - [[prd-18-engine-node-ci]] — `PRD-18`

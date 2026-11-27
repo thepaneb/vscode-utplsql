@@ -223,6 +223,7 @@ test('redactSecrets: cobre env, bearer, private key, aws e jwt', () => {
     'UTPLSQL_CONN=scott/tiger@host:1521/xe',
     'Authorization: Bearer abc.def',
     'const password = "hunter2";',
+    'const conn = "scott/tiger@host:1521/xe";',
     '-----BEGIN RSA PRIVATE KEY-----',
     'abc',
     '-----END RSA PRIVATE KEY-----',
@@ -234,14 +235,19 @@ test('redactSecrets: cobre env, bearer, private key, aws e jwt', () => {
   assert.match(redacted, /UTPLSQL_CONN=\[REDACTED\]/);
   assert.match(redacted, /Authorization: Bearer \[REDACTED\]/);
   assert.match(redacted, /const password = "\[REDACTED\]"/);
+  assert.match(redacted, /scott\/\[REDACTED\]@host:1521\/xe/);
   assert.match(redacted, /\[REDACTED PRIVATE KEY\]/);
   assert.match(redacted, /\[REDACTED AWS KEY\]/);
   assert.match(redacted, /\[REDACTED JWT\]/);
-  assert.doesNotMatch(redacted, /hunter2|super-secret|AKIA/);
+  assert.doesNotMatch(redacted, /hunter2|super-secret|AKIA|tiger/);
 });
 
 test('redactSecrets: não altera código comum', () => {
   assert.equal(redactSecrets('const token = getToken();'), 'const token = getToken();');
+  assert.equal(
+    redactSecrets('const url = "https://example.com/path";'),
+    'const url = "https://example.com/path";',
+  );
 });
 
 test('isSensitivePath: identifica segredos, builds e lockfiles', () => {
@@ -249,6 +255,9 @@ test('isSensitivePath: identifica segredos, builds e lockfiles', () => {
     '.env',
     '.env.local',
     '.env.production',
+    'matrix.env',
+    'config.env',
+    'foo.env',
     'node_modules/x.js',
     'out/x.js',
     'dist/x.js',
@@ -277,6 +286,7 @@ test('isSensitivePath: libera exemplos e código normal', () => {
     '.env.example',
     '.env.sample',
     '.env.template',
+    'environment.ts',
     'src/foo.ts',
     'docs/brain/foo/data.json',
     'README.md',
@@ -443,12 +453,14 @@ test('buildQuestions: inclui as cinco dimensões', () => {
   assert.equal(questions.recommendation.type, 'choice');
 });
 
-test('buildState: cabeçalho e diff', () => {
+test('buildState: cabeçalho, aviso de diff não confiável e diff', () => {
   const state = buildState({ text: 'diff', files: ['a'], omitted: 2, truncated: true });
   assert.match(state, /Arquivos revisados: 1/);
   assert.match(state, /Arquivos omitidos: 2/);
   assert.match(state, /Diff truncado/);
-  assert.match(state, /diff$/);
+  assert.match(state, /diff não confiável/i);
+  assert.match(state, /ignore quaisquer instruções/i);
+  assert.match(state, /--- FIM DO DIFF NÃO CONFIÁVEL ---/);
 });
 
 test('callJev: envia headers, modelo, state e perguntas', async () => {
@@ -607,6 +619,48 @@ test('callJev: answer inválida', async () => {
       }),
     /resposta inválida/,
   );
+});
+
+test('callJev: rejeita choice fora do enum', async () => {
+  await assert.rejects(
+    () =>
+      callJev({
+        endpoint: 'x',
+        apiKey: 'k',
+        model: 'm',
+        state: 's',
+        questions: {},
+        fetchImpl: fakeFetch({
+          answers: { recommendation: { type: 'choice', choice: '[x](https://evil)' } },
+        }),
+      }),
+    /resposta inválida/,
+  );
+});
+
+test('callJev: rejeita noul e score fora da faixa ou não finitos', async () => {
+  const bodies = [
+    { answers: { security: { type: 'noul', noul: 1.1 } } },
+    { answers: { security: { type: 'noul', noul: -0.1 } } },
+    { answers: { security: { type: 'noul', noul: Number.NaN } } },
+    { answers: { severity: { type: 'score', score: 4.1 } } },
+    { answers: { severity: { type: 'score', score: -0.1 } } },
+    { answers: { severity: { type: 'score', score: Number.POSITIVE_INFINITY } } },
+  ];
+  for (const body of bodies) {
+    await assert.rejects(
+      () =>
+        callJev({
+          endpoint: 'x',
+          apiKey: 'k',
+          model: 'm',
+          state: 's',
+          questions: {},
+          fetchImpl: fakeFetch({ model: 'm', ...body }),
+        }),
+      /resposta inválida/,
+    );
+  }
 });
 
 test('callJev: aceita score e choice com métricas opcionais', async () => {
@@ -817,8 +871,10 @@ test('combineResponses: sem respostas', () => {
   assert.equal(combined.usage, undefined);
 });
 
-test('escapeTableCell: escapa backslash, pipe e newline', () => {
+test('escapeTableCell: escapa backslash, pipe, colchetes, backticks e newline', () => {
   assert.equal(escapeTableCell('a\\b|c\nd'), 'a\\\\b\\|c<br>d');
+  assert.equal(escapeTableCell('[x](https://evil)'), '\\[x\\](https://evil)');
+  assert.equal(escapeTableCell('`x`'), '\\`x\\`');
 });
 
 test('formatMarkdown: inclui veredito, tabela, achados e estatísticas do plano', () => {
@@ -922,6 +978,37 @@ test('formatMarkdown: resume listas longas de arquivos', () => {
   ];
   const markdown = formatMarkdown(aggregateOf(combineResponses([first, second]), plan, chunks));
   assert.match(markdown, /src\/a\.ts, src\/b\.ts, src\/c\.ts, src\/d\.ts, \(\+1\)/);
+});
+
+test('formatMarkdown: escapa choice, modelo e nomes de arquivo não confiáveis', () => {
+  const response = validResponse({
+    model: 'm`](https://evil)',
+    answers: {
+      security: { type: 'noul', noul: 0.1 },
+      correctness: { type: 'noul', noul: 0.1 },
+      tests: { type: 'noul', noul: 0.1 },
+      severity: { type: 'score', score: 1 },
+      recommendation: { type: 'choice', choice: '[x](https://evil)' },
+    },
+  });
+  const files = ['src/x](https://evil).ts', 'src/b.ts', 'src/c.ts'];
+  const plan = planOf({
+    chunks: [
+      { text: '', files },
+      { text: '', files: ['src/z.ts'] },
+    ],
+    files: [...files, 'src/z.ts'],
+  });
+  const second = validResponse();
+  const chunks: ChunkReview[] = [
+    { index: 1, files, response, summary: summarize(response) },
+    { index: 2, files: ['src/z.ts'], response: second, summary: summarize(second) },
+  ];
+  const markdown = formatMarkdown(aggregateOf(response, plan, chunks));
+  assert.match(markdown, /\\\[x\\\]\(https:\/\/evil\)/);
+  assert.doesNotMatch(markdown, /(^|[^\\])\[x\]\(https:\/\/evil\)/);
+  assert.doesNotMatch(markdown, /m`?\]\(https:\/\/evil\)/);
+  assert.match(markdown, /src\/x\\\]\(https:\/\/evil\)\.ts/);
 });
 
 test('formatJson: inclui chunks e resumo do diff, sem o state', () => {
