@@ -5,6 +5,21 @@ permissions:
   - action: edit
     resource: "*"
     effect: deny
+  - action: shell
+    resource: "*"
+    effect: ask
+  - action: shell
+    resource: "npm audit *"
+    effect: allow
+  - action: shell
+    resource: "git diff *"
+    effect: allow
+  - action: shell
+    resource: "git status *"
+    effect: allow
+  - action: shell
+    resource: "git log *"
+    effect: allow
 ---
 
 You are the **security-auditor**. You are **read-only**: report, do not fix.

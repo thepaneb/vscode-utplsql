@@ -72,6 +72,36 @@ test('jev-review: persiste relatório e comenta de forma fixa no PR', () => {
   assert.match(text, /retention-days:\s*90/);
   assert.match(text, /<!-- jev-review -->/);
   assert.match(text, /issues\/\$PR_NUMBER\/comments/);
+  assert.match(text, /persist-credentials:\s*false/);
+});
+
+test('CODEOWNERS protege o ferramental de IA', () => {
+  const text = fs.readFileSync(path.join(ROOT, '.github', 'CODEOWNERS'), 'utf8');
+  for (const entry of [
+    '/scripts/jev-review.cjs',
+    '/src/tools/jevReview.ts',
+    '/.opencode/',
+    '/opencode.json',
+  ]) {
+    assert.ok(text.includes(entry), `${entry} ausente no CODEOWNERS`);
+  }
+});
+
+test('agentes read-only pedem aprovação ou negam shell', () => {
+  const agents = path.join(ROOT, '.opencode', 'agent');
+  for (const file of [
+    'security-auditor.md',
+    'oracle-analyst.md',
+    'i18n-reviewer.md',
+    'docs-auditor.md',
+  ]) {
+    const text = fs.readFileSync(path.join(agents, file), 'utf8');
+    assert.match(
+      text,
+      /- action: shell\s*\n\s*resource: "\*"\s*\n\s*effect: (ask|deny)/,
+      `${file}: sem regra de shell ask/deny`,
+    );
+  }
 });
 
 test('ci: roda em push e PR da branch de integração release/**', () => {
