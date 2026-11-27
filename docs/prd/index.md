@@ -207,6 +207,12 @@ notas `prd-*`. O índice navegável do vault é a [[MOC - PRDs]].
 | 148 | [Confiabilidade de execução e estado após a auditoria 0.20.0](completed/prd-148-execution-state-reliability.md) | 0.20.1 | 2026-11-07 |
 | 150 | [Thick-full verdadeiro: inicialização thick e recuperação do pool após break](completed/prd-150-thick-full-true-pool-recovery.md) | 0.20.1 | 2026-11-07 |
 
+### 🟡 Em desenvolvimento
+
+| # | PRD | Versão | Data |
+|---|---|---|---|
+| 153 | [Segurança de IA: injeção de prompt e vazamento de dados](in-progress/prd-153-ai-security-prompt-injection-data-egress.md) | 0.24.0 | 2026-11-27 |
+
 ### ⚪ Propostos
 
 | # | PRD | Versão | Data |
@@ -231,6 +237,7 @@ notas `prd-*`. O índice navegável do vault é a [[MOC - PRDs]].
 | 145 | [Segurança do entregável: logging de credenciais, cadeia de build e triagem dos alertas do GitHub](proposed/prd-145-security-alerts-deliverable.md) | 0.24.0 | 2026-11-05 |
 | 149 | [Performance mensurável e qualidade de engenharia](proposed/prd-149-performance-engineering-quality.md) | 0.23.0 | 2026-11-07 |
 | 151 | [CodeLens de debug de teste e suíte](proposed/prd-151-codelens-debug-test.md) | 0.25.0 | 2026-11-07 |
+| 154 | [AI disclosure e proveniência no desenvolvimento](proposed/prd-154-ai-disclosure-provenance.md) | 0.24.0 | 2026-11-27 |
 <!-- prd:roadmap:end -->
 
 ---
@@ -371,6 +378,8 @@ docs/prd/
 │   ├── prd-147-marketplace-listing-page.md
 │   ├── prd-148-execution-state-reliability.md
 │   ├── prd-150-thick-full-true-pool-recovery.md
+├── in-progress/        ← sendo implementados agora
+│   ├── prd-153-ai-security-prompt-injection-data-egress.md
 ├── proposed/        ← em avaliação
 │   ├── prd-60-branch-coverage-investigation.md
 │   ├── prd-61-cli-auto-provision.md
@@ -392,6 +401,7 @@ docs/prd/
 │   ├── prd-145-security-alerts-deliverable.md
 │   ├── prd-149-performance-engineering-quality.md
 │   ├── prd-151-codelens-debug-test.md
+│   ├── prd-154-ai-disclosure-provenance.md
 ```
 <!-- prd:estrutura:end -->
 

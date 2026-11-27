@@ -149,5 +149,5 @@ reais de stack") com `prds: ["PRD-132"]`, `implementacao:` e `testes:`. Enquanto
 - 🗺️ [[MOC - PRDs]]
 - 🔗 PRDs relacionados: [[prd-27-default-keybindings|PRD-27]] · [[prd-29-jump-to-failing-assertion|PRD-29]] · [[prd-34-multi-connection-profiles|PRD-34]]
 - 🔗 Mesma versão (0.25.0): [[prd-133-rate-limiting-keybindings|PRD-133]] · [[prd-140-statusbar-settings-grouping|PRD-140]] · [[prd-141-onboarding-walkthrough-accessibility|PRD-141]] · [[prd-151-codelens-debug-test|PRD-151]]
-- 🚀 ⬅️ release anterior: [[prd-145-security-alerts-deliverable|PRD-145 (0.24.0)]]
+- 🚀 ⬅️ release anterior: [[prd-154-ai-disclosure-provenance|PRD-154 (0.24.0)]]
 <!-- brain:auto:end -->

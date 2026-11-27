@@ -110,5 +110,5 @@ Superfícies: CHANGELOG, README, wiki.
 - 🗺️ [[MOC - PRDs]]
 - 🔗 PRDs relacionados: [[prd-119-security-posture-scorecard|PRD-119]] · [[prd-120-lean-activation-lazy-setup|PRD-120]]
 - 🔗 Mesma versão (0.25.0): [[prd-132-ux-execution-dryrun-jump|PRD-132]] · [[prd-133-rate-limiting-keybindings|PRD-133]] · [[prd-140-statusbar-settings-grouping|PRD-140]] · [[prd-151-codelens-debug-test|PRD-151]]
-- 🚀 ⬅️ release anterior: [[prd-145-security-alerts-deliverable|PRD-145 (0.24.0)]]
+- 🚀 ⬅️ release anterior: [[prd-154-ai-disclosure-provenance|PRD-154 (0.24.0)]]
 <!-- brain:auto:end -->
