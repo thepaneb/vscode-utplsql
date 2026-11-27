@@ -130,8 +130,8 @@ As sete PRDs saíram para **`approved`** e as questões em aberto foram fechadas
 
 ## Validação final (2026-11-26)
 
-- Unitários: **1925 testes / 1921 pass / 4 skip / 0 fail** (`npm run test:unit`).
-- Cobertura: **98,92% linhas/statements · 94,5% branches · 98,74% funções**.
+- Unitários: **1967 testes / 1963 pass / 4 skip / 0 fail** (`npm run test:unit`).
+- Cobertura: **98,91% linhas/statements · 94,48% branches · 98,76% funções**.
 - Matriz no commit `624ccc4`: thin full 18c/21c/23ai + multiroot ✅ · thick smoke
   18c/21c/23ai ✅ · thick full 23ai/11g ✅ · 19ee smoke ✅.
 - Correções Oracle da validação no `DEMO`: descoberta pela ordem de nomes,

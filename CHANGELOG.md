@@ -33,6 +33,8 @@
   PR template, `CONTRIBUTING.md` and `SECURITY.md` document AI disclosure and
   the no-runtime-AI/no-telemetry posture. Internal tooling only — there is no
   extension runtime change.
+- **Dependency updates**: `fast-xml-parser` 5.12.1 (runtime XML parsing),
+  `@vscode/vsce` 4.1.1 and the Scorecard/CodeQL action pins.
 - **Schema discovery fix**: `discoverUtplsqlSchema` resolves `UT_RUNNER` in
   Oracle's name-resolution order (current-schema package, private synonym, public
   synonym, accessible package), so a private synonym such as `DEMO.UT_RUNNER →
