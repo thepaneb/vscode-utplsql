@@ -30,6 +30,8 @@ Workflow [`jev-review.yml`](../../../.github/workflows/jev-review.yml) — **ger
 - `run: npm run compile`
 - `run: |`
 - `run: cat jev-review.md >> "$GITHUB_STEP_SUMMARY"`
+- `uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2`
+- `run: |`
 
 ## Conexões
 

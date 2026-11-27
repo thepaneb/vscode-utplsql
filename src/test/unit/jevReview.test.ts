@@ -4,20 +4,24 @@ import os from 'node:os';
 import path from 'node:path';
 import { test } from 'node:test';
 import {
+  type AggregateReview,
   buildQuestions,
   buildState,
+  type ChunkReview,
   CliError,
   callJev,
   choiceValue,
+  combineResponses,
   DEFAULT_MAX_DIFF_CHARS,
+  type DiffPlan,
   type ExecFileLike,
   escapeTableCell,
   type FetchLike,
   type FetchResponse,
-  filterDiff,
   formatJson,
   formatMarkdown,
   getGitDiff,
+  isDocPath,
   isMaxTokensError,
   isSensitivePath,
   JevApiError,
@@ -28,6 +32,7 @@ import {
   noulValue,
   parseArgs,
   parseEnvValue,
+  planDiffChunks,
   redactSecrets,
   scoreValue,
   splitDiff,
@@ -143,6 +148,33 @@ function writeDiff(dir: string, contents: string): string {
   const file = path.join(dir, 'sample.diff');
   fs.writeFileSync(file, contents, 'utf8');
   return file;
+}
+
+function planOf(overrides: Partial<DiffPlan> = {}): DiffPlan {
+  const files = overrides.files ?? ['a'];
+  return {
+    chunks: [{ text: '', files }],
+    files,
+    omitted: 0,
+    omittedDocs: 0,
+    omittedSensitive: 0,
+    splitFiles: 0,
+    ...overrides,
+  };
+}
+
+function aggregateOf(
+  response: JevResponse,
+  plan = planOf(),
+  chunks?: ChunkReview[],
+): AggregateReview {
+  const summary = summarize(response);
+  return {
+    response,
+    summary,
+    plan,
+    chunks: chunks ?? [{ index: 1, files: plan.files, response, summary }],
+  };
 }
 
 test('parseEnvValue: lê valor simples, com quotes, export e CRLF', () => {
@@ -284,40 +316,116 @@ test('splitDiff: vazio', () => {
   assert.deepEqual(splitDiff(''), []);
 });
 
-test('filterDiff: ignora .env, lockfile e binário e redige segredos', () => {
-  const filtered = filterDiff(`${SAMPLE_DIFF}${ENV_DIFF}${LOCK_DIFF}${BINARY_DIFF}`);
-  assert.deepEqual(filtered.files, ['src/users.ts']);
-  assert.equal(filtered.omitted, 3);
-  assert.equal(filtered.truncated, false);
-  assert.match(filtered.text, /src\/users\.ts/);
-  assert.doesNotMatch(filtered.text, /super-secret/);
+function diffFor(file: string, body: string): string {
+  return `diff --git a/${file} b/${file}\n--- a/${file}\n+++ b/${file}\n@@ -1 +1 @@\n+${body}\n`;
+}
+
+test('isDocPath: cobre docs, markdown e arquivos raiz', () => {
+  for (const file of [
+    'docs/guide.md',
+    'docs/brain/note.md',
+    'README.md',
+    'README.pt-BR.md',
+    'CHANGELOG.md',
+    'CONTRIBUTING.md',
+    'LICENSE',
+    '.opencode/skills/jev-review/SKILL.md',
+  ]) {
+    assert.equal(isDocPath(file), true, file);
+  }
+  for (const file of ['src/foo.ts', 'scripts/tool.cjs', 'site/index.html', 'config.ts']) {
+    assert.equal(isDocPath(file), false, file);
+  }
 });
 
-test('filterDiff: redige segredo em arquivo normal', () => {
-  const diff =
-    'diff --git a/config.ts b/config.ts\n--- a/config.ts\n+++ b/config.ts\n@@ -1 +1 @@\n+const apiKey = "sk-live-123";\n';
-  const filtered = filterDiff(diff);
-  assert.match(filtered.text, /\[REDACTED\]/);
-  assert.doesNotMatch(filtered.text, /sk-live-123/);
+test('planDiffChunks: prioriza src e omite docs', () => {
+  const plan = planDiffChunks(
+    `${diffFor('docs/guide.md', 'doc')}${diffFor('README.md', 'readme')}${SAMPLE_DIFF}${diffFor('scripts/tool.cjs', 'script')}`,
+    10_000,
+    10_000,
+  );
+  assert.deepEqual(plan.files, ['src/users.ts', 'scripts/tool.cjs']);
+  assert.equal(plan.omittedDocs, 2);
+  assert.equal(plan.omittedSensitive, 0);
+  assert.equal(plan.omitted, 2);
+  assert.equal(plan.chunks.length, 1);
+  assert.deepEqual(plan.chunks[0].files, ['src/users.ts', 'scripts/tool.cjs']);
+  assert.ok(
+    plan.chunks[0].text.indexOf('src/users.ts') < plan.chunks[0].text.indexOf('scripts/tool.cjs'),
+  );
 });
 
-test('filterDiff: trunca por arquivo e por total', () => {
-  const diff = `diff --git a/a.ts b/a.ts\n--- a/a.ts\n+++ b/a.ts\n@@ -1 +1 @@\n+${'a'.repeat(200)}\n`;
-  const perFile = filterDiff(diff, 1000, 20);
-  assert.equal(perFile.truncated, true);
-  assert.match(perFile.text, /\.\.\. \[truncado\]/);
-
-  const total = filterDiff(`${diff}${diff.replace(/a\.ts/g, 'b.ts')}`, 120, 1000);
-  assert.equal(total.truncated, true);
-  assert.match(total.text, /\.\.\. \[diff truncado\]/);
-  assert.equal(total.files.length, 1);
-  assert.equal(total.omitted, 1);
+test('planDiffChunks: cobre todo o src em vários blocos', () => {
+  const names = ['a', 'b', 'c', 'd', 'e'];
+  const diff = names.map((name) => diffFor(`src/${name}.ts`, 'x'.repeat(120))).join('');
+  const plan = planDiffChunks(diff, 300, 1000);
+  assert.equal(plan.chunks.length, 5);
+  assert.equal(plan.splitFiles, 0);
+  assert.deepEqual(
+    plan.files,
+    names.map((name) => `src/${name}.ts`),
+  );
+  for (const chunk of plan.chunks) {
+    assert.ok(chunk.text.length <= 300, `${chunk.text.length} > 300`);
+  }
+  const all = plan.chunks.map((chunk) => chunk.text).join('\n');
+  for (const name of names) {
+    assert.match(all, new RegExp(`src/${name}\\.ts`));
+  }
 });
 
-test('filterDiff: limite total zero omite todos', () => {
-  const filtered = filterDiff(SAMPLE_DIFF, 0, 1000);
-  assert.deepEqual(filtered.files, []);
-  assert.equal(filtered.omitted, 1);
+test('planDiffChunks: divide arquivo grande em partes sem perder conteúdo', () => {
+  const lines = Array.from({ length: 40 }, (_, index) => `+linha-${index}-${'x'.repeat(20)}`).join(
+    '\n',
+  );
+  const diff = `diff --git a/src/big.ts b/src/big.ts\n--- a/src/big.ts\n+++ b/src/big.ts\n@@ -1,40 +1,40 @@\n${lines}\n`;
+  const plan = planDiffChunks(diff, 300, 220);
+  assert.ok(plan.chunks.length > 1);
+  assert.equal(plan.splitFiles, 1);
+  assert.deepEqual(plan.files, ['src/big.ts']);
+  const all = plan.chunks.map((chunk) => chunk.text).join('\n');
+  for (let index = 0; index < 40; index++) {
+    assert.match(all, new RegExp(`linha-${index}-`));
+  }
+  assert.match(all, /parte 1\/\d+ de src\/big\.ts/);
+});
+
+test('planDiffChunks: omite sensíveis e binários e redige segredos', () => {
+  const plan = planDiffChunks(
+    `${SAMPLE_DIFF}${ENV_DIFF}${LOCK_DIFF}${BINARY_DIFF}${diffFor('config.ts', 'const apiKey = "sk-live-123";')}`,
+    10_000,
+    10_000,
+  );
+  assert.deepEqual(plan.files, ['src/users.ts', 'config.ts']);
+  assert.equal(plan.omittedSensitive, 3);
+  assert.equal(plan.omittedDocs, 0);
+  const all = plan.chunks.map((chunk) => chunk.text).join('\n');
+  assert.match(all, /\[REDACTED\]/);
+  assert.doesNotMatch(all, /sk-live-123|super-secret/);
+});
+
+test('planDiffChunks: não omite markdown dentro de src', () => {
+  const plan = planDiffChunks(diffFor('src/notes.md', 'nota'), 10_000, 10_000);
+  assert.deepEqual(plan.files, ['src/notes.md']);
+  assert.equal(plan.omittedDocs, 0);
+});
+
+test('planDiffChunks: linha única maior que a parte é dividida', () => {
+  const diff = `diff --git a/src/long.ts b/src/long.ts\n--- a/src/long.ts\n+++ b/src/long.ts\n@@ -1 +1 @@\n+${'x'.repeat(500)}\n`;
+  const plan = planDiffChunks(diff, 300, 120);
+  assert.ok(plan.chunks.length > 1);
+  assert.equal(plan.splitFiles, 1);
+  assert.deepEqual(plan.files, ['src/long.ts']);
+  const all = plan.chunks.map((chunk) => chunk.text).join('\n');
+  assert.equal((all.match(/x/g) ?? []).length, 500);
+});
+
+test('planDiffChunks: diff vazio', () => {
+  const plan = planDiffChunks('', 10_000, 10_000);
+  assert.deepEqual(plan.chunks, []);
+  assert.deepEqual(plan.files, []);
+  assert.equal(plan.omitted, 0);
+  assert.equal(plan.splitFiles, 0);
 });
 
 test('buildQuestions: inclui as cinco dimensões', () => {
@@ -646,11 +754,74 @@ test('summarize: respostas ausentes', () => {
   assert.equal(summary.hasFindings, false);
 });
 
+test('combineResponses: usa o pior veredito, maior severidade e soma uso', () => {
+  const first = validResponse({
+    answers: {
+      security: { type: 'noul', noul: 0.2 },
+      correctness: { type: 'noul', noul: 0.1 },
+      tests: { type: 'noul', noul: 0.1 },
+      severity: { type: 'score', score: 1.1 },
+      recommendation: { type: 'choice', choice: 'approve' },
+    },
+    usage: { input_tokens: 10, output_tokens: 2, cost: 0.001 },
+  });
+  const second = validResponse({
+    answers: {
+      security: { type: 'noul', noul: 0.8 },
+      correctness: { type: 'noul', noul: 0.9 },
+      tests: { type: 'noul', noul: 0.7 },
+      severity: { type: 'score', score: 3.2 },
+      recommendation: { type: 'choice', choice: 'block' },
+    },
+    usage: { input_tokens: 20, output_tokens: 4, cost: 0.002 },
+  });
+  const combined = combineResponses([first, second]);
+  assert.equal(combined.model, 'jev-1.13-free');
+  assert.equal(noulValue(combined, 'security'), 0.8);
+  assert.equal(noulValue(combined, 'correctness'), 0.9);
+  assert.equal(noulValue(combined, 'tests'), 0.7);
+  assert.equal(scoreValue(combined, 'severity'), 3.2);
+  assert.equal(choiceValue(combined, 'recommendation'), 'block');
+  assert.deepEqual(combined.usage, { input_tokens: 30, output_tokens: 6, cost: 0.003 });
+});
+
+test('combineResponses: lida com respostas ausentes e modelos diferentes', () => {
+  const combined = combineResponses([
+    { model: 'a', answers: {} },
+    { model: 'b', answers: { severity: { type: 'score', score: 2 } } },
+  ]);
+  assert.equal(combined.model, 'misto');
+  assert.equal(noulValue(combined, 'security'), undefined);
+  assert.equal(scoreValue(combined, 'severity'), 2);
+  assert.equal(choiceValue(combined, 'recommendation'), undefined);
+  assert.equal(combined.usage, undefined);
+});
+
+test('combineResponses: uso vazio vira undefined', () => {
+  const combined = combineResponses([{ model: 'm', answers: {}, usage: {} }]);
+  assert.equal(combined.usage, undefined);
+});
+
+test('combineResponses: veredito desconhecido perde para comment', () => {
+  const combined = combineResponses([
+    { model: 'm', answers: { recommendation: { type: 'choice', choice: 'weird' } } },
+    { model: 'm', answers: { recommendation: { type: 'choice', choice: 'comment' } } },
+  ]);
+  assert.equal(choiceValue(combined, 'recommendation'), 'comment');
+});
+
+test('combineResponses: sem respostas', () => {
+  const combined = combineResponses([]);
+  assert.equal(combined.model, 'desconhecido');
+  assert.deepEqual(combined.answers, {});
+  assert.equal(combined.usage, undefined);
+});
+
 test('escapeTableCell: escapa backslash, pipe e newline', () => {
   assert.equal(escapeTableCell('a\\b|c\nd'), 'a\\\\b\\|c<br>d');
 });
 
-test('formatMarkdown: inclui veredito, tabela e achados', () => {
+test('formatMarkdown: inclui veredito, tabela, achados e estatísticas do plano', () => {
   const response = validResponse({
     answers: {
       security: { type: 'noul', noul: 0.98 },
@@ -661,64 +832,131 @@ test('formatMarkdown: inclui veredito, tabela e achados', () => {
     },
     usage: { input_tokens: 10, output_tokens: 2, cost: 0 },
   });
-  const summary = summarize(response);
-  const markdown = formatMarkdown(response, summary, {
-    text: '',
-    files: ['src/a.ts'],
-    omitted: 2,
-    truncated: true,
-  });
+  const markdown = formatMarkdown(
+    aggregateOf(
+      response,
+      planOf({
+        files: ['src/a.ts'],
+        omitted: 2,
+        omittedDocs: 1,
+        omittedSensitive: 1,
+        splitFiles: 1,
+      }),
+    ),
+  );
   assert.match(markdown, /Jev review/);
   assert.match(markdown, /block/);
   assert.match(markdown, /98%/);
   assert.match(markdown, /3\.97\/4/);
+  assert.match(markdown, /Blocos:\*\* 1/);
   assert.match(markdown, /Arquivos revisados:\*\* 1/);
-  assert.match(markdown, /Omitidos:\*\* 2/);
-  assert.match(markdown, /Truncado:\*\* sim/);
+  assert.match(markdown, /Omitidos:\*\* 2 \(docs 1, sensíveis 1\)/);
+  assert.match(markdown, /Arquivos divididos:\*\* 1/);
   assert.match(markdown, /custo 0/);
 });
 
 test('formatMarkdown: aprovado sem achados', () => {
   const response = validResponse();
-  const markdown = formatMarkdown(response, summarize(response), {
-    text: '',
-    files: ['a'],
-    omitted: 0,
-    truncated: false,
-  });
+  const markdown = formatMarkdown(aggregateOf(response));
   assert.match(markdown, /Nenhum risco relevante/);
 });
 
 test('formatMarkdown: respostas ausentes usam —', () => {
   const response: JevResponse = { model: 'm', answers: {} };
-  const markdown = formatMarkdown(response, summarize(response), {
-    text: '',
-    files: ['a'],
-    omitted: 0,
-    truncated: false,
-  });
+  const markdown = formatMarkdown(aggregateOf(response));
   assert.match(markdown, /—/);
   assert.match(markdown, /desconhecida/);
 });
 
-test('formatJson: não inclui o diff/state', () => {
+test('formatMarkdown: lista os blocos quando há mais de um', () => {
+  const first = validResponse();
+  const second = validResponse({
+    answers: {
+      security: { type: 'noul', noul: 0.1 },
+      correctness: { type: 'noul', noul: 0.1 },
+      tests: { type: 'noul', noul: 0.1 },
+      severity: { type: 'score', score: 1 },
+      recommendation: { type: 'choice', choice: 'comment' },
+    },
+  });
+  const plan = planOf({
+    chunks: [
+      { text: '', files: ['src/a.ts'] },
+      { text: '', files: ['src/b.ts'] },
+    ],
+    files: ['src/a.ts', 'src/b.ts'],
+  });
+  const chunks: ChunkReview[] = [
+    { index: 1, files: ['src/a.ts'], response: first, summary: summarize(first) },
+    { index: 2, files: ['src/b.ts'], response: second, summary: summarize(second) },
+  ];
+  const markdown = formatMarkdown(aggregateOf(combineResponses([first, second]), plan, chunks));
+  assert.match(markdown, /Blocos revisados \(2\)/);
+  assert.match(markdown, /src\/a\.ts/);
+  assert.match(markdown, /src\/b\.ts/);
+  assert.match(markdown, /comment/);
+});
+
+test('formatMarkdown: resume listas longas de arquivos', () => {
+  const files = ['src/a.ts', 'src/b.ts', 'src/c.ts', 'src/d.ts', 'src/e.ts'];
+  const first = validResponse();
+  const second = validResponse({
+    answers: {
+      security: { type: 'noul', noul: 0.1 },
+      correctness: { type: 'noul', noul: 0.1 },
+      tests: { type: 'noul', noul: 0.1 },
+      severity: { type: 'score', score: 1 },
+      recommendation: { type: 'choice', choice: 'approve' },
+    },
+  });
+  const plan = planOf({
+    chunks: [
+      { text: '', files },
+      { text: '', files: ['src/z.ts'] },
+    ],
+    files: [...files, 'src/z.ts'],
+  });
+  const chunks: ChunkReview[] = [
+    { index: 1, files, response: first, summary: summarize(first) },
+    { index: 2, files: ['src/z.ts'], response: second, summary: summarize(second) },
+  ];
+  const markdown = formatMarkdown(aggregateOf(combineResponses([first, second]), plan, chunks));
+  assert.match(markdown, /src\/a\.ts, src\/b\.ts, src\/c\.ts, src\/d\.ts, \(\+1\)/);
+});
+
+test('formatJson: inclui chunks e resumo do diff, sem o state', () => {
   const response = validResponse();
   const json = JSON.parse(
-    formatJson(response, summarize(response), {
-      text: 'SEGREDO',
-      files: ['a'],
-      omitted: 1,
-      truncated: false,
-    }),
+    formatJson(
+      aggregateOf(
+        response,
+        planOf({
+          chunks: [{ text: 'SEGREDO', files: ['a'] }],
+          files: ['a'],
+          omitted: 1,
+          omittedSensitive: 1,
+        }),
+      ),
+    ),
   ) as {
     model: string;
     verdict: string;
-    diff: { files: string[]; omitted: number; truncated: boolean };
+    chunks: Array<{ index: number; files: string[] }>;
+    diff: {
+      files: string[];
+      omitted: number;
+      omittedDocs: number;
+      omittedSensitive: number;
+      chunks: number;
+    };
   };
   assert.equal(json.model, 'jev-1.13-free');
   assert.equal(json.verdict, 'approve');
   assert.deepEqual(json.diff.files, ['a']);
   assert.equal(json.diff.omitted, 1);
+  assert.equal(json.diff.omittedSensitive, 1);
+  assert.equal(json.diff.chunks, 1);
+  assert.deepEqual(json.chunks[0].files, ['a']);
   assert.equal(JSON.stringify(json).includes('SEGREDO'), false);
 });
 
@@ -729,6 +967,7 @@ test('parseArgs: defaults', () => {
   assert.equal(options.repo, '.');
   assert.equal(options.model, 'jev-1.13-free');
   assert.equal(options.maxDiffChars, DEFAULT_MAX_DIFF_CHARS);
+  assert.equal(options.jsonOutput, undefined);
   assert.equal(options.format, 'markdown');
   assert.equal(options.workingTree, false);
   assert.equal(options.failOnFindings, false);
@@ -754,6 +993,8 @@ test('parseArgs: flags com valor inline e separado', () => {
     '30',
     '--output',
     'out.md',
+    '--json-output',
+    'out.json',
     '--working-tree',
     '--fail-on-findings',
     '--require-key',
@@ -770,6 +1011,7 @@ test('parseArgs: flags com valor inline e separado', () => {
   assert.equal(options.maxFileChars, 20);
   assert.equal(options.timeoutMs, 30);
   assert.equal(options.output, 'out.md');
+  assert.equal(options.jsonOutput, 'out.json');
   assert.equal(options.workingTree, true);
   assert.equal(options.failOnFindings, true);
   assert.equal(options.requireKey, true);
@@ -916,13 +1158,15 @@ test('main: dry-run não chama fetch', async () => {
     assert.equal(called, false);
     const payload = JSON.parse(result.out) as {
       model: string;
-      diff: { files: string[] };
-      state: string;
+      diff: { files: string[]; chunks: number };
+      chunks: Array<{ files: string[]; state: string; chars: number }>;
       questions: Record<string, unknown>;
     };
     assert.equal(payload.model, 'jev-1.13-free');
     assert.deepEqual(payload.diff.files, ['src/users.ts']);
-    assert.match(payload.state, /Arquivos revisados: 1/);
+    assert.equal(payload.diff.chunks, 1);
+    assert.deepEqual(payload.chunks[0].files, ['src/users.ts']);
+    assert.match(payload.chunks[0].state, /Arquivos revisados: 1/);
     assert.equal(typeof payload.questions.security, 'object');
   });
 });
@@ -941,7 +1185,46 @@ test('main: run completo em markdown', async () => {
   });
 });
 
-test('main: reduz o diff e repete em max_tokens_exceeded', async () => {
+test('main: revisa todos os blocos e agrega', async () => {
+  await withTempDirAsync(async (dir) => {
+    const names = ['a', 'b', 'c'];
+    const file = writeDiff(
+      dir,
+      names.map((name) => diffFor(`src/${name}.ts`, 'x'.repeat(120))).join(''),
+    );
+    let calls = 0;
+    const fetchImpl: FetchLike = async () => {
+      calls++;
+      return fakeResponse(
+        calls === 1
+          ? validResponse()
+          : validResponse({
+              answers: {
+                security: { type: 'noul', noul: 0.1 },
+                correctness: { type: 'noul', noul: 0.1 },
+                tests: { type: 'noul', noul: 0.1 },
+                severity: { type: 'score', score: 2.5 },
+                recommendation: { type: 'choice', choice: 'comment' },
+              },
+              usage: { input_tokens: 5, output_tokens: 1, cost: 0 },
+            }),
+      );
+    };
+    const result = await runMain(['--diff-file', file, '--max-diff-chars', '300'], {
+      env: { OPENCODE_API_KEY: 'k' },
+      cwd: dir,
+      fetchImpl,
+    });
+    assert.equal(result.code, 0);
+    assert.equal(calls, 3);
+    assert.match(result.out, /Blocos:\*\* 3/);
+    assert.match(result.out, /comment/);
+    assert.match(result.out, /20 input \/ 4 output/);
+    assert.match(result.err, /bloco 1\/3/);
+  });
+});
+
+test('main: em max_tokens divide o bloco e reenvia', async () => {
   await withTempDirAsync(async (dir) => {
     const file = writeDiff(dir, SAMPLE_DIFF);
     let calls = 0;
@@ -955,27 +1238,48 @@ test('main: reduz o diff e repete em max_tokens_exceeded', async () => {
       fetchImpl,
     });
     assert.equal(result.code, 0);
-    assert.equal(calls, 2);
+    assert.equal(calls, 3);
+    assert.match(result.err, /dividindo em 2/);
     assert.match(result.out, /Jev review/);
   });
 });
 
-test('main: desiste após 3 max_tokens_exceeded', async () => {
+test('main: falha quando o bloco continua excedendo o limite', async () => {
   await withTempDirAsync(async (dir) => {
     const file = writeDiff(dir, SAMPLE_DIFF);
-    let calls = 0;
-    const fetchImpl: FetchLike = async () => {
-      calls++;
-      return maxTokensResponse();
-    };
+    const fetchImpl: FetchLike = async () => maxTokensResponse();
     const result = await runMain(['--diff-file', file], {
       env: { OPENCODE_API_KEY: 'k' },
       cwd: dir,
       fetchImpl,
     });
     assert.equal(result.code, 1);
-    assert.equal(calls, 3);
     assert.match(result.err, /max_tokens_exceeded/);
+  });
+});
+
+test('main: --json-output escreve markdown e json', async () => {
+  await withTempDirAsync(async (dir) => {
+    const file = writeDiff(dir, SAMPLE_DIFF);
+    const written: Array<{ file: string; data: string }> = [];
+    const result = await runMain(
+      ['--diff-file', file, '--output', 'report.md', '--json-output', 'report.json'],
+      {
+        env: { OPENCODE_API_KEY: 'k' },
+        cwd: dir,
+        fetchImpl: fakeFetch(validResponse()),
+        writeFile: (target, data) => written.push({ file: target, data }),
+      },
+    );
+    assert.equal(result.code, 0);
+    assert.equal(result.out, '');
+    assert.equal(written.length, 2);
+    assert.equal(written[0].file, path.join(dir, 'report.md'));
+    assert.match(written[0].data, /Jev review/);
+    assert.equal(written[1].file, path.join(dir, 'report.json'));
+    const json = JSON.parse(written[1].data) as { chunks: unknown[]; diff: { chunks: number } };
+    assert.equal(json.chunks.length, 1);
+    assert.equal(json.diff.chunks, 1);
   });
 });
 
@@ -1093,6 +1397,42 @@ test('main: erro ao escrever output', async () => {
     });
     assert.equal(result.code, 2);
     assert.match(result.err, /não foi possível escrever/);
+  });
+});
+
+test('main: erro ao escrever json-output', async () => {
+  await withTempDirAsync(async (dir) => {
+    const file = writeDiff(dir, SAMPLE_DIFF);
+    const result = await runMain(['--diff-file', file, '--json-output', 'report.json'], {
+      env: { OPENCODE_API_KEY: 'k' },
+      cwd: dir,
+      fetchImpl: fakeFetch(validResponse()),
+      writeFile: () => {
+        throw new Error('disco cheio');
+      },
+    });
+    assert.equal(result.code, 2);
+    assert.match(result.err, /não foi possível escrever report\.json/);
+  });
+});
+
+test('main: erro da API escreve json de erro', async () => {
+  await withTempDirAsync(async (dir) => {
+    const file = writeDiff(dir, SAMPLE_DIFF);
+    const written: string[] = [];
+    const result = await runMain(
+      ['--diff-file', file, '--output', 'report.md', '--json-output', 'report.json'],
+      {
+        env: { OPENCODE_API_KEY: 'k' },
+        cwd: dir,
+        fetchImpl: fakeFetch({ error: 'unauthorized' }, false, 401),
+        writeFile: (_target, data) => written.push(data),
+      },
+    );
+    assert.equal(result.code, 1);
+    assert.equal(written.length, 2);
+    const json = JSON.parse(written[1]) as { error: string };
+    assert.match(json.error, /HTTP 401/);
   });
 });
 

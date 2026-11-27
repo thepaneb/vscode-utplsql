@@ -47,6 +47,9 @@ npm run jev:review -- --base origin/main --format json
 npm run jev:review -- --base origin/main --output jev-review.md
 npm run jev:review -- --base origin/main --dry-run
 
+# Salvar markdown + JSON (usado pelo CI)
+npm run jev:review -- --base origin/main --output jev-review.md --json-output jev-review.json
+
 # Falhar (exit 1) quando houver achados — usar só em gate calibrado
 npm run jev:review -- --base origin/main --fail-on-findings
 ```
@@ -54,6 +57,24 @@ npm run jev:review -- --base origin/main --fail-on-findings
 O script usa `https://opencode.ai/inference/systemone/v1/systemone` com
 `jev-1.13-free` por padrão. Se o modelo gratuito sair do ar, use
 `--model jev-1.13` (pago; ~$0,042/M tokens de input, output grátis).
+
+## Cobertura do diff (chunking)
+
+O review **não corta mais o diff no primeiro limite**: ele ordena `src/**`
+primeiro, omite docs (`docs/**`, `*.md`) e sensíveis/binários, e envia o
+restante em blocos de até `--max-diff-chars` (default 30000 caracteres por
+chamada). Um arquivo maior que o bloco é dividido por linhas em partes
+numeradas; **todo o `src/**` entra no contexto**.
+
+- Se a API responder `max_tokens_exceeded`, o bloco é dividido em dois e
+  reenviado (até 4 níveis); se ainda falhar, o review sai com erro visível —
+  nunca omite `src` silenciosamente.
+- O relatório agrega os blocos: pior veredito, maior severidade, união dos
+  achados e soma de tokens/custo. O JSON inclui `chunks[]` e o resumo do diff.
+- PRs muito grandes fazem várias chamadas (~1–2 s cada, modelo grátis); PRs
+  normais continuam em uma única chamada.
+- Docs só entram no review se estiverem dentro de um arquivo de código; o
+  gatilho do CI já ignora PRs que só mudam docs.
 
 ## Como interpretar
 
@@ -84,16 +105,23 @@ Regras de uso:
   `.vscode-patched`, certificados e `docs/brain/.obsidian/plugins/*/data.json`.
 - Mesmo assim, não inclua credenciais Oracle, strings de conexão ou conteúdo
   proprietário que não seja necessário para revisar o diff.
-- O contexto do Jev é ~64K tokens; o script trunca o diff
-  (`--max-diff-chars`, default 40000 caracteres) e por arquivo
-  (`--max-file-chars`, default 20000). Se a API responder
-  `max_tokens_exceeded`, ele reduz o diff e tenta de novo (até 3 tentativas).
+- O contexto do Jev é ~64K tokens; cada bloco tem no máximo `--max-diff-chars`
+  (default 30000 caracteres) e cada parte de arquivo no máximo `--max-file-chars`
+  (default 20000). Em `max_tokens_exceeded`, o bloco é subdividido e reenviado
+  (até 4 níveis); não há mais corte silencioso do diff.
 - A chamada sai da máquina para o OpenCode Console; não use o modelo gratuito
   para dados sensíveis.
 
 ## CI
 
 O workflow `.github/workflows/jev-review.yml` roda em PRs internos, em modo
-**advisory** (não é required check), e publica o relatório no summary. Ele usa o
-secret `OPENCODE_API_KEY`; PRs de fork são pulados. Só torne gate obrigatório
-depois de calibrar os limiares com alguns PRs reais.
+**advisory** (não é required check), e publica o relatório em três lugares:
+
+- **step summary** do run;
+- **artifact** `jev-review-<PR>` com `jev-review.md` e `jev-review.json`
+  (retenção de 90 dias, para medir uso/achados ao longo do tempo);
+- **comentário fixo** no PR (marcador oculto `<!-- jev-review -->`, atualizado
+  em cada push em vez de criar um novo).
+
+Ele usa o secret `OPENCODE_API_KEY`; PRs de fork são pulados. Só torne gate
+obrigatório depois de calibrar os limiares com alguns PRs reais.
