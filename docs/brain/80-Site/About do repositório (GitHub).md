@@ -3,7 +3,7 @@ tipo: guia
 status: ativo
 titulo: "About do repositório (GitHub)"
 verificado: 2026-11-04
-descricao: "Run, debug and cover utPLSQL (Oracle PL/SQL) tests in VS Code's native Test Explorer — visual coverage, jump-to-failure, DBMS_DEBUG debugger, tags/random order, connection profiles and Oracle-direct execution via node-oracledb (thin & thick). 24 UI languages; requires VS Code 1.125+ (Node 24)."
+descricao: "Run, debug and cover utPLSQL (Oracle PL/SQL) tests in VS Code's native Test Explorer — visual coverage, jump-to-failure, DBMS_DEBUG debugger, tags/random order, connection profiles and Oracle-direct execution via node-oracledb (thin & thick). 26 UI languages; requires VS Code 1.125+ (Node 24)."
 homepage: "https://thepaneb.github.io/vscode-utplsql/"
 topics: [code-coverage, coverage, debugger, i18n, node-oracledb, oracle, oracle-database, plsql, plsql-debugger, test-explorer, testing, typescript, unit-testing, utplsql, vscode, vscode-extension]
 implementacao: ["scripts/github-about.cjs"]

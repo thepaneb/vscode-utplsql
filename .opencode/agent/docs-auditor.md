@@ -9,6 +9,31 @@ tools:
   glob: true
   write: false
   edit: false
+permissions:
+  - action: edit
+    resource: "*"
+    effect: deny
+  - action: shell
+    resource: "*"
+    effect: ask
+  - action: shell
+    resource: "npm run docs:check"
+    effect: allow
+  - action: shell
+    resource: "npm run docs:check *"
+    effect: allow
+  - action: shell
+    resource: "npm run docs:features-check *"
+    effect: allow
+  - action: shell
+    resource: "npm run brain:check"
+    effect: allow
+  - action: shell
+    resource: "git diff *"
+    effect: allow
+  - action: shell
+    resource: "git status *"
+    effect: allow
 ---
 
 You are the **docs-auditor** for this repository (a VSCode extension for
@@ -24,7 +49,7 @@ The code is authoritative. Read it first, then the docs:
 
 - `src/**/*.ts` (production behavior), `package.json` (`contributes`:
   settings, commands, menus, keybindings, `engines`, `version`),
-  `src/i18nLocales.ts` (locales), `scripts/db-matrix/*` (test matrix).
+  `src/i18n/locales/*` (locales), `scripts/db-matrix/*` (test matrix).
 - Settings/commands enumerated in `package.json` are the contract.
 
 ## Docs under audit (versioned only)

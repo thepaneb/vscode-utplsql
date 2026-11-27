@@ -93,6 +93,44 @@ utPLSQL installed **in the same schema** as the tests — no cross-schema grants
 > `DBA_PROCEDURES` grants are **not** required — the framework reads its
 > own source.
 
+## Shared install — runner, coverage and synonyms
+
+The schema that runs the tests needs direct grants on the runner buffer and on
+the profiler tables used by the Cobertura reporter. Grants do **not** create
+synonyms: the test packages call `ut.expect` unqualified and the
+`UT_COVERAGE_*` packages use `AUTHID CURRENT_USER` to read `DBMSPCC_*` from the
+current schema.
+
+```sql
+-- As DBA (or the UT3 owner):
+GRANT SELECT, INSERT, UPDATE, DELETE ON UT3.UT_OUTPUT_BUFFER_TMP      TO <schema>;
+GRANT SELECT, INSERT, UPDATE, DELETE ON UT3.UT_OUTPUT_BUFFER_INFO_TMP TO <schema>;
+
+GRANT SELECT ON UT3.DBMSPCC_BLOCKS TO <schema>;
+GRANT SELECT ON UT3.DBMSPCC_RUNS   TO <schema>;
+GRANT SELECT ON UT3.DBMSPCC_UNITS  TO <schema>;
+
+GRANT EXECUTE ON UT3.UT               TO <schema>;
+GRANT EXECUTE ON UT3.UT_RUNNER        TO <schema>;
+GRANT EXECUTE ON UT3.UT_VARCHAR2_LIST TO <schema>;
+GRANT EXECUTE ON UT3.UT_REPORTERS     TO <schema>;
+
+-- Run in the test schema (or prefix with <schema>. as DBA):
+CREATE OR REPLACE SYNONYM UT               FOR UT3.UT;
+CREATE OR REPLACE SYNONYM UT_RUNNER        FOR UT3.UT_RUNNER;
+CREATE OR REPLACE SYNONYM UT_VARCHAR2_LIST FOR UT3.UT_VARCHAR2_LIST;
+CREATE OR REPLACE SYNONYM UT_REPORTERS     FOR UT3.UT_REPORTERS;
+CREATE OR REPLACE SYNONYM DBMSPCC_BLOCKS   FOR UT3.DBMSPCC_BLOCKS;
+CREATE OR REPLACE SYNONYM DBMSPCC_RUNS     FOR UT3.DBMSPCC_RUNS;
+CREATE OR REPLACE SYNONYM DBMSPCC_UNITS    FOR UT3.DBMSPCC_UNITS;
+```
+
+> The extension qualifies `ut_runner`, `ut_varchar2_list`, `ut_reporters` and the
+> reporter constructors with the discovered owner. The `UT` and `DBMSPCC_*`
+> synonyms remain required for the test code and the current-user coverage
+> helper. Without the `DBMSPCC_*` synonyms, coverage fails with
+> `ORA-00942: table or view "<schema>.DBMSPCC_BLOCKS" does not exist`.
+
 ## PL/SQL debugging (`DBMS_DEBUG`)
 
 To debug tests (Debug Adapter `utplsql`), the schema that runs the tests needs:
@@ -116,8 +154,8 @@ command), otherwise breakpoints are silently ignored.
 Run this script as DBA to audit the configuration:
 
 ```sql
--- 1. Check if utPLSQL is installed
-SELECT ut_meta.version() FROM dual;
+-- 1. Check if utPLSQL is installed (shared owner)
+SELECT ut_runner.version() FROM dual;
 
 -- 2. Check profiler grants (coverage)
 SELECT grantee, table_name, privilege
@@ -134,4 +172,17 @@ WHERE table_name IN ('DBA_SOURCE', 'DBA_OBJECTS', 'DBA_PROCEDURES')
 -- 4. Check utPLSQL source view
 SELECT ut_metadata.get_source_view_name FROM dual;
 -- Expected: dba_source (shared) or all_source (per-schema)
+
+-- 5. Check runner buffer grants
+SELECT grantee, table_name, privilege
+FROM dba_tab_privs
+WHERE table_name IN ('UT_OUTPUT_BUFFER_TMP', 'UT_OUTPUT_BUFFER_INFO_TMP')
+  AND grantee IN ('UT3', 'DEV', 'TEST', 'PUBLIC');
+
+-- 6. Check the synonyms used by test code and coverage
+SELECT owner, synonym_name, table_owner, table_name
+FROM dba_synonyms
+WHERE synonym_name IN ('UT', 'UT_RUNNER', 'UT_VARCHAR2_LIST', 'UT_REPORTERS',
+                       'DBMSPCC_BLOCKS', 'DBMSPCC_RUNS', 'DBMSPCC_UNITS')
+  AND owner IN ('DEV', 'TEST', 'PUBLIC');
 ```

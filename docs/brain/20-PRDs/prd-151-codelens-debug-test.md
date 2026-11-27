@@ -22,7 +22,7 @@ tags: [prd]
 | Data | 2026-11-07 |
 | Componente | Extensão `paneb.vscode-utplsql` (CodeLens + debugger) |
 | Versão alvo | 0.25.0 (onda de UX) |
-| Arquivos afetados | `src/codelens.ts`, `src/commands/debug.ts`, `src/i18nLocales.ts`, `package.json`, `package.nls*.json`, `src/test/unit/codelens.test.ts`, `src/test/unit/debugCommands.test.ts`, docs geradas |
+| Arquivos afetados | `src/codelens.ts`, `src/commands/debug.ts`, `src/i18n/locales/*.ts`, `package.json`, `package.nls*.json`, `src/test/unit/codelens.test.ts`, `src/test/unit/debugCommands.test.ts`, docs geradas |
 | Esforço estimado | 1–2 dias |
 | Complexidade | Baixa-Média |
 | Relaciona-se a | PRD-53 (debug de testes), PRD-33 (debugger), BR-PARSE-015, BR-PARSE-019 |
@@ -66,7 +66,7 @@ reutiliza `startDebugSession(packageName, procName?)`, respeita
   validação de argumentos e mensagens de erro coerentes com os demais comandos
   de debug.
 - Paridade de i18n: títulos/tooltips do lens e título do comando nos **24
-  catálogos** (`src/i18nLocales.ts` + `package.nls*.json`).
+  catálogos** (`src/i18n/locales/*.ts` + `package.nls*.json`).
 
 **Não-objetivos**
 
@@ -124,7 +124,7 @@ reutiliza `startDebugSession(packageName, procName?)`, respeita
 - Adicionar `nls.command.debugLens` em `package.nls.json` e nos 23
   `package.nls.<locale>.json` (paridade exata; o CI de i18n cobra).
 - Adicionar as chaves `codelens.debugSuite`, `codelens.debugTest` e
-  `codelens.debugTip` em todos os catálogos de `src/i18nLocales.ts`.
+  `codelens.debugTip` em todos os catálogos de `src/i18n/locales/*.ts`.
 - Textos em pt-BR/en no mesmo estilo dos existentes:
   - pt-BR: `⏯ Depurar Suite`, `⏯ Depurar Test`, `Depurar {desc}`;
   - en: `⏯ Debug Suite`, `⏯ Debug Test`, `Debug {desc}`.
@@ -180,7 +180,7 @@ reutiliza `startDebugSession(packageName, procName?)`, respeita
    terceiro quando `cfg.debuggerEnabled`, com título/tooltip/argumentos.
 2. `src/commands/debug.ts`: registrar `utplsql.debugLens`, validar args e
    reutilizar `startForTarget`; manter o carregamento lazy via `loadDebugger()`.
-3. `package.json` + `package.nls*.json` + `src/i18nLocales.ts`: comando e chaves.
+3. `package.json` + `package.nls*.json` + `src/i18n/locales/*.ts`: comando e chaves.
 4. Atualizar testes de CodeLens/debug e docs/CHANGELOG.
 5. Rodar `i18n-reviewer`, `brain:ci`, `docs:check`, `test:unit` e a suíte de
    integração do eixo thin.
@@ -275,5 +275,5 @@ testes/CI.
 - 🗺️ [[MOC - PRDs]]
 - 🔗 PRDs relacionados: [[prd-33-plsql-debugger-integration|PRD-33]] · [[prd-53-debug-test-variants|PRD-53]]
 - 🔗 Mesma versão (0.25.0): [[prd-132-ux-execution-dryrun-jump|PRD-132]] · [[prd-133-rate-limiting-keybindings|PRD-133]] · [[prd-140-statusbar-settings-grouping|PRD-140]] · [[prd-141-onboarding-walkthrough-accessibility|PRD-141]]
-- 🚀 ⬅️ release anterior: [[prd-145-security-alerts-deliverable|PRD-145 (0.24.0)]]
+- 🚀 ⬅️ release anterior: [[prd-155-jev-review-packs-profiles|PRD-155 (0.24.0)]]
 <!-- brain:auto:end -->

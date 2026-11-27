@@ -11,7 +11,7 @@ import {
 } from './dbmsDebug';
 import { t } from './i18n';
 import { logger } from './logger';
-import { connectionUser, parseConnString } from './oracleRunner';
+import { connectionUser, discoverUtplsqlSchema, parseConnString } from './oracleRunner';
 
 // ---------------------------------------------------------------------------
 // Contratos injetáveis (testáveis com fake)
@@ -71,11 +71,12 @@ export const liveRuntime: DebuggerRuntime = {
   },
   async runTest(conn, packageName, testName) {
     const path = testName ? `${packageName}.${testName}` : packageName;
+    const utSchema = await discoverUtplsqlSchema(conn);
     await conn.execute(
       `BEGIN
-         ut_runner.run(
-           a_paths     => ut_varchar2_list(:path),
-           a_reporters => ut_reporters()
+         ${utSchema}ut_runner.run(
+           a_paths     => ${utSchema}ut_varchar2_list(:path),
+           a_reporters => ${utSchema}ut_reporters()
          );
        END;`,
       { path },

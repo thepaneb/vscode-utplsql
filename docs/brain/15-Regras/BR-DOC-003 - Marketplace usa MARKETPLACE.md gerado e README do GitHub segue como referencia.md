@@ -19,7 +19,7 @@ tags: [docs, marketplace]
 ## Enunciado
 
 A página do Marketplace é uma **superfície dedicada**, gerada do vault para
-`MARKETPLACE.md` e empacotada no VSIX. O `README.md` do GitHub e as 23 variantes
+`MARKETPLACE.md` e empacotada no VSIX. O `README.md` do GitHub e as 25 variantes
 continuam sendo a referência completa e a paridade da PRD-91; a página curta do
 Marketplace não é uma variante de locale e não entra no gate de paridade.
 
@@ -32,7 +32,7 @@ verificados pelo `docs-fidelity`.
 ## Exceções
 
 A página é English-only e aponta para as variantes no GitHub; não há tradução
-das 23 variantes para o Marketplace.
+das 25 variantes para o Marketplace.
 
 ## Justificativa
 

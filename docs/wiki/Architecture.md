@@ -56,7 +56,9 @@ functions live in `src/results.ts` (`applyResultsFromCases`,
   `utplsql.oraclePoolCloseAfterRun` (default `true`, PRD-101), the last
   run/coverage/export/discovery closes an idle pool immediately; connections in
   use are never interrupted.
-- `discoverUtplsqlSchema`: `UT3.` prefix via `ALL_SYNONYMS` (shared install).
+- `discoverUtplsqlSchema`: resolves the utPLSQL owner in Oracle order — package
+  in the current schema → private synonym → public synonym → accessible
+  `UT_RUNNER` package (`ALL_OBJECTS`); returns `UT3.`/`OWNER.` or `''`.
 - **Discovery resilience (PRD-131)**: transient connection failures use
   `retryWithBackoff` (`discovery.retryAttempts`); `get_suites_info`,
   `get_reporters_list` and the utPLSQL schema prefix are cached in memory with
@@ -92,7 +94,7 @@ bundled.
 | `state.ts`, `types.ts` (type-only) | `testTree.ts` — builds the tree (file/schema/tag), `mergeDbSuites` |
 | | `languageIdentity.ts` — `discovery.languageIds` + `files.associations` → globs/seletor/watcher (PRD-109) |
 | `plsqlDeclarations.ts` — extracts PROCEDURE/FUNCTION declarations from source; `scaffold.ts` — generates the `ut_<pkg>.pks` test-suite template (skeleton or one `%test` per routine, PRD-59/100) | `scriptRunner.ts` — SQL script execution |
-| `i18n.ts`, `i18nLocales.ts` — localization (24 locales) | `quickfix.ts` — setup diagnostics + quick-fix |
+| `i18n.ts`, `i18n/locales/*` — localization (26 locales) | `quickfix.ts` — setup diagnostics + quick-fix |
 | `charset.ts` — byte→string decoding (utf8/latin1/win1252) | `compileForDebug.ts` — compile object with debug info |
 | `charsetSupport.ts` — legacy-charset detection (euro preserved) | `compilationDiagnostics.ts` — ALL_ERRORS → Problems Panel |
 | `debounce.ts` — coalescing helper (global + per-key, PRD-103); `perf.ts` — probe de fases/JSONL opt-in (PRD-102) | `dbSourceProvider.ts` — `utplsql-db:` virtual documents |

@@ -8,8 +8,10 @@ tags: [moc, i18n, locale]
 # MOC - I18n
 
 Locales da extensão (`LOC-*`, **geradas** de `package.nls.*.json` por
-`npm run brain:sync`). As strings de UI ficam em `package.nls.<locale>.json` na
-raiz; o README tem variantes em `60-README/` e a wiki é pt-BR/en.
+`npm run brain:sync`). As strings de UI de manifesto ficam em
+`package.nls.<locale>.json` na raiz; as mensagens de runtime ficam em
+`src/i18n/locales/*.ts` (um arquivo por locale). O README tem variantes em
+`60-README/` e a wiki é pt-BR/en.
 
 ## Locales
 
@@ -24,10 +26,19 @@ SORT id ASC
 
 - [[MOC - Documentacao]]
 - [[NFR-006 - Internacionalização]]
+- [[Estrutura dos catálogos]]
+- [[Registro de locales]]
+- [[Política de locales]]
+- [[Glossário de localização]]
+- [[Checklist de pseudo-localização]]
 
 ## Índice (links)
 
 <!-- brain:auto:start:moc-index -->
+- [[Checklist de pseudo-localização]]
+- [[Estrutura dos catálogos]]
+- [[Glossário de localização]]
+- [[LOC-ar - ar]] — `LOC-ar`
 - [[LOC-bg - Български]] — `LOC-bg`
 - [[LOC-cs - Čeština]] — `LOC-cs`
 - [[LOC-de - Deutsch]] — `LOC-de`
@@ -36,6 +47,7 @@ SORT id ASC
 - [[LOC-en-gb - English (UK)]] — `LOC-en-gb`
 - [[LOC-es - Español]] — `LOC-es`
 - [[LOC-fr - Français]] — `LOC-fr`
+- [[LOC-he - he]] — `LOC-he`
 - [[LOC-hu - Magyar]] — `LOC-hu`
 - [[LOC-id - Bahasa Indonesia]] — `LOC-id`
 - [[LOC-it - Italiano]] — `LOC-it`
@@ -52,4 +64,6 @@ SORT id ASC
 - [[LOC-vi - Tiếng Việt]] — `LOC-vi`
 - [[LOC-zh-cn - 中文(简体)]] — `LOC-zh-cn`
 - [[LOC-zh-tw - 中文(繁體)]] — `LOC-zh-tw`
+- [[Política de locales]]
+- [[Registro de locales]]
 <!-- brain:auto:end -->

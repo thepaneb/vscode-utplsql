@@ -4,14 +4,19 @@ import * as fs from 'node:fs';
 import * as path from 'node:path';
 import { test } from 'node:test';
 import {
+  ar,
   bg,
   cs,
   de,
+  type ExtensionLocale,
   el,
   en,
   enGb,
   es,
+  formatDuration,
+  formatNumber,
   fr,
+  he,
   hu,
   id,
   it,
@@ -32,8 +37,10 @@ import {
   zhCn,
   zhTw,
 } from '../../i18n';
+import { type Catalog, catalogs, LOCALE_CODES, type PluralForms } from '../../i18n/locales';
 
-const ALL_CATALOGS: [string, Record<string, string>][] = [
+const ALL_CATALOGS: [string, Catalog][] = [
+  ['pt-br', ptBr],
   ['en', en],
   ['en-gb', enGb],
   ['es', es],
@@ -57,7 +64,18 @@ const ALL_CATALOGS: [string, Record<string, string>][] = [
   ['th', th],
   ['uk', uk],
   ['vi', vi],
+  ['ar', ar],
+  ['he', he],
 ];
+
+test('barrel: LOCALE_CODES cobre os 24 catálogos na ordem canônica', () => {
+  assert.strictEqual(LOCALE_CODES.length, 26);
+  assert.deepStrictEqual([...new Set(LOCALE_CODES)], [...LOCALE_CODES]);
+  assert.deepStrictEqual(Object.keys(catalogs), [...LOCALE_CODES]);
+  for (const code of LOCALE_CODES) {
+    assert.ok(catalogs[code], `catálogo ausente para ${code}`);
+  }
+});
 
 test('resolveLocale: auto com editor pt -> pt-br', () => {
   assert.strictEqual(resolveLocale('auto', 'pt-BR'), 'pt-br');
@@ -94,6 +112,9 @@ test('resolveLocale: auto detecta os idiomas suportados', () => {
   assert.strictEqual(resolveLocale('auto', 'uk'), 'uk');
   assert.strictEqual(resolveLocale('auto', 'vi'), 'vi');
   assert.strictEqual(resolveLocale('auto', 'en-GB'), 'en-gb');
+  assert.strictEqual(resolveLocale('auto', 'ar-EG'), 'ar');
+  assert.strictEqual(resolveLocale('auto', 'he'), 'he');
+  assert.strictEqual(resolveLocale('auto', 'iw'), 'he');
 });
 
 test('resolveLocale: forçado ignora idioma do editor', () => {
@@ -121,6 +142,14 @@ test('resolveLocale: forçado ignora idioma do editor', () => {
 test('resolveLocale: valor invalido cai no auto', () => {
   assert.strictEqual(resolveLocale('xx', 'pt'), 'pt-br');
   assert.strictEqual(resolveLocale('xx', 'en'), 'en');
+});
+
+test('t: isolamento bidi só em locales RTL e parâmetros técnicos', () => {
+  const isolated = '\u2068UT3.PKG\u2069';
+  assert.ok(t('ar', 'ext.profile.active', { name: 'UT3.PKG' }).includes(isolated));
+  assert.ok(t('he', 'ext.profile.active', { name: 'UT3.PKG' }).includes(isolated));
+  assert.ok(!t('en', 'ext.profile.active', { name: 'UT3.PKG' }).includes('\u2068'));
+  assert.ok(!t('ar', 'status.failed', { count: 3 }).includes('\u2068'));
 });
 
 test('t: pt-br retorna a chave do catalogo pt', () => {
@@ -176,10 +205,10 @@ test('t: interpolacao parametrizada', () => {
 test('t: chave ausente em en cai para pt-br', () => {
   const original = en['ext.noConnection'];
   try {
-    delete (en as Record<string, string>)['ext.noConnection'];
+    delete (en as Catalog)['ext.noConnection'];
     assert.strictEqual(t('en', 'ext.noConnection'), 'Conexão Oracle não informada.');
   } finally {
-    (en as Record<string, string>)['ext.noConnection'] = original;
+    (en as Catalog)['ext.noConnection'] = original;
   }
 });
 
@@ -207,6 +236,87 @@ test('paridade: catálogos não têm chaves extras nem valores vazios', () => {
     const empty = Object.keys(cat).filter((k) => !String(cat[k]).trim());
     assert.deepStrictEqual(empty, [], `valores vazios em ${name}`);
   }
+});
+
+const PLURAL_KEYS = [
+  'ext.validate.problems',
+  'ext.sqlDev.import.ok',
+  'debug.breakpointsApplied',
+  'quickfix.invalidObjects',
+  'quickfix.stillInvalid',
+  'script.rows',
+  'status.passed',
+  'status.failed',
+  'status.errored',
+  'status.skipped',
+];
+
+test('plural: chaves têm as formas exigidas pelo CLDR de cada locale', () => {
+  for (const [name, cat] of ALL_CATALOGS) {
+    const required = new Intl.PluralRules(name).resolvedOptions().pluralCategories;
+    for (const key of PLURAL_KEYS) {
+      const value = cat[key];
+      assert.ok(value && typeof value === 'object', `${name}.${key} não é plural`);
+      const forms = value as PluralForms;
+      for (const category of required) {
+        assert.ok(forms[category], `${name}.${key} sem forma ${category}`);
+      }
+      assert.ok(forms.other, `${name}.${key} sem forma other`);
+    }
+  }
+});
+
+test('plural: t() seleciona a forma por Intl.PluralRules (ru)', () => {
+  const original = ru['status.failed'];
+  ru['status.failed'] = {
+    one: 'ONE {count}',
+    few: 'FEW {count}',
+    many: 'MANY {count}',
+    other: 'OTHER {count}',
+  };
+  try {
+    assert.strictEqual(t('ru', 'status.failed', { count: 1 }), 'ONE 1');
+    assert.strictEqual(t('ru', 'status.failed', { count: 3 }), 'FEW 3');
+    assert.strictEqual(t('ru', 'status.failed', { count: 5 }), 'MANY 5');
+    assert.strictEqual(t('ru', 'status.failed', { count: 21 }), 'ONE 21');
+  } finally {
+    ru['status.failed'] = original;
+  }
+});
+
+test('plural: forma ausente cai para other', () => {
+  const original = ru['status.failed'];
+  ru['status.failed'] = { other: 'OTHER {count}' };
+  try {
+    assert.strictEqual(t('ru', 'status.failed', { count: 3 }), 'OTHER 3');
+  } finally {
+    ru['status.failed'] = original;
+  }
+});
+
+test('plural: fallback para pt-BR quando o locale não tem a forma', () => {
+  const original = en['status.failed'];
+  en['status.failed'] = {};
+  try {
+    assert.match(t('en', 'status.failed', { count: 1 }), /falha/);
+  } finally {
+    en['status.failed'] = original;
+  }
+  const originalString = en['ext.noConnection'];
+  en['ext.noConnection'] = {};
+  try {
+    assert.strictEqual(t('en', 'ext.noConnection', { count: 1 }), 'Conexão Oracle não informada.');
+  } finally {
+    en['ext.noConnection'] = originalString;
+  }
+  assert.ok(t('en', 'status.failed').length > 0);
+});
+
+test('plural: inglês usa one/other (draft) no catálogo', () => {
+  const singular = t('en', 'ext.validate.problems', { count: 1 });
+  const plural = t('en', 'ext.validate.problems', { count: 2 });
+  assert.ok(!singular.includes('(s)'));
+  assert.ok(plural.includes('(s)'));
 });
 
 test('package.nls.*: alinhados com package.nls.json (sem faltas/extras/vazios)', () => {
@@ -246,4 +356,38 @@ test('catalogos nao vazios', () => {
 
 test('t: placeholder ausente nos params permanece literal (branch não-coberto)', () => {
   assert.strictEqual(t('pt-br', 'ext.profile.active', {}), 'Perfil ativo: {name}');
+});
+
+test('formatNumber: separador e grouping do locale; fallback en', () => {
+  assert.strictEqual(formatNumber('en', 1234), '1,234');
+  assert.strictEqual(formatNumber('pt-br', 1234), '1.234');
+  assert.strictEqual(
+    formatNumber('pt-br', 12.3, { minimumFractionDigits: 1, maximumFractionDigits: 1 }),
+    '12,3',
+  );
+  assert.strictEqual(formatNumber('en', 1234, { useGrouping: false }), '1234');
+  assert.strictEqual(formatNumber('xx' as unknown as ExtensionLocale, 1234), '1,234');
+  assert.strictEqual(
+    formatNumber('en', 42, { style: 'currency', currency: 'INVALID' } as Intl.NumberFormatOptions),
+    '42',
+  );
+});
+
+test('formatDuration: ms abaixo de 1s; s com 1 decimal do locale', () => {
+  assert.strictEqual(formatDuration('en', 0), '0 ms');
+  assert.strictEqual(formatDuration('en', 850), '850 ms');
+  assert.strictEqual(formatDuration('en', 1000), '1.0 s');
+  assert.strictEqual(formatDuration('en', 12300), '12.3 s');
+  assert.strictEqual(formatDuration('pt-br', 12300), '12,3 s');
+  assert.strictEqual(formatDuration('ru', 12300), '12,3 s');
+  assert.strictEqual(formatDuration('xx' as unknown as ExtensionLocale, 12300), '12.3 s');
+  assert.strictEqual(formatDuration('en', Number.NaN), '');
+  assert.strictEqual(formatDuration('en', -1), '');
+});
+
+test('t: count/total/current são formatados; outros números ficam crus', () => {
+  assert.match(t('pt-br', 'ext.validate.problems', { count: 1234 }), /1\.234/);
+  assert.match(t('en', 'ext.validate.problems', { count: 1234 }), /1,234/);
+  assert.match(t('pt-br', 'status.running', { current: 1234, total: 5678 }), /1\.234\/5\.678/);
+  assert.strictEqual(t('pt-br', 'script.dbms', { line: 1234 }), '[dbms] 1234');
 });

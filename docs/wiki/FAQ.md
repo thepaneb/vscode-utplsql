@@ -201,11 +201,13 @@ or legacy **11.2 (11g)** are not supported by thin mode — set
 
 Yes, but it requires grants on the buffer tables:
 ```sql
-GRANT SELECT, DELETE ON UT3.UT_OUTPUT_BUFFER_TMP TO PUBLIC;
-GRANT SELECT, DELETE ON UT3.UT_OUTPUT_BUFFER_INFO_TMP TO PUBLIC;
+GRANT SELECT, INSERT, UPDATE, DELETE ON UT3.UT_OUTPUT_BUFFER_TMP TO <schema>;
+GRANT SELECT, INSERT, UPDATE, DELETE ON UT3.UT_OUTPUT_BUFFER_INFO_TMP TO <schema>;
 ```
-Without these grants, direct execution will not work — set up a dedicated
-schema for utPLSQL.
+Without these grants, direct execution will not work. The test code also needs
+the `UT` synonym, and coverage needs `DBMSPCC_*` synonyms (the coverage packages
+use `AUTHID CURRENT_USER`); grants alone do not create synonyms. See
+[Database requirements](Database-requirements.md#shared-install--runner-coverage-and-synonyms).
 
 ---
 

@@ -47,6 +47,7 @@ function fillSuiteTests(
   schema?: string,
 ): void {
   const cfg = readConfig();
+  const locale = getExtensionLocale();
   const prefix = schema ? `${schema}:` : '';
   for (const t of suite.tests) {
     const id = `test:${prefix}${suite.packageName.toLowerCase()}.${t.procName.toLowerCase()}${idSuffix}`;
@@ -62,6 +63,7 @@ function fillSuiteTests(
         taggedLabel(t.displayName ?? t.description, t.tags, cfg.showTagsInTree),
         durationMs,
         cfg.showTestDuration,
+        locale,
       ),
       suite.uri,
     );

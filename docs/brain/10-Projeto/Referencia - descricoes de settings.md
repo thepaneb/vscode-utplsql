@@ -260,7 +260,7 @@ continuam vindo do `package.json`/`package.nls.json`.
   },
   "utplsql.language": {
     "default": "auto",
-    "description": "Language of the runtime messages. `auto` follows VSCode (pt, zh-tw/zh-hk, zh, es, ja, de, fr, it, ko, ru, tr, pl, cs, hu, bg, el, id, ro, sr, th, uk, vi, en-gb; otherwise en). Covers the **24 locales**."
+    "description": "Language of the runtime messages. `auto` follows VSCode (pt, zh-tw/zh-hk, zh, es, ja, de, fr, it, ko, ru, tr, pl, cs, hu, bg, el, id, ro, sr, th, uk, vi, ar, he, en-gb; otherwise en). Covers the **26 locales**."
   }
 }
 ```

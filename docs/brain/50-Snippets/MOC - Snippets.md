@@ -19,7 +19,7 @@ SORT file.name ASC
 
 ## Ideias de snippets
 
-- Descobrir prefixo do schema utPLSQL (`ALL_SYNONYMS`).
+- Descobrir prefixo do schema utPLSQL (resolução de nome + fallback `ALL_OBJECTS`).
 - Ler `UT_OUTPUT_BUFFER_TMP` para um schema.
 - Listar objetos inválidos (`ALL_OBJECTS WHERE status='INVALID'`).
 - Rodar `ut_runner.run` manualmente.

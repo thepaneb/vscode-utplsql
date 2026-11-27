@@ -5,7 +5,7 @@ titulo: "Contributing"
 publicar: docs/wiki/Contributing.md
 origem: ["MOC - Documentacao"]
 verificado: 2026-11-08
-regras: ["BR-PLAT-002", "BR-PLAT-003", "BR-PLAT-004", "BR-QUAL-002", "BR-TEST-003", "BR-DOC-001", "BR-DOC-002", "BR-CONN-024"]
+regras: ["BR-PLAT-002", "BR-PLAT-003", "BR-PLAT-004", "BR-QUAL-002", "BR-TEST-003", "BR-DOC-001", "BR-DOC-002", "BR-CONN-024", "BR-I18N-003", "BR-I18N-005", "BR-I18N-007"]
 tags: [wiki]
 ---
 
@@ -104,7 +104,7 @@ vscode-utplsql/
 │   ├── debugger.ts          ← DBMS_DEBUG debug adapter
 │   ├── dbmsDebug.ts         ← DBMS_DEBUG client (pure SQL/parse)
 │   ├── i18n.ts              ← translation runtime (pure)
-│   ├── i18nLocales.ts       ← locale catalogs (pure)
+│   ├── i18n/locales/*.ts    ← locale catalogs (pure, one per locale)
 │   ├── state.ts             ← session state (pure)
 │   ├── types.ts             ← interfaces (type-only)
 │   └── test/
@@ -264,3 +264,39 @@ If the change completes a PRD, reference `Closes #N` in the commit/PR body.
 
 The wiki is automatically synced via workflow when pushing to the `main`
 branch (files in `docs/wiki/`).
+
+### Localized docs parity (PRD-91)
+
+- `npm run docs:fidelity` (via `docs:check`) compares each `README.<locale>.md`
+  with `README.md`: feature bullets (emoji multiset), Commands table presence and
+  the full language-link set; settings are already covered by the fidelity check.
+- The number of variants is derived from `package.nls.*.json` (no hardcoded 23).
+- [[Registro de locales]] lists status/reviewer/coverage for every active locale
+  and is required by `docs:check`; [[Política de locales]] defines when to
+  keep/add/archive a locale.
+
+### Pseudo-localization and hardcoded strings (PRD-89)
+
+- Run the Extension Development Host with `UTPLSQL_PSEUDO_LOC=1`: runtime
+  messages are accented and padded (~30%) to reveal **hardcoded strings** (which
+  stay in plain English) and layout overflow. The manual pass is in
+  [[Checklist de pseudo-localização]].
+- `node scripts/scrape-strings.cjs` reports `showInformationMessage`/
+  `showWarningMessage`/`showErrorMessage` literals outside `t()`; `--strict`
+  fails. `docs:check` runs it as a **warning**, with exceptions in
+  `scripts/scrape-strings.allow.json`.
+- Pseudo is dev-only (`UTPLSQL_PSEUDO_LOC`), never a public setting; the default
+  output is unchanged.
+
+### Localization pipeline (PRD-93)
+
+- `npm run i18n:export` compiles and writes `i18n-export/<locale>.json`
+  (`{ locale, base?, messages }`; `en-gb` is an overlay of `en`).
+- Translate/edit the JSON, then `npm run i18n:apply`: it regenerates the whole
+  `src/i18n/locales/<locale>.ts` from the JSON and runs the Biome formatter.
+- Vocabulary is fixed by [[Glossário de localização]]; owners/reviewers and
+  locale status live in [[Registro de locales]].
+- `npm run i18n:check` runs in CI (after `test:coverage`) and validates
+  catalogues × `LOCALE_CODES` × `package.nls.*` × glossary, including the CLDR
+  plural forms of every locale. An external TMS is optional; the JSON format is
+  TMS-friendly.

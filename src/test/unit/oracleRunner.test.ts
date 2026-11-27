@@ -745,6 +745,42 @@ test('discoverUtplsqlSchema: sem synonym retorna vazio', async () => {
   assert.strictEqual(prefix, '');
 });
 
+test('discoverUtplsqlSchema: synonym privado do schema atual aponta para UT3', async () => {
+  const conn = {
+    execute: async (sql: string) =>
+      /UNION ALL/.test(sql)
+        ? { rows: [{ PRIO: 1, KIND: 'SYNONYM', OWNER: 'DEMO', TABLE_OWNER: 'UT3' }] }
+        : { rows: [] },
+  };
+  const prefix = await discoverUtplsqlSchema(conn as never);
+  assert.strictEqual(prefix, 'UT3.');
+});
+
+test('discoverUtplsqlSchema: pacote UT_RUNNER no schema atual não cai no fallback', async () => {
+  const calls: string[] = [];
+  const conn = {
+    execute: async (sql: string) => {
+      calls.push(sql);
+      if (/UNION ALL/.test(sql)) {
+        return { rows: [{ PRIO: 0, KIND: 'OBJECT', OWNER: 'DEMO', TABLE_OWNER: null }] };
+      }
+      throw new Error('fallback não deveria rodar');
+    },
+  };
+  const prefix = await discoverUtplsqlSchema(conn as never);
+  assert.strictEqual(prefix, '');
+  assert.strictEqual(calls.length, 1);
+});
+
+test('discoverUtplsqlSchema: sem synonym usa pacote UT_RUNNER acessível', async () => {
+  const conn = {
+    execute: async (sql: string) =>
+      /UNION ALL/.test(sql) ? { rows: [] } : { rows: [{ OWNER: 'UT3' }] },
+  };
+  const prefix = await discoverUtplsqlSchema(conn as never);
+  assert.strictEqual(prefix, 'UT3.');
+});
+
 test('discoverUtplsqlSchema: erro de acesso retorna vazio', async () => {
   const conn = {
     execute: async () => {
@@ -852,11 +888,16 @@ function makeOracleRunFake(opts: {
   runThrows?: boolean;
   reporters?: string[];
   enableDbmsOutputThrows?: boolean;
+  /** Simula shared install: descoberta resolve UT_RUNNER para outro schema. */
+  utSchema?: string;
 }) {
   const captured: { runSql?: string; runBinds?: Record<string, unknown> } = {};
   const conn1 = {
     callTimeout: 0,
     execute: async (sql: string, binds?: Record<string, unknown>) => {
+      if (opts.utSchema && /all_synonyms|union all/i.test(sql)) {
+        return { rows: [{ TABLE_OWNER: opts.utSchema }] };
+      }
       if (/ALL_SYNONYMS/.test(sql)) return { rows: [{ TABLE_OWNER: 'UT3' }] };
       if (/DELETE FROM/.test(sql)) return {};
       if (/ut_runner\.run/.test(sql)) {
@@ -1156,6 +1197,39 @@ test('executeRunOracle: a_paths vira bind tipado UT_VARCHAR2_LIST', async () => 
     dir: 'in',
     type: 'UT_VARCHAR2_LIST',
     val: ['pkg', 'pkg.t1'],
+  });
+});
+
+test('executeRunOracle: qualifica ut_runner.run e o tipo quando o utPLSQL está em outro schema', async () => {
+  const { mod, captured } = makeOracleRunFake({ buffer: [JUNIT_XML], utSchema: 'UT3' });
+  const run = makeRun();
+  const { item, metaMap } = makeLeaf();
+  try {
+    await executeRunOracle(
+      {
+        connection: 'u/p@//h:1521/s',
+        pathArgs: ['pkg'],
+        coverage: false,
+        sourcePath: 'install',
+        run,
+        leafTests: [item],
+        state: makeState(metaMap),
+      },
+      neverCancel as never,
+      async () => mod as never,
+    );
+  } finally {
+    await closeOraclePool();
+  }
+  assert.match(captured.runSql ?? '', /^BEGIN UT3\.ut_runner\.run\(/);
+  assert.match(
+    captured.runSql ?? '',
+    /a_reporters => UT3\.ut_reporters\(UT3\.ut_documentation_reporter\(\),UT3\.ut_junit_reporter\(\)\)/,
+  );
+  assert.deepStrictEqual(captured.runBinds?.paths, {
+    dir: 'in',
+    type: 'UT3.UT_VARCHAR2_LIST',
+    val: ['pkg'],
   });
 });
 
@@ -2588,6 +2662,23 @@ test('getOracleInfo: sem linhas retorna nulos', async () => {
   assert.deepStrictEqual(await getOracleInfo(conn), { utVersion: null, dbVersion: null });
 });
 
+test('getOracleInfo: qualifica ut_runner.version com o schema descoberto', async () => {
+  let versionSql = '';
+  const conn = infoConn((sql) => {
+    if (/all_synonyms|union all/i.test(sql)) return { rows: [{ TABLE_OWNER: 'UT3' }] };
+    if (sql.includes('ut_runner.version')) {
+      versionSql = sql;
+      return { rows: [['3.1.10']] };
+    }
+    return { rows: [['19.0.0.0.0']] };
+  });
+  assert.deepStrictEqual(await getOracleInfo(conn), {
+    utVersion: '3.1.10',
+    dbVersion: '19.0.0.0.0',
+  });
+  assert.match(versionSql, /SELECT UT3\.ut_runner\.version\(\) FROM dual/);
+});
+
 // ── listReportersOracle / checkReporterExists ────────────────────────
 
 test('listReportersOracle: mapeia linhas em nomes', async () => {
@@ -2612,16 +2703,41 @@ test('listReportersOracle: erro retorna array vazio', async () => {
 
 test('listReportersOracle: cache por connection evita query repetida', async () => {
   clearOracleMetadataCache();
-  let queries = 0;
-  const conn = infoConn(() => {
-    queries += 1;
-    return { rows: [['UT3.UT_DOCUMENTATION_REPORTER']] };
+  let reporterQueries = 0;
+  const conn = infoConn((sql) => {
+    if (/get_reporters_list/.test(sql)) {
+      reporterQueries += 1;
+      return { rows: [['UT3.UT_DOCUMENTATION_REPORTER']] };
+    }
+    if (/all_synonyms|union all/i.test(sql)) return { rows: [{ TABLE_OWNER: 'UT3' }] };
+    return { rows: [] };
   });
   try {
     const first = await listReportersOracle(conn, 'conn-1');
     const second = await listReportersOracle(conn, 'conn-1');
     assert.deepStrictEqual(second, first);
-    assert.strictEqual(queries, 1);
+    assert.strictEqual(reporterQueries, 1);
+  } finally {
+    clearOracleMetadataCache();
+  }
+});
+
+test('listReportersOracle: qualifica get_reporters_list com o schema do utPLSQL', async () => {
+  clearOracleMetadataCache();
+  let reporterSql = '';
+  const conn = infoConn((sql) => {
+    if (/get_reporters_list/.test(sql)) {
+      reporterSql = sql;
+      return { rows: [['UT3.UT_JUNIT_REPORTER']] };
+    }
+    if (/all_synonyms|union all/i.test(sql)) return { rows: [{ TABLE_OWNER: 'UT3' }] };
+    return { rows: [] };
+  });
+  try {
+    assert.deepStrictEqual(await listReportersOracle(conn, 'conn-qualified'), [
+      'UT_JUNIT_REPORTER',
+    ]);
+    assert.match(reporterSql, /FROM TABLE\(UT3\.ut_runner\.get_reporters_list\(\)\)/);
   } finally {
     clearOracleMetadataCache();
   }

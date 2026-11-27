@@ -6,7 +6,7 @@
 
 <div align="center">
 
-[English](README.md) · [中文(简体)](README.zh-CN.md) · [中文(繁體)](README.zh-TW.md) · [日本語](README.ja.md) · **한국어** · [Español](README.es.md) · [Français](README.fr.md) · [Português](README.pt-BR.md) · [Italiano](README.it.md) · [Română](README.ro.md) · [Deutsch](README.de.md) · [Русский](README.ru.md) · [Polski](README.pl.md) · [Українська](README.uk.md) · [Čeština](README.cs.md) · [Български](README.bg.md) · [Српски](README.sr.md) · [Türkçe](README.tr.md) · [Ελληνικά](README.el.md) · [Magyar](README.hu.md) · [Bahasa Indonesia](README.id.md) · [Tiếng Việt](README.vi.md) · [ไทย](README.th.md) · [English (UK)](README.en-GB.md)
+[English](README.md) · [العربية](README.ar.md) · [עברית](README.he.md) · [中文(简体)](README.zh-CN.md) · [中文(繁體)](README.zh-TW.md) · [日本語](README.ja.md) · **한국어** · [Español](README.es.md) · [Français](README.fr.md) · [Português](README.pt-BR.md) · [Italiano](README.it.md) · [Română](README.ro.md) · [Deutsch](README.de.md) · [Русский](README.ru.md) · [Polski](README.pl.md) · [Українська](README.uk.md) · [Čeština](README.cs.md) · [Български](README.bg.md) · [Српски](README.sr.md) · [Türkçe](README.tr.md) · [Ελληνικά](README.el.md) · [Magyar](README.hu.md) · [Bahasa Indonesia](README.id.md) · [Tiếng Việt](README.vi.md) · [ไทย](README.th.md) · [English (UK)](README.en-GB.md)
 
 </div>
 
@@ -26,7 +26,7 @@
 
 # utPLSQL Test Runner
 
-**utPLSQL**(Oracle PL/SQL) 테스트를 VS Code에서 바로 실행하고 디버그하세요 — 네이티브 **Test Explorer**, 시각적 커버리지, PL/SQL 디버거, `node-oracledb` 기반 **Oracle 직접 실행**. **24개 언어** 지원, **VS Code 1.125+** (Node 24).
+**utPLSQL**(Oracle PL/SQL) 테스트를 VS Code에서 바로 실행하고 디버그하세요 — 네이티브 **Test Explorer**, 시각적 커버리지, PL/SQL 디버거, `node-oracledb` 기반 **Oracle 직접 실행**. **26개 언어** 지원, **VS Code 1.125+** (Node 24).
 
 ### Test Explorer 및 실행
 
@@ -85,7 +85,7 @@
 - 🎯 **실패 지점으로 이동** — 실패한 단언의 줄로 직접 이동(네이티브 "Go to Error" 사용).
 - 🧱 **컴파일 진단** — 실행할 때마다 PL/SQL 컴파일 오류(`ALL_ERRORS`)가 Problems Panel에 source `utPLSQL Compilation`로 표시됩니다(설정 `utplsql.compilationDiagnostics.enabled`).
 - ⏳ **진행률 및 취소** — 긴 실행은 카운트가 있는 진행 알림과 *Cancel* 버튼을 표시합니다(선택적 `utplsql.timeoutMinutes` 포함).
-- 🌍 **i18n — 24개 언어** — `utplsql.language`가 VSCode를 따릅니다(24개 로케일: pt-br, en, en-gb, es, zh-cn, zh-tw, ja, de, fr, it, ko, ru, tr, pl, cs, hu, bg, el, id, ro, sr, th, uk, vi).
+- 🌍 **i18n — 26개 언어** — `utplsql.language`가 VSCode를 따릅니다(26개 로케일: pt-br, en, en-gb, es, zh-cn, zh-tw, ja, de, fr, it, ko, ru, tr, pl, cs, hu, bg, el, id, ro, sr, th, uk, vi, ar, he).
 
 
 ## 설치
@@ -229,7 +229,7 @@ Test Explorer에 나타납니다.
 | `utplsql.scriptRunner.filePattern` | `**/*.{sql,pks,pkb,fnc,prc,trg}` | Globs to list files when running a script folder. |
 | `utplsql.scriptRunner.dbmsOutput` | `false` | Captures and displays `DBMS_OUTPUT` during script execution. |
 | `utplsql.scriptRunner.timeoutSeconds` | `300` | Per-statement timeout (s) for scripts (`callTimeout`). |
-| `utplsql.language` | `auto` | 런타임 메시지의 언어. `auto`는 VSCode를 따릅니다(pt, zh-tw/zh-hk, zh, es, ja, de, fr, it, ko, ru, tr, pl, cs, hu, bg, el, id, ro, sr, th, uk, vi, en-gb; 그 외에는 en). **24개 로케일**을 다룹니다. |
+| `utplsql.language` | `auto` | 런타임 메시지의 언어. `auto`는 VSCode를 따릅니다(pt, zh-tw/zh-hk, zh, es, ja, de, fr, it, ko, ru, tr, pl, cs, hu, bg, el, id, ro, sr, th, uk, vi, ar, he, en-gb; 그 외에는 en). **26개 로케일**을 다룹니다. |
 
 예시(프로젝트 `.vscode/settings.json`):
 

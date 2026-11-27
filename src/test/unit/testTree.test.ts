@@ -174,7 +174,7 @@ test('buildFileTree: usa a duração do último resultado no label', () => {
   state.setLastResults(new Map([['test:ut_app.test_one', { status: 'passed', durationMs: 12 }]]));
   __setConfigValue('showTestDuration', true);
   buildFileTree(controller, state, [suite({})]);
-  assert.match(controller._labels.get('test:ut_app.test_one'), /\(12ms\)/);
+  assert.match(controller._labels.get('test:ut_app.test_one'), /\(12 ms\)/);
 });
 
 test('buildFileTree: displayName tem prioridade sobre description', () => {
@@ -396,7 +396,7 @@ test('fillSuiteTests: duração de snapshot legado no schema mode', () => {
   resolvePackageNode(controller, state, pkgItem as never);
   const suiteItem = pkgItem._children[0];
   resolveSuiteNode(controller, state, suiteItem as never);
-  assert.match(controller._labels.get(suiteItem._children[0].id), /\(12ms\)/);
+  assert.match(controller._labels.get(suiteItem._children[0].id), /\(12 ms\)/);
   __resetConfigValues();
 });
 

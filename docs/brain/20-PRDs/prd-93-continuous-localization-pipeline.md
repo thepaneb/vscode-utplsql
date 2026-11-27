@@ -2,14 +2,15 @@
 tipo: prd
 id: PRD-93
 aliases: [PRD-93]
-status: proposed
+status: completed
 titulo: "Pipeline de localização contínua (glossário, TM e revisão)"
 versao: "0.22.0"
 data: "2026-09-29"
 autor: "Gil Cleber Barboza"
 versao_titulo: "0.22.0 — Localização completa"
-verificado: 2026-09-29
-regras: []
+verificado: 2026-11-25
+regras: ["BR-I18N-007"]
+docs: ["CHANGELOG", "wiki/Contributing.md"]
 tags: [prd]
 ---
 
@@ -21,21 +22,22 @@ tags: [prd]
 | Data | 2026-09-29 |
 | Componente | Extensão `paneb.vscode-utplsql` |
 | Versão alvo | 0.22.0 |
-| Arquivos afetados | `scripts/i18n-export.cjs`, `scripts/i18n-apply.cjs` (novos), `docs/brain/12-I18n/` (glossário + donos), `.opencode/skills/` (workflow), `.github/workflows/ci.yml` |
+| Arquivos afetados | `scripts/i18n-export.cjs`, `scripts/i18n-apply.cjs`, `scripts/i18n-check.cjs` (novos), `src/i18n/locales/*.ts`, `docs/brain/12-I18n/` (glossário + registro/donos), `.opencode/skills/`, `.github/workflows/ci.yml` |
 | Esforço estimado | 2–3 dias |
 | Complexidade | Média |
 
 ## 1. Resumo
 
-Com 24 locales (e `ar`/`he` na 0.22.0), a manutenção manual não escala. Esta PRD
+Com 24 locales (26 com `ar`/`he` na 0.22.0), a manutenção manual não escala. Esta PRD
 define um **pipeline de localização contínua**: exportar/importar catálogos com
 **translation memory** e **glossário**, dono/revisor por locale, e gates de
 qualidade no CI — via scripts próprios e, opcionalmente, um TMS.
 
 ## 2. Contexto e problema
 
-- Os catálogos vivem em `src/i18nLocales.ts` + `package.nls.*.json`; adicionar uma
-  string exige editar 24 lugares (ou 48, contando README).
+- Os catálogos vivem em `src/i18n/locales/*.ts` (após a PRD-115) +
+  `package.nls.*.json`; adicionar uma string exige editar 26 lugares (ou mais,
+  contando README).
 - Não há **glossário** para termos críticos (`utPLSQL`, `PL/SQL`, `V$SQL`, `thin`,
   `DBMS_DEBUG`, `wallet`) — risco de traduções divergentes.
 - Não há **memória de tradução**: a mesma frase é retraduzida do zero.
@@ -46,8 +48,10 @@ qualidade no CI — via scripts próprios e, opcionalmente, um TMS.
 **Objetivos**
 - **Formatos de intercâmbio**: `scripts/i18n-export.cjs` gera arquivos por locale
   (ex.: JSON/CSV/`xliff`); `i18n-apply.cjs` reimporta e valida.
-- **Glossário** versionado no vault (`12-I18n/glossario`) e checado em tradução.
-- **Registro de donos/revisores** por locale (integra PRD-91).
+- **Glossário** versionado no vault (`12-I18n/Glossário de localização.md`) e
+  checado em tradução.
+- **Registro de donos/revisores** por locale (o mesmo `12-I18n/Registro de
+  locales.md` da PRD-91).
 - **Gate de qualidade**: paridade, plurais (PRD-90), pseudo-loc (PRD-89) e
   glossário no CI.
 - **Opção TMS** documentada (Crowdin/Lokalise/Smartling) com o fluxo equivalente.
@@ -60,9 +64,10 @@ qualidade no CI — via scripts próprios e, opcionalmente, um TMS.
 
 ### RF1 — Export/Import
 
-`i18n-export` produz um artefato por locale com chaves, formas plurais e contexto;
-`i18n-apply` valida e grava de volta em `i18nLocales.ts`/`package.nls.*` sem
-quebrar formatação.
+`i18n-export` produz um artefato **JSON** por locale com chaves, formas plurais e
+contexto; `i18n-apply` valida e **regenera o arquivo inteiro** de
+`src/i18n/locales/<locale>.ts` a partir do modelo, rodando o Biome em seguida
+(em vez de edição cirúrgica), com round-trip idempotente e diferença mínima.
 
 ### RF2 — Glossário
 
@@ -119,21 +124,40 @@ Nenhuma setting de extensão; env/CI para TMS quando adotado.
 - Glossário aplicado e validado no CI.
 - Registro de donos/revisores preenchido.
 
-## 11. Questões em aberto
+## 11. Decisões (2026-11-25)
 
-- Adotar TMS neste ciclo ou manter scripts próprios? (decisão de custo.)
+- **Sem TMS nesta release**: scripts próprios (`i18n-export.cjs`/`i18n-apply.cjs`)
+  com export JSON por locale; o fluxo equivalente para Crowdin/Lokalise/Smartling
+  fica documentado como opção futura (sem credencial no repo).
+- `i18n-apply` **regenera o arquivo inteiro** e roda Biome; a idempotência é
+  provada por round-trip, não por edição linha a linha.
+- Glossário e donos/revisores vivem em notas do vault (`12-I18n/`), reaproveitando
+  o registro da PRD-91.
+- Gate único (`i18n:check`) cobre paridade, plurais, pseudo e glossário; o modo
+  aviso/bloqueio segue a decisão da PRD-89.
 
 ## 12. Impacto no cérebro
 
-Esperado criar `BR-I18N-007` (pipeline: round-trip + glossário + gate) e notas
-`ENT`/`NFR` do registro de locales, com `prds: ["PRD-93"]`.
+Criada a regra `BR-I18N-007` (pipeline: round-trip + glossário + gate) com
+`prds: ["PRD-93"]`; o glossário está em `12-I18n/Glossário de localização.md` e
+o registro/donos em `12-I18n/Registro de locales.md`.
+
+RNFs sem regra: RNF1, RNF2 (cobertos pelos testes/gates de qualidade).
+
+## 13. Impacto nas docs
+
+- `CHANGELOG` — bullet do pipeline de localização (PRD-93).
+- `wiki/Contributing.md` — fluxo `i18n-export`/`i18n-apply`, glossário e
+  donos/revisores (PRD-93).
 
 ## Conexões
 
 <!-- brain:auto:start:conexoes -->
 - 🗺️ [[MOC - PRDs]]
-- 🔗 PRDs relacionados: [[prd-89-pseudo-localization-gate|PRD-89]] · [[prd-90-message-plurals-cldr|PRD-90]] · [[prd-91-doc-parity-localized-distribution|PRD-91]]
+- 📐 Regras: [[BR-I18N-007 - Pipeline de localização com round-trip e gate de i18n|BR-I18N-007]]
+- 🔗 PRDs relacionados: [[prd-89-pseudo-localization-gate|PRD-89]] · [[prd-90-message-plurals-cldr|PRD-90]] · [[prd-91-doc-parity-localized-distribution|PRD-91]] · [[prd-115-split-i18n-locales|PRD-115]]
 - ⚙️ Pipelines: [[PIPE-ci - CI|PIPE-ci]]
-- 🔗 Mesma versão (0.22.0): [[prd-88-locale-aware-formatting|PRD-88]] · [[prd-89-pseudo-localization-gate|PRD-89]] · [[prd-90-message-plurals-cldr|PRD-90]] · [[prd-91-doc-parity-localized-distribution|PRD-91]] · [[prd-92-rtl-new-locales|PRD-92]] · [[prd-115-split-i18n-locales|PRD-115]]
+- 🎯 RF1 — Export/Import → [[BR-I18N-007 - Pipeline de localização com round-trip e gate de i18n|BR-I18N-007]]
+- 🎯 RF4 — Integração contínua → [[BR-I18N-007 - Pipeline de localização com round-trip e gate de i18n|BR-I18N-007]]
 - 🚀 ⬅️ release anterior: [[prd-139-state-store-slicing-lru|PRD-139 (0.21.0)]] · ➡️ próxima release: [[prd-60-branch-coverage-investigation|PRD-60 (0.23.0)]]
 <!-- brain:auto:end -->

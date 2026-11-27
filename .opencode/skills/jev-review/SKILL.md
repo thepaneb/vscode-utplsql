@@ -47,13 +47,54 @@ npm run jev:review -- --base origin/main --format json
 npm run jev:review -- --base origin/main --output jev-review.md
 npm run jev:review -- --base origin/main --dry-run
 
-# Falhar (exit 1) quando houver achados — usar só em gate calibrado
-npm run jev:review -- --base origin/main --fail-on-findings
+# Salvar markdown + JSON (usado pelo CI)
+npm run jev:review -- --base origin/main --output jev-review.md --json-output jev-review.json
+
+# Falhar (exit 1) a partir de um veredito — usar só em gate calibrado
+npm run jev:review -- --base origin/main --fail-on comment
+npm run jev:review -- --base origin/main --fail-on block
+
+# Forçar um modelo e desligar o fallback
+npm run jev:review -- --base origin/main --model jev-1.14 --no-fallback
 ```
 
 O script usa `https://opencode.ai/inference/systemone/v1/systemone` com
-`jev-1.13-free` por padrão. Se o modelo gratuito sair do ar, use
-`--model jev-1.13` (pago; ~$0,042/M tokens de input, output grátis).
+`jev-1.13-free` por padrão. O modelo pago **`jev-1.14`** foi validado em
+nov/2026: ~$0,042/M tokens de input (output grátis), ~US$ 0,0002 para um PR de
+5 mil tokens e ~US$ 0,016 para o release de 379 mil tokens. `--model jev-1.13`
+continua disponível como alternativa paga.
+
+Falhas retryable (rede, 403/404/408/410/425/429/451, 5xx e 400 de modelo)
+trocam para o próximo modelo da cadeia **`jev-1.13-free` → `jev-1.14` →
+`jev-1.13`**; a escolha é sticky para os blocos seguintes. Use
+`--fallback-model <id>` (repetível) para mudar a cadeia ou `--no-fallback` para
+usar só o `--model`. O markdown mostra o fallback e o JSON expõe
+`models.attempted`/`models.fallbackUsed` para auditoria. `--fail-on` aceita
+`none` (default), `comment` ou `block`; `--fail-on-findings` continua como
+alias legado. O endpoint precisa ser HTTPS; `--allow-insecure-endpoint` libera
+apenas proxy local.
+
+## Cobertura do diff (chunking)
+
+O review **não corta mais o diff no primeiro limite**: ele ordena `src/**`
+primeiro, omite docs (`docs/**`, `*.md`) e sensíveis/binários, e envia o
+restante em blocos de até `--max-diff-chars` (default 30000 caracteres por
+chamada). Um arquivo maior que o bloco é dividido por linhas em partes
+numeradas; **todo o `src/**` entra no contexto**.
+
+- Se a API responder `max_tokens_exceeded`, o bloco é dividido em dois e
+  reenviado (até 4 níveis); se ainda falhar, o review sai com erro visível —
+  nunca omite `src` silenciosamente.
+- O relatório agrega os blocos de forma robusta: segurança/correção continuam
+  sendo **máximos** (gates), a severidade usa o **p90** (um bloco isolado não
+  domina o PR inteiro) e a recomendação é **derivada**: `block` exige
+  segurança/correção acima do limiar ou p90 ≥ 3; um `block` bruto de bloco sem
+  essa evidência vira `comment`. O veredito bruto por bloco fica no JSON
+  (`chunks[]`) e na tabela de detalhes; a soma de tokens/custo é preservada.
+- PRs muito grandes fazem várias chamadas (~1–2 s cada, modelo grátis); PRs
+  normais continuam em uma única chamada.
+- Docs só entram no review se estiverem dentro de um arquivo de código; o
+  gatilho do CI já ignora PRs que só mudam docs.
 
 ## Como interpretar
 
@@ -67,6 +108,11 @@ O relatório traz cinco dimensões:
 | `severity` | severidade do problema | ≥ 3,0/4 |
 | `recommendation` | aprovar/comentar/bloquear | `comment`/`block` |
 
+A agregação de vários blocos é **robusta**: segurança e correção são gates
+(máximo entre blocos), a severidade usa p90 e a recomendação é derivada dessa
+evidência. O `block` por bloco é bruto; confira os blocos no JSON antes de
+tratar o agregado como bloqueio.
+
 Regras de uso:
 
 1. Leia o diff e **verifique** cada achado antes de mudar código.
@@ -79,21 +125,30 @@ Regras de uso:
 
 ## Privacidade e limites
 
-- O script redige segredos (`.env`, tokens, bearer, chaves privadas, JWT, AWS) e
-  **ignora** `.env*`, lockfiles, `node_modules/`, `out/`, `dist/`, `coverage/`,
-  `.vscode-patched`, certificados e `docs/brain/.obsidian/plugins/*/data.json`.
+- O script redige segredos (`.env`, tokens bearer, chaves privadas, JWT, AWS,
+  GitHub/OpenAI/Slack, URL com `user:pass`) e **ignora** `.env*`, lockfiles,
+  `node_modules/`, `out/`, `dist/`, `coverage/`, `.vscode-patched`,
+  `secrets/`/`credentials/`, `.ssh/`, `.npmrc`/`.pypirc`/`.netrc`, certificados
+  e `docs/brain/.obsidian/plugins/*/data.json`.
 - Mesmo assim, não inclua credenciais Oracle, strings de conexão ou conteúdo
   proprietário que não seja necessário para revisar o diff.
-- O contexto do Jev é ~64K tokens; o script trunca o diff
-  (`--max-diff-chars`, default 40000 caracteres) e por arquivo
-  (`--max-file-chars`, default 20000). Se a API responder
-  `max_tokens_exceeded`, ele reduz o diff e tenta de novo (até 3 tentativas).
+- O contexto do Jev é ~64K tokens; cada bloco tem no máximo `--max-diff-chars`
+  (default 30000 caracteres) e cada parte de arquivo no máximo `--max-file-chars`
+  (default 20000). Em `max_tokens_exceeded`, o bloco é subdividido e reenviado
+  (até 4 níveis); não há mais corte silencioso do diff.
 - A chamada sai da máquina para o OpenCode Console; não use o modelo gratuito
   para dados sensíveis.
 
 ## CI
 
 O workflow `.github/workflows/jev-review.yml` roda em PRs internos, em modo
-**advisory** (não é required check), e publica o relatório no summary. Ele usa o
-secret `OPENCODE_API_KEY`; PRs de fork são pulados. Só torne gate obrigatório
-depois de calibrar os limiares com alguns PRs reais.
+**advisory** (não é required check), e publica o relatório em três lugares:
+
+- **step summary** do run;
+- **artifact** `jev-review-<PR>` com `jev-review.md` e `jev-review.json`
+  (retenção de 90 dias, para medir uso/achados ao longo do tempo);
+- **comentário fixo** no PR (marcador oculto `<!-- jev-review -->`, atualizado
+  em cada push em vez de criar um novo).
+
+Ele usa o secret `OPENCODE_API_KEY`; PRs de fork são pulados. Só torne gate
+obrigatório depois de calibrar os limiares com alguns PRs reais.

@@ -47,9 +47,14 @@ code --install-extension vscode-utplsql-*.vsix
 
 To verify whether utPLSQL is installed:
 ```sql
-SELECT ut_meta.version() FROM dual;
+SELECT ut_runner.version() FROM dual;
 -- should return something like: v3.2.3
 ```
+
+For a **shared install** (owner `UT3`), the test schema also needs grants on
+the runner buffer and the `DBMSPCC_*` tables, plus the `UT`/`DBMSPCC_*`
+synonyms used by the test code and coverage. Grants do not create synonyms.
+See [Database requirements](Database-requirements.md#shared-install--runner-coverage-and-synonyms).
 
 ### Local machine
 

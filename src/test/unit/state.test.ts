@@ -1,7 +1,6 @@
 import assert from 'node:assert';
 import { test } from 'node:test';
 import {
-  formatDuration,
   PERSIST_KEY,
   PERSIST_MAX_ENTRIES,
   PERSIST_MESSAGE_LIMIT,
@@ -141,29 +140,35 @@ test('TestStateManager: clearSuiteMap remove todos os itens', () => {
 
 // ── Duração no label (PRD-56 RF4) ──────────────────────────────────────
 
-test('formatDuration: abaixo de 1s usa ms; acima usa s com 1 decimal', () => {
-  assert.strictEqual(formatDuration(850), '850ms');
-  assert.strictEqual(formatDuration(999), '999ms');
-  assert.strictEqual(formatDuration(1000), '1.0s');
-  assert.strictEqual(formatDuration(1234), '1.2s');
-  assert.strictEqual(formatDuration(65432), '65.4s');
-});
-
 test('withDurationSuffix: aplica, substitui (idempotente) e remove', () => {
-  assert.strictEqual(withDurationSuffix('app_pkg.is_valid', 1200, true), 'app_pkg.is_valid (1.2s)');
-  // reaplicar não acumula sufixos
   assert.strictEqual(
-    withDurationSuffix('app_pkg.is_valid (1.2s)', 800, true),
-    'app_pkg.is_valid (800ms)',
+    withDurationSuffix('app_pkg.is_valid', 1200, true, 'en'),
+    'app_pkg.is_valid (1.2 s)',
+  );
+  assert.strictEqual(
+    withDurationSuffix('app_pkg.is_valid', 1200, true, 'pt-br'),
+    'app_pkg.is_valid (1,2 s)',
+  );
+  // reaplicar não acumula sufixos (inclusive formato antigo, sem espaço)
+  assert.strictEqual(
+    withDurationSuffix('app_pkg.is_valid (1.2 s)', 800, true, 'en'),
+    'app_pkg.is_valid (800 ms)',
+  );
+  assert.strictEqual(
+    withDurationSuffix('app_pkg.is_valid (1.2s)', 800, true, 'en'),
+    'app_pkg.is_valid (800 ms)',
   );
   // desligado → limpa o sufixo anterior
-  assert.strictEqual(withDurationSuffix('app_pkg.is_valid (1.2s)', 800, false), 'app_pkg.is_valid');
+  assert.strictEqual(
+    withDurationSuffix('app_pkg.is_valid (1.2 s)', 800, false, 'en'),
+    'app_pkg.is_valid',
+  );
   // sem duração → nada
-  assert.strictEqual(withDurationSuffix('x (1.2s)', undefined, true), 'x');
-  assert.strictEqual(withDurationSuffix('x', Number.NaN, true), 'x');
-  assert.strictEqual(withDurationSuffix('x', -1, true), 'x');
+  assert.strictEqual(withDurationSuffix('x (1.2 s)', undefined, true, 'en'), 'x');
+  assert.strictEqual(withDurationSuffix('x', Number.NaN, true, 'en'), 'x');
+  assert.strictEqual(withDurationSuffix('x', -1, true, 'en'), 'x');
   // sufixo que não é duração fica intacto
-  assert.strictEqual(withDurationSuffix('x [tag] (2)', undefined, true), 'x [tag] (2)');
+  assert.strictEqual(withDurationSuffix('x [tag] (2)', undefined, true, 'en'), 'x [tag] (2)');
 });
 
 test('truncateMessage: corta mensagens longas com reticências', () => {

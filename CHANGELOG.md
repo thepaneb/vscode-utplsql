@@ -1,5 +1,52 @@
 # Changelog
 
+## 0.22.0
+
+- **Locale catalogs split (PRD-115)**: the 26 runtime catalogs now live one per
+  file under `src/i18n/locales/`, exported by a barrel with the canonical
+  `LOCALE_CODES`; `i18nLocales.ts` is gone and the locale is resolved at message
+  time in the commands.
+- **Locale-aware numbers and durations (PRD-88)**: `formatNumber`/`formatDuration`
+  use `Intl` with the resolved locale; the status bar and Test Explorer show
+  `12,3 s` in pt-BR and `12.3 s` in en, and counting parameters are formatted
+  without touching technical values.
+- **CLDR plurals (PRD-90)**: the ten `{count}` messages use
+  `Intl.PluralRules` (one/few/many/two/zero/other) with `other → pt-BR → key`
+  fallback; the initial forms are drafts pending in-country review.
+- **Pseudo-localization and hardcoded-string gate (PRD-89)**: `UTPLSQL_PSEUDO_LOC=1`
+  accents/pads runtime messages, and `scrape-strings.cjs` reports UI literals
+  outside `t()` (warning in CI, `--strict` opt-in).
+- **README parity and locale registry (PRD-91)**: `docs:check` now enforces the
+  feature-bullet/commands/language-link parity of every README variant and
+  requires the locale registry (status/reviewer/coverage); the variant count is
+  derived from `package.nls.*.json`.
+- **RTL and Arabic/Hebrew (PRD-92)**: `ar` and `he` join the extension (26 locales,
+  25 README variants) with FSI/PDI bidi isolation for technical identifiers;
+  translations are **beta** pending in-country review.
+- **Continuous localization pipeline (PRD-93)**: `i18n:export`/`i18n:apply` move
+  catalogs through JSON (en-gb as an overlay), the localization glossary is in
+  the vault, and `i18n:check` validates catalogs × locales × manifests × plural
+  forms × glossary in CI.
+- **AI development tooling (PRD-153 P0 / PRD-154 phase 1)**: the Jev review can
+  fall back from `jev-1.13-free` to `jev-1.14` and supports `--no-fallback`/
+  `--fail-on` with stricter output validation and redaction; `AI_USAGE.md`, the
+  PR template, `CONTRIBUTING.md` and `SECURITY.md` document AI disclosure and
+  the no-runtime-AI/no-telemetry posture. Internal tooling only — there is no
+  extension runtime change.
+- **Dependency updates**: `fast-xml-parser` 5.12.1 (runtime XML parsing),
+  `@vscode/vsce` 4.1.1 and the Scorecard/CodeQL action pins.
+- **Schema discovery fix**: `discoverUtplsqlSchema` resolves `UT_RUNNER` in
+  Oracle's name-resolution order (current-schema package, private synonym, public
+  synonym, accessible package), so a private synonym such as `DEMO.UT_RUNNER →
+  UT3.UT_RUNNER` no longer causes `ORA-00942` on `UT_OUTPUT_BUFFER_TMP`.
+- **Schema-qualified utPLSQL calls**: `UT_VARCHAR2_LIST`, `UT_REPORTERS`, the
+  reporter constructors and `ut_runner` itself (`run`, `version`,
+  `get_reporters_list`, `get_suites_info`, `rebuild_annotation_cache`) are
+  qualified with the discovered utPLSQL schema, fixing `NJS-129` and `PLS-00201`
+  (including `UT_RUNNER.RUN`) and restoring reporter/coverage detection when the
+  test schema reaches utPLSQL through grants without local object synonyms.
+  Debug runs qualify `ut_runner.run`, `ut_varchar2_list` and `ut_reporters` too.
+
 ## 0.21.0
 
 - **Split state stores and LRU caches (PRD-139)**: `TestStateManager` now

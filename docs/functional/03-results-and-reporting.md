@@ -147,7 +147,7 @@ state.setExtraReporter(name) → state.consumeExtraReporter()
 function listReportersOracle(conn): Promise<string[]>
 ```
 
-- Consulta `SELECT reporter_object_name FROM TABLE(ut_runner.get_reporters_list())`
+- Consulta `SELECT reporter_object_name FROM TABLE(${utSchema}ut_runner.get_reporters_list())` (schema descoberto)
 - Erro de acesso/instalação → retorna array vazio (best-effort)
 - `checkReporterExists(conn, name)` valida o nome (case-insensitive) contra essa lista
 

@@ -5,7 +5,7 @@
 **Run, debug and measure coverage of utPLSQL (Oracle PL/SQL) unit tests directly
 from VS Code — no Java, no Instant Client required in thin mode.**
 
-`24 UI languages · VS Code 1.125+ · Oracle 12.1+ (thin) / 11.2+ (thick) · MIT`
+`26 UI languages · VS Code 1.125+ · Oracle 12.1+ (thin) / 11.2+ (thick) · MIT`
 
 [Install from the Marketplace](https://marketplace.visualstudio.com/items?itemName=paneb.vscode-utplsql) ·
 [Quick start](https://github.com/thepaneb/vscode-utplsql#quick-start) ·
@@ -20,12 +20,12 @@ from VS Code — no Java, no Instant Client required in thin mode.**
 
 _Native Test Explorer: run, debug and see results without leaving VS Code._
 
-## What's new in 0.21.0
+## What's new in 0.22.0
 
-Architecture and reliability release: typed domain errors and validated
-configuration, a typed execution event bus with decoupled UI subscribers, run
-strategies, resilient database discovery with retry and metadata cache, and
-bounded state/coverage caches. The full release notes are in the
+Localization release: catalogs split per locale, locale-aware numbers and
+durations, CLDR plurals, pseudo-localization and a hardcoded-string scanner,
+structural README parity with a locale registry, **Arabic/Hebrew (RTL, beta)**
+and an export/import pipeline. The full release notes are in the
 [CHANGELOG](https://github.com/thepaneb/vscode-utplsql/blob/main/CHANGELOG.md).
 
 ## Why use this extension?
@@ -44,7 +44,7 @@ bounded state/coverage caches. The full release notes are in the
   in VS Code SecretStorage.
 - **CodeLens and inline results** — run at cursor and see pass/fail
   decorations next to the test.
-- **24 UI languages** — the interface follows your VS Code language.
+- **26 UI languages** — the interface follows your VS Code language.
 
 ## Quick start
 
@@ -83,8 +83,9 @@ parser understands `%displayname`, `%disabled`, `%throws` and the standard
 utPLSQL annotations, and the tree reflects exactly what the database will
 execute. Suites can be organized by file, by schema (including lazy
 schema → package → suite resolution for large schemas) or by tag. Shared
-installations are supported: the extension discovers the `UT3` owner from
-`ALL_SYNONYMS` and works with the utPLSQL packages installed there.
+installations are supported: the extension resolves the utPLSQL owner in Oracle
+order (current schema → private synonym → public synonym → accessible package)
+and works with the utPLSQL packages installed there.
 
 When a test fails, the message includes the expected/actual diff produced by
 utPLSQL and a **Go to Error** location resolved from the PL/SQL stack frame.
@@ -243,7 +244,7 @@ More troubleshooting: [wiki/Troubleshooting](https://github.com/thepaneb/vscode-
 
 ## Languages
 
-The interface is available in 24 languages. The complete localized READMEs are
+The interface is available in 26 languages. The complete localized READMEs are
 in the [GitHub repository](https://github.com/thepaneb/vscode-utplsql#readme);
 the Marketplace page is English-only.
 

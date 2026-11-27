@@ -19,7 +19,7 @@ This project bridges multiple systems. When debugging failures, identify the com
 - Check `UT_OUTPUT_BUFFER_TMP` — polling every 200ms, may miss early output
 - Check `conn.break()` for cancellation
 - Ensure `GRANT EXECUTE ON DBMS_PROFILER` for coverage
-- Check `ALL_SYNONYMS` access for shared install prefix
+- Check `ALL_SYNONYMS`/`ALL_OBJECTS` access for the shared install prefix (current schema → private synonym → public synonym → accessible `UT_RUNNER`)
 
 ### Test Discovery (discovery.ts + suiteParser.ts)
 - Verify `.pks` files contain `%suite` and `%test` annotations

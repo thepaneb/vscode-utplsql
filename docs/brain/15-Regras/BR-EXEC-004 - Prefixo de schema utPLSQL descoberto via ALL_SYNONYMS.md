@@ -2,14 +2,14 @@
 id: BR-EXEC-004
 aliases: [BR-EXEC-004]
 tipo: regra
-titulo: Prefixo de schema utPLSQL descoberto via ALL_SYNONYMS
+titulo: Prefixo de schema utPLSQL descoberto pela ordem de resolução do Oracle
 dominio: execucao
 status: ativo
 severidade: alta
 fonte: codigo
-verificado: 2026-09-23
-implementacao: ["src/oracleRunner.ts:170", "src/oracleRunner.ts:179", "src/oracleRunner.ts:185", "src/oracleRunner.ts:191"]
-testes: ["src/test/unit/oracleRunner.test.ts:670", "src/test/unit/oracleRunner.test.ts:678", "src/test/integration/oracleCapabilities.test.ts:56"]
+verificado: 2026-11-26
+implementacao: ["src/oracleRunner.ts"]
+testes: ["src/test/unit/oracleRunner.test.ts", "src/test/integration/oracleCapabilities.test.ts"]
 prds: ["PRD-43", "PRD-64"]
 requisitos: ["PRD-11/RF3"]
 interno: true
@@ -17,19 +17,19 @@ tags: ["execucao"]
 ---
 ## Enunciado
 
-Se UT_RUNNER for um synonym público, então discoverUtplsqlSchema retorna <owner>. (ex.: UT3.) para prefixar as queries de buffer; caso contrário (sem linha ou erro) retorna string vazia.
+Se o utPLSQL estiver acessível, então discoverUtplsqlSchema resolve o owner na ordem de nomes do Oracle — pacote UT_RUNNER no schema atual → synonym privado do schema atual → synonym público → pacote acessível em ALL_OBJECTS (preferindo UT3) — e retorna `<owner>.` (ex.: `UT3.`) para qualificar `ut_runner`, tipos, reporters e buffer; no install próprio retorna string vazia.
 
 ## Pré-condições
 
-Chamada com uma conexão cujo execute aceita SQL sem binds.
+Chamada com uma conexão cujo `execute` aceita SQL sem binds. O owner resolvido é validado por `sanitizeSchemaPrefix` antes de qualquer concatenação.
 
 ## Exceções
 
-ALL_SYNONYMS inacessível (ex.: ORA-00942) é engolido em log debug e resulta em prefixo vazio; também tolera resultado em formato array ou objeto.
+`ALL_SYNONYMS`/`ALL_OBJECTS` inacessível (ex.: ORA-00942) é engolido em log debug e resulta em prefixo vazio; também tolera resultado em formato array ou objeto. Synonym que aponta para o próprio schema atual resulta em prefixo vazio. Sem synonym, o fallback procura qualquer pacote `UT_RUNNER` visível, preferindo `UT3`.
 
 ## Justificativa
 
-Suporta install próprio (prefixo vazio, resolve pelo schema atual) e shared install (synonym aponta para o owner documentado, ex.: UT3).
+Suporta install próprio (prefixo vazio, resolve pelo schema atual) e shared install por synonym privado, synonym público ou grant direto no pacote (ex.: `DEMO` → `UT3`). Grant não cria synonym: o prefixo descoberto é o que permite qualificar os objetos usados pelo runner.
 
 ## Conexões
 

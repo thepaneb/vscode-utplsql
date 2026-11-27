@@ -119,5 +119,5 @@ Superfícies: CHANGELOG, README (gerado).
 - 🗺️ [[MOC - PRDs]]
 - 🔗 PRDs relacionados: [[prd-65-schema-mode-security-fixes|PRD-65]] · [[prd-81-security-hardening|PRD-81]]
 - 🔗 Mesma versão (0.25.0): [[prd-132-ux-execution-dryrun-jump|PRD-132]] · [[prd-133-rate-limiting-keybindings|PRD-133]] · [[prd-141-onboarding-walkthrough-accessibility|PRD-141]] · [[prd-151-codelens-debug-test|PRD-151]]
-- 🚀 ⬅️ release anterior: [[prd-145-security-alerts-deliverable|PRD-145 (0.24.0)]]
+- 🚀 ⬅️ release anterior: [[prd-155-jev-review-packs-profiles|PRD-155 (0.24.0)]]
 <!-- brain:auto:end -->

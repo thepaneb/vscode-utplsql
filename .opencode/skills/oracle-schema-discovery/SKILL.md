@@ -8,15 +8,14 @@ compatibility: opencode
 
 ## Project patterns
 
-### discoverUtplsqlSchema (oracleRunner.ts:91-111)
+### discoverUtplsqlSchema (`oracleRunner.ts`)
 
-Queries `ALL_SYNONYMS` to find the UT3 schema prefix for shared installs:
-```sql
-SELECT table_owner FROM ALL_SYNONYMS 
-WHERE synonym_name = 'UT_RUNNER' AND owner = 'PUBLIC'
-```
-
-Returns `'UT3.'` prefix (or empty string on failure) used in buffer queries.
+Resolves the utPLSQL owner in Oracle name-resolution order: package `UT_RUNNER`
+in the current schema → private synonym → public synonym → accessible
+`UT_RUNNER` package (`ALL_OBJECTS`, preferring `UT3`). Returns `'UT3.'`/`'OWNER.'`
+(or empty string on failure). The prefix is used by `ut_runner.run`,
+`UT_VARCHAR2_LIST`, `UT_REPORTERS`, reporters, buffer queries and the debugger.
+See `docs/brain/50-Snippets/Descobrir prefixo do schema utPLSQL.md` for the SQL.
 
 ### Schema-mode (discovery.ts:85-104)
 

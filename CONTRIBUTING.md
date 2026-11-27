@@ -4,6 +4,37 @@ Thank you for considering contributing to **utPLSQL Test Runner**! This document
 
 This project follows the [Code of Conduct](CODE_OF_CONDUCT.md). By participating, you are expected to uphold it.
 
+## AI-assisted contributions
+
+AI coding assistants are welcome for code, tests, documentation, issues and
+review. The rules are:
+
+- **Human responsibility.** The person who signs the commit is responsible for
+  correctness, licensing, security and tests. An AI tool is not a person and
+  must never appear in `Co-authored-by` or `Signed-off-by`.
+- **Disclose substantial assistance.** Mention the tool and what it helped with
+  (for example, "generated the parser tests and the first draft of the docs") in
+  the pull request. Autocomplete, spelling fixes and mechanical transforms do
+  not need a dedicated disclosure.
+- **Prefer the trailer.** Commits with substantial AI assistance should carry
+  `Assisted-by: <tool>/<model>` (for example,
+  `Assisted-by: OpenCode/DeepSeek V4.1 Flash`). Check it with
+  `git interpret-trailers --parse`.
+- **Never share secrets.** Do not paste Oracle credentials, `.env` files,
+  tokens, private keys, customer data or private URLs into a prompt. Use the
+  redacted diff produced by the Jev review instead of sending a raw repository.
+- **Review and test everything.** AI output is a draft, not evidence. Run the
+  same tests, lint and review gates as any other change; a generated change
+  without human review will not be merged.
+- **Jev is advisory.** The Jev review (`npm run jev:review`) is a probabilistic
+  signal. It does not replace tests, lint or human approval; verify each finding
+  before changing code.
+
+AI assistance does not change the license of your contribution. By opening a
+pull request you confirm you have the right to submit the code and that you
+reviewed it. See [AI_USAGE.md](AI_USAGE.md) for the runtime and development
+disclosure.
+
 ## How can I contribute?
 
 ### Reporting bugs
@@ -204,7 +235,7 @@ release workflow.
 - Avoid introducing new dependencies without discussing them first in an issue
 - Execution is **Oracle-direct** (node-oracledb, thin by default; thick is opt-in)
   — changes in `oracleRunner.ts`/`discovery.ts` must consider both driver modes
-  and the shared install (`ALL_SYNONYMS`)
+  and the shared install (schema discovery via `ALL_SYNONYMS`/`ALL_OBJECTS`)
 
 ## Review process
 

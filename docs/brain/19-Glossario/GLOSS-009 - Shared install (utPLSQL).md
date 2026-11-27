@@ -15,11 +15,14 @@ tags: ["banco"]
 ## Definição
 
 Instalação do utPLSQL em um schema (ex.: UT3) compartilhado por outros schemas via
-synonyms/grants. A extensão descobre o prefixo por `ALL_SYNONYMS`.
+synonyms/grants. A extensão descobre o prefixo pela ordem de resolução de nomes do
+Oracle: pacote no schema atual → synonym privado → synonym público → pacote
+acessível em `ALL_OBJECTS`.
 
 ## Onde aparece
 
-`oracleRunner.ts` (`discoverUtplsqlSchema`), ERR-001.
+`oracleRunner.ts` (`discoverUtplsqlSchema`), ERR-001. No shared install, o prefixo
+qualifica `ut_runner.run`, `UT_VARCHAR2_LIST`, `UT_REPORTERS`, reporters e o buffer.
 
 ## Conexões
 

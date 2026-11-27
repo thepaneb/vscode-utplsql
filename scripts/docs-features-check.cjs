@@ -6,7 +6,7 @@
  *  - exige uma entrada no registro `docs/brain/10-Projeto/Registro de features.md`;
  *  - exige o ID da PRD na seção da versão do CHANGELOG;
  *  - para features de usuário (`interno: false`), exige bullet no README,
- *    âncora nas 23 variantes, menção na wiki e (se `docs/linkedin` existir)
+ *    âncora nas 25 variantes, menção na wiki e (se `docs/linkedin` existir)
  *    posts pt/en + cards.
  *
  * Uso:

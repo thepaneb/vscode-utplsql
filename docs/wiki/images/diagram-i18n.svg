@@ -5,7 +5,7 @@
     </marker>
   </defs>
   <rect width="900" height="640" fill="#fff"/>
-  <text x="450" y="32" text-anchor="middle" font-size="18" font-weight="bold" fill="#333">Internationalization (i18n) — 24 languages</text>
+  <text x="450" y="32" text-anchor="middle" font-size="18" font-weight="bold" fill="#333">Internationalization (i18n) — 26 languages</text>
 
   <!-- setting -->
   <rect x="60" y="70" width="250" height="56" rx="8" fill="#e2e3e5" stroke="#555" stroke-width="1.5"/>
@@ -29,10 +29,10 @@
 
   <!-- catalogs -->
   <rect x="60" y="300" width="360" height="150" rx="10" fill="#fff" stroke="#555" stroke-width="1.5"/>
-  <text x="240" y="324" text-anchor="middle" font-size="13" font-weight="bold" fill="#333">src/i18nLocales.ts (catalogs)</text>
+  <text x="240" y="324" text-anchor="middle" font-size="13" font-weight="bold" fill="#333">src/i18n/locales (catalogs)</text>
   <text x="240" y="346" text-anchor="middle" font-size="11" fill="#333">pt-br (base) · en · en-gb · es · zh-cn · zh-tw</text>
   <text x="240" y="364" text-anchor="middle" font-size="11" fill="#333">ja · de · fr · it · ko · ru · tr · pl · cs · hu</text>
-  <text x="240" y="382" text-anchor="middle" font-size="11" fill="#333">bg · el · id · ro · sr · th · uk · vi</text>
+  <text x="240" y="382" text-anchor="middle" font-size="11" fill="#333">bg · el · id · ro · sr · th · uk · vi · ar · he</text>
   <text x="240" y="408" text-anchor="middle" font-size="10" fill="#6a737d">key parity guaranteed by tests</text>
   <text x="240" y="424" text-anchor="middle" font-size="10" fill="#6a737d">t() uses locale catalog; missing → pt-BR</text>
 

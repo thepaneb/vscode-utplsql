@@ -38,7 +38,7 @@ para o merge, pare depois dele e peça a aprovação da tag/release em separado.
    CI); preencha `docs:`/`## Impacto nas docs` e o registro de features; rode
    `npm run docs:features-check -- <versão>` e `npm run sync-prds` no fim.
 5. **Docs** — se houve settings/comandos/features, aplique a skill
-   **`docs-fidelity`** (README + 23 variantes, `docs/wiki` (en), functional).
+   **`docs-fidelity`** (README + 25 variantes, `docs/wiki` (en), functional).
 6. **Commit + push** da branch de release. **Não faça merge na `main`** ainda:
    abra/atualize o PR final e aguarde a **aprovação específica** do mantenedor
    para o merge.

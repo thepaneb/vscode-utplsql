@@ -15,7 +15,7 @@ tags: [readme]
 
 <div align="center">
 
-[[README (extensão)|English]] · [[README.zh-CN|中文(简体)]] · [[README.zh-TW|中文(繁體)]] · [[README.ja|日本語]] · [[README.ko|한국어]] · [[README.es|Español]] · [[README.fr|Français]] · [[README.pt-BR|Português]] · [[README.it|Italiano]] · [[README.ro|Română]] · [[README.de|Deutsch]] · [[README.ru|Русский]] · [[README.pl|Polski]] · [[README.uk|Українська]] · [[README.cs|Čeština]] · [[README.bg|Български]] · [[README.sr|Српски]] · [[README.tr|Türkçe]] · [[README.el|Ελληνικά]] · [[README.hu|Magyar]] · [[README.id|Bahasa Indonesia]] · **Tiếng Việt** · [[README.th|ไทย]] · [[README.en-GB|English (UK)]]
+[[README (extensão)|English]] · [[README.ar|العربية]] · [[README.he|עברית]] · [[README.zh-CN|中文(简体)]] · [[README.zh-TW|中文(繁體)]] · [[README.ja|日本語]] · [[README.ko|한국어]] · [[README.es|Español]] · [[README.fr|Français]] · [[README.pt-BR|Português]] · [[README.it|Italiano]] · [[README.ro|Română]] · [[README.de|Deutsch]] · [[README.ru|Русский]] · [[README.pl|Polski]] · [[README.uk|Українська]] · [[README.cs|Čeština]] · [[README.bg|Български]] · [[README.sr|Српски]] · [[README.tr|Türkçe]] · [[README.el|Ελληνικά]] · [[README.hu|Magyar]] · [[README.id|Bahasa Indonesia]] · **Tiếng Việt** · [[README.th|ไทย]] · [[README.en-GB|English (UK)]]
 
 </div>
 
@@ -35,7 +35,7 @@ tags: [readme]
 
 # utPLSQL Test Runner
 
-Chạy và gỡ lỗi kiểm thử **utPLSQL** (Oracle PL/SQL) ngay trong VS Code — **Test Explorer** gốc, độ phủ trực quan, trình gỡ lỗi PL/SQL và thực thi **Oracle trực tiếp** qua `node-oracledb`. Có **24 ngôn ngữ**; yêu cầu **VS Code 1.125+** (Node 24).
+Chạy và gỡ lỗi kiểm thử **utPLSQL** (Oracle PL/SQL) ngay trong VS Code — **Test Explorer** gốc, độ phủ trực quan, trình gỡ lỗi PL/SQL và thực thi **Oracle trực tiếp** qua `node-oracledb`. Có **26 ngôn ngữ**; yêu cầu **VS Code 1.125+** (Node 24).
 
 ### Test Explorer và thực thi
 
@@ -94,7 +94,7 @@ Chạy và gỡ lỗi kiểm thử **utPLSQL** (Oracle PL/SQL) ngay trong VS Cod
 - 🎯 **Nhảy tới lỗi** — điều hướng trực tiếp tới dòng của assertion bị lỗi (qua "Go to Error" gốc).
 - 🧱 **Chẩn đoán biên dịch** — sau mỗi lần chạy, lỗi biên dịch PL/SQL (`ALL_ERRORS`) hiện trong Problems Panel dưới source `utPLSQL Compilation` (cài đặt `utplsql.compilationDiagnostics.enabled`).
 - ⏳ **Tiến trình và hủy** — các lần chạy dài hiển thị thông báo tiến trình kèm số đếm và nút *Cancel* (và `utplsql.timeoutMinutes` tùy chọn).
-- 🌍 **i18n — 24 ngôn ngữ** — `utplsql.language` theo VSCode (24 locale: pt-br, en, en-gb, es, zh-cn, zh-tw, ja, de, fr, it, ko, ru, tr, pl, cs, hu, bg, el, id, ro, sr, th, uk, vi).
+- 🌍 **i18n — 26 ngôn ngữ** — `utplsql.language` theo VSCode (26 locale: pt-br, en, en-gb, es, zh-cn, zh-tw, ja, de, fr, it, ko, ru, tr, pl, cs, hu, bg, el, id, ro, sr, th, uk, vi, ar, he).
 
 
 ## Cài đặt
@@ -237,7 +237,7 @@ Test Explorer **ngay khi từng bài kiểm thử hoàn tất**. VSIX đã kèm 
 | `utplsql.scriptRunner.filePattern` | `**/*.{sql,pks,pkb,fnc,prc,trg}` | Globs to list files when running a script folder. |
 | `utplsql.scriptRunner.dbmsOutput` | `false` | Captures and displays `DBMS_OUTPUT` during script execution. |
 | `utplsql.scriptRunner.timeoutSeconds` | `300` | Per-statement timeout (s) for scripts (`callTimeout`). |
-| `utplsql.language` | `auto` | Ngôn ngữ của các thông báo runtime. `auto` theo VSCode (pt, zh-tw/zh-hk, zh, es, ja, de, fr, it, ko, ru, tr, pl, cs, hu, bg, el, id, ro, sr, th, uk, vi, en-gb; nếu không thì en). Bao phủ **24 locale**. |
+| `utplsql.language` | `auto` | Ngôn ngữ của các thông báo runtime. `auto` theo VSCode (pt, zh-tw/zh-hk, zh, es, ja, de, fr, it, ko, ru, tr, pl, cs, hu, bg, el, id, ro, sr, th, uk, vi, en-gb; nếu không thì en). Bao phủ **26 locale**. |
 
 Ví dụ (`.vscode/settings.json` của dự án):
 

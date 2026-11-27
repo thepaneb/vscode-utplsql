@@ -19,7 +19,7 @@ Campos:
 - `prd` — ID da PRD (`PRD-NN`);
 - `interno: true` — enabler de infraestrutura/testes; dispensa bullet/wiki/posts;
 - `readme_bullet` — texto exato do bullet no `README.md` (EN);
-- `readme_anchor` — trecho estável presente nas 23 variantes (emoji/heading);
+- `readme_anchor` — trecho estável presente nas 25 variantes (emoji/heading);
 - `wiki` — página em `docs/brain/70-Wiki` (sem `.md`);
 - `linkedin` — `["docs/linkedin/features/...-pt.md", "...-en.md"]`;
 - `card` — `["docs/linkedin/assets/....png", "...-en.png"]`.
@@ -71,6 +71,13 @@ Campos:
   { "id": "run-event-bus", "prd": "PRD-128", "interno": true },
   { "id": "run-strategies", "prd": "PRD-129", "interno": true },
   { "id": "tree-organization-strategies", "prd": "PRD-138", "interno": true },
-  { "id": "state-stores-lru", "prd": "PRD-139", "interno": true }
+  { "id": "state-stores-lru", "prd": "PRD-139", "interno": true },
+  { "id": "split-i18n-locales", "prd": "PRD-115", "interno": true },
+  { "id": "locale-aware-formatting", "prd": "PRD-88", "interno": true },
+  { "id": "cldr-plurals", "prd": "PRD-90", "interno": true },
+  { "id": "pseudo-localization-scanner", "prd": "PRD-89", "interno": true },
+  { "id": "readme-parity-locale-registry", "prd": "PRD-91", "interno": true },
+  { "id": "rtl-ar-he", "prd": "PRD-92", "interno": true },
+  { "id": "i18n-pipeline", "prd": "PRD-93", "interno": true }
 ]
 ```

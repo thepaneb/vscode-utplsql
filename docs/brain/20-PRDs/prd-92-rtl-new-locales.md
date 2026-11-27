@@ -2,14 +2,15 @@
 tipo: prd
 id: PRD-92
 aliases: [PRD-92]
-status: proposed
+status: completed
 titulo: "RTL e novos locales (árabe e hebraico)"
 versao: "0.22.0"
 data: "2026-09-29"
 autor: "Gil Cleber Barboza"
 versao_titulo: "0.22.0 — Localização completa"
-verificado: 2026-09-29
-regras: []
+verificado: 2026-11-25
+regras: ["BR-I18N-006"]
+docs: ["CHANGELOG", "README", "wiki/Internationalization.md"]
 tags: [prd]
 ---
 
@@ -21,7 +22,7 @@ tags: [prd]
 | Data | 2026-09-29 |
 | Componente | Extensão `paneb.vscode-utplsql` |
 | Versão alvo | 0.22.0 |
-| Arquivos afetados | `src/i18n.ts`, `src/i18nLocales.ts`, `package.nls.ar.json`, `package.nls.he.json`, `src/statusBar.ts`, `src/decorations.ts`, `README.ar.md`, `README.he.md`, `docs/brain/12-I18n/` |
+| Arquivos afetados | `src/i18n.ts`, `src/i18n/locales/{ar,he}.ts`, `package.nls.{ar,he}.json`, `package.json` (enum/descrição), `src/statusBar.ts`, `src/decorations.ts`, `docs/brain/60-README/` (2 novas + switcher das 24), `docs/brain/12-I18n/`, `docs/brain/14-NFR/NFR-006`, `docs/brain/70-Wiki/Internationalization.md`, `.opencode/agent/i18n-reviewer.md`, `scripts/docs-check.cjs` |
 | Esforço estimado | 2–3 dias |
 | Complexidade | Média |
 
@@ -34,7 +35,8 @@ com paridade de catálogo e README.
 
 ## 2. Contexto e problema
 
-- Hoje: 24 locales, **0 RTL** (verificado).
+- Hoje: 24 locales, **0 RTL** (verificado); a entrega leva a **26 locales** e
+  **25 variantes** de README (+ `README.md`).
 - Elementos sensíveis a direção: status bar (contadores/duração), tooltips,
   decorações inline, diagnóstico no Problems Panel, nós da árvore, e nomes de
   objetos PL/SQL (sempre **LTR**).
@@ -59,18 +61,22 @@ com paridade de catálogo e README.
 
 ### RF1 — Isolamento bidi na interpolação
 
-`t()` embrulha parâmetros técnicos (nomes, paths, códigos ORA/PLS) em FSI/PDI
-quando o locale é RTL.
+`t()` embrulha em FSI/PDI (U+2068/U+2069) os parâmetros de um conjunto fixo de
+chaves técnicas (`name`, `path`, `file`, `schema`, `conn`, `id`, `cmd`, `package`,
+`proc`, `desc`, `reporter`, `error`) quando o locale é RTL; a prosa não é
+isolada. Teste com um identificador `UT3.PKG` dentro de frase em `ar`.
 
 ### RF2 — Locales `ar` e `he`
 
-Catálogos completos, com as formas plurais exigidas pelo CLDR (`ar`: 6; `he`:
-`one`/`two`/`many`/`other`).
+Catálogos completos em `src/i18n/locales/`, com as formas plurais exigidas pelo
+CLDR (`ar`: 6; `he`: `one`/`two`/`many`/`other`). Dígitos permanecem latinos
+(`Intl` já devolve `12.3` para `ar` no Node 24; teste fixa isso).
 
-### RF3 — Manifesto e README
+### RF3 — Manifesto, README e setting
 
-`package.nls.ar.json`/`package.nls.he.json` e `README.ar.md`/`README.he.md`
-(paridade estrutural — PRD-91).
+`package.nls.ar.json`/`he.json`, `README.ar.md`/`he.md` e o **switcher de idiomas
+atualizado nas 24 notas existentes** + 2 novas (paridade estrutural — PRD-91).
+`utplsql.language` ganha `ar`/`he` no enum e na `markdownDescription`.
 
 ### RF4 — Aceite visual
 
@@ -83,10 +89,13 @@ Development Host com `utplsql.language = ar`.
 
 ## 5. Solução proposta
 
-- Helper de isolamento em `i18n.ts` (`bidiIsolate(text)`) aplicado a parâmetros
-  marcados.
-- Catálogos `ar`/`he` (tradução + revisão) e manifestos.
-- Reuso dos gates de PRD-89/90/91.
+- Helper de isolamento em `i18n.ts` (`bidiIsolate(text)`) aplicado ao conjunto de
+  parâmetros técnicos, só quando o locale é RTL.
+- Catálogos `ar`/`he` (tradução + revisão), manifestos, notas de README e
+  switcher das variantes; atualizar enum/descrição, `NFR-006` e o agente
+  `i18n-reviewer` para 26 locales.
+- Reuso dos gates de PRD-89/90/91 (o `docs-check` já deriva o número de
+  variantes da PRD-91).
 
 ## 6. Configuração
 
@@ -118,20 +127,39 @@ Development Host com `utplsql.language = ar`.
 - Paridade de catálogo/README verde.
 - Checklist RTL executado.
 
-## 11. Questões em aberto
+## 11. Decisões (2026-11-25)
 
-- Incluir `fa`/`ur` no mesmo ciclo? (depende de revisores.)
+- Apenas **`ar` e `he`** nesta release; `fa`/`ur` ficam como candidatos da
+  0.23.0, dependentes de revisores.
+- **Contingência de revisão**: se não houver revisor in-country até o aceite, os
+  locales entram com status **beta** no `Registro de locales` (PRD-91) e a
+  revisão linguística fica registrada como pendência — o suporte RTL/bidi não é
+  bloqueado por isso.
+- Atualizar todos os contadores derivados (26 locales, 25 variantes, 25
+  manifests + base), inclusive `NFR-006`, MOC/setting e agente `i18n-reviewer`.
+- Identificadores técnicos nunca são traduzidos; só recebem isolamento bidi.
 
 ## 12. Impacto no cérebro
 
-Esperado criar `BR-I18N-006` (isolamento bidi em locales RTL) com
-`prds: ["PRD-92"]`.
+Criada a regra `BR-I18N-006` (isolamento bidi em locales RTL) com
+`prds: ["PRD-92"]`; `ar`/`he` entram como **beta** no registro e o checklist
+RTL foi adicionado ao cérebro.
+
+RNFs sem regra: RNF1, RNF2 (cobertos pelos testes/gates de qualidade).
+
+## 13. Impacto nas docs
+
+- `CHANGELOG` — bullet dos locales `ar`/`he` e do suporte RTL (PRD-92).
+- `README` — bullet + âncora nos 25 variantes, citando PRD-92.
+- `wiki/Internationalization.md` — lista de locales e isolamento bidi (PRD-92).
 
 ## Conexões
 
 <!-- brain:auto:start:conexoes -->
 - 🗺️ [[MOC - PRDs]]
+- 📐 Regras: [[BR-I18N-006 - Locales RTL isolam identificadores técnicos com FSI-PDI|BR-I18N-006]]
 - 🔗 PRDs relacionados: [[prd-89-pseudo-localization-gate|PRD-89]] · [[prd-90-message-plurals-cldr|PRD-90]] · [[prd-91-doc-parity-localized-distribution|PRD-91]] · [[prd-93-continuous-localization-pipeline|PRD-93]]
-- 🔗 Mesma versão (0.22.0): [[prd-88-locale-aware-formatting|PRD-88]] · [[prd-89-pseudo-localization-gate|PRD-89]] · [[prd-90-message-plurals-cldr|PRD-90]] · [[prd-91-doc-parity-localized-distribution|PRD-91]] · [[prd-93-continuous-localization-pipeline|PRD-93]] · [[prd-115-split-i18n-locales|PRD-115]]
+- 🎯 RF1 — Isolamento bidi na interpolação → [[BR-I18N-006 - Locales RTL isolam identificadores técnicos com FSI-PDI|BR-I18N-006]]
+- 🎯 RF4 — Aceite visual → [[BR-I18N-006 - Locales RTL isolam identificadores técnicos com FSI-PDI|BR-I18N-006]]
 - 🚀 ⬅️ release anterior: [[prd-139-state-store-slicing-lru|PRD-139 (0.21.0)]] · ➡️ próxima release: [[prd-60-branch-coverage-investigation|PRD-60 (0.23.0)]]
 <!-- brain:auto:end -->

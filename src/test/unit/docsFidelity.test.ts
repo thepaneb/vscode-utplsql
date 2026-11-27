@@ -167,6 +167,113 @@ test('docs-fidelity: detecta termo obsoleto numa variante de README', () => {
   );
 });
 
+test('docs-fidelity: detecta bullet de feature ausente na variante (PRD-91)', () => {
+  const problems = checkFidelity({
+    settings: [],
+    readme: '### Features\n- 🧪 One\n- 🔍 Two\n\n## Installation',
+    readmeVariants: [{ name: 'zz-ZZ', text: '### Features\n- 🧪 One\n\n## Instalação' }],
+  });
+  assert.ok(
+    problems.some((p) => p.includes('zz-ZZ') && p.includes('bullets de feature')),
+    `esperava bullet divergente: ${problems.join(' | ')}`,
+  );
+});
+
+test('docs-fidelity: detecta tabela de Comandos ausente na variante (PRD-91)', () => {
+  const problems = checkFidelity({
+    settings: [],
+    readme: '### Features\n- 🧪 One\n\n## Installation',
+    readmeVariants: [{ name: 'zz-ZZ', text: '### Features\n- 🧪 One\n\n## Instalação' }],
+  });
+  assert.ok(
+    problems.some((p) => p.includes('zz-ZZ') && p.includes('tabela de Comandos')),
+    `esperava tabela de Comandos: ${problems.join(' | ')}`,
+  );
+});
+
+test('docs-fidelity: detecta links de idioma ausentes na variante (PRD-91)', () => {
+  const problems = checkFidelity({
+    settings: [],
+    readme: '### Features\n- 🧪 One\n\n## Installation',
+    readmeVariants: [{ name: 'zz-ZZ', text: '### Features\n- 🧪 One\n\n## Instalação' }],
+  });
+  assert.ok(
+    problems.some((p) => p.includes('zz-ZZ') && p.includes('links de idioma')),
+    `esperava links ausentes: ${problems.join(' | ')}`,
+  );
+});
+
+test('docs-fidelity: registro de locales incompleto é reportado (PRD-91)', () => {
+  const problems = checkFidelity({
+    settings: [],
+    readme: '### Features\n- 🧪 One\n\n## Installation',
+    readmeVariants: [],
+    localeRegistry: '```json\n[{"code":"en","status":"ativo","revisor":"x","cobertura":"y"}]\n```',
+  });
+  assert.ok(
+    problems.some((p) => p.includes('registro de locales sem entrada')),
+    `esperava registro incompleto: ${problems.join(' | ')}`,
+  );
+});
+
+test('docs-fidelity: bullet de feature extra na variante é reportado (PRD-91)', () => {
+  const problems = checkFidelity({
+    settings: [],
+    readme: '### Features\n- 🧪 One\n\n## Installation',
+    readmeVariants: [
+      { name: 'zz-ZZ', text: '### Features\n- 🧪 One\n- 🔍 Extra\n\n## Instalação' },
+    ],
+  });
+  assert.ok(problems.some((p) => p.includes('zz-ZZ') && p.includes('sobram')));
+});
+
+test('docs-fidelity: link de idioma desconhecido na variante é reportado (PRD-91)', () => {
+  const problems = checkFidelity({
+    settings: [],
+    readme: '### Features\n- 🧪 One\n\n## Installation',
+    readmeVariants: [
+      { name: 'zz-ZZ', text: '### Features\n- 🧪 One\n\n## Instalação\n[xx](README.xx-XX.md)' },
+    ],
+  });
+  assert.ok(
+    problems.some((p) => p.includes('zz-ZZ') && p.includes('links de idioma desconhecidos')),
+  );
+});
+
+test('docs-fidelity: registro de locales ausente/sem bloco/JSON inválido (PRD-91)', () => {
+  const base = { settings: [], readme: '', readmeVariants: [], localeCodes: ['en'] };
+  assert.ok(
+    checkFidelity({ ...base, localeRegistry: '' }).some((p) =>
+      p.includes('registro de locales ausente'),
+    ),
+  );
+  assert.ok(
+    checkFidelity({ ...base, localeRegistry: '# sem json' }).some((p) => p.includes('sem bloco')),
+  );
+  assert.ok(
+    checkFidelity({ ...base, localeRegistry: '```json\n{\n```' }).some((p) =>
+      p.includes('JSON inválido'),
+    ),
+  );
+  assert.ok(
+    checkFidelity({ ...base, localeRegistry: '```json\n{}\n```' }).some((p) =>
+      p.includes('deve ser um array'),
+    ),
+  );
+});
+
+test('docs-fidelity: registro com entrada incompleta é reportado (PRD-91)', () => {
+  const problems = checkFidelity({
+    settings: [],
+    readme: '',
+    readmeVariants: [],
+    localeCodes: ['en', 'zz'],
+    localeRegistry:
+      '```json\n[{"code":"en","status":"ativo","revisor":"x","cobertura":"y"},{"code":"zz","status":"ativo"}]\n```',
+  });
+  assert.ok(problems.some((p) => p.includes('entradas incompletas: zz')));
+});
+
 test('docs-fidelity: detecta comando de paleta ausente na wiki', () => {
   const problems = checkFidelity({
     settings: [],
@@ -382,6 +489,10 @@ test('docs-fidelity.cjs: CLI valida fixture isolada', () => {
       '# Install\n',
     );
     writeFixture(path.join(root, 'docs', 'prd', 'completed', 'prd-7-demo.md'), '# PRD 7\n');
+    writeFixture(
+      path.join(root, 'docs', 'brain', '12-I18n', 'Registro de locales.md'),
+      '```json\n[{"code":"en","status":"ativo","revisor":"x","cobertura":"y"}]\n```\n',
+    );
 
     const result = spawnSync(process.execPath, [script], { encoding: 'utf8' });
     assert.strictEqual(result.status, 0, `${result.stdout}\n${result.stderr}`);

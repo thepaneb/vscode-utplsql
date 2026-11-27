@@ -16,7 +16,7 @@ tags: ["seguranca", "sql"]
 ---
 ## Enunciado
 
-O prefixo de schema descoberto em `ALL_SYNONYMS.TABLE_OWNER` só é concatenado no
+O prefixo de schema descoberto na resolução de nomes (synonym privado/público ou `ALL_OBJECTS.OWNER`) só é concatenado no
 SQL (`DELETE FROM ${utSchema}UT_OUTPUT_BUFFER_TMP`, `SELECT ... FROM
 ${utSchema}UT_OUTPUT_BUFFER_TMP`) depois de validado como identificador Oracle
 (`^[A-Z0-9_$#]+\.$` ou vazio). Valor fora do padrão é tratado como **sem

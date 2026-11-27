@@ -327,15 +327,20 @@ test('liveRuntime.runTest: executa ut_runner.run no conn com bind', async () => 
   const conn = {
     execute: async (sql: string, binds?: Record<string, unknown>) => {
       calls.push({ sql, binds });
+      if (/all_synonyms|all_objects/i.test(sql)) {
+        return { rows: [{ TABLE_OWNER: 'UT3' }] };
+      }
     },
     close: async () => {},
   };
   const { liveRuntime } = await import('../../debugger.js');
   await liveRuntime.runTest(conn as never, 'test_app', 't1');
-  assert.strictEqual(calls.length, 1);
-  assert.match(calls[0].sql, /ut_runner\.run/);
-  assert.match(calls[0].sql, /ut_varchar2_list\(:path\)/);
-  assert.strictEqual(calls[0].binds?.path, 'test_app.t1');
+  const run = calls.find((c) => /ut_runner\.run/.test(c.sql));
+  assert.ok(run, 'deveria chamar ut_runner.run');
+  assert.match(run.sql, /UT3\.ut_runner\.run/);
+  assert.match(run.sql, /UT3\.ut_varchar2_list\(:path\)/);
+  assert.match(run.sql, /UT3\.ut_reporters\(\)/);
+  assert.strictEqual(run.binds?.path, 'test_app.t1');
 });
 
 test('debugger: runTest sem testName usa só o pacote', async () => {

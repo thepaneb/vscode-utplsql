@@ -5,6 +5,15 @@ permissions:
   - action: edit
     resource: "*"
     effect: deny
+  - action: shell
+    resource: "*"
+    effect: ask
+  - action: shell
+    resource: "docker exec *"
+    effect: allow
+  - action: shell
+    resource: "docker ps *"
+    effect: allow
 ---
 
 You are the **oracle-analyst** for this repo (VSCode extension for utPLSQL/Oracle

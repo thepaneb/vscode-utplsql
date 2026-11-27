@@ -25,8 +25,8 @@ docs/brain/ (texto humano = fonte)  ──brain:build──►  README*, docs/wi
 | Mudança | Onde editar (fonte) | Artefatos gerados |
 |---|---|---|
 | Feature/comportamento | `10-Projeto/Funcional/`, `70-Wiki/` | `docs/functional/`, `docs/wiki/` |
-| Setting / comando / keybinding | nota `60-README/README (extensão)` + 23 variantes, `package.json`, `package.nls.*.json` | `README*.md` |
-| Nova string de UI | `package.nls.json` + `package.nls.<locale>.json` (23) | — |
+| Setting / comando / keybinding | nota `60-README/README (extensão)` + variantes (uma por locale), `package.json`, `package.nls.*.json` | `README*.md` |
+| Nova string de UI | `package.nls.json` + `package.nls.<locale>.json` (um por locale) | validar com `UTPLSQL_PSEUDO_LOC=1` + `node scripts/scrape-strings.cjs` |
 | Arquitetura / módulo | `70-Wiki/Architecture` (+ MOCs) | `docs/wiki/Architecture.md` |
 | PRD (criar/aprovar/implementar/concluir) | notas `20-PRDs/` | `docs/prd/**` → skill **`prd-workflow`** |
 | Feature/versão (divulgação) | posts LinkedIn `docs/linkedin/` | skill **`linkedin-posts`** |
@@ -41,10 +41,11 @@ Edite a **nota do vault** (nunca o arquivo gerado). Regras de link:
 - README: `[[README.pt-BR|Português]]` (o build converte p/ `README.pt-BR.md`).
 
 **README e variantes** — a nota `60-README/README (extensão)` é a verdade. Se ela
-mudar, as 23 variantes (`README.<locale>.md`) precisam da mesma alteração —
-**incluindo os bullets de features, a tabela de settings e a de Comandos**. Ao
-adicionar setting/command, confira a paridade com `package.json`; o `docs:fidelity`
-cobra a menção no `README.md` gerado.
+mudar, as variantes (`README.<locale>.md`, uma por locale) precisam da mesma
+alteração — **incluindo os bullets de features, a tabela de settings e a de
+Comandos**. Ao adicionar setting/command, confira a paridade com `package.json`;
+o `docs:fidelity` cobra a menção no `README.md` gerado e a **paridade estrutural**
+das variantes (bullets de feature, tabela de Comandos e links de idioma).
 
 **Wiki** — notas em `70-Wiki/`; `docs/wiki/` é gerado e publicado pelo workflow
 `wiki.yml`.
@@ -65,9 +66,13 @@ npm run brain:check     # valida wikilinks internos + links externos do vault
 - [ ] `npm run brain:build -- check` → sem drift
 - [ ] `npm run docs:check` → consistência versionada (README↔variantes, PRD↔index,
       vault frontmatter, wiki) **+ fidelidade código↔docs**. **Roda no CI.**
-- [ ] `npm run docs:fidelity` → checagem focada de fidelidade código↔docs
+- [ ] `npm run docs:fidelity` → fidelidade código↔docs **+ paridade das variantes**
+      (bullets/Comandos/links) **+ registro de locales**
 - [ ] PRD mudou de status? frontmatter + `brain:build` (o `index.md` é gerado)
-- [ ] README mudou? variantes atualizadas
+- [ ] README mudou? variantes atualizadas (bullets, tabela de Comandos e switcher)
+- [ ] Locale novo/removido? `12-I18n/Registro de locales.md` atualizado (PRD-91)
+- [ ] String nova de UI? `t()` + catálogo; `node scripts/scrape-strings.cjs --strict`
+      e o checklist de pseudo-localização (PRD-89)
 - [ ] `CHANGELOG.md` atualizado se houve correção/feature
 - [ ] `npm run lint` passa (se mexeu em `src/`)
 
@@ -86,6 +91,8 @@ o **código** (fonte da verdade) com a doc versionada e falha em:
 | Módulo `src/*.ts` não citado | `src/` | `docs/wiki/Architecture.md` |
 | Exemplo de `.vsix` em versão antiga | `package.json` `version` | `wiki/FAQ.md`, `wiki/Installation-and-requirements.md` |
 | PRD concluído ausente | `docs/prd/completed/` | `docs/wiki/PRDs.md` |
+| Paridade das variantes | `README.md` (bullets emoji/Comandos/links) | `README.<locale>.md` |
+| Registro de locales incompleto | `package.nls.*.json` + `en` | `12-I18n/Registro de locales.md` |
 | Termo obsoleto como afirmação | lista (`type_mapping`, `java -jar`) | wiki |
 
 > Ao mexer em settings/comandos/módulos, rode `npm run docs:fidelity` **antes** de

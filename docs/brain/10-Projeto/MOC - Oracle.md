@@ -11,8 +11,9 @@ tags: [moc, oracle, oracledb]
 ## Crítico — execução direta
 
 - **`oracledb`** é `dependencies` — driver thin (sem Instant Client).
-- **`discoverUtplsqlSchema(conn)`**: query `ALL_SYNONYMS` → prefixo `UT3.` nas queries de
-  buffer. Suporta shared install.
+- **`discoverUtplsqlSchema(conn)`**: resolve o owner do utPLSQL na ordem do Oracle
+  (schema atual → synonym privado → synonym público → `ALL_OBJECTS` acessível) e
+  usa o prefixo em `ut_runner.run`, tipos, reporters e buffer. Suporta shared install.
 - **Todos os reporters** (doc, JUnit, coverage) escrevem na mesma
   `UT_OUTPUT_BUFFER_TMP` (VARCHAR2). `UT_OUTPUT_CLOB_BUFFER_TMP` não é usado.
 - Shared install sem grants → `ORA-00942` → erro com mensagem amigável.

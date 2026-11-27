@@ -35,18 +35,18 @@ npm run sync-prds
 - **0.19.0 — “Piso Node 24 e runtime moderno”** (publicada): [[Roadmap - 0.19.0 (planejamento)]]
 - **0.20.0 — “Observabilidade e desempenho”** (publicada): [[Roadmap - 0.20.0 (planejamento)]]
 - **0.20.1 — “Confiabilidade de execução e estado”** (publicada): [[Roadmap - 0.20.1 (execução)]]
-- **0.21.0 — “Arquitetura, configuração e resiliência”** (próxima): [[Roadmap - 0.21.0 (planejamento)]]
-- **0.22.0 — “Localização completa”**: [[Roadmap - 0.22.0 (planejamento)]]
+- **0.21.0 — “Arquitetura, configuração e resiliência”** (publicada): [[Roadmap - 0.21.0 (planejamento)]]
+- **0.22.0 — “Localização completa”** (em execução): [[Roadmap - 0.22.0 (execução)]]
 - **0.23.0 — “Docs e qualidade residual”**: [[Roadmap - 0.23.0 (planejamento)]]
 - **0.24.0 — “UX, segurança e distribuição”**: [[Roadmap - 0.24.0 (planejamento)]]
 
 ## Status (gerado)
 
 <!-- brain:auto:start:prd-summary -->
-- 📝 Propostos: **27**
+- 📝 Propostos: **22**
 - 🔵 Aprovados: **0**
-- 🟡 Em desenvolvimento: **0**
-- 🟢 Concluídos: **121**
+- 🟡 Em desenvolvimento: **1**
+- 🟢 Concluídos: **128**
 
 Detalhe completo (fonte da verdade): [docs/prd/index.md](../../prd/index.md)
 <!-- brain:auto:end -->
@@ -126,6 +126,9 @@ Detalhe completo (fonte da verdade): [docs/prd/index.md](../../prd/index.md)
 - [[prd-15-integration-tests-real-db]] — `PRD-15`
 - [[prd-150-thick-full-true-pool-recovery]] — `PRD-150`
 - [[prd-151-codelens-debug-test]] — `PRD-151`
+- [[prd-153-ai-security-prompt-injection-data-egress]] — `PRD-153`
+- [[prd-154-ai-disclosure-provenance]] — `PRD-154`
+- [[prd-155-jev-review-packs-profiles]] — `PRD-155`
 - [[prd-16-integration-test-invocation-modes]] — `PRD-16`
 - [[prd-17-java-args-setting]] — `PRD-17`
 - [[prd-18-engine-node-ci]] — `PRD-18`
@@ -218,7 +221,7 @@ Detalhe completo (fonte da verdade): [docs/prd/index.md](../../prd/index.md)
 - [[Roadmap - 0.20.0 (planejamento)]]
 - [[Roadmap - 0.20.1 (execução)]]
 - [[Roadmap - 0.21.0 (planejamento)]]
-- [[Roadmap - 0.22.0 (planejamento)]]
+- [[Roadmap - 0.22.0 (execução)]]
 - [[Roadmap - 0.23.0 (planejamento)]]
 - [[Roadmap - 0.24.0 (planejamento)]]
 - [[Roadmap - 0.25.0 (planejamento)]]

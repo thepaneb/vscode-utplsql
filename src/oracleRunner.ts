@@ -348,22 +348,83 @@ export async function discoverUtplsqlSchema(
     if (cached !== undefined) return cached;
   }
   let prefix = '';
+  let resolved = false;
+  // Ordem de resolução de nome no Oracle: objeto no schema atual, synonym
+  // privado do schema atual, synonym público. O código antigo só olhava o
+  // synonym público; um usuário com synonym privado (ex.: DEMO → UT3) caía no
+  // schema errado e recebia ORA-00942 em UT_OUTPUT_BUFFER_TMP (PRD-89/92).
+  const field = (row: unknown, name: string, index: number): string => {
+    if (Array.isArray(row)) return String(row[index] ?? '');
+    return String((row as Record<string, unknown> | null)?.[name] ?? '');
+  };
   try {
     const result = await conn.execute(
-      `SELECT table_owner FROM ALL_SYNONYMS WHERE synonym_name = 'UT_RUNNER' AND owner = 'PUBLIC'`,
+      `SELECT prio, kind, owner, table_owner FROM (
+         SELECT 0 AS prio, 'OBJECT' AS kind, owner, NULL AS table_owner
+           FROM all_objects
+          WHERE object_name = 'UT_RUNNER' AND object_type = 'PACKAGE'
+            AND owner = SYS_CONTEXT('USERENV','CURRENT_SCHEMA')
+         UNION ALL
+         SELECT 1, 'SYNONYM', owner, table_owner
+           FROM all_synonyms
+          WHERE synonym_name = 'UT_RUNNER'
+            AND owner = SYS_CONTEXT('USERENV','CURRENT_SCHEMA')
+         UNION ALL
+         SELECT 2, 'SYNONYM', owner, table_owner
+           FROM all_synonyms
+          WHERE synonym_name = 'UT_RUNNER' AND owner = 'PUBLIC'
+       ) ORDER BY prio`,
       {},
     );
-    const rows = result.rows;
-    if (rows && rows.length > 0) {
-      const owner = (rows[0] as { TABLE_OWNER?: string }).TABLE_OWNER;
-      // Defesa em profundidade: o prefixo só chega ao SQL se for um
-      // identificador Oracle válido (PRD-110).
-      if (owner) prefix = sanitizeSchemaPrefix(`${owner}.`);
+    const row = result.rows?.[0];
+    if (row) {
+      const kind = field(row, 'KIND', 1);
+      const owner = field(row, 'OWNER', 2);
+      const tableOwner = field(row, 'TABLE_OWNER', 3);
+      if (kind === 'OBJECT') {
+        // O pacote UT_RUNNER está no schema atual: nome sem prefixo resolve.
+        prefix = '';
+        resolved = true;
+      } else if (tableOwner && tableOwner !== owner) {
+        // Synonym (privado ou público) aponta para outro schema (UT3).
+        prefix = sanitizeSchemaPrefix(`${tableOwner}.`);
+        resolved = true;
+      } else if (tableOwner) {
+        // Synonym aponta para o próprio schema atual.
+        prefix = '';
+        resolved = true;
+      }
     }
   } catch (e) {
-    // ALL_SYNONYMS pode não estar acessível — sem prefixo
-    logger.debug('discoverUtplsqlSchema: ALL_SYNONYMS inacessível', { error: String(e) });
+    // ALL_OBJECTS/ALL_SYNONYMS podem não estar acessíveis; segue para o fallback.
+    logger.debug('discoverUtplsqlSchema: catálogo de objetos/synonyms inacessível', {
+      error: String(e),
+    });
   }
+  if (!resolved) {
+    // Sem synonym: pacote UT_RUNNER acessível por grant direto. Prefere UT3
+    // (instalação padrão) e, depois, qualquer owner acessível.
+    try {
+      const result = await conn.execute(
+        `SELECT owner FROM all_objects
+          WHERE object_name = 'UT_RUNNER' AND object_type = 'PACKAGE'
+          ORDER BY CASE WHEN owner = 'UT3' THEN 0 ELSE 1 END, owner`,
+        {},
+      );
+      const rows = result.rows ?? [];
+      if (rows.length > 0) {
+        const owner = field(rows[0], 'OWNER', 0);
+        if (owner) prefix = sanitizeSchemaPrefix(`${owner}.`);
+      }
+    } catch (e) {
+      logger.debug('discoverUtplsqlSchema: fallback ALL_OBJECTS inacessível', {
+        error: String(e),
+      });
+    }
+  }
+  logger.debug(
+    `discoverUtplsqlSchema: prefix=${prefix === '' ? '(schema atual)' : prefix} resolved=${resolved}`,
+  );
   if (key) oracleMetadataCache.set(key, prefix, readConfig().discoveryCacheTtlSeconds * 1000);
   return prefix;
 }
@@ -436,17 +497,21 @@ function extractScalar(row: unknown, colName?: string): string | null {
   return vals.length > 0 && vals[0] != null ? String(vals[0]) : null;
 }
 
-export async function getOracleInfo(conn: {
-  execute(
-    sql: string,
-    bindParams?: Record<string, unknown>,
-    options?: Record<string, unknown>,
-  ): Promise<{ rows?: unknown[] }>;
-}): Promise<{ utVersion: string | null; dbVersion: string | null }> {
+export async function getOracleInfo(
+  conn: {
+    execute(
+      sql: string,
+      bindParams?: Record<string, unknown>,
+      options?: Record<string, unknown>,
+    ): Promise<{ rows?: unknown[] }>;
+  },
+  cacheKey?: string,
+): Promise<{ utVersion: string | null; dbVersion: string | null }> {
   let utVersion: string | null = null;
   let dbVersion: string | null = null;
   try {
-    const r = await conn.execute(`SELECT ut_runner.version() FROM dual`);
+    const utSchema = await discoverUtplsqlSchema(conn, cacheKey);
+    const r = await conn.execute(`SELECT ${utSchema}ut_runner.version() FROM dual`);
     utVersion = extractScalar(r.rows?.[0]);
   } catch (e) {
     // utRunner pode não existir
@@ -481,8 +546,9 @@ export async function listReportersOracle(
   }
   let reporters: string[] = [];
   try {
+    const utSchema = await discoverUtplsqlSchema(conn, cacheKey);
     const result = await conn.execute(
-      `SELECT reporter_object_name FROM TABLE(ut_runner.get_reporters_list())`,
+      `SELECT reporter_object_name FROM TABLE(${utSchema}ut_runner.get_reporters_list())`,
     );
     // `get_reporters_list()` devolve o nome qualificado pelo schema
     // (ex.: `UT3.UT_COVERAGE_COBERTURA_REPORTER`); normalizamos para o nome do
@@ -529,8 +595,9 @@ export async function rebuildAnnotationCache(
 ): Promise<void> {
   const owner = parseConnString(connection).user.toUpperCase();
   const done = await withOracleConnection(oracledb, connection, cfg, async (conn) => {
+    const utSchema = await discoverUtplsqlSchema(conn, connection);
     await conn.execute(
-      `BEGIN ut_runner.rebuild_annotation_cache(:owner); END;`,
+      `BEGIN ${utSchema}ut_runner.rebuild_annotation_cache(:owner); END;`,
       { owner: { dir: oracledb.BIND_IN, type: oracledb.STRING, val: owner } },
       { autoCommit: true },
     );
@@ -768,6 +835,7 @@ async function prepareReporters(options: {
   run: vscode.TestRun;
   oracledb: typeof import('oracledb');
   cacheKey?: string;
+  utSchema: string;
 }): Promise<ReporterPreparation> {
   let coverageEnabled = !options.exporting && options.coverage;
   let htmlEnabled = false;
@@ -791,6 +859,7 @@ async function prepareReporters(options: {
       htmlEnabled: false,
       knownReporters: known,
       oracledb: options.oracledb,
+      utSchema: options.utSchema,
     });
     runners = list.runners;
     exportBinds = list.binds;
@@ -846,6 +915,7 @@ async function prepareReporters(options: {
     sessionReporter,
     knownReporters,
     oracledb: options.oracledb,
+    utSchema: options.utSchema,
   });
   runners = list.runners;
   exportBinds = list.binds;
@@ -1108,12 +1178,23 @@ async function executeRunOracleCore(
 
     const utSchema = sanitizeSchemaPrefix(await discoverUtplsqlSchema(conn1, connection));
 
-    await conn1.execute(`DELETE FROM ${utSchema}UT_OUTPUT_BUFFER_TMP`, {}, { autoCommit: true });
-    await conn1.execute(
-      `DELETE FROM ${utSchema}UT_OUTPUT_BUFFER_INFO_TMP`,
-      {},
-      { autoCommit: true },
-    );
+    try {
+      await conn1.execute(`DELETE FROM ${utSchema}UT_OUTPUT_BUFFER_TMP`, {}, { autoCommit: true });
+      await conn1.execute(
+        `DELETE FROM ${utSchema}UT_OUTPUT_BUFFER_INFO_TMP`,
+        {},
+        { autoCommit: true },
+      );
+    } catch (e) {
+      if (/ORA-00942/.test(String(e))) {
+        logger.warn(
+          `utPLSQL: UT_OUTPUT_BUFFER_TMP não encontrada em ${
+            utSchema || 'schema atual'
+          }. Verifique se o utPLSQL está instalado nesse schema e se UT_RUNNER resolve para ele (synonym privado/público ou grant direto).`,
+        );
+      }
+      throw e;
+    }
 
     const { runners, exportBinds, coverageEnabled, htmlEnabled } = await prepareReporters({
       conn1,
@@ -1126,6 +1207,7 @@ async function executeRunOracleCore(
       run,
       oracledb,
       cacheKey: connection,
+      utSchema,
     });
 
     const owner = (coverageOwner ?? '').trim() || parseConnString(connection).user.toUpperCase();
@@ -1143,6 +1225,7 @@ async function executeRunOracleCore(
     const scope = buildCoverageScope(oracledb, {
       enabled: coverageEnabled,
       owner,
+      utSchema,
       schemes: coverageSchemesCfg,
       includeObjects: coverageIncludeObjects,
       excludeObjects: coverageExcludeObjects,
@@ -1161,6 +1244,7 @@ async function executeRunOracleCore(
       pathArgs,
       runners,
       schemesArg: scope.schemesArg,
+      utSchema,
       scopeParams: scope.scopeParams,
       randomOrderParams: random.params,
       tags,

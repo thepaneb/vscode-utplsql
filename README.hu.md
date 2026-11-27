@@ -6,7 +6,7 @@
 
 <div align="center">
 
-[English](README.md) · [中文(简体)](README.zh-CN.md) · [中文(繁體)](README.zh-TW.md) · [日本語](README.ja.md) · [한국어](README.ko.md) · [Español](README.es.md) · [Français](README.fr.md) · [Português](README.pt-BR.md) · [Italiano](README.it.md) · [Română](README.ro.md) · [Deutsch](README.de.md) · [Русский](README.ru.md) · [Polski](README.pl.md) · [Українська](README.uk.md) · [Čeština](README.cs.md) · [Български](README.bg.md) · [Српски](README.sr.md) · [Türkçe](README.tr.md) · [Ελληνικά](README.el.md) · **Magyar** · [Bahasa Indonesia](README.id.md) · [Tiếng Việt](README.vi.md) · [ไทย](README.th.md) · [English (UK)](README.en-GB.md)
+[English](README.md) · [العربية](README.ar.md) · [עברית](README.he.md) · [中文(简体)](README.zh-CN.md) · [中文(繁體)](README.zh-TW.md) · [日本語](README.ja.md) · [한국어](README.ko.md) · [Español](README.es.md) · [Français](README.fr.md) · [Português](README.pt-BR.md) · [Italiano](README.it.md) · [Română](README.ro.md) · [Deutsch](README.de.md) · [Русский](README.ru.md) · [Polski](README.pl.md) · [Українська](README.uk.md) · [Čeština](README.cs.md) · [Български](README.bg.md) · [Српски](README.sr.md) · [Türkçe](README.tr.md) · [Ελληνικά](README.el.md) · **Magyar** · [Bahasa Indonesia](README.id.md) · [Tiếng Việt](README.vi.md) · [ไทย](README.th.md) · [English (UK)](README.en-GB.md)
 
 </div>
 
@@ -26,7 +26,7 @@
 
 # utPLSQL Test Runner
 
-Futtasd és debugold az **utPLSQL** (Oracle PL/SQL) teszteket közvetlenül a VS Code-ban — natív **Test Explorer**, vizuális lefedettség, PL/SQL hibakereső és **közvetlen Oracle-végrehajtás** `node-oracledb`-vel. **24 nyelven** érhető el; **VS Code 1.125+** (Node 24).
+Futtasd és debugold az **utPLSQL** (Oracle PL/SQL) teszteket közvetlenül a VS Code-ban — natív **Test Explorer**, vizuális lefedettség, PL/SQL hibakereső és **közvetlen Oracle-végrehajtás** `node-oracledb`-vel. **26 nyelven** érhető el; **VS Code 1.125+** (Node 24).
 
 ### Test Explorer és futtatás
 
@@ -85,7 +85,7 @@ Futtasd és debugold az **utPLSQL** (Oracle PL/SQL) teszteket közvetlenül a VS
 - 🎯 **Ugrás a hibához** — közvetlen navigáció a hibát kiváltó állítás sorához (a natív „Go to Error" segítségével).
 - 🧱 **Fordítási diagnosztika** — minden futtatás után a PL/SQL fordítási hibák (`ALL_ERRORS`) megjelennek a Problems Panelben a `utPLSQL Compilation` forrás alatt (`utplsql.compilationDiagnostics.enabled` beállítás).
 - ⏳ **Folyamat és megszakítás** — a hosszú futások előrehaladási értesítést mutatnak számlálóval és *Cancel* gombbal (plusz opcionális `utplsql.timeoutMinutes`).
-- 🌍 **i18n — 24 nyelv** — a `utplsql.language` követi a VSCode-ot (24 területi beállítás: pt-br, en, en-gb, es, zh-cn, zh-tw, ja, de, fr, it, ko, ru, tr, pl, cs, hu, bg, el, id, ro, sr, th, uk, vi).
+- 🌍 **i18n — 26 nyelv** — a `utplsql.language` követi a VSCode-ot (26 területi beállítás: pt-br, en, en-gb, es, zh-cn, zh-tw, ja, de, fr, it, ko, ru, tr, pl, cs, hu, bg, el, id, ro, sr, th, uk, vi, ar, he).
 
 
 ## Telepítés
@@ -229,7 +229,7 @@ A bővítmény közvetlenül Oracle-on keresztül csatlakozik, beolvassa a ripor
 | `utplsql.scriptRunner.filePattern` | `**/*.{sql,pks,pkb,fnc,prc,trg}` | Globs to list files when running a script folder. |
 | `utplsql.scriptRunner.dbmsOutput` | `false` | Captures and displays `DBMS_OUTPUT` during script execution. |
 | `utplsql.scriptRunner.timeoutSeconds` | `300` | Per-statement timeout (s) for scripts (`callTimeout`). |
-| `utplsql.language` | `auto` | A futásidejű üzenetek nyelve. `auto` esetén a VSCode-ot követi (pt, zh-tw/zh-hk, zh, es, ja, de, fr, it, ko, ru, tr, pl, cs, hu, bg, el, id, ro, sr, th, uk, vi, en-gb; egyébként en). A **24 területi beállítást** fedi le. |
+| `utplsql.language` | `auto` | A futásidejű üzenetek nyelve. `auto` esetén a VSCode-ot követi (pt, zh-tw/zh-hk, zh, es, ja, de, fr, it, ko, ru, tr, pl, cs, hu, bg, el, id, ro, sr, th, uk, vi, en-gb; egyébként en). A **26 területi beállítást** fedi le. |
 
 Példa (projekt `.vscode/settings.json`):
 

@@ -110,7 +110,7 @@ test('validateSetup: roda validações, aplica diagnósticos e informa a contage
   ]);
   assert.strictEqual(appliedDiags.length, 1);
   assert.deepStrictEqual(__getInformationMessages(), [
-    '1 problema(s) de configuração encontrado(s). Veja o Problems Panel.',
+    '1 problema de configuração encontrado. Veja o Problems Panel.',
   ]);
 });
 

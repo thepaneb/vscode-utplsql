@@ -14,6 +14,12 @@
 /docs/functional/       @thepaneb
 /docs/prd/              @thepaneb
 
+# Ferramental de IA (Jev, agentes, MCPs)
+/scripts/jev-review.cjs   @thepaneb
+/src/tools/jevReview.ts   @thepaneb
+/.opencode/               @thepaneb
+/opencode.json            @thepaneb
+
 # Ferramental do vault / CI de drift
 /scripts/brain.cjs        @thepaneb
 /scripts/brain-build.cjs  @thepaneb

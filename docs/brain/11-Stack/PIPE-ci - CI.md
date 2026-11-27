@@ -40,6 +40,7 @@ Workflow [`ci.yml`](../../../.github/workflows/ci.yml) — **gerado** por `npm r
 - `run: npm run lint`
 - `run: npm run typecheck`
 - `run: npm run test:coverage`
+- `run: npm run i18n:check`
 - `uses: codecov/codecov-action@303a32d7a59b442fa8d48b6a1cc6825c09c847a5 # v7.1.1`
 
 ## Conexões

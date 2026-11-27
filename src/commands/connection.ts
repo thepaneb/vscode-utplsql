@@ -13,7 +13,6 @@ export function registerConnectionCommands(
   deps: CommandDeps,
 ): void {
   const { state } = deps;
-  const locale = getExtensionLocale();
 
   context.subscriptions.push(
     vscode.commands.registerCommand('utplsql.selectReporter', async () => {
@@ -26,7 +25,7 @@ export function registerConnectionCommands(
           ((mod as Record<string, unknown>).default as typeof import('oracledb')) ??
           (mod as typeof import('oracledb'));
       } catch {
-        vscode.window.showErrorMessage(t(locale, 'common.oracledbMissing'));
+        vscode.window.showErrorMessage(t(getExtensionLocale(), 'common.oracledbMissing'));
         return;
       }
       const { withOracleConnection, listReportersOracle } = await import('../oracleRunner.js');
@@ -35,29 +34,31 @@ export function registerConnectionCommands(
         const reporters = await listReportersOracle(oracleConn);
         if (reporters.length === 0) {
           vscode.window.showErrorMessage(
-            t(locale, 'ext.reporters.listFailed', { error: t(locale, 'ext.reporters.listEmpty') }),
+            t(getExtensionLocale(), 'ext.reporters.listFailed', {
+              error: t(getExtensionLocale(), 'ext.reporters.listEmpty'),
+            }),
           );
           return;
         }
         const selected = await vscode.window.showQuickPick(reporters, {
-          placeHolder: t(locale, 'ext.reporters.placeholder'),
+          placeHolder: t(getExtensionLocale(), 'ext.reporters.placeholder'),
         });
         if (selected) {
           state.setExtraReporter(selected);
           vscode.window.showInformationMessage(
-            t(locale, 'ext.reporters.willUse', { name: selected }),
+            t(getExtensionLocale(), 'ext.reporters.willUse', { name: selected }),
           );
         }
       });
     }),
     vscode.commands.registerCommand('utplsql.clearConnection', () => {
       clearSessionConnection();
-      vscode.window.showInformationMessage(t(locale, 'ext.connection.cleared'));
+      vscode.window.showInformationMessage(t(getExtensionLocale(), 'ext.connection.cleared'));
     }),
     vscode.commands.registerCommand('utplsql.showInfo', async () => {
       const conn = await resolveConnection();
       if (!conn) {
-        vscode.window.showErrorMessage(t(locale, 'ext.noConnection'));
+        vscode.window.showErrorMessage(t(getExtensionLocale(), 'ext.noConnection'));
         return;
       }
       let oracledb: typeof import('oracledb');
@@ -67,7 +68,7 @@ export function registerConnectionCommands(
           ((mod as Record<string, unknown>).default as typeof import('oracledb')) ??
           (mod as typeof import('oracledb'));
       } catch {
-        vscode.window.showErrorMessage(t(locale, 'common.oracledbMissing'));
+        vscode.window.showErrorMessage(t(getExtensionLocale(), 'common.oracledbMissing'));
         return;
       }
       const { withOracleConnection, getOracleInfo } = await import('../oracleRunner.js');
@@ -75,7 +76,10 @@ export function registerConnectionCommands(
       await withOracleConnection(oracledb, conn, cfg, async (oracleConn) => {
         const info = await getOracleInfo(oracleConn);
         const msg = `utPLSQL: ${info.utVersion ?? 'unknown'}\nOracle DB: ${info.dbVersion ?? 'unknown'}`;
-        const copy = await vscode.window.showInformationMessage(msg, t(locale, 'common.copy'));
+        const copy = await vscode.window.showInformationMessage(
+          msg,
+          t(getExtensionLocale(), 'common.copy'),
+        );
         if (copy) vscode.env.clipboard.writeText(msg);
       });
     }),

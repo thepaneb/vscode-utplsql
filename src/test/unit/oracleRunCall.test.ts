@@ -48,6 +48,33 @@ test('buildReporterList: default, cobertura e HTML', () => {
   ]);
 });
 
+test('buildReporterList: qualifica reporters com o schema do utPLSQL', () => {
+  const list = buildReporterList({
+    exporting: false,
+    coverageEnabled: true,
+    htmlEnabled: true,
+    additionalReporters: ['ut_custom_reporter'],
+    knownReporters: ['UT_CUSTOM_REPORTER'],
+    utSchema: 'UT3.',
+    oracledb: oracle,
+  });
+  assert.deepStrictEqual(list.runners, [
+    'UT3.ut_documentation_reporter()',
+    'UT3.ut_junit_reporter()',
+    'UT3.ut_coverage_cobertura_reporter()',
+    'UT3.ut_coverage_html_reporter()',
+    'UT3.ut_custom_reporter()',
+  ]);
+});
+
+test('exportReporterCall: qualifica o reporter com o schema do utPLSQL', () => {
+  const binds: Record<string, import('oracledb').BindParameter> = {};
+  assert.strictEqual(
+    exportReporterCall('ut_junit_reporter', 'UTF-8', false, binds, oracle, 'UT3.'),
+    'UT3.ut_junit_reporter(a_client_character_set => :exportCharset)',
+  );
+});
+
 test('buildReporterList: export usa só o reporter escolhido', () => {
   const list = buildReporterList({
     exporting: true,
@@ -134,6 +161,31 @@ test('buildCoverageScope: schemes + escopo fino', () => {
   });
 });
 
+test('buildCoverageScope: qualifica UT_VARCHAR2_LIST com o schema do utPLSQL', () => {
+  const scope = buildCoverageScope(oracle, {
+    enabled: true,
+    owner: 'APP',
+    utSchema: 'UT3.',
+    includeObjects: ['APP.A'],
+    excludeObjects: ['APP.B'],
+  });
+  assert.deepStrictEqual(scope.binds.schemes, {
+    dir: 3001,
+    type: 'UT3.UT_VARCHAR2_LIST',
+    val: ['APP'],
+  });
+  assert.deepStrictEqual(scope.binds.includeObjects, {
+    dir: 3001,
+    type: 'UT3.UT_VARCHAR2_LIST',
+    val: ['APP.A'],
+  });
+  assert.deepStrictEqual(scope.binds.excludeObjects, {
+    dir: 3001,
+    type: 'UT3.UT_VARCHAR2_LIST',
+    val: ['APP.B'],
+  });
+});
+
 test('buildRandomOrderParams: desabilitado e com seed', () => {
   assert.deepStrictEqual(buildRandomOrderParams(oracle, {}), {
     params: '',
@@ -157,6 +209,7 @@ test('buildRunCall: PL/SQL e binds idênticos ao contrato', () => {
     tags: 'fast & !slow',
     binds: { exportCharset: { dir: 3001, type: 2001, val: 'UTF-8' } },
   });
+  assert.match(call.plsql, /^BEGIN ut_runner\.run\(/);
   assert.match(call.plsql, /a_paths => :paths/);
   assert.match(
     call.plsql,
@@ -171,6 +224,34 @@ test('buildRunCall: PL/SQL e binds idênticos ao contrato', () => {
     val: ['pkg', 'pkg.proc'],
   });
   assert.deepStrictEqual(call.binds.exportCharset, { dir: 3001, type: 2001, val: 'UTF-8' });
+});
+
+test('buildRunCall: qualifica UT_VARCHAR2_LIST quando o utPLSQL está em outro schema', () => {
+  const call = buildRunCall(oracle, {
+    pathArgs: ['pkg'],
+    runners: ['ut_documentation_reporter()'],
+    schemesArg: 'null',
+    utSchema: 'UT3.',
+  });
+  assert.deepStrictEqual(call.binds.paths, {
+    dir: 3001,
+    type: 'UT3.UT_VARCHAR2_LIST',
+    val: ['pkg'],
+  });
+});
+
+test('buildRunCall: qualifica pacote e construtor ut_reporters com o schema do utPLSQL', () => {
+  const call = buildRunCall(oracle, {
+    pathArgs: [],
+    runners: ['UT3.ut_documentation_reporter()'],
+    schemesArg: 'null',
+    utSchema: 'UT3.',
+  });
+  assert.match(call.plsql, /^BEGIN UT3\.ut_runner\.run\(/);
+  assert.match(
+    call.plsql,
+    /a_reporters => UT3\.ut_reporters\(UT3\.ut_documentation_reporter\(\)\)/,
+  );
 });
 
 test('buildRunCall: sem paths/tags/cobertura mantém null', () => {

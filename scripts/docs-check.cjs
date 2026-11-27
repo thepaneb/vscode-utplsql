@@ -47,6 +47,13 @@ function mdFiles(dir) {
   return readdirSafe(dir).filter((f) => f.endsWith('.md'));
 }
 
+/** Locales com manifesto `package.nls.<locale>.json` (o `en` é o base). */
+function localeManifests() {
+  return readdirSafe(REPO)
+    .filter((f) => /^package\.nls\..+\.json$/.test(f))
+    .map((f) => f.slice('package.nls.'.length, -'.json'.length));
+}
+
 // ── README + variantes ─────────────────────────────────────────────────
 
 function checkReadme() {
@@ -60,8 +67,11 @@ function checkReadme() {
   for (const l of linked) {
     if (!exists.has(l)) fail(`README.md aponta para ${l}, que não existe`);
   }
+  const manifests = new Set(localeManifests());
   for (const e of exists) {
     if (!linked.has(e)) fail(`${e} existe mas não está linkado no README.md`);
+    const code = e.slice('README.'.length, -'.md'.length).toLowerCase();
+    if (!manifests.has(code)) fail(`${e} não tem package.nls.${code}.json correspondente`);
   }
   if ([...linked].every((l) => exists.has(l)) && [...exists].every((e) => linked.has(e))) {
     ok(`${exists.size} variantes consistentes com README.md`);
@@ -78,7 +88,10 @@ function checkMarketplace() {
   if (!/<!--\s*GENERATED/i.test(text)) fail('MARKETPLACE.md sem banner GENERATED');
   if (!text.includes('<!-- prd:PRD-147 -->')) fail('MARKETPLACE.md sem marcador prd:PRD-147');
   const variants = readdirSafe(REPO).filter((n) => /^README\..+\.md$/.test(n));
-  if (variants.length !== 23) fail(`esperadas 23 variantes de README (achei ${variants.length})`);
+  const expected = localeManifests().length;
+  if (variants.length !== expected) {
+    fail(`esperadas ${expected} variantes de README (achei ${variants.length})`);
+  }
   if (!fs.existsSync(path.join(REPO, 'README.md'))) fail('README.md ausente');
   ok('MARKETPLACE.md gerado e separado das variantes');
 }
@@ -277,9 +290,27 @@ function checkSite() {
   else ok('landing page indexável, robots.txt e sitemap.xml coerentes');
 }
 
+// ── Strings de UI hardcoded (aviso, PRD-89) ────────────────────────────
+
+function checkHardcodedStrings() {
+  console.log('Strings de UI hardcoded (aviso)');
+  try {
+    const { scan, loadAllowlist, isAllowed } = require('./scrape-strings.cjs');
+    const pending = scan(REPO).filter((f) => !isAllowed(f, loadAllowlist(REPO)));
+    if (!pending.length) return ok('nenhuma string nova fora de t()');
+    for (const f of pending.slice(0, 10)) {
+      console.log(`  ⚠ ${f.file}:${f.line} ${JSON.stringify(f.text)}`);
+    }
+    if (pending.length > 10) console.log(`  … +${pending.length - 10} achado(s)`);
+  } catch (e) {
+    console.log(`  ⚠ scanner indisponível: ${e instanceof Error ? e.message : String(e)}`);
+  }
+}
+
 // ── main ───────────────────────────────────────────────────────────────
 
 checkReadme();
+checkHardcodedStrings();
 checkMarketplace();
 checkPrd();
 checkPrdVault();

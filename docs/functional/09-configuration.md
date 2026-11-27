@@ -298,7 +298,7 @@ connectOracle(connection: string, opts?): Promise<ScriptDb>;
 ## i18n (PRD-49)
 
 Motor de tradução das mensagens de runtime. `src/i18n.ts` (puro) + catálogos
-em `src/i18nLocales.ts` para 24 locales + `auto` (25 valores da setting).
+em `src/i18n/locales/*` para 26 locales + `auto` (27 valores da setting).
 
 ```typescript
 function resolveLocale(setting: string, vscodeLanguage: string): ExtensionLocale

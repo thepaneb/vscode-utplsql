@@ -26,6 +26,7 @@ function makeFakeOracledb(opts: FakeOracledbOptions = {}) {
     callTimeout: 0,
     execute: async (sql: string) => {
       if (opts.throwOnExecute) throw new Error('ORA-00942');
+      if (/ut_runner/i.test(sql) && /all_(objects|synonyms)/i.test(sql)) return { rows: [] };
       if (sql.includes('ALL_SYNONYMS')) return { rows: [] };
       return { rows: opts.rows ?? [] };
     },

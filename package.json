@@ -1,8 +1,8 @@
 {
   "name": "vscode-utplsql",
   "displayName": "utPLSQL Test Runner",
-  "description": "Run, debug and measure coverage of utPLSQL (Oracle PL/SQL) unit tests in VS Code's native Test Explorer — Oracle-direct via node-oracledb (no Java/Instant Client in thin mode), visual coverage, PL/SQL debugger and 24 UI languages.",
-  "version": "0.21.0",
+  "description": "Run, debug and measure coverage of utPLSQL (Oracle PL/SQL) unit tests in VS Code's native Test Explorer — Oracle-direct via node-oracledb (no Java/Instant Client in thin mode), visual coverage, PL/SQL debugger and 26 UI languages.",
+  "version": "0.22.0",
   "publisher": "paneb",
   "author": "Gil Cleber Barboza",
   "license": "MIT",
@@ -554,10 +554,12 @@
             "sr",
             "th",
             "uk",
-            "vi"
+            "vi",
+            "ar",
+            "he"
           ],
           "default": "auto",
-          "markdownDescription": "Language of the extension's textual content. `auto` follows the VS Code language (15 native + bg, el, en-gb, id, ro, sr, th, uk, vi; otherwise en)."
+          "markdownDescription": "Language of the extension's textual content. `auto` follows the VS Code language (26 locales, including ar and he; otherwise en)."
         }
       }
     },
@@ -1055,6 +1057,9 @@
     "docs:check": "node scripts/docs-check.cjs",
     "docs:fidelity": "node scripts/docs-fidelity.cjs",
     "docs:features-check": "node scripts/docs-features-check.cjs",
+    "i18n:export": "npm run compile && node scripts/i18n-export.cjs",
+    "i18n:apply": "node scripts/i18n-apply.cjs && npm run lint:fix",
+    "i18n:check": "node scripts/i18n-check.cjs",
     "marketplace:check": "node scripts/marketplace-images.cjs",
     "version:check": "node scripts/version-check.cjs",
     "audit:prod": "npm audit --omit=dev --audit-level=high",
@@ -1066,7 +1071,7 @@
     "publish:patch": "echo '⚠️ Publicacao apenas via GitHub workflow (release). Use npm run package para .vsix local.' && exit 1"
   },
   "dependencies": {
-    "fast-xml-parser": "^5.12.0",
+    "fast-xml-parser": "^5.12.1",
     "oracledb": "^26.0.0"
   },
   "devDependencies": {
@@ -1078,7 +1083,7 @@
     "@types/vscode": "1.125.0",
     "@vscode/test-cli": "^0.0.15",
     "@vscode/test-electron": "^3.1.0",
-    "@vscode/vsce": "^4.1.0",
+    "@vscode/vsce": "^4.1.1",
     "c8": "^12.0.0",
     "esbuild": "^0.28.2",
     "typescript": "^7.0.2"

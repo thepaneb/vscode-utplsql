@@ -196,7 +196,7 @@ Usados nos comandos `runFile` / `runFolder`.
 
 ## Descoberta DB-first (PRD-74)
 
-No modo `schema`, `mergeDbSuites` consulta `ut_runner.get_suites_info` (utPLSQL
+No modo `schema`, `mergeDbSuites` consulta `${utSchema}ut_runner.get_suites_info` (qualificado com o schema descoberto; utPLSQL
 ≥ 3.1.3) e funde com a descoberta por arquivo: o arquivo prevalece em URI/linha,
 o banco em descrição/tags. Quando a API não está disponível, cai para
 `ALL_SOURCE` (PRD-43). `discoverDbSuites` faz o gate de versão.
@@ -206,7 +206,7 @@ o banco em descrição/tags. Quando a API não está disponível, cai para
 A API `get_suites_info` lê o cache de anotações mantido pela DDL trigger do
 utPLSQL. Se o cache estiver desatualizado, o comando **`utPLSQL: Rebuild
 Annotation Cache`** (`utplsql.rebuildAnnotations`) chama
-`ut_runner.rebuild_annotation_cache(<owner>)` e atualiza a árvore. Requer
+`${utSchema}ut_runner.rebuild_annotation_cache(<owner>)` e atualiza a árvore. Requer
 conexão resolvida (não abre prompt); sem conexão, avisa.
 
 ## Geração de suíte de teste (PRD-59 + PRD-100)

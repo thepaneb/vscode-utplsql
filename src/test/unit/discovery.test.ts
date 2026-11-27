@@ -836,12 +836,33 @@ test('getSuitesInfo: erro (API ausente) retorna vazio', async () => {
   assert.deepStrictEqual(rows, []);
 });
 
+test('getSuitesInfo: qualifica o pacote ut_runner com o schema descoberto', async () => {
+  clearOracleMetadataCache();
+  let apiSql = '';
+  const conn = {
+    execute: async (sql: string) => {
+      if (/all_synonyms|union all/i.test(sql)) return { rows: [{ TABLE_OWNER: 'UT3' }] };
+      if (/get_suites_info/.test(sql)) {
+        apiSql = sql;
+        return { rows: [] };
+      }
+      return { rows: [] };
+    },
+  };
+  try {
+    await getSuitesInfo(conn, 'hr', 'conn-qualified');
+    assert.match(apiSql, /FROM TABLE\(UT3\.ut_runner\.get_suites_info\(:owner, null\)\)/);
+  } finally {
+    clearOracleMetadataCache();
+  }
+});
+
 test('getSuitesInfo: cache por (connection, owner) evita query repetida', async () => {
   clearOracleMetadataCache();
-  let queries = 0;
+  let suiteQueries = 0;
   const conn = {
-    execute: async () => {
-      queries += 1;
+    execute: async (sql: string) => {
+      if (/get_suites_info/.test(sql)) suiteQueries += 1;
       return { rows: INFO_ROWS };
     },
   };
@@ -849,10 +870,10 @@ test('getSuitesInfo: cache por (connection, owner) evita query repetida', async 
     const first = await getSuitesInfo(conn, 'hr', 'u/p@//h:1521/s');
     const second = await getSuitesInfo(conn, 'hr', 'u/p@//h:1521/s');
     assert.deepStrictEqual(second, first);
-    assert.strictEqual(queries, 1);
+    assert.strictEqual(suiteQueries, 1);
     clearOracleMetadataCache();
     await getSuitesInfo(conn, 'hr', 'u/p@//h:1521/s');
-    assert.strictEqual(queries, 2);
+    assert.strictEqual(suiteQueries, 2);
   } finally {
     clearOracleMetadataCache();
   }
@@ -1205,6 +1226,8 @@ function makeApiDbConn(opts: {
         opts.onApi?.();
         return { rows: opts.infoRows ?? [] };
       }
+      // Descoberta do schema do utPLSQL (UT_RUNNER): sem synonym → ''.
+      if (/all_synonyms|union all|UT_RUNNER/i.test(sql)) return { rows: [] };
       if (/all_objects/i.test(sql)) {
         opts.onAllSource?.();
         return { rows: opts.allObjects ?? [] };

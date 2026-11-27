@@ -36,4 +36,4 @@ pacote.
 ## Justificativa
 
 Mantém o pacote enxuto e garante que a página exibida no Marketplace seja a
-vitrine de conversão, sem duplicar as 23 variantes do GitHub.
+vitrine de conversão, sem duplicar as 25 variantes do GitHub.
