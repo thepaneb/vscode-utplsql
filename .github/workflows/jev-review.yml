@@ -2,6 +2,7 @@ name: Jev Review
 
 permissions:
   contents: read
+  pull-requests: write
 
 on:
   pull_request:
@@ -39,7 +40,40 @@ jobs:
             --base "origin/${{ github.base_ref }}" \
             --head HEAD \
             --format markdown \
-            --output jev-review.md
+            --output jev-review.md \
+            --json-output jev-review.json
       - name: Publicar resumo
         if: always() && hashFiles('jev-review.md') != ''
         run: cat jev-review.md >> "$GITHUB_STEP_SUMMARY"
+      - name: Publicar artifact
+        if: always() && hashFiles('jev-review.md') != ''
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: jev-review-${{ github.event.pull_request.number }}
+          path: |
+            jev-review.md
+            jev-review.json
+          if-no-files-found: ignore
+          retention-days: 90
+      - name: Comentar no PR
+        if: always() && hashFiles('jev-review.md') != ''
+        env:
+          GH_TOKEN: ${{ github.token }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+          REPO: ${{ github.repository }}
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        run: |
+          marker='<!-- jev-review -->'
+          body="$RUNNER_TEMP/jev-comment.md"
+          {
+            printf '%s\n\n' "$marker"
+            head -c 60000 jev-review.md
+            printf '\n\n_Relatório completo: [artifact do run](%s#artifacts)._\n' "$RUN_URL"
+          } > "$body"
+          existing=$(gh api --paginate "repos/$REPO/issues/$PR_NUMBER/comments" \
+            --jq '.[] | select((.body // "") | startswith("<!-- jev-review -->")) | .id' | head -n 1)
+          if [ -n "$existing" ]; then
+            gh api -X PATCH "repos/$REPO/issues/comments/$existing" -F body=@"$body" > /dev/null
+          else
+            gh api -X POST "repos/$REPO/issues/$PR_NUMBER/comments" -F body=@"$body" > /dev/null
+          fi

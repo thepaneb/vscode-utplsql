@@ -64,6 +64,16 @@ test('wiki: token nunca na URL; usa http.extraheader efêmero', () => {
   assert.match(text, /git -C \/tmp\/wiki config http\.extraheader/);
 });
 
+test('jev-review: persiste relatório e comenta de forma fixa no PR', () => {
+  const text = readWorkflow('jev-review.yml');
+  assert.match(text, /pull-requests:\s*write/);
+  assert.match(text, /--json-output jev-review\.json/);
+  assert.match(text, /upload-artifact@[0-9a-f]{40}/);
+  assert.match(text, /retention-days:\s*90/);
+  assert.match(text, /<!-- jev-review -->/);
+  assert.match(text, /issues\/\$PR_NUMBER\/comments/);
+});
+
 test('ci: roda em push e PR da branch de integração release/**', () => {
   const text = readWorkflow('ci.yml');
   assert.match(text, /push:\s*\n\s*branches:\s*\[main, 'release\/\*\*'\]/);
