@@ -264,6 +264,6 @@ fechamento para não deixar vínculo parcial.
 - 🗺️ [[MOC - PRDs]]
 - 🔗 PRDs relacionados: [[prd-122-marketplace-trust-metadata|PRD-122]] · [[prd-144-security-runtime-hardening|PRD-144]] · [[prd-145-security-alerts-deliverable|PRD-145]] · [[prd-154-ai-disclosure-provenance|PRD-154]]
 - ⚙️ Pipelines: [[PIPE-jev-review - Jev Review|PIPE-jev-review]]
-- 🔗 Mesma versão (0.24.0 - Segurança e distribuição): [[prd-154-ai-disclosure-provenance|PRD-154]]
+- 🔗 Mesma versão (0.24.0 - Segurança e distribuição): [[prd-154-ai-disclosure-provenance|PRD-154]] · [[prd-155-jev-review-packs-profiles|PRD-155]]
 - 🚀 ⬅️ release anterior: [[prd-149-performance-engineering-quality|PRD-149 (0.23.0)]] · ➡️ próxima release: [[prd-132-ux-execution-dryrun-jump|PRD-132 (0.25.0)]]
 <!-- brain:auto:end -->

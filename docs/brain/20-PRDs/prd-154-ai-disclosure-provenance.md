@@ -223,6 +223,6 @@ enquanto a PRD estiver `proposed`.
 - 🗺️ [[MOC - PRDs]]
 - 🔗 PRDs relacionados: [[prd-122-marketplace-trust-metadata|PRD-122]] · [[prd-153-ai-security-prompt-injection-data-egress|PRD-153]]
 - ⚙️ Pipelines: [[PIPE-jev-review - Jev Review|PIPE-jev-review]]
-- 🔗 Mesma versão (0.24.0 - Segurança e distribuição): [[prd-153-ai-security-prompt-injection-data-egress|PRD-153]]
+- 🔗 Mesma versão (0.24.0 - Segurança e distribuição): [[prd-153-ai-security-prompt-injection-data-egress|PRD-153]] · [[prd-155-jev-review-packs-profiles|PRD-155]]
 - 🚀 ⬅️ release anterior: [[prd-149-performance-engineering-quality|PRD-149 (0.23.0)]] · ➡️ próxima release: [[prd-132-ux-execution-dryrun-jump|PRD-132 (0.25.0)]]
 <!-- brain:auto:end -->

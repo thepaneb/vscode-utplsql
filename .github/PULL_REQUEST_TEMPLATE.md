@@ -27,6 +27,16 @@ Passos realizados:
 1. ...
 2. ...
 
+## Assistência de IA
+
+<!-- Marque uma opção. Veja a política em CONTRIBUTING.md ("AI-assisted contributions"). -->
+
+- [ ] Nenhuma
+- [ ] Sim — ferramenta/modelo: <!-- ex.: OpenCode/DeepSeek V4.1 Flash -->;
+      partes afetadas: <!-- ex.: testes do parser, rascunho da documentação -->.
+      Revisei e testei cada mudança; o commit principal leva o trailer
+      `Assisted-by: <ferramenta>/<modelo>` quando a assistência foi substancial.
+
 ## Checklist
 
 - [ ] `npm run compile` executa sem erros
