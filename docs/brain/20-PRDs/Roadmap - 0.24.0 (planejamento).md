@@ -3,7 +3,7 @@ tipo: nota
 status: ativo
 modulo: prds
 data: 2026-10-30
-verificado: 2026-11-07
+verificado: 2026-11-27
 tags: [prd, roadmap, planejamento]
 ---
 
@@ -31,6 +31,7 @@ a **fonte da verdade** no frontmatter das notas `prd-*`: ver [[MOC - PRDs]] e
 | 6 | PRD-122 | Confiança na distribuição: publisher verificado e política de privacidade | 1-2 dias | Baixa-Média |
 | 7 | PRD-153 | Segurança de IA: injeção de prompt e vazamento de dados | 2-3 dias | Média |
 | 8 | PRD-154 | AI disclosure e proveniência no desenvolvimento | 1-2 dias | Baixa-Média |
+| 9 | PRD-155 | Jev review: packs e profiles por domínio | 2-3 dias | Média |
 
 **PRDs:** [[prd-143-redos-regex-audit-input-validation|PRD-143]] ·
 [[prd-144-security-runtime-hardening|PRD-144]] ·
@@ -39,22 +40,24 @@ a **fonte da verdade** no frontmatter das notas `prd-*`: ver [[MOC - PRDs]] e
 [[prd-121-auditable-package-sourcemap|PRD-121]] ·
 [[prd-122-marketplace-trust-metadata|PRD-122]] ·
 [[prd-153-ai-security-prompt-injection-data-egress|PRD-153]] ·
-[[prd-154-ai-disclosure-provenance|PRD-154]]
+[[prd-154-ai-disclosure-provenance|PRD-154]] ·
+[[prd-155-jev-review-packs-profiles|PRD-155]]
 
 **Tema:** postura de segurança e cadeia de distribuição, depois que a
 arquitetura (128/129/138) e o CI (125, 0.20.0) estabilizaram. A **143**, a **144**
 e a **145** endurecem entrada, runtime e entregável; a **142**, a **121** e a
 **122** fecham a cadeia de distribuição (proveniência, pacote auditável e
 política de privacidade). A **153** e a **154** fecham a transparência e a
-segurança do uso de IA no desenvolvimento. Ordem sugerida:
-**143 → 144 → 145 → 142 → 121 → 122 → 153 → 154**.
+segurança do uso de IA no desenvolvimento; a **155** aplica o mesmo modelo de
+packs do Jev aos domínios de segurança, docs e release. Ordem sugerida:
+**143 → 144 → 145 → 142 → 121 → 122 → 153 → 154 → 155**.
 
 **Dependências:** a 142 depois da 125 (matriz de CI, 0.19.0–0.20.0); a fase de
 repositório da 122 (política + `PRIVACY.md`) pode ser antecipada como docs-only,
 e a verificação do publisher/portal fica nesta versão. A **144** e a **145**
 entram depois da 143, fechando o bloco de segurança antes da distribuição.
 
-**Total estimado:** ≈ 8,5–14,5 dias.
+**Total estimado:** ≈ 10,5–17,5 dias.
 
 ## Fluxo de execução (por PRD)
 

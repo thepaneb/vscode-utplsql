@@ -127,5 +127,5 @@ Criar regra `BR-UX-*` ("comandos pesados são serializados por lock") com
 - 🗺️ [[MOC - PRDs]]
 - 🔗 PRDs relacionados: [[prd-27-default-keybindings|PRD-27]]
 - 🔗 Mesma versão (0.25.0): [[prd-132-ux-execution-dryrun-jump|PRD-132]] · [[prd-140-statusbar-settings-grouping|PRD-140]] · [[prd-141-onboarding-walkthrough-accessibility|PRD-141]] · [[prd-151-codelens-debug-test|PRD-151]]
-- 🚀 ⬅️ release anterior: [[prd-154-ai-disclosure-provenance|PRD-154 (0.24.0)]]
+- 🚀 ⬅️ release anterior: [[prd-155-jev-review-packs-profiles|PRD-155 (0.24.0)]]
 <!-- brain:auto:end -->

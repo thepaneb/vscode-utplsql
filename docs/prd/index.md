@@ -238,6 +238,7 @@ notas `prd-*`. O índice navegável do vault é a [[MOC - PRDs]].
 | 149 | [Performance mensurável e qualidade de engenharia](proposed/prd-149-performance-engineering-quality.md) | 0.23.0 | 2026-11-07 |
 | 151 | [CodeLens de debug de teste e suíte](proposed/prd-151-codelens-debug-test.md) | 0.25.0 | 2026-11-07 |
 | 154 | [AI disclosure e proveniência no desenvolvimento](proposed/prd-154-ai-disclosure-provenance.md) | 0.24.0 | 2026-11-27 |
+| 155 | [Jev review: packs e profiles por domínio](proposed/prd-155-jev-review-packs-profiles.md) | 0.24.0 | 2026-11-27 |
 <!-- prd:roadmap:end -->
 
 ---
@@ -402,6 +403,7 @@ docs/prd/
 │   ├── prd-149-performance-engineering-quality.md
 │   ├── prd-151-codelens-debug-test.md
 │   ├── prd-154-ai-disclosure-provenance.md
+│   ├── prd-155-jev-review-packs-profiles.md
 ```
 <!-- prd:estrutura:end -->
 

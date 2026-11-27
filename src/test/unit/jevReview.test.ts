@@ -23,7 +23,9 @@ import {
   formatMarkdown,
   getGitDiff,
   isDocPath,
+  isHttpsEndpoint,
   isMaxTokensError,
+  isRetryableModelError,
   isSensitivePath,
   JevApiError,
   type JevResponse,
@@ -1136,6 +1138,23 @@ test('formatMarkdown: escapa choice, modelo e nomes de arquivo não confiáveis'
   assert.match(markdown, /src\/x\\\]\(https:\/\/evil\)\.ts/);
 });
 
+test('formatMarkdown e formatJson: expõem fallback de modelo', () => {
+  const response = validResponse();
+  const aggregate = aggregateOf(response);
+  aggregate.meta = {
+    primary: 'jev-1.13-free',
+    attempted: ['jev-1.13-free', 'jev-1.14'],
+    fallbackUsed: true,
+  };
+  const markdown = formatMarkdown(aggregate);
+  assert.match(markdown, /Fallback de modelo.*jev-1\.13-free.*jev-1\.14/);
+  const json = JSON.parse(formatJson(aggregate)) as {
+    models: { primary: string; attempted: string[]; fallbackUsed: boolean };
+  };
+  assert.equal(json.models.primary, 'jev-1.13-free');
+  assert.equal(json.models.fallbackUsed, true);
+});
+
 test('formatJson: inclui chunks e resumo do diff, sem o state', () => {
   const response = validResponse();
   const json = JSON.parse(
@@ -1183,6 +1202,10 @@ test('parseArgs: defaults', () => {
   assert.equal(options.format, 'markdown');
   assert.equal(options.workingTree, false);
   assert.equal(options.failOnFindings, false);
+  assert.equal(options.failOn, 'none');
+  assert.deepEqual(options.fallbackModels, ['jev-1.14', 'jev-1.13']);
+  assert.equal(options.noFallback, false);
+  assert.equal(options.allowInsecureEndpoint, false);
   assert.equal(options.help, false);
 });
 
@@ -1228,6 +1251,48 @@ test('parseArgs: flags com valor inline e separado', () => {
   assert.equal(options.failOnFindings, true);
   assert.equal(options.requireKey, true);
   assert.equal(options.dryRun, true);
+});
+
+test('parseArgs: fallback, fail-on e endpoint inseguro', () => {
+  const options = parseArgs([
+    '--fallback-model',
+    'jev-1.14',
+    '--fallback-model=jev-1.13',
+    '--fail-on',
+    'block',
+    '--allow-insecure-endpoint',
+  ]);
+  assert.deepEqual(options.fallbackModels, ['jev-1.14', 'jev-1.13']);
+  assert.equal(options.failOn, 'block');
+  assert.equal(options.allowInsecureEndpoint, true);
+
+  const noFallback = parseArgs(['--no-fallback']);
+  assert.equal(noFallback.noFallback, true);
+  assert.deepEqual(noFallback.fallbackModels, []);
+
+  assert.throws(() => parseArgs(['--fail-on', 'maybe']), /--fail-on/);
+  assert.throws(() => parseArgs(['--no-fallback=1']), /n\u00e3o aceita valor/);
+});
+
+test('parseArgs: --fallback-model substitui o default', () => {
+  const options = parseArgs(['--fallback-model', 'custom-model']);
+  assert.deepEqual(options.fallbackModels, ['custom-model']);
+});
+
+test('isHttpsEndpoint: s\u00f3 aceita https v\u00e1lido', () => {
+  assert.equal(isHttpsEndpoint('https://example.test/v1'), true);
+  assert.equal(isHttpsEndpoint('http://localhost:8080'), false);
+  assert.equal(isHttpsEndpoint('not a url'), false);
+});
+
+test('isRetryableModelError: classifica falhas de modelo', () => {
+  assert.equal(isRetryableModelError(new JevApiError('HTTP 429: rate limit', 429)), true);
+  assert.equal(isRetryableModelError(new JevApiError('HTTP 503: down', 503)), true);
+  assert.equal(isRetryableModelError(new JevApiError('HTTP 400: unknown model', 400)), true);
+  assert.equal(isRetryableModelError(new JevApiError('HTTP 400: max_tokens_exceeded', 400)), false);
+  assert.equal(isRetryableModelError(new JevApiError('HTTP 401: nope', 401)), false);
+  assert.equal(isRetryableModelError(new JevApiError('timeout após 60000ms')), true);
+  assert.equal(isRetryableModelError(new Error('falha de rede')), false);
 });
 
 test('parseArgs: -h', () => {
@@ -1394,6 +1459,164 @@ test('main: run completo em markdown', async () => {
     assert.equal(result.code, 0);
     assert.match(result.out, /Jev review/);
     assert.match(result.out, /approve/);
+  });
+});
+
+test('main: fallback de modelo em erro retryable', async () => {
+  await withTempDirAsync(async (dir) => {
+    const file = writeDiff(dir, SAMPLE_DIFF);
+    const models: string[] = [];
+    let calls = 0;
+    const fetchImpl: FetchLike = async (_url, init) => {
+      const payload = JSON.parse(init.body) as { model: string };
+      models.push(payload.model);
+      calls++;
+      if (calls === 1) return fakeResponse({ error: 'rate limit' }, false, 429);
+      return fakeResponse(validResponse({ model: payload.model }));
+    };
+    const result = await runMain(['--diff-file', file, '--json-output', 'out.json'], {
+      env: { OPENCODE_API_KEY: 'k' },
+      cwd: dir,
+      fetchImpl,
+    });
+    assert.equal(result.code, 0);
+    assert.deepEqual(models, ['jev-1.13-free', 'jev-1.14']);
+    assert.match(result.err, /tentando jev-1\.14/);
+    const json = JSON.parse(fs.readFileSync(path.join(dir, 'out.json'), 'utf8')) as {
+      models: { primary: string; attempted: string[]; fallbackUsed: boolean };
+    };
+    assert.equal(json.models.primary, 'jev-1.13-free');
+    assert.deepEqual(json.models.attempted, ['jev-1.13-free', 'jev-1.14']);
+    assert.equal(json.models.fallbackUsed, true);
+  });
+});
+
+test('main: fallback é sticky entre blocos', async () => {
+  await withTempDirAsync(async (dir) => {
+    const file = writeDiff(
+      dir,
+      ['a', 'b'].map((name) => diffFor(`src/${name}.ts`, 'x'.repeat(120))).join(''),
+    );
+    const models: string[] = [];
+    let calls = 0;
+    const fetchImpl: FetchLike = async (_url, init) => {
+      const payload = JSON.parse(init.body) as { model: string };
+      models.push(payload.model);
+      calls++;
+      if (calls === 1) return fakeResponse({ error: 'rate limit' }, false, 429);
+      return fakeResponse(validResponse({ model: payload.model }));
+    };
+    const result = await runMain(['--diff-file', file, '--max-diff-chars', '300'], {
+      env: { OPENCODE_API_KEY: 'k' },
+      cwd: dir,
+      fetchImpl,
+    });
+    assert.equal(result.code, 0);
+    assert.deepEqual(models, ['jev-1.13-free', 'jev-1.14', 'jev-1.14']);
+  });
+});
+
+test('main: --no-fallback não troca de modelo', async () => {
+  await withTempDirAsync(async (dir) => {
+    const file = writeDiff(dir, SAMPLE_DIFF);
+    let calls = 0;
+    const result = await runMain(['--diff-file', file, '--no-fallback'], {
+      env: { OPENCODE_API_KEY: 'k' },
+      cwd: dir,
+      fetchImpl: async () => {
+        calls++;
+        return fakeResponse({}, false, 429);
+      },
+    });
+    assert.equal(result.code, 1);
+    assert.equal(calls, 1);
+    assert.match(result.err, /HTTP 429/);
+  });
+});
+
+test('main: --fail-on block só falha em block', async () => {
+  await withTempDirAsync(async (dir) => {
+    const file = writeDiff(dir, SAMPLE_DIFF);
+    const blocking = validResponse({
+      answers: {
+        security: { type: 'noul', noul: 0.9 },
+        correctness: { type: 'noul', noul: 0.1 },
+        tests: { type: 'noul', noul: 0.1 },
+        severity: { type: 'score', score: 2 },
+        recommendation: { type: 'choice', choice: 'block' },
+      },
+    });
+    const blockingRun = await runMain(['--diff-file', file, '--fail-on', 'block'], {
+      env: { OPENCODE_API_KEY: 'k' },
+      cwd: dir,
+      fetchImpl: fakeFetch(blocking),
+    });
+    assert.equal(blockingRun.code, 1);
+
+    const passingRun = await runMain(['--diff-file', file, '--fail-on', 'block'], {
+      env: { OPENCODE_API_KEY: 'k' },
+      cwd: dir,
+      fetchImpl: fakeFetch(validResponse()),
+    });
+    assert.equal(passingRun.code, 0);
+  });
+});
+
+test('main: --fail-on comment falha em comment e block', async () => {
+  await withTempDirAsync(async (dir) => {
+    const file = writeDiff(dir, SAMPLE_DIFF);
+    const commenting = validResponse({
+      answers: {
+        security: { type: 'noul', noul: 0.1 },
+        correctness: { type: 'noul', noul: 0.1 },
+        tests: { type: 'noul', noul: 0.8 },
+        severity: { type: 'score', score: 1.5 },
+        recommendation: { type: 'choice', choice: 'comment' },
+      },
+    });
+    const result = await runMain(['--diff-file', file, '--fail-on', 'comment'], {
+      env: { OPENCODE_API_KEY: 'k' },
+      cwd: dir,
+      fetchImpl: fakeFetch(commenting),
+    });
+    assert.equal(result.code, 1);
+
+    const approve = await runMain(['--diff-file', file, '--fail-on', 'comment'], {
+      env: { OPENCODE_API_KEY: 'k' },
+      cwd: dir,
+      fetchImpl: fakeFetch(validResponse()),
+    });
+    assert.equal(approve.code, 0);
+  });
+});
+
+test('main: endpoint http é recusado sem opt-in', async () => {
+  const rejected = await runMain(['--endpoint', 'http://localhost:8080', '--diff-file', 'x'], {
+    env: { OPENCODE_API_KEY: 'k' },
+    readFile: () => SAMPLE_DIFF,
+  });
+  assert.equal(rejected.code, 2);
+  assert.match(rejected.err, /HTTPS/);
+});
+
+test('main: --allow-insecure-endpoint libera proxy local', async () => {
+  await withTempDirAsync(async (dir) => {
+    const file = writeDiff(dir, SAMPLE_DIFF);
+    const result = await runMain(
+      [
+        '--endpoint',
+        'http://localhost:8080',
+        '--allow-insecure-endpoint',
+        '--diff-file',
+        file,
+        '--dry-run',
+      ],
+      {
+        env: { OPENCODE_API_KEY: 'k' },
+        cwd: dir,
+      },
+    );
+    assert.equal(result.code, 0);
   });
 });
 

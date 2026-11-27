@@ -28,6 +28,31 @@ The extension connects directly to Oracle via `node-oracledb` (no external CLI) 
 
 If you identify a problem in any of these areas, it is considered a security vulnerability, even if it looks like an ordinary "bug".
 
+## AI-assisted development and Jev review
+
+The extension **does not call an AI service at runtime** and does not send
+telemetry. AI tools are used only during development and review, including the
+advisory Jev review of pull requests.
+
+- The Jev workflow sends a **filtered diff** to the OpenCode Console endpoint. It
+  skips forks (no access to the repository secret), redacts common token
+  formats, and excludes `.env` files, lockfiles, binaries and generated
+  directories before sending anything.
+- The report is **advisory and probabilistic**. It is not a human approval and
+  does not replace tests, lint, CodeQL or review; treat every finding as a
+  hypothesis to verify.
+- AI-assisted contributions must disclose the tool and scope in the pull
+  request and keep a human responsible for the change. The full policy and the
+  `Assisted-by` trailer convention are in
+  [CONTRIBUTING.md](CONTRIBUTING.md#ai-assisted-contributions); the runtime and
+  development disclosure is in [AI_USAGE.md](AI_USAGE.md).
+- Never include Oracle credentials, `.env` content, tokens or private data in a
+  prompt, issue, diff or review request. The Jev redaction is best-effort, not a
+  guarantee.
+
+If you find a way to make the Jev review expose a secret or accept untrusted
+instructions from a diff, report it through the private channel below.
+
 ## Implemented protections
 
 - **`machine`-scoped connection settings** (`utplsql.connection`, `utplsql.profiles`, `utplsql.activeProfile`, `utplsql.oracleClientLibDir`, `utplsql.oracleClientConfigDir`): a third-party `.vscode/settings.json` **cannot** override them.
