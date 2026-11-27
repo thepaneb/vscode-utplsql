@@ -5,6 +5,7 @@ import path from 'node:path';
 import { test } from 'node:test';
 import {
   type AggregateReview,
+  aggregateChunkResponses,
   buildQuestions,
   buildState,
   type ChunkReview,
@@ -871,6 +872,130 @@ test('combineResponses: sem respostas', () => {
   assert.equal(combined.usage, undefined);
 });
 
+test('aggregateChunkResponses: p90 evita block de um outlier', () => {
+  const responses = Array.from({ length: 10 }, (_, index) =>
+    index === 0
+      ? validResponse({
+          answers: {
+            security: { type: 'noul', noul: 0.1 },
+            correctness: { type: 'noul', noul: 0.1 },
+            tests: { type: 'noul', noul: 0.91 },
+            severity: { type: 'score', score: 3.06 },
+            recommendation: { type: 'choice', choice: 'block' },
+          },
+        })
+      : validResponse(),
+  );
+  const aggregate = aggregateChunkResponses(responses);
+  assert.equal(scoreValue(aggregate, 'severity'), 1.1);
+  assert.equal(choiceValue(aggregate, 'recommendation'), 'comment');
+  assert.equal(summarize(aggregate).verdict, 'comment');
+});
+
+test('aggregateChunkResponses: segurança mantém block mesmo com severidade baixa', () => {
+  const responses = [
+    validResponse({
+      answers: {
+        security: { type: 'noul', noul: 0.98 },
+        correctness: { type: 'noul', noul: 0.1 },
+        tests: { type: 'noul', noul: 0.1 },
+        severity: { type: 'score', score: 1.2 },
+        recommendation: { type: 'choice', choice: 'block' },
+      },
+    }),
+    ...Array.from({ length: 9 }, () => validResponse()),
+  ];
+  const aggregate = aggregateChunkResponses(responses);
+  assert.equal(choiceValue(aggregate, 'recommendation'), 'block');
+  assert.equal(summarize(aggregate).verdict, 'block');
+});
+
+test('aggregateChunkResponses: correção mantém block', () => {
+  const responses = [
+    validResponse({
+      answers: {
+        security: { type: 'noul', noul: 0.1 },
+        correctness: { type: 'noul', noul: 0.8 },
+        tests: { type: 'noul', noul: 0.1 },
+        severity: { type: 'score', score: 1.2 },
+        recommendation: { type: 'choice', choice: 'block' },
+      },
+    }),
+    ...Array.from({ length: 9 }, () => validResponse()),
+  ];
+  assert.equal(summarize(aggregateChunkResponses(responses)).verdict, 'block');
+});
+
+test('aggregateChunkResponses: p90 de severidade alta mantém block', () => {
+  const high = validResponse({
+    answers: {
+      security: { type: 'noul', noul: 0.1 },
+      correctness: { type: 'noul', noul: 0.1 },
+      tests: { type: 'noul', noul: 0.1 },
+      severity: { type: 'score', score: 3.2 },
+      recommendation: { type: 'choice', choice: 'block' },
+    },
+  });
+  const responses = [
+    ...Array.from({ length: 2 }, () => high),
+    ...Array.from({ length: 8 }, () => validResponse()),
+  ];
+  const aggregate = aggregateChunkResponses(responses);
+  assert.equal(scoreValue(aggregate, 'severity'), 3.2);
+  assert.equal(summarize(aggregate).verdict, 'block');
+});
+
+test('aggregateChunkResponses: block bruto sem evidência vira comment', () => {
+  const responses = [
+    validResponse({
+      answers: {
+        security: { type: 'noul', noul: 0.1 },
+        correctness: { type: 'noul', noul: 0.1 },
+        tests: { type: 'noul', noul: 0.1 },
+        severity: { type: 'score', score: 1.2 },
+        recommendation: { type: 'choice', choice: 'block' },
+      },
+    }),
+    ...Array.from({ length: 9 }, () => validResponse()),
+  ];
+  const aggregate = aggregateChunkResponses(responses);
+  assert.equal(choiceValue(aggregate, 'recommendation'), 'comment');
+  assert.equal(summarize(aggregate).verdict, 'comment');
+});
+
+test('aggregateChunkResponses: aprovado e sem respostas', () => {
+  const approved = aggregateChunkResponses([validResponse(), validResponse()]);
+  assert.equal(summarize(approved).verdict, 'approve');
+  assert.equal(choiceValue(approved, 'recommendation'), 'approve');
+  const empty = aggregateChunkResponses([]);
+  assert.equal(empty.model, 'desconhecido');
+  assert.deepEqual(empty.answers, {});
+});
+
+test('aggregateChunkResponses: sem severidade remove o campo', () => {
+  const aggregate = aggregateChunkResponses([
+    {
+      model: 'm',
+      answers: {
+        security: { type: 'noul', noul: 0.1 },
+        tests: { type: 'noul', noul: 0.1 },
+        recommendation: { type: 'choice', choice: 'approve' },
+      },
+    },
+  ]);
+  assert.equal(scoreValue(aggregate, 'severity'), undefined);
+  assert.equal(choiceValue(aggregate, 'recommendation'), 'approve');
+});
+
+test('aggregateChunkResponses: soma uso e modelo misto', () => {
+  const aggregate = aggregateChunkResponses([
+    validResponse({ model: 'a', usage: { input_tokens: 10, output_tokens: 2 } }),
+    validResponse({ model: 'b', usage: { input_tokens: 20, output_tokens: 4 } }),
+  ]);
+  assert.equal(aggregate.model, 'misto');
+  assert.deepEqual(aggregate.usage, { input_tokens: 30, output_tokens: 6 });
+});
+
 test('escapeTableCell: escapa backslash, pipe, colchetes, backticks e newline', () => {
   assert.equal(escapeTableCell('a\\b|c\nd'), 'a\\\\b\\|c<br>d');
   assert.equal(escapeTableCell('[x](https://evil)'), '\\[x\\](https://evil)');
@@ -1459,6 +1584,22 @@ test('main: erro da API não sobrescreve a causa quando output falha', async () 
   await withTempDirAsync(async (dir) => {
     const file = writeDiff(dir, SAMPLE_DIFF);
     const result = await runMain(['--diff-file', file, '--output', 'report.md'], {
+      env: { OPENCODE_API_KEY: 'k' },
+      cwd: dir,
+      fetchImpl: fakeFetch({ error: 'falha' }, false, 500),
+      writeFile: () => {
+        throw new Error('disco cheio');
+      },
+    });
+    assert.equal(result.code, 1);
+    assert.match(result.err, /HTTP 500/);
+  });
+});
+
+test('main: erro da API não sobrescreve a causa quando json-output falha', async () => {
+  await withTempDirAsync(async (dir) => {
+    const file = writeDiff(dir, SAMPLE_DIFF);
+    const result = await runMain(['--diff-file', file, '--json-output', 'report.json'], {
       env: { OPENCODE_API_KEY: 'k' },
       cwd: dir,
       fetchImpl: fakeFetch({ error: 'falha' }, false, 500),
